@@ -136,22 +136,36 @@ function Sidebar({ activeView, onNavigate }) {
 
 // ---- Landing / overview page ----
 function Home({ onBrowse, mpCount }) {
-  const [recent, setRecent] = useState([]);
-  const [loadingRecent, setLoadingRecent] = useState(true);
+  const [activeTab, setActiveTab] = useState("donations");
+  const [donations, setDonations] = useState([]);
+  const [roles, setRoles] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadRecent() {
-      const { data, error } = await supabase
-        .from("financial_interests")
-        .select("summary, value_amount, date_registered, donor_name, politicians(name)")
-        .not("date_registered", "is", null)
-        .order("date_registered", { ascending: false })
-        .limit(3);
-      if (!error) setRecent(data ?? []);
-      setLoadingRecent(false);
+      const [donationsRes, rolesRes] = await Promise.all([
+        supabase
+          .from("financial_interests")
+          .select("summary, value_amount, date_registered, donor_name, politicians(name)")
+          .not("value_amount", "is", null)
+          .order("date_registered", { ascending: false })
+          .limit(4),
+        supabase
+          .from("financial_interests")
+          .select("summary, date_registered, politicians(name)")
+          .eq("category", "Employment and earnings")
+          .not("date_registered", "is", null)
+          .order("date_registered", { ascending: false })
+          .limit(4),
+      ]);
+      setDonations(donationsRes.data ?? []);
+      setRoles(rolesRes.data ?? []);
+      setLoading(false);
     }
     loadRecent();
   }, []);
+
+  const items = activeTab === "donations" ? donations : roles;
 
   return (
     <div style={{ maxWidth: 720, margin: "0 auto", padding: "80px 24px", textAlign: "center" }}>
@@ -180,38 +194,67 @@ function Home({ onBrowse, mpCount }) {
         </div>
       </div>
 
-      <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "18px 20px", marginBottom: 36, textAlign: "left" }}>
-        <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10, textAlign: "center" }}>
-          Most Recently Declared
-        </div>
-        {loadingRecent && (
-          <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, textAlign: "center" }}>Loading…</div>
-        )}
-        {!loadingRecent && recent.length === 0 && (
-          <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, textAlign: "center" }}>No entries found.</div>
-        )}
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          {recent.map((item, i) => (
-            <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, paddingTop: i > 0 ? 10 : 0, borderTop: i > 0 ? `1px solid ${COLORS.hairline}` : "none" }}>
-              <div style={{ minWidth: 0 }}>
-                <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, color: COLORS.ink }}>
-                  {item.politicians?.name ?? "Unknown MP"}
-                </div>
-                <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
-                  from {item.donor_name ?? item.summary}
-                </div>
-              </div>
-              <div style={{ textAlign: "right", flexShrink: 0 }}>
-                {item.value_amount && (
-                  <div style={{ fontFamily: FONT_MONO, fontSize: 13, fontWeight: 700, color: COLORS.ink }}>
-                    £{Number(item.value_amount).toLocaleString()}
-                  </div>
-                )}
-                <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>{formatDate(item.date_registered)}</div>
-              </div>
-            </div>
+      <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "8px 20px 20px", marginBottom: 36, textAlign: "left" }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: 4, padding: "10px 0 14px" }}>
+          {[
+            { key: "donations", label: "Donations" },
+            { key: "roles", label: "Roles" },
+          ].map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              style={{
+                fontFamily: FONT_BODY,
+                fontSize: 12.5,
+                fontWeight: 600,
+                padding: "6px 16px",
+                borderRadius: 999,
+                border: "none",
+                cursor: "pointer",
+                background: activeTab === tab.key ? COLORS.ink : "transparent",
+                color: activeTab === tab.key ? "#fff" : COLORS.inkSoft,
+              }}
+            >
+              {tab.label}
+            </button>
           ))}
         </div>
+
+        {loading && (
+          <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, textAlign: "center", padding: "10px 0" }}>Loading…</div>
+        )}
+        {!loading && items.length === 0 && (
+          <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, textAlign: "center", padding: "10px 0" }}>No entries found.</div>
+        )}
+
+        {!loading && items.length > 0 && (
+          <div style={{ position: "relative", paddingLeft: 20 }}>
+            <div style={{ position: "absolute", left: 4, top: 6, bottom: 6, width: 1, background: COLORS.hairline }} />
+            {items.map((item, i) => (
+              <div key={i} style={{ position: "relative", paddingBottom: i < items.length - 1 ? 16 : 0 }}>
+                <div style={{ position: "absolute", left: -20, top: 4, width: 9, height: 9, borderRadius: "50%", background: COLORS.brass, border: `2px solid ${COLORS.paperCard}` }} />
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, color: COLORS.ink }}>
+                      {item.politicians?.name ?? "Unknown MP"}
+                    </div>
+                    <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
+                      {activeTab === "donations" ? `from ${item.donor_name ?? item.summary}` : item.summary}
+                    </div>
+                  </div>
+                  <div style={{ textAlign: "right", flexShrink: 0 }}>
+                    {activeTab === "donations" && item.value_amount && (
+                      <div style={{ fontFamily: FONT_MONO, fontSize: 13, fontWeight: 700, color: COLORS.ink }}>
+                        £{Number(item.value_amount).toLocaleString()}
+                      </div>
+                    )}
+                    <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>{formatDate(item.date_registered)}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <button
