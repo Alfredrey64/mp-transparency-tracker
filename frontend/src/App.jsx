@@ -382,9 +382,16 @@ function PoliticianList({ onSelect }) {
 }
 
 // ---- Detail screen: one MP's declared financial interests ----
+const DETAIL_TABS = [
+  { key: "all", label: "All" },
+  { key: "donations", label: "Donations" },
+  { key: "roles", label: "Roles" },
+];
+
 function PoliticianDetail({ politician, onBack }) {
   const [interests, setInterests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("all");
 
   useEffect(() => {
     async function load() {
@@ -398,6 +405,12 @@ function PoliticianDetail({ politician, onBack }) {
     }
     load();
   }, [politician.id]);
+
+  const filteredInterests = useMemo(() => {
+    if (activeTab === "donations") return interests.filter((item) => item.value_amount != null);
+    if (activeTab === "roles") return interests.filter((item) => item.category === "Employment and earnings");
+    return interests;
+  }, [interests, activeTab]);
 
   const office = timeInOffice(politician.membership_start_date);
 
@@ -428,16 +441,40 @@ function PoliticianDetail({ politician, onBack }) {
           </div>
         </div>
 
-        <div style={{ paddingTop: 20, display: "flex", flexDirection: "column", gap: 10 }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: 4, padding: "16px 0 4px" }}>
+          {DETAIL_TABS.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              style={{
+                fontFamily: FONT_BODY,
+                fontSize: 12.5,
+                fontWeight: 600,
+                padding: "6px 16px",
+                borderRadius: 999,
+                border: "none",
+                cursor: "pointer",
+                background: activeTab === tab.key ? COLORS.ink : "transparent",
+                color: activeTab === tab.key ? "#fff" : COLORS.inkSoft,
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        <div style={{ paddingTop: 16, display: "flex", flexDirection: "column", gap: 10 }}>
           {loading && <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft }}>Loading declared interests…</div>}
 
-          {!loading && interests.length === 0 && (
+          {!loading && filteredInterests.length === 0 && (
             <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, textAlign: "center", padding: "20px 0" }}>
-              No declared financial interests found for this MP.
+              {interests.length === 0
+                ? "No declared financial interests found for this MP."
+                : `No entries in "${DETAIL_TABS.find((t) => t.key === activeTab)?.label}" for this MP.`}
             </div>
           )}
 
-          {interests.map((item) => (
+          {filteredInterests.map((item) => (
             <div key={item.id} style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 14 }}>
               <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 11, color: COLORS.brass, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>
                 {shortCategory(item.category)}
