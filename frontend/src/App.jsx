@@ -70,11 +70,50 @@ function EyebrowLabel({ children }) {
 
 function PlaceholderBox({ title, note }) {
   return (
-    <div style={{ background: COLORS.paperCard, border: `1px dashed ${COLORS.hairline}`, borderRadius: 12, padding: 20 }}>
+    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.brass}`, borderRadius: 12, padding: 20, boxShadow: "0 1px 4px rgba(30,42,68,0.05)" }}>
       <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 5 }}>
         {title}
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>{note}</div>
+    </div>
+  );
+}
+
+function ParliamentSilhouette({ width = 200, opacity = 1, color = COLORS.ink }) {
+  return (
+    <svg width={width} viewBox="0 0 240 120" fill="none" style={{ opacity }}>
+      {/* Riverline */}
+      <line x1="0" y1="112" x2="240" y2="112" stroke={color} strokeWidth="1.5" />
+      {/* Main building block */}
+      <rect x="18" y="70" width="120" height="42" fill={color} />
+      {/* Crenellations on main block */}
+      {[18, 30, 42, 54, 66, 78, 90, 102, 114, 126].map((x) => (
+        <rect key={x} x={x} y="64" width="6" height="8" fill={color} />
+      ))}
+      {/* Small turret left */}
+      <rect x="10" y="58" width="10" height="54" fill={color} />
+      <polygon points="10,58 15,46 20,58" fill={color} />
+      {/* Big Ben tower */}
+      <rect x="150" y="30" width="26" height="82" fill={color} />
+      <rect x="146" y="24" width="34" height="8" fill={color} />
+      <polygon points="150,24 163,4 176,24" fill={color} />
+      {/* Clock face */}
+      <circle cx="163" cy="46" r="7" fill={COLORS.paper} stroke={color} strokeWidth="2" />
+      {/* Spire */}
+      <line x1="163" y1="4" x2="163" y2="-6" stroke={color} strokeWidth="2" />
+      {/* Far right smaller spire */}
+      <rect x="190" y="80" width="14" height="32" fill={color} />
+      <polygon points="190,80 197,66 204,80" fill={color} />
+    </svg>
+  );
+}
+
+function SectionDivider() {
+  return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, margin: "14px 0" }}>
+      <span style={{ width: 24, height: 1, background: COLORS.hairline }} />
+      <span style={{ width: 4, height: 4, borderRadius: "50%", background: COLORS.brass }} />
+      <span style={{ width: 24, height: 1, background: COLORS.hairline }} />
     </div>
   );
 }
@@ -100,10 +139,16 @@ function Sidebar({ activeView, onNavigate }) {
         boxSizing: "border-box",
       }}
     >
-      <div style={{ marginBottom: 36 }}>
+      <div style={{ marginBottom: 32, textAlign: "center" }}>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
+          <ParliamentSilhouette width={72} color={COLORS.brass} opacity={0.9} />
+        </div>
         <EyebrowLabel>Public Record</EyebrowLabel>
-        <div style={{ fontFamily: FONT_DISPLAY, fontSize: 24, color: "#fff", lineHeight: 1.2, marginTop: 4 }}>
+        <div style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: "#fff", lineHeight: 1.25, marginTop: 6 }}>
           UK Parliament Tracker
+        </div>
+        <div style={{ display: "flex", justifyContent: "center", marginTop: 14 }}>
+          <span style={{ width: 36, height: 1, background: "rgba(255,255,255,0.15)" }} />
         </div>
       </div>
 
@@ -179,11 +224,15 @@ function Home({ onBrowse, mpCount }) {
   const items = activeTab === "donations" ? donations : roles;
 
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", padding: "80px 24px", textAlign: "center" }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: "80px 24px", textAlign: "center", position: "relative" }}>
+      <div style={{ position: "absolute", top: 0, right: 24, pointerEvents: "none" }}>
+        <ParliamentSilhouette width={220} color={COLORS.ink} opacity={0.045} />
+      </div>
       <EyebrowLabel>Public Record · UK Parliament</EyebrowLabel>
       <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 56, color: COLORS.ink, margin: "16px 0 0", lineHeight: 1.1 }}>
         Follow the money behind every MP.
       </h1>
+      <SectionDivider />
       <p style={{ fontFamily: FONT_BODY, fontSize: 18, color: COLORS.inkSoft, marginTop: 22, lineHeight: 1.6, maxWidth: 620, marginLeft: "auto", marginRight: "auto" }}>
         A plain-language look at declared gifts, donations, and financial interests for every current
         Member of Parliament — pulled automatically from the official Register of Interests and updated
@@ -206,7 +255,7 @@ function Home({ onBrowse, mpCount }) {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 36, textAlign: "left" }}>
-        <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "8px 20px 20px" }}>
+        <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "8px 20px 20px", boxShadow: "0 2px 8px rgba(30,42,68,0.06)" }}>
           <div style={{ display: "flex", justifyContent: "center", gap: 4, padding: "10px 0 14px" }}>
             {[
               { key: "donations", label: "Donations" },
@@ -350,6 +399,7 @@ function PoliticianList({ onSelect }) {
             borderRadius: 10,
             background: COLORS.paperCard,
             color: COLORS.ink,
+            boxShadow: "0 1px 3px rgba(30,42,68,0.05)",
           }}
         />
       </div>
@@ -373,8 +423,10 @@ function PoliticianList({ onSelect }) {
               padding: "12px 14px",
               background: COLORS.paperCard,
               border: `1px solid ${COLORS.hairline}`,
-              borderRadius: 10,
+              borderRadius: 12,
               cursor: "pointer",
+              boxShadow: "0 1px 3px rgba(30,42,68,0.06)",
+              transition: "box-shadow 0.15s, transform 0.15s",
             }}
           >
             <span style={{ width: 10, height: 10, borderRadius: "50%", background: partyColour(p.party_colour), flexShrink: 0 }} />
@@ -439,12 +491,15 @@ function PoliticianDetail({ politician, onBack }) {
       </button>
 
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ paddingBottom: 28, borderBottom: `1px solid ${COLORS.hairline}`, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 10 }}>
+        <div style={{ position: "relative", paddingBottom: 28, borderBottom: `1px solid ${COLORS.hairline}`, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 10, overflow: "hidden" }}>
+          <div style={{ position: "absolute", top: -10, right: -10, pointerEvents: "none" }}>
+            <ParliamentSilhouette width={180} color={COLORS.ink} opacity={0.05} />
+          </div>
           {politician.thumbnail_url && (
             <img
               src={politician.thumbnail_url}
               alt=""
-              style={{ width: 96, height: 96, borderRadius: "50%", objectFit: "cover", border: `1px solid ${COLORS.hairline}` }}
+              style={{ width: 96, height: 96, borderRadius: "50%", objectFit: "cover", border: `3px solid ${COLORS.paperCard}`, outline: `1px solid ${COLORS.hairline}`, boxShadow: "0 4px 14px rgba(30,42,68,0.12)" }}
             />
           )}
           <div>
@@ -453,6 +508,7 @@ function PoliticianDetail({ politician, onBack }) {
               {politician.party} · {politician.constituency}
               {office && ` · MP for ${office}`}
             </div>
+            <SectionDivider />
           </div>
         </div>
 
@@ -493,7 +549,7 @@ function PoliticianDetail({ politician, onBack }) {
               )}
 
               {filteredInterests.map((item) => (
-                <div key={item.id} style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 14 }}>
+                <div key={item.id} style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 16, boxShadow: "0 1px 4px rgba(30,42,68,0.05)" }}>
                   <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: COLORS.brass, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 5 }}>
                     {shortCategory(item.category)}
                   </div>
