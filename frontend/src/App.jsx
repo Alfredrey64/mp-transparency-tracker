@@ -70,11 +70,11 @@ function EyebrowLabel({ children }) {
 
 function PlaceholderBox({ title, note }) {
   return (
-    <div style={{ background: COLORS.paperCard, border: `1px dashed ${COLORS.hairline}`, borderRadius: 12, padding: 16 }}>
-      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13, color: COLORS.ink, marginBottom: 4 }}>
+    <div style={{ background: COLORS.paperCard, border: `1px dashed ${COLORS.hairline}`, borderRadius: 12, padding: 20 }}>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 5 }}>
         {title}
       </div>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>{note}</div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>{note}</div>
     </div>
   );
 }
@@ -92,7 +92,7 @@ function Sidebar({ activeView, onNavigate }) {
   return (
     <div
       style={{
-        width: 240,
+        width: 260,
         flexShrink: 0,
         background: COLORS.ink,
         minHeight: "100vh",
@@ -102,7 +102,7 @@ function Sidebar({ activeView, onNavigate }) {
     >
       <div style={{ marginBottom: 36 }}>
         <EyebrowLabel>Public Record</EyebrowLabel>
-        <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, color: "#fff", lineHeight: 1.2, marginTop: 4 }}>
+        <div style={{ fontFamily: FONT_DISPLAY, fontSize: 24, color: "#fff", lineHeight: 1.2, marginTop: 4 }}>
           UK Parliament Tracker
         </div>
       </div>
@@ -120,13 +120,13 @@ function Sidebar({ activeView, onNavigate }) {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                padding: "10px 12px",
+                padding: "12px 14px",
                 borderRadius: 8,
                 border: "none",
                 background: active ? "rgba(255,255,255,0.08)" : "transparent",
                 color: item.soon ? "rgba(199,206,224,0.4)" : COLORS.sidebarText,
                 fontFamily: FONT_BODY,
-                fontSize: 14,
+                fontSize: 15.5,
                 fontWeight: active ? 600 : 400,
                 cursor: item.soon ? "default" : "pointer",
               }}
@@ -179,12 +179,12 @@ function Home({ onBrowse, mpCount }) {
   const items = activeTab === "donations" ? donations : roles;
 
   return (
-    <div style={{ maxWidth: 960, margin: "0 auto", padding: "80px 24px", textAlign: "center" }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: "80px 24px", textAlign: "center" }}>
       <EyebrowLabel>Public Record · UK Parliament</EyebrowLabel>
-      <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 44, color: COLORS.ink, margin: "12px 0 0", lineHeight: 1.1 }}>
+      <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 56, color: COLORS.ink, margin: "16px 0 0", lineHeight: 1.1 }}>
         Follow the money behind every MP.
       </h1>
-      <p style={{ fontFamily: FONT_BODY, fontSize: 16, color: COLORS.inkSoft, marginTop: 20, lineHeight: 1.6, maxWidth: 560, marginLeft: "auto", marginRight: "auto" }}>
+      <p style={{ fontFamily: FONT_BODY, fontSize: 18, color: COLORS.inkSoft, marginTop: 22, lineHeight: 1.6, maxWidth: 620, marginLeft: "auto", marginRight: "auto" }}>
         A plain-language look at declared gifts, donations, and financial interests for every current
         Member of Parliament — pulled automatically from the official Register of Interests and updated
         every day, with no editorial spin.
@@ -192,16 +192,16 @@ function Home({ onBrowse, mpCount }) {
 
       <div style={{ display: "flex", justifyContent: "center", gap: 40, marginTop: 36, marginBottom: 36 }}>
         <div>
-          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 28, color: COLORS.ink }}>{mpCount ?? "…"}</div>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>Current MPs tracked</div>
+          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 36, color: COLORS.ink }}>{mpCount ?? "…"}</div>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft }}>Current MPs tracked</div>
         </div>
         <div>
-          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 28, color: COLORS.ink }}>Daily</div>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>Automatic updates</div>
+          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 36, color: COLORS.ink }}>Daily</div>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft }}>Automatic updates</div>
         </div>
         <div>
-          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 28, color: COLORS.ink }}>Official</div>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>Source data only</div>
+          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 36, color: COLORS.ink }}>Official</div>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft }}>Source data only</div>
         </div>
       </div>
 
@@ -217,9 +217,9 @@ function Home({ onBrowse, mpCount }) {
                 onClick={() => setActiveTab(tab.key)}
                 style={{
                   fontFamily: FONT_BODY,
-                  fontSize: 12.5,
+                  fontSize: 14,
                   fontWeight: 600,
-                  padding: "6px 16px",
+                  padding: "8px 18px",
                   borderRadius: 999,
                   border: "none",
                   cursor: "pointer",
@@ -247,20 +247,20 @@ function Home({ onBrowse, mpCount }) {
                   <div style={{ position: "absolute", left: -20, top: 4, width: 9, height: 9, borderRadius: "50%", background: COLORS.brass, border: `2px solid ${COLORS.paperCard}` }} />
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
                     <div style={{ minWidth: 0 }}>
-                      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, color: COLORS.ink }}>
+                      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink }}>
                         {item.politicians?.name ?? "Unknown MP"}
                       </div>
-                      <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
+                      <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft }}>
                         {activeTab === "donations" ? `from ${item.donor_name ?? item.summary}` : item.summary}
                       </div>
                     </div>
                     <div style={{ textAlign: "right", flexShrink: 0 }}>
                       {activeTab === "donations" && item.value_amount && (
-                        <div style={{ fontFamily: FONT_MONO, fontSize: 13, fontWeight: 700, color: COLORS.ink }}>
+                        <div style={{ fontFamily: FONT_MONO, fontSize: 15, fontWeight: 700, color: COLORS.ink }}>
                           £{Number(item.value_amount).toLocaleString()}
                         </div>
                       )}
-                      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>{formatDate(item.date_registered)}</div>
+                      <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>{formatDate(item.date_registered)}</div>
                     </div>
                   </div>
                 </div>
@@ -276,13 +276,13 @@ function Home({ onBrowse, mpCount }) {
         onClick={onBrowse}
         style={{
           fontFamily: FONT_BODY,
-          fontSize: 14.5,
+          fontSize: 16,
           fontWeight: 600,
           color: "#fff",
           background: COLORS.ink,
           border: "none",
           borderRadius: 10,
-          padding: "13px 24px",
+          padding: "15px 28px",
           cursor: "pointer",
         }}
       >
@@ -327,10 +327,10 @@ function PoliticianList({ onSelect }) {
     <div style={{ padding: "40px 40px 60px" }}>
       <div style={{ marginBottom: 20 }}>
         <EyebrowLabel>Public Record · UK Parliament</EyebrowLabel>
-        <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 28, color: COLORS.ink, margin: "8px 0 0" }}>
+        <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 34, color: COLORS.ink, margin: "10px 0 0" }}>
           MP Financial Interests
         </h1>
-        <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 6 }}>
+        <p style={{ fontFamily: FONT_BODY, fontSize: 15, color: COLORS.inkSoft, marginTop: 6 }}>
           {loading ? "Loading current MPs…" : `${politicians.length} current MPs, updated daily from the official register.`}
         </p>
       </div>
@@ -343,9 +343,9 @@ function PoliticianList({ onSelect }) {
           style={{
             width: "100%",
             boxSizing: "border-box",
-            padding: "10px 14px",
+            padding: "13px 16px",
             fontFamily: FONT_BODY,
-            fontSize: 14,
+            fontSize: 16,
             border: `1px solid ${COLORS.hairline}`,
             borderRadius: 10,
             background: COLORS.paperCard,
@@ -377,10 +377,10 @@ function PoliticianList({ onSelect }) {
               cursor: "pointer",
             }}
           >
-            <span style={{ width: 8, height: 8, borderRadius: "50%", background: partyColour(p.party_colour), flexShrink: 0 }} />
+            <span style={{ width: 10, height: 10, borderRadius: "50%", background: partyColour(p.party_colour), flexShrink: 0 }} />
             <span style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15.5, color: COLORS.ink }}>{p.name}</div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>
+              <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, color: COLORS.ink }}>{p.name}</div>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
                 {p.party} · {p.constituency}
               </div>
             </span>
@@ -438,18 +438,18 @@ function PoliticianDetail({ politician, onBack }) {
         ← All MPs
       </button>
 
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-        <div style={{ paddingBottom: 20, borderBottom: `1px solid ${COLORS.hairline}`, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 10 }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <div style={{ paddingBottom: 28, borderBottom: `1px solid ${COLORS.hairline}`, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 10 }}>
           {politician.thumbnail_url && (
             <img
               src={politician.thumbnail_url}
               alt=""
-              style={{ width: 64, height: 64, borderRadius: "50%", objectFit: "cover", border: `1px solid ${COLORS.hairline}` }}
+              style={{ width: 96, height: 96, borderRadius: "50%", objectFit: "cover", border: `1px solid ${COLORS.hairline}` }}
             />
           )}
           <div>
-            <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, margin: 0 }}>{politician.name}</h1>
-            <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 3 }}>
+            <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 30, color: COLORS.ink, margin: 0 }}>{politician.name}</h1>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 15, color: COLORS.inkSoft, marginTop: 3 }}>
               {politician.party} · {politician.constituency}
               {office && ` · MP for ${office}`}
             </div>
@@ -466,9 +466,9 @@ function PoliticianDetail({ politician, onBack }) {
                   onClick={() => setActiveTab(tab.key)}
                   style={{
                     fontFamily: FONT_BODY,
-                    fontSize: 12.5,
+                    fontSize: 14,
                     fontWeight: 600,
-                    padding: "6px 16px",
+                    padding: "8px 18px",
                     borderRadius: 999,
                     border: "none",
                     cursor: "pointer",
@@ -494,10 +494,10 @@ function PoliticianDetail({ politician, onBack }) {
 
               {filteredInterests.map((item) => (
                 <div key={item.id} style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 14 }}>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 11, color: COLORS.brass, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>
+                  <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: COLORS.brass, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 5 }}>
                     {shortCategory(item.category)}
                   </div>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.4 }}>
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 16, color: COLORS.ink, lineHeight: 1.4 }}>
                     {item.summary}
                   </div>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 8, fontSize: 12.5, color: COLORS.inkSoft, textAlign: "center" }}>
