@@ -68,6 +68,17 @@ function EyebrowLabel({ children }) {
   );
 }
 
+function PlaceholderBox({ title, note }) {
+  return (
+    <div style={{ background: COLORS.paperCard, border: `1px dashed ${COLORS.hairline}`, borderRadius: 12, padding: 16 }}>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13, color: COLORS.ink, marginBottom: 4 }}>
+        {title}
+      </div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>{note}</div>
+    </div>
+  );
+}
+
 // ---- Sidebar navigation ----
 const NAV_ITEMS = [
   { key: "home", label: "Overview" },
@@ -168,7 +179,7 @@ function Home({ onBrowse, mpCount }) {
   const items = activeTab === "donations" ? donations : roles;
 
   return (
-    <div style={{ maxWidth: 720, margin: "0 auto", padding: "80px 24px", textAlign: "center" }}>
+    <div style={{ maxWidth: 960, margin: "0 auto", padding: "80px 24px", textAlign: "center" }}>
       <EyebrowLabel>Public Record · UK Parliament</EyebrowLabel>
       <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 44, color: COLORS.ink, margin: "12px 0 0", lineHeight: 1.1 }}>
         Follow the money behind every MP.
@@ -194,67 +205,71 @@ function Home({ onBrowse, mpCount }) {
         </div>
       </div>
 
-      <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "8px 20px 20px", marginBottom: 36, textAlign: "left" }}>
-        <div style={{ display: "flex", justifyContent: "center", gap: 4, padding: "10px 0 14px" }}>
-          {[
-            { key: "donations", label: "Donations" },
-            { key: "roles", label: "Roles" },
-          ].map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              style={{
-                fontFamily: FONT_BODY,
-                fontSize: 12.5,
-                fontWeight: 600,
-                padding: "6px 16px",
-                borderRadius: 999,
-                border: "none",
-                cursor: "pointer",
-                background: activeTab === tab.key ? COLORS.ink : "transparent",
-                color: activeTab === tab.key ? "#fff" : COLORS.inkSoft,
-              }}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        {loading && (
-          <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, textAlign: "center", padding: "10px 0" }}>Loading…</div>
-        )}
-        {!loading && items.length === 0 && (
-          <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, textAlign: "center", padding: "10px 0" }}>No entries found.</div>
-        )}
-
-        {!loading && items.length > 0 && (
-          <div style={{ position: "relative", paddingLeft: 20 }}>
-            <div style={{ position: "absolute", left: 4, top: 6, bottom: 6, width: 1, background: COLORS.hairline }} />
-            {items.map((item, i) => (
-              <div key={i} style={{ position: "relative", paddingBottom: i < items.length - 1 ? 16 : 0 }}>
-                <div style={{ position: "absolute", left: -20, top: 4, width: 9, height: 9, borderRadius: "50%", background: COLORS.brass, border: `2px solid ${COLORS.paperCard}` }} />
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, color: COLORS.ink }}>
-                      {item.politicians?.name ?? "Unknown MP"}
-                    </div>
-                    <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
-                      {activeTab === "donations" ? `from ${item.donor_name ?? item.summary}` : item.summary}
-                    </div>
-                  </div>
-                  <div style={{ textAlign: "right", flexShrink: 0 }}>
-                    {activeTab === "donations" && item.value_amount && (
-                      <div style={{ fontFamily: FONT_MONO, fontSize: 13, fontWeight: 700, color: COLORS.ink }}>
-                        £{Number(item.value_amount).toLocaleString()}
-                      </div>
-                    )}
-                    <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>{formatDate(item.date_registered)}</div>
-                  </div>
-                </div>
-              </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 36, textAlign: "left" }}>
+        <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "8px 20px 20px" }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: 4, padding: "10px 0 14px" }}>
+            {[
+              { key: "donations", label: "Donations" },
+              { key: "roles", label: "Roles" },
+            ].map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                style={{
+                  fontFamily: FONT_BODY,
+                  fontSize: 12.5,
+                  fontWeight: 600,
+                  padding: "6px 16px",
+                  borderRadius: 999,
+                  border: "none",
+                  cursor: "pointer",
+                  background: activeTab === tab.key ? COLORS.ink : "transparent",
+                  color: activeTab === tab.key ? "#fff" : COLORS.inkSoft,
+                }}
+              >
+                {tab.label}
+              </button>
             ))}
           </div>
-        )}
+
+          {loading && (
+            <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, textAlign: "center", padding: "10px 0" }}>Loading…</div>
+          )}
+          {!loading && items.length === 0 && (
+            <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, textAlign: "center", padding: "10px 0" }}>No entries found.</div>
+          )}
+
+          {!loading && items.length > 0 && (
+            <div style={{ position: "relative", paddingLeft: 20 }}>
+              <div style={{ position: "absolute", left: 4, top: 6, bottom: 6, width: 1, background: COLORS.hairline }} />
+              {items.map((item, i) => (
+                <div key={i} style={{ position: "relative", paddingBottom: i < items.length - 1 ? 16 : 0 }}>
+                  <div style={{ position: "absolute", left: -20, top: 4, width: 9, height: 9, borderRadius: "50%", background: COLORS.brass, border: `2px solid ${COLORS.paperCard}` }} />
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, color: COLORS.ink }}>
+                        {item.politicians?.name ?? "Unknown MP"}
+                      </div>
+                      <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
+                        {activeTab === "donations" ? `from ${item.donor_name ?? item.summary}` : item.summary}
+                      </div>
+                    </div>
+                    <div style={{ textAlign: "right", flexShrink: 0 }}>
+                      {activeTab === "donations" && item.value_amount && (
+                        <div style={{ fontFamily: FONT_MONO, fontSize: 13, fontWeight: 700, color: COLORS.ink }}>
+                          £{Number(item.value_amount).toLocaleString()}
+                        </div>
+                      )}
+                      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>{formatDate(item.date_registered)}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <PlaceholderBox title="Latest Political News" note="Coming soon — recent press coverage of tracked MPs, with a source-bias indicator." />
       </div>
 
       <button
@@ -423,7 +438,7 @@ function PoliticianDetail({ politician, onBack }) {
         ← All MPs
       </button>
 
-      <div style={{ maxWidth: 640, margin: "0 auto" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         <div style={{ paddingBottom: 20, borderBottom: `1px solid ${COLORS.hairline}`, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 10 }}>
           {politician.thumbnail_url && (
             <img
@@ -441,62 +456,77 @@ function PoliticianDetail({ politician, onBack }) {
           </div>
         </div>
 
-        <div style={{ display: "flex", justifyContent: "center", gap: 4, padding: "16px 0 4px" }}>
-          {DETAIL_TABS.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              style={{
-                fontFamily: FONT_BODY,
-                fontSize: 12.5,
-                fontWeight: 600,
-                padding: "6px 16px",
-                borderRadius: 999,
-                border: "none",
-                cursor: "pointer",
-                background: activeTab === tab.key ? COLORS.ink : "transparent",
-                color: activeTab === tab.key ? "#fff" : COLORS.inkSoft,
-              }}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        <div style={{ paddingTop: 16, display: "flex", flexDirection: "column", gap: 10 }}>
-          {loading && <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft }}>Loading declared interests…</div>}
-
-          {!loading && filteredInterests.length === 0 && (
-            <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, textAlign: "center", padding: "20px 0" }}>
-              {interests.length === 0
-                ? "No declared financial interests found for this MP."
-                : `No entries in "${DETAIL_TABS.find((t) => t.key === activeTab)?.label}" for this MP.`}
+        <div style={{ display: "grid", gridTemplateColumns: "minmax(280px, 380px) 1fr", gap: 24, paddingTop: 24, alignItems: "start" }}>
+          {/* ---- Left column: financial interests ---- */}
+          <div>
+            <div style={{ display: "flex", justifyContent: "center", gap: 4, paddingBottom: 12 }}>
+              {DETAIL_TABS.map((tab) => (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key)}
+                  style={{
+                    fontFamily: FONT_BODY,
+                    fontSize: 12.5,
+                    fontWeight: 600,
+                    padding: "6px 16px",
+                    borderRadius: 999,
+                    border: "none",
+                    cursor: "pointer",
+                    background: activeTab === tab.key ? COLORS.ink : "transparent",
+                    color: activeTab === tab.key ? "#fff" : COLORS.inkSoft,
+                  }}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
-          )}
 
-          {filteredInterests.map((item) => (
-            <div key={item.id} style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 14 }}>
-              <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 11, color: COLORS.brass, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>
-                {shortCategory(item.category)}
-              </div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.4 }}>
-                {item.summary}
-              </div>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 8, fontSize: 12.5, color: COLORS.inkSoft, textAlign: "center" }}>
-                {item.value_amount && (
-                  <span style={{ fontFamily: FONT_MONO, fontSize: 12, fontWeight: 700, color: COLORS.ink }}>£{Number(item.value_amount).toLocaleString()}</span>
-                )}
-                {item.value_amount && item.date_registered && <span>-</span>}
-                {item.date_registered && <span style={{ fontFamily: FONT_BODY }}>{formatDate(item.date_registered)}</span>}
-                {(item.value_amount || item.date_registered) && item.source_url && <span>-</span>}
-                {item.source_url && (
-                  <a href={item.source_url} target="_blank" rel="noreferrer" style={{ color: COLORS.inkSoft, fontFamily: FONT_BODY }}>
-                    source ↗
-                  </a>
-                )}
-              </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {loading && <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft }}>Loading declared interests…</div>}
+
+              {!loading && filteredInterests.length === 0 && (
+                <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, textAlign: "center", padding: "20px 0" }}>
+                  {interests.length === 0
+                    ? "No declared financial interests found for this MP."
+                    : `No entries in "${DETAIL_TABS.find((t) => t.key === activeTab)?.label}" for this MP.`}
+                </div>
+              )}
+
+              {filteredInterests.map((item) => (
+                <div key={item.id} style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 14 }}>
+                  <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 11, color: COLORS.brass, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>
+                    {shortCategory(item.category)}
+                  </div>
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.4 }}>
+                    {item.summary}
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 8, fontSize: 12.5, color: COLORS.inkSoft, textAlign: "center" }}>
+                    {item.value_amount && (
+                      <span style={{ fontFamily: FONT_MONO, fontSize: 12, fontWeight: 700, color: COLORS.ink }}>£{Number(item.value_amount).toLocaleString()}</span>
+                    )}
+                    {item.value_amount && item.date_registered && <span>-</span>}
+                    {item.date_registered && <span style={{ fontFamily: FONT_BODY }}>{formatDate(item.date_registered)}</span>}
+                    {(item.value_amount || item.date_registered) && item.source_url && <span>-</span>}
+                    {item.source_url && (
+                      <a href={item.source_url} target="_blank" rel="noreferrer" style={{ color: COLORS.inkSoft, fontFamily: FONT_BODY }}>
+                        source ↗
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+
+          {/* ---- Right column: everything else, built one piece at a time ---- */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <PlaceholderBox title="Biography" note="Coming soon" />
+            <PlaceholderBox title="Parliamentary Contact" note="Coming soon" />
+            <PlaceholderBox title="Cabinet Role" note="Coming soon" />
+            <PlaceholderBox title="Voting Record" note="Coming soon" />
+            <PlaceholderBox title="Standards & Investigations" note="Coming soon" />
+            <PlaceholderBox title="In the News" note="Coming soon" />
+          </div>
         </div>
       </div>
     </div>
