@@ -1,11 +1,8 @@
-name: Fetch MP Financial Interests
+name: Fetch MP Financial Interests and Voting Records
 
-# This section decides WHEN the job runs:
 on:
   schedule:
-    # Runs once a day at 6:00 AM UTC. Cron format is: minute hour day month weekday
     - cron: "0 6 * * *"
-  # This lets you also trigger it manually from the GitHub Actions tab, for testing
   workflow_dispatch:
 
 jobs:
@@ -23,8 +20,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run the fetch script
+      - name: Run the financial interests fetch script
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-interests.js
+
+      - name: Run the voting records fetch script
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node fetch-votes.js
