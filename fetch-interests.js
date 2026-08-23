@@ -2,7 +2,8 @@
 //
 // What this does, in plain terms:
 // 1. Fetches EVERY current MP from the Members API (paged, since there are ~650)
-// 2. For each MP, fetches their declared financial interests
+// 2. For each MP, fetches their biography, parliamentary contact details,
+//    and declared financial interests
 // 3. Saves/updates all of it into Supabase — safely re-runnable, no duplicates
 //
 // Run it with: node fetch-interests.js
@@ -16,14 +17,13 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-// Small pause between requests so we're not hammering a public government API
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // ---- Step 1: fetch every current MP, one page at a time ----
 async function fetchAllCurrentMembers() {
   const members = [];
   let skip = 0;
-  const take = 20; // the API's page size
+  const take = 20;
   let total = Infinity;
 
   while (skip < total) {
@@ -45,7 +45,7 @@ async function fetchAllCurrentMembers() {
         gender: v.gender ?? null,
         thumbnailUrl: v.thumbnailUrl ?? null,
         membershipStartDate: v.latestHouseMembership?.membershipStartDate
-          ? v.latestHouseMembership.membershipStartDate.slice(0, 10) // keep just YYYY-MM-DD
+          ? v.latestHouseMembership.membershipStartDate.slice(0, 10)
           : null,
       });
     }
@@ -83,7 +83,55 @@ async function upsertPolitician(member) {
   return data;
 }
 
-// ---- Step 3: parse the "Name - £Amount" style summary text ----
+// ---- Step 3: fetch a short official biography (Synopsis) ----
+async function fetchSynopsis(memberId) {
+  try {
+    const res = await fetch(`https://members-api.parliament.uk/api/Members/${memberId}/Synopsis`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (typeof data.value === "string") return data.value.trim() || null;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+// ---- Step 4: fetch parliamentary office contact details ----
+async function fetchContact(memberId) {
+  try {
+    const res = await fetch(`https://members-api.parliament.uk/api/Members/${memberId}/Contact`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    const office = (data.value ?? []).find((c) => c.type === "Parliamentary office");
+    if (!office) return null;
+    const address = [office.line1, office.line2, office.line3, office.line4, office.line5, office.postcode]
+      .filter(Boolean)
+      .join(", ");
+    return {
+      address: address || null,
+      phone: office.phone ?? null,
+      email: office.email ?? null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+async function saveBiographyAndContact(politicianRowId, memberId) {
+  const [biography, contact] = await Promise.all([fetchSynopsis(memberId), fetchContact(memberId)]);
+  const { error } = await supabase
+    .from("politicians")
+    .update({
+      biography,
+      parliamentary_address: contact?.address ?? null,
+      parliamentary_phone: contact?.phone ?? null,
+      parliamentary_email: contact?.email ?? null,
+    })
+    .eq("id", politicianRowId);
+  if (error) throw error;
+}
+
+// ---- Step 5: parse the "Name - £Amount" style summary text ----
 function parseSummary(summary) {
   if (!summary) return { donorName: null, valueAmount: null };
   const match = summary.match(/^(.*?)\s*-\s*£\s*([\d,]+(?:\.\d{1,2})?)/);
@@ -94,7 +142,7 @@ function parseSummary(summary) {
   };
 }
 
-// ---- Step 4: fetch and save one MP's financial interests ----
+// ---- Step 6: fetch and save one MP's financial interests ----
 async function fetchAndSaveInterests(politicianRowId, memberId) {
   const url = `https://interests-api.parliament.uk/api/v1/Interests?MemberId=${memberId}&Take=50`;
   const res = await fetch(url);
@@ -137,13 +185,14 @@ async function main() {
   for (const [i, member] of members.entries()) {
     try {
       const politicianRow = await upsertPolitician(member);
+      await saveBiographyAndContact(politicianRow.id, member.memberId);
       const count = await fetchAndSaveInterests(politicianRow.id, member.memberId);
       totalInterests += count;
       console.log(`[${i + 1}/${members.length}] ${member.name} — ${count} interest(s)`);
     } catch (err) {
       console.error(`  ⚠ Failed for ${member.name}: ${err.message}`);
     }
-    await sleep(150); // be polite to the API between MPs
+    await sleep(150);
   }
 
   console.log(`\nDone. ${members.length} MPs processed, ${totalInterests} interests saved/updated.`);

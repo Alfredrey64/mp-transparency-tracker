@@ -68,6 +68,58 @@ function EyebrowLabel({ children }) {
   );
 }
 
+function CardShell({ title, children }) {
+  return (
+    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.brass}`, borderRadius: 12, padding: 20, boxShadow: "0 1px 4px rgba(30,42,68,0.05)" }}>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 8 }}>
+        {title}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function BiographyBox({ politician }) {
+  return (
+    <CardShell title="Biography">
+      {politician.biography ? (
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, lineHeight: 1.6 }}>
+          {politician.biography}
+        </div>
+      ) : (
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
+          No official biography published for this MP yet.
+        </div>
+      )}
+    </CardShell>
+  );
+}
+
+function ContactBox({ politician }) {
+  const hasContact = politician.parliamentary_address || politician.parliamentary_phone || politician.parliamentary_email;
+  return (
+    <CardShell title="Parliamentary Contact">
+      {hasContact ? (
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, lineHeight: 1.7 }}>
+          {politician.parliamentary_address && <div>{politician.parliamentary_address}</div>}
+          {politician.parliamentary_phone && <div>{politician.parliamentary_phone}</div>}
+          {politician.parliamentary_email && (
+            <div>
+              <a href={`mailto:${politician.parliamentary_email}`} style={{ color: COLORS.inkSoft }}>
+                {politician.parliamentary_email}
+              </a>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
+          No parliamentary contact details published for this MP yet.
+        </div>
+      )}
+    </CardShell>
+  );
+}
+
 function PlaceholderBox({ title, note }) {
   return (
     <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.brass}`, borderRadius: 12, padding: 20, boxShadow: "0 1px 4px rgba(30,42,68,0.05)" }}>
@@ -601,8 +653,8 @@ function PoliticianDetail({ politician, onBack }) {
 
           {/* ---- Right column: everything else, built one piece at a time ---- */}
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            <PlaceholderBox title="Biography" note="Coming soon" />
-            <PlaceholderBox title="Parliamentary Contact" note="Coming soon" />
+            <BiographyBox politician={politician} />
+            <ContactBox politician={politician} />
             <PlaceholderBox title="Cabinet Role" note="Coming soon" />
             <PlaceholderBox title="Voting Record" note="Coming soon" />
             <PlaceholderBox title="Standards & Investigations" note="Coming soon" />
