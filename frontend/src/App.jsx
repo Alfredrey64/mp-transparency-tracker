@@ -504,28 +504,19 @@ function PoliticianDetail({ politician, onBack }) {
   const office = timeInOffice(politician.membership_start_date);
 
   return (
-    <div style={{ position: "relative", overflow: "hidden" }}>
-      <div
-        style={{
-          position: "absolute",
-          top: -80,
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: 1100,
-          height: 1100,
-          pointerEvents: "none",
-        }}
-      >
-        <PartyEmblem color={partyColour(politician.party_colour)} opacity={0.06} />
+    <div style={{ padding: "40px 40px 60px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+        <button
+          onClick={onBack}
+          style={{ background: "none", border: "none", cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, padding: 0 }}
+        >
+          ← All MPs
+        </button>
+        <span
+          title={politician.party}
+          style={{ width: 14, height: 14, borderRadius: "50%", background: partyColour(politician.party_colour), border: `1px solid ${COLORS.hairline}` }}
+        />
       </div>
-
-      <div style={{ position: "relative", padding: "40px 40px 60px" }}>
-      <button
-        onClick={onBack}
-        style={{ background: "none", border: "none", cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, padding: 0, marginBottom: 20 }}
-      >
-        ← All MPs
-      </button>
 
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
         <div style={{ position: "relative", paddingBottom: 28, borderBottom: `1px solid ${COLORS.hairline}`, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 10, overflow: "hidden" }}>
@@ -618,7 +609,6 @@ function PoliticianDetail({ politician, onBack }) {
             <PlaceholderBox title="In the News" note="Coming soon" />
           </div>
         </div>
-      </div>
       </div>
     </div>
   );
