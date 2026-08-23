@@ -79,92 +79,24 @@ function PlaceholderBox({ title, note }) {
   );
 }
 
-function ParliamentBanner({ opacity = 0.08, color = COLORS.ink }) {
+function PartyEmblem({ color, opacity = 0.07 }) {
+  const pleats = Array.from({ length: 28 }, (_, i) => (360 / 28) * i);
   return (
-    <svg
-      viewBox="0 0 1600 220"
-      preserveAspectRatio="xMidYMax slice"
-      style={{ opacity, width: "100%", height: "100%", display: "block" }}
-    >
-      <g fill="none" stroke={color} strokeWidth="1.6" strokeLinejoin="round">
-        {/* Baseline */}
-        <line x1="0" y1="208" x2="1600" y2="208" strokeWidth="1" />
-
-        {/* Victoria Tower (far left) */}
-        <rect x="60" y="70" width="70" height="138" />
-        <polygon points="60,70 95,30 130,70" />
-        <line x1="95" y1="30" x2="95" y2="10" />
-        <rect x="80" y="100" width="14" height="24" />
-        <rect x="100" y="100" width="14" height="24" />
-        <rect x="80" y="140" width="14" height="24" />
-        <rect x="100" y="140" width="14" height="24" />
-
-        {/* Long Gothic facade with repeating pinnacles and arched windows */}
-        <line x1="130" y1="150" x2="620" y2="150" />
-        <line x1="130" y1="208" x2="620" y2="208" />
-        {Array.from({ length: 14 }).map((_, i) => {
-          const x = 140 + i * 35;
-          return (
-            <g key={`pin-${i}`}>
-              <line x1={x} y1="150" x2={x} y2="132" />
-              <polygon points={`${x - 5},132 ${x},118 ${x + 5},132`} />
-            </g>
-          );
+    <svg viewBox="0 0 400 400" style={{ width: "100%", height: "100%", opacity }}>
+      <g stroke={color} strokeWidth="2" fill="none">
+        {pleats.map((angle) => {
+          const rad = (angle * Math.PI) / 180;
+          const x1 = 200 + Math.cos(rad) * 150;
+          const y1 = 200 + Math.sin(rad) * 150;
+          const x2 = 200 + Math.cos(rad) * 185;
+          const y2 = 200 + Math.sin(rad) * 185;
+          return <line key={angle} x1={x1} y1={y1} x2={x2} y2={y2} />;
         })}
-        {Array.from({ length: 9 }).map((_, i) => {
-          const x = 150 + i * 52;
-          return (
-            <g key={`win-${i}`}>
-              <line x1={x} y1="165" x2={x} y2="196" />
-              <line x1={x + 20} y1="165" x2={x + 20} y2="196" />
-              <line x1={x} y1="165" x2={x + 20} y2="165" />
-              <polygon points={`${x},165 ${x + 10},152 ${x + 20},165`} />
-            </g>
-          );
-        })}
-
-        {/* Elizabeth Tower (Big Ben) */}
-        <rect x="660" y="20" width="60" height="188" />
-        <rect x="652" y="8" width="76" height="14" />
-        <polygon points="660,8 690,-38 720,8" />
-        <line x1="690" y1="-38" x2="690" y2="-52" />
-        <circle cx="690" cy="55" r="17" />
-        <circle cx="690" cy="55" r="2" />
-        <line x1="690" y1="42" x2="690" y2="55" />
-        <line x1="690" y1="55" x2="700" y2="55" />
-        <line x1="668" y1="90" x2="712" y2="90" />
-        <line x1="668" y1="120" x2="712" y2="120" />
-        <line x1="668" y1="150" x2="712" y2="150" />
-        <line x1="668" y1="180" x2="712" y2="180" />
-
-        {/* Continuing terrace to the right */}
-        <line x1="760" y1="160" x2="1500" y2="160" />
-        <line x1="760" y1="208" x2="1500" y2="208" />
-        {Array.from({ length: 20 }).map((_, i) => {
-          const x = 770 + i * 37;
-          return (
-            <g key={`pin2-${i}`}>
-              <line x1={x} y1="160" x2={x} y2="144" />
-              <polygon points={`${x - 5},144 ${x},132 ${x + 5},144`} />
-            </g>
-          );
-        })}
-        {Array.from({ length: 13 }).map((_, i) => {
-          const x = 780 + i * 55;
-          return (
-            <g key={`win2-${i}`}>
-              <line x1={x} y1="172" x2={x} y2="198" />
-              <line x1={x + 18} y1="172" x2={x + 18} y2="198" />
-              <line x1={x} y1="172" x2={x + 18} y2="172" />
-              <polygon points={`${x},172 ${x + 9},160 ${x + 18},172`} />
-            </g>
-          );
-        })}
-
-        {/* A smaller end tower, far right */}
-        <rect x="1500" y="90" width="46" height="118" />
-        <polygon points="1500,90 1523,60 1546,90" />
+        <circle cx="200" cy="200" r="150" />
       </g>
+      <circle cx="200" cy="200" r="120" fill={color} opacity="0.5" />
+      <circle cx="200" cy="200" r="34" fill={color} />
+      <circle cx="200" cy="200" r="34" fill="none" stroke={COLORS.paper} strokeWidth="3" />
     </svg>
   );
 }
@@ -572,9 +504,19 @@ function PoliticianDetail({ politician, onBack }) {
   const office = timeInOffice(politician.membership_start_date);
 
   return (
-    <div style={{ position: "relative" }}>
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 220, overflow: "hidden", pointerEvents: "none" }}>
-        <ParliamentBanner opacity={0.07} />
+    <div style={{ position: "relative", overflow: "hidden" }}>
+      <div
+        style={{
+          position: "absolute",
+          top: -80,
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: 1100,
+          height: 1100,
+          pointerEvents: "none",
+        }}
+      >
+        <PartyEmblem color={partyColour(politician.party_colour)} opacity={0.06} />
       </div>
 
       <div style={{ position: "relative", padding: "40px 40px 60px" }}>
