@@ -50,6 +50,17 @@ function timeInOffice(startDate) {
   return years <= 0 ? "less than a year" : `${years} year${years === 1 ? "" : "s"}`;
 }
 
+function stripHtml(text) {
+  if (!text) return text;
+  return text
+    .replace(/<[^>]+>/g, "")
+    .replace(/&amp;/g, "&")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&#39;/g, "'")
+    .replace(/&quot;/g, '"')
+    .trim();
+}
+
 function EyebrowLabel({ children }) {
   return (
     <div
@@ -68,114 +79,21 @@ function EyebrowLabel({ children }) {
   );
 }
 
-function CardShell({ title, children }) {
-  return (
-    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.brass}`, borderRadius: 12, padding: 20, boxShadow: "0 1px 4px rgba(30,42,68,0.05)" }}>
-      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 8 }}>
-        {title}
-      </div>
-      {children}
-    </div>
-  );
-}
-
-function BiographyBox({ politician }) {
-  return (
-    <CardShell title="Biography">
-      {politician.biography ? (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, lineHeight: 1.6 }}>
-          {politician.biography}
-        </div>
-      ) : (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
-          No official biography published for this MP yet.
-        </div>
-      )}
-    </CardShell>
-  );
-}
-
-function ContactBox({ politician }) {
-  const hasContact = politician.parliamentary_address || politician.parliamentary_phone || politician.parliamentary_email;
-  return (
-    <CardShell title="Parliamentary Contact">
-      {hasContact ? (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, lineHeight: 1.7 }}>
-          {politician.parliamentary_address && <div>{politician.parliamentary_address}</div>}
-          {politician.parliamentary_phone && <div>{politician.parliamentary_phone}</div>}
-          {politician.parliamentary_email && (
-            <div>
-              <a href={`mailto:${politician.parliamentary_email}`} style={{ color: COLORS.inkSoft }}>
-                {politician.parliamentary_email}
-              </a>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
-          No parliamentary contact details published for this MP yet.
-        </div>
-      )}
-    </CardShell>
-  );
-}
-
-function PlaceholderBox({ title, note }) {
-  return (
-    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.brass}`, borderRadius: 12, padding: 20, boxShadow: "0 1px 4px rgba(30,42,68,0.05)" }}>
-      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 5 }}>
-        {title}
-      </div>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>{note}</div>
-    </div>
-  );
-}
-
-function PartyEmblem({ color, opacity = 0.07 }) {
-  const pleats = Array.from({ length: 28 }, (_, i) => (360 / 28) * i);
-  return (
-    <svg viewBox="0 0 400 400" style={{ width: "100%", height: "100%", opacity }}>
-      <g stroke={color} strokeWidth="2" fill="none">
-        {pleats.map((angle) => {
-          const rad = (angle * Math.PI) / 180;
-          const x1 = 200 + Math.cos(rad) * 150;
-          const y1 = 200 + Math.sin(rad) * 150;
-          const x2 = 200 + Math.cos(rad) * 185;
-          const y2 = 200 + Math.sin(rad) * 185;
-          return <line key={angle} x1={x1} y1={y1} x2={x2} y2={y2} />;
-        })}
-        <circle cx="200" cy="200" r="150" />
-      </g>
-      <circle cx="200" cy="200" r="120" fill={color} opacity="0.5" />
-      <circle cx="200" cy="200" r="34" fill={color} />
-      <circle cx="200" cy="200" r="34" fill="none" stroke={COLORS.paper} strokeWidth="3" />
-    </svg>
-  );
-}
-
 function ParliamentSilhouette({ width = 200, opacity = 1, color = COLORS.ink }) {
   return (
     <svg width={width} viewBox="0 0 240 120" fill="none" style={{ opacity }}>
-      {/* Riverline */}
       <line x1="0" y1="112" x2="240" y2="112" stroke={color} strokeWidth="1.5" />
-      {/* Main building block */}
       <rect x="18" y="70" width="120" height="42" fill={color} />
-      {/* Crenellations on main block */}
       {[18, 30, 42, 54, 66, 78, 90, 102, 114, 126].map((x) => (
         <rect key={x} x={x} y="64" width="6" height="8" fill={color} />
       ))}
-      {/* Small turret left */}
       <rect x="10" y="58" width="10" height="54" fill={color} />
       <polygon points="10,58 15,46 20,58" fill={color} />
-      {/* Big Ben tower */}
       <rect x="150" y="30" width="26" height="82" fill={color} />
       <rect x="146" y="24" width="34" height="8" fill={color} />
       <polygon points="150,24 163,4 176,24" fill={color} />
-      {/* Clock face */}
       <circle cx="163" cy="46" r="7" fill={COLORS.paper} stroke={color} strokeWidth="2" />
-      {/* Spire */}
       <line x1="163" y1="4" x2="163" y2="-6" stroke={color} strokeWidth="2" />
-      {/* Far right smaller spire */}
       <rect x="190" y="80" width="14" height="32" fill={color} />
       <polygon points="190,80 197,66 204,80" fill={color} />
     </svg>
@@ -188,6 +106,134 @@ function SectionDivider() {
       <span style={{ width: 24, height: 1, background: COLORS.hairline }} />
       <span style={{ width: 4, height: 4, borderRadius: "50%", background: COLORS.brass }} />
       <span style={{ width: 24, height: 1, background: COLORS.hairline }} />
+    </div>
+  );
+}
+
+function CardShell({ title, children }) {
+  return (
+    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.brass}`, borderRadius: 12, padding: 20, boxShadow: "0 1px 4px rgba(30,42,68,0.05)" }}>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 8 }}>
+        {title}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function BiographyBox({ politician }) {
+  const bio = stripHtml(politician.biography);
+  return (
+    <CardShell title="Biography">
+      {bio ? (
+        <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, color: COLORS.ink, lineHeight: 1.65 }}>
+          {bio}
+        </div>
+      ) : (
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
+          No official biography published for this MP yet.
+        </div>
+      )}
+    </CardShell>
+  );
+}
+
+function ContactRow({ label, children }) {
+  return (
+    <div style={{ marginBottom: 10 }}>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 10.5, color: COLORS.brass, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 2 }}>
+        {label}
+      </div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink }}>{children}</div>
+    </div>
+  );
+}
+
+function ContactBox({ politician }) {
+  const hasContact = politician.parliamentary_address || politician.parliamentary_phone || politician.parliamentary_email;
+  return (
+    <CardShell title="Parliamentary Contact">
+      {hasContact ? (
+        <div>
+          {politician.parliamentary_address && <ContactRow label="Address">{politician.parliamentary_address}</ContactRow>}
+          {politician.parliamentary_phone && <ContactRow label="Phone">{politician.parliamentary_phone}</ContactRow>}
+          {politician.parliamentary_email && (
+            <ContactRow label="Email">
+              <a href={`mailto:${politician.parliamentary_email}`} style={{ color: COLORS.ink }}>
+                {politician.parliamentary_email}
+              </a>
+            </ContactRow>
+          )}
+        </div>
+      ) : (
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
+          No parliamentary contact details published for this MP yet.
+        </div>
+      )}
+    </CardShell>
+  );
+}
+
+function CabinetRoleBox({ politician }) {
+  return (
+    <CardShell title="Cabinet Role">
+      {politician.cabinet_role ? (
+        <div>
+          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 16, color: COLORS.ink }}>
+            {politician.cabinet_role}
+          </div>
+          {politician.cabinet_role_start_date && (
+            <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 3 }}>
+              Since {formatDate(politician.cabinet_role_start_date)}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
+          No current government post — this MP is a backbencher.
+        </div>
+      )}
+    </CardShell>
+  );
+}
+
+function StandardsBox({ politician }) {
+  const encodedName = encodeURIComponent(politician.name);
+  return (
+    <CardShell title="Standards & Investigations">
+      <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.6, marginBottom: 10 }}>
+        There's no reliable automated feed for this, so rather than guess, here are direct links to
+        check the official record yourself:
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <a
+          href={`https://committees.parliament.uk/committee/62/standards/publications/`}
+          target="_blank"
+          rel="noreferrer"
+          style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, fontWeight: 600 }}
+        >
+          Committee on Standards — published findings ↗
+        </a>
+        <a
+          href={`https://www.parliament.uk/site-information/search/?q=${encodedName}`}
+          target="_blank"
+          rel="noreferrer"
+          style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, fontWeight: 600 }}
+        >
+          Search parliament.uk for "{politician.name}" ↗
+        </a>
+      </div>
+    </CardShell>
+  );
+}
+
+function PlaceholderBox({ title, note }) {
+  return (
+    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.brass}`, borderRadius: 12, padding: 20, boxShadow: "0 1px 4px rgba(30,42,68,0.05)" }}>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 5 }}>
+        {title}
+      </div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>{note}</div>
     </div>
   );
 }
@@ -276,16 +322,18 @@ function Home({ onBrowse, mpCount }) {
       const [donationsRes, rolesRes] = await Promise.all([
         supabase
           .from("financial_interests")
-          .select("summary, value_amount, date_registered, donor_name, politicians(name)")
+          .select("id, summary, value_amount, date_registered, donor_name, politicians(name)")
           .not("value_amount", "is", null)
           .order("date_registered", { ascending: false })
+          .order("id", { ascending: false })
           .limit(4),
         supabase
           .from("financial_interests")
-          .select("summary, date_registered, politicians(name)")
+          .select("id, summary, date_registered, politicians(name)")
           .eq("category", "Employment and earnings")
           .not("date_registered", "is", null)
           .order("date_registered", { ascending: false })
+          .order("id", { ascending: false })
           .limit(4),
       ]);
       setDonations(donationsRes.data ?? []);
@@ -366,7 +414,7 @@ function Home({ onBrowse, mpCount }) {
             <div style={{ position: "relative", paddingLeft: 20 }}>
               <div style={{ position: "absolute", left: 4, top: 6, bottom: 6, width: 1, background: COLORS.hairline }} />
               {items.map((item, i) => (
-                <div key={i} style={{ position: "relative", paddingBottom: i < items.length - 1 ? 16 : 0 }}>
+                <div key={item.id} style={{ position: "relative", paddingBottom: i < items.length - 1 ? 16 : 0 }}>
                   <div style={{ position: "absolute", left: -20, top: 4, width: 9, height: 9, borderRadius: "50%", background: COLORS.brass, border: `2px solid ${COLORS.paperCard}` }} />
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
                     <div style={{ minWidth: 0 }}>
@@ -651,13 +699,13 @@ function PoliticianDetail({ politician, onBack }) {
             </div>
           </div>
 
-          {/* ---- Right column: everything else, built one piece at a time ---- */}
+          {/* ---- Right column: everything else ---- */}
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <BiographyBox politician={politician} />
             <ContactBox politician={politician} />
-            <PlaceholderBox title="Cabinet Role" note="Coming soon" />
+            <CabinetRoleBox politician={politician} />
             <PlaceholderBox title="Voting Record" note="Coming soon" />
-            <PlaceholderBox title="Standards & Investigations" note="Coming soon" />
+            <StandardsBox politician={politician} />
             <PlaceholderBox title="In the News" note="Coming soon" />
           </div>
         </div>
