@@ -1433,6 +1433,37 @@ function InfoCard({ title, color, children }) {
   );
 }
 
+const APPG_EXAMPLES = [
+  {
+    name: "All-Party Parliamentary Group on Cancer",
+    tag: "Health",
+    color: "#B5533C",
+    desc: "Founded in 1998 to keep cancer care and treatment high on the political agenda. It brings MPs, peers, doctors, researchers, and patients together to push for better, more consistent cancer services across the NHS.",
+    secretariat: "Run day-to-day by Macmillan Cancer Support, a cancer charity.",
+  },
+  {
+    name: "All-Party Parliamentary Beer Group",
+    tag: "Industry",
+    color: "#8A7A3D",
+    desc: "Promotes the UK brewing and pub industry — its economic contribution, cultural role, and the challenges pubs and breweries face, from tax to planning rules.",
+    secretariat: "Its administration is provided by Ocklynge Consulting, a public affairs firm working for the brewing sector.",
+  },
+  {
+    name: "All-Party Parliamentary Group on Portugal",
+    tag: "International",
+    color: "#2E6F6F",
+    desc: "Builds relationships between UK and Portuguese parliamentarians, and supports trade and cultural ties between the two countries.",
+    secretariat: "Administered by the Portuguese Chamber of Commerce in the UK.",
+  },
+  {
+    name: "All-Party Parliamentary Group on Europe",
+    tag: "International",
+    color: "#5B4E8A",
+    desc: "A newer group (first met in late 2024) focused on the UK's evolving relationship with Europe and the EU, aiming to encourage informed, cross-party discussion rather than push a single position.",
+    secretariat: "Its secretariat is provided by European Movement UK, a campaign group.",
+  },
+];
+
 function AppgMemberships() {
   return (
     <div style={{ padding: "40px 40px 60px" }}>
@@ -1442,48 +1473,87 @@ function AppgMemberships() {
           APPG Memberships
         </h1>
         <p style={{ fontFamily: FONT_BODY, fontSize: 15, color: COLORS.inkSoft, marginTop: 6 }}>
-          All-Party Parliamentary Groups are one of the earliest, least visible ways outside interests can
-          shape what MPs focus on — worth understanding, even though (unlike the rest of this app) we can't
-          automatically track them here.
+          All-Party Parliamentary Groups are informal, cross-party groups MPs and peers join to focus on a
+          particular topic — and one of the earliest, least visible ways outside organisations connect with
+          Parliament.
         </p>
       </div>
 
-      <div style={{ maxWidth: 820 }}>
+      <div style={{ maxWidth: 900 }}>
         <InfoCard title="What is an APPG?" color={COLORS.brass}>
-          An All-Party Parliamentary Group is an informal group of MPs and members of the House of Lords who
-          share an interest in a particular topic — anything from a country (like the APPG on Japan) to a
-          disease (like the APPG on Cancer) to an industry (like the APPG on Gambling). They have{" "}
-          <strong style={{ color: COLORS.ink }}>no official status in Parliament</strong> — they can't
-          introduce legislation — but they regularly bring in outside speakers, hold inquiries, and produce
-          reports that can genuinely influence government thinking.
+          An All-Party Parliamentary Group brings together MPs and members of the House of Lords who share
+          an interest in a topic — a country, a health condition, an industry, a social issue. They have{" "}
+          <strong style={{ color: COLORS.ink }}>no official power in Parliament</strong> — they can't pass
+          laws — but they regularly host outside speakers, run inquiries, and publish reports that can
+          genuinely shape how MPs and ministers think about an issue.
         </InfoCard>
 
-        <InfoCard title="Why It Matters for Transparency" color="#3A6EA5">
-          Running a group takes staff, research, and admin — and that support (called a "secretariat") is
-          very often provided, free or subsidised, by an outside organisation: a charity, a trade body, a
-          lobbying firm, or a company with a direct interest in the group's topic. An MP chairing the APPG on
-          a particular industry, whose day-to-day running is funded by a company in that industry, is a real
-          and legitimate thing to want visibility on — often well before any formal financial interest or
-          donation would ever be declared elsewhere.
+        <div style={{ marginBottom: 20 }}>
+          <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>
+            A Few Real Examples
+          </h2>
+          <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16 }}>
+            APPGs cover almost every topic imaginable — here's a small, varied sample.
+          </p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 14 }}>
+            {APPG_EXAMPLES.map((group) => (
+              <div
+                key={group.name}
+                style={{
+                  background: COLORS.paperCard,
+                  border: `1px solid ${COLORS.hairline}`,
+                  borderLeft: `5px solid ${group.color}`,
+                  borderRadius: 12,
+                  padding: 16,
+                  boxShadow: "0 1px 4px rgba(30,42,68,0.05)",
+                }}
+              >
+                <div
+                  style={{
+                    display: "inline-block",
+                    fontFamily: FONT_BODY,
+                    fontWeight: 700,
+                    fontSize: 10,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    color: group.color,
+                    background: `${group.color}1A`,
+                    padding: "3px 9px",
+                    borderRadius: 999,
+                    marginBottom: 8,
+                  }}
+                >
+                  {group.tag}
+                </div>
+                <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink, marginBottom: 6 }}>
+                  {group.name}
+                </div>
+                <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, lineHeight: 1.55, marginBottom: 8 }}>
+                  {group.desc}
+                </div>
+                <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, fontStyle: "italic" }}>
+                  {group.secretariat}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <InfoCard title="Why It's Worth Knowing About" color="#3A6EA5">
+          Running a group takes staff and admin, and that support — called a "secretariat" — is very often
+          provided by an outside organisation with a direct stake in the topic: a charity, a trade body, or
+          a public affairs firm working for an industry. That's not necessarily improper — it's how these
+          groups are usually formed — but it's a genuine, early signal of who an MP is working closely with,
+          often well before any formal donation would ever be declared elsewhere.
         </InfoCard>
 
         <InfoCard title="The Rules APPGs Must Follow" color="#2F6F4E">
           <ul style={{ margin: 0, paddingLeft: 20 }}>
-            <li style={{ marginBottom: 8 }}>Must have at least 20 members, and officers from more than one political party</li>
-            <li style={{ marginBottom: 8 }}>Must hold at least two meetings a year, including one Annual General Meeting</li>
-            <li style={{ marginBottom: 8 }}>Must publicly register any income or benefits received above a set threshold, including secretariat support</li>
-            <li>Must re-register with Parliament's Committee on Standards roughly every 6 weeks, or the group is automatically dissolved</li>
+            <li style={{ marginBottom: 8 }}>At least 20 members, with officers from more than one political party</li>
+            <li style={{ marginBottom: 8 }}>At least two meetings a year, including one Annual General Meeting</li>
+            <li style={{ marginBottom: 8 }}>Must publicly declare income or benefits above a set threshold, including secretariat support</li>
+            <li>Must re-register roughly every 6 weeks, or the group is automatically dissolved</li>
           </ul>
-        </InfoCard>
-
-        <InfoCard title="Why We Can't Automate This (Yet)" color="#7A4B4B">
-          Every other tab in this app pulls from an official, structured, machine-readable API — which is
-          exactly why it can update itself daily with confidence. The APPG Register isn't published that
-          way: it only exists as a set of formatted documents on Parliament's website, refreshed every few
-          weeks. Reliably and accurately turning that into per-MP data would mean scraping web pages rather
-          than reading a proper data feed — a much less reliable foundation, and one we'd rather not build
-          this app's credibility on. If an official APPG API is ever published, this is one of the first
-          things we'd wire up.
         </InfoCard>
 
         <div
@@ -1497,11 +1567,12 @@ function AppgMemberships() {
           }}
         >
           <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, marginTop: 0, marginBottom: 10 }}>
-            Check the Real Register Yourself
+            Look Up Any MP's Memberships
           </h2>
           <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, color: COLORS.inkSoft, lineHeight: 1.6, marginTop: 0 }}>
-            The official register is public and searchable right now — you can look up any MP by name to see
-            which groups they chair or belong to, and what funding each group has declared.
+            The full official register is public and searchable — find any MP by name to see every group
+            they chair or belong to, and what funding each one has declared. It's updated every few weeks,
+            so it's always the most current source.
           </p>
           <a
             href="https://publications.parliament.uk/pa/cm/cmallparty/register/contents.htm"
