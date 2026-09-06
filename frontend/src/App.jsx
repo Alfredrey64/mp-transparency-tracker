@@ -1153,32 +1153,56 @@ const ELECTION_STAGES = [
 
 function FlowDiagram({ stages, activeKey, onSelect, color }) {
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6 }}>
-      {stages.map((stage, i) => (
-        <div key={stage.key} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <button
-            onClick={() => onSelect(stage.key)}
-            style={{
-              fontFamily: FONT_BODY,
-              fontSize: 13,
-              fontWeight: 600,
-              padding: "10px 16px",
-              borderRadius: 10,
-              border: `1.5px solid ${activeKey === stage.key ? color : COLORS.hairline}`,
-              background: activeKey === stage.key ? color : COLORS.paperCard,
-              color: activeKey === stage.key ? "#fff" : COLORS.ink,
-              cursor: "pointer",
-              whiteSpace: "nowrap",
-              boxShadow: activeKey === stage.key ? "0 2px 8px rgba(30,42,68,0.15)" : "none",
-            }}
-          >
-            {stage.label}
-          </button>
-          {i < stages.length - 1 && (
-            <span style={{ color: COLORS.hairline, fontSize: 16 }}>→</span>
-          )}
-        </div>
-      ))}
+    <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
+      {stages.map((stage, i) => {
+        const active = activeKey === stage.key;
+        return (
+          <div key={stage.key} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <button
+              onClick={() => onSelect(stage.key)}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                fontFamily: FONT_BODY,
+                fontSize: 13,
+                fontWeight: 600,
+                padding: "9px 16px 9px 9px",
+                borderRadius: 999,
+                border: `1.5px solid ${active ? color : COLORS.hairline}`,
+                background: active ? color : COLORS.paperCard,
+                color: active ? "#fff" : COLORS.ink,
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+                boxShadow: active ? "0 3px 10px rgba(30,42,68,0.18)" : "none",
+                transition: "all 0.15s",
+              }}
+            >
+              <span
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: 22,
+                  height: 22,
+                  borderRadius: "50%",
+                  fontSize: 11,
+                  fontFamily: FONT_MONO,
+                  background: active ? "rgba(255,255,255,0.25)" : `${color}1A`,
+                  color: active ? "#fff" : color,
+                  flexShrink: 0,
+                }}
+              >
+                {i + 1}
+              </span>
+              {stage.label}
+            </button>
+            {i < stages.length - 1 && (
+              <span style={{ color: color, opacity: 0.4, fontSize: 18, fontWeight: 700 }}>→</span>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -1188,10 +1212,20 @@ function DiagramSection({ title, intro, stages, color }) {
   const active = stages.find((s) => s.key === activeKey);
 
   return (
-    <div style={{ marginBottom: 44 }}>
-      <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 24, color: COLORS.ink, marginBottom: 6 }}>{title}</h2>
+    <div
+      style={{
+        marginBottom: 32,
+        background: COLORS.paperCard,
+        border: `1px solid ${COLORS.hairline}`,
+        borderTop: `4px solid ${color}`,
+        borderRadius: 16,
+        padding: "24px 28px",
+        boxShadow: "0 2px 10px rgba(30,42,68,0.05)",
+      }}
+    >
+      <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 24, color: COLORS.ink, marginTop: 0, marginBottom: 6 }}>{title}</h2>
       {intro && (
-        <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16, maxWidth: 720 }}>
+        <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, marginTop: 0, marginBottom: 18, maxWidth: 780 }}>
           {intro}
         </p>
       )}
@@ -1201,13 +1235,13 @@ function DiagramSection({ title, intro, stages, color }) {
       {active && (
         <div
           style={{
-            marginTop: 16,
-            background: COLORS.paperCard,
+            marginTop: 18,
+            background: COLORS.paper,
             border: `1px solid ${COLORS.hairline}`,
             borderLeft: `4px solid ${color}`,
             borderRadius: 10,
             padding: "16px 18px",
-            maxWidth: 720,
+            maxWidth: 780,
           }}
         >
           <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink, marginBottom: 6 }}>{active.label}</div>
@@ -1218,55 +1252,158 @@ function DiagramSection({ title, intro, stages, color }) {
   );
 }
 
+function ConstituencyLookup() {
+  const [postcode, setPostcode] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [result, setResult] = useState(null);
+
+  async function handleSearch(e) {
+    e.preventDefault();
+    if (!postcode.trim()) return;
+    setLoading(true);
+    setError(null);
+    setResult(null);
+    try {
+      const res = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(postcode.trim())}`);
+      const data = await res.json();
+      if (!res.ok || data.status !== 200) {
+        setError("Couldn't find that postcode — double check it's a valid UK postcode.");
+        setLoading(false);
+        return;
+      }
+      const constituency = data.result.parliamentary_constituency;
+      const { data: matches } = await supabase.from("politicians").select("*").eq("constituency", constituency).limit(1);
+      setResult({ constituency, mp: matches?.[0] ?? null });
+    } catch {
+      setError("Something went wrong looking that up — please try again.");
+    }
+    setLoading(false);
+  }
+
+  return (
+    <div
+      style={{
+        background: COLORS.paperCard,
+        border: `1px solid ${COLORS.hairline}`,
+        borderTop: `4px solid ${COLORS.brass}`,
+        borderRadius: 16,
+        padding: "24px 28px",
+        boxShadow: "0 2px 10px rgba(30,42,68,0.05)",
+      }}
+    >
+      <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 24, color: COLORS.ink, marginTop: 0, marginBottom: 6 }}>
+        Find Your MP
+      </h2>
+      <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16, maxWidth: 620 }}>
+        Enter your postcode to see which constituency you're in, and who currently represents it in Parliament.
+      </p>
+      <form onSubmit={handleSearch} style={{ display: "flex", gap: 10, maxWidth: 420, marginBottom: 16 }}>
+        <input
+          value={postcode}
+          onChange={(e) => setPostcode(e.target.value)}
+          placeholder="e.g. SW1A 1AA"
+          style={{
+            flex: 1,
+            boxSizing: "border-box",
+            padding: "12px 14px",
+            fontFamily: FONT_BODY,
+            fontSize: 15,
+            border: `1px solid ${COLORS.hairline}`,
+            borderRadius: 10,
+            background: COLORS.paper,
+            color: COLORS.ink,
+          }}
+        />
+        <button
+          type="submit"
+          style={{
+            fontFamily: FONT_BODY,
+            fontWeight: 600,
+            fontSize: 14,
+            padding: "0 20px",
+            borderRadius: 10,
+            border: "none",
+            background: COLORS.ink,
+            color: "#fff",
+            cursor: "pointer",
+          }}
+        >
+          Search
+        </button>
+      </form>
+
+      {loading && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Looking up…</div>}
+      {error && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: "#9C3B3B" }}>{error}</div>}
+
+      {result && (
+        <div style={{ borderTop: `1px solid ${COLORS.hairline}`, paddingTop: 16 }}>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginBottom: 10 }}>
+            Constituency: <strong style={{ color: COLORS.ink }}>{result.constituency}</strong>
+          </div>
+          {result.mp ? (
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              {result.mp.thumbnail_url && (
+                <img
+                  src={result.mp.thumbnail_url}
+                  alt=""
+                  style={{ width: 56, height: 56, borderRadius: "50%", objectFit: "cover", border: `1px solid ${COLORS.hairline}` }}
+                />
+              )}
+              <div>
+                <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, color: COLORS.ink }}>{result.mp.name}</div>
+                <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>{result.mp.party}</div>
+              </div>
+            </div>
+          ) : (
+            <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
+              We don't currently have a matching record for this constituency — it may use a slightly
+              different name in our data.
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function HowParliamentWorks() {
   return (
     <div style={{ padding: "40px 40px 60px" }}>
-      <div style={{ marginBottom: 32 }}>
+      <div style={{ marginBottom: 32, maxWidth: 900 }}>
         <EyebrowLabel>Public Record · UK Parliament</EyebrowLabel>
         <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 34, color: COLORS.ink, margin: "10px 0 0" }}>
           How Parliament Works
         </h1>
-        <p style={{ fontFamily: FONT_BODY, fontSize: 15, color: COLORS.inkSoft, marginTop: 6, maxWidth: 720 }}>
+        <p style={{ fontFamily: FONT_BODY, fontSize: 15, color: COLORS.inkSoft, marginTop: 6 }}>
           Click through each stage below to see a plain-English explanation — from who's actually in charge,
           to how a bill becomes law, to how your own MP ends up in Parliament in the first place.
         </p>
       </div>
 
-      <DiagramSection
-        title="Who's In Charge?"
-        intro="The UK's system separates ceremonial authority, law-making, and day-to-day running of the country into distinct roles."
-        stages={STRUCTURE_ROWS}
-        color={COLORS.brass}
-      />
+      <div style={{ maxWidth: 1400 }}>
+        <DiagramSection
+          title="Who's In Charge?"
+          intro="The UK's system separates ceremonial authority, law-making, and day-to-day running of the country into distinct roles."
+          stages={STRUCTURE_ROWS}
+          color={COLORS.brass}
+        />
 
-      <DiagramSection
-        title="How a Bill Becomes Law"
-        intro="Every law goes through the same basic journey — though it can take anywhere from weeks to years."
-        stages={BILL_PROCESS_STAGES}
-        color="#3A6EA5"
-      />
+        <DiagramSection
+          title="How a Bill Becomes Law"
+          intro="Every law goes through the same basic journey — though it can take anywhere from weeks to years."
+          stages={BILL_PROCESS_STAGES}
+          color="#3A6EA5"
+        />
 
-      <DiagramSection
-        title="How MPs Are Elected"
-        intro="Every MP in this app got their seat through the same process."
-        stages={ELECTION_STAGES}
-        color="#2F6F4E"
-      />
+        <DiagramSection
+          title="How MPs Are Elected"
+          intro="Every MP in this app got their seat through the same process."
+          stages={ELECTION_STAGES}
+          color="#2F6F4E"
+        />
 
-      <div
-        style={{
-          background: COLORS.paperCard,
-          border: `1px dashed ${COLORS.hairline}`,
-          borderRadius: 12,
-          padding: 18,
-          maxWidth: 720,
-          fontFamily: FONT_BODY,
-          fontSize: 13,
-          color: COLORS.inkSoft,
-        }}
-      >
-        Coming soon: search your postcode to see exactly who represents your area, from your local
-        councillor up to your MP.
+        <ConstituencyLookup />
       </div>
     </div>
   );
