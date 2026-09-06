@@ -942,7 +942,7 @@ function VotingRecords() {
           .select("*")
           .not("next_sitting_date", "is", null)
           .order("next_sitting_date", { ascending: true })
-          .limit(10),
+          .limit(40),
         supabase.from("politicians").select("*").order("name"),
       ]);
       setBills(billsRes.data ?? []);
