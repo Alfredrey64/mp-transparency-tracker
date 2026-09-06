@@ -1,4 +1,4 @@
-name: Fetch MP Financial Interests and Voting Records
+name: Fetch MP Financial Interests, Voting Records, and Bills
 
 on:
   schedule:
@@ -31,3 +31,9 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-votes.js
+
+      - name: Run the bills fetch script
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node fetch-bills.js

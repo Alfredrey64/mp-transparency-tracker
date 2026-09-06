@@ -227,6 +227,47 @@ function StandardsBox({ politician }) {
   );
 }
 
+function VotingSummaryBox({ politician }) {
+  const [stats, setStats] = useState(null);
+
+  useEffect(() => {
+    async function load() {
+      const { data } = await supabase
+        .from("voting_records")
+        .select("voted_with_party_majority")
+        .eq("politician_id", politician.id);
+      if (!data || data.length === 0) {
+        setStats({ total: 0 });
+        return;
+      }
+      const withParty = data.filter((v) => v.voted_with_party_majority === true).length;
+      const decisive = data.filter((v) => v.voted_with_party_majority !== null).length;
+      setStats({ total: data.length, withParty, decisive });
+    }
+    load();
+  }, [politician.id]);
+
+  return (
+    <CardShell title="Voting Record">
+      {stats === null && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>}
+      {stats && stats.total === 0 && (
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
+          No recorded votes found for this MP in the tracked period.
+        </div>
+      )}
+      {stats && stats.total > 0 && (
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, lineHeight: 1.6 }}>
+          {stats.total} recorded vote{stats.total === 1 ? "" : "s"} tracked — voted with their own party's
+          majority in {stats.withParty} of {stats.decisive}.
+          <div style={{ marginTop: 6, fontSize: 12.5, color: COLORS.inkSoft }}>
+            See the "Voting Records" tab in the sidebar for their full history.
+          </div>
+        </div>
+      )}
+    </CardShell>
+  );
+}
+
 function PlaceholderBox({ title, note }) {
   return (
     <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.brass}`, borderRadius: 12, padding: 20, boxShadow: "0 1px 4px rgba(30,42,68,0.05)" }}>
@@ -242,7 +283,7 @@ function PlaceholderBox({ title, note }) {
 const NAV_ITEMS = [
   { key: "home", label: "Overview" },
   { key: "list", label: "Financial Interests" },
-  { key: "voting", label: "Voting Records", soon: true },
+  { key: "voting", label: "Voting Records" },
   { key: "appg", label: "APPG Memberships", soon: true },
   { key: "companies", label: "Companies House", soon: true },
 ];
@@ -704,11 +745,227 @@ function PoliticianDetail({ politician, onBack }) {
             <BiographyBox politician={politician} />
             <ContactBox politician={politician} />
             <CabinetRoleBox politician={politician} />
-            <PlaceholderBox title="Voting Record" note="Coming soon" />
+            <VotingSummaryBox politician={politician} />
             <StandardsBox politician={politician} />
             <PlaceholderBox title="In the News" note="Coming soon" />
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ---- Voting Records tab ----
+function UpcomingBillCard({ bill }) {
+  return (
+    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.brass}`, borderRadius: 12, padding: 16, boxShadow: "0 1px 4px rgba(30,42,68,0.05)" }}>
+      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink }}>{bill.short_title}</div>
+      {bill.long_title && (
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 4, lineHeight: 1.5 }}>
+          {bill.long_title}
+        </div>
+      )}
+      <ul style={{ margin: "8px 0 0", paddingLeft: 18, fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, lineHeight: 1.6 }}>
+        <li>Current stage: {bill.current_stage ?? "Unknown"} ({bill.current_house})</li>
+        {bill.sponsor_name && (
+          <li>
+            Sponsored by {bill.sponsor_name}
+            {bill.sponsoring_department ? ` · ${bill.sponsoring_department}` : ""}
+          </li>
+        )}
+        {bill.next_sitting_date && <li>Next sitting: {formatDate(bill.next_sitting_date)}</li>}
+      </ul>
+      <div style={{ marginTop: 8 }}>
+        <a href={bill.source_url} target="_blank" rel="noreferrer" style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
+          Full bill page ↗
+        </a>
+      </div>
+    </div>
+  );
+}
+
+function MpVotingHistory({ politician, onBack }) {
+  const [votes, setVotes] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      const { data } = await supabase
+        .from("voting_records")
+        .select("*")
+        .eq("politician_id", politician.id)
+        .order("date", { ascending: false });
+      setVotes(data ?? []);
+      setLoading(false);
+    }
+    load();
+  }, [politician.id]);
+
+  const withPartyCount = votes.filter((v) => v.voted_with_party_majority === true).length;
+  const againstPartyCount = votes.filter((v) => v.voted_with_party_majority === false).length;
+
+  return (
+    <div>
+      <button
+        onClick={onBack}
+        style={{ background: "none", border: "none", cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, padding: 0, marginBottom: 16 }}
+      >
+        ← Choose a different MP
+      </button>
+
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+        {politician.thumbnail_url && (
+          <img src={politician.thumbnail_url} alt="" style={{ width: 48, height: 48, borderRadius: "50%", objectFit: "cover", border: `1px solid ${COLORS.hairline}` }} />
+        )}
+        <div>
+          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, color: COLORS.ink }}>{politician.name}</div>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>{politician.party} · {politician.constituency}</div>
+        </div>
+      </div>
+
+      {!loading && votes.length > 0 && (
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginBottom: 16 }}>
+          Voted with their own party's majority in <strong style={{ color: COLORS.ink }}>{withPartyCount}</strong> of the last{" "}
+          {withPartyCount + againstPartyCount} recorded votes where a party majority existed.
+        </div>
+      )}
+
+      {loading && <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft }}>Loading voting history…</div>}
+      {!loading && votes.length === 0 && (
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
+          No recorded votes found for this MP in the tracked period.
+        </div>
+      )}
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {votes.map((v) => (
+          <div key={v.id} style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 14 }}>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 15, color: COLORS.ink, marginBottom: 6 }}>{v.title}</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+              <span
+                style={{
+                  fontFamily: FONT_MONO, fontSize: 11, fontWeight: 700, textTransform: "uppercase",
+                  padding: "3px 9px", borderRadius: 999,
+                  background: v.voted_aye ? "#E4EEE7" : "#F3E4E2",
+                  color: v.voted_aye ? "#2F6F4E" : "#9C3B3B",
+                }}
+              >
+                {v.voted_aye ? "Aye" : "No"}
+              </span>
+              {v.voted_with_party_majority !== null && (
+                <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>
+                  {v.voted_with_party_majority ? "With party majority" : "Against party majority"}
+                </span>
+              )}
+              <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>{formatDate(v.date)}</span>
+              <a href={v.source_url} target="_blank" rel="noreferrer" style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>
+                source ↗
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function VotingRecords() {
+  const [bills, setBills] = useState([]);
+  const [politicians, setPoliticians] = useState([]);
+  const [loadingBills, setLoadingBills] = useState(true);
+  const [query, setQuery] = useState("");
+  const [selectedMp, setSelectedMp] = useState(null);
+
+  useEffect(() => {
+    async function load() {
+      const [billsRes, politiciansRes] = await Promise.all([
+        supabase
+          .from("bills")
+          .select("*")
+          .not("next_sitting_date", "is", null)
+          .order("next_sitting_date", { ascending: true })
+          .limit(10),
+        supabase.from("politicians").select("*").order("name"),
+      ]);
+      setBills(billsRes.data ?? []);
+      setPoliticians(politiciansRes.data ?? []);
+      setLoadingBills(false);
+    }
+    load();
+  }, []);
+
+  const filteredPoliticians = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+    return politicians.filter((p) => p.name?.toLowerCase().includes(q)).slice(0, 8);
+  }, [politicians, query]);
+
+  if (selectedMp) {
+    return (
+      <div style={{ padding: "40px 40px 60px", maxWidth: 800, margin: "0 auto" }}>
+        <MpVotingHistory politician={selectedMp} onBack={() => setSelectedMp(null)} />
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ padding: "40px 40px 60px" }}>
+      <div style={{ marginBottom: 24 }}>
+        <EyebrowLabel>Public Record · UK Parliament</EyebrowLabel>
+        <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 34, color: COLORS.ink, margin: "10px 0 0" }}>
+          Voting Records
+        </h1>
+        <p style={{ fontFamily: FONT_BODY, fontSize: 15, color: COLORS.inkSoft, marginTop: 6 }}>
+          See how any MP voted, and whether they voted with or against their own party's majority — plus
+          what's coming up next in Parliament.
+        </p>
+      </div>
+
+      <div style={{ marginBottom: 32, maxWidth: 480 }}>
+        <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13, color: COLORS.ink, marginBottom: 8 }}>
+          Look up an MP's voting history
+        </div>
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search by MP name"
+          style={{
+            width: "100%", boxSizing: "border-box", padding: "13px 16px", fontFamily: FONT_BODY, fontSize: 16,
+            border: `1px solid ${COLORS.hairline}`, borderRadius: 10, background: COLORS.paperCard, color: COLORS.ink,
+          }}
+        />
+        {filteredPoliticians.length > 0 && (
+          <div style={{ marginTop: 8, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 10, overflow: "hidden" }}>
+            {filteredPoliticians.map((p) => (
+              <button
+                key={p.id}
+                onClick={() => { setSelectedMp(p); setQuery(""); }}
+                style={{
+                  display: "block", width: "100%", textAlign: "left", padding: "10px 14px", border: "none",
+                  background: "transparent", cursor: "pointer", fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink,
+                  borderBottom: `1px solid ${COLORS.hairline}`,
+                }}
+              >
+                {p.name} <span style={{ color: COLORS.inkSoft, fontSize: 12.5 }}>· {p.party}</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13, color: COLORS.ink, marginBottom: 12 }}>
+        Upcoming Bills
+      </div>
+      {loadingBills && <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft }}>Loading…</div>}
+      {!loadingBills && bills.length === 0 && (
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
+          No bills with a scheduled sitting date found right now.
+        </div>
+      )}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 14 }}>
+        {bills.map((bill) => (
+          <UpcomingBillCard key={bill.bill_id} bill={bill} />
+        ))}
       </div>
     </div>
   );
@@ -737,6 +994,7 @@ export default function App() {
       <Sidebar activeView={view} onNavigate={handleNavigate} />
       <div style={{ flex: 1, minWidth: 0 }}>
         {view === "home" && <Home onBrowse={() => handleNavigate("list")} mpCount={mpCount} />}
+        {view === "voting" && <VotingRecords />}
         {view === "list" &&
           (selected ? (
             <PoliticianDetail politician={selected} onBack={() => setSelected(null)} />
