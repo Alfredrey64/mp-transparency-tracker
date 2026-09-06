@@ -282,10 +282,10 @@ function PlaceholderBox({ title, note }) {
 // ---- Sidebar navigation ----
 const NAV_ITEMS = [
   { key: "home", label: "Overview" },
+  { key: "howitworks", label: "How Parliament Works" },
   { key: "list", label: "Financial Interests" },
   { key: "voting", label: "Voting Records" },
-  { key: "howitworks", label: "How Parliament Works" },
-  { key: "appg", label: "APPG Memberships", soon: true },
+  { key: "appg", label: "APPG Memberships" },
   { key: "companies", label: "Companies House", soon: true },
 ];
 
@@ -1409,6 +1409,125 @@ function HowParliamentWorks() {
   );
 }
 
+// ---- APPG Memberships tab ----
+function InfoCard({ title, color, children }) {
+  return (
+    <div
+      style={{
+        background: COLORS.paperCard,
+        border: `1px solid ${COLORS.hairline}`,
+        borderTop: `4px solid ${color}`,
+        borderRadius: 16,
+        padding: "22px 26px",
+        boxShadow: "0 2px 10px rgba(30,42,68,0.05)",
+        marginBottom: 20,
+      }}
+    >
+      <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, marginTop: 0, marginBottom: 10 }}>
+        {title}
+      </h2>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 14.5, color: COLORS.inkSoft, lineHeight: 1.7 }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function AppgMemberships() {
+  return (
+    <div style={{ padding: "40px 40px 60px" }}>
+      <div style={{ marginBottom: 28, maxWidth: 900 }}>
+        <EyebrowLabel>Public Record · UK Parliament</EyebrowLabel>
+        <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 34, color: COLORS.ink, margin: "10px 0 0" }}>
+          APPG Memberships
+        </h1>
+        <p style={{ fontFamily: FONT_BODY, fontSize: 15, color: COLORS.inkSoft, marginTop: 6 }}>
+          All-Party Parliamentary Groups are one of the earliest, least visible ways outside interests can
+          shape what MPs focus on — worth understanding, even though (unlike the rest of this app) we can't
+          automatically track them here.
+        </p>
+      </div>
+
+      <div style={{ maxWidth: 820 }}>
+        <InfoCard title="What is an APPG?" color={COLORS.brass}>
+          An All-Party Parliamentary Group is an informal group of MPs and members of the House of Lords who
+          share an interest in a particular topic — anything from a country (like the APPG on Japan) to a
+          disease (like the APPG on Cancer) to an industry (like the APPG on Gambling). They have{" "}
+          <strong style={{ color: COLORS.ink }}>no official status in Parliament</strong> — they can't
+          introduce legislation — but they regularly bring in outside speakers, hold inquiries, and produce
+          reports that can genuinely influence government thinking.
+        </InfoCard>
+
+        <InfoCard title="Why It Matters for Transparency" color="#3A6EA5">
+          Running a group takes staff, research, and admin — and that support (called a "secretariat") is
+          very often provided, free or subsidised, by an outside organisation: a charity, a trade body, a
+          lobbying firm, or a company with a direct interest in the group's topic. An MP chairing the APPG on
+          a particular industry, whose day-to-day running is funded by a company in that industry, is a real
+          and legitimate thing to want visibility on — often well before any formal financial interest or
+          donation would ever be declared elsewhere.
+        </InfoCard>
+
+        <InfoCard title="The Rules APPGs Must Follow" color="#2F6F4E">
+          <ul style={{ margin: 0, paddingLeft: 20 }}>
+            <li style={{ marginBottom: 8 }}>Must have at least 20 members, and officers from more than one political party</li>
+            <li style={{ marginBottom: 8 }}>Must hold at least two meetings a year, including one Annual General Meeting</li>
+            <li style={{ marginBottom: 8 }}>Must publicly register any income or benefits received above a set threshold, including secretariat support</li>
+            <li>Must re-register with Parliament's Committee on Standards roughly every 6 weeks, or the group is automatically dissolved</li>
+          </ul>
+        </InfoCard>
+
+        <InfoCard title="Why We Can't Automate This (Yet)" color="#7A4B4B">
+          Every other tab in this app pulls from an official, structured, machine-readable API — which is
+          exactly why it can update itself daily with confidence. The APPG Register isn't published that
+          way: it only exists as a set of formatted documents on Parliament's website, refreshed every few
+          weeks. Reliably and accurately turning that into per-MP data would mean scraping web pages rather
+          than reading a proper data feed — a much less reliable foundation, and one we'd rather not build
+          this app's credibility on. If an official APPG API is ever published, this is one of the first
+          things we'd wire up.
+        </InfoCard>
+
+        <div
+          style={{
+            background: COLORS.paperCard,
+            border: `1px solid ${COLORS.hairline}`,
+            borderTop: `4px solid ${COLORS.ink}`,
+            borderRadius: 16,
+            padding: "22px 26px",
+            boxShadow: "0 2px 10px rgba(30,42,68,0.05)",
+          }}
+        >
+          <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, marginTop: 0, marginBottom: 10 }}>
+            Check the Real Register Yourself
+          </h2>
+          <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, color: COLORS.inkSoft, lineHeight: 1.6, marginTop: 0 }}>
+            The official register is public and searchable right now — you can look up any MP by name to see
+            which groups they chair or belong to, and what funding each group has declared.
+          </p>
+          <a
+            href="https://publications.parliament.uk/pa/cm/cmallparty/register/contents.htm"
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              display: "inline-block",
+              marginTop: 6,
+              fontFamily: FONT_BODY,
+              fontWeight: 600,
+              fontSize: 14,
+              color: "#fff",
+              background: COLORS.ink,
+              padding: "10px 20px",
+              borderRadius: 10,
+              textDecoration: "none",
+            }}
+          >
+            Open the official APPG Register ↗
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [view, setView] = useState("home");
   const [selected, setSelected] = useState(null);
@@ -1432,6 +1551,7 @@ export default function App() {
       <Sidebar activeView={view} onNavigate={handleNavigate} />
       <div style={{ flex: 1, minWidth: 0 }}>
         {view === "home" && <Home onBrowse={() => handleNavigate("list")} mpCount={mpCount} />}
+        {view === "appg" && <AppgMemberships />}
         {view === "howitworks" && <HowParliamentWorks />}
         {view === "voting" && <VotingRecords />}
         {view === "list" &&
