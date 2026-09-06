@@ -284,6 +284,7 @@ const NAV_ITEMS = [
   { key: "home", label: "Overview" },
   { key: "list", label: "Financial Interests" },
   { key: "voting", label: "Voting Records" },
+  { key: "howitworks", label: "How Parliament Works" },
   { key: "appg", label: "APPG Memberships", soon: true },
   { key: "companies", label: "Companies House", soon: true },
 ];
@@ -1036,6 +1037,241 @@ function VotingRecords() {
   );
 }
 
+// ---- How Parliament Works tab ----
+const STRUCTURE_ROWS = [
+  {
+    key: "monarch",
+    label: "The Monarch",
+    tagline: "Ceremonial Head of State",
+    desc: "The Monarch is the formal Head of State but has no political power in practice. Every Act of Parliament requires Royal Assent, and the Monarch formally invites the leader of the winning party to become Prime Minister — but by long-standing convention, never refuses or interferes.",
+  },
+  {
+    key: "parliament",
+    label: "Parliament",
+    tagline: "The legislature — makes the laws",
+    desc: "Parliament is made up of two chambers: the elected House of Commons (650 MPs) and the House of Lords (appointed and hereditary members, plus bishops). Together they debate, amend, and vote on new laws.",
+  },
+  {
+    key: "government",
+    label: "The Government",
+    tagline: "The executive — runs the country day to day",
+    desc: "The Government is formed by whichever party (or coalition) holds a majority of seats in the Commons. It's led by the Prime Minister and the Cabinet (senior ministers, each responsible for a department like Health, Defence, or Treasury). The Government proposes most new laws and sets policy.",
+  },
+  {
+    key: "delivery",
+    label: "Civil Service & Local Councils",
+    tagline: "Implementation — where policy meets daily life",
+    desc: "Once a law passes, it's the Civil Service (permanent, non-political staff in government departments) and local councils who actually deliver it — running the NHS, schools, roads, benefits, and local services according to the rules Parliament has set.",
+  },
+];
+
+const BILL_PROCESS_STAGES = [
+  {
+    key: "idea",
+    label: "Idea",
+    desc: "Most bills come from the Government — usually built from manifesto promises and drafted by civil servants in the relevant department. MPs can also propose their own Private Members' Bills (chosen by ballot or a 10-minute slot), and the House of Lords can introduce bills too.",
+  },
+  {
+    key: "first",
+    label: "1st Reading",
+    desc: "A purely formal step — the bill's title is read out and it's printed. There's no debate or vote at this stage.",
+  },
+  {
+    key: "second",
+    label: "2nd Reading",
+    desc: "The first real debate. MPs discuss the bill's main principles and purpose, then vote on whether it should proceed. This is usually the first meaningful vote a bill faces.",
+  },
+  {
+    key: "committee",
+    label: "Committee Stage",
+    desc: "A smaller group of MPs (or occasionally the whole House) examines the bill line by line, proposing and voting on detailed amendments.",
+  },
+  {
+    key: "report",
+    label: "Report Stage",
+    desc: "The whole House considers the amendments made in Committee, and can propose further changes.",
+  },
+  {
+    key: "third",
+    label: "3rd Reading",
+    desc: "A final debate and vote on the bill as it now stands, in the House where it started.",
+  },
+  {
+    key: "otherhouse",
+    label: "Other House",
+    desc: "The bill then goes through the same stages (1st reading through 3rd reading) in the other House — Lords if it started in the Commons, or vice versa.",
+  },
+  {
+    key: "pingpong",
+    label: "\"Ping Pong\"",
+    desc: "If the two Houses disagree on amendments, the bill bounces back and forth between them until they reach agreement — nicknamed \"ping pong\".",
+  },
+  {
+    key: "assent",
+    label: "Royal Assent",
+    desc: "The Monarch formally approves the bill — a ceremonial step that hasn't been refused since 1708. The bill is now an Act of Parliament: it's law.",
+  },
+  {
+    key: "implementation",
+    label: "Implementation",
+    desc: "Laws often don't take effect immediately. Ministers issue \"commencement orders\" to bring parts of an Act into force, and further detailed rules (secondary legislation) are often needed before departments and councils can actually enforce it.",
+  },
+];
+
+const ELECTION_STAGES = [
+  {
+    key: "called",
+    label: "Election Called",
+    desc: "General elections happen at least every 5 years, but the Prime Minister can request one sooner. All 650 Commons seats are contested at once.",
+  },
+  {
+    key: "candidates",
+    label: "Candidates Stand",
+    desc: "In each of the UK's 650 constituencies, candidates put themselves forward — representing a party, or standing as independents.",
+  },
+  {
+    key: "vote",
+    label: "Voters Vote (FPTP)",
+    desc: "The UK uses First Past The Post: each voter gets one vote in their own constituency, and whoever gets the most votes there wins — even without an outright majority of votes cast.",
+  },
+  {
+    key: "mp",
+    label: "An MP Is Elected",
+    desc: "The winning candidate in each constituency becomes that area's Member of Parliament, taking a seat in the House of Commons.",
+  },
+  {
+    key: "government-formed",
+    label: "Government Forms",
+    desc: "Whichever party wins more than half of the 650 seats (326+) can form a Government alone. If no party reaches that, parties may form a coalition, or one may govern as a minority.",
+  },
+  {
+    key: "pm-appointed",
+    label: "PM Appointed",
+    desc: "The Monarch formally invites the leader of the party that can command a Commons majority to become Prime Minister and form a Government.",
+  },
+];
+
+function FlowDiagram({ stages, activeKey, onSelect, color }) {
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6 }}>
+      {stages.map((stage, i) => (
+        <div key={stage.key} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <button
+            onClick={() => onSelect(stage.key)}
+            style={{
+              fontFamily: FONT_BODY,
+              fontSize: 13,
+              fontWeight: 600,
+              padding: "10px 16px",
+              borderRadius: 10,
+              border: `1.5px solid ${activeKey === stage.key ? color : COLORS.hairline}`,
+              background: activeKey === stage.key ? color : COLORS.paperCard,
+              color: activeKey === stage.key ? "#fff" : COLORS.ink,
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+              boxShadow: activeKey === stage.key ? "0 2px 8px rgba(30,42,68,0.15)" : "none",
+            }}
+          >
+            {stage.label}
+          </button>
+          {i < stages.length - 1 && (
+            <span style={{ color: COLORS.hairline, fontSize: 16 }}>→</span>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function DiagramSection({ title, intro, stages, color }) {
+  const [activeKey, setActiveKey] = useState(stages[0].key);
+  const active = stages.find((s) => s.key === activeKey);
+
+  return (
+    <div style={{ marginBottom: 44 }}>
+      <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 24, color: COLORS.ink, marginBottom: 6 }}>{title}</h2>
+      {intro && (
+        <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16, maxWidth: 720 }}>
+          {intro}
+        </p>
+      )}
+      <div style={{ overflowX: "auto", paddingBottom: 8 }}>
+        <FlowDiagram stages={stages} activeKey={activeKey} onSelect={setActiveKey} color={color} />
+      </div>
+      {active && (
+        <div
+          style={{
+            marginTop: 16,
+            background: COLORS.paperCard,
+            border: `1px solid ${COLORS.hairline}`,
+            borderLeft: `4px solid ${color}`,
+            borderRadius: 10,
+            padding: "16px 18px",
+            maxWidth: 720,
+          }}
+        >
+          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink, marginBottom: 6 }}>{active.label}</div>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.6 }}>{active.desc}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function HowParliamentWorks() {
+  return (
+    <div style={{ padding: "40px 40px 60px" }}>
+      <div style={{ marginBottom: 32 }}>
+        <EyebrowLabel>Public Record · UK Parliament</EyebrowLabel>
+        <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 34, color: COLORS.ink, margin: "10px 0 0" }}>
+          How Parliament Works
+        </h1>
+        <p style={{ fontFamily: FONT_BODY, fontSize: 15, color: COLORS.inkSoft, marginTop: 6, maxWidth: 720 }}>
+          Click through each stage below to see a plain-English explanation — from who's actually in charge,
+          to how a bill becomes law, to how your own MP ends up in Parliament in the first place.
+        </p>
+      </div>
+
+      <DiagramSection
+        title="Who's In Charge?"
+        intro="The UK's system separates ceremonial authority, law-making, and day-to-day running of the country into distinct roles."
+        stages={STRUCTURE_ROWS}
+        color={COLORS.brass}
+      />
+
+      <DiagramSection
+        title="How a Bill Becomes Law"
+        intro="Every law goes through the same basic journey — though it can take anywhere from weeks to years."
+        stages={BILL_PROCESS_STAGES}
+        color="#3A6EA5"
+      />
+
+      <DiagramSection
+        title="How MPs Are Elected"
+        intro="Every MP in this app got their seat through the same process."
+        stages={ELECTION_STAGES}
+        color="#2F6F4E"
+      />
+
+      <div
+        style={{
+          background: COLORS.paperCard,
+          border: `1px dashed ${COLORS.hairline}`,
+          borderRadius: 12,
+          padding: 18,
+          maxWidth: 720,
+          fontFamily: FONT_BODY,
+          fontSize: 13,
+          color: COLORS.inkSoft,
+        }}
+      >
+        Coming soon: search your postcode to see exactly who represents your area, from your local
+        councillor up to your MP.
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [view, setView] = useState("home");
   const [selected, setSelected] = useState(null);
@@ -1059,6 +1295,7 @@ export default function App() {
       <Sidebar activeView={view} onNavigate={handleNavigate} />
       <div style={{ flex: 1, minWidth: 0 }}>
         {view === "home" && <Home onBrowse={() => handleNavigate("list")} mpCount={mpCount} />}
+        {view === "howitworks" && <HowParliamentWorks />}
         {view === "voting" && <VotingRecords />}
         {view === "list" &&
           (selected ? (
