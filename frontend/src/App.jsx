@@ -756,27 +756,84 @@ function PoliticianDetail({ politician, onBack }) {
 }
 
 // ---- Voting Records tab ----
+const BILL_CATEGORIES = [
+  { match: ["health and social care"], label: "Health", color: "#B5533C" },
+  { match: ["defence"], label: "Defence", color: "#3A6EA5" },
+  { match: ["treasury"], label: "Economy & Finance", color: "#8A7A3D" },
+  { match: ["transport"], label: "Transport", color: "#4C7A6B" },
+  { match: ["science, innovation", "digital, culture", "technology"], label: "Science & Tech", color: "#5B4E8A" },
+  { match: ["justice", "home office", "home department"], label: "Justice & Home Affairs", color: "#7A4B4B" },
+  { match: ["energy security", "net zero", "environment, food"], label: "Environment & Energy", color: "#2F6F4E" },
+  { match: ["education"], label: "Education", color: "#C08A2E" },
+  { match: ["work and pensions"], label: "Work & Pensions", color: "#6B5B95" },
+  { match: ["housing, communities", "levelling up"], label: "Housing & Communities", color: "#A0522D" },
+  { match: ["foreign, commonwealth"], label: "Foreign Affairs", color: "#2E6F6F" },
+  { match: ["culture, media"], label: "Culture & Media", color: "#B0508A" },
+];
+
+function categoriseBill(bill) {
+  const dept = (bill.sponsoring_department ?? "").toLowerCase();
+  for (const cat of BILL_CATEGORIES) {
+    if (cat.match.some((m) => dept.includes(m))) return cat;
+  }
+  return { label: "General", color: COLORS.inkSoft };
+}
+
 function UpcomingBillCard({ bill }) {
+  const category = categoriseBill(bill);
   return (
-    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.brass}`, borderRadius: 12, padding: 16, boxShadow: "0 1px 4px rgba(30,42,68,0.05)" }}>
-      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink }}>{bill.short_title}</div>
+    <div
+      style={{
+        background: COLORS.paperCard,
+        border: `1px solid ${COLORS.hairline}`,
+        borderLeft: `5px solid ${category.color}`,
+        borderRadius: 12,
+        padding: 16,
+        boxShadow: "0 1px 4px rgba(30,42,68,0.05)",
+        transition: "box-shadow 0.15s, transform 0.15s",
+      }}
+    >
+      <div
+        style={{
+          display: "inline-block",
+          fontFamily: FONT_BODY,
+          fontWeight: 700,
+          fontSize: 10,
+          letterSpacing: "0.06em",
+          textTransform: "uppercase",
+          color: category.color,
+          background: `${category.color}1A`,
+          padding: "3px 9px",
+          borderRadius: 999,
+          marginBottom: 8,
+        }}
+      >
+        {category.label}
+      </div>
+      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, color: COLORS.ink }}>{bill.short_title}</div>
       {bill.long_title && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 4, lineHeight: 1.5 }}>
           {bill.long_title}
         </div>
       )}
-      <ul style={{ margin: "8px 0 0", paddingLeft: 18, fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, lineHeight: 1.6 }}>
-        <li>Current stage: {bill.current_stage ?? "Unknown"} ({bill.current_house})</li>
-        {bill.sponsor_name && (
-          <li>
-            Sponsored by {bill.sponsor_name}
-            {bill.sponsoring_department ? ` · ${bill.sponsoring_department}` : ""}
-          </li>
-        )}
-        {bill.next_sitting_date && <li>Next sitting: {formatDate(bill.next_sitting_date)}</li>}
-      </ul>
-      <div style={{ marginTop: 8 }}>
-        <a href={bill.source_url} target="_blank" rel="noreferrer" style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 5, marginTop: 10 }}>
+        {[
+          `Current stage: ${bill.current_stage ?? "Unknown"} (${bill.current_house})`,
+          bill.sponsor_name
+            ? `Sponsored by ${bill.sponsor_name}${bill.sponsoring_department ? ` · ${bill.sponsoring_department}` : ""}`
+            : null,
+          bill.next_sitting_date ? `Next sitting: ${formatDate(bill.next_sitting_date)}` : null,
+        ]
+          .filter(Boolean)
+          .map((line, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "baseline", gap: 6, fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, lineHeight: 1.5 }}>
+              <span style={{ width: 4, height: 4, borderRadius: "50%", background: category.color, flexShrink: 0 }} />
+              <span>{line}</span>
+            </div>
+          ))}
+      </div>
+      <div style={{ marginTop: 10 }}>
+        <a href={bill.source_url} target="_blank" rel="noreferrer" style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, color: category.color }}>
           Full bill page ↗
         </a>
       </div>
@@ -953,8 +1010,16 @@ function VotingRecords() {
         )}
       </div>
 
-      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13, color: COLORS.ink, marginBottom: 12 }}>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13, color: COLORS.ink, marginBottom: 10 }}>
         Upcoming Bills
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 14px", marginBottom: 16 }}>
+        {BILL_CATEGORIES.map((cat) => (
+          <div key={cat.label} style={{ display: "flex", alignItems: "center", gap: 5 }}>
+            <span style={{ width: 8, height: 8, borderRadius: "50%", background: cat.color }} />
+            <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>{cat.label}</span>
+          </div>
+        ))}
       </div>
       {loadingBills && <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft }}>Loading…</div>}
       {!loadingBills && bills.length === 0 && (
