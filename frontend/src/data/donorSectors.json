@@ -1,0 +1,720 @@
+{
+  "Refrigeration House Limited": {
+    "sector": "Finance & Banking",
+    "source": "companies-house",
+    "companyName": "REFRIGERATION HOUSE LIMITED",
+    "companyNumber": "15999252",
+    "sicCode": "64305"
+  },
+  "Best for Britain Ltd": {
+    "sector": "Tech & Telecoms",
+    "source": "companies-house",
+    "companyName": "BEST FOR BRITAIN LIMITED",
+    "companyNumber": "10436078",
+    "sicCode": "63990"
+  },
+  "Public and Commercial Services Union (PCS)": {
+    "sector": "Trade Unions",
+    "source": "known-union-list"
+  },
+  "Faith in Public Ltd": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "FAITH IN PUBLIC LTD",
+    "companyNumber": "11134849",
+    "sicCode": "94910"
+  },
+  "Playscan Limited": {
+    "sector": "Construction & Property",
+    "source": "companies-house",
+    "companyName": "PLAYSCAN LIMITED",
+    "companyNumber": "01966393",
+    "sicCode": "41100"
+  },
+  "International Centre of Justice for Palestinians": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "INTERNATIONAL CENTRE OF JUSTICE FOR PALESTINIANS",
+    "companyNumber": "13054048",
+    "sicCode": "94920"
+  },
+  "International Centre of Justice for Palestinians (ICJP)": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "INTERNATIONAL CENTRE OF JUSTICE FOR PALESTINIANS",
+    "companyNumber": "13054048",
+    "sicCode": "94920"
+  },
+  "National Liberal Club": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "NATIONAL LIBERAL CLUB LIMITED(THE)",
+    "companyNumber": "01355034",
+    "sicCode": "56302"
+  },
+  "Palace Yard Events Ltd": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "PALACE YARD EVENTS LIMITED",
+    "companyNumber": "14294995",
+    "sicCode": "82990"
+  },
+  "J.C. Bamford Excavators Ltd": {
+    "sector": "Chemicals & Manufacturing",
+    "source": "companies-house",
+    "companyName": "J.C. BAMFORD EXCAVATORS LIMITED",
+    "companyNumber": "00561597",
+    "sicCode": "28922"
+  },
+  "JC Bamford Excavators Ltd": {
+    "sector": "Chemicals & Manufacturing",
+    "source": "companies-house",
+    "companyName": "J.C. BAMFORD EXCAVATORS LIMITED",
+    "companyNumber": "00561597",
+    "sicCode": "28922"
+  },
+  "The Arsenal Football Club Limited": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "THE ARSENAL FOOTBALL CLUB LIMITED",
+    "companyNumber": "00109244",
+    "sicCode": "93120"
+  },
+  "Small Axe Communications Ltd": {
+    "sector": "Tech & Telecoms",
+    "source": "companies-house",
+    "companyName": "SMALL AXE COMMUNICATIONS LTD",
+    "companyNumber": "07877552",
+    "sicCode": "62020"
+  },
+  "The Coalition for Global Prosperity (CGP)": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "COALITION FOR GLOBAL PROSPERITY",
+    "companyNumber": "10894509",
+    "sicCode": "88990"
+  },
+  "National Union of Journalists": {
+    "sector": "Trade Unions",
+    "source": "known-union-list"
+  },
+  "Godfrey Coaching Ltd": {
+    "sector": "Legal & Professional Services",
+    "source": "companies-house",
+    "companyName": "GODFREY COACHING LIMITED",
+    "companyNumber": "12356990",
+    "sicCode": "70229"
+  },
+  "Ecotricity Group Ltd": {
+    "sector": "Legal & Professional Services",
+    "source": "companies-house",
+    "companyName": "ECOTRICITY GROUP LTD",
+    "companyNumber": "03521776",
+    "sicCode": "70100"
+  },
+  "OPD Group Ltd": {
+    "sector": "Finance & Banking",
+    "source": "companies-house",
+    "companyName": "OPD GROUP LIMITED",
+    "companyNumber": "03201382",
+    "sicCode": "64209"
+  },
+  "Silverstone Circuits Limited": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "SILVERSTONE CIRCUITS LIMITED",
+    "companyNumber": "00882843",
+    "sicCode": "93110"
+  },
+  "Compass - Together for a Good Society Ltd": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "COMPASS - TOGETHER FOR A GOOD SOCIETY LTD",
+    "companyNumber": "05391145",
+    "sicCode": "94920"
+  },
+  "Aid Alliance": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "AID ALLIANCE",
+    "companyNumber": "16507092",
+    "sicCode": "96090"
+  },
+  "Flowidea Limited": {
+    "sector": "Finance & Banking",
+    "source": "companies-house",
+    "companyName": "FLOWIDEA LIMITED",
+    "companyNumber": "02463564",
+    "sicCode": "64999"
+  },
+  "Polyseam Limited": {
+    "sector": "Chemicals & Manufacturing",
+    "source": "companies-house",
+    "companyName": "POLYSEAM LIMITED",
+    "companyNumber": "02839491",
+    "sicCode": "20301"
+  },
+  "Ivy Business Centre Ltd": {
+    "sector": "Construction & Property",
+    "source": "companies-house",
+    "companyName": "IVY BUSINESS CENTRE LTD",
+    "companyNumber": "08046145",
+    "sicCode": "68209"
+  },
+  "Bansols Beta Ltd": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "BANSOLS BETA LIMITED",
+    "companyNumber": "02878404",
+    "sicCode": "56103"
+  },
+  "Excool Limited": {
+    "sector": "Energy & Oil/Gas",
+    "source": "companies-house",
+    "companyName": "EXCOOL LIMITED",
+    "companyNumber": "07153492",
+    "sicCode": "35300"
+  },
+  "Tattersalls Ltd": {
+    "sector": "Retail & Consumer",
+    "source": "companies-house",
+    "companyName": "TATTERSALLS LIMITED",
+    "companyNumber": "00791113",
+    "sicCode": "46230"
+  },
+  "Opal-Chant Limited": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "OPAL-CHANT LIMITED",
+    "companyNumber": "01238067",
+    "sicCode": "96090"
+  },
+  "BPI (British Recorded Music Industry) Limited": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "BPI (BRITISH RECORDED MUSIC INDUSTRY) LIMITED",
+    "companyNumber": "01132389",
+    "sicCode": "94990"
+  },
+  "Silverstone Circuits Ltd": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "SILVERSTONE CIRCUITS LIMITED",
+    "companyNumber": "00882843",
+    "sicCode": "93110"
+  },
+  "NAPO - the Probation and Family Courts Union": {
+    "sector": "Trade Unions",
+    "source": "known-union-list"
+  },
+  "The Police Federation": {
+    "sector": "Trade Unions",
+    "source": "known-union-list"
+  },
+  "Public and Commercial Services Union": {
+    "sector": "Trade Unions",
+    "source": "known-union-list"
+  },
+  "University and College Union (UCU)": {
+    "sector": "Trade Unions",
+    "source": "known-union-list"
+  },
+  "SME4LABOUR LTD": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "SME4LABOUR LTD",
+    "companyNumber": "10685562",
+    "sicCode": "94920"
+  },
+  "BPI (British Recorded Music Industry) Ltd": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "BPI (BRITISH RECORDED MUSIC INDUSTRY) LIMITED",
+    "companyNumber": "01132389",
+    "sicCode": "94990"
+  },
+  "The Coalition for Global Prosperity": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "COALITION FOR GLOBAL PROSPERITY",
+    "companyNumber": "10894509",
+    "sicCode": "88990"
+  },
+  "Adam Management Holdings Limited": {
+    "sector": "Legal & Professional Services",
+    "source": "companies-house",
+    "companyName": "ADAM MANAGEMENT HOLDINGS LTD",
+    "companyNumber": "13453522",
+    "sicCode": "70229"
+  },
+  "UNISON": {
+    "sector": "Trade Unions",
+    "source": "known-union-list"
+  },
+  "Google UK Ltd": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "GOOGLE UK LIMITED",
+    "companyNumber": "03977902",
+    "sicCode": "82990"
+  },
+  "KBR (Aspire Construction) Limited": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "KBR (ASPIRE CONSTRUCTION) LIMITED",
+    "companyNumber": "05704158",
+    "sicCode": "96090"
+  },
+  "Nealade Limited": {
+    "sector": "Construction & Property",
+    "source": "companies-house",
+    "companyName": "NEALADE LIMITED",
+    "companyNumber": "01080312",
+    "sicCode": "41100"
+  },
+  "Stuart Leach Associates Limited": {
+    "sector": "Legal & Professional Services",
+    "source": "companies-house",
+    "companyName": "STUART LEACH ASSOCIATES LIMITED",
+    "companyNumber": "14239649",
+    "sicCode": "70210"
+  },
+  "RCL Partners Ltd": {
+    "sector": "Legal & Professional Services",
+    "source": "companies-house",
+    "companyName": "RCL PARTNERS LIMITED",
+    "companyNumber": "13138411",
+    "sicCode": "70229"
+  },
+  "Persimmon Homes Ltd": {
+    "sector": "Construction & Property",
+    "source": "companies-house",
+    "companyName": "PERSIMMON HOMES LIMITED",
+    "companyNumber": "04108747",
+    "sicCode": "41100"
+  },
+  "Bawtry Farms Ltd": {
+    "sector": "Agriculture & Food",
+    "source": "companies-house",
+    "companyName": "BAWTRY FARMS LIMITED",
+    "companyNumber": "03443510",
+    "sicCode": "01500"
+  },
+  "Duolingo": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "DUOLINGO UK LIMITED",
+    "companyNumber": "16394151",
+    "sicCode": "85520"
+  },
+  "Country Land and Business Association Limited": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "COUNTRY LAND AND BUSINESS ASSOCIATION LIMITED",
+    "companyNumber": "06131587",
+    "sicCode": "94990"
+  },
+  "PRS for Music Limited": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "PRS FOR MUSIC LIMITED",
+    "companyNumber": "03444246",
+    "sicCode": "82990"
+  },
+  "Lawn Tennis Association": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "LAWN TENNIS ASSOCIATION LIMITED",
+    "companyNumber": "07459469",
+    "sicCode": "93199"
+  },
+  "Homes for Britain Ltd": {
+    "sector": "Legal & Professional Services",
+    "source": "companies-house",
+    "companyName": "HOMES FOR BRITAIN LTD",
+    "companyNumber": "14724694",
+    "sicCode": "70210"
+  },
+  "Labour Asians Society Ltd": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "LABOUR ASIANS SOCIETY LTD",
+    "companyNumber": "15835908",
+    "sicCode": "88990"
+  },
+  "Adam Management Holdings Ltd": {
+    "sector": "Legal & Professional Services",
+    "source": "companies-house",
+    "companyName": "ADAM MANAGEMENT HOLDINGS LTD",
+    "companyNumber": "13453522",
+    "sicCode": "70229"
+  },
+  "India Legal Services Limited": {
+    "sector": "Legal & Professional Services",
+    "source": "companies-house",
+    "companyName": "INDIA LEGAL SERVICES LIMITED",
+    "companyNumber": "04868952",
+    "sicCode": "69102"
+  },
+  "Channel 4": {
+    "sector": "Media & Publishing",
+    "source": "companies-house",
+    "companyName": "CHANNEL 44 LIMITED",
+    "companyNumber": "12336485",
+    "sicCode": "59113"
+  },
+  "Countryside Alliance": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "THE COUNTRYSIDE ALLIANCE FOUNDATION",
+    "companyNumber": "05669451",
+    "sicCode": "85590"
+  },
+  "Informa Telecoms & Media Ltd": {
+    "sector": "Legal & Professional Services",
+    "source": "companies-house",
+    "companyName": "INFORMA TELECOMS & MEDIA LIMITED",
+    "companyNumber": "00991704",
+    "sicCode": "70229"
+  },
+  "National Liberal Club Ltd": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "NATIONAL LIBERAL CLUB LIMITED(THE)",
+    "companyNumber": "01355034",
+    "sicCode": "56302"
+  },
+  "Neural Voice AI": {
+    "sector": "Trade Unions",
+    "source": "known-union-list"
+  },
+  "Joseph Rowntree Reform Trust Limited": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "THE JOSEPH ROWNTREE REFORM TRUST LIMITED",
+    "companyNumber": "00357963",
+    "sicCode": "94920"
+  },
+  "High Street Deal Ltd": {
+    "sector": "Construction & Property",
+    "source": "companies-house",
+    "companyName": "HIGH STREET DEAL LIMITED",
+    "companyNumber": "12167840",
+    "sicCode": "68100"
+  },
+  "Ascot Racecourse Limited": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "ASCOT RACECOURSE LIMITED",
+    "companyNumber": "04320977",
+    "sicCode": "93110"
+  },
+  "The National Liberal Club": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "NATIONAL LIBERAL CLUB LIMITED(THE)",
+    "companyNumber": "01355034",
+    "sicCode": "56302"
+  },
+  "Lloyds Banking Group plc": {
+    "sector": "Finance & Banking",
+    "source": "companies-house",
+    "companyName": "LLOYDS BANKING GROUP PLC",
+    "companyNumber": "SC095000",
+    "sicCode": "64205"
+  },
+  "Centre for Social Justice (CSJ)": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "THE CENTRE FOR SOCIAL JUSTICE",
+    "companyNumber": "05137036",
+    "sicCode": "82990"
+  },
+  "The Financial Times": {
+    "sector": "Media & Publishing",
+    "source": "manual-override"
+  },
+  "The Lawn Tennis Association": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "LAWN TENNIS ASSOCIATION LIMITED",
+    "companyNumber": "07459469",
+    "sicCode": "93199"
+  },
+  "Global Foods (Birmingham) Limited": {
+    "sector": "Retail & Consumer",
+    "source": "companies-house",
+    "companyName": "GLOBAL FOODS (BIRMINGHAM) LIMITED",
+    "companyNumber": "04096414",
+    "sicCode": "46900"
+  },
+  "Strathgrove Ltd": {
+    "sector": "Construction & Property",
+    "source": "companies-house",
+    "companyName": "STRATHGROVE LIMITED",
+    "companyNumber": "00972224",
+    "sicCode": "41100"
+  },
+  "STRATHGROVE LIMITED": {
+    "sector": "Construction & Property",
+    "source": "companies-house",
+    "companyName": "STRATHGROVE LIMITED",
+    "companyNumber": "00972224",
+    "sicCode": "41100"
+  },
+  "Millennium Care (U.K.) Limited": {
+    "sector": "Pharma & Healthcare",
+    "source": "companies-house",
+    "companyName": "MILLENNIUM CARE (U.K.) LIMITED",
+    "companyNumber": "03462318",
+    "sicCode": "86900"
+  },
+  "SRE Hotels (Cliveden) Ltd": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "SRE HOTELS (CLIVEDEN) LIMITED",
+    "companyNumber": "07844715",
+    "sicCode": "96090"
+  },
+  "Earthcott Ltd": {
+    "sector": "Legal & Professional Services",
+    "source": "companies-house",
+    "companyName": "EARTHCOTT LTD",
+    "companyNumber": "13598010",
+    "sicCode": "70210"
+  },
+  "Mail Solutions Limited": {
+    "sector": "Chemicals & Manufacturing",
+    "source": "companies-house",
+    "companyName": "MAIL SOLUTIONS LIMITED",
+    "companyNumber": "02413935",
+    "sicCode": "18129"
+  },
+  "British Fashion Council LTD": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "BRITISH FASHION COUNCIL",
+    "companyNumber": "02050620",
+    "sicCode": "96090"
+  },
+  "All England Lawn Tennis Club": {
+    "sector": "Legal & Professional Services",
+    "source": "companies-house",
+    "companyName": "ALL ENGLAND LAWN TENNIS CLUB (WIMBLEDON) LIMITED(THE)",
+    "companyNumber": "01429062",
+    "sicCode": "69109"
+  },
+  "Chestnut Nursery Schools Limited": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "CHESTNUT NURSERY SCHOOLS LIMITED",
+    "companyNumber": "04424281",
+    "sicCode": "85100"
+  },
+  "The Professional Darts Corporation": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "THE PROFESSIONAL DARTS CORPORATION LIMITED",
+    "companyNumber": "03473679",
+    "sicCode": "93199"
+  },
+  "Strand Partners": {
+    "sector": "Legal & Professional Services",
+    "source": "companies-house",
+    "companyName": "STRAND PARTNERS LIMITED",
+    "companyNumber": "13797289",
+    "sicCode": "70210"
+  },
+  "Fast Foster & Company Ltd": {
+    "sector": "Construction & Property",
+    "source": "companies-house",
+    "companyName": "FAST FOSTER & COMPANY LIMITED",
+    "companyNumber": "15235147",
+    "sicCode": "68100"
+  },
+  "UB Healthcare Ltd": {
+    "sector": "Pharma & Healthcare",
+    "source": "companies-house",
+    "companyName": "UB HEALTHCARE LTD",
+    "companyNumber": "13950973",
+    "sicCode": "86900"
+  },
+  "BCP Unison Branch": {
+    "sector": "Trade Unions",
+    "source": "known-union-list"
+  },
+  "GMB London region": {
+    "sector": "Trade Unions",
+    "source": "known-union-list"
+  },
+  "Unison": {
+    "sector": "Trade Unions",
+    "source": "known-union-list"
+  },
+  "GMB Union": {
+    "sector": "Trade Unions",
+    "source": "known-union-list"
+  },
+  "Ascot Authority (Holdings) Limited": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "ASCOT AUTHORITY (HOLDINGS) LIMITED",
+    "companyNumber": "04274507",
+    "sicCode": "93110"
+  },
+  "Lloyds Banking Group PLC": {
+    "sector": "Finance & Banking",
+    "source": "companies-house",
+    "companyName": "LLOYDS BANKING GROUP PLC",
+    "companyNumber": "SC095000",
+    "sicCode": "64205"
+  },
+  "Lloyds Banking Group": {
+    "sector": "Finance & Banking",
+    "source": "companies-house",
+    "companyName": "LLOYDS BANKING GROUP PLC",
+    "companyNumber": "SC095000",
+    "sicCode": "64205"
+  },
+  "The Football League Ltd": {
+    "sector": "Retail & Consumer",
+    "source": "companies-house",
+    "companyName": "THE FOOTBALL LEAGUE STORE LIMITED",
+    "companyNumber": "14411628",
+    "sicCode": "47710"
+  },
+  "GMB Trade Union": {
+    "sector": "Trade Unions",
+    "source": "known-union-list"
+  },
+  "University of Plymouth": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "UNIVERSITY OF PLYMOUTH SERVICES LIMITED",
+    "companyNumber": "12458890",
+    "sicCode": "82990"
+  },
+  "Mace Consult Limited": {
+    "sector": "Legal & Professional Services",
+    "source": "companies-house",
+    "companyName": "MACE CONSULT LIMITED",
+    "companyNumber": "07094851",
+    "sicCode": "70229"
+  },
+  "Informa Connect Holdings Ltd": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "INFORMA CONNECT HOLDINGS LIMITED",
+    "companyNumber": "15615107",
+    "sicCode": "82990"
+  },
+  "The Football Association Premier League Ltd": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "THE FOOTBALL ASSOCIATION PREMIER LEAGUE LIMITED",
+    "companyNumber": "02719699",
+    "sicCode": "93199"
+  },
+  "Carlton Club": {
+    "sector": "Alcohol & Gambling",
+    "source": "companies-house",
+    "companyName": "CARLTON CLUBS LIMITED",
+    "companyNumber": "SC123870",
+    "sicCode": "92000"
+  },
+  "Tottenham Hotspur Limited": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "TOTTENHAM HOTSPUR LIMITED",
+    "companyNumber": "01706358",
+    "sicCode": "93110"
+  },
+  "Brechin Investment Ltd": {
+    "sector": "Finance & Banking",
+    "source": "companies-house",
+    "companyName": "BRECHIN INVESTMENTS LIMITED",
+    "companyNumber": "09735057",
+    "sicCode": "64209"
+  },
+  "SME4Labour LTD": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "SME4LABOUR LTD",
+    "companyNumber": "10685562",
+    "sicCode": "94920"
+  },
+  "European Innovation Ltd": {
+    "sector": "Tech & Telecoms",
+    "source": "companies-house",
+    "companyName": "EUROPEAN INNOVATION LIMITED",
+    "companyNumber": "04334036",
+    "sicCode": "62011"
+  },
+  "Manchester United Football Club Limited": {
+    "sector": "Trade Unions",
+    "source": "known-union-list"
+  },
+  "Global Media IP Limited": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "GLOBAL MEDIA IP LIMITED",
+    "companyNumber": "12002350",
+    "sicCode": "82990"
+  },
+  "SME4Labour Ltd": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "SME4LABOUR LTD",
+    "companyNumber": "10685562",
+    "sicCode": "94920"
+  },
+  "The Football Association Ltd": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "THE ARMY FOOTBALL ASSOCIATION",
+    "companyNumber": "07797047",
+    "sicCode": "93199"
+  },
+  "Persimmon PLC": {
+    "sector": "Finance & Banking",
+    "source": "companies-house",
+    "companyName": "PERSIMMON PUBLIC LIMITED COMPANY",
+    "companyNumber": "01818486",
+    "sicCode": "64203"
+  },
+  "Zarah Sultana Campaigns Ltd": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "ZARAH SULTANA CAMPAIGNS LTD",
+    "companyNumber": "13740182",
+    "sicCode": "94920"
+  },
+  "The Football Association Premier League": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "THE FOOTBALL ASSOCIATION PREMIER LEAGUE LIMITED",
+    "companyNumber": "02719699",
+    "sicCode": "93199"
+  },
+  "London Marathon Events Ltd": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "LONDON MARATHON EVENTS LIMITED",
+    "companyNumber": "01528489",
+    "sicCode": "93199"
+  },
+  "The Football Association": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "THE ARMY FOOTBALL ASSOCIATION",
+    "companyNumber": "07797047",
+    "sicCode": "93199"
+  },
+  "Knights Tailoring Ltd": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "KNIGHTS TAILORING LTD",
+    "companyNumber": "07036550",
+    "sicCode": "95230"
+  }
+}

@@ -1,9 +1,12 @@
-name: Fetch MP Financial Interests, Voting Records, and Bills
+name: Fetch MP Financial Interests, Voting Records, Bills, and Donor Sectors
 
 on:
   schedule:
     - cron: "0 6 * * *"
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   fetch-data:
@@ -37,3 +40,24 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-bills.js
+
+      - name: Run the donor sector tagging script
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          COMPANIES_HOUSE_API_KEY: ${{ secrets.COMPANIES_HOUSE_API_KEY }}
+        run: node fetch-donor-sectors.js
+
+      # The three scripts above write straight to Supabase, so the live site
+      # picks them up on its next request — no deploy needed. The donor
+      # sector tagger is different: it writes a file *in the repo*
+      # (frontend/src/data/donorSectors.json), so that file has to be
+      # committed and pushed here for the change to exist anywhere, and
+      # pushing it is what triggers Vercel to rebuild the site with it.
+      - name: Commit updated donor sector data, if it changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json
+          git diff --staged --quiet || git commit -m "chore: daily donor sector data refresh"
+          git push
