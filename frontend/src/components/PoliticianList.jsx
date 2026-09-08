@@ -30,23 +30,28 @@ function SkeletonCard() {
 
 function Avatar({ politician, color }) {
   const [errored, setErrored] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   if (politician.thumbnail_url && !errored) {
     return (
-      <img
-        src={politician.thumbnail_url}
-        alt=""
-        onError={() => setErrored(true)}
+      <div
         style={{
-          width: 40,
-          height: 40,
-          borderRadius: "50%",
-          objectFit: "cover",
-          objectPosition: "center top",
-          flexShrink: 0,
-          border: `2px solid ${COLORS.paperCard}`,
+          width: 40, height: 40, borderRadius: "50%", flexShrink: 0,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          background: COLORS.paperCard, border: `2px solid ${COLORS.paperCard}`,
           boxShadow: `0 0 0 2px ${color}55`,
         }}
-      />
+      >
+        <img
+          src={politician.thumbnail_url}
+          alt=""
+          onError={() => setErrored(true)}
+          onLoad={() => setLoaded(true)}
+          style={{
+            width: 35, height: 35, borderRadius: "50%", objectFit: "cover", objectPosition: "center top",
+            opacity: loaded ? 1 : 0, transition: "opacity 0.25s ease",
+          }}
+        />
+      </div>
     );
   }
   return (

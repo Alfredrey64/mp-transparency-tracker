@@ -2,19 +2,44 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
 import { EyebrowLabel, ParliamentSilhouette } from "./shared";
-import { IconHome, IconFlow, IconCoin, IconVote, IconGroup, IconInfluence, IconBriefcase, IconSettings } from "./icons";
+import { IconHome, IconFlow, IconCoin, IconVote, IconGroup, IconInfluence, IconManifesto, IconTracker, IconBriefcase, IconSettings } from "./icons";
 
-const NAV_ITEMS = [
+const TOP_NAV_ITEMS = [
   { key: "home", label: "Overview", icon: IconHome },
   { key: "howitworks", label: "How Parliament Works", icon: IconFlow },
+  { key: "parties", label: "Party Policies", icon: IconManifesto },
+  { key: "tracker", label: "Government Tracker", icon: IconTracker },
+];
+
+const DATA_NAV_ITEMS = [
   { key: "list", label: "Financial Interests", icon: IconCoin },
-  { key: "voting", label: "Voting Records", icon: IconVote },
+  { key: "voting", label: "Voting Records & Bills", icon: IconVote },
   { key: "donors", label: "Donors & Lobbying", icon: IconInfluence },
   { key: "appg", label: "APPG Memberships", icon: IconGroup },
   { key: "companies", label: "Companies House", icon: IconBriefcase, soon: true },
 ];
 
 const BOTTOM_NAV_ITEMS = [{ key: "settings", label: "Settings", icon: IconSettings }];
+
+function SectionLabel({ children }) {
+  return (
+    <div style={{ marginTop: 34, paddingTop: 22, borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+      <div
+        style={{
+          fontFamily: FONT_DISPLAY,
+          fontStyle: "italic",
+          fontSize: 13.5,
+          fontWeight: 500,
+          letterSpacing: "0.01em",
+          color: "rgba(199,208,208,0.55)",
+          padding: "0 14px 12px",
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
 
 function NavList({ items, activeView, onNavigate, withDividers }) {
   return (
@@ -90,7 +115,9 @@ function SidebarInner({ activeView, onNavigate }) {
       </div>
 
       <div style={{ flex: 1 }}>
-        <NavList items={NAV_ITEMS} activeView={activeView} onNavigate={onNavigate} withDividers />
+        <NavList items={TOP_NAV_ITEMS} activeView={activeView} onNavigate={onNavigate} withDividers />
+        <SectionLabel>MP Accountability</SectionLabel>
+        <NavList items={DATA_NAV_ITEMS} activeView={activeView} onNavigate={onNavigate} withDividers />
       </div>
 
       <div style={{ paddingTop: 12, marginTop: 12, borderTop: "1px solid rgba(255,255,255,0.08)" }}>

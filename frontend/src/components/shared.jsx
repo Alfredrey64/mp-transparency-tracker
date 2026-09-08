@@ -252,8 +252,7 @@ export function StandardsBox({ politician }) {
   return (
     <CardShell title="Standards & Investigations">
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.6, marginBottom: 10 }}>
-        There's no reliable automated feed for this, so rather than guess, here are direct links to
-        check the official record yourself:
+        To find out more click the following links
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         <a
@@ -366,6 +365,58 @@ export function VotingSummaryBox({ politician }) {
       <div style={{ marginTop: 10, fontSize: 12, color: COLORS.inkSoft }}>
         See the "Voting Records" tab in the sidebar for their full history.
       </div>
+    </CardShell>
+  );
+}
+
+export function NewsBox({ politician }) {
+  const [articles, setArticles] = useState(null);
+
+  useEffect(() => {
+    async function load() {
+      const { data } = await supabase
+        .from("mp_news")
+        .select("headline, source, url, published_date")
+        .eq("politician_id", politician.id)
+        .order("published_date", { ascending: false });
+      setArticles(data ?? []);
+    }
+    load();
+  }, [politician.id]);
+
+  return (
+    <CardShell title="In the News">
+      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.8, marginBottom: 10, lineHeight: 1.5 }}>
+        A daily headline skim for this MP's name, not a verified fact-check — a same-named person or a passing mention can
+        occasionally slip through.
+      </div>
+      {articles === null && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>}
+      {articles?.length === 0 && (
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
+          No recent news coverage found for this MP in the last two weeks.
+        </div>
+      )}
+      {articles && articles.length > 0 && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {articles.map((a, i) => (
+            <a
+              key={i}
+              href={a.url}
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                display: "block", textDecoration: "none", paddingBottom: i < articles.length - 1 ? 10 : 0,
+                borderBottom: i < articles.length - 1 ? `1px solid ${COLORS.hairline}` : "none",
+              }}
+            >
+              <div style={{ fontFamily: FONT_DISPLAY, fontSize: 14.5, color: COLORS.ink, lineHeight: 1.35 }}>{a.headline}</div>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.brass, marginTop: 3, fontWeight: 600 }}>
+                {a.source} · {formatDate(a.published_date)} ↗
+              </div>
+            </a>
+          ))}
+        </div>
+      )}
     </CardShell>
   );
 }

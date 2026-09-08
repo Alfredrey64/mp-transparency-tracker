@@ -9,6 +9,8 @@ import VotingRecords from "./components/VotingRecords";
 import HowParliamentWorks from "./components/HowParliamentWorks";
 import AppgMemberships from "./components/AppgMemberships";
 import DonorsLobbying from "./components/DonorsLobbying";
+import PartyPolicies from "./components/PartyPolicies";
+import GovernmentTracker from "./components/GovernmentTracker";
 import Settings from "./components/Settings";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsConditions from "./components/TermsConditions";
@@ -35,11 +37,13 @@ export default function App() {
     <div className="mp-app-shell" style={{ display: "flex", minHeight: "100vh", background: COLORS.paper, fontFamily: FONT_BODY }}>
       <Sidebar activeView={view} onNavigate={handleNavigate} />
       <div style={{ flex: 1, minWidth: 0 }}>
-        {view === "home" && <Home onBrowse={() => handleNavigate("list")} mpCount={mpCount} />}
+        {view === "home" && <Home onBrowse={() => handleNavigate("list")} onNavigate={handleNavigate} mpCount={mpCount} />}
         {view === "appg" && <AppgMemberships />}
         {view === "howitworks" && <HowParliamentWorks />}
         {view === "voting" && <VotingRecords />}
         {view === "donors" && <DonorsLobbying />}
+        {view === "parties" && <PartyPolicies />}
+        {view === "tracker" && <GovernmentTracker />}
         {view === "settings" && <Settings onNavigate={handleNavigate} />}
         {view === "privacy" && <PrivacyPolicy onNavigate={handleNavigate} />}
         {view === "terms" && <TermsConditions />}

@@ -47,7 +47,7 @@ function CountUp({ value }) {
   return <>{value ? display : "…"}</>;
 }
 
-export default function Home({ onBrowse, mpCount }) {
+export default function Home({ onBrowse, onNavigate, mpCount }) {
   const [activeTab, setActiveTab] = useState("donations");
   const [donations, setDonations] = useState([]);
   const [roles, setRoles] = useState([]);
@@ -296,8 +296,18 @@ export default function Home({ onBrowse, mpCount }) {
           </div>
 
           <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: 20, boxShadow: "0 2px 8px rgba(30,42,68,0.06)" }}>
-            <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 14 }}>
-              Bills Going Through Parliament
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+              <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink }}>
+                Bills Going Through Parliament
+              </div>
+              {onNavigate && (
+                <button
+                  onClick={() => onNavigate("voting")}
+                  style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.brass, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                >
+                  View all →
+                </button>
+              )}
             </div>
             {loadingExtras && <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>Loading…</div>}
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>

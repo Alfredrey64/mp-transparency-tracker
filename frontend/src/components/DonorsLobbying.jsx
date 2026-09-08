@@ -18,8 +18,17 @@ const NOT_A_REAL_DONOR = /^(agreement( starting.*)?|payment received.*|undisclos
 
 export default function DonorsLobbying() {
   const [rows, setRows] = useState(null);
-  const [expandedSector, setExpandedSector] = useState(null);
+  const [expandedSectors, setExpandedSectors] = useState(() => new Set());
   const [expandedDonor, setExpandedDonor] = useState(null);
+
+  function toggleSector(sector) {
+    setExpandedSectors((prev) => {
+      const next = new Set(prev);
+      if (next.has(sector)) next.delete(sector);
+      else next.add(sector);
+      return next;
+    });
+  }
 
   useEffect(() => {
     async function load() {
@@ -136,6 +145,8 @@ export default function DonorsLobbying() {
         subtitle="Who's funding Parliament, grouped by industry where it's confidently identifiable — not a judgement on any MP's views."
         maxWidth={900}
       />
+
+      <EducationSection />
 
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -287,29 +298,31 @@ export default function DonorsLobbying() {
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 14, marginBottom: 32, alignItems: "start" }}>
         {stats.sectorLeaderboards.map((s, i) => {
-          const isOpen = expandedSector === s.sector;
+          const isOpen = expandedSectors.has(s.sector);
           return (
             <motion.div
               key={s.sector}
+              layout="position"
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.3, delay: (i % 8) * 0.04 }}
               style={{
-                background: COLORS.paperCard,
+                background: isOpen ? `${s.color}0a` : COLORS.paperCard,
                 border: `1px solid ${COLORS.hairline}`,
                 borderLeft: `5px solid ${s.color}`,
                 borderRadius: 12,
                 padding: 16,
+                transition: "background 0.2s",
               }}
             >
               <button
-                onClick={() => setExpandedSector(isOpen ? null : s.sector)}
+                onClick={() => toggleSector(s.sector)}
                 style={{ display: "block", width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" }}
               >
-                <div style={{ display: "flex", justifyContent: "space-between", fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13.5, color: COLORS.ink, marginBottom: 8 }}>
-                  <span>{s.sector}</span>
-                  <span style={{ color: COLORS.inkSoft, fontWeight: 400, fontSize: 11 }}>{isOpen ? "▾ hide all" : "▸ see all"}</span>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8, marginBottom: 8 }}>
+                  <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13.5, color: COLORS.ink }}>{s.sector}</span>
+                  <span style={{ fontFamily: FONT_MONO, fontSize: 11.5, color: COLORS.inkSoft, flexShrink: 0 }}>£{Math.round(s.total).toLocaleString()}</span>
                 </div>
               </button>
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -323,6 +336,16 @@ export default function DonorsLobbying() {
                   </div>
                 ))}
               </div>
+              <button
+                onClick={() => toggleSector(s.sector)}
+                style={{
+                  display: "flex", alignItems: "center", gap: 4, marginTop: 10, background: "none", border: "none",
+                  padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontWeight: 600, fontSize: 11.5, color: s.color,
+                }}
+              >
+                <motion.span animate={{ rotate: isOpen ? 90 : 0 }} transition={{ duration: 0.15 }} style={{ display: "inline-block" }}>▸</motion.span>
+                {isOpen ? "Hide full list" : `See all ${s.allDonations.length} donations`}
+              </button>
               <AnimatePresence>
                 {isOpen && (
                   <motion.div
@@ -335,8 +358,11 @@ export default function DonorsLobbying() {
                     <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${COLORS.hairline}`, maxHeight: 260, overflowY: "auto", display: "flex", flexDirection: "column", gap: 6 }}>
                       {s.allDonations.slice(0, 40).map((don, di) => (
                         <div key={di} style={{ display: "flex", justifyContent: "space-between", gap: 8, fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft }}>
-                          <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                            {don.donor} → {don.mpName}
+                          <span style={{ display: "flex", alignItems: "center", gap: 5, overflow: "hidden" }}>
+                            <span style={{ width: 5, height: 5, borderRadius: "50%", background: don.partyColor, flexShrink: 0 }} />
+                            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                              {don.donor} → {don.mpName}
+                            </span>
                           </span>
                           <span style={{ fontFamily: FONT_MONO, color: COLORS.ink, flexShrink: 0 }}>£{Math.round(don.amount).toLocaleString()}</span>
                         </div>
@@ -406,6 +432,110 @@ export default function DonorsLobbying() {
         {Math.round(donorSectorMetadata.minMatchConfidence * 100)}%
         {donorSectorMetadata.flaggedForReview ? ` · ${donorSectorMetadata.flaggedForReview} matches removed by an automatic safety check` : ""}.
         This is a snapshot, not a live feed — it needs to be regenerated by hand as new donations are declared.
+      </div>
+    </div>
+  );
+}
+
+function EducationCard({ title, children }) {
+  return (
+    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "16px 18px", minWidth: 0 }}>
+      <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 16.5, color: COLORS.ink, margin: "0 0 10px" }}>{title}</h3>
+      <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
+        {children}
+      </ul>
+    </div>
+  );
+}
+
+function Bullet({ children }) {
+  return (
+    <li style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+      <span style={{ marginTop: 7, width: 4, height: 4, borderRadius: "50%", background: COLORS.brass, flexShrink: 0 }} />
+      <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, lineHeight: 1.5 }}>{children}</span>
+    </li>
+  );
+}
+
+function EducationSection() {
+  return (
+    <div style={{ marginBottom: 32, maxWidth: 1200 }}>
+      <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 23, color: COLORS.ink, marginBottom: 4 }}>
+        Money & Influence in Parliament, Explained
+      </h2>
+      <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 18, maxWidth: 760 }}>
+        Before the numbers: what these words actually mean, who regulates them, and why they're politically sensitive
+        enough to have their own transparency rules.
+      </p>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
+        <EducationCard title={'What counts as a "donation"?'}>
+          <Bullet>
+            Covers cash to fund an MP's work, gifts, hospitality (meals, tickets, travel), shareholdings, property,
+            and paid outside jobs — all declared in the public{" "}
+            <a href="https://www.parliament.uk/mps-lords-and-offices/standards-and-financial-interests/parliamentary-commissioner-for-standards/registers-of-interests/register-of-members-financial-interests/" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
+              Register of Members' Financial Interests
+            </a>.
+          </Bullet>
+          <Bullet>
+            Reporting thresholds are deliberately low: <strong style={{ color: COLORS.ink }}>£300</strong> for a
+            single gift/hospitality, <strong style={{ color: COLORS.ink }}>£1,500</strong> for donations — both
+            within 28 days of receipt.
+          </Bullet>
+          <Bullet>
+            Donations can only legally come from permissible UK sources (registered voters, UK companies, unions) —
+            to keep foreign money out of UK politics.
+          </Bullet>
+          <Bullet>
+            Party-level donations are a separate, higher Electoral Commission threshold: £11,180 (£2,230 for
+            further donations from the same source in a year).
+          </Bullet>
+        </EducationCard>
+
+        <EducationCard title="What is lobbying?">
+          <Bullet>
+            <strong style={{ color: COLORS.ink }}>In-house</strong> — a company's own "public affairs" staff
+            contact MPs and ministers directly.
+          </Bullet>
+          <Bullet>
+            <strong style={{ color: COLORS.ink }}>Consultant lobbying</strong> — paid agencies lobby on a client's
+            behalf. The only kind covered by the{" "}
+            <a href="https://www.legislation.gov.uk/ukpga/2014/4" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
+              Lobbying Act 2014
+            </a>{" "}
+            register — and only for direct contact with a minister or permanent secretary, not backbench MPs. Most
+            real lobbying, including nearly all in-house lobbying, falls outside it entirely.
+          </Bullet>
+          <Bullet>
+            <strong style={{ color: COLORS.ink }}>APPGs</strong> — cross-party groups often funded or staffed by
+            outside organisations with a stake in the topic. See the "APPG Memberships" tab.
+          </Bullet>
+          <Bullet>
+            <strong style={{ color: COLORS.ink }}>The "revolving door"</strong> — former ministers taking jobs in
+            industries they used to regulate, overseen (advisory only, not binding) by{" "}
+            <a href="https://www.gov.uk/government/organisations/advisory-committee-on-business-appointments" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
+              ACOBA
+            </a>.
+          </Bullet>
+        </EducationCard>
+
+        <EducationCard title="Why does it matter politically?">
+          <Bullet>
+            Legitimate side: campaigns cost money, and government benefits from hearing directly from affected
+            industries, unions, and experts. Most declared interests here are exactly that — routine and lawful.
+          </Bullet>
+          <Bullet>
+            Concern: money or privileged access could buy influence ordinary constituents don't get — "cash for
+            access."
+          </Bullet>
+          <Bullet>
+            That's why disclosure rules exist and keep tightening — from 1990s "cash for questions" to more recent
+            undercover lobbying stings.
+          </Bullet>
+          <Bullet>
+            A declared donation isn't evidence of wrongdoing on its own. Transparency just lets you check the
+            pattern yourself, rather than take it on trust.
+          </Bullet>
+        </EducationCard>
       </div>
     </div>
   );

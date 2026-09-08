@@ -1,4 +1,4 @@
-name: Fetch MP Financial Interests, Voting Records, Bills, and Donor Sectors
+name: Fetch MP Financial Interests, Voting Records, Bills, Donor Sectors, and News
 
 on:
   schedule:
@@ -40,6 +40,15 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-bills.js
+
+      # Google News RSS is a public feed with no API key, but it's a slow
+      # per-MP crawl (~650 requests, politely rate-limited) — expect this
+      # step alone to take several minutes.
+      - name: Run the MP news fetch script
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node fetch-mp-news.js
 
       - name: Run the donor sector tagging script
         env:

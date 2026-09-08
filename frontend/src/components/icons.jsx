@@ -67,6 +67,35 @@ export function IconSettings({ size = 17 }) {
   );
 }
 
+export function IconManifesto({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6.5 3.5h9a1 1 0 0 1 1 1V19l-2.5-1.5L11.5 19 9 17.5 6.5 19V4.5a1 1 0 0 1 1-1Z" />
+      <path d="M9 8h5M9 11h5" />
+    </svg>
+  );
+}
+
+export function IconTracker({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <circle cx="12" cy="12" r="4.5" />
+      <circle cx="12" cy="12" r="0.8" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function IconBills({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 3.5h9.5L19 7v13.5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-16a1 1 0 0 1 1-1Z" />
+      <path d="M15 3.5V7h4" />
+      <path d="M8.5 12h7M8.5 15h7M8.5 18h4.5" />
+    </svg>
+  );
+}
+
 export function IconBriefcase({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">

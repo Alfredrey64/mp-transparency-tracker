@@ -12,7 +12,7 @@ import {
   CabinetRoleBox,
   VotingSummaryBox,
   StandardsBox,
-  PlaceholderBox,
+  NewsBox,
 } from "./shared";
 
 const DETAIL_TABS = [
@@ -101,6 +101,7 @@ export default function PoliticianDetail({ politician, onBack }) {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
   const [avatarErrored, setAvatarErrored] = useState(false);
+  const [avatarLoaded, setAvatarLoaded] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -155,12 +156,25 @@ export default function PoliticianDetail({ politician, onBack }) {
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
         <div style={{ position: "relative", paddingBottom: 28, borderBottom: `1px solid ${COLORS.hairline}`, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 10, overflow: "hidden" }}>
           {politician.thumbnail_url && !avatarErrored ? (
-            <img
-              src={politician.thumbnail_url}
-              alt=""
-              onError={() => setAvatarErrored(true)}
-              style={{ width: 96, height: 96, borderRadius: "50%", objectFit: "cover", objectPosition: "center top", border: `3px solid ${COLORS.paperCard}`, boxShadow: `0 0 0 2px ${color}55, 0 4px 14px rgba(30,42,68,0.12)` }}
-            />
+            <div
+              style={{
+                width: 96, height: 96, borderRadius: "50%", flexShrink: 0,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                background: COLORS.paperCard, border: `3px solid ${COLORS.paperCard}`,
+                boxShadow: `0 0 0 2px ${color}55, 0 4px 14px rgba(30,42,68,0.12)`,
+              }}
+            >
+              <img
+                src={politician.thumbnail_url}
+                alt=""
+                onError={() => setAvatarErrored(true)}
+                onLoad={() => setAvatarLoaded(true)}
+                style={{
+                  width: 86, height: 86, borderRadius: "50%", objectFit: "cover", objectPosition: "center top",
+                  opacity: avatarLoaded ? 1 : 0, transition: "opacity 0.25s ease",
+                }}
+              />
+            </div>
           ) : (
             <div
               style={{
@@ -290,7 +304,7 @@ export default function PoliticianDetail({ politician, onBack }) {
             <CabinetRoleBox politician={politician} />
             <VotingSummaryBox politician={politician} />
             <StandardsBox politician={politician} />
-            <PlaceholderBox title="In the News" note="Coming soon" />
+            <NewsBox politician={politician} />
           </div>
         </div>
       </div>
