@@ -9,11 +9,23 @@ const CATEGORY_SHORT_NAMES = {
   "Donations and other support (including loans) for activities as an MP": "Donations & Support",
   "Gifts, benefits and hospitality from UK sources": "Gifts & Hospitality",
   "Gifts, benefits and hospitality from sources outside the UK": "Overseas Gifts & Hospitality",
+  "Gifts and benefits from sources outside the UK": "Overseas Gifts & Hospitality",
   "Visits outside the UK": "Overseas Visits",
   "Land and property (within or outside the UK)": "Land & Property",
   "Shareholdings": "Shareholdings",
   "Employment and earnings": "Outside Employment",
+  "Employment and earnings - Ongoing paid employment": "Outside Employment",
+  "Employment and earnings - Ad hoc payments": "One-off Payment",
+  "Miscellaneous": "Miscellaneous",
+  "Family members employed": "Family Member Employed",
+  "Family members engaged in third-party lobbying": "Family Member Lobbying",
 };
+
+// Categories that represent an ongoing outside job or role, as distinct from
+// a one-off payment (e.g. a single speech fee) or a family member's own
+// interest. This is what the Register of Members' Financial Interests uses
+// to distinguish "still doing this" from "was paid once for this".
+export const ONGOING_ROLE_CATEGORIES = ["Employment and earnings", "Employment and earnings - Ongoing paid employment"];
 
 export function shortCategory(category) {
   return CATEGORY_SHORT_NAMES[category] ?? category;

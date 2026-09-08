@@ -1,5 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
 
 // Sourced from Full Fact's independent, non-partisan Government Tracker
@@ -11,6 +12,28 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
 const LAST_CHECKED = "September 2026";
 const SOURCE_URL = "https://fullfact.org/government-tracker/";
 const LABOUR_RED = "#C8102E";
+
+// An original rose-bloom motif — a rounded cluster of overlapping petals with
+// a spiral swirl (the detail that actually reads as "rose" rather than a
+// generic flower), plus a stem and leaf. Evokes Labour's long-standing use of
+// the rose as a party symbol without reproducing their actual trademarked
+// logo artwork, which we deliberately avoid using anywhere in this app.
+function RoseEmblem({ size = 30 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
+      <path d="M16 21.5c-1 3-0.6 6.2 1.4 8.7" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" opacity="0.85" />
+      <path d="M17 25.5c2-1.1 4-0.3 4.3 1.6c-2.2 0.9-4.2 0-4.3-1.6Z" fill="#fff" opacity="0.7" />
+      <circle cx="12.8" cy="13.8" r="5.6" fill="#fff" opacity="0.55" />
+      <circle cx="19.2" cy="13.8" r="5.6" fill="#fff" opacity="0.55" />
+      <circle cx="16" cy="10" r="5.6" fill="#fff" opacity="0.55" />
+      <circle cx="16" cy="15.5" r="6.4" fill="#fff" opacity="0.6" />
+      <path
+        d="M16,17.5 C19,17 19.6,13.5 17,12 C15,10.9 12.6,12.4 13,14.7 C13.3,16.4 15.2,17.3 16.1,16.1 C16.8,15.2 16.1,13.8 14.9,14"
+        stroke={LABOUR_RED} strokeWidth="1.3" strokeLinecap="round" fill="none" opacity="0.9"
+      />
+    </svg>
+  );
+}
 
 const STATUS = {
   achieved: { label: "Achieved", color: "#2F6F4E", icon: "check" },
@@ -245,35 +268,70 @@ function HeroStat({ label, count, color }) {
   );
 }
 
-function PledgeCard({ pledge }) {
+function PledgeLine({ pledge }) {
+  const [open, setOpen] = useState(false);
   const s = STATUS[pledge.status];
   return (
-    <div style={{ border: `1px solid ${COLORS.hairline}`, borderLeft: `3px solid ${s.color}`, borderRadius: 10, padding: "12px 14px", background: COLORS.paperCard }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10 }}>
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink, lineHeight: 1.4 }}>
-          {pledge.promise}
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 5, flexShrink: 0 }}>
-          <StatusIcon icon={s.icon} color={s.color} />
-        </div>
-      </div>
-      <div
+    <div style={{ borderBottom: `1px solid ${COLORS.hairline}` }}>
+      <button
+        onClick={() => setOpen((v) => !v)}
         style={{
-          display: "inline-block", marginTop: 8, fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700, textTransform: "uppercase",
-          letterSpacing: "0.03em", padding: "2px 8px", borderRadius: 999, color: s.color, background: `${s.color}18`,
+          display: "flex", alignItems: "center", gap: 10, width: "100%", padding: "11px 2px",
+          background: "none", border: "none", cursor: "pointer", textAlign: "left",
         }}
       >
-        {s.label}
-      </div>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, lineHeight: 1.55, marginTop: 8 }}>
-        {pledge.reality}
-      </div>
+        <StatusIcon icon={s.icon} color={s.color} size={16} />
+        <span
+          style={{
+            flex: 1, minWidth: 0, fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink,
+            whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+          }}
+        >
+          {pledge.promise}
+        </span>
+        <span
+          style={{
+            flexShrink: 0, fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700, textTransform: "uppercase",
+            letterSpacing: "0.03em", padding: "2px 9px", borderRadius: 999, color: s.color, background: `${s.color}18`,
+          }}
+        >
+          {s.label}
+        </span>
+        <span style={{ flexShrink: 0, fontFamily: FONT_MONO, fontSize: 11, color: COLORS.inkSoft }}>{open ? "▾" : "▸"}</span>
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.2 }} style={{ overflow: "hidden" }}>
+            <div style={{ padding: "0 2px 14px 26px", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, lineHeight: 1.6 }}>
+              {pledge.reality}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
 
+// Looked up live rather than hardcoded, so this stays correct automatically
+// if the office changes hands — same "find by cabinet_role" approach used
+// for the Commons seating chart's PM marker.
+function usePrimeMinister() {
+  const [pm, setPm] = useState(null);
+  useEffect(() => {
+    async function load() {
+      const { data } = await supabase.from("politicians").select("name, thumbnail_url, cabinet_role");
+      const found = (data ?? []).find((p) => (p.cabinet_role ?? "").toLowerCase().includes("prime minister"));
+      setPm(found ?? null);
+    }
+    load();
+  }, []);
+  return pm;
+}
+
 export default function PromiseTracker() {
   const [activeFilter, setActiveFilter] = useState("all");
+  const pm = usePrimeMinister();
+  const [pmPhotoLoaded, setPmPhotoLoaded] = useState(false);
 
   const filteredCategories = useMemo(() => {
     if (activeFilter === "all") return CATEGORIES;
@@ -283,6 +341,7 @@ export default function PromiseTracker() {
   return (
     <div
       style={{
+        position: "relative",
         border: `1px solid ${COLORS.hairline}`,
         borderTop: `4px solid ${LABOUR_RED}`,
         borderRadius: 18,
@@ -291,10 +350,45 @@ export default function PromiseTracker() {
         boxShadow: "0 1px 4px rgba(20,30,32,0.06)",
       }}
     >
-      <div style={{ fontFamily: FONT_MONO, fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: LABOUR_RED }}>
-        Labour Government · Elected July 2024
+      {pm?.thumbnail_url && (
+        <div
+          style={{
+            position: "absolute", top: 20, right: 20, width: 60, height: 60, borderRadius: "50%", flexShrink: 0,
+            display: "flex", alignItems: "center", justifyContent: "center", background: COLORS.paper,
+            border: `1px solid ${COLORS.hairline}`, boxShadow: "0 2px 8px rgba(20,30,32,0.1)",
+          }}
+          title={`${pm.name} — ${pm.cabinet_role}`}
+        >
+          <img
+            src={pm.thumbnail_url}
+            alt=""
+            onLoad={() => setPmPhotoLoaded(true)}
+            style={{
+              width: 53, height: 53, borderRadius: "50%", objectFit: "cover", objectPosition: "center top",
+              opacity: pmPhotoLoaded ? 1 : 0, transition: "opacity 0.25s ease",
+            }}
+          />
+        </div>
+      )}
+      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <div
+          style={{
+            width: 56, height: 56, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center",
+            justifyContent: "center", background: LABOUR_RED, boxShadow: `0 4px 14px ${LABOUR_RED}40`,
+          }}
+        >
+          <RoseEmblem size={32} />
+        </div>
+        <div>
+          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 26, fontWeight: 600, color: COLORS.ink, lineHeight: 1.15 }}>
+            Labour Government
+          </div>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 500, color: COLORS.inkSoft, marginTop: 3 }}>
+            In office since July 2024
+          </div>
+        </div>
       </div>
-      <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 10, marginBottom: 0, lineHeight: 1.65, maxWidth: 780 }}>
+      <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 18, marginBottom: 0, lineHeight: 1.65, maxWidth: 780 }}>
         As the sitting government, Labour's manifesto pledges are the only ones that can be checked against real
         outcomes rather than promises. We don't make these calls ourselves — every status here comes from{" "}
         <a href={SOURCE_URL} target="_blank" rel="noreferrer" style={{ color: LABOUR_RED, fontWeight: 600 }}>
@@ -333,10 +427,15 @@ export default function PromiseTracker() {
         <AnimatePresence mode="popLayout">
           {filteredCategories.map((cat) => (
             <motion.div key={cat.name} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
-              <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink, marginBottom: 10 }}>{cat.name}</div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 10 }}>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 2, paddingBottom: 8, borderBottom: `2px solid ${COLORS.ink}` }}>
+                <span style={{ fontFamily: FONT_BODY, fontSize: 15, fontWeight: 700, color: COLORS.ink }}>{cat.name}</span>
+                <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>
+                  {cat.pledges.length} pledge{cat.pledges.length === 1 ? "" : "s"}
+                </span>
+              </div>
+              <div>
                 {cat.pledges.map((p) => (
-                  <PledgeCard key={p.promise} pledge={p} />
+                  <PledgeLine key={p.promise} pledge={p} />
                 ))}
               </div>
             </motion.div>

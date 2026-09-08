@@ -91,7 +91,7 @@ export default function Home({ onBrowse, onNavigate, mpCount }) {
           .select("*")
           .not("next_sitting_date", "is", null)
           .order("next_sitting_date", { ascending: true })
-          .limit(4),
+          .limit(7),
       ]);
       const map = new Map();
       for (const p of partiesRes.data ?? []) {
@@ -159,7 +159,7 @@ export default function Home({ onBrowse, onNavigate, mpCount }) {
         </motion.div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 24, marginBottom: 24, textAlign: "left" }}>
-          <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "8px 20px 20px", boxShadow: "0 2px 8px rgba(30,42,68,0.06)" }}>
+          <div style={{ display: "flex", flexDirection: "column", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "8px 20px 20px", boxShadow: "0 2px 8px rgba(30,42,68,0.06)" }}>
             <div style={{ display: "flex", justifyContent: "center", gap: 4, padding: "10px 0 14px" }}>
               {[
                 { key: "donations", label: "Donations" },
@@ -194,10 +194,10 @@ export default function Home({ onBrowse, onNavigate, mpCount }) {
             )}
 
             {!loading && items.length > 0 && (
-              <div style={{ position: "relative", paddingLeft: 20 }}>
+              <div style={{ position: "relative", paddingLeft: 20, flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 10 }}>
                 <div style={{ position: "absolute", left: 4, top: 6, bottom: 6, width: 1, background: COLORS.hairline }} />
-                {items.map((item, i) => (
-                  <div key={item.id} style={{ position: "relative", paddingBottom: i < items.length - 1 ? 16 : 0 }}>
+                {items.map((item) => (
+                  <div key={item.id} style={{ position: "relative" }}>
                     <div style={{ position: "absolute", left: -20, top: 4, width: 9, height: 9, borderRadius: "50%", background: COLORS.brass, border: `2px solid ${COLORS.paperCard}` }} />
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
                       <div style={{ minWidth: 0 }}>
@@ -263,12 +263,12 @@ export default function Home({ onBrowse, onNavigate, mpCount }) {
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 24, marginBottom: 36, textAlign: "left" }}>
-          <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: 20, boxShadow: "0 2px 8px rgba(30,42,68,0.06)" }}>
+          <div style={{ display: "flex", flexDirection: "column", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: 20, boxShadow: "0 2px 8px rgba(30,42,68,0.06)" }}>
             <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 14 }}>
               Party Breakdown
             </div>
             {loadingExtras && <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>Loading…</div>}
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 10 }}>
               {parties.map((party, i) => (
                 <motion.div
                   key={party.name}

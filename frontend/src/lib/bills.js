@@ -1,4 +1,10 @@
-import { COLORS } from "../theme";
+// A real hex value, deliberately not COLORS.inkSoft — that token resolves to
+// a CSS var() for dark-mode theming, and several places (like the filter
+// pills) build alpha-suffixed colors ("${color}40") which only works on an
+// actual hex string. A var() with a suffix glued on is invalid CSS and gets
+// silently dropped, which is why "General" used to render with no border or
+// tint at all.
+const GENERAL_COLOR = "#6B7280";
 
 export const BILL_CATEGORIES = [
   { match: ["health and social care"], label: "Health", color: "#B5533C" },
@@ -20,5 +26,5 @@ export function categoriseBill(bill) {
   for (const cat of BILL_CATEGORIES) {
     if (cat.match.some((m) => dept.includes(m))) return cat;
   }
-  return { label: "General", color: COLORS.inkSoft };
+  return { label: "General", color: GENERAL_COLOR };
 }

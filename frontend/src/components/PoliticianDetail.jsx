@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
-import { partyColour, timeInOffice, shortCategory, formatDate, initials } from "../lib/format";
+import { partyColour, timeInOffice, shortCategory, formatDate, initials, ONGOING_ROLE_CATEGORIES } from "../lib/format";
 import { getDonorSector, sectorColor } from "../lib/donorSectors";
 import {
   SectionDivider,
@@ -96,6 +96,38 @@ function FundingBySectorBox({ interests }) {
   );
 }
 
+function CurrentRolesBox({ interests }) {
+  const roles = useMemo(
+    () => interests.filter((item) => ONGOING_ROLE_CATEGORIES.includes(item.category)),
+    [interests]
+  );
+  if (roles.length === 0) return null;
+
+  return (
+    <CardShell title="Current Outside Roles">
+      <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginBottom: 10, lineHeight: 1.5 }}>
+        Ongoing paid roles or jobs outside Parliament, as declared in the register — separate from one-off payments
+        like a single speech or article fee.
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {roles.map((r, i) => (
+          <div key={r.id} style={{ paddingBottom: i < roles.length - 1 ? 10 : 0, borderBottom: i < roles.length - 1 ? `1px solid ${COLORS.hairline}` : "none" }}>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.5 }}>{r.summary}</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4, fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>
+              {r.date_registered && <span>Registered {formatDate(r.date_registered)}</span>}
+              {r.source_url && (
+                <a href={r.source_url} target="_blank" rel="noreferrer" style={{ color: COLORS.inkSoft }}>
+                  source ↗
+                </a>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </CardShell>
+  );
+}
+
 export default function PoliticianDetail({ politician, onBack }) {
   const [interests, setInterests] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -118,9 +150,14 @@ export default function PoliticianDetail({ politician, onBack }) {
 
   const filteredInterests = useMemo(() => {
     if (activeTab === "donations") return interests.filter((item) => item.value_amount != null);
-    if (activeTab === "roles") return interests.filter((item) => item.category === "Employment and earnings");
+    if (activeTab === "roles") return interests.filter((item) => ONGOING_ROLE_CATEGORIES.includes(item.category));
     return interests;
   }, [interests, activeTab]);
+
+  const totalDeclaredValue = useMemo(
+    () => interests.reduce((sum, item) => sum + (item.value_amount ?? 0), 0),
+    [interests]
+  );
 
   const office = timeInOffice(politician.membership_start_date);
   const color = partyColour(politician.party_colour, COLORS.inkSoft);
@@ -203,6 +240,17 @@ export default function PoliticianDetail({ politician, onBack }) {
               {politician.party} · {politician.constituency}
               {office && ` · MP for ${office}`}
             </div>
+            {totalDeclaredValue > 0 && (
+              <div
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 6, marginTop: 10, padding: "6px 14px",
+                  borderRadius: 999, background: `${COLORS.brass}14`, fontFamily: FONT_BODY, fontSize: 13,
+                  fontWeight: 700, color: COLORS.brass,
+                }}
+              >
+                £{Math.round(totalDeclaredValue).toLocaleString()} total declared value
+              </div>
+            )}
             <SectionDivider />
           </div>
         </div>
@@ -299,6 +347,7 @@ export default function PoliticianDetail({ politician, onBack }) {
           {/* ---- Right column: everything else ---- */}
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <BiographyBox politician={politician} />
+            <CurrentRolesBox interests={interests} />
             <FundingBySectorBox interests={interests} />
             <ContactBox politician={politician} />
             <CabinetRoleBox politician={politician} />

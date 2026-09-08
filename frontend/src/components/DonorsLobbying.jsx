@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { getDonorSector, sectorColor, normalizeDonorKey, donorSectorMetadata } from "../lib/donorSectors";
 import { partyColour, formatDate } from "../lib/format";
 import { PageHeader } from "./shared";
@@ -187,7 +187,7 @@ export default function DonorsLobbying() {
               >
                 <div style={{ display: "flex", justifyContent: "space-between", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, marginBottom: 3 }}>
                   <span>{s.sector}</span>
-                  <span style={{ fontFamily: FONT_MONO, color: COLORS.inkSoft }}>£{Math.round(s.total).toLocaleString()}</span>
+                  <span style={{ fontFamily: FONT_BODY, fontWeight: 700, color: COLORS.ink }}>£{Math.round(s.total).toLocaleString()}</span>
                 </div>
                 <div style={{ height: 7, borderRadius: 999, background: COLORS.paper, overflow: "hidden" }}>
                   <motion.div
@@ -252,7 +252,7 @@ export default function DonorsLobbying() {
                         </span>
                       </div>
                     </div>
-                    <div style={{ fontFamily: FONT_MONO, fontSize: 13, fontWeight: 700, color: COLORS.ink, flexShrink: 0 }}>
+                    <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 700, color: COLORS.ink, flexShrink: 0 }}>
                       £{Math.round(d.total).toLocaleString()}
                     </div>
                   </button>
@@ -273,7 +273,7 @@ export default function DonorsLobbying() {
                                 <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.mpName}</span>
                                 {r.date && <span style={{ opacity: 0.7, flexShrink: 0 }}>· {formatDate(r.date)}</span>}
                               </span>
-                              <span style={{ fontFamily: FONT_MONO, color: COLORS.ink, flexShrink: 0 }}>£{Math.round(r.amount).toLocaleString()}</span>
+                              <span style={{ fontFamily: FONT_BODY, fontWeight: 700, color: COLORS.ink, flexShrink: 0 }}>£{Math.round(r.amount).toLocaleString()}</span>
                             </div>
                           ))}
                         </div>
@@ -322,7 +322,7 @@ export default function DonorsLobbying() {
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8, marginBottom: 8 }}>
                   <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13.5, color: COLORS.ink }}>{s.sector}</span>
-                  <span style={{ fontFamily: FONT_MONO, fontSize: 11.5, color: COLORS.inkSoft, flexShrink: 0 }}>£{Math.round(s.total).toLocaleString()}</span>
+                  <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12.5, color: COLORS.ink, flexShrink: 0 }}>£{Math.round(s.total).toLocaleString()}</span>
                 </div>
               </button>
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -332,7 +332,7 @@ export default function DonorsLobbying() {
                       <span style={{ width: 6, height: 6, borderRadius: "50%", background: mp.partyColor, flexShrink: 0 }} />
                       <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{mp.name}</span>
                     </span>
-                    <span style={{ fontFamily: FONT_MONO, color: COLORS.ink, flexShrink: 0 }}>£{Math.round(mp.total).toLocaleString()}</span>
+                    <span style={{ fontFamily: FONT_BODY, fontWeight: 700, color: COLORS.ink, flexShrink: 0 }}>£{Math.round(mp.total).toLocaleString()}</span>
                   </div>
                 ))}
               </div>
@@ -364,7 +364,7 @@ export default function DonorsLobbying() {
                               {don.donor} → {don.mpName}
                             </span>
                           </span>
-                          <span style={{ fontFamily: FONT_MONO, color: COLORS.ink, flexShrink: 0 }}>£{Math.round(don.amount).toLocaleString()}</span>
+                          <span style={{ fontFamily: FONT_BODY, fontWeight: 700, color: COLORS.ink, flexShrink: 0 }}>£{Math.round(don.amount).toLocaleString()}</span>
                         </div>
                       ))}
                       {s.allDonations.length > 40 && (

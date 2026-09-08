@@ -11,6 +11,7 @@ import AppgMemberships from "./components/AppgMemberships";
 import DonorsLobbying from "./components/DonorsLobbying";
 import PartyPolicies from "./components/PartyPolicies";
 import GovernmentTracker from "./components/GovernmentTracker";
+import CompaniesHouse from "./components/CompaniesHouse";
 import Settings from "./components/Settings";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsConditions from "./components/TermsConditions";
@@ -44,6 +45,7 @@ export default function App() {
         {view === "donors" && <DonorsLobbying />}
         {view === "parties" && <PartyPolicies />}
         {view === "tracker" && <GovernmentTracker />}
+        {view === "companies" && <CompaniesHouse />}
         {view === "settings" && <Settings onNavigate={handleNavigate} />}
         {view === "privacy" && <PrivacyPolicy onNavigate={handleNavigate} />}
         {view === "terms" && <TermsConditions />}

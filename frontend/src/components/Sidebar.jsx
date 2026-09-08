@@ -14,9 +14,9 @@ const TOP_NAV_ITEMS = [
 const DATA_NAV_ITEMS = [
   { key: "list", label: "Financial Interests", icon: IconCoin },
   { key: "voting", label: "Voting Records & Bills", icon: IconVote },
-  { key: "donors", label: "Donors & Lobbying", icon: IconInfluence },
   { key: "appg", label: "APPG Memberships", icon: IconGroup },
-  { key: "companies", label: "Companies House", icon: IconBriefcase, soon: true },
+  { key: "donors", label: "Donors & Lobbying", icon: IconInfluence },
+  { key: "companies", label: "Companies House", icon: IconBriefcase },
 ];
 
 const BOTTOM_NAV_ITEMS = [{ key: "settings", label: "Settings", icon: IconSettings }];
@@ -26,12 +26,12 @@ function SectionLabel({ children }) {
     <div style={{ marginTop: 34, paddingTop: 22, borderTop: "1px solid rgba(255,255,255,0.08)" }}>
       <div
         style={{
-          fontFamily: FONT_DISPLAY,
-          fontStyle: "italic",
-          fontSize: 13.5,
-          fontWeight: 500,
-          letterSpacing: "0.01em",
-          color: "rgba(199,208,208,0.55)",
+          fontFamily: FONT_BODY,
+          fontSize: 12.5,
+          fontWeight: 700,
+          letterSpacing: "0.04em",
+          textTransform: "uppercase",
+          color: "rgba(226,232,232,0.8)",
           padding: "0 14px 12px",
         }}
       >
