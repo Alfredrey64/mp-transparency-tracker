@@ -38,13 +38,6 @@
     "companyNumber": "13054048",
     "sicCode": "94920"
   },
-  "International Centre of Justice for Palestinians (ICJP)": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "INTERNATIONAL CENTRE OF JUSTICE FOR PALESTINIANS",
-    "companyNumber": "13054048",
-    "sicCode": "94920"
-  },
   "National Liberal Club": {
     "sector": "Other / Uncategorised",
     "source": "companies-house",
@@ -203,11 +196,11 @@
     "companyNumber": "00882843",
     "sicCode": "93110"
   },
-  "NAPO - the Probation and Family Courts Union": {
+  "The Police Federation": {
     "sector": "Trade Unions",
     "source": "known-union-list"
   },
-  "The Police Federation": {
+  "NAPO - the Probation and Family Courts Union": {
     "sector": "Trade Unions",
     "source": "known-union-list"
   },
