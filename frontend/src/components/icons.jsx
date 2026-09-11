@@ -105,3 +105,14 @@ export function IconBriefcase({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconMethodology({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="4.5" y="4" width="15" height="17" rx="1.8" />
+      <path d="M9 3.5h6a1 1 0 0 1 1 1V6H8V4.5a1 1 0 0 1 1-1Z" />
+      <path d="m8.3 13 2 2 4.4-4.6" />
+      <path d="M8.3 17.3h7.4" />
+    </svg>
+  );
+}

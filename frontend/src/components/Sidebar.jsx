@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
 import { EyebrowLabel, ParliamentSilhouette } from "./shared";
-import { IconHome, IconFlow, IconCoin, IconVote, IconGroup, IconInfluence, IconManifesto, IconTracker, IconBriefcase, IconSettings } from "./icons";
+import { IconHome, IconFlow, IconCoin, IconVote, IconGroup, IconInfluence, IconManifesto, IconTracker, IconBriefcase, IconMethodology, IconSettings } from "./icons";
 
 const TOP_NAV_ITEMS = [
   { key: "home", label: "Overview", icon: IconHome },
@@ -19,7 +19,10 @@ const DATA_NAV_ITEMS = [
   { key: "companies", label: "Companies House", icon: IconBriefcase },
 ];
 
-const BOTTOM_NAV_ITEMS = [{ key: "settings", label: "Settings", icon: IconSettings }];
+const BOTTOM_NAV_ITEMS = [
+  { key: "methodology", label: "Data & Methodology", icon: IconMethodology },
+  { key: "settings", label: "Settings", icon: IconSettings },
+];
 
 function SectionLabel({ children }) {
   return (

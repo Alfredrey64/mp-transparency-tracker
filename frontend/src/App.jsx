@@ -12,6 +12,7 @@ import DonorsLobbying from "./components/DonorsLobbying";
 import PartyPolicies from "./components/PartyPolicies";
 import GovernmentTracker from "./components/GovernmentTracker";
 import CompaniesHouse from "./components/CompaniesHouse";
+import Methodology from "./components/Methodology";
 import Settings from "./components/Settings";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsConditions from "./components/TermsConditions";
@@ -46,6 +47,7 @@ export default function App() {
         {view === "parties" && <PartyPolicies />}
         {view === "tracker" && <GovernmentTracker />}
         {view === "companies" && <CompaniesHouse />}
+        {view === "methodology" && <Methodology onNavigate={handleNavigate} />}
         {view === "settings" && <Settings onNavigate={handleNavigate} />}
         {view === "privacy" && <PrivacyPolicy onNavigate={handleNavigate} />}
         {view === "terms" && <TermsConditions />}
