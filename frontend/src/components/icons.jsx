@@ -116,3 +116,42 @@ export function IconMethodology({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconGlossary({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6.5A1.5 1.5 0 0 1 5 19.5v-15Z" />
+      <path d="M5 17.5h13" />
+      <path d="M8.5 8h7M8.5 11h4.5" />
+    </svg>
+  );
+}
+
+export function IconHistory({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 12a8 8 0 1 1 2.5 5.8" />
+      <path d="M4 12V7M4 12h5" />
+      <path d="M12 8v4.5l3 2" />
+    </svg>
+  );
+}
+
+export function IconDevolved({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 5.5 9 4l6 2 5-1.5v14L14 20l-6-2-4 1.5v-14Z" />
+      <path d="M9 4v14M15 6v14" />
+    </svg>
+  );
+}
+
+export function IconFormerMP({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="10" cy="8" r="3.2" />
+      <path d="M4 19.5c.5-3.2 2.7-5 6-5s5.5 1.8 6 5" />
+      <path d="M16.5 8.5h5M19.5 5.5l2.5 3-2.5 3" />
+    </svg>
+  );
+}

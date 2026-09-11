@@ -2,11 +2,21 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
 import { EyebrowLabel, ParliamentSilhouette } from "./shared";
-import { IconHome, IconFlow, IconCoin, IconVote, IconGroup, IconInfluence, IconManifesto, IconTracker, IconBriefcase, IconMethodology, IconSettings } from "./icons";
+import {
+  IconHome, IconFlow, IconCoin, IconVote, IconGroup, IconInfluence, IconManifesto, IconTracker, IconBriefcase,
+  IconMethodology, IconSettings, IconGlossary, IconHistory, IconDevolved, IconFormerMP,
+} from "./icons";
 
-const TOP_NAV_ITEMS = [
-  { key: "home", label: "Overview", icon: IconHome },
+const HOME_NAV_ITEMS = [{ key: "home", label: "Overview", icon: IconHome }];
+
+const LEARN_NAV_ITEMS = [
   { key: "howitworks", label: "How Parliament Works", icon: IconFlow },
+  { key: "glossary", label: "Glossary", icon: IconGlossary },
+  { key: "history", label: "Political History", icon: IconHistory },
+  { key: "devolved", label: "Devolved Administrations", icon: IconDevolved },
+];
+
+const GOVERNMENT_NAV_ITEMS = [
   { key: "parties", label: "Party Policies", icon: IconManifesto },
   { key: "tracker", label: "Government Tracker", icon: IconTracker },
 ];
@@ -15,6 +25,7 @@ const DATA_NAV_ITEMS = [
   { key: "list", label: "Financial Interests", icon: IconCoin },
   { key: "voting", label: "Voting Records & Bills", icon: IconVote },
   { key: "appg", label: "APPG Memberships", icon: IconGroup },
+  { key: "formerMps", label: "Former MPs", icon: IconFormerMP },
   { key: "donors", label: "Donors & Lobbying", icon: IconInfluence },
   { key: "companies", label: "Companies House", icon: IconBriefcase },
 ];
@@ -118,7 +129,11 @@ function SidebarInner({ activeView, onNavigate }) {
       </div>
 
       <div style={{ flex: 1 }}>
-        <NavList items={TOP_NAV_ITEMS} activeView={activeView} onNavigate={onNavigate} withDividers />
+        <NavList items={HOME_NAV_ITEMS} activeView={activeView} onNavigate={onNavigate} />
+        <SectionLabel>Learn</SectionLabel>
+        <NavList items={LEARN_NAV_ITEMS} activeView={activeView} onNavigate={onNavigate} withDividers />
+        <SectionLabel>Parties &amp; Government</SectionLabel>
+        <NavList items={GOVERNMENT_NAV_ITEMS} activeView={activeView} onNavigate={onNavigate} withDividers />
         <SectionLabel>MP Accountability</SectionLabel>
         <NavList items={DATA_NAV_ITEMS} activeView={activeView} onNavigate={onNavigate} withDividers />
       </div>

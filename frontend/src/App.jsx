@@ -13,6 +13,10 @@ import PartyPolicies from "./components/PartyPolicies";
 import GovernmentTracker from "./components/GovernmentTracker";
 import CompaniesHouse from "./components/CompaniesHouse";
 import Methodology from "./components/Methodology";
+import Glossary from "./components/Glossary";
+import PoliticalHistory from "./components/PoliticalHistory";
+import DevolvedAdministrations from "./components/DevolvedAdministrations";
+import FormerMps from "./components/FormerMps";
 import Settings from "./components/Settings";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsConditions from "./components/TermsConditions";
@@ -45,9 +49,13 @@ export default function App() {
         {view === "voting" && <VotingRecords />}
         {view === "donors" && <DonorsLobbying />}
         {view === "parties" && <PartyPolicies />}
+        {view === "history" && <PoliticalHistory />}
+        {view === "devolved" && <DevolvedAdministrations />}
         {view === "tracker" && <GovernmentTracker />}
         {view === "companies" && <CompaniesHouse />}
+        {view === "formerMps" && <FormerMps />}
         {view === "methodology" && <Methodology onNavigate={handleNavigate} />}
+        {view === "glossary" && <Glossary />}
         {view === "settings" && <Settings onNavigate={handleNavigate} />}
         {view === "privacy" && <PrivacyPolicy onNavigate={handleNavigate} />}
         {view === "terms" && <TermsConditions />}

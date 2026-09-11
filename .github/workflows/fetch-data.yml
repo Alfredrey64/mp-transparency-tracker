@@ -1,4 +1,4 @@
-name: Fetch MP Financial Interests, Voting Records, Bills, Donor Sectors, and News
+name: Fetch MP Financial Interests, Voting Records, Bills, Donor Sectors, News, Former MPs, and On This Day
 
 on:
   schedule:
@@ -56,6 +56,18 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           COMPANIES_HOUSE_API_KEY: ${{ secrets.COMPANIES_HOUSE_API_KEY }}
         run: node fetch-donor-sectors.js
+
+      - name: Run the former MPs fetch script
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node fetch-former-mps.js
+
+      - name: Run the on-this-day fetch script
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node fetch-on-this-day.js
 
       # The three scripts above write straight to Supabase, so the live site
       # picks them up on its next request — no deploy needed. The donor

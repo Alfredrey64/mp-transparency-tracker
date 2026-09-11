@@ -6,29 +6,10 @@ import { formatDate, partyColour } from "../lib/format";
 import { categoriseBill } from "../lib/bills";
 import { PageHeader } from "./shared";
 
-// Curated snapshot, not a live feed — refresh manually every so often.
-const NEWS_ITEMS = [
-  {
-    headline: "Starmer vows to fight on after Labour's heavy by-election defeat",
-    source: "Yahoo News",
-    url: "https://www.yahoo.com/news/articles/uk-labour-party-loses-parliamentary-052611773.html",
-  },
-  {
-    headline: "Reform UK now polling neck-and-neck with Labour nationally",
-    source: "Euronews",
-    url: "https://www.euronews.com/2025/09/28/keir-starmer-urges-labour-party-unity-to-fend-off-nigel-farages-reform-uk-threat",
-  },
-  {
-    headline: "Labour conference: Starmer urges party unity as Reform's threat grows",
-    source: "Al Jazeera",
-    url: "https://www.aljazeera.com/news/2025/9/28/uks-governing-labour-party-holds-annual-conference-amid-far-right-surge",
-  },
-  {
-    headline: "Parliament returns from summer recess to a packed September agenda",
-    source: "UK Parliament",
-    url: "https://www.parliament.uk/business/news/2026/august-2026/coming-up-in-the-commons-1-4-september/",
-  },
-];
+function yearsAgo(year) {
+  const n = new Date().getFullYear() - year;
+  return n === 1 ? "1 year ago" : `${n} years ago`;
+}
 
 function CountUp({ value }) {
   const [display, setDisplay] = useState(0);
@@ -55,6 +36,7 @@ export default function Home({ onBrowse, onNavigate, mpCount }) {
   const [parties, setParties] = useState([]);
   const [upcomingBills, setUpcomingBills] = useState([]);
   const [loadingExtras, setLoadingExtras] = useState(true);
+  const [onThisDay, setOnThisDay] = useState(null);
 
   useEffect(() => {
     async function loadRecent() {
@@ -104,6 +86,14 @@ export default function Home({ onBrowse, onNavigate, mpCount }) {
       setLoadingExtras(false);
     }
     loadExtras();
+  }, []);
+
+  useEffect(() => {
+    async function loadOnThisDay() {
+      const { data } = await supabase.from("on_this_day").select("*").order("year", { ascending: false });
+      setOnThisDay(data ?? []);
+    }
+    loadOnThisDay();
   }, []);
 
   const items = activeTab === "donations" ? donations : roles;
@@ -236,25 +226,59 @@ export default function Home({ onBrowse, onNavigate, mpCount }) {
 
           <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: 20, boxShadow: "0 2px 8px rgba(30,42,68,0.06)" }}>
             <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 4 }}>
-              Latest Political News
+              On This Day in Parliament
             </div>
             <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.75, marginBottom: 14 }}>
-              A hand-picked snapshot, not a live feed — links go to the original source.
+              Debates the Commons actually held on today's date in past years, straight from the official Hansard record.
             </div>
+
+            {onThisDay === null && (
+              <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>Loading…</div>
+            )}
+            {onThisDay !== null && onThisDay.length === 0 && (
+              <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>
+                Nothing notable turned up in Hansard for today's date — check back tomorrow.
+              </div>
+            )}
+
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {NEWS_ITEMS.map((item) => (
+              {onThisDay?.map((item, i) => (
                 <a
-                  key={item.url}
-                  href={item.url}
+                  key={`${item.year}-${item.title}`}
+                  href={item.source_url}
                   target="_blank"
                   rel="noreferrer"
-                  style={{ display: "block", textDecoration: "none", paddingBottom: 12, borderBottom: `1px solid ${COLORS.hairline}` }}
+                  style={{
+                    display: "flex",
+                    gap: 12,
+                    alignItems: "flex-start",
+                    textDecoration: "none",
+                    paddingBottom: 12,
+                    borderBottom: i < onThisDay.length - 1 ? `1px solid ${COLORS.hairline}` : "none",
+                  }}
                 >
-                  <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15.5, color: COLORS.ink, lineHeight: 1.35 }}>
-                    {item.headline}
+                  <div
+                    style={{
+                      flexShrink: 0,
+                      fontFamily: FONT_DISPLAY,
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: "#fff",
+                      background: COLORS.brass,
+                      borderRadius: 999,
+                      padding: "3px 10px",
+                      marginTop: 2,
+                    }}
+                  >
+                    {item.year}
                   </div>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.brass, marginTop: 4, fontWeight: 600 }}>
-                    {item.source} ↗
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, color: COLORS.ink, lineHeight: 1.35 }}>
+                      {item.title}
+                    </div>
+                    <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 3 }}>
+                      {yearsAgo(item.year)} · Hansard record ↗
+                    </div>
                   </div>
                 </a>
               ))}
