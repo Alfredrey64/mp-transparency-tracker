@@ -65,6 +65,21 @@ body {
 .mp-sidebar {
   position: sticky;
   top: 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+.mp-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.mp-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+.mp-sidebar::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 @media (max-width: 880px) {

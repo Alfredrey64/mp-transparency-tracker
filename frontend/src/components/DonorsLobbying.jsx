@@ -6,6 +6,9 @@ import { getDonorSector, sectorColor, normalizeDonorKey, donorSectorMetadata } f
 import { partyColour, formatDate } from "../lib/format";
 import { PageHeader } from "./shared";
 import { IconInfluence } from "./icons";
+import { CompanyDonorsView } from "./CompanyDonorsView";
+import { withScrollPreserved } from "../lib/preserveScroll";
+import { fetchAllRows } from "../lib/supabasePagination";
 
 const UNTAGGED_COLOR = COLORS.inkSoft;
 const UNTAGGED_LABEL = "Untagged / individual donors";
@@ -20,6 +23,7 @@ export default function DonorsLobbying() {
   const [rows, setRows] = useState(null);
   const [expandedSectors, setExpandedSectors] = useState(() => new Set());
   const [expandedDonor, setExpandedDonor] = useState(null);
+  const [view, setView] = useState("byDonor");
 
   function toggleSector(sector) {
     setExpandedSectors((prev) => {
@@ -32,12 +36,14 @@ export default function DonorsLobbying() {
 
   useEffect(() => {
     async function load() {
-      const { data } = await supabase
-        .from("financial_interests")
-        .select("donor_name, value_amount, date_registered, politicians(id, name, party, party_colour)")
-        .not("value_amount", "is", null)
-        .not("donor_name", "is", null);
-      setRows(data ?? []);
+      const data = await fetchAllRows(() =>
+        supabase
+          .from("financial_interests")
+          .select("donor_name, value_amount, date_registered, politicians(id, name, party, party_colour)")
+          .not("value_amount", "is", null)
+          .not("donor_name", "is", null)
+      );
+      setRows(data);
     }
     load();
   }, []);
@@ -148,6 +154,47 @@ export default function DonorsLobbying() {
 
       <EducationSection />
 
+      <div style={{ display: "flex", gap: 2, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: 3, marginBottom: 24, width: "fit-content" }}>
+        {[
+          { key: "byDonor", label: "By Donor & Sector" },
+          { key: "byCompany", label: "By Company" },
+        ].map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => withScrollPreserved(() => setView(tab.key))}
+            style={{
+              position: "relative",
+              fontFamily: FONT_BODY,
+              fontSize: 13,
+              fontWeight: 600,
+              padding: "8px 18px",
+              borderRadius: 999,
+              border: "none",
+              cursor: "pointer",
+              background: "transparent",
+              color: view === tab.key ? "#fff" : COLORS.inkSoft,
+              transition: "color 0.15s",
+            }}
+          >
+            {view === tab.key && (
+              <motion.span
+                layoutId="donors-view-pill"
+                transition={{ type: "spring", stiffness: 500, damping: 38 }}
+                style={{ position: "absolute", inset: 0, background: COLORS.ink, borderRadius: 999, zIndex: 0 }}
+              />
+            )}
+            <span style={{ position: "relative", zIndex: 1 }}>{tab.label}</span>
+          </button>
+        ))}
+      </div>
+
+      <AnimatePresence mode="wait" initial={false}>
+      {view === "byCompany" ? (
+        <motion.div key="byCompany" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.18, ease: "easeInOut" }}>
+          <CompanyDonorsView />
+        </motion.div>
+      ) : (
+        <motion.div key="byDonor" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.18, ease: "easeInOut" }}>
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -380,6 +427,9 @@ export default function DonorsLobbying() {
           );
         })}
       </div>
+        </motion.div>
+      )}
+      </AnimatePresence>
 
       <div
         style={{

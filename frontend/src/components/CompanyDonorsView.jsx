@@ -1,32 +1,32 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_BODY } from "../theme";
 import { getDonorSector, sectorColor } from "../lib/donorSectors";
 import { partyColour, formatDate } from "../lib/format";
-import { PageHeader } from "./shared";
-import { IconBriefcase } from "./icons";
+import { fetchAllRows } from "../lib/supabasePagination";
 
-// This is a company-first view of the same underlying data as Donors &
-// Lobbying — which is donor-first (grouped by MP and by industry sector).
-// Here we group by the actual registered company (via Companies House
-// number, not just the raw donor-name string, since the same company can
-// appear under several name variants in the register). We can't run a
-// general company search here: that would mean calling the Companies House
-// API straight from the browser, which would expose the API key and isn't
-// something this static frontend can do safely. So this only ever shows
-// companies that are *also* declared donors — not a general business
-// directory.
+// This is a company-first view of the same underlying data shown elsewhere
+// on this page donor-first (grouped by MP and by industry sector). Here we
+// group by the actual registered company (via Companies House number, not
+// just the raw donor-name string, since the same company can appear under
+// several name variants in the register). We can't run a general company
+// search here: that would mean calling the Companies House API straight
+// from the browser, which would expose the API key and isn't something
+// this static frontend can do safely. So this only ever shows companies
+// that are *also* declared donors — not a general business directory.
 function useDonorCompanies() {
   const [companies, setCompanies] = useState(null);
 
   useEffect(() => {
     async function load() {
-      const { data } = await supabase
-        .from("financial_interests")
-        .select("donor_name, value_amount, date_registered, politicians(name, party, party_colour)")
-        .not("value_amount", "is", null)
-        .not("donor_name", "is", null);
+      const data = await fetchAllRows(() =>
+        supabase
+          .from("financial_interests")
+          .select("donor_name, value_amount, date_registered, politicians(name, party, party_colour)")
+          .not("value_amount", "is", null)
+          .not("donor_name", "is", null)
+      );
 
       const byCompany = new Map(); // companyNumber -> aggregate
       for (const row of data ?? []) {
@@ -65,7 +65,7 @@ function useDonorCompanies() {
   return companies;
 }
 
-export default function CompaniesHouse() {
+export function CompanyDonorsView() {
   const companies = useDonorCompanies();
   const [query, setQuery] = useState("");
   const [sectorFilter, setSectorFilter] = useState("All");
@@ -89,26 +89,18 @@ export default function CompaniesHouse() {
   }, [companies, query, sectorFilter]);
 
   return (
-    <div style={{ maxWidth: 1080, margin: "0 auto", padding: PAGE_PADDING }}>
-      <PageHeader
-        icon={IconBriefcase}
-        kicker="Public Record · Companies House"
-        title="Companies behind the donations"
-        subtitle="A company-first look at the same declared donations as Donors & Lobbying — search a company to see its official Companies House record and every MP it's given money to."
-      />
-
+    <div style={{ maxWidth: 1080 }}>
       <div
         style={{
           background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12,
-          padding: "14px 18px", marginTop: 24, marginBottom: 24, maxWidth: 820,
+          padding: "14px 18px", marginBottom: 24, maxWidth: 820,
           fontFamily: FONT_BODY, fontSize: 13, lineHeight: 1.6, color: COLORS.inkSoft,
         }}
       >
         This only covers companies that are <strong style={{ color: COLORS.ink }}>also declared donors</strong> to an
         MP — it isn't a general Companies House search. We can't safely query the live Companies House API from your
         browser (that would expose the API key), so this list is limited to the {companies?.length ?? "…"} companies
-        already confidently matched via the same process described on the{" "}
-        <strong style={{ color: COLORS.ink }}>Donors & Lobbying</strong> page.
+        already confidently matched via the same process described below.
       </div>
 
       <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 16, flexWrap: "wrap", maxWidth: 900 }}>

@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, useMotionValue, animate } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY } from "../theme";
 import { formatDate, partyColour } from "../lib/format";
 import { categoriseBill } from "../lib/bills";
+import { getWatchlist, removeFromWatchlist } from "../lib/watchlist";
+import { IconSearch } from "./icons";
 import { PageHeader } from "./shared";
 
 function yearsAgo(year) {
@@ -28,15 +30,19 @@ function CountUp({ value }) {
   return <>{value ? display : "…"}</>;
 }
 
-export default function Home({ onBrowse, onNavigate, mpCount }) {
+export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
   const [activeTab, setActiveTab] = useState("donations");
   const [donations, setDonations] = useState([]);
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [parties, setParties] = useState([]);
+  const [allPoliticians, setAllPoliticians] = useState([]);
+  const [constituencyQuery, setConstituencyQuery] = useState("");
+  const [watchlist, setWatchlist] = useState(() => getWatchlist());
   const [upcomingBills, setUpcomingBills] = useState([]);
   const [loadingExtras, setLoadingExtras] = useState(true);
   const [onThisDay, setOnThisDay] = useState(null);
+  const [todaysBusiness, setTodaysBusiness] = useState(null);
+  const [parliamentTab, setParliamentTab] = useState("today");
 
   useEffect(() => {
     async function loadRecent() {
@@ -66,8 +72,8 @@ export default function Home({ onBrowse, onNavigate, mpCount }) {
 
   useEffect(() => {
     async function loadExtras() {
-      const [partiesRes, billsRes] = await Promise.all([
-        supabase.from("politicians").select("party, party_colour"),
+      const [politiciansRes, billsRes] = await Promise.all([
+        supabase.from("politicians").select("id, name, party, party_colour, constituency, thumbnail_url"),
         supabase
           .from("bills")
           .select("*")
@@ -75,13 +81,7 @@ export default function Home({ onBrowse, onNavigate, mpCount }) {
           .order("next_sitting_date", { ascending: true })
           .limit(7),
       ]);
-      const map = new Map();
-      for (const p of partiesRes.data ?? []) {
-        if (!p.party) continue;
-        if (!map.has(p.party)) map.set(p.party, { name: p.party, color: partyColour(p.party_colour, COLORS.inkSoft), count: 0 });
-        map.get(p.party).count += 1;
-      }
-      setParties([...map.values()].sort((a, b) => b.count - a.count).slice(0, 7));
+      setAllPoliticians(politiciansRes.data ?? []);
       setUpcomingBills(billsRes.data ?? []);
       setLoadingExtras(false);
     }
@@ -96,8 +96,30 @@ export default function Home({ onBrowse, onNavigate, mpCount }) {
     loadOnThisDay();
   }, []);
 
+  useEffect(() => {
+    async function loadTodaysBusiness() {
+      const { data } = await supabase.from("todays_business").select("*").order("id", { ascending: true });
+      setTodaysBusiness(data ?? []);
+    }
+    loadTodaysBusiness();
+  }, []);
+
   const items = activeTab === "donations" ? donations : roles;
-  const maxPartyCount = Math.max(1, ...parties.map((p) => p.count));
+
+  const constituencyMatches = useMemo(() => {
+    const q = constituencyQuery.trim().toLowerCase();
+    if (q.length < 2) return [];
+    return allPoliticians.filter((p) => p.constituency?.toLowerCase().includes(q)).slice(0, 6);
+  }, [allPoliticians, constituencyQuery]);
+
+  function handleSelectPolitician(p) {
+    onViewProfile?.(p);
+  }
+
+  function handleRemoveWatched(id) {
+    removeFromWatchlist(id);
+    setWatchlist(getWatchlist());
+  }
 
   return (
     <div style={{ maxWidth: 1100, margin: "0 auto", padding: "clamp(48px, 10vw, 80px) clamp(16px, 5vw, 24px)", textAlign: "center", position: "relative" }}>
@@ -204,7 +226,7 @@ export default function Home({ onBrowse, onNavigate, mpCount }) {
                       {activeTab === "donations" && item.value_amount && (
                         <div
                           style={{
-                            fontFamily: FONT_MONO,
+                            fontFamily: FONT_BODY,
                             fontSize: 14,
                             fontWeight: 700,
                             color: "#fff",
@@ -225,98 +247,234 @@ export default function Home({ onBrowse, onNavigate, mpCount }) {
           </div>
 
           <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: 20, boxShadow: "0 2px 8px rgba(30,42,68,0.06)" }}>
-            <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 4 }}>
-              On This Day in Parliament
-            </div>
-            <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.75, marginBottom: 14 }}>
-              Debates the Commons actually held on today's date in past years, straight from the official Hansard record.
-            </div>
-
-            {onThisDay === null && (
-              <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>Loading…</div>
-            )}
-            {onThisDay !== null && onThisDay.length === 0 && (
-              <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>
-                Nothing notable turned up in Hansard for today's date — check back tomorrow.
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4, gap: 10, flexWrap: "wrap" }}>
+              <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink }}>
+                Parliament {parliamentTab === "today" ? "Today" : "On This Day"}
               </div>
-            )}
-
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {onThisDay?.map((item, i) => (
-                <a
-                  key={`${item.year}-${item.title}`}
-                  href={item.source_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{
-                    display: "flex",
-                    gap: 12,
-                    alignItems: "flex-start",
-                    textDecoration: "none",
-                    paddingBottom: 12,
-                    borderBottom: i < onThisDay.length - 1 ? `1px solid ${COLORS.hairline}` : "none",
-                  }}
-                >
-                  <div
+              <div style={{ display: "flex", gap: 2, background: COLORS.paper, borderRadius: 999, padding: 2 }}>
+                {[
+                  { key: "today", label: "Today" },
+                  { key: "history", label: "On This Day" },
+                ].map((tab) => (
+                  <button
+                    key={tab.key}
+                    onClick={() => setParliamentTab(tab.key)}
                     style={{
-                      flexShrink: 0,
-                      fontFamily: FONT_DISPLAY,
-                      fontSize: 13,
+                      fontFamily: FONT_BODY,
+                      fontSize: 11.5,
                       fontWeight: 600,
-                      color: "#fff",
-                      background: COLORS.brass,
+                      padding: "5px 11px",
                       borderRadius: 999,
-                      padding: "3px 10px",
-                      marginTop: 2,
+                      border: "none",
+                      cursor: "pointer",
+                      background: parliamentTab === tab.key ? COLORS.ink : "transparent",
+                      color: parliamentTab === tab.key ? "#fff" : COLORS.inkSoft,
+                      transition: "background 0.15s, color 0.15s",
                     }}
                   >
-                    {item.year}
-                  </div>
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, color: COLORS.ink, lineHeight: 1.35 }}>
-                      {item.title}
-                    </div>
-                    <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 3 }}>
-                      {yearsAgo(item.year)} · Hansard record ↗
-                    </div>
-                  </div>
-                </a>
-              ))}
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
             </div>
+
+            {parliamentTab === "today" ? (
+              <>
+                <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.75, marginBottom: 14 }}>
+                  What's actually scheduled in the Commons chamber today, straight from Parliament's own business calendar.
+                </div>
+
+                {todaysBusiness === null && (
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>Loading…</div>
+                )}
+                {todaysBusiness !== null && todaysBusiness.length === 0 && (
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>
+                    The Commons doesn't appear to be sitting today — check back on the next sitting day.
+                  </div>
+                )}
+
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {todaysBusiness?.map((item, i) => (
+                    <div
+                      key={item.id}
+                      style={{
+                        display: "flex",
+                        gap: 12,
+                        alignItems: "flex-start",
+                        paddingBottom: 10,
+                        borderBottom: i < todaysBusiness.length - 1 ? `1px solid ${COLORS.hairline}` : "none",
+                      }}
+                    >
+                      <div
+                        style={{
+                          flexShrink: 0,
+                          fontFamily: FONT_BODY,
+                          fontSize: 11.5,
+                          fontWeight: 700,
+                          color: COLORS.brass,
+                          minWidth: 42,
+                          marginTop: 2,
+                        }}
+                      >
+                        {item.event_time ?? "—"}
+                      </div>
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ fontFamily: FONT_DISPLAY, fontSize: 14.5, color: COLORS.ink, lineHeight: 1.35 }}>
+                          {item.description}
+                        </div>
+                        <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 2 }}>
+                          {item.category ?? item.event_type}
+                          {item.lead_member ? ` · ${item.lead_member}` : ""}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <>
+                <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.75, marginBottom: 14 }}>
+                  Debates the Commons actually held on today's date in past years, straight from the official Hansard record.
+                </div>
+
+                {onThisDay === null && (
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>Loading…</div>
+                )}
+                {onThisDay !== null && onThisDay.length === 0 && (
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>
+                    Nothing notable turned up in Hansard for today's date — check back tomorrow.
+                  </div>
+                )}
+
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {onThisDay?.map((item, i) => (
+                    <a
+                      key={`${item.year}-${item.title}`}
+                      href={item.source_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{
+                        display: "flex",
+                        gap: 12,
+                        alignItems: "flex-start",
+                        textDecoration: "none",
+                        paddingBottom: 12,
+                        borderBottom: i < onThisDay.length - 1 ? `1px solid ${COLORS.hairline}` : "none",
+                      }}
+                    >
+                      <div
+                        style={{
+                          flexShrink: 0,
+                          fontFamily: FONT_DISPLAY,
+                          fontSize: 13,
+                          fontWeight: 600,
+                          color: "#fff",
+                          background: COLORS.brass,
+                          borderRadius: 999,
+                          padding: "3px 10px",
+                          marginTop: 2,
+                        }}
+                      >
+                        {item.year}
+                      </div>
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, color: COLORS.ink, lineHeight: 1.35 }}>
+                          {item.title}
+                        </div>
+                        <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 3 }}>
+                          {yearsAgo(item.year)} · Hansard record ↗
+                        </div>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 24, marginBottom: 36, textAlign: "left" }}>
           <div style={{ display: "flex", flexDirection: "column", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: 20, boxShadow: "0 2px 8px rgba(30,42,68,0.06)" }}>
-            <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 14 }}>
-              Party Breakdown
+            <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 4 }}>
+              Find Your MP
             </div>
-            {loadingExtras && <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>Loading…</div>}
-            <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 10 }}>
-              {parties.map((party, i) => (
-                <motion.div
-                  key={party.name}
-                  initial={{ opacity: 0, x: -8 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: i * 0.04 }}
-                >
-                  <div style={{ display: "flex", justifyContent: "space-between", fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, marginBottom: 3 }}>
-                    <span>{party.name}</span>
-                    <span style={{ color: COLORS.inkSoft }}>{party.count}</span>
-                  </div>
-                  <div style={{ height: 7, borderRadius: 999, background: COLORS.paper, overflow: "hidden" }}>
-                    <motion.div
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${(party.count / maxPartyCount) * 100}%` }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.5, delay: 0.1 + i * 0.04, ease: "easeOut" }}
-                      style={{ height: "100%", borderRadius: 999, background: party.color }}
-                    />
-                  </div>
-                </motion.div>
-              ))}
+            <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 12 }}>
+              Search by constituency to jump straight to their profile
             </div>
+
+            {watchlist.length > 0 && (
+              <div style={{ marginBottom: 14, paddingBottom: 14, borderBottom: `1px solid ${COLORS.hairline}` }}>
+                <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+                  Your Watchlist
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  {watchlist.map((p) => {
+                    const wColor = partyColour(p.party_colour, COLORS.inkSoft);
+                    return (
+                      <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <button
+                          onClick={() => handleSelectPolitician(p)}
+                          style={{ display: "flex", alignItems: "center", gap: 8, flex: 1, minWidth: 0, background: "none", border: "none", padding: "4px 0", cursor: "pointer", textAlign: "left" }}
+                        >
+                          <span style={{ width: 7, height: 7, borderRadius: "50%", background: wColor, flexShrink: 0 }} />
+                          <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</span>
+                          <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, flexShrink: 0 }}>· {p.constituency}</span>
+                        </button>
+                        <button
+                          onClick={() => handleRemoveWatched(p.id)}
+                          title="Remove from watchlist"
+                          style={{ flexShrink: 0, background: "none", border: "none", color: COLORS.inkSoft, cursor: "pointer", fontSize: 13, padding: 4, opacity: 0.6 }}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            <div style={{ position: "relative" }}>
+              <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: COLORS.inkSoft, display: "flex" }}>
+                <IconSearch size={15} />
+              </span>
+              <input
+                value={constituencyQuery}
+                onChange={(e) => setConstituencyQuery(e.target.value)}
+                placeholder="e.g. Holborn and St Pancras"
+                style={{
+                  width: "100%", boxSizing: "border-box", padding: "10px 12px 10px 36px", fontFamily: FONT_BODY, fontSize: 13.5,
+                  border: `1px solid ${COLORS.hairline}`, borderRadius: 9, background: COLORS.paper, color: COLORS.ink,
+                }}
+              />
+            </div>
+
+            {constituencyQuery.trim().length >= 2 && (
+              <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 2 }}>
+                {constituencyMatches.length === 0 ? (
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, padding: "8px 2px" }}>No constituency matches that search.</div>
+                ) : (
+                  constituencyMatches.map((p) => {
+                    const mColor = partyColour(p.party_colour, COLORS.inkSoft);
+                    return (
+                      <button
+                        key={p.id}
+                        onClick={() => handleSelectPolitician(p)}
+                        style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", padding: "7px 4px", borderRadius: 7, cursor: "pointer", textAlign: "left" }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = COLORS.paper; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                      >
+                        <span style={{ width: 7, height: 7, borderRadius: "50%", background: mColor, flexShrink: 0 }} />
+                        <span style={{ minWidth: 0 }}>
+                          <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.constituency}</div>
+                          <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>{p.name} · {p.party}</div>
+                        </span>
+                      </button>
+                    );
+                  })
+                )}
+              </div>
+            )}
           </div>
 
           <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: 20, boxShadow: "0 2px 8px rgba(30,42,68,0.06)" }}>

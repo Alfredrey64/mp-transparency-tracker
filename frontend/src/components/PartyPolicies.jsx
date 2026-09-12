@@ -7,14 +7,6 @@ import { isTrackedParty, findManifesto } from "../data/partyManifestos";
 import { PageHeader } from "./shared";
 import { IconManifesto } from "./icons";
 
-// The SNP's official registered colour is a very bright, saturated yellow
-// that's hard to read as text/borders and clashes with the rest of the
-// palette — swap it for the app's existing muted gold token, which still
-// reads unmistakably as "SNP yellow" without the glare.
-const PARTY_COLOR_OVERRIDES = {
-  "Scottish National Party": COLORS.gold,
-};
-
 // The party-colour dot is the only element that shares a layoutId between
 // the grid card and the modal — like the CommonsBadge morph elsewhere in
 // this app, it's a small, fixed-proportion shape with no text in it, so the
@@ -49,8 +41,7 @@ function useParties() {
         const manifesto = findManifesto(p.party);
         const groupKey = manifesto?.key ?? p.party;
         if (!map.has(groupKey)) {
-          const rawColor = partyColour(p.party_colour, COLORS.inkSoft);
-          map.set(groupKey, { name: p.party, color: PARTY_COLOR_OVERRIDES[p.party] ?? rawColor, seats: 0 });
+          map.set(groupKey, { name: p.party, color: partyColour(p.party_colour, COLORS.inkSoft), seats: 0 });
         }
         map.get(groupKey).seats += 1;
       }

@@ -4,6 +4,10 @@ import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
 import { partyColour, timeInOffice, shortCategory, formatDate, initials, ONGOING_ROLE_CATEGORIES } from "../lib/format";
 import { getDonorSector, sectorColor } from "../lib/donorSectors";
+import { sectorToBillCategory } from "../lib/sectorBillMapping";
+import { categoriseBill } from "../lib/bills";
+import { isWatched, toggleWatch } from "../lib/watchlist";
+import { IconStar } from "./icons";
 import {
   SectionDivider,
   CardShell,
@@ -96,6 +100,93 @@ function FundingBySectorBox({ interests }) {
   );
 }
 
+// A division's own `title` (e.g. "Finance Bill: Third Reading") isn't
+// linked to a `bills` row by any shared key — the two come from separate
+// parliamentary data sources. Matching on a title prefix is the same
+// imperfect-but-reasonable approach VotingRecords.jsx uses in the other
+// direction (bill → its divisions).
+function matchBillForVote(voteTitle, categorisedBills) {
+  return categorisedBills.find((b) => b.short_title && voteTitle.startsWith(b.short_title)) ?? null;
+}
+
+function MoneyAndVotesBox({ politician, interests }) {
+  const [votes, setVotes] = useState(null);
+  const [bills, setBills] = useState(null);
+
+  useEffect(() => {
+    async function load() {
+      const [{ data: v }, { data: b }] = await Promise.all([
+        supabase.from("voting_records").select("title, date, voted_aye").eq("politician_id", politician.id),
+        supabase.from("bills").select("short_title, sponsoring_department"),
+      ]);
+      setVotes(v ?? []);
+      setBills(b ?? []);
+    }
+    load();
+  }, [politician.id]);
+
+  const links = useMemo(() => {
+    if (!votes || !bills) return null;
+    const categorisedBills = bills.map((b) => ({ ...b, category: categoriseBill(b) }));
+    const bySector = groupInterestsBySector(interests);
+
+    return bySector
+      .map((s) => {
+        const targetCategory = sectorToBillCategory(s.sector);
+        if (!targetCategory) return null;
+        const relatedVotes = votes
+          .map((v) => ({ ...v, bill: matchBillForVote(v.title, categorisedBills) }))
+          .filter((v) => v.bill?.category.label === targetCategory)
+          .sort((a, b) => new Date(b.date) - new Date(a.date));
+        if (relatedVotes.length === 0) return null;
+        return { sector: s.sector, color: s.color, sectorTotal: s.total, category: targetCategory, votes: relatedVotes };
+      })
+      .filter(Boolean);
+  }, [votes, bills, interests]);
+
+  if (links === null) return null;
+  if (links.length === 0) return null;
+
+  return (
+    <CardShell title="Money & Votes">
+      <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginBottom: 12, lineHeight: 1.55 }}>
+        Where this MP's declared donors' industry overlaps with a bill's policy area, and they voted on it. This is
+        a factual overlap, not evidence the donation influenced the vote — most MPs vote with their party regardless
+        of who has donated to them, and a shared policy area doesn't establish a connection between the two.
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+        {links.map((link) => (
+          <div key={link.sector} style={{ background: `${link.color}0c`, border: `1px solid ${link.color}33`, borderRadius: 10, padding: "10px 13px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8, marginBottom: 8, flexWrap: "wrap" }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink }}>
+                <strong>£{Math.round(link.sectorTotal).toLocaleString()}</strong> from {link.sector} donors
+              </div>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: link.color, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                {link.category} · {link.votes.length} vote{link.votes.length === 1 ? "" : "s"}
+              </div>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {link.votes.map((v, i) => (
+                <div key={i} style={{ display: "flex", justifyContent: "space-between", gap: 10, fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>
+                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{v.title}</span>
+                  <span
+                    style={{
+                      flexShrink: 0, fontWeight: 700, fontSize: 10.5, textTransform: "uppercase", padding: "1px 7px", borderRadius: 999,
+                      color: v.voted_aye ? "#2F6F4E" : "#9C3B3B", background: v.voted_aye ? "#E4EEE7" : "#F3E4E2",
+                    }}
+                  >
+                    {v.voted_aye ? "Aye" : "No"}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </CardShell>
+  );
+}
+
 function CurrentRolesBox({ interests }) {
   const roles = useMemo(
     () => interests.filter((item) => ONGOING_ROLE_CATEGORIES.includes(item.category)),
@@ -134,6 +225,7 @@ export default function PoliticianDetail({ politician, onBack }) {
   const [activeTab, setActiveTab] = useState("all");
   const [avatarErrored, setAvatarErrored] = useState(false);
   const [avatarLoaded, setAvatarLoaded] = useState(false);
+  const [watched, setWatched] = useState(() => isWatched(politician.id));
 
   useEffect(() => {
     async function load() {
@@ -191,7 +283,7 @@ export default function PoliticianDetail({ politician, onBack }) {
       </button>
 
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ position: "relative", paddingBottom: 28, borderBottom: `1px solid ${COLORS.hairline}`, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 10, overflow: "hidden" }}>
+        <div style={{ position: "relative", paddingTop: 10, paddingBottom: 28, borderBottom: `1px solid ${COLORS.hairline}`, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 10 }}>
           {politician.thumbnail_url && !avatarErrored ? (
             <div
               style={{
@@ -207,7 +299,7 @@ export default function PoliticianDetail({ politician, onBack }) {
                 onError={() => setAvatarErrored(true)}
                 onLoad={() => setAvatarLoaded(true)}
                 style={{
-                  width: 86, height: 86, borderRadius: "50%", objectFit: "cover", objectPosition: "center top",
+                  width: 70, height: 70, borderRadius: "50%", objectFit: "cover", objectPosition: "center",
                   opacity: avatarLoaded ? 1 : 0, transition: "opacity 0.25s ease",
                 }}
               />
@@ -234,7 +326,21 @@ export default function PoliticianDetail({ politician, onBack }) {
             </div>
           )}
           <div>
-            <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 30, color: COLORS.ink, margin: 0 }}>{politician.name}</h1>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}>
+              <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 30, color: COLORS.ink, margin: 0 }}>{politician.name}</h1>
+              <button
+                onClick={() => setWatched(toggleWatch(politician))}
+                title={watched ? "Remove from your watchlist" : "Add to your watchlist"}
+                style={{
+                  display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                  width: 32, height: 32, borderRadius: "50%", border: `1px solid ${watched ? COLORS.brass : COLORS.hairline}`,
+                  background: watched ? `${COLORS.brass}14` : "transparent", color: watched ? COLORS.brass : COLORS.inkSoft,
+                  cursor: "pointer", transition: "background 0.15s, border-color 0.15s, color 0.15s",
+                }}
+              >
+                <IconStar size={16} filled={watched} />
+              </button>
+            </div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontFamily: FONT_BODY, fontSize: 15, color: COLORS.inkSoft, marginTop: 5 }}>
               <span style={{ width: 9, height: 9, borderRadius: "50%", background: color, flexShrink: 0 }} />
               {politician.party} · {politician.constituency}
@@ -349,6 +455,7 @@ export default function PoliticianDetail({ politician, onBack }) {
             <BiographyBox politician={politician} />
             <CurrentRolesBox interests={interests} />
             <FundingBySectorBox interests={interests} />
+            <MoneyAndVotesBox politician={politician} interests={interests} />
             <ContactBox politician={politician} />
             <CabinetRoleBox politician={politician} />
             <VotingSummaryBox politician={politician} />

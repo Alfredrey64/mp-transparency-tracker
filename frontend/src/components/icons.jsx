@@ -155,3 +155,81 @@ export function IconFormerMP({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconBudget({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3v9l7.8 4.5" />
+      <path d="M12 3a9 9 0 1 0 9 9h-9Z" />
+    </svg>
+  );
+}
+
+export function IconPartyFinance({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3 4 7v1.5h16V7Z" />
+      <path d="M5.5 8.5V17M9.5 8.5V17M14.5 8.5V17M18.5 8.5V17" />
+      <path d="M3.5 20h17" />
+    </svg>
+  );
+}
+
+export function IconByElection({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 10h16v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z" />
+      <path d="M4 10 8 4h8l4 6" />
+      <path d="m9 13.5 2.2 2.2L15.5 11" />
+    </svg>
+  );
+}
+
+export function IconPulse({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M8 12h2l1.5 3.5L14 7l1.5 5H16" />
+    </svg>
+  );
+}
+
+export function IconCabinet({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="10" width="18" height="10" rx="1.5" />
+      <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+      <circle cx="12" cy="15" r="1.4" />
+    </svg>
+  );
+}
+
+export function IconTimeline({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="4" y1="12" x2="20" y2="12" />
+      <line x1="4" y1="18" x2="20" y2="18" />
+      <circle cx="8" cy="6" r="1.6" fill="currentColor" stroke="none" />
+      <circle cx="15" cy="12" r="1.6" fill="currentColor" stroke="none" />
+      <circle cx="10" cy="18" r="1.6" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function IconStar({ size = 17, filled = false }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m12 3.5 2.6 5.6 6 0.7-4.4 4.2 1.1 6-5.3-3-5.3 3 1.1-6-4.4-4.2 6-0.7Z" />
+    </svg>
+  );
+}
+
+export function IconSearch({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="10.5" cy="10.5" r="6.5" />
+      <line x1="19.5" y1="19.5" x2="15.3" y2="15.3" />
+    </svg>
+  );
+}

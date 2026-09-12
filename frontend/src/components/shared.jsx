@@ -8,13 +8,13 @@ export function PageHeader({ kicker = "Public Record · UK Parliament", title, s
   const isHero = size === "xl";
   return (
     <div style={{ marginBottom: isHero ? 0 : 28, maxWidth, textAlign: align }}>
-      <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
+      <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22 }}>
         <EyebrowLabel>{kicker}</EyebrowLabel>
       </motion.div>
       <motion.h1
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.05, ease: "easeOut" }}
+        transition={{ duration: 0.24, delay: 0.02, ease: "easeOut" }}
         style={{
           fontFamily: FONT_DISPLAY,
           fontSize: isHero ? "clamp(32px, 6vw, 56px)" : "clamp(26px, 4vw, 34px)",
@@ -29,9 +29,9 @@ export function PageHeader({ kicker = "Public Record · UK Parliament", title, s
       >
         {Icon && (
           <motion.span
-            initial={{ scale: 0.6, rotate: -8, opacity: 0 }}
+            initial={{ scale: 0.75, rotate: -6, opacity: 0 }}
             animate={{ scale: 1, rotate: 0, opacity: 1 }}
-            transition={{ duration: 0.45, delay: 0.1, ease: "backOut" }}
+            transition={{ duration: 0.3, delay: 0.04, ease: "backOut" }}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -52,7 +52,7 @@ export function PageHeader({ kicker = "Public Record · UK Parliament", title, s
       <motion.div
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
-        transition={{ duration: 0.55, delay: 0.25, ease: "easeOut" }}
+        transition={{ duration: 0.3, delay: 0.08, ease: "easeOut" }}
         style={{
           transformOrigin: align === "center" ? "center" : "left",
           height: 3,

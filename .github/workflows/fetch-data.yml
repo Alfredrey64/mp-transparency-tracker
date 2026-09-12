@@ -1,4 +1,4 @@
-name: Fetch MP Financial Interests, Voting Records, Bills, Donor Sectors, News, Former MPs, and On This Day
+name: Fetch MP Financial Interests, Voting Records, Bills, Donor Sectors, News, Former MPs, On This Day, Today's Business, Party Finances, and By-Elections
 
 on:
   schedule:
@@ -57,17 +57,45 @@ jobs:
           COMPANIES_HOUSE_API_KEY: ${{ secrets.COMPANIES_HOUSE_API_KEY }}
         run: node fetch-donor-sectors.js
 
+      - name: Run the party donations fetch script
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node fetch-party-donations.js
+
+      - name: Run the party donor sector tagging script
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          COMPANIES_HOUSE_API_KEY: ${{ secrets.COMPANIES_HOUSE_API_KEY }}
+        run: node fetch-party-donor-sectors.js
+
       - name: Run the former MPs fetch script
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-former-mps.js
 
+      # Checks every current MP's latest election result, so this is another
+      # ~650-request crawl like the MP news step above — expect it to take a
+      # few minutes too.
+      - name: Run the by-elections fetch script
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node fetch-by-elections.js
+
       - name: Run the on-this-day fetch script
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-on-this-day.js
+
+      - name: Run today's Commons business fetch script
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node fetch-todays-business.js
 
       # The three scripts above write straight to Supabase, so the live site
       # picks them up on its next request — no deploy needed. The donor
@@ -79,6 +107,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json
+          git add frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json frontend/src/data/partyDonorSectors.json frontend/src/data/partyDonorSectorsMeta.json
           git diff --staged --quiet || git commit -m "chore: daily donor sector data refresh"
           git push

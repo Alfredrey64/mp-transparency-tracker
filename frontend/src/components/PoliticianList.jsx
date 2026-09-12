@@ -47,7 +47,7 @@ function Avatar({ politician, color }) {
           onError={() => setErrored(true)}
           onLoad={() => setLoaded(true)}
           style={{
-            width: 35, height: 35, borderRadius: "50%", objectFit: "cover", objectPosition: "center top",
+            width: 29, height: 29, borderRadius: "50%", objectFit: "cover", objectPosition: "center",
             opacity: loaded ? 1 : 0, transition: "opacity 0.25s ease",
           }}
         />

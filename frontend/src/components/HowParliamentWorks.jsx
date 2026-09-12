@@ -366,11 +366,13 @@ function ConstituencyLookup() {
           {result.mp ? (
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               {result.mp.thumbnail_url && (
-                <img
-                  src={result.mp.thumbnail_url}
-                  alt=""
-                  style={{ width: 56, height: 56, borderRadius: "50%", objectFit: "cover", objectPosition: "center top", border: `1px solid ${COLORS.hairline}` }}
-                />
+                <div style={{ width: 56, height: 56, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}` }}>
+                  <img
+                    src={result.mp.thumbnail_url}
+                    alt=""
+                    style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", objectPosition: "center" }}
+                  />
+                </div>
               )}
               <div>
                 <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, color: COLORS.ink }}>{result.mp.name}</div>

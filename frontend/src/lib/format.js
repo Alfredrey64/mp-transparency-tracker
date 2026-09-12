@@ -31,8 +31,18 @@ export function shortCategory(category) {
   return CATEGORY_SHORT_NAMES[category] ?? category;
 }
 
+// The SNP's official registered colour (fff685) is a very bright, saturated
+// yellow that's hard to read as text/borders and clashes with the rest of
+// the palette — swap it everywhere for the app's existing muted gold token,
+// which still reads unmistakably as "SNP yellow" without the glare.
+const COLOUR_OVERRIDES = {
+  fff685: "#C9A227",
+};
+
 export function partyColour(hex, fallback) {
   if (!hex) return fallback;
+  const normalized = hex.replace("#", "").toLowerCase();
+  if (COLOUR_OVERRIDES[normalized]) return COLOUR_OVERRIDES[normalized];
   return hex.startsWith("#") ? hex : `#${hex}`;
 }
 

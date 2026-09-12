@@ -1,5 +1,7 @@
 import donorSectorData from "../data/donorSectors.json";
 import donorSectorMeta from "../data/donorSectorsMeta.json";
+import partyDonorSectorData from "../data/partyDonorSectors.json";
+import partyDonorSectorMeta from "../data/partyDonorSectorsMeta.json";
 import { COLORS } from "../theme";
 
 export const SECTOR_COLORS = {
@@ -54,6 +56,24 @@ export function getDonorSector(donorName) {
   const trimmed = donorName.trim();
   if (donorSectorData[trimmed]) return donorSectorData[trimmed];
   return normalizedLookup.get(normalizeDonorKey(trimmed)) ?? null;
+}
+
+export const partyDonorSectorMetadata = partyDonorSectorMeta;
+
+// Same lookup as getDonorSector, but for the separate top-donor set tagged
+// from party_donations (donations made directly to parties, not MPs) —
+// kept as its own file since it's a different donor universe.
+const partyNormalizedLookup = new Map();
+for (const [name, tag] of Object.entries(partyDonorSectorData)) {
+  const key = normalizeDonorKey(name);
+  if (key && !partyNormalizedLookup.has(key)) partyNormalizedLookup.set(key, tag);
+}
+
+export function getPartyDonorSector(donorName) {
+  if (!donorName) return null;
+  const trimmed = donorName.trim();
+  if (partyDonorSectorData[trimmed]) return partyDonorSectorData[trimmed];
+  return partyNormalizedLookup.get(normalizeDonorKey(trimmed)) ?? null;
 }
 
 export function summariseBySector(interests) {

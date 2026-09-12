@@ -401,7 +401,7 @@ function MpVotingHistory({ politician, onBack }) {
               alt=""
               onLoad={() => setAvatarLoaded(true)}
               style={{
-                width: 43, height: 43, borderRadius: "50%", objectFit: "cover", objectPosition: "center top",
+                width: 34, height: 34, borderRadius: "50%", objectFit: "cover", objectPosition: "center",
                 opacity: avatarLoaded ? 1 : 0, transition: "opacity 0.25s ease",
               }}
             />

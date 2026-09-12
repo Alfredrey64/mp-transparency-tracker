@@ -364,7 +364,7 @@ export default function PromiseTracker() {
             alt=""
             onLoad={() => setPmPhotoLoaded(true)}
             style={{
-              width: 53, height: 53, borderRadius: "50%", objectFit: "cover", objectPosition: "center top",
+              width: 43, height: 43, borderRadius: "50%", objectFit: "cover", objectPosition: "center",
               opacity: pmPhotoLoaded ? 1 : 0, transition: "opacity 0.25s ease",
             }}
           />
