@@ -8,7 +8,7 @@ export default function GovernmentTracker() {
     <div style={{ maxWidth: 1080, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconTracker}
-        kicker="Public Record · Government Tracker"
+        kicker="Public Record · Promises Tracker"
         title="Has the government kept its word?"
         subtitle="An independent, evidence-based look at how far Labour has delivered on its 2024 manifesto since forming government."
       />

@@ -1,4 +1,4 @@
-name: Fetch MP Financial Interests, Voting Records, Bills, Donor Sectors, News, Former MPs, On This Day, Today's Business, Party Finances, and By-Elections
+name: Fetch MP Financial Interests, Voting Records, Bills, Donor Sectors, News, Former MPs, On This Day, Today's Business, Party Finances, By-Elections, House of Lords Peers, MP Activity, IPSA Expenses, Petitions, and Ministerial Gifts
 
 on:
   schedule:
@@ -23,19 +23,30 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      # continue-on-error is set on every fetch step below deliberately: each
+      # one writes to its own, independent Supabase table, so one script
+      # having a bad day (a flaky upstream API, a transient network error)
+      # shouldn't stop every step after it from running too — that's what
+      # used to happen here, and was why the donor-sector commit at the very
+      # end (the step that actually deploys anything) kept getting skipped
+      # whenever an earlier, unrelated step failed.
+
       - name: Run the financial interests fetch script
+        continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-interests.js
 
       - name: Run the voting records fetch script
+        continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-votes.js
 
       - name: Run the bills fetch script
+        continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
@@ -45,12 +56,14 @@ jobs:
       # per-MP crawl (~650 requests, politely rate-limited) — expect this
       # step alone to take several minutes.
       - name: Run the MP news fetch script
+        continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-mp-news.js
 
       - name: Run the donor sector tagging script
+        continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
@@ -58,12 +71,14 @@ jobs:
         run: node fetch-donor-sectors.js
 
       - name: Run the party donations fetch script
+        continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-party-donations.js
 
       - name: Run the party donor sector tagging script
+        continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
@@ -71,6 +86,7 @@ jobs:
         run: node fetch-party-donor-sectors.js
 
       - name: Run the former MPs fetch script
+        continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
@@ -80,29 +96,77 @@ jobs:
       # ~650-request crawl like the MP news step above — expect it to take a
       # few minutes too.
       - name: Run the by-elections fetch script
+        continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-by-elections.js
 
       - name: Run the on-this-day fetch script
+        continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-on-this-day.js
 
       - name: Run today's Commons business fetch script
+        continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-todays-business.js
 
-      # The three scripts above write straight to Supabase, so the live site
-      # picks them up on its next request — no deploy needed. The donor
-      # sector tagger is different: it writes a file *in the repo*
+      # ~815 peers, each needing four follow-up requests (biography,
+      # government role, recent debate contributions, recent written
+      # questions) — expect this step to take several minutes.
+      - name: Run the House of Lords peers fetch script
+        continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node fetch-peers.js
+
+      # ~650 MPs, two requests each (debate contributions, written
+      # questions) — the Commons equivalent of the Lords activity above.
+      - name: Run the MP activity fetch script
+        continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node fetch-mp-activity.js
+
+      # Relies on IPSA's own site internals (a Next.js build id, rediscovered
+      # each run) rather than a documented API — see the script's own header
+      # comment for why, and the caveat that comes with that.
+      - name: Run the IPSA business cost claims fetch script
+        continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node fetch-ipsa-expenses.js
+
+      - name: Run the petitions fetch script
+        continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node fetch-petitions.js
+
+      - name: Run the ministerial gifts & hospitality fetch script
+        continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node fetch-ministerial-gifts.js
+
+      # The scripts above write straight to Supabase, so the live site picks
+      # them up on its next request — no deploy needed. The donor sector
+      # tagger is different: it writes a file *in the repo*
       # (frontend/src/data/donorSectors.json), so that file has to be
       # committed and pushed here for the change to exist anywhere, and
-      # pushing it is what triggers Vercel to rebuild the site with it.
+      # pushing it is what triggers Vercel to rebuild the site with it. This
+      # step has no continue-on-error — if it fails, we want the run to show
+      # red rather than silently not deploying anything.
       - name: Commit updated donor sector data, if it changed
         run: |
           git config user.name "github-actions[bot]"

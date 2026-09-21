@@ -10,6 +10,23 @@ import { withScrollPreserved } from "../lib/preserveScroll";
 
 const VOTE_THEMES = ["General", ...new Set(LANDMARK_VOTES.map((v) => v.theme))];
 
+// Groups the (otherwise flat) list of landmark votes into the same rough
+// eras used on the Timeline tab — breaks up what would otherwise be one
+// long, visually uniform stack of cards into a chronological narrative
+// with real hierarchy, rather than trying to make each card busier.
+const HISTORY_ERAS = [
+  { key: "georgian", label: "Georgian Britain", to: 1831, accent: "#8A6D3B" },
+  { key: "victorian", label: "Victorian Era", to: 1900, accent: "#4C7A6B" },
+  { key: "wartime", label: "Edwardian Britain & the World Wars", to: 1945, accent: "#7A4B4B" },
+  { key: "postwar", label: "The Post-War Consensus", to: 1978, accent: "#3F7D5C" },
+  { key: "thatcher", label: "Thatcher to New Labour", to: 2009, accent: "#5A7FA6" },
+  { key: "modern", label: "Coalition, Brexit & Beyond", to: Infinity, accent: "#6E4B6E" },
+];
+
+function eraForYear(year) {
+  return HISTORY_ERAS.find((e) => year <= e.to) ?? HISTORY_ERAS[HISTORY_ERAS.length - 1];
+}
+
 const PARTY_HISTORY = [
   {
     party: "Labour Party",
@@ -254,45 +271,36 @@ function VoteRow({ vote, index }) {
       transition={{ duration: 0.4, delay: Math.min(index, 8) * 0.04, ease: "easeOut" }}
       whileHover={{ y: -3, boxShadow: "0 12px 28px rgba(20,30,32,0.12)", transition: { duration: 0.15, delay: 0 } }}
       style={{
-        position: "relative", overflow: "hidden", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`,
-        borderLeft: `4px solid ${outcomeColor}`, borderRadius: 14, padding: "22px 24px", marginBottom: 16,
+        position: "relative", overflow: "hidden", background: `linear-gradient(135deg, ${themeColor}0a, ${COLORS.paperCard} 55%)`, border: `1px solid ${COLORS.hairline}`,
+        borderLeft: `4px solid ${outcomeColor}`, borderRadius: 13, padding: "17px 20px", marginBottom: 13,
         boxShadow: "0 1px 4px rgba(20,30,32,0.05)",
       }}
     >
-      <div
-        aria-hidden
-        style={{
-          position: "absolute", top: -14, right: 8, fontFamily: FONT_DISPLAY, fontSize: 68, fontWeight: 700,
-          color: COLORS.ink, opacity: 0.05, lineHeight: 1, pointerEvents: "none", userSelect: "none",
-        }}
-      >
-        {vote.year}
-      </div>
-      <div style={{ position: "relative", display: "flex", gap: 16, alignItems: "flex-start" }}>
+      <div style={{ position: "relative", display: "flex", gap: 13, alignItems: "flex-start" }}>
         <span
           style={{
-            flexShrink: 0, width: 40, height: 40, borderRadius: 11, background: `${themeColor}16`,
+            flexShrink: 0, width: 34, height: 34, borderRadius: 10, background: `${themeColor}16`,
             display: "flex", alignItems: "center", justifyContent: "center", color: themeColor,
           }}
         >
-          <BillIcon title={vote.title} size={22} color={themeColor} />
+          <BillIcon title={vote.title} size={18} color={themeColor} />
         </span>
         <div style={{ minWidth: 0, flex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, flexWrap: "wrap" }}>
-            <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12, color: COLORS.inkSoft }}>{vote.date}</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 7, flexWrap: "wrap" }}>
+            <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11.5, color: COLORS.inkSoft }}>{vote.date}</span>
             <span style={{ width: 3, height: 3, borderRadius: "50%", background: COLORS.inkSoft, opacity: 0.5 }} />
             <span
               style={{
-                fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em",
-                color: themeColor, background: `${themeColor}18`, padding: "3px 10px", borderRadius: 999,
+                fontFamily: FONT_BODY, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em",
+                color: themeColor, background: `${themeColor}18`, padding: "2.5px 9px", borderRadius: 999,
               }}
             >
               {vote.theme}
             </span>
           </div>
-          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 19, color: COLORS.ink, lineHeight: 1.4, marginBottom: 12, maxWidth: 560 }}>{vote.title}</div>
+          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink, lineHeight: 1.35, marginBottom: 10, maxWidth: 560 }}>{vote.title}</div>
           <ResultPill outcome={vote.outcome}>{vote.result}</ResultPill>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, lineHeight: 1.7, marginTop: 13, maxWidth: 620 }}>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.65, marginTop: 11, maxWidth: 620 }}>
             {vote.detail}
           </div>
         </div>
@@ -350,7 +358,7 @@ function PartyCard({ party, index, seatCount }) {
       transition={{ duration: 0.35, delay: Math.min(index ?? 0, 8) * 0.04, ease: "easeOut" }}
       style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `4px solid ${party.color}`, borderRadius: 14, padding: 20, boxShadow: "0 1px 4px rgba(20,30,32,0.05)" }}
     >
-      <button onClick={() => setOpen((v) => !v)} style={{ display: "block", width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" }}>
+      <button onClick={() => withScrollPreserved(() => setOpen((v) => !v))} style={{ display: "block", width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
           <div style={{ minWidth: 0 }}>
             <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, color: COLORS.ink, marginBottom: 5 }}>{party.party}</div>
@@ -475,6 +483,10 @@ export default function PoliticalHistory() {
   const sortedVotes = [...LANDMARK_VOTES]
     .filter((v) => voteFilter === "General" || v.theme === voteFilter)
     .sort((a, b) => (a.year - b.year) || a.date.localeCompare(b.date));
+  const voteEraGroups = HISTORY_ERAS.map((era) => ({
+    ...era,
+    votes: sortedVotes.filter((v) => eraForYear(v.year).key === era.key),
+  })).filter((g) => g.votes.length > 0);
 
   return (
     <div style={{ maxWidth: 900, margin: "0 auto", padding: PAGE_PADDING }}>
@@ -532,8 +544,17 @@ export default function PoliticalHistory() {
               </div>
             ) : (
               <div>
-                {sortedVotes.map((v, i) => (
-                  <VoteRow key={v.title} vote={v} index={i} />
+                {voteEraGroups.map((era) => (
+                  <div key={era.key} style={{ marginBottom: 36 }}>
+                    <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 14 }}>
+                      <span style={{ width: 9, height: 9, borderRadius: "50%", background: era.accent, flexShrink: 0 }} />
+                      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 19, color: COLORS.ink }}>{era.label}</div>
+                      <span style={{ flex: 1, height: 1, background: COLORS.hairline }} />
+                    </div>
+                    {era.votes.map((v, i) => (
+                      <VoteRow key={v.title} vote={v} index={i} />
+                    ))}
+                  </div>
                 ))}
               </div>
             )}

@@ -5,6 +5,7 @@ import { COLORS, FONT_BODY } from "../theme";
 import { getDonorSector, sectorColor } from "../lib/donorSectors";
 import { partyColour, formatDate } from "../lib/format";
 import { fetchAllRows } from "../lib/supabasePagination";
+import { withScrollPreserved } from "../lib/preserveScroll";
 
 // This is a company-first view of the same underlying data shown elsewhere
 // on this page donor-first (grouped by MP and by industry sector). Here we
@@ -26,6 +27,7 @@ function useDonorCompanies() {
           .select("donor_name, value_amount, date_registered, politicians(name, party, party_colour)")
           .not("value_amount", "is", null)
           .not("donor_name", "is", null)
+          .order("id", { ascending: true })
       );
 
       const byCompany = new Map(); // companyNumber -> aggregate
@@ -116,11 +118,11 @@ export function CompanyDonorsView() {
       </div>
 
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 20, maxWidth: 900 }}>
-        <FilterPill active={sectorFilter === "All"} color={COLORS.ink} onClick={() => setSectorFilter("All")}>
+        <FilterPill active={sectorFilter === "All"} color={COLORS.ink} onClick={() => withScrollPreserved(() => setSectorFilter("All"))}>
           All sectors ({companies?.length ?? 0})
         </FilterPill>
         {sectors.map(([sector, color]) => (
-          <FilterPill key={sector} active={sectorFilter === sector} color={color} onClick={() => setSectorFilter(sector)}>
+          <FilterPill key={sector} active={sectorFilter === sector} color={color} onClick={() => withScrollPreserved(() => setSectorFilter(sector))}>
             {sector}
           </FilterPill>
         ))}

@@ -233,3 +233,24 @@ export function IconSearch({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconLords({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 19h16" />
+      <path d="M5 19V9.5l2.2 2-2-5.5 3.3 3L12 4l3.5 5 3.3-3-2 5.5 2.2-2V19" />
+    </svg>
+  );
+}
+
+export function IconPetition({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 3h9l4 4v14H6Z" />
+      <path d="M15 3v4h4" />
+      <line x1="9" y1="11" x2="15" y2="11" />
+      <line x1="9" y1="14.5" x2="15" y2="14.5" />
+      <path d="M9 18.5c1.2-1.4 2.4-1.4 3.5 0" />
+    </svg>
+  );
+}

@@ -7,6 +7,7 @@ import { categoriseBill } from "../lib/bills";
 import { getWatchlist, removeFromWatchlist } from "../lib/watchlist";
 import { IconSearch } from "./icons";
 import { PageHeader } from "./shared";
+import { withScrollPreserved } from "../lib/preserveScroll";
 
 function yearsAgo(year) {
   const n = new Date().getFullYear() - year;
@@ -179,7 +180,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
               ].map((tab) => (
                 <button
                   key={tab.key}
-                  onClick={() => setActiveTab(tab.key)}
+                  onClick={() => withScrollPreserved(() => setActiveTab(tab.key))}
                   style={{
                     fontFamily: FONT_BODY,
                     fontSize: 14,
@@ -258,7 +259,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                 ].map((tab) => (
                   <button
                     key={tab.key}
-                    onClick={() => setParliamentTab(tab.key)}
+                    onClick={() => withScrollPreserved(() => setParliamentTab(tab.key))}
                     style={{
                       fontFamily: FONT_BODY,
                       fontSize: 11.5,

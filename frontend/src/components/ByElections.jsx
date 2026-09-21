@@ -5,6 +5,7 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { partyColour, formatDate } from "../lib/format";
 import { PageHeader } from "./shared";
 import { IconByElection } from "./icons";
+import { withScrollPreserved } from "../lib/preserveScroll";
 
 function daysAgo(dateStr) {
   if (!dateStr) return null;
@@ -199,7 +200,7 @@ export default function ByElections() {
               }}
             >
               <button
-                onClick={() => setExpanded(isOpen ? null : e.election_id)}
+                onClick={() => withScrollPreserved(() => setExpanded(isOpen ? null : e.election_id))}
                 style={{ display: "block", width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, marginBottom: 12 }}>

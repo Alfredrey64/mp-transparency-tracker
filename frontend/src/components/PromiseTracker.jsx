@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
+import { withScrollPreserved } from "../lib/preserveScroll";
 
 // Sourced from Full Fact's independent, non-partisan Government Tracker
 // (fullfact.org/government-tracker), which assesses Labour's 2024 manifesto
@@ -274,7 +275,7 @@ function PledgeLine({ pledge }) {
   return (
     <div style={{ borderBottom: `1px solid ${COLORS.hairline}` }}>
       <button
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => withScrollPreserved(() => setOpen((v) => !v))}
         style={{
           display: "flex", alignItems: "center", gap: 10, width: "100%", padding: "11px 2px",
           background: "none", border: "none", cursor: "pointer", textAlign: "left",
@@ -412,11 +413,11 @@ export default function PromiseTracker() {
 
       {/* Filter by status */}
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 22 }}>
-        <FilterPill active={activeFilter === "all"} color={COLORS.ink} onClick={() => setActiveFilter("all")}>
+        <FilterPill active={activeFilter === "all"} color={COLORS.ink} onClick={() => withScrollPreserved(() => setActiveFilter("all"))}>
           All categories
         </FilterPill>
         {Object.entries(STATUS).map(([key, s]) => (
-          <FilterPill key={key} active={activeFilter === key} color={s.color} onClick={() => setActiveFilter(key)}>
+          <FilterPill key={key} active={activeFilter === key} color={s.color} onClick={() => withScrollPreserved(() => setActiveFilter(key))}>
             {s.label}
           </FilterPill>
         ))}

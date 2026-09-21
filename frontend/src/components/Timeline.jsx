@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useId } from "react";
 import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
@@ -6,6 +6,66 @@ import { IconTimeline } from "./icons";
 import { GOVERNMENTS, LANDMARK_VOTES, OUTCOME_COLOR } from "../lib/politicalHistoryData";
 import { BillIcon } from "./billIcons";
 import { withScrollPreserved } from "../lib/preserveScroll";
+import pmPortraits from "../data/pmPortraits.json";
+
+// A small "time flows downward" connector rendered between consecutive
+// entries in the Full Timeline — a soft gradient line easing into a rounded,
+// curved chevron, animated into view the same way the boxes are so the
+// whole chain feels like one continuous reveal rather than a static rail.
+function TimelineArrow({ color, index = 0 }) {
+  const gradientId = useId();
+  return (
+    <motion.div
+      initial={{ opacity: 0, scaleY: 0.4 }}
+      whileInView={{ opacity: 1, scaleY: 1 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.4, delay: Math.min(index, 10) * 0.03, ease: "easeOut" }}
+      style={{ display: "flex", justifyContent: "center", margin: "-3px 0", y: -4, transformOrigin: "top" }}
+      aria-hidden="true"
+    >
+      <svg width="22" height="26" viewBox="0 0 22 26" fill="none">
+        <defs>
+          <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={color} stopOpacity="0.1" />
+            <stop offset="100%" stopColor={color} stopOpacity="0.95" />
+          </linearGradient>
+        </defs>
+        <line x1="11" y1="0" x2="11" y2="14" stroke={`url(#${gradientId})`} strokeWidth="2.25" strokeLinecap="round" />
+        <path d="M3 13 L11 23 L19 13" stroke={color} strokeWidth="2.25" fill="none" strokeLinecap="round" strokeLinejoin="miter" />
+      </svg>
+    </motion.div>
+  );
+}
+
+function PmAvatar({ name, color, size = 40 }) {
+  const [loaded, setLoaded] = useState(false);
+  const [errored, setErrored] = useState(false);
+  const url = pmPortraits[name]?.url;
+
+  if (!url || errored) {
+    return (
+      <div
+        style={{
+          width: size, height: size, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
+          background: color, color: "#fff", fontFamily: FONT_DISPLAY, fontSize: size * 0.36, fontWeight: 600,
+        }}
+      >
+        {name.split(/\s+/).map((w) => w[0]).slice(-2).join("").toUpperCase()}
+      </div>
+    );
+  }
+  return (
+    <div style={{ width: size, height: size, borderRadius: "50%", flexShrink: 0, overflow: "hidden", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}` }}>
+      <img
+        src={url}
+        alt=""
+        onLoad={() => setLoaded(true)}
+        onError={() => setErrored(true)}
+        style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", opacity: loaded ? 1 : 0, transition: "opacity 0.25s ease" }}
+      />
+    </div>
+  );
+}
 
 function historicPartyColor(party) {
   if (/labour/i.test(party)) return "#C8102E";
@@ -120,12 +180,21 @@ function GovernmentEntry({ entry, index, showTerm }) {
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.4, delay: Math.min(index, 10) * 0.03, ease: "easeOut" }}
       whileHover={{ y: -2, transition: { duration: 0.15, delay: 0 } }}
-      onClick={() => setOpen((v) => !v)}
-      style={{
-        display: "flex", gap: 16, alignItems: "center", background: `${color}0c`,
-        border: `1px solid ${color}30`, borderRadius: 12, padding: "16px 20px", margin: "18px 0",
-        cursor: "pointer",
-      }}
+      onClick={() => withScrollPreserved(() => setOpen((v) => !v))}
+      style={
+        showTerm
+          ? {
+              display: "flex", gap: 16, alignItems: "center", background: `${color}0c`,
+              border: `1px solid ${color}30`, borderRadius: 12, padding: "19px 20px 15px", margin: "26px 0",
+              cursor: "pointer",
+            }
+          : {
+              display: "flex", gap: 16, alignItems: "center", background: COLORS.paperCard,
+              border: `1px solid ${COLORS.hairline}`, borderLeft: `3px solid ${color}`, borderRadius: 10,
+              padding: "16px 17px 12px", margin: "16px 0", cursor: "pointer",
+              boxShadow: "0 1px 4px rgba(20,30,32,0.05)",
+            }
+      }
     >
       <div style={{ flexShrink: 0, width: showTerm ? 68 : 58, textAlign: showTerm ? "center" : "right" }}>
         <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: showTerm ? 16 : 17, color, lineHeight: 1.15, fontVariantNumeric: "tabular-nums" }}>
@@ -140,7 +209,13 @@ function GovernmentEntry({ entry, index, showTerm }) {
           </>
         )}
       </div>
-      <div style={{ flexShrink: 0, width: 2, alignSelf: "stretch", background: color, borderRadius: 2, minHeight: 20, opacity: 0.5 }} />
+      <div
+        style={{
+          flexShrink: 0, width: 2, alignSelf: "stretch", borderRadius: 2, minHeight: 20,
+          background: showTerm ? color : COLORS.hairline, opacity: showTerm ? 0.5 : 1,
+        }}
+      />
+      <PmAvatar name={entry.pm} color={color} size={showTerm ? 40 : 36} />
       <div style={{ minWidth: 0, flex: 1 }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
           <span style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink }}>{entry.pm}</span>
@@ -236,7 +311,7 @@ function BillEntry({ entry, index }) {
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.35, delay: Math.min(index, 10) * 0.03, ease: "easeOut" }}
-      style={{ display: "flex", gap: 16, alignItems: "center", margin: "14px 0" }}
+      style={{ display: "flex", gap: 16, alignItems: "center", margin: "16px 0" }}
     >
       <div style={{ flexShrink: 0, width: 58, textAlign: "right" }}>
         <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 15, color: COLORS.ink, lineHeight: 1.15, fontVariantNumeric: "tabular-nums" }}>
@@ -250,18 +325,18 @@ function BillEntry({ entry, index }) {
       </div>
       <div style={{ flexShrink: 0, width: 2, alignSelf: "stretch", background: COLORS.hairline, borderRadius: 2, minHeight: 16 }} />
       <motion.div
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => withScrollPreserved(() => setOpen((v) => !v))}
         whileHover={{ y: -2, boxShadow: "0 8px 20px rgba(20,30,32,0.10)", transition: { duration: 0.15, delay: 0 } }}
         style={{
           minWidth: 0, flex: 1, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `3px solid ${color}`,
-          borderRadius: 10, padding: "13px 17px", cursor: "pointer",
+          borderRadius: 10, padding: "16px 17px 12px", cursor: "pointer",
         }}
       >
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 11 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
           <span
             style={{
               flexShrink: 0, width: 30, height: 30, borderRadius: 9, background: `${color}16`,
-              display: "flex", alignItems: "center", justifyContent: "center", color, marginTop: 1,
+              display: "flex", alignItems: "center", justifyContent: "center", color,
             }}
           >
             <BillIcon title={entry.title} size={17} color={color} />
@@ -331,14 +406,39 @@ function EraSection({ era }) {
         <span style={{ flex: 1, height: 1, background: COLORS.hairline }} />
         <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, flexShrink: 0 }}>{era.range}</span>
       </motion.div>
-      <div style={{ paddingLeft: 26 }}>
-        {era.entries.map((entry, i) =>
-          entry.type === "government" ? (
-            <GovernmentEntry key={`gov-${entry.year}-${i}`} entry={entry} index={i} />
-          ) : (
-            <BillEntry key={`bill-${entry.year}-${i}`} entry={entry} index={i} />
-          )
-        )}
+      <div style={{ paddingLeft: 26, position: "relative" }}>
+        <motion.div
+          aria-hidden="true"
+          initial={{ scaleY: 0, opacity: 0 }}
+          whileInView={{ scaleY: 1, opacity: 1 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          style={{
+            position: "absolute", left: 5, top: 4, bottom: 4, width: 2, borderRadius: 2, transformOrigin: "top",
+            background: `linear-gradient(${era.accent}00, ${era.accent}70 8%, ${era.accent}70 92%, ${era.accent}00)`,
+          }}
+        />
+        {era.entries.map((entry, i) => (
+          <div key={`entry-${entry.year}-${entry.type}-${i}`} style={{ position: "relative" }}>
+            <motion.span
+              aria-hidden="true"
+              initial={{ scale: 0, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.3, delay: Math.min(i, 10) * 0.03, ease: "easeOut" }}
+              style={{
+                position: "absolute", left: -24, top: "50%", marginTop: -4, width: 8, height: 8, borderRadius: "50%",
+                background: era.accent, boxShadow: `0 0 0 3px ${COLORS.paper}, 0 0 0 4px ${era.accent}40`,
+              }}
+            />
+            {i > 0 && <TimelineArrow color={era.accent} index={i} />}
+            {entry.type === "government" ? (
+              <GovernmentEntry entry={entry} index={i} />
+            ) : (
+              <BillEntry entry={entry} index={i} />
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -361,7 +461,12 @@ function PmEraSection({ era }) {
       </motion.div>
       <div style={{ paddingLeft: 26 }}>
         {era.entries.map((entry, i) => (
-          <GovernmentEntry key={`pm-${entry.year}-${entry.pm}-${i}`} entry={entry} index={i} showTerm />
+          <GovernmentEntry
+            key={`pm-${entry.year}-${entry.pm}-${i}`}
+            entry={entry}
+            index={i}
+            showTerm
+          />
         ))}
       </div>
     </div>
@@ -396,7 +501,7 @@ export default function Timeline() {
         icon={IconTimeline}
         kicker="Public Record · Timeline"
         title="Three centuries in one timeline"
-        subtitle="Every government formed since Robert Walpole in 1721, and every landmark bill from the Political History tab, woven into a single chronological sweep of who was in power and what they did with it. Click any entry for more."
+        subtitle="Every government formed since Robert Walpole took office in 1721, alongside the landmark bills passed along the way — who held power, and what they did with it. Click any entry for more detail."
       />
 
       <div style={{ display: "flex", gap: 4, marginTop: 28, marginBottom: 8, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: 4, width: "fit-content" }}>

@@ -6,6 +6,7 @@ import { getPartyDonorSector, sectorColor, partyDonorSectorMetadata } from "../l
 import { getDonorProfile, publicFundDescription } from "../lib/donorProfiles";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { PageHeader } from "./shared";
+import { withScrollPreserved } from "../lib/preserveScroll";
 import { IconPartyFinance } from "./icons";
 
 // The Electoral Commission's own party names don't always match the short
@@ -49,6 +50,7 @@ export default function PartyFinances() {
           .select("party_name, donor_name, donor_status, value")
           .not("value", "is", null)
           .not("donor_name", "is", null)
+          .order("id", { ascending: true })
       );
       setRows(data);
     }
@@ -257,7 +259,7 @@ export default function PartyFinances() {
               }}
             >
               <button
-                onClick={() => setExpandedParty(isOpen ? null : p.name)}
+                onClick={() => withScrollPreserved(() => setExpandedParty(isOpen ? null : p.name))}
                 style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left", gap: 12 }}
               >
                 <div>
@@ -282,12 +284,12 @@ export default function PartyFinances() {
                     style={{ overflow: "hidden" }}
                   >
                     <div style={{ marginTop: 16, paddingTop: 4, borderTop: `1px solid ${COLORS.hairline}`, maxHeight: 420, overflowY: "auto" }}>
-                      {p.donors.slice(0, 40).map((d, di) => {
+                      {p.donors.map((d, di) => {
                         const tag = getPartyDonorSector(d.name);
                         const profile = getDonorProfile(d.name);
                         const description = profile?.description ?? (d.status === "Public Fund" ? publicFundDescription(d.name) : null);
                         const badgeColor = d.status === "Public Fund" ? COLORS.brass : tag ? sectorColor(tag.sector) : NEUTRAL_TAG_COLOR;
-                        const isLast = di === Math.min(p.donors.length, 40) - 1;
+                        const isLast = di === p.donors.length - 1;
                         return (
                           <div key={d.name} style={{ padding: "12px 0", borderBottom: isLast ? "none" : `1px solid ${COLORS.hairline}` }}>
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
@@ -331,11 +333,6 @@ export default function PartyFinances() {
                           </div>
                         );
                       })}
-                      {p.donors.length > 40 && (
-                        <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, opacity: 0.7, fontStyle: "italic", paddingTop: 12 }}>
-                          +{p.donors.length - 40} more not shown
-                        </div>
-                      )}
                     </div>
                   </motion.div>
                 )}

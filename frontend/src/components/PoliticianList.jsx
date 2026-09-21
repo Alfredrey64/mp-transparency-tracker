@@ -5,6 +5,7 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { partyColour, initials } from "../lib/format";
 import { PageHeader } from "./shared";
 import { IconCoin } from "./icons";
+import { withScrollPreserved } from "../lib/preserveScroll";
 
 function SkeletonCard() {
   return (
@@ -157,7 +158,7 @@ export default function PoliticianList({ onSelect }) {
           onBlur={(e) => (e.target.style.borderColor = COLORS.hairline)}
         />
         <button
-          onClick={() => setSortBy(sortBy === "name" ? "constituency" : "name")}
+          onClick={() => withScrollPreserved(() => setSortBy(sortBy === "name" ? "constituency" : "name"))}
           style={{
             fontFamily: FONT_BODY,
             fontSize: 13,
@@ -177,7 +178,7 @@ export default function PoliticianList({ onSelect }) {
 
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 24 }}>
         <button
-          onClick={() => setActiveParty("All")}
+          onClick={() => withScrollPreserved(() => setActiveParty("All"))}
           style={{
             fontFamily: FONT_BODY,
             fontSize: 13,
@@ -198,7 +199,7 @@ export default function PoliticianList({ onSelect }) {
           return (
             <button
               key={party.name}
-              onClick={() => setActiveParty(active ? "All" : party.name)}
+              onClick={() => withScrollPreserved(() => setActiveParty(active ? "All" : party.name))}
               style={{
                 fontFamily: FONT_BODY,
                 fontSize: 13,

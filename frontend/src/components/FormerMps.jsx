@@ -200,7 +200,7 @@ export default function FormerMps() {
           return (
             <div key={m.parliament_member_id} style={{ borderBottom: `1px solid ${COLORS.hairline}` }}>
               <button
-                onClick={() => setExpanded(isOpen ? null : m.parliament_member_id)}
+                onClick={() => withScrollPreserved(() => setExpanded(isOpen ? null : m.parliament_member_id))}
                 style={{
                   display: "flex", alignItems: "center", gap: 14, padding: "12px 0", width: "100%",
                   background: "none", border: "none", cursor: "pointer", textAlign: "left",

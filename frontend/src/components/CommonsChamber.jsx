@@ -4,6 +4,7 @@ import { supabase } from "../supabaseClient";
 import { COLORS, FONT_BODY, FONT_MONO } from "../theme";
 import { partyColour } from "../lib/format";
 import { CommonsBadge } from "./shared";
+import { withScrollPreserved } from "../lib/preserveScroll";
 
 const PER_ROW = 22;
 const SPACING = 15;
@@ -194,7 +195,7 @@ export default function CommonsChamber() {
                 stroke={isPM ? COLORS.ink : "#fff"}
                 strokeWidth={isPM ? 1.5 : 0.75}
                 style={{ cursor: "pointer" }}
-                onClick={() => setSelected(seat.mp)}
+                onClick={() => withScrollPreserved(() => setSelected(seat.mp))}
               >
                 <title>{seat.mp.name} — {seat.mp.party}{isPM ? " (Prime Minister)" : ""}</title>
               </circle>
@@ -214,7 +215,7 @@ export default function CommonsChamber() {
                 stroke={isLeader ? COLORS.ink : "#fff"}
                 strokeWidth={isLeader ? 1.5 : 0.75}
                 style={{ cursor: "pointer" }}
-                onClick={() => setSelected(seat.mp)}
+                onClick={() => withScrollPreserved(() => setSelected(seat.mp))}
               >
                 <title>{seat.mp.name} — {seat.mp.party}{isLeader ? " (Leader of the Opposition)" : ""}</title>
               </circle>
@@ -231,7 +232,7 @@ export default function CommonsChamber() {
               stroke="#fff"
               strokeWidth={1}
               style={{ cursor: "pointer" }}
-              onClick={() => setSelected(layout.speaker)}
+              onClick={() => withScrollPreserved(() => setSelected(layout.speaker))}
             >
               <title>{layout.speaker.name} — Speaker</title>
             </circle>

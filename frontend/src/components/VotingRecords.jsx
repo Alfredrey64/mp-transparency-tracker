@@ -5,6 +5,7 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../the
 import { formatDate, partyColour } from "../lib/format";
 import { categoriseBill } from "../lib/bills";
 import { PageHeader } from "./shared";
+import { withScrollPreserved } from "../lib/preserveScroll";
 import { IconVote, IconBills } from "./icons";
 
 // A division (Commons vote) is stored per-MP with no bill_id — divisions and
@@ -577,11 +578,11 @@ export default function VotingRecords() {
         </div>
 
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 18 }}>
-          <FilterPill active={billCategory === "All"} color={COLORS.ink} onClick={() => setBillCategory("All")}>
+          <FilterPill active={billCategory === "All"} color={COLORS.ink} onClick={() => withScrollPreserved(() => setBillCategory("All"))}>
             All ({bills.length})
           </FilterPill>
           {billCategories.map((cat) => (
-            <FilterPill key={cat.label} active={billCategory === cat.label} color={cat.color} onClick={() => setBillCategory(cat.label)}>
+            <FilterPill key={cat.label} active={billCategory === cat.label} color={cat.color} onClick={() => withScrollPreserved(() => setBillCategory(cat.label))}>
               {cat.label}
             </FilterPill>
           ))}

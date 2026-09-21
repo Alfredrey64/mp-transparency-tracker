@@ -6,7 +6,7 @@ import GlobalSearch from "./GlobalSearch";
 import {
   IconHome, IconFlow, IconCoin, IconVote, IconGroup, IconInfluence, IconManifesto, IconTracker,
   IconMethodology, IconSettings, IconGlossary, IconHistory, IconDevolved, IconFormerMP, IconBudget, IconCabinet, IconTimeline,
-  IconPartyFinance, IconByElection,
+  IconPartyFinance, IconByElection, IconLords, IconPetition,
 } from "./icons";
 
 const HOME_NAV_ITEMS = [{ key: "home", label: "Overview", icon: IconHome }];
@@ -20,9 +20,11 @@ const LEARN_NAV_ITEMS = [
 
 const GOVERNMENT_NAV_ITEMS = [
   { key: "cabinet", label: "Cabinet", icon: IconCabinet },
+  { key: "lords", label: "House of Lords", icon: IconLords },
   { key: "budget", label: "Government Budget", icon: IconBudget },
-  { key: "tracker", label: "Government Tracker", icon: IconTracker },
+  { key: "tracker", label: "Promises Tracker", icon: IconTracker },
   { key: "byElections", label: "Elections", icon: IconByElection },
+  { key: "petitions", label: "Petitions", icon: IconPetition },
 ];
 
 // Where the money is — who funds MPs individually vs. who funds parties

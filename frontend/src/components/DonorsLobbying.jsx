@@ -42,6 +42,7 @@ export default function DonorsLobbying() {
           .select("donor_name, value_amount, date_registered, politicians(id, name, party, party_colour)")
           .not("value_amount", "is", null)
           .not("donor_name", "is", null)
+          .order("id", { ascending: true })
       );
       setRows(data);
     }
@@ -273,7 +274,7 @@ export default function DonorsLobbying() {
                   }}
                 >
                   <button
-                    onClick={() => setExpandedDonor(isOpen ? null : d.key)}
+                    onClick={() => withScrollPreserved(() => setExpandedDonor(isOpen ? null : d.key))}
                     style={{
                       display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, width: "100%",
                       background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left",

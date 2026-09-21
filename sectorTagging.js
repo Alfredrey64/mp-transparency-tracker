@@ -6,7 +6,6 @@
 // Kept in one place so the matching rules — and any future fix to them —
 // apply identically to both.
 
-import fetch from "node-fetch";
 
 const CH_KEY = process.env.COMPANIES_HOUSE_API_KEY;
 const CH_AUTH = "Basic " + Buffer.from(`${CH_KEY}:`).toString("base64");

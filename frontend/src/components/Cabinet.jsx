@@ -5,6 +5,7 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { partyColour, formatDate, stripHtml } from "../lib/format";
 import { PageHeader } from "./shared";
 import { IconCabinet } from "./icons";
+import { withScrollPreserved } from "../lib/preserveScroll";
 
 // Cabinet roles don't carry a clean "department" field of their own — we
 // infer one from the role title itself (most already name their department
@@ -197,7 +198,7 @@ function CabinetCard({ member, area, index, onViewProfile }) {
         background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${color}`, borderRadius: 14, padding: 20, boxShadow: "0 1px 4px rgba(20,30,32,0.05)",
       }}
     >
-      <button onClick={() => setOpen((v) => !v)} style={{ display: "block", width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" }}>
+      <button onClick={() => withScrollPreserved(() => setOpen((v) => !v))} style={{ display: "block", width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" }}>
         <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
           <Avatar url={member.thumbnail_url} name={member.name} color={color} />
           <div style={{ minWidth: 0, flex: 1 }}>

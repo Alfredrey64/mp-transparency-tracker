@@ -369,6 +369,119 @@ export function VotingSummaryBox({ politician }) {
   );
 }
 
+// "Rebellion rate" — how often an MP voted against the majority of their
+// own party, using the same voted_with_party_majority flag fetch-votes.js
+// already computes per division. This is a proxy for "went against the
+// whip", not the whip's actual instruction (which is never published), so
+// the label and copy are careful to say so.
+export function RebellionRateBox({ politician }) {
+  const hasPartyMajorityConcept = !NO_PARTY_MAJORITY_CONCEPT.includes((politician.party ?? "").toLowerCase());
+  const [stats, setStats] = useState(hasPartyMajorityConcept ? undefined : null);
+
+  useEffect(() => {
+    if (!hasPartyMajorityConcept) return;
+    async function load() {
+      const [{ count: total }, { count: against }] = await Promise.all([
+        supabase.from("voting_records").select("*", { count: "exact", head: true }).eq("politician_id", politician.id).not("voted_with_party_majority", "is", null),
+        supabase.from("voting_records").select("*", { count: "exact", head: true }).eq("politician_id", politician.id).eq("voted_with_party_majority", false),
+      ]);
+      setStats({ total: total ?? 0, against: against ?? 0 });
+    }
+    load();
+  }, [politician.id, hasPartyMajorityConcept]);
+
+  if (stats === undefined) {
+    return (
+      <CardShell title="Rebellion Rate">
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>
+      </CardShell>
+    );
+  }
+
+  if (stats === null || stats.total === 0) {
+    return null;
+  }
+
+  const pct = Math.round((stats.against / stats.total) * 1000) / 10;
+
+  return (
+    <CardShell title="Rebellion Rate">
+      <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 8 }}>
+        <span style={{ fontFamily: FONT_DISPLAY, fontSize: 30, color: pct > 0 ? "#9C3B3B" : COLORS.ink }}>{pct}%</span>
+        <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
+          of {stats.total} recorded vote{stats.total === 1 ? "" : "s"}
+        </span>
+      </div>
+      <div style={{ height: 8, borderRadius: 999, background: COLORS.paper, overflow: "hidden", marginBottom: 10 }}>
+        <div style={{ width: `${Math.max(pct, pct > 0 ? 2 : 0)}%`, height: "100%", background: "#9C3B3B", borderRadius: 999 }} />
+      </div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5 }}>
+        The share of recorded Commons divisions where this MP voted against the majority of their own party.
+        Actual whip instructions are never published, so this is our best available proxy — not a claim about
+        what the whip actually told them to do.
+      </div>
+    </CardShell>
+  );
+}
+
+// Recent debate contributions and written questions — the Commons
+// equivalent of the section already shown on each Lords peer's profile,
+// pulled from the same Members API endpoints.
+export function RecentActivityBox({ politician }) {
+  const activity = politician.recent_activity;
+  const contributions = activity?.contributions ?? [];
+  const writtenQuestions = activity?.writtenQuestions ?? [];
+  if (contributions.length === 0 && writtenQuestions.length === 0) return null;
+
+  return (
+    <CardShell title="Recent Parliamentary Activity">
+      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 12, lineHeight: 1.5 }}>
+        Their most recent debate contributions and written questions, from Hansard and the official record.
+      </div>
+
+      {contributions.length > 0 && (
+        <div style={{ marginBottom: writtenQuestions.length > 0 ? 16 : 0 }}>
+          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.brass, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+            Debate Contributions
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {contributions.map((c, i) => (
+              <div key={i} style={{ paddingBottom: 10, borderBottom: i < contributions.length - 1 ? `1px solid ${COLORS.hairline}` : "none" }}>
+                <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.4 }}>{c.title}</div>
+                <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginTop: 3 }}>
+                  {formatDate(c.date)} · {c.section}
+                  {c.speechCount > 0 ? ` · ${c.speechCount} speech${c.speechCount === 1 ? "" : "es"}` : ""}
+                  {c.questionCount > 0 ? ` · ${c.questionCount} question${c.questionCount === 1 ? "" : "s"}` : ""}
+                  {c.interventionCount > 0 ? ` · ${c.interventionCount} intervention${c.interventionCount === 1 ? "" : "s"}` : ""}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {writtenQuestions.length > 0 && (
+        <div>
+          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.brass, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+            Written Questions
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {writtenQuestions.map((q, i) => (
+              <div key={i} style={{ paddingBottom: 10, borderBottom: i < writtenQuestions.length - 1 ? `1px solid ${COLORS.hairline}` : "none" }}>
+                <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: COLORS.ink }}>{q.heading}</div>
+                <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginTop: 4 }}>
+                  To {q.department} · tabled {formatDate(q.dateTabled)}
+                  {q.dateAnswered ? ` · answered ${formatDate(q.dateAnswered)}` : " · awaiting answer"}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </CardShell>
+  );
+}
+
 export function NewsBox({ politician }) {
   const [articles, setArticles] = useState(null);
 

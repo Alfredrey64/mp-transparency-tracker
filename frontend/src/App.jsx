@@ -22,6 +22,8 @@ import FormerMps from "./components/FormerMps";
 import ByElections from "./components/ByElections";
 import GovernmentBudget from "./components/GovernmentBudget";
 import Cabinet from "./components/Cabinet";
+import HouseOfLords from "./components/HouseOfLords";
+import Petitions from "./components/Petitions";
 import Settings from "./components/Settings";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsConditions from "./components/TermsConditions";
@@ -76,8 +78,10 @@ export default function App() {
             {view === "tracker" && <GovernmentTracker />}
             {view === "budget" && <GovernmentBudget />}
             {view === "cabinet" && <Cabinet onViewProfile={handleViewProfile} />}
+            {view === "lords" && <HouseOfLords />}
             {view === "formerMps" && <FormerMps />}
             {view === "byElections" && <ByElections />}
+            {view === "petitions" && <Petitions />}
             {view === "methodology" && <Methodology onNavigate={handleNavigate} />}
             {view === "glossary" && <Glossary />}
             {view === "settings" && <Settings onNavigate={handleNavigate} />}

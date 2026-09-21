@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { IconDevolved } from "./icons";
+import { withScrollPreserved } from "../lib/preserveScroll";
 
 const ADMINISTRATIONS = [
   {
@@ -72,7 +73,7 @@ export default function DevolvedAdministrations() {
               style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `4px solid ${a.accent}`, borderRadius: 14, boxShadow: "0 1px 4px rgba(20,30,32,0.05)" }}
             >
               <button
-                onClick={() => setOpenIndex(open ? null : i)}
+                onClick={() => withScrollPreserved(() => setOpenIndex(open ? null : i))}
                 style={{ display: "block", width: "100%", background: "none", border: "none", padding: "22px 24px", cursor: "pointer", textAlign: "left" }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>

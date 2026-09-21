@@ -7,6 +7,7 @@ import { getDonorSector, sectorColor } from "../lib/donorSectors";
 import { sectorToBillCategory } from "../lib/sectorBillMapping";
 import { categoriseBill } from "../lib/bills";
 import { isWatched, toggleWatch } from "../lib/watchlist";
+import { withScrollPreserved } from "../lib/preserveScroll";
 import { IconStar } from "./icons";
 import {
   SectionDivider,
@@ -15,6 +16,8 @@ import {
   ContactBox,
   CabinetRoleBox,
   VotingSummaryBox,
+  RebellionRateBox,
+  RecentActivityBox,
   StandardsBox,
   NewsBox,
 } from "./shared";
@@ -22,6 +25,8 @@ import {
 const DETAIL_TABS = [
   { key: "all", label: "All" },
   { key: "donations", label: "Donations" },
+  { key: "claims", label: "Claims" },
+  { key: "gifts", label: "Gifts" },
   { key: "roles", label: "Roles" },
 ];
 
@@ -59,7 +64,7 @@ function FundingBySectorBox({ interests }) {
           return (
             <div key={s.sector}>
               <button
-                onClick={() => setOpenSector(isOpen ? null : s.sector)}
+                onClick={() => withScrollPreserved(() => setOpenSector(isOpen ? null : s.sector))}
                 style={{ display: "block", width: "100%", background: "none", border: "none", padding: "4px 0", cursor: "pointer", textAlign: "left" }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, marginBottom: 3 }}>
@@ -219,9 +224,146 @@ function CurrentRolesBox({ interests }) {
   );
 }
 
+// The "Claims" tab: a compact IPSA summary (this year vs last, by category)
+// followed by every itemised claim behind it, so it's clear not just how
+// much was claimed but what it was actually for.
+function ClaimsTabContent({ politician, claims }) {
+  const summary = politician.ipsa_expenses;
+
+  if (!summary) {
+    return (
+      <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, textAlign: "center", padding: "20px 0" }}>
+        No IPSA business cost data available for this MP yet.
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.brass}`, borderRadius: 12, padding: 16, marginBottom: 14 }}>
+        <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 4 }}>
+          <span style={{ fontFamily: FONT_DISPLAY, fontSize: 26, color: COLORS.ink }}>
+            £{summary.total.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+          </span>
+          <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>
+            claimed in {summary.year.replace("_", "/20")}
+          </span>
+        </div>
+        {summary.previousYear && (
+          <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 10 }}>
+            vs £{summary.previousYear.total.toLocaleString(undefined, { maximumFractionDigits: 0 })} in {summary.previousYear.year.replace("_", "/20")}
+          </div>
+        )}
+        {summary.byCategory?.length > 0 && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
+            {summary.byCategory.map((c) => (
+              <span key={c.category} style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, background: COLORS.paper, padding: "3px 9px", borderRadius: 999 }}>
+                {c.category} · £{c.amount.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+              </span>
+            ))}
+          </div>
+        )}
+        <div style={{ marginTop: 10, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5 }}>
+          Business costs (staffing, travel, accommodation, office running costs) claimed through IPSA — separate from
+          their salary and from the donations shown under the Donations tab.{" "}
+          <a
+            href="https://www.theipsa.org.uk/mp-staffing-business-costs/your-mp"
+            target="_blank"
+            rel="noreferrer"
+            style={{ color: COLORS.ink, fontWeight: 600 }}
+          >
+            Full record on IPSA's site ↗
+          </a>
+        </div>
+      </div>
+
+      {claims.length === 0 ? (
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, textAlign: "center", padding: "20px 0" }}>
+          No itemised claims recorded for {summary.year.replace("_", "/20")} yet.
+        </div>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {claims.map((c, i) => (
+            <div key={i} style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 10, padding: "11px 14px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
+                <span style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13, color: COLORS.ink }}>
+                  {c.category}{c.expenseType && c.expenseType !== c.category ? ` · ${c.expenseType}` : ""}
+                </span>
+                <span style={{ fontFamily: FONT_MONO, fontSize: 12.5, fontWeight: 700, color: COLORS.ink, flexShrink: 0 }}>
+                  £{Number(c.amount).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                </span>
+              </div>
+              {c.description && (
+                <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 3 }}>{c.description}</div>
+              )}
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, opacity: 0.8, marginTop: 3 }}>{formatDate(c.date)}</div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// The "Gifts" tab — only ever populated for the MPs currently holding a
+// government post; everyone else just sees the explanatory empty state.
+function GiftsTabContent({ gifts }) {
+  if (gifts === null) {
+    return <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft }}>Loading…</div>;
+  }
+
+  if (gifts.length === 0) {
+    return (
+      <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, textAlign: "center", padding: "20px 0", lineHeight: 1.6 }}>
+        No ministerial gifts or hospitality declared for this MP — this register only applies to MPs currently
+        holding a government post.
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 12, lineHeight: 1.5 }}>
+        Declared under the Cabinet Office's monthly Register of Ministers' Gifts and Hospitality — covers this
+        ministerial role, not their personal financial interests shown under Donations.
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {gifts.map((g, i) => (
+          <div key={i} style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 10, padding: "11px 14px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap", marginBottom: 4 }}>
+              <span
+                style={{
+                  fontFamily: FONT_BODY, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em",
+                  color: COLORS.brass, background: `${COLORS.brass}18`, padding: "2px 8px", borderRadius: 999,
+                }}
+              >
+                {g.kind}
+              </span>
+              <span style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft }}>{g.department}</span>
+              {g.given_or_received && (
+                <span style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft }}>· {g.given_or_received}</span>
+              )}
+            </div>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.4 }}>
+              {g.description || "(no description given)"}
+              {g.counterparty && <span style={{ color: COLORS.inkSoft }}> — {g.given_or_received === "Given" ? "to" : "from"} {g.counterparty}</span>}
+            </div>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 4 }}>
+              {g.date_or_period}
+              {g.value_amount != null && ` · £${g.value_amount.toLocaleString()}`}
+              {g.outcome && g.outcome !== "N/A" ? ` · ${g.outcome}` : ""}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function PoliticianDetail({ politician, onBack }) {
   const [interests, setInterests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [gifts, setGifts] = useState(null);
   const [activeTab, setActiveTab] = useState("all");
   const [avatarErrored, setAvatarErrored] = useState(false);
   const [avatarLoaded, setAvatarLoaded] = useState(false);
@@ -239,6 +381,20 @@ export default function PoliticianDetail({ politician, onBack }) {
     }
     load();
   }, [politician.id]);
+
+  useEffect(() => {
+    async function load() {
+      const { data } = await supabase
+        .from("ministerial_gifts")
+        .select("kind, department, date_or_period, description, given_or_received, counterparty, value_amount, outcome, source_url")
+        .eq("politician_id", politician.id)
+        .order("date_or_period", { ascending: false });
+      setGifts(data ?? []);
+    }
+    load();
+  }, [politician.id]);
+
+  const claims = politician.ipsa_expenses?.claims ?? [];
 
   const filteredInterests = useMemo(() => {
     if (activeTab === "donations") return interests.filter((item) => item.value_amount != null);
@@ -368,7 +524,7 @@ export default function PoliticianDetail({ politician, onBack }) {
               {DETAIL_TABS.map((tab) => (
                 <button
                   key={tab.key}
-                  onClick={() => setActiveTab(tab.key)}
+                  onClick={() => withScrollPreserved(() => setActiveTab(tab.key))}
                   style={{
                     position: "relative",
                     fontFamily: FONT_BODY,
@@ -396,57 +552,65 @@ export default function PoliticianDetail({ politician, onBack }) {
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {loading && <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft }}>Loading declared interests…</div>}
+              {activeTab === "claims" ? (
+                <ClaimsTabContent politician={politician} claims={claims} />
+              ) : activeTab === "gifts" ? (
+                <GiftsTabContent gifts={gifts} />
+              ) : (
+                <>
+                  {loading && <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft }}>Loading declared interests…</div>}
 
-              {!loading && filteredInterests.length === 0 && (
-                <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, textAlign: "center", padding: "20px 0" }}>
-                  {interests.length === 0
-                    ? "No declared financial interests found for this MP."
-                    : `No entries in "${DETAIL_TABS.find((t) => t.key === activeTab)?.label}" for this MP.`}
-                </div>
-              )}
+                  {!loading && filteredInterests.length === 0 && (
+                    <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, textAlign: "center", padding: "20px 0" }}>
+                      {interests.length === 0
+                        ? "No declared financial interests found for this MP."
+                        : `No entries in "${DETAIL_TABS.find((t) => t.key === activeTab)?.label}" for this MP.`}
+                    </div>
+                  )}
 
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeTab}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.15 }}
-                  style={{ display: "flex", flexDirection: "column", gap: 10 }}
-                >
-                  {filteredInterests.map((item, i) => (
+                  <AnimatePresence mode="wait">
                     <motion.div
-                      key={item.id}
-                      initial={{ opacity: 0, y: 6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.2, delay: Math.min(i, 10) * 0.03 }}
-                      whileHover={{ y: -2, boxShadow: "0 6px 16px rgba(30,42,68,0.1)" }}
-                      style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 16, boxShadow: "0 1px 4px rgba(30,42,68,0.05)" }}
+                      key={activeTab}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.15 }}
+                      style={{ display: "flex", flexDirection: "column", gap: 10 }}
                     >
-                      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: COLORS.brass, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 5 }}>
-                        {shortCategory(item.category)}
-                      </div>
-                      <div style={{ fontFamily: FONT_BODY, fontSize: 16, color: COLORS.ink, lineHeight: 1.4 }}>
-                        {item.summary}
-                      </div>
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 8, fontSize: 12.5, color: COLORS.inkSoft, textAlign: "center" }}>
-                        {item.value_amount && (
-                          <span style={{ fontFamily: FONT_MONO, fontSize: 12, fontWeight: 700, color: COLORS.ink }}>£{Number(item.value_amount).toLocaleString()}</span>
-                        )}
-                        {item.value_amount && item.date_registered && <span>-</span>}
-                        {item.date_registered && <span style={{ fontFamily: FONT_BODY }}>{formatDate(item.date_registered)}</span>}
-                        {(item.value_amount || item.date_registered) && item.source_url && <span>-</span>}
-                        {item.source_url && (
-                          <a href={item.source_url} target="_blank" rel="noreferrer" style={{ color: COLORS.inkSoft, fontFamily: FONT_BODY }}>
-                            source ↗
-                          </a>
-                        )}
-                      </div>
+                      {filteredInterests.map((item, i) => (
+                        <motion.div
+                          key={item.id}
+                          initial={{ opacity: 0, y: 6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.2, delay: Math.min(i, 10) * 0.03 }}
+                          whileHover={{ y: -2, boxShadow: "0 6px 16px rgba(30,42,68,0.1)" }}
+                          style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 16, boxShadow: "0 1px 4px rgba(30,42,68,0.05)" }}
+                        >
+                          <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: COLORS.brass, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 5 }}>
+                            {shortCategory(item.category)}
+                          </div>
+                          <div style={{ fontFamily: FONT_BODY, fontSize: 16, color: COLORS.ink, lineHeight: 1.4 }}>
+                            {item.summary}
+                          </div>
+                          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 8, fontSize: 12.5, color: COLORS.inkSoft, textAlign: "center" }}>
+                            {item.value_amount && (
+                              <span style={{ fontFamily: FONT_MONO, fontSize: 12, fontWeight: 700, color: COLORS.ink }}>£{Number(item.value_amount).toLocaleString()}</span>
+                            )}
+                            {item.value_amount && item.date_registered && <span>-</span>}
+                            {item.date_registered && <span style={{ fontFamily: FONT_BODY }}>{formatDate(item.date_registered)}</span>}
+                            {(item.value_amount || item.date_registered) && item.source_url && <span>-</span>}
+                            {item.source_url && (
+                              <a href={item.source_url} target="_blank" rel="noreferrer" style={{ color: COLORS.inkSoft, fontFamily: FONT_BODY }}>
+                                source ↗
+                              </a>
+                            )}
+                          </div>
+                        </motion.div>
+                      ))}
                     </motion.div>
-                  ))}
-                </motion.div>
-              </AnimatePresence>
+                  </AnimatePresence>
+                </>
+              )}
             </div>
           </div>
 
@@ -459,6 +623,8 @@ export default function PoliticianDetail({ politician, onBack }) {
             <ContactBox politician={politician} />
             <CabinetRoleBox politician={politician} />
             <VotingSummaryBox politician={politician} />
+            <RebellionRateBox politician={politician} />
+            <RecentActivityBox politician={politician} />
             <StandardsBox politician={politician} />
             <NewsBox politician={politician} />
           </div>

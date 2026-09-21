@@ -4,6 +4,7 @@ import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
 import { PageHeader, CommonsBadge } from "./shared";
 import CommonsChamber from "./CommonsChamber";
+import { withScrollPreserved } from "../lib/preserveScroll";
 
 function CrownGraphic() {
   return (
@@ -131,6 +132,116 @@ const BILL_PROCESS_STAGES = [
   { key: "implementation", label: "Implementation", desc: "Laws often don't take effect immediately. Ministers issue \"commencement orders\" to bring parts of an Act into force, and further detailed rules (secondary legislation) are often needed before departments and councils can actually enforce it." },
 ];
 
+function SalaryBar({ label, amount, max, color, note }) {
+  const pct = Math.max(4, Math.round((amount / max) * 100));
+  return (
+    <div style={{ marginBottom: 14 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4, gap: 10 }}>
+        <span style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: COLORS.ink }}>{label}</span>
+        <span style={{ fontFamily: FONT_MONO, fontSize: 13, color, flexShrink: 0 }}>£{amount.toLocaleString()}</span>
+      </div>
+      <div style={{ height: 10, borderRadius: 999, background: `${color}14`, overflow: "hidden" }}>
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          style={{ height: "100%", borderRadius: 999, background: color }}
+        />
+      </div>
+      {note && <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginTop: 3 }}>{note}</div>}
+    </div>
+  );
+}
+
+function SalaryDiagram() {
+  return (
+    <div style={{ marginTop: 14, maxWidth: 420 }}>
+      <SalaryBar label="MP's basic salary" amount={91346} max={170000} color="#4C6FA6" note="Set independently by IPSA, not by MPs themselves — reviewed each year." />
+      <SalaryBar label="Cabinet minister (total)" amount={162000} max={170000} color="#4C6FA6" note="Basic salary plus roughly £71,000 'Special Responsibility' pay for the ministerial role." />
+      <SalaryBar label="Prime Minister (total)" amount={172000} max={170000} color="#4C6FA6" note="Several recent PMs have voluntarily waived part of this." />
+      <SalaryBar label="UK median full-time salary" amount={37000} max={170000} color={COLORS.inkSoft} note="ONS figure, for comparison — all amounts rounded and reviewed annually, so treat as approximate." />
+    </div>
+  );
+}
+
+function WeekSplitDiagram() {
+  const segments = [
+    { label: "Westminster (Mon–Thu, sitting weeks)", pct: 57, color: "#4C6FA6" },
+    { label: "Constituency (Fri–Sun)", pct: 43, color: COLORS.brass },
+  ];
+  return (
+    <div style={{ marginTop: 14, maxWidth: 420 }}>
+      <div style={{ display: "flex", height: 14, borderRadius: 999, overflow: "hidden" }}>
+        {segments.map((s) => (
+          <motion.div
+            key={s.label}
+            initial={{ width: 0 }}
+            animate={{ width: `${s.pct}%` }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            style={{ background: s.color }}
+          />
+        ))}
+      </div>
+      <div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginTop: 8 }}>
+        {segments.map((s) => (
+          <span key={s.label} style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>
+            <span style={{ width: 8, height: 8, borderRadius: 2, background: s.color, flexShrink: 0 }} />
+            {s.label}
+          </span>
+        ))}
+      </div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginTop: 6 }}>
+        A rough, illustrative split for a sitting week — recess, committee travel, and individual MPs' patterns all vary a lot.
+      </div>
+    </div>
+  );
+}
+
+const MP_JOB_STAGES = [
+  {
+    key: "week", label: "A Typical Week",
+    desc: "There's no single \"normal\" week, but when the Commons is sitting, most MPs split their time between Westminster — debates, votes, committee meetings, and party business, roughly Monday to Thursday — and their constituency, typically Friday to Sunday, for surgeries, local events, and casework. Many travel weekly between London and constituencies as far away as Scotland or Cornwall.",
+    visual: <WeekSplitDiagram />,
+  },
+  {
+    key: "casework", label: "Constituency Casework",
+    desc: "A large share of an MP's time goes on non-legislative work: holding regular \"surgeries\" where constituents bring individual problems — a stuck visa application, a housing dispute, an NHS delay — and writing on their behalf to ministers, councils, or other agencies. A typical MP's office handles hundreds of individual cases a year, on top of general correspondence and emails.",
+  },
+  {
+    key: "chamber", label: "Debates, Votes & Committees",
+    desc: "In the chamber, MPs speak in debates, table written and oral questions to ministers, and vote in divisions — sometimes several times in an evening, summoned from wherever they are on the parliamentary estate by a division bell. Many also sit on select committees, questioning ministers and officials and helping produce reports that scrutinise government policy in detail.",
+  },
+  {
+    key: "party-life", label: "Party & Public Life",
+    desc: "Beyond Parliament itself, most MPs are expected to support their party — attending party meetings and conferences, and campaigning in other seats during elections and by-elections — and to keep up a public and media presence, from local press coverage to their own constituents' social media.",
+  },
+  {
+    key: "salary", label: "Salary",
+    desc: "MPs are paid a basic annual salary set by IPSA (the Independent Parliamentary Standards Authority) — an independent body created after the 2009 expenses scandal, precisely so that MPs no longer set their own pay. Extra parliamentary roles (a Cabinet post, a select committee chair, the Speakership) come with additional \"Special Responsibility\" pay on top.",
+    visual: <SalaryDiagram />,
+  },
+  {
+    key: "outside-jobs", label: "Second Jobs & Outside Earnings",
+    desc: "MPs are allowed to hold paid work outside Parliament — a doctor keeping up shifts, a barrister still taking cases — provided being an MP stays their main job. Outside earnings above a set threshold must be declared on the Register of Members' Financial Interests within 28 days (see the Financial Interests tab), and MPs can't be paid to advocate for a cause or lobby ministers on someone else's behalf.",
+  },
+  {
+    key: "staff", label: "Staff & Office Budget",
+    desc: "MPs don't personally fund their own staff. IPSA provides a separate staffing budget, worth well over £200,000 a year, to employ caseworkers and researchers who run the constituency and Westminster offices, answer correspondence, and handle casework for constituents.",
+  },
+  {
+    key: "expenses", label: "Expenses (IPSA)",
+    desc: "Since the 2009 scandal, MPs' business costs — travel between Westminster and their constituency, accommodation for MPs who don't represent a London seat, and office running costs — are claimed through IPSA under published rules, rather than self-administered as they were before.",
+  },
+  {
+    key: "pension", label: "Pension",
+    desc: "MPs contribute to the Parliamentary Contributory Pension Fund, a defined-benefit scheme broadly similar to those found across much of the public sector, alongside an employer (Exchequer) contribution.",
+  },
+  {
+    key: "resigning", label: "\"Resigning\"",
+    desc: "An MP can't actually resign — a law dating to 1624 bars a sitting MP from simply quitting their seat. To leave early, they instead apply for a nominal paid \"office of profit under the Crown\" (traditionally Crown Steward and Bailiff of the Chiltern Hundreds, or of the Manor of Northstead), which automatically disqualifies them from sitting as an MP — triggering a by-election.",
+  },
+];
+
 const ELECTION_STAGES = [
   { key: "called", label: "Election Called", desc: "General elections happen at least every 5 years, but the Prime Minister can request one sooner. All 650 Commons seats are contested at once." },
   { key: "candidates", label: "Candidates Stand", desc: "In each of the UK's 650 constituencies, candidates put themselves forward — representing a party, or standing as independents." },
@@ -243,7 +354,7 @@ function DiagramSection({ title, intro, stages, color, index = 0 }) {
         </p>
       )}
       <div style={{ overflowX: "auto", paddingBottom: 8 }}>
-        <FlowDiagram stages={stages} activeKey={activeKey} onSelect={setActiveKey} color={color} />
+        <FlowDiagram stages={stages} activeKey={activeKey} onSelect={(key) => withScrollPreserved(() => setActiveKey(key))} color={color} />
       </div>
       {active && (
         <motion.div
@@ -426,6 +537,15 @@ export default function HowParliamentWorks() {
           intro="Every MP in this app got their seat through the same process."
           stages={ELECTION_STAGES}
           color="#2F6F4E"
+        />
+
+        <DiagramSection
+          id="mpjob"
+          index={3}
+          title="The Job of an MP"
+          intro="Once elected, what does the role actually involve day to day — and what does it pay?"
+          stages={MP_JOB_STAGES}
+          color="#4C6FA6"
         />
 
         <ConstituencyLookup />
