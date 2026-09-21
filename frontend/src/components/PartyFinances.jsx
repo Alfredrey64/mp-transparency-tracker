@@ -141,7 +141,7 @@ export default function PartyFinances() {
           Electoral Commission
         </a>{" "}
         under a higher threshold (£11,180, or £2,230 for further donations from the same source in a year). It's a
-        rolling 12-month window, refreshed daily, not a full historical record.
+        rolling 12-month window, kept up to date daily, not a full historical record.
       </div>
 
       {stats.totalValue > 0 && (
@@ -380,7 +380,7 @@ function PartyFinanceRulesSection() {
         How Party Funding Is Actually Regulated
       </h2>
       <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 18, maxWidth: 760 }}>
-        A quick, plain-language guide to the rules behind the numbers below — set out in the Political Parties,
+        A quick, straightforward guide to the rules behind the numbers below — set out in the Political Parties,
         Elections and Referendums Act 2000 (as amended), and enforced by the Electoral Commission.
       </p>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>

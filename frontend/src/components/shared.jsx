@@ -500,8 +500,8 @@ export function NewsBox({ politician }) {
   return (
     <CardShell title="In the News">
       <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.8, marginBottom: 10, lineHeight: 1.5 }}>
-        A daily headline skim for this MP's name, not a verified fact-check — a same-named person or a passing mention can
-        occasionally slip through.
+        Not a verified fact-check — a same-named person or a passing mention can occasionally slip through. See Data
+        & Methodology for how this is compiled.
       </div>
       {articles === null && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>}
       {articles?.length === 0 && (

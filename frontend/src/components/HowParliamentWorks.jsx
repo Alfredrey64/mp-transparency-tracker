@@ -507,7 +507,7 @@ export default function HowParliamentWorks() {
     <div style={{ padding: PAGE_PADDING }}>
       <PageHeader
         title="How Parliament Works"
-        subtitle="Click through each stage below to see a plain-English explanation — from who's actually in charge, to how a bill becomes law, to how your own MP ends up in Parliament in the first place."
+        subtitle="Click through each stage below to see a clear explanation — from who's actually in charge, to how a bill becomes law, to how your own MP ends up in Parliament in the first place."
         maxWidth={900}
       />
 

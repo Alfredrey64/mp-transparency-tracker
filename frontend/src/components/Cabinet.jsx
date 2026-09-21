@@ -274,7 +274,7 @@ export default function Cabinet({ onViewProfile }) {
         icon={IconCabinet}
         kicker="Public Record · Cabinet"
         title="Who's in Cabinet"
-        subtitle="Every current Cabinet minister, grouped by area of work, with what their role actually involves and their background — pulled from the same official register as the rest of this site, refreshed daily."
+        subtitle="Every current Cabinet minister, grouped by area of work, with what their role actually involves and their background — drawn from the same official register as the rest of this site, and kept up to date."
       />
 
       {members === null && (

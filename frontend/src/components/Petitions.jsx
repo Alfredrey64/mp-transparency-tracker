@@ -147,7 +147,7 @@ export default function Petitions() {
         icon={IconPetition}
         kicker="Public Record · Petitions"
         title="Public petitions to Parliament"
-        subtitle="The most-signed petitions currently open, plus recent ones that got a government response or a Commons debate — pulled directly from petitions.parliament.uk, no editorial curation of which petitions appear."
+        subtitle="The most-signed petitions currently open, plus recent ones that got a government response or a Commons debate — taken straight from petitions.parliament.uk itself, with no editorial curation of which petitions appear."
       />
 
       <div

@@ -1,4 +1,4 @@
-name: Fetch MP Financial Interests, Voting Records, Bills, Donor Sectors, News, Former MPs, On This Day, Today's Business, Party Finances, By-Elections, House of Lords Peers, MP Activity, IPSA Expenses, Petitions, and Ministerial Gifts
+name: Fetch MP Financial Interests, Voting Records, Bills, Donor Sectors, News, Former MPs, On This Day, Today's Business, Party Finances, By-Elections, House of Lords Peers, MP Activity, IPSA Expenses, Petitions, Ministerial Gifts, and Select Committees
 
 on:
   schedule:
@@ -158,6 +158,16 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-ministerial-gifts.js
+
+      # ~45 committees, three requests each (details, current members,
+      # open inquiries) — see the script's own header comment for exactly
+      # which committee types count as "select committees" here.
+      - name: Run the select committees fetch script
+        continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node fetch-committees.js
 
       # The scripts above write straight to Supabase, so the live site picks
       # them up on its next request — no deploy needed. The donor sector

@@ -75,7 +75,7 @@ export default function PartyPolicies() {
         icon={IconManifesto}
         kicker="Public Record · Party Policies"
         title="Where each party stands"
-        subtitle="A plain-language summary of each party's most recent UK general election manifesto (2024). These are our own summaries, not the original documents — click into a party for more detail, or follow the link to read their manifesto in full."
+        subtitle="An objective summary of each party's most recent UK general election manifesto (2024). These are our own summaries, not the original documents — click into a party for more detail, or follow the link to read their manifesto in full."
       />
 
       {parties === null ? (
@@ -220,7 +220,7 @@ export default function PartyPolicies() {
                         Read the full "{expandedManifesto.manifestoTitle}" manifesto ↗
                       </a>
                       <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 8, lineHeight: 1.5 }}>
-                        This is our own plain-language summary of {expandedManifesto.shortName}'s {expandedManifesto.manifestoYear} general
+                        This is our own objective summary of {expandedManifesto.shortName}'s {expandedManifesto.manifestoYear} general
                         election manifesto, not the original text. Policy positions can change once a party is in government or as events
                         unfold — check the link above for the party's current official position.
                       </div>

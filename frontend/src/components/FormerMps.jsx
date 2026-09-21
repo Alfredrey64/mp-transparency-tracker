@@ -99,7 +99,7 @@ export default function FormerMps() {
         icon={IconFormerMP}
         kicker="Public Record · Former MPs"
         title="Who's recently left Parliament"
-        subtitle="The most recent MPs to leave the Commons — by resignation, at a general election, or death — pulled daily from the official record."
+        subtitle="The most recent MPs to leave the Commons — by resignation, at a general election, or death — kept up to date from the official record."
       />
 
       <div
@@ -109,8 +109,8 @@ export default function FormerMps() {
         }}
       >
         This shows <em>that</em> someone left and Parliament's own recorded reason for it — it can't tell you what
-        they went on to do afterwards. There's no reliable, automatically-updating source for that, so rather than
-        guess, we've simply left it out.
+        they went on to do afterwards. There's no reliable public source for that, so rather than guess, we've
+        simply left it out.
       </div>
 
       {reasonCounts && reasonCounts.size > 0 && (

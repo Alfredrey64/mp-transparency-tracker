@@ -77,7 +77,7 @@ export default function ByElections() {
         icon={IconByElection}
         kicker="Public Record · Elections"
         title="Elections"
-        subtitle="Seats that have changed hands outside a general election — a by-election is held whenever one falls vacant mid-Parliament, usually through a resignation, a death, or an expulsion — plus any seat currently sitting empty awaiting one. Often watched as an early signal of how the governing party is doing. Pulled daily from the official record."
+        subtitle="Seats that have changed hands outside a general election — a by-election is held whenever one falls vacant mid-Parliament, usually through a resignation, a death, or an expulsion — plus any seat currently sitting empty awaiting one. Often watched as an early signal of how the governing party is doing."
       />
 
       {elections !== null && (completed.length > 0 || vacantSeats.length > 0) && (

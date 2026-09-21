@@ -24,9 +24,14 @@ import GovernmentBudget from "./components/GovernmentBudget";
 import Cabinet from "./components/Cabinet";
 import HouseOfLords from "./components/HouseOfLords";
 import Petitions from "./components/Petitions";
+import PartyMatch from "./components/PartyMatch";
 import Settings from "./components/Settings";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsConditions from "./components/TermsConditions";
+import Committees from "./components/Committees";
+import ComparePoliticians from "./components/ComparePoliticians";
+import RecentActivity from "./components/RecentActivity";
+import MinisterialMeetings from "./components/MinisterialMeetings";
 
 export default function App() {
   const [view, setView] = useState("home");
@@ -82,6 +87,11 @@ export default function App() {
             {view === "formerMps" && <FormerMps />}
             {view === "byElections" && <ByElections />}
             {view === "petitions" && <Petitions />}
+            {view === "partymatch" && <PartyMatch />}
+            {view === "committees" && <Committees />}
+            {view === "compare" && <ComparePoliticians />}
+            {view === "recentActivity" && <RecentActivity onSelectPolitician={handleViewProfile} />}
+            {view === "ministerialMeetings" && <MinisterialMeetings />}
             {view === "methodology" && <Methodology onNavigate={handleNavigate} />}
             {view === "glossary" && <Glossary />}
             {view === "settings" && <Settings onNavigate={handleNavigate} />}

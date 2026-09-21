@@ -47,10 +47,10 @@ export default function PrivacyPolicy({ onNavigate }) {
         </Section>
 
         <Section title="Where the MP data comes from">
-          All MP, financial interest, voting, and bill data is pulled from official public sources: the UK
-          Parliament Members API, the Register of Members' Financial Interests, and the Commons Votes API. Donor
-          industry tags are additionally cross-referenced against public UK Companies House records. Nothing here is
-          submitted by site visitors.
+          All MP, financial interest, voting, and bill data comes from official public sources: UK Parliament's own
+          published records on its members, the Register of Members' Financial Interests, and its record of Commons
+          votes. Donor industry tags are additionally cross-referenced against public UK Companies House records.
+          Nothing here is submitted by site visitors. See Data & Methodology for the full list of sources.
         </Section>
 
         <Section title="Third-party links">

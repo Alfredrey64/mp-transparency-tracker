@@ -88,7 +88,7 @@ export default function AppgMemberships() {
     <div style={{ padding: PAGE_PADDING }}>
       <PageHeader
         title="APPG Memberships"
-        subtitle="All-Party Parliamentary Groups are informal, cross-party groups MPs and peers join to focus on a particular topic — and one of the earliest, least visible ways outside organisations connect with Parliament."
+        subtitle="All-Party Parliamentary Groups are informal, cross-party groups that MPs and peers join to focus on a particular topic — and one of the earliest, least visible ways outside organisations get access to Parliament."
         maxWidth={900}
       />
 
@@ -181,7 +181,7 @@ export default function AppgMemberships() {
         </div>
       </div>
 
-      <InfoCard title="Why It's Worth Knowing About" color="#8A6D1F" index={1}>
+      <InfoCard title="Why This Matters" color="#8A6D1F" index={1}>
         Running a group takes staff and admin, and that support — called a "secretariat" — is very often
         provided by an outside organisation with a direct stake in the topic: a charity, a trade body, or
         a public affairs firm working for an industry. That's not necessarily improper — it's how these

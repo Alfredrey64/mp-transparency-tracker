@@ -25,9 +25,8 @@ export default function TermsConditions() {
 
         <Section title="Accuracy and data sources">
           <p>
-            Data is pulled automatically from official public APIs and registers and, in the case of donor industry
-            tags, cross-referenced against Companies House records using automated name-matching. Automated matching
-            can be wrong. Specifically:
+            Data comes from official public registers and, in the case of donor industry tags, is cross-referenced
+            against Companies House records by matching names — that matching can be wrong. Specifically:
           </p>
           <ul style={{ margin: "0 0 12px", paddingLeft: 20 }}>
             <li style={{ marginBottom: 8 }}>Source registers are updated on their own schedule — this site may lag behind the live official record.</li>
@@ -49,9 +48,9 @@ export default function TermsConditions() {
 
         <Section title="Acceptable use">
           You may browse and reference this site for personal, educational, or journalistic purposes. You may not
-          use it to harass, defame, or make unfounded accusations against any individual named on it. Automated
-          scraping that materially burdens the underlying official APIs is discouraged — please use those sources
-          directly for bulk data needs.
+          use it to harass, defame, or make unfounded accusations against any individual named on it. Heavy automated
+          scraping of this site is discouraged — for bulk data needs, please go to the original official registers
+          directly.
         </Section>
 
         <Section title="Limitation of liability">

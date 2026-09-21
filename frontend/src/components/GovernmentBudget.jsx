@@ -155,8 +155,7 @@ export default function GovernmentBudget() {
         }}
       >
         These are headline totals for 2025-26 from the Office for Budget Responsibility's published guide to the
-        public finances, hand-curated here rather than pulled live — there's no free public API for a full spending
-        breakdown, and the official detail is only published a few times a year, at each Budget and Spending Review.
+        public finances, which is only updated a few times a year, at each Budget and Spending Review.
         "Other departmental spending" and "other annually managed spending" are our own arithmetic remainder, not an
         officially published line — see <strong style={{ color: COLORS.ink }}>Data & Methodology</strong> for the full picture.
       </div>
@@ -310,7 +309,7 @@ export default function GovernmentBudget() {
             </div>
 
             <div style={{ background: `${active.color}0d`, borderRadius: 10, padding: "12px 14px", marginBottom: 16, fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.55 }}>
-              <strong>Worth knowing:</strong> {active.didYouKnow}
+              <strong>For context:</strong> {active.didYouKnow}
             </div>
 
             <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, borderTop: `1px solid ${COLORS.hairline}`, paddingTop: 12 }}>

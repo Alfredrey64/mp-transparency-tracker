@@ -146,7 +146,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
         <PageHeader
           kicker="Public Record · UK Parliament"
           title="Follow the money behind every MP."
-          subtitle="A plain-language look at declared gifts, donations, and financial interests for every current Member of Parliament — pulled automatically from the official Register of Interests and updated every day, with no editorial spin."
+          subtitle="An objective look at declared gifts, donations, and financial interests for every current Member of Parliament, taken straight from the official Register of Members' Financial Interests and kept up to date."
           align="center"
           size="xl"
         />
@@ -163,7 +163,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
           </div>
           <div>
             <div style={{ fontFamily: FONT_DISPLAY, fontSize: 36, color: COLORS.ink }}>Daily</div>
-            <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft }}>Automatic updates</div>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft }}>Kept up to date</div>
           </div>
           <div>
             <div style={{ fontFamily: FONT_DISPLAY, fontSize: 36, color: COLORS.ink }}>Official</div>

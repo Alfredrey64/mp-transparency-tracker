@@ -1,4 +1,4 @@
-// Plain-language summaries of each party's most recent UK general election
+// Objective summaries of each party's most recent UK general election
 // manifesto (2024), written independently rather than copied from the
 // documents themselves — manifestos are copyrighted, so this app links to
 // the official source for the full text instead of reproducing it.

@@ -254,3 +254,147 @@ export function IconPetition({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconCompass({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M15.5 8.5 13 13l-4.5 2.5L11 11z" />
+    </svg>
+  );
+}
+
+export function IconEconomy({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 20V12M9.3 20V8M14.6 20V14M20 20V4" />
+    </svg>
+  );
+}
+
+export function IconHealth({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7.5v9M7.5 12h9" />
+    </svg>
+  );
+}
+
+export function IconMigration({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 12h11" />
+      <path d="M10 7.2 15 12l-5 4.8" />
+      <path d="M19 5v14" />
+    </svg>
+  );
+}
+
+export function IconLeaf({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 19c-2-7 2-14 12-14 1 7-3 12-9 13-1 .1-2 .5-3 1Z" />
+      <path d="M8 18c2-3 5-6 9-9" />
+    </svg>
+  );
+}
+
+export function IconGlobe({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M3 12h18" />
+      <path d="M12 3c2.5 2.5 2.5 15.5 0 18M12 3c-2.5 2.5-2.5 15.5 0 18" />
+    </svg>
+  );
+}
+
+export function IconGavel({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14.5 3.5 20 9l-2 2-5.5-5.5Z" />
+      <path d="m4 19.5 7-7" />
+      <path d="m8.5 10.5 4.5 4.5" />
+      <path d="M3 21h7" />
+    </svg>
+  );
+}
+
+export function IconHeart({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10Z" />
+    </svg>
+  );
+}
+
+export function IconShield({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3.2 19 6v6c0 5-3 8-7 9-4-1-7-4-7-9V6Z" />
+    </svg>
+  );
+}
+
+export function IconFactory({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 21V10l5 3.2V10l5 3.2V10l5 3.2V21Z" />
+      <path d="M3 21h18" />
+    </svg>
+  );
+}
+
+export function IconHardHat({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 15.5a8 8 0 0 1 16 0Z" />
+      <path d="M3.5 15.5h17v2.5a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1Z" />
+      <path d="M12 9V6" />
+    </svg>
+  );
+}
+
+export function IconDoor({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M7 3h8v18H7Z" />
+      <path d="M15 3.3 18 5v16l-3-1.7" />
+      <circle cx="11.7" cy="12" r="0.9" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function IconCommittee({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <ellipse cx="12" cy="13.5" rx="7.5" ry="4.5" />
+      <circle cx="12" cy="5" r="1.6" fill="currentColor" stroke="none" />
+      <circle cx="4" cy="9.5" r="1.6" fill="currentColor" stroke="none" />
+      <circle cx="20" cy="9.5" r="1.6" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function IconCompare({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3v18" />
+      <path d="M5 7h14" />
+      <path d="M5 7 2.5 12.5a2.5 2.5 0 0 0 5 0Z" />
+      <path d="M19 7l-2.5 5.5a2.5 2.5 0 0 0 5 0Z" />
+    </svg>
+  );
+}
+
+export function IconMeeting({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="7" cy="8" r="2.6" />
+      <circle cx="17" cy="8" r="2.6" />
+      <path d="M2.5 19c.4-3.2 2.2-5.2 4.5-5.2M21.5 19c-.4-3.2-2.2-5.2-4.5-5.2" />
+      <path d="M9 19h6" />
+    </svg>
+  );
+}

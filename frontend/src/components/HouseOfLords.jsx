@@ -27,9 +27,9 @@ function DataScopeNote() {
       }}
     >
 This covers <em>who</em> sits in the House of Lords, and their recent debates and written questions — but not what
-      they've declared or how they've voted. The two APIs the rest of this site uses for that (financial interests and
-      division votes) turn out to only cover the Commons; there's no equivalent structured source for the Lords,
-      including no attendance percentage, so rather than guess, it's simply left out. The{" "}
+      they've declared or how they've voted. The official sources the rest of this site draws on for that (financial
+      interests and division votes) turn out to only cover the Commons; there's no equivalent structured source for
+      the Lords, including no attendance percentage, so rather than guess, it's simply left out. The{" "}
       <a href="https://www.parliament.uk/mps-lords-and-offices/standards-and-financial-interests/parliamentary-commissioner-for-standards/registers-of-interests/register-of-lords-interests/" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
         official Register of Lords' Interests
       </a>{" "}

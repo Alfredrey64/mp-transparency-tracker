@@ -131,7 +131,7 @@ export default function PoliticianList({ onSelect }) {
       <PageHeader
         icon={IconCoin}
         title="Who's Funding Your MPs?"
-        subtitle={loading ? "Loading current MPs…" : `Search, filter, and explore declared gifts, donations, and interests for ${politicians.length} current MPs — updated daily from the official register. Showing ${filtered.length} now.`}
+        subtitle={loading ? "Loading current MPs…" : `Search, filter, and explore declared gifts, donations, and interests for ${politicians.length} current MPs — updated daily from the official register.`}
       />
 
       <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 16, flexWrap: "wrap" }}>

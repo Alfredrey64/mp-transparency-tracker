@@ -6,46 +6,98 @@ import GlobalSearch from "./GlobalSearch";
 import {
   IconHome, IconFlow, IconCoin, IconVote, IconGroup, IconInfluence, IconManifesto, IconTracker,
   IconMethodology, IconSettings, IconGlossary, IconHistory, IconDevolved, IconFormerMP, IconBudget, IconCabinet, IconTimeline,
-  IconPartyFinance, IconByElection, IconLords, IconPetition,
+  IconPartyFinance, IconByElection, IconLords, IconPetition, IconCompass, IconCommittee, IconCompare, IconMeeting, IconPulse,
 } from "./icons";
 
-const HOME_NAV_ITEMS = [{ key: "home", label: "Overview", icon: IconHome }];
-
-const LEARN_NAV_ITEMS = [
-  { key: "howitworks", label: "How Parliament Works", icon: IconFlow },
-  { key: "devolved", label: "Devolved Administrations", icon: IconDevolved },
-  { key: "parties", label: "Party Policies", icon: IconManifesto },
-  { key: "glossary", label: "Glossary", icon: IconGlossary },
+const HOME_NAV_ITEMS = [
+  { key: "home", label: "Overview", icon: IconHome },
+  { key: "recentActivity", label: "What's Changed", icon: IconPulse },
 ];
 
-const GOVERNMENT_NAV_ITEMS = [
-  { key: "cabinet", label: "Cabinet", icon: IconCabinet },
-  { key: "lords", label: "House of Lords", icon: IconLords },
-  { key: "budget", label: "Government Budget", icon: IconBudget },
-  { key: "tracker", label: "Promises Tracker", icon: IconTracker },
-  { key: "byElections", label: "Elections", icon: IconByElection },
-  { key: "petitions", label: "Petitions", icon: IconPetition },
-];
-
-// Where the money is — who funds MPs individually vs. who funds parties
-// directly. Split out from MP Accountability below since Party Finances
-// isn't about any one MP's own conduct, and grouping it with Donors &
-// Lobbying makes the "follow the money" pages easy to find together.
-const MONEY_NAV_ITEMS = [
-  { key: "donors", label: "Donors & Lobbying", icon: IconInfluence },
-  { key: "partyFinances", label: "Party Finances", icon: IconPartyFinance },
-];
-
-const ACCOUNTABILITY_NAV_ITEMS = [
-  { key: "list", label: "Financial Interests", icon: IconCoin },
-  { key: "voting", label: "Voting Records & Bills", icon: IconVote },
-  { key: "appg", label: "APPG Memberships", icon: IconGroup },
-];
-
-const HISTORY_NAV_ITEMS = [
-  { key: "history", label: "Political History", icon: IconHistory },
-  { key: "timeline", label: "Timeline", icon: IconTimeline },
-  { key: "formerMps", label: "Former MPs", icon: IconFormerMP },
+// One accent hue per section, used for its label dot, its card tint, its
+// active-item highlight, and its active item's icon colour — the fastest
+// way to tell at a glance which group you're in, independent of reading
+// the (smaller, uppercase) section label itself. Chosen to be distinct
+// from every other colour already in use elsewhere in the app (party
+// colours, budget categories, the brass/teal accent). Each section renders
+// as its own faintly tinted card so the groups stay visually distinct even
+// with every item on screen at once.
+const SECTIONS = [
+  {
+    key: "learn",
+    label: "Learn",
+    accent: "#5A7FA6",
+    items: [
+      { key: "howitworks", label: "How Parliament Works", icon: IconFlow },
+      { key: "devolved", label: "Devolved Administrations", icon: IconDevolved },
+      { key: "parties", label: "Party Policies", icon: IconManifesto },
+      { key: "glossary", label: "Glossary", icon: IconGlossary },
+    ],
+  },
+  {
+    // Interactive, participatory tools — as distinct from Learn's static
+    // reference material above. Find Your Party lived under Learn before,
+    // but it's a personalised tool, not something to read; Petitions used
+    // to sit under The Government, but a petition is something a citizen
+    // does, not a government institution.
+    key: "involved",
+    label: "Get Involved",
+    accent: "#A8456B",
+    items: [
+      { key: "partymatch", label: "Find Your Party", icon: IconCompass },
+      { key: "petitions", label: "Petitions", icon: IconPetition },
+    ],
+  },
+  {
+    key: "government",
+    label: "The Government",
+    accent: "#9C6B30",
+    items: [
+      { key: "cabinet", label: "Cabinet", icon: IconCabinet },
+      { key: "lords", label: "House of Lords", icon: IconLords },
+      { key: "committees", label: "Select Committees", icon: IconCommittee },
+      { key: "budget", label: "Government Budget", icon: IconBudget },
+      { key: "tracker", label: "Promises Tracker", icon: IconTracker },
+      { key: "byElections", label: "Elections", icon: IconByElection },
+    ],
+  },
+  {
+    // Where the money is — declared interests, who funds MPs individually,
+    // and who funds parties directly. "Financial Interests" lives here
+    // (not under MP Accountability below) because it's the app's core
+    // follow-the-money page, not a record of an MP's personal conduct.
+    key: "money",
+    label: "Money in Politics",
+    accent: "#B5533C",
+    items: [
+      { key: "list", label: "Financial Interests", icon: IconCoin },
+      { key: "donors", label: "Donors & Lobbying", icon: IconInfluence },
+      { key: "partyFinances", label: "Party Finances", icon: IconPartyFinance },
+      { key: "ministerialMeetings", label: "Ministerial Meetings", icon: IconMeeting },
+    ],
+  },
+  {
+    // What MPs actually do in Parliament, as distinct from money — how
+    // they vote and which cross-party groups they join.
+    key: "accountability",
+    label: "MP Accountability",
+    accent: "#6E4B6E",
+    items: [
+      { key: "voting", label: "Voting Records & Bills", icon: IconVote },
+      { key: "appg", label: "APPG Memberships", icon: IconGroup },
+      { key: "compare", label: "Compare MPs", icon: IconCompare },
+    ],
+  },
+  {
+    key: "history",
+    label: "History",
+    accent: "#3F7D5C",
+    items: [
+      { key: "history", label: "Political History", icon: IconHistory },
+      { key: "timeline", label: "Timeline", icon: IconTimeline },
+      { key: "formerMps", label: "Former MPs", icon: IconFormerMP },
+    ],
+  },
 ];
 
 const BOTTOM_NAV_ITEMS = [
@@ -53,17 +105,6 @@ const BOTTOM_NAV_ITEMS = [
   { key: "settings", label: "Settings", icon: IconSettings },
 ];
 
-// One accent hue per section, used for its label dot, its active-item
-// highlight, and now the active item's icon colour — the fastest way to
-// tell at a glance which group you're in, independent of reading the
-// (smaller, uppercase) section label itself. Chosen to be distinct from
-// every other colour already in use elsewhere in the app (party colours,
-// budget categories, the brass/teal accent).
-const ACCENT_LEARN = "#5A7FA6";
-const ACCENT_GOVERNMENT = "#9C6B30";
-const ACCENT_MONEY = "#B5533C";
-const ACCENT_DATA = "#6E4B6E";
-const ACCENT_HISTORY = "#3F7D5C";
 const ACCENT_DEFAULT = "#8A9694";
 
 function NavItem({ item, active, accent, onNavigate }) {
@@ -138,8 +179,16 @@ function NavList({ items, activeView, onNavigate, accent = ACCENT_DEFAULT }) {
 
 function SidebarSection({ label, accent, items, activeView, onNavigate }) {
   return (
-    <div style={{ marginTop: 12, paddingTop: 10, borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 7, padding: "0 10px 6px" }}>
+    <div
+      style={{
+        marginTop: 12,
+        padding: "9px 7px",
+        borderRadius: 11,
+        background: `linear-gradient(160deg, ${accent}17, ${accent}05 75%)`,
+        border: `1px solid ${accent}2a`,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 7, padding: "0 3px 7px" }}>
         <span style={{ width: 6, height: 6, borderRadius: "50%", background: accent, flexShrink: 0, boxShadow: `0 0 0 3px ${accent}2e` }} />
         <span
           style={{
@@ -183,11 +232,16 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician }) {
         <div style={{ marginTop: 10 }}>
           <NavList items={HOME_NAV_ITEMS} activeView={activeView} onNavigate={onNavigate} />
         </div>
-        <SidebarSection label="Learn" accent={ACCENT_LEARN} items={LEARN_NAV_ITEMS} activeView={activeView} onNavigate={onNavigate} />
-        <SidebarSection label="The Government" accent={ACCENT_GOVERNMENT} items={GOVERNMENT_NAV_ITEMS} activeView={activeView} onNavigate={onNavigate} />
-        <SidebarSection label="Money in Politics" accent={ACCENT_MONEY} items={MONEY_NAV_ITEMS} activeView={activeView} onNavigate={onNavigate} />
-        <SidebarSection label="MP Accountability" accent={ACCENT_DATA} items={ACCOUNTABILITY_NAV_ITEMS} activeView={activeView} onNavigate={onNavigate} />
-        <SidebarSection label="History" accent={ACCENT_HISTORY} items={HISTORY_NAV_ITEMS} activeView={activeView} onNavigate={onNavigate} />
+        {SECTIONS.map((section) => (
+          <SidebarSection
+            key={section.key}
+            label={section.label}
+            accent={section.accent}
+            items={section.items}
+            activeView={activeView}
+            onNavigate={onNavigate}
+          />
+        ))}
       </div>
 
       <div style={{ paddingTop: 10, marginTop: 10, borderTop: "1px solid rgba(255,255,255,0.06)" }}>

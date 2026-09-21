@@ -119,16 +119,37 @@ export default function Methodology({ onNavigate }) {
               auth="No key required"
               use="A daily per-MP headline search, for the 'In the News' section on each MP's page."
             />
+            <SourceRow
+              name="UK Parliament Committees API"
+              url="https://committees-api.parliament.uk/"
+              auth="No key required"
+              use="Current select committees, their membership and chair, and their open inquiries, for the Select Committees page. Scoped to Commons departmental committees, Lords investigative committees, and the two cross-cutting Joint Committees — procedural and administrative committees are left out."
+            />
+            <SourceRow
+              name="OBR — Public Finances Databank"
+              url="https://obr.uk/data/"
+              auth="Entered by hand"
+              use="Headline government spending totals by department, for the Government Budget page. There's no API for a full breakdown at this level of detail, and the official figures themselves are only published a few times a year, so these are updated manually rather than daily like the rest of the site."
+            />
+            <SourceRow
+              name="Departmental ministerial transparency returns"
+              url="https://www.gov.uk/government/collections/ministers-transparency-publications"
+              auth="Entered by hand"
+              use="A curated sample of ministers' declared meetings with outside organisations, for the Ministerial Meetings page. Around twenty departments each publish this separately, on their own schedule, in their own format — there's no single source to automate against, so this is refreshed periodically by hand rather than daily."
+            />
           </div>
         </Section>
 
         <Section title="How often it updates">
           <p style={{ marginTop: 0, marginBottom: 0 }}>
             A scheduled job runs once a day, pulling fresh data from every API above and writing it straight to the
-            live database — there's no manual step and no deploy needed for MPs, interests, votes, bills, donor-sector
-            tags, or news to refresh. The exceptions are content we've written and curated by hand, which only change
-            when we deliberately update them: the Party Policies manifesto summaries, and the Government Tracker's
-            selected pledges (though their status still reflects Full Fact's current published verdict).
+            live database — there's no manual step and no deploy needed for MPs, interests, votes, bills, committees,
+            donor-sector tags, or news to refresh. The Compare MPs and What's Changed pages don't have their own data
+            source at all — they're just different views over everything else here, so they're exactly as current as
+            the rest of the site. The exceptions are content we've written and curated by hand, which only change
+            when we deliberately update them: the Party Policies manifesto summaries, the Government Tracker's
+            selected pledges (though their status still reflects Full Fact's current published verdict), the
+            Government Budget figures, and the Ministerial Meetings sample.
           </p>
         </Section>
 
