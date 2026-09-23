@@ -398,3 +398,43 @@ export function IconMeeting({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconQuestion({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v10A1.5 1.5 0 0 1 18.5 17H9l-4 4v-4H5.5A1.5 1.5 0 0 1 4 15.5Z" />
+      <path d="M9.3 8.3a2.5 2.5 0 0 1 4.9.7c0 1.5-2.2 1.8-2.2 3.3" />
+      <circle cx="12" cy="15.6" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function IconPin({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 21.5c4-4.2 7-8 7-11.5a7 7 0 1 0-14 0c0 3.5 3 7.3 7 11.5Z" />
+      <circle cx="12" cy="10" r="2.4" />
+    </svg>
+  );
+}
+
+export function IconBroadcast({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="8" width="18" height="12" rx="1.8" />
+      <path d="m7 8 3-4.5M17 8l-3-4.5" />
+      <circle cx="12" cy="14" r="2.4" />
+    </svg>
+  );
+}
+
+export function IconRankings({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 21h18" />
+      <rect x="4" y="12" width="5" height="9" rx="0.8" />
+      <rect x="9.5" y="6" width="5" height="15" rx="0.8" />
+      <rect x="15" y="15" width="5" height="6" rx="0.8" />
+    </svg>
+  );
+}

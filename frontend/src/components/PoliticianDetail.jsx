@@ -192,6 +192,81 @@ function MoneyAndVotesBox({ politician, interests }) {
   );
 }
 
+// Words too generic to count as a real name match on their own — "Group",
+// "Trust", "Limited" and the like appear in hundreds of unrelated
+// organisation names, so two entries sharing only one of these wouldn't be
+// a meaningful overlap.
+const ORG_STOPWORDS = new Set([
+  "the", "ltd", "limited", "plc", "group", "llp", "inc", "co", "and", "of",
+  "committee", "association", "foundation", "trust", "international",
+  "company", "corporation", "holdings", "services", "uk",
+]);
+
+function significantWords(name) {
+  return (name ?? "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter((w) => w.length >= 4 && !ORG_STOPWORDS.has(w));
+}
+
+function namesOverlap(a, b) {
+  const wordsA = new Set(significantWords(a));
+  return significantWords(b).some((w) => wordsA.has(w));
+}
+
+// Cross-references two registers that never otherwise touch: an MP's own
+// declared financial interests, and the separate Cabinet Office register of
+// ministerial gifts and hospitality (only populated for MPs who hold a
+// government post). A name appearing in both isn't evidence of anything —
+// it's a factual overlap, surfaced because it's otherwise invisible: no
+// single official source lists both together.
+function CrossRegisterBox({ interests, gifts }) {
+  const matches = useMemo(() => {
+    if (!interests?.length || !gifts?.length) return [];
+    const donors = interests.filter((i) => i.donor_name);
+    const found = [];
+    for (const g of gifts) {
+      if (!g.counterparty) continue;
+      for (const d of donors) {
+        if (namesOverlap(d.donor_name, g.counterparty)) found.push({ donor: d, gift: g });
+      }
+    }
+    return found;
+  }, [interests, gifts]);
+
+  if (matches.length === 0) return null;
+
+  return (
+    <CardShell title="Same Name, Two Registers">
+      <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginBottom: 12, lineHeight: 1.55 }}>
+        An organisation or individual appears in both this MP's declared financial interests and the separate
+        register of ministerial gifts and hospitality. This is a factual name overlap only, not evidence of
+        anything improper — ministers routinely meet and receive hospitality from many of the same organisations
+        active in public life more broadly.
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {matches.map((m, i) => (
+          <div key={i} style={{ background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 10, padding: "10px 12px" }}>
+            <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12.5, color: COLORS.ink, marginBottom: 6 }}>
+              {m.gift.counterparty}
+            </div>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5, marginBottom: 4 }}>
+              <strong style={{ color: COLORS.ink }}>Declared interest:</strong> {m.donor.summary}
+              {m.donor.date_registered && ` · ${formatDate(m.donor.date_registered)}`}
+            </div>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5 }}>
+              <strong style={{ color: COLORS.ink }}>Ministerial register:</strong> {m.gift.kind}
+              {m.gift.department && ` · ${m.gift.department}`}
+              {m.gift.date_or_period && ` · ${m.gift.date_or_period}`}
+            </div>
+          </div>
+        ))}
+      </div>
+    </CardShell>
+  );
+}
+
 function CurrentRolesBox({ interests }) {
   const roles = useMemo(
     () => interests.filter((item) => ONGOING_ROLE_CATEGORIES.includes(item.category)),
@@ -620,6 +695,7 @@ export default function PoliticianDetail({ politician, onBack }) {
             <CurrentRolesBox interests={interests} />
             <FundingBySectorBox interests={interests} />
             <MoneyAndVotesBox politician={politician} interests={interests} />
+            <CrossRegisterBox interests={interests} gifts={gifts} />
             <ContactBox politician={politician} />
             <CabinetRoleBox politician={politician} />
             <VotingSummaryBox politician={politician} />

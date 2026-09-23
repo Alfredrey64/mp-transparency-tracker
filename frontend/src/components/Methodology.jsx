@@ -123,7 +123,19 @@ export default function Methodology({ onNavigate }) {
               name="UK Parliament Committees API"
               url="https://committees-api.parliament.uk/"
               auth="No key required"
-              use="Current select committees, their membership and chair, and their open inquiries, for the Select Committees page. Scoped to Commons departmental committees, Lords investigative committees, and the two cross-cutting Joint Committees — procedural and administrative committees are left out."
+              use="Current select committees, their membership and chair, and their open inquiries, for the Select Committees page (scoped to Commons departmental committees, Lords investigative committees, and the two cross-cutting Joint Committees — procedural and administrative committees are left out). Also used for the Standards & Sanctions page, to find every report the Committee on Standards has published about a named MP's individual conduct."
+            />
+            <SourceRow
+              name="UK Parliament Written Questions API"
+              url="https://writtenquestions-api.parliament.uk/"
+              auth="No key required"
+              use="Every written question tabled in either House over a rolling 30 days, and the government's answer once given, for the Written Questions page."
+            />
+            <SourceRow
+              name="Register of All-Party Parliamentary Groups"
+              url="https://www.parliament.uk/mps-lords-and-offices/standards-and-financial-interests/parliamentary-commissioner-for-standards/registers-of-interests/register-of-all-party-party-parliamentary-groups/"
+              auth="Entered by hand"
+              use="A curated sample of APPGs' registered financial benefits (secretariat funding, hospitality) on the APPG Memberships page. Published as a PDF roughly every 6 weeks with no API to draw from, so refreshed periodically by hand rather than daily."
             />
             <SourceRow
               name="OBR — Public Finances Databank"
@@ -144,12 +156,13 @@ export default function Methodology({ onNavigate }) {
           <p style={{ marginTop: 0, marginBottom: 0 }}>
             A scheduled job runs once a day, pulling fresh data from every API above and writing it straight to the
             live database — there's no manual step and no deploy needed for MPs, interests, votes, bills, committees,
-            donor-sector tags, or news to refresh. The Compare MPs and What's Changed pages don't have their own data
-            source at all — they're just different views over everything else here, so they're exactly as current as
-            the rest of the site. The exceptions are content we've written and curated by hand, which only change
-            when we deliberately update them: the Party Policies manifesto summaries, the Government Tracker's
-            selected pledges (though their status still reflects Full Fact's current published verdict), the
-            Government Budget figures, and the Ministerial Meetings sample.
+            written questions, standards reports, donor-sector tags, or news to refresh. Compare MPs, the "What's
+            Changed" panel on the Overview page, and My MP don't have their own data source at all — they're just
+            different views over everything else here, so they're exactly as current as the rest of the site. The exceptions are content
+            we've written and curated by hand, which only change when we deliberately update them: the Party Policies
+            manifesto summaries, the Government Tracker's selected pledges (though their status still reflects Full
+            Fact's current published verdict), the Government Budget figures, the Ministerial Meetings sample, and
+            the APPG registered financial benefits sample.
           </p>
         </Section>
 
@@ -184,6 +197,17 @@ export default function Methodology({ onNavigate }) {
               <strong>"In the News":</strong> a daily headline search for an MP's name, filtered to require their
               surname appear in the headline. It's a skim, not a verified fact-check — a same-named person, or a
               passing mention, can occasionally slip through.
+            </CaveatItem>
+            <CaveatItem>
+              <strong>Standards & Sanctions:</strong> the Committee on Standards publishes both individual MP conduct
+              reports and general reports reviewing the rules themselves under one list, with no field distinguishing
+              the two — a report is kept only if its title, once the "Nth Report -" prefix is stripped, reads like a
+              short person's name rather than a policy topic. That's a good filter in practice, but a report about a
+              genuinely name-like topic could in principle slip through, or a very unusually worded personal report
+              could be missed. The "what happened" and "the outcome" summaries shown on that page are written by
+              hand from each report's own findings — for the most significant, widely reported cases only; where we
+              haven't summarised a report yet, the page links straight to the Committee's original document instead
+              of guessing.
             </CaveatItem>
             <CaveatItem>
               <strong>Party Policies & Government Tracker:</strong> the manifesto summaries are written independently

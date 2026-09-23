@@ -4,6 +4,7 @@ import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { getPartyDonorSector, sectorColor, partyDonorSectorMetadata } from "../lib/donorSectors";
 import { getDonorProfile, publicFundDescription } from "../lib/donorProfiles";
+import { normaliseIndividualDonorName } from "../lib/donorNames";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { PageHeader } from "./shared";
 import { withScrollPreserved } from "../lib/preserveScroll";
@@ -68,8 +69,15 @@ export default function PartyFinances() {
 
     for (const row of rows) {
       const value = row.value ?? 0;
-      const donorKey = row.donor_name.trim();
-      if (NOT_A_REAL_DONOR.test(donorKey)) continue;
+      const rawName = row.donor_name.trim();
+      if (NOT_A_REAL_DONOR.test(rawName)) continue;
+      // The register itself is inconsistent about how an individual's name is
+      // spelled between donations (with/without a title, a middle name, ALL
+      // CAPS) — normalising merges those into one donor instead of splitting
+      // their giving across several look-alike entries. Never applied to
+      // organisations, where chopping a name down risks merging two unrelated
+      // companies that happen to share a word.
+      const donorKey = row.donor_status === "Individual" ? normaliseIndividualDonorName(rawName) : rawName;
 
       totalValue += value;
       partyTotals.set(row.party_name, (partyTotals.get(row.party_name) ?? 0) + value);
@@ -142,6 +150,20 @@ export default function PartyFinances() {
         </a>{" "}
         under a higher threshold (£11,180, or £2,230 for further donations from the same source in a year). It's a
         rolling 12-month window, kept up to date daily, not a full historical record.
+      </div>
+
+      <div
+        style={{
+          background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: "14px 18px",
+          marginBottom: 28, maxWidth: 900, fontFamily: FONT_BODY, fontSize: 13, lineHeight: 1.6, color: COLORS.inkSoft,
+        }}
+      >
+        <strong style={{ color: COLORS.ink }}>Seen a big donation in the news that isn't here yet?</strong> Parties
+        only have to report their donations to the Electoral Commission once a quarter, with up to 20 working days
+        after the quarter ends to file — so a donation that's already public knowledge through press reporting can
+        take a few months to reach the official register this page draws from. That's a gap in the official reporting
+        timeline, not a gap in this site's data — once a party's quarterly return is filed and published, the next
+        daily update picks it up automatically.
       </div>
 
       {stats.totalValue > 0 && (

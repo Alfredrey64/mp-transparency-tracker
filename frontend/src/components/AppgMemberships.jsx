@@ -38,20 +38,102 @@ const QUICK_FACTS = [
   { label: "6 Weeks", note: "re-registration cycle" },
 ];
 
-const APPG_EXAMPLES = [
+// Standard UK party colours, used only for the small notable-member dots
+// below — not the app-wide partyColour() helper, which expects a hex value
+// already looked up from a politician record rather than a party name.
+const PARTY_DOT = {
+  Labour: "#DC2626",
+  "Labour (Co-op)": "#DC2626",
+  Conservative: "#0087DC",
+  "Liberal Democrat": "#FAA61A",
+  "Scottish National Party": "#C9A227",
+  Green: "#6AB023",
+  "Plaid Cymru": "#005B54",
+  "Non-affiliated": COLORS.inkSoft,
+};
+
+function MemberList({ members }) {
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "5px 12px", marginTop: 8 }}>
+      {members.map((m) => (
+        <span key={m.name} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: FONT_BODY, fontSize: 12, color: COLORS.ink }}>
+          <span style={{ width: 7, height: 7, borderRadius: "50%", background: PARTY_DOT[m.party] ?? COLORS.inkSoft, flexShrink: 0 }} />
+          {m.name} <span style={{ color: COLORS.inkSoft }}>· {m.role}</span>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+// A hand-picked sample of real, publicly reported financial benefits
+// registered by APPGs — not an automated feed. The Register of APPGs is
+// published as a PDF every ~6 weeks with no API to pull it from
+// automatically, so — like the Ministerial Meetings page — this is a
+// periodically refreshed sample rather than a complete or daily-updating
+// record. See Data & Methodology. Officers are as listed on the official
+// register as at 1 December 2025.
+const REGISTERED_BENEFITS = [
   {
-    name: "All-Party Parliamentary Group on Cancer",
-    tag: "Health",
+    group: "APPG on Defence Technology",
     color: "#B5533C",
-    desc: "Founded in 1998 to keep cancer care and treatment high on the political agenda. It brings MPs, peers, doctors, researchers, and patients together to push for better, more consistent cancer services across the NHS.",
-    secretariat: "Run day-to-day by Macmillan Cancer Support, a cancer charity.",
+    detail:
+      "Its secretariat took funding from RUK Advanced Systems Limited — a UK subsidiary of the Israeli arms manufacturer Rafael — without properly registering the arrangement. The Parliamentary Commissioner for Standards opened an investigation into the funding, and the group shut itself down in September 2025 rather than continue.",
+    sourceUrl: "https://www.thebureauinvestigates.com/stories/2025-09-05/appg-shuts-down-while-under-investigation-over-israeli-arms-funding",
+    members: null,
+    note: "Wound up in September 2025 — no longer on the current register.",
   },
   {
-    name: "All-Party Parliamentary Beer Group",
+    group: "Scotch Whisky APPG",
+    color: "#9C6B30",
+    detail:
+      "Its secretariat is run directly by the Scotch Whisky Association — the industry's own trade body — rather than an independent third party, a common pattern for single-industry APPGs.",
+    sourceUrl: "https://publications.parliament.uk/pa/cm/cmallparty/251201/scotch-whisky.htm",
+    members: [
+      { name: "Wendy Chamberlain MP", party: "Liberal Democrat", role: "chair" },
+      { name: "Andrew Bowie MP", party: "Conservative", role: "officer" },
+      { name: "Graham Leadbitter MP", party: "Scottish National Party", role: "officer" },
+      { name: "Douglas McAllister MP", party: "Labour", role: "officer" },
+    ],
+  },
+  {
+    group: "All-Party Parliamentary Beer Group",
+    color: "#8A7A3D",
+    detail:
+      "Its administration is provided by Ocklynge Consulting, a public affairs firm whose client work includes the brewing and pub sector the group exists to promote.",
+    sourceUrl: "https://publications.parliament.uk/pa/cm/cmallparty/251201/beer.htm",
+    members: [
+      { name: "Tonia Antoniazzi MP", party: "Labour", role: "chair" },
+      { name: "Greg Smith MP", party: "Conservative", role: "vice chair" },
+      { name: "Andrew Snowden MP", party: "Conservative", role: "vice chair" },
+      { name: "Pete Wishart MP", party: "Scottish National Party", role: "vice chair" },
+    ],
+  },
+];
+
+const APPG_EXAMPLES = [
+  {
+    name: "APPG on the Less Survivable Cancers",
+    tag: "Health",
+    color: "#B5533C",
+    desc: "Campaigns for the cancers with the lowest survival rates — brain, liver, lung, pancreatic, oesophageal, and stomach — which between them get a fraction of the research funding and public attention that more survivable cancers receive.",
+    secretariat: "Run day-to-day by Pancreatic Cancer UK, via the Less Survivable Cancers Taskforce.",
+    members: [
+      { name: "Paulette Hamilton MP", party: "Labour", role: "chair" },
+      { name: "Charlie Maynard MP", party: "Liberal Democrat", role: "vice chair" },
+      { name: "Dr Allison Gardner MP", party: "Labour", role: "officer" },
+    ],
+  },
+  {
+    name: "All-Party Parliamentary Group for Video Games and Esports",
     tag: "Industry",
     color: "#8A7A3D",
-    desc: "Promotes the UK brewing and pub industry — its economic contribution, cultural role, and the challenges pubs and breweries face, from tax to planning rules.",
-    secretariat: "Its administration is provided by Ocklynge Consulting, a public affairs firm working for the brewing sector.",
+    desc: "Works with the games and interactive entertainment industry to raise its profile in Parliament — one of the UK's biggest creative exports, but one MPs rarely discuss compared with film or music.",
+    secretariat: "Its administration is provided by UK Interactive Entertainment (Ukie), the industry's trade body.",
+    members: [
+      { name: "Charlotte Nichols MP", party: "Labour", role: "chair" },
+      { name: "Matt Western MP", party: "Labour", role: "vice chair" },
+      { name: "Lord Vaizey of Didcot", party: "Conservative", role: "vice chair" },
+    ],
   },
   {
     name: "All-Party Parliamentary Group on Portugal",
@@ -59,27 +141,47 @@ const APPG_EXAMPLES = [
     color: "#2E6F6F",
     desc: "Builds relationships between UK and Portuguese parliamentarians, and supports trade and cultural ties between the two countries.",
     secretariat: "Administered by the Portuguese Chamber of Commerce in the UK.",
+    members: [
+      { name: "Valerie Vaz MP", party: "Labour", role: "chair" },
+      { name: "Baroness Hooper", party: "Conservative", role: "vice chair" },
+      { name: "Christine Jardine MP", party: "Liberal Democrat", role: "vice chair" },
+    ],
   },
   {
     name: "All-Party Parliamentary Group on Europe",
     tag: "International",
     color: "#5B4E8A",
-    desc: "A newer group (first met in late 2024) focused on the UK's evolving relationship with Europe and the EU, aiming to encourage informed, cross-party discussion rather than push a single position.",
+    desc: "A newer group (founded October 2024) focused on the UK's evolving relationship with Europe and the EU, aiming to encourage informed, cross-party discussion rather than push a single position.",
     secretariat: "Its secretariat is provided by European Movement UK, a campaign group.",
+    members: [
+      { name: "Rosena Allin-Khan MP", party: "Labour", role: "co-chair" },
+      { name: "Lord Kirkhope", party: "Conservative", role: "co-chair" },
+      { name: "Ellie Chowns MP", party: "Green", role: "vice chair" },
+    ],
   },
   {
     name: "All-Party Parliamentary Group on Artificial Intelligence",
     tag: "Technology",
     color: "#4C7A6B",
     desc: "Examines how AI is developed and regulated in the UK — bringing together parliamentarians, academics, and industry to look at both the opportunities and the risks as the technology moves fast and policy tries to keep up.",
-    secretariat: "Typically supported by organisations with a stake in AI policy and industry standards.",
+    secretariat: "Run by the Big Innovation Centre, whose funders for this group include Deloitte, EY, BT Group, and Santander among others.",
+    members: [
+      { name: "Dr Allison Gardner MP", party: "Labour", role: "chair" },
+      { name: "Lord Clement-Jones", party: "Liberal Democrat", role: "co-chair" },
+      { name: "Dawn Butler MP", party: "Labour", role: "vice chair" },
+    ],
   },
   {
     name: "All-Party Parliamentary Group for Chess",
     tag: "Culture",
     color: "#B0508A",
     desc: "One of the more light-hearted examples — promotes chess in education and community life, and celebrates the game's role in the UK. A reminder that not every APPG is about heavyweight policy.",
-    secretariat: "Supported by chess federations and educational charities.",
+    secretariat: "Supported by Chess in Schools and Communities, an education charity.",
+    members: [
+      { name: "Neil Duncan-Jordan MP", party: "Labour", role: "chair" },
+      { name: "Peter Fortune MP", party: "Conservative", role: "co-chair" },
+      { name: "Lord Wigley", party: "Plaid Cymru", role: "vice chair" },
+    ],
   },
 ];
 
@@ -122,6 +224,39 @@ export default function AppgMemberships() {
         laws — but they regularly host outside speakers, run inquiries, and publish reports that can
         genuinely shape how MPs and ministers think about an issue.
       </InfoCard>
+
+      <div style={{ marginBottom: 32, maxWidth: 900 }}>
+        <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>
+          Registered Financial Benefits
+        </h2>
+        <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16 }}>
+          A hand-picked sample of real, publicly reported cases — not a complete or automatically updating record.
+          The full Register of APPGs is published as a PDF roughly every 6 weeks with no API to draw from
+          automatically, so this is refreshed periodically by hand instead, the same approach used for the
+          Ministerial Meetings page.
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {REGISTERED_BENEFITS.map((b, i) => (
+            <motion.div
+              key={b.group}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.3, delay: i * 0.05 }}
+              style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `3px solid ${b.color}`, borderRadius: 12, padding: "16px 20px" }}
+            >
+              <div style={{ fontFamily: FONT_DISPLAY, fontSize: 16.5, color: COLORS.ink, marginBottom: 6 }}>{b.group}</div>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, lineHeight: 1.6, marginBottom: 8 }}>{b.detail}</div>
+              {b.members ? <MemberList members={b.members} /> : (
+                <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, fontStyle: "italic", marginBottom: 8 }}>{b.note}</div>
+              )}
+              <a href={b.sourceUrl} target="_blank" rel="noreferrer" style={{ display: "inline-block", marginTop: 10, fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: b.color }}>
+                Source ↗
+              </a>
+            </motion.div>
+          ))}
+        </div>
+      </div>
 
       <div style={{ marginBottom: 20 }}>
         <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>
@@ -175,6 +310,12 @@ export default function AppgMemberships() {
               </div>
               <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, fontStyle: "italic" }}>
                 {group.secretariat}
+              </div>
+              <div style={{ borderTop: `1px solid ${COLORS.hairline}`, marginTop: 12, paddingTop: 10 }}>
+                <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10, color: group.color, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 2 }}>
+                  Notable members
+                </div>
+                <MemberList members={group.members} />
               </div>
             </motion.div>
           ))}

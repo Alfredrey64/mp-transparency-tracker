@@ -249,14 +249,41 @@ export function CabinetRoleBox({ politician }) {
 
 export function StandardsBox({ politician }) {
   const encodedName = encodeURIComponent(politician.name);
+  const [reports, setReports] = useState(null);
+
+  useEffect(() => {
+    async function load() {
+      const { data } = await supabase.from("standards_reports").select("title, report_url, publication_date").eq("politician_id", politician.id);
+      setReports(data ?? []);
+    }
+    load();
+  }, [politician.id]);
+
   return (
     <CardShell title="Standards & Investigations">
+      {reports?.length > 0 && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 12 }}>
+          {reports.map((r) => (
+            <a
+              key={r.report_url}
+              href={r.report_url}
+              target="_blank"
+              rel="noreferrer"
+              style={{ display: "block", background: "#F3E4E2", borderRadius: 8, padding: "8px 10px", fontFamily: FONT_BODY, fontSize: 12.5, color: "#9C3B3B", fontWeight: 600 }}
+            >
+              {r.title} ↗
+            </a>
+          ))}
+        </div>
+      )}
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.6, marginBottom: 10 }}>
-        To find out more click the following links
+        {reports?.length > 0
+          ? "The published finding above is a matter of public record — see the Standards & Sanctions tab for the full context. For anything more recent:"
+          : "No published Committee on Standards finding currently matched to this MP. To check for yourself:"}
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         <a
-          href={`https://committees.parliament.uk/committee/62/standards/publications/`}
+          href="https://committees.parliament.uk/committee/290/committee-on-standards/publications/"
           target="_blank"
           rel="noreferrer"
           style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, fontWeight: 600 }}

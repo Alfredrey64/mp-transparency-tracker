@@ -30,8 +30,12 @@ import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsConditions from "./components/TermsConditions";
 import Committees from "./components/Committees";
 import ComparePoliticians from "./components/ComparePoliticians";
-import RecentActivity from "./components/RecentActivity";
 import MinisterialMeetings from "./components/MinisterialMeetings";
+import WrittenQuestions from "./components/WrittenQuestions";
+import StandardsReports from "./components/StandardsReports";
+import MyMP from "./components/MyMP";
+import MediaLiteracy from "./components/MediaLiteracy";
+import Rankings from "./components/Rankings";
 
 export default function App() {
   const [view, setView] = useState("home");
@@ -90,8 +94,12 @@ export default function App() {
             {view === "partymatch" && <PartyMatch />}
             {view === "committees" && <Committees />}
             {view === "compare" && <ComparePoliticians />}
-            {view === "recentActivity" && <RecentActivity onSelectPolitician={handleViewProfile} />}
             {view === "ministerialMeetings" && <MinisterialMeetings />}
+            {view === "writtenQuestions" && <WrittenQuestions onSelectPolitician={handleViewProfile} />}
+            {view === "standards" && <StandardsReports onSelectPolitician={handleViewProfile} />}
+            {view === "rankings" && <Rankings onSelectPolitician={handleViewProfile} />}
+            {view === "myMP" && <MyMP onViewProfile={handleViewProfile} />}
+            {view === "mediaLiteracy" && <MediaLiteracy />}
             {view === "methodology" && <Methodology onNavigate={handleNavigate} />}
             {view === "glossary" && <Glossary />}
             {view === "settings" && <Settings onNavigate={handleNavigate} />}

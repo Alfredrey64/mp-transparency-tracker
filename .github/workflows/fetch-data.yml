@@ -1,4 +1,4 @@
-name: Fetch MP Financial Interests, Voting Records, Bills, Donor Sectors, News, Former MPs, On This Day, Today's Business, Party Finances, By-Elections, House of Lords Peers, MP Activity, IPSA Expenses, Petitions, Ministerial Gifts, and Select Committees
+name: Fetch MP Financial Interests, Voting Records, Bills, Donor Sectors, News, Former MPs, On This Day, Today's Business, Party Finances, By-Elections, House of Lords Peers, MP Activity, IPSA Expenses, Petitions, Ministerial Gifts, Select Committees, Written Questions, and Standards Reports
 
 on:
   schedule:
@@ -168,6 +168,22 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-committees.js
+
+      # A 30-day rolling window, but that's still several thousand written
+      # questions most days — expect this step to take a few minutes.
+      - name: Run the written questions fetch script
+        continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node fetch-written-questions.js
+
+      - name: Run the standards reports fetch script
+        continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node fetch-standards-reports.js
 
       # The scripts above write straight to Supabase, so the live site picks
       # them up on its next request — no deploy needed. The donor sector

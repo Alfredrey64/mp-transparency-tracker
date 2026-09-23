@@ -6,12 +6,13 @@ import GlobalSearch from "./GlobalSearch";
 import {
   IconHome, IconFlow, IconCoin, IconVote, IconGroup, IconInfluence, IconManifesto, IconTracker,
   IconMethodology, IconSettings, IconGlossary, IconHistory, IconDevolved, IconFormerMP, IconBudget, IconCabinet, IconTimeline,
-  IconPartyFinance, IconByElection, IconLords, IconPetition, IconCompass, IconCommittee, IconCompare, IconMeeting, IconPulse,
+  IconPartyFinance, IconByElection, IconLords, IconPetition, IconCompass, IconCommittee, IconCompare, IconMeeting,
+  IconQuestion, IconGavel, IconPin, IconBroadcast, IconRankings,
 } from "./icons";
 
 const HOME_NAV_ITEMS = [
   { key: "home", label: "Overview", icon: IconHome },
-  { key: "recentActivity", label: "What's Changed", icon: IconPulse },
+  { key: "myMP", label: "My MP", icon: IconPin },
 ];
 
 // One accent hue per section, used for its label dot, its card tint, its
@@ -32,6 +33,7 @@ const SECTIONS = [
       { key: "devolved", label: "Devolved Administrations", icon: IconDevolved },
       { key: "parties", label: "Party Policies", icon: IconManifesto },
       { key: "glossary", label: "Glossary", icon: IconGlossary },
+      { key: "mediaLiteracy", label: "Media Literacy", icon: IconBroadcast },
     ],
   },
   {
@@ -84,8 +86,11 @@ const SECTIONS = [
     accent: "#6E4B6E",
     items: [
       { key: "voting", label: "Voting Records & Bills", icon: IconVote },
+      { key: "writtenQuestions", label: "Written Questions", icon: IconQuestion },
+      { key: "standards", label: "Standards & Sanctions", icon: IconGavel },
       { key: "appg", label: "APPG Memberships", icon: IconGroup },
       { key: "compare", label: "Compare MPs", icon: IconCompare },
+      { key: "rankings", label: "Rankings", icon: IconRankings },
     ],
   },
   {
