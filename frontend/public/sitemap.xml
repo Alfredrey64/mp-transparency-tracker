@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  This app uses hash-based client-side routing (e.g. "/#/rankings"), and the
+  part of a URL after "#" is never sent to a server or seen by a crawler as
+  a distinct page — so there's genuinely only one indexable URL here, not
+  one per section. If this site later moves to real path-based routing
+  (which needs a server rewrite rule to serve index.html for every path),
+  each page could get its own <url> entry here.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://mp-transparency-tracker.vercel.app/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

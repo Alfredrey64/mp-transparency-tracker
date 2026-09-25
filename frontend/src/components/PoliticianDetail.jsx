@@ -267,6 +267,13 @@ function CrossRegisterBox({ interests, gifts }) {
   );
 }
 
+// The register's own summary text already ends with "- £1,234.00" — once
+// that figure is shown as its own right-hand value, repeating it inside the
+// sentence too just looks like a typo, so it's trimmed off here.
+function stripTrailingAmount(text) {
+  return (text ?? "").replace(/\s*-\s*£[\d,]+(\.\d+)?\s*$/, "");
+}
+
 function CurrentRolesBox({ interests }) {
   const roles = useMemo(
     () => interests.filter((item) => ONGOING_ROLE_CATEGORIES.includes(item.category)),
@@ -364,8 +371,14 @@ function ClaimsTabContent({ politician, claims }) {
                 <span style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13, color: COLORS.ink }}>
                   {c.category}{c.expenseType && c.expenseType !== c.category ? ` · ${c.expenseType}` : ""}
                 </span>
-                <span style={{ fontFamily: FONT_MONO, fontSize: 12.5, fontWeight: 700, color: COLORS.ink, flexShrink: 0 }}>
-                  £{Number(c.amount).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                <span
+                  style={{
+                    fontFamily: FONT_MONO, fontSize: 14, fontWeight: 600, color: COLORS.brass, flexShrink: 0,
+                    lineHeight: 1.5, letterSpacing: "-0.01em", fontVariantNumeric: "tabular-nums", background: `${COLORS.brass}14`,
+                    padding: "2px 9px", borderRadius: 999,
+                  }}
+                >
+                  £{Number(c.amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
               </div>
               {c.description && (
@@ -659,27 +672,41 @@ export default function PoliticianDetail({ politician, onBack }) {
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.2, delay: Math.min(i, 10) * 0.03 }}
                           whileHover={{ y: -2, boxShadow: "0 6px 16px rgba(30,42,68,0.1)" }}
-                          style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 16, boxShadow: "0 1px 4px rgba(30,42,68,0.05)" }}
+                          style={{
+                            display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16,
+                            background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 16,
+                            boxShadow: "0 1px 4px rgba(30,42,68,0.05)",
+                          }}
                         >
-                          <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: COLORS.brass, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 5 }}>
-                            {shortCategory(item.category)}
+                          <div style={{ minWidth: 0, flex: 1 }}>
+                            <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: COLORS.brass, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>
+                              {shortCategory(item.category)}
+                            </div>
+                            <div style={{ fontFamily: FONT_BODY, fontSize: 16, color: COLORS.ink, lineHeight: 1.4 }}>
+                              {stripTrailingAmount(item.summary)}
+                            </div>
+                            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8, fontSize: 12, color: COLORS.inkSoft }}>
+                              {item.date_registered && <span style={{ fontFamily: FONT_BODY }}>{formatDate(item.date_registered)}</span>}
+                              {item.date_registered && item.source_url && <span>·</span>}
+                              {item.source_url && (
+                                <a href={item.source_url} target="_blank" rel="noreferrer" style={{ color: COLORS.inkSoft, fontFamily: FONT_BODY }}>
+                                  source ↗
+                                </a>
+                              )}
+                            </div>
                           </div>
-                          <div style={{ fontFamily: FONT_BODY, fontSize: 16, color: COLORS.ink, lineHeight: 1.4 }}>
-                            {item.summary}
-                          </div>
-                          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 8, fontSize: 12.5, color: COLORS.inkSoft, textAlign: "center" }}>
-                            {item.value_amount && (
-                              <span style={{ fontFamily: FONT_MONO, fontSize: 12, fontWeight: 700, color: COLORS.ink }}>£{Number(item.value_amount).toLocaleString()}</span>
-                            )}
-                            {item.value_amount && item.date_registered && <span>-</span>}
-                            {item.date_registered && <span style={{ fontFamily: FONT_BODY }}>{formatDate(item.date_registered)}</span>}
-                            {(item.value_amount || item.date_registered) && item.source_url && <span>-</span>}
-                            {item.source_url && (
-                              <a href={item.source_url} target="_blank" rel="noreferrer" style={{ color: COLORS.inkSoft, fontFamily: FONT_BODY }}>
-                                source ↗
-                              </a>
-                            )}
-                          </div>
+                          {item.value_amount && (
+                            <div
+                              style={{
+                                flexShrink: 0, display: "inline-flex", alignItems: "center", justifyContent: "center",
+                                padding: "8px 14px", borderRadius: 999, background: `${COLORS.brass}14`,
+                              }}
+                            >
+                              <span style={{ fontFamily: FONT_BODY, fontSize: 15, fontWeight: 600, lineHeight: 1, color: COLORS.brass, whiteSpace: "nowrap" }}>
+                                £{Number(item.value_amount).toLocaleString()}
+                              </span>
+                            </div>
+                          )}
                         </motion.div>
                       ))}
                     </motion.div>
