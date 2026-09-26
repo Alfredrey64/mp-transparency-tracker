@@ -438,3 +438,32 @@ export function IconRankings({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconDarkMoney({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M7.8 12h8.4" strokeWidth="3" />
+    </svg>
+  );
+}
+
+export function IconThinkTank({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3a6 6 0 0 0-3.5 10.9c.5.4.8 1 .8 1.6v.3h5.4v-.3c0-.6.3-1.2.8-1.6A6 6 0 0 0 12 3Z" />
+      <path d="M9.5 18h5M10.3 21h3.4" />
+    </svg>
+  );
+}
+
+export function IconRegister({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3.5" y="5" width="17" height="14" rx="1.8" />
+      <circle cx="8.5" cy="10.3" r="1.8" />
+      <path d="M6 15.3c.5-1.5 1.6-2.3 2.5-2.3s2 .8 2.5 2.3" />
+      <path d="M13.5 9.3h4M13.5 12.3h4" />
+    </svg>
+  );
+}

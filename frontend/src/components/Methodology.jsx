@@ -149,6 +149,30 @@ export default function Methodology({ onNavigate }) {
               auth="Entered by hand"
               use="A curated sample of ministers' declared meetings with outside organisations, for the Ministerial Meetings page. Around twenty departments each publish this separately, on their own schedule, in their own format — there's no single source to automate against, so this is refreshed periodically by hand rather than daily."
             />
+            <SourceRow
+              name="Electoral Commission — donation rules & published cases"
+              url="https://www.electoralcommission.org.uk/political-party-donations-and-loans-northern-ireland/who-can-you-accept-donations-and-loans/uk-unincorporated-associations"
+              auth="Publicly documented"
+              use="The registration thresholds and the Constitutional Research Council/DUP case described on the Dark Money page — a fixed explainer of a legal mechanism and one well-documented real case, not a live feed, so it's only updated if the underlying rules change."
+            />
+            <SourceRow
+              name="Independent Adviser on Ministerial Standards / gov.uk business appointment rules"
+              url="https://www.gov.uk/government/collections/business-appointment-rules"
+              auth="Entered by hand"
+              use="The explanation of the business appointment rules and the four real cases on the Revolving Door page. ACOBA, the body that ran this process for 50 years, was abolished in October 2025; its successor arrangements are new enough that this page is a snapshot to be revisited as the new system builds a track record, not a daily feed."
+            />
+            <SourceRow
+              name="Who Funds You?"
+              url="https://whofundsyou.org/"
+              auth="Independent ratings, entered by hand"
+              use="Every transparency grade on the Think Tank Funding page is this project's own published assessment, not our judgement — see that page for how their A–E scale works. Chosen by hand as a small, illustrative sample, not the full set of UK think tanks they've rated."
+            />
+            <SourceRow
+              name="Office of the Registrar of Consultant Lobbyists"
+              url="https://registrarofconsultantlobbyists.org.uk/"
+              auth="Register downloaded by hand"
+              use="The total count of registered firms and the real recent investigations on the Consultant Lobbyists page. The register only covers paid lobbying-for-hire, not the larger volume of in-house lobbying — explained on that page — and per-firm client lists change every quarter, so this is refreshed periodically by hand rather than automatically."
+            />
           </div>
         </Section>
 
@@ -161,8 +185,9 @@ export default function Methodology({ onNavigate }) {
             different views over everything else here, so they're exactly as current as the rest of the site. The exceptions are content
             we've written and curated by hand, which only change when we deliberately update them: the Party Policies
             manifesto summaries, the Government Tracker's selected pledges (though their status still reflects Full
-            Fact's current published verdict), the Government Budget figures, the Ministerial Meetings sample, and
-            the APPG registered financial benefits sample.
+            Fact's current published verdict), the Government Budget figures, the Ministerial Meetings sample, the
+            APPG registered financial benefits sample, the Dark Money and Revolving Door explainers, the Think Tank
+            Funding sample, and the Consultant Lobbyists register snapshot.
           </p>
         </Section>
 

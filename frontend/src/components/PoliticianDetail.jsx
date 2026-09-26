@@ -5,6 +5,7 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../the
 import { partyColour, timeInOffice, shortCategory, formatDate, initials, ONGOING_ROLE_CATEGORIES } from "../lib/format";
 import { getDonorSector, sectorColor } from "../lib/donorSectors";
 import { sectorToBillCategory } from "../lib/sectorBillMapping";
+import { sectorToCommittee } from "../lib/sectorCommitteeMapping";
 import { categoriseBill } from "../lib/bills";
 import { isWatched, toggleWatch } from "../lib/watchlist";
 import { withScrollPreserved } from "../lib/preserveScroll";
@@ -184,6 +185,70 @@ function MoneyAndVotesBox({ politician, interests }) {
                   </span>
                 </div>
               ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </CardShell>
+  );
+}
+
+// Cross-references two things that never otherwise appear on the same
+// page: which select committee an MP sits on, and which industries their
+// declared donors are in. A committee's remit is public and an MP's
+// committee membership is their own choice (subject to their party's
+// approval), so an MP scrutinising the same industry as their donors is a
+// real, checkable fact — not proof the donation bought the seat. Committee
+// places are handed out based on an MP's background and interests, which is
+// very often exactly why someone with, say, pharmaceutical donors ends up
+// on the Health and Social Care Committee in the first place.
+function CommitteeConflictsBox({ interests, myCommittees }) {
+  const conflicts = useMemo(() => {
+    if (myCommittees.length === 0) return [];
+    const bySector = groupInterestsBySector(interests);
+    return bySector
+      .map((s) => {
+        const targetCommittee = sectorToCommittee(s.sector);
+        if (!targetCommittee) return null;
+        const committee = myCommittees.find((c) => c.name === targetCommittee);
+        if (!committee) return null;
+        return { sector: s.sector, color: s.color, sectorTotal: s.total, donations: s.donations, committeeName: committee.name };
+      })
+      .filter(Boolean);
+  }, [interests, myCommittees]);
+
+  if (conflicts.length === 0) return null;
+
+  return (
+    <CardShell title="Committee & Donor Overlap">
+      <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginBottom: 12, lineHeight: 1.55 }}>
+        Where this MP sits on a select committee that scrutinises the same industry as one of their declared donors.
+        This is a factual overlap, not evidence of undue influence — committee places reflect an MP's background and
+        interests, which is very often exactly why it lines up with their donors' industry.
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {conflicts.map((c) => (
+          <div key={c.sector} style={{ background: `${c.color}0c`, border: `1px solid ${c.color}33`, borderRadius: 10, padding: "10px 13px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8, flexWrap: "wrap", marginBottom: 8 }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink }}>
+                <strong>£{Math.round(c.sectorTotal).toLocaleString()}</strong> from {c.sector} donors
+              </div>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: c.color, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                Sits on: {c.committeeName}
+              </div>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              {c.donations.slice(0, 5).map((d, i) => (
+                <div key={i} style={{ display: "flex", justifyContent: "space-between", gap: 10, fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>
+                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{d.donor}</span>
+                  <span style={{ flexShrink: 0 }}>£{Math.round(d.amount).toLocaleString()}</span>
+                </div>
+              ))}
+              {c.donations.length > 5 && (
+                <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, fontStyle: "italic" }}>
+                  + {c.donations.length - 5} more — see the Donations tab above.
+                </div>
+              )}
             </div>
           </div>
         ))}
@@ -456,6 +521,16 @@ export default function PoliticianDetail({ politician, onBack }) {
   const [avatarErrored, setAvatarErrored] = useState(false);
   const [avatarLoaded, setAvatarLoaded] = useState(false);
   const [watched, setWatched] = useState(() => isWatched(politician.id));
+  const [committees, setCommittees] = useState([]);
+
+  useEffect(() => {
+    supabase.from("committees").select("id, name, members").then(({ data }) => setCommittees(data ?? []));
+  }, []);
+
+  const myCommittees = useMemo(
+    () => committees.filter((c) => (c.members ?? []).some((m) => m.parliament_member_id === politician.parliament_member_id)),
+    [committees, politician.parliament_member_id]
+  );
 
   useEffect(() => {
     async function load() {
@@ -722,6 +797,7 @@ export default function PoliticianDetail({ politician, onBack }) {
             <CurrentRolesBox interests={interests} />
             <FundingBySectorBox interests={interests} />
             <MoneyAndVotesBox politician={politician} interests={interests} />
+            <CommitteeConflictsBox interests={interests} myCommittees={myCommittees} />
             <CrossRegisterBox interests={interests} gifts={gifts} />
             <ContactBox politician={politician} />
             <CabinetRoleBox politician={politician} />

@@ -4,6 +4,172 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
 import { supabase } from "../supabaseClient";
 import { stripHtml, formatDate } from "../lib/format";
 
+// A colour-accented card used by several longer-form explainer pages
+// (Media Literacy, APPG Memberships, and others) for a titled block of
+// prose or a list — a top border in the page's own accent colour is enough
+// to visually separate sections without a heavier boxed look everywhere.
+// The icon is optional: pages that want a little more visual texture on
+// each card can pass one, but nothing breaks for the pages that don't.
+export function InfoCard({ title, color, children, index = 0, maxWidth = 900, icon: Icon }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 14 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.35, delay: index * 0.05, ease: "easeOut" }}
+      whileHover={{ y: -3, boxShadow: "0 10px 26px rgba(30,42,68,0.1)" }}
+      style={{
+        background: COLORS.paperCard, borderLeft: `1px solid ${COLORS.hairline}`, borderRight: `1px solid ${COLORS.hairline}`,
+        borderBottom: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${color}`, borderRadius: 16, maxWidth,
+        padding: "22px clamp(16px, 4vw, 26px)", boxShadow: "0 2px 10px rgba(30,42,68,0.05)", marginBottom: 20,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+        {Icon && (
+          <div style={{ flexShrink: 0, width: 34, height: 34, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", background: `${color}1c`, color }}>
+            <Icon size={16} />
+          </div>
+        )}
+        <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, margin: 0 }}>{title}</h2>
+      </div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 14.5, color: COLORS.inkSoft, lineHeight: 1.7 }}>{children}</div>
+    </motion.div>
+  );
+}
+
+// A short, high-visibility "here's why you should care" band for pages that
+// need to land their real-world stakes before a reader gets into the
+// mechanics — a single diagonal-tinted strip in the page's own colour,
+// not another full card, so it reads as a headline rather than one more
+// section to work through.
+export function WhyItMattersBand({ icon: Icon, color, children }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2, duration: 0.35 }}
+      style={{
+        display: "flex", alignItems: "center", gap: 14, maxWidth: 900, marginBottom: 28,
+        background: `linear-gradient(135deg, ${color}1A, ${color}05)`, border: `1px solid ${color}33`,
+        borderRadius: 14, padding: "16px 20px",
+      }}
+    >
+      <div style={{ flexShrink: 0, width: 38, height: 38, borderRadius: "50%", background: color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>
+        <Icon size={17} />
+      </div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.6 }}>
+        <strong>Why this matters:</strong> {children}
+      </div>
+    </motion.div>
+  );
+}
+
+// One stop in a "how the money/influence actually moves" diagram — an icon
+// in a circle with a label underneath. Pass `broken` for the one link in
+// the chain that's the actual point of the page (the bit nobody has to
+// disclose, the bit no register covers): a dashed outline reads as "this is
+// where it stops being traceable" without needing any extra explanation.
+export function FlowNode({ icon: Icon, label, color, broken = false }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 9, width: 130, flexShrink: 0 }}>
+      <div
+        style={{
+          width: 58, height: 58, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+          background: broken ? "transparent" : `${color}1c`, color,
+          border: broken ? `2px dashed ${color}` : `2px solid ${color}40`,
+        }}
+      >
+        <Icon size={24} />
+      </div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 600, color: COLORS.ink, textAlign: "center", lineHeight: 1.3 }}>
+        {label}
+      </div>
+    </div>
+  );
+}
+
+// The connector between two FlowNodes — wraps sensibly on narrow screens
+// since it's just an inline glyph, not an absolutely-positioned line. A
+// small coin bearing a £ sign travels along the connector to stand in for
+// money actually moving between the two nodes: `oscillate` makes it travel
+// back and forth (for the revolving-door page, where the whole point is
+// people moving both ways) instead of one-way loop (donor → recipient
+// pages). A gentle spin plus a squash-and-stretch on arrival/departure is
+// what keeps a coin sliding along a straight line from reading as a flat,
+// robotic dot. `showGlyph` can drop the arrow character where a page
+// already has its own connecting visual (e.g. the rotating door icon) and
+// just wants the coin.
+const COIN_SIZE = 17;
+const OSCILLATE_CLEARANCE = 6;
+
+export function FlowArrow({ color, animated = true, oscillate = false, showGlyph = true, trackWidth = 40 }) {
+  const coinColor = color ?? COLORS.brass;
+  const travelStart = OSCILLATE_CLEARANCE;
+  const travelEnd = trackWidth - COIN_SIZE - OSCILLATE_CLEARANCE;
+  return (
+    <div aria-hidden="true" style={{ position: "relative", width: trackWidth, height: 24, flexShrink: 0, alignSelf: "center", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      {showGlyph && <span style={{ fontSize: 22, color: color ?? COLORS.inkSoft, opacity: 0.55 }}>→</span>}
+      {animated && (
+        <motion.div
+          animate={
+            oscillate
+              ? { left: [`${travelStart}px`, `${travelEnd}px`, `${travelStart}px`], rotate: [0, 180, 360], scale: [0.85, 1, 0.85] }
+              : { left: ["3%", "79%"], rotate: [0, 360], scale: [0.5, 1, 1, 0.5], opacity: [0, 1, 1, 0] }
+          }
+          transition={
+            oscillate
+              ? { duration: 3.4, repeat: Infinity, ease: "easeInOut" }
+              : { duration: 1.9, repeat: Infinity, ease: "easeInOut", times: [0, 0.18, 0.82, 1] }
+          }
+          style={{
+            position: "absolute", top: "50%", width: 17, height: 17, marginTop: -8.5,
+            borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+            background: `radial-gradient(circle at 32% 28%, ${coinColor}, ${coinColor} 55%, ${coinColor}b0)`,
+            border: `1px solid ${coinColor}`,
+            boxShadow: `0 2px 5px rgba(0,0,0,0.35), 0 0 8px ${coinColor}80`,
+          }}
+        >
+          <span style={{ fontFamily: FONT_BODY, fontWeight: 800, fontSize: 10, lineHeight: 1, color: "#fff", textShadow: "0 1px 1px rgba(0,0,0,0.25)" }}>
+            £
+          </span>
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
+// A simple two-bar comparison for "here's the visible slice vs. the much
+// larger part nothing requires anyone to measure" — the second bar is
+// deliberately drawn with a diagonal hatch rather than a solid fill, so it
+// reads as "illustrative, not a real measurement" rather than a precise
+// (and made-up) figure.
+export function ScaleComparison({ bars, maxWidth = 900 }) {
+  return (
+    <div style={{ maxWidth, marginBottom: 30 }}>
+      {bars.map((bar, i) => (
+        <div key={bar.label} style={{ marginBottom: i < bars.length - 1 ? 16 : 0 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, flexWrap: "wrap", marginBottom: 6 }}>
+            <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13, color: COLORS.ink }}>{bar.label}</span>
+            <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: bar.color, fontWeight: 700 }}>{bar.caption}</span>
+          </div>
+          <div style={{ height: 14, borderRadius: 999, background: COLORS.paper, overflow: "hidden" }}>
+            <motion.div
+              initial={{ width: 0 }}
+              whileInView={{ width: `${bar.width}%` }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.9, delay: i * 0.15, ease: "easeOut" }}
+              style={{
+                height: "100%", borderRadius: 999, background: bar.color,
+                backgroundImage: bar.hatched ? "repeating-linear-gradient(45deg, rgba(255,255,255,0.16) 0 7px, transparent 7px 14px)" : "none",
+              }}
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function PageHeader({ kicker = "Public Record · UK Parliament", title, subtitle, align = "left", size = "lg", maxWidth, icon: Icon }) {
   const isHero = size === "xl";
   return (

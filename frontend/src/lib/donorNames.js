@@ -25,3 +25,33 @@ export function normaliseIndividualDonorName(rawName) {
   const kept = words.length > 2 ? [words[0], words[words.length - 1]] : words;
   return kept.map(fixCase).join(" ");
 }
+
+// Companies suffer a different version of the same register inconsistency:
+// not a missing title, but a trailing full stop, "JC" vs "J.C.", or ALL CAPS
+// vs Title Case for the exact same legal entity (e.g. "J.C. Bamford
+// Excavators Ltd" / "JC Bamford Excavators Ltd" / "J. C. Bamford Excavators
+// Limited" are all the same donor). This key is for *grouping only* — never
+// shown to a reader — so it can be aggressive about stripping punctuation
+// and case without worrying about how the result reads.
+export function donorGroupingKey(rawName, donorStatus) {
+  const trimmed = rawName.trim().replace(/\s+/g, " ");
+  if (donorStatus === "Individual") return normaliseIndividualDonorName(trimmed).toLowerCase();
+  return trimmed
+    .toLowerCase()
+    .replace(/\bltd\b\.?/g, "limited")
+    .replace(/\bplc\b\.?/g, "")
+    .replace(/[.,]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// Given two raw spellings that group under the same key, pick the one that
+// reads better as a display name — preferring a name that isn't shouting in
+// ALL CAPS, and otherwise just keeping whichever was seen first.
+export function preferDisplayName(current, candidate) {
+  if (!current) return candidate;
+  const currentIsShouting = current === current.toUpperCase() && current !== current.toLowerCase();
+  const candidateIsShouting = candidate === candidate.toUpperCase() && candidate !== candidate.toLowerCase();
+  if (currentIsShouting && !candidateIsShouting) return candidate;
+  return current;
+}

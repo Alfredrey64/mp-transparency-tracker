@@ -7,12 +7,14 @@ import {
   IconHome, IconFlow, IconCoin, IconVote, IconGroup, IconInfluence, IconManifesto, IconTracker,
   IconMethodology, IconSettings, IconGlossary, IconHistory, IconDevolved, IconFormerMP, IconBudget, IconCabinet, IconTimeline,
   IconPartyFinance, IconByElection, IconLords, IconPetition, IconCompass, IconCommittee, IconCompare, IconMeeting,
-  IconQuestion, IconGavel, IconPin, IconBroadcast, IconRankings,
+  IconQuestion, IconGavel, IconPin, IconBroadcast, IconRankings, IconDarkMoney, IconThinkTank, IconDoor, IconRegister,
+  IconSearch, IconStar,
 } from "./icons";
 
 const HOME_NAV_ITEMS = [
   { key: "home", label: "Overview", icon: IconHome },
   { key: "myMP", label: "My MP", icon: IconPin },
+  { key: "watchlist", label: "My Watchlist", icon: IconStar },
 ];
 
 // One accent hue per section, used for its label dot, its card tint, its
@@ -68,14 +70,34 @@ const SECTIONS = [
     // and who funds parties directly. "Financial Interests" lives here
     // (not under MP Accountability below) because it's the app's core
     // follow-the-money page, not a record of an MP's personal conduct.
+    // Kept to the four *declared-register* pages — somewhere to look up a
+    // real name and a real figure — so it doesn't blur into the explainer
+    // pages just below, which are about what the registers can't show you.
     key: "money",
     label: "Money in Politics",
     accent: "#B5533C",
     items: [
+      { key: "followTheMoney", label: "Follow the Money", icon: IconSearch },
       { key: "list", label: "Financial Interests", icon: IconCoin },
       { key: "donors", label: "Donors & Lobbying", icon: IconInfluence },
       { key: "partyFinances", label: "Party Finances", icon: IconPartyFinance },
       { key: "ministerialMeetings", label: "Ministerial Meetings", icon: IconMeeting },
+    ],
+  },
+  {
+    // The other side of "Money in Politics": not a register of names and
+    // figures, but an explanation of where those registers run out — a
+    // legal gap, an expired rule, an undisclosed funder. Split out from
+    // "Money in Politics" itself once it grew to four pages of its own,
+    // so neither section reads as a long, undifferentiated list.
+    key: "gaps",
+    label: "Transparency Gaps",
+    accent: "#9C3B3B",
+    items: [
+      { key: "darkMoney", label: "Dark Money", icon: IconDarkMoney },
+      { key: "revolvingDoor", label: "Revolving Door", icon: IconDoor },
+      { key: "lobbyingRegister", label: "Consultant Lobbyists", icon: IconRegister },
+      { key: "thinkTanks", label: "Think Tank Funding", icon: IconThinkTank },
     ],
   },
   {

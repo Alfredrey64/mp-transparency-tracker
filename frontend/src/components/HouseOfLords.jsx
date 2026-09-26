@@ -27,13 +27,16 @@ function DataScopeNote() {
       }}
     >
 This covers <em>who</em> sits in the House of Lords, and their recent debates and written questions — but not what
-      they've declared or how they've voted. The official sources the rest of this site draws on for that (financial
-      interests and division votes) turn out to only cover the Commons; there's no equivalent structured source for
-      the Lords, including no attendance percentage, so rather than guess, it's simply left out. The{" "}
+      they've declared or how they've voted. The official source the rest of this site draws on for that (the
+      Commons register of financial interests) is available as structured data; the Lords equivalent, checked
+      directly against Parliament's own systems, is not — it's published only as free-text entries per peer (things
+      like "adviser to X" or "shareholding in Y", rarely with a declared £ figure), with no equivalent for division
+      votes or an attendance percentage either. Rather than force that into a format built for the Commons register,
+      it's left out here — but every peer's profile below links straight to their own entry on the{" "}
       <a href="https://www.parliament.uk/mps-lords-and-offices/standards-and-financial-interests/parliamentary-commissioner-for-standards/registers-of-interests/register-of-lords-interests/" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
         official Register of Lords' Interests
-      </a>{" "}
-      is public, if you want to look up a specific peer by hand.
+      </a>
+      .
     </div>
   );
 }
@@ -58,6 +61,39 @@ function Avatar({ peer, color, size = 40 }) {
     <div style={{ width: size, height: size, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: FONT_DISPLAY, fontSize: size * 0.35, fontWeight: 600, color: "#fff", background: color }}>
       {initials(peer.name)}
     </div>
+  );
+}
+
+// Not scraped data — a peer's registered interests are free-text prose
+// entries with no consistent structure or declared £ figure (unlike the
+// Commons register), so rather than half-represent them here, this links
+// straight to the peer's own entry on Parliament's site. Unlike the
+// `politicians` table, `peers.id` IS the Parliament member id directly
+// (visible in its own thumbnail_url, e.g. ".../Members/1467/Thumbnail") —
+// there's no separate parliament_member_id column here to look up instead.
+function LordsInterestsLink({ peer }) {
+  if (!peer.id) return null;
+  return (
+    <a
+      href={`https://members.parliament.uk/member/${peer.id}/registeredinterests`}
+      target="_blank"
+      rel="noreferrer"
+      style={{
+        display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14,
+        background: `${COLORS.brass}0c`, border: `1px solid ${COLORS.brass}33`, borderRadius: 12,
+        padding: "14px 18px", marginBottom: 16, textDecoration: "none",
+      }}
+    >
+      <div style={{ minWidth: 0 }}>
+        <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13.5, color: COLORS.ink, marginBottom: 2 }}>
+          View {peer.name}'s registered interests
+        </div>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>
+          Straight to their entry on the official Register of Lords' Interests
+        </div>
+      </div>
+      <span style={{ flexShrink: 0, fontFamily: FONT_BODY, fontWeight: 700, fontSize: 15, color: COLORS.brass }}>↗</span>
+    </a>
   );
 }
 
@@ -91,6 +127,8 @@ function PeerDetail({ peer, onBack, formerMp }) {
         </div>
 
         <div style={{ paddingTop: 24 }}>
+          <LordsInterestsLink peer={peer} />
+
           <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.brass}`, borderRadius: 12, padding: 20, marginBottom: 16 }}>
             <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 8 }}>Biography</div>
             {peer.wikipedia_bio ? (

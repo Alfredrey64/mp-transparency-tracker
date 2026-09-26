@@ -53,3 +53,25 @@ export function toggleWatch(politician) {
 export function removeFromWatchlist(politicianId) {
   writeAll(readAll().filter((p) => p.id !== politicianId));
 }
+
+// When the Watchlist Digest page last computed "what's new" — also
+// localStorage-only, so "new since your last visit" means exactly that for
+// this browser, with no account or server-side tracking involved.
+const LAST_CHECKED_KEY = "mp-tracker-watchlist-last-checked";
+
+export function getLastChecked() {
+  try {
+    const raw = localStorage.getItem(LAST_CHECKED_KEY);
+    return raw ? Number(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function setLastChecked(timestamp = Date.now()) {
+  try {
+    localStorage.setItem(LAST_CHECKED_KEY, String(timestamp));
+  } catch {
+    // Private browsing / storage disabled — next visit just re-checks the same window.
+  }
+}

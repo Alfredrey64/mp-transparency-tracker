@@ -1,13 +1,19 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
-import { partyColour } from "../lib/format";
-import { IconCompare, IconSearch } from "./icons";
+import { partyColour, formatDate } from "../lib/format";
+import { getDonorSector, sectorColor } from "../lib/donorSectors";
+import { IconCompare, IconSearch, IconCoin, IconVote } from "./icons";
 
 const MAX_COMPARE = 3;
 const NO_PARTY_MAJORITY_CONCEPT = ["independent", "speaker"];
+const PALETTE = ["#5A7FA6", "#B5533C", "#3F7D5C"];
+
+function colorFor(politician, index) {
+  return partyColour(politician.party_colour, PALETTE[index % PALETTE.length]);
+}
 
 function Avatar({ url, name, color, size = 56 }) {
   const [loaded, setLoaded] = useState(false);
@@ -37,53 +43,87 @@ function Avatar({ url, name, color, size = 56 }) {
   );
 }
 
-// One count/sum query per metric, per selected MP — small numbers (at most
-// MAX_COMPARE MPs at a time) so running them all in parallel on selection
-// change is simpler than a combined query, and fast enough not to need
-// caching. Keyed by the joined id list so it only re-fetches when the
-// actual selection changes, not on every render.
-function useComparisonStats(politicianIds) {
-  const [stats, setStats] = useState({});
+// Money and voting data for each selected MP, fetched fresh whenever the
+// selection changes. Kept separate from the `politicians` row itself (which
+// already carries ipsa_expenses) because financial_interests and
+// voting_records both need their own per-MP query.
+function useComparisonData(politicianIds) {
+  const [data, setData] = useState({});
   const key = politicianIds.join(",");
 
   useEffect(() => {
     let cancelled = false;
     async function load() {
       if (politicianIds.length === 0) {
-        if (!cancelled) setStats({});
+        if (!cancelled) setData({});
         return;
       }
       const entries = await Promise.all(
         politicianIds.map(async (id) => {
-          const [interests, votesTotal, votesAye, rebellionTotal, rebellionAgainst] = await Promise.all([
-            supabase.from("financial_interests").select("value_amount").eq("politician_id", id).not("value_amount", "is", null),
-            supabase.from("voting_records").select("*", { count: "exact", head: true }).eq("politician_id", id),
-            supabase.from("voting_records").select("*", { count: "exact", head: true }).eq("politician_id", id).eq("voted_aye", true),
-            supabase.from("voting_records").select("*", { count: "exact", head: true }).eq("politician_id", id).not("voted_with_party_majority", "is", null),
-            supabase.from("voting_records").select("*", { count: "exact", head: true }).eq("politician_id", id).eq("voted_with_party_majority", false),
+          const [interestsRes, votesRes] = await Promise.all([
+            supabase.from("financial_interests").select("donor_name, value_amount").eq("politician_id", id).not("value_amount", "is", null),
+            supabase
+              .from("voting_records")
+              .select("division_id, title, date, voted_aye, voted_with_party_majority, source_url, aye_count, no_count")
+              .eq("politician_id", id)
+              .order("date", { ascending: false })
+              .limit(80),
           ]);
-          const totalValue = (interests.data ?? []).reduce((sum, r) => sum + (r.value_amount ?? 0), 0);
-          return [
-            id,
-            {
-              donationCount: interests.data?.length ?? 0,
-              totalValue,
-              votesTotal: votesTotal.count ?? 0,
-              votesAye: votesAye.count ?? 0,
-              rebellionTotal: rebellionTotal.count ?? 0,
-              rebellionAgainst: rebellionAgainst.count ?? 0,
-            },
-          ];
+          const interests = interestsRes.data ?? [];
+          const totalDonations = interests.reduce((sum, r) => sum + (r.value_amount ?? 0), 0);
+
+          const bySector = new Map();
+          for (const r of interests) {
+            const tag = getDonorSector(r.donor_name);
+            if (!tag) continue;
+            bySector.set(tag.sector, (bySector.get(tag.sector) ?? 0) + r.value_amount);
+          }
+          const sectors = [...bySector.entries()]
+            .map(([sector, total]) => ({ sector, total }))
+            .sort((a, b) => b.total - a.total);
+
+          return [id, { donationCount: interests.length, totalDonations, sectors, votes: votesRes.data ?? [] }];
         })
       );
-      if (!cancelled) setStats(Object.fromEntries(entries));
+      if (!cancelled) setData(Object.fromEntries(entries));
     }
     load();
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 
-  return stats;
+  return data;
+}
+
+// With one MP selected, just their own recent votes. With two or more,
+// narrowed down to Commons divisions where every selected MP actually has a
+// recorded vote — so "agreed" or "split" is a real comparison, not two
+// unrelated votes shown side by side.
+function useVoteComparisons(selected, data) {
+  return useMemo(() => {
+    if (selected.length === 0) return [];
+    if (selected.length === 1) {
+      const votes = data[selected[0].id]?.votes ?? [];
+      return votes.slice(0, 8).map((v) => ({
+        divisionId: v.division_id, title: v.title, date: v.date, source_url: v.source_url,
+        aye_count: v.aye_count, no_count: v.no_count, perMp: [v],
+      }));
+    }
+    const maps = selected.map((p) => new Map((data[p.id]?.votes ?? []).map((v) => [v.division_id, v])));
+    if (maps.some((m) => m.size === 0)) return [];
+    const [base] = maps;
+    const shared = [];
+    for (const [divisionId, baseVote] of base) {
+      const perMp = maps.map((m) => m.get(divisionId));
+      if (perMp.every(Boolean)) {
+        shared.push({
+          divisionId, title: baseVote.title, date: baseVote.date, source_url: baseVote.source_url,
+          aye_count: baseVote.aye_count, no_count: baseVote.no_count, perMp,
+        });
+      }
+    }
+    return shared.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 8);
+  }, [selected, data]);
 }
 
 function SearchPicker({ politicians, selectedIds, onAdd, disabled }) {
@@ -141,23 +181,18 @@ function SearchPicker({ politicians, selectedIds, onAdd, disabled }) {
   );
 }
 
-function StatRow({ label, children }) {
+function MiniField({ label, value }) {
   return (
-    <div style={{ padding: "10px 0", borderTop: `1px solid ${COLORS.hairline}` }}>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>
+    <div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 10, fontWeight: 700, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em" }}>
         {label}
       </div>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.5 }}>{children}</div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink }}>{value}</div>
     </div>
   );
 }
 
-function ComparisonCard({ politician, stats, committeeNames, color, onRemove }) {
-  const hasRebellionConcept = !NO_PARTY_MAJORITY_CONCEPT.includes((politician.party ?? "").toLowerCase());
-  const rebellionPct = stats && hasRebellionConcept && stats.rebellionTotal > 0
-    ? Math.round((stats.rebellionAgainst / stats.rebellionTotal) * 1000) / 10
-    : null;
-
+function MpHeaderCard({ politician, color, onRemove }) {
   return (
     <motion.div
       layout
@@ -165,9 +200,9 @@ function ComparisonCard({ politician, stats, committeeNames, color, onRemove }) 
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.96 }}
       transition={{ duration: 0.25 }}
-      style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${color}`, borderRadius: 14, padding: 18, minWidth: 0 }}
+      style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${color}`, borderRadius: 14, padding: 16, minWidth: 0 }}
     >
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 10 }}>
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
           <Avatar url={politician.thumbnail_url} name={politician.name} color={color} />
           <div style={{ minWidth: 0 }}>
@@ -185,50 +220,198 @@ function ComparisonCard({ politician, stats, committeeNames, color, onRemove }) 
           ×
         </button>
       </div>
+      <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${COLORS.hairline}`, display: "flex", flexDirection: "column", gap: 8 }}>
+        <MiniField label="Constituency" value={politician.constituency ?? "—"} />
+        <MiniField label="Government role" value={politician.cabinet_role ?? "Backbencher"} />
+      </div>
+    </motion.div>
+  );
+}
 
-      <StatRow label="Constituency">{politician.constituency ?? "—"}</StatRow>
-      {politician.cabinet_role && <StatRow label="Government role">{politician.cabinet_role}</StatRow>}
+function SectionTitle({ icon: Icon, color, children }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+      <div style={{ flexShrink: 0, width: 32, height: 32, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", background: `${color}1c`, color }}>
+        <Icon size={15} />
+      </div>
+      <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 19, color: COLORS.ink, margin: 0 }}>{children}</h2>
+    </div>
+  );
+}
 
-      {!stats ? (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "16px 0" }}>Loading…</div>
+// One labelled row per MP within a metric block — bar width is relative to
+// the largest value among the MPs being compared, so the visual comparison
+// is honest (a bar twice as long really does mean roughly twice the money).
+function MoneyBar({ label, value, max, color, formatted }) {
+  const pct = max > 0 ? Math.max((value / max) * 100, value > 0 ? 3 : 0) : 0;
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 7 }}>
+      <span style={{ width: 130, flexShrink: 0, fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+        {label}
+      </span>
+      <div style={{ flex: 1, height: 12, borderRadius: 999, background: COLORS.paper, overflow: "hidden" }}>
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          style={{ height: "100%", borderRadius: 999, background: color }}
+        />
+      </div>
+      <span style={{ width: 96, flexShrink: 0, textAlign: "right", fontFamily: FONT_MONO, fontSize: 12.5, fontWeight: 700, color }}>
+        {formatted}
+      </span>
+    </div>
+  );
+}
+
+function MoneyMetricGroup({ title, description, rows }) {
+  const max = Math.max(1, ...rows.map((r) => r.value));
+  return (
+    <div style={{ marginBottom: 20 }}>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13, color: COLORS.ink, marginBottom: description ? 2 : 8 }}>{title}</div>
+      {description && <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 8, lineHeight: 1.5 }}>{description}</div>}
+      {rows.map((r) => (
+        <MoneyBar key={r.name} label={r.name} value={r.value} max={max} color={r.color} formatted={r.formatted} />
+      ))}
+    </div>
+  );
+}
+
+function SectorBreakdown({ politician, color, sectors }) {
+  const [open, setOpen] = useState(false);
+  const shown = open ? sectors : sectors.slice(0, 3);
+
+  return (
+    <div style={{ border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 14, background: COLORS.paper, minWidth: 0 }}>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12, color, marginBottom: 8, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+        {politician.name} — funding by sector
+      </div>
+      {sectors.length === 0 ? (
+        <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>No sector-matched donations found.</div>
       ) : (
         <>
-          <StatRow label="Declared interests">
-            {stats.donationCount} entr{stats.donationCount === 1 ? "y" : "ies"} with a value
-            {stats.totalValue > 0 && <> · £{Math.round(stats.totalValue).toLocaleString()} total</>}
-          </StatRow>
-          <StatRow label="Recorded Commons votes">
-            {stats.votesTotal > 0 ? (
-              <>{stats.votesAye} Aye · {stats.votesTotal - stats.votesAye} No <span style={{ color: COLORS.inkSoft }}>(of {stats.votesTotal})</span></>
-            ) : "No recorded votes yet"}
-          </StatRow>
-          {rebellionPct !== null && (
-            <StatRow label="Rebellion rate">
-              <span style={{ color: rebellionPct > 0 ? "#9C3B3B" : COLORS.ink, fontWeight: 600 }}>{rebellionPct}%</span>
-              <span style={{ color: COLORS.inkSoft }}> of {stats.rebellionTotal} party-line votes</span>
-            </StatRow>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {shown.map((s) => (
+              <div key={s.sector} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+                <span style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0, fontFamily: FONT_BODY, fontSize: 12, color: COLORS.ink }}>
+                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: sectorColor(s.sector), flexShrink: 0 }} />
+                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.sector}</span>
+                </span>
+                <span style={{ flexShrink: 0, fontFamily: FONT_MONO, fontSize: 11.5, color: COLORS.inkSoft }}>£{Math.round(s.total).toLocaleString()}</span>
+              </div>
+            ))}
+          </div>
+          {sectors.length > 3 && (
+            <button
+              onClick={() => setOpen((v) => !v)}
+              style={{ marginTop: 8, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 11, fontWeight: 600, color }}
+            >
+              {open ? "Show fewer" : `Show all ${sectors.length} sectors`}
+            </button>
           )}
-          <StatRow label="Select committees">
-            {committeeNames.length > 0 ? committeeNames.join(", ") : "Not currently on a select committee"}
-          </StatRow>
         </>
       )}
+    </div>
+  );
+}
+
+function VoteCompareRow({ vote, selected }) {
+  const [open, setOpen] = useState(false);
+  const ayeStates = vote.perMp.map((v) => v.voted_aye);
+  const agreed = selected.length > 1 && ayeStates.every((a) => a === ayeStates[0]);
+  const showVerdict = selected.length > 1;
+
+  return (
+    <motion.div layout="position" style={{ border: `1px solid ${COLORS.hairline}`, borderRadius: 12, overflow: "hidden", background: COLORS.paperCard, marginBottom: 10 }}>
+      <button
+        onClick={() => setOpen((v) => !v)}
+        style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", padding: "12px 16px", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}
+      >
+        <span style={{ flexShrink: 0, fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, width: 76 }}>{formatDate(vote.date)}</span>
+        <span style={{ flex: 1, minWidth: 0, fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          {vote.title}
+        </span>
+        <span style={{ display: "flex", gap: 6, flexShrink: 0 }}>
+          {vote.perMp.map((v, i) => (
+            <span
+              key={i}
+              title={selected[i].name}
+              style={{
+                fontFamily: FONT_MONO, fontSize: 10, fontWeight: 700, textTransform: "uppercase", padding: "3px 8px", borderRadius: 999,
+                background: v.voted_aye ? "#E4EEE7" : "#F3E4E2", color: v.voted_aye ? "#2F6F4E" : "#9C3B3B",
+                boxShadow: `inset 0 0 0 1.5px ${colorFor(selected[i], i)}`,
+              }}
+            >
+              {v.voted_aye ? "Aye" : "No"}
+            </span>
+          ))}
+        </span>
+        {showVerdict && (
+          <span
+            style={{
+              flexShrink: 0, fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, textTransform: "uppercase", letterSpacing: "0.04em",
+              padding: "3px 9px", borderRadius: 999, background: agreed ? `${COLORS.brass}18` : "#F3E4E2", color: agreed ? COLORS.brass : "#9C3B3B",
+            }}
+          >
+            {agreed ? "Agreed" : "Split"}
+          </span>
+        )}
+        <span style={{ flexShrink: 0, fontFamily: FONT_MONO, fontSize: 12, color: COLORS.inkSoft }}>{open ? "▾" : "▸"}</span>
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} style={{ overflow: "hidden" }}>
+            <div style={{ padding: "0 16px 16px", borderTop: `1px solid ${COLORS.hairline}`, marginTop: -1 }}>
+              <div style={{ paddingTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+                {selected.map((p, i) => {
+                  const v = vote.perMp[i];
+                  const hasPartyConcept = !NO_PARTY_MAJORITY_CONCEPT.includes((p.party ?? "").toLowerCase());
+                  return (
+                    <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", fontFamily: FONT_BODY, fontSize: 12.5 }}>
+                      <span style={{ width: 8, height: 8, borderRadius: "50%", background: colorFor(p, i), flexShrink: 0 }} />
+                      <span style={{ color: COLORS.ink, fontWeight: 600 }}>{p.name}</span>
+                      <span style={{ color: v.voted_aye ? "#2F6F4E" : "#9C3B3B", fontWeight: 700 }}>{v.voted_aye ? "Voted Aye" : "Voted No"}</span>
+                      {hasPartyConcept && v.voted_with_party_majority === false && (
+                        <span style={{ color: "#9C3B3B", fontSize: 11 }}>(against their own party)</span>
+                      )}
+                    </div>
+                  );
+                })}
+                <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 4, lineHeight: 1.5 }}>
+                  Full Commons result: {vote.aye_count} Aye · {vote.no_count} No
+                  {vote.source_url && (
+                    <>
+                      {" · "}
+                      <a href={vote.source_url} target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
+                        source ↗
+                      </a>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
 
 export default function ComparePoliticians() {
   const [politicians, setPoliticians] = useState([]);
-  const [committees, setCommittees] = useState([]);
   const [selected, setSelected] = useState([]);
 
   useEffect(() => {
-    supabase.from("politicians").select("id, name, party, party_colour, constituency, thumbnail_url, cabinet_role, parliament_member_id").then(({ data }) => setPoliticians(data ?? []));
-    supabase.from("committees").select("id, name, members").then(({ data }) => setCommittees(data ?? []));
+    supabase
+      .from("politicians")
+      .select("id, name, party, party_colour, constituency, thumbnail_url, cabinet_role, parliament_member_id, ipsa_expenses")
+      .then(({ data }) => setPoliticians(data ?? []));
   }, []);
 
   const selectedIds = useMemo(() => selected.map((p) => p.id), [selected]);
-  const stats = useComparisonStats(selectedIds);
+  const data = useComparisonData(selectedIds);
+  const voteComparisons = useVoteComparisons(selected, data);
 
   function addPolitician(p) {
     if (selected.length >= MAX_COMPARE) return;
@@ -239,22 +422,13 @@ export default function ComparePoliticians() {
     setSelected((prev) => prev.filter((p) => p.id !== id));
   }
 
-  function committeesFor(politician) {
-    if (!politician.parliament_member_id) return [];
-    return committees
-      .filter((c) => (c.members ?? []).some((m) => m.parliament_member_id === politician.parliament_member_id))
-      .map((c) => c.name);
-  }
-
-  const palette = ["#5A7FA6", "#B5533C", "#3F7D5C"];
-
   return (
     <div style={{ maxWidth: 1080, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconCompare}
         kicker="Public Record · Compare MPs"
         title="Compare MPs side by side"
-        subtitle={`Pick up to ${MAX_COMPARE} MPs to see their declared interests, voting record, rebellion rate, and select committee memberships next to each other.`}
+        subtitle={`Pick up to ${MAX_COMPARE} MPs to compare exactly what they've declared in money — donations and IPSA business costs — and how they voted on the same issues in the Commons.`}
       />
 
       <div style={{ marginTop: 24, marginBottom: 24 }}>
@@ -266,20 +440,65 @@ export default function ComparePoliticians() {
           Search for an MP above to start comparing.
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
-          <AnimatePresence mode="popLayout">
-            {selected.map((p, i) => (
-              <ComparisonCard
-                key={p.id}
-                politician={p}
-                stats={stats[p.id]}
-                committeeNames={committeesFor(p)}
-                color={partyColour(p.party_colour, palette[i % palette.length])}
-                onRemove={() => removePolitician(p.id)}
-              />
-            ))}
-          </AnimatePresence>
-        </div>
+        <>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16, marginBottom: 24 }}>
+            <AnimatePresence mode="popLayout">
+              {selected.map((p, i) => (
+                <MpHeaderCard key={p.id} politician={p} color={colorFor(p, i)} onRemove={() => removePolitician(p.id)} />
+              ))}
+            </AnimatePresence>
+          </div>
+
+          <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 16, padding: "22px clamp(16px, 4vw, 26px)", marginBottom: 20 }}>
+            <SectionTitle icon={IconCoin} color={COLORS.brass}>Money</SectionTitle>
+
+            <MoneyMetricGroup
+              title="Total declared donations"
+              description="Every financial interest with a declared monetary value, from the Register of Members' Financial Interests."
+              rows={selected.map((p, i) => ({
+                name: p.name, color: colorFor(p, i), value: data[p.id]?.totalDonations ?? 0,
+                formatted: `£${Math.round(data[p.id]?.totalDonations ?? 0).toLocaleString()}`,
+              }))}
+            />
+            <MoneyMetricGroup
+              title="Number of declared donations"
+              rows={selected.map((p, i) => ({
+                name: p.name, color: colorFor(p, i), value: data[p.id]?.donationCount ?? 0,
+                formatted: `${data[p.id]?.donationCount ?? 0}`,
+              }))}
+            />
+            <MoneyMetricGroup
+              title="IPSA business costs claimed"
+              description="Staffing, travel, accommodation and office running costs claimed through IPSA — separate from personal donations, in the most recent reported year for each MP."
+              rows={selected.map((p, i) => ({
+                name: p.name, color: colorFor(p, i), value: p.ipsa_expenses?.total ?? 0,
+                formatted: `£${Math.round(p.ipsa_expenses?.total ?? 0).toLocaleString()}`,
+              }))}
+            />
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 14, marginTop: 4 }}>
+              {selected.map((p, i) => (
+                <SectorBreakdown key={p.id} politician={p} color={colorFor(p, i)} sectors={data[p.id]?.sectors ?? []} />
+              ))}
+            </div>
+          </div>
+
+          <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 16, padding: "22px clamp(16px, 4vw, 26px)" }}>
+            <SectionTitle icon={IconVote} color="#5A7FA6">Recent votes</SectionTitle>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginBottom: 14, lineHeight: 1.5 }}>
+              {selected.length >= 2
+                ? "The most recent Commons divisions where every selected MP has a recorded vote, so you can see whether they actually agreed — tap any row for the full detail."
+                : "Their most recent recorded Commons votes. Add a second MP above to see whether they'd have agreed."}
+            </div>
+            {voteComparisons.length === 0 ? (
+              <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "12px 0" }}>
+                {selected.length >= 2 ? "No overlapping recorded votes found for these MPs yet." : "No recorded votes found for this MP yet."}
+              </div>
+            ) : (
+              voteComparisons.map((v) => <VoteCompareRow key={v.divisionId} vote={v} selected={selected} />)
+            )}
+          </div>
+        </>
       )}
     </div>
   );

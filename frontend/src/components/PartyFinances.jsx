@@ -4,7 +4,7 @@ import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { getPartyDonorSector, sectorColor, partyDonorSectorMetadata } from "../lib/donorSectors";
 import { getDonorProfile, publicFundDescription } from "../lib/donorProfiles";
-import { normaliseIndividualDonorName } from "../lib/donorNames";
+import { normaliseIndividualDonorName, donorGroupingKey, preferDisplayName } from "../lib/donorNames";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { PageHeader } from "./shared";
 import { withScrollPreserved } from "../lib/preserveScroll";
@@ -71,27 +71,29 @@ export default function PartyFinances() {
       const value = row.value ?? 0;
       const rawName = row.donor_name.trim();
       if (NOT_A_REAL_DONOR.test(rawName)) continue;
-      // The register itself is inconsistent about how an individual's name is
-      // spelled between donations (with/without a title, a middle name, ALL
-      // CAPS) — normalising merges those into one donor instead of splitting
-      // their giving across several look-alike entries. Never applied to
-      // organisations, where chopping a name down risks merging two unrelated
-      // companies that happen to share a word.
-      const donorKey = row.donor_status === "Individual" ? normaliseIndividualDonorName(rawName) : rawName;
+      // The register itself is inconsistent about how a donor's name is
+      // spelled between donations — an individual with or without a title,
+      // a company with or without punctuation, sometimes in ALL CAPS.
+      // donorGroupingKey merges those into one donor instead of splitting
+      // their giving across several look-alike entries; preferDisplayName
+      // then picks the more readable of the spellings actually seen to show
+      // the reader, rather than displaying the aggressive grouping key.
+      const donorGroupKey = donorGroupingKey(rawName, row.donor_status);
+      const displayName = row.donor_status === "Individual" ? normaliseIndividualDonorName(rawName) : rawName;
 
       totalValue += value;
       partyTotals.set(row.party_name, (partyTotals.get(row.party_name) ?? 0) + value);
 
       if (!partyDonors.has(row.party_name)) partyDonors.set(row.party_name, new Map());
       const donorMap = partyDonors.get(row.party_name);
-      const existing = donorMap.get(donorKey);
-      donorMap.set(donorKey, {
-        name: donorKey,
+      const existing = donorMap.get(donorGroupKey);
+      donorMap.set(donorGroupKey, {
+        name: preferDisplayName(existing?.name, displayName),
         total: (existing?.total ?? 0) + value,
         status: row.donor_status,
       });
 
-      const tag = getPartyDonorSector(donorKey);
+      const tag = getPartyDonorSector(displayName);
       if (tag) {
         taggedValue += value;
         sectorTotals.set(tag.sector, (sectorTotals.get(tag.sector) ?? 0) + value);

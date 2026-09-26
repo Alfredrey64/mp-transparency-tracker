@@ -41,6 +41,12 @@ const StandardsReports = lazy(() => import("./components/StandardsReports"));
 const MyMP = lazy(() => import("./components/MyMP"));
 const MediaLiteracy = lazy(() => import("./components/MediaLiteracy"));
 const Rankings = lazy(() => import("./components/Rankings"));
+const DarkMoney = lazy(() => import("./components/DarkMoney"));
+const RevolvingDoor = lazy(() => import("./components/RevolvingDoor"));
+const ThinkTankFunding = lazy(() => import("./components/ThinkTankFunding"));
+const LobbyingRegister = lazy(() => import("./components/LobbyingRegister"));
+const FollowTheMoney = lazy(() => import("./components/FollowTheMoney"));
+const WatchlistDigest = lazy(() => import("./components/WatchlistDigest"));
 
 function PageLoadingFallback() {
   return (
@@ -58,6 +64,7 @@ const VALID_VIEWS = new Set([
   "devolved", "tracker", "budget", "cabinet", "lords", "formerMps", "byElections", "petitions", "partymatch",
   "committees", "compare", "ministerialMeetings", "writtenQuestions", "standards", "rankings", "myMP",
   "mediaLiteracy", "methodology", "glossary", "settings", "privacy", "terms", "list",
+  "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist",
 ]);
 
 // A minimal hash router — no react-router dependency needed for a flat set
@@ -211,6 +218,12 @@ export default function App() {
             {view === "rankings" && <Rankings onSelectPolitician={handleViewProfile} />}
             {view === "myMP" && <MyMP onViewProfile={handleViewProfile} />}
             {view === "mediaLiteracy" && <MediaLiteracy />}
+            {view === "darkMoney" && <DarkMoney />}
+            {view === "revolvingDoor" && <RevolvingDoor />}
+            {view === "thinkTanks" && <ThinkTankFunding />}
+            {view === "lobbyingRegister" && <LobbyingRegister />}
+            {view === "followTheMoney" && <FollowTheMoney onSelectPolitician={handleViewProfile} />}
+            {view === "watchlist" && <WatchlistDigest onSelectPolitician={handleViewProfile} />}
             {view === "methodology" && <Methodology onNavigate={handleNavigate} />}
             {view === "glossary" && <Glossary />}
             {view === "settings" && <Settings onNavigate={handleNavigate} />}
