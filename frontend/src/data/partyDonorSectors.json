@@ -14,12 +14,12 @@
     "sector": "Trade Unions",
     "source": "donor-status"
   },
-  "PG Paper Company Limited": {
-    "sector": "Retail & Consumer",
+  "TREEMAN ROCKAFELLA LIMITED": {
+    "sector": "Legal & Professional Services",
     "source": "companies-house-crn",
-    "companyName": "PG PAPER COMPANY LTD.",
-    "companyNumber": "SC256809",
-    "sicCode": "46190"
+    "companyName": "TREEMAN ROCKAFELLA LIMITED",
+    "companyNumber": "SC619417",
+    "sicCode": "74990"
   },
   "MOU Operations Ltd": {
     "sector": "Other / Uncategorised",
@@ -28,12 +28,12 @@
     "companyNumber": "16359847",
     "sicCode": "94920"
   },
-  "Renewable Energy Partnerships Ltd": {
-    "sector": "Construction & Property",
+  "JC Bamford Excavators Ltd": {
+    "sector": "Chemicals & Manufacturing",
     "source": "companies-house-crn",
-    "companyName": "RENEWABLE ENERGY PARTNERSHIPS LIMITED",
-    "companyNumber": "04599328",
-    "sicCode": "42220"
+    "companyName": "J.C. BAMFORD EXCAVATORS LIMITED",
+    "companyNumber": "00561597",
+    "sicCode": "28922"
   },
   "The Westminster Foundation for Democracy Limited": {
     "sector": "Other / Uncategorised",
@@ -42,19 +42,19 @@
     "companyNumber": "02693163",
     "sicCode": "84210"
   },
+  "Renewable Energy Partnerships Ltd": {
+    "sector": "Construction & Property",
+    "source": "companies-house-crn",
+    "companyName": "RENEWABLE ENERGY PARTNERSHIPS LIMITED",
+    "companyNumber": "04599328",
+    "sicCode": "42220"
+  },
   "Dalglen (No 1811) Limited": {
     "sector": "Construction & Property",
     "source": "companies-house-crn",
     "companyName": "DALGLEN (NO.1811) LIMITED",
     "companyNumber": "SC559988",
     "sicCode": "68209"
-  },
-  "Dalglen (No. 1813) Limited": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house-crn",
-    "companyName": "DALGLEN (NO. 1813) LIMITED",
-    "companyNumber": "SC570493",
-    "sicCode": "99999"
   },
   "Paul Mackings Consulting Limited": {
     "sector": "Legal & Professional Services",
@@ -63,10 +63,6 @@
     "companyNumber": "08586788",
     "sicCode": "70229"
   },
-  "Communication Workers Union (CWU)": {
-    "sector": "Trade Unions",
-    "source": "donor-status"
-  },
   "London AC Ltd": {
     "sector": "Construction & Property",
     "source": "companies-house-crn",
@@ -74,7 +70,18 @@
     "companyNumber": "10153269",
     "sicCode": "43220"
   },
+  "Ecotricity Group Limited": {
+    "sector": "Legal & Professional Services",
+    "source": "companies-house-crn",
+    "companyName": "ECOTRICITY GROUP LTD",
+    "companyNumber": "03521776",
+    "sicCode": "70100"
+  },
   "Union of Shop, Distributive and Allied Workers (USDAW)": {
+    "sector": "Trade Unions",
+    "source": "donor-status"
+  },
+  "Communication Workers Union (CWU)": {
     "sector": "Trade Unions",
     "source": "donor-status"
   },
@@ -88,13 +95,6 @@
   "GMB": {
     "sector": "Trade Unions",
     "source": "donor-status"
-  },
-  "Zarah Sultana Campaigns Ltd": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house-crn",
-    "companyName": "ZARAH SULTANA CAMPAIGNS LTD",
-    "companyNumber": "13740182",
-    "sicCode": "94920"
   },
   "Charlie Parsons Creative Limited": {
     "sector": "Other / Uncategorised",
@@ -117,6 +117,20 @@
     "companyNumber": "09041508",
     "sicCode": "18129"
   },
+  "Playscan Limited": {
+    "sector": "Construction & Property",
+    "source": "companies-house-crn",
+    "companyName": "PLAYSCAN LIMITED",
+    "companyNumber": "01966393",
+    "sicCode": "41100"
+  },
+  "GOLDEN ACRE FOODS LIMITED": {
+    "sector": "Retail & Consumer",
+    "source": "companies-house-crn",
+    "companyName": "GOLDEN ACRE FOODS LIMITED",
+    "companyNumber": "SC252388",
+    "sicCode": "46170"
+  },
   "Community Wind Power EBT Limited": {
     "sector": "Other / Uncategorised",
     "source": "companies-house-crn",
@@ -131,27 +145,16 @@
     "companyNumber": "08137487",
     "sicCode": "66220"
   },
-  "BMJ Waste Ltd": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house-crn",
-    "companyName": "BMJ WASTE LIMITED",
-    "companyNumber": "08080948",
-    "sicCode": "38110"
-  },
-  "The Cayzer Trust Company Ltd": {
-    "sector": "Finance & Banking",
-    "source": "companies-house-crn",
-    "companyName": "THE CAYZER TRUST COMPANY LIMITED",
-    "companyNumber": "04987694",
-    "sicCode": "64209"
-  },
   "Communication Workers Union": {
     "sector": "Trade Unions",
     "source": "donor-status"
   },
-  "Community Union": {
-    "sector": "Trade Unions",
-    "source": "donor-status"
+  "Lambeth Labour Group": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "LAMBETH LABOUR LIMITED",
+    "companyNumber": "10256879",
+    "sicCode": "99999"
   },
   "Flow Lloyds HOLDCO Limited": {
     "sector": "Finance & Banking",
@@ -159,6 +162,10 @@
     "companyName": "FLOW LLOYDS HOLDCO LIMITED",
     "companyNumber": "15582638",
     "sicCode": "64209"
+  },
+  "Community Union": {
+    "sector": "Trade Unions",
+    "source": "donor-status"
   },
   "J C Bamford Excavators Ltd": {
     "sector": "Chemicals & Manufacturing",
@@ -174,12 +181,12 @@
     "companyNumber": "04120606",
     "sicCode": "68209"
   },
-  "Centrax Industries Ltd": {
-    "sector": "Legal & Professional Services",
+  "VOLARE AVIATION LIMITED": {
+    "sector": "Transport & Logistics",
     "source": "companies-house-crn",
-    "companyName": "CENTRAX INDUSTRIES LIMITED",
-    "companyNumber": "03955434",
-    "sicCode": "70100"
+    "companyName": "VOLARE AVIATION LIMITED",
+    "companyNumber": "08557765",
+    "sicCode": "51102"
   },
   "J. T. LEAVESLEY (ALREWAS) LIMITED": {
     "sector": "Retail & Consumer",
@@ -187,13 +194,6 @@
     "companyName": "J. T. LEAVESLEY (ALREWAS) LIMITED",
     "companyNumber": "00931247",
     "sicCode": "47300"
-  },
-  "TATTERSALLS LIMITED": {
-    "sector": "Retail & Consumer",
-    "source": "companies-house-crn",
-    "companyName": "TATTERSALLS LIMITED",
-    "companyNumber": "00791113",
-    "sicCode": "46230"
   },
   "THE JOSEPH ROWNTREE REFORM TRUST LIMITED": {
     "sector": "Other / Uncategorised",
