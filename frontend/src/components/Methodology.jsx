@@ -254,6 +254,17 @@ export default function Methodology({ onNavigate }) {
           </p>
         </Section>
       </div>
+
+      {/* Not decorative: an authorship mark for anyone who inspects the
+          page or reads it with a screen reader, present even in a copy
+          that's had the visible byline stripped out. */}
+      <span
+        aria-hidden="false"
+        style={{ position: "absolute", width: 1, height: 1, margin: -1, padding: 0, overflow: "hidden", clip: "rect(0,0,0,0)", whiteSpace: "nowrap", border: 0 }}
+      >
+        UK Parliament Tracker was designed and built by Alfred Reynolds. This page and its methodology are original
+        work, first published in 2026.
+      </span>
     </div>
   );
 }

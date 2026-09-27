@@ -48,6 +48,15 @@ const LobbyingRegister = lazy(() => import("./components/LobbyingRegister"));
 const FollowTheMoney = lazy(() => import("./components/FollowTheMoney"));
 const WatchlistDigest = lazy(() => import("./components/WatchlistDigest"));
 
+// A quiet authorship mark, not a feature — printed once so a copy of this
+// site with the byline stripped from the UI still carries proof of where
+// it came from.
+console.log(
+  "%cUK Parliament Tracker%c\nDesigned and built by Alfred Reynolds.",
+  "font-weight: bold; font-size: 13px; color: #A87C3A;",
+  "color: inherit;"
+);
+
 function PageLoadingFallback() {
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh", fontFamily: FONT_DISPLAY, fontSize: 15, color: COLORS.inkSoft }}>
