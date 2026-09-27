@@ -103,7 +103,6 @@ export default function PartyPolicies() {
                   background: COLORS.paperCard,
                   border: `1px solid ${party.color}45`,
                   borderTop: `4px solid ${party.color}`,
-                  boxShadow: "0 1px 4px rgba(20,30,32,0.06)",
                   padding: "20px 20px 18px",
                 }}
               >

@@ -269,11 +269,10 @@ function VoteRow({ vote, index }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.4, delay: Math.min(index, 8) * 0.04, ease: "easeOut" }}
-      whileHover={{ y: -3, boxShadow: "0 12px 28px rgba(20,30,32,0.12)", transition: { duration: 0.15, delay: 0 } }}
+      whileHover={{ transition: { duration: 0.15, delay: 0 } }}
       style={{
         position: "relative", overflow: "hidden", background: `linear-gradient(135deg, ${themeColor}0a, ${COLORS.paperCard} 55%)`, border: `1px solid ${COLORS.hairline}`,
         borderLeft: `4px solid ${outcomeColor}`, borderRadius: 13, padding: "17px 20px", marginBottom: 13,
-        boxShadow: "0 1px 4px rgba(20,30,32,0.05)",
       }}
     >
       <div style={{ position: "relative", display: "flex", gap: 13, alignItems: "flex-start" }}>
@@ -354,9 +353,9 @@ function PartyCard({ party, index, seatCount }) {
       initial={{ opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
-      whileHover={{ y: -2, boxShadow: "0 10px 24px rgba(20,30,32,0.10)", transition: { duration: 0.15, delay: 0 } }}
+      whileHover={{ borderColor: party.color, transition: { duration: 0.15, delay: 0 } }}
       transition={{ duration: 0.35, delay: Math.min(index ?? 0, 8) * 0.04, ease: "easeOut" }}
-      style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `4px solid ${party.color}`, borderRadius: 14, padding: 20, boxShadow: "0 1px 4px rgba(20,30,32,0.05)" }}
+      style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `4px solid ${party.color}`, borderRadius: 14, padding: 20  }}
     >
       <button onClick={() => withScrollPreserved(() => setOpen((v) => !v))} style={{ display: "block", width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
@@ -509,7 +508,7 @@ export default function PoliticalHistory() {
             }}
           >
             {tab === t.key && (
-              <motion.span layoutId="history-tab-pill" transition={{ type: "spring", stiffness: 500, damping: 35 }} style={{ position: "absolute", inset: 0, background: COLORS.ink, borderRadius: 999, zIndex: -1 }} />
+              <motion.span layoutId="history-tab-pill" transition={{ type: "spring", stiffness: 500, damping: 35 }} style={{ position: "absolute", inset: 0, background: COLORS.brass, borderRadius: 999, zIndex: -1 }} />
             )}
             {t.label}
           </button>
@@ -528,7 +527,7 @@ export default function PoliticalHistory() {
                     onClick={() => withScrollPreserved(() => setVoteFilter(theme))}
                     style={{
                       fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, padding: "7px 14px", borderRadius: 999,
-                      border: `1px solid ${active ? COLORS.ink : COLORS.hairline}`, background: active ? COLORS.ink : "transparent",
+                      border: `1px solid ${active ? COLORS.brass : COLORS.hairline}`, background: active ? COLORS.brass : "transparent",
                       color: active ? "#fff" : COLORS.inkSoft, cursor: "pointer", transition: "all 0.15s",
                     }}
                   >

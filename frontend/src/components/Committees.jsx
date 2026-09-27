@@ -158,8 +158,8 @@ export default function Committees() {
                 onClick={() => setHouseFilter(h)}
                 style={{
                   fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, padding: "7px 14px", borderRadius: 999,
-                  border: `1px solid ${houseFilter === h ? COLORS.ink : COLORS.hairline}`,
-                  background: houseFilter === h ? COLORS.ink : "transparent",
+                  border: `1px solid ${houseFilter === h ? COLORS.brass : COLORS.hairline}`,
+                  background: houseFilter === h ? COLORS.brass : "transparent",
                   color: houseFilter === h ? "#fff" : COLORS.inkSoft, cursor: "pointer", transition: "all 0.15s",
                 }}
               >

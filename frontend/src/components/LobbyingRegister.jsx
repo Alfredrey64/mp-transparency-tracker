@@ -192,7 +192,6 @@ export default function LobbyingRegister() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.3, delay: i * 0.05 }}
-              whileHover={{ y: -2, boxShadow: "0 10px 22px rgba(30,42,68,0.1)" }}
               style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `3px solid ${item.color}`, borderRadius: 12, padding: "16px 20px" }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, flexWrap: "wrap", marginBottom: 6 }}>

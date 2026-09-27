@@ -279,8 +279,8 @@ export default function WrittenQuestions({ onSelectPolitician }) {
                 onClick={() => setHouseFilter(h)}
                 style={{
                   fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, padding: "6px 13px", borderRadius: 999,
-                  border: `1px solid ${houseFilter === h ? COLORS.ink : COLORS.hairline}`,
-                  background: houseFilter === h ? COLORS.ink : "transparent", color: houseFilter === h ? "#fff" : COLORS.inkSoft, cursor: "pointer",
+                  border: `1px solid ${houseFilter === h ? COLORS.brass : COLORS.hairline}`,
+                  background: houseFilter === h ? COLORS.brass : "transparent", color: houseFilter === h ? "#fff" : COLORS.inkSoft, cursor: "pointer",
                 }}
               >
                 {h}

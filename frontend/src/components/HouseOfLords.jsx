@@ -391,8 +391,8 @@ export default function HouseOfLords() {
           onClick={() => withScrollPreserved(() => setActiveParty("All"))}
           style={{
             fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, padding: "7px 14px", borderRadius: 999,
-            border: `1px solid ${activeParty === "All" ? COLORS.ink : COLORS.hairline}`,
-            background: activeParty === "All" ? COLORS.ink : "transparent", color: activeParty === "All" ? "#fff" : COLORS.inkSoft, cursor: "pointer",
+            border: `1px solid ${activeParty === "All" ? COLORS.brass : COLORS.hairline}`,
+            background: activeParty === "All" ? COLORS.brass : "transparent", color: activeParty === "All" ? "#fff" : COLORS.inkSoft, cursor: "pointer",
           }}
         >
           All parties
@@ -445,11 +445,10 @@ export default function HouseOfLords() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "80px" }}
                 transition={{ duration: 0.25, delay: (i % 16) * 0.02, ease: "easeOut" }}
-                whileHover={{ y: -3, boxShadow: "0 8px 20px rgba(30,42,68,0.14)" }}
                 style={{
                   textAlign: "left", display: "flex", alignItems: "center", gap: 12, padding: "12px 14px",
                   background: `linear-gradient(135deg, ${color}1c, ${color}08 55%, ${COLORS.paperCard} 100%)`,
-                  border: `1px solid ${COLORS.hairline}`, borderRadius: 12, cursor: "pointer", boxShadow: "0 1px 3px rgba(30,42,68,0.06)",
+                  border: `1px solid ${COLORS.hairline}`, borderRadius: 12, cursor: "pointer",
                 }}
               >
                 <Avatar peer={p} color={color} />

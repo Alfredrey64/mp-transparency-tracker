@@ -69,7 +69,7 @@ function PostcodeForm({ onFound, initialError }) {
   }
 
   return (
-    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${COLORS.brass}`, borderRadius: 16, padding: "28px clamp(18px, 4vw, 32px)", boxShadow: "0 2px 10px rgba(30,42,68,0.05)", maxWidth: 480, margin: "24px auto 0" }}>
+    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${COLORS.brass}`, borderRadius: 16, padding: "28px clamp(18px, 4vw, 32px)", maxWidth: 480, margin: "24px auto 0" }}>
       <div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}>
         <div style={{ width: 48, height: 48, borderRadius: "50%", background: `${COLORS.brass}14`, color: COLORS.brass, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <IconPin size={22} />
@@ -97,7 +97,7 @@ function PostcodeForm({ onFound, initialError }) {
           type="submit"
           disabled={loading}
           style={{
-            fontFamily: FONT_BODY, fontWeight: 700, fontSize: 14, color: "#fff", background: COLORS.ink,
+            fontFamily: FONT_BODY, fontWeight: 700, fontSize: 14, color: "#fff", background: COLORS.brass,
             border: "none", borderRadius: 10, padding: "11px 20px", cursor: loading ? "default" : "pointer", opacity: loading ? 0.6 : 1, flexShrink: 0,
           }}
         >
@@ -133,7 +133,7 @@ function MPDashboard({ politician, onForget, onViewFullProfile }) {
         <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
           <button
             onClick={() => onViewFullProfile(politician)}
-            style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13, color: "#fff", background: COLORS.ink, border: "none", borderRadius: 999, padding: "9px 18px", cursor: "pointer" }}
+            style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13, color: "#fff", background: COLORS.brass, border: "none", borderRadius: 999, padding: "9px 18px", cursor: "pointer" }}
           >
             Full profile →
           </button>

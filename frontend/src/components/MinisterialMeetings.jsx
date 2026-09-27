@@ -74,7 +74,6 @@ function MeetingCard({ meeting, color, index }) {
       initial={{ opacity: 0, y: 8 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
-      whileHover={{ y: -2, boxShadow: "0 10px 24px rgba(30,42,68,0.12)" }}
       transition={{ duration: 0.25, delay: Math.min(index, 8) * 0.02 }}
       style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `3px solid ${color}`, borderRadius: 12, padding: "16px 18px" }}
     >

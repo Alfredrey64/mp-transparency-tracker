@@ -77,7 +77,6 @@ function CaseCard({ item, index }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.3, delay: (index % 6) * 0.05 }}
-      whileHover={{ y: -2, boxShadow: "0 10px 22px rgba(30,42,68,0.12)" }}
       style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `4px solid ${item.color}`, borderRadius: 14, padding: "18px 20px" }}
     >
       <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, color: COLORS.ink, marginBottom: 2 }}>{item.name}</div>

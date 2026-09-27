@@ -192,7 +192,6 @@ function GovernmentEntry({ entry, index, showTerm }) {
               display: "flex", gap: 16, alignItems: "center", background: COLORS.paperCard,
               border: `1px solid ${COLORS.hairline}`, borderLeft: `3px solid ${color}`, borderRadius: 10,
               padding: "16px 17px 12px", margin: "16px 0", cursor: "pointer",
-              boxShadow: "0 1px 4px rgba(20,30,32,0.05)",
             }
       }
     >
@@ -326,7 +325,6 @@ function BillEntry({ entry, index }) {
       <div style={{ flexShrink: 0, width: 2, alignSelf: "stretch", background: COLORS.hairline, borderRadius: 2, minHeight: 16 }} />
       <motion.div
         onClick={() => withScrollPreserved(() => setOpen((v) => !v))}
-        whileHover={{ y: -2, boxShadow: "0 8px 20px rgba(20,30,32,0.10)", transition: { duration: 0.15, delay: 0 } }}
         style={{
           minWidth: 0, flex: 1, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `3px solid ${color}`,
           borderRadius: 10, padding: "16px 17px 12px", cursor: "pointer",
@@ -516,7 +514,7 @@ export default function Timeline() {
             }}
           >
             {tab === t.key && (
-              <motion.span layoutId="timeline-tab-pill" transition={{ type: "spring", stiffness: 500, damping: 35 }} style={{ position: "absolute", inset: 0, background: COLORS.ink, borderRadius: 999, zIndex: -1 }} />
+              <motion.span layoutId="timeline-tab-pill" transition={{ type: "spring", stiffness: 500, damping: 35 }} style={{ position: "absolute", inset: 0, background: COLORS.brass, borderRadius: 999, zIndex: -1 }} />
             )}
             {t.label}
           </button>

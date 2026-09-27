@@ -119,11 +119,10 @@ const cardStyle = {
   borderTop: `4px solid ${COLORS.brass}`,
   borderRadius: 16,
   padding: "28px clamp(18px, 4vw, 32px)",
-  boxShadow: "0 2px 10px rgba(30,42,68,0.05)",
 };
 
 const primaryButtonStyle = {
-  fontFamily: FONT_BODY, fontWeight: 700, fontSize: 14.5, color: "#fff", background: COLORS.ink,
+  fontFamily: FONT_BODY, fontWeight: 700, fontSize: 14.5, color: "#fff", background: COLORS.brass,
   border: "none", borderRadius: 999, padding: "12px 26px", cursor: "pointer",
 };
 
@@ -181,7 +180,7 @@ function PrioritiesScreen({ selected, onToggle, onContinue }) {
                 style={{
                   display: "flex", alignItems: "center", gap: 7,
                   fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, padding: "6px 14px 6px 6px", borderRadius: 999,
-                  border: `1px solid ${active ? COLORS.ink : COLORS.hairline}`, background: active ? COLORS.ink : "transparent",
+                  border: `1px solid ${active ? COLORS.brass : COLORS.hairline}`, background: active ? COLORS.brass : "transparent",
                   color: active ? "#fff" : disabled ? `${COLORS.inkSoft}80` : COLORS.inkSoft,
                   cursor: disabled ? "not-allowed" : "pointer", transition: "border-color 0.15s, background 0.15s, color 0.15s",
                 }}
@@ -297,7 +296,7 @@ function QuestionScreen({ question, index, total, value, onAnswer, onBack }) {
                 style={{
                   display: "flex", alignItems: "center", gap: 12, fontFamily: FONT_BODY, fontSize: 14, fontWeight: 600,
                   padding: "12px 16px", borderRadius: 10, textAlign: "left", cursor: "pointer",
-                  border: `1px solid ${active ? COLORS.ink : COLORS.hairline}`, background: active ? `${COLORS.brass}14` : "transparent",
+                  border: `1px solid ${active ? COLORS.brass : COLORS.hairline}`, background: active ? `${COLORS.brass}14` : "transparent",
                   color: COLORS.ink, transition: "border-color 0.15s, background 0.15s",
                 }}
               >

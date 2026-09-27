@@ -374,7 +374,7 @@ export default function Glossary() {
               <motion.span
                 layoutId="glossary-tab-pill"
                 transition={{ type: "spring", stiffness: 500, damping: 38 }}
-                style={{ position: "absolute", inset: 0, background: COLORS.ink, borderRadius: 999, zIndex: 0 }}
+                style={{ position: "absolute", inset: 0, background: COLORS.brass, borderRadius: 999, zIndex: 0 }}
               />
             )}
             <span style={{ position: "relative", zIndex: 1 }}>{t.label}</span>

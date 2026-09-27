@@ -230,7 +230,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
         </motion.div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 24, marginBottom: 24, textAlign: "left" }}>
-          <div style={{ display: "flex", flexDirection: "column", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "8px 20px 20px", boxShadow: "0 2px 8px rgba(30,42,68,0.06)" }}>
+          <div style={{ display: "flex", flexDirection: "column", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "8px 20px 20px" }}>
             <div style={{ display: "flex", justifyContent: "center", gap: 4, padding: "10px 0 14px" }}>
               {[
                 { key: "donations", label: "Donations" },
@@ -247,7 +247,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                     borderRadius: 999,
                     border: "none",
                     cursor: "pointer",
-                    background: activeTab === tab.key ? COLORS.ink : "transparent",
+                    background: activeTab === tab.key ? COLORS.brass : "transparent",
                     color: activeTab === tab.key ? "#fff" : COLORS.inkSoft,
                     transition: "background 0.15s, color 0.15s",
                   }}
@@ -305,7 +305,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
             )}
           </div>
 
-          <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: 20, boxShadow: "0 2px 8px rgba(30,42,68,0.06)" }}>
+          <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: 20 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4, gap: 10, flexWrap: "wrap" }}>
               <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink }}>
                 {parliamentTab === "changes" ? "What's Changed" : "On This Day"}
@@ -326,7 +326,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                       borderRadius: 999,
                       border: "none",
                       cursor: "pointer",
-                      background: parliamentTab === tab.key ? COLORS.ink : "transparent",
+                      background: parliamentTab === tab.key ? COLORS.brass : "transparent",
                       color: parliamentTab === tab.key ? "#fff" : COLORS.inkSoft,
                       transition: "background 0.15s, color 0.15s",
                     }}
@@ -454,7 +454,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 24, marginBottom: 36, textAlign: "left" }}>
-          <div style={{ display: "flex", flexDirection: "column", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: 20, boxShadow: "0 2px 8px rgba(30,42,68,0.06)" }}>
+          <div style={{ display: "flex", flexDirection: "column", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: 20 }}>
             <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 4 }}>
               Find Your MP
             </div>
@@ -537,7 +537,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
             )}
           </div>
 
-          <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: 20, boxShadow: "0 2px 8px rgba(30,42,68,0.06)" }}>
+          <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: 20 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
               <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink }}>
                 Bills Going Through Parliament
@@ -584,22 +584,20 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
 
         <motion.button
           onClick={onBrowse}
-          whileHover={{ y: -2, boxShadow: "0 10px 24px rgba(30,42,68,0.22)" }}
-          whileTap={{ y: 0 }}
+          whileTap={{ scale: 0.98 }}
           style={{
             fontFamily: FONT_BODY,
             fontSize: 16,
             fontWeight: 600,
             color: "#fff",
-            background: COLORS.ink,
+            background: COLORS.brass,
             border: "none",
-            borderRadius: 10,
+            borderRadius: 6,
             padding: "15px 28px",
             cursor: "pointer",
-            boxShadow: "0 4px 14px rgba(30,42,68,0.15)",
           }}
         >
-          Browse MPs →
+          Browse MPs
         </motion.button>
       </div>
     </div>

@@ -348,7 +348,6 @@ export default function PromiseTracker() {
         borderRadius: 18,
         background: COLORS.paperCard,
         padding: "26px clamp(16px, 4vw, 28px) 28px",
-        boxShadow: "0 1px 4px rgba(20,30,32,0.06)",
       }}
     >
       {pm?.thumbnail_url && (
@@ -356,7 +355,7 @@ export default function PromiseTracker() {
           style={{
             position: "absolute", top: 20, right: 20, width: 60, height: 60, borderRadius: "50%", flexShrink: 0,
             display: "flex", alignItems: "center", justifyContent: "center", background: COLORS.paper,
-            border: `1px solid ${COLORS.hairline}`, boxShadow: "0 2px 8px rgba(20,30,32,0.1)",
+            border: `1px solid ${COLORS.hairline}`,
           }}
           title={`${pm.name} — ${pm.cabinet_role}`}
         >

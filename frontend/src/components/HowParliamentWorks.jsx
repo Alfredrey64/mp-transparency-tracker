@@ -344,7 +344,7 @@ function DiagramSection({ title, intro, stages, color, index = 0 }) {
         borderTop: `4px solid ${color}`,
         borderRadius: 16,
         padding: "24px clamp(16px, 4vw, 28px)",
-        boxShadow: "0 2px 10px rgba(30,42,68,0.05)",
+        
       }}
     >
       <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 24, color: COLORS.ink, marginTop: 0, marginBottom: 6 }}>{title}</h2>
@@ -422,7 +422,7 @@ function ConstituencyLookup() {
         borderTop: `4px solid ${COLORS.brass}`,
         borderRadius: 16,
         padding: "24px clamp(16px, 4vw, 28px)",
-        boxShadow: "0 2px 10px rgba(30,42,68,0.05)",
+        
       }}
     >
       <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 24, color: COLORS.ink, marginTop: 0, marginBottom: 6 }}>
@@ -457,7 +457,7 @@ function ConstituencyLookup() {
             padding: "0 20px",
             borderRadius: 10,
             border: "none",
-            background: COLORS.ink,
+            background: COLORS.brass,
             color: "#fff",
             cursor: "pointer",
           }}

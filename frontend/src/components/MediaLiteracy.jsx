@@ -14,7 +14,7 @@ function InfoCard({ title, color, children, index = 0 }) {
       style={{
         background: COLORS.paperCard, borderLeft: `1px solid ${COLORS.hairline}`, borderRight: `1px solid ${COLORS.hairline}`,
         borderBottom: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${color}`, borderRadius: 16,
-        padding: "22px clamp(16px, 4vw, 26px)", boxShadow: "0 2px 10px rgba(30,42,68,0.05)", marginBottom: 20,
+        padding: "22px clamp(16px, 4vw, 26px)", marginBottom: 20,
       }}
     >
       <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, marginTop: 0, marginBottom: 10 }}>{title}</h2>
@@ -120,7 +120,6 @@ function OutletCard({ outlet, index, open, onToggle }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.3, delay: (index % 6) * 0.05 }}
-      whileHover={{ y: -2, boxShadow: "0 10px 22px rgba(30,42,68,0.12)" }}
       style={{
         background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${outlet.color}`,
         borderRadius: 14, overflow: "hidden", cursor: "pointer",
@@ -260,7 +259,7 @@ function ImpartialityQuiz() {
                   onClick={() => answer("broadcast")}
                   disabled={Boolean(feedback)}
                   style={{
-                    fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13.5, color: "#fff", background: COLORS.ink,
+                    fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13.5, color: "#fff", background: COLORS.brass,
                     border: "none", borderRadius: 999, padding: "11px 22px", cursor: feedback ? "default" : "pointer", opacity: feedback ? 0.7 : 1,
                   }}
                 >
@@ -408,7 +407,6 @@ function CaseCard({ item, index }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.3, delay: (index % 6) * 0.05 }}
-      whileHover={{ y: -2, boxShadow: "0 10px 22px rgba(30,42,68,0.12)" }}
       style={{
         background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `4px solid ${item.color}`,
         borderRadius: 14, padding: "16px 20px",

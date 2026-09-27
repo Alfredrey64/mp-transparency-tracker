@@ -17,7 +17,7 @@ function InfoCard({ title, color, children, index = 0 }) {
         borderTop: `4px solid ${color}`,
         borderRadius: 16,
         padding: "22px clamp(16px, 4vw, 26px)",
-        boxShadow: "0 2px 10px rgba(30,42,68,0.05)",
+        
         marginBottom: 20,
       }}
     >
@@ -273,7 +273,6 @@ export default function AppgMemberships() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.3, delay: (i % 6) * 0.05, ease: "easeOut" }}
-              whileHover={{ y: -3, boxShadow: "0 8px 20px rgba(30,42,68,0.12)" }}
               style={{
                 background: COLORS.paperCard,
                 borderTop: `1px solid ${COLORS.hairline}`,
@@ -282,7 +281,7 @@ export default function AppgMemberships() {
                 borderLeft: `5px solid ${group.color}`,
                 borderRadius: 12,
                 padding: 16,
-                boxShadow: "0 1px 4px rgba(30,42,68,0.05)",
+                
               }}
             >
               <div
@@ -352,7 +351,7 @@ export default function AppgMemberships() {
           borderTop: `4px solid ${COLORS.ink}`,
           borderRadius: 16,
           padding: "22px clamp(16px, 4vw, 26px)",
-          boxShadow: "0 2px 10px rgba(30,42,68,0.05)",
+          
           maxWidth: 900,
         }}
       >
@@ -368,7 +367,6 @@ export default function AppgMemberships() {
           href="https://publications.parliament.uk/pa/cm/cmallparty/register/contents.htm"
           target="_blank"
           rel="noreferrer"
-          whileHover={{ y: -2, boxShadow: "0 8px 18px rgba(0,0,0,0.18)" }}
           style={{
             display: "inline-block",
             marginTop: 6,
@@ -376,7 +374,7 @@ export default function AppgMemberships() {
             fontWeight: 600,
             fontSize: 14,
             color: "#fff",
-            background: COLORS.ink,
+            background: COLORS.brass,
             padding: "10px 20px",
             borderRadius: 10,
             textDecoration: "none",

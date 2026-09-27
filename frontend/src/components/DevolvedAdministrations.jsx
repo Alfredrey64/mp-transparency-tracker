@@ -69,8 +69,8 @@ export default function DevolvedAdministrations() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.35, delay: i * 0.06, ease: "easeOut" }}
-              whileHover={{ y: -2, boxShadow: "0 10px 24px rgba(20,30,32,0.10)", transition: { duration: 0.15, delay: 0 } }}
-              style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `4px solid ${a.accent}`, borderRadius: 14, boxShadow: "0 1px 4px rgba(20,30,32,0.05)" }}
+              whileHover={{ borderColor: a.accent, transition: { duration: 0.15, delay: 0 } }}
+              style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `4px solid ${a.accent}`, borderRadius: 14 }}
             >
               <button
                 onClick={() => withScrollPreserved(() => setOpenIndex(open ? null : i))}

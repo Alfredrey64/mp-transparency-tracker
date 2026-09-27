@@ -288,7 +288,7 @@ export function CommonsBadge({ size = 36 }) {
         width: size,
         height: size,
         borderRadius: "50%",
-        background: COLORS.ink,
+        background: COLORS.sidebarBgDeep,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

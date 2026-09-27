@@ -192,10 +192,10 @@ function CabinetCard({ member, area, index, onViewProfile }) {
       initial={{ opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
-      whileHover={{ y: -3, boxShadow: "0 10px 26px rgba(20,30,32,0.12)", transition: { duration: 0.15, delay: 0 } }}
+      whileHover={{ borderColor: color, transition: { duration: 0.15, delay: 0 } }}
       transition={{ duration: 0.32, delay: Math.min(index ?? 0, 8) * 0.03, ease: "easeOut" }}
       style={{
-        background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${color}`, borderRadius: 14, padding: 20, boxShadow: "0 1px 4px rgba(20,30,32,0.05)",
+        background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${color}`, borderRadius: 14, padding: 20,
       }}
     >
       <button onClick={() => withScrollPreserved(() => setOpen((v) => !v))} style={{ display: "block", width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" }}>

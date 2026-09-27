@@ -64,13 +64,13 @@ function BillEntry({ bill, politicians }) {
   return (
     <motion.div
       layout="position"
-      whileHover={{ y: -1, boxShadow: "0 6px 18px rgba(20,30,32,0.09)" }}
+      whileHover={{ borderColor: category.color }}
       transition={{ duration: 0.15 }}
       style={{
         background: COLORS.paperCard,
         border: `1px solid ${COLORS.hairline}`,
         borderRadius: 14,
-        boxShadow: "0 1px 3px rgba(20,30,32,0.05)",
+        
         overflow: "hidden",
       }}
     >
@@ -534,7 +534,7 @@ export default function VotingRecords() {
       <div
         style={{
           marginTop: 24, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14,
-          padding: 18, boxShadow: "0 1px 3px rgba(20,30,32,0.05)",
+          padding: 18,
         }}
       >
         <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13.5, color: COLORS.ink, marginBottom: 10 }}>

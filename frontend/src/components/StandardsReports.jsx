@@ -93,7 +93,6 @@ function ReportCard({ report, politician, onSelectPolitician, index }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.25, delay: Math.min(index, 10) * 0.02 }}
-      whileHover={{ y: -2, boxShadow: "0 10px 24px rgba(30,42,68,0.10)" }}
       style={{
         display: "flex",
         gap: 14,
@@ -103,7 +102,6 @@ function ReportCard({ report, politician, onSelectPolitician, index }) {
         borderLeft: `4px solid ${color}`,
         borderRadius: 12,
         padding: "18px 20px",
-        boxShadow: "0 1px 4px rgba(30,42,68,0.04)",
       }}
     >
       {politician?.thumbnail_url ? (
@@ -316,7 +314,7 @@ export default function StandardsReports({ onSelectPolitician }) {
                 <motion.div
                   layoutId="standardsToggle"
                   transition={{ type: "spring", stiffness: 400, damping: 32 }}
-                  style={{ position: "absolute", inset: 0, background: COLORS.ink, borderRadius: 999, zIndex: -1 }}
+                  style={{ position: "absolute", inset: 0, background: COLORS.brass, borderRadius: 999, zIndex: -1 }}
                 />
               )}
               {opt.label}

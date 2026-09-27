@@ -895,7 +895,7 @@ export default function PoliticianDetail({ politician, onBack }) {
                     <motion.span
                       layoutId="detail-tab-pill"
                       transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                      style={{ position: "absolute", inset: 0, background: COLORS.ink, borderRadius: 999, zIndex: -1 }}
+                      style={{ position: "absolute", inset: 0, background: COLORS.brass, borderRadius: 999, zIndex: -1 }}
                     />
                   )}
                   {tab.label}

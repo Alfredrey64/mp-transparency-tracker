@@ -167,7 +167,6 @@ function CompanyRow({ company, isOpen, onToggle }) {
 
   return (
     <motion.div
-      whileHover={{ y: -1, boxShadow: "0 4px 14px rgba(20,30,32,0.08)" }}
       transition={{ duration: 0.15 }}
       style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `3px solid ${color}`, borderRadius: 12, padding: 16 }}
     >

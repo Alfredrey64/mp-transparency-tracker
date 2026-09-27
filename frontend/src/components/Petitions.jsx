@@ -47,7 +47,7 @@ function PetitionRow({ petition, index, isOpen, onToggle }) {
       transition={{ duration: 0.35, delay: Math.min(index, 10) * 0.03, ease: "easeOut" }}
       style={{
         background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `4px solid ${color}`,
-        borderRadius: 12, padding: "16px 20px", marginBottom: 12, boxShadow: "0 1px 4px rgba(20,30,32,0.05)",
+        borderRadius: 12, padding: "16px 20px", marginBottom: 12,
       }}
     >
       <button onClick={onToggle} style={{ display: "block", width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" }}>
@@ -171,7 +171,7 @@ export default function Petitions() {
               onClick={() => withScrollPreserved(() => setFilter(f.key))}
               style={{
                 fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, padding: "7px 14px", borderRadius: 999,
-                border: `1px solid ${active ? COLORS.ink : COLORS.hairline}`, background: active ? COLORS.ink : "transparent",
+                border: `1px solid ${active ? COLORS.brass : COLORS.hairline}`, background: active ? COLORS.brass : "transparent",
                 color: active ? "#fff" : COLORS.inkSoft, cursor: "pointer", transition: "all 0.15s",
               }}
             >
