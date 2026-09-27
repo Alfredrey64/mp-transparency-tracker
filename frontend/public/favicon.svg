@@ -1,6 +1,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
-  <rect width="512" height="512" fill="#0D8A7A"/>
-  <g transform="translate(96 176) scale(1.3333)">
+  <defs>
+    <linearGradient id="bg" x1="8%" y1="4%" x2="92%" y2="96%">
+      <stop offset="0%" stop-color="#16B39E"/>
+      <stop offset="52%" stop-color="#0D8A7A"/>
+      <stop offset="100%" stop-color="#075E52"/>
+    </linearGradient>
+    <radialGradient id="sheen" cx="32%" cy="16%" r="70%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.20"/>
+      <stop offset="60%" stop-color="#ffffff" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vignette" cx="50%" cy="58%" r="75%">
+      <stop offset="60%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#04211C" stop-opacity="0.22"/>
+    </radialGradient>
+    <filter id="lift" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="9" stdDeviation="12" flood-color="#03231E" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <rect width="512" height="512" fill="url(#vignette)"/>
+  <rect width="512" height="512" fill="url(#sheen)"/>
+
+  <g transform="translate(96 176) scale(1.3333)" filter="url(#lift)">
     <rect x="18" y="70" width="120" height="42" fill="#ffffff"/>
     <rect x="18" y="64" width="6" height="8" fill="#ffffff"/>
     <rect x="30" y="64" width="6" height="8" fill="#ffffff"/>
