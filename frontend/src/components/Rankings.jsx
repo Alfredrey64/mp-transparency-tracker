@@ -65,8 +65,8 @@ function RankRow({ entry, index, maxValue, color, valueLabel, onSelectPolitician
       onClick={() => onSelectPolitician(p)}
       style={{
         display: "flex", alignItems: "center", gap: 12, width: "100%", textAlign: "left", cursor: "pointer",
-        background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `3px solid ${pColor}`,
-        borderRadius: 12, padding: "11px 16px",
+        background: "none", border: "none", borderLeft: `3px solid ${pColor}`, borderBottom: `1px solid ${COLORS.hairline}`,
+        padding: "11px 14px",
       }}
     >
       <span
