@@ -4,33 +4,32 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
 import { supabase } from "../supabaseClient";
 import { stripHtml, formatDate } from "../lib/format";
 
-// A colour-accented card used by several longer-form explainer pages
-// (Media Literacy, APPG Memberships, and others) for a titled block of
-// prose or a list — a top border in the page's own accent colour is enough
-// to visually separate sections without a heavier boxed look everywhere.
-// The icon is optional: pages that want a little more visual texture on
-// each card can pass one, but nothing breaks for the pages that don't.
+// An annotated passage, not a dashboard tile: a left margin rule in the
+// page's own accent colour and a soft tint of that same colour, open on
+// every other edge — no bounding box, no radius, no drop shadow, nothing
+// to make several of these in a row read as identical stacked cards.
+// Closer to how a printed report marks up a marginal note than to a SaaS
+// card kit. The icon is optional and sits inline with the heading rather
+// than in its own circular badge.
 export function InfoCard({ title, color, children, index = 0, maxWidth = 900, icon: Icon }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 14 }}
+      initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.35, delay: index * 0.05, ease: "easeOut" }}
-      whileHover={{ y: -3, boxShadow: "0 10px 26px rgba(30,42,68,0.1)" }}
+      transition={{ duration: 0.35, delay: index * 0.04, ease: "easeOut" }}
       style={{
-        background: COLORS.paperCard, borderLeft: `1px solid ${COLORS.hairline}`, borderRight: `1px solid ${COLORS.hairline}`,
-        borderBottom: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${color}`, borderRadius: 16, maxWidth,
-        padding: "22px clamp(16px, 4vw, 26px)", boxShadow: "0 2px 10px rgba(30,42,68,0.05)", marginBottom: 20,
+        borderLeft: `3px solid ${color}`, background: `${color}0a`, maxWidth,
+        padding: "18px 22px 20px", marginBottom: 22,
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 9 }}>
         {Icon && (
-          <div style={{ flexShrink: 0, width: 34, height: 34, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", background: `${color}1c`, color }}>
-            <Icon size={16} />
-          </div>
+          <span style={{ flexShrink: 0, color, display: "inline-flex", position: "relative", top: 2 }}>
+            <Icon size={18} />
+          </span>
         )}
-        <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, margin: 0 }}>{title}</h2>
+        <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, margin: 0 }}>{title}</h2>
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 14.5, color: COLORS.inkSoft, lineHeight: 1.7 }}>{children}</div>
     </motion.div>
@@ -251,20 +250,17 @@ export function PageHeader({ kicker = "Public Record · UK Parliament", title, s
   );
 }
 
+// A masthead-style section marker rather than a tracked-out uppercase
+// tag — a short brass rule plus the label set in italic Newsreader, closer
+// to how a printed report or Hansard volume marks a section than a SaaS
+// dashboard's eyebrow chip.
 export function EyebrowLabel({ children }) {
   return (
-    <div
-      style={{
-        fontFamily: FONT_BODY,
-        fontSize: 12,
-        fontWeight: 600,
-        letterSpacing: "0.16em",
-        textTransform: "uppercase",
-        color: COLORS.brass,
-        fontVariant: "small-caps",
-      }}
-    >
-      {children}
+    <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+      <span style={{ width: 16, height: 2, background: COLORS.brass, flexShrink: 0 }} />
+      <span style={{ fontFamily: FONT_DISPLAY, fontStyle: "italic", fontSize: 15, color: COLORS.brass }}>
+        {children}
+      </span>
     </div>
   );
 }
@@ -326,10 +322,16 @@ export function SectionDivider() {
   );
 }
 
+// A dossier sheet, not a boxed widget: MP profiles stack a dozen of these
+// down one column, and a dozen identical rounded-shadow cards in a row is
+// the single densest instance of the "SaaS card kit" look on the whole
+// site. A hairline rule and a serif heading read instead as one continuous
+// case file with clearly marked sections — closer to a civil service
+// personnel file than a dashboard.
 export function CardShell({ title, children }) {
   return (
-    <div style={{ background: COLORS.paperCard, borderLeft: `1px solid ${COLORS.hairline}`, borderRight: `1px solid ${COLORS.hairline}`, borderBottom: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.brass}`, borderRadius: 12, padding: 20, boxShadow: "0 1px 4px rgba(30,42,68,0.05)" }}>
-      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 8 }}>
+    <div style={{ paddingTop: 18, borderTop: `1px solid ${COLORS.hairline}` }}>
+      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink, marginBottom: 10 }}>
         {title}
       </div>
       {children}
@@ -729,8 +731,8 @@ export function NewsBox({ politician }) {
 
 export function PlaceholderBox({ title, note }) {
   return (
-    <div style={{ background: COLORS.paperCard, borderLeft: `1px solid ${COLORS.hairline}`, borderRight: `1px solid ${COLORS.hairline}`, borderBottom: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.brass}`, borderRadius: 12, padding: 20, boxShadow: "0 1px 4px rgba(30,42,68,0.05)" }}>
-      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 5 }}>
+    <div style={{ paddingTop: 18, borderTop: `1px solid ${COLORS.hairline}` }}>
+      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink, marginBottom: 6 }}>
         {title}
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>{note}</div>

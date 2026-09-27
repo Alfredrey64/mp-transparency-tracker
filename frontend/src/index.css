@@ -2,26 +2,30 @@
   margin: 0;
   padding: 0;
 
-  --c-ink: #1C2226;
-  --c-ink-soft: #57646D;
-  --c-paper: #EFF2F1;
-  --c-paper-card: #FBFDFC;
-  --c-hairline: #D6DEDC;
-  --c-sidebar-bg: #212A2E;
-  --c-sidebar-bg-deep: #141B1E;
-  --c-sidebar-text: #C4D0D0;
+  /* A warm, aged-parchment light theme instead of a neutral cool grey —
+     paired with the deep committee-room green dark theme below, so the
+     accent colours in theme.js (brass, commons green, garnet) read as
+     institutional on either ground rather than generic-dashboard neutral. */
+  --c-ink: #22281F;
+  --c-ink-soft: #5B6350;
+  --c-paper: #E9E4D0;
+  --c-paper-card: #F6F2E3;
+  --c-hairline: #D2C9A8;
+  --c-sidebar-bg: #1B2A20;
+  --c-sidebar-bg-deep: #101A13;
+  --c-sidebar-text: #C7D0BE;
 }
 
 [data-theme="dark"] {
   color-scheme: dark;
-  --c-ink: #E8EDEC;
-  --c-ink-soft: #A7B4B3;
-  --c-paper: #14181A;
-  --c-paper-card: #1D2325;
-  --c-hairline: #323B3D;
-  --c-sidebar-bg: #171D1F;
-  --c-sidebar-bg-deep: #0D1112;
-  --c-sidebar-text: #C4D0D0;
+  --c-ink: #EBE6D6;
+  --c-ink-soft: #A6A78F;
+  --c-paper: #131D16;
+  --c-paper-card: #1B2A20;
+  --c-hairline: #33422F;
+  --c-sidebar-bg: #101A13;
+  --c-sidebar-bg-deep: #0A120C;
+  --c-sidebar-text: #C7D0BE;
 }
 
 html, body, #root {
@@ -44,7 +48,7 @@ body {
 }
 
 .skeleton-pulse {
-  background: linear-gradient(90deg, #E1DCD3 25%, #EEEAE3 37%, #E1DCD3 63%);
+  background: linear-gradient(90deg, var(--c-hairline) 25%, var(--c-paper-card) 37%, var(--c-hairline) 63%);
   background-size: 400% 100%;
   animation: skeleton-shimmer 1.4s ease infinite;
 }
