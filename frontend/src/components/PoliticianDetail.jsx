@@ -7,6 +7,8 @@ import { getDonorSector, sectorColor } from "../lib/donorSectors";
 import { sectorToBillCategory } from "../lib/sectorBillMapping";
 import { sectorToCommittee } from "../lib/sectorCommitteeMapping";
 import { categoriseBill } from "../lib/bills";
+import { findManifesto } from "../data/partyManifestos";
+import { manifestoSectionToBillCategory } from "../lib/manifestoBillMapping";
 import { isWatched, toggleWatch } from "../lib/watchlist";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { IconStar } from "./icons";
@@ -29,6 +31,7 @@ const DETAIL_TABS = [
   { key: "claims", label: "Claims" },
   { key: "gifts", label: "Gifts" },
   { key: "roles", label: "Roles" },
+  { key: "manifesto", label: "Manifesto" },
 ];
 
 function groupInterestsBySector(interests) {
@@ -458,6 +461,153 @@ function ClaimsTabContent({ politician, claims }) {
   );
 }
 
+// One manifesto policy area, its actual promises, and — where the heading
+// maps onto a trackable bill category — how this MP voted on legislation
+// touching that same area. Matched by title against Commons divisions, the
+// same imperfect-but-reasonable heuristic VotingRecords.jsx and
+// MoneyAndVotesBox already use elsewhere on this site.
+function ManifestoSectionCard({ section }) {
+  const hasCategory = Boolean(section.targetCategory);
+  const hasVotes = section.relatedVotes.length > 0;
+
+  return (
+    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 16 }}>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 14, color: COLORS.ink, marginBottom: 8 }}>{section.heading}</div>
+      <ul style={{ margin: "0 0 10px", paddingLeft: 18 }}>
+        {section.points.map((p, i) => (
+          <li key={i} style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginBottom: 4, lineHeight: 1.5 }}>{p}</li>
+        ))}
+      </ul>
+      {!hasCategory ? (
+        <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, fontStyle: "italic" }}>
+          No single legislation category maps cleanly onto this policy area.
+        </div>
+      ) : !hasVotes ? (
+        <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>
+          No recorded {section.targetCategory} votes for this MP in the tracked period yet.
+        </div>
+      ) : (
+        <div style={{ borderTop: `1px solid ${COLORS.hairline}`, paddingTop: 10 }}>
+          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>
+            How they voted on {section.targetCategory} legislation
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {section.relatedVotes.map((v, i) => (
+              <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+                <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {v.title}
+                </span>
+                <span style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: 6 }}>
+                  <span
+                    style={{
+                      fontFamily: FONT_MONO, fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", padding: "1px 7px", borderRadius: 999,
+                      background: v.voted_aye ? "#E4EEE7" : "#F3E4E2", color: v.voted_aye ? "#2F6F4E" : "#9C3B3B",
+                    }}
+                  >
+                    {v.voted_aye ? "Aye" : "No"}
+                  </span>
+                  <span style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft }}>{formatDate(v.date)}</span>
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// The "Manifesto" tab: this MP's own party's 2024 manifesto, section by
+// section, next to their actual votes on legislation in the same policy
+// area. Deliberately doesn't try to score a pledge as "kept" or "broken" —
+// manifesto text is too broad for that to be defensible — it just puts the
+// promise and the voting record side by side and lets the reader judge.
+function ManifestoTabContent({ politician }) {
+  const [votes, setVotes] = useState(null);
+  const [bills, setBills] = useState(null);
+
+  useEffect(() => {
+    async function load() {
+      const [{ data: v }, { data: b }] = await Promise.all([
+        supabase.from("voting_records").select("title, date, voted_aye").eq("politician_id", politician.id),
+        supabase.from("bills").select("short_title, sponsoring_department"),
+      ]);
+      setVotes(v ?? []);
+      setBills(b ?? []);
+    }
+    load();
+  }, [politician.id]);
+
+  const manifesto = useMemo(() => findManifesto(politician.party), [politician.party]);
+  const loading = votes === null || bills === null;
+
+  const sections = useMemo(() => {
+    if (!manifesto?.sections || loading) return null;
+    const categorisedBills = bills.map((b) => ({ ...b, category: categoriseBill(b) }));
+    return manifesto.sections.map((section) => {
+      const targetCategory = manifestoSectionToBillCategory(section.heading);
+      const relatedVotes = targetCategory
+        ? votes
+            .map((v) => ({ ...v, bill: matchBillForVote(v.title, categorisedBills) }))
+            .filter((v) => v.bill?.category.label === targetCategory)
+            .sort((a, b) => new Date(b.date) - new Date(a.date))
+        : [];
+      return { ...section, targetCategory, relatedVotes };
+    });
+  }, [manifesto, votes, bills, loading]);
+
+  if (!manifesto) {
+    return (
+      <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, textAlign: "center", padding: "20px 0" }}>
+        No 2024 manifesto on record for {politician.party ?? "this MP's party"}.
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.brass}`, borderRadius: 12, padding: 16, marginBottom: 14 }}>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, lineHeight: 1.55 }}>
+          {manifesto.shortName}'s {manifesto.manifestoYear} manifesto, <em>{manifesto.manifestoTitle}</em> — summarised
+          independently rather than reproduced (manifestos are copyrighted) — matched below against{" "}
+          {politician.name.split(" ").slice(-1)[0]}'s actual Commons votes in the same policy area. Votes are matched
+          by title against official divisions, which can occasionally miss one or pick up an unrelated vote with a
+          similar name; a policy area with none listed just means no matching bill has come to a vote yet, not that
+          nothing has happened.
+        </div>
+        <a href={manifesto.manifestoUrl} target="_blank" rel="noreferrer" style={{ display: "inline-block", marginTop: 8, fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: COLORS.brass }}>
+          Read {manifesto.shortName}'s full manifesto ↗
+        </a>
+      </div>
+
+      {loading && <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft, textAlign: "center", padding: "20px 0" }}>Checking voting history…</div>}
+
+      {!loading && sections && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {sections.map((section) => (
+            <ManifestoSectionCard key={section.heading} section={section} />
+          ))}
+        </div>
+      )}
+
+      {!loading && !sections && manifesto.highlights?.length > 0 && (
+        <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 16 }}>
+          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12, color: COLORS.ink, marginBottom: 10 }}>Key manifesto commitments</div>
+          <ul style={{ margin: 0, paddingLeft: 18 }}>
+            {manifesto.highlights.map((h, i) => (
+              <li key={i} style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, marginBottom: 6, lineHeight: 1.5 }}>{h}</li>
+            ))}
+          </ul>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 10, lineHeight: 1.5 }}>
+            This party's manifesto isn't broken into the policy-area sections used elsewhere on this site, so votes
+            can't be matched to a specific pledge here.
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // The "Gifts" tab — only ever populated for the MPs currently holding a
 // government post; everyone else just sees the explanatory empty state.
 function GiftsTabContent({ gifts }) {
@@ -719,6 +869,8 @@ export default function PoliticianDetail({ politician, onBack }) {
                 <ClaimsTabContent politician={politician} claims={claims} />
               ) : activeTab === "gifts" ? (
                 <GiftsTabContent gifts={gifts} />
+              ) : activeTab === "manifesto" ? (
+                <ManifestoTabContent politician={politician} />
               ) : (
                 <>
                   {loading && <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft }}>Loading declared interests…</div>}
