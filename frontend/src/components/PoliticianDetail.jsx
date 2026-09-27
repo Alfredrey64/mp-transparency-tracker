@@ -468,7 +468,7 @@ function ClaimsTabContent({ politician, claims }) {
 // MoneyAndVotesBox already use elsewhere on this site.
 function ManifestoSectionCard({ section }) {
   const hasCategory = Boolean(section.targetCategory);
-  const hasVotes = section.relatedVotes.length > 0;
+  const hasVotes = section.relatedBills.length > 0;
 
   return (
     <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 16 }}>
@@ -488,26 +488,44 @@ function ManifestoSectionCard({ section }) {
         </div>
       ) : (
         <div style={{ borderTop: `1px solid ${COLORS.hairline}`, paddingTop: 10 }}>
-          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>
+          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10 }}>
             How they voted on {section.targetCategory} legislation
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            {section.relatedVotes.map((v, i) => (
-              <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  {v.title}
-                </span>
-                <span style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: 6 }}>
-                  <span
-                    style={{
-                      fontFamily: FONT_MONO, fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", padding: "1px 7px", borderRadius: 999,
-                      background: v.voted_aye ? "#E4EEE7" : "#F3E4E2", color: v.voted_aye ? "#2F6F4E" : "#9C3B3B",
-                    }}
-                  >
-                    {v.voted_aye ? "Aye" : "No"}
-                  </span>
-                  <span style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft }}>{formatDate(v.date)}</span>
-                </span>
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            {section.relatedBills.map((bill) => (
+              <div key={bill.short_title}>
+                <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12.5, color: COLORS.ink, marginBottom: 2 }}>
+                  {bill.short_title}
+                </div>
+                {bill.long_title && (
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, fontStyle: "italic", marginBottom: 7, lineHeight: 1.45 }}>
+                    {bill.long_title}
+                  </div>
+                )}
+                <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                  {bill.votes.map((v, i) => {
+                    const prefix = `${bill.short_title}:`;
+                    const stageLabel = v.title.startsWith(prefix) ? v.title.slice(prefix.length).trim() : v.title;
+                    return (
+                      <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", paddingLeft: 10 }}>
+                        <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          {stageLabel}
+                        </span>
+                        <span style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: 6 }}>
+                          <span
+                            style={{
+                              fontFamily: FONT_MONO, fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", padding: "1px 7px", borderRadius: 999,
+                              background: v.voted_aye ? "#E4EEE7" : "#F3E4E2", color: v.voted_aye ? "#2F6F4E" : "#9C3B3B",
+                            }}
+                          >
+                            {v.voted_aye ? "Aye" : "No"}
+                          </span>
+                          <span style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft }}>{formatDate(v.date)}</span>
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             ))}
           </div>
@@ -530,7 +548,7 @@ function ManifestoTabContent({ politician }) {
     async function load() {
       const [{ data: v }, { data: b }] = await Promise.all([
         supabase.from("voting_records").select("title, date, voted_aye").eq("politician_id", politician.id),
-        supabase.from("bills").select("short_title, sponsoring_department"),
+        supabase.from("bills").select("short_title, long_title, sponsoring_department"),
       ]);
       setVotes(v ?? []);
       setBills(b ?? []);
@@ -552,7 +570,26 @@ function ManifestoTabContent({ politician }) {
             .filter((v) => v.bill?.category.label === targetCategory)
             .sort((a, b) => new Date(b.date) - new Date(a.date))
         : [];
-      return { ...section, targetCategory, relatedVotes };
+
+      // Grouped by bill rather than shown as one long flat list of
+      // near-identically-named clause/amendment votes — a plain-English
+      // long_title once per bill (the only description field the bills
+      // table reliably has; the free-text `summary` column is empty for
+      // all but two rows) does far more to make "New Clause 142" legible
+      // than repeating the vote title alone ever could.
+      const relatedBills = [];
+      const billIndex = new Map();
+      for (const v of relatedVotes) {
+        const key = v.bill.short_title;
+        if (!billIndex.has(key)) {
+          const entry = { short_title: v.bill.short_title, long_title: v.bill.long_title, votes: [] };
+          billIndex.set(key, entry);
+          relatedBills.push(entry);
+        }
+        billIndex.get(key).votes.push(v);
+      }
+
+      return { ...section, targetCategory, relatedBills };
     });
   }, [manifesto, votes, bills, loading]);
 

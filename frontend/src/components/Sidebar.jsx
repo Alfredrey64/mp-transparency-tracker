@@ -7,8 +7,8 @@ import {
   IconHome, IconFlow, IconCoin, IconVote, IconGroup, IconInfluence, IconManifesto, IconTracker,
   IconMethodology, IconSettings, IconGlossary, IconHistory, IconDevolved, IconFormerMP, IconBudget, IconCabinet, IconTimeline,
   IconPartyFinance, IconByElection, IconLords, IconPetition, IconCompass, IconCommittee, IconCompare, IconMeeting,
-  IconQuestion, IconGavel, IconPin, IconBroadcast, IconRankings, IconDarkMoney, IconThinkTank, IconDoor, IconRegister,
-  IconSearch, IconStar,
+  IconQuestion, IconGavel, IconPin, IconRankings, IconDarkMoney, IconThinkTank, IconDoor, IconRegister,
+  IconSearch, IconStar, IconBook,
 } from "./icons";
 
 const HOME_NAV_ITEMS = [
@@ -35,7 +35,7 @@ const SECTIONS = [
       { key: "devolved", label: "Devolved Administrations", icon: IconDevolved },
       { key: "parties", label: "Party Policies", icon: IconManifesto },
       { key: "glossary", label: "Glossary", icon: IconGlossary },
-      { key: "mediaLiteracy", label: "Media Literacy", icon: IconBroadcast },
+      { key: "mediaLiteracy", label: "Media Literacy", icon: IconBook },
     ],
   },
   {

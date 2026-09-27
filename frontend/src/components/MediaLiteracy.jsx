@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
-import { IconBroadcast } from "./icons";
+import { IconBroadcast, IconBook } from "./icons";
 
 function InfoCard({ title, color, children, index = 0 }) {
   return (
@@ -451,7 +451,7 @@ export default function MediaLiteracy() {
   return (
     <div style={{ padding: PAGE_PADDING }}>
       <PageHeader
-        icon={IconBroadcast}
+        icon={IconBook}
         title="How broadcast impartiality actually works"
         subtitle="This site doesn't rate broadcasters for bias — that's a subjective judgement call, not a matter of public record like everything else here. What follows instead is how UK broadcast regulation actually works, what it requires in practice, who owns what, and real, independently adjudicated cases of it playing out."
         maxWidth={900}
