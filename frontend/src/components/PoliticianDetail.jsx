@@ -934,18 +934,16 @@ export default function PoliticianDetail({ politician, onBack }) {
                       {filteredInterests.map((item, i) => (
                         <motion.div
                           key={item.id}
-                          initial={{ opacity: 0, y: 6 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.2, delay: Math.min(i, 10) * 0.03 }}
-                          whileHover={{ y: -2, boxShadow: "0 6px 16px rgba(30,42,68,0.1)" }}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.2, delay: Math.min(i, 10) * 0.02 }}
                           style={{
-                            display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16,
-                            background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 16,
-                            boxShadow: "0 1px 4px rgba(30,42,68,0.05)",
+                            display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16,
+                            padding: "14px 2px", borderBottom: `1px solid ${COLORS.hairline}`,
                           }}
                         >
                           <div style={{ minWidth: 0, flex: 1 }}>
-                            <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: COLORS.brass, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>
+                            <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 11.5, color: COLORS.brass, marginBottom: 6 }}>
                               {shortCategory(item.category)}
                             </div>
                             <div style={{ fontFamily: FONT_BODY, fontSize: 16, color: COLORS.ink, lineHeight: 1.4 }}>
@@ -962,15 +960,8 @@ export default function PoliticianDetail({ politician, onBack }) {
                             </div>
                           </div>
                           {item.value_amount && (
-                            <div
-                              style={{
-                                flexShrink: 0, display: "inline-flex", alignItems: "center", justifyContent: "center",
-                                padding: "8px 14px", borderRadius: 999, background: `${COLORS.brass}14`,
-                              }}
-                            >
-                              <span style={{ fontFamily: FONT_BODY, fontSize: 15, fontWeight: 600, lineHeight: 1, color: COLORS.brass, whiteSpace: "nowrap" }}>
-                                £{Number(item.value_amount).toLocaleString()}
-                              </span>
+                            <div style={{ flexShrink: 0, fontFamily: FONT_MONO, fontSize: 16, fontWeight: 600, color: COLORS.brass, whiteSpace: "nowrap", paddingTop: 3 }}>
+                              £{Number(item.value_amount).toLocaleString()}
                             </div>
                           )}
                         </motion.div>

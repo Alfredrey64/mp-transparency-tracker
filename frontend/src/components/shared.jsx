@@ -197,19 +197,9 @@ export function PageHeader({ kicker = "Public Record · UK Parliament", title, s
             initial={{ scale: 0.75, rotate: -6, opacity: 0 }}
             animate={{ scale: 1, rotate: 0, opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.04, ease: "backOut" }}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: isHero ? 56 : 44,
-              height: isHero ? 56 : 44,
-              borderRadius: "50%",
-              background: `${COLORS.brass}1c`,
-              color: COLORS.brass,
-              flexShrink: 0,
-            }}
+            style={{ display: "inline-flex", color: COLORS.brass, flexShrink: 0 }}
           >
-            <Icon size={isHero ? 28 : 22} />
+            <Icon size={isHero ? 40 : 30} />
           </motion.span>
         )}
         <span>{title}</span>
@@ -220,11 +210,10 @@ export function PageHeader({ kicker = "Public Record · UK Parliament", title, s
         transition={{ duration: 0.3, delay: 0.08, ease: "easeOut" }}
         style={{
           transformOrigin: align === "center" ? "center" : "left",
-          height: 3,
-          width: isHero ? 72 : 52,
-          borderRadius: 2,
-          background: `linear-gradient(90deg, ${COLORS.brass}, ${COLORS.brass}00)`,
-          margin: align === "center" ? "14px auto 0" : "12px 0 0",
+          height: 2,
+          width: isHero ? 40 : 28,
+          background: COLORS.brass,
+          margin: align === "center" ? "16px auto 0" : "14px 0 0",
         }}
       />
       {subtitle && (
