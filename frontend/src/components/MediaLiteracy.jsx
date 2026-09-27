@@ -470,7 +470,7 @@ export default function MediaLiteracy() {
         }}
       >
         <div style={{ flexShrink: 0, width: 38, height: 38, borderRadius: "50%", background: COLORS.brass, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>
-          <IconBroadcast size={17} />
+          <IconBook size={17} />
         </div>
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.6 }}>
           <strong>Why this matters:</strong> what you watch shapes what you think is normal, urgent, or true — and

@@ -9,6 +9,7 @@ import { sectorToCommittee } from "../lib/sectorCommitteeMapping";
 import { categoriseBill } from "../lib/bills";
 import { findManifesto } from "../data/partyManifestos";
 import { manifestoSectionToBillCategory } from "../lib/manifestoBillMapping";
+import { getBillDescription } from "../lib/billDescriptions";
 import { isWatched, toggleWatch } from "../lib/watchlist";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { IconStar } from "./icons";
@@ -497,15 +498,16 @@ function ManifestoSectionCard({ section }) {
                 <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12.5, color: COLORS.ink, marginBottom: 2 }}>
                   {bill.short_title}
                 </div>
-                {bill.long_title && (
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, fontStyle: "italic", marginBottom: 7, lineHeight: 1.45 }}>
-                    {bill.long_title}
+                {bill.description && (
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 7, lineHeight: 1.5 }}>
+                    {bill.description}
                   </div>
                 )}
                 <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
                   {bill.votes.map((v, i) => {
-                    const prefix = `${bill.short_title}:`;
-                    const stageLabel = v.title.startsWith(prefix) ? v.title.slice(prefix.length).trim() : v.title;
+                    const stageLabel = v.title.startsWith(bill.short_title)
+                      ? v.title.slice(bill.short_title.length).replace(/^:?\s*/, "")
+                      : v.title;
                     return (
                       <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", paddingLeft: 10 }}>
                         <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
@@ -572,17 +574,17 @@ function ManifestoTabContent({ politician }) {
         : [];
 
       // Grouped by bill rather than shown as one long flat list of
-      // near-identically-named clause/amendment votes — a plain-English
-      // long_title once per bill (the only description field the bills
-      // table reliably has; the free-text `summary` column is empty for
-      // all but two rows) does far more to make "New Clause 142" legible
-      // than repeating the vote title alone ever could.
+      // near-identically-named clause/amendment votes — a real description
+      // once per bill (see lib/billDescriptions.js — falling back to the
+      // official long_title, which is usually generic boilerplate) does
+      // far more to make "New Clause 142" legible than the vote title
+      // alone ever could.
       const relatedBills = [];
       const billIndex = new Map();
       for (const v of relatedVotes) {
         const key = v.bill.short_title;
         if (!billIndex.has(key)) {
-          const entry = { short_title: v.bill.short_title, long_title: v.bill.long_title, votes: [] };
+          const entry = { short_title: v.bill.short_title, description: getBillDescription(v.bill.short_title, v.bill.long_title), votes: [] };
           billIndex.set(key, entry);
           relatedBills.push(entry);
         }

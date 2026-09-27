@@ -433,6 +433,14 @@ export function IconBook({ size = 17 }) {
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z" />
       <path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z" />
+      <g strokeWidth="1.15" opacity="0.7">
+        <path d="M4.3 9c1-0.9 2 0.9 3 0" />
+        <path d="M4.3 12.3c1-0.9 2 0.9 3 0" />
+        <path d="M4.3 15.6c1-0.9 2 0.9 3 0" />
+        <path d="M15.7 9c1-0.9 2 0.9 3 0" />
+        <path d="M15.7 12.3c1-0.9 2 0.9 3 0" />
+        <path d="M15.7 15.6c1-0.9 2 0.9 3 0" />
+      </g>
     </svg>
   );
 }
