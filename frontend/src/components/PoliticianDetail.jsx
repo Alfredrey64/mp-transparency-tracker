@@ -931,8 +931,8 @@ export default function PoliticianDetail({ politician, onBack }) {
                           animate={{ opacity: 1 }}
                           transition={{ duration: 0.2, delay: Math.min(i, 10) * 0.02 }}
                           style={{
-                            display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16,
-                            padding: "14px 2px", borderBottom: `1px solid ${COLORS.hairline}`,
+                            display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16,
+                            padding: "14px 16px", background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 12,
                           }}
                         >
                           <div style={{ minWidth: 0, flex: 1 }}>
@@ -953,7 +953,7 @@ export default function PoliticianDetail({ politician, onBack }) {
                             </div>
                           </div>
                           {item.value_amount && (
-                            <div style={{ flexShrink: 0, fontFamily: FONT_BODY, fontSize: 16.5, fontWeight: 700, color: COLORS.accent, whiteSpace: "nowrap", paddingTop: 3 }}>
+                            <div style={{ flexShrink: 0, fontFamily: FONT_BODY, fontSize: 16.5, fontWeight: 700, color: COLORS.accent, whiteSpace: "nowrap" }}>
                               £{Number(item.value_amount).toLocaleString()}
                             </div>
                           )}

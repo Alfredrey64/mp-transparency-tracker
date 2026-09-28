@@ -59,6 +59,38 @@ function InquiryRow({ inquiry }) {
   );
 }
 
+// A compact stacked bar showing the committee's actual party balance —
+// visible even collapsed, so "who's scrutinising the government" has a
+// real answer at a glance rather than needing every card opened to find
+// it. Same party colours used everywhere else on the site, so no new
+// legend is needed for it to read correctly.
+function PartyComposition({ members }) {
+  const parties = useMemo(() => {
+    const counts = new Map();
+    for (const m of members ?? []) {
+      const name = m.party || "Other";
+      if (!counts.has(name)) counts.set(name, { name, count: 0, color: partyColour(m.party_colour, COLORS.inkSoft) });
+      counts.get(name).count += 1;
+    }
+    return [...counts.values()].sort((a, b) => b.count - a.count);
+  }, [members]);
+
+  const total = members?.length ?? 0;
+  if (total === 0) return null;
+
+  return (
+    <div style={{ display: "flex", height: 7, borderRadius: 999, overflow: "hidden", marginTop: 12, gap: 1 }}>
+      {parties.map((p) => (
+        <div
+          key={p.name}
+          style={{ width: `${(p.count / total) * 100}%`, background: p.color, minWidth: 3 }}
+          title={`${p.name}: ${p.count} member${p.count === 1 ? "" : "s"}`}
+        />
+      ))}
+    </div>
+  );
+}
+
 function CommitteeCard({ committee, index, open, onToggle }) {
   const color = partyColour(committee.chair_party_colour, COLORS.accent);
   const purpose = stripHtml(committee.purpose);
@@ -92,6 +124,7 @@ function CommitteeCard({ committee, index, open, onToggle }) {
           {" · "}{committee.members?.length ?? 0} members
           {committee.inquiries?.length > 0 && <> · {committee.inquiries.length} open inquir{committee.inquiries.length === 1 ? "y" : "ies"}</>}
         </div>
+        <PartyComposition members={committee.members} />
       </button>
 
       <AnimatePresence initial={false}>

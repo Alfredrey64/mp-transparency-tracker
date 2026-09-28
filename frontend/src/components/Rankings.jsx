@@ -50,7 +50,40 @@ function Avatar({ url, name, color, size = 36 }) {
   );
 }
 
-const TICK_FRACTIONS = [0, 0.25, 0.5, 0.75, 1];
+// The standard "nice numbers" axis algorithm (Heckbert) — picks a step
+// that's always 1, 2, or 5 times a power of ten, so ticks land on round
+// values like £50,000 or 10% instead of whatever the data's actual min/max
+// happen to divide into (quintiles of £166,813 gives you a tick at
+// "£41,703", which nobody reads as a scale — they read it as a specific
+// MP's figure that got mislabelled).
+function niceNumber(range, round) {
+  if (!range || range <= 0) return 1;
+  const exponent = Math.floor(Math.log10(range));
+  const fraction = range / 10 ** exponent;
+  let niceFraction;
+  if (round) {
+    if (fraction < 1.5) niceFraction = 1;
+    else if (fraction < 3) niceFraction = 2;
+    else if (fraction < 7) niceFraction = 5;
+    else niceFraction = 10;
+  } else {
+    if (fraction <= 1) niceFraction = 1;
+    else if (fraction <= 2) niceFraction = 2;
+    else if (fraction <= 5) niceFraction = 5;
+    else niceFraction = 10;
+  }
+  return niceFraction * 10 ** exponent;
+}
+
+function niceScale(dataMin, dataMax, targetTicks = 5) {
+  const range = niceNumber(dataMax - dataMin, false);
+  const step = niceNumber(range / (targetTicks - 1), true);
+  const niceMin = Math.floor(dataMin / step) * step;
+  const niceMax = Math.ceil(dataMax / step) * step;
+  const ticks = [];
+  for (let v = niceMin; v <= niceMax + step / 2; v += step) ticks.push(Math.round(v * 1000) / 1000);
+  return { niceMin, niceMax, step, ticks };
+}
 
 // Where does the shown Top 30 actually sit against all of Parliament? A
 // ranked list alone can't answer that — two MPs one place apart in rank
@@ -58,21 +91,22 @@ const TICK_FRACTIONS = [0, 0.25, 0.5, 0.75, 1];
 // MP's value (not just the visible Top 30) into a real histogram shows
 // the actual shape of the spread — often a long tail, not evenly spaced —
 // with the bins that make up the list below highlighted against the rest.
-// A real axis underneath (five labelled ticks, not just "low"/"high") is
-// what actually makes a histogram readable rather than just decorative.
+// The bars and the axis share the same niceMin/niceMax domain, so a tick
+// at "£50,000" always lines up with the bar actually at £50,000.
 function DistributionChart({ data, color, shownCount, formatValue }) {
   const BINS = 24;
-  const { bins, min, max } = useMemo(() => {
+  const { bins, min, max, ticks } = useMemo(() => {
     const values = data.map((e) => e.value);
-    const lo = Math.min(...values, 0);
-    const hi = Math.max(...values);
-    const width = (hi - lo) / BINS || 1;
+    const dataMin = Math.min(...values, 0);
+    const dataMax = Math.max(...values);
+    const scale = niceScale(dataMin, dataMax);
+    const width = (scale.niceMax - scale.niceMin) / BINS || 1;
     const counts = Array.from({ length: BINS }, () => 0);
     for (const v of values) {
-      const idx = Math.min(BINS - 1, Math.max(0, Math.floor((v - lo) / width)));
+      const idx = Math.min(BINS - 1, Math.max(0, Math.floor((v - scale.niceMin) / width)));
       counts[idx]++;
     }
-    return { bins: counts, min: lo, max: hi };
+    return { bins: counts, min: scale.niceMin, max: scale.niceMax, ticks: scale.ticks };
   }, [data]);
 
   const maxBinCount = Math.max(...bins, 1);
@@ -109,17 +143,19 @@ function DistributionChart({ data, color, shownCount, formatValue }) {
           points at its position on the bars above, the way a real chart
           axis does. */}
       <div style={{ position: "relative", height: 28, borderTop: `1px solid ${COLORS.hairline}` }}>
-        {TICK_FRACTIONS.map((f) => {
-          const value = min + (max - min) * f;
+        {ticks.map((value) => {
+          const f = (value - min) / (max - min || 1);
+          const atStart = f < 0.02;
+          const atEnd = f > 0.98;
           return (
             <div
-              key={f}
+              key={value}
               style={{
                 position: "absolute", left: `${f * 100}%`, top: 0, transform: `translateX(-${f * 100}%)`,
-                display: "flex", flexDirection: "column", alignItems: f === 0 ? "flex-start" : f === 1 ? "flex-end" : "center",
+                display: "flex", flexDirection: "column", alignItems: atStart ? "flex-start" : atEnd ? "flex-end" : "center",
               }}
             >
-              <div style={{ width: 1, height: 5, background: COLORS.hairline, marginLeft: f === 0 ? 0 : f === 1 ? "auto" : "50%" }} />
+              <div style={{ width: 1, height: 5, background: COLORS.hairline, marginLeft: atStart ? 0 : atEnd ? "auto" : "50%" }} />
               <div style={{ fontFamily: FONT_MONO, fontSize: 11, fontWeight: 600, color: COLORS.ink, marginTop: 4, whiteSpace: "nowrap" }}>
                 {formatValue({ value })}
               </div>
