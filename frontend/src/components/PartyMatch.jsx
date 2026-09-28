@@ -5,9 +5,9 @@ import { PageHeader } from "./shared";
 import {
   IconCompass, IconEconomy, IconHealth, IconMigration, IconLeaf, IconHome, IconGlobe, IconGavel,
   IconGlossary, IconHeart, IconVote, IconDevolved, IconShield, IconFactory, IconInfluence, IconHardHat,
-  IconDoor, IconStar,
+  IconDoor, IconStar, IconPin,
 } from "./icons";
-import { QUESTIONS, ISSUES, ANSWER_SCALE, QUIZ_PARTIES, scoreQuiz } from "../data/partyMatchQuiz";
+import { QUESTIONS, ISSUES, ANSWER_SCALE, QUIZ_PARTIES, NATIONS, scoreQuiz } from "../data/partyMatchQuiz";
 
 const MAX_PRIORITIES = 5;
 
@@ -211,6 +211,85 @@ function PrioritiesScreen({ selected, onToggle, onContinue }) {
   );
 }
 
+// SNP and Plaid Cymru only stand candidates in Scotland and Wales — without
+// this question the quiz can (and did) match a resident of, say,
+// Manchester with Plaid Cymru purely on policy alignment, which is a real
+// answer to "who thinks like you" but a useless one for "who could you
+// actually vote for". A little pin drops onto whichever card is picked, the
+// nearest thing to "cute" that still does real work: it's the same visual
+// language as a map pin marking where you are.
+function NationScreen({ selected, onSelect, onContinue, onSkip }) {
+  return (
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+      <div style={cardStyle}>
+        <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginTop: 0, marginBottom: 6 }}>
+          Where do you live?
+        </h2>
+        <p style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 0, marginBottom: 20, lineHeight: 1.6 }}>
+          A couple of parties in this quiz only stand candidates in one nation — telling us keeps your result to
+          parties you could actually vote for. Nothing here is saved; it only shapes which parties appear in your
+          results.
+        </p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: 12, marginBottom: 22 }}>
+          {NATIONS.map((n) => {
+            const active = selected === n.key;
+            return (
+              <motion.button
+                key={n.key}
+                onClick={() => onSelect(n.key)}
+                whileHover={{ y: -3 }}
+                whileTap={{ scale: 0.96 }}
+                style={{
+                  position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
+                  padding: "22px 10px 16px", borderRadius: 14, cursor: "pointer",
+                  border: `2px solid ${active ? COLORS.accent : COLORS.hairline}`,
+                  background: active ? `${COLORS.accent}10` : COLORS.paper,
+                  transition: "border-color 0.15s, background 0.15s",
+                }}
+              >
+                <AnimatePresence>
+                  {active && (
+                    <motion.span
+                      key="pin"
+                      initial={{ y: -22, opacity: 0, scale: 0.5 }}
+                      animate={{ y: [-22, 2, -2, 0], opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.5 }}
+                      transition={{ duration: 0.5, ease: "easeOut" }}
+                      style={{ position: "absolute", top: -13, color: COLORS.accent, display: "flex" }}
+                    >
+                      <IconPin size={20} />
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+                <span style={{ fontSize: 30, lineHeight: 1 }} aria-hidden>{n.flag}</span>
+                <span style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13, color: COLORS.ink, textAlign: "center" }}>
+                  {n.label}
+                </span>
+              </motion.button>
+            );
+          })}
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+          <motion.button
+            whileHover={selected ? { scale: 1.03 } : {}}
+            whileTap={selected ? { scale: 0.97 } : {}}
+            onClick={() => selected && onContinue()}
+            style={{ ...primaryButtonStyle, opacity: selected ? 1 : 0.45, cursor: selected ? "pointer" : "default" }}
+          >
+            Continue →
+          </motion.button>
+          <button
+            onClick={onSkip}
+            style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: COLORS.inkSoft, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+          >
+            Prefer not to say
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 function ExplainerToggle({ text }) {
   const [open, setOpen] = useState(false);
   return (
@@ -331,11 +410,20 @@ function QuestionScreen({ question, index, total, value, onAnswer, onBack }) {
   );
 }
 
-function ResultsScreen({ results, onRetake }) {
+function ResultsScreen({ results, nation, onRetake }) {
   const top = results[0];
   const animatedPct = useCountUp(top.pct, true);
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+      {nation === "northern-ireland" && (
+        <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: "12px 16px", marginBottom: 16, fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, lineHeight: 1.6 }}>
+          <strong style={{ color: COLORS.ink }}>A note for Northern Ireland:</strong> this quiz scores against parties
+          with a comparable UK-wide or devolved-nation platform. Northern Ireland's own parties campaign on a
+          fundamentally different axis — the constitutional question — that this scale doesn't fit, so they're left
+          out rather than force-fitted. The ranking below is the closest match among the parties it does cover, not a
+          full picture of your options on the ballot.
+        </div>
+      )}
       <div style={{ ...cardStyle, borderTopColor: top.color, marginBottom: 16, textAlign: "center" }}>
         <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>
           Your closest match
@@ -425,7 +513,8 @@ function ResultsScreen({ results, onRetake }) {
 }
 
 export default function PartyMatch() {
-  const [stage, setStage] = useState("intro"); // "intro" | "priorities" | number | "results"
+  const [stage, setStage] = useState("intro"); // "intro" | "nation" | "priorities" | number | "results"
+  const [nation, setNation] = useState(null);
   const [priorities, setPriorities] = useState([]);
   const [answers, setAnswers] = useState({});
 
@@ -442,12 +531,13 @@ export default function PartyMatch() {
   }
 
   function retake() {
+    setNation(null);
     setPriorities([]);
     setAnswers({});
     setStage("intro");
   }
 
-  const results = useMemo(() => (stage === "results" ? scoreQuiz(answers, priorities) : null), [stage, answers, priorities]);
+  const results = useMemo(() => (stage === "results" ? scoreQuiz(answers, priorities, nation) : null), [stage, answers, priorities, nation]);
 
   return (
     <div style={{ maxWidth: 720, margin: "0 auto", padding: PAGE_PADDING }}>
@@ -461,7 +551,16 @@ export default function PartyMatch() {
       {typeof stage === "number" && <ProgressBar current={stage} total={QUESTIONS.length} />}
 
       <AnimatePresence mode="wait">
-        {stage === "intro" && <IntroScreen key="intro" onStart={() => setStage("priorities")} />}
+        {stage === "intro" && <IntroScreen key="intro" onStart={() => setStage("nation")} />}
+        {stage === "nation" && (
+          <NationScreen
+            key="nation"
+            selected={nation}
+            onSelect={setNation}
+            onContinue={() => setStage("priorities")}
+            onSkip={() => { setNation(null); setStage("priorities"); }}
+          />
+        )}
         {stage === "priorities" && (
           <PrioritiesScreen key="priorities" selected={priorities} onToggle={togglePriority} onContinue={() => setStage(0)} />
         )}
@@ -476,7 +575,7 @@ export default function PartyMatch() {
             onBack={() => setStage(stage - 1)}
           />
         )}
-        {stage === "results" && results && <ResultsScreen key="results" results={results} onRetake={retake} />}
+        {stage === "results" && results && <ResultsScreen key="results" results={results} nation={nation} onRetake={retake} />}
       </AnimatePresence>
     </div>
   );

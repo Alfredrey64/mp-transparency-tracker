@@ -247,9 +247,12 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician }) {
             plain text-align:center on this wrapper can't centre (that
             only centres inline content, not a flex child's box) — wrapped
             here so the label actually sits centred above the title below
-            it, instead of drifting left of it. */}
+            it, instead of drifting left of it. No rule here (showRule is
+            for the left-aligned masthead usage next to a headline) — a
+            leading dash in front of one centred, standalone word just
+            reads as a stray mark rather than a section marker. */}
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <EyebrowLabel color={COLORS.accentOnDark}>Public Record</EyebrowLabel>
+          <EyebrowLabel color={COLORS.accentOnDark} showRule={false}>Public Record</EyebrowLabel>
         </div>
         <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 18, color: "#fff", lineHeight: 1.2, marginTop: 6 }}>
           UK Parliament Tracker

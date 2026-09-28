@@ -158,7 +158,7 @@ function QuestionCard({ q, politicianById, onSelectPolitician, index }) {
         </span>
       </div>
 
-      <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4 }}>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 9 }}>
         To {q.answering_body_name ?? "the government"}{q.heading ? ` · ${q.heading}` : ""}
       </div>
       <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, color: COLORS.ink, lineHeight: 1.5, marginBottom: answered ? 10 : 0 }}>

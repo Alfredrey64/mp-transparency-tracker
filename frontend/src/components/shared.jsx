@@ -244,10 +244,10 @@ export function PageHeader({ kicker = "Public Record · UK Parliament", title, s
 // Grotesk. Deliberately not italic: Space Grotesk has no real italic cut,
 // so fontStyle:"italic" was forcing the browser's synthetic slant, which
 // just reads as skewed rather than as a proper italic.
-export function EyebrowLabel({ children, color = COLORS.accent }) {
+export function EyebrowLabel({ children, color = COLORS.accent, showRule = true }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-      <span style={{ width: 16, height: 2, background: color, flexShrink: 0 }} />
+      {showRule && <span style={{ width: 16, height: 2, background: color, flexShrink: 0 }} />}
       <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 500, fontSize: 14.5, letterSpacing: "0.01em", color }}>
         {children}
       </span>

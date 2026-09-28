@@ -80,7 +80,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
           .not("value_amount", "is", null)
           .order("date_registered", { ascending: false })
           .order("id", { ascending: false })
-          .limit(4),
+          .limit(7),
         supabase
           .from("financial_interests")
           .select("id, summary, date_registered, politicians(id, name)")
@@ -88,7 +88,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
           .not("date_registered", "is", null)
           .order("date_registered", { ascending: false })
           .order("id", { ascending: false })
-          .limit(4),
+          .limit(7),
       ]);
       setDonations(donationsRes.data ?? []);
       setRoles(rolesRes.data ?? []);
@@ -186,6 +186,10 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
   }, []);
 
   const items = activeTab === "donations" ? donations : roles;
+  const donationsTotal = useMemo(
+    () => donations.reduce((sum, d) => sum + (d.value_amount ?? 0), 0),
+    [donations]
+  );
 
   const politicianById = useMemo(() => {
     const map = new Map();
@@ -310,7 +314,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
           background: COLORS.paperCard, padding: "22px clamp(18px, 4vw, 30px)",
         }}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 4 }}>
           <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 19, color: COLORS.ink }}>Latest Declared Interests</div>
           <div style={{ display: "flex", gap: 4 }}>
             {[
@@ -339,6 +343,13 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
           </div>
         </div>
 
+        {activeTab === "donations" && !loading && donations.length > 0 && (
+          <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginBottom: 14 }}>
+            <strong style={{ fontFamily: FONT_MONO, color: "#F2622A" }}>£{Math.round(donationsTotal).toLocaleString()}</strong> declared
+            across these {donations.length} entries
+          </div>
+        )}
+
         {loading && (
           <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>Loading…</div>
         )}
@@ -363,7 +374,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                 onMouseEnter={(e) => { if (item.politicians?.id) e.currentTarget.style.background = COLORS.paper; }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
               >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
                   <div style={{ minWidth: 0 }}>
                     <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 16, color: COLORS.ink }}>
                       {item.politicians?.name ?? "Unknown MP"}

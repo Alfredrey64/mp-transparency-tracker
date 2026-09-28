@@ -36,6 +36,24 @@ export const QUIZ_PARTIES = [
   { key: "plaid-cymru", name: "Plaid Cymru", color: "#005B54" },
 ];
 
+// SNP and Plaid Cymru only stand candidates in Scotland and Wales
+// respectively — a strong match with either is meaningless (and mildly
+// misleading) for someone who couldn't actually vote for them. `onlyIn`
+// restricts a party to one nation's results; parties without it are
+// treated as standing UK-wide (England, Scotland, and Wales — Northern
+// Ireland's parties are out of scope entirely, see the note below).
+// Flags follow the same reasoning as the Devolved Administrations page:
+// Northern Ireland has had no official flag of its own since 1972, so the
+// Union Flag stands in for it rather than a contested unofficial one.
+export const NATIONS = [
+  { key: "england", label: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
+  { key: "scotland", label: "Scotland", flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿" },
+  { key: "wales", label: "Wales", flag: "🏴󠁧󠁢󠁷󠁬󠁳󠁿" },
+  { key: "northern-ireland", label: "Northern Ireland", flag: "🇬🇧" },
+];
+
+const NATION_RESTRICTED = { snp: "scotland", "plaid-cymru": "wales" };
+
 // A user picks up to 5 of these as "matters most to me" — the matching
 // question(s) then count double toward their result.
 export const ISSUES = [
@@ -182,11 +200,20 @@ export const ANSWER_SCALE = [
   { value: 2, label: "Strongly Agree" },
 ];
 
-// answers: { [questionId]: -2..2 }, priorities: Set/array of issue keys.
-// Returns parties sorted by descending match percentage.
-export function scoreQuiz(answers, priorities) {
+// answers: { [questionId]: -2..2 }, priorities: Set/array of issue keys,
+// nation: one of NATIONS' keys, or null if skipped. Returns parties sorted
+// by descending match percentage — nation-restricted parties (SNP, Plaid
+// Cymru) are left out entirely unless the given nation is the one they
+// actually stand in, rather than being scored and shown as if they were a
+// real option everywhere.
+export function scoreQuiz(answers, priorities, nation = null) {
   const prioritySet = new Set(priorities);
-  const results = QUIZ_PARTIES.map((party) => {
+  const eligibleParties = QUIZ_PARTIES.filter((party) => {
+    const restrictedTo = NATION_RESTRICTED[party.key];
+    if (!restrictedTo) return true;
+    return nation === restrictedTo;
+  });
+  const results = eligibleParties.map((party) => {
     let earned = 0;
     let possible = 0;
     for (const q of QUESTIONS) {

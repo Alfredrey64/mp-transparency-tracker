@@ -9,6 +9,7 @@ const ADMINISTRATIONS = [
   {
     name: "Scottish Parliament",
     place: "Holyrood, Edinburgh",
+    flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
     accent: "#5A7FA6",
     established: "1999, following a 1997 referendum (74% in favour)",
     members: "129 MSPs, elected by the Additional Member System (a mix of constituency and regional-list seats)",
@@ -22,6 +23,7 @@ const ADMINISTRATIONS = [
   {
     name: "Senedd Cymru — Welsh Parliament",
     place: "Cardiff Bay",
+    flag: "🏴󠁧󠁢󠁷󠁬󠁳󠁿",
     accent: "#9C6B30",
     established: "1999 as the National Assembly for Wales; renamed the Senedd in 2020",
     members: "60 Members currently, rising to 96 from the next election, elected by proportional representation",
@@ -35,6 +37,11 @@ const ADMINISTRATIONS = [
   {
     name: "Northern Ireland Assembly",
     place: "Stormont, Belfast",
+    // Deliberately the Union Flag, not a "Northern Ireland flag" — unlike
+    // Scotland and Wales, NI has had no official flag of its own since the
+    // Ulster Banner's official status ended in 1972; the Union Flag is what
+    // Stormont itself flies on designated days.
+    flag: "🇬🇧",
     accent: "#6E4B6E",
     established: "1998, under the Good Friday (Belfast) Agreement that ended the Troubles",
     members: "90 MLAs, elected by Single Transferable Vote",
@@ -79,7 +86,10 @@ export default function DevolvedAdministrations() {
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
                   <div>
                     <div style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, marginBottom: 2 }}>{a.name}</div>
-                    <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>{a.place}</div>
+                    <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, display: "flex", alignItems: "center", gap: 6 }}>
+                      <span style={{ fontSize: 13 }} aria-hidden>{a.flag}</span>
+                      {a.place}
+                    </div>
                   </div>
                   <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ flexShrink: 0, color: COLORS.inkSoft, fontSize: 13, marginTop: 6 }}>▾</motion.span>
                 </div>

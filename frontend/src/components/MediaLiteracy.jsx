@@ -36,9 +36,14 @@ function BroadcastHero() {
         {rings.map((i) => (
           <motion.div
             key={i}
-            initial={{ scale: 0.3, opacity: 0.6 }}
-            animate={{ scale: 1.8, opacity: 0 }}
-            transition={{ duration: 2.6, repeat: Infinity, delay: i * 0.75, ease: "easeOut" }}
+            initial={{ scale: 0.3, opacity: 0 }}
+            // Opacity reaches 0 well before scale finishes growing (60% of
+            // the way through, not 100%) so there's a brief invisible hold
+            // before each loop resets — the reset itself was landing while
+            // still faintly visible, which is what read as an irregular
+            // flicker rather than a clean, continuous pulse.
+            animate={{ scale: [0.3, 1, 1.8], opacity: [0, 0.55, 0] }}
+            transition={{ duration: 2.6, times: [0, 0.35, 1], repeat: Infinity, delay: i * 0.85, ease: "easeOut" }}
             style={{ position: "absolute", width: 60, height: 60, borderRadius: "50%", border: `2px solid ${COLORS.accent}` }}
           />
         ))}
