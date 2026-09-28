@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, useMotionValue, animate } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
-import { formatDate, partyColour } from "../lib/format";
+import { formatDate, partyColour, shortCategory } from "../lib/format";
 import { categoriseBill } from "../lib/bills";
 import { getWatchlist, removeFromWatchlist } from "../lib/watchlist";
 import { IconSearch, IconCoin, IconBills, IconInfluence, IconPetition, IconGroup, IconPulse, IconShield, IconRankings, IconManifesto, IconPartyFinance } from "./icons";
@@ -76,14 +76,14 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
       const [donationsRes, rolesRes] = await Promise.all([
         supabase
           .from("financial_interests")
-          .select("id, summary, value_amount, date_registered, donor_name, politicians(id, name)")
+          .select("id, summary, value_amount, date_registered, donor_name, category, politicians(id, name, party, party_colour)")
           .not("value_amount", "is", null)
           .order("date_registered", { ascending: false })
           .order("id", { ascending: false })
           .limit(7),
         supabase
           .from("financial_interests")
-          .select("id, summary, date_registered, politicians(id, name)")
+          .select("id, summary, date_registered, category, politicians(id, name, party, party_colour)")
           .eq("category", "Employment and earnings")
           .not("date_registered", "is", null)
           .order("date_registered", { ascending: false })
@@ -379,7 +379,16 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                     <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 16, color: COLORS.ink }}>
                       {item.politicians?.name ?? "Unknown MP"}
                     </div>
-                    <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 1 }}>
+                    {item.politicians?.party && (
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 2 }}>
+                        <span style={{ width: 6, height: 6, borderRadius: "50%", background: partyColour(item.politicians.party_colour, COLORS.inkSoft), flexShrink: 0 }} />
+                        <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>
+                          {item.politicians.party}
+                          {activeTab === "donations" && item.category && ` · ${shortCategory(item.category)}`}
+                        </span>
+                      </div>
+                    )}
+                    <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, marginTop: 3 }}>
                       {activeTab === "donations" ? `from ${item.donor_name ?? item.summary}` : item.summary}
                     </div>
                     <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.75, marginTop: 2 }}>
@@ -387,7 +396,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                     </div>
                   </div>
                   {activeTab === "donations" && item.value_amount && (
-                    <div style={{ flexShrink: 0, fontFamily: FONT_MONO, fontSize: 14, fontWeight: 700, color: "#F2622A" }}>
+                    <div style={{ flexShrink: 0, fontFamily: FONT_BODY, fontSize: 15, fontWeight: 700, color: "#F2622A" }}>
                       £{Number(item.value_amount).toLocaleString()}
                     </div>
                   )}

@@ -31,6 +31,14 @@ export function shortCategory(category) {
   return CATEGORY_SHORT_NAMES[category] ?? category;
 }
 
+// The register's own summary text often already ends with "- £1,234.00" —
+// once that figure is shown as its own value elsewhere (a right-aligned
+// amount, say), repeating it inside the sentence too just looks like a
+// typo, so it's trimmed off here.
+export function stripTrailingAmount(text) {
+  return (text ?? "").replace(/\s*-\s*£[\d,]+(\.\d+)?\s*$/, "");
+}
+
 // The SNP's official registered colour (fff685) is a very bright, saturated
 // yellow that's hard to read as text/borders and clashes with the rest of
 // the palette — swap it everywhere for the app's existing muted gold token,

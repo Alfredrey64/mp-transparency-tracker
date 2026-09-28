@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
-import { partyColour, timeInOffice, shortCategory, formatDate, initials, ONGOING_ROLE_CATEGORIES } from "../lib/format";
+import { partyColour, timeInOffice, shortCategory, formatDate, initials, ONGOING_ROLE_CATEGORIES, stripTrailingAmount } from "../lib/format";
 import { getDonorSector, sectorColor } from "../lib/donorSectors";
 import { sectorToBillCategory } from "../lib/sectorBillMapping";
 import { sectorToCommittee } from "../lib/sectorCommitteeMapping";
@@ -74,7 +74,7 @@ function FundingBySectorBox({ interests }) {
               >
                 <div style={{ display: "flex", justifyContent: "space-between", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, marginBottom: 3 }}>
                   <span>{s.sector} {isOpen ? "▾" : "▸"}</span>
-                  <span style={{ fontFamily: FONT_MONO, color: COLORS.inkSoft }}>£{Math.round(s.total).toLocaleString()}</span>
+                  <span style={{ fontFamily: FONT_BODY, fontWeight: 600, color: COLORS.inkSoft }}>£{Math.round(s.total).toLocaleString()}</span>
                 </div>
                 <div style={{ height: 6, borderRadius: 999, background: COLORS.paper, overflow: "hidden" }}>
                   <div style={{ height: "100%", width: `${(s.total / max) * 100}%`, borderRadius: 999, background: s.color }} />
@@ -95,7 +95,7 @@ function FundingBySectorBox({ interests }) {
                           <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                             {d.donor} · {formatDate(d.date)}
                           </span>
-                          <span style={{ fontFamily: FONT_MONO, color: COLORS.ink, flexShrink: 0 }}>£{Math.round(d.amount).toLocaleString()}</span>
+                          <span style={{ fontFamily: FONT_BODY, fontWeight: 600, color: COLORS.ink, flexShrink: 0 }}>£{Math.round(d.amount).toLocaleString()}</span>
                         </div>
                       ))}
                     </div>
@@ -334,13 +334,6 @@ function CrossRegisterBox({ interests, gifts }) {
       </div>
     </CardShell>
   );
-}
-
-// The register's own summary text already ends with "- £1,234.00" — once
-// that figure is shown as its own right-hand value, repeating it inside the
-// sentence too just looks like a typo, so it's trimmed off here.
-function stripTrailingAmount(text) {
-  return (text ?? "").replace(/\s*-\s*£[\d,]+(\.\d+)?\s*$/, "");
 }
 
 function CurrentRolesBox({ interests }) {
@@ -960,7 +953,7 @@ export default function PoliticianDetail({ politician, onBack }) {
                             </div>
                           </div>
                           {item.value_amount && (
-                            <div style={{ flexShrink: 0, fontFamily: FONT_MONO, fontSize: 16, fontWeight: 600, color: COLORS.accent, whiteSpace: "nowrap", paddingTop: 3 }}>
+                            <div style={{ flexShrink: 0, fontFamily: FONT_BODY, fontSize: 16.5, fontWeight: 700, color: COLORS.accent, whiteSpace: "nowrap", paddingTop: 3 }}>
                               £{Number(item.value_amount).toLocaleString()}
                             </div>
                           )}

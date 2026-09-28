@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { partyColour } from "../lib/format";
 import { normalizeDonorKey } from "../lib/donorSectors";
@@ -93,7 +93,7 @@ function DonorResultCard({ result, onSelectPolitician }) {
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
         <div style={{ fontFamily: FONT_DISPLAY, fontSize: 19, color: COLORS.ink, minWidth: 0 }}>{result.displayName}</div>
-        <div style={{ flexShrink: 0, fontFamily: FONT_MONO, fontSize: 15, fontWeight: 700, color: COLORS.accent }}>
+        <div style={{ flexShrink: 0, fontFamily: FONT_BODY, fontSize: 16, fontWeight: 700, color: COLORS.accent }}>
           £{Math.round(result.grandTotal).toLocaleString()} total
         </div>
       </div>
@@ -124,7 +124,7 @@ function DonorResultCard({ result, onSelectPolitician }) {
                     <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{m.politician.name}</span>
                     <span style={{ color: COLORS.inkSoft, fontSize: 12, flexShrink: 0 }}>· {m.politician.party}</span>
                   </span>
-                  <span style={{ flexShrink: 0, fontFamily: FONT_MONO, fontSize: 12.5, color: COLORS.inkSoft }}>
+                  <span style={{ flexShrink: 0, fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13, color: COLORS.inkSoft }}>
                     £{Math.round(m.total).toLocaleString()}{m.count > 1 ? ` (${m.count})` : ""}
                   </span>
                 </button>
@@ -143,7 +143,7 @@ function DonorResultCard({ result, onSelectPolitician }) {
             {partyAgg.map((p) => (
               <div key={p.party} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, padding: "2px 4px", fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink }}>
                 <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.party}</span>
-                <span style={{ flexShrink: 0, fontFamily: FONT_MONO, fontSize: 12.5, color: COLORS.inkSoft }}>
+                <span style={{ flexShrink: 0, fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13, color: COLORS.inkSoft }}>
                   £{Math.round(p.total).toLocaleString()}{p.count > 1 ? ` (${p.count})` : ""}
                 </span>
               </div>

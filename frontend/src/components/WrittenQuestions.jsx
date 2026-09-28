@@ -120,7 +120,11 @@ function Avatar({ url, name, color, size = 34 }) {
 function QuestionCard({ q, politicianById, onSelectPolitician, index }) {
   const color = partyColour(q.asking_member_party_colour, COLORS.inkSoft);
   const answered = Boolean(q.date_answered);
-  const clickable = Boolean(q.politician_id);
+  // politician_id alone isn't enough — Lords members table written
+  // questions too, and they're not in the MPs table this map is built
+  // from, so a Lords question had a live-looking underlined name that
+  // actually crashed the page on click (onSelectPolitician(undefined)).
+  const clickable = Boolean(q.politician_id) && politicianById.has(q.politician_id);
 
   return (
     <motion.div
