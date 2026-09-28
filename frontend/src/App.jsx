@@ -102,6 +102,12 @@ export default function App() {
   const [view, setView] = useState(() => parseHash().view);
   const [selected, setSelected] = useState(null);
   const [mpCount, setMpCount] = useState(null);
+  // Set only when navigating away from an MP's own profile to a page that
+  // can be pre-filtered to them (their full voting history, their written
+  // questions) — so e.g. clicking a vote on the profile lands you on that
+  // MP's history, not a blank picker. Cleared on any ordinary sidebar
+  // navigation so it doesn't leak into an unrelated later visit.
+  const [pendingMp, setPendingMp] = useState(null);
   const isPopping = useRef(false);
   // True for the one render where a direct "#/mp/123" link hasn't finished
   // fetching that MP yet — the URL-sync effect below must not overwrite the
@@ -178,6 +184,7 @@ export default function App() {
 
   function handleNavigate(key) {
     setSelected(null);
+    setPendingMp(null);
     setView(key);
     window.scrollTo(0, 0);
   }
@@ -185,6 +192,13 @@ export default function App() {
   function handleViewProfile(politician) {
     setSelected(politician);
     setView("list");
+    window.scrollTo(0, 0);
+  }
+
+  function handleNavigateForMp(key, politician) {
+    setSelected(null);
+    setPendingMp(politician);
+    setView(key);
     window.scrollTo(0, 0);
   }
 
@@ -204,7 +218,7 @@ export default function App() {
             {view === "home" && <Home onBrowse={() => handleNavigate("list")} onNavigate={handleNavigate} onViewProfile={handleViewProfile} mpCount={mpCount} />}
             {view === "appg" && <AppgMemberships />}
             {view === "howitworks" && <HowParliamentWorks />}
-            {view === "voting" && <VotingRecords />}
+            {view === "voting" && <VotingRecords initialMp={pendingMp} />}
             {view === "donors" && <DonorsLobbying />}
             {view === "partyFinances" && <PartyFinances />}
             {view === "parties" && <PartyPolicies />}
@@ -222,7 +236,7 @@ export default function App() {
             {view === "committees" && <Committees />}
             {view === "compare" && <ComparePoliticians />}
             {view === "ministerialMeetings" && <MinisterialMeetings />}
-            {view === "writtenQuestions" && <WrittenQuestions onSelectPolitician={handleViewProfile} />}
+            {view === "writtenQuestions" && <WrittenQuestions onSelectPolitician={handleViewProfile} initialQuery={pendingMp?.name} />}
             {view === "standards" && <StandardsReports onSelectPolitician={handleViewProfile} />}
             {view === "rankings" && <Rankings onSelectPolitician={handleViewProfile} />}
             {view === "myMP" && <MyMP onViewProfile={handleViewProfile} />}
@@ -240,7 +254,12 @@ export default function App() {
             {view === "terms" && <TermsConditions />}
             {view === "list" &&
               (selected ? (
-                <PoliticianDetail key={selected.id} politician={selected} onBack={() => { setSelected(null); window.scrollTo(0, 0); }} />
+                <PoliticianDetail
+                  key={selected.id}
+                  politician={selected}
+                  onBack={() => { setSelected(null); window.scrollTo(0, 0); }}
+                  onNavigate={handleNavigateForMp}
+                />
               ) : (
                 <PoliticianList onSelect={(p) => { setSelected(p); window.scrollTo(0, 0); }} />
               ))}

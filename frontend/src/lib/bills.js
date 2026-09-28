@@ -28,3 +28,12 @@ export function categoriseBill(bill) {
   }
   return { label: "General", color: GENERAL_COLOR };
 }
+
+// A division's own `title` (e.g. "Finance Bill: Third Reading") isn't linked
+// to a `bills` row by any shared key — the two come from separate
+// parliamentary data sources — so matching on a title prefix is the same
+// imperfect-but-reasonable heuristic used everywhere else on this site that
+// needs to connect a vote to the bill it was actually on.
+export function matchBillForVote(voteTitle, bills) {
+  return bills.find((b) => b.short_title && voteTitle.startsWith(b.short_title)) ?? null;
+}

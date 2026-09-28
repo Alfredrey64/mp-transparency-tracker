@@ -1,9 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
 import { supabase } from "../supabaseClient";
 import { stripHtml, formatDate } from "../lib/format";
+import { matchBillForVote } from "../lib/bills";
+import { getBillDescription } from "../lib/billDescriptions";
 import { SECTION_ACCENT_BY_ICON } from "../data/sidebarSections";
+import { withScrollPreserved } from "../lib/preserveScroll";
 
 // An annotated passage, not a dashboard tile: a left margin rule in the
 // page's own accent colour and a soft tint of that same colour, open on
@@ -509,22 +512,43 @@ export function StandardsBox({ politician }) {
 // with their own party's majority" isn't a meaningful comparison for them.
 const NO_PARTY_MAJORITY_CONCEPT = ["independent", "speaker"];
 
-export function VotingSummaryBox({ politician }) {
+export function VotingSummaryBox({ politician, onNavigate }) {
   const [votes, setVotes] = useState(null);
+  const [bills, setBills] = useState(null);
   const hasPartyMajorityConcept = !NO_PARTY_MAJORITY_CONCEPT.includes((politician.party ?? "").toLowerCase());
 
   useEffect(() => {
     async function load() {
-      const { data } = await supabase
-        .from("voting_records")
-        .select("title, date, voted_aye, voted_with_party_majority, source_url")
-        .eq("politician_id", politician.id)
-        .order("date", { ascending: false })
-        .limit(4);
-      setVotes(data ?? []);
+      const [{ data: v }, { data: b }] = await Promise.all([
+        supabase
+          .from("voting_records")
+          .select("title, date, voted_aye, voted_with_party_majority, source_url")
+          .eq("politician_id", politician.id)
+          .order("date", { ascending: false })
+          .limit(4),
+        supabase.from("bills").select("short_title, long_title"),
+      ]);
+      setVotes(v ?? []);
+      setBills(b ?? []);
     }
     load();
   }, [politician.id]);
+
+  // Each vote's own title (e.g. "Finance Bill: New Clause 4") rarely says
+  // what the bill actually does — matching it back to the bill it belongs
+  // to gets a real, plain-English description onto the row, using the same
+  // hand-written-or-fall-back-to-official-title approach as the Manifesto
+  // tab, rather than inventing summary text this site can't stand behind.
+  const billByVote = useMemo(() => {
+    if (!bills) return null;
+    const map = new Map();
+    for (const v of votes ?? []) {
+      if (map.has(v.title)) continue;
+      const bill = matchBillForVote(v.title, bills);
+      if (bill) map.set(v.title, getBillDescription(bill.short_title, bill.long_title));
+    }
+    return map;
+  }, [votes, bills]);
 
   if (votes === null) {
     return (
@@ -547,15 +571,19 @@ export function VotingSummaryBox({ politician }) {
   return (
     <CardShell title="Voting Record">
       <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 10 }}>
-        Their {votes.length} most recent recorded vote{votes.length === 1 ? "" : "s"}
+        Their {votes.length} most recent recorded vote{votes.length === 1 ? "" : "s"} — tap any of these, or their full
+        history below, to see every recorded vote.
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {votes.map((v, i) => {
           const againstParty = hasPartyMajorityConcept && v.voted_with_party_majority === false;
+          const description = billByVote?.get(v.title);
           return (
-            <div
+            <button
               key={i}
+              onClick={() => withScrollPreserved(() => onNavigate?.("voting", politician))}
               style={{
+                display: "block", width: "100%", textAlign: "left", background: "none", border: "none", cursor: onNavigate ? "pointer" : "default", padding: 0,
                 borderLeft: `3px solid ${againstParty ? "#9C3B3B" : COLORS.hairline}`,
                 paddingLeft: 10,
                 paddingBottom: i < votes.length - 1 ? 8 : 0,
@@ -563,6 +591,11 @@ export function VotingSummaryBox({ politician }) {
               }}
             >
               <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.4 }}>{v.title}</div>
+              {description && (
+                <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5, marginTop: 3 }}>
+                  {description}
+                </div>
+              )}
               <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", marginTop: 4 }}>
                 <span
                   style={{
@@ -587,13 +620,22 @@ export function VotingSummaryBox({ politician }) {
                   </span>
                 )}
               </div>
-            </div>
+            </button>
           );
         })}
       </div>
-      <div style={{ marginTop: 10, fontSize: 12, color: COLORS.inkSoft }}>
-        See the "Voting Records" tab in the sidebar for their full history.
-      </div>
+      {onNavigate ? (
+        <button
+          onClick={() => withScrollPreserved(() => onNavigate("voting", politician))}
+          style={{ display: "block", marginTop: 10, fontSize: 12, color: COLORS.accent, fontWeight: 600, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY }}
+        >
+          See their full voting history →
+        </button>
+      ) : (
+        <div style={{ marginTop: 10, fontSize: 12, color: COLORS.inkSoft }}>
+          See the "Voting Records" tab in the sidebar for their full history.
+        </div>
+      )}
     </CardShell>
   );
 }
@@ -655,8 +697,17 @@ export function RebellionRateBox({ politician }) {
 
 // Recent debate contributions and written questions — the Commons
 // equivalent of the section already shown on each Lords peer's profile,
-// pulled from the same Members API endpoints.
-export function RecentActivityBox({ politician }) {
+// pulled from the same Members API endpoints. Written questions carry
+// their actual question text (the Members API returns it, we just weren't
+// showing it) so a click can take you to this site's own Written Questions
+// register, searched to this MP, to read the full exchange. Debate
+// contributions can't do the same — the Members API's contribution summary
+// gives titles, sections and speech/question/intervention counts, never
+// the actual words spoken, and this site doesn't scrape Hansard's full
+// transcripts, so there's no richer detail or internal page to send a
+// click to without either inventing text or linking somewhere this site
+// doesn't actually track.
+export function RecentActivityBox({ politician, onNavigate }) {
   const activity = politician.recent_activity;
   const contributions = activity?.contributions ?? [];
   const writtenQuestions = activity?.writtenQuestions ?? [];
@@ -696,15 +747,35 @@ export function RecentActivityBox({ politician }) {
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {writtenQuestions.map((q, i) => (
-              <div key={i} style={{ paddingBottom: 10, borderBottom: i < writtenQuestions.length - 1 ? `1px solid ${COLORS.hairline}` : "none" }}>
+              <button
+                key={i}
+                onClick={() => withScrollPreserved(() => onNavigate?.("writtenQuestions", politician))}
+                style={{
+                  display: "block", width: "100%", textAlign: "left", background: "none", border: "none", cursor: onNavigate ? "pointer" : "default", padding: 0,
+                  paddingBottom: 10, borderBottom: i < writtenQuestions.length - 1 ? `1px solid ${COLORS.hairline}` : "none",
+                }}
+              >
                 <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: COLORS.ink }}>{q.heading}</div>
-                <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginTop: 4 }}>
+                {q.questionText && (
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.ink, opacity: 0.85, lineHeight: 1.5, marginTop: 4 }}>
+                    {stripHtml(q.questionText)}
+                  </div>
+                )}
+                <div style={{ fontFamily: FONT_MONO, fontSize: 10.5, color: COLORS.inkSoft, marginTop: 5, letterSpacing: "0.01em" }}>
                   To {q.department} · tabled {formatDate(q.dateTabled)}
                   {q.dateAnswered ? ` · answered ${formatDate(q.dateAnswered)}` : " · awaiting answer"}
                 </div>
-              </div>
+              </button>
             ))}
           </div>
+          {onNavigate && (
+            <button
+              onClick={() => withScrollPreserved(() => onNavigate("writtenQuestions", politician))}
+              style={{ display: "block", marginTop: 10, fontSize: 12, color: COLORS.accent, fontWeight: 600, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY }}
+            >
+              See all their written questions →
+            </button>
+          )}
         </div>
       )}
     </CardShell>

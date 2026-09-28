@@ -190,10 +190,10 @@ function QuestionCard({ q, politicianById, onSelectPolitician, index }) {
   );
 }
 
-export default function WrittenQuestions({ onSelectPolitician }) {
+export default function WrittenQuestions({ onSelectPolitician, initialQuery = "" }) {
   const [rows, setRows] = useState(null);
   const [politicians, setPoliticians] = useState([]);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery);
   const [statusFilter, setStatusFilter] = useState("All");
   const [houseFilter, setHouseFilter] = useState("All");
 

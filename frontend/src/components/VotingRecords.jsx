@@ -475,12 +475,12 @@ function MpVotingHistory({ politician, onBack }) {
   );
 }
 
-export default function VotingRecords() {
+export default function VotingRecords({ initialMp = null }) {
   const [bills, setBills] = useState([]);
   const [politicians, setPoliticians] = useState([]);
   const [loadingBills, setLoadingBills] = useState(true);
   const [query, setQuery] = useState("");
-  const [selectedMp, setSelectedMp] = useState(null);
+  const [selectedMp, setSelectedMp] = useState(initialMp);
   const [billCategory, setBillCategory] = useState("All");
 
   useEffect(() => {

@@ -6,7 +6,7 @@ import { partyColour, timeInOffice, shortCategory, formatDate, initials, ONGOING
 import { getDonorSector, sectorColor } from "../lib/donorSectors";
 import { sectorToBillCategory } from "../lib/sectorBillMapping";
 import { sectorToCommittee } from "../lib/sectorCommitteeMapping";
-import { categoriseBill } from "../lib/bills";
+import { categoriseBill, matchBillForVote } from "../lib/bills";
 import { findManifesto } from "../data/partyManifestos";
 import { manifestoSectionToBillCategory } from "../lib/manifestoBillMapping";
 import { getBillDescription } from "../lib/billDescriptions";
@@ -108,15 +108,6 @@ function FundingBySectorBox({ interests }) {
       </div>
     </CardShell>
   );
-}
-
-// A division's own `title` (e.g. "Finance Bill: Third Reading") isn't
-// linked to a `bills` row by any shared key — the two come from separate
-// parliamentary data sources. Matching on a title prefix is the same
-// imperfect-but-reasonable approach VotingRecords.jsx uses in the other
-// direction (bill → its divisions).
-function matchBillForVote(voteTitle, categorisedBills) {
-  return categorisedBills.find((b) => b.short_title && voteTitle.startsWith(b.short_title)) ?? null;
 }
 
 function MoneyAndVotesBox({ politician, interests }) {
@@ -695,7 +686,7 @@ function GiftsTabContent({ gifts }) {
   );
 }
 
-export default function PoliticianDetail({ politician, onBack }) {
+export default function PoliticianDetail({ politician, onBack, onNavigate }) {
   const [interests, setInterests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [gifts, setGifts] = useState(null);
@@ -974,13 +965,13 @@ export default function PoliticianDetail({ politician, onBack }) {
             <MoneyAndVotesBox politician={politician} interests={interests} />
             <CommitteeConflictsBox interests={interests} myCommittees={myCommittees} />
             <CrossRegisterBox interests={interests} gifts={gifts} />
-            <ContactBox politician={politician} />
             <CabinetRoleBox politician={politician} />
-            <VotingSummaryBox politician={politician} />
+            <VotingSummaryBox politician={politician} onNavigate={onNavigate} />
             <RebellionRateBox politician={politician} />
-            <RecentActivityBox politician={politician} />
+            <RecentActivityBox politician={politician} onNavigate={onNavigate} />
             <StandardsBox politician={politician} />
             <NewsBox politician={politician} />
+            <ContactBox politician={politician} />
           </div>
         </div>
       </div>
