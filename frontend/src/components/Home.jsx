@@ -5,7 +5,7 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
 import { formatDate, partyColour } from "../lib/format";
 import { categoriseBill } from "../lib/bills";
 import { getWatchlist, removeFromWatchlist } from "../lib/watchlist";
-import { IconSearch, IconCoin, IconBills, IconInfluence, IconPetition, IconGroup, IconPulse, IconShield, IconRankings } from "./icons";
+import { IconSearch, IconCoin, IconBills, IconInfluence, IconPetition, IconGroup, IconPulse, IconShield, IconRankings, IconManifesto, IconPartyFinance } from "./icons";
 import { EyebrowLabel, ParliamentSilhouette } from "./shared";
 import { PartyHemicycleSection } from "./PartyHemicycle";
 import { withScrollPreserved } from "../lib/preserveScroll";
@@ -35,9 +35,9 @@ const CHANGE_FEED_TYPES = {
 // colour means, rather than the homepage inventing its own one-off scheme.
 const QUICK_LINKS = [
   { key: "voting", label: "Browse Bills", icon: IconBills, color: "#9B4FE0" },
-  { key: "followTheMoney", label: "Follow the Money", icon: IconSearch, color: "#F2622A" },
+  { key: "parties", label: "Browse Party Policies", icon: IconManifesto, color: "#2F80ED" },
+  { key: "partyFinances", label: "Browse Party Funding", icon: IconPartyFinance, color: "#F2622A" },
   { key: "rankings", label: "Rankings", icon: IconRankings, color: "#D9A62A" },
-  { key: "darkMoney", label: "Transparency Gaps", icon: IconShield, color: "#E63946" },
 ];
 
 function CountUp({ value }) {
@@ -347,16 +347,16 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
         )}
 
         {!loading && items.length > 0 && (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", columnGap: 20 }}>
-            {items.map((item) => (
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            {items.map((item, i) => (
               <div
                 key={item.id}
                 onClick={() => handleSelectPoliticianById(item.politicians?.id)}
                 style={{
-                  padding: "12px 8px",
+                  padding: "14px 8px",
                   margin: "0 -8px",
                   borderRadius: 8,
-                  borderBottom: `1px solid ${COLORS.hairline}`,
+                  borderBottom: i < items.length - 1 ? `1px solid ${COLORS.hairline}` : "none",
                   cursor: item.politicians?.id ? "pointer" : "default",
                   transition: "background 0.15s",
                 }}
@@ -393,7 +393,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
 
       {/* Find Your MP: full-width band */}
       <div style={{ borderTop: `1px solid ${COLORS.hairline}`, borderBottom: `1px solid ${COLORS.hairline}`, padding: "24px 0", marginBottom: 40 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 24, alignItems: "start" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 24, alignItems: "center" }}>
           <div>
             <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, color: COLORS.ink, marginBottom: 4 }}>Find Your MP</div>
             <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.5 }}>
@@ -476,8 +476,8 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "clamp(28px, 5vw, 56px)" }}>
-        <div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "clamp(24px, 4vw, 32px)", marginBottom: 40 }}>
+        <div style={{ border: `1px solid ${COLORS.hairline}`, borderRadius: 16, padding: "20px 22px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
             <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, color: COLORS.ink }}>Bills Going Through Parliament</div>
             {onNavigate && (
@@ -524,7 +524,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
           </div>
         </div>
 
-        <div>
+        <div style={{ border: `1px solid ${COLORS.hairline}`, borderRadius: 16, padding: "20px 22px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4, gap: 10, flexWrap: "wrap" }}>
             <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, color: COLORS.ink }}>
               {parliamentTab === "changes" ? "What's Changed" : "On This Day"}

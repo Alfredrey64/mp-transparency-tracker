@@ -240,14 +240,15 @@ export function PageHeader({ kicker = "Public Record · UK Parliament", title, s
 }
 
 // A masthead-style section marker rather than a tracked-out uppercase
-// tag — a short brass rule plus the label set in italic Caslon, closer
-// to how a printed report or Hansard volume marks a section than a SaaS
-// dashboard's eyebrow chip.
-export function EyebrowLabel({ children }) {
+// tag — a short accent rule plus the label set in medium-weight Space
+// Grotesk. Deliberately not italic: Space Grotesk has no real italic cut,
+// so fontStyle:"italic" was forcing the browser's synthetic slant, which
+// just reads as skewed rather than as a proper italic.
+export function EyebrowLabel({ children, color = COLORS.accent }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-      <span style={{ width: 16, height: 2, background: COLORS.accent, flexShrink: 0 }} />
-      <span style={{ fontFamily: FONT_DISPLAY, fontStyle: "italic", fontSize: 15, color: COLORS.accent }}>
+      <span style={{ width: 16, height: 2, background: color, flexShrink: 0 }} />
+      <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 500, fontSize: 14.5, letterSpacing: "0.01em", color }}>
         {children}
       </span>
     </div>

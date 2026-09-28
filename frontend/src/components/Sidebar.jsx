@@ -241,10 +241,17 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician }) {
     <>
       <div style={{ marginBottom: 4, textAlign: "center" }}>
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 7 }}>
-          <ParliamentSilhouette width={46} color={COLORS.accent} opacity={0.95} />
+          <ParliamentSilhouette width={46} color={COLORS.accentOnDark} opacity={0.95} />
         </div>
-        <EyebrowLabel>Public Record</EyebrowLabel>
-        <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, color: "#fff", lineHeight: 1.2, marginTop: 4 }}>
+        {/* EyebrowLabel renders its own rule+text as a flex row, which a
+            plain text-align:center on this wrapper can't centre (that
+            only centres inline content, not a flex child's box) — wrapped
+            here so the label actually sits centred above the title below
+            it, instead of drifting left of it. */}
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <EyebrowLabel color={COLORS.accentOnDark}>Public Record</EyebrowLabel>
+        </div>
+        <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 18, color: "#fff", lineHeight: 1.2, marginTop: 6 }}>
           UK Parliament Tracker
         </div>
         <div style={{ display: "flex", justifyContent: "center", marginTop: 10 }}>
@@ -299,7 +306,7 @@ export default function Sidebar({ activeView, onNavigate, onSelectPolitician }) 
         style={{ alignItems: "center", justifyContent: "space-between", background: COLORS.sidebarBg, padding: "14px 18px" }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <ParliamentSilhouette width={26} color={COLORS.accent} />
+          <ParliamentSilhouette width={26} color={COLORS.accentOnDark} />
           <span style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: "#fff" }}>UK Parliament Tracker</span>
         </div>
         <button

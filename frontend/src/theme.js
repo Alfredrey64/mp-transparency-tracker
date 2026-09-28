@@ -19,6 +19,12 @@ export const COLORS = {
   paperCard: "var(--c-paper-card)",
   hairline: "var(--c-hairline)",
   accent: "#4F46E5",
+  // The base accent is tuned for white text on top of it (buttons) and
+  // for text on a light page — against the sidebar's own dark ground it
+  // loses almost all contrast, since both sit at a similarly low
+  // luminance. This lighter variant is for exactly that one case: accent
+  // text/icons directly on the dark sidebar.
+  accentOnDark: "#8B85F5",
   gold: "#E8B93D",
   commonsGreen: "#1FA97C",
   garnet: "#E63946",
