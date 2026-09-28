@@ -983,7 +983,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
                               </div>
                             </div>
                             {item.value_amount && (
-                              <div style={{ flexShrink: 0, fontFamily: FONT_BODY, fontSize: 16.5, fontWeight: 700, color: meta.color, whiteSpace: "nowrap" }}>
+                              <div style={{ flexShrink: 0, fontFamily: FONT_BODY, fontSize: 16.5, fontWeight: 700, color: meta.color, whiteSpace: "nowrap", marginRight: 8 }}>
                                 £{Number(item.value_amount).toLocaleString()}
                               </div>
                             )}

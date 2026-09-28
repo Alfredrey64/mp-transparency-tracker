@@ -3,8 +3,14 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader, InfoCard, WhyItMattersBand, FlowNode, FlowArrow } from "./shared";
 import { IconThinkTank, IconShield, IconSearch, IconBroadcast, IconQuestion } from "./icons";
 
-// The gap the whole page is about, drawn as a broken chain: you see the
-// person on screen, you never see who's actually behind them.
+// The full chain the page is about, not just its two endpoints: money
+// starts with a funder nobody has to name, passes through a think tank
+// that has no duty to disclose it either, and comes out the other end as
+// an "independent expert" on air. Drawing it left-to-right, hidden source
+// to visible face, means the arrow and the coin travelling along it both
+// point the same way the money actually moves — the previous two-node
+// version pointed its static arrow one way and animated the coin the
+// other, which read as a contradiction rather than a broken chain.
 function MaskedExpertDiagram() {
   return (
     <div
@@ -13,14 +19,16 @@ function MaskedExpertDiagram() {
         background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 18,
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, flexWrap: "wrap" }}>
+        <FlowNode icon={IconQuestion} label="Undisclosed funder" color="#9C3B3B" broken />
+        <FlowArrow color="#9C3B3B" trackWidth={44} />
+        <FlowNode icon={IconThinkTank} label="The think tank" color="#9C6B30" />
+        <FlowArrow color="#5A7FA6" trackWidth={44} />
         <FlowNode icon={IconBroadcast} label={'"Independent expert" on air'} color="#5A7FA6" />
-        <FlowArrow color="#9C3B3B" reverse />
-        <FlowNode icon={IconQuestion} label="Who's actually paying them" color="#9C3B3B" broken />
       </div>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, margin: "18px auto 0", maxWidth: 480 }}>
-        The audience sees the first circle every time. The second is the one no broadcaster is required to fill in
-        — the sample below shows what happens on the rare occasions someone actually checked.
+      <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, margin: "18px auto 0", maxWidth: 520 }}>
+        The audience only ever sees the circle on the right. Everything feeding it from the left is invisible by
+        law — the sample below shows what turns up on the rare occasions someone actually checked.
       </div>
     </div>
   );

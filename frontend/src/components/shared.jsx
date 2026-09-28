@@ -707,12 +707,13 @@ export function RebellionRateBox({ politician }) {
 // their actual question text (the Members API returns it, we just weren't
 // showing it) so a click can take you to this site's own Written Questions
 // register, searched to this MP, to read the full exchange. Debate
-// contributions can't do the same — the Members API's contribution summary
-// gives titles, sections and speech/question/intervention counts, never
-// the actual words spoken, and this site doesn't scrape Hansard's full
-// transcripts, so there's no richer detail or internal page to send a
-// click to without either inventing text or linking somewhere this site
-// doesn't actually track.
+// contributions can't do the same internally — the Members API's
+// contribution summary gives titles, sections and speech/question/
+// intervention counts, never the actual words spoken, and this site
+// doesn't scrape Hansard's full transcripts — but the same API response
+// does carry the debate's own id, which resolves to a real, working
+// Hansard URL (verified against several live debates), so a click there
+// goes to the actual transcript instead of nowhere.
 export function RecentActivityBox({ politician, onNavigate }) {
   const activity = politician.recent_activity;
   const contributions = activity?.contributions ?? [];
@@ -731,17 +732,30 @@ export function RecentActivityBox({ politician, onNavigate }) {
             Debate Contributions
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {contributions.map((c, i) => (
-              <div key={i} style={{ paddingBottom: 10, borderBottom: i < contributions.length - 1 ? `1px solid ${COLORS.hairline}` : "none" }}>
-                <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.4 }}>{c.title}</div>
-                <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginTop: 3 }}>
-                  {formatDate(c.date)} · {c.section}
-                  {c.speechCount > 0 ? ` · ${c.speechCount} speech${c.speechCount === 1 ? "" : "es"}` : ""}
-                  {c.questionCount > 0 ? ` · ${c.questionCount} question${c.questionCount === 1 ? "" : "s"}` : ""}
-                  {c.interventionCount > 0 ? ` · ${c.interventionCount} intervention${c.interventionCount === 1 ? "" : "s"}` : ""}
-                </div>
-              </div>
-            ))}
+            {contributions.map((c, i) => {
+              const row = (
+                <>
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.4 }}>
+                    {c.title}
+                    {c.hansardUrl && <span style={{ color: COLORS.accent }}> ↗</span>}
+                  </div>
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginTop: 3 }}>
+                    {formatDate(c.date)} · {c.section}
+                    {c.speechCount > 0 ? ` · ${c.speechCount} speech${c.speechCount === 1 ? "" : "es"}` : ""}
+                    {c.questionCount > 0 ? ` · ${c.questionCount} question${c.questionCount === 1 ? "" : "s"}` : ""}
+                    {c.interventionCount > 0 ? ` · ${c.interventionCount} intervention${c.interventionCount === 1 ? "" : "s"}` : ""}
+                  </div>
+                </>
+              );
+              const rowStyle = { display: "block", paddingBottom: 10, borderBottom: i < contributions.length - 1 ? `1px solid ${COLORS.hairline}` : "none" };
+              return c.hansardUrl ? (
+                <a key={i} href={c.hansardUrl} target="_blank" rel="noreferrer" style={{ ...rowStyle, textDecoration: "none" }}>
+                  {row}
+                </a>
+              ) : (
+                <div key={i} style={rowStyle}>{row}</div>
+              );
+            })}
           </div>
         </div>
       )}

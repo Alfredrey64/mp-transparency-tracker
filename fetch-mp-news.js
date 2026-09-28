@@ -74,13 +74,74 @@ async function fetchNewsFor(mpName) {
   return parseItems(xml);
 }
 
-// Cheap safety net: require the MP's surname to actually appear in the
-// headline, since a quoted-name search can occasionally still return a
-// loosely related result.
-function mentionsSurname(headline, mpName) {
-  const surname = mpName.trim().split(/\s+/).pop()?.toLowerCase();
-  if (!surname) return true;
-  return headline.toLowerCase().includes(surname);
+// A quoted-name search still lets loosely related results through —
+// surname-only matching was the worst of it: "Khan" alone matched Imran
+// Khan, and even requiring the full name still can't distinguish "Afzal
+// Khan" from someone else's longer name that happens to contain those two
+// words, like "Sher Afzal Khan Marwat" or "Aayan Afzal Khan". Headlines
+// vary in capitalisation by publisher (sentence case vs. title case) so
+// this can't be bulletproof, but checking that neither word immediately
+// next to the match looks like part of a longer name — rather than a
+// common headline word (a title, a party, "MP", a verb like "says") —
+// catches the great majority of same-name false positives that a bare
+// substring check let through.
+const SAFE_NEIGHBOUR_WORDS = new Set([
+  "mp", "mps", "the", "a", "an", "and", "or", "but", "to", "of", "in", "on", "at", "by", "for", "with", "from", "as",
+  "is", "are", "was", "were", "says", "said", "say", "slams", "blasts", "defends", "backs", "urges", "calls", "warns",
+  "demands", "vows", "hits", "out", "meets", "meet", "labour", "conservative", "tory", "tories", "snp", "green",
+  "libdem", "lib", "dem", "dems", "reform", "independent", "dup", "sinn", "fein", "sir", "dame", "dr", "mr", "mrs",
+  "ms", "rt", "hon", "lord", "lady", "minister", "secretary", "chancellor", "pm", "prime", "leader", "shadow",
+  "former", "ex", "new", "veteran", "senior", "backbench", "chief", "deputy", "co", "vs", "v", "why", "how", "what",
+  "who", "when", "after", "before", "over", "under", "amid", "against", "despite", "during", "this", "that", "his",
+  "her", "their", "its", "it's",
+]);
+
+function neighbourLooksLikeName(word) {
+  if (!word) return false;
+  const clean = word.replace(/[^a-zA-Z']/g, "");
+  if (clean.length < 3) return false;
+  return !SAFE_NEIGHBOUR_WORDS.has(clean.toLowerCase());
+}
+
+// A second, different failure mode from the "embedded in a longer name"
+// one above: an MP's exact full name genuinely belongs to someone else
+// entirely — a footballer, an actor — and nothing about the name itself
+// gives that away. "Alberto Costa" is both a Conservative MP and a
+// footballer Manchester United and Arsenal have been linked with; only
+// the surrounding words tell the two apart. This doesn't try to require a
+// political keyword on every headline (most legitimate coverage doesn't
+// use one), just rejects a match where the headline is unambiguously
+// about sport, film or music and carries no political signal at all.
+const NON_POLITICAL_CONTEXT = [
+  "transfer", "striker", "midfielder", "goalkeeper", "defender", "midfield", "football club",
+  "premier league", "champions league", "match report", "loan move", "signing for", "box office",
+  "album", "single", "tour dates", "film review", "tv series", "starring role", "season finale",
+  "west end", "wins gold", "world cup", "olympics", "grand prix", "wimbledon",
+];
+const POLITICAL_CONTEXT = [
+  "mp", "mps", "labour", "conservative", "tory", "tories", "parliament", "commons", "lords",
+  "minister", "government", "westminster", "constituency", "snp", "libdem", "lib dem", "reform uk",
+  "secretary of state", "downing street", "whitehall", "cabinet", "shadow", "by-election",
+];
+
+function hasUnrelatedContext(headline) {
+  const lower = headline.toLowerCase();
+  const hasNonPolitical = NON_POLITICAL_CONTEXT.some((w) => lower.includes(w));
+  if (!hasNonPolitical) return false;
+  return !POLITICAL_CONTEXT.some((w) => lower.includes(w));
+}
+
+function isLikelyMatch(headline, mpName) {
+  const name = mpName.trim();
+  if (!name) return true;
+  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = headline.match(new RegExp(`\\b${escaped}\\b`, "i"));
+  if (!match) return false;
+  if (hasUnrelatedContext(headline)) return false;
+
+  const before = headline.slice(0, match.index).trim().split(/\s+/).pop();
+  const after = headline.slice(match.index + match[0].length).trim().split(/\s+/)[0];
+  return !neighbourLooksLikeName(before) && !neighbourLooksLikeName(after);
 }
 
 async function main() {
@@ -94,7 +155,7 @@ async function main() {
   for (const [i, mp] of politicians.entries()) {
     try {
       const items = (await fetchNewsFor(mp.name))
-        .filter((item) => mentionsSurname(item.headline, mp.name))
+        .filter((item) => isLikelyMatch(item.headline, mp.name))
         .sort((a, b) => new Date(b.published_date) - new Date(a.published_date))
         .slice(0, ARTICLES_PER_MP);
 
