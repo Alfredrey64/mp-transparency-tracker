@@ -12,7 +12,7 @@ import { manifestoSectionToBillCategory } from "../lib/manifestoBillMapping";
 import { getBillDescription } from "../lib/billDescriptions";
 import { isWatched, toggleWatch } from "../lib/watchlist";
 import { withScrollPreserved } from "../lib/preserveScroll";
-import { IconStar } from "./icons";
+import { IconStar, IconCoin, IconMeeting, IconGlobe, IconHome, IconEconomy, IconBriefcase, IconQuestion, IconGroup } from "./icons";
 import {
   SectionDivider,
   CardShell,
@@ -34,6 +34,33 @@ const DETAIL_TABS = [
   { key: "roles", label: "Roles" },
   { key: "manifesto", label: "Manifesto" },
 ];
+
+// Every entry in the register reads as the same flat sentence right now
+// regardless of whether it's a £700k ongoing directorship or a £50 bottle
+// of wine — this gives each register category its own colour and icon (the
+// colours reuse hues already meaningful elsewhere on this site: the same
+// orange as "Current Outside Roles", the same teal as Foreign Affairs
+// bills, and so on) so a long list of interests reads as distinct kinds of
+// thing at a glance, not one undifferentiated column of grey cards.
+const DEFAULT_CATEGORY_META = { color: "#6B7280", Icon: IconQuestion };
+const CATEGORY_META = {
+  "Donations and other support (including loans) for activities as an MP": { color: COLORS.accent, Icon: IconCoin },
+  "Gifts, benefits and hospitality from UK sources": { color: "#B0508A", Icon: IconMeeting },
+  "Gifts and benefits from sources outside the UK": { color: "#2E6F6F", Icon: IconGlobe },
+  "Visits outside the UK": { color: "#2E6F6F", Icon: IconGlobe },
+  "Land and property (within or outside the UK)": { color: "#A0522D", Icon: IconHome },
+  Shareholdings: { color: "#8A7A3D", Icon: IconEconomy },
+  "Employment and earnings": { color: "#F2622A", Icon: IconBriefcase },
+  "Employment and earnings - Ongoing paid employment": { color: "#F2622A", Icon: IconBriefcase },
+  "Employment and earnings - Ad hoc payments": { color: "#D9A62A", Icon: IconCoin },
+  Miscellaneous: DEFAULT_CATEGORY_META,
+  "Family members employed": { color: "#6B5B95", Icon: IconGroup },
+  "Family members engaged in third-party lobbying": { color: "#7A4B4B", Icon: IconGroup },
+};
+
+function categoryMeta(category) {
+  return CATEGORY_META[category] ?? DEFAULT_CATEGORY_META;
+}
 
 function groupInterestsBySector(interests) {
   const bySector = new Map();
@@ -915,41 +942,54 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
                       transition={{ duration: 0.15 }}
                       style={{ display: "flex", flexDirection: "column", gap: 10 }}
                     >
-                      {filteredInterests.map((item, i) => (
-                        <motion.div
-                          key={item.id}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ duration: 0.2, delay: Math.min(i, 10) * 0.02 }}
-                          style={{
-                            display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16,
-                            padding: "14px 16px", background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 12,
-                          }}
-                        >
-                          <div style={{ minWidth: 0, flex: 1 }}>
-                            <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 11.5, color: COLORS.accent, marginBottom: 6 }}>
-                              {shortCategory(item.category)}
+                      {filteredInterests.map((item, i) => {
+                        const meta = categoryMeta(item.category);
+                        return (
+                          <motion.div
+                            key={item.id}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.2, delay: Math.min(i, 10) * 0.02 }}
+                            style={{
+                              display: "flex", alignItems: "center", gap: 14,
+                              padding: "14px 16px", background: COLORS.paper, border: `1px solid ${COLORS.hairline}`,
+                              borderLeft: `3px solid ${meta.color}`, borderRadius: 12,
+                            }}
+                          >
+                            <div
+                              style={{
+                                flexShrink: 0, width: 36, height: 36, borderRadius: "50%",
+                                display: "flex", alignItems: "center", justifyContent: "center",
+                                background: `${meta.color}1c`, color: meta.color,
+                              }}
+                            >
+                              <meta.Icon size={16} />
                             </div>
-                            <div style={{ fontFamily: FONT_BODY, fontSize: 16, color: COLORS.ink, lineHeight: 1.4 }}>
-                              {stripTrailingAmount(item.summary)}
+                            <div style={{ minWidth: 0, flex: 1 }}>
+                              <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 11.5, color: meta.color, marginBottom: 6 }}>
+                                {shortCategory(item.category)}
+                              </div>
+                              <div style={{ fontFamily: FONT_BODY, fontSize: 16, color: COLORS.ink, lineHeight: 1.4 }}>
+                                {stripTrailingAmount(item.summary)}
+                              </div>
+                              <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8, fontSize: 12, color: COLORS.inkSoft }}>
+                                {item.date_registered && <span style={{ fontFamily: FONT_BODY }}>{formatDate(item.date_registered)}</span>}
+                                {item.date_registered && item.source_url && <span>·</span>}
+                                {item.source_url && (
+                                  <a href={item.source_url} target="_blank" rel="noreferrer" style={{ color: COLORS.inkSoft, fontFamily: FONT_BODY }}>
+                                    source ↗
+                                  </a>
+                                )}
+                              </div>
                             </div>
-                            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8, fontSize: 12, color: COLORS.inkSoft }}>
-                              {item.date_registered && <span style={{ fontFamily: FONT_BODY }}>{formatDate(item.date_registered)}</span>}
-                              {item.date_registered && item.source_url && <span>·</span>}
-                              {item.source_url && (
-                                <a href={item.source_url} target="_blank" rel="noreferrer" style={{ color: COLORS.inkSoft, fontFamily: FONT_BODY }}>
-                                  source ↗
-                                </a>
-                              )}
-                            </div>
-                          </div>
-                          {item.value_amount && (
-                            <div style={{ flexShrink: 0, fontFamily: FONT_BODY, fontSize: 16.5, fontWeight: 700, color: COLORS.accent, whiteSpace: "nowrap" }}>
-                              £{Number(item.value_amount).toLocaleString()}
-                            </div>
-                          )}
-                        </motion.div>
-                      ))}
+                            {item.value_amount && (
+                              <div style={{ flexShrink: 0, fontFamily: FONT_BODY, fontSize: 16.5, fontWeight: 700, color: meta.color, whiteSpace: "nowrap" }}>
+                                £{Number(item.value_amount).toLocaleString()}
+                              </div>
+                            )}
+                          </motion.div>
+                        );
+                      })}
                     </motion.div>
                   </AnimatePresence>
                 </>
