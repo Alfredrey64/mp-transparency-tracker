@@ -107,11 +107,15 @@ export function FlowNode({ icon: Icon, label, color, broken = false }) {
 // arrival/departure is what keeps a coin sliding along a straight line
 // from reading as a flat, robotic dot. `showGlyph` can drop the arrow
 // character where a page already has its own connecting visual (e.g. the
-// rotating door icon) and just wants the coin.
+// rotating door icon) and just wants the coin. `glyph` swaps (or, passed
+// empty, removes) the £ printed on the travelling dot itself — for the one
+// non-money use of this pattern (a bill bouncing between the Commons and
+// Lords), a blank coin reads as "something is moving" without implying
+// cash is changing hands.
 const COIN_SIZE = 17;
 const OSCILLATE_CLEARANCE = 6;
 
-export function FlowArrow({ color, animated = true, oscillate = false, reverse = false, showGlyph = true, trackWidth = 40 }) {
+export function FlowArrow({ color, animated = true, oscillate = false, reverse = false, showGlyph = true, trackWidth = 40, glyph = "£" }) {
   const coinColor = color ?? COLORS.accent;
   const travelStart = OSCILLATE_CLEARANCE;
   const travelEnd = trackWidth - COIN_SIZE - OSCILLATE_CLEARANCE;
@@ -140,9 +144,11 @@ export function FlowArrow({ color, animated = true, oscillate = false, reverse =
             boxShadow: `0 2px 5px rgba(0,0,0,0.35), 0 0 8px ${coinColor}80`,
           }}
         >
-          <span style={{ fontFamily: FONT_BODY, fontWeight: 800, fontSize: 10, lineHeight: 1, color: "#fff", textShadow: "0 1px 1px rgba(0,0,0,0.25)" }}>
-            £
-          </span>
+          {glyph && (
+            <span style={{ fontFamily: FONT_BODY, fontWeight: 800, fontSize: 10, lineHeight: 1, color: "#fff", textShadow: "0 1px 1px rgba(0,0,0,0.25)" }}>
+              {glyph}
+            </span>
+          )}
         </motion.div>
       )}
     </div>

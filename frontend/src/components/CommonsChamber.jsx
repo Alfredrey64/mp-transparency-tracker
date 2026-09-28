@@ -138,11 +138,11 @@ export default function CommonsChamber() {
         Live seat count from the current data, grouped by party
       </div>
 
-      <div style={{ overflowX: "auto" }}>
+      <div>
         <svg
           width="100%"
           viewBox={`0 0 800 ${viewBoxHeight}`}
-          style={{ minWidth: 520, maxWidth: 780, display: "block", margin: "0 auto" }}
+          style={{ maxWidth: 780, display: "block", margin: "0 auto" }}
         >
           <defs>
             <clipPath id="chamber-reveal">

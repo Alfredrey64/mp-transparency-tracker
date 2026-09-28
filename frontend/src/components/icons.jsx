@@ -516,3 +516,14 @@ export function IconRegister({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconTransport({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="6" width="18" height="10.5" rx="2.5" />
+      <path d="M3 11.5h18" />
+      <circle cx="7.5" cy="19" r="1.6" />
+      <circle cx="16.5" cy="19" r="1.6" />
+    </svg>
+  );
+}

@@ -1,10 +1,14 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
 import { partyColour, formatDate, stripHtml } from "../lib/format";
 import { PageHeader } from "./shared";
-import { IconCabinet } from "./icons";
+import {
+  IconCabinet, IconEconomy, IconGlobe, IconGavel, IconHealth, IconBook, IconFactory, IconHome,
+  IconTransport, IconLeaf, IconBroadcast, IconHardHat, IconThinkTank, IconDevolved, IconBills,
+  IconGroup, IconQuestion,
+} from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
 
 // Cabinet roles don't carry a clean "department" field of their own — we
@@ -74,6 +78,29 @@ const AREA_DESCRIPTIONS = {
   "Leader of the House": "Organises government business in the Commons and represents the government's interests to MPs.",
   "Whips Office": "Enforces party discipline, manages the parliamentary timetable, and counts votes — the internal machinery that keeps a government's working majority together.",
   "Other Cabinet Roles": "Cabinet-level responsibilities that don't map neatly onto a single government department.",
+};
+
+// A small pictogram per department area, so the org chart's badges read as
+// "which department is this" at a glance rather than just a bare member
+// count — the count moved to its own caption underneath instead.
+const AREA_ICONS = {
+  "Prime Minister & Cabinet Office": IconCabinet,
+  "Treasury & Economy": IconEconomy,
+  "Foreign, Commonwealth & Defence": IconGlobe,
+  "Home Office & Justice": IconGavel,
+  "Health & Social Care": IconHealth,
+  Education: IconBook,
+  "Business, Trade & Energy": IconFactory,
+  "Housing & Local Government": IconHome,
+  Transport: IconTransport,
+  "Environment, Food & Rural Affairs": IconLeaf,
+  "Culture, Media, Digital & Sport": IconBroadcast,
+  "Work & Pensions": IconHardHat,
+  "Science, Innovation & Technology": IconThinkTank,
+  "Scotland, Wales & Northern Ireland": IconDevolved,
+  "Leader of the House": IconBills,
+  "Whips Office": IconGroup,
+  "Other Cabinet Roles": IconQuestion,
 };
 
 // Specific descriptions for the most senior, best-known titles — checked in
@@ -271,16 +298,24 @@ function jumpToArea(area) {
 // department. Tapping a department jumps straight to its full list below
 // (the same jumpToArea the pill row already used), so the diagram is a
 // real way to navigate, not just decoration in front of the list.
+// Reveals itself the way an actual org chart gets drawn — trunk down from
+// the PM, then the spine out, then each branch line down to its
+// department, each node popping in right as its own branch lands — rather
+// than everything just fading in together. Each stagger delay is chained
+// off the one before it so the sequence reads as one continuous draw
+// rather than several unrelated animations that happen to overlap.
 function CabinetOrgChart({ groups }) {
   if (groups.length === 0) return null;
   const maxCount = Math.max(...groups.map((g) => g.members.length));
+  const branchStart = 0.55;
+  const branchStep = 0.05;
   return (
     <div style={{ marginTop: 32, marginBottom: 8, display: "flex", flexDirection: "column", alignItems: "center" }}>
       <motion.div
-        initial={{ opacity: 0, y: -8 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: -8, scale: 0.9 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
         viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.35, ease: "backOut" }}
         style={{
           display: "flex", flexDirection: "column", alignItems: "center", gap: 6, padding: "10px 20px",
           borderRadius: 12, background: `${COLORS.accent}12`, border: `1px solid ${COLORS.accent}40`,
@@ -288,38 +323,60 @@ function CabinetOrgChart({ groups }) {
       >
         <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 15, color: COLORS.accent }}>Prime Minister</span>
       </motion.div>
-      <div style={{ width: 2, height: 22, background: COLORS.hairline }} />
-      <div style={{ width: "100%", maxWidth: 760, height: 1, background: COLORS.hairline }} />
+      <motion.div
+        initial={{ height: 0 }}
+        whileInView={{ height: 22 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ duration: 0.25, delay: 0.3, ease: "easeOut" }}
+        style={{ width: 2, background: COLORS.hairline }}
+      />
+      <motion.div
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ duration: 0.4, delay: 0.4, ease: "easeOut" }}
+        style={{ width: "100%", maxWidth: 760, height: 1, background: COLORS.hairline }}
+      />
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "18px 22px", maxWidth: 820, marginTop: 22 }}>
         {groups.map((g, gi) => {
           const accent = SECTION_ACCENTS[gi % SECTION_ACCENTS.length];
           const size = Math.round(36 + (g.members.length / maxCount) * 26);
+          const Icon = AREA_ICONS[g.area] ?? IconQuestion;
+          const branchDelay = branchStart + gi * branchStep;
           return (
             <motion.button
               key={g.area}
               onClick={() => jumpToArea(g.area)}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: -8 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.3, delay: gi * 0.02, ease: "easeOut" }}
-              whileHover={{ y: -2 }}
+              transition={{ duration: 0.3, delay: branchDelay + 0.1, ease: "easeOut" }}
+              whileHover={{ y: -3 }}
               style={{
                 position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
                 width: 96, background: "none", border: "none", cursor: "pointer", padding: 0,
               }}
             >
-              <div style={{ position: "absolute", top: -22, width: 1, height: 22, background: COLORS.hairline }} />
+              <motion.div
+                initial={{ height: 0 }}
+                whileInView={{ height: 22 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.2, delay: branchDelay, ease: "easeOut" }}
+                style={{ position: "absolute", top: -22, width: 1, background: COLORS.hairline }}
+              />
               <div
                 style={{
                   width: size, height: size, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-                  background: `${accent}20`, border: `2px solid ${accent}`, fontFamily: FONT_BODY, fontWeight: 700,
-                  fontSize: 14, color: accent, flexShrink: 0,
+                  background: `${accent}20`, border: `2px solid ${accent}`, color: accent, flexShrink: 0,
                 }}
               >
-                {g.members.length}
+                <Icon size={Math.round(size * 0.42)} />
               </div>
               <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 600, color: COLORS.ink, textAlign: "center", lineHeight: 1.3 }}>
                 {g.area}
+              </span>
+              <span style={{ fontFamily: FONT_MONO, fontSize: 10, color: COLORS.inkSoft }}>
+                {g.members.length} {g.members.length === 1 ? "minister" : "ministers"}
               </span>
             </motion.button>
           );

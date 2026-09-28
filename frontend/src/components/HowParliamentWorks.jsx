@@ -2,8 +2,9 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
-import { PageHeader, CommonsBadge } from "./shared";
+import { PageHeader, CommonsBadge, FlowNode, FlowArrow } from "./shared";
 import CommonsChamber from "./CommonsChamber";
+import { IconVote, IconLords } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
 
 function CrownGraphic() {
@@ -88,6 +89,94 @@ function DeliveryDiagram() {
   );
 }
 
+// A bill bouncing between the two Houses is exactly the "thing travelling
+// between two nodes" pattern FlowNode/FlowArrow already draw for the
+// donor-to-recipient pages — oscillate makes the same coin-style dot
+// travel back and forth instead of one-way, which is the whole point of
+// "ping pong".
+function PingPongDiagram() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35 }}
+      style={{
+        display: "flex", alignItems: "center", justifyContent: "center", gap: 4, marginTop: 14,
+        padding: "18px 14px", background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 12,
+      }}
+    >
+      <FlowNode icon={IconVote} label="Commons" color={COLORS.commonsGreen} />
+      <FlowArrow color="#7A4B63" oscillate showGlyph={false} glyph="" trackWidth={64} />
+      <FlowNode icon={IconLords} label="Lords" color="#7A4B63" />
+    </motion.div>
+  );
+}
+
+function MajorityBarDiagram() {
+  const total = 650;
+  const majority = 326;
+  const pct = (majority / total) * 100;
+  return (
+    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }} style={{ marginTop: 14, maxWidth: 420 }}>
+      <div style={{ position: "relative", height: 16, borderRadius: 999, background: `${COLORS.accent}14`, overflow: "visible" }}>
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          style={{ position: "absolute", left: 0, top: 0, bottom: 0, background: COLORS.accent, borderRadius: 999 }}
+        />
+        <div style={{ position: "absolute", left: `${pct}%`, top: -4, bottom: -4, width: 2, background: COLORS.ink }} />
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, fontFamily: FONT_MONO, fontSize: 11, color: COLORS.inkSoft }}>
+        <span>0 seats</span>
+        <span style={{ color: COLORS.ink, fontWeight: 700 }}>326 needed for a majority</span>
+        <span>650 seats</span>
+      </div>
+    </motion.div>
+  );
+}
+
+function FPTPDiagram() {
+  const candidates = [
+    { name: "Candidate A", pct: 34, color: COLORS.accent, winner: true },
+    { name: "Candidate B", pct: 29, color: "#9C3B3B" },
+    { name: "Candidate C", pct: 24, color: "#2F6F4E" },
+    { name: "Candidate D", pct: 13, color: COLORS.inkSoft },
+  ];
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35 }}
+      style={{ marginTop: 14, maxWidth: 420, display: "flex", flexDirection: "column", gap: 9 }}
+    >
+      {candidates.map((c) => (
+        <div key={c.name}>
+          <div style={{ display: "flex", justifyContent: "space-between", fontFamily: FONT_BODY, fontSize: 12, marginBottom: 3 }}>
+            <span style={{ color: COLORS.ink, fontWeight: c.winner ? 700 : 400 }}>
+              {c.name}
+              {c.winner ? " — wins the seat" : ""}
+            </span>
+            <span style={{ fontFamily: FONT_MONO, color: COLORS.inkSoft }}>{c.pct}%</span>
+          </div>
+          <div style={{ height: 8, borderRadius: 999, background: `${c.color}14`, overflow: "hidden" }}>
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${c.pct}%` }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              style={{ height: "100%", borderRadius: 999, background: c.color }}
+            />
+          </div>
+        </div>
+      ))}
+      <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginTop: 2 }}>
+        An illustrative example — Candidate A wins with only 34% of the vote, because First Past The Post only needs
+        the most votes, not a majority of them.
+      </div>
+    </motion.div>
+  );
+}
+
 const STRUCTURE_ROWS = [
   {
     key: "monarch",
@@ -127,8 +216,8 @@ const BILL_PROCESS_STAGES = [
   { key: "report", label: "Report Stage", desc: "The whole House considers the amendments made in Committee, and can propose further changes." },
   { key: "third", label: "3rd Reading", desc: "A final debate and vote on the bill as it now stands, in the House where it started." },
   { key: "otherhouse", label: "Other House", desc: "The bill then goes through the same stages (1st reading through 3rd reading) in the other House — Lords if it started in the Commons, or vice versa." },
-  { key: "pingpong", label: "\"Ping Pong\"", desc: "If the two Houses disagree on amendments, the bill bounces back and forth between them until they reach agreement — nicknamed \"ping pong\"." },
-  { key: "assent", label: "Royal Assent", desc: "The Monarch formally approves the bill — a ceremonial step that hasn't been refused since 1708. The bill is now an Act of Parliament: it's law." },
+  { key: "pingpong", label: "\"Ping Pong\"", desc: "If the two Houses disagree on amendments, the bill bounces back and forth between them until they reach agreement — nicknamed \"ping pong\".", visual: <PingPongDiagram /> },
+  { key: "assent", label: "Royal Assent", desc: "The Monarch formally approves the bill — a ceremonial step that hasn't been refused since 1708. The bill is now an Act of Parliament: it's law.", visual: <CrownGraphic /> },
   { key: "implementation", label: "Implementation", desc: "Laws often don't take effect immediately. Ministers issue \"commencement orders\" to bring parts of an Act into force, and further detailed rules (secondary legislation) are often needed before departments and councils can actually enforce it." },
 ];
 
@@ -245,11 +334,33 @@ const MP_JOB_STAGES = [
 const ELECTION_STAGES = [
   { key: "called", label: "Election Called", desc: "General elections happen at least every 5 years, but the Prime Minister can request one sooner. All 650 Commons seats are contested at once." },
   { key: "candidates", label: "Candidates Stand", desc: "In each of the UK's 650 constituencies, candidates put themselves forward — representing a party, or standing as independents." },
-  { key: "vote", label: "Voters Vote (FPTP)", desc: "The UK uses First Past The Post: each voter gets one vote in their own constituency, and whoever gets the most votes there wins — even without an outright majority of votes cast." },
+  { key: "vote", label: "Voters Vote (FPTP)", desc: "The UK uses First Past The Post: each voter gets one vote in their own constituency, and whoever gets the most votes there wins — even without an outright majority of votes cast.", visual: <FPTPDiagram /> },
   { key: "mp", label: "An MP Is Elected", desc: "The winning candidate in each constituency becomes that area's Member of Parliament, taking a seat in the House of Commons." },
-  { key: "government-formed", label: "Government Forms", desc: "Whichever party wins more than half of the 650 seats (326+) can form a Government alone. If no party reaches that, parties may form a coalition, or one may govern as a minority." },
+  { key: "government-formed", label: "Government Forms", desc: "Whichever party wins more than half of the 650 seats (326+) can form a Government alone. If no party reaches that, parties may form a coalition, or one may govern as a minority.", visual: <MajorityBarDiagram /> },
   { key: "pm-appointed", label: "PM Appointed", desc: "The Monarch formally invites the leader of the party that can command a Commons majority to become Prime Minister and form a Government." },
 ];
+
+// A quiet "you are here" marker for the stages that don't have a bespoke
+// diagram of their own — every expand panel gets at least this much visual
+// structure, rather than reading as a wall of plain paragraph text.
+function StageProgressDots({ index, total, color }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 14 }}>
+      {Array.from({ length: total }).map((_, i) => (
+        <span
+          key={i}
+          style={{
+            width: i === index ? 20 : 7, height: 7, borderRadius: 999, flexShrink: 0,
+            background: i === index ? color : `${color}30`, transition: "width 0.2s",
+          }}
+        />
+      ))}
+      <span style={{ fontFamily: FONT_MONO, fontSize: 10.5, color: COLORS.inkSoft, marginLeft: 6, whiteSpace: "nowrap" }}>
+        Stage {index + 1} of {total}
+      </span>
+    </div>
+  );
+}
 
 // Used to be a row of pills where only one stage's explanation could be
 // open at a time — reading through a ten-stage process meant clicking,
@@ -259,7 +370,7 @@ const ELECTION_STAGES = [
 // the whole sequence doesn't mean re-clicking your way through it one
 // panel at a time. The connecting spine also just reads as more of an
 // actual diagram than a pill row sitting above an unrelated box did.
-function StepTimeline({ stages, color }) {
+function StepTimeline({ stages, color, showProgress = false }) {
   const [openKeys, setOpenKeys] = useState(() => new Set([stages[0].key]));
 
   function toggle(key) {
@@ -272,32 +383,32 @@ function StepTimeline({ stages, color }) {
   }
 
   return (
-    <div style={{ position: "relative", paddingLeft: 34 }}>
+    <div style={{ position: "relative" }}>
       <div style={{ position: "absolute", left: 15, top: 16, bottom: 16, width: 2, background: `${color}30` }} />
       {stages.map((stage, i) => {
         const isOpen = openKeys.has(stage.key);
         return (
-          <div key={stage.key} style={{ position: "relative", marginBottom: i < stages.length - 1 ? 4 : 0 }}>
-            <span
-              style={{
-                position: "absolute", left: -34, top: 8, width: 30, height: 30, borderRadius: "50%",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                background: isOpen ? color : COLORS.paperCard, border: `2px solid ${color}`,
-                color: isOpen ? "#fff" : color, fontFamily: FONT_MONO, fontSize: 12, fontWeight: 700,
-                transition: "background 0.2s, color 0.2s", flexShrink: 0,
-              }}
-            >
-              {i + 1}
-            </span>
+          <div key={stage.key} style={{ marginBottom: i < stages.length - 1 ? 4 : 0 }}>
             <motion.button
               onClick={() => withScrollPreserved(() => toggle(stage.key))}
               whileHover={{ x: 2 }}
               style={{
-                display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, width: "100%",
+                display: "flex", alignItems: "center", gap: 12, width: "100%",
                 background: "none", border: "none", padding: "8px 0", cursor: "pointer", textAlign: "left",
               }}
             >
-              <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 16, color: COLORS.ink }}>{stage.label}</span>
+              <span
+                style={{
+                  flexShrink: 0, width: 30, height: 30, borderRadius: "50%",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  background: isOpen ? color : COLORS.paperCard, border: `2px solid ${color}`,
+                  color: isOpen ? "#fff" : color, fontFamily: FONT_MONO, fontSize: 12, fontWeight: 700,
+                  transition: "background 0.2s, color 0.2s",
+                }}
+              >
+                {i + 1}
+              </span>
+              <span style={{ flex: 1, fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 16, color: COLORS.ink }}>{stage.label}</span>
               <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ flexShrink: 0, color, fontSize: 13 }}>▾</motion.span>
             </motion.button>
             <AnimatePresence initial={false}>
@@ -309,10 +420,11 @@ function StepTimeline({ stages, color }) {
                   transition={{ duration: 0.25, ease: "easeInOut" }}
                   style={{ overflow: "hidden" }}
                 >
-                  <div style={{ paddingBottom: 18 }}>
+                  <div style={{ paddingLeft: 42, paddingBottom: 18 }}>
                     <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.6, maxWidth: 720 }}>
                       {stage.desc}
                     </div>
+                    {showProgress && !stage.visual && <StageProgressDots index={i} total={stages.length} color={color} />}
                     {stage.visual}
                   </div>
                 </motion.div>
@@ -325,7 +437,7 @@ function StepTimeline({ stages, color }) {
   );
 }
 
-function DiagramSection({ title, intro, stages, color, index = 0 }) {
+function DiagramSection({ title, intro, stages, color, index = 0, showProgress = false }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -349,7 +461,7 @@ function DiagramSection({ title, intro, stages, color, index = 0 }) {
           {intro}
         </p>
       )}
-      <StepTimeline stages={stages} color={color} />
+      <StepTimeline stages={stages} color={color} showProgress={showProgress} />
     </motion.div>
   );
 }
@@ -490,6 +602,7 @@ export default function HowParliamentWorks() {
           intro="The UK's system separates ceremonial authority, law-making, and day-to-day running of the country into distinct roles."
           stages={STRUCTURE_ROWS}
           color={COLORS.accent}
+          showProgress
         />
 
         <DiagramSection
@@ -499,6 +612,7 @@ export default function HowParliamentWorks() {
           intro="Every law goes through the same basic journey — though it can take anywhere from weeks to years."
           stages={BILL_PROCESS_STAGES}
           color="#7A4B63"
+          showProgress
         />
 
         <DiagramSection
@@ -508,6 +622,7 @@ export default function HowParliamentWorks() {
           intro="Every MP in this app got their seat through the same process."
           stages={ELECTION_STAGES}
           color="#2F6F4E"
+          showProgress
         />
 
         <DiagramSection
@@ -517,6 +632,7 @@ export default function HowParliamentWorks() {
           intro="Once elected, what does the role actually involve day to day — and what does it pay?"
           stages={MP_JOB_STAGES}
           color="#4C6FA6"
+          showProgress
         />
 
         <ConstituencyLookup />
