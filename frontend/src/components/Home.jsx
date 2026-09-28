@@ -65,14 +65,14 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
       const [donationsRes, rolesRes] = await Promise.all([
         supabase
           .from("financial_interests")
-          .select("id, summary, value_amount, date_registered, donor_name, politicians(name)")
+          .select("id, summary, value_amount, date_registered, donor_name, politicians(id, name)")
           .not("value_amount", "is", null)
           .order("date_registered", { ascending: false })
           .order("id", { ascending: false })
           .limit(4),
         supabase
           .from("financial_interests")
-          .select("id, summary, date_registered, politicians(name)")
+          .select("id, summary, date_registered, politicians(id, name)")
           .eq("category", "Employment and earnings")
           .not("date_registered", "is", null)
           .order("date_registered", { ascending: false })
@@ -117,7 +117,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
       const [donationsRes, billsRes, giftsRes, petitionsRes] = await Promise.all([
         supabase
           .from("financial_interests")
-          .select("id, summary, value_amount, date_registered, donor_name, politicians(name)")
+          .select("id, summary, value_amount, date_registered, donor_name, politicians(id, name)")
           .not("value_amount", "is", null)
           .order("date_registered", { ascending: false })
           .order("id", { ascending: false })
@@ -130,7 +130,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
           .limit(4),
         supabase
           .from("ministerial_gifts")
-          .select("id, department, kind, date_or_period, description, politicians(name)")
+          .select("id, department, kind, date_or_period, description, politicians(id, name)")
           .order("date_or_period", { ascending: false })
           .limit(3),
         supabase
@@ -145,16 +145,19 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
         type: "donation", date: d.date_registered,
         title: d.politicians?.name ?? "Unknown MP",
         detail: `${d.donor_name ?? d.summary}${d.value_amount ? ` · £${Number(d.value_amount).toLocaleString()}` : ""}`,
+        politicianId: d.politicians?.id ?? null,
       }));
       const billItems = (billsRes.data ?? []).map((b) => ({
         type: "bill", date: b.last_updated,
         title: b.short_title,
         detail: `${b.current_stage ?? "Stage update"}${b.sponsoring_department ? ` · ${b.sponsoring_department}` : ""}`,
+        billId: b.bill_id,
       }));
       const giftItems = (giftsRes.data ?? []).map((g) => ({
         type: "gift", date: g.date_or_period,
         title: g.politicians?.name ?? "Minister",
         detail: `${g.description ?? g.kind}${g.department ? ` · ${g.department}` : ""}`,
+        politicianId: g.politicians?.id ?? null,
       }));
       const petitionItems = (petitionsRes.data ?? []).map((p) => ({
         type: "petition", date: p.government_responded_at,
@@ -173,6 +176,12 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
 
   const items = activeTab === "donations" ? donations : roles;
 
+  const politicianById = useMemo(() => {
+    const map = new Map();
+    for (const p of allPoliticians) map.set(p.id, p);
+    return map;
+  }, [allPoliticians]);
+
   const constituencyMatches = useMemo(() => {
     const q = constituencyQuery.trim().toLowerCase();
     if (q.length < 2) return [];
@@ -181,6 +190,17 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
 
   function handleSelectPolitician(p) {
     onViewProfile?.(p);
+  }
+
+  function handleSelectPoliticianById(id) {
+    const p = politicianById.get(id);
+    if (p) handleSelectPolitician(p);
+  }
+
+  function handleChangeFeedClick(item) {
+    if (item.type === "bill") onNavigate?.("voting");
+    else if (item.type === "donation" || item.type === "gift") handleSelectPoliticianById(item.politicianId);
+    else if (item.type === "petition") onNavigate?.("petitions");
   }
 
   function handleRemoveWatched(id) {
@@ -286,7 +306,20 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
           {!loading && items.length > 0 && (
             <div style={{ display: "flex", flexDirection: "column" }}>
               {items.map((item, i) => (
-                <div key={item.id} style={{ padding: "12px 0", borderBottom: i < items.length - 1 ? `1px solid ${COLORS.hairline}` : "none" }}>
+                <div
+                  key={item.id}
+                  onClick={() => handleSelectPoliticianById(item.politicians?.id)}
+                  style={{
+                    padding: "12px 4px 12px 0",
+                    marginLeft: -4,
+                    borderRadius: 6,
+                    borderBottom: i < items.length - 1 ? `1px solid ${COLORS.hairline}` : "none",
+                    cursor: item.politicians?.id ? "pointer" : "default",
+                    transition: "background 0.15s",
+                  }}
+                  onMouseEnter={(e) => { if (item.politicians?.id) e.currentTarget.style.background = COLORS.paperCard; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
                     <div style={{ minWidth: 0 }}>
                       <div style={{ fontFamily: FONT_DISPLAY, fontSize: 16.5, color: COLORS.ink }}>
@@ -421,11 +454,21 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
               return (
                 <div
                   key={bill.bill_id}
+                  onClick={() => onNavigate?.("voting")}
+                  role={onNavigate ? "button" : undefined}
+                  tabIndex={onNavigate ? 0 : undefined}
+                  onKeyDown={(e) => { if (onNavigate && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); onNavigate("voting"); } }}
                   style={{
                     borderLeft: `3px solid ${category.color}`,
-                    padding: "10px 0 10px 12px",
+                    padding: "10px 10px 10px 12px",
+                    marginRight: -10,
+                    borderRadius: "0 6px 6px 0",
                     borderBottom: i < upcomingBills.length - 1 ? `1px solid ${COLORS.hairline}` : "none",
+                    cursor: onNavigate ? "pointer" : "default",
+                    transition: "background 0.15s",
                   }}
+                  onMouseEnter={(e) => { if (onNavigate) e.currentTarget.style.background = COLORS.paperCard; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                 >
                   <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15.5, color: COLORS.ink }}>
                     {bill.short_title}
@@ -490,16 +533,27 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                   {recentChanges?.map((item, i) => {
                     const meta = CHANGE_FEED_TYPES[item.type];
                     const Icon = meta.icon;
+                    const clickable = item.type === "bill" || item.type === "petition" || (item.politicianId != null);
                     return (
                       <div
                         key={`${item.type}-${i}`}
+                        onClick={clickable ? () => handleChangeFeedClick(item) : undefined}
+                        role={clickable ? "button" : undefined}
+                        tabIndex={clickable ? 0 : undefined}
+                        onKeyDown={clickable ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleChangeFeedClick(item); } } : undefined}
                         style={{
                           display: "flex",
                           gap: 12,
                           alignItems: "flex-start",
-                          paddingBottom: 10,
+                          padding: "0 6px 10px 0",
+                          margin: "0 -6px 0 0",
+                          borderRadius: 6,
                           borderBottom: i < recentChanges.length - 1 ? `1px solid ${COLORS.hairline}` : "none",
+                          cursor: clickable ? "pointer" : "default",
+                          transition: "background 0.15s",
                         }}
+                        onMouseEnter={(e) => { if (clickable) e.currentTarget.style.background = COLORS.paperCard; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                       >
                         <span
                           style={{
