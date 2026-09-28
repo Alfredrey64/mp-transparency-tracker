@@ -5,6 +5,7 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../the
 import { formatDate, partyColour } from "../lib/format";
 import { categoriseBill } from "../lib/bills";
 import { PageHeader } from "./shared";
+import { BillJourney } from "./BillJourney";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { IconVote, IconBills } from "./icons";
 
@@ -567,6 +568,12 @@ export default function VotingRecords() {
           </div>
         )}
       </div>
+
+      {!loadingBills && bills.length > 0 && (
+        <div style={{ marginTop: 32 }}>
+          <BillJourney bills={bills} />
+        </div>
+      )}
 
       <div style={{ marginTop: 32 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 600, color: COLORS.ink }}>

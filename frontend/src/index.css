@@ -86,6 +86,24 @@ body {
   background: transparent;
 }
 
+.mp-bill-track {
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-hairline) transparent;
+}
+
+.mp-bill-track::-webkit-scrollbar {
+  height: 5px;
+}
+
+.mp-bill-track::-webkit-scrollbar-thumb {
+  background: var(--c-hairline);
+  border-radius: 3px;
+}
+
+.mp-bill-track::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 @media (max-width: 880px) {
   .mp-app-shell {
     flex-direction: column;
