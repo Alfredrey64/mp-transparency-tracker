@@ -92,10 +92,13 @@ function niceScale(dataMin, dataMax, targetTicks = 5) {
 // the actual shape of the spread — often a long tail, not evenly spaced —
 // with the bins that make up the list below highlighted against the rest.
 // The bars and the axis share the same niceMin/niceMax domain, so a tick
-// at "£50,000" always lines up with the bar actually at £50,000.
-function DistributionChart({ data, color, shownCount, formatValue }) {
+// at "£50,000" always lines up with the bar actually at £50,000. Every
+// non-empty bar is also clickable — the only way to actually find "who has
+// the lowest attendance" is to be able to select the bottom of the chart,
+// not just read the shape of it.
+function DistributionChart({ data, color, shownCount, formatValue, activeBin, onSelectBin }) {
   const BINS = 24;
-  const { bins, min, max, ticks } = useMemo(() => {
+  const { bins, min, max, ticks, binWidth } = useMemo(() => {
     const values = data.map((e) => e.value);
     const dataMin = Math.min(...values, 0);
     const dataMax = Math.max(...values);
@@ -106,7 +109,7 @@ function DistributionChart({ data, color, shownCount, formatValue }) {
       const idx = Math.min(BINS - 1, Math.max(0, Math.floor((v - scale.niceMin) / width)));
       counts[idx]++;
     }
-    return { bins: counts, min: scale.niceMin, max: scale.niceMax, ticks: scale.ticks };
+    return { bins: counts, min: scale.niceMin, max: scale.niceMax, ticks: scale.ticks, binWidth: width };
   }, [data]);
 
   const maxBinCount = Math.max(...bins, 1);
@@ -115,26 +118,43 @@ function DistributionChart({ data, color, shownCount, formatValue }) {
 
   return (
     <div style={{ marginBottom: 22, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: "16px 18px 12px" }}>
-      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12, color: COLORS.ink, marginBottom: 12 }}>
-        How {data.length} ranked MPs spread out
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
+        <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12, color: COLORS.ink }}>
+          How {data.length} ranked MPs spread out — tap a bar to see who's there
+        </div>
+        {activeBin != null && (
+          <button
+            onClick={() => onSelectBin?.(null)}
+            style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+          >
+            Clear selection ×
+          </button>
+        )}
       </div>
 
       <div style={{ position: "relative", height: 76, marginBottom: 2 }}>
         <div style={{ display: "flex", alignItems: "flex-end", gap: 2, height: "100%" }}>
-          {bins.map((count, i) => (
-            <motion.div
-              key={i}
-              initial={{ scaleY: 0 }}
-              animate={{ scaleY: 1 }}
-              transition={{ duration: 0.3, delay: i * 0.012, ease: "easeOut" }}
-              style={{
-                flex: 1, height: `${Math.max((count / maxBinCount) * 100, count > 0 ? 4 : 0)}%`,
-                background: color, opacity: i >= thresholdBin ? 0.95 : 0.25, borderRadius: "2px 2px 0 0",
-                transformOrigin: "bottom",
-              }}
-              title={`${count} MP${count === 1 ? "" : "s"}`}
-            />
-          ))}
+          {bins.map((count, i) => {
+            const isActive = activeBin === i;
+            return (
+              <motion.button
+                key={i}
+                onClick={() => count > 0 && onSelectBin?.(isActive ? null : i, { min: min + i * binWidth, max: min + (i + 1) * binWidth })}
+                initial={{ scaleY: 0 }}
+                animate={{ scaleY: 1 }}
+                transition={{ duration: 0.3, delay: i * 0.012, ease: "easeOut" }}
+                whileHover={count > 0 ? { scaleY: 1.04 } : {}}
+                style={{
+                  flex: 1, height: `${Math.max((count / maxBinCount) * 100, count > 0 ? 4 : 0)}%`,
+                  background: color, opacity: isActive ? 1 : i >= thresholdBin ? 0.95 : 0.25,
+                  border: isActive ? `2px solid ${COLORS.ink}` : "none",
+                  borderRadius: "2px 2px 0 0", transformOrigin: "bottom", padding: 0,
+                  cursor: count > 0 ? "pointer" : "default",
+                }}
+                title={`${count} MP${count === 1 ? "" : "s"}`}
+              />
+            );
+          })}
         </div>
       </div>
 
@@ -223,6 +243,12 @@ export default function Rankings({ onSelectPolitician }) {
   const [interestRows, setInterestRows] = useState(null);
   const [category, setCategory] = useState("expenses");
   const [query, setQuery] = useState("");
+  const [binFilter, setBinFilter] = useState(null); // { index, min, max } | null
+
+  function changeCategory(key) {
+    setCategory(key);
+    setBinFilter(null);
+  }
 
   useEffect(() => {
     async function load() {
@@ -347,12 +373,19 @@ export default function Rankings({ onSelectPolitician }) {
 
   const filtered = useMemo(() => {
     if (!active.data) return [];
+    let list = active.data;
     const q = query.trim().toLowerCase();
-    if (!q) return active.data;
-    return active.data.filter((e) => e.politician.name.toLowerCase().includes(q) || (e.politician.constituency ?? "").toLowerCase().includes(q));
-  }, [active.data, query]);
+    if (q) list = list.filter((e) => e.politician.name.toLowerCase().includes(q) || (e.politician.constituency ?? "").toLowerCase().includes(q));
+    if (binFilter) list = list.filter((e) => e.value >= binFilter.min && e.value < binFilter.max);
+    return list;
+  }, [active.data, query, binFilter]);
 
-  const shown = filtered.slice(0, TOP_N);
+  // With no bin selected, this is a "Top 30" leaderboard. Selecting a bar
+  // on the histogram switches it to "every MP in that exact range" instead
+  // — that's the only way to actually answer "who has the lowest
+  // attendance", since the bottom of the distribution is never in the
+  // Top 30 by definition.
+  const shown = binFilter ? filtered : filtered.slice(0, TOP_N);
   const maxValue = active.data?.[0]?.value || 1;
 
   return (
@@ -368,7 +401,7 @@ export default function Rankings({ onSelectPolitician }) {
         {CATEGORIES.map((c) => (
           <button
             key={c.key}
-            onClick={() => setCategory(c.key)}
+            onClick={() => changeCategory(c.key)}
             style={{
               position: "relative", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, padding: "8px 16px", borderRadius: 999,
               border: "none", background: "transparent", color: category === c.key ? "#fff" : COLORS.inkSoft, cursor: "pointer", zIndex: 1,
@@ -397,7 +430,15 @@ export default function Rankings({ onSelectPolitician }) {
       </div>
 
       {!loading && active.data.length > 0 && (
-        <DistributionChart key={active.key} data={active.data} color={active.color} shownCount={TOP_N} formatValue={active.formatValue} />
+        <DistributionChart
+          key={active.key}
+          data={active.data}
+          color={active.color}
+          shownCount={TOP_N}
+          formatValue={active.formatValue}
+          activeBin={binFilter?.index}
+          onSelectBin={(index, range) => setBinFilter(index == null ? null : { index, ...range })}
+        />
       )}
 
       <div style={{ position: "relative", maxWidth: 420, marginBottom: 16 }}>
@@ -414,6 +455,21 @@ export default function Rankings({ onSelectPolitician }) {
           }}
         />
       </div>
+
+      {binFilter && (
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14, fontFamily: FONT_BODY, fontSize: 13 }}>
+          <span style={{ color: COLORS.ink }}>
+            Showing all <strong>{filtered.length}</strong> MP{filtered.length === 1 ? "" : "s"} between{" "}
+            <strong>{active.formatValue({ value: binFilter.min })}</strong> and <strong>{active.formatValue({ value: binFilter.max })}</strong>
+          </span>
+          <button
+            onClick={() => setBinFilter(null)}
+            style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: active.color, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+          >
+            Back to Top {TOP_N}
+          </button>
+        </div>
+      )}
 
       {loading && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>}
       {!loading && filtered.length === 0 && (

@@ -6,7 +6,7 @@ import { formatDate, partyColour, shortCategory } from "../lib/format";
 import { categoriseBill } from "../lib/bills";
 import { getWatchlist, removeFromWatchlist } from "../lib/watchlist";
 import { IconSearch, IconCoin, IconBills, IconInfluence, IconPetition, IconGroup, IconPulse, IconShield, IconRankings, IconManifesto, IconPartyFinance } from "./icons";
-import { EyebrowLabel, ParliamentSilhouette } from "./shared";
+import { EyebrowLabel } from "./shared";
 import { PartyHemicycleSection } from "./PartyHemicycle";
 import { withScrollPreserved } from "../lib/preserveScroll";
 
@@ -225,13 +225,6 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
 
   return (
     <div style={{ maxWidth: 1180, margin: "0 auto", padding: "clamp(32px, 6vw, 56px) clamp(16px, 5vw, 24px) 60px", position: "relative" }}>
-      <div
-        aria-hidden
-        style={{ position: "absolute", top: -10, right: "clamp(-40px, -2vw, 0px)", opacity: 0.05, pointerEvents: "none", zIndex: 0 }}
-      >
-        <ParliamentSilhouette width={460} color={COLORS.accent} />
-      </div>
-
       <motion.div
         initial="hidden"
         animate="visible"
@@ -499,7 +492,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "clamp(24px, 4vw, 32px)", marginBottom: 40 }}>
         <div style={{ border: `1px solid ${COLORS.hairline}`, borderRadius: 16, padding: "20px 22px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, color: COLORS.ink }}>Bills Going Through Parliament</div>
+            <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 20, color: COLORS.ink }}>Bills Going Through Parliament</div>
             {onNavigate && (
               <button
                 onClick={() => onNavigate("voting")}

@@ -260,7 +260,7 @@ export default function PoliticianList({ onSelect }) {
               >
                 <Avatar politician={p} color={color} />
                 <span style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, color: COLORS.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 16.5, color: COLORS.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                     {p.name}
                   </div>
                   <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>

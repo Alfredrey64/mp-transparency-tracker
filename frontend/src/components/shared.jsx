@@ -94,15 +94,21 @@ export function FlowNode({ icon: Icon, label, color, broken = false }) {
 // money actually moving between the two nodes: `oscillate` makes it travel
 // back and forth (for the revolving-door page, where the whole point is
 // people moving both ways) instead of one-way loop (donor → recipient
-// pages). A gentle spin plus a squash-and-stretch on arrival/departure is
-// what keeps a coin sliding along a straight line from reading as a flat,
-// robotic dot. `showGlyph` can drop the arrow character where a page
-// already has its own connecting visual (e.g. the rotating door icon) and
-// just wants the coin.
+// pages). `reverse` flips a one-way loop right-to-left instead, for the
+// rarer case where the money actually originates from the node drawn on
+// the right — e.g. an undisclosed funder paying a talking head, where the
+// funder node comes second for narrative reasons ("here's what you see,
+// here's what you don't") but the cash itself moves the other way;
+// without this the coin reads as the left-hand node paying the right-hand
+// one, which is backwards. A gentle spin plus a squash-and-stretch on
+// arrival/departure is what keeps a coin sliding along a straight line
+// from reading as a flat, robotic dot. `showGlyph` can drop the arrow
+// character where a page already has its own connecting visual (e.g. the
+// rotating door icon) and just wants the coin.
 const COIN_SIZE = 17;
 const OSCILLATE_CLEARANCE = 6;
 
-export function FlowArrow({ color, animated = true, oscillate = false, showGlyph = true, trackWidth = 40 }) {
+export function FlowArrow({ color, animated = true, oscillate = false, reverse = false, showGlyph = true, trackWidth = 40 }) {
   const coinColor = color ?? COLORS.accent;
   const travelStart = OSCILLATE_CLEARANCE;
   const travelEnd = trackWidth - COIN_SIZE - OSCILLATE_CLEARANCE;
@@ -114,6 +120,8 @@ export function FlowArrow({ color, animated = true, oscillate = false, showGlyph
           animate={
             oscillate
               ? { left: [`${travelStart}px`, `${travelEnd}px`, `${travelStart}px`], rotate: [0, 180, 360], scale: [0.85, 1, 0.85] }
+              : reverse
+              ? { left: ["79%", "3%"], rotate: [360, 0], scale: [0.5, 1, 1, 0.5], opacity: [0, 1, 1, 0] }
               : { left: ["3%", "79%"], rotate: [0, 360], scale: [0.5, 1, 1, 0.5], opacity: [0, 1, 1, 0] }
           }
           transition={
@@ -320,20 +328,48 @@ export function SectionDivider() {
   );
 }
 
-// A dossier sheet, not a boxed widget: MP profiles stack a dozen of these
-// down one column, and a dozen identical rounded-shadow cards in a row is
-// the single densest instance of the "SaaS card kit" look on the whole
-// site. A hairline rule and a serif heading read instead as one continuous
-// case file with clearly marked sections — closer to a civil service
-// personnel file than a dashboard.
+// Used to be a bare hairline rule between sections — a dozen of them down
+// one column read as one continuous sheet rather than a stack of boxes.
+// In practice, on a page this dense (a dozen-plus sections per MP), that
+// read as one undifferentiated wall of text rather than clearly separate
+// facts, so each section is now a real bordered card, colour-coded by
+// what kind of information it is (money-related sections share a colour,
+// accountability-related ones share another, and so on) — the same
+// per-topic colour language already used for the sidebar and page
+// headers elsewhere on the site.
+const CARD_ACCENT = {
+  "Parliamentary Contact": "#2F80ED",
+  "Cabinet Role": "#D9A62A",
+  "Standards & Investigations": "#E63946",
+  "Voting Record": "#9B4FE0",
+  "Rebellion Rate": "#9B4FE0",
+  "Recent Parliamentary Activity": "#1FA97C",
+  "In the News": "#E0367A",
+  "Funding by Sector": "#F2622A",
+  "Money & Votes": "#F2622A",
+  "Current Outside Roles": "#F2622A",
+  "Committee & Donor Overlap": "#E63946",
+  "Same Name, Two Registers": "#E63946",
+};
+
 export function CardShell({ title, children }) {
+  const accent = CARD_ACCENT[title] ?? COLORS.accent;
   return (
-    <div style={{ paddingTop: 18, borderTop: `1px solid ${COLORS.hairline}` }}>
-      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink, marginBottom: 10 }}>
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      style={{
+        background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${accent}`,
+        borderRadius: 14, padding: "18px 20px",
+      }}
+    >
+      <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 17, color: COLORS.ink, marginBottom: 10 }}>
         {title}
       </div>
       {children}
-    </div>
+    </motion.div>
   );
 }
 

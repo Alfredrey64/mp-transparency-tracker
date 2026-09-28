@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
 import { PageHeader, CommonsBadge } from "./shared";
@@ -251,65 +251,73 @@ const ELECTION_STAGES = [
   { key: "pm-appointed", label: "PM Appointed", desc: "The Monarch formally invites the leader of the party that can command a Commons majority to become Prime Minister and form a Government." },
 ];
 
-function FlowDiagram({ stages, activeKey, onSelect, color }) {
+// Used to be a row of pills where only one stage's explanation could be
+// open at a time — reading through a ten-stage process meant clicking,
+// reading, clicking again, and losing the previous stage's text every
+// time. A vertical timeline with independent expand/collapse per stage
+// lets several stay open at once (or all of them), so working through
+// the whole sequence doesn't mean re-clicking your way through it one
+// panel at a time. The connecting spine also just reads as more of an
+// actual diagram than a pill row sitting above an unrelated box did.
+function StepTimeline({ stages, color }) {
+  const [openKeys, setOpenKeys] = useState(() => new Set([stages[0].key]));
+
+  function toggle(key) {
+    setOpenKeys((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  }
+
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
+    <div style={{ position: "relative", paddingLeft: 34 }}>
+      <div style={{ position: "absolute", left: 15, top: 16, bottom: 16, width: 2, background: `${color}30` }} />
       {stages.map((stage, i) => {
-        const active = activeKey === stage.key;
+        const isOpen = openKeys.has(stage.key);
         return (
-          <div key={stage.key} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <motion.button
-              onClick={() => onSelect(stage.key)}
-              whileHover={{ scale: active ? 1 : 1.04 }}
-              whileTap={{ scale: 0.94 }}
-              animate={{
-                backgroundColor: active ? color : COLORS.paperCard,
-                borderColor: active ? color : COLORS.hairline,
-                color: active ? "#ffffff" : COLORS.ink,
-                boxShadow: active ? "0 3px 10px rgba(0,0,0,0.18)" : "0 0px 0px rgba(0,0,0,0)",
-              }}
-              transition={{ duration: 0.22, ease: "easeOut" }}
+          <div key={stage.key} style={{ position: "relative", marginBottom: i < stages.length - 1 ? 4 : 0 }}>
+            <span
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                fontFamily: FONT_BODY,
-                fontSize: 13,
-                fontWeight: 600,
-                padding: "9px 16px 9px 9px",
-                borderRadius: 999,
-                borderWidth: 1.5,
-                borderStyle: "solid",
-                cursor: "pointer",
-                whiteSpace: "nowrap",
+                position: "absolute", left: -34, top: 8, width: 30, height: 30, borderRadius: "50%",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                background: isOpen ? color : COLORS.paperCard, border: `2px solid ${color}`,
+                color: isOpen ? "#fff" : color, fontFamily: FONT_MONO, fontSize: 12, fontWeight: 700,
+                transition: "background 0.2s, color 0.2s", flexShrink: 0,
               }}
             >
-              <motion.span
-                key={active ? "on" : "off"}
-                initial={{ scale: 0.55 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 500, damping: 22 }}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: 22,
-                  height: 22,
-                  borderRadius: "50%",
-                  fontSize: 11,
-                  fontFamily: FONT_MONO,
-                  background: active ? "rgba(255,255,255,0.25)" : `${color}1A`,
-                  color: active ? "#fff" : color,
-                  flexShrink: 0,
-                }}
-              >
-                {i + 1}
-              </motion.span>
-              <span>{stage.label}</span>
+              {i + 1}
+            </span>
+            <motion.button
+              onClick={() => withScrollPreserved(() => toggle(stage.key))}
+              whileHover={{ x: 2 }}
+              style={{
+                display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, width: "100%",
+                background: "none", border: "none", padding: "8px 0", cursor: "pointer", textAlign: "left",
+              }}
+            >
+              <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 16, color: COLORS.ink }}>{stage.label}</span>
+              <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ flexShrink: 0, color, fontSize: 13 }}>▾</motion.span>
             </motion.button>
-            {i < stages.length - 1 && (
-              <span style={{ color: color, opacity: 0.4, fontSize: 18, fontWeight: 700 }}>→</span>
-            )}
+            <AnimatePresence initial={false}>
+              {isOpen && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.25, ease: "easeInOut" }}
+                  style={{ overflow: "hidden" }}
+                >
+                  <div style={{ paddingBottom: 18 }}>
+                    <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.6, maxWidth: 720 }}>
+                      {stage.desc}
+                    </div>
+                    {stage.visual}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         );
       })}
@@ -318,17 +326,6 @@ function FlowDiagram({ stages, activeKey, onSelect, color }) {
 }
 
 function DiagramSection({ title, intro, stages, color, index = 0 }) {
-  const [activeKey, setActiveKey] = useState(stages[0].key);
-  const active = stages.find((s) => s.key === activeKey);
-  const activeIndex = stages.findIndex((s) => s.key === activeKey);
-
-  const [prevIndex, setPrevIndex] = useState(activeIndex);
-  const [direction, setDirection] = useState(0);
-  if (activeIndex !== prevIndex) {
-    setDirection(activeIndex > prevIndex ? 1 : -1);
-    setPrevIndex(activeIndex);
-  }
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -344,41 +341,15 @@ function DiagramSection({ title, intro, stages, color, index = 0 }) {
         borderTop: `4px solid ${color}`,
         borderRadius: 16,
         padding: "24px clamp(16px, 4vw, 28px)",
-        
       }}
     >
       <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 24, color: COLORS.ink, marginTop: 0, marginBottom: 6 }}>{title}</h2>
       {intro && (
-        <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, marginTop: 0, marginBottom: 18, maxWidth: 780 }}>
+        <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, marginTop: 0, marginBottom: 20, maxWidth: 780 }}>
           {intro}
         </p>
       )}
-      <div style={{ overflowX: "auto", paddingBottom: 8 }}>
-        <FlowDiagram stages={stages} activeKey={activeKey} onSelect={(key) => withScrollPreserved(() => setActiveKey(key))} color={color} />
-      </div>
-      {active && (
-        <motion.div
-          key={active.key}
-          initial={{ opacity: 0, x: direction * 28 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-          style={{
-            marginTop: 18,
-            background: COLORS.paper,
-            borderTop: `1px solid ${COLORS.hairline}`,
-            borderRight: `1px solid ${COLORS.hairline}`,
-            borderBottom: `1px solid ${COLORS.hairline}`,
-            borderLeft: `4px solid ${color}`,
-            borderRadius: 10,
-            padding: "16px 18px",
-            maxWidth: active.visual ? undefined : 780,
-          }}
-        >
-          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink, marginBottom: 6 }}>{active.label}</div>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.6, maxWidth: 780 }}>{active.desc}</div>
-          {active.visual}
-        </motion.div>
-      )}
+      <StepTimeline stages={stages} color={color} />
     </motion.div>
   );
 }
@@ -507,7 +478,7 @@ export default function HowParliamentWorks() {
     <div style={{ padding: PAGE_PADDING }}>
       <PageHeader
         title="How Parliament Works"
-        subtitle="Click through each stage below to see a clear explanation — from who's actually in charge, to how a bill becomes law, to how your own MP ends up in Parliament in the first place."
+        subtitle="Expand any stage below for a clear explanation — from who's actually in charge, to how a bill becomes law, to how your own MP ends up in Parliament in the first place."
         maxWidth={900}
       />
 

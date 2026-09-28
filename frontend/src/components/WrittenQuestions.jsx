@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { formatDate, partyColour, stripHtml } from "../lib/format";
 import { IconQuestion, IconSearch } from "./icons";
@@ -162,7 +162,7 @@ function QuestionCard({ q, politicianById, onSelectPolitician, index }) {
         </span>
       </div>
 
-      <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 9 }}>
+      <div style={{ fontFamily: FONT_MONO, fontSize: 11, fontWeight: 600, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.02em", marginTop: 4, marginBottom: 13 }}>
         To {q.answering_body_name ?? "the government"}{q.heading ? ` · ${q.heading}` : ""}
       </div>
       <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, color: COLORS.ink, lineHeight: 1.5, marginBottom: answered ? 10 : 0 }}>

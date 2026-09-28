@@ -230,7 +230,14 @@ function NationScreen({ selected, onSelect, onContinue, onSkip }) {
           parties you could actually vote for. Nothing here is saved; it only shapes which parties appear in your
           results.
         </p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: 12, marginBottom: 22 }}>
+        {/* Square cards, and enough clearance above the whole grid (not
+            just above each card's own border) for the pin's full travel —
+            the pin used to only clear its own card's edge, which still
+            left it poking up into the paragraph above (row 1) or the row
+            above it (row 2+) once the drop-and-bounce animation was
+            accounted for. rowGap alone now carries that clearance, so it
+            doesn't depend on which row is selected. */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", columnGap: 12, rowGap: 32, marginTop: 26, marginBottom: 22 }}>
           {NATIONS.map((n) => {
             const active = selected === n.key;
             return (
@@ -240,8 +247,8 @@ function NationScreen({ selected, onSelect, onContinue, onSkip }) {
                 whileHover={{ y: -3 }}
                 whileTap={{ scale: 0.96 }}
                 style={{
-                  position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
-                  padding: "22px 10px 16px", borderRadius: 14, cursor: "pointer",
+                  position: "relative", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14,
+                  aspectRatio: "1 / 1", borderRadius: 14, cursor: "pointer",
                   border: `2px solid ${active ? COLORS.accent : COLORS.hairline}`,
                   background: active ? `${COLORS.accent}10` : COLORS.paper,
                   transition: "border-color 0.15s, background 0.15s",
@@ -251,20 +258,20 @@ function NationScreen({ selected, onSelect, onContinue, onSkip }) {
                   {active && (
                     <motion.span
                       key="pin"
-                      initial={{ y: -22, opacity: 0, scale: 0.5 }}
-                      animate={{ y: [-22, 2, -2, 0], opacity: 1, scale: 1 }}
+                      initial={{ y: -18, opacity: 0, scale: 0.5 }}
+                      animate={{ y: [-18, 1, -1, 0], opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.5 }}
                       transition={{ duration: 0.5, ease: "easeOut" }}
-                      style={{ position: "absolute", top: -30, color: COLORS.accent, display: "flex" }}
+                      style={{ position: "absolute", top: -24, color: COLORS.accent, display: "flex" }}
                     >
                       <IconPin size={20} />
                     </motion.span>
                   )}
                 </AnimatePresence>
                 {n.flagIcon ? (
-                  <n.flagIcon size={22} />
+                  <n.flagIcon size={24} />
                 ) : (
-                  <span style={{ fontSize: 30, lineHeight: 1 }} aria-hidden>{n.flag}</span>
+                  <span style={{ fontSize: 32, lineHeight: 1 }} aria-hidden>{n.flag}</span>
                 )}
                 <span style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13, color: COLORS.ink, textAlign: "center" }}>
                   {n.label}

@@ -137,53 +137,11 @@ export default function PartyFinances() {
         maxWidth={900}
       />
 
-      <PartyFinanceRulesSection />
-
-      <div
-        style={{
-          background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: "14px 18px",
-          marginBottom: 28, maxWidth: 900, fontFamily: FONT_BODY, fontSize: 13, lineHeight: 1.6, color: COLORS.inkSoft,
-        }}
-      >
-        This is different from the "Donors & Lobbying" tab, which covers what individual MPs personally declare.
-        This covers money given straight to a party's central or local accounts — reported to the{" "}
-        <a href="https://search.electoralcommission.org.uk/" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
-          Electoral Commission
-        </a>{" "}
-        under a higher threshold (£11,180, or £2,230 for further donations from the same source in a year). It's a
-        rolling 12-month window, kept up to date daily, not a full historical record.
-      </div>
-
-      <div
-        style={{
-          background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: "14px 18px",
-          marginBottom: 28, maxWidth: 900, fontFamily: FONT_BODY, fontSize: 13, lineHeight: 1.6, color: COLORS.inkSoft,
-        }}
-      >
-        <strong style={{ color: COLORS.ink }}>Seen a big donation in the news that isn't here yet?</strong> Parties
-        only have to report their donations to the Electoral Commission once a quarter, with up to 20 working days
-        after the quarter ends to file — so a donation that's already public knowledge through press reporting can
-        take a few months to reach the official register this page draws from. That's a gap in the official reporting
-        timeline, not a gap in this site's data — once a party's quarterly return is filed and published, the next
-        daily update picks it up automatically.
-      </div>
-
-      {stats.totalValue > 0 && (
-        <div
-          style={{
-            background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: "14px 18px",
-            marginBottom: 28, maxWidth: 900, fontFamily: FONT_BODY, fontSize: 13, lineHeight: 1.6, color: COLORS.inkSoft,
-          }}
-        >
-          £{Math.round(stats.taggedValue).toLocaleString()} of £{Math.round(stats.totalValue).toLocaleString()} declared
-          to parties in this period (<strong style={{ color: COLORS.ink }}>{taggedPct}%</strong>) is confidently matched
-          to a donor's industry, using UK company records and the Electoral Commission's own donor-type data. The rest
-          is named individuals (deliberately not auto-matched to companies) and donors that couldn't be confidently
-          identified.
-        </div>
-      )}
-
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 24, marginBottom: 32 }}>
+      {/* The actual numbers, first — this used to sit below a rules
+          explainer and three separate text boxes, most of which just
+          repeated what the page subtitle already says. Real content
+          belongs above the reference material, not after it. */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 24, marginTop: 24, marginBottom: 20 }}>
         <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: 20 }}>
           <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 14 }}>
             Total Declared by Party
@@ -223,7 +181,9 @@ export default function PartyFinances() {
             Money by Industry
           </div>
           <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 12 }}>
-            Across all parties, where confidently identifiable
+            {stats.totalValue > 0
+              ? `£${Math.round(stats.taggedValue).toLocaleString()} of £${Math.round(stats.totalValue).toLocaleString()} confidently matched to an industry (${taggedPct}%) — the rest is named individuals or unidentifiable donors.`
+              : "Across all parties, where confidently identifiable"}
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {stats.sectorBars.map((s, i) => (
@@ -256,7 +216,21 @@ export default function PartyFinances() {
         </div>
       </div>
 
-      <div style={{ marginBottom: 16 }}>
+      <div
+        style={{
+          background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: "12px 16px",
+          marginBottom: 32, maxWidth: 900, fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.55, color: COLORS.inkSoft,
+        }}
+      >
+        <strong style={{ color: COLORS.ink }}>Missing a donation you saw in the news?</strong> Parties file quarterly,
+        with up to 20 working days after the quarter ends — so recent press reports can lag the official register by
+        a few months. That's a gap in the reporting timeline, not in this site's data; it's picked up automatically
+        once filed.
+      </div>
+
+      <PartyFinanceRulesSection />
+
+      <div style={{ marginBottom: 16, marginTop: 8 }}>
         <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>Party by Party</h2>
         <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 0 }}>
           Click a party to see its largest individual donors in this period.

@@ -86,7 +86,7 @@ export default function DevolvedAdministrations() {
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
                   <div>
-                    <div style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, marginBottom: 2 }}>{a.name}</div>
+                    <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 21, color: COLORS.ink, marginBottom: 2 }}>{a.name}</div>
                     <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, display: "flex", alignItems: "center", gap: 6 }}>
                       {a.flagIcon ? <a.flagIcon size={13} /> : <span style={{ fontSize: 13 }} aria-hidden>{a.flag}</span>}
                       {a.place}

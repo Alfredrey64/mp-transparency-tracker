@@ -15,7 +15,7 @@ function MaskedExpertDiagram() {
     >
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, flexWrap: "wrap" }}>
         <FlowNode icon={IconBroadcast} label={'"Independent expert" on air'} color="#5A7FA6" />
-        <FlowArrow />
+        <FlowArrow color="#9C3B3B" reverse />
         <FlowNode icon={IconQuestion} label="Who's actually paying them" color="#9C3B3B" broken />
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, margin: "18px auto 0", maxWidth: 480 }}>

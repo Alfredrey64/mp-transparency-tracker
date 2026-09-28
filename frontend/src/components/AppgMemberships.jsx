@@ -35,7 +35,6 @@ const QUICK_FACTS = [
   { label: "500+", note: "active groups registered" },
   { label: "No", note: "power to pass laws" },
   { label: "Cross-Party", note: "by constitution" },
-  { label: "6 Weeks", note: "re-registration cycle" },
 ];
 
 // Standard UK party colours, used only for the small notable-member dots
