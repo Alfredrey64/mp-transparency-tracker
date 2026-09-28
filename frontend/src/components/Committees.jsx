@@ -45,7 +45,7 @@ function InquiryRow({ inquiry }) {
 }
 
 function CommitteeCard({ committee, index, open, onToggle }) {
-  const color = partyColour(committee.chair_party_colour, COLORS.brass);
+  const color = partyColour(committee.chair_party_colour, COLORS.accent);
   const purpose = stripHtml(committee.purpose);
 
   return (
@@ -158,8 +158,8 @@ export default function Committees() {
                 onClick={() => setHouseFilter(h)}
                 style={{
                   fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, padding: "7px 14px", borderRadius: 999,
-                  border: `1px solid ${houseFilter === h ? COLORS.brass : COLORS.hairline}`,
-                  background: houseFilter === h ? COLORS.brass : "transparent",
+                  border: `1px solid ${houseFilter === h ? COLORS.accent : COLORS.hairline}`,
+                  background: houseFilter === h ? COLORS.accent : "transparent",
                   color: houseFilter === h ? "#fff" : COLORS.inkSoft, cursor: "pointer", transition: "all 0.15s",
                 }}
               >

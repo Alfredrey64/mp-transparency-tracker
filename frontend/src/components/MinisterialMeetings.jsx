@@ -172,8 +172,8 @@ export default function MinisterialMeetings() {
       <div
         style={{
           display: "flex", flexWrap: "wrap", gap: 24, alignItems: "center", justifyContent: "space-between",
-          background: `linear-gradient(160deg, ${COLORS.brass}12, ${COLORS.paperCard} 70%)`,
-          border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.brass}`, borderRadius: 14, padding: "20px 24px",
+          background: `linear-gradient(160deg, ${COLORS.accent}12, ${COLORS.paperCard} 70%)`,
+          border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.accent}`, borderRadius: 14, padding: "20px 24px",
           marginTop: 24, marginBottom: 16,
         }}
       >
@@ -244,7 +244,7 @@ export default function MinisterialMeetings() {
         {groups.map(([label, meetings]) => (
           <div key={label} style={{ marginBottom: 28 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 12 }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: COLORS.brass, flexShrink: 0 }} />
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: COLORS.accent, flexShrink: 0 }} />
               <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", whiteSpace: "nowrap" }}>
                 {label}
               </span>

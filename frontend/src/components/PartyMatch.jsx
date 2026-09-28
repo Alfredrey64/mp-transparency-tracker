@@ -94,7 +94,7 @@ function MatchOrbitDiagram({ highlightKey, size = 160 }) {
         transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
         style={{ transformOrigin: `${center}px ${center}px` }}
       />
-      <circle cx={center} cy={center} r={8} fill="none" stroke={COLORS.brass} strokeWidth="2" />
+      <circle cx={center} cy={center} r={8} fill="none" stroke={COLORS.accent} strokeWidth="2" />
     </svg>
   );
 }
@@ -107,7 +107,7 @@ function ProgressBar({ current, total }) {
         initial={false}
         animate={{ width: `${pct}%` }}
         transition={{ duration: 0.35, ease: "easeOut" }}
-        style={{ height: "100%", background: `linear-gradient(90deg, ${COLORS.brass}, ${COLORS.gold})`, borderRadius: 999 }}
+        style={{ height: "100%", background: `linear-gradient(90deg, ${COLORS.accent}, ${COLORS.gold})`, borderRadius: 999 }}
       />
     </div>
   );
@@ -116,13 +116,13 @@ function ProgressBar({ current, total }) {
 const cardStyle = {
   background: COLORS.paperCard,
   border: `1px solid ${COLORS.hairline}`,
-  borderTop: `4px solid ${COLORS.brass}`,
+  borderTop: `4px solid ${COLORS.accent}`,
   borderRadius: 16,
   padding: "28px clamp(18px, 4vw, 32px)",
 };
 
 const primaryButtonStyle = {
-  fontFamily: FONT_BODY, fontWeight: 700, fontSize: 14.5, color: "#fff", background: COLORS.brass,
+  fontFamily: FONT_BODY, fontWeight: 700, fontSize: 14.5, color: "#fff", background: COLORS.accent,
   border: "none", borderRadius: 999, padding: "12px 26px", cursor: "pointer",
 };
 
@@ -180,7 +180,7 @@ function PrioritiesScreen({ selected, onToggle, onContinue }) {
                 style={{
                   display: "flex", alignItems: "center", gap: 7,
                   fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, padding: "6px 14px 6px 6px", borderRadius: 999,
-                  border: `1px solid ${active ? COLORS.brass : COLORS.hairline}`, background: active ? COLORS.brass : "transparent",
+                  border: `1px solid ${active ? COLORS.accent : COLORS.hairline}`, background: active ? COLORS.accent : "transparent",
                   color: active ? "#fff" : disabled ? `${COLORS.inkSoft}80` : COLORS.inkSoft,
                   cursor: disabled ? "not-allowed" : "pointer", transition: "border-color 0.15s, background 0.15s, color 0.15s",
                 }}
@@ -189,8 +189,8 @@ function PrioritiesScreen({ selected, onToggle, onContinue }) {
                   style={{
                     display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
                     width: 22, height: 22, borderRadius: 7,
-                    background: active ? "rgba(255,255,255,0.18)" : `${COLORS.brass}14`,
-                    color: active ? "#fff" : COLORS.brass,
+                    background: active ? "rgba(255,255,255,0.18)" : `${COLORS.accent}14`,
+                    color: active ? "#fff" : COLORS.accent,
                   }}
                 >
                   <Icon size={12} />
@@ -220,7 +220,7 @@ function ExplainerToggle({ text }) {
         aria-expanded={open}
         style={{
           display: "flex", alignItems: "center", gap: 6, fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700,
-          color: COLORS.brass, background: "transparent", border: "none", cursor: "pointer", padding: 0,
+          color: COLORS.accent, background: "transparent", border: "none", cursor: "pointer", padding: 0,
         }}
       >
         <motion.span
@@ -268,12 +268,12 @@ function QuestionScreen({ question, index, total, value, onAnswer, onBack }) {
           <span
             style={{
               display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-              width: 32, height: 32, borderRadius: 10, background: `${COLORS.brass}14`, color: COLORS.brass,
+              width: 32, height: 32, borderRadius: 10, background: `${COLORS.accent}14`, color: COLORS.accent,
             }}
           >
             <Icon size={17} />
           </span>
-          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.brass, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.accent, textTransform: "uppercase", letterSpacing: "0.06em" }}>
             {issueLabel(question.issue)}
             <div style={{ fontWeight: 600, color: COLORS.inkSoft, textTransform: "none", letterSpacing: "normal", marginTop: 2 }}>
               Question {index + 1} of {total}
@@ -296,11 +296,11 @@ function QuestionScreen({ question, index, total, value, onAnswer, onBack }) {
                 style={{
                   display: "flex", alignItems: "center", gap: 12, fontFamily: FONT_BODY, fontSize: 14, fontWeight: 600,
                   padding: "12px 16px", borderRadius: 10, textAlign: "left", cursor: "pointer",
-                  border: `1px solid ${active ? COLORS.brass : COLORS.hairline}`, background: active ? `${COLORS.brass}14` : "transparent",
+                  border: `1px solid ${active ? COLORS.accent : COLORS.hairline}`, background: active ? `${COLORS.accent}14` : "transparent",
                   color: COLORS.ink, transition: "border-color 0.15s, background 0.15s",
                 }}
               >
-                <span style={{ position: "relative", width: 16, height: 16, borderRadius: "50%", flexShrink: 0, border: `2px solid ${active ? COLORS.brass : COLORS.hairline}` }}>
+                <span style={{ position: "relative", width: 16, height: 16, borderRadius: "50%", flexShrink: 0, border: `2px solid ${active ? COLORS.accent : COLORS.hairline}` }}>
                   <AnimatePresence>
                     {active && (
                       <motion.span
@@ -308,7 +308,7 @@ function QuestionScreen({ question, index, total, value, onAnswer, onBack }) {
                         animate={{ scale: 1 }}
                         exit={{ scale: 0 }}
                         transition={{ type: "spring", stiffness: 500, damping: 25 }}
-                        style={{ position: "absolute", inset: 2, borderRadius: "50%", background: COLORS.brass }}
+                        style={{ position: "absolute", inset: 2, borderRadius: "50%", background: COLORS.accent }}
                       />
                     )}
                   </AnimatePresence>

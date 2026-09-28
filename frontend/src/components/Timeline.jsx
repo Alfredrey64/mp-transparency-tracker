@@ -491,7 +491,7 @@ export default function Timeline() {
         aria-hidden
         style={{
           position: "fixed", top: 0, left: 0, right: 0, height: 3, transformOrigin: "0% 50%",
-          background: `linear-gradient(90deg, ${COLORS.brass}, #6E4B6E)`, scaleX: progress, zIndex: 50,
+          background: `linear-gradient(90deg, ${COLORS.accent}, #6E4B6E)`, scaleX: progress, zIndex: 50,
         }}
       />
 
@@ -514,7 +514,7 @@ export default function Timeline() {
             }}
           >
             {tab === t.key && (
-              <motion.span layoutId="timeline-tab-pill" transition={{ type: "spring", stiffness: 500, damping: 35 }} style={{ position: "absolute", inset: 0, background: COLORS.brass, borderRadius: 999, zIndex: -1 }} />
+              <motion.span layoutId="timeline-tab-pill" transition={{ type: "spring", stiffness: 500, damping: 35 }} style={{ position: "absolute", inset: 0, background: COLORS.accent, borderRadius: 999, zIndex: -1 }} />
             )}
             {t.label}
           </button>
@@ -530,7 +530,7 @@ export default function Timeline() {
             style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", margin: "24px 0 24px", fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}
           >
             <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ width: 12, height: 12, borderRadius: 3, background: `${COLORS.brass}20`, border: `1px solid ${COLORS.brass}` }} />
+              <span style={{ width: 12, height: 12, borderRadius: 3, background: `${COLORS.accent}20`, border: `1px solid ${COLORS.accent}` }} />
               New government — click to expand
             </span>
             <span style={{ display: "flex", alignItems: "center", gap: 6 }}>

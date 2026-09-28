@@ -181,7 +181,7 @@ export default function DonorsLobbying() {
               <motion.span
                 layoutId="donors-view-pill"
                 transition={{ type: "spring", stiffness: 500, damping: 38 }}
-                style={{ position: "absolute", inset: 0, background: COLORS.brass, borderRadius: 999, zIndex: 0 }}
+                style={{ position: "absolute", inset: 0, background: COLORS.accent, borderRadius: 999, zIndex: 0 }}
               />
             )}
             <span style={{ position: "relative", zIndex: 1 }}>{tab.label}</span>
@@ -501,7 +501,7 @@ function EducationCard({ title, children }) {
 function Bullet({ children }) {
   return (
     <li style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-      <span style={{ marginTop: 7, width: 4, height: 4, borderRadius: "50%", background: COLORS.brass, flexShrink: 0 }} />
+      <span style={{ marginTop: 7, width: 4, height: 4, borderRadius: "50%", background: COLORS.accent, flexShrink: 0 }} />
       <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, lineHeight: 1.5 }}>{children}</span>
     </li>
   );

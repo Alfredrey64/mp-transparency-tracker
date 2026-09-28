@@ -391,7 +391,7 @@ function ClaimsTabContent({ politician, claims }) {
 
   return (
     <div>
-      <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.brass}`, borderRadius: 12, padding: 16, marginBottom: 14 }}>
+      <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.accent}`, borderRadius: 12, padding: 16, marginBottom: 14 }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 4 }}>
           <span style={{ fontFamily: FONT_DISPLAY, fontSize: 26, color: COLORS.ink }}>
             £{summary.total.toLocaleString(undefined, { maximumFractionDigits: 0 })}
@@ -442,8 +442,8 @@ function ClaimsTabContent({ politician, claims }) {
                 </span>
                 <span
                   style={{
-                    fontFamily: FONT_MONO, fontSize: 14, fontWeight: 600, color: COLORS.brass, flexShrink: 0,
-                    lineHeight: 1.5, letterSpacing: "-0.01em", fontVariantNumeric: "tabular-nums", background: `${COLORS.brass}14`,
+                    fontFamily: FONT_MONO, fontSize: 14, fontWeight: 600, color: COLORS.accent, flexShrink: 0,
+                    lineHeight: 1.5, letterSpacing: "-0.01em", fontVariantNumeric: "tabular-nums", background: `${COLORS.accent}14`,
                     padding: "2px 9px", borderRadius: 999,
                   }}
                 >
@@ -605,7 +605,7 @@ function ManifestoTabContent({ politician }) {
 
   return (
     <div>
-      <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.brass}`, borderRadius: 12, padding: 16, marginBottom: 14 }}>
+      <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.accent}`, borderRadius: 12, padding: 16, marginBottom: 14 }}>
         <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, lineHeight: 1.55 }}>
           {manifesto.shortName}'s {manifesto.manifestoYear} manifesto, <em>{manifesto.manifestoTitle}</em> — summarised
           independently rather than reproduced (manifestos are copyrighted) — matched below against{" "}
@@ -614,7 +614,7 @@ function ManifestoTabContent({ politician }) {
           similar name; a policy area with none listed just means no matching bill has come to a vote yet, not that
           nothing has happened.
         </div>
-        <a href={manifesto.manifestoUrl} target="_blank" rel="noreferrer" style={{ display: "inline-block", marginTop: 8, fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: COLORS.brass }}>
+        <a href={manifesto.manifestoUrl} target="_blank" rel="noreferrer" style={{ display: "inline-block", marginTop: 8, fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: COLORS.accent }}>
           Read {manifesto.shortName}'s full manifesto ↗
         </a>
       </div>
@@ -676,7 +676,7 @@ function GiftsTabContent({ gifts }) {
               <span
                 style={{
                   fontFamily: FONT_BODY, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em",
-                  color: COLORS.brass, background: `${COLORS.brass}18`, padding: "2px 8px", borderRadius: 999,
+                  color: COLORS.accent, background: `${COLORS.accent}18`, padding: "2px 8px", borderRadius: 999,
                 }}
               >
                 {g.kind}
@@ -841,8 +841,8 @@ export default function PoliticianDetail({ politician, onBack }) {
                 title={watched ? "Remove from your watchlist" : "Add to your watchlist"}
                 style={{
                   display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-                  width: 32, height: 32, borderRadius: "50%", border: `1px solid ${watched ? COLORS.brass : COLORS.hairline}`,
-                  background: watched ? `${COLORS.brass}14` : "transparent", color: watched ? COLORS.brass : COLORS.inkSoft,
+                  width: 32, height: 32, borderRadius: "50%", border: `1px solid ${watched ? COLORS.accent : COLORS.hairline}`,
+                  background: watched ? `${COLORS.accent}14` : "transparent", color: watched ? COLORS.accent : COLORS.inkSoft,
                   cursor: "pointer", transition: "background 0.15s, border-color 0.15s, color 0.15s",
                 }}
               >
@@ -858,8 +858,8 @@ export default function PoliticianDetail({ politician, onBack }) {
               <div
                 style={{
                   display: "inline-flex", alignItems: "center", gap: 6, marginTop: 10, padding: "6px 14px",
-                  borderRadius: 999, background: `${COLORS.brass}14`, fontFamily: FONT_BODY, fontSize: 13,
-                  fontWeight: 700, color: COLORS.brass,
+                  borderRadius: 999, background: `${COLORS.accent}14`, fontFamily: FONT_BODY, fontSize: 13,
+                  fontWeight: 700, color: COLORS.accent,
                 }}
               >
                 £{Math.round(totalDeclaredValue).toLocaleString()} total declared value
@@ -895,7 +895,7 @@ export default function PoliticianDetail({ politician, onBack }) {
                     <motion.span
                       layoutId="detail-tab-pill"
                       transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                      style={{ position: "absolute", inset: 0, background: COLORS.brass, borderRadius: 999, zIndex: -1 }}
+                      style={{ position: "absolute", inset: 0, background: COLORS.accent, borderRadius: 999, zIndex: -1 }}
                     />
                   )}
                   {tab.label}
@@ -943,7 +943,7 @@ export default function PoliticianDetail({ politician, onBack }) {
                           }}
                         >
                           <div style={{ minWidth: 0, flex: 1 }}>
-                            <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 11.5, color: COLORS.brass, marginBottom: 6 }}>
+                            <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 11.5, color: COLORS.accent, marginBottom: 6 }}>
                               {shortCategory(item.category)}
                             </div>
                             <div style={{ fontFamily: FONT_BODY, fontSize: 16, color: COLORS.ink, lineHeight: 1.4 }}>
@@ -960,7 +960,7 @@ export default function PoliticianDetail({ politician, onBack }) {
                             </div>
                           </div>
                           {item.value_amount && (
-                            <div style={{ flexShrink: 0, fontFamily: FONT_MONO, fontSize: 16, fontWeight: 600, color: COLORS.brass, whiteSpace: "nowrap", paddingTop: 3 }}>
+                            <div style={{ flexShrink: 0, fontFamily: FONT_MONO, fontSize: 16, fontWeight: 600, color: COLORS.accent, whiteSpace: "nowrap", paddingTop: 3 }}>
                               £{Number(item.value_amount).toLocaleString()}
                             </div>
                           )}

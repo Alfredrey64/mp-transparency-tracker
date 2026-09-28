@@ -69,9 +69,9 @@ function PostcodeForm({ onFound, initialError }) {
   }
 
   return (
-    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${COLORS.brass}`, borderRadius: 16, padding: "28px clamp(18px, 4vw, 32px)", maxWidth: 480, margin: "24px auto 0" }}>
+    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${COLORS.accent}`, borderRadius: 16, padding: "28px clamp(18px, 4vw, 32px)", maxWidth: 480, margin: "24px auto 0" }}>
       <div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}>
-        <div style={{ width: 48, height: 48, borderRadius: "50%", background: `${COLORS.brass}14`, color: COLORS.brass, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ width: 48, height: 48, borderRadius: "50%", background: `${COLORS.accent}14`, color: COLORS.accent, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <IconPin size={22} />
         </div>
       </div>
@@ -97,7 +97,7 @@ function PostcodeForm({ onFound, initialError }) {
           type="submit"
           disabled={loading}
           style={{
-            fontFamily: FONT_BODY, fontWeight: 700, fontSize: 14, color: "#fff", background: COLORS.brass,
+            fontFamily: FONT_BODY, fontWeight: 700, fontSize: 14, color: "#fff", background: COLORS.accent,
             border: "none", borderRadius: 10, padding: "11px 20px", cursor: loading ? "default" : "pointer", opacity: loading ? 0.6 : 1, flexShrink: 0,
           }}
         >
@@ -127,13 +127,13 @@ function MPDashboard({ politician, onForget, onViewFullProfile }) {
             {politician.party} · {politician.constituency}
           </div>
           {politician.cabinet_role && (
-            <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.brass, marginTop: 4 }}>{politician.cabinet_role}</div>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accent, marginTop: 4 }}>{politician.cabinet_role}</div>
           )}
         </div>
         <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
           <button
             onClick={() => onViewFullProfile(politician)}
-            style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13, color: "#fff", background: COLORS.brass, border: "none", borderRadius: 999, padding: "9px 18px", cursor: "pointer" }}
+            style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13, color: "#fff", background: COLORS.accent, border: "none", borderRadius: 999, padding: "9px 18px", cursor: "pointer" }}
           >
             Full profile →
           </button>

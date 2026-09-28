@@ -37,7 +37,7 @@ function SignatureBar({ count, threshold, label, color }) {
 
 function PetitionRow({ petition, index, isOpen, onToggle }) {
   const isOpenState = petition.state === "open";
-  const color = petition.debate_outcome_summary || petition.debate_scheduled_on ? "#6E4B6E" : petition.government_responded_at ? "#2F6F4E" : COLORS.brass;
+  const color = petition.debate_outcome_summary || petition.debate_scheduled_on ? "#6E4B6E" : petition.government_responded_at ? "#2F6F4E" : COLORS.accent;
 
   return (
     <motion.div
@@ -171,7 +171,7 @@ export default function Petitions() {
               onClick={() => withScrollPreserved(() => setFilter(f.key))}
               style={{
                 fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, padding: "7px 14px", borderRadius: 999,
-                border: `1px solid ${active ? COLORS.brass : COLORS.hairline}`, background: active ? COLORS.brass : "transparent",
+                border: `1px solid ${active ? COLORS.accent : COLORS.hairline}`, background: active ? COLORS.accent : "transparent",
                 color: active ? "#fff" : COLORS.inkSoft, cursor: "pointer", transition: "all 0.15s",
               }}
             >

@@ -20,16 +20,17 @@ const HOME_NAV_ITEMS = [
 // One accent hue per section, used for its label dot, its card tint, its
 // active-item highlight, and its active item's icon colour — the fastest
 // way to tell at a glance which group you're in, independent of reading
-// the (smaller, uppercase) section label itself. Chosen to be distinct
-// from every other colour already in use elsewhere in the app (party
-// colours, budget categories, the brass/teal accent). Each section renders
-// as its own faintly tinted card so the groups stay visually distinct even
-// with every item on screen at once.
+// the (smaller, uppercase) section label itself. Turned up to real,
+// saturated colour rather than the muted institutional tones this used to
+// be — the whole point is that sections read as visually distinct, which a
+// set of near-identical desaturated browns and greens never quite managed.
+// Each section renders as its own faintly tinted card so the groups stay
+// visually distinct even with every item on screen at once.
 const SECTIONS = [
   {
     key: "learn",
     label: "Learn",
-    accent: "#5A7FA6",
+    accent: "#2F80ED",
     items: [
       { key: "howitworks", label: "How Parliament Works", icon: IconFlow },
       { key: "devolved", label: "Devolved Administrations", icon: IconDevolved },
@@ -46,7 +47,7 @@ const SECTIONS = [
     // does, not a government institution.
     key: "involved",
     label: "Get Involved",
-    accent: "#A8456B",
+    accent: "#E0367A",
     items: [
       { key: "partymatch", label: "Find Your Party", icon: IconCompass },
       { key: "petitions", label: "Petitions", icon: IconPetition },
@@ -55,7 +56,7 @@ const SECTIONS = [
   {
     key: "government",
     label: "The Government",
-    accent: "#9C6B30",
+    accent: "#D9A62A",
     items: [
       { key: "cabinet", label: "Cabinet", icon: IconCabinet },
       { key: "lords", label: "House of Lords", icon: IconLords },
@@ -75,7 +76,7 @@ const SECTIONS = [
     // pages just below, which are about what the registers can't show you.
     key: "money",
     label: "Money in Politics",
-    accent: "#B5533C",
+    accent: "#F2622A",
     items: [
       { key: "followTheMoney", label: "Follow the Money", icon: IconSearch },
       { key: "list", label: "Financial Interests", icon: IconCoin },
@@ -92,7 +93,7 @@ const SECTIONS = [
     // so neither section reads as a long, undifferentiated list.
     key: "gaps",
     label: "Transparency Gaps",
-    accent: "#9C3B3B",
+    accent: "#E63946",
     items: [
       { key: "darkMoney", label: "Dark Money", icon: IconDarkMoney },
       { key: "revolvingDoor", label: "Revolving Door", icon: IconDoor },
@@ -105,7 +106,7 @@ const SECTIONS = [
     // they vote and which cross-party groups they join.
     key: "accountability",
     label: "MP Accountability",
-    accent: "#6E4B6E",
+    accent: "#9B4FE0",
     items: [
       { key: "voting", label: "Voting Records & Bills", icon: IconVote },
       { key: "writtenQuestions", label: "Written Questions", icon: IconQuestion },
@@ -118,7 +119,7 @@ const SECTIONS = [
   {
     key: "history",
     label: "History",
-    accent: "#3F7D5C",
+    accent: "#1FA97C",
     items: [
       { key: "history", label: "Political History", icon: IconHistory },
       { key: "timeline", label: "Timeline", icon: IconTimeline },
@@ -240,7 +241,7 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician }) {
     <>
       <div style={{ marginBottom: 4, textAlign: "center" }}>
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 7 }}>
-          <ParliamentSilhouette width={46} color={COLORS.brass} opacity={0.95} />
+          <ParliamentSilhouette width={46} color={COLORS.accent} opacity={0.95} />
         </div>
         <EyebrowLabel>Public Record</EyebrowLabel>
         <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, color: "#fff", lineHeight: 1.2, marginTop: 4 }}>
@@ -298,7 +299,7 @@ export default function Sidebar({ activeView, onNavigate, onSelectPolitician }) 
         style={{ alignItems: "center", justifyContent: "space-between", background: COLORS.sidebarBg, padding: "14px 18px" }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <ParliamentSilhouette width={26} color={COLORS.brass} />
+          <ParliamentSilhouette width={26} color={COLORS.accent} />
           <span style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: "#fff" }}>UK Parliament Tracker</span>
         </div>
         <button

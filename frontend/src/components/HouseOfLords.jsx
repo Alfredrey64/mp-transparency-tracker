@@ -80,7 +80,7 @@ function LordsInterestsLink({ peer }) {
       rel="noreferrer"
       style={{
         display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14,
-        background: `${COLORS.brass}0c`, border: `1px solid ${COLORS.brass}33`, borderRadius: 12,
+        background: `${COLORS.accent}0c`, border: `1px solid ${COLORS.accent}33`, borderRadius: 12,
         padding: "14px 18px", marginBottom: 16, textDecoration: "none",
       }}
     >
@@ -92,7 +92,7 @@ function LordsInterestsLink({ peer }) {
           Straight to their entry on the official Register of Lords' Interests
         </div>
       </div>
-      <span style={{ flexShrink: 0, fontFamily: FONT_BODY, fontWeight: 700, fontSize: 15, color: COLORS.brass }}>↗</span>
+      <span style={{ flexShrink: 0, fontFamily: FONT_BODY, fontWeight: 700, fontSize: 15, color: COLORS.accent }}>↗</span>
     </a>
   );
 }
@@ -120,7 +120,7 @@ function PeerDetail({ peer, onBack, formerMp }) {
             {office && ` · in the Lords for ${office}`}
           </div>
           {peer.government_role && (
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 4, padding: "6px 14px", borderRadius: 999, background: `${COLORS.brass}14`, fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.brass }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 4, padding: "6px 14px", borderRadius: 999, background: `${COLORS.accent}14`, fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accent }}>
               {peer.government_role}
             </div>
           )}
@@ -129,7 +129,7 @@ function PeerDetail({ peer, onBack, formerMp }) {
         <div style={{ paddingTop: 24 }}>
           <LordsInterestsLink peer={peer} />
 
-          <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.brass}`, borderRadius: 12, padding: 20, marginBottom: 16 }}>
+          <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.accent}`, borderRadius: 12, padding: 20, marginBottom: 16 }}>
             <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 8 }}>Biography</div>
             {peer.wikipedia_bio ? (
               <>
@@ -152,8 +152,8 @@ function PeerDetail({ peer, onBack, formerMp }) {
           </div>
 
           {formerMp && (
-            <div style={{ background: `${COLORS.brass}0c`, border: `1px solid ${COLORS.brass}33`, borderRadius: 12, padding: "14px 18px", marginBottom: 16 }}>
-              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.brass, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>
+            <div style={{ background: `${COLORS.accent}0c`, border: `1px solid ${COLORS.accent}33`, borderRadius: 12, padding: "14px 18px", marginBottom: 16 }}>
+              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.accent, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>
                 Previously an MP
               </div>
               <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.55 }}>
@@ -196,12 +196,12 @@ function PeerDetail({ peer, onBack, formerMp }) {
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {peer.ministerial_history.map((m, i) => (
                   <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start", paddingBottom: 10, borderBottom: i < peer.ministerial_history.length - 1 ? `1px solid ${COLORS.hairline}` : "none" }}>
-                    <span style={{ flexShrink: 0, width: 6, height: 6, borderRadius: "50%", background: m.endDate ? COLORS.inkSoft : COLORS.brass, marginTop: 6, opacity: m.endDate ? 0.5 : 1 }} />
+                    <span style={{ flexShrink: 0, width: 6, height: 6, borderRadius: "50%", background: m.endDate ? COLORS.inkSoft : COLORS.accent, marginTop: 6, opacity: m.endDate ? 0.5 : 1 }} />
                     <div style={{ minWidth: 0 }}>
                       <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.4 }}>
                         {m.role}
                         {!m.endDate && (
-                          <span style={{ marginLeft: 8, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: COLORS.brass, background: `${COLORS.brass}18`, padding: "2px 8px", borderRadius: 999 }}>
+                          <span style={{ marginLeft: 8, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: COLORS.accent, background: `${COLORS.accent}18`, padding: "2px 8px", borderRadius: 999 }}>
                             Current
                           </span>
                         )}
@@ -226,12 +226,12 @@ function PeerDetail({ peer, onBack, formerMp }) {
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {peer.committees.map((c, i) => (
                   <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start", paddingBottom: 10, borderBottom: i < peer.committees.length - 1 ? `1px solid ${COLORS.hairline}` : "none" }}>
-                    <span style={{ flexShrink: 0, width: 6, height: 6, borderRadius: "50%", background: c.endDate ? COLORS.inkSoft : COLORS.brass, marginTop: 6, opacity: c.endDate ? 0.5 : 1 }} />
+                    <span style={{ flexShrink: 0, width: 6, height: 6, borderRadius: "50%", background: c.endDate ? COLORS.inkSoft : COLORS.accent, marginTop: 6, opacity: c.endDate ? 0.5 : 1 }} />
                     <div style={{ minWidth: 0 }}>
                       <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.4 }}>
                         {c.name}
                         {c.role && (
-                          <span style={{ marginLeft: 8, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: COLORS.brass, background: `${COLORS.brass}18`, padding: "2px 8px", borderRadius: 999 }}>
+                          <span style={{ marginLeft: 8, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: COLORS.accent, background: `${COLORS.accent}18`, padding: "2px 8px", borderRadius: 999 }}>
                             {c.role}
                           </span>
                         )}
@@ -256,7 +256,7 @@ function PeerDetail({ peer, onBack, formerMp }) {
 
               {peer.recent_activity.contributions?.length > 0 && (
                 <div style={{ marginBottom: peer.recent_activity.writtenQuestions?.length > 0 ? 18 : 0 }}>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.brass, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.accent, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
                     Debate Contributions
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -277,7 +277,7 @@ function PeerDetail({ peer, onBack, formerMp }) {
 
               {peer.recent_activity.writtenQuestions?.length > 0 && (
                 <div>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.brass, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.accent, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
                     Written Questions
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -391,8 +391,8 @@ export default function HouseOfLords() {
           onClick={() => withScrollPreserved(() => setActiveParty("All"))}
           style={{
             fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, padding: "7px 14px", borderRadius: 999,
-            border: `1px solid ${activeParty === "All" ? COLORS.brass : COLORS.hairline}`,
-            background: activeParty === "All" ? COLORS.brass : "transparent", color: activeParty === "All" ? "#fff" : COLORS.inkSoft, cursor: "pointer",
+            border: `1px solid ${activeParty === "All" ? COLORS.accent : COLORS.hairline}`,
+            background: activeParty === "All" ? COLORS.accent : "transparent", color: activeParty === "All" ? "#fff" : COLORS.inkSoft, cursor: "pointer",
           }}
         >
           All parties
@@ -424,8 +424,8 @@ export default function HouseOfLords() {
             onClick={() => withScrollPreserved(() => setActiveType(t))}
             style={{
               fontFamily: FONT_BODY, fontSize: 12, fontWeight: 600, padding: "5px 12px", borderRadius: 999,
-              border: `1px solid ${activeType === t ? COLORS.brass : COLORS.hairline}`,
-              background: activeType === t ? `${COLORS.brass}14` : "transparent", color: activeType === t ? COLORS.brass : COLORS.inkSoft, cursor: "pointer",
+              border: `1px solid ${activeType === t ? COLORS.accent : COLORS.hairline}`,
+              background: activeType === t ? `${COLORS.accent}14` : "transparent", color: activeType === t ? COLORS.accent : COLORS.inkSoft, cursor: "pointer",
             }}
           >
             {t}

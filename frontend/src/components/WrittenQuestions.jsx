@@ -33,9 +33,9 @@ function DepartmentDropdown({ value, options, onChange }) {
         style={{
           width: "100%", boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8,
           fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, color: COLORS.ink,
-          padding: "8px 12px", borderRadius: 8, border: `1px solid ${open ? COLORS.brass : COLORS.hairline}`,
+          padding: "8px 12px", borderRadius: 8, border: `1px solid ${open ? COLORS.accent : COLORS.hairline}`,
           background: COLORS.paper, cursor: "pointer", textAlign: "left",
-          boxShadow: open ? `0 0 0 3px ${COLORS.brass}22` : "none", transition: "border-color 0.15s, box-shadow 0.15s",
+          boxShadow: open ? `0 0 0 3px ${COLORS.accent}22` : "none", transition: "border-color 0.15s, box-shadow 0.15s",
         }}
       >
         <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{label}</span>
@@ -73,12 +73,12 @@ function DepartmentDropdown({ value, options, onChange }) {
                     onChange(d);
                     setOpen(false);
                   }}
-                  whileHover={{ backgroundColor: `${COLORS.brass}14` }}
+                  whileHover={{ backgroundColor: `${COLORS.accent}14` }}
                   style={{
                     display: "block", width: "100%", textAlign: "left", fontFamily: FONT_BODY, fontSize: 12.5,
-                    fontWeight: active ? 700 : 500, color: active ? COLORS.brass : COLORS.ink,
+                    fontWeight: active ? 700 : 500, color: active ? COLORS.accent : COLORS.ink,
                     padding: "8px 10px", borderRadius: 7, border: "none",
-                    background: active ? `${COLORS.brass}14` : "transparent", cursor: "pointer",
+                    background: active ? `${COLORS.accent}14` : "transparent", cursor: "pointer",
                     overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
                   }}
                 >
@@ -128,7 +128,7 @@ function QuestionCard({ q, politicianById, onSelectPolitician, index }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.25, delay: Math.min(index, 8) * 0.02 }}
-      style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `3px solid ${answered ? COLORS.brass : "#B08A3E"}`, borderRadius: 12, padding: "16px 18px" }}
+      style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `3px solid ${answered ? COLORS.accent : "#B08A3E"}`, borderRadius: 12, padding: "16px 18px" }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
         <Avatar url={q.asking_member_thumbnail_url} name={q.asking_member_name} color={color} />
@@ -151,7 +151,7 @@ function QuestionCard({ q, politicianById, onSelectPolitician, index }) {
           style={{
             flexShrink: 0, fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700, padding: "3px 9px", borderRadius: 999,
             textTransform: "uppercase", letterSpacing: "0.03em",
-            color: answered ? COLORS.brass : "#B08A3E", background: answered ? `${COLORS.brass}14` : "#B08A3E1a",
+            color: answered ? COLORS.accent : "#B08A3E", background: answered ? `${COLORS.accent}14` : "#B08A3E1a",
           }}
         >
           {answered ? "Answered" : "Awaiting answer"}
@@ -177,7 +177,7 @@ function QuestionCard({ q, politicianById, onSelectPolitician, index }) {
           href={`https://questions-statements.parliament.uk/written-questions/detail/${q.date_tabled}/${q.uin}`}
           target="_blank"
           rel="noreferrer"
-          style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: COLORS.brass }}
+          style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: COLORS.accent }}
         >
           Full record ↗
         </a>
@@ -279,8 +279,8 @@ export default function WrittenQuestions({ onSelectPolitician }) {
                 onClick={() => setHouseFilter(h)}
                 style={{
                   fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, padding: "6px 13px", borderRadius: 999,
-                  border: `1px solid ${houseFilter === h ? COLORS.brass : COLORS.hairline}`,
-                  background: houseFilter === h ? COLORS.brass : "transparent", color: houseFilter === h ? "#fff" : COLORS.inkSoft, cursor: "pointer",
+                  border: `1px solid ${houseFilter === h ? COLORS.accent : COLORS.hairline}`,
+                  background: houseFilter === h ? COLORS.accent : "transparent", color: houseFilter === h ? "#fff" : COLORS.inkSoft, cursor: "pointer",
                 }}
               >
                 {h}
@@ -302,8 +302,8 @@ export default function WrittenQuestions({ onSelectPolitician }) {
                 onClick={() => setStatusFilter(s)}
                 style={{
                   fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, padding: "6px 13px", borderRadius: 999,
-                  border: `1px solid ${statusFilter === s ? COLORS.brass : COLORS.hairline}`,
-                  background: statusFilter === s ? `${COLORS.brass}18` : "transparent", color: statusFilter === s ? COLORS.brass : COLORS.inkSoft, cursor: "pointer",
+                  border: `1px solid ${statusFilter === s ? COLORS.accent : COLORS.hairline}`,
+                  background: statusFilter === s ? `${COLORS.accent}18` : "transparent", color: statusFilter === s ? COLORS.accent : COLORS.inkSoft, cursor: "pointer",
                 }}
               >
                 {s}

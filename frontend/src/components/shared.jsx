@@ -102,7 +102,7 @@ const COIN_SIZE = 17;
 const OSCILLATE_CLEARANCE = 6;
 
 export function FlowArrow({ color, animated = true, oscillate = false, showGlyph = true, trackWidth = 40 }) {
-  const coinColor = color ?? COLORS.brass;
+  const coinColor = color ?? COLORS.accent;
   const travelStart = OSCILLATE_CLEARANCE;
   const travelEnd = trackWidth - COIN_SIZE - OSCILLATE_CLEARANCE;
   return (
@@ -197,7 +197,7 @@ export function PageHeader({ kicker = "Public Record · UK Parliament", title, s
             initial={{ scale: 0.75, rotate: -6, opacity: 0 }}
             animate={{ scale: 1, rotate: 0, opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.04, ease: "backOut" }}
-            style={{ display: "inline-flex", color: COLORS.brass, flexShrink: 0 }}
+            style={{ display: "inline-flex", color: COLORS.accent, flexShrink: 0 }}
           >
             <Icon size={isHero ? 40 : 30} />
           </motion.span>
@@ -212,7 +212,7 @@ export function PageHeader({ kicker = "Public Record · UK Parliament", title, s
           transformOrigin: align === "center" ? "center" : "left",
           height: 2,
           width: isHero ? 40 : 28,
-          background: COLORS.brass,
+          background: COLORS.accent,
           margin: align === "center" ? "16px auto 0" : "14px 0 0",
         }}
       />
@@ -246,8 +246,8 @@ export function PageHeader({ kicker = "Public Record · UK Parliament", title, s
 export function EyebrowLabel({ children }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-      <span style={{ width: 16, height: 2, background: COLORS.brass, flexShrink: 0 }} />
-      <span style={{ fontFamily: FONT_DISPLAY, fontStyle: "italic", fontSize: 15, color: COLORS.brass }}>
+      <span style={{ width: 16, height: 2, background: COLORS.accent, flexShrink: 0 }} />
+      <span style={{ fontFamily: FONT_DISPLAY, fontStyle: "italic", fontSize: 15, color: COLORS.accent }}>
         {children}
       </span>
     </div>
@@ -305,7 +305,7 @@ export function SectionDivider() {
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, margin: "14px 0" }}>
       <span style={{ width: 24, height: 1, background: COLORS.hairline }} />
-      <span style={{ width: 4, height: 4, borderRadius: "50%", background: COLORS.brass }} />
+      <span style={{ width: 4, height: 4, borderRadius: "50%", background: COLORS.accent }} />
       <span style={{ width: 24, height: 1, background: COLORS.hairline }} />
     </div>
   );
@@ -348,7 +348,7 @@ export function BiographyBox({ politician }) {
 export function ContactRow({ label, children }) {
   return (
     <div style={{ marginBottom: 10 }}>
-      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 10.5, color: COLORS.brass, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 2 }}>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 10.5, color: COLORS.accent, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 2 }}>
         {label}
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink }}>{children}</div>
@@ -625,7 +625,7 @@ export function RecentActivityBox({ politician }) {
 
       {contributions.length > 0 && (
         <div style={{ marginBottom: writtenQuestions.length > 0 ? 16 : 0 }}>
-          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.brass, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.accent, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
             Debate Contributions
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -646,7 +646,7 @@ export function RecentActivityBox({ politician }) {
 
       {writtenQuestions.length > 0 && (
         <div>
-          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.brass, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.accent, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
             Written Questions
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -707,7 +707,7 @@ export function NewsBox({ politician }) {
               }}
             >
               <div style={{ fontFamily: FONT_DISPLAY, fontSize: 14.5, color: COLORS.ink, lineHeight: 1.35 }}>{a.headline}</div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.brass, marginTop: 3, fontWeight: 600 }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.accent, marginTop: 3, fontWeight: 600 }}>
                 {a.source} · {formatDate(a.published_date)} ↗
               </div>
             </a>

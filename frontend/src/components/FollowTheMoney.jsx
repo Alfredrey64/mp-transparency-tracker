@@ -89,11 +89,11 @@ function DonorResultCard({ result, onSelectPolitician }) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
-      style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${COLORS.brass}`, borderRadius: 14, padding: 20 }}
+      style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${COLORS.accent}`, borderRadius: 14, padding: 20 }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
         <div style={{ fontFamily: FONT_DISPLAY, fontSize: 19, color: COLORS.ink, minWidth: 0 }}>{result.displayName}</div>
-        <div style={{ flexShrink: 0, fontFamily: FONT_MONO, fontSize: 15, fontWeight: 700, color: COLORS.brass }}>
+        <div style={{ flexShrink: 0, fontFamily: FONT_MONO, fontSize: 15, fontWeight: 700, color: COLORS.accent }}>
           £{Math.round(result.grandTotal).toLocaleString()} total
         </div>
       </div>

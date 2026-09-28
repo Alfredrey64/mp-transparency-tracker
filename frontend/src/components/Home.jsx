@@ -5,7 +5,7 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
 import { formatDate, partyColour } from "../lib/format";
 import { categoriseBill } from "../lib/bills";
 import { getWatchlist, removeFromWatchlist } from "../lib/watchlist";
-import { IconSearch, IconCoin, IconBills, IconInfluence, IconPetition } from "./icons";
+import { IconSearch, IconCoin, IconBills, IconInfluence, IconPetition, IconGroup, IconPulse, IconShield, IconRankings } from "./icons";
 import { EyebrowLabel, ParliamentSilhouette } from "./shared";
 import { PartyHemicycleSection } from "./PartyHemicycle";
 import { withScrollPreserved } from "../lib/preserveScroll";
@@ -23,11 +23,22 @@ function yearsAgo(year) {
 }
 
 const CHANGE_FEED_TYPES = {
-  donation: { icon: IconCoin, color: "#B5533C", label: "Declared interest" },
-  bill: { icon: IconBills, color: "#9C6B30", label: "Bill update" },
-  gift: { icon: IconInfluence, color: "#6E4B6E", label: "Ministerial gift" },
-  petition: { icon: IconPetition, color: "#3F7D5C", label: "Petition response" },
+  donation: { icon: IconCoin, color: "#F2622A", label: "Declared interest" },
+  bill: { icon: IconBills, color: "#9B4FE0", label: "Bill update" },
+  gift: { icon: IconInfluence, color: "#D9A62A", label: "Ministerial gift" },
+  petition: { icon: IconPetition, color: "#1FA97C", label: "Petition response" },
 };
+
+// Each destination keeps the same accent its section uses in the sidebar
+// (see Sidebar.jsx's SECTIONS) — a visitor who clicks "Browse Bills" here
+// and later sees purple again in the sidebar has already learned what that
+// colour means, rather than the homepage inventing its own one-off scheme.
+const QUICK_LINKS = [
+  { key: "voting", label: "Browse Bills", icon: IconBills, color: "#9B4FE0" },
+  { key: "followTheMoney", label: "Follow the Money", icon: IconSearch, color: "#F2622A" },
+  { key: "rankings", label: "Rankings", icon: IconRankings, color: "#D9A62A" },
+  { key: "darkMoney", label: "Transparency Gaps", icon: IconShield, color: "#E63946" },
+];
 
 function CountUp({ value }) {
   const [display, setDisplay] = useState(0);
@@ -214,63 +225,94 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
         aria-hidden
         style={{ position: "absolute", top: -10, right: "clamp(-40px, -2vw, 0px)", opacity: 0.05, pointerEvents: "none", zIndex: 0 }}
       >
-        <ParliamentSilhouette width={460} color={COLORS.brass} />
+        <ParliamentSilhouette width={460} color={COLORS.accent} />
       </div>
 
       <motion.div
         initial="hidden"
         animate="visible"
         variants={revealParent}
-        style={{
-          position: "relative", zIndex: 1, display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "clamp(28px, 5vw, 56px)",
-          alignItems: "start", marginBottom: 44,
-        }}
+        style={{ position: "relative", zIndex: 1, textAlign: "center", marginBottom: 48 }}
       >
-        {/* Left: masthead */}
         <motion.div variants={revealChild}>
-          <EyebrowLabel>Public Record · UK Parliament</EyebrowLabel>
-          <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: "clamp(34px, 5vw, 54px)", color: COLORS.ink, margin: "14px 0 0", lineHeight: 1.1 }}>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <EyebrowLabel>Public Record · UK Parliament</EyebrowLabel>
+          </div>
+          <h1 style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: "clamp(36px, 6vw, 58px)", color: COLORS.ink, margin: "16px auto 0", lineHeight: 1.08, maxWidth: 760 }}>
             Follow the money behind every MP.
           </h1>
-          <div style={{ width: 42, height: 2, background: COLORS.brass, margin: "18px 0" }} />
-          <p style={{ fontFamily: FONT_BODY, fontSize: 16, color: COLORS.inkSoft, lineHeight: 1.65, maxWidth: 520, margin: 0 }}>
+          <p style={{ fontFamily: FONT_BODY, fontSize: 17, color: COLORS.inkSoft, lineHeight: 1.65, maxWidth: 600, margin: "18px auto 0" }}>
             An objective look at declared gifts, donations, and financial interests for every current Member of
             Parliament, taken straight from the official Register of Members' Financial Interests and kept up to
             date.
           </p>
-
-          <div style={{ display: "flex", flexWrap: "wrap", margin: "28px 0 30px" }}>
-            {[
-              { value: <CountUp value={mpCount} />, label: "MPs tracked" },
-              { value: "Daily", label: "kept up to date" },
-              { value: "Official", label: "source data only" },
-            ].map((s, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center" }}>
-                {i > 0 && <span style={{ width: 1, height: 30, background: COLORS.hairline, margin: "0 20px", flexShrink: 0 }} />}
-                <div>
-                  <div style={{ fontFamily: FONT_MONO, fontSize: 19, fontWeight: 600, color: COLORS.ink }}>{s.value}</div>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 2 }}>{s.label}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <motion.button
-            onClick={onBrowse}
-            whileTap={{ scale: 0.98 }}
-            style={{
-              fontFamily: FONT_BODY, fontSize: 16, fontWeight: 600, color: "#fff", background: COLORS.brass,
-              border: "none", borderRadius: 6, padding: "15px 28px", cursor: "pointer",
-            }}
-          >
-            Browse MPs
-          </motion.button>
         </motion.div>
 
-        {/* Right: live ticker rail */}
-        <motion.div variants={revealChild} style={{ borderLeft: `1px solid ${COLORS.hairline}`, paddingLeft: 28 }}>
-          <div style={{ display: "flex", gap: 4, marginBottom: 16 }}>
+        <motion.div variants={revealChild} style={{ display: "flex", justifyContent: "center", gap: "clamp(20px, 5vw, 52px)", flexWrap: "wrap", margin: "38px 0 34px" }}>
+          {[
+            { value: <CountUp value={mpCount} />, label: "MPs tracked", icon: IconGroup, color: COLORS.accent },
+            { value: "Daily", label: "kept up to date", icon: IconPulse, color: "#F2622A" },
+            { value: "Official", label: "source data only", icon: IconShield, color: "#1FA97C" },
+          ].map((s) => (
+            <div key={s.label} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, minWidth: 108 }}>
+              <div style={{ width: 46, height: 46, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", background: `${s.color}18`, color: s.color }}>
+                <s.icon size={20} />
+              </div>
+              <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 26, color: COLORS.ink }}>{s.value}</div>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>{s.label}</div>
+            </div>
+          ))}
+        </motion.div>
+
+        <motion.div variants={revealChild} style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap" }}>
+          <motion.button
+            onClick={onBrowse}
+            whileHover={{ y: -1 }}
+            whileTap={{ scale: 0.98 }}
+            style={{
+              fontFamily: FONT_BODY, fontSize: 15, fontWeight: 700, color: "#fff", background: COLORS.accent,
+              border: "none", borderRadius: 999, padding: "13px 24px", cursor: "pointer",
+              display: "flex", alignItems: "center", gap: 8,
+            }}
+          >
+            <IconGroup size={16} />
+            Browse MPs
+          </motion.button>
+          {QUICK_LINKS.map((link) => (
+            <motion.button
+              key={link.key}
+              onClick={() => onNavigate?.(link.key)}
+              whileHover={{ y: -1, borderColor: link.color }}
+              whileTap={{ scale: 0.98 }}
+              style={{
+                fontFamily: FONT_BODY, fontSize: 15, fontWeight: 600, color: link.color, background: `${link.color}12`,
+                border: `1px solid ${link.color}40`, borderRadius: 999, padding: "13px 22px", cursor: "pointer",
+                display: "flex", alignItems: "center", gap: 8,
+              }}
+            >
+              <link.icon size={16} />
+              {link.label}
+            </motion.button>
+          ))}
+        </motion.div>
+      </motion.div>
+
+      {/* Latest activity: its own bordered rail, not squeezed beside the
+          hero — the centred masthead above is a single clear opening
+          statement, and this ticker is a distinct, subsequent section. */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.15, ease: "easeOut" }}
+        style={{
+          position: "relative", zIndex: 1, marginBottom: 44, borderRadius: 16,
+          border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid #F2622A`,
+          background: COLORS.paperCard, padding: "22px clamp(18px, 4vw, 30px)",
+        }}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
+          <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 19, color: COLORS.ink }}>Latest Declared Interests</div>
+          <div style={{ display: "flex", gap: 4 }}>
             {[
               { key: "donations", label: "Donations" },
               { key: "roles", label: "Roles" },
@@ -286,7 +328,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                   borderRadius: 999,
                   border: "none",
                   cursor: "pointer",
-                  background: activeTab === tab.key ? COLORS.brass : "transparent",
+                  background: activeTab === tab.key ? "#F2622A" : "transparent",
                   color: activeTab === tab.key ? "#fff" : COLORS.inkSoft,
                   transition: "background 0.15s, color 0.15s",
                 }}
@@ -295,54 +337,54 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
               </button>
             ))}
           </div>
+        </div>
 
-          {loading && (
-            <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>Loading…</div>
-          )}
-          {!loading && items.length === 0 && (
-            <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>No entries found.</div>
-          )}
+        {loading && (
+          <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>Loading…</div>
+        )}
+        {!loading && items.length === 0 && (
+          <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>No entries found.</div>
+        )}
 
-          {!loading && items.length > 0 && (
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              {items.map((item, i) => (
-                <div
-                  key={item.id}
-                  onClick={() => handleSelectPoliticianById(item.politicians?.id)}
-                  style={{
-                    padding: "12px 4px 12px 0",
-                    marginLeft: -4,
-                    borderRadius: 6,
-                    borderBottom: i < items.length - 1 ? `1px solid ${COLORS.hairline}` : "none",
-                    cursor: item.politicians?.id ? "pointer" : "default",
-                    transition: "background 0.15s",
-                  }}
-                  onMouseEnter={(e) => { if (item.politicians?.id) e.currentTarget.style.background = COLORS.paperCard; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-                >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
-                    <div style={{ minWidth: 0 }}>
-                      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 16.5, color: COLORS.ink }}>
-                        {item.politicians?.name ?? "Unknown MP"}
-                      </div>
-                      <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 1 }}>
-                        {activeTab === "donations" ? `from ${item.donor_name ?? item.summary}` : item.summary}
-                      </div>
-                      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.75, marginTop: 2 }}>
-                        {formatDate(item.date_registered)}
-                      </div>
+        {!loading && items.length > 0 && (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", columnGap: 20 }}>
+            {items.map((item) => (
+              <div
+                key={item.id}
+                onClick={() => handleSelectPoliticianById(item.politicians?.id)}
+                style={{
+                  padding: "12px 8px",
+                  margin: "0 -8px",
+                  borderRadius: 8,
+                  borderBottom: `1px solid ${COLORS.hairline}`,
+                  cursor: item.politicians?.id ? "pointer" : "default",
+                  transition: "background 0.15s",
+                }}
+                onMouseEnter={(e) => { if (item.politicians?.id) e.currentTarget.style.background = COLORS.paper; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 16, color: COLORS.ink }}>
+                      {item.politicians?.name ?? "Unknown MP"}
                     </div>
-                    {activeTab === "donations" && item.value_amount && (
-                      <div style={{ flexShrink: 0, fontFamily: FONT_MONO, fontSize: 14, fontWeight: 700, color: COLORS.brass }}>
-                        £{Number(item.value_amount).toLocaleString()}
-                      </div>
-                    )}
+                    <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 1 }}>
+                      {activeTab === "donations" ? `from ${item.donor_name ?? item.summary}` : item.summary}
+                    </div>
+                    <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.75, marginTop: 2 }}>
+                      {formatDate(item.date_registered)}
+                    </div>
                   </div>
+                  {activeTab === "donations" && item.value_amount && (
+                    <div style={{ flexShrink: 0, fontFamily: FONT_MONO, fontSize: 14, fontWeight: 700, color: "#F2622A" }}>
+                      £{Number(item.value_amount).toLocaleString()}
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
-          )}
-        </motion.div>
+              </div>
+            ))}
+          </div>
+        )}
       </motion.div>
 
       {allPoliticians.length > 0 && (
@@ -441,7 +483,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
             {onNavigate && (
               <button
                 onClick={() => onNavigate("voting")}
-                style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.brass, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accent, background: "none", border: "none", cursor: "pointer", padding: 0 }}
               >
                 View all
               </button>
@@ -503,7 +545,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                     borderRadius: 999,
                     border: "none",
                     cursor: "pointer",
-                    background: parliamentTab === tab.key ? COLORS.brass : "transparent",
+                    background: parliamentTab === tab.key ? COLORS.accent : "transparent",
                     color: parliamentTab === tab.key ? "#fff" : COLORS.inkSoft,
                     transition: "background 0.15s, color 0.15s",
                   }}
@@ -617,7 +659,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                           fontSize: 13,
                           fontWeight: 600,
                           color: "#fff",
-                          background: COLORS.brass,
+                          background: COLORS.accent,
                           borderRadius: 999,
                           padding: "3px 10px",
                           marginTop: 2,

@@ -199,7 +199,7 @@ const POLITICS_TERMS = [
 ];
 
 const TABS = [
-  { key: "procedure", label: "Parliamentary Terms", accent: COLORS.brass },
+  { key: "procedure", label: "Parliamentary Terms", accent: COLORS.accent },
   { key: "politics", label: "Political Terms & Issues", accent: "#6E4B6E" },
 ];
 
@@ -374,7 +374,7 @@ export default function Glossary() {
               <motion.span
                 layoutId="glossary-tab-pill"
                 transition={{ type: "spring", stiffness: 500, damping: 38 }}
-                style={{ position: "absolute", inset: 0, background: COLORS.brass, borderRadius: 999, zIndex: 0 }}
+                style={{ position: "absolute", inset: 0, background: COLORS.accent, borderRadius: 999, zIndex: 0 }}
               />
             )}
             <span style={{ position: "relative", zIndex: 1 }}>{t.label}</span>

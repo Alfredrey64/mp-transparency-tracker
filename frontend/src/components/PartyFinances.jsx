@@ -312,7 +312,7 @@ export default function PartyFinances() {
                         const tag = getPartyDonorSector(d.name);
                         const profile = getDonorProfile(d.name);
                         const description = profile?.description ?? (d.status === "Public Fund" ? publicFundDescription(d.name) : null);
-                        const badgeColor = d.status === "Public Fund" ? COLORS.brass : tag ? sectorColor(tag.sector) : NEUTRAL_TAG_COLOR;
+                        const badgeColor = d.status === "Public Fund" ? COLORS.accent : tag ? sectorColor(tag.sector) : NEUTRAL_TAG_COLOR;
                         const isLast = di === p.donors.length - 1;
                         return (
                           <div key={d.name} style={{ padding: "12px 0", borderBottom: isLast ? "none" : `1px solid ${COLORS.hairline}` }}>
@@ -391,7 +391,7 @@ function RuleCard({ title, children }) {
 function RuleBullet({ children }) {
   return (
     <li style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-      <span style={{ marginTop: 7, width: 4, height: 4, borderRadius: "50%", background: COLORS.brass, flexShrink: 0 }} />
+      <span style={{ marginTop: 7, width: 4, height: 4, borderRadius: "50%", background: COLORS.accent, flexShrink: 0 }} />
       <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, lineHeight: 1.55 }}>{children}</span>
     </li>
   );

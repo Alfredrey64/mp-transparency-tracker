@@ -211,13 +211,13 @@ export default function AppgMemberships() {
               textAlign: "center",
             }}
           >
-            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 24, color: COLORS.brass }}>{fact.label}</div>
+            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 24, color: COLORS.accent }}>{fact.label}</div>
             <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 2 }}>{fact.note}</div>
           </div>
         ))}
       </motion.div>
 
-      <InfoCard title="What is an APPG?" color={COLORS.brass} index={0}>
+      <InfoCard title="What is an APPG?" color={COLORS.accent} index={0}>
         An All-Party Parliamentary Group brings together MPs and members of the House of Lords who share
         an interest in a topic — a country, a health condition, an industry, a social issue. They have{" "}
         <strong style={{ color: COLORS.ink }}>no official power in Parliament</strong> — they can't pass
@@ -374,7 +374,7 @@ export default function AppgMemberships() {
             fontWeight: 600,
             fontSize: 14,
             color: "#fff",
-            background: COLORS.brass,
+            background: COLORS.accent,
             padding: "10px 20px",
             borderRadius: 10,
             textDecoration: "none",

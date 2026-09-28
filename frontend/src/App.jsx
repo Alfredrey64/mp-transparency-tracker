@@ -53,7 +53,7 @@ const WatchlistDigest = lazy(() => import("./components/WatchlistDigest"));
 // it came from.
 console.log(
   "%cUK Parliament Tracker%c\nDesigned and built by Alfred Reynolds.",
-  "font-weight: bold; font-size: 13px; color: #A87C3A;",
+  "font-weight: bold; font-size: 13px; color: #4F46E5;",
   "color: inherit;"
 );
 

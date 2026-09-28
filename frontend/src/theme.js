@@ -1,40 +1,41 @@
-// An institutional palette drawn from the Palace itself rather than a
-// generic dashboard default: deep committee-room green as the ground,
-// antique gilt brass as the signature accent (the Mace, the gilding
-// throughout the building), with the Commons' green benches and a garnet
-// red (already used ad hoc across the app for warnings/gaps, now a real
-// token) as secondary accents. ink/paper/hairline/sidebar tokens resolve
-// through CSS variables (defined in index.css) so dark/light mode can
-// repaint them instantly with no re-render. brass/gold/commonsGreen/garnet
-// stay fixed hex because they're used in alpha-suffix tricks throughout the
-// app (`${COLORS.brass}1A`) that don't work with var(), and because each is
-// tuned to read clearly on both a light and a dark ground.
+// A brighter, more saturated pass on the palette — the previous
+// aged-parchment/institutional-brass system read as drab rather than
+// dignified once it was actually on screen. ink/paper/hairline/sidebar
+// tokens resolve through CSS variables (defined in index.css) so dark/light
+// mode can repaint them instantly; the ground itself moved from a warm tan
+// parchment to a clean, near-white (light) / rich indigo-charcoal (dark),
+// so colour comes from the accents against a quiet backdrop rather than
+// from a tinted page. `accent` is the one sitewide primary (buttons, links,
+// active states); gold/commonsGreen/garnet are narrower, meaning-specific
+// accents (Royal Assent, the two Houses' actual bench colours, warnings).
+// Each section of the sidebar also gets its own vivid accent (see
+// Sidebar.jsx's SECTIONS) — that's the main mechanism for telling one part
+// of the site from another at a glance, not a single colour repeated
+// everywhere.
 export const COLORS = {
   ink: "var(--c-ink)",
   inkSoft: "var(--c-ink-soft)",
   paper: "var(--c-paper)",
   paperCard: "var(--c-paper-card)",
   hairline: "var(--c-hairline)",
-  brass: "#A87C3A",
-  gold: "#C9A227",
-  commonsGreen: "#3B6E52",
-  garnet: "#9C3B3B",
+  accent: "#4F46E5",
+  gold: "#E8B93D",
+  commonsGreen: "#1FA97C",
+  garnet: "#E63946",
   sidebarBg: "var(--c-sidebar-bg)",
   sidebarBgDeep: "var(--c-sidebar-bg-deep)",
   sidebarText: "var(--c-sidebar-text)",
 };
 
-// Caslon is the actual historic typeface of British government print — Acts
-// of Parliament, royal proclamations, and print of state were set in it for
-// two centuries, which is why "it's not in Caslon" was a real 18th-century
-// complaint about a document not looking official. Libre Caslon Text is a
-// faithful, screen-tuned revival, used here for exactly the reason the
-// original was chosen: it reads as a record, not a pitch deck. Archivo is
-// its sturdy, unfussy modern counterpart for interface chrome — a grotesque
-// built for institutional/civic use rather than a startup's default sans,
-// keeping the old-document headline and the modern tool around it from
-// fighting each other. IBM Plex Mono stays untouched for tabular figures.
-export const FONT_DISPLAY = "'Libre Caslon Text', Georgia, serif";
+// A confident geometric sans for display type instead of another attempt at
+// "distinguished serif" — Newsreader, then Caslon, both still read as
+// old-fashioned once actually on screen, which was the real complaint. Space
+// Grotesk has real character (look at its lowercase "g" and "a") without
+// reaching for a serif's built-in gravitas, and works at both hero and
+// small-label sizes. Archivo stays for body copy — a distinct enough sans
+// that the two don't blur into one typeface, but still calm at reading
+// sizes. IBM Plex Mono is untouched for tabular figures.
+export const FONT_DISPLAY = "'Space Grotesk', system-ui, sans-serif";
 export const FONT_BODY = "'Archivo', system-ui, sans-serif";
 export const FONT_MONO = "'IBM Plex Mono', monospace";
 

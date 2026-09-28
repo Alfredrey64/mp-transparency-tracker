@@ -269,7 +269,7 @@ function PartyCardHeader({ party, manifesto, dotLayoutId, large }) {
   );
 }
 
-function BulletLine({ children, small, color = COLORS.brass }) {
+function BulletLine({ children, small, color = COLORS.accent }) {
   return (
     <li style={{ display: "flex", gap: 9, alignItems: "flex-start" }}>
       <svg width={small ? 14 : 15} height={small ? 14 : 15} viewBox="0 0 20 20" fill="none" style={{ flexShrink: 0, marginTop: small ? 1.5 : 2 }}>

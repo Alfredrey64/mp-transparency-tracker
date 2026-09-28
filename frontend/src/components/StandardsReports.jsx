@@ -178,7 +178,7 @@ function ReportCard({ report, politician, onSelectPolitician, index }) {
           </div>
         )}
 
-        <a href={report.report_url} target="_blank" rel="noreferrer" style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.brass }}>
+        <a href={report.report_url} target="_blank" rel="noreferrer" style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.accent }}>
           Read the Committee's report ↗
         </a>
       </div>
@@ -262,7 +262,7 @@ export default function StandardsReports({ onSelectPolitician }) {
 
       {stats && (
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 24, marginBottom: 20 }}>
-          <StatCard value={stats.total} label="Reports on record" color={COLORS.brass} index={0} />
+          <StatCard value={stats.total} label="Reports on record" color={COLORS.accent} index={0} />
           <StatCard value={stats.suspended} label="Ended in suspension" color="#B5533C" index={1} />
           <StatCard value={stats.resigned} label="Resigned or recalled" color="#9C3B3B" index={2} />
           <StatCard value={stats.mostRecentYear ?? "—"} label="Most recent report" color="#4C7A6B" index={3} />
@@ -314,7 +314,7 @@ export default function StandardsReports({ onSelectPolitician }) {
                 <motion.div
                   layoutId="standardsToggle"
                   transition={{ type: "spring", stiffness: 400, damping: 32 }}
-                  style={{ position: "absolute", inset: 0, background: COLORS.brass, borderRadius: 999, zIndex: -1 }}
+                  style={{ position: "absolute", inset: 0, background: COLORS.accent, borderRadius: 999, zIndex: -1 }}
                 />
               )}
               {opt.label}

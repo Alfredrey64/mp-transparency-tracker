@@ -350,7 +350,7 @@ function VoteCompareRow({ vote, selected }) {
           <span
             style={{
               flexShrink: 0, fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, textTransform: "uppercase", letterSpacing: "0.04em",
-              padding: "3px 9px", borderRadius: 999, background: agreed ? `${COLORS.brass}18` : "#F3E4E2", color: agreed ? COLORS.brass : "#9C3B3B",
+              padding: "3px 9px", borderRadius: 999, background: agreed ? `${COLORS.accent}18` : "#F3E4E2", color: agreed ? COLORS.accent : "#9C3B3B",
             }}
           >
             {agreed ? "Agreed" : "Split"}
@@ -450,7 +450,7 @@ export default function ComparePoliticians() {
           </div>
 
           <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 16, padding: "22px clamp(16px, 4vw, 26px)", marginBottom: 20 }}>
-            <SectionTitle icon={IconCoin} color={COLORS.brass}>Money</SectionTitle>
+            <SectionTitle icon={IconCoin} color={COLORS.accent}>Money</SectionTitle>
 
             <MoneyMetricGroup
               title="Total declared donations"

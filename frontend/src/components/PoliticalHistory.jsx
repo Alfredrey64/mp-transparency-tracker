@@ -262,7 +262,7 @@ function ResultPill({ outcome, children }) {
 
 function VoteRow({ vote, index }) {
   const outcomeColor = OUTCOME_COLOR[vote.outcome];
-  const themeColor = THEME_COLORS[vote.theme] ?? COLORS.brass;
+  const themeColor = THEME_COLORS[vote.theme] ?? COLORS.accent;
   return (
     <motion.div
       initial={{ opacity: 0, y: 14 }}
@@ -508,7 +508,7 @@ export default function PoliticalHistory() {
             }}
           >
             {tab === t.key && (
-              <motion.span layoutId="history-tab-pill" transition={{ type: "spring", stiffness: 500, damping: 35 }} style={{ position: "absolute", inset: 0, background: COLORS.brass, borderRadius: 999, zIndex: -1 }} />
+              <motion.span layoutId="history-tab-pill" transition={{ type: "spring", stiffness: 500, damping: 35 }} style={{ position: "absolute", inset: 0, background: COLORS.accent, borderRadius: 999, zIndex: -1 }} />
             )}
             {t.label}
           </button>
@@ -527,7 +527,7 @@ export default function PoliticalHistory() {
                     onClick={() => withScrollPreserved(() => setVoteFilter(theme))}
                     style={{
                       fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, padding: "7px 14px", borderRadius: 999,
-                      border: `1px solid ${active ? COLORS.brass : COLORS.hairline}`, background: active ? COLORS.brass : "transparent",
+                      border: `1px solid ${active ? COLORS.accent : COLORS.hairline}`, background: active ? COLORS.accent : "transparent",
                       color: active ? "#fff" : COLORS.inkSoft, cursor: "pointer", transition: "all 0.15s",
                     }}
                   >

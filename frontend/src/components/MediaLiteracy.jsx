@@ -39,10 +39,10 @@ function BroadcastHero() {
             initial={{ scale: 0.3, opacity: 0.6 }}
             animate={{ scale: 1.8, opacity: 0 }}
             transition={{ duration: 2.6, repeat: Infinity, delay: i * 0.75, ease: "easeOut" }}
-            style={{ position: "absolute", width: 60, height: 60, borderRadius: "50%", border: `2px solid ${COLORS.brass}` }}
+            style={{ position: "absolute", width: 60, height: 60, borderRadius: "50%", border: `2px solid ${COLORS.accent}` }}
           />
         ))}
-        <div style={{ width: 44, height: 44, borderRadius: "50%", background: COLORS.brass, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", zIndex: 1 }}>
+        <div style={{ width: 44, height: 44, borderRadius: "50%", background: COLORS.accent, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", zIndex: 1 }}>
           <IconBroadcast size={20} />
         </div>
       </div>
@@ -259,7 +259,7 @@ function ImpartialityQuiz() {
                   onClick={() => answer("broadcast")}
                   disabled={Boolean(feedback)}
                   style={{
-                    fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13.5, color: "#fff", background: COLORS.brass,
+                    fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13.5, color: "#fff", background: COLORS.accent,
                     border: "none", borderRadius: 999, padding: "11px 22px", cursor: feedback ? "default" : "pointer", opacity: feedback ? 0.7 : 1,
                   }}
                 >
@@ -467,7 +467,7 @@ export default function MediaLiteracy() {
           borderRadius: 14, padding: "16px 20px",
         }}
       >
-        <div style={{ flexShrink: 0, width: 38, height: 38, borderRadius: "50%", background: COLORS.brass, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>
+        <div style={{ flexShrink: 0, width: 38, height: 38, borderRadius: "50%", background: COLORS.accent, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>
           <IconBook size={17} />
         </div>
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.6 }}>

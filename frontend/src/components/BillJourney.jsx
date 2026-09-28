@@ -135,7 +135,7 @@ export function BillJourney({ bills }) {
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: 14, fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>
         <span>
-          <strong style={{ color: COLORS.brass, fontFamily: FONT_MONO }}>{assent.length}</strong> have received Royal
+          <strong style={{ color: COLORS.accent, fontFamily: FONT_MONO }}>{assent.length}</strong> have received Royal
           Assent and are now law
         </span>
         {other.length > 0 && (

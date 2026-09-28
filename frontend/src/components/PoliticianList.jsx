@@ -153,7 +153,7 @@ export default function PoliticianList({ onSelect }) {
             outline: "none",
             transition: "border-color 0.15s, box-shadow 0.15s",
           }}
-          onFocus={(e) => (e.target.style.borderColor = COLORS.brass)}
+          onFocus={(e) => (e.target.style.borderColor = COLORS.accent)}
           onBlur={(e) => (e.target.style.borderColor = COLORS.hairline)}
         />
         <button
@@ -184,8 +184,8 @@ export default function PoliticianList({ onSelect }) {
             fontWeight: 600,
             padding: "7px 14px",
             borderRadius: 999,
-            border: `1px solid ${activeParty === "All" ? COLORS.brass : COLORS.hairline}`,
-            background: activeParty === "All" ? COLORS.brass : "transparent",
+            border: `1px solid ${activeParty === "All" ? COLORS.accent : COLORS.hairline}`,
+            background: activeParty === "All" ? COLORS.accent : "transparent",
             color: activeParty === "All" ? "#fff" : COLORS.inkSoft,
             cursor: "pointer",
             transition: "all 0.15s",

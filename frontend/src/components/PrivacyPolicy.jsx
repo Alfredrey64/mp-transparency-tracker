@@ -68,7 +68,7 @@ export default function PrivacyPolicy({ onNavigate }) {
           If you believe information about you (or anyone) is displayed inaccurately, see the{" "}
           <button
             onClick={() => onNavigate("terms")}
-            style={{ background: "none", border: "none", padding: 0, font: "inherit", color: COLORS.brass, fontWeight: 600, cursor: "pointer" }}
+            style={{ background: "none", border: "none", padding: 0, font: "inherit", color: COLORS.accent, fontWeight: 600, cursor: "pointer" }}
           >
             Terms & Conditions
           </button>{" "}

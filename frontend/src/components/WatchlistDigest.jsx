@@ -39,7 +39,7 @@ function WatchlistEntryCard({ entry, onSelectPolitician }) {
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {interests.length > 0 && (
             <div>
-              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.brass, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 6 }}>
+              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.accent, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 6 }}>
                 New declared interest{interests.length === 1 ? "" : "s"}
               </div>
               {interests.map((it, i) => (
@@ -78,7 +78,7 @@ function WatchlistEntryCard({ entry, onSelectPolitician }) {
                   rel="noreferrer"
                   style={{ display: "block", fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, marginBottom: 4, textDecoration: "none", lineHeight: 1.5 }}
                 >
-                  {n.headline} <span style={{ color: COLORS.brass, fontSize: 11.5 }}>↗</span>
+                  {n.headline} <span style={{ color: COLORS.accent, fontSize: 11.5 }}>↗</span>
                 </a>
               ))}
             </div>

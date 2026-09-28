@@ -151,8 +151,8 @@ export default function FormerMps() {
               onClick={() => withScrollPreserved(() => setReasonFilter(r))}
               style={{
                 fontFamily: FONT_BODY, fontSize: 12, fontWeight: 600, padding: "6px 12px", borderRadius: 999,
-                border: `1px solid ${reasonFilter === r ? COLORS.brass : COLORS.hairline}`,
-                background: reasonFilter === r ? COLORS.brass : "transparent",
+                border: `1px solid ${reasonFilter === r ? COLORS.accent : COLORS.hairline}`,
+                background: reasonFilter === r ? COLORS.accent : "transparent",
                 color: reasonFilter === r ? COLORS.paper : COLORS.inkSoft,
                 cursor: "pointer",
               }}
@@ -176,7 +176,7 @@ export default function FormerMps() {
                 <motion.span
                   layoutId="former-mps-sort-pill"
                   transition={{ type: "spring", stiffness: 500, damping: 38 }}
-                  style={{ position: "absolute", inset: 0, background: COLORS.brass, borderRadius: 999, zIndex: 0 }}
+                  style={{ position: "absolute", inset: 0, background: COLORS.accent, borderRadius: 999, zIndex: 0 }}
                 />
               )}
               <span style={{ position: "relative", zIndex: 1 }}>{s.label}</span>

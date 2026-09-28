@@ -192,7 +192,7 @@ function CompanyRow({ company, isOpen, onToggle }) {
             <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 15, color: COLORS.ink }}>
               £{Math.round(company.total).toLocaleString()}
             </div>
-            <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.brass, fontWeight: 700, marginTop: 3 }}>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.accent, fontWeight: 700, marginTop: 3 }}>
               {isOpen ? "Hide" : "Details"} {isOpen ? "▾" : "▸"}
             </div>
           </div>

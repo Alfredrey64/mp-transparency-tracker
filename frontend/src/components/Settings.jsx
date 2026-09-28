@@ -33,7 +33,7 @@ function ToggleSwitch({ checked, onChange, label, description }) {
           height: 26,
           borderRadius: 999,
           flexShrink: 0,
-          background: checked ? COLORS.brass : COLORS.hairline,
+          background: checked ? COLORS.accent : COLORS.hairline,
           transition: "background 0.2s ease",
         }}
       >

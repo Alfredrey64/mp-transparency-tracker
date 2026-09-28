@@ -2,30 +2,30 @@
   margin: 0;
   padding: 0;
 
-  /* A warm, aged-parchment light theme instead of a neutral cool grey —
-     paired with the deep committee-room green dark theme below, so the
-     accent colours in theme.js (brass, commons green, garnet) read as
-     institutional on either ground rather than generic-dashboard neutral. */
-  --c-ink: #22281F;
-  --c-ink-soft: #5B6350;
-  --c-paper: #E9E4D0;
-  --c-paper-card: #F6F2E3;
-  --c-hairline: #D2C9A8;
-  --c-sidebar-bg: #1B2A20;
-  --c-sidebar-bg-deep: #101A13;
-  --c-sidebar-text: #C7D0BE;
+  /* A clean, near-white ground instead of the aged-parchment tan this used
+     to be — that warm tint was reading as dated paper rather than
+     considered design. Colour now comes from the accents (see theme.js)
+     against a quiet backdrop, not from a tinted page itself. */
+  --c-ink: #191A23;
+  --c-ink-soft: #5B5E70;
+  --c-paper: #FBFBFD;
+  --c-paper-card: #F2F3F8;
+  --c-hairline: #E1E3ED;
+  --c-sidebar-bg: #1B1C2E;
+  --c-sidebar-bg-deep: #101120;
+  --c-sidebar-text: #C7CBDC;
 }
 
 [data-theme="dark"] {
   color-scheme: dark;
-  --c-ink: #EBE6D6;
-  --c-ink-soft: #A6A78F;
-  --c-paper: #131D16;
-  --c-paper-card: #1B2A20;
-  --c-hairline: #33422F;
-  --c-sidebar-bg: #101A13;
-  --c-sidebar-bg-deep: #0A120C;
-  --c-sidebar-text: #C7D0BE;
+  --c-ink: #F1F2F7;
+  --c-ink-soft: #A8ACC0;
+  --c-paper: #14151F;
+  --c-paper-card: #1D1F2C;
+  --c-hairline: #2C2F42;
+  --c-sidebar-bg: #101120;
+  --c-sidebar-bg-deep: #0A0B16;
+  --c-sidebar-text: #C7CBDC;
 }
 
 html, body, #root {

@@ -55,7 +55,7 @@ function CommonsLordsDiagram() {
       transition={{ duration: 0.35 }}
       style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 14 }}
     >
-      {chamber("House of Commons", "650 elected MPs", "Directly elected by voters in each constituency", 65, COLORS.brass, true)}
+      {chamber("House of Commons", "650 elected MPs", "Directly elected by voters in each constituency", 65, COLORS.accent, true)}
       {chamber("House of Lords", "~800 members", "Appointed peers, some hereditary members, and bishops", 65, "#7A4B63", false)}
     </motion.div>
   );
@@ -167,7 +167,7 @@ function SalaryDiagram() {
 function WeekSplitDiagram() {
   const segments = [
     { label: "Westminster (Mon–Thu, sitting weeks)", pct: 57, color: "#4C6FA6" },
-    { label: "Constituency (Fri–Sun)", pct: 43, color: COLORS.brass },
+    { label: "Constituency (Fri–Sun)", pct: 43, color: COLORS.accent },
   ];
   return (
     <div style={{ marginTop: 14, maxWidth: 420 }}>
@@ -419,7 +419,7 @@ function ConstituencyLookup() {
         borderLeft: `1px solid ${COLORS.hairline}`,
         borderRight: `1px solid ${COLORS.hairline}`,
         borderBottom: `1px solid ${COLORS.hairline}`,
-        borderTop: `4px solid ${COLORS.brass}`,
+        borderTop: `4px solid ${COLORS.accent}`,
         borderRadius: 16,
         padding: "24px clamp(16px, 4vw, 28px)",
         
@@ -457,7 +457,7 @@ function ConstituencyLookup() {
             padding: "0 20px",
             borderRadius: 10,
             border: "none",
-            background: COLORS.brass,
+            background: COLORS.accent,
             color: "#fff",
             cursor: "pointer",
           }}
@@ -518,7 +518,7 @@ export default function HowParliamentWorks() {
           title="Who's In Charge?"
           intro="The UK's system separates ceremonial authority, law-making, and day-to-day running of the country into distinct roles."
           stages={STRUCTURE_ROWS}
-          color={COLORS.brass}
+          color={COLORS.accent}
         />
 
         <DiagramSection
