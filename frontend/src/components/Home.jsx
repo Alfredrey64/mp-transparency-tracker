@@ -7,6 +7,7 @@ import { categoriseBill } from "../lib/bills";
 import { getWatchlist, removeFromWatchlist } from "../lib/watchlist";
 import { IconSearch, IconCoin, IconBills, IconInfluence, IconPetition } from "./icons";
 import { EyebrowLabel, ParliamentSilhouette } from "./shared";
+import { PartyHemicycleSection } from "./PartyHemicycle";
 import { withScrollPreserved } from "../lib/preserveScroll";
 
 // One orchestrated reveal for the masthead (headline + ticker rail together,
@@ -310,6 +311,10 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
           )}
         </motion.div>
       </motion.div>
+
+      {allPoliticians.length > 0 && (
+        <PartyHemicycleSection politicians={allPoliticians} onSelectParty={() => onNavigate?.("list")} />
+      )}
 
       {/* Find Your MP: full-width band */}
       <div style={{ borderTop: `1px solid ${COLORS.hairline}`, borderBottom: `1px solid ${COLORS.hairline}`, padding: "24px 0", marginBottom: 40 }}>
