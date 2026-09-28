@@ -24,15 +24,18 @@ export const COLORS = {
   sidebarText: "var(--c-sidebar-text)",
 };
 
-// Newsreader carries the "official record" editorial voice (headlines,
-// pull quotes); Plex Sans and Plex Mono are a genuine matched family — one
-// designed as a pair, not two unrelated fonts pressed into service — so
-// interface chrome and tabular data read as deliberately related rather
-// than a display font plus whatever sans was the default for the last
-// project. Public Sans (the US government's own typeface) is gone: an odd
-// borrowed identity for a UK site, and itself a common civic-tech default.
-export const FONT_DISPLAY = "'Newsreader', Georgia, serif";
-export const FONT_BODY = "'IBM Plex Sans', system-ui, sans-serif";
+// Caslon is the actual historic typeface of British government print — Acts
+// of Parliament, royal proclamations, and print of state were set in it for
+// two centuries, which is why "it's not in Caslon" was a real 18th-century
+// complaint about a document not looking official. Libre Caslon Text is a
+// faithful, screen-tuned revival, used here for exactly the reason the
+// original was chosen: it reads as a record, not a pitch deck. Archivo is
+// its sturdy, unfussy modern counterpart for interface chrome — a grotesque
+// built for institutional/civic use rather than a startup's default sans,
+// keeping the old-document headline and the modern tool around it from
+// fighting each other. IBM Plex Mono stays untouched for tabular figures.
+export const FONT_DISPLAY = "'Libre Caslon Text', Georgia, serif";
+export const FONT_BODY = "'Archivo', system-ui, sans-serif";
 export const FONT_MONO = "'IBM Plex Mono', monospace";
 
 export const PAGE_PADDING = "clamp(20px, 5vw, 40px) clamp(16px, 5vw, 40px) 60px";

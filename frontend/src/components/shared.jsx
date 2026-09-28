@@ -240,7 +240,7 @@ export function PageHeader({ kicker = "Public Record · UK Parliament", title, s
 }
 
 // A masthead-style section marker rather than a tracked-out uppercase
-// tag — a short brass rule plus the label set in italic Newsreader, closer
+// tag — a short brass rule plus the label set in italic Caslon, closer
 // to how a printed report or Hansard volume marks a section than a SaaS
 // dashboard's eyebrow chip.
 export function EyebrowLabel({ children }) {
