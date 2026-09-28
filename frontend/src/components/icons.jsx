@@ -447,6 +447,36 @@ export function IconBook({ size = 17 }) {
   );
 }
 
+// The Ulster Banner — no Unicode flag emoji exists for Northern Ireland
+// (there's no ISO 3166-2 regional tag sequence registered for it, unlike
+// Scotland/Wales/England), so where the actual flag is wanted rather than
+// the Union Flag stand-in, it has to be drawn. A simplified but
+// recognisable rendition: the St George's Cross field, the six-pointed
+// Star of David outline, the crown, and the Red Hand of Ulster at centre.
+export function IconNorthernIreland({ size = 22 }) {
+  const w = size * 1.5;
+  return (
+    <svg width={w} height={size} viewBox="0 0 30 20" style={{ display: "block" }}>
+      <rect x="0.5" y="0.5" width="29" height="19" fill="#FFFFFF" stroke="#C9C9C9" strokeWidth="0.5" />
+      <rect x="12.5" y="0.5" width="5" height="19" fill="#D0011B" />
+      <rect x="0.5" y="7.5" width="29" height="5" fill="#D0011B" />
+      <g transform="translate(15 10)">
+        <path
+          d="M0 -6 L1.4 -2.1 L5.2 -2 L2.2 0.5 L3.3 4.2 L0 2 L-3.3 4.2 L-2.2 0.5 L-5.2 -2 L-1.4 -2.1 Z"
+          fill="#FFFFFF"
+          stroke="#D0011B"
+          strokeWidth="0.6"
+        />
+        <path d="M-1.8 -8.2 L0 -6.4 L1.8 -8.2 L1.3 -5.6 L0 -5 L-1.3 -5.6 Z" fill="#FFD100" stroke="#B8960C" strokeWidth="0.3" />
+        <path
+          d="M0.9 1.4c0-1 -0.7-1.6 -0.9-1.6s-0.9 0.6-0.9 1.6c0 0.6 0.3 1 0.3 1.6h1.2c0-0.6 0.3-1 0.3-1.6Z"
+          fill="#D0011B"
+        />
+      </g>
+    </svg>
+  );
+}
+
 export function IconRankings({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">

@@ -50,13 +50,17 @@ function Avatar({ url, name, color, size = 36 }) {
   );
 }
 
+const TICK_FRACTIONS = [0, 0.25, 0.5, 0.75, 1];
+
 // Where does the shown Top 30 actually sit against all of Parliament? A
 // ranked list alone can't answer that — two MPs one place apart in rank
 // could be nearly tied or worlds apart in value. Bucketing every ranked
 // MP's value (not just the visible Top 30) into a real histogram shows
 // the actual shape of the spread — often a long tail, not evenly spaced —
 // with the bins that make up the list below highlighted against the rest.
-function DistributionChart({ data, color, shownCount }) {
+// A real axis underneath (five labelled ticks, not just "low"/"high") is
+// what actually makes a histogram readable rather than just decorative.
+function DistributionChart({ data, color, shownCount, formatValue }) {
   const BINS = 24;
   const { bins, min, max } = useMemo(() => {
     const values = data.map((e) => e.value);
@@ -76,29 +80,56 @@ function DistributionChart({ data, color, shownCount }) {
   const thresholdBin = Math.min(BINS - 1, Math.floor(((thresholdValue - min) / (max - min || 1)) * BINS));
 
   return (
-    <div style={{ marginBottom: 20 }}>
-      <div style={{ display: "flex", alignItems: "flex-end", gap: 2, height: 56 }}>
-        {bins.map((count, i) => (
-          <motion.div
-            key={i}
-            initial={{ scaleY: 0 }}
-            animate={{ scaleY: 1 }}
-            transition={{ duration: 0.3, delay: i * 0.012, ease: "easeOut" }}
-            style={{
-              flex: 1, height: `${Math.max((count / maxBinCount) * 100, count > 0 ? 4 : 0)}%`,
-              background: color, opacity: i >= thresholdBin ? 0.95 : 0.28, borderRadius: "2px 2px 0 0",
-              transformOrigin: "bottom",
-            }}
-            title={`${count} MP${count === 1 ? "" : "s"}`}
-          />
-        ))}
+    <div style={{ marginBottom: 22, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: "16px 18px 12px" }}>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12, color: COLORS.ink, marginBottom: 12 }}>
+        How {data.length} ranked MPs spread out
       </div>
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, fontFamily: FONT_BODY, fontSize: 10, fontWeight: 700, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", opacity: 0.7 }}>
-        <span>Lower</span>
-        <span>Higher</span>
+
+      <div style={{ position: "relative", height: 76, marginBottom: 2 }}>
+        <div style={{ display: "flex", alignItems: "flex-end", gap: 2, height: "100%" }}>
+          {bins.map((count, i) => (
+            <motion.div
+              key={i}
+              initial={{ scaleY: 0 }}
+              animate={{ scaleY: 1 }}
+              transition={{ duration: 0.3, delay: i * 0.012, ease: "easeOut" }}
+              style={{
+                flex: 1, height: `${Math.max((count / maxBinCount) * 100, count > 0 ? 4 : 0)}%`,
+                background: color, opacity: i >= thresholdBin ? 0.95 : 0.25, borderRadius: "2px 2px 0 0",
+                transformOrigin: "bottom",
+              }}
+              title={`${count} MP${count === 1 ? "" : "s"}`}
+            />
+          ))}
+        </div>
       </div>
-      <div style={{ marginTop: 6, textAlign: "center", fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft }}>
-        Every one of {data.length} ranked MPs, low to high — the brighter bars are where the {Math.min(shownCount, data.length)} shown below fall
+
+      {/* The axis: a baseline with five real, formatted values along it —
+          not just "low"/"high" — plus tick marks so each label clearly
+          points at its position on the bars above, the way a real chart
+          axis does. */}
+      <div style={{ position: "relative", height: 28, borderTop: `1px solid ${COLORS.hairline}` }}>
+        {TICK_FRACTIONS.map((f) => {
+          const value = min + (max - min) * f;
+          return (
+            <div
+              key={f}
+              style={{
+                position: "absolute", left: `${f * 100}%`, top: 0, transform: `translateX(-${f * 100}%)`,
+                display: "flex", flexDirection: "column", alignItems: f === 0 ? "flex-start" : f === 1 ? "flex-end" : "center",
+              }}
+            >
+              <div style={{ width: 1, height: 5, background: COLORS.hairline, marginLeft: f === 0 ? 0 : f === 1 ? "auto" : "50%" }} />
+              <div style={{ fontFamily: FONT_MONO, fontSize: 11, fontWeight: 600, color: COLORS.ink, marginTop: 4, whiteSpace: "nowrap" }}>
+                {formatValue({ value })}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div style={{ marginTop: 6, fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5 }}>
+        The brighter bars on the right are where the {Math.min(shownCount, data.length)} MPs shown below fall.
       </div>
     </div>
   );
@@ -330,7 +361,7 @@ export default function Rankings({ onSelectPolitician }) {
       </div>
 
       {!loading && active.data.length > 0 && (
-        <DistributionChart key={active.key} data={active.data} color={active.color} shownCount={TOP_N} />
+        <DistributionChart key={active.key} data={active.data} color={active.color} shownCount={TOP_N} formatValue={active.formatValue} />
       )}
 
       <div style={{ position: "relative", maxWidth: 420, marginBottom: 16 }}>

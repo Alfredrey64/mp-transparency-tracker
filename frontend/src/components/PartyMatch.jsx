@@ -255,13 +255,17 @@ function NationScreen({ selected, onSelect, onContinue, onSkip }) {
                       animate={{ y: [-22, 2, -2, 0], opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.5 }}
                       transition={{ duration: 0.5, ease: "easeOut" }}
-                      style={{ position: "absolute", top: -13, color: COLORS.accent, display: "flex" }}
+                      style={{ position: "absolute", top: -30, color: COLORS.accent, display: "flex" }}
                     >
                       <IconPin size={20} />
                     </motion.span>
                   )}
                 </AnimatePresence>
-                <span style={{ fontSize: 30, lineHeight: 1 }} aria-hidden>{n.flag}</span>
+                {n.flagIcon ? (
+                  <n.flagIcon size={22} />
+                ) : (
+                  <span style={{ fontSize: 30, lineHeight: 1 }} aria-hidden>{n.flag}</span>
+                )}
                 <span style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13, color: COLORS.ink, textAlign: "center" }}>
                   {n.label}
                 </span>

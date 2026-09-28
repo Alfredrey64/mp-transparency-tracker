@@ -8,19 +8,34 @@ import { IconCommittee } from "./icons";
 
 const HOUSE_FILTERS = ["All", "Commons", "Lords", "Joint"];
 
-function MemberChip({ member }) {
+// The same green/red the bill-stage diagram already uses for the two
+// Houses — real chamber colours (Commons benches are green, Lords' are
+// red), not an arbitrary pair, so it means the same thing wherever it
+// shows up on the site. Joint committees get the sitewide accent instead
+// of a blend of the two, since "joint" isn't a colour between green and
+// red, it's a genuinely different category.
+const HOUSE_COLOR = { Commons: COLORS.commonsGreen, Lords: COLORS.garnet, Joint: COLORS.accent };
+
+function MemberChip({ member, showHouse }) {
   const color = partyColour(member.party_colour, COLORS.inkSoft);
+  const houseColor = HOUSE_COLOR[member.house];
   return (
     <span
       style={{
         display: "inline-flex", alignItems: "center", gap: 6, fontFamily: FONT_BODY, fontSize: 12.5,
-        padding: "5px 10px 5px 8px", borderRadius: 999, background: COLORS.paper, border: `1px solid ${COLORS.hairline}`,
+        padding: "5px 10px 5px 8px", borderRadius: 999, background: COLORS.paper,
+        border: `1px solid ${showHouse && houseColor ? `${houseColor}55` : COLORS.hairline}`,
       }}
     >
       <span style={{ width: 6, height: 6, borderRadius: "50%", background: color, flexShrink: 0 }} />
       <span style={{ color: COLORS.ink, fontWeight: member.is_chair ? 700 : 400 }}>
         {member.name}{member.is_chair ? " (Chair)" : ""}
       </span>
+      {showHouse && houseColor && (
+        <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: houseColor }}>
+          {member.house}
+        </span>
+      )}
     </span>
   );
 }
@@ -62,8 +77,11 @@ function CommitteeCard({ committee, index, open, onToggle }) {
           <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, color: COLORS.ink, lineHeight: 1.3 }}>{committee.name}</div>
           <span
             style={{
-              flexShrink: 0, fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700, color: COLORS.inkSoft,
-              background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: "3px 9px", textTransform: "uppercase",
+              flexShrink: 0, fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700,
+              color: HOUSE_COLOR[committee.house] ?? COLORS.inkSoft,
+              background: `${HOUSE_COLOR[committee.house] ?? COLORS.inkSoft}14`,
+              border: `1px solid ${HOUSE_COLOR[committee.house] ?? COLORS.inkSoft}40`,
+              borderRadius: 999, padding: "3px 9px", textTransform: "uppercase",
             }}
           >
             {committee.house}
@@ -96,7 +114,9 @@ function CommitteeCard({ committee, index, open, onToggle }) {
                 Members ({committee.members?.length ?? 0})
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: committee.inquiries?.length > 0 ? 16 : 0 }}>
-                {(committee.members ?? []).map((m, i) => <MemberChip key={i} member={m} />)}
+                {(committee.members ?? []).map((m, i) => (
+                  <MemberChip key={i} member={m} showHouse={committee.house === "Joint"} />
+                ))}
               </div>
 
               {committee.inquiries?.length > 0 && (
@@ -152,20 +172,24 @@ export default function Committees() {
       {committees !== null && committees.length > 0 && (
         <>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 24, marginBottom: 20 }}>
-            {HOUSE_FILTERS.map((h) => (
-              <button
-                key={h}
-                onClick={() => setHouseFilter(h)}
-                style={{
-                  fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, padding: "7px 14px", borderRadius: 999,
-                  border: `1px solid ${houseFilter === h ? COLORS.accent : COLORS.hairline}`,
-                  background: houseFilter === h ? COLORS.accent : "transparent",
-                  color: houseFilter === h ? "#fff" : COLORS.inkSoft, cursor: "pointer", transition: "all 0.15s",
-                }}
-              >
-                {h}
-              </button>
-            ))}
+            {HOUSE_FILTERS.map((h) => {
+              const c = HOUSE_COLOR[h] ?? COLORS.accent;
+              const active = houseFilter === h;
+              return (
+                <button
+                  key={h}
+                  onClick={() => setHouseFilter(h)}
+                  style={{
+                    fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, padding: "7px 14px", borderRadius: 999,
+                    border: `1px solid ${active ? c : COLORS.hairline}`,
+                    background: active ? c : "transparent",
+                    color: active ? "#fff" : COLORS.inkSoft, cursor: "pointer", transition: "all 0.15s",
+                  }}
+                >
+                  {h}
+                </button>
+              );
+            })}
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>

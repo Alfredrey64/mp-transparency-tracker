@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
-import { IconDevolved } from "./icons";
+import { IconDevolved, IconNorthernIreland } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
 
 const ADMINISTRATIONS = [
@@ -37,11 +37,12 @@ const ADMINISTRATIONS = [
   {
     name: "Northern Ireland Assembly",
     place: "Stormont, Belfast",
-    // Deliberately the Union Flag, not a "Northern Ireland flag" — unlike
-    // Scotland and Wales, NI has had no official flag of its own since the
-    // Ulster Banner's official status ended in 1972; the Union Flag is what
-    // Stormont itself flies on designated days.
-    flag: "🇬🇧",
+    // No Unicode flag emoji exists for Northern Ireland (unlike Scotland
+    // and Wales, there's no registered ISO 3166-2 tag sequence for it) —
+    // flagIcon is a drawn Ulster Banner instead, the flag most commonly
+    // recognised as "the Northern Ireland flag" despite losing official
+    // status in 1972.
+    flagIcon: IconNorthernIreland,
     accent: "#6E4B6E",
     established: "1998, under the Good Friday (Belfast) Agreement that ended the Troubles",
     members: "90 MLAs, elected by Single Transferable Vote",
@@ -87,7 +88,7 @@ export default function DevolvedAdministrations() {
                   <div>
                     <div style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, marginBottom: 2 }}>{a.name}</div>
                     <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, display: "flex", alignItems: "center", gap: 6 }}>
-                      <span style={{ fontSize: 13 }} aria-hidden>{a.flag}</span>
+                      {a.flagIcon ? <a.flagIcon size={13} /> : <span style={{ fontSize: 13 }} aria-hidden>{a.flag}</span>}
                       {a.place}
                     </div>
                   </div>

@@ -219,16 +219,13 @@ export default function StandardsReports({ onSelectPolitician }) {
     if (!reports) return null;
     let suspended = 0;
     let resigned = 0;
-    let mostRecentYear = null;
     reports.forEach((r) => {
       const detail = STANDARDS_REPORT_DETAILS[String(r.id)];
       const outcome = classifyOutcome(detail);
       if (outcome?.label === "Suspended") suspended += 1;
       if (outcome?.label === "Resigned / Stood Down" || outcome?.label === "Recalled") resigned += 1;
-      const y = r.publication_date ? new Date(r.publication_date).getFullYear() : null;
-      if (y && (mostRecentYear === null || y > mostRecentYear)) mostRecentYear = y;
     });
-    return { total: reports.length, suspended, resigned, mostRecentYear };
+    return { total: reports.length, suspended, resigned };
   }, [reports]);
 
   const filtered = useMemo(() => {
@@ -265,7 +262,6 @@ export default function StandardsReports({ onSelectPolitician }) {
           <StatCard value={stats.total} label="Reports on record" color={COLORS.accent} index={0} />
           <StatCard value={stats.suspended} label="Ended in suspension" color="#B5533C" index={1} />
           <StatCard value={stats.resigned} label="Resigned or recalled" color="#9C3B3B" index={2} />
-          <StatCard value={stats.mostRecentYear ?? "—"} label="Most recent report" color="#4C7A6B" index={3} />
         </div>
       )}
 

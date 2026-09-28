@@ -1,3 +1,5 @@
+import { IconNorthernIreland } from "../components/icons";
+
 // Data behind the "Find Your Party" quiz.
 //
 // How this works, in plain terms: each statement below is scored -2 to +2
@@ -42,14 +44,15 @@ export const QUIZ_PARTIES = [
 // restricts a party to one nation's results; parties without it are
 // treated as standing UK-wide (England, Scotland, and Wales — Northern
 // Ireland's parties are out of scope entirely, see the note below).
-// Flags follow the same reasoning as the Devolved Administrations page:
-// Northern Ireland has had no official flag of its own since 1972, so the
-// Union Flag stands in for it rather than a contested unofficial one.
+// England/Scotland/Wales each have a real Unicode flag emoji; Northern
+// Ireland doesn't (no ISO 3166-2 tag sequence is registered for it), so
+// its entry uses `flagIcon` — a drawn Ulster Banner component — instead
+// of the `flag` emoji string the other three use.
 export const NATIONS = [
   { key: "england", label: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
   { key: "scotland", label: "Scotland", flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿" },
   { key: "wales", label: "Wales", flag: "🏴󠁧󠁢󠁷󠁬󠁳󠁿" },
-  { key: "northern-ireland", label: "Northern Ireland", flag: "🇬🇧" },
+  { key: "northern-ireland", label: "Northern Ireland", flagIcon: IconNorthernIreland },
 ];
 
 const NATION_RESTRICTED = { snp: "scotland", "plaid-cymru": "wales" };
