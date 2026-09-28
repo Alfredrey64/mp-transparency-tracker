@@ -85,23 +85,35 @@ export function PartyHemicycle({ politicians, onSelectParty }) {
         viewBox={`${-viewW / 2} ${-viewH + 10} ${viewW} ${viewH}`}
         style={{ width: "100%", height: "auto", overflow: "visible" }}
       >
-        {seatData.map((seat, i) => {
-          const dimmed = hoveredParty && seat.party !== hoveredParty;
-          return (
-            <motion.circle
-              key={i}
-              cx={seat.x}
-              cy={seat.y}
-              r={SEAT_RADIUS}
-              fill={seat.color}
-              initial={{ opacity: 0, scale: 0 }}
-              whileInView={{ opacity: dimmed ? 0.18 : 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.35, delay: 0.3 + i * 0.0014, ease: "backOut" }}
-              style={{ transition: "opacity 0.15s" }}
-            />
-          );
-        })}
+        {/* One orchestrated entrance for the whole chamber on mount, not
+            650 individually-observed seats — each seat used to be its own
+            motion.circle with its own whileInView/IntersectionObserver,
+            which is real per-element overhead for no visible benefit (this
+            section is usually already on-screen at load), and starting an
+            observed element at scale:0 is a known fragile pattern (a
+            zero-area target can be missed by some intersection
+            implementations). A single group animating on mount is simpler,
+            cheaper, and has nothing to depend on but mounting. Each seat's
+            hover-dim is a separate, plain CSS opacity transition. */}
+        <motion.g
+          initial={{ opacity: 0, scale: 0.94 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.55, delay: 0.15, ease: "easeOut" }}
+        >
+          {seatData.map((seat, i) => {
+            const dimmed = hoveredParty && seat.party !== hoveredParty;
+            return (
+              <circle
+                key={i}
+                cx={seat.x}
+                cy={seat.y}
+                r={SEAT_RADIUS}
+                fill={seat.color}
+                style={{ opacity: dimmed ? 0.18 : 1, transition: "opacity 0.15s" }}
+              />
+            );
+          })}
+        </motion.g>
       </svg>
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 18px", marginTop: 18, justifyContent: "center" }}>
