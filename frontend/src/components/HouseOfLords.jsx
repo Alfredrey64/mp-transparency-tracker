@@ -4,6 +4,7 @@ import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { partyColour, initials, formatDate, timeInOffice } from "../lib/format";
 import { PageHeader } from "./shared";
+import { PartyHemicycleSection } from "./PartyHemicycle";
 import { IconLords } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
 
@@ -373,6 +374,17 @@ export default function HouseOfLords() {
       />
 
       <DataScopeNote />
+
+      {!loading && peers.length > 0 && (
+        <PartyHemicycleSection
+          politicians={peers}
+          onSelectParty={(name) => withScrollPreserved(() => setActiveParty(name))}
+          heading="The Lords, seat by seat"
+          subtitle="Every current peer, coloured by party — hover a party below to pick it out, or tap one to filter the list."
+          noPartyLabel="Crossbench"
+          legendCount={10}
+        />
+      )}
 
       <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 16, flexWrap: "wrap" }}>
         <input

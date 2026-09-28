@@ -43,18 +43,18 @@ function computeSeatPositions(total) {
   return seats.sort((a, b) => a.angle - b.angle);
 }
 
-export function PartyHemicycle({ politicians, onSelectParty }) {
+export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Independent", legendCount = 8 }) {
   const [hoveredParty, setHoveredParty] = useState(null);
 
   const parties = useMemo(() => {
     const counts = new Map();
     for (const p of politicians) {
-      const name = p.party ?? "Independent";
+      const name = p.party ?? noPartyLabel;
       if (!counts.has(name)) counts.set(name, { name, count: 0, color: partyColour(p.party_colour, COLORS.inkSoft) });
       counts.get(name).count += 1;
     }
     return [...counts.values()].sort((a, b) => b.count - a.count);
-  }, [politicians]);
+  }, [politicians, noPartyLabel]);
 
   const total = politicians.length;
 
@@ -117,7 +117,7 @@ export function PartyHemicycle({ politicians, onSelectParty }) {
       </svg>
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 18px", marginTop: 18, justifyContent: "center" }}>
-        {parties.slice(0, 8).map((p) => (
+        {parties.slice(0, legendCount).map((p) => (
           <button
             key={p.name}
             onClick={() => onSelectParty?.(p.name)}
@@ -139,16 +139,23 @@ export function PartyHemicycle({ politicians, onSelectParty }) {
   );
 }
 
-export function PartyHemicycleSection({ politicians, onSelectParty }) {
+export function PartyHemicycleSection({
+  politicians,
+  onSelectParty,
+  heading = "The Commons, seat by seat",
+  subtitle = "Every current seat, coloured by party — hover a party below to pick it out.",
+  noPartyLabel = "Independent",
+  legendCount = 8,
+}) {
   return (
     <div style={{ marginBottom: 40 }}>
       <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, color: COLORS.ink, marginBottom: 4, textAlign: "center" }}>
-        The Commons, seat by seat
+        {heading}
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, textAlign: "center", marginBottom: 8 }}>
-        Every current seat, coloured by party — hover a party below to pick it out.
+        {subtitle}
       </div>
-      <PartyHemicycle politicians={politicians} onSelectParty={onSelectParty} />
+      <PartyHemicycle politicians={politicians} onSelectParty={onSelectParty} noPartyLabel={noPartyLabel} legendCount={legendCount} />
     </div>
   );
 }

@@ -345,6 +345,41 @@ function LineageDiagram({ nodes, color }) {
   );
 }
 
+// A real vertical timeline — a spine with a dot at each milestone — rather
+// than the year and event just sitting side by side as two columns of
+// text. The dot for the most recent entry is filled solid; earlier ones
+// are hollow, so the line reads left-to-right, oldest to newest, the same
+// direction the eye already reads the years in.
+function PartyTimeline({ events, color }) {
+  return (
+    <div style={{ position: "relative", paddingLeft: 22 }}>
+      <div style={{ position: "absolute", left: 5, top: 5, bottom: 5, width: 2, background: `${color}30` }} />
+      {events.map((t, i) => {
+        const isLast = i === events.length - 1;
+        return (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, x: -8 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ delay: i * 0.06, duration: 0.25 }}
+            style={{ position: "relative", paddingBottom: isLast ? 0 : 16 }}
+          >
+            <span
+              style={{
+                position: "absolute", left: -22, top: 3, width: 10, height: 10, borderRadius: "50%",
+                background: isLast ? color : COLORS.paper, border: `2px solid ${color}`, boxSizing: "border-box",
+              }}
+            />
+            <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12.5, color }}>{t.year}</span>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.5, marginTop: 2 }}>{t.event}</div>
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+}
+
 function PartyCard({ party, index, seatCount }) {
   const [open, setOpen] = useState(false);
   return (
@@ -398,20 +433,7 @@ function PartyCard({ party, index, seatCount }) {
                 <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>
                   Timeline
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  {party.timeline.map((t, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, x: -8 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.06, duration: 0.25 }}
-                      style={{ display: "flex", gap: 12, alignItems: "flex-start" }}
-                    >
-                      <span style={{ flexShrink: 0, width: 44, fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12.5, color: party.color }}>{t.year}</span>
-                      <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.5 }}>{t.event}</span>
-                    </motion.div>
-                  ))}
-                </div>
+                <PartyTimeline events={party.timeline} color={party.color} />
               </div>
               <div>
                 <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>

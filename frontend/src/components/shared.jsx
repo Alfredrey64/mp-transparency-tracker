@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
 import { supabase } from "../supabaseClient";
 import { stripHtml, formatDate } from "../lib/format";
+import { SECTION_ACCENT_BY_ICON } from "../data/sidebarSections";
 
 // An annotated passage, not a dashboard tile: a left margin rule in the
 // page's own accent colour and a soft tint of that same colour, open on
@@ -171,10 +172,17 @@ export function ScaleComparison({ bars, maxWidth = 900 }) {
 
 export function PageHeader({ kicker = "Public Record · UK Parliament", title, subtitle, align = "left", size = "lg", maxWidth, icon: Icon }) {
   const isHero = size === "xl";
+  // Every page passes its own distinct icon here already — reusing it as
+  // the lookup key means each page's header automatically picks up its
+  // sidebar section's colour (see data/sidebarSections.js) with no prop
+  // threading needed through 30-odd page files. Pages outside any section
+  // (Home, Methodology/Settings, standalone pages) just keep the plain
+  // sitewide accent.
+  const accent = SECTION_ACCENT_BY_ICON.get(Icon) ?? COLORS.accent;
   return (
     <div style={{ marginBottom: isHero ? 0 : 28, maxWidth, textAlign: align }}>
       <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22 }}>
-        <EyebrowLabel>{kicker}</EyebrowLabel>
+        <EyebrowLabel color={accent}>{kicker}</EyebrowLabel>
       </motion.div>
       <motion.h1
         initial={{ opacity: 0, y: 6 }}
@@ -197,7 +205,7 @@ export function PageHeader({ kicker = "Public Record · UK Parliament", title, s
             initial={{ scale: 0.75, rotate: -6, opacity: 0 }}
             animate={{ scale: 1, rotate: 0, opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.04, ease: "backOut" }}
-            style={{ display: "inline-flex", color: COLORS.accent, flexShrink: 0 }}
+            style={{ display: "inline-flex", color: accent, flexShrink: 0 }}
           >
             <Icon size={isHero ? 40 : 30} />
           </motion.span>
@@ -212,7 +220,7 @@ export function PageHeader({ kicker = "Public Record · UK Parliament", title, s
           transformOrigin: align === "center" ? "center" : "left",
           height: 2,
           width: isHero ? 40 : 28,
-          background: COLORS.accent,
+          background: accent,
           margin: align === "center" ? "16px auto 0" : "14px 0 0",
         }}
       />

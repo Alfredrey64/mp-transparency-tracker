@@ -264,6 +264,71 @@ function jumpToArea(area) {
   document.getElementById(`cabinet-${area}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+// A real org chart, not a card grid standing in for one: the Prime
+// Minister at the top with a single trunk line down to a spine, then every
+// department branching off it — the actual shape of "who reports up to
+// whom" at Cabinet level, sized by how many ministers sit in each
+// department. Tapping a department jumps straight to its full list below
+// (the same jumpToArea the pill row already used), so the diagram is a
+// real way to navigate, not just decoration in front of the list.
+function CabinetOrgChart({ groups }) {
+  if (groups.length === 0) return null;
+  const maxCount = Math.max(...groups.map((g) => g.members.length));
+  return (
+    <div style={{ marginTop: 32, marginBottom: 8, display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <motion.div
+        initial={{ opacity: 0, y: -8 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ duration: 0.3 }}
+        style={{
+          display: "flex", flexDirection: "column", alignItems: "center", gap: 6, padding: "10px 20px",
+          borderRadius: 12, background: `${COLORS.accent}12`, border: `1px solid ${COLORS.accent}40`,
+        }}
+      >
+        <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 15, color: COLORS.accent }}>Prime Minister</span>
+      </motion.div>
+      <div style={{ width: 2, height: 22, background: COLORS.hairline }} />
+      <div style={{ width: "100%", maxWidth: 760, height: 1, background: COLORS.hairline }} />
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "18px 22px", maxWidth: 820, marginTop: 22 }}>
+        {groups.map((g, gi) => {
+          const accent = SECTION_ACCENTS[gi % SECTION_ACCENTS.length];
+          const size = Math.round(36 + (g.members.length / maxCount) * 26);
+          return (
+            <motion.button
+              key={g.area}
+              onClick={() => jumpToArea(g.area)}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.3, delay: gi * 0.02, ease: "easeOut" }}
+              whileHover={{ y: -2 }}
+              style={{
+                position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
+                width: 96, background: "none", border: "none", cursor: "pointer", padding: 0,
+              }}
+            >
+              <div style={{ position: "absolute", top: -22, width: 1, height: 22, background: COLORS.hairline }} />
+              <div
+                style={{
+                  width: size, height: size, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+                  background: `${accent}20`, border: `2px solid ${accent}`, fontFamily: FONT_BODY, fontWeight: 700,
+                  fontSize: 14, color: accent, flexShrink: 0,
+                }}
+              >
+                {g.members.length}
+              </div>
+              <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 600, color: COLORS.ink, textAlign: "center", lineHeight: 1.3 }}>
+                {g.area}
+              </span>
+            </motion.button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function Cabinet({ onViewProfile }) {
   const members = useCabinet();
   const groups = members ? groupByArea(members) : [];
@@ -286,25 +351,7 @@ export default function Cabinet({ onViewProfile }) {
         </div>
       )}
 
-      {groups.length > 1 && (
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 28 }}>
-          {groups.map((g, gi) => {
-            const accent = SECTION_ACCENTS[gi % SECTION_ACCENTS.length];
-            return (
-              <button
-                key={g.area}
-                onClick={() => jumpToArea(g.area)}
-                style={{
-                  fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 600, padding: "6px 12px", borderRadius: 999,
-                  border: `1px solid ${accent}50`, background: `${accent}10`, color: accent, cursor: "pointer",
-                }}
-              >
-                {g.area}
-              </button>
-            );
-          })}
-        </div>
-      )}
+      {groups.length > 1 && <CabinetOrgChart groups={groups} />}
 
       {groups.map((g, gi) => {
         const accent = SECTION_ACCENTS[gi % SECTION_ACCENTS.length];

@@ -50,6 +50,60 @@ function Avatar({ url, name, color, size = 36 }) {
   );
 }
 
+// Where does the shown Top 30 actually sit against all of Parliament? A
+// ranked list alone can't answer that — two MPs one place apart in rank
+// could be nearly tied or worlds apart in value. Bucketing every ranked
+// MP's value (not just the visible Top 30) into a real histogram shows
+// the actual shape of the spread — often a long tail, not evenly spaced —
+// with the bins that make up the list below highlighted against the rest.
+function DistributionChart({ data, color, shownCount }) {
+  const BINS = 24;
+  const { bins, min, max } = useMemo(() => {
+    const values = data.map((e) => e.value);
+    const lo = Math.min(...values, 0);
+    const hi = Math.max(...values);
+    const width = (hi - lo) / BINS || 1;
+    const counts = Array.from({ length: BINS }, () => 0);
+    for (const v of values) {
+      const idx = Math.min(BINS - 1, Math.max(0, Math.floor((v - lo) / width)));
+      counts[idx]++;
+    }
+    return { bins: counts, min: lo, max: hi };
+  }, [data]);
+
+  const maxBinCount = Math.max(...bins, 1);
+  const thresholdValue = data[Math.min(shownCount, data.length) - 1]?.value ?? min;
+  const thresholdBin = Math.min(BINS - 1, Math.floor(((thresholdValue - min) / (max - min || 1)) * BINS));
+
+  return (
+    <div style={{ marginBottom: 20 }}>
+      <div style={{ display: "flex", alignItems: "flex-end", gap: 2, height: 56 }}>
+        {bins.map((count, i) => (
+          <motion.div
+            key={i}
+            initial={{ scaleY: 0 }}
+            animate={{ scaleY: 1 }}
+            transition={{ duration: 0.3, delay: i * 0.012, ease: "easeOut" }}
+            style={{
+              flex: 1, height: `${Math.max((count / maxBinCount) * 100, count > 0 ? 4 : 0)}%`,
+              background: color, opacity: i >= thresholdBin ? 0.95 : 0.28, borderRadius: "2px 2px 0 0",
+              transformOrigin: "bottom",
+            }}
+            title={`${count} MP${count === 1 ? "" : "s"}`}
+          />
+        ))}
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, fontFamily: FONT_BODY, fontSize: 10, fontWeight: 700, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", opacity: 0.7 }}>
+        <span>Lower</span>
+        <span>Higher</span>
+      </div>
+      <div style={{ marginTop: 6, textAlign: "center", fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft }}>
+        Every one of {data.length} ranked MPs, low to high — the brighter bars are where the {Math.min(shownCount, data.length)} shown below fall
+      </div>
+    </div>
+  );
+}
+
 function RankRow({ entry, index, maxValue, color, valueLabel, onSelectPolitician }) {
   const p = entry.politician;
   const pColor = partyColour(p.party_colour, COLORS.inkSoft);
@@ -274,6 +328,10 @@ export default function Rankings({ onSelectPolitician }) {
         <div style={{ marginBottom: 6 }}>{active.intro}</div>
         <div style={{ color: COLORS.inkSoft, fontSize: 12.5 }}>{active.caveat}</div>
       </div>
+
+      {!loading && active.data.length > 0 && (
+        <DistributionChart key={active.key} data={active.data} color={active.color} shownCount={TOP_N} />
+      )}
 
       <div style={{ position: "relative", maxWidth: 420, marginBottom: 16 }}>
         <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: COLORS.inkSoft, display: "flex" }}>
