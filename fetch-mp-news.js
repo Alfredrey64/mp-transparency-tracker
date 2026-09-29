@@ -93,13 +93,13 @@ const SAFE_NEIGHBOUR_WORDS = new Set([
   "ms", "rt", "hon", "lord", "lady", "minister", "secretary", "chancellor", "pm", "prime", "leader", "shadow",
   "former", "ex", "new", "veteran", "senior", "backbench", "chief", "deputy", "co", "vs", "v", "why", "how", "what",
   "who", "when", "after", "before", "over", "under", "amid", "against", "despite", "during", "this", "that", "his",
-  "her", "their", "its", "it's",
+  "her", "their", "its", "it's", "uk", "us", "eu", "ni", "tv", "obe", "mbe", "cbe", "qc", "kc", "at", "no", "yes",
 ]);
 
 function neighbourLooksLikeName(word) {
   if (!word) return false;
   const clean = word.replace(/[^a-zA-Z']/g, "");
-  if (clean.length < 3) return false;
+  if (clean.length < 2) return false;
   return !SAFE_NEIGHBOUR_WORDS.has(clean.toLowerCase());
 }
 
@@ -116,7 +116,12 @@ const NON_POLITICAL_CONTEXT = [
   "transfer", "striker", "midfielder", "goalkeeper", "defender", "midfield", "football club",
   "premier league", "champions league", "match report", "loan move", "signing for", "box office",
   "album", "single", "tour dates", "film review", "tv series", "starring role", "season finale",
-  "west end", "wins gold", "world cup", "olympics", "grand prix", "wimbledon",
+  "west end", "wins gold", "world cup", "olympics", "grand prix", "wimbledon", "keeping tabs on",
+  "manchester united", "man utd", "man united", "arsenal", "chelsea fc", "liverpool fc",
+  "manchester city", "man city", "tottenham", "newcastle united", "aston villa", "west ham",
+  "everton", "wolverhampton wanderers", "crystal palace fc", "brighton and hove albion",
+  "nottingham forest", "sheffield united", "leeds united", "leicester city", "for sale", "auction",
+  "print by", "artwork by", "painting by",
 ];
 const POLITICAL_CONTEXT = [
   "mp", "mps", "labour", "conservative", "tory", "tories", "parliament", "commons", "lords",
@@ -138,6 +143,14 @@ function isLikelyMatch(headline, mpName) {
   const match = headline.match(new RegExp(`\\b${escaped}\\b`, "i"));
   if (!match) return false;
   if (hasUnrelatedContext(headline)) return false;
+
+  // A "headline" that's nothing but the name itself (occasionally an
+  // aggregator's bare listing entry rather than a real story) gives no
+  // context at all to judge relevance from — safer to drop it than show
+  // it as if it were an actual news story about them.
+  const remainder = (headline.slice(0, match.index) + headline.slice(match.index + match[0].length))
+    .replace(/[^a-zA-Z0-9]/g, "");
+  if (!remainder) return false;
 
   const before = headline.slice(0, match.index).trim().split(/\s+/).pop();
   const after = headline.slice(match.index + match[0].length).trim().split(/\s+/)[0];
