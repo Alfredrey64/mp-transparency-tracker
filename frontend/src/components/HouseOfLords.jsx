@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { partyColour, initials, formatDate, timeInOffice } from "../lib/format";
-import { PageHeader, CardShell } from "./shared";
+import { PageHeader, CardShell, LoadFailedNote } from "./shared";
 import { PartyHemicycleSection } from "./PartyHemicycle";
 import { IconLords } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
@@ -318,13 +318,19 @@ export default function HouseOfLords() {
   const [activeParty, setActiveParty] = useState("All");
   const [activeType, setActiveType] = useState("All");
   const [selected, setSelected] = useState(null);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     async function load() {
-      const [{ data: peerData }, { data: formerData }] = await Promise.all([
+      const [{ data: peerData, error: peerErr }, { data: formerData }] = await Promise.all([
         supabase.from("peers").select("*").order("name"),
         supabase.from("former_mps").select("parliament_member_id, name, constituency, party, membership_end_date, membership_end_reason"),
       ]);
+      // Worth telling apart from a genuinely empty result — this feeds
+      // straight into the page's own subtitle ("X peers in total"), and a
+      // failed fetch would otherwise print the flatly false "0 peers in
+      // total" rather than saying anything failed.
+      setFailed(Boolean(peerErr));
       setPeers(peerData ?? []);
       setFormerMps(formerData ?? []);
       setLoading(false);
@@ -375,12 +381,24 @@ export default function HouseOfLords() {
         icon={IconLords}
         kicker="Public Record · House of Lords"
         title="Who's in the House of Lords"
-        subtitle={loading ? "Loading current peers…" : `Every current member of the House of Lords — ${peers.length} peers in total.`}
+        subtitle={
+          loading
+            ? "Loading current peers…"
+            : failed
+            ? "Couldn't load the current peers — this looks like a connection issue, not an empty House."
+            : `Every current member of the House of Lords — ${peers.length} peers in total.`
+        }
       />
 
       <DataScopeNote />
 
-      {!loading && peers.length > 0 && (
+      {!loading && failed && (
+        <div style={{ marginBottom: 24 }}>
+          <LoadFailedNote item="the list of peers" />
+        </div>
+      )}
+
+      {!loading && !failed && peers.length > 0 && (
         <PartyHemicycleSection
           politicians={peers}
           onSelectParty={(name) => withScrollPreserved(() => setActiveParty(name))}
@@ -481,7 +499,7 @@ export default function HouseOfLords() {
             );
           })}
 
-        {!loading && filtered.length === 0 && (
+        {!loading && !failed && filtered.length === 0 && (
           <div style={{ gridColumn: "1 / -1", fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, textAlign: "center", padding: "20px 0" }}>
             No peers match your filters.
           </div>

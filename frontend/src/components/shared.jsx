@@ -465,14 +465,24 @@ export function CabinetRoleBox({ politician }) {
 export function StandardsBox({ politician }) {
   const encodedName = encodeURIComponent(politician.name);
   const [reports, setReports] = useState(null);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     async function load() {
-      const { data } = await supabase.from("standards_reports").select("title, report_url, publication_date").eq("politician_id", politician.id);
+      const { data, error } = await supabase.from("standards_reports").select("title, report_url, publication_date").eq("politician_id", politician.id);
+      setFailed(Boolean(error));
       setReports(data ?? []);
     }
     load();
   }, [politician.id]);
+
+  if (failed) {
+    return (
+      <CardShell title="Standards & Investigations">
+        <LoadFailedNote item="Standards & Investigations data" />
+      </CardShell>
+    );
+  }
 
   return (
     <CardShell title="Standards & Investigations">
@@ -525,11 +535,12 @@ const NO_PARTY_MAJORITY_CONCEPT = ["independent", "speaker"];
 export function VotingSummaryBox({ politician, onNavigate }) {
   const [votes, setVotes] = useState(null);
   const [bills, setBills] = useState(null);
+  const [failed, setFailed] = useState(false);
   const hasPartyMajorityConcept = !NO_PARTY_MAJORITY_CONCEPT.includes((politician.party ?? "").toLowerCase());
 
   useEffect(() => {
     async function load() {
-      const [{ data: v }, { data: b }] = await Promise.all([
+      const [{ data: v, error: vErr }, { data: b, error: bErr }] = await Promise.all([
         supabase
           .from("voting_records")
           .select("title, date, voted_aye, voted_with_party_majority, source_url")
@@ -538,6 +549,7 @@ export function VotingSummaryBox({ politician, onNavigate }) {
           .limit(4),
         supabase.from("bills").select("short_title, long_title"),
       ]);
+      setFailed(Boolean(vErr || bErr));
       setVotes(v ?? []);
       setBills(b ?? []);
     }
@@ -564,6 +576,14 @@ export function VotingSummaryBox({ politician, onNavigate }) {
     return (
       <CardShell title="Voting Record">
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>
+      </CardShell>
+    );
+  }
+
+  if (failed) {
+    return (
+      <CardShell title="Voting Record">
+        <LoadFailedNote item="voting record" />
       </CardShell>
     );
   }
@@ -658,14 +678,20 @@ export function VotingSummaryBox({ politician, onNavigate }) {
 export function RebellionRateBox({ politician }) {
   const hasPartyMajorityConcept = !NO_PARTY_MAJORITY_CONCEPT.includes((politician.party ?? "").toLowerCase());
   const [stats, setStats] = useState(hasPartyMajorityConcept ? undefined : null);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     if (!hasPartyMajorityConcept) return;
     async function load() {
-      const [{ count: total }, { count: against }] = await Promise.all([
+      const [{ count: total, error: totalErr }, { count: against, error: againstErr }] = await Promise.all([
         supabase.from("voting_records").select("*", { count: "exact", head: true }).eq("politician_id", politician.id).not("voted_with_party_majority", "is", null),
         supabase.from("voting_records").select("*", { count: "exact", head: true }).eq("politician_id", politician.id).eq("voted_with_party_majority", false),
       ]);
+      // A genuine zero-votes MP and a failed count query both leave `total`
+      // as 0/null here — worth telling apart, since this box otherwise just
+      // renders nothing for "no votes", which would silently hide a real
+      // rebellion rate behind a network blip instead of showing it.
+      setFailed(Boolean(totalErr || againstErr));
       setStats({ total: total ?? 0, against: against ?? 0 });
     }
     load();
@@ -675,6 +701,14 @@ export function RebellionRateBox({ politician }) {
     return (
       <CardShell title="Rebellion Rate">
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>
+      </CardShell>
+    );
+  }
+
+  if (failed) {
+    return (
+      <CardShell title="Rebellion Rate">
+        <LoadFailedNote item="rebellion rate data" />
       </CardShell>
     );
   }
@@ -808,18 +842,28 @@ export function RecentActivityBox({ politician, onNavigate }) {
 
 export function NewsBox({ politician }) {
   const [articles, setArticles] = useState(null);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     async function load() {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("mp_news")
         .select("headline, source, url, published_date")
         .eq("politician_id", politician.id)
         .order("published_date", { ascending: false });
+      setFailed(Boolean(error));
       setArticles(data ?? []);
     }
     load();
   }, [politician.id]);
+
+  if (failed) {
+    return (
+      <CardShell title="In the News">
+        <LoadFailedNote item="news coverage" />
+      </CardShell>
+    );
+  }
 
   return (
     <CardShell title="In the News">
@@ -855,6 +899,26 @@ export function NewsBox({ politician }) {
         </div>
       )}
     </CardShell>
+  );
+}
+
+// A failed fetch and a genuinely empty result both leave `data` null/[] if
+// the caller only ever checks `data ?? []` — which on a transparency site
+// means a network hiccup can render as "no published Committee on
+// Standards finding" or "no declared financial interests", stating a
+// clean record when the truth is just "we don't know right now". This is
+// the distinct message for the failure case, so it never gets silently
+// swallowed into the same copy as an actual empty result.
+export function LoadFailedNote({ item = "this" }) {
+  return (
+    <div
+      style={{
+        fontFamily: FONT_BODY, fontSize: 13, color: "#9C3B3B", background: "#9C3B3B14",
+        border: "1px solid #9C3B3B33", borderRadius: 8, padding: "10px 13px", lineHeight: 1.5,
+      }}
+    >
+      Couldn't load {item} — this looks like a connection issue, not an empty record. Try refreshing the page.
+    </div>
   );
 }
 

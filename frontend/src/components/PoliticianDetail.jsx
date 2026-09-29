@@ -24,6 +24,7 @@ import {
   RecentActivityBox,
   StandardsBox,
   NewsBox,
+  LoadFailedNote,
 } from "./shared";
 
 const DETAIL_TABS = [
@@ -660,9 +661,13 @@ function ManifestoTabContent({ politician }) {
 
 // The "Gifts" tab — only ever populated for the MPs currently holding a
 // government post; everyone else just sees the explanatory empty state.
-function GiftsTabContent({ gifts }) {
+function GiftsTabContent({ gifts, failed }) {
   if (gifts === null) {
     return <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft }}>Loading…</div>;
+  }
+
+  if (failed) {
+    return <LoadFailedNote item="ministerial gifts data" />;
   }
 
   if (gifts.length === 0) {
@@ -716,7 +721,9 @@ function GiftsTabContent({ gifts }) {
 export default function PoliticianDetail({ politician, onBack, onNavigate }) {
   const [interests, setInterests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [interestsFailed, setInterestsFailed] = useState(false);
   const [gifts, setGifts] = useState(null);
+  const [giftsFailed, setGiftsFailed] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
   const [avatarErrored, setAvatarErrored] = useState(false);
   const [avatarLoaded, setAvatarLoaded] = useState(false);
@@ -734,11 +741,12 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
 
   useEffect(() => {
     async function load() {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("financial_interests")
         .select("*")
         .eq("politician_id", politician.id)
         .order("date_registered", { ascending: false });
+      setInterestsFailed(Boolean(error));
       setInterests(data ?? []);
       setLoading(false);
     }
@@ -747,11 +755,12 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
 
   useEffect(() => {
     async function load() {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("ministerial_gifts")
         .select("kind, department, date_or_period, description, given_or_received, counterparty, value_amount, outcome, source_url")
         .eq("politician_id", politician.id)
         .order("date_or_period", { ascending: false });
+      setGiftsFailed(Boolean(error));
       setGifts(data ?? []);
     }
     load();
@@ -918,14 +927,16 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
               {activeTab === "claims" ? (
                 <ClaimsTabContent politician={politician} claims={claims} />
               ) : activeTab === "gifts" ? (
-                <GiftsTabContent gifts={gifts} />
+                <GiftsTabContent gifts={gifts} failed={giftsFailed} />
               ) : activeTab === "manifesto" ? (
                 <ManifestoTabContent politician={politician} />
               ) : (
                 <>
                   {loading && <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft }}>Loading declared interests…</div>}
 
-                  {!loading && filteredInterests.length === 0 && (
+                  {!loading && interestsFailed && <LoadFailedNote item="declared financial interests" />}
+
+                  {!loading && !interestsFailed && filteredInterests.length === 0 && (
                     <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, textAlign: "center", padding: "20px 0" }}>
                       {interests.length === 0
                         ? "No declared financial interests found for this MP."

@@ -6,7 +6,7 @@ import { formatDate, partyColour, shortCategory } from "../lib/format";
 import { categoriseBill } from "../lib/bills";
 import { getWatchlist, removeFromWatchlist } from "../lib/watchlist";
 import { IconSearch, IconCoin, IconBills, IconInfluence, IconPetition, IconGroup, IconPulse, IconShield, IconRankings, IconManifesto, IconPartyFinance } from "./icons";
-import { EyebrowLabel } from "./shared";
+import { EyebrowLabel, LoadFailedNote } from "./shared";
 import { PartyHemicycleSection } from "./PartyHemicycle";
 import { withScrollPreserved } from "../lib/preserveScroll";
 
@@ -62,6 +62,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
   const [donations, setDonations] = useState([]);
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [recentFailed, setRecentFailed] = useState(false);
   const [allPoliticians, setAllPoliticians] = useState([]);
   const [constituencyQuery, setConstituencyQuery] = useState("");
   const [watchlist, setWatchlist] = useState(() => getWatchlist());
@@ -90,6 +91,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
           .order("id", { ascending: false })
           .limit(7),
       ]);
+      setRecentFailed(Boolean(donationsRes.error || rolesRes.error));
       setDonations(donationsRes.data ?? []);
       setRoles(rolesRes.data ?? []);
       setLoading(false);
@@ -346,7 +348,9 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
         {loading && (
           <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>Loading…</div>
         )}
-        {!loading && items.length === 0 && (
+        {!loading && recentFailed && <LoadFailedNote item="recent declared interests" />}
+
+        {!loading && !recentFailed && items.length === 0 && (
           <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>No entries found.</div>
         )}
 

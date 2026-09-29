@@ -4,6 +4,7 @@ import { supabase } from "./supabaseClient";
 import { COLORS, FONT_BODY, FONT_DISPLAY } from "./theme";
 import Sidebar from "./components/Sidebar";
 import Home from "./components/Home";
+import { SECTIONS } from "./data/sidebarSections";
 
 // Everything below is code-split per page: a visitor to the homepage
 // shouldn't have to download the other ~30 pages' code up front. Home and
@@ -75,6 +76,32 @@ const VALID_VIEWS = new Set([
   "mediaLiteracy", "methodology", "glossary", "settings", "privacy", "terms", "list",
   "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist",
 ]);
+
+// The tab title, bookmark name and browser-history entry for every view —
+// built from the same labels the sidebar already shows, so a page's title
+// here can't drift out of sync with what it's actually called in the nav.
+// A handful of pages that sit outside any sidebar section (Home, My MP,
+// Settings, the legal pages) get their own entry below instead.
+const PAGE_TITLES = Object.fromEntries(
+  SECTIONS.flatMap((section) => section.items.map((item) => [item.key, item.label]))
+);
+Object.assign(PAGE_TITLES, {
+  home: "Follow the money behind every MP",
+  myMP: "My MP",
+  watchlist: "My Watchlist",
+  methodology: "Data & Methodology",
+  settings: "Settings",
+  privacy: "Privacy Policy",
+  terms: "Terms & Conditions",
+});
+
+function titleForState(view, selected) {
+  const base = "UK Parliament Tracker";
+  if (selected) return `${selected.name} — ${base}`;
+  if (view === "home") return base;
+  const label = PAGE_TITLES[view];
+  return label ? `${label} — ${base}` : base;
+}
 
 // A minimal hash router — no react-router dependency needed for a flat set
 // of ~30 pages plus one detail view. "#/mp/123" links straight to an MP;
@@ -150,6 +177,18 @@ export default function App() {
     if (window.location.hash !== nextHash) {
       window.history.pushState(null, "", nextHash);
     }
+  }, [view, selected]);
+
+  // The tab title, and the name a bookmark or browser-history entry
+  // actually gets, used to be the same generic "UK Parliament Tracker" on
+  // every single page — no help at all with five tabs open, or finding an
+  // MP's page again in history. This is the one piece of per-page SEO a
+  // client-only SPA can do for real: a crawler that never executes JS
+  // still only ever sees index.html's static title, but the document
+  // title itself, and what search engines that DO render JS index, follow
+  // the actual page.
+  useEffect(() => {
+    document.title = titleForState(view, selected);
   }, [view, selected]);
 
   // Re-sync app state whenever the URL changes from outside our own
