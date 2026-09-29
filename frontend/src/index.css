@@ -47,6 +47,22 @@ body {
   box-sizing: border-box;
 }
 
+/* An on-brand keyboard-focus ring, in place of each browser's own default
+   (which varies in colour/shape and reads as a mismatched blue box against
+   this dark, indigo-accented UI). :focus-visible rather than :focus so it
+   only shows for keyboard navigation, not every mouse click — a ring
+   flashing on every click a mouse user makes would be noise, not signal. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #4F46E5;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 .skeleton-pulse {
   background: linear-gradient(90deg, var(--c-hairline) 25%, var(--c-paper-card) 37%, var(--c-hairline) 63%);
   background-size: 400% 100%;

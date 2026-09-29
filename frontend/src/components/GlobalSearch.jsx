@@ -67,13 +67,14 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
         <input
           value={query}
           onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
-          onFocus={() => setOpen(true)}
+          onFocus={(e) => { setOpen(true); e.target.style.borderColor = COLORS.accentOnDark; e.target.style.boxShadow = `0 0 0 3px ${COLORS.accentOnDark}33`; }}
+          onBlur={(e) => { e.target.style.borderColor = "rgba(255,255,255,0.09)"; e.target.style.boxShadow = "none"; }}
           placeholder="Search MPs, bills…"
           style={{
             width: "100%", boxSizing: "border-box", padding: "8px 10px 8px 32px",
             fontFamily: FONT_BODY, fontSize: 12.5, borderRadius: 8,
             border: "1px solid rgba(255,255,255,0.09)", background: "rgba(255,255,255,0.05)",
-            color: "#fff", outline: "none",
+            color: "#fff", outline: "none", transition: "border-color 0.15s, box-shadow 0.15s",
           }}
         />
       </div>

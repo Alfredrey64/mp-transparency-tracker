@@ -38,9 +38,15 @@ const KNOWN_UNIONS = [
   "national union of journalists", "unite the union",
 ];
 
+// Several of these are short abbreviations ("neu", "gmb", "eis", "poa") that
+// a plain substring check would also find inside an unrelated word — "neu"
+// (National Education Union) is a literal substring of "Neural", which is
+// exactly how a donor called "Neural Voice AI" ended up tagged as a trade
+// union. Matching on a word boundary instead means the abbreviation has to
+// actually appear as its own word, not just as a run of the same letters.
 export function matchesKnownUnion(name) {
   const lower = name.toLowerCase();
-  return KNOWN_UNIONS.some((u) => lower.includes(u));
+  return KNOWN_UNIONS.some((u) => new RegExp(`\\b${u.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`).test(lower));
 }
 
 // ---- Manually verified overrides ----
@@ -56,9 +62,20 @@ export function matchesManualOverride(name) {
 }
 
 // ---- UK SIC 2007 code -> our broad sector taxonomy ----
+// Codes that mean "this entity is just a holding shell or administrative
+// head office" rather than describing any real business activity — e.g.
+// Ecotricity Group Ltd (a renewable energy company) files under 70100
+// because that's its holding entity, which would otherwise land it in
+// "Legal & Professional Services" purely because 701xx also covers real
+// management-consultancy codes. A company registered under one of these
+// could be the parent of a business in any industry, so guessing a sector
+// from the code alone would be worse than not guessing at all.
+const SHELL_ENTITY_CODES = new Set(["64200", "64209", "70100"]);
+
 export function sicToSector(sic) {
   if (!sic) return null;
   const code = sic.trim();
+  if (SHELL_ENTITY_CODES.has(code)) return "Other / Uncategorised";
   const div = parseInt(code.slice(0, 2), 10);
 
   if (code === "25400" || code === "30400") return "Defence & Arms";
@@ -102,7 +119,16 @@ function matchScore(donorName, companyTitle) {
   const b = normalise(companyTitle);
   if (!a || !b) return 0;
   if (a.length < 5 || b.length < 5) return 0;
-  if (!a.includes(b) && !b.includes(a)) return 0;
+  // Containment has to be a *prefix*, not "appears anywhere" — a plain
+  // substring check let "The Football Association" match "THE ARMY
+  // FOOTBALL ASSOCIATION" (an entirely different organisation whose name
+  // just happens to end the same way), since "football association" is a
+  // substring of "army football association". Genuine name variants for
+  // the same real company almost always extend at the end (adding "Group",
+  // "Holdings", "(UK)", "Limited"), so requiring the shorter name to be a
+  // prefix of the longer one keeps those matches while rejecting a
+  // different organisation that merely shares a trailing phrase.
+  if (!a.startsWith(b) && !b.startsWith(a)) return 0;
   const shorter = Math.min(a.length, b.length);
   const longer = Math.max(a.length, b.length);
   return shorter / longer;

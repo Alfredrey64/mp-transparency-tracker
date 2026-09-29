@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { partyColour, initials, formatDate, timeInOffice } from "../lib/format";
-import { PageHeader } from "./shared";
+import { PageHeader, CardShell } from "./shared";
 import { PartyHemicycleSection } from "./PartyHemicycle";
 import { IconLords } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
@@ -127,11 +127,10 @@ function PeerDetail({ peer, onBack, formerMp }) {
           )}
         </div>
 
-        <div style={{ paddingTop: 24 }}>
+        <div style={{ paddingTop: 24, display: "flex", flexDirection: "column", gap: 16 }}>
           <LordsInterestsLink peer={peer} />
 
-          <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.accent}`, borderRadius: 12, padding: 20, marginBottom: 16 }}>
-            <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 8 }}>Biography</div>
+          <CardShell title="Biography">
             {peer.wikipedia_bio ? (
               <>
                 <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, color: COLORS.ink, lineHeight: 1.65, marginBottom: 8 }}>{peer.wikipedia_bio}</div>
@@ -150,21 +149,18 @@ function PeerDetail({ peer, onBack, formerMp }) {
             ) : (
               <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No biography available for this peer yet.</div>
             )}
-          </div>
+          </CardShell>
 
           {formerMp && (
-            <div style={{ background: `${COLORS.accent}0c`, border: `1px solid ${COLORS.accent}33`, borderRadius: 12, padding: "14px 18px", marginBottom: 16 }}>
-              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.accent, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>
-                Previously an MP
-              </div>
+            <CardShell title="Previously an MP">
               <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.55 }}>
                 Served as MP for {formerMp.constituency} ({formerMp.party}) until {formatDate(formerMp.membership_end_date)}
                 {formerMp.membership_end_reason ? ` (${formerMp.membership_end_reason.toLowerCase()})` : ""}.
               </div>
-            </div>
+            </CardShell>
           )}
 
-          <div style={{ display: "flex", gap: 24, flexWrap: "wrap", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 20, marginBottom: 16 }}>
+          <div style={{ display: "flex", gap: 24, flexWrap: "wrap", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 20 }}>
             <div>
               <div style={{ fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: COLORS.inkSoft, marginBottom: 3 }}>Peerage</div>
               <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink }}>{peer.peerage_type}</div>
@@ -182,15 +178,13 @@ function PeerDetail({ peer, onBack, formerMp }) {
           </div>
 
           {PEERAGE_EXPLANATIONS[peer.peerage_type] && (
-            <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 20, marginBottom: 16 }}>
-              <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 8 }}>How They Got Here</div>
+            <CardShell title="How They Got Here">
               <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, lineHeight: 1.65 }}>{PEERAGE_EXPLANATIONS[peer.peerage_type]}</div>
-            </div>
+            </CardShell>
           )}
 
           {peer.ministerial_history?.length > 0 && (
-            <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 20, marginBottom: 16 }}>
-              <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 4 }}>Ministerial History</div>
+            <CardShell title="Ministerial History">
               <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginBottom: 14, lineHeight: 1.5 }}>
                 Every government post they've held, most recent first.
               </div>
@@ -215,12 +209,11 @@ function PeerDetail({ peer, onBack, formerMp }) {
                   </div>
                 ))}
               </div>
-            </div>
+            </CardShell>
           )}
 
           {peer.committees?.length > 0 && (
-            <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 20, marginBottom: 16 }}>
-              <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 4 }}>Committee Service</div>
+            <CardShell title="Committee Service">
               <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginBottom: 14, lineHeight: 1.5 }}>
                 Lords select committees they've sat on, most recent first.
               </div>
@@ -244,12 +237,11 @@ function PeerDetail({ peer, onBack, formerMp }) {
                   </div>
                 ))}
               </div>
-            </div>
+            </CardShell>
           )}
 
           {(peer.recent_activity?.contributions?.length > 0 || peer.recent_activity?.writtenQuestions?.length > 0) && (
-            <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 20, marginBottom: 16 }}>
-              <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 4 }}>Recent Parliamentary Activity</div>
+            <CardShell title="Recent Parliamentary Activity">
               <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginBottom: 14, lineHeight: 1.5 }}>
                 Their most recent debate contributions and written questions, from Hansard and the official record. Not a
                 voting record or attendance figure — neither is published for the Lords.
@@ -261,17 +253,30 @@ function PeerDetail({ peer, onBack, formerMp }) {
                     Debate Contributions
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                    {peer.recent_activity.contributions.map((c, i) => (
-                      <div key={i} style={{ paddingBottom: 10, borderBottom: i < peer.recent_activity.contributions.length - 1 ? `1px solid ${COLORS.hairline}` : "none" }}>
-                        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.4 }}>{c.title}</div>
-                        <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 3 }}>
-                          {formatDate(c.date)} · {c.section}
-                          {c.speechCount > 0 ? ` · ${c.speechCount} speech${c.speechCount === 1 ? "" : "es"}` : ""}
-                          {c.questionCount > 0 ? ` · ${c.questionCount} question${c.questionCount === 1 ? "" : "s"}` : ""}
-                          {c.interventionCount > 0 ? ` · ${c.interventionCount} intervention${c.interventionCount === 1 ? "" : "s"}` : ""}
-                        </div>
-                      </div>
-                    ))}
+                    {peer.recent_activity.contributions.map((c, i) => {
+                      const row = (
+                        <>
+                          <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.4 }}>
+                            {c.title}
+                            {c.hansardUrl && <span style={{ color: COLORS.accent }}> ↗</span>}
+                          </div>
+                          <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 3 }}>
+                            {formatDate(c.date)} · {c.section}
+                            {c.speechCount > 0 ? ` · ${c.speechCount} speech${c.speechCount === 1 ? "" : "es"}` : ""}
+                            {c.questionCount > 0 ? ` · ${c.questionCount} question${c.questionCount === 1 ? "" : "s"}` : ""}
+                            {c.interventionCount > 0 ? ` · ${c.interventionCount} intervention${c.interventionCount === 1 ? "" : "s"}` : ""}
+                          </div>
+                        </>
+                      );
+                      const rowStyle = { display: "block", paddingBottom: 10, borderBottom: i < peer.recent_activity.contributions.length - 1 ? `1px solid ${COLORS.hairline}` : "none" };
+                      return c.hansardUrl ? (
+                        <a key={i} href={c.hansardUrl} target="_blank" rel="noreferrer" style={{ ...rowStyle, textDecoration: "none" }}>
+                          {row}
+                        </a>
+                      ) : (
+                        <div key={i} style={rowStyle}>{row}</div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -295,7 +300,7 @@ function PeerDetail({ peer, onBack, formerMp }) {
                   </div>
                 </div>
               )}
-            </div>
+            </CardShell>
           )}
 
           <DataScopeNote />

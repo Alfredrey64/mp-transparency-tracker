@@ -359,6 +359,10 @@ const CARD_ACCENT = {
   "Current Outside Roles": "#F2622A",
   "Committee & Donor Overlap": "#E63946",
   "Same Name, Two Registers": "#E63946",
+  "Ministerial History": "#D9A62A",
+  "Committee Service": "#6E4B6E",
+  "How They Got Here": "#5A7FA6",
+  "Previously an MP": COLORS.commonsGreen,
 };
 
 export function CardShell({ title, children }) {

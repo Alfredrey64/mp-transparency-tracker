@@ -38,13 +38,6 @@
     "companyNumber": "13054048",
     "sicCode": "94920"
   },
-  "International Centre of Justice for Palestinians (ICJP)": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "INTERNATIONAL CENTRE OF JUSTICE FOR PALESTINIANS",
-    "companyNumber": "13054048",
-    "sicCode": "94920"
-  },
   "National Liberal Club": {
     "sector": "Other / Uncategorised",
     "source": "companies-house",
@@ -106,14 +99,14 @@
     "sicCode": "70229"
   },
   "Ecotricity Group Ltd": {
-    "sector": "Legal & Professional Services",
+    "sector": "Other / Uncategorised",
     "source": "companies-house",
     "companyName": "ECOTRICITY GROUP LTD",
     "companyNumber": "03521776",
     "sicCode": "70100"
   },
   "OPD Group Ltd": {
-    "sector": "Finance & Banking",
+    "sector": "Other / Uncategorised",
     "source": "companies-house",
     "companyName": "OPD GROUP LIMITED",
     "companyNumber": "03201382",
@@ -152,7 +145,7 @@
     "source": "companies-house",
     "companyName": "POLYSEAM LIMITED",
     "companyNumber": "02839491",
-    "sicCode": "20301"
+    "sicCode": "22290"
   },
   "Ivy Business Centre Ltd": {
     "sector": "Construction & Property",
@@ -383,10 +376,6 @@
     "companyName": "NATIONAL LIBERAL CLUB LIMITED(THE)",
     "companyNumber": "01355034",
     "sicCode": "56302"
-  },
-  "Neural Voice AI": {
-    "sector": "Trade Unions",
-    "source": "known-union-list"
   },
   "Joseph Rowntree Reform Trust Limited": {
     "sector": "Other / Uncategorised",
@@ -630,7 +619,7 @@
     "sicCode": "93110"
   },
   "Brechin Investment Ltd": {
-    "sector": "Finance & Banking",
+    "sector": "Other / Uncategorised",
     "source": "companies-house",
     "companyName": "BRECHIN INVESTMENTS LIMITED",
     "companyNumber": "09735057",
@@ -651,8 +640,11 @@
     "sicCode": "62011"
   },
   "Manchester United Football Club Limited": {
-    "sector": "Trade Unions",
-    "source": "known-union-list"
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "MANCHESTER UNITED FOOTBALL CLUB LIMITED",
+    "companyNumber": "00095489",
+    "sicCode": "93120"
   },
   "Global Media IP Limited": {
     "sector": "Other / Uncategorised",
@@ -671,8 +663,8 @@
   "The Football Association Ltd": {
     "sector": "Other / Uncategorised",
     "source": "companies-house",
-    "companyName": "THE ARMY FOOTBALL ASSOCIATION",
-    "companyNumber": "07797047",
+    "companyName": "THE FOOTBALL ASSOCIATION PREMIER LEAGUE LIMITED",
+    "companyNumber": "02719699",
     "sicCode": "93199"
   },
   "Persimmon PLC": {
@@ -706,8 +698,8 @@
   "The Football Association": {
     "sector": "Other / Uncategorised",
     "source": "companies-house",
-    "companyName": "THE ARMY FOOTBALL ASSOCIATION",
-    "companyNumber": "07797047",
+    "companyName": "THE FOOTBALL ASSOCIATION PREMIER LEAGUE LIMITED",
+    "companyNumber": "02719699",
     "sicCode": "93199"
   },
   "Knights Tailoring Ltd": {

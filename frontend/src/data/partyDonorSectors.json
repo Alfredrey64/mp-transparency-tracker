@@ -1,4 +1,12 @@
 {
+  "UNISON": {
+    "sector": "Trade Unions",
+    "source": "donor-status"
+  },
+  "Unite the Union": {
+    "sector": "Trade Unions",
+    "source": "donor-status"
+  },
   "Flowidea Limited": {
     "sector": "Finance & Banking",
     "source": "companies-house-crn",
@@ -6,34 +14,9 @@
     "companyNumber": "02463564",
     "sicCode": "64999"
   },
-  "Unite the Union": {
+  "GMB": {
     "sector": "Trade Unions",
     "source": "donor-status"
-  },
-  "UNISON": {
-    "sector": "Trade Unions",
-    "source": "donor-status"
-  },
-  "TREEMAN ROCKAFELLA LIMITED": {
-    "sector": "Legal & Professional Services",
-    "source": "companies-house-crn",
-    "companyName": "TREEMAN ROCKAFELLA LIMITED",
-    "companyNumber": "SC619417",
-    "sicCode": "74990"
-  },
-  "MOU Operations Ltd": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house-crn",
-    "companyName": "MOU OPERATIONS LTD",
-    "companyNumber": "16359847",
-    "sicCode": "94920"
-  },
-  "JC Bamford Excavators Ltd": {
-    "sector": "Chemicals & Manufacturing",
-    "source": "companies-house-crn",
-    "companyName": "J.C. BAMFORD EXCAVATORS LIMITED",
-    "companyNumber": "00561597",
-    "sicCode": "28922"
   },
   "The Westminster Foundation for Democracy Limited": {
     "sector": "Other / Uncategorised",
@@ -42,12 +25,19 @@
     "companyNumber": "02693163",
     "sicCode": "84210"
   },
-  "Renewable Energy Partnerships Ltd": {
-    "sector": "Construction & Property",
+  "TREEMAN ROCKAFELLA LIMITED": {
+    "sector": "Legal & Professional Services",
     "source": "companies-house-crn",
-    "companyName": "RENEWABLE ENERGY PARTNERSHIPS LIMITED",
-    "companyNumber": "04599328",
-    "sicCode": "42220"
+    "companyName": "TREEMAN ROCKAFELLA LIMITED",
+    "companyNumber": "SC619417",
+    "sicCode": "74990"
+  },
+  "PG Paper Company Limited": {
+    "sector": "Retail & Consumer",
+    "source": "companies-house-crn",
+    "companyName": "PG PAPER COMPANY LTD.",
+    "companyNumber": "SC256809",
+    "sicCode": "46190"
   },
   "Dalglen (No 1811) Limited": {
     "sector": "Construction & Property",
@@ -56,6 +46,17 @@
     "companyNumber": "SC559988",
     "sicCode": "68209"
   },
+  "Communication Workers Union (CWU)": {
+    "sector": "Trade Unions",
+    "source": "donor-status"
+  },
+  "Renewable Energy Partnerships Ltd": {
+    "sector": "Construction & Property",
+    "source": "companies-house-crn",
+    "companyName": "RENEWABLE ENERGY PARTNERSHIPS LIMITED",
+    "companyNumber": "04599328",
+    "sicCode": "42220"
+  },
   "Paul Mackings Consulting Limited": {
     "sector": "Legal & Professional Services",
     "source": "companies-house-crn",
@@ -63,91 +64,16 @@
     "companyNumber": "08586788",
     "sicCode": "70229"
   },
-  "London AC Ltd": {
-    "sector": "Construction & Property",
-    "source": "companies-house-crn",
-    "companyName": "LONDON AC LIMITED",
-    "companyNumber": "10153269",
-    "sicCode": "43220"
-  },
-  "Ecotricity Group Limited": {
-    "sector": "Legal & Professional Services",
-    "source": "companies-house-crn",
-    "companyName": "ECOTRICITY GROUP LTD",
-    "companyNumber": "03521776",
-    "sicCode": "70100"
-  },
   "Union of Shop, Distributive and Allied Workers (USDAW)": {
     "sector": "Trade Unions",
     "source": "donor-status"
   },
-  "Communication Workers Union (CWU)": {
-    "sector": "Trade Unions",
-    "source": "donor-status"
-  },
   "Eldridge Capital Management Services (UK) LTD": {
-    "sector": "Finance & Banking",
+    "sector": "Other / Uncategorised",
     "source": "companies-house-crn",
     "companyName": "ELDRIDGE CAPITAL MANAGEMENT SERVICES (UK) LIMITED",
     "companyNumber": "15958977",
     "sicCode": "64209"
-  },
-  "GMB": {
-    "sector": "Trade Unions",
-    "source": "donor-status"
-  },
-  "Charlie Parsons Creative Limited": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house-crn",
-    "companyName": "CHARLIE PARSONS CREATIVE LIMITED",
-    "companyNumber": "05943538",
-    "sicCode": "90030"
-  },
-  "RMB Associates Limited": {
-    "sector": "Legal & Professional Services",
-    "source": "companies-house-crn",
-    "companyName": "RMB ASSOCIATES LTD",
-    "companyNumber": "08823586",
-    "sicCode": "70229"
-  },
-  "Jupiter Visual Communications LTD": {
-    "sector": "Chemicals & Manufacturing",
-    "source": "companies-house-crn",
-    "companyName": "JUPITER VISUAL COMMUNICATIONS LIMITED",
-    "companyNumber": "09041508",
-    "sicCode": "18129"
-  },
-  "Playscan Limited": {
-    "sector": "Construction & Property",
-    "source": "companies-house-crn",
-    "companyName": "PLAYSCAN LIMITED",
-    "companyNumber": "01966393",
-    "sicCode": "41100"
-  },
-  "GOLDEN ACRE FOODS LIMITED": {
-    "sector": "Retail & Consumer",
-    "source": "companies-house-crn",
-    "companyName": "GOLDEN ACRE FOODS LIMITED",
-    "companyNumber": "SC252388",
-    "sicCode": "46170"
-  },
-  "Community Wind Power EBT Limited": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house-crn",
-    "companyName": "COMMUNITY WIND POWER EBT LIMITED",
-    "companyNumber": "13697724",
-    "sicCode": "82990"
-  },
-  "JB DRAX HONORE (UK) LIMITED": {
-    "sector": "Finance & Banking",
-    "source": "companies-house-crn",
-    "companyName": "JB DRAX HONORE (UK) LIMITED",
-    "companyNumber": "08137487",
-    "sicCode": "66220"
-  },
-  "Communication Workers Union": {
-    "sector": "Trade Unions",
-    "source": "donor-status"
   },
   "Lambeth Labour Group": {
     "sector": "Other / Uncategorised",
@@ -156,23 +82,58 @@
     "companyNumber": "10256879",
     "sicCode": "99999"
   },
-  "Flow Lloyds HOLDCO Limited": {
+  "Charlie Parsons Creative Limited": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house-crn",
+    "companyName": "CHARLIE PARSONS CREATIVE LIMITED",
+    "companyNumber": "05943538",
+    "sicCode": "90030"
+  },
+  "JB DRAX HONORE (UK) LIMITED": {
     "sector": "Finance & Banking",
+    "source": "companies-house-crn",
+    "companyName": "JB DRAX HONORE (UK) LIMITED",
+    "companyNumber": "08137487",
+    "sicCode": "66220"
+  },
+  "RMB Associates Limited": {
+    "sector": "Legal & Professional Services",
+    "source": "companies-house-crn",
+    "companyName": "RMB ASSOCIATES LTD",
+    "companyNumber": "08823586",
+    "sicCode": "70229"
+  },
+  "Playscan Limited": {
+    "sector": "Construction & Property",
+    "source": "companies-house-crn",
+    "companyName": "PLAYSCAN LIMITED",
+    "companyNumber": "01966393",
+    "sicCode": "41100"
+  },
+  "THE JOSEPH ROWNTREE REFORM TRUST LIMITED": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house-crn",
+    "companyName": "THE JOSEPH ROWNTREE REFORM TRUST LIMITED",
+    "companyNumber": "00357963",
+    "sicCode": "94920"
+  },
+  "Flow Lloyds HOLDCO Limited": {
+    "sector": "Other / Uncategorised",
     "source": "companies-house-crn",
     "companyName": "FLOW LLOYDS HOLDCO LIMITED",
     "companyNumber": "15582638",
     "sicCode": "64209"
   },
-  "Community Union": {
+  "Communication Workers Union": {
     "sector": "Trade Unions",
     "source": "donor-status"
   },
-  "J C Bamford Excavators Ltd": {
-    "sector": "Chemicals & Manufacturing",
+  "Joseph Rowntree Reform Trust Ltd": {
+    "sector": "Other / Uncategorised",
     "source": "companies-house-crn",
-    "companyName": "J.C. BAMFORD EXCAVATORS LIMITED",
-    "companyNumber": "00561597",
-    "sicCode": "28922"
+    "companyName": "THE JOSEPH ROWNTREE REFORM TRUST LIMITED",
+    "companyNumber": "00357963",
+    "sicCode": "94920"
   },
   "Rocktel Services Limited": {
     "sector": "Construction & Property",
@@ -181,6 +142,13 @@
     "companyNumber": "04120606",
     "sicCode": "68209"
   },
+  "Centrax Industries Ltd": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house-crn",
+    "companyName": "CENTRAX INDUSTRIES LIMITED",
+    "companyNumber": "03955434",
+    "sicCode": "70100"
+  },
   "VOLARE AVIATION LIMITED": {
     "sector": "Transport & Logistics",
     "source": "companies-house-crn",
@@ -188,18 +156,39 @@
     "companyNumber": "08557765",
     "sicCode": "51102"
   },
-  "J. T. LEAVESLEY (ALREWAS) LIMITED": {
+  "TATTERSALLS LIMITED": {
     "sector": "Retail & Consumer",
     "source": "companies-house-crn",
-    "companyName": "J. T. LEAVESLEY (ALREWAS) LIMITED",
-    "companyNumber": "00931247",
-    "sicCode": "47300"
+    "companyName": "TATTERSALLS LIMITED",
+    "companyNumber": "00791113",
+    "sicCode": "46230"
   },
-  "THE JOSEPH ROWNTREE REFORM TRUST LIMITED": {
+  "United Kingdom Sotheby's International Realty Limited": {
+    "sector": "Construction & Property",
+    "source": "companies-house-crn",
+    "companyName": "UNITED KINGDOM SOTHEBY'S INTERNATIONAL REALTY LIMITED",
+    "companyNumber": "01266162",
+    "sicCode": "68310"
+  },
+  "Nova Venture Holdings Ltd": {
     "sector": "Other / Uncategorised",
     "source": "companies-house-crn",
-    "companyName": "THE JOSEPH ROWNTREE REFORM TRUST LIMITED",
-    "companyNumber": "00357963",
-    "sicCode": "94920"
+    "companyName": "NOVA VENTURE HOLDINGS LIMITED",
+    "companyNumber": "12582946",
+    "sicCode": "70100"
+  },
+  "CPG Chester Ltd": {
+    "sector": "Construction & Property",
+    "source": "companies-house-crn",
+    "companyName": "CPG CHESTER LIMITED",
+    "companyNumber": "10932289",
+    "sicCode": "68209"
+  },
+  "SLM Management Ltd": {
+    "sector": "Legal & Professional Services",
+    "source": "companies-house-crn",
+    "companyName": "SLM MANAGEMENT LIMITED",
+    "companyNumber": "04741413",
+    "sicCode": "70229"
   }
 }
