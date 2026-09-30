@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
@@ -293,26 +293,142 @@ function jumpToArea(area) {
   document.getElementById(`cabinet-${area}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+// Tracks how many department nodes fit per row, so the chart can chunk
+// departments into explicit rows itself rather than leaving it to CSS
+// flex-wrap to decide. That distinction matters: with flex-wrap, only the
+// row lucky enough to sit directly under the single drawn spine line
+// actually connects to it — every row after the first got a stub line
+// floating above it, connected to nothing. Owning the row boundaries
+// means every row can get its own spine, so the chart is structurally
+// correct (every branch really does trace back to the PM) at any width.
+//
+// Measures the chart's own rendered width rather than window.innerWidth —
+// this page's sidebar alone eats over 200px, so at a "medium" browser
+// width, going off the window's width picked a column count that didn't
+// actually fit the much narrower content column next to the sidebar,
+// clipping the row's rightmost node instead of wrapping it.
+const NODE_WIDTH = 108;
+const NODE_GAP = 22;
+
+function useResponsiveColumns(containerRef) {
+  const [columns, setColumns] = useState(3);
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    function update(width) {
+      const fit = Math.floor((width + NODE_GAP) / (NODE_WIDTH + NODE_GAP));
+      setColumns(Math.max(2, fit));
+    }
+    update(el.getBoundingClientRect().width);
+    const observer = new ResizeObserver(([entry]) => update(entry.contentRect.width));
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [containerRef]);
+  return columns;
+}
+
+function OrgChartNode({ group, accent, delay }) {
+  const Icon = AREA_ICONS[group.area] ?? IconQuestion;
+  const size = group.size;
+  return (
+    <motion.button
+      onClick={() => jumpToArea(group.area)}
+      initial={{ opacity: 0, y: -8 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.3, delay: delay + 0.1, ease: "easeOut" }}
+      whileHover={{ y: -3 }}
+      style={{
+        position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
+        width: 108, background: "none", border: "none", cursor: "pointer", padding: 0,
+      }}
+    >
+      <motion.div
+        initial={{ height: 0 }}
+        whileInView={{ height: 20 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ duration: 0.2, delay, ease: "easeOut" }}
+        style={{ position: "absolute", top: -20, width: 1, background: COLORS.hairline }}
+      />
+      <div
+        style={{
+          width: size, height: size, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+          background: `${accent}20`, border: `2px solid ${accent}`, color: accent, flexShrink: 0,
+        }}
+      >
+        <Icon size={Math.round(size * 0.42)} />
+      </div>
+      <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 600, color: COLORS.ink, textAlign: "center", lineHeight: 1.3 }}>
+        {group.area}
+      </span>
+      <span style={{ fontFamily: FONT_MONO, fontSize: 10, color: COLORS.inkSoft }}>
+        {group.members.length} {group.members.length === 1 ? "minister" : "ministers"}
+      </span>
+    </motion.button>
+  );
+}
+
+// One tier of the chart: a spine sized to exactly this row's own nodes
+// (an absolutely-positioned line pinned edge-to-edge inside a wrapper
+// that's only as wide as the row's flex content, not the full column) —
+// so it's never wider or narrower than the branches actually hanging off
+// it, whether the row holds two departments or six. A row of exactly one
+// node skips the spine entirely; there's nothing for a horizontal line to
+// span.
+function OrgChartRow({ row, baseDelay }) {
+  return (
+    <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", position: "relative" }}>
+      {row.length > 1 && (
+        <motion.div
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.35, delay: baseDelay, ease: "easeOut" }}
+          style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: COLORS.hairline }}
+        />
+      )}
+      <div style={{ display: "flex", justifyContent: "center", gap: "18px 22px", paddingTop: 20, flexWrap: "nowrap" }}>
+        {row.map((group, i) => (
+          <OrgChartNode
+            key={group.area}
+            group={group}
+            accent={group.accent}
+            delay={baseDelay + i * 0.04}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // A real org chart, not a card grid standing in for one: the Prime
-// Minister at the top with a single trunk line down to a spine, then every
-// department branching off it — the actual shape of "who reports up to
-// whom" at Cabinet level, sized by how many ministers sit in each
-// department. Tapping a department jumps straight to its full list below
-// (the same jumpToArea the pill row already used), so the diagram is a
-// real way to navigate, not just decoration in front of the list.
-// Reveals itself the way an actual org chart gets drawn — trunk down from
-// the PM, then the spine out, then each branch line down to its
-// department, each node popping in right as its own branch lands — rather
-// than everything just fading in together. Each stagger delay is chained
-// off the one before it so the sequence reads as one continuous draw
-// rather than several unrelated animations that happen to overlap.
+// Minister at the top with a single trunk line down to a tiered spine —
+// every department branching off the row it actually sits in, sized by
+// how many ministers sit there. Tapping a department jumps straight to
+// its full list below (the same jumpToArea the pill row already used),
+// so the diagram is a real way to navigate, not just decoration in front
+// of the list. Reveals itself the way an actual org chart gets drawn —
+// trunk down from the PM, then row by row, each branch line landing
+// right as its own node pops in — rather than everything fading in
+// together. Each row's delay picks up where the previous one's animation
+// finished, so however many rows there are, the sequence still reads as
+// one continuous draw from the top down, not several unrelated
+// animations that happen to overlap.
 function CabinetOrgChart({ groups }) {
+  const containerRef = useRef(null);
+  const columns = useResponsiveColumns(containerRef);
   if (groups.length === 0) return null;
   const maxCount = Math.max(...groups.map((g) => g.members.length));
-  const branchStart = 0.55;
-  const branchStep = 0.05;
+  const sized = groups.map((g, gi) => ({
+    ...g,
+    accent: SECTION_ACCENTS[gi % SECTION_ACCENTS.length],
+    size: Math.round(36 + (g.members.length / maxCount) * 26),
+  }));
+  const rows = [];
+  for (let i = 0; i < sized.length; i += columns) rows.push(sized.slice(i, i + columns));
+
   return (
-    <div style={{ marginTop: 32, marginBottom: 8, display: "flex", flexDirection: "column", alignItems: "center" }}>
+    <div ref={containerRef} style={{ marginTop: 32, marginBottom: 8, display: "flex", flexDirection: "column", alignItems: "center" }}>
       <motion.div
         initial={{ opacity: 0, y: -8, scale: 0.9 }}
         whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -332,58 +448,23 @@ function CabinetOrgChart({ groups }) {
         transition={{ duration: 0.25, delay: 0.3, ease: "easeOut" }}
         style={{ width: 2, background: COLORS.hairline }}
       />
-      <motion.div
-        initial={{ scaleX: 0 }}
-        whileInView={{ scaleX: 1 }}
-        viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.4, delay: 0.4, ease: "easeOut" }}
-        style={{ width: "100%", maxWidth: 760, height: 1, background: COLORS.hairline }}
-      />
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "18px 22px", maxWidth: 820, marginTop: 22 }}>
-        {groups.map((g, gi) => {
-          const accent = SECTION_ACCENTS[gi % SECTION_ACCENTS.length];
-          const size = Math.round(36 + (g.members.length / maxCount) * 26);
-          const Icon = AREA_ICONS[g.area] ?? IconQuestion;
-          const branchDelay = branchStart + gi * branchStep;
-          return (
-            <motion.button
-              key={g.area}
-              onClick={() => jumpToArea(g.area)}
-              initial={{ opacity: 0, y: -8 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.3, delay: branchDelay + 0.1, ease: "easeOut" }}
-              whileHover={{ y: -3 }}
-              style={{
-                position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
-                width: 96, background: "none", border: "none", cursor: "pointer", padding: 0,
-              }}
-            >
+      {rows.map((row, ri) => {
+        const rowDelay = 0.55 + ri * 0.35;
+        return (
+          <div key={ri} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            {ri > 0 && (
               <motion.div
                 initial={{ height: 0 }}
-                whileInView={{ height: 22 }}
+                whileInView={{ height: 20 }}
                 viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.2, delay: branchDelay, ease: "easeOut" }}
-                style={{ position: "absolute", top: -22, width: 1, background: COLORS.hairline }}
+                transition={{ duration: 0.2, delay: rowDelay - 0.12, ease: "easeOut" }}
+                style={{ width: 1, background: COLORS.hairline }}
               />
-              <div
-                style={{
-                  width: size, height: size, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-                  background: `${accent}20`, border: `2px solid ${accent}`, color: accent, flexShrink: 0,
-                }}
-              >
-                <Icon size={Math.round(size * 0.42)} />
-              </div>
-              <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 600, color: COLORS.ink, textAlign: "center", lineHeight: 1.3 }}>
-                {g.area}
-              </span>
-              <span style={{ fontFamily: FONT_MONO, fontSize: 10, color: COLORS.inkSoft }}>
-                {g.members.length} {g.members.length === 1 ? "minister" : "ministers"}
-              </span>
-            </motion.button>
-          );
-        })}
-      </div>
+            )}
+            <OrgChartRow row={row} baseDelay={rowDelay} />
+          </div>
+        );
+      })}
     </div>
   );
 }
