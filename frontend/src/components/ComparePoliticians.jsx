@@ -215,7 +215,11 @@ function MpHeaderCard({ politician, color, onRemove }) {
         <button
           onClick={onRemove}
           aria-label={`Remove ${politician.name}`}
-          style={{ flexShrink: 0, background: "none", border: "none", color: COLORS.inkSoft, cursor: "pointer", fontSize: 15, padding: 4, opacity: 0.6 }}
+          style={{
+            flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
+            width: 32, height: 32, margin: -4, background: "none", border: "none",
+            color: COLORS.inkSoft, cursor: "pointer", fontSize: 15, opacity: 0.6,
+          }}
         >
           ×
         </button>

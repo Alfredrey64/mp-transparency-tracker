@@ -438,7 +438,11 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                       <button
                         onClick={() => handleRemoveWatched(p.id)}
                         title="Remove from watchlist"
-                        style={{ background: "none", border: "none", color: COLORS.inkSoft, cursor: "pointer", fontSize: 13, padding: "0 2px", opacity: 0.6 }}
+                        style={{
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          width: 24, height: 24, background: "none", border: "none",
+                          color: COLORS.inkSoft, cursor: "pointer", fontSize: 13, opacity: 0.6,
+                        }}
                       >
                         ×
                       </button>

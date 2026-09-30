@@ -892,13 +892,17 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24, paddingTop: 24, alignItems: "start" }}>
           {/* ---- Left column: financial interests ---- */}
           <div>
-            <div style={{ position: "relative", display: "flex", justifyContent: "center", gap: 4, paddingBottom: 12 }}>
+            <div
+              className="mp-bill-track"
+              style={{ position: "relative", display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 4, paddingBottom: 12, overflowX: "auto" }}
+            >
               {DETAIL_TABS.map((tab) => (
                 <button
                   key={tab.key}
                   onClick={() => withScrollPreserved(() => setActiveTab(tab.key))}
                   style={{
                     position: "relative",
+                    flexShrink: 0,
                     fontFamily: FONT_BODY,
                     fontSize: 14,
                     fontWeight: 600,
