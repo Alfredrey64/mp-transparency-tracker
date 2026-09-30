@@ -1,6 +1,83 @@
 {
-  "generatedAt": null,
-  "succeededCount": 0,
+  "generatedAt": "2026-09-30T18:03:17.112Z",
+  "succeededCount": 11,
   "totalCount": 19,
-  "sources": []
+  "sources": [
+    {
+      "label": "Financial interests",
+      "succeeded": true
+    },
+    {
+      "label": "Voting records",
+      "succeeded": true
+    },
+    {
+      "label": "Bills",
+      "succeeded": true
+    },
+    {
+      "label": "MP news",
+      "succeeded": true
+    },
+    {
+      "label": "Donor sector tagging",
+      "succeeded": true
+    },
+    {
+      "label": "Party donations",
+      "succeeded": true
+    },
+    {
+      "label": "Party donor sector tagging",
+      "succeeded": true
+    },
+    {
+      "label": "Former MPs",
+      "succeeded": true
+    },
+    {
+      "label": "By-elections",
+      "succeeded": true
+    },
+    {
+      "label": "On this day",
+      "succeeded": true
+    },
+    {
+      "label": "Today's Commons business",
+      "succeeded": false
+    },
+    {
+      "label": "House of Lords peers",
+      "succeeded": true
+    },
+    {
+      "label": "MP activity",
+      "succeeded": false
+    },
+    {
+      "label": "IPSA business cost claims",
+      "succeeded": false
+    },
+    {
+      "label": "Petitions",
+      "succeeded": false
+    },
+    {
+      "label": "Ministerial gifts & hospitality",
+      "succeeded": false
+    },
+    {
+      "label": "Select committees",
+      "succeeded": false
+    },
+    {
+      "label": "Written questions",
+      "succeeded": false
+    },
+    {
+      "label": "Standards reports",
+      "succeeded": false
+    }
+  ]
 }
