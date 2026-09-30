@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 import { supabase } from "./supabaseClient";
 import { COLORS, FONT_BODY, FONT_DISPLAY } from "./theme";
 import Sidebar from "./components/Sidebar";
@@ -242,6 +242,7 @@ export default function App() {
   }
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className="mp-app-shell" style={{ display: "flex", minHeight: "100vh", background: COLORS.paper, fontFamily: FONT_BODY }}>
       <Sidebar activeView={view} onNavigate={handleNavigate} onSelectPolitician={handleViewProfile} />
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -307,5 +308,6 @@ export default function App() {
         </AnimatePresence>
       </div>
     </div>
+    </MotionConfig>
   );
 }

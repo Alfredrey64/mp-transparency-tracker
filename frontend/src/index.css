@@ -154,3 +154,15 @@ select:focus-visible,
     z-index: 55;
   }
 }
+
+/* framer-motion's own animations already respect this via the app-wide
+   <MotionConfig reducedMotion="user"> in App.jsx — this covers the rest:
+   plain CSS transitions/keyframes (hover states, the skeleton shimmer)
+   that MotionConfig has no reach into. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
