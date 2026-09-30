@@ -32,6 +32,7 @@ jobs:
       # whenever an earlier, unrelated step failed.
 
       - name: Run the financial interests fetch script
+        id: fetch_interests
         continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -39,6 +40,7 @@ jobs:
         run: node fetch-interests.js
 
       - name: Run the voting records fetch script
+        id: fetch_votes
         continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -46,6 +48,7 @@ jobs:
         run: node fetch-votes.js
 
       - name: Run the bills fetch script
+        id: fetch_bills
         continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -56,6 +59,7 @@ jobs:
       # per-MP crawl (~650 requests, politely rate-limited) — expect this
       # step alone to take several minutes.
       - name: Run the MP news fetch script
+        id: fetch_mp_news
         continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -63,6 +67,7 @@ jobs:
         run: node fetch-mp-news.js
 
       - name: Run the donor sector tagging script
+        id: fetch_donor_sectors
         continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -71,6 +76,7 @@ jobs:
         run: node fetch-donor-sectors.js
 
       - name: Run the party donations fetch script
+        id: fetch_party_donations
         continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -78,6 +84,7 @@ jobs:
         run: node fetch-party-donations.js
 
       - name: Run the party donor sector tagging script
+        id: fetch_party_donor_sectors
         continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -86,6 +93,7 @@ jobs:
         run: node fetch-party-donor-sectors.js
 
       - name: Run the former MPs fetch script
+        id: fetch_former_mps
         continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -96,6 +104,7 @@ jobs:
       # ~650-request crawl like the MP news step above — expect it to take a
       # few minutes too.
       - name: Run the by-elections fetch script
+        id: fetch_by_elections
         continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -103,6 +112,7 @@ jobs:
         run: node fetch-by-elections.js
 
       - name: Run the on-this-day fetch script
+        id: fetch_on_this_day
         continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -110,6 +120,7 @@ jobs:
         run: node fetch-on-this-day.js
 
       - name: Run today's Commons business fetch script
+        id: fetch_todays_business
         continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -120,6 +131,7 @@ jobs:
       # government role, recent debate contributions, recent written
       # questions) — expect this step to take several minutes.
       - name: Run the House of Lords peers fetch script
+        id: fetch_peers
         continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -129,6 +141,7 @@ jobs:
       # ~650 MPs, two requests each (debate contributions, written
       # questions) — the Commons equivalent of the Lords activity above.
       - name: Run the MP activity fetch script
+        id: fetch_mp_activity
         continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -139,6 +152,7 @@ jobs:
       # each run) rather than a documented API — see the script's own header
       # comment for why, and the caveat that comes with that.
       - name: Run the IPSA business cost claims fetch script
+        id: fetch_ipsa_expenses
         continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -146,6 +160,7 @@ jobs:
         run: node fetch-ipsa-expenses.js
 
       - name: Run the petitions fetch script
+        id: fetch_petitions
         continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -153,6 +168,7 @@ jobs:
         run: node fetch-petitions.js
 
       - name: Run the ministerial gifts & hospitality fetch script
+        id: fetch_ministerial_gifts
         continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -163,6 +179,7 @@ jobs:
       # open inquiries) — see the script's own header comment for exactly
       # which committee types count as "select committees" here.
       - name: Run the select committees fetch script
+        id: fetch_committees
         continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -172,6 +189,7 @@ jobs:
       # A 30-day rolling window, but that's still several thousand written
       # questions most days — expect this step to take a few minutes.
       - name: Run the written questions fetch script
+        id: fetch_written_questions
         continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -179,24 +197,60 @@ jobs:
         run: node fetch-written-questions.js
 
       - name: Run the standards reports fetch script
+        id: fetch_standards_reports
         continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-standards-reports.js
 
+      # continue-on-error above means the workflow run itself can show green
+      # even when several scripts above silently failed — nothing surfaced
+      # that anywhere except by opening this run and reading every step by
+      # hand. `if: always()` so this runs whether earlier steps failed or
+      # not, turning each one's outcome into a small JSON file the live
+      # site reads directly (see report-pipeline-status.js and the "How
+      # often it updates" section it feeds on the Data & Methodology page).
+      - name: Report pipeline run status
+        if: always()
+        env:
+          STATUS_fetch_interests: ${{ steps.fetch_interests.outcome }}
+          STATUS_fetch_votes: ${{ steps.fetch_votes.outcome }}
+          STATUS_fetch_bills: ${{ steps.fetch_bills.outcome }}
+          STATUS_fetch_mp_news: ${{ steps.fetch_mp_news.outcome }}
+          STATUS_fetch_donor_sectors: ${{ steps.fetch_donor_sectors.outcome }}
+          STATUS_fetch_party_donations: ${{ steps.fetch_party_donations.outcome }}
+          STATUS_fetch_party_donor_sectors: ${{ steps.fetch_party_donor_sectors.outcome }}
+          STATUS_fetch_former_mps: ${{ steps.fetch_former_mps.outcome }}
+          STATUS_fetch_by_elections: ${{ steps.fetch_by_elections.outcome }}
+          STATUS_fetch_on_this_day: ${{ steps.fetch_on_this_day.outcome }}
+          STATUS_fetch_todays_business: ${{ steps.fetch_todays_business.outcome }}
+          STATUS_fetch_peers: ${{ steps.fetch_peers.outcome }}
+          STATUS_fetch_mp_activity: ${{ steps.fetch_mp_activity.outcome }}
+          STATUS_fetch_ipsa_expenses: ${{ steps.fetch_ipsa_expenses.outcome }}
+          STATUS_fetch_petitions: ${{ steps.fetch_petitions.outcome }}
+          STATUS_fetch_ministerial_gifts: ${{ steps.fetch_ministerial_gifts.outcome }}
+          STATUS_fetch_committees: ${{ steps.fetch_committees.outcome }}
+          STATUS_fetch_written_questions: ${{ steps.fetch_written_questions.outcome }}
+          STATUS_fetch_standards_reports: ${{ steps.fetch_standards_reports.outcome }}
+        run: node report-pipeline-status.js
+
       # The scripts above write straight to Supabase, so the live site picks
       # them up on its next request — no deploy needed. The donor sector
-      # tagger is different: it writes a file *in the repo*
-      # (frontend/src/data/donorSectors.json), so that file has to be
-      # committed and pushed here for the change to exist anywhere, and
-      # pushing it is what triggers Vercel to rebuild the site with it. This
-      # step has no continue-on-error — if it fails, we want the run to show
-      # red rather than silently not deploying anything.
-      - name: Commit updated donor sector data, if it changed
+      # tagger and the pipeline status report are different: they write a
+      # file *in the repo* (frontend/src/data/*.json), so those files have
+      # to be committed and pushed here for the change to exist anywhere,
+      # and pushing them is what triggers Vercel to rebuild the site with
+      # them. This step has no continue-on-error — if it fails, we want the
+      # run to show red rather than silently not deploying anything.
+      # `if: always()` so the status report above still gets committed and
+      # deployed even on a run where an earlier fetch step failed — that's
+      # exactly the run a visitor most needs to see an honest status for.
+      - name: Commit updated data files, if they changed
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json frontend/src/data/partyDonorSectors.json frontend/src/data/partyDonorSectorsMeta.json
-          git diff --staged --quiet || git commit -m "chore: daily donor sector data refresh"
+          git add frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json frontend/src/data/partyDonorSectors.json frontend/src/data/partyDonorSectorsMeta.json frontend/src/data/pipelineStatus.json
+          git diff --staged --quiet || git commit -m "chore: daily data refresh"
           git push

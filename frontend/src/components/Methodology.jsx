@@ -1,6 +1,7 @@
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { IconMethodology } from "./icons";
+import pipelineStatus from "../data/pipelineStatus.json";
 
 const REPO_URL = "https://github.com/Alfredrey64/mp-transparency-tracker";
 
@@ -27,6 +28,49 @@ function SourceRow({ name, use, url, auth }) {
         )}
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 3, lineHeight: 1.55 }}>{use}</div>
+    </div>
+  );
+}
+
+// Every fetch step in the daily workflow is set to continue past its own
+// failure so one flaky upstream API doesn't stop the other 18 from
+// running — which also means the workflow itself can show green in
+// GitHub even when several sources silently failed. This turns that back
+// into something a visitor (not just someone reading the Actions log) can
+// actually see, generated fresh by the workflow's own last step.
+function PipelineStatus() {
+  const { generatedAt, succeededCount, totalCount, sources } = pipelineStatus;
+
+  if (!generatedAt) {
+    return (
+      <div style={{ background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 10, padding: "12px 16px", fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>
+        Pipeline status reporting starts with the next scheduled run.
+      </div>
+    );
+  }
+
+  const allSucceeded = succeededCount === totalCount;
+  const failed = sources.filter((s) => !s.succeeded);
+  const runTime = new Date(generatedAt).toLocaleString("en-GB", {
+    day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit",
+  });
+
+  return (
+    <div style={{ background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 10, padding: "12px 16px" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: allSucceeded ? "#2F6F4E" : "#B5533C" }}>
+        <span style={{ width: 7, height: 7, borderRadius: "50%", background: allSucceeded ? "#2F6F4E" : "#B5533C", flexShrink: 0 }} />
+        {succeededCount}/{totalCount} sources updated successfully on the last run
+      </div>
+      <div style={{ fontFamily: FONT_MONO, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 4 }}>
+        Last run: {runTime}
+      </div>
+      {failed.length > 0 && (
+        <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 8, lineHeight: 1.6 }}>
+          Didn't update this time: {failed.map((s) => s.label).join(", ")}. Everything else on this page's source
+          list was unaffected — each source is independent, so this is usually a transient issue with that one
+          upstream source, not a fault with the site.
+        </div>
+      )}
     </div>
   );
 }
@@ -189,6 +233,9 @@ export default function Methodology({ onNavigate }) {
             APPG registered financial benefits sample, the Dark Money and Revolving Door explainers, the Think Tank
             Funding sample, and the Consultant Lobbyists register snapshot.
           </p>
+          <div style={{ marginTop: 16 }}>
+            <PipelineStatus />
+          </div>
         </Section>
 
         <Section title="Where the automated matching can go wrong">
