@@ -136,7 +136,7 @@ function hasUnrelatedContext(headline) {
   return !POLITICAL_CONTEXT.some((w) => lower.includes(w));
 }
 
-function isLikelyMatch(headline, mpName) {
+export function isLikelyMatch(headline, mpName) {
   const name = mpName.trim();
   if (!name) return true;
   const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -194,7 +194,13 @@ async function main() {
   console.log(`\nDone. ${withCoverage}/${politicians.length} MPs had recent news coverage found.`);
 }
 
-main().catch((err) => {
-  console.error("Something went wrong:", err.message);
-  process.exit(1);
-});
+// Guarded so importing isLikelyMatch (and the other exports below) for
+// tests doesn't also kick off the real fetch — only running this file
+// directly (`node fetch-mp-news.js`) does.
+import { fileURLToPath } from "url";
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main().catch((err) => {
+    console.error("Something went wrong:", err.message);
+    process.exit(1);
+  });
+}

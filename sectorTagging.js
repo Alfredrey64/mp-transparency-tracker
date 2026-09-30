@@ -114,7 +114,7 @@ function normalise(name) {
 // "FINANCIAL TIMES LIMITED" scores much higher than to "THE FINANCIAL TIMES
 // (BULGARIA) LIMITED", so among several candidates we can prefer the tightest
 // match instead of just the first one over the confidence bar.
-function matchScore(donorName, companyTitle) {
+export function matchScore(donorName, companyTitle) {
   const a = normalise(donorName);
   const b = normalise(companyTitle);
   if (!a || !b) return 0;
