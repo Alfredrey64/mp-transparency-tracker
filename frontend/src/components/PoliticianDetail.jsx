@@ -390,13 +390,13 @@ function CurrentRolesBox({ interests }) {
 // The "Claims" tab: a compact IPSA summary (this year vs last, by category)
 // followed by every itemised claim behind it, so it's clear not just how
 // much was claimed but what it was actually for.
-function ClaimsTabContent({ politician, claims }) {
+function ClaimsTabContent({ politician, claims, onNavigate }) {
   const summary = politician.ipsa_expenses;
 
   if (!summary) {
     return (
       <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, textAlign: "center", padding: "20px 0" }}>
-        No IPSA business cost data available for this MP yet.
+        No business cost data available for this MP yet (published by IPSA, the Independent Parliamentary Standards Authority).
       </div>
     );
   }
@@ -427,8 +427,19 @@ function ClaimsTabContent({ politician, claims }) {
           </div>
         )}
         <div style={{ marginTop: 10, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5 }}>
-          Business costs (staffing, travel, accommodation, office running costs) claimed through IPSA — separate from
-          their salary and from the donations shown under the Donations tab.{" "}
+          Business costs (staffing, travel, accommodation, office running costs) claimed through IPSA, the
+          Independent Parliamentary Standards Authority{onNavigate && (
+            <>
+              {" "}(
+              <button
+                onClick={() => withScrollPreserved(() => onNavigate("glossary"))}
+                style={{ background: "none", border: "none", padding: 0, font: "inherit", color: "inherit", textDecoration: "underline", cursor: "pointer" }}
+              >
+                see Glossary
+              </button>
+              )
+            </>
+          )} — separate from their salary and from the donations shown under the Donations tab.{" "}
           <a
             href="https://www.theipsa.org.uk/mp-staffing-business-costs/your-mp"
             target="_blank"
@@ -929,7 +940,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
 
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {activeTab === "claims" ? (
-                <ClaimsTabContent politician={politician} claims={claims} />
+                <ClaimsTabContent politician={politician} claims={claims} onNavigate={onNavigate} />
               ) : activeTab === "gifts" ? (
                 <GiftsTabContent gifts={gifts} failed={giftsFailed} />
               ) : activeTab === "manifesto" ? (

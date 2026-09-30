@@ -384,7 +384,7 @@ function StepTimeline({ stages, color, showProgress = false }) {
 
   return (
     <div style={{ position: "relative" }}>
-      <div style={{ position: "absolute", left: 15, top: 16, bottom: 16, width: 2, background: `${color}30` }} />
+      <div style={{ position: "absolute", left: 14, top: 16, bottom: 16, width: 2, background: `${color}30` }} />
       {stages.map((stage, i) => {
         const isOpen = openKeys.has(stage.key);
         return (

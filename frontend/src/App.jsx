@@ -280,7 +280,7 @@ export default function App() {
             {view === "ministerialMeetings" && <MinisterialMeetings />}
             {view === "writtenQuestions" && <WrittenQuestions onSelectPolitician={handleViewProfile} initialQuery={pendingMp?.name} />}
             {view === "standards" && <StandardsReports onSelectPolitician={handleViewProfile} />}
-            {view === "rankings" && <Rankings onSelectPolitician={handleViewProfile} />}
+            {view === "rankings" && <Rankings onSelectPolitician={handleViewProfile} onNavigate={handleNavigate} />}
             {view === "myMP" && <MyMP onViewProfile={handleViewProfile} />}
             {view === "mediaLiteracy" && <MediaLiteracy />}
             {view === "darkMoney" && <DarkMoney />}

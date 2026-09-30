@@ -6,6 +6,7 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../the
 import { PageHeader } from "./shared";
 import { partyColour, initials } from "../lib/format";
 import { IconRankings, IconSearch } from "./icons";
+import { withScrollPreserved } from "../lib/preserveScroll";
 
 // Independents and the Speaker don't sit under a party whip, so "voted
 // against the party majority" isn't a meaningful idea for them — the same
@@ -237,7 +238,7 @@ function RankRow({ entry, index, maxValue, color, valueLabel, onSelectPolitician
   );
 }
 
-export default function Rankings({ onSelectPolitician }) {
+export default function Rankings({ onSelectPolitician, onNavigate }) {
   const [politicians, setPoliticians] = useState(null);
   const [votingRows, setVotingRows] = useState(null);
   const [interestRows, setInterestRows] = useState(null);
@@ -334,7 +335,25 @@ export default function Rankings({ onSelectPolitician }) {
         color: "#9C6B30",
         data: expensesRanking,
         formatValue: (e) => `£${Math.round(e.value).toLocaleString()}`,
-        intro: "How much each MP has claimed in business costs — staffing, travel, accommodation, and office running costs — through IPSA this financial year.",
+        intro: (
+          <>
+            How much each MP has claimed in business costs — staffing, travel, accommodation, and office running
+            costs — through IPSA, the Independent Parliamentary Standards Authority
+            {onNavigate && (
+              <>
+                {" "}(
+                <button
+                  onClick={() => withScrollPreserved(() => onNavigate("glossary"))}
+                  style={{ background: "none", border: "none", padding: 0, font: "inherit", color: "inherit", textDecoration: "underline", cursor: "pointer" }}
+                >
+                  see Glossary
+                </button>
+                )
+              </>
+            )}
+            , this financial year.
+          </>
+        ),
         caveat: "A high total often reflects a large constituency, a big staff, or higher regional costs, not impropriety — every claim is itself checked and audited by IPSA before it's paid out. See the Claims tab on an MP's own page for the itemised breakdown.",
       },
       {
@@ -365,7 +384,7 @@ export default function Rankings({ onSelectPolitician }) {
         caveat: "Official records don't distinguish being absent from being paired or deliberately abstaining, and an MP who joined Parliament partway through this window will show a lower rate simply because they weren't yet in office for earlier votes.",
       },
     ],
-    [expensesRanking, earningsRanking, rebellionRanking, attendanceRanking, totalDivisions]
+    [expensesRanking, earningsRanking, rebellionRanking, attendanceRanking, totalDivisions, onNavigate]
   );
 
   const active = CATEGORIES.find((c) => c.key === category);

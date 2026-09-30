@@ -146,6 +146,12 @@ export default function Methodology({ onNavigate }) {
               use="Every bill currently going through Parliament — summary, sponsor, stage, and department."
             />
             <SourceRow
+              name="IPSA (Independent Parliamentary Standards Authority)"
+              url="https://www.theipsa.org.uk/"
+              auth="No key required"
+              use="Every current MP's itemised business cost claims (staffing, travel, accommodation, office running costs), for the Claims tab on their profile and the Business Expenses ranking. Not a documented public API — IPSA publishes this on their own site, which this project reads from directly rather than assuming a stable format, so it's more fragile than the official Parliament APIs above if IPSA's site changes significantly."
+            />
+            <SourceRow
               name="UK Companies House API"
               url="https://developer.company-information.service.gov.uk/"
               auth="Free API key"
