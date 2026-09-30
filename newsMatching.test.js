@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { isLikelyMatch } from "./fetch-mp-news.js";
+import { isLikelyMatch } from "./newsMatching.js";
 
 describe("isLikelyMatch", () => {
   it("matches a genuine headline about the MP", () => {
