@@ -23,7 +23,7 @@
   <rect width="512" height="512" fill="url(#vignette)"/>
   <rect width="512" height="512" fill="url(#sheen)"/>
 
-  <g transform="translate(68.4 164.8) scale(1.753)" filter="url(#lift)" stroke="#2B2578" stroke-width="1.2" stroke-linejoin="round">
+  <g transform="translate(58 148) scale(1.85)" filter="url(#lift)" stroke="#2B2578" stroke-width="1.2" stroke-linejoin="round">
     <rect x="18" y="70" width="120" height="42" fill="#ffffff"/>
     <rect x="18" y="64" width="6" height="8" fill="#ffffff"/>
     <rect x="30" y="64" width="6" height="8" fill="#ffffff"/>
@@ -44,7 +44,7 @@
     <line x1="163" y1="4" x2="163" y2="-8" stroke="#ffffff" stroke-width="2"/>
     <rect x="190" y="80" width="14" height="32" fill="#ffffff"/>
     <polygon points="190,80 197,66 204,80" fill="#ffffff"/>
-    <line x1="0" y1="112" x2="240" y2="112" stroke="#ffffff" stroke-width="2"/>
+    <line x1="6" y1="112" x2="208" y2="112" stroke="#ffffff" stroke-width="2"/>
   </g>
 
   <!-- Faint engraved detail — stonework coursing, windows and clock ticks,
@@ -52,7 +52,7 @@
        silhouette so it reads as etched detail rather than a second, harder
        outline. Same local coordinate space and transform as the silhouette
        above, so everything lines up without its own separate maths. -->
-  <g transform="translate(68.4 164.8) scale(1.753)" stroke="#000000" stroke-opacity="0.24" stroke-width="0.9" fill="none" stroke-linecap="round">
+  <g transform="translate(58 148) scale(1.85)" stroke="#000000" stroke-opacity="0.24" stroke-width="0.9" fill="none" stroke-linecap="round">
     <!-- Wall stonework coursing -->
     <line x1="21" y1="82" x2="135" y2="82"/>
     <line x1="21" y1="94" x2="135" y2="94"/>
@@ -88,4 +88,7 @@
     <!-- Small side tower window -->
     <rect x="194" y="90" width="6" height="10"/>
   </g>
+
+  <!-- Faint frame around the whole icon square -->
+  <rect x="0.75" y="0.75" width="510.5" height="510.5" fill="none" stroke="#000000" stroke-opacity="0.22" stroke-width="1.5"/>
 </svg>
