@@ -4,6 +4,7 @@ import { supabase } from "./supabaseClient";
 import { COLORS, FONT_BODY, FONT_DISPLAY } from "./theme";
 import Sidebar from "./components/Sidebar";
 import Home from "./components/Home";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import { SECTIONS } from "./data/sidebarSections";
 
 // Everything below is code-split per page: a visitor to the homepage
@@ -254,6 +255,7 @@ export default function App() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.22, ease: "easeInOut" }}
           >
+            <ErrorBoundary onGoHome={() => handleNavigate("home")}>
             <Suspense fallback={<PageLoadingFallback />}>
             {view === "home" && <Home onBrowse={() => handleNavigate("list")} onNavigate={handleNavigate} onViewProfile={handleViewProfile} mpCount={mpCount} />}
             {view === "appg" && <AppgMemberships />}
@@ -304,6 +306,7 @@ export default function App() {
                 <PoliticianList onSelect={(p) => { setSelected(p); window.scrollTo(0, 0); }} />
               ))}
             </Suspense>
+            </ErrorBoundary>
           </motion.div>
         </AnimatePresence>
       </div>
