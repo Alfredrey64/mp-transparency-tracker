@@ -4,7 +4,7 @@ import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
 import { formatDate, partyColour } from "../lib/format";
 import { categoriseBill } from "../lib/bills";
-import { PageHeader } from "./shared";
+import { PageHeader, LoadFailedNote } from "./shared";
 import { BillJourney } from "./BillJourney";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { IconVote, IconBills } from "./icons";
@@ -367,15 +367,17 @@ function VoteGroup({ label, color, members, note }) {
 function MpVotingHistory({ politician, onBack }) {
   const [votes, setVotes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [failed, setFailed] = useState(false);
   const [avatarLoaded, setAvatarLoaded] = useState(false);
 
   useEffect(() => {
     async function load() {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("voting_records")
         .select("*")
         .eq("politician_id", politician.id)
         .order("date", { ascending: false });
+      setFailed(Boolean(error));
       setVotes(data ?? []);
       setLoading(false);
     }
@@ -423,7 +425,8 @@ function MpVotingHistory({ politician, onBack }) {
       )}
 
       {loading && <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft }}>Loading voting history…</div>}
-      {!loading && votes.length === 0 && (
+      {!loading && failed && <LoadFailedNote item="this MP's voting history" />}
+      {!loading && !failed && votes.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
           No recorded votes found for this MP in the tracked period.
         </div>
@@ -479,6 +482,7 @@ export default function VotingRecords({ initialMp = null }) {
   const [bills, setBills] = useState([]);
   const [politicians, setPoliticians] = useState([]);
   const [loadingBills, setLoadingBills] = useState(true);
+  const [billsFailed, setBillsFailed] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedMp, setSelectedMp] = useState(initialMp);
   const [billCategory, setBillCategory] = useState("All");
@@ -489,6 +493,7 @@ export default function VotingRecords({ initialMp = null }) {
         supabase.from("bills").select("*").order("last_updated", { ascending: false }),
         supabase.from("politicians").select("*").order("name"),
       ]);
+      setBillsFailed(Boolean(billsRes.error));
       setBills(billsRes.data ?? []);
       setPoliticians(politiciansRes.data ?? []);
       setLoadingBills(false);
@@ -596,7 +601,8 @@ export default function VotingRecords({ initialMp = null }) {
         </div>
 
         {loadingBills && <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft }}>Loading…</div>}
-        {!loadingBills && billsShown.length === 0 && (
+        {!loadingBills && billsFailed && <LoadFailedNote item="the bills list" />}
+        {!loadingBills && !billsFailed && billsShown.length === 0 && (
           <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No bills found in this category right now.</div>
         )}
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>

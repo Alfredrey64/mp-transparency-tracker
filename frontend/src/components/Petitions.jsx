@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
-import { PageHeader } from "./shared";
+import { PageHeader, LoadFailedNote } from "./shared";
 import { IconPetition } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
 
@@ -122,12 +122,14 @@ function PetitionRow({ petition, index, isOpen, onToggle }) {
 
 export default function Petitions() {
   const [petitions, setPetitions] = useState(null);
+  const [failed, setFailed] = useState(false);
   const [filter, setFilter] = useState("open");
   const [openId, setOpenId] = useState(null);
 
   useEffect(() => {
     async function load() {
-      const { data } = await supabase.from("petitions").select("*").order("signature_count", { ascending: false });
+      const { data, error } = await supabase.from("petitions").select("*").order("signature_count", { ascending: false });
+      setFailed(Boolean(error));
       setPetitions(data ?? []);
     }
     load();
@@ -185,7 +187,9 @@ export default function Petitions() {
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>
       )}
 
-      {petitions !== null && filtered.length === 0 && (
+      {petitions !== null && failed && <LoadFailedNote item="the petitions list" />}
+
+      {petitions !== null && !failed && filtered.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, padding: "20px 0" }}>
           No petitions match this filter right now.
         </div>

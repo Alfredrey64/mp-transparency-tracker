@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
-import { PageHeader } from "./shared";
+import { PageHeader, LoadFailedNote } from "./shared";
 import { formatDate, partyColour } from "../lib/format";
 import { IconGavel, IconSearch } from "./icons";
 import STANDARDS_REPORT_DETAILS from "../data/standardsReportDetails.json";
@@ -200,6 +200,7 @@ function YearHeading({ year, count }) {
 
 export default function StandardsReports({ onSelectPolitician }) {
   const [reports, setReports] = useState(null);
+  const [failed, setFailed] = useState(false);
   const [politicians, setPoliticians] = useState([]);
   const [query, setQuery] = useState("");
   const [currentOnly, setCurrentOnly] = useState(false);
@@ -209,7 +210,10 @@ export default function StandardsReports({ onSelectPolitician }) {
       .from("standards_reports")
       .select("*")
       .order("publication_date", { ascending: false })
-      .then(({ data }) => setReports(data ?? []));
+      .then(({ data, error }) => {
+        setFailed(Boolean(error));
+        setReports(data ?? []);
+      });
     supabase.from("politicians").select("*").then(({ data }) => setPoliticians(data ?? []));
   }, []);
 
@@ -320,10 +324,11 @@ export default function StandardsReports({ onSelectPolitician }) {
       </div>
 
       {reports === null && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>}
-      {reports !== null && reports.length === 0 && (
+      {reports !== null && failed && <LoadFailedNote item="the standards reports list" />}
+      {reports !== null && !failed && reports.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No data yet — check back after the next daily update.</div>
       )}
-      {reports !== null && reports.length > 0 && filtered.length === 0 && (
+      {reports !== null && !failed && reports.length > 0 && filtered.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No matches.</div>
       )}
 

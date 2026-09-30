@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { partyColour, formatDate } from "../lib/format";
-import { PageHeader } from "./shared";
+import { PageHeader, LoadFailedNote } from "./shared";
 import { IconFormerMP } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
 
@@ -45,6 +45,7 @@ function Avatar({ url, name, color }) {
 
 export default function FormerMps() {
   const [mps, setMps] = useState(null);
+  const [failed, setFailed] = useState(false);
   const [query, setQuery] = useState("");
   const [reasonFilter, setReasonFilter] = useState("All");
   const [sort, setSort] = useState("recent");
@@ -52,10 +53,11 @@ export default function FormerMps() {
 
   useEffect(() => {
     async function load() {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("former_mps")
         .select("*")
         .order("membership_end_date", { ascending: false });
+      setFailed(Boolean(error));
       setMps(data ?? []);
     }
     load();
@@ -186,7 +188,8 @@ export default function FormerMps() {
       </div>
 
       {mps === null && <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft }}>Loading…</div>}
-      {mps !== null && filtered.length === 0 && (
+      {mps !== null && failed && <LoadFailedNote item="the former MPs list" />}
+      {mps !== null && !failed && filtered.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
           {mps.length === 0 ? "No data yet — check back after the next daily update." : "No one matches that search."}
         </div>

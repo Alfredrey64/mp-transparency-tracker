@@ -4,7 +4,7 @@ import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
 import { partyColour } from "../lib/format";
 import { isTrackedParty, findManifesto } from "../data/partyManifestos";
-import { PageHeader } from "./shared";
+import { PageHeader, LoadFailedNote } from "./shared";
 import { IconManifesto } from "./icons";
 
 // The party-colour dot is the only element that shares a layoutId between
@@ -28,10 +28,12 @@ function PartyDot({ layoutId, color, size = 10 }) {
 
 function useParties() {
   const [parties, setParties] = useState(null);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     async function load() {
-      const { data } = await supabase.from("politicians").select("party, party_colour");
+      const { data, error } = await supabase.from("politicians").select("party, party_colour");
+      setFailed(Boolean(error));
       const map = new Map();
       for (const p of data ?? []) {
         if (!p.party || !isTrackedParty(p.party)) continue;
@@ -50,11 +52,11 @@ function useParties() {
     load();
   }, []);
 
-  return parties;
+  return { parties, failed };
 }
 
 export default function PartyPolicies() {
-  const parties = useParties();
+  const { parties, failed } = useParties();
   const [expandedName, setExpandedName] = useState(null);
 
   useEffect(() => {
@@ -80,6 +82,10 @@ export default function PartyPolicies() {
 
       {parties === null ? (
         <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, marginTop: 24 }}>Loading…</div>
+      ) : failed ? (
+        <div style={{ marginTop: 24 }}>
+          <LoadFailedNote item="the party list" />
+        </div>
       ) : (
         <div
           style={{

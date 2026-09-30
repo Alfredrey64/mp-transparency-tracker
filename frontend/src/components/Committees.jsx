@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
-import { PageHeader } from "./shared";
+import { PageHeader, LoadFailedNote } from "./shared";
 import { partyColour, stripHtml, formatDate } from "../lib/format";
 import { IconCommittee } from "./icons";
 
@@ -170,11 +170,15 @@ function CommitteeCard({ committee, index, open, onToggle }) {
 
 export default function Committees() {
   const [committees, setCommittees] = useState(null);
+  const [failed, setFailed] = useState(false);
   const [houseFilter, setHouseFilter] = useState("All");
   const [openId, setOpenId] = useState(null);
 
   useEffect(() => {
-    supabase.from("committees").select("*").order("name", { ascending: true }).then(({ data }) => setCommittees(data ?? []));
+    supabase.from("committees").select("*").order("name", { ascending: true }).then(({ data, error }) => {
+      setFailed(Boolean(error));
+      setCommittees(data ?? []);
+    });
   }, []);
 
   const filtered = useMemo(() => {
@@ -196,7 +200,13 @@ export default function Committees() {
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>Loading…</div>
       )}
 
-      {committees !== null && committees.length === 0 && (
+      {committees !== null && failed && (
+        <div style={{ marginTop: 24 }}>
+          <LoadFailedNote item="the committee list" />
+        </div>
+      )}
+
+      {committees !== null && !failed && committees.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>
           No committee data available yet.
         </div>

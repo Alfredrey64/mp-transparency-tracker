@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
 import { partyColour, formatDate, stripHtml } from "../lib/format";
-import { PageHeader } from "./shared";
+import { PageHeader, LoadFailedNote } from "./shared";
 import {
   IconCabinet, IconEconomy, IconGlobe, IconGavel, IconHealth, IconBook, IconFactory, IconHome,
   IconTransport, IconLeaf, IconBroadcast, IconHardHat, IconThinkTank, IconDevolved, IconBills,
@@ -163,20 +163,22 @@ function groupByArea(members) {
 
 function useCabinet() {
   const [members, setMembers] = useState(null);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     async function load() {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("politicians")
         .select("id, name, party, party_colour, constituency, thumbnail_url, cabinet_role, cabinet_role_start_date, biography")
         .not("cabinet_role", "is", null)
         .order("cabinet_role_start_date", { ascending: true });
+      setFailed(Boolean(error));
       setMembers(data ?? []);
     }
     load();
   }, []);
 
-  return members;
+  return { members, failed };
 }
 
 function Avatar({ url, name, color, size = 64 }) {
@@ -387,7 +389,7 @@ function CabinetOrgChart({ groups }) {
 }
 
 export default function Cabinet({ onViewProfile }) {
-  const members = useCabinet();
+  const { members, failed } = useCabinet();
   const groups = members ? groupByArea(members) : [];
 
   return (
@@ -402,7 +404,12 @@ export default function Cabinet({ onViewProfile }) {
       {members === null && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>Loading…</div>
       )}
-      {members !== null && members.length === 0 && (
+      {members !== null && failed && (
+        <div style={{ marginTop: 24 }}>
+          <LoadFailedNote item="the Cabinet list" />
+        </div>
+      )}
+      {members !== null && !failed && members.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>
           No Cabinet roles are currently recorded — check back after the next daily update.
         </div>

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_BODY, FONT_MONO } from "../theme";
 import { partyColour } from "../lib/format";
-import { CommonsBadge } from "./shared";
+import { CommonsBadge, LoadFailedNote } from "./shared";
 import { withScrollPreserved } from "../lib/preserveScroll";
 
 const PER_ROW = 22;
@@ -26,15 +26,19 @@ function packSeats(n, originX, originY, growLeft) {
 export default function CommonsChamber() {
   const [politicians, setPoliticians] = useState(null);
   const [selected, setSelected] = useState(null);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     async function load() {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("politicians")
         .select("id, name, party, party_colour, constituency, cabinet_role")
         .order("party");
-      if (!cancelled) setPoliticians(data ?? []);
+      if (!cancelled) {
+        setFailed(Boolean(error));
+        setPoliticians(data ?? []);
+      }
     }
     load();
     return () => { cancelled = true; };
@@ -108,6 +112,17 @@ export default function CommonsChamber() {
           Loading the chamber…
         </div>
       </motion.div>
+    );
+  }
+
+  // An empty chamber (every seat missing) reads as a genuine visual glitch
+  // either way, but a failed fetch specifically deserves its own message —
+  // an empty diagram with no explanation just looks broken, not "no MPs".
+  if (failed) {
+    return (
+      <div style={{ marginTop: 14 }}>
+        <LoadFailedNote item="the Commons seating data" />
+      </div>
     );
   }
 

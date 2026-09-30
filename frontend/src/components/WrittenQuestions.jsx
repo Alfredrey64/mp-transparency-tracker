@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
-import { PageHeader } from "./shared";
+import { PageHeader, LoadFailedNote } from "./shared";
 import { formatDate, partyColour, stripHtml } from "../lib/format";
 import { IconQuestion, IconSearch } from "./icons";
 
@@ -192,6 +192,7 @@ function QuestionCard({ q, politicianById, onSelectPolitician, index }) {
 
 export default function WrittenQuestions({ onSelectPolitician, initialQuery = "" }) {
   const [rows, setRows] = useState(null);
+  const [failed, setFailed] = useState(false);
   const [politicians, setPoliticians] = useState([]);
   const [query, setQuery] = useState(initialQuery);
   const [statusFilter, setStatusFilter] = useState("All");
@@ -202,7 +203,10 @@ export default function WrittenQuestions({ onSelectPolitician, initialQuery = ""
       .from("written_questions")
       .select("*")
       .order("date_tabled", { ascending: false })
-      .then(({ data }) => setRows(data ?? []));
+      .then(({ data, error }) => {
+        setFailed(Boolean(error));
+        setRows(data ?? []);
+      });
     supabase.from("politicians").select("*").then(({ data }) => setPoliticians(data ?? []));
   }, []);
 
@@ -327,10 +331,11 @@ export default function WrittenQuestions({ onSelectPolitician, initialQuery = ""
       </div>
 
       {rows === null && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>}
-      {rows !== null && rows.length === 0 && (
+      {rows !== null && failed && <LoadFailedNote item="the written questions list" />}
+      {rows !== null && !failed && rows.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No data yet — check back after the next daily update.</div>
       )}
-      {rows !== null && rows.length > 0 && filtered.length === 0 && (
+      {rows !== null && !failed && rows.length > 0 && filtered.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Nothing matches those filters.</div>
       )}
 
