@@ -399,6 +399,7 @@ function StepTimeline({ stages, color, showProgress = false }) {
             >
               <span
                 style={{
+                  position: "relative", zIndex: 1,
                   flexShrink: 0, width: 30, height: 30, borderRadius: "50%",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   background: isOpen ? color : COLORS.paperCard, border: `2px solid ${color}`,
