@@ -46,4 +46,46 @@
     <polygon points="190,80 197,66 204,80" fill="#ffffff"/>
     <line x1="0" y1="112" x2="240" y2="112" stroke="#ffffff" stroke-width="2"/>
   </g>
+
+  <!-- Faint engraved detail — stonework coursing, windows and clock ticks,
+       drawn as thin low-opacity black strokes on top of the flat white
+       silhouette so it reads as etched detail rather than a second, harder
+       outline. Same local coordinate space and transform as the silhouette
+       above, so everything lines up without its own separate maths. -->
+  <g transform="translate(68.4 164.8) scale(1.753)" stroke="#000000" stroke-opacity="0.24" stroke-width="0.9" fill="none" stroke-linecap="round">
+    <!-- Wall stonework coursing -->
+    <line x1="21" y1="82" x2="135" y2="82"/>
+    <line x1="21" y1="94" x2="135" y2="94"/>
+    <line x1="21" y1="106" x2="135" y2="106"/>
+    <!-- Wall windows -->
+    <rect x="30" y="86" width="9" height="14"/>
+    <line x1="34.5" y1="86" x2="34.5" y2="100"/>
+    <rect x="54" y="86" width="9" height="14"/>
+    <line x1="58.5" y1="86" x2="58.5" y2="100"/>
+    <rect x="78" y="86" width="9" height="14"/>
+    <line x1="82.5" y1="86" x2="82.5" y2="100"/>
+    <rect x="102" y="86" width="9" height="14"/>
+    <line x1="106.5" y1="86" x2="106.5" y2="100"/>
+    <rect x="120" y="86" width="9" height="14"/>
+    <line x1="124.5" y1="86" x2="124.5" y2="100"/>
+    <!-- Corner turret window -->
+    <line x1="15" y1="66" x2="15" y2="108"/>
+    <!-- Big Ben tower: corner seam and stacked window slits -->
+    <line x1="163" y1="34" x2="163" y2="105"/>
+    <rect x="156" y="58" width="5" height="9"/>
+    <rect x="165" y="58" width="5" height="9"/>
+    <rect x="156" y="72" width="5" height="9"/>
+    <rect x="165" y="72" width="5" height="9"/>
+    <rect x="156" y="86" width="5" height="9"/>
+    <rect x="165" y="86" width="5" height="9"/>
+    <!-- Clock ticks and hands -->
+    <line x1="163" y1="40.5" x2="163" y2="42"/>
+    <line x1="169.5" y1="46" x2="168" y2="46"/>
+    <line x1="163" y1="51.5" x2="163" y2="50"/>
+    <line x1="156.5" y1="46" x2="158" y2="46"/>
+    <line x1="163" y1="46" x2="163" y2="42.3" stroke-width="1.1"/>
+    <line x1="163" y1="46" x2="166" y2="46" stroke-width="1.1"/>
+    <!-- Small side tower window -->
+    <rect x="194" y="90" width="6" height="10"/>
+  </g>
 </svg>
