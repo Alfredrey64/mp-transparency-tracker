@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
@@ -21,49 +21,71 @@ import { IconVote, IconBills } from "./icons";
 // the bill card opens (in parallel, one query per division) rather than
 // gated behind a second click — a bill with two or three divisions is a
 // handful of queries, not hundreds.
-function BillEntry({ bill, politicians }) {
-  const [open, setOpen] = useState(false);
+function BillEntry({ bill, politicians, initiallyOpen }) {
+  const [open, setOpen] = useState(initiallyOpen ?? false);
   const [divisions, setDivisions] = useState(null);
   const category = categoriseBill(bill);
+  const ref = useRef(null);
+
+  async function loadDivisions() {
+    const titleMatch = (bill.short_title ?? "").trim();
+    if (!titleMatch) { setDivisions([]); return; }
+    const { data } = await supabase
+      .from("voting_records")
+      .select("division_id, title, date, aye_count, no_count")
+      .ilike("title", `${titleMatch}%`);
+    const byDivision = new Map();
+    for (const row of data ?? []) {
+      if (!byDivision.has(row.division_id)) byDivision.set(row.division_id, row);
+    }
+    const list = [...byDivision.values()].sort((a, b) => new Date(b.date) - new Date(a.date));
+    setDivisions(list);
+
+    const breakdowns = await Promise.all(
+      list.map(async (d) => {
+        const { data: rows } = await supabase
+          .from("voting_records")
+          .select("politician_id, voted_aye, politicians(name, party, party_colour)")
+          .eq("division_id", d.division_id);
+        const votedIds = new Set((rows ?? []).map((r) => r.politician_id));
+        const ayes = (rows ?? []).filter((r) => r.voted_aye).map((r) => r.politicians).filter(Boolean);
+        const noes = (rows ?? []).filter((r) => !r.voted_aye).map((r) => r.politicians).filter(Boolean);
+        const didNotVote = politicians.filter((p) => !votedIds.has(p.id));
+        return [d.division_id, { ayes, noes, didNotVote }];
+      })
+    );
+    setDivisions((current) =>
+      (current ?? []).map((d) => ({ ...d, breakdown: Object.fromEntries(breakdowns)[d.division_id] }))
+    );
+  }
 
   async function toggle() {
     const next = !open;
     setOpen(next);
-    if (next && divisions === null) {
-      const titleMatch = (bill.short_title ?? "").trim();
-      if (!titleMatch) { setDivisions([]); return; }
-      const { data } = await supabase
-        .from("voting_records")
-        .select("division_id, title, date, aye_count, no_count")
-        .ilike("title", `${titleMatch}%`);
-      const byDivision = new Map();
-      for (const row of data ?? []) {
-        if (!byDivision.has(row.division_id)) byDivision.set(row.division_id, row);
-      }
-      const list = [...byDivision.values()].sort((a, b) => new Date(b.date) - new Date(a.date));
-      setDivisions(list);
-
-      const breakdowns = await Promise.all(
-        list.map(async (d) => {
-          const { data: rows } = await supabase
-            .from("voting_records")
-            .select("politician_id, voted_aye, politicians(name, party, party_colour)")
-            .eq("division_id", d.division_id);
-          const votedIds = new Set((rows ?? []).map((r) => r.politician_id));
-          const ayes = (rows ?? []).filter((r) => r.voted_aye).map((r) => r.politicians).filter(Boolean);
-          const noes = (rows ?? []).filter((r) => !r.voted_aye).map((r) => r.politicians).filter(Boolean);
-          const didNotVote = politicians.filter((p) => !votedIds.has(p.id));
-          return [d.division_id, { ayes, noes, didNotVote }];
-        })
-      );
-      setDivisions((current) =>
-        (current ?? []).map((d) => ({ ...d, breakdown: Object.fromEntries(breakdowns)[d.division_id] }))
-      );
-    }
+    if (next && divisions === null) loadDivisions();
   }
+
+  // Arriving here from a bill clicked elsewhere (the homepage's own
+  // "Bills Going Through Parliament" list, previously just a generic
+  // link to this whole page) — open straight to that bill, already
+  // expanded, scrolled into view, instead of landing back at the top of
+  // a ~100-bill list the visitor has to go find it in again themselves.
+  useEffect(() => {
+    if (!initiallyOpen) return;
+    // loadDivisions can set state synchronously on its very first line (the
+    // "no title to match on" guard), before any await — fine from a click
+    // handler, but a direct call from an effect body would set state in
+    // the same synchronous pass as the effect itself. The microtask hop
+    // defers even that branch to after this render has committed.
+    Promise.resolve().then(loadDivisions);
+    const timer = setTimeout(() => ref.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 100);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initiallyOpen]);
 
   return (
     <motion.div
+      ref={ref}
       layout="position"
       whileHover={{ borderColor: category.color }}
       transition={{ duration: 0.15 }}
@@ -71,7 +93,7 @@ function BillEntry({ bill, politicians }) {
         background: COLORS.paperCard,
         border: `1px solid ${COLORS.hairline}`,
         borderRadius: 14,
-        
+        scrollMarginTop: 20,
         overflow: "hidden",
       }}
     >
@@ -478,7 +500,7 @@ function MpVotingHistory({ politician, onBack }) {
   );
 }
 
-export default function VotingRecords({ initialMp = null }) {
+export default function VotingRecords({ initialMp = null, initialBill = null }) {
   const [bills, setBills] = useState([]);
   const [politicians, setPoliticians] = useState([]);
   const [loadingBills, setLoadingBills] = useState(true);
@@ -607,7 +629,7 @@ export default function VotingRecords({ initialMp = null }) {
         )}
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {billsShown.map((bill) => (
-            <BillEntry key={bill.bill_id} bill={bill} politicians={politicians} />
+            <BillEntry key={bill.bill_id} bill={bill} politicians={politicians} initiallyOpen={bill.bill_id === initialBill} />
           ))}
         </div>
       </div>

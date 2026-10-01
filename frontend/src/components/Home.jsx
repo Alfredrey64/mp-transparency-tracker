@@ -216,7 +216,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
   }
 
   function handleChangeFeedClick(item) {
-    if (item.type === "bill") onNavigate?.("voting");
+    if (item.type === "bill") onNavigate?.("voting", item.billId ? { bill_id: item.billId } : undefined);
     else if (item.type === "donation" || item.type === "gift") handleSelectPoliticianById(item.politicianId);
     else if (item.type === "petition") onNavigate?.("petitions");
   }
@@ -520,10 +520,10 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
               return (
                 <div
                   key={bill.bill_id}
-                  onClick={() => onNavigate?.("voting")}
+                  onClick={() => onNavigate?.("voting", bill)}
                   role={onNavigate ? "button" : undefined}
                   tabIndex={onNavigate ? 0 : undefined}
-                  onKeyDown={(e) => { if (onNavigate && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); onNavigate("voting"); } }}
+                  onKeyDown={(e) => { if (onNavigate && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); onNavigate("voting", bill); } }}
                   style={{
                     borderLeft: `3px solid ${category.color}`,
                     padding: "10px 10px 10px 12px",

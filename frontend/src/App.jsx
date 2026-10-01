@@ -136,6 +136,10 @@ export default function App() {
   // MP's history, not a blank picker. Cleared on any ordinary sidebar
   // navigation so it doesn't leak into an unrelated later visit.
   const [pendingMp, setPendingMp] = useState(null);
+  // Same idea as pendingMp, for the one bill a visitor just clicked on the
+  // homepage — lets Voting Records open straight to that bill instead of
+  // just landing at the top of its full list.
+  const [pendingBill, setPendingBill] = useState(null);
   const isPopping = useRef(false);
   // True for the one render where a direct "#/mp/123" link hasn't finished
   // fetching that MP yet — the URL-sync effect below must not overwrite the
@@ -225,6 +229,7 @@ export default function App() {
   function handleNavigate(key) {
     setSelected(null);
     setPendingMp(null);
+    setPendingBill(null);
     setView(key);
     window.scrollTo(0, 0);
   }
@@ -238,6 +243,17 @@ export default function App() {
   function handleNavigateForMp(key, politician) {
     setSelected(null);
     setPendingMp(politician);
+    setView(key);
+    window.scrollTo(0, 0);
+  }
+
+  // Mirrors handleNavigateForMp above, for the one other cross-page link
+  // that needs to land somewhere more specific than just the top of the
+  // target page: a bill clicked on the homepage's own list.
+  function handleNavigateForBill(key, bill) {
+    setSelected(null);
+    setPendingMp(null);
+    setPendingBill(bill ?? null);
     setView(key);
     window.scrollTo(0, 0);
   }
@@ -257,10 +273,10 @@ export default function App() {
           >
             <ErrorBoundary onGoHome={() => handleNavigate("home")}>
             <Suspense fallback={<PageLoadingFallback />}>
-            {view === "home" && <Home onBrowse={() => handleNavigate("list")} onNavigate={handleNavigate} onViewProfile={handleViewProfile} mpCount={mpCount} />}
+            {view === "home" && <Home onBrowse={() => handleNavigate("list")} onNavigate={handleNavigateForBill} onViewProfile={handleViewProfile} mpCount={mpCount} />}
             {view === "appg" && <AppgMemberships />}
             {view === "howitworks" && <HowParliamentWorks />}
-            {view === "voting" && <VotingRecords initialMp={pendingMp} />}
+            {view === "voting" && <VotingRecords initialMp={pendingMp} initialBill={pendingBill?.bill_id} />}
             {view === "donors" && <DonorsLobbying />}
             {view === "partyFinances" && <PartyFinances />}
             {view === "parties" && <PartyPolicies />}
