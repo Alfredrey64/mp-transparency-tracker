@@ -2,7 +2,8 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, useMotionValue, animate } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
-import { formatDate, partyColour, shortCategory } from "../lib/format";
+import { formatDate, partyColour, shortCategory, timeAgo } from "../lib/format";
+import pipelineStatus from "../data/pipelineStatus.json";
 import { categoriseBill } from "../lib/bills";
 import { getWatchlist, removeFromWatchlist } from "../lib/watchlist";
 import { IconSearch, IconCoin, IconBills, IconInfluence, IconPetition, IconGroup, IconPulse, IconShield, IconRankings, IconManifesto, IconPartyFinance } from "./icons";
@@ -250,7 +251,9 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
         <motion.div variants={revealChild} style={{ display: "flex", justifyContent: "center", gap: "clamp(20px, 5vw, 52px)", flexWrap: "wrap", margin: "38px 0 34px" }}>
           {[
             { value: <CountUp value={mpCount} />, label: "MPs tracked", icon: IconGroup, color: COLORS.accent },
-            { value: "Daily", label: "kept up to date", icon: IconPulse, color: "#F2622A" },
+            pipelineStatus.generatedAt
+              ? { value: timeAgo(pipelineStatus.generatedAt), label: "last updated", icon: IconPulse, color: "#F2622A" }
+              : { value: "Daily", label: "kept up to date", icon: IconPulse, color: "#F2622A" },
             { value: "Official", label: "source data only", icon: IconShield, color: "#1FA97C" },
           ].map((s) => (
             <div key={s.label} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, minWidth: 108 }}>

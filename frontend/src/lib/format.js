@@ -5,6 +5,28 @@ export function formatDate(dateStr) {
   return d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 }
 
+// "3 hours ago" rather than a bare timestamp, for the one place (the
+// homepage's "kept up to date" stat) where the point is to show a claim
+// of freshness is actually true right now, not just assert a schedule.
+// Deliberately coarse — nobody needs second-level precision on "how
+// recently was the data pipeline last run", and round numbers read
+// faster than exact ones at a glance.
+export function timeAgo(dateStr) {
+  if (!dateStr) return null;
+  const d = new Date(dateStr);
+  if (isNaN(d)) return null;
+  const seconds = Math.max(0, Math.floor((Date.now() - d.getTime()) / 1000));
+  if (seconds < 60) return "Just now";
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days === 1) return "Yesterday";
+  if (days < 7) return `${days}d ago`;
+  return formatDate(dateStr);
+}
+
 const CATEGORY_SHORT_NAMES = {
   "Donations and other support (including loans) for activities as an MP": "Donations & Support",
   "Gifts, benefits and hospitality from UK sources": "Gifts & Hospitality",
