@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-30T18:03:17.112Z",
-  "succeededCount": 11,
+  "generatedAt": "2026-10-01T17:53:48.436Z",
+  "succeededCount": 18,
   "totalCount": 19,
   "sources": [
     {
@@ -53,31 +53,31 @@
     },
     {
       "label": "MP activity",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "IPSA business cost claims",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Petitions",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Ministerial gifts & hospitality",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Select committees",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Written questions",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Standards reports",
-      "succeeded": false
+      "succeeded": true
     }
   ]
 }
