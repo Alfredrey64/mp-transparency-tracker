@@ -1,5 +1,6 @@
 import { PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
+import { GlossaryTerm } from "./GlossaryTerm";
 import { IconTracker } from "./icons";
 import PromiseTracker from "./PromiseTracker";
 
@@ -10,7 +11,12 @@ export default function GovernmentTracker() {
         icon={IconTracker}
         kicker="Public Record · Promises Tracker"
         title="Has the government kept its word?"
-        subtitle="An independent, evidence-based look at how far Labour has delivered on its 2024 manifesto since forming government."
+        subtitle={
+          <>
+            An independent, evidence-based look at how far Labour has delivered on its 2024{" "}
+            <GlossaryTerm term="Manifesto">manifesto</GlossaryTerm> since forming government.
+          </>
+        }
       />
       <div style={{ marginTop: 28 }}>
         <PromiseTracker />

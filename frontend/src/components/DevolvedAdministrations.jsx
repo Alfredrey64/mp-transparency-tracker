@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
+import { GlossaryTerm } from "./GlossaryTerm";
 import { IconDevolved, IconNorthernIreland } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
 
@@ -64,7 +65,14 @@ export default function DevolvedAdministrations() {
         icon={IconDevolved}
         kicker="Public Record · Devolved Administrations"
         title="Beyond Westminster"
-        subtitle="This site otherwise covers the UK Parliament at Westminster — but Scotland, Wales, and Northern Ireland each have their own devolved legislature with real law-making power. Click any of the three below for how they actually work, and how they relate to Westminster."
+        subtitle={
+          <>
+            This site otherwise covers the UK Parliament at Westminster — but Scotland, Wales, and Northern Ireland
+            each have their own <GlossaryTerm term="Devolution">devolved</GlossaryTerm> legislature with real
+            law-making power. Click any of the three below for how they actually work, and how they relate to
+            Westminster.
+          </>
+        }
       />
 
       <div style={{ marginTop: 24, display: "flex", flexDirection: "column", gap: 18 }}>

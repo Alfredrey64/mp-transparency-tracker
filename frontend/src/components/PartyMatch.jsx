@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
+import { GlossaryTerm } from "./GlossaryTerm";
 import {
   IconCompass, IconEconomy, IconHealth, IconMigration, IconLeaf, IconHome, IconGlobe, IconGavel,
   IconGlossary, IconHeart, IconVote, IconDevolved, IconShield, IconFactory, IconInfluence, IconHardHat,
@@ -556,7 +557,12 @@ export default function PartyMatch() {
         icon={IconCompass}
         kicker="Public Record · Find Your Party"
         title="Which party matches you?"
-        subtitle="Answer a short set of policy questions and see which party's stated positions line up closest with your own — based on their 2024 manifestos, not ours."
+        subtitle={
+          <>
+            Answer a short set of policy questions and see which party's stated positions line up closest with your
+            own — based on their 2024 <GlossaryTerm term="Manifesto">manifestos</GlossaryTerm>, not ours.
+          </>
+        }
       />
 
       {typeof stage === "number" && <ProgressBar current={stage} total={QUESTIONS.length} />}

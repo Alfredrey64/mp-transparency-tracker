@@ -5,6 +5,7 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../the
 import { partyColour } from "../lib/format";
 import { isTrackedParty, findManifesto } from "../data/partyManifestos";
 import { PageHeader, LoadFailedNote } from "./shared";
+import { GlossaryTerm } from "./GlossaryTerm";
 import { IconManifesto } from "./icons";
 
 // The party-colour dot is the only element that shares a layoutId between
@@ -77,7 +78,14 @@ export default function PartyPolicies() {
         icon={IconManifesto}
         kicker="Public Record · Party Policies"
         title="Where each party stands"
-        subtitle="An objective summary of each party's most recent UK general election manifesto (2024). These are our own summaries, not the original documents — click into a party for more detail, or follow the link to read their manifesto in full."
+        subtitle={
+          <>
+            An objective summary of each party's most recent UK general election{" "}
+            <GlossaryTerm term="Manifesto">manifesto</GlossaryTerm> (2024). These are our own summaries, not the
+            original documents — click into a party for more detail, or follow the link to read their manifesto in
+            full.
+          </>
+        }
       />
 
       {parties === null ? (

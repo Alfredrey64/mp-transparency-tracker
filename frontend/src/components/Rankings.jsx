@@ -4,6 +4,7 @@ import { supabase } from "../supabaseClient";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
+import { GlossaryTerm } from "./GlossaryTerm";
 import { partyColour, initials } from "../lib/format";
 import { IconRankings, IconSearch } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
@@ -371,7 +372,12 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
         color: "#6E4B6E",
         data: rebellionRanking,
         formatValue: (e) => `${e.value}%`,
-        intro: `How often an MP voted against their own party's majority, across the ${totalDivisions} Commons divisions recorded so far.`,
+        intro: (
+          <>
+            How often an MP voted against their own party's majority, across the {totalDivisions} Commons{" "}
+            <GlossaryTerm term="Division">divisions</GlossaryTerm> recorded so far.
+          </>
+        ),
         caveat: `Only MPs with at least ${MIN_VOTES_FOR_REBELLION_RANKING} recorded votes are ranked, so a handful of votes can't inflate a rate. Independents and the Speaker aren't ranked — a party "majority" isn't a meaningful idea for them.`,
       },
       {
@@ -380,8 +386,20 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
         color: "#3F7D5C",
         data: attendanceRanking,
         formatValue: (e) => `${e.value}%`,
-        intro: `The share of the ${totalDivisions} recorded Commons divisions each MP voted in, tracked so far.`,
-        caveat: "Official records don't distinguish being absent from being paired or deliberately abstaining, and an MP who joined Parliament partway through this window will show a lower rate simply because they weren't yet in office for earlier votes.",
+        intro: (
+          <>
+            The share of the {totalDivisions} recorded Commons <GlossaryTerm term="Division">divisions</GlossaryTerm>{" "}
+            each MP voted in, tracked so far.
+          </>
+        ),
+        caveat: (
+          <>
+            Official records don't distinguish being absent from being{" "}
+            <GlossaryTerm term="Pairing">paired</GlossaryTerm> or deliberately abstaining, and an MP who joined
+            Parliament partway through this window will show a lower rate simply because they weren't yet in office
+            for earlier votes.
+          </>
+        ),
       },
     ],
     [expensesRanking, earningsRanking, rebellionRanking, attendanceRanking, totalDivisions, onNavigate]

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader, LoadFailedNote } from "./shared";
+import { GlossaryTerm } from "./GlossaryTerm";
 import { partyColour, stripHtml, formatDate } from "../lib/format";
 import { IconCommittee } from "./icons";
 
@@ -193,7 +194,14 @@ export default function Committees() {
         icon={IconCommittee}
         kicker="Public Record · Select Committees"
         title="Who's scrutinising the government"
-        subtitle="Select committees are the cross-party groups of MPs and peers who question ministers, gather evidence, and publish reports on how well government departments are actually doing their jobs — separate from, and often more detailed than, anything debated on the floor of the Commons or Lords."
+        subtitle={
+          <>
+            <GlossaryTerm term="Select Committee">Select committees</GlossaryTerm> are the cross-party groups of MPs
+            and peers who question ministers, gather evidence, and publish reports on how well government
+            departments are actually doing their jobs — separate from, and often more detailed than, anything
+            debated on the floor of the Commons or Lords.
+          </>
+        }
       />
 
       {committees === null && (
