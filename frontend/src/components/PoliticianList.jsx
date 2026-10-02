@@ -6,6 +6,9 @@ import { partyColour, initials } from "../lib/format";
 import { PageHeader } from "./shared";
 import { IconCoin } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
+import { fetchAllRows } from "../lib/supabasePagination";
+import { interestColumns, mpColumns } from "../lib/exportColumns";
+import DownloadCsvButton from "./DownloadCsvButton";
 
 function SkeletonCard() {
   return (
@@ -107,6 +110,8 @@ export default function PoliticianList({ onSelect }) {
     }
     return [...map.values()].sort((a, b) => b.count - a.count);
   }, [politicians]);
+
+  const mpById = useMemo(() => new Map(politicians.map((p) => [p.id, p])), [politicians]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -222,6 +227,23 @@ export default function PoliticianList({ onSelect }) {
           );
         })}
       </div>
+
+      {!loading && !error && politicians.length > 0 && (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 22px", marginBottom: 20 }}>
+          <DownloadCsvButton
+            label={`Download ${filtered.length === politicians.length ? "all" : "these"} ${filtered.length.toLocaleString("en-GB")} MPs (CSV)`}
+            slug="mps"
+            columns={mpColumns(window.location.origin)}
+            rows={filtered}
+          />
+          <DownloadCsvButton
+            label="Download every declared interest, all MPs (CSV)"
+            slug="declared-interests-all-mps"
+            columns={interestColumns((i) => mpById.get(i.politician_id))}
+            loadRows={() => fetchAllRows(() => supabase.from("financial_interests").select("*").order("id"))}
+          />
+        </div>
+      )}
 
       {error && (
         <div style={{ color: "#9C3B3B", fontFamily: FONT_BODY, fontSize: 13.5, marginBottom: 16 }}>

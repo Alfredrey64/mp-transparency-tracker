@@ -6,6 +6,8 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader, LoadFailedNote } from "./shared";
 import { formatDate, partyColour, stripHtml } from "../lib/format";
 import { IconQuestion, IconSearch } from "./icons";
+import DownloadCsvButton from "./DownloadCsvButton";
+import { WRITTEN_QUESTION_COLUMNS } from "../lib/exportColumns";
 
 const WINDOW_DAYS = 30;
 
@@ -379,6 +381,12 @@ export default function WrittenQuestions({ onSelectPolitician, initialQuery = ""
       )}
       {rows !== null && !failed && rows.length > 0 && filtered.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Nothing matches those filters.</div>
+      )}
+
+      {filtered.length > 0 && (
+        <div style={{ marginBottom: 14 }}>
+          <DownloadCsvButton label={`Download these ${filtered.length.toLocaleString("en-GB")} questions and answers (CSV)`} slug="written-questions" columns={WRITTEN_QUESTION_COLUMNS} rows={filtered} />
+        </div>
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>

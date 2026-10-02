@@ -14,6 +14,9 @@ import { isWatched, toggleWatch } from "../lib/watchlist";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { GlossaryTerm } from "./GlossaryTerm";
 import MpSummary from "./MpSummary";
+import DownloadCsvButton from "./DownloadCsvButton";
+import { fetchAllRows } from "../lib/supabasePagination";
+import { interestColumns, voteColumns } from "../lib/exportColumns";
 import { IconStar, IconCoin, IconMeeting, IconGlobe, IconHome, IconEconomy, IconBriefcase, IconQuestion, IconGroup } from "./icons";
 import {
   SectionDivider,
@@ -890,6 +893,23 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
             )}
             <SectionDivider />
           </div>
+        </div>
+
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "6px 22px", paddingTop: 14 }}>
+          {interests.length > 0 && (
+            <DownloadCsvButton
+              label="Download their declared interests (CSV)"
+              slug={`${politician.name}-declared-interests`}
+              columns={interestColumns(() => politician)}
+              rows={interests}
+            />
+          )}
+          <DownloadCsvButton
+            label="Download their voting record (CSV)"
+            slug={`${politician.name}-votes`}
+            columns={voteColumns(politician)}
+            loadRows={() => fetchAllRows(() => supabase.from("voting_records").select("*").eq("politician_id", politician.id).order("date", { ascending: false }))}
+          />
         </div>
 
         <MpSummary

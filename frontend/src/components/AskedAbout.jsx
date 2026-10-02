@@ -7,6 +7,8 @@ import { sanitiseTopicQuery, summariseQuestions, MIN_TOPIC_LENGTH, SUGGESTED_TOP
 import { PageHeader, LoadFailedNote } from "./shared";
 import { IconTopic, IconSearch } from "./icons";
 import BarRow from "./BarRow";
+import DownloadCsvButton from "./DownloadCsvButton";
+import { WRITTEN_QUESTION_COLUMNS } from "../lib/exportColumns";
 
 // PostgREST's default page size; a single request can't return more.
 const FETCH_LIMIT = 1000;
@@ -141,6 +143,10 @@ export default function AskedAbout({ onSelectPolitician }) {
                   That's a lot, so the breakdown below covers the {fmt(summary.total)} most recent. Try a more specific topic to narrow it.
                 </div>
               )}
+
+              <div style={{ marginTop: 10 }}>
+                <DownloadCsvButton label={`Download these ${fmt(summary.total)} questions (CSV)`} slug={`written-questions-${query}`} columns={WRITTEN_QUESTION_COLUMNS} rows={state.rows} />
+              </div>
 
               {summary.parties.length > 0 && (
                 <Section title="By party" note="This counts questions, not MPs, so a party's total reflects both how many members it has and how many of them are asking.">

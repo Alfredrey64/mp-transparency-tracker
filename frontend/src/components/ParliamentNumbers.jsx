@@ -6,6 +6,8 @@ import { computeParliamentStats } from "../lib/parliamentStats";
 import { PageHeader, LoadFailedNote } from "./shared";
 import { IconChartBars } from "./icons";
 import BarRow from "./BarRow";
+import DownloadCsvButton from "./DownloadCsvButton";
+import { SEATS_COLUMNS } from "../lib/exportColumns";
 
 const fmt = (n) => n.toLocaleString("en-GB");
 const pct1 = (n) => `${(Math.round(n * 10) / 10).toFixed(1)}%`;
@@ -125,6 +127,9 @@ export default function ParliamentNumbers({ onNavigate }) {
               {showTable ? "Hide the table" : "View as a table"}
             </button>
             {showTable && <div style={{ marginTop: 10 }}><SeatsTable stats={stats} /></div>}
+            <div style={{ marginTop: 8 }}>
+              <DownloadCsvButton label="Download seats by party (CSV)" slug="seats-by-party" columns={SEATS_COLUMNS} rows={stats.seatsByParty} />
+            </div>
           </Section>
 
           <Section
