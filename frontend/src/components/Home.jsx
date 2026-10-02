@@ -430,7 +430,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
       </motion.div>
 
       {allPoliticians.length > 0 && (
-        <PartyHemicycleSection politicians={allPoliticians} onSelectParty={() => onNavigate?.("list")} />
+        <PartyHemicycleSection politicians={allPoliticians} onSelectParty={() => onNavigate?.("list")} subtitle="Every current seat, coloured by party. Hover a party below to pick it out. Labour (Co-op) MPs are Labour MPs who also belong to the Co-operative Party." />
       )}
 
       {/* Find Your MP: full-width band */}
@@ -535,6 +535,9 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
               </button>
             )}
           </div>
+          <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "0 0 12px" }}>
+            A bill becomes law by passing a second reading, committee stage and report stage in each House, then Royal Assent. The stage shown is where each one has got to.
+          </p>
           {loadingExtras && <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>Loading…</div>}
           <div style={{ display: "flex", flexDirection: "column" }}>
             {upcomingBills.map((bill, i) => {

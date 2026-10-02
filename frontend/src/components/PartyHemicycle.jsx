@@ -129,7 +129,7 @@ export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Ind
         {parties.slice(0, legendCount).map((p) => (
           <button
             key={p.name}
-            onClick={() => onSelectParty?.(p.name)}
+            onClick={(e) => onSelectParty?.(p.name, e)}
             onMouseEnter={() => setHoveredParty(p.name)}
             onMouseLeave={() => setHoveredParty(null)}
             style={{

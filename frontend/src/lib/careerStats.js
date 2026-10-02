@@ -86,17 +86,18 @@ export function computeCareerStats(careers, politicians) {
     else nowIndependent += 1;
     const to = isSwitch ? family(p.party) : "Independent";
     const key = `${c[F.from]}→${to}`;
-    if (!moves.has(key)) moves.set(key, { from: c[F.from], to, kind: isSwitch ? "switch" : "independent", count: 0, names: [] });
+    if (!moves.has(key)) moves.set(key, { from: c[F.from], to, kind: isSwitch ? "switch" : "independent", count: 0, names: [], memberIds: [] });
     const m = moves.get(key);
     m.count += 1;
     m.names.push(p.name);
+    m.memberIds.push(p.parliament_member_id);
   }
   const transitions = [...moves.values()].sort((a, b) => b.count - a.count || a.from.localeCompare(b.from)).slice(0, 8);
 
   // Persistence: contests lost before getting in.
   const lostBefore = mps.filter(({ c }) => c[F.lost] > 0);
-  const mostLost = topN(lostBefore.map(({ p, c }) => ({ name: p.name, party: p.party, colour: p.party_colour ?? null, times: c[F.lost] })), 3, (x) => x.times);
-  const mostElected = topN(mps.map(({ p, c }) => ({ name: p.name, party: p.party, colour: p.party_colour ?? null, times: c[F.elected] })), 3, (x) => x.times);
+  const mostLost = topN(lostBefore.map(({ p, c }) => ({ name: p.name, memberId: p.parliament_member_id, party: p.party, colour: p.party_colour ?? null, times: c[F.lost] })), 3, (x) => x.times);
+  const mostElected = topN(mps.map(({ p, c }) => ({ name: p.name, memberId: p.parliament_member_id, party: p.party, colour: p.party_colour ?? null, times: c[F.elected] })), 3, (x) => x.times);
 
   return {
     total,

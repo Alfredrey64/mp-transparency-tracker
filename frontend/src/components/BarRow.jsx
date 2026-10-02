@@ -6,13 +6,26 @@ import { COLORS, FONT_BODY, numeric } from "../theme";
 // numeric typeface beside it. `tick` draws a dashed marker at that fraction
 // of the track. Label and value columns have fixed widths, so every row in
 // a chart has a track of exactly the same length: bars are comparable by eye.
-export default function BarRow({ label, color, fraction, valueText, detail, tick, labelWidth = 170, valueWidth = 120, delay = 0 }) {
+export default function BarRow({ label, color, fraction, valueText, detail, tick, labelWidth = 170, valueWidth = 120, delay = 0, onClick }) {
   const reduce = useReducedMotion();
   const width = `${Math.max(0, Math.min(1, fraction)) * 100}%`;
   return (
     <div
-      role="img"
-      aria-label={`${label}: ${valueText}${detail ? `, ${detail}` : ""}`}
+      {...(onClick
+        ? {
+            role: "button",
+            tabIndex: 0,
+            className: "nclick",
+            "aria-label": `${label}: ${valueText}${detail ? `, ${detail}` : ""}. See the MPs`,
+            onClick,
+            onKeyDown: (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onClick(e);
+              }
+            },
+          }
+        : { role: "img", "aria-label": `${label}: ${valueText}${detail ? `, ${detail}` : ""}` })}
       title={`${label}: ${valueText}${detail ? ` (${detail})` : ""}`}
       style={{ display: "grid", gridTemplateColumns: `minmax(90px, ${labelWidth}px) minmax(0, 1fr) ${valueWidth}px`, alignItems: "center", gap: 12, padding: "5px 0" }}
     >

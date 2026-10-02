@@ -1,4 +1,7 @@
-import { EXTRA_PROCEDURE_TERMS, EXTRA_POLITICS_TERMS, TERM_OVERRIDES } from "./glossaryExtraTerms.js";
+import { EXTRA_PROCEDURE_TERMS, EXTRA_POLITICS_TERMS, TERM_OVERRIDES as EXTRA_OVERRIDES } from "./glossaryExtraTerms.js";
+import { MORE_PROCEDURE_TERMS, MORE_POLITICS_TERMS, MORE_TERM_OVERRIDES } from "./glossaryMoreTerms.js";
+
+const TERM_OVERRIDES = { ...EXTRA_OVERRIDES, ...MORE_TERM_OVERRIDES };
 
 // Plain-English definitions of terms used throughout this site and in UK
 // political reporting generally — written independently, not copied from any
@@ -201,8 +204,8 @@ const BASE_POLITICS_TERMS = [
 const applyOverrides = (t) => (TERM_OVERRIDES[t.term] ? { ...t, ...TERM_OVERRIDES[t.term] } : t);
 const byTerm = (a, b) => a.term.localeCompare(b.term, "en", { sensitivity: "base" });
 
-export const PROCEDURE_TERMS = [...BASE_PROCEDURE_TERMS, ...EXTRA_PROCEDURE_TERMS].map(applyOverrides).sort(byTerm);
-export const POLITICS_TERMS = [...BASE_POLITICS_TERMS, ...EXTRA_POLITICS_TERMS].map(applyOverrides).sort(byTerm);
+export const PROCEDURE_TERMS = [...BASE_PROCEDURE_TERMS, ...EXTRA_PROCEDURE_TERMS, ...MORE_PROCEDURE_TERMS].map(applyOverrides).sort(byTerm);
+export const POLITICS_TERMS = [...BASE_POLITICS_TERMS, ...EXTRA_POLITICS_TERMS, ...MORE_POLITICS_TERMS].map(applyOverrides).sort(byTerm);
 
 // Every spelling that should resolve to an entry: its own full term, the
 // text before and inside a trailing parenthetical (so "IPSA (Independent

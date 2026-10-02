@@ -1,5 +1,5 @@
+import { preloadView } from "../pageLoaders";
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
 import { EyebrowLabel, ParliamentSilhouette } from "./shared";
 import GlobalSearch from "./GlobalSearch";
@@ -8,8 +8,8 @@ import { SECTIONS } from "../data/sidebarSections";
 import { readSectionChoices, writeSectionChoices, isSectionOpen } from "../lib/sidebarState";
 
 const HOME_NAV_ITEMS = [
-  { key: "start", label: "Start Here", icon: IconRoute },
   { key: "home", label: "Overview", icon: IconHome },
+  { key: "start", label: "Start Here", icon: IconRoute },
   { key: "myMP", label: "My MP", icon: IconPin },
   { key: "watchlist", label: "My Watchlist", icon: IconStar },
 ];
@@ -29,7 +29,12 @@ function NavItem({ item, active, accent, onNavigate }) {
     <button
       onClick={() => !item.soon && onNavigate(item.key)}
       disabled={item.soon}
-      onMouseEnter={() => setHover(true)}
+      onMouseEnter={() => {
+        setHover(true);
+        preloadView(item.key);
+      }}
+      onFocus={() => preloadView(item.key)}
+      onTouchStart={() => preloadView(item.key)}
       onMouseLeave={() => setHover(false)}
       style={{
         position: "relative",
@@ -52,9 +57,8 @@ function NavItem({ item, active, accent, onNavigate }) {
       }}
     >
       {active && (
-        <motion.span
-          layoutId="sidebar-active-bar"
-          transition={{ type: "spring", stiffness: 500, damping: 40 }}
+        <span
+          aria-hidden="true"
           style={{ position: "absolute", left: 0, top: 3, bottom: 3, width: 3, borderRadius: 3, background: accent }}
         />
       )}
@@ -126,21 +130,16 @@ function SidebarSection({ label, accent, items, activeView, onNavigate, open, on
           </svg>
         </span>
       </button>
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            style={{ overflow: "hidden" }}
-          >
-            <div style={{ padding: "0 7px 8px" }}>
-              <NavList items={items} activeView={activeView} onNavigate={onNavigate} accent={accent} />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Folds with a grid-row transition, which the browser runs off the
+          main thread's layout work. Closed content is inert so it can't be
+          tabbed to. */}
+      <div className="fold" data-open={open} inert={!open}>
+        <div className="fold-inner">
+          <div style={{ padding: "0 7px 8px" }}>
+            <NavList items={items} activeView={activeView} onNavigate={onNavigate} accent={accent} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

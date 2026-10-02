@@ -1,59 +1,60 @@
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
-import { motion, AnimatePresence, MotionConfig } from "framer-motion";
+import { motion, MotionConfig } from "framer-motion";
 import { supabase } from "./supabaseClient";
 import { COLORS, FONT_BODY, FONT_DISPLAY } from "./theme";
 import Sidebar from "./components/Sidebar";
 import Home from "./components/Home";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { SECTIONS } from "./data/sidebarSections";
+import { LOADERS } from "./pageLoaders";
 import { startGlossDedupe } from "./glossJsx/dedupe";
 
 // Everything below is code-split per page: a visitor to the homepage
 // shouldn't have to download the other ~30 pages' code up front. Home and
 // Sidebar stay eager imports above so the very first paint has no loading
 // flash.
-const PoliticianList = lazy(() => import("./components/PoliticianList"));
+const PoliticianList = lazy(LOADERS.list);
 const PoliticianDetail = lazy(() => import("./components/PoliticianDetail"));
-const VotingRecords = lazy(() => import("./components/VotingRecords"));
-const HowParliamentWorks = lazy(() => import("./components/HowParliamentWorks"));
-const AppgMemberships = lazy(() => import("./components/AppgMemberships"));
-const DonorsLobbying = lazy(() => import("./components/DonorsLobbying"));
-const PartyFinances = lazy(() => import("./components/PartyFinances"));
-const PartyPolicies = lazy(() => import("./components/PartyPolicies"));
-const GovernmentTracker = lazy(() => import("./components/GovernmentTracker"));
-const Methodology = lazy(() => import("./components/Methodology"));
-const Glossary = lazy(() => import("./components/Glossary"));
-const PoliticalHistory = lazy(() => import("./components/PoliticalHistory"));
-const Timeline = lazy(() => import("./components/Timeline"));
-const DevolvedAdministrations = lazy(() => import("./components/DevolvedAdministrations"));
-const FormerMps = lazy(() => import("./components/FormerMps"));
-const ByElections = lazy(() => import("./components/ByElections"));
-const GovernmentBudget = lazy(() => import("./components/GovernmentBudget"));
-const Cabinet = lazy(() => import("./components/Cabinet"));
-const HouseOfLords = lazy(() => import("./components/HouseOfLords"));
-const Petitions = lazy(() => import("./components/Petitions"));
-const PartyMatch = lazy(() => import("./components/PartyMatch"));
-const Settings = lazy(() => import("./components/Settings"));
-const PrivacyPolicy = lazy(() => import("./components/PrivacyPolicy"));
-const TermsConditions = lazy(() => import("./components/TermsConditions"));
-const Committees = lazy(() => import("./components/Committees"));
-const ComparePoliticians = lazy(() => import("./components/ComparePoliticians"));
-const MinisterialMeetings = lazy(() => import("./components/MinisterialMeetings"));
-const WrittenQuestions = lazy(() => import("./components/WrittenQuestions"));
-const StandardsReports = lazy(() => import("./components/StandardsReports"));
-const MyMP = lazy(() => import("./components/MyMP"));
-const MediaLiteracy = lazy(() => import("./components/MediaLiteracy"));
-const Rankings = lazy(() => import("./components/Rankings"));
-const DarkMoney = lazy(() => import("./components/DarkMoney"));
-const RevolvingDoor = lazy(() => import("./components/RevolvingDoor"));
-const ThinkTankFunding = lazy(() => import("./components/ThinkTankFunding"));
-const LobbyingRegister = lazy(() => import("./components/LobbyingRegister"));
-const FollowTheMoney = lazy(() => import("./components/FollowTheMoney"));
-const WatchlistDigest = lazy(() => import("./components/WatchlistDigest"));
-const ParliamentNumbers = lazy(() => import("./components/ParliamentNumbers"));
-const AskedAbout = lazy(() => import("./components/AskedAbout"));
-const Constituency = lazy(() => import("./components/Constituency"));
-const StartHere = lazy(() => import("./components/StartHere"));
+const VotingRecords = lazy(LOADERS.voting);
+const HowParliamentWorks = lazy(LOADERS.howitworks);
+const AppgMemberships = lazy(LOADERS.appg);
+const DonorsLobbying = lazy(LOADERS.donors);
+const PartyFinances = lazy(LOADERS.partyFinances);
+const PartyPolicies = lazy(LOADERS.parties);
+const GovernmentTracker = lazy(LOADERS.tracker);
+const Methodology = lazy(LOADERS.methodology);
+const Glossary = lazy(LOADERS.glossary);
+const PoliticalHistory = lazy(LOADERS.history);
+const Timeline = lazy(LOADERS.timeline);
+const DevolvedAdministrations = lazy(LOADERS.devolved);
+const FormerMps = lazy(LOADERS.formerMps);
+const ByElections = lazy(LOADERS.byElections);
+const GovernmentBudget = lazy(LOADERS.budget);
+const Cabinet = lazy(LOADERS.cabinet);
+const HouseOfLords = lazy(LOADERS.lords);
+const Petitions = lazy(LOADERS.petitions);
+const PartyMatch = lazy(LOADERS.partymatch);
+const Settings = lazy(LOADERS.settings);
+const PrivacyPolicy = lazy(LOADERS.privacy);
+const TermsConditions = lazy(LOADERS.terms);
+const Committees = lazy(LOADERS.committees);
+const ComparePoliticians = lazy(LOADERS.compare);
+const MinisterialMeetings = lazy(LOADERS.ministerialMeetings);
+const WrittenQuestions = lazy(LOADERS.writtenQuestions);
+const StandardsReports = lazy(LOADERS.standards);
+const MyMP = lazy(LOADERS.myMP);
+const MediaLiteracy = lazy(LOADERS.mediaLiteracy);
+const Rankings = lazy(LOADERS.rankings);
+const DarkMoney = lazy(LOADERS.darkMoney);
+const RevolvingDoor = lazy(LOADERS.revolvingDoor);
+const ThinkTankFunding = lazy(LOADERS.thinkTanks);
+const LobbyingRegister = lazy(LOADERS.lobbyingRegister);
+const FollowTheMoney = lazy(LOADERS.followTheMoney);
+const WatchlistDigest = lazy(LOADERS.watchlist);
+const ParliamentNumbers = lazy(LOADERS.numbers);
+const AskedAbout = lazy(LOADERS.topics);
+const Constituency = lazy(LOADERS.constituency);
+const StartHere = lazy(LOADERS.start);
 
 // A quiet authorship mark, not a feature — printed once so a copy of this
 // site with the byline stripped from the UI still carries proof of where
@@ -288,14 +289,14 @@ export default function App() {
     <div className="mp-app-shell" style={{ display: "flex", minHeight: "100vh", background: COLORS.paper, fontFamily: FONT_BODY }}>
       <Sidebar activeView={view} onNavigate={handleNavigate} onSelectPolitician={handleViewProfile} />
       <div style={{ flex: 1, minWidth: 0 }}>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={`${view}-${selected?.id ?? ""}`}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.22, ease: "easeInOut" }}
-          >
+        {/* The new page fades in straight away. It used to wait for the old
+            one to fade out first, which added a visible pause to every click. */}
+        <motion.div
+          key={`${view}-${selected?.id ?? ""}`}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.18, ease: "easeOut" }}
+        >
             <ErrorBoundary onGoHome={() => handleNavigate("home")}>
             <Suspense fallback={<PageLoadingFallback />}>
             {view === "home" && <Home onBrowse={() => handleNavigate("list")} onNavigate={handleNavigateForBill} onViewProfile={handleViewProfile} mpCount={mpCount} />}
@@ -352,8 +353,7 @@ export default function App() {
               ))}
             </Suspense>
             </ErrorBoundary>
-          </motion.div>
-        </AnimatePresence>
+        </motion.div>
       </div>
     </div>
     </MotionConfig>

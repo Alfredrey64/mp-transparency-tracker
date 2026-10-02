@@ -204,3 +204,14 @@ select:focus-visible,
 @container (max-width: 780px) {
   .bento-grid > .s4, .bento-grid > .s5, .bento-grid > .s6, .bento-grid > .s7, .bento-grid > .s8, .bento-grid > .s12 { grid-column: 1 / -1; }
 }
+
+/* Figures and bars you can tap to see the MPs behind them. */
+.nclick { cursor: pointer; border-radius: 8px; transition: background-color 0.15s; }
+.nclick:hover, .nclick:focus-visible { background-color: rgba(127, 127, 160, 0.14); }
+.member-row:hover, .member-row:focus-visible { background-color: rgba(127, 127, 160, 0.14) !important; }
+
+/* Sidebar sections: fold by animating a grid row from 0fr to 1fr. */
+.fold { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.2s ease-out; }
+.fold[data-open="true"] { grid-template-rows: 1fr; }
+.fold-inner { overflow: hidden; min-height: 0; }
+@media (prefers-reduced-motion: reduce) { .fold { transition: none; } }

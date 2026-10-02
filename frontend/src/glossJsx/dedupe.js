@@ -23,10 +23,17 @@ export function startGlossDedupe(root) {
     }
   }
 
-  const observer = new MutationObserver(() => {
+  // Only a mention appearing or disappearing can change which one is first,
+  // so changes to plain text (a number counting up, say) are ignored, and
+  // the rest are batched into one pass: reading each mention's position
+  // forces the browser to lay the page out, and doing that on every frame of
+  // an animation made the page stutter.
+  const observer = new MutationObserver((records) => {
     if (scheduled) return;
+    const structural = records.some((r) => [...r.addedNodes, ...r.removedNodes].some((n) => n.nodeType === 1));
+    if (!structural) return;
     scheduled = true;
-    queueMicrotask(run);
+    setTimeout(run, 80);
   });
   observer.observe(root, { childList: true, subtree: true });
   run();

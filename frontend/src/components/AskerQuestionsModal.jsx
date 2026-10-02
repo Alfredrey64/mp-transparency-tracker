@@ -71,7 +71,7 @@ export default function AskerQuestionsModal({ person, questions, topic, returnFo
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      style={{ position: "fixed", inset: 0, zIndex: 3000, background: "rgba(8, 9, 20, 0.62)", backdropFilter: "blur(3px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "clamp(10px, 4vw, 32px)" }}
+      style={{ position: "fixed", inset: 0, zIndex: 3000, background: "rgba(8, 9, 20, 0.62)", display: "flex", alignItems: "center", justifyContent: "center", padding: "clamp(10px, 4vw, 32px)" }}
     >
       <motion.div
         ref={panelRef}

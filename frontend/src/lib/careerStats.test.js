@@ -45,8 +45,8 @@ describe("computeCareerStats", () => {
     expect(s.switchers.nowIndependent).toBe(1);
     expect(s.switchers.transitions).toEqual(
       expect.arrayContaining([
-        { from: "Conservative", to: "Reform UK", kind: "switch", count: 1, names: ["E"] },
-        { from: "Labour", to: "Independent", kind: "independent", count: 1, names: ["F"] },
+        { from: "Conservative", to: "Reform UK", kind: "switch", count: 1, names: ["E"], memberIds: [5] },
+        { from: "Labour", to: "Independent", kind: "independent", count: 1, names: ["F"], memberIds: [6] },
       ])
     );
   });
