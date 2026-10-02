@@ -9,6 +9,7 @@ import { PageHeader, LoadFailedNote } from "./shared";
 import { PartyHemicycle } from "./PartyHemicycle";
 import { IconChartBars } from "./icons";
 import BarRow from "./BarRow";
+import Reveal from "./Reveal";
 import CountUp from "./CountUp";
 import DownloadCsvButton from "./DownloadCsvButton";
 import { SEATS_COLUMNS } from "../lib/exportColumns";
@@ -20,21 +21,6 @@ const joinNames = (n) => (n.length <= 2 ? n.join(" and ") : `${n.slice(0, -1).jo
 const goSeat = (name) => {
   window.location.hash = `#/constituency/${encodeURIComponent(name)}`;
 };
-
-// Fades a section up the first time it scrolls into view.
-function Reveal({ children, delay = 0 }) {
-  const reduce = useReducedMotion();
-  return (
-    <motion.div
-      initial={reduce ? false : { opacity: 0, y: 18 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.5, delay, ease: "easeOut" }}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 function Section({ title, intro, children, delay }) {
   return (

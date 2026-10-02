@@ -54,3 +54,54 @@ describe("ordinal", () => {
     );
   });
 });
+
+import { plainEndReason, buildSeatTimeline, spanLabel, majorityStanding, majorityBins } from "./constituency";
+
+describe("plainEndReason", () => {
+  it("translates the API's wording and leaves unknown wording alone", () => {
+    expect(plainEndReason("Dissolution")).toBe("Left at a general election");
+    expect(plainEndReason("Death")).toBe("Died in office");
+    expect(plainEndReason("Resignation (Chiltern)")).toBe("Resigned");
+    expect(plainEndReason("Recall")).toBe("Removed through a recall petition");
+    expect(plainEndReason("Disqualification following imprisonment for more than a year")).toBe("Disqualified from sitting");
+    expect(plainEndReason("Something new")).toBe("Something new");
+    expect(plainEndReason(null)).toBeNull();
+  });
+});
+
+describe("buildSeatTimeline", () => {
+  const now = new Date("2026-10-02T00:00:00Z");
+  const former = [{ id: 1, name: "Newer", party: "Labour", colour: "d50000", start: "2010-05-06", end: "2024-05-30", reason: "Dissolution" }, { id: 2, name: "Older", party: "Conservative", colour: "0063ba", start: "1979-05-03", end: "2010-04-12", reason: "Death" }];
+  const t = buildSeatTimeline({ name: "Now", party: "Reform UK", colour: "12b6cf", start: "2024-07-04" }, former, now);
+  it("lists the sitting MP first, then former MPs newest first, with years served", () => {
+    expect(t.map((e) => e.name)).toEqual(["Now", "Newer", "Older"]);
+    expect(t[0].current).toBe(true);
+    expect(t[0].years).toBeCloseTo(2.25, 1);
+    expect(t[1].years).toBeCloseTo(14.07, 1);
+    expect(t[2].reason).toBe("Died in office");
+  });
+  it("copes with no sitting MP or no history", () => {
+    expect(buildSeatTimeline(null, [], now)).toEqual([]);
+    expect(buildSeatTimeline({ name: "A" }, [], now)).toHaveLength(1);
+  });
+  it("labels spans plainly", () => {
+    expect(spanLabel(t[0])).toBe("2024 to now");
+    expect(spanLabel(t[1])).toBe("2010 to 2024");
+    expect(spanLabel({ current: false, start: "2001-01-01", end: "2001-12-01" })).toBe("2001");
+  });
+});
+
+describe("majority standing", () => {
+  const seats = { a: { result: { majorityPct: 1 } }, b: { result: { majorityPct: 10 } }, c: { result: { majorityPct: 30 } }, d: { result: null } };
+  it("ranks a seat from the narrowest and says how many seats are more marginal than it", () => {
+    expect(majorityStanding(seats, "b")).toEqual({ rankNarrowest: 2, of: 3, moreMarginalThanPct: 33 });
+    expect(majorityStanding(seats, "d")).toBeNull();
+  });
+  it("bins majorities in five-point steps and marks the seat's own bin", () => {
+    const { counts, mineBin } = majorityBins(seats, 10);
+    expect(counts[0]).toBe(1);
+    expect(counts[2]).toBe(1);
+    expect(counts[6]).toBe(1);
+    expect(mineBin).toBe(2);
+  });
+});

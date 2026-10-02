@@ -50,3 +50,74 @@ export function ordinal(n) {
   if (mod100 >= 11 && mod100 <= 13) return `${n}th`;
   return `${n}${{ 1: "st", 2: "nd", 3: "rd" }[n % 10] ?? "th"}`;
 }
+
+// --- History ---------------------------------------------------------------
+
+// The Members API's own wording for why someone's time as an MP ended, in
+// plain English. Unknown wording is shown as given rather than guessed at.
+export function plainEndReason(reason) {
+  const r = String(reason ?? "").toLowerCase();
+  if (!r) return null;
+  if (r.startsWith("dissolution")) return "Left at a general election";
+  if (r.startsWith("death")) return "Died in office";
+  if (r.startsWith("resignation")) return "Resigned";
+  if (r.startsWith("recall")) return "Removed through a recall petition";
+  if (r.includes("election court") || r.includes("undue")) return "Election declared void by an election court";
+  if (r.startsWith("disqualif")) return "Disqualified from sitting";
+  return reason;
+}
+
+const YEAR_MS = 365.25 * 24 * 60 * 60 * 1000;
+const yearOf = (d) => (d ? new Date(d).getFullYear() : null);
+
+// Everyone known to have held a seat, newest first: the sitting MP, then the
+// former MPs whose last seat this was. `years` is time served as an MP (for
+// the sitting MP, so far), which sizes each stripe in the party-history bar.
+// `current`: { name, party, colour, start }. `former`: from constituencyHistory.json.
+export function buildSeatTimeline(current, former = [], now = new Date()) {
+  const entries = [];
+  if (current) {
+    const start = current.start ?? null;
+    entries.push({
+      key: "current", name: current.name, party: current.party ?? null, colour: current.colour ?? null,
+      start, end: null, current: true, reason: null,
+      years: start ? Math.max(0.05, (now.getTime() - new Date(start).getTime()) / YEAR_MS) : 0.05,
+    });
+  }
+  for (const m of former) {
+    entries.push({
+      key: `former-${m.id}`, name: m.name, party: m.party ?? null, colour: m.colour ?? null,
+      start: m.start ?? null, end: m.end ?? null, current: false, reason: plainEndReason(m.reason),
+      years: m.start && m.end ? Math.max(0.05, (new Date(m.end).getTime() - new Date(m.start).getTime()) / YEAR_MS) : 0.05,
+    });
+  }
+  return entries;
+}
+
+export function spanLabel(entry) {
+  const a = yearOf(entry.start);
+  if (entry.current) return a ? `${a} to now` : "Current MP";
+  const b = yearOf(entry.end);
+  if (a && b) return a === b ? `${a}` : `${a} to ${b}`;
+  return b ? `to ${b}` : "";
+}
+
+// Where this seat's majority sits among all seats: "more marginal than X%".
+export function majorityStanding(seats, key) {
+  const all = Object.values(seats).map((s) => s.result?.majorityPct).filter((v) => typeof v === "number");
+  const mine = seats[key]?.result?.majorityPct;
+  if (typeof mine !== "number" || all.length === 0) return null;
+  const smaller = all.filter((v) => v < mine).length;
+  return { rankNarrowest: smaller + 1, of: all.length, moreMarginalThanPct: Math.round((all.filter((v) => v > mine).length / all.length) * 100) };
+}
+
+// Five-point bins of majority share, as the Numbers page draws them, plus
+// the bin a given seat falls in.
+export function majorityBins(seats, mine, step = 5, bins = 11) {
+  const counts = Array.from({ length: bins }, () => 0);
+  for (const s of Object.values(seats)) {
+    const v = s.result?.majorityPct;
+    if (typeof v === "number") counts[Math.min(bins - 1, Math.floor(v / step))] += 1;
+  }
+  return { counts, mineBin: typeof mine === "number" ? Math.min(bins - 1, Math.floor(mine / step)) : null, step };
+}
