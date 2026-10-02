@@ -3,13 +3,13 @@ import { COLORS, FONT_BODY, FONT_MONO } from "../theme";
 // One row of a horizontal bar chart: a label, a thin bar with a rounded
 // data end, and the value written beside it. `tick` draws a dashed marker
 // at that fraction of the track (the majority line on the seats chart).
-export default function BarRow({ label, color, fraction, valueText, detail, tick }) {
+export default function BarRow({ label, color, fraction, valueText, detail, tick, labelWidth = 170 }) {
   return (
     <div
       role="img"
       aria-label={`${label}: ${valueText}${detail ? `, ${detail}` : ""}`}
       title={`${label}: ${valueText}${detail ? ` (${detail})` : ""}`}
-      style={{ display: "grid", gridTemplateColumns: "minmax(110px, 170px) 1fr minmax(72px, auto)", alignItems: "center", gap: 12, padding: "5px 0" }}
+      style={{ display: "grid", gridTemplateColumns: `minmax(110px, ${labelWidth}px) 1fr minmax(72px, auto)`, alignItems: "center", gap: 12, padding: "5px 0" }}
     >
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{label}</div>
       <div style={{ position: "relative", height: 10, background: COLORS.paperCard, borderRadius: 4 }}>

@@ -52,6 +52,7 @@ const FollowTheMoney = lazy(() => import("./components/FollowTheMoney"));
 const WatchlistDigest = lazy(() => import("./components/WatchlistDigest"));
 const ParliamentNumbers = lazy(() => import("./components/ParliamentNumbers"));
 const AskedAbout = lazy(() => import("./components/AskedAbout"));
+const Constituency = lazy(() => import("./components/Constituency"));
 
 // A quiet authorship mark, not a feature — printed once so a copy of this
 // site with the byline stripped from the UI still carries proof of where
@@ -78,7 +79,7 @@ const VALID_VIEWS = new Set([
   "devolved", "tracker", "budget", "cabinet", "lords", "formerMps", "byElections", "petitions", "partymatch",
   "committees", "compare", "ministerialMeetings", "writtenQuestions", "standards", "rankings", "myMP",
   "mediaLiteracy", "methodology", "glossary", "settings", "privacy", "terms", "list",
-  "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist", "numbers", "topics",
+  "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist", "numbers", "topics", "constituency",
 ]);
 
 // The tab title, bookmark name and browser-history entry for every view —
@@ -99,9 +100,10 @@ Object.assign(PAGE_TITLES, {
   terms: "Terms & Conditions",
 });
 
-function titleForState(view, selected) {
+function titleForState(view, selected, param) {
   const base = "UK Parliament Tracker";
   if (selected) return `${selected.name} — ${base}`;
+  if (param) return `${param} — ${PAGE_TITLES[view] ?? base} — ${base}`;
   if (view === "home") return base;
   const label = PAGE_TITLES[view];
   return label ? `${label} — ${base}` : base;
@@ -116,21 +118,32 @@ function parseHash() {
   const raw = window.location.hash.replace(/^#\/?/, "");
   const segments = raw.split("/").filter(Boolean);
   if (segments[0] === "mp" && /^\d+$/.test(segments[1] ?? "")) {
-    return { view: "list", mpId: Number(segments[1]) };
+    return { view: "list", mpId: Number(segments[1]), param: null };
   }
   if (VALID_VIEWS.has(segments[0])) {
-    return { view: segments[0], mpId: null };
+    // A second segment is a page-specific parameter (the constituency
+    // page's seat name), URL-encoded; a malformed escape just means none.
+    let param;
+    try {
+      param = segments[1] ? decodeURIComponent(segments.slice(1).join("/")) : null;
+    } catch {
+      param = null;
+    }
+    return { view: segments[0], mpId: null, param };
   }
-  return { view: "home", mpId: null };
+  return { view: "home", mpId: null, param: null };
 }
 
-function hashForState(view, selected) {
+function hashForState(view, selected, param) {
   if (selected) return `#/mp/${selected.id}`;
+  if (param) return `#/${view}/${encodeURIComponent(param)}`;
   return view === "home" ? "#/" : `#/${view}`;
 }
 
 export default function App() {
   const [view, setView] = useState(() => parseHash().view);
+  // The page-specific part of the URL after the view name, if any.
+  const [viewParam, setViewParam] = useState(() => parseHash().param);
   const [selected, setSelected] = useState(null);
   const [mpCount, setMpCount] = useState(null);
 
@@ -183,11 +196,11 @@ export default function App() {
       return;
     }
     if (initialMpPending.current) return;
-    const nextHash = hashForState(view, selected);
+    const nextHash = hashForState(view, selected, viewParam);
     if (window.location.hash !== nextHash) {
       window.history.pushState(null, "", nextHash);
     }
-  }, [view, selected]);
+  }, [view, selected, viewParam]);
 
   // The tab title, and the name a bookmark or browser-history entry
   // actually gets, used to be the same generic "UK Parliament Tracker" on
@@ -198,8 +211,8 @@ export default function App() {
   // title itself, and what search engines that DO render JS index, follow
   // the actual page.
   useEffect(() => {
-    document.title = titleForState(view, selected);
-  }, [view, selected]);
+    document.title = titleForState(view, selected, viewParam);
+  }, [view, selected, viewParam]);
 
   // Re-sync app state whenever the URL changes from outside our own
   // pushState calls: "popstate" covers the browser's back/forward buttons,
@@ -214,12 +227,14 @@ export default function App() {
       const parsed = parseHash();
       if (parsed.mpId) {
         setSelected(null);
+        setViewParam(null);
         setView("list");
         supabase.from("politicians").select("*").eq("id", parsed.mpId).single().then(({ data }) => {
           if (data) setSelected(data);
         });
       } else {
         setSelected(null);
+        setViewParam(parsed.param);
         setView(parsed.view);
       }
     }
@@ -233,6 +248,7 @@ export default function App() {
 
   function handleNavigate(key) {
     setSelected(null);
+    setViewParam(null);
     setPendingMp(null);
     setPendingBill(null);
     setView(key);
@@ -241,12 +257,14 @@ export default function App() {
 
   function handleViewProfile(politician) {
     setSelected(politician);
+    setViewParam(null);
     setView("list");
     window.scrollTo(0, 0);
   }
 
   function handleNavigateForMp(key, politician) {
     setSelected(null);
+    setViewParam(null);
     setPendingMp(politician);
     setView(key);
     window.scrollTo(0, 0);
@@ -257,6 +275,7 @@ export default function App() {
   // target page: a bill clicked on the homepage's own list.
   function handleNavigateForBill(key, bill) {
     setSelected(null);
+    setViewParam(null);
     setPendingMp(null);
     setPendingBill(bill ?? null);
     setView(key);
@@ -312,6 +331,7 @@ export default function App() {
             {view === "watchlist" && <WatchlistDigest onSelectPolitician={handleViewProfile} />}
             {view === "numbers" && <ParliamentNumbers onNavigate={handleNavigate} />}
             {view === "topics" && <AskedAbout onSelectPolitician={handleViewProfile} />}
+            {view === "constituency" && <Constituency seat={viewParam} onSelectPolitician={handleViewProfile} />}
             {view === "methodology" && <Methodology onNavigate={handleNavigate} />}
             {view === "glossary" && <Glossary />}
             {view === "settings" && <Settings onNavigate={handleNavigate} />}

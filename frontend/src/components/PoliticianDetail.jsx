@@ -877,7 +877,15 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
             </div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontFamily: FONT_BODY, fontSize: 15, color: COLORS.inkSoft, marginTop: 5 }}>
               <span style={{ width: 9, height: 9, borderRadius: "50%", background: color, flexShrink: 0 }} />
-              {politician.party} · {politician.constituency}
+              {politician.party} ·{" "}
+              <button
+                type="button"
+                onClick={() => { window.location.hash = `#/constituency/${encodeURIComponent(politician.constituency)}`; }}
+                title="See how this constituency voted and what people there are petitioning for"
+                style={{ background: "none", border: "none", padding: 0, font: "inherit", color: "inherit", cursor: "pointer", textDecoration: "underline", textDecorationStyle: "dotted", textUnderlineOffset: 3 }}
+              >
+                {politician.constituency}
+              </button>
               {office && ` · MP for ${office}`}
             </div>
             {totalDeclaredValue > 0 && (

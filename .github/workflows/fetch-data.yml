@@ -1,4 +1,4 @@
-name: Fetch MP Financial Interests, Voting Records, Bills, Donor Sectors, News, Former MPs, On This Day, Today's Business, Party Finances, By-Elections, House of Lords Peers, MP Activity, IPSA Expenses, Petitions, Ministerial Gifts, Select Committees, Written Questions, and Standards Reports
+name: Fetch MP Financial Interests, Voting Records, Bills, Donor Sectors, News, Former MPs, On This Day, Today's Business, Party Finances, By-Elections, House of Lords Peers, MP Activity, IPSA Expenses, Petitions, Ministerial Gifts, Select Committees, Written Questions, Standards Reports, and Constituencies
 
 on:
   schedule:
@@ -204,6 +204,15 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-standards-reports.js
 
+      # No Supabase credentials needed: this one writes a JSON file into the
+      # repo (frontend/src/data/constituencies.json) rather than a table,
+      # committed by the last step below. ~650 requests for election results
+      # plus ~75 petition lookups — expect a few minutes.
+      - name: Run the constituencies fetch script
+        id: fetch_constituencies
+        continue-on-error: true
+        run: node fetch-constituencies.js
+
       # continue-on-error above means the workflow run itself can show green
       # even when several scripts above silently failed — nothing surfaced
       # that anywhere except by opening this run and reading every step by
@@ -233,6 +242,7 @@ jobs:
           STATUS_fetch_committees: ${{ steps.fetch_committees.outcome }}
           STATUS_fetch_written_questions: ${{ steps.fetch_written_questions.outcome }}
           STATUS_fetch_standards_reports: ${{ steps.fetch_standards_reports.outcome }}
+          STATUS_fetch_constituencies: ${{ steps.fetch_constituencies.outcome }}
         run: node report-pipeline-status.js
 
       # The scripts above write straight to Supabase, so the live site picks
@@ -251,6 +261,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json frontend/src/data/partyDonorSectors.json frontend/src/data/partyDonorSectorsMeta.json frontend/src/data/pipelineStatus.json
+          git add frontend/src/data/constituencies.json frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json frontend/src/data/partyDonorSectors.json frontend/src/data/partyDonorSectorsMeta.json frontend/src/data/pipelineStatus.json
           git diff --staged --quiet || git commit -m "chore: daily data refresh"
           git push
