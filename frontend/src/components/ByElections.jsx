@@ -4,6 +4,7 @@ import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { partyColour, formatDate } from "../lib/format";
 import { PageHeader } from "./shared";
+import { GlossaryTerm } from "./GlossaryTerm";
 import { IconByElection } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
 
@@ -77,7 +78,14 @@ export default function ByElections() {
         icon={IconByElection}
         kicker="Public Record · Elections"
         title="Elections"
-        subtitle="Seats that have changed hands outside a general election — a by-election is held whenever one falls vacant mid-Parliament, usually through a resignation, a death, or an expulsion — plus any seat currently sitting empty awaiting one. Often watched as an early signal of how the governing party is doing."
+        subtitle={
+          <>
+            Seats that have changed hands outside a <GlossaryTerm term="General Election">general election</GlossaryTerm> —
+            a <GlossaryTerm term="By-election">by-election</GlossaryTerm> is held whenever one falls vacant
+            mid-Parliament, usually through a resignation, a death, or an expulsion — plus any seat currently sitting
+            empty awaiting one. Often watched as an early signal of how the governing party is doing.
+          </>
+        }
       />
 
       {elections !== null && (completed.length > 0 || vacantSeats.length > 0) && (

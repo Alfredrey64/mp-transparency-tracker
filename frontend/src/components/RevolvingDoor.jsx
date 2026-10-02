@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader, InfoCard, WhyItMattersBand, FlowNode, FlowArrow } from "./shared";
+import { GlossaryTerm } from "./GlossaryTerm";
 import { IconDoor, IconCompare, IconGavel, IconShield, IconCabinet, IconBriefcase } from "./icons";
 
 // A literally revolving door between the same two roles the whole page is
@@ -148,8 +149,8 @@ export default function RevolvingDoor() {
           The Advisory Committee on Business Appointments (ACOBA) — the body that gave this advice for exactly 50
           years — was abolished on 13 October 2025. Its work has been split in two: applications from{" "}
           <strong style={{ color: COLORS.ink }}>former ministers</strong> now go to the Prime Minister's own
-          Independent Adviser on Ministerial Standards, while <strong style={{ color: COLORS.ink }}>former civil
-          servants and special advisers</strong> go through the Civil Service Commission. Former ACOBA staff moved
+          Independent Adviser on Ministerial Standards, while <strong style={{ color: COLORS.ink }}>former{" "}
+          <GlossaryTerm term="Civil Service">civil servants</GlossaryTerm> and special advisers</strong> go through the Civil Service Commission. Former ACOBA staff moved
           across to keep the process running.
         </p>
         <p style={{ marginBottom: 0 }}>

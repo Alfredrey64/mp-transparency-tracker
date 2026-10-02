@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
 import { PageHeader, InfoCard, WhyItMattersBand, ScaleComparison } from "./shared";
+import { GlossaryTerm } from "./GlossaryTerm";
 import { formatDate } from "../lib/format";
 import { IconRegister, IconGroup, IconShield, IconGavel, IconSearch } from "./icons";
 import LOBBYISTS from "../data/consultantLobbyists.json";
@@ -207,7 +208,7 @@ export default function LobbyingRegister() {
 
       <ScaleComparison bars={VISIBILITY_BARS} />
 
-      <InfoCard title="What 'lobbying' actually means" color="#5A7FA6" icon={IconGroup} index={0}>
+      <InfoCard title={<>What '<GlossaryTerm term="Lobbying">lobbying</GlossaryTerm>' actually means</>} color="#5A7FA6" icon={IconGroup} index={0}>
         <p style={{ marginTop: 0 }}>
           Lobbying just means trying to persuade someone in government to make a particular decision — support a
           bill, change a regulation, award a contract. It isn't inherently improper: charities, trade unions,
@@ -241,7 +242,7 @@ export default function LobbyingRegister() {
           than the consultancies that actually appear on this register.
         </p>
         <p style={{ marginBottom: 0 }}>
-          This isn't a settled question: a private member's bill, the Lobbying Transparency (In-house Lobbyists)
+          This isn't a settled question: a <GlossaryTerm term="Private Member's Bill">private member's bill</GlossaryTerm>, the Lobbying Transparency (In-house Lobbyists)
           Bill, was introduced in the House of Lords in 2026 specifically to close this gap. The government has so
           far resisted widening the register to cover it.
         </p>

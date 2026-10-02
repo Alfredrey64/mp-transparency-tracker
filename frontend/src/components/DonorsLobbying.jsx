@@ -5,6 +5,7 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { getDonorSector, sectorColor, normalizeDonorKey, donorSectorMetadata } from "../lib/donorSectors";
 import { partyColour, formatDate } from "../lib/format";
 import { PageHeader } from "./shared";
+import { GlossaryTerm } from "./GlossaryTerm";
 import { IconInfluence } from "./icons";
 import { CompanyDonorsView } from "./CompanyDonorsView";
 import { withScrollPreserved } from "../lib/preserveScroll";
@@ -541,7 +542,7 @@ function EducationSection() {
           </Bullet>
         </EducationCard>
 
-        <EducationCard title="What is lobbying?">
+        <EducationCard title={<>What is <GlossaryTerm term="Lobbying">lobbying</GlossaryTerm>?</>}>
           <Bullet>
             <strong style={{ color: COLORS.ink }}>In-house</strong> — a company's own "public affairs" staff
             contact MPs and ministers directly.

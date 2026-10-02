@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
 import { withScrollPreserved } from "../lib/preserveScroll";
+import { GlossaryTerm } from "./GlossaryTerm";
 
 // Sourced from Full Fact's independent, non-partisan Government Tracker
 // (fullfact.org/government-tracker), which assesses Labour's 2024 manifesto
@@ -389,7 +390,7 @@ export default function PromiseTracker() {
         </div>
       </div>
       <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 18, marginBottom: 0, lineHeight: 1.65, maxWidth: 780 }}>
-        As the sitting government, Labour's manifesto pledges are the only ones that can be checked against real
+        As the sitting government, Labour's <GlossaryTerm term="Manifesto">manifesto</GlossaryTerm> pledges are the only ones that can be checked against real
         outcomes rather than promises. We don't make these calls ourselves — every status here comes from{" "}
         <a href={SOURCE_URL} target="_blank" rel="noreferrer" style={{ color: LABOUR_RED, fontWeight: 600 }}>
           Full Fact's independent, non-partisan Government Tracker ↗

@@ -5,6 +5,7 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../the
 import { formatDate, partyColour } from "../lib/format";
 import { categoriseBill } from "../lib/bills";
 import { PageHeader, LoadFailedNote } from "./shared";
+import { GlossaryTerm } from "./GlossaryTerm";
 import { BillJourney } from "./BillJourney";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { IconVote, IconBills } from "./icons";
@@ -556,7 +557,13 @@ export default function VotingRecords({ initialMp = null, initialBill = null }) 
       <PageHeader
         icon={IconVote}
         title="How They Voted"
-        subtitle="Every bill going through Parliament and every recorded Commons vote, in one place — look up an MP's history, or a bill's full detail and how MPs voted on it."
+        subtitle={
+          <>
+            Every <GlossaryTerm term="Bill">bill</GlossaryTerm> going through Parliament and every recorded Commons{" "}
+            <GlossaryTerm term="Division">vote</GlossaryTerm>, in one place — look up an MP's history, or a bill's
+            full detail and how MPs voted on it.
+          </>
+        }
       />
 
       <div

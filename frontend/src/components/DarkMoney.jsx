@@ -1,5 +1,6 @@
 import { FONT_DISPLAY, FONT_BODY, PAGE_PADDING, COLORS } from "../theme";
 import { PageHeader, InfoCard, WhyItMattersBand, FlowNode, FlowArrow } from "./shared";
+import { GlossaryTerm } from "./GlossaryTerm";
 import { IconDarkMoney, IconShield, IconHistory, IconGlobe, IconSearch, IconGroup, IconQuestion, IconPartyFinance } from "./icons";
 
 // The core mechanism of the whole page, drawn rather than listed: money
@@ -130,9 +131,9 @@ export default function DarkMoney() {
         </div>
       </div>
 
-      <InfoCard title="A real case: the DUP's £435,000 Brexit referendum campaign" color="#6E4B6E" icon={IconHistory} index={2}>
+      <InfoCard title={<>A real case: the DUP's £435,000 <GlossaryTerm term="Brexit">Brexit</GlossaryTerm> referendum campaign</>} color="#6E4B6E" icon={IconHistory} index={2}>
         <p style={{ marginTop: 0 }}>
-          In the run-up to the 2016 EU referendum, a previously unknown group called the{" "}
+          In the run-up to the 2016 EU <GlossaryTerm term="Referendum">referendum</GlossaryTerm>, a previously unknown group called the{" "}
           <strong style={{ color: COLORS.ink }}>Constitutional Research Council</strong> — chaired by Richard Cook,
           a former vice-chair of the Scottish Conservatives — donated £435,000 to the Democratic Unionist Party.
           Around £425,000 of it was spent on Vote Leave campaigning in England, including a £282,000 four-page

@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader, InfoCard, WhyItMattersBand, FlowNode, FlowArrow } from "./shared";
+import { GlossaryTerm } from "./GlossaryTerm";
 import { IconThinkTank, IconShield, IconSearch, IconBroadcast, IconQuestion } from "./icons";
 
 // The full chain the page is about, not just its two endpoints: money
@@ -129,7 +130,14 @@ export default function ThinkTankFunding() {
         icon={IconThinkTank}
         kicker="Public Record · Transparency Gaps"
         title="Who funds the think tanks you hear from?"
-        subtitle="Think tank staff appear on the news as independent experts every day — but UK law puts no obligation on any of them to say who pays for their research. This page shows what an independent transparency project has actually found when it asked, across the political spectrum."
+        subtitle={
+          <>
+            <GlossaryTerm term="Think Tank">Think tank</GlossaryTerm> staff appear on the news as independent
+            experts every day — but UK law puts no obligation on any of them to say who pays for their research.
+            This page shows what an independent transparency project has actually found when it asked, across the
+            political spectrum.
+          </>
+        }
         maxWidth={900}
       />
 

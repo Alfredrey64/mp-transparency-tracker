@@ -12,6 +12,7 @@ import { manifestoSectionToBillCategory } from "../lib/manifestoBillMapping";
 import { getBillDescription } from "../lib/billDescriptions";
 import { isWatched, toggleWatch } from "../lib/watchlist";
 import { withScrollPreserved } from "../lib/preserveScroll";
+import { GlossaryTerm } from "./GlossaryTerm";
 import { IconStar, IconCoin, IconMeeting, IconGlobe, IconHome, IconEconomy, IconBriefcase, IconQuestion, IconGroup } from "./icons";
 import {
   SectionDivider,
@@ -390,7 +391,7 @@ function CurrentRolesBox({ interests }) {
 // The "Claims" tab: a compact IPSA summary (this year vs last, by category)
 // followed by every itemised claim behind it, so it's clear not just how
 // much was claimed but what it was actually for.
-function ClaimsTabContent({ politician, claims, onNavigate }) {
+function ClaimsTabContent({ politician, claims }) {
   const summary = politician.ipsa_expenses;
 
   if (!summary) {
@@ -427,19 +428,9 @@ function ClaimsTabContent({ politician, claims, onNavigate }) {
           </div>
         )}
         <div style={{ marginTop: 10, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5 }}>
-          Business costs (staffing, travel, accommodation, office running costs) claimed through IPSA, the
-          Independent Parliamentary Standards Authority{onNavigate && (
-            <>
-              {" "}(
-              <button
-                onClick={() => withScrollPreserved(() => onNavigate("glossary"))}
-                style={{ background: "none", border: "none", padding: 0, font: "inherit", color: "inherit", textDecoration: "underline", cursor: "pointer" }}
-              >
-                see Glossary
-              </button>
-              )
-            </>
-          )} — separate from their salary and from the donations shown under the Donations tab.{" "}
+          Business costs (staffing, travel, accommodation, office running costs) claimed through{" "}
+          <GlossaryTerm term="IPSA">IPSA, the Independent Parliamentary Standards Authority</GlossaryTerm> — separate
+          from their salary and from the donations shown under the Donations tab.{" "}
           <a
             href="https://www.theipsa.org.uk/mp-staffing-business-costs/your-mp"
             target="_blank"
@@ -630,7 +621,7 @@ function ManifestoTabContent({ politician }) {
     <div>
       <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.accent}`, borderRadius: 12, padding: 16, marginBottom: 14 }}>
         <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, lineHeight: 1.55 }}>
-          {manifesto.shortName}'s {manifesto.manifestoYear} manifesto, <em>{manifesto.manifestoTitle}</em> — summarised
+          {manifesto.shortName}'s {manifesto.manifestoYear} <GlossaryTerm term="Manifesto">manifesto</GlossaryTerm>, <em>{manifesto.manifestoTitle}</em> — summarised
           independently rather than reproduced (manifestos are copyrighted) — matched below against{" "}
           {politician.name.split(" ").slice(-1)[0]}'s actual Commons votes in the same policy area. Votes are matched
           by title against official divisions, which can occasionally miss one or pick up an unrelated vote with a
@@ -940,7 +931,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
 
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {activeTab === "claims" ? (
-                <ClaimsTabContent politician={politician} claims={claims} onNavigate={onNavigate} />
+                <ClaimsTabContent politician={politician} claims={claims} />
               ) : activeTab === "gifts" ? (
                 <GiftsTabContent gifts={gifts} failed={giftsFailed} />
               ) : activeTab === "manifesto" ? (

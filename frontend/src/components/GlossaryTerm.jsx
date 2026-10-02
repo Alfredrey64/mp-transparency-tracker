@@ -90,8 +90,8 @@ export function GlossaryTerm({ term, children }) {
         aria-expanded={open}
         style={{
           background: "none", border: "none", padding: 0, margin: 0, font: "inherit", color: "inherit",
-          cursor: supportsHover ? "help" : "pointer", display: "inline",
-          borderBottom: "1px dotted currentColor", textUnderlineOffset: 2,
+          cursor: supportsHover ? "help" : "pointer", display: "inline", lineHeight: 1,
+          borderBottom: "1px dotted currentColor",
         }}
       >
         {children}

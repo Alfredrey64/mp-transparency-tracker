@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
 import { PageHeader, CommonsBadge, FlowNode, FlowArrow } from "./shared";
+import { GlossaryTerm } from "./GlossaryTerm";
 import CommonsChamber from "./CommonsChamber";
 import { IconVote, IconLords } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
@@ -280,7 +281,7 @@ function WeekSplitDiagram() {
         ))}
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginTop: 6 }}>
-        A rough, illustrative split for a sitting week — recess, committee travel, and individual MPs' patterns all vary a lot.
+        A rough, illustrative split for a sitting week — <GlossaryTerm term="Recess">recess</GlossaryTerm>, committee travel, and individual MPs' patterns all vary a lot.
       </div>
     </div>
   );
@@ -591,7 +592,13 @@ export default function HowParliamentWorks() {
     <div style={{ padding: PAGE_PADDING }}>
       <PageHeader
         title="How Parliament Works"
-        subtitle="Expand any stage below for a clear explanation — from who's actually in charge, to how a bill becomes law, to how your own MP ends up in Parliament in the first place."
+        subtitle={
+          <>
+            Expand any stage below for a clear explanation — from who's actually in charge, to how a{" "}
+            <GlossaryTerm term="Bill">bill</GlossaryTerm> becomes law, to how your own MP ends up in Parliament in
+            the first place.
+          </>
+        }
         maxWidth={900}
       />
 

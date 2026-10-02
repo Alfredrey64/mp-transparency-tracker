@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader, LoadFailedNote } from "./shared";
 import { formatDate, partyColour, stripHtml } from "../lib/format";
 import { IconQuestion, IconSearch } from "./icons";
@@ -117,6 +117,47 @@ function Avatar({ url, name, color, size = 34 }) {
   );
 }
 
+// Full question/answer text can now run to several paragraphs (the API's
+// list endpoint used to hard-truncate both fields around 255 chars, which
+// is why this wasn't needed before — see fetch-written-questions.js for
+// the fix that fetches the untruncated text). Clamping to a few lines by
+// default, with a toggle that only appears when the text actually overflows
+// that clamp, keeps short questions compact while still showing long ones
+// in full on request.
+function ExpandableText({ children, clampLines, style }) {
+  const [expanded, setExpanded] = useState(false);
+  const [overflows, setOverflows] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    setOverflows(el.scrollHeight - el.clientHeight > 1);
+  }, [children]);
+
+  return (
+    <div>
+      <div
+        ref={ref}
+        style={{
+          ...style,
+          ...(expanded ? {} : { display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: clampLines, overflow: "hidden" }),
+        }}
+      >
+        {children}
+      </div>
+      {overflows && (
+        <button
+          onClick={() => setExpanded((e) => !e)}
+          style={{ marginTop: 6, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.accent }}
+        >
+          {expanded ? "Show less" : "Show more"}
+        </button>
+      )}
+    </div>
+  );
+}
+
 function QuestionCard({ q, politicianById, onSelectPolitician, index }) {
   const color = partyColour(q.asking_member_party_colour, COLORS.inkSoft);
   const answered = Boolean(q.date_answered);
@@ -162,16 +203,16 @@ function QuestionCard({ q, politicianById, onSelectPolitician, index }) {
         </span>
       </div>
 
-      <div style={{ fontFamily: FONT_MONO, fontSize: 11, fontWeight: 600, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.02em", marginTop: 4, marginBottom: 13 }}>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: COLORS.inkSoft, marginTop: 4, marginBottom: 13 }}>
         To {q.answering_body_name ?? "the government"}{q.heading ? ` · ${q.heading}` : ""}
       </div>
-      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, color: COLORS.ink, lineHeight: 1.5, marginBottom: answered ? 10 : 0 }}>
-        {q.question_text}
-      </div>
+      <ExpandableText clampLines={4} style={{ fontFamily: FONT_DISPLAY, fontSize: 15, color: COLORS.ink, lineHeight: 1.5, marginBottom: answered ? 10 : 0 }}>
+        {stripHtml(q.question_text)}
+      </ExpandableText>
       {answered && q.answer_text && (
-        <div style={{ background: COLORS.paper, borderRadius: 10, padding: "10px 14px", fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.6 }}>
+        <ExpandableText clampLines={5} style={{ background: COLORS.paper, borderRadius: 10, padding: "10px 14px", fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.6 }}>
           {stripHtml(q.answer_text)}
-        </div>
+        </ExpandableText>
       )}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 10 }}>
         <span style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft }}>

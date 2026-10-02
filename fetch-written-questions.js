@@ -36,15 +36,27 @@ function withTimeout(promise, ms) {
   ]);
 }
 
+// 429s need a much longer cooldown than a one-off network blip — the first
+// enrichment run (fetching per-question detail for ~5,000 questions) hit
+// sustained rate-limiting at attempt counts/backoff tuned for transient
+// errors, and silently kept the old truncated text for every question that
+// never got a successful retry. More attempts and a backoff that actually
+// backs off on a 429 specifically (rather than treating it like any other
+// failure) fixes that.
 async function getJson(url) {
-  for (let attempt = 1; attempt <= 3; attempt++) {
+  const maxAttempts = 6;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
       const res = await withTimeout(fetch(url, { headers: { Accept: "application/json" } }), REQUEST_TIMEOUT_MS);
-      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+      if (!res.ok) {
+        const err = new Error(`${res.status} ${res.statusText}`);
+        err.status = res.status;
+        throw err;
+      }
       return await res.json();
     } catch (err) {
-      if (attempt === 3) throw err;
-      await sleep(1500 * attempt);
+      if (attempt === maxAttempts) throw err;
+      await sleep(err.status === 429 ? 4000 * attempt : 1500 * attempt);
     }
   }
 }
@@ -65,13 +77,58 @@ async function fetchAllQuestions(fromStr) {
   return all;
 }
 
+// The list endpoint above silently hard-truncates questionText at 255 chars
+// and answerText at 258 — no ellipsis or flag, it just stops mid-word. The
+// single-question endpoint (/questions/{id}) returns the untruncated text,
+// so every question needs a second request to get the real content. A
+// small worker pool keeps this from taking forever across ~5,000+ questions
+// while staying polite to the API (no large burst of parallel requests).
+const DETAIL_CONCURRENCY = 3;
+
+async function fetchFullText(id) {
+  const data = await getJson(`${API}/${id}`);
+  return data.value;
+}
+
+async function withFullText(questions) {
+  const enriched = new Array(questions.length);
+  let next = 0;
+  let done = 0;
+  let failed = 0;
+
+  async function worker() {
+    while (true) {
+      const i = next++;
+      if (i >= questions.length) return;
+      const q = questions[i];
+      try {
+        const full = await fetchFullText(q.id);
+        enriched[i] = { ...q, questionText: full.questionText, answerText: full.answerText };
+      } catch (err) {
+        failed++;
+        console.error(`  ⚠ Couldn't fetch full text for question ${q.id}, keeping the truncated version: ${err.message}`);
+        enriched[i] = q;
+      }
+      done++;
+      if (done % 500 === 0) console.log(`  fetched full text for ${done} of ${questions.length} questions (${failed} failed so far)...`);
+      await sleep(80);
+    }
+  }
+
+  console.log(`Fetching full question/answer text for ${questions.length} questions...`);
+  await Promise.all(Array.from({ length: DETAIL_CONCURRENCY }, worker));
+  console.log(`Finished fetching full text: ${questions.length - failed} succeeded, ${failed} kept their truncated version.`);
+  return enriched;
+}
+
 async function main() {
   const from = new Date(Date.now() - WINDOW_DAYS * 24 * 60 * 60 * 1000);
   const fromStr = from.toISOString().slice(0, 10);
 
   console.log(`Fetching written questions tabled since ${fromStr}...`);
-  const questions = await fetchAllQuestions(fromStr);
-  console.log(`Found ${questions.length} written questions.`);
+  const listed = await fetchAllQuestions(fromStr);
+  console.log(`Found ${listed.length} written questions.`);
+  const questions = await withFullText(listed);
 
   console.log("Loading current MPs to link askers where possible...");
   const { data: politicians } = await supabase.from("politicians").select("id, parliament_member_id");

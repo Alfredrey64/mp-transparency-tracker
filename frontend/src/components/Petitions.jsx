@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader, LoadFailedNote } from "./shared";
+import { GlossaryTerm } from "./GlossaryTerm";
 import { IconPetition } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
 
@@ -158,7 +159,7 @@ export default function Petitions() {
           marginTop: 24, marginBottom: 22, fontFamily: FONT_BODY, fontSize: 13, lineHeight: 1.6, color: COLORS.inkSoft,
         }}
       >
-        Any UK citizen or resident can create or sign a petition to Parliament. At <strong style={{ color: COLORS.ink }}>10,000 signatures</strong>,
+        Any UK citizen or resident can create or sign a <GlossaryTerm term="Petition">petition</GlossaryTerm> to Parliament. At <strong style={{ color: COLORS.ink }}>10,000 signatures</strong>,
         the government must respond in writing; at <strong style={{ color: COLORS.ink }}>100,000</strong>, it's considered for a
         Commons debate — though a debate isn't guaranteed, and neither a response nor a debate changes the law by itself. Petitions run
         for six months from opening, and each one is moderated before publication.

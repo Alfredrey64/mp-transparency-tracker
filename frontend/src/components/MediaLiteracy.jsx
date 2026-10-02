@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
+import { GlossaryTerm } from "./GlossaryTerm";
 import { IconBroadcast, IconBook } from "./icons";
 
 function InfoCard({ title, color, children, index = 0 }) {
@@ -589,7 +590,7 @@ export default function MediaLiteracy() {
       <InfoCard title="Reading any outlet critically" color="#9C6B30" index={3}>
         <ul style={{ margin: 0, paddingLeft: 20 }}>
           <li style={{ marginBottom: 8 }}>Separate news reporting from opinion/comment sections — outlets label these differently, and the impartiality rules above apply far more strictly to the former.</li>
-          <li style={{ marginBottom: 8 }}>Check who's speaking, not just what's said — a guest's job title or affiliation (a think tank, a trade body, a party) tells you their starting position.</li>
+          <li style={{ marginBottom: 8 }}>Check who's speaking, not just what's said — a guest's job title or affiliation (a <GlossaryTerm term="Think Tank">think tank</GlossaryTerm>, a trade body, a party) tells you their starting position.</li>
           <li style={{ marginBottom: 8 }}>A single outlet's framing of a story is one angle — cross-checking a second, differently-owned outlet is the cheapest way to spot what's been left out.</li>
           <li>For anything on this site specifically — donations, votes, interests — you don't need to trust anyone's framing at all: every figure links to the original official document.</li>
         </ul>

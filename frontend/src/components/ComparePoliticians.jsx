@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
+import { GlossaryTerm } from "./GlossaryTerm";
 import { partyColour, formatDate } from "../lib/format";
 import { getDonorSector, sectorColor } from "../lib/donorSectors";
 import { IconCompare, IconSearch, IconCoin, IconVote } from "./icons";
@@ -472,7 +473,7 @@ export default function ComparePoliticians() {
               }))}
             />
             <MoneyMetricGroup
-              title="IPSA business costs claimed"
+              title={<><GlossaryTerm term="IPSA">IPSA</GlossaryTerm> business costs claimed</>}
               description="Staffing, travel, accommodation and office running costs claimed through IPSA — separate from personal donations, in the most recent reported year for each MP."
               rows={selected.map((p, i) => ({
                 name: p.name, color: colorFor(p, i), value: p.ipsa_expenses?.total ?? 0,
