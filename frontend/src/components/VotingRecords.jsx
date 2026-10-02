@@ -6,6 +6,7 @@ import { formatDate, partyColour } from "../lib/format";
 import { categoriseBill } from "../lib/bills";
 import { PageHeader, LoadFailedNote } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
+import VoteExplainer from "./VoteExplainer";
 import { BillJourney } from "./BillJourney";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { IconVote, IconBills } from "./icons";
@@ -239,7 +240,8 @@ function DivisionCard({ division }) {
   return (
     <div style={{ border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: "14px 16px", background: COLORS.paper }}>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink, lineHeight: 1.4, marginBottom: 8 }}>{division.title}</div>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 6 }}>{formatDate(division.date)}</div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 8 }}>{formatDate(division.date)}</div>
+      <VoteExplainer title={division.title} />
 
       <div style={{ display: "flex", height: 9, borderRadius: 999, overflow: "hidden", marginBottom: 6 }}>
         <div style={{ width: `${ayePct}%`, background: "#2F6F4E" }} />

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import { motion } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
 import { supabase } from "../supabaseClient";
@@ -7,6 +7,10 @@ import { matchBillForVote } from "../lib/bills";
 import { getBillDescription } from "../lib/billDescriptions";
 import { SECTION_ACCENT_BY_ICON } from "../data/sidebarSections";
 import { withScrollPreserved } from "../lib/preserveScroll";
+// Lazy: this file is part of the bundle every page load pays for, and the
+// explainer (a table of division-title patterns) is only needed once an MP's
+// profile is open.
+const VoteExplainer = lazy(() => import("./VoteExplainer"));
 
 // An annotated passage, not a dashboard tile: a left margin rule in the
 // page's own accent colour and a soft tint of that same colour, open on
@@ -626,6 +630,9 @@ export function VotingSummaryBox({ politician, onNavigate }) {
                   {description}
                 </div>
               )}
+              <Suspense fallback={null}>
+                <VoteExplainer title={v.title} votedAye={v.voted_aye} inline />
+              </Suspense>
               <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", marginTop: 4 }}>
                 <span
                   style={{
