@@ -213,6 +213,14 @@ jobs:
         continue-on-error: true
         run: node fetch-constituencies.js
 
+      # Former MPs grouped by the last seat they held, for the Constituency
+      # page's History tab (~90 requests). Reads constituencies.json, so it
+      # has to run after the step above.
+      - name: Run the constituency history fetch script
+        id: fetch_constituency_history
+        continue-on-error: true
+        run: node fetch-constituency-history.js
+
       # continue-on-error above means the workflow run itself can show green
       # even when several scripts above silently failed — nothing surfaced
       # that anywhere except by opening this run and reading every step by
@@ -243,6 +251,7 @@ jobs:
           STATUS_fetch_written_questions: ${{ steps.fetch_written_questions.outcome }}
           STATUS_fetch_standards_reports: ${{ steps.fetch_standards_reports.outcome }}
           STATUS_fetch_constituencies: ${{ steps.fetch_constituencies.outcome }}
+          STATUS_fetch_constituency_history: ${{ steps.fetch_constituency_history.outcome }}
         run: node report-pipeline-status.js
 
       # The scripts above write straight to Supabase, so the live site picks
@@ -261,6 +270,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add frontend/src/data/constituencies.json frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json frontend/src/data/partyDonorSectors.json frontend/src/data/partyDonorSectorsMeta.json frontend/src/data/pipelineStatus.json
+          git add frontend/src/data/constituencies.json frontend/src/data/constituencySummary.json frontend/src/data/constituencyHistory.json frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json frontend/src/data/partyDonorSectors.json frontend/src/data/partyDonorSectorsMeta.json frontend/src/data/pipelineStatus.json
           git diff --staged --quiet || git commit -m "chore: daily data refresh"
           git push

@@ -16,6 +16,14 @@ export function sanitiseTopicQuery(raw) {
 
 export const MIN_TOPIC_LENGTH = 3;
 
+// Who a question belongs to: the member id where there is one, else the name.
+export const askerKey = (row) => row.asking_member_id ?? row.asking_member_name;
+
+// The questions one asker put on the topic, newest first.
+export function questionsBy(rows, key) {
+  return rows.filter((r) => r.asking_member_name && askerKey(r) === key).sort((a, b) => String(b.date_tabled ?? "").localeCompare(String(a.date_tabled ?? "")));
+}
+
 function tally(rows, keyOf, make) {
   const map = new Map();
   for (const row of rows) {
@@ -35,8 +43,8 @@ export function summariseQuestions(rows, { recentLimit = 8, topLimit = 10 } = {}
   const asked = rows.filter((r) => r.asking_member_name);
   const people = tally(
     asked,
-    (r) => r.asking_member_id ?? r.asking_member_name,
-    (r) => ({ name: r.asking_member_name, party: r.asking_member_party ?? null, colour: r.asking_member_party_colour ?? null, politicianId: r.politician_id ?? null, house: r.house ?? null })
+    askerKey,
+    (r) => ({ key: askerKey(r), name: r.asking_member_name, party: r.asking_member_party ?? null, colour: r.asking_member_party_colour ?? null, politicianId: r.politician_id ?? null, house: r.house ?? null, thumbnail: r.asking_member_thumbnail_url ?? null })
   );
   const parties = tally(
     asked.filter((r) => r.asking_member_party),

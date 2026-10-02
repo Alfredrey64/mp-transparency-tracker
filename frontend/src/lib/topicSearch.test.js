@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { sanitiseTopicQuery, summariseQuestions } from "./topicSearch";
+import { sanitiseTopicQuery, summariseQuestions, questionsBy, askerKey } from "./topicSearch";
 
 describe("sanitiseTopicQuery", () => {
   it("strips characters that mean something in a filter string", () => {
@@ -40,5 +40,24 @@ describe("summariseQuestions", () => {
   });
   it("copes with nothing", () => {
     expect(summariseQuestions([])).toMatchObject({ total: 0, askers: 0, people: [], parties: [] });
+  });
+});
+
+describe("questionsBy", () => {
+  const rows = [
+    q({ id: 1, date_tabled: "2026-09-01" }), q({ id: 2, date_tabled: "2026-09-09" }),
+    q({ id: 3, asking_member_id: 2, asking_member_name: "B" }), q({ id: 4, asking_member_id: null, asking_member_name: null }),
+  ];
+  it("returns one asker's questions, newest first", () => {
+    expect(questionsBy(rows, 1).map((r) => r.id)).toEqual([2, 1]);
+    expect(questionsBy(rows, 2).map((r) => r.id)).toEqual([3]);
+  });
+  it("falls back to the name when there is no member id, and ignores anonymous questions", () => {
+    expect(askerKey({ asking_member_id: null, asking_member_name: "Lord X" })).toBe("Lord X");
+    expect(questionsBy(rows, undefined)).toEqual([]);
+  });
+  it("gives each person in the summary a key and a thumbnail", () => {
+    const s = summariseQuestions([q({ asking_member_thumbnail_url: "http://img" })]);
+    expect(s.people[0]).toMatchObject({ key: 1, thumbnail: "http://img" });
   });
 });

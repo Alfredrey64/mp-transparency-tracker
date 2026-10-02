@@ -6,7 +6,8 @@
 //    majority, turnout, electorate, and the top few candidates.
 // 2. Fetches the most-signed open petitions, and for each the number of
 //    signatures from every constituency.
-// 3. Writes the lot to frontend/src/data/constituencies.json, which the
+// 3. Writes the lot to frontend/src/data/constituencies.json (plus a small
+//    national summary in constituencySummary.json), which the
 //    Constituency page loads on demand. A file in the repo rather than a
 //    database table: it changes slowly, is read in one go, and needs no
 //    schema. The daily workflow commits it, and that commit redeploys.
@@ -17,9 +18,10 @@
 // Run it with: node fetch-constituencies.js
 
 import { readFileSync, writeFileSync, existsSync } from "fs";
-import { buildResult, indexPetitions, normaliseConstituencyName } from "./constituencyData.js";
+import { buildResult, indexPetitions, normaliseConstituencyName, summariseConstituencies } from "./constituencyData.js";
 
 const OUTPUT = "frontend/src/data/constituencies.json";
+const SUMMARY_OUTPUT = "frontend/src/data/constituencySummary.json";
 const MIN_SEATS = 600;
 const PAGE_SIZE = 20; // the Members API ignores a larger `take`
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -129,6 +131,10 @@ async function main() {
   }
 
   writeFileSync(OUTPUT, JSON.stringify({ generatedAt: new Date().toISOString(), constituencies: seats }) + "\n");
+  // A small national roll-up (majority histogram, narrowest and biggest
+  // seats, turnout) so the Parliament in Numbers page doesn't have to load
+  // every seat just to draw it.
+  writeFileSync(SUMMARY_OUTPUT, JSON.stringify({ generatedAt: new Date().toISOString(), ...summariseConstituencies(seats) }) + "\n");
   console.log(`\nDone. Wrote ${count} constituencies (${failed} used older data).`);
 }
 

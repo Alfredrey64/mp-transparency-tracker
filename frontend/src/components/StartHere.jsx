@@ -3,6 +3,7 @@ import { supabase } from "../supabaseClient";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING } from "../theme";
 import { partyColour } from "../lib/format";
 import { searchSeats } from "../lib/constituency";
+import { readRememberedSeat, rememberSeat, forgetSeat } from "../lib/rememberedMp";
 import { PageHeader } from "./shared";
 import { IconRoute, IconSearch } from "./icons";
 
@@ -53,7 +54,9 @@ const body = { fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.65, color: C
 export default function StartHere({ onNavigate, onNavigateForMp, onViewProfile }) {
   const [seats, setSeats] = useState(null);
   const [query, setQuery] = useState("");
-  const [picked, setPicked] = useState(null);
+  // Restored from the browser, so returning from a bill, a vote or a profile
+  // keeps the MP chosen earlier instead of starting over.
+  const [picked, setPicked] = useState(() => readRememberedSeat());
   const [mp, setMp] = useState(null);
   const [mpFailed, setMpFailed] = useState(false);
 
@@ -63,14 +66,39 @@ export default function StartHere({ onNavigate, onNavigateForMp, onViewProfile }
 
   const matches = useMemo(() => (seats ? searchSeats(seats, query, 6) : []), [seats, query]);
 
-  async function pick(seat) {
+  // The full MP record behind the remembered or chosen seat.
+  const memberId = picked?.mp?.memberId;
+  useEffect(() => {
+    if (memberId == null) return;
+    let cancelled = false;
+    supabase
+      .from("politicians")
+      .select("*")
+      .eq("parliament_member_id", memberId)
+      .single()
+      .then(({ data }) => {
+        if (cancelled) return;
+        setMp(data ?? null);
+        setMpFailed(!data);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [memberId]);
+
+  function pick(seat) {
+    rememberSeat(seat);
     setPicked(seat);
     setQuery("");
     setMp(null);
     setMpFailed(false);
-    const { data } = await supabase.from("politicians").select("*").eq("parliament_member_id", seat.mp.memberId).single();
-    if (data) setMp(data);
-    else setMpFailed(true);
+  }
+
+  function change() {
+    forgetSeat();
+    setPicked(null);
+    setMp(null);
+    setMpFailed(false);
   }
 
   const name = picked?.mp?.name;
@@ -135,7 +163,7 @@ export default function StartHere({ onNavigate, onNavigateForMp, onViewProfile }
               </span>
               <button
                 type="button"
-                onClick={() => { setPicked(null); setMp(null); }}
+                onClick={change}
                 style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: ACCENT }}
               >
                 Change

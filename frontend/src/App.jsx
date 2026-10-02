@@ -331,7 +331,7 @@ export default function App() {
             {view === "followTheMoney" && <FollowTheMoney onSelectPolitician={handleViewProfile} />}
             {view === "watchlist" && <WatchlistDigest onSelectPolitician={handleViewProfile} />}
             {view === "numbers" && <ParliamentNumbers onNavigate={handleNavigate} />}
-            {view === "topics" && <AskedAbout onSelectPolitician={handleViewProfile} />}
+            {view === "topics" && <AskedAbout onSelectPolitician={handleViewProfile} onNavigateForMp={handleNavigateForMp} />}
             {view === "start" && <StartHere onNavigate={handleNavigate} onNavigateForMp={handleNavigateForMp} onViewProfile={handleViewProfile} />}
             {view === "constituency" && <Constituency seat={viewParam} onSelectPolitician={handleViewProfile} />}
             {view === "methodology" && <Methodology onNavigate={handleNavigate} />}

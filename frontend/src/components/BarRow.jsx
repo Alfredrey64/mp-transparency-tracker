@@ -1,24 +1,34 @@
-import { COLORS, FONT_BODY, FONT_MONO } from "../theme";
+import { motion, useReducedMotion } from "framer-motion";
+import { COLORS, FONT_BODY, numeric } from "../theme";
 
 // One row of a horizontal bar chart: a label, a thin bar with a rounded
-// data end, and the value written beside it. `tick` draws a dashed marker
-// at that fraction of the track (the majority line on the seats chart).
-export default function BarRow({ label, color, fraction, valueText, detail, tick, labelWidth = 170 }) {
+// data end that grows in when it scrolls into view, and the value set in the
+// numeric typeface beside it. `tick` draws a dashed marker at that fraction
+// of the track (the majority line on the seats chart).
+export default function BarRow({ label, color, fraction, valueText, detail, tick, labelWidth = 170, delay = 0 }) {
+  const reduce = useReducedMotion();
+  const width = `${Math.max(0, Math.min(1, fraction)) * 100}%`;
   return (
     <div
       role="img"
       aria-label={`${label}: ${valueText}${detail ? `, ${detail}` : ""}`}
       title={`${label}: ${valueText}${detail ? ` (${detail})` : ""}`}
-      style={{ display: "grid", gridTemplateColumns: `minmax(110px, ${labelWidth}px) 1fr minmax(72px, auto)`, alignItems: "center", gap: 12, padding: "5px 0" }}
+      style={{ display: "grid", gridTemplateColumns: `minmax(110px, ${labelWidth}px) 1fr minmax(84px, auto)`, alignItems: "center", gap: 12, padding: "5px 0" }}
     >
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{label}</div>
       <div style={{ position: "relative", height: 10, background: COLORS.paperCard, borderRadius: 4 }}>
-        <div style={{ width: `${Math.max(0, Math.min(1, fraction)) * 100}%`, minWidth: fraction > 0 ? 3 : 0, height: "100%", background: color, borderRadius: "0 4px 4px 0" }} />
+        <motion.div
+          initial={reduce ? false : { width: 0 }}
+          whileInView={{ width }}
+          viewport={{ once: true, margin: "-20px" }}
+          transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
+          style={{ minWidth: fraction > 0 ? 3 : 0, height: "100%", background: color, borderRadius: "0 4px 4px 0" }}
+        />
         {tick != null && <div style={{ position: "absolute", left: `${tick * 100}%`, top: -4, bottom: -4, borderLeft: `1.5px dashed ${COLORS.inkSoft}`, opacity: 0.7 }} />}
       </div>
-      <div style={{ fontFamily: FONT_MONO, fontSize: 12, color: COLORS.ink, textAlign: "right", whiteSpace: "nowrap" }}>
+      <div style={{ ...numeric, fontSize: 14, fontWeight: 600, color: COLORS.ink, textAlign: "right", whiteSpace: "nowrap" }}>
         {valueText}
-        {detail && <span style={{ color: COLORS.inkSoft }}> · {detail}</span>}
+        {detail && <span style={{ color: COLORS.inkSoft, fontWeight: 500, fontSize: 12.5 }}> · {detail}</span>}
       </div>
     </div>
   );

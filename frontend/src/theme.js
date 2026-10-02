@@ -44,5 +44,12 @@ export const COLORS = {
 export const FONT_DISPLAY = "'Space Grotesk', system-ui, sans-serif";
 export const FONT_BODY = "'Archivo', system-ui, sans-serif";
 export const FONT_MONO = "'IBM Plex Mono', monospace";
+// For figures that are the point of a page — percentages, counts, majorities.
+// Fraunces is a soft, high-contrast serif with distinctive numerals, which
+// sets them apart from the grotesque headings and body text around them.
+// Always used with lining, tabular figures (see numeric below) so columns of
+// numbers line up and a "1" doesn't shrink into the text.
+export const FONT_NUMERIC = "'Fraunces', Georgia, serif";
+export const numeric = { fontFamily: FONT_NUMERIC, fontVariantNumeric: "lining-nums tabular-nums", fontFeatureSettings: "'lnum' 1, 'tnum' 1" };
 
 export const PAGE_PADDING = "clamp(20px, 5vw, 40px) clamp(16px, 5vw, 40px) 60px";

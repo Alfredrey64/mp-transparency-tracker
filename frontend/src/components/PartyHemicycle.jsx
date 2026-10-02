@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, numeric } from "../theme";
 import { partyColour } from "../lib/format";
 
 // A real chamber seating chart, not a bar or donut standing in for one —
@@ -131,7 +131,7 @@ export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Ind
           >
             <span style={{ width: 8, height: 8, borderRadius: "50%", background: p.color, flexShrink: 0 }} />
             <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink }}>{p.name}</span>
-            <span style={{ fontFamily: FONT_MONO, fontSize: 12, color: COLORS.inkSoft }}>{p.count}</span>
+            <span style={{ ...numeric, fontSize: 13, fontWeight: 600, color: COLORS.inkSoft }}>{p.count}</span>
           </button>
         ))}
       </div>

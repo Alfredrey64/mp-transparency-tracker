@@ -173,3 +173,19 @@ select:focus-visible,
   border-bottom: none !important;
   cursor: inherit !important;
 }
+
+/* Parliament in Numbers: the women-in-the-Commons dots pop in row by row once
+   the chart scrolls into view (the delay per row is set inline). */
+@keyframes waffleIn {
+  from { opacity: 0; transform: scale(0.3); }
+  to { opacity: 1; transform: scale(1); }
+}
+.waffle-dot { animation: waffleIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .waffle-dot { animation: none; }
+}
+
+/* Rows in the "who has asked the most" list: a soft highlight so it reads as
+   something you can open. */
+.asker-row { transition: background 0.15s; }
+.asker-row:hover, .asker-row:focus-visible { background: color-mix(in srgb, var(--c-ink) 6%, transparent); }
