@@ -3,7 +3,7 @@ import {
   IconGlossary, IconHistory, IconDevolved, IconFormerMP, IconBudget, IconCabinet, IconTimeline,
   IconPartyFinance, IconByElection, IconLords, IconPetition, IconCompass, IconCommittee, IconCompare, IconMeeting,
   IconQuestion, IconGavel, IconRankings, IconDarkMoney, IconThinkTank, IconDoor, IconRegister,
-  IconSearch, IconBook, IconChartBars,
+  IconSearch, IconBook, IconChartBars, IconTopic,
 } from "../components/icons";
 
 // Lives outside both Sidebar.jsx and shared.jsx specifically so neither has
@@ -106,6 +106,7 @@ export const SECTIONS = [
     items: [
       { key: "voting", label: "Voting Records & Bills", icon: IconVote },
       { key: "writtenQuestions", label: "Written Questions", icon: IconQuestion },
+      { key: "topics", label: "Who's Asking About…", icon: IconTopic },
       { key: "standards", label: "Standards & Sanctions", icon: IconGavel },
       { key: "appg", label: "APPG Memberships", icon: IconGroup },
       { key: "compare", label: "Compare MPs", icon: IconCompare },
