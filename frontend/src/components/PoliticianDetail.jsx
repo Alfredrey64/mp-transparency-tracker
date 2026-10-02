@@ -15,6 +15,7 @@ import { withScrollPreserved } from "../lib/preserveScroll";
 import { GlossaryTerm } from "./GlossaryTerm";
 import MpSummary from "./MpSummary";
 import DownloadCsvButton from "./DownloadCsvButton";
+import { explainDivision } from "../lib/divisionExplainer";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { interestColumns, voteColumns } from "../lib/exportColumns";
 import { IconStar, IconCoin, IconMeeting, IconGlobe, IconHome, IconEconomy, IconBriefcase, IconQuestion, IconGroup } from "./icons";
@@ -523,9 +524,7 @@ function ManifestoSectionCard({ section }) {
                 )}
                 <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
                   {bill.votes.map((v, i) => {
-                    const stageLabel = v.title.startsWith(bill.short_title)
-                      ? v.title.slice(bill.short_title.length).replace(/^:?\s*/, "")
-                      : v.title;
+                    const stageLabel = explainDivision(v.title)?.label ?? v.title;
                     return (
                       <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", paddingLeft: 10 }}>
                         <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>

@@ -73,3 +73,24 @@ describe("explainDivision — real Commons division titles", () => {
     expect(kind("  Health   Bill:   Third   Reading ")).toBe("third-reading");
   });
 });
+
+describe("friendly names", () => {
+  const h = (title) => explainDivision(title).headline;
+  it("replaces procedural labels with what the vote was", () => {
+    expect(h("Health Bill: Report Stage: New Clause 142")).toBe("Health Bill: Proposed new section (clause 142) · Report Stage");
+    expect(h("Public Office (Accountability) Bill Report Stage: Amendment 19")).toBe("Public Office (Accountability) Bill: Proposed change (amendment 19) · Report Stage");
+    expect(h("Terminally Ill Adults (End of Life) Bill: Second Reading")).toBe("Terminally Ill Adults (End of Life) Bill: Second Reading: should the bill go ahead?");
+    expect(h("Representation of the People Bill: Third Reading")).toBe("Representation of the People Bill: Final Commons vote on the bill");
+    expect(h("National Security (State Threats) Bill: motion to agree to Lords Amendment 1")).toBe("National Security (State Threats) Bill: Lords' change to the bill (amendment 1)");
+    expect(h("Taxation (Energy and Vehicles) Bill Committee: New Clause 4")).toContain("Proposed new section (clause 4) · Committee Stage");
+  });
+  it("names non-bill votes plainly", () => {
+    expect(h("Closure motion")).toBe("Vote to end a debate");
+    expect(h("Opposition Day: Early release of prisoners")).toBe("Opposition Day debate: Early release of prisoners");
+    expect(h("Draft Carbon Budget Order 2026")).toBe("New rules: Carbon Budget Order");
+  });
+  it("keeps the official title available and falls back to it when unrecognised", () => {
+    expect(explainDivision("Health Bill: Third Reading").title).toBe("Health Bill: Third Reading");
+    expect(h("Something completely unrecognised")).toBe("Something completely unrecognised");
+  });
+});

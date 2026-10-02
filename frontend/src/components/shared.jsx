@@ -11,6 +11,7 @@ import { withScrollPreserved } from "../lib/preserveScroll";
 // explainer (a table of division-title patterns) is only needed once an MP's
 // profile is open.
 const VoteExplainer = lazy(() => import("./VoteExplainer"));
+const VoteTitle = lazy(() => import("./VoteTitle"));
 
 // An annotated passage, not a dashboard tile: a left margin rule in the
 // page's own accent colour and a soft tint of that same colour, open on
@@ -624,7 +625,11 @@ export function VotingSummaryBox({ politician, onNavigate }) {
                 borderBottom: i < votes.length - 1 ? `1px solid ${COLORS.hairline}` : "none",
               }}
             >
-              <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.4 }}>{v.title}</div>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: COLORS.ink, lineHeight: 1.4 }}>
+                <Suspense fallback={v.title}>
+                  <VoteTitle title={v.title} />
+                </Suspense>
+              </div>
               {description && (
                 <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5, marginTop: 3 }}>
                   {description}

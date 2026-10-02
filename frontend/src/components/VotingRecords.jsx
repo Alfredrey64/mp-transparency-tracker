@@ -7,6 +7,8 @@ import { categoriseBill } from "../lib/bills";
 import { PageHeader, LoadFailedNote } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import VoteExplainer from "./VoteExplainer";
+import VoteHistory from "./VoteHistory";
+import { explainDivision } from "../lib/divisionExplainer";
 import { BillJourney } from "./BillJourney";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { IconVote, IconBills } from "./icons";
@@ -239,7 +241,8 @@ function DivisionCard({ division }) {
 
   return (
     <div style={{ border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: "14px 16px", background: COLORS.paper }}>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink, lineHeight: 1.4, marginBottom: 8 }}>{division.title}</div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 600, color: COLORS.ink, lineHeight: 1.4, marginBottom: 3 }}>{explainDivision(division.title)?.label ?? division.title}</div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginBottom: 6 }}>Official title: {division.title}</div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 8 }}>{formatDate(division.date)}</div>
       <VoteExplainer title={division.title} />
 
@@ -389,7 +392,7 @@ function VoteGroup({ label, color, members, note }) {
   );
 }
 
-function MpVotingHistory({ politician, onBack }) {
+function MpVotingHistory({ politician, bills, onBack }) {
   const [votes, setVotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
@@ -457,48 +460,7 @@ function MpVotingHistory({ politician, onBack }) {
         </div>
       )}
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        {votes.map((v) => (
-          <div
-            key={v.id}
-            style={{
-              background: COLORS.paperCard,
-              border: `1px solid ${COLORS.hairline}`,
-              borderLeft: `3px solid ${hasPartyMajorityConcept && v.voted_with_party_majority === false ? "#9C3B3B" : "transparent"}`,
-              borderRadius: 12,
-              padding: 14,
-            }}
-          >
-            <div style={{ fontFamily: FONT_BODY, fontSize: 15, color: COLORS.ink, marginBottom: 6 }}>{v.title}</div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-              <span
-                style={{
-                  fontFamily: FONT_MONO, fontSize: 11, fontWeight: 700, textTransform: "uppercase",
-                  padding: "3px 9px", borderRadius: 999,
-                  background: v.voted_aye ? "#E4EEE7" : "#F3E4E2",
-                  color: v.voted_aye ? "#2F6F4E" : "#9C3B3B",
-                }}
-              >
-                {v.voted_aye ? "Aye" : "No"}
-              </span>
-              {hasPartyMajorityConcept && v.voted_with_party_majority !== null && (
-                <span
-                  style={{
-                    fontFamily: FONT_BODY, fontSize: 12, fontWeight: v.voted_with_party_majority === false ? 700 : 400,
-                    color: v.voted_with_party_majority === false ? "#9C3B3B" : COLORS.inkSoft,
-                  }}
-                >
-                  {v.voted_with_party_majority ? "With party majority" : "Against party majority"}
-                </span>
-              )}
-              <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>{formatDate(v.date)}</span>
-              <a href={v.source_url} target="_blank" rel="noreferrer" style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>
-                source ↗
-              </a>
-            </div>
-          </div>
-        ))}
-      </div>
+      {!loading && !failed && votes.length > 0 && <VoteHistory votes={votes} bills={bills} hasPartyMajorityConcept={hasPartyMajorityConcept} />}
     </div>
   );
 }
@@ -549,7 +511,7 @@ export default function VotingRecords({ initialMp = null, initialBill = null }) 
   if (selectedMp) {
     return (
       <div style={{ padding: PAGE_PADDING, maxWidth: 800, margin: "0 auto" }}>
-        <MpVotingHistory politician={selectedMp} onBack={() => setSelectedMp(null)} />
+        <MpVotingHistory politician={selectedMp} bills={bills} onBack={() => setSelectedMp(null)} />
       </div>
     );
   }

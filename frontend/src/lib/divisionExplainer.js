@@ -33,7 +33,7 @@ function billVote(billName, billPart, rest) {
   const where = stage ? ` ${STAGE_TEXT[stage]}` : "";
   const fromLords = /\[lords\]/i.test(billName);
   const name = billName.replace(/\s*\[Lords\]/i, "");
-  const subject = { billName: name, fromLords };
+  const subject = { billName: name, fromLords, stage };
 
   if (/reasoned amendment/.test(r)) {
     return result(
@@ -69,7 +69,7 @@ function billVote(billName, billPart, rest) {
       `The House of Lords changed the ${name}, and the Commons voted on whether to accept ${n ? `Lords Amendment ${n}` : "that change"}. If the two Houses disagree, the bill goes back and forth between them.`,
       "Accepted the Lords' change.",
       "Rejected the Lords' change and sent it back.",
-      subject
+      { ...subject, number: n ?? null }
     );
   }
   const clause = r.match(/new clause\s*(\d+\w*)/);
@@ -79,7 +79,7 @@ function billVote(billName, billPart, rest) {
       `A vote on adding a new section (New Clause ${clause[1]}) to the ${name}${where}. The title doesn't say what the clause does — the bill's own page on bills.parliament.uk does.`,
       "In favour of adding it.",
       "Against adding it.",
-      subject
+      { ...subject, number: clause[1] }
     );
   }
   const schedule = r.match(/new schedule\s*(\d+\w*)/);
@@ -89,7 +89,7 @@ function billVote(billName, billPart, rest) {
       `A vote on adding a new schedule (a detailed annex, New Schedule ${schedule[1]}) to the ${name}${where}.`,
       "In favour of adding it.",
       "Against adding it.",
-      subject
+      { ...subject, number: schedule[1] }
     );
   }
   const amendment = r.match(/amendment\s*(\d+\w*)/);
@@ -99,7 +99,7 @@ function billVote(billName, billPart, rest) {
       `A vote on a proposed change (Amendment ${amendment[1]}) to the ${name}${where}. The title doesn't say what the change is — the bill's own page does.`,
       "In favour of making the change.",
       "Against making the change.",
-      subject
+      { ...subject, number: amendment[1] }
     );
   }
   if (/programme motion/.test(r)) {
@@ -129,7 +129,7 @@ function billVote(billName, billPart, rest) {
   );
 }
 
-export function explainDivision(rawTitle) {
+function classify(rawTitle) {
   const title = clean(rawTitle);
   if (!title) return null;
   const t = lower(title);
@@ -235,4 +235,44 @@ export function explainDivision(rawTitle) {
 export function describeVote(explanation, votedAye) {
   if (!explanation || votedAye == null) return null;
   return votedAye ? explanation.ayeMeans : explanation.noMeans;
+}
+
+const STAGE_NAME = { report: "Report Stage", committee: "Committee Stage" };
+
+// A short, approachable name for the vote — what it was, not its procedural
+// label. "Proposed new section (clause 142) · Report Stage" instead of
+// "Report Stage: New Clause 142".
+function labelFor(e, title) {
+  const n = e.number ? ` (${{ "new-clause": "clause", "new-schedule": "schedule", amendment: "amendment", "lords-amendment": "amendment" }[e.kind] ?? "no."} ${e.number})` : "";
+  const stage = e.stage ? ` · ${STAGE_NAME[e.stage]}` : "";
+  switch (e.kind) {
+    case "second-reading": return "Second Reading: should the bill go ahead?";
+    case "reasoned-amendment": return "Attempt to block the bill at Second Reading";
+    case "third-reading": return "Final Commons vote on the bill";
+    case "lords-amendment": return `Lords' change to the bill${n}`;
+    case "new-clause": return `Proposed new section${n}${stage}`;
+    case "new-schedule": return `Proposed new annex${n}${stage}`;
+    case "amendment": return `Proposed change${n}${stage}`;
+    case "programme": return "Timetable for debating the bill";
+    case "money-resolution": return "Authorising the bill's spending";
+    case "bill-other": return e.stage ? `Vote at ${STAGE_NAME[e.stage]}` : "Vote on the bill";
+    case "closure": return "Vote to end a debate";
+    case "opposition-day": return e.topic ? `Opposition Day debate: ${e.topic}` : "Opposition Day debate";
+    case "statutory-instrument": return e.subject ? `New rules: ${e.subject}` : "New rules (secondary legislation)";
+    case "draft-code": return "Official code of practice";
+    case "business": return "How the House organises its time";
+    case "estimates": return "A department's spending plans";
+    case "private-sitting": return "Vote to sit in private";
+    case "adjournment": return "Vote to adjourn";
+    case "humble-address": return "Formal request to the King";
+    default: return title;
+  }
+}
+
+export function explainDivision(rawTitle) {
+  const e = classify(rawTitle);
+  if (!e) return null;
+  const title = clean(rawTitle);
+  const label = labelFor(e, title);
+  return { ...e, title, label, headline: e.billName ? `${e.billName}: ${label}` : label };
 }
