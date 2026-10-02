@@ -103,3 +103,10 @@ export function initials(name) {
   const last = parts.length > 1 ? parts[parts.length - 1][0] : "";
   return (first + last).toUpperCase();
 }
+
+// IPSA's financial years arrive as "26_27" (April 2026 to March 2027).
+// Shown as "2026/27", the way they're written everywhere else.
+export function financialYearLabel(raw) {
+  const m = String(raw ?? "").match(/^(\d{2})_(\d{2})$/);
+  return m ? `20${m[1]}/${m[2]}` : String(raw ?? "");
+}

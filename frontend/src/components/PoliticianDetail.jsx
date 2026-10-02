@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
-import { partyColour, timeInOffice, shortCategory, formatDate, initials, ONGOING_ROLE_CATEGORIES, stripTrailingAmount } from "../lib/format";
+import { partyColour, timeInOffice, shortCategory, formatDate, initials, ONGOING_ROLE_CATEGORIES, stripTrailingAmount, financialYearLabel } from "../lib/format";
 import { getDonorSector, sectorColor } from "../lib/donorSectors";
 import { sectorToBillCategory } from "../lib/sectorBillMapping";
 import { sectorToCommittee } from "../lib/sectorCommitteeMapping";
@@ -13,6 +13,7 @@ import { getBillDescription } from "../lib/billDescriptions";
 import { isWatched, toggleWatch } from "../lib/watchlist";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { GlossaryTerm } from "./GlossaryTerm";
+import MpSummary from "./MpSummary";
 import { IconStar, IconCoin, IconMeeting, IconGlobe, IconHome, IconEconomy, IconBriefcase, IconQuestion, IconGroup } from "./icons";
 import {
   SectionDivider,
@@ -410,12 +411,12 @@ function ClaimsTabContent({ politician, claims }) {
             £{summary.total.toLocaleString(undefined, { maximumFractionDigits: 0 })}
           </span>
           <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>
-            claimed in {summary.year.replace("_", "/20")}
+            claimed in {financialYearLabel(summary.year)}
           </span>
         </div>
         {summary.previousYear && (
           <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 10 }}>
-            vs £{summary.previousYear.total.toLocaleString(undefined, { maximumFractionDigits: 0 })} in {summary.previousYear.year.replace("_", "/20")}
+            vs £{summary.previousYear.total.toLocaleString(undefined, { maximumFractionDigits: 0 })} in {financialYearLabel(summary.previousYear.year)}
           </div>
         )}
         {summary.byCategory?.length > 0 && (
@@ -444,7 +445,7 @@ function ClaimsTabContent({ politician, claims }) {
 
       {claims.length === 0 ? (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, textAlign: "center", padding: "20px 0" }}>
-          No itemised claims recorded for {summary.year.replace("_", "/20")} yet.
+          No itemised claims recorded for {financialYearLabel(summary.year)} yet.
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -890,6 +891,15 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
             <SectionDivider />
           </div>
         </div>
+
+        <MpSummary
+          politician={politician}
+          interests={interests}
+          interestsLoading={loading}
+          interestsFailed={interestsFailed}
+          gifts={gifts}
+          committees={myCommittees}
+        />
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24, paddingTop: 24, alignItems: "start" }}>
           {/* ---- Left column: financial interests ---- */}

@@ -1,5 +1,6 @@
 /** @jsxImportSource react */
-import { useState, useEffect, useLayoutEffect, useRef, useMemo, useContext } from "react";
+import { useState, useEffect, useLayoutEffect, useRef, useMemo, useContext, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { COLORS, FONT_BODY } from "../theme";
 import { findGlossaryEntry } from "../data/glossaryTerms";
@@ -38,18 +39,15 @@ function useSupportsHover() {
 // or broken tooltip.
 export function GlossaryTerm({ term, children }) {
   const [open, setOpen] = useState(false);
-  // The popover's `left`, in pixels relative to the anchor span (its
-  // positioned ancestor) — computed fresh on every open from the anchor's
-  // and popover's actual measured widths, clamped so it never runs off
-  // either edge of the viewport. Expressed as a plain `left` rather than
-  // framer-motion's usual centring trick (left: 50% + transform) because
-  // motion.div fully owns the `transform` property for its own y/scale
-  // animation here and silently drops a hand-written transform string
-  // passed alongside it — confirmed by inspecting the rendered style
-  // directly, not assumed.
-  const [leftPx, setLeftPx] = useState(0);
+  // Where the popover sits, in viewport coordinates. It's rendered into
+  // document.body rather than next to the term, because anywhere inside the
+  // page it can be clipped by an ancestor with overflow: hidden/auto (cards,
+  // clamped text boxes, scroll areas) or hidden behind a later sibling's
+  // stacking context — a fixed-position box at the top level is neither.
+  const [pos, setPos] = useState({ left: 0, top: 0, above: false });
   const supportsHover = useSupportsHover();
   const ref = useRef(null);
+  const buttonRef = useRef(null);
   const popoverRef = useRef(null);
   const entry = useMemo(() => findGlossaryEntry(term), [term]);
   const blocked = useContext(GlossBlockedContext);
@@ -63,21 +61,44 @@ export function GlossaryTerm({ term, children }) {
     return () => document.removeEventListener("click", handleOutside);
   }, [open]);
 
-  // Layout effect, not a plain effect: runs synchronously before the
-  // browser paints, so the popover's first visible frame is already at
-  // its corrected position instead of flashing at left:0 for one frame.
-  useLayoutEffect(() => {
-    if (!open || !popoverRef.current || !ref.current) return;
+  // Measured from the term's own line boxes, not its bounding box: a term
+  // that wraps onto two lines has a bounding box covering both and the empty
+  // space beside them, so below/above must be judged from the last/first line.
+  // Flips above when the text beneath it wouldn't fit the popover, centres on
+  // the term, and is clamped so it can't cross either edge of the screen.
+  const place = useCallback(() => {
+    const button = buttonRef.current;
+    const popover = popoverRef.current;
+    if (!button || !popover) return;
+    const rects = button.getClientRects();
+    if (!rects.length) return;
     const margin = 12;
-    const anchorRect = ref.current.getBoundingClientRect();
-    const popoverWidth = popoverRef.current.offsetWidth;
-    let left = (anchorRect.width - popoverWidth) / 2;
-    const absoluteLeft = anchorRect.left + left;
-    const absoluteRight = absoluteLeft + popoverWidth;
-    if (absoluteRight > window.innerWidth - margin) left -= absoluteRight - (window.innerWidth - margin);
-    else if (absoluteLeft < margin) left += margin - absoluteLeft;
-    setLeftPx(left);
-  }, [open]);
+    const gap = 8;
+    const width = popover.offsetWidth;
+    const height = popover.offsetHeight;
+    const first = rects[0];
+    const last = rects[rects.length - 1];
+    const roomBelow = window.innerHeight - last.bottom - gap - margin;
+    const roomAbove = first.top - gap - margin;
+    const above = height > roomBelow && roomAbove > roomBelow;
+    const anchor = above ? first : last;
+    const left = Math.max(margin, Math.min(anchor.left + anchor.width / 2 - width / 2, window.innerWidth - margin - width));
+    const top = Math.max(margin, above ? anchor.top - gap - height : anchor.bottom + gap);
+    setPos((p) => (p.left === left && p.top === top && p.above === above ? p : { left, top, above }));
+  }, []);
+
+  // Layout effect, not a plain effect: runs before the browser paints, so the
+  // first visible frame is already at the right place.
+  useLayoutEffect(() => {
+    if (!open) return;
+    place();
+    window.addEventListener("scroll", place, true);
+    window.addEventListener("resize", place);
+    return () => {
+      window.removeEventListener("scroll", place, true);
+      window.removeEventListener("resize", place);
+    };
+  }, [open, place]);
 
   // No entry, or sitting inside a link/button where a nested button is
   // invalid: just the plain text.
@@ -86,6 +107,7 @@ export function GlossaryTerm({ term, children }) {
   return (
     <span ref={ref} data-gloss-term={entry.term} style={{ position: "relative", display: "inline" }}>
       <button
+        ref={buttonRef}
         type="button"
         onClick={(e) => { e.stopPropagation(); setOpen(true); }}
         onMouseEnter={supportsHover ? () => setOpen(true) : undefined}
@@ -101,36 +123,39 @@ export function GlossaryTerm({ term, children }) {
       >
         {children}
       </button>
-      {/* motion.span, not motion.div: GlossaryTerm gets used inline inside
-          a <p> (PageHeader's subtitle, among others), and a <div> is flow
-          content — invalid as a descendant of <p> under the HTML spec, so
-          browsers silently closed the <p> early and warned about it.
-          <span> is phrasing content, valid anywhere this is, and
-          display: block below makes it box-lay-out identically. */}
-      <AnimatePresence>
-        {open && (
-          <motion.span
-            ref={popoverRef}
-            initial={{ opacity: 0, y: 4, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 4, scale: 0.98 }}
-            transition={{ duration: 0.15 }}
-            style={{
-              position: "absolute", zIndex: 60, top: "calc(100% + 8px)", left: leftPx,
-              display: "block", width: "max-content", maxWidth: "min(280px, 80vw)",
-              background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 10,
-              padding: "10px 13px", boxShadow: "0 10px 28px rgba(0,0,0,0.3)", textAlign: "left",
-            }}
-          >
-            <span style={{ display: "block", fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12, color: COLORS.ink, marginBottom: 3 }}>
-              {entry.term}
-            </span>
-            <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, lineHeight: 1.5 }}>
-              {entry.def}
-            </span>
-          </motion.span>
-        )}
-      </AnimatePresence>
+      {/* motion.span, not motion.div: the popover can still end up inside a
+          <p> in React's tree (portals keep their React parent for events and
+          context), and a <span> is the safe choice anywhere. pointer-events:
+          none so it never intercepts a tap meant for the text beneath it. */}
+      {createPortal(
+        <AnimatePresence>
+          {open && (
+            <motion.span
+              ref={popoverRef}
+              role="tooltip"
+              initial={{ opacity: 0, y: pos.above ? -4 : 4, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: pos.above ? -4 : 4, scale: 0.98 }}
+              transition={{ duration: 0.15 }}
+              style={{
+                position: "fixed", zIndex: 2000, top: pos.top, left: pos.left, pointerEvents: "none",
+                display: "block", width: "max-content", maxWidth: "min(300px, calc(100vw - 24px))",
+                maxHeight: "calc(100vh - 24px)", overflowY: "auto",
+                background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 10,
+                padding: "10px 13px", boxShadow: "0 10px 28px rgba(0,0,0,0.3)", textAlign: "left",
+              }}
+            >
+              <span style={{ display: "block", fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12, color: COLORS.ink, marginBottom: 3 }}>
+                {entry.term}
+              </span>
+              <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, lineHeight: 1.5 }}>
+                {entry.def}
+              </span>
+            </motion.span>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </span>
   );
 }
