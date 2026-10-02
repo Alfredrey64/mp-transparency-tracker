@@ -1,7 +1,9 @@
-import { useState, useEffect, useLayoutEffect, useRef, useMemo } from "react";
+/** @jsxImportSource react */
+import { useState, useEffect, useLayoutEffect, useRef, useMemo, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { COLORS, FONT_BODY } from "../theme";
 import { findGlossaryEntry } from "../data/glossaryTerms";
+import { GlossBlockedContext } from "../glossJsx/blockContext";
 
 // Kept out of shared.jsx deliberately — shared.jsx is eagerly bundled
 // (Home and Sidebar, the two pages that load before any code-splitting
@@ -50,6 +52,7 @@ export function GlossaryTerm({ term, children }) {
   const ref = useRef(null);
   const popoverRef = useRef(null);
   const entry = useMemo(() => findGlossaryEntry(term), [term]);
+  const blocked = useContext(GlossBlockedContext);
 
   useEffect(() => {
     if (!open) return;
@@ -76,10 +79,12 @@ export function GlossaryTerm({ term, children }) {
     setLeftPx(left);
   }, [open]);
 
-  if (!entry) return children;
+  // No entry, or sitting inside a link/button where a nested button is
+  // invalid: just the plain text.
+  if (!entry || blocked) return children;
 
   return (
-    <span ref={ref} style={{ position: "relative", display: "inline" }}>
+    <span ref={ref} data-gloss-term={entry.term} style={{ position: "relative", display: "inline" }}>
       <button
         type="button"
         onClick={(e) => { e.stopPropagation(); setOpen(true); }}

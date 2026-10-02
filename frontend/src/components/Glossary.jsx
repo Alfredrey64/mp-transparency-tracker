@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";

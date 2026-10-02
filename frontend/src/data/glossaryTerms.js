@@ -1,3 +1,5 @@
+import { EXTRA_PROCEDURE_TERMS, EXTRA_POLITICS_TERMS, TERM_OVERRIDES } from "./glossaryExtraTerms.js";
+
 // Plain-English definitions of terms used throughout this site and in UK
 // political reporting generally — written independently, not copied from any
 // single source. Kept deliberately short; where a fuller picture matters
@@ -8,7 +10,7 @@
 // Shared (not just used by the Glossary page itself) so that GlossaryTerm
 // (see shared.jsx) can look up a definition for the inline hover/tap
 // glossary popovers used elsewhere on the site.
-export const PROCEDURE_TERMS = [
+const BASE_PROCEDURE_TERMS = [
   { term: "Act of Parliament", def: "A bill that has completed every stage in both Houses and received Royal Assent — it's now law.", example: "The National Insurance Contributions (Reduction in Rates) Act 2024." },
   { term: "Adjournment Debate", def: "A short debate at the end of the Commons day letting a backbench MP raise a local or specific issue and get a direct response from a minister." },
   { term: "All-Party Parliamentary Group (APPG)", def: "An informal, cross-party group of MPs and peers sharing an interest in a particular topic, country, or cause. Not an official arm of Parliament, and often supported by outside organisations.", example: "See the APPG Memberships tab for who belongs to which." },
@@ -99,7 +101,7 @@ export const PROCEDURE_TERMS = [
 // across this site and in general UK political coverage — distinct from the
 // procedural terms above, which are specifically about how Parliament itself
 // operates.
-export const POLITICS_TERMS = [
+const BASE_POLITICS_TERMS = [
   { term: "Austerity", def: "A government policy of cutting public spending and/or raising taxes to reduce a budget deficit — most associated in the UK with the 2010s coalition and Conservative governments.", example: "Chancellor George Osborne's spending cuts from 2010 onward." },
   { term: "Blue Wall", def: "Traditionally safe Conservative-voting seats, largely in southern England, a number of which fell to the Liberal Democrats and Labour in the 2024 general election." },
   { term: "Boundary Review", def: "A periodic redrawing of constituency boundaries by an independent commission, intended to keep the number of voters in each seat roughly equal as populations shift." },
@@ -196,23 +198,34 @@ export const POLITICS_TERMS = [
   { term: "Youthquake", def: "A significant political or cultural shift attributed to the actions or turnout of young people.", example: "Widely used to describe youth turnout in the 2017 general election, though the scale of that effect was later disputed by researchers." },
 ];
 
-// Every term keyed by its own lowercased text, plus — for a term like "IPSA
-// (Independent Parliamentary Standards Authority)" — also keyed by just
-// "ipsa" and just "independent parliamentary standards authority", so a
-// GlossaryTerm elsewhere on the site can reference it by whichever form
-// reads naturally in that sentence, without hand-maintaining a separate
-// alias list in sync with the definitions themselves.
+const applyOverrides = (t) => (TERM_OVERRIDES[t.term] ? { ...t, ...TERM_OVERRIDES[t.term] } : t);
+const byTerm = (a, b) => a.term.localeCompare(b.term, "en", { sensitivity: "base" });
+
+export const PROCEDURE_TERMS = [...BASE_PROCEDURE_TERMS, ...EXTRA_PROCEDURE_TERMS].map(applyOverrides).sort(byTerm);
+export const POLITICS_TERMS = [...BASE_POLITICS_TERMS, ...EXTRA_POLITICS_TERMS].map(applyOverrides).sort(byTerm);
+
+// Every spelling that should resolve to an entry: its own full term, the
+// text before and inside a trailing parenthetical (so "IPSA (Independent
+// Parliamentary Standards Authority)" answers to both halves), each side of
+// a "/" or " vs. " pair, plus any hand-listed aliases. Apostrophes are
+// normalised so a curly ’ in page copy still finds a straight ' key.
+export const normaliseKey = (k) => k.trim().toLowerCase().replace(/[’‘]/g, "'").replace(/\s+/g, " ");
+
+export function keysFor(entry) {
+  const keys = [entry.term];
+  const paren = entry.term.match(/^(.+?)\s*\(([^)]+)\)$/);
+  if (paren) keys.push(paren[1].trim(), paren[2].trim());
+  for (const k of [...keys]) {
+    if (/ \/ | vs\. /.test(k)) keys.push(...k.split(/ \/ | vs\. /).map((x) => x.trim()));
+  }
+  keys.push(...(entry.aliases ?? []));
+  return [...new Set(keys.filter(Boolean))];
+}
+
 function buildIndex() {
   const index = new Map();
   for (const entry of [...PROCEDURE_TERMS, ...POLITICS_TERMS]) {
-    const keys = [entry.term];
-    const parenMatch = entry.term.match(/^(.+?)\s*\(([^)]+)\)$/);
-    if (parenMatch) {
-      keys.push(parenMatch[1].trim(), parenMatch[2].trim());
-    }
-    for (const key of keys) {
-      index.set(key.toLowerCase(), entry);
-    }
+    for (const key of keysFor(entry)) index.set(normaliseKey(key), entry);
   }
   return index;
 }
@@ -220,5 +233,5 @@ function buildIndex() {
 export const GLOSSARY_INDEX = buildIndex();
 
 export function findGlossaryEntry(term) {
-  return GLOSSARY_INDEX.get(term.trim().toLowerCase()) ?? null;
+  return GLOSSARY_INDEX.get(normaliseKey(term)) ?? null;
 }

@@ -3,7 +3,13 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  // JSX is compiled against src/glossJsx instead of react's own runtime, so
+  // long prose anywhere in the app is offered to the glossary for automatic
+  // underlining (see src/glossJsx/prepare.js). It delegates straight back to
+  // react/jsx-runtime for everything else. Given as a root-relative source
+  // path, not a package name: a bare name gets pre-bundled by the dev server
+  // into a separate, stale copy of the runtime.
+  plugins: [react({ jsxImportSource: '/src/glossJsx' })],
   build: {
     rollupOptions: {
       output: {

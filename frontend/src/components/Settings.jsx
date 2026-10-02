@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { useTheme } from "../lib/ThemeContext";
 import { PageHeader } from "./shared";

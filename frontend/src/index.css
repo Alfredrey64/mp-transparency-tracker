@@ -166,3 +166,10 @@ select:focus-visible,
     transition-duration: 0.001ms !important;
   }
 }
+
+/* Second and later mentions of a glossary term on a page: see
+   glossJsx/dedupe.js. The span is also inert, so this is only the visual half. */
+[data-gloss-dup] > button {
+  border-bottom: none !important;
+  cursor: inherit !important;
+}

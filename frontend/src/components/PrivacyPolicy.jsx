@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 

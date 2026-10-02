@@ -6,6 +6,7 @@ import Sidebar from "./components/Sidebar";
 import Home from "./components/Home";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { SECTIONS } from "./data/sidebarSections";
+import { startGlossDedupe } from "./glossJsx/dedupe";
 
 // Everything below is code-split per page: a visitor to the homepage
 // shouldn't have to download the other ~30 pages' code up front. Home and
@@ -130,6 +131,8 @@ export default function App() {
   const [view, setView] = useState(() => parseHash().view);
   const [selected, setSelected] = useState(null);
   const [mpCount, setMpCount] = useState(null);
+
+  useEffect(() => startGlossDedupe(document.getElementById("root")), []);
   // Set only when navigating away from an MP's own profile to a page that
   // can be pre-filtered to them (their full voting history, their written
   // questions) — so e.g. clicking a vote on the profile lands you on that
