@@ -43,7 +43,7 @@ function computeSeatPositions(total) {
   return seats.sort((a, b) => a.angle - b.angle);
 }
 
-export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Independent", legendCount = 8 }) {
+export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Independent", legendCount = 8, centre = null }) {
   const [hoveredParty, setHoveredParty] = useState(null);
 
   const parties = useMemo(() => {
@@ -81,9 +81,10 @@ export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Ind
 
   return (
     <div>
+      <div style={{ position: "relative" }}>
       <svg
         viewBox={`${-viewW / 2} ${-viewH + 10} ${viewW} ${viewH}`}
-        style={{ width: "100%", height: "auto", overflow: "visible" }}
+        style={{ width: "100%", height: "auto", overflow: "visible", display: "block" }}
       >
         {/* One orchestrated entrance for the whole chamber on mount, not
             650 individually-observed seats — each seat used to be its own
@@ -115,6 +116,14 @@ export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Ind
           })}
         </motion.g>
       </svg>
+      {/* An optional figure set inside the dome, where the empty floor of the
+          chamber is — the way an election-night graphic puts the seat count. */}
+      {centre && (
+        <div style={{ position: "absolute", left: "50%", bottom: "1%", transform: "translateX(-50%)", textAlign: "center", pointerEvents: "none" }}>
+          {centre}
+        </div>
+      )}
+      </div>
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 18px", marginTop: 18, justifyContent: "center" }}>
         {parties.slice(0, legendCount).map((p) => (

@@ -35,7 +35,6 @@ const CHANGE_FEED_TYPES = {
 // and later sees purple again in the sidebar has already learned what that
 // colour means, rather than the homepage inventing its own one-off scheme.
 const QUICK_LINKS = [
-  { key: "start", label: "New here? Start here", icon: IconRoute, color: "#1FA97C" },
   { key: "voting", label: "Browse Bills", icon: IconBills, color: "#9B4FE0" },
   { key: "parties", label: "Browse Party Policies", icon: IconManifesto, color: "#2F80ED" },
   { key: "partyFinances", label: "Browse Party Funding", icon: IconPartyFinance, color: "#F2622A" },
@@ -297,6 +296,28 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
               {link.label}
             </motion.button>
           ))}
+        </motion.div>
+
+        {/* A different kind of thing from the buttons above, so it isn't one more
+            pill in the row: an invitation for anyone who's never been here. */}
+        <motion.div variants={revealChild} style={{ display: "flex", justifyContent: "center", marginTop: 20 }}>
+          <motion.button
+            onClick={() => onNavigate?.("start")}
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.99 }}
+            style={{
+              display: "flex", alignItems: "center", gap: 14, textAlign: "left", maxWidth: 440, width: "100%",
+              background: "#1FA97C14", border: "1px solid #1FA97C55", borderRadius: 18, padding: "13px 18px", cursor: "pointer",
+            }}
+          >
+            <span style={{ width: 42, height: 42, borderRadius: "50%", background: "#1FA97C", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <IconRoute size={20} />
+            </span>
+            <span style={{ minWidth: 0 }}>
+              <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: 16, fontWeight: 600, color: COLORS.ink }}>Never used this before?</span>
+              <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 1 }}>Take the five-minute guided tour →</span>
+            </span>
+          </motion.button>
         </motion.div>
       </motion.div>
 

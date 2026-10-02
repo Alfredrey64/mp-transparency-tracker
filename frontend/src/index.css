@@ -189,3 +189,18 @@ select:focus-visible,
    something you can open. */
 .asker-row { transition: background 0.15s; }
 .asker-row:hover, .asker-row:focus-visible { background: color-mix(in srgb, var(--c-ink) 6%, transparent); }
+
+/* Parliament in Numbers: a modular grid. The tiles reflow by the width of the
+   grid itself (a container query), not the window, since the page sits beside
+   a sidebar of varying width. */
+.bento { container-type: inline-size; }
+.bento-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
+.bento-grid > .s4 { grid-column: span 4; }
+.bento-grid > .s5 { grid-column: span 5; }
+.bento-grid > .s6 { grid-column: span 6; }
+.bento-grid > .s7 { grid-column: span 7; }
+.bento-grid > .s8 { grid-column: span 8; }
+.bento-grid > .s12 { grid-column: span 12; }
+@container (max-width: 780px) {
+  .bento-grid > .s4, .bento-grid > .s5, .bento-grid > .s6, .bento-grid > .s7, .bento-grid > .s8, .bento-grid > .s12 { grid-column: 1 / -1; }
+}

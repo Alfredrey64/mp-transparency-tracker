@@ -4,8 +4,9 @@ import { COLORS, FONT_BODY, numeric } from "../theme";
 // One row of a horizontal bar chart: a label, a thin bar with a rounded
 // data end that grows in when it scrolls into view, and the value set in the
 // numeric typeface beside it. `tick` draws a dashed marker at that fraction
-// of the track (the majority line on the seats chart).
-export default function BarRow({ label, color, fraction, valueText, detail, tick, labelWidth = 170, delay = 0 }) {
+// of the track. Label and value columns have fixed widths, so every row in
+// a chart has a track of exactly the same length: bars are comparable by eye.
+export default function BarRow({ label, color, fraction, valueText, detail, tick, labelWidth = 170, valueWidth = 120, delay = 0 }) {
   const reduce = useReducedMotion();
   const width = `${Math.max(0, Math.min(1, fraction)) * 100}%`;
   return (
@@ -13,7 +14,7 @@ export default function BarRow({ label, color, fraction, valueText, detail, tick
       role="img"
       aria-label={`${label}: ${valueText}${detail ? `, ${detail}` : ""}`}
       title={`${label}: ${valueText}${detail ? ` (${detail})` : ""}`}
-      style={{ display: "grid", gridTemplateColumns: `minmax(110px, ${labelWidth}px) 1fr minmax(84px, auto)`, alignItems: "center", gap: 12, padding: "5px 0" }}
+      style={{ display: "grid", gridTemplateColumns: `minmax(90px, ${labelWidth}px) minmax(0, 1fr) ${valueWidth}px`, alignItems: "center", gap: 12, padding: "5px 0" }}
     >
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{label}</div>
       <div style={{ position: "relative", height: 10, background: COLORS.paperCard, borderRadius: 4 }}>

@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
 import { EyebrowLabel, ParliamentSilhouette } from "./shared";
 import GlobalSearch from "./GlobalSearch";
-import { IconHome, IconMethodology, IconSettings, IconPin, IconStar } from "./icons";
+import { IconHome, IconMethodology, IconSettings, IconPin, IconStar, IconRoute } from "./icons";
 import { SECTIONS } from "../data/sidebarSections";
+import { readSectionChoices, writeSectionChoices, isSectionOpen } from "../lib/sidebarState";
 
 const HOME_NAV_ITEMS = [
+  { key: "start", label: "Start Here", icon: IconRoute },
   { key: "home", label: "Overview", icon: IconHome },
   { key: "myMP", label: "My MP", icon: IconPin },
   { key: "watchlist", label: "My Watchlist", icon: IconStar },
@@ -89,38 +91,80 @@ function NavList({ items, activeView, onNavigate, accent = ACCENT_DEFAULT }) {
   );
 }
 
-function SidebarSection({ label, accent, items, activeView, onNavigate }) {
+// A section that folds away. The header shows how many pages are inside and,
+// while it's closed, which of them you're on, so collapsing never loses your
+// place.
+function SidebarSection({ label, accent, items, activeView, onNavigate, open, onToggle }) {
+  const activeItem = items.find((i) => i.key === activeView);
   return (
     <div
       style={{
-        marginTop: 12,
-        padding: "9px 7px",
+        marginTop: 8,
         borderRadius: 11,
-        background: `linear-gradient(160deg, ${accent}17, ${accent}05 75%)`,
-        border: `1px solid ${accent}2a`,
+        background: open ? `linear-gradient(160deg, ${accent}17, ${accent}05 75%)` : "transparent",
+        border: `1px solid ${open ? `${accent}2a` : "rgba(255,255,255,0.05)"}`,
+        transition: "background 0.2s, border-color 0.2s",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 7, padding: "0 3px 7px" }}>
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        style={{ display: "flex", alignItems: "center", gap: 8, width: "100%", background: "none", border: "none", cursor: "pointer", padding: "9px 10px", textAlign: "left" }}
+      >
         <span style={{ width: 6, height: 6, borderRadius: "50%", background: accent, flexShrink: 0, boxShadow: `0 0 0 3px ${accent}2e` }} />
-        <span
-          style={{
-            fontFamily: FONT_BODY,
-            fontSize: 11.5,
-            fontWeight: 800,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            color: "rgba(255,255,255,0.92)",
-          }}
-        >
-          {label}
+        <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(255,255,255,0.92)", flexShrink: 0 }}>{label}</span>
+        {!open && activeItem && (
+          <span style={{ minWidth: 0, flex: 1, fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 600, color: accent, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            · {activeItem.label}
+          </span>
+        )}
+        <span style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 7, flexShrink: 0 }}>
+          <span style={{ fontFamily: FONT_MONO, fontSize: 10, color: "rgba(199,206,224,0.45)" }}>{items.length}</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(199,206,224,0.6)" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" style={{ transform: open ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>
+            <path d="m6 9 6 6 6-6" />
+          </svg>
         </span>
-      </div>
-      <NavList items={items} activeView={activeView} onNavigate={onNavigate} accent={accent} />
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            style={{ overflow: "hidden" }}
+          >
+            <div style={{ padding: "0 7px 8px" }}>
+              <NavList items={items} activeView={activeView} onNavigate={onNavigate} accent={accent} />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
 
 function SidebarInner({ activeView, onNavigate, onSelectPolitician }) {
+  // Sections the visitor has opened or closed themselves; the rest follow
+  // the page they're on. "Start Here" lives in the top group, not under Learn.
+  const [choices, setChoices] = useState(() => readSectionChoices());
+  const sections = SECTIONS.map((section) => ({ ...section, items: section.items.filter((i) => i.key !== "start") }));
+  const states = sections.map((section) => isSectionOpen(choices, section.key, section.items.some((i) => i.key === activeView)));
+  const allOpen = states.every(Boolean);
+
+  function toggle(key, currentlyOpen) {
+    const next = { ...choices, [key]: !currentlyOpen };
+    setChoices(next);
+    writeSectionChoices(next);
+  }
+
+  function setAll(open) {
+    const next = Object.fromEntries(sections.map((s) => [s.key, open]));
+    setChoices(next);
+    writeSectionChoices(next);
+  }
+
   return (
     <>
       <div style={{ marginBottom: 4, textAlign: "center" }}>
@@ -154,7 +198,16 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician }) {
         <div style={{ marginTop: 10 }}>
           <NavList items={HOME_NAV_ITEMS} activeView={activeView} onNavigate={onNavigate} />
         </div>
-        {SECTIONS.map((section) => (
+        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}>
+          <button
+            type="button"
+            onClick={() => setAll(!allOpen)}
+            style={{ background: "none", border: "none", padding: "2px 4px", cursor: "pointer", fontFamily: FONT_BODY, fontSize: 11, fontWeight: 600, color: "rgba(199,206,224,0.55)" }}
+          >
+            {allOpen ? "Collapse all" : "Expand all"}
+          </button>
+        </div>
+        {sections.map((section, i) => (
           <SidebarSection
             key={section.key}
             label={section.label}
@@ -162,6 +215,8 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician }) {
             items={section.items}
             activeView={activeView}
             onNavigate={onNavigate}
+            open={states[i]}
+            onToggle={() => toggle(section.key, states[i])}
           />
         ))}
       </div>
