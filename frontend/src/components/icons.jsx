@@ -527,3 +527,44 @@ export function IconTransport({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconChartBars({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 20V10" />
+      <path d="M10 20V4" />
+      <path d="M16 20v-7" />
+      <path d="M22 20H2" />
+    </svg>
+  );
+}
+
+export function IconMap({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 4 3 6.5v13L9 17l6 3 6-2.5v-13L15 7 9 4Z" />
+      <path d="M9 4v13" />
+      <path d="M15 7v13" />
+    </svg>
+  );
+}
+
+export function IconRoute({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="6" cy="19" r="2.2" />
+      <circle cx="18" cy="5" r="2.2" />
+      <path d="M8.2 19H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.8" />
+    </svg>
+  );
+}
+
+export function IconTopic({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 5h16v10H10l-4 4v-4H4V5Z" />
+      <circle cx="11.5" cy="10" r="2.3" />
+      <path d="m13.3 11.8 2 2" />
+    </svg>
+  );
+}

@@ -3,7 +3,7 @@ import {
   IconGlossary, IconHistory, IconDevolved, IconFormerMP, IconBudget, IconCabinet, IconTimeline,
   IconPartyFinance, IconByElection, IconLords, IconPetition, IconCompass, IconCommittee, IconCompare, IconMeeting,
   IconQuestion, IconGavel, IconRankings, IconDarkMoney, IconThinkTank, IconDoor, IconRegister,
-  IconSearch, IconBook,
+  IconSearch, IconBook, IconChartBars,
 } from "../components/icons";
 
 // Lives outside both Sidebar.jsx and shared.jsx specifically so neither has
@@ -32,6 +32,7 @@ export const SECTIONS = [
       { key: "parties", label: "Party Policies", icon: IconManifesto },
       { key: "glossary", label: "Glossary", icon: IconGlossary },
       { key: "mediaLiteracy", label: "Media Literacy", icon: IconBook },
+      { key: "numbers", label: "Parliament in Numbers", icon: IconChartBars },
     ],
   },
   {

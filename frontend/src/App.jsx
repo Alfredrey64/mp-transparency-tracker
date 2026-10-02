@@ -50,6 +50,7 @@ const ThinkTankFunding = lazy(() => import("./components/ThinkTankFunding"));
 const LobbyingRegister = lazy(() => import("./components/LobbyingRegister"));
 const FollowTheMoney = lazy(() => import("./components/FollowTheMoney"));
 const WatchlistDigest = lazy(() => import("./components/WatchlistDigest"));
+const ParliamentNumbers = lazy(() => import("./components/ParliamentNumbers"));
 
 // A quiet authorship mark, not a feature — printed once so a copy of this
 // site with the byline stripped from the UI still carries proof of where
@@ -76,7 +77,7 @@ const VALID_VIEWS = new Set([
   "devolved", "tracker", "budget", "cabinet", "lords", "formerMps", "byElections", "petitions", "partymatch",
   "committees", "compare", "ministerialMeetings", "writtenQuestions", "standards", "rankings", "myMP",
   "mediaLiteracy", "methodology", "glossary", "settings", "privacy", "terms", "list",
-  "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist",
+  "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist", "numbers",
 ]);
 
 // The tab title, bookmark name and browser-history entry for every view —
@@ -308,6 +309,7 @@ export default function App() {
             {view === "lobbyingRegister" && <LobbyingRegister />}
             {view === "followTheMoney" && <FollowTheMoney onSelectPolitician={handleViewProfile} />}
             {view === "watchlist" && <WatchlistDigest onSelectPolitician={handleViewProfile} />}
+            {view === "numbers" && <ParliamentNumbers onNavigate={handleNavigate} />}
             {view === "methodology" && <Methodology onNavigate={handleNavigate} />}
             {view === "glossary" && <Glossary />}
             {view === "settings" && <Settings onNavigate={handleNavigate} />}
