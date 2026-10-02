@@ -53,6 +53,7 @@ const WatchlistDigest = lazy(() => import("./components/WatchlistDigest"));
 const ParliamentNumbers = lazy(() => import("./components/ParliamentNumbers"));
 const AskedAbout = lazy(() => import("./components/AskedAbout"));
 const Constituency = lazy(() => import("./components/Constituency"));
+const StartHere = lazy(() => import("./components/StartHere"));
 
 // A quiet authorship mark, not a feature — printed once so a copy of this
 // site with the byline stripped from the UI still carries proof of where
@@ -79,7 +80,7 @@ const VALID_VIEWS = new Set([
   "devolved", "tracker", "budget", "cabinet", "lords", "formerMps", "byElections", "petitions", "partymatch",
   "committees", "compare", "ministerialMeetings", "writtenQuestions", "standards", "rankings", "myMP",
   "mediaLiteracy", "methodology", "glossary", "settings", "privacy", "terms", "list",
-  "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist", "numbers", "topics", "constituency",
+  "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist", "numbers", "topics", "constituency", "start",
 ]);
 
 // The tab title, bookmark name and browser-history entry for every view —
@@ -331,6 +332,7 @@ export default function App() {
             {view === "watchlist" && <WatchlistDigest onSelectPolitician={handleViewProfile} />}
             {view === "numbers" && <ParliamentNumbers onNavigate={handleNavigate} />}
             {view === "topics" && <AskedAbout onSelectPolitician={handleViewProfile} />}
+            {view === "start" && <StartHere onNavigate={handleNavigate} onNavigateForMp={handleNavigateForMp} onViewProfile={handleViewProfile} />}
             {view === "constituency" && <Constituency seat={viewParam} onSelectPolitician={handleViewProfile} />}
             {view === "methodology" && <Methodology onNavigate={handleNavigate} />}
             {view === "glossary" && <Glossary />}

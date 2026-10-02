@@ -6,7 +6,7 @@ import { formatDate, partyColour, shortCategory, timeAgo } from "../lib/format";
 import pipelineStatus from "../data/pipelineStatus.json";
 import { categoriseBill } from "../lib/bills";
 import { getWatchlist, removeFromWatchlist } from "../lib/watchlist";
-import { IconSearch, IconCoin, IconBills, IconInfluence, IconPetition, IconGroup, IconPulse, IconShield, IconRankings, IconManifesto, IconPartyFinance } from "./icons";
+import { IconSearch, IconCoin, IconBills, IconInfluence, IconPetition, IconGroup, IconPulse, IconShield, IconRankings, IconManifesto, IconPartyFinance, IconRoute } from "./icons";
 import { EyebrowLabel, LoadFailedNote } from "./shared";
 import { PartyHemicycleSection } from "./PartyHemicycle";
 import { withScrollPreserved } from "../lib/preserveScroll";
@@ -35,6 +35,7 @@ const CHANGE_FEED_TYPES = {
 // and later sees purple again in the sidebar has already learned what that
 // colour means, rather than the homepage inventing its own one-off scheme.
 const QUICK_LINKS = [
+  { key: "start", label: "New here? Start here", icon: IconRoute, color: "#1FA97C" },
   { key: "voting", label: "Browse Bills", icon: IconBills, color: "#9B4FE0" },
   { key: "parties", label: "Browse Party Policies", icon: IconManifesto, color: "#2F80ED" },
   { key: "partyFinances", label: "Browse Party Funding", icon: IconPartyFinance, color: "#F2622A" },
