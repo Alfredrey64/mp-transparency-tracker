@@ -233,7 +233,7 @@ function WhereItSits({ seats, mine, colour, standing }) {
       </div>
       <div style={{ display: "flex", gap: 5, marginTop: 5 }}>
         {counts.map((_, i) => (
-          <div key={i} style={{ flex: 1, textAlign: "center", fontFamily: FONT_BODY, fontSize: 10, color: i === mineBin ? COLORS.ink : COLORS.inkSoft, fontWeight: i === mineBin ? 700 : 400 }}>{i * 5}{i === counts.length - 1 ? "+" : ""}</div>
+          <div key={i} style={{ flex: 1, textAlign: "center", fontFamily: FONT_BODY, fontSize: 11, color: i === mineBin ? COLORS.ink : COLORS.inkSoft, fontWeight: i === mineBin ? 700 : 400 }}>{i * 5}{i === counts.length - 1 ? "+" : ""}</div>
         ))}
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, textAlign: "center", marginTop: 1 }}>Winner's majority, % of votes cast. Every seat in the country; this one is highlighted.</div>

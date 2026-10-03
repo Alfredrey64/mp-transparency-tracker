@@ -104,7 +104,7 @@ export default function LordsNumbers({ onNavigate }) {
               onSelectParty={(name, e) => see(e, name, "Every peer currently sitting with this group.", (m) => (m.party === "Unknown" ? "Crossbench" : m.party) === name)}
               centre={
                 <div>
-                  <div style={{ ...numeric, fontSize: "clamp(22px, 4.4cqw, 34px)", fontWeight: 700, lineHeight: 1, color: COLORS.ink, letterSpacing: "-0.03em" }}>
+                  <div style={{ ...numeric, fontSize: "clamp(17px, 4cqw, 34px)", fontWeight: 700, lineHeight: 1, color: COLORS.ink, letterSpacing: "-0.03em" }}>
                     <CountUp value={stats.total} duration={1.3} />
                   </div>
                   <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 2 }}>peers</div>

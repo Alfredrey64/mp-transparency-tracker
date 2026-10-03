@@ -106,23 +106,35 @@ export function GlossaryTerm({ term, children }) {
 
   return (
     <span ref={ref} data-gloss-term={entry.term} style={{ position: "relative", display: "inline" }}>
-      <button
+      {/* A span, not a <button>: browsers lay a button out as an inline-block,
+          so a term that wrapped onto two lines became one block with a single
+          underline along its bottom edge. A plain inline span wraps like the
+          surrounding text, and a text-decoration underline follows every line
+          of it, close under the words. */}
+      <span
         ref={buttonRef}
-        type="button"
+        role="button"
+        tabIndex={0}
+        className="gloss-term"
         onClick={(e) => { e.stopPropagation(); setOpen(true); }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            e.stopPropagation();
+            setOpen(true);
+          } else if (e.key === "Escape") {
+            setOpen(false);
+          }
+        }}
         onMouseEnter={supportsHover ? () => setOpen(true) : undefined}
         onMouseLeave={supportsHover ? () => setOpen(false) : undefined}
         onFocus={() => setOpen(true)}
         onBlur={() => setOpen(false)}
         aria-expanded={open}
-        style={{
-          background: "none", border: "none", padding: 0, margin: 0, font: "inherit", color: "inherit",
-          cursor: supportsHover ? "help" : "pointer", display: "inline", lineHeight: 1,
-          borderBottom: "1px dotted currentColor",
-        }}
+        style={{ cursor: supportsHover ? "help" : "pointer" }}
       >
         {children}
-      </button>
+      </span>
       {/* motion.span, not motion.div: the popover can still end up inside a
           <p> in React's tree (portals keep their React parent for events and
           context), and a <span> is the safe choice anywhere. pointer-events:

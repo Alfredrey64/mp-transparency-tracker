@@ -479,7 +479,7 @@ function ResultsScreen({ results, nation, onRetake }) {
                     style={{
                       display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
                       width: 24, height: 24, borderRadius: "50%", background: `${r.color}22`, color: r.color,
-                      border: `1.5px solid ${r.color}55`, fontFamily: FONT_BODY, fontWeight: 800, fontSize: 10,
+                      border: `1.5px solid ${r.color}55`, fontFamily: FONT_BODY, fontWeight: 800, fontSize: 11,
                     }}
                   >
                     {partyInitials(r.name)}

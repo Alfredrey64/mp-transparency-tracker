@@ -211,7 +211,7 @@ function MoneyAndVotesBox({ politician, interests }) {
                   <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{v.title}</span>
                   <span
                     style={{
-                      flexShrink: 0, fontWeight: 700, fontSize: 10.5, textTransform: "uppercase", padding: "1px 7px", borderRadius: 999,
+                      flexShrink: 0, fontWeight: 700, fontSize: 11, textTransform: "uppercase", padding: "1px 7px", borderRadius: 999,
                       color: v.voted_aye ? "#2F6F4E" : "#9C3B3B", background: v.voted_aye ? "#E4EEE7" : "#F3E4E2",
                     }}
                   >
@@ -513,7 +513,7 @@ function ManifestoSectionCard({ section }) {
         </div>
       ) : (
         <div style={{ borderTop: `1px solid ${COLORS.hairline}`, paddingTop: 10 }}>
-          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10 }}>
+          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10 }}>
             How they voted on {section.targetCategory} legislation
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -538,7 +538,7 @@ function ManifestoSectionCard({ section }) {
                         <span style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: 6 }}>
                           <span
                             style={{
-                              fontFamily: FONT_MONO, fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", padding: "1px 7px", borderRadius: 999,
+                              fontFamily: FONT_MONO, fontSize: 11, fontWeight: 700, textTransform: "uppercase", padding: "1px 7px", borderRadius: 999,
                               background: v.voted_aye ? "#E4EEE7" : "#F3E4E2", color: v.voted_aye ? "#2F6F4E" : "#9C3B3B",
                             }}
                           >
@@ -701,7 +701,7 @@ function GiftsTabContent({ gifts, failed }) {
             <div style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap", marginBottom: 4 }}>
               <span
                 style={{
-                  fontFamily: FONT_BODY, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em",
+                  fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em",
                   color: COLORS.accent, background: `${COLORS.accent}18`, padding: "2px 8px", borderRadius: 999,
                 }}
               >

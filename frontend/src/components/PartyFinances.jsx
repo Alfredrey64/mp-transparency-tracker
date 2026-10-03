@@ -298,7 +298,7 @@ export default function PartyFinances() {
                                 </span>
                                 <span
                                   style={{
-                                    flexShrink: 0, fontFamily: FONT_BODY, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em",
+                                    flexShrink: 0, fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em",
                                     color: badgeColor, background: `${badgeColor}1a`, padding: "2px 8px", borderRadius: 999,
                                   }}
                                 >

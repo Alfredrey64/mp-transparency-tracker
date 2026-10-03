@@ -255,7 +255,7 @@ function CabinetCard({ member, area, index, onViewProfile }) {
             <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${COLORS.hairline}` }}>
               {roleText && (
                 <div style={{ background: `${color}0d`, border: `1px solid ${color}33`, borderRadius: 10, padding: "10px 13px", marginBottom: 14 }}>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>
+                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>
                     What this role does
                   </div>
                   <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.55 }}>{roleText}</div>
@@ -361,7 +361,7 @@ function OrgChartNode({ group, accent, delay }) {
       <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 600, color: COLORS.ink, textAlign: "center", lineHeight: 1.3 }}>
         {group.area}
       </span>
-      <span style={{ fontFamily: FONT_MONO, fontSize: 10, color: COLORS.inkSoft }}>
+      <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: COLORS.inkSoft }}>
         {group.members.length} {group.members.length === 1 ? "minister" : "ministers"}
       </span>
     </motion.button>

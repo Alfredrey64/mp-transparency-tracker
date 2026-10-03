@@ -293,7 +293,7 @@ function PledgeLine({ pledge }) {
         </span>
         <span
           style={{
-            flexShrink: 0, fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700, textTransform: "uppercase",
+            flexShrink: 0, fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase",
             letterSpacing: "0.03em", padding: "2px 9px", borderRadius: 999, color: s.color, background: `${s.color}18`,
           }}
         >

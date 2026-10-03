@@ -197,7 +197,7 @@ function QuestionCard({ q, politicianById, onSelectPolitician, index }) {
         </div>
         <span
           style={{
-            flexShrink: 0, fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700, padding: "3px 9px", borderRadius: 999,
+            flexShrink: 0, fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, padding: "3px 9px", borderRadius: 999,
             textTransform: "uppercase", letterSpacing: "0.03em",
             color: answered ? COLORS.accent : "#B08A3E", background: answered ? `${COLORS.accent}14` : "#B08A3E1a",
           }}
@@ -321,7 +321,7 @@ export default function WrittenQuestions({ onSelectPolitician, initialQuery = ""
         }}
       >
         <div>
-          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 7 }}>
+          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 7 }}>
             House
           </div>
           <div style={{ display: "flex", gap: 6 }}>
@@ -344,7 +344,7 @@ export default function WrittenQuestions({ onSelectPolitician, initialQuery = ""
         <div style={{ width: 1, alignSelf: "stretch", background: COLORS.hairline, minHeight: 44 }} />
 
         <div>
-          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 7 }}>
+          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 7 }}>
             Status
           </div>
           <div style={{ display: "flex", gap: 6 }}>
@@ -367,7 +367,7 @@ export default function WrittenQuestions({ onSelectPolitician, initialQuery = ""
         <div style={{ width: 1, alignSelf: "stretch", background: COLORS.hairline, minHeight: 44 }} />
 
         <div style={{ flex: "1 1 220px", minWidth: 200 }}>
-          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 7 }}>
+          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 7 }}>
             Department
           </div>
           <DepartmentDropdown value={departmentFilter} options={departments} onChange={setDepartmentFilter} />

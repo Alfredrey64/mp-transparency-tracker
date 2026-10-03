@@ -288,7 +288,7 @@ export default function AppgMemberships() {
                   display: "inline-block",
                   fontFamily: FONT_BODY,
                   fontWeight: 700,
-                  fontSize: 10,
+                  fontSize: 11,
                   letterSpacing: "0.06em",
                   textTransform: "uppercase",
                   color: group.color,
@@ -310,7 +310,7 @@ export default function AppgMemberships() {
                 {group.secretariat}
               </div>
               <div style={{ borderTop: `1px solid ${COLORS.hairline}`, marginTop: 12, paddingTop: 10 }}>
-                <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10, color: group.color, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 2 }}>
+                <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: group.color, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 2 }}>
                   Notable members
                 </div>
                 <MemberList members={group.members} />

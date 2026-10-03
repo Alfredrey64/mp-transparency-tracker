@@ -130,7 +130,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
 
           {results.mps.length > 0 && (
             <div style={{ marginBottom: 4 }}>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "rgba(226,232,232,0.45)", padding: "4px 8px" }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "rgba(226,232,232,0.45)", padding: "4px 8px" }}>
                 MPs
               </div>
               {results.mps.map((p) => {
@@ -146,7 +146,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
                     <span style={{ width: 6, height: 6, borderRadius: "50%", background: color, flexShrink: 0 }} />
                     <span style={{ minWidth: 0 }}>
                       <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: "#fff", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</div>
-                      <div style={{ fontFamily: FONT_BODY, fontSize: 10.5, color: "rgba(226,232,232,0.55)" }}>{p.party} · {p.constituency}</div>
+                      <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: "rgba(226,232,232,0.55)" }}>{p.party} · {p.constituency}</div>
                     </span>
                   </button>
                 );
@@ -156,7 +156,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
 
           {results.bills.length > 0 && (
             <div style={{ marginBottom: 4 }}>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "rgba(226,232,232,0.45)", padding: "4px 8px" }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "rgba(226,232,232,0.45)", padding: "4px 8px" }}>
                 Bills
               </div>
               {results.bills.map((b, i) => (
@@ -168,7 +168,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
                   onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                 >
                   <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: "#fff", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{b.short_title}</div>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 10.5, color: "rgba(226,232,232,0.55)" }}>{b.current_stage ?? "Bill"}</div>
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: "rgba(226,232,232,0.55)" }}>{b.current_stage ?? "Bill"}</div>
                 </button>
               ))}
             </div>
@@ -176,7 +176,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
 
           {results.pages.length > 0 && (
             <div style={{ marginBottom: 4 }}>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "rgba(226,232,232,0.45)", padding: "4px 8px" }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "rgba(226,232,232,0.45)", padding: "4px 8px" }}>
                 Pages
               </div>
               {results.pages.map((p) => (
@@ -198,7 +198,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
 
           {results.glossary.length > 0 && (
             <div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "rgba(226,232,232,0.45)", padding: "4px 8px" }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "rgba(226,232,232,0.45)", padding: "4px 8px" }}>
                 Glossary
               </div>
               {results.glossary.map((g) => (
@@ -214,7 +214,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
                   </span>
                   <span style={{ minWidth: 0 }}>
                     <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: "#fff" }}>{g.term}</div>
-                    <div style={{ fontFamily: FONT_BODY, fontSize: 10.5, color: "rgba(226,232,232,0.55)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{g.def}</div>
+                    <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: "rgba(226,232,232,0.55)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{g.def}</div>
                   </span>
                 </button>
               ))}

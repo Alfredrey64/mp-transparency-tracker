@@ -67,12 +67,12 @@ export function SeatsChart({ stats, onOpen }) {
         <span />
         <div style={{ position: "relative", height: 18 }}>
           {ticks.map((t) => (
-            <span key={t} style={{ position: "absolute", left: `${t * 100}%`, transform: t === 0 ? "none" : t === 1 ? "translateX(-100%)" : "translateX(-50%)", fontFamily: FONT_BODY, fontSize: 10.5, color: COLORS.inkSoft, whiteSpace: "nowrap" }}>
+            <span key={t} style={{ position: "absolute", left: `${t * 100}%`, transform: t === 0 ? "none" : t === 1 ? "translateX(-100%)" : "translateX(-50%)", fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, whiteSpace: "nowrap" }}>
               {fmt(Math.round(total * t))}
             </span>
           ))}
         </div>
-        <span style={{ fontFamily: FONT_BODY, fontSize: 10.5, color: COLORS.inkSoft, textAlign: "right" }}>seats · share</span>
+        <span style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, textAlign: "right" }}>seats · share</span>
       </div>
       {rows.map((r, i) => (
         <div

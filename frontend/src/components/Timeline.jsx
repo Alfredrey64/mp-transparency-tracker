@@ -220,7 +220,7 @@ function GovernmentEntry({ entry, index, showTerm }) {
           <span style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink }}>{entry.pm}</span>
           <span
             style={{
-              fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em",
+              fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em",
               color, background: `${color}1e`, padding: "2px 9px", borderRadius: 999,
             }}
           >
@@ -247,7 +247,7 @@ function GovernmentEntry({ entry, index, showTerm }) {
             <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${color}30` }}>
               {entry.events && entry.events.length > 0 && (
                 <div style={{ marginBottom: 16 }}>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
                     Major events
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
@@ -268,7 +268,7 @@ function GovernmentEntry({ entry, index, showTerm }) {
               )}
               {lineage && (
                 <div style={{ marginBottom: 16 }}>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 5 }}>
+                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 5 }}>
                     About the {entry.party}
                   </div>
                   <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, lineHeight: 1.6 }}>{lineage}</div>
@@ -276,7 +276,7 @@ function GovernmentEntry({ entry, index, showTerm }) {
               )}
               {bills.length > 0 && (
                 <div>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>
+                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>
                     Landmark bills passed under this government
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
@@ -317,7 +317,7 @@ function BillEntry({ entry, index }) {
           {entry.year}
         </div>
         {shortDate(entry.date) && (
-          <div style={{ fontFamily: FONT_BODY, fontSize: 10, color: COLORS.inkSoft, marginTop: 2, textTransform: "uppercase", letterSpacing: "0.03em" }}>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginTop: 2, textTransform: "uppercase", letterSpacing: "0.03em" }}>
             {shortDate(entry.date)}
           </div>
         )}
@@ -342,7 +342,7 @@ function BillEntry({ entry, index }) {
           <div style={{ minWidth: 0, flex: 1 }}>
             <div style={{ display: "flex", alignItems: "baseline", gap: 9, flexWrap: "wrap", marginBottom: 5 }}>
               <span style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 14.5, color: COLORS.ink }}>{entry.title}</span>
-              <span style={{ fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700, color, textTransform: "uppercase" }}>{entry.result}</span>
+              <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color, textTransform: "uppercase" }}>{entry.result}</span>
               <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ marginLeft: "auto", color: COLORS.inkSoft, fontSize: 12 }}>▾</motion.span>
             </div>
             <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.6 }}>{entry.detail}</div>
@@ -359,7 +359,7 @@ function BillEntry({ entry, index }) {
             style={{ overflow: "hidden" }}
           >
             <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${COLORS.hairline}` }}>
-              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>
+              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>
                 Passed under
               </div>
               {!gov ? (
@@ -371,7 +371,7 @@ function BillEntry({ entry, index }) {
                 <span style={{ fontFamily: FONT_DISPLAY, fontSize: 14.5, color: COLORS.ink }}>{gov.pm}</span>
                 <span
                   style={{
-                    fontFamily: FONT_BODY, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em",
+                    fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em",
                     color: govColor, background: `${govColor}1e`, padding: "2px 8px", borderRadius: 999,
                   }}
                 >

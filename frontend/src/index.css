@@ -169,10 +169,18 @@ select:focus-visible,
 
 /* Second and later mentions of a glossary term on a page: see
    glossJsx/dedupe.js. The span is also inert, so this is only the visual half. */
-[data-gloss-dup] > button {
-  border-bottom: none !important;
-  cursor: inherit !important;
+/* A glossary term: a dotted underline that follows every line the term wraps
+   onto and sits just under the letters. */
+.gloss-term {
+  text-decoration: underline dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-skip-ink: none;
+  border-radius: 2px;
+  transition: background-color 0.12s;
 }
+.gloss-term:hover, .gloss-term:focus-visible { text-decoration-style: solid; background-color: rgba(127, 127, 160, 0.14); outline: none; }
+[data-gloss-dup] > .gloss-term { text-decoration: none; cursor: inherit !important; background: none; }
 
 /* Parliament in Numbers: the women-in-the-Commons dots pop in row by row once
    the chart scrolls into view (the delay per row is set inline). */
@@ -220,3 +228,22 @@ select:focus-visible,
 @keyframes careerBar { from { transform: scaleX(0); opacity: 0.4; } to { transform: scaleX(1); opacity: 1; } }
 .career-bar { transform-origin: left center; animation: careerBar 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; }
 @media (prefers-reduced-motion: reduce) { .career-bar { animation: none; } }
+
+/* Home hero on a phone: the three facts sit in one tidy row and the quick
+   links become an even two-column grid instead of ragged, uneven pills. */
+@media (max-width: 560px) {
+  .hero-stats { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px !important; margin: 30px 0 26px !important; }
+  .hero-stats > div { min-width: 0 !important; text-align: center; }
+  .hero-stat-value { font-size: 19px !important; }
+  .hero-links { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hero-links > button { justify-content: center; padding: 12px 10px !important; font-size: 14px !important; text-align: center; }
+  .hero-links > button:first-child { grid-column: 1 / -1; }
+}
+
+/* Touch screens: small text-link buttons (a row of 14px-high "Download" or
+   "Glossary →" links) get an invisible, larger area to tap, without moving
+   anything on the page. */
+@media (pointer: coarse) {
+  button:not([style*="position"]):not(.gloss-term) { position: relative; }
+  button:not(.gloss-term)::after { content: ""; position: absolute; inset: -6px -4px; }
+}

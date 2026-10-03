@@ -162,16 +162,16 @@ function PeerDetail({ peer, onBack, formerMp }) {
 
           <div style={{ display: "flex", gap: 24, flexWrap: "wrap", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 20 }}>
             <div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: COLORS.inkSoft, marginBottom: 3 }}>Peerage</div>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: COLORS.inkSoft, marginBottom: 3 }}>Peerage</div>
               <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink }}>{peer.peerage_type}</div>
             </div>
             <div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: COLORS.inkSoft, marginBottom: 3 }}>Joined the Lords</div>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: COLORS.inkSoft, marginBottom: 3 }}>Joined the Lords</div>
               <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink }}>{formatDate(peer.membership_start_date) ?? "Unknown"}</div>
             </div>
             {peer.government_role_start_date && (
               <div>
-                <div style={{ fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: COLORS.inkSoft, marginBottom: 3 }}>In role since</div>
+                <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: COLORS.inkSoft, marginBottom: 3 }}>In role since</div>
                 <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink }}>{formatDate(peer.government_role_start_date)}</div>
               </div>
             )}
@@ -196,7 +196,7 @@ function PeerDetail({ peer, onBack, formerMp }) {
                       <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.4 }}>
                         {m.role}
                         {!m.endDate && (
-                          <span style={{ marginLeft: 8, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: COLORS.accent, background: `${COLORS.accent}18`, padding: "2px 8px", borderRadius: 999 }}>
+                          <span style={{ marginLeft: 8, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: COLORS.accent, background: `${COLORS.accent}18`, padding: "2px 8px", borderRadius: 999 }}>
                             Current
                           </span>
                         )}
@@ -225,7 +225,7 @@ function PeerDetail({ peer, onBack, formerMp }) {
                       <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.4 }}>
                         {c.name}
                         {c.role && (
-                          <span style={{ marginLeft: 8, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: COLORS.accent, background: `${COLORS.accent}18`, padding: "2px 8px", borderRadius: 999 }}>
+                          <span style={{ marginLeft: 8, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: COLORS.accent, background: `${COLORS.accent}18`, padding: "2px 8px", borderRadius: 999 }}>
                             {c.role}
                           </span>
                         )}
@@ -249,7 +249,7 @@ function PeerDetail({ peer, onBack, formerMp }) {
 
               {peer.recent_activity.contributions?.length > 0 && (
                 <div style={{ marginBottom: peer.recent_activity.writtenQuestions?.length > 0 ? 18 : 0 }}>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.accent, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.accent, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
                     Debate Contributions
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -283,7 +283,7 @@ function PeerDetail({ peer, onBack, formerMp }) {
 
               {peer.recent_activity.writtenQuestions?.length > 0 && (
                 <div>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.accent, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.accent, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
                     Written Questions
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>

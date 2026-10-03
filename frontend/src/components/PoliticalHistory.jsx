@@ -254,7 +254,7 @@ function ResultPill({ outcome, children }) {
         background: color, padding: "4px 12px 4px 10px", borderRadius: 999,
       }}
     >
-      <span style={{ fontSize: 10.5 }}>{outcome === "achieved" ? "✓" : "✗"}</span>
+      <span style={{ fontSize: 11 }}>{outcome === "achieved" ? "✓" : "✗"}</span>
       {children}
     </span>
   );
@@ -290,7 +290,7 @@ function VoteRow({ vote, index }) {
             <span style={{ width: 3, height: 3, borderRadius: "50%", background: COLORS.inkSoft, opacity: 0.5 }} />
             <span
               style={{
-                fontFamily: FONT_BODY, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em",
+                fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em",
                 color: themeColor, background: `${themeColor}18`, padding: "2.5px 9px", borderRadius: 999,
               }}
             >
@@ -335,7 +335,7 @@ function LineageDiagram({ nodes, color }) {
             <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12.5, color: i === nodes.length - 1 ? "#fff" : COLORS.ink, lineHeight: 1.3 }}>
               {n.label}
             </div>
-            <div style={{ fontFamily: FONT_BODY, fontSize: 10.5, color: i === nodes.length - 1 ? "rgba(255,255,255,0.85)" : color, marginTop: 2 }}>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: i === nodes.length - 1 ? "rgba(255,255,255,0.85)" : color, marginTop: 2 }}>
               {n.year}
             </div>
           </motion.div>
@@ -408,7 +408,7 @@ function PartyCard({ party, index, seatCount }) {
             {seatCount != null && seatCount > 0 && (
               <div style={{ textAlign: "right" }}>
                 <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: party.color, lineHeight: 1 }}>{seatCount}</div>
-                <div style={{ fontFamily: FONT_BODY, fontSize: 10, color: COLORS.inkSoft }}>MPs now</div>
+                <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft }}>MPs now</div>
               </div>
             )}
             <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ color: COLORS.inkSoft, fontSize: 13 }}>▾</motion.span>

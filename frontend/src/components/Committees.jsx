@@ -33,7 +33,7 @@ function MemberChip({ member, showHouse }) {
         {member.name}{member.is_chair ? " (Chair)" : ""}
       </span>
       {showHouse && houseColor && (
-        <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: houseColor }}>
+        <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: houseColor }}>
           {member.house}
         </span>
       )}
@@ -110,7 +110,7 @@ function CommitteeCard({ committee, index, open, onToggle }) {
           <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, color: COLORS.ink, lineHeight: 1.3 }}>{committee.name}</div>
           <span
             style={{
-              flexShrink: 0, fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700,
+              flexShrink: 0, fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700,
               color: HOUSE_COLOR[committee.house] ?? COLORS.inkSoft,
               background: `${HOUSE_COLOR[committee.house] ?? COLORS.inkSoft}14`,
               border: `1px solid ${HOUSE_COLOR[committee.house] ?? COLORS.inkSoft}40`,
@@ -144,7 +144,7 @@ function CommitteeCard({ committee, index, open, onToggle }) {
                 </div>
               )}
 
-              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>
+              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>
                 Members ({committee.members?.length ?? 0})
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: committee.inquiries?.length > 0 ? 16 : 0 }}>
@@ -155,7 +155,7 @@ function CommitteeCard({ committee, index, open, onToggle }) {
 
               {committee.inquiries?.length > 0 && (
                 <>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>
+                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>
                     Open inquiries
                   </div>
                   {committee.inquiries.map((inq, i) => <InquiryRow key={i} inquiry={inq} />)}

@@ -150,7 +150,7 @@ export function FlowArrow({ color, animated = true, oscillate = false, reverse =
           }}
         >
           {glyph && (
-            <span style={{ fontFamily: FONT_BODY, fontWeight: 800, fontSize: 10, lineHeight: 1, color: "#fff", textShadow: "0 1px 1px rgba(0,0,0,0.25)" }}>
+            <span style={{ fontFamily: FONT_BODY, fontWeight: 800, fontSize: 11, lineHeight: 1, color: "#fff", textShadow: "0 1px 1px rgba(0,0,0,0.25)" }}>
               {glyph}
             </span>
           )}
@@ -411,7 +411,7 @@ export function BiographyBox({ politician }) {
 export function ContactRow({ label, children }) {
   return (
     <div style={{ marginBottom: 10 }}>
-      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 10.5, color: COLORS.accent, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 2 }}>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 11, color: COLORS.accent, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 2 }}>
         {label}
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink }}>{children}</div>
@@ -641,7 +641,7 @@ export function VotingSummaryBox({ politician, onNavigate }) {
               <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", marginTop: 4 }}>
                 <span
                   style={{
-                    fontFamily: FONT_MONO, fontSize: 10, fontWeight: 700, textTransform: "uppercase",
+                    fontFamily: FONT_MONO, fontSize: 11, fontWeight: 700, textTransform: "uppercase",
                     padding: "2px 7px", borderRadius: 999,
                     background: v.voted_aye ? "#E4EEE7" : "#F3E4E2",
                     color: v.voted_aye ? "#2F6F4E" : "#9C3B3B",
@@ -653,7 +653,7 @@ export function VotingSummaryBox({ politician, onNavigate }) {
                 {againstParty && (
                   <span
                     style={{
-                      fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10, textTransform: "uppercase",
+                      fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, textTransform: "uppercase",
                       letterSpacing: "0.04em", padding: "2px 7px", borderRadius: 999,
                       background: "#F3E4E2", color: "#9C3B3B",
                     }}
@@ -778,7 +778,7 @@ export function RecentActivityBox({ politician, onNavigate }) {
 
       {contributions.length > 0 && (
         <div style={{ marginBottom: writtenQuestions.length > 0 ? 16 : 0 }}>
-          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.accent, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.accent, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
             Debate Contributions
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -812,7 +812,7 @@ export function RecentActivityBox({ politician, onNavigate }) {
 
       {writtenQuestions.length > 0 && (
         <div>
-          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.accent, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.accent, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
             Written Questions
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -831,7 +831,7 @@ export function RecentActivityBox({ politician, onNavigate }) {
                     {stripHtml(q.questionText)}
                   </div>
                 )}
-                <div style={{ fontFamily: FONT_MONO, fontSize: 10.5, color: COLORS.inkSoft, marginTop: 5, letterSpacing: "0.01em" }}>
+                <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: COLORS.inkSoft, marginTop: 5, letterSpacing: "0.01em" }}>
                   To {q.department} · tabled {formatDate(q.dateTabled)}
                   {q.dateAnswered ? ` · answered ${formatDate(q.dateAnswered)}` : " · awaiting answer"}
                 </div>

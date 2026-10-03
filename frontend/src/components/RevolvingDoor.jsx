@@ -85,13 +85,13 @@ function CaseCard({ item, index }) {
         {item.role}
       </div>
       <div style={{ marginBottom: 10 }}>
-        <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: "#9C3B3B", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>
+        <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: "#9C3B3B", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>
           What happened
         </div>
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.6 }}>{item.what}</div>
       </div>
       <div>
-        <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: item.color, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>
+        <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: item.color, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>
           What followed
         </div>
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.6 }}>{item.outcome}</div>

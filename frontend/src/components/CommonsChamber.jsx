@@ -298,7 +298,7 @@ export default function CommonsChamber() {
           >
             <span style={{ width: 7, height: 7, borderRadius: "50%", background: g.color, flexShrink: 0 }} />
             <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 600, color: COLORS.ink }}>{g.name}</span>
-            <span style={{ fontFamily: FONT_MONO, fontSize: 10.5, color: COLORS.inkSoft }}>{g.members.length}</span>
+            <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: COLORS.inkSoft }}>{g.members.length}</span>
           </div>
         ))}
       </div>

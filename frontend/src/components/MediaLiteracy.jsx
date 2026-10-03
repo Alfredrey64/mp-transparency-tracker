@@ -155,11 +155,11 @@ function OutletCard({ outlet, index, open, onToggle }) {
         style={{ overflow: "hidden" }}
       >
         <div style={{ padding: "0 16px 16px" }}>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700, color: outlet.color, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>Ownership</div>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: outlet.color, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>Ownership</div>
           <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.55, marginBottom: 10 }}>{outlet.ownership}</div>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700, color: outlet.color, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>Funding</div>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: outlet.color, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>Funding</div>
           <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.55, marginBottom: 10 }}>{outlet.funding}</div>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700, color: outlet.color, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>Regulation</div>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: outlet.color, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>Regulation</div>
           <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.55 }}>{outlet.regulator}</div>
         </div>
       </motion.div>
@@ -422,7 +422,7 @@ function CaseCard({ item, index }) {
         <div style={{ display: "flex", alignItems: "center", gap: 9, flexWrap: "wrap" }}>
           <span
             style={{
-              fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, letterSpacing: "0.04em", textTransform: "uppercase",
+              fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, letterSpacing: "0.04em", textTransform: "uppercase",
               color: item.color, background: `${item.color}1A`, padding: "3px 9px", borderRadius: 999,
             }}
           >
@@ -435,7 +435,7 @@ function CaseCard({ item, index }) {
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
         <span
           style={{
-            fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10, letterSpacing: "0.05em", textTransform: "uppercase",
+            fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, letterSpacing: "0.05em", textTransform: "uppercase",
             color: verdict.color, background: `${verdict.color}1A`, border: `1px solid ${verdict.color}33`, padding: "3px 9px", borderRadius: 999,
           }}
         >
@@ -516,7 +516,7 @@ export default function MediaLiteracy() {
               style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${req.color}`, borderRadius: 14, padding: 16 }}
             >
               <div style={{ fontFamily: FONT_DISPLAY, fontSize: 16, color: COLORS.ink, marginBottom: 4 }}>{req.title}</div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700, color: req.color, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: req.color, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>
                 {req.rule}
               </div>
               <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.6 }}>{req.body}</div>

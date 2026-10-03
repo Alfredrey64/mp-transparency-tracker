@@ -147,7 +147,7 @@ export default function ByElections() {
                     <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, color: COLORS.ink }}>{v.constituency_name}</div>
                     <span
                       style={{
-                        fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, textTransform: "uppercase", letterSpacing: "0.05em",
+                        fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em",
                         color: "#B0473E", background: "#B0473E1e", padding: "4px 10px", borderRadius: 999, flexShrink: 0,
                       }}
                     >
@@ -234,7 +234,7 @@ export default function ByElections() {
 
                 <div style={{ display: "flex", alignItems: "stretch", gap: 0, background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 10, overflow: "hidden" }}>
                   <div style={{ flex: 1, minWidth: 0, padding: "10px 14px", borderRight: `1px solid ${COLORS.hairline}` }}>
-                    <div style={{ fontFamily: FONT_BODY, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: COLORS.inkSoft, marginBottom: 4 }}>
+                    <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: COLORS.inkSoft, marginBottom: 4 }}>
                       Previously
                     </div>
                     {predecessor ? (
@@ -249,7 +249,7 @@ export default function ByElections() {
                     )}
                   </div>
                   <div style={{ flex: 1, minWidth: 0, padding: "10px 14px" }}>
-                    <div style={{ fontFamily: FONT_BODY, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: COLORS.inkSoft, marginBottom: 4 }}>
+                    <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: COLORS.inkSoft, marginBottom: 4 }}>
                       Elected instead
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: 7, minWidth: 0 }}>
@@ -278,7 +278,7 @@ export default function ByElections() {
                         <Stat label="Electorate" value={e.electorate?.toLocaleString()} />
                       </div>
 
-                      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>
+                      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>
                         Full result · {candidates.length} candidate{candidates.length === 1 ? "" : "s"} stood
                       </div>
                       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -345,7 +345,7 @@ function Stat({ label, value }) {
   if (!value) return null;
   return (
     <div>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: COLORS.inkSoft, marginBottom: 3 }}>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: COLORS.inkSoft, marginBottom: 3 }}>
         {label}
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 15, fontWeight: 700, color: COLORS.ink }}>{value}</div>

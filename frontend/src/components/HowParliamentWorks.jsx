@@ -356,7 +356,7 @@ function StageProgressDots({ index, total, color }) {
           }}
         />
       ))}
-      <span style={{ fontFamily: FONT_MONO, fontSize: 10.5, color: COLORS.inkSoft, marginLeft: 6, whiteSpace: "nowrap" }}>
+      <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: COLORS.inkSoft, marginLeft: 6, whiteSpace: "nowrap" }}>
         Stage {index + 1} of {total}
       </span>
     </div>

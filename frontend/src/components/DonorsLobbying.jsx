@@ -291,8 +291,9 @@ export default function DonorsLobbying() {
                     }
                   >
                     <div style={{ minWidth: 0 }}>
-                      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 14, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                        {d.name} <span style={{ color: COLORS.inkSoft, fontSize: 11 }}>{isOpen ? "▾" : "▸"}</span>
+                      <div style={{ display: "flex", alignItems: "baseline", gap: 6, fontFamily: FONT_DISPLAY, fontSize: 14, color: COLORS.ink }}>
+                        <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{d.name}</span>
+                        <span style={{ flexShrink: 0, color: COLORS.inkSoft, fontSize: 11 }}>{isOpen ? "▾" : "▸"}</span>
                       </div>
                       <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 1 }}>
                         <span style={{ width: 6, height: 6, borderRadius: "50%", background: d.tag ? sectorColor(d.tag.sector) : UNTAGGED_COLOR, flexShrink: 0 }} />
@@ -417,7 +418,7 @@ export default function DonorsLobbying() {
                         </div>
                       ))}
                       {s.allDonations.length > 40 && (
-                        <div style={{ fontFamily: FONT_BODY, fontSize: 10.5, color: COLORS.inkSoft, opacity: 0.7, fontStyle: "italic" }}>
+                        <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, opacity: 0.7, fontStyle: "italic" }}>
                           +{s.allDonations.length - 40} more not shown
                         </div>
                       )}

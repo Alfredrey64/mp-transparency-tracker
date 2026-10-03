@@ -248,7 +248,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
           </p>
         </motion.div>
 
-        <motion.div variants={revealChild} style={{ display: "flex", justifyContent: "center", gap: "clamp(20px, 5vw, 52px)", flexWrap: "wrap", margin: "38px 0 34px" }}>
+        <motion.div className="hero-stats" variants={revealChild} style={{ display: "flex", justifyContent: "center", gap: "clamp(20px, 5vw, 52px)", flexWrap: "wrap", margin: "38px 0 34px" }}>
           {[
             { value: <CountUp value={mpCount} />, label: "MPs tracked", icon: IconGroup, color: COLORS.accent },
             pipelineStatus.generatedAt
@@ -260,13 +260,13 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
               <div style={{ width: 46, height: 46, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", background: `${s.color}18`, color: s.color }}>
                 <s.icon size={20} />
               </div>
-              <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 26, color: COLORS.ink }}>{s.value}</div>
+              <div className="hero-stat-value" style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 26, color: COLORS.ink }}>{s.value}</div>
               <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>{s.label}</div>
             </div>
           ))}
         </motion.div>
 
-        <motion.div variants={revealChild} style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap" }}>
+        <motion.div className="hero-links" variants={revealChild} style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap" }}>
           <motion.button
             onClick={onBrowse}
             whileHover={{ y: -1 }}
@@ -446,7 +446,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
           <div>
             {watchlist.length > 0 && (
               <div style={{ marginBottom: 14, display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
-                <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em" }}>
                   Watching:
                 </span>
                 {watchlist.map((p) => {
@@ -655,7 +655,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                           <Icon size={14} />
                         </span>
                         <div style={{ minWidth: 0 }}>
-                          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: meta.color, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 2 }}>
+                          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: meta.color, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 2 }}>
                             {meta.label} · {formatDate(item.date)}
                           </div>
                           <div style={{ fontFamily: FONT_DISPLAY, fontSize: 14.5, color: COLORS.ink, lineHeight: 1.35 }}>

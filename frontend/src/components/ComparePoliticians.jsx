@@ -185,7 +185,7 @@ function SearchPicker({ politicians, selectedIds, onAdd, disabled }) {
 function MiniField({ label, value }) {
   return (
     <div>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 10, fontWeight: 700, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em" }}>
         {label}
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink }}>{value}</div>
@@ -342,7 +342,7 @@ function VoteCompareRow({ vote, selected }) {
               key={i}
               title={selected[i].name}
               style={{
-                fontFamily: FONT_MONO, fontSize: 10, fontWeight: 700, textTransform: "uppercase", padding: "3px 8px", borderRadius: 999,
+                fontFamily: FONT_MONO, fontSize: 11, fontWeight: 700, textTransform: "uppercase", padding: "3px 8px", borderRadius: 999,
                 background: v.voted_aye ? "#E4EEE7" : "#F3E4E2", color: v.voted_aye ? "#2F6F4E" : "#9C3B3B",
                 boxShadow: `inset 0 0 0 1.5px ${colorFor(selected[i], i)}`,
               }}
@@ -354,7 +354,7 @@ function VoteCompareRow({ vote, selected }) {
         {showVerdict && (
           <span
             style={{
-              flexShrink: 0, fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, textTransform: "uppercase", letterSpacing: "0.04em",
+              flexShrink: 0, fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em",
               padding: "3px 9px", borderRadius: 999, background: agreed ? `${COLORS.accent}18` : "#F3E4E2", color: agreed ? COLORS.accent : "#9C3B3B",
             }}
           >

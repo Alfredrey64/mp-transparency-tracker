@@ -208,7 +208,7 @@ function Dot() {
 
 function StatusPill({ label, color }) {
   return (
-    <span style={{ fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.02em", color, background: `${color}18`, padding: "3px 9px", borderRadius: 999 }}>
+    <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.02em", color, background: `${color}18`, padding: "3px 9px", borderRadius: 999 }}>
       {label}
     </span>
   );
@@ -229,7 +229,7 @@ function CategoryPill({ label, color }) {
 
 function FieldLabel({ children }) {
   return (
-    <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>
+    <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>
       {children}
     </div>
   );
@@ -305,16 +305,16 @@ function PartyBreakdownTable({ breakdown }) {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: PARTY_TABLE_COLUMNS, columnGap: 10, rowGap: 0, alignItems: "center" }}>
-        <span style={{ fontFamily: FONT_BODY, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: COLORS.inkSoft, paddingBottom: 6, borderBottom: `1px solid ${COLORS.hairline}` }}>
+        <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: COLORS.inkSoft, paddingBottom: 6, borderBottom: `1px solid ${COLORS.hairline}` }}>
           Party
         </span>
-        <span style={{ fontFamily: FONT_BODY, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: "#2F6F4E", textAlign: "center", paddingBottom: 6, borderBottom: `1px solid ${COLORS.hairline}` }}>
+        <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: "#2F6F4E", textAlign: "center", paddingBottom: 6, borderBottom: `1px solid ${COLORS.hairline}` }}>
           Aye
         </span>
-        <span style={{ fontFamily: FONT_BODY, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: "#9C3B3B", textAlign: "center", paddingBottom: 6, borderBottom: `1px solid ${COLORS.hairline}` }}>
+        <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: "#9C3B3B", textAlign: "center", paddingBottom: 6, borderBottom: `1px solid ${COLORS.hairline}` }}>
           No
         </span>
-        <span style={{ fontFamily: FONT_BODY, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: COLORS.inkSoft, textAlign: "center", paddingBottom: 6, borderBottom: `1px solid ${COLORS.hairline}` }}>
+        <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: COLORS.inkSoft, textAlign: "center", paddingBottom: 6, borderBottom: `1px solid ${COLORS.hairline}` }}>
           Absent
         </span>
 
@@ -374,7 +374,7 @@ function VoteGroup({ label, color, members, note }) {
       <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12, color, marginBottom: note ? 2 : 6 }}>
         {label} ({members.length})
       </div>
-      {note && <div style={{ fontFamily: FONT_BODY, fontSize: 10.5, color: COLORS.inkSoft, marginBottom: 6, lineHeight: 1.4 }}>{note}</div>}
+      {note && <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginBottom: 6, lineHeight: 1.4 }}>{note}</div>}
       <div style={{ display: "flex", flexDirection: "column", gap: 3, maxHeight: 160, overflowY: "auto" }}>
         {shown.map((m, i) => (
           <div key={i} style={{ display: "flex", alignItems: "center", gap: 5, fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.ink }}>

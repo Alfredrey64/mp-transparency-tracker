@@ -125,13 +125,13 @@ export default function DevolvedAdministrations() {
                     <div style={{ padding: "0 24px 24px" }}>
                       <div style={{ paddingTop: 18, borderTop: `1px solid ${COLORS.hairline}`, display: "flex", flexDirection: "column", gap: 16 }}>
                         <motion.div initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.05, duration: 0.25 }}>
-                          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: a.accent, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>
+                          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: a.accent, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>
                             How its laws actually get made
                           </div>
                           <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.65 }}>{a.process}</div>
                         </motion.div>
                         <motion.div initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.12, duration: 0.25 }}>
-                          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: a.accent, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>
+                          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: a.accent, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>
                             How it works with Westminster
                           </div>
                           <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.65 }}>{a.relationship}</div>
@@ -163,7 +163,7 @@ export default function DevolvedAdministrations() {
 function Field({ label, children }) {
   return (
     <div>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: COLORS.inkSoft, marginBottom: 3 }}>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: COLORS.inkSoft, marginBottom: 3 }}>
         {label}
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.5 }}>{children}</div>

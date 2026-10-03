@@ -42,7 +42,7 @@ function OutcomeBadge({ outcome }) {
         display: "inline-block",
         fontFamily: FONT_BODY,
         fontWeight: 700,
-        fontSize: 10,
+        fontSize: 11,
         letterSpacing: "0.05em",
         textTransform: "uppercase",
         color: outcome.color,
@@ -160,13 +160,13 @@ function ReportCard({ report, politician, onSelectPolitician, index }) {
             }}
           >
             <div>
-              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: "#9C3B3B", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>
+              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: "#9C3B3B", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>
                 What happened
               </div>
               <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.55 }}>{detail.offence}</div>
             </div>
             <div style={{ borderTop: `1px solid ${COLORS.hairline}`, paddingTop: 9 }}>
-              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: outcome?.color ?? color, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>
+              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: outcome?.color ?? color, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>
                 The outcome
               </div>
               <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.55 }}>{detail.sanction}</div>

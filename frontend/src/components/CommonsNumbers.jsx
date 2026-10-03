@@ -45,7 +45,7 @@ function SafetyHistogram({ summary, onOpen }) {
       </div>
       <div style={{ display: "flex", gap: 5, marginTop: 5 }}>
         {summary.histogram.map((h) => (
-          <div key={h.from} style={{ flex: 1, textAlign: "center", fontFamily: FONT_BODY, fontSize: 10, color: COLORS.inkSoft }}>
+          <div key={h.from} style={{ flex: 1, textAlign: "center", fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft }}>
             {h.from}
             {h.to == null ? "+" : ""}
           </div>
@@ -195,7 +195,7 @@ export default function CommonsNumbers({ onNavigate }) {
                 onSelectParty={(name, e) => see(e, name, "Every MP currently sitting for this party.", (m) => (m.party ?? "Independent") === name)}
                 centre={
                   <div>
-                    <div style={{ ...numeric, fontSize: "clamp(22px, 4.4cqw, 34px)", fontWeight: 700, lineHeight: 1, color: COLORS.ink, letterSpacing: "-0.03em" }}>
+                    <div style={{ ...numeric, fontSize: "clamp(17px, 4cqw, 34px)", fontWeight: 700, lineHeight: 1, color: COLORS.ink, letterSpacing: "-0.03em" }}>
                       <CountUp value={stats.total} duration={1.3} />
                     </div>
                     <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 2 }}>MPs</div>

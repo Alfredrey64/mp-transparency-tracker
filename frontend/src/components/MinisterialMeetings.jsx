@@ -58,7 +58,7 @@ function FilterPill({ active, color, onClick, children }) {
 function FilterGroup({ label, children }) {
   return (
     <div style={{ marginBottom: 14 }}>
-      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 7 }}>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 7 }}>
         {label}
       </div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>{children}</div>
@@ -92,7 +92,7 @@ function MeetingCard({ meeting, color, index }) {
           <span style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 700, color: COLORS.ink, whiteSpace: "nowrap" }}>{meeting.minister}</span>
           <span
             style={{
-              fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700, color, background: `${color}14`,
+              fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color, background: `${color}14`,
               padding: "2px 8px", borderRadius: 999, textTransform: "uppercase", letterSpacing: "0.03em", whiteSpace: "nowrap",
             }}
           >
@@ -102,7 +102,7 @@ function MeetingCard({ meeting, color, index }) {
         <span style={{ flexShrink: 0, fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, whiteSpace: "nowrap" }}>{formatDate(meeting.date)}</span>
       </div>
 
-      <div style={{ fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 700, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 2 }}>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 2 }}>
         Met with
       </div>
       <div
