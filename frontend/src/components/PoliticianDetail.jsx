@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
@@ -13,6 +13,10 @@ import { getBillDescription } from "../lib/billDescriptions";
 import { isWatched, toggleWatch } from "../lib/watchlist";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { GlossaryTerm } from "./GlossaryTerm";
+
+// The Career tab pulls in a chart and a chunk of career data, so it loads
+// only when someone opens it.
+const CareerTab = lazy(() => import("./CareerTab"));
 import MpSummary from "./MpSummary";
 import DownloadCsvButton from "./DownloadCsvButton";
 import { explainDivision } from "../lib/divisionExplainer";
@@ -40,6 +44,7 @@ const DETAIL_TABS = [
   { key: "gifts", label: "Gifts" },
   { key: "roles", label: "Roles" },
   { key: "manifesto", label: "Manifesto" },
+  { key: "career", label: "Career" },
 ];
 
 // Every entry in the register reads as the same flat sentence right now
@@ -930,7 +935,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24, paddingTop: 24, alignItems: "start" }}>
           {/* ---- Left column: financial interests ---- */}
-          <div>
+          <div style={activeTab === "career" ? { gridColumn: "1 / -1" } : undefined}>
             <div
               className="mp-bill-track"
               style={{ position: "relative", display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 4, paddingBottom: 12, overflowX: "auto" }}
@@ -973,6 +978,10 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
                 <GiftsTabContent gifts={gifts} failed={giftsFailed} />
               ) : activeTab === "manifesto" ? (
                 <ManifestoTabContent politician={politician} />
+              ) : activeTab === "career" ? (
+                <Suspense fallback={<div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft, padding: "20px 0" }}>Loading career…</div>}>
+                  <CareerTab politician={politician} />
+                </Suspense>
               ) : (
                 <>
                   {loading && <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft }}>Loading declared interests…</div>}
@@ -1052,7 +1061,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
           </div>
 
           {/* ---- Right column: everything else ---- */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div style={{ display: activeTab === "career" ? "none" : "flex", flexDirection: "column", gap: 16 }}>
             <BiographyBox politician={politician} />
             <CurrentRolesBox interests={interests} />
             <FundingBySectorBox interests={interests} />

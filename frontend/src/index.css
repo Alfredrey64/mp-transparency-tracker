@@ -215,3 +215,8 @@ select:focus-visible,
 .fold[data-open="true"] { grid-template-rows: 1fr; }
 .fold-inner { overflow: hidden; min-height: 0; }
 @media (prefers-reduced-motion: reduce) { .fold { transition: none; } }
+
+/* Career tab: bars grow out from their left edge, once, when the tab opens. */
+@keyframes careerBar { from { transform: scaleX(0); opacity: 0.4; } to { transform: scaleX(1); opacity: 1; } }
+.career-bar { transform-origin: left center; animation: careerBar 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@media (prefers-reduced-motion: reduce) { .career-bar { animation: none; } }

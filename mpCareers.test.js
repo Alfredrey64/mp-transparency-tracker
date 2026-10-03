@@ -50,3 +50,56 @@ describe("careerRecord", () => {
     expect(r.slice(8)).toEqual(["Labour", "i"]);
   });
 });
+
+import { careerDetail, peerRecord } from "./mpCareers.js";
+
+describe("careerDetail", () => {
+  const bio = {
+    houseMemberships: [{ house: 1, startDate: "2010-05-06T00:00:00", endDate: null }, { house: 1, startDate: "1997-05-01T00:00:00", endDate: "2005-04-11T00:00:00" }],
+    representations: [
+      { house: 1, name: "Seat B", startDate: "2010-05-06T00:00:00", endDate: null, additionalInfo: "Elected 3 times" },
+      { house: 1, name: "Seat A", startDate: "1997-05-01T00:00:00", endDate: "2005-04-11T00:00:00", additionalInfo: "Elected 2 times" },
+      { house: 2, name: "Not counted", startDate: "2020-01-01T00:00:00" },
+    ],
+    partyAffiliations: [{ name: "Labour", startDate: "2010-05-06T00:00:00", endDate: null }, { name: "Conservative", startDate: "1997-05-01T00:00:00", endDate: "2010-01-01T00:00:00" }],
+    governmentPosts: [{ name: "Minister", additionalInfo: "Treasury", startDate: "2012-01-01T00:00:00", endDate: "2013-01-01T00:00:00" }],
+    oppositionPosts: [{ name: "Shadow", additionalInfo: null, startDate: "2015-01-01T00:00:00", endDate: null }],
+    otherPosts: [{ name: "Chair of a party group", startDate: "2001-01-01T00:00:00", endDate: "2002-01-01T00:00:00" }],
+    committeeMemberships: [{ name: "Treasury Committee", startDate: "2011-01-01T00:00:00", endDate: null, additionalInfo: "Chair" }],
+    electionsContested: [{ name: "Seat C", startDate: "1992-04-09T00:00:00" }],
+  };
+  const d = careerDetail(bio);
+  it("keeps Commons spells and seats, oldest first, with elections won", () => {
+    expect(d.h).toEqual([["1997-05-01", "2005-04-11"], ["2010-05-06", null]]);
+    expect(d.s).toEqual([["Seat A", "1997-05-01", "2005-04-11", 2], ["Seat B", "2010-05-06", null, 3]]);
+  });
+  it("keeps parties, posts, committees and lost elections as dated rows", () => {
+    expect(d.p).toEqual([["Conservative", "1997-05-01", "2010-01-01"], ["Labour", "2010-05-06", null]]);
+    expect(d.g).toEqual([["Minister", "Treasury", "2012-01-01", "2013-01-01"]]);
+    expect(d.o).toEqual([["Shadow", null, "2015-01-01", null]]);
+    expect(d.x).toEqual([["Chair of a party group", "2001-01-01", "2002-01-01"]]);
+    expect(d.c).toEqual([["Treasury Committee", "2011-01-01", null, "Chair"]]);
+    expect(d.l).toEqual([["Seat C", "1992-04-09"]]);
+  });
+  it("copes with an empty biography", () => {
+    expect(careerDetail({})).toEqual({ h: [], s: [], p: [], g: [], o: [], x: [], c: [], l: [] });
+  });
+});
+
+describe("peerRecord", () => {
+  it("records a former MP who became a peer", () => {
+    const bio = {
+      houseMemberships: [{ house: 1, startDate: "1997-05-01T00:00:00", endDate: "2010-05-01T00:00:00" }, { house: 2, startDate: "2011-06-01T00:00:00", endDate: null }],
+      representations: [{ house: 1, additionalInfo: "Elected 3 times" }],
+      governmentPosts: [{ endDate: "2010-05-01T00:00:00" }, { endDate: null }],
+      oppositionPosts: [{}],
+      committeeMemberships: [{ house: 2, endDate: null }, { house: 2, endDate: "2015-01-01T00:00:00" }, { house: 1, endDate: null }],
+      partyAffiliations: [{ name: "Conservative", startDate: "1997-05-01T00:00:00", endDate: "2020-01-01T00:00:00" }, { name: "Crossbench", startDate: "2020-01-01T00:00:00", endDate: null }],
+    };
+    expect(peerRecord(bio)).toEqual([2011, 1997, 2010, 3, 2, 1, 1, 2, 1, "Conservative", "s"]);
+  });
+  it("leaves the MP fields empty for a peer who was never an MP", () => {
+    const r = peerRecord({ houseMemberships: [{ house: 2, startDate: "2019-01-01T00:00:00", endDate: null }] });
+    expect(r.slice(0, 4)).toEqual([2019, null, null, 0]);
+  });
+});

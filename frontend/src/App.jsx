@@ -105,7 +105,9 @@ Object.assign(PAGE_TITLES, {
 function titleForState(view, selected, param) {
   const base = "UK Parliament Tracker";
   if (selected) return `${selected.name} — ${base}`;
-  if (param) return `${param} — ${PAGE_TITLES[view] ?? base} — ${base}`;
+  if (view === "numbers" && param === "lords") return `Parliament in Numbers: the Lords — ${base}`;
+  // For the Lords the parameter is a peer's id, which makes a poor title.
+  if (param && view !== "lords" && view !== "numbers") return `${param} — ${PAGE_TITLES[view] ?? base} — ${base}`;
   if (view === "home") return base;
   const label = PAGE_TITLES[view];
   return label ? `${label} — ${base}` : base;
@@ -312,7 +314,7 @@ export default function App() {
             {view === "tracker" && <GovernmentTracker />}
             {view === "budget" && <GovernmentBudget />}
             {view === "cabinet" && <Cabinet onViewProfile={handleViewProfile} />}
-            {view === "lords" && <HouseOfLords />}
+            {view === "lords" && <HouseOfLords peerId={viewParam} />}
             {view === "formerMps" && <FormerMps />}
             {view === "byElections" && <ByElections />}
             {view === "petitions" && <Petitions />}
@@ -331,7 +333,7 @@ export default function App() {
             {view === "lobbyingRegister" && <LobbyingRegister />}
             {view === "followTheMoney" && <FollowTheMoney onSelectPolitician={handleViewProfile} />}
             {view === "watchlist" && <WatchlistDigest onSelectPolitician={handleViewProfile} />}
-            {view === "numbers" && <ParliamentNumbers onNavigate={handleNavigate} />}
+            {view === "numbers" && <ParliamentNumbers house={viewParam} onNavigate={handleNavigate} />}
             {view === "topics" && <AskedAbout onSelectPolitician={handleViewProfile} onNavigateForMp={handleNavigateForMp} />}
             {view === "start" && <StartHere onNavigate={handleNavigate} onNavigateForMp={handleNavigateForMp} onViewProfile={handleViewProfile} />}
             {view === "constituency" && <Constituency seat={viewParam} onSelectPolitician={handleViewProfile} />}

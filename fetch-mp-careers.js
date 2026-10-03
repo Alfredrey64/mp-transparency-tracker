@@ -7,16 +7,21 @@
 //    elections contested) and boils it down to a short row of numbers.
 // 3. Writes frontend/src/data/mpCareers.json, keyed by Parliament's member
 //    id, for the Parliament in Numbers page to join with the MP list.
+// 4. Also writes the full dated detail (seats, parties, posts, committees,
+//    lost elections) for the Career tab on each profile, split into
+//    SHARDS files by member id so a profile fetches ~1/16th of it.
 //
 // If too few MPs come back (an upstream outage) the existing file is left
 // alone, so the page never loses its data to a partial run.
 //
 // Run it with: node fetch-mp-careers.js
 
-import { writeFileSync } from "fs";
-import { careerRecord } from "./mpCareers.js";
+import { writeFileSync, mkdirSync } from "fs";
+import { careerRecord, careerDetail } from "./mpCareers.js";
 
 const OUTPUT = "frontend/src/data/mpCareers.json";
+const DETAIL_DIR = "frontend/src/data/careerDetail";
+const SHARDS = 16;
 const MIN_MPS = 600;
 const PAGE_SIZE = 20;
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -50,11 +55,15 @@ async function main() {
   console.log(`Found ${members.length} MPs. Fetching each biography...`);
 
   const mps = {};
+  const detail = {};
   let failed = 0;
   for (const [i, member] of members.entries()) {
     try {
       const data = await getJson(`https://members-api.parliament.uk/api/Members/${member.id}/Biography`);
-      if (data?.value) mps[member.id] = careerRecord(data.value);
+      if (data?.value) {
+        mps[member.id] = careerRecord(data.value);
+        detail[member.id] = careerDetail(data.value);
+      }
       else failed++;
     } catch (err) {
       failed++;
@@ -67,6 +76,11 @@ async function main() {
   const count = Object.keys(mps).length;
   if (count < MIN_MPS) throw new Error(`Only ${count} biographies came back (need ${MIN_MPS}) — leaving ${OUTPUT} unchanged.`);
   writeFileSync(OUTPUT, JSON.stringify({ generatedAt: new Date().toISOString(), mps }) + "\n");
+
+  mkdirSync(DETAIL_DIR, { recursive: true });
+  const shards = Array.from({ length: SHARDS }, () => ({}));
+  for (const [id, record] of Object.entries(detail)) shards[Number(id) % SHARDS][id] = record;
+  shards.forEach((shard, i) => writeFileSync(`${DETAIL_DIR}/${String(i).padStart(2, "0")}.json`, JSON.stringify(shard) + "\n"));
   console.log(`\nDone. Wrote careers for ${count} MPs (${failed} unavailable).`);
 }
 

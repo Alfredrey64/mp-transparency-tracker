@@ -35,7 +35,7 @@ function Avatar({ member, colour }) {
   return <span style={{ width: 40, height: 40, borderRadius: "50%", background: `${colour}33`, border: `2px solid ${colour}`, flexShrink: 0, boxSizing: "border-box" }} />;
 }
 
-export default function MembersModal({ title, note, members, badge, returnFocusTo, onClose }) {
+export default function MembersModal({ title, note, members, badge, returnFocusTo, onClose, onSelect, noun = "MP" }) {
   const reduce = useReducedMotion();
   const panelRef = useRef(null);
   const closeRef = useRef(null);
@@ -112,7 +112,7 @@ export default function MembersModal({ title, note, members, badge, returnFocusT
           <div style={{ minWidth: 0, flex: 1 }}>
             <div style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, lineHeight: 1.2 }}>{title}</div>
             <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 4, lineHeight: 1.5 }}>
-              <strong style={{ ...numeric, fontSize: 15, color: COLORS.ink }}>{members.length.toLocaleString("en-GB")}</strong> {members.length === 1 ? "MP" : "MPs"}
+              <strong style={{ ...numeric, fontSize: 15, color: COLORS.ink }}>{members.length.toLocaleString("en-GB")}</strong> {members.length === 1 ? noun : `${noun}s`}
               {note ? ` · ${note}` : ""}
             </div>
           </div>
@@ -143,7 +143,7 @@ export default function MembersModal({ title, note, members, badge, returnFocusT
         )}
 
         <div style={{ overflowY: "auto", padding: "0 12px 14px", borderTop: `1px solid ${COLORS.hairline}` }}>
-          {filtered.length === 0 && <div style={{ padding: "18px 8px", fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No MP in this list matches that.</div>}
+          {filtered.length === 0 && <div style={{ padding: "18px 8px", fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Nobody in this list matches that.</div>}
           {visible.map((m) => {
             const colour = partyColour(m.colour, COLORS.inkSoft);
             const extra = badge?.(m);
@@ -153,7 +153,8 @@ export default function MembersModal({ title, note, members, badge, returnFocusT
                 type="button"
                 className="member-row"
                 onClick={() => {
-                  window.location.hash = `#/mp/${m.id}`;
+                  if (onSelect) onSelect(m);
+                  else window.location.hash = `#/mp/${m.id}`;
                 }}
                 style={{ display: "grid", gridTemplateColumns: "40px minmax(0, 1fr) auto", gap: 12, alignItems: "center", width: "100%", textAlign: "left", background: "none", border: "none", borderBottom: `1px solid ${COLORS.hairline}`, padding: "9px 8px", cursor: "pointer", borderRadius: 8 }}
               >

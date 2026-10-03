@@ -310,7 +310,7 @@ function PeerDetail({ peer, onBack, formerMp }) {
   );
 }
 
-export default function HouseOfLords() {
+export default function HouseOfLords({ peerId = null }) {
   const [peers, setPeers] = useState([]);
   const [formerMps, setFormerMps] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -332,10 +332,17 @@ export default function HouseOfLords() {
       // total" rather than saying anything failed.
       setFailed(Boolean(peerErr));
       setPeers(peerData ?? []);
+      // A link to "#/lords/<id>" (from Parliament in Numbers) opens that peer.
+      if (peerId != null && /^\d+$/.test(String(peerId))) {
+        const wanted = (peerData ?? []).find((p) => String(p.id) === String(peerId));
+        if (wanted) setSelected(wanted);
+      }
       setFormerMps(formerData ?? []);
       setLoading(false);
     }
     load();
+    // Runs once on arrival: peerId is only the peer to open first.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // A peer who was previously an MP keeps the same Parliament member id
@@ -370,7 +377,12 @@ export default function HouseOfLords() {
       <PeerDetail
         peer={selected}
         formerMp={formerMpById.get(selected.id)}
-        onBack={() => { setSelected(null); window.scrollTo(0, 0); }}
+        onBack={() => {
+          setSelected(null);
+          // Opened from a "#/lords/<id>" link? Drop the id from the address.
+          if (/^#\/lords\/\d+/.test(window.location.hash)) window.history.replaceState(null, "", "#/lords");
+          window.scrollTo(0, 0);
+        }}
       />
     );
   }
