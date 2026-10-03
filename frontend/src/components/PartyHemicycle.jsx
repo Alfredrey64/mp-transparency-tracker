@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { useMemo, useRef, useState } from "react";
+import { useInView, useReducedMotion } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, numeric } from "../theme";
 import { partyColour } from "../lib/format";
 
@@ -19,6 +19,8 @@ const ROWS = 9;
 const INNER_RADIUS = 66;
 const ROW_STEP = 25;
 const SEAT_RADIUS = 6.2;
+// How long the opening sweep takes to cross the dome, left to right.
+const SWEEP_SECONDS = 1;
 
 function computeSeatPositions(total) {
   const radii = Array.from({ length: ROWS }, (_, i) => INNER_RADIUS + i * ROW_STEP);
@@ -45,6 +47,12 @@ function computeSeatPositions(total) {
 
 export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Independent", legendCount = 8, centre = null }) {
   const [hoveredParty, setHoveredParty] = useState(null);
+  // The seats sweep in from the left the first time the dome scrolls into
+  // view. Until then they are held invisible, so nothing flashes on first paint.
+  const wrapRef = useRef(null);
+  const inView = useInView(wrapRef, { once: true, margin: "0px 0px -8% 0px" });
+  const reduce = useReducedMotion();
+  const shown = inView || reduce;
 
   const parties = useMemo(() => {
     const counts = new Map();
@@ -81,51 +89,45 @@ export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Ind
 
   return (
     <div>
-      <div style={{ position: "relative" }}>
+      <div ref={wrapRef} style={{ position: "relative" }}>
       <svg
         viewBox={`${-viewW / 2} ${-viewH + 10} ${viewW} ${viewH}`}
         style={{ width: "100%", height: "auto", overflow: "visible", display: "block" }}
       >
-        {/* One orchestrated entrance for the whole chamber on mount, not
-            650 individually-observed seats — each seat used to be its own
-            motion.circle with its own whileInView/IntersectionObserver,
-            which is real per-element overhead for no visible benefit (this
-            section is usually already on-screen at load), and starting an
-            observed element at scale:0 is a known fragile pattern (a
-            zero-area target can be missed by some intersection
-            implementations). A single group animating on mount is simpler,
-            cheaper, and has nothing to depend on but mounting. Each seat's
-            hover-dim is a separate, plain CSS opacity transition. */}
-        <motion.g
-          initial={{ opacity: 0, scale: 0.94 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.55, delay: 0.15, ease: "easeOut" }}
-        >
+        {/* The entrance is a sweep: every seat fades and rises into place on
+            a delay set by its angle, so a wave crosses the dome from the
+            left edge over the top to the right edge, rippling outwards
+            through the rows. It is plain CSS (see .seat-sweep), one
+            animation per seat with no JavaScript per frame; once it has
+            run, the inline opacity below is what controls the hover-dim. */}
+        <g style={{ opacity: shown ? 1 : 0 }}>
           {seatData.map((seat, i) => {
             const dimmed = hoveredParty && seat.party !== hoveredParty;
+            const delay = (1 - seat.angle / Math.PI) * SWEEP_SECONDS + seat.row * 0.014;
             return (
               <circle
                 key={i}
+                className={shown && !reduce ? "seat-sweep" : undefined}
                 cx={seat.x}
                 cy={seat.y}
                 r={SEAT_RADIUS}
                 fill={seat.color}
-                style={{ opacity: dimmed ? 0.18 : 1, transition: "opacity 0.15s" }}
+                style={{ opacity: dimmed ? 0.18 : 1, transition: "opacity 0.15s", animationDelay: `${delay.toFixed(3)}s` }}
               />
             );
           })}
-        </motion.g>
+        </g>
       </svg>
       {/* An optional figure set inside the dome, where the empty floor of the
           chamber is — the way an election-night graphic puts the seat count. */}
       {centre && (
-        <div style={{ position: "absolute", left: "50%", bottom: "1%", transform: "translateX(-50%)", textAlign: "center", pointerEvents: "none" }}>
+        <div className={shown && !reduce ? "hemi-fade" : undefined} style={{ position: "absolute", left: "50%", bottom: "1%", transform: "translateX(-50%)", textAlign: "center", pointerEvents: "none", opacity: shown ? 1 : 0 }}>
           {centre}
         </div>
       )}
       </div>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 18px", marginTop: 18, justifyContent: "center" }}>
+      <div className={shown && !reduce ? "hemi-fade hemi-legend" : undefined} style={{ display: "flex", flexWrap: "wrap", gap: "8px 18px", marginTop: 18, justifyContent: "center", opacity: shown ? 1 : 0 }}>
         {parties.slice(0, legendCount).map((p) => (
           <button
             key={p.name}
