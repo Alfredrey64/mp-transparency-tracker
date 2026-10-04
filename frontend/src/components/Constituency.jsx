@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
+import ShareButton from "./ShareButton";
+import { seatShareSpec } from "../lib/shareSpecs";
 import { motion, useReducedMotion } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme";
@@ -513,6 +515,19 @@ function SeatDetail({ record, seats, generatedAt, onSelectPolitician }) {
   return (
     <>
       <SeatHero record={record} mpInfo={mpInfo} safety={safety} onOpenProfile={openProfile} opening={opening} />
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10, marginTop: 14 }}>
+        <button
+          type="button"
+          onClick={() => { window.location.hash = `#/seatmap/${encodeURIComponent(record.name)}`; }}
+          style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accent }}
+        >
+          Find it on the seat map →
+        </button>
+        <ShareButton
+          filename={`${record.name}-2024-result`}
+          getSpec={() => seatShareSpec({ name: record.name, mp: { name: mp.name, party: mp.party, colour: mp.colour }, result, link: window.location.href })}
+        />
+      </div>
       <Tabs tab={tab} setTab={setTab} tabs={[{ key: "overview", label: "Overview" }, { key: "history", label: "History" }]} />
       {tab === "overview" ? <Overview record={record} seats={seats} safety={safety} /> : <History record={record} seats={seats} mpInfo={mpInfo} history={history} />}
       <p style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.55, marginTop: 26 }}>

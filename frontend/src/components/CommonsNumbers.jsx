@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
+import ShareButton from "./ShareButton";
+import { chamberShareSpec } from "../lib/shareSpecs";
 import { motion, useReducedMotion } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_BODY, numeric } from "../theme";
@@ -180,6 +182,11 @@ export default function CommonsNumbers({ onNavigate }) {
         <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, margin: "0" }}>
           <strong style={{ color: COLORS.accent }}>Tap any bar, party or figure marked “See who”</strong> to list the MPs behind it. Each name opens that MP's profile.
         </p>
+      )}
+      {rows !== null && !failed && stats && (
+        <div style={{ marginTop: 12 }}>
+          <ShareButton filename="house-of-commons-by-the-numbers" label="Share the chamber as an image" getSpec={() => chamberShareSpec({ house: "commons", stats, link: window.location.href })} />
+        </div>
       )}
 
       {rows === null && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>Loading…</div>}

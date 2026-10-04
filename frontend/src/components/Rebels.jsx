@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
+import ShareButton from "./ShareButton";
+import { rebelsShareSpec } from "../lib/shareSpecs";
 import { supabase } from "../supabaseClient";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { COLORS, FONT_BODY, PAGE_PADDING, numeric } from "../theme";
@@ -74,6 +76,12 @@ export default function Rebels({ onNavigate }) {
       {failed && <div style={{ marginTop: 24 }}><LoadFailedNote item="the voting records" /></div>}
 
       {r && r.countedVotes === 0 && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>No recorded votes to work from yet.</div>}
+
+      {r && r.countedVotes > 0 && (
+        <div style={{ marginTop: 18 }}>
+          <ShareButton filename="who-votes-against-their-party" label="Share this as an image" getSpec={() => rebelsShareSpec({ r, link: window.location.href })} />
+        </div>
+      )}
 
       {r && r.countedVotes > 0 && (
         <div className="bento" style={{ marginTop: 26 }}>

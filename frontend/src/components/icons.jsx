@@ -580,3 +580,13 @@ export function IconSplit({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconHexMap({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M8 3.5 11 5.2v3.4L8 10.3 5 8.6V5.2L8 3.5Z" />
+      <path d="M16 3.5 19 5.2v3.4L16 10.3l-3-1.7V5.2L16 3.5Z" />
+      <path d="M12 10.5 15 12.2v3.4L12 17.3l-3-1.7v-3.4L12 10.5Z" />
+    </svg>
+  );
+}

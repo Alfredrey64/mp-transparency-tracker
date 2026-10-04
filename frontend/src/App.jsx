@@ -57,6 +57,7 @@ const Constituency = lazy(LOADERS.constituency);
 const StartHere = lazy(LOADERS.start);
 const Rebels = lazy(LOADERS.rebels);
 const Offices = lazy(LOADERS.offices);
+const SeatMap = lazy(LOADERS.seatmap);
 
 // A quiet authorship mark, not a feature — printed once so a copy of this
 // site with the byline stripped from the UI still carries proof of where
@@ -83,7 +84,7 @@ const VALID_VIEWS = new Set([
   "devolved", "tracker", "budget", "cabinet", "lords", "formerMps", "byElections", "petitions", "partymatch",
   "committees", "compare", "ministerialMeetings", "writtenQuestions", "standards", "rankings", "myMP",
   "mediaLiteracy", "methodology", "glossary", "settings", "privacy", "terms", "list",
-  "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist", "numbers", "topics", "constituency", "start", "rebels", "offices",
+  "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist", "numbers", "topics", "constituency", "start", "rebels", "offices", "seatmap",
 ]);
 
 // The tab title, bookmark name and browser-history entry for every view —
@@ -339,6 +340,7 @@ export default function App() {
             {view === "topics" && <AskedAbout onSelectPolitician={handleViewProfile} onNavigateForMp={handleNavigateForMp} />}
             {view === "rebels" && <Rebels onNavigate={handleNavigate} />}
             {view === "offices" && <Offices initialQuery={viewParam} />}
+            {view === "seatmap" && <SeatMap seat={viewParam} />}
             {view === "start" && <StartHere onNavigate={handleNavigate} onNavigateForMp={handleNavigateForMp} onViewProfile={handleViewProfile} />}
             {view === "constituency" && <Constituency seat={viewParam} onSelectPolitician={handleViewProfile} />}
             {view === "methodology" && <Methodology onNavigate={handleNavigate} />}

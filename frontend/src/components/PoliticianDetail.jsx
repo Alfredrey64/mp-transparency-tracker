@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import ShareButton from "./ShareButton";
+import { mpShareSpec } from "../lib/shareSpecs";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
@@ -891,6 +893,15 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
                 {politician.constituency}
               </button>
               {office && ` · MP for ${office}`}
+            </div>
+            <div style={{ display: "flex", justifyContent: "center", marginTop: 10 }}>
+              <ShareButton
+                filename={`${politician.name}-uk-parliament-tracker`}
+                getSpec={async () => {
+                  const career = (await import("../data/mpCareers.json")).default.mps[politician.parliament_member_id];
+                  return mpShareSpec({ politician, career, interestCount: interests.length, totalDeclared: totalDeclaredValue, link: window.location.href });
+                }}
+              />
             </div>
             {totalDeclaredValue > 0 && (
               <div

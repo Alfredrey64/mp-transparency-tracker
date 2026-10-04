@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
+import ShareButton from "./ShareButton";
+import { chamberShareSpec } from "../lib/shareSpecs";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_BODY, numeric } from "../theme";
 import { partyColour, formatDate } from "../lib/format";
@@ -88,6 +90,9 @@ export default function LordsNumbers({ onNavigate }) {
       <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, margin: 0 }}>
         <strong style={{ color: COLORS.accent }}>Tap any bar, party or figure marked “See who”</strong> to list the peers behind it. Each name opens that peer's page.
       </p>
+      <div style={{ marginTop: 12 }}>
+        <ShareButton filename="house-of-lords-by-the-numbers" label="Share the chamber as an image" getSpec={() => chamberShareSpec({ house: "lords", stats, link: window.location.href })} />
+      </div>
 
       <div className="bento" style={{ marginTop: 26 }}>
         <div className="bento-grid">
