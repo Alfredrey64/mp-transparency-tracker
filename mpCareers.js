@@ -131,3 +131,14 @@ export function peerRecord(bio) {
     change ? (change.kind === "switch" ? "s" : "i") : null,
   ];
 }
+
+// A peer's detail: the same dated rows as an MP's, plus their spells in the
+// Lords (`lords`), so the Career tab can show "MP from 1997 to 2010, then a
+// peer". Seats, parties, posts and committees come out as for an MP; house
+// memberships split into `h` (the Commons) and `lords`.
+export function peerDetail(bio) {
+  return {
+    ...careerDetail(bio),
+    lords: sortBy((bio.houseMemberships ?? []).filter(isLordsRow), (r) => r.startDate).map((r) => [day(r.startDate), day(r.endDate)]),
+  };
+}

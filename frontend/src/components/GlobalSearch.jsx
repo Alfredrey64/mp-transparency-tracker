@@ -4,6 +4,44 @@ import { COLORS, FONT_BODY } from "../theme";
 import { partyColour } from "../lib/format";
 import { IconSearch, IconGlossary } from "./icons";
 import { SECTIONS } from "../data/sidebarSections";
+import { filtersForPhrase } from "../lib/careerFilters";
+
+// Where a search result sends you when it isn't one of the page links.
+const goHash = (hash) => {
+  window.location.hash = hash;
+};
+
+// Words that suggest someone is looking for who held a government post.
+const OFFICE_WORDS = /\b(secretary|minister|chancellor|leader|whip|chair|speaker|attorney|treasury|lord chancellor)\b/i;
+
+const GROUP_LABEL = { fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "rgba(226,232,232,0.45)", padding: "4px 8px" };
+
+function ResultGroup({ label, children }) {
+  return (
+    <div style={{ marginBottom: 4 }}>
+      <div style={GROUP_LABEL}>{label}</div>
+      {children}
+    </div>
+  );
+}
+
+function ResultRow({ onClick, title, sub, dot }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{ display: "flex", alignItems: "center", gap: 8, width: "100%", background: "none", border: "none", padding: "7px 8px", borderRadius: 7, cursor: "pointer", textAlign: "left" }}
+      onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+    >
+      {dot && <span style={{ width: 6, height: 6, borderRadius: "50%", background: dot, flexShrink: 0 }} />}
+      <span style={{ minWidth: 0 }}>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: "#fff", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{title}</div>
+        {sub && <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: "rgba(226,232,232,0.55)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{sub}</div>}
+      </span>
+    </button>
+  );
+}
 
 // Flattened once at module load, not per render — SECTIONS doesn't change
 // at runtime, and it's already part of the eager bundle regardless (the
@@ -19,6 +57,7 @@ const PAGES = SECTIONS.flatMap((s) => s.items).filter((i) => i.key !== "glossary
 export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
   const [politicians, setPoliticians] = useState([]);
   const [bills, setBills] = useState([]);
+  const [peers, setPeers] = useState([]);
   // Loaded via a dynamic import, not a static one at the top of this file —
   // GlobalSearch lives in the Sidebar, which (like Home) is in the one
   // bundle every page pays for on first load. The glossary's full term
@@ -34,12 +73,14 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
 
   useEffect(() => {
     async function load() {
-      const [{ data: p }, { data: b }] = await Promise.all([
+      const [{ data: p }, { data: b }, { data: l }] = await Promise.all([
         supabase.from("politicians").select("*"),
         supabase.from("bills").select("short_title, current_stage, sponsoring_department"),
+        supabase.from("peers").select("id, name, party, party_colour, peerage_type"),
       ]);
       setPoliticians(p ?? []);
       setBills(b ?? []);
+      setPeers(l ?? []);
     }
     load();
     import("../data/glossaryTerms").then(({ PROCEDURE_TERMS, POLITICS_TERMS }) => {
@@ -57,17 +98,21 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (q.length < 2) return { mps: [], bills: [], pages: [], glossary: [] };
+    if (q.length < 2) return { mps: [], peers: [], seats: [], careers: [], offices: false, bills: [], pages: [], glossary: [] };
     const mps = politicians
       .filter((p) => p.name?.toLowerCase().includes(q) || p.constituency?.toLowerCase().includes(q) || p.party?.toLowerCase().includes(q))
       .slice(0, 5);
     const matchedBills = bills.filter((b) => b.short_title?.toLowerCase().includes(q)).slice(0, 5);
     const pages = PAGES.filter((p) => p.label.toLowerCase().includes(q)).slice(0, 4);
-    const glossary = glossaryEntries.filter((g) => g.term.toLowerCase().includes(q)).slice(0, 4);
-    return { mps, bills: matchedBills, pages, glossary };
-  }, [politicians, bills, glossaryEntries, query]);
+    const glossary = glossaryEntries.filter((g) => g.term.toLowerCase().includes(q) || (g.aliases ?? []).some((a) => a.toLowerCase().includes(q))).slice(0, 4);
+    const matchedPeers = peers.filter((p) => p.name?.toLowerCase().includes(q)).slice(0, 4);
+    // Constituencies by name, one entry each, opening that seat's page.
+    const seats = [...new Set(politicians.map((p) => p.constituency).filter(Boolean))].filter((c) => c.toLowerCase().includes(q)).slice(0, 3);
+    const careers = filtersForPhrase(q).slice(0, 3);
+    return { mps, peers: matchedPeers, seats, careers, offices: OFFICE_WORDS.test(q) && q.length >= 4, bills: matchedBills, pages, glossary };
+  }, [politicians, peers, bills, glossaryEntries, query]);
 
-  const hasResults = results.mps.length > 0 || results.bills.length > 0 || results.pages.length > 0 || results.glossary.length > 0;
+  const hasResults = results.mps.length > 0 || results.peers.length > 0 || results.seats.length > 0 || results.careers.length > 0 || results.offices || results.bills.length > 0 || results.pages.length > 0 || results.glossary.length > 0;
 
   function selectPolitician(p) {
     onSelectPolitician?.(p);
@@ -77,6 +122,13 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
 
   function selectBill() {
     onNavigate?.("voting");
+    setQuery("");
+    setOpen(false);
+  }
+
+  // Opens a result that lives at its own address, then clears the box.
+  function openHash(hash) {
+    goHash(hash);
     setQuery("");
     setOpen(false);
   }
@@ -104,7 +156,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
           onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
           onFocus={(e) => { setOpen(true); e.target.style.borderColor = COLORS.accentOnDark; e.target.style.boxShadow = `0 0 0 3px ${COLORS.accentOnDark}33`; }}
           onBlur={(e) => { e.target.style.borderColor = "rgba(255,255,255,0.09)"; e.target.style.boxShadow = "none"; }}
-          placeholder="Search MPs, bills…"
+          placeholder="Search MPs, peers, seats, bills…"
           style={{
             width: "100%", boxSizing: "border-box", padding: "8px 10px 8px 32px",
             fontFamily: FONT_BODY, fontSize: 12.5, borderRadius: 8,
@@ -152,6 +204,33 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
                 );
               })}
             </div>
+          )}
+
+          {results.peers.length > 0 && (
+            <ResultGroup label="Peers">
+              {results.peers.map((p) => (
+                <ResultRow key={p.id} onClick={() => openHash(`#/lords/${p.id}`)} title={p.name} sub={`${p.party ?? "Crossbench"} · ${p.peerage_type ?? "Peer"}`} dot={partyColour(p.party_colour, "rgba(226,232,232,0.5)")} />
+              ))}
+            </ResultGroup>
+          )}
+
+          {results.seats.length > 0 && (
+            <ResultGroup label="Constituencies">
+              {results.seats.map((c) => (
+                <ResultRow key={c} onClick={() => openHash(`#/constituency/${encodeURIComponent(c)}`)} title={c} sub="Result, history and local petitions" />
+              ))}
+            </ResultGroup>
+          )}
+
+          {(results.careers.length > 0 || results.offices) && (
+            <ResultGroup label="Explore">
+              {results.careers.map((f) => (
+                <ResultRow key={f.key} onClick={() => openHash(`#/list/career=${f.key}`)} title={`MPs: ${f.label.toLowerCase()}`} sub="Filter the MP list" />
+              ))}
+              {results.offices && (
+                <ResultRow onClick={() => openHash(`#/offices/${encodeURIComponent(query.trim())}`)} title={`Who has held “${query.trim()}”?`} sub="Search government and shadow posts" />
+              )}
+            </ResultGroup>
           )}
 
           {results.bills.length > 0 && (

@@ -55,6 +55,8 @@ const ParliamentNumbers = lazy(LOADERS.numbers);
 const AskedAbout = lazy(LOADERS.topics);
 const Constituency = lazy(LOADERS.constituency);
 const StartHere = lazy(LOADERS.start);
+const Rebels = lazy(LOADERS.rebels);
+const Offices = lazy(LOADERS.offices);
 
 // A quiet authorship mark, not a feature — printed once so a copy of this
 // site with the byline stripped from the UI still carries proof of where
@@ -81,7 +83,7 @@ const VALID_VIEWS = new Set([
   "devolved", "tracker", "budget", "cabinet", "lords", "formerMps", "byElections", "petitions", "partymatch",
   "committees", "compare", "ministerialMeetings", "writtenQuestions", "standards", "rankings", "myMP",
   "mediaLiteracy", "methodology", "glossary", "settings", "privacy", "terms", "list",
-  "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist", "numbers", "topics", "constituency", "start",
+  "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist", "numbers", "topics", "constituency", "start", "rebels", "offices",
 ]);
 
 // The tab title, bookmark name and browser-history entry for every view —
@@ -335,6 +337,8 @@ export default function App() {
             {view === "watchlist" && <WatchlistDigest onSelectPolitician={handleViewProfile} />}
             {view === "numbers" && <ParliamentNumbers house={viewParam} onNavigate={handleNavigate} />}
             {view === "topics" && <AskedAbout onSelectPolitician={handleViewProfile} onNavigateForMp={handleNavigateForMp} />}
+            {view === "rebels" && <Rebels onNavigate={handleNavigate} />}
+            {view === "offices" && <Offices initialQuery={viewParam} />}
             {view === "start" && <StartHere onNavigate={handleNavigate} onNavigateForMp={handleNavigateForMp} onViewProfile={handleViewProfile} />}
             {view === "constituency" && <Constituency seat={viewParam} onSelectPolitician={handleViewProfile} />}
             {view === "methodology" && <Methodology onNavigate={handleNavigate} />}
@@ -351,7 +355,7 @@ export default function App() {
                   onNavigate={handleNavigateForMp}
                 />
               ) : (
-                <PoliticianList onSelect={(p) => { setSelected(p); window.scrollTo(0, 0); }} />
+                <PoliticianList initialCareer={viewParam} onSelect={(p) => { setSelected(p); window.scrollTo(0, 0); }} />
               ))}
             </Suspense>
             </ErrorBoundary>

@@ -51,7 +51,7 @@ describe("careerRecord", () => {
   });
 });
 
-import { careerDetail, peerRecord } from "./mpCareers.js";
+import { careerDetail, peerRecord, peerDetail } from "./mpCareers.js";
 
 describe("careerDetail", () => {
   const bio = {
@@ -101,5 +101,17 @@ describe("peerRecord", () => {
   it("leaves the MP fields empty for a peer who was never an MP", () => {
     const r = peerRecord({ houseMemberships: [{ house: 2, startDate: "2019-01-01T00:00:00", endDate: null }] });
     expect(r.slice(0, 4)).toEqual([2019, null, null, 0]);
+  });
+});
+
+describe("peerDetail", () => {
+  it("adds Lords spells to the career detail and keeps Commons spells apart", () => {
+    const d = peerDetail({
+      houseMemberships: [{ house: 1, startDate: "1997-05-01T00:00:00", endDate: "2010-05-01T00:00:00" }, { house: 2, startDate: "2011-06-01T00:00:00", endDate: null }],
+      committeeMemberships: [{ name: "Lords committee", startDate: "2012-01-01T00:00:00", endDate: null }],
+    });
+    expect(d.h).toEqual([["1997-05-01", "2010-05-01"]]);
+    expect(d.lords).toEqual([["2011-06-01", null]]);
+    expect(d.c).toEqual([["Lords committee", "2012-01-01", null, null]]);
   });
 });

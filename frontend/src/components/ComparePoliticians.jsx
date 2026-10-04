@@ -6,7 +6,7 @@ import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { partyColour, formatDate } from "../lib/format";
 import { getDonorSector, sectorColor } from "../lib/donorSectors";
-import { IconCompare, IconSearch, IconCoin, IconVote } from "./icons";
+import { IconCompare, IconSearch, IconCoin, IconVote, IconBriefcase } from "./icons";
 
 const MAX_COMPARE = 3;
 const NO_PARTY_MAJORITY_CONCEPT = ["independent", "speaker"];
@@ -403,15 +403,48 @@ function VoteCompareRow({ vote, selected }) {
   );
 }
 
+// How each selected MP's career compares, from the same career file the MP
+// list filters and the Parliament in Numbers page use.
+function CareerCompare({ selected, careers }) {
+  const year = new Date().getFullYear();
+  const c = (p) => careers[p.parliament_member_id];
+  const rows = (pick, format) => selected.map((p, i) => ({ name: p.name, color: colorFor(p, i), value: c(p) ? pick(c(p)) ?? 0 : 0, formatted: c(p) ? format(c(p)) : "no career record" }));
+  const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+  return (
+    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 16, padding: "22px clamp(16px, 4vw, 26px)", marginBottom: 20 }}>
+      <SectionTitle icon={IconBriefcase} color="#1FA97C">Career</SectionTitle>
+      <MoneyMetricGroup title="Time as an MP" description="Years since each MP first entered the Commons. Some have had breaks in service." rows={rows((x) => (x[0] ? year - x[0] : 0), (x) => (x[0] ? `since ${x[0]}` : "unknown"))} />
+      <MoneyMetricGroup title="Elections won" description="Every general election and by-election each MP has won." rows={rows((x) => x[1], (x) => `${x[1]}`)} />
+      <MoneyMetricGroup title="Government posts held" description="Ministerial jobs, now or in any past Parliament." rows={rows((x) => x[2], (x) => (x[3] ? `${x[2]} · in post now` : `${x[2]}`))} />
+      <MoneyMetricGroup title="Shadow front-bench posts held" rows={rows((x) => x[4], (x) => `${x[4]}`)} />
+      <MoneyMetricGroup title="Committees" description="Committees each MP has served on." rows={rows((x) => x[6], (x) => `${x[5]} now · ${x[6]} ever`)} />
+      <MoneyMetricGroup title="Elections lost before winning" rows={rows((x) => x[7], (x) => plural(x[7], "loss", "losses"))} />
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 22px", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
+        {selected.map((p, i) => (
+          <span key={p.id} style={{ color: COLORS.ink }}>
+            <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: colorFor(p, i), marginRight: 6 }} />
+            {p.name}: {!c(p) ? "no career record (not a current MP)" : c(p)[8] ? `has left ${c(p)[8]}` : "no change of party recorded"}
+          </span>
+        ))}
+      </div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 12, marginTop: 10 }}>
+        <span style={{ color: COLORS.inkSoft }}>Each MP's full timeline is on the Career tab of their profile.</span>
+      </div>
+    </div>
+  );
+}
+
 export default function ComparePoliticians() {
   const [politicians, setPoliticians] = useState([]);
   const [selected, setSelected] = useState([]);
+  const [careers, setCareers] = useState(null);
 
   useEffect(() => {
     supabase
       .from("politicians")
       .select("id, name, party, party_colour, constituency, thumbnail_url, cabinet_role, parliament_member_id, ipsa_expenses")
       .then(({ data }) => setPoliticians(data ?? []));
+    import("../data/mpCareers.json").then((m) => setCareers(m.default.mps)).catch(() => setCareers(null));
   }, []);
 
   const selectedIds = useMemo(() => selected.map((p) => p.id), [selected]);
@@ -433,7 +466,7 @@ export default function ComparePoliticians() {
         icon={IconCompare}
         kicker="Public Record · Compare MPs"
         title="Compare MPs side by side"
-        subtitle={`Pick up to ${MAX_COMPARE} MPs to compare exactly what they've declared in money — donations and IPSA business costs — and how they voted on the same issues in the Commons.`}
+        subtitle={`Pick up to ${MAX_COMPARE} MPs to compare their careers, exactly what they've declared in money — donations and IPSA business costs — and how they voted on the same issues in the Commons.`}
       />
 
       <div style={{ marginTop: 24, marginBottom: 24 }}>
@@ -453,6 +486,8 @@ export default function ComparePoliticians() {
               ))}
             </AnimatePresence>
           </div>
+
+          {careers && <CareerCompare selected={selected} careers={careers} />}
 
           <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 16, padding: "22px clamp(16px, 4vw, 26px)", marginBottom: 20 }}>
             <SectionTitle icon={IconCoin} color={COLORS.accent}>Money</SectionTitle>

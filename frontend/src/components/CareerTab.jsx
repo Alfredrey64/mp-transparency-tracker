@@ -11,7 +11,7 @@ import {
 // thing as a dated log you can filter. All from Parliament's own biography
 // record for the MP.
 
-const LANE_COLOURS = { commons: "#4F46E5", seat: "#4F46E5", gov: "#1FA97C", opp: "#E8A33D", other: "#7B6CF0", committee: "#2F8FBF" };
+const LANE_COLOURS = { lords: "#9B4FE0", commons: "#4F46E5", seat: "#4F46E5", gov: "#1FA97C", opp: "#E8A33D", other: "#7B6CF0", committee: "#2F8FBF" };
 const ROW = 24;
 const LABEL_W = 104;
 
@@ -188,15 +188,16 @@ function Log({ events, now }) {
   );
 }
 
-export default function CareerTab({ politician }) {
-  const memberId = politician.parliament_member_id;
+export default function CareerTab({ politician, house = "commons" }) {
+  // A peer's row id in the peers table is their Parliament member id.
+  const memberId = house === "lords" ? politician.id : politician.parliament_member_id;
   const [state, setState] = useState({ id: null, detail: null, failed: false });
   const [now] = useState(() => Date.now());
 
   useEffect(() => {
     if (memberId == null) return;
     let cancelled = false;
-    loadCareerDetail(memberId)
+    loadCareerDetail(memberId, house)
       .then((detail) => {
         if (!cancelled) setState({ id: memberId, detail, failed: false });
       })
@@ -206,7 +207,7 @@ export default function CareerTab({ politician }) {
     return () => {
       cancelled = true;
     };
-  }, [memberId]);
+  }, [memberId, house]);
 
   const detail = state.id === memberId ? state.detail : null;
   const loading = memberId != null && state.id !== memberId;
@@ -238,9 +239,10 @@ export default function CareerTab({ politician }) {
 
       {hasAnything && summary && (
         <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "20px 24px", padding: "18px 20px", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.accent}`, borderRadius: 16 }}>
-          <Stat value={summary.firstElected ? summary.firstElected.slice(0, 4) : "–"} label="first elected" note={summary.firstElected ? monthYear(summary.firstElected) : undefined} />
-          <Stat value={yrs(summary.yearsInCommons)} label="in the Commons" />
-          <Stat value={summary.electionsWon} label="elections won" note={summary.electionsLost ? `${summary.electionsLost} lost` : undefined} />
+          {summary.firstElected && <Stat value={summary.firstElected.slice(0, 4)} label="first elected" note={monthYear(summary.firstElected)} />}
+          {summary.lordsFrom && <Stat value={yrs(summary.yearsInLords)} label="in the Lords" note={`since ${summary.lordsFrom.slice(0, 4)}`} />}
+          {summary.firstElected && <Stat value={yrs(summary.yearsInCommons)} label={summary.lordsFrom ? "as an MP" : "in the Commons"} />}
+          {summary.firstElected && <Stat value={summary.electionsWon} label="elections won" note={summary.electionsLost ? `${summary.electionsLost} lost` : undefined} />}
           <Stat value={summary.governmentPosts} label="government posts" note={summary.governmentPosts ? `${yrs(summary.governmentYears)} in government` : undefined} />
           <Stat value={summary.shadowPosts} label="shadow posts" note={summary.shadowPosts ? `${yrs(summary.shadowYears)} on the front bench` : undefined} />
           <Stat value={summary.committees} label="committees" note={summary.committeesNow ? `${summary.committeesNow} now` : undefined} />

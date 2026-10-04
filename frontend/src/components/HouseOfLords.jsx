@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
@@ -7,6 +7,9 @@ import { PageHeader, CardShell, LoadFailedNote } from "./shared";
 import { PartyHemicycleSection } from "./PartyHemicycle";
 import { IconLords } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
+
+// The Career tab loads its chart and career data only when opened.
+const CareerTab = lazy(() => import("./CareerTab"));
 
 const PEERAGE_TYPES = ["Life peer", "Life Peer (judicial)", "Bishop"];
 
@@ -101,6 +104,7 @@ function LordsInterestsLink({ peer }) {
 function PeerDetail({ peer, onBack, formerMp }) {
   const color = partyColour(peer.party_colour, COLORS.inkSoft);
   const office = timeInOffice(peer.membership_start_date);
+  const [tab, setTab] = useState("overview");
 
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, ease: "easeOut" }} style={{ padding: PAGE_PADDING }}>
@@ -127,7 +131,30 @@ function PeerDetail({ peer, onBack, formerMp }) {
           )}
         </div>
 
-        <div style={{ paddingTop: 24, display: "flex", flexDirection: "column", gap: 16 }}>
+        <div role="tablist" aria-label="Peer page sections" style={{ display: "flex", justifyContent: "center", gap: 4, paddingTop: 18 }}>
+          {[["overview", "Overview"], ["career", "Career"]].map(([key, label]) => (
+            <button
+              key={key}
+              type="button"
+              role="tab"
+              aria-selected={tab === key}
+              onClick={() => setTab(key)}
+              style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 600, padding: "8px 20px", borderRadius: 999, border: "none", cursor: "pointer", background: tab === key ? COLORS.accent : "transparent", color: tab === key ? "#fff" : COLORS.inkSoft, transition: "background-color 0.15s, color 0.15s" }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {tab === "career" && (
+          <div style={{ paddingTop: 24 }}>
+            <Suspense fallback={<div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft, padding: "20px 0" }}>Loading career…</div>}>
+              <CareerTab politician={peer} house="lords" />
+            </Suspense>
+          </div>
+        )}
+
+        <div style={{ paddingTop: 24, display: tab === "career" ? "none" : "flex", flexDirection: "column", gap: 16 }}>
           <LordsInterestsLink peer={peer} />
 
           <CardShell title="Biography">

@@ -568,3 +568,15 @@ export function IconTopic({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconSplit({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 21v-7" />
+      <path d="M12 14c0-4-6-4-6-9" />
+      <path d="M12 14c0-4 6-4 6-9" />
+      <path d="m3.5 7 2.5-2.5L8.5 7" />
+      <path d="m15.5 7 2.5-2.5L20.5 7" />
+    </svg>
+  );
+}

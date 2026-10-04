@@ -3,7 +3,7 @@ import {
   IconGlossary, IconHistory, IconDevolved, IconFormerMP, IconBudget, IconCabinet, IconTimeline,
   IconPartyFinance, IconByElection, IconLords, IconPetition, IconCompass, IconCommittee, IconCompare, IconMeeting,
   IconQuestion, IconGavel, IconRankings, IconDarkMoney, IconThinkTank, IconDoor, IconRegister,
-  IconSearch, IconBook, IconChartBars, IconTopic, IconMap, IconRoute,
+  IconSearch, IconBook, IconChartBars, IconTopic, IconMap, IconRoute, IconSplit,
 } from "../components/icons";
 
 // Lives outside both Sidebar.jsx and shared.jsx specifically so neither has
@@ -57,6 +57,7 @@ export const SECTIONS = [
     accent: "#D9A62A",
     items: [
       { key: "cabinet", label: "Cabinet", icon: IconCabinet },
+      { key: "offices", label: "Who Held Office", icon: IconCabinet },
       { key: "lords", label: "House of Lords", icon: IconLords },
       { key: "committees", label: "Select Committees", icon: IconCommittee },
       { key: "budget", label: "Government Budget", icon: IconBudget },
@@ -107,6 +108,7 @@ export const SECTIONS = [
     accent: "#9B4FE0",
     items: [
       { key: "voting", label: "Voting Records & Bills", icon: IconVote },
+      { key: "rebels", label: "Rebels", icon: IconSplit },
       { key: "writtenQuestions", label: "Written Questions", icon: IconQuestion },
       { key: "topics", label: "Who's Asking About…", icon: IconTopic },
       { key: "standards", label: "Standards & Sanctions", icon: IconGavel },

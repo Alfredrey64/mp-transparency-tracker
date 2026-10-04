@@ -9,16 +9,21 @@
 //    party changes.
 // 3. Writes frontend/src/data/lordsCareers.json, keyed by Parliament's
 //    member id, for the Lords half of the Parliament in Numbers page.
+// 4. Also writes each peer's full dated career (seats, parties, posts,
+//    committees, Lords service) for the Career tab on their page, split
+//    into SHARDS files by member id.
 //
 // If too few peers come back (an upstream outage) the existing file is left
 // alone, so the page never loses its data to a partial run.
 //
 // Run it with: node fetch-lords-careers.js
 
-import { writeFileSync } from "fs";
-import { peerRecord } from "./mpCareers.js";
+import { writeFileSync, mkdirSync } from "fs";
+import { peerRecord, peerDetail } from "./mpCareers.js";
 
 const OUTPUT = "frontend/src/data/lordsCareers.json";
+const DETAIL_DIR = "frontend/src/data/lordsCareerDetail";
+const SHARDS = 16;
 const MIN_PEERS = 600;
 const PAGE_SIZE = 20;
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -52,11 +57,15 @@ async function main() {
   console.log(`Found ${members.length} peers. Fetching each biography...`);
 
   const peers = {};
+  const detail = {};
   let failed = 0;
   for (const [i, member] of members.entries()) {
     try {
       const data = await getJson(`https://members-api.parliament.uk/api/Members/${member.id}/Biography`);
-      if (data?.value) peers[member.id] = peerRecord(data.value);
+      if (data?.value) {
+        peers[member.id] = peerRecord(data.value);
+        detail[member.id] = peerDetail(data.value);
+      }
       else failed++;
     } catch (err) {
       failed++;
@@ -69,6 +78,11 @@ async function main() {
   const count = Object.keys(peers).length;
   if (count < MIN_PEERS) throw new Error(`Only ${count} biographies came back (need ${MIN_PEERS}) — leaving ${OUTPUT} unchanged.`);
   writeFileSync(OUTPUT, JSON.stringify({ generatedAt: new Date().toISOString(), peers }) + "\n");
+
+  mkdirSync(DETAIL_DIR, { recursive: true });
+  const shards = Array.from({ length: SHARDS }, () => ({}));
+  for (const [id, record] of Object.entries(detail)) shards[Number(id) % SHARDS][id] = record;
+  shards.forEach((shard, i) => writeFileSync(`${DETAIL_DIR}/${String(i).padStart(2, "0")}.json`, JSON.stringify(shard) + "\n"));
   console.log(`\nDone. Wrote careers for ${count} peers (${failed} unavailable).`);
 }
 

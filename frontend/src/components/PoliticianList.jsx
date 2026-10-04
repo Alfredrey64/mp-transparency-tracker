@@ -9,6 +9,7 @@ import { withScrollPreserved } from "../lib/preserveScroll";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { interestColumns, mpColumns } from "../lib/exportColumns";
 import DownloadCsvButton from "./DownloadCsvButton";
+import { CAREER_FILTERS, SORTS, applyCareerFilters, sortMps, careerLine } from "../lib/careerFilters";
 
 function SkeletonCard() {
   return (
@@ -79,14 +80,29 @@ function Avatar({ politician, color }) {
     </div>
   );
 }
+// "career=minister,govNow" -> the filter keys it names; anything else -> none.
+function keysFromParam(param) {
+  const m = /^career=(.+)$/.exec(param ?? "");
+  return m ? m[1].split(",").filter((k) => CAREER_FILTERS.some((f) => f.key === k)) : [];
+}
 
-export default function PoliticianList({ onSelect }) {
+export default function PoliticianList({ onSelect, initialCareer = null }) {
   const [politicians, setPoliticians] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [query, setQuery] = useState("");
   const [activeParty, setActiveParty] = useState("All");
   const [sortBy, setSortBy] = useState("name");
+  // Career facts for every MP, loaded after the list (a small file), which
+  // switch on the career filters, the extra sorts and the line on each card.
+  const [careers, setCareers] = useState(null);
+  const [careerKeys, setCareerKeys] = useState(() => keysFromParam(initialCareer));
+  // A search result can point here with "#/list/career=minister".
+  const [seenCareerParam, setSeenCareerParam] = useState(initialCareer);
+  if (seenCareerParam !== initialCareer) {
+    setSeenCareerParam(initialCareer);
+    setCareerKeys(keysFromParam(initialCareer));
+  }
 
   useEffect(() => {
     async function load() {
@@ -99,6 +115,7 @@ export default function PoliticianList({ onSelect }) {
       setLoading(false);
     }
     load();
+    import("../data/mpCareers.json").then((m) => setCareers(m.default.mps)).catch(() => setCareers(null));
   }, []);
 
   const parties = useMemo(() => {
@@ -125,11 +142,10 @@ export default function PoliticianList({ onSelect }) {
           p.party?.toLowerCase().includes(q)
       );
     }
-    if (sortBy === "constituency") {
-      list = [...list].sort((a, b) => (a.constituency ?? "").localeCompare(b.constituency ?? ""));
-    }
+    list = applyCareerFilters(list, careers, careerKeys);
+    list = sortMps(list, careers, sortBy);
     return list;
-  }, [politicians, query, activeParty, sortBy]);
+  }, [politicians, query, activeParty, sortBy, careers, careerKeys]);
 
   return (
     <div style={{ padding: PAGE_PADDING }}>
@@ -161,23 +177,18 @@ export default function PoliticianList({ onSelect }) {
           onFocus={(e) => (e.target.style.borderColor = COLORS.accent)}
           onBlur={(e) => (e.target.style.borderColor = COLORS.hairline)}
         />
-        <button
-          onClick={() => withScrollPreserved(() => setSortBy(sortBy === "name" ? "constituency" : "name"))}
-          style={{
-            fontFamily: FONT_BODY,
-            fontSize: 13,
-            fontWeight: 600,
-            color: COLORS.inkSoft,
-            background: "transparent",
-            border: `1px solid ${COLORS.hairline}`,
-            borderRadius: 10,
-            padding: "12px 16px",
-            cursor: "pointer",
-            whiteSpace: "nowrap",
-          }}
-        >
-          Sort: {sortBy === "name" ? "Name" : "Constituency"} ⇅
-        </button>
+        <label style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: COLORS.inkSoft }}>
+          Sort
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: COLORS.ink, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 10, padding: "11px 12px", cursor: "pointer" }}
+          >
+            {SORTS.filter((o) => careers || (o.key === "name" || o.key === "constituency")).map((o) => (
+              <option key={o.key} value={o.key}>{o.label}</option>
+            ))}
+          </select>
+        </label>
       </div>
 
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 24 }}>
@@ -227,6 +238,42 @@ export default function PoliticianList({ onSelect }) {
           );
         })}
       </div>
+
+      {careers && (
+        <div style={{ marginBottom: 20 }}>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.inkSoft, marginBottom: 8 }}>Filter by career</div>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+            {CAREER_FILTERS.map((f) => {
+              const on = careerKeys.includes(f.key);
+              return (
+                <button
+                  key={f.key}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => withScrollPreserved(() => setCareerKeys((prev) => (on ? prev.filter((k) => k !== f.key) : [...prev, f.key])))}
+                  style={{
+                    fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, padding: "7px 14px", borderRadius: 999, cursor: "pointer",
+                    border: `1px solid ${on ? COLORS.accent : COLORS.hairline}`, background: on ? `${COLORS.accent}1f` : "transparent", color: on ? COLORS.accent : COLORS.inkSoft,
+                    transition: "background-color 0.15s, border-color 0.15s, color 0.15s",
+                  }}
+                >
+                  {on ? "✓ " : ""}{f.label}
+                </button>
+              );
+            })}
+            {careerKeys.length > 0 && (
+              <button type="button" onClick={() => withScrollPreserved(() => setCareerKeys([]))} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accent }}>
+                Clear
+              </button>
+            )}
+          </div>
+          {(careerKeys.length > 0 || activeParty !== "All" || query.trim()) && !loading && (
+            <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 10 }}>
+              Showing <strong style={{ color: COLORS.ink }}>{filtered.length.toLocaleString("en-GB")}</strong> of {politicians.length.toLocaleString("en-GB")} MPs.
+            </div>
+          )}
+        </div>
+      )}
 
       {!loading && !error && politicians.length > 0 && (
         <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 22px", marginBottom: 20 }}>
@@ -288,6 +335,11 @@ export default function PoliticianList({ onSelect }) {
                   <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                     {p.party} · {p.constituency}
                   </div>
+                  {careers && careerLine(careers[p.parliament_member_id]) && (
+                    <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: 1 }}>
+                      {careerLine(careers[p.parliament_member_id])}
+                    </div>
+                  )}
                 </span>
               </motion.button>
             );

@@ -1,4 +1,5 @@
 import { preloadView } from "../pageLoaders";
+import { useWatchlistChanges } from "../lib/useWatchlistChanges";
 import { useState } from "react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
 import { EyebrowLabel, ParliamentSilhouette } from "./shared";
@@ -76,6 +77,14 @@ function NavItem({ item, active, accent, onNavigate }) {
         </span>
         <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{item.label}</span>
       </span>
+      {item.badge > 0 && (
+        <span
+          title={`${item.badge} new for the MPs you follow`}
+          style={{ flexShrink: 0, minWidth: 18, height: 18, padding: "0 5px", boxSizing: "border-box", borderRadius: 999, background: "#F2622A", color: "#fff", fontFamily: FONT_MONO, fontSize: 10.5, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}
+        >
+          {item.badge > 99 ? "99+" : item.badge}
+        </span>
+      )}
       {item.soon && (
         <span style={{ flexShrink: 0, fontFamily: FONT_MONO, fontSize: 9, letterSpacing: "0.06em", textTransform: "uppercase" }}>
           Soon
@@ -145,6 +154,9 @@ function SidebarSection({ label, accent, items, activeView, onNavigate, open, on
 }
 
 function SidebarInner({ activeView, onNavigate, onSelectPolitician }) {
+  // A count beside "My Watchlist" when the MPs you follow have something new.
+  const watch = useWatchlistChanges();
+  const homeItems = HOME_NAV_ITEMS.map((i) => (i.key === "watchlist" && watch?.changes > 0 ? { ...i, badge: watch.changes } : i));
   // Sections the visitor has opened or closed themselves; the rest follow
   // the page they're on. "Start Here" lives in the top group, not under Learn.
   const [choices, setChoices] = useState(() => readSectionChoices());
@@ -195,7 +207,7 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician }) {
 
       <div style={{ flex: 1 }}>
         <div style={{ marginTop: 10 }}>
-          <NavList items={HOME_NAV_ITEMS} activeView={activeView} onNavigate={onNavigate} />
+          <NavList items={homeItems} activeView={activeView} onNavigate={onNavigate} />
         </div>
         <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}>
           <button

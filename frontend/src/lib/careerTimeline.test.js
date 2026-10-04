@@ -94,6 +94,23 @@ describe("events and summary", () => {
   });
 });
 
+describe("a peer's career", () => {
+  const peer = { ...detail, lords: [["2011-06-01", null]], h: [["1997-05-01", "2010-05-01"]], s: [["Seat A", "1997-05-01", "2010-05-01", 3]] };
+  it("tells the Lords story first, then the time as an MP", () => {
+    const lines = careerStory("Lord Smith", peer, NOW);
+    expect(lines[0]).toContain("Lord Smith has sat in the House of Lords since June 2011");
+    expect(lines[1]).toContain("Before that, Lord Smith was an MP for Seat A from May 1997 to May 2010");
+  });
+  it("adds a Lords lane and event, and Lords years to the summary", () => {
+    expect(buildLanes(peer, NOW)[0].key).toBe("lords");
+    expect(buildEvents(peer).some((e) => e.kind === "lords")).toBe(true);
+    const s = summarise(peer, NOW);
+    expect(s.lordsFrom).toBe("2011-06-01");
+    expect(Math.round(s.yearsInLords)).toBe(15);
+    expect(s.inLordsNow).toBe(true);
+  });
+});
+
 describe("party colours", () => {
   it("knows the main parties and gives others a steady colour", () => {
     expect(partyColourByName("Labour")).toBe("#d50000");

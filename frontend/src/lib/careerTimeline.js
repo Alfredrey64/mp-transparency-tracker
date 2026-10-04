@@ -100,6 +100,7 @@ const spellItems = (list, make, now) => list.filter((r) => ms(make(r).start)).ma
 // The swimlanes: one entry per lane, each with its packed bars.
 export function buildLanes(detail, now = Date.now()) {
   const lanes = [
+    { key: "lords", label: "In the Lords", items: spellItems(detail.lords ?? [], (r) => ({ label: "Peer", start: r[0], end: r[1] }), now) },
     { key: "commons", label: "In the Commons", items: spellItems(detail.h, (r) => ({ label: "MP", start: r[0], end: r[1] }), now) },
     { key: "seat", label: "Seat", items: spellItems(mergeSeats(detail.s), (r) => ({ label: r.name, start: r.start, end: r.end, note: r.elected ? `Elected ${r.elected} time${r.elected === 1 ? "" : "s"}` : "" }), now) },
     { key: "party", label: "Party", items: spellItems(detail.p, (r) => ({ label: r[0], start: r[1], end: r[2] }), now) },
@@ -149,6 +150,7 @@ export function buildEvents(detail) {
     events.push({ kind, start, end: end ?? null, ongoing: !end, title, sub: sub ?? null, years: yearOf(start), ...extra });
   };
 
+  for (const [start, end] of detail.lords ?? []) add("lords", start, end, "Member of the House of Lords", null);
   for (const seat of mergeSeats(detail.s)) {
     add("seat", seat.start, seat.end, `MP for ${seat.name}`, seat.elected ? `Elected ${seat.elected} time${seat.elected === 1 ? "" : "s"} in this spell` : null);
   }
@@ -166,6 +168,7 @@ export function buildEvents(detail) {
 }
 
 export const EVENT_KINDS = [
+  { key: "lords", label: "House of Lords", colour: "#9B4FE0" },
   { key: "seat", label: "Seats", colour: "#4F46E5" },
   { key: "party", label: "Party", colour: "#8A6D3B" },
   { key: "gov", label: "Government", colour: "#1FA97C" },
@@ -199,6 +202,9 @@ export function summarise(detail, now = Date.now()) {
     shadowPosts: detail.o.length,
     committees: detail.c.length,
     committeesNow: detail.c.filter((c) => !c[2]).length,
+    lordsFrom: detail.lords?.[0]?.[0] ?? null,
+    yearsInLords: unionYears(detail.lords ?? [], now),
+    inLordsNow: (detail.lords ?? []).some((l) => !l[1]),
     partyChanges: switches,
     longestRole: longest,
   };
@@ -209,7 +215,14 @@ export function summarise(detail, now = Date.now()) {
 export function careerStory(name, detail, now = Date.now()) {
   const s = summarise(detail, now);
   const lines = [];
-  if (s.firstElected) {
+  if (s.lordsFrom) {
+    lines.push(`${name} has sat in the House of Lords since ${monthYear(s.lordsFrom)}, about ${Math.max(1, Math.round(s.yearsInLords))} year${Math.round(s.yearsInLords) <= 1 ? "" : "s"}.`);
+  }
+  if (s.firstElected && s.lordsFrom) {
+    const seats = s.seats;
+    const lastEnd = detail.h[detail.h.length - 1]?.[1];
+    lines.push(`Before that, ${name} was an MP${seats.length ? ` for ${seats.length === 1 ? seats[0] : `${seats[0]} and then ${seats[seats.length - 1]}`}` : ""} from ${monthYear(s.firstElected)}${lastEnd ? ` to ${monthYear(lastEnd)}` : ""}.`);
+  } else if (s.firstElected) {
     const seats = s.seats;
     const seatText = seats.length === 0 ? "" : seats.length === 1 ? ` for ${seats[0]}` : `, first for ${seats[0]} and now for ${seats[seats.length - 1]}`;
     lines.push(`${name} has been an MP${seatText} since ${monthYear(s.firstElected)}, ${s.yearsInCommons >= 1 ? `about ${Math.round(s.yearsInCommons)} years in the Commons` : "less than a year in the Commons"}.`);

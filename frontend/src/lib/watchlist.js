@@ -5,6 +5,17 @@
 // widget on the homepage, not a live-synced record.
 const STORAGE_KEY = "mp-tracker-watchlist";
 
+// Tells anything showing "N new for the MPs you follow" (the sidebar badge, the
+// home page note) to count again after the list or the last-checked time moves.
+export const WATCHLIST_EVENT = "mp-tracker-watchlist-changed";
+function notify() {
+  try {
+    window.dispatchEvent(new Event(WATCHLIST_EVENT));
+  } catch {
+    // No window (tests): nothing is listening.
+  }
+}
+
 function readAll() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -47,11 +58,13 @@ export function toggleWatch(politician) {
         },
       ];
   writeAll(next);
+  notify();
   return !exists;
 }
 
 export function removeFromWatchlist(politicianId) {
   writeAll(readAll().filter((p) => p.id !== politicianId));
+  notify();
 }
 
 // When the Watchlist Digest page last computed "what's new" — also
@@ -74,4 +87,5 @@ export function setLastChecked(timestamp = Date.now()) {
   } catch {
     // Private browsing / storage disabled — next visit just re-checks the same window.
   }
+  notify();
 }

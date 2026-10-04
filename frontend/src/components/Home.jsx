@@ -1,3 +1,4 @@
+import { useWatchlistChanges } from "../lib/useWatchlistChanges";
 import { useState, useEffect, useMemo } from "react";
 import { motion, useMotionValue, animate } from "framer-motion";
 import { supabase } from "../supabaseClient";
@@ -40,6 +41,26 @@ const QUICK_LINKS = [
   { key: "partyFinances", label: "Browse Party Funding", icon: IconPartyFinance, color: "#F2622A" },
   { key: "rankings", label: "Rankings", icon: IconRankings, color: "#D9A62A" },
 ];
+
+// A quiet line for anyone following MPs: how many new things there are for
+// them since the Watchlist was last opened. Shows nothing when there is
+// nothing, or when this browser follows no one.
+function WatchlistNote({ onNavigate }) {
+  const watch = useWatchlistChanges();
+  if (!watch || watch.changes === 0) return null;
+  return (
+    <div style={{ display: "flex", justifyContent: "center", marginTop: 14 }}>
+      <button
+        type="button"
+        onClick={() => onNavigate?.("watchlist")}
+        style={{ display: "flex", alignItems: "center", gap: 10, background: "#F2622A14", border: "1px solid #F2622A55", borderRadius: 999, padding: "9px 18px", cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink }}
+      >
+        <span style={{ minWidth: 22, height: 22, padding: "0 6px", boxSizing: "border-box", borderRadius: 999, background: "#F2622A", color: "#fff", fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>{watch.changes > 99 ? "99+" : watch.changes}</span>
+        New since you last looked, for the {watch.following} MP{watch.following === 1 ? "" : "s"} you follow →
+      </button>
+    </div>
+  );
+}
 
 function CountUp({ value }) {
   const [display, setDisplay] = useState(0);
@@ -297,6 +318,8 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
             </motion.button>
           ))}
         </motion.div>
+
+        <WatchlistNote onNavigate={onNavigate} />
 
         {/* A different kind of thing from the buttons above, so it isn't one more
             pill in the row: an invitation for anyone who's never been here. */}
