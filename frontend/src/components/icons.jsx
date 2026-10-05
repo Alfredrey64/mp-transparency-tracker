@@ -574,11 +574,10 @@ export function IconTopic({ size = 17 }) {
 export function IconSplit({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 21v-7" />
-      <path d="M12 14c0-4-6-4-6-9" />
-      <path d="M12 14c0-4 6-4 6-9" />
-      <path d="m3.5 7 2.5-2.5L8.5 7" />
-      <path d="m15.5 7 2.5-2.5L20.5 7" />
+      <path d="M7 21V4" />
+      <path d="M3.5 7.5 7 4l3.5 3.5" />
+      <path d="M7 17c0-4.5 10-3.5 10-9V4" />
+      <path d="M13.5 7.5 17 4l3.5 3.5" />
     </svg>
   );
 }
@@ -600,6 +599,16 @@ export function IconCouncil({ size = 17 }) {
       <path d="M9.5 11V4.5h5V11" />
       <circle cx="12" cy="7.8" r="1.1" />
       <path d="M10.5 20.5v-4h3v4" />
+    </svg>
+  );
+}
+
+export function IconParliament({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3.5 20.5h17M5 20.5V12h14v8.5" />
+      <path d="M9.5 12V8.5L12 3.5l2.5 5V12" />
+      <path d="M8.5 15v3M12 15v3M15.5 15v3" />
     </svg>
   );
 }

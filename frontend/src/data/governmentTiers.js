@@ -18,6 +18,7 @@ export const TIERS = [
   {
     key: "parliament",
     name: "UK Parliament",
+    keywords: "Makes laws, sets taxes, questions ministers",
     short: "Makes the laws and checks the government",
     figure: { value: "650 + ~800", label: "MPs and peers" },
     color: "#4F46E5",
@@ -43,6 +44,7 @@ export const TIERS = [
   {
     key: "government",
     name: "UK Government",
+    keywords: "Runs departments, writes rules, spends money",
     short: "Runs the country day to day",
     figure: { value: "~120", label: "ministers" },
     color: "#B5533C",
@@ -68,6 +70,7 @@ export const TIERS = [
   {
     key: "devolved",
     name: "Devolved governments",
+    keywords: "Health, schools, housing, transport",
     short: "Scotland, Wales and Northern Ireland run their own affairs",
     figure: { value: "315", label: "MSPs, MSs and MLAs" },
     figureHere: {
@@ -94,6 +97,7 @@ export const TIERS = [
   {
     key: "combined",
     name: "Mayors and combined authorities",
+    keywords: "Buses and trams, skills, housing plans",
     short: "Big city regions in England with a shared mayor",
     figure: { value: "~12", label: "mayors outside London" },
     color: "#8A5A9E",
@@ -113,6 +117,7 @@ export const TIERS = [
   {
     key: "council",
     name: "Local councils",
+    keywords: "Bins, planning, social care, roads",
     short: "Deliver the services on your doorstep",
     figure: { value: "~370", label: "councils across the UK" },
     figureHere: {
@@ -143,6 +148,7 @@ export const TIERS = [
   {
     key: "parish",
     name: "Parish and town councils",
+    keywords: "Parks, village halls, allotments",
     short: "The smallest tier, for a village or a town",
     figure: { value: "~10,000", label: "in England" },
     figureHere: {
@@ -165,6 +171,23 @@ export const TIERS = [
     absentNote: "Northern Ireland has no parish tier. Its 11 councils cover everything local.",
   },
 ];
+
+// The voter, at the bottom of the diagram.
+export const YOU = {
+  name: "You, the voter",
+  short: "Every tier answers to you at the ballot box",
+  figure: { value: "~48m", label: "registered voters" },
+  does: [
+    "Elect your MP, your councillors and, depending on where you live, a mayor, devolved members and parish councillors.",
+    "Between elections you can write to your MP, back a petition, comment on a planning application or go to a council meeting.",
+    "You can stand for office yourself. Most parish councils are glad of new faces.",
+  ],
+  links: [
+    { label: "Your constituency", href: "#/constituency" },
+    { label: "Your council", href: "#/councils" },
+    { label: "Petitions", href: "#/petitions" },
+  ],
+};
 
 // Between one tier and the next: what passes down and what flows back up.
 export const CONNECTORS = [
