@@ -35,3 +35,35 @@ describe("councilChangeMeaning", () => {
     expect(councilChangeMeaning({ rows: [row(2026, 5, 5, 0)] })).toBeNull();
   });
 });
+
+import { changesMeaning, defectionMeaning, controlTrendMeaning } from "./councilMeaning";
+
+describe("national sentences", () => {
+  const summary = { total: 72, flows: [{ from: "lab", to: "noc", count: 31 }], net: [{ key: "ref", net: 24 }, { key: "noc", net: 5 }, { key: "lab", net: -43 }] };
+  it("compares the latest year's changes of control with earlier years", () => {
+    const r = changesMeaning({ changesByYear: [{ year: 2024, count: 26 }, { year: 2025, count: 32 }, { year: 2026, count: 72 }], summary });
+    expect(r.marker).toBe("The most on record");
+    expect(r.text).toContain("72 councils changed hands in 2026, more than in any other year since records here begin in 2024");
+    expect(r.text).toContain("Labour to No overall control (31 councils)");
+    expect(r.text).toContain("Reform UK made the biggest net gain (+24) and Labour the biggest net loss (−43)");
+    expect(r.text).toContain("5 more councils now have no overall control.");
+    const typical = changesMeaning({ changesByYear: [{ year: 2023, count: 86 }, { year: 2024, count: 20 }, { year: 2025, count: 30 }, { year: 2026, count: 25 }], summary: { ...summary, total: 25 } });
+    expect(typical.marker).toBe("A typical year");
+    expect(changesMeaning({ changesByYear: [], summary })).toBeNull();
+  });
+  it("sizes up the defections", () => {
+    const s = { total: 629, since: 2025, flows: [{ count: 98, fromParty: { short: "Labour" }, toParty: { short: "Independent or other" } }] };
+    const r = defectionMeaning({ summary: s, councillors: 19273 });
+    expect(r.marker).toBe("Some movement");
+    expect(r.text).toContain("629 councillors (3.3%)");
+    expect(r.text).toContain("Labour to Independent or other (98)");
+    expect(defectionMeaning({ summary: null, councillors: 1 })).toBeNull();
+  });
+  it("describes the shift in control since the first year", () => {
+    const row = (year, counts) => ({ year, counts });
+    const r = controlTrendMeaning({ trend: [row(2016, { con: 157, lab: 106, noc: 80 }), row(2026, { con: 24, lab: 64, noc: 196 })] });
+    expect(r.marker).toBe("A big shift");
+    expect(r.text).toBe("Since 2016, No overall control has gone from controlling 80 councils to 196, while Conservative has gone from 157 to 24.");
+    expect(controlTrendMeaning({ trend: [] })).toBeNull();
+  });
+});

@@ -22,8 +22,8 @@ const SEAT_RADIUS = 6.2;
 // How long the opening sweep takes to cross the dome, left to right.
 const SWEEP_SECONDS = 1;
 
-function computeSeatPositions(total) {
-  const radii = Array.from({ length: ROWS }, (_, i) => INNER_RADIUS + i * ROW_STEP);
+function computeSeatPositions(total, rows = ROWS) {
+  const radii = Array.from({ length: rows }, (_, i) => INNER_RADIUS + i * ROW_STEP);
   const totalRadius = radii.reduce((a, b) => a + b, 0);
   const counts = radii.map((r) => Math.max(1, Math.round((r / totalRadius) * total)));
   let diff = total - counts.reduce((a, b) => a + b, 0);
@@ -45,7 +45,9 @@ function computeSeatPositions(total) {
   return seats.sort((a, b) => a.angle - b.angle);
 }
 
-export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Independent", legendCount = 8, centre = null }) {
+// `rows` is how many concentric rows the dome has: fewer for a small body (a
+// council of 57), the default for the Commons.
+export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Independent", legendCount = 8, centre = null, rows: rowCount = ROWS }) {
   const [hoveredParty, setHoveredParty] = useState(null);
   // The seats sweep in from the left the first time the dome scrolls into
   // view. Until then they are held invisible, so nothing flashes on first paint.
@@ -68,7 +70,7 @@ export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Ind
 
   const seatData = useMemo(() => {
     if (total === 0) return [];
-    const positions = computeSeatPositions(total);
+    const positions = computeSeatPositions(total, rowCount);
     const out = [];
     let cursor = 0;
     for (const party of parties) {
@@ -79,11 +81,11 @@ export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Ind
       }
     }
     return out;
-  }, [parties, total]);
+  }, [parties, total, rowCount]);
 
   if (total === 0) return null;
 
-  const maxRadius = INNER_RADIUS + (ROWS - 1) * ROW_STEP + SEAT_RADIUS;
+  const maxRadius = INNER_RADIUS + (rowCount - 1) * ROW_STEP + SEAT_RADIUS;
   const viewW = maxRadius * 2 + 20;
   const viewH = maxRadius + 20;
 

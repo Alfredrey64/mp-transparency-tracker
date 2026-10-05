@@ -99,3 +99,74 @@ export function findWard(wards, name) {
   if (!n) return null;
   return wards.find(([w]) => normCouncil(w) === n) ?? wards.find(([w]) => normCouncil(w).includes(n) || n.includes(normCouncil(w))) ?? null;
 }
+
+// ---- Control, changes of hands and defections --------------------------------
+
+// Who can control a council, as the pipeline names them, and how each is shown.
+export const CONTROL = {
+  lab: { label: "Labour", colour: "#d50000" },
+  con: { label: "Conservative", colour: "#0063ba" },
+  ld: { label: "Liberal Democrat", colour: "#fc7d0b" },
+  ref: { label: "Reform UK", colour: "#12b6cf" },
+  green: { label: "Green", colour: "#78b82a" },
+  snp: { label: "SNP", colour: "#d9b900" },
+  pc: { label: "Plaid Cymru", colour: "#348837" },
+  ukip: { label: "UKIP", colour: "#70147a" },
+  other: { label: "Independents and others", colour: "#909090" },
+  noc: { label: "No overall control", colour: "#5b6075" },
+};
+export const CONTROL_ORDER = ["lab", "con", "ld", "ref", "green", "snp", "pc", "ukip", "other", "noc"];
+export const controlLabelOf = (key) => CONTROL[key]?.label ?? key;
+export const controlColourOf = (key) => CONTROL[key]?.colour ?? "#909090";
+
+// The trend as rows of { year, counts: {key: n} } with every key present.
+export function controlTrend(trend) {
+  return (trend ?? []).map(({ year, ...counts }) => ({ year, counts: Object.fromEntries(CONTROL_ORDER.map((k) => [k, counts[k] ?? 0])), total: Object.values(counts).reduce((n, v) => n + v, 0) }));
+}
+
+// Councils that changed control in the latest year: how many, where each party
+// gained and lost, and the most common moves.
+export function changesSummary(changes) {
+  const gained = {};
+  const lost = {};
+  const flows = new Map();
+  for (const c of changes ?? []) {
+    gained[c.to] = (gained[c.to] ?? 0) + 1;
+    lost[c.from] = (lost[c.from] ?? 0) + 1;
+    const k = `${c.from}>${c.to}`;
+    flows.set(k, (flows.get(k) ?? 0) + 1);
+  }
+  const net = CONTROL_ORDER.filter((k) => k !== "noc" || gained.noc || lost.noc).map((key) => ({ key, gained: gained[key] ?? 0, lost: lost[key] ?? 0, net: (gained[key] ?? 0) - (lost[key] ?? 0) })).filter((r) => r.gained || r.lost);
+  return {
+    total: (changes ?? []).length,
+    net: net.sort((a, b) => b.net - a.net),
+    flows: [...flows.entries()].map(([k, count]) => ({ from: k.split(">")[0], to: k.split(">")[1], count })).sort((a, b) => b.count - a.count),
+  };
+}
+
+// Councillors who changed party: the biggest moves with names, and how many
+// each party gained and lost overall.
+export function defectionSummary(defections, parties) {
+  if (!defections) return null;
+  const gained = new Map();
+  const lost = new Map();
+  for (const f of defections.flows) {
+    gained.set(f.to, (gained.get(f.to) ?? 0) + f.count);
+    lost.set(f.from, (lost.get(f.from) ?? 0) + f.count);
+  }
+  const ids = new Set([...gained.keys(), ...lost.keys()]);
+  const net = [...ids].map((idx) => ({ ...partyDisplay(parties, idx), idx, gained: gained.get(idx) ?? 0, lost: lost.get(idx) ?? 0, net: (gained.get(idx) ?? 0) - (lost.get(idx) ?? 0) })).sort((a, b) => b.net - a.net);
+  return {
+    since: defections.since,
+    total: defections.total,
+    flows: defections.flows.map((f) => ({ ...f, fromParty: partyDisplay(parties, f.from), toParty: partyDisplay(parties, f.to) })),
+    net,
+    byCouncil: defections.byCouncil,
+  };
+}
+
+// Each party's councillors now against the previous list: [{ ...party, count, before, change }].
+export function seatChanges(byParty, previousSeats) {
+  const before = new Map(previousSeats ?? []);
+  return byParty.map((p) => ({ ...p, before: before.get(p.idx) ?? 0, change: p.count - (before.get(p.idx) ?? 0) }));
+}

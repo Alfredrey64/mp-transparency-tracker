@@ -28,3 +28,57 @@ describe("section choices", () => {
     expect(isSectionOpen({ learn: true }, "learn", false)).toBe(true);
   });
 });
+
+import { readSidebarMode, writeSidebarMode, sectionsForMode, sectionStartsOpen } from "./sidebarState";
+
+const memory = () => {
+  const m = new Map();
+  return { getItem: (k) => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, v) };
+};
+
+describe("sidebar mode", () => {
+  it("starts simple and remembers a choice", () => {
+    const store = memory();
+    expect(readSidebarMode(store)).toBe("simple");
+    writeSidebarMode("all", store);
+    expect(readSidebarMode(store)).toBe("all");
+    writeSidebarMode("simple", store);
+    expect(readSidebarMode(store)).toBe("simple");
+  });
+  it("survives storage that throws", () => {
+    const broken = { getItem: () => { throw new Error("no"); }, setItem: () => { throw new Error("no"); } };
+    expect(readSidebarMode(broken)).toBe("simple");
+    expect(() => writeSidebarMode("all", broken)).not.toThrow();
+  });
+});
+
+describe("sectionsForMode", () => {
+  const sections = [
+    { key: "a", items: [{ key: "start" }, { key: "x", essential: true }, { key: "y" }] },
+    { key: "b", items: [{ key: "z" }] },
+  ];
+  it("shows only the essential pages in the simple view, and drops empty sections", () => {
+    const s = sectionsForMode(sections, "simple", "home");
+    expect(s.map((x) => x.key)).toEqual(["a"]);
+    expect(s[0].items.map((i) => i.key)).toEqual(["x"]);
+  });
+  it("keeps the page you are on in view even if it isn't essential", () => {
+    const s = sectionsForMode(sections, "simple", "z");
+    expect(s.map((x) => x.key)).toEqual(["a", "b"]);
+    expect(s[1].items.map((i) => i.key)).toEqual(["z"]);
+  });
+  it("shows everything, except the tour (which has its own place), in the full view", () => {
+    const s = sectionsForMode(sections, "all", "home");
+    expect(s[0].items.map((i) => i.key)).toEqual(["x", "y"]);
+    expect(s).toHaveLength(2);
+  });
+});
+
+describe("sectionStartsOpen", () => {
+  it("lets a choice win, then opens everything in the simple view and the active section in the full view", () => {
+    expect(sectionStartsOpen({ a: false }, "a", "simple", true)).toBe(false);
+    expect(sectionStartsOpen({}, "a", "simple", false)).toBe(true);
+    expect(sectionStartsOpen({}, "a", "all", false)).toBe(false);
+    expect(sectionStartsOpen({}, "a", "all", true)).toBe(true);
+  });
+});

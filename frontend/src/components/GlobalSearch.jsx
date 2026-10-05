@@ -103,7 +103,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
       .filter((p) => p.name?.toLowerCase().includes(q) || p.constituency?.toLowerCase().includes(q) || p.party?.toLowerCase().includes(q))
       .slice(0, 5);
     const matchedBills = bills.filter((b) => b.short_title?.toLowerCase().includes(q)).slice(0, 5);
-    const pages = PAGES.filter((p) => p.label.toLowerCase().includes(q)).slice(0, 4);
+    const pages = PAGES.filter((p) => [p.label, p.hint, ...(p.aka ?? [])].some((t) => t?.toLowerCase().includes(q))).slice(0, 4);
     const glossary = glossaryEntries.filter((g) => g.term.toLowerCase().includes(q) || (g.aliases ?? []).some((a) => a.toLowerCase().includes(q))).slice(0, 4);
     const matchedPeers = peers.filter((p) => p.name?.toLowerCase().includes(q)).slice(0, 4);
     // Constituencies by name, one entry each, opening that seat's page.
@@ -156,7 +156,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
           onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
           onFocus={(e) => { setOpen(true); e.target.style.borderColor = COLORS.accentOnDark; e.target.style.boxShadow = `0 0 0 3px ${COLORS.accentOnDark}33`; }}
           onBlur={(e) => { e.target.style.borderColor = "rgba(255,255,255,0.09)"; e.target.style.boxShadow = "none"; }}
-          placeholder="Search MPs, peers, seats, bills…"
+          placeholder="Search MPs, councils, topics…"
           style={{
             width: "100%", boxSizing: "border-box", padding: "8px 10px 8px 32px",
             fontFamily: FONT_BODY, fontSize: 12.5, borderRadius: 8,

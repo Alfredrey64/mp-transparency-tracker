@@ -267,3 +267,16 @@ select:focus-visible,
   .hub-layout { grid-template-columns: minmax(0, 520px) minmax(0, 1fr); gap: 28px; align-items: start; }
   .hub-map { position: sticky; top: 12px; }
 }
+
+/* Your Council: two columns of charts side by side on a wide screen. The left
+   column is a size container so the dome's centre figure can scale with it. */
+.council-split { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.council-split > div:first-child { container-type: inline-size; }
+@media (min-width: 820px) {
+  .council-split { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 36px; align-items: start; }
+}
+
+/* Menu items are a comfortable size to tap on a phone. */
+@media (pointer: coarse) {
+  .side-item { min-height: 48px; }
+}

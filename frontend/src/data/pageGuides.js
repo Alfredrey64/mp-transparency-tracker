@@ -212,9 +212,9 @@ export const PAGE_GUIDES = {
     notShown: "Questions asked out loud, or older than 30 days. Asking isn't the same as acting.",
   },
   councils: {
-    what: "Every council in the UK: who runs it, who your councillors are, how its make-up has changed since 2016 and when it next votes.",
+    what: "Every council in the UK: who runs it, who your councillors are, which councils changed hands and which councillors changed party, and when each next votes.",
     why: "Councils decide bin collections, planning, housing, roads and care, the services you meet most often, and you can vote for them.",
-    notShown: "Parish and town councils, ward-by-ward election results, or councillors' contact details. By-elections can change a council between updates.",
+    notShown: "Parish and town councils, ward-by-ward results, or contact details. Defections come from comparing yearly lists, so a switch and a switch back is missed.",
   },
   appg: {
     what: "The cross-party groups MPs and peers join around a topic, and who belongs to which.",

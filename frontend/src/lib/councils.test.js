@@ -87,3 +87,39 @@ describe("history and wards", () => {
     expect(findWard(wards, "")).toBeNull();
   });
 });
+
+import { controlTrend, changesSummary, defectionSummary, seatChanges, controlLabelOf } from "./councils";
+
+describe("control, changes and defections", () => {
+  it("fills every control key in each year of the trend", () => {
+    const t = controlTrend([{ year: 2025, lab: 3, noc: 1 }]);
+    expect(t[0].year).toBe(2025);
+    expect(t[0].total).toBe(4);
+    expect(t[0].counts).toMatchObject({ lab: 3, noc: 1, con: 0, ref: 0 });
+    expect(controlLabelOf("noc")).toBe("No overall control");
+    expect(controlLabelOf("ref")).toBe("Reform UK");
+  });
+  it("sums up the councils that changed hands, with net gains and the commonest moves", () => {
+    const s = changesSummary([{ from: "lab", to: "ref" }, { from: "lab", to: "ref" }, { from: "con", to: "noc" }, { from: "noc", to: "ref" }]);
+    expect(s.total).toBe(4);
+    expect(s.flows[0]).toEqual({ from: "lab", to: "ref", count: 2 });
+    const byKey = Object.fromEntries(s.net.map((r) => [r.key, r.net]));
+    expect(byKey).toEqual({ ref: 3, noc: 0, con: -1, lab: -2 });
+    expect(s.net[0].key).toBe("ref");
+    expect(changesSummary(undefined).total).toBe(0);
+  });
+  it("sums up councillors who changed party", () => {
+    const parties = [{ name: "Labour Party", short: "Labour", colour: "#d50000" }, { name: "Reform UK", short: "Reform UK", colour: "#12b6cf" }, { name: "Independent / Other", short: "Independent or other", colour: "#909090" }];
+    const s = defectionSummary({ since: 2025, total: 15, flows: [{ from: 0, to: 2, count: 10 }, { from: 0, to: 1, count: 5 }], byCouncil: [{ name: "A", count: 9 }] }, parties);
+    expect(s.total).toBe(15);
+    expect(s.flows[0]).toMatchObject({ count: 10 });
+    expect(s.flows[0].fromParty.short).toBe("Labour");
+    expect(s.net.find((p) => p.short === "Labour")).toMatchObject({ lost: 15, gained: 0, net: -15 });
+    expect(s.net[0].net).toBeGreaterThan(0);
+    expect(defectionSummary(null, parties)).toBeNull();
+  });
+  it("compares each party's councillors with last year's", () => {
+    const r = seatChanges([{ idx: 1, count: 120 }, { idx: 2, count: 50 }], [[1, 100], [3, 9]]);
+    expect(r).toEqual([{ idx: 1, count: 120, before: 100, change: 20 }, { idx: 2, count: 50, before: 0, change: 50 }]);
+  });
+});

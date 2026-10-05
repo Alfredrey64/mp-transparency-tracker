@@ -103,7 +103,30 @@ export function controlLabel(raw) {
 
 const HISTORY_COLUMNS = ["total", "con", "lab", "ld", "green", "ukip", "ref", "pc", "snp", "other"];
 
-export function buildCouncils({ councillorsCsv, historyCsv, now = new Date() }) {
+// Who controls a council, worked out from its seats: the party holding more
+// than half of them, or "noc" (no overall control). This doesn't depend on how
+// the source labels a council in a given year, so years can be compared.
+const CONTROL_KEYS = ["con", "lab", "ld", "green", "ukip", "ref", "pc", "snp", "other"];
+export function controlOfRow(row) {
+  const total = row.total;
+  if (!total) return "noc";
+  return CONTROL_KEYS.find((k) => (row[k] ?? 0) * 2 > total) ?? "noc";
+}
+
+// councillor key -> party index, for one year's list.
+function readCouncillors(csv, partyOf) {
+  const [head, ...rows] = parseCsv(csv);
+  const col = (name) => head.indexOf(name);
+  const C = { council: col("Council"), ward: col("Ward Name"), name: col("Councillor Name"), party: col("Party Name"), code: col("Electoral Commission Party Code") };
+  const out = new Map();
+  for (const r of rows) {
+    if (!r[C.council]) continue;
+    out.set(`${r[C.council]}|${r[C.ward]}|${r[C.name]}`, partyOf(r[C.party], r[C.code]));
+  }
+  return out;
+}
+
+export function buildCouncils({ councillorsCsv, historyCsv, previousCsv = null, previousYear = null, now = new Date() }) {
   const parties = [];
   const partyIndex = new Map();
   const partyOf = (name, code) => {
@@ -122,6 +145,7 @@ export function buildCouncils({ councillorsCsv, historyCsv, now = new Date() }) 
   const C = { council: col("Council"), ward: col("Ward Name"), name: col("Councillor Name"), next: col("Next Election"), party: col("Party Name"), code: col("Electoral Commission Party Code") };
 
   const byCouncil = new Map();
+  const currentParties = new Map();
   for (const r of rows) {
     const council = r[C.council];
     if (!council) continue;
@@ -131,6 +155,7 @@ export function buildCouncils({ councillorsCsv, historyCsv, now = new Date() }) 
     const ward = r[C.ward] || "Unknown ward";
     if (!c.wards.has(ward)) c.wards.set(ward, []);
     c.wards.get(ward).push([r[C.name], p]);
+    currentParties.set(`${council}|${ward}|${r[C.name]}`, p);
     if (/^\d{4}-\d{2}-\d{2}$/.test(r[C.next] ?? "")) c.next.set(r[C.next], (c.next.get(r[C.next]) ?? 0) + 1);
     c.seats.set(p, (c.seats.get(p) ?? 0) + 1);
     c.total += 1;
@@ -155,14 +180,58 @@ export function buildCouncils({ councillorsCsv, historyCsv, now = new Date() }) 
     }
   }
 
+  // Councillors who changed party since the previous list: the same person, in
+  // the same ward of the same council, under a different party.
+  const previous = previousCsv ? readCouncillors(previousCsv, partyOf) : null;
+  const moved = new Map();
+  const flows = new Map();
+  const previousSeats = new Map();
+  if (previous) {
+    for (const p of previous.values()) previousSeats.set(p, (previousSeats.get(p) ?? 0) + 1);
+    for (const [key, now_] of currentParties) {
+      const before = previous.get(key);
+      if (before == null || before === now_) continue;
+      const [council, ward, name] = key.split("|");
+      if (!moved.has(council)) moved.set(council, []);
+      moved.get(council).push([ward, name, before, now_]);
+      const f = `${before}>${now_}`;
+      flows.set(f, (flows.get(f) ?? 0) + 1);
+    }
+  }
+
+  // Control of each council in each year, from its seats, for the trend and
+  // for "changed hands".
+  const trend = new Map();
+  const changesByYear = new Map();
+  const changesNow = [];
+  const control = new Map();
+  for (const [name, h] of history) {
+    // Only councils that exist today, so each year counts the same set.
+    if (!byCouncil.has(name)) continue;
+    const rows = h.rows.map((r) => ({ year: r[0], ...Object.fromEntries(HISTORY_COLUMNS.map((k, i) => [k, r[i + 1]])) })).sort((a, b) => a.year - b.year);
+    const byYear = rows.map((r) => [r.year, controlOfRow(r)]);
+    control.set(name, byYear);
+    byYear.forEach(([year, key], i) => {
+      if (!trend.has(year)) trend.set(year, {});
+      trend.get(year)[key] = (trend.get(year)[key] ?? 0) + 1;
+      if (i > 0 && byYear[i - 1][0] === year - 1 && byYear[i - 1][1] !== key) changesByYear.set(year, (changesByYear.get(year) ?? 0) + 1);
+    });
+  }
+  const latestYear = Math.max(...[...trend.keys()]);
+
   const index = [];
   const detail = {};
   for (const [name, c] of [...byCouncil.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
     const h = history.get(name);
     const id = h?.id ?? name;
+    const ctl = control.get(name) ?? [];
+    const now2 = ctl.find(([y]) => y === latestYear)?.[1] ?? null;
+    const before = ctl.find(([y]) => y === latestYear - 1)?.[1] ?? null;
+    if (now2 && before && now2 !== before) changesNow.push({ id, name, from: before, to: now2 });
     index.push({
       id,
       name,
+      control_by_seats: now2,
       total: c.total,
       control: controlLabel(h?.control),
       // When its seats next come up, and how many on each date.
@@ -170,6 +239,7 @@ export function buildCouncils({ councillorsCsv, historyCsv, now = new Date() }) 
       seats: [...c.seats.entries()].sort((a, b) => b[1] - a[1]),
     });
     detail[id] = {
+      moved: (moved.get(name) ?? []).sort((a, b) => a[1].localeCompare(b[1])),
       history: (h?.rows ?? []).sort((a, b) => a[0] - b[0]),
       wards: [...c.wards.entries()].sort((a, b) => a[0].localeCompare(b[0])).map(([ward, list]) => [ward, list.sort((a, b) => a[0].localeCompare(b[0]))]),
     };
@@ -182,5 +252,22 @@ export function buildCouncils({ councillorsCsv, historyCsv, now = new Date() }) 
     parties,
     index,
     detail,
+    latestYear,
+    // How many councils each party (or no one) controlled by seats, year by year.
+    trend: [...trend.entries()].sort((a, b) => a[0] - b[0]).map(([year, counts]) => ({ year, ...counts })),
+    // How many councils changed control between consecutive years.
+    changesByYear: [...changesByYear.entries()].sort((a, b) => a[0] - b[0]).map(([year, count]) => ({ year, count })),
+    // The councils whose control changed in the latest year, and how.
+    changes: changesNow.sort((a, b) => a.name.localeCompare(b.name)),
+    // Councillors who changed party since the previous list.
+    defections: previous
+      ? {
+          since: previousYear,
+          total: [...flows.values()].reduce((n, v) => n + v, 0),
+          flows: [...flows.entries()].map(([k, count]) => ({ from: Number(k.split(">")[0]), to: Number(k.split(">")[1]), count })).sort((a, b) => b.count - a.count).slice(0, 40),
+          byCouncil: [...moved.entries()].map(([name, list]) => ({ name, count: list.length })).sort((a, b) => b.count - a.count).slice(0, 15),
+          previousSeats: [...previousSeats.entries()].sort((a, b) => b[1] - a[1]),
+        }
+      : null,
   };
 }

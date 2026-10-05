@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseCsv, controlLabel, buildCouncils, shardOf, SHARDS } from "./councils.js";
+import { parseCsv, controlLabel, buildCouncils, shardOf, SHARDS, controlOfRow } from "./councils.js";
 
 describe("parseCsv", () => {
   it("reads quoted fields, commas inside quotes, doubled quotes and a byte-order mark", () => {
@@ -72,5 +72,61 @@ describe("buildCouncils", () => {
     expect(d.history.map((r) => r[0])).toEqual([2025, 2026]);
     expect(d.history[1]).toEqual([2026, 4, 0, 2, 0, 0, 0, 1, 0, 0, 1]);
     expect(out.historyColumns[0]).toBe("year");
+  });
+});
+
+describe("control, changes of hands and defections", () => {
+  it("works out control from seats alone", () => {
+    expect(controlOfRow({ total: 10, con: 6, lab: 4 })).toBe("con");
+    expect(controlOfRow({ total: 10, con: 5, lab: 5 })).toBe("noc");
+    expect(controlOfRow({ total: 10, other: 6 })).toBe("other");
+    expect(controlOfRow({ total: 0 })).toBe("noc");
+  });
+
+  const header = 'Council,"Ward Name","Councillor Name","Next Election","Party Name","Electoral Commission Party Code"';
+  const councillorsCsv = [
+    header,
+    'Adur,A,"Ann",2027-05-06,"Reform UK",PP7931',
+    'Adur,A,"Bob",2027-05-06,"Reform UK",PP7931',
+    'Adur,B,"Cy",2027-05-06,"Labour Party",PP53',
+    'Bexley,C,"Di",2030-05-02,"Labour Party",PP53',
+  ].join("\n");
+  const previousCsv = [
+    header,
+    'Adur,A,"Ann",2027-05-06,"Conservative and Unionist",PP52',
+    'Adur,A,"Bob",2027-05-06,"Reform UK",PP7931',
+    'Adur,B,"Cy",2027-05-06,"Labour Party",PP53',
+    'Bexley,C,"Di",2030-05-02,"Labour Party",PP53',
+    'Bexley,C,"Gone",2030-05-02,"Labour Party",PP53',
+  ].join("\n");
+  const historyCsv = [
+    "id,council id,authority,year,total,con,lab,ld,green,ukip,ref,pc,snp,other,majority,",
+    "1,1,Adur,2025,3,2,1,0,0,0,0,0,0,0,CON,E07000223",
+    "2,1,Adur,2026,3,0,1,0,0,0,2,0,0,0,REF,E07000223",
+    "3,2,Bexley,2025,2,0,2,0,0,0,0,0,0,0,LAB,E09000004",
+    "4,2,Bexley,2026,2,0,2,0,0,0,0,0,0,0,LAB,E09000004",
+    "5,3,Abolished,2025,5,5,0,0,0,0,0,0,0,0,CON,E07000999",
+  ].join("\n");
+  const out = buildCouncils({ councillorsCsv, historyCsv, previousCsv, previousYear: 2025, now: new Date("2026-10-01") });
+
+  it("finds the councils whose control changed, counting only councils that exist today", () => {
+    expect(out.latestYear).toBe(2026);
+    expect(out.changes).toEqual([{ id: "E07000223", name: "Adur", from: "con", to: "ref" }]);
+    expect(out.changesByYear).toEqual([{ year: 2026, count: 1 }]);
+    expect(out.trend).toEqual([{ year: 2025, con: 1, lab: 1 }, { year: 2026, ref: 1, lab: 1 }]);
+    expect(out.index[0].control_by_seats).toBe("ref");
+  });
+  it("finds councillors who changed party, with the flows between parties", () => {
+    expect(out.defections.since).toBe(2025);
+    expect(out.defections.total).toBe(1);
+    const name = (i) => out.parties[i].short;
+    expect(out.defections.flows.map((f) => [name(f.from), name(f.to), f.count])).toEqual([["Conservative", "Reform UK", 1]]);
+    expect(out.defections.byCouncil).toEqual([{ name: "Adur", count: 1 }]);
+    expect(out.detail.E07000223.moved).toHaveLength(1);
+    expect(out.detail.E07000223.moved[0].slice(0, 2)).toEqual(["A", "Ann"]);
+    expect(out.detail.E09000004.moved).toEqual([]);
+  });
+  it("copes with no previous list", () => {
+    expect(buildCouncils({ councillorsCsv, historyCsv }).defections).toBeNull();
   });
 });
