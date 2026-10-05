@@ -290,3 +290,24 @@ select:focus-visible,
   .mm-layout { grid-template-columns: 240px minmax(0, 1fr); gap: 44px; align-items: start; }
   .mm-side { position: sticky; top: 16px; }
 }
+
+/* Tiers of government: the two lanes beside the tiers (laws and money down,
+   votes up) flow with moving dashes, and a tier lights up when the walk-through
+   reaches it. The sticky panel keeps the story in view while the tiers animate. */
+.lane-down, .lane-up {
+  background-image: repeating-linear-gradient(to bottom, var(--lane) 0 5px, transparent 5px 14px);
+  background-size: 100% 14px;
+}
+.lane-down { animation: laneDown 1.1s linear infinite; }
+.lane-up { animation: laneUp 1.1s linear infinite; }
+@keyframes laneDown { to { background-position: 0 14px; } }
+@keyframes laneUp { to { background-position: 0 -14px; } }
+@keyframes tierPulse { 0% { box-shadow: 0 0 0 0 var(--pulse), 0 0 0 4px var(--c-paper-card); } 100% { box-shadow: 0 0 0 14px transparent, 0 0 0 4px var(--c-paper-card); } }
+.tier-pulse { animation: tierPulse 1.4s ease-out infinite; }
+.tier-stage { position: sticky; top: 8px; z-index: 20; }
+.tier-mini { display: none; position: sticky; top: 8px; z-index: 20; margin-bottom: 10px; }
+@media (max-width: 600px) {
+  .tier-stage { position: static; }
+  .tier-mini { display: flex; }
+}
+@media (prefers-reduced-motion: reduce) { .tier-pulse { animation: none; } }

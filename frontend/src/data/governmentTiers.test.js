@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { NATIONS, TIERS, CONNECTORS, VOTE_FOR, WHO_TO_CONTACT, contactAnswer } from "./governmentTiers";
+import { NATIONS, TIERS, CONNECTORS, VOTE_FOR, WHO_TO_CONTACT, contactAnswer, SCENARIOS, scenarioSteps } from "./governmentTiers";
 
 describe("government tiers", () => {
   it("has a unique key and full content for every tier", () => {
@@ -46,5 +46,40 @@ describe("contactAnswer", () => {
     expect(contactAnswer(row, "wales")).toBe("W");
     expect(contactAnswer(row, "scotland")).toBe("X");
     expect(contactAnswer({ england: "E" }, "ni")).toBe("E");
+  });
+});
+
+describe("scenarios", () => {
+  const nationKeys = NATIONS.map((n) => n.key);
+  it("always run top to bottom and end with you, then the vote", () => {
+    const order = [...TIERS.map((t) => t.key), "you", "vote"];
+    for (const sc of SCENARIOS) {
+      for (const n of nationKeys) {
+        const steps = scenarioSteps(sc, n);
+        const idx = steps.map((s) => order.indexOf(s.tier));
+        expect(idx.every((i) => i >= 0)).toBe(true);
+        expect([...idx].sort((a, b) => a - b)).toEqual(idx);
+        expect(steps.at(-1).tier).toBe("vote");
+        expect(steps.at(-2).tier).toBe("you");
+        expect(steps.length).toBeGreaterThan(3);
+      }
+    }
+  });
+
+  it("skips tiers that don't exist where you live", () => {
+    const law = SCENARIOS.find((s) => s.key === "law");
+    expect(scenarioSteps(law, "england").some((s) => s.tier === "devolved")).toBe(false);
+    expect(scenarioSteps(law, "scotland").some((s) => s.tier === "combined")).toBe(false);
+    expect(scenarioSteps(law, "ni").some((s) => s.tier === "parish")).toBe(false);
+  });
+
+  it("applies planning law only in England", () => {
+    const estate = SCENARIOS.find((s) => s.key === "estate");
+    expect(scenarioSteps(estate, "england")[0].tier).toBe("parliament");
+    expect(scenarioSteps(estate, "wales")[0].tier).toBe("devolved");
+  });
+
+  it("has a token label on every tier step", () => {
+    for (const sc of SCENARIOS) for (const s of sc.steps) if (s.tier !== "vote") expect(s.token).toBeTruthy();
   });
 });

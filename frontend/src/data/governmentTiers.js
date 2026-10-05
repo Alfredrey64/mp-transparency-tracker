@@ -228,3 +228,66 @@ export function contactAnswer(row, nation) {
   if (nation === "england") return row.england;
   return row[nation] ?? row.elsewhere ?? row.england;
 }
+
+// "See it in action": three simplified walk-throughs of power cascading down
+// the tiers. Each step lights up one tier (or "you"), in order from the top.
+// A step with `nations` only applies in those nations; a step for a tier that
+// doesn't exist where you live is skipped. Every walk-through ends with you
+// getting the result, then voting.
+export const SCENARIOS = [
+  {
+    key: "law",
+    label: "A new law",
+    blurb: "How a law passed in Westminster ends up on your street",
+    steps: [
+      { tier: "parliament", token: "The Act", title: "Parliament passes the law", text: "MPs vote on it at each stage and peers check the detail. Once it has Royal Assent it is an Act, and every tier below has to work within it." },
+      { tier: "government", token: "The rules", title: "Ministers turn it into rules and money", text: "The department writes the detailed regulations and sets funding aside. Civil servants do most of the work." },
+      { tier: "devolved", token: "The local version", title: "Devolved governments apply it", text: "If the law touches something devolved, such as health or education, the Scottish, Welsh or Northern Ireland government decides how it works there and pays for it from its own budget." },
+      { tier: "combined", token: "The regional plan", title: "A regional mayor plans across councils", text: "Where there is a mayor, they join up transport, skills and housing across a whole city region." },
+      { tier: "council", token: "The service", title: "Your council delivers it", text: "Councils hire the staff, sign the contracts and decide who gets what, and where. This is the tier you actually meet." },
+      { tier: "parish", token: "The local detail", title: "Your parish council adds the local detail", text: "It can't change the rules, but it can tell the council what your village needs and run small projects of its own." },
+      { tier: "you", token: "The result", title: "You feel the difference", text: "A law passed in Westminster turns into a bin collection, a school place or a bus route." },
+      { tier: "vote", title: "Then you get your say", text: "If it isn't working, you can vote out your councillors, mayor, MP or devolved government when their next election comes round." },
+    ],
+  },
+  {
+    key: "money",
+    label: "Where the money goes",
+    blurb: "How a pound of tax reaches local services",
+    steps: [
+      { tier: "parliament", token: "The Budget", title: "Parliament approves taxes and spending", text: "The Chancellor proposes taxes in the Budget and MPs vote on them. Nothing can be spent without Parliament's approval." },
+      { tier: "government", token: "Grants", title: "The Treasury shares it out", text: "The government keeps some for national services such as defence and benefits, and sends the rest down as grants." },
+      { tier: "devolved", token: "Block grant", title: "Devolved governments get a block grant", text: "Scotland, Wales and Northern Ireland each receive a lump sum and choose how to spend it, on top of any taxes they raise themselves." },
+      { tier: "combined", token: "Deal funding", title: "Mayors get money through devolution deals", text: "City regions receive funding for transport and skills, agreed in a deal with the government." },
+      { tier: "council", token: "Council budget", title: "Councils add your council tax", text: "Your council combines government grants, business rates and your council tax, then pays for care, bins, roads and more." },
+      { tier: "parish", token: "The precept", title: "Parishes add a small charge", text: "The parish precept appears on your council tax bill and pays for local benches, halls and play areas." },
+      { tier: "you", token: "Your bill", title: "You pay in, and you get services back", text: "You pay income tax, VAT and council tax, and see the money again as hospitals, schools and clean streets." },
+      { tier: "vote", title: "Then you get your say", text: "How the money is spent is a choice. Parties set out their plans before each election and you decide which to back." },
+    ],
+  },
+  {
+    key: "estate",
+    label: "A new housing estate",
+    blurb: "Who decides when homes are proposed near you",
+    steps: [
+      { tier: "parliament", nations: ["england"], token: "Planning law", title: "Parliament writes the planning law", text: "Acts of Parliament set the basic rules in England for what can be built and who gets to decide." },
+      { tier: "government", nations: ["england"], token: "National policy", title: "Ministers set national planning policy", text: "The government publishes the national rules councils must follow, including targets for how many homes are needed." },
+      { tier: "devolved", token: "Planning policy", title: "The devolved government sets planning policy", text: "Planning is devolved, so the Scottish, Welsh or Northern Ireland government writes the rules for its own nation." },
+      { tier: "combined", token: "Regional plan", title: "A regional mayor can set a plan for the area", text: "Some mayors draw up a strategy showing where homes and transport links should go across several councils." },
+      { tier: "council", token: "The decision", title: "Your council decides the application", text: "Councillors on the planning committee weigh up the plans and local objections, and approve or refuse. Their decision can be appealed." },
+      { tier: "parish", nations: ["england", "scotland", "wales"], token: "Local views", title: "Your parish council gives its view", text: "It is asked for an opinion on nearby applications. It doesn't decide, but councils have to take the view into account." },
+      { tier: "you", token: "Your say", title: "You can have your say too", text: "Anyone can comment on an application and councils must consider what residents say before deciding." },
+      { tier: "vote", title: "Then you get your say again", text: "Councillors are elected, so planning decisions are one of the things voters can judge them on at the next local election." },
+    ],
+  },
+];
+
+// The steps that apply where you live, in order.
+export function scenarioSteps(scenario, nation) {
+  const tierExists = (key) => TIERS.find((t) => t.key === key)?.here[nation] !== undefined;
+  return scenario.steps.filter((s) => {
+    if (s.tier === "you" || s.tier === "vote") return true;
+    if (s.nations && !s.nations.includes(nation)) return false;
+    return tierExists(s.tier);
+  });
+}

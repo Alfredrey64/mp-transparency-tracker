@@ -8,7 +8,7 @@ import { loadCouncilDetail } from "../lib/councilDetail";
 import { councilShareSpec } from "../lib/shareSpecs";
 import { councilMeaning, councilChangeMeaning, changesMeaning, defectionMeaning, controlTrendMeaning } from "../lib/councilMeaning";
 import { LoadFailedNote } from "./shared";
-import { IconCouncil, IconGroup, IconSplit, IconCompare, IconChartBars, IconVote } from "./icons";
+import { IconGroup, IconSplit, IconCompare, IconChartBars, IconVote } from "./icons";
 import { PartyHemicycle } from "./PartyHemicycle";
 import PageGuide from "./PageGuide";
 import CountUp from "./CountUp";
@@ -221,15 +221,14 @@ function Hero({ index, subtitle, title, kicker }) {
     <div style={{ position: "relative", overflow: "hidden", borderRadius: 26, border: `1px solid ${COLORS.hairline}`, padding: "clamp(22px, 4vw, 40px)", background: `radial-gradient(900px 340px at 92% -10%, ${COLORS.accent}33, transparent 60%), radial-gradient(520px 260px at 0% 110%, #1FA97C22, transparent 65%), ${COLORS.paperCard}` }}>
       <div aria-hidden="true" style={{ position: "absolute", inset: 0, backgroundImage: `radial-gradient(${COLORS.hairline} 1px, transparent 1px)`, backgroundSize: "22px 22px", opacity: 0.55, maskImage: "linear-gradient(180deg, #000, transparent 75%)", WebkitMaskImage: "linear-gradient(180deg, #000, transparent 75%)" }} />
       <div style={{ position: "relative" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 9, fontFamily: FONT_DISPLAY, fontSize: 14.5, fontWeight: 500, color: COLORS.accent }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 9, fontFamily: FONT_DISPLAY, fontSize: 14.5, fontWeight: 500, color: COLORS.accent }}>
           <span style={{ width: 16, height: 2, background: COLORS.accent }} />
           {kicker}
         </div>
-        <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: "clamp(30px, 5.6vw, 52px)", lineHeight: 1.05, letterSpacing: "-0.025em", color: COLORS.ink, margin: "12px 0 0", display: "flex", alignItems: "center", gap: 14 }}>
-          <span style={{ color: COLORS.accent, display: "inline-flex" }}><IconCouncil size={38} /></span>
+        <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: "clamp(30px, 5.6vw, 52px)", lineHeight: 1.05, letterSpacing: "-0.025em", color: COLORS.ink, margin: "12px 0 0", textAlign: "center", textWrap: "balance" }}>
           {title}
         </h1>
-        <p style={{ fontFamily: FONT_BODY, fontSize: "clamp(15px, 1.8vw, 17px)", color: COLORS.inkSoft, lineHeight: 1.6, margin: "14px 0 24px", maxWidth: 680 }}>{subtitle}</p>
+        <p style={{ fontFamily: FONT_BODY, fontSize: "clamp(15px, 1.8vw, 17px)", color: COLORS.inkSoft, lineHeight: 1.6, margin: "14px auto 24px", maxWidth: 680, textAlign: "center", textWrap: "pretty" }}>{subtitle}</p>
         <Finder index={index} />
       </div>
     </div>
