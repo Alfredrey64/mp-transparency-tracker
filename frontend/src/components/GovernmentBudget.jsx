@@ -231,7 +231,7 @@ export default function GovernmentBudget() {
           </div>
         </div>
 
-        <div style={{ flex: "1 1 340px", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 8 }}>
+        <div style={{ flex: "1 1 340px", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(240px, 100%), 1fr))", gap: 8 }}>
           {segments.map((c, i) => {
             const isActive = activeKey === c.key;
             return (

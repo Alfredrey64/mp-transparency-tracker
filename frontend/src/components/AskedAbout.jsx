@@ -64,7 +64,7 @@ function PartySplit({ parties, total }) {
           />
         ))}
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: "10px 22px", marginTop: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(210px, 100%), 1fr))", gap: "10px 22px", marginTop: 16 }}>
         {segments.map((s) => (
           <div key={s.label} style={{ display: "flex", alignItems: "baseline", gap: 9, minWidth: 0 }}>
             <span style={{ width: 10, height: 10, borderRadius: 3, background: s.colour, flexShrink: 0, alignSelf: "center" }} />

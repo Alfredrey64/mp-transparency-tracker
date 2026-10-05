@@ -505,7 +505,7 @@ export default function MediaLiteracy() {
           "Due impartiality" isn't just a slogan — it's a specific set of rules Ofcom enforces, with real cases
           testing where the line falls. Here's what it breaks down into.
         </p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))", gap: 14 }}>
           {CODE_REQUIREMENTS.map((req, i) => (
             <motion.div
               key={req.title}
@@ -533,7 +533,7 @@ export default function MediaLiteracy() {
           Ownership and funding model are matters of public record, not opinion — worth knowing before you judge a
           broadcaster's coverage of anything, including its own owners' interests. Tap a card for the detail.
         </p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))", gap: 16 }}>
           {outletOrder.map((o, i) => (
             <OutletCard
               key={o.name}

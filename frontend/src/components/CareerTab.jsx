@@ -239,7 +239,7 @@ export default function CareerTab({ politician, house = "commons" }) {
       </section>
 
       {hasAnything && summary && (
-        <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "20px 24px", padding: "18px 20px", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.accent}`, borderRadius: 16 }}>
+        <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(150px, 100%), 1fr))", gap: "20px 24px", padding: "18px 20px", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.accent}`, borderRadius: 16 }}>
           {summary.firstElected && <Stat value={summary.firstElected.slice(0, 4)} label="first elected" note={monthYear(summary.firstElected)} />}
           {summary.lordsFrom && <Stat value={yrs(summary.yearsInLords)} label="in the Lords" note={`since ${summary.lordsFrom.slice(0, 4)}`} />}
           {summary.firstElected && <Stat value={yrs(summary.yearsInCommons)} label={summary.lordsFrom ? "as an MP" : "in the Commons"} />}

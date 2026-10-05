@@ -298,7 +298,7 @@ export default function PoliticianList({ onSelect, initialCareer = null }) {
         </div>
       )}
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))", gap: 12 }}>
         {loading &&
           Array.from({ length: 12 }).map((_, i) => <SkeletonCard key={i} />)}
 

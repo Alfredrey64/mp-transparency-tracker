@@ -479,7 +479,7 @@ export default function ComparePoliticians() {
         </div>
       ) : (
         <>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16, marginBottom: 24 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))", gap: 16, marginBottom: 24 }}>
             <AnimatePresence mode="popLayout">
               {selected.map((p, i) => (
                 <MpHeaderCard key={p.id} politician={p} color={colorFor(p, i)} onRemove={() => removePolitician(p.id)} />
@@ -516,7 +516,7 @@ export default function ComparePoliticians() {
               }))}
             />
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 14, marginTop: 4 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(220px, 100%), 1fr))", gap: 14, marginTop: 4 }}>
               {selected.map((p, i) => (
                 <SectorBreakdown key={p.id} politician={p} color={colorFor(p, i)} sectors={data[p.id]?.sectors ?? []} />
               ))}

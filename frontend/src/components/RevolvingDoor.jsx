@@ -187,7 +187,7 @@ export default function RevolvingDoor() {
           Chosen to show the range — from a technical process failure, to a case that fell entirely outside the
           rules' reach, to one still being tested under the new system.
         </p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 14 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(320px, 100%), 1fr))", gap: 14 }}>
           {CASES.map((item, i) => (
             <CaseCard key={item.name} item={item} index={i} />
           ))}

@@ -103,7 +103,7 @@ export default function DevolvedAdministrations() {
                   <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ flexShrink: 0, color: COLORS.inkSoft, fontSize: 13, marginTop: 6 }}>▾</motion.span>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14, marginTop: 14, marginBottom: 14 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(200px, 100%), 1fr))", gap: 14, marginTop: 14, marginBottom: 14 }}>
                   <Field label="Established">{a.established}</Field>
                   <Field label="Members">{a.members}</Field>
                   <Field label="Led by">{a.led}</Field>

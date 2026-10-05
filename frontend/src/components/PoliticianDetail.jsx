@@ -950,7 +950,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
 
         <PageGuide viewKey="mp" style={{ maxWidth: 760, margin: "20px auto 0" }} />
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24, paddingTop: 24, alignItems: "start" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 24, paddingTop: 24, alignItems: "start" }}>
           {/* ---- Left column: financial interests ---- */}
           <div style={activeTab === "career" ? { gridColumn: "1 / -1" } : undefined}>
             <div

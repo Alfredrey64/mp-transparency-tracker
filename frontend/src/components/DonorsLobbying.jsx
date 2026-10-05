@@ -223,7 +223,7 @@ export default function DonorsLobbying() {
         See "How this works" below for the full picture.
       </motion.div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 24, marginBottom: 28 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(340px, 100%), 1fr))", gap: 24, marginBottom: 28 }}>
         <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: 20 }}>
           <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 14 }}>
             Declared Value by Sector
@@ -351,7 +351,7 @@ export default function DonorsLobbying() {
         </p>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 14, marginBottom: 32, alignItems: "start" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))", gap: 14, marginBottom: 32, alignItems: "start" }}>
         {stats.sectorLeaderboards.map((s, i) => {
           const isOpen = expandedSectors.has(s.sector);
           return (
@@ -524,7 +524,7 @@ function EducationSection() {
         Before the numbers: what these words actually mean, who regulates them, and why they're politically sensitive
         enough to have their own transparency rules.
       </p>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))", gap: 16 }}>
         <EducationCard title={'What counts as a "donation"?'}>
           <Bullet>
             Covers cash to fund an MP's work, gifts, hospitality (meals, tickets, travel), shareholdings, property,

@@ -521,7 +521,7 @@ export default function Cabinet({ onViewProfile }) {
                 {AREA_DESCRIPTIONS[g.area]}
               </div>
             )}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 14 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(320px, 100%), 1fr))", gap: 14 }}>
               {g.members.map((m, mi) => (
                 <CabinetCard key={m.id} member={m} area={g.area} index={mi} onViewProfile={onViewProfile} />
               ))}

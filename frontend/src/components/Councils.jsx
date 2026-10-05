@@ -92,9 +92,9 @@ function StatCard({ icon: Icon, colour, value, format = fmt, label, caption, chi
 
 function Chip({ colour, children, style }) {
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, color: COLORS.ink, background: `${colour}1c`, border: `1px solid ${colour}55`, borderRadius: 999, padding: "3px 10px", whiteSpace: "nowrap", ...style }}>
-      <span style={{ width: 8, height: 8, borderRadius: "50%", background: colour }} />
-      {children}
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, color: COLORS.ink, background: `${colour}1c`, border: `1px solid ${colour}55`, borderRadius: 999, padding: "3px 10px", whiteSpace: "nowrap", maxWidth: "100%", minWidth: 0, ...style }}>
+      <span style={{ width: 8, height: 8, borderRadius: "50%", background: colour, flexShrink: 0 }} />
+      <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis" }}>{children}</span>
     </span>
   );
 }
@@ -185,7 +185,7 @@ function Finder({ index }) {
 
   return (
     <div style={{ background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 18, padding: "18px clamp(14px, 2.4vw, 22px) 20px", boxShadow: "0 18px 40px -22px rgba(0,0,0,0.6)" }}>
-      <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fit, minmax(270px, 1fr))" }}>
+      <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fit, minmax(min(270px, 100%), 1fr))" }}>
         <form onSubmit={lookup}>
           <label style={{ display: "block", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.ink, marginBottom: 7 }}>Find your council by postcode</label>
           <div style={{ display: "flex", gap: 8 }}>
@@ -284,7 +284,7 @@ function Overview({ data }) {
       {/* Key numbers */}
       <div>
         <SectionHead kicker={`${latestYear} at a glance`} title="The key numbers" />
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(205px, 1fr))", gap: 14 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(205px, 100%), 1fr))", gap: 14 }}>
           <StatCard icon={IconGroup} colour="#4F46E5" value={s.councillors} label="councillors" caption={`on ${s.councils} councils across the UK. ${topParty ? `${topParty.short} is the largest party with ${fmt(topParty.count)}.` : ""}`} />
           <StatCard
             icon={IconCompare}
@@ -370,7 +370,7 @@ function Overview({ data }) {
           <div style={{ marginTop: 16 }}>
             <button type="button" onClick={() => setShowAllChanges((v) => !v)} style={linkButton}>{showAllChanges ? "Hide the list" : `See all ${changes.total} councils that changed hands →`}</button>
             {showAllChanges && (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 8, marginTop: 12 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))", gap: 8, marginTop: 12 }}>
                 {rawChanges.map((c) => (
                   <button key={c.id} type="button" className="nclick" onClick={() => goCouncil(c.id)} style={{ textAlign: "left", background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: "10px 12px", cursor: "pointer", color: "inherit" }}>
                     <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 14, fontWeight: 600, color: COLORS.ink, marginBottom: 6 }}>{c.name}</span>
@@ -450,7 +450,7 @@ function Overview({ data }) {
       <Reveal>
         <Card id="elections">
           <SectionHead kicker="Elections" accent="#1FA97C" title="When councils next vote" blurb="The date each council's next election falls on. Some councils elect everyone at once; others elect a third or a half at a time." />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))", gap: 12 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(230px, 100%), 1fr))", gap: 12 }}>
             {s.nextDates.map((d, i) => (
               <div key={d.date} style={{ background: COLORS.paper, border: `1px solid ${i === 0 ? "#1FA97C" : COLORS.hairline}`, borderRadius: 16, padding: "14px 16px" }}>
                 <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: i === 0 ? "#1FA97C" : COLORS.inkSoft }}>{i === 0 ? "Next up" : "Later"}</div>
@@ -476,7 +476,7 @@ function Overview({ data }) {
             </button>
           ))}
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(270px, 1fr))", gap: 10 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(270px, 100%), 1fr))", gap: 10 }}>
           {listed.map((c) => {
             const colour = controlColourOf(c.control_by_seats);
             return (
@@ -602,7 +602,7 @@ function CouncilView({ council, data, wardName, countyId, detail, failed }) {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(195px, 1fr))", gap: 14 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(195px, 100%), 1fr))", gap: 14 }}>
         <StatCard icon={IconGroup} colour="#4F46E5" value={council.total} label="councillors" caption={`${major} seats are needed for a majority.`} />
         <StatCard icon={IconChartBars} colour={controlColourOf(council.control_by_seats)} value={seats[0]?.count ?? 0} label={`seats for ${seats[0]?.short ?? "the largest party"}`} caption={council.control_by_seats === "noc" ? "No party holds a majority of the seats." : `${controlLabelOf(council.control_by_seats)} holds a majority of the seats.`} />
         <StatCard icon={IconCompare} colour="#E0367A" value={change ? 1 : 0} format={(n) => (n ? "Yes" : "No")} label={`changed hands in ${latestYear}`} caption={change ? `From ${controlLabelOf(change.from)} to ${controlLabelOf(change.to)}.` : `Same kind of control as in ${latestYear - 1}.`} />
@@ -647,7 +647,7 @@ function CouncilView({ council, data, wardName, countyId, detail, failed }) {
       {moved.length > 0 && (
         <Card>
           <SectionHead kicker="Defections" accent="#E8A33D" title={`${moved.length} ${moved.length === 1 ? "councillor has" : "councillors have"} changed party`} blurb={`In a different party from the one listed in ${data.defections?.since ?? "last year"}.`} />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 10 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(300px, 100%), 1fr))", gap: 10 }}>
             {moved.map(([ward, name, from, to]) => (
               <div key={`${ward}-${name}`} style={{ background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: "10px 12px" }}>
                 <div style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 600, color: COLORS.ink }}>{name}</div>
@@ -695,7 +695,7 @@ function CouncilView({ council, data, wardName, countyId, detail, failed }) {
                 </button>
               ))}
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", gap: 10 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(250px, 100%), 1fr))", gap: 10 }}>
               {visible.map(([ward, list]) => (
                 <div key={ward} style={{ background: COLORS.paper, border: `1px solid ${yourWard && yourWard[0] === ward ? COLORS.accent : COLORS.hairline}`, borderRadius: 14, padding: "11px 13px" }}>
                   <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 700, color: COLORS.ink, marginBottom: 5 }}>{ward}</div>

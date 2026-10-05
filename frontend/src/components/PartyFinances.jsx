@@ -144,7 +144,7 @@ export default function PartyFinances() {
           explainer and three separate text boxes, most of which just
           repeated what the page subtitle already says. Real content
           belongs above the reference material, not after it. */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 24, marginTop: 24, marginBottom: 20 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(340px, 100%), 1fr))", gap: 24, marginTop: 24, marginBottom: 20 }}>
         <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: 20 }}>
           <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 14 }}>
             Total Declared by Party
@@ -386,7 +386,7 @@ function PartyFinanceRulesSection() {
         A quick, straightforward guide to the rules behind the numbers below — set out in the Political Parties,
         Elections and Referendums Act 2000 (as amended), and enforced by the Electoral Commission.
       </p>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))", gap: 16 }}>
         <RuleCard title="What counts as a reportable donation">
           <RuleBullet>
             Cash, gifts, loans on non-commercial terms, sponsorship, and free or discounted services all count —

@@ -197,7 +197,7 @@ export default function AppgMemberships() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.35 }}
-        style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 14, marginBottom: 28, maxWidth: 900 }}
+        style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(160px, 100%), 1fr))", gap: 14, marginBottom: 28, maxWidth: 900 }}
       >
         {QUICK_FACTS.map((fact) => (
           <div
@@ -264,7 +264,7 @@ export default function AppgMemberships() {
         <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16 }}>
           APPGs cover almost every topic imaginable — here's a small, varied sample.
         </p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 14 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))", gap: 14 }}>
           {APPG_EXAMPLES.map((group, i) => (
             <motion.div
               key={group.name}

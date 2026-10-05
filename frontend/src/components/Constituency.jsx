@@ -316,7 +316,7 @@ function Overview({ record, seats, safety }) {
             </Panel>
           </Reveal>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 16 }}>
             {result.turnoutPct != null && result.turnout != null && result.electorate != null && (
               <Reveal>
                 <Panel title="Who turned out" style={{ height: "100%", boxSizing: "border-box" }}>
@@ -451,7 +451,7 @@ function History({ record, seats, mpInfo, history }) {
 
       <Reveal>
         <Panel title="Notable about this seat">
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: 12 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(210px, 100%), 1fr))", gap: 12 }}>
             {result?.outcome && <Fact label="At the last election" value={/gain/i.test(result.outcome) ? "Changed party" : /hold/i.test(result.outcome) ? "Held" : result.outcome} note={`${result.outcome}${result.date ? `, ${formatDate(result.date)}` : ""}`} />}
             {result?.isGeneralElection === false && <Fact label="How the MP won it" value="By-election" note={(result.title ?? "").replace(/^\d{4}-\d{2}-\d{2}\s+/, "")} />}
             {standing && <Fact label="Closeness of the result" value={`${ordinal(standing.rankNarrowest)} closest`} note={`Of ${fmt(standing.of)} seats`} />}

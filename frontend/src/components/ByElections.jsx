@@ -211,15 +211,15 @@ export default function ByElections() {
                 onClick={() => withScrollPreserved(() => setExpanded(isOpen ? null : e.election_id))}
                 style={{ display: "block", width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" }}
               >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, marginBottom: 12 }}>
-                  <div>
+                <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", gap: 8, marginBottom: 12 }}>
+                  <div style={{ flex: "1 1 170px", minWidth: 0 }}>
                     <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, color: COLORS.ink }}>{e.constituency_name}</div>
                     <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 2 }}>
                       {formatDate(e.election_date)} · {daysAgo(e.election_date)}
                       {predecessor?.membership_end_reason ? ` · seat vacated by ${predecessor.membership_end_reason.toLowerCase()}` : ""}
                     </div>
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, maxWidth: "100%" }}>
                     <span
                       style={{
                         fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em",

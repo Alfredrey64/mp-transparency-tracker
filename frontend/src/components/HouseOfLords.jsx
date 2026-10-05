@@ -510,7 +510,7 @@ export default function HouseOfLords({ peerId = null }) {
         ))}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))", gap: 12 }}>
         {!loading &&
           filtered.map((p, i) => {
             const color = partyColour(p.party_colour, COLORS.inkSoft);

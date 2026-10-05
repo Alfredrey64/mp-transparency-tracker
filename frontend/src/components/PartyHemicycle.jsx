@@ -129,7 +129,7 @@ export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Ind
       )}
       </div>
 
-      <div className={shown && !reduce ? "hemi-fade hemi-legend" : undefined} style={{ display: "flex", flexWrap: "wrap", gap: "8px 18px", marginTop: 18, justifyContent: "center", opacity: shown ? 1 : 0 }}>
+      <div className={shown && !reduce ? "hemi-fade hemi-legend" : undefined} style={{ display: "flex", flexWrap: "wrap", gap: "2px 16px", marginTop: 14, justifyContent: "center", opacity: shown ? 1 : 0 }}>
         {parties.slice(0, legendCount).map((p) => (
           <button
             key={p.name}
@@ -137,7 +137,7 @@ export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Ind
             onMouseEnter={() => setHoveredParty(p.name)}
             onMouseLeave={() => setHoveredParty(null)}
             style={{
-              display: "flex", alignItems: "center", gap: 7, background: "none", border: "none", padding: 0,
+              display: "flex", alignItems: "center", gap: 7, background: "none", border: "none", padding: "7px 2px",
               cursor: onSelectParty ? "pointer" : "default", opacity: hoveredParty && hoveredParty !== p.name ? 0.4 : 1,
               transition: "opacity 0.15s",
             }}

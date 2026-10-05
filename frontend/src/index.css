@@ -236,7 +236,7 @@ select:focus-visible,
   .hero-stats > div { min-width: 0 !important; text-align: center; }
   .hero-stat-value { font-size: 19px !important; }
   .hero-links { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .hero-links > button { justify-content: center; padding: 12px 10px !important; font-size: 14px !important; text-align: center; }
+  .hero-links > button { justify-content: center; padding: 12px 8px !important; font-size: 14px !important; text-align: center; min-width: 0; white-space: normal !important; line-height: 1.25; }
   .hero-links > button:first-child { grid-column: 1 / -1; }
 }
 
@@ -244,8 +244,8 @@ select:focus-visible,
    "Glossary →" links) get an invisible, larger area to tap, without moving
    anything on the page. */
 @media (pointer: coarse) {
-  button:not([style*="position"]):not(.gloss-term) { position: relative; }
-  button:not(.gloss-term)::after { content: ""; position: absolute; inset: -6px -4px; }
+  button:not([style*="position"]):not(.gloss-term):not(.tier-slab) { position: relative; }
+  button:not(.gloss-term)::after { content: ""; position: absolute; inset: -8px -6px; }
 }
 
 /* The Commons and Lords domes: seats sweep in from the left (delay per seat is
@@ -286,8 +286,12 @@ select:focus-visible,
    the menu), and stack above it otherwise. */
 .mm-wrap { container-type: inline-size; }
 .mm-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; margin-top: 8px; }
+/* Stacked (no room for a side column): the filter lists sit two across so the
+   meetings themselves start sooner. */
+.mm-filterlist { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 18px; }
 @container (min-width: 760px) {
   .mm-layout { grid-template-columns: 240px minmax(0, 1fr); gap: 44px; align-items: start; }
+  .mm-filterlist { display: block; }
   .mm-side { position: sticky; top: 16px; }
 }
 
@@ -327,11 +331,12 @@ select:focus-visible,
   .tier-slab-num { font-size: 17px; }
 }
 @container (max-width: 520px) {
-  .tier-grid { --pitch: 70px; --row: 58px; --sp: 60px; --dl: 14px; --ul: 38px; --hl: 3px; --hw: 48px; }
+  .tier-grid { --pitch: 76px; --row: 64px; --sp: 60px; --dl: 14px; --ul: 38px; --hl: 3px; --hw: 48px; }
   .tier-grid .tier-sub { display: none; }
   .tier-slab { padding: 0 11px; gap: 9px; }
-  .tier-slab-icon { width: 32px; height: 32px; }
-  .tier-slab-name { font-size: 14.5px; }
+  .tier-slab > .tier-slab-icon { display: none; }
+  .tier-slab-name { font-size: 14px; line-height: 1.2; overflow-wrap: anywhere; }
+  .tier-slab-num { font-size: 14px; }
 }
 @media (max-height: 760px) { .tier-grid .tier-keys { display: none; } }
 
@@ -374,7 +379,7 @@ select:focus-visible,
 .tier-node[data-lit="0"] { transition-delay: 0s; }
 
 .tier-slab {
-  position: absolute; left: var(--sp); right: 0; top: calc(var(--pitch) * var(--i)); height: var(--row); z-index: 1;
+  position: absolute; left: var(--sp); width: calc(100% - var(--sp) - 8px); top: calc(var(--pitch) * var(--i)); height: var(--row); z-index: 1; min-width: 0; overflow: visible;
   display: flex; align-items: center; gap: 14px; padding: 0 16px; text-align: left; font: inherit; cursor: pointer;
   background: var(--c-paper); border: 1px solid var(--c-hairline); border-radius: 14px;
   transition: transform 0.4s ease, border-color 0.3s, box-shadow 0.4s, background-color 0.4s;

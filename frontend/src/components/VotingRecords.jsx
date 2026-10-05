@@ -145,7 +145,7 @@ function BillEntry({ bill, politicians, initiallyOpen }) {
                     <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.6 }}>{bill.summary}</div>
                   </div>
                 )}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 12, marginBottom: 18 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(160px, 100%), 1fr))", gap: 12, marginBottom: 18 }}>
                   {bill.sponsor_name && (
                     <div>
                       <FieldLabel>Sponsor</FieldLabel>
@@ -260,7 +260,7 @@ function DivisionCard({ division }) {
       ) : (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: "easeOut" }}>
           <PartyBreakdownTable breakdown={division.breakdown} />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: 10 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(190px, 100%), 1fr))", gap: 10 }}>
             <VoteGroup label="Voted Aye" color="#2F6F4E" members={division.breakdown.ayes} />
             <VoteGroup label="Voted No" color="#9C3B3B" members={division.breakdown.noes} />
             <VoteGroup label="Did not vote" color={COLORS.inkSoft} members={division.breakdown.didNotVote} note="Absent, paired, or abstained — Commons records don't distinguish between these." />

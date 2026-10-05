@@ -238,7 +238,7 @@ function NationScreen({ selected, onSelect, onContinue, onSkip }) {
             above it (row 2+) once the drop-and-bounce animation was
             accounted for. rowGap alone now carries that clearance, so it
             doesn't depend on which row is selected. */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", columnGap: 12, rowGap: 32, marginTop: 26, marginBottom: 22 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(130px, 100%), 1fr))", columnGap: 12, rowGap: 32, marginTop: 26, marginBottom: 22 }}>
           {NATIONS.map((n) => {
             const active = selected === n.key;
             return (
