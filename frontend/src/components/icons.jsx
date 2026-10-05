@@ -30,9 +30,9 @@ export function IconCoin({ size = 17 }) {
 export function IconVote({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-7" />
-      <path d="M4 12l8-7 8 7" />
-      <path d="m9 12 2.2 2.2L16 9.5" />
+      <path d="M7 3.5h10a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2Z" />
+      <path d="m8.4 9 1.7 1.7 3.3-3.6" />
+      <path d="M8.5 14.2h7M8.5 17.2h4.5" />
     </svg>
   );
 }
@@ -51,9 +51,10 @@ export function IconGroup({ size = 17 }) {
 export function IconInfluence({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 21h6l7-7a2.1 2.1 0 0 0-3-3l-7 7z" />
-      <path d="M13 8l3-3a2.1 2.1 0 0 1 3 3l-3 3" />
-      <path d="M8 16l-2 2M11 19l-2 2" />
+      <circle cx="8.5" cy="8" r="3" />
+      <path d="M3 19.5c.4-3.4 2.5-5.3 5.5-5.3 1 0 1.9.2 2.7.6" />
+      <circle cx="17.5" cy="17" r="4.6" />
+      <path transform="translate(12.63 12.17) scale(.42)" strokeWidth="4" d="M9.7 15.8V9.9c0-1.6 1.1-2.7 2.5-2.7 1.2 0 2.1.6 2.4 1.7M8.7 12.5h4.6M8.3 15.8h6.6" />
     </svg>
   );
 }
@@ -61,8 +62,9 @@ export function IconInfluence({ size = 17 }) {
 export function IconSettings({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="3.2" />
-      <path d="M12 3.5v2.2M12 18.3v2.2M20.5 12h-2.2M5.7 12H3.5M17.6 6.4l-1.55 1.55M7.95 16.05 6.4 17.6M17.6 17.6l-1.55-1.55M7.95 7.95 6.4 6.4" />
+      <path d="M4 7h8.5M17.5 7H20M4 17h2.5M11.5 17H20" />
+      <circle cx="15" cy="7" r="2.3" />
+      <circle cx="9" cy="17" r="2.3" />
     </svg>
   );
 }
@@ -168,9 +170,9 @@ export function IconBudget({ size = 17 }) {
 export function IconPartyFinance({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 3 4 7v1.5h16V7Z" />
-      <path d="M5.5 8.5V17M9.5 8.5V17M14.5 8.5V17M18.5 8.5V17" />
-      <path d="M3.5 20h17" />
+      <rect x="3" y="6.5" width="18" height="11" rx="1.8" />
+      <circle cx="12" cy="12" r="2.6" />
+      <path d="M6.5 12h.01M17.5 12h.01" />
     </svg>
   );
 }
@@ -178,9 +180,9 @@ export function IconPartyFinance({ size = 17 }) {
 export function IconByElection({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 10h16v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z" />
-      <path d="M4 10 8 4h8l4 6" />
-      <path d="m9 13.5 2.2 2.2L15.5 11" />
+      <rect x="4" y="5.5" width="16" height="14.5" rx="2" />
+      <path d="M4 10h16M8.5 3.5v4M15.5 3.5v4" />
+      <path d="m9 15 2 2 4-4" />
     </svg>
   );
 }
@@ -197,9 +199,9 @@ export function IconPulse({ size = 17 }) {
 export function IconCabinet({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="10" width="18" height="10" rx="1.5" />
-      <path d="M8 10V7a4 4 0 0 1 8 0v3" />
-      <circle cx="12" cy="15" r="1.4" />
+      <path d="M3.5 9.5V8A1.5 1.5 0 0 1 5 6.5h14A1.5 1.5 0 0 1 20.5 8v1.5" />
+      <path d="M3.5 9.5h17v9.5a1.5 1.5 0 0 1-1.5 1.5H5a1.5 1.5 0 0 1-1.5-1.5Z" />
+      <path d="M10.2 9.5v3.8h3.6V9.5" />
     </svg>
   );
 }
@@ -207,12 +209,10 @@ export function IconCabinet({ size = 17 }) {
 export function IconTimeline({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="4" y1="6" x2="20" y2="6" />
-      <line x1="4" y1="12" x2="20" y2="12" />
-      <line x1="4" y1="18" x2="20" y2="18" />
-      <circle cx="8" cy="6" r="1.6" fill="currentColor" stroke="none" />
-      <circle cx="15" cy="12" r="1.6" fill="currentColor" stroke="none" />
-      <circle cx="10" cy="18" r="1.6" fill="currentColor" stroke="none" />
+      <circle cx="6" cy="5" r="1.8" />
+      <circle cx="6" cy="12" r="1.8" />
+      <circle cx="6" cy="19" r="1.8" />
+      <path d="M6 6.8v3.4M6 13.8v3.4M10.5 5H20M10.5 12H20M10.5 19h6" />
     </svg>
   );
 }
@@ -237,8 +237,11 @@ export function IconSearch({ size = 17 }) {
 export function IconLords({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 19h16" />
-      <path d="M5 19V9.5l2.2 2-2-5.5 3.3 3L12 4l3.5 5 3.3-3-2 5.5 2.2-2V19" />
+      <path d="M5.2 17.5 4 9l4.6 3.5L12 6.5l3.4 6L20 9l-1.2 8.5z" />
+      <path d="M5.2 20.5h13.6" />
+      <circle cx="4" cy="7.2" r="1" />
+      <circle cx="12" cy="4.3" r="1" />
+      <circle cx="20" cy="7.2" r="1" />
     </svg>
   );
 }
@@ -313,10 +316,8 @@ export function IconGlobe({ size = 17 }) {
 export function IconGavel({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M14.5 3.5 20 9l-2 2-5.5-5.5Z" />
-      <path d="m4 19.5 7-7" />
-      <path d="m8.5 10.5 4.5 4.5" />
-      <path d="M3 21h7" />
+      <rect x="10.5" y="5" width="10" height="7" rx="1.4" transform="rotate(45 15.5 8.5)" />
+      <path d="M13 11 4.5 19.5M12 21h8" />
     </svg>
   );
 }
@@ -359,9 +360,8 @@ export function IconHardHat({ size = 17 }) {
 export function IconDoor({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M7 3h8v18H7Z" />
-      <path d="M15 3.3 18 5v16l-3-1.7" />
-      <circle cx="11.7" cy="12" r="0.9" fill="currentColor" stroke="none" />
+      <path d="M14 4.5H7A1.5 1.5 0 0 0 5.5 6v12A1.5 1.5 0 0 0 7 19.5h7" />
+      <path d="M10 12h10M17 8.5l3.5 3.5-3.5 3.5" />
     </svg>
   );
 }
@@ -369,10 +369,12 @@ export function IconDoor({ size = 17 }) {
 export function IconCommittee({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <ellipse cx="12" cy="13.5" rx="7.5" ry="4.5" />
-      <circle cx="12" cy="5" r="1.6" fill="currentColor" stroke="none" />
-      <circle cx="4" cy="9.5" r="1.6" fill="currentColor" stroke="none" />
-      <circle cx="20" cy="9.5" r="1.6" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="12" cy="4" r="1.6" />
+      <circle cx="19.6" cy="9.5" r="1.6" />
+      <circle cx="16.7" cy="18.5" r="1.6" />
+      <circle cx="7.3" cy="18.5" r="1.6" />
+      <circle cx="4.4" cy="9.5" r="1.6" />
     </svg>
   );
 }
@@ -491,8 +493,8 @@ export function IconRankings({ size = 17 }) {
 export function IconDarkMoney({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="8.5" />
-      <path d="M7.8 12h8.4" strokeWidth="3" />
+      <circle cx="12" cy="12" r="8.5" strokeDasharray="2.8 2.8" />
+      <path d="M9.7 15.8V9.9c0-1.6 1.1-2.7 2.5-2.7 1.2 0 2.1.6 2.4 1.7M8.7 12.5h4.6M8.3 15.8h6.6" />
     </svg>
   );
 }
@@ -594,10 +596,10 @@ export function IconHexMap({ size = 17 }) {
 export function IconCouncil({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 9.5 12 4l9 5.5" />
-      <path d="M4.5 9.5h15" />
-      <path d="M6 12v6M10 12v6M14 12v6M18 12v6" />
-      <path d="M3.5 20h17" />
+      <path d="M4.5 20.5V11h15v9.5M3.5 20.5h17" />
+      <path d="M9.5 11V4.5h5V11" />
+      <circle cx="12" cy="7.8" r="1.1" />
+      <path d="M10.5 20.5v-4h3v4" />
     </svg>
   );
 }

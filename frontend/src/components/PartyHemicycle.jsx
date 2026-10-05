@@ -162,7 +162,7 @@ export function PartyHemicycleSection({
 }) {
   return (
     <div style={{ marginBottom: 40 }}>
-      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, color: COLORS.ink, marginBottom: 4, textAlign: "center" }}>
+      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, color: COLORS.ink, marginBottom: 4, textAlign: "center" }}>
         {heading}
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, textAlign: "center", marginBottom: 8 }}>

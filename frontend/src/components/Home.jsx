@@ -460,7 +460,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
       <div style={{ borderTop: `1px solid ${COLORS.hairline}`, borderBottom: `1px solid ${COLORS.hairline}`, padding: "24px 0", marginBottom: 40 }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 24, alignItems: "center" }}>
           <div>
-            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, color: COLORS.ink, marginBottom: 4 }}>Find Your MP</div>
+            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, color: COLORS.ink, marginBottom: 4 }}>Find Your MP</div>
             <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.5 }}>
               Search by constituency to jump straight to their profile.
             </div>
@@ -598,7 +598,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
 
         <div style={{ border: `1px solid ${COLORS.hairline}`, borderRadius: 16, padding: "20px 22px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4, gap: 10, flexWrap: "wrap" }}>
-            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, color: COLORS.ink }}>
+            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, color: COLORS.ink }}>
               {parliamentTab === "changes" ? "What's Changed" : "On This Day"}
             </div>
             <div style={{ display: "flex", gap: 2 }}>
