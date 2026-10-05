@@ -145,7 +145,7 @@ function Slab({ i, tier, exists, nationLabel, figure, selected, active, lit, arr
   );
 }
 
-const FLOW_ARROWS = 6;
+const FLOW_ARROWS = 4;
 
 function Spine({ action, voting, tpos, fpos, tokenColor, stepKey }) {
   const arrows = Array.from({ length: FLOW_ARROWS }, (_, k) => <i key={k} style={{ "--k": k }} />);
