@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { YearsMeaning } from "./MpMeaning";
 import { COLORS, FONT_BODY, FONT_DISPLAY, numeric } from "../theme";
 import { loadCareerDetail } from "../lib/careerDetail";
 import {
@@ -248,6 +249,12 @@ export default function CareerTab({ politician, house = "commons" }) {
           <Stat value={summary.committees} label="committees" note={summary.committeesNow ? `${summary.committeesNow} now` : undefined} />
           <Stat value={summary.partyChanges} label="party changes" note={summary.partyChanges ? "including spells as an independent" : undefined} />
         </section>
+      )}
+
+      {hasAnything && house !== "lords" && summary?.firstElected && (
+        <div style={{ marginTop: -12 }}>
+          <YearsMeaning politician={politician} />
+        </div>
       )}
 
       {hasAnything && (

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
+import { GuideKeyContext, guideKeyFor } from "./lib/viewContext";
 import { motion, MotionConfig } from "framer-motion";
 import { supabase } from "./supabaseClient";
 import { COLORS, FONT_BODY, FONT_DISPLAY } from "./theme";
@@ -293,6 +294,7 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user">
+    <GuideKeyContext.Provider value={guideKeyFor(view, viewParam)}>
     <div className="mp-app-shell" style={{ display: "flex", minHeight: "100vh", background: COLORS.paper, fontFamily: FONT_BODY }}>
       <Sidebar activeView={view} onNavigate={handleNavigate} onSelectPolitician={handleViewProfile} />
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -365,6 +367,7 @@ export default function App() {
         </motion.div>
       </div>
     </div>
+    </GuideKeyContext.Provider>
     </MotionConfig>
   );
 }

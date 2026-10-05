@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
+import WhatThisMeans from "./WhatThisMeans";
+import { lordsMeaning, womenMeaning } from "../lib/numbersMeaning";
 import ShareButton from "./ShareButton";
 import { chamberShareSpec } from "../lib/shareSpecs";
 import { supabase } from "../supabaseClient";
@@ -116,6 +118,7 @@ export default function LordsNumbers({ onNavigate }) {
                 </div>
               }
             />
+            <WhatThisMeans result={lordsMeaning({ top: biggest, total: stats.total, majorityLine: stats.majorityLine, crossbench: crossbench?.count })} />
           </Tile>
 
           <Tile span="s4" edge="people" title="At a glance" delay={0.05}>
@@ -173,6 +176,7 @@ export default function LordsNumbers({ onNavigate }) {
 
           <Tile span="s5" edge="people" title="Women in the Lords" note="Each dot is one peer. The coloured ones are women.">
             <WomenWaffle women={stats.women} total={stats.total} />
+            <WhatThisMeans result={womenMeaning({ womenPct: stats.womenPct, noun: "peers" })} style={{ marginTop: 14 }} />
             <div style={{ marginTop: 16 }}>
               {stats.womenByParty.slice(0, 5).map((r, i) => (
                 <BarRow

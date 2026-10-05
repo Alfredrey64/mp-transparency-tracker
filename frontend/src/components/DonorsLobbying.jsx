@@ -1,4 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
+import WhatThisMeans from "./WhatThisMeans";
+import { concentrationMeaning } from "../lib/moneyMeaning";
+import { everydayShort } from "../lib/everyday";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
@@ -259,6 +262,7 @@ export default function DonorsLobbying() {
           <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 12 }}>
             By total declared value, across all MPs
           </div>
+          <WhatThisMeans result={concentrationMeaning({ top: stats.topDonors.slice(0, 10).map((d) => d.total), total: stats.totalValue, count: 10 })} caveat="One donor giving to several MPs counts once here." style={{ marginTop: 0, marginBottom: 14 }} />
           <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
             {stats.topDonors.map((d, i) => {
               const isOpen = expandedDonor === d.key;
@@ -299,6 +303,7 @@ export default function DonorsLobbying() {
                         <span style={{ width: 6, height: 6, borderRadius: "50%", background: d.tag ? sectorColor(d.tag.sector) : UNTAGGED_COLOR, flexShrink: 0 }} />
                         <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>
                           {d.tag?.sector ?? "Untagged"} · {d.mpCount} MP{d.mpCount === 1 ? "" : "s"}
+                          {everydayShort(d.total) ? ` · ${everydayShort(d.total)}` : ""}
                         </span>
                       </div>
                     </div>

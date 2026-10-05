@@ -237,6 +237,18 @@ jobs:
         continue-on-error: true
         run: node fetch-lords-careers.js
 
+      # How each MP compares with the rest (declared value, outside earnings,
+      # expenses, rebellion rate, attendance, years served), for the "what
+      # this means" lines on the site. Reads the tables the steps above fill
+      # and mpCareers.json, so it has to run after them.
+      - name: Build the MP benchmarks
+        id: build_benchmarks
+        continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node build-benchmarks.js
+
       # continue-on-error above means the workflow run itself can show green
       # even when several scripts above silently failed — nothing surfaced
       # that anywhere except by opening this run and reading every step by
@@ -270,6 +282,7 @@ jobs:
           STATUS_fetch_constituency_history: ${{ steps.fetch_constituency_history.outcome }}
           STATUS_fetch_mp_careers: ${{ steps.fetch_mp_careers.outcome }}
           STATUS_fetch_lords_careers: ${{ steps.fetch_lords_careers.outcome }}
+          STATUS_build_benchmarks: ${{ steps.build_benchmarks.outcome }}
         run: node report-pipeline-status.js
 
       # The scripts above write straight to Supabase, so the live site picks
@@ -288,6 +301,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add frontend/src/data/constituencies.json frontend/src/data/constituencySummary.json frontend/src/data/constituencyHistory.json frontend/src/data/mpCareers.json frontend/src/data/careerDetail frontend/src/data/lordsCareers.json frontend/src/data/lordsCareerDetail frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json frontend/src/data/partyDonorSectors.json frontend/src/data/partyDonorSectorsMeta.json frontend/src/data/pipelineStatus.json
+          git add frontend/src/data/constituencies.json frontend/src/data/constituencySummary.json frontend/src/data/constituencyHistory.json frontend/src/data/mpCareers.json frontend/src/data/careerDetail frontend/src/data/lordsCareers.json frontend/src/data/benchmarks.json frontend/src/data/lordsCareerDetail frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json frontend/src/data/partyDonorSectors.json frontend/src/data/partyDonorSectorsMeta.json frontend/src/data/pipelineStatus.json
           git diff --staged --quiet || git commit -m "chore: daily data refresh"
           git push

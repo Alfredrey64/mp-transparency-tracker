@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import WhatThisMeans from "./WhatThisMeans";
+import { describeAgainst } from "../lib/interpret";
 import { supabase } from "../supabaseClient";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { COLORS, FONT_BODY, PAGE_PADDING, numeric } from "../theme";
@@ -90,6 +92,15 @@ function SeatExtras({ cell, cells, uk, region, onSelect }) {
       <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 8 }}>
         Region averages are for {regionName(cell.region)}, {region.seats} seats.
       </div>
+      <WhatThisMeans
+        result={describeAgainst({ value: cell.result?.majorityPct, reference: uk.avgLead, format: pct1, what: "The winner's lead", yardstick: "the UK average across all seats" })}
+        caveat={cell.result?.majorityPct != null && cell.result.majorityPct < 5 ? "A small lead means the seat could easily change hands." : cell.result?.majorityPct >= 30 ? "A lead this big means the seat almost never changes hands." : ""}
+      />
+      <WhatThisMeans
+        result={describeAgainst({ value: cell.result?.turnoutPct, reference: uk.avgTurnout, format: pct1, what: "Turnout", yardstick: "the UK average" })}
+        caveat="Turnout is the share of registered voters who voted."
+        style={{ marginTop: 8 }}
+      />
 
       {next.length > 0 && (
         <div style={{ marginTop: 16 }}>

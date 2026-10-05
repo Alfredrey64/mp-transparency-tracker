@@ -4,6 +4,8 @@ import { supabase } from "../supabaseClient";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
+import WhatThisMeans, { Everyday } from "./WhatThisMeans";
+import { describeSpread } from "../lib/interpret";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { partyColour, initials } from "../lib/format";
 import { IconRankings, IconSearch } from "./icons";
@@ -423,6 +425,14 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
   // attendance", since the bottom of the distribution is never in the
   // Top 30 by definition.
   const shown = binFilter ? filtered : filtered.slice(0, TOP_N);
+  // One line on how spread out the ranked figures are, and, for money, what
+  // the biggest one comes to in everyday terms.
+  const spread = useMemo(() => {
+    if (!active.data?.length) return null;
+    const sorted = active.data.map((e) => e.value).sort((a, b) => a - b);
+    return describeSpread({ sorted, format: (v) => active.formatValue({ value: v }), noun: "MP", zero: "have none" });
+  }, [active]);
+  const topValueEveryday = active.key === "expenses" || active.key === "earnings" ? active.data?.[0]?.value : null;
   const maxValue = active.data?.[0]?.value || 1;
 
   return (
@@ -467,6 +477,14 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
       </div>
 
       {!loading && active.data.length > 0 && (
+        <>
+          {spread && (
+            <WhatThisMeans
+              result={{ marker: "How spread out it is", tone: "mid", text: spread }}
+              style={{ marginTop: 0, marginBottom: 14 }}
+            />
+          )}
+          {topValueEveryday && <div style={{ marginBottom: 14 }}><Everyday amount={topValueEveryday} lead={`The largest figure here, ${active.formatValue({ value: topValueEveryday })}, is`} /></div>}
         <DistributionChart
           key={active.key}
           data={active.data}
@@ -476,6 +494,7 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
           activeBin={binFilter?.index}
           onSelectBin={(index, range) => setBinFilter(index == null ? null : { index, ...range })}
         />
+        </>
       )}
 
       <div style={{ position: "relative", maxWidth: 420, marginBottom: 16 }}>

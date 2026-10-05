@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import PageGuide from "./PageGuide";
+import { DeclaredMeaning, ExpensesMeaning } from "./MpMeaning";
 import ShareButton from "./ShareButton";
 import { mpShareSpec } from "../lib/shareSpecs";
 import { motion, AnimatePresence } from "framer-motion";
@@ -439,6 +441,7 @@ function ClaimsTabContent({ politician, claims }) {
             ))}
           </div>
         )}
+        <ExpensesMeaning politician={politician} />
         <div style={{ marginTop: 10, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5 }}>
           Business costs (staffing, travel, accommodation, office running costs) claimed through{" "}
           <GlossaryTerm term="IPSA">IPSA, the Independent Parliamentary Standards Authority</GlossaryTerm> — separate
@@ -914,6 +917,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
                 £{Math.round(totalDeclaredValue).toLocaleString()} total declared value
               </div>
             )}
+            <DeclaredMeaning politician={politician} total={totalDeclaredValue} />
             <SectionDivider />
           </div>
         </div>
@@ -943,6 +947,8 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
           gifts={gifts}
           committees={myCommittees}
         />
+
+        <PageGuide viewKey="mp" style={{ maxWidth: 760, margin: "20px auto 0" }} />
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24, paddingTop: 24, alignItems: "start" }}>
           {/* ---- Left column: financial interests ---- */}

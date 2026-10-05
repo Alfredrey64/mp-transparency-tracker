@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
+import WhatThisMeans from "./WhatThisMeans";
+import { rebelsMeaning } from "../lib/numbersMeaning";
 import ShareButton from "./ShareButton";
 import { rebelsShareSpec } from "../lib/shareSpecs";
 import { supabase } from "../supabaseClient";
@@ -86,6 +88,10 @@ export default function Rebels({ onNavigate }) {
       {r && r.countedVotes > 0 && (
         <div className="bento" style={{ marginTop: 26 }}>
           <div className="bento-grid">
+            <Tile span="s12" edge="change" title="What this shows" delay={0.02}>
+              <WhatThisMeans result={rebelsMeaning({ mpsWhoRebelled: r.mpsWhoRebelled, mpsCounted: r.mpsCounted, rebelPct: r.rebelPct })} caveat="Votes against the party majority include free votes, where MPs choose for themselves." style={{ marginTop: 0 }} />
+            </Tile>
+
             <Tile span="s4" edge="change" title="At a glance" note="Votes by MPs in a party, since records began on this site.">
               <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
                 <Figure value={r.rebelVotes} format={(n) => fmt(Math.round(n))} label="votes against the party" note={`${pct1(r.rebelPct)} of ${fmt(r.countedVotes)} votes`} />

@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
+import WhatThisMeans from "./WhatThisMeans";
+import { seatsMeaning, womenMeaning, tenureMeaning, safetyMeaning } from "../lib/numbersMeaning";
 import ShareButton from "./ShareButton";
 import { chamberShareSpec } from "../lib/shareSpecs";
 import { motion, useReducedMotion } from "framer-motion";
@@ -217,6 +219,7 @@ export default function CommonsNumbers({ onNavigate }) {
                 <Figure value={stats.newMps} format={(n) => fmt(Math.round(n))} label="new since July 2024" note="Including by-election winners" onOpen={(e) => see(e, "New MPs since July 2024", "Elected at the 2024 general election or a by-election since.", (m) => m.start && m.start >= GENERAL_ELECTION_2024, { sort: (a, b) => byName(a, b), badge: (m) => `Since ${formatDate(m.start)}` })} />
                 <Figure value={stats.medianTenure} format={(n) => `${(Math.round(n * 10) / 10).toFixed(1)} yrs`} label="typical time as an MP" note={`The median: half have served less. The average is ${(Math.round(stats.averageTenure * 10) / 10).toFixed(1)} years.`} onOpen={(e) => see(e, "Every MP, longest-serving first", "Time since their current run in the Commons began.", (m) => m.start, { sort: (a, b) => String(a.start).localeCompare(String(b.start)), badge: (m) => `${Math.floor((Date.now() - new Date(m.start).getTime()) / YEAR_MS)} yrs` })} />
               </div>
+              <WhatThisMeans result={tenureMeaning({ newMps: stats.newMps, total: stats.total, medianYears: stats.medianTenure })} style={{ marginTop: 16 }} />
             </Tile>
 
             <Tile span="s7" edge="seats" title="Seats by party" note={`Every bar is on the same 0 to 650 scale. The dashed line marks ${stats.majorityLine} seats, more than half the House.${sinn ? ` Sinn Féin's ${sinn.count} MPs don't take their seats, so in practice slightly fewer votes are needed.` : ""}`}>
@@ -224,6 +227,7 @@ export default function CommonsNumbers({ onNavigate }) {
                 stats={stats}
                 onOpen={(r, e) => see(e, r.key === "others" ? "The smaller parties" : r.label, r.key === "others" ? "MPs from parties with only one or two seats." : "Every MP currently sitting for this party.", (m) => r.parties.includes(partyOf(m)))}
               />
+              <WhatThisMeans result={seatsMeaning({ top: stats.seatsByParty[0], total: stats.total, majorityLine: stats.majorityLine })} caveat={sinn ? "Sinn Féin's MPs don't take their seats, so slightly fewer votes are needed in practice." : ""} />
               <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 22px", marginTop: 12 }}>
                 <button type="button" onClick={() => setShowTable((v) => !v)} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accent }}>
                   {showTable ? "Hide the table" : "View every party as a table"}
@@ -235,6 +239,7 @@ export default function CommonsNumbers({ onNavigate }) {
 
             <Tile span="s5" edge="people" title="Women in the Commons" note="Each dot is one MP. The coloured ones are women." delay={0.05}>
               <WomenWaffle women={stats.women} total={stats.total} />
+              <WhatThisMeans result={womenMeaning({ womenPct: stats.womenPct })} style={{ marginTop: 14 }} />
               <div style={{ marginTop: 16 }}>
                 {stats.womenByParty.slice(0, 5).map((r, i) => (
                   <BarRow key={r.party} label={r.party} color={COLORS.accent} fraction={r.womenPct / 100} valueText={pct0(r.womenPct)} detail={`${r.women}/${r.count}`} labelWidth={130} valueWidth={96} delay={i * 0.04} onClick={(e) => see(e, `Women MPs: ${r.party}`, "The women currently sitting for this party.", (m) => m.gender === "F" && partyOf(m) === r.party)} />
@@ -312,6 +317,9 @@ export default function CommonsNumbers({ onNavigate }) {
                   <SafetyHistogram
                     summary={summary}
                     onOpen={(h, e) => seeSeats(e, h.to == null ? `Winning by ${h.from}% or more` : `Winning by ${h.from} to ${h.to}%`, "MPs whose lead over the runner-up, as a share of votes cast, falls in this range. Smallest lead first.", (s) => s.result.majorityPct >= h.from && (h.to == null || s.result.majorityPct < h.to))}
+                  />
+                  <WhatThisMeans
+                    result={safetyMeaning({ marginal: summary.histogram[0]?.count ?? 0, safe: summary.histogram.filter((h) => h.from >= 20).reduce((n, h) => n + h.count, 0), total: summary.total })}
                   />
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "14px 30px", marginTop: 20, paddingTop: 16, borderTop: `1px solid ${COLORS.hairline}` }}>
                     <Figure value={summary.wonWithUnderHalf} format={(n) => fmt(Math.round(n))} label="MPs won with under half the vote" size={32} onOpen={(e) => seeSeats(e, "MPs elected on under half the vote", "Smallest lead first.", (s) => typeof s.result.candidates?.[0]?.share === "number" && s.result.candidates[0].share < 0.5)} />

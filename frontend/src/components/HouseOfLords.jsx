@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import PageGuide from "./PageGuide";
 import { motion } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
@@ -130,6 +131,8 @@ function PeerDetail({ peer, onBack, formerMp }) {
             </div>
           )}
         </div>
+
+        <PageGuide viewKey="peer" style={{ marginTop: 18 }} />
 
         <div role="tablist" aria-label="Peer page sections" style={{ display: "flex", justifyContent: "center", gap: 4, paddingTop: 18 }}>
           {[["overview", "Overview"], ["career", "Career"]].map(([key, label]) => (

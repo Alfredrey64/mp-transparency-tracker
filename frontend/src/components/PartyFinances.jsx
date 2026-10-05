@@ -1,4 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
+import WhatThisMeans from "./WhatThisMeans";
+import { partyConcentrationMeaning } from "../lib/moneyMeaning";
+import { everydayShort } from "../lib/everyday";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
@@ -146,6 +149,7 @@ export default function PartyFinances() {
           <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 15, color: COLORS.ink, marginBottom: 14 }}>
             Total Declared by Party
           </div>
+          <WhatThisMeans result={partyConcentrationMeaning({ parties: stats.parties })} style={{ marginTop: 0, marginBottom: 14 }} />
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {stats.parties.map((p, i) => (
               <motion.div
@@ -264,6 +268,7 @@ export default function PartyFinances() {
                   <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink }}>{p.name}</div>
                   <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 2 }}>
                     {p.donors.length} donor{p.donors.length === 1 ? "" : "s"}
+                    {everydayShort(p.total) ? ` · ${everydayShort(p.total)}` : ""}
                   </div>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>

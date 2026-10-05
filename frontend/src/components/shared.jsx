@@ -1,4 +1,7 @@
-import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { useState, useEffect, useMemo, useContext, lazy, Suspense } from "react";
+import PageGuide from "./PageGuide";
+import { GuideKeyContext } from "../lib/viewContext";
+import { RebelMeaning } from "./MpMeaning";
 import { motion } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
 import { supabase } from "../supabaseClient";
@@ -194,6 +197,8 @@ export function ScaleComparison({ bars, maxWidth = 900 }) {
 
 export function PageHeader({ kicker = "Public Record · UK Parliament", title, subtitle, align = "left", size = "lg", maxWidth, icon: Icon }) {
   const isHero = size === "xl";
+  // The page's "What you're looking at" box sits under every header.
+  const guideKey = useContext(GuideKeyContext);
   // Every page passes its own distinct icon here already — reusing it as
   // the lookup key means each page's header automatically picks up its
   // sidebar section's colour (see data/sidebarSections.js) with no prop
@@ -265,6 +270,7 @@ export function PageHeader({ kicker = "Public Record · UK Parliament", title, s
           {subtitle}
         </motion.p>
       )}
+      {!isHero && <PageGuide viewKey={guideKey} />}
     </div>
   );
 }
@@ -747,6 +753,7 @@ export function RebellionRateBox({ politician }) {
         Actual whip instructions are never published, so this is our best available proxy — not a claim about
         what the whip actually told them to do.
       </div>
+      <RebelMeaning politician={politician} />
     </CardShell>
   );
 }
