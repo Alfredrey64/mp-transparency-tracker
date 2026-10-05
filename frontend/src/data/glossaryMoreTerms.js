@@ -56,7 +56,7 @@ export const MORE_POLITICS_TERMS = [
   { term: "SDLP (Social Democratic and Labour Party)", def: "A Northern Ireland party that seeks a united Ireland by consent. Its MPs take their seats in the Commons and usually sit with Labour on the benches.", aliases: ["SDLP", "Social Democratic and Labour Party"] },
   { term: "Ulster Unionist Party", def: "A Northern Ireland party that supports Northern Ireland staying in the United Kingdom. It was the largest unionist party for most of the twentieth century.", aliases: ["UUP"] },
   { term: "Alliance Party", def: "A Northern Ireland party that doesn't identify as unionist or nationalist and draws support from both communities.", aliases: ["Alliance Party of Northern Ireland"] },
-  { term: "Cartogram", def: "A map that distorts real geography to show something else. On the Seat Map every constituency is the same size, so each seat counts equally whatever its area, and the UK's outline is only roughly kept.", aliases: ["hex map", "hexagon map", "hex cartogram"] },
+  { term: "Cartogram", def: "A map that distorts real geography to show something else. On the Your Constituency map every seat is the same size, so each seat counts equally whatever its area, and the UK's outline is only roughly kept.", aliases: ["hex map", "hexagon map", "hex cartogram"] },
   { term: "Co-operative Party", def: "A party, backed by the co-operative movement, that has a standing agreement with Labour. Its MPs are elected jointly and appear as 'Labour (Co-op)'; they sit and vote as Labour MPs.", aliases: ["Labour (Co-op)", "Labour Co-op", "Co-op MPs"] },
 ];
 

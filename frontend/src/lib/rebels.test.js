@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { computeRebels, MIN_VOTES } from "./rebels";
+import { computeRebels, rebelRates, MIN_VOTES } from "./rebels";
 
 const pol = (id, party, name = `MP ${id}`) => ({ id, party, name, party_colour: null });
 const politicians = [pol(1, "Labour"), pol(2, "Labour"), pol(3, "Conservative"), pol(4, "Independent"), pol(5, "Speaker")];
@@ -49,5 +49,16 @@ describe("computeRebels", () => {
   });
   it("copes with nothing", () => {
     expect(computeRebels([], politicians)).toMatchObject({ countedVotes: 0, rebelPct: 0, byMp: [], rebelDivisions: [] });
+  });
+});
+
+describe("rebelRates", () => {
+  it("gives each MP with enough votes their share against the party, leaving out the rest", () => {
+    const many = Array.from({ length: MIN_VOTES }, (_, i) => vote(1, 200 + i, i < 3 ? false : true));
+    const few = [vote(2, 300, false)];
+    const rates = rebelRates([...many, ...few, vote(4, 1, false)], politicians);
+    expect(rates.get(1).pct).toBeCloseTo(30, 5);
+    expect(rates.has(2)).toBe(false);
+    expect(rates.has(4)).toBe(false);
   });
 });

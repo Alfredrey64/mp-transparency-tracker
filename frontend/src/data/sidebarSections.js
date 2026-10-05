@@ -3,7 +3,7 @@ import {
   IconGlossary, IconHistory, IconDevolved, IconFormerMP, IconBudget, IconCabinet, IconTimeline,
   IconPartyFinance, IconByElection, IconLords, IconPetition, IconCompass, IconCommittee, IconCompare, IconMeeting,
   IconQuestion, IconGavel, IconRankings, IconDarkMoney, IconThinkTank, IconDoor, IconRegister,
-  IconSearch, IconBook, IconChartBars, IconTopic, IconMap, IconRoute, IconSplit, IconHexMap,
+  IconSearch, IconBook, IconChartBars, IconTopic, IconRoute, IconSplit, IconHexMap,
 } from "../components/icons";
 
 // Lives outside both Sidebar.jsx and shared.jsx specifically so neither has
@@ -46,8 +46,7 @@ export const SECTIONS = [
     label: "Get Involved",
     accent: "#E0367A",
     items: [
-      { key: "constituency", label: "Your Constituency", icon: IconMap },
-      { key: "seatmap", label: "Seat Map", icon: IconHexMap },
+      { key: "constituency", label: "Your Constituency", icon: IconHexMap },
       { key: "partymatch", label: "Find Your Party", icon: IconCompass },
       { key: "petitions", label: "Petitions", icon: IconPetition },
     ],

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { normSeat, hexPosition, hexPoints, lerpColour, buildCells, boundsOf, MODES, partyKey } from "./seatMap";
+import { normSeat, hexPosition, hexPoints, lerpColour, buildCells, boundsOf, MODES, partyKey, regionName, summariseRegion, neighbours, seatRanks } from "./seatMap";
 
 describe("names and positions", () => {
   it("treats punctuation and case as the same seat", () => {
@@ -65,5 +65,54 @@ describe("cells", () => {
     expect(b.minX).toBeLessThan(cells[0].x);
     expect(partyKey(cells).map((p) => p.party)).toEqual(["Labour", "Conservative", "Unknown"]);
     expect(boundsOf([])).toEqual({ minX: 0, minY: 0, width: 1, height: 1 });
+  });
+});
+
+describe("regions, neighbours and ranks", () => {
+  const hexes = [["A", "A", 0, 0, "E12000007"], ["B", "B", 1, 0, "E12000007"], ["C", "C", 0, 1, "S92000003"], ["D", "D", 5, 5, "S92000003"]];
+  const seats = {
+    A: { name: "A", petitions: [{ count: 400 }, { count: 100 }], result: { majorityPct: 2, turnoutPct: 70, isGeneralElection: true, outcome: "Lab Gain", candidates: [{ party: "Labour", colour: "d50000" }] } },
+    B: { name: "B", result: { majorityPct: 20, turnoutPct: 50, candidates: [{ party: "Conservative", colour: "0063ba" }] } },
+    C: { name: "C", result: { majorityPct: 10, turnoutPct: 60, candidates: [{ party: "SNP", colour: "fff685" }] } },
+    D: { name: "D", result: { majorityPct: 30, turnoutPct: 40, candidates: [{ party: "SNP", colour: "fff685" }] } },
+  };
+  const mps = [
+    { id: 1, name: "A1", party: "Labour", party_colour: "d50000", constituency: "A", gender: "F", parliament_member_id: 11 },
+    { id: 2, name: "B1", party: "Conservative", party_colour: "0063ba", constituency: "B", gender: "M", parliament_member_id: 12 },
+  ];
+  const cells = buildCells(hexes, seats, mps, 1, { careers: { 11: [2024, 1, 0], 12: [1990, 8, 3] } });
+  it("names regions", () => {
+    expect(regionName("E12000007")).toBe("London");
+    expect(regionName("nope")).toBe("Unknown");
+  });
+  it("carries career years and petition signatures onto the cells", () => {
+    expect(cells[0].mp.first).toBe(2024);
+    expect(cells[1].mp.elected).toBe(8);
+    expect(cells[0].petitions).toBe(500);
+  });
+  it("summarises a region, or the whole country", () => {
+    const london = summariseRegion(cells, "E12000007");
+    expect(london).toMatchObject({ seats: 2, women: 1, marginal: 1, gains: 1 });
+    expect(london.avgTurnout).toBe(60);
+    expect(london.parties.map((p) => p.party)).toEqual(["Labour", "Conservative"]);
+    expect(summariseRegion(cells, null).seats).toBe(4);
+  });
+  it("finds the seats next door", () => {
+    expect(neighbours(cells, cells[0]).map((c) => c.name).sort()).toEqual(["B", "C"]);
+    expect(neighbours(cells, cells[3])).toEqual([]);
+  });
+  it("ranks a seat among all of them", () => {
+    expect(seatRanks(cells, cells[0]).closest).toEqual({ rank: 1, of: 4 });
+    expect(seatRanks(cells, cells[0]).turnout).toEqual({ rank: 1, of: 4 });
+    expect(seatRanks(cells, cells[1]).serving).toEqual({ rank: 1, of: 2 });
+  });
+  it("paints the new views", () => {
+    const by = Object.fromEntries(MODES.map((m) => [m.key, m]));
+    expect(by.newmps.colour(cells[0])).toBe("#1FA97C");
+    expect(by.newmps.colour(cells[1])).not.toBe("#1FA97C");
+    expect(by.time.colour(cells[2])).toBe("#5b6075");
+    expect(by.petitions.colour(cells[0])).not.toBe("#5b6075");
+    expect(by.rebels.colour(cells[0])).toBe("#5b6075");
+    expect(by.rebels.needsVotes).toBe(true);
   });
 });

@@ -3,14 +3,13 @@ import ShareButton from "./ShareButton";
 import { seatShareSpec } from "../lib/shareSpecs";
 import { motion, useReducedMotion } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme";
+import { COLORS, FONT_BODY, FONT_DISPLAY, numeric } from "../theme";
 import { formatDate, partyColour } from "../lib/format";
 import {
   seatSafety, leadOverSecond, searchSeats, seatKey, ordinal, SAFETY_BANDS,
   buildSeatTimeline, spanLabel, majorityStanding, majorityBins,
 } from "../lib/constituency";
-import { PageHeader, LoadFailedNote } from "./shared";
-import { IconMap, IconSearch } from "./icons";
+import { IconSearch } from "./icons";
 import CountUp from "./CountUp";
 import Reveal from "./Reveal";
 
@@ -22,7 +21,7 @@ const goSeat = (name) => {
   window.location.hash = `#/constituency/${encodeURIComponent(name)}`;
 };
 
-function Panel({ title, children, style }) {
+export function Panel({ title, children, style }) {
   return (
     <section style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 18, padding: "20px 22px", ...style }}>
       {title && <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, color: COLORS.ink, margin: "0 0 14px", letterSpacing: "-0.01em" }}>{title}</h2>}
@@ -31,7 +30,7 @@ function Panel({ title, children, style }) {
   );
 }
 
-function SeatSearch({ seats, autoFocus }) {
+export function SeatSearch({ seats, autoFocus }) {
   const [query, setQuery] = useState("");
   const matches = useMemo(() => searchSeats(seats, query), [seats, query]);
   return (
@@ -87,7 +86,7 @@ function SeatHero({ record, mpInfo, safety, onOpenProfile, opening }) {
     >
       <div aria-hidden="true" style={{ position: "absolute", right: -60, top: -60, width: 240, height: 240, borderRadius: "50%", background: `radial-gradient(circle, ${colour}40, transparent 68%)` }} />
       <div style={{ position: "relative" }}>
-        <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: COLORS.inkSoft, letterSpacing: "0.02em", marginBottom: 6 }}>Your constituency</div>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: COLORS.inkSoft, letterSpacing: "0.02em", marginBottom: 6 }}>Constituency</div>
         <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: "clamp(34px, 7vw, 58px)", lineHeight: 1.04, letterSpacing: "-0.025em", color: COLORS.ink, margin: 0 }}>{record.name}</h1>
 
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 16, marginTop: 22 }}>
@@ -475,7 +474,7 @@ function History({ record, seats, mpInfo, history }) {
   );
 }
 
-function SeatDetail({ record, seats, generatedAt, onSelectPolitician }) {
+export function SeatDetail({ record, seats, generatedAt, onSelectPolitician, extras = null }) {
   const { result, mp } = record;
   const safety = result ? seatSafety(result.majorityPct) : null;
   const [tab, setTab] = useState("overview");
@@ -515,19 +514,13 @@ function SeatDetail({ record, seats, generatedAt, onSelectPolitician }) {
   return (
     <>
       <SeatHero record={record} mpInfo={mpInfo} safety={safety} onOpenProfile={openProfile} opening={opening} />
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10, marginTop: 14 }}>
-        <button
-          type="button"
-          onClick={() => { window.location.hash = `#/seatmap/${encodeURIComponent(record.name)}`; }}
-          style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accent }}
-        >
-          Find it on the seat map →
-        </button>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 14 }}>
         <ShareButton
           filename={`${record.name}-2024-result`}
           getSpec={() => seatShareSpec({ name: record.name, mp: { name: mp.name, party: mp.party, colour: mp.colour }, result, link: window.location.href })}
         />
       </div>
+      {extras}
       <Tabs tab={tab} setTab={setTab} tabs={[{ key: "overview", label: "Overview" }, { key: "history", label: "History" }]} />
       {tab === "overview" ? <Overview record={record} seats={seats} safety={safety} /> : <History record={record} seats={seats} mpInfo={mpInfo} history={history} />}
       <p style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.55, marginTop: 26 }}>
@@ -535,59 +528,5 @@ function SeatDetail({ record, seats, generatedAt, onSelectPolitician }) {
         Boundaries changed in 2024, so a seat's name can be shared with an older seat that covered different ground.
       </p>
     </>
-  );
-}
-
-export default function Constituency({ seat, onSelectPolitician }) {
-  const [data, setData] = useState(null);
-  const [failed, setFailed] = useState(false);
-
-  useEffect(() => {
-    // The whole file (650 seats) loads on demand rather than with the app.
-    import("../data/constituencies.json").then((m) => setData(m.default)).catch(() => setFailed(true));
-  }, []);
-
-  const record = data && seat ? data.constituencies[seatKey(seat)] : null;
-
-  return (
-    <div style={{ maxWidth: 940, margin: "0 auto", padding: PAGE_PADDING }}>
-      {!record && (
-        <PageHeader
-          icon={IconMap}
-          kicker="Your Constituency"
-          title="Your constituency"
-          subtitle="Look up any constituency or MP to see how the seat voted at the last election, how safe or marginal it is, who has held it before, and what people there are petitioning for."
-        />
-      )}
-
-      {failed && <LoadFailedNote item="the constituency data" />}
-      {!failed && !data && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>}
-
-      {data && !record && (
-        <>
-          {seat && (
-            <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: "#9C3B3B", marginBottom: 14 }}>
-              We couldn't find a constituency called “{seat}”. It may be vacant, or spelled differently — try searching.
-            </div>
-          )}
-          <div style={{ marginTop: 6 }}>
-            <SeatSearch seats={data.constituencies} autoFocus={!seat} />
-          </div>
-        </>
-      )}
-
-      {data && record && (
-        <>
-          <button
-            type="button"
-            onClick={() => { window.location.hash = "#/constituency"; }}
-            style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginBottom: 14 }}
-          >
-            ← Look up another constituency
-          </button>
-          <SeatDetail key={seatKey(record.name)} record={record} seats={data.constituencies} generatedAt={data.generatedAt} onSelectPolitician={onSelectPolitician} />
-        </>
-      )}
-    </div>
   );
 }

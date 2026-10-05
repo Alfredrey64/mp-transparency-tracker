@@ -85,3 +85,20 @@ export function computeRebels(votes, politicians) {
     rebelDivisions,
   };
 }
+
+// Each MP's share of their votes cast against their party: Map(id -> { pct, total, against }).
+// Only MPs under a whip with MIN_VOTES or more recorded votes are included.
+export function rebelRates(votes, politicians) {
+  const byId = new Map(politicians.map((p) => [p.id, p]));
+  const tally = new Map();
+  for (const v of votes) {
+    if (!hasWhip(byId.get(v.politician_id)) || v.voted_with_party_majority == null) continue;
+    const t = tally.get(v.politician_id) ?? { total: 0, against: 0 };
+    t.total += 1;
+    if (v.voted_with_party_majority === false) t.against += 1;
+    tally.set(v.politician_id, t);
+  }
+  const out = new Map();
+  for (const [id, t] of tally) if (t.total >= MIN_VOTES) out.set(id, { ...t, pct: (t.against / t.total) * 100 });
+  return out;
+}

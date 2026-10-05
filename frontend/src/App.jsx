@@ -57,7 +57,6 @@ const Constituency = lazy(LOADERS.constituency);
 const StartHere = lazy(LOADERS.start);
 const Rebels = lazy(LOADERS.rebels);
 const Offices = lazy(LOADERS.offices);
-const SeatMap = lazy(LOADERS.seatmap);
 
 // A quiet authorship mark, not a feature — printed once so a copy of this
 // site with the byline stripped from the UI still carries proof of where
@@ -84,7 +83,7 @@ const VALID_VIEWS = new Set([
   "devolved", "tracker", "budget", "cabinet", "lords", "formerMps", "byElections", "petitions", "partymatch",
   "committees", "compare", "ministerialMeetings", "writtenQuestions", "standards", "rankings", "myMP",
   "mediaLiteracy", "methodology", "glossary", "settings", "privacy", "terms", "list",
-  "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist", "numbers", "topics", "constituency", "start", "rebels", "offices", "seatmap",
+  "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist", "numbers", "topics", "constituency", "start", "rebels", "offices",
 ]);
 
 // The tab title, bookmark name and browser-history entry for every view —
@@ -124,6 +123,9 @@ function titleForState(view, selected, param) {
 function parseHash() {
   const raw = window.location.hash.replace(/^#\/?/, "");
   const segments = raw.split("/").filter(Boolean);
+  // The seat map used to be its own page; its links now open the merged
+  // Your Constituency page.
+  if (segments[0] === "seatmap") segments[0] = "constituency";
   if (segments[0] === "mp" && /^\d+$/.test(segments[1] ?? "")) {
     return { view: "list", mpId: Number(segments[1]), param: null };
   }
@@ -340,7 +342,6 @@ export default function App() {
             {view === "topics" && <AskedAbout onSelectPolitician={handleViewProfile} onNavigateForMp={handleNavigateForMp} />}
             {view === "rebels" && <Rebels onNavigate={handleNavigate} />}
             {view === "offices" && <Offices initialQuery={viewParam} />}
-            {view === "seatmap" && <SeatMap seat={viewParam} />}
             {view === "start" && <StartHere onNavigate={handleNavigate} onNavigateForMp={handleNavigateForMp} onViewProfile={handleViewProfile} />}
             {view === "constituency" && <Constituency seat={viewParam} onSelectPolitician={handleViewProfile} />}
             {view === "methodology" && <Methodology onNavigate={handleNavigate} />}
