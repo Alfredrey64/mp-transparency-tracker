@@ -590,3 +590,14 @@ export function IconHexMap({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconCouncil({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 9.5 12 4l9 5.5" />
+      <path d="M4.5 9.5h15" />
+      <path d="M6 12v6M10 12v6M14 12v6M18 12v6" />
+      <path d="M3.5 20h17" />
+    </svg>
+  );
+}

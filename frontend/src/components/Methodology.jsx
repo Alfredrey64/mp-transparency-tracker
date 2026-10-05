@@ -122,6 +122,12 @@ export default function Methodology({ onNavigate }) {
         <Section title="Primary data sources">
           <div>
             <SourceRow
+              name="Open Council Data UK"
+              url="https://opencouncildata.co.uk/"
+              auth="Free CSV downloads, CC BY-SA 4.0"
+              use="Every UK councillor with their ward, party and next election date, and each council's party make-up since 2016. The Your Council page is built from it; the two files derived from it are shared on the same licence."
+            />
+            <SourceRow
               name="UK Parliament Members API"
               url="https://members-api.parliament.uk/"
               auth="No key required"

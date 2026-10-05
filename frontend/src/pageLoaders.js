@@ -39,6 +39,7 @@ export const LOADERS = {
   start: () => import("./components/StartHere"),
   rebels: () => import("./components/Rebels"),
   offices: () => import("./components/Offices"),
+  councils: () => import("./components/Councils"),
   constituency: () => import("./components/ConstituencyHub"),
   methodology: () => import("./components/Methodology"),
   glossary: () => import("./components/Glossary"),

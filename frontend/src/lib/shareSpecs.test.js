@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { mpShareSpec, seatShareSpec, chamberShareSpec, rebelsShareSpec, mapShareSpec, wrapLines } from "./shareSpecs";
+import { mpShareSpec, seatShareSpec, chamberShareSpec, rebelsShareSpec, mapShareSpec, councilShareSpec, wrapLines } from "./shareSpecs";
 
 describe("mpShareSpec", () => {
   it("shows career facts and declared interests", () => {
@@ -52,6 +52,20 @@ describe("chamber, rebels and map cards", () => {
     const s = mapShareSpec({ cells: [{ x: 1, y: 2 }], mode, key: [{ party: "Labour", colour: "#d50000", count: 5 }] });
     expect(s.hexes).toEqual([{ x: 1, y: 2, colour: "#fff" }]);
     expect(s.legend).toEqual([{ label: "Labour 5", colour: "#d50000" }]);
+  });
+});
+
+describe("councilShareSpec", () => {
+  it("shows who runs a council, its seats by party and when it next votes", () => {
+    const council = { name: "Cambridge", control: "Labour minority", total: 42, next: [["2027-05-06", 14]] };
+    const seats = [{ short: "Labour", colour: "#d50000", count: 17, pct: 40.5 }, { short: "Green", colour: "#78b82a", count: 12, pct: 28.6 }];
+    const s = councilShareSpec({ council, seats, link: "x" });
+    expect(s.title).toBe("Cambridge");
+    expect(s.subtitle).toBe("Run by: Labour minority");
+    expect(s.stats).toEqual([{ value: "42", label: "councillors" }, { value: "2027", label: "next election" }]);
+    expect(s.bars[0]).toMatchObject({ label: "Labour", valueText: "17 · 40.5%", fraction: 1 });
+    expect(s.bars[1].fraction).toBeCloseTo(12 / 17, 5);
+    expect(councilShareSpec({ council: { ...council, next: [] }, seats, link: "x" }).stats).toHaveLength(1);
   });
 });
 

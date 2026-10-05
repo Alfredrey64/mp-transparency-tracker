@@ -1,6 +1,6 @@
 // report-pipeline-status.js
 //
-// The daily fetch-data workflow runs 24 independent scripts with
+// The daily fetch-data workflow runs 25 independent scripts with
 // continue-on-error set on every one of them (deliberately — see that
 // workflow's own comment for why), which means the workflow run itself can
 // show green even when several of those scripts silently failed. Nothing
@@ -44,6 +44,7 @@ const SCRIPTS = [
   { id: "fetch_mp_careers", label: "MP careers (terms, posts, party changes)" },
   { id: "fetch_lords_careers", label: "Lords careers (arrival, former MPs, posts)" },
   { id: "build_benchmarks", label: "MP benchmarks (how each MP compares)" },
+  { id: "fetch_councils", label: "Councils (councillors, make-up, election dates)" },
 ];
 
 // GitHub Actions step `outcome` is "success", "failure", "cancelled", or

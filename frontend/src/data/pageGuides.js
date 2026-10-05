@@ -211,6 +211,11 @@ export const PAGE_GUIDES = {
     why: "It shows who is pressing government on an issue you care about.",
     notShown: "Questions asked out loud, or older than 30 days. Asking isn't the same as acting.",
   },
+  councils: {
+    what: "Every council in the UK: who runs it, who your councillors are, how its make-up has changed since 2016 and when it next votes.",
+    why: "Councils decide bin collections, planning, housing, roads and care, the services you meet most often, and you can vote for them.",
+    notShown: "Parish and town councils, ward-by-ward election results, or councillors' contact details. By-elections can change a council between updates.",
+  },
   appg: {
     what: "The cross-party groups MPs and peers join around a topic, and who belongs to which.",
     why: "These groups are an early, low-profile way outside organisations get access to Parliament. Often an industry or charity pays for their running.",

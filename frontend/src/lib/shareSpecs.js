@@ -99,6 +99,26 @@ export function mapShareSpec({ cells, mode, key, link }) {
   };
 }
 
+// A council: who runs it, how many councillors, and seats by party.
+export function councilShareSpec({ council, seats, link }) {
+  const top = seats[0];
+  const max = Math.max(1, ...seats.slice(0, 6).map((p) => p.count));
+  const next = council.next?.[0]?.[0];
+  return {
+    kicker: "Local council",
+    title: council.name,
+    subtitle: `Run by: ${council.control}`,
+    accent: colour(top?.colour, "#4F46E5"),
+    stats: [
+      { value: fmt(council.total), label: "councillors" },
+      next ? { value: next.slice(0, 4), label: "next election" } : null,
+    ].filter(Boolean),
+    bars: seats.slice(0, 6).map((p) => ({ label: p.short, valueText: `${fmt(p.count)} · ${pct1(p.pct)}`, fraction: p.count / max, colour: colour(p.colour) })),
+    footer: `${CARD_SITE} · local councils`,
+    link,
+  };
+}
+
 // Splits text into at most maxLines lines no wider than maxWidth, ending the
 // last line with an ellipsis if the text didn't all fit. `measure` returns the
 // width of a string, so this works with a canvas or with a stand-in.

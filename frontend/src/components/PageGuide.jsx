@@ -10,9 +10,10 @@ const STORAGE_KEY = "mpTracker.guideOpen";
 
 function readOpen() {
   try {
-    return localStorage.getItem(STORAGE_KEY) !== "closed";
+    // Hidden until someone chooses to open it, then remembered.
+    return localStorage.getItem(STORAGE_KEY) === "open";
   } catch {
-    return true;
+    return false;
   }
 }
 

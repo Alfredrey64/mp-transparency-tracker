@@ -58,6 +58,7 @@ const Constituency = lazy(LOADERS.constituency);
 const StartHere = lazy(LOADERS.start);
 const Rebels = lazy(LOADERS.rebels);
 const Offices = lazy(LOADERS.offices);
+const Councils = lazy(LOADERS.councils);
 
 // A quiet authorship mark, not a feature — printed once so a copy of this
 // site with the byline stripped from the UI still carries proof of where
@@ -84,7 +85,7 @@ const VALID_VIEWS = new Set([
   "devolved", "tracker", "budget", "cabinet", "lords", "formerMps", "byElections", "petitions", "partymatch",
   "committees", "compare", "ministerialMeetings", "writtenQuestions", "standards", "rankings", "myMP",
   "mediaLiteracy", "methodology", "glossary", "settings", "privacy", "terms", "list",
-  "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist", "numbers", "topics", "constituency", "start", "rebels", "offices",
+  "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist", "numbers", "topics", "constituency", "start", "rebels", "offices", "councils",
 ]);
 
 // The tab title, bookmark name and browser-history entry for every view —
@@ -110,7 +111,7 @@ function titleForState(view, selected, param) {
   if (selected) return `${selected.name} — ${base}`;
   if (view === "numbers" && param === "lords") return `Parliament in Numbers: the Lords — ${base}`;
   // For the Lords the parameter is a peer's id, which makes a poor title.
-  if (param && view !== "lords" && view !== "numbers") return `${param} — ${PAGE_TITLES[view] ?? base} — ${base}`;
+  if (param && view !== "lords" && view !== "numbers" && view !== "councils") return `${param} — ${PAGE_TITLES[view] ?? base} — ${base}`;
   if (view === "home") return base;
   const label = PAGE_TITLES[view];
   return label ? `${label} — ${base}` : base;
@@ -344,6 +345,7 @@ export default function App() {
             {view === "topics" && <AskedAbout onSelectPolitician={handleViewProfile} onNavigateForMp={handleNavigateForMp} />}
             {view === "rebels" && <Rebels onNavigate={handleNavigate} />}
             {view === "offices" && <Offices initialQuery={viewParam} />}
+            {view === "councils" && <Councils param={viewParam} />}
             {view === "start" && <StartHere onNavigate={handleNavigate} onNavigateForMp={handleNavigateForMp} onViewProfile={handleViewProfile} />}
             {view === "constituency" && <Constituency seat={viewParam} onSelectPolitician={handleViewProfile} />}
             {view === "methodology" && <Methodology onNavigate={handleNavigate} />}
