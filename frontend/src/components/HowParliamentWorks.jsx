@@ -7,6 +7,7 @@ import { GlossaryTerm } from "./GlossaryTerm";
 import CommonsChamber from "./CommonsChamber";
 import { IconVote, IconLords } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
+import GovernmentTiers from "./GovernmentTiers";
 
 function CrownGraphic() {
   return (
@@ -612,6 +613,8 @@ export default function HowParliamentWorks() {
           color={COLORS.accent}
           showProgress
         />
+
+        <GovernmentTiers />
 
         <DiagramSection
           id="billprocess"

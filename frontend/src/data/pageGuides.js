@@ -47,7 +47,7 @@ export const PAGE_GUIDES = {
     notShown: "Anyone who has since left Parliament, so older holders are missing. It shows today's MPs and peers, not everyone who ever held the job.",
   },
   howitworks: {
-    what: "A plain walk-through of how Parliament makes laws, from an idea to a new law, and who does what along the way.",
+    what: "A plain walk-through of the tiers of government, how a bill becomes law, and who does what along the way.",
     why: "You can't judge what your MP does without knowing what MPs actually have the power to do.",
     notShown: "Every exception and procedure. It's a guide to the main route, not the full rulebook.",
   },

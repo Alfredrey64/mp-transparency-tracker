@@ -280,3 +280,13 @@ select:focus-visible,
 @media (pointer: coarse) {
   .side-item { min-height: 48px; }
 }
+
+/* Ministers' meetings: the summary and filters sit in a column beside the
+   meeting log when the page itself is wide enough (it shares the screen with
+   the menu), and stack above it otherwise. */
+.mm-wrap { container-type: inline-size; }
+.mm-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; margin-top: 8px; }
+@container (min-width: 760px) {
+  .mm-layout { grid-template-columns: 240px minmax(0, 1fr); gap: 44px; align-items: start; }
+  .mm-side { position: sticky; top: 16px; }
+}

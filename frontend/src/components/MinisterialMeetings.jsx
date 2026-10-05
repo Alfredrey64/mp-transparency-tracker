@@ -1,9 +1,8 @@
 import { useState, useMemo } from "react";
-import { motion } from "framer-motion";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, numeric } from "../theme";
 import { PageHeader } from "./shared";
-import { formatDate } from "../lib/format";
 import { IconMeeting, IconSearch } from "./icons";
+import { monthLabel, dayParts, shortDepartment, splitAttendees, tally } from "../lib/meetingsView";
 import {
   MINISTERIAL_MEETINGS,
   MINISTERIAL_MEETINGS_UPDATED,
@@ -11,144 +10,95 @@ import {
   MINISTERIAL_MEETINGS_COLLECTION_URL,
 } from "../data/ministerialMeetings";
 
-const DEPARTMENT_PALETTE = ["#9C6B30", "#5A7FA6", "#6E4B6E", "#3F7D5C", "#B5533C", "#A8456B"];
+// One quiet colour per department, used only as a small marker beside the name.
+const DEPARTMENT_PALETTE = ["#B5533C", "#4C6FA6", "#2F6F4E", "#8A5A9E", "#C28A1E", "#5A8A8A"];
 
-function monthLabel(dateStr) {
-  return new Date(dateStr).toLocaleDateString("en-GB", { month: "long", year: "numeric" });
-}
+const text = { fontFamily: FONT_BODY, color: COLORS.inkSoft, fontSize: 14, lineHeight: 1.6 };
 
-function ministerInitials(name) {
-  return name.split(/\s+/).map((w) => w[0]).slice(-2).join("").toUpperCase();
-}
-
-// Roundtable meetings can list a dozen-plus attendees in one comma-separated
-// string — showing all of them as the card's headline makes the card
-// unreadable, so this trims to the first few names plus a "+N more" count,
-// with the full list still available on hover.
-function summariseAttendees(organisation, max = 3) {
-  const names = organisation.split(",").map((n) => n.trim()).filter(Boolean);
-  if (names.length <= max) return { headline: organisation, full: null };
-  return { headline: `${names.slice(0, max).join(", ")}, +${names.length - max} more`, full: organisation };
-}
-
-function StatChip({ value, label }) {
-  return (
-    <div style={{ textAlign: "center" }}>
-      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 26, color: COLORS.ink }}>{value}</div>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.04em" }}>{label}</div>
-    </div>
-  );
-}
-
-function FilterPill({ active, color, onClick, children }) {
+// A filter row: a name, how many meetings it covers, and a thin bar for scale.
+function FilterRow({ label, count, max, color, active, onClick }) {
   return (
     <button
       onClick={onClick}
+      aria-pressed={active}
       style={{
-        fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, padding: "6px 13px", borderRadius: 999,
-        border: `1px solid ${active ? color : COLORS.hairline}`, background: active ? `${color}18` : "transparent",
-        color: active ? color : COLORS.inkSoft, cursor: "pointer", transition: "all 0.15s",
+        display: "block", width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer",
+        padding: "7px 0 7px 12px", borderLeft: `2px solid ${active ? color : "transparent"}`, font: "inherit",
       }}
     >
-      {children}
+      <span style={{ display: "flex", justifyContent: "space-between", gap: 10, fontFamily: FONT_BODY, fontSize: 14, color: active ? COLORS.ink : COLORS.inkSoft, fontWeight: active ? 700 : 500 }}>
+        <span>{label}</span>
+        <span style={{ ...numeric, fontSize: 14 }}>{count}</span>
+      </span>
+      {max > 0 && (
+        <span style={{ display: "block", height: 3, marginTop: 5, background: COLORS.hairline, borderRadius: 2 }}>
+          <span style={{ display: "block", height: 3, width: `${(count / max) * 100}%`, background: color, borderRadius: 2, opacity: active ? 1 : 0.55 }} />
+        </span>
+      )}
     </button>
   );
 }
 
-function FilterGroup({ label, children }) {
+function FilterList({ title, children }) {
   return (
-    <div style={{ marginBottom: 14 }}>
-      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 7 }}>
-        {label}
-      </div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>{children}</div>
+    <div style={{ marginTop: 26 }}>
+      <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 15, fontWeight: 600, color: COLORS.ink, margin: "0 0 6px" }}>{title}</h2>
+      {children}
     </div>
   );
 }
 
-function MeetingCard({ meeting, color, index }) {
-  const { headline, full } = summariseAttendees(meeting.organisation);
-
+function Meeting({ meeting, color }) {
+  const { shown, rest, total } = splitAttendees(meeting.organisation);
+  const { day, weekday } = dayParts(meeting.date);
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.25, delay: Math.min(index, 8) * 0.02 }}
-      style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `3px solid ${color}`, borderRadius: 12, padding: "16px 18px" }}
-    >
-      {/* A fixed-shape metadata row (avatar, minister, department pill, date) that
-          never reflows, however long the attendee list below it turns out to be. */}
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-        <div
-          style={{
-            flexShrink: 0, width: 32, height: 32, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-            background: `${color}18`, color, fontFamily: FONT_DISPLAY, fontSize: 12.5, fontWeight: 600,
-          }}
-        >
-          {ministerInitials(meeting.minister)}
+    <article style={{ display: "grid", gridTemplateColumns: "56px minmax(0, 1fr)", gap: 14, padding: "18px 0", borderTop: `1px solid ${COLORS.hairline}` }}>
+      <time dateTime={meeting.date} style={{ textAlign: "left" }}>
+        <span style={{ display: "block", ...numeric, fontSize: 30, lineHeight: 1, color: COLORS.ink }}>{day}</span>
+        <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 3 }}>{weekday}</span>
+      </time>
+      <div style={{ minWidth: 0 }}>
+        <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 600, lineHeight: 1.35, color: COLORS.ink, margin: 0 }}>
+          {shown.join(", ")}
+          {rest.length > 0 && <span style={{ color: COLORS.inkSoft, fontWeight: 400 }}> and {rest.length} more</span>}
+        </h3>
+        <div style={{ ...text, fontSize: 13.5, marginTop: 2 }}>
+          <span aria-hidden="true" style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: color, marginRight: 7 }} />
+          {meeting.minister}, {shortDepartment(meeting.department)}
         </div>
-        <div style={{ minWidth: 0, flex: 1, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-          <span style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 700, color: COLORS.ink, whiteSpace: "nowrap" }}>{meeting.minister}</span>
-          <span
-            style={{
-              fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color, background: `${color}14`,
-              padding: "2px 8px", borderRadius: 999, textTransform: "uppercase", letterSpacing: "0.03em", whiteSpace: "nowrap",
-            }}
-          >
-            {meeting.department}
-          </span>
-        </div>
-        <span style={{ flexShrink: 0, fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, whiteSpace: "nowrap" }}>{formatDate(meeting.date)}</span>
+        <p style={{ ...text, margin: "8px 0 0", color: COLORS.ink, opacity: 0.85 }}>{meeting.purpose}</p>
+        {rest.length > 0 && (
+          <details style={{ marginTop: 8 }}>
+            <summary style={{ ...text, fontSize: 13.5, cursor: "pointer", color: COLORS.ink }}>All {total} attendees</summary>
+            <p style={{ ...text, fontSize: 13.5, margin: "6px 0 0" }}>{[...shown, ...rest].join(", ")}</p>
+          </details>
+        )}
+        <a href={meeting.sourceUrl} target="_blank" rel="noreferrer" style={{ display: "inline-block", marginTop: 8, fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color }}>
+          Read the official return
+        </a>
       </div>
-
-      <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 2 }}>
-        Met with
-      </div>
-      <div
-        title={full ?? undefined}
-        style={{ fontFamily: FONT_DISPLAY, fontSize: 15.5, color: COLORS.ink, lineHeight: 1.4, marginBottom: 8, cursor: full ? "help" : "default" }}
-      >
-        {headline}
-      </div>
-
-      <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, lineHeight: 1.6 }}>
-        {meeting.purpose}
-      </div>
-      <a
-        href={meeting.sourceUrl}
-        target="_blank"
-        rel="noreferrer"
-        style={{ display: "inline-block", marginTop: 10, fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color }}
-      >
-        View official return ↗
-      </a>
-    </motion.div>
+    </article>
   );
 }
 
 export default function MinisterialMeetings() {
   const [query, setQuery] = useState("");
-  const [departmentFilter, setDepartmentFilter] = useState("All");
-  const [ministerFilter, setMinisterFilter] = useState("All");
+  const [department, setDepartment] = useState(null);
+  const [minister, setMinister] = useState(null);
 
-  const departments = useMemo(() => [...new Set(MINISTERIAL_MEETINGS.map((m) => m.department))], []);
-  const departmentColor = useMemo(() => {
-    const map = {};
-    departments.forEach((d, i) => { map[d] = DEPARTMENT_PALETTE[i % DEPARTMENT_PALETTE.length]; });
-    return map;
-  }, [departments]);
-  const ministers = useMemo(() => [...new Set(MINISTERIAL_MEETINGS.map((m) => m.minister))], []);
+  const byDepartment = useMemo(() => tally(MINISTERIAL_MEETINGS, (m) => m.department), []);
+  const byMinister = useMemo(() => tally(MINISTERIAL_MEETINGS, (m) => m.minister), []);
+  const colorOf = useMemo(() => Object.fromEntries(byDepartment.map(([d], i) => [d, DEPARTMENT_PALETTE[i % DEPARTMENT_PALETTE.length]])), [byDepartment]);
+  const ministerDepartment = useMemo(() => Object.fromEntries(MINISTERIAL_MEETINGS.map((m) => [m.minister, m.department])), []);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return MINISTERIAL_MEETINGS.filter((m) => {
-      if (departmentFilter !== "All" && m.department !== departmentFilter) return false;
-      if (ministerFilter !== "All" && m.minister !== ministerFilter) return false;
-      if (q && !(`${m.minister} ${m.organisation} ${m.purpose}`.toLowerCase().includes(q))) return false;
-      return true;
-    }).sort((a, b) => new Date(b.date) - new Date(a.date));
-  }, [query, departmentFilter, ministerFilter]);
+      if (department && m.department !== department) return false;
+      if (minister && m.minister !== minister) return false;
+      return !q || `${m.minister} ${m.organisation} ${m.purpose}`.toLowerCase().includes(q);
+    }).sort((a, b) => b.date.localeCompare(a.date));
+  }, [query, department, minister]);
 
   const groups = useMemo(() => {
     const map = new Map();
@@ -160,103 +110,99 @@ export default function MinisterialMeetings() {
     return [...map.entries()];
   }, [filtered]);
 
+  const filtering = Boolean(query || department || minister);
+  const clear = () => { setQuery(""); setDepartment(null); setMinister(null); };
+  const maxMinister = byMinister[0]?.[1] ?? 0;
+  const maxDepartment = byDepartment[0]?.[1] ?? 0;
+
   return (
-    <div style={{ maxWidth: 920, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 980, margin: "0 auto", padding: "clamp(20px, 5vw, 40px) clamp(16px, 5vw, 40px) 60px" }}>
       <PageHeader
         icon={IconMeeting}
-        kicker="Public Record · Ministerial Meetings"
+        kicker="Who ministers meet"
         title="Who's getting a minister's time"
-        subtitle="Every minister has to declare who they meet with outside government — companies, charities, industry bodies, unions. This is where that access becomes visible: a sample of those declared meetings, taken directly from each department's own published transparency return."
+        subtitle="Ministers have to publish who they meet outside government: companies, charities, unions and industry bodies. This is a sample of those meetings, copied from each department's own return."
+        maxWidth={720}
       />
 
-      <div
-        style={{
-          display: "flex", flexWrap: "wrap", gap: 24, alignItems: "center", justifyContent: "space-between",
-          background: `linear-gradient(160deg, ${COLORS.accent}12, ${COLORS.paperCard} 70%)`,
-          border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.accent}`, borderRadius: 14, padding: "20px 24px",
-          marginTop: 24, marginBottom: 16,
-        }}
-      >
-        <div style={{ display: "flex", gap: 30 }}>
-          <StatChip value={MINISTERIAL_MEETINGS.length} label="Meetings" />
-          <StatChip value={ministers.length} label="Ministers" />
-          <StatChip value={departments.length} label="Departments" />
-        </div>
-        <div style={{ textAlign: "right" }}>
-          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 16, color: COLORS.ink }}>{MINISTERIAL_MEETINGS_PERIOD}</div>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft }}>the latest quarter any department has published</div>
-        </div>
-      </div>
+      <div className="mm-wrap">
+      <div className="mm-layout">
+        <aside className="mm-side">
+          <div style={{ ...numeric, fontSize: 56, lineHeight: 1, color: COLORS.ink }}>{MINISTERIAL_MEETINGS.length}</div>
+          <p style={{ ...text, margin: "6px 0 0" }}>
+            declared meetings, {MINISTERIAL_MEETINGS_PERIOD}. That is the latest period any department has published.
+          </p>
 
-      <div
-        style={{
-          background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: "14px 18px",
-          fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.6, color: COLORS.inkSoft, marginBottom: 24,
-        }}
-      >
-        <strong style={{ color: COLORS.ink }}>About this data:</strong> departments publish ministers' meetings on a
-        lag of several months by design — the {MINISTERIAL_MEETINGS_PERIOD} return wasn't published until late June
-        2026, so this genuinely is the most current record available anywhere, not a stale fetch. It's also a curated
-        sample rather than a complete one — every department publishes separately, in its own format, on its own
-        schedule, so an exhaustive automatic feed isn't realistic here (see Data & Methodology for why). For the full
-        picture, browse{" "}
-        <a href={MINISTERIAL_MEETINGS_COLLECTION_URL} target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
-          every department's own releases
-        </a>{" "}
-        directly. Last refreshed {MINISTERIAL_MEETINGS_UPDATED}.
-      </div>
-
-      <div style={{ position: "relative", maxWidth: 460, marginBottom: 20 }}>
-        <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: COLORS.inkSoft, display: "flex" }}>
-          <IconSearch size={15} />
-        </span>
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search by minister, organisation, or topic…"
-          style={{
-            width: "100%", boxSizing: "border-box", padding: "11px 14px 11px 36px", fontFamily: FONT_BODY, fontSize: 13.5,
-            border: `1px solid ${COLORS.hairline}`, borderRadius: 10, background: COLORS.paperCard, color: COLORS.ink,
-          }}
-        />
-      </div>
-
-      <FilterGroup label="Department">
-        <FilterPill active={departmentFilter === "All"} color={COLORS.ink} onClick={() => setDepartmentFilter("All")}>All</FilterPill>
-        {departments.map((d) => (
-          <FilterPill key={d} active={departmentFilter === d} color={departmentColor[d]} onClick={() => setDepartmentFilter(d)}>{d}</FilterPill>
-        ))}
-      </FilterGroup>
-      <FilterGroup label="Minister">
-        <FilterPill active={ministerFilter === "All"} color={COLORS.ink} onClick={() => setMinisterFilter("All")}>All</FilterPill>
-        {ministers.map((m) => (
-          <FilterPill key={m} active={ministerFilter === m} color={COLORS.ink} onClick={() => setMinisterFilter(m)}>{m}</FilterPill>
-        ))}
-      </FilterGroup>
-
-      <div style={{ marginTop: 12 }}>
-        {groups.length === 0 && (
-          <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, padding: "20px 0" }}>
-            Nothing matches that search.
+          <div style={{ position: "relative", marginTop: 22 }}>
+            <span style={{ position: "absolute", left: 0, top: "50%", transform: "translateY(-50%)", color: COLORS.inkSoft, display: "flex" }}>
+              <IconSearch size={15} />
+            </span>
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search a minister, group or topic"
+              aria-label="Search meetings"
+              style={{
+                width: "100%", padding: "9px 0 9px 24px", fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink,
+                background: "transparent", border: "none", borderBottom: `1px solid ${COLORS.ink}`, borderRadius: 0, outline: "none",
+              }}
+            />
           </div>
-        )}
 
-        {groups.map(([label, meetings]) => (
-          <div key={label} style={{ marginBottom: 28 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 12 }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: COLORS.accent, flexShrink: 0 }} />
-              <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", whiteSpace: "nowrap" }}>
-                {label}
-              </span>
-              <span style={{ flex: 1, height: 1, background: COLORS.hairline }} />
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {meetings.map((m, i) => (
-                <MeetingCard key={`${m.minister}-${m.date}-${i}`} meeting={m} color={departmentColor[m.department]} index={i} />
+          <FilterList title="Ministers">
+            {byMinister.map(([name, count]) => (
+              <FilterRow
+                key={name} label={name} count={count} max={maxMinister} color={colorOf[ministerDepartment[name]]}
+                active={minister === name} onClick={() => setMinister(minister === name ? null : name)}
+              />
+            ))}
+          </FilterList>
+
+          <FilterList title="Departments">
+            {byDepartment.map(([name, count]) => (
+              <FilterRow
+                key={name} label={shortDepartment(name)} count={count} max={maxDepartment} color={colorOf[name]}
+                active={department === name} onClick={() => setDepartment(department === name ? null : name)}
+              />
+            ))}
+          </FilterList>
+        </aside>
+
+        <main style={{ minWidth: 0 }}>
+          <p style={{ ...text, margin: "0 0 4px", maxWidth: 640 }}>
+            Departments publish these returns months after the fact, so this is the freshest record there is. It is also a hand-picked sample, not a
+            complete list: each department publishes in its own format, so there is no single feed to collect from. For everything, browse{" "}
+            <a href={MINISTERIAL_MEETINGS_COLLECTION_URL} target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
+              each department's own releases
+            </a>
+            . Last refreshed {MINISTERIAL_MEETINGS_UPDATED}.
+          </p>
+
+          <div style={{ ...text, fontSize: 13.5, margin: "18px 0 6px", minHeight: 22 }} aria-live="polite">
+            {filtering ? (
+              <>
+                Showing {filtered.length} of {MINISTERIAL_MEETINGS.length} meetings.{" "}
+                <button onClick={clear} style={{ background: "none", border: "none", padding: 0, font: "inherit", color: COLORS.ink, fontWeight: 600, textDecoration: "underline", cursor: "pointer" }}>
+                  Clear filters
+                </button>
+              </>
+            ) : null}
+          </div>
+
+          {groups.length === 0 && <p style={{ ...text, padding: "20px 0" }}>Nothing matches that search.</p>}
+
+          {groups.map(([label, meetings]) => (
+            <section key={label} style={{ marginTop: 14 }}>
+              <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 26, fontWeight: 600, color: COLORS.ink, margin: "0 0 10px" }}>
+                {label} <span style={{ ...numeric, fontSize: 15, fontWeight: 400, color: COLORS.inkSoft }}>{meetings.length}</span>
+              </h2>
+              {meetings.map((m) => (
+                <Meeting key={`${m.minister}-${m.date}-${m.organisation}`} meeting={m} color={colorOf[m.department]} />
               ))}
-            </div>
-          </div>
-        ))}
+            </section>
+          ))}
+        </main>
+      </div>
       </div>
     </div>
   );
