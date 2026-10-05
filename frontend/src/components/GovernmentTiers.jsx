@@ -86,8 +86,10 @@ function Control({ onClick, disabled, primary, children }) {
 
 function Legend() {
   const item = (down, text) => (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 9, fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>
-      <span aria-hidden="true" className="tier-legend-lane" data-dir={down ? "down" : "up"} style={{ "--lane": down ? SECTION_COLOR : COLORS.commonsGreen }} />
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>
+      <svg width="12" height="16" viewBox="0 0 12 16" aria-hidden="true" fill="none" stroke={down ? SECTION_COLOR : COLORS.commonsGreen} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        {down ? <path d="M6 2v11M2 9l4 4 4-4" /> : <path d="M6 14V3M2 7l4-4 4 4" />}
+      </svg>
       {text}
     </span>
   );
@@ -143,16 +145,40 @@ function Slab({ i, tier, exists, nationLabel, figure, selected, active, lit, arr
   );
 }
 
+const FLOW_ARROWS = 6;
+
 function Spine({ action, voting, tpos, fpos, tokenColor, stepKey }) {
+  const arrows = Array.from({ length: FLOW_ARROWS }, (_, k) => <i key={k} style={{ "--k": k }} />);
   return (
-    <div className="tier-spine" data-flow={action ? "off" : "on"} style={{ "--tpos": tpos, "--fpos": fpos, "--up": voting ? 1 : 0, "--tokc": tokenColor }}>
-      <span className="tier-trk tier-trk-down" style={{ "--lane": SECTION_COLOR }} />
-      <span className="tier-trk tier-trk-up" style={{ "--lane": COLORS.commonsGreen }} />
+    <div
+      className="tier-spine"
+      data-mode={action ? "action" : "explore"}
+      style={{ "--tpos": tpos, "--fpos": fpos, "--up": action && voting ? 1 : 0, "--fh": action ? fpos : 6, "--uv": action ? (voting ? 1 : 0) : 1, "--tokc": tokenColor }}
+    >
+      <span className="tier-trk tier-trk-down" />
+      <span className="tier-trk tier-trk-up" />
       <span className="tier-fill tier-fill-down" />
       <span className="tier-fill tier-fill-up" />
+      <span className="tier-flow tier-flow-down" aria-hidden="true">{arrows}</span>
+      <span className="tier-flow tier-flow-up" aria-hidden="true">{arrows}</span>
       <span className="tier-tok" data-on={action ? "1" : "0"} data-up={voting ? "1" : "0"}>
         <span key={stepKey} className="tier-ripple" />
       </span>
+    </div>
+  );
+}
+
+// On a phone the panel sits below the diagram, so this slim bar rides along
+// with the page while the walk-through plays.
+function MiniBar({ steps, step, playing, finished, dispatch, onPlayPause, color }) {
+  const btn = { fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, padding: "6px 11px", borderRadius: 8, border: `1px solid ${COLORS.hairline}`, background: "transparent", color: COLORS.ink, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6 };
+  return (
+    <div className="tier-mini" style={{ background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderLeft: `4px solid ${color}`, borderRadius: 10, padding: "8px 10px", alignItems: "center", gap: 8 }}>
+      <span style={{ flex: 1, minWidth: 0, fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+        {step + 1}/{steps.length} {steps[step].title}
+      </span>
+      <button onClick={onPlayPause} style={btn}>{finished ? ReplayGlyph : playing ? PauseGlyph : PlayGlyph}{finished ? "Replay" : playing ? "Pause" : "Play"}</button>
+      <button onClick={() => dispatch({ type: "go", to: step + 1, steps, user: true })} disabled={finished} style={{ ...btn, opacity: finished ? 0.4 : 1 }}>Next</button>
     </div>
   );
 }
@@ -277,6 +303,8 @@ export default function GovernmentTiers() {
   const [playing, setPlaying] = useState(false);
   const [{ step, from }, dispatch] = useReducer(reducer, { step: 0, from: 0 });
   const stageRef = useRef(null);
+  const colRef = useRef(null);
+  const panelRef = useRef(null);
 
   const nationLabel = NATIONS.find((n) => n.key === nation).label;
   const scenario = SCENARIOS.find((s) => s.key === scenarioKey);
@@ -296,6 +324,32 @@ export default function GovernmentTiers() {
     const id = setTimeout(() => dispatch({ type: "go", to: step + 1, steps }), dur * 1000 + DWELL_MS);
     return () => clearTimeout(id);
   }, [runs, step, steps, dur]);
+
+  // The panel follows you down the diagram, then eases back to the top of its
+  // column once you have scrolled past the end. The transition on .tier-panel
+  // makes both moves smooth.
+  useEffect(() => {
+    const col = colRef.current;
+    const panel = panelRef.current;
+    if (!col || !panel) return undefined;
+    const place = () => {
+      const c = col.getBoundingClientRect();
+      const room = Math.max(0, c.height - panel.offsetHeight);
+      const extra = parseFloat(getComputedStyle(col).paddingBottom) || 0;
+      const past = c.bottom - extra < 140;
+      const y = past ? 0 : Math.min(room, Math.max(0, 16 - c.top));
+      panel.style.transform = `translateY(${Math.round(y)}px)`;
+      panel.style.opacity = past ? "0" : "1";
+      panel.style.pointerEvents = past ? "none" : "";
+    };
+    place();
+    window.addEventListener("scroll", place, { passive: true });
+    window.addEventListener("resize", place);
+    return () => {
+      window.removeEventListener("scroll", place);
+      window.removeEventListener("resize", place);
+    };
+  }, []);
 
   const bringIntoView = () => requestAnimationFrame(() => stageRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
   const wrapped = (a) => {
@@ -354,6 +408,12 @@ export default function GovernmentTiers() {
 
       <div className="tier-wrap" ref={stageRef}>
         <div className="tier-grid">
+          {action && (
+            <MiniBar
+              steps={steps} step={Math.min(step, steps.length - 1)} playing={playing} finished={finished} dispatch={wrapped} onPlayPause={onPlayPause}
+              color={tokenColor}
+            />
+          )}
           <div className="tier-diagram" style={{ "--dur": `${dur}s` }}>
             <Spine action={action} voting={voting} tpos={voting ? 0 : idx} fpos={action ? idx : 0} tokenColor={tokenColor} stepKey={`${scenarioKey}-${step}-${nation}`} />
             {slabs.map((t, i) => {
@@ -381,7 +441,8 @@ export default function GovernmentTiers() {
             })}
           </div>
 
-          <div className="tier-panel" style={{ background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "18px 20px" }}>
+          <div className="tier-panelcol" ref={colRef}>
+          <div className="tier-panel" ref={panelRef} style={{ background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "18px 20px" }}>
             {action ? (
               <ActionPanel
                 scenarioKey={scenarioKey} onScenario={onScenario} steps={steps} step={Math.min(step, steps.length - 1)} playing={playing} finished={finished}
@@ -392,6 +453,7 @@ export default function GovernmentTiers() {
                 <TierInfo index={selected} nation={nation} nationLabel={nationLabel} />
               </div>
             )}
+          </div>
           </div>
         </div>
       </div>
