@@ -360,6 +360,9 @@ export default function GovernmentTiers() {
   const diaRef = useRef(null);
   const sheetRef = useRef(null);
   // A first guess at the diagram's width (refined as soon as it is measured), so a phone never starts from a desktop-sized layout.
+  // A first guess at the page column's width (refined once measured): the screen minus the menu, if the menu is showing.
+  const [wrapWidth, setWrapWidth] = useState(() => (typeof window === "undefined" ? 1000 : window.innerWidth > 880 ? window.innerWidth - 380 : window.innerWidth - 72));
+  const [screenH, setScreenH] = useState(() => (typeof window === "undefined" ? 800 : window.innerHeight));
   const [width, setWidth] = useState(() => (typeof window === "undefined" ? 560 : Math.max(240, Math.min(560, window.innerWidth - 72))));
 
   const nationLabel = NATIONS.find((n) => n.key === nation).label;
@@ -373,7 +376,11 @@ export default function GovernmentTiers() {
   const fromPos = from === null ? 0 : positionOf(from, order);
   const voting = cur.tier === "vote";
   const dur = travelSeconds(fromPos, pos, voting);
-  const layout = useMemo(() => buildLayout(nation, width), [nation, width]);
+  // Size the diagram so the whole thing fits on screen: less room is kept back
+  // on a big screen, more on a phone where the walk-through sheet takes the bottom.
+  const stacked = wrapWidth < 780;
+  const availH = Math.max(320, screenH - (stacked ? (action ? 270 : 150) : 190));
+  const layout = useMemo(() => buildLayout(nation, width, availH), [nation, width, availH]);
   const curKey = voting ? "you" : cur.tier;
   const selKey = order.includes(selected) ? selected : order[0];
   const runs = action && playing && !finished;
@@ -384,7 +391,16 @@ export default function GovernmentTiers() {
     if (!el) return undefined;
     const ro = new ResizeObserver(([entry]) => setWidth(Math.max(240, Math.round(entry.contentRect.width))));
     ro.observe(el);
-    return () => ro.disconnect();
+    const wrap = stageRef.current;
+    const ro2 = wrap ? new ResizeObserver(([entry]) => setWrapWidth(Math.round(entry.contentRect.width))) : null;
+    if (wrap) ro2.observe(wrap);
+    const onResize = () => setScreenH(window.innerHeight);
+    window.addEventListener("resize", onResize);
+    return () => {
+      ro.disconnect();
+      ro2?.disconnect();
+      window.removeEventListener("resize", onResize);
+    };
   }, []);
 
   // Auto-advance: once the marker has arrived, rest on the step for a moment,
@@ -490,7 +506,7 @@ export default function GovernmentTiers() {
 
       <div className="tier-wrap" ref={stageRef}>
         <div className="tier-grid" style={{ "--len": `${layout.height}px` }}>
-          <div className="tier-diagram" ref={diaRef} style={{ "--dur": `${dur}s`, height: layout.height }}>
+          <div className="tier-diagram" ref={diaRef} data-density={layout.metrics.density} style={{ "--dur": `${dur}s`, height: layout.height }}>
             <Branches layout={layout} action={action} reached={reached} voting={voting} dur={dur} />
             <Bead action={action} path={beadPath} color={tokenColor} stepKey={`${scenarioKey}-${step}-${nation}`} />
             {slabs.map((t, i) => {

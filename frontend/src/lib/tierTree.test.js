@@ -25,7 +25,7 @@ describe("tier tree", () => {
       const l = buildLayout("england", w);
       l.nodes.forEach((n, i) => {
         expect(n.right).toBeLessThanOrEqual(w - metrics(w).trunk + 0.001);
-        expect(n.left).toBe(n.depth * metrics(w).indent);
+        expect(n.left).toBe(14 + n.depth * metrics(w).indent);
         if (i > 0) expect(n.top).toBeGreaterThan(l.nodes[i - 1].bottom);
       });
       expect(l.height).toBe(l.nodes.at(-1).bottom);
@@ -47,5 +47,23 @@ describe("tier tree", () => {
     expect(routeBetween(l, "parish", "you")).toBeTruthy();
     expect(routeBetween(l, "parish", "parliament")).toBeNull();
     expect(routeBetween(l, "council", "council")).toBeNull();
+  });
+});
+
+describe("fitting the screen", () => {
+  it("shrinks the stack to the height available, down to a floor", () => {
+    const roomy = buildLayout("england", 560, 0);
+    const fitted = buildLayout("england", 560, 420);
+    expect(fitted.height).toBeLessThan(roomy.height);
+    expect(fitted.height).toBeLessThanOrEqual(420);
+    expect(fitted.metrics.row).toBeGreaterThanOrEqual(50);
+    const squeezed = buildLayout("england", 560, 100);
+    expect(squeezed.metrics.row).toBe(50);
+    expect(squeezed.metrics.gap).toBe(14);
+  });
+
+  it("leaves a stack that already fits alone", () => {
+    const roomy = buildLayout("england", 560, 0);
+    expect(buildLayout("england", 560, 5000).height).toBe(roomy.height);
   });
 });

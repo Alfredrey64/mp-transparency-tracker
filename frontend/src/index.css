@@ -372,7 +372,12 @@ select:focus-visible,
   .tier-diagram .tier-slab-name { font-size: 14px; line-height: 1.2; overflow-wrap: anywhere; }
   .tier-diagram .tier-slab-num { font-size: 14.5px; }
 }
-@media (max-height: 640px) { .tier-diagram .tier-keys { display: none; } }
+/* When the stack is squeezed to fit the screen, boxes show less. */
+.tier-diagram[data-density="mid"] .tier-keys { display: none; }
+.tier-diagram[data-density="mid"] .tier-slab-short { -webkit-line-clamp: 1; }
+.tier-diagram[data-density="tight"] .tier-keys, .tier-diagram[data-density="tight"] .tier-sub { display: none; }
+.tier-diagram[data-density="tight"] .tier-slab-icon { width: 30px; height: 30px; }
+.tier-diagram[data-density="tight"] .tier-slab-name { font-size: 15px; }
 
 /* The branches. */
 .tb-svg { position: absolute; left: 0; top: 0; z-index: 0; overflow: visible; pointer-events: none; }

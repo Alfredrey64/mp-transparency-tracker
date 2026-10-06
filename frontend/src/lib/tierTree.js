@@ -23,6 +23,9 @@ export function treeFor(nation) {
   return list;
 }
 
+// Room kept clear on the left so the bead and a selected box are never clipped.
+const PAD = 14;
+
 // Sizes shrink with the width the diagram has to work with.
 export function metrics(width) {
   if (width < 430) return { row: 66, gap: 28, indent: 14, trunk: 28, radius: 9, spine: 10 };
@@ -30,12 +33,24 @@ export function metrics(width) {
   return { row: 96, gap: 40, indent: 34, trunk: 46, radius: 11, spine: 16 };
 }
 
-export function buildLayout(nation, width) {
-  const m = metrics(width);
+// Shrink the rows and gaps so the whole stack fits in `availH` pixels of screen
+// height, down to a sensible minimum (below that it simply scrolls).
+export function fitMetrics(m, count, availH) {
+  if (!availH) return { ...m, density: m.row >= 88 ? "full" : "mid" };
+  const total = count * m.row + (count - 1) * m.gap;
+  if (total <= availH) return { ...m, density: m.row >= 88 ? "full" : "mid" };
+  const k = availH / total;
+  const row = Math.max(50, Math.floor(m.row * k));
+  const gap = Math.max(14, Math.floor(m.gap * k));
+  return { ...m, row, gap, density: row >= 88 ? "full" : row >= 66 ? "mid" : "tight" };
+}
+
+export function buildLayout(nation, width, availH) {
   const list = treeFor(nation);
+  const m = fitMetrics(metrics(width), list.length, availH);
   const nodes = list.map((n) => {
     const top = n.index * (m.row + m.gap);
-    const left = n.depth * m.indent;
+    const left = PAD + n.depth * m.indent;
     const w = Math.max(120, width - m.trunk - left);
     return { ...n, top, left, width: w, height: m.row, right: left + w, bottom: top + m.row, midY: top + m.row / 2, spineX: left + m.spine };
   });
