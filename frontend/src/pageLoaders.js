@@ -47,6 +47,13 @@ export const LOADERS = {
   privacy: () => import("./components/PrivacyPolicy"),
   terms: () => import("./components/TermsConditions"),
   list: () => import("./components/PoliticianList"),
+  economy: () => import("./components/SectorPage"),
+  prices: () => import("./components/SectorPage"),
+  jobs: () => import("./components/SectorPage"),
+  publicFinances: () => import("./components/SectorPage"),
+  population: () => import("./components/SectorPage"),
+  health: () => import("./components/SectorPage"),
+  housing: () => import("./components/SectorPage"),
 };
 
 const started = new Set();

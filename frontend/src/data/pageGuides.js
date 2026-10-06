@@ -46,6 +46,41 @@ export const PAGE_GUIDES = {
     why: "Who has held a job tells you who had power over a subject, and when.",
     notShown: "Anyone who has since left Parliament, so older holders are missing. It shows today's MPs and peers, not everyone who ever held the job.",
   },
+  economy: {
+    what: "Official figures on how fast the UK economy is growing, how much it produces and how much each hour of work yields, from the Office for National Statistics.",
+    why: "Growth, or the lack of it, shapes tax, spending, jobs and pay. These are the numbers politicians argue about.",
+    notShown: "Forecasts, and what caused any change. The figures are revised as more data arrives.",
+  },
+  prices: {
+    what: "How fast prices are rising overall and for food, energy, rents, transport and eating out, using the ONS's official inflation figures.",
+    why: "It shows what the cost of living is doing to household budgets, which is central to many election debates.",
+    notShown: "Your own spending. A typical basket can differ a lot from what you buy.",
+  },
+  jobs: {
+    what: "Unemployment, employment, vacancies and pay, including pay after inflation, from the ONS labour market statistics.",
+    why: "It shows whether people can find work and whether wages are keeping up with prices.",
+    notShown: "Pay for particular jobs, regions or ages. These are whole-economy averages.",
+  },
+  publicFinances: {
+    what: "Monthly government borrowing, the size of the national debt compared with the economy, and public sector employment.",
+    why: "Borrowing and debt limit what any government can spend or promise.",
+    notShown: "Where each pound goes. See Where taxes go for that.",
+  },
+  population: {
+    what: "How many people live in the UK and in each of England, Scotland, Wales and Northern Ireland, going back over fifty years.",
+    why: "Population drives demand for homes, schools, hospitals and transport.",
+    notShown: "Age, ethnicity or local areas, and the reasons behind the changes.",
+  },
+  health: {
+    what: "A few official measures of health: how many people work for the NHS, how many are kept out of work by long-term sickness, and weekly deaths.",
+    why: "It gives a sense of the pressure on the health system and the nation's wellbeing.",
+    notShown: "Waiting lists, hospital performance or local health, which come from NHS bodies, not the ONS.",
+  },
+  housing: {
+    what: "How much private rents have risen, an index of rents since 2015, and the cost of home energy.",
+    why: "Housing is the biggest bill for most households, and a major political issue.",
+    notShown: "House prices, mortgage costs or home building. Those come from other bodies.",
+  },
   howitworks: {
     what: "A plain walk-through of the tiers of government, how a bill becomes law, and who does what along the way.",
     why: "You can't judge what your MP does without knowing what MPs actually have the power to do.",

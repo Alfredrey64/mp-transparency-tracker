@@ -244,6 +244,13 @@ jobs:
         continue-on-error: true
         run: node fetch-councils.js
 
+      # Official statistics from the Office for National Statistics (Open
+      # Government Licence v3.0) for the Britain in numbers pages.
+      - name: Run the ONS statistics fetch script
+        id: fetch_ons
+        continue-on-error: true
+        run: node fetch-ons.js
+
       # How each MP compares with the rest (declared value, outside earnings,
       # expenses, rebellion rate, attendance, years served), for the "what
       # this means" lines on the site. Reads the tables the steps above fill
@@ -290,6 +297,7 @@ jobs:
           STATUS_fetch_mp_careers: ${{ steps.fetch_mp_careers.outcome }}
           STATUS_fetch_lords_careers: ${{ steps.fetch_lords_careers.outcome }}
           STATUS_build_benchmarks: ${{ steps.build_benchmarks.outcome }}
+          STATUS_fetch_ons: ${{ steps.fetch_ons.outcome }}
           STATUS_fetch_councils: ${{ steps.fetch_councils.outcome }}
         run: node report-pipeline-status.js
 
@@ -309,6 +317,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add frontend/src/data/constituencies.json frontend/src/data/constituencySummary.json frontend/src/data/constituencyHistory.json frontend/src/data/mpCareers.json frontend/src/data/careerDetail frontend/src/data/lordsCareers.json frontend/src/data/benchmarks.json frontend/src/data/councilsIndex.json frontend/src/data/councilDetail frontend/src/data/lordsCareerDetail frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json frontend/src/data/partyDonorSectors.json frontend/src/data/partyDonorSectorsMeta.json frontend/src/data/pipelineStatus.json
+          git add frontend/src/data/constituencies.json frontend/src/data/constituencySummary.json frontend/src/data/constituencyHistory.json frontend/src/data/mpCareers.json frontend/src/data/careerDetail frontend/src/data/lordsCareers.json frontend/src/data/benchmarks.json frontend/src/data/councilsIndex.json frontend/src/data/councilDetail frontend/src/data/ons frontend/src/data/lordsCareerDetail frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json frontend/src/data/partyDonorSectors.json frontend/src/data/partyDonorSectorsMeta.json frontend/src/data/pipelineStatus.json
           git diff --staged --quiet || git commit -m "chore: daily data refresh"
           git push

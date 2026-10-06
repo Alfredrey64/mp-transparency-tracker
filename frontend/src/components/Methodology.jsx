@@ -128,6 +128,12 @@ export default function Methodology({ onNavigate }) {
               use="Every UK councillor with their ward, party and next election date, and each council's party make-up since 2016. The Your Council page is built from it; the two files derived from it are shared on the same licence."
             />
             <SourceRow
+              name="Office for National Statistics"
+              url="https://www.ons.gov.uk/"
+              auth="No key required, Open Government Licence v3.0"
+              use="Time series on the economy, prices, jobs and pay, public finances, population, NHS staffing and weekly deaths. The Britain in numbers pages are built from them. They are refreshed daily and only change when the ONS publishes."
+            />
+            <SourceRow
               name="UK Parliament Members API"
               url="https://members-api.parliament.uk/"
               auth="No key required"

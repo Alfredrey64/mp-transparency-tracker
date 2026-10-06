@@ -612,3 +612,68 @@ export function IconParliament({ size = 17 }) {
     </svg>
   );
 }
+
+const iconProps = { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.8", strokeLinecap: "round", strokeLinejoin: "round" };
+
+export function IconTrend({ size = 17 }) {
+  return (
+    <svg width={size} height={size} {...iconProps}>
+      <path d="M4 4v15.5h16.5" />
+      <path d="M7.5 15l3.5-4 3 2.5 5-6.5" />
+      <path d="M16 7h3.5v3.5" />
+    </svg>
+  );
+}
+
+export function IconBasket({ size = 17 }) {
+  return (
+    <svg width={size} height={size} {...iconProps}>
+      <path d="M8 9.5 11 4M16 9.5 13 4" />
+      <path d="M3.5 9.5h17l-1.8 9a1.5 1.5 0 0 1-1.5 1.2H6.8a1.5 1.5 0 0 1-1.5-1.2z" />
+      <path d="M9.5 13v3.5M12 13v3.5M14.5 13v3.5" />
+    </svg>
+  );
+}
+
+export function IconLedger({ size = 17 }) {
+  return (
+    <svg width={size} height={size} {...iconProps}>
+      <path d="M5 8c0-1.7 3.1-3 7-3s7 1.3 7 3-3.1 3-7 3-7-1.3-7-3z" />
+      <path d="M5 8v4c0 1.7 3.1 3 7 3s7-1.3 7-3V8" />
+      <path d="M5 12v4c0 1.7 3.1 3 7 3s7-1.3 7-3v-4" />
+    </svg>
+  );
+}
+
+export function IconPopulation({ size = 17 }) {
+  return (
+    <svg width={size} height={size} {...iconProps}>
+      <circle cx="12" cy="8" r="2.6" />
+      <path d="M7 19.5c.3-3 2.3-4.8 5-4.8s4.7 1.8 5 4.8" />
+      <circle cx="5.2" cy="10.2" r="2" />
+      <path d="M2 18.5c.2-2.2 1.7-3.6 3.6-3.6" />
+      <circle cx="18.8" cy="10.2" r="2" />
+      <path d="M22 18.5c-.2-2.2-1.7-3.6-3.6-3.6" />
+    </svg>
+  );
+}
+
+export function IconHeartbeat({ size = 17 }) {
+  return (
+    <svg width={size} height={size} {...iconProps}>
+      <path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z" />
+      <path d="M6.5 12.5h3l1.4-2.6 2.2 5 1.4-2.4h3" />
+    </svg>
+  );
+}
+
+export function IconHouse({ size = 17 }) {
+  return (
+    <svg width={size} height={size} {...iconProps}>
+      <path d="M3.5 11.5 12 4l8.5 7.5" />
+      <path d="M5.5 10v9.5h13V10" />
+      <path d="M10 19.5v-5h4v5" />
+      <path d="M16.5 7.2V4.5h2v4.4" />
+    </svg>
+  );
+}

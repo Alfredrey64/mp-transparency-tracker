@@ -4,6 +4,7 @@ import {
   IconPartyFinance, IconByElection, IconLords, IconPetition, IconCompass, IconCommittee, IconCompare, IconMeeting,
   IconQuestion, IconGavel, IconRankings, IconDarkMoney, IconThinkTank, IconDoor, IconRegister,
   IconSearch, IconBook, IconChartBars, IconTopic, IconRoute, IconSplit, IconHexMap, IconCouncil,
+  IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconHouse,
 } from "../components/icons";
 
 // Lives outside both Sidebar.jsx and shared.jsx specifically so neither has
@@ -67,6 +68,24 @@ export const SECTIONS = [
       { key: "budget", label: "Where taxes go", icon: IconBudget, hint: "Government spending in charts", aka: ["government budget", "spending"] },
       { key: "tracker", label: "Promises tracker", icon: IconTracker, hint: "Has the government kept its word?", aka: ["manifesto promises"] },
       { key: "byElections", label: "By-elections", icon: IconByElection, hint: "Votes between general elections", aka: ["elections", "by election"] },
+    ],
+  },
+  {
+    // Official statistics (from the Office for National Statistics) on how the
+    // country is doing. Each page is built from the same template in
+    // components/SectorPage.jsx, using the series in data/onsSectors.js.
+    key: "country",
+    label: "Britain in numbers",
+    blurb: "Official statistics, in plain English",
+    accent: "#0E9AA7",
+    items: [
+      { key: "economy", label: "The economy", icon: IconTrend, hint: "Growth, output and productivity", essential: true, aka: ["gdp", "growth", "recession", "productivity", "ons"] },
+      { key: "prices", label: "Prices and bills", icon: IconBasket, hint: "Inflation, food, energy and rents", essential: true, aka: ["inflation", "cost of living", "cpi", "food prices", "energy bills"] },
+      { key: "jobs", label: "Jobs and pay", icon: IconBriefcase, hint: "Unemployment, wages and vacancies", aka: ["unemployment", "wages", "earnings", "employment", "vacancies"] },
+      { key: "publicFinances", label: "Public finances", icon: IconLedger, hint: "Borrowing, debt and public sector jobs", aka: ["national debt", "borrowing", "deficit", "public sector"] },
+      { key: "population", label: "Population", icon: IconPopulation, hint: "How many of us there are", aka: ["census", "people", "growth", "demographics"] },
+      { key: "health", label: "Health", icon: IconHeartbeat, hint: "NHS staff, sickness and deaths", aka: ["nhs", "deaths", "sickness", "healthcare"] },
+      { key: "housing", label: "Housing and rents", icon: IconHouse, hint: "What it costs to keep a roof overhead", aka: ["rent", "renters", "house prices", "energy"] },
     ],
   },
   {
