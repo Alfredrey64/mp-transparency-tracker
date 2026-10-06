@@ -97,6 +97,7 @@ export const TIERS = [
   {
     key: "combined",
     name: "Mayors and combined authorities",
+    slabName: "Regional mayors",
     keywords: "Buses and trams, skills, housing plans",
     short: "Big city regions in England with a shared mayor",
     figure: { value: "~12", label: "mayors outside London" },

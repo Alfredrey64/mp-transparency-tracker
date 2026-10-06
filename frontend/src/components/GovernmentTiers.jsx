@@ -2,6 +2,7 @@ import { useState, useReducer, useRef, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY } from "../theme";
 import { IconParliament, IconCabinet, IconDevolved, IconTransport, IconCouncil, IconHome, IconGroup } from "./icons";
+import { buildLayout, routeBetween } from "../lib/tierTree";
 import { NATIONS, TIERS, VOTE_FOR, CHECKS, WHO_TO_CONTACT, contactAnswer, SCENARIOS, scenarioSteps, YOU, visibleTierKeys, linkBetween } from "../data/governmentTiers";
 
 const SECTION_COLOR = "#B5533C";
@@ -102,7 +103,7 @@ function Legend() {
 
 // One tier of the diagram, placed by its position in the stack so nothing ever
 // reflows while the walk-through plays.
-function Slab({ i, tier, figure, selected, active, arriveDelay, tokenLabel, onClick }) {
+function Slab({ box, tier, figure, selected, active, arriveDelay, tokenLabel, onClick }) {
   const Icon = ICONS[tier.key];
   return (
     <button
@@ -111,11 +112,11 @@ function Slab({ i, tier, figure, selected, active, arriveDelay, tokenLabel, onCl
       aria-current={active ? "step" : undefined}
       className="tier-slab"
       data-active={active || selected ? "1" : "0"}
-      style={{ "--i": i, "--c": tier.color, "--delay": `${arriveDelay}s` }}
+      style={{ left: box.left, top: box.top, width: box.width, height: box.height, "--c": tier.color, "--delay": `${arriveDelay}s` }}
     >
       <span className="tier-slab-icon"><Icon size={22} /></span>
       <span style={{ minWidth: 0, flex: 1 }}>
-        <span className="tier-slab-name">{tier.name}</span>
+        <span className="tier-slab-name">{tier.slabName ?? tier.name}</span>
         <span className="tier-sub tier-slab-short">{tier.short}</span>
         {tier.keywords && <span className="tier-keys tier-slab-keys">{tier.keywords}</span>}
       </span>
@@ -128,35 +129,57 @@ function Slab({ i, tier, figure, selected, active, arriveDelay, tokenLabel, onCl
   );
 }
 
-const STREAKS = 6;
-
-// The two lanes behind the boxes: laws and money down, votes up.
-function Spine({ n, action, voting, tpos, fpos, tokenColor, stepKey }) {
-  const streaks = Array.from({ length: STREAKS }, (_, k) => <i key={k} style={{ "--k": k }} />);
-  const gaps = Array.from({ length: n - 1 }, (_, j) => j);
+// The branches: red down through the tiers, green back up from you. Dots drift
+// along them in Explore. In the walk-through each branch fills in as the bead
+// reaches the tier it leads to.
+function Branches({ layout, action, reached, voting, dur }) {
+  const { width, height } = layout;
+  const arrow = (id, color) => (
+    <marker id={id} viewBox="0 0 12 12" refX="9" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M2.5 2 L9 6 L2.5 10" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+    </marker>
+  );
   return (
-    <div
-      className="tier-spine"
-      data-mode={action ? "action" : "explore"}
-      data-vote={action && voting ? "1" : "0"}
-      style={{ "--tpos": tpos, "--fpos": fpos, "--up": action && voting ? 1 : 0, "--tokc": tokenColor }}
-    >
-      <span className="tier-trk tier-trk-down" />
-      <span className="tier-trk tier-trk-up" />
-      <span className="tier-fill tier-fill-down" />
-      <span className="tier-fill tier-fill-up" />
-      <span className="tier-flow tier-flow-down" aria-hidden="true">{streaks}</span>
-      <span className="tier-flow tier-flow-up" aria-hidden="true">{streaks}</span>
-      {gaps.map((j) => (
-        <span key={j} aria-hidden="true">
-          <i className="tier-arrow tier-arrow-down" style={{ "--j": j }} />
-          <i className="tier-arrow tier-arrow-up" style={{ "--j": j }} />
-        </span>
+    <svg className="tb-svg" data-mode={action ? "action" : "explore"} width={width} height={height} viewBox={`0 0 ${width} ${height}`} aria-hidden="true">
+      <defs>
+        {arrow("tb-arr-down", "#D4573A")}
+        {arrow("tb-arr-up", "#1FA97C")}
+      </defs>
+      {layout.edges.map((e) => (
+        <g key={e.key} className="tb-down">
+          <path d={e.d} className="tb-base" markerEnd="url(#tb-arr-down)" />
+          <path d={e.d} className="tb-flow" />
+          <path d={e.d} className="tb-done" pathLength="1" data-done={action && reached.has(e.key) ? "1" : "0"} />
+        </g>
       ))}
-      <span className="tier-tok" data-on={action ? "1" : "0"} data-up={voting ? "1" : "0"}>
-        <span key={stepKey} className="tier-ripple" />
-      </span>
-    </div>
+      <g className="tb-up">
+        <path d={layout.trunk} className="tb-base" markerEnd="url(#tb-arr-up)" />
+        <path d={layout.trunk} className="tb-flow" />
+        <path d={layout.trunk} className="tb-done" pathLength="1" data-done={action && voting ? "1" : "0"} />
+        {layout.stubs.map((st) => (
+          <g key={st.key}>
+            <path d={st.d} className="tb-base" markerEnd="url(#tb-arr-up)" />
+            <path d={st.d} className="tb-flow" />
+            <path d={st.d} className="tb-done" pathLength="1" data-done={action && voting ? "1" : "0"} style={{ transitionDelay: action && voting ? `${(dur * (1 - st.at) * 0.9).toFixed(2)}s` : "0s" }} />
+          </g>
+        ))}
+      </g>
+    </svg>
+  );
+}
+
+// The glowing bead that travels the branches in the walk-through.
+function Bead({ action, path, color, stepKey }) {
+  return (
+    <span
+      key={stepKey}
+      className="tb-bead"
+      data-on={action ? "1" : "0"}
+      aria-hidden="true"
+      style={{ offsetPath: `path("${path}")`, "--tokc": color }}
+    >
+      <span className="tier-ripple" />
+    </span>
   );
 }
 
@@ -300,6 +323,9 @@ export default function GovernmentTiers() {
   const stageRef = useRef(null);
   const colRef = useRef(null);
   const panelRef = useRef(null);
+  const diaRef = useRef(null);
+  // A first guess at the diagram's width (refined as soon as it is measured), so a phone never starts from a desktop-sized layout.
+  const [width, setWidth] = useState(() => (typeof window === "undefined" ? 560 : Math.max(240, Math.min(560, window.innerWidth - 72))));
 
   const nationLabel = NATIONS.find((n) => n.key === nation).label;
   const scenario = SCENARIOS.find((s) => s.key === scenarioKey);
@@ -308,13 +334,23 @@ export default function GovernmentTiers() {
   const finished = step >= steps.length - 1;
   const action = mode === "action";
   const order = useMemo(() => visibleTierKeys(nation), [nation]);
-  const n = order.length;
   const pos = positionOf(cur.tier, order);
   const fromPos = from === null ? 0 : positionOf(from, order);
   const voting = cur.tier === "vote";
   const dur = travelSeconds(fromPos, pos, voting);
+  const layout = useMemo(() => buildLayout(nation, width), [nation, width]);
+  const curKey = voting ? "you" : cur.tier;
   const selKey = order.includes(selected) ? selected : order[0];
   const runs = action && playing && !finished;
+
+  // Keep the diagram's drawing the same width as the space it sits in.
+  useEffect(() => {
+    const el = diaRef.current;
+    if (!el) return undefined;
+    const ro = new ResizeObserver(([entry]) => setWidth(Math.max(240, Math.round(entry.contentRect.width))));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   // Auto-advance: once the marker has arrived, rest on the step for a moment,
   // then move on. Nothing here scrolls the page.
@@ -371,6 +407,10 @@ export default function GovernmentTiers() {
   const slabs = order.map((k) => (k === "you" ? YOU_TIER : TIERS.find((t) => t.key === k)));
   const tokenColor = voting ? COLORS.commonsGreen : slabs[pos].color;
   const span = Math.max(1, Math.abs(pos - fromPos));
+  // Tiers the story has reached so far; their branches are drawn in.
+  const reached = new Set(steps.slice(0, step + 1).map((st) => (st.tier === "vote" ? "you" : st.tier)));
+  const toBox = layout.byKey[curKey];
+  const beadPath = voting ? layout.trunk : (from !== null ? routeBetween(layout, from === "vote" ? "you" : from, cur.tier) : null) ?? `M ${toBox.left - 9} ${toBox.midY}`;
 
   return (
     <motion.div
@@ -406,22 +446,23 @@ export default function GovernmentTiers() {
       <Legend />
 
       <div className="tier-wrap" ref={stageRef}>
-        <div className="tier-grid" style={{ "--n": n }}>
+        <div className="tier-grid" style={{ "--len": `${layout.height}px` }}>
           {action && (
             <MiniBar
               steps={steps} step={Math.min(step, steps.length - 1)} playing={playing} finished={finished} dispatch={wrapped} onPlayPause={onPlayPause}
               color={tokenColor}
             />
           )}
-          <div className="tier-diagram" style={{ "--dur": `${dur}s` }}>
-            <Spine n={n} action={action} voting={voting} tpos={voting ? 0 : pos} fpos={action ? pos : 0} tokenColor={tokenColor} stepKey={`${scenarioKey}-${step}-${nation}`} />
+          <div className="tier-diagram" ref={diaRef} style={{ "--dur": `${dur}s`, height: layout.height }}>
+            <Branches layout={layout} action={action} reached={reached} voting={voting} dur={dur} />
+            <Bead action={action} path={beadPath} color={tokenColor} stepKey={`${scenarioKey}-${step}-${nation}`} />
             {slabs.map((t, i) => {
               const here = action && i === pos;
               const frac = action && i > fromPos && i <= pos ? (i - fromPos) / span : 0;
               return (
                 <Slab
                   key={t.key}
-                  i={i}
+                  box={layout.byKey[t.key]}
                   tier={t}
                   figure={t.figureHere?.[nation] ?? t.figure}
                   selected={!action && selKey === t.key}
