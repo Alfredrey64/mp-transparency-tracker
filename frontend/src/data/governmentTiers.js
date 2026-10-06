@@ -314,3 +314,24 @@ export function scenarioSteps(scenario, nation) {
     return tierExists(s.tier);
   });
 }
+
+// The tiers that exist where you live, top to bottom, ending with the voter.
+export function visibleTierKeys(nation) {
+  return [...TIERS.filter((t) => t.here[nation] !== undefined).map((t) => t.key), "you"];
+}
+
+// How two neighbouring tiers connect. Tiers that don't exist in a nation are
+// left out of the diagram, so what sits above or below a tier can change.
+const LINKS = {
+  "parliament>government": CONNECTORS[0],
+  "government>devolved": CONNECTORS[1],
+  "government>combined": CONNECTORS[2],
+  "devolved>combined": CONNECTORS[2],
+  "government>council": "The government hands down grants and sets the rules councils work to",
+  "devolved>council": "The devolved government funds councils and sets what they are responsible for",
+  "combined>council": CONNECTORS[3],
+  "council>parish": CONNECTORS[4],
+};
+export function linkBetween(upper, lower) {
+  return LINKS[`${upper}>${lower}`] ?? null;
+}

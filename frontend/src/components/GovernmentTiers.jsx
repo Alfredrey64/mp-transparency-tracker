@@ -2,32 +2,31 @@ import { useState, useReducer, useRef, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY } from "../theme";
 import { IconParliament, IconCabinet, IconDevolved, IconTransport, IconCouncil, IconHome, IconGroup } from "./icons";
-import { NATIONS, TIERS, CONNECTORS, VOTE_FOR, CHECKS, WHO_TO_CONTACT, contactAnswer, SCENARIOS, scenarioSteps, YOU } from "../data/governmentTiers";
+import { NATIONS, TIERS, VOTE_FOR, CHECKS, WHO_TO_CONTACT, contactAnswer, SCENARIOS, scenarioSteps, YOU, visibleTierKeys, linkBetween } from "../data/governmentTiers";
 
 const SECTION_COLOR = "#B5533C";
 const DWELL_MS = 3800;
-const YOU_INDEX = TIERS.length;
 const ICONS = { parliament: IconParliament, government: IconCabinet, devolved: IconDevolved, combined: IconTransport, council: IconCouncil, parish: IconHome, you: IconGroup };
+const YOU_TIER = { key: "you", name: YOU.name, short: YOU.short, color: COLORS.accent, figure: YOU.figure, links: YOU.links };
 
-// Where the marker sits for a step: a tier's position (0 at the top), or the
-// voter at the bottom for "you" and "vote".
-function activeIndex(step) {
-  if (!step) return 0;
-  return step.tier === "you" || step.tier === "vote" ? YOU_INDEX : TIERS.findIndex((t) => t.key === step.tier);
+// Where the marker sits for a step: a tier's place in the stack (0 at the top),
+// or the voter at the bottom for "you" and "vote".
+function positionOf(tierKey, order) {
+  if (tierKey === "you" || tierKey === "vote") return order.length - 1;
+  return Math.max(0, order.indexOf(tierKey));
 }
 
 function reducer(state, a) {
-  if (a.type === "reset") return { step: 0, from: 0 };
+  if (a.type === "reset") return { step: 0, from: null };
   const to = Math.max(0, Math.min(a.to, a.steps.length - 1));
-  return { step: to, from: activeIndex(a.steps[state.step]) };
+  return { step: to, from: a.steps[state.step]?.tier ?? null };
 }
 
 // How long the marker takes to travel to a step, in seconds: longer for longer
 // hops, and a slow climb for the vote so the way back up reads as its own moment.
-function travelSeconds(from, step) {
-  if (!step) return 0.6;
-  if (step.tier === "vote") return 2.6;
-  return Math.min(2.2, 0.75 + 0.3 * Math.abs(activeIndex(step) - from));
+function travelSeconds(fromPos, toPos, isVote) {
+  if (isVote) return 2.6;
+  return Math.min(2.2, 0.75 + 0.3 * Math.abs(toPos - fromPos));
 }
 
 function Heading({ children }) {
@@ -101,66 +100,59 @@ function Legend() {
   );
 }
 
-// One tier of the diagram, placed by its index so nothing ever reflows while the
-// walk-through plays. `lit` and `arrive` time the highlight to the marker.
-function Slab({ i, tier, exists, nationLabel, figure, selected, active, lit, arriveDelay, tokenLabel, onClick }) {
+// One tier of the diagram, placed by its position in the stack so nothing ever
+// reflows while the walk-through plays.
+function Slab({ i, tier, figure, selected, active, arriveDelay, tokenLabel, onClick }) {
   const Icon = ICONS[tier.key];
-  const color = tier.color;
   return (
-    <>
-      <span
-        aria-hidden="true"
-        className="tier-node"
-        data-lit={lit ? "1" : "0"}
-        style={{ "--i": i, "--c": color, "--delay": `${arriveDelay}s` }}
-      />
-      <button
-        onClick={onClick}
-        aria-pressed={selected}
-        aria-current={active ? "step" : undefined}
-        className="tier-slab"
-        data-active={active || selected ? "1" : "0"}
-        data-missing={exists ? "0" : "1"}
-        style={{ "--i": i, "--c": color, "--delay": `${arriveDelay}s` }}
-      >
-        <span className="tier-slab-icon"><Icon size={22} /></span>
-        <span style={{ minWidth: 0, flex: 1 }}>
-          <span className="tier-slab-name">{tier.name}</span>
-          <span className="tier-sub tier-slab-short">{tier.short}</span>
-          {tier.keywords && <span className="tier-keys tier-slab-keys">{tier.keywords}</span>}
-        </span>
-        <span className="tier-slab-fig">
-          {exists ? (
-            <>
-              <span className="tier-slab-num">{figure.value}</span>
-              <span className="tier-sub tier-slab-label">{figure.label}</span>
-            </>
-          ) : (
-            <span className="tier-slab-label">Not in {nationLabel}</span>
-          )}
-        </span>
-        {tokenLabel && <span className="tier-pill" data-on={active ? "1" : "0"} style={{ "--c": color }}>{tokenLabel}</span>}
-      </button>
-    </>
+    <button
+      onClick={onClick}
+      aria-pressed={selected}
+      aria-current={active ? "step" : undefined}
+      className="tier-slab"
+      data-active={active || selected ? "1" : "0"}
+      style={{ "--i": i, "--c": tier.color, "--delay": `${arriveDelay}s` }}
+    >
+      <span className="tier-slab-icon"><Icon size={22} /></span>
+      <span style={{ minWidth: 0, flex: 1 }}>
+        <span className="tier-slab-name">{tier.name}</span>
+        <span className="tier-sub tier-slab-short">{tier.short}</span>
+        {tier.keywords && <span className="tier-keys tier-slab-keys">{tier.keywords}</span>}
+      </span>
+      <span className="tier-slab-fig">
+        <span className="tier-slab-num">{figure.value}</span>
+        <span className="tier-sub tier-slab-label">{figure.label}</span>
+      </span>
+      {tokenLabel && <span className="tier-pill" data-on={active ? "1" : "0"} style={{ "--c": tier.color }}>{tokenLabel}</span>}
+    </button>
   );
 }
 
-const FLOW_ARROWS = 4;
+const STREAKS = 6;
 
-function Spine({ action, voting, tpos, fpos, tokenColor, stepKey }) {
-  const arrows = Array.from({ length: FLOW_ARROWS }, (_, k) => <i key={k} style={{ "--k": k }} />);
+// The two lanes behind the boxes: laws and money down, votes up.
+function Spine({ n, action, voting, tpos, fpos, tokenColor, stepKey }) {
+  const streaks = Array.from({ length: STREAKS }, (_, k) => <i key={k} style={{ "--k": k }} />);
+  const gaps = Array.from({ length: n - 1 }, (_, j) => j);
   return (
     <div
       className="tier-spine"
       data-mode={action ? "action" : "explore"}
-      style={{ "--tpos": tpos, "--fpos": fpos, "--up": action && voting ? 1 : 0, "--fh": action ? fpos : 6, "--uv": action ? (voting ? 1 : 0) : 1, "--tokc": tokenColor }}
+      data-vote={action && voting ? "1" : "0"}
+      style={{ "--tpos": tpos, "--fpos": fpos, "--up": action && voting ? 1 : 0, "--tokc": tokenColor }}
     >
       <span className="tier-trk tier-trk-down" />
       <span className="tier-trk tier-trk-up" />
       <span className="tier-fill tier-fill-down" />
       <span className="tier-fill tier-fill-up" />
-      <span className="tier-flow tier-flow-down" aria-hidden="true">{arrows}</span>
-      <span className="tier-flow tier-flow-up" aria-hidden="true">{arrows}</span>
+      <span className="tier-flow tier-flow-down" aria-hidden="true">{streaks}</span>
+      <span className="tier-flow tier-flow-up" aria-hidden="true">{streaks}</span>
+      {gaps.map((j) => (
+        <span key={j} aria-hidden="true">
+          <i className="tier-arrow tier-arrow-down" style={{ "--j": j }} />
+          <i className="tier-arrow tier-arrow-up" style={{ "--j": j }} />
+        </span>
+      ))}
       <span className="tier-tok" data-on={action ? "1" : "0"} data-up={voting ? "1" : "0"}>
         <span key={stepKey} className="tier-ripple" />
       </span>
@@ -183,17 +175,20 @@ function MiniBar({ steps, step, playing, finished, dispatch, onPlayPause, color 
   );
 }
 
-function TierInfo({ index, nation, nationLabel }) {
-  const isYou = index === YOU_INDEX;
-  const tier = isYou ? null : TIERS[index];
+function TierInfo({ tierKey, order, nation, nationLabel }) {
+  const isYou = tierKey === "you";
+  const tier = isYou ? null : TIERS.find((t) => t.key === tierKey);
   const exists = isYou || tier.here[nation] !== undefined;
-  const Icon = ICONS[isYou ? "you" : tier.key];
+  const Icon = ICONS[tierKey];
   const color = isYou ? COLORS.accent : tier.color;
   const name = isYou ? YOU.name : tier.name;
   const para = { fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.6, color: COLORS.inkSoft, margin: "0 0 14px" };
   const links = isYou ? YOU.links : tier.links;
-  const above = !isYou && index > 0 ? CONNECTORS[index - 1] : null;
-  const below = !isYou && index < CONNECTORS.length ? CONNECTORS[index] : null;
+  const at = order.indexOf(tierKey);
+  const aboveKey = at > 0 ? order[at - 1] : null;
+  const belowKey = !isYou && at >= 0 ? order[at + 1] : null;
+  const above = aboveKey ? linkBetween(aboveKey, tierKey) : null;
+  const below = belowKey && belowKey !== "you" ? linkBetween(tierKey, belowKey) : null;
   return (
     <div>
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
@@ -297,11 +292,11 @@ function ActionPanel({ scenarioKey, onScenario, steps, step, playing, finished, 
 
 export default function GovernmentTiers() {
   const [nation, setNation] = useState("england");
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState("parliament");
   const [mode, setMode] = useState("explore");
   const [scenarioKey, setScenarioKey] = useState(SCENARIOS[0].key);
   const [playing, setPlaying] = useState(false);
-  const [{ step, from }, dispatch] = useReducer(reducer, { step: 0, from: 0 });
+  const [{ step, from }, dispatch] = useReducer(reducer, { step: 0, from: null });
   const stageRef = useRef(null);
   const colRef = useRef(null);
   const panelRef = useRef(null);
@@ -312,9 +307,13 @@ export default function GovernmentTiers() {
   const cur = steps[Math.min(step, steps.length - 1)];
   const finished = step >= steps.length - 1;
   const action = mode === "action";
-  const idx = activeIndex(cur);
+  const order = useMemo(() => visibleTierKeys(nation), [nation]);
+  const n = order.length;
+  const pos = positionOf(cur.tier, order);
+  const fromPos = from === null ? 0 : positionOf(from, order);
   const voting = cur.tier === "vote";
-  const dur = travelSeconds(from, cur);
+  const dur = travelSeconds(fromPos, pos, voting);
+  const selKey = order.includes(selected) ? selected : order[0];
   const runs = action && playing && !finished;
 
   // Auto-advance: once the marker has arrived, rest on the step for a moment,
@@ -363,15 +362,15 @@ export default function GovernmentTiers() {
   const onPlayPause = () => {
     if (finished) { dispatch({ type: "reset" }); setPlaying(true); } else setPlaying(!playing);
   };
-  const onSlab = (i) => {
-    if (!action) { setSelected(i); return; }
-    const at = steps.findIndex((s) => activeIndex(s) === i);
+  const onSlab = (key) => {
+    if (!action) { setSelected(key); return; }
+    const at = steps.findIndex((s) => (s.tier === "vote" ? "you" : s.tier) === key);
     if (at >= 0) wrapped({ type: "go", to: at, steps });
   };
 
-  const tokenColor = voting ? COLORS.commonsGreen : idx === YOU_INDEX ? COLORS.accent : TIERS[idx].color;
-  const slabs = [...TIERS, { key: "you", name: YOU.name, short: YOU.short, color: COLORS.accent, figure: YOU.figure, here: { [nation]: "" } }];
-  const span = Math.max(1, Math.abs(idx - from));
+  const slabs = order.map((k) => (k === "you" ? YOU_TIER : TIERS.find((t) => t.key === k)));
+  const tokenColor = voting ? COLORS.commonsGreen : slabs[pos].color;
+  const span = Math.max(1, Math.abs(pos - fromPos));
 
   return (
     <motion.div
@@ -407,7 +406,7 @@ export default function GovernmentTiers() {
       <Legend />
 
       <div className="tier-wrap" ref={stageRef}>
-        <div className="tier-grid">
+        <div className="tier-grid" style={{ "--n": n }}>
           {action && (
             <MiniBar
               steps={steps} step={Math.min(step, steps.length - 1)} playing={playing} finished={finished} dispatch={wrapped} onPlayPause={onPlayPause}
@@ -415,27 +414,21 @@ export default function GovernmentTiers() {
             />
           )}
           <div className="tier-diagram" style={{ "--dur": `${dur}s` }}>
-            <Spine action={action} voting={voting} tpos={voting ? 0 : idx} fpos={action ? idx : 0} tokenColor={tokenColor} stepKey={`${scenarioKey}-${step}-${nation}`} />
+            <Spine n={n} action={action} voting={voting} tpos={voting ? 0 : pos} fpos={action ? pos : 0} tokenColor={tokenColor} stepKey={`${scenarioKey}-${step}-${nation}`} />
             {slabs.map((t, i) => {
-              const exists = t.here[nation] !== undefined;
-              const lit = action && i <= idx;
-              const frac = action && i > from && i <= idx ? (i - from) / span : 0;
-              const arriveDelay = action ? dur * 0.9 * frac : 0;
-              const here = action && (i === idx);
+              const here = action && i === pos;
+              const frac = action && i > fromPos && i <= pos ? (i - fromPos) / span : 0;
               return (
                 <Slab
                   key={t.key}
                   i={i}
                   tier={t}
-                  exists={exists}
-                  nationLabel={nationLabel}
                   figure={t.figureHere?.[nation] ?? t.figure}
-                  selected={!action && selected === i}
+                  selected={!action && selKey === t.key}
                   active={here}
-                  lit={lit}
-                  arriveDelay={here ? dur * 0.85 : arriveDelay}
+                  arriveDelay={here ? dur * 0.85 : dur * 0.9 * frac}
                   tokenLabel={here && cur.token ? cur.token : null}
-                  onClick={() => onSlab(i)}
+                  onClick={() => onSlab(t.key)}
                 />
               );
             })}
@@ -450,7 +443,7 @@ export default function GovernmentTiers() {
               />
             ) : (
               <div style={{ height: "100%", overflowY: "auto" }}>
-                <TierInfo index={selected} nation={nation} nationLabel={nationLabel} />
+                <TierInfo tierKey={selKey} order={order} nation={nation} nationLabel={nationLabel} />
               </div>
             )}
           </div>

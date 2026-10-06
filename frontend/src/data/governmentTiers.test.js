@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { NATIONS, TIERS, CONNECTORS, VOTE_FOR, WHO_TO_CONTACT, contactAnswer, SCENARIOS, scenarioSteps } from "./governmentTiers";
+import { NATIONS, TIERS, CONNECTORS, VOTE_FOR, WHO_TO_CONTACT, contactAnswer, SCENARIOS, scenarioSteps, visibleTierKeys, linkBetween } from "./governmentTiers";
 
 describe("government tiers", () => {
   it("has a unique key and full content for every tier", () => {
@@ -81,5 +81,21 @@ describe("scenarios", () => {
 
   it("has a token label on every tier step", () => {
     for (const sc of SCENARIOS) for (const s of sc.steps) if (s.tier !== "vote") expect(s.token).toBeTruthy();
+  });
+});
+
+describe("what shows in each nation", () => {
+  it("leaves out tiers that don't exist and always ends with the voter", () => {
+    expect(visibleTierKeys("england")).toEqual(["parliament", "government", "combined", "council", "parish", "you"]);
+    expect(visibleTierKeys("scotland")).toEqual(["parliament", "government", "devolved", "council", "parish", "you"]);
+    expect(visibleTierKeys("wales")).not.toContain("combined");
+    expect(visibleTierKeys("ni")).toEqual(["parliament", "government", "devolved", "council", "you"]);
+  });
+
+  it("describes the link between every neighbouring pair of tiers in every nation", () => {
+    for (const n of NATIONS) {
+      const keys = visibleTierKeys(n.key).filter((k) => k !== "you");
+      for (let i = 0; i < keys.length - 1; i++) expect(linkBetween(keys[i], keys[i + 1])).toBeTruthy();
+    }
   });
 });

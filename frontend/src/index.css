@@ -325,33 +325,35 @@ select:focus-visible,
   .mm-side { position: sticky; top: 16px; }
 }
 
-/* Tiers of government. The diagram is laid out by index on a fixed grid, so
-   nothing reflows while the walk-through plays: slabs, hubs, the two lanes and
-   the travelling bead are all positioned from --pitch (the distance from one
-   tier to the next) and --i (a tier's place, 0 at the top). The bead and the
-   lane fill share one duration and easing, so they arrive together. */
+/* Tiers of government. The tiers are stacked boxes, laid out by position on a
+   fixed grid so nothing reflows while the walk-through plays. Two lanes run
+   down the middle behind them (laws and money down, votes up) and show in the
+   gaps between boxes. --row is a box's height, --gap the space between boxes,
+   --pitch the distance from one box to the next, --n how many boxes there are
+   and --i a box's place in the stack (0 at the top). The bead and the lane fill
+   share one duration and easing, so they arrive together. */
 .tier-wrap { container-type: inline-size; scroll-margin-top: 84px; }
 .tier-grid {
-  --pitch: clamp(78px, calc((100vh - 220px) / 7), 112px);
-  --row: calc(var(--pitch) - 14px);
-  --sp: 78px;
-  --dl: 20px;
-  --ul: 52px;
-  --hl: 6px;
-  --hw: 62px;
+  --row: clamp(70px, calc((100vh - 360px) / 7), 92px);
+  --gap: 44px;
+  --pitch: calc(var(--row) + var(--gap));
+  --len: calc(var(--pitch) * (var(--n, 7) - 1) + var(--row));
   --ease: cubic-bezier(0.45, 0.05, 0.25, 1);
   display: grid; gap: 24px; grid-template-columns: minmax(0, 1fr);
 }
-.tier-diagram { position: relative; height: calc(var(--pitch) * 7 - 14px); }
+.tier-diagram { position: relative; height: var(--len); padding: 0; }
 .tier-panelcol { min-width: 0; }
 .tier-panel { height: 290px; overflow: hidden; transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.35s ease; will-change: transform; }
 .tier-mini { display: none; position: sticky; top: 8px; z-index: 20; }
 @container (min-width: 780px) {
   .tier-grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 28px; }
-  .tier-panel { height: min(480px, calc(100vh - 40px), calc(var(--pitch) * 7 - 14px)); }
+  .tier-panel { height: min(480px, calc(100vh - 40px), var(--len)); }
+  /* Extra room below the diagram (cancelled by the negative margin, so the
+     layout is unchanged) lets the panel stay on screen while the last tier is. */
+  .tier-panelcol { align-self: stretch; padding-bottom: 360px; margin-bottom: -360px; }
 }
 @container (max-width: 779px) {
-  .tier-grid { --pitch: 88px; --row: 74px; --sp: 70px; --dl: 17px; --ul: 45px; --hl: 5px; --hw: 54px; }
+  .tier-grid { --row: 76px; --gap: 36px; }
   .tier-grid .tier-keys, .tier-grid .tier-slab-label { display: none; }
   .tier-grid .tier-slab-short { -webkit-line-clamp: 1; }
   .tier-step[data-active="0"] { display: none; }
@@ -359,67 +361,89 @@ select:focus-visible,
   .tier-slab-icon { width: 38px; height: 38px; }
   .tier-slab-name { font-size: 16px; }
   .tier-slab-num { font-size: 17px; }
+  .tier-grid .tier-mini { display: flex; }
 }
 @container (max-width: 520px) {
-  .tier-grid { --pitch: 76px; --row: 64px; --sp: 60px; --dl: 14px; --ul: 38px; --hl: 3px; --hw: 48px; }
+  .tier-grid { --row: 66px; --gap: 32px; }
   .tier-grid .tier-sub { display: none; }
-  .tier-slab { padding: 0 11px; gap: 9px; }
+  .tier-slab { padding: 0 12px; gap: 10px; }
   .tier-slab > .tier-slab-icon { display: none; }
-  .tier-slab-name { font-size: 14px; line-height: 1.2; overflow-wrap: anywhere; }
-  .tier-slab-num { font-size: 14px; }
+  .tier-slab-name { font-size: 14.5px; line-height: 1.2; overflow-wrap: anywhere; }
+  .tier-slab-num { font-size: 15px; }
 }
 @media (max-height: 760px) { .tier-grid .tier-keys { display: none; } }
 
-.tier-spine { position: absolute; left: 0; top: 0; bottom: 0; width: var(--sp); }
-.tier-trk { position: absolute; width: 6px; top: calc(var(--row) / 2); height: calc(var(--pitch) * 6); border-radius: 3px; background: var(--c-hairline); overflow: hidden; }
-.tier-trk-down { left: var(--dl); --lane: #B5533C; }
-.tier-trk-up { left: var(--ul); --lane: #1FA97C; }
-/* The lanes themselves: a column of dots drifting along them. */
-.tier-spine[data-mode="explore"] .tier-trk::after {
-  content: ""; position: absolute; inset: 0;
-  background-image: radial-gradient(circle at 50% 50%, var(--lane) 1.9px, transparent 2.5px); background-size: 6px 16px;
-  animation: trkDown 1.4s linear infinite;
+/* The lanes. Two thin tracks side by side, centred under the boxes. */
+.tier-spine {
+  position: absolute; left: 50%; top: 0; width: 44px; margin-left: -22px; height: var(--len);
+  --ln-down: #D4573A; --ln-up: #1FA97C;
 }
-.tier-spine[data-mode="explore"] .tier-trk-up::after { animation-name: trkUp; }
-@keyframes trkDown { to { background-position: 0 16px; } }
-@keyframes trkUp { to { background-position: 0 -16px; } }
+.tier-trk { position: absolute; top: 0; height: 100%; width: 5px; border-radius: 3px; }
+.tier-trk-down { left: 9px; background: color-mix(in srgb, var(--ln-down) 26%, var(--c-hairline)); }
+.tier-trk-up { left: 30px; background: color-mix(in srgb, var(--ln-up) 26%, var(--c-hairline)); }
+.tier-fill { position: absolute; width: 5px; border-radius: 3px; transition: height var(--dur, 0.6s) var(--ease), top var(--dur, 0.6s) var(--ease); }
+.tier-fill-down { left: 9px; top: 0; height: calc(var(--pitch) * var(--fpos)); background: linear-gradient(to bottom, color-mix(in srgb, var(--ln-down) 55%, transparent), var(--ln-down)); }
+.tier-fill-up { left: 30px; top: calc(var(--len) * (1 - var(--up))); height: calc(var(--len) * var(--up)); background: linear-gradient(to top, color-mix(in srgb, var(--ln-up) 55%, transparent), var(--ln-up)); }
 
-.tier-fill { position: absolute; width: 6px; border-radius: 3px; transition: height var(--dur, 0.6s) var(--ease), top var(--dur, 0.6s) var(--ease); }
-.tier-fill-down { left: var(--dl); top: calc(var(--row) / 2); height: calc(var(--pitch) * var(--fpos)); background: #B5533C; }
-.tier-fill-up { left: var(--ul); background: #1FA97C; top: calc(var(--row) / 2 + var(--pitch) * 6 * (1 - var(--up))); height: calc(var(--pitch) * 6 * var(--up)); }
+/* Light drifting along each lane: soft streaks that fade in and out, so they
+   slide behind a box and come out the other side. */
+.tier-spine[data-mode="explore"] { --flowd: var(--len); --flowu: var(--len); }
+.tier-spine[data-mode="action"] { --flowd: calc(var(--pitch) * var(--fpos)); --flowu: calc(var(--len) * var(--up)); }
+.tier-flow { position: absolute; width: 5px; pointer-events: none; overflow: hidden; border-radius: 3px; transition: height var(--dur, 0.6s) var(--ease), top var(--dur, 0.6s) var(--ease); }
+.tier-flow-down { left: 9px; top: 0; height: var(--flowd); --lane: var(--ln-down); }
+.tier-flow-up { left: 30px; top: calc(var(--len) - var(--flowu)); height: var(--flowu); --lane: var(--ln-up); }
+.tier-flow i {
+  position: absolute; left: 0; top: 0; width: 5px; height: 34px; border-radius: 3px; opacity: 0;
+  background: linear-gradient(to bottom, transparent, var(--lane) 50%, transparent);
+  animation: streakDown 5.6s linear infinite; animation-delay: calc(var(--k) * -0.8s);
+}
+.tier-flow-up i { background: linear-gradient(to top, transparent, var(--lane) 50%, transparent); animation-name: streakUp; }
+@keyframes streakDown {
+  0% { opacity: 0; transform: translateY(-34px); }
+  10% { opacity: 0.95; }
+  90% { opacity: 0.95; }
+  100% { opacity: 0; transform: translateY(var(--len)); }
+}
+@keyframes streakUp {
+  0% { opacity: 0; transform: translateY(var(--len)); }
+  10% { opacity: 0.95; }
+  90% { opacity: 0.95; }
+  100% { opacity: 0; transform: translateY(-34px); }
+}
 
+/* Arrowheads in the middle of every gap, so the direction reads at a glance. */
+.tier-arrow {
+  position: absolute; width: 11px; height: 11px; margin: 0 0 0 -5.5px; border-right: 3px solid var(--lane); border-bottom: 3px solid var(--lane); border-radius: 1.5px;
+  top: calc(var(--pitch) * var(--j) + var(--row) + var(--gap) / 2 - 6px); transition: opacity 0.4s;
+}
+.tier-arrow-down { left: 11.5px; transform: rotate(45deg); --lane: var(--ln-down); }
+.tier-arrow-up { left: 32.5px; transform: rotate(-135deg); --lane: var(--ln-up); }
+.tier-spine[data-mode="action"] .tier-arrow-up { opacity: 0.25; }
+.tier-spine[data-mode="action"][data-vote="1"] .tier-arrow-up { opacity: 1; }
+
+/* The bead that travels the lanes in the walk-through. */
 .tier-tok {
-  position: absolute; left: calc(var(--dl) - 6px); top: calc(var(--row) / 2 - 9px); width: 18px; height: 18px; border-radius: 50%; z-index: 4; opacity: 0;
+  position: absolute; left: 3.5px; top: -8px; width: 16px; height: 16px; border-radius: 50%; z-index: 4; opacity: 0;
   background: var(--tokc); border: 2.5px solid #fff; box-shadow: 0 0 0 5px color-mix(in srgb, var(--tokc) 30%, transparent), 0 0 18px var(--tokc);
   transform: translateY(calc(var(--pitch) * var(--tpos)));
   transition: transform var(--dur, 0.6s) var(--ease), left var(--dur, 0.6s) var(--ease), opacity 0.3s, background-color 0.4s, box-shadow 0.4s;
 }
 .tier-tok[data-on="1"] { opacity: 1; }
-.tier-tok[data-up="1"] { left: calc(var(--ul) - 6px); }
+.tier-tok[data-up="1"] { left: 24.5px; }
 .tier-ripple { position: absolute; inset: -2px; border-radius: 50%; border: 2px solid var(--tokc); opacity: 0; animation: tokRipple 1.3s ease-out var(--dur, 0.6s) 2 both; }
-@keyframes tokRipple { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(3.4); opacity: 0; } }
-
-.tier-node {
-  position: absolute; left: var(--hl); width: var(--hw); height: 26px; border-radius: 9px; z-index: 2;
-  top: calc(var(--pitch) * var(--i) + var(--row) / 2 - 13px);
-  background: var(--c-paper-card); border: 2.5px solid var(--c); box-shadow: 0 0 0 4px var(--c-paper-card);
-  transition: background-color 0.35s ease var(--delay, 0s);
-}
-.tier-node[data-lit="1"] { background: var(--c); }
-.tier-node[data-lit="0"] { transition-delay: 0s; }
+@keyframes tokRipple { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(3.2); opacity: 0; } }
 
 .tier-slab {
-  position: absolute; left: var(--sp); width: calc(100% - var(--sp) - 8px); top: calc(var(--pitch) * var(--i)); height: var(--row); z-index: 1; min-width: 0; overflow: visible;
-  display: flex; align-items: center; gap: 14px; padding: 0 16px; text-align: left; font: inherit; cursor: pointer;
+  position: absolute; left: 0; width: 100%; top: calc(var(--pitch) * var(--i)); height: var(--row); z-index: 1; min-width: 0; overflow: visible;
+  display: flex; align-items: center; gap: 14px; padding: 0 18px; text-align: left; font: inherit; cursor: pointer;
   background: var(--c-paper); border: 1px solid var(--c-hairline); border-radius: 14px;
   transition: transform 0.4s ease, border-color 0.3s, box-shadow 0.4s, background-color 0.4s;
 }
 .tier-slab:hover { border-color: color-mix(in srgb, var(--c) 55%, var(--c-hairline)); }
 .tier-slab[data-active="1"] {
-  border-color: var(--c); transform: translateX(6px); background: color-mix(in srgb, var(--c) 8%, var(--c-paper));
+  border-color: var(--c); transform: scale(1.012); background: color-mix(in srgb, var(--c) 8%, var(--c-paper));
   box-shadow: 0 8px 26px color-mix(in srgb, var(--c) 24%, transparent); transition-delay: var(--delay, 0s);
 }
-.tier-slab[data-missing="1"] { opacity: 0.5; border-style: dashed; }
 .tier-slab-icon { flex: none; width: 42px; height: 42px; border-radius: 11px; display: inline-flex; align-items: center; justify-content: center; color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); }
 .tier-slab-name { display: block; font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 18px; font-weight: 600; line-height: 1.2; color: var(--c-ink); }
 .tier-slab-short, .tier-slab-keys { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; font-family: 'Archivo', system-ui, sans-serif; color: var(--c-ink-soft); }
@@ -438,47 +462,6 @@ select:focus-visible,
 
 .tier-step-body { display: block; animation: stepIn 0.4s ease both; }
 @keyframes stepIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-
-
-/* Flow arrows: a few small chevrons drift along each lane, fading in at one end
-   and out at the other so nothing pops. In the walk-through they are confined
-   to the part of the lane the story has already filled. */
-.tier-flow {
-  position: absolute; width: 6px; pointer-events: none; z-index: 1; clip-path: inset(0 -14px);
-  transition: height var(--dur, 0.6s) var(--ease), top var(--dur, 0.6s) var(--ease);
-}
-.tier-flow-down { left: var(--dl); top: calc(var(--row) / 2); height: calc(var(--pitch) * var(--fh)); --lane: #B5533C; }
-.tier-flow-up { left: var(--ul); top: calc(var(--row) / 2 + var(--pitch) * 6 * (1 - var(--uv))); height: calc(var(--pitch) * 6 * var(--uv)); --lane: #1FA97C; }
-.tier-spine[data-mode="action"] .tier-flow { --lane: #fff; }
-.tier-spine[data-mode="action"] .tier-flow i { filter: none; }
-.tier-flow i {
-  position: absolute; left: 50%; top: 0; width: 10px; height: 10px; margin: 0 0 0 -5px; opacity: 0;
-  border-right: 3px solid var(--lane); border-bottom: 3px solid var(--lane); border-radius: 1px;
-  filter: drop-shadow(0 0 3px var(--c-paper-card)) drop-shadow(0 0 2px var(--c-paper-card));
-  transform: translateY(0) rotate(45deg);
-  animation: flowDown 9s linear infinite; animation-delay: calc(var(--k) * -2.25s);
-}
-.tier-flow-up i { animation-name: flowUp; }
-@keyframes flowDown {
-  0% { opacity: 0; transform: translateY(0) rotate(45deg); }
-  7% { opacity: 0.95; }
-  93% { opacity: 0.95; }
-  100% { opacity: 0; transform: translateY(calc(var(--pitch) * 6)) rotate(45deg); }
-}
-@keyframes flowUp {
-  0% { opacity: 0; transform: translateY(calc(var(--pitch) * 6)) rotate(-135deg); }
-  7% { opacity: 0.95; }
-  93% { opacity: 0.95; }
-  100% { opacity: 0; transform: translateY(0) rotate(-135deg); }
-}
-@container (max-width: 779px) {
-  .tier-grid .tier-mini { display: flex; }
-}
-@container (min-width: 780px) {
-  /* Extra room below the diagram (cancelled by the negative margin, so the
-     layout is unchanged) lets the panel stay on screen while the last tier is. */
-  .tier-panelcol { align-self: stretch; padding-bottom: 360px; margin-bottom: -360px; }
-}
 
 /* Printing (handy for classrooms): just the page, no menu, on white. */
 @media print {
