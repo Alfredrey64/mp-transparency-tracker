@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { normalisePeriod, periodToT, periodLabel, formatValue, formatAxis, latestInfo, sentenceFor, sliceRange, niceTicks, changeWords } from "./onsFormat";
+import { labelFor, normalisePeriod, periodToT, periodLabel, formatValue, formatAxis, latestInfo, sentenceFor, sliceRange, niceTicks, changeWords } from "./onsFormat";
 
 describe("ONS periods", () => {
   it("normalises months, quarters and years", () => {
@@ -85,5 +85,16 @@ describe("chart helpers", () => {
     const t = niceTicks(-1.3, 6.2);
     expect(t[0]).toBeGreaterThanOrEqual(-1.3);
     expect(t.at(-1)).toBeLessThanOrEqual(6.2 + 1e-6);
+  });
+});
+
+describe("year-ending figures", () => {
+  it("labels crime-style figures as the year to a month", () => {
+    const def = { yearEnding: true, sentenceName: "Crimes recorded by the police", format: "count", kind: "level", verb: "were" };
+    expect(labelFor(def, "2026-03")).toBe("Year to March 2026");
+    expect(labelFor({}, "2026-03")).toBe("March 2026");
+    expect(sentenceFor(def, [["2025-03", 4466986], ["2026-03", 4361958]])).toBe("Crimes recorded by the police were 4.36 million in the year to March 2026, down 2.4% on a year earlier.");
+    expect(formatValue("count", 431)).toBe("431");
+    expect(formatValue("count", 62347)).toBe("62,347");
   });
 });

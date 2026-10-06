@@ -4,7 +4,7 @@ import {
   IconPartyFinance, IconByElection, IconLords, IconPetition, IconCompass, IconCommittee, IconCompare, IconMeeting,
   IconQuestion, IconGavel, IconRankings, IconDarkMoney, IconThinkTank, IconDoor, IconRegister,
   IconSearch, IconBook, IconChartBars, IconTopic, IconRoute, IconSplit, IconHexMap, IconCouncil,
-  IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconHouse, IconGlobe, IconLeaf, IconCompareTime,
+  IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconHouse, IconGlobe, IconLeaf, IconCompareTime, IconShield,
 } from "../components/icons";
 
 // Lives outside both Sidebar.jsx and shared.jsx specifically so neither has
@@ -85,7 +85,8 @@ export const SECTIONS = [
       { key: "publicFinances", label: "Public finances", icon: IconLedger, hint: "Borrowing, debt and public sector jobs", aka: ["national debt", "borrowing", "deficit", "public sector"] },
       { key: "population", label: "Population", icon: IconPopulation, hint: "How many of us there are", aka: ["census", "people", "growth", "demographics"] },
       { key: "health", label: "Health", icon: IconHeartbeat, hint: "NHS staff, sickness and deaths", aka: ["nhs", "deaths", "sickness", "healthcare"] },
-      { key: "housing", label: "Housing and rents", icon: IconHouse, hint: "What it costs to keep a roof overhead", aka: ["rent", "renters", "house prices", "energy"] },
+      { key: "housing", label: "Housing", icon: IconHouse, hint: "House prices, rents and bills", essential: true, aka: ["rent", "renters", "house prices", "mortgage", "property", "energy"] },
+      { key: "crime", label: "Crime", icon: IconShield, hint: "What the survey and police figures show", aka: ["police", "knife crime", "burglary", "violence", "theft", "fraud", "shoplifting"] },
       { key: "trade", label: "Trade", icon: IconGlobe, hint: "What we sell abroad and buy in", aka: ["exports", "imports", "trade deficit", "current account"] },
       { key: "environment", label: "Energy and environment", icon: IconLeaf, hint: "Emissions and energy use", aka: ["climate", "emissions", "net zero", "carbon", "energy"] },
       { key: "indicators", label: "Compare over time", icon: IconCompareTime, hint: "Pick measures and watch them move", essential: true, aka: ["timeline", "history", "compare", "trends", "over time"] },

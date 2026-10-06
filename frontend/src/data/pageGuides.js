@@ -92,9 +92,14 @@ export const PAGE_GUIDES = {
     notShown: "Waiting lists, hospital performance or local health, which come from NHS bodies, not the ONS.",
   },
   housing: {
-    what: "How much private rents have risen, an index of rents since 2015, and the cost of home energy.",
-    why: "Housing is the biggest bill for most households, and a major political issue.",
-    notShown: "House prices, mortgage costs or home building. Those come from other bodies.",
+    what: "Average house prices across the UK, its nations and regions since 1968, plus rents and the cost of heating a home.",
+    why: "Housing is the biggest bill for most households and a major political issue.",
+    notShown: "Mortgage rates or home building. House prices come from HM Land Registry with the ONS.",
+  },
+  crime: {
+    what: "Two ways of counting crime in England and Wales: the Crime Survey, which asks people what happened to them, and crimes recorded by the police.",
+    why: "The two often disagree, and knowing why helps you judge any crime headline.",
+    notShown: "Scotland and Northern Ireland, which count crime separately, or crime in your own area.",
   },
   howitworks: {
     what: "A plain walk-through of the tiers of government, how a bill becomes law, and who does what along the way.",

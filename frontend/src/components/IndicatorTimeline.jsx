@@ -10,6 +10,7 @@ import { changeBetween, valueAtOrBefore } from "../lib/onsStats";
 import { toLineData, yearTicks } from "../lib/onsChart";
 import { bandsBetween, governmentAt, PARTY_COLOURS } from "../lib/governments";
 import { IconCompareTime } from "./icons";
+import { card as baseCard } from "../lib/onsStyles";
 
 // Pick a few measures and watch how they moved over time, side by side, with
 // who was in government shaded behind them. Press play to watch the story
@@ -41,7 +42,7 @@ const PRESETS = [
   { label: "Everything", from: 0 },
 ];
 
-const card = { background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 16, padding: "18px 20px" };
+const card = { ...baseCard, padding: "20px 22px" };
 const pill = (on) => ({
   fontFamily: FONT_BODY, fontSize: 13, fontWeight: on ? 700 : 500, padding: "6px 12px", borderRadius: 999, cursor: "pointer",
   border: `1px solid ${on ? COLORS.ink : COLORS.hairline}`, background: on ? COLORS.ink : "transparent", color: on ? COLORS.paper : COLORS.inkSoft,
@@ -183,7 +184,7 @@ export default function IndicatorTimeline({ param }) {
         <>
           <section style={{ ...card, marginTop: 24 }} aria-label="Choose measures">
             <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 14px", alignItems: "center", justifyContent: "space-between" }}>
-              <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 600, color: COLORS.ink, margin: 0 }}>
+              <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, letterSpacing: "-0.01em", color: COLORS.ink, margin: 0 }}>
                 Choose measures <span style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 500, color: COLORS.inkSoft }}>{picks.length} of {MAX_PICKED}</span>
               </h2>
               <input
@@ -330,7 +331,7 @@ export default function IndicatorTimeline({ param }) {
                         initial={reduce ? false : { opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}
                       >
                         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", justifyContent: "space-between", gap: "4px 14px", marginBottom: 6 }}>
-                          <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 17, fontWeight: 600, color: COLORS.ink, margin: 0, display: "flex", alignItems: "center", gap: 9 }}>
+                          <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 19, fontWeight: 700, letterSpacing: "-0.01em", color: COLORS.ink, margin: 0, display: "flex", alignItems: "center", gap: 9 }}>
                             <span aria-hidden="true" style={{ width: 10, height: 10, borderRadius: 3, background: c.accent }} />
                             {c.def.label}
                           </h2>
@@ -368,7 +369,7 @@ export default function IndicatorTimeline({ param }) {
 
               <section style={{ ...card, marginTop: 22 }} aria-label="Then and now">
                 <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "8px 16px" }}>
-                  <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 600, color: COLORS.ink, margin: 0 }}>Then and now</h2>
+                  <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, letterSpacing: "-0.01em", color: COLORS.ink, margin: 0 }}>Then and now</h2>
                   <label style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, display: "inline-flex", alignItems: "center", gap: 8 }}>
                     Compare today with
                     <select
@@ -384,10 +385,10 @@ export default function IndicatorTimeline({ param }) {
                   <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: FONT_BODY, fontSize: 14, minWidth: 420 }}>
                     <thead>
                       <tr style={{ textAlign: "left", color: COLORS.inkSoft, fontSize: 12.5 }}>
-                        <th style={{ padding: "6px 8px 6px 0", fontWeight: 600 }}>Measure</th>
-                        <th style={{ padding: "6px 8px", fontWeight: 600, textAlign: "right" }}>{thenAt}</th>
-                        <th style={{ padding: "6px 8px", fontWeight: 600, textAlign: "right" }}>Latest</th>
-                        <th style={{ padding: "6px 0 6px 8px", fontWeight: 600, textAlign: "right" }}>Change</th>
+                        <th style={{ padding: "6px 8px 6px 0", fontWeight: 700 }}>Measure</th>
+                        <th style={{ padding: "6px 8px", fontWeight: 700, textAlign: "right" }}>{thenAt}</th>
+                        <th style={{ padding: "6px 8px", fontWeight: 700, textAlign: "right" }}>Latest</th>
+                        <th style={{ padding: "6px 0 6px 8px", fontWeight: 700, textAlign: "right" }}>Change</th>
                       </tr>
                     </thead>
                     <tbody>

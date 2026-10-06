@@ -63,6 +63,7 @@ export function formatValue(format, v) {
     case "gbpbn0": return `£${group(v / 1000)}bn`;
     case "thousands": return v >= 1000 ? `${(v / 1000).toFixed(2)} million` : `${group(v)},000`.replace(/^0,000$/, "0");
     case "people": return v >= 1e6 ? `${(v / 1e6).toFixed(1)} million` : group(v);
+    case "count": return Math.abs(v) >= 1e6 ? `${(v / 1e6).toFixed(2)} million` : group(v);
     case "index": return v.toFixed(1);
     case "gbpbnx": return Math.abs(v) >= 100 ? `£${group(v)}bn` : money(v, `£${Math.abs(v).toFixed(1)}bn`); // value already in £ billion
     case "ktonnes": return `${group(v / 1000)} million tonnes`; // value in thousand tonnes
@@ -81,6 +82,7 @@ export function formatAxis(format, v) {
     case "gbpbn0": return `£${group(v / 1000)}bn`;
     case "thousands": return v >= 1000 ? `${Number((v / 1000).toFixed(1))}m` : `${group(v)}k`;
     case "people": return v >= 1e6 ? `${Number((v / 1e6).toFixed(0))}m` : group(v);
+    case "count": return Math.abs(v) >= 1e6 ? `${Number((v / 1e6).toFixed(1))}m` : Math.abs(v) >= 10000 ? `${Math.round(v / 1000)}k` : group(v);
     case "gbpbnx": return `£${group(v)}bn`;
     case "ktonnes": return `${group(v / 1000)}m`;
     case "mtoe": return `${v.toFixed(0)}`;
@@ -99,13 +101,20 @@ export function changeBetween(def, from, to) {
   return { type: "amount", amount: to - from, text: formatValue(def.format, Math.abs(to - from)) };
 }
 
+// A period as a person would say it. Figures for "the year to March 2026"
+// (crime, mainly) are labelled as such rather than as plain "March 2026".
+export function labelFor(def, p) {
+  if (def?.yearEnding && /^\d{4}-\d{2}$/.test(p)) return `Year to ${periodLabel(p)}`;
+  return periodLabel(p);
+}
+
 // The latest figure and how it compares with a year earlier.
 export function latestInfo(def, points) {
   if (!points?.length) return null;
   const [period, value] = points[points.length - 1];
   const t = periodToT(period);
   const before = points.find(([p]) => Math.abs(periodToT(p) - (t - 1)) < 0.02);
-  const info = { period, value, label: periodLabel(period), before: before ? { period: before[0], value: before[1], label: periodLabel(before[0]) } : null };
+  const info = { period, value, label: labelFor(def, period), before: before ? { period: before[0], value: before[1], label: labelFor(def, before[0]) } : null };
   if (info.before) info.change = changeBetween(def, info.before.value, value);
   return info;
 }
@@ -127,7 +136,7 @@ export function sentenceFor(def, points) {
   if (!info) return "";
   const words = changeWords(info.change);
   const verb = def.verb ?? "was";
-  const when = `${def.labelPrefix ?? ""}${periodInSentence(info.period)}`;
+  const when = def.yearEnding ? `the year to ${periodLabel(info.period)}` : `${def.labelPrefix ?? ""}${periodInSentence(info.period)}`;
   const head = `${def.sentenceName ?? def.label} ${verb} ${formatValue(def.format, info.value)} ${def.timeWord ?? "in"} ${when}`;
   return words ? `${head}, ${words}.` : `${head}.`;
 }

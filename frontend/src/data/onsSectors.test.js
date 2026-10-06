@@ -24,6 +24,10 @@ describe("Britain in numbers sectors", () => {
       for (const def of sector.series) {
         if (def.derive) {
           expect(sector.series.map((x) => x.id)).toContain(def.derive.from);
+        } else if (def.hpi) {
+          expect(def.hpi.region && def.hpi.field).toBeTruthy();
+        } else if (def.table) {
+          expect(def.table.match).toBeInstanceOf(RegExp);
         } else {
           expect(def.cdid).toMatch(/^[A-Z0-9]{4,6}$/);
           expect(def.path.startsWith("/")).toBe(true);

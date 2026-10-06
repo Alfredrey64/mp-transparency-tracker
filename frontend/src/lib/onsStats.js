@@ -3,7 +3,7 @@
 // series has ever recorded. This is what makes a number meaningful: 4.9% only
 // tells you something once you know what it was before.
 
-import { periodToT, periodLabel, changeBetween } from "./onsFormat";
+import { periodToT, labelFor, changeBetween } from "./onsFormat";
 
 export { changeBetween };
 
@@ -24,7 +24,7 @@ export function compareStats(def, points) {
   const t = periodToT(period);
   const back = (years) => {
     const p = pointNear(points, t - years, years <= 1 ? 0.05 : 0.2);
-    return p ? { period: p[0], label: periodLabel(p[0]), value: p[1], change: changeBetween(def, p[1], value) } : null;
+    return p ? { period: p[0], label: labelFor(def, p[0]), value: p[1], change: changeBetween(def, p[1], value) } : null;
   };
   let high = points[0];
   let low = points[0];
@@ -35,12 +35,12 @@ export function compareStats(def, points) {
     if (p[1] < value) below++;
   }
   return {
-    latest: { period, label: periodLabel(period), value },
+    latest: { period, label: labelFor(def, period), value },
     yearAgo: back(1),
     fiveAgo: back(5),
     tenAgo: back(10),
-    high: { period: high[0], label: periodLabel(high[0]), value: high[1], isNow: high[0] === period },
-    low: { period: low[0], label: periodLabel(low[0]), value: low[1], isNow: low[0] === period },
+    high: { period: high[0], label: labelFor(def, high[0]), value: high[1], isNow: high[0] === period },
+    low: { period: low[0], label: labelFor(def, low[0]), value: low[1], isNow: low[0] === period },
     since: points[0][0].slice(0, 4),
     higherThanShare: Math.round((below / points.length) * 100),
     count: points.length,

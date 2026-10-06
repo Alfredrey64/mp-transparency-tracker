@@ -27,6 +27,15 @@ const TRADE = "/economy/nationalaccounts/balanceofpayments";
 
 const s = (id, cdid, dataset, path, rest) => ({ id, cdid, dataset, path, ...rest });
 const d = (id, derive, rest) => ({ id, derive, ...rest });
+// A UK House Price Index series (HM Land Registry, with the ONS and the other statistical bodies).
+const h = (id, region, field, rest) => ({ id, hpi: { region, field }, source: HPI_SOURCE, ...rest });
+// A line from a table in an ONS crime spreadsheet. `match` finds the row by its label.
+const t = (id, table, match, rest) => ({ id, table: { ...table, match }, source: table.source, yearEnding: true, verb: "were", ...rest });
+
+const HPI_SOURCE = { name: "UK House Price Index (HM Land Registry, ONS and others)", url: "https://www.gov.uk/government/collections/uk-house-price-index-reports" };
+const CRIME_URL = "https://www.ons.gov.uk/peoplepopulationandcommunity/crimeandjustice/datasets/crimeinenglandandwalesappendixtables";
+const CSEW = { sheet: "Table A1a", labelCol: 0, source: { name: "Crime Survey for England and Wales (ONS), appendix table A1a", url: CRIME_URL } };
+const POLICE = { sheet: "Table A5a", labelCol: 1, source: { name: "Police recorded crime (Home Office, published by the ONS), appendix table A5a", url: CRIME_URL } };
 
 export const SECTORS = [
   {
@@ -338,13 +347,63 @@ export const SECTORS = [
   },
   {
     key: "housing",
-    label: "Housing and rents",
-    title: "Housing and rents",
-    hint: "What it costs to keep a roof overhead",
-    subtitle: "What renters are paying, how fast housing costs are rising, and the cost of heating a home.",
-    story: "Housing is the biggest bill most households face, and it shapes where people can afford to live and when they can start a family.",
+    label: "Housing",
+    title: "Housing, house prices and rents",
+    hint: "House prices, rents and bills",
+    subtitle: "What homes cost to buy and to rent, how that differs across the UK, and what it costs to heat them.",
+    story: "Housing is the biggest bill most households face. It shapes where people can afford to live, when they can start a family, and how much of every pay packet is left over.",
     accent: "#2F9E6E",
     series: [
+      h("hpi-uk", "united-kingdom", "averagePrice", {
+        label: "Average UK house price", sentenceName: "The average UK house price", headline: true, format: "gbp", kind: "level", nominal: true,
+        explain: "The average price paid for a home in the UK, worked out from every sale registered with the Land Registry. It is not adjusted for inflation.",
+        why: "It is the number behind most debates on affordability. Compare it with average earnings to see how many years of pay a home costs.",
+      }),
+      h("hpi-change", "united-kingdom", "percentageAnnualChange", {
+        label: "House price change on a year earlier", sentenceName: "Annual UK house price growth", headline: true, format: "pct", kind: "rate",
+        explain: "How much average UK house prices have changed compared with a year earlier.",
+        why: "Rising prices help people who already own and make it harder for first-time buyers. Falling prices can hit homeowners who have borrowed a lot.",
+      }),
+      h("hpi-england", "england", "averagePrice", {
+        label: "England", sentenceName: "The average house price in England", headline: true, format: "gbp", kind: "level", nominal: true,
+        explain: "The average price paid for a home in England.",
+        why: "England has about 85% of the UK's homes, so it sets the national picture.",
+      }),
+      h("hpi-wales", "wales", "averagePrice", {
+        label: "Wales", sentenceName: "The average house price in Wales", format: "gbp", kind: "level", nominal: true,
+        explain: "The average price paid for a home in Wales.",
+        why: "Housing is a devolved matter, so Wales sets its own policy on housebuilding, renting and support for buyers.",
+      }),
+      h("hpi-scotland", "scotland", "averagePrice", {
+        label: "Scotland", sentenceName: "The average house price in Scotland", format: "gbp", kind: "level", nominal: true,
+        explain: "The average price paid for a home in Scotland.",
+        why: "Scotland has its own housing and tax rules, including its own tax on house purchases.",
+      }),
+      h("hpi-ni", "northern-ireland", "averagePrice", {
+        label: "Northern Ireland", sentenceName: "The average house price in Northern Ireland", format: "gbp", kind: "level", nominal: true,
+        explain: "The average price paid for a home in Northern Ireland.",
+        why: "Northern Ireland has historically had the lowest prices in the UK, though they have been catching up.",
+      }),
+      h("hpi-london", "london", "averagePrice", {
+        label: "London", sentenceName: "The average house price in London", headline: true, format: "gbp", kind: "level", nominal: true,
+        explain: "The average price paid for a home in London.",
+        why: "London prices are far above the rest of the country, which is a big part of the case for building more homes where people want to live.",
+      }),
+      h("hpi-north-east", "north-east", "averagePrice", {
+        label: "North East of England", sentenceName: "The average house price in the North East", format: "gbp", kind: "level", nominal: true,
+        explain: "The average price paid for a home in the North East of England, usually the cheapest English region.",
+        why: "The gap between London and the North East is one way to see how unevenly prosperity is spread.",
+      }),
+      h("hpi-detached", "united-kingdom", "averagePriceDetached", {
+        label: "Detached houses", sentenceName: "The average price of a detached house", format: "gbp", kind: "level", nominal: true,
+        explain: "The average price paid for a detached house in the UK.",
+        why: "Detached houses are the top of the market, so they show how far prices have risen for larger family homes.",
+      }),
+      h("hpi-flat", "united-kingdom", "averagePriceFlatMaisonette", {
+        label: "Flats and maisonettes", sentenceName: "The average price of a flat or maisonette", format: "gbp", kind: "level", nominal: true,
+        explain: "The average price paid for a flat or maisonette in the UK.",
+        why: "Flats are the usual first rung for younger buyers, especially in cities.",
+      }),
       s("rents-rate", "D7GQ", "mm23", PRICES, {
         label: "Rents, change on a year earlier", sentenceName: "Rent inflation", headline: true, format: "pct", kind: "rate",
         explain: "How much more private tenants pay to rent a home than a year earlier.",
@@ -355,15 +414,96 @@ export const SECTORS = [
         explain: "Rents measured against a starting point of 100 in 2015. A reading of 141 means rents are about 41% higher than in 2015.",
         why: "It shows the cumulative rise in rents over years, which single-year percentages hide.",
       }),
-      s("cpih-housing", "L55O", "mm23", PRICES, {
-        label: "Inflation including housing costs (CPIH)", sentenceName: "Inflation including housing costs (CPIH)", format: "pct", kind: "rate",
-        explain: "Overall inflation including the cost of owning and running a home, such as the rent homeowners would pay themselves.",
-        why: "Comparing it with ordinary CPI shows whether housing costs are pushing the cost of living up or holding it down.",
-      }),
       s("home-energy", "D7GT", "mm23", PRICES, {
-        label: "Electricity, gas and other fuels", sentenceName: "Home energy inflation", headline: true, format: "pct", kind: "rate",
+        label: "Electricity, gas and other fuels", sentenceName: "Home energy inflation", format: "pct", kind: "rate",
         explain: "The change in what households pay for electricity, gas and heating fuel.",
         why: "Heating a home is a large and unavoidable cost, and a major reason for fuel poverty debates.",
+      }),
+    ],
+  },
+  {
+    key: "crime",
+    label: "Crime",
+    title: "Crime in England and Wales",
+    hint: "What the survey and police figures show",
+    subtitle: "Two ways of counting crime, side by side: a survey that asks people what happened to them, and the crimes police record. They often tell different stories, so both are here.",
+    story: "No single number captures crime. The Crime Survey asks people about their own experience, so it catches crimes that never reach the police. Police figures count what is reported and recorded, so they also reflect how readily people report and how forces record.",
+    accent: "#B04A4A",
+    series: [
+      t("csew-all", CSEW, /^ALL CSEW HEADLINE CRIME EXCLUDING FRAUD/i, {
+        label: "All crime in the Crime Survey (excluding fraud)", sentenceName: "Crime Survey incidents (excluding fraud)", headline: true, format: "thousands", kind: "level",
+        explain: "The number of crimes people say they experienced in the 12 months before they were interviewed, from the Crime Survey for England and Wales. It leaves out fraud and computer misuse, which are counted separately. The survey changed to telephone interviews from 2020, so comparisons across that point need care.",
+        why: "Because it asks people directly, it is the most reliable guide to long-run trends, even for crimes that are not reported to the police.",
+      }),
+      t("csew-violence", CSEW, /^VIOLENCE$/i, {
+        label: "Violence in the Crime Survey", sentenceName: "Violent incidents in the Crime Survey", format: "thousands", kind: "level",
+        explain: "Incidents of violence, with or without injury, that people say happened to them. It does not include homicide.",
+        why: "Violence is the crime people worry about most, and the survey shows it has fallen a long way since the 1990s.",
+      }),
+      t("csew-theft", CSEW, /^THEFT OFFENCES/i, {
+        label: "Theft in the Crime Survey", sentenceName: "Theft incidents in the Crime Survey", format: "thousands", kind: "level",
+        explain: "Burglary, vehicle theft, theft from the person and other thefts that people say happened to them or their household.",
+        why: "Theft is the largest category and has fallen sharply since the mid-1990s, partly because cars and homes are better protected.",
+      }),
+      t("csew-fraud", CSEW, /^Fraud/i, {
+        label: "Fraud in the Crime Survey", sentenceName: "Fraud incidents in the Crime Survey", format: "thousands", kind: "level",
+        explain: "Incidents of fraud, such as bank and credit card fraud and online shopping scams. It has only been counted since 2017.",
+        why: "Fraud is now the most common crime people experience, though it is often not reported, and it is harder for police to investigate.",
+      }),
+      t("prc-all", POLICE, /^TOTAL RECORDED CRIME - ALL OFFENCES EXCLUDING FRAUD/i, {
+        label: "All crime recorded by the police (excluding fraud)", sentenceName: "Crimes recorded by the police (excluding fraud)", headline: true, format: "count", kind: "level",
+        explain: "Every crime that police forces in England and Wales recorded in the year to March, excluding fraud, which is recorded separately.",
+        why: "It is the figure usually quoted in the news. It can rise either because there is more crime or because more is being reported and recorded.",
+      }),
+      t("prc-violence", POLICE, /^TOTAL VIOLENCE AGAINST THE PERSON/i, {
+        label: "Violence against the person (police recorded)", sentenceName: "Violent crimes recorded by the police", headline: true, format: "count", kind: "level",
+        explain: "Violent crimes recorded by police, from common assault to murder. Changes in how police record violence have raised the total since 2014.",
+        why: "It is the largest group of recorded crime, and is closely watched because of its human cost.",
+      }),
+      t("prc-homicide", POLICE, /^Homicide/i, {
+        label: "Homicides (police recorded)", sentenceName: "Homicides recorded by the police", headline: true, format: "count", kind: "level",
+        explain: "Murder, manslaughter and infanticide recorded by the police.",
+        why: "Homicide is the most reliably recorded crime because almost every case is discovered, so it is the best check on police figures.",
+      }),
+      t("prc-knife", POLICE, /^Possession of article with blade or point/i, {
+        label: "Possession of a knife or blade (police recorded)", sentenceName: "Knife and blade possession offences recorded by the police", headline: true, format: "count", kind: "level",
+        explain: "Offences of carrying a knife or blade in public without good reason. More police activity, such as stop and search, increases this number.",
+        why: "Knife crime is a major public concern. This counts carrying offences, not attacks.",
+      }),
+      t("prc-sexual", POLICE, /^TOTAL SEXUAL OFFENCES/i, {
+        label: "Sexual offences (police recorded)", sentenceName: "Sexual offences recorded by the police", format: "count", kind: "level",
+        explain: "Rape, sexual assault and other sexual offences recorded by the police.",
+        why: "Many of these crimes are never reported, so a rise can partly reflect more victims coming forward.",
+      }),
+      t("prc-robbery", POLICE, /^TOTAL ROBBERY/i, {
+        label: "Robbery (police recorded)", sentenceName: "Robberies recorded by the police", format: "count", kind: "level",
+        explain: "Theft where force or the threat of force is used, such as mugging.",
+        why: "Robbery is rarer than other thefts but more frightening, and it is often a signal of wider street crime.",
+      }),
+      t("prc-burglary", POLICE, /^Burglary$/i, {
+        label: "Burglary (police recorded)", sentenceName: "Burglaries recorded by the police", format: "count", kind: "level",
+        explain: "Break-ins to homes and other buildings recorded by the police.",
+        why: "Burglary has fallen steadily for decades, helped by better locks, alarms and cameras.",
+      }),
+      t("prc-theft", POLICE, /^TOTAL THEFT OFFENCES/i, {
+        label: "Theft (police recorded)", sentenceName: "Thefts recorded by the police", format: "count", kind: "level",
+        explain: "All thefts recorded by the police, from shoplifting to vehicle theft.",
+        why: "Theft is the biggest category of recorded crime, and its fall explains most of the long decline in the total.",
+      }),
+      t("prc-shoplifting", POLICE, /^Shoplifting/i, {
+        label: "Shoplifting (police recorded)", sentenceName: "Shoplifting offences recorded by the police", format: "count", kind: "level",
+        explain: "Thefts from shops recorded by the police.",
+        why: "Shoplifting has risen sharply recently, and retailers say much of it is never reported.",
+      }),
+      t("prc-damage", POLICE, /^TOTAL CRIMINAL DAMAGE AND ARSON/i, {
+        label: "Criminal damage and arson (police recorded)", sentenceName: "Criminal damage and arson offences recorded by the police", format: "count", kind: "level",
+        explain: "Damage to property, such as vandalism, and deliberate fires.",
+        why: "It is an everyday sign of antisocial behaviour in a neighbourhood.",
+      }),
+      t("prc-drugs", POLICE, /^TOTAL DRUG OFFENCES/i, {
+        label: "Drug offences (police recorded)", sentenceName: "Drug offences recorded by the police", format: "count", kind: "level",
+        explain: "Possession and supply of controlled drugs recorded by the police.",
+        why: "Unlike most crimes, these are found by police activity, so the total reflects policing priorities as much as drug use.",
       }),
     ],
   },

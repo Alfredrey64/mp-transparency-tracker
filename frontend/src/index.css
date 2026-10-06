@@ -451,3 +451,12 @@ select:focus-visible,
   * { animation: none !important; transition: none !important; }
   .tier-panel { opacity: 1 !important; transform: none !important; }
 }
+
+/* Britain in numbers: the range and jump bar stays in reach on a wide screen,
+   and the jump chips slide sideways rather than wrapping on a phone. */
+.ons-toolbar { background: color-mix(in srgb, var(--c-paper) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 12; }
+.ons-jump { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; scroll-snap-type: x proximity; }
+.ons-jump > a { scroll-snap-align: start; flex: none; max-width: 240px; overflow: hidden; text-overflow: ellipsis; }
+@media (min-width: 900px) {
+  .ons-toolbar { position: sticky; top: 0; }
+}

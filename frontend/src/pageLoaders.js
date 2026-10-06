@@ -54,6 +54,7 @@ export const LOADERS = {
   population: () => import("./components/SectorPage"),
   health: () => import("./components/SectorPage"),
   housing: () => import("./components/SectorPage"),
+  crime: () => import("./components/SectorPage"),
   trade: () => import("./components/SectorPage"),
   environment: () => import("./components/SectorPage"),
   indicators: () => import("./components/IndicatorTimeline"),

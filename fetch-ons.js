@@ -18,6 +18,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { SECTORS, WEEKLY_DEATHS } from "./frontend/src/data/onsSectors.js";
 import { normalisePeriod } from "./frontend/src/lib/onsFormat.js";
+import { readXlsx } from "./xlsx-lite.js";
 
 const OUT_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), "frontend", "src", "data", "ons");
 const HEADERS = { "User-Agent": "uk-parliament-tracker (independent, non-commercial; contact via GitHub)" };
@@ -62,6 +63,80 @@ async function fetchSeries(def) {
   };
 }
 
+// --- House prices: the UK House Price Index (HM Land Registry, ONS and others) ---
+
+const hpiCache = new Map();
+
+async function hpiRegion(region) {
+  if (!hpiCache.has(region)) {
+    const items = [];
+    for (let page = 0; page < 20; page++) {
+      const j = await getJson(`https://landregistry.data.gov.uk/data/ukhpi/region/${region}.json?_view=all&_pageSize=200&_page=${page}&_sort=refMonth`);
+      const got = j.result?.items ?? [];
+      items.push(...got);
+      if (got.length < 200) break;
+      await sleep(200);
+    }
+    hpiCache.set(region, items);
+  }
+  return hpiCache.get(region);
+}
+
+async function fetchHpi(def) {
+  const items = await hpiRegion(def.hpi.region);
+  const points = items
+    .filter((i) => i.refMonth && typeof i[def.hpi.field] === "number")
+    .map((i) => [i.refMonth, i[def.hpi.field]])
+    .sort((a, b) => a[0].localeCompare(b[0]));
+  if (!points.length) throw new Error(`${def.hpi.region}/${def.hpi.field}: no data`);
+  return { freq: "months", title: def.label, updated: null, points: points.slice(-KEEP.months) };
+}
+
+// --- Crime: tables in the ONS "Crime in England and Wales" appendix workbook ---
+
+let crimeBook;
+const MONTHS = { jan: "01", feb: "02", mar: "03", apr: "04", may: "05", jun: "06", jul: "07", aug: "08", sep: "09", oct: "10", nov: "11", dec: "12" };
+const tidy = (x) => String(x ?? "").replace(/\[[^\]]*\]/g, "").replace(/\s+/g, " ").trim();
+
+async function crimeWorkbook() {
+  if (!crimeBook) {
+    const root = await getJson("https://www.ons.gov.uk/peoplepopulationandcommunity/crimeandjustice/datasets/crimeinenglandandwalesappendixtables/data");
+    const latest = root.datasets?.[0]?.uri;
+    if (!latest) throw new Error("crime tables: no latest release");
+    const release = await getJson(`https://www.ons.gov.uk${latest}/data`);
+    const file = release.downloads?.[0]?.file;
+    if (!file) throw new Error("crime tables: no file");
+    const res = await fetch(`https://www.ons.gov.uk/file?uri=${latest}/${file}`, { headers: HEADERS });
+    if (!res.ok) throw new Error(`crime tables: HTTP ${res.status}`);
+    crimeBook = { sheets: readXlsx(Buffer.from(await res.arrayBuffer())), updated: release.description?.releaseDate ?? null };
+  }
+  return crimeBook;
+}
+
+async function fetchTable(def) {
+  const book = await crimeWorkbook();
+  const rows = book.sheets[def.table.sheet];
+  if (!rows) throw new Error(`${def.table.sheet}: sheet not found`);
+  const col = def.table.labelCol;
+  const headIndex = rows.findIndex((r) => /^offence/i.test(tidy(r?.[col])));
+  if (headIndex < 0) throw new Error(`${def.table.sheet}: header not found`);
+  // Each data column is headed "Apr 2025 to Mar 2026": keep the month it ends in.
+  const periods = {};
+  rows[headIndex].forEach((cell, i) => {
+    const text = tidy(cell);
+    if (/compared|change/i.test(text)) return; // the "% change on last year" column
+    const m = /(\w{3})\s+(\d{4})\s+to\s+(\w{3})\s+(\d{4})/.exec(text);
+    if (m && MONTHS[m[3].toLowerCase()]) periods[i] = `${m[4]}-${MONTHS[m[3].toLowerCase()]}`;
+  });
+  const row = rows.slice(headIndex + 1).find((r) => r && def.table.match.test(tidy(r[col])));
+  if (!row) throw new Error(`${def.table.sheet}: row not found for ${def.id}`);
+  const points = Object.entries(periods)
+    .map(([i, period]) => [period, row[i]])
+    .filter(([, v]) => typeof v === "number" && Number.isFinite(v))
+    .sort((a, b) => a[0].localeCompare(b[0]));
+  if (points.length < 3) throw new Error(`${def.id}: too few points`);
+  return { freq: "months", title: def.label, updated: book.updated, points };
+}
 // Deaths registered each week in England and Wales (England plus Wales), for
 // this year and last, so a page can compare the two.
 async function fetchWeeklyDeaths() {
@@ -117,10 +192,10 @@ async function main() {
 
     for (const def of sector.series) {
       if (def.derive) continue; // worked out in the browser
-      const key = `${def.path}|${def.cdid}|${def.dataset}`;
+      const key = def.hpi ? `hpi|${def.hpi.region}|${def.hpi.field}` : def.table ? `table|${def.table.sheet}|${def.id}` : `${def.path}|${def.cdid}|${def.dataset}`;
       try {
         if (!cache.has(key)) {
-          cache.set(key, await fetchSeries(def));
+          cache.set(key, def.hpi ? await fetchHpi(def) : def.table ? await fetchTable(def) : await fetchSeries(def));
           await sleep(250);
         }
         out.series[def.id] = cache.get(key);
