@@ -17,6 +17,23 @@ function positionOf(tierKey, order) {
   return Math.max(0, order.indexOf(tierKey));
 }
 
+// On a phone the walk-through sheet covers the bottom of the screen, so nudge
+// the page (smoothly, and only when needed) to keep the active box in the clear
+// area above it.
+function followBox(layout, key, diagramEl, sheetEl) {
+  if (!sheetEl || !diagramEl || getComputedStyle(sheetEl).display === "none") return;
+  const box = layout.byKey[key];
+  if (!box) return;
+  const top = diagramEl.getBoundingClientRect().top + box.top;
+  const sheetH = sheetEl.getBoundingClientRect().height + 20;
+  const minTop = 76;
+  const maxBottom = window.innerHeight - sheetH;
+  if (top < minTop || top + box.height > maxBottom) {
+    const want = Math.max(minTop, (maxBottom - box.height) / 2);
+    window.scrollBy({ top: top - want, behavior: "smooth" });
+  }
+}
+
 function reducer(state, a) {
   if (a.type === "reset") return { step: 0, from: null };
   const to = Math.max(0, Math.min(a.to, a.steps.length - 1));
@@ -164,6 +181,15 @@ function Branches({ layout, action, reached, voting, dur }) {
           </g>
         ))}
       </g>
+      {layout.dots.map((d) => {
+        const lit = action && (d.up ? voting : reached.has(d.fromLast ? "you" : d.key));
+        return (
+          <circle
+            key={d.key} cx={d.x} cy={d.y} r="5" className={`tb-dot ${d.up ? "tb-dot-up" : "tb-dot-down"}`} data-lit={lit ? "1" : "0"}
+            style={d.up && action && voting ? { transitionDelay: `${(dur * (1 - d.at) * 0.9).toFixed(2)}s` } : undefined}
+          />
+        );
+      })}
     </svg>
   );
 }
@@ -185,15 +211,23 @@ function Bead({ action, path, color, stepKey }) {
 
 // On a phone the panel sits below the diagram, so this slim bar rides along
 // with the page while the walk-through plays.
-function MiniBar({ steps, step, playing, finished, dispatch, onPlayPause, color }) {
-  const btn = { fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, padding: "6px 11px", borderRadius: 8, border: `1px solid ${COLORS.hairline}`, background: "transparent", color: COLORS.ink, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6 };
+function PhoneSheet({ sheetRef, steps, step, playing, finished, dispatch, onPlayPause, color }) {
+  const cur = steps[step];
+  const btn = { fontFamily: FONT_BODY, fontSize: 14, fontWeight: 600, padding: "9px 16px", borderRadius: 10, border: `1px solid ${COLORS.hairline}`, background: "transparent", color: COLORS.ink, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7 };
   return (
-    <div className="tier-mini" style={{ background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderLeft: `4px solid ${color}`, borderRadius: 10, padding: "8px 10px", alignItems: "center", gap: 8 }}>
-      <span style={{ flex: 1, minWidth: 0, fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-        {step + 1}/{steps.length} {steps[step].title}
-      </span>
-      <button onClick={onPlayPause} style={btn}>{finished ? ReplayGlyph : playing ? PauseGlyph : PlayGlyph}{finished ? "Replay" : playing ? "Pause" : "Play"}</button>
-      <button onClick={() => dispatch({ type: "go", to: step + 1, steps, user: true })} disabled={finished} style={{ ...btn, opacity: finished ? 0.4 : 1 }}>Next</button>
+    <div ref={sheetRef} className="tier-mini" style={{ borderTop: `3px solid ${color}` }}>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginBottom: 2 }}>
+        Step {step + 1} of {steps.length}{cur.token ? `. Carrying: ${cur.token}` : ""}
+      </div>
+      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 16.5, fontWeight: 600, color: COLORS.ink, lineHeight: 1.3 }}>{cur.title}</div>
+      <p className="tier-mini-text" style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.5, color: COLORS.inkSoft, margin: "4px 0 0" }}>{cur.text}</p>
+      <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+        <button onClick={() => dispatch({ type: "go", to: step - 1, steps, user: true })} disabled={step === 0} style={{ ...btn, opacity: step === 0 ? 0.4 : 1 }}>Back</button>
+        <button onClick={onPlayPause} style={{ ...btn, flex: 1, justifyContent: "center", background: SECTION_COLOR, borderColor: SECTION_COLOR, color: "#fff" }}>
+          {finished ? ReplayGlyph : playing ? PauseGlyph : PlayGlyph}{finished ? "Replay" : playing ? "Pause" : "Play"}
+        </button>
+        <button onClick={() => dispatch({ type: "go", to: step + 1, steps, user: true })} disabled={finished} style={{ ...btn, opacity: finished ? 0.4 : 1 }}>Next</button>
+      </div>
     </div>
   );
 }
@@ -324,6 +358,7 @@ export default function GovernmentTiers() {
   const colRef = useRef(null);
   const panelRef = useRef(null);
   const diaRef = useRef(null);
+  const sheetRef = useRef(null);
   // A first guess at the diagram's width (refined as soon as it is measured), so a phone never starts from a desktop-sized layout.
   const [width, setWidth] = useState(() => (typeof window === "undefined" ? 560 : Math.max(240, Math.min(560, window.innerWidth - 72))));
 
@@ -353,12 +388,16 @@ export default function GovernmentTiers() {
   }, []);
 
   // Auto-advance: once the marker has arrived, rest on the step for a moment,
-  // then move on. Nothing here scrolls the page.
+  // then move on. On a phone the page follows the marker, gently.
   useEffect(() => {
     if (!runs) return undefined;
-    const id = setTimeout(() => dispatch({ type: "go", to: step + 1, steps }), dur * 1000 + DWELL_MS);
+    const next = steps[step + 1];
+    const id = setTimeout(() => {
+      dispatch({ type: "go", to: step + 1, steps });
+      if (next) followBox(layout, next.tier === "vote" ? layout.nodes[0].key : next.tier, diaRef.current, sheetRef.current);
+    }, dur * 1000 + DWELL_MS);
     return () => clearTimeout(id);
-  }, [runs, step, steps, dur]);
+  }, [runs, step, steps, dur, layout]);
 
   // The panel follows you down the diagram, then eases back to the top of its
   // column once you have scrolled past the end. The transition on .tier-panel
@@ -389,7 +428,11 @@ export default function GovernmentTiers() {
   const bringIntoView = () => requestAnimationFrame(() => stageRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
   const wrapped = (a) => {
     dispatch(a);
-    if (a.user) setPlaying(false);
+    if (a.user) {
+      setPlaying(false);
+      const target = a.steps[Math.max(0, Math.min(a.to, a.steps.length - 1))];
+      requestAnimationFrame(() => followBox(layout, target.tier === "vote" ? layout.nodes[0].key : target.tier, diaRef.current, sheetRef.current));
+    }
   };
   const enterAction = () => { setMode("action"); dispatch({ type: "reset" }); setPlaying(true); bringIntoView(); };
   const onMode = (k) => (k === "action" ? enterAction() : (setMode("explore"), setPlaying(false)));
@@ -447,12 +490,6 @@ export default function GovernmentTiers() {
 
       <div className="tier-wrap" ref={stageRef}>
         <div className="tier-grid" style={{ "--len": `${layout.height}px` }}>
-          {action && (
-            <MiniBar
-              steps={steps} step={Math.min(step, steps.length - 1)} playing={playing} finished={finished} dispatch={wrapped} onPlayPause={onPlayPause}
-              color={tokenColor}
-            />
-          )}
           <div className="tier-diagram" ref={diaRef} style={{ "--dur": `${dur}s`, height: layout.height }}>
             <Branches layout={layout} action={action} reached={reached} voting={voting} dur={dur} />
             <Bead action={action} path={beadPath} color={tokenColor} stepKey={`${scenarioKey}-${step}-${nation}`} />
@@ -474,6 +511,13 @@ export default function GovernmentTiers() {
               );
             })}
           </div>
+
+          {action && (
+            <PhoneSheet
+              sheetRef={sheetRef} steps={steps} step={Math.min(step, steps.length - 1)} playing={playing} finished={finished}
+              dispatch={wrapped} onPlayPause={onPlayPause} color={tokenColor}
+            />
+          )}
 
           <div className="tier-panelcol" ref={colRef}>
           <div className="tier-panel" ref={panelRef} style={{ background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "18px 20px" }}>

@@ -25,8 +25,8 @@ export function treeFor(nation) {
 
 // Sizes shrink with the width the diagram has to work with.
 export function metrics(width) {
-  if (width < 430) return { row: 64, gap: 30, indent: 18, trunk: 30, radius: 9, spine: 12 };
-  if (width < 600) return { row: 76, gap: 34, indent: 26, trunk: 38, radius: 10, spine: 14 };
+  if (width < 430) return { row: 66, gap: 28, indent: 14, trunk: 28, radius: 9, spine: 10 };
+  if (width < 600) return { row: 76, gap: 34, indent: 22, trunk: 36, radius: 10, spine: 13 };
   return { row: 96, gap: 40, indent: 34, trunk: 46, radius: 11, spine: 16 };
 }
 
@@ -58,7 +58,14 @@ export function buildLayout(nation, width) {
   const trunk = `M ${you.right} ${you.midY} H ${tx - r} Q ${tx} ${you.midY} ${tx} ${you.midY - r} V ${first.midY + r} Q ${tx} ${first.midY} ${tx - r} ${first.midY} H ${first.right + 1}`;
   const stubs = tiers.slice(1).map((n) => ({ key: n.key, d: `M ${tx} ${n.midY} H ${n.right + 1}`, at: 1 - n.midY / height }));
 
-  return { metrics: m, nodes, byKey, height, edges, trunk, stubs, trunkX: tx, width };
+  // Small round junctions where a branch leaves a tier, and where a vote branch taps the trunk.
+  const dots = [
+    ...tiers.filter((n) => tiers.some((c) => c.parent === n.key)).map((n) => ({ key: n.key, x: n.spineX, y: n.bottom, up: false })),
+    { key: "you", x: last.spineX, y: last.bottom, up: false, fromLast: true },
+    ...tiers.map((n) => ({ key: `vote-${n.key}`, x: tx, y: n.midY, up: true, at: 1 - n.midY / height })),
+  ];
+
+  return { metrics: m, nodes, byKey, height, edges, trunk, stubs, dots, trunkX: tx, width };
 }
 
 // The path the bead takes from one tier to the next, or null when there isn't

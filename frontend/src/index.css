@@ -338,7 +338,13 @@ select:focus-visible,
 .tier-diagram { position: relative; container-type: inline-size; container-name: tierdia; overflow-x: clip; }
 .tier-panelcol { min-width: 0; }
 .tier-panel { height: 290px; overflow: hidden; transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.35s ease; will-change: transform; }
-.tier-mini { display: none; position: sticky; top: 8px; z-index: 20; }
+.tier-mini {
+  display: none; position: sticky; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 30;
+  background: var(--c-paper); border: 1px solid var(--c-hairline); border-radius: 16px; padding: 12px 14px 13px;
+  box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.35);
+}
+.tier-mini-text { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+@media (max-height: 520px) { .tier-mini-text { display: none; } }
 @container tierwrap (min-width: 780px) {
   .tier-grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 28px; }
   .tier-panel { height: min(480px, calc(100vh - 40px), var(--len)); }
@@ -348,7 +354,7 @@ select:focus-visible,
 }
 @container tierwrap (max-width: 779px) {
   .tier-step[data-active="0"] { display: none; }
-  .tier-grid .tier-mini { display: flex; }
+  .tier-grid .tier-mini { display: block; }
 }
 /* What fits in a box depends on how wide the diagram is, not the page. */
 @container tierdia (max-width: 599px) {
@@ -373,14 +379,21 @@ select:focus-visible,
 .tb-down { --ln: #D4573A; }
 .tb-up { --ln: #1FA97C; }
 .tb-svg path { fill: none; stroke-linejoin: round; }
-.tb-base { stroke: color-mix(in srgb, var(--ln) 24%, var(--c-hairline)); stroke-width: 3.5; stroke-linecap: round; }
+.tb-base { stroke: color-mix(in srgb, var(--ln) 30%, var(--c-hairline)); stroke-width: 4; stroke-linecap: round; }
 /* Dots drifting along a branch, in the direction it was drawn. */
-.tb-flow { stroke: var(--ln); stroke-width: 3.6; stroke-linecap: round; stroke-dasharray: 0.01 10; animation: tbDash 1.4s linear infinite; transition: opacity 0.3s; }
-@keyframes tbDash { to { stroke-dashoffset: -10.01; } }
+.tb-flow { stroke: var(--ln); stroke-width: 4.4; stroke-linecap: round; stroke-dasharray: 0.01 11; animation: tbDash 1.5s linear infinite; transition: opacity 0.3s; }
+@keyframes tbDash { to { stroke-dashoffset: -11.01; } }
 .tb-svg[data-mode="action"] .tb-flow { opacity: 0; }
 /* In the walk-through, a branch fills in as the story reaches it. */
-.tb-done { stroke: var(--ln); stroke-width: 4; stroke-linecap: butt; stroke-dasharray: 1 1; stroke-dashoffset: 1; opacity: 0; transition: stroke-dashoffset var(--dur, 0.6s) var(--ease), opacity 0.2s; }
+.tb-done { stroke: var(--ln); stroke-width: 4.6; stroke-linecap: butt; stroke-dasharray: 1 1; stroke-dashoffset: 1; opacity: 0; transition: stroke-dashoffset var(--dur, 0.6s) var(--ease), opacity 0.2s; }
 .tb-done[data-done="1"] { stroke-dashoffset: 0; opacity: 1; }
+
+/* Junctions: where a branch leaves a tier and where a vote branch meets the trunk. */
+.tb-dot { stroke: var(--c-paper-card); stroke-width: 2.5; transition: fill 0.35s; }
+.tb-dot-down { fill: color-mix(in srgb, #D4573A 45%, var(--c-hairline)); }
+.tb-dot-up { fill: color-mix(in srgb, #1FA97C 45%, var(--c-hairline)); }
+.tb-dot-down[data-lit="1"] { fill: #D4573A; }
+.tb-dot-up[data-lit="1"] { fill: #1FA97C; }
 
 /* The bead that travels the branches. */
 .tb-bead {
