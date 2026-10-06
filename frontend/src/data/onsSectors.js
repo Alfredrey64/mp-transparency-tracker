@@ -3,22 +3,30 @@
 //
 // Shared by the daily pipeline (fetch-ons.js, which downloads each series) and
 // the pages themselves, so a series can't be shown without being fetched. Every
-// series is an ONS "time series": a code (cdid), the dataset it sits in, and the
-// topic path it is filed under. Contains public sector information licensed
-// under the Open Government Licence v3.0.
+// downloaded series is an ONS "time series": a code (cdid), the dataset it sits
+// in, and the topic path it is filed under. A series with a `derive` is worked
+// out in the browser from others (see lib/onsDerive.js). Contains public sector
+// information licensed under the Open Government Licence v3.0.
 //
 // kind "rate": already a percentage, so changes are in percentage points.
 // kind "level": an amount, so changes are in per cent.
 // format: how the raw ONS value is written (see lib/onsFormat.js).
+// explain: what the number measures. why: why anyone should care.
 
 const PRICES = "/economy/inflationandpriceindices";
 const GDP = "/economy/grossdomesticproductgdp";
+const OUTPUT = "/economy/economicoutputandproductivity/output";
 const PEOPLE_IN_WORK = "/employmentandlabourmarket/peopleinwork";
+const EMPLOYMENT = `${PEOPLE_IN_WORK}/employmentandemployeetypes`;
+const EARNINGS = `${PEOPLE_IN_WORK}/earningsandworkinghours`;
 const NOT_IN_WORK = "/employmentandlabourmarket/peoplenotinwork";
 const PUBLIC_FINANCE = "/economy/governmentpublicsectorandtaxes/publicsectorfinance";
+const PUBLIC_WORKERS = "/employmentandlabourmarket/peopleinwork/publicsectorpersonnel";
 const POPULATION = "/peoplepopulationandcommunity/populationandmigration/populationestimates";
+const TRADE = "/economy/nationalaccounts/balanceofpayments";
 
 const s = (id, cdid, dataset, path, rest) => ({ id, cdid, dataset, path, ...rest });
+const d = (id, derive, rest) => ({ id, derive, ...rest });
 
 export const SECTORS = [
   {
@@ -26,32 +34,59 @@ export const SECTORS = [
     label: "The economy",
     title: "How the economy is doing",
     hint: "Growth, output and productivity",
-    subtitle: "Is the UK economy growing, and are people getting more out of each hour they work? The latest official figures, in charts.",
+    subtitle: "Is the UK economy growing, and are people getting more out of each hour they work? The latest official figures, with the history behind them.",
+    story: "The economy is the pot that pays for everything else: wages, taxes, public services. When it grows, there is more to share out. When it shrinks, every budget gets tighter.",
     accent: "#0E9AA7",
     series: [
       s("gdp-quarter", "IHYQ", "qna", GDP, {
         label: "Growth in the economy, each quarter", sentenceName: "Economic growth", headline: true, format: "pct", kind: "rate",
-        explain: "How much the UK's total output (GDP) grew, or shrank, compared with the previous three months. Two quarters in a row below zero is the usual definition of a recession.",
+        explain: "How much the UK's total output (GDP) grew, or shrank, compared with the previous three months.",
+        why: "Two quarters in a row below zero is the usual definition of a recession, which tends to mean job losses and weaker public finances.",
       }),
       s("gdp-year", "IHYP", "qna", GDP, {
         label: "Growth in the economy, each year", sentenceName: "Economic growth over the year", headline: true, format: "pct", kind: "rate",
         explain: "The same measure over a full calendar year, which smooths out the ups and downs of single quarters.",
+        why: "It is the number most often quoted when governments are judged on the economy, and it shows the long swings, like the 2008 financial crisis and the 2020 pandemic.",
       }),
       s("gdp-head", "N3Y7", "qna", GDP, {
         label: "Growth per person, each quarter", sentenceName: "Growth per person", format: "pct", kind: "rate",
         explain: "Total growth divided by the number of people. If the economy grows but the population grows faster, this goes negative.",
+        why: "It is a better guide to whether the average person is getting better off than total growth, which can rise just because there are more people.",
       }),
       s("gdp-level", "ABMI", "qna", GDP, {
-        label: "Size of the economy, each quarter", sentenceName: "The economy's output", format: "gbpbn0", kind: "level", timeWord: "in",
+        label: "Size of the economy, each quarter", sentenceName: "The economy's output", headline: true, format: "gbpbn0", kind: "level",
         explain: "Everything the UK produced in a quarter, with the effect of rising prices removed so that different years can be compared fairly.",
+        why: "It lets you compare today with decades ago in real terms, and see how long it took to recover from each downturn.",
+      }),
+      s("income-head", "CRXX", "ukea", GDP, {
+        label: "Household income per person, after inflation", sentenceName: "Household income per person", headline: true, format: "gbp", kind: "level",
+        explain: "What households have to spend and save each quarter after tax and benefits, divided by the number of people, with rising prices taken out.",
+        why: "It is the closest single measure of living standards. If it is flat for years, most households feel no better off, whatever headline growth says.",
       }),
       s("productivity", "LZVD", "prdy", "/employmentandlabourmarket/peopleinwork/labourproductivity", {
         label: "Output per hour worked, change on a year earlier", sentenceName: "Growth in output per hour worked", headline: true, format: "pct", kind: "rate",
-        explain: "How much more (or less) is produced in each hour worked than a year ago. It is the main way living standards improve over the long run.",
+        explain: "How much more (or less) is produced in each hour worked than a year ago.",
+        why: "Over the long run, pay and living standards can only rise sustainably if output per hour rises. Slow productivity growth is a central UK worry.",
+      }),
+      s("production", "K222", "diop", OUTPUT, {
+        label: "Factory, energy and mining output", sentenceName: "The production index", format: "index", kind: "level", verb: "stood at",
+        explain: "An index of what factories, power stations, mines and quarries produce, adjusted for prices and the time of year. The latest reference year is 100.",
+        why: "Industry is a smaller part of the economy than it was, but it is a guide to exports, energy and the health of manufacturing towns.",
+      }),
+      s("services", "S2KU", "ios1", OUTPUT, {
+        label: "Services output", sentenceName: "The services index", format: "index", kind: "level", verb: "stood at",
+        explain: "An index of output from services, such as shops, banks, schools, hospitals and restaurants. About four-fifths of the economy is services.",
+        why: "Because services are so large, this index moves the whole economy. It is a quick read on how healthy the economy is.",
+      }),
+      s("retail", "J5EK", "drsi", "/businessindustryandtrade/retailindustry", {
+        label: "Shop sales (volume)", sentenceName: "Shop sales", format: "index", kind: "level", verb: "stood at",
+        explain: "How much is being bought in shops and online, with price rises removed so it reflects what people are actually buying. The latest reference year is 100.",
+        why: "Consumer spending is about 60% of the economy. Weak shop sales often mean people are cutting back.",
       }),
       s("saving", "DGD8", "ukea", GDP, {
         label: "Share of income that households save", sentenceName: "The household saving ratio", format: "pct", kind: "rate",
-        explain: "The part of household income left over after spending. A higher figure means people are putting more aside, often when they are worried about the future.",
+        explain: "The part of household income left over after spending.",
+        why: "People tend to save more when they are worried about the future, and less when they feel secure or are squeezed by bills.",
       }),
     ],
   },
@@ -61,35 +96,58 @@ export const SECTORS = [
     title: "Prices and the cost of living",
     hint: "Inflation, food, energy and rents",
     subtitle: "How fast prices are rising, and which things are getting dearer. Each chart shows the change in prices compared with a year earlier.",
+    story: "Inflation is how fast your money loses its buying power. It is why a pay rise can still feel like a pay cut, and why the Bank of England sets interest rates the way it does.",
     accent: "#E07A1F",
     series: [
       s("cpi", "D7G7", "mm23", PRICES, {
         label: "Inflation (CPI)", sentenceName: "Inflation (CPI)", headline: true, format: "pct", kind: "rate",
-        explain: "How much more a typical basket of goods and services costs than a year ago. The Bank of England aims to keep it at 2%.",
+        explain: "How much more a typical basket of goods and services costs than a year ago.",
+        why: "The Bank of England aims to keep it at 2%. When it is well above target, interest rates tend to rise, which affects mortgages and savings.",
       }),
       s("cpih", "L55O", "mm23", PRICES, {
         label: "Inflation including housing costs (CPIH)", sentenceName: "Inflation including housing costs (CPIH)", headline: true, format: "pct", kind: "rate",
         explain: "The same as CPI, but it also counts the cost of owning and running a home. It is the ONS's preferred measure.",
+        why: "Housing is the biggest cost for most households, so this can paint a different picture from CPI when rents and mortgages are moving.",
+      }),
+      s("core", "DKO8", "mm23", PRICES, {
+        label: "Underlying inflation", sentenceName: "Underlying inflation", headline: true, format: "pct", kind: "rate",
+        explain: "Inflation with the most volatile items taken out: energy, food, alcohol and tobacco.",
+        why: "It shows whether price rises are spreading through the economy, which is what central banks watch most closely.",
+      }),
+      s("services-inflation", "D7NN", "mm23", PRICES, {
+        label: "Prices of services", sentenceName: "Services inflation", format: "pct", kind: "rate",
+        explain: "The change in prices of things like haircuts, restaurant meals, insurance and fares.",
+        why: "Service prices are driven mostly by wages, so persistent services inflation is a sign that pay growth is feeding into prices.",
+      }),
+      s("goods-inflation", "D7NM", "mm23", PRICES, {
+        label: "Prices of goods", sentenceName: "Goods inflation", format: "pct", kind: "rate",
+        explain: "The change in prices of physical things such as food, clothes, furniture and fuel.",
+        why: "Goods prices swing with world commodity prices and exchange rates, so they often cause sudden jumps and falls in headline inflation.",
       }),
       s("food", "D7G8", "mm23", PRICES, {
         label: "Food and non-alcoholic drinks", sentenceName: "Food and drink inflation", headline: true, format: "pct", kind: "rate",
         explain: "How much the price of food and soft drinks has changed over the past year.",
+        why: "Food takes a bigger share of the budget of lower-income households, so food price rises hit them hardest.",
       }),
       s("energy", "D7GT", "mm23", PRICES, {
         label: "Electricity, gas and other fuels", sentenceName: "Home energy inflation", headline: true, format: "pct", kind: "rate",
         explain: "The change in what households pay for electricity, gas and heating fuel.",
+        why: "Energy bills were the main driver of the 2022 inflation spike and are heavily shaped by government policy and world markets.",
       }),
       s("rents", "D7GQ", "mm23", PRICES, {
         label: "Rents", sentenceName: "Rent inflation", format: "pct", kind: "rate",
         explain: "The change in what private tenants pay to rent a home, compared with a year earlier.",
+        why: "About one in five households rents privately, so rents are a major part of the cost of living for younger people.",
       }),
       s("transport", "D7GE", "mm23", PRICES, {
         label: "Transport", sentenceName: "Transport inflation", format: "pct", kind: "rate",
         explain: "Fuel, fares and the cost of buying and running a vehicle.",
+        why: "Fuel duty, rail fares and car costs are all affected by government decisions as well as world prices.",
       }),
       s("eating-out", "D7GI", "mm23", PRICES, {
         label: "Restaurants and hotels", sentenceName: "Restaurant and hotel inflation", format: "pct", kind: "rate",
         explain: "What people pay for meals out, coffee, pubs and hotel stays.",
+        why: "It reflects wage and rent costs for hospitality businesses, which employ a large share of young workers.",
       }),
     ],
   },
@@ -99,35 +157,68 @@ export const SECTORS = [
     title: "Jobs and pay",
     hint: "Unemployment, wages and vacancies",
     subtitle: "How many people have work, how much they earn, and whether pay is keeping up with prices.",
+    story: "Work is where most people's income comes from. These figures show whether jobs are easy or hard to find, and whether a pay packet goes as far as it used to.",
     accent: "#3E7CD9",
     series: [
       s("unemployment", "MGSX", "lms", `${NOT_IN_WORK}/unemployment`, {
         label: "Unemployment rate", sentenceName: "The unemployment rate", headline: true, format: "pct", kind: "rate",
         explain: "The share of people who want a job, are looking for one and could start, out of everyone who is working or looking. Adults aged 16 and over.",
+        why: "It is the most-watched sign of how hard it is to find work. Rising unemployment also means less tax coming in and more benefit claims.",
       }),
-      s("employment", "LF24", "lms", `${PEOPLE_IN_WORK}/employmentandemployeetypes`, {
+      s("youth-unemployment", "YCWD", "lms", EMPLOYMENT, {
+        label: "Unemployment among 16 to 24 year olds", sentenceName: "Youth unemployment", format: "pct", kind: "rate",
+        explain: "The unemployment rate for 16 to 24 year olds, including students who are looking for work. It is not seasonally adjusted, so it jumps around through the year.",
+        why: "Young people are usually hit first and hardest in a downturn, and a bad start in work can hold back earnings for years.",
+      }),
+      s("employment", "LF24", "lms", EMPLOYMENT, {
         label: "Employment rate", sentenceName: "The employment rate", headline: true, format: "pct", kind: "rate",
         explain: "The share of people aged 16 to 64 who are in paid work.",
+        why: "A higher rate means more people are earning and paying tax. Governments often set targets for it.",
+      }),
+      s("employed", "MGRZ", "lms", EMPLOYMENT, {
+        label: "Number of people in work", sentenceName: "The number of people in work", format: "thousands", kind: "level",
+        explain: "How many people aged 16 and over have a paid job, including self-employed people.",
+        why: "It shows the real scale of the workforce, which grows with population and with the number of older people who keep working.",
+      }),
+      s("unemployed", "MGSC", "lms", `${NOT_IN_WORK}/unemployment`, {
+        label: "Number of unemployed people", sentenceName: "The number of unemployed people", format: "thousands", kind: "level",
+        explain: "How many people aged 16 and over are out of work, looking for a job and able to start.",
+        why: "The count puts the unemployment rate in human terms: every point of the rate is roughly 350,000 people.",
       }),
       s("inactivity", "LF2S", "lms", `${NOT_IN_WORK}/economicinactivity`, {
         label: "Economic inactivity rate", sentenceName: "The economic inactivity rate", format: "pct", kind: "rate",
-        explain: "The share of people aged 16 to 64 who are neither working nor looking for work, for example students, carers, people who are retired early or people who are long-term sick.",
+        explain: "The share of people aged 16 to 64 who are neither working nor looking for work, for example students, carers, people retired early or people who are long-term sick.",
+        why: "Unemployment can fall because people give up looking. Inactivity shows how many are outside the labour market altogether.",
       }),
-      s("vacancies", "AP2Y", "lms", `${PEOPLE_IN_WORK}/employmentandemployeetypes`, {
-        label: "Job vacancies", sentenceName: "Job vacancies", verb: "were", headline: true, format: "thousands", kind: "level", 
-        explain: "How many job vacancies employers had open. Fewer vacancies can mean employers are hiring less.",
+      s("redundancy", "BEIR", "lms", `${NOT_IN_WORK}/redundancies`, {
+        label: "Redundancy rate", sentenceName: "The redundancy rate", format: "pct", kind: "rate", verb: "stood at",
+        explain: "The number of people made redundant, out of every thousand employees, in the latest three months.",
+        why: "It is an early warning. Redundancies tend to rise before unemployment does.",
       }),
-      s("pay-level", "KAB9", "lms", `${PEOPLE_IN_WORK}/earningsandworkinghours`, {
-        label: "Average weekly pay", sentenceName: "Average weekly pay", headline: true, format: "gbp", kind: "level",
+      s("vacancies", "AP2Y", "lms", EMPLOYMENT, {
+        label: "Job vacancies", sentenceName: "Job vacancies", verb: "were", headline: true, format: "thousands", kind: "level",
+        explain: "How many job vacancies employers had open.",
+        why: "Fewer vacancies can mean employers are hiring less. When vacancies are high, workers have more bargaining power.",
+      }),
+      s("hours", "YBUY", "lms", EARNINGS, {
+        label: "Weekly hours of full-time workers", sentenceName: "Full-time workers' average weekly hours", format: "hours", kind: "level", verb: "were",
+        explain: "The average number of hours full-time employees actually worked in a week, including paid and unpaid overtime.",
+        why: "Pay per hour matters as much as pay per week. A fall in hours can mean a lower weekly income even if the hourly rate rises.",
+      }),
+      s("pay-level", "KAB9", "lms", EARNINGS, {
+        nominal: true, label: "Average weekly pay", sentenceName: "Average weekly pay", headline: true, format: "gbp", kind: "level",
         explain: "Average weekly earnings across the whole economy, before tax, excluding one-off back payments. It is an average, so very high earners pull it up.",
+        why: "It shows how much workers actually earn, before inflation is taken into account.",
       }),
-      s("pay-growth", "KAC3", "lms", `${PEOPLE_IN_WORK}/earningsandworkinghours`, {
+      s("pay-growth", "KAC3", "lms", EARNINGS, {
         label: "Pay growth on a year earlier", sentenceName: "Pay growth", format: "pct", kind: "rate",
         explain: "How much average pay has risen compared with a year earlier, before taking prices into account.",
+        why: "Compare it with inflation. If pay grows faster than prices, people are getting better off.",
       }),
-      s("pay-real", "A3WW", "lms", `${PEOPLE_IN_WORK}/earningsandworkinghours`, {
+      s("pay-real", "A3WW", "lms", EARNINGS, {
         label: "Pay growth after inflation", sentenceName: "Pay growth after inflation", headline: true, format: "pct", kind: "rate",
         explain: "Pay growth once rising prices are taken off. If it is above zero, wages are buying more than they did a year ago.",
+        why: "A long run below zero is what people mean by a living standards squeeze.",
       }),
     ],
   },
@@ -136,24 +227,44 @@ export const SECTORS = [
     label: "Public finances",
     title: "Public finances",
     hint: "Borrowing, debt and public sector jobs",
-    subtitle: "How much the government borrows each month, how big the national debt is compared with the economy, and how many people work for the public sector.",
+    subtitle: "How much the government borrows each month, how big the national debt is, and how many people work for the public sector.",
+    story: "Governments rarely collect exactly what they spend. The gap is borrowed, and the total owed is the national debt. These figures set the limits on what any government can promise.",
     accent: "#7B5BD6",
     series: [
       s("debt", "HF6X", "pusf", PUBLIC_FINANCE, {
         label: "National debt compared with the size of the economy", sentenceName: "Public sector net debt, as a share of the economy,", headline: true, format: "pct", kind: "rate",
         explain: "What the public sector owes, after taking off what it owns in cash and similar assets, as a share of a year's economic output. It excludes public sector banks.",
+        why: "It is the main yardstick of how heavy the debt burden is. Governments set fiscal rules around it, and it affects what it costs to borrow.",
+      }),
+      s("debt-level", "HF6W", "pusf", PUBLIC_FINANCE, {
+        nominal: true, label: "National debt in pounds", sentenceName: "Public sector net debt", headline: true, format: "gbpbnx", kind: "level",
+        explain: "The total owed by the public sector, in billions of pounds, excluding public sector banks.",
+        why: "A number this big is easier to grasp divided by about 28 million households. It keeps rising whenever the government borrows more than it repays.",
       }),
       s("borrowing", "DZLS", "pusf", PUBLIC_FINANCE, {
-        label: "Government borrowing each month", sentenceName: "Public sector borrowing", headline: true, format: "gbpbn", kind: "level", timeWord: "in",
+        nominal: true, label: "Government borrowing each month", sentenceName: "Public sector borrowing", format: "gbpbn", kind: "level",
         explain: "How much more the public sector spent than it collected in taxes and other income during the month. Months with big tax payments can show a surplus.",
+        why: "Monthly figures are noisy, so look at the 12-month total below for the real trend.",
+      }),
+      d("borrowing-12m", { op: "sum", n: 12, from: "borrowing" }, {
+        nominal: true, label: "Government borrowing over the past 12 months", sentenceName: "Borrowing over the past year", headline: true, format: "gbpbn", kind: "level",
+        explain: "The last twelve months of borrowing added together, which removes the seasonal ups and downs.",
+        why: "It is the closest thing to a deficit figure for the year. Each year's deficit is added to the national debt.",
       }),
       s("deficit", "DZLT", "pusf", PUBLIC_FINANCE, {
-        label: "Gap in day-to-day spending each month", sentenceName: "The day-to-day spending gap", format: "gbpbn", kind: "level", timeWord: "in",
+        nominal: true, label: "Gap in day-to-day spending each month", sentenceName: "The day-to-day spending gap", format: "gbpbn", kind: "level",
         explain: "Borrowing to pay for running costs such as wages, benefits and bills, leaving out spending on roads, buildings and other lasting investment.",
+        why: "Many fiscal rules aim to balance day-to-day spending, while allowing borrowing for investment.",
       }),
-      s("public-workers", "C9KP", "pse", "/employmentandlabourmarket/peopleinwork/publicsectorpersonnel", {
-        label: "People working in the public sector", sentenceName: "Public sector employment (full-time equivalent)", headline: true, format: "thousands", kind: "level", 
+      s("investment", "DZLW", "pusf", PUBLIC_FINANCE, {
+        nominal: true, label: "Government investment each month", sentenceName: "Public sector net investment", format: "gbpbn", kind: "level",
+        explain: "Spending on things that last, such as roads, railways, hospitals and schools, after allowing for wear and tear.",
+        why: "Investment is often the first thing cut when budgets are tight, but it shapes what the economy can do for decades.",
+      }),
+      s("public-workers", "C9KP", "pse", PUBLIC_WORKERS, {
+        label: "People working in the public sector", sentenceName: "Public sector employment (full-time equivalent)", headline: true, format: "thousands", kind: "level",
         explain: "Everyone employed by government, local councils, the NHS, schools and other public bodies, counted as full-time equivalents.",
+        why: "Public sector pay is one of the biggest items of government spending, and a large share of voters work in it.",
       }),
     ],
   },
@@ -163,27 +274,38 @@ export const SECTORS = [
     title: "Population",
     hint: "How many of us there are",
     subtitle: "How the UK's population has grown, and how that differs across England, Scotland, Wales and Northern Ireland.",
+    story: "Every public service is planned around how many people there are, and where. Population change drives demand for homes, schools, hospitals and transport.",
     accent: "#D4577A",
     series: [
       s("uk", "UKPOP", "pop", POPULATION, {
         label: "UK population", sentenceName: "The UK population", headline: true, format: "people", kind: "level", labelPrefix: "mid-",
         explain: "The best estimate of how many people live in the UK, taken at the middle of each year. Later years are revised once more data comes in.",
+        why: "It is the denominator for almost everything else: spending per person, jobs per person and homes per person.",
+      }),
+      d("uk-growth", { op: "yoy", from: "uk" }, {
+        label: "How fast the UK population is growing", sentenceName: "UK population growth", headline: true, format: "pct", kind: "rate", labelPrefix: "mid-",
+        explain: "The change in the UK's population compared with the year before, as a percentage. It combines births, deaths and people moving in and out.",
+        why: "Fast growth increases demand for housing and services. Slow growth means an ageing population with fewer workers per pensioner.",
       }),
       s("england", "ENPOP", "pop", POPULATION, {
         label: "England", sentenceName: "England's population", headline: true, format: "people", kind: "level", labelPrefix: "mid-",
-        explain: "People living in England.",
+        explain: "People living in England, about 85% of the UK.",
+        why: "England's size is why UK-wide votes are dominated by English seats, and why devolved nations argue about their share of funding.",
       }),
       s("scotland", "SCPOP", "pop", POPULATION, {
         label: "Scotland", sentenceName: "Scotland's population", headline: true, format: "people", kind: "level", labelPrefix: "mid-",
         explain: "People living in Scotland.",
+        why: "Population is used to divide up funding between the UK's nations.",
       }),
       s("wales", "WAPOP", "pop", POPULATION, {
         label: "Wales", sentenceName: "Wales's population", headline: true, format: "people", kind: "level", labelPrefix: "mid-",
         explain: "People living in Wales.",
+        why: "Population is used to divide up funding between the UK's nations.",
       }),
       s("ni", "NIPOP", "pop", POPULATION, {
         label: "Northern Ireland", sentenceName: "Northern Ireland's population", headline: true, format: "people", kind: "level", labelPrefix: "mid-",
         explain: "People living in Northern Ireland.",
+        why: "Population is used to divide up funding between the UK's nations.",
       }),
     ],
   },
@@ -193,16 +315,24 @@ export const SECTORS = [
     title: "Health",
     hint: "NHS staff, sickness and deaths",
     subtitle: "A few official measures of the nation's health: how many people work for the NHS, how many are kept out of work by long-term illness, and how many deaths are registered each week.",
+    story: "The NHS is the largest public service, and ill health is one of the biggest reasons people are out of work. These measures show the strain on both.",
     accent: "#D9453B",
     weeklyDeaths: true,
     series: [
-      s("nhs-staff", "G7GL", "pse", "/employmentandlabourmarket/peopleinwork/publicsectorpersonnel", {
-        label: "NHS staff", sentenceName: "NHS employment (full-time equivalent)", headline: true, format: "thousands", kind: "level", 
+      s("nhs-staff", "G7GL", "pse", PUBLIC_WORKERS, {
+        label: "NHS staff", sentenceName: "NHS employment (full-time equivalent)", headline: true, format: "thousands", kind: "level",
         explain: "People working for the NHS across the UK, counted as full-time equivalents, so two half-time jobs count as one.",
+        why: "Staffing is the single biggest factor in how many patients the NHS can treat.",
+      }),
+      s("sick-count", "LF69", "lms", `${NOT_IN_WORK}/economicinactivity`, {
+        label: "People out of work with long-term sickness", sentenceName: "People out of work because of long-term sickness", headline: true, format: "thousands", kind: "level",
+        explain: "How many working-age people (16 to 64) are neither in work nor looking for it because of long-term sickness or disability.",
+        why: "It is one of the clearest signs of how ill health affects the economy, and has risen sharply since the pandemic.",
       }),
       s("long-term-sick", "LF75", "lms", `${NOT_IN_WORK}/economicinactivity`, {
-        label: "Long-term sick, as a share of those not working or looking for work", sentenceName: "The share of economically inactive 16 to 64 year olds who are long-term sick", headline: true, format: "pct", kind: "rate",
+        label: "Long-term sick, as a share of those not working or looking for work", sentenceName: "The share of economically inactive 16 to 64 year olds who are long-term sick", format: "pct", kind: "rate",
         explain: "Of the working-age people who are neither in work nor looking for it, the share who say long-term sickness or disability is the reason.",
+        why: "It shows how much of the gap between those in and out of the labour market is down to health, rather than study, caring or retirement.",
       }),
     ],
   },
@@ -212,23 +342,95 @@ export const SECTORS = [
     title: "Housing and rents",
     hint: "What it costs to keep a roof overhead",
     subtitle: "What renters are paying, how fast housing costs are rising, and the cost of heating a home.",
+    story: "Housing is the biggest bill most households face, and it shapes where people can afford to live and when they can start a family.",
     accent: "#2F9E6E",
     series: [
       s("rents-rate", "D7GQ", "mm23", PRICES, {
         label: "Rents, change on a year earlier", sentenceName: "Rent inflation", headline: true, format: "pct", kind: "rate",
         explain: "How much more private tenants pay to rent a home than a year earlier.",
+        why: "Rent rises hit younger and lower-income households hardest, and feed into debates about rent controls and housebuilding.",
       }),
       s("rents-index", "KYHJ", "mm23", PRICES, {
-        label: "Private rents index", sentenceName: "The private rents index", headline: true, format: "index", kind: "level", timeWord: "in",
+        label: "Private rents index", sentenceName: "The private rents index", headline: true, format: "index", kind: "level", verb: "stood at",
         explain: "Rents measured against a starting point of 100 in 2015. A reading of 141 means rents are about 41% higher than in 2015.",
+        why: "It shows the cumulative rise in rents over years, which single-year percentages hide.",
       }),
       s("cpih-housing", "L55O", "mm23", PRICES, {
         label: "Inflation including housing costs (CPIH)", sentenceName: "Inflation including housing costs (CPIH)", format: "pct", kind: "rate",
         explain: "Overall inflation including the cost of owning and running a home, such as the rent homeowners would pay themselves.",
+        why: "Comparing it with ordinary CPI shows whether housing costs are pushing the cost of living up or holding it down.",
       }),
       s("home-energy", "D7GT", "mm23", PRICES, {
         label: "Electricity, gas and other fuels", sentenceName: "Home energy inflation", headline: true, format: "pct", kind: "rate",
         explain: "The change in what households pay for electricity, gas and heating fuel.",
+        why: "Heating a home is a large and unavoidable cost, and a major reason for fuel poverty debates.",
+      }),
+    ],
+  },
+  {
+    key: "trade",
+    label: "Trade",
+    title: "Trade with the world",
+    hint: "What we sell abroad and buy in",
+    subtitle: "How much the UK sells to the rest of the world, how much it buys, and the gap between the two.",
+    story: "The UK sells goods and services abroad and buys them in. When we buy more than we sell, the difference has to be paid for by borrowing from, or selling assets to, the rest of the world.",
+    accent: "#C28A1E",
+    series: [
+      s("exports", "KTMW", "ukea", TRADE, {
+        nominal: true, label: "Exports of goods and services", sentenceName: "UK exports", verb: "were", headline: true, format: "gbpbn", kind: "level",
+        explain: "The value of what the UK sold to other countries in a quarter, in current prices.",
+        why: "Exports earn income from abroad and support jobs. Trade deals are meant to increase them.",
+      }),
+      s("imports", "KTMX", "ukea", TRADE, {
+        nominal: true, label: "Imports of goods and services", sentenceName: "UK imports", verb: "were", headline: true, format: "gbpbn", kind: "level",
+        explain: "The value of what the UK bought from other countries in a quarter, in current prices.",
+        why: "The UK relies on imports for food, fuel and many goods, so they show how exposed households are to world prices.",
+      }),
+      s("trade-balance", "KTMY", "ukea", TRADE, {
+        nominal: true, label: "Trade balance", sentenceName: "The trade balance", headline: true, format: "gbpbn", kind: "level",
+        explain: "Exports minus imports. A negative number means the UK bought more than it sold.",
+        why: "The UK has run a trade deficit for most of the last forty years, which is normal for an economy with a large services sector and strong overseas investment.",
+      }),
+      s("current-account", "AA6H", "ukea", TRADE, {
+        label: "Current account, as a share of the economy", sentenceName: "The current account balance", headline: true, format: "pct", kind: "rate",
+        explain: "The widest measure of money flowing in and out of the country, including trade, investment income and transfers, as a percentage of GDP.",
+        why: "A large deficit means the UK is relying on foreign money to pay its way, which can put pressure on the pound.",
+      }),
+    ],
+  },
+  {
+    key: "environment",
+    label: "Energy and environment",
+    title: "Energy and the environment",
+    hint: "Emissions and energy use",
+    subtitle: "How much greenhouse gas the UK produces, and how much energy it uses. These figures come out more slowly than the others, about two years after the year they describe.",
+    story: "The UK has a legal target of reaching net zero emissions by 2050. These figures show how far emissions and energy use have moved since 1990.",
+    accent: "#3F9B3F",
+    series: [
+      s("ghg", "K8B5", "bb", GDP, {
+        label: "Greenhouse gas emissions", sentenceName: "UK greenhouse gas emissions", verb: "were", headline: true, format: "ktonnes", kind: "level",
+        explain: "All greenhouse gases produced by UK residents and businesses, in carbon dioxide equivalents. It includes emissions abroad from UK residents' flights and shipping.",
+        why: "Climate targets are set on emissions, and the UK's long-run fall is among the largest of any major economy.",
+      }),
+      s("co2", "K83W", "bb", GDP, {
+        label: "Carbon dioxide emissions", sentenceName: "UK carbon dioxide emissions", verb: "were", format: "ktonnes", kind: "level",
+        explain: "Carbon dioxide on its own, the biggest greenhouse gas, from burning fossil fuels.",
+        why: "Most of the long fall in emissions has come from replacing coal with gas, wind and solar in electricity generation.",
+      }),
+      s("energy-use", "K7ZA", "bb", GDP, {
+        label: "Energy used", sentenceName: "UK energy use", headline: true, format: "mtoe", kind: "level",
+        explain: "All the energy used by UK residents and businesses, in millions of tonnes of oil equivalent.",
+        why: "Using less energy for the same output is the cheapest way to cut emissions and bills.",
+      }),
+      s("non-fossil", "K7Z9", "bb", GDP, {
+        label: "Energy from non-fossil sources", sentenceName: "Energy from non-fossil sources", format: "mtoe", kind: "level",
+        explain: "Energy from nuclear, wind, solar, hydro and biomass, in millions of tonnes of oil equivalent.",
+        why: "It tracks the shift away from fossil fuels.",
+      }),
+      d("non-fossil-share", { op: "percentOf", from: "non-fossil", of: "energy-use" }, {
+        label: "Share of energy from non-fossil sources", sentenceName: "The share of energy from non-fossil sources", headline: true, format: "pct", kind: "rate",
+        explain: "Non-fossil energy as a percentage of all the energy used.",
+        why: "It is a simple measure of how far the energy mix has changed.",
       }),
     ],
   },
@@ -236,6 +438,15 @@ export const SECTORS = [
 
 export const SECTOR_KEYS = SECTORS.map((x) => x.key);
 export const sectorByKey = (key) => SECTORS.find((x) => x.key === key);
+
+// Every series across all the pages, with the page it belongs to, for the
+// compare-over-time page.
+export const ALL_SERIES = SECTORS.flatMap((sector) => sector.series.map((def) => ({ ...def, sector: sector.key, sectorLabel: sector.label })));
+export const seriesByRef = (sectorKey, id) => ALL_SERIES.find((x) => x.sector === sectorKey && x.id === id);
+
+// The same series can appear on more than one page (for example home energy
+// inflation), so the compare page refers to each by "<sector>.<id>".
+export const refOf = (def) => `${def.sector}.${def.id}`;
 
 // Weekly deaths come from the ONS dataset API rather than a time series.
 export const WEEKLY_DEATHS = {

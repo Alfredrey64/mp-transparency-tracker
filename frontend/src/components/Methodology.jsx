@@ -131,7 +131,7 @@ export default function Methodology({ onNavigate }) {
               name="Office for National Statistics"
               url="https://www.ons.gov.uk/"
               auth="No key required, Open Government Licence v3.0"
-              use="Time series on the economy, prices, jobs and pay, public finances, population, NHS staffing and weekly deaths. The Britain in numbers pages are built from them. They are refreshed daily and only change when the ONS publishes."
+              use="Time series on the economy, prices, jobs and pay, public finances, population, NHS staffing, trade, energy and emissions, plus weekly deaths, with their full history. The Britain in numbers pages are built from them. They are refreshed daily and only change when the ONS publishes. Shading by prime minister uses public records of when each took office."
             />
             <SourceRow
               name="UK Parliament Members API"

@@ -51,18 +51,23 @@ export function shortPeriodLabel(p) {
 }
 
 const group = (n) => Math.round(n).toLocaleString("en-GB");
+const money = (v, text) => (v < 0 ? `-${text.replace(/^-/, "")}` : text);
 
 // How each kind of number is written. `v` is the raw ONS value.
 export function formatValue(format, v) {
   if (v === null || v === undefined || Number.isNaN(v)) return "n/a";
   switch (format) {
     case "pct": return `${v.toFixed(1)}%`;
-    case "gbp": return `£${group(v)}`;
-    case "gbpbn": return `£${(v / 1000).toFixed(1)}bn`; // value in £ million
+    case "gbp": return money(v, `£${group(Math.abs(v))}`);
+    case "gbpbn": return money(v, `£${(Math.abs(v) / 1000).toFixed(1)}bn`); // value in £ million
     case "gbpbn0": return `£${group(v / 1000)}bn`;
     case "thousands": return v >= 1000 ? `${(v / 1000).toFixed(2)} million` : `${group(v)},000`.replace(/^0,000$/, "0");
     case "people": return v >= 1e6 ? `${(v / 1e6).toFixed(1)} million` : group(v);
     case "index": return v.toFixed(1);
+    case "gbpbnx": return Math.abs(v) >= 100 ? `£${group(v)}bn` : money(v, `£${Math.abs(v).toFixed(1)}bn`); // value already in £ billion
+    case "ktonnes": return `${group(v / 1000)} million tonnes`; // value in thousand tonnes
+    case "mtoe": return `${v.toFixed(0)} million tonnes of oil equivalent`;
+    case "hours": return `${v.toFixed(1)} hours`;
     default: return String(v);
   }
 }
@@ -76,8 +81,22 @@ export function formatAxis(format, v) {
     case "gbpbn0": return `£${group(v / 1000)}bn`;
     case "thousands": return v >= 1000 ? `${Number((v / 1000).toFixed(1))}m` : `${group(v)}k`;
     case "people": return v >= 1e6 ? `${Number((v / 1e6).toFixed(0))}m` : group(v);
+    case "gbpbnx": return `£${group(v)}bn`;
+    case "ktonnes": return `${group(v / 1000)}m`;
+    case "mtoe": return `${v.toFixed(0)}`;
+    case "hours": return `${Number(v.toFixed(1))}`;
     default: return String(Number(v.toFixed(1)));
   }
+}
+
+// How much `to` differs from `from`: percentage points for rates and per cent for
+// levels. A level that is zero or negative at either end has no sensible per cent
+// change, so it is given as an amount instead.
+export function changeBetween(def, from, to) {
+  if (def.kind === "rate") return { type: "points", amount: to - from };
+  if (from > 0 && to > 0) return { type: "percent", amount: ((to - from) / from) * 100 };
+  if (from === to) return { type: "amount", amount: 0, text: formatValue(def.format, 0) };
+  return { type: "amount", amount: to - from, text: formatValue(def.format, Math.abs(to - from)) };
 }
 
 // The latest figure and how it compares with a year earlier.
@@ -87,16 +106,14 @@ export function latestInfo(def, points) {
   const t = periodToT(period);
   const before = points.find(([p]) => Math.abs(periodToT(p) - (t - 1)) < 0.02);
   const info = { period, value, label: periodLabel(period), before: before ? { period: before[0], value: before[1], label: periodLabel(before[0]) } : null };
-  if (info.before) {
-    if (def.kind === "rate") info.change = { type: "points", amount: value - info.before.value };
-    else if (info.before.value !== 0) info.change = { type: "percent", amount: ((value - info.before.value) / Math.abs(info.before.value)) * 100 };
-  }
+  if (info.before) info.change = changeBetween(def, info.before.value, value);
   return info;
 }
 
 export function changeWords(change) {
   if (!change) return "";
   const a = Math.abs(change.amount);
+  if (change.type === "amount") return a === 0 ? "little changed on a year earlier" : `${change.amount > 0 ? "up" : "down"} ${change.text} on a year earlier`;
   const unit = change.type === "points" ? (a === 1 ? "percentage point" : "percentage points") : "%";
   const n = a < 10 ? a.toFixed(1) : Math.round(a).toString();
   if (Number(n) === 0) return "little changed on a year earlier";
@@ -132,4 +149,15 @@ export function niceTicks(min, max, count = 4) {
   const ticks = [];
   for (let v = Math.ceil(min / step) * step; v <= max + step * 1e-6; v += step) ticks.push(Number(v.toFixed(10)));
   return ticks;
+}
+
+// A short form of a change, for small print: "up 0.3 pts", "down 4.2%".
+export function changeShort(change) {
+  if (!change) return "";
+  if (change.type === "amount") return change.amount === 0 ? "little changed" : `${change.amount > 0 ? "up" : "down"} ${change.text}`;
+  const a = Math.abs(change.amount);
+  const n = a < 10 ? a.toFixed(1) : Math.round(a).toString();
+  if (Number(n) === 0) return "little changed";
+  const dir = change.amount > 0 ? "up" : "down";
+  return change.type === "points" ? `${dir} ${n} pts` : `${dir} ${n}%`;
 }

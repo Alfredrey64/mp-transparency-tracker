@@ -46,6 +46,21 @@ export const PAGE_GUIDES = {
     why: "Who has held a job tells you who had power over a subject, and when.",
     notShown: "Anyone who has since left Parliament, so older holders are missing. It shows today's MPs and peers, not everyone who ever held the job.",
   },
+  trade: {
+    what: "How much the UK sells to the rest of the world and buys from it, the gap between the two, and the wider current account balance.",
+    why: "Trade shapes jobs, prices and the value of the pound, and trade deals are a standing political topic.",
+    notShown: "Which countries we trade with or which goods. The ONS publishes those separately.",
+  },
+  environment: {
+    what: "How much greenhouse gas the UK produces, how much energy it uses, and how much of that energy comes from non-fossil sources, since 1990.",
+    why: "The UK has a legal target of net zero emissions by 2050, so these show how far it has come.",
+    notShown: "Emissions from goods made abroad and bought here. Figures run about two years behind.",
+  },
+  indicators: {
+    what: "A tool for picking up to four measures from the Britain in numbers pages and watching how they moved over time, with who was in government shaded behind.",
+    why: "Comparing measures over the same years shows how they moved together or apart. Shading by government shows when things changed.",
+    notShown: "What caused any change. Most of these figures are shaped by world events, not just one government.",
+  },
   economy: {
     what: "Official figures on how fast the UK economy is growing, how much it produces and how much each hour of work yields, from the Office for National Statistics.",
     why: "Growth, or the lack of it, shapes tax, spending, jobs and pay. These are the numbers politicians argue about.",

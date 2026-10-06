@@ -21,7 +21,8 @@ import { normalisePeriod } from "./frontend/src/lib/onsFormat.js";
 
 const OUT_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), "frontend", "src", "data", "ons");
 const HEADERS = { "User-Agent": "uk-parliament-tracker (independent, non-commercial; contact via GitHub)" };
-const KEEP = { months: 300, quarters: 160, years: 80 };
+// Keep the whole history: the pages compare today with decades ago.
+const KEEP = { months: 1200, quarters: 400, years: 200 };
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -115,6 +116,7 @@ async function main() {
     const out = { fetchedAt: new Date().toISOString(), series: {} };
 
     for (const def of sector.series) {
+      if (def.derive) continue; // worked out in the browser
       const key = `${def.path}|${def.cdid}|${def.dataset}`;
       try {
         if (!cache.has(key)) {

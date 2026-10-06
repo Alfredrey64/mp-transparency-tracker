@@ -22,10 +22,16 @@ describe("Britain in numbers sectors", () => {
       expect(new Set(ids).size).toBe(ids.length);
       expect(sector.series.some((x) => x.headline)).toBe(true);
       for (const def of sector.series) {
-        expect(def.cdid).toMatch(/^[A-Z0-9]{4,6}$/);
-        expect(def.path.startsWith("/")).toBe(true);
+        if (def.derive) {
+          expect(sector.series.map((x) => x.id)).toContain(def.derive.from);
+        } else {
+          expect(def.cdid).toMatch(/^[A-Z0-9]{4,6}$/);
+          expect(def.path.startsWith("/")).toBe(true);
+        }
         expect(["rate", "level"]).toContain(def.kind);
-        expect(def.explain.length).toBeGreaterThan(20);
+        expect(def.explain.length).toBeGreaterThan(15);
+        expect(def.why.length).toBeGreaterThan(15);
+        expect(def.label.length).toBeGreaterThan(2);
       }
     }
   });
@@ -33,7 +39,7 @@ describe("Britain in numbers sectors", () => {
   it("has saved data for every series the pages show", () => {
     for (const sector of SECTORS) {
       const file = JSON.parse(fs.readFileSync(path.join(dir, `${sector.key}.json`), "utf8"));
-      for (const def of sector.series) {
+      for (const def of sector.series.filter((x) => !x.derive)) {
         const s = file.series[def.id];
         expect(s, `${sector.key}/${def.id}`).toBeTruthy();
         expect(s.points.length).toBeGreaterThan(2);

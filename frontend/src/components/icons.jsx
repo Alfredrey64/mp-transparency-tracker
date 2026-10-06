@@ -677,3 +677,13 @@ export function IconHouse({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconCompareTime({ size = 17 }) {
+  return (
+    <svg width={size} height={size} {...iconProps}>
+      <path d="M4 4v16h16.5" />
+      <path d="M7.5 16l3.5-6 3 3 5-6.5" />
+      <path d="M7.5 11.5l3-3.5 3.2 4.5 5.3-1.5" />
+    </svg>
+  );
+}
