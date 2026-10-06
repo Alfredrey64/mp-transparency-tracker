@@ -76,14 +76,13 @@ export default function PartyPolicies() {
     <div style={{ maxWidth: 1080, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconManifesto}
-        kicker="Public Record · Party Policies"
+        kicker="Party Policies"
         title="Where each party stands"
         subtitle={
           <>
-            An objective summary of each party's most recent UK general election{" "}
+            A neutral summary of each party's most recent UK general election{" "}
             <GlossaryTerm term="Manifesto">manifesto</GlossaryTerm> (2024). These are our own summaries, not the
-            original documents — click into a party for more detail, or follow the link to read their manifesto in
-            full.
+            original documents. Open a party for more detail, or follow the link to read its manifesto in full.
           </>
         }
       />

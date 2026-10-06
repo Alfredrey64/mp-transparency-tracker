@@ -99,9 +99,9 @@ export default function FormerMps() {
     <div style={{ maxWidth: 820, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconFormerMP}
-        kicker="Public Record · Former MPs"
-        title="Who's recently left Parliament"
-        subtitle="The most recent MPs to leave the Commons — by resignation, at a general election, or death — kept up to date from the official record."
+        kicker="Former MPs"
+        title="MPs who have just left"
+        subtitle="The most recent MPs to leave the Commons, whether by resignation, at a general election or through death. Kept up to date from the official record."
       />
 
       <div

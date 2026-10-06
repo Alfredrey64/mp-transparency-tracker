@@ -140,7 +140,7 @@ export default function DonorsLobbying() {
   if (!stats) {
     return (
       <div style={{ padding: PAGE_PADDING }}>
-        <PageHeader icon={IconInfluence} title="Donors & Lobbying" subtitle="Loading…" />
+        <PageHeader icon={IconInfluence} title="Who funds MPs" subtitle="Loading…" />
       </div>
     );
   }
@@ -152,8 +152,8 @@ export default function DonorsLobbying() {
     <div style={{ padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconInfluence}
-        title="Donors & Lobbying"
-        subtitle="Who's funding Parliament, grouped by industry where it's confidently identifiable — not a judgement on any MP's views."
+        title="Who funds MPs"
+        subtitle="Who is funding Parliament, grouped by industry where that can be identified with confidence. It is not a judgement on any MP's views."
         maxWidth={900}
       />
 

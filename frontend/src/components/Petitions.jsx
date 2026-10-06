@@ -149,9 +149,9 @@ export default function Petitions() {
     <div style={{ maxWidth: 900, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconPetition}
-        kicker="Public Record · Petitions"
+        kicker="Petitions"
         title="Public petitions to Parliament"
-        subtitle="The most-signed petitions currently open, plus recent ones that got a government response or a Commons debate — taken straight from petitions.parliament.uk itself, with no editorial curation of which petitions appear."
+        subtitle="The most-signed petitions that are open now, plus recent ones that got a government response or a Commons debate. They come straight from petitions.parliament.uk, with no picking and choosing from us."
       />
 
       <div

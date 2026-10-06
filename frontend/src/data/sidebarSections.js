@@ -146,3 +146,19 @@ export const SECTIONS = [
 export const SECTION_ACCENT_BY_ICON = new Map(
   SECTIONS.flatMap((section) => section.items.map((item) => [item.icon, section.accent]))
 );
+
+// The small label above each page's title is the name of the sidebar section the
+// page lives in, so a page and its menu group always read the same way. Pages
+// that sit outside every section get a plain label of their own.
+const OUTSIDE_SECTIONS = {
+  myMP: "Your area & your say",
+  watchlist: "Your area & your say",
+  methodology: "About this site",
+  settings: "About this site",
+  privacy: "About this site",
+  terms: "About this site",
+};
+export const SECTION_LABEL_BY_KEY = new Map([
+  ...Object.entries(OUTSIDE_SECTIONS),
+  ...SECTIONS.flatMap((section) => section.items.map((item) => [item.key, section.label])),
+]);

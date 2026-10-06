@@ -555,12 +555,12 @@ export default function PartyMatch() {
     <div style={{ maxWidth: 720, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconCompass}
-        kicker="Public Record · Find Your Party"
+        kicker="Find Your Party"
         title="Which party matches you?"
         subtitle={
           <>
             Answer a short set of policy questions and see which party's stated positions line up closest with your
-            own — based on their 2024 <GlossaryTerm term="Manifesto">manifestos</GlossaryTerm>, not ours.
+            own. It is based on their 2024 <GlossaryTerm term="Manifesto">manifestos</GlossaryTerm>, not our opinions.
           </>
         }
       />

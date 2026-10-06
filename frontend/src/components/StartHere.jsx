@@ -111,7 +111,7 @@ export default function StartHere({ onNavigate, onNavigateForMp, onViewProfile }
     <div style={{ maxWidth: 780, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconRoute}
-        kicker="Start Here"
+        kicker="Start here"
         title="From “who's my MP?” to “what are they up to?”"
         subtitle="Five steps, about five minutes, no prior knowledge needed. Pick your MP first and every step after it opens on them."
       />
@@ -170,7 +170,7 @@ export default function StartHere({ onNavigate, onNavigateForMp, onViewProfile }
               </button>
             </div>
           )}
-          {mpFailed && <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: "#9C3B3B", marginTop: 8 }}>Couldn't load that MP's record just now — the other steps still work from the menu.</div>}
+          {mpFailed && <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: "#9C3B3B", marginTop: 8 }}>Couldn't load that MP's record just now. The other steps still work from the menu.</div>}
         </Step>
 
         <Step n={2} title="See what they've declared">

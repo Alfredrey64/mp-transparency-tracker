@@ -1,11 +1,11 @@
 {
   "name": "UK Parliament Tracker",
   "short_name": "Parliament",
-  "description": "An independent, unofficial look at UK Parliament — MPs' declared donations, gifts, expenses, and voting records, kept up to date daily.",
+  "description": "An independent, unofficial look at UK Parliament: MPs' declared donations, gifts, expenses and voting records, updated daily.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "orientation": "portrait-primary",
+  "orientation": "any",
   "background_color": "#14151F",
   "theme_color": "#4F46E5",
   "icons": [

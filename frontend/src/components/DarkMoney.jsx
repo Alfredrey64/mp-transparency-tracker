@@ -54,9 +54,9 @@ export default function DarkMoney() {
     <div style={{ padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconDarkMoney}
-        kicker="Public Record · Transparency Gaps"
-        title="Dark money: the donations you'll never see"
-        subtitle="Every other page on this site traces a donation back to a named person or company in the official register. This page is about the narrow but real set of cases where UK law itself doesn't require that — and a real, well-documented example of exactly how much can move through it."
+        kicker="Transparency Gaps"
+        title="Dark money: donations with no named donor"
+        subtitle="Every other page here traces a donation to a named person or company in the official register. This page covers the narrow set of cases where UK law does not require that, with a well-documented example of how much can move through them."
         maxWidth={900}
       />
 
@@ -77,12 +77,12 @@ export default function DarkMoney() {
           exactly like this, start to finish, with nothing hidden.
         </p>
         <p style={{ marginBottom: 0 }}>
-          This page is about the exception: real, legal ways for money to reach a party's bank account without that
+          This page is about the exception: legal ways for money to reach a party's bank account without a donor's
           name ever being attached to it.
         </p>
       </InfoCard>
 
-      <InfoCard title="What 'dark money' actually means here" color="#9C3B3B" icon={IconDarkMoney} index={1}>
+      <InfoCard title="What 'dark money' means here" color="#9C3B3B" icon={IconDarkMoney} index={1}>
         <p style={{ marginTop: 0 }}>
           It isn't a technical legal term — it's the name given to political money whose original source the public
           can't trace, even though it moved entirely within the rules. UK law requires donations to political

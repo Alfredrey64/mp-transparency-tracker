@@ -8,7 +8,7 @@ import { supabase } from "../supabaseClient";
 import { stripHtml, formatDate } from "../lib/format";
 import { matchBillForVote } from "../lib/bills";
 import { getBillDescription } from "../lib/billDescriptions";
-import { SECTION_ACCENT_BY_ICON } from "../data/sidebarSections";
+import { SECTION_ACCENT_BY_ICON, SECTION_LABEL_BY_KEY } from "../data/sidebarSections";
 import { withScrollPreserved } from "../lib/preserveScroll";
 // Lazy: this file is part of the bundle every page load pays for, and the
 // explainer (a table of division-title patterns) is only needed once an MP's
@@ -195,7 +195,7 @@ export function ScaleComparison({ bars, maxWidth = 900 }) {
   );
 }
 
-export function PageHeader({ kicker = "Public Record · UK Parliament", title, subtitle, align = "left", size = "lg", maxWidth, icon: Icon }) {
+export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = "left", size = "lg", maxWidth, icon: Icon }) {
   const isHero = size === "xl";
   // The page's "What you're looking at" box sits under every header.
   const guideKey = useContext(GuideKeyContext);
@@ -206,10 +206,11 @@ export function PageHeader({ kicker = "Public Record · UK Parliament", title, s
   // (Home, Methodology/Settings, standalone pages) just keep the plain
   // sitewide accent.
   const accent = SECTION_ACCENT_BY_ICON.get(Icon) ?? COLORS.accent;
+  const kickerText = SECTION_LABEL_BY_KEY.get(guideKey) ?? kicker;
   return (
     <div style={{ marginBottom: isHero ? 0 : 28, maxWidth, textAlign: align }}>
       <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22 }}>
-        <EyebrowLabel color={accent}>{kicker}</EyebrowLabel>
+        <EyebrowLabel color={accent}>{kickerText}</EyebrowLabel>
       </motion.div>
       <motion.h1
         initial={{ opacity: 0, y: 6 }}
@@ -376,6 +377,16 @@ const CARD_ACCENT = {
   "Previously an MP": COLORS.commonsGreen,
 };
 
+// "Cabinet Role" reads as "Cabinet role": cards use the same sentence case as
+// every other heading. Acronyms and the like keep their capitals.
+const KEEP_CAPS = new Set(["MP", "MPs", "UK", "APPG", "APPGs", "IPSA"]);
+function sentenceCase(text) {
+  return text
+    .split(" ")
+    .map((w, i) => (i === 0 || KEEP_CAPS.has(w) || /\d/.test(w) ? w : w.toLowerCase()))
+    .join(" ");
+}
+
 export function CardShell({ title, children }) {
   const accent = CARD_ACCENT[title] ?? COLORS.accent;
   return (
@@ -390,7 +401,7 @@ export function CardShell({ title, children }) {
       }}
     >
       <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 17, color: COLORS.ink, marginBottom: 10 }}>
-        {title}
+        {sentenceCase(title)}
       </div>
       {children}
     </motion.div>
@@ -936,7 +947,7 @@ export function LoadFailedNote({ item = "this" }) {
         border: "1px solid #9C3B3B33", borderRadius: 8, padding: "10px 13px", lineHeight: 1.5,
       }}
     >
-      Couldn't load {item} — this looks like a connection issue, not an empty record. Try refreshing the page.
+      Couldn't load {item}. This looks like a connection problem, not an empty record. Try refreshing the page.
     </div>
   );
 }
@@ -945,7 +956,7 @@ export function PlaceholderBox({ title, note }) {
   return (
     <div style={{ paddingTop: 18, borderTop: `1px solid ${COLORS.hairline}` }}>
       <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink, marginBottom: 6 }}>
-        {title}
+        {sentenceCase(title)}
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>{note}</div>
     </div>

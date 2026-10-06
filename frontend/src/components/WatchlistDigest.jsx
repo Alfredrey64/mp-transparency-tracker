@@ -144,7 +144,7 @@ export default function WatchlistDigest({ onSelectPolitician }) {
     <div style={{ padding: PAGE_PADDING, maxWidth: 900, margin: "0 auto" }}>
       <PageHeader
         icon={IconStar}
-        kicker="Public Record · Your Watchlist"
+        kicker="Your Watchlist"
         title="What's changed for MPs you follow"
         subtitle={
           watchlist.length === 0

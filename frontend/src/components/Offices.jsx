@@ -136,7 +136,7 @@ export default function Offices({ initialQuery = "" }) {
     <div style={{ maxWidth: 860, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconCabinet}
-        kicker="The Government · Who Held Office"
+        kicker="Who held office"
         title="Who has held this office?"
         subtitle="Search any government or shadow post, such as Secretary of State for Health or Shadow Chancellor, and see everyone in Parliament today who has held it, with dates."
       />

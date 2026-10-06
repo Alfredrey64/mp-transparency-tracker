@@ -758,7 +758,7 @@ export default function Councils({ param }) {
       {data ? (
         <Hero
           index={data.index}
-          kicker="Get Involved · Your Council"
+          kicker="Your area & your say"
           title="Your council and your councillors"
           subtitle="Councils run bin collections, planning, housing, roads and care. See who runs yours, who your councillors are, who is changing sides, and when you next get a vote."
         />

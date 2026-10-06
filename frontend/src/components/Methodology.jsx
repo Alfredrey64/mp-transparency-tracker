@@ -89,9 +89,9 @@ export default function Methodology({ onNavigate }) {
     <div style={{ maxWidth: 820, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconMethodology}
-        kicker="Public Record · Data & Methodology"
-        title="Where this data comes from, and its limits"
-        subtitle="Every figure on this site traces back to an official or independent public source. This page is the one place that lays out exactly which sources, how they're combined, how often they update, and — just as importantly — where the automated matching can get things wrong."
+        kicker="Data & Methodology"
+        title="Where our data comes from"
+        subtitle="Every figure on this site traces back to an official or independent public source. This page sets out which sources we use, how they are combined, how often they update, and where the automated matching can get things wrong."
       />
 
       <div style={{ marginTop: 28 }}>
@@ -253,8 +253,8 @@ export default function Methodology({ onNavigate }) {
         <Section title="Where the automated matching can go wrong">
           <p style={{ marginTop: 0 }}>
             Two features on this site work by matching records from separate data sources that don't share a common
-            ID — that matching is genuinely useful, but it's inference, not certainty. We'd rather tell you exactly
-            where the soft spots are than let the confident presentation imply more precision than the data supports.
+            ID. That matching is useful, but it is inference, not certainty. We would rather tell you where the weak
+            spots are than let a confident presentation suggest more precision than the data supports.
           </p>
           <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
             <CaveatItem>
@@ -287,7 +287,7 @@ export default function Methodology({ onNavigate }) {
               reports and general reports reviewing the rules themselves under one list, with no field distinguishing
               the two — a report is kept only if its title, once the "Nth Report -" prefix is stripped, reads like a
               short person's name rather than a policy topic. That's a good filter in practice, but a report about a
-              genuinely name-like topic could in principle slip through, or a very unusually worded personal report
+              topic that looks like a name could in principle slip through, or a very unusually worded personal report
               could be missed. The "what happened" and "the outcome" summaries shown on that page are written by
               hand from each report's own findings — for the most significant, widely reported cases only; where we
               haven't summarised a report yet, the page links straight to the Committee's original document instead

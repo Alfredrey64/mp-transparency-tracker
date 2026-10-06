@@ -166,9 +166,9 @@ export default function AskedAbout({ onSelectPolitician, onNavigateForMp }) {
     <div style={{ maxWidth: 940, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconTopic}
-        kicker="Public Record · Written Questions"
-        title="Who's asking about…"
-        subtitle="Type a topic and see which MPs and peers have put written questions to ministers about it in the last 30 days: which parties, which departments, and exactly what they asked."
+        kicker="Written Questions"
+        title="Who's asking about a topic"
+        subtitle="Type a topic to see which MPs and peers have put written questions to ministers about it in the last 30 days: which parties, which departments and what they asked."
       />
 
       <div

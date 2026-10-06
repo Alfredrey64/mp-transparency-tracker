@@ -30,7 +30,7 @@ export default function DownloadCsvButton({ label, slug, columns, rows, loadRows
         fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: status === "error" ? "#9C3B3B" : COLORS.accent, ...style,
       }}
     >
-      {status === "busy" ? "Preparing the file…" : status === "error" ? "Couldn't prepare that — try again" : `${label} ↓`}
+      {status === "busy" ? "Preparing the file…" : status === "error" ? "Couldn't prepare that. Try again" : `${label} ↓`}
     </button>
   );
 }

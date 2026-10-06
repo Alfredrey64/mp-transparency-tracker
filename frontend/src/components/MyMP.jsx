@@ -49,21 +49,21 @@ function PostcodeForm({ onFound, initialError }) {
       const res = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(postcode.trim())}`);
       const data = await res.json();
       if (!res.ok || data.status !== 200) {
-        setError("Couldn't find that postcode — double check it's a valid UK postcode.");
+        setError("Couldn't find that postcode. Please check that it is a valid UK postcode.");
         setLoading(false);
         return;
       }
       const constituency = data.result.parliamentary_constituency;
       const { data: matches } = await supabase.from("politicians").select("*").eq("constituency", constituency).limit(1);
       if (!matches?.[0]) {
-        setError(`Found the constituency (${constituency}) but couldn't match it to a current MP — try Browse MPs instead.`);
+        setError(`Found the constituency (${constituency}) but couldn't match it to a current MP. Try Browse MPs instead.`);
         setLoading(false);
         return;
       }
       localStorage.setItem(STORAGE_KEY, postcode.trim());
       onFound(matches[0]);
     } catch {
-      setError("Something went wrong looking that up — please try again.");
+      setError("Something went wrong looking that up. Try again in a moment.");
     }
     setLoading(false);
   }
@@ -193,9 +193,9 @@ export default function MyMP({ onViewProfile }) {
     <div style={{ maxWidth: 900, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconPin}
-        kicker="Public Record · My MP"
-        title="Your MP, everything in one place"
-        subtitle="Declared interests, voting record, rebellion rate, and recent activity for whoever represents you — found by postcode, remembered only on this device."
+        kicker="My MP"
+        title="Your MP in one place"
+        subtitle="Declared interests, voting record, rebellion rate and recent activity for whoever represents you. Found by postcode and remembered only on this device."
       />
 
       <AnimatePresence mode="wait">

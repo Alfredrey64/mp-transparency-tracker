@@ -63,13 +63,13 @@ export default function DevolvedAdministrations() {
     <div style={{ maxWidth: 900, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconDevolved}
-        kicker="Public Record · Devolved Administrations"
-        title="Beyond Westminster"
+        kicker="Devolved Administrations"
+        title="Scotland, Wales and Northern Ireland"
         subtitle={
           <>
-            This site otherwise covers the UK Parliament at Westminster — but Scotland, Wales, and Northern Ireland
-            each have their own <GlossaryTerm term="Devolution">devolved</GlossaryTerm> legislature with real
-            law-making power. Click any of the three below for how they actually work, and how they relate to
+            The rest of this site is about the UK Parliament at Westminster. Scotland, Wales and Northern Ireland each
+            also have their own <GlossaryTerm term="Devolution">devolved</GlossaryTerm> legislature, which makes laws
+            on matters Westminster has handed over. Open any of the three to see how it works and how it relates to
             Westminster.
           </>
         }

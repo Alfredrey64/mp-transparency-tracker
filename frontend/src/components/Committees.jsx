@@ -192,14 +192,14 @@ export default function Committees() {
     <div style={{ maxWidth: 980, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconCommittee}
-        kicker="Public Record · Select Committees"
+        kicker="Select Committees"
         title="Who's scrutinising the government"
         subtitle={
           <>
-            <GlossaryTerm term="Select Committee">Select committees</GlossaryTerm> are the cross-party groups of MPs
-            and peers who question ministers, gather evidence, and publish reports on how well government
-            departments are actually doing their jobs — separate from, and often more detailed than, anything
-            debated on the floor of the Commons or Lords.
+            <GlossaryTerm term="Select Committee">Select committees</GlossaryTerm> are cross-party groups of MPs and
+            peers who question ministers, gather evidence and publish reports on how well government departments are
+            doing. Their work is separate from, and often more detailed than, what is debated on the floor of the
+            Commons or Lords.
           </>
         }
       />

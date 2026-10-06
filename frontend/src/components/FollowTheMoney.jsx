@@ -202,9 +202,9 @@ export default function FollowTheMoney({ onSelectPolitician }) {
     <div style={{ padding: PAGE_PADDING, maxWidth: 900, margin: "0 auto" }}>
       <PageHeader
         icon={IconSearch}
-        kicker="Public Record · Follow the Money"
-        title="Follow the money"
-        subtitle="Search any company, union, or individual donor's name to see every MP and political party they've given declared money to — pulled from two official registers at once."
+        kicker="Follow the Money"
+        title="Trace a donor"
+        subtitle="Search any company, union or individual donor to see every MP and party they have given declared money to. It draws on two official registers at once."
       />
 
       <div style={{ position: "relative", maxWidth: 480, marginTop: 20, marginBottom: 24 }}>

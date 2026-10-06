@@ -513,9 +513,9 @@ export default function PoliticalHistory() {
     <div style={{ maxWidth: 900, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconHistory}
-        kicker="Public Record · Political History"
-        title="Landmark votes & party history"
-        subtitle="Moments and lineages that give today's Parliament and parties their context — a curated selection, not an exhaustive archive. See the Timeline tab for the full chronological sweep of governments and bills together."
+        kicker="Political History"
+        title="Landmark votes and party history"
+        subtitle="Moments that give today's Parliament and parties their context. It is a selection, not a full archive. The Timeline tab lists every government and bill in order."
       />
 
       <div style={{ display: "flex", gap: 4, marginTop: 24, marginBottom: 28, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: 4, width: "fit-content" }}>

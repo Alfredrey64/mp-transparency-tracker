@@ -36,9 +36,9 @@ const CHANGE_FEED_TYPES = {
 // and later sees purple again in the sidebar has already learned what that
 // colour means, rather than the homepage inventing its own one-off scheme.
 const QUICK_LINKS = [
-  { key: "voting", label: "Browse Bills", icon: IconBills, color: "#9B4FE0" },
-  { key: "parties", label: "Browse Party Policies", icon: IconManifesto, color: "#2F80ED" },
-  { key: "partyFinances", label: "Browse Party Funding", icon: IconPartyFinance, color: "#F2622A" },
+  { key: "voting", label: "Browse bills", icon: IconBills, color: "#9B4FE0" },
+  { key: "parties", label: "Browse party policies", icon: IconManifesto, color: "#2F80ED" },
+  { key: "partyFinances", label: "Browse party funding", icon: IconPartyFinance, color: "#F2622A" },
   { key: "rankings", label: "Rankings", icon: IconRankings, color: "#D9A62A" },
 ];
 
@@ -257,7 +257,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
       >
         <motion.div variants={revealChild}>
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <EyebrowLabel>Public Record · UK Parliament</EyebrowLabel>
+            <EyebrowLabel>An independent look at UK Parliament</EyebrowLabel>
           </div>
           <h1 style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: "clamp(36px, 6vw, 58px)", color: COLORS.ink, margin: "16px auto 0", lineHeight: 1.08, maxWidth: 760 }}>
             Follow the money behind every MP.
@@ -358,7 +358,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 4 }}>
-          <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 19, color: COLORS.ink }}>Latest Declared Interests</div>
+          <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 19, color: COLORS.ink }}>Latest declared interests</div>
           <div style={{ display: "flex", gap: 4 }}>
             {[
               { key: "donations", label: "Donations" },
@@ -460,7 +460,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
       <div style={{ borderTop: `1px solid ${COLORS.hairline}`, borderBottom: `1px solid ${COLORS.hairline}`, padding: "24px 0", marginBottom: 40 }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))", gap: 24, alignItems: "center" }}>
           <div>
-            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, color: COLORS.ink, marginBottom: 4 }}>Find Your MP</div>
+            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, color: COLORS.ink, marginBottom: 4 }}>Find your MP</div>
             <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.5 }}>
               Search by constituency to jump straight to their profile.
             </div>
@@ -548,7 +548,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))", gap: "clamp(24px, 4vw, 32px)", marginBottom: 40 }}>
         <div style={{ border: `1px solid ${COLORS.hairline}`, borderRadius: 16, padding: "20px 22px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-            <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 20, color: COLORS.ink }}>Bills Going Through Parliament</div>
+            <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 20, color: COLORS.ink }}>Bills going through Parliament</div>
             {onNavigate && (
               <button
                 onClick={() => onNavigate("voting")}
@@ -599,12 +599,12 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
         <div style={{ border: `1px solid ${COLORS.hairline}`, borderRadius: 16, padding: "20px 22px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4, gap: 10, flexWrap: "wrap" }}>
             <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, color: COLORS.ink }}>
-              {parliamentTab === "changes" ? "What's Changed" : "On This Day"}
+              {parliamentTab === "changes" ? "What's changed" : "On this day"}
             </div>
             <div style={{ display: "flex", gap: 2 }}>
               {[
-                { key: "changes", label: "What's Changed" },
-                { key: "history", label: "On This Day" },
+                { key: "changes", label: "What's changed" },
+                { key: "history", label: "On this day" },
               ].map((tab) => (
                 <button
                   key={tab.key}

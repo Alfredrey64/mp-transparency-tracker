@@ -122,7 +122,7 @@ export default function PartyFinances() {
   if (!stats) {
     return (
       <div style={{ padding: PAGE_PADDING }}>
-        <PageHeader icon={IconPartyFinance} title="Party Finances" subtitle="Loading…" />
+        <PageHeader icon={IconPartyFinance} title="Who funds the parties" subtitle="Loading…" />
       </div>
     );
   }
@@ -135,8 +135,8 @@ export default function PartyFinances() {
     <div style={{ padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconPartyFinance}
-        title="Party Finances"
-        subtitle="Donations made directly to political parties over the last 12 months — a separate regime and dataset from MPs' own declared interests, regulated and published by the Electoral Commission rather than Parliament."
+        title="Who funds the parties"
+        subtitle="Donations made directly to political parties over the last 12 months. This is a separate system from MPs' own declared interests, regulated and published by the Electoral Commission rather than Parliament."
         maxWidth={900}
       />
 
@@ -404,7 +404,7 @@ function PartyFinanceRulesSection() {
           </RuleBullet>
         </RuleCard>
 
-        <RuleCard title="Who's actually allowed to give">
+        <RuleCard title="Who is allowed to give">
           <RuleBullet>
             Only "permissible" UK sources can donate: registered voters, companies that trade in the UK, trade
             unions, and a handful of other UK-based organisations.

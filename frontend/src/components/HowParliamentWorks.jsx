@@ -512,7 +512,7 @@ function ConstituencyLookup() {
       }}
     >
       <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 24, color: COLORS.ink, marginTop: 0, marginBottom: 6 }}>
-        Find Your MP
+        Find your MP
       </h2>
       <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16, maxWidth: 620 }}>
         Enter your postcode to see which constituency you're in, and who currently represents it in Parliament.
@@ -592,12 +592,12 @@ export default function HowParliamentWorks() {
   return (
     <div style={{ padding: PAGE_PADDING, maxWidth: 1180, margin: "0 auto" }}>
       <PageHeader
-        title="How Parliament Works"
+        title="How Parliament works"
         subtitle={
           <>
-            Expand any stage below for a clear explanation — from who's actually in charge, to how a{" "}
-            <GlossaryTerm term="Bill">bill</GlossaryTerm> becomes law, to how your own MP ends up in Parliament in
-            the first place.
+            From who is in charge, to who does what where you live, to how a{" "}
+            <GlossaryTerm term="Bill">bill</GlossaryTerm> becomes law and how your own MP gets elected. Open any
+            stage for a plain explanation.
           </>
         }
         maxWidth={900}
@@ -607,7 +607,7 @@ export default function HowParliamentWorks() {
         <DiagramSection
           id="charge"
           index={0}
-          title="Who's In Charge?"
+          title="Who's in charge?"
           intro="The UK's system separates ceremonial authority, law-making, and day-to-day running of the country into distinct roles."
           stages={STRUCTURE_ROWS}
           color={COLORS.accent}
@@ -619,7 +619,7 @@ export default function HowParliamentWorks() {
         <DiagramSection
           id="billprocess"
           index={1}
-          title="How a Bill Becomes Law"
+          title="How a bill becomes law"
           intro="Every law goes through the same basic journey — though it can take anywhere from weeks to years."
           stages={BILL_PROCESS_STAGES}
           color="#7A4B63"
@@ -629,7 +629,7 @@ export default function HowParliamentWorks() {
         <DiagramSection
           id="elections"
           index={2}
-          title="How MPs Are Elected"
+          title="How MPs are elected"
           intro="Every MP in this app got their seat through the same process."
           stages={ELECTION_STAGES}
           color="#2F6F4E"
@@ -639,7 +639,7 @@ export default function HowParliamentWorks() {
         <DiagramSection
           id="mpjob"
           index={3}
-          title="The Job of an MP"
+          title="The job of an MP"
           intro="Once elected, what does the role actually involve day to day — and what does it pay?"
           stages={MP_JOB_STAGES}
           color="#4C6FA6"

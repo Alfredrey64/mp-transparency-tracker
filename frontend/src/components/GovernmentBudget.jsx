@@ -142,9 +142,9 @@ export default function GovernmentBudget() {
     <div style={{ maxWidth: 1040, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconBudget}
-        kicker="Public Record · Government Budget"
-        title="Where the government's money goes"
-        subtitle="The UK public sector is due to spend about £1,368bn in 2025-26 — roughly £48,000 per household. Click any slice of the ring, or any category, to explore it."
+        kicker="Government Budget"
+        title="Where taxes go"
+        subtitle="The UK public sector is due to spend about £1,368bn in 2025-26, roughly £48,000 per household. Tap any slice of the ring, or any category, to explore it."
       />
 
       <div

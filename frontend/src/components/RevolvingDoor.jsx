@@ -105,9 +105,9 @@ export default function RevolvingDoor() {
     <div style={{ padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconDoor}
-        kicker="Public Record · Transparency Gaps"
+        kicker="Transparency Gaps"
         title="The revolving door between government and industry"
-        subtitle="When a minister or senior official leaves office, the knowledge and contacts they built up don't disappear — and UK rules on where they can go next have long been criticised as advisory only. Here's how that system actually worked, why it just changed completely, and four real cases that shaped the debate."
+        subtitle="When a minister or senior official leaves office, their knowledge and contacts go with them. UK rules on where they can go next have long been criticised as advisory only. This page explains how the system worked, why it has recently changed, and four cases that shaped the debate."
         maxWidth={900}
       />
 
@@ -144,7 +144,7 @@ export default function RevolvingDoor() {
         to people still inside government. Getting advice has always been a requirement; following it has not.
       </InfoCard>
 
-      <InfoCard title="ACOBA is gone — here's what replaced it" color="#9C6B30" icon={IconCompare} index={2}>
+      <InfoCard title="ACOBA has gone. Here is what replaced it" color="#9C6B30" icon={IconCompare} index={2}>
         <p style={{ marginTop: 0 }}>
           The Advisory Committee on Business Appointments (ACOBA) — the body that gave this advice for exactly 50
           years — was abolished on 13 October 2025. Its work has been split in two: applications from{" "}
@@ -155,9 +155,9 @@ export default function RevolvingDoor() {
         </p>
         <p style={{ marginBottom: 0 }}>
           The new Independent Adviser handled 61 former-ministers' applications in its first reporting year
-          (2025–26) — a real, working system, but a genuinely new one with no long track record yet. Whether
-          folding this into a role with a much broader remit strengthens or dilutes scrutiny is something this page
-          will keep watching, not something that can be judged this early.
+          (2025–26). The system works, but it is new and has no long track record. Whether folding this into a role
+          with a much broader remit strengthens or dilutes scrutiny is something this page will keep watching. It
+          is too early to judge.
         </p>
       </InfoCard>
 

@@ -194,9 +194,9 @@ export default function LobbyingRegister() {
     <div style={{ padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconRegister}
-        kicker="Public Record · Transparency Gaps"
-        title="The Register of Consultant Lobbyists"
-        subtitle="The UK's one statutory, public list of who's being paid to lobby ministers on someone else's behalf — genuinely useful, and much narrower than most people assume."
+        kicker="Transparency Gaps"
+        title="The register of consultant lobbyists"
+        subtitle="The UK's one statutory, public list of who is paid to lobby ministers on someone else's behalf. It is useful, but much narrower than most people assume."
         maxWidth={900}
       />
 
@@ -221,7 +221,7 @@ export default function LobbyingRegister() {
         </p>
       </InfoCard>
 
-      <InfoCard title="What actually has to be registered" color="#3F7D5C" icon={IconRegister} index={1}>
+      <InfoCard title="What has to be registered" color="#3F7D5C" icon={IconRegister} index={1}>
         The Transparency of Lobbying, Non-Party Campaigning and Trade Union Administration Act 2014 created a
         statutory duty for one specific, narrow activity: a{" "}
         <strong style={{ color: COLORS.ink }}>consultant lobbyist</strong> — a firm or individual paid by a client to

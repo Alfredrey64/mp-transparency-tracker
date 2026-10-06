@@ -464,9 +464,9 @@ export default function ComparePoliticians() {
     <div style={{ maxWidth: 1080, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconCompare}
-        kicker="Public Record · Compare MPs"
+        kicker="Compare MPs"
         title="Compare MPs side by side"
-        subtitle={`Pick up to ${MAX_COMPARE} MPs to compare their careers, exactly what they've declared in money — donations and IPSA business costs — and how they voted on the same issues in the Commons.`}
+        subtitle={`Pick up to ${MAX_COMPARE} MPs to compare their careers, what they have declared in money (donations and IPSA business costs) and how they voted on the same issues in the Commons.`}
       />
 
       <div style={{ marginTop: 24, marginBottom: 24 }}>

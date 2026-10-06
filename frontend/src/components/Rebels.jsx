@@ -69,7 +69,7 @@ export default function Rebels({ onNavigate }) {
     <div style={{ maxWidth: 1040, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconSplit}
-        kicker="MP Accountability · Rebels"
+        kicker="Rebels"
         title="Who votes against their own party"
         subtitle="Most MPs vote with the majority of their party almost every time. This page shows the exceptions: who breaks ranks, which parties split most, and which votes caused the biggest rebellions."
       />

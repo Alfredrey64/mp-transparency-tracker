@@ -212,7 +212,7 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician }) {
             to a headline): a leading dash in front of one centred word just
             reads as a stray mark. */}
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <EyebrowLabel color={COLORS.accentOnDark} showRule={false}>Public Record</EyebrowLabel>
+          <EyebrowLabel color={COLORS.accentOnDark} showRule={false}>Independent and unofficial</EyebrowLabel>
         </div>
         <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 19, color: "#fff", lineHeight: 1.2, marginTop: 6 }}>
           UK Parliament Tracker
@@ -333,11 +333,8 @@ export default function Sidebar({ activeView, onNavigate, onSelectPolitician }) 
           width: 300,
           flexShrink: 0,
           background: `linear-gradient(160deg, ${COLORS.sidebarBg}, ${COLORS.sidebarBgDeep})`,
-          minHeight: "100vh",
-          maxHeight: "100vh",
           overflowY: "auto",
           alignSelf: "flex-start",
-          padding: "20px 16px 16px",
           boxSizing: "border-box",
           display: "flex",
           flexDirection: "column",

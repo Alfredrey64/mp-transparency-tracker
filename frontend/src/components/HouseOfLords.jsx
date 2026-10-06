@@ -421,14 +421,14 @@ export default function HouseOfLords({ peerId = null }) {
     <div style={{ padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconLords}
-        kicker="Public Record · House of Lords"
+        kicker="House of Lords"
         title="Who's in the House of Lords"
         subtitle={
           loading
             ? "Loading current peers…"
             : failed
-            ? "Couldn't load the current peers — this looks like a connection issue, not an empty House."
-            : `Every current member of the House of Lords — ${peers.length} peers in total.`
+            ? "Couldn't load the current peers. This looks like a connection problem, not an empty House."
+            : `Every current member of the House of Lords: ${peers.length} peers in total.`
         }
       />
 

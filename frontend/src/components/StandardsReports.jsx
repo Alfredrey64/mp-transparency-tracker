@@ -256,9 +256,9 @@ export default function StandardsReports({ onSelectPolitician }) {
     <div style={{ maxWidth: 860, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconGavel}
-        kicker="Public Record · Standards & Sanctions"
+        kicker="Standards & Sanctions"
         title="When the standards system names an MP"
-        subtitle="Every report the Commons Committee on Standards has published about a named MP's individual conduct — as distinct from the committee's separate work reviewing the rules themselves."
+        subtitle="Every report the Commons Committee on Standards has published about a named MP's conduct. The committee's separate work reviewing the rules is not included."
       />
 
       {stats && (

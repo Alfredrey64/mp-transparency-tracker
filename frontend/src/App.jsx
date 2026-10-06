@@ -296,7 +296,7 @@ export default function App() {
   return (
     <MotionConfig reducedMotion="user">
     <GuideKeyContext.Provider value={guideKeyFor(view, viewParam)}>
-    <div className="mp-app-shell" style={{ display: "flex", minHeight: "100vh", background: COLORS.paper, fontFamily: FONT_BODY }}>
+    <div className="mp-app-shell" style={{ display: "flex", background: COLORS.paper, fontFamily: FONT_BODY }}>
       <Sidebar activeView={view} onNavigate={handleNavigate} onSelectPolitician={handleViewProfile} />
       <div style={{ flex: 1, minWidth: 0 }}>
         {/* The new page fades in straight away. It used to wait for the old

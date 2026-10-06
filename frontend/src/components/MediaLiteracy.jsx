@@ -456,8 +456,8 @@ export default function MediaLiteracy() {
     <div style={{ padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconBook}
-        title="How broadcast impartiality actually works"
-        subtitle="This site doesn't rate broadcasters for bias — that's a subjective judgement call, not a matter of public record like everything else here. What follows instead is how UK broadcast regulation actually works, what it requires in practice, who owns what, and real, independently adjudicated cases of it playing out."
+        title="How broadcast impartiality works"
+        subtitle="This site doesn't rate broadcasters for bias, because that is a judgement call rather than a matter of public record. Instead, this page explains how UK broadcast regulation works, what it requires, who owns what, and cases where it has been tested."
         maxWidth={900}
       />
 
@@ -548,11 +548,11 @@ export default function MediaLiteracy() {
 
       <div style={{ marginBottom: 32, maxWidth: 900 }}>
         <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>
-          When broadcasters have fallen short — and when they haven't
+          When broadcasters have fallen short, and when they haven't
         </h2>
         <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16 }}>
-          Five real, published Ofcom cases — chosen to show what a genuine breach looks like, what falls just short of
-          one, and that Ofcom's own rulings can themselves be successfully challenged.
+          Five published Ofcom cases, chosen to show what a breach looks like, what falls just short of one, and that
+          Ofcom's own rulings can be successfully challenged.
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {REAL_CASES.map((item, i) => (
@@ -561,7 +561,7 @@ export default function MediaLiteracy() {
         </div>
       </div>
 
-      <InfoCard title="Where to find real, adjudicated findings" color="#3F7D5C" index={2}>
+      <InfoCard title="Where to find the official rulings" color="#3F7D5C" index={2}>
         <p style={{ marginTop: 0 }}>
           Rather than trust anyone's scorecard — including any you find elsewhere — Ofcom itself publishes every
           impartiality complaint it upholds, with its full written reasoning, in its weekly Broadcast and On Demand

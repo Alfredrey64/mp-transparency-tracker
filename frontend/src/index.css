@@ -33,6 +33,36 @@ html, body, #root {
   min-height: 100vh;
   margin: 0;
   padding: 0;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+@supports (min-height: 100dvh) {
+  html, body, #root { min-height: 100dvh; }
+}
+
+/* Phones: no 300ms tap delay or double-tap zoom on controls, and no grey flash
+   when something is tapped. */
+button, a, [role="button"], input, select, summary { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+
+/* The app shell fills the screen, and the menu column is exactly as tall as the
+   visible screen (dvh follows the browser's collapsing address bar). */
+.mp-app-shell { min-height: 100vh; }
+.mp-sidebar { min-height: 100vh; max-height: 100vh; padding: 20px 16px 16px; }
+@supports (min-height: 100dvh) {
+  .mp-app-shell { min-height: 100dvh; }
+  .mp-sidebar { min-height: 100dvh; max-height: 100dvh; }
+}
+
+/* Notched phones and home-screen apps: keep content clear of the notch, the
+   rounded corners and the home bar. */
+.mp-mobile-topbar { padding-top: calc(14px + env(safe-area-inset-top, 0px)) !important; padding-left: calc(18px + env(safe-area-inset-left, 0px)) !important; padding-right: calc(18px + env(safe-area-inset-right, 0px)) !important; }
+.mp-sidebar { padding-top: calc(20px + env(safe-area-inset-top, 0px)); padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); padding-left: calc(16px + env(safe-area-inset-left, 0px)); }
+#root { padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+/* iOS zooms the page when you focus a field set below 16px. Keep fields at 16px
+   on touch screens so the page stays put. */
+@media (pointer: coarse) {
+  input, select, textarea { font-size: 16px !important; }
 }
 
 body {
@@ -448,4 +478,15 @@ select:focus-visible,
   /* Extra room below the diagram (cancelled by the negative margin, so the
      layout is unchanged) lets the panel stay on screen while the last tier is. */
   .tier-panelcol { align-self: stretch; padding-bottom: 360px; margin-bottom: -360px; }
+}
+
+/* Printing (handy for classrooms): just the page, no menu, on white. */
+@media print {
+  .mp-sidebar, .mp-sidebar-backdrop, .mp-mobile-topbar, .tier-mini { display: none !important; }
+  :root, [data-theme="dark"] {
+    --c-ink: #111; --c-ink-soft: #444; --c-paper: #fff; --c-paper-card: #f6f6f8; --c-hairline: #d5d5dc;
+  }
+  body { background: #fff; }
+  * { animation: none !important; transition: none !important; }
+  .tier-panel { opacity: 1 !important; transform: none !important; }
 }

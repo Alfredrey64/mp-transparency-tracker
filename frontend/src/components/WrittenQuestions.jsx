@@ -284,9 +284,9 @@ export default function WrittenQuestions({ onSelectPolitician, initialQuery = ""
     <div style={{ maxWidth: 900, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconQuestion}
-        kicker="Public Record · Written Questions"
+        kicker="Written Questions"
         title="What MPs are actually asking ministers"
-        subtitle={`Written questions tabled in either House over the last ${WINDOW_DAYS} days — one of the clearest day-to-day signals of what an MP is actually pressing government on, whether or not it ever makes the news.`}
+        subtitle={`Written questions tabled in either House over the last ${WINDOW_DAYS} days. They are one of the clearest day-to-day signs of what an MP is pressing government on, whether or not it makes the news.`}
       />
 
       <div

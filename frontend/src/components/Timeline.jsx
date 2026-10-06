@@ -497,9 +497,9 @@ export default function Timeline() {
 
       <PageHeader
         icon={IconTimeline}
-        kicker="Public Record · Timeline"
+        kicker="Timeline"
         title="Three centuries in one timeline"
-        subtitle="Every government formed since Robert Walpole took office in 1721, alongside the landmark bills passed along the way — who held power, and what they did with it. Click any entry for more detail."
+        subtitle="Every government formed since Robert Walpole took office in 1721, alongside the landmark bills passed along the way: who held power, and what they did with it. Tap any entry for more detail."
       />
 
       <div style={{ display: "flex", gap: 4, marginTop: 28, marginBottom: 8, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: 4, width: "fit-content" }}>

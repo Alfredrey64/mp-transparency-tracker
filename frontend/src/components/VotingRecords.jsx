@@ -520,12 +520,12 @@ export default function VotingRecords({ initialMp = null, initialBill = null }) 
     <div style={{ padding: PAGE_PADDING, maxWidth: 1240, margin: "0 auto" }}>
       <PageHeader
         icon={IconVote}
-        title="How They Voted"
+        title="How MPs voted"
         subtitle={
           <>
             Every <GlossaryTerm term="Bill">bill</GlossaryTerm> going through Parliament and every recorded Commons{" "}
-            <GlossaryTerm term="Division">vote</GlossaryTerm>, in one place — look up an MP's history, or a bill's
-            full detail and how MPs voted on it.
+            <GlossaryTerm term="Division">vote</GlossaryTerm>, in one place. Look up an MP's history, or a bill's
+            detail and how MPs voted on it.
           </>
         }
       />

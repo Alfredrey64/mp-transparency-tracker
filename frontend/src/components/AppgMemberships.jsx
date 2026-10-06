@@ -188,8 +188,8 @@ export default function AppgMemberships() {
   return (
     <div style={{ padding: PAGE_PADDING }}>
       <PageHeader
-        title="APPG Memberships"
-        subtitle="All-Party Parliamentary Groups are informal, cross-party groups that MPs and peers join to focus on a particular topic — and one of the earliest, least visible ways outside organisations get access to Parliament."
+        title="Cross-party groups"
+        subtitle="All-party parliamentary groups (APPGs) are informal groups that MPs and peers join to focus on one topic. They are one of the earliest and least visible ways outside organisations get access to Parliament."
         maxWidth={900}
       />
 
@@ -218,18 +218,18 @@ export default function AppgMemberships() {
 
       <InfoCard title="What is an APPG?" color={COLORS.accent} index={0}>
         An All-Party Parliamentary Group brings together MPs and members of the House of Lords who share
-        an interest in a topic — a country, a health condition, an industry, a social issue. They have{" "}
-        <strong style={{ color: COLORS.ink }}>no official power in Parliament</strong> — they can't pass
-        laws — but they regularly host outside speakers, run inquiries, and publish reports that can
-        genuinely shape how MPs and ministers think about an issue.
+        an interest in a topic, such as a country, a health condition, an industry or a social issue. They have{" "}
+        <strong style={{ color: COLORS.ink }}>no official power in Parliament</strong> and can't pass laws, but
+        they regularly host outside speakers, run inquiries and publish reports that can shape how MPs and
+        ministers think about an issue.
       </InfoCard>
 
       <div style={{ marginBottom: 32, maxWidth: 900 }}>
         <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>
-          Registered Financial Benefits
+          Registered financial benefits
         </h2>
         <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16 }}>
-          A hand-picked sample of real, publicly reported cases — not a complete or automatically updating record.
+          A hand-picked sample of publicly reported cases. It is not a complete or automatically updating record.
           The full Register of APPGs is published as a PDF roughly every 6 weeks with no API to draw from
           automatically, so this is refreshed periodically by hand instead, the same approach used for the
           Ministerial Meetings page.
@@ -320,7 +320,7 @@ export default function AppgMemberships() {
         </div>
       </div>
 
-      <InfoCard title="Why This Matters" color="#8A6D1F" index={1}>
+      <InfoCard title="Why this matters" color="#8A6D1F" index={1}>
         Running a group takes staff and admin, and that support — called a "secretariat" — is very often
         provided by an outside organisation with a direct stake in the topic: a charity, a trade body, or
         a public affairs firm working for an industry. That's not necessarily improper — it's how these
@@ -328,7 +328,7 @@ export default function AppgMemberships() {
         often well before any formal donation would ever be declared elsewhere.
       </InfoCard>
 
-      <InfoCard title="The Rules APPGs Must Follow" color="#2F6F4E" index={2}>
+      <InfoCard title="The rules APPGs must follow" color="#2F6F4E" index={2}>
         <ul style={{ margin: 0, paddingLeft: 20 }}>
           <li style={{ marginBottom: 8 }}>At least 20 members, with officers from more than one political party</li>
           <li style={{ marginBottom: 8 }}>At least two meetings a year, including one Annual General Meeting</li>

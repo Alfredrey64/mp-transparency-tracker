@@ -439,9 +439,9 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
     <div style={{ maxWidth: 860, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconRankings}
-        kicker="Public Record · Rankings"
-        title="How MPs compare, side by side"
-        subtitle="Four metrics, each built from data already tracked elsewhere on this site, ranked head-to-head — business expenses, outside earnings, rebellion rate, and voting attendance. None of these are a verdict on any individual MP; read the note under each ranking for what it can and can't tell you."
+        kicker="Rankings"
+        title="MP league tables"
+        subtitle="Four measures, each built from data tracked elsewhere on this site: business expenses, outside earnings, rebellion rate and voting attendance. None is a verdict on an individual MP. Read the note under each table for what it can and can't tell you."
       />
 
       <div style={{ display: "inline-flex", flexWrap: "wrap", gap: 6, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: 4, marginTop: 24, marginBottom: 20 }}>

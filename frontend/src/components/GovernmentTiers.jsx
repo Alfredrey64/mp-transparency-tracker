@@ -385,7 +385,7 @@ export default function GovernmentTiers() {
         borderBottom: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${SECTION_COLOR}`, borderRadius: 16, padding: "24px clamp(16px, 4vw, 28px)",
       }}
     >
-      <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 24, color: COLORS.ink, marginTop: 0, marginBottom: 6 }}>Who Does What? The Tiers of Government</h2>
+      <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 24, color: COLORS.ink, marginTop: 0, marginBottom: 6 }}>Who does what? The tiers of government</h2>
       <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, marginTop: 0, marginBottom: 20, maxWidth: 780, lineHeight: 1.6 }}>
         Power in the UK is shared between several tiers, from Parliament down to your village. Each one has its own job and its own voters. This is a map
         of how they connect, not a chain of command: a minister can't tell a councillor what to decide, though they do hold the purse strings.

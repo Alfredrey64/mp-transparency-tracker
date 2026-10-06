@@ -14,13 +14,13 @@ const HOUSES = {
   commons: {
     label: "House of Commons",
     title: "The House of Commons, by the numbers",
-    subtitle: "Who sits in the Commons right now, where they came from, and how safe their seats are. All worked out from live parliamentary records.",
+    subtitle: "Who sits in the Commons right now, where they came from and how safe their seats are. All worked out from live parliamentary records.",
     hash: "#/numbers",
   },
   lords: {
     label: "House of Lords",
     title: "The House of Lords, by the numbers",
-    subtitle: "Who sits in the Lords right now, how they got there, and where they came from. All worked out from live parliamentary records.",
+    subtitle: "Who sits in the Lords right now, how they got there and where they came from. All worked out from live parliamentary records.",
     hash: "#/numbers/lords",
   },
 };
@@ -53,7 +53,7 @@ export default function ParliamentNumbers({ house, onNavigate }) {
   const h = HOUSES[active];
   return (
     <div style={{ maxWidth: 1040, margin: "0 auto", padding: PAGE_PADDING }}>
-      <PageHeader icon={IconChartBars} kicker={`Public Record · Parliament in Numbers`} title={h.title} subtitle={h.subtitle} />
+      <PageHeader icon={IconChartBars} kicker="Parliament in numbers" title={h.title} subtitle={h.subtitle} />
       <HouseTabs active={active} />
       <div style={{ marginTop: 18 }}>
         {active === "lords" ? (

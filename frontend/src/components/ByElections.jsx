@@ -76,14 +76,14 @@ export default function ByElections() {
     <div style={{ maxWidth: 860, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconByElection}
-        kicker="Public Record · Elections"
-        title="Elections"
+        kicker="Elections"
+        title="By-elections"
         subtitle={
           <>
-            Seats that have changed hands outside a <GlossaryTerm term="General Election">general election</GlossaryTerm> —
-            a <GlossaryTerm term="By-election">by-election</GlossaryTerm> is held whenever one falls vacant
-            mid-Parliament, usually through a resignation, a death, or an expulsion — plus any seat currently sitting
-            empty awaiting one. Often watched as an early signal of how the governing party is doing.
+            A <GlossaryTerm term="By-election">by-election</GlossaryTerm> is held when a seat falls vacant between{" "}
+            <GlossaryTerm term="General Election">general elections</GlossaryTerm>, usually after a resignation, a
+            death or an expulsion. This page shows seats that have changed hands this way, plus any seat waiting for
+            one. They are often read as an early sign of how the governing party is doing.
           </>
         }
       />
@@ -125,7 +125,7 @@ export default function ByElections() {
 
       {vacantSeats.length > 0 && (
         <div style={{ marginBottom: 28 }}>
-          <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, color: COLORS.ink, marginBottom: 4 }}>Upcoming Elections</h2>
+          <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, color: COLORS.ink, marginBottom: 4 }}>Upcoming elections</h2>
           <p style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 0, marginBottom: 14 }}>
             A seat with no sitting MP right now — a by-election to fill it is expected, though Parliament doesn't
             always announce a date immediately.

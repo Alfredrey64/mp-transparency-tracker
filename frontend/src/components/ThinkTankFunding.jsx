@@ -128,7 +128,7 @@ export default function ThinkTankFunding() {
     <div style={{ padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconThinkTank}
-        kicker="Public Record · Transparency Gaps"
+        kicker="Transparency Gaps"
         title="Who funds the think tanks you hear from?"
         subtitle={
           <>
@@ -148,13 +148,13 @@ export default function ThinkTankFunding() {
 
       <MaskedExpertDiagram />
 
-      <InfoCard title="What a think tank actually is" color="#5A7FA6" icon={IconQuestion} index={0}>
+      <InfoCard title="What a think tank is" color="#5A7FA6" icon={IconQuestion} index={0}>
         <p style={{ marginTop: 0 }}>
-          A think tank is an organisation that researches policy questions — the economy, health, immigration,
-          climate — and publishes reports and recommendations aimed at influencing government and public debate.
-          Some genuinely are independent researchers with no fixed agenda. Others exist largely to make a particular
-          industry's or ideology's case sound like disinterested expert analysis, which is precisely why who funds
-          one matters: it's one of the few real clues to which kind you're looking at.
+          A think tank is an organisation that researches policy questions, such as the economy, health, immigration
+          or climate, and publishes reports and recommendations aimed at influencing government and public debate.
+          Some are independent researchers with no fixed agenda. Others exist largely to make a particular
+          industry's or ideology's case sound like neutral expert analysis. That is why who funds one matters: it is
+          one of the few clues to which kind you are looking at.
         </p>
         <p style={{ marginBottom: 0 }}>
           They're not fringe voices — think tank staff are quoted in newspapers, interviewed on the radio, and
@@ -177,7 +177,7 @@ export default function ThinkTankFunding() {
         </p>
       </InfoCard>
 
-      <InfoCard title="Who Funds You? — an independent scorecard, not ours" color="#3F7D5C" icon={IconSearch} index={2}>
+      <InfoCard title="Who Funds You?: an independent scorecard, not ours" color="#3F7D5C" icon={IconSearch} index={2}>
         <p style={{ marginTop: 0 }}>
           Rather than judge any organisation's transparency ourselves, every grade below is taken directly from{" "}
           <a href="https://whofundsyou.org/" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>

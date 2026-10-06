@@ -155,9 +155,9 @@ export default function Glossary() {
     <div style={{ maxWidth: 760, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconGlossary}
-        kicker="Public Record · Glossary"
-        title="Parliamentary jargon, explained clearly"
-        subtitle="Every term you'll run into on this site, and in most UK political reporting, explained simply — search, or tap a term to expand it."
+        kicker="Glossary"
+        title="Jargon buster"
+        subtitle="Every term you will meet on this site and in most UK political news, explained simply. Search, or tap a term to open it."
       />
 
       <div style={{ display: "flex", gap: 2, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: 3, marginTop: 24, marginBottom: 20, width: "fit-content" }}>
