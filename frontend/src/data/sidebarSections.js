@@ -4,7 +4,7 @@ import {
   IconPartyFinance, IconByElection, IconLords, IconPetition, IconCompass, IconCommittee, IconCompare, IconMeeting,
   IconQuestion, IconGavel, IconRankings, IconDarkMoney, IconThinkTank, IconDoor, IconRegister,
   IconSearch, IconBook, IconChartBars, IconTopic, IconRoute, IconSplit, IconHexMap, IconCouncil,
-  IconTaxes, IconRates, IconMigration, IconMap, IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconHouse, IconGlobe, IconLeaf, IconCompareTime, IconShield,
+  IconTaxes, IconRates, IconMigration, IconMap, IconAsk, IconFactory, IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconHouse, IconGlobe, IconLeaf, IconCompareTime, IconShield,
 } from "../components/icons";
 
 // Lives outside both Sidebar.jsx and shared.jsx specifically so neither has
@@ -30,6 +30,7 @@ export const SECTIONS = [
     accent: "#2F80ED",
     items: [
       { key: "start", label: "Take the guided tour", icon: IconRoute, hint: "5 minutes, no jargon", essential: true },
+      { key: "answers", label: "Ask a question", icon: IconAsk, hint: "Why is housing so expensive?", essential: true, aka: ["why", "how", "explain", "question", "questions", "answers", "faq", "ask"] },
       { key: "howitworks", label: "How Parliament works", icon: IconFlow, hint: "From idea to law, step by step", essential: true, aka: ["parliament", "laws"] },
       { key: "devolved", label: "Scotland, Wales & N. Ireland", icon: IconDevolved, hint: "Who decides what where you live", aka: ["devolved administrations", "devolution"] },
       { key: "parties", label: "What parties promise", icon: IconManifesto, hint: "Manifesto positions side by side", aka: ["party policies", "manifesto"] },
@@ -88,6 +89,7 @@ export const SECTIONS = [
       { key: "housing", label: "Housing", icon: IconHouse, hint: "House prices, rents and bills", essential: true, aka: ["rent", "renters", "house prices", "mortgage", "property", "energy"] },
       { key: "crime", label: "Crime", icon: IconShield, hint: "What the survey and police figures show", aka: ["police", "knife crime", "burglary", "violence", "theft", "fraud", "shoplifting"] },
       { key: "trade", label: "Trade", icon: IconGlobe, hint: "What we sell abroad and buy in", aka: ["exports", "imports", "trade deficit", "current account"] },
+      { key: "business", label: "Business and industry", icon: IconFactory, hint: "Output by industry and online shopping", aka: ["industry", "manufacturing", "construction", "retail", "online shopping", "high street", "hospitality", "farming", "factories"] },
       { key: "immigration", label: "Immigration", icon: IconMigration, hint: "Net migration, small boats and asylum", essential: true, aka: ["migration", "asylum", "small boats", "channel crossings", "visas", "refugees", "net migration", "deportation", "returns"] },
       { key: "tax", label: "Taxes and spending", icon: IconTaxes, hint: "Where the money comes from and goes", essential: true, aka: ["tax", "income tax", "vat", "national insurance", "corporation tax", "public spending", "welfare", "benefits", "debt interest"] },
       { key: "rates", label: "Interest rates", icon: IconRates, hint: "Mortgages, savings and the pound", essential: true, aka: ["bank rate", "mortgage", "mortgages", "savings", "exchange rate", "pound", "dollar", "gilt", "base rate"] },

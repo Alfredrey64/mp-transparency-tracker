@@ -36,12 +36,20 @@ const median = (sorted) => {
   return sorted.length % 2 ? sorted[m] : (sorted[m - 1] + sorted[m]) / 2;
 };
 
-// Where one MP's figure sits among all MPs'.
-//   sorted  the distribution of every MP's figure
-//   format  how to write a figure ("£1,500", "12%")
-//   noun    what is being counted ("MPs"), plural
-//   zero    what to say when the middle MP's figure is zero ("has declared nothing")
-export function describeAmongMps({ value, sorted, format, noun = "MPs", zero = "is at zero" }) {
+// Where one MP's figure sits among all MPs', in plain sentences about that MP.
+//   sorted    the distribution of every MP's figure
+//   format    how to write a figure ("£1,500", "12%")
+//   noun      what is being counted ("MPs"), plural
+//   lead      says what the figure is, about this MP: (v) => `This MP has declared ${v}`
+//   typical   says it for the typical MP:             (v) => `The typical MP has declared ${v}`
+//   zero      what half of MPs have done when the middle MP is at zero ("have declared nothing")
+//   zeroSelf  the same, said of this MP when they are at zero ("This MP has declared nothing")
+export function describeAmongMps({
+  value, sorted, format, noun = "MPs", zero = "are at zero",
+  lead = (v) => `This MP's figure is ${v}`,
+  typical = (v) => `The typical MP is at ${v}`,
+  zeroSelf = lead(format(0)),
+}) {
   const p = percentileOf(sorted, value);
   if (p == null) return null;
   const band = bandFor(p);
@@ -49,11 +57,16 @@ export function describeAmongMps({ value, sorted, format, noun = "MPs", zero = "
   const higher = share(sorted, (v) => v > value);
   const mid = median(sorted);
   const parts = [];
-  if (band.tone === "high") parts.push(`More than ${lower}% of ${noun} are lower.`);
-  else if (band.tone === "low") parts.push(`More than ${higher}% of ${noun} are higher.`);
-  else parts.push(`Close to the middle of ${sorted.length.toLocaleString("en-GB")} ${noun}.`);
-  if (mid === 0) parts.push(`Half of ${noun} ${zero}.`);
-  else if (mid != null) parts.push(`The middle one is ${format(mid)}.`);
+  if (value === 0 && mid === 0) {
+    parts.push(`${zeroSelf}, like about half of ${noun}.`);
+  } else {
+    const me = lead(format(value));
+    if (band.tone === "high") parts.push(`${me}, which is higher than ${lower}% of ${noun}.`);
+    else if (band.tone === "low") parts.push(`${me}, which is lower than ${higher}% of ${noun}.`);
+    else parts.push(`${me}, which is typical: about as many ${noun} are above this as below it.`);
+    if (mid === 0) parts.push(`Half of ${noun} ${zero}.`);
+    else if (mid != null) parts.push(`${typical(format(mid))}.`);
+  }
   return { marker: band.label, tone: band.tone, text: parts.join(" "), percentile: p };
 }
 

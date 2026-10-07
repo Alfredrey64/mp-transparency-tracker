@@ -30,7 +30,7 @@ function Tooltip({ at, name, text }) {
   );
 }
 
-function RegionMap({ regions, view, fill, valueText, a11yLabel, selected, hover, onHover, onSelect, accent }) {
+function RegionMap({ regions, view, fill, valueText, a11yLabel, selected, hover, onHover, onSelect, accent, smooth = true }) {
   const reduce = useReducedMotion();
   const [point, setPoint] = useState(null);
 
@@ -70,7 +70,7 @@ function RegionMap({ regions, view, fill, valueText, a11yLabel, selected, hover,
                 transition={{ delay: reduce ? 0 : 0.05 + i * 0.045, duration: 0.5, ease: "easeOut" }}
                 style={{
                   fill: fill(r.key), stroke: outline(r.key), strokeWidth: selected === r.key ? 3 : hover === r.key ? 2.2 : 1.4, strokeLinejoin: "round", cursor: "pointer",
-                  transition: "fill 0.45s ease, stroke 0.15s", transformBox: "fill-box", transformOrigin: "center", outline: "none",
+                  transition: smooth ? "fill 0.35s ease, stroke 0.15s" : "stroke 0.15s", transformBox: "fill-box", transformOrigin: "center", outline: "none",
                   filter: hover === r.key || selected === r.key ? "drop-shadow(0 4px 8px rgba(0,0,0,0.35))" : undefined,
                 }}
               />
@@ -79,7 +79,7 @@ function RegionMap({ regions, view, fill, valueText, a11yLabel, selected, hover,
             <motion.g initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7, duration: 0.5 }}>
               <circle
                 cx={LONDON.cx} cy={LONDON.cy} r="16" pointerEvents="none"
-                style={{ fill: fill("london"), stroke: outline("london"), strokeWidth: selected === "london" ? 3 : 2, transition: "fill 0.45s ease" }}
+                style={{ fill: fill("london"), stroke: outline("london"), strokeWidth: selected === "london" ? 3 : 2, transition: smooth ? "fill 0.35s ease" : "none" }}
               />
               {/* A bigger invisible circle, so there is a comfortable target for a finger. */}
               <circle cx={LONDON.cx} cy={LONDON.cy} r="26" {...handlers("london")} style={{ fill: "transparent", cursor: "pointer", outline: "none" }} />
@@ -98,7 +98,7 @@ function RegionMap({ regions, view, fill, valueText, a11yLabel, selected, hover,
               transition={{ delay: reduce ? 0 : i * 0.04, type: "spring", stiffness: 300, damping: 22 }}
               style={{
                 gridColumn: r.tile[0] + 1, gridRow: r.tile[1] + 1, aspectRatio: "1 / 1", borderRadius: 14, background: fill(r.key), cursor: "pointer", outline: "none",
-                border: `2px solid ${selected === r.key ? accent : hover === r.key ? COLORS.ink : "transparent"}`, transition: "background 0.45s ease, border-color 0.15s",
+                border: `2px solid ${selected === r.key ? accent : hover === r.key ? COLORS.ink : "transparent"}`, transition: smooth ? "background 0.35s ease, border-color 0.15s" : "border-color 0.15s",
                 display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "8px 9px", minWidth: 0, overflow: "hidden",
               }}
             >

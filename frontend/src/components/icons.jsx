@@ -707,3 +707,13 @@ export function IconRates({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconAsk({ size = 17 }) {
+  return (
+    <svg width={size} height={size} {...iconProps}>
+      <path d="M4.5 5.5h15a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5H11l-4.5 3.5V16.5h-2A1.5 1.5 0 0 1 3 15V7a1.5 1.5 0 0 1 1.5-1.5Z" />
+      <path d="M9.8 9.6c0-1.1.9-1.8 2.2-1.8s2.2.7 2.2 1.7c0 1.5-2.2 1.4-2.2 3" />
+      <path d="M12 14.4v.1" />
+    </svg>
+  );
+}

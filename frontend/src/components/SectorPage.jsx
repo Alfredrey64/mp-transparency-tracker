@@ -24,7 +24,7 @@ import { toLineData, yearTicks } from "../lib/onsChart";
 import { bandsBetween, PARTY_COLOURS } from "../lib/governments";
 import { DEEP_DIVES } from "../data/onsDeepDives";
 import { card, cardTitle, smallTitle, pillStyle, dateText } from "../lib/onsStyles";
-import { IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconHouse, IconGlobe, IconLeaf, IconShield, IconTaxes, IconRates, IconMigration } from "./icons";
+import { IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconHouse, IconGlobe, IconLeaf, IconShield, IconTaxes, IconRates, IconMigration, IconFactory } from "./icons";
 
 // One page per sector, all built from the same pieces: a short story with a
 // spotlight figure, the headline numbers, then a card for every measure with its
@@ -32,7 +32,7 @@ import { IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconH
 // The numbers come from the Office for National Statistics (and, for house prices
 // and crime, the bodies named on each card), saved daily by fetch-ons.js.
 
-const ICONS = { economy: IconTrend, prices: IconBasket, jobs: IconBriefcase, publicFinances: IconLedger, population: IconPopulation, health: IconHeartbeat, housing: IconHouse, crime: IconShield, trade: IconGlobe, environment: IconLeaf, tax: IconTaxes, rates: IconRates, immigration: IconMigration };
+const ICONS = { economy: IconTrend, prices: IconBasket, jobs: IconBriefcase, publicFinances: IconLedger, population: IconPopulation, health: IconHeartbeat, housing: IconHouse, crime: IconShield, trade: IconGlobe, environment: IconLeaf, tax: IconTaxes, rates: IconRates, immigration: IconMigration, business: IconFactory };
 const RANGES = [{ years: 2, label: "2 years" }, { years: 5, label: "5 years" }, { years: 10, label: "10 years" }, { years: 25, label: "25 years" }, { years: 0, label: "Everything" }];
 const WHOLE_HISTORY = new Set(["population", "environment", "crime"]);
 const NOW = new Date().getFullYear() + 1;

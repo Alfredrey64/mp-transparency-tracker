@@ -1074,6 +1074,249 @@ const PLACES = {
     },
   ],
 };
+// --- More series, added to the pages above ---
+//
+// Written as tables of rows so each is one line to add: the series, then how to say it.
+
+const sectorOf = (key) => SECTORS.find((x) => x.key === key);
+const addSeries = (key, ...defs) => sectorOf(key).series.push(...defs);
+const addInputs = (key, ...defs) => (sectorOf(key).inputs ??= []).push(...defs);
+
+// Prices: the other main groups of the Consumer Prices Index, and two other measures of inflation.
+// [id, cdid, name, what it covers, why it matters]
+const CPI_GROUPS = [
+  ["alcohol-tobacco", "D7G9", "Alcohol and tobacco", "beer, wine, spirits, cigarettes and tobacco", "Tax is a big part of the price, so changes in duty show up here as well as changes in the cost of making and selling them."],
+  ["clothing", "D7GA", "Clothing and shoes", "clothes and footwear", "Clothing is mostly imported, so its prices follow the pound and global costs, and sales and discounting make it swing."],
+  ["housing-fuels", "D7GB", "Housing, water and fuels", "rents, repairs, water and energy bills (not the cost of owning a home)", "It is the largest group for most households, and it includes the energy bills that drove the 2022 surge."],
+  ["household-goods", "D7GC", "Furniture and household goods", "furniture, appliances, carpets and household repairs", "These are big, occasional purchases, so people notice when they rise even though they take a small share of spending."],
+  ["health-prices", "D7GD", "Health", "medicines, dental care, glasses and medical equipment", "Most NHS care is free, so this covers only what people pay for directly."],
+  ["communication", "D7GF", "Phones and communication", "mobile and landline contracts, broadband and post", "Many contracts rise by a set amount each year, so this can differ from the rest of the economy."],
+  ["recreation", "D7GG", "Recreation and culture", "package holidays, books, games, TV, pets and gardening", "Holidays and leisure are the first things people cut back on when money is tight, so demand and prices shift quickly."],
+  ["education-prices", "D7GH", "Education", "tuition fees and other education costs paid by households", "Fees for universities are set by the government, so this follows policy more than the market."],
+  ["misc-prices", "D7GJ", "Insurance and other services", "insurance, financial services, personal care and social protection costs", "Insurance premiums, especially for cars and homes, can rise sharply and are hard to avoid."],
+];
+addSeries("prices",
+  ...CPI_GROUPS.map(([id, cdid, name, covers, why]) => s(id, cdid, "mm23", PRICES, {
+    realMode: "relative", label: name, sentenceName: `Inflation for ${name.toLowerCase()}`, format: "pct", kind: "rate",
+    explain: `How much the prices of ${covers} have changed compared with a year earlier.`, why,
+  })),
+  s("rpi", "CZBH", "mm23", PRICES, {
+    label: "Inflation (RPI)", sentenceName: "Inflation measured by the Retail Prices Index", format: "pct", kind: "rate",
+    explain: "The older measure of inflation, the Retail Prices Index. It tends to run higher than CPI. It is no longer an official statistic, but it is still used for some things, such as index-linked government bonds and rail fares.",
+    why: "Many contracts, pensions and bonds are tied to RPI, so the gap between RPI and CPI matters to savers, pensioners and the government.",
+  }),
+  d("ppi-output", { op: "yoy", from: "ppi-output-index" }, {
+    label: "Prices at the factory gate", sentenceName: "Price inflation at the factory gate", format: "pct", kind: "rate",
+    explain: "How much more factories in the UK are charging for what they make than a year ago, before it reaches the shops.",
+    why: "It is an early warning for shop prices, because what factories charge today shows up on shelves in the months that follow.",
+  }),
+);
+addInputs("prices", s("ppi-output-index", "GB7S", "ppi", PRICES, {
+  label: "Factory gate price index", sentenceName: "Factory gate prices", format: "index", kind: "level",
+  explain: "The price index for goods made in the UK and sold here, with 2015 as 100.", why: "A building block for factory gate inflation.",
+}));
+
+// Jobs: more of how people work, pay in each sector, strikes.
+addSeries("jobs",
+  s("part-time", "YCCU", "lms", EMPLOYMENT, {
+    label: "People working part-time", sentenceName: "The number of people working part-time", verb: "was", format: "thousands", kind: "level",
+    explain: "How many people in work do fewer hours than a full-time job, by their own description.",
+    why: "Part-time work suits some people and traps others who want more hours, and it affects pay, pensions and how many hours the economy really supplies.",
+  }),
+  s("self-employed", "MGRQ", "lms", EMPLOYMENT, {
+    label: "Self-employed people", sentenceName: "The number of self-employed people", verb: "was", format: "thousands", kind: "level",
+    explain: "People who work for themselves rather than for an employer, including contractors and sole traders.",
+    why: "Self-employed people have no sick pay, paid holiday or employer pension, so a rise can mean more flexibility or more insecurity.",
+  }),
+  s("temp-share", "YCCC", "lms", EMPLOYMENT, {
+    label: "Employees on temporary contracts", sentenceName: "The share of employees on temporary contracts", format: "pct", kind: "rate",
+    explain: "The share of employees whose job has an end date, such as fixed-term or agency work.",
+    why: "A high share can mean employers are cautious about hiring, and workers have less security.",
+  }),
+  s("long-term-unemployed", "YBWH", "lms", `${NOT_IN_WORK}/unemployment`, {
+    label: "People unemployed for over a year", sentenceName: "The number of people unemployed for over a year", verb: "was", format: "thousands", kind: "level",
+    explain: "How many people have been out of work, looking for a job and available to start for more than 12 months.",
+    why: "The longer someone is out of work, the harder it is to get back in, so this is the part of unemployment that does the most lasting harm.",
+  }),
+  s("youth-employment", "AIWI", "lms", EMPLOYMENT, {
+    label: "Young people in work (not in full-time education)", sentenceName: "The employment rate of 16 to 24 year olds who are not in full-time education", format: "pct", kind: "rate",
+    explain: "Of 16 to 24 year olds who are not students, the share who have a job.",
+    why: "It shows whether young people who have left education are finding work, which sets their pay and prospects for years.",
+  }),
+  s("pay-public", "KAJ5", "lms", EARNINGS, {
+    nominal: true, label: "Average weekly pay in the public sector", sentenceName: "Average weekly regular pay in the public sector", format: "gbp", kind: "level",
+    explain: "Average weekly pay before tax for people working for government, the NHS, schools and other public bodies, leaving out bonuses and back pay.",
+    why: "Public sector pay is set by government decisions on pay awards, and the gap with the private sector is a recurring cause of strikes.",
+  }),
+  s("pay-private", "KAJ2", "lms", EARNINGS, {
+    nominal: true, label: "Average weekly pay in the private sector", sentenceName: "Average weekly regular pay in the private sector", format: "gbp", kind: "level",
+    explain: "Average weekly pay before tax for people working for private firms, leaving out bonuses and back pay.",
+    why: "Private pay follows what firms can afford and how hard it is to hire, so it moves faster than public pay in both directions.",
+  }),
+  d("strikes-12m", { op: "sum", n: 12, from: "strikes-month" }, {
+    yearEnding: true, label: "Working days lost to strikes over 12 months", sentenceName: "Working days lost to strikes", verb: "were", format: "thousands", kind: "level",
+    explain: "The number of working days that people lost to strikes over the last 12 months. A day lost is one person on strike for one day.",
+    why: "Strikes rose sharply in 2022 and 2023, mostly in the public sector, over pay that had fallen behind prices.",
+  }),
+);
+addInputs("jobs", s("strikes-month", "BBFW", "lms", EMPLOYMENT, {
+  label: "Working days lost to strikes each month", sentenceName: "Working days lost to strikes", format: "thousands", kind: "level",
+  explain: "Working days lost to strike action in the UK each month.", why: "A building block for the 12-month total.",
+}));
+
+// Economy: where spending and investment growth comes from.
+addSeries("economy",
+  d("government-spending-growth", { op: "yoy", from: "government-consumption" }, {
+    label: "Government spending on services, change on a year earlier", sentenceName: "Annual growth in government spending on services", format: "pct", kind: "rate",
+    explain: "How much more (or less) the government spent on running public services than in the same quarter a year before, after removing price rises.",
+    why: "Government spending is about a fifth of the economy, so it can make up for weak spending elsewhere, or hold the economy back when it is cut.",
+  }),
+  d("investment-total-growth", { op: "yoy", from: "investment-total" }, {
+    label: "All investment, change on a year earlier", sentenceName: "Annual growth in total investment", format: "pct", kind: "rate",
+    explain: "How much more (or less) was invested in machinery, buildings, housing and infrastructure by businesses, households and the government than a year before, after removing price rises.",
+    why: "Investment builds the future capacity of the economy. It swings more than anything else in a downturn.",
+  }),
+);
+addInputs("economy",
+  s("government-consumption", "NMRY", "ukea", GDP, { label: "Government spending on services", sentenceName: "Government spending on services", format: "gbpbn", kind: "level", explain: "General government final consumption expenditure, after removing price rises.", why: "A building block for its growth rate." }),
+  s("investment-total", "NPQT", "cxnv", GDP, { label: "All investment", sentenceName: "Total investment", format: "gbpbn", kind: "level", explain: "Total gross fixed capital formation, after removing price rises.", why: "A building block for its growth rate." }),
+);
+
+// Trade: goods and services, and who we trade with.
+const trade = (id, cdid, label, sentenceName, explain, why, rest = {}) => s(id, cdid, "ukea", TRADE, { nominal: true, label, sentenceName, verb: "were", format: "gbpbn", kind: "level", explain, why, ...rest });
+addSeries("trade",
+  trade("goods-exports", "BOKG", "Exports of goods", "UK exports of goods", "What the UK sold abroad in physical goods such as cars, machinery, medicines and fuel, in a quarter.", "Goods are what most people picture as trade, but the UK is better known for selling services."),
+  trade("goods-imports", "BOKH", "Imports of goods", "UK imports of goods", "What the UK bought from abroad in physical goods such as food, cars, electronics and fuel, in a quarter.", "The UK imports far more goods than it sells, which is why the trade balance is negative."),
+  trade("goods-balance", "BOKI", "Trade balance in goods", "The UK's trade balance in goods", "Goods exports minus goods imports. A negative number means the UK bought more goods than it sold.", "The goods gap is large and has been for decades.", { verb: "was" }),
+  trade("services-exports", "IKBB", "Exports of services", "UK exports of services", "What the UK sold abroad in services such as finance, insurance, law, consulting, education and travel, in a quarter.", "The UK is one of the world's biggest services exporters, and it is where most of its trade strength lies."),
+  trade("services-imports", "IKBC", "Imports of services", "UK imports of services", "What the UK bought from abroad in services such as travel, transport and online services, in a quarter.", "Holidays abroad and online services bought from overseas firms are a big part of it."),
+  trade("services-balance", "IKBD", "Trade balance in services", "The UK's trade balance in services", "Services exports minus services imports. A positive number means the UK sold more services than it bought.", "The surplus in services offsets part of the gap in goods.", { verb: "was" }),
+  d("eu-balance", { op: "minus", from: "eu-exports", of: "eu-imports" }, {
+    nominal: true, label: "Trade balance in goods with the EU", sentenceName: "The UK's trade balance in goods with the EU", verb: "was", format: "gbpbn", kind: "level",
+    explain: "Goods sold to EU countries minus goods bought from them. A negative number means the UK bought more than it sold.",
+    why: "The EU is the UK's largest trading partner. Trade with it was reshaped by Brexit.",
+  }),
+  d("noneu-balance", { op: "minus", from: "noneu-exports", of: "noneu-imports" }, {
+    nominal: true, label: "Trade balance in goods with the rest of the world", sentenceName: "The UK's trade balance in goods with countries outside the EU", verb: "was", format: "gbpbn", kind: "level",
+    explain: "Goods sold to countries outside the EU minus goods bought from them.",
+    why: "Trade deals aim to widen this part of trade, which includes the US, China and the Commonwealth.",
+  }),
+  d("eu-export-share", { op: "percentOf", from: "eu-exports", of: "goods-exports" }, {
+    label: "Share of goods exports that go to the EU", sentenceName: "The share of UK goods exports that go to the EU", format: "pct", kind: "rate",
+    explain: "Of everything the UK sells abroad in goods, the share that goes to EU countries.",
+    why: "It shows how dependent the UK still is on the EU as a market, and how fast trade is shifting elsewhere.",
+  }),
+);
+addInputs("trade",
+  trade("eu-exports", "L87S", "Goods exports to the EU", "Goods exports to the EU", "Goods sold to EU countries in a quarter.", "A building block for the EU balance and share."),
+  trade("eu-imports", "L87U", "Goods imports from the EU", "Goods imports from the EU", "Goods bought from EU countries in a quarter.", "A building block for the EU balance."),
+  trade("noneu-exports", "L87M", "Goods exports to non-EU countries", "Goods exports to non-EU countries", "Goods sold to countries outside the EU in a quarter.", "A building block for the non-EU balance."),
+  trade("noneu-imports", "L87O", "Goods imports from non-EU countries", "Goods imports from non-EU countries", "Goods bought from countries outside the EU in a quarter.", "A building block for the non-EU balance."),
+);
+
+// Housing: types of home, new build against existing, and how many homes are being sold.
+addSeries("housing",
+  h("hpi-semi", "united-kingdom", "averagePriceSemiDetached", {
+    nominal: true, label: "Semi-detached houses", sentenceName: "The average price of a semi-detached house", format: "gbp", kind: "level",
+    explain: "The average price paid for a semi-detached house in the UK.", why: "Semi-detached houses are the most common home in England, so their price is close to what a typical family home costs.",
+  }),
+  h("hpi-terraced", "united-kingdom", "averagePriceTerraced", {
+    nominal: true, label: "Terraced houses", sentenceName: "The average price of a terraced house", format: "gbp", kind: "level",
+    explain: "The average price paid for a terraced house in the UK.", why: "Terraced houses are the most common first home, so their price shows what first-time buyers face.",
+  }),
+  h("hpi-new-build", "united-kingdom", "averagePriceNewBuild", {
+    nominal: true, label: "New-build homes", sentenceName: "The average price of a new-build home", format: "gbp", kind: "level",
+    explain: "The average price paid for a home that has just been built, in the UK. These figures arrive about two months later than the others.", why: "New-build homes cost more than existing ones, and the gap shows whether building is adding the kind of homes people can afford.",
+  }),
+  h("hpi-existing", "united-kingdom", "averagePriceExistingProperty", {
+    nominal: true, label: "Existing homes", sentenceName: "The average price of an existing home", format: "gbp", kind: "level",
+    explain: "The average price paid for a home that has been lived in before, in the UK. These figures arrive about two months later than the others.", why: "Most sales are of existing homes, so this is the price most buyers face.",
+  }),
+  h("hpi-sales", "united-kingdom", "salesVolume", {
+    label: "Homes sold each month", sentenceName: "The number of homes sold", verb: "was", format: "count", kind: "level",
+    explain: "The number of home sales registered in the UK in the month. These figures arrive about two months later than the prices.", why: "Prices can look stable while few homes change hands. Sales show whether the market is active or frozen.",
+  }),
+);
+
+// Crime: more of what the survey and the police count. [id, row, name, what it counts, why it matters]
+const CSEW_ROWS = [
+  ["csew-injury", /^Violence with injury$/i, "Violence with injury in the Crime Survey", "Violence with injury", "violent incidents where the victim was hurt, from bruises to serious wounds", "Violence that causes injury is the part of violence that does the most harm, and the survey shows how much of it is never reported."],
+  ["csew-burglary", /^Domestic burglary$/i, "Burglary in the Crime Survey", "Domestic burglary", "break-ins and attempted break-ins at people's homes", "Burglary has fallen steeply since the 1990s, helped by better locks and alarms, and is one of the crimes people fear most."],
+  ["csew-vehicle", /^Vehicle-related theft$/i, "Vehicle theft in the Crime Survey", "Vehicle-related theft", "theft of vehicles, theft from vehicles and attempts", "Vehicle theft fell sharply as cars became harder to steal, and it is rising again in some places as thieves use keyless-entry tricks."],
+  ["csew-damage", /^CRIMINAL DAMAGE$/i, "Criminal damage in the Crime Survey", "Criminal damage", "damage to vehicles and property, including arson", "Vandalism is a common crime that is often not reported, so the survey is the best guide to the trend."],
+  ["csew-person-theft", /^Theft from the person$/i, "Theft from the person in the Crime Survey", "Theft from the person", "snatches and pickpocketing of phones, wallets and bags", "Phone theft has become a major part of this, especially in big cities."],
+];
+const PRC_ROWS = [
+  ["prc-injury", /^Violence with injury/i, "Violence with injury (police recorded)", "Violence with injury", "violent crimes recorded by police where the victim was injured", "Recorded violence with injury is rising partly because police record it more carefully than they used to."],
+  ["prc-stalking", /^Stalking and harassment/i, "Stalking and harassment (police recorded)", "Stalking and harassment", "stalking and harassment offences recorded by the police", "These offences became separate crimes in recent years, and recorded cases have risen sharply as more people report them."],
+  ["prc-rape", /^Rape$/i, "Rape (police recorded)", "Rape", "rapes recorded by the police, of adults and children", "Most rapes are never reported, so changes reflect the willingness to come forward and how the police record them, as well as how many happen."],
+  ["prc-vehicle", /^Vehicle offences/i, "Vehicle offences (police recorded)", "Vehicle offences", "thefts of and from vehicles recorded by the police", "Vehicle crime is the largest part of recorded theft and is highly sensitive to new thieving methods."],
+  ["prc-person-theft", /^Theft from the person/i, "Theft from the person (police recorded)", "Theft from the person", "snatches and pickpocketing recorded by the police", "Phone snatching in big cities is behind much of the rise."],
+  ["prc-bicycle", /^Bicycle theft/i, "Bicycle theft (police recorded)", "Bicycle theft", "bikes reported stolen to the police", "Bike theft is rarely solved, so many people no longer report it."],
+  ["prc-public-order", /^TOTAL PUBLIC ORDER OFFENCES/i, "Public order offences (police recorded)", "Public order offences", "threats, abuse and disorder recorded by the police, such as causing fear or alarm", "These are mostly decided by police activity and decisions to charge."],
+  ["prc-weapons", /^TOTAL POSSESSION OF WEAPONS OFFENCES/i, "Possession of weapons (police recorded)", "Possession of weapons", "offences of having a weapon, including knives, firearms and others, recorded by the police", "This is found by police action, so it rises with stop and search as well as with carrying."],
+];
+const crimeSeries = (rows, base, noun) => rows.map(([id, re, label, , covers, why]) => t(id, base, re, {
+  label, sentenceName: noun === "survey" ? label.replace(/ in the Crime Survey$/, "") + " as experienced by people in England and Wales" : `${label.replace(/ \(police recorded\)$/, "")} recorded by the police`, verb: "stood at", format: noun === "survey" ? "thousands" : "count", kind: "level",
+  explain: `The number of ${covers}${noun === "survey" ? ", as reported to the Crime Survey for England and Wales (an estimate)" : ""}, over the year.`, why,
+}));
+addSeries("crime", ...crimeSeries(CSEW_ROWS, CSEW, "survey"), ...crimeSeries(PRC_ROWS, POLICE, "police"));
+
+// Energy and environment: where emissions come from.
+const GHG_SOURCES = [
+  ["ghg-households", "K8B4", "Emissions from households", "Greenhouse gases produced by households", "heating homes with gas and running cars", "Heating and driving are the biggest single source, and the hardest to change because every household has to switch."],
+  ["ghg-power", "FS9R", "Emissions from power stations and the gas network", "Greenhouse gases from electricity and gas supply", "electricity, gas, steam and air conditioning supply", "This is where most of the fall has come from, as coal was replaced by gas, wind and solar."],
+  ["ghg-manufacturing", "K8AS", "Emissions from manufacturing", "Greenhouse gases from manufacturing", "factories and industrial processes, such as steel, chemicals and cement", "Industry has fewer ways to cut emissions than power does, and moving production abroad can simply shift the emissions elsewhere."],
+  ["ghg-agriculture", "K8AQ", "Emissions from farming", "Greenhouse gases from agriculture, forestry and fishing", "methane from livestock, nitrous oxide from fertiliser, and farm fuel", "Farming emissions have barely changed, and are expected to become a larger share as other sectors fall."],
+  ["ghg-transport", "FS9T", "Emissions from transport businesses", "Greenhouse gases from transport and storage businesses", "freight, buses, trains, shipping and aviation run by businesses, not private cars", "Cars driven by households are counted under households. Electric vehicles and cleaner fuels are the main route to cutting this."],
+];
+addSeries("environment", ...GHG_SOURCES.map(([id, cdid, label, name, covers, why]) => s(id, cdid, "bb", GDP, {
+  yearEnding: false, label, sentenceName: name, verb: "were", format: "ktonnes", kind: "level",
+  explain: `Greenhouse gases, in carbon dioxide equivalents, produced by ${covers}, measured on the UK residents and businesses basis.`, why,
+})));
+
+// A new page: business and industry. The index series are inputs, and each card is that industry's growth.
+const INDUSTRIES = [
+  ["manufacturing", "ECY6", "Manufacturing", "factories making cars, food, machinery, medicines and everything else", "Manufacturing is about a tenth of the economy but a big part of exports and of jobs in many towns.", true],
+  ["construction", "ECY9", "Construction", "building homes, offices, roads and repairs", "Construction is an early sign of confidence and decides whether the homes and infrastructure the country needs get built.", true],
+  ["retail-trade", "ECYD", "Shops and wholesale", "retail, wholesale and car sales and repairs", "It reflects what people are spending, and is where the shift to online shopping is felt.", false],
+  ["hospitality", "ECYH", "Hotels, pubs and restaurants", "hotels, restaurants, pubs, cafes and catering", "Hospitality employs millions of people, often young and part-time, and is hit first when household budgets are squeezed.", false],
+  ["finance", "ECYJ", "Finance and insurance", "banks, insurers, fund managers and related services", "Finance is a large part of UK tax receipts and exports, and is concentrated in London and a few other cities.", false],
+  ["tech-comms", "ECYI", "Technology and communications", "software, telecoms, computing and media", "It has been one of the fastest-growing parts of the economy and is central to productivity.", false],
+  ["health-social", "ECYS", "Health and social care", "hospitals, GPs, care homes and social work", "It is the largest employer in the country, and its output depends mainly on public spending.", false],
+  ["transport-storage", "ECYG", "Transport and storage", "freight, haulage, warehousing, buses, trains, flights and shipping", "It moves goods and people, so it follows trade and shopping, and is sensitive to fuel costs.", false],
+  ["agriculture", "ECY3", "Farming, forestry and fishing", "farming, forestry and fishing", "Output swings with the weather and harvests more than any other industry.", false],
+];
+SECTORS.push({
+  key: "business",
+  label: "Business and industry",
+  title: "Business and industry",
+  hint: "Output by industry, online shopping, factory prices",
+  subtitle: "How each major part of the economy is doing: factories, building, shops, hotels and pubs, finance, technology and health, plus how much we buy online.",
+  story: "The economy is not one thing. Some industries boom while others shrink, and which is which decides where the jobs and the tax revenue are. These figures show how each part is doing compared with a year ago.",
+  accent: "#A66BBE",
+  series: [
+    ...INDUSTRIES.map(([id, , name, covers, why, headline]) => d(`${id}-growth`, { op: "yoy", from: `${id}-index` }, {
+      headline, label: `${name}: output`, sentenceName: `Annual output growth in ${name.toLowerCase()}`, format: "pct", kind: "rate",
+      explain: `How much more (or less) was produced in ${covers} than a year earlier, after removing price rises. Monthly, seasonally adjusted.`, why,
+    })),
+    s("online-share", "J4MC", "drsi", "/businessindustryandtrade/retailindustry", {
+      headline: true, label: "Share of shopping done online", sentenceName: "The share of all retail sales made online", format: "pct", kind: "rate",
+      explain: "Of everything spent in shops and online, the share spent through websites and apps. It excludes services such as travel.",
+      why: "It spiked in the pandemic and has stayed high. It is a major reason high streets are changing and why many shops have closed.",
+    }),
+    s("online-sales", "JE2J", "drsi", "/businessindustryandtrade/retailindustry", {
+      nominal: true, label: "Spending online each week", sentenceName: "Online retail sales", verb: "were", format: "gbpbn", kind: "level",
+      explain: "What people spend on retail goods online, in an average week in the month shown.",
+      why: "It shows how large online retail has become, and how fast it grows compared with the shops.",
+    }),
+  ],
+  inputs: INDUSTRIES.map(([id, cdid, name]) => s(`${id}-index`, cdid, "mgdp", GDP, {
+    label: `${name}: output index`, sentenceName: `Output in ${name.toLowerCase()}`, format: "index", kind: "level",
+    explain: `An index of the volume of output in ${name.toLowerCase()}, with 2022 as 100. Monthly, seasonally adjusted.`, why: "A building block for the growth rate.",
+  })),
+});
+
 // --- Extra pieces some pages have ---
 //
 // breakdowns: a total split into parts, shown as "out of every £1". Each part is a series id on the same page.
@@ -1110,6 +1353,26 @@ const BREAKDOWNS = {
     },
   ],
 };
+BREAKDOWNS.environment = [
+  {
+    id: "where-emissions-come-from",
+    title: "Where the UK's greenhouse gases come from",
+    blurb: "Out of every 100 units of greenhouse gas the UK produces, this is how many come from each source. Each square is 1%.",
+    total: "ghg",
+    parts: [
+      { id: "ghg-households", label: "Households (heating and driving)" },
+      { id: "ghg-power", label: "Power stations and the gas network" },
+      { id: "ghg-manufacturing", label: "Manufacturing" },
+      { id: "ghg-agriculture", label: "Farming" },
+      { id: "ghg-transport", label: "Transport businesses" },
+    ],
+    otherLabel: "Everything else: construction, services, mining and the rest of the economy",
+    format: "ktonnes",
+    unit: "%",
+    verb: "produced",
+    annual: true,
+  },
+];
 const MORTGAGE = { rates: "mortgage-2y" };
 for (const sector of SECTORS) {
   sector.places = PLACES[sector.key] ?? [];

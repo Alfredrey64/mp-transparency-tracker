@@ -38,4 +38,12 @@ describe("breakdown", () => {
     expect(breakdownAt({}, "total", [{ id: "a", label: "A" }])).toBeNull();
     expect(breakdownAt(data, "total", [{ id: "missing", label: "X" }])).toBeNull();
   });
+
+  it("labels yearly figures by year", () => {
+    const data = { total: [["2022", 100], ["2023", 90]], a: [["2023", 40]] };
+    const r = breakdownAt(data, "total", [{ id: "a", label: "A" }], { annual: true });
+    expect(r.refLabel).toBe("2023");
+    expect(r.total).toBe(90);
+    expect(r.other.value).toBe(50);
+  });
 });

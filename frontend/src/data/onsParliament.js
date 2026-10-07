@@ -14,6 +14,7 @@ export const PARLIAMENT_LINKS = {
   crime: { topics: ["knife crime", "policing", "sentencing"], billCategory: "Justice & Home Affairs", pages: [{ key: "committees", label: "Watchdog committees" }, { key: "parties", label: "What parties promise" }] },
   trade: { topics: ["trade", "tariffs", "exports"], billCategory: "Economy & Finance", pages: [{ key: "committees", label: "Watchdog committees" }, { key: "tracker", label: "Promises tracker" }] },
   regions: { topics: ["levelling up", "regional growth", "devolution"], billCategory: "Housing & Communities", pages: [{ key: "councils", label: "Your council" }, { key: "devolved", label: "Scotland, Wales & N. Ireland" }] },
+  business: { topics: ["manufacturing", "high street", "business rates"], billCategory: "Economy & Finance", pages: [{ key: "budget", label: "Where taxes go" }, { key: "parties", label: "What parties promise" }] },
   immigration: { topics: ["immigration", "asylum", "small boats"], billCategory: "Justice & Home Affairs", pages: [{ key: "parties", label: "What parties promise" }, { key: "tracker", label: "Promises tracker" }] },
   tax: { topics: ["taxation", "national insurance", "public spending"], billCategory: "Economy & Finance", pages: [{ key: "budget", label: "Where taxes go" }, { key: "tracker", label: "Promises tracker" }] },
   rates: { topics: ["interest rates", "mortgages", "inflation"], billCategory: "Economy & Finance", pages: [{ key: "parties", label: "What parties promise" }, { key: "committees", label: "Watchdog committees" }] },

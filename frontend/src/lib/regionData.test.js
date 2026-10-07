@@ -42,3 +42,31 @@ describe("region data", () => {
     expect(domainOf({})).toEqual([0, 1]);
   });
 });
+
+import { rampColour, bandsOf, valueAtPosition } from "./regionData";
+
+describe("map colours and key", () => {
+  it("blends from pale to vivid and stays within the ends", () => {
+    expect(rampColour("#2F9E6E", 0)).toContain("0%");
+    expect(rampColour("#2F9E6E", 1)).toContain("100%");
+    expect(rampColour("#2F9E6E", -3)).toBe(rampColour("#2F9E6E", 0));
+    expect(rampColour("#2F9E6E", 9)).toBe(rampColour("#2F9E6E", 1));
+    expect(rampColour("#2F9E6E", 0.5)).toContain("#2F9E6E");
+  });
+
+  it("counts places in each band of the scale", () => {
+    const bands = bandsOf({ a: 0, b: 1, c: 5, d: 10, e: null }, [0, 10], 5);
+    expect(bands.map((b) => b.count)).toEqual([2, 0, 1, 0, 1]);
+    expect(bands[4].keys).toEqual(["d"]);
+    expect(bands[0].from).toBe(0);
+    expect(bands.at(-1).to).toBe(10);
+  });
+
+  it("finds the value between two months", () => {
+    expect(valueAtPosition([10, 20, 40], 0)).toBe(10);
+    expect(valueAtPosition([10, 20, 40], 1.5)).toBe(30);
+    expect(valueAtPosition([10, 20, 40], 99)).toBe(40);
+    expect(valueAtPosition([null, 20], 0.5)).toBe(20);
+    expect(valueAtPosition([], 1)).toBeNull();
+  });
+});

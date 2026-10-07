@@ -20,9 +20,11 @@ function BreakdownCard({ spec, series, accent }) {
 
   const result = useMemo(() => {
     const byId = Object.fromEntries(Object.entries(series).map(([id, item]) => [id, item.points]));
-    return breakdownAt(byId, spec.total, spec.parts);
+    return breakdownAt(byId, spec.total, spec.parts, { annual: Boolean(spec.annual) });
   }, [series, spec]);
   if (!result) return null;
+  const fmt = spec.format ?? "gbpbn";
+  const unit = spec.unit ?? "p";
 
   const rows = [
     ...result.parts.map((p, i) => ({ key: p.id, label: p.label, value: p.value, pence: p.pence, color: COLOURS[i % COLOURS.length] })),
@@ -44,7 +46,9 @@ function BreakdownCard({ spec, series, accent }) {
       <h2 id={`h-${spec.id}`} style={cardTitle}>{spec.title}</h2>
       <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.55, color: COLORS.ink, margin: "10px 0 6px", maxWidth: 760 }}>{spec.blurb}</p>
       <p style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, margin: "0 0 18px" }}>
-        In the 12 months to {result.refLabel} the public sector {spec.verb} {formatValue("gbpbn", result.total)} in total, at the prices of the time.
+        {spec.annual
+          ? `In ${result.refLabel} the UK ${spec.verb} ${formatValue(fmt, result.total)} in total.`
+          : `In the 12 months to ${result.refLabel} the public sector ${spec.verb} ${formatValue(fmt, result.total)} in total, at the prices of the time.`}
       </p>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))", gap: "22px 36px", alignItems: "center" }}>
@@ -75,8 +79,8 @@ function BreakdownCard({ spec, series, accent }) {
                 <span aria-hidden="true" style={{ width: 14, height: 14, borderRadius: 4, background: r.color }} />
                 <span style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.35, color: COLORS.ink, fontWeight: 600, minWidth: 0 }}>{r.label}</span>
                 <span style={{ textAlign: "right" }}>
-                  <span style={{ ...numeric, fontSize: 20, fontWeight: 600, color: COLORS.ink }}>{r.pence}p</span>
-                  <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>{formatValue("gbpbn", r.value)}</span>
+                  <span style={{ ...numeric, fontSize: 20, fontWeight: 600, color: COLORS.ink }}>{r.pence}{unit}</span>
+                  <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>{formatValue(fmt, r.value)}</span>
                 </span>
               </div>
             </li>
@@ -85,7 +89,7 @@ function BreakdownCard({ spec, series, accent }) {
       </div>
       {top && (
         <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "16px 0 0" }}>
-          The biggest named part is <strong style={{ color: COLORS.ink }}>{top.label.toLowerCase()}</strong>, at {top.pence}p in every £1.
+          The biggest named part is <strong style={{ color: COLORS.ink }}>{top.label.toLowerCase()}</strong>, at {top.pence}{unit} {unit === "p" ? "in every £1" : "of the total"}.
         </p>
       )}
     </motion.section>

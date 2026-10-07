@@ -56,6 +56,12 @@ export const KEY_POINTS = {
     { series: "ghg", text: "The UK produced {value} of greenhouse gases {when}, {change}." },
     { series: "non-fossil-share", text: "{value} of the energy the UK uses comes from non-fossil sources {when}." },
   ],
+  business: [
+    { series: "manufacturing-growth", text: "Compared with a year earlier, factory output changed by {value} {when}. A minus sign means it shrank." },
+    { series: "construction-growth", text: "Compared with a year earlier, building output changed by {value} {when}. A minus sign means it shrank." },
+    { series: "online-share", text: "{value} of shopping is done online {when}, {change}." },
+    { series: "online-sales", text: "People spent {value} online in an average week {when}, {change}." },
+  ],
   tax: [
     { series: "receipts-12m", text: "The government collected {value} {when}, {change}." },
     { series: "income-tax-share", text: "{value} of everything it collects is income tax taken from pay {when}." },

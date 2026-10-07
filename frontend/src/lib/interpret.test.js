@@ -24,23 +24,30 @@ describe("bands", () => {
 });
 
 describe("describeAmongMps", () => {
-  it("says what share are lower for a high figure", () => {
-    const r = describeAmongMps({ value: 95, sorted: hundred, format: pct });
+  const lead = (v) => `This MP has declared ${v}`;
+  it("says what share of MPs a high figure is above, in a sentence about this MP", () => {
+    const r = describeAmongMps({ value: 95, sorted: hundred, format: pct, lead });
     expect(r.marker).toBe("Unusually high");
     expect(r.tone).toBe("high");
-    expect(r.text).toContain("More than 94% of MPs are lower.");
-    expect(r.text).toContain("The middle one is 51%");
+    expect(r.text).toContain("This MP has declared 95%, which is higher than 94% of MPs.");
+    expect(r.text).toContain("The typical MP is at 51%.");
   });
-  it("says what share are higher for a low figure, and 'close to the middle' for a typical one", () => {
-    expect(describeAmongMps({ value: 5, sorted: hundred, format: pct }).text).toContain("More than 95% of MPs are higher.");
-    expect(describeAmongMps({ value: 50, sorted: hundred, format: pct }).text).toContain("Close to the middle of 100 MPs.");
+  it("says what share are higher for a low figure, and 'typical' for a middling one", () => {
+    expect(describeAmongMps({ value: 5, sorted: hundred, format: pct, lead }).text).toContain("This MP has declared 5%, which is lower than 95% of MPs.");
+    expect(describeAmongMps({ value: 50, sorted: hundred, format: pct, lead }).text).toContain("which is typical: about as many MPs are above this as below it.");
+  });
+  it("uses its own typical-MP wording", () => {
+    const r = describeAmongMps({ value: 50, sorted: hundred, format: pct, typical: (v) => `The typical MP has declared ${v}` });
+    expect(r.text).toContain("The typical MP has declared 51%.");
   });
   it("handles a distribution where most MPs are at zero", () => {
     const sorted = [...Array(80).fill(0), ...Array.from({ length: 20 }, (_, i) => (i + 1) * 1000)];
-    const none = describeAmongMps({ value: 0, sorted, format: gbp, zero: "have declared nothing" });
+    const none = describeAmongMps({ value: 0, sorted, format: gbp, zero: "have declared nothing", zeroSelf: "This MP has declared nothing" });
     expect(none.marker).toBe("About typical");
-    expect(none.text).toContain("Half of MPs have declared nothing.");
-    expect(describeAmongMps({ value: 19000, sorted, format: gbp }).marker).toBe("Unusually high");
+    expect(none.text).toBe("This MP has declared nothing, like about half of MPs.");
+    const high = describeAmongMps({ value: 19000, sorted, format: gbp, zero: "have declared nothing", lead });
+    expect(high.marker).toBe("Unusually high");
+    expect(high.text).toContain("Half of MPs have declared nothing.");
   });
   it("returns null with nothing to compare", () => {
     expect(describeAmongMps({ value: 1, sorted: [], format: pct })).toBeNull();

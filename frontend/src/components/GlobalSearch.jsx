@@ -67,6 +67,8 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
   // (search works from the first keystroke almost always, since mount
   // happens well before anyone's finished typing) without the eager cost.
   const [glossaryEntries, setGlossaryEntries] = useState([]);
+  // Written answers to common questions, loaded on demand for the same reason as the glossary.
+  const [answerTools, setAnswerTools] = useState(null);
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const containerRef = useRef(null);
@@ -83,6 +85,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
       setPeers(l ?? []);
     }
     load();
+    Promise.all([import("../data/answers"), import("../lib/answerSearch")]).then(([a, s]) => setAnswerTools({ answers: a.ANSWERS, find: s.findAnswers }));
     import("../data/glossaryTerms").then(({ PROCEDURE_TERMS, POLITICS_TERMS, STATISTICS_TERMS }) => {
       setGlossaryEntries([...PROCEDURE_TERMS, ...POLITICS_TERMS, ...STATISTICS_TERMS]);
     });
@@ -98,7 +101,9 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (q.length < 2) return { mps: [], peers: [], seats: [], careers: [], offices: false, bills: [], pages: [], glossary: [] };
+    if (q.length < 2) return { mps: [], peers: [], seats: [], careers: [], offices: false, bills: [], pages: [], glossary: [], answers: [] };
+    // A question, or at least a couple of words, rather than a name.
+    const answers = answerTools && q.length >= 4 ? answerTools.find(q, answerTools.answers, 3) : [];
     const mps = politicians
       .filter((p) => p.name?.toLowerCase().includes(q) || p.constituency?.toLowerCase().includes(q) || p.party?.toLowerCase().includes(q))
       .slice(0, 5);
@@ -109,10 +114,10 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
     // Constituencies by name, one entry each, opening that seat's page.
     const seats = [...new Set(politicians.map((p) => p.constituency).filter(Boolean))].filter((c) => c.toLowerCase().includes(q)).slice(0, 3);
     const careers = filtersForPhrase(q).slice(0, 3);
-    return { mps, peers: matchedPeers, seats, careers, offices: OFFICE_WORDS.test(q) && q.length >= 4, bills: matchedBills, pages, glossary };
-  }, [politicians, peers, bills, glossaryEntries, query]);
+    return { mps, peers: matchedPeers, seats, careers, offices: OFFICE_WORDS.test(q) && q.length >= 4, bills: matchedBills, pages, glossary, answers };
+  }, [politicians, peers, bills, glossaryEntries, answerTools, query]);
 
-  const hasResults = results.mps.length > 0 || results.peers.length > 0 || results.seats.length > 0 || results.careers.length > 0 || results.offices || results.bills.length > 0 || results.pages.length > 0 || results.glossary.length > 0;
+  const hasResults = results.mps.length > 0 || results.peers.length > 0 || results.seats.length > 0 || results.careers.length > 0 || results.offices || results.bills.length > 0 || results.pages.length > 0 || results.glossary.length > 0 || results.answers.length > 0;
 
   function selectPolitician(p) {
     onSelectPolitician?.(p);
@@ -178,6 +183,14 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
             <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: "rgba(226,232,232,0.55)", padding: "8px 6px" }}>
               No matches.
             </div>
+          )}
+
+          {results.answers.length > 0 && (
+            <ResultGroup label="Answers">
+              {results.answers.map((a) => (
+                <ResultRow key={a.id} onClick={() => openHash(`#/answers/${a.id}`)} title={a.question} sub="A plain-English answer with the latest figures" />
+              ))}
+            </ResultGroup>
           )}
 
           {results.mps.length > 0 && (

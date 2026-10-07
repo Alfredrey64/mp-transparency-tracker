@@ -32,6 +32,12 @@ export function rollingSum(points, n) {
   return out;
 }
 
+// a minus b, where both have a figure for the same period.
+export function minus(a, b) {
+  const lookup = new Map(b);
+  return a.filter(([p]) => lookup.has(p)).map(([p, v]) => [p, v - lookup.get(p)]);
+}
+
 // a as a percentage of b, where both have a figure for the same period.
 export function percentOf(a, b) {
   const lookup = new Map(b.map(([p, v]) => [p, v]));
@@ -46,6 +52,7 @@ export function derive(spec, base) {
     case "yoy": return yearOnYear(from);
     case "sum": return rollingSum(from, spec.n);
     case "complement": return from.map(([p, v]) => [p, 100 - v]);
+    case "minus": return base[spec.of]?.length ? minus(from, base[spec.of]) : [];
     case "percentOf": return base[spec.of]?.length ? percentOf(from, base[spec.of]) : [];
     default: return [];
   }

@@ -38,7 +38,7 @@ export function penceSplit(values) {
 
 // seriesById: { id: [[period, value], ...] }; parts: [{ id, label }].
 // Returns null if the total, or all the parts, are missing.
-export function breakdownAt(seriesById, totalId, parts) {
+export function breakdownAt(seriesById, totalId, parts, { annual = false } = {}) {
   const total = seriesById[totalId];
   if (!total?.length) return null;
   const present = parts.filter((p) => seriesById[p.id]?.length);
@@ -55,7 +55,7 @@ export function breakdownAt(seriesById, totalId, parts) {
   const pence = penceSplit([...rows.map((r) => r.value), other]);
   return {
     ref,
-    refLabel: monthLabel(ref),
+    refLabel: annual ? String(Math.floor(ref / 12)) : monthLabel(ref),
     total: shown,
     parts: rows.map((r, i) => ({ ...r, pence: pence[i], share: (r.value / shown) * 100 })),
     other: { value: other, pence: pence[rows.length], share: (other / shown) * 100 },
