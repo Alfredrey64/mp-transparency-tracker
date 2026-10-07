@@ -18,12 +18,16 @@ describe("Britain in numbers sectors", () => {
 
   it("gives every series what the page needs", () => {
     for (const sector of SECTORS) {
-      const ids = sector.series.map((x) => x.id);
+      const ids = sectorSeries(sector).map((x) => x.id);
       expect(new Set(ids).size).toBe(ids.length);
       expect(sector.series.some((x) => x.headline)).toBe(true);
       for (const def of sectorSeries(sector)) {
         if (def.derive) {
-          expect(sector.series.map((x) => x.id)).toContain(def.derive.from);
+          expect(ids).toContain(def.derive.from);
+          if (def.derive.of) expect(ids).toContain(def.derive.of);
+        } else if (def.boe) {
+          expect(def.boe.code).toMatch(/^[A-Z0-9]{5,10}$/);
+          expect(["month", "last", "mean"]).toContain(def.boe.mode);
         } else if (def.hpi) {
           expect(def.hpi.region && def.hpi.field).toBeTruthy();
         } else if (def.table) {
@@ -37,6 +41,18 @@ describe("Britain in numbers sectors", () => {
         expect(def.why.length).toBeGreaterThan(15);
         expect(def.label.length).toBeGreaterThan(2);
       }
+    }
+  });
+
+  it("builds every breakdown from series on its own page", () => {
+    for (const sector of SECTORS) {
+      const ids = new Set(sector.series.map((x) => x.id));
+      for (const b of sector.breakdowns) {
+        expect(ids.has(b.total), `${sector.key}/${b.id}/total`).toBe(true);
+        expect(b.parts.length).toBeGreaterThan(0);
+        for (const part of b.parts) expect(ids.has(part.id), `${sector.key}/${b.id}/${part.id}`).toBe(true);
+      }
+      if (sector.mortgage) expect(ids.has(sector.mortgage)).toBe(true);
     }
   });
 

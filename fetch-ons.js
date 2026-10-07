@@ -1,11 +1,12 @@
-// Downloads the Office for National Statistics time series behind the
-// "Britain in numbers" pages (economy, prices, jobs, public finances,
-// population, health, housing) and saves one small JSON file per page in
-// frontend/src/data/ons/.
+// Downloads the official figures behind the "Britain in numbers" pages and
+// saves one small JSON file per page in frontend/src/data/ons/. Most come from
+// the Office for National Statistics; house prices come from HM Land Registry,
+// crime from the ONS crime tables, and interest rates, mortgage approvals and
+// exchange rates from the Bank of England.
 //
 // Which series to fetch is defined once, in frontend/src/data/onsSectors.js,
 // which the pages read as well. Weekly deaths come from the ONS dataset API;
-// everything else is a classic time series. If a series can't be fetched this
+// the ONS figures are classic time series. If a series can't be fetched this
 // run, the copy saved last time is kept, so one bad response never blanks a
 // page. The script only fails (so the daily status report flags it) when it
 // couldn't refresh anything at all.
@@ -137,6 +138,63 @@ async function fetchTable(def) {
   if (points.length < 3) throw new Error(`${def.id}: too few points`);
   return { freq: "months", title: def.label, updated: book.updated, points };
 }
+// --- Interest rates and the pound: the Bank of England's statistical database ---
+
+const BOE_MONTHS = { jan: "01", feb: "02", mar: "03", apr: "04", may: "05", jun: "06", jul: "07", aug: "08", sep: "09", oct: "10", nov: "11", dec: "12" };
+let boeTable;
+
+// Every Bank of England series the pages use, in one request. Rows are { "YYYY-MM": [values...] } per code.
+async function boeData() {
+  if (!boeTable) {
+    const codes = [...new Set(SECTORS.flatMap((sector) => sectorSeries(sector)).filter((def) => def.boe).map((def) => def.boe.code))];
+    const url = `https://www.bankofengland.co.uk/boeapps/database/_iadb-fromshowcolumns.asp?csv.x=yes&Datefrom=01/Jan/1970&Dateto=now&SeriesCodes=${codes.join(",")}&CSVF=TN&UsingCodes=Y&VPD=Y&VFD=N`;
+    let text;
+    let lastError;
+    for (let i = 0; i < 3 && !text; i++) {
+      try {
+        const res = await fetch(url, { headers: { ...HEADERS, "User-Agent": `Mozilla/5.0 ${HEADERS["User-Agent"]}` } });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const body = await res.text();
+        if (!body.startsWith("DATE,")) throw new Error("not a data file");
+        text = body;
+      } catch (e) {
+        lastError = e;
+        await sleep(1500 * (i + 1));
+      }
+    }
+    if (!text) throw new Error(`Bank of England: ${lastError?.message ?? "failed"}`);
+    const [head, ...rows] = text.trim().split(/\r?\n/);
+    const names = head.split(",").slice(1);
+    const table = Object.fromEntries(names.map((n) => [n, new Map()]));
+    for (const row of rows) {
+      const [date, ...values] = row.split(",");
+      const m = /^(\d{1,2}) (\w{3}) (\d{4})$/.exec(date.trim());
+      if (!m || !BOE_MONTHS[m[2].toLowerCase()]) continue;
+      const period = `${m[3]}-${BOE_MONTHS[m[2].toLowerCase()]}`;
+      names.forEach((name, i) => {
+        const v = Number(values[i]);
+        if (values[i]?.trim() && Number.isFinite(v)) {
+          if (!table[name].has(period)) table[name].set(period, []);
+          table[name].get(period).push(v);
+        }
+      });
+    }
+    boeTable = table;
+  }
+  return boeTable;
+}
+
+async function fetchBoe(def) {
+  const table = (await boeData())[def.boe.code];
+  if (!table?.size) throw new Error(`${def.boe.code}: no data`);
+  const points = [...table.entries()]
+    // An average over only a few days of the current month would mislead, so it waits for most of the month.
+    .filter(([, values]) => def.boe.mode !== "mean" || values.length >= 10)
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([period, values]) => [period, def.boe.mode === "mean" ? Math.round((values.reduce((a, b) => a + b, 0) / values.length) * 10000) / 10000 : values[values.length - 1]]);
+  return { freq: "months", title: def.label, updated: null, points: points.slice(-KEEP.months) };
+}
+
 // Deaths registered each week in England and Wales (England plus Wales), for
 // this year and last, so a page can compare the two.
 async function fetchWeeklyDeaths() {
@@ -206,10 +264,10 @@ async function main() {
 
     for (const def of sectorSeries(sector)) {
       if (def.derive) continue; // worked out in the browser
-      const key = def.hpi ? `hpi|${def.hpi.region}|${def.hpi.field}` : def.table ? `table|${def.table.sheet}|${def.id}` : `${def.path}|${def.cdid}|${def.dataset}`;
+      const key = def.boe ? `boe|${def.boe.code}|${def.boe.mode}` : def.hpi ? `hpi|${def.hpi.region}|${def.hpi.field}` : def.table ? `table|${def.table.sheet}|${def.id}` : `${def.path}|${def.cdid}|${def.dataset}`;
       try {
         if (!cache.has(key)) {
-          cache.set(key, def.hpi ? await fetchHpi(def) : def.table ? await fetchTable(def) : await fetchSeries(def));
+          cache.set(key, def.boe ? await fetchBoe(def) : def.hpi ? await fetchHpi(def) : def.table ? await fetchTable(def) : await fetchSeries(def));
           await sleep(250);
         }
         out.series[def.id] = cache.get(key);

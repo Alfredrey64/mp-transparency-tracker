@@ -56,6 +56,16 @@ export const PAGE_GUIDES = {
     why: "The UK has a legal target of net zero emissions by 2050, so these show how far it has come.",
     notShown: "Emissions from goods made abroad and bought here. Figures run about two years behind.",
   },
+  tax: {
+    what: "How much the government collects in each main tax over the last 12 months, how much it spends on benefits and debt interest, and how each £1 is split.",
+    why: "Tax and spending decisions are what Budgets are about, and these figures show where the money really comes from and goes.",
+    notShown: "Who pays each tax, or spending on each department. Figures are for the whole UK public sector.",
+  },
+  rates: {
+    what: "The Bank of England's interest rate, what mortgage and savings rates people are offered, the pound's value and how many mortgages are being approved.",
+    why: "Interest rates set the cost of borrowing for homes and businesses, and they are the Bank's main tool against inflation.",
+    notShown: "Rates on any one deal you could get today. These are averages across lenders.",
+  },
   indicators: {
     what: "A tool for picking up to four measures from the Britain in numbers pages and watching how they moved over time, with who was in government shaded behind.",
     why: "Comparing measures over the same years shows how they moved together or apart. Shading by government shows when things changed.",

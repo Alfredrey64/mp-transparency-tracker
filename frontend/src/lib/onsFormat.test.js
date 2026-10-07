@@ -56,6 +56,7 @@ describe("comparing with a year earlier", () => {
 
   it("describes a change in words", () => {
     expect(changeWords({ type: "points", amount: 0.3 })).toBe("up 0.3 percentage points on a year earlier");
+    expect(changeWords({ type: "points", amount: -0.75, digits: 2 })).toBe("down 0.75 percentage points on a year earlier");
     expect(changeWords({ type: "percent", amount: -4.2 })).toBe("down 4.2% on a year earlier");
     expect(changeWords({ type: "percent", amount: 0.01 })).toBe("little changed on a year earlier");
   });
@@ -96,5 +97,11 @@ describe("year-ending figures", () => {
     expect(sentenceFor(def, [["2025-03", 4466986], ["2026-03", 4361958]])).toBe("Crimes recorded by the police were 4.36 million in the year to March 2026, down 2.4% on a year earlier.");
     expect(formatValue("count", 431)).toBe("431");
     expect(formatValue("count", 62347)).toBe("62,347");
+  });
+
+  it("words four-quarter totals as the year to the month they end in", () => {
+    const def = { yearEnding: true, sentenceName: "VAT", format: "gbpbn", kind: "level" };
+    expect(sentenceFor(def, [["2025-Q2", 200000], ["2026-Q2", 210000]])).toBe("VAT was £210.0bn in the year to June 2026, up 5.0% on a year earlier.");
+    expect(labelFor(def, "2026-Q2")).toBe("Year to June 2026");
   });
 });

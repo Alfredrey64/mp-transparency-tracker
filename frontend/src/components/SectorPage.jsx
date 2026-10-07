@@ -4,6 +4,8 @@ import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme
 import { PageHeader, LoadFailedNote } from "./shared";
 import LineChart from "./LineChart";
 import PlacesChart from "./PlacesChart";
+import BreakdownCard from "./BreakdownCard";
+import MortgageCard from "./MortgageCard";
 import ChartActions from "./ChartActions";
 import CountUp from "./CountUp";
 import { sectorByKey, sectorSeries, ONS_SERIES_PAGE, WEEKLY_DEATHS } from "../data/onsSectors";
@@ -18,7 +20,7 @@ import { toLineData, yearTicks } from "../lib/onsChart";
 import { bandsBetween, PARTY_COLOURS } from "../lib/governments";
 import { DEEP_DIVES } from "../data/onsDeepDives";
 import { card, cardTitle, smallTitle, pillStyle, dateText } from "../lib/onsStyles";
-import { IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconHouse, IconGlobe, IconLeaf, IconShield } from "./icons";
+import { IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconHouse, IconGlobe, IconLeaf, IconShield, IconTaxes, IconRates } from "./icons";
 
 // One page per sector, all built from the same pieces: a short story with a
 // spotlight figure, the headline numbers, then a card for every measure with its
@@ -26,7 +28,7 @@ import { IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconH
 // The numbers come from the Office for National Statistics (and, for house prices
 // and crime, the bodies named on each card), saved daily by fetch-ons.js.
 
-const ICONS = { economy: IconTrend, prices: IconBasket, jobs: IconBriefcase, publicFinances: IconLedger, population: IconPopulation, health: IconHeartbeat, housing: IconHouse, crime: IconShield, trade: IconGlobe, environment: IconLeaf };
+const ICONS = { economy: IconTrend, prices: IconBasket, jobs: IconBriefcase, publicFinances: IconLedger, population: IconPopulation, health: IconHeartbeat, housing: IconHouse, crime: IconShield, trade: IconGlobe, environment: IconLeaf, tax: IconTaxes, rates: IconRates };
 const RANGES = [{ years: 2, label: "2 years" }, { years: 5, label: "5 years" }, { years: 10, label: "10 years" }, { years: 25, label: "25 years" }, { years: 0, label: "Everything" }];
 const WHOLE_HISTORY = new Set(["population", "environment", "crime"]);
 const NOW = new Date().getFullYear() + 1;
@@ -488,7 +490,8 @@ export default function SectorPage({ sector, param = null }) {
 
   const Icon = ICONS[sector];
   const shown = useMemo(() => (def && loaded ? def.series.filter((s) => loaded.series[s.id]) : []), [def, loaded]);
-  const jumpIds = useMemo(() => (def ? [...def.places.map((g) => g.id), ...shown.map((s) => s.id)] : []), [def, shown]);
+  const extraCards = useMemo(() => (def ? [...def.breakdowns.map((x) => ({ id: x.id, label: x.title })), ...(def.mortgage ? [{ id: "mortgage-cost", label: "What a mortgage costs" }] : []), ...def.places.map((g) => ({ id: g.id, label: g.title }))] : []), [def]);
+  const jumpIds = useMemo(() => [...extraCards.map((x) => x.id), ...shown.map((s) => s.id)], [extraCards, shown]);
   const active = useActiveCard(jumpIds);
   if (!def) return null;
   const tiles = shown.filter((s) => s.headline);
@@ -549,7 +552,7 @@ export default function SectorPage({ sector, param = null }) {
               </div>
             </div>
             <div className="ons-jump" role="navigation" aria-label="Jump to a measure">
-              {[...def.places.map((g) => ({ id: g.id, label: g.title })), ...shown].map((s) => (
+              {[...extraCards, ...shown].map((s) => (
                 <a
                   key={s.id}
                   href={`#s-${s.id}`}
@@ -573,6 +576,8 @@ export default function SectorPage({ sector, param = null }) {
           )}
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(480px, 100%), 1fr))", gap: 20, alignItems: "start", marginTop: 8 }}>
+            {def.breakdowns.map((x) => <BreakdownCard key={x.id} spec={x} series={loaded.series} accent={def.accent} />)}
+            {def.mortgage && loaded.series[def.mortgage] && <MortgageCard points={loaded.series[def.mortgage].points} accent={def.accent} />}
             {def.places.map((g) => (
               <PlacesChart
                 key={g.id} group={g} sector={def.key} series={loaded.series} range={range} real={real} deflator={deflator}
@@ -588,7 +593,7 @@ export default function SectorPage({ sector, param = null }) {
           <InParliament sector={def.key} accent={def.accent} />
 
           <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.6, color: COLORS.inkSoft, marginTop: 32, maxWidth: 780 }}>
-            Most figures are from the Office for National Statistics (ONS), published under the Open Government Licence v3.0. House prices come from the UK House Price Index (HM Land Registry with the ONS and others), and police recorded crime from the Home Office.
+            Most figures are from the Office for National Statistics (ONS), published under the Open Government Licence v3.0. House prices come from the UK House Price Index (HM Land Registry with the ONS and others), police recorded crime from the Home Office, and interest rates, mortgage approvals and exchange rates from the Bank of England.
             This site is independent and is not part of any of these bodies. Official statistics are revised as more information arrives, so recent figures can change. We refresh them every day, and they only change when the publishers release them.
           </p>
         </>

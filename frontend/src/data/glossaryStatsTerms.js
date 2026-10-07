@@ -50,6 +50,25 @@ export const STATISTICS_TERMS = [
   { term: "Public Sector Net Investment", def: "Government spending on things that last, such as roads, railways and hospitals, minus the wear and tear on what already exists." },
   { term: "Full-Time Equivalent (FTE)", def: "A way of counting staff in which two half-time workers count as one full-time worker, so totals reflect the work done rather than the number of people.", aliases: ["full-time equivalents", "FTEs"] },
 
+  // Tax and spending
+  { term: "Income Tax", def: "A tax on what people earn, taken in bands: a tax-free personal allowance, then rising rates on higher slices of income. Most is taken straight from pay by employers (PAYE).", aliases: ["income tax"], auto: false },
+  { term: "PAYE (Pay As You Earn)", def: "The system by which employers take income tax (and employee National Insurance) from each pay packet and pass it to HM Revenue and Customs.", aliases: ["pay as you earn"] },
+  { term: "Self Assessment", def: "The tax return that the self-employed, landlords and people with other untaxed income fill in to work out what income tax they owe. Most bills fall due in January and July.", aliases: ["self-assessment", "self-assessed"] },
+  { term: "VAT (Value Added Tax)", def: "A tax of 20% on most goods and services, collected by businesses at each step and passed on to the government. Some things, such as most food and children's clothes, are zero-rated.", aliases: ["value added tax"] },
+  { term: "Corporation Tax", def: "A tax on company profits. The main rate has been 25% for larger companies since April 2023, with a lower rate for small profits.", aliases: ["corporation tax"], auto: false },
+  { term: "Fuel Duty", def: "A tax charged per litre on petrol and diesel. The rate was cut in 2022 and has been frozen or cut each year since, so it brings in less in real terms.", auto: false },
+  { term: "Council Tax", def: "A local tax on homes, set by councils within limits set by the government, which pays for local services. Each home is put in a band based on its value (in England, its value in 1991).", auto: false },
+  { term: "Total Managed Expenditure (TME)", def: "All public spending: day-to-day running costs, benefits and interest on debt, plus investment. It is the figure used when people talk about how much the government spends.", aliases: ["total managed expenditure"] },
+  { term: "Capital Allowances", def: "Rules that let a company deduct some of what it spends on equipment and buildings from its taxable profit. 'Full expensing' lets firms deduct the whole cost of qualifying equipment in the first year.", aliases: ["full expensing"] },
+  { term: "Business Investment", def: "What firms spend on things that last, such as machinery, vehicles, software and buildings. It is measured separately from government and housing investment, and is a key driver of productivity.", aliases: ["gross fixed capital formation"], auto: false },
+
+  // Interest rates and the pound
+  { term: "Gilt Yield", def: "The yearly return an investor gets from a government bond at its current price. When investors want less of a bond its price falls and its yield rises, which makes it dearer for the government to borrow.", aliases: ["gilt yields", "bond yield", "bond yields"] },
+  { term: "Fixed-Rate Mortgage", def: "A mortgage whose interest rate stays the same for an agreed period, usually two or five years. After that it moves to a standard rate, usually higher, unless the borrower switches to a new deal (remortgages).", aliases: ["fixed rate mortgage", "fixed-rate deal", "remortgage", "remortgaging"], auto: false },
+  { term: "Loan-to-Value (LTV)", def: "The size of a mortgage as a share of the home's value. A 75% LTV mortgage means a 25% deposit. Lower LTV loans are usually cheaper because they are less risky for the lender.", aliases: ["LTV", "loan to value"] },
+  { term: "Exchange Rate", def: "How much of one currency another buys. A rise in the pound against the dollar means a pound buys more dollars, which makes imports cheaper and exports dearer for other countries.", aliases: ["exchange rates", "effective exchange rate", "sterling index"], auto: false },
+  { term: "Mortgage Approvals", def: "The number of new home loans lenders agree each month. An approval comes weeks before the sale completes, so it is an early guide to where the housing market is heading.", aliases: ["mortgage approval", "remortgaging approvals"] },
+
   // Population
   { term: "Mid-Year Population Estimate", def: "The ONS's official estimate of how many people live in each part of the UK on 30 June each year, built from the Census with births, deaths and migration added.", aliases: ["population estimate", "population estimates", "mid-year estimate"] },
   { term: "Net Migration", def: "The number of people moving to live in the UK minus the number moving away, over a year. A positive number means the population is growing from migration.", aliases: ["net international migration"] },

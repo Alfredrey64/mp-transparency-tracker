@@ -11,7 +11,8 @@ describe("comparing a series with its past", () => {
   });
 
   it("measures change in points for rates and per cent for levels", () => {
-    expect(changeBetween({ kind: "rate" }, 3, 4.5)).toEqual({ type: "points", amount: 1.5 });
+    expect(changeBetween({ kind: "rate" }, 3, 4.5)).toEqual({ type: "points", amount: 1.5, digits: 1 });
+    expect(changeBetween({ kind: "rate", format: "pct2" }, 3.75, 4.5)).toEqual({ type: "points", amount: 0.75, digits: 2 });
     expect(changeBetween({ kind: "level" }, 50, 75).amount).toBeCloseTo(50);
     const deficit = changeBetween({ kind: "level", format: "gbpbn" }, -11400, -12500);
     expect(deficit.type).toBe("amount");

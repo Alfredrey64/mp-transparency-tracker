@@ -26,12 +26,16 @@ const POPULATION = "/peoplepopulationandcommunity/populationandmigration/populat
 const TRADE = "/economy/nationalaccounts/balanceofpayments";
 
 const s = (id, cdid, dataset, path, rest) => ({ id, cdid, dataset, path, ...rest });
+// A Bank of England database series. mode "month": the series is already monthly; "last": the
+// last daily figure of each month; "mean": the average of the daily figures in each month.
+const b = (id, code, mode, rest) => ({ id, boe: { code, mode }, source: BOE_SOURCE, ...rest });
 const d = (id, derive, rest) => ({ id, derive, ...rest });
 // A UK House Price Index series (HM Land Registry, with the ONS and the other statistical bodies).
 const h = (id, region, field, rest) => ({ id, hpi: { region, field }, source: HPI_SOURCE, ...rest });
 // A line from a table in an ONS crime spreadsheet. `match` finds the row by its label.
 const t = (id, table, match, rest) => ({ id, table: { ...table, match }, source: table.source, yearEnding: true, verb: "were", ...rest });
 
+const BOE_SOURCE = { name: "Bank of England Database", url: "https://www.bankofengland.co.uk/boeapps/database/" };
 const HPI_SOURCE = { name: "UK House Price Index (HM Land Registry, ONS and others)", url: "https://www.gov.uk/government/collections/uk-house-price-index-reports" };
 const CRIME_URL = "https://www.ons.gov.uk/peoplepopulationandcommunity/crimeandjustice/datasets/crimeinenglandandwalesappendixtables";
 const CSEW = { sheet: "Table A1a", labelCol: 0, source: { name: "Crime Survey for England and Wales (ONS), appendix table A1a", url: CRIME_URL } };
@@ -96,6 +100,31 @@ export const SECTORS = [
         label: "Share of income that households save", sentenceName: "The household saving ratio", format: "pct", kind: "rate",
         explain: "The part of household income left over after spending.",
         why: "People tend to save more when they are worried about the future, and less when they feel secure or are squeezed by bills.",
+      }),
+      s("investment-business", "NPEL", "cxnv", GDP, {
+        label: "Business investment", sentenceName: "Business investment", headline: true, format: "gbpbn", kind: "level",
+        explain: "What firms spent in a quarter on things that last, such as machinery, vehicles, software and buildings, with the effect of rising prices removed.",
+        why: "Firms invest when they expect demand to grow. Low investment holds back productivity, and with it pay and living standards.",
+      }),
+      d("investment-business-growth", { op: "yoy", from: "investment-business" }, {
+        label: "Business investment, change on a year earlier", sentenceName: "Business investment growth", verb: "was", format: "pct", kind: "rate",
+        explain: "How much more (or less) firms invested than in the same quarter a year before, after removing price rises.",
+        why: "It is a quick read on business confidence. It swings sharply in recessions and when big uncertainties such as new trade rules arrive.",
+      }),
+      d("investment-share", { op: "percentOf", from: "investment-business-cp", of: "gdp-cp" }, {
+        label: "Business investment as a share of the economy", sentenceName: "Business investment, as a share of the economy,", headline: true, format: "pct", kind: "rate",
+        explain: "Business investment, at the prices of the time, divided by the size of the economy (GDP) in the same quarter.",
+        why: "The UK has long invested a smaller share of its income than most rich countries, which is one explanation put forward for its weak productivity growth.",
+      }),
+    ],
+    inputs: [
+      s("investment-business-cp", "NPEK", "ukea", GDP, {
+        label: "Business investment at current prices", sentenceName: "Business investment", format: "gbpbn", kind: "level",
+        explain: "Business investment in each quarter's own prices. Used to work out business investment as a share of GDP.", why: "A building block for the investment share.",
+      }),
+      s("gdp-cp", "YBHA", "ukea", GDP, {
+        label: "Size of the economy at current prices", sentenceName: "GDP", format: "gbpbn", kind: "level",
+        explain: "GDP in each quarter's own prices. Used to work out business investment as a share of GDP.", why: "A building block for the investment share.",
       }),
     ],
   },
@@ -574,6 +603,170 @@ export const SECTORS = [
       }),
     ],
   },
+  {
+    key: "tax",
+    label: "Taxes and spending",
+    title: "Taxes and public spending",
+    hint: "Where the money comes from and goes",
+    subtitle: "How much the government collects in each main tax, what it spends on benefits and on interest, and how each £1 is shared out. Every figure is the total for the last 12 months.",
+    story: "Every government is a collector and a spender. Taxes pay for the NHS, schools, pensions and the interest on past borrowing, and a shift of a few pence in the pound is what Budgets are fought over.",
+    accent: "#8A9A2B",
+    series: [
+      d("receipts-12m", { op: "sum", n: 12, from: "receipts-m" }, {
+        yearEnding: true, nominal: true, label: "Everything the government collects", sentenceName: "Public sector receipts", verb: "were", headline: true, format: "gbpbn", kind: "level",
+        explain: "Taxes, National Insurance and other income received by the public sector over the last 12 months, excluding public sector banks.",
+        why: "It is the pot that pays for everything else. How fast it grows decides how much room there is for tax cuts or spending rises.",
+      }),
+      d("paye-12m", { op: "sum", n: 12, from: "paye-m" }, {
+        yearEnding: true, nominal: true, label: "Income tax taken from pay (PAYE)", sentenceName: "Income tax taken from pay", headline: true, format: "gbpbn", kind: "level",
+        explain: "Income tax that employers take from pay packets and pay to HMRC, over the last 12 months.",
+        why: "The biggest single tax. It rises when more people work, pay rises, or tax thresholds stay frozen and people are pulled into higher rates.",
+      }),
+      d("sa-12m", { op: "sum", n: 12, from: "sa-m" }, {
+        yearEnding: true, nominal: true, label: "Income tax from self-assessment", sentenceName: "Self-assessed income tax", format: "gbpbn", kind: "level",
+        explain: "Income tax paid by people who fill in a tax return, such as the self-employed and landlords, over the last 12 months.",
+        why: "It is paid mostly in January and July, which is why the government's borrowing swings so much between months.",
+      }),
+      d("nics-12m", { op: "sum", n: 12, from: "nics-m" }, {
+        yearEnding: true, nominal: true, label: "National Insurance", sentenceName: "National Insurance", headline: true, format: "gbpbn", kind: "level",
+        explain: "Compulsory social contributions paid by employees, employers and the self-employed, over the last 12 months.",
+        why: "It is a tax on jobs. Changes to its rates and thresholds affect take-home pay and what it costs to hire people.",
+      }),
+      d("vat-4q", { op: "sum", n: 4, from: "vat-q" }, {
+        yearEnding: true, nominal: true, label: "VAT", sentenceName: "VAT", headline: true, format: "gbpbn", kind: "level",
+        explain: "Value Added Tax collected on what people and businesses buy, over the last four quarters.",
+        why: "It rises and falls with how much people spend, and it is hard to avoid, which is why governments rely on it.",
+      }),
+      d("corp-4q", { op: "sum", n: 4, from: "corp-q" }, {
+        yearEnding: true, nominal: true, label: "Corporation tax", sentenceName: "Corporation tax", format: "gbpbn", kind: "level",
+        explain: "Tax on company profits, over the last four quarters.",
+        why: "Its rate affects where firms choose to invest. The yield swings with company profits and with changes to what firms can deduct.",
+      }),
+      d("fuel-12m", { op: "sum", n: 12, from: "fuel-m" }, {
+        yearEnding: true, nominal: true, label: "Fuel duty", sentenceName: "Fuel duty", format: "gbpbn", kind: "level",
+        explain: "The tax on petrol and diesel, over the last 12 months.",
+        why: "The rate has been frozen or cut for years. As more people switch to electric cars, this tax will bring in less.",
+      }),
+      s("council-tax", "NMHM", "bb", PUBLIC_FINANCE, {
+        nominal: true, label: "Council tax", sentenceName: "Council tax", format: "gbpbn", kind: "level",
+        explain: "Council tax collected by local councils each calendar year. It is published once a year, so it runs behind the other taxes here.",
+        why: "It pays for local services such as bin collections and social care, and is the main tax local councils control.",
+      }),
+      d("spending-12m", { op: "sum", n: 12, from: "spending-m" }, {
+        yearEnding: true, nominal: true, label: "Everything the government spends", sentenceName: "Public sector spending", headline: true, format: "gbpbn", kind: "level",
+        explain: "Total managed expenditure: day-to-day spending plus investment, by the public sector excluding public sector banks, over the last 12 months.",
+        why: "It is the number behind every argument about the size of the state. When it is bigger than receipts, the gap is borrowed.",
+      }),
+      d("benefits-12m", { op: "sum", n: 12, from: "benefits-m" }, {
+        yearEnding: true, nominal: true, label: "Benefits and pensions", sentenceName: "Spending on benefits and pensions", headline: true, format: "gbpbn", kind: "level",
+        explain: "Net social benefits paid out, including the State Pension and benefits for people of working age, over the last 12 months.",
+        why: "It is the largest part of spending. It rises as the population ages and when benefits are increased in line with prices or pay.",
+      }),
+      d("interest-12m", { op: "sum", n: 12, from: "interest-m" }, {
+        yearEnding: true, nominal: true, label: "Interest on the national debt", sentenceName: "Debt interest", headline: true, format: "gbpbn", kind: "level",
+        explain: "Interest and dividends paid to those the public sector owes money to, over the last 12 months.",
+        why: "Every pound spent on interest is a pound not spent on services. It climbs when debt grows or when interest rates rise.",
+      }),
+      d("income-tax-share", { op: "percentOf", from: "paye-12m", of: "receipts-12m" }, {
+        yearEnding: true, label: "Share of receipts from income tax on pay", sentenceName: "The share of government income that comes from PAYE income tax", headline: true, format: "pct", kind: "rate",
+        explain: "Income tax taken from pay, as a share of everything the government collects over the last 12 months.",
+        why: "A rising share means the government leans more heavily on working people's earnings, for example when tax thresholds are frozen.",
+      }),
+      d("interest-share", { op: "percentOf", from: "interest-12m", of: "receipts-12m" }, {
+        yearEnding: true, label: "Debt interest as a share of everything collected", sentenceName: "Debt interest as a share of government income", headline: true, format: "pct", kind: "rate",
+        explain: "Interest paid on the national debt, divided by everything the government collects, over the last 12 months.",
+        why: "It shows how much of each pound of tax is already spoken for by past borrowing before any new spending decision is made.",
+      }),
+      d("benefits-share", { op: "percentOf", from: "benefits-12m", of: "spending-12m" }, {
+        yearEnding: true, label: "Benefits and pensions as a share of spending", sentenceName: "Benefits and pensions as a share of public spending", format: "pct", kind: "rate",
+        explain: "Spending on benefits and pensions as a share of all public spending over the last 12 months.",
+        why: "It shows how much of the budget is committed to support people, and how fast that grows as the population ages.",
+      }),
+    ],
+    inputs: [
+      s("receipts-m", "JW2O", "pusf", PUBLIC_FINANCE, { label: "Public sector receipts each month", sentenceName: "Public sector receipts", format: "gbpbn", kind: "level", explain: "Total current receipts each month, excluding public sector banks. Not adjusted for the time of year.", why: "A building block for the 12-month totals." }),
+      s("paye-m", "MS6W", "pusf", PUBLIC_FINANCE, { label: "PAYE income tax each month", sentenceName: "PAYE income tax", format: "gbpbn", kind: "level", explain: "Income tax taken from pay each month. Not adjusted for the time of year.", why: "A building block for the 12-month totals." }),
+      s("sa-m", "LISB", "pusf", PUBLIC_FINANCE, { label: "Self-assessed income tax each month", sentenceName: "Self-assessed income tax", format: "gbpbn", kind: "level", explain: "Income tax from tax returns each month. Not adjusted for the time of year.", why: "A building block for the 12-month totals." }),
+      s("nics-m", "AIIH", "pusf", PUBLIC_FINANCE, { label: "National Insurance each month", sentenceName: "National Insurance", format: "gbpbn", kind: "level", explain: "Compulsory social contributions each month. Not adjusted for the time of year.", why: "A building block for the 12-month totals." }),
+      s("fuel-m", "CUDG", "pusf", PUBLIC_FINANCE, { label: "Fuel duty each month", sentenceName: "Fuel duty", format: "gbpbn", kind: "level", explain: "Fuel duty each month. Not adjusted for the time of year.", why: "A building block for the 12-month totals." }),
+      s("vat-q", "NZGF", "ukea", PUBLIC_FINANCE, { label: "VAT each quarter", sentenceName: "VAT", format: "gbpbn", kind: "level", explain: "VAT receivable by central government each quarter. Not adjusted for the time of year.", why: "A building block for the 12-month total." }),
+      s("corp-q", "ACCD", "qna", PUBLIC_FINANCE, { label: "Corporation tax each quarter", sentenceName: "Corporation tax", format: "gbpbn", kind: "level", explain: "Corporation tax each quarter. Not adjusted for the time of year.", why: "A building block for the 12-month total." }),
+      s("spending-m", "KX5Q", "pusf", PUBLIC_FINANCE, { label: "Public sector spending each month", sentenceName: "Public sector spending", format: "gbpbn", kind: "level", explain: "Total managed expenditure each month, excluding public sector banks. Not adjusted for the time of year.", why: "A building block for the 12-month totals." }),
+      s("benefits-m", "CWNZ", "pusf", PUBLIC_FINANCE, { label: "Benefits and pensions each month", sentenceName: "Benefits and pensions", format: "gbpbn", kind: "level", explain: "Net social benefits paid each month, excluding public sector banks. Not adjusted for the time of year.", why: "A building block for the 12-month totals." }),
+      s("interest-m", "JW2P", "pusf", PUBLIC_FINANCE, { label: "Debt interest each month", sentenceName: "Debt interest", format: "gbpbn", kind: "level", explain: "Interest and dividends paid to the private sector and the rest of the world each month, excluding public sector banks. Not adjusted for the time of year.", why: "A building block for the 12-month totals." }),
+    ],
+  },
+  {
+    key: "rates",
+    label: "Interest rates",
+    title: "Interest rates, mortgages and the pound",
+    hint: "Mortgages, savings and the pound",
+    subtitle: "The Bank of England's interest rate, what lenders charge and savers earn, how many mortgages are being approved, and what a pound buys in dollars and euros.",
+    story: "Interest rates are the price of money. When the Bank of England raises its rate, mortgages and loans get dearer and saving pays more. When it cuts, the reverse. It is its main weapon against inflation.",
+    accent: "#3D5AFE",
+    series: [
+      b("bank-rate", "IUDBEDR", "last", {
+        label: "Bank Rate", sentenceName: "Bank Rate", headline: true, format: "pct2", kind: "rate",
+        explain: "The interest rate set by the Bank of England's Monetary Policy Committee. The figure shown is the rate on the last day of each month.",
+        why: "It is the starting point for almost every other interest rate, so a change feeds through to mortgages, loans and savings accounts.",
+      }),
+      b("mortgage-2y", "IUMBV34", "month", {
+        label: "Two-year fixed mortgage rate", sentenceName: "The average two-year fixed mortgage rate (for a 75% loan against the home's value)", headline: true, format: "pct2", kind: "rate",
+        explain: "The average interest rate on new two-year fixed-rate mortgages where the borrower has a 25% deposit (a 75% loan-to-value), across UK lenders.",
+        why: "It is what many homebuyers and remortgagers actually pay. A one-point rise adds roughly £60 a month to the repayments on every £100,000 borrowed.",
+      }),
+      b("mortgage-5y", "IUMBV42", "month", {
+        label: "Five-year fixed mortgage rate", sentenceName: "The average five-year fixed mortgage rate (for a 75% loan against the home's value)", format: "pct2", kind: "rate",
+        explain: "The average interest rate on new five-year fixed-rate mortgages with a 25% deposit, across UK lenders.",
+        why: "Five-year deals give certainty for longer. They follow what lenders expect rates to do, so they can move before the Bank does.",
+      }),
+      b("mortgage-2y-90", "IUMB482", "month", {
+        label: "Two-year fixed mortgage rate for small deposits", sentenceName: "The average two-year fixed mortgage rate for a 90% loan against the home's value", format: "pct2", kind: "rate",
+        explain: "The average interest rate on new two-year fixed-rate mortgages where the borrower has only a 10% deposit (a 90% loan-to-value).",
+        why: "Buyers with small deposits pay more. The gap between this and the main rate shows how much extra risk lenders are charging for.",
+      }),
+      b("credit-card", "IUMCCTL", "month", {
+        label: "Credit card interest rate", sentenceName: "The average credit card interest rate", format: "pct2", kind: "rate",
+        explain: "The average interest rate that UK lenders charge on credit card borrowing for households.",
+        why: "Credit card debt is one of the dearest ways to borrow, so people who carry a balance feel interest rates quickly.",
+      }),
+      b("savings-bond", "IUMWTFA", "month", {
+        label: "One-year fixed savings bond rate", sentenceName: "The average one-year fixed savings bond rate", format: "pct2", kind: "rate",
+        explain: "The average interest rate paid to households on one-year fixed-rate savings bonds, including unconditional bonuses.",
+        why: "It shows what savers can earn. When it is below inflation, savings lose buying power even as they grow.",
+      }),
+      b("gilt-10y", "IUMAMNPY", "month", {
+        label: "UK government 10-year borrowing rate", sentenceName: "The UK government's 10-year borrowing rate", headline: true, format: "pct2", kind: "rate",
+        explain: "The yield on 10-year UK government bonds (gilts): what investors require each year for lending to the government for ten years. Monthly average.",
+        why: "It is the cost of government borrowing and sets the tone for mortgage and business loan rates. A sharp rise can force a government to rethink its plans.",
+      }),
+      b("usd", "XUMAUSS", "month", {
+        label: "The pound in US dollars", sentenceName: "The pound's value in US dollars", headline: true, format: "usd", kind: "level",
+        explain: "How many US dollars one pound buys. Monthly average.",
+        why: "A weaker pound makes imports, holidays abroad and fuel dearer, but helps exporters. A stronger pound does the reverse.",
+      }),
+      b("eur", "XUMAERS", "month", {
+        label: "The pound in euros", sentenceName: "The pound's value in euros", format: "eur", kind: "level",
+        explain: "How many euros one pound buys. Monthly average.",
+        why: "The EU is the UK's largest trading partner, so the pound's value against the euro matters for prices and for firms that trade there.",
+      }),
+      b("sterling-index", "XUDLBK67", "mean", {
+        label: "The pound against a basket of currencies", sentenceName: "The sterling exchange rate index", format: "index", kind: "level",
+        explain: "An index of the pound's value against the currencies of the UK's main trading partners, weighted by trade, set to 100 in January 2005. Monthly average.",
+        why: "A single currency pair can mislead. This shows whether the pound has gained or lost value overall.",
+      }),
+      b("mortgage-approvals", "LPMVTVX", "month", {
+        label: "Mortgages approved to buy a home", sentenceName: "Mortgage approvals for house purchase", verb: "were", headline: true, format: "count", kind: "level",
+        explain: "The number of new mortgages approved each month to people buying a home. An approval is not yet a completed purchase. Seasonally adjusted.",
+        why: "It is an early sign of where the housing market is heading, because approvals come weeks before sales are registered.",
+      }),
+      b("remortgage-approvals", "LPMB4B3", "month", {
+        label: "Mortgages approved to switch lender", sentenceName: "Remortgaging approvals", verb: "were", format: "count", kind: "level",
+        explain: "The number of new mortgages approved each month to people who already own their home and are switching to a new deal. Seasonally adjusted.",
+        why: "When fixed deals end into higher rates, many people remortgage at once, which is how rate rises reach household budgets.",
+      }),
+    ],
+  },
 ];
 
 // --- "Compare places": one chart with several places side by side ---
@@ -654,10 +847,52 @@ const PLACES = {
     },
   ],
 };
-for (const sector of SECTORS) sector.places = PLACES[sector.key] ?? [];
+// --- Extra pieces some pages have ---
+//
+// breakdowns: a total split into parts, shown as "out of every £1". Each part is a series id on the same page.
+// mortgage: the series a page uses for its "what a mortgage costs" calculator.
+const BREAKDOWNS = {
+  tax: [
+    {
+      id: "where-money-comes-from",
+      title: "Where each £1 of tax and income comes from",
+      blurb: "Out of every £1 the government collects, this is how many pence come from each source. Each square is 1p.",
+      total: "receipts-12m",
+      parts: [
+        { id: "paye-12m", label: "Income tax from pay" },
+        { id: "nics-12m", label: "National Insurance" },
+        { id: "vat-4q", label: "VAT" },
+        { id: "sa-12m", label: "Self-assessed income tax" },
+        { id: "corp-4q", label: "Corporation tax" },
+        { id: "fuel-12m", label: "Fuel duty" },
+      ],
+      otherLabel: "Everything else, such as council tax, business rates, other taxes and income",
+      verb: "collected",
+    },
+    {
+      id: "where-money-goes",
+      title: "Where each £1 of public spending goes",
+      blurb: "Out of every £1 the government spends, this is how many pence go on benefits and pensions, and how many on interest. Each square is 1p.",
+      total: "spending-12m",
+      parts: [
+        { id: "benefits-12m", label: "Benefits and pensions" },
+        { id: "interest-12m", label: "Interest on the national debt" },
+      ],
+      otherLabel: "Everything else: the NHS, schools, defence, police, local services, transport and investment",
+      verb: "spent",
+    },
+  ],
+};
+const MORTGAGE = { rates: "mortgage-2y" };
+for (const sector of SECTORS) {
+  sector.places = PLACES[sector.key] ?? [];
+  sector.inputs = sector.inputs ?? [];
+  sector.breakdowns = BREAKDOWNS[sector.key] ?? [];
+  sector.mortgage = MORTGAGE[sector.key] ?? null;
+}
 
-// Every series a page needs the figures for: its cards, plus anything only the place charts use.
-export const sectorSeries = (sector) => [...sector.series, ...sector.places.flatMap((g) => g.extra)];
+// Every series a page needs the figures for: its cards, the raw figures that cards are worked out from, plus anything only the place charts use.
+export const sectorSeries = (sector) => [...sector.series, ...sector.inputs, ...sector.places.flatMap((g) => g.extra)];
 
 export const SECTOR_KEYS = SECTORS.map((x) => x.key);
 export const sectorByKey = (key) => SECTORS.find((x) => x.key === key);

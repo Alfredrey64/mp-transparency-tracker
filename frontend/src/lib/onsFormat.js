@@ -58,8 +58,9 @@ export function formatValue(format, v) {
   if (v === null || v === undefined || Number.isNaN(v)) return "n/a";
   switch (format) {
     case "pct": return `${v.toFixed(1)}%`;
+    case "pct2": return `${v.toFixed(2)}%`;
     case "gbp": return money(v, `£${group(Math.abs(v))}`);
-    case "gbpbn": return money(v, `£${(Math.abs(v) / 1000).toFixed(1)}bn`); // value in £ million
+    case "gbpbn": return money(v, `£${(Math.abs(v) / 1000).toLocaleString("en-GB", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}bn`); // value in £ million
     case "gbpbn0": return `£${group(v / 1000)}bn`;
     case "thousands": return v >= 1000 ? `${(v / 1000).toFixed(2)} million` : `${group(v)},000`.replace(/^0,000$/, "0");
     case "people": return v >= 1e6 ? `${(v / 1e6).toFixed(1)} million` : group(v);
@@ -69,6 +70,8 @@ export function formatValue(format, v) {
     case "ktonnes": return `${group(v / 1000)} million tonnes`; // value in thousand tonnes
     case "mtoe": return `${v.toFixed(0)} million tonnes of oil equivalent`;
     case "hours": return `${v.toFixed(1)} hours`;
+    case "usd": return `$${v.toFixed(2)}`;
+    case "eur": return `€${v.toFixed(2)}`;
     default: return String(v);
   }
 }
@@ -77,6 +80,7 @@ export function formatValue(format, v) {
 export function formatAxis(format, v) {
   switch (format) {
     case "pct": return `${Number(v.toFixed(1))}%`;
+    case "pct2": return `${Number(v.toFixed(2))}%`;
     case "gbp": return `£${group(v)}`;
     case "gbpbn": return `£${Math.round(v / 1000)}bn`;
     case "gbpbn0": return `£${group(v / 1000)}bn`;
@@ -87,6 +91,8 @@ export function formatAxis(format, v) {
     case "ktonnes": return `${group(v / 1000)}m`;
     case "mtoe": return `${v.toFixed(0)}`;
     case "hours": return `${Number(v.toFixed(1))}`;
+    case "usd": return `$${v.toFixed(2)}`;
+    case "eur": return `€${v.toFixed(2)}`;
     default: return String(Number(v.toFixed(1)));
   }
 }
@@ -95,7 +101,7 @@ export function formatAxis(format, v) {
 // levels. A level that is zero or negative at either end has no sensible per cent
 // change, so it is given as an amount instead.
 export function changeBetween(def, from, to) {
-  if (def.kind === "rate") return { type: "points", amount: to - from };
+  if (def.kind === "rate") return { type: "points", amount: to - from, digits: def.format === "pct2" ? 2 : 1 };
   if (from > 0 && to > 0) return { type: "percent", amount: ((to - from) / from) * 100 };
   if (from === to) return { type: "amount", amount: 0, text: formatValue(def.format, 0) };
   return { type: "amount", amount: to - from, text: formatValue(def.format, Math.abs(to - from)) };
@@ -104,8 +110,14 @@ export function changeBetween(def, from, to) {
 // A period as a person would say it. Figures for "the year to March 2026"
 // (crime, mainly) are labelled as such rather than as plain "March 2026".
 export function labelFor(def, p) {
-  if (def?.yearEnding && /^\d{4}-\d{2}$/.test(p)) return `Year to ${periodLabel(p)}`;
+  if (def?.yearEnding && (/^\d{4}-\d{2}$/.test(p) || /^\d{4}-Q[1-4]$/.test(p))) return `Year to ${yearEndLabel(p)}`;
   return periodLabel(p);
+}
+
+// The month a 12-month (or four-quarter) total ends in: "2026-Q2" is "June 2026".
+export function yearEndLabel(p) {
+  const q = /^(\d{4})-Q([1-4])$/.exec(p);
+  return q ? `${MONTHS[Number(q[2]) * 3 - 1]} ${q[1]}` : periodLabel(p);
 }
 
 // The latest figure and how it compares with a year earlier.
@@ -124,7 +136,7 @@ export function changeWords(change) {
   const a = Math.abs(change.amount);
   if (change.type === "amount") return a === 0 ? "little changed on a year earlier" : `${change.amount > 0 ? "up" : "down"} ${change.text} on a year earlier`;
   const unit = change.type === "points" ? (a === 1 ? "percentage point" : "percentage points") : "%";
-  const n = a < 10 ? a.toFixed(1) : Math.round(a).toString();
+  const n = a < 10 ? a.toFixed(change.type === "points" ? change.digits ?? 1 : 1) : Math.round(a).toString();
   if (Number(n) === 0) return "little changed on a year earlier";
   const dir = change.type === "points" ? (change.amount > 0 ? "up" : "down") : change.amount > 0 ? "up" : "down";
   return change.type === "points" ? `${dir} ${n} ${unit} on a year earlier` : `${dir} ${n}% on a year earlier`;
@@ -136,7 +148,7 @@ export function sentenceFor(def, points) {
   if (!info) return "";
   const words = changeWords(info.change);
   const verb = def.verb ?? "was";
-  const when = def.yearEnding ? `the year to ${periodLabel(info.period)}` : `${def.labelPrefix ?? ""}${periodInSentence(info.period)}`;
+  const when = def.yearEnding ? `the year to ${yearEndLabel(info.period)}` : `${def.labelPrefix ?? ""}${periodInSentence(info.period)}`;
   const head = `${def.sentenceName ?? def.label} ${verb} ${formatValue(def.format, info.value)} ${def.timeWord ?? "in"} ${when}`;
   return words ? `${head}, ${words}.` : `${head}.`;
 }
@@ -165,7 +177,7 @@ export function changeShort(change) {
   if (!change) return "";
   if (change.type === "amount") return change.amount === 0 ? "little changed" : `${change.amount > 0 ? "up" : "down"} ${change.text}`;
   const a = Math.abs(change.amount);
-  const n = a < 10 ? a.toFixed(1) : Math.round(a).toString();
+  const n = a < 10 ? a.toFixed(change.type === "points" ? change.digits ?? 1 : 1) : Math.round(a).toString();
   if (Number(n) === 0) return "little changed";
   const dir = change.amount > 0 ? "up" : "down";
   return change.type === "points" ? `${dir} ${n} pts` : `${dir} ${n}%`;

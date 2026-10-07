@@ -687,3 +687,23 @@ export function IconCompareTime({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconTaxes({ size = 17 }) {
+  return (
+    <svg width={size} height={size} {...iconProps}>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M14.8 8.6c-.5-.7-1.5-1.1-2.6-1.1-1.5 0-2.6.9-2.6 2.2 0 3 .6 3.4.6 4.6 0 .8-.5 1.4-1.4 1.8h6.2" />
+      <path d="M9.2 12h4.4" />
+    </svg>
+  );
+}
+
+export function IconRates({ size = 17 }) {
+  return (
+    <svg width={size} height={size} {...iconProps}>
+      <path d="M5 19 19 5" />
+      <circle cx="7.5" cy="7.5" r="2.4" />
+      <circle cx="16.5" cy="16.5" r="2.4" />
+    </svg>
+  );
+}

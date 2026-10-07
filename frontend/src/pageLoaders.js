@@ -57,6 +57,8 @@ export const LOADERS = {
   crime: () => import("./components/SectorPage"),
   trade: () => import("./components/SectorPage"),
   environment: () => import("./components/SectorPage"),
+  tax: () => import("./components/SectorPage"),
+  rates: () => import("./components/SectorPage"),
   indicators: () => import("./components/IndicatorTimeline"),
 };
 

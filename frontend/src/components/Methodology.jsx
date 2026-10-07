@@ -131,7 +131,7 @@ export default function Methodology({ onNavigate }) {
               name="Office for National Statistics"
               url="https://www.ons.gov.uk/"
               auth="No key required, Open Government Licence v3.0"
-              use="Time series on the economy, prices, jobs and pay (including unemployment by region), public finances, population, NHS staffing, trade, energy and emissions, plus weekly deaths, with their full history. The Britain in numbers pages are built from them. They are refreshed daily and only change when the ONS publishes. Shading by prime minister uses public records of when each took office."
+              use="Time series on the economy, prices, jobs and pay (including unemployment by region), public finances (including taxes collected and public spending), business investment, population, NHS staffing, trade, energy and emissions, plus weekly deaths, with their full history. The Britain in numbers pages are built from them. They are refreshed daily and only change when the ONS publishes. Shading by prime minister uses public records of when each took office."
             />
             <SourceRow
               name="UK House Price Index (HM Land Registry, ONS and others)"
@@ -144,6 +144,12 @@ export default function Methodology({ onNavigate }) {
               url="https://www.ons.gov.uk/peoplepopulationandcommunity/crimeandjustice/datasets/crimeinenglandandwalesappendixtables"
               auth="No key required, Open Government Licence v3.0"
               use="The Crime Survey for England and Wales and police recorded crime, read from the ONS appendix tables spreadsheet. They cover England and Wales only, and the two measures count different things, so the Crime page shows both and explains the gap."
+            />
+            <SourceRow
+              name="Bank of England Database"
+              url="https://www.bankofengland.co.uk/boeapps/database/"
+              auth="No key required, free to reuse with credit"
+              use="Bank Rate, the average rates lenders charge and pay on mortgages, credit cards and savings bonds, ten-year government borrowing rates, the pound against the dollar and euro, and mortgage approvals, for the Interest rates page. Daily figures are shown as a month's last value (Bank Rate) or its average (the pound's index)."
             />
             <SourceRow
               name="Consumer Prices Index (ONS series D7BT)"

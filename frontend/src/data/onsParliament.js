@@ -13,5 +13,7 @@ export const PARLIAMENT_LINKS = {
   housing: { topics: ["housing", "renters", "planning"], billCategory: "Housing & Communities", pages: [{ key: "councils", label: "Your council" }, { key: "parties", label: "What parties promise" }] },
   crime: { topics: ["knife crime", "policing", "sentencing"], billCategory: "Justice & Home Affairs", pages: [{ key: "committees", label: "Watchdog committees" }, { key: "parties", label: "What parties promise" }] },
   trade: { topics: ["trade", "tariffs", "exports"], billCategory: "Economy & Finance", pages: [{ key: "committees", label: "Watchdog committees" }, { key: "tracker", label: "Promises tracker" }] },
+  tax: { topics: ["taxation", "national insurance", "public spending"], billCategory: "Economy & Finance", pages: [{ key: "budget", label: "Where taxes go" }, { key: "tracker", label: "Promises tracker" }] },
+  rates: { topics: ["interest rates", "mortgages", "inflation"], billCategory: "Economy & Finance", pages: [{ key: "parties", label: "What parties promise" }, { key: "committees", label: "Watchdog committees" }] },
   environment: { topics: ["net zero", "climate", "energy"], billCategory: "Environment & Energy", pages: [{ key: "parties", label: "What parties promise" }, { key: "tracker", label: "Promises tracker" }] },
 };
