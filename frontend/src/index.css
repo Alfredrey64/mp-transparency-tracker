@@ -460,3 +460,7 @@ select:focus-visible,
 @media (min-width: 900px) {
   .ons-toolbar { position: sticky; top: 0; }
 }
+
+/* The fold-out explanation on each Britain in numbers card: no default marker, a turning chevron. */
+.ons-dive > summary::-webkit-details-marker { display: none; }
+.ons-dive[open] .ons-dive-chevron { transform: rotate(180deg); }

@@ -10,6 +10,7 @@ import { formatValue, formatAxis, latestInfo, changeWords, changeShort, sentence
 import { compareStats } from "../lib/onsStats";
 import { toLineData, yearTicks } from "../lib/onsChart";
 import { bandsBetween, PARTY_COLOURS } from "../lib/governments";
+import { DEEP_DIVES } from "../data/onsDeepDives";
 import { card, cardTitle, smallTitle, pillStyle, dateText } from "../lib/onsStyles";
 import { IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconHouse, IconGlobe, IconLeaf, IconShield } from "./icons";
 
@@ -153,6 +154,41 @@ function Explain({ explain, why, accent }) {
   );
 }
 
+
+// The longer explanation behind each measure: how it is worked out, what moves it,
+// and what people try to change to move it. Folded away so the card stays short.
+function DeepDive({ id, accent }) {
+  const dive = DEEP_DIVES[id];
+  if (!dive) return null;
+  const blocks = [
+    ["How it is measured", dive.how],
+    ["What causes it to change", dive.causes],
+    ["What is usually changed to move it", dive.levers],
+  ];
+  return (
+    <details className="ons-dive" style={{ marginTop: 16, border: `1px solid ${accent}55`, borderRadius: 16, background: `${accent}0d`, overflow: "hidden" }}>
+      <summary style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, cursor: "pointer", padding: "13px 18px", fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: 700, color: COLORS.ink, listStyle: "none" }}>
+        <span>How it is measured, what drives it and what changes it</span>
+        <span aria-hidden="true" className="ons-dive-chevron" style={{ color: accent, fontSize: 13, flexShrink: 0, transition: "transform 0.2s" }}>▼</span>
+      </summary>
+      <div style={{ padding: "2px 18px 18px", display: "grid", gap: 16 }}>
+        {blocks.map(([title, text], i) => (
+          <div key={title} style={{ display: "grid", gridTemplateColumns: "28px 1fr", gap: 12, alignItems: "start" }}>
+            <span aria-hidden="true" style={{ width: 26, height: 26, borderRadius: 13, background: accent, color: "#fff", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, display: "grid", placeItems: "center" }}>{i + 1}</span>
+            <div style={{ minWidth: 0 }}>
+              <h3 style={smallTitle}>{title}</h3>
+              <p style={{ fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.6, color: COLORS.inkSoft, margin: 0 }}>{text}</p>
+            </div>
+          </div>
+        ))}
+        <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: 0, paddingTop: 12, borderTop: `1px solid ${COLORS.hairline}` }}>
+          This lists the tools that are commonly used, not a view on which are best. Economists and politicians disagree about that, and most tools have trade-offs.
+        </p>
+      </div>
+    </details>
+  );
+}
+
 function SourceLine({ def, item }) {
   const link = def.source?.url ?? (def.cdid ? ONS_SERIES_PAGE(def) : null);
   const name = def.source?.name ?? (def.derive ? "Worked out from ONS figures" : `ONS series ${def.cdid} (${def.dataset?.toUpperCase()})`);
@@ -216,6 +252,7 @@ function SeriesCard({ def, item, range, accent, showGovernments, sectorKey }) {
         </p>
       )}
       <Explain explain={def.explain} why={def.why} accent={accent} />
+      <DeepDive id={def.id} accent={accent} />
       <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 10px", alignItems: "center", marginTop: 16 }}>
         <a href={`#/indicators/${sectorKey}.${def.id}`} style={{ ...pillStyle(false), textDecoration: "none", color: COLORS.ink, borderColor: `${accent}88` }}>Compare over time</a>
       </div>
