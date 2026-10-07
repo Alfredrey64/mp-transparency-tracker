@@ -59,6 +59,9 @@ export function formatValue(format, v) {
   switch (format) {
     case "pct": return `${v.toFixed(1)}%`;
     case "pct2": return `${v.toFixed(2)}%`;
+    case "gbp2": return money(v, `£${Math.abs(v).toFixed(2)}`);
+    case "per1000": return v.toFixed(1);
+    case "multiple": return `${v.toFixed(1)} years`;
     case "gbp": return money(v, `£${group(Math.abs(v))}`);
     case "gbpbn": return money(v, `£${(Math.abs(v) / 1000).toLocaleString("en-GB", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}bn`); // value in £ million
     case "gbpbn0": return `£${group(v / 1000)}bn`;
@@ -83,6 +86,9 @@ export function formatAxis(format, v) {
   switch (format) {
     case "pct": return `${Number(v.toFixed(1))}%`;
     case "pct2": return `${Number(v.toFixed(2))}%`;
+    case "gbp2": return `£${Number(v.toFixed(1))}`;
+    case "per1000": return String(Number(v.toFixed(1)));
+    case "multiple": return String(Number(v.toFixed(1)));
     case "gbp": return `£${group(v)}`;
     case "gbpbn": return `£${Math.round(v / 1000)}bn`;
     case "gbpbn0": return `£${group(v / 1000)}bn`;

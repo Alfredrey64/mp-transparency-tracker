@@ -11,6 +11,7 @@ import { loadSector, loadDeflator } from "../lib/onsData";
 import { makeDeflator, toReal, canAdjust } from "../lib/onsReal";
 import { formatValue, formatAxis, changeBetween, changeShort } from "../lib/onsFormat";
 import { monthlyTimeline, valuesOver, ranked, ordinal, domainOf, tLabel, valueAtPosition, niceBands, classOf, classColour } from "../lib/regionData";
+import { isScrolling } from "../lib/scrollState";
 import { card, cardTitle, pillStyle } from "../lib/onsStyles";
 
 // Regions and nations: an interactive, animated map with a league table beside it. Pick a measure,
@@ -110,7 +111,7 @@ function League({ rows, selected, hover, onHover, onSelect, accent, dateLabel, r
             <motion.li key={r.key} layout={!reduce} transition={{ type: "spring", stiffness: 380, damping: 36 }} style={{ margin: 0 }}>
               <button
                 type="button" className="ons-chip" aria-pressed={selected === r.key}
-                onClick={() => onSelect(r.key)} onPointerEnter={(e) => { if (e.pointerType !== "touch") onHover(r.key); }} onPointerLeave={(e) => { if (e.pointerType !== "touch") onHover(null); }}
+                onClick={() => onSelect(r.key)} onPointerEnter={(e) => { if (e.pointerType !== "touch" && !isScrolling()) onHover(r.key); }} onPointerLeave={(e) => { if (e.pointerType !== "touch") onHover(null); }}
                 onFocus={() => onHover(r.key)} onBlur={() => onHover(null)}
                 style={{
                   display: "grid", gridTemplateColumns: "34px 14px minmax(0, 1fr) auto", gap: "0 10px", alignItems: "center", width: "100%", textAlign: "left", font: "inherit", cursor: "pointer",
@@ -122,7 +123,7 @@ function League({ rows, selected, hover, onHover, onSelect, accent, dateLabel, r
                   {r.moved !== 0 && <span style={{ fontSize: 10.5, fontWeight: 700, color: r.moved > 0 ? "#2F6F4E" : "#9C3B3B" }}>{r.moved > 0 ? "▲" : "▼"}{Math.abs(r.moved)}</span>}
                 </span>
                 <span aria-hidden="true" style={{ width: 14, height: 14, borderRadius: 4, background: r.colour, boxShadow: `0 0 0 1px ${COLORS.hairline}` }} />
-                <span style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.name}</span>
+                <span style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink, minWidth: 0, lineHeight: 1.25 }}>{r.name}</span>
                 <span style={{ textAlign: "right", lineHeight: 1.2 }}>
                   <span style={{ ...numeric, display: "block", fontSize: 16, fontWeight: 600, color: COLORS.ink }}>{r.text}</span>
                   {r.change && <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 600, color: COLORS.inkSoft }}>{r.change}</span>}

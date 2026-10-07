@@ -1,6 +1,6 @@
 import { preloadView } from "../pageLoaders";
 import { useWatchlistChanges } from "../lib/useWatchlistChanges";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
 import { EyebrowLabel, ParliamentSilhouette } from "./shared";
 import GlobalSearch from "./GlobalSearch";
@@ -106,7 +106,7 @@ function NavList({ items, activeView, onNavigate, accent = ACCENT_DEFAULT }) {
 // A group of pages with a plain title and a line saying what it is for. It
 // folds away; while closed, the header names the page you are on so you
 // never lose your place.
-function SidebarSection({ label, blurb, accent, items, activeView, onNavigate, open, onToggle }) {
+function SidebarSection({ label, blurb, accent, items, activeView, onNavigate, open, onToggle, animate }) {
   const activeItem = items.find((i) => i.key === activeView);
   return (
     <div
@@ -138,10 +138,11 @@ function SidebarSection({ label, blurb, accent, items, activeView, onNavigate, o
           </svg>
         </span>
       </button>
-      {/* Folds with a grid-row transition, which the browser runs off the
-          main thread's layout work. Closed content is inert so it can't be
-          tabbed to. */}
-      <div className="fold" data-open={open} inert={!open}>
+      {/* Folds with a grid-row transition, but only once the visitor has opened or closed
+          something themselves. A section that opens on its own (the one holding the page you
+          are on, or when the page first loads) opens at once, so it can never be left half
+          open. Closed content is inert so it can't be tabbed to. */}
+      <div className={animate ? "fold fold-anim" : "fold"} data-open={open} inert={!open}>
         <div className="fold-inner">
           <div style={{ padding: "0 8px 9px" }}>
             <NavList items={items} activeView={activeView} onNavigate={onNavigate} accent={accent} />
@@ -185,13 +186,33 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician }) {
   const states = sections.map((section) => sectionStartsOpen(choices, section.key, mode, section.items.some((i) => i.key === activeView)));
   const allOpen = states.every(Boolean);
 
+  // Whether the visitor has folded or unfolded anything yet.
+  const [touched, setTouched] = useState(false);
+  const scroller = useRef(null);
+
+  // Keep the page you are on whole in the menu: scroll the menu (not the page) just enough to show it.
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      const box = scroller.current?.closest(".mp-sidebar");
+      const item = box?.querySelector('[aria-current="page"]');
+      if (!box || !item) return;
+      const b = box.getBoundingClientRect();
+      const r = item.getBoundingClientRect();
+      if (r.bottom > b.bottom - 12) box.scrollTop += r.bottom - b.bottom + 24;
+      else if (r.top < b.top + 12) box.scrollTop -= b.top - r.top + 24;
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [activeView, mode]);
+
   function toggle(key, currentlyOpen) {
+    setTouched(true);
     const next = { ...choices, [key]: !currentlyOpen };
     setChoices(next);
     writeSectionChoices(next);
   }
 
   function setAll(open) {
+    setTouched(true);
     const next = Object.fromEntries(sections.map((s) => [s.key, open]));
     setChoices({ ...choices, ...next });
     writeSectionChoices({ ...choices, ...next });
@@ -226,7 +247,7 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician }) {
         <GlobalSearch onSelectPolitician={onSelectPolitician} onNavigate={onNavigate} />
       </div>
 
-      <div style={{ flex: 1 }}>
+      <div ref={scroller} style={{ flex: 1 }}>
         {/* The first thing a newcomer should see. */}
         <button
           type="button"
@@ -268,6 +289,7 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician }) {
             activeView={activeView}
             onNavigate={onNavigate}
             open={states[i]}
+            animate={touched}
             onToggle={() => toggle(section.key, states[i])}
           />
         ))}

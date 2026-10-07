@@ -46,6 +46,7 @@ const SCRIPTS = [
   { id: "build_benchmarks", label: "MP benchmarks (how each MP compares)" },
   { id: "fetch_councils", label: "Councils (councillors, make-up, election dates)" },
   { id: "fetch_ons", label: "ONS statistics (economy, prices, jobs, health, population)" },
+  { id: "fetch_regional_breakdowns", label: "Regional breakdowns (jobs, housing, crime by place)" },
 ];
 
 // GitHub Actions step `outcome` is "success", "failure", "cancelled", or

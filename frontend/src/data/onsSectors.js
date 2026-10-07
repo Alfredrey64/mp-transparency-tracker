@@ -974,7 +974,10 @@ export const SECTORS = [
         why: "Family visas are shaped by income requirements, which have been raised.",
       }),
     ],
-    inputs: [],
+    inputs: [
+      d("visas-ws", { op: "plus", from: "visas-work", of: "visas-study" }, { yearEnding: true, label: "Work and study visas granted", format: "count", kind: "level", explain: "Work visas plus study visas, over the year. A building block for the split of visas.", why: "A building block." }),
+      d("visas-main", { op: "plus", from: "visas-ws", of: "visas-family" }, { yearEnding: true, label: "Work, study and family visas granted", format: "count", kind: "level", explain: "Work, study and family visas added together, over the year. A building block for the split of visas.", why: "A building block." }),
+    ],
   },
   {
     // The Regions page draws its own interactive map. These are the extra figures it needs by region;
@@ -1387,6 +1390,212 @@ BREAKDOWNS.environment = [
     annual: true,
   },
 ];
+BREAKDOWNS.crime = [
+  {
+    id: "types-of-crime",
+    title: "What kinds of crime the police record",
+    blurb: "Out of every 100 crimes recorded by the police in England and Wales (not counting fraud), this is how many are of each type. Each square is 1%.",
+    total: "prc-all",
+    parts: [
+      { id: "prc-violence", label: "Violence against the person, including stalking and harassment" },
+      { id: "prc-theft", label: "Theft, including shoplifting, burglary and vehicle theft" },
+      { id: "prc-damage", label: "Criminal damage and arson" },
+      { id: "prc-public-order", label: "Public order offences" },
+      { id: "prc-drugs", label: "Drug offences" },
+      { id: "prc-sexual", label: "Sexual offences" },
+    ],
+    otherLabel: "Everything else, such as robbery and possession of weapons",
+    format: "count",
+    unit: "%",
+    summary: "In the year to {when} the police in England and Wales recorded {total} crimes, not counting fraud.",
+  },
+];
+BREAKDOWNS.trade = [
+  {
+    id: "what-we-sell",
+    title: "What the UK sells abroad",
+    blurb: "Out of every 100 pounds the UK earns from selling to other countries, this is how many come from goods and how many from services. Each square is 1%.",
+    total: "exports",
+    parts: [
+      { id: "goods-exports", label: "Goods, such as cars, machinery, fuel and medicines" },
+      { id: "services-exports", label: "Services, such as finance, business services, travel and education" },
+    ],
+    otherLabel: "Not split",
+    format: "gbpbn",
+    unit: "%",
+    summary: "In the three months to {when} the UK sold {total} to other countries.",
+  },
+  {
+    id: "what-we-buy",
+    title: "What the UK buys from abroad",
+    blurb: "Out of every 100 pounds the UK spends on buying from other countries, this is how many go on goods and how many on services. Each square is 1%.",
+    total: "imports",
+    parts: [
+      { id: "goods-imports", label: "Goods, such as cars, electronics, food and fuel" },
+      { id: "services-imports", label: "Services, such as holidays abroad, shipping and online services" },
+    ],
+    otherLabel: "Not split",
+    format: "gbpbn",
+    unit: "%",
+    summary: "In the three months to {when} the UK bought {total} from other countries.",
+  },
+  {
+    id: "where-goods-go",
+    title: "Where the UK's goods exports go",
+    blurb: "Out of every 100 pounds of goods the UK sells abroad, this is how many go to countries in the EU and how many to the rest of the world. Each square is 1%.",
+    total: "goods-exports",
+    parts: [
+      { id: "eu-exports", label: "To countries in the European Union" },
+      { id: "noneu-exports", label: "To the rest of the world" },
+    ],
+    otherLabel: "Not split",
+    format: "gbpbn",
+    unit: "%",
+    summary: "In the three months to {when} the UK sold {total} of goods to other countries.",
+  },
+  {
+    id: "where-goods-come-from",
+    title: "Where the UK's goods imports come from",
+    blurb: "Out of every 100 pounds of goods the UK buys from abroad, this is how many come from the EU and how many from the rest of the world. Each square is 1%.",
+    total: "goods-imports",
+    parts: [
+      { id: "eu-imports", label: "From countries in the European Union" },
+      { id: "noneu-imports", label: "From the rest of the world" },
+    ],
+    otherLabel: "Not split",
+    format: "gbpbn",
+    unit: "%",
+    summary: "In the three months to {when} the UK bought {total} of goods from other countries.",
+  },
+];
+BREAKDOWNS.population = [
+  {
+    id: "where-people-live",
+    title: "Where the UK's people live",
+    blurb: "Out of every 100 people in the UK, this is how many live in each of its four nations. Each square is 1%.",
+    total: "uk",
+    parts: [
+      { id: "england", label: "England" },
+      { id: "scotland", label: "Scotland" },
+      { id: "wales", label: "Wales" },
+      { id: "ni", label: "Northern Ireland" },
+    ],
+    otherLabel: "Not split",
+    format: "people",
+    unit: "%",
+    annual: true,
+    summary: "In mid-{when} the UK had {total} people.",
+  },
+];
+BREAKDOWNS.immigration = [
+  {
+    id: "why-visas",
+    title: "Why people are granted visas",
+    blurb: "Out of every 100 work, study and family visas granted, this is how many are for each reason. Each square is 1%. It leaves out visitors and dependants of workers and students.",
+    total: "visas-main",
+    parts: [
+      { id: "visas-study", label: "Study" },
+      { id: "visas-work", label: "Work" },
+      { id: "visas-family", label: "Family" },
+    ],
+    otherLabel: "Not split",
+    format: "count",
+    unit: "%",
+    summary: "In the year to {when}, {total} work, study and family visas were granted.",
+  },
+];
+// "Compare these": several measures on one page drawn together, with the latest figure of each ranked beside the chart.
+PLACES.prices = [{
+  id: "inflation-by-spending",
+  title: "Inflation by type of spending",
+  blurb: "Pick up to six kinds of spending to see how fast their prices are rising or falling. The bars show every kind, highest first, so you can see what is pushing the headline figure up or down.",
+  format: "pct",
+  members: ["cpi", "food", "energy", "rents", "transport", "eating-out", "alcohol-tobacco", "clothing", "housing-fuels", "household-goods", "health-prices", "communication", "recreation", "education-prices", "misc-prices"],
+  defaultOn: ["cpi", "food", "energy", "rents"],
+  showAs: "levels",
+  names: {
+    cpi: "All items (CPI)", food: "Food and drink", energy: "Home energy", rents: "Rents", transport: "Transport", "eating-out": "Restaurants and hotels", "alcohol-tobacco": "Alcohol and tobacco", clothing: "Clothing and shoes",
+    "housing-fuels": "Housing, water and fuels", "household-goods": "Furniture and household goods", "health-prices": "Health", communication: "Phones and communication", recreation: "Recreation and culture", "education-prices": "Education", "misc-prices": "Insurance and other services",
+  },
+  extra: [],
+}];
+PLACES.health = [{
+  id: "nhs-targets",
+  title: "How the NHS is doing against its targets",
+  blurb: "Pick up to six measures to compare. Each is the share of patients seen within a target time, so higher is better. The bars show every measure, highest first.",
+  format: "pct",
+  members: ["rtt-within-18", "ae-4-hour", "ae-4-hour-major", "cancer-62-day", "cancer-28-day", "cancer-31-day"],
+  defaultOn: ["rtt-within-18", "ae-4-hour", "cancer-62-day", "cancer-28-day"],
+  showAs: "levels",
+  names: { "rtt-within-18": "Operations and treatment within 18 weeks", "ae-4-hour": "A&E within 4 hours", "ae-4-hour-major": "Major A&E within 4 hours", "cancer-62-day": "Cancer treatment within 62 days", "cancer-28-day": "Cancer diagnosis within 28 days", "cancer-31-day": "Cancer treatment within 31 days" },
+  extra: [],
+}];
+PLACES.business = [{
+  id: "industries-growing",
+  title: "Which industries are growing",
+  blurb: "Pick up to six industries to compare how much more (or less) each produced than a year earlier. The bars show every industry, highest first.",
+  format: "pct",
+  members: INDUSTRIES.map(([id]) => `${id}-growth`),
+  defaultOn: ["manufacturing-growth", "construction-growth", "finance-growth", "tech-comms-growth", "hospitality-growth"],
+  showAs: "levels",
+  names: Object.fromEntries(INDUSTRIES.map(([id, , name]) => [`${id}-growth`, name])),
+  extra: [],
+}];
+PLACES.rates = [{
+  id: "rates-compared",
+  title: "Interest rates compared",
+  blurb: "Pick up to six rates to compare: what the Bank of England charges, what a mortgage costs, what savers earn, what credit cards charge and what the government pays to borrow. The bars show every rate, highest first.",
+  format: "pct2",
+  members: ["bank-rate", "mortgage-2y", "mortgage-5y", "mortgage-2y-90", "credit-card", "savings-bond", "gilt-10y"],
+  defaultOn: ["bank-rate", "mortgage-2y", "savings-bond", "credit-card"],
+  showAs: "levels",
+  names: { "bank-rate": "Bank Rate", "mortgage-2y": "2-year fixed mortgage", "mortgage-5y": "5-year fixed mortgage", "mortgage-2y-90": "2-year fixed mortgage, small deposit", "credit-card": "Credit cards", "savings-bond": "1-year savings bond", "gilt-10y": "Government borrowing, 10 years" },
+  extra: [],
+}];
+PLACES.environment = [{
+  id: "emissions-compared",
+  title: "Emissions by source over time",
+  blurb: "Pick up to six sources to see how much greenhouse gas each has produced over the years. The bars show every source, highest first.",
+  format: "ktonnes",
+  members: ["ghg-households", "ghg-power", "ghg-manufacturing", "ghg-agriculture", "ghg-transport"],
+  defaultOn: ["ghg-households", "ghg-power", "ghg-manufacturing", "ghg-agriculture", "ghg-transport"],
+  showAs: "levels",
+  names: { "ghg-households": "Households", "ghg-power": "Power stations and gas", "ghg-manufacturing": "Manufacturing", "ghg-agriculture": "Farming", "ghg-transport": "Transport businesses" },
+  extra: [],
+}];
+PLACES.tax = [{
+  id: "taxes-compared",
+  title: "The main taxes compared",
+  blurb: "Pick up to six taxes to see how much each raises. The bars show every tax, largest first.",
+  format: "gbpbn",
+  members: ["paye-12m", "nics-12m", "vat-4q", "corp-4q", "sa-12m", "fuel-12m", "council-tax"],
+  defaultOn: ["paye-12m", "nics-12m", "vat-4q", "corp-4q"],
+  showAs: "levels",
+  names: { "paye-12m": "Income tax from pay", "nics-12m": "National Insurance", "vat-4q": "VAT", "corp-4q": "Corporation tax", "sa-12m": "Self-assessed income tax", "fuel-12m": "Fuel duty", "council-tax": "Council tax" },
+  extra: [],
+}];
+PLACES.immigration = [{
+  id: "visas-compared",
+  title: "Visas granted, by reason",
+  blurb: "Pick the kinds of visa to compare over time. The bars show each kind, largest first.",
+  format: "count",
+  members: ["visas-work", "visas-study", "visas-family"],
+  defaultOn: ["visas-work", "visas-study", "visas-family"],
+  showAs: "levels",
+  names: { "visas-work": "Work", "visas-study": "Study", "visas-family": "Family" },
+  extra: [],
+}];
+PLACES.crime = [{
+  id: "crime-by-type",
+  title: "Recorded crime by type",
+  blurb: "Pick up to six types of crime to compare how many the police have recorded each year. The bars show every type, largest first.",
+  format: "count",
+  members: ["prc-violence", "prc-theft", "prc-damage", "prc-public-order", "prc-drugs", "prc-sexual", "prc-burglary", "prc-robbery", "prc-shoplifting", "prc-knife"],
+  defaultOn: ["prc-violence", "prc-theft", "prc-damage", "prc-shoplifting"],
+  showAs: "levels",
+  names: { "prc-violence": "Violence against the person", "prc-theft": "Theft", "prc-damage": "Criminal damage and arson", "prc-public-order": "Public order", "prc-drugs": "Drugs", "prc-sexual": "Sexual offences", "prc-burglary": "Burglary", "prc-robbery": "Robbery", "prc-shoplifting": "Shoplifting", "prc-knife": "Knife and blade possession" },
+  extra: [],
+}];
 const MORTGAGE = { rates: "mortgage-2y" };
 for (const sector of SECTORS) {
   sector.places = PLACES[sector.key] ?? [];

@@ -4,6 +4,7 @@ import RegionMap from "./RegionMap";
 import ColourKey from "./RegionKey";
 import { REGIONS, inSentence } from "../data/regionMetrics";
 import { formatValue } from "../lib/onsFormat";
+import { isScrolling } from "../lib/scrollState";
 import { niceBands, classOf, classColour, ranked, ordinal } from "../lib/regionData";
 
 // One figure for each region, drawn on the map with a label on every place, a colour key with round-number
@@ -49,7 +50,7 @@ export default function RegionCompare({ values, format, accent, noun, ukValue = 
         <ColourKey bounds={bounds} accent={accent} format={format} uk={ukValue} ukLabel={ukLabel} caption={caption ?? "Round-number steps, same colours on every map here"} />
       </div>
       <div style={{ minWidth: 0 }}>
-        <ol aria-label={`Places ranked by ${noun}`} style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 3 }}>
+        <ol aria-label={`Places ranked by ${noun}`} style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: "3px 24px" }}>
           {order.map(({ key, rank }) => {
             const r = REGIONS.find((x) => x.key === key);
             const on = top === key;
@@ -57,7 +58,7 @@ export default function RegionCompare({ values, format, accent, noun, ukValue = 
               <li key={key}>
                 <button
                   type="button" className="ons-chip" aria-pressed={selected === key} onClick={() => select(key)}
-                  onPointerEnter={(e) => { if (e.pointerType !== "touch") setHover(key); }} onPointerLeave={(e) => { if (e.pointerType !== "touch") setHover(null); }}
+                  onPointerEnter={(e) => { if (e.pointerType !== "touch" && !isScrolling()) setHover(key); }} onPointerLeave={(e) => { if (e.pointerType !== "touch") setHover(null); }}
                   onFocus={() => setHover(key)} onBlur={() => setHover(null)}
                   style={{ display: "grid", gridTemplateColumns: "26px minmax(0, 1fr) auto", gap: "2px 10px", alignItems: "center", width: "100%", textAlign: "left", font: "inherit", cursor: "pointer", background: on ? `${accent}14` : "none", border: `1.5px solid ${selected === key ? accent : "transparent"}`, borderRadius: 10, padding: "6px 9px" }}
                 >

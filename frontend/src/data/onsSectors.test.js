@@ -51,7 +51,7 @@ describe("Britain in numbers sectors", () => {
 
   it("builds every breakdown from series on its own page", () => {
     for (const sector of SECTORS) {
-      const ids = new Set(sector.series.map((x) => x.id));
+      const ids = new Set(sectorSeries(sector).map((x) => x.id));
       for (const b of sector.breakdowns) {
         expect(ids.has(b.total), `${sector.key}/${b.id}/total`).toBe(true);
         expect(b.parts.length).toBeGreaterThan(0);

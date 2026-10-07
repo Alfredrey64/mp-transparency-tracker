@@ -1,5 +1,5 @@
 import { memo, useEffect, useId, useMemo, useRef, useState } from "react";
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme";
 import { PageHeader, LoadFailedNote } from "./shared";
 import LineChart from "./LineChart";
@@ -11,8 +11,8 @@ import { KEY_POINTS } from "../data/onsKeyPoints";
 import { fillKeyPoint } from "../lib/onsKeyPoints";
 import { SECTOR_PROMISES } from "../data/onsPromises";
 import ChartActions from "./ChartActions";
-import CountUp from "./CountUp";
 import PopulationExplorer from "./PopulationExplorer";
+import SectorExplorer from "./SectorExplorer";
 import { sectorByKey, sectorSeries, ONS_SERIES_PAGE, WEEKLY_DEATHS } from "../data/onsSectors";
 import { loadSector, loadDeflator } from "../lib/onsData";
 import { makeDeflator, toReal, canAdjust } from "../lib/onsReal";
@@ -36,17 +36,18 @@ import { IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconH
 const ICONS = { economy: IconTrend, prices: IconBasket, jobs: IconBriefcase, publicFinances: IconLedger, population: IconPopulation, health: IconHeartbeat, housing: IconHouse, crime: IconShield, trade: IconGlobe, environment: IconLeaf, tax: IconTaxes, rates: IconRates, immigration: IconMigration, business: IconFactory };
 const RANGES = [{ years: 2, label: "2 years" }, { years: 5, label: "5 years" }, { years: 10, label: "10 years" }, { years: 25, label: "25 years" }, { years: 0, label: "Everything" }];
 // Pages with a bigger interactive card of their own, before the series cards.
-const EXPLORERS = { population: { id: "who-lives-where", label: "Who lives where" } };
+const EXPLORERS = {
+  population: { id: "who-lives-where", label: "Who lives where" },
+  jobs: { id: "who-works-where", label: "Who works where" },
+  housing: { id: "housing-by-place", label: "Homes by type and place" },
+  crime: { id: "crime-by-place", label: "Crime by place" },
+};
 const WHOLE_HISTORY = new Set(["population", "environment", "crime"]);
 const NOW = new Date().getFullYear() + 1;
 
-// A line that reveals itself left to right, with a soft fill under it. Drawn with
-// a clip rather than by stroking the path, so the line is always one unbroken stroke.
+// A small line with a soft fill under it. Drawn once and left alone: it does not animate while the page scrolls.
 function Spark({ points, color, height = 44 }) {
   const id = useId().replace(/:/g, "");
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-30px" });
-  const reduce = useReducedMotion();
   const pts = points.slice(-48);
   if (pts.length < 2) return null;
   const ys = pts.map((p) => p[1]);
@@ -56,20 +57,15 @@ function Spark({ points, color, height = 44 }) {
   const y = (v) => height - 5 - ((v - lo) / (hi - lo || 1)) * (height - 12);
   const line = pts.map((p, i) => `${i ? "L" : "M"}${x(i).toFixed(1)} ${y(p[1]).toFixed(1)}`).join(" ");
   return (
-    <svg ref={ref} viewBox={`0 0 200 ${height}`} width="100%" height={height} preserveAspectRatio="none" aria-hidden="true" style={{ display: "block", overflow: "hidden" }}>
+    <svg viewBox={`0 0 200 ${height}`} width="100%" height={height} preserveAspectRatio="none" aria-hidden="true" style={{ display: "block", overflow: "hidden" }}>
       <defs>
         <linearGradient id={`g${id}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={color} stopOpacity="0.32" />
           <stop offset="100%" stopColor={color} stopOpacity="0" />
         </linearGradient>
-        <clipPath id={`c${id}`}>
-          <motion.rect x="0" y="0" height={height} initial={{ width: reduce ? 200 : 0 }} animate={{ width: inView || reduce ? 200 : 0 }} transition={{ duration: 1.3, ease: [0.22, 1, 0.36, 1], delay: 0.2 }} />
-        </clipPath>
       </defs>
-      <g clipPath={`url(#c${id})`}>
-        <path d={`${line} L200 ${height} L0 ${height} Z`} fill={`url(#g${id})`} />
-        <path d={line} fill="none" stroke={color} strokeWidth="2.2" vectorEffect="non-scaling-stroke" strokeLinejoin="round" strokeLinecap="round" />
-      </g>
+      <path d={`${line} L200 ${height} L0 ${height} Z`} fill={`url(#g${id})`} />
+      <path d={line} fill="none" stroke={color} strokeWidth="2.2" vectorEffect="non-scaling-stroke" strokeLinejoin="round" strokeLinecap="round" />
     </svg>
   );
 }
@@ -86,31 +82,26 @@ function ChangeChip({ change, accent }) {
   );
 }
 
-const Tile = memo(function Tile({ def, item, accent, index }) {
-  const reduce = useReducedMotion();
+// A headline figure. A plain link: it does not fade, count up or move, so nothing shifts as the page scrolls.
+const Tile = memo(function Tile({ def, item, accent }) {
   const info = latestInfo(def, item.points);
   if (!info) return null;
   return (
-    <motion.a
+    <a
       className="ons-tile"
       href={`#s-${def.id}`}
       onClick={(e) => { e.preventDefault(); document.getElementById(`s-${def.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
-      initial={reduce ? false : { opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.4, delay: Math.min(index, 4) * 0.05, ease: "easeOut" }}
       style={{
         ...card, padding: "20px 22px 0", position: "relative", overflow: "hidden", textDecoration: "none", display: "flex", flexDirection: "column", color: "inherit",
         background: `linear-gradient(180deg, ${accent}14, ${COLORS.paperCard} 55%)`, borderColor: `${accent}40`,
       }}
     >
       <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, fontWeight: 700, color: COLORS.ink, lineHeight: 1.3 }}>{def.label}</div>
-      <div style={{ ...numeric, fontSize: 42, fontWeight: 600, lineHeight: 1.1, color: COLORS.ink, marginTop: 10, letterSpacing: "-0.02em" }}>
-        <CountUp value={info.value} format={(n) => formatValue(def.format, n)} duration={1.3} />
-      </div>
+      <div style={{ ...numeric, fontSize: 42, fontWeight: 600, lineHeight: 1.1, color: COLORS.ink, marginTop: 10, letterSpacing: "-0.02em" }}>{formatValue(def.format, info.value)}</div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, margin: "2px 0 10px" }}>{info.label}</div>
       <div><ChangeChip change={info.change} accent={accent} /></div>
       <div style={{ margin: "14px -22px 0" }}><Spark points={item.points} color={accent} /></div>
-    </motion.a>
+    </a>
   );
 });
 
@@ -402,7 +393,7 @@ function Spotlight({ def, item, accent }) {
     <div style={{ minWidth: 0 }}>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: accent, marginBottom: 4 }}>{def.label}</div>
       <div style={{ ...numeric, fontSize: "clamp(46px, 7vw, 68px)", fontWeight: 600, lineHeight: 1.05, color: COLORS.ink, letterSpacing: "-0.03em" }}>
-        <CountUp value={info.value} format={(n) => formatValue(def.format, n)} duration={1.6} />
+        {formatValue(def.format, info.value)}
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, margin: "4px 0 10px" }}>{info.label}</div>
       <ChangeChip change={info.change} accent={accent} />
@@ -429,6 +420,30 @@ function useActiveCard(ids) {
     return () => io.disconnect();
   }, [key]);
   return active;
+}
+
+// The row of links to each card. It keeps track of which card is on screen in its own state, so scrolling re-draws
+// only this row, never the page's charts and maps.
+function JumpBar({ items, ids, accent }) {
+  const active = useActiveCard(ids);
+  return (
+    <div className="ons-jump" role="navigation" aria-label="Jump to a measure">
+      {items.map((s) => (
+        <a
+          key={s.id}
+          href={`#s-${s.id}`}
+          onClick={(e) => { e.preventDefault(); document.getElementById(`s-${s.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
+          aria-current={active === s.id ? "true" : undefined}
+          style={{
+            fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, whiteSpace: "nowrap", textDecoration: "none", padding: "5px 11px", borderRadius: 999,
+            color: active === s.id ? "#fff" : COLORS.inkSoft, background: active === s.id ? accent : "transparent", border: `1px solid ${active === s.id ? accent : COLORS.hairline}`,
+          }}
+        >
+          {s.label}
+        </a>
+      ))}
+    </div>
+  );
 }
 
 // The three or four things to take away, in plain English, filled in from the latest figures.
@@ -551,7 +566,6 @@ export default function SectorPage({ sector, param = null }) {
   const extraCards = useMemo(() => (def ? [...(EXPLORERS[def.key] ? [EXPLORERS[def.key]] : []), ...def.breakdowns.map((x) => ({ id: x.id, label: x.title })), ...(def.mortgage ? [{ id: "mortgage-cost", label: "What a mortgage costs" }] : []), ...def.places.map((g) => ({ id: g.id, label: g.title }))] : []), [def]);
   const hasPromises = Boolean(def && SECTOR_PROMISES[def.key]);
   const jumpIds = useMemo(() => [...extraCards.map((x) => x.id), ...shown.map((s) => s.id), ...(def && SECTOR_PROMISES[def.key] ? ["promises"] : [])], [extraCards, shown, def]);
-  const active = useActiveCard(jumpIds);
   if (!def) return null;
   const tiles = shown.filter((s) => s.headline);
   const spotlight = tiles[0];
@@ -594,7 +608,7 @@ export default function SectorPage({ sector, param = null }) {
           <KeyPoints sector={def.key} series={loaded.series} accent={def.accent} skip={spotlight?.id} />
 
           <div className="ons-noprint" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(250px, 100%), 1fr))", gap: 16, marginTop: 18 }}>
-            {tiles.slice(1).map((s, i) => <Tile key={s.id} def={s} item={loaded.series[s.id]} accent={def.accent} index={i} />)}
+            {tiles.slice(1).map((s) => <Tile key={s.id} def={s} item={loaded.series[s.id]} accent={def.accent} />)}
           </div>
 
           <div className="ons-toolbar" style={{ margin: "32px 0 14px", padding: "12px 0" }}>
@@ -612,23 +626,7 @@ export default function SectorPage({ sector, param = null }) {
                 <Toggle on={showGovernments} onChange={setShowGovernments}>Show who was in government</Toggle>
               </div>
             </div>
-            <div className="ons-jump" role="navigation" aria-label="Jump to a measure">
-              {[...extraCards, ...shown, ...(hasPromises ? [{ id: "promises", label: "What the government promised" }] : [])].map((s) => (
-                <a
-                  key={s.id}
-                  href={`#s-${s.id}`}
-                  onClick={(e) => { e.preventDefault(); document.getElementById(`s-${s.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
-                  aria-current={active === s.id ? "true" : undefined}
-                  style={{
-                    fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, whiteSpace: "nowrap", textDecoration: "none", padding: "5px 11px", borderRadius: 999,
-                    color: active === s.id ? "#fff" : COLORS.inkSoft, background: active === s.id ? def.accent : "transparent", border: `1px solid ${active === s.id ? def.accent : COLORS.hairline}`,
-                    transition: "background 0.2s, color 0.2s",
-                  }}
-                >
-                  {s.label}
-                </a>
-              ))}
-            </div>
+            <JumpBar items={[...extraCards, ...shown, ...(hasPromises ? [{ id: "promises", label: "What the government promised" }] : [])]} ids={jumpIds} accent={def.accent} />
           </div>
           {showGovernments && (
             <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "0 0 12px", maxWidth: 780 }}>
@@ -638,6 +636,7 @@ export default function SectorPage({ sector, param = null }) {
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(480px, 100%), 1fr))", gap: 20, alignItems: "start", marginTop: 8 }}>
             {def.key === "population" && <PopulationExplorer accent={def.accent} />}
+            {def.key !== "population" && EXPLORERS[def.key] && <SectorExplorer sector={def.key} accent={def.accent} />}
             {def.breakdowns.map((x) => <BreakdownCard key={x.id} spec={x} series={loaded.series} accent={def.accent} />)}
             {def.mortgage && loaded.series[def.mortgage] && <MortgageCard points={loaded.series[def.mortgage].points} accent={def.accent} />}
             {def.places.map((g) => (

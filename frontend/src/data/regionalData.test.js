@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import profile from "./regionalProfile.json";
+import breakdowns from "./regionalBreakdowns.json";
 import deprivation from "./deprivation.json";
 import { REGIONS } from "./regionMetrics";
 
@@ -66,5 +67,30 @@ describe("deprivation", () => {
 
   it("is roughly even across England as a whole, by construction", () => {
     for (const v of deprivation.england.deciles.imd) expect(v).toBeGreaterThan(9);
+  });
+});
+
+describe("regional breakdowns", () => {
+  it("has Jobs, Housing and Crime, each with groups that have a figure for most places", () => {
+    for (const sector of ["jobs", "housing", "crime"]) {
+      const cats = breakdowns.sectors[sector]?.categories ?? [];
+      expect(cats.length, sector).toBeGreaterThanOrEqual(2);
+      for (const cat of cats) {
+        expect(["gbp", "gbp2", "pct", "per1000", "multiple"], `${sector}/${cat.id}`).toContain(cat.format);
+        expect(cat.groups.length, `${sector}/${cat.id}`).toBeGreaterThan(0);
+        for (const g of cat.groups) expect(Object.values(g.values).filter((v) => v !== null).length, `${sector}/${cat.id}/${g.id}`).toBeGreaterThanOrEqual(8);
+      }
+    }
+  });
+
+  it("gives believable figures", () => {
+    const find = (sector, cat, group) => breakdowns.sectors[sector].categories.find((c) => c.id === cat).groups.find((g) => g.id === group);
+    // London is the most expensive and takes the most years of pay; the North East the cheapest.
+    const years = find("housing", "affordability", "years-averagePrice").values;
+    expect(years.london).toBeGreaterThan(years.ne * 2);
+    // Women are paid less per hour than men in the UK as a whole.
+    expect(breakdowns.sectors.jobs.categories.find((c) => c.id === "paygap").groups[0].all).toBeGreaterThan(0);
+    // Crime is recorded for England and Wales only.
+    expect(find("crime", "rate", "total-recorded-crime-excluding-fraud-").values.scotland).toBeNull();
   });
 });

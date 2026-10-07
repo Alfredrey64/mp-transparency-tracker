@@ -1,5 +1,6 @@
 import { memo, useCallback, useState, useSyncExternalStore } from "react";
 import { COLORS, FONT_BODY, numeric } from "../theme";
+import { isScrolling } from "../lib/scrollState";
 import geo from "../data/regionMap.json";
 
 // The 12 regions and nations drawn two ways: as a map, and as a grid of equal tiles (so London,
@@ -71,7 +72,7 @@ function RegionMap({ regions, view, fill, valueText, deltaText, a11yLabel, selec
     if (r) setPoint({ x: e.clientX - r.left, y: e.clientY - r.top, w: r.width });
   };
   const handlers = (key) => ({
-    onPointerEnter: (e) => { onHover(key); track(e); },
+    onPointerEnter: (e) => { if (!isScrolling()) { onHover(key); track(e); } },
     onPointerMove: track,
     onPointerLeave: () => { onHover(null); setPoint(null); },
     onFocus: () => onHover(key),
@@ -85,7 +86,7 @@ function RegionMap({ regions, view, fill, valueText, deltaText, a11yLabel, selec
   });
   // A label is a second target for the same place, so it needs no focus stop of its own.
   const labelHandlers = (key) => ({
-    onPointerEnter: () => onHover(key),
+    onPointerEnter: () => { if (!isScrolling()) onHover(key); },
     onPointerLeave: () => onHover(null),
     onClick: () => onSelect(key),
     "aria-hidden": true,
@@ -108,9 +109,9 @@ function RegionMap({ regions, view, fill, valueText, deltaText, a11yLabel, selec
         <path d={`M${r.cx} ${r.cy} L${left ? -6 : 451} ${y}`} stroke={COLORS.inkSoft} strokeWidth="1" opacity={active(key) ? 0.9 : 0.45} fill="none" vectorEffect="non-scaling-stroke" />
         <circle cx={r.cx} cy={r.cy} r="3.5" fill={COLORS.ink} stroke={COLORS.paperCard} strokeWidth="1.5" />
         <rect x={left ? x - 200 : x - 6} y={y - 34} width="206" height="76" fill="transparent" />
-        <text x={x} y={y - 12} textAnchor={anchor} fontFamily={FONT_BODY} fontSize="21" fontWeight={active(key) ? 800 : 700} fill={COLORS.ink}>{short(key)}</text>
-        <text x={x} y={y + 15} textAnchor={anchor} fontFamily={numeric.fontFamily} fontSize="27" fontWeight="600" fill={COLORS.ink}>{valueText(key)}</text>
-        {delta && <text x={x} y={y + 35} textAnchor={anchor} fontFamily={FONT_BODY} fontSize="17" fontWeight="600" fill={COLORS.inkSoft}>{delta}</text>}
+        <text x={x} y={y - 11} textAnchor={anchor} fontFamily={FONT_BODY} fontSize="19" fontWeight={active(key) ? 800 : 700} fill={COLORS.ink}>{short(key)}</text>
+        <text x={x} y={y + 13} textAnchor={anchor} fontFamily={numeric.fontFamily} fontSize="25" fontWeight="600" fill={COLORS.ink}>{valueText(key)}</text>
+        {delta && <text x={x} y={y + 30} textAnchor={anchor} fontFamily={FONT_BODY} fontSize="15" fontWeight="600" fill={COLORS.inkSoft}>{delta}</text>}
       </g>
     );
   };

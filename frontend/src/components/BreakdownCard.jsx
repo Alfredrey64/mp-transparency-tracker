@@ -1,8 +1,9 @@
-import { memo, useMemo, useRef, useState } from "react";
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import { memo, useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import { COLORS, FONT_BODY, numeric } from "../theme";
 import { formatValue } from "../lib/onsFormat";
 import { breakdownAt } from "../lib/onsBreakdown";
+import { isScrolling } from "../lib/scrollState";
 import { card, cardTitle } from "../lib/onsStyles";
 
 // "Out of every £1": a total split into parts as 100 squares, one for each penny.
@@ -13,9 +14,6 @@ const COLOURS = ["#0E9AA7", "#E07A1F", "#7B5BD6", "#D4577A", "#3E7CD9", "#3F9B3F
 const OTHER = "#8A8FA3";
 
 function BreakdownCard({ spec, series, accent }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-40px" });
-  const reduce = useReducedMotion();
   const [hover, setHover] = useState(null);
 
   const result = useMemo(() => {
@@ -28,7 +26,7 @@ function BreakdownCard({ spec, series, accent }) {
 
   const rows = [
     ...result.parts.map((p, i) => ({ key: p.id, label: p.label, value: p.value, pence: p.pence, color: COLOURS[i % COLOURS.length] })),
-    { key: "other", label: spec.otherLabel, value: result.other.value, pence: result.other.pence, color: OTHER },
+    ...(result.other.pence > 0 || result.other.value > 0 ? [{ key: "other", label: spec.otherLabel, value: result.other.value, pence: result.other.pence, color: OTHER }] : []),
   ];
   // One colour per square, in order: the biggest parts first, as listed.
   const squareEls = rows.flatMap((r, i) => Array.from({ length: r.pence }, () => i));
@@ -36,7 +34,6 @@ function BreakdownCard({ spec, series, accent }) {
 
   return (
     <motion.section
-      ref={ref}
       id={`s-${spec.id}`}
       className="ons-anchor"
       aria-labelledby={`h-${spec.id}`}
@@ -46,21 +43,22 @@ function BreakdownCard({ spec, series, accent }) {
       <h2 id={`h-${spec.id}`} style={cardTitle}>{spec.title}</h2>
       <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.55, color: COLORS.ink, margin: "10px 0 6px", maxWidth: 760 }}>{spec.blurb}</p>
       <p style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, margin: "0 0 18px" }}>
-        {spec.annual
-          ? `In ${result.refLabel} the UK ${spec.verb} ${formatValue(fmt, result.total)} in total.`
-          : `In the 12 months to ${result.refLabel} the public sector ${spec.verb} ${formatValue(fmt, result.total)} in total, at the prices of the time.`}
+        {spec.summary
+          ? spec.summary.replace("{when}", result.refLabel).replace("{total}", formatValue(fmt, result.total))
+          : spec.annual
+            ? `In ${result.refLabel} the UK ${spec.verb} ${formatValue(fmt, result.total)} in total.`
+            : `In the 12 months to ${result.refLabel} the public sector ${spec.verb} ${formatValue(fmt, result.total)} in total, at the prices of the time.`}
       </p>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))", gap: "22px 36px", alignItems: "center" }}>
         <div
           aria-hidden="true"
           className="bd-grid"
-          data-in={inView || reduce ? "1" : undefined}
           data-active={hover === null ? undefined : hover}
           onPointerLeave={(e) => { if (e.pointerType !== "touch") setHover(null); }}
         >
           {squareEls.map((el, i) => (
-            <span key={i} className="bd-sq" data-row={el} style={{ background: rows[el].color, animationDelay: `${i * 7}ms` }} onPointerEnter={(e) => { if (e.pointerType !== "touch") setHover(el); }} onPointerDown={(e) => { if (e.pointerType === "touch") setHover((h) => (h === el ? null : el)); }} />
+            <span key={i} className="bd-sq" data-row={el} style={{ background: rows[el].color }} onPointerEnter={(e) => { if (e.pointerType !== "touch" && !isScrolling()) setHover(el); }} onPointerDown={(e) => { if (e.pointerType === "touch") setHover((h) => (h === el ? null : el)); }} />
           ))}
         </div>
 
@@ -69,7 +67,7 @@ function BreakdownCard({ spec, series, accent }) {
             <li key={r.key}>
               <div
                 tabIndex={0}
-                onPointerEnter={(e) => { if (e.pointerType !== "touch") setHover(i); }}
+                onPointerEnter={(e) => { if (e.pointerType !== "touch" && !isScrolling()) setHover(i); }}
                 onPointerLeave={(e) => { if (e.pointerType !== "touch") setHover(null); }}
                 onPointerDown={(e) => { if (e.pointerType === "touch") setHover((h) => (h === i ? null : i)); }}
                 onFocus={() => setHover(i)}

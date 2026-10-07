@@ -146,6 +146,12 @@ export default function Methodology({ onNavigate }) {
               use="The &quot;Who lives where&quot; map on the Population page: ethnic group, religion, place of birth, age, housing, qualifications, type of work and health for the regions of England and for Wales, from the 2021 Census (a one-off count, so it does not update); and median, lower and higher pay for every region and nation from the yearly Annual Survey of Hours and Earnings, which also feeds the pay map on the Regions page. Scotland (census held in 2022) and Northern Ireland counted their people separately, so they are filled in from the UK-wide comparison tables published by NISRA and from National Records of Scotland, only where the categories match; otherwise they are greyed out."
             />
             <SourceRow
+              name="Annual Population Survey, Annual Survey of Hours and Earnings, UK House Price Index and police force area crime tables (the &quot;by place&quot; maps)"
+              url="https://www.nomisweb.co.uk/"
+              auth="No key required, Open Government Licence v3.0"
+              use="The maps by region on the Jobs, Housing and Crime pages: employment, unemployment, inactivity, kinds of job and qualifications by group from the Annual Population Survey; pay per hour by sex and hours from the Annual Survey of Hours and Earnings (both via Nomis, a sample survey, so small differences between regions may be noise); prices by type of home and buyer from the UK House Price Index, and years of pay to buy a home worked out here from them; and crimes recorded per 1,000 people by type, from the Home Office tables published by the ONS (England and Wales only). Refreshed each day, and they change only when the publishers release new figures."
+            />
+            <SourceRow
               name="English Indices of Deprivation 2025 (Ministry of Housing, Communities and Local Government)"
               url="https://www.gov.uk/government/statistics/english-indices-of-deprivation-2025"
               auth="No key required, Open Government Licence v3.0"

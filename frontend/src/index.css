@@ -249,10 +249,11 @@ select:focus-visible,
 .member-row:hover, .member-row:focus-visible { background-color: rgba(127, 127, 160, 0.14) !important; }
 
 /* Sidebar sections: fold by animating a grid row from 0fr to 1fr. */
-.fold { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.2s ease-out; }
+.fold { display: grid; grid-template-rows: 0fr; }
+.fold-anim { transition: grid-template-rows 0.2s ease-out; }
 .fold[data-open="true"] { grid-template-rows: 1fr; }
 .fold-inner { overflow: hidden; min-height: 0; }
-@media (prefers-reduced-motion: reduce) { .fold { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .fold-anim { transition: none; } }
 
 /* Career tab: bars grow out from their left edge, once, when the tab opens. */
 @keyframes careerBar { from { transform: scaleX(0); opacity: 0.4; } to { transform: scaleX(1); opacity: 1; } }
@@ -527,21 +528,17 @@ select:focus-visible,
    one-off CSS animation, so nothing re-animates (and nothing jumps) when you move the pointer. */
 .bd-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; width: 100%; max-width: 300px; margin: 0 auto; }
 .bd-sq { aspect-ratio: 1; border-radius: 4px; opacity: 1; transition: opacity 0.18s ease; }
-.bd-grid:not([data-in="1"]) .bd-sq { opacity: 0; }
-.bd-grid[data-in="1"] .bd-sq { animation: bd-pop 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.15) backwards; }
-@keyframes bd-pop { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: scale(1); } }
 .bd-grid[data-active] .bd-sq { opacity: 0.18; }
 .bd-grid[data-active="0"] .bd-sq[data-row="0"], .bd-grid[data-active="1"] .bd-sq[data-row="1"], .bd-grid[data-active="2"] .bd-sq[data-row="2"],
 .bd-grid[data-active="3"] .bd-sq[data-row="3"], .bd-grid[data-active="4"] .bd-sq[data-row="4"], .bd-grid[data-active="5"] .bd-sq[data-row="5"],
 .bd-grid[data-active="6"] .bd-sq[data-row="6"], .bd-grid[data-active="7"] .bd-sq[data-row="7"] { opacity: 1; }
-@media (prefers-reduced-motion: reduce) { .bd-grid[data-in="1"] .bd-sq { animation: none; } }
 
 /* A small text-style button: "See the chart". Big enough to tap, quiet enough to read around. */
 .ons-linkbtn { background: none; border: none; padding: 8px 0 0; font-family: 'Archivo', system-ui, sans-serif; font-size: 13px; font-weight: 600; line-height: 1.2; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; min-height: 32px; }
 @media (pointer: coarse), (max-width: 700px) { .ons-linkbtn { min-height: 44px; padding-top: 12px; } }
 
 /* Regions page: the map beside the league table on wide screens, stacked on narrow ones. */
-.regions-grid { display: grid; grid-template-columns: minmax(0, 1.9fr) minmax(320px, 1fr); gap: 20px; align-items: start; }
+.regions-grid { display: grid; grid-template-columns: minmax(0, 2.3fr) minmax(300px, 1fr); gap: 20px; align-items: start; }
 .regions-wrap { container-type: inline-size; }
 @container (max-width: 940px) { .regions-grid { grid-template-columns: minmax(0, 1fr); } }
 
@@ -549,3 +546,8 @@ select:focus-visible,
 .rm-in { animation: rm-in 0.5s ease-out backwards; animation-delay: calc(var(--i, 0) * 45ms + 50ms); }
 @keyframes rm-in { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .rm-in { animation: none; } }
+
+/* A chart's line and fill fade in once when the page loads: CSS only, so nothing is running while the page scrolls. */
+.lc-in { animation: lc-fade 0.7s ease-out backwards; }
+@keyframes lc-fade { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .lc-in { animation: none; } }

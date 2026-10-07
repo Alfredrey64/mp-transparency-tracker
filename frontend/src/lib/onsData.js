@@ -18,8 +18,9 @@ export function resolveSeries(sectorDef, data) {
       out[def.id] = { def, points: raw.points, freq: raw.freq, updated: raw.updated, next: raw.next };
     }
   }
-  for (const def of sectorDef.series) {
-    if (!def.derive) continue;
+  // Building blocks first (some are worked out from other building blocks), then the cards worked out from them.
+  for (const def of [...(sectorDef.inputs ?? []), ...sectorDef.series]) {
+    if (!def.derive || out[def.id]) continue;
     const points = derive(def.derive, base);
     if (points.length) {
       const from = out[def.derive.from];

@@ -1,5 +1,4 @@
 import { useState, useMemo, useId, useRef, useEffect } from "react";
-import { motion, useInView } from "framer-motion";
 import { COLORS, FONT_BODY } from "../theme";
 import { niceTicks } from "../lib/onsFormat";
 
@@ -9,7 +8,7 @@ import { niceTicks } from "../lib/onsFormat";
 //   share one crosshair between several charts).
 // - `bands` shades stretches of time, for example who was in government.
 // - `clipX` draws only up to a point in time, which is how the timeline plays.
-// - `animateIn` draws the line in once, when the chart scrolls into view.
+// - `animateIn` fades the chart in once, when it first appears (a CSS fade, so nothing runs while the page scrolls).
 //
 // Points look like { x: number, y: number, label: string }.
 
@@ -21,7 +20,6 @@ export default function LineChart({
 }) {
   const gid = useId().replace(/:/g, "");
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
   const [localHover, setLocalHover] = useState(null);
   // Not drawn until its width is known, in a box already as tall as the chart, so nothing jumps.
   const [measuredW, setW] = useState(null);
@@ -166,18 +164,12 @@ export default function LineChart({
 
         <g clipPath={`url(#clip-${gid})`}>
           {area && (
-            <motion.path
-              d={area}
-              fill={`url(#fill-${gid})`}
-              initial={animateIn ? { opacity: 0 } : false}
-              animate={animateIn ? { opacity: inView ? 1 : 0 } : undefined}
-              transition={{ duration: 0.8, delay: 0.7 }}
-            />
+            <path d={area} fill={`url(#fill-${gid})`} className={animateIn ? "lc-in" : undefined} />
           )}
           {shown.slice().reverse().map((l) => {
             const first = l === shown[0];
             return (
-              <motion.path
+              <path
                 key={l.name}
                 d={path(l.points)}
                 fill="none"
@@ -186,22 +178,14 @@ export default function LineChart({
                 strokeLinejoin="round"
                 strokeLinecap="round"
                 opacity={first ? 1 : 0.75}
-                initial={animateIn ? { pathLength: 0 } : false}
-                animate={animateIn ? { pathLength: inView ? 1 : 0 } : undefined}
-                transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+                className={animateIn ? "lc-in" : undefined}
               />
             );
           })}
         </g>
 
         {hits.length === 0 && main.length > 0 && (
-          <motion.circle
-            cx={sx(main.at(-1).x)} cy={sy(main.at(-1).y)} r="4.5" fill={accent} stroke={COLORS.paperCard} strokeWidth="2"
-            initial={animateIn ? { scale: 0, opacity: 0 } : false}
-            animate={animateIn ? { scale: inView ? 1 : 0, opacity: inView ? 1 : 0 } : undefined}
-            transition={{ delay: 1.3, type: "spring", stiffness: 300, damping: 14 }}
-            style={{ transformBox: "fill-box", transformOrigin: "center" }}
-          />
+          <circle cx={sx(main.at(-1).x)} cy={sy(main.at(-1).y)} r="4.5" fill={accent} stroke={COLORS.paperCard} strokeWidth="2" className={animateIn ? "lc-in" : undefined} />
         )}
         {hits.length > 0 && (
           <g pointerEvents="none">
