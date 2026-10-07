@@ -7,7 +7,7 @@ export const card = {
   background: COLORS.paperCard,
   border: `1px solid ${COLORS.hairline}`,
   borderRadius: 22,
-  padding: "24px 26px",
+  padding: "clamp(18px, 4.5vw, 26px)",
   boxShadow: "0 18px 40px -26px rgba(0, 0, 0, 0.55)",
 };
 

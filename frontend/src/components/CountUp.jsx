@@ -16,6 +16,7 @@ export default function CountUp({ value, format = (n) => Math.round(n).toLocaleS
     return () => controls.stop();
   }, [inView, reduce, value, duration]);
 
-  const display = reduce ? value : shown ?? (inView ? 0 : value);
+  // Starts at zero, so the number never flashes its final value before counting.
+  const display = reduce ? value : shown ?? 0;
   return <span ref={ref}>{format(display)}</span>;
 }

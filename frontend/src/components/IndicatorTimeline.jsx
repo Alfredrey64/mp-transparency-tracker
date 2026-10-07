@@ -42,7 +42,7 @@ const PRESETS = [
   { label: "Everything", from: 0 },
 ];
 
-const card = { ...baseCard, padding: "20px 22px" };
+const card = { ...baseCard, padding: "clamp(16px, 4.5vw, 22px)" };
 const pill = (on) => ({
   fontFamily: FONT_BODY, fontSize: 13, fontWeight: on ? 700 : 500, padding: "6px 12px", borderRadius: 999, cursor: "pointer",
   border: `1px solid ${on ? COLORS.ink : COLORS.hairline}`, background: on ? COLORS.ink : "transparent", color: on ? COLORS.paper : COLORS.inkSoft,
@@ -187,7 +187,7 @@ export default function IndicatorTimeline({ param }) {
               <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, letterSpacing: "-0.01em", color: COLORS.ink, margin: 0 }}>
                 Choose measures <span style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 500, color: COLORS.inkSoft }}>{picks.length} of {MAX_PICKED}</span>
               </h2>
-              <input
+              <input className="ons-chip"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search, for example rent or debt"
@@ -197,7 +197,7 @@ export default function IndicatorTimeline({ param }) {
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
               {chosen.map((c, i) => (
-                <button
+                <button className="ons-chip"
                   key={refOf({ sector: c.sector, id: c.def.id })}
                   onClick={() => toggle(`${c.sector}.${c.def.id}`)}
                   aria-label={`Remove ${c.def.label}`}
@@ -218,7 +218,7 @@ export default function IndicatorTimeline({ param }) {
                       const on = picks.includes(ref);
                       const full = !on && picks.length >= MAX_PICKED;
                       return (
-                        <button key={ref} onClick={() => toggle(ref)} aria-pressed={on} disabled={full} style={{ ...pill(on), opacity: full ? 0.4 : 1, cursor: full ? "default" : "pointer" }}>
+                        <button className="ons-chip" key={ref} onClick={() => toggle(ref)} aria-pressed={on} disabled={full} style={{ ...pill(on), opacity: full ? 0.4 : 1, cursor: full ? "default" : "pointer" }}>
                           {c.label}
                         </button>
                       );
@@ -239,12 +239,12 @@ export default function IndicatorTimeline({ param }) {
                   {PRESETS.map((p) => {
                     const target = p.back ? Math.floor(to - p.back) : p.from;
                     const on = p.from === 0 ? fromYear === 0 : fromYear === target;
-                    return <button key={p.label} onClick={() => preset(p)} aria-pressed={on} style={pill(on)}>{p.label}</button>;
+                    return <button className="ons-chip" key={p.label} onClick={() => preset(p)} aria-pressed={on} style={pill(on)}>{p.label}</button>;
                   })}
                 </div>
                 <div role="radiogroup" aria-label="Chart layout" style={{ display: "inline-flex", gap: 6 }}>
-                  <button role="radio" aria-checked={!overlay} onClick={() => setMode("separate")} style={pill(!overlay)}>Separate charts</button>
-                  <button
+                  <button className="ons-chip" role="radio" aria-checked={!overlay} onClick={() => setMode("separate")} style={pill(!overlay)}>Separate charts</button>
+                  <button className="ons-chip"
                     role="radio" aria-checked={overlay} onClick={() => overlayOk && setMode("overlay")} disabled={!overlayOk}
                     title={overlayOk ? "" : "Overlaying needs measures in the same unit, such as all percentages"}
                     style={{ ...pill(overlay), opacity: overlayOk ? 1 : 0.4, cursor: overlayOk ? "pointer" : "default" }}
@@ -252,19 +252,19 @@ export default function IndicatorTimeline({ param }) {
                     One chart
                   </button>
                 </div>
-                <button role="switch" aria-checked={showGov} onClick={() => setShowGov(!showGov)} style={{ ...pill(showGov) }}>
+                <button className="ons-chip" role="switch" aria-checked={showGov} onClick={() => setShowGov(!showGov)} style={{ ...pill(showGov) }}>
                   {showGov ? "Hide" : "Show"} who was in government
                 </button>
               </div>
 
               <div style={{ ...card, display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px 16px", position: "sticky", top: 8, zIndex: 10 }}>
-                <button
+                <button className="ons-chip"
                   onClick={play}
                   style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, padding: "9px 18px", borderRadius: 10, border: "none", background: COLORS.ink, color: COLORS.paper, cursor: "pointer", minWidth: 96 }}
                 >
                   {playing ? "Pause" : playhead !== null && playhead < to - 0.001 ? "Resume" : "Play"}
                 </button>
-                {playhead !== null && <button onClick={stop} style={pill(false)}>Show it all</button>}
+                {playhead !== null && <button className="ons-chip" onClick={stop} style={pill(false)}>Show it all</button>}
                 <div aria-live="off" style={{ marginLeft: "auto", textAlign: "right" }}>
                   <div style={{ ...numeric, fontSize: 26, lineHeight: 1.1, color: COLORS.ink }}>{Math.floor(here ?? to)}</div>
                   <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: gov ? PARTY_COLOURS[gov.party] : COLORS.inkSoft, fontWeight: 600 }}>
@@ -272,6 +272,7 @@ export default function IndicatorTimeline({ param }) {
                   </div>
                 </div>
                 <input
+                  className="ons-range"
                   type="range" min={from} max={to} step={Math.max(0.01, span / 400)} value={playhead ?? to}
                   onChange={(e) => scrub(Number(e.target.value))}
                   aria-label="Move through time"
@@ -372,7 +373,7 @@ export default function IndicatorTimeline({ param }) {
                   <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, letterSpacing: "-0.01em", color: COLORS.ink, margin: 0 }}>Then and now</h2>
                   <label style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, display: "inline-flex", alignItems: "center", gap: 8 }}>
                     Compare today with
-                    <select
+                    <select className="ons-chip"
                       value={thenAt}
                       onChange={(e) => setThenYear(Number(e.target.value))}
                       style={{ fontFamily: FONT_BODY, fontSize: 14, padding: "6px 10px", borderRadius: 8, border: `1px solid ${COLORS.hairline}`, background: COLORS.paper, color: COLORS.ink }}

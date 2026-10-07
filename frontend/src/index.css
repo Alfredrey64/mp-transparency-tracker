@@ -454,7 +454,7 @@ select:focus-visible,
 
 /* Britain in numbers: the range and jump bar stays in reach on a wide screen,
    and the jump chips slide sideways rather than wrapping on a phone. */
-.ons-toolbar { background: color-mix(in srgb, var(--c-paper) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 12; }
+.ons-toolbar { background: color-mix(in srgb, var(--c-paper) 96%, transparent); z-index: 12; }
 .ons-jump { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; scroll-snap-type: x proximity; }
 .ons-jump > a { scroll-snap-align: start; flex: none; max-width: 240px; overflow: hidden; text-overflow: ellipsis; }
 @media (min-width: 900px) {
@@ -464,3 +464,24 @@ select:focus-visible,
 /* The fold-out explanation on each Britain in numbers card: no default marker, a turning chevron. */
 .ons-dive > summary::-webkit-details-marker { display: none; }
 .ons-dive[open] .ons-dive-chevron { transform: rotate(180deg); }
+
+/* Britain in numbers on touch screens: every control is a comfortable thumb target. */
+@media (pointer: coarse), (max-width: 700px) {
+  .ons-tap { min-height: 44px; box-sizing: border-box; }
+  button.ons-tap[role="radio"], a.ons-tap:not(.ons-inline) { display: inline-flex; align-items: center; padding-left: 16px; padding-right: 16px; }
+  .ons-inline { display: inline-flex; align-items: center; min-height: 44px; }
+  summary.ons-tap { display: flex; align-items: center; }
+  .ons-jump > a { min-height: 40px; display: inline-flex; align-items: center; }
+  .ons-jump { gap: 6px; }
+}
+
+.ons-cardvalue { text-align: right; }
+@media (max-width: 700px) { .ons-cardvalue { text-align: left; flex: 1 1 100%; } }
+
+/* Chips, buttons and fields on the compare page. */
+@media (pointer: coarse), (max-width: 700px) {
+  .ons-chip { min-height: 40px; box-sizing: border-box; }
+  button.ons-chip { display: inline-flex; align-items: center; justify-content: center; }
+  input.ons-chip, select.ons-chip { min-height: 44px; font-size: 16px !important; }
+}
+@media (pointer: coarse), (max-width: 700px) { input.ons-range { height: 36px; cursor: pointer; } }

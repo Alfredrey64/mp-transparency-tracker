@@ -1,4 +1,4 @@
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useId, useMemo, useRef, useState } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme";
 import { PageHeader, LoadFailedNote } from "./shared";
@@ -71,7 +71,7 @@ function ChangeChip({ change, accent }) {
   );
 }
 
-function Tile({ def, item, accent, index }) {
+const Tile = memo(function Tile({ def, item, accent, index }) {
   const reduce = useReducedMotion();
   const info = latestInfo(def, item.points);
   if (!info) return null;
@@ -79,11 +79,11 @@ function Tile({ def, item, accent, index }) {
     <motion.a
       href={`#s-${def.id}`}
       onClick={(e) => { e.preventDefault(); document.getElementById(`s-${def.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
-      initial={reduce ? false : { opacity: 0, y: 22 }}
+      initial={reduce ? false : { opacity: 0, y: 12 }}
       whileInView={{ opacity: 1, y: 0 }}
-      whileHover={reduce ? undefined : { y: -4 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.5, delay: Math.min(index, 7) * 0.06, ease: "easeOut" }}
+      whileHover={reduce ? undefined : { y: -3, transition: { duration: 0.18 } }}
+      viewport={{ once: true, margin: "0px 0px 120px 0px" }}
+      transition={{ duration: 0.45, delay: Math.min(index, 3) * 0.05, ease: "easeOut" }}
       style={{
         ...card, padding: "20px 22px 0", position: "relative", overflow: "hidden", textDecoration: "none", display: "flex", flexDirection: "column", color: "inherit",
         background: `linear-gradient(180deg, ${accent}14, ${COLORS.paperCard} 55%)`, borderColor: `${accent}40`,
@@ -98,7 +98,7 @@ function Tile({ def, item, accent, index }) {
       <div style={{ margin: "14px -22px 0" }}><Spark points={item.points} color={accent} /></div>
     </motion.a>
   );
-}
+});
 
 // How today compares with the past, as one tidy strip.
 function Strip({ def, points, accent }) {
@@ -113,15 +113,17 @@ function Strip({ def, points, accent }) {
   cells.push({ name: "Lowest", when: st.low.isNow ? "That is now" : st.low.label, value: formatValue(def.format, st.low.value) });
   return (
     <div style={{ marginTop: 18 }}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(132px, 100%), 1fr))", border: `1px solid ${COLORS.hairline}`, borderRadius: 14, overflow: "hidden", background: COLORS.paper }}>
-        {cells.map((c, i) => (
-          <div key={c.name} style={{ padding: "11px 14px", borderLeft: i ? `1px solid ${COLORS.hairline}` : "none", borderTop: "none", minWidth: 0 }}>
+      <div style={{ border: `1px solid ${COLORS.hairline}`, borderRadius: 14, overflow: "hidden", background: COLORS.paper }}>
+       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(132px, 100%), 1fr))", margin: "0 -1px -1px 0" }}>
+        {cells.map((c) => (
+          <div key={c.name} style={{ padding: "11px 14px", borderRight: `1px solid ${COLORS.hairline}`, borderBottom: `1px solid ${COLORS.hairline}`, minWidth: 0 }}>
             <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: COLORS.inkSoft }}>{c.name}</div>
             <div style={{ ...numeric, fontSize: 19, fontWeight: 600, color: COLORS.ink, marginTop: 2 }}>{c.value}</div>
             <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 1 }}>{c.when}</div>
             {c.note && <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 600, color: accent, marginTop: 1 }}>{c.note}</div>}
           </div>
         ))}
+       </div>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 12, flexWrap: "wrap" }}>
         <div aria-hidden="true" style={{ flex: "1 1 160px", maxWidth: 260, height: 8, borderRadius: 4, background: COLORS.hairline, position: "relative" }}>
@@ -167,13 +169,13 @@ function DeepDive({ id, accent }) {
   ];
   return (
     <details className="ons-dive" style={{ marginTop: 16, border: `1px solid ${accent}55`, borderRadius: 16, background: `${accent}0d`, overflow: "hidden" }}>
-      <summary style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, cursor: "pointer", padding: "13px 18px", fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: 700, color: COLORS.ink, listStyle: "none" }}>
+      <summary className="ons-tap" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, cursor: "pointer", padding: "13px 18px", fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: 700, color: COLORS.ink, listStyle: "none" }}>
         <span>How it is measured, what drives it and what changes it</span>
         <span aria-hidden="true" className="ons-dive-chevron" style={{ color: accent, fontSize: 13, flexShrink: 0, transition: "transform 0.2s" }}>▼</span>
       </summary>
       <div style={{ padding: "2px 18px 18px", display: "grid", gap: 16 }}>
         {blocks.map(([title, text], i) => (
-          <div key={title} style={{ display: "grid", gridTemplateColumns: "28px 1fr", gap: 12, alignItems: "start" }}>
+          <div key={title} style={{ display: "grid", gridTemplateColumns: "26px 1fr", gap: 10, alignItems: "start" }}>
             <span aria-hidden="true" style={{ width: 26, height: 26, borderRadius: 13, background: accent, color: "#fff", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, display: "grid", placeItems: "center" }}>{i + 1}</span>
             <div style={{ minWidth: 0 }}>
               <h3 style={smallTitle}>{title}</h3>
@@ -195,14 +197,13 @@ function SourceLine({ def, item }) {
   return (
     <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 12, lineHeight: 1.5 }}>
       Source: {name}{item.updated ? `, released ${dateText(item.updated)}` : ""}.{" "}
-      {link && <a href={link} target="_blank" rel="noreferrer" style={{ color: COLORS.inkSoft, textDecoration: "underline" }}>See the source</a>}
+      {link && <a className="ons-tap ons-inline" href={link} target="_blank" rel="noreferrer" style={{ color: COLORS.inkSoft, textDecoration: "underline" }}>See the source</a>}
     </div>
   );
 }
 
-function SeriesCard({ def, item, range, accent, showGovernments, sectorKey }) {
-  const pts = sliceRange(item.points, range);
-  const data = useMemo(() => toLineData(pts), [pts]);
+const SeriesCard = memo(function SeriesCard({ def, item, range, accent, showGovernments, sectorKey }) {
+  const data = useMemo(() => toLineData(sliceRange(item.points, range)), [item.points, range]);
   const info = latestInfo(def, item.points);
   const sentence = sentenceFor(def, item.points);
   const recent = item.points.slice(-12).reverse();
@@ -215,16 +216,16 @@ function SeriesCard({ def, item, range, accent, showGovernments, sectorKey }) {
       id={`s-${def.id}`}
       aria-labelledby={`h-${def.id}`}
       style={{ ...card, scrollMarginTop: 110, position: "relative", overflow: "hidden" }}
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.55, ease: "easeOut" }}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, margin: "0px 0px 200px 0px" }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
     >
       <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `linear-gradient(180deg, ${accent}, ${accent}22)` }} />
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", gap: "10px 20px" }}>
         <h2 id={`h-${def.id}`} style={{ ...cardTitle, flex: "1 1 240px" }}>{def.label}</h2>
         {info && (
-          <div style={{ textAlign: "right" }}>
+          <div className="ons-cardvalue">
             <div style={{ ...numeric, fontSize: 30, fontWeight: 600, lineHeight: 1.1, color: COLORS.ink, letterSpacing: "-0.02em" }}>{formatValue(def.format, info.value)}</div>
             <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>{info.label}</div>
           </div>
@@ -254,10 +255,10 @@ function SeriesCard({ def, item, range, accent, showGovernments, sectorKey }) {
       <Explain explain={def.explain} why={def.why} accent={accent} />
       <DeepDive id={def.id} accent={accent} />
       <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 10px", alignItems: "center", marginTop: 16 }}>
-        <a href={`#/indicators/${sectorKey}.${def.id}`} style={{ ...pillStyle(false), textDecoration: "none", color: COLORS.ink, borderColor: `${accent}88` }}>Compare over time</a>
+        <a className="ons-tap" href={`#/indicators/${sectorKey}.${def.id}`} style={{ ...pillStyle(false), textDecoration: "none", color: COLORS.ink, borderColor: `${accent}88` }}>Compare over time</a>
       </div>
       <details style={{ marginTop: 8 }}>
-        <summary style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: COLORS.ink, cursor: "pointer", padding: "6px 0" }}>Show the latest figures as a table</summary>
+        <summary className="ons-tap" style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink, cursor: "pointer", padding: "6px 0" }}>Show the latest figures as a table</summary>
         <table style={{ width: "100%", borderCollapse: "collapse", marginTop: 6, fontFamily: FONT_BODY, fontSize: 13 }}>
           <tbody>
             {recent.map(([p, v]) => (
@@ -272,7 +273,7 @@ function SeriesCard({ def, item, range, accent, showGovernments, sectorKey }) {
       <SourceLine def={def} item={item} />
     </motion.section>
   );
-}
+});
 
 function WeeklyDeaths({ data, accent }) {
   const years = Object.keys(data.years).sort();
@@ -293,7 +294,7 @@ function WeeklyDeaths({ data, accent }) {
   return (
     <motion.section
       aria-labelledby="h-weekly-deaths" style={{ ...card, scrollMarginTop: 110, position: "relative", overflow: "hidden" }} id="s-weekly-deaths"
-      initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.55 }}
+      initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, margin: "0px 0px 200px 0px" }} transition={{ duration: 0.4 }}
     >
       <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `linear-gradient(180deg, ${accent}, ${accent}22)` }} />
       <h2 id="h-weekly-deaths" style={cardTitle}>Deaths registered each week</h2>
@@ -322,6 +323,7 @@ function WeeklyDeaths({ data, accent }) {
 function Toggle({ on, onChange, children }) {
   return (
     <button
+      className="ons-tap"
       role="switch"
       aria-checked={on}
       onClick={() => onChange(!on)}
@@ -417,7 +419,7 @@ export default function SectorPage({ sector }) {
               <div>
                 <p style={{ fontFamily: FONT_DISPLAY, fontSize: "clamp(17px, 2.2vw, 21px)", fontWeight: 600, lineHeight: 1.5, letterSpacing: "-0.01em", color: COLORS.ink, margin: 0 }}>{def.story}</p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "10px 14px", marginTop: 20, alignItems: "center" }}>
-                  <a href={`#/indicators/${compareRefs}`} style={{ fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: 700, color: "#fff", background: def.accent, borderRadius: 12, padding: "11px 20px", textDecoration: "none", boxShadow: `0 12px 24px -12px ${def.accent}` }}>
+                  <a className="ons-tap" href={`#/indicators/${compareRefs}`} style={{ fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: 700, color: "#fff", background: def.accent, borderRadius: 12, padding: "11px 20px", textDecoration: "none", boxShadow: `0 12px 24px -12px ${def.accent}` }}>
                     Watch these change over time
                   </a>
                   {newest && <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>Latest ONS release: {dateText(newest)}</span>}
@@ -428,7 +430,7 @@ export default function SectorPage({ sector }) {
           </motion.div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(250px, 100%), 1fr))", gap: 16, marginTop: 18 }}>
-            {tiles.map((s, i) => <Tile key={s.id} def={s} item={loaded.series[s.id]} accent={def.accent} index={i} />)}
+            {tiles.slice(1).map((s, i) => <Tile key={s.id} def={s} item={loaded.series[s.id]} accent={def.accent} index={i} />)}
           </div>
 
           <div className="ons-toolbar" style={{ margin: "32px 0 14px", padding: "12px 0" }}>
@@ -437,7 +439,7 @@ export default function SectorPage({ sector }) {
                 <span style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink }}>Show</span>
                 <div role="radiogroup" aria-label="How far back to show" style={{ display: "inline-flex", flexWrap: "wrap", gap: 6 }}>
                   {RANGES.map((r) => (
-                    <button key={r.years} role="radio" aria-checked={range === r.years} onClick={() => setRange(r.years)} style={pillStyle(range === r.years)}>{r.label}</button>
+                    <button key={r.years} className="ons-tap" role="radio" aria-checked={range === r.years} onClick={() => setRange(r.years)} style={pillStyle(range === r.years)}>{r.label}</button>
                   ))}
                 </div>
               </div>

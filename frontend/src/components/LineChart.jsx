@@ -1,4 +1,4 @@
-import { useState, useMemo, useId, useRef } from "react";
+import { useState, useMemo, useId, useRef, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { COLORS, FONT_BODY } from "../theme";
 import { niceTicks } from "../lib/onsFormat";
@@ -13,7 +13,8 @@ import { niceTicks } from "../lib/onsFormat";
 //
 // Points look like { x: number, y: number, label: string }.
 
-const W = 640;
+// The chart is drawn at the width it is shown at, so its text stays readable on a phone.
+const DEFAULT_W = 640;
 
 export default function LineChart({
   lines, xTicks, yFormat, ariaLabel, height = 230, accent, bands = [], domainX, hoverX, onHoverX, clipX, animateIn = false, compact = false,
@@ -22,7 +23,21 @@ export default function LineChart({
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const [localHover, setLocalHover] = useState(null);
-  const M = compact ? { l: 44, r: 12, t: 8, b: 22 } : { l: 48, r: 16, t: 16, b: 28 };
+  // Not drawn until its width is known, in a box already as tall as the chart, so nothing jumps.
+  const [measuredW, setW] = useState(null);
+  const W = measuredW ?? DEFAULT_W;
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    const fit = (width) => { if (width > 0) setW(Math.min(960, Math.max(260, Math.round(width)))); };
+    const ro = new ResizeObserver(([entry]) => fit(entry.contentRect.width));
+    ro.observe(el);
+    // Measure straight away too, in case the first observation is slow to arrive.
+    const frame = requestAnimationFrame(() => fit(el.getBoundingClientRect().width));
+    return () => { cancelAnimationFrame(frame); ro.disconnect(); };
+  }, []);
+  const narrow = W < 420;
+  const M = compact ? { l: 44, r: 12, t: 8, b: 22 } : { l: narrow ? 42 : 48, r: narrow ? 10 : 16, t: 16, b: 28 };
   const H = height;
   const controlled = onHoverX !== undefined;
   const hover = controlled ? hoverX : localHover;
@@ -47,7 +62,7 @@ export default function LineChart({
     const sx = (x) => M.l + ((x - xMin) / (xMax - xMin || 1)) * (W - M.l - M.r);
     const sy = (y) => M.t + (1 - (y - dLo) / (dHi - dLo || 1)) * (H - M.t - M.b);
     return { xMin, xMax, ticks, sx, sy, dLo, dHi };
-  }, [lines, H, domainX, compact, M.l, M.r, M.t, M.b]);
+  }, [lines, H, domainX, compact, W, M.l, M.r, M.t, M.b]);
 
   if (!geo) return null;
   const { sx, sy, ticks } = geo;
@@ -86,7 +101,8 @@ export default function LineChart({
   const bandsShown = bands.filter((b) => b.end > geo.xMin && b.start < geo.xMax);
 
   return (
-    <div ref={ref} style={{ position: "relative" }}>
+    <div ref={ref} style={{ position: "relative", minHeight: H }}>
+      {measuredW !== null && (
       <svg
         viewBox={`0 0 ${W} ${H}`}
         width="100%"
@@ -176,6 +192,7 @@ export default function LineChart({
           </g>
         )}
       </svg>
+      )}
 
       {hits.length > 0 && (
         <div
