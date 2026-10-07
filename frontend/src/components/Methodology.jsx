@@ -131,7 +131,25 @@ export default function Methodology({ onNavigate }) {
               name="Office for National Statistics"
               url="https://www.ons.gov.uk/"
               auth="No key required, Open Government Licence v3.0"
-              use="Time series on the economy, prices, jobs and pay, public finances, population, NHS staffing, trade, energy and emissions, plus weekly deaths, with their full history. The Britain in numbers pages are built from them. They are refreshed daily and only change when the ONS publishes. Shading by prime minister uses public records of when each took office."
+              use="Time series on the economy, prices, jobs and pay (including unemployment by region), public finances, population, NHS staffing, trade, energy and emissions, plus weekly deaths, with their full history. The Britain in numbers pages are built from them. They are refreshed daily and only change when the ONS publishes. Shading by prime minister uses public records of when each took office."
+            />
+            <SourceRow
+              name="UK House Price Index (HM Land Registry, ONS and others)"
+              url="https://www.gov.uk/government/collections/uk-house-price-index-reports"
+              auth="No key required, Open Government Licence v3.0"
+              use="Average house prices for the UK, its nations, the English regions and types of home, from sales recorded by HM Land Registry, Registers of Scotland and Land & Property Services (Northern Ireland). They are shown as published and are not adjusted for inflation unless you switch on &quot;Show in today's money&quot;."
+            />
+            <SourceRow
+              name="Crime in England and Wales (ONS, with Home Office figures)"
+              url="https://www.ons.gov.uk/peoplepopulationandcommunity/crimeandjustice/datasets/crimeinenglandandwalesappendixtables"
+              auth="No key required, Open Government Licence v3.0"
+              use="The Crime Survey for England and Wales and police recorded crime, read from the ONS appendix tables spreadsheet. They cover England and Wales only, and the two measures count different things, so the Crime page shows both and explains the gap."
+            />
+            <SourceRow
+              name="Consumer Prices Index (ONS series D7BT)"
+              url="https://www.ons.gov.uk/economy/inflationandpriceindices/timeseries/d7bt/mm23"
+              auth="No key required, Open Government Licence v3.0"
+              use="The monthly price index, from 1988, used only to turn money amounts into today's prices when you switch on &quot;Show in today's money&quot;. Quarterly and yearly figures use the average of the months they cover."
             />
             <SourceRow
               name="UK Parliament Members API"

@@ -506,6 +506,7 @@ export default function SectorPage({ sector, param = null }) {
       {loaded && (
         <>
           <motion.div
+            className="ons-noprint"
             initial={reduce ? false : { opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
             style={{
               position: "relative", overflow: "hidden", borderRadius: 26, padding: "clamp(22px, 4vw, 36px)", marginTop: 26, border: `1px solid ${def.accent}55`,
@@ -528,7 +529,7 @@ export default function SectorPage({ sector, param = null }) {
             </div>
           </motion.div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(250px, 100%), 1fr))", gap: 16, marginTop: 18 }}>
+          <div className="ons-noprint" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(250px, 100%), 1fr))", gap: 16, marginTop: 18 }}>
             {tiles.slice(1).map((s, i) => <Tile key={s.id} def={s} item={loaded.series[s.id]} accent={def.accent} index={i} />)}
           </div>
 

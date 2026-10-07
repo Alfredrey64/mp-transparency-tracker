@@ -174,11 +174,20 @@ export default function App() {
   // just landing at the top of its full list.
   const [pendingBill, setPendingBill] = useState(null);
   const isPopping = useRef(false);
+  // The page's main region: the skip link jumps to it, and it takes focus when the page
+  // changes so a screen reader announces the new page instead of staying on the old link.
+  const mainRef = useRef(null);
+  const firstPage = useRef(true);
   // True for the one render where a direct "#/mp/123" link hasn't finished
   // fetching that MP yet — the URL-sync effect below must not overwrite the
   // hash back to "#/list" during that brief window, or a shared/bookmarked
   // link to an MP would silently rewrite itself before it even loads.
   const initialMpPending = useRef(false);
+
+  useEffect(() => {
+    if (firstPage.current) { firstPage.current = false; return; }
+    mainRef.current?.focus({ preventScroll: true });
+  }, [view, selected?.id]);
 
   useEffect(() => {
     async function loadCount() {
@@ -301,11 +310,15 @@ export default function App() {
     <MotionConfig reducedMotion="user">
     <GuideKeyContext.Provider value={guideKeyFor(view, viewParam)}>
     <div className="mp-app-shell" style={{ display: "flex", background: COLORS.paper, fontFamily: FONT_BODY }}>
+      <button type="button" className="skip-link" onClick={() => { mainRef.current?.focus(); mainRef.current?.scrollIntoView?.(); }}>Skip to main content</button>
       <Sidebar activeView={view} onNavigate={handleNavigate} onSelectPolitician={handleViewProfile} />
       <div style={{ flex: 1, minWidth: 0 }}>
         {/* The new page fades in straight away. It used to wait for the old
             one to fade out first, which added a visible pause to every click. */}
-        <motion.div
+        <motion.main
+          id="main-content"
+          ref={mainRef}
+          tabIndex={-1}
           key={`${view}-${selected?.id ?? ""}`}
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
@@ -372,7 +385,7 @@ export default function App() {
               ))}
             </Suspense>
             </ErrorBoundary>
-        </motion.div>
+        </motion.main>
       </div>
     </div>
     </GuideKeyContext.Provider>

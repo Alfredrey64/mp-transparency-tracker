@@ -7,7 +7,7 @@ import { formatDate, partyColour, shortCategory, timeAgo } from "../lib/format";
 import pipelineStatus from "../data/pipelineStatus.json";
 import { categoriseBill } from "../lib/bills";
 import { getWatchlist, removeFromWatchlist } from "../lib/watchlist";
-import { IconSearch, IconCoin, IconBills, IconInfluence, IconPetition, IconGroup, IconPulse, IconShield, IconRankings, IconManifesto, IconPartyFinance, IconRoute } from "./icons";
+import { IconSearch, IconCoin, IconBills, IconInfluence, IconPetition, IconGroup, IconPulse, IconShield, IconRankings, IconManifesto, IconPartyFinance, IconRoute, IconTrend } from "./icons";
 import { EyebrowLabel, LoadFailedNote } from "./shared";
 import { PartyHemicycleSection } from "./PartyHemicycle";
 import { withScrollPreserved } from "../lib/preserveScroll";
@@ -40,6 +40,7 @@ const QUICK_LINKS = [
   { key: "parties", label: "Browse party policies", icon: IconManifesto, color: "#2F80ED" },
   { key: "partyFinances", label: "Browse party funding", icon: IconPartyFinance, color: "#F2622A" },
   { key: "rankings", label: "Rankings", icon: IconRankings, color: "#D9A62A" },
+  { key: "economy", label: "Britain in numbers", icon: IconTrend, color: "#0E9AA7" },
 ];
 
 // A quiet line for anyone following MPs: how many new things there are for

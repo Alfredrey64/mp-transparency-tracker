@@ -494,3 +494,27 @@ select:focus-visible,
 /* Cards a link jumps to stop below the sticky range bar on wide screens. */
 .ons-anchor { scroll-margin-top: 24px; }
 @media (min-width: 900px) { .ons-anchor { scroll-margin-top: 190px; } }
+
+/* Keyboard users can jump past the sidebar; the main region takes focus quietly when the page changes. */
+.skip-link {
+  position: absolute; left: 12px; top: -64px; z-index: 1000; background: #fff; color: #111; font: 700 14px/1 system-ui, sans-serif;
+  padding: 12px 18px; border: 2px solid #4F46E5; border-radius: 10px; cursor: pointer; transition: top 0.15s;
+}
+.skip-link:focus { top: 12px; }
+#main-content:focus { outline: none; }
+
+/* Printing and saving as PDF: plain black on white, no sidebar or controls, every card whole.
+   Cards that fade in as they are scrolled to, and charts that draw themselves, are shown finished. */
+@media print {
+  html, html[data-theme] {
+    --c-ink: #111 !important; --c-ink-soft: #444 !important; --c-paper: #fff !important; --c-paper-card: #fff !important; --c-hairline: #ccc !important;
+  }
+  body { background: #fff !important; }
+  aside, .skip-link, .ons-toolbar, .ons-noprint, .ons-jump, button.ons-tap, button.ons-chip, [role="status"], [role="switch"], [role="radiogroup"] { display: none !important; }
+  .mp-app-shell { display: block !important; }
+  .ons-anchor, main { opacity: 1 !important; transform: none !important; }
+  .ons-anchor { break-inside: avoid; box-shadow: none !important; margin-bottom: 14px; }
+  svg path { opacity: 1 !important; stroke-dasharray: none !important; stroke-dashoffset: 0 !important; }
+  svg circle { opacity: 1 !important; }
+  a { text-decoration: none; }
+}

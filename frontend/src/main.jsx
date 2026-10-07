@@ -11,3 +11,8 @@ createRoot(document.getElementById('root')).render(
     </ThemeProvider>
   </StrictMode>,
 )
+
+// Printing or saving as PDF: open every fold-out first, so the page prints in full.
+window.addEventListener('beforeprint', () => {
+  document.querySelectorAll('details').forEach((d) => { d.open = true })
+})
