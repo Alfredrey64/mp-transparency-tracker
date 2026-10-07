@@ -1,5 +1,5 @@
 import { COLORS, FONT_BODY, numeric } from "../theme";
-import { formatValue, formatAxis } from "../lib/onsFormat";
+import { formatValue, formatCompact } from "../lib/onsFormat";
 import { classColour } from "../lib/regionData";
 
 // The colour key: a bar of classes with round-number edges, with the UK figure marked on it.
@@ -17,7 +17,7 @@ export default function ColourKey({ bounds, accent, format, uk, caption, ukLabel
           {Array.from({ length: n }, (_, i) => <div key={i} style={{ background: classColour(accent, i, n) }} />)}
         </div>
         {bounds.map((b, i) => (
-          <span key={i} style={{ ...numeric, position: "absolute", top: 22, left: `${(i / n) * 100}%`, transform: i === 0 ? "none" : i === n ? "translateX(-100%)" : "translateX(-50%)", fontSize: 11.5, color: COLORS.inkSoft, whiteSpace: "nowrap" }}>{formatAxis(format, b)}</span>
+          <span key={i} className={n > 5 && (n - i) % 2 === 1 ? "key-skip" : undefined} style={{ ...numeric, position: "absolute", top: 22, left: `${(i / n) * 100}%`, transform: i === 0 ? "none" : i === n ? "translateX(-100%)" : "translateX(-50%)", fontSize: 11.5, color: COLORS.inkSoft, whiteSpace: "nowrap" }}>{formatCompact(format, b)}</span>
         ))}
         {ukAt !== null && (
           <span aria-hidden="true" title={`UK ${formatValue(format, uk)}`} style={{ position: "absolute", left: `${ukAt * 100}%`, top: -4, width: 0, height: 0, transform: "translateX(-50%)", borderLeft: "6px solid transparent", borderRight: "6px solid transparent", borderTop: `7px solid ${COLORS.ink}` }} />

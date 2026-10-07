@@ -61,7 +61,7 @@ function Tooltip({ at, name, text }) {
 
 const halo = { paintOrder: "stroke", stroke: "var(--c-paper, #fff)", strokeWidth: 5, strokeLinejoin: "round" };
 
-function RegionMap({ regions, view, fill, valueText, deltaText, a11yLabel, selected, hover, onHover, onSelect, accent, smooth = true }) {
+function RegionMap({ regions, view, fill, valueText, compactText, deltaText, a11yLabel, selected, hover, onHover, onSelect, accent, smooth = true }) {
   const [boxRef, boxWidth] = useBoxWidth();
   const wide = boxWidth === 0 || boxWidth >= WIDE_FROM;
   const [point, setPoint] = useState(null);
@@ -121,7 +121,7 @@ function RegionMap({ regions, view, fill, valueText, deltaText, a11yLabel, selec
     return (
       <g key={key} pointerEvents="none">
         {wide && <text x={at[0]} y={at[1] - 10} textAnchor="middle" fontFamily={FONT_BODY} fontSize={size} fontWeight="700" fill={COLORS.ink} style={halo}>{short(key)}</text>}
-        <text x={at[0]} y={at[1] + (wide ? 18 : 5)} textAnchor="middle" fontFamily={numeric.fontFamily} fontSize={wide ? size + 6 : size} fontWeight="600" fill={COLORS.ink} style={halo}>{valueText(key)}</text>
+        <text x={at[0]} y={at[1] + (wide ? 18 : 5)} textAnchor="middle" fontFamily={numeric.fontFamily} fontSize={wide ? size + 6 : size} fontWeight="600" fill={COLORS.ink} style={halo}>{wide ? valueText(key) : (compactText ?? valueText)(key)}</text>
         {delta && <text x={at[0]} y={at[1] + 40} textAnchor="middle" fontFamily={FONT_BODY} fontSize="17" fontWeight="600" fill={COLORS.ink} style={halo}>{delta}</text>}
       </g>
     );
@@ -132,7 +132,7 @@ function RegionMap({ regions, view, fill, valueText, deltaText, a11yLabel, selec
   return (
     <div data-map-box ref={boxRef} style={{ position: "relative" }}>
       {view === "map" ? (
-        <svg viewBox={viewBox} width="100%" style={{ display: "block", maxHeight: wide ? "min(820px, 88vh)" : "min(680px, 82vh)", margin: "0 auto", overflow: "visible" }} role="group" aria-label="Map of the regions and nations of the UK">
+        <svg viewBox={viewBox} style={{ display: "block", maxHeight: wide ? "min(820px, 88vh)" : "min(700px, 84vh)", margin: "0 auto", width: "100%", overflow: "visible" }} role="group" aria-label="Map of the regions and nations of the UK">
           <g>
             {geo.regions.map((r, i) => (
               <path
@@ -173,21 +173,21 @@ function RegionMap({ regions, view, fill, valueText, deltaText, a11yLabel, selec
           </g>
         </svg>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gridTemplateRows: "repeat(5, minmax(0, 1fr))", gap: 8, maxWidth: 620, margin: "0 auto" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gridTemplateRows: "repeat(5, minmax(0, 1fr))", gap: wide ? 8 : 5, maxWidth: 620, margin: "0 auto" }}>
           {regions.map((r, i) => (
             <div
               key={r.key}
               {...handlers(r.key)}
               className="rm-in"
               style={{
-                "--i": i, gridColumn: r.tile[0] + 1, gridRow: r.tile[1] + 1, aspectRatio: "1 / 1", borderRadius: 14, background: fill(r.key), cursor: "pointer", outline: "none",
+                "--i": i, gridColumn: r.tile[0] + 1, gridRow: r.tile[1] + 1, aspectRatio: "1 / 1", borderRadius: wide ? 14 : 10, background: fill(r.key), cursor: "pointer", outline: "none",
                 border: `2px solid ${selected === r.key ? accent : hover === r.key ? COLORS.ink : "transparent"}`, transition: smooth ? "background 0.45s ease, border-color 0.15s" : "border-color 0.15s",
-                display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "8px 9px", minWidth: 0, overflow: "hidden",
+                display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: wide ? "8px 9px" : "4px 5px", minWidth: 0, overflow: "hidden",
               }}
             >
-              <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.ink, textShadow: "0 0 4px var(--c-paper, #fff), 0 0 2px var(--c-paper, #fff)", lineHeight: 1.2 }}>{r.short}</span>
-              <span style={{ ...numeric, fontSize: 13.5, fontWeight: 600, color: COLORS.ink, textShadow: "0 0 4px var(--c-paper, #fff), 0 0 2px var(--c-paper, #fff)" }}>{valueText(r.key)}</span>
-              {deltaText?.(r.key) && <span style={{ fontFamily: FONT_BODY, fontSize: 10.5, fontWeight: 600, color: COLORS.ink, textShadow: "0 0 4px var(--c-paper, #fff), 0 0 2px var(--c-paper, #fff)" }}>{deltaText(r.key)}</span>}
+              <span style={{ fontFamily: FONT_BODY, fontSize: wide ? 11.5 : 9.5, fontWeight: 700, color: COLORS.ink, textShadow: "0 0 4px var(--c-paper, #fff), 0 0 2px var(--c-paper, #fff)", lineHeight: 1.15 }}>{r.short}</span>
+              <span style={{ ...numeric, fontSize: wide ? 13.5 : 12, fontWeight: 600, color: COLORS.ink, textShadow: "0 0 4px var(--c-paper, #fff), 0 0 2px var(--c-paper, #fff)" }}>{wide ? valueText(r.key) : (compactText ?? valueText)(r.key)}</span>
+              {deltaText?.(r.key) && <span style={{ fontFamily: FONT_BODY, fontSize: wide ? 10.5 : 9, fontWeight: 600, color: COLORS.ink, textShadow: "0 0 4px var(--c-paper, #fff), 0 0 2px var(--c-paper, #fff)" }}>{deltaText(r.key)}</span>}
             </div>
           ))}
         </div>

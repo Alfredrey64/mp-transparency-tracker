@@ -551,3 +551,21 @@ select:focus-visible,
 .lc-in { animation: lc-fade 0.7s ease-out backwards; }
 @keyframes lc-fade { from { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .lc-in { animation: none; } }
+
+/* Small tabs and links on the home page get a thumb-sized target on touch screens and phones. */
+@media (pointer: coarse), (max-width: 700px) { .hit-tab { min-height: 40px; padding-left: 14px !important; padding-right: 14px !important; } }
+
+/* The map's player: on a narrow screen the date slider gets a line of its own so it has room. */
+@media (max-width: 520px) {
+  .play-row { flex-wrap: wrap; }
+  .play-row .play-slider { order: 3; flex: 1 1 100% !important; margin-top: 4px; }
+}
+
+/* A close button for the phone menu, so it can be dismissed without hunting for the dimmed area beside it. */
+.mp-sidebar-close { display: none; }
+@media (max-width: 880px) {
+  .mp-sidebar-close { display: inline-flex; align-items: center; justify-content: center; position: sticky; top: 0; align-self: flex-end; width: 44px; height: 44px; margin: -8px -6px -26px 0; z-index: 2; border-radius: 22px; border: none; background: rgba(255, 255, 255, 0.08); color: #fff; cursor: pointer; }
+}
+
+/* On a narrow screen the colour key shows every other edge, counting back from the top one, so the labels never run together. */
+@media (max-width: 520px) { .key-skip { display: none; } }

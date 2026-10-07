@@ -3,7 +3,7 @@ import { COLORS, FONT_BODY, numeric } from "../theme";
 import RegionMap from "./RegionMap";
 import ColourKey from "./RegionKey";
 import { REGIONS, inSentence } from "../data/regionMetrics";
-import { formatValue } from "../lib/onsFormat";
+import { formatValue, formatCompact } from "../lib/onsFormat";
 import { isScrolling } from "../lib/scrollState";
 import { niceBands, classOf, classColour, ranked, ordinal } from "../lib/regionData";
 
@@ -43,7 +43,7 @@ export default function RegionCompare({ values, format, accent, noun, ukValue = 
     <div className="regions-grid">
       <div style={{ minWidth: 0 }}>
         <RegionMap
-          regions={REGIONS} view="map" fill={colour} valueText={text} accent={accent} smooth
+          regions={REGIONS} view="map" fill={colour} valueText={text} compactText={(k) => (has(k) ? `${formatCompact(format, values[k])}${unit}` : "–")} accent={accent} smooth
           a11yLabel={(k) => `${REGIONS.find((r) => r.key === k).name}: ${has(k) ? `${text(k)} ${noun}` : MISSING}`}
           selected={selected} hover={hover} onHover={setHover} onSelect={select}
         />

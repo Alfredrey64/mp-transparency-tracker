@@ -175,7 +175,7 @@ function ModeSwitch({ mode, onChange }) {
   );
 }
 
-function SidebarInner({ activeView, onNavigate, onSelectPolitician }) {
+function SidebarInner({ activeView, onNavigate, onSelectPolitician, onClose }) {
   // A count beside "My watchlist" when the MPs you follow have something new.
   const watch = useWatchlistChanges();
   const homeItems = HOME_NAV_ITEMS.map((i) => (i.key === "watchlist" && watch?.changes > 0 ? { ...i, badge: watch.changes } : i));
@@ -225,6 +225,11 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician }) {
 
   return (
     <>
+      {onClose && (
+        <button type="button" className="mp-sidebar-close" aria-label="Close menu" onClick={onClose}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg>
+        </button>
+      )}
       <div style={{ marginBottom: 4, textAlign: "center" }}>
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 7 }}>
           <ParliamentSilhouette width={46} color={COLORS.accentOnDark} opacity={0.95} />
@@ -363,7 +368,7 @@ export default function Sidebar({ activeView, onNavigate, onSelectPolitician }) 
           borderRight: "1px solid rgba(255,255,255,0.05)",
         }}
       >
-        <SidebarInner activeView={activeView} onNavigate={handleNav} onSelectPolitician={handleSelectPolitician} />
+        <SidebarInner activeView={activeView} onNavigate={handleNav} onSelectPolitician={handleSelectPolitician} onClose={() => setOpen(false)} />
       </div>
     </>
   );

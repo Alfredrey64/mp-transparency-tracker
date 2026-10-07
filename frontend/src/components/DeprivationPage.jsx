@@ -64,7 +64,7 @@ function AreaRow({ area, accent }) {
   return (
     <li style={{ borderTop: `1px solid ${COLORS.hairline}` }}>
       <button type="button" className="ons-tap" aria-expanded={open} onClick={() => setOpen((o) => !o)}
-        style={{ display: "grid", gridTemplateColumns: "42px minmax(0, 1fr) minmax(90px, 150px)", gap: "2px 12px", alignItems: "center", width: "100%", textAlign: "left", font: "inherit", background: "none", border: "none", padding: "10px 4px", cursor: "pointer" }}>
+        style={{ display: "grid", gridTemplateColumns: "34px minmax(0, 1fr) auto", gap: "2px 12px", alignItems: "center", width: "100%", textAlign: "left", font: "inherit", background: "none", border: "none", padding: "10px 4px", cursor: "pointer" }}>
         <span style={{ ...numeric, fontSize: 14, color: COLORS.inkSoft }}>{area.rank}</span>
         <span style={{ minWidth: 0 }}>
           <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: 700, color: COLORS.ink }}>{area.name}</span>
@@ -72,7 +72,7 @@ function AreaRow({ area, accent }) {
         </span>
         <span style={{ textAlign: "right" }}>
           <span style={{ ...numeric, display: "block", fontSize: 15, fontWeight: 600, color: COLORS.ink }}>{f1(area.worst10)}</span>
-          <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>of areas in worst tenth</span>
+          <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>in worst tenth</span>
         </span>
       </button>
       {open && (
@@ -133,9 +133,12 @@ export default function DeprivationPage() {
         <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.6, color: COLORS.ink, margin: "10px 0 8px", maxWidth: 800 }}>
           The government ranks all 33,755 small neighbourhoods in England, each home to about 1,500 people, from the most deprived to the least. Deprivation here means more than low income: it covers being out of work, poor health, few qualifications, crime, the cost and quality of housing, and the quality of the local environment. Each neighbourhood is placed in one of ten equal steps, called deciles.
         </p>
-        <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.6, color: COLORS.inkSoft, margin: 0, maxWidth: 800 }}>
-          Three things to keep in mind. It ranks places against each other, so it says where is relatively worse off, not how badly off anyone is. It describes neighbourhoods, not individuals: poorer people live in every area. And it covers England only: Scotland, Wales and Northern Ireland have their own indices, built differently, so they cannot be compared and are greyed out on the map.
-        </p>
+        <details className="dep-more" style={{ maxWidth: 800 }}>
+          <summary className="ons-tap" style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink, cursor: "pointer", padding: "6px 0" }}>Three things to keep in mind</summary>
+          <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.6, color: COLORS.inkSoft, margin: "4px 0 0" }}>
+            It ranks places against each other, so it says where is relatively worse off, not how badly off anyone is. It describes neighbourhoods, not individuals: poorer people live in every area. And it covers England only: Scotland, Wales and Northern Ireland have their own indices, built differently, so they cannot be compared and are greyed out on the map.
+          </p>
+        </details>
       </section>
 
       <div role="radiogroup" aria-label="Kind of deprivation" style={{ display: "flex", flexWrap: "wrap", gap: 8, margin: "22px 0 8px" }}>

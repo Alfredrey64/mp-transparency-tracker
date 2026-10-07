@@ -9,7 +9,7 @@ import geo from "../data/regionMap.json";
 import { REGIONS, METRICS, metricById } from "../data/regionMetrics";
 import { loadSector, loadDeflator } from "../lib/onsData";
 import { makeDeflator, toReal, canAdjust } from "../lib/onsReal";
-import { formatValue, formatAxis, changeBetween, changeShort } from "../lib/onsFormat";
+import { formatValue, formatAxis, formatCompact, changeBetween, changeShort } from "../lib/onsFormat";
 import { monthlyTimeline, valuesOver, ranked, ordinal, domainOf, tLabel, valueAtPosition, niceBands, classOf, classColour } from "../lib/regionData";
 import { isScrolling } from "../lib/scrollState";
 import { card, cardTitle, pillStyle } from "../lib/onsStyles";
@@ -341,14 +341,14 @@ export default function RegionsPage({ param }) {
               )}
 
               <RegionMap
-                regions={REGIONS} view={view} fill={colour} valueText={text} deltaText={(k) => deltas[k]} accent={accent} smooth
+                regions={REGIONS} view={view} fill={colour} valueText={text} compactText={(k) => (valid(atIdx[k]) ? formatCompact(metric.format, atIdx[k]) : "n/a")} deltaText={(k) => deltas[k]} accent={accent} smooth
                 a11yLabel={(k) => `${REGIONS.find((r) => r.key === k).name}: ${text(k)}`}
                 selected={selected} hover={hover} onHover={setHover} onSelect={select}
               />
 
               <ColourKey bounds={bounds} accent={accent} format={metric.format} uk={valid(ukValues[idx]) ? ukValues[idx] : null} caption={scaleMode === "all" ? "Same colours at every date, so you can watch the country change" : "Colours reset at each date, to rank the places"} />
 
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 18 }}>
+              <div className="play-row" style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 18 }}>
                 <button
                   type="button" className="ons-tap" onClick={() => (playing ? setPlaying(false) : startPlay())}
                   style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: "#fff", background: accent, border: "none", borderRadius: 10, padding: "9px 16px", minWidth: 100, cursor: "pointer", flexShrink: 0 }}
@@ -357,8 +357,8 @@ export default function RegionsPage({ param }) {
                 </button>
                 <button type="button" className="ons-tap" aria-label="Back one year" title="Back one year" onClick={() => jump(idx - 12)} style={stepButton}>−1 yr</button>
                 <input
-                  className="ons-range" type="range" min={from} max={last} step={1} value={idx} aria-label="Date" aria-valuetext={tLabel(timeline[idx])}
-                  onChange={(e) => jump(Number(e.target.value))} style={{ flex: 1, minWidth: 0, accentColor: accent }}
+                  type="range" min={from} max={last} step={1} value={idx} aria-label="Date" aria-valuetext={tLabel(timeline[idx])}
+                  onChange={(e) => jump(Number(e.target.value))} className="ons-range play-slider" style={{ flex: 1, minWidth: 0, accentColor: accent }}
                 />
                 <button type="button" className="ons-tap" aria-label="Forward one year" title="Forward one year" onClick={() => jump(idx + 12)} style={stepButton}>+1 yr</button>
               </div>

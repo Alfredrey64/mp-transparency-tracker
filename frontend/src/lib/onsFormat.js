@@ -105,6 +105,20 @@ export function formatAxis(format, v) {
   }
 }
 
+// The shortest honest way to write a figure, for places with no room: a label on a small map, a tick on a key.
+export function formatCompact(format, v) {
+  if (v === null || v === undefined || Number.isNaN(v)) return "n/a";
+  const trim = (x, d = 1) => String(Number(x.toFixed(d)));
+  switch (format) {
+    case "gbp": return Math.abs(v) >= 1e6 ? `£${trim(v / 1e6)}m` : Math.abs(v) >= 1e3 ? `£${trim(v / 1e3, v >= 1e4 ? 0 : 1)}k` : `£${Math.round(v)}`;
+    case "gbp2": return `£${trim(v)}`;
+    case "multiple": return trim(v);
+    case "count": return Math.abs(v) >= 1e6 ? `${trim(v / 1e6)}m` : Math.abs(v) >= 1e4 ? `${trim(v / 1e3, 0)}k` : formatValue("count", v);
+    case "people": return Math.abs(v) >= 1e6 ? `${trim(v / 1e6)}m` : Math.abs(v) >= 1e3 ? `${trim(v / 1e3, 0)}k` : String(Math.round(v));
+    default: return formatValue(format, v);
+  }
+}
+
 // How much `to` differs from `from`: percentage points for rates and per cent for
 // levels. A level that is zero or negative at either end has no sensible per cent
 // change, so it is given as an amount instead.

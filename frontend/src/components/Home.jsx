@@ -367,6 +367,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
             ].map((tab) => (
               <button
                 key={tab.key}
+                className="hit-tab"
                 onClick={() => withScrollPreserved(() => setActiveTab(tab.key))}
                 style={{
                   fontFamily: FONT_BODY,
@@ -552,6 +553,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
             <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 20, color: COLORS.ink }}>Bills going through Parliament</div>
             {onNavigate && (
               <button
+                className="hit-tab"
                 onClick={() => onNavigate("voting")}
                 style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accent, background: "none", border: "none", cursor: "pointer", padding: 0 }}
               >
@@ -609,6 +611,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
               ].map((tab) => (
                 <button
                   key={tab.key}
+                  className="hit-tab"
                   onClick={() => withScrollPreserved(() => setParliamentTab(tab.key))}
                   style={{
                     fontFamily: FONT_BODY,
