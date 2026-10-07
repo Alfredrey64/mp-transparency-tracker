@@ -465,14 +465,14 @@ function MpVotingHistory({ politician, bills, onBack }) {
   );
 }
 
-export default function VotingRecords({ initialMp = null, initialBill = null }) {
+export default function VotingRecords({ initialMp = null, initialBill = null, initialCategory = null }) {
   const [bills, setBills] = useState([]);
   const [politicians, setPoliticians] = useState([]);
   const [loadingBills, setLoadingBills] = useState(true);
   const [billsFailed, setBillsFailed] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedMp, setSelectedMp] = useState(initialMp);
-  const [billCategory, setBillCategory] = useState("All");
+  const [billCategory, setBillCategory] = useState(initialCategory ?? "All");
 
   useEffect(() => {
     async function load() {
@@ -488,10 +488,12 @@ export default function VotingRecords({ initialMp = null, initialBill = null }) 
     load();
   }, []);
 
+  // A category from a link (for example from a Britain in numbers page) that has no bills falls back to all of them.
+  const categoryHasBills = useMemo(() => billCategory === "All" || bills.some((b) => categoriseBill(b).label === billCategory), [bills, billCategory]);
   const billsShown = useMemo(() => {
-    if (billCategory === "All") return bills;
+    if (billCategory === "All" || (bills.length && !categoryHasBills)) return bills;
     return bills.filter((b) => categoriseBill(b).label === billCategory);
-  }, [bills, billCategory]);
+  }, [bills, billCategory, categoryHasBills]);
 
   const billCategories = useMemo(() => {
     const set = new Map();
@@ -583,7 +585,7 @@ export default function VotingRecords({ initialMp = null, initialBill = null }) 
         </div>
 
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 18 }}>
-          <FilterPill active={billCategory === "All"} color={COLORS.ink} onClick={() => withScrollPreserved(() => setBillCategory("All"))}>
+          <FilterPill active={billCategory === "All" || (bills.length > 0 && !categoryHasBills)} color={COLORS.ink} onClick={() => withScrollPreserved(() => setBillCategory("All"))}>
             All ({bills.length})
           </FilterPill>
           {billCategories.map((cat) => (

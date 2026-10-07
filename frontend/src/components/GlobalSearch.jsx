@@ -83,8 +83,8 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
       setPeers(l ?? []);
     }
     load();
-    import("../data/glossaryTerms").then(({ PROCEDURE_TERMS, POLITICS_TERMS }) => {
-      setGlossaryEntries([...PROCEDURE_TERMS, ...POLITICS_TERMS]);
+    import("../data/glossaryTerms").then(({ PROCEDURE_TERMS, POLITICS_TERMS, STATISTICS_TERMS }) => {
+      setGlossaryEntries([...PROCEDURE_TERMS, ...POLITICS_TERMS, ...STATISTICS_TERMS]);
     });
   }, []);
 

@@ -1,4 +1,5 @@
 import { EXTRA_PROCEDURE_TERMS, EXTRA_POLITICS_TERMS, TERM_OVERRIDES as EXTRA_OVERRIDES } from "./glossaryExtraTerms.js";
+import { STATISTICS_TERMS as RAW_STATISTICS_TERMS } from "./glossaryStatsTerms.js";
 import { MORE_PROCEDURE_TERMS, MORE_POLITICS_TERMS, MORE_TERM_OVERRIDES } from "./glossaryMoreTerms.js";
 
 const TERM_OVERRIDES = { ...EXTRA_OVERRIDES, ...MORE_TERM_OVERRIDES };
@@ -205,6 +206,7 @@ const applyOverrides = (t) => (TERM_OVERRIDES[t.term] ? { ...t, ...TERM_OVERRIDE
 const byTerm = (a, b) => a.term.localeCompare(b.term, "en", { sensitivity: "base" });
 
 export const PROCEDURE_TERMS = [...BASE_PROCEDURE_TERMS, ...EXTRA_PROCEDURE_TERMS, ...MORE_PROCEDURE_TERMS].map(applyOverrides).sort(byTerm);
+export const STATISTICS_TERMS = RAW_STATISTICS_TERMS.map(applyOverrides).sort(byTerm);
 export const POLITICS_TERMS = [...BASE_POLITICS_TERMS, ...EXTRA_POLITICS_TERMS, ...MORE_POLITICS_TERMS].map(applyOverrides).sort(byTerm);
 
 // Every spelling that should resolve to an entry: its own full term, the
@@ -227,7 +229,7 @@ export function keysFor(entry) {
 
 function buildIndex() {
   const index = new Map();
-  for (const entry of [...PROCEDURE_TERMS, ...POLITICS_TERMS]) {
+  for (const entry of [...PROCEDURE_TERMS, ...POLITICS_TERMS, ...STATISTICS_TERMS]) {
     for (const key of keysFor(entry)) index.set(normaliseKey(key), entry);
   }
   return index;

@@ -1,6 +1,6 @@
 /** @jsxImportSource react */
 import { GlossaryTerm } from "./GlossaryTerm";
-import { findGlossaryEntry, keysFor, normaliseKey, PROCEDURE_TERMS, POLITICS_TERMS } from "../data/glossaryTerms";
+import { findGlossaryEntry, keysFor, normaliseKey, PROCEDURE_TERMS, POLITICS_TERMS, STATISTICS_TERMS } from "../data/glossaryTerms";
 
 // The glossary half of the automatic underlining, loaded on demand by
 // glossJsx/glossText.js. The pragma above opts this file out of the custom
@@ -15,7 +15,7 @@ let matcher = null;
 function getMatcher() {
   if (matcher) return matcher;
   const keys = [];
-  for (const entry of [...PROCEDURE_TERMS, ...POLITICS_TERMS]) {
+  for (const entry of [...PROCEDURE_TERMS, ...POLITICS_TERMS, ...STATISTICS_TERMS]) {
     if (entry.auto === false) continue;
     for (const key of keysFor(entry)) if (key.length >= 3) keys.push(key);
   }

@@ -16,7 +16,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { SECTORS, WEEKLY_DEATHS } from "./frontend/src/data/onsSectors.js";
+import { SECTORS, WEEKLY_DEATHS, sectorSeries } from "./frontend/src/data/onsSectors.js";
 import { normalisePeriod } from "./frontend/src/lib/onsFormat.js";
 import { readXlsx } from "./xlsx-lite.js";
 
@@ -171,6 +171,20 @@ async function fetchWeeklyDeaths() {
   return { updated: version.release_date ?? null, years };
 }
 
+// The Consumer Prices Index itself (2015 = 100, monthly from 1988), used on the
+// pages to show money amounts in today's prices.
+async function fetchDeflator() {
+  const j = await getJson("https://www.ons.gov.uk/economy/inflationandpriceindices/timeseries/d7bt/mm23/data");
+  const points = [];
+  for (const row of j.months ?? []) {
+    const period = normalisePeriod("months", row.date);
+    const value = Number(row.value);
+    if (period && Number.isFinite(value) && value > 0) points.push([period, value]);
+  }
+  if (points.length < 100) throw new Error("deflator: too few points");
+  return { fetchedAt: new Date().toISOString(), title: j.description?.title ?? "CPI index", updated: j.description?.releaseDate ?? null, points };
+}
+
 function readExisting(file) {
   try {
     return JSON.parse(fs.readFileSync(file, "utf8"));
@@ -190,7 +204,7 @@ async function main() {
     const previous = readExisting(file);
     const out = { fetchedAt: new Date().toISOString(), series: {} };
 
-    for (const def of sector.series) {
+    for (const def of sectorSeries(sector)) {
       if (def.derive) continue; // worked out in the browser
       const key = def.hpi ? `hpi|${def.hpi.region}|${def.hpi.field}` : def.table ? `table|${def.table.sheet}|${def.id}` : `${def.path}|${def.cdid}|${def.dataset}`;
       try {
@@ -222,6 +236,16 @@ async function main() {
       fs.writeFileSync(file, `${JSON.stringify(out)}\n`);
       console.log(`${sector.key}: ${Object.keys(out.series).length} series saved`);
     }
+  }
+
+  const deflatorFile = path.join(OUT_DIR, "deflator.json");
+  try {
+    fs.writeFileSync(deflatorFile, `${JSON.stringify(await fetchDeflator())}\n`);
+    refreshed++;
+    console.log("deflator: saved");
+  } catch (e) {
+    failed++;
+    console.warn(`! deflator: ${e.message}`);
   }
 
   console.log(`Done: ${refreshed} refreshed, ${failed} kept from last time or missing.`);

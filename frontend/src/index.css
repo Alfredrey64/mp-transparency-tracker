@@ -485,3 +485,12 @@ select:focus-visible,
   input.ons-chip, select.ons-chip { min-height: 44px; font-size: 16px !important; }
 }
 @media (pointer: coarse), (max-width: 700px) { input.ons-range { height: 36px; cursor: pointer; } }
+
+/* The chart a shared link points at glows briefly when it is scrolled to. */
+@keyframes ons-flash { 0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.0); } 20% { box-shadow: 0 0 0 5px rgba(79, 70, 229, 0.45); } 100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); } }
+.ons-flash { animation: ons-flash 2.4s ease-out; }
+@media (prefers-reduced-motion: reduce) { .ons-flash { animation: none; outline: 3px solid rgba(79, 70, 229, 0.5); } }
+
+/* Cards a link jumps to stop below the sticky range bar on wide screens. */
+.ons-anchor { scroll-margin-top: 24px; }
+@media (min-width: 900px) { .ons-anchor { scroll-margin-top: 190px; } }

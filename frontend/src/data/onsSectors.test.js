@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
-import { SECTORS, SECTOR_KEYS } from "./onsSectors";
+import { SECTORS, SECTOR_KEYS, sectorSeries } from "./onsSectors";
 import { SECTIONS } from "./sidebarSections";
 import { PAGE_GUIDES } from "./pageGuides";
 
@@ -21,7 +21,7 @@ describe("Britain in numbers sectors", () => {
       const ids = sector.series.map((x) => x.id);
       expect(new Set(ids).size).toBe(ids.length);
       expect(sector.series.some((x) => x.headline)).toBe(true);
-      for (const def of sector.series) {
+      for (const def of sectorSeries(sector)) {
         if (def.derive) {
           expect(sector.series.map((x) => x.id)).toContain(def.derive.from);
         } else if (def.hpi) {
@@ -40,10 +40,21 @@ describe("Britain in numbers sectors", () => {
     }
   });
 
+  it("only compares places using series that exist", () => {
+    for (const sector of SECTORS) {
+      const ids = new Set(sectorSeries(sector).map((x) => x.id));
+      for (const group of sector.places) {
+        for (const id of [...group.members, ...group.defaultOn]) expect(ids.has(id), `${sector.key}/${group.id}/${id}`).toBe(true);
+        expect(group.defaultOn.length).toBeLessThanOrEqual(6);
+        expect(group.defaultOn.every((id) => group.members.includes(id))).toBe(true);
+      }
+    }
+  });
+
   it("has saved data for every series the pages show", () => {
     for (const sector of SECTORS) {
       const file = JSON.parse(fs.readFileSync(path.join(dir, `${sector.key}.json`), "utf8"));
-      for (const def of sector.series.filter((x) => !x.derive)) {
+      for (const def of sectorSeries(sector).filter((x) => !x.derive)) {
         const s = file.series[def.id];
         expect(s, `${sector.key}/${def.id}`).toBeTruthy();
         expect(s.points.length).toBeGreaterThan(2);

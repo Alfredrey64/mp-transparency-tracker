@@ -2,7 +2,7 @@
 // Everything is loaded on demand, one file per page, so a visitor only pays
 // for the page they are looking at (the compare page loads them all).
 
-import { SECTORS, sectorByKey } from "../data/onsSectors";
+import { SECTORS, sectorByKey, sectorSeries } from "../data/onsSectors";
 import { derive } from "./onsDerive";
 
 const FILES = import.meta.glob("../data/ons/*.json");
@@ -11,7 +11,7 @@ const FILES = import.meta.glob("../data/ons/*.json");
 export function resolveSeries(sectorDef, data) {
   const out = {};
   const base = {};
-  for (const def of sectorDef.series) {
+  for (const def of sectorSeries(sectorDef)) {
     const raw = data?.series?.[def.id];
     if (raw) {
       base[def.id] = raw.points;
@@ -28,6 +28,13 @@ export function resolveSeries(sectorDef, data) {
     }
   }
   return out;
+}
+
+// The CPI index used to show money in today's prices.
+export async function loadDeflator() {
+  const load = FILES["../data/ons/deflator.json"];
+  if (!load) return null;
+  return (await load()).default;
 }
 
 export async function loadSector(key) {

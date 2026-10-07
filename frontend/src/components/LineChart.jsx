@@ -37,7 +37,7 @@ export default function LineChart({
     return () => { cancelAnimationFrame(frame); ro.disconnect(); };
   }, []);
   const narrow = W < 420;
-  const M = compact ? { l: 44, r: 12, t: 8, b: 22 } : { l: narrow ? 42 : 48, r: narrow ? 10 : 16, t: 16, b: 28 };
+  const base = compact ? { l: 44, r: 12, t: 8, b: 22 } : { l: narrow ? 42 : 48, r: narrow ? 10 : 16, t: 16, b: 28 };
   const H = height;
   const controlled = onHoverX !== undefined;
   const hover = controlled ? hoverX : localHover;
@@ -59,13 +59,18 @@ export default function LineChart({
     const ticks = niceTicks(lo, hi, compact ? 3 : 4);
     const dLo = Math.min(lo, ticks[0] ?? lo);
     const dHi = Math.max(hi, ticks.at(-1) ?? hi);
+    // The left margin grows to fit the longest axis label, so values like £600,000 are never cut off.
+    const longest = Math.max(...ticks.map((t) => String(yFormat(t)).length));
+    const M = { ...base, l: Math.max(base.l, Math.ceil(14 + longest * (compact ? 6 : 6.6))) };
     const sx = (x) => M.l + ((x - xMin) / (xMax - xMin || 1)) * (W - M.l - M.r);
     const sy = (y) => M.t + (1 - (y - dLo) / (dHi - dLo || 1)) * (H - M.t - M.b);
-    return { xMin, xMax, ticks, sx, sy, dLo, dHi };
-  }, [lines, H, domainX, compact, W, M.l, M.r, M.t, M.b]);
+    return { xMin, xMax, ticks, sx, sy, dLo, dHi, M };
+    // yFormat is a new function on every render and only its output length matters here.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lines, H, domainX, compact, W, base.l, base.r, base.t, base.b]);
 
   if (!geo) return null;
-  const { sx, sy, ticks } = geo;
+  const { sx, sy, ticks, M } = geo;
 
   const shown = lines.map((l) => ({ ...l, points: clipX === undefined ? l.points : l.points.filter((p) => p.x <= clipX) })).filter((l) => l.points.length);
   const main = shown[0]?.points ?? [];

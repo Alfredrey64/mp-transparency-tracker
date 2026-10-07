@@ -3,9 +3,15 @@ import { motion, useInView, useReducedMotion } from "framer-motion";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme";
 import { PageHeader, LoadFailedNote } from "./shared";
 import LineChart from "./LineChart";
+import PlacesChart from "./PlacesChart";
+import ChartActions from "./ChartActions";
 import CountUp from "./CountUp";
-import { sectorByKey, ONS_SERIES_PAGE, WEEKLY_DEATHS } from "../data/onsSectors";
-import { loadSector } from "../lib/onsData";
+import { sectorByKey, sectorSeries, ONS_SERIES_PAGE, WEEKLY_DEATHS } from "../data/onsSectors";
+import { loadSector, loadDeflator } from "../lib/onsData";
+import { makeDeflator, toReal } from "../lib/onsReal";
+import { buildShareParam, parseShareParam, shareUrl } from "../lib/shareLink";
+import { seriesCsv } from "../lib/onsDownload";
+import { PARLIAMENT_LINKS } from "../data/onsParliament";
 import { formatValue, formatAxis, latestInfo, changeWords, changeShort, sentenceFor, sliceRange, labelFor } from "../lib/onsFormat";
 import { compareStats } from "../lib/onsStats";
 import { toLineData, yearTicks } from "../lib/onsChart";
@@ -191,6 +197,8 @@ function DeepDive({ id, accent }) {
   );
 }
 
+const unitOf = (format) => ({ pct: "%", gbp: "£", gbpbn: "£ billion", gbpbn0: "£ billion", gbpbnx: "£ billion", thousands: "thousands", people: "people", count: "count", index: "index", ktonnes: "thousand tonnes", mtoe: "million tonnes of oil equivalent", hours: "hours" }[format] ?? "");
+
 function SourceLine({ def, item }) {
   const link = def.source?.url ?? (def.cdid ? ONS_SERIES_PAGE(def) : null);
   const name = def.source?.name ?? (def.derive ? "Worked out from ONS figures" : `ONS series ${def.cdid} (${def.dataset?.toUpperCase()})`);
@@ -202,20 +210,40 @@ function SourceLine({ def, item }) {
   );
 }
 
-const SeriesCard = memo(function SeriesCard({ def, item, range, accent, showGovernments, sectorKey }) {
-  const data = useMemo(() => toLineData(sliceRange(item.points, range)), [item.points, range]);
-  const info = latestInfo(def, item.points);
-  const sentence = sentenceFor(def, item.points);
-  const recent = item.points.slice(-12).reverse();
+const SeriesCard = memo(function SeriesCard({ def, item, range, accent, showGovernments, sectorKey, real, deflator }) {
+  // In today's money, a money series is re-priced and starts when the price index does.
+  const adjusted = real && def.nominal && deflator;
+  const points = useMemo(() => (adjusted ? toReal(item.points, deflator) : item.points), [adjusted, item.points, deflator]);
+  const data = useMemo(() => toLineData(sliceRange(points, range)), [points, range]);
+  const info = latestInfo(def, points);
+  const sentence = sentenceFor(def, points);
+  const recent = points.slice(-12).reverse();
   const bands = useMemo(
     () => (showGovernments && data.length ? bandsBetween(data[0].x, data.at(-1).x + 0.05, NOW).map((b) => ({ ...b, color: PARTY_COLOURS[b.party] })) : []),
     [showGovernments, data],
   );
+  const sourceName = def.source?.name ?? (def.derive ? "Worked out from ONS figures" : `Office for National Statistics, series ${def.cdid}`);
+  const getInfo = () => ({
+    url: shareUrl(sectorKey, buildShareParam({ target: def.id, range, real: Boolean(adjusted), governments: showGovernments })),
+    title: def.label,
+    sentence: `${sentence ?? ""}${adjusted ? ` These figures are in ${deflator.label} prices.` : ""}`.trim(),
+    source: sourceName,
+    accent,
+    filename: `${sectorKey}-${def.id}.png`,
+    csv: {
+      filename: `${sectorKey}-${def.id}.csv`,
+      text: seriesCsv({
+        title: def.label, source: sourceName, unit: unitOf(def.format), points: item.points,
+        adjusted: adjusted ? item.points.map(([p], i) => toReal([item.points[i]], deflator)[0] ?? [p, ""]) : null,
+      }),
+    },
+  });
   return (
     <motion.section
+      className="ons-anchor"
       id={`s-${def.id}`}
       aria-labelledby={`h-${def.id}`}
-      style={{ ...card, scrollMarginTop: 110, position: "relative", overflow: "hidden" }}
+      style={{ ...card, position: "relative", overflow: "hidden" }}
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       viewport={{ once: true, margin: "0px 0px 200px 0px" }}
@@ -231,7 +259,7 @@ const SeriesCard = memo(function SeriesCard({ def, item, range, accent, showGove
           </div>
         )}
       </div>
-      {sentence && <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.55, color: COLORS.ink, margin: "10px 0 18px" }}>{sentence}</p>}
+      {sentence && <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.55, color: COLORS.ink, margin: "10px 0 18px" }}>{sentence}{adjusted ? ` These figures are in ${deflator.label} prices.` : ""}</p>}
       {data.length > 1 ? (
         <LineChart
           key={`${range}-${showGovernments}`}
@@ -246,16 +274,19 @@ const SeriesCard = memo(function SeriesCard({ def, item, range, accent, showGove
       ) : (
         <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Not enough data for this period.</p>
       )}
-      <Strip def={def} points={item.points} accent={accent} />
+      <Strip def={def} points={points} accent={accent} />
       {def.nominal && (
         <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.5, color: COLORS.inkSoft, margin: "10px 0 0" }}>
-          These amounts are not adjusted for inflation, so figures from many years ago look smaller than they were worth.
+          {adjusted
+            ? `Adjusted for inflation with the Consumer Prices Index, which starts in 1988, so earlier years are left out. Switch "Show in today's money" off to see the amounts as they were published.`
+            : `These amounts are not adjusted for inflation, so figures from many years ago look smaller than they were worth. Switch on "Show in today's money" above to compare like with like.`}
         </p>
       )}
       <Explain explain={def.explain} why={def.why} accent={accent} />
       <DeepDive id={def.id} accent={accent} />
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 10px", alignItems: "center", marginTop: 16 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "10px 14px", alignItems: "center", marginTop: 16 }}>
         <a className="ons-tap" href={`#/indicators/${sectorKey}.${def.id}`} style={{ ...pillStyle(false), textDecoration: "none", color: COLORS.ink, borderColor: `${accent}88` }}>Compare over time</a>
+        <ChartActions cardId={`s-${def.id}`} getInfo={getInfo} />
       </div>
       <details style={{ marginTop: 8 }}>
         <summary className="ons-tap" style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink, cursor: "pointer", padding: "6px 0" }}>Show the latest figures as a table</summary>
@@ -293,7 +324,8 @@ function WeeklyDeaths({ data, accent }) {
   if (before.length) lines.push({ name: lastYear, color: COLORS.inkSoft, points: before, format: (v) => v.toLocaleString("en-GB") });
   return (
     <motion.section
-      aria-labelledby="h-weekly-deaths" style={{ ...card, scrollMarginTop: 110, position: "relative", overflow: "hidden" }} id="s-weekly-deaths"
+      className="ons-anchor"
+      aria-labelledby="h-weekly-deaths" style={{ ...card, position: "relative", overflow: "hidden" }} id="s-weekly-deaths"
       initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, margin: "0px 0px 200px 0px" }} transition={{ duration: 0.4 }}
     >
       <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `linear-gradient(180deg, ${accent}, ${accent}22)` }} />
@@ -374,13 +406,55 @@ function useActiveCard(ids) {
   return active;
 }
 
-export default function SectorPage({ sector }) {
+// Where these figures meet Parliament: who is asking ministers about the topic, how MPs
+// have voted on bills in the area, and related pages on this site.
+function InParliament({ sector, accent }) {
+  const links = PARLIAMENT_LINKS[sector];
+  if (!links) return null;
+  const chip = { fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink, textDecoration: "none", padding: "8px 14px", borderRadius: 999, border: `1px solid ${accent}77`, background: `${accent}12` };
+  return (
+    <section aria-labelledby="h-in-parliament" style={{ ...card, marginTop: 28, position: "relative", overflow: "hidden" }}>
+      <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `linear-gradient(180deg, ${accent}, ${accent}22)` }} />
+      <h2 id="h-in-parliament" style={cardTitle}>Where this reaches Parliament</h2>
+      <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "10px 0 18px", maxWidth: 720 }}>
+        Numbers like these are what MPs argue about. See who is asking ministers about them, how MPs have voted, and what the parties promise.
+      </p>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))", gap: 22 }}>
+        <div>
+          <h3 style={smallTitle}>MPs and peers asking ministers about…</h3>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 8 }}>
+            {links.topics.map((t) => <a key={t} className="ons-tap" href={`#/topics/${encodeURIComponent(t)}`} style={chip}>{t}</a>)}
+          </div>
+        </div>
+        <div>
+          <h3 style={smallTitle}>How MPs voted</h3>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 8 }}>
+            <a className="ons-tap" href={`#/voting/${encodeURIComponent(links.billCategory)}`} style={chip}>Bills on {links.billCategory.toLowerCase()}</a>
+          </div>
+        </div>
+        <div>
+          <h3 style={smallTitle}>More on this site</h3>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 8 }}>
+            {links.pages.map((p) => <a key={p.key} className="ons-tap" href={`#/${p.key}`} style={chip}>{p.label}</a>)}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default function SectorPage({ sector, param = null }) {
   const def = sectorByKey(sector);
   const reduce = useReducedMotion();
   const [loaded, setLoaded] = useState(null);
   const [failed, setFailed] = useState(false);
-  const [range, setRange] = useState(WHOLE_HISTORY.has(sector) ? 0 : 10);
-  const [showGovernments, setShowGovernments] = useState(false);
+  // A shared link can open the page at one chart with its range and settings.
+  const share = useMemo(() => parseShareParam(param), [param]);
+  const [range, setRange] = useState(share?.range ?? (WHOLE_HISTORY.has(sector) ? 0 : 10));
+  const [showGovernments, setShowGovernments] = useState(share?.governments ?? false);
+  const [real, setReal] = useState(share?.real ?? false);
+  const [deflatorData, setDeflatorData] = useState(null);
+  const hasMoney = Boolean(def && sectorSeries(def).some((x) => x.nominal));
 
   useEffect(() => {
     let alive = true;
@@ -388,9 +462,34 @@ export default function SectorPage({ sector }) {
     return () => { alive = false; };
   }, [sector]);
 
+  useEffect(() => {
+    if (!hasMoney) return undefined;
+    let alive = true;
+    loadDeflator().then((d) => alive && setDeflatorData(d)).catch(() => {});
+    return () => { alive = false; };
+  }, [hasMoney]);
+  const deflator = useMemo(() => (deflatorData ? makeDeflator(deflatorData.points) : null), [deflatorData]);
+
+  // Scroll to the chart a shared link points at, once the page has its figures.
+  const focused = useRef(false);
+  const target = share?.target ?? null;
+  useEffect(() => {
+    if (!loaded || !target || focused.current) return undefined;
+    const timer = setTimeout(() => {
+      const el = document.getElementById(`s-${target}`);
+      if (!el) return;
+      focused.current = true;
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      el.classList.add("ons-flash");
+      setTimeout(() => el.classList.remove("ons-flash"), 2600);
+    }, 700);
+    return () => clearTimeout(timer);
+  }, [loaded, target]);
+
   const Icon = ICONS[sector];
   const shown = useMemo(() => (def && loaded ? def.series.filter((s) => loaded.series[s.id]) : []), [def, loaded]);
-  const active = useActiveCard(shown.map((s) => s.id));
+  const jumpIds = useMemo(() => (def ? [...def.places.map((g) => g.id), ...shown.map((s) => s.id)] : []), [def, shown]);
+  const active = useActiveCard(jumpIds);
   if (!def) return null;
   const tiles = shown.filter((s) => s.headline);
   const spotlight = tiles[0];
@@ -443,10 +542,13 @@ export default function SectorPage({ sector }) {
                   ))}
                 </div>
               </div>
-              <Toggle on={showGovernments} onChange={setShowGovernments}>Show who was in government</Toggle>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0 22px" }}>
+                {hasMoney && <Toggle on={real} onChange={setReal}>Show in today&apos;s money</Toggle>}
+                <Toggle on={showGovernments} onChange={setShowGovernments}>Show who was in government</Toggle>
+              </div>
             </div>
             <div className="ons-jump" role="navigation" aria-label="Jump to a measure">
-              {shown.map((s) => (
+              {[...def.places.map((g) => ({ id: g.id, label: g.title })), ...shown].map((s) => (
                 <a
                   key={s.id}
                   href={`#s-${s.id}`}
@@ -470,11 +572,19 @@ export default function SectorPage({ sector }) {
           )}
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(480px, 100%), 1fr))", gap: 20, alignItems: "start", marginTop: 8 }}>
+            {def.places.map((g) => (
+              <PlacesChart
+                key={g.id} group={g} sector={def.key} series={loaded.series} range={range} real={real} deflator={deflator}
+                showGovernments={showGovernments} accent={def.accent} initial={share?.target === g.id ? share : null}
+              />
+            ))}
             {loaded.data.weeklyDeaths && <WeeklyDeaths data={loaded.data.weeklyDeaths} accent={def.accent} />}
             {shown.map((s) => (
-              <SeriesCard key={s.id} def={s} item={loaded.series[s.id]} range={range} accent={def.accent} showGovernments={showGovernments} sectorKey={def.key} />
+              <SeriesCard key={s.id} def={s} item={loaded.series[s.id]} range={range} accent={def.accent} showGovernments={showGovernments} sectorKey={def.key} real={real} deflator={deflator} />
             ))}
           </div>
+
+          <InParliament sector={def.key} accent={def.accent} />
 
           <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.6, color: COLORS.inkSoft, marginTop: 32, maxWidth: 780 }}>
             Most figures are from the Office for National Statistics (ONS), published under the Open Government Licence v3.0. House prices come from the UK House Price Index (HM Land Registry with the ONS and others), and police recorded crime from the Home Office.

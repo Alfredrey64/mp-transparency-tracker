@@ -576,6 +576,89 @@ export const SECTORS = [
   },
 ];
 
+// --- "Compare places": one chart with several places side by side ---
+//
+// Each group lists the series to draw (`members`, ids from the page's own
+// series, or from `extra`) and any extra series that only appear here, not as
+// cards of their own. `place` is the short name shown on the chart.
+
+const hpiPlace = (id, region, place, why) => h(id, region, "averagePrice", {
+  label: `${place}: average house price`, place, sentenceName: `The average house price in ${place}`, format: "gbp", kind: "level", nominal: true,
+  explain: `The average price paid for a home in ${place}.`, why,
+});
+const unemploymentPlace = (id, cdid, place) => s(id, cdid, "lms", `${NOT_IN_WORK}/unemployment`, {
+  label: `${place}: unemployment rate`, place, sentenceName: `Unemployment in ${place}`, format: "pct", kind: "rate",
+  explain: `The unemployment rate for people aged 16 and over in ${place}, seasonally adjusted.`,
+  why: "Local job markets differ a lot, and regional gaps are at the heart of debates about levelling up.",
+});
+
+const PLACES = {
+  housing: [
+    {
+      id: "house-prices-places",
+      title: "House prices across the UK",
+      blurb: "Pick up to six places to see how the average price paid for a home has moved in each. The bars show every place, highest first.",
+      format: "gbp",
+      members: ["hpi-uk", "hpi-england", "hpi-wales", "hpi-scotland", "hpi-ni", "hpi-london", "hpi-north-east", "hpi-north-west", "hpi-yorkshire", "hpi-east-midlands", "hpi-west-midlands", "hpi-east", "hpi-south-east", "hpi-south-west"],
+      defaultOn: ["hpi-london", "hpi-north-east", "hpi-wales", "hpi-scotland"],
+      showAs: "levels",
+      names: { "hpi-uk": "UK", "hpi-north-east": "North East" },
+      extra: [
+        hpiPlace("hpi-north-west", "north-west", "North West", "The North West has some of the UK's biggest cities outside London, with prices well below the national average."),
+        hpiPlace("hpi-yorkshire", "yorkshire-and-the-humber", "Yorkshire and the Humber", "Prices here sit below the UK average, so homes are more affordable than in the south."),
+        hpiPlace("hpi-east-midlands", "east-midlands", "East Midlands", "Prices in the East Midlands sit close to the middle of the English regions."),
+        hpiPlace("hpi-west-midlands", "west-midlands", "West Midlands", "Prices in the West Midlands sit close to the middle of the English regions."),
+        hpiPlace("hpi-east", "east-of-england", "East of England", "The East of England has high prices, partly because many people commute from there to London."),
+        hpiPlace("hpi-south-east", "south-east", "South East", "The South East is the most expensive region outside London, helped by commuters and high local wages."),
+        hpiPlace("hpi-south-west", "south-west", "South West", "The South West has high prices relative to local wages, partly because of second homes and retirement moves."),
+      ],
+    },
+  ],
+  jobs: [
+    {
+      id: "unemployment-places",
+      title: "Unemployment across the UK",
+      blurb: "Pick up to six places to compare their unemployment rates over time. The bars show every place, highest first.",
+      format: "pct",
+      members: ["unemployment", "unemployment-north-east", "unemployment-north-west", "unemployment-yorkshire", "unemployment-east-midlands", "unemployment-west-midlands", "unemployment-east", "unemployment-london", "unemployment-south-east", "unemployment-south-west", "unemployment-wales", "unemployment-scotland", "unemployment-ni"],
+      defaultOn: ["unemployment", "unemployment-north-east", "unemployment-london", "unemployment-scotland"],
+      showAs: "levels",
+      names: { unemployment: "UK" },
+      extra: [
+        unemploymentPlace("unemployment-north-east", "YCNC", "North East"),
+        unemploymentPlace("unemployment-north-west", "YCND", "North West"),
+        unemploymentPlace("unemployment-yorkshire", "YCNE", "Yorkshire and the Humber"),
+        unemploymentPlace("unemployment-east-midlands", "YCNF", "East Midlands"),
+        unemploymentPlace("unemployment-west-midlands", "YCNG", "West Midlands"),
+        unemploymentPlace("unemployment-east", "YCNH", "East of England"),
+        unemploymentPlace("unemployment-london", "YCNI", "London"),
+        unemploymentPlace("unemployment-south-east", "YCNJ", "South East"),
+        unemploymentPlace("unemployment-south-west", "YCNK", "South West"),
+        unemploymentPlace("unemployment-wales", "YCNM", "Wales"),
+        unemploymentPlace("unemployment-scotland", "YCNN", "Scotland"),
+        unemploymentPlace("unemployment-ni", "ZSFB", "Northern Ireland"),
+      ],
+    },
+  ],
+  population: [
+    {
+      id: "population-nations",
+      title: "The four nations compared",
+      blurb: "England is far bigger than the other nations, so the chart starts with growth since the start of the period, with every place set to 100. Switch to actual numbers to see the sizes.",
+      format: "people",
+      members: ["uk", "england", "scotland", "wales", "ni"],
+      defaultOn: ["england", "scotland", "wales", "ni"],
+      showAs: "index",
+      names: { uk: "UK" },
+      extra: [],
+    },
+  ],
+};
+for (const sector of SECTORS) sector.places = PLACES[sector.key] ?? [];
+
+// Every series a page needs the figures for: its cards, plus anything only the place charts use.
+export const sectorSeries = (sector) => [...sector.series, ...sector.places.flatMap((g) => g.extra)];
+
 export const SECTOR_KEYS = SECTORS.map((x) => x.key);
 export const sectorByKey = (key) => SECTORS.find((x) => x.key === key);
 

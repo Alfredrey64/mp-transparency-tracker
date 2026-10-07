@@ -116,8 +116,8 @@ function AskerRow({ person, rank, max, onOpen }) {
   );
 }
 
-export default function AskedAbout({ onSelectPolitician, onNavigateForMp }) {
-  const [input, setInput] = useState("");
+export default function AskedAbout({ onSelectPolitician, onNavigateForMp, initialTopic = null }) {
+  const [input, setInput] = useState(initialTopic ?? "");
   const [state, setState] = useState({ status: "idle" });
   // Which asker's pop-up is open, and the row that opened it (focus returns there).
   const [open, setOpen] = useState(null);

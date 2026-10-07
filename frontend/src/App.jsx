@@ -115,7 +115,7 @@ function titleForState(view, selected, param) {
   if (selected) return `${selected.name} — ${base}`;
   if (view === "numbers" && param === "lords") return `Parliament in Numbers: the Lords — ${base}`;
   // For the Lords the parameter is a peer's id, which makes a poor title.
-  if (param && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators") return `${param} — ${PAGE_TITLES[view] ?? base} — ${base}`;
+  if (param && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view)) return `${param} — ${PAGE_TITLES[view] ?? base} — ${base}`;
   if (view === "home") return base;
   const label = PAGE_TITLES[view];
   return label ? `${label} — ${base}` : base;
@@ -316,7 +316,7 @@ export default function App() {
             {view === "home" && <Home onBrowse={() => handleNavigate("list")} onNavigate={handleNavigateForBill} onViewProfile={handleViewProfile} mpCount={mpCount} />}
             {view === "appg" && <AppgMemberships />}
             {view === "howitworks" && <HowParliamentWorks />}
-            {view === "voting" && <VotingRecords initialMp={pendingMp} initialBill={pendingBill?.bill_id} />}
+            {view === "voting" && <VotingRecords initialMp={pendingMp} initialBill={pendingBill?.bill_id} initialCategory={viewParam} />}
             {view === "donors" && <DonorsLobbying />}
             {view === "partyFinances" && <PartyFinances />}
             {view === "parties" && <PartyPolicies />}
@@ -346,11 +346,11 @@ export default function App() {
             {view === "followTheMoney" && <FollowTheMoney onSelectPolitician={handleViewProfile} />}
             {view === "watchlist" && <WatchlistDigest onSelectPolitician={handleViewProfile} />}
             {view === "numbers" && <ParliamentNumbers house={viewParam} onNavigate={handleNavigate} />}
-            {view === "topics" && <AskedAbout onSelectPolitician={handleViewProfile} onNavigateForMp={handleNavigateForMp} />}
+            {view === "topics" && <AskedAbout initialTopic={viewParam} onSelectPolitician={handleViewProfile} onNavigateForMp={handleNavigateForMp} />}
             {view === "rebels" && <Rebels onNavigate={handleNavigate} />}
             {view === "offices" && <Offices initialQuery={viewParam} />}
             {view === "councils" && <Councils param={viewParam} />}
-            {SECTOR_VIEWS.has(view) && <SectorPage key={view} sector={view} />}
+            {SECTOR_VIEWS.has(view) && <SectorPage key={view} sector={view} param={viewParam} />}
             {view === "indicators" && <IndicatorTimeline param={viewParam} />}
             {view === "start" && <StartHere onNavigate={handleNavigate} onNavigateForMp={handleNavigateForMp} onViewProfile={handleViewProfile} />}
             {view === "constituency" && <Constituency seat={viewParam} onSelectPolitician={handleViewProfile} />}

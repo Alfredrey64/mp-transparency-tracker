@@ -5,12 +5,14 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { IconGlossary, IconSearch } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
-import { PROCEDURE_TERMS, POLITICS_TERMS } from "../data/glossaryTerms";
+import { PROCEDURE_TERMS, POLITICS_TERMS, STATISTICS_TERMS } from "../data/glossaryTerms";
 
 const TABS = [
   { key: "procedure", label: "Parliamentary Terms", accent: COLORS.accent },
   { key: "politics", label: "Political Terms & Issues", accent: "#6E4B6E" },
+  { key: "statistics", label: "Statistics & economy", accent: "#0E9AA7" },
 ];
+const TERMS_BY_TAB = { procedure: PROCEDURE_TERMS, politics: POLITICS_TERMS, statistics: STATISTICS_TERMS };
 
 function groupByLetter(terms) {
   const groups = [];
@@ -134,7 +136,7 @@ export default function Glossary() {
   const [openTerm, setOpenTerm] = useState(null);
 
   const activeTab = TABS.find((t) => t.key === tab);
-  const activeTerms = tab === "procedure" ? PROCEDURE_TERMS : POLITICS_TERMS;
+  const activeTerms = TERMS_BY_TAB[tab];
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -157,20 +159,23 @@ export default function Glossary() {
         icon={IconGlossary}
         kicker="Glossary"
         title="Jargon buster"
-        subtitle="Every term you will meet on this site and in most UK political news, explained simply. Search, or tap a term to open it."
+        subtitle="Every term you will meet on this site and in most UK political news, explained simply. Pick a group, search, or tap a term to open it. The statistics and economy group covers the figures on the Britain in numbers pages."
       />
 
-      <div style={{ display: "flex", gap: 2, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: 3, marginTop: 24, marginBottom: 20, width: "fit-content" }}>
+      <div style={{ display: "flex", gap: 2, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 24, padding: 3, marginTop: 24, marginBottom: 20, width: "fit-content", maxWidth: "100%", flexWrap: "wrap" }} role="tablist" aria-label="Group of terms">
         {TABS.map((t) => (
           <button
             key={t.key}
+            role="tab"
+            aria-selected={tab === t.key}
             onClick={() => selectTab(t.key)}
             style={{
               position: "relative",
               fontFamily: FONT_BODY,
               fontSize: 13,
               fontWeight: 600,
-              padding: "8px 16px",
+              padding: "10px 16px",
+              minHeight: 40,
               borderRadius: 999,
               border: "none",
               cursor: "pointer",
@@ -183,7 +188,7 @@ export default function Glossary() {
               <motion.span
                 layoutId="glossary-tab-pill"
                 transition={{ type: "spring", stiffness: 500, damping: 38 }}
-                style={{ position: "absolute", inset: 0, background: COLORS.accent, borderRadius: 999, zIndex: 0 }}
+                style={{ position: "absolute", inset: 0, background: t.accent, borderRadius: 999, zIndex: 0 }}
               />
             )}
             <span style={{ position: "relative", zIndex: 1 }}>{t.label}</span>
