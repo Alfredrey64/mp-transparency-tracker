@@ -37,6 +37,16 @@ const h = (id, region, field, rest) => ({ id, hpi: { region, field }, source: HP
 // A line from a table in an ONS crime spreadsheet. `match` finds the row by its label.
 const t = (id, table, match, rest) => ({ id, table: { ...table, match }, source: table.source, yearEnding: true, verb: "were", ...rest });
 
+// Gross annual pay for employees by where they live: the Annual Survey of Hours and Earnings, from Nomis.
+const NOMIS_SOURCE = { name: "Annual Survey of Hours and Earnings, resident analysis (ONS, via Nomis)", url: "https://www.nomisweb.co.uk/datasets/asher" };
+const n = (id, stat, place, rest) => ({ id, nomis: { stat, place }, source: NOMIS_SOURCE, ...rest });
+// stat: Nomis item code. 2 = the median, 6 = the 10th percentile, 15 = the 90th percentile.
+const PAY_STATS = [
+  ["pay", 2, "Median pay", "typical pay", "The pay of the person in the middle: half of employees living in the area earn more, half less."],
+  ["pay-low", 6, "Pay of lower earners", "pay at the low end", "The pay of someone who earns more than only one in ten employees living in the area."],
+  ["pay-high", 15, "Pay of higher earners", "pay at the high end", "The pay of someone who earns more than nine in ten employees living in the area."],
+];
+
 const NHS_SOURCE = { name: "NHS England statistics", url: "https://www.england.nhs.uk/statistics/" };
 const HOME_OFFICE_SOURCE = { name: "Home Office immigration system statistics", url: "https://www.gov.uk/government/collections/migration-statistics" };
 const BOATS_SOURCE = { name: "Home Office: migrants detected crossing the English Channel in small boats", url: "https://www.gov.uk/government/publications/migrants-detected-crossing-the-english-channel-in-small-boats" };
@@ -50,18 +60,18 @@ const POLICE = { sheet: "Table A5a", labelCol: 1, source: { name: "Police record
 
 // The 12 regions and nations the Regions page compares, with the series each one uses.
 export const REGION_ROWS = [
-  { key: "ne", name: "North East", emp: "LF3P", inact: "LF59", hpi: "north-east" },
-  { key: "nw", name: "North West", emp: "LF3Q", inact: "LF5A", hpi: "north-west" },
-  { key: "yh", name: "Yorkshire and the Humber", emp: "LF3R", inact: "LF5B", hpi: "yorkshire-and-the-humber" },
-  { key: "em", name: "East Midlands", emp: "LF3S", inact: "LF5C", hpi: "east-midlands" },
-  { key: "wm", name: "West Midlands", emp: "LF3T", inact: "LF5D", hpi: "west-midlands" },
-  { key: "east", name: "East of England", emp: "LF3U", inact: "LF5E", hpi: "east-of-england" },
-  { key: "london", name: "London", emp: "LF3V", inact: "LF5F", hpi: "london" },
-  { key: "se", name: "South East", emp: "LF3W", inact: "LF5G", hpi: "south-east" },
-  { key: "sw", name: "South West", emp: "LF3X", inact: "LF5H", hpi: "south-west" },
-  { key: "wales", name: "Wales", emp: "LF3Z", inact: "LF5J", hpi: "wales" },
-  { key: "scotland", name: "Scotland", emp: "LF42", inact: "LF5K", hpi: "scotland" },
-  { key: "ni", name: "Northern Ireland", emp: "LF5Z", inact: null, activity: "LF5Y", hpi: "northern-ireland" },
+  { key: "ne", name: "North East", ashe: "North East", emp: "LF3P", inact: "LF59", hpi: "north-east" },
+  { key: "nw", name: "North West", ashe: "North West", emp: "LF3Q", inact: "LF5A", hpi: "north-west" },
+  { key: "yh", name: "Yorkshire and the Humber", ashe: "Yorkshire and The Humber", emp: "LF3R", inact: "LF5B", hpi: "yorkshire-and-the-humber" },
+  { key: "em", name: "East Midlands", ashe: "East Midlands", emp: "LF3S", inact: "LF5C", hpi: "east-midlands" },
+  { key: "wm", name: "West Midlands", ashe: "West Midlands", emp: "LF3T", inact: "LF5D", hpi: "west-midlands" },
+  { key: "east", name: "East of England", ashe: "East", emp: "LF3U", inact: "LF5E", hpi: "east-of-england" },
+  { key: "london", name: "London", ashe: "London", emp: "LF3V", inact: "LF5F", hpi: "london" },
+  { key: "se", name: "South East", ashe: "South East", emp: "LF3W", inact: "LF5G", hpi: "south-east" },
+  { key: "sw", name: "South West", ashe: "South West", emp: "LF3X", inact: "LF5H", hpi: "south-west" },
+  { key: "wales", name: "Wales", ashe: "Wales", emp: "LF3Z", inact: "LF5J", hpi: "wales" },
+  { key: "scotland", name: "Scotland", ashe: "Scotland", emp: "LF42", inact: "LF5K", hpi: "scotland" },
+  { key: "ni", name: "Northern Ireland", ashe: "Northern Ireland", emp: "LF5Z", inact: null, activity: "LF5Y", hpi: "northern-ireland" },
 ];
 
 export const SECTORS = [
@@ -979,6 +989,10 @@ export const SECTORS = [
     custom: true,
     series: [],
     inputs: [
+      ...[...REGION_ROWS, { key: "uk", name: "the UK", ashe: "United Kingdom" }].flatMap((r) => PAY_STATS.map(([prefix, stat, label, short, what]) => n(`${prefix}-${r.key}`, stat, r.ashe, {
+        label: `${r.name}: ${label.toLowerCase()}`, place: r.name, sentenceName: `${label} in ${r.name}`, format: "gbp", kind: "level", nominal: true,
+        explain: `${what} Gross pay over a year before tax, for employees living in ${r.name}, from a survey of employers each April.`, why: `Pay is the main way people share in the economy, and ${short} differs a lot between places.`,
+      }))),
       ...REGION_ROWS.flatMap((r) => [
         s(`emp-${r.key}`, r.emp, "lms", EMPLOYMENT, { label: `${r.name}: employment rate`, place: r.name, sentenceName: `The employment rate in ${r.name}`, format: "pct", kind: "rate", explain: `The share of people aged 16 to 64 in ${r.name} who are in paid work.`, why: "A high employment rate means most working-age people have a job." }),
         r.inact

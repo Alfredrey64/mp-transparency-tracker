@@ -61,6 +61,7 @@ export const LOADERS = {
   business: () => import("./components/SectorPage"),
   regions: () => import("./components/RegionsPage"),
   answers: () => import("./components/AnswersPage"),
+  deprivation: () => import("./components/DeprivationPage"),
   tax: () => import("./components/SectorPage"),
   rates: () => import("./components/SectorPage"),
   indicators: () => import("./components/IndicatorTimeline"),

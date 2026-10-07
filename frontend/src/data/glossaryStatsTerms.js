@@ -87,6 +87,8 @@ export const STATISTICS_TERMS = [
   // Population
   { term: "Mid-Year Population Estimate", def: "The ONS's official estimate of how many people live in each part of the UK on 30 June each year, built from the Census with births, deaths and migration added.", aliases: ["population estimate", "population estimates", "mid-year estimate"] },
   { term: "Net Migration", def: "The number of people moving to live in the UK minus the number moving away, over a year. A positive number means the population is growing from migration.", aliases: ["net international migration"] },
+  { term: "Index of Multiple Deprivation", def: "The government's official ranking of every small neighbourhood in England, from most to least deprived, combining income, work, health, education, crime, housing and living environment. It ranks places against each other: it does not say how badly off anyone is.", aliases: ["indices of deprivation", "deprivation index", "imd"] },
+  { term: "Decile", def: "One of ten equal slices of a ranking. The first decile is the top tenth (here, the most deprived 10% of neighbourhoods) and the tenth is the bottom tenth.", aliases: ["deciles", "tenth"], auto: false },
   { term: "Census", def: "A survey of every household, held every ten years, that gives the most complete picture of who lives where. The latest in England and Wales was in 2021.", auto: false },
   { term: "Fertility Rate", def: "The average number of children a woman would have in her lifetime at current birth rates. About 2.1 is needed for a population to stay stable without migration.", aliases: ["total fertility rate", "birth rate"] },
 

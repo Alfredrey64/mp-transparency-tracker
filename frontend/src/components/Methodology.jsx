@@ -140,6 +140,18 @@ export default function Methodology({ onNavigate }) {
               use="Average house prices for the UK, its nations, the English regions and types of home, from sales recorded by HM Land Registry, Registers of Scotland and Land & Property Services (Northern Ireland). They are shown as published and are not adjusted for inflation unless you switch on &quot;Remove inflation (real terms)&quot;."
             />
             <SourceRow
+              name="Census 2021 and Annual Survey of Hours and Earnings (ONS, via Nomis)"
+              url="https://www.nomisweb.co.uk/"
+              auth="No key required, Open Government Licence v3.0"
+              use="The &quot;Who lives where&quot; map on the Population page: ethnic group, religion, place of birth, age, housing, qualifications, type of work and health for the regions of England and for Wales, from the 2021 Census (a one-off count, so it does not update); and median, lower and higher pay for every region and nation from the yearly Annual Survey of Hours and Earnings, which also feeds the pay map on the Regions page. Scotland and Northern Ireland counted their people in separate censuses with different questions, so the census maps leave them out."
+            />
+            <SourceRow
+              name="English Indices of Deprivation 2025 (Ministry of Housing, Communities and Local Government)"
+              url="https://www.gov.uk/government/statistics/english-indices-of-deprivation-2025"
+              auth="No key required, Open Government Licence v3.0"
+              use="The Deprivation page: how deprived each of England's 33,755 small neighbourhoods is overall and on seven kinds of deprivation, added up here into regions using population estimates, plus the Ministry's own ranking of 296 councils. England only: Scotland, Wales and Northern Ireland have their own indices, which cannot be compared. Published once, so it does not update."
+            />
+            <SourceRow
               name="Crime in England and Wales (ONS, with Home Office figures)"
               url="https://www.ons.gov.uk/peoplepopulationandcommunity/crimeandjustice/datasets/crimeinenglandandwalesappendixtables"
               auth="No key required, Open Government Licence v3.0"

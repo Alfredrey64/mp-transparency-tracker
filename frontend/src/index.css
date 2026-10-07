@@ -475,6 +475,10 @@ select:focus-visible,
   .ons-jump { gap: 6px; }
 }
 
+/* The headline tiles do not move on hover: lifting a tile under a stationary pointer makes it flicker while the page scrolls past. */
+.ons-tile { transition: box-shadow 0.2s ease; }
+.ons-tile:hover, .ons-tile:focus-visible { box-shadow: 0 16px 30px -18px rgba(0, 0, 0, 0.55); }
+
 .ons-cardvalue { text-align: right; }
 @media (max-width: 700px) { .ons-cardvalue { text-align: left; flex: 1 1 100%; } }
 
@@ -537,5 +541,11 @@ select:focus-visible,
 @media (pointer: coarse), (max-width: 700px) { .ons-linkbtn { min-height: 44px; padding-top: 12px; } }
 
 /* Regions page: the map beside the league table on wide screens, stacked on narrow ones. */
-.regions-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 20px; align-items: start; }
-@media (max-width: 900px) { .regions-grid { grid-template-columns: minmax(0, 1fr); } }
+.regions-grid { display: grid; grid-template-columns: minmax(0, 1.9fr) minmax(320px, 1fr); gap: 20px; align-items: start; }
+.regions-wrap { container-type: inline-size; }
+@container (max-width: 940px) { .regions-grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* The map's places and tiles fade in one after another. Plain CSS, not framer-motion, so their fill colours can change freely afterwards. */
+.rm-in { animation: rm-in 0.5s ease-out backwards; animation-delay: calc(var(--i, 0) * 45ms + 50ms); }
+@keyframes rm-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .rm-in { animation: none; } }

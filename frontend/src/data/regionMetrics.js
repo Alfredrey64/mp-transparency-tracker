@@ -24,6 +24,10 @@ const UNEMPLOYMENT = { ne: "unemployment-north-east", nw: "unemployment-north-we
 const own = (prefix) => Object.fromEntries(REGIONS.map((r) => [r.key, { sector: "regions", id: `${prefix}-${r.key}` }]));
 const from = (sector, ids) => Object.fromEntries(Object.entries(ids).map(([k, id]) => [k, { sector, id }]));
 
+// A region's name as it reads in a sentence: "the North East", "London".
+const THE = new Set(["ne", "nw", "em", "wm", "east", "se", "sw"]);
+export const inSentence = (key) => `${THE.has(key) ? "the " : ""}${REGIONS.find((r) => r.key === key)?.name ?? key}`;
+
 export const METRICS = [
   {
     id: "price", label: "House prices", noun: "average house price", format: "gbp", nominal: true, accent: "#2F9E6E",
@@ -36,6 +40,12 @@ export const METRICS = [
     series: own("hpichg"), uk: { sector: "housing", id: "hpi-change" }, link: { href: "#/housing", label: "House prices in detail" },
     blurb: "How much average house prices have changed compared with a year earlier. Press play to see booms and slumps spread, or fail to spread, across the country.",
     why: "Prices tend to rise first in the south and spread outwards, so the map shows where a boom is, and where it has yet to reach.",
+  },
+  {
+    id: "pay", label: "Pay", noun: "typical annual pay", format: "gbp", nominal: true, accent: "#C0478A",
+    series: own("pay"), uk: { sector: "regions", id: "pay-uk" }, link: { href: "#/jobs", label: "Jobs and pay in detail" },
+    blurb: "The pay of the typical employee living in each place, before tax, for a full year. It counts where people live, not where they work, so it includes people who commute into London.",
+    why: "Pay is where regional gaps show up most plainly. The figures change once a year, each April, so the colours step rather than drift.",
   },
   {
     id: "unemployment", label: "Unemployment", noun: "unemployment rate", format: "pct", accent: "#D9453B",

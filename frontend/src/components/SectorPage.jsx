@@ -12,6 +12,7 @@ import { fillKeyPoint } from "../lib/onsKeyPoints";
 import { SECTOR_PROMISES } from "../data/onsPromises";
 import ChartActions from "./ChartActions";
 import CountUp from "./CountUp";
+import PopulationExplorer from "./PopulationExplorer";
 import { sectorByKey, sectorSeries, ONS_SERIES_PAGE, WEEKLY_DEATHS } from "../data/onsSectors";
 import { loadSector, loadDeflator } from "../lib/onsData";
 import { makeDeflator, toReal, canAdjust } from "../lib/onsReal";
@@ -34,6 +35,8 @@ import { IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconH
 
 const ICONS = { economy: IconTrend, prices: IconBasket, jobs: IconBriefcase, publicFinances: IconLedger, population: IconPopulation, health: IconHeartbeat, housing: IconHouse, crime: IconShield, trade: IconGlobe, environment: IconLeaf, tax: IconTaxes, rates: IconRates, immigration: IconMigration, business: IconFactory };
 const RANGES = [{ years: 2, label: "2 years" }, { years: 5, label: "5 years" }, { years: 10, label: "10 years" }, { years: 25, label: "25 years" }, { years: 0, label: "Everything" }];
+// Pages with a bigger interactive card of their own, before the series cards.
+const EXPLORERS = { population: { id: "who-lives-where", label: "Who lives where" } };
 const WHOLE_HISTORY = new Set(["population", "environment", "crime"]);
 const NOW = new Date().getFullYear() + 1;
 
@@ -89,11 +92,11 @@ const Tile = memo(function Tile({ def, item, accent, index }) {
   if (!info) return null;
   return (
     <motion.a
+      className="ons-tile"
       href={`#s-${def.id}`}
       onClick={(e) => { e.preventDefault(); document.getElementById(`s-${def.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
       initial={reduce ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
-      whileHover={reduce ? undefined : { y: -3, transition: { duration: 0.18 } }}
       transition={{ duration: 0.4, delay: Math.min(index, 4) * 0.05, ease: "easeOut" }}
       style={{
         ...card, padding: "20px 22px 0", position: "relative", overflow: "hidden", textDecoration: "none", display: "flex", flexDirection: "column", color: "inherit",
@@ -545,7 +548,7 @@ export default function SectorPage({ sector, param = null }) {
 
   const Icon = ICONS[sector];
   const shown = useMemo(() => (def && loaded ? def.series.filter((s) => loaded.series[s.id]) : []), [def, loaded]);
-  const extraCards = useMemo(() => (def ? [...def.breakdowns.map((x) => ({ id: x.id, label: x.title })), ...(def.mortgage ? [{ id: "mortgage-cost", label: "What a mortgage costs" }] : []), ...def.places.map((g) => ({ id: g.id, label: g.title }))] : []), [def]);
+  const extraCards = useMemo(() => (def ? [...(EXPLORERS[def.key] ? [EXPLORERS[def.key]] : []), ...def.breakdowns.map((x) => ({ id: x.id, label: x.title })), ...(def.mortgage ? [{ id: "mortgage-cost", label: "What a mortgage costs" }] : []), ...def.places.map((g) => ({ id: g.id, label: g.title }))] : []), [def]);
   const hasPromises = Boolean(def && SECTOR_PROMISES[def.key]);
   const jumpIds = useMemo(() => [...extraCards.map((x) => x.id), ...shown.map((s) => s.id), ...(def && SECTOR_PROMISES[def.key] ? ["promises"] : [])], [extraCards, shown, def]);
   const active = useActiveCard(jumpIds);
@@ -617,7 +620,7 @@ export default function SectorPage({ sector, param = null }) {
                   onClick={(e) => { e.preventDefault(); document.getElementById(`s-${s.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
                   aria-current={active === s.id ? "true" : undefined}
                   style={{
-                    fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: active === s.id ? 700 : 600, whiteSpace: "nowrap", textDecoration: "none", padding: "5px 11px", borderRadius: 999,
+                    fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, whiteSpace: "nowrap", textDecoration: "none", padding: "5px 11px", borderRadius: 999,
                     color: active === s.id ? "#fff" : COLORS.inkSoft, background: active === s.id ? def.accent : "transparent", border: `1px solid ${active === s.id ? def.accent : COLORS.hairline}`,
                     transition: "background 0.2s, color 0.2s",
                   }}
@@ -634,6 +637,7 @@ export default function SectorPage({ sector, param = null }) {
           )}
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(480px, 100%), 1fr))", gap: 20, alignItems: "start", marginTop: 8 }}>
+            {def.key === "population" && <PopulationExplorer accent={def.accent} />}
             {def.breakdowns.map((x) => <BreakdownCard key={x.id} spec={x} series={loaded.series} accent={def.accent} />)}
             {def.mortgage && loaded.series[def.mortgage] && <MortgageCard points={loaded.series[def.mortgage].points} accent={def.accent} />}
             {def.places.map((g) => (

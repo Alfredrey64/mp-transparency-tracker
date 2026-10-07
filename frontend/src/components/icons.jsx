@@ -551,6 +551,16 @@ export function IconMap({ size = 17 }) {
   );
 }
 
+export function IconDeprivation({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="13" width="4" height="8" rx="1" />
+      <rect x="10" y="8" width="4" height="13" rx="1" />
+      <rect x="17" y="3" width="4" height="18" rx="1" />
+    </svg>
+  );
+}
+
 export function IconRoute({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">

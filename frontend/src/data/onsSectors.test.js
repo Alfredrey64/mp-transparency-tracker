@@ -32,6 +32,9 @@ describe("Britain in numbers sectors", () => {
           expect(["month", "last", "mean"]).toContain(def.boe.mode);
         } else if (def.hpi) {
           expect(def.hpi.region && def.hpi.field).toBeTruthy();
+        } else if (def.nomis) {
+          expect([2, 6, 15]).toContain(def.nomis.stat);
+          expect(def.nomis.place.length).toBeGreaterThan(1);
         } else if (def.table) {
           expect(def.table.match).toBeInstanceOf(RegExp);
         } else {

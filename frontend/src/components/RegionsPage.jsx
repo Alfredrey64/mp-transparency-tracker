@@ -3,13 +3,14 @@ import { LayoutGroup, motion, useReducedMotion } from "framer-motion";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme";
 import { PageHeader, LoadFailedNote } from "./shared";
 import RegionMap from "./RegionMap";
+import ColourKey from "./RegionKey";
 import { IconMap } from "./icons";
 import geo from "../data/regionMap.json";
 import { REGIONS, METRICS, metricById } from "../data/regionMetrics";
 import { loadSector, loadDeflator } from "../lib/onsData";
 import { makeDeflator, toReal, canAdjust } from "../lib/onsReal";
 import { formatValue, formatAxis, changeBetween, changeShort } from "../lib/onsFormat";
-import { monthlyTimeline, valuesOver, ranked, ordinal, domainOf, fraction, tLabel, rampColour, bandsOf, valueAtPosition } from "../lib/regionData";
+import { monthlyTimeline, valuesOver, ranked, ordinal, domainOf, tLabel, valueAtPosition, niceBands, classOf, classColour } from "../lib/regionData";
 import { card, cardTitle, pillStyle } from "../lib/onsStyles";
 
 // Regions and nations: an interactive, animated map with a league table beside it. Pick a measure,
@@ -92,37 +93,8 @@ function arrowChange(change) {
 
 const chip = (accent) => ({ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, color: COLORS.ink, background: `${accent}1f`, borderRadius: 999, padding: "4px 11px" });
 
-// The colour key: five steps from lowest to highest, with how many places are in each right now.
-function ColourKey({ domain, accent, format, bands, uk, scaleMode }) {
-  return (
-    <div style={{ margin: "16px auto 0", maxWidth: 460 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6, gap: 10 }}>
-        <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.ink }}>Colour key</span>
-        <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, textAlign: "right" }}>{scaleMode === "fixed" ? "Same scale at every date" : "Reset at each date"}</span>
-      </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 4 }}>
-        {bands.map((b, i) => (
-          <div key={i} style={{ minWidth: 0 }}>
-            <div aria-hidden="true" style={{ height: 14, borderRadius: i === 0 ? "7px 3px 3px 7px" : i === 4 ? "3px 7px 7px 3px" : 3, background: rampColour(accent, b.mid) }} />
-            <div style={{ ...numeric, fontSize: 11, color: COLORS.inkSoft, marginTop: 4, lineHeight: 1.25, textAlign: "center", overflowWrap: "anywhere" }}>
-              {i === 0 ? formatAxis(format, b.from) : ""}{i === 0 ? "+" : ""}
-              {i > 0 ? `${formatAxis(format, b.from)}+` : ""}
-            </div>
-            <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.ink, textAlign: "center" }}>{b.count === 0 ? "·" : `${b.count} ${b.count === 1 ? "place" : "places"}`}</div>
-          </div>
-        ))}
-      </div>
-      <div style={{ display: "flex", justifyContent: "space-between", fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 6 }}>
-        <span>Lowest {formatValue(format, domain[0])}</span>
-        {uk !== null && <span>UK {formatValue(format, uk)}</span>}
-        <span>Highest {formatValue(format, domain[1])}</span>
-      </div>
-    </div>
-  );
-}
-
 // Every place, highest first, with how it has moved over the past year.
-function League({ rows, selected, hover, onHover, onSelect, accent, metric, dateLabel, reduce }) {
+function League({ rows, selected, hover, onHover, onSelect, accent, dateLabel, reduce }) {
   return (
     <section aria-labelledby="h-league" style={card}>
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
@@ -130,7 +102,7 @@ function League({ rows, selected, hover, onHover, onSelect, accent, metric, date
         <span style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: accent }}>{dateLabel}</span>
       </div>
       <p style={{ fontFamily: FONT_BODY, fontSize: 13, lineHeight: 1.5, color: COLORS.inkSoft, margin: "6px 0 12px" }}>
-        Highest first, for {metric.noun}. The small figure under each value is the change over the past year, and the arrow by the rank is how many places the region has moved up or down in a year. Tap a row to choose it.
+        Highest first. Under each figure is its change on a year earlier; the arrow by the rank shows places gained or lost in a year.
       </p>
       <LayoutGroup>
         <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 3 }}>
@@ -198,6 +170,20 @@ function Detail({ region, metric, def, values, ukValues, valuesByKey, index, pos
   );
 }
 
+// A row of choices where exactly one is picked.
+function Segmented({ label, value, options, onChange }) {
+  return (
+    <div role="radiogroup" aria-label={label} style={{ display: "inline-flex", flexWrap: "wrap", gap: 6 }}>
+      {options.map((o) => (
+        <button key={o.id} type="button" role="radio" aria-checked={value === o.id} className="ons-chip" title={o.note} style={pillStyle(value === o.id)} onClick={() => onChange(o.id)}>{o.label}</button>
+      ))}
+    </div>
+  );
+}
+
+const fieldLabel = { display: "block", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.ink, marginBottom: 6 };
+const valid = (v) => v !== null && v !== undefined;
+
 export default function RegionsPage({ param }) {
   const reduce = useReducedMotion();
   const [data, setData] = useState(null);
@@ -211,7 +197,7 @@ export default function RegionsPage({ param }) {
   const [selected, setSelected] = useState(null);
   const [hover, setHover] = useState(null);
   const [real, setReal] = useState(false);
-  const [scaleMode, setScaleMode] = useState("fixed");
+  const [scaleMode, setScaleMode] = useState("all");
 
   useEffect(() => {
     let alive = true;
@@ -247,12 +233,12 @@ export default function RegionsPage({ param }) {
   const pos = Math.max(from, Math.min(position ?? last, last));
   const idx = Math.round(pos);
 
-  // The figures at this date (whole months, for the words), and between months (for smooth colour).
+  // The figures at this date, and a year before it.
   const atIdx = useMemo(() => Object.fromEntries(REGIONS.map((r) => [r.key, valuesByKey[r.key]?.[idx] ?? null])), [valuesByKey, idx]);
-  const atPos = Object.fromEntries(REGIONS.map((r) => [r.key, valueAtPosition(valuesByKey[r.key], pos)]));
   const yearBack = useMemo(() => Object.fromEntries(REGIONS.map((r) => [r.key, idx >= 12 ? valuesByKey[r.key]?.[idx - 12] ?? null : null])), [valuesByKey, idx]);
   const windowDomain = useMemo(() => domainOf(Object.fromEntries(Object.entries(valuesByKey).map(([k, list]) => [k, list.slice(from)]))), [valuesByKey, from]);
-  const domain = scaleMode === "fixed" ? windowDomain : domainOf(Object.fromEntries(Object.entries(atPos).map(([k, v]) => [k, [v]])));
+  const domain = scaleMode === "all" ? windowDomain : domainOf(Object.fromEntries(Object.entries(atIdx).map(([k, v]) => [k, [v]])));
+  const { bounds } = useMemo(() => niceBands(domain[0], domain[1], 6), [domain]);
   const def = series?.byRegion[REGIONS[0].key]?.def;
   const canReal = Boolean(def && canAdjust(def));
 
@@ -282,19 +268,18 @@ export default function RegionsPage({ param }) {
 
   if (failed) return <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}><LoadFailedNote item="the regional figures" /></div>;
 
-  const valid = (v) => v !== null && v !== undefined;
-  const colour = (key) => (valid(atPos[key]) ? rampColour(accent, fraction(atPos[key], domain)) : COLORS.hairline);
+  const nClasses = bounds.length - 1;
+  const colour = (key) => (valid(atIdx[key]) ? classColour(accent, classOf(atIdx[key], bounds), nClasses) : COLORS.hairline);
   const text = (key) => (valid(atIdx[key]) ? formatValue(metric.format, atIdx[key]) : "n/a");
+  const deltas = Object.fromEntries(REGIONS.map((r) => [r.key, valid(yearBack[r.key]) && valid(atIdx[r.key]) ? arrowChange(changeBetween(def, yearBack[r.key], atIdx[r.key])) : ""]));
 
   const order = ranked(atIdx);
   const orderBefore = ranked(yearBack);
   const league = order.map(({ key, rank }) => {
     const r = REGIONS.find((x) => x.key === key);
     const before = orderBefore.find((o) => o.key === key)?.rank ?? rank;
-    const c = valid(yearBack[key]) ? changeBetween(def, yearBack[key], atIdx[key]) : null;
-    return { key, rank, name: r.name, text: text(key), colour: colour(key), moved: before - rank, change: arrowChange(c), direction: c ? Math.sign(c.amount) : 0 };
+    return { key, rank, name: r.name, text: text(key), colour: colour(key), moved: before - rank, change: deltas[key] };
   });
-  const bands = bandsOf(atPos, domain, 5);
   const shown = hover ?? selected ?? order[0]?.key ?? "london";
   const shownRegion = REGIONS.find((r) => r.key === shown);
   const glance = order.length > 1
@@ -317,10 +302,11 @@ export default function RegionsPage({ param }) {
     const months = WINDOWS.find((w) => w.id === id).months;
     setPosition(months === null ? 0 : Math.max(0, last - months));
   }
+  const select = (k) => setSelected((cur) => (cur === k ? null : k));
 
   return (
-    <div style={{ maxWidth: 1180, margin: "0 auto", padding: PAGE_PADDING }}>
-      <PageHeader icon={IconMap} title="Regions and nations" subtitle="How the 12 regions and nations of the UK compare. Pick a measure, then press play to watch it change, or tap a place to see it up close." maxWidth={780} />
+    <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
+      <PageHeader icon={IconMap} title="Regions and nations" subtitle="How the 12 regions and nations of the UK compare. Pick a measure, press play to watch it change, and tap a place to see it up close." maxWidth={780} />
 
       {!data && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>Loading…</div>}
 
@@ -337,45 +323,34 @@ export default function RegionsPage({ param }) {
             ))}
           </div>
 
-          <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.55, color: COLORS.ink, margin: "0 0 4px", maxWidth: 760 }}>{metric.blurb}</p>
-          <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "0 0 14px", maxWidth: 760 }}>{metric.why}</p>
+          <p style={{ fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.55, color: COLORS.ink, margin: "0 0 4px", maxWidth: 800 }}>{metric.blurb}</p>
+          <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "0 0 18px", maxWidth: 800 }}>{metric.why}</p>
 
-          <ol aria-label="How to use this page" style={{ listStyle: "none", margin: "0 0 16px", padding: 0, display: "flex", flexWrap: "wrap", gap: "8px 18px" }}>
-            {["Pick a measure above", "Press play, or drag the date", "Hover, tap or tab to a place, or use the league table"].map((step, i) => (
-              <li key={step} style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
-                <span aria-hidden="true" style={{ width: 22, height: 22, borderRadius: 11, background: accent, color: "#fff", fontSize: 12, fontWeight: 700, display: "grid", placeItems: "center", flexShrink: 0 }}>{i + 1}</span>
-                {step}
-              </li>
-            ))}
-          </ol>
-          {glance && (
-            <p style={{ fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.55, color: COLORS.ink, margin: "0 0 16px", maxWidth: 760 }} aria-live="polite">
-              In {tLabel(timeline[idx])}, <strong>{glance.high.name}</strong> had the highest {metric.noun} ({formatValue(metric.format, glance.high.value)}) and <strong>{glance.low.name}</strong> the lowest ({formatValue(metric.format, glance.low.value)}).
-            </p>
-          )}
-
+          <div className="regions-wrap">
           <div className="regions-grid">
-            <section aria-label="Map" style={{ ...card, background: `radial-gradient(520px 320px at 50% 0%, ${accent}1f, transparent 70%), ${COLORS.paperCard}`, minWidth: 0 }}>
-              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "8px 14px", marginBottom: 10 }}>
-                <div role="radiogroup" aria-label="Map style" style={{ display: "inline-flex", gap: 6 }}>
-                  <button type="button" role="radio" aria-checked={view === "map"} className="ons-chip" style={pillStyle(view === "map")} onClick={() => setView("map")}>Map</button>
-                  <button type="button" role="radio" aria-checked={view === "tiles"} className="ons-chip" style={pillStyle(view === "tiles")} onClick={() => setView("tiles")}>Equal tiles</button>
-                </div>
-                <div style={{ ...numeric, fontFamily: FONT_DISPLAY, fontSize: 24, fontWeight: 700, color: COLORS.ink }} aria-hidden="true">{tLabel(timeline[idx])}</div>
+            <section aria-label="Map" style={{ ...card, background: `radial-gradient(560px 340px at 50% 0%, ${accent}1f, transparent 70%), ${COLORS.paperCard}`, minWidth: 0 }}>
+              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "8px 14px", marginBottom: 6 }}>
+                <Segmented label="Map style" value={view} onChange={setView} options={[{ id: "map", label: "Map" }, { id: "tiles", label: "Equal tiles" }]} />
+                <div style={{ ...numeric, fontFamily: FONT_DISPLAY, fontSize: 26, fontWeight: 700, color: COLORS.ink }} aria-hidden="true">{tLabel(timeline[idx])}</div>
               </div>
+              {glance && (
+                <p style={{ fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.5, color: COLORS.ink, margin: "6px 0 8px" }} aria-live="polite">
+                  <strong>{glance.high.name}</strong> is highest ({formatValue(metric.format, glance.high.value)}) and <strong>{glance.low.name}</strong> lowest ({formatValue(metric.format, glance.low.value)}).
+                </p>
+              )}
 
               <RegionMap
-                regions={REGIONS} view={view} fill={colour} valueText={text} accent={accent} smooth={!playing}
+                regions={REGIONS} view={view} fill={colour} valueText={text} deltaText={(k) => deltas[k]} accent={accent} smooth
                 a11yLabel={(k) => `${REGIONS.find((r) => r.key === k).name}: ${text(k)}`}
-                selected={selected} hover={hover} onHover={setHover} onSelect={(k) => setSelected((cur) => (cur === k ? null : k))}
+                selected={selected} hover={hover} onHover={setHover} onSelect={select}
               />
 
-              <ColourKey domain={domain} accent={accent} format={metric.format} bands={bands} uk={valid(ukValues[idx]) ? ukValues[idx] : null} scaleMode={scaleMode} />
+              <ColourKey bounds={bounds} accent={accent} format={metric.format} uk={valid(ukValues[idx]) ? ukValues[idx] : null} caption={scaleMode === "all" ? "Same colours at every date, so you can watch the country change" : "Colours reset at each date, to rank the places"} />
 
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 18 }}>
                 <button
                   type="button" className="ons-tap" onClick={() => (playing ? setPlaying(false) : startPlay())}
-                  style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: "#fff", background: accent, border: "none", borderRadius: 10, padding: "9px 16px", minWidth: 96, cursor: "pointer", flexShrink: 0 }}
+                  style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: "#fff", background: accent, border: "none", borderRadius: 10, padding: "9px 16px", minWidth: 100, cursor: "pointer", flexShrink: 0 }}
                 >
                   {playing ? "Pause" : pos >= last - 0.5 ? "Play again" : "Play"}
                 </button>
@@ -387,18 +362,13 @@ export default function RegionsPage({ param }) {
                 <button type="button" className="ons-tap" aria-label="Forward one year" title="Forward one year" onClick={() => jump(idx + 12)} style={stepButton}>+1 yr</button>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(220px, 100%), 1fr))", gap: "10px 18px", marginTop: 14 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(210px, 100%), 1fr))", gap: "12px 20px", marginTop: 16 }}>
                 <div>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.ink, marginBottom: 6 }}>Speed of time</div>
-                  <div role="radiogroup" aria-label="Speed of time" style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                    {SPEEDS.map((s) => (
-                      <button key={s.id} type="button" role="radio" aria-checked={speedId === s.id} className="ons-chip" title={s.note} style={pillStyle(speedId === s.id)} onClick={() => setSpeedId(s.id)}>{s.label}</button>
-                    ))}
-                  </div>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 5 }}>{speed.note}</div>
+                  <span style={fieldLabel} id="regions-speed-label">Speed of time: {speed.note}</span>
+                  <Segmented label="Speed of time" value={speedId} onChange={setSpeedId} options={SPEEDS.map((s) => ({ id: s.id, label: s.label, note: s.note }))} />
                 </div>
                 <div>
-                  <label htmlFor="regions-window" style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.ink, marginBottom: 6 }}>Show</label>
+                  <label htmlFor="regions-window" style={fieldLabel}>Period to play</label>
                   <select
                     id="regions-window" className="ons-chip" value={windowId} onChange={(e) => pickWindow(e.target.value)}
                     style={{ fontFamily: FONT_BODY, fontSize: 14, padding: "8px 10px", borderRadius: 10, border: `1px solid ${COLORS.hairline}`, background: COLORS.paper, color: COLORS.ink, width: "100%", maxWidth: 260 }}
@@ -406,29 +376,29 @@ export default function RegionsPage({ param }) {
                     {WINDOWS.map((w) => <option key={w.id} value={w.id}>{w.label}</option>)}
                   </select>
                 </div>
+                <div>
+                  <span style={fieldLabel}>Colours compare</span>
+                  <Segmented label="Colours compare" value={scaleMode} onChange={setScaleMode} options={[{ id: "all", label: "All dates" }, { id: "date", label: "This date only" }]} />
+                </div>
               </div>
 
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "2px 22px", marginTop: 10 }}>
-                <Switch on={scaleMode === "date"} onChange={(on) => setScaleMode(on ? "date" : "fixed")}>Compare places at this date</Switch>
-                <Switch on={real} onChange={setReal} disabled={!canReal} hint="Only money amounts, such as house prices, have inflation to take out.">{TOGGLE}</Switch>
+              <div style={{ marginTop: 10 }}>
+                <Switch on={real} onChange={setReal} disabled={!canReal} hint="Only money amounts, such as house prices and pay, have inflation to take out.">{TOGGLE}</Switch>
               </div>
-              <p style={{ fontFamily: FONT_BODY, fontSize: 12, lineHeight: 1.5, color: COLORS.inkSoft, margin: "6px 0 0" }}>
-                {scaleMode === "fixed" ? "Colours use one scale for every date shown, so you can see the whole country change." : "Colours are reset at each date, so the map shows which places are highest and lowest then."}
-                {" "}Jobs figures are for the three months ending at the date shown.
-              </p>
             </section>
 
             <div style={{ display: "grid", gap: 20, alignContent: "start", minWidth: 0 }}>
-              <League rows={league} selected={selected} hover={hover} onHover={setHover} onSelect={(k) => setSelected((cur) => (cur === k ? null : k))} accent={accent} metric={metric} dateLabel={tLabel(timeline[idx])} reduce={reduce} />
+              <League rows={league} selected={selected} hover={hover} onHover={setHover} onSelect={select} accent={accent} dateLabel={tLabel(timeline[idx])} reduce={reduce} />
               <Detail
                 region={shownRegion} metric={metric} def={def} values={valuesByKey[shown] ?? []} ukValues={ukValues} valuesByKey={valuesByKey}
                 index={idx} position={pos} from={from} timeline={timeline} accent={accent} onScrub={jump}
               />
             </div>
           </div>
+          </div>
 
-          <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.6, color: COLORS.inkSoft, marginTop: 24, maxWidth: 780 }}>
-            House prices are from the UK House Price Index (HM Land Registry with the ONS and others). Jobs figures are from the ONS Labour Force Survey, a sample survey, so differences between regions of a point or two may be noise. Outlines: {geo.attribution} The map shows regions, not the differences inside them: your own area can be very different from its region&apos;s average.
+          <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.6, color: COLORS.inkSoft, marginTop: 24, maxWidth: 800 }}>
+            House prices are from the UK House Price Index (HM Land Registry with the ONS and others). Jobs figures are from the ONS Labour Force Survey, a sample survey, so differences between regions of a point or two may be noise; they are for the three months ending at the date shown. Pay is from the ONS Annual Survey of Hours and Earnings, each April. Outlines: {geo.attribution} The map shows regions, not the differences inside them: your own area can be very different from its region&apos;s average.
           </p>
         </>
       )}

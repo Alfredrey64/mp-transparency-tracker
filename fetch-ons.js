@@ -198,6 +198,40 @@ async function fetchBoe(def) {
   return { freq: "months", title: def.label, updated: null, points: points.slice(-KEEP.months) };
 }
 
+// --- Pay by region: the Annual Survey of Hours and Earnings, from Nomis (ONS) ---
+
+let nomisPay;
+
+// Median and the 10th/90th percentile of gross annual pay for employees, by where they live, for every
+// region and nation in one request each. Saved as April of each year, when the survey is taken.
+async function nomisAshe(stat) {
+  nomisPay ??= new Map();
+  if (!nomisPay.has(stat)) {
+    const years = Array.from({ length: new Date().getFullYear() - 1996 }, (_, i) => 1997 + i).join(",");
+    const url = `https://www.nomisweb.co.uk/api/v01/dataset/NM_30_1.data.csv?geography=TYPE480,TYPE499&date=${years}&sex=7&item=${stat}&pay=7&measures=20100&select=date_name,geography_name,obs_value`;
+    const res = await fetch(url, { headers: HEADERS });
+    if (!res.ok) throw new Error(`Nomis pay: HTTP ${res.status}`);
+    const byPlace = new Map();
+    for (const line of (await res.text()).trim().split(/\r?\n/).slice(1)) {
+      const m = /^"(\d{4})","([^"]+)",(-?[\d.]+)$/.exec(line.trim());
+      if (!m) continue;
+      const place = m[2].toLowerCase();
+      if (!byPlace.has(place)) byPlace.set(place, []);
+      byPlace.get(place).push([`${m[1]}-04`, Number(m[3])]);
+    }
+    // Some places appear under both the regions and the countries, so keep one reading per year.
+    for (const [place, points] of byPlace) byPlace.set(place, [...new Map(points).entries()].sort((a, b) => a[0].localeCompare(b[0])));
+    nomisPay.set(stat, byPlace);
+  }
+  return nomisPay.get(stat);
+}
+
+async function fetchNomis(def) {
+  const points = (await nomisAshe(def.nomis.stat)).get(def.nomis.place.toLowerCase());
+  if (!points || points.length < 5) throw new Error(`${def.id}: no pay figures for ${def.nomis.place}`);
+  return { freq: "months", title: def.label, updated: null, points };
+}
+
 // Deaths registered each week in England and Wales (England plus Wales), for
 // this year and last, so a page can compare the two.
 async function fetchWeeklyDeaths() {
@@ -267,10 +301,10 @@ async function main() {
 
     for (const def of sectorSeries(sector)) {
       if (def.derive) continue; // worked out in the browser
-      const key = def.feed ? `feed|${def.feed}` : def.boe ? `boe|${def.boe.code}|${def.boe.mode}` : def.hpi ? `hpi|${def.hpi.region}|${def.hpi.field}` : def.table ? `table|${def.table.sheet}|${def.id}` : `${def.path}|${def.cdid}|${def.dataset}`;
+      const key = def.feed ? `feed|${def.feed}` : def.boe ? `boe|${def.boe.code}|${def.boe.mode}` : def.nomis ? `nomis|${def.nomis.stat}|${def.nomis.place}` : def.hpi ? `hpi|${def.hpi.region}|${def.hpi.field}` : def.table ? `table|${def.table.sheet}|${def.id}` : `${def.path}|${def.cdid}|${def.dataset}`;
       try {
         if (!cache.has(key)) {
-          cache.set(key, def.feed ? { title: def.label, ...(await fetchFeed(def.feed)) } : def.boe ? await fetchBoe(def) : def.hpi ? await fetchHpi(def) : def.table ? await fetchTable(def) : await fetchSeries(def));
+          cache.set(key, def.feed ? { title: def.label, ...(await fetchFeed(def.feed)) } : def.boe ? await fetchBoe(def) : def.nomis ? await fetchNomis(def) : def.hpi ? await fetchHpi(def) : def.table ? await fetchTable(def) : await fetchSeries(def));
           await sleep(250);
         }
         out.series[def.id] = cache.get(key);

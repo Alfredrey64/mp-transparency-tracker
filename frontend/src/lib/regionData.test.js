@@ -70,3 +70,27 @@ describe("map colours and key", () => {
     expect(valueAtPosition([], 1)).toBeNull();
   });
 });
+
+import { niceBands, classOf, classColour } from "./regionData";
+
+describe("whole-number colour classes", () => {
+  it("picks round edges that cover the range", () => {
+    expect(niceBands(2.3, 7.9).bounds).toEqual([2, 3, 4, 5, 6, 7, 8]);
+    expect(niceBands(48000, 552000).bounds).toEqual([0, 100000, 200000, 300000, 400000, 500000, 600000]);
+    expect(niceBands(0, 1).bounds[0]).toBe(0);
+    expect(niceBands(5, 5).bounds.length).toBe(2);
+  });
+
+  it("puts values in classes and leaves gaps out", () => {
+    const { bounds } = niceBands(2, 8);
+    expect(classOf(2, bounds)).toBe(0);
+    expect(classOf(3, bounds)).toBe(1);
+    expect(classOf(8, bounds)).toBe(bounds.length - 2);
+    expect(classOf(null, bounds)).toBe(-1);
+  });
+
+  it("gives every class its own colour", () => {
+    const colours = Array.from({ length: 6 }, (_, i) => classColour("#2F9E6E", i, 6));
+    expect(new Set(colours).size).toBe(6);
+  });
+});

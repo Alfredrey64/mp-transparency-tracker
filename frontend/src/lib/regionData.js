@@ -104,3 +104,48 @@ export function valueAtPosition(values, position) {
   if (b === null || b === undefined) return a;
   return a + (b - a) * (p - i);
 }
+
+// ---------------------------------------------------------------------------
+// Whole-number colour classes
+//
+// The map is coloured in a handful of classes with round-number edges (0 to 100k, 100k to 200k, ...)
+// rather than a smooth fade, so a region visibly steps from one colour to the next as its figure
+// crosses a line, and the key can say exactly where the lines are.
+
+// Round-number class edges that cover [lo, hi] in about `target` classes: { bounds: [b0, b1, ...], step }.
+export function niceBands(lo, hi, target = 6) {
+  if (!Number.isFinite(lo) || !Number.isFinite(hi)) return { bounds: [0, 1], step: 1 };
+  if (hi - lo < 1e-9) {
+    const step = Math.abs(hi) >= 1 ? 1 : 0.1;
+    const start = Math.floor(lo / step) * step;
+    return { bounds: [start, start + step], step };
+  }
+  const raw = (hi - lo) / target;
+  const mag = 10 ** Math.floor(Math.log10(raw));
+  const step = [1, 2, 5, 10].map((m) => m * mag).find((x) => x >= raw - 1e-12) ?? 10 * mag;
+  const start = Math.floor(lo / step + 1e-9) * step;
+  const bounds = [];
+  for (let b = start, i = 0; i < 40; i++, b = start + i * step) {
+    bounds.push(Number(b.toPrecision(12)));
+    if (b >= hi - 1e-9) break;
+  }
+  return { bounds, step };
+}
+
+// Which class a value falls in (0 is the lowest). The top edge belongs to the top class.
+export function classOf(v, bounds) {
+  if (v === null || v === undefined || Number.isNaN(v)) return -1;
+  const last = bounds.length - 2;
+  for (let i = 0; i <= last; i++) if (v < bounds[i + 1]) return Math.max(0, i);
+  return last;
+}
+
+// The colour of one class out of `n`: from nearly white, through the metric's own colour, to a deep shade.
+// Each step is well apart from its neighbours so the map reads at a glance.
+export function classColour(accent, i, n) {
+  const t = n <= 1 ? 1 : Math.max(0, Math.min(1, i / (n - 1)));
+  const pale = `color-mix(in oklab, ${accent} 14%, #ffffff)`;
+  const deep = `color-mix(in oklab, ${accent} 52%, #000000)`;
+  if (t <= 0.55) return `color-mix(in oklab, ${accent} ${Math.round((t / 0.55) * 100)}%, ${pale})`;
+  return `color-mix(in oklab, ${deep} ${Math.round(((t - 0.55) / 0.45) * 100)}%, ${accent})`;
+}
