@@ -7,6 +7,8 @@ import PlacesChart from "./PlacesChart";
 import BreakdownCard from "./BreakdownCard";
 import MortgageCard from "./MortgageCard";
 import PromisesCard from "./PromisesCard";
+import { KEY_POINTS } from "../data/onsKeyPoints";
+import { fillKeyPoint } from "../lib/onsKeyPoints";
 import { SECTOR_PROMISES } from "../data/onsPromises";
 import ChartActions from "./ChartActions";
 import CountUp from "./CountUp";
@@ -426,6 +428,41 @@ function useActiveCard(ids) {
   return active;
 }
 
+// The three or four things to take away, in plain English, filled in from the latest figures.
+function KeyPoints({ sector, series, accent, skip }) {
+  const all = KEY_POINTS[sector] ?? [];
+  // The big figure at the top already says the first one, so leave it out when there are enough others.
+  const list = all.length > 3 ? all.filter((k) => k.series !== skip) : all;
+  const points = list
+    .map((k) => {
+      const item = series[k.series];
+      const parts = item ? fillKeyPoint(k.text, item.def, item.points) : null;
+      return parts ? { id: k.series, parts } : null;
+    })
+    .filter(Boolean);
+  if (!points.length) return null;
+  const jump = (id) => document.getElementById(`s-${id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  return (
+    <section aria-labelledby="h-key-points" style={{ ...card, marginTop: 18, position: "relative", overflow: "hidden" }}>
+      <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `linear-gradient(180deg, ${accent}, ${accent}22)` }} />
+      <h2 id="h-key-points" style={cardTitle}>The key points</h2>
+      <ol style={{ listStyle: "none", margin: "14px 0 0", padding: 0, display: "grid", gap: 12 }}>
+        {points.map((p, i) => (
+          <li key={p.id} style={{ display: "grid", gridTemplateColumns: "28px 1fr", gap: 12, alignItems: "start" }}>
+            <span aria-hidden="true" style={{ width: 26, height: 26, borderRadius: 13, background: accent, color: "#fff", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, display: "grid", placeItems: "center", marginTop: 1 }}>{i + 1}</span>
+            <div style={{ minWidth: 0 }}>
+              <p style={{ fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.55, color: COLORS.ink, margin: 0 }}>
+                {p.parts.map((part, j) => (part.strong ? <strong key={j} style={{ fontWeight: 800 }}>{part.text}</strong> : <span key={j}>{part.text}</span>))}
+              </p>
+              <button type="button" className="ons-linkbtn" onClick={() => jump(p.id)} style={{ color: COLORS.inkSoft }}>See the chart</button>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
 // Where these figures meet Parliament: who is asking ministers about the topic, how MPs
 // have voted on bills in the area, and related pages on this site.
 function InParliament({ sector, accent }) {
@@ -550,6 +587,8 @@ export default function SectorPage({ sector, param = null }) {
               {spotlight && <Spotlight def={spotlight} item={loaded.series[spotlight.id]} accent={def.accent} />}
             </div>
           </motion.div>
+
+          <KeyPoints sector={def.key} series={loaded.series} accent={def.accent} skip={spotlight?.id} />
 
           <div className="ons-noprint" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(250px, 100%), 1fr))", gap: 16, marginTop: 18 }}>
             {tiles.slice(1).map((s, i) => <Tile key={s.id} def={s} item={loaded.series[s.id]} accent={def.accent} index={i} />)}

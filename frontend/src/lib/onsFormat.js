@@ -144,14 +144,20 @@ export function changeWords(change) {
   return change.type === "points" ? `${dir} ${n} ${unit} on a year earlier` : `${dir} ${n}% on a year earlier`;
 }
 
+// When a figure is for, as it follows a value in a sentence: "in August 2026", "in the year to
+// March 2026", "as at June 2026".
+export function whenPhrase(def, period) {
+  const when = def.yearEnding ? `the year to ${yearEndLabel(period)}` : `${def.labelPrefix ?? ""}${periodInSentence(period)}`;
+  return `${def.timeWord ?? "in"} ${when}`;
+}
+
 // One plain sentence, e.g. "Inflation (CPI) was 3.1% in August 2026, up 0.3 percentage points on a year earlier."
 export function sentenceFor(def, points) {
   const info = latestInfo(def, points);
   if (!info) return "";
   const words = changeWords(info.change);
   const verb = def.verb ?? "was";
-  const when = def.yearEnding ? `the year to ${yearEndLabel(info.period)}` : `${def.labelPrefix ?? ""}${periodInSentence(info.period)}`;
-  const head = `${def.sentenceName ?? def.label} ${verb} ${formatValue(def.format, info.value)} ${def.timeWord ?? "in"} ${when}`;
+  const head = `${def.sentenceName ?? def.label} ${verb} ${formatValue(def.format, info.value)} ${whenPhrase(def, info.period)}`;
   return words ? `${head}, ${words}.` : `${head}.`;
 }
 

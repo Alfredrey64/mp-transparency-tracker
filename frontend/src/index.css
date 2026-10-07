@@ -457,7 +457,7 @@ select:focus-visible,
 .ons-toolbar { background: color-mix(in srgb, var(--c-paper) 96%, transparent); z-index: 12; }
 .ons-jump { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; scroll-snap-type: x proximity; }
 .ons-jump > a { scroll-snap-align: start; flex: none; max-width: 240px; overflow: hidden; text-overflow: ellipsis; }
-@media (min-width: 900px) {
+@media (min-width: 900px) and (min-height: 680px) {
   .ons-toolbar { position: sticky; top: 0; }
 }
 
@@ -493,7 +493,7 @@ select:focus-visible,
 
 /* Cards a link jumps to stop below the sticky range bar on wide screens. */
 .ons-anchor { scroll-margin-top: 24px; }
-@media (min-width: 900px) { .ons-anchor { scroll-margin-top: 190px; } }
+@media (min-width: 900px) and (min-height: 680px) { .ons-anchor { scroll-margin-top: 190px; } }
 
 /* Keyboard users can jump past the sidebar; the main region takes focus quietly when the page changes. */
 .skip-link {
@@ -518,3 +518,20 @@ select:focus-visible,
   svg circle { opacity: 1 !important; }
   a { text-decoration: none; }
 }
+
+/* "Out of every £1": 100 squares, one per penny. Hover only changes opacity, and the entrance is a
+   one-off CSS animation, so nothing re-animates (and nothing jumps) when you move the pointer. */
+.bd-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; width: 100%; max-width: 300px; margin: 0 auto; }
+.bd-sq { aspect-ratio: 1; border-radius: 4px; opacity: 1; transition: opacity 0.18s ease; }
+.bd-grid:not([data-in="1"]) .bd-sq { opacity: 0; }
+.bd-grid[data-in="1"] .bd-sq { animation: bd-pop 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.15) backwards; }
+@keyframes bd-pop { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: scale(1); } }
+.bd-grid[data-active] .bd-sq { opacity: 0.18; }
+.bd-grid[data-active="0"] .bd-sq[data-row="0"], .bd-grid[data-active="1"] .bd-sq[data-row="1"], .bd-grid[data-active="2"] .bd-sq[data-row="2"],
+.bd-grid[data-active="3"] .bd-sq[data-row="3"], .bd-grid[data-active="4"] .bd-sq[data-row="4"], .bd-grid[data-active="5"] .bd-sq[data-row="5"],
+.bd-grid[data-active="6"] .bd-sq[data-row="6"], .bd-grid[data-active="7"] .bd-sq[data-row="7"] { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .bd-grid[data-in="1"] .bd-sq { animation: none; } }
+
+/* A small text-style button: "See the chart". Big enough to tap, quiet enough to read around. */
+.ons-linkbtn { background: none; border: none; padding: 8px 0 0; font-family: 'Archivo', system-ui, sans-serif; font-size: 13px; font-weight: 600; line-height: 1.2; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; min-height: 32px; }
+@media (pointer: coarse), (max-width: 700px) { .ons-linkbtn { min-height: 44px; padding-top: 12px; } }

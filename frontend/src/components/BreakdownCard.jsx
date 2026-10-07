@@ -29,7 +29,7 @@ function BreakdownCard({ spec, series, accent }) {
     { key: "other", label: spec.otherLabel, value: result.other.value, pence: result.other.pence, color: OTHER },
   ];
   // One colour per square, in order: the biggest parts first, as listed.
-  const squares = rows.flatMap((r, i) => Array.from({ length: r.pence }, () => i));
+  const squareEls = rows.flatMap((r, i) => Array.from({ length: r.pence }, () => i));
   const top = rows.filter((r) => r.key !== "other").sort((a, b) => b.pence - a.pence)[0];
 
   return (
@@ -50,22 +50,14 @@ function BreakdownCard({ spec, series, accent }) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))", gap: "22px 36px", alignItems: "center" }}>
         <div
           aria-hidden="true"
-          style={{ display: "grid", gridTemplateColumns: "repeat(10, 1fr)", gap: 4, width: "100%", maxWidth: 300, margin: "0 auto" }}
-          onPointerLeave={() => setHover(null)}
+          className="bd-grid"
+          data-in={inView || reduce ? "1" : undefined}
+          data-active={hover === null ? undefined : hover}
+          onPointerLeave={(e) => { if (e.pointerType !== "touch") setHover(null); }}
         >
-          {squares.map((rowIndex, i) => {
-            const dim = hover !== null && hover !== rowIndex;
-            return (
-              <motion.span
-                key={i}
-                style={{ aspectRatio: "1", borderRadius: 4, background: rows[rowIndex].color, opacity: dim ? 0.18 : 1, transition: "opacity 0.15s" }}
-                initial={reduce ? false : { scale: 0, opacity: 0 }}
-                animate={inView || reduce ? { scale: 1, opacity: dim ? 0.18 : 1 } : { scale: 0, opacity: 0 }}
-                transition={{ delay: reduce ? 0 : 0.15 + i * 0.008, type: "spring", stiffness: 380, damping: 22 }}
-                onPointerEnter={() => setHover(rowIndex)}
-              />
-            );
-          })}
+          {squareEls.map((el, i) => (
+            <span key={i} className="bd-sq" data-row={el} style={{ background: rows[el].color, animationDelay: `${i * 7}ms` }} onPointerEnter={(e) => { if (e.pointerType !== "touch") setHover(el); }} onPointerDown={(e) => { if (e.pointerType === "touch") setHover((h) => (h === el ? null : el)); }} />
+          ))}
         </div>
 
         <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 2 }}>
@@ -73,8 +65,9 @@ function BreakdownCard({ spec, series, accent }) {
             <li key={r.key}>
               <div
                 tabIndex={0}
-                onPointerEnter={() => setHover(i)}
-                onPointerLeave={() => setHover(null)}
+                onPointerEnter={(e) => { if (e.pointerType !== "touch") setHover(i); }}
+                onPointerLeave={(e) => { if (e.pointerType !== "touch") setHover(null); }}
+                onPointerDown={(e) => { if (e.pointerType === "touch") setHover((h) => (h === i ? null : i)); }}
                 onFocus={() => setHover(i)}
                 onBlur={() => setHover(null)}
                 style={{ display: "grid", gridTemplateColumns: "14px 1fr auto", gap: 12, alignItems: "center", padding: "9px 8px", borderRadius: 10, background: hover === i ? `${r.color}1f` : "transparent", transition: "background 0.15s", outlineOffset: -2 }}

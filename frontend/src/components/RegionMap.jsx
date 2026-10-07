@@ -58,7 +58,7 @@ function RegionMap({ regions, view, fill, valueText, a11yLabel, selected, hover,
   return (
     <div data-map-box style={{ position: "relative" }}>
       {view === "map" ? (
-        <svg viewBox={`0 0 ${geo.width} ${geo.height}`} width="100%" style={{ display: "block", maxHeight: 640, margin: "0 auto", overflow: "visible" }} role="group" aria-label="Map of the regions and nations of the UK">
+        <svg viewBox={`0 0 ${geo.width} ${geo.height}`} width="100%" style={{ display: "block", maxHeight: "min(640px, 80vh)", margin: "0 auto", overflow: "visible" }} role="group" aria-label="Map of the regions and nations of the UK">
           <g>
             {geo.regions.map((r, i) => (
               <motion.path
@@ -78,9 +78,11 @@ function RegionMap({ regions, view, fill, valueText, a11yLabel, selected, hover,
             {/* London is tiny at this scale, so it also gets a marker you can actually hit. */}
             <motion.g initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7, duration: 0.5 }}>
               <circle
-                cx={LONDON.cx} cy={LONDON.cy} r="15" {...handlers("london")}
-                style={{ fill: fill("london"), stroke: outline("london"), strokeWidth: selected === "london" ? 3 : 2, cursor: "pointer", transition: "fill 0.45s ease", outline: "none" }}
+                cx={LONDON.cx} cy={LONDON.cy} r="16" pointerEvents="none"
+                style={{ fill: fill("london"), stroke: outline("london"), strokeWidth: selected === "london" ? 3 : 2, transition: "fill 0.45s ease" }}
               />
+              {/* A bigger invisible circle, so there is a comfortable target for a finger. */}
+              <circle cx={LONDON.cx} cy={LONDON.cy} r="26" {...handlers("london")} style={{ fill: "transparent", cursor: "pointer", outline: "none" }} />
               <text x={LONDON.cx} y={LONDON.cy + 4} textAnchor="middle" fontSize="10" fontWeight="800" fontFamily={FONT_BODY} fill={COLORS.paper} stroke={COLORS.ink} strokeWidth="2.6" paintOrder="stroke" pointerEvents="none">L</text>
             </motion.g>
           </g>

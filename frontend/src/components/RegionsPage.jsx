@@ -182,6 +182,9 @@ export default function RegionsPage({ param }) {
   const shown = hover ?? selected ?? ranked(atDate)[0]?.key ?? "london";
   const shownRegion = REGIONS.find((r) => r.key === shown);
   const race = ranked(atDate);
+  const glance = race.length > 1
+    ? { high: { name: REGIONS.find((r) => r.key === race[0].key).name, value: atDate[race[0].key] }, low: { name: REGIONS.find((r) => r.key === race.at(-1).key).name, value: atDate[race.at(-1).key] } }
+    : null;
   const top = Math.max(...race.map((r) => atDate[r.key]), 1e-9);
 
   function startPlay() {
@@ -216,7 +219,21 @@ export default function RegionsPage({ param }) {
           </div>
 
           <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.55, color: COLORS.ink, margin: "0 0 4px", maxWidth: 760 }}>{metric.blurb}</p>
-          <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "0 0 16px", maxWidth: 760 }}>{metric.why}</p>
+          <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "0 0 14px", maxWidth: 760 }}>{metric.why}</p>
+
+          <ol aria-label="How to use this page" style={{ listStyle: "none", margin: "0 0 16px", padding: 0, display: "flex", flexWrap: "wrap", gap: "8px 18px" }}>
+            {["Pick a measure above", "Press play, or drag the date", "Hover, tap or tab to a place"].map((step, i) => (
+              <li key={step} style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
+                <span aria-hidden="true" style={{ width: 22, height: 22, borderRadius: 11, background: accent, color: "#fff", fontSize: 12, fontWeight: 700, display: "grid", placeItems: "center", flexShrink: 0 }}>{i + 1}</span>
+                {step}
+              </li>
+            ))}
+          </ol>
+          {glance && (
+            <p style={{ fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.55, color: COLORS.ink, margin: "0 0 16px", maxWidth: 760 }} aria-live="polite">
+              In {tLabel(timeline[idx])}, <strong>{glance.high.name}</strong> had the highest {metric.noun} ({formatValue(metric.format, glance.high.value)}) and <strong>{glance.low.name}</strong> the lowest ({formatValue(metric.format, glance.low.value)}).
+            </p>
+          )}
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(380px, 100%), 1fr))", gap: 20, alignItems: "start" }}>
             <section aria-label="Map" style={{ ...card, background: `radial-gradient(520px 320px at 50% 0%, ${accent}1f, transparent 70%), ${COLORS.paperCard}` }}>
