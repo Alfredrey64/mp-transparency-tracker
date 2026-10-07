@@ -15,7 +15,7 @@ describe("downloads", () => {
   it("adds the adjusted column when given", () => {
     const text = seriesCsv({ title: "Pay", source: "ONS", unit: "£", points: [["2000-01", 10]], adjusted: [["2000-01", 20]] });
     const [head, row] = text.split("\r\n");
-    expect(head).toBe("series,period,value,value_in_todays_prices,unit,source");
+    expect(head).toBe("series,period,value,value_with_inflation_removed,unit,source");
     expect(row).toBe("Pay,2000-01,10,20,£,ONS");
   });
 

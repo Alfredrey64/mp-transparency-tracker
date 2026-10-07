@@ -5,7 +5,7 @@
 
 import zlib from "node:zlib";
 
-function unzip(buf) {
+export function unzip(buf) {
   // Find the end-of-central-directory record, then walk the central directory.
   let eocd = -1;
   for (let i = buf.length - 22; i >= Math.max(0, buf.length - 66000); i--) {

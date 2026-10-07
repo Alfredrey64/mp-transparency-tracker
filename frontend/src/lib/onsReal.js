@@ -1,8 +1,13 @@
-// Shows money amounts in today's prices, using the Consumer Prices Index.
+// Takes inflation out of the figures, in three ways, all using the Consumer Prices Index:
 //
-// A figure for a month is multiplied by (latest index / index for that month).
-// Quarterly and yearly figures use the average index over the months they cover.
-// The index only starts in 1988, so earlier figures are left out when adjusting.
+//  - money amounts (nominal series) are shown in today's prices: a figure for a month is
+//    multiplied by (latest index / index for that month);
+//  - interest rates (realMode "rate") become real rates: the rate minus the inflation rate;
+//  - price rises for one kind of thing (realMode "relative"), such as food, become how much
+//    faster or slower they rose than prices in general: the rise minus the inflation rate.
+//
+// Quarterly and yearly figures use the average over the months they cover. The index only
+// starts in 1988 (and inflation a year later), so earlier figures are left out.
 
 import { periodLabel } from "./onsFormat";
 
@@ -14,24 +19,37 @@ const monthsOf = (period) => {
   return [];
 };
 
+const yearBefore = (month) => `${Number(month.slice(0, 4)) - 1}${month.slice(4)}`;
+const average = (values) => (values.length ? values.reduce((a, b) => a + b, 0) / values.length : null);
+
 export function makeDeflator(points) {
   if (!points?.length) return null;
   const byMonth = new Map(points);
   const [latestPeriod, latestIndex] = points[points.length - 1];
-  const at = (period) => {
-    const values = monthsOf(period).map((m) => byMonth.get(m)).filter((v) => v > 0);
-    return values.length ? values.reduce((a, b) => a + b, 0) / values.length : null;
-  };
-  return { at, latestPeriod, latestIndex, label: periodLabel(latestPeriod), firstPeriod: points[0][0] };
+  const at = (period) => average(monthsOf(period).map((m) => byMonth.get(m)).filter((v) => v > 0));
+  const inflationAt = (period) => average(
+    monthsOf(period)
+      .map((m) => (byMonth.get(m) > 0 && byMonth.get(yearBefore(m)) > 0 ? (byMonth.get(m) / byMonth.get(yearBefore(m)) - 1) * 100 : null))
+      .filter((v) => v !== null),
+  );
+  return { at, inflationAt, latestPeriod, latestIndex, label: periodLabel(latestPeriod), firstPeriod: points[0][0] };
 }
 
-// The same points, each worth what it would be in the latest month's prices.
-export function toReal(points, deflator) {
+// Does this series change when inflation is taken out?
+export const canAdjust = (def) => Boolean(def?.nominal || def?.realMode);
+
+// The same points with inflation taken out, as described above. `def` says which way.
+export function toReal(points, deflator, def) {
   if (!deflator) return points;
   const out = [];
   for (const [period, value] of points) {
-    const index = deflator.at(period);
-    if (index) out.push([period, (value * deflator.latestIndex) / index]);
+    if (def?.realMode) {
+      const inflation = deflator.inflationAt(period);
+      if (inflation !== null) out.push([period, value - inflation]);
+    } else {
+      const index = deflator.at(period);
+      if (index) out.push([period, (value * deflator.latestIndex) / index]);
+    }
   }
   return out;
 }

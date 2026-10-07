@@ -137,13 +137,43 @@ export default function Methodology({ onNavigate }) {
               name="UK House Price Index (HM Land Registry, ONS and others)"
               url="https://www.gov.uk/government/collections/uk-house-price-index-reports"
               auth="No key required, Open Government Licence v3.0"
-              use="Average house prices for the UK, its nations, the English regions and types of home, from sales recorded by HM Land Registry, Registers of Scotland and Land & Property Services (Northern Ireland). They are shown as published and are not adjusted for inflation unless you switch on &quot;Show in today's money&quot;."
+              use="Average house prices for the UK, its nations, the English regions and types of home, from sales recorded by HM Land Registry, Registers of Scotland and Land & Property Services (Northern Ireland). They are shown as published and are not adjusted for inflation unless you switch on &quot;Remove inflation (real terms)&quot;."
             />
             <SourceRow
               name="Crime in England and Wales (ONS, with Home Office figures)"
               url="https://www.ons.gov.uk/peoplepopulationandcommunity/crimeandjustice/datasets/crimeinenglandandwalesappendixtables"
               auth="No key required, Open Government Licence v3.0"
               use="The Crime Survey for England and Wales and police recorded crime, read from the ONS appendix tables spreadsheet. They cover England and Wales only, and the two measures count different things, so the Crime page shows both and explains the gap."
+            />
+            <SourceRow
+              name="NHS England statistics"
+              url="https://www.england.nhs.uk/statistics/"
+              auth="No key required, Open Government Licence v3.0"
+              use="Hospital waiting times (referral to treatment), A&E four-hour performance, cancer waiting times and ambulance response times for England, read from the spreadsheets NHS England publishes each month. The Health page sets them against the NHS's standards and the government's goals. They are England only: Scotland, Wales and Northern Ireland publish their own."
+            />
+            <SourceRow
+              name="Home Office immigration statistics and small boat data"
+              url="https://www.gov.uk/government/collections/migration-statistics"
+              auth="No key required, Open Government Licence v3.0"
+              use="Asylum claims, the asylum backlog and hotel use, returns, visas granted and the daily count of people crossing the Channel in small boats, for the Immigration page, from the spreadsheets the Home Office publishes each quarter and week. The latest figures are provisional and revised."
+            />
+            <SourceRow
+              name="ONS long-term international migration"
+              url="https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/internationalmigration"
+              auth="No key required, Open Government Licence v3.0"
+              use="Net migration, immigration and emigration by year ending, from the ONS's provisional estimates, which combine Home Office travel and visa records with census data. The latest year is revised as more records arrive."
+            />
+            <SourceRow
+              name="Housing supply statistics (Ministry of Housing, Communities and Local Government)"
+              url="https://www.gov.uk/government/collections/housing-supply-indicators-of-new-supply-england"
+              auth="No key required, Open Government Licence v3.0"
+              use="Net additional dwellings and new homes started and completed in England, from the department's live tables, for the Housing page and the 1.5 million homes pledge."
+            />
+            <SourceRow
+              name="Full Fact Government Tracker"
+              url="https://fullfact.org/government-tracker/"
+              auth="Verdicts are Full Fact's, cited with credit"
+              use="Full Fact's verdicts on the government's pledges, shown beside the figures that bear on them. We do not judge the pledges ourselves, and the verdicts are as of the date shown on the card."
             />
             <SourceRow
               name="Bank of England Database"
@@ -155,7 +185,7 @@ export default function Methodology({ onNavigate }) {
               name="Consumer Prices Index (ONS series D7BT)"
               url="https://www.ons.gov.uk/economy/inflationandpriceindices/timeseries/d7bt/mm23"
               auth="No key required, Open Government Licence v3.0"
-              use="The monthly price index, from 1988, used only to turn money amounts into today's prices when you switch on &quot;Show in today's money&quot;. Quarterly and yearly figures use the average of the months they cover."
+              use="The monthly price index, from 1988, used only to turn money amounts into today's prices, and to turn interest rates and price rises into real terms, when you switch on &quot;Remove inflation (real terms)&quot;. Quarterly and yearly figures use the average of the months they cover."
             />
             <SourceRow
               name="UK Parliament Members API"

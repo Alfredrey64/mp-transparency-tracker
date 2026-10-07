@@ -1,8 +1,10 @@
 // Downloads the official figures behind the "Britain in numbers" pages and
 // saves one small JSON file per page in frontend/src/data/ons/. Most come from
 // the Office for National Statistics; house prices come from HM Land Registry,
-// crime from the ONS crime tables, and interest rates, mortgage approvals and
-// exchange rates from the Bank of England.
+// crime from the ONS crime tables, interest rates, mortgage approvals and
+// exchange rates from the Bank of England, and NHS waiting times, migration,
+// asylum, small boats and housing supply from the spreadsheets their
+// publishers release (see fetch-tables.js).
 //
 // Which series to fetch is defined once, in frontend/src/data/onsSectors.js,
 // which the pages read as well. Weekly deaths come from the ONS dataset API;
@@ -20,6 +22,7 @@ import { fileURLToPath } from "node:url";
 import { SECTORS, WEEKLY_DEATHS, sectorSeries } from "./frontend/src/data/onsSectors.js";
 import { normalisePeriod } from "./frontend/src/lib/onsFormat.js";
 import { readXlsx } from "./xlsx-lite.js";
+import { fetchFeed } from "./fetch-tables.js";
 
 const OUT_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), "frontend", "src", "data", "ons");
 const HEADERS = { "User-Agent": "uk-parliament-tracker (independent, non-commercial; contact via GitHub)" };
@@ -264,10 +267,10 @@ async function main() {
 
     for (const def of sectorSeries(sector)) {
       if (def.derive) continue; // worked out in the browser
-      const key = def.boe ? `boe|${def.boe.code}|${def.boe.mode}` : def.hpi ? `hpi|${def.hpi.region}|${def.hpi.field}` : def.table ? `table|${def.table.sheet}|${def.id}` : `${def.path}|${def.cdid}|${def.dataset}`;
+      const key = def.feed ? `feed|${def.feed}` : def.boe ? `boe|${def.boe.code}|${def.boe.mode}` : def.hpi ? `hpi|${def.hpi.region}|${def.hpi.field}` : def.table ? `table|${def.table.sheet}|${def.id}` : `${def.path}|${def.cdid}|${def.dataset}`;
       try {
         if (!cache.has(key)) {
-          cache.set(key, def.boe ? await fetchBoe(def) : def.hpi ? await fetchHpi(def) : def.table ? await fetchTable(def) : await fetchSeries(def));
+          cache.set(key, def.feed ? { title: def.label, ...(await fetchFeed(def.feed)) } : def.boe ? await fetchBoe(def) : def.hpi ? await fetchHpi(def) : def.table ? await fetchTable(def) : await fetchSeries(def));
           await sleep(250);
         }
         out.series[def.id] = cache.get(key);

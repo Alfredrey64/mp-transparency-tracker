@@ -17,7 +17,7 @@ import { niceTicks } from "../lib/onsFormat";
 const DEFAULT_W = 640;
 
 export default function LineChart({
-  lines, xTicks, yFormat, ariaLabel, height = 230, accent, bands = [], domainX, hoverX, onHoverX, clipX, animateIn = false, compact = false,
+  lines, xTicks, yFormat, ariaLabel, height = 230, accent, bands = [], domainX, hoverX, onHoverX, clipX, animateIn = false, compact = false, refLines,
 }) {
   const gid = useId().replace(/:/g, "");
   const ref = useRef(null);
@@ -47,7 +47,8 @@ export default function LineChart({
     const all = lines.flatMap((l) => l.points);
     if (!all.length) return null;
     const xs = all.map((p) => p.x);
-    const ys = all.map((p) => p.y);
+    // Targets are part of the picture, so the axis always reaches them.
+    const ys = [...all.map((p) => p.y), ...(refLines ?? []).map((r) => r.value)];
     const xMin = domainX?.[0] ?? Math.min(...xs);
     const xMax = domainX?.[1] ?? Math.max(...xs);
     let yMin = Math.min(...ys);
@@ -67,7 +68,7 @@ export default function LineChart({
     return { xMin, xMax, ticks, sx, sy, dLo, dHi, M };
     // yFormat is a new function on every render and only its output length matters here.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lines, H, domainX, compact, W, base.l, base.r, base.t, base.b]);
+  }, [lines, refLines, H, domainX, compact, W, base.l, base.r, base.t, base.b]);
 
   if (!geo) return null;
   const { sx, sy, ticks, M } = geo;
@@ -149,6 +150,18 @@ export default function LineChart({
 
         {xTicks.map((t) => (
           <text key={t.x} x={sx(t.x)} y={H - 7} textAnchor="middle" fontSize="11.5" fontFamily={FONT_BODY} fill={COLORS.inkSoft}>{t.label}</text>
+        ))}
+
+        {(refLines ?? []).map((r) => (
+          <g key={`${r.value}-${r.label}`} pointerEvents="none">
+            <line x1={M.l} x2={W - M.r} y1={sy(r.value)} y2={sy(r.value)} stroke={COLORS.ink} strokeWidth="1.4" strokeDasharray="6 4" opacity="0.6" />
+            <text
+              x={M.l + 6} y={sy(r.value) - 6} fontSize="11.5" fontWeight="700" fontFamily={FONT_BODY} fill={COLORS.ink}
+              stroke={COLORS.paperCard} strokeWidth="3.5" paintOrder="stroke" strokeLinejoin="round"
+            >
+              {r.label}
+            </text>
+          </g>
         ))}
 
         <g clipPath={`url(#clip-${gid})`}>

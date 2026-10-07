@@ -6,11 +6,13 @@ import LineChart from "./LineChart";
 import PlacesChart from "./PlacesChart";
 import BreakdownCard from "./BreakdownCard";
 import MortgageCard from "./MortgageCard";
+import PromisesCard from "./PromisesCard";
+import { SECTOR_PROMISES } from "../data/onsPromises";
 import ChartActions from "./ChartActions";
 import CountUp from "./CountUp";
 import { sectorByKey, sectorSeries, ONS_SERIES_PAGE, WEEKLY_DEATHS } from "../data/onsSectors";
 import { loadSector, loadDeflator } from "../lib/onsData";
-import { makeDeflator, toReal } from "../lib/onsReal";
+import { makeDeflator, toReal, canAdjust } from "../lib/onsReal";
 import { buildShareParam, parseShareParam, shareUrl } from "../lib/shareLink";
 import { seriesCsv } from "../lib/onsDownload";
 import { PARLIAMENT_LINKS } from "../data/onsParliament";
@@ -20,7 +22,7 @@ import { toLineData, yearTicks } from "../lib/onsChart";
 import { bandsBetween, PARTY_COLOURS } from "../lib/governments";
 import { DEEP_DIVES } from "../data/onsDeepDives";
 import { card, cardTitle, smallTitle, pillStyle, dateText } from "../lib/onsStyles";
-import { IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconHouse, IconGlobe, IconLeaf, IconShield, IconTaxes, IconRates } from "./icons";
+import { IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconHouse, IconGlobe, IconLeaf, IconShield, IconTaxes, IconRates, IconMigration } from "./icons";
 
 // One page per sector, all built from the same pieces: a short story with a
 // spotlight figure, the headline numbers, then a card for every measure with its
@@ -28,7 +30,7 @@ import { IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconH
 // The numbers come from the Office for National Statistics (and, for house prices
 // and crime, the bodies named on each card), saved daily by fetch-ons.js.
 
-const ICONS = { economy: IconTrend, prices: IconBasket, jobs: IconBriefcase, publicFinances: IconLedger, population: IconPopulation, health: IconHeartbeat, housing: IconHouse, crime: IconShield, trade: IconGlobe, environment: IconLeaf, tax: IconTaxes, rates: IconRates };
+const ICONS = { economy: IconTrend, prices: IconBasket, jobs: IconBriefcase, publicFinances: IconLedger, population: IconPopulation, health: IconHeartbeat, housing: IconHouse, crime: IconShield, trade: IconGlobe, environment: IconLeaf, tax: IconTaxes, rates: IconRates, immigration: IconMigration };
 const RANGES = [{ years: 2, label: "2 years" }, { years: 5, label: "5 years" }, { years: 10, label: "10 years" }, { years: 25, label: "25 years" }, { years: 0, label: "Everything" }];
 const WHOLE_HISTORY = new Set(["population", "environment", "crime"]);
 const NOW = new Date().getFullYear() + 1;
@@ -87,11 +89,10 @@ const Tile = memo(function Tile({ def, item, accent, index }) {
     <motion.a
       href={`#s-${def.id}`}
       onClick={(e) => { e.preventDefault(); document.getElementById(`s-${def.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
-      initial={reduce ? false : { opacity: 0, y: 12 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={reduce ? false : { opacity: 0 }}
+      animate={{ opacity: 1 }}
       whileHover={reduce ? undefined : { y: -3, transition: { duration: 0.18 } }}
-      viewport={{ once: true, margin: "0px 0px 120px 0px" }}
-      transition={{ duration: 0.45, delay: Math.min(index, 3) * 0.05, ease: "easeOut" }}
+      transition={{ duration: 0.4, delay: Math.min(index, 4) * 0.05, ease: "easeOut" }}
       style={{
         ...card, padding: "20px 22px 0", position: "relative", overflow: "hidden", textDecoration: "none", display: "flex", flexDirection: "column", color: "inherit",
         background: `linear-gradient(180deg, ${accent}14, ${COLORS.paperCard} 55%)`, borderColor: `${accent}40`,
@@ -212,10 +213,31 @@ function SourceLine({ def, item }) {
   );
 }
 
+const TOGGLE = "Remove inflation (real terms)";
+
+// What the chart shows once inflation is taken out, and what it shows as published.
+function adjustedNote(def, deflator) {
+  if (def.realMode === "rate") return "These are real rates: the rate minus inflation.";
+  if (def.realMode === "relative") return "These show how much faster or slower this rose than prices in general.";
+  return `These figures are in ${deflator.label} prices.`;
+}
+function adjustedCaption(def) {
+  if (def.realMode === "rate") return `Real rate: the interest rate minus the yearly rise in the Consumer Prices Index (inflation). Below zero means prices are rising faster than the rate, so borrowers gain and savers lose. It starts in 1989, when the index allows. Switch "${TOGGLE}" off to see the rate as published.`;
+  if (def.realMode === "relative") return `Relative to prices in general: the price rise shown minus overall inflation. Above zero means this rose faster than the average price, below zero slower. Switch "${TOGGLE}" off to see the price rise as published.`;
+  return `Adjusted for inflation with the Consumer Prices Index, which starts in 1988, so earlier years are left out. Switch "${TOGGLE}" off to see the amounts as they were published.`;
+}
+function unadjustedCaption(def) {
+  if (def.realMode === "rate") return `Shown as published. Switch on "${TOGGLE}" above to see the real rate, which takes inflation out.`;
+  if (def.realMode === "relative") return `Shown as published, so it includes general inflation. Switch on "${TOGGLE}" above to see it relative to prices in general.`;
+  return `These amounts are not adjusted for inflation, so figures from many years ago look smaller than they were worth. Switch on "${TOGGLE}" above to compare like with like.`;
+}
+
 const SeriesCard = memo(function SeriesCard({ def, item, range, accent, showGovernments, sectorKey, real, deflator }) {
-  // In today's money, a money series is re-priced and starts when the price index does.
-  const adjusted = real && def.nominal && deflator;
-  const points = useMemo(() => (adjusted ? toReal(item.points, deflator) : item.points), [adjusted, item.points, deflator]);
+  // With inflation taken out, a money series is re-priced (and starts when the price index does),
+  // an interest rate becomes a real rate, and a price rise is shown relative to prices in general.
+  const adjustable = canAdjust(def);
+  const adjusted = real && adjustable && deflator;
+  const points = useMemo(() => (adjusted ? toReal(item.points, deflator, def) : item.points), [adjusted, item.points, deflator, def]);
   const data = useMemo(() => toLineData(sliceRange(points, range)), [points, range]);
   const info = latestInfo(def, points);
   const sentence = sentenceFor(def, points);
@@ -228,7 +250,7 @@ const SeriesCard = memo(function SeriesCard({ def, item, range, accent, showGove
   const getInfo = () => ({
     url: shareUrl(sectorKey, buildShareParam({ target: def.id, range, real: Boolean(adjusted), governments: showGovernments })),
     title: def.label,
-    sentence: `${sentence ?? ""}${adjusted ? ` These figures are in ${deflator.label} prices.` : ""}`.trim(),
+    sentence: `${sentence ?? ""}${adjusted ? ` ${adjustedNote(def, deflator)}` : ""}`.trim(),
     source: sourceName,
     accent,
     filename: `${sectorKey}-${def.id}.png`,
@@ -236,7 +258,7 @@ const SeriesCard = memo(function SeriesCard({ def, item, range, accent, showGove
       filename: `${sectorKey}-${def.id}.csv`,
       text: seriesCsv({
         title: def.label, source: sourceName, unit: unitOf(def.format), points: item.points,
-        adjusted: adjusted ? item.points.map(([p], i) => toReal([item.points[i]], deflator)[0] ?? [p, ""]) : null,
+        adjusted: adjusted ? (() => { const byPeriod = new Map(points); return item.points.map(([p]) => [p, byPeriod.get(p) ?? ""]); })() : null,
       }),
     },
   });
@@ -246,10 +268,6 @@ const SeriesCard = memo(function SeriesCard({ def, item, range, accent, showGove
       id={`s-${def.id}`}
       aria-labelledby={`h-${def.id}`}
       style={{ ...card, position: "relative", overflow: "hidden" }}
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true, margin: "0px 0px 200px 0px" }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
     >
       <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `linear-gradient(180deg, ${accent}, ${accent}22)` }} />
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", gap: "10px 20px" }}>
@@ -261,7 +279,7 @@ const SeriesCard = memo(function SeriesCard({ def, item, range, accent, showGove
           </div>
         )}
       </div>
-      {sentence && <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.55, color: COLORS.ink, margin: "10px 0 18px" }}>{sentence}{adjusted ? ` These figures are in ${deflator.label} prices.` : ""}</p>}
+      {sentence && <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.55, color: COLORS.ink, margin: "10px 0 18px" }}>{sentence}{adjusted ? ` ${adjustedNote(def, deflator)}` : ""}</p>}
       {data.length > 1 ? (
         <LineChart
           key={`${range}-${showGovernments}`}
@@ -271,17 +289,16 @@ const SeriesCard = memo(function SeriesCard({ def, item, range, accent, showGove
           ariaLabel={`${def.label}: line chart. ${sentence}`}
           accent={accent}
           bands={bands}
+          refLines={adjusted ? undefined : def.targets}
           animateIn
         />
       ) : (
         <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Not enough data for this period.</p>
       )}
       <Strip def={def} points={points} accent={accent} />
-      {def.nominal && (
+      {adjustable && (
         <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.5, color: COLORS.inkSoft, margin: "10px 0 0" }}>
-          {adjusted
-            ? `Adjusted for inflation with the Consumer Prices Index, which starts in 1988, so earlier years are left out. Switch "Show in today's money" off to see the amounts as they were published.`
-            : `These amounts are not adjusted for inflation, so figures from many years ago look smaller than they were worth. Switch on "Show in today's money" above to compare like with like.`}
+          {adjusted ? adjustedCaption(def) : unadjustedCaption(def)}
         </p>
       )}
       <Explain explain={def.explain} why={def.why} accent={accent} />
@@ -328,7 +345,6 @@ function WeeklyDeaths({ data, accent }) {
     <motion.section
       className="ons-anchor"
       aria-labelledby="h-weekly-deaths" style={{ ...card, position: "relative", overflow: "hidden" }} id="s-weekly-deaths"
-      initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, margin: "0px 0px 200px 0px" }} transition={{ duration: 0.4 }}
     >
       <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `linear-gradient(180deg, ${accent}, ${accent}22)` }} />
       <h2 id="h-weekly-deaths" style={cardTitle}>Deaths registered each week</h2>
@@ -354,14 +370,16 @@ function WeeklyDeaths({ data, accent }) {
   );
 }
 
-function Toggle({ on, onChange, children }) {
+function Toggle({ on, onChange, children, disabled = false, hint }) {
   return (
     <button
       className="ons-tap"
       role="switch"
-      aria-checked={on}
-      onClick={() => onChange(!on)}
-      style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "none", border: "none", cursor: "pointer", padding: "6px 0", font: "inherit" }}
+      aria-checked={on && !disabled}
+      aria-disabled={disabled || undefined}
+      title={disabled ? hint : undefined}
+      onClick={() => { if (!disabled) onChange(!on); }}
+      style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1, padding: "6px 0", font: "inherit" }}
     >
       <span aria-hidden="true" style={{ width: 40, height: 23, borderRadius: 12, background: on ? COLORS.ink : COLORS.hairline, position: "relative", transition: "background 0.2s", flexShrink: 0 }}>
         <span style={{ position: "absolute", top: 3, left: on ? 20 : 3, width: 17, height: 17, borderRadius: 9, background: on ? COLORS.paper : COLORS.inkSoft, transition: "left 0.2s" }} />
@@ -456,7 +474,7 @@ export default function SectorPage({ sector, param = null }) {
   const [showGovernments, setShowGovernments] = useState(share?.governments ?? false);
   const [real, setReal] = useState(share?.real ?? false);
   const [deflatorData, setDeflatorData] = useState(null);
-  const hasMoney = Boolean(def && sectorSeries(def).some((x) => x.nominal));
+  const hasMoney = Boolean(def && sectorSeries(def).some(canAdjust));
 
   useEffect(() => {
     let alive = true;
@@ -491,7 +509,8 @@ export default function SectorPage({ sector, param = null }) {
   const Icon = ICONS[sector];
   const shown = useMemo(() => (def && loaded ? def.series.filter((s) => loaded.series[s.id]) : []), [def, loaded]);
   const extraCards = useMemo(() => (def ? [...def.breakdowns.map((x) => ({ id: x.id, label: x.title })), ...(def.mortgage ? [{ id: "mortgage-cost", label: "What a mortgage costs" }] : []), ...def.places.map((g) => ({ id: g.id, label: g.title }))] : []), [def]);
-  const jumpIds = useMemo(() => [...extraCards.map((x) => x.id), ...shown.map((s) => s.id)], [extraCards, shown]);
+  const hasPromises = Boolean(def && SECTOR_PROMISES[def.key]);
+  const jumpIds = useMemo(() => [...extraCards.map((x) => x.id), ...shown.map((s) => s.id), ...(def && SECTOR_PROMISES[def.key] ? ["promises"] : [])], [extraCards, shown, def]);
   const active = useActiveCard(jumpIds);
   if (!def) return null;
   const tiles = shown.filter((s) => s.headline);
@@ -547,12 +566,12 @@ export default function SectorPage({ sector, param = null }) {
                 </div>
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "0 22px" }}>
-                {hasMoney && <Toggle on={real} onChange={setReal}>Show in today&apos;s money</Toggle>}
+                <Toggle on={real} onChange={setReal} disabled={!hasMoney} hint="Nothing on this page is a money amount, a price rise or an interest rate, so there is no inflation to take out.">{TOGGLE}</Toggle>
                 <Toggle on={showGovernments} onChange={setShowGovernments}>Show who was in government</Toggle>
               </div>
             </div>
             <div className="ons-jump" role="navigation" aria-label="Jump to a measure">
-              {[...extraCards, ...shown].map((s) => (
+              {[...extraCards, ...shown, ...(hasPromises ? [{ id: "promises", label: "What the government promised" }] : [])].map((s) => (
                 <a
                   key={s.id}
                   href={`#s-${s.id}`}
@@ -590,6 +609,7 @@ export default function SectorPage({ sector, param = null }) {
             ))}
           </div>
 
+          <PromisesCard sector={def.key} series={loaded.series} accent={def.accent} />
           <InParliament sector={def.key} accent={def.accent} />
 
           <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.6, color: COLORS.inkSoft, marginTop: 32, maxWidth: 780 }}>

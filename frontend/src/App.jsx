@@ -60,8 +60,9 @@ const Rebels = lazy(LOADERS.rebels);
 const Offices = lazy(LOADERS.offices);
 const Councils = lazy(LOADERS.councils);
 const SectorPage = lazy(LOADERS.economy);
+const RegionsPage = lazy(LOADERS.regions);
 const IndicatorTimeline = lazy(LOADERS.indicators);
-const SECTOR_VIEWS = new Set(["economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates"]);
+const SECTOR_VIEWS = new Set(["economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates", "immigration"]);
 
 // A quiet authorship mark, not a feature — printed once so a copy of this
 // site with the byline stripped from the UI still carries proof of where
@@ -89,7 +90,7 @@ const VALID_VIEWS = new Set([
   "committees", "compare", "ministerialMeetings", "writtenQuestions", "standards", "rankings", "myMP",
   "mediaLiteracy", "methodology", "glossary", "settings", "privacy", "terms", "list",
   "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist", "numbers", "topics", "constituency", "start", "rebels", "offices", "councils",
-  "economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates", "indicators",
+  "economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates", "immigration", "regions", "indicators",
 ]);
 
 // The tab title, bookmark name and browser-history entry for every view —
@@ -115,7 +116,7 @@ function titleForState(view, selected, param) {
   if (selected) return `${selected.name} — ${base}`;
   if (view === "numbers" && param === "lords") return `Parliament in Numbers: the Lords — ${base}`;
   // For the Lords the parameter is a peer's id, which makes a poor title.
-  if (param && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view)) return `${param} — ${PAGE_TITLES[view] ?? base} — ${base}`;
+  if (param && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view) && view !== "regions") return `${param} — ${PAGE_TITLES[view] ?? base} — ${base}`;
   if (view === "home") return base;
   const label = PAGE_TITLES[view];
   return label ? `${label} — ${base}` : base;
@@ -363,6 +364,7 @@ export default function App() {
             {view === "rebels" && <Rebels onNavigate={handleNavigate} />}
             {view === "offices" && <Offices initialQuery={viewParam} />}
             {view === "councils" && <Councils param={viewParam} />}
+            {view === "regions" && <RegionsPage param={viewParam} />}
             {SECTOR_VIEWS.has(view) && <SectorPage key={view} sector={view} param={viewParam} />}
             {view === "indicators" && <IndicatorTimeline param={viewParam} />}
             {view === "start" && <StartHere onNavigate={handleNavigate} onNavigateForMp={handleNavigateForMp} onViewProfile={handleViewProfile} />}

@@ -70,6 +70,8 @@ export function formatValue(format, v) {
     case "ktonnes": return `${group(v / 1000)} million tonnes`; // value in thousand tonnes
     case "mtoe": return `${v.toFixed(0)} million tonnes of oil equivalent`;
     case "hours": return `${v.toFixed(1)} hours`;
+    case "weeks": return `${v.toFixed(1)} weeks`;
+    case "minutes": return `${v.toFixed(1)} minutes`;
     case "usd": return `$${v.toFixed(2)}`;
     case "eur": return `€${v.toFixed(2)}`;
     default: return String(v);

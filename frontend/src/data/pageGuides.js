@@ -56,6 +56,16 @@ export const PAGE_GUIDES = {
     why: "The UK has a legal target of net zero emissions by 2050, so these show how far it has come.",
     notShown: "Emissions from goods made abroad and bought here. Figures run about two years behind.",
   },
+  regions: {
+    what: "An interactive map of the 12 regions and nations of the UK, coloured by house prices, unemployment, jobs and inactivity, which you can play through time.",
+    why: "Averages for the UK hide big gaps between places, and those gaps are what 'levelling up' arguments are about.",
+    notShown: "Anything smaller than a region. Your own town or council can differ a lot from its region's average.",
+  },
+  immigration: {
+    what: "How many people come to live in the UK and leave, small boat crossings, asylum claims and the backlog, hotels, returns, and the visas granted.",
+    why: "Immigration is a top political issue and the figures are often muddled. Seeing legal migration, asylum and small boats apart helps you judge claims.",
+    notShown: "Where migrants live, or how they affect pay and services. Figures lag by months and are revised.",
+  },
   tax: {
     what: "How much the government collects in each main tax over the last 12 months, how much it spends on benefits and debt interest, and how each £1 is split.",
     why: "Tax and spending decisions are what Budgets are about, and these figures show where the money really comes from and goes.",

@@ -45,6 +45,7 @@ export function derive(spec, base) {
   switch (spec.op) {
     case "yoy": return yearOnYear(from);
     case "sum": return rollingSum(from, spec.n);
+    case "complement": return from.map(([p, v]) => [p, 100 - v]);
     case "percentOf": return base[spec.of]?.length ? percentOf(from, base[spec.of]) : [];
     default: return [];
   }

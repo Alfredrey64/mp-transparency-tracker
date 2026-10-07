@@ -5,7 +5,7 @@ import LineChart from "./LineChart";
 import ChartActions from "./ChartActions";
 import { formatValue, formatAxis, sliceRange, periodLabel, periodToT } from "../lib/onsFormat";
 import { toLineData, yearTicks } from "../lib/onsChart";
-import { toReal } from "../lib/onsReal";
+import { toReal, canAdjust } from "../lib/onsReal";
 import { bandsBetween, PARTY_COLOURS } from "../lib/governments";
 import { buildShareParam, shareUrl } from "../lib/shareLink";
 import { placesCsv } from "../lib/onsDownload";
@@ -33,8 +33,8 @@ function PlacesChart({ group, sector, series, range, real, deflator, showGovernm
   const places = useMemo(() => group.members.map((id) => {
     const item = series[id];
     if (!item) return null;
-    const adjust = real && item.def.nominal && deflator;
-    const points = adjust ? toReal(item.points, deflator) : item.points;
+    const adjust = real && canAdjust(item.def) && deflator;
+    const points = adjust ? toReal(item.points, deflator, item.def) : item.points;
     return { id, name: group.names?.[id] ?? item.def.place ?? item.def.label, def: item.def, points: sliceRange(points, range), updated: item.updated };
   }).filter((p) => p && p.points.length > 1), [group, series, range, real, deflator]);
 
@@ -92,8 +92,8 @@ function PlacesChart({ group, sector, series, range, real, deflator, showGovernm
     [showGovernments, chosen.length, xFrom, xTo],
   );
   const sentence = indexed
-    ? `Each place is set to 100 at the start, so the lines show growth, not size.${real ? " Money amounts are in today's prices." : ""}`
-    : `${real ? "Money amounts are in today's prices. " : ""}Hover or touch the chart to read each place's figure.`;
+    ? `Each place is set to 100 at the start, so the lines show growth, not size.${real ? " Inflation has been taken out." : ""}`
+    : `${real ? "Inflation has been taken out. " : ""}Hover or touch the chart to read each place's figure.`;
 
   const getInfo = () => ({
     url: shareUrl(sector, buildShareParam({ target: group.id, range, real, indexed, places: selected })),
@@ -119,10 +119,6 @@ function PlacesChart({ group, sector, series, range, real, deflator, showGovernm
       id={cardId}
       aria-labelledby={`h-${group.id}`}
       style={{ ...card, position: "relative", overflow: "hidden", gridColumn: "1 / -1" }}
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true, margin: "0px 0px 200px 0px" }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
     >
       <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `linear-gradient(180deg, ${accent}, ${accent}22)` }} />
       <h2 id={`h-${group.id}`} style={cardTitle}>{group.title}</h2>

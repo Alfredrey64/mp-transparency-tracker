@@ -4,6 +4,10 @@ import { animate, useInView, useReducedMotion } from "framer-motion";
 // A number that counts up to its value the first time it scrolls into view.
 // Shows the final value straight away for anyone who prefers reduced motion,
 // and `format` lets callers keep their own formatting (commas, %, decimals).
+//
+// The final value is laid out invisibly underneath the counting number, so the space
+// it needs is reserved from the start. Without that, the text grows as the digits
+// climb and can wrap onto another line, which makes the whole box jump.
 export default function CountUp({ value, format = (n) => Math.round(n).toLocaleString("en-GB"), duration = 1.1 }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
@@ -16,7 +20,12 @@ export default function CountUp({ value, format = (n) => Math.round(n).toLocaleS
     return () => controls.stop();
   }, [inView, reduce, value, duration]);
 
-  // Starts at zero, so the number never flashes its final value before counting.
-  const display = reduce ? value : shown ?? 0;
-  return <span ref={ref}>{format(display)}</span>;
+  const final = format(value);
+  if (reduce) return <span ref={ref}>{final}</span>;
+  return (
+    <span ref={ref} style={{ display: "inline-grid" }}>
+      <span aria-hidden="true" style={{ gridArea: "1 / 1", visibility: "hidden" }}>{final}</span>
+      <span style={{ gridArea: "1 / 1" }} aria-label={final}>{format(shown ?? 0)}</span>
+    </span>
+  );
 }

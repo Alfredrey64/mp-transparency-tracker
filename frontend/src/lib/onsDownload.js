@@ -6,9 +6,9 @@ import { csvCell } from "./csv";
 
 const line = (cells) => cells.map(csvCell).join(",");
 
-// One series: period, value, and (when adjusted for inflation) the value in today's prices.
+// One series: period, value, and (when inflation has been taken out) the adjusted value.
 export function seriesCsv({ title, source, points, adjusted, unit }) {
-  const rows = [line(["series", "period", "value", ...(adjusted ? ["value_in_todays_prices"] : []), "unit", "source"])];
+  const rows = [line(["series", "period", "value", ...(adjusted ? ["value_with_inflation_removed"] : []), "unit", "source"])];
   points.forEach(([period, value], i) => {
     rows.push(line([title, period, value, ...(adjusted ? [adjusted[i]?.[1] ?? ""] : []), unit, source]));
   });

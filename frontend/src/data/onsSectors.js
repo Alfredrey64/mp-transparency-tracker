@@ -26,6 +26,8 @@ const POPULATION = "/peoplepopulationandcommunity/populationandmigration/populat
 const TRADE = "/economy/nationalaccounts/balanceofpayments";
 
 const s = (id, cdid, dataset, path, rest) => ({ id, cdid, dataset, path, ...rest });
+// A series read from a published spreadsheet (see fetch-tables.js for each `feed`).
+const f = (id, feed, source, rest) => ({ id, feed, source, ...rest });
 // A Bank of England database series. mode "month": the series is already monthly; "last": the
 // last daily figure of each month; "mean": the average of the daily figures in each month.
 const b = (id, code, mode, rest) => ({ id, boe: { code, mode }, source: BOE_SOURCE, ...rest });
@@ -35,11 +37,32 @@ const h = (id, region, field, rest) => ({ id, hpi: { region, field }, source: HP
 // A line from a table in an ONS crime spreadsheet. `match` finds the row by its label.
 const t = (id, table, match, rest) => ({ id, table: { ...table, match }, source: table.source, yearEnding: true, verb: "were", ...rest });
 
+const NHS_SOURCE = { name: "NHS England statistics", url: "https://www.england.nhs.uk/statistics/" };
+const HOME_OFFICE_SOURCE = { name: "Home Office immigration system statistics", url: "https://www.gov.uk/government/collections/migration-statistics" };
+const BOATS_SOURCE = { name: "Home Office: migrants detected crossing the English Channel in small boats", url: "https://www.gov.uk/government/publications/migrants-detected-crossing-the-english-channel-in-small-boats" };
+const ONS_MIGRATION_SOURCE = { name: "ONS: long-term international migration, provisional", url: "https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/internationalmigration/bulletins/longterminternationalmigrationprovisional/latest" };
+const HOUSING_SUPPLY_SOURCE = { name: "Ministry of Housing, Communities and Local Government: housing supply statistics", url: "https://www.gov.uk/government/collections/housing-supply-indicators-of-new-supply-england" };
 const BOE_SOURCE = { name: "Bank of England Database", url: "https://www.bankofengland.co.uk/boeapps/database/" };
 const HPI_SOURCE = { name: "UK House Price Index (HM Land Registry, ONS and others)", url: "https://www.gov.uk/government/collections/uk-house-price-index-reports" };
 const CRIME_URL = "https://www.ons.gov.uk/peoplepopulationandcommunity/crimeandjustice/datasets/crimeinenglandandwalesappendixtables";
 const CSEW = { sheet: "Table A1a", labelCol: 0, source: { name: "Crime Survey for England and Wales (ONS), appendix table A1a", url: CRIME_URL } };
 const POLICE = { sheet: "Table A5a", labelCol: 1, source: { name: "Police recorded crime (Home Office, published by the ONS), appendix table A5a", url: CRIME_URL } };
+
+// The 12 regions and nations the Regions page compares, with the series each one uses.
+export const REGION_ROWS = [
+  { key: "ne", name: "North East", emp: "LF3P", inact: "LF59", hpi: "north-east" },
+  { key: "nw", name: "North West", emp: "LF3Q", inact: "LF5A", hpi: "north-west" },
+  { key: "yh", name: "Yorkshire and the Humber", emp: "LF3R", inact: "LF5B", hpi: "yorkshire-and-the-humber" },
+  { key: "em", name: "East Midlands", emp: "LF3S", inact: "LF5C", hpi: "east-midlands" },
+  { key: "wm", name: "West Midlands", emp: "LF3T", inact: "LF5D", hpi: "west-midlands" },
+  { key: "east", name: "East of England", emp: "LF3U", inact: "LF5E", hpi: "east-of-england" },
+  { key: "london", name: "London", emp: "LF3V", inact: "LF5F", hpi: "london" },
+  { key: "se", name: "South East", emp: "LF3W", inact: "LF5G", hpi: "south-east" },
+  { key: "sw", name: "South West", emp: "LF3X", inact: "LF5H", hpi: "south-west" },
+  { key: "wales", name: "Wales", emp: "LF3Z", inact: "LF5J", hpi: "wales" },
+  { key: "scotland", name: "Scotland", emp: "LF42", inact: "LF5K", hpi: "scotland" },
+  { key: "ni", name: "Northern Ireland", emp: "LF5Z", inact: null, activity: "LF5Y", hpi: "northern-ireland" },
+];
 
 export const SECTORS = [
   {
@@ -153,37 +176,37 @@ export const SECTORS = [
         why: "It shows whether price rises are spreading through the economy, which is what central banks watch most closely.",
       }),
       s("services-inflation", "D7NN", "mm23", PRICES, {
-        label: "Prices of services", sentenceName: "Services inflation", format: "pct", kind: "rate",
+        realMode: "relative", label: "Prices of services", sentenceName: "Services inflation", format: "pct", kind: "rate",
         explain: "The change in prices of things like haircuts, restaurant meals, insurance and fares.",
         why: "Service prices are driven mostly by wages, so persistent services inflation is a sign that pay growth is feeding into prices.",
       }),
       s("goods-inflation", "D7NM", "mm23", PRICES, {
-        label: "Prices of goods", sentenceName: "Goods inflation", format: "pct", kind: "rate",
+        realMode: "relative", label: "Prices of goods", sentenceName: "Goods inflation", format: "pct", kind: "rate",
         explain: "The change in prices of physical things such as food, clothes, furniture and fuel.",
         why: "Goods prices swing with world commodity prices and exchange rates, so they often cause sudden jumps and falls in headline inflation.",
       }),
       s("food", "D7G8", "mm23", PRICES, {
-        label: "Food and non-alcoholic drinks", sentenceName: "Food and drink inflation", headline: true, format: "pct", kind: "rate",
+        realMode: "relative", label: "Food and non-alcoholic drinks", sentenceName: "Food and drink inflation", headline: true, format: "pct", kind: "rate",
         explain: "How much the price of food and soft drinks has changed over the past year.",
         why: "Food takes a bigger share of the budget of lower-income households, so food price rises hit them hardest.",
       }),
       s("energy", "D7GT", "mm23", PRICES, {
-        label: "Electricity, gas and other fuels", sentenceName: "Home energy inflation", headline: true, format: "pct", kind: "rate",
+        realMode: "relative", label: "Electricity, gas and other fuels", sentenceName: "Home energy inflation", headline: true, format: "pct", kind: "rate",
         explain: "The change in what households pay for electricity, gas and heating fuel.",
         why: "Energy bills were the main driver of the 2022 inflation spike and are heavily shaped by government policy and world markets.",
       }),
       s("rents", "D7GQ", "mm23", PRICES, {
-        label: "Rents", sentenceName: "Rent inflation", format: "pct", kind: "rate",
+        realMode: "relative", label: "Rents", sentenceName: "Rent inflation", format: "pct", kind: "rate",
         explain: "The change in what private tenants pay to rent a home, compared with a year earlier.",
         why: "About one in five households rents privately, so rents are a major part of the cost of living for younger people.",
       }),
       s("transport", "D7GE", "mm23", PRICES, {
-        label: "Transport", sentenceName: "Transport inflation", format: "pct", kind: "rate",
+        realMode: "relative", label: "Transport", sentenceName: "Transport inflation", format: "pct", kind: "rate",
         explain: "Fuel, fares and the cost of buying and running a vehicle.",
         why: "Fuel duty, rail fares and car costs are all affected by government decisions as well as world prices.",
       }),
       s("eating-out", "D7GI", "mm23", PRICES, {
-        label: "Restaurants and hotels", sentenceName: "Restaurant and hotel inflation", format: "pct", kind: "rate",
+        realMode: "relative", label: "Restaurants and hotels", sentenceName: "Restaurant and hotel inflation", format: "pct", kind: "rate",
         explain: "What people pay for meals out, coffee, pubs and hotel stays.",
         why: "It reflects wage and rent costs for hospitality businesses, which employ a large share of young workers.",
       }),
@@ -351,12 +374,74 @@ export const SECTORS = [
     key: "health",
     label: "Health",
     title: "Health",
-    hint: "NHS staff, sickness and deaths",
-    subtitle: "A few official measures of the nation's health: how many people work for the NHS, how many are kept out of work by long-term illness, and how many deaths are registered each week.",
-    story: "The NHS is the largest public service, and ill health is one of the biggest reasons people are out of work. These measures show the strain on both.",
+    hint: "Waiting times, A&E, cancer and staff",
+    subtitle: "How long patients wait for hospital treatment, A&E, cancer care and an ambulance, set against the NHS's standards and the government's goals, plus staffing, sickness and deaths.",
+    story: "Waiting times are how most people feel the state of the NHS. A long wait for an operation, a trolley in A&E or an ambulance that is slow to arrive each show up in these figures, and each is a target the government has promised to hit.",
     accent: "#D9453B",
     weeklyDeaths: true,
     series: [
+      f("rtt-waiting", "rtt-waiting", NHS_SOURCE, {
+        label: "People waiting for hospital treatment", sentenceName: "The NHS waiting list in England", headline: true, format: "count", kind: "level", timeWord: "in",
+        explain: "The size of the NHS waiting list in England: the number of waits (called 'pathways') that have started and not yet ended in treatment or a decision that none is needed. One person can be waiting for more than one thing.",
+        why: "It is the most-quoted measure of NHS pressure. A list this long means millions of people living with pain or worry while they wait.",
+      }),
+      f("rtt-within-18", "rtt-within-18", NHS_SOURCE, {
+        label: "Waiting list: share seen within 18 weeks", sentenceName: "The share of people on the waiting list who had waited under 18 weeks", headline: true, format: "pct", kind: "rate",
+        explain: "Of everyone waiting for hospital treatment in England, the share who have been waiting for less than 18 weeks. The NHS standard is that 92% should.",
+        why: "The standard has not been met since 2016. The government has promised to meet it, so this is the number to watch for whether that promise is being kept.",
+        targets: [{ value: 92, label: "NHS standard: 92%" }, { value: 65, label: "March 2026 goal: 65%" }],
+      }),
+      f("rtt-over-52", "rtt-over-52", NHS_SOURCE, {
+        label: "People waiting over a year", sentenceName: "The number of patients waiting more than a year", headline: true, format: "count", kind: "level",
+        explain: "The number of waits that have lasted more than 52 weeks, on the waiting list for hospital treatment in England.",
+        why: "A year-long wait is the clearest sign a patient is not getting care when they need it. The NHS aims for almost nobody to wait this long.",
+      }),
+      f("rtt-median", "rtt-median", NHS_SOURCE, {
+        label: "Typical wait for treatment", sentenceName: "The median wait of people on the waiting list", format: "weeks", kind: "level",
+        explain: "The wait of the person in the middle of the list: half have waited less, half more. It is for those still waiting, not those who have been treated.",
+        why: "The headline waiting list can hide how long people really wait. The median shows what a typical patient faces, though it is lower than the longest waits.",
+      }),
+      f("ae-4-hour", "ae-4-hour", NHS_SOURCE, {
+        label: "A&E: share seen within 4 hours", sentenceName: "The share of A&E attendances dealt with within four hours", headline: true, format: "pct", kind: "rate",
+        explain: "The share of everyone attending an A&E department or urgent care centre in England who was admitted, transferred or sent home within four hours of arriving.",
+        why: "A&E is where emergencies and the pressures of the rest of the NHS meet. The standard is 95%, last met in 2015.",
+        targets: [{ value: 95, label: "NHS standard: 95%" }, { value: 78, label: "March 2026 goal: 78%" }],
+      }),
+      f("ae-4-hour-major", "ae-4-hour-major", NHS_SOURCE, {
+        label: "Major A&E departments: share seen within 4 hours", sentenceName: "The share of attendances at major A&E departments dealt with within four hours", format: "pct", kind: "rate",
+        explain: "The same four-hour measure, for the full 24-hour hospital A&E departments only (not minor injury units or walk-in centres, which are quicker).",
+        why: "The sickest patients go to these departments, so this is the harder test, and usually the lower number.",
+      }),
+      f("cancer-62-day", "cancer-62-day", NHS_SOURCE, {
+        label: "Cancer: treated within 62 days of an urgent referral", sentenceName: "The share of cancer patients who started treatment within 62 days of an urgent referral", headline: true, format: "pct", kind: "rate",
+        explain: "Of people urgently referred by a GP with suspected cancer (or after a screening), the share who began their first treatment within two months in England.",
+        why: "Cancer is more likely to be treated successfully when it is caught and treated early, so delays here can cost lives.",
+        targets: [{ value: 85, label: "NHS standard: 85%" }, { value: 75, label: "March 2026 goal: 75%" }],
+      }),
+      f("cancer-28-day", "cancer-28-day", NHS_SOURCE, {
+        label: "Cancer: told within 28 days of an urgent referral", sentenceName: "The share of urgently referred patients told within 28 days whether they have cancer", format: "pct", kind: "rate",
+        explain: "Of people urgently referred with suspected cancer, the share who were told within four weeks that they have cancer or that it has been ruled out (the Faster Diagnosis Standard).",
+        why: "The wait for an answer is often the hardest part. This is the earliest warning of delays further along the cancer pathway.",
+        targets: [{ value: 80, label: "Standard from April 2026: 80%" }],
+      }),
+      f("cancer-31-day", "cancer-31-day", NHS_SOURCE, {
+        label: "Cancer: first treatment within 31 days of a decision", sentenceName: "The share of cancer patients who began treatment within 31 days of the decision to treat", format: "pct", kind: "rate",
+        explain: "Of people with cancer who have agreed a treatment plan, the share who began treatment within a month.",
+        why: "Once a plan is agreed, delays are hard to justify. The standard is met more often than the other cancer targets.",
+        targets: [{ value: 96, label: "NHS standard: 96%" }],
+      }),
+      f("ambulance-c2", "ambulance-c2", NHS_SOURCE, {
+        label: "Ambulances: average response to emergencies", sentenceName: "The average ambulance response time to emergencies such as strokes and heart attacks", verb: "was", headline: true, format: "minutes", kind: "level",
+        explain: "The average time from a 999 call being answered to an ambulance arriving, for Category 2 calls: emergencies such as strokes, chest pain and serious burns, in England.",
+        why: "For a stroke or heart attack, minutes matter. The standard is 18 minutes on average. The government's goal is 30 minutes.",
+        targets: [{ value: 30, label: "2025/26 goal: 30 minutes" }, { value: 18, label: "NHS standard: 18 minutes" }],
+      }),
+      f("ambulance-c1", "ambulance-c1", NHS_SOURCE, {
+        label: "Ambulances: average response to life-threatening calls", sentenceName: "The average ambulance response time to life-threatening calls", verb: "was", format: "minutes", kind: "level",
+        explain: "The average time from a 999 call being answered to an ambulance arriving, for Category 1 calls: cardiac arrests and other immediately life-threatening emergencies, in England.",
+        why: "These are the most urgent calls. The standard is an average of 7 minutes.",
+        targets: [{ value: 7, label: "NHS standard: 7 minutes" }],
+      }),
       s("nhs-staff", "G7GL", "pse", PUBLIC_WORKERS, {
         label: "NHS staff", sentenceName: "NHS employment (full-time equivalent)", headline: true, format: "thousands", kind: "level",
         explain: "People working for the NHS across the UK, counted as full-time equivalents, so two half-time jobs count as one.",
@@ -434,7 +519,7 @@ export const SECTORS = [
         why: "Flats are the usual first rung for younger buyers, especially in cities.",
       }),
       s("rents-rate", "D7GQ", "mm23", PRICES, {
-        label: "Rents, change on a year earlier", sentenceName: "Rent inflation", headline: true, format: "pct", kind: "rate",
+        realMode: "relative", label: "Rents, change on a year earlier", sentenceName: "Rent inflation", headline: true, format: "pct", kind: "rate",
         explain: "How much more private tenants pay to rent a home than a year earlier.",
         why: "Rent rises hit younger and lower-income households hardest, and feed into debates about rent controls and housebuilding.",
       }),
@@ -444,10 +529,30 @@ export const SECTORS = [
         why: "It shows the cumulative rise in rents over years, which single-year percentages hide.",
       }),
       s("home-energy", "D7GT", "mm23", PRICES, {
-        label: "Electricity, gas and other fuels", sentenceName: "Home energy inflation", format: "pct", kind: "rate",
+        realMode: "relative", label: "Electricity, gas and other fuels", sentenceName: "Home energy inflation", format: "pct", kind: "rate",
         explain: "The change in what households pay for electricity, gas and heating fuel.",
         why: "Heating a home is a large and unavoidable cost, and a major reason for fuel poverty debates.",
       }),
+      f("homes-net", "homes-net", HOUSING_SUPPLY_SOURCE, {
+        yearEnding: true, label: "New homes added in England each year", sentenceName: "Net additional dwellings in England", verb: "were", headline: true, format: "count", kind: "level",
+        explain: "The net increase in the number of homes in England over a financial year (April to March): new builds, plus homes created by converting other buildings, minus those demolished or merged.",
+        why: "It is the official measure of how fast the country is building homes. The government has promised 1.5 million over the parliament, which needs about 300,000 a year.",
+        targets: [{ value: 300000, label: "Needed for 1.5 million in five years: 300,000" }],
+      }),
+      d("homes-completed-12m", { op: "sum", n: 4, from: "homes-completed-q" }, {
+        yearEnding: true, label: "New homes finished in England over 12 months", sentenceName: "New homes completed in England", verb: "were", headline: true, format: "count", kind: "level",
+        explain: "The number of new homes completed in England over the last four quarters, counting newly built homes only (not conversions), from building control records.",
+        why: "It is the quickest read on whether building is speeding up, because it is published quarterly, ahead of the annual figure.",
+      }),
+      d("homes-started-12m", { op: "sum", n: 4, from: "homes-started-q" }, {
+        yearEnding: true, label: "New homes started in England over 12 months", sentenceName: "New homes started in England", verb: "were", format: "count", kind: "level",
+        explain: "The number of new homes where building work began in England over the last four quarters.",
+        why: "Homes started now are homes finished in a year or two, so this is the best early sign of whether the building target can be met.",
+      }),
+    ],
+    inputs: [
+      f("homes-completed-q", "homes-completed", HOUSING_SUPPLY_SOURCE, { label: "New homes completed each quarter", sentenceName: "New homes completed", format: "count", kind: "level", explain: "New homes completed in England each quarter.", why: "A building block for the 12-month total." }),
+      f("homes-started-q", "homes-started", HOUSING_SUPPLY_SOURCE, { label: "New homes started each quarter", sentenceName: "New homes started", format: "count", kind: "level", explain: "New homes started in England each quarter.", why: "A building block for the 12-month total." }),
     ],
   },
   {
@@ -706,37 +811,37 @@ export const SECTORS = [
     accent: "#3D5AFE",
     series: [
       b("bank-rate", "IUDBEDR", "last", {
-        label: "Bank Rate", sentenceName: "Bank Rate", headline: true, format: "pct2", kind: "rate",
+        realMode: "rate", label: "Bank Rate", sentenceName: "Bank Rate", headline: true, format: "pct2", kind: "rate",
         explain: "The interest rate set by the Bank of England's Monetary Policy Committee. The figure shown is the rate on the last day of each month.",
         why: "It is the starting point for almost every other interest rate, so a change feeds through to mortgages, loans and savings accounts.",
       }),
       b("mortgage-2y", "IUMBV34", "month", {
-        label: "Two-year fixed mortgage rate", sentenceName: "The average two-year fixed mortgage rate (for a 75% loan against the home's value)", headline: true, format: "pct2", kind: "rate",
+        realMode: "rate", label: "Two-year fixed mortgage rate", sentenceName: "The average two-year fixed mortgage rate (for a 75% loan against the home's value)", headline: true, format: "pct2", kind: "rate",
         explain: "The average interest rate on new two-year fixed-rate mortgages where the borrower has a 25% deposit (a 75% loan-to-value), across UK lenders.",
         why: "It is what many homebuyers and remortgagers actually pay. A one-point rise adds roughly £60 a month to the repayments on every £100,000 borrowed.",
       }),
       b("mortgage-5y", "IUMBV42", "month", {
-        label: "Five-year fixed mortgage rate", sentenceName: "The average five-year fixed mortgage rate (for a 75% loan against the home's value)", format: "pct2", kind: "rate",
+        realMode: "rate", label: "Five-year fixed mortgage rate", sentenceName: "The average five-year fixed mortgage rate (for a 75% loan against the home's value)", format: "pct2", kind: "rate",
         explain: "The average interest rate on new five-year fixed-rate mortgages with a 25% deposit, across UK lenders.",
         why: "Five-year deals give certainty for longer. They follow what lenders expect rates to do, so they can move before the Bank does.",
       }),
       b("mortgage-2y-90", "IUMB482", "month", {
-        label: "Two-year fixed mortgage rate for small deposits", sentenceName: "The average two-year fixed mortgage rate for a 90% loan against the home's value", format: "pct2", kind: "rate",
+        realMode: "rate", label: "Two-year fixed mortgage rate for small deposits", sentenceName: "The average two-year fixed mortgage rate for a 90% loan against the home's value", format: "pct2", kind: "rate",
         explain: "The average interest rate on new two-year fixed-rate mortgages where the borrower has only a 10% deposit (a 90% loan-to-value).",
         why: "Buyers with small deposits pay more. The gap between this and the main rate shows how much extra risk lenders are charging for.",
       }),
       b("credit-card", "IUMCCTL", "month", {
-        label: "Credit card interest rate", sentenceName: "The average credit card interest rate", format: "pct2", kind: "rate",
+        realMode: "rate", label: "Credit card interest rate", sentenceName: "The average credit card interest rate", format: "pct2", kind: "rate",
         explain: "The average interest rate that UK lenders charge on credit card borrowing for households.",
         why: "Credit card debt is one of the dearest ways to borrow, so people who carry a balance feel interest rates quickly.",
       }),
       b("savings-bond", "IUMWTFA", "month", {
-        label: "One-year fixed savings bond rate", sentenceName: "The average one-year fixed savings bond rate", format: "pct2", kind: "rate",
+        realMode: "rate", label: "One-year fixed savings bond rate", sentenceName: "The average one-year fixed savings bond rate", format: "pct2", kind: "rate",
         explain: "The average interest rate paid to households on one-year fixed-rate savings bonds, including unconditional bonuses.",
         why: "It shows what savers can earn. When it is below inflation, savings lose buying power even as they grow.",
       }),
       b("gilt-10y", "IUMAMNPY", "month", {
-        label: "UK government 10-year borrowing rate", sentenceName: "The UK government's 10-year borrowing rate", headline: true, format: "pct2", kind: "rate",
+        realMode: "rate", label: "UK government 10-year borrowing rate", sentenceName: "The UK government's 10-year borrowing rate", headline: true, format: "pct2", kind: "rate",
         explain: "The yield on 10-year UK government bonds (gilts): what investors require each year for lending to the government for ten years. Monthly average.",
         why: "It is the cost of government borrowing and sets the tone for mortgage and business loan rates. A sharp rise can force a government to rethink its plans.",
       }),
@@ -765,6 +870,128 @@ export const SECTORS = [
         explain: "The number of new mortgages approved each month to people who already own their home and are switching to a new deal. Seasonally adjusted.",
         why: "When fixed deals end into higher rates, many people remortgage at once, which is how rate rises reach household budgets.",
       }),
+    ],
+  },
+
+  {
+    key: "immigration",
+    label: "Immigration",
+    title: "Immigration and asylum",
+    hint: "Net migration, small boats and asylum",
+    subtitle: "How many people come to live in the UK and leave it, how many cross the Channel in small boats, how many claim asylum and how long they wait, and how many visas are granted.",
+    story: "Immigration is one of the most debated subjects in politics, and the numbers behind it are often misquoted. These figures keep legal migration, asylum and small boat crossings apart, since they are different things with different causes.",
+    accent: "#2C7DA0",
+    series: [
+      f("migration-net", "migration-net", ONS_MIGRATION_SOURCE, {
+        yearEnding: true, label: "Net migration", sentenceName: "Net migration", verb: "was", headline: true, format: "count", kind: "level",
+        explain: "The number of people moving to live in the UK for a year or more, minus the number leaving, over the year. A positive number means the population grows through migration.",
+        why: "It is the figure most quoted in the immigration debate. The government has promised to reduce it, and it fell sharply from its 2023 peak.",
+      }),
+      f("migration-in", "migration-in", ONS_MIGRATION_SOURCE, {
+        yearEnding: true, label: "People arriving to live in the UK", sentenceName: "Long-term immigration", verb: "was", headline: true, format: "count", kind: "level",
+        explain: "The number of people arriving to live in the UK for a year or more, over the year, whatever their nationality, including British citizens returning.",
+        why: "Net migration is the gap between arrivals and departures, so the two halves tell different stories. Arrivals show demand to come, mostly for work and study.",
+      }),
+      f("migration-out", "migration-out", ONS_MIGRATION_SOURCE, {
+        yearEnding: true, label: "People leaving the UK", sentenceName: "Long-term emigration", verb: "was", format: "count", kind: "level",
+        explain: "The number of people leaving the UK to live abroad for a year or more, over the year.",
+        why: "Departures have risen as many who came on study and work visas leave when they end, which pulls net migration down.",
+      }),
+      f("migration-non-eu", "migration-non-eu", ONS_MIGRATION_SOURCE, {
+        yearEnding: true, label: "Arrivals from outside Europe", sentenceName: "Immigration of non-EU+ nationals", verb: "was", format: "count", kind: "level",
+        explain: "People arriving to live in the UK for a year or more who are not British, or from the EU, Norway, Iceland, Liechtenstein or Switzerland. Most come on work, study or family visas.",
+        why: "Since Brexit most arrivals are from outside Europe, and this group responds to changes in visa rules.",
+      }),
+      f("small-boats-month", "boats-month", BOATS_SOURCE, {
+        label: "Small boat arrivals each month", sentenceName: "The number of people who arrived in the UK in small boats", verb: "was", format: "count", kind: "level",
+        explain: "The number of people detected crossing the English Channel in small boats and arriving in the UK in the month. Figures are provisional operational data.",
+        why: "Crossings are highest in calm summer weather, so compare the same month in different years rather than neighbouring months.",
+      }),
+      d("small-boats-12m", { op: "sum", n: 12, from: "small-boats-month" }, {
+        yearEnding: true, label: "Small boat arrivals over 12 months", sentenceName: "The number of people who arrived in the UK in small boats", verb: "was", headline: true, format: "count", kind: "level",
+        explain: "The number of people who arrived by small boat over the last 12 months, which smooths out the weather.",
+        why: "Small boat crossings are a small share of total migration but a large share of the political argument, and the government has promised to break the smuggling gangs behind them.",
+      }),
+      f("asylum-claims", "asylum-claims", HOME_OFFICE_SOURCE, {
+        yearEnding: true, label: "People claiming asylum", sentenceName: "The number of people who claimed asylum in the UK", verb: "was", headline: true, format: "count", kind: "level",
+        explain: "The number of people who made an asylum claim in the UK in the year, counting main applicants and their dependants, whether they arrived by small boat, plane or lorry.",
+        why: "Asylum claims are different from migration for work or study: a person fleeing persecution can ask for protection regardless of how they arrived.",
+      }),
+      f("asylum-awaiting", "asylum-awaiting", HOME_OFFICE_SOURCE, {
+        timeWord: "as at", label: "People awaiting an asylum decision", sentenceName: "The number of people awaiting an initial decision on their asylum claim", verb: "was", headline: true, format: "count", kind: "level",
+        explain: "The number of people who have claimed asylum and are still waiting for the Home Office's first decision, counted on the last day of the period.",
+        why: "A long backlog means people wait in limbo, often in taxpayer-funded accommodation. Clearing it is central to the government's plans.",
+      }),
+      f("asylum-hotels", "asylum-hotels", HOME_OFFICE_SOURCE, {
+        timeWord: "as at", label: "Asylum seekers in hotels", sentenceName: "The number of asylum seekers accommodated in hotels", verb: "was", headline: true, format: "count", kind: "level",
+        explain: "The number of people waiting for an asylum decision who were housed in hotels, counted on the last day of the period.",
+        why: "Hotels are the most expensive and the most controversial way to house asylum seekers. The government promised to end their use.",
+        targets: [{ value: 0, label: "Pledge: end hotel use" }],
+      }),
+      f("asylum-support", "asylum-support", HOME_OFFICE_SOURCE, {
+        timeWord: "as at", label: "Asylum seekers receiving support", sentenceName: "The number of asylum seekers in receipt of Home Office support", verb: "was", format: "count", kind: "level",
+        explain: "The number of people who have claimed asylum and receive accommodation or money from the Home Office because they would otherwise be destitute, counted on the last day of the period.",
+        why: "People seeking asylum are not allowed to work in most cases, so those without savings depend on this support, which is a major part of the cost.",
+      }),
+      f("asylum-grant-rate", "asylum-grant-rate", HOME_OFFICE_SOURCE, {
+        yearEnding: true, label: "Share of asylum claims granted", sentenceName: "The share of asylum claims granted protection or other leave at first decision", format: "pct", kind: "rate",
+        explain: "Of the asylum decisions made in the year, the share granting protection or other permission to stay. Decisions made in the year are not the same people as claims made in the year.",
+        why: "It varies a lot between nationalities and years, as conflicts change who is claiming. It is the figure used to argue that most claims are, or are not, genuine.",
+      }),
+      f("returns-enforced", "returns-enforced", HOME_OFFICE_SOURCE, {
+        yearEnding: true, label: "Enforced returns", sentenceName: "Enforced returns from the UK", verb: "were", format: "count", kind: "level",
+        explain: "The number of people the Home Office removed from the UK against their wishes, such as people who had no right to stay or foreign national offenders, over the year.",
+        why: "Returns are the other side of the system. The government has promised to speed them up, and has added staff to do so.",
+      }),
+      f("returns-voluntary", "returns-voluntary", HOME_OFFICE_SOURCE, {
+        yearEnding: true, label: "Voluntary returns", sentenceName: "Voluntary returns from the UK", verb: "were", format: "count", kind: "level",
+        explain: "The number of people who left after being told they had no right to stay, and did so without being forced, often with help from the Home Office, over the year.",
+        why: "Voluntary returns are cheaper than forced ones and now far outnumber them.",
+      }),
+      f("visas-work", "visas-work", HOME_OFFICE_SOURCE, {
+        yearEnding: true, label: "Work visas granted", sentenceName: "Work visas granted", verb: "were", format: "count", kind: "level",
+        explain: "The number of visas granted to people coming to work, including skilled workers, health and care workers and temporary workers, but not their dependants, over the year.",
+        why: "Work visa rules are the most direct lever on legal migration, and they were tightened in 2024 after a record peak.",
+      }),
+      f("visas-study", "visas-study", HOME_OFFICE_SOURCE, {
+        yearEnding: true, label: "Study visas granted", sentenceName: "Study visas granted", verb: "were", format: "count", kind: "level",
+        explain: "The number of visas granted to people coming to study, mainly at universities, over the year.",
+        why: "International students pay higher fees that help fund universities. Most leave when their course ends, and some stay on other visas.",
+      }),
+      f("visas-family", "visas-family", HOME_OFFICE_SOURCE, {
+        yearEnding: true, label: "Family visas granted", sentenceName: "Family visas granted", verb: "were", format: "count", kind: "level",
+        explain: "The number of visas granted to partners, children and other relatives of people already living in the UK, over the year.",
+        why: "Family visas are shaped by income requirements, which have been raised.",
+      }),
+    ],
+    inputs: [],
+  },
+  {
+    // The Regions page draws its own interactive map. These are the extra figures it needs by region;
+    // house prices and unemployment come from the Housing and Jobs pages' files.
+    key: "regions",
+    label: "Regions and nations",
+    title: "Regions and nations",
+    hint: "Maps of prices, jobs and more",
+    subtitle: "How the 12 regions and nations of the UK compare, on an interactive map you can play through time.",
+    story: "The UK is one of the most regionally unequal rich countries. Where you live shapes what your home costs, how likely you are to have a job, and what you earn.",
+    accent: "#B5651D",
+    custom: true,
+    series: [],
+    inputs: [
+      ...REGION_ROWS.flatMap((r) => [
+        s(`emp-${r.key}`, r.emp, "lms", EMPLOYMENT, { label: `${r.name}: employment rate`, place: r.name, sentenceName: `The employment rate in ${r.name}`, format: "pct", kind: "rate", explain: `The share of people aged 16 to 64 in ${r.name} who are in paid work.`, why: "A high employment rate means most working-age people have a job." }),
+        r.inact
+          ? s(`inact-${r.key}`, r.inact, "lms", `${NOT_IN_WORK}/economicinactivity`, { label: `${r.name}: economic inactivity rate`, place: r.name, sentenceName: `Economic inactivity in ${r.name}`, format: "pct", kind: "rate", explain: `The share of people aged 16 to 64 in ${r.name} who are neither working nor looking for work.`, why: "Inactivity includes students, carers and people who are long-term sick." })
+          : null,
+        r.activity
+          ? s(`activity-${r.key}`, r.activity, "lms", EMPLOYMENT, { label: `${r.name}: economic activity rate`, place: r.name, sentenceName: `Economic activity in ${r.name}`, format: "pct", kind: "rate", explain: `The share of people aged 16 to 64 in ${r.name} who are working or looking for work.`, why: "Used to work out the inactivity rate." })
+          : null,
+        r.activity
+          ? d(`inact-${r.key}`, { op: "complement", from: `activity-${r.key}` }, { label: `${r.name}: economic inactivity rate`, place: r.name, sentenceName: `Economic inactivity in ${r.name}`, format: "pct", kind: "rate", explain: `The share of people aged 16 to 64 in ${r.name} who are neither working nor looking for work, worked out as 100% minus the activity rate.`, why: "Inactivity includes students, carers and people who are long-term sick." })
+          : null,
+        h(`hpichg-${r.key}`, r.hpi, "percentageAnnualChange", { label: `${r.name}: house price change on a year earlier`, place: r.name, sentenceName: `Annual house price growth in ${r.name}`, format: "pct", kind: "rate", explain: `How much average house prices in ${r.name} have changed compared with a year earlier.`, why: "Rising prices help owners and make it harder for first-time buyers." }),
+      ]).filter(Boolean),
     ],
   },
 ];

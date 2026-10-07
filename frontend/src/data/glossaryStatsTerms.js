@@ -69,6 +69,21 @@ export const STATISTICS_TERMS = [
   { term: "Exchange Rate", def: "How much of one currency another buys. A rise in the pound against the dollar means a pound buys more dollars, which makes imports cheaper and exports dearer for other countries.", aliases: ["exchange rates", "effective exchange rate", "sterling index"], auto: false },
   { term: "Mortgage Approvals", def: "The number of new home loans lenders agree each month. An approval comes weeks before the sale completes, so it is an early guide to where the housing market is heading.", aliases: ["mortgage approval", "remortgaging approvals"] },
 
+  // Health
+  { term: "Referral to Treatment (RTT)", def: "The measure of how long patients in England wait from being referred by a GP to starting hospital treatment. The NHS standard is that 92% of people waiting should have waited under 18 weeks.", aliases: ["RTT", "18-week standard", "18 weeks standard", "waiting list"] },
+  { term: "Faster Diagnosis Standard", def: "The NHS standard that people urgently referred with suspected cancer are told within 28 days whether or not they have cancer. The target is for 80% of patients to meet it.", aliases: ["28-day standard", "28-day faster diagnosis"] },
+  { term: "Category 2 Ambulance Call", def: "A 999 call for an emergency such as a stroke, heart attack or serious injury, where the patient is not in immediate danger of dying. The NHS standard is an average response of 18 minutes. Category 1 is for immediately life-threatening cases, with a 7-minute standard.", aliases: ["category 2", "category 1", "ambulance response times"] },
+
+  // Housing supply
+  { term: "Net Additional Dwellings", def: "The official measure of how many homes England gains in a year: new builds and conversions of other buildings, minus homes demolished or merged.", aliases: ["net additional dwelling", "housing supply"] },
+  { term: "Housing Starts and Completions", def: "A start is when building work begins on a new home, and a completion is when it is finished. Starts predict completions about a year or two later.", aliases: ["housing starts", "housing completions", "homes completed"] },
+
+  // Immigration
+  { term: "Asylum Seeker", def: "Someone who has asked a government for protection because they fear persecution at home and is waiting for a decision. If the claim succeeds, they become a refugee.", aliases: ["asylum seekers", "asylum claim", "asylum claims", "asylum"] },
+  { term: "Refugee", def: "Someone who has been recognised as needing protection because they cannot safely return to their own country. The UK grants refugee status through the asylum system and through resettlement schemes.", aliases: ["refugees"], auto: false },
+  { term: "Small Boat Crossings", def: "People who cross the English Channel from France in small boats to reach the UK, often to claim asylum. Crossings are counted by the Home Office and are highest in calm summer weather.", aliases: ["small boats", "small boat arrivals", "channel crossings"] },
+  { term: "Immigration Rules", def: "The detailed rules, set by the Home Secretary and approved by Parliament, that decide who may enter or stay in the UK and on what conditions, for example the salary needed for a work visa.", aliases: ["visa rules"] },
+
   // Population
   { term: "Mid-Year Population Estimate", def: "The ONS's official estimate of how many people live in each part of the UK on 30 June each year, built from the Census with births, deaths and migration added.", aliases: ["population estimate", "population estimates", "mid-year estimate"] },
   { term: "Net Migration", def: "The number of people moving to live in the UK minus the number moving away, over a year. A positive number means the population is growing from migration.", aliases: ["net international migration"] },

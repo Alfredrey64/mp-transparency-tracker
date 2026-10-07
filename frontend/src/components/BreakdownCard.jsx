@@ -39,10 +39,6 @@ function BreakdownCard({ spec, series, accent }) {
       className="ons-anchor"
       aria-labelledby={`h-${spec.id}`}
       style={{ ...card, position: "relative", overflow: "hidden", gridColumn: "1 / -1" }}
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true, margin: "0px 0px 200px 0px" }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
     >
       <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `linear-gradient(180deg, ${accent}, ${accent}22)` }} />
       <h2 id={`h-${spec.id}`} style={cardTitle}>{spec.title}</h2>

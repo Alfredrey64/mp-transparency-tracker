@@ -3,7 +3,7 @@
 // The part after the page name reads  <chart>.<range>.<flags>[.<places>]
 //   chart   a series id, or the id of a places chart
 //   range   years to show, 0 for everything
-//   flags   r = in today's money, g = government shading, i = indexed (places), - = none
+//   flags   r = inflation taken out (real terms), g = government shading, i = indexed (places), - = none
 //   places  for a places chart, the places ticked, joined with +
 // For example  #/housing/hpi-london.10.r  or  #/population/population-nations.0.i.england+wales
 

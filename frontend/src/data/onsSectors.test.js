@@ -20,11 +20,13 @@ describe("Britain in numbers sectors", () => {
     for (const sector of SECTORS) {
       const ids = sectorSeries(sector).map((x) => x.id);
       expect(new Set(ids).size).toBe(ids.length);
-      expect(sector.series.some((x) => x.headline)).toBe(true);
+      if (!sector.custom) expect(sector.series.some((x) => x.headline)).toBe(true);
       for (const def of sectorSeries(sector)) {
         if (def.derive) {
           expect(ids).toContain(def.derive.from);
           if (def.derive.of) expect(ids).toContain(def.derive.of);
+        } else if (def.feed) {
+          expect(def.feed).toMatch(/^[a-z0-9-]+$/);
         } else if (def.boe) {
           expect(def.boe.code).toMatch(/^[A-Z0-9]{5,10}$/);
           expect(["month", "last", "mean"]).toContain(def.boe.mode);
