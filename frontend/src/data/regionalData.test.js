@@ -32,6 +32,21 @@ describe("census profile", () => {
   });
 });
 
+describe("Scotland and Northern Ireland", () => {
+  it("are filled in for the groups that can be compared, and plausible", () => {
+    const find = (cat, id) => profile.categories.find((c) => c.id === cat).groups.find((g) => g.id === id);
+    for (const [cat, id] of [["ethnicity", "asian"], ["religion", "christian"], ["age", "65-plus"], ["homes", "own-outright"], ["education", "degree"], ["health", "bad-health"], ["birth", "born-abroad"]]) {
+      const g = find(cat, id);
+      expect(g.values.scotland, `${cat}/${id}`).toBeGreaterThan(0);
+      expect(g.values.ni, `${cat}/${id}`).toBeGreaterThan(0);
+      expect(g.uk, `${cat}/${id}`).toBeGreaterThan(0);
+    }
+    // Known headlines: most people in Northern Ireland are Christian, about half in Scotland have no religion.
+    expect(find("religion", "christian").values.ni).toBeGreaterThan(75);
+    expect(find("religion", "no-religion").values.scotland).toBeGreaterThan(45);
+  });
+});
+
 describe("deprivation", () => {
   it("covers England's nine regions and nearly every council", () => {
     expect(Object.keys(deprivation.regions)).toHaveLength(9);

@@ -143,7 +143,7 @@ export default function Methodology({ onNavigate }) {
               name="Census 2021 and Annual Survey of Hours and Earnings (ONS, via Nomis)"
               url="https://www.nomisweb.co.uk/"
               auth="No key required, Open Government Licence v3.0"
-              use="The &quot;Who lives where&quot; map on the Population page: ethnic group, religion, place of birth, age, housing, qualifications, type of work and health for the regions of England and for Wales, from the 2021 Census (a one-off count, so it does not update); and median, lower and higher pay for every region and nation from the yearly Annual Survey of Hours and Earnings, which also feeds the pay map on the Regions page. Scotland and Northern Ireland counted their people in separate censuses with different questions, so the census maps leave them out."
+              use="The &quot;Who lives where&quot; map on the Population page: ethnic group, religion, place of birth, age, housing, qualifications, type of work and health for the regions of England and for Wales, from the 2021 Census (a one-off count, so it does not update); and median, lower and higher pay for every region and nation from the yearly Annual Survey of Hours and Earnings, which also feeds the pay map on the Regions page. Scotland (census held in 2022) and Northern Ireland counted their people separately, so they are filled in from the UK-wide comparison tables published by NISRA and from National Records of Scotland, only where the categories match; otherwise they are greyed out."
             />
             <SourceRow
               name="English Indices of Deprivation 2025 (Ministry of Housing, Communities and Local Government)"
