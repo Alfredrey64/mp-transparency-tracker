@@ -103,10 +103,11 @@ function PartyRing({ parties, total }) {
   const R = 62;
   const C = 2 * Math.PI * R;
   const [hover, setHover] = useState(null);
-  let offset = 0;
   const top = parties.slice(0, 7);
   const rest = parties.slice(7).reduce((n, p) => n + p.count, 0);
   const list = rest ? [...top, { name: "Other parties", count: rest, color: COLORS.inkSoft }] : top;
+  // Where each segment starts around the ring.
+  const starts = list.map((_, i) => list.slice(0, i).reduce((n, p) => n + (p.count / total) * C, 0));
   return (
     <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 150px) minmax(0, 1fr)", gap: 16, alignItems: "center" }}>
       <svg viewBox="0 0 160 160" width="100%" role="img" aria-label="Share of committee places by party" style={{ maxWidth: 170, justifySelf: "center" }}>
@@ -114,14 +115,12 @@ function PartyRing({ parties, total }) {
         <g transform="rotate(-90 80 80)">
           {list.map((p, i) => {
             const len = (p.count / total) * C;
-            const seg = (
+            return (
               <circle
                 key={p.name} className="cm-seg" cx="80" cy="80" r={R} fill="none" stroke={p.color} strokeWidth="24"
-                style={{ "--C": C, "--len": Math.max(0, len - 1.5), "--rest": C - Math.max(0, len - 1.5), "--i": i, strokeDashoffset: -offset, opacity: hover && hover !== p.name ? 0.25 : 1, transition: "opacity 0.15s" }}
+                style={{ "--C": C, "--len": Math.max(0, len - 1.5), "--rest": C - Math.max(0, len - 1.5), "--i": i, strokeDashoffset: -starts[i], opacity: hover && hover !== p.name ? 0.25 : 1, transition: "opacity 0.15s" }}
               />
             );
-            offset += len;
-            return seg;
           })}
         </g>
         <text x="80" y="78" textAnchor="middle" fontFamily={FONT_DISPLAY} fontSize="26" fontWeight="700" fill={COLORS.ink}>{total}</text>
