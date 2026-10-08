@@ -22,8 +22,8 @@ const SEAT_RADIUS = 6.2;
 // How long the opening sweep takes to cross the dome, left to right.
 const SWEEP_SECONDS = 1;
 
-function computeSeatPositions(total, rows = ROWS) {
-  const radii = Array.from({ length: rows }, (_, i) => INNER_RADIUS + i * ROW_STEP);
+function computeSeatPositions(total, rows = ROWS, inner = INNER_RADIUS, step = ROW_STEP) {
+  const radii = Array.from({ length: rows }, (_, i) => inner + i * step);
   const totalRadius = radii.reduce((a, b) => a + b, 0);
   const counts = radii.map((r) => Math.max(1, Math.round((r / totalRadius) * total)));
   let diff = total - counts.reduce((a, b) => a + b, 0);
@@ -47,7 +47,7 @@ function computeSeatPositions(total, rows = ROWS) {
 
 // `rows` is how many concentric rows the dome has: fewer for a small body (a
 // council of 57), the default for the Commons.
-export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Independent", legendCount = 8, centre = null, rows: rowCount = ROWS, maxWidth = null }) {
+export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Independent", legendCount = 8, centre = null, rows: rowCount = ROWS, maxWidth = null, inner = INNER_RADIUS, step = ROW_STEP, seatRadius = SEAT_RADIUS }) {
   const [hoveredParty, setHoveredParty] = useState(null);
   // The seats sweep in from the left the first time the dome scrolls into
   // view. Until then they are held invisible, so nothing flashes on first paint.
@@ -70,7 +70,7 @@ export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Ind
 
   const seatData = useMemo(() => {
     if (total === 0) return [];
-    const positions = computeSeatPositions(total, rowCount);
+    const positions = computeSeatPositions(total, rowCount, inner, step);
     const out = [];
     let cursor = 0;
     for (const party of parties) {
@@ -81,11 +81,11 @@ export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Ind
       }
     }
     return out;
-  }, [parties, total, rowCount]);
+  }, [parties, total, rowCount, inner, step]);
 
   if (total === 0) return null;
 
-  const maxRadius = INNER_RADIUS + (rowCount - 1) * ROW_STEP + SEAT_RADIUS;
+  const maxRadius = inner + (rowCount - 1) * step + seatRadius;
   const viewW = maxRadius * 2 + 20;
   const viewH = maxRadius + 20;
 
@@ -112,7 +112,7 @@ export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Ind
                 className={shown && !reduce ? "seat-sweep" : undefined}
                 cx={seat.x}
                 cy={seat.y}
-                r={SEAT_RADIUS}
+                r={seatRadius}
                 fill={seat.color}
                 style={{ opacity: dimmed ? 0.18 : 1, transition: "opacity 0.15s", animationDelay: `${delay.toFixed(3)}s` }}
               />

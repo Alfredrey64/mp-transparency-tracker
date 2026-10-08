@@ -284,7 +284,7 @@ function Overview({ data }) {
       {/* Key numbers */}
       <div>
         <SectionHead kicker={`${latestYear} at a glance`} title="The key numbers" />
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(205px, 100%), 1fr))", gap: 14 }}>
+        <div className="box-row" style={{ "--n": nextDate ? 5 : 4, "--min": "170px" }}>
           <StatCard icon={IconGroup} colour="#4F46E5" value={s.councillors} label="councillors" caption={`on ${s.councils} councils across the UK. ${topParty ? `${topParty.short} is the largest party with ${fmt(topParty.count)}.` : ""}`} />
           <StatCard
             icon={IconCompare}
@@ -330,9 +330,12 @@ function Overview({ data }) {
                 legendCount={10}
                 onSelectParty={(name) => pickFromLegend(name)}
                 rows={7}
+                inner={110}
+                step={17}
+                seatRadius={4.4}
                 centre={
                   <div>
-                    <div style={{ ...numeric, fontSize: "clamp(22px, 4.6cqw, 40px)", fontWeight: 700, lineHeight: 1, color: COLORS.ink, letterSpacing: "-0.03em" }}>{s.councils}</div>
+                    <div style={{ ...numeric, fontSize: "clamp(20px, 8cqw, 40px)", fontWeight: 700, lineHeight: 1, color: COLORS.ink, letterSpacing: "-0.03em" }}>{s.councils}</div>
                     <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 2 }}>councils</div>
                   </div>
                 }
