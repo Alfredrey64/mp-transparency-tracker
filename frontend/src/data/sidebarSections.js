@@ -94,7 +94,7 @@ export const SECTIONS = [
       { key: "tax", label: "Taxes and spending", icon: IconTaxes, hint: "Where the money comes from and goes", essential: true, aka: ["tax", "income tax", "vat", "national insurance", "corporation tax", "public spending", "welfare", "benefits", "debt interest"] },
       { key: "rates", label: "Interest rates", icon: IconRates, hint: "Mortgages, savings and the pound", essential: true, aka: ["bank rate", "mortgage", "mortgages", "savings", "exchange rate", "pound", "dollar", "gilt", "base rate"] },
       { key: "environment", label: "Energy and environment", icon: IconLeaf, hint: "Emissions and energy use", aka: ["climate", "emissions", "net zero", "carbon", "energy"] },
-      { key: "deprivation", label: "Deprivation", icon: IconDeprivation, hint: "The most and least deprived areas", essential: true, aka: ["poverty", "poor", "imd", "index of multiple deprivation", "deprived", "wealthy", "rich", "left behind", "levelling up", "council"] },
+      { key: "deprivation", label: "Deprivation", icon: IconDeprivation, hint: "The most and least deprived areas, in three nations", essential: true, aka: ["poverty", "poor", "imd", "index of multiple deprivation", "deprived", "wealthy", "rich", "left behind", "levelling up", "council"] },
       { key: "regions", label: "Regions and nations", icon: IconMap, hint: "Maps of prices, jobs and more", essential: true, aka: ["map", "regional", "north south divide", "levelling up", "london", "scotland", "wales", "northern ireland", "region"] },
       { key: "indicators", label: "Compare over time", icon: IconCompareTime, hint: "Pick measures and watch them move", essential: true, aka: ["timeline", "history", "compare", "trends", "over time"] },
     ],

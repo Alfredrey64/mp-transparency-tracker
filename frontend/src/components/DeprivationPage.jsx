@@ -2,13 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme";
 import { PageHeader } from "./shared";
 import RegionCompare from "./RegionCompare";
+import DeprivationNations from "./DeprivationNations";
 import { IconDeprivation } from "./icons";
 import { REGIONS, inSentence } from "../data/regionMetrics";
 import data from "../data/deprivation.json";
 import { card, cardTitle, pillStyle } from "../lib/onsStyles";
 
-// Deprivation: the English Indices of Deprivation 2025, by region and by local authority. England only: Scotland, Wales and
-// Northern Ireland publish their own indices, built differently, which cannot be compared with these.
+// Deprivation: the English Indices of Deprivation 2025, by region and by local authority, plus Wales and Scotland's own indices
+// (DeprivationNations.jsx). Each nation's index is built differently and cannot be compared with the others.
 
 const ACCENT = "#B4432F";
 const nameOf = (key) => REGIONS.find((r) => r.key === key)?.name ?? key;
@@ -182,7 +183,10 @@ function AreaList({ domain, domainLabel }) {
   );
 }
 
+const NATIONS = [["england", "England"], ["wales", "Wales"], ["scotland", "Scotland"]];
+
 export default function DeprivationPage() {
+  const [nation, setNation] = useState("england");
   const [domain, setDomain] = useState("imd");
   const [endId, setEndId] = useState("most10");
   const [regionKey, setRegionKey] = useState(() => Object.entries(data.regions).sort((a, b) => b[1].score - a[1].score)[0][0]);
@@ -200,7 +204,16 @@ export default function DeprivationPage() {
 
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
-      <PageHeader icon={IconDeprivation} title="Deprivation" subtitle="Which parts of England are most and least deprived, region by region and council by council, from the official Indices of Deprivation 2025." maxWidth={780} />
+      <PageHeader icon={IconDeprivation} title="Deprivation" subtitle="Which parts of England, Wales and Scotland are most and least deprived, and which constituencies, from each nation's official index of deprivation." maxWidth={780} />
+
+      <div role="radiogroup" aria-label="Nation" style={{ display: "inline-flex", flexWrap: "wrap", gap: 8, marginTop: 20 }}>
+        {NATIONS.map(([id, label]) => (
+          <button key={id} type="button" role="radio" aria-checked={nation === id} className="ons-chip" onClick={() => setNation(id)} style={pillStyle(nation === id)}>{label}</button>
+        ))}
+      </div>
+
+      {nation !== "england" ? <DeprivationNations key={nation} nation={nation} /> : (
+        <>
 
       <section aria-labelledby="h-dep-what" style={{ ...card, marginTop: 24, position: "relative", overflow: "hidden" }}>
         <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `linear-gradient(180deg, ${ACCENT}, ${ACCENT}22)` }} />
@@ -211,7 +224,7 @@ export default function DeprivationPage() {
         <details className="dep-more" style={{ maxWidth: 800 }}>
           <summary className="ons-tap" style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink, cursor: "pointer", padding: "6px 0" }}>Three things to keep in mind</summary>
           <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.6, color: COLORS.inkSoft, margin: "4px 0 0" }}>
-            It ranks places against each other, so it says where is relatively worse off, not how badly off anyone is. It describes neighbourhoods, not individuals: poorer people live in every area. And it covers England only: Scotland, Wales and Northern Ireland have their own indices, built differently, so they cannot be compared and are greyed out on the map.
+            It ranks places against each other, so it says where is relatively worse off, not how badly off anyone is. It describes neighbourhoods, not individuals: poorer people live in every area. And it covers England only: Wales, Scotland and Northern Ireland have their own indices, built differently, so they cannot be compared with these. Pick Wales or Scotland above to see theirs.
           </p>
         </details>
       </section>
@@ -269,6 +282,8 @@ export default function DeprivationPage() {
       <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.6, color: COLORS.inkSoft, marginTop: 24, maxWidth: 800 }}>
         Source: <a href={data.source.url} style={{ color: "inherit" }}>{data.source.name}</a>, published in November 2025. Regions are worked out here by adding up the people in each region&apos;s neighbourhoods (mid-2022 population estimates), so a region&apos;s figure means the share of its people, not of its neighbourhoods. Council rankings are the Ministry&apos;s own, for the 2024 local authority districts. Contains public sector information licensed under the Open Government Licence v3.0.
       </p>
+        </>
+      )}
     </div>
   );
 }
