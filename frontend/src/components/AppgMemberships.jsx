@@ -199,7 +199,7 @@ export default function AppgMemberships() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.35 }}
-        style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(160px, 100%), 1fr))", gap: 14, marginBottom: 28, maxWidth: "none" }}
+        className="box-row" style={{ "--n": 3, "--min": "100px", marginBottom: 28 }}
       >
         {QUICK_FACTS.map((fact) => (
           <div

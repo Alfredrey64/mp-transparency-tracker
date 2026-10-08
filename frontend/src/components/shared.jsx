@@ -195,7 +195,7 @@ export function ScaleComparison({ bars, maxWidth = 900 }) {
   );
 }
 
-export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = "left", size = "lg", maxWidth, icon: Icon }) {
+export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = "left", size = "lg", icon: Icon }) {
   const isHero = size === "xl";
   // The page's "What you're looking at" box sits under every header.
   const guideKey = useContext(GuideKeyContext);
@@ -263,7 +263,7 @@ export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = 
             color: COLORS.inkSoft,
             marginTop: isHero ? 22 : 8,
             lineHeight: 1.6,
-            maxWidth: isHero ? 620 : maxWidth,
+            maxWidth: isHero ? 620 : 1100,
             marginLeft: align === "center" ? "auto" : undefined,
             marginRight: align === "center" ? "auto" : undefined,
           }}

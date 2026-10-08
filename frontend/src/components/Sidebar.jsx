@@ -318,6 +318,21 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician, onClose }) {
 
 export default function Sidebar({ activeView, onNavigate, onSelectPolitician }) {
   const [open, setOpen] = useState(false);
+  const barRef = useRef(null);
+
+  // The phone top bar slides away as you read down the page and comes back the moment you scroll up, so it only takes room when wanted.
+  useEffect(() => {
+    let last = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      const bar = barRef.current;
+      if (bar) bar.classList.toggle("mp-topbar-hidden", y > 90 && y > last + 4);
+      if (bar && y < last - 4) bar.classList.remove("mp-topbar-hidden");
+      last = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   function handleNav(key) {
     onNavigate(key);
@@ -333,6 +348,7 @@ export default function Sidebar({ activeView, onNavigate, onSelectPolitician }) 
     <>
       <div
         className="mp-mobile-topbar"
+        ref={barRef}
         style={{ alignItems: "center", justifyContent: "space-between", background: COLORS.sidebarBg, padding: "4px 14px" }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>

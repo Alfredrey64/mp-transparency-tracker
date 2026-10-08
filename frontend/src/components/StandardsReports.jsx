@@ -262,7 +262,7 @@ export default function StandardsReports({ onSelectPolitician }) {
       />
 
       {stats && (
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 24, marginBottom: 20 }}>
+        <div className="box-row" style={{ "--n": 3, "--min": "100px", "--gap": "12px", marginTop: 24, marginBottom: 20 }}>
           <StatCard value={stats.total} label="Reports on record" color={COLORS.accent} index={0} />
           <StatCard value={stats.suspended} label="Ended in suspension" color="#B5533C" index={1} />
           <StatCard value={stats.resigned} label="Resigned or recalled" color="#9C3B3B" index={2} />

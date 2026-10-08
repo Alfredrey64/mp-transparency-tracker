@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme";
 import { PageHeader } from "./shared";
 import RegionCompare from "./RegionCompare";
@@ -59,8 +59,10 @@ function Deciles({ regionKey, domain, accent }) {
   );
 }
 
-function AreaRow({ area, accent }) {
+// One council or constituency in the ranked list. Press it for the breakdown by kind of deprivation.
+function AreaRow({ area, kind, total, measure }) {
   const [open, setOpen] = useState(false);
+  const seat = kind === "constituencies";
   return (
     <li style={{ borderTop: `1px solid ${COLORS.hairline}` }}>
       <button type="button" className="ons-tap" aria-expanded={open} onClick={() => setOpen((o) => !o)}
@@ -71,27 +73,112 @@ function AreaRow({ area, accent }) {
           <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>{nameOf(area.region)}</span>
         </span>
         <span style={{ textAlign: "right" }}>
-          <span style={{ ...numeric, display: "block", fontSize: 15, fontWeight: 600, color: COLORS.ink }}>{f1(area.worst10)}</span>
-          <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>in worst tenth</span>
+          <span style={{ ...numeric, display: "block", fontSize: 15, fontWeight: 600, color: COLORS.ink }}>{f1(area.value)}</span>
+          <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>{seat ? "of people" : "of areas"} in worst tenth</span>
         </span>
       </button>
       {open && (
-        <div style={{ padding: "2px 4px 14px 54px" }}>
+        <div style={{ padding: "2px 4px 14px 46px" }}>
           <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.55, color: COLORS.ink, margin: "0 0 8px" }}>
-            Ranked <strong>{area.rank}</strong> of 296 local authorities in England for overall deprivation, where 1 is the most deprived. {f1(area.worst10)} of its neighbourhoods are among the most deprived tenth in England. Share of its neighbourhoods in the most deprived tenth, by kind of deprivation:
+            Number <strong>{area.rank}</strong> of {total} {seat ? "constituencies" : "local authorities"} in England for {measure.toLowerCase()}, where 1 is the most deprived. {f1(area.value)}% of its {seat ? "residents live in neighbourhoods" : "neighbourhoods are"} among the most deprived tenth in England. Overall, {f1(area.imd)}%. The share in the worst tenth, by kind of deprivation:
           </p>
           <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 6 }}>
             {data.domains.slice(1).map((d) => (
-              <li key={d.id} style={{ display: "grid", gridTemplateColumns: "minmax(0, 190px) minmax(0, 1fr) 52px", gap: 10, alignItems: "center", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink }}>
+              <li key={d.id} style={{ display: "grid", gridTemplateColumns: "minmax(0, 170px) minmax(0, 1fr) 52px", gap: 10, alignItems: "center", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink }}>
                 <span>{d.label}</span>
-                <span aria-hidden="true" style={{ height: 8, borderRadius: 4, background: `${accent}18`, overflow: "hidden" }}><span style={{ display: "block", height: "100%", width: `${Math.min(100, area.domains[d.id] ?? 0)}%`, background: accent }} /></span>
+                <span aria-hidden="true" style={{ height: 8, borderRadius: 4, background: `${ACCENT}18`, overflow: "hidden" }}><span style={{ display: "block", height: "100%", width: `${Math.min(100, area.domains[d.id] ?? 0)}%`, background: ACCENT }} /></span>
                 <span style={{ ...numeric, textAlign: "right" }}>{f1(area.domains[d.id] ?? 0)}</span>
               </li>
             ))}
           </ul>
+          {seat && <a href={`#/constituency/${encodeURIComponent(area.name)}`} className="ons-tap" style={{ display: "inline-block", marginTop: 10, fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 700, color: COLORS.ink }}>See this constituency, its MP and its results</a>}
         </div>
       )}
     </li>
+  );
+}
+
+// Councils and constituencies ranked on the kind of deprivation picked above, searchable, with the most and least deprived up front.
+function AreaList({ domain, domainLabel }) {
+  const [kind, setKind] = useState("councils");
+  const [seats, setSeats] = useState(null);
+  const [query, setQuery] = useState("");
+  const [region, setRegion] = useState("all");
+  const [showAll, setShowAll] = useState(false);
+
+  useEffect(() => {
+    if (kind !== "constituencies" || seats) return undefined;
+    let alive = true;
+    import("../data/deprivationConstituencies.json").then((m) => alive && setSeats(m.default.seats)).catch(() => {});
+    return () => { alive = false; };
+  }, [kind, seats]);
+
+  const ranked = useMemo(() => {
+    const raw = kind === "councils" ? data.areas : seats ?? [];
+    const withValue = raw.map((a) => ({ ...a, imd: a.worst10, value: domain === "imd" ? a.worst10 : a.domains[domain] ?? 0 }));
+    withValue.sort((x, y) => y.value - x.value || y.score - x.score);
+    return withValue.map((a, i) => ({ ...a, rank: i + 1 }));
+  }, [kind, seats, domain]);
+
+  const q = query.trim().toLowerCase();
+  const filtered = useMemo(() => ranked.filter((a) => (region === "all" || a.region === region) && (!q || a.name.toLowerCase().includes(q))), [ranked, region, q]);
+  const front = !q && !showAll && region === "all";
+  const noun = kind === "councils" ? "council" : "constituency";
+  const plural = kind === "councils" ? "councils" : "constituencies";
+  const loading = kind === "constituencies" && !seats;
+
+  return (
+    <section aria-labelledby="h-dep-areas" className="regions-wrap" style={{ ...card, marginTop: 20 }}>
+      <h2 id="h-dep-areas" style={cardTitle}>Council by council, or seat by seat</h2>
+      <p style={{ fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.55, color: COLORS.inkSoft, margin: "6px 0 14px", maxWidth: 800 }}>
+        Every local authority and every parliamentary constituency in England, ranked on <strong style={{ color: COLORS.ink }}>{domainLabel.toLowerCase()}</strong> (change it with the buttons above). Rank 1 is the most deprived. The figure on the right is the share in the most deprived tenth of neighbourhoods in England. Tap one for the detail.
+      </p>
+      <div role="radiogroup" aria-label="What to rank" style={{ display: "inline-flex", gap: 6, marginBottom: 14 }}>
+        {[["councils", "Councils (296)"], ["constituencies", "Constituencies (543)"]].map(([id, label]) => (
+          <button key={id} type="button" role="radio" aria-checked={kind === id} className="ons-chip" onClick={() => { setKind(id); setShowAll(false); }} style={pillStyle(kind === id)}>{label}</button>
+        ))}
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))", gap: "10px 16px", marginBottom: 8 }}>
+        <div>
+          <label htmlFor="dep-search" style={labelStyle}>Find your {noun}</label>
+          <input id="dep-search" type="search" className="ons-chip" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={kind === "councils" ? "Type a name, such as Leeds" : "Type a name, such as Hackney North"} autoComplete="off"
+            style={{ fontFamily: FONT_BODY, fontSize: 16, padding: "9px 12px", borderRadius: 10, border: `1px solid ${COLORS.hairline}`, background: COLORS.paper, color: COLORS.ink, width: "100%", boxSizing: "border-box" }} />
+        </div>
+        <div>
+          <label htmlFor="dep-region" style={labelStyle}>Region</label>
+          <select id="dep-region" className="ons-chip" value={region} onChange={(e) => setRegion(e.target.value)}
+            style={{ fontFamily: FONT_BODY, fontSize: 16, padding: "9px 10px", borderRadius: 10, border: `1px solid ${COLORS.hairline}`, background: COLORS.paper, color: COLORS.ink, width: "100%", boxSizing: "border-box" }}>
+            <option value="all">All of England</option>
+            {Object.keys(data.regions).map((k) => <option key={k} value={k}>{nameOf(k)}</option>)}
+          </select>
+        </div>
+      </div>
+      {loading && <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading the constituencies…</p>}
+      {!loading && front && (
+        <div className="dep-two">
+          <div>
+            <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 16, fontWeight: 700, color: COLORS.ink, margin: "12px 0 0" }}>The 10 most deprived</h3>
+            <ol style={{ listStyle: "none", margin: 0, padding: 0 }}>{ranked.slice(0, 10).map((a) => <AreaRow key={a.code} area={a} kind={kind} total={ranked.length} measure={domainLabel} />)}</ol>
+          </div>
+          <div>
+            <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 16, fontWeight: 700, color: COLORS.ink, margin: "12px 0 0" }}>The 10 least deprived</h3>
+            <ol style={{ listStyle: "none", margin: 0, padding: 0 }}>{ranked.slice(-10).map((a) => <AreaRow key={a.code} area={a} kind={kind} total={ranked.length} measure={domainLabel} />)}</ol>
+          </div>
+        </div>
+      )}
+      {!loading && front && <button type="button" className="ons-tap" onClick={() => setShowAll(true)} style={{ ...pillStyle(false), marginTop: 14, cursor: "pointer" }}>Show all {ranked.length} {plural}</button>}
+      {!loading && !front && (
+        <>
+          <p style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, margin: "10px 0 0" }} aria-live="polite">{filtered.length === 0 ? `No ${noun} matches that name.` : `${filtered.length} ${filtered.length === 1 ? noun : plural}${q ? ` matching "${query.trim()}"` : ""}${region !== "all" ? ` in ${inSentence(region)}` : ""}.`}</p>
+          <ol style={{ listStyle: "none", margin: "4px 0 0", padding: 0 }}>{filtered.slice(0, showAll || region !== "all" ? 600 : 25).map((a) => <AreaRow key={a.code} area={a} kind={kind} total={ranked.length} measure={domainLabel} />)}</ol>
+        </>
+      )}
+      {kind === "constituencies" && (
+        <p style={{ fontFamily: FONT_BODY, fontSize: 12, lineHeight: 1.55, color: COLORS.inkSoft, margin: "14px 0 0" }}>
+          Constituency figures are worked out here: each neighbourhood is matched to the July 2024 constituency it best fits (ONS lookup) and its people are added up. Neighbourhoods on a boundary are counted wholly in one seat, so treat small differences as rough.
+        </p>
+      )}
+    </section>
   );
 }
 
@@ -99,9 +186,6 @@ export default function DeprivationPage() {
   const [domain, setDomain] = useState("imd");
   const [endId, setEndId] = useState("most10");
   const [regionKey, setRegionKey] = useState(() => Object.entries(data.regions).sort((a, b) => b[1].score - a[1].score)[0][0]);
-  const [query, setQuery] = useState("");
-  const [areaRegion, setAreaRegion] = useState("all");
-  const [showAll, setShowAll] = useState(false);
 
   const end = ENDS.find((e) => e.id === endId);
   const domainLabel = data.domains.find((d) => d.id === domain).label;
@@ -113,15 +197,6 @@ export default function DeprivationPage() {
 
   const regionData = data.regions[regionKey];
   const sorted = Object.entries(values).filter(([, v]) => v !== null).sort((a, b) => b[1] - a[1]);
-  const q = query.trim().toLowerCase();
-  const areas = useMemo(() => {
-    let list = data.areas;
-    if (areaRegion !== "all") list = list.filter((a) => a.region === areaRegion);
-    if (q) list = list.filter((a) => a.name.toLowerCase().includes(q));
-    return list;
-  }, [q, areaRegion]);
-  const shownAreas = q || showAll || areaRegion !== "all" ? areas.slice(0, showAll || areaRegion !== "all" ? 400 : 25) : [...areas.slice(0, 10)];
-  const mostLeast = !q && !showAll && areaRegion === "all";
 
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
@@ -189,42 +264,7 @@ export default function DeprivationPage() {
         <Deciles regionKey={regionKey} domain={domain} accent={ACCENT} />
       </section>
 
-      <section aria-labelledby="h-dep-areas" style={{ ...card, marginTop: 20 }}>
-        <h2 id="h-dep-areas" style={cardTitle}>Council by council</h2>
-        <p style={{ fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.55, color: COLORS.inkSoft, margin: "6px 0 14px", maxWidth: 800 }}>
-          All 296 local authorities in England, ranked by overall deprivation, where 1 is the most deprived. The figure on the right is the share of each council&apos;s neighbourhoods that are in the most deprived tenth in England. Tap one for the detail.
-        </p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))", gap: "10px 16px", marginBottom: 8 }}>
-          <div>
-            <label htmlFor="dep-search" style={labelStyle}>Find your council</label>
-            <input id="dep-search" type="search" className="ons-chip" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Type a name, such as Leeds" autoComplete="off"
-              style={{ fontFamily: FONT_BODY, fontSize: 16, padding: "9px 12px", borderRadius: 10, border: `1px solid ${COLORS.hairline}`, background: COLORS.paper, color: COLORS.ink, width: "100%", boxSizing: "border-box" }} />
-          </div>
-          <div>
-            <label htmlFor="dep-region" style={labelStyle}>Region</label>
-            <select id="dep-region" className="ons-chip" value={areaRegion} onChange={(e) => setAreaRegion(e.target.value)}
-              style={{ fontFamily: FONT_BODY, fontSize: 16, padding: "9px 10px", borderRadius: 10, border: `1px solid ${COLORS.hairline}`, background: COLORS.paper, color: COLORS.ink, width: "100%", boxSizing: "border-box" }}>
-              <option value="all">All of England</option>
-              {Object.keys(data.regions).map((k) => <option key={k} value={k}>{nameOf(k)}</option>)}
-            </select>
-          </div>
-        </div>
-        {mostLeast && (
-          <>
-            <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 16, fontWeight: 700, color: COLORS.ink, margin: "12px 0 0" }}>The 10 most deprived</h3>
-            <ol style={{ listStyle: "none", margin: 0, padding: 0 }}>{data.areas.slice(0, 10).map((a) => <AreaRow key={a.code} area={a} accent={ACCENT} />)}</ol>
-            <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 16, fontWeight: 700, color: COLORS.ink, margin: "18px 0 0" }}>The 10 least deprived</h3>
-            <ol style={{ listStyle: "none", margin: 0, padding: 0 }}>{data.areas.slice(-10).map((a) => <AreaRow key={a.code} area={a} accent={ACCENT} />)}</ol>
-            <button type="button" className="ons-tap" onClick={() => setShowAll(true)} style={{ ...pillStyle(false), marginTop: 14, cursor: "pointer" }}>Show all 296 councils</button>
-          </>
-        )}
-        {!mostLeast && (
-          <>
-            <p style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, margin: "10px 0 0" }} aria-live="polite">{areas.length === 0 ? "No council matches that name." : `${areas.length} ${areas.length === 1 ? "council" : "councils"}${q ? ` matching "${query.trim()}"` : ""}${areaRegion !== "all" ? ` in ${inSentence(areaRegion)}` : ""}.`}</p>
-            <ol style={{ listStyle: "none", margin: "4px 0 0", padding: 0 }}>{shownAreas.map((a) => <AreaRow key={a.code} area={a} accent={ACCENT} />)}</ol>
-          </>
-        )}
-      </section>
+      <AreaList domain={domain} domainLabel={domainLabel} />
 
       <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.6, color: COLORS.inkSoft, marginTop: 24, maxWidth: 800 }}>
         Source: <a href={data.source.url} style={{ color: "inherit" }}>{data.source.name}</a>, published in November 2025. Regions are worked out here by adding up the people in each region&apos;s neighbourhoods (mid-2022 population estimates), so a region&apos;s figure means the share of its people, not of its neighbourhoods. Council rankings are the Ministry&apos;s own, for the 2024 local authority districts. Contains public sector information licensed under the Open Government Licence v3.0.

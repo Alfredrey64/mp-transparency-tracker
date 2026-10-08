@@ -42,6 +42,8 @@ const EXPLORERS = {
   housing: { id: "housing-by-place", label: "Homes by type and place" },
   crime: { id: "crime-by-place", label: "Crime by place" },
 };
+// How many headline tiles to put in a row on a wide screen, so the last row is never a lone box: up to four in one row, then threes or fours.
+const tileColumns = (n) => (n <= 4 ? Math.max(1, n) : n === 5 || n === 6 ? 3 : 4);
 const WHOLE_HISTORY = new Set(["population", "environment", "crime"]);
 const NOW = new Date().getFullYear() + 1;
 
@@ -97,7 +99,7 @@ const Tile = memo(function Tile({ def, item, accent }) {
       }}
     >
       <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, fontWeight: 700, color: COLORS.ink, lineHeight: 1.3 }}>{def.label}</div>
-      <div style={{ ...numeric, fontSize: 42, fontWeight: 600, lineHeight: 1.1, color: COLORS.ink, marginTop: 10, letterSpacing: "-0.02em" }}>{formatValue(def.format, info.value)}</div>
+      <div className="tile-num" style={{ ...numeric, fontSize: 42, fontWeight: 600, lineHeight: 1.1, color: COLORS.ink, marginTop: 10, letterSpacing: "-0.02em" }}>{formatValue(def.format, info.value)}</div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, margin: "2px 0 10px" }}>{info.label}</div>
       <div><ChangeChip change={info.change} accent={accent} /></div>
       <div style={{ margin: "14px -22px 0" }}><Spark points={item.points} color={accent} /></div>
@@ -110,7 +112,8 @@ function Strip({ def, points, accent }) {
   const st = compareStats(def, points);
   if (!st) return null;
   const cells = [];
-  for (const [key, name] of [["yearAgo", "A year ago"], ["fiveAgo", "Five years ago"], ["tenAgo", "Ten years ago"]]) {
+  // Four boxes, so they fill one row on a wide card and sit two by two on a phone: "five years ago" is only shown when there is no "ten years ago".
+  for (const [key, name] of [["yearAgo", "A year ago"], [st.tenAgo ? "tenAgo" : "fiveAgo", st.tenAgo ? "Ten years ago" : "Five years ago"]]) {
     const c = st[key];
     if (c) cells.push({ name, when: c.label, value: formatValue(def.format, c.value), note: changeShort(c.change) });
   }
@@ -119,7 +122,7 @@ function Strip({ def, points, accent }) {
   return (
     <div style={{ marginTop: 18 }}>
       <div style={{ border: `1px solid ${COLORS.hairline}`, borderRadius: 14, overflow: "hidden", background: COLORS.paper }}>
-       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(132px, 100%), 1fr))", margin: "0 -1px -1px 0" }}>
+       <div className="box-row" style={{ "--n": cells.length, "--min": "110px", "--gap": "0px", margin: "0 -1px -1px 0" }}>
         {cells.map((c) => (
           <div key={c.name} style={{ padding: "11px 14px", borderRight: `1px solid ${COLORS.hairline}`, borderBottom: `1px solid ${COLORS.hairline}`, minWidth: 0 }}>
             <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: COLORS.inkSoft }}>{c.name}</div>
@@ -573,7 +576,7 @@ export default function SectorPage({ sector, param = null }) {
   const newest = shown.map((s) => loaded.series[s.id].updated).filter(Boolean).sort().at(-1);
 
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div className="regions-wrap" style={{ maxWidth: 1280, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader icon={Icon} title={def.title} subtitle={def.subtitle} maxWidth={780} />
 
       {failed && <div style={{ marginTop: 24 }}><LoadFailedNote item="these figures" /></div>}
@@ -607,7 +610,7 @@ export default function SectorPage({ sector, param = null }) {
 
           <KeyPoints sector={def.key} series={loaded.series} accent={def.accent} skip={spotlight?.id} />
 
-          <div className="ons-noprint" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(250px, 100%), 1fr))", gap: 16, marginTop: 18 }}>
+          <div className="ons-noprint box-row" style={{ "--n": tileColumns(tiles.length - 1), "--min": "150px", "--gap": "16px", marginTop: 18 }}>
             {tiles.slice(1).map((s) => <Tile key={s.id} def={s} item={loaded.series[s.id]} accent={def.accent} />)}
           </div>
 

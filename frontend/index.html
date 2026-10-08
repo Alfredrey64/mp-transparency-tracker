@@ -24,9 +24,10 @@
     <link rel="canonical" href="https://mp-transparency-tracker.vercel.app/" />
 
     <!-- iOS-specific "Add to Home Screen" behaviour: launches full-screen with
-         no Safari chrome, using the same brand icon and dark status bar. -->
+         no Safari chrome, using the same brand icon and dark status bar. The status bar is opaque (not "translucent"), so the app starts below it
+         and the top bar does not have to add its own space for it. -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="apple-mobile-web-app-title" content="Parliament" />
 
     <meta property="og:type" content="website" />

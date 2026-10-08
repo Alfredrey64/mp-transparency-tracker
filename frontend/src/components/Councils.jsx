@@ -602,7 +602,7 @@ function CouncilView({ council, data, wardName, countyId, detail, failed }) {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(195px, 100%), 1fr))", gap: 14 }}>
+      <div className="box-row" style={{ "--n": next ? 5 : 4, "--min": "150px" }}>
         <StatCard icon={IconGroup} colour="#4F46E5" value={council.total} label="councillors" caption={`${major} seats are needed for a majority.`} />
         <StatCard icon={IconChartBars} colour={controlColourOf(council.control_by_seats)} value={seats[0]?.count ?? 0} label={`seats for ${seats[0]?.short ?? "the largest party"}`} caption={council.control_by_seats === "noc" ? "No party holds a majority of the seats." : `${controlLabelOf(council.control_by_seats)} holds a majority of the seats.`} />
         <StatCard icon={IconCompare} colour="#E0367A" value={change ? 1 : 0} format={(n) => (n ? "Yes" : "No")} label={`changed hands in ${latestYear}`} caption={change ? `From ${controlLabelOf(change.from)} to ${controlLabelOf(change.to)}.` : `Same kind of control as in ${latestYear - 1}.`} />

@@ -507,7 +507,7 @@ export default function MediaLiteracy() {
           "Due impartiality" isn't just a slogan — it's a specific set of rules Ofcom enforces, with real cases
           testing where the line falls. Here's what it breaks down into.
         </p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))", gap: 14 }}>
+        <div className="box-row" style={{ "--n": 3, "--min": "250px" }}>
           {CODE_REQUIREMENTS.map((req, i) => (
             <motion.div
               key={req.title}

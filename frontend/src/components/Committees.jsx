@@ -330,14 +330,14 @@ export default function Committees() {
 
       {committees !== null && committees.length > 0 && (
         <>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(150px, 100%), 1fr))", gap: 12, marginTop: 24 }}>
+          <div className="box-row" style={{ "--n": 4, "--min": "140px", "--gap": "12px", marginTop: 24 }}>
             <Stat value={counts.All} label="committees" color={COLORS.accent} />
             <Stat value={counts.members} label="places held by MPs and peers" color={HOUSE_COLOR.Commons} />
             <Stat value={counts.inquiries} label="open inquiries" color="#E07A1F" />
             <Stat value={`${counts.Commons ?? 0} / ${counts.Lords ?? 0}`} label="Commons / Lords (plus joint)" color={HOUSE_COLOR.Lords} />
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))", gap: 14, marginTop: 14 }}>
+          <div className="box-row" style={{ "--n": 3, "--min": "300px", "--gap": "14px", marginTop: 14 }}>
             <Panel title="Who holds the seats" note="Every committee place, by party">
               <PartyRing parties={overall.parties} total={overall.total} />
             </Panel>

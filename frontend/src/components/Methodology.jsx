@@ -155,7 +155,7 @@ export default function Methodology({ onNavigate }) {
               name="English Indices of Deprivation 2025 (Ministry of Housing, Communities and Local Government)"
               url="https://www.gov.uk/government/statistics/english-indices-of-deprivation-2025"
               auth="No key required, Open Government Licence v3.0"
-              use="The Deprivation page: how deprived each of England's 33,755 small neighbourhoods is overall and on seven kinds of deprivation, added up here into regions using population estimates, plus the Ministry's own ranking of 296 councils. England only: Scotland, Wales and Northern Ireland have their own indices, which cannot be compared. Published once, so it does not update."
+              use="The Deprivation page: how deprived each of England's 33,755 small neighbourhoods is overall and on seven kinds of deprivation, added up here into regions using population estimates, plus the Ministry's own ranking of 296 councils, and a ranking of the 543 English constituencies worked out here by matching each neighbourhood to its best-fit constituency (ONS lookup, July 2024 boundaries). England only: Scotland, Wales and Northern Ireland have their own indices, which cannot be compared. Published once, so it does not update."
             />
             <SourceRow
               name="Crime in England and Wales (ONS, with Home Office figures)"

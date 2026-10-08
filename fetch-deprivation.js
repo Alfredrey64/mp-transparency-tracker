@@ -4,6 +4,8 @@
 // neighbourhoods overall and on each of the seven kinds of deprivation, and a one-line summary for
 // each of England's 296 local authorities.
 //
+// It also adds up the same neighbourhoods into the 543 English Westminster constituencies (deprivationConstituencies.json).
+//
 // The indices are published once, with no regular update, so this does not run every day: run it by
 // hand when a new edition appears (change the two file addresses below). England only: Scotland,
 // Wales and Northern Ireland have their own indices, built differently, which cannot be compared
@@ -17,6 +19,9 @@ import { fileURLToPath } from "node:url";
 import { readXlsx } from "./xlsx-lite.js";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "frontend", "src", "data", "deprivation.json");
+const OUT_SEATS = path.join(path.dirname(fileURLToPath(import.meta.url)), "frontend", "src", "data", "deprivationConstituencies.json");
+// Which Westminster constituency each neighbourhood (LSOA, 2021) falls in: the ONS best-fit lookup, for July 2024 boundaries.
+const SEAT_LOOKUP = "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/LSOA21_PCON24_LAD21_EW_LU/FeatureServer/0/query";
 const HEADERS = { "User-Agent": "uk-parliament-tracker (independent, non-commercial; contact via GitHub)" };
 // File 7 is every neighbourhood with its ranks, deciles and population; file 10 summarises each lower-tier local authority.
 const FILE_7 = "https://assets.publishing.service.gov.uk/media/691ded56d140bbbaa59a2a7d/File_7_IoD2025_All_Ranks_Scores_Deciles_Population_Denominators.csv";
@@ -61,6 +66,21 @@ function parseCsv(text) {
   return rows;
 }
 
+// Every neighbourhood's constituency, from the ONS lookup (paged: the service returns up to 2,000 rows at a time).
+async function seatLookup() {
+  const out = new Map();
+  for (let offset = 0; offset < 60000; ) {
+    const url = `${SEAT_LOOKUP}?where=${encodeURIComponent("LSOA21CD LIKE 'E01%'")}&outFields=LSOA21CD,PCON24CD,PCON24NM&resultOffset=${offset}&resultRecordCount=2000&orderByFields=LSOA21CD&f=json`;
+    const j = await (await get(url)).json();
+    for (const f of j.features ?? []) out.set(f.attributes.LSOA21CD, { code: f.attributes.PCON24CD, name: f.attributes.PCON24NM });
+    // The service may hand back fewer rows than asked for, so move on by what it actually returned.
+    if (!j.features?.length || (!j.exceededTransferLimit && j.features.length < 1000)) break;
+    offset += j.features.length;
+  }
+  if (out.size < 30000) throw new Error(`constituency lookup: only ${out.size} neighbourhoods`);
+  return out;
+}
+
 async function get(url) {
   const res = await fetch(url, { headers: HEADERS });
   if (!res.ok) throw new Error(`${url}: HTTP ${res.status}`);
@@ -78,6 +98,9 @@ async function main() {
     return i;
   };
   const ladCol = col("Local Authority District code");
+  const lsoaCol = col("LSOA code");
+  const seatOf = await seatLookup();
+  const seats = new Map();
   const popCol = col("Total population: mid 2022");
   const scoreCol = col("Index of Multiple Deprivation (IMD) Score");
   const domainCols = DOMAINS.map((d) => col(d.match));
@@ -90,6 +113,15 @@ async function main() {
     const region = REGIONS[lookup[row[ladCol]]];
     const people = Number(row[popCol]);
     if (!region || !Number.isFinite(people)) continue;
+    const seatInfo = seatOf.get(row[lsoaCol]);
+    if (seatInfo) {
+      if (!seats.has(seatInfo.code)) seats.set(seatInfo.code, { code: seatInfo.code, name: seatInfo.name, people: 0, score: 0, deciles: DOMAINS.map(() => new Array(10).fill(0)), regionPeople: {} });
+      const t = seats.get(seatInfo.code);
+      t.people += people;
+      t.score += Number(row[scoreCol]) * people;
+      domainCols.forEach((c, i) => { t.deciles[i][Number(row[c]) - 1] += people; });
+      t.regionPeople[region] = (t.regionPeople[region] ?? 0) + people;
+    }
     for (const target of [regions[region], england]) {
       target.people += people;
       target.score += Number(row[scoreCol]) * people;
@@ -126,6 +158,21 @@ async function main() {
     areas,
   };
   fs.writeFileSync(OUT, `${JSON.stringify(out)}\n`);
+
+  // Constituencies: the share of each one's people in the most (and least) deprived tenth of England, overall and by kind.
+  const seatRows = [...seats.values()].map((t) => {
+    const dec = (i) => t.deciles[i].map((n) => (n / t.people) * 100);
+    const region = Object.entries(t.regionPeople).sort((a, b) => b[1] - a[1])[0][0];
+    return {
+      code: t.code, name: t.name, region, people: Math.round(t.people), score: round(t.score / t.people),
+      worst10: round(dec(0)[0]), worst20: round(dec(0)[0] + dec(0)[1]), best10: round(dec(0)[9]),
+      domains: Object.fromEntries(DOMAINS.slice(1).map((d, i) => [d.id, round(dec(i + 1)[0])])),
+    };
+  }).sort((a, b) => b.score - a.score);
+  seatRows.forEach((r, i) => { r.rank = i + 1; });
+  if (seatRows.length < 500) throw new Error(`only ${seatRows.length} constituencies`);
+  fs.writeFileSync(OUT_SEATS, `${JSON.stringify({ fetchedAt: out.fetchedAt, source: out.source, boundaries: "Westminster constituencies, July 2024 boundaries; neighbourhoods are matched to the constituency they best fit", seats: seatRows })}\n`);
+  console.log(`Saved ${path.relative(process.cwd(), OUT_SEATS)}: ${seatRows.length} constituencies`);
   console.log(`Saved ${path.relative(process.cwd(), OUT)}: ${areas.length} local authorities, ${Object.keys(regions).length} regions`);
 }
 

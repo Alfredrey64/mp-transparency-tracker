@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import profile from "./regionalProfile.json";
 import breakdowns from "./regionalBreakdowns.json";
 import deprivation from "./deprivation.json";
+import seats from "./deprivationConstituencies.json";
 import { REGIONS } from "./regionMetrics";
 
 const censusPlaces = REGIONS.filter((r) => !["scotland", "ni"].includes(r.key)).map((r) => r.key);
@@ -92,5 +93,26 @@ describe("regional breakdowns", () => {
     expect(breakdowns.sectors.jobs.categories.find((c) => c.id === "paygap").groups[0].all).toBeGreaterThan(0);
     // Crime is recorded for England and Wales only.
     expect(find("crime", "rate", "total-recorded-crime-excluding-fraud-").values.scotland).toBeNull();
+  });
+});
+
+describe("deprivation by constituency", () => {
+  it("covers England's 543 constituencies, ranked from most to least deprived", () => {
+    expect(seats.seats.length).toBeGreaterThanOrEqual(540);
+    expect(seats.seats[0].rank).toBe(1);
+    expect(seats.seats[0].score).toBeGreaterThan(seats.seats.at(-1).score);
+    for (const seat of seats.seats) {
+      expect(seat.worst10, seat.name).toBeGreaterThanOrEqual(0);
+      expect(seat.worst10, seat.name).toBeLessThanOrEqual(100);
+      expect(seat.code).toMatch(/^E14/);
+    }
+  });
+
+  it("adds up to about a tenth of England's people in the most deprived tenth", () => {
+    const people = seats.seats.reduce((n, s) => n + s.people, 0);
+    const worst = seats.seats.reduce((n, s) => n + (s.worst10 / 100) * s.people, 0);
+    expect(people).toBeGreaterThan(55e6);
+    expect(worst / people).toBeGreaterThan(0.095);
+    expect(worst / people).toBeLessThan(0.105);
   });
 });
