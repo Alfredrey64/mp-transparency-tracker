@@ -1,7 +1,7 @@
 // fetch-election-history.js
 //
 // What this does, in plain terms:
-// 1. Asks Democracy Club (the volunteer-run election data project; its candidate and results database is open) for every
+// 1. Downloads from Democracy Club (the volunteer-run election data project; its candidate and results database is open) every
 //    candidate's vote in each of the last four general elections that had the same boundaries as 2010: 2010, 2015, 2017 and
 //    2019, for all 650 seats.
 // 2. Files each seat's results under the name of today's constituency with the same name, and writes
@@ -11,8 +11,7 @@
 // for the old seat of that name, not exactly the same ground as today's. Seats with no old seat of the same name (new in 2024,
 // or renamed) simply have no history.
 //
-// Past results never change, so this is run by hand, not daily. Democracy Club limits how fast it can be asked, so the script
-// waits when told to (about 60 requests in all).
+// Past results never change, so this is run by hand, not daily. It takes four downloads, one per election.
 //
 // Run it with: node fetch-election-history.js
 
@@ -22,41 +21,44 @@ import { fileURLToPath } from "node:url";
 import { normaliseConstituencyName } from "./constituencyData.js";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "frontend", "src", "data", "electionHistory.json");
-const API = "https://candidates.democracyclub.org.uk/api/next";
+const EXPORT = "https://candidates.democracyclub.org.uk/data/export_csv/";
 const ELECTIONS = [["parl.2010-05-06", 2010], ["parl.2015-05-07", 2015], ["parl.2017-06-08", 2017], ["parl.2019-12-12", 2019]];
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-async function getJson(url) {
-  for (let attempt = 1; attempt <= 30; attempt++) {
+async function getText(url) {
+  for (let attempt = 1; attempt <= 10; attempt++) {
     try {
-      const res = await fetch(url.replace(/^http:/, "https:"), { headers: { Accept: "application/json", "User-Agent": "uk-parliament-tracker (independent, non-commercial)" } });
-      const body = await res.json().catch(() => null);
-      // "Request was throttled. Expected available in 10 seconds."
-      if (res.status === 429 || body?.detail?.startsWith?.("Request was throttled")) {
-        const secs = Number(/in (\d+) seconds/.exec(body?.detail ?? "")?.[1] ?? 30);
-        console.log(`  throttled, waiting ${secs}s`);
-        await sleep((secs + 2) * 1000);
-        continue;
-      }
+      const res = await fetch(url, { headers: { "User-Agent": "uk-parliament-tracker (independent, non-commercial)" } });
+      if (res.status === 429) { await sleep(30000); continue; }
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return body;
+      return await res.text();
     } catch (e) {
-      if (attempt === 30) throw new Error(`${url}: ${e.message}`);
-      await sleep(2000);
+      if (attempt === 10) throw new Error(`${url}: ${e.message}`);
+      await sleep(3000);
     }
   }
-  return null;
+  return "";
 }
 
-async function allPages(url) {
-  const out = [];
-  for (let next = url; next; ) {
-    const j = await getJson(next);
-    console.log(`  page ok (${out.length + (j.results?.length ?? 0)} of ${j.count})`);
-    out.push(...(j.results ?? []));
-    next = j.next;
+// A small CSV reader that copes with quoted fields.
+function parseCsv(text) {
+  const rows = [];
+  let row = [];
+  let field = "";
+  let quoted = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (quoted) {
+      if (c === '"' && text[i + 1] === '"') { field += '"'; i++; }
+      else if (c === '"') quoted = false;
+      else field += c;
+    } else if (c === '"') quoted = true;
+    else if (c === ",") { row.push(field); field = ""; }
+    else if (c === "\n") { row.push(field.replace(/\r$/, "")); rows.push(row); row = []; field = ""; }
+    else field += c;
   }
-  return out;
+  if (field || row.length) { row.push(field); rows.push(row); }
+  return rows;
 }
 
 // Democracy Club's party names, in the short form the rest of the site uses, with the party's colour.
@@ -91,22 +93,32 @@ async function main() {
   const parties = {};
   const bySeat = {};
   for (const [id, year] of ELECTIONS) {
-    console.log(`${year}: ballots...`);
-    const labels = new Map((await allPages(`${API}/ballots/?election_id=${id}&limit=100`)).map((b) => [b.ballot_paper_id, b.post?.label]));
-    console.log(`${year}: results...`);
-    const results = await allPages(`${API}/results/?election_id=${id}&limit=100`);
+    console.log(`${year}...`);
+    const [head, ...rows] = parseCsv(await getText(`${EXPORT}?election_id=${id}&field_group=results`)).filter((r) => r.length > 5);
+    const col = (name) => {
+      const i = head.indexOf(name);
+      if (i < 0) throw new Error(`column not found: ${name}`);
+      return i;
+    };
+    const c = { label: col("post_label"), ballot: col("ballot_paper_id"), party: col("party_name"), votes: col("votes_cast"), electorate: col("total_electorate"), turnout: col("turnout_reported") };
+    const seats = new Map();
+    for (const r of rows) {
+      const votes = Number(r[c.votes]);
+      if (!Number.isFinite(votes) || r[c.votes] === "") continue;
+      if (!seats.has(r[c.ballot])) seats.set(r[c.ballot], { label: r[c.label], electorate: Number(r[c.electorate]) || null, turnout: Number(r[c.turnout]) || null, cands: [] });
+      seats.get(r[c.ballot]).cands.push({ party: r[c.party], votes });
+    }
     let n = 0;
-    for (const r of results) {
-      const label = labels.get(r.ballot?.ballot_paper_id);
-      const cands = (r.candidate_results ?? []).filter((c) => Number.isFinite(c.num_ballots)).sort((a, b) => b.num_ballots - a.num_ballots);
-      const total = cands.reduce((a, c) => a + c.num_ballots, 0);
-      if (!label || cands.length < 2 || !total) continue;
-      const key = normaliseConstituencyName(label);
-      (bySeat[key] ??= []).push({
+    for (const s of seats.values()) {
+      const cands = s.cands.sort((a, b) => b.votes - a.votes);
+      const total = cands.reduce((a, x) => a + x.votes, 0);
+      if (cands.length < 2 || !total) continue;
+      (bySeat[normaliseConstituencyName(s.label)] ??= []).push({
         y: year,
-        m: cands[0].num_ballots - cands[1].num_ballots,
-        p: pct((cands[0].num_ballots - cands[1].num_ballots) / total),
-        c: cands.slice(0, 6).map((c) => { const p = party(c.party?.name); if (p.colour) parties[p.name] = p.colour; return [p.name, pct(c.num_ballots / total), c.num_ballots]; }),
+        t: s.electorate && s.turnout ? pct(s.turnout / s.electorate) : s.electorate ? pct(total / s.electorate) : null,
+        m: cands[0].votes - cands[1].votes,
+        p: pct((cands[0].votes - cands[1].votes) / total),
+        c: cands.slice(0, 6).map((x) => { const p = party(x.party); if (p.colour) parties[p.name] = p.colour; return [p.name, pct(x.votes / total), x.votes]; }),
       });
       n++;
     }

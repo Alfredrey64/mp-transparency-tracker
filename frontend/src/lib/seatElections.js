@@ -21,3 +21,8 @@ export function changesOfParty(list) {
   for (let i = 1; i < list.length; i++) if (list[i].parties[0]?.name !== list[i - 1].parties[0]?.name) out.push({ year: list[i].year, from: list[i - 1].parties[0]?.name, to: list[i].parties[0]?.name });
   return out;
 }
+
+const SHORT = { Conservative: "Con", Labour: "Lab", "Liberal Democrat": "Lib Dem", "Scottish National Party": "SNP", "Green Party": "Green", "Plaid Cymru": "Plaid", "Reform UK": "Reform", "Democratic Unionist Party": "DUP", "Sinn Féin": "Sinn Féin", "Social Democratic & Labour Party": "SDLP", "Ulster Unionist Party": "UUP", "British National Party": "BNP" };
+
+// A party's name in the short form used in tight spaces: "Lib Dem", "SNP".
+export const shortParty = (name) => SHORT[name] ?? name;

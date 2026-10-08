@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme";
 import { partyColour } from "../lib/format";
 import { searchSeats, seatKey, seatSafety } from "../lib/constituency";
+import { shortParty } from "../lib/seatElections";
 import { PageHeader, LoadFailedNote } from "./shared";
 import { IconSeatCompare, IconSearch } from "./icons";
 import ShareButton from "./ShareButton";
@@ -14,6 +15,8 @@ import { card, cardTitle, pillStyle } from "../lib/onsStyles";
 const SEP = "~";
 const fmt = (n) => (n == null ? "–" : Math.round(n).toLocaleString("en-GB"));
 const pct1 = (n) => (n == null ? "–" : `${(Math.round(n * 10) / 10).toFixed(1)}%`);
+// A lead under 1% keeps two decimals, so a 15-vote majority does not read as 0.0%.
+const lead1 = (n) => (n == null ? "–" : n > 0 && n < 1 ? `${n.toFixed(2)}%` : pct1(n));
 const colour = (hex) => partyColour(hex, COLORS.inkSoft);
 const thumb = (id) => `https://members-api.parliament.uk/api/Members/${id}/Thumbnail`;
 const goPair = (a, b) => {
@@ -116,7 +119,7 @@ function History({ rows, parties }) {
         <li key={e.y} style={{ flex: 1, minWidth: 0 }}>
           <span title={`${e.c[0]?.[0]} won in ${e.y}`} style={{ display: "block", height: 22, borderRadius: 5, background: colour(parties[e.c[0]?.[0]]) }} />
           <span style={{ ...numeric, display: "block", fontSize: 11.5, color: COLORS.ink, marginTop: 4 }}>{e.y}</span>
-          <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, lineHeight: 1.25, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{e.c[0]?.[0]}</span>
+          <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, lineHeight: 1.25, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{shortParty(e.c[0]?.[0])}</span>
           <span style={{ ...numeric, display: "block", fontSize: 11, color: COLORS.inkSoft }}>+{(Math.round((e.p ?? 0) * 10) / 10).toFixed(1)}</span>
         </li>
       ))}
@@ -153,7 +156,7 @@ function summary(a, b) {
   const part = (r) => {
     const lead = r.result?.majorityPct;
     const s = seatSafety(lead);
-    return `${r.name} is ${s ? `a ${s.label.toLowerCase().replace(" seat", "")} seat` : "a seat"} held by ${r.mp.party}${lead != null ? ` by ${pct1(lead)} of the vote` : ""}`;
+    return `${r.name} is ${s ? `a ${s.label.toLowerCase().replace(" seat", "")} seat` : "a seat"} held by ${r.mp.party}${lead != null ? ` by ${lead1(lead)} of the vote` : ""}`;
   };
   return `${part(a)}; ${part(b)}.`;
 }
@@ -228,7 +231,7 @@ export default function CompareSeats({ param }) {
               </div>
               <p style={{ fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.55, color: COLORS.ink, margin: "16px 0 4px" }}>{summary(a, b)}</p>
 
-              <Pair title="Winner's lead at the last election" left={<Big tint={colourFor(a)} sub={`${fmt(a.result?.majority)} votes · ${seatSafety(a.result?.majorityPct)?.label ?? ""}`}>{pct1(a.result?.majorityPct)}</Big>} right={<Big tint={colourFor(b)} sub={`${fmt(b.result?.majority)} votes · ${seatSafety(b.result?.majorityPct)?.label ?? ""}`}>{pct1(b.result?.majorityPct)}</Big>} />
+              <Pair title="Winner's lead at the last election" left={<Big tint={colourFor(a)} sub={`${fmt(a.result?.majority)} votes · ${seatSafety(a.result?.majorityPct)?.label ?? ""}`}>{lead1(a.result?.majorityPct)}</Big>} right={<Big tint={colourFor(b)} sub={`${fmt(b.result?.majority)} votes · ${seatSafety(b.result?.majorityPct)?.label ?? ""}`}>{lead1(b.result?.majorityPct)}</Big>} />
               <Pair title="Turnout" left={<Big sub={`${fmt(a.result?.turnout)} of ${fmt(a.result?.electorate)} voters`}>{pct1(a.result?.turnoutPct)}</Big>} right={<Big sub={`${fmt(b.result?.turnout)} of ${fmt(b.result?.electorate)} voters`}>{pct1(b.result?.turnoutPct)}</Big>} />
               <Pair title="Share of the vote" tall left={a.result ? <Shares candidates={a.result.candidates} /> : null} right={b.result ? <Shares candidates={b.result.candidates} /> : null} />
               <Pair title="Who won each general election since 2010" tall left={history ? <History rows={history.bySeat[seatKey(a.name)]} parties={history.parties} /> : "Loading…"} right={history ? <History rows={history.bySeat[seatKey(b.name)]} parties={history.parties} /> : "Loading…"} />

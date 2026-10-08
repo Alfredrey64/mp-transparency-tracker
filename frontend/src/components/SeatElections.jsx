@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, numeric } from "../theme";
 import { partyColour } from "../lib/format";
 import { Panel } from "./Constituency";
-import { electionList, changesOfParty } from "../lib/seatElections";
+import { electionList, changesOfParty, shortParty } from "../lib/seatElections";
 
 // A seat's general elections side by side: the 2010, 2015, 2017 and 2019 results for the old seat of the same name (from
 // Democracy Club, via electionHistory.json) and the 2024 result for today's seat. Boundaries changed in 2024, so 2024 is not
@@ -22,6 +22,17 @@ function Lines({ list, colourOf }) {
   const top = Math.max(60, Math.ceil(Math.max(...list.flatMap((e) => e.parties.map((p) => p.share))) / 10) * 10);
   const x = (i) => L + (list.length === 1 ? (W - L - R) / 2 : (i / (list.length - 1)) * (W - L - R));
   const y = (v) => H - B - (v / top) * (H - B - T);
+  // Labels at the right-hand end, pushed apart so two parties on nearly the same share can both be read.
+  const labelY = useMemo(() => {
+    const ends = names.map((name) => {
+      const p = list.at(-1).parties.find((q) => q.name === name);
+      return p ? { name, y: y(p.share) + 4 } : null;
+    }).filter(Boolean).sort((a, b) => a.y - b.y);
+    for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 15) ends[i].y = ends[i - 1].y + 15;
+    return Object.fromEntries(ends.map((e) => [e.name, e.y]));
+    // y depends only on the chart's fixed size and `top`.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [names, list, top]);
   return (
     <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Vote share of the leading parties at each general election" style={{ width: "100%", height: "auto", display: "block" }}>
       {Array.from({ length: top / 10 + 1 }, (_, i) => i * 10).map((v) => (
@@ -47,7 +58,7 @@ function Lines({ list, colourOf }) {
           <g key={name}>
             {segs.map((s, k) => <path key={k} d={s.map((p, j) => `${j ? "L" : "M"}${x(p.i).toFixed(1)} ${y(p.v).toFixed(1)}`).join("")} fill="none" stroke={c} strokeWidth="2.6" strokeLinejoin="round" strokeLinecap="round" />)}
             {pts.map((p, i) => p && <circle key={i} cx={x(i)} cy={y(p.v)} r="4" fill={c} stroke={COLORS.paperCard} strokeWidth="1.6"><title>{`${name}, ${list[i].year}: ${pct1(p.v)}`}</title></circle>)}
-            {last && last.i === list.length - 1 && <text x={x(last.i) + 9} y={y(last.v) + 4} fontFamily={FONT_BODY} fontSize="12" fontWeight="700" fill={COLORS.ink}>{name.replace("Liberal Democrat", "Lib Dem").replace("Scottish National Party", "SNP").replace("Conservative", "Con").replace("Green Party", "Green")}</text>}
+            {last && last.i === list.length - 1 && <text x={x(last.i) + 9} y={labelY[name] ?? y(last.v) + 4} fontFamily={FONT_BODY} fontSize="12" fontWeight="700" fill={COLORS.ink}>{shortParty(name)}</text>}
           </g>
         );
       })}
