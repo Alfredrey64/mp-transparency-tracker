@@ -111,7 +111,7 @@ function RegisterSearch() {
   const shown = filtered.slice(0, DISPLAY_CAP);
 
   return (
-    <div style={{ marginBottom: 32, maxWidth: 900 }}>
+    <div style={{ marginBottom: 32, maxWidth: "none" }}>
       <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>
         Search the register yourself
       </h2>
@@ -148,7 +148,7 @@ function RegisterSearch() {
 
       <div
         style={{
-          display: "flex", flexDirection: "column", gap: 1, maxHeight: 420, overflowY: "auto",
+          display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 440px), 1fr))", alignContent: "start", gap: 0, maxHeight: 420, overflowY: "auto",
           border: `1px solid ${COLORS.hairline}`, borderRadius: 12, background: COLORS.paperCard,
         }}
       >
@@ -191,7 +191,7 @@ function RegisterSearch() {
 
 export default function LobbyingRegister() {
   return (
-    <div style={{ padding: PAGE_PADDING }}>
+    <div className="editorial" style={{ padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconRegister}
         kicker="Transparency Gaps"
@@ -199,6 +199,8 @@ export default function LobbyingRegister() {
         subtitle="The UK's one statutory, public list of who is paid to lobby ministers on someone else's behalf. It is useful, but much narrower than most people assume."
         maxWidth={900}
       />
+
+      <div className="editorial-body">
 
       <WhyItMattersBand icon={IconRegister} color="#5A7FA6">
         this register makes one narrow slice of professional persuasion visible — but most real-world lobbying,
@@ -234,7 +236,7 @@ export default function LobbyingRegister() {
 
       <RegisterSearch />
 
-      <InfoCard title="The big gap: in-house lobbyists aren't covered at all" color="#9C3B3B" icon={IconGavel} index={2}>
+      <InfoCard title="The big gap: in-house lobbyists aren't covered at all" color="#9C3B3B" icon={IconGavel} index={2} wide>
         <p style={{ marginTop: 0 }}>
           The rule only catches lobbying-for-hire. A company's own government-affairs team, lobbying ministers
           directly on their employer's behalf, isn't "consultant" lobbying at all — and doesn't have to register or
@@ -248,7 +250,7 @@ export default function LobbyingRegister() {
         </p>
       </InfoCard>
 
-      <div style={{ marginBottom: 24, maxWidth: 900 }}>
+      <div style={{ marginBottom: 24, maxWidth: "none" }}>
         <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>
           The register in action: real recent investigations
         </h2>
@@ -257,7 +259,7 @@ export default function LobbyingRegister() {
           wasn't. Three recent examples — all ultimately cleared, which is itself informative about how narrow the
           legal definition is.
         </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div className="ed-list">
           {CASES.map((item, i) => (
             <motion.div
               key={item.name}
@@ -279,7 +281,7 @@ export default function LobbyingRegister() {
         </div>
       </div>
 
-      <InfoCard title="Where this leaves you as a reader" color="#9C6B30" icon={IconShield} index={3}>
+      <InfoCard title="Where this leaves you as a reader" color="#9C6B30" icon={IconShield} index={3} wide>
         <ul style={{ margin: 0, paddingLeft: 20 }}>
           <li style={{ marginBottom: 8 }}>
             If a firm appears on this register, that's a genuine, useful signal — it's telling you a client paid
@@ -300,6 +302,7 @@ export default function LobbyingRegister() {
           </li>
         </ul>
       </InfoCard>
+      </div>
     </div>
   );
 }

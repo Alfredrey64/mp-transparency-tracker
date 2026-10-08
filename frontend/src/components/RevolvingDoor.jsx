@@ -11,7 +11,7 @@ function RevolvingDoorDiagram() {
   return (
     <div
       style={{
-        padding: "30px 20px 24px", marginBottom: 30, maxWidth: 900, textAlign: "center",
+        padding: "30px 20px 24px", marginBottom: 30, maxWidth: "none", textAlign: "center",
         background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 18,
       }}
     >
@@ -102,7 +102,7 @@ function CaseCard({ item, index }) {
 
 export default function RevolvingDoor() {
   return (
-    <div style={{ padding: PAGE_PADDING }}>
+    <div className="editorial" style={{ padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconDoor}
         kicker="Transparency Gaps"
@@ -110,6 +110,8 @@ export default function RevolvingDoor() {
         subtitle="When a minister or senior official leaves office, their knowledge and contacts go with them. UK rules on where they can go next have long been criticised as advisory only. This page explains how the system worked, why it has recently changed, and four cases that shaped the debate."
         maxWidth={900}
       />
+
+      <div className="editorial-body">
 
       <WhyItMattersBand icon={IconDoor} color="#6E4B6E">
         a minister who could profit from a private-sector job right after leaving office has a reason to make
@@ -179,7 +181,7 @@ export default function RevolvingDoor() {
         </ul>
       </InfoCard>
 
-      <div style={{ marginBottom: 20, maxWidth: 900 }}>
+      <div style={{ marginBottom: 20, maxWidth: "none" }}>
         <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>
           Four real cases
         </h2>
@@ -192,6 +194,7 @@ export default function RevolvingDoor() {
             <CaseCard key={item.name} item={item} index={i} />
           ))}
         </div>
+      </div>
       </div>
     </div>
   );

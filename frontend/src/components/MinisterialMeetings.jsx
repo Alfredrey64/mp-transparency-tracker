@@ -116,7 +116,7 @@ export default function MinisterialMeetings() {
   const maxDepartment = byDepartment[0]?.[1] ?? 0;
 
   return (
-    <div style={{ maxWidth: 980, margin: "0 auto", padding: "clamp(20px, 5vw, 40px) clamp(16px, 5vw, 40px) 60px" }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: "clamp(20px, 5vw, 40px) clamp(16px, 5vw, 40px) 60px" }}>
       <PageHeader
         icon={IconMeeting}
         kicker="Who ministers meet"

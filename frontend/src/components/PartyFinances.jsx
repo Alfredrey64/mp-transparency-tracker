@@ -121,7 +121,7 @@ export default function PartyFinances() {
 
   if (!stats) {
     return (
-      <div style={{ padding: PAGE_PADDING }}>
+      <div className="editorial" style={{ padding: PAGE_PADDING }}>
         <PageHeader icon={IconPartyFinance} title="Who funds the parties" subtitle="Loading…" />
       </div>
     );
@@ -139,6 +139,8 @@ export default function PartyFinances() {
         subtitle="Donations made directly to political parties over the last 12 months. This is a separate system from MPs' own declared interests, regulated and published by the Electoral Commission rather than Parliament."
         maxWidth={900}
       />
+
+      <div className="editorial-body">
 
       {/* The actual numbers, first — this used to sit below a rules
           explainer and three separate text boxes, most of which just
@@ -223,7 +225,7 @@ export default function PartyFinances() {
       <div
         style={{
           background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: "12px 16px",
-          marginBottom: 32, maxWidth: 900, fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.55, color: COLORS.inkSoft,
+          marginBottom: 32, maxWidth: "none", fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.55, color: COLORS.inkSoft,
         }}
       >
         <strong style={{ color: COLORS.ink }}>Missing a donation you saw in the news?</strong> Parties file quarterly,
@@ -346,12 +348,13 @@ export default function PartyFinances() {
       </div>
 
       {partyDonorSectorMetadata.generatedAt && (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.7, marginTop: 14, maxWidth: 900 }}>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.7, marginTop: 14, maxWidth: "none" }}>
           Sector tags generated {new Date(partyDonorSectorMetadata.generatedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })} ·{" "}
           {partyDonorSectorMetadata.donorsTagged} of {partyDonorSectorMetadata.donorsConsidered} top donors tagged.
           This is a snapshot, not a live feed.
         </div>
       )}
+      </div>
     </div>
   );
 }
@@ -378,7 +381,7 @@ function RuleBullet({ children }) {
 
 function PartyFinanceRulesSection() {
   return (
-    <div style={{ marginTop: 24, marginBottom: 4, maxWidth: 1200 }}>
+    <div style={{ marginTop: 24, marginBottom: 4, maxWidth: "none" }}>
       <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, marginBottom: 4 }}>
         How Party Funding Is Actually Regulated
       </h2>

@@ -139,7 +139,7 @@ export default function DonorsLobbying() {
 
   if (!stats) {
     return (
-      <div style={{ padding: PAGE_PADDING }}>
+      <div className="editorial" style={{ padding: PAGE_PADDING }}>
         <PageHeader icon={IconInfluence} title="Who funds MPs" subtitle="Loading…" />
       </div>
     );
@@ -156,6 +156,8 @@ export default function DonorsLobbying() {
         subtitle="Who is funding Parliament, grouped by industry where that can be identified with confidence. It is not a judgement on any MP's views."
         maxWidth={900}
       />
+
+      <div className="editorial-body">
 
       <EducationSection />
 
@@ -210,7 +212,7 @@ export default function DonorsLobbying() {
           borderRadius: 12,
           padding: "14px 18px",
           marginBottom: 28,
-          maxWidth: 900,
+          maxWidth: "none",
           fontFamily: FONT_BODY,
           fontSize: 13, lineHeight: 1.6,
           color: COLORS.inkSoft,
@@ -446,7 +448,7 @@ export default function DonorsLobbying() {
           borderTop: `4px solid ${COLORS.ink}`,
           borderRadius: 16,
           padding: "22px clamp(16px, 4vw, 26px)",
-          maxWidth: 900,
+          maxWidth: "none",
         }}
       >
         <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, marginTop: 0, marginBottom: 10 }}>
@@ -483,12 +485,13 @@ export default function DonorsLobbying() {
         </div>
       </div>
 
-      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.7, marginTop: 14, maxWidth: 900 }}>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.7, marginTop: 14, maxWidth: "none" }}>
         As of {new Date(donorSectorMetadata.generatedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })},{" "}
         {donorSectorMetadata.donorsTagged} of the top {donorSectorMetadata.donorsConsidered} donors have a sector tag
         ({donorSectorMetadata.individualsSkipped} excluded as named individuals). See{" "}
         <span style={{ fontWeight: 600, color: COLORS.ink }}>Data & Methodology</span> for how tagging works, and how
         often it's brought up to date.
+      </div>
       </div>
     </div>
   );
@@ -516,7 +519,7 @@ function Bullet({ children }) {
 
 function EducationSection() {
   return (
-    <div style={{ marginBottom: 32, maxWidth: 1200 }}>
+    <div style={{ marginBottom: 32, maxWidth: "none" }}>
       <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 23, color: COLORS.ink, marginBottom: 4 }}>
         Money & Influence in Parliament, Explained
       </h2>

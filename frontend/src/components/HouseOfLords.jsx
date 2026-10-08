@@ -448,6 +448,7 @@ export default function HouseOfLords({ peerId = null }) {
           subtitle="Every current peer, coloured by party — hover a party below to pick it out, or tap one to filter the list."
           noPartyLabel="Crossbench"
           legendCount={10}
+          maxWidth={480}
         />
       )}
 

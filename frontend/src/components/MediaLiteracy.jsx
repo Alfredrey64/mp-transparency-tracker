@@ -453,13 +453,15 @@ export default function MediaLiteracy() {
   const outletOrder = useMemo(() => OUTLETS, []);
 
   return (
-    <div style={{ padding: PAGE_PADDING }}>
+    <div className="editorial" style={{ padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconBook}
         title="How broadcast impartiality works"
         subtitle="This site doesn't rate broadcasters for bias, because that is a judgement call rather than a matter of public record. Instead, this page explains how UK broadcast regulation works, what it requires, who owns what, and cases where it has been tested."
         maxWidth={900}
       />
+
+      <div className="editorial-body">
 
       <BroadcastHero />
 
@@ -468,7 +470,7 @@ export default function MediaLiteracy() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.35 }}
         style={{
-          display: "flex", alignItems: "center", gap: 14, maxWidth: 900, marginBottom: 28,
+          display: "flex", alignItems: "center", gap: 14, maxWidth: "none", marginBottom: 28,
           background: "linear-gradient(135deg, #5A7FA61A, #B5533C14)", border: `1px solid ${COLORS.hairline}`,
           borderRadius: 14, padding: "16px 20px",
         }}
@@ -497,7 +499,7 @@ export default function MediaLiteracy() {
         </p>
       </InfoCard>
 
-      <div style={{ marginBottom: 32, maxWidth: 900 }}>
+      <div style={{ marginBottom: 32, maxWidth: "none" }}>
         <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>
           What the Broadcasting Code actually requires
         </h2>
@@ -546,7 +548,7 @@ export default function MediaLiteracy() {
         </div>
       </div>
 
-      <div style={{ marginBottom: 32, maxWidth: 900 }}>
+      <div style={{ marginBottom: 32, maxWidth: "none" }}>
         <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>
           When broadcasters have fallen short, and when they haven't
         </h2>
@@ -554,7 +556,7 @@ export default function MediaLiteracy() {
           Five published Ofcom cases, chosen to show what a breach looks like, what falls just short of one, and that
           Ofcom's own rulings can be successfully challenged.
         </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div className="ed-list">
           {REAL_CASES.map((item, i) => (
             <CaseCard key={`${item.outlet}-${item.programme}-${item.date}`} item={item} index={i} />
           ))}
@@ -595,6 +597,7 @@ export default function MediaLiteracy() {
           <li>For anything on this site specifically — donations, votes, interests — you don't need to trust anyone's framing at all: every figure links to the original official document.</li>
         </ul>
       </InfoCard>
+      </div>
     </div>
   );
 }

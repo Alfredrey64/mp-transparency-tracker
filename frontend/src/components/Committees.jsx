@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader, LoadFailedNote } from "./shared";
@@ -60,119 +59,115 @@ function InquiryRow({ inquiry }) {
   );
 }
 
-// A compact stacked bar showing the committee's actual party balance —
-// visible even collapsed, so "who's scrutinising the government" has a
-// real answer at a glance rather than needing every card opened to find
-// it. Same party colours used everywhere else on the site, so no new
-// legend is needed for it to read correctly.
-function PartyComposition({ members }) {
-  const parties = useMemo(() => {
+// One dot for every member, in their party's colour (the chair ringed): the committee's make-up at a glance, and
+// the same colours used everywhere else on the site, so it needs no legend.
+function MemberDots({ members, color }) {
+  const dots = useMemo(() => {
     const counts = new Map();
     for (const m of members ?? []) {
-      const name = m.party || "Other";
-      if (!counts.has(name)) counts.set(name, { name, count: 0, color: partyColour(m.party_colour, COLORS.inkSoft) });
-      counts.get(name).count += 1;
+      const key = m.party || "Other";
+      counts.set(key, (counts.get(key) ?? 0) + 1);
     }
-    return [...counts.values()].sort((a, b) => b.count - a.count);
+    return [...(members ?? [])]
+      .sort((a, b) => (counts.get(b.party || "Other") ?? 0) - (counts.get(a.party || "Other") ?? 0) || String(a.party).localeCompare(String(b.party)))
+      .map((m) => ({ color: partyColour(m.party_colour, COLORS.inkSoft), chair: m.is_chair, label: `${m.name}${m.party ? `, ${m.party}` : ""}` }));
   }, [members]);
-
-  const total = members?.length ?? 0;
-  if (total === 0) return null;
-
+  if (!dots.length) return null;
   return (
-    <div style={{ display: "flex", height: 7, borderRadius: 999, overflow: "hidden", marginTop: 12, gap: 1 }}>
-      {parties.map((p) => (
-        <div
-          key={p.name}
-          style={{ width: `${(p.count / total) * 100}%`, background: p.color, minWidth: 3 }}
-          title={`${p.name}: ${p.count} member${p.count === 1 ? "" : "s"}`}
-        />
+    <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 14 }} aria-label={`${dots.length} members by party`}>
+      {dots.map((d, i) => (
+        <span key={i} title={d.label} style={{ width: 13, height: 13, borderRadius: "50%", background: d.color, boxShadow: d.chair ? `0 0 0 2px ${COLORS.paperCard}, 0 0 0 3.5px ${color}` : "none", margin: d.chair ? 2 : 0 }} />
       ))}
     </div>
   );
 }
 
-function CommitteeCard({ committee, index, open, onToggle }) {
-  const color = partyColour(committee.chair_party_colour, COLORS.accent);
-  const purpose = stripHtml(committee.purpose);
+const initials = (name) => String(name ?? "").replace(/^(The |Rt Hon |Dame |Sir |Lord |Baroness |Lady |Dr |Mr |Mrs |Ms )+/i, "").split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
 
+function Stat({ value, label }) {
   return (
-    <motion.div
-      layout="position"
-      initial={{ opacity: 0, y: 12 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.3, delay: Math.min(index, 10) * 0.03, ease: "easeOut" }}
-      style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${color}`, borderRadius: 14, padding: 18 }}
-    >
-      <button onClick={onToggle} style={{ display: "block", width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10, marginBottom: 6 }}>
-          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, color: COLORS.ink, lineHeight: 1.3 }}>{committee.name}</div>
-          <span
-            style={{
-              flexShrink: 0, fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700,
-              color: HOUSE_COLOR[committee.house] ?? COLORS.inkSoft,
-              background: `${HOUSE_COLOR[committee.house] ?? COLORS.inkSoft}14`,
-              border: `1px solid ${HOUSE_COLOR[committee.house] ?? COLORS.inkSoft}40`,
-              borderRadius: 999, padding: "3px 9px", textTransform: "uppercase",
-            }}
-          >
-            {committee.house}
-          </span>
-        </div>
-        <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
-          {committee.chair_name ? <>Chaired by <strong style={{ color: COLORS.ink }}>{committee.chair_name}</strong></> : "Chair not currently listed"}
-          {" · "}{committee.members?.length ?? 0} members
-          {committee.inquiries?.length > 0 && <> · {committee.inquiries.length} open inquir{committee.inquiries.length === 1 ? "y" : "ies"}</>}
-        </div>
-        <PartyComposition members={committee.members} />
-      </button>
-
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.22, ease: "easeInOut" }}
-            style={{ overflow: "hidden" }}
-          >
-            <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${COLORS.hairline}` }}>
-              {purpose && (
-                <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.6, marginBottom: 14 }}>
-                  {purpose}
-                </div>
-              )}
-
-              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>
-                Members ({committee.members?.length ?? 0})
-              </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: committee.inquiries?.length > 0 ? 16 : 0 }}>
-                {(committee.members ?? []).map((m, i) => (
-                  <MemberChip key={i} member={m} showHouse={committee.house === "Joint"} />
-                ))}
-              </div>
-
-              {committee.inquiries?.length > 0 && (
-                <>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>
-                    Open inquiries
-                  </div>
-                  {committee.inquiries.map((inq, i) => <InquiryRow key={i} inquiry={inq} />)}
-                </>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
+    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "14px 16px" }}>
+      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 28, fontWeight: 700, color: COLORS.ink, lineHeight: 1.1 }}>{value}</div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 2 }}>{label}</div>
+    </div>
   );
 }
+
+function CommitteeCard({ committee, open, onToggle }) {
+  const color = partyColour(committee.chair_party_colour, COLORS.accent);
+  const houseColor = HOUSE_COLOR[committee.house] ?? COLORS.inkSoft;
+  const purpose = stripHtml(committee.purpose);
+  const n = committee.members?.length ?? 0;
+  const q = committee.inquiries?.length ?? 0;
+
+  return (
+    <div
+      style={{
+        gridColumn: open ? "1 / -1" : undefined, background: `linear-gradient(160deg, ${houseColor}14, ${COLORS.paperCard} 55%)`,
+        border: `1px solid ${open ? houseColor : COLORS.hairline}`, borderTop: `4px solid ${houseColor}`, borderRadius: 16, padding: 18, minWidth: 0,
+        transition: "border-color 0.15s",
+      }}
+    >
+      <button onClick={onToggle} aria-expanded={open} style={{ display: "block", width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left", font: "inherit" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 10 }}>
+          <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: houseColor, background: `${houseColor}18`, border: `1px solid ${houseColor}44`, borderRadius: 999, padding: "3px 10px", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+            {committee.house}
+          </span>
+          {q > 0 && (
+            <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.ink, background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: "3px 10px" }}>
+              {q} open {q === 1 ? "inquiry" : "inquiries"}
+            </span>
+          )}
+        </div>
+        <div style={{ fontFamily: FONT_DISPLAY, fontSize: 19, color: COLORS.ink, lineHeight: 1.25, marginBottom: 12 }}>{committee.name}</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span aria-hidden="true" style={{ flexShrink: 0, width: 34, height: 34, borderRadius: "50%", background: committee.chair_name ? color : COLORS.hairline, color: "#fff", display: "grid", placeItems: "center", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 800, textShadow: "0 1px 2px rgba(0,0,0,0.35)" }}>
+            {committee.chair_name ? initials(committee.chair_name) : "?"}
+          </span>
+          <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.35, minWidth: 0 }}>
+            {committee.chair_name ? <>Chair<br /><strong style={{ color: COLORS.ink, fontSize: 13.5 }}>{committee.chair_name}</strong></> : "Chair not currently listed"}
+          </span>
+          <span style={{ marginLeft: "auto", textAlign: "right", fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, lineHeight: 1.2, flexShrink: 0 }}>
+            <strong style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink }}>{n}</strong>members
+          </span>
+        </div>
+        <MemberDots members={committee.members} color={houseColor} />
+        <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 600, color: houseColor, marginTop: 12 }}>{open ? "Hide details ▴" : "Show members and inquiries ▾"}</div>
+      </button>
+
+      {open && (
+        <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${COLORS.hairline}`, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))", gap: "16px 28px" }}>
+          <div style={{ minWidth: 0 }}>
+            {purpose && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.6, marginBottom: 14 }}>{purpose}</div>}
+            <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>Members ({n})</div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {(committee.members ?? []).map((m, i) => <MemberChip key={i} member={m} showHouse={committee.house === "Joint"} />)}
+            </div>
+          </div>
+          {q > 0 && (
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>Open inquiries</div>
+              {committee.inquiries.map((inq, i) => <InquiryRow key={i} inquiry={inq} />)}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+const SORTS = [
+  { id: "name", label: "A to Z", fn: (a, b) => a.name.localeCompare(b.name) },
+  { id: "members", label: "Most members", fn: (a, b) => (b.members?.length ?? 0) - (a.members?.length ?? 0) || a.name.localeCompare(b.name) },
+  { id: "inquiries", label: "Most open inquiries", fn: (a, b) => (b.inquiries?.length ?? 0) - (a.inquiries?.length ?? 0) || a.name.localeCompare(b.name) },
+];
 
 export default function Committees() {
   const [committees, setCommittees] = useState(null);
   const [failed, setFailed] = useState(false);
   const [houseFilter, setHouseFilter] = useState("All");
+  const [sortId, setSortId] = useState("name");
+  const [query, setQuery] = useState("");
   const [openId, setOpenId] = useState(null);
 
   useEffect(() => {
@@ -182,18 +177,32 @@ export default function Committees() {
     });
   }, []);
 
+  const counts = useMemo(() => {
+    const out = { All: committees?.length ?? 0, members: 0, inquiries: 0 };
+    for (const c of committees ?? []) {
+      out[c.house] = (out[c.house] ?? 0) + 1;
+      out.members += c.members?.length ?? 0;
+      out.inquiries += c.inquiries?.length ?? 0;
+    }
+    return out;
+  }, [committees]);
+
+  const q = query.trim().toLowerCase();
   const filtered = useMemo(() => {
     if (!committees) return [];
-    if (houseFilter === "All") return committees;
-    return committees.filter((c) => c.house === houseFilter);
-  }, [committees, houseFilter]);
+    return committees
+      .filter((c) => houseFilter === "All" || c.house === houseFilter)
+      .filter((c) => !q || c.name.toLowerCase().includes(q) || String(c.chair_name ?? "").toLowerCase().includes(q))
+      .sort(SORTS.find((x) => x.id === sortId).fn);
+  }, [committees, houseFilter, q, sortId]);
 
   return (
-    <div style={{ maxWidth: 980, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconCommittee}
         kicker="Select Committees"
         title="Who's scrutinising the government"
+        maxWidth={900}
         subtitle={
           <>
             <GlossaryTerm term="Select Committee">Select committees</GlossaryTerm> are cross-party groups of MPs and
@@ -222,38 +231,49 @@ export default function Committees() {
 
       {committees !== null && committees.length > 0 && (
         <>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 24, marginBottom: 20 }}>
-            {HOUSE_FILTERS.map((h) => {
-              const c = HOUSE_COLOR[h] ?? COLORS.accent;
-              const active = houseFilter === h;
-              return (
-                <button
-                  key={h}
-                  onClick={() => setHouseFilter(h)}
-                  style={{
-                    fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, padding: "7px 14px", borderRadius: 999,
-                    border: `1px solid ${active ? c : COLORS.hairline}`,
-                    background: active ? c : "transparent",
-                    color: active ? "#fff" : COLORS.inkSoft, cursor: "pointer", transition: "all 0.15s",
-                  }}
-                >
-                  {h}
-                </button>
-              );
-            })}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(150px, 100%), 1fr))", gap: 12, marginTop: 24 }}>
+            <Stat value={counts.All} label="committees" />
+            <Stat value={counts.members.toLocaleString("en-GB")} label="places held by MPs and peers" />
+            <Stat value={counts.inquiries} label="open inquiries" />
+            <Stat value={`${counts.Commons ?? 0} / ${counts.Lords ?? 0}`} label="Commons / Lords (plus joint)" />
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {filtered.map((c, i) => (
-              <CommitteeCard
-                key={c.id}
-                committee={c}
-                index={i}
-                open={openId === c.id}
-                onToggle={() => setOpenId(openId === c.id ? null : c.id)}
-              />
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px 16px", marginTop: 22, marginBottom: 18 }}>
+            <div role="radiogroup" aria-label="House" style={{ display: "inline-flex", flexWrap: "wrap", gap: 8 }}>
+              {HOUSE_FILTERS.map((h) => {
+                const c = HOUSE_COLOR[h] ?? COLORS.accent;
+                const active = houseFilter === h;
+                return (
+                  <button
+                    key={h} role="radio" aria-checked={active} onClick={() => setHouseFilter(h)}
+                    style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, padding: "7px 14px", borderRadius: 999, minHeight: 36, border: `1px solid ${active ? c : COLORS.hairline}`, background: active ? c : "transparent", color: active ? "#fff" : COLORS.inkSoft, cursor: "pointer" }}
+                  >
+                    {h} <span style={{ opacity: 0.75 }}>{counts[h] ?? 0}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <input
+              type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search by committee or chair" aria-label="Search committees"
+              style={{ flex: "1 1 220px", maxWidth: 360, boxSizing: "border-box", padding: "9px 14px", fontFamily: FONT_BODY, fontSize: 14, border: `1px solid ${COLORS.hairline}`, borderRadius: 10, background: COLORS.paperCard, color: COLORS.ink }}
+            />
+            <label style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
+              Sort
+              <select value={sortId} onChange={(e) => setSortId(e.target.value)} style={{ fontFamily: FONT_BODY, fontSize: 14, padding: "8px 10px", borderRadius: 10, border: `1px solid ${COLORS.hairline}`, background: COLORS.paperCard, color: COLORS.ink }}>
+                {SORTS.map((x) => <option key={x.id} value={x.id}>{x.label}</option>)}
+              </select>
+            </label>
+          </div>
+
+          {filtered.length === 0 && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No committee matches that.</div>}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 340px), 1fr))", gap: 14, alignItems: "start" }}>
+            {filtered.map((c) => (
+              <CommitteeCard key={c.id} committee={c} open={openId === c.id} onToggle={() => setOpenId(openId === c.id ? null : c.id)} />
             ))}
           </div>
+          <p style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 18, lineHeight: 1.55 }}>
+            Each dot is one member, in their party's colour; a ringed dot is the chair. Hover a dot for the name.
+          </p>
         </>
       )}
     </div>

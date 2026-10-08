@@ -474,7 +474,7 @@ export default function Cabinet({ onViewProfile }) {
   const groups = members ? groupByArea(members) : [];
 
   return (
-    <div style={{ maxWidth: 980, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconCabinet}
         kicker="Cabinet"

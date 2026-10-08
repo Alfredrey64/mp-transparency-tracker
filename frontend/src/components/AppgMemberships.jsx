@@ -186,18 +186,20 @@ const APPG_EXAMPLES = [
 
 export default function AppgMemberships() {
   return (
-    <div style={{ padding: PAGE_PADDING }}>
+    <div className="editorial" style={{ padding: PAGE_PADDING }}>
       <PageHeader
         title="Cross-party groups"
         subtitle="All-party parliamentary groups (APPGs) are informal groups that MPs and peers join to focus on one topic. They are one of the earliest and least visible ways outside organisations get access to Parliament."
         maxWidth={900}
       />
 
+      <div className="editorial-body">
+
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.35 }}
-        style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(160px, 100%), 1fr))", gap: 14, marginBottom: 28, maxWidth: 900 }}
+        style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(160px, 100%), 1fr))", gap: 14, marginBottom: 28, maxWidth: "none" }}
       >
         {QUICK_FACTS.map((fact) => (
           <div
@@ -224,7 +226,7 @@ export default function AppgMemberships() {
         ministers think about an issue.
       </InfoCard>
 
-      <div style={{ marginBottom: 32, maxWidth: 900 }}>
+      <div style={{ marginBottom: 32, maxWidth: "none" }}>
         <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>
           Registered financial benefits
         </h2>
@@ -234,7 +236,7 @@ export default function AppgMemberships() {
           automatically, so this is refreshed periodically by hand instead, the same approach used for the
           Ministerial Meetings page.
         </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div className="ed-list">
           {REGISTERED_BENEFITS.map((b, i) => (
             <motion.div
               key={b.group}
@@ -351,7 +353,7 @@ export default function AppgMemberships() {
           borderRadius: 16,
           padding: "22px clamp(16px, 4vw, 26px)",
           
-          maxWidth: 900,
+          maxWidth: "none",
         }}
       >
         <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, marginTop: 0, marginBottom: 10 }}>
@@ -382,6 +384,7 @@ export default function AppgMemberships() {
           Open the official APPG Register ↗
         </motion.a>
       </motion.div>
+      </div>
     </div>
   );
 }

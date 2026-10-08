@@ -436,7 +436,7 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
   const maxValue = active.data?.[0]?.value || 1;
 
   return (
-    <div style={{ maxWidth: 860, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconRankings}
         kicker="Rankings"

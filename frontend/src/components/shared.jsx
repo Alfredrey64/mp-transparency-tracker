@@ -23,13 +23,12 @@ const VoteTitle = lazy(() => import("./VoteTitle"));
 // Closer to how a printed report marks up a marginal note than to a SaaS
 // card kit. The icon is optional and sits inline with the heading rather
 // than in its own circular badge.
-export function InfoCard({ title, color, children, index = 0, maxWidth = 900, icon: Icon }) {
+export function InfoCard({ title, color, children, maxWidth = "none", icon: Icon, wide = false }) {
+  // Sits in the page's two-column layout on a wide screen (see .editorial-body); `wide` spans both columns.
+  // A plain box: nothing fades or slides in as the page scrolls.
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.35, delay: index * 0.04, ease: "easeOut" }}
+    <div
+      className={wide ? undefined : "ed-half"}
       style={{
         borderLeft: `3px solid ${color}`, background: `${color}0a`, maxWidth,
         padding: "18px 22px 20px", marginBottom: 22,
@@ -44,7 +43,7 @@ export function InfoCard({ title, color, children, index = 0, maxWidth = 900, ic
         <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, margin: 0 }}>{title}</h2>
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 14.5, color: COLORS.inkSoft, lineHeight: 1.7 }}>{children}</div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -60,7 +59,7 @@ export function WhyItMattersBand({ icon: Icon, color, children }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2, duration: 0.35 }}
       style={{
-        display: "flex", alignItems: "center", gap: 14, maxWidth: 900, marginBottom: 28,
+        display: "flex", alignItems: "center", gap: 14, marginBottom: 28,
         background: `linear-gradient(135deg, ${color}1A, ${color}05)`, border: `1px solid ${color}33`,
         borderRadius: 14, padding: "16px 20px",
       }}

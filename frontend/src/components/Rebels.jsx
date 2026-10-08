@@ -66,7 +66,7 @@ export default function Rebels({ onNavigate }) {
   const divisions = r ? (showAll ? r.rebelDivisions : r.rebelDivisions.slice(0, SHOWN_DIVISIONS)) : [];
 
   return (
-    <div style={{ maxWidth: 1040, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconSplit}
         kicker="Rebels"

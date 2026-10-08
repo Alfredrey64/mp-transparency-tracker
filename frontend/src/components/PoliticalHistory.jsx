@@ -510,7 +510,7 @@ export default function PoliticalHistory() {
   })).filter((g) => g.votes.length > 0);
 
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconHistory}
         kicker="Political History"

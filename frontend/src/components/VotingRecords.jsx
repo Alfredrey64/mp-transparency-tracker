@@ -90,10 +90,10 @@ function BillEntry({ bill, politicians, initiallyOpen }) {
   return (
     <motion.div
       ref={ref}
-      layout="position"
       whileHover={{ borderColor: category.color }}
       transition={{ duration: 0.15 }}
       style={{
+        gridColumn: open ? "1 / -1" : undefined, minWidth: 0,
         background: COLORS.paperCard,
         border: `1px solid ${COLORS.hairline}`,
         borderRadius: 14,
@@ -600,7 +600,7 @@ export default function VotingRecords({ initialMp = null, initialBill = null, in
         {!loadingBills && !billsFailed && billsShown.length === 0 && (
           <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No bills found in this category right now.</div>
         )}
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 520px), 1fr))", gap: 12, alignItems: "start" }}>
           {billsShown.map((bill) => (
             <BillEntry key={bill.bill_id} bill={bill} politicians={politicians} initiallyOpen={bill.bill_id === initialBill} />
           ))}

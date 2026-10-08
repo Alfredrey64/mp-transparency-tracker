@@ -333,18 +333,18 @@ export default function Sidebar({ activeView, onNavigate, onSelectPolitician }) 
     <>
       <div
         className="mp-mobile-topbar"
-        style={{ alignItems: "center", justifyContent: "space-between", background: COLORS.sidebarBg, padding: "14px 18px" }}
+        style={{ alignItems: "center", justifyContent: "space-between", background: COLORS.sidebarBg, padding: "4px 14px" }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <ParliamentSilhouette width={26} color={COLORS.accentOnDark} />
-          <span style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: "#fff" }}>UK Parliament Tracker</span>
+          <ParliamentSilhouette width={24} color={COLORS.accentOnDark} />
+          <span style={{ fontFamily: FONT_DISPLAY, fontSize: 16, color: "#fff", whiteSpace: "nowrap" }}>UK Parliament Tracker</span>
         </div>
         <button
           onClick={() => setOpen(true)}
           aria-label="Open menu"
-          style={{ background: "transparent", border: "none", color: "#fff", cursor: "pointer", padding: 6 }}
+          style={{ background: "transparent", border: "none", color: "#fff", cursor: "pointer", padding: 10, margin: "-2px 0", display: "flex" }}
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <line x1="3" y1="6" x2="21" y2="6" />
             <line x1="3" y1="12" x2="21" y2="12" />
             <line x1="3" y1="18" x2="21" y2="18" />

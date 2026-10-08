@@ -15,6 +15,7 @@ const ADMINISTRATIONS = [
     established: "1999, following a 1997 referendum (74% in favour)",
     members: "129 MSPs, elected by the Additional Member System (a mix of constituency and regional-list seats)",
     led: "First Minister",
+    holders: [{ role: "First Minister", name: "John Swinney", party: "SNP", since: "May 2024; re-elected after the May 2026 election" }],
     powers: "Health, education, justice, policing, local government, and some tax-varying powers. Further powers, including parts of the welfare system, followed the 2014 independence referendum.",
     reserved: "Defence, foreign affairs, immigration, most of the constitution, and monetary policy stay with Westminster.",
     process: "Bills pass through three stages of scrutiny in a single, unicameral chamber — there's no upper house to send legislation back, unlike Westminster's Commons and Lords.",
@@ -29,6 +30,7 @@ const ADMINISTRATIONS = [
     established: "1999 as the National Assembly for Wales; renamed the Senedd in 2020",
     members: "60 Members currently, rising to 96 from the next election, elected by proportional representation",
     led: "First Minister of Wales",
+    holders: [{ role: "First Minister of Wales", name: "Rhun ap Iorwerth", party: "Plaid Cymru", since: "12 May 2026, leading a minority government" }],
     powers: "Powers have expanded steadily since 1999. Since the Wales Act 2017, it works on a \"reserved powers\" model like Scotland's — devolved by default, with only specific matters held back for Westminster.",
     reserved: "As with Scotland: defence, foreign affairs, immigration, and the core constitution remain reserved.",
     process: "Passes \"Acts of Senedd Cymru\" through a similar three-stage process in its own single, unicameral chamber.",
@@ -48,6 +50,10 @@ const ADMINISTRATIONS = [
     established: "1998, under the Good Friday (Belfast) Agreement that ended the Troubles",
     members: "90 MLAs, elected by Single Transferable Vote",
     led: "A First Minister and deputy First Minister, jointly, from the two largest parties by designation — with equal status in law",
+    holders: [
+      { role: "First Minister", name: "Michelle O'Neill", party: "Sinn Féin", since: "February 2024" },
+      { role: "deputy First Minister", name: "Emma Little-Pengelly", party: "DUP", since: "February 2024" },
+    ],
     powers: "Health, education, justice, policing, and agriculture, among others.",
     reserved: "Defence, foreign affairs, immigration, and national security remain with Westminster. Unlike Scotland and Wales, the Assembly's power-sharing structure has led to several extended suspensions over the years, most recently 2022–2024.",
     process: "Passes \"Acts of the Northern Ireland Assembly\". Votes on the most sensitive issues need \"cross-community support\" — backing from both designated unionist and nationalist members, not just a simple majority — a safeguard built into the Good Friday Agreement specifically to protect power-sharing.",
@@ -56,11 +62,14 @@ const ADMINISTRATIONS = [
   },
 ];
 
+// Who holds each leading post, as last checked. Elections move these, so the date is shown on the page.
+const HOLDERS_CHECKED = "8 October 2026";
+
 export default function DevolvedAdministrations() {
   const [openIndex, setOpenIndex] = useState(null);
 
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1120, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconDevolved}
         kicker="Devolved Administrations"
@@ -106,7 +115,16 @@ export default function DevolvedAdministrations() {
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(200px, 100%), 1fr))", gap: 14, marginTop: 14, marginBottom: 14 }}>
                   <Field label="Established">{a.established}</Field>
                   <Field label="Members">{a.members}</Field>
-                  <Field label="Led by">{a.led}</Field>
+                  <Field label="Led by">
+                    <div>{a.led}</div>
+                    {a.holders.map((h) => (
+                      <div key={h.role} style={{ marginTop: 6, color: COLORS.ink }}>
+                        <span style={{ color: COLORS.inkSoft }}>{h.role}: </span>
+                        <strong>{h.name}</strong> ({h.party})
+                        <span style={{ display: "block", fontSize: 11.5, color: COLORS.inkSoft }}>in post since {h.since}</span>
+                      </div>
+                    ))}
+                  </Field>
                 </div>
 
                 <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.65, marginBottom: 8 }}>{a.powers}</div>
@@ -156,6 +174,9 @@ export default function DevolvedAdministrations() {
           );
         })}
       </div>
+      <p style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 18, lineHeight: 1.55 }}>
+        Office-holders last checked {HOLDERS_CHECKED}, against the devolved governments' own websites and news reports. Leaders can change between our checks, for example after an election or a resignation.
+      </p>
     </div>
   );
 }

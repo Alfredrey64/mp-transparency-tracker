@@ -55,7 +55,7 @@ button, a, [role="button"], input, select, summary { touch-action: manipulation;
 
 /* Notched phones and home-screen apps: keep content clear of the notch, the
    rounded corners and the home bar. */
-.mp-mobile-topbar { padding-top: calc(14px + env(safe-area-inset-top, 0px)) !important; padding-left: calc(18px + env(safe-area-inset-left, 0px)) !important; padding-right: calc(18px + env(safe-area-inset-right, 0px)) !important; }
+.mp-mobile-topbar { position: sticky; top: 0; z-index: 50; padding-top: calc(4px + env(safe-area-inset-top, 0px)) !important; padding-bottom: 4px !important; padding-left: calc(14px + env(safe-area-inset-left, 0px)) !important; padding-right: calc(8px + env(safe-area-inset-right, 0px)) !important; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
 .mp-sidebar { padding-top: calc(20px + env(safe-area-inset-top, 0px)); padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); padding-left: calc(16px + env(safe-area-inset-left, 0px)); }
 #root { padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
 
@@ -248,12 +248,10 @@ select:focus-visible,
 .nclick:hover, .nclick:focus-visible { background-color: rgba(127, 127, 160, 0.14); }
 .member-row:hover, .member-row:focus-visible { background-color: rgba(127, 127, 160, 0.14) !important; }
 
-/* Sidebar sections: fold by animating a grid row from 0fr to 1fr. */
-.fold { display: grid; grid-template-rows: 0fr; }
-.fold-anim { transition: grid-template-rows 0.2s ease-out; }
-.fold[data-open="true"] { grid-template-rows: 1fr; }
-.fold-inner { overflow: hidden; min-height: 0; }
-@media (prefers-reduced-motion: reduce) { .fold-anim { transition: none; } }
+/* Sidebar sections: shown or hidden outright. (They used to slide open by animating a grid row from 0fr to 1fr, which some browsers, WebKit among them, can leave clipped when the content changes size after it opens.) */
+.fold { display: none; }
+.fold[data-open="true"] { display: block; }
+.fold-inner { min-height: 0; }
 
 /* Career tab: bars grow out from their left edge, once, when the tab opens. */
 @keyframes careerBar { from { transform: scaleX(0); opacity: 0.4; } to { transform: scaleX(1); opacity: 1; } }
@@ -569,3 +567,29 @@ select:focus-visible,
 
 /* On a narrow screen the colour key shows every other edge, counting back from the top one, so the labels never run together. */
 @media (max-width: 520px) { .key-skip { display: none; } }
+
+/* With the phone top bar stuck to the top, jump targets stop below it. */
+@media (max-width: 880px) { .ons-anchor, [id^="s-"] { scroll-margin-top: 72px; } }
+
+/* Editorial pages (the explainers and "what's hidden" pages): a wide reading layout. On a big screen the cards sit in two
+   columns; the header, the "why this matters" band, diagrams and tables span both. Phones and narrow windows get one column. */
+.editorial { max-width: 1320px; margin: 0 auto; container-type: inline-size; }
+.editorial-body { display: grid; grid-template-columns: minmax(0, 1fr); column-gap: 28px; }
+.editorial-body > * { grid-column: 1 / -1; min-width: 0; }
+@container (min-width: 900px) {
+  .editorial-body { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .editorial-body > .ed-half { grid-column: auto; }
+}
+
+/* A run of cards inside an editorial page: one column on a phone, two when there is room. */
+.ed-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 520px), 1fr)); gap: 14px; align-items: stretch; }
+.editorial-body { align-items: stretch; }
+@container (min-width: 900px) { .editorial-body { align-items: stretch; } }
+
+/* Thumb-sized targets on touch screens and phones. Small text buttons keep their look but get a larger invisible hit area;
+   filter chips and toggles are made taller. */
+@media (pointer: coarse), (max-width: 700px) {
+  main button:not([style*="position"]):not([role="slider"]):not(.bd-sq) { position: relative; }
+  main button:not([style*="position: absolute"]):not([style*="position: fixed"]):not([role="slider"]):not(.bd-sq):not(.ons-range)::after { content: ""; position: absolute; inset: -7px -5px; }
+  main button[aria-pressed], main button[role="radio"], main button[role="tab"], main button.ons-chip { min-height: 38px; }
+}

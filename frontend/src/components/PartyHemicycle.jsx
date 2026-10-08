@@ -47,7 +47,7 @@ function computeSeatPositions(total, rows = ROWS) {
 
 // `rows` is how many concentric rows the dome has: fewer for a small body (a
 // council of 57), the default for the Commons.
-export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Independent", legendCount = 8, centre = null, rows: rowCount = ROWS }) {
+export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Independent", legendCount = 8, centre = null, rows: rowCount = ROWS, maxWidth = null }) {
   const [hoveredParty, setHoveredParty] = useState(null);
   // The seats sweep in from the left the first time the dome scrolls into
   // view. Until then they are held invisible, so nothing flashes on first paint.
@@ -90,7 +90,7 @@ export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Ind
   const viewH = maxRadius + 20;
 
   return (
-    <div>
+    <div style={maxWidth ? { maxWidth, margin: "0 auto" } : undefined}>
       <div ref={wrapRef} style={{ position: "relative" }}>
       <svg
         viewBox={`${-viewW / 2} ${-viewH + 10} ${viewW} ${viewH}`}
@@ -159,6 +159,7 @@ export function PartyHemicycleSection({
   subtitle = "Every current seat, coloured by party — hover a party below to pick it out.",
   noPartyLabel = "Independent",
   legendCount = 8,
+  maxWidth = null,
 }) {
   return (
     <div style={{ marginBottom: 40 }}>
@@ -168,7 +169,7 @@ export function PartyHemicycleSection({
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, textAlign: "center", marginBottom: 8 }}>
         {subtitle}
       </div>
-      <PartyHemicycle politicians={politicians} onSelectParty={onSelectParty} noPartyLabel={noPartyLabel} legendCount={legendCount} />
+      <PartyHemicycle politicians={politicians} onSelectParty={onSelectParty} noPartyLabel={noPartyLabel} legendCount={legendCount} maxWidth={maxWidth} />
     </div>
   );
 }

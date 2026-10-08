@@ -16,7 +16,7 @@ function MaskedExpertDiagram() {
   return (
     <div
       style={{
-        padding: "30px 20px 24px", marginBottom: 30, maxWidth: 900, textAlign: "center",
+        padding: "30px 20px 24px", marginBottom: 30, maxWidth: "none", textAlign: "center",
         background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 18,
       }}
     >
@@ -125,7 +125,7 @@ function ThinkTankRow({ item, index }) {
 
 export default function ThinkTankFunding() {
   return (
-    <div style={{ padding: PAGE_PADDING }}>
+    <div className="editorial" style={{ padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconThinkTank}
         kicker="Transparency Gaps"
@@ -140,6 +140,8 @@ export default function ThinkTankFunding() {
         }
         maxWidth={900}
       />
+
+      <div className="editorial-body">
 
       <WhyItMattersBand icon={IconThinkTank} color="#9C6B30">
         the "expert" quoted on the news tonight could be paid, indirectly, by exactly the industry their comments
@@ -195,7 +197,7 @@ export default function ThinkTankFunding() {
         </p>
       </InfoCard>
 
-      <div style={{ marginBottom: 24, maxWidth: 900 }}>
+      <div style={{ marginBottom: 24, maxWidth: "none" }}>
         <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>
           A sample, across the spectrum
         </h2>
@@ -205,7 +207,7 @@ export default function ThinkTankFunding() {
           sample to illustrate the range, not a comprehensive or systematically balanced survey of every think tank
           in Britain; Who Funds You? itself has assessed dozens more, in both directions.
         </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div className="ed-list">
           {THINK_TANKS.map((item, i) => (
             <ThinkTankRow key={item.name} item={item} index={i} />
           ))}
@@ -220,6 +222,7 @@ export default function ThinkTankFunding() {
         who isn't. Knowing an organisation's transparency grade doesn't tell you whether a specific argument is
         right or wrong — but it's a reasonable prompt to ask who benefits before taking "independent" at face value.
       </InfoCard>
+      </div>
     </div>
   );
 }

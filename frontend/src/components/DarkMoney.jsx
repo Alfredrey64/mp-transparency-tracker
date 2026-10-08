@@ -10,7 +10,7 @@ function MoneyTrailDiagram() {
   return (
     <div
       style={{
-        padding: "30px 20px 24px", marginBottom: 30, maxWidth: 900, textAlign: "center",
+        padding: "30px 20px 24px", marginBottom: 30, maxWidth: "none", textAlign: "center",
         background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 18,
       }}
     >
@@ -51,7 +51,7 @@ function ThresholdStep({ number, title, children, color }) {
 
 export default function DarkMoney() {
   return (
-    <div style={{ padding: PAGE_PADDING }}>
+    <div className="editorial" style={{ padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconDarkMoney}
         kicker="Transparency Gaps"
@@ -59,6 +59,8 @@ export default function DarkMoney() {
         subtitle="Every other page here traces a donation to a named person or company in the official register. This page covers the narrow set of cases where UK law does not require that, with a well-documented example of how much can move through them."
         maxWidth={900}
       />
+
+      <div className="editorial-body">
 
       <WhyItMattersBand icon={IconDarkMoney} color="#9C3B3B">
         if you can't see who really paid for a party's campaign, you can't judge whether their policies end up
@@ -100,7 +102,7 @@ export default function DarkMoney() {
         </p>
       </InfoCard>
 
-      <div style={{ marginBottom: 32, maxWidth: 900 }}>
+      <div style={{ marginBottom: 32, maxWidth: "none" }}>
         <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>
           How the unincorporated association loophole works
         </h2>
@@ -182,6 +184,7 @@ export default function DarkMoney() {
           </li>
         </ul>
       </InfoCard>
+      </div>
     </div>
   );
 }
