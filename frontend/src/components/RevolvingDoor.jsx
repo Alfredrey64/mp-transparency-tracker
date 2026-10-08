@@ -10,6 +10,7 @@ import { IconDoor, IconCompare, IconGavel, IconShield, IconCabinet, IconBriefcas
 function RevolvingDoorDiagram() {
   return (
     <div
+      className="ed-half"
       style={{
         padding: "30px 20px 24px", marginBottom: 30, maxWidth: "none", textAlign: "center",
         background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 18,

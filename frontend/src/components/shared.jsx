@@ -55,6 +55,7 @@ export function InfoCard({ title, color, children, maxWidth = "none", icon: Icon
 export function WhyItMattersBand({ icon: Icon, color, children }) {
   return (
     <motion.div
+      className="ed-half"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2, duration: 0.35 }}
@@ -207,7 +208,7 @@ export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = 
   const accent = SECTION_ACCENT_BY_ICON.get(Icon) ?? COLORS.accent;
   const kickerText = SECTION_LABEL_BY_KEY.get(guideKey) ?? kicker;
   return (
-    <div style={{ marginBottom: isHero ? 0 : 28, maxWidth, textAlign: align }}>
+    <div style={{ marginBottom: isHero ? 0 : 28, textAlign: align }}>
       <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22 }}>
         <EyebrowLabel color={accent}>{kickerText}</EyebrowLabel>
       </motion.div>
@@ -262,7 +263,7 @@ export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = 
             color: COLORS.inkSoft,
             marginTop: isHero ? 22 : 8,
             lineHeight: 1.6,
-            maxWidth: isHero ? 620 : undefined,
+            maxWidth: isHero ? 620 : maxWidth,
             marginLeft: align === "center" ? "auto" : undefined,
             marginRight: align === "center" ? "auto" : undefined,
           }}

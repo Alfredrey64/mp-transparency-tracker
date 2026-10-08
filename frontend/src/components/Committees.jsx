@@ -4,7 +4,9 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader, LoadFailedNote } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { partyColour, stripHtml, formatDate } from "../lib/format";
+import { isScrolling } from "../lib/scrollState";
 import { IconCommittee } from "./icons";
+import CountUp from "./CountUp";
 
 const HOUSE_FILTERS = ["All", "Commons", "Lords", "Joint"];
 
@@ -76,7 +78,7 @@ function MemberDots({ members, color }) {
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 14 }} aria-label={`${dots.length} members by party`}>
       {dots.map((d, i) => (
-        <span key={i} title={d.label} style={{ width: 13, height: 13, borderRadius: "50%", background: d.color, boxShadow: d.chair ? `0 0 0 2px ${COLORS.paperCard}, 0 0 0 3.5px ${color}` : "none", margin: d.chair ? 2 : 0 }} />
+        <span key={i} className="cm-dot" title={d.label} style={{ "--d": i, width: 13, height: 13, borderRadius: "50%", background: d.color, boxShadow: d.chair ? `0 0 0 2px ${COLORS.paperCard}, 0 0 0 3.5px ${color}` : "none", margin: d.chair ? 2 : 0 }} />
       ))}
     </div>
   );
@@ -84,16 +86,97 @@ function MemberDots({ members, color }) {
 
 const initials = (name) => String(name ?? "").replace(/^(The |Rt Hon |Dame |Sir |Lord |Baroness |Lady |Dr |Mr |Mrs |Ms )+/i, "").split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
 
-function Stat({ value, label }) {
+function Stat({ value, label, color }) {
   return (
-    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "14px 16px" }}>
-      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 28, fontWeight: 700, color: COLORS.ink, lineHeight: 1.1 }}>{value}</div>
+    <div style={{ position: "relative", overflow: "hidden", background: `linear-gradient(160deg, ${color}1f, ${COLORS.paperCard} 70%)`, border: `1px solid ${color}44`, borderRadius: 14, padding: "14px 16px" }}>
+      <span aria-hidden="true" style={{ position: "absolute", right: -18, top: -18, width: 70, height: 70, borderRadius: "50%", background: `${color}22` }} />
+      <div style={{ position: "relative", fontFamily: FONT_DISPLAY, fontSize: 30, fontWeight: 700, color: COLORS.ink, lineHeight: 1.1 }}>
+        {typeof value === "number" ? <CountUp value={value} format={(n) => Math.round(n).toLocaleString("en-GB")} duration={1.1} /> : value}
+      </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 2 }}>{label}</div>
     </div>
   );
 }
 
-function CommitteeCard({ committee, open, onToggle }) {
+// A ring of every committee place, in party colours: who actually holds the scrutiny seats.
+function PartyRing({ parties, total }) {
+  const R = 62;
+  const C = 2 * Math.PI * R;
+  const [hover, setHover] = useState(null);
+  let offset = 0;
+  const top = parties.slice(0, 7);
+  const rest = parties.slice(7).reduce((n, p) => n + p.count, 0);
+  const list = rest ? [...top, { name: "Other parties", count: rest, color: COLORS.inkSoft }] : top;
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 150px) minmax(0, 1fr)", gap: 16, alignItems: "center" }}>
+      <svg viewBox="0 0 160 160" width="100%" role="img" aria-label="Share of committee places by party" style={{ maxWidth: 170, justifySelf: "center" }}>
+        <circle cx="80" cy="80" r={R} fill="none" stroke={COLORS.hairline} strokeWidth="24" opacity="0.5" />
+        <g transform="rotate(-90 80 80)">
+          {list.map((p, i) => {
+            const len = (p.count / total) * C;
+            const seg = (
+              <circle
+                key={p.name} className="cm-seg" cx="80" cy="80" r={R} fill="none" stroke={p.color} strokeWidth="24"
+                style={{ "--C": C, "--len": Math.max(0, len - 1.5), "--rest": C - Math.max(0, len - 1.5), "--i": i, strokeDashoffset: -offset, opacity: hover && hover !== p.name ? 0.25 : 1, transition: "opacity 0.15s" }}
+              />
+            );
+            offset += len;
+            return seg;
+          })}
+        </g>
+        <text x="80" y="78" textAnchor="middle" fontFamily={FONT_DISPLAY} fontSize="26" fontWeight="700" fill={COLORS.ink}>{total}</text>
+        <text x="80" y="96" textAnchor="middle" fontFamily={FONT_BODY} fontSize="10.5" fill={COLORS.inkSoft}>places</text>
+      </svg>
+      <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 2 }}>
+        {list.map((p) => (
+          <li key={p.name}
+            onPointerEnter={(e) => { if (e.pointerType !== "touch" && !isScrolling()) setHover(p.name); }} onPointerLeave={() => setHover(null)}
+            style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, padding: "3px 0", opacity: hover && hover !== p.name ? 0.45 : 1 }}>
+            <span style={{ width: 10, height: 10, borderRadius: "50%", background: p.color, flexShrink: 0 }} />
+            <span style={{ flex: 1, minWidth: 0 }}>{p.name}</span>
+            <strong style={{ fontVariantNumeric: "tabular-nums" }}>{p.count}</strong>
+            <span style={{ color: COLORS.inkSoft, width: 34, textAlign: "right", fontVariantNumeric: "tabular-nums" }}>{Math.round((p.count / total) * 100)}%</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+// Horizontal bars that grow in when the page loads. Pressing one searches for that committee.
+function BarList({ items, color, unit, onPick }) {
+  const max = Math.max(1, ...items.map((i) => i.value));
+  return (
+    <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 7 }}>
+      {items.map((it, i) => (
+        <li key={it.id}>
+          <button type="button" onClick={() => onPick(it.name)} style={{ display: "block", width: "100%", textAlign: "left", background: "none", border: "none", padding: 0, cursor: "pointer", font: "inherit" }}>
+            <span style={{ display: "flex", justifyContent: "space-between", gap: 8, fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, marginBottom: 3 }}>
+              <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{it.name}</span>
+              <strong style={{ flexShrink: 0, fontVariantNumeric: "tabular-nums" }}>{it.value} <span style={{ fontWeight: 400, color: COLORS.inkSoft }}>{unit}</span></strong>
+            </span>
+            <span aria-hidden="true" style={{ display: "block", height: 9, borderRadius: 5, background: `${color}1c`, overflow: "hidden" }}>
+              <span className="cm-bar" style={{ "--i": i, display: "block", height: "100%", width: `${(it.value / max) * 100}%`, borderRadius: 5, background: `linear-gradient(90deg, ${color}aa, ${color})` }} />
+            </span>
+          </button>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+function Panel({ title, note, children }) {
+  return (
+    <section style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 16, padding: "16px 18px", minWidth: 0 }}>
+      <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink, margin: 0 }}>{title}</h2>
+      {note && <p style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, margin: "3px 0 12px" }}>{note}</p>}
+      {!note && <div style={{ height: 12 }} />}
+      {children}
+    </section>
+  );
+}
+
+function CommitteeCard({ committee, open, onToggle, index = 0 }) {
   const color = partyColour(committee.chair_party_colour, COLORS.accent);
   const houseColor = HOUSE_COLOR[committee.house] ?? COLORS.inkSoft;
   const purpose = stripHtml(committee.purpose);
@@ -102,8 +185,9 @@ function CommitteeCard({ committee, open, onToggle }) {
 
   return (
     <div
+      className="cm-card"
       style={{
-        gridColumn: open ? "1 / -1" : undefined, background: `linear-gradient(160deg, ${houseColor}14, ${COLORS.paperCard} 55%)`,
+        "--i": index, gridColumn: open ? "1 / -1" : undefined, background: `linear-gradient(160deg, ${houseColor}14, ${COLORS.paperCard} 55%)`,
         border: `1px solid ${open ? houseColor : COLORS.hairline}`, borderTop: `4px solid ${houseColor}`, borderRadius: 16, padding: 18, minWidth: 0,
         transition: "border-color 0.15s",
       }}
@@ -187,6 +271,22 @@ export default function Committees() {
     return out;
   }, [committees]);
 
+  // Whole-page figures for the diagrams: every committee place by party, and the busiest committees.
+  const overall = useMemo(() => {
+    const byParty = new Map();
+    let total = 0;
+    for (const c of committees ?? []) {
+      for (const m of c.members ?? []) {
+        const name = m.party || "Other";
+        if (!byParty.has(name)) byParty.set(name, { name, count: 0, color: partyColour(m.party_colour, COLORS.inkSoft) });
+        byParty.get(name).count += 1;
+        total += 1;
+      }
+    }
+    const top = (key) => [...(committees ?? [])].map((c) => ({ id: c.id, name: c.name, value: key(c) })).filter((x) => x.value > 0).sort((a, b) => b.value - a.value).slice(0, 7);
+    return { parties: [...byParty.values()].sort((a, b) => b.count - a.count), total, inquiries: top((c) => c.inquiries?.length ?? 0), biggest: top((c) => c.members?.length ?? 0) };
+  }, [committees]);
+
   const q = query.trim().toLowerCase();
   const filtered = useMemo(() => {
     if (!committees) return [];
@@ -232,10 +332,22 @@ export default function Committees() {
       {committees !== null && committees.length > 0 && (
         <>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(150px, 100%), 1fr))", gap: 12, marginTop: 24 }}>
-            <Stat value={counts.All} label="committees" />
-            <Stat value={counts.members.toLocaleString("en-GB")} label="places held by MPs and peers" />
-            <Stat value={counts.inquiries} label="open inquiries" />
-            <Stat value={`${counts.Commons ?? 0} / ${counts.Lords ?? 0}`} label="Commons / Lords (plus joint)" />
+            <Stat value={counts.All} label="committees" color={COLORS.accent} />
+            <Stat value={counts.members} label="places held by MPs and peers" color={HOUSE_COLOR.Commons} />
+            <Stat value={counts.inquiries} label="open inquiries" color="#E07A1F" />
+            <Stat value={`${counts.Commons ?? 0} / ${counts.Lords ?? 0}`} label="Commons / Lords (plus joint)" color={HOUSE_COLOR.Lords} />
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))", gap: 14, marginTop: 14 }}>
+            <Panel title="Who holds the seats" note="Every committee place, by party">
+              <PartyRing parties={overall.parties} total={overall.total} />
+            </Panel>
+            <Panel title="Busiest committees" note="Most open inquiries. Press one to find it.">
+              <BarList items={overall.inquiries} color="#E07A1F" unit="inquiries" onPick={(name) => { setQuery(name); setOpenId(null); }} />
+            </Panel>
+            <Panel title="Biggest committees" note="Most members. Press one to find it.">
+              <BarList items={overall.biggest} color={HOUSE_COLOR.Commons} unit="members" onPick={(name) => { setQuery(name); setOpenId(null); }} />
+            </Panel>
           </div>
 
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px 16px", marginTop: 22, marginBottom: 18 }}>
@@ -267,8 +379,8 @@ export default function Committees() {
 
           {filtered.length === 0 && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No committee matches that.</div>}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 340px), 1fr))", gap: 14, alignItems: "start" }}>
-            {filtered.map((c) => (
-              <CommitteeCard key={c.id} committee={c} open={openId === c.id} onToggle={() => setOpenId(openId === c.id ? null : c.id)} />
+            {filtered.map((c, i) => (
+              <CommitteeCard key={c.id} index={i} committee={c} open={openId === c.id} onToggle={() => setOpenId(openId === c.id ? null : c.id)} />
             ))}
           </div>
           <p style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 18, lineHeight: 1.55 }}>
