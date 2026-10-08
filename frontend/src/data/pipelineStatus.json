@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-04T17:21:13.864Z",
-  "succeededCount": 22,
-  "totalCount": 23,
+  "generatedAt": "2026-10-08T18:31:25.180Z",
+  "succeededCount": 26,
+  "totalCount": 27,
   "sources": [
     {
       "label": "Financial interests",
@@ -93,6 +93,22 @@
     },
     {
       "label": "Lords careers (arrival, former MPs, posts)",
+      "succeeded": true
+    },
+    {
+      "label": "MP benchmarks (how each MP compares)",
+      "succeeded": true
+    },
+    {
+      "label": "Councils (councillors, make-up, election dates)",
+      "succeeded": true
+    },
+    {
+      "label": "ONS statistics (economy, prices, jobs, health, population)",
+      "succeeded": true
+    },
+    {
+      "label": "Regional breakdowns (jobs, housing, crime by place)",
       "succeeded": true
     }
   ]

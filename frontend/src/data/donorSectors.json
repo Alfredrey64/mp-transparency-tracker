@@ -38,13 +38,6 @@
     "companyNumber": "13054048",
     "sicCode": "94920"
   },
-  "International Centre of Justice for Palestinians (ICJP)": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "INTERNATIONAL CENTRE OF JUSTICE FOR PALESTINIANS",
-    "companyNumber": "13054048",
-    "sicCode": "94920"
-  },
   "National Liberal Club": {
     "sector": "Other / Uncategorised",
     "source": "companies-house",
@@ -370,13 +363,6 @@
     "companyNumber": "05669451",
     "sicCode": "85590"
   },
-  "Informa Telecoms & Media Ltd": {
-    "sector": "Legal & Professional Services",
-    "source": "companies-house",
-    "companyName": "INFORMA TELECOMS & MEDIA LIMITED",
-    "companyNumber": "00991704",
-    "sicCode": "70229"
-  },
   "National Liberal Club Ltd": {
     "sector": "Other / Uncategorised",
     "source": "companies-house",
@@ -457,6 +443,13 @@
     "companyName": "STRATHGROVE LIMITED",
     "companyNumber": "00972224",
     "sicCode": "41100"
+  },
+  "Millennium Care (U.K.) Limited": {
+    "sector": "Pharma & Healthcare",
+    "source": "companies-house",
+    "companyName": "MILLENNIUM CARE (U.K.) LIMITED",
+    "companyNumber": "03462318",
+    "sicCode": "86900"
   },
   "SRE Hotels (Cliveden) Ltd": {
     "sector": "Other / Uncategorised",
@@ -681,6 +674,13 @@
     "companyNumber": "13740182",
     "sicCode": "94920"
   },
+  "The Football Association Premier League": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "THE FOOTBALL ASSOCIATION PREMIER LEAGUE LIMITED",
+    "companyNumber": "02719699",
+    "sicCode": "93199"
+  },
   "London Marathon Events Ltd": {
     "sector": "Other / Uncategorised",
     "source": "companies-house",
@@ -696,10 +696,10 @@
     "sicCode": "93199"
   },
   "Knights Tailoring Ltd": {
-    "sector": "Other / Uncategorised",
+    "sector": "Chemicals & Manufacturing",
     "source": "companies-house",
     "companyName": "KNIGHTS TAILORING LTD",
     "companyNumber": "07036550",
-    "sicCode": "95230"
+    "sicCode": "14120"
   }
 }

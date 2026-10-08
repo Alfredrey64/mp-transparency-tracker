@@ -25,6 +25,13 @@
     "companyNumber": "02693163",
     "sicCode": "84210"
   },
+  "Dalglen (No 1811) Limited": {
+    "sector": "Construction & Property",
+    "source": "companies-house-crn",
+    "companyName": "DALGLEN (NO.1811) LIMITED",
+    "companyNumber": "SC559988",
+    "sicCode": "68209"
+  },
   "Renewable Energy Partnerships Ltd": {
     "sector": "Construction & Property",
     "source": "companies-house-crn",
@@ -53,6 +60,10 @@
     "companyNumber": "16359847",
     "sicCode": "94920"
   },
+  "Communication Workers Union (CWU)": {
+    "sector": "Trade Unions",
+    "source": "donor-status"
+  },
   "Eldridge Capital Management Services (UK) LTD": {
     "sector": "Other / Uncategorised",
     "source": "companies-house-crn",
@@ -64,9 +75,12 @@
     "sector": "Trade Unions",
     "source": "donor-status"
   },
-  "Communication Workers Union (CWU)": {
-    "sector": "Trade Unions",
-    "source": "donor-status"
+  "Lambeth Labour Group": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "LAMBETH LABOUR LIMITED",
+    "companyNumber": "10256879",
+    "sicCode": "99999"
   },
   "Charlie Parsons Creative Limited": {
     "sector": "Other / Uncategorised",
@@ -82,30 +96,12 @@
     "companyNumber": "08137487",
     "sicCode": "66220"
   },
-  "Lambeth Labour Group": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "LAMBETH LABOUR LIMITED",
-    "companyNumber": "10256879",
-    "sicCode": "99999"
-  },
-  "RMB Associates Limited": {
-    "sector": "Legal & Professional Services",
+  "Playscan Limited": {
+    "sector": "Construction & Property",
     "source": "companies-house-crn",
-    "companyName": "RMB ASSOCIATES LTD",
-    "companyNumber": "08823586",
-    "sicCode": "70229"
-  },
-  "GOLDEN ACRE FOODS LIMITED": {
-    "sector": "Retail & Consumer",
-    "source": "companies-house-crn",
-    "companyName": "GOLDEN ACRE FOODS LIMITED",
-    "companyNumber": "SC252388",
-    "sicCode": "46170"
-  },
-  "Communication Workers Union": {
-    "sector": "Trade Unions",
-    "source": "donor-status"
+    "companyName": "PLAYSCAN LIMITED",
+    "companyNumber": "01966393",
+    "sicCode": "41100"
   },
   "Flow Lloyds HOLDCO Limited": {
     "sector": "Other / Uncategorised",
@@ -113,6 +109,17 @@
     "companyName": "FLOW LLOYDS HOLDCO LIMITED",
     "companyNumber": "15582638",
     "sicCode": "64209"
+  },
+  "Communication Workers Union": {
+    "sector": "Trade Unions",
+    "source": "donor-status"
+  },
+  "Rocktel Services Limited": {
+    "sector": "Construction & Property",
+    "source": "companies-house-crn",
+    "companyName": "ROCKTEL SERVICES LIMITED",
+    "companyNumber": "04120606",
+    "sicCode": "68209"
   },
   "J C Bamford Excavators Ltd": {
     "sector": "Chemicals & Manufacturing",
@@ -127,6 +134,13 @@
     "companyName": "VOLARE AVIATION LIMITED",
     "companyNumber": "08557765",
     "sicCode": "51102"
+  },
+  "J. T. LEAVESLEY (ALREWAS) LIMITED": {
+    "sector": "Retail & Consumer",
+    "source": "companies-house-crn",
+    "companyName": "J. T. LEAVESLEY (ALREWAS) LIMITED",
+    "companyNumber": "00931247",
+    "sicCode": "47300"
   },
   "Centrax Industries Ltd": {
     "sector": "Other / Uncategorised",
@@ -156,20 +170,6 @@
     "companyNumber": "00357963",
     "sicCode": "94920"
   },
-  "United Kingdom Sotheby's International Realty Limited": {
-    "sector": "Construction & Property",
-    "source": "companies-house-crn",
-    "companyName": "UNITED KINGDOM SOTHEBY'S INTERNATIONAL REALTY LIMITED",
-    "companyNumber": "01266162",
-    "sicCode": "68310"
-  },
-  "Rocktel Services Limited": {
-    "sector": "Construction & Property",
-    "source": "companies-house-crn",
-    "companyName": "ROCKTEL SERVICES LIMITED",
-    "companyNumber": "04120606",
-    "sicCode": "68209"
-  },
   "Nova Venture Holdings Ltd": {
     "sector": "Other / Uncategorised",
     "source": "companies-house-crn",
@@ -183,5 +183,12 @@
     "companyName": "CPG CHESTER LIMITED",
     "companyNumber": "10932289",
     "sicCode": "68209"
+  },
+  "SLM Management Ltd": {
+    "sector": "Legal & Professional Services",
+    "source": "companies-house-crn",
+    "companyName": "SLM MANAGEMENT LIMITED",
+    "companyNumber": "04741413",
+    "sicCode": "70229"
   }
 }
