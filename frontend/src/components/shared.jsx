@@ -2,6 +2,8 @@ import { useState, useEffect, useMemo, useContext, lazy, Suspense } from "react"
 import PageGuide from "./PageGuide";
 import { GuideKeyContext } from "../lib/viewContext";
 import { RebelMeaning } from "./MpMeaning";
+import ShareButton from "./ShareButton";
+import { pageShareSpec } from "../lib/shareSpecs";
 import { motion } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
 import { supabase } from "../supabaseClient";
@@ -195,7 +197,9 @@ export function ScaleComparison({ bars, maxWidth = 900 }) {
   );
 }
 
-export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = "left", size = "lg", icon: Icon }) {
+// share: a function returning what goes on the page's share card (see lib/shareSpecs.js); leave it out for a plain card of the
+// title and subtitle, or pass false on a page that has its own Share button.
+export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = "left", size = "lg", icon: Icon, share }) {
   const isHero = size === "xl";
   // The page's "What you're looking at" box sits under every header.
   const guideKey = useContext(GuideKeyContext);
@@ -270,6 +274,14 @@ export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = 
         >
           {subtitle}
         </motion.p>
+      )}
+      {!isHero && share !== false && (
+        <div className="ons-noprint" style={{ marginTop: 12 }}>
+          <ShareButton
+            filename={String(title).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}
+            getSpec={share ?? (() => pageShareSpec({ kicker: kickerText, title, subtitle, accent, link: window.location.href }))}
+          />
+        </div>
       )}
       {!isHero && <PageGuide viewKey={guideKey} />}
     </div>

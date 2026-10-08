@@ -288,7 +288,7 @@ export default function ConstituencyHub({ seat, onSelectPolitician }) {
         icon={IconHexMap}
         kicker="Your area & your say"
         title="Find your constituency"
-        subtitle="Every one of the 650 seats is a hexagon on this map, all the same size so each counts equally. Tap yours, or search for it, to see how it voted, who represents it, how it compares and what people there are petitioning for."
+        subtitle="Every one of the 650 seats is a hexagon on this map, all the same size so each counts equally. Tap yours, or search for it, to see how it voted, who represents it, how it compares and what people there are petitioning for." share={false}
       />
 
       {failed && <div style={{ marginTop: 24 }}><LoadFailedNote item="the constituency data" /></div>}

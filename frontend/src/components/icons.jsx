@@ -727,3 +727,26 @@ export function IconAsk({ size = 17 }) {
     </svg>
   );
 }
+
+// Two bars meeting at a tipping point: a seat that could go either way.
+export function IconSwing({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 20 12 5l8 15" />
+      <path d="M7.5 14h9" />
+      <path d="M12 5V3" />
+      <path d="M3 20h18" />
+    </svg>
+  );
+}
+
+// Two hexagon seats side by side with a bar between: put two constituencies against each other.
+export function IconSeatCompare({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6.5 4 9.5 5.7v3.6L6.5 11 3.5 9.3V5.7L6.5 4Z" />
+      <path d="M17.5 13 20.5 14.7v3.6L17.5 20l-3-1.7v-3.6L17.5 13Z" />
+      <path d="M12 7h8M4 17h8" />
+    </svg>
+  );
+}

@@ -221,6 +221,16 @@ export const PAGE_GUIDES = {
     why: "Select committees are one of the main ways Parliament holds ministers to account between votes.",
     notShown: "What they find behind closed doors. Only members and published reports are shown.",
   },
+  marginals: {
+    what: "Which seats are closest, how far the vote would have to move to change each, and a tool to see what a shift between two parties would do.",
+    why: "Elections are decided in a few close seats, and swing is how analysts say how much a result would have to change.",
+    notShown: "A forecast. The swing tool is simple: every seat moves equally and only two parties count.",
+  },
+  compareSeats: {
+    what: "Two constituencies side by side: who holds them, how close the result was, past elections, turnout and how deprived each area is.",
+    why: "Putting two places next to each other shows how different, or alike, the seats behind the headlines are.",
+    notShown: "Anything below seat level. Boundaries changed in 2024, so older results are for the old seat of that name.",
+  },
   compare: {
     what: "Up to three MPs side by side: their careers, declared money, expenses and how they voted on the same issues.",
     why: "Seeing MPs next to each other makes differences clear that a single profile can hide.",

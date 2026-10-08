@@ -53,7 +53,7 @@ export default function ParliamentNumbers({ house, onNavigate }) {
   const h = HOUSES[active];
   return (
     <div style={{ maxWidth: 1040, margin: "0 auto", padding: PAGE_PADDING }}>
-      <PageHeader icon={IconChartBars} kicker="Parliament in numbers" title={h.title} subtitle={h.subtitle} />
+      <PageHeader icon={IconChartBars} kicker="Parliament in numbers" title={h.title} subtitle={h.subtitle} share={false} />
       <HouseTabs active={active} />
       <div style={{ marginTop: 18 }}>
         {active === "lords" ? (

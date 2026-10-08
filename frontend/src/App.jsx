@@ -55,6 +55,8 @@ const WatchlistDigest = lazy(LOADERS.watchlist);
 const ParliamentNumbers = lazy(LOADERS.numbers);
 const AskedAbout = lazy(LOADERS.topics);
 const Constituency = lazy(LOADERS.constituency);
+const Marginals = lazy(LOADERS.marginals);
+const CompareSeats = lazy(LOADERS.compareSeats);
 const StartHere = lazy(LOADERS.start);
 const Rebels = lazy(LOADERS.rebels);
 const Offices = lazy(LOADERS.offices);
@@ -92,7 +94,7 @@ const VALID_VIEWS = new Set([
   "committees", "compare", "ministerialMeetings", "writtenQuestions", "standards", "rankings", "myMP",
   "mediaLiteracy", "methodology", "glossary", "settings", "privacy", "terms", "list",
   "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist", "numbers", "topics", "constituency", "start", "rebels", "offices", "councils",
-  "economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates", "immigration", "business", "regions", "answers", "deprivation", "indicators",
+  "economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates", "immigration", "business", "regions", "answers", "deprivation", "indicators", "marginals", "compareSeats",
 ]);
 
 // The tab title, bookmark name and browser-history entry for every view —
@@ -118,7 +120,7 @@ function titleForState(view, selected, param) {
   if (selected) return `${selected.name} — ${base}`;
   if (view === "numbers" && param === "lords") return `Parliament in Numbers: the Lords — ${base}`;
   // For the Lords the parameter is a peer's id, which makes a poor title.
-  if (param && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view) && view !== "regions" && view !== "answers" && view !== "deprivation") return `${param} — ${PAGE_TITLES[view] ?? base} — ${base}`;
+  if (param && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view) && view !== "regions" && view !== "answers" && view !== "deprivation" && view !== "compareSeats") return `${param} — ${PAGE_TITLES[view] ?? base} — ${base}`;
   if (view === "home") return base;
   const label = PAGE_TITLES[view];
   return label ? `${label} — ${base}` : base;
@@ -369,6 +371,8 @@ export default function App() {
             {view === "regions" && <RegionsPage param={viewParam} />}
             {view === "answers" && <AnswersPage param={viewParam} />}
             {view === "deprivation" && <DeprivationPage />}
+            {view === "marginals" && <Marginals />}
+            {view === "compareSeats" && <CompareSeats param={viewParam} />}
             {SECTOR_VIEWS.has(view) && <SectorPage key={view} sector={view} param={viewParam} />}
             {view === "indicators" && <IndicatorTimeline param={viewParam} />}
             {view === "start" && <StartHere onNavigate={handleNavigate} onNavigateForMp={handleNavigateForMp} onViewProfile={handleViewProfile} />}

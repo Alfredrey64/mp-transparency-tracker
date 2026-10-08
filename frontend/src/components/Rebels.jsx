@@ -71,7 +71,7 @@ export default function Rebels({ onNavigate }) {
         icon={IconSplit}
         kicker="Rebels"
         title="Who votes against their own party"
-        subtitle="Most MPs vote with the majority of their party almost every time. This page shows the exceptions: who breaks ranks, which parties split most, and which votes caused the biggest rebellions."
+        subtitle="Most MPs vote with the majority of their party almost every time. This page shows the exceptions: who breaks ranks, which parties split most, and which votes caused the biggest rebellions." share={false}
       />
 
       {!r && !failed && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>Loading votes…</div>}

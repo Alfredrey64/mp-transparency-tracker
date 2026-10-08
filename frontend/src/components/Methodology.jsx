@@ -155,7 +155,19 @@ export default function Methodology({ onNavigate }) {
               name="English Indices of Deprivation 2025 (Ministry of Housing, Communities and Local Government)"
               url="https://www.gov.uk/government/statistics/english-indices-of-deprivation-2025"
               auth="No key required, Open Government Licence v3.0"
-              use="The Deprivation page: how deprived each of England's 33,755 small neighbourhoods is overall and on seven kinds of deprivation, added up here into regions using population estimates, plus the Ministry's own ranking of 296 councils, and a ranking of the 543 English constituencies worked out here by matching each neighbourhood to its best-fit constituency (ONS lookup, July 2024 boundaries). England only: Scotland, Wales and Northern Ireland have their own indices, which cannot be compared. Published once, so it does not update."
+              use="The Deprivation page: how deprived each of England's 33,755 small neighbourhoods is overall and on seven kinds of deprivation, added up here into regions using population estimates, plus the Ministry's own ranking of 296 councils, and a ranking of the 543 English constituencies worked out here by matching each neighbourhood to its best-fit constituency (ONS lookup, July 2024 boundaries). England only here: Wales and Scotland have their own indices (next rows), built differently, which cannot be compared with these. Published once, so it does not update."
+            />
+            <SourceRow
+              name="Welsh Index of Multiple Deprivation 2025 (Welsh Government, via StatsWales) and Scottish Index of Multiple Deprivation 2020 v2 (Scottish Government)"
+              url="https://www.gov.wales/welsh-index-multiple-deprivation-wimd-2025-results-report-overall-index-html"
+              auth="No key required, Open Government Licence v3.0"
+              use="The Wales and Scotland tabs on the Deprivation page: each nation ranks only its own small neighbourhoods (1,917 in Wales, 6,976 data zones in Scotland), so figures say how an area compares with the rest of its own nation. Added up here into council areas and into Westminster constituencies using ONS lookups (Scottish wards are matched to constituencies, and a ward split between two seats is shared equally). The Scottish edition is from 2020; a new one is planned for late 2026. Published once, so it does not update."
+            />
+            <SourceRow
+              name="Past general election results by constituency (Democracy Club)"
+              url="https://candidates.democracyclub.org.uk/api/docs/next/"
+              auth="No key required, open data"
+              use="The Elections tab on a constituency's page and the Compare constituencies page: each seat's vote shares at the 2010, 2015, 2017 and 2019 general elections, for the old seat of the same name (the 2024 boundaries redrew many seats, so older results may cover different ground). The 2024 result comes from Parliament's Members API. Past results never change, so these are fetched by hand rather than daily."
             />
             <SourceRow
               name="Crime in England and Wales (ONS, with Home Office figures)"

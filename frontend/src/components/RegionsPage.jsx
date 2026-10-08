@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { LayoutGroup, motion, useReducedMotion } from "framer-motion";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme";
 import { PageHeader, LoadFailedNote } from "./shared";
+import { rankingShareSpec } from "../lib/shareSpecs";
 import RegionMap from "./RegionMap";
 import ColourKey from "./RegionKey";
 import { IconMap } from "./icons";
@@ -307,7 +308,13 @@ export default function RegionsPage({ param }) {
 
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
-      <PageHeader icon={IconMap} title="Regions and nations" subtitle="How the 12 regions and nations of the UK compare. Pick a measure, press play to watch it change, and tap a place to see it up close." maxWidth={780} />
+      <PageHeader icon={IconMap} title="Regions and nations" subtitle="How the 12 regions and nations of the UK compare. Pick a measure, press play to watch it change, and tap a place to see it up close."
+        share={() => rankingShareSpec({
+          kicker: "Regions and nations", title: `${metric.label}, region by region`, subtitle: `${tLabel(timeline[idx])}: the six highest of the 12 regions and nations`, accent,
+          rows: league.map((l) => ({ label: l.name, valueText: l.text, fraction: atIdx[l.key] ?? 0, colour: accent })),
+          note: league.length > 1 ? `Lowest: ${league.at(-1).name}, ${league.at(-1).text}.` : null, footer: "UK Parliament Tracker · Regions and nations", link: window.location.href,
+        })}
+      />
 
       {!data && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>Loading…</div>}
 

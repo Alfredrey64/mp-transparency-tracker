@@ -17,9 +17,10 @@ import { sectorByKey, sectorSeries, ONS_SERIES_PAGE, WEEKLY_DEATHS } from "../da
 import { loadSector, loadDeflator } from "../lib/onsData";
 import { makeDeflator, toReal, canAdjust } from "../lib/onsReal";
 import { buildShareParam, parseShareParam, shareUrl } from "../lib/shareLink";
+import { sectorShareSpec } from "../lib/shareSpecs";
 import { seriesCsv } from "../lib/onsDownload";
 import { PARLIAMENT_LINKS } from "../data/onsParliament";
-import { formatValue, formatAxis, latestInfo, changeWords, changeShort, sentenceFor, sliceRange, labelFor } from "../lib/onsFormat";
+import { periodToT, formatValue, formatAxis, latestInfo, changeWords, changeShort, sentenceFor, sliceRange, labelFor } from "../lib/onsFormat";
 import { compareStats } from "../lib/onsStats";
 import { toLineData, yearTicks } from "../lib/onsChart";
 import { bandsBetween, PARTY_COLOURS } from "../lib/governments";
@@ -575,9 +576,19 @@ export default function SectorPage({ sector, param = null }) {
   const compareRefs = tiles.slice(0, 3).map((s) => `${def.key}.${s.id}`).join(",");
   const newest = shown.map((s) => loaded.series[s.id].updated).filter(Boolean).sort().at(-1);
 
+  // The page's share card: the headline figures and the history of the first.
+  const shareCard = () => {
+    const tilesOut = tiles.slice(0, 4).map((s) => ({ s, info: latestInfo(s, loaded.series[s.id].points) })).filter((t) => t.info).map(({ s, info }) => ({ value: formatValue(s.format, info.value), label: s.label, when: info.label }));
+    const pts = spotlight ? loaded.series[spotlight.id].points : [];
+    const first = pts[0];
+    const last = pts.at(-1);
+    const line = pts.length > 1 ? { points: pts.map(([p, v]) => [periodToT(p), v]), label: spotlight.label, firstLabel: labelFor(spotlight, first[0]), lastLabel: labelFor(spotlight, last[0]), lastText: formatValue(spotlight.format, last[1]) } : null;
+    return sectorShareSpec({ title: def.title, subtitle: def.subtitle, accent: def.accent, tiles: tilesOut, line, newest: newest ? dateText(newest) : null, link: window.location.href });
+  };
+
   return (
     <div className="regions-wrap" style={{ maxWidth: 1280, margin: "0 auto", padding: PAGE_PADDING }}>
-      <PageHeader icon={Icon} title={def.title} subtitle={def.subtitle} maxWidth={780} />
+      <PageHeader icon={Icon} title={def.title} subtitle={def.subtitle} share={loaded ? shareCard : undefined} />
 
       {failed && <div style={{ marginTop: 24 }}><LoadFailedNote item="these figures" /></div>}
       {!loaded && !failed && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>Loading…</div>}

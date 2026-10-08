@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import ShareButton from "./ShareButton";
 import { seatShareSpec } from "../lib/shareSpecs";
 import { motion, useReducedMotion } from "framer-motion";
@@ -12,6 +12,8 @@ import {
 import { IconSearch } from "./icons";
 import CountUp from "./CountUp";
 import Reveal from "./Reveal";
+
+const SeatElections = lazy(() => import("./SeatElections"));
 
 const fmt = (n) => n.toLocaleString("en-GB");
 const pct1 = (n) => `${(Math.round(n * 10) / 10).toFixed(1)}%`;
@@ -480,6 +482,7 @@ export function SeatDetail({ record, seats, generatedAt, onSelectPolitician, ext
   const [tab, setTab] = useState("overview");
   const [mpInfo, setMpInfo] = useState(null);
   const [history, setHistory] = useState(null);
+  const [elections, setElections] = useState(null);
   const [opening, setOpening] = useState(false);
 
   // The sitting MP's own record: when they became an MP, and the full row
@@ -505,6 +508,12 @@ export function SeatDetail({ record, seats, generatedAt, onSelectPolitician, ext
     import("../data/constituencyHistory.json").then((m) => setHistory(m.default)).catch(() => setHistory({ bySeat: {} }));
   }, [tab, history]);
 
+  // Loaded only once the Elections tab is opened: the 2010 to 2019 results for every seat.
+  useEffect(() => {
+    if (tab !== "elections" || elections) return;
+    import("../data/electionHistory.json").then((m) => setElections(m.default)).catch(() => setElections({ bySeat: {}, parties: {} }));
+  }, [tab, elections]);
+
   function openProfile() {
     if (!mpInfo) return;
     setOpening(true);
@@ -514,15 +523,27 @@ export function SeatDetail({ record, seats, generatedAt, onSelectPolitician, ext
   return (
     <>
       <SeatHero record={record} mpInfo={mpInfo} safety={safety} onOpenProfile={openProfile} opening={opening} />
-      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 14 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "flex-end", gap: 10, marginTop: 14 }}>
+        <a
+          href={`#/compareSeats/${encodeURIComponent(`${record.name}~`)}`}
+          style={{ display: "inline-flex", alignItems: "center", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accent, background: `${COLORS.accent}12`, border: `1px solid ${COLORS.accent}40`, borderRadius: 999, padding: "7px 14px", textDecoration: "none" }}
+        >
+          Compare with another seat
+        </a>
         <ShareButton
           filename={`${record.name}-2024-result`}
           getSpec={() => seatShareSpec({ name: record.name, mp: { name: mp.name, party: mp.party, colour: mp.colour }, result, link: window.location.href })}
         />
       </div>
       {extras}
-      <Tabs tab={tab} setTab={setTab} tabs={[{ key: "overview", label: "Overview" }, { key: "history", label: "History" }]} />
-      {tab === "overview" ? <Overview record={record} seats={seats} safety={safety} /> : <History record={record} seats={seats} mpInfo={mpInfo} history={history} />}
+      <Tabs tab={tab} setTab={setTab} tabs={[{ key: "overview", label: "Overview" }, { key: "elections", label: "Elections" }, { key: "history", label: "MPs" }]} />
+      {tab === "overview" && <Overview record={record} seats={seats} safety={safety} />}
+      {tab === "elections" && (
+        <Suspense fallback={null}>
+          <SeatElections record={record} history={elections?.bySeat?.[seatKey(record.name)]} parties={elections?.parties} loading={!elections} />
+        </Suspense>
+      )}
+      {tab === "history" && <History record={record} seats={seats} mpInfo={mpInfo} history={history} />}
       <p style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.55, marginTop: 26 }}>
         Election results come from Parliament's Members API; petition signatures from petition.parliament.uk. Updated {generatedAt ? formatDate(generatedAt) : "daily"}.
         Boundaries changed in 2024, so a seat's name can be shared with an older seat that covered different ground.

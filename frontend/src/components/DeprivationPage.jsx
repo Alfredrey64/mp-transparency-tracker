@@ -3,6 +3,7 @@ import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme
 import { PageHeader } from "./shared";
 import RegionCompare from "./RegionCompare";
 import DeprivationNations from "./DeprivationNations";
+import { rankingShareSpec } from "../lib/shareSpecs";
 import { IconDeprivation } from "./icons";
 import { REGIONS, inSentence } from "../data/regionMetrics";
 import data from "../data/deprivation.json";
@@ -204,7 +205,13 @@ export default function DeprivationPage() {
 
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
-      <PageHeader icon={IconDeprivation} title="Deprivation" subtitle="Which parts of England, Wales and Scotland are most and least deprived, and which constituencies, from each nation's official index of deprivation." maxWidth={780} />
+      <PageHeader icon={IconDeprivation} title="Deprivation" subtitle="Which parts of England, Wales and Scotland are most and least deprived, and which constituencies, from each nation's official index of deprivation."
+        share={nation === "england" ? () => rankingShareSpec({
+          kicker: "Deprivation", title: `${domainLabel}: the regions of England`, subtitle: `Share of people who ${end.phrase}`, accent: ACCENT,
+          rows: sorted.map(([k, v]) => ({ label: nameOf(k), valueText: f1(v), fraction: v })),
+          note: `If deprivation were spread evenly it would be ${end.fair}% everywhere.`, footer: "UK Parliament Tracker · Indices of Deprivation 2025", link: window.location.href,
+        }) : undefined}
+      />
 
       <div role="radiogroup" aria-label="Nation" style={{ display: "inline-flex", flexWrap: "wrap", gap: 8, marginTop: 20 }}>
         {NATIONS.map(([id, label]) => (

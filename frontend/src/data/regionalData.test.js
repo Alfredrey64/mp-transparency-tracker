@@ -3,6 +3,7 @@ import profile from "./regionalProfile.json";
 import breakdowns from "./regionalBreakdowns.json";
 import deprivation from "./deprivation.json";
 import seats from "./deprivationConstituencies.json";
+import nations from "./deprivationNations.json";
 import { REGIONS } from "./regionMetrics";
 
 const censusPlaces = REGIONS.filter((r) => !["scotland", "ni"].includes(r.key)).map((r) => r.key);
@@ -114,5 +115,47 @@ describe("deprivation by constituency", () => {
     expect(people).toBeGreaterThan(55e6);
     expect(worst / people).toBeGreaterThan(0.095);
     expect(worst / people).toBeLessThan(0.105);
+  });
+});
+
+describe("deprivation in Wales and Scotland", () => {
+  it("covers every Welsh and Scottish constituency and council area", () => {
+    expect(nations.wales.seats).toHaveLength(32);
+    expect(nations.wales.areas).toHaveLength(22);
+    expect(nations.scotland.seats).toHaveLength(57);
+    expect(nations.scotland.areas).toHaveLength(32);
+    expect(nations.wales.total).toBeGreaterThan(1900);
+    expect(nations.scotland.total).toBe(6976);
+  });
+
+  it("has a share between 0 and 100 for every area and every kind of deprivation, ranked from most deprived", () => {
+    for (const nation of [nations.wales, nations.scotland]) {
+      for (const list of [nation.seats, nation.areas]) {
+        expect(list[0].rank).toBe(1);
+        expect(list[0].score).toBeGreaterThanOrEqual(list.at(-1).score);
+        for (const a of list) {
+          expect(a.worst10, a.name).toBeGreaterThanOrEqual(0);
+          expect(a.worst10, a.name).toBeLessThanOrEqual(100);
+          for (const d of nation.domains.slice(1)) expect(a.domains[d.id], `${a.name} ${d.id}`).toBeGreaterThanOrEqual(0);
+        }
+      }
+    }
+  });
+
+  it("puts a tenth of each nation's neighbourhoods in its own most deprived tenth", () => {
+    for (const nation of [nations.wales, nations.scotland]) {
+      const total = nation.areas.reduce((n, a) => n + a.n, 0);
+      const worst = nation.areas.reduce((n, a) => n + (a.worst10 / 100) * a.n, 0);
+      expect(total).toBe(nation.total);
+      expect(worst / total).toBeGreaterThan(0.095);
+      expect(worst / total).toBeLessThan(0.105);
+    }
+  });
+
+  it("matches every constituency's neighbourhoods fully (a split ward is shared, not lost)", () => {
+    for (const nation of [nations.wales, nations.scotland]) {
+      const total = nation.seats.reduce((n, a) => n + a.n, 0);
+      expect(Math.abs(total - nation.total)).toBeLessThan(2);
+    }
   });
 });

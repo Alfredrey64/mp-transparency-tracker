@@ -80,6 +80,68 @@ function drawBars(ctx, bars, x, y, w, h) {
   });
 }
 
+// A line chart of one series: the line, a soft fill under it, the first and last values, and the years at each end.
+function drawLine(ctx, line, x, y, w, h, accent) {
+  const pts = (line.points ?? []).filter((p) => Number.isFinite(p[0]) && Number.isFinite(p[1]));
+  if (pts.length < 2) return;
+  ctx.fillStyle = INK;
+  ctx.font = `600 22px ${FONT_BODY}`;
+  ctx.textAlign = "left";
+  ctx.fillText(fit(ctx, line.label ?? "", w), x, y + 22);
+  const top = y + 64;
+  const bottom = y + h - 40;
+  const xs = pts.map((p) => p[0]);
+  const ys = pts.map((p) => p[1]);
+  const x0 = Math.min(...xs);
+  const x1 = Math.max(...xs);
+  let lo = Math.min(...ys);
+  let hi = Math.max(...ys);
+  if (hi === lo) { hi += 1; lo -= 1; }
+  const pad = (hi - lo) * 0.08;
+  lo -= pad;
+  hi += pad;
+  const px = (t) => x + 6 + ((t - x0) / (x1 - x0 || 1)) * (w - 12 - 90);
+  const py = (v) => bottom - ((v - lo) / (hi - lo)) * (bottom - top);
+  ctx.beginPath();
+  pts.forEach((p, i) => (i ? ctx.lineTo(px(p[0]), py(p[1])) : ctx.moveTo(px(p[0]), py(p[1]))));
+  ctx.lineTo(px(pts.at(-1)[0]), bottom);
+  ctx.lineTo(px(pts[0][0]), bottom);
+  ctx.closePath();
+  const fill = ctx.createLinearGradient(0, top, 0, bottom);
+  fill.addColorStop(0, `${accent}55`);
+  fill.addColorStop(1, `${accent}00`);
+  ctx.fillStyle = fill;
+  ctx.fill();
+  ctx.beginPath();
+  pts.forEach((p, i) => (i ? ctx.lineTo(px(p[0]), py(p[1])) : ctx.moveTo(px(p[0]), py(p[1]))));
+  ctx.strokeStyle = lighten(accent, 0.25);
+  ctx.lineWidth = 4;
+  ctx.lineJoin = "round";
+  ctx.lineCap = "round";
+  ctx.stroke();
+  const end = pts.at(-1);
+  ctx.beginPath();
+  ctx.arc(px(end[0]), py(end[1]), 7, 0, Math.PI * 2);
+  ctx.fillStyle = INK;
+  ctx.fill();
+  ctx.textAlign = "left";
+  ctx.font = `700 26px ${FONT_NUMERIC}`;
+  ctx.fillStyle = INK;
+  ctx.fillText(fit(ctx, line.lastText ?? "", 130), px(end[0]) + 14, py(end[1]) + 8);
+  ctx.font = `400 18px ${FONT_BODY}`;
+  ctx.fillStyle = SOFT;
+  ctx.textAlign = "left";
+  ctx.fillText(fit(ctx, line.firstLabel ?? "", 200), x, y + h - 10);
+  ctx.textAlign = "right";
+  ctx.fillText(fit(ctx, line.lastLabel ?? "", 200), x + w - 90, y + h - 10);
+  if (line.firstText) {
+    ctx.textAlign = "left";
+    ctx.fillStyle = FAINT;
+    ctx.fillText(line.firstText, px(pts[0][0]), Math.max(top - 6, py(pts[0][1]) - 14));
+  }
+  ctx.textAlign = "left";
+}
+
 function drawHexes(ctx, hexes, x, y, w, h) {
   if (!hexes.length) return;
   const xs = hexes.map((c) => c.x);
@@ -128,7 +190,7 @@ export async function renderShareCard(spec) {
   ctx.fillStyle = accent;
   ctx.fillRect(0, 0, 14, H);
 
-  const hasPanel = Boolean(spec.bars?.length || spec.hexes?.length);
+  const hasPanel = Boolean(spec.bars?.length || spec.hexes?.length || spec.line?.points?.length);
   const leftW = hasPanel ? 540 : W - PAD * 2;
   const panelX = 700;
   const panelW = W - PAD - panelX;
@@ -192,6 +254,7 @@ export async function renderShareCard(spec) {
 
   // Right-hand panel: bars or the hexagon map.
   if (spec.bars?.length) drawBars(ctx, spec.bars, panelX, 86, panelW, H - 86 - 100);
+  if (spec.line?.points?.length) drawLine(ctx, spec.line, panelX, 86, panelW, H - 86 - 100, accent);
   if (spec.hexes?.length) drawHexes(ctx, spec.hexes, panelX - 20, 70, panelW + 20, H - 70 - 90);
 
   // Footer.

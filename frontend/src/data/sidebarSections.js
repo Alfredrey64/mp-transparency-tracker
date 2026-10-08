@@ -4,7 +4,7 @@ import {
   IconPartyFinance, IconByElection, IconLords, IconPetition, IconCompass, IconCommittee, IconCompare, IconMeeting,
   IconQuestion, IconGavel, IconRankings, IconDarkMoney, IconThinkTank, IconDoor, IconRegister,
   IconSearch, IconBook, IconChartBars, IconTopic, IconRoute, IconSplit, IconHexMap, IconCouncil,
-  IconTaxes, IconRates, IconMigration, IconMap, IconAsk, IconDeprivation, IconFactory, IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconHouse, IconGlobe, IconLeaf, IconCompareTime, IconShield,
+  IconTaxes, IconRates, IconMigration, IconMap, IconAsk, IconDeprivation, IconSwing, IconSeatCompare, IconFactory, IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconHouse, IconGlobe, IconLeaf, IconCompareTime, IconShield,
 } from "../components/icons";
 
 // Lives outside both Sidebar.jsx and shared.jsx specifically so neither has
@@ -51,6 +51,8 @@ export const SECTIONS = [
     accent: "#E0367A",
     items: [
       { key: "constituency", label: "Your constituency", icon: IconHexMap, hint: "Your MP, seat and local results", essential: true, aka: ["constituency", "seat", "map", "election result"] },
+      { key: "marginals", label: "Marginal seats", icon: IconSwing, hint: "How close each seat was, and swing", aka: ["swing", "marginals", "majority", "safe seat", "target seats", "election"] },
+      { key: "compareSeats", label: "Compare constituencies", icon: IconSeatCompare, hint: "Two seats side by side", aka: ["compare seats", "compare constituencies", "versus"] },
       { key: "councils", label: "Your council", icon: IconCouncil, hint: "Councillors and local elections", essential: true, aka: ["councillors", "local elections", "council"] },
       { key: "partymatch", label: "Which party suits me?", icon: IconCompass, hint: "A short quiz", aka: ["find your party", "quiz"] },
       { key: "petitions", label: "Petitions", icon: IconPetition, hint: "Ask Parliament to act", essential: true },

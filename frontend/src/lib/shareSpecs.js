@@ -150,3 +150,76 @@ export function wrapLines(text, measure, maxWidth, maxLines) {
   }
   return lines;
 }
+
+// "What if the vote moved?": a swing between two parties and the seats it would change.
+export function swingShareSpec({ from, to, points, flips, fromTotal, toTotal, fromColour, toColour, link }) {
+  const top = flips.slice(0, 6);
+  const max = Math.max(1, ...top.map((r) => r.swing));
+  return {
+    kicker: "What if the vote moved?",
+    title: `A ${(Math.round(points * 10) / 10).toFixed(1)}-point swing from ${from} to ${to}`,
+    subtitle: `would change ${flips.length} ${flips.length === 1 ? "seat" : "seats"}, using the 2024 results`,
+    accent: colour(toColour),
+    stats: [
+      { value: String(flips.length), label: flips.length === 1 ? "seat changes hands" : "seats change hands" },
+      { value: `${fromTotal - flips.length}`, label: `${from} (from ${fromTotal})` },
+      { value: `${toTotal + flips.length}`, label: `${to} (from ${toTotal})` },
+    ],
+    bars: top.map((r) => ({ label: r.name, valueText: `${(Math.round(r.swing * 10) / 10).toFixed(1)} pts`, fraction: r.swing / max, colour: colour(fromColour) })),
+    note: "Seats needing the least swing, shown first. A simple model, not a forecast.",
+    footer: `${CARD_SITE} · marginal seats and swing`,
+    link,
+  };
+}
+
+// Two seats side by side: the leads and turnouts, and each seat's top three parties.
+export function compareSeatsShareSpec({ a, b, link }) {
+  const bars = (r) => (r.result?.candidates ?? []).slice(0, 3).map((c) => ({ label: `${r.name}: ${c.party}`, valueText: pct1((c.share ?? 0) * 100), fraction: c.share ?? 0, colour: colour(c.colour) }));
+  return {
+    kicker: "Constituency comparison",
+    title: `${a.name} and ${b.name}`,
+    subtitle: a.mp.party === b.mp.party ? `Both held by ${a.mp.party}` : `${a.mp.party} and ${b.mp.party}`,
+    accent: colour(a.mp.colour),
+    stats: [
+      { value: pct1(a.result?.majorityPct ?? 0), label: `${a.name}: winner's lead` },
+      { value: pct1(b.result?.majorityPct ?? 0), label: `${b.name}: winner's lead` },
+      { value: pct1(a.result?.turnoutPct ?? 0), label: `${a.name}: turnout` },
+      { value: pct1(b.result?.turnoutPct ?? 0), label: `${b.name}: turnout` },
+    ],
+    bars: [...bars(a), ...bars(b)],
+    footer: `${CARD_SITE} · 2024 general election results`,
+    link,
+  };
+}
+
+// Any page with nothing special to show: its name and what it is about.
+export function pageShareSpec({ kicker, title, subtitle, accent, link }) {
+  return { kicker: kicker || "UK Parliament Tracker", title, subtitle: subtitle ?? "", accent: colour(accent, "#4F46E5"), stats: [], footer: CARD_SITE, link };
+}
+
+// A Britain in numbers page: its headline figures and the history of the main one.
+// tiles: [{ value, label, when }]; line: { points: [[x, y]], label, firstLabel, lastLabel, firstText, lastText }.
+export function sectorShareSpec({ title, subtitle, accent, tiles, line, newest, link }) {
+  return {
+    kicker: "Britain in numbers",
+    title,
+    subtitle: subtitle ?? "",
+    accent: colour(accent, "#4F46E5"),
+    stats: (tiles ?? []).slice(0, 4).map((t) => ({ value: t.value, label: t.label })),
+    line,
+    footer: `${CARD_SITE} · Britain in numbers${newest ? ` · official statistics, updated ${newest}` : ""}`,
+    link,
+  };
+}
+
+// A league of places or areas: the top few as bars.
+export function rankingShareSpec({ kicker, title, subtitle, accent, rows, note, footer, link }) {
+  const max = Math.max(1e-9, ...rows.map((r) => r.fraction ?? 0));
+  return {
+    kicker, title, subtitle: subtitle ?? "", accent: colour(accent, "#4F46E5"),
+    bars: rows.slice(0, 6).map((r) => ({ label: r.label, valueText: r.valueText, fraction: (r.fraction ?? 0) / max, colour: colour(r.colour ?? accent) })),
+    note: note ?? null,
+    footer: footer ?? CARD_SITE,
+    link,
+  };
+}
