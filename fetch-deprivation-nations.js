@@ -1,5 +1,6 @@
-// Fetches the Welsh Index of Multiple Deprivation 2025 and the Scottish Index of Multiple Deprivation 2020 (v2) and
-// boils them down to what the Deprivation page shows for Wales and for Scotland: for each local authority and each
+// Fetches the Welsh Index of Multiple Deprivation 2025, the Scottish Index of Multiple Deprivation 2020 (v2) and the Northern
+// Ireland Multiple Deprivation Measure 2017 and boils them down to what the Deprivation page shows for Wales, Scotland and
+// Northern Ireland: for each local authority and each
 // Westminster constituency, the share of its neighbourhoods in the most deprived tenth of the country, overall and
 // on each kind of deprivation.
 //
@@ -13,6 +14,10 @@
 //             ward each sits in); ward -> constituency from the ONS lookup WD24_PCON24_LAD24_UTLA24_UK_LU. A ward that
 //             straddles two seats is shared between them equally.
 //
+// Northern Ireland: NISRA's Northern Ireland Multiple Deprivation Measure 2017, at the level of its 462 wards (2014), which
+// nest into the 18 constituencies (ONS lookup WD24_PCON24_LAD24_UTLA24_UK_LU; a ward in two seats is shared equally). Ranks
+// and shares are of wards, not of the finer 890 super output areas, so that councils and constituencies are counted alike.
+//
 // Contains public sector information licensed under the Open Government Licence v3.0.
 //
 // Run it with: node fetch-deprivation-nations.js
@@ -21,11 +26,13 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { readXlsx } from "./xlsx-lite.js";
+import { readXls } from "./xls-lite.js";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "frontend", "src", "data", "deprivationNations.json");
 const HEADERS = { "User-Agent": "Mozilla/5.0 (uk-parliament-tracker; independent, non-commercial)" };
 const ARCGIS = "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services";
 const WIMD = "https://api.stats.gov.wales/v1/9706edd9-73ad-4902-bb12-7ccd7038626e/view";
+const NIMDM_WARD = "https://www.nisra.gov.uk/files/nisra/publications/NIMDM17_Ward2014.xls";
 const SIMD_LOOKUP = "https://www.gov.scot/binaries/content/documents/govscot/publications/statistics/2020/01/scottish-index-of-multiple-deprivation-2020-data-zone-look-up-file/documents/scottish-index-of-multiple-deprivation-data-zone-look-up/scottish-index-of-multiple-deprivation-data-zone-look-up/govscot%3Adocument/SIMD%2B2020v2%2B-%2Bdatazone%2Blookup%2B-%2Bupdated%2B2025.xlsx";
 
 const round = (x, d = 1) => Math.round(x * 10 ** d) / 10 ** d;
@@ -194,10 +201,44 @@ async function scotland() {
   };
 }
 
+async function northernIreland() {
+  const domains = [
+    { id: "imd", label: "Overall deprivation" }, { id: "income", label: "Income" }, { id: "employment", label: "Employment" }, { id: "health", label: "Health and disability" },
+    { id: "education", label: "Education, skills and training" }, { id: "access", label: "Access to services" }, { id: "living", label: "Living environment" }, { id: "crime", label: "Crime and disorder" },
+  ];
+  const res = await fetch(NIMDM_WARD, { headers: HEADERS });
+  if (!res.ok) throw new Error(`NIMDM: HTTP ${res.status}`);
+  const sheet = readXls(Buffer.from(await res.arrayBuffer()))["NIMDM 2017"];
+  const hoods = sheet.filter((r) => /^N08\d+$/.test(r[2] ?? "")).map((r) => ({ code: r[2], ranks: Object.fromEntries(domains.map((d, i) => [d.id, Number(r[4 + i])])), la: { code: r[0], name: r[0] }, place: r[0] }));
+  const N = hoods.length;
+  if (N < 450) throw new Error(`NIMDM: only ${N} wards`);
+  const wardRows = await arcgisAll("WD24_PCON24_LAD24_UTLA24_UK_LU", "WD24CD LIKE 'N08%'", "WD24CD,PCON24CD,PCON24NM");
+  const byWard = new Map();
+  for (const w of wardRows) {
+    if (!byWard.has(w.WD24CD)) byWard.set(w.WD24CD, []);
+    byWard.get(w.WD24CD).push(w);
+  }
+  let unmatched = 0;
+  const seatsOf = (n) => {
+    const hit = byWard.get(n.code);
+    if (!hit?.length) { unmatched++; return []; }
+    return hit.map((w) => [w.PCON24CD, 1 / hit.length, { name: w.PCON24NM }]);
+  };
+  const areas = ranked(summarise(hoods, N, domains, (n) => [[n.la.code, 1, { name: n.la.name }]]));
+  const seats = ranked(summarise(hoods, N, domains, seatsOf));
+  if (unmatched > 0) throw new Error(`NIMDM: ${unmatched} wards could not be matched to a constituency`);
+  if (areas.length !== 11 || seats.length !== 18) throw new Error(`NIMDM: ${areas.length} districts, ${seats.length} seats`);
+  return {
+    nation: "Northern Ireland", unit: "wards", total: N, domains, areas, seats,
+    source: { name: "Northern Ireland Multiple Deprivation Measure 2017 (NISRA)", url: "https://www.nisra.gov.uk/statistics/deprivation/northern-ireland-multiple-deprivation-measure-2017-nimdm2017", published: "November 2017" },
+    boundaries: "Areas are the 462 electoral wards (2014) ranked by NISRA. Each ward is matched to the constituency it falls in (ONS lookup), and a ward split between two seats is shared equally between them.",
+  };
+}
+
 async function main() {
-  const out = { fetchedAt: new Date().toISOString(), wales: await wales(), scotland: await scotland() };
+  const out = { fetchedAt: new Date().toISOString(), wales: await wales(), scotland: await scotland(), northernireland: await northernIreland() };
   fs.writeFileSync(OUT, `${JSON.stringify(out)}\n`);
-  for (const k of ["wales", "scotland"]) console.log(`${k}: ${out[k].total} neighbourhoods, ${out[k].areas.length} council areas, ${out[k].seats.length} constituencies`);
+  for (const k of ["wales", "scotland", "northernireland"]) console.log(`${k}: ${out[k].total} ${out[k].unit ?? "neighbourhoods"}, ${out[k].areas.length} council areas, ${out[k].seats.length} constituencies`);
   console.log(`Saved ${path.relative(process.cwd(), OUT)}`);
 }
 

@@ -184,7 +184,7 @@ function AreaList({ domain, domainLabel }) {
   );
 }
 
-const NATIONS = [["england", "England"], ["wales", "Wales"], ["scotland", "Scotland"]];
+const NATIONS = [["england", "England"], ["wales", "Wales"], ["scotland", "Scotland"], ["northernireland", "Northern Ireland"]];
 
 export default function DeprivationPage() {
   const [nation, setNation] = useState("england");
@@ -205,7 +205,7 @@ export default function DeprivationPage() {
 
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
-      <PageHeader icon={IconDeprivation} title="Deprivation" subtitle="Which parts of England, Wales and Scotland are most and least deprived, and which constituencies, from each nation's official index of deprivation."
+      <PageHeader icon={IconDeprivation} title="Deprivation" subtitle="Which parts of England, Wales, Scotland and Northern Ireland are most and least deprived, and which constituencies, from each nation's official index of deprivation."
         share={nation === "england" ? () => rankingShareSpec({
           kicker: "Deprivation", title: `${domainLabel}: the regions of England`, subtitle: `Share of people who ${end.phrase}`, accent: ACCENT,
           rows: sorted.map(([k, v]) => ({ label: nameOf(k), valueText: f1(v), fraction: v })),
@@ -231,7 +231,7 @@ export default function DeprivationPage() {
         <details className="dep-more" style={{ maxWidth: 800 }}>
           <summary className="ons-tap" style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink, cursor: "pointer", padding: "6px 0" }}>Three things to keep in mind</summary>
           <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.6, color: COLORS.inkSoft, margin: "4px 0 0" }}>
-            It ranks places against each other, so it says where is relatively worse off, not how badly off anyone is. It describes neighbourhoods, not individuals: poorer people live in every area. And it covers England only: Wales, Scotland and Northern Ireland have their own indices, built differently, so they cannot be compared with these. Pick Wales or Scotland above to see theirs.
+            It ranks places against each other, so it says where is relatively worse off, not how badly off anyone is. It describes neighbourhoods, not individuals: poorer people live in every area. And it covers England only: Wales, Scotland and Northern Ireland have their own indices, built differently, so they cannot be compared with these. Pick one of them above to see theirs.
           </p>
         </details>
       </section>

@@ -72,9 +72,9 @@ export const PAGE_GUIDES = {
     notShown: "Anything smaller than a region. Your own town or council can differ a lot from its region's average.",
   },
   deprivation: {
-    what: "How deprived each part of England, Wales and Scotland is on each nation's official index: every council and Westminster constituency, plus England by region on a labelled map.",
+    what: "How deprived each part of England, Wales, Scotland and Northern Ireland is on each nation's official index: every council and Westminster constituency, plus England by region on a labelled map.",
     why: "It shows where the biggest needs are, and what 'levelling up' and 'left behind' arguments mean in practice.",
-    notShown: "Northern Ireland, or how well off any one person is. Each nation's index is built differently, so England, Wales and Scotland cannot be compared with each other.",
+    notShown: "How well off any one person is. Each nation's index is built differently, so the four cannot be compared with each other.",
   },
   immigration: {
     what: "How many people come to live in the UK and leave, small boat crossings, asylum claims and the backlog, hotels, returns, and the visas granted.",

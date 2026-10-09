@@ -44,6 +44,22 @@ const NOTES = {
     },
     seatCount: 57,
   },
+  northernireland: {
+    place: "Northern Ireland",
+    intro: "The Northern Ireland Statistics and Research Agency ranks Northern Ireland's 462 electoral wards, each home to about 4,000 people, from the most deprived to the least. The Northern Ireland Multiple Deprivation Measure combines 37 measures across seven kinds of deprivation. This is the 2017 edition, the latest published: it is older than England's, Wales's and Scotland's, and a newer one has not yet appeared. NISRA also ranks 890 smaller areas, but wards are used here so that council areas and constituencies are counted the same way.",
+    kept: "It ranks places against each other, so it says where is relatively worse off than the rest of Northern Ireland, not how badly off anyone is. A ward is a big area, so it can hide pockets of deprivation inside it. It describes places, not individuals. And the ranking is Northern Ireland-only: it is built differently from the English, Welsh and Scottish indices, so a ward in the worst tenth here is not the same as a neighbourhood in the worst tenth of England.",
+    domains: {
+      imd: "A combined score from all seven kinds of deprivation below, weighted by how much each matters. Income and employment count most (25% each).",
+      income: "People living in households with an income below 60% of the Northern Ireland median, including those on means-tested benefits.",
+      employment: "People of working age who are out of work through unemployment, sickness, disability or caring.",
+      health: "Early death, poor physical and mental health, hospital admissions, low birth weight and long-term illness or disability.",
+      education: "Special educational needs, school absence, GCSE results, young people not in education or training, and adult qualifications.",
+      access: "How far and how long it takes to reach a GP, a school, a shop and other services, and broadband speed.",
+      living: "Poor and unfit housing, overcrowding, road defects and collisions, and flood risk.",
+      crime: "Rates of violence, burglary, theft, vehicle crime and criminal damage, plus deliberate fires and anti-social behaviour.",
+    },
+    seatCount: 18,
+  },
 };
 
 // One bar for each council area, in the order of the kind of deprivation picked, against an even spread.
@@ -72,7 +88,7 @@ function CouncilBars({ areas, domain, place }) {
 }
 
 // One council area or constituency in the ranked list. Press it for the breakdown by kind of deprivation.
-function Row({ area, kind, total, measure, domains, place }) {
+function Row({ area, kind, total, measure, domains, place, unit }) {
   const [open, setOpen] = useState(false);
   const seat = kind === "constituencies";
   return (
@@ -86,13 +102,13 @@ function Row({ area, kind, total, measure, domains, place }) {
         </span>
         <span style={{ textAlign: "right" }}>
           <span style={{ ...numeric, display: "block", fontSize: 15, fontWeight: 600, color: COLORS.ink }}>{f1(area.value)}</span>
-          <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>of areas in worst tenth</span>
+          <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>of {unit} in worst tenth</span>
         </span>
       </button>
       {open && (
         <div style={{ padding: "2px 4px 14px 46px" }}>
           <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.55, color: COLORS.ink, margin: "0 0 8px" }}>
-            Number <strong>{area.rank}</strong> of {total} {seat ? "constituencies" : "council areas"} in {place} for {measure.toLowerCase()}, where 1 is the most deprived. {f1(area.value)} of its neighbourhoods are among the most deprived tenth in {place} ({Math.round(area.n)} neighbourhoods in all). Overall, {f1(area.worst10)}; {f1(area.worst20)} are in the worst fifth and {f1(area.best10)} in the least deprived tenth. The share in the worst tenth, by kind of deprivation:
+            Number <strong>{area.rank}</strong> of {total} {seat ? "constituencies" : "council areas"} in {place} for {measure.toLowerCase()}, where 1 is the most deprived. {f1(area.value)} of its {unit} are among the most deprived tenth in {place} ({Math.round(area.n)} {unit} in all). Overall, {f1(area.worst10)}; {f1(area.worst20)} are in the worst fifth and {f1(area.best10)} in the least deprived tenth. The share in the worst tenth, by kind of deprivation:
           </p>
           <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 6 }}>
             {domains.slice(1).map((d) => (
@@ -136,7 +152,7 @@ function List({ nation, data, domain, domainLabel }) {
     <section aria-labelledby={`h-${idBase}-areas`} className="regions-wrap" style={{ ...card, marginTop: 20 }}>
       <h2 id={`h-${idBase}-areas`} style={cardTitle}>Council by council, or seat by seat</h2>
       <p style={{ fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.55, color: COLORS.inkSoft, margin: "6px 0 14px", maxWidth: 800 }}>
-        Every council area and every Westminster constituency in {note.place}, ranked on <strong style={{ color: COLORS.ink }}>{domainLabel.toLowerCase()}</strong> (change it with the buttons above). Rank 1 is the most deprived. The figure on the right is the share of its neighbourhoods in the most deprived tenth of {note.place}. Tap one for the detail.
+        Every council area and every Westminster constituency in {note.place}, ranked on <strong style={{ color: COLORS.ink }}>{domainLabel.toLowerCase()}</strong> (change it with the buttons above). Rank 1 is the most deprived. The figure on the right is the share of its {data.unit ?? "neighbourhoods"} in the most deprived tenth of {note.place}. Tap one for the detail.
       </p>
       <div role="radiogroup" aria-label="What to rank" style={{ display: "inline-flex", gap: 6, marginBottom: 14 }}>
         {[["constituencies", `Constituencies (${data.seats.length})`], ["councils", `Council areas (${data.areas.length})`]].map(([id, label]) => (
@@ -164,11 +180,11 @@ function List({ nation, data, domain, domainLabel }) {
         <div className="dep-two">
           <div>
             <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 16, fontWeight: 700, color: COLORS.ink, margin: "12px 0 0" }}>The 10 most deprived</h3>
-            <ol style={{ listStyle: "none", margin: 0, padding: 0 }}>{ranked.slice(0, 10).map((a) => <Row key={a.code} area={a} kind={kind} total={ranked.length} measure={domainLabel} domains={data.domains} place={note.place} />)}</ol>
+            <ol style={{ listStyle: "none", margin: 0, padding: 0 }}>{ranked.slice(0, 10).map((a) => <Row key={a.code} area={a} kind={kind} total={ranked.length} measure={domainLabel} domains={data.domains} place={note.place} unit={data.unit ?? "neighbourhoods"} />)}</ol>
           </div>
           <div>
             <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 16, fontWeight: 700, color: COLORS.ink, margin: "12px 0 0" }}>The 10 least deprived</h3>
-            <ol style={{ listStyle: "none", margin: 0, padding: 0 }}>{ranked.slice(-10).map((a) => <Row key={a.code} area={a} kind={kind} total={ranked.length} measure={domainLabel} domains={data.domains} place={note.place} />)}</ol>
+            <ol style={{ listStyle: "none", margin: 0, padding: 0 }}>{ranked.slice(-10).map((a) => <Row key={a.code} area={a} kind={kind} total={ranked.length} measure={domainLabel} domains={data.domains} place={note.place} unit={data.unit ?? "neighbourhoods"} />)}</ol>
           </div>
         </div>
       )}
@@ -176,7 +192,7 @@ function List({ nation, data, domain, domainLabel }) {
       {!front && (
         <>
           <p style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, margin: "10px 0 0" }} aria-live="polite">{filtered.length === 0 ? `No ${noun} matches that name.` : `${filtered.length} ${filtered.length === 1 ? noun : plural}${q ? ` matching "${query.trim()}"` : ""}${council !== "all" && kind === "constituencies" ? ` mostly in ${council}` : ""}.`}</p>
-          <ol style={{ listStyle: "none", margin: "4px 0 0", padding: 0 }}>{filtered.map((a) => <Row key={a.code} area={a} kind={kind} total={ranked.length} measure={domainLabel} domains={data.domains} place={note.place} />)}</ol>
+          <ol style={{ listStyle: "none", margin: "4px 0 0", padding: 0 }}>{filtered.map((a) => <Row key={a.code} area={a} kind={kind} total={ranked.length} measure={domainLabel} domains={data.domains} place={note.place} unit={data.unit ?? "neighbourhoods"} />)}</ol>
         </>
       )}
       {kind === "constituencies" && <p style={{ fontFamily: FONT_BODY, fontSize: 12, lineHeight: 1.55, color: COLORS.inkSoft, margin: "14px 0 0" }}>{data.boundaries} Treat small differences as rough.</p>}
@@ -228,7 +244,7 @@ export default function DeprivationNations({ nation }) {
       <section aria-labelledby={`h-dep-${nation}-bars`} className="regions-wrap" style={{ ...card, background: `radial-gradient(560px 340px at 50% 0%, ${ACCENT}1a, transparent 70%), ${COLORS.paperCard}` }}>
         <h2 id={`h-dep-${nation}-bars`} style={cardTitle}>Where it is concentrated</h2>
         <p style={{ fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.55, color: COLORS.ink, margin: "8px 0 16px", maxWidth: 800 }} aria-live="polite">
-          <strong>{domainLabel}:</strong> in <strong>{ordered[0].name}</strong>, {f1(ordered[0].value)} of neighbourhoods are in the most deprived tenth of {note.place}, the most of any council area. In <strong>{ordered.at(-1).name}</strong> it is {f1(ordered.at(-1).value)}. If deprivation were spread evenly it would be 10% everywhere.
+          <strong>{domainLabel}:</strong> in <strong>{ordered[0].name}</strong>, {f1(ordered[0].value)} of {data.unit ?? "neighbourhoods"} are in the most deprived tenth of {note.place}, the most of any council area. In <strong>{ordered.at(-1).name}</strong> it is {f1(ordered.at(-1).value)}. If deprivation were spread evenly it would be 10% everywhere.
         </p>
         <CouncilBars areas={data.areas} domain={domain} place={note.place} />
       </section>
@@ -236,7 +252,7 @@ export default function DeprivationNations({ nation }) {
       <List nation={nation} data={data} domain={domain} domainLabel={domainLabel} />
 
       <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.6, color: COLORS.inkSoft, marginTop: 24, maxWidth: 800 }}>
-        Source: <a href={data.source.url} style={{ color: "inherit" }}>{data.source.name}</a>, published {data.source.published}. Shares are counted by neighbourhood, not by population. Contains public sector information licensed under the Open Government Licence v3.0.
+        Source: <a href={data.source.url} style={{ color: "inherit" }}>{data.source.name}</a>, published {data.source.published}. Shares are counted by {data.unit === "wards" ? "ward" : "neighbourhood"}, not by population. Contains public sector information licensed under the Open Government Licence v3.0.
       </p>
     </>
   );

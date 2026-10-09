@@ -149,6 +149,7 @@ async function loadDeprivation() {
   add(eng.default.seats, "England", "residents");
   add(nations.default.wales.seats, "Wales", "neighbourhoods");
   add(nations.default.scotland.seats, "Scotland", "neighbourhoods");
+  add(nations.default.northernireland.seats, "Northern Ireland", "wards");
   return map;
 }
 
@@ -248,7 +249,7 @@ export default function CompareSeats({ param }) {
           )}
 
           <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.6, color: COLORS.inkSoft, marginTop: 22, maxWidth: 760 }}>
-            Results come from Parliament&apos;s Members API. Boundaries changed in 2024, so each earlier general election is for the old seat of the same name, which may cover different ground. Deprivation comes from the English Indices of Deprivation 2025, the Welsh Index of Multiple Deprivation 2025 and the Scottish Index of Multiple Deprivation 2020.
+            Results come from Parliament&apos;s Members API. Boundaries changed in 2024, so each earlier general election is for the old seat of the same name, which may cover different ground. Deprivation comes from the English Indices of Deprivation 2025, the Welsh Index of Multiple Deprivation 2025 the Scottish Index of Multiple Deprivation 2020 and the Northern Ireland Multiple Deprivation Measure 2017.
           </p>
         </>
       )}
