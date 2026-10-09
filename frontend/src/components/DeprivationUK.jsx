@@ -1,6 +1,9 @@
 import { memo, useEffect, useMemo, useState } from "react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, numeric } from "../theme";
-import { card, cardTitle, pillStyle } from "../lib/onsStyles";
+import { card, cardTitle } from "../lib/onsStyles";
+import { Segmented, HowToRead } from "./DeprivationControls";
+import { KINDS } from "../data/deprivationKinds";
+import { oneIn, oneInShort, againstFair } from "../lib/deprivationPlain";
 import { hexPosition, hexPoints, boundsOf, normSeat } from "../lib/seatMap";
 import { classColour, classOf } from "../lib/regionData";
 import hexData from "../data/seatHexes.json";
@@ -17,15 +20,6 @@ const NATIONS = [
   { id: "wales", name: "Wales", region: /^W/ },
   { id: "scotland", name: "Scotland", region: /^S/ },
   { id: "northernireland", name: "Northern Ireland", region: /^N/ },
-];
-// The kinds of deprivation every nation's index measures, and what each calls them.
-const KINDS = [
-  { id: "imd", label: "Overall deprivation" },
-  { id: "income", label: "Income" },
-  { id: "employment", label: "Employment" },
-  { id: "health", label: "Health" },
-  { id: "education", label: "Education and skills" },
-  { id: "crime", label: "Crime" },
 ];
 const KEY_IN = { wales: { crime: "safety" } };
 const f1 = (v) => `${(Math.round(v * 10) / 10).toFixed(1)}%`;
@@ -53,10 +47,9 @@ const Hexes = memo(function Hexes({ cells, colourOf, dimmedOf, onPick, onHover }
   );
 });
 
-export default function DeprivationUK() {
+export default function DeprivationUK({ kind = "imd" }) {
   const [data, setData] = useState(null);
   const [failed, setFailed] = useState(false);
-  const [kind, setKind] = useState("imd");
   const [nation, setNation] = useState("all");
   const [picked, setPicked] = useState(null);
   const [hover, setHover] = useState(null);
@@ -111,7 +104,7 @@ export default function DeprivationUK() {
   if (failed) return <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, marginTop: 24 }}>The map could not be loaded. Refresh the page to try again.</p>;
   if (!data) return <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, marginTop: 24 }}>Loading the map…</p>;
 
-  const kindLabel = KINDS.find((k) => k.id === kind).label;
+  const kindLabel = KINDS.uk.find((k) => k.id === kind)?.label ?? "Overall deprivation";
   const card2 = shown?.seat;
 
   return (
@@ -119,27 +112,19 @@ export default function DeprivationUK() {
       <section aria-labelledby="h-dep-uk-what" style={{ ...card, marginTop: 24, position: "relative", overflow: "hidden" }}>
         <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `linear-gradient(180deg, ${ACCENT}, ${ACCENT}22)` }} />
         <h2 id="h-dep-uk-what" style={cardTitle}>All four nations on one map</h2>
-        <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.6, color: COLORS.ink, margin: "10px 0 8px", maxWidth: 800 }}>
-          Each hexagon is one of the 650 Westminster constituencies, the same size so every seat counts equally. England, Wales, Scotland and Northern Ireland each publish their own index and each ranks only itself, so the colour shows how much of a seat is among the most deprived tenth <strong>of its own nation</strong>. A dark seat in Wales and a dark seat in England are both badly off by their nation&apos;s own measure, but the two indices are built differently, so do not read the shades as a ranking of one nation against another.
+        <p style={{ fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.6, color: COLORS.ink, margin: "10px 0 0", maxWidth: 780 }}>
+          Each hexagon is one of the 650 Westminster constituencies, all drawn the same size so every seat counts equally. The darker the hexagon, the more of that area is among the most deprived in <strong>its own nation</strong>.
         </p>
+        <p style={{ fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.6, color: COLORS.inkSoft, margin: "10px 0 0", maxWidth: 780 }}>
+          England, Wales, Scotland and Northern Ireland each publish their own measure and each ranks only itself. So a dark seat in Wales and a dark seat in England are both badly off compared with the rest of their own country, but the two measures are built differently. Read the colours as &ldquo;hardest hit within its nation&rdquo;, not as one nation against another.
+        </p>
+        <HowToRead place="its nation" counts="areas" unit="area" />
       </section>
-
-      <div role="radiogroup" aria-label="Kind of deprivation" style={{ display: "flex", flexWrap: "wrap", gap: 8, margin: "22px 0 8px" }}>
-        {KINDS.map((k) => (
-          <button key={k.id} type="button" role="radio" aria-checked={kind === k.id} className="ons-chip" onClick={() => setKind(k.id)}
-            style={{ ...pillStyle(kind === k.id), background: kind === k.id ? ACCENT : "transparent", borderColor: kind === k.id ? ACCENT : COLORS.hairline, color: kind === k.id ? "#fff" : COLORS.inkSoft }}>
-            {k.label}
-          </button>
-        ))}
-      </div>
-      <p style={{ fontFamily: FONT_BODY, fontSize: 13, lineHeight: 1.55, color: COLORS.inkSoft, margin: "0 0 14px", maxWidth: 800 }}>These six are measured by all four indices. Each index has more kinds of its own: pick a nation above to see them.</p>
 
       <section aria-labelledby="h-dep-uk-map" className="regions-wrap" style={{ ...card, background: `radial-gradient(560px 340px at 50% 0%, ${ACCENT}1a, transparent 70%), ${COLORS.paperCard}` }}>
         <h2 id="h-dep-uk-map" style={cardTitle}>{kindLabel}, seat by seat</h2>
-        <div role="radiogroup" aria-label="Show which nation" style={{ display: "flex", flexWrap: "wrap", gap: 6, margin: "12px 0 10px" }}>
-          {[{ id: "all", name: "All of the UK" }, ...NATIONS].map((n) => (
-            <button key={n.id} type="button" role="radio" aria-checked={nation === n.id} className="ons-chip" onClick={() => setNation(n.id)} style={pillStyle(nation === n.id)}>{n.name}</button>
-          ))}
+        <div style={{ margin: "12px 0 12px" }}>
+          <Segmented label="Show which nation" value={nation} onChange={setNation} small options={[{ id: "all", label: "All of the UK", short: "All UK" }, ...NATIONS.map((n) => ({ id: n.id, label: n.name, short: n.id === "northernireland" ? "N. Ireland" : n.name }))]} accent={ACCENT} />
         </div>
 
         <div className="dep-uk-grid">
@@ -152,18 +137,18 @@ export default function DeprivationUK() {
               <div aria-hidden="true" style={{ position: "absolute", left: 6, bottom: 6, maxWidth: "calc(100% - 12px)", background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderLeft: `4px solid ${ACCENT}`, borderRadius: 12, padding: "8px 12px", boxShadow: "0 8px 24px rgba(0,0,0,0.35)", pointerEvents: "none" }}>
                 <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, color: COLORS.ink, lineHeight: 1.2 }}>{shown.name}</div>
                 <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>{NATIONS.find((n) => n.id === shown.nation).name}</div>
-                <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, marginTop: 2 }}><span style={{ ...numeric, fontWeight: 700 }}>{valueOf(shown) == null ? "n/a" : f1(valueOf(shown))}</span> in its nation&apos;s worst tenth</div>
+                <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, marginTop: 2 }}><span style={{ ...numeric, fontWeight: 700 }}>{valueOf(shown) == null ? "n/a" : oneInShort(valueOf(shown))}</span> ({valueOf(shown) == null ? "" : f1(valueOf(shown))}) in its nation&apos;s worst tenth</div>
               </div>
             )}
           </div>
 
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.ink, marginBottom: 6 }}>Share in the most deprived tenth of its own nation</div>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.ink, marginBottom: 6 }}>How much of the seat is in the most deprived tenth of its own nation</div>
             <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 4 }}>
               {BOUNDS.slice(0, -1).map((lo, i) => (
                 <li key={lo} style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink }}>
                   <span aria-hidden="true" style={{ width: 22, height: 14, borderRadius: 4, background: classColour(ACCENT, i, BOUNDS.length - 1), flexShrink: 0 }} />
-                  {i === BOUNDS.length - 2 ? `${lo}% or more` : `${lo}% to ${BOUNDS[i + 1]}%`}{lo === 10 ? " (an even spread is 10%)" : ""}
+                  {i === BOUNDS.length - 2 ? `${lo}% or more` : `${lo}% to ${BOUNDS[i + 1]}%`}{lo === 10 ? " (a fair share is 10%)" : ""}
                 </li>
               ))}
             </ol>
@@ -185,7 +170,7 @@ export default function DeprivationUK() {
 
             {selected?.seat && (
               <div style={{ marginTop: 16, padding: "12px 14px", borderRadius: 12, background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.5, color: COLORS.ink }} aria-live="polite">
-                <strong>{selected.name}</strong> ({NATIONS.find((n) => n.id === selected.nation).name}): {valueOf(selected) == null ? "no figure" : <>{f1(valueOf(selected))} in its nation&apos;s most deprived tenth for {kindLabel.toLowerCase()}</>}. Number {selected.seat.rankOverall} of {selected.seat.of} seats in its nation overall, where 1 is the most deprived.
+                <strong>{selected.name}</strong> ({NATIONS.find((n) => n.id === selected.nation).name}): {valueOf(selected) == null ? "no figure" : <>{oneIn(valueOf(selected))} of it ({f1(valueOf(selected))}) is in its nation&apos;s most deprived tenth for {kindLabel.toLowerCase()}, {againstFair(valueOf(selected)).text} a fair share</>}. Number {selected.seat.rankOverall} of {selected.seat.of} seats in its nation overall, where 1 is the most deprived.
                 <div style={{ marginTop: 8 }}><a href={`#/constituency/${encodeURIComponent(selected.name)}`} className="ons-tap" style={{ fontWeight: 700, color: COLORS.ink }}>See this constituency, its MP and its results</a></div>
               </div>
             )}
@@ -199,13 +184,13 @@ export default function DeprivationUK() {
               <button type="button" disabled={!c.top} onClick={() => { setPicked(c.top.code); setNation(c.id); }} className="ons-tap" style={{ all: "unset", cursor: "pointer", display: "block", width: "100%" }}>
                 <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: COLORS.inkSoft }}>{c.name}</span>
                 <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: 16, color: COLORS.ink, marginTop: 2 }}>{c.top?.name ?? "n/a"}</span>
-                <span style={{ ...numeric, display: "block", fontSize: 13, color: COLORS.inkSoft }}>{c.topValue == null ? "" : f1(c.topValue)}</span>
+                <span style={{ ...numeric, display: "block", fontSize: 13, color: COLORS.inkSoft }}>{c.topValue == null ? "" : `${oneInShort(c.topValue)} (${f1(c.topValue)})`}</span>
               </button>
             </li>
           ))}
         </ul>
         <p style={{ fontFamily: FONT_BODY, fontSize: 12, lineHeight: 1.55, color: COLORS.inkSoft, margin: "14px 0 0", maxWidth: 800 }}>
-          England&apos;s figures are the share of a seat&apos;s residents; Wales&apos;s and Scotland&apos;s are the share of its neighbourhoods and Northern Ireland&apos;s of its wards, as each nation publishes them. Each index is from a different year (England 2025, Wales 2025, Scotland 2020, Northern Ireland 2017), and constituencies are matched to neighbourhoods by best fit. The hexagon layout is an outline of the UK, not to scale.
+          How to read the figures: England&apos;s are the share of a seat&apos;s residents; Wales&apos;s and Scotland&apos;s are the share of its neighbourhoods and Northern Ireland&apos;s of its wards, as each nation publishes them. Each index is from a different year (England 2025, Wales 2025, Scotland 2020, Northern Ireland 2017), and constituencies are matched to neighbourhoods by best fit. The hexagon layout is an outline of the UK, not to scale.
         </p>
       </section>
     </>

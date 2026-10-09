@@ -622,3 +622,8 @@ select:focus-visible,
 /* The whole-UK deprivation map: map beside its key on a wide screen, stacked on a phone. */
 .dep-uk-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
 @container (min-width: 760px) { .dep-uk-grid { grid-template-columns: minmax(0, 1fr) 300px; gap: 28px; align-items: start; } }
+
+/* The Deprivation page's segmented switches: full names on a wide screen, short ones on a narrow one. */
+.seg .seg-short { display: none; }
+@media (max-width: 560px) { .seg .seg-long { display: none; } .seg .seg-short { display: inline; } }
+@container (max-width: 660px) { .seg .seg-long { display: none; } .seg .seg-short { display: inline; } }
