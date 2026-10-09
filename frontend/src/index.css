@@ -618,3 +618,7 @@ select:focus-visible,
 
 .mp-mobile-topbar.mp-topbar-hidden { transform: translateY(-100%); }
 @media (prefers-reduced-motion: reduce) { .mp-mobile-topbar { transition: none; } }
+
+/* The whole-UK deprivation map: map beside its key on a wide screen, stacked on a phone. */
+.dep-uk-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+@container (min-width: 760px) { .dep-uk-grid { grid-template-columns: minmax(0, 1fr) 300px; gap: 28px; align-items: start; } }

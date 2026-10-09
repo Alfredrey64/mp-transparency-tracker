@@ -3,6 +3,7 @@ import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme
 import { PageHeader } from "./shared";
 import RegionCompare from "./RegionCompare";
 import DeprivationNations from "./DeprivationNations";
+import DeprivationUK from "./DeprivationUK";
 import { rankingShareSpec } from "../lib/shareSpecs";
 import { IconDeprivation } from "./icons";
 import { REGIONS, inSentence } from "../data/regionMetrics";
@@ -184,10 +185,10 @@ function AreaList({ domain, domainLabel }) {
   );
 }
 
-const NATIONS = [["england", "England"], ["wales", "Wales"], ["scotland", "Scotland"], ["northernireland", "Northern Ireland"]];
+const NATIONS = [["uk", "Whole UK"], ["england", "England"], ["wales", "Wales"], ["scotland", "Scotland"], ["northernireland", "Northern Ireland"]];
 
 export default function DeprivationPage() {
-  const [nation, setNation] = useState("england");
+  const [nation, setNation] = useState("uk");
   const [domain, setDomain] = useState("imd");
   const [endId, setEndId] = useState("most10");
   const [regionKey, setRegionKey] = useState(() => Object.entries(data.regions).sort((a, b) => b[1].score - a[1].score)[0][0]);
@@ -219,7 +220,7 @@ export default function DeprivationPage() {
         ))}
       </div>
 
-      {nation !== "england" ? <DeprivationNations key={nation} nation={nation} /> : (
+      {nation === "uk" ? <DeprivationUK /> : nation !== "england" ? <DeprivationNations key={nation} nation={nation} /> : (
         <>
 
       <section aria-labelledby="h-dep-what" style={{ ...card, marginTop: 24, position: "relative", overflow: "hidden" }}>
