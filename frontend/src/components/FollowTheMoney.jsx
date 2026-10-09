@@ -1,9 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, numeric } from "../theme";
 import { PageHeader } from "./shared";
-import { partyColour } from "../lib/format";
+import { partyColour, initials } from "../lib/format";
+import { partyColourByName } from "../lib/careerTimeline";
 import { normalizeDonorKey } from "../lib/donorSectors";
 import { IconSearch } from "./icons";
 
@@ -75,83 +76,149 @@ function aggregateByParty(rows) {
   return [...map.values()].sort((a, b) => b.total - a.total);
 }
 
-function DonorResultCard({ result, onSelectPolitician }) {
+const money = (n) => `£${Math.round(n).toLocaleString("en-GB")}`;
+const EXAMPLES = ["Unite", "GMB", "Co-operative", "Ltd"];
+
+// A thin bar split in two: how much of a donor's money went to MPs and how much to parties.
+function SplitBar({ mp, party }) {
+  const total = mp + party || 1;
+  return (
+    <div>
+      <div role="img" aria-label={`${money(mp)} to MPs personally and ${money(party)} to parties`} style={{ display: "flex", height: 10, borderRadius: 5, overflow: "hidden", gap: 2, background: COLORS.hairline }}>
+        {mp > 0 && <span style={{ flex: mp / total, background: "#4F46E5" }} />}
+        {party > 0 && <span style={{ flex: party / total, background: "#E0367A" }} />}
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "2px 16px", marginTop: 7, fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
+        <span><span aria-hidden="true" style={{ display: "inline-block", width: 9, height: 9, borderRadius: 3, background: "#4F46E5", marginRight: 6 }} />To MPs personally <strong style={{ color: COLORS.ink }}>{money(mp)}</strong></span>
+        <span><span aria-hidden="true" style={{ display: "inline-block", width: 9, height: 9, borderRadius: 3, background: "#E0367A", marginRight: 6 }} />To parties <strong style={{ color: COLORS.ink }}>{money(party)}</strong></span>
+      </div>
+    </div>
+  );
+}
+
+// One list of recipients with a bar behind each row, so the biggest stands out.
+function Recipients({ title, total, accent, rows }) {
+  const max = Math.max(...rows.map((r) => r.total), 1);
+  return (
+    <div style={{ minWidth: 0 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8, paddingBottom: 8, borderBottom: `2px solid ${accent}` }}>
+        <h4 style={{ margin: 0, fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink }}>{title}</h4>
+        <span style={{ ...numeric, fontSize: 14, fontWeight: 700, color: accent }}>{money(total)}</span>
+      </div>
+      <ul style={{ listStyle: "none", margin: "6px 0 0", padding: 0, display: "grid", gap: 2 }}>
+        {rows.map((r) => (
+          <li key={r.key}>
+            {r.onClick ? (
+              <button type="button" onClick={r.onClick} className="nclick" style={{ ...rowStyle, cursor: "pointer" }}>{rowBody(r, max)}</button>
+            ) : (
+              <div style={rowStyle}>{rowBody(r, max)}</div>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+const rowStyle = { position: "relative", display: "block", width: "100%", textAlign: "left", background: "none", border: "none", padding: "9px 8px", borderRadius: 10, overflow: "hidden", font: "inherit", color: "inherit" };
+function rowBody(r, max) {
+  return (
+    <>
+      <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${Math.max(4, (r.total / max) * 100)}%`, background: `${r.colour}1f`, borderLeft: `3px solid ${r.colour}` }} />
+      <span style={{ position: "relative", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
+        <span style={{ minWidth: 0 }}>
+          <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 14, fontWeight: 600, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.label}</span>
+          {r.sub && <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>{r.sub}</span>}
+        </span>
+        <span style={{ ...numeric, flexShrink: 0, fontSize: 14, fontWeight: 600, color: COLORS.ink, textAlign: "right" }}>
+          {money(r.total)}
+          {r.count > 1 && <span style={{ display: "block", fontFamily: FONT_BODY, fontWeight: 400, fontSize: 11.5, color: COLORS.inkSoft }}>{r.count} gifts</span>}
+        </span>
+      </span>
+    </>
+  );
+}
+
+function DonorResultCard({ result, index, onSelectPolitician }) {
   const mpAgg = useMemo(() => aggregateByPolitician(result.mpRows), [result]);
   const partyAgg = useMemo(() => aggregateByParty(result.partyRows), [result]);
   const companyNumbers = useMemo(
     () => [...new Set(result.partyRows.map((r) => r.company_registration_number).filter(Boolean))],
     [result]
   );
+  const gifts = result.mpRows.length + result.partyRows.length;
 
   return (
-    <motion.div
+    <motion.article
       layout
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25 }}
-      style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${COLORS.accent}`, borderRadius: 14, padding: 20 }}
+      transition={{ duration: 0.3, delay: Math.min(index, 6) * 0.05 }}
+      style={{ position: "relative", overflow: "hidden", background: `linear-gradient(135deg, ${COLORS.accent}0f, ${COLORS.paperCard} 45%)`, border: `1px solid ${COLORS.hairline}`, borderRadius: 20, padding: "clamp(16px, 3vw, 24px)", boxShadow: "0 18px 40px -28px rgba(0,0,0,0.5)" }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
-        <div style={{ fontFamily: FONT_DISPLAY, fontSize: 19, color: COLORS.ink, minWidth: 0 }}>{result.displayName}</div>
-        <div style={{ flexShrink: 0, fontFamily: FONT_BODY, fontSize: 16, fontWeight: 700, color: COLORS.accent }}>
-          £{Math.round(result.grandTotal).toLocaleString()} total
+      <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+        <span aria-hidden="true" style={{ flexShrink: 0, width: 52, height: 52, borderRadius: 16, display: "grid", placeItems: "center", background: `linear-gradient(145deg, ${COLORS.accent}, ${COLORS.accent}99)`, color: "#fff", fontFamily: FONT_DISPLAY, fontSize: 19, fontWeight: 700 }}>{initials(result.displayName)}</span>
+        <div style={{ flex: "1 1 220px", minWidth: 0 }}>
+          <h3 style={{ margin: 0, fontFamily: FONT_DISPLAY, fontSize: "clamp(19px, 2.6vw, 24px)", fontWeight: 700, color: COLORS.ink, lineHeight: 1.2, overflowWrap: "anywhere" }}>{result.displayName}</h3>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 8px", marginTop: 6 }}>
+            <span style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 600, color: COLORS.inkSoft, border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: "2px 10px" }}>{gifts} declared {gifts === 1 ? "gift" : "gifts"}</span>
+            {companyNumbers.length > 0 && <span style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 600, color: COLORS.inkSoft, border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: "2px 10px" }}>Companies House {companyNumbers.join(", ")}</span>}
+          </div>
+        </div>
+        <div style={{ textAlign: "right", flexShrink: 0 }}>
+          <div style={{ ...numeric, fontSize: "clamp(26px, 4vw, 34px)", fontWeight: 700, letterSpacing: "-0.03em", color: COLORS.ink, lineHeight: 1 }}>{money(result.grandTotal)}</div>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 3 }}>given in total</div>
         </div>
       </div>
-      {companyNumbers.length > 0 && (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginTop: 4 }}>
-          Companies House no. {companyNumbers.join(", ")}
-        </div>
-      )}
 
-      {mpAgg.length > 0 && (
-        <div style={{ marginTop: 14 }}>
-          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>
-            Given to MPs personally · £{Math.round(result.mpTotal).toLocaleString()}
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {mpAgg.map((m) => {
-              const color = partyColour(m.politician.party_colour, COLORS.inkSoft);
-              return (
-                <button
-                  key={m.politician.id}
-                  onClick={() => onSelectPolitician?.(m.politician)}
-                  style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, width: "100%", background: "none", border: "none", padding: "6px 4px", borderRadius: 8, cursor: "pointer", textAlign: "left" }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = COLORS.paper; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-                >
-                  <span style={{ display: "flex", alignItems: "center", gap: 7, minWidth: 0, fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink }}>
-                    <span style={{ width: 7, height: 7, borderRadius: "50%", background: color, flexShrink: 0 }} />
-                    <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{m.politician.name}</span>
-                    <span style={{ color: COLORS.inkSoft, fontSize: 12, flexShrink: 0 }}>· {m.politician.party}</span>
-                  </span>
-                  <span style={{ flexShrink: 0, fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13, color: COLORS.inkSoft }}>
-                    £{Math.round(m.total).toLocaleString()}{m.count > 1 ? ` (${m.count})` : ""}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
+      <div style={{ marginTop: 18 }}><SplitBar mp={result.mpTotal} party={result.partyTotal} /></div>
 
-      {partyAgg.length > 0 && (
-        <div style={{ marginTop: 14 }}>
-          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>
-            Given to political parties · £{Math.round(result.partyTotal).toLocaleString()}
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            {partyAgg.map((p) => (
-              <div key={p.party} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, padding: "2px 4px", fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink }}>
-                <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.party}</span>
-                <span style={{ flexShrink: 0, fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13, color: COLORS.inkSoft }}>
-                  £{Math.round(p.total).toLocaleString()}{p.count > 1 ? ` (${p.count})` : ""}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </motion.div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))", gap: "22px 28px", marginTop: 22 }}>
+        {mpAgg.length > 0 && (
+          <Recipients
+            title="Given to MPs personally" total={result.mpTotal} accent="#4F46E5"
+            rows={mpAgg.map((m) => ({ key: m.politician.id, label: m.politician.name, sub: m.politician.party, colour: partyColour(m.politician.party_colour, COLORS.inkSoft), total: m.total, count: m.count, onClick: () => onSelectPolitician?.(m.politician) }))}
+          />
+        )}
+        {partyAgg.length > 0 && (
+          <Recipients
+            title="Given to political parties" total={result.partyTotal} accent="#E0367A"
+            rows={partyAgg.map((p) => ({ key: p.party, label: p.party, colour: partyColourByName(p.party), total: p.total, count: p.count }))}
+          />
+        )}
+      </div>
+    </motion.article>
+  );
+}
+
+function Steps() {
+  const steps = [
+    ["1", "Type a name", "A company, a union or a person."],
+    ["2", "We check two registers", "MPs' declared interests and the Electoral Commission's party donations."],
+    ["3", "See who got the money", "Every MP and party, with the amounts."],
+  ];
+  return (
+    <ol style={{ listStyle: "none", margin: "22px 0 0", padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(220px, 100%), 1fr))", gap: 12 }}>
+      {steps.map(([n, t, d]) => (
+        <li key={n} style={{ display: "grid", gridTemplateColumns: "32px minmax(0, 1fr)", gap: 12, alignItems: "start", padding: "12px 14px", borderRadius: 14, background: `${COLORS.paper}`, border: `1px solid ${COLORS.hairline}` }}>
+          <span aria-hidden="true" style={{ width: 28, height: 28, borderRadius: 9, display: "grid", placeItems: "center", background: `${COLORS.accent}22`, color: COLORS.accent, fontFamily: FONT_BODY, fontWeight: 800, fontSize: 14 }}>{n}</span>
+          <span>
+            <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink }}>{t}</span>
+            <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.5, color: COLORS.inkSoft, marginTop: 2 }}>{d}</span>
+          </span>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+function Skeleton() {
+  return (
+    <div aria-hidden="true" style={{ display: "grid", gap: 16 }}>
+      {[0, 1].map((i) => (
+        <div key={i} style={{ height: 190, borderRadius: 20, border: `1px solid ${COLORS.hairline}`, background: `linear-gradient(100deg, ${COLORS.paperCard} 30%, ${COLORS.paper} 50%, ${COLORS.paperCard} 70%)`, backgroundSize: "200% 100%", animation: "donorShimmer 1.4s linear infinite" }} />
+      ))}
+      <style>{"@keyframes donorShimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } } @media (prefers-reduced-motion: reduce) { [style*='donorShimmer'] { animation: none !important; } }"}</style>
+    </div>
   );
 }
 
@@ -197,9 +264,11 @@ export default function FollowTheMoney({ onSelectPolitician }) {
   const isTooShort = trimmedQuery.length > 0 && trimmedQuery.length < MIN_QUERY_LENGTH;
   const hasSearched = debounced.length >= MIN_QUERY_LENGTH;
   const activeResults = hasSearched ? results : null;
+  const shownResults = activeResults?.slice(0, RESULT_CAP) ?? [];
+  const totalGiven = shownResults.reduce((n, r) => n + r.grandTotal, 0);
 
   return (
-    <div style={{ padding: PAGE_PADDING, maxWidth: 900, margin: "0 auto" }}>
+    <div style={{ padding: PAGE_PADDING, maxWidth: 1000, margin: "0 auto" }}>
       <PageHeader
         icon={IconSearch}
         kicker="Follow the Money"
@@ -207,64 +276,73 @@ export default function FollowTheMoney({ onSelectPolitician }) {
         subtitle="Search any company, union or individual donor to see every MP and party they have given declared money to. It draws on two official registers at once."
       />
 
-      <div style={{ position: "relative", maxWidth: 480, marginTop: 20, marginBottom: 24 }}>
-        <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: COLORS.inkSoft, display: "flex" }}>
-          <IconSearch size={16} />
-        </span>
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search a donor's name…"
-          style={{
-            width: "100%", boxSizing: "border-box", padding: "13px 16px 13px 40px", fontFamily: FONT_BODY, fontSize: 15,
-            border: `1px solid ${COLORS.hairline}`, borderRadius: 12, background: COLORS.paperCard, color: COLORS.ink,
-          }}
-        />
-      </div>
-
-      {isTooShort && (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>Keep typing, at least {MIN_QUERY_LENGTH} characters.</div>
-      )}
-
-      {!isTooShort && hasSearched && loading && (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Searching the registers…</div>
-      )}
-
-      {!isTooShort && hasSearched && !loading && activeResults?.length === 0 && (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, lineHeight: 1.6, maxWidth: 560 }}>
-          No donor matching "{debounced}" found in either register. If it's a company, try a shorter fragment of the
-          name: the search only matches text that appears exactly as typed, so punctuation like "K.G.L" won't be
-          found by searching "KGL".
+      <section aria-label="Search for a donor" style={{ marginTop: 22, padding: "clamp(18px, 3vw, 28px)", borderRadius: 24, border: `1px solid ${COLORS.hairline}`, background: `radial-gradient(640px 260px at 90% -20%, ${COLORS.accent}2b, transparent 70%), radial-gradient(420px 220px at 0% 120%, #E0367A1c, transparent 70%), ${COLORS.paperCard}` }}>
+        <label htmlFor="donor-q" style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: "clamp(18px, 2.4vw, 22px)", fontWeight: 700, color: COLORS.ink, marginBottom: 12 }}>Who do you want to look up?</label>
+        <div style={{ position: "relative" }}>
+          <span style={{ position: "absolute", left: 18, top: "50%", transform: "translateY(-50%)", color: COLORS.accent, display: "flex" }}>
+            <IconSearch size={20} />
+          </span>
+          <input
+            id="donor-q" type="search" value={query} onChange={(e) => setQuery(e.target.value)} autoComplete="off"
+            placeholder="A donor's name, such as Unite"
+            style={{ width: "100%", boxSizing: "border-box", padding: "17px 20px 17px 50px", fontFamily: FONT_BODY, fontSize: 17, border: `2px solid ${COLORS.hairline}`, borderRadius: 16, background: COLORS.paper, color: COLORS.ink, outline: "none" }}
+            onFocus={(e) => (e.target.style.borderColor = COLORS.accent)}
+            onBlur={(e) => (e.target.style.borderColor = COLORS.hairline)}
+          />
         </div>
-      )}
-
-      {!isTooShort && hasSearched && !loading && activeResults?.length > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5, maxWidth: 620 }}>
-            Results only include donor names containing "{debounced}" exactly: a differently punctuated spelling of
-            the same name (e.g. "K.G.L" vs "KGL") may sit under a separate result below. Where a Companies House
-            number is shown, that's the most reliable way to confirm it's really the same donor.
-          </div>
-          {activeResults.slice(0, RESULT_CAP).map((r) => (
-            <DonorResultCard key={r.key} result={r} onSelectPolitician={onSelectPolitician} />
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginTop: 14 }}>
+          <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>Try</span>
+          {EXAMPLES.map((e) => (
+            <button key={e} type="button" className="ons-chip" onClick={() => setQuery(e)} style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink, background: "transparent", border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: "6px 14px", cursor: "pointer" }}>{e}</button>
           ))}
-          {activeResults.length > RESULT_CAP && (
-            <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>
-              Showing the top {RESULT_CAP} of {activeResults.length} matching donor names, by total value. Narrow your search for a more exact match.
-            </div>
-          )}
         </div>
-      )}
+        {!hasSearched && <Steps />}
+      </section>
 
-      {!isTooShort && !hasSearched && (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.6, maxWidth: 620 }}>
-          Searches MPs' declared financial interests and the Electoral Commission's register of party donations at
-          once, for any donor name containing what you type. Once found, near-identical spellings of the same name
-          (with or without "Ltd", different punctuation or capitalisation) are merged into a single result
-          automatically; where a Companies House number is on record, it's shown so you can double-check identity
-          yourself.
-        </div>
-      )}
+      <div style={{ marginTop: 22 }}>
+        {isTooShort && (
+          <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft }}>Keep typing, at least {MIN_QUERY_LENGTH} characters.</div>
+        )}
+
+        {!isTooShort && hasSearched && loading && <Skeleton />}
+
+        {!isTooShort && hasSearched && !loading && activeResults?.length === 0 && (
+          <div style={{ padding: "22px 24px", borderRadius: 18, border: `1px dashed ${COLORS.hairline}`, background: COLORS.paperCard }}>
+            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 700, color: COLORS.ink }}>No donor called &ldquo;{debounced}&rdquo; in either register</div>
+            <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.6, maxWidth: 600, margin: "8px 0 0" }}>
+              If it is a company, try a shorter piece of the name. The search only matches text that appears exactly as typed, so punctuation like &ldquo;K.G.L&rdquo; won&apos;t be found by searching &ldquo;KGL&rdquo;.
+            </p>
+          </div>
+        )}
+
+        {!isTooShort && hasSearched && !loading && activeResults?.length > 0 && (
+          <div style={{ display: "grid", gap: 18 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", justifyContent: "space-between", gap: "6px 20px" }}>
+              <h2 style={{ margin: 0, fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, color: COLORS.ink }}>
+                {activeResults.length} {activeResults.length === 1 ? "donor matches" : "donors match"} &ldquo;{debounced}&rdquo;
+              </h2>
+              <span style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Biggest first, {money(totalGiven)} between them</span>
+            </div>
+            {shownResults.map((r, i) => (
+              <DonorResultCard key={r.key} result={r} index={i} onSelectPolitician={onSelectPolitician} />
+            ))}
+            {activeResults.length > RESULT_CAP && (
+              <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
+                Showing the top {RESULT_CAP} of {activeResults.length} matching donor names, by total value. Narrow your search for a more exact match.
+              </div>
+            )}
+            <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, lineHeight: 1.55, maxWidth: 680, margin: 0 }}>
+              Results only include donor names containing &ldquo;{debounced}&rdquo; exactly: a differently punctuated spelling of the same name (for example &ldquo;K.G.L&rdquo; and &ldquo;KGL&rdquo;) may sit under a separate result. Where a Companies House number is shown, that is the most reliable way to confirm it is really the same donor.
+            </p>
+          </div>
+        )}
+
+        {!isTooShort && !hasSearched && (
+          <p style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.6, maxWidth: 680, margin: 0 }}>
+            Near-identical spellings of the same name (with or without &ldquo;Ltd&rdquo;, different punctuation or capitalisation) are merged into a single result. Where a Companies House number is on record it is shown, so you can double-check who it is.
+          </p>
+        )}
+      </div>
     </div>
   );
 }

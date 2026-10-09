@@ -3,7 +3,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme";
 import { PageHeader, LoadFailedNote } from "./shared";
 import LineChart from "./LineChart";
-import { ALL_SERIES, refOf } from "../data/onsSectors";
+import { ALL_SERIES, SECTORS, refOf } from "../data/onsSectors";
 import { loadEverything } from "../lib/onsData";
 import { formatValue, formatAxis, periodToT, changeShort, periodLabel } from "../lib/onsFormat";
 import { changeBetween, valueAtOrBefore } from "../lib/onsStats";
@@ -33,6 +33,10 @@ const CHOICES = (() => {
   });
 })();
 
+// Topics are the Britain in numbers pages; each holds the measures to choose from.
+const TOPICS = SECTORS.map((t) => ({ key: t.key, label: t.label, accent: t.accent }))
+  .filter((t) => CHOICES.some((c) => c.sector === t.key));
+
 const PRESETS = [
   { label: "Since 1990", from: 1990 },
   { label: "Since 2000", from: 2000 },
@@ -47,6 +51,34 @@ const pill = (on) => ({
   fontFamily: FONT_BODY, fontSize: 13, fontWeight: on ? 700 : 500, padding: "6px 12px", borderRadius: 999, cursor: "pointer",
   border: `1px solid ${on ? COLORS.ink : COLORS.hairline}`, background: on ? COLORS.ink : "transparent", color: on ? COLORS.paper : COLORS.inkSoft,
 });
+
+function ControlGroup({ label, hint, children }) {
+  return (
+    <div style={{ display: "grid", gap: 6, alignContent: "start" }}>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.ink }}>
+        {label}
+        {hint && <span style={{ fontWeight: 500, color: COLORS.inkSoft }}> {hint}</span>}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+// A linked row of options where exactly one is on, so it is obvious which.
+function Choice({ options, label }) {
+  return (
+    <div role="radiogroup" aria-label={label} style={{ display: "inline-flex", flexWrap: "wrap", padding: 3, gap: 2, borderRadius: 12, background: COLORS.paper, border: `1px solid ${COLORS.hairline}` }}>
+      {options.map((o) => (
+        <button
+          key={o.label} type="button" role="radio" aria-checked={o.on} disabled={o.disabled} title={o.title} onClick={o.onClick} className="ons-chip"
+          style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: o.on ? 700 : 600, padding: "7px 13px", borderRadius: 9, border: "none", cursor: o.disabled ? "default" : "pointer", opacity: o.disabled ? 0.4 : 1, background: o.on ? COLORS.ink : "transparent", color: o.on ? COLORS.paper : COLORS.inkSoft, transition: "background 0.15s, color 0.15s" }}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
 
 function parsePicks(param) {
   const valid = new Set(CHOICES.map(refOf));
@@ -66,6 +98,10 @@ export default function IndicatorTimeline({ param }) {
   const [failed, setFailed] = useState(false);
   const [picks, setPicks] = useState(() => parsePicks(param));
   const [query, setQuery] = useState("");
+  const [topicKey, setTopicKey] = useState(() => {
+    const first = parsePicks(param)[0]?.split(".")[0];
+    return TOPICS.some((t) => t.key === first) ? first : TOPICS[0]?.key;
+  });
   const [fromYear, setFromYear] = useState(2000);
   const [mode, setMode] = useState("separate");
   const [showGov, setShowGov] = useState(true);
@@ -155,8 +191,12 @@ export default function IndicatorTimeline({ param }) {
   const gov = here !== null && here !== undefined ? governmentAt(here) : null;
   const clip = playhead ?? undefined;
 
-  const matches = CHOICES.filter((c) => !query.trim() || `${c.label} ${c.sectorLabel}`.toLowerCase().includes(query.trim().toLowerCase()));
-  const groups = [...new Set(matches.map((m) => m.sectorLabel))].map((label) => ({ label, items: matches.filter((m) => m.sectorLabel === label) }));
+  const searching = query.trim().length > 0;
+  const topic = TOPICS.find((t) => t.key === topicKey) ?? TOPICS[0];
+  const topicItems = CHOICES.filter((c) => c.sector === topic?.key);
+  const found = CHOICES.filter((c) => `${c.label} ${c.sectorLabel}`.toLowerCase().includes(query.trim().toLowerCase()));
+  const shown = searching ? found : topicItems;
+  const pickedIn = (key) => picks.filter((r) => r.startsWith(`${key}.`)).length;
 
   // "Then and now": the figure at a chosen year against the latest.
   const thenAt = thenYear ?? Math.ceil(from);
@@ -173,7 +213,7 @@ export default function IndicatorTimeline({ param }) {
       <PageHeader
         icon={IconCompareTime}
         title="Compare the numbers over time"
-        subtitle="Pick up to four measures from any page and see how they moved, side by side, with who was in government shaded behind them. Press play to watch the years unfold."
+        subtitle="Pick a topic, tick up to four measures from it, and see how they moved, side by side, with who was in government shaded behind them. Press play to watch the years unfold."
         maxWidth={760}
       />
 
@@ -185,17 +225,12 @@ export default function IndicatorTimeline({ param }) {
           <section style={{ ...card, marginTop: 24 }} aria-label="Choose measures">
             <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 14px", alignItems: "center", justifyContent: "space-between" }}>
               <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, letterSpacing: "-0.01em", color: COLORS.ink, margin: 0 }}>
-                Choose measures <span style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 500, color: COLORS.inkSoft }}>{picks.length} of {MAX_PICKED}</span>
+                Choose what to compare
               </h2>
-              <input className="ons-chip"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search, for example rent or debt"
-                aria-label="Search measures"
-                style={{ fontFamily: FONT_BODY, fontSize: 14, padding: "8px 12px", borderRadius: 10, border: `1px solid ${COLORS.hairline}`, background: COLORS.paper, color: COLORS.ink, width: "min(300px, 100%)" }}
-              />
+              <span style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: COLORS.inkSoft }}>{picks.length} of {MAX_PICKED} chosen</span>
             </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
+
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12, minHeight: 36 }}>
               {chosen.map((c, i) => (
                 <button className="ons-chip"
                   key={refOf({ sector: c.sector, id: c.def.id })}
@@ -207,54 +242,100 @@ export default function IndicatorTimeline({ param }) {
                   <span aria-hidden="true" style={{ fontSize: 15, lineHeight: 1 }}>×</span>
                 </button>
               ))}
+              {chosen.length === 0 && <span style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, alignSelf: "center" }}>Nothing chosen yet. Start with a topic below.</span>}
             </div>
-            <div style={{ maxHeight: 250, overflowY: "auto", marginTop: 14, paddingRight: 4 }}>
-              {groups.map((g) => (
-                <div key={g.label} style={{ marginBottom: 12 }}>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.inkSoft, marginBottom: 6 }}>{g.label}</div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                    {g.items.map((c) => {
-                      const ref = refOf(c);
-                      const on = picks.includes(ref);
-                      const full = !on && picks.length >= MAX_PICKED;
-                      return (
-                        <button className="ons-chip" key={ref} onClick={() => toggle(ref)} aria-pressed={on} disabled={full} style={{ ...pill(on), opacity: full ? 0.4 : 1, cursor: full ? "default" : "pointer" }}>
-                          {c.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-              {!groups.length && <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Nothing matches that search.</p>}
+
+            <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", gap: "8px 14px", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.ink }}>1. Pick a topic</div>
+              <input className="ons-chip"
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Or search, for example rent or debt"
+                aria-label="Search measures"
+                style={{ fontFamily: FONT_BODY, fontSize: 14, padding: "8px 12px", borderRadius: 10, border: `1px solid ${COLORS.hairline}`, background: COLORS.paper, color: COLORS.ink, width: "min(300px, 100%)" }}
+              />
             </div>
+            <div role="tablist" aria-label="Topics" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(150px, 46%), 1fr))", gap: 8, marginTop: 10, opacity: searching ? 0.45 : 1 }}>
+              {TOPICS.map((t) => {
+                const on = !searching && t.key === topic?.key;
+                const n = pickedIn(t.key);
+                return (
+                  <button
+                    key={t.key} type="button" role="tab" aria-selected={on} className="ons-chip"
+                    onClick={() => { setTopicKey(t.key); setQuery(""); }}
+                    style={{ position: "relative", textAlign: "left", display: "flex", alignItems: "center", gap: 9, padding: "11px 12px", borderRadius: 14, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink, background: on ? `${t.accent}22` : COLORS.paper, border: `2px solid ${on ? t.accent : COLORS.hairline}`, transition: "background 0.15s, border-color 0.15s" }}
+                  >
+                    <span aria-hidden="true" style={{ flexShrink: 0, width: 12, height: 12, borderRadius: 4, background: t.accent }} />
+                    <span style={{ minWidth: 0, lineHeight: 1.2 }}>{t.label}</span>
+                    {n > 0 && <span style={{ marginLeft: "auto", flexShrink: 0, minWidth: 20, height: 20, borderRadius: 10, display: "grid", placeItems: "center", background: t.accent, color: "#fff", fontSize: 12, fontWeight: 800 }}>{n}</span>}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.ink, margin: "18px 0 8px" }}>
+              {searching ? `Results for \u201C${query.trim()}\u201D` : `2. Tick the measures you want from ${topic?.label ?? ""}`}
+            </div>
+            <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(300px, 100%), 1fr))", gap: 6, maxHeight: 340, overflowY: "auto", paddingRight: 4 }}>
+              {shown.map((c) => {
+                const ref = refOf(c);
+                const idx = picks.indexOf(ref);
+                const on = idx >= 0;
+                const full = !on && picks.length >= MAX_PICKED;
+                const colour = on ? LINE_COLOURS[idx % 4] : COLORS.hairline;
+                return (
+                  <li key={ref}>
+                    <button
+                      type="button" className="ons-chip" role="checkbox" aria-checked={on} disabled={full} onClick={() => toggle(ref)}
+                      title={full ? `You can compare up to ${MAX_PICKED} at once. Remove one first.` : undefined}
+                      style={{ width: "100%", textAlign: "left", display: "flex", alignItems: "center", gap: 11, padding: "10px 12px", borderRadius: 12, fontFamily: FONT_BODY, fontSize: 14, fontWeight: on ? 700 : 500, lineHeight: 1.3, color: COLORS.ink, background: on ? `${colour}1f` : "transparent", border: `1px solid ${on ? colour : COLORS.hairline}`, opacity: full ? 0.45 : 1, cursor: full ? "default" : "pointer", transition: "background 0.15s, border-color 0.15s" }}
+                    >
+                      <span aria-hidden="true" style={{ flexShrink: 0, width: 20, height: 20, borderRadius: 6, display: "grid", placeItems: "center", background: on ? colour : "transparent", border: `2px solid ${on ? colour : COLORS.inkSoft}`, color: "#fff", fontSize: 13, fontWeight: 800 }}>{on ? "\u2713" : ""}</span>
+                      <span style={{ minWidth: 0 }}>
+                        {c.label}
+                        {searching && <span style={{ display: "block", fontSize: 12, fontWeight: 500, color: COLORS.inkSoft }}>{c.sectorLabel}</span>}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+            {!shown.length && <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Nothing matches that search.</p>}
           </section>
 
           {chosen.length === 0 && <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, marginTop: 24 }}>Pick a measure above to see it here.</p>}
 
           {chosen.length > 0 && window_ && (
             <>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "10px 20px", alignItems: "center", margin: "22px 0 12px" }}>
-                <div role="group" aria-label="Time period" style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                  {PRESETS.map((p) => {
-                    const target = p.back ? Math.floor(to - p.back) : p.from;
-                    const on = p.from === 0 ? fromYear === 0 : fromYear === target;
-                    return <button className="ons-chip" key={p.label} onClick={() => preset(p)} aria-pressed={on} style={pill(on)}>{p.label}</button>;
-                  })}
-                </div>
-                <div role="radiogroup" aria-label="Chart layout" style={{ display: "inline-flex", gap: 6 }}>
-                  <button className="ons-chip" role="radio" aria-checked={!overlay} onClick={() => setMode("separate")} style={pill(!overlay)}>Separate charts</button>
-                  <button className="ons-chip"
-                    role="radio" aria-checked={overlay} onClick={() => overlayOk && setMode("overlay")} disabled={!overlayOk}
-                    title={overlayOk ? "" : "Overlaying needs measures in the same unit, such as all percentages"}
-                    style={{ ...pill(overlay), opacity: overlayOk ? 1 : 0.4, cursor: overlayOk ? "pointer" : "default" }}
-                  >
-                    One chart
-                  </button>
-                </div>
-                <button className="ons-chip" role="switch" aria-checked={showGov} onClick={() => setShowGov(!showGov)} style={{ ...pill(showGov) }}>
-                  {showGov ? "Hide" : "Show"} who was in government
-                </button>
+              <div style={{ ...card, display: "flex", flexWrap: "wrap", gap: "16px 28px", alignItems: "flex-start", margin: "22px 0 14px" }}>
+                <ControlGroup label="How far back">
+                  <Choice
+                    label="Time period"
+                    options={PRESETS.map((p) => {
+                      const target = p.back ? Math.floor(to - p.back) : p.from;
+                      return { label: p.label, on: p.from === 0 ? fromYear === 0 : fromYear === target, onClick: () => preset(p) };
+                    })}
+                  />
+                </ControlGroup>
+                <ControlGroup label="Show them as">
+                  <Choice
+                    label="Chart layout"
+                    options={[
+                      { label: "Separate charts", on: !overlay, onClick: () => setMode("separate") },
+                      { label: "One chart", on: overlay, disabled: !overlayOk, onClick: () => overlayOk && setMode("overlay"), title: overlayOk ? "" : "Overlaying needs measures in the same unit, such as all percentages" },
+                    ]}
+                  />
+                </ControlGroup>
+                <ControlGroup label="Who was in government">
+                  <Choice
+                    label="Government shading"
+                    options={[
+                      { label: "Shaded", on: showGov, onClick: () => setShowGov(true) },
+                      { label: "Hidden", on: !showGov, onClick: () => setShowGov(false) },
+                    ]}
+                  />
+                </ControlGroup>
               </div>
 
               <div style={{ ...card, display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px 16px", position: "sticky", top: 8, zIndex: 10 }}>
