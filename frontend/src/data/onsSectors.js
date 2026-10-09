@@ -498,6 +498,16 @@ export const SECTORS = [
         explain: "How much faster, in percentage points, average UK house prices rose over the past year than average pay did. Above zero, prices are outpacing pay and homes are getting harder to afford. Below zero, pay is catching up.",
         why: "A gap that stays above zero for years is how a home goes from costing four years of pay to eight.",
       }),
+      d("mortgage-payment", { op: "mortgage", from: "hpi-uk", rate: "mortgage-2y-h", ltv: 0.75, years: 25 }, {
+        label: "Monthly mortgage payment on the average home", sentenceName: "The monthly repayment on a typical mortgage for the average home", verb: "was", format: "gbp", kind: "level", nominal: true,
+        explain: "What it costs each month to repay a mortgage on the average UK home, assuming a 25% deposit (a loan of 75% of the price), 25 years to repay, and the average two-year fixed rate lenders were charging that month. A simplified repayment mortgage: the rate is held for the whole term and fees are left out.",
+        why: "Most buyers think in monthly payments, not in the price. A home can get cheaper compared with pay and still cost more each month if mortgage rates have risen.",
+      }),
+      d("mortgage-share-of-pay", { op: "percentOf", from: "mortgage-payment", of: "awe-monthly" }, {
+        label: "Mortgage payment as a share of average pay", sentenceName: "The mortgage payment on the average home as a share of average pay", verb: "was", headline: true, format: "pct", kind: "rate",
+        explain: "The monthly mortgage payment on the average UK home (a 75% loan over 25 years at the average two-year fixed rate) as a share of average monthly pay before tax. Lenders and housing charities often treat a third of take-home pay as a stretch.",
+        why: "This is the affordability measure that includes the cost of borrowing, so it rises when mortgage rates jump even if house prices and pay barely move.",
+      }),
       h("hpi-england", "england", "averagePrice", {
         label: "England", sentenceName: "The average house price in England", headline: true, format: "gbp", kind: "level", nominal: true,
         explain: "The average price paid for a home in England.",
@@ -572,6 +582,8 @@ export const SECTORS = [
     ],
     inputs: [
       s("awe-weekly", "KAB9", "lms", EARNINGS, { nominal: true, label: "Average weekly pay", sentenceName: "Average weekly pay", format: "gbp", kind: "level", explain: "Average weekly earnings across the whole economy, before tax. Used to work out how many years of pay a home costs.", why: "A building block for years of pay to buy a home." }),
+      d("awe-monthly", { op: "scale", from: "awe-weekly", factor: 52 / 12 }, { nominal: true, label: "Average monthly pay", sentenceName: "Average monthly pay", format: "gbp", kind: "level", explain: "Average weekly pay worked out as a month (weekly pay times 52, divided by 12). Used to compare a monthly mortgage payment with pay.", why: "A building block for the mortgage share of pay." }),
+      b("mortgage-2y-h", "IUMBV34", "month", { realMode: "rate", label: "Two-year fixed mortgage rate", sentenceName: "The average two-year fixed mortgage rate", format: "pct2", kind: "rate", explain: "The average two-year fixed mortgage rate for a 75% loan. Used to work out monthly mortgage payments.", why: "A building block for the mortgage payment." }),
       d("awe-yoy", { op: "yoy", from: "awe-weekly" }, { label: "Pay growth on a year earlier", sentenceName: "Pay growth", format: "pct", kind: "rate", explain: "How much average weekly pay has risen over the year, before taking prices into account. Used to compare with house price growth.", why: "A building block for the gap between house price and pay growth." }),
       f("homes-completed-q", "homes-completed", HOUSING_SUPPLY_SOURCE, { label: "New homes completed each quarter", sentenceName: "New homes completed", format: "count", kind: "level", explain: "New homes completed in England each quarter.", why: "A building block for the 12-month total." }),
       f("homes-started-q", "homes-started", HOUSING_SUPPLY_SOURCE, { label: "New homes started each quarter", sentenceName: "New homes started", format: "count", kind: "level", explain: "New homes started in England each quarter.", why: "A building block for the 12-month total." }),

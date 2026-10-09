@@ -133,6 +133,16 @@ export const DEEP_DIVES = {
     causes: "House prices rising faster than pay, which happens when mortgages are cheap, homes are scarce or investors buy more. It falls when interest rates rise and cool prices, or when pay rises faster than prices.",
     levers: "Governments change planning rules and house building targets (supply), Stamp Duty and help-to-buy schemes (demand), and landlord taxes. The Bank of England's interest rate and mortgage lending rules affect what buyers can borrow, and wage policy such as the minimum wage affects the other half of the sum.",
   },
+  "mortgage-payment": {
+    how: "The average UK house price from the UK House Price Index, times 75% (a 25% deposit), repaid over 25 years at the Bank of England's average two-year fixed mortgage rate for that month. It is the standard repayment formula with the rate held fixed for the whole term, so it is a guide to the cost of borrowing, not a quote: real mortgages reset after the fixed period, and fees are left out.",
+    causes: "House prices and mortgage rates. A one-point rise in the rate adds roughly £60 a month for every £100,000 borrowed. Rates follow the Bank of England's rate and what lenders pay to borrow.",
+    levers: "The Bank of England's interest rate is the main one. Governments and regulators change mortgage lending rules, Stamp Duty and help-to-buy schemes, and the planning rules that affect how many homes are built.",
+  },
+  "mortgage-share-of-pay": {
+    how: "The monthly mortgage payment (see the card above) divided by average monthly pay: average weekly earnings across the whole economy, before tax, times 52 and divided by 12. Average earnings include part-time work, and the share is of pay before tax and not of take-home pay, so it is lower than a typical buyer's share of take-home pay.",
+    causes: "Mortgage rates, house prices and pay. It rose sharply when rates jumped in 2022 and 2023, and falls when pay grows faster than the cost of borrowing.",
+    levers: "The Bank of England's interest rate, mortgage lending and affordability rules, wage policy such as the minimum wage, and the government's housing and planning policy.",
+  },
   "price-vs-pay-growth": {
     how: "The UK House Price Index's annual change in average house prices, minus the annual change in average weekly earnings across the whole economy, both for the same month. The result is in percentage points: 3 means house prices grew 3 points faster than pay over the year.",
     causes: "Mortgage rates and lending rules, how many homes are built compared with how many people want one, and how fast firms raise wages. Pay rises after a burst of inflation can pull the gap below zero even when prices are still rising.",

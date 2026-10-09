@@ -2,6 +2,7 @@
 // raw figures. Points are [period, value] pairs like the ones the ONS pages use.
 
 import { periodToT } from "./onsFormat";
+import { monthlyPayment } from "./mortgage";
 
 export function periodsPerYear(points) {
   if (points.length < 2) return 1;
@@ -57,6 +58,18 @@ export function ratio(a, b, times = 1) {
   return a.filter(([p]) => lookup.get(p)).map(([p, v]) => [p, v / (lookup.get(p) * times)]);
 }
 
+// Every figure times `factor` (for example weekly pay times 52 / 12 for monthly pay).
+export function scale(a, factor) {
+  return a.map(([p, v]) => [p, v * factor]);
+}
+
+// The monthly repayment on a mortgage for `ltv` (for example 0.75) of each period's house price, over `years`, at that
+// period's mortgage rate. Where both have a figure for the same period.
+export function mortgagePayments(prices, rates, ltv = 0.75, years = 25) {
+  const lookup = new Map(rates);
+  return prices.filter(([p]) => lookup.has(p)).map(([p, v]) => [p, monthlyPayment(v * ltv, lookup.get(p), years)]);
+}
+
 // Works out a derived series from `base`, a map of series id to points.
 export function derive(spec, base) {
   const from = base[spec.from];
@@ -68,6 +81,8 @@ export function derive(spec, base) {
     case "plus": return base[spec.of]?.length ? plus(from, base[spec.of]) : [];
     case "minus": return base[spec.of]?.length ? minus(from, base[spec.of]) : [];
     case "ratio": return base[spec.of]?.length ? ratio(from, base[spec.of], spec.times ?? 1) : [];
+    case "scale": return scale(from, spec.factor);
+    case "mortgage": return base[spec.rate]?.length ? mortgagePayments(from, base[spec.rate], spec.ltv, spec.years) : [];
     case "percentOf": return base[spec.of]?.length ? percentOf(from, base[spec.of]) : [];
     default: return [];
   }
