@@ -489,7 +489,7 @@ export function CabinetRoleBox({ politician }) {
         </div>
       ) : (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
-          No current government post — this MP is a backbencher.
+          No current government post. This MP is a backbencher.
         </div>
       )}
     </CardShell>
@@ -537,7 +537,7 @@ export function StandardsBox({ politician }) {
       )}
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.6, marginBottom: 10 }}>
         {reports?.length > 0
-          ? "The published finding above is a matter of public record — see the Standards & Sanctions tab for the full context. For anything more recent:"
+          ? "The published finding above is a matter of public record. See the Standards & Sanctions tab for the full context. For anything more recent:"
           : "No published Committee on Standards finding currently matched to this MP. To check for yourself:"}
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -547,7 +547,7 @@ export function StandardsBox({ politician }) {
           rel="noreferrer"
           style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, fontWeight: 600 }}
         >
-          Committee on Standards — published findings ↗
+          Committee on Standards, published findings ↗
         </a>
         <a
           href={`https://www.parliament.uk/site-information/search/?q=${encodedName}`}
@@ -635,7 +635,7 @@ export function VotingSummaryBox({ politician, onNavigate }) {
   return (
     <CardShell title="Voting Record">
       <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 10 }}>
-        Their {votes.length} most recent recorded vote{votes.length === 1 ? "" : "s"} — tap any of these, or their full
+        Their {votes.length} most recent recorded vote{votes.length === 1 ? "" : "s"}. Tap any of these, or their full
         history below, to see every recorded vote.
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -700,7 +700,7 @@ export function VotingSummaryBox({ politician, onNavigate }) {
           onClick={() => withScrollPreserved(() => onNavigate("voting", politician))}
           style={{ display: "block", marginTop: 10, fontSize: 12, color: COLORS.accent, fontWeight: 600, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY }}
         >
-          See their full voting history →
+          See their full voting history
         </button>
       ) : (
         <div style={{ marginTop: 10, fontSize: 12, color: COLORS.inkSoft }}>
@@ -773,7 +773,7 @@ export function RebellionRateBox({ politician }) {
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5 }}>
         The share of recorded Commons divisions where this MP voted against the majority of their own party.
-        Actual whip instructions are never published, so this is our best available proxy — not a claim about
+        Actual whip instructions are never published, so this is our best available proxy, not a claim about
         what the whip actually told them to do.
       </div>
       <RebelMeaning politician={politician} />
@@ -873,7 +873,7 @@ export function RecentActivityBox({ politician, onNavigate }) {
               onClick={() => withScrollPreserved(() => onNavigate("writtenQuestions", politician))}
               style={{ display: "block", marginTop: 10, fontSize: 12, color: COLORS.accent, fontWeight: 600, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY }}
             >
-              See all their written questions →
+              See all their written questions
             </button>
           )}
         </div>
@@ -910,7 +910,7 @@ export function NewsBox({ politician }) {
   return (
     <CardShell title="In the News">
       <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.8, marginBottom: 10, lineHeight: 1.5 }}>
-        Not a verified fact-check — a same-named person or a passing mention can occasionally slip through. See Data
+        Not a verified fact-check: a same-named person or a passing mention can occasionally slip through. See Data
         & Methodology for how this is compiled.
       </div>
       {articles === null && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>}

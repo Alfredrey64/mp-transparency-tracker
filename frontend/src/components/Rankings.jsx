@@ -124,7 +124,7 @@ function DistributionChart({ data, color, shownCount, formatValue, activeBin, on
     <div style={{ marginBottom: 22, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: "16px 18px 12px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
         <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12, color: COLORS.ink }}>
-          How {data.length} ranked MPs spread out — tap a bar to see who's there
+          How {data.length} ranked MPs spread out. Tap a bar to see who's there
         </div>
         {activeBin != null && (
           <button
@@ -166,7 +166,7 @@ function DistributionChart({ data, color, shownCount, formatValue, activeBin, on
       </div>
 
       {/* The axis: a baseline with five real, formatted values along it —
-          not just "low"/"high" — plus tick marks so each label clearly
+          not just "low"/"high", plus tick marks so each label clearly
           points at its position on the bars above, the way a real chart
           axis does. */}
       <div style={{ position: "relative", height: 28, borderTop: `1px solid ${COLORS.hairline}` }}>
@@ -242,7 +242,7 @@ function Podium({ entries, color, formatValue, maxValue, onSelectPolitician }) {
               <span style={{ position: "absolute", right: -6, bottom: -4 }}><Medal rank={entry.rank} size={first ? 32 : 28} /></span>
             </span>
             <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: first ? 14.5 : 13, color: COLORS.ink, textAlign: "center", lineHeight: 1.25, maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{p.name}</span>
-            <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, textAlign: "center", marginBottom: 6, maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.party ?? "—"}</span>
+            <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, textAlign: "center", marginBottom: 6, maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.party ?? "No party"}</span>
             <motion.span
               aria-hidden="true"
               initial={reduce ? false : { height: 0 }} animate={{ height }} transition={{ delay: 0.1, type: "spring", stiffness: 90, damping: 16 }}
@@ -285,7 +285,7 @@ function RaceRow({ entry, index, maxValue, color, valueLabel, onSelectPolitician
         <span style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10 }}>
           <span style={{ minWidth: 0, fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13.5, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {p.name}
-            <span style={{ fontWeight: 500, fontSize: 11.5, color: COLORS.inkSoft }}>{"  "}{p.party ?? "—"} · {p.constituency ?? "—"}</span>
+            <span style={{ fontWeight: 500, fontSize: 11.5, color: COLORS.inkSoft }}>{"  "}{p.party ?? "No party"} · {p.constituency ?? "No constituency"}</span>
           </span>
           <span style={{ flexShrink: 0, fontFamily: FONT_MONO, fontWeight: 800, fontSize: 14, color }}>{valueLabel}</span>
         </span>
@@ -436,8 +436,8 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
         formatValue: (e) => `£${Math.round(e.value).toLocaleString()}`,
         intro: (
           <>
-            How much each MP has claimed in business costs — staffing, travel, accommodation, and office running
-            costs — through IPSA, the Independent Parliamentary Standards Authority
+            How much each MP has claimed in business costs, staffing, travel, accommodation, and office running
+            costs, through IPSA, the Independent Parliamentary Standards Authority
             {onNavigate && (
               <>
                 {" "}(
@@ -453,7 +453,7 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
             , this financial year.
           </>
         ),
-        caveat: "A high total often reflects a large constituency, a big staff, or higher regional costs, not impropriety — every claim is itself checked and audited by IPSA before it's paid out. See the Claims tab on an MP's own page for the itemised breakdown.",
+        caveat: "A high total often reflects a large constituency, a big staff, or higher regional costs, not impropriety: every claim is itself checked and audited by IPSA before it's paid out. See the Claims tab on an MP's own page for the itemised breakdown.",
       },
       {
         key: "earnings",
@@ -461,8 +461,8 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
         color: "#1E8E85",
         data: earningsRanking,
         formatValue: (e) => `£${Math.round(e.value).toLocaleString()}`,
-        intro: "Total declared outside earnings — ongoing paid roles and one-off payments such as speeches, articles, or consultancy — from the Register of Members' Financial Interests.",
-        caveat: "Declaring outside earnings isn't a breach of any rule — it's what the register is for. MPs with no entries here simply haven't declared any outside income, not necessarily none at all if something is below the registration threshold.",
+        intro: "Total declared outside earnings (ongoing paid roles and one-off payments such as speeches, articles, or consultancy) from the Register of Members' Financial Interests.",
+        caveat: "Declaring outside earnings isn't a breach of any rule. It's what the register is for. MPs with no entries here simply haven't declared any outside income, not necessarily none at all if something is below the registration threshold.",
       },
       {
         key: "rebellion",
@@ -476,7 +476,7 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
             <GlossaryTerm term="Division">divisions</GlossaryTerm> recorded so far.
           </>
         ),
-        caveat: `Only MPs with at least ${MIN_VOTES_FOR_REBELLION_RANKING} recorded votes are ranked, so a handful of votes can't inflate a rate. Independents and the Speaker aren't ranked — a party "majority" isn't a meaningful idea for them.`,
+        caveat: `Only MPs with at least ${MIN_VOTES_FOR_REBELLION_RANKING} recorded votes are ranked, so a handful of votes can't inflate a rate. Independents and the Speaker aren't ranked: a party "majority" isn't a meaningful idea for them.`,
       },
       {
         key: "attendance",
@@ -654,7 +654,7 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
 
       {!loading && filtered.length > TOP_N && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, textAlign: "center", marginTop: 16 }}>
-          Showing the top {TOP_N} of {filtered.length} ranked MPs — search by name to find someone further down the list.
+          Showing the top {TOP_N} of {filtered.length} ranked MPs. Search by name to find someone further down the list.
         </div>
       )}
     </div>

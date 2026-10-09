@@ -108,7 +108,7 @@ function PostcodeForm({ onFound, initialError }) {
         <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: "#9C3B3B", marginTop: 12, textAlign: "center" }}>{error}</div>
       )}
       <p style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, textAlign: "center", marginTop: 14, marginBottom: 0, opacity: 0.75 }}>
-        Only saved in your own browser, to skip this step next time — never sent anywhere or seen by us. See Privacy Policy.
+        Only saved in your own browser, to skip this step next time, never sent anywhere or seen by us. See Privacy Policy.
       </p>
     </div>
   );
@@ -135,7 +135,7 @@ function MPDashboard({ politician, onForget, onViewFullProfile }) {
             onClick={() => onViewFullProfile(politician)}
             style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13, color: "#fff", background: COLORS.accent, border: "none", borderRadius: 999, padding: "9px 18px", cursor: "pointer" }}
           >
-            Full profile →
+            Full profile
           </button>
           <button
             onClick={onForget}

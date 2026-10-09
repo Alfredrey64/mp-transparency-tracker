@@ -224,7 +224,7 @@ export default function StartHere({ onNavigate, onNavigateForMp, onViewProfile }
         <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 22px", marginTop: 12 }}>
           {[["howitworks", "How Parliament works"], ["glossary", "Glossary"], ["methodology", "Where the data comes from"]].map(([key, label]) => (
             <button key={key} type="button" onClick={() => onNavigate?.(key)} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: ACCENT }}>
-              {label} →
+              {label}
             </button>
           ))}
         </div>

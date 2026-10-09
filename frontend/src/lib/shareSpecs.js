@@ -154,19 +154,19 @@ export function wrapLines(text, measure, maxWidth, maxLines) {
 // "What if the vote moved?": a swing between two parties and the seats it would change.
 export function swingShareSpec({ from, to, points, flips, fromTotal, toTotal, fromColour, toColour, link }) {
   const top = flips.slice(0, 6);
-  const max = Math.max(1, ...top.map((r) => r.swing));
+  const maxMaj = Math.max(1, ...top.map((r) => r.majority));
   return {
-    kicker: "What if the vote moved?",
-    title: `A ${(Math.round(points * 10) / 10).toFixed(1)}-point swing from ${from} to ${to}`,
-    subtitle: `would change ${flips.length} ${flips.length === 1 ? "seat" : "seats"}, using the 2024 results`,
+    kicker: "What if voters changed their minds?",
+    title: `If ${(Math.round(points * 10) / 10).toFixed(1)} in every 100 voters moved from ${from} to ${to}`,
+    subtitle: `${flips.length} ${flips.length === 1 ? "seat" : "seats"} would change hands, using the 2024 results`,
     accent: colour(toColour),
     stats: [
       { value: String(flips.length), label: flips.length === 1 ? "seat changes hands" : "seats change hands" },
       { value: `${fromTotal - flips.length}`, label: `${from} (from ${fromTotal})` },
       { value: `${toTotal + flips.length}`, label: `${to} (from ${toTotal})` },
     ],
-    bars: top.map((r) => ({ label: r.name, valueText: `${(Math.round(r.swing * 10) / 10).toFixed(1)} pts`, fraction: r.swing / max, colour: colour(fromColour) })),
-    note: "Seats needing the least swing, shown first. A simple model, not a forecast.",
+    bars: top.map((r) => ({ label: r.name, valueText: `${Math.floor(r.majority / 2) + 1} voters`, fraction: Math.max(0.05, r.majority / maxMaj), colour: colour(fromColour) })),
+    note: "The seats that need the fewest voters to switch, shown first. A rough guide, not a forecast.",
     footer: `${CARD_SITE} · marginal seats and swing`,
     link,
   };

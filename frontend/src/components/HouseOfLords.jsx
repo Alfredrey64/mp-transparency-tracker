@@ -18,9 +18,9 @@ const PEERAGE_TYPES = ["Life peer", "Life Peer (judicial)", "Bishop"];
 // explanation that applies to everyone of that type, so it's safe to show
 // for all 815 peers without needing to research each one individually.
 const PEERAGE_EXPLANATIONS = {
-  "Life peer": "Appointed for life by the Monarch, on the Prime Minister's advice. Most are nominated by a party leader as a \"working peer\"; crossbenchers (no party) are instead recommended by the independent House of Lords Appointments Commission. The title and the seat both end when they die — it isn't inherited.",
-  "Life Peer (judicial)": "A senior judge given a life peerage, continuing a centuries-old tradition of the UK's most senior judiciary sitting in the Lords — historically the Law Lords, who served as the country's final court of appeal before the Supreme Court took over that role in 2009.",
-  "Bishop": "One of the 26 most senior Church of England bishops, who sit in the Lords by right as the \"Lords Spiritual\" — not appointed or elected, but seated by seniority once a diocesan vacancy comes up. They leave when they retire as a bishop, not for life.",
+  "Life peer": "Appointed for life by the Monarch, on the Prime Minister's advice. Most are nominated by a party leader as a \"working peer\"; crossbenchers (no party) are instead recommended by the independent House of Lords Appointments Commission. The title and the seat both end when they die. It isn't inherited.",
+  "Life Peer (judicial)": "A senior judge given a life peerage, continuing a centuries-old tradition of the UK's most senior judiciary sitting in the Lords, historically the Law Lords, who served as the country's final court of appeal before the Supreme Court took over that role in 2009.",
+  "Bishop": "One of the 26 most senior Church of England bishops, who sit in the Lords by right as the \"Lords Spiritual\", not appointed or elected, but seated by seniority once a diocesan vacancy comes up. They leave when they retire as a bishop, not for life.",
 };
 
 function DataScopeNote() {
@@ -31,13 +31,13 @@ function DataScopeNote() {
         marginBottom: 24, fontFamily: FONT_BODY, fontSize: 13, lineHeight: 1.6, color: COLORS.inkSoft,
       }}
     >
-This covers <em>who</em> sits in the House of Lords, and their recent debates and written questions — but not what
+This covers <em>who</em> sits in the House of Lords, and their recent debates and written questions, but not what
       they've declared or how they've voted. The official source the rest of this site draws on for that (the
       Commons register of financial interests) is available as structured data; the Lords equivalent, checked
-      directly against Parliament's own systems, is not — it's published only as free-text entries per peer (things
+      directly against Parliament's own systems, is not. It's published only as free-text entries per peer (things
       like "adviser to X" or "shareholding in Y", rarely with a declared £ figure), with no equivalent for division
       votes or an attendance percentage either. Rather than force that into a format built for the Commons register,
-      it's left out here — but every peer's profile below links straight to their own entry on the{" "}
+      it's left out here, but every peer's profile below links straight to their own entry on the{" "}
       <a href="https://www.parliament.uk/mps-lords-and-offices/standards-and-financial-interests/parliamentary-commissioner-for-standards/registers-of-interests/register-of-lords-interests/" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
         official Register of Lords' Interests
       </a>
@@ -171,7 +171,7 @@ function PeerDetail({ peer, onBack, formerMp }) {
                   ) : (
                     "Wikipedia"
                   )}
-                  , not the official Parliament record — not independently verified.
+                  , not the official Parliament record, not independently verified.
                 </div>
               </>
             ) : peer.biography ? (
@@ -233,7 +233,7 @@ function PeerDetail({ peer, onBack, formerMp }) {
                       </div>
                       <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 3 }}>
                         {m.department ? `${m.department} · ` : ""}
-                        {formatDate(m.startDate)} – {m.endDate ? formatDate(m.endDate) : "present"}
+                        {formatDate(m.startDate)} to {m.endDate ? formatDate(m.endDate) : "present"}
                       </div>
                     </div>
                   </div>
@@ -261,7 +261,7 @@ function PeerDetail({ peer, onBack, formerMp }) {
                         )}
                       </div>
                       <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 3 }}>
-                        {formatDate(c.startDate)} – {c.endDate ? formatDate(c.endDate) : "present"}
+                        {formatDate(c.startDate)} to {c.endDate ? formatDate(c.endDate) : "present"}
                       </div>
                     </div>
                   </div>
@@ -274,7 +274,7 @@ function PeerDetail({ peer, onBack, formerMp }) {
             <CardShell title="Recent Parliamentary Activity">
               <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginBottom: 14, lineHeight: 1.5 }}>
                 Their most recent debate contributions and written questions, from Hansard and the official record. Not a
-                voting record or attendance figure — neither is published for the Lords.
+                voting record or attendance figure: neither is published for the Lords.
               </div>
 
               {peer.recent_activity.contributions?.length > 0 && (
@@ -445,7 +445,7 @@ export default function HouseOfLords({ peerId = null }) {
           politicians={peers}
           onSelectParty={(name) => withScrollPreserved(() => setActiveParty(name))}
           heading="The Lords, seat by seat"
-          subtitle="Every current peer, coloured by party — hover a party below to pick it out, or tap one to filter the list."
+          subtitle="Every current peer, coloured by party. Hover a party below to pick it out, or tap one to filter the list."
           noPartyLabel="Crossbench"
           legendCount={10}
           maxWidth={480}

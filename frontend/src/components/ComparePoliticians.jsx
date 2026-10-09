@@ -226,7 +226,7 @@ function MpHeaderCard({ politician, color, onRemove }) {
         </button>
       </div>
       <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${COLORS.hairline}`, display: "flex", flexDirection: "column", gap: 8 }}>
-        <MiniField label="Constituency" value={politician.constituency ?? "—"} />
+        <MiniField label="Constituency" value={politician.constituency ?? "n/a"} />
         <MiniField label="Government role" value={politician.cabinet_role ?? "Backbencher"} />
       </div>
     </motion.div>
@@ -289,7 +289,7 @@ function SectorBreakdown({ politician, color, sectors }) {
   return (
     <div style={{ border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 14, background: COLORS.paper, minWidth: 0 }}>
       <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12, color, marginBottom: 8, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-        {politician.name} — funding by sector
+        {politician.name}, funding by sector
       </div>
       {sectors.length === 0 ? (
         <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>No sector-matched donations found.</div>
@@ -509,7 +509,7 @@ export default function ComparePoliticians() {
             />
             <MoneyMetricGroup
               title={<><GlossaryTerm term="IPSA">IPSA</GlossaryTerm> business costs claimed</>}
-              description="Staffing, travel, accommodation and office running costs claimed through IPSA — separate from personal donations, in the most recent reported year for each MP."
+              description="Staffing, travel, accommodation and office running costs claimed through IPSA, separate from personal donations, in the most recent reported year for each MP."
               rows={selected.map((p, i) => ({
                 name: p.name, color: colorFor(p, i), value: p.ipsa_expenses?.total ?? 0,
                 formatted: `£${Math.round(p.ipsa_expenses?.total ?? 0).toLocaleString()}`,
@@ -527,7 +527,7 @@ export default function ComparePoliticians() {
             <SectionTitle icon={IconVote} color="#5A7FA6">Recent votes</SectionTitle>
             <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginBottom: 14, lineHeight: 1.5 }}>
               {selected.length >= 2
-                ? "The most recent Commons divisions where every selected MP has a recorded vote, so you can see whether they actually agreed — tap any row for the full detail."
+                ? "The most recent Commons divisions where every selected MP has a recorded vote, so you can see whether they actually agreed. Tap any row for the full detail."
                 : "Their most recent recorded Commons votes. Add a second MP above to see whether they'd have agreed."}
             </div>
             {voteComparisons.length === 0 ? (

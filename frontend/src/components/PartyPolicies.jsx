@@ -137,7 +137,7 @@ export default function PartyPolicies() {
                     color: party.color, marginTop: 18, padding: "6px 12px", borderRadius: 999, background: `${party.color}14`,
                   }}
                 >
-                  {manifesto ? "View full details" : "Search official sources"} <span aria-hidden>→</span>
+                  {manifesto ? "View full details" : "Search official sources"}
                 </div>
               </motion.div>
             );
@@ -234,7 +234,7 @@ export default function PartyPolicies() {
                       <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 8, lineHeight: 1.5 }}>
                         This is our own objective summary of {expandedManifesto.shortName}'s {expandedManifesto.manifestoYear} general
                         election manifesto, not the original text. Policy positions can change once a party is in government or as events
-                        unfold — check the link above for the party's current official position.
+                        unfold. Check the link above for the party's current official position.
                       </div>
                     </div>
                   </>

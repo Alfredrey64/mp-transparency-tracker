@@ -177,7 +177,7 @@ export default function PartyFinances() {
               </motion.div>
             ))}
             {stats.parties.length === 0 && (
-              <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>No data yet — check back after the next daily update.</div>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>No data yet. Check back after the next daily update.</div>
             )}
           </div>
         </div>
@@ -188,7 +188,7 @@ export default function PartyFinances() {
           </div>
           <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 12 }}>
             {stats.totalValue > 0
-              ? `£${Math.round(stats.taggedValue).toLocaleString()} of £${Math.round(stats.totalValue).toLocaleString()} confidently matched to an industry (${taggedPct}%) — the rest is named individuals or unidentifiable donors.`
+              ? `£${Math.round(stats.taggedValue).toLocaleString()} of £${Math.round(stats.totalValue).toLocaleString()} confidently matched to an industry (${taggedPct}%): the rest is named individuals or unidentifiable donors.`
               : "Across all parties, where confidently identifiable"}
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -229,7 +229,7 @@ export default function PartyFinances() {
         }}
       >
         <strong style={{ color: COLORS.ink }}>Missing a donation you saw in the news?</strong> Parties file quarterly,
-        with up to 20 working days after the quarter ends — so recent press reports can lag the official register by
+        with up to 20 working days after the quarter ends, so recent press reports can lag the official register by
         a few months. That's a gap in the reporting timeline, not in this site's data; it's picked up automatically
         once filed.
       </div>
@@ -386,24 +386,23 @@ function PartyFinanceRulesSection() {
         How Party Funding Is Actually Regulated
       </h2>
       <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 18, maxWidth: 760 }}>
-        A quick, straightforward guide to the rules behind the numbers below — set out in the Political Parties,
+        A quick, straightforward guide to the rules behind the numbers below, set out in the Political Parties,
         Elections and Referendums Act 2000 (as amended), and enforced by the Electoral Commission.
       </p>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))", gap: 16 }}>
         <RuleCard title="What counts as a reportable donation">
           <RuleBullet>
-            Cash, gifts, loans on non-commercial terms, sponsorship, and free or discounted services all count —
-            not just cheques.
+            Cash, gifts, loans on non-commercial terms, sponsorship, and free or discounted services all count, not just cheques.
           </RuleBullet>
           <RuleBullet>
             A party has to report any single donation over <strong style={{ color: COLORS.ink }}>£11,180</strong> to
             its central organisation, or <strong style={{ color: COLORS.ink }}>£2,230</strong> to one of its local
-            accounting units (a constituency association, for example) — thresholds set well below what MPs
+            accounting units (a constituency association, for example), thresholds set well below what MPs
             themselves have to declare.
           </RuleBullet>
           <RuleBullet>
             Reports go to the Electoral Commission quarterly in normal times, and weekly during the run-up to an
-            election — which is why donation activity often spikes sharply just before one.
+            election, which is why donation activity often spikes sharply just before one.
           </RuleBullet>
         </RuleCard>
 
@@ -413,7 +412,7 @@ function PartyFinanceRulesSection() {
             unions, and a handful of other UK-based organisations.
           </RuleBullet>
           <RuleBullet>
-            Foreign money and anonymous donations are banned outright — a party that accepts one is legally required
+            Foreign money and anonymous donations are banned outright: a party that accepts one is legally required
             to hand it back or forfeit it to the Treasury.
           </RuleBullet>
           <RuleBullet>
@@ -424,7 +423,7 @@ function PartyFinanceRulesSection() {
 
         <RuleCard title={'Not every "donor" below is a donor'}>
           <RuleBullet>
-            Entries like "House of Commons" or "Electoral Commission" aren't gifts from a person or company — they're{" "}
+            Entries like "House of Commons" or "Electoral Commission" aren't gifts from a person or company, they're{" "}
             <strong style={{ color: COLORS.ink }}>Short Money</strong> and{" "}
             <strong style={{ color: COLORS.ink }}>Policy Development Grants</strong>, state funding Parliament pays
             opposition parties to do their job.

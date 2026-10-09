@@ -36,7 +36,7 @@ const PARTY_HISTORY = [
     founded: 1900,
     ideology: "Centre-left · Social democracy",
     dbMatch: ["labour"],
-    text: "Founded in 1900 as the Labour Representation Committee — a coalition of trade unions and socialist societies aiming to get working-class representatives into Parliament. Renamed the Labour Party in 1906.",
+    text: "Founded in 1900 as the Labour Representation Committee: a coalition of trade unions and socialist societies aiming to get working-class representatives into Parliament. Renamed the Labour Party in 1906.",
     lineage: [
       { label: "Labour Representation Committee", year: "1900" },
       { label: "Labour Party", year: "1906" },
@@ -44,7 +44,7 @@ const PARTY_HISTORY = [
     timeline: [
       { year: 1900, event: "Founded as the Labour Representation Committee" },
       { year: 1924, event: "Forms its first (minority) government, under Ramsay MacDonald" },
-      { year: 1945, event: "First majority government, under Clement Attlee — creates the NHS and the modern welfare state" },
+      { year: 1945, event: "First majority government, under Clement Attlee, creates the NHS and the modern welfare state" },
       { year: 1997, event: "Landslide win under Tony Blair ends 18 years of Conservative government" },
       { year: 2024, event: "Returns to power in a landslide, under Keir Starmer" },
     ],
@@ -56,7 +56,7 @@ const PARTY_HISTORY = [
     founded: 1834,
     ideology: "Centre-right · Conservatism",
     dbMatch: ["conservative"],
-    text: "Traces its roots to the Tory party of the 18th century, formally reorganised as the Conservative Party under Robert Peel in the 1830s — the oldest political party in the UK still in continuous existence.",
+    text: "Traces its roots to the Tory party of the 18th century, formally reorganised as the Conservative Party under Robert Peel in the 1830s: the oldest political party in the UK still in continuous existence.",
     lineage: [
       { label: "Tory Party", year: "18th c." },
       { label: "Conservative Party", year: "1834" },
@@ -75,7 +75,7 @@ const PARTY_HISTORY = [
     founded: 1988,
     ideology: "Centre · Liberalism",
     dbMatch: ["liberal democrat"],
-    text: "Formed in 1988 through the merger of the Liberal Party — descended from the Whigs, historically one of Britain's two dominant parties before Labour's rise — and the Social Democratic Party (SDP), which had broken away from Labour's right wing in 1981.",
+    text: "Formed in 1988 through the merger of the Liberal Party (descended from the Whigs, historically one of Britain's two dominant parties before Labour's rise) and the Social Democratic Party (SDP), which had broken away from Labour's right wing in 1981.",
     lineage: [
       { label: "Whigs", year: "18th c." },
       { label: "Liberal Party", year: "1859" },
@@ -106,7 +106,7 @@ const PARTY_HISTORY = [
       { year: 1934, event: "Founded from the merger of two Scottish nationalist groups" },
       { year: 1999, event: "The Scottish Parliament is established" },
       { year: 2007, event: "Forms its first Scottish government, under Alex Salmond" },
-      { year: 2014, event: "Scottish independence referendum — 55% vote to remain in the UK" },
+      { year: 2014, event: "Scottish independence referendum: 55% vote to remain in the UK" },
     ],
     leaders: ["Alex Salmond", "Nicola Sturgeon", "John Swinney"],
   },
@@ -223,7 +223,7 @@ const PARTY_HISTORY = [
     founded: 1905,
     ideology: "Centre-right · Unionism",
     dbMatch: ["ulster unionist"],
-    text: "The oldest political party in Northern Ireland, tracing back to the Irish Unionist movement of the late 19th and early 20th centuries — historically the dominant unionist party before the rise of the DUP.",
+    text: "The oldest political party in Northern Ireland, tracing back to the Irish Unionist movement of the late 19th and early 20th centuries, historically the dominant unionist party before the rise of the DUP.",
     lineage: [
       { label: "Irish Unionist Alliance", year: "1891" },
       { label: "Ulster Unionist Party", year: "1905" },

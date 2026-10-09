@@ -117,13 +117,13 @@ Object.assign(PAGE_TITLES, {
 
 function titleForState(view, selected, param) {
   const base = "UK Parliament Tracker";
-  if (selected) return `${selected.name} — ${base}`;
-  if (view === "numbers" && param === "lords") return `Parliament in Numbers: the Lords — ${base}`;
+  if (selected) return `${selected.name} | ${base}`;
+  if (view === "numbers" && param === "lords") return `Parliament in Numbers: the Lords | ${base}`;
   // For the Lords the parameter is a peer's id, which makes a poor title.
-  if (param && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view) && view !== "regions" && view !== "answers" && view !== "deprivation" && view !== "compareSeats") return `${param} — ${PAGE_TITLES[view] ?? base} — ${base}`;
+  if (param && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view) && view !== "regions" && view !== "answers" && view !== "deprivation" && view !== "compareSeats") return `${param} | ${PAGE_TITLES[view] ?? base} | ${base}`;
   if (view === "home") return base;
   const label = PAGE_TITLES[view];
-  return label ? `${label} — ${base}` : base;
+  return label ? `${label} | ${base}` : base;
 }
 
 // A minimal hash router — no react-router dependency needed for a flat set

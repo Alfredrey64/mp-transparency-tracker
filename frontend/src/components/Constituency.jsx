@@ -107,7 +107,7 @@ function SeatHero({ record, mpInfo, safety, onOpenProfile, opening }) {
             disabled={opening}
             style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 700, color: "#fff", background: COLORS.accent, border: "none", borderRadius: 999, padding: "10px 18px", cursor: "pointer" }}
           >
-            {opening ? "Opening…" : "See their full record →"}
+            {opening ? "Opening…" : "See their full record"}
           </button>
         </div>
 

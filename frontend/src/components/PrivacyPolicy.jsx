@@ -20,7 +20,7 @@ export default function PrivacyPolicy({ onNavigate }) {
         <Section title="The short version">
           This site does not have user accounts, does not ask you to log in, and does not collect names, emails, or
           payment details from visitors. It's a read-only tool for browsing public UK Parliament data. The "personal
-          data" you'll see on this site is about Members of Parliament — public figures acting in their public role,
+          data" you'll see on this site is about Members of Parliament, public figures acting in their public role,
           published under the UK Parliament's own official registers.
         </Section>
 
@@ -29,7 +29,7 @@ export default function PrivacyPolicy({ onNavigate }) {
             <li style={{ marginBottom: 8 }}>No analytics, advertising, or tracking scripts.</li>
             <li style={{ marginBottom: 8 }}>No cookies used for tracking or advertising.</li>
             <li style={{ marginBottom: 8 }}>No account creation, sign-in, or password storage.</li>
-            <li>No sale or sharing of visitor data — there isn't any to sell.</li>
+            <li>No sale or sharing of visitor data. There isn't any to sell.</li>
           </ul>
         </Section>
 
@@ -42,7 +42,7 @@ export default function PrivacyPolicy({ onNavigate }) {
             <li style={{ marginBottom: 8 }}>
               <strong style={{ color: COLORS.ink }}>Standard web infrastructure:</strong> like any website, the
               hosting provider and font provider (Google Fonts) may log basic technical request data (such as IP
-              address) as part of normal web delivery — this site doesn't request or process that data itself.
+              address) as part of normal web delivery. This site doesn't request or process that data itself.
             </li>
           </ul>
         </Section>
@@ -56,7 +56,7 @@ export default function PrivacyPolicy({ onNavigate }) {
 
         <Section title="Third-party links">
           This site links out to official sources (parliament.uk, Companies House, news outlets, and similar) for
-          verification. Once you follow a link, that site's own privacy policy applies — we have no control over
+          verification. Once you follow a link, that site's own privacy policy applies. We have no control over
           external sites.
         </Section>
 

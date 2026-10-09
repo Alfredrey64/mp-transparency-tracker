@@ -80,16 +80,16 @@ function historicPartyColor(party) {
 // Short lineage notes for every party label that appears in GOVERNMENTS —
 // used to add context when a government entry is expanded.
 const PARTY_LINEAGE = {
-  Whig: "Whigs were the dominant party of the 18th and early 19th centuries — the direct ancestor of the Liberal Party, and via it, today's Liberal Democrats.",
+  Whig: "Whigs were the dominant party of the 18th and early 19th centuries: the direct ancestor of the Liberal Party, and via it, today's Liberal Democrats.",
   Tory: "Tories were the 18th-century ancestor of today's Conservative Party, formally reorganised under that name in the 1830s.",
-  Conservative: "Traces back to the Tories, reorganised as the Conservative Party under Robert Peel in the 1830s — still the party's name today.",
+  Conservative: "Traces back to the Tories, reorganised as the Conservative Party under Robert Peel in the 1830s, still the party's name today.",
   "Conservative (Coalition)": "The Conservative Party leading a coalition government, governing jointly with another party rather than alone.",
   Liberal: "Formed from an 1859 merger of Whigs, Peelites and Radicals. Eclipsed by Labour after 1918, and merged with the SDP in 1988 to form the Liberal Democrats.",
   "Liberal (Coalition)": "The Liberal Party leading a wartime coalition government, governing jointly with Conservative and Labour ministers.",
   Peelite: "Followers of Robert Peel who split from the Conservatives over the 1846 repeal of the Corn Laws. Most later joined the Liberal Party.",
   Coalition: "A temporary alliance between parties formed to govern together, not a permanent party in its own right.",
   "National Government": "A cross-party coalition formed to handle a national economic crisis, drawing ministers from Labour, Conservative and Liberal ranks.",
-  Labour: "Founded in 1900 as the Labour Representation Committee, becoming the Labour Party in 1906 — Britain's main party of the left ever since.",
+  Labour: "Founded in 1900 as the Labour Representation Committee, becoming the Labour Party in 1906, Britain's main party of the left ever since.",
 };
 
 const SORTED_GOVERNMENTS = [...GOVERNMENTS].sort((a, b) => a.year - b.year);
@@ -364,7 +364,7 @@ function BillEntry({ entry, index }) {
               </div>
               {!gov ? (
                 <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, lineHeight: 1.55 }}>
-                  This predates Robert Walpole's 1721 premiership — the office of Prime Minister didn't exist yet.
+                  This predates Robert Walpole's 1721 premiership: the office of Prime Minister didn't exist yet.
                 </div>
               ) : (
               <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
@@ -531,7 +531,7 @@ export default function Timeline() {
           >
             <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
               <span style={{ width: 12, height: 12, borderRadius: 3, background: `${COLORS.accent}20`, border: `1px solid ${COLORS.accent}` }} />
-              New government — click to expand
+              New government. Click to expand
             </span>
             <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
               <span style={{ width: 3, height: 12, borderRadius: 2, background: OUTCOME_COLOR.achieved }} />
@@ -569,7 +569,7 @@ export default function Timeline() {
       {tab === "pms" && (
         <>
           <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.6, margin: "24px 0 24px" }}>
-            All {SORTED_GOVERNMENTS.length} government formations since Robert Walpole in 1721 — click any Prime Minister for their party's lineage and the landmark bills passed on their watch.
+            All {SORTED_GOVERNMENTS.length} government formations since Robert Walpole in 1721. Click any Prime Minister for their party's lineage and the landmark bills passed on their watch.
           </div>
 
           <div style={{ position: "sticky", top: 0, zIndex: 5, background: COLORS.paper, paddingTop: 14, paddingBottom: 16, marginBottom: 16 }}>

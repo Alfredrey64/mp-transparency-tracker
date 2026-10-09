@@ -76,16 +76,16 @@ const REGISTERED_BENEFITS = [
     group: "APPG on Defence Technology",
     color: "#B5533C",
     detail:
-      "Its secretariat took funding from RUK Advanced Systems Limited — a UK subsidiary of the Israeli arms manufacturer Rafael — without properly registering the arrangement. The Parliamentary Commissioner for Standards opened an investigation into the funding, and the group shut itself down in September 2025 rather than continue.",
+      "Its secretariat took funding from RUK Advanced Systems Limited, a UK subsidiary of the Israeli arms manufacturer Rafael, without properly registering the arrangement. The Parliamentary Commissioner for Standards opened an investigation into the funding, and the group shut itself down in September 2025 rather than continue.",
     sourceUrl: "https://www.thebureauinvestigates.com/stories/2025-09-05/appg-shuts-down-while-under-investigation-over-israeli-arms-funding",
     members: null,
-    note: "Wound up in September 2025 — no longer on the current register.",
+    note: "Wound up in September 2025: no longer on the current register.",
   },
   {
     group: "Scotch Whisky APPG",
     color: "#9C6B30",
     detail:
-      "Its secretariat is run directly by the Scotch Whisky Association — the industry's own trade body — rather than an independent third party, a common pattern for single-industry APPGs.",
+      "Its secretariat is run directly by the Scotch Whisky Association, the industry's own trade body, rather than an independent third party, a common pattern for single-industry APPGs.",
     sourceUrl: "https://publications.parliament.uk/pa/cm/cmallparty/251201/scotch-whisky.htm",
     members: [
       { name: "Wendy Chamberlain MP", party: "Liberal Democrat", role: "chair" },
@@ -114,7 +114,7 @@ const APPG_EXAMPLES = [
     name: "APPG on the Less Survivable Cancers",
     tag: "Health",
     color: "#B5533C",
-    desc: "Campaigns for the cancers with the lowest survival rates — brain, liver, lung, pancreatic, oesophageal, and stomach — which between them get a fraction of the research funding and public attention that more survivable cancers receive.",
+    desc: "Campaigns for the cancers with the lowest survival rates (brain, liver, lung, pancreatic, oesophageal, and stomach) which between them get a fraction of the research funding and public attention that more survivable cancers receive.",
     secretariat: "Run day-to-day by Pancreatic Cancer UK, via the Less Survivable Cancers Taskforce.",
     members: [
       { name: "Paulette Hamilton MP", party: "Labour", role: "chair" },
@@ -126,7 +126,7 @@ const APPG_EXAMPLES = [
     name: "All-Party Parliamentary Group for Video Games and Esports",
     tag: "Industry",
     color: "#8A7A3D",
-    desc: "Works with the games and interactive entertainment industry to raise its profile in Parliament — one of the UK's biggest creative exports, but one MPs rarely discuss compared with film or music.",
+    desc: "Works with the games and interactive entertainment industry to raise its profile in Parliament: one of the UK's biggest creative exports, but one MPs rarely discuss compared with film or music.",
     secretariat: "Its administration is provided by UK Interactive Entertainment (Ukie), the industry's trade body.",
     members: [
       { name: "Charlotte Nichols MP", party: "Labour", role: "chair" },
@@ -162,7 +162,7 @@ const APPG_EXAMPLES = [
     name: "All-Party Parliamentary Group on Artificial Intelligence",
     tag: "Technology",
     color: "#4C7A6B",
-    desc: "Examines how AI is developed and regulated in the UK — bringing together parliamentarians, academics, and industry to look at both the opportunities and the risks as the technology moves fast and policy tries to keep up.",
+    desc: "Examines how AI is developed and regulated in the UK, bringing together parliamentarians, academics, and industry to look at both the opportunities and the risks as the technology moves fast and policy tries to keep up.",
     secretariat: "Run by the Big Innovation Centre, whose funders for this group include Deloitte, EY, BT Group, and Santander among others.",
     members: [
       { name: "Dr Allison Gardner MP", party: "Labour", role: "chair" },
@@ -174,7 +174,7 @@ const APPG_EXAMPLES = [
     name: "All-Party Parliamentary Group for Chess",
     tag: "Culture",
     color: "#B0508A",
-    desc: "One of the more light-hearted examples — promotes chess in education and community life, and celebrates the game's role in the UK. A reminder that not every APPG is about heavyweight policy.",
+    desc: "One of the more light-hearted examples, promotes chess in education and community life, and celebrates the game's role in the UK. A reminder that not every APPG is about heavyweight policy.",
     secretariat: "Supported by Chess in Schools and Communities, an education charity.",
     members: [
       { name: "Neil Duncan-Jordan MP", party: "Labour", role: "chair" },
@@ -264,7 +264,7 @@ export default function AppgMemberships() {
           A Few Real Examples
         </h2>
         <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16 }}>
-          APPGs cover almost every topic imaginable — here's a small, varied sample.
+          APPGs cover almost every topic imaginable, here's a small, varied sample.
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))", gap: 14 }}>
           {APPG_EXAMPLES.map((group, i) => (
@@ -323,10 +323,10 @@ export default function AppgMemberships() {
       </div>
 
       <InfoCard title="Why this matters" color="#8A6D1F" index={1}>
-        Running a group takes staff and admin, and that support — called a "secretariat" — is very often
+        Running a group takes staff and admin, and that support, called a "secretariat", is very often
         provided by an outside organisation with a direct stake in the topic: a charity, a trade body, or
-        a public affairs firm working for an industry. That's not necessarily improper — it's how these
-        groups are usually formed — but it's a genuine, early signal of who an MP is working closely with,
+        a public affairs firm working for an industry. That's not necessarily improper. It's how these
+        groups are usually formed, but it's a genuine, early signal of who an MP is working closely with,
         often well before any formal donation would ever be declared elsewhere.
       </InfoCard>
 
@@ -360,7 +360,7 @@ export default function AppgMemberships() {
           Look Up Any MP's Memberships
         </h2>
         <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, color: COLORS.inkSoft, lineHeight: 1.6, marginTop: 0 }}>
-          The full official register is public and searchable — find any MP by name to see every group
+          The full official register is public and searchable. Find any MP by name to see every group
           they chair or belong to, and what funding each one has declared. It's updated every few weeks,
           so it's always the most current source.
         </p>

@@ -85,7 +85,7 @@ const OUTLETS = [
   {
     name: "BBC",
     color: "#5A7FA6",
-    funding: "The TV licence fee — a statutory charge on households, set by government but collected independently.",
+    funding: "The TV licence fee: a statutory charge on households, set by government but collected independently.",
     ownership: "A public corporation operating under a Royal Charter, not owned by shareholders or the state directly.",
     regulator: "Regulated by Ofcom for due impartiality since 2017 (previously self-regulated under its own Charter).",
   },
@@ -93,29 +93,29 @@ const OUTLETS = [
     name: "ITV",
     color: "#9C6B30",
     funding: "Commercial advertising revenue.",
-    ownership: "A publicly listed company (ITV plc) on the London Stock Exchange — owned by its shareholders.",
+    ownership: "A publicly listed company (ITV plc) on the London Stock Exchange, owned by its shareholders.",
     regulator: "Regulated by Ofcom for due impartiality, like every UK broadcast news service.",
   },
   {
     name: "Channel 4",
     color: "#B5533C",
     funding: "Commercial advertising revenue, despite public ownership.",
-    ownership: "Publicly owned (a state-owned corporation) — the government considered privatising it in 2022 but reversed that decision in January 2023.",
+    ownership: "Publicly owned (a state-owned corporation): the government considered privatising it in 2022 but reversed that decision in January 2023.",
     regulator: "Regulated by Ofcom for due impartiality.",
   },
   {
     name: "Sky News",
     color: "#3F7D5C",
     funding: "Subscription and advertising revenue, cross-funded within the wider Sky/Comcast group.",
-    ownership: "Owned by Sky Group, itself owned by Comcast — a US media conglomerate — since 2018.",
+    ownership: "Owned by Sky Group, itself owned by Comcast, a US media conglomerate, since 2018.",
     regulator: "Regulated by Ofcom for due impartiality.",
   },
   {
     name: "GB News",
     color: "#6E4B6E",
     funding: "Commercial advertising and direct shareholder investment (it has reported significant losses since launch).",
-    ownership: "Privately owned — per Companies House filings, majority-owned by the investment firm Legatum Ventures and the financier Sir Paul Marshall (roughly 41% each), with smaller stakes held by staff and other investors.",
-    regulator: "Regulated by Ofcom for due impartiality — and has been found in breach of the Broadcasting Code on several occasions, including for sitting politicians hosting shows and interviewing ministers from their own party.",
+    ownership: "Privately owned, per Companies House filings, majority-owned by the investment firm Legatum Ventures and the financier Sir Paul Marshall (roughly 41% each), with smaller stakes held by staff and other investors.",
+    regulator: "Regulated by Ofcom for due impartiality, and has been found in breach of the Broadcasting Code on several occasions, including for sitting politicians hosting shows and interviewing ministers from their own party.",
   },
 ];
 
@@ -222,7 +222,7 @@ function ImpartialityQuiz() {
         Quick check: broadcast or print?
       </h2>
       <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 20, maxWidth: 560 }}>
-        Every one of these has a clear, factual regulatory status — no opinion required. Sort all eight to see if the
+        Every one of these has a clear, factual regulatory status: no opinion required. Sort all eight to see if the
         broadcast/print divide is as intuitive as it sounds.
       </p>
 
@@ -254,7 +254,7 @@ function ImpartialityQuiz() {
                     animate={{ opacity: 1, y: 0 }}
                     style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, marginTop: 10, color: feedback === "correct" ? "#3F7D5C" : "#9C3B3B" }}
                   >
-                    {feedback === "correct" ? "✓ Correct" : `✗ Actually ${current.answer === "broadcast" ? "a broadcaster — legally impartial" : "a newspaper — free to editorialise"}`}
+                    {feedback === "correct" ? "✓ Correct" : `✗ Actually ${current.answer === "broadcast" ? "a broadcaster, legally impartial" : "a newspaper, free to editorialise"}`}
                   </motion.div>
                 )}
               </div>
@@ -269,7 +269,7 @@ function ImpartialityQuiz() {
                     border: "none", borderRadius: 999, padding: "11px 22px", cursor: feedback ? "default" : "pointer", opacity: feedback ? 0.7 : 1,
                   }}
                 >
-                  Broadcaster — must be impartial
+                  Broadcaster, must be impartial
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: feedback ? 1 : 1.03 }}
@@ -281,7 +281,7 @@ function ImpartialityQuiz() {
                     border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: "11px 22px", cursor: feedback ? "default" : "pointer", opacity: feedback ? 0.7 : 1,
                   }}
                 >
-                  Newspaper — free to editorialise
+                  Newspaper, free to editorialise
                 </motion.button>
               </div>
             </motion.div>
@@ -296,8 +296,8 @@ function ImpartialityQuiz() {
               <div style={{ fontFamily: FONT_DISPLAY, fontSize: 32, color: COLORS.ink, marginBottom: 6 }}>{score} / {order.length}</div>
               <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginBottom: 18, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>
                 {score === order.length
-                  ? "The regulatory line tracks the medium, not the outlet's reputation — every TV and radio news service sits on one side of it, every newspaper on the other, regardless of who owns them or what they're known for."
-                  : "Ownership, funding, and popular reputation don't determine which side of the line an outlet sits on — only the medium does: broadcast, or print."}
+                  ? "The regulatory line tracks the medium, not the outlet's reputation: every TV and radio news service sits on one side of it, every newspaper on the other, regardless of who owns them or what they're known for."
+                  : "Ownership, funding, and popular reputation don't determine which side of the line an outlet sits on: only the medium does: broadcast, or print."}
               </div>
               <motion.button
                 whileHover={{ scale: 1.03 }}
@@ -323,19 +323,19 @@ const CODE_REQUIREMENTS = [
     title: "Due impartiality",
     color: "#5A7FA6",
     rule: "Broadcasting Code, Section 5",
-    body: "An \"appropriately wide range of significant views\" must be included and given \"due weight\" on any matter of political or industrial controversy, or current public policy — and the programme itself, not just the channel's output over time, has to achieve this on major matters. A broadcaster can't simply balance things out across a whole week; a single one-sided programme on a big issue can breach the rule on its own.",
+    body: "An \"appropriately wide range of significant views\" must be included and given \"due weight\" on any matter of political or industrial controversy, or current public policy, and the programme itself, not just the channel's output over time, has to achieve this on major matters. A broadcaster can't simply balance things out across a whole week; a single one-sided programme on a big issue can breach the rule on its own.",
   },
   {
     title: "Due accuracy",
     color: "#4C7A6B",
     rule: "Broadcasting Code, Section 5",
-    body: "Facts must be checked and significant errors corrected — \"due\" means accuracy appropriate to the subject and nature of the programme, so a throwaway aside is judged more lightly than a claim central to a news report. Material factual mistakes that could mislead audiences on matters of public importance have to be corrected, and correction has to be proportionate to how prominent the original error was.",
+    body: "Facts must be checked and significant errors corrected. \"Due\" means accuracy appropriate to the subject and nature of the programme, so a throwaway aside is judged more lightly than a claim central to a news report. Material factual mistakes that could mislead audiences on matters of public importance have to be corrected, and correction has to be proportionate to how prominent the original error was.",
   },
   {
     title: "No politicians as newsreaders or interviewers",
     color: "#9C6B30",
     rule: "Broadcasting Code, Section 5.3",
-    body: "A sitting politician cannot present, interview, or report in a news programme, and can only appear in other programming (chat shows, current affairs) if there's a clear editorial justification and — critically — their political allegiance is made clear to the audience. This is the rule GB News was found to have repeatedly breached by giving MPs their own shows.",
+    body: "A sitting politician cannot present, interview, or report in a news programme, and can only appear in other programming (chat shows, current affairs) if there's a clear editorial justification and, critically, their political allegiance is made clear to the audience. This is the rule GB News was found to have repeatedly breached by giving MPs their own shows.",
   },
   {
     title: "Fairness",
@@ -347,7 +347,7 @@ const CODE_REQUIREMENTS = [
     title: "Extra care at elections and referendums",
     color: "#6E4B6E",
     rule: "Broadcasting Code, Section 6",
-    body: "During an election or referendum period the impartiality duty tightens further — broadcasters must give due weight to all major parties and campaigns, and news coverage of constituency and electoral area campaigns comes with additional rules on candidate participation and airtime.",
+    body: "During an election or referendum period the impartiality duty tightens further, broadcasters must give due weight to all major parties and campaigns, and news coverage of constituency and electoral area campaigns comes with additional rules on candidate participation and airtime.",
   },
 ];
 
@@ -359,7 +359,7 @@ const REAL_CASES = [
     programme: "The Live Desk",
     verdict: "Breach",
     rule: "Due impartiality",
-    summary: "An episode endorsed and actively promoted a GB News-branded campaign — a petition to protect physical cash as legal tender until 2050 — including an on-screen QR code urging viewers to sign it. Ofcom found this crossed the line from reporting a story to campaigning on it, which due impartiality rules don't allow a broadcaster to do.",
+    summary: "An episode endorsed and actively promoted a GB News-branded campaign (a petition to protect physical cash as legal tender until 2050) including an on-screen QR code urging viewers to sign it. Ofcom found this crossed the line from reporting a story to campaigning on it, which due impartiality rules don't allow a broadcaster to do.",
   },
   {
     outlet: "GB News",
@@ -368,7 +368,7 @@ const REAL_CASES = [
     programme: "State of the Nation; Friday & Saturday Morning with Esther and Phil",
     verdict: "Breach",
     rule: "Politicians as presenters",
-    summary: "Sitting Conservative MP Jacob Rees-Mogg presented his own show, and fellow Conservative MPs Esther McVey and Philip Davies co-hosted a weekend programme on which they interviewed Chancellor Jeremy Hunt — also Conservative — ahead of the spring budget, drawing 45 complaints. Ofcom ruled this breached the ban on politicians acting as newsreaders or interviewers, and put GB News on notice that further breaches could trigger a statutory sanction.",
+    summary: "Sitting Conservative MP Jacob Rees-Mogg presented his own show, and fellow Conservative MPs Esther McVey and Philip Davies co-hosted a weekend programme on which they interviewed Chancellor Jeremy Hunt, also Conservative, ahead of the spring budget, drawing 45 complaints. Ofcom ruled this breached the ban on politicians acting as newsreaders or interviewers, and put GB News on notice that further breaches could trigger a statutory sanction.",
   },
   {
     outlet: "GB News",
@@ -386,7 +386,7 @@ const REAL_CASES = [
     programme: "The World at One (BBC Radio 4)",
     verdict: "Breach",
     rule: "Due impartiality",
-    summary: "Coverage of the dispute between Alex Salmond and the Scottish Government over harassment complaints included an interview with Baroness Ruth Davidson giving strongly critical views, without due weight given to alternative perspectives on a matter of intense, live political controversy. Ofcom found this a breach — a reminder that the impartiality duty applies to the BBC exactly as it does to any commercial broadcaster.",
+    summary: "Coverage of the dispute between Alex Salmond and the Scottish Government over harassment complaints included an interview with Baroness Ruth Davidson giving strongly critical views, without due weight given to alternative perspectives on a matter of intense, live political controversy. Ofcom found this a breach: a reminder that the impartiality duty applies to the BBC exactly as it does to any commercial broadcaster.",
   },
   {
     outlet: "BBC",
@@ -395,14 +395,14 @@ const REAL_CASES = [
     programme: "News coverage of a London antisemitic incident",
     verdict: "Fell short",
     rule: "Due accuracy",
-    summary: "The BBC reported a disputed interpretation of an audio recording without making clear, promptly enough, that its meaning was contested. Ofcom identified \"significant editorial failings\" here — but, unlike the cases above, did not find an actual Code breach. It's a more nuanced example: coverage can fall short of best practice without crossing the regulatory line.",
+    summary: "The BBC reported a disputed interpretation of an audio recording without making clear, promptly enough, that its meaning was contested. Ofcom identified \"significant editorial failings\" here, but, unlike the cases above, did not find an actual Code breach. It's a more nuanced example: coverage can fall short of best practice without crossing the regulatory line.",
   },
 ];
 
 const VERDICT_STYLES = {
   Breach: { label: "Ruled a breach", color: "#9C3B3B" },
   Overturned: { label: "Overturned on appeal", color: "#4C7A6B" },
-  "Fell short": { label: "Fell short — not a breach", color: "#9C6B30" },
+  "Fell short": { label: "Fell short, not a breach", color: "#9C6B30" },
 };
 
 function CaseCard({ item, index }) {
@@ -479,7 +479,7 @@ export default function MediaLiteracy() {
           <IconBook size={17} />
         </div>
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.6 }}>
-          <strong>Why this matters:</strong> what you watch shapes what you think is normal, urgent, or true — and
+          <strong>Why this matters:</strong> what you watch shapes what you think is normal, urgent, or true, and
           most people can't name which outlets are legally required to be impartial and which are free to campaign.
           Knowing the difference is the first step to reading any story with the right amount of trust.
         </div>
@@ -490,11 +490,11 @@ export default function MediaLiteracy() {
           UK television and radio news is legally required to be impartial. Ofcom's Broadcasting Code sets out a "due
           impartiality" rule: broadcasters must give an appropriately wide range of significant views due weight on
           matters of political controversy, and can't take an editorial side. This applies equally to the BBC, ITV, Sky
-          News, Channel 4, and GB News — public or private, licence-fee-funded or commercial makes no difference.
+          News, Channel 4, and GB News, public or private, licence-fee-funded or commercial makes no difference.
         </p>
         <p style={{ marginBottom: 0 }}>
           Newspapers and news websites have no equivalent legal duty. They're free to editorialise, endorse a party at
-          an election, and run an openly partisan front page — which is exactly why a paper's political lean is
+          an election, and run an openly partisan front page, which is exactly why a paper's political lean is
           common knowledge in a way a broadcaster's legally isn't supposed to be.
         </p>
       </InfoCard>
@@ -504,7 +504,7 @@ export default function MediaLiteracy() {
           What the Broadcasting Code actually requires
         </h2>
         <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16 }}>
-          "Due impartiality" isn't just a slogan — it's a specific set of rules Ofcom enforces, with real cases
+          "Due impartiality" isn't just a slogan. It's a specific set of rules Ofcom enforces, with real cases
           testing where the line falls. Here's what it breaks down into.
         </p>
         <div className="box-row" style={{ "--n": 3, "--min": "250px" }}>
@@ -532,7 +532,7 @@ export default function MediaLiteracy() {
       <div style={{ marginBottom: 32 }}>
         <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>Who owns and funds each broadcaster</h2>
         <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16, maxWidth: 760 }}>
-          Ownership and funding model are matters of public record, not opinion — worth knowing before you judge a
+          Ownership and funding model are matters of public record, not opinion, worth knowing before you judge a
           broadcaster's coverage of anything, including its own owners' interests. Tap a card for the detail.
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))", gap: 16 }}>
@@ -565,7 +565,7 @@ export default function MediaLiteracy() {
 
       <InfoCard title="Where to find the official rulings" color="#3F7D5C" index={2}>
         <p style={{ marginTop: 0 }}>
-          Rather than trust anyone's scorecard — including any you find elsewhere — Ofcom itself publishes every
+          Rather than trust anyone's scorecard, including any you find elsewhere, Ofcom itself publishes every
           impartiality complaint it upholds, with its full written reasoning, in its weekly Broadcast and On Demand
           Bulletin. It's slower and less satisfying than a single number, but it's the actual adjudication, not a guess.
         </p>
@@ -584,17 +584,17 @@ export default function MediaLiteracy() {
             <a href="https://www.lboro.ac.uk/research/crcc/" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
               Loughborough University's Centre for Research in Communication and Culture ↗
             </a>{" "}
-            — independent academics who quantitatively track UK election TV and press coverage, rather than assert a verdict.
+           , independent academics who quantitatively track UK election TV and press coverage, rather than assert a verdict.
           </li>
         </ul>
       </InfoCard>
 
       <InfoCard title="Reading any outlet critically" color="#9C6B30" index={3}>
         <ul style={{ margin: 0, paddingLeft: 20 }}>
-          <li style={{ marginBottom: 8 }}>Separate news reporting from opinion/comment sections — outlets label these differently, and the impartiality rules above apply far more strictly to the former.</li>
-          <li style={{ marginBottom: 8 }}>Check who's speaking, not just what's said — a guest's job title or affiliation (a <GlossaryTerm term="Think Tank">think tank</GlossaryTerm>, a trade body, a party) tells you their starting position.</li>
-          <li style={{ marginBottom: 8 }}>A single outlet's framing of a story is one angle — cross-checking a second, differently-owned outlet is the cheapest way to spot what's been left out.</li>
-          <li>For anything on this site specifically — donations, votes, interests — you don't need to trust anyone's framing at all: every figure links to the original official document.</li>
+          <li style={{ marginBottom: 8 }}>Separate news reporting from opinion/comment sections, outlets label these differently, and the impartiality rules above apply far more strictly to the former.</li>
+          <li style={{ marginBottom: 8 }}>Check who's speaking, not just what's said: a guest's job title or affiliation (a <GlossaryTerm term="Think Tank">think tank</GlossaryTerm>, a trade body, a party) tells you their starting position.</li>
+          <li style={{ marginBottom: 8 }}>A single outlet's framing of a story is one angle, cross-checking a second, differently-owned outlet is the cheapest way to spot what's been left out.</li>
+          <li>For anything on this site specifically (donations, votes, interests) you don't need to trust anyone's framing at all: every figure links to the original official document.</li>
         </ul>
       </InfoCard>
       </div>

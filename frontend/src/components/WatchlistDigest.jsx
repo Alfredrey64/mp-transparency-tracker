@@ -45,7 +45,7 @@ function WatchlistEntryCard({ entry, onSelectPolitician }) {
               {interests.map((it, i) => (
                 <div key={i} style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, marginBottom: 4, lineHeight: 1.5 }}>
                   {it.donor_name}
-                  {it.value_amount ? <> — £{Math.round(it.value_amount).toLocaleString()}</> : ""}
+                  {it.value_amount ? <>, £{Math.round(it.value_amount).toLocaleString()}</> : ""}
                   <span style={{ color: COLORS.inkSoft, fontSize: 11.5 }}> · {formatDate(it.date_registered)}</span>
                 </div>
               ))}
@@ -148,7 +148,7 @@ export default function WatchlistDigest({ onSelectPolitician }) {
         title="What's changed for MPs you follow"
         subtitle={
           watchlist.length === 0
-            ? "You're not following any MPs yet — tap the star on an MP's profile to add them here."
+            ? "You're not following any MPs yet. Tap the star on an MP's profile to add them here."
             : `New declared interests, votes against their own party, and news mentions since ${
                 previousCheck ? formatDate(new Date(previousCheck).toISOString()) : "you started following them"
               }, for the ${watchlist.length} MP${watchlist.length === 1 ? "" : "s"} you follow.`
@@ -157,8 +157,8 @@ export default function WatchlistDigest({ onSelectPolitician }) {
 
       {watchlist.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 20, lineHeight: 1.6, maxWidth: 560 }}>
-          Nothing to show yet. Visit any MP's profile and tap the star next to their name to start following them —
-          come back to this page any time to see what's changed since your last visit. This list lives only in this
+          Nothing to show yet. Visit any MP's profile and tap the star next to their name to start following them.
+          Come back to this page any time to see what's changed since your last visit. This list lives only in this
           browser; there's no account and nothing is sent anywhere.
         </div>
       )}

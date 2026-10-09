@@ -13,11 +13,11 @@
 // it; a bill with no entry here just falls back to its own long_title.
 const BILL_DESCRIPTIONS = {
   "Health Bill":
-    "Restructures NHS oversight in England — folding NHS England's functions back into the Department of Health and Social Care directly, changing how Integrated Care Boards and foundation trusts operate, and updating patient safety, pharmacy regulation and medical device licensing rules.",
+    "Restructures NHS oversight in England, folding NHS England's functions back into the Department of Health and Social Care directly, changing how Integrated Care Boards and foundation trusts operate, and updating patient safety, pharmacy regulation and medical device licensing rules.",
   "Immigration and Asylum Bill":
-    "The government's main immigration and asylum legislation for the session — covering how asylum claims are processed, new enforcement powers against illegal working and smuggling, and protections for victims of modern slavery.",
+    "The government's main immigration and asylum legislation for the session, covering how asylum claims are processed, new enforcement powers against illegal working and smuggling, and protections for victims of modern slavery.",
   "Public Office (Accountability) Bill":
-    "Often called the 'Hillsborough Law' — creates a legal duty for public officials and public authorities to act with candour in inquiries and investigations, makes it a specific offence to knowingly mislead the public in that role, and replaces the old common-law offence of misconduct in public office with clearer statutory ones.",
+    "Often called the 'Hillsborough Law', creates a legal duty for public officials and public authorities to act with candour in inquiries and investigations, makes it a specific offence to knowingly mislead the public in that role, and replaces the old common-law offence of misconduct in public office with clearer statutory ones.",
 };
 
 export function getBillDescription(shortTitle, fallback) {

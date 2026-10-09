@@ -162,7 +162,7 @@ export default function Petitions() {
       >
         Any UK citizen or resident can create or sign a <GlossaryTerm term="Petition">petition</GlossaryTerm> to Parliament. At <strong style={{ color: COLORS.ink }}>10,000 signatures</strong>,
         the government must respond in writing; at <strong style={{ color: COLORS.ink }}>100,000</strong>, it's considered for a
-        Commons debate — though a debate isn't guaranteed, and neither a response nor a debate changes the law by itself. Petitions run
+        Commons debate, though a debate isn't guaranteed, and neither a response nor a debate changes the law by itself. Petitions run
         for six months from opening, and each one is moderated before publication.
       </div>
 

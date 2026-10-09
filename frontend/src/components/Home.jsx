@@ -57,7 +57,7 @@ function WatchlistNote({ onNavigate }) {
         style={{ display: "flex", alignItems: "center", gap: 10, background: "#F2622A14", border: "1px solid #F2622A55", borderRadius: 999, padding: "9px 18px", cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink }}
       >
         <span style={{ minWidth: 22, height: 22, padding: "0 6px", boxSizing: "border-box", borderRadius: 999, background: "#F2622A", color: "#fff", fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>{watch.changes > 99 ? "99+" : watch.changes}</span>
-        New since you last looked, for the {watch.following} MP{watch.following === 1 ? "" : "s"} you follow →
+        New since you last looked, for the {watch.following} MP{watch.following === 1 ? "" : "s"} you follow
       </button>
     </div>
   );
@@ -339,14 +339,14 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
             </span>
             <span style={{ minWidth: 0 }}>
               <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: 16, fontWeight: 600, color: COLORS.ink }}>Never used this before?</span>
-              <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 1 }}>Take the five-minute guided tour →</span>
+              <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 1 }}>Take the five-minute guided tour</span>
             </span>
           </motion.button>
         </motion.div>
       </motion.div>
 
       {/* Latest activity: its own bordered rail, not squeezed beside the
-          hero — the centred masthead above is a single clear opening
+          hero: the centred masthead above is a single clear opening
           statement, and this ticker is a distinct, subsequent section. */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
@@ -708,7 +708,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                 )}
                 {onThisDay !== null && onThisDay.length === 0 && (
                   <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>
-                    Nothing notable turned up in Hansard for today's date — check back tomorrow.
+                    Nothing notable turned up in Hansard for today's date. Check back tomorrow.
                   </div>
                 )}
 

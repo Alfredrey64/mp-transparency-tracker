@@ -21,7 +21,7 @@ export const LANDMARK_VOTES = [
     title: "Representation of the People Act 1918",
     result: "Passed",
     outcome: "achieved",
-    detail: "Nearly tripled the electorate at a stroke — giving the vote to all men over 21 and, for the first time, to women over 30 who met a property qualification.",
+    detail: "Nearly tripled the electorate at a stroke, giving the vote to all men over 21 and, for the first time, to women over 30 who met a property qualification.",
   },
   {
     year: 1928,
@@ -30,7 +30,7 @@ export const LANDMARK_VOTES = [
     title: "Representation of the People (Equal Franchise) Act 1928",
     result: "Passed",
     outcome: "achieved",
-    detail: "Gave women the vote on exactly the same terms as men, at 21 — a decade after the partial, property-qualified franchise of 1918.",
+    detail: "Gave women the vote on exactly the same terms as men, at 21: a decade after the partial, property-qualified franchise of 1918.",
   },
   {
     year: 1965,
@@ -39,7 +39,7 @@ export const LANDMARK_VOTES = [
     title: "Murder (Abolition of Death Penalty) Act 1965",
     result: "Passed",
     outcome: "achieved",
-    detail: "Suspended the death penalty for murder in Great Britain, on a free vote rather than along party lines — made permanent by a further Commons vote in 1969.",
+    detail: "Suspended the death penalty for murder in Great Britain, on a free vote rather than along party lines, made permanent by a further Commons vote in 1969.",
   },
   {
     year: 1967,
@@ -66,13 +66,13 @@ export const LANDMARK_VOTES = [
     title: "Vote of No Confidence in the Callaghan Government",
     result: "Lost, 311 to 310",
     outcome: "not_kept",
-    detail: "The government lost by a single vote — the only UK government brought down by a Commons confidence vote since 1924. It triggered the general election that brought Margaret Thatcher to power.",
+    detail: "The government lost by a single vote: the only UK government brought down by a Commons confidence vote since 1924. It triggered the general election that brought Margaret Thatcher to power.",
   },
   {
     year: 2003,
     date: "18 March 2003",
     theme: "Foreign Policy & War",
-    title: "Iraq War — authorisation of military action",
+    title: "Iraq War, authorisation of military action",
     result: "Passed",
     outcome: "achieved",
     detail: "MPs voted to authorise military action in Iraq, after one of the largest backbench rebellions in Labour Party history against Tony Blair's own government.",
@@ -81,10 +81,10 @@ export const LANDMARK_VOTES = [
     year: 2004,
     date: "18 November 2004",
     theme: "Social Reform",
-    title: "Hunting Act — final Commons stages",
+    title: "Hunting Act, final Commons stages",
     result: "Passed",
     outcome: "achieved",
-    detail: "Banned hunting foxes, deer, and hares with dogs in England and Wales, after years of deadlock with the Lords — eventually forced through using the rarely-invoked Parliament Act.",
+    detail: "Banned hunting foxes, deer, and hares with dogs in England and Wales, after years of deadlock with the Lords, eventually forced through using the rarely-invoked Parliament Act.",
   },
   {
     year: 2011,
@@ -102,7 +102,7 @@ export const LANDMARK_VOTES = [
     title: "Marriage (Same Sex Couples) Bill, Second Reading",
     result: "Passed by a large majority",
     outcome: "achieved",
-    detail: "Legalised same-sex marriage in England and Wales, though the vote split the Conservative Party — more of its MPs voted against or abstained than voted in favour.",
+    detail: "Legalised same-sex marriage in England and Wales, though the vote split the Conservative Party: more of its MPs voted against or abstained than voted in favour.",
   },
   {
     year: 2013,
@@ -129,7 +129,7 @@ export const LANDMARK_VOTES = [
     title: "\"Meaningful Vote\" on Theresa May's Brexit Withdrawal Agreement",
     result: "Defeated, 432 to 202",
     outcome: "not_kept",
-    detail: "A margin of 230 votes — the largest government defeat in the history of the House of Commons.",
+    detail: "A margin of 230 votes: the largest government defeat in the history of the House of Commons.",
   },
   {
     year: 2019,
@@ -150,7 +150,7 @@ export const LANDMARK_VOTES = [
     title: "Importation Act 1846 (Repeal of the Corn Laws)",
     result: "Passed",
     outcome: "achieved",
-    detail: "Scrapped tariffs that had protected British agriculture, opening the country up to free trade in food. It split Robert Peel's own Conservative Party so badly that it fell from power within weeks — a rupture that shaped British party politics for a generation.",
+    detail: "Scrapped tariffs that had protected British agriculture, opening the country up to free trade in food. It split Robert Peel's own Conservative Party so badly that it fell from power within weeks: a rupture that shaped British party politics for a generation.",
   },
   {
     year: 1910,
@@ -168,7 +168,7 @@ export const LANDMARK_VOTES = [
     title: "Bank of England Act 1946",
     result: "Passed",
     outcome: "achieved",
-    detail: "Nationalised the Bank of England, bringing UK monetary policy directly under government control — the first of Clement Attlee's wave of post-war nationalisations.",
+    detail: "Nationalised the Bank of England, bringing UK monetary policy directly under government control: the first of Clement Attlee's wave of post-war nationalisations.",
   },
   {
     year: 1980,
@@ -177,7 +177,7 @@ export const LANDMARK_VOTES = [
     title: "Housing Act 1980 (Right to Buy)",
     result: "Passed",
     outcome: "achieved",
-    detail: "Gave council tenants the legal right to buy their home at a discount. Reshaped home ownership in Britain and remains one of the most consequential — and contested — economic policies of the Thatcher era.",
+    detail: "Gave council tenants the legal right to buy their home at a discount. Reshaped home ownership in Britain and remains one of the most consequential, and contested, economic policies of the Thatcher era.",
   },
   {
     year: 1998,
@@ -186,7 +186,7 @@ export const LANDMARK_VOTES = [
     title: "Bank of England Act 1998",
     result: "Passed",
     outcome: "achieved",
-    detail: "Gave the Bank of England independent control over setting interest rates, removing that power from the Chancellor — a fundamental change in how UK economic policy is made, still in place today.",
+    detail: "Gave the Bank of England independent control over setting interest rates, removing that power from the Chancellor: a fundamental change in how UK economic policy is made, still in place today.",
   },
   {
     year: 1998,
@@ -204,7 +204,7 @@ export const LANDMARK_VOTES = [
     title: "Banking (Special Provisions) Act 2008",
     result: "Passed",
     outcome: "achieved",
-    detail: "Emergency legislation, rushed through Parliament in days, that nationalised Northern Rock — the first bank failure of the 2008 financial crisis and a turning point in the UK's response to it.",
+    detail: "Emergency legislation, rushed through Parliament in days, that nationalised Northern Rock: the first bank failure of the 2008 financial crisis and a turning point in the UK's response to it.",
   },
   {
     year: 2021,
@@ -213,7 +213,7 @@ export const LANDMARK_VOTES = [
     title: "Health and Social Care Levy Act 2021",
     result: "Passed",
     outcome: "achieved",
-    detail: "Raised National Insurance to fund the NHS and social care — a significant tax rise, and a break from a Conservative manifesto pledge. Reversed the following year amid a wider economic crisis.",
+    detail: "Raised National Insurance to fund the NHS and social care: a significant tax rise, and a break from a Conservative manifesto pledge. Reversed the following year amid a wider economic crisis.",
   },
   {
     year: 1972,
@@ -231,7 +231,7 @@ export const LANDMARK_VOTES = [
     title: "Trade Union Act 1984",
     result: "Passed",
     outcome: "achieved",
-    detail: "Required trade unions to hold a secret ballot of members before calling a strike — part of a wider run of Thatcher-era union reform that permanently changed UK industrial relations law.",
+    detail: "Required trade unions to hold a secret ballot of members before calling a strike, part of a wider run of Thatcher-era union reform that permanently changed UK industrial relations law.",
   },
   // Constitutional history beyond the two entries above — how power is
   // actually structured and checked, not just who holds it.
@@ -251,7 +251,7 @@ export const LANDMARK_VOTES = [
     title: "Life Peerages Act 1958",
     result: "Passed",
     outcome: "achieved",
-    detail: "Allowed the Crown to create peers whose title isn't inherited — and, for the first time, allowed women to sit in the House of Lords. Life peerages are now how the large majority of new peers are appointed.",
+    detail: "Allowed the Crown to create peers whose title isn't inherited, and, for the first time, allowed women to sit in the House of Lords. Life peerages are now how the large majority of new peers are appointed.",
   },
   {
     year: 1998,
@@ -269,7 +269,7 @@ export const LANDMARK_VOTES = [
     title: "Scotland Act 1998",
     result: "Passed",
     outcome: "achieved",
-    detail: "Established the Scottish Parliament, following the 1997 devolution referendum — the single biggest transfer of power out of Westminster in modern UK history.",
+    detail: "Established the Scottish Parliament, following the 1997 devolution referendum: the single biggest transfer of power out of Westminster in modern UK history.",
   },
   {
     year: 1999,
@@ -278,7 +278,7 @@ export const LANDMARK_VOTES = [
     title: "House of Lords Act 1999",
     result: "Passed",
     outcome: "achieved",
-    detail: "Removed the automatic right of most hereditary peers to sit in the House of Lords, cutting their number from over 700 to 92 — the biggest reform of the Lords' membership in a century.",
+    detail: "Removed the automatic right of most hereditary peers to sit in the House of Lords, cutting their number from over 700 to 92: the biggest reform of the Lords' membership in a century.",
   },
   {
     year: 2005,
@@ -335,7 +335,7 @@ export const LANDMARK_VOTES = [
     title: "Education Act 1944 (the \"Butler Act\")",
     result: "Passed",
     outcome: "achieved",
-    detail: "Established free secondary education for all children in England and Wales, and created the tripartite grammar/secondary modern/technical school system — the foundation of the modern state education system.",
+    detail: "Established free secondary education for all children in England and Wales, and created the tripartite grammar/secondary modern/technical school system: the foundation of the modern state education system.",
   },
   {
     year: 1946,
@@ -344,7 +344,7 @@ export const LANDMARK_VOTES = [
     title: "National Health Service Act 1946",
     result: "Passed",
     outcome: "achieved",
-    detail: "Created the NHS, launched on 5 July 1948 — free healthcare at the point of use for everyone, funded through taxation. Arguably the single most consequential piece of social legislation in modern UK history.",
+    detail: "Created the NHS, launched on 5 July 1948, free healthcare at the point of use for everyone, funded through taxation. Arguably the single most consequential piece of social legislation in modern UK history.",
   },
   {
     year: 1967,
@@ -353,7 +353,7 @@ export const LANDMARK_VOTES = [
     title: "Abortion Act 1967",
     result: "Passed",
     outcome: "achieved",
-    detail: "Legalised abortion in Great Britain up to a set time limit, under specified medical grounds — one of a cluster of liberalising social reforms passed in the same Parliament as the Sexual Offences Act.",
+    detail: "Legalised abortion in Great Britain up to a set time limit, under specified medical grounds: one of a cluster of liberalising social reforms passed in the same Parliament as the Sexual Offences Act.",
   },
   {
     year: 1970,
@@ -362,7 +362,7 @@ export const LANDMARK_VOTES = [
     title: "Equal Pay Act 1970",
     result: "Passed",
     outcome: "achieved",
-    detail: "Made it illegal to pay women less than men for the same or broadly similar work — prompted in part by the 1968 Ford Dagenham sewing machinists' strike.",
+    detail: "Made it illegal to pay women less than men for the same or broadly similar work, prompted in part by the 1968 Ford Dagenham sewing machinists' strike.",
   },
   {
     year: 1975,
@@ -380,7 +380,7 @@ export const LANDMARK_VOTES = [
     title: "Gender Recognition Act 2004",
     result: "Passed",
     outcome: "achieved",
-    detail: "Let transgender people apply for legal recognition of their acquired gender, including a new birth certificate — a legal framework that remains a live and contested political topic.",
+    detail: "Let transgender people apply for legal recognition of their acquired gender, including a new birth certificate: a legal framework that remains a live and contested political topic.",
   },
   {
     year: 2010,
@@ -389,7 +389,7 @@ export const LANDMARK_VOTES = [
     title: "Equality Act 2010",
     result: "Passed",
     outcome: "achieved",
-    detail: "Consolidated decades of separate UK anti-discrimination law — covering sex, race, disability, age, religion and more — into a single Act.",
+    detail: "Consolidated decades of separate UK anti-discrimination law (covering sex, race, disability, age, religion and more) into a single Act.",
   },
   // More recent decisions on the use of British military force.
   {
@@ -399,7 +399,7 @@ export const LANDMARK_VOTES = [
     title: "Military intervention in Libya",
     result: "Passed by a large majority",
     outcome: "achieved",
-    detail: "MPs backed UK participation in NATO-led air operations to protect civilians during the Libyan civil war, under a UN Security Council resolution — with cross-party support far wider than the 2003 Iraq vote.",
+    detail: "MPs backed UK participation in NATO-led air operations to protect civilians during the Libyan civil war, under a UN Security Council resolution, with cross-party support far wider than the 2003 Iraq vote.",
   },
   {
     year: 2015,
@@ -427,7 +427,7 @@ export const LANDMARK_VOTES = [
     title: "Confidence vote following the Maastricht Treaty Social Chapter defeat",
     result: "Won, 339 to 299",
     outcome: "achieved",
-    detail: "John Major staked his government's survival on ratifying the Maastricht Treaty after losing a vote on the Social Chapter opt-out the night before — winning, but only after turning it into an explicit confidence vote against his own famously rebellious backbenchers.",
+    detail: "John Major staked his government's survival on ratifying the Maastricht Treaty after losing a vote on the Social Chapter opt-out the night before, winning, but only after turning it into an explicit confidence vote against his own famously rebellious backbenchers.",
   },
   {
     year: 2015,
@@ -436,7 +436,7 @@ export const LANDMARK_VOTES = [
     title: "European Union Referendum Act 2015",
     result: "Passed",
     outcome: "achieved",
-    detail: "Legislated for the referendum that took place on 23 June 2016 — the Act that made the Brexit vote happen in the first place.",
+    detail: "Legislated for the referendum that took place on 23 June 2016: the Act that made the Brexit vote happen in the first place.",
   },
   // Two more moments when a government's survival itself was on the line.
   {
@@ -446,7 +446,7 @@ export const LANDMARK_VOTES = [
     title: "Defeat of the first MacDonald Labour Government (the \"Campbell Case\")",
     result: "Lost, 364 to 198",
     outcome: "not_kept",
-    detail: "Ramsay MacDonald's first, minority Labour government fell over its handling of a dropped prosecution against a communist newspaper editor — triggering the general election referenced in the Callaghan entry above as the last time this had happened before 1979.",
+    detail: "Ramsay MacDonald's first, minority Labour government fell over its handling of a dropped prosecution against a communist newspaper editor, triggering the general election referenced in the Callaghan entry above as the last time this had happened before 1979.",
   },
   {
     year: 1940,
@@ -466,7 +466,7 @@ export const LANDMARK_VOTES = [
     title: "Bill of Rights 1689",
     result: "Passed",
     outcome: "achieved",
-    detail: "Set hard limits on royal power after the Glorious Revolution — no suspending laws or raising taxes without Parliament's consent, and free elections and free speech within Parliament. The bedrock of the UK's constitutional monarchy.",
+    detail: "Set hard limits on royal power after the Glorious Revolution: no suspending laws or raising taxes without Parliament's consent, and free elections and free speech within Parliament. The bedrock of the UK's constitutional monarchy.",
   },
   {
     year: 1701,
@@ -475,7 +475,7 @@ export const LANDMARK_VOTES = [
     title: "Act of Settlement 1701",
     result: "Passed",
     outcome: "achieved",
-    detail: "Secured the Protestant succession to the throne and, just as importantly, guaranteed judges could only be removed by Parliament rather than at the monarch's pleasure — a founding pillar of judicial independence.",
+    detail: "Secured the Protestant succession to the throne and, just as importantly, guaranteed judges could only be removed by Parliament rather than at the monarch's pleasure: a founding pillar of judicial independence.",
   },
   {
     year: 1707,
@@ -484,7 +484,7 @@ export const LANDMARK_VOTES = [
     title: "Acts of Union 1707",
     result: "Passed",
     outcome: "achieved",
-    detail: "Merged the Parliaments of England and Scotland into a single Parliament of Great Britain at Westminster — the union this site's own subject, the UK Parliament, is built on.",
+    detail: "Merged the Parliaments of England and Scotland into a single Parliament of Great Britain at Westminster: the union this site's own subject, the UK Parliament, is built on.",
   },
   {
     year: 1800,
@@ -502,7 +502,7 @@ export const LANDMARK_VOTES = [
     title: "Roman Catholic Relief Act 1829 (\"Catholic Emancipation\")",
     result: "Passed",
     outcome: "achieved",
-    detail: "Ended centuries of exclusion by allowing Catholics to sit as MPs and hold most public offices — pushed through by the Duke of Wellington's government despite his own party's deep opposition.",
+    detail: "Ended centuries of exclusion by allowing Catholics to sit as MPs and hold most public offices, pushed through by the Duke of Wellington's government despite his own party's deep opposition.",
   },
   {
     year: 1833,
@@ -511,7 +511,7 @@ export const LANDMARK_VOTES = [
     title: "Slavery Abolition Act 1833",
     result: "Passed",
     outcome: "achieved",
-    detail: "Abolished slavery across most of the British Empire, building on the 1807 Act that had already ended Britain's own participation in the slave trade. The government paid £20 million in compensation — to slave owners, not the enslaved.",
+    detail: "Abolished slavery across most of the British Empire, building on the 1807 Act that had already ended Britain's own participation in the slave trade. The government paid £20 million in compensation, to slave owners, not the enslaved.",
   },
   {
     year: 1875,
@@ -520,7 +520,7 @@ export const LANDMARK_VOTES = [
     title: "Public Health Act 1875",
     result: "Passed",
     outcome: "achieved",
-    detail: "Set binding sanitation, sewerage and housing standards for the first time, forcing local authorities to act — a direct response to the cholera outbreaks and squalor of the rapidly industrialising Victorian city.",
+    detail: "Set binding sanitation, sewerage and housing standards for the first time, forcing local authorities to act: a direct response to the cholera outbreaks and squalor of the rapidly industrialising Victorian city.",
   },
   {
     year: 1888,
@@ -529,7 +529,7 @@ export const LANDMARK_VOTES = [
     title: "Local Government Act 1888",
     result: "Passed",
     outcome: "achieved",
-    detail: "Created directly elected county councils across England and Wales, including the London County Council — the foundation of the modern local government system this site's data still sits alongside today.",
+    detail: "Created directly elected county councils across England and Wales, including the London County Council: the foundation of the modern local government system this site's data still sits alongside today.",
   },
   {
     year: 1908,
@@ -538,7 +538,7 @@ export const LANDMARK_VOTES = [
     title: "Old-Age Pensions Act 1908",
     result: "Passed",
     outcome: "achieved",
-    detail: "Introduced Britain's first state pension — a modest, means-tested payment for the over-70s, but the first time the state took direct responsibility for supporting people in old age. A forerunner of the 1909 People's Budget that helped fund it.",
+    detail: "Introduced Britain's first state pension: a modest, means-tested payment for the over-70s, but the first time the state took direct responsibility for supporting people in old age. A forerunner of the 1909 People's Budget that helped fund it.",
   },
   {
     year: 1922,
@@ -547,7 +547,7 @@ export const LANDMARK_VOTES = [
     title: "Irish Free State (Agreement) Act 1922",
     result: "Passed",
     outcome: "achieved",
-    detail: "Gave legal effect to the Anglo-Irish Treaty, creating the Irish Free State as a self-governing dominion and partitioning Ireland — ending the Irish War of Independence, and one of the most consequential and contested Acts this Parliament has ever passed.",
+    detail: "Gave legal effect to the Anglo-Irish Treaty, creating the Irish Free State as a self-governing dominion and partitioning Ireland, ending the Irish War of Independence, and one of the most consequential and contested Acts this Parliament has ever passed.",
   },
   {
     year: 2000,
@@ -565,7 +565,7 @@ export const LANDMARK_VOTES = [
     title: "Parliamentary Voting System and Constituencies Act 2011",
     result: "Passed",
     outcome: "achieved",
-    detail: "The enabling legislation for the 2011 referendum on switching Westminster elections to the Alternative Vote — a Liberal Democrat coalition priority. The referendum itself was heavily defeated, and the UK kept first-past-the-post.",
+    detail: "The enabling legislation for the 2011 referendum on switching Westminster elections to the Alternative Vote: a Liberal Democrat coalition priority. The referendum itself was heavily defeated, and the UK kept first-past-the-post.",
   },
   // A second pass, widening every category further.
   {
@@ -575,7 +575,7 @@ export const LANDMARK_VOTES = [
     title: "Matrimonial Causes Act 1857",
     result: "Passed",
     outcome: "achieved",
-    detail: "Created civil divorce for the first time — before this, ending a marriage legally required its own individual Act of Parliament, putting it far beyond the reach of all but the wealthy.",
+    detail: "Created civil divorce for the first time, before this, ending a marriage legally required its own individual Act of Parliament, putting it far beyond the reach of all but the wealthy.",
   },
   {
     year: 1882,
@@ -602,7 +602,7 @@ export const LANDMARK_VOTES = [
     title: "Redistribution of Seats Act 1885",
     result: "Passed",
     outcome: "achieved",
-    detail: "Companion legislation to the Third Reform Act — replaced most multi-member constituencies with single-member seats of broadly equal size, the direct ancestor of today's constituency map.",
+    detail: "Companion legislation to the Third Reform Act, replaced most multi-member constituencies with single-member seats of broadly equal size, the direct ancestor of today's constituency map.",
   },
   {
     year: 1885,
@@ -611,7 +611,7 @@ export const LANDMARK_VOTES = [
     title: "Defeat of Gladstone's second government on the Budget",
     result: "Lost",
     outcome: "not_kept",
-    detail: "An amendment to the Budget was carried against the government, and Gladstone resigned rather than carry on — a reminder that budget votes have long doubled as tests of a government's authority.",
+    detail: "An amendment to the Budget was carried against the government, and Gladstone resigned rather than carry on: a reminder that budget votes have long doubled as tests of a government's authority.",
   },
   {
     year: 1911,
@@ -620,7 +620,7 @@ export const LANDMARK_VOTES = [
     title: "National Insurance Act 1911",
     result: "Passed",
     outcome: "achieved",
-    detail: "Lloyd George's flagship reform — created the UK's first compulsory unemployment and health insurance schemes, funded by workers, employers and the state together. A direct forerunner of the modern welfare state.",
+    detail: "Lloyd George's flagship reform, created the UK's first compulsory unemployment and health insurance schemes, funded by workers, employers and the state together. A direct forerunner of the modern welfare state.",
   },
   {
     year: 1946,
@@ -629,7 +629,7 @@ export const LANDMARK_VOTES = [
     title: "Coal Industry Nationalisation Act 1946",
     result: "Passed",
     outcome: "achieved",
-    detail: "Brought Britain's coal mines under state ownership as the National Coal Board — the first and, for decades, most politically totemic of Attlee's nationalisations.",
+    detail: "Brought Britain's coal mines under state ownership as the National Coal Board: the first and, for decades, most politically totemic of Attlee's nationalisations.",
   },
   {
     year: 1948,
@@ -638,7 +638,7 @@ export const LANDMARK_VOTES = [
     title: "Representation of the People Act 1948",
     result: "Passed",
     outcome: "achieved",
-    detail: "Abolished the last surviving forms of plural voting — extra votes for university graduates and business property owners — finally making it one person, one vote in UK general elections.",
+    detail: "Abolished the last surviving forms of plural voting (extra votes for university graduates and business property owners) finally making it one person, one vote in UK general elections.",
   },
   {
     year: 1976,
@@ -656,7 +656,7 @@ export const LANDMARK_VOTES = [
     title: "Employment Act 1980",
     result: "Passed",
     outcome: "achieved",
-    detail: "The first in Margaret Thatcher's run of trade union reform — restricted secondary picketing and made \"closed shops\" (jobs that required union membership) harder to enforce.",
+    detail: "The first in Margaret Thatcher's run of trade union reform, restricted secondary picketing and made \"closed shops\" (jobs that required union membership) harder to enforce.",
   },
   {
     year: 1984,
@@ -665,7 +665,7 @@ export const LANDMARK_VOTES = [
     title: "Telecommunications Act 1984",
     result: "Passed",
     outcome: "achieved",
-    detail: "Privatised British Telecom, the first of the major 1980s privatisations of state-owned industry — gas, water, and the rest followed over the rest of the decade.",
+    detail: "Privatised British Telecom, the first of the major 1980s privatisations of state-owned industry, gas, water, and the rest followed over the rest of the decade.",
   },
   {
     year: 1986,
@@ -674,7 +674,7 @@ export const LANDMARK_VOTES = [
     title: "Financial Services Act 1986",
     result: "Passed",
     outcome: "achieved",
-    detail: "The legal underpinning of the \"Big Bang\" — deregulated the London Stock Exchange and abolished fixed commissions, transforming the City of London into a global financial centre almost overnight.",
+    detail: "The legal underpinning of the \"Big Bang\", deregulated the London Stock Exchange and abolished fixed commissions, transforming the City of London into a global financial centre almost overnight.",
   },
   {
     year: 1986,
@@ -683,7 +683,7 @@ export const LANDMARK_VOTES = [
     title: "European Communities (Amendment) Act 1986",
     result: "Passed",
     outcome: "achieved",
-    detail: "Ratified the Single European Act, the first major overhaul of the EEC's founding treaties — deepened integration by extending qualified majority voting and setting a 1992 deadline for the EU single market.",
+    detail: "Ratified the Single European Act, the first major overhaul of the EEC's founding treaties, deepened integration by extending qualified majority voting and setting a 1992 deadline for the EU single market.",
   },
   {
     year: 1989,
@@ -692,7 +692,7 @@ export const LANDMARK_VOTES = [
     title: "Children Act 1989",
     result: "Passed",
     outcome: "achieved",
-    detail: "Rewrote the law on child welfare and custody around a single guiding principle — that the child's welfare is paramount — still the foundation of UK family and child protection law today.",
+    detail: "Rewrote the law on child welfare and custody around a single guiding principle, that the child's welfare is paramount, still the foundation of UK family and child protection law today.",
   },
   {
     year: 1991,
@@ -701,7 +701,7 @@ export const LANDMARK_VOTES = [
     title: "Commons debate authorising British forces in the Gulf War",
     result: "Passed by a large majority",
     outcome: "achieved",
-    detail: "MPs backed UK participation in the US-led coalition to expel Iraqi forces from Kuwait, with both government and official opposition support — a rare moment of near-unanimity on the use of military force.",
+    detail: "MPs backed UK participation in the US-led coalition to expel Iraqi forces from Kuwait, with both government and official opposition support: a rare moment of near-unanimity on the use of military force.",
   },
   {
     year: 1998,
@@ -728,7 +728,7 @@ export const LANDMARK_VOTES = [
     title: "Financial Services and Markets Act 2000",
     result: "Passed",
     outcome: "achieved",
-    detail: "Created the Financial Services Authority, the UK's first single regulator covering the whole financial sector — later broken up into the FCA and PRA after the 2008 crisis exposed its limits.",
+    detail: "Created the Financial Services Authority, the UK's first single regulator covering the whole financial sector, later broken up into the FCA and PRA after the 2008 crisis exposed its limits.",
   },
   {
     year: 2000,
@@ -737,7 +737,7 @@ export const LANDMARK_VOTES = [
     title: "Freedom of Information Act 2000",
     result: "Passed",
     outcome: "achieved",
-    detail: "Gave the public a legal right to request information held by public bodies — including, famously, the 2009 disclosures on MPs' expenses that this site's own subject matter grew directly out of.",
+    detail: "Gave the public a legal right to request information held by public bodies, including, famously, the 2009 disclosures on MPs' expenses that this site's own subject matter grew directly out of.",
   },
   {
     year: 2000,
@@ -746,7 +746,7 @@ export const LANDMARK_VOTES = [
     title: "Political Parties, Elections and Referendums Act 2000",
     result: "Passed",
     outcome: "achieved",
-    detail: "Created the Electoral Commission and set the modern rules on political donations and campaign spending — the framework every declared donation on this site's own Donors & Lobbying page is regulated under.",
+    detail: "Created the Electoral Commission and set the modern rules on political donations and campaign spending: the framework every declared donation on this site's own Donors & Lobbying page is regulated under.",
   },
   {
     year: 2008,
@@ -755,7 +755,7 @@ export const LANDMARK_VOTES = [
     title: "European Union (Amendment) Act 2008",
     result: "Passed",
     outcome: "achieved",
-    detail: "Ratified the Lisbon Treaty without the public referendum Labour had promised for its near-identical predecessor, the EU Constitution — a decision that fuelled years of Conservative and UKIP pressure for an in/out referendum.",
+    detail: "Ratified the Lisbon Treaty without the public referendum Labour had promised for its near-identical predecessor, the EU Constitution: a decision that fuelled years of Conservative and UKIP pressure for an in/out referendum.",
   },
   {
     year: 2013,
@@ -773,7 +773,7 @@ export const LANDMARK_VOTES = [
     title: "Electoral Registration and Administration Act 2013",
     result: "Passed",
     outcome: "achieved",
-    detail: "Replaced household voter registration (one person registering a whole address) with individual electoral registration — intended to cut fraud, though critics warned, correctly, that it would initially shrink the electoral roll.",
+    detail: "Replaced household voter registration (one person registering a whole address) with individual electoral registration, intended to cut fraud, though critics warned, correctly, that it would initially shrink the electoral roll.",
   },
   {
     year: 2018,
@@ -782,7 +782,7 @@ export const LANDMARK_VOTES = [
     title: "European Union (Withdrawal) Act 2018",
     result: "Passed",
     outcome: "achieved",
-    detail: "The technical core of Brexit — converted the whole existing body of EU law into UK domestic law at the moment of exit, so nothing simply vanished overnight, and gave ministers wide powers to amend it afterwards.",
+    detail: "The technical core of Brexit, converted the whole existing body of EU law into UK domestic law at the moment of exit, so nothing simply vanished overnight, and gave ministers wide powers to amend it afterwards.",
   },
   {
     year: 2019,
@@ -791,7 +791,7 @@ export const LANDMARK_VOTES = [
     title: "\"Indicative votes\" on alternative Brexit outcomes",
     result: "No option won a majority",
     outcome: "not_kept",
-    detail: "With Theresa May's deal repeatedly rejected, backbenchers seized control of the Commons agenda to test alternatives — customs union, a second referendum, revoking Article 50 — across two rounds of votes. Every single option was defeated, starkly illustrating Parliament's deadlock.",
+    detail: "With Theresa May's deal repeatedly rejected, backbenchers seized control of the Commons agenda to test alternatives (customs union, a second referendum, revoking Article 50) across two rounds of votes. Every single option was defeated, starkly illustrating Parliament's deadlock.",
   },
   {
     year: 2019,
@@ -800,7 +800,7 @@ export const LANDMARK_VOTES = [
     title: "Motion for an early general election under the Fixed-term Parliaments Act",
     result: "Failed to reach the required two-thirds majority",
     outcome: "not_kept",
-    detail: "Boris Johnson tried to force a snap election to break the Brexit deadlock, but the Fixed-term Parliaments Act (see the Constitutional tab) required a two-thirds majority he couldn't reach — MPs voted to deny him one rather than trigger a \"no-deal by default\" election timetable.",
+    detail: "Boris Johnson tried to force a snap election to break the Brexit deadlock, but the Fixed-term Parliaments Act (see the Constitutional tab) required a two-thirds majority he couldn't reach. MPs voted to deny him one rather than trigger a \"no-deal by default\" election timetable.",
   },
 ];
 
@@ -814,8 +814,8 @@ export const LANDMARK_VOTES = [
 // 20th century — that level of precision isn't something we're confident
 // enough in to state as fact.
 export const GOVERNMENTS = [
-  { year: 1721, pm: "Robert Walpole", party: "Whig", note: "Conventionally regarded as the first Prime Minister, though the title didn't exist officially yet.", events: ["Britain's longest continuously serving PM — 21 years in office", "Steered the country through the 1720 South Sea Bubble financial crash", "Established many of the working conventions of Cabinet government"] },
-  { year: 1742, pm: "Earl of Wilmington", party: "Whig", note: "Led a Whig government.", events: ["A caretaker figure — Walpole's old rivals, not Wilmington himself, effectively ran the government", "Died in office after less than a year"] },
+  { year: 1721, pm: "Robert Walpole", party: "Whig", note: "Conventionally regarded as the first Prime Minister, though the title didn't exist officially yet.", events: ["Britain's longest continuously serving PM, 21 years in office", "Steered the country through the 1720 South Sea Bubble financial crash", "Established many of the working conventions of Cabinet government"] },
+  { year: 1742, pm: "Earl of Wilmington", party: "Whig", note: "Led a Whig government.", events: ["A caretaker figure: Walpole's old rivals, not Wilmington himself, effectively ran the government", "Died in office after less than a year"] },
   { year: 1743, pm: "Henry Pelham", party: "Whig", note: "Led a Whig government.", events: ["Brought political stability after years of factional infighting", "Reduced the national debt and largely kept Britain at peace", "His death in 1754 famously prompted George II to say \"Now I shall have no more peace\""] },
   { year: 1754, pm: "Duke of Newcastle", party: "Whig", note: "Led a Whig government.", events: ["Struggled to manage the outbreak of the Seven Years' War", "Resigned in 1756 after early wartime setbacks"] },
   { year: 1756, pm: "Duke of Devonshire", party: "Whig", note: "Brief wartime ministry during the Seven Years' War.", events: ["A brief wartime caretaker government", "Paved the way for the Pitt–Newcastle coalition that followed"] },
@@ -829,14 +829,14 @@ export const GOVERNMENTS = [
   { year: 1782, pm: "Marquess of Rockingham", party: "Whig", note: "Returned to office to negotiate peace with America; died in office months later.", events: ["Returned to office to begin peace negotiations with America", "Died in office just months later"] },
   { year: 1782, pm: "Earl of Shelburne", party: "Whig", note: "Negotiated the 1783 Treaty of Paris recognising American independence.", events: ["Negotiated the 1783 Treaty of Paris, formally recognising American independence", "Brought down by his own fractious coalition within months"] },
   { year: 1783, pm: "Duke of Portland", party: "Coalition", note: "The short-lived \"Fox–North Coalition,\" dismissed by the King within months.", events: ["The short-lived \"Fox–North Coalition\"", "Dismissed by King George III within months, seen by the Crown as illegitimate"] },
-  { year: 1783, pm: "William Pitt the Younger", party: "Tory", note: "Became PM at 24; oversaw the 1800 Union with Ireland and financed Britain's early wars against Revolutionary France.", events: ["Became PM at 24 — still the youngest in British history", "Financed Britain's early wars against Revolutionary France", "Passed the Act of Union with Ireland in 1800"] },
+  { year: 1783, pm: "William Pitt the Younger", party: "Tory", note: "Became PM at 24; oversaw the 1800 Union with Ireland and financed Britain's early wars against Revolutionary France.", events: ["Became PM at 24, still the youngest in British history", "Financed Britain's early wars against Revolutionary France", "Passed the Act of Union with Ireland in 1800"] },
   { year: 1801, pm: "Henry Addington", party: "Tory", note: "Negotiated the 1802 Peace of Amiens, a brief pause in the wars with France.", events: ["Negotiated the 1802 Peace of Amiens, a temporary pause in the wars with France", "War resumed in 1803, and his government fell the following year"] },
   { year: 1804, pm: "William Pitt the Younger", party: "Tory", note: "Returned to lead the war against Napoleon until his death in office in 1806.", events: ["Formed the Third Coalition against Napoleon", "Died in office in 1806, exhausted by the strain of wartime leadership"] },
-  { year: 1806, pm: "Lord Grenville", party: "Whig", note: "The \"Ministry of All the Talents\" — passed the Slave Trade Act 1807, abolishing Britain's participation in the transatlantic slave trade.", events: ["The \"Ministry of All the Talents\" — a broad coalition government", "Passed the Slave Trade Act 1807, abolishing Britain's participation in the transatlantic slave trade"] },
+  { year: 1806, pm: "Lord Grenville", party: "Whig", note: "The \"Ministry of All the Talents\", passed the Slave Trade Act 1807, abolishing Britain's participation in the transatlantic slave trade.", events: ["The \"Ministry of All the Talents\": a broad coalition government", "Passed the Slave Trade Act 1807, abolishing Britain's participation in the transatlantic slave trade"] },
   { year: 1807, pm: "Duke of Portland", party: "Tory", note: "Continued the war against Napoleon.", events: ["Continued the war against Napoleon", "Marked by a bitter duel between two of his own ministers, Canning and Castlereagh"] },
-  { year: 1809, pm: "Spencer Perceval", party: "Tory", note: "The only British Prime Minister ever assassinated — shot in the House of Commons lobby in 1812.", events: ["The only British Prime Minister ever assassinated — shot in the Commons lobby in 1812", "Governed through the ongoing Napoleonic Wars"] },
-  { year: 1812, pm: "Earl of Liverpool", party: "Tory", note: "The 19th century's longest-serving PM (15 years) — saw Waterloo, the Peterloo Massacre, and growing pressure for reform.", events: ["The 19th century's longest-serving PM, at 15 years", "Saw victory at Waterloo in 1815 and the peace that followed", "Governed through the Peterloo Massacre (1819) and growing pressure for reform"] },
-  { year: 1827, pm: "George Canning", party: "Tory", note: "Died in office after less than four months — the shortest premiership until Liz Truss, 195 years later.", events: ["Died in office after less than four months", "The shortest premiership in British history until Liz Truss, 195 years later"] },
+  { year: 1809, pm: "Spencer Perceval", party: "Tory", note: "The only British Prime Minister ever assassinated, shot in the House of Commons lobby in 1812.", events: ["The only British Prime Minister ever assassinated, shot in the Commons lobby in 1812", "Governed through the ongoing Napoleonic Wars"] },
+  { year: 1812, pm: "Earl of Liverpool", party: "Tory", note: "The 19th century's longest-serving PM (15 years), saw Waterloo, the Peterloo Massacre, and growing pressure for reform.", events: ["The 19th century's longest-serving PM, at 15 years", "Saw victory at Waterloo in 1815 and the peace that followed", "Governed through the Peterloo Massacre (1819) and growing pressure for reform"] },
+  { year: 1827, pm: "George Canning", party: "Tory", note: "Died in office after less than four months: the shortest premiership until Liz Truss, 195 years later.", events: ["Died in office after less than four months", "The shortest premiership in British history until Liz Truss, 195 years later"] },
   { year: 1827, pm: "Viscount Goderich", party: "Tory", note: "Resigned without ever facing Parliament as PM.", events: ["Resigned without ever facing Parliament as PM", "Unable to hold his fractious Cabinet together"] },
   { year: 1828, pm: "Duke of Wellington", party: "Tory", note: "The victor of Waterloo; passed Catholic Emancipation in 1829 despite his own party's opposition.", events: ["The victor of Waterloo against Napoleon in 1815", "Passed Catholic Emancipation in 1829 despite his own party's opposition"] },
   { year: 1830, pm: "Earl Grey", party: "Whig", note: "Passed the Great Reform Act 1832 and the Slavery Abolition Act 1833.", events: ["Passed the Great Reform Act 1832, the first major expansion of the franchise", "Passed the Slavery Abolition Act 1833"] },
@@ -859,16 +859,16 @@ export const GOVERNMENTS = [
   { year: 1885, pm: "Marquess of Salisbury", party: "Conservative", note: "The first of three separate Salisbury governments.", events: ["A brief minority government pending the next general election"] },
   { year: 1886, pm: "William Gladstone", party: "Liberal", note: "His third government fell within months after his first Irish Home Rule Bill was defeated.", events: ["His first Irish Home Rule Bill was defeated, ending this government within months"] },
   { year: 1886, pm: "Marquess of Salisbury", party: "Conservative", note: "A long period of Conservative dominance amid the imperial \"Scramble for Africa.\"", events: ["A long period of Conservative dominance amid the imperial \"Scramble for Africa\""] },
-  { year: 1892, pm: "William Gladstone", party: "Liberal", note: "His fourth and final government passed a second Home Rule Bill through the Commons, only for the Lords to reject it.", events: ["A second Home Rule Bill passed the Commons but was rejected by the Lords", "Resigned in 1894, aged 84 — the oldest serving PM in history"] },
+  { year: 1892, pm: "William Gladstone", party: "Liberal", note: "His fourth and final government passed a second Home Rule Bill through the Commons, only for the Lords to reject it.", events: ["A second Home Rule Bill passed the Commons but was rejected by the Lords", "Resigned in 1894, aged 84: the oldest serving PM in history"] },
   { year: 1894, pm: "Earl of Rosebery", party: "Liberal", note: "A short, troubled premiership amid deep Liberal Party divisions.", events: ["A troubled premiership amid deep Liberal Party divisions", "Resigned within a year, worn down by internal party conflict"] },
   { year: 1895, pm: "Marquess of Salisbury", party: "Conservative", note: "His third government saw continued imperial expansion into the new century.", events: ["Presided over the British Empire at its territorial height", "Governed through the Second Boer War (1899–1902)"] },
   { year: 1902, pm: "Arthur Balfour", party: "Conservative", note: "Passed the Education Act 1902; resigned in 1905 amid a party split over trade tariffs.", events: ["Passed the Education Act 1902, reorganising schooling in England and Wales", "Signed the Entente Cordiale with France in 1904", "Resigned in 1905 amid a bitter party split over trade tariffs"] },
   { year: 1905, pm: "Henry Campbell-Bannerman", party: "Liberal", note: "The first to officially hold the title \"Prime Minister\"; began the Liberal welfare reforms.", events: ["The first to officially hold the title \"Prime Minister\"", "Began the Liberal welfare reforms later expanded by Asquith and Lloyd George"] },
   { year: 1908, pm: "H. H. Asquith", party: "Liberal", note: "Passed the 1909 \"People's Budget\" and the Parliament Act 1911, and led Britain into the First World War in 1914.", events: ["Passed the 1909 \"People's Budget\" and the Parliament Act 1911", "Led Britain into the First World War in 1914", "Replaced by Lloyd George in 1916 amid a wartime political crisis"] },
   { year: 1916, pm: "David Lloyd George", party: "Liberal (Coalition)", note: "Led the wartime coalition to victory in 1918, then passed the Representation of the People Act 1918.", events: ["Led the wartime coalition to victory in 1918", "Passed the Representation of the People Act 1918, nearly tripling the electorate", "Negotiated the 1921 Anglo-Irish Treaty, creating the Irish Free State"] },
-  { year: 1922, pm: "Bonar Law", party: "Conservative", note: "Resigned after seven months due to terminal illness — sometimes called \"the unknown Prime Minister.\"", events: ["Resigned after seven months due to terminal illness", "Sometimes called \"the unknown Prime Minister\""] },
+  { year: 1922, pm: "Bonar Law", party: "Conservative", note: "Resigned after seven months due to terminal illness, sometimes called \"the unknown Prime Minister.\"", events: ["Resigned after seven months due to terminal illness", "Sometimes called \"the unknown Prime Minister\""] },
   { year: 1923, pm: "Stanley Baldwin", party: "Conservative", note: "The first of three separate Baldwin governments.", events: ["Called a snap election over trade tariffs and lost his majority within months"] },
-  { year: 1924, pm: "Ramsay MacDonald", party: "Labour", note: "The first-ever Labour government — a minority administration that fell the same year over the Campbell Case.", events: ["Britain's first-ever Labour government — a minority administration", "Fell the same year over the \"Campbell Case\""] },
+  { year: 1924, pm: "Ramsay MacDonald", party: "Labour", note: "The first-ever Labour government: a minority administration that fell the same year over the Campbell Case.", events: ["Britain's first-ever Labour government: a minority administration", "Fell the same year over the \"Campbell Case\""] },
   { year: 1924, pm: "Stanley Baldwin", party: "Conservative", note: "Governed through the 1926 General Strike.", events: ["Governed through the 1926 General Strike", "Passed the Representation of the People (Equal Franchise) Act 1928"] },
   { year: 1929, pm: "Ramsay MacDonald", party: "Labour", note: "A second minority Labour government, overwhelmed by the Great Depression from 1929.", events: ["A second minority Labour government", "Overwhelmed by the Great Depression from late 1929"] },
   { year: 1931, pm: "Ramsay MacDonald", party: "National Government", note: "Formed a cross-party National Government to handle the economic crisis, splitting from and being expelled by his own Labour Party.", events: ["Formed a cross-party National Government to handle the economic crisis", "Expelled from the Labour Party he had once led"] },
@@ -878,7 +878,7 @@ export const GOVERNMENTS = [
   { year: 1945, pm: "Clement Attlee", party: "Labour", note: "Created the NHS and the modern welfare state, nationalised the Bank of England, coal and rail, and granted Indian independence in 1947.", events: ["Created the NHS, launched on 5 July 1948", "Nationalised the Bank of England, coal mines and railways", "Granted Indian independence in 1947"] },
   { year: 1951, pm: "Winston Churchill", party: "Conservative", note: "A quieter second term; suffered a serious stroke in office before handing over to Eden.", events: ["A quieter second term focused on post-war recovery", "Suffered a serious stroke in office in 1953, kept largely secret at the time"] },
   { year: 1955, pm: "Anthony Eden", party: "Conservative", note: "Resigned in 1957 after the disastrous 1956 Suez Crisis badly damaged Britain's international standing.", events: ["Led the disastrous 1956 Suez Crisis, badly damaging Britain's international standing", "Resigned in 1957 amid the fallout and ill health"] },
-  { year: 1957, pm: "Harold Macmillan", party: "Conservative", note: "Presided over African decolonisation (\"the wind of change\") before resigning in 1963 amid the Profumo scandal and ill health.", events: ["Gave the \"Wind of Change\" speech on African decolonisation in 1960", "Presided over rising post-war prosperity — \"never had it so good\"", "Resigned in 1963 amid the Profumo scandal"] },
+  { year: 1957, pm: "Harold Macmillan", party: "Conservative", note: "Presided over African decolonisation (\"the wind of change\") before resigning in 1963 amid the Profumo scandal and ill health.", events: ["Gave the \"Wind of Change\" speech on African decolonisation in 1960", "Presided over rising post-war prosperity (\"never had it so good\")", "Resigned in 1963 amid the Profumo scandal"] },
   { year: 1963, pm: "Sir Alec Douglas-Home", party: "Conservative", note: "A brief premiership; narrowly lost the 1964 election to Harold Wilson.", events: ["A brief premiership of less than a year", "Narrowly lost the 1964 general election to Harold Wilson"] },
   { year: 1964, pm: "Harold Wilson", party: "Labour", note: "His first government passed the death penalty suspension, the Sexual Offences Act, and the Abortion Act, and devalued the pound in 1967.", events: ["Legalised abortion, decriminalised homosexuality, and suspended the death penalty", "Devalued the pound in 1967", "Established the Open University in 1969"] },
   { year: 1970, pm: "Edward Heath", party: "Conservative", note: "Took the UK into the EEC in 1973, but was brought down by the 1973–74 miners' strike and the three-day week.", events: ["Took the UK into the European Economic Community in 1973", "Faced the 1973–74 miners' strike and introduced the three-day week", "Lost both general elections held in 1974"] },
@@ -888,13 +888,13 @@ export const GOVERNMENTS = [
   { year: 1990, pm: "John Major", party: "Conservative", note: "Ratified the Maastricht Treaty amid fierce party rebellion, survived Black Wednesday in 1992, and lost the 1997 landslide to Blair.", events: ["Ratified the Maastricht Treaty amid fierce Conservative rebellion", "Survived \"Black Wednesday\" in 1992, when the pound crashed out of the ERM", "Lost the 1997 election in a landslide to Tony Blair"] },
   { year: 1997, pm: "Tony Blair", party: "Labour", note: "Delivered Scottish and Welsh devolution, the Human Rights Act, the Good Friday Agreement, and the 2003 Iraq War.", events: ["Delivered devolution to Scotland and Wales", "Brokered the Good Friday Agreement in Northern Ireland, 1998", "Passed the Human Rights Act 1998", "Joined the US-led invasion of Iraq in 2003, his most controversial decision"] },
   { year: 2007, pm: "Gordon Brown", party: "Labour", note: "Led the response to the 2008 global financial crisis, including the Northern Rock nationalisation.", events: ["Led the UK's response to the 2008 global financial crisis", "Nationalised Northern Rock and bailed out major banks", "Lost the 2010 election, resulting in a hung parliament"] },
-  { year: 2010, pm: "David Cameron", party: "Conservative (Coalition)", note: "The first coalition government since WWII, with the Liberal Democrats; called the 2016 EU referendum and resigned when Leave won.", events: ["Formed the first coalition government since WWII, with the Liberal Democrats", "Introduced austerity spending cuts", "Called the 2014 Scottish independence referendum — No won", "Called the 2016 EU referendum and resigned when Leave won"] },
+  { year: 2010, pm: "David Cameron", party: "Conservative (Coalition)", note: "The first coalition government since WWII, with the Liberal Democrats; called the 2016 EU referendum and resigned when Leave won.", events: ["Formed the first coalition government since WWII, with the Liberal Democrats", "Introduced austerity spending cuts", "Called the 2014 Scottish independence referendum: No won", "Called the 2016 EU referendum and resigned when Leave won"] },
   { year: 2016, pm: "Theresa May", party: "Conservative", note: "Triggered Article 50, lost her majority in a snap 2017 election, and resigned in 2019 after Parliament repeatedly rejected her Brexit deal.", events: ["Triggered Article 50 to begin the Brexit process", "Lost her Commons majority in a snap 2017 election", "Her Brexit withdrawal deal was rejected by Parliament three times", "Resigned in 2019"] },
   { year: 2019, pm: "Boris Johnson", party: "Conservative", note: "Won a landslide on \"Get Brexit Done,\" completed the UK's EU withdrawal, led the COVID-19 response, and resigned in 2022 over the \"Partygate\" scandal.", events: ["Won a landslide in 2019 on \"Get Brexit Done\"", "Completed the UK's departure from the EU on 31 January 2020", "Led the UK through the COVID-19 pandemic", "Resigned in 2022 following the \"Partygate\" scandal"] },
-  { year: 2022, pm: "Liz Truss", party: "Conservative", note: "The shortest-serving PM in British history — 49 days — after her mini-budget triggered a market crisis.", events: ["The shortest-serving PM in British history — 49 days", "Her mini-budget triggered a market crisis and a collapse in the pound", "Resigned after losing the confidence of her own party"] },
+  { year: 2022, pm: "Liz Truss", party: "Conservative", note: "The shortest-serving PM in British history, 49 days, after her mini-budget triggered a market crisis.", events: ["The shortest-serving PM in British history, 49 days", "Her mini-budget triggered a market crisis and a collapse in the pound", "Resigned after losing the confidence of her own party"] },
   { year: 2022, pm: "Rishi Sunak", party: "Conservative", note: "The UK's first British Asian PM; called and lost the July 2024 general election.", events: ["The UK's first British Asian Prime Minister", "Focused on stabilising the economy after the Truss mini-budget", "Called and lost the July 2024 general election"] },
   { year: 2024, pm: "Keir Starmer", party: "Labour", note: "Won a landslide in July 2024, ending 14 years of Conservative government.", events: ["Won a landslide general election victory in July 2024", "Ended 14 years of Conservative government"] },
-  { year: 2026, pm: "Andy Burnham", party: "Labour", note: "Became Prime Minister in July 2026. This is drawn directly from this site's own live Cabinet data, not a separately verified historical source — treat the surrounding circumstances with appropriate caution.", events: ["Became Prime Minister in July 2026, per this site's own live data"] },
+  { year: 2026, pm: "Andy Burnham", party: "Labour", note: "Became Prime Minister in July 2026. This is drawn directly from this site's own live Cabinet data, not a separately verified historical source. Treat the surrounding circumstances with appropriate caution.", events: ["Became Prime Minister in July 2026, per this site's own live data"] },
 ];
 
 export const OUTCOME_COLOR = { achieved: "#2F6F4E", not_kept: "#9C3B3B" };

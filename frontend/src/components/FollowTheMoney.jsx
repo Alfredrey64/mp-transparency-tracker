@@ -223,7 +223,7 @@ export default function FollowTheMoney({ onSelectPolitician }) {
       </div>
 
       {isTooShort && (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>Keep typing — at least {MIN_QUERY_LENGTH} characters.</div>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>Keep typing, at least {MIN_QUERY_LENGTH} characters.</div>
       )}
 
       {!isTooShort && hasSearched && loading && (
@@ -233,7 +233,7 @@ export default function FollowTheMoney({ onSelectPolitician }) {
       {!isTooShort && hasSearched && !loading && activeResults?.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, lineHeight: 1.6, maxWidth: 560 }}>
           No donor matching "{debounced}" found in either register. If it's a company, try a shorter fragment of the
-          name — the search only matches text that appears exactly as typed, so punctuation like "K.G.L" won't be
+          name: the search only matches text that appears exactly as typed, so punctuation like "K.G.L" won't be
           found by searching "KGL".
         </div>
       )}
@@ -241,7 +241,7 @@ export default function FollowTheMoney({ onSelectPolitician }) {
       {!isTooShort && hasSearched && !loading && activeResults?.length > 0 && (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5, maxWidth: 620 }}>
-            Results only include donor names containing "{debounced}" exactly — a differently punctuated spelling of
+            Results only include donor names containing "{debounced}" exactly: a differently punctuated spelling of
             the same name (e.g. "K.G.L" vs "KGL") may sit under a separate result below. Where a Companies House
             number is shown, that's the most reliable way to confirm it's really the same donor.
           </div>
@@ -250,7 +250,7 @@ export default function FollowTheMoney({ onSelectPolitician }) {
           ))}
           {activeResults.length > RESULT_CAP && (
             <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>
-              Showing the top {RESULT_CAP} of {activeResults.length} matching donor names, by total value — narrow your search for a more exact match.
+              Showing the top {RESULT_CAP} of {activeResults.length} matching donor names, by total value. Narrow your search for a more exact match.
             </div>
           )}
         </div>

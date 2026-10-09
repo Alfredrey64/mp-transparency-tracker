@@ -19,10 +19,10 @@ export function getDonorProfile(donorName) {
 // Electoral Commission" is really Parliament funding opposition parties to
 // do their job.
 const PUBLIC_FUND_RULES = [
-  { test: /electoral commission/i, description: "A Policy Development Grant — a small state grant the Electoral Commission distributes to help political parties develop policy. Not a donation from a person or organisation." },
-  { test: /house of lords/i, description: "\"Cranborne Money\" — UK state funding paid to opposition parties to support their work in the House of Lords. Not a donation from a person or organisation." },
-  { test: /house of commons|gwasanaethau corfforaethol/i, description: "\"Short Money\" — UK state funding paid to opposition parties to support their parliamentary work in the Commons. Not a donation from a person or organisation." },
-  { test: /northern ireland assembly/i, description: "Financial Assistance for Political Parties — the Northern Ireland Assembly's equivalent of Short Money, funding opposition parties' Assembly work. Not a donation from a person or organisation." },
+  { test: /electoral commission/i, description: "A Policy Development Grant: a small state grant the Electoral Commission distributes to help political parties develop policy. Not a donation from a person or organisation." },
+  { test: /house of lords/i, description: "\"Cranborne Money\": UK state funding paid to opposition parties to support their work in the House of Lords. Not a donation from a person or organisation." },
+  { test: /house of commons|gwasanaethau corfforaethol/i, description: "\"Short Money\": UK state funding paid to opposition parties to support their parliamentary work in the Commons. Not a donation from a person or organisation." },
+  { test: /northern ireland assembly/i, description: "Financial Assistance for Political Parties: the Northern Ireland Assembly's equivalent of Short Money, funding opposition parties' Assembly work. Not a donation from a person or organisation." },
   { test: /scottish parliament/i, description: "State funding the Scottish Parliament provides to political parties to support their parliamentary duties. Not a donation from a person or organisation." },
 ];
 

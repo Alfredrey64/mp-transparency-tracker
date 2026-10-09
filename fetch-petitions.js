@@ -39,7 +39,7 @@ function toRow(p) {
     // that showing up as a stale "scheduled for" date in the past.
     debate_outcome_summary: a.debate_outcome_at
       ? a.debate_outcome?.summary ??
-        `Debated in the Commons on ${a.debate_outcome_at.slice(0, 10)} — Parliament doesn't publish a written summary of every debate's outcome; see Hansard for the transcript.`
+        `Debated in the Commons on ${a.debate_outcome_at.slice(0, 10)}. Parliament doesn't publish a written summary of every debate's outcome; see Hansard for the transcript.`
       : null,
     debate_scheduled_on: !a.debate_outcome_at ? (a.debate_scheduled_on ?? a.scheduled_debate_date ?? null) : null,
     url: `https://petition.parliament.uk/petitions/${p.id}`,

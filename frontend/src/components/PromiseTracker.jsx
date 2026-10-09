@@ -159,7 +159,7 @@ export default function PromiseTracker() {
             display: "flex", alignItems: "center", justifyContent: "center", background: COLORS.paper,
             border: `1px solid ${COLORS.hairline}`,
           }}
-          title={`${pm.name} — ${pm.cabinet_role}`}
+          title={`${pm.name}, ${pm.cabinet_role}`}
         >
           <img
             src={pm.thumbnail_url}
@@ -192,11 +192,11 @@ export default function PromiseTracker() {
       </div>
       <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 18, marginBottom: 0, lineHeight: 1.65, maxWidth: 780 }}>
         As the sitting government, Labour's <GlossaryTerm term="Manifesto">manifesto</GlossaryTerm> pledges are the only ones that can be checked against real
-        outcomes rather than promises. We don't make these calls ourselves — every status here comes from{" "}
+        outcomes rather than promises. We don't make these calls ourselves: every status here comes from{" "}
         <a href={SOURCE_URL} target="_blank" rel="noreferrer" style={{ color: LABOUR_RED, fontWeight: 600 }}>
           Full Fact's independent, non-partisan Government Tracker ↗
         </a>
-        , which assesses all {OVERALL_TOTAL} pledges it tracks — this page shows a {TOTAL_PLEDGES}-pledge sample
+        , which assesses all {OVERALL_TOTAL} pledges it tracks. This page shows a {TOTAL_PLEDGES}-pledge sample
         spanning every major policy area, last checked {LAST_CHECKED}.
       </p>
 
@@ -251,7 +251,7 @@ export default function PromiseTracker() {
       </div>
 
       <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 24, paddingTop: 16, borderTop: `1px solid ${COLORS.hairline}`, lineHeight: 1.6 }}>
-        This is a curated sample of the {OVERALL_TOTAL} pledges Full Fact tracks — see{" "}
+        This is a curated sample of the {OVERALL_TOTAL} pledges Full Fact tracks. See{" "}
         <a href={SOURCE_URL} target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
           their full tracker ↗
         </a>{" "}

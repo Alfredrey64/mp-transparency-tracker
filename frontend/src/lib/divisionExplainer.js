@@ -49,7 +49,7 @@ function billVote(billName, billPart, rest) {
       "second-reading",
       `The ${name}'s Second Reading: the first main debate, where MPs vote on whether the bill's overall idea should go any further.`,
       "In favour of the bill moving on to the next stage.",
-      "Against — to stop it going any further.",
+      "Against, to stop it going any further.",
       subject
     );
   }
@@ -76,7 +76,7 @@ function billVote(billName, billPart, rest) {
   if (clause) {
     return result(
       "new-clause",
-      `A vote on adding a new section (New Clause ${clause[1]}) to the ${name}${where}. The title doesn't say what the clause does — the bill's own page on bills.parliament.uk does.`,
+      `A vote on adding a new section (New Clause ${clause[1]}) to the ${name}${where}. The title doesn't say what the clause does: the bill's own page on bills.parliament.uk does.`,
       "In favour of adding it.",
       "Against adding it.",
       { ...subject, number: clause[1] }
@@ -96,7 +96,7 @@ function billVote(billName, billPart, rest) {
   if (amendment) {
     return result(
       "amendment",
-      `A vote on a proposed change (Amendment ${amendment[1]}) to the ${name}${where}. The title doesn't say what the change is — the bill's own page does.`,
+      `A vote on a proposed change (Amendment ${amendment[1]}) to the ${name}${where}. The title doesn't say what the change is: the bill's own page does.`,
       "In favour of making the change.",
       "Against making the change.",
       { ...subject, number: amendment[1] }
@@ -139,7 +139,7 @@ function classify(rawTitle) {
       "closure",
       "A vote to end the current debate and go straight to the decision. It's used to stop a debate running on, and is a normal part of getting business through.",
       "In favour of ending the debate now.",
-      "Against — wanted the debate to continue."
+      "Against, wanted the debate to continue."
     );
   }
 
@@ -159,7 +159,7 @@ function classify(rawTitle) {
     const subject = title.replace(/^draft\s+/i, "").replace(/\s+20\d\d$/, "").trim();
     return result(
       "statutory-instrument",
-      `A vote on whether to approve ${subject ? `the ${subject}` : "draft secondary legislation"} — detailed rules ministers made using powers an earlier Act gave them. This kind only takes effect if Parliament approves it.`,
+      `A vote on whether to approve ${subject ? `the ${subject}` : "draft secondary legislation"}, detailed rules ministers made using powers an earlier Act gave them. This kind only takes effect if Parliament approves it.`,
       "Approved it.",
       "Voted against approving it.",
       { subject }
@@ -169,7 +169,7 @@ function classify(rawTitle) {
   if (/^draft .*code of practice/.test(t) || /^draft .*(guidance|code)\b/.test(t)) {
     return result(
       "draft-code",
-      "A vote on whether to approve a draft official code of practice — formal guidance that ministers have laid before Parliament and that needs MPs' approval.",
+      "A vote on whether to approve a draft official code of practice, formal guidance that ministers have laid before Parliament and that needs MPs' approval.",
       "Approved it.",
       "Voted against approving it."
     );
@@ -205,7 +205,7 @@ function classify(rawTitle) {
   if (/^business of the house|^business motion|^programme motion/.test(t)) {
     return result(
       "business",
-      "A vote on how the House organises its time and business — for example when bills will be debated.",
+      "A vote on how the House organises its time and business, for example when bills will be debated.",
       "In favour of the arrangements proposed.",
       "Against the arrangements proposed."
     );

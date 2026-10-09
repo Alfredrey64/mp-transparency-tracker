@@ -85,13 +85,13 @@ export default function Settings({ onNavigate }) {
               onClick={() => onNavigate("privacy")}
               style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, textAlign: "left" }}
             >
-              Privacy Policy <span style={{ color: COLORS.inkSoft }}>→</span>
+              Privacy Policy
             </button>
             <button
               onClick={() => onNavigate("terms")}
               style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, textAlign: "left" }}
             >
-              Terms & Conditions <span style={{ color: COLORS.inkSoft }}>→</span>
+              Terms & Conditions
             </button>
           </div>
         </div>

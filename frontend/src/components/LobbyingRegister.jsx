@@ -13,8 +13,8 @@ import LOBBYISTS from "../data/consultantLobbyists.json";
 // solid on purpose — its size is illustrative of "bigger and unknown", not
 // a real figure, since nobody actually counts in-house lobbying.
 const VISIBILITY_BARS = [
-  { label: "Registered consultant lobbying", caption: `${LOBBYISTS.length} firms — fully visible`, color: "#5A7FA6", width: 14 },
-  { label: "In-house lobbying by companies' own staff", caption: "Unmeasured — no register covers it", color: "#9C3B3B", width: 94, hatched: true },
+  { label: "Registered consultant lobbying", caption: `${LOBBYISTS.length} firms, fully visible`, color: "#5A7FA6", width: 14 },
+  { label: "In-house lobbying by companies' own staff", caption: "Unmeasured: no register covers it", color: "#9C3B3B", width: 94, hatched: true },
 ];
 
 const CASES = [
@@ -28,13 +28,13 @@ const CASES = [
     name: "Chamber Group",
     color: "#9C6B30",
     period: "Investigated December 2025–February 2026",
-    detail: "Also investigated for possible unregistered consultant lobbying, and also cleared — the Registrar found no breach in relation to the matter examined.",
+    detail: "Also investigated for possible unregistered consultant lobbying, and also cleared: the Registrar found no breach in relation to the matter examined.",
   },
   {
     name: "George Freeman MP",
     color: "#3F7D5C",
     period: "Investigated July–October 2025",
-    detail: "Investigated after leaked emails reported by The Times appeared to show him discussing parliamentary questions with the director of GHGSat, a firm paying him as an adviser after he'd been explicitly advised by ACOBA not to lobby on its behalf. Cleared on the narrow lobbying-registration question — see the Revolving Door page for the fuller story.",
+    detail: "Investigated after leaked emails reported by The Times appeared to show him discussing parliamentary questions with the director of GHGSat, a firm paying him as an adviser after he'd been explicitly advised by ACOBA not to lobby on its behalf. Cleared on the narrow lobbying-registration question. See the Revolving Door page for the fuller story.",
   },
 ];
 
@@ -56,13 +56,13 @@ const LOBBYIST_FOCUS = {
   "Charlotte Street Partners Limited": "Scotland-focused public affairs",
   "Chelgate Limited": "Corporate & public affairs",
   "Cicero Consulting Limited": "Financial & corporate public affairs",
-  "CMS Cameron McKenna Nabarro Olswang LLP": "Law firm — regulatory & public policy",
-  "Cooley (UK) LLP": "Law firm — technology & life sciences",
-  "Covington & Burling LLP": "Law firm — regulatory & international trade",
+  "CMS Cameron McKenna Nabarro Olswang LLP": "Law firm, regulatory & public policy",
+  "Cooley (UK) LLP": "Law firm, technology & life sciences",
+  "Covington & Burling LLP": "Law firm, regulatory & international trade",
   "Daniel J Edelman Limited": "Global PR & communications",
-  "Deloitte LLP": "Big Four — tax, audit & policy advisory",
-  "DLA Piper UK LLP": "Law firm — regulatory & public policy",
-  "Ernst & Young LLP (EY)": "Big Four — tax, audit & policy advisory",
+  "Deloitte LLP": "Big Four, tax, audit & policy advisory",
+  "DLA Piper UK LLP": "Law firm, regulatory & public policy",
+  "Ernst & Young LLP (EY)": "Big Four, tax, audit & policy advisory",
   "FGS Global (UK) Limited": "Financial & corporate communications",
   "Fleishman-Hillard Group Limited": "Global PR & public affairs",
   "Fragomen LLP": "Immigration law & policy",
@@ -75,23 +75,23 @@ const LOBBYIST_FOCUS = {
   "Incisive Health Ltd": "Health & life sciences policy",
   "Independent Automotive Aftermarket Federation": "Automotive aftermarket trade body",
   "iNHouse Communications Limited": "Health & life sciences PR",
-  "KPMG LLP": "Big Four — tax, audit & policy advisory",
+  "KPMG LLP": "Big Four, tax, audit & policy advisory",
   "Kreab Limited": "Financial & corporate communications",
   "Lexington Communications Limited": "Financial & corporate communications",
   "MAP Patient Access Limited": "Pharmaceutical patient-access policy",
   "MHP Communications": "Corporate & public affairs",
   "Milltown Partners GBR Limited": "Technology & reputation advisory",
-  "Mishcon de Reya LLP": "Law firm — regulatory & public policy",
-  "Norton Rose Fulbright LLP": "Law firm — regulatory & public policy",
-  "Pinsent Masons LLP": "Law firm — regulatory & public policy",
+  "Mishcon de Reya LLP": "Law firm, regulatory & public policy",
+  "Norton Rose Fulbright LLP": "Law firm, regulatory & public policy",
+  "Pinsent Masons LLP": "Law firm, regulatory & public policy",
   "Policy Connect Limited": "Cross-party policy & research forum",
   "Portland PR Limited": "Corporate & public affairs",
   "Powerscourt Limited": "Financial & corporate communications",
-  "PricewaterhouseCoopers LLP (PWC)": "Big Four — tax, audit & policy advisory",
+  "PricewaterhouseCoopers LLP (PWC)": "Big Four, tax, audit & policy advisory",
   "Public First Limited": "Polling & public affairs",
   "Red Flag Consulting Limited": "Corporate & reputation advisory",
   "SEC Newgate UK Limited": "Corporate & public affairs",
-  "Shoosmiths LLP": "Law firm — regulatory & public policy",
+  "Shoosmiths LLP": "Law firm, regulatory & public policy",
   "SME4Labour Limited": "Small-business advocacy (Labour-affiliated)",
   "Tavistock Communications Limited": "Financial & corporate communications",
   "Teneo Strategy Limited": "Corporate advisory & communications",
@@ -116,11 +116,11 @@ function RegisterSearch() {
         Search the register yourself
       </h2>
       <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16 }}>
-        Every firm currently registered as a consultant lobbyist — a snapshot taken by hand from the official
+        Every firm currently registered as a consultant lobbyist: a snapshot taken by hand from the official
         register (see Data & Methodology for exactly when). This list shows who's registered, not who they
         lobbied for or when; tap "official register" on any Data & Methodology source row for a firm's live,
         quarter-by-quarter client list. Where a firm's general practice area is well-established public knowledge,
-        it's shown alongside their name — a broad category only, not a claim about a specific client or issue (the
+        it's shown alongside their name: a broad category only, not a claim about a specific client or issue (the
         register itself doesn't disclose that, and most firms below are smaller consultancies this site can't
         confidently categorise, so they're left unlabelled rather than guessed at).
       </p>
@@ -182,7 +182,7 @@ function RegisterSearch() {
 
       {filtered.length > DISPLAY_CAP && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 10 }}>
-          Showing the first {DISPLAY_CAP} matches — narrow your search to see a specific firm.
+          Showing the first {DISPLAY_CAP} matches. Narrow your search to see a specific firm.
         </div>
       )}
     </div>
@@ -203,7 +203,7 @@ export default function LobbyingRegister() {
       <div className="editorial-body">
 
       <WhyItMattersBand icon={IconRegister} color="#5A7FA6">
-        this register makes one narrow slice of professional persuasion visible — but most real-world lobbying,
+        this register makes one narrow slice of professional persuasion visible, but most real-world lobbying,
         done in-house by a company's own staff, leaves no public trace at all. Knowing exactly what this register
         does and doesn't cover is the only way to read it without being misled by its silences.
       </WhyItMattersBand>
@@ -212,22 +212,22 @@ export default function LobbyingRegister() {
 
       <InfoCard title={<>What '<GlossaryTerm term="Lobbying">lobbying</GlossaryTerm>' actually means</>} color="#5A7FA6" icon={IconGroup} index={0}>
         <p style={{ marginTop: 0 }}>
-          Lobbying just means trying to persuade someone in government to make a particular decision — support a
+          Lobbying just means trying to persuade someone in government to make a particular decision, support a
           bill, change a regulation, award a contract. It isn't inherently improper: charities, trade unions,
           patient groups and residents' associations all lobby government too, not only corporations. The concern
-          isn't that persuasion happens — it's whether the public can see who's doing it, for whom, and why, so a
+          isn't that persuasion happens. It's whether the public can see who's doing it, for whom, and why, so a
           minister's eventual decision can be judged with that context in mind.
         </p>
         <p style={{ marginBottom: 0 }}>
-          This particular register only captures one specific slice of that activity — read on for exactly which.
+          This particular register only captures one specific slice of that activity. Read on for exactly which.
         </p>
       </InfoCard>
 
       <InfoCard title="What has to be registered" color="#3F7D5C" icon={IconRegister} index={1}>
         The Transparency of Lobbying, Non-Party Campaigning and Trade Union Administration Act 2014 created a
         statutory duty for one specific, narrow activity: a{" "}
-        <strong style={{ color: COLORS.ink }}>consultant lobbyist</strong> — a firm or individual paid by a client to
-        lobby on their behalf, as opposed to lobbying for their own organisation — communicating{" "}
+        <strong style={{ color: COLORS.ink }}>consultant lobbyist</strong>: a firm or individual paid by a client to
+        lobby on their behalf, as opposed to lobbying for their own organisation, communicating{" "}
         <strong style={{ color: COLORS.ink }}>directly and personally with a government minister or a department's
         permanent secretary</strong> (the most senior civil servant in that department, who runs it day to day).
         Every firm on the register has to file a quarterly return naming every client they lobbied for in that way,
@@ -239,7 +239,7 @@ export default function LobbyingRegister() {
       <InfoCard title="The big gap: in-house lobbyists aren't covered at all" color="#9C3B3B" icon={IconGavel} index={2} wide>
         <p style={{ marginTop: 0 }}>
           The rule only catches lobbying-for-hire. A company's own government-affairs team, lobbying ministers
-          directly on their employer's behalf, isn't "consultant" lobbying at all — and doesn't have to register or
+          directly on their employer's behalf, isn't "consultant" lobbying at all, and doesn't have to register or
           disclose anything. In-house teams are estimated to account for a larger share of all lobbying activity
           than the consultancies that actually appear on this register.
         </p>
@@ -256,7 +256,7 @@ export default function LobbyingRegister() {
         </h2>
         <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16 }}>
           The Registrar can and does open investigations into whether lobbying should have been registered and
-          wasn't. Three recent examples — all ultimately cleared, which is itself informative about how narrow the
+          wasn't. Three recent examples: all ultimately cleared, which is itself informative about how narrow the
           legal definition is.
         </p>
         <div className="ed-list">
@@ -284,17 +284,17 @@ export default function LobbyingRegister() {
       <InfoCard title="Where this leaves you as a reader" color="#9C6B30" icon={IconShield} index={3} wide>
         <ul style={{ margin: 0, paddingLeft: 20 }}>
           <li style={{ marginBottom: 8 }}>
-            If a firm appears on this register, that's a genuine, useful signal — it's telling you a client paid
+            If a firm appears on this register, that's a genuine, useful signal. It's telling you a client paid
             someone specifically to approach the very top of government.
           </li>
           <li style={{ marginBottom: 8 }}>
-            If a company <em>isn't</em> on it, that tells you nothing either way — the vast majority of real-world
+            If a company <em>isn't</em> on it, that tells you nothing either way: the vast majority of real-world
             lobbying, done in-house or aimed at officials below permanent secretary level, simply never has to
             appear here.
           </li>
           <li>
             The list above was taken from the live register in September 2026 and is refreshed periodically by
-            hand, not daily — for current, quarter-by-quarter client lists per firm, search the{" "}
+            hand, not daily, for current, quarter-by-quarter client lists per firm, search the{" "}
             <a href="https://registrarofconsultantlobbyists.org.uk/" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
               official register itself ↗
             </a>

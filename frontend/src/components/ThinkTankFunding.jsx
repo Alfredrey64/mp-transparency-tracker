@@ -30,7 +30,7 @@ function MaskedExpertDiagram() {
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, margin: "18px auto 0", maxWidth: 520 }}>
         The audience only ever sees the circle on the right. Everything feeding it from the left is invisible by
-        law — the sample below shows what turns up on the rare occasions someone actually checked.
+        law: the sample below shows what turns up on the rare occasions someone actually checked.
       </div>
     </div>
   );
@@ -59,7 +59,7 @@ const THINK_TANKS = [
     name: "Adam Smith Institute",
     lean: "Free-market / right-leaning",
     grade: "E",
-    detail: "One of only four UK think tanks — out of roughly 200 assessed — that refuse to name a single donor. Rated \"highly opaque\" by the transparency watchdog Transparify.",
+    detail: "One of only four UK think tanks, out of roughly 200 assessed, that refuse to name a single donor. Rated \"highly opaque\" by the transparency watchdog Transparify.",
   },
   {
     name: "TaxPayers' Alliance",
@@ -71,7 +71,7 @@ const THINK_TANKS = [
     name: "Centre for Policy Studies",
     lean: "Free-market / right-leaning",
     grade: "D",
-    detail: "Rated among the least transparent UK think tanks in 2019, improving slightly to a D grade by 2023 — still well below the disclosure standard of the organisations below.",
+    detail: "Rated among the least transparent UK think tanks in 2019, improving slightly to a D grade by 2023, still well below the disclosure standard of the organisations below.",
   },
   {
     name: "Institute for Public Policy Research (IPPR)",
@@ -134,7 +134,7 @@ export default function ThinkTankFunding() {
         subtitle={
           <>
             <GlossaryTerm term="Think Tank">Think tank</GlossaryTerm> staff appear on the news as independent
-            experts every day — but UK law puts no obligation on any of them to say who pays for their research.
+            experts every day, but UK law puts no obligation on any of them to say who pays for their research.
             This page shows what an independent transparency project has actually found when it asked, across the
             political spectrum.
           </>
@@ -146,7 +146,7 @@ export default function ThinkTankFunding() {
 
       <WhyItMattersBand icon={IconThinkTank} color="#9C6B30">
         the "expert" quoted on the news tonight could be paid, indirectly, by exactly the industry their comments
-        defend — and under UK law, neither they nor the broadcaster interviewing them has to tell you that.
+        defend, and under UK law, neither they nor the broadcaster interviewing them has to tell you that.
       </WhyItMattersBand>
 
       <MaskedExpertDiagram />
@@ -160,7 +160,7 @@ export default function ThinkTankFunding() {
           one of the few clues to which kind you are looking at.
         </p>
         <p style={{ marginBottom: 0 }}>
-          They're not fringe voices — think tank staff are quoted in newspapers, interviewed on the radio, and
+          They're not fringe voices. Think tank staff are quoted in newspapers, interviewed on the radio, and
           invited to brief select committees and ministers on a near-daily basis, almost always introduced by their
           job title alone, with no mention of who pays their salary.
         </p>
@@ -168,13 +168,13 @@ export default function ThinkTankFunding() {
 
       <InfoCard title="Why there's no legal requirement to say" color="#9C3B3B" icon={IconShield} index={1}>
         <p style={{ marginTop: 0 }}>
-          A political party has to name a donor who gives more than a few hundred pounds. A think tank — even one
-          whose staff regularly brief ministers and appear on broadcast news — has no equivalent duty at all.
+          A political party has to name a donor who gives more than a few hundred pounds. A think tank, even one
+          whose staff regularly brief ministers and appear on broadcast news, has no equivalent duty at all.
         </p>
         <p style={{ marginBottom: 0 }}>
           Most register as <strong style={{ color: COLORS.ink }}>educational charities</strong>. Charity law's rules
-          are built around a completely different question — making sure a charity's money is spent on its stated
-          charitable purpose — and were simply never designed to answer "who is trying to influence government
+          are built around a completely different question, making sure a charity's money is spent on its stated
+          charitable purpose, and were simply never designed to answer "who is trying to influence government
           policy through this organisation?" the way election law is. Several UK think tanks have used that mismatch
           to keep every donor's identity confidential, entirely lawfully.
         </p>
@@ -192,7 +192,7 @@ export default function ThinkTankFunding() {
           rating here may be a couple of years old for some organisations.
         </p>
         <p style={{ marginBottom: 0 }}>
-          A poor grade is not proof that a specific claim from that organisation is wrong — but it does mean their
+          A poor grade is not proof that a specific claim from that organisation is wrong, but it does mean their
           independence can't be checked the way a party donation or an MP's outside earnings can be, everywhere
           else on this site.
         </p>
@@ -203,7 +203,7 @@ export default function ThinkTankFunding() {
           A sample, across the spectrum
         </h2>
         <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16 }}>
-          Seven prominent UK think tanks with a published Who Funds You? grade — three free-market organisations
+          Seven prominent UK think tanks with a published Who Funds You? grade: three free-market organisations
           rated poorly, one left-leaning and two non-partisan organisations rated highly. This is a hand-picked
           sample to illustrate the range, not a comprehensive or systematically balanced survey of every think tank
           in Britain; Who Funds You? itself has assessed dozens more, in both directions.
@@ -217,11 +217,11 @@ export default function ThinkTankFunding() {
 
       <InfoCard title="Why this matters for what you see on the news" color="#9C6B30" icon={IconBroadcast} index={3}>
         A think tank fellow introduced on air as an "independent" or "leading" analyst is giving their institution's
-        view a platform without the audience necessarily knowing who funds that institution — a gap that sits right
+        view a platform without the audience necessarily knowing who funds that institution: a gap that sits right
         alongside the questions raised on the{" "}
         <strong style={{ color: COLORS.ink }}>Media Literacy</strong> page about who's regulated to be impartial and
         who isn't. Knowing an organisation's transparency grade doesn't tell you whether a specific argument is
-        right or wrong — but it's a reasonable prompt to ask who benefits before taking "independent" at face value.
+        right or wrong, but it's a reasonable prompt to ask who benefits before taking "independent" at face value.
       </InfoCard>
       </div>
     </div>

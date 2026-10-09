@@ -100,7 +100,7 @@ export function CompanyDonorsView() {
         }}
       >
         This only covers companies that are <strong style={{ color: COLORS.ink }}>also declared donors</strong> to an
-        MP — it isn't a general Companies House search. It's limited to the {companies?.length ?? "…"} companies
+        MP. It isn't a general Companies House search. It's limited to the {companies?.length ?? "…"} companies
         we've been able to confidently match to a donor; see Data & Methodology for how that matching works.
       </div>
 

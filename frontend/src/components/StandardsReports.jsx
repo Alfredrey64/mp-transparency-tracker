@@ -141,7 +141,7 @@ function ReportCard({ report, politician, onSelectPolitician, index }) {
           {politician ? (
             <>{politician.party} · currently sitting</>
           ) : (
-            "No longer a current MP — this Parliament, or since left office"
+            "No longer a current MP. This Parliament, or since left office"
           )}
         </div>
         <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, opacity: 0.7, marginBottom: 10 }}>{report.title}</div>
@@ -275,7 +275,7 @@ export default function StandardsReports({ onSelectPolitician }) {
           marginBottom: 24, fontFamily: FONT_BODY, fontSize: 13, lineHeight: 1.6, color: COLORS.inkSoft,
         }}
       >
-        This isn't every allegation or every investigation — most complaints to the Parliamentary Commissioner for
+        This isn't every allegation or every investigation: most complaints to the Parliamentary Commissioner for
         Standards are resolved informally and never become a public report. This is specifically the committee's
         formal, published findings, which only happen for the more serious cases. A report appearing here is a
         matter of public record, not an accusation from this site.
@@ -326,7 +326,7 @@ export default function StandardsReports({ onSelectPolitician }) {
       {reports === null && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>}
       {reports !== null && failed && <LoadFailedNote item="the standards reports list" />}
       {reports !== null && !failed && reports.length === 0 && (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No data yet — check back after the next daily update.</div>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No data yet. Check back after the next daily update.</div>
       )}
       {reports !== null && !failed && reports.length > 0 && filtered.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No matches.</div>

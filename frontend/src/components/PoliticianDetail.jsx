@@ -103,7 +103,7 @@ function FundingBySectorBox({ interests }) {
   return (
     <CardShell title="Funding by Sector">
       <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginBottom: 10, lineHeight: 1.5 }}>
-        Declared donors matched to an industry, where confidently identifiable — not the MP's own stated position.
+        Declared donors matched to an industry, where confidently identifiable, not the MP's own stated position.
         Tap a sector to see which donations make it up.
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
@@ -195,7 +195,7 @@ function MoneyAndVotesBox({ politician, interests }) {
     <CardShell title="Money & Votes">
       <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginBottom: 12, lineHeight: 1.55 }}>
         Where this MP's declared donors' industry overlaps with a bill's policy area, and they voted on it. This is
-        a factual overlap, not evidence the donation influenced the vote — most MPs vote with their party regardless
+        a factual overlap, not evidence the donation influenced the vote: most MPs vote with their party regardless
         of who has donated to them, and a shared policy area doesn't establish a connection between the two.
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -261,7 +261,7 @@ function CommitteeConflictsBox({ interests, myCommittees }) {
     <CardShell title="Committee & Donor Overlap">
       <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginBottom: 12, lineHeight: 1.55 }}>
         Where this MP sits on a select committee that scrutinises the same industry as one of their declared donors.
-        This is a factual overlap, not evidence of undue influence — committee places reflect an MP's background and
+        This is a factual overlap, not evidence of undue influence, committee places reflect an MP's background and
         interests, which is very often exactly why it lines up with their donors' industry.
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -284,7 +284,7 @@ function CommitteeConflictsBox({ interests, myCommittees }) {
               ))}
               {c.donations.length > 5 && (
                 <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, fontStyle: "italic" }}>
-                  + {c.donations.length - 5} more — see the Donations tab above.
+                  + {c.donations.length - 5} more. See the Donations tab above.
                 </div>
               )}
             </div>
@@ -345,7 +345,7 @@ function CrossRegisterBox({ interests, gifts }) {
       <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginBottom: 12, lineHeight: 1.55 }}>
         An organisation or individual appears in both this MP's declared financial interests and the separate
         register of ministerial gifts and hospitality. This is a factual name overlap only, not evidence of
-        anything improper — ministers routinely meet and receive hospitality from many of the same organisations
+        anything improper, ministers routinely meet and receive hospitality from many of the same organisations
         active in public life more broadly.
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -380,7 +380,7 @@ function CurrentRolesBox({ interests }) {
   return (
     <CardShell title="Current Outside Roles">
       <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginBottom: 10, lineHeight: 1.5 }}>
-        Ongoing paid roles or jobs outside Parliament, as declared in the register — separate from one-off payments
+        Ongoing paid roles or jobs outside Parliament, as declared in the register, separate from one-off payments
         like a single speech or article fee.
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -444,7 +444,7 @@ function ClaimsTabContent({ politician, claims }) {
         <ExpensesMeaning politician={politician} />
         <div style={{ marginTop: 10, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5 }}>
           Business costs (staffing, travel, accommodation, office running costs) claimed through{" "}
-          <GlossaryTerm term="IPSA">IPSA, the Independent Parliamentary Standards Authority</GlossaryTerm> — separate
+          <GlossaryTerm term="IPSA">IPSA, the Independent Parliamentary Standards Authority</GlossaryTerm>, separate
           from their salary and from the donations shown under the Donations tab.{" "}
           <a
             href="https://www.theipsa.org.uk/mp-staffing-business-costs/your-mp"
@@ -634,8 +634,8 @@ function ManifestoTabContent({ politician }) {
     <div>
       <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.accent}`, borderRadius: 12, padding: 16, marginBottom: 14 }}>
         <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, lineHeight: 1.55 }}>
-          {manifesto.shortName}'s {manifesto.manifestoYear} <GlossaryTerm term="Manifesto">manifesto</GlossaryTerm>, <em>{manifesto.manifestoTitle}</em> — summarised
-          independently rather than reproduced (manifestos are copyrighted) — matched below against{" "}
+          {manifesto.shortName}'s {manifesto.manifestoYear} <GlossaryTerm term="Manifesto">manifesto</GlossaryTerm>, <em>{manifesto.manifestoTitle}</em>, summarised
+          independently rather than reproduced (manifestos are copyrighted), matched below against{" "}
           {politician.name.split(" ").slice(-1)[0]}'s actual Commons votes in the same policy area. Votes are matched
           by title against official divisions, which can occasionally miss one or pick up an unrelated vote with a
           similar name; a policy area with none listed just means no matching bill has come to a vote yet, not that
@@ -688,7 +688,7 @@ function GiftsTabContent({ gifts, failed }) {
   if (gifts.length === 0) {
     return (
       <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, textAlign: "center", padding: "20px 0", lineHeight: 1.6 }}>
-        No ministerial gifts or hospitality declared for this MP — this register only applies to MPs currently
+        No ministerial gifts or hospitality declared for this MP. This register only applies to MPs currently
         holding a government post.
       </div>
     );
@@ -697,7 +697,7 @@ function GiftsTabContent({ gifts, failed }) {
   return (
     <div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 12, lineHeight: 1.5 }}>
-        Declared under the Cabinet Office's monthly Register of Ministers' Gifts and Hospitality — covers this
+        Declared under the Cabinet Office's monthly Register of Ministers' Gifts and Hospitality, covers this
         ministerial role, not their personal financial interests shown under Donations.
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -719,7 +719,7 @@ function GiftsTabContent({ gifts, failed }) {
             </div>
             <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.4 }}>
               {g.description || "(no description given)"}
-              {g.counterparty && <span style={{ color: COLORS.inkSoft }}> — {g.given_or_received === "Given" ? "to" : "from"} {g.counterparty}</span>}
+              {g.counterparty && <span style={{ color: COLORS.inkSoft }}>, {g.given_or_received === "Given" ? "to" : "from"} {g.counterparty}</span>}
             </div>
             <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 4 }}>
               {g.date_or_period}

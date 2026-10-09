@@ -157,7 +157,7 @@ function FPTPDiagram() {
           <div style={{ display: "flex", justifyContent: "space-between", fontFamily: FONT_BODY, fontSize: 12, marginBottom: 3 }}>
             <span style={{ color: COLORS.ink, fontWeight: c.winner ? 700 : 400 }}>
               {c.name}
-              {c.winner ? " — wins the seat" : ""}
+              {c.winner ? ", wins the seat" : ""}
             </span>
             <span style={{ fontFamily: FONT_MONO, color: COLORS.inkSoft }}>{c.pct}%</span>
           </div>
@@ -172,7 +172,7 @@ function FPTPDiagram() {
         </div>
       ))}
       <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginTop: 2 }}>
-        An illustrative example — Candidate A wins with only 34% of the vote, because First Past The Post only needs
+        An illustrative example: Candidate A wins with only 34% of the vote, because First Past The Post only needs
         the most votes, not a majority of them.
       </div>
     </motion.div>
@@ -184,42 +184,42 @@ const STRUCTURE_ROWS = [
     key: "monarch",
     label: "The Monarch",
     tagline: "Ceremonial Head of State",
-    desc: "The Monarch is the formal Head of State but has no political power in practice. Every Act of Parliament requires Royal Assent, and the Monarch formally invites the leader of the winning party to become Prime Minister — but by long-standing convention, never refuses or interferes.",
+    desc: "The Monarch is the formal Head of State but has no political power in practice. Every Act of Parliament requires Royal Assent, and the Monarch formally invites the leader of the winning party to become Prime Minister, but by long-standing convention, never refuses or interferes.",
     visual: <CrownGraphic />,
   },
   {
     key: "parliament",
     label: "Parliament",
-    tagline: "The legislature — makes the laws",
+    tagline: "The legislature, makes the laws",
     desc: "Parliament is made up of two chambers: the elected House of Commons (650 MPs) and the House of Lords (appointed and hereditary members, plus bishops). Together they debate, amend, and vote on new laws.",
     visual: <CommonsLordsDiagram />,
   },
   {
     key: "government",
     label: "The Government",
-    tagline: "The executive — runs the country day to day",
+    tagline: "The executive, runs the country day to day",
     desc: "The Government is formed by whichever party (or coalition) holds a majority of seats in the Commons. It's led by the Prime Minister and the Cabinet (senior ministers, each responsible for a department like Health, Defence, or Treasury). The Government proposes most new laws and sets policy. Below is the current Commons, seat by seat.",
     visual: <CommonsChamber />,
   },
   {
     key: "delivery",
     label: "Civil Service & Local Councils",
-    tagline: "Implementation — where policy meets daily life",
-    desc: "Once a law passes, it's the Civil Service (permanent, non-political staff in government departments) and local councils who actually deliver it — running the NHS, schools, roads, benefits, and local services according to the rules Parliament has set.",
+    tagline: "Implementation, where policy meets daily life",
+    desc: "Once a law passes, it's the Civil Service (permanent, non-political staff in government departments) and local councils who actually deliver it, running the NHS, schools, roads, benefits, and local services according to the rules Parliament has set.",
     visual: <DeliveryDiagram />,
   },
 ];
 
 const BILL_PROCESS_STAGES = [
-  { key: "idea", label: "Idea", desc: "Most bills come from the Government — usually built from manifesto promises and drafted by civil servants in the relevant department. MPs can also propose their own Private Members' Bills (chosen by ballot or a 10-minute slot), and the House of Lords can introduce bills too." },
-  { key: "first", label: "1st Reading", desc: "A purely formal step — the bill's title is read out and it's printed. There's no debate or vote at this stage." },
+  { key: "idea", label: "Idea", desc: "Most bills come from the Government, usually built from manifesto promises and drafted by civil servants in the relevant department. MPs can also propose their own Private Members' Bills (chosen by ballot or a 10-minute slot), and the House of Lords can introduce bills too." },
+  { key: "first", label: "1st Reading", desc: "A purely formal step: the bill's title is read out and it's printed. There's no debate or vote at this stage." },
   { key: "second", label: "2nd Reading", desc: "The first real debate. MPs discuss the bill's main principles and purpose, then vote on whether it should proceed. This is usually the first meaningful vote a bill faces." },
   { key: "committee", label: "Committee Stage", desc: "A smaller group of MPs (or occasionally the whole House) examines the bill line by line, proposing and voting on detailed amendments." },
   { key: "report", label: "Report Stage", desc: "The whole House considers the amendments made in Committee, and can propose further changes." },
   { key: "third", label: "3rd Reading", desc: "A final debate and vote on the bill as it now stands, in the House where it started." },
-  { key: "otherhouse", label: "Other House", desc: "The bill then goes through the same stages (1st reading through 3rd reading) in the other House — Lords if it started in the Commons, or vice versa." },
-  { key: "pingpong", label: "\"Ping Pong\"", desc: "If the two Houses disagree on amendments, the bill bounces back and forth between them until they reach agreement — nicknamed \"ping pong\".", visual: <PingPongDiagram /> },
-  { key: "assent", label: "Royal Assent", desc: "The Monarch formally approves the bill — a ceremonial step that hasn't been refused since 1708. The bill is now an Act of Parliament: it's law.", visual: <CrownGraphic /> },
+  { key: "otherhouse", label: "Other House", desc: "The bill then goes through the same stages (1st reading through 3rd reading) in the other House (Lords if it started in the Commons, or vice versa)." },
+  { key: "pingpong", label: "\"Ping Pong\"", desc: "If the two Houses disagree on amendments, the bill bounces back and forth between them until they reach agreement, nicknamed \"ping pong\".", visual: <PingPongDiagram /> },
+  { key: "assent", label: "Royal Assent", desc: "The Monarch formally approves the bill: a ceremonial step that hasn't been refused since 1708. The bill is now an Act of Parliament: it's law.", visual: <CrownGraphic /> },
   { key: "implementation", label: "Implementation", desc: "Laws often don't take effect immediately. Ministers issue \"commencement orders\" to bring parts of an Act into force, and further detailed rules (secondary legislation) are often needed before departments and councils can actually enforce it." },
 ];
 
@@ -247,10 +247,10 @@ function SalaryBar({ label, amount, max, color, note }) {
 function SalaryDiagram() {
   return (
     <div style={{ marginTop: 14, maxWidth: 420 }}>
-      <SalaryBar label="MP's basic salary" amount={91346} max={170000} color="#4C6FA6" note="Set independently by IPSA, not by MPs themselves — reviewed each year." />
+      <SalaryBar label="MP's basic salary" amount={91346} max={170000} color="#4C6FA6" note="Set independently by IPSA, not by MPs themselves, reviewed each year." />
       <SalaryBar label="Cabinet minister (total)" amount={162000} max={170000} color="#4C6FA6" note="Basic salary plus roughly £71,000 'Special Responsibility' pay for the ministerial role." />
       <SalaryBar label="Prime Minister (total)" amount={172000} max={170000} color="#4C6FA6" note="Several recent PMs have voluntarily waived part of this." />
-      <SalaryBar label="UK median full-time salary" amount={37000} max={170000} color={COLORS.inkSoft} note="ONS figure, for comparison — all amounts rounded and reviewed annually, so treat as approximate." />
+      <SalaryBar label="UK median full-time salary" amount={37000} max={170000} color={COLORS.inkSoft} note="ONS figure, for comparison: all amounts rounded and reviewed annually, so treat as approximate." />
     </div>
   );
 }
@@ -282,7 +282,7 @@ function WeekSplitDiagram() {
         ))}
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginTop: 6 }}>
-        A rough, illustrative split for a sitting week — <GlossaryTerm term="Recess">recess</GlossaryTerm>, committee travel, and individual MPs' patterns all vary a lot.
+        A rough, illustrative split for a sitting week. <GlossaryTerm term="Recess">recess</GlossaryTerm>, committee travel, and individual MPs' patterns all vary a lot.
       </div>
     </div>
   );
@@ -291,29 +291,29 @@ function WeekSplitDiagram() {
 const MP_JOB_STAGES = [
   {
     key: "week", label: "A Typical Week",
-    desc: "There's no single \"normal\" week, but when the Commons is sitting, most MPs split their time between Westminster — debates, votes, committee meetings, and party business, roughly Monday to Thursday — and their constituency, typically Friday to Sunday, for surgeries, local events, and casework. Many travel weekly between London and constituencies as far away as Scotland or Cornwall.",
+    desc: "There's no single \"normal\" week, but when the Commons is sitting, most MPs split their time between Westminster (debates, votes, committee meetings, and party business, roughly Monday to Thursday) and their constituency, typically Friday to Sunday, for surgeries, local events, and casework. Many travel weekly between London and constituencies as far away as Scotland or Cornwall.",
     visual: <WeekSplitDiagram />,
   },
   {
     key: "casework", label: "Constituency Casework",
-    desc: "A large share of an MP's time goes on non-legislative work: holding regular \"surgeries\" where constituents bring individual problems — a stuck visa application, a housing dispute, an NHS delay — and writing on their behalf to ministers, councils, or other agencies. A typical MP's office handles hundreds of individual cases a year, on top of general correspondence and emails.",
+    desc: "A large share of an MP's time goes on non-legislative work: holding regular \"surgeries\" where constituents bring individual problems (a stuck visa application, a housing dispute, an NHS delay) and writing on their behalf to ministers, councils, or other agencies. A typical MP's office handles hundreds of individual cases a year, on top of general correspondence and emails.",
   },
   {
     key: "chamber", label: "Debates, Votes & Committees",
-    desc: "In the chamber, MPs speak in debates, table written and oral questions to ministers, and vote in divisions — sometimes several times in an evening, summoned from wherever they are on the parliamentary estate by a division bell. Many also sit on select committees, questioning ministers and officials and helping produce reports that scrutinise government policy in detail.",
+    desc: "In the chamber, MPs speak in debates, table written and oral questions to ministers, and vote in divisions, sometimes several times in an evening, summoned from wherever they are on the parliamentary estate by a division bell. Many also sit on select committees, questioning ministers and officials and helping produce reports that scrutinise government policy in detail.",
   },
   {
     key: "party-life", label: "Party & Public Life",
-    desc: "Beyond Parliament itself, most MPs are expected to support their party — attending party meetings and conferences, and campaigning in other seats during elections and by-elections — and to keep up a public and media presence, from local press coverage to their own constituents' social media.",
+    desc: "Beyond Parliament itself, most MPs are expected to support their party (attending party meetings and conferences, and campaigning in other seats during elections and by-elections) and to keep up a public and media presence, from local press coverage to their own constituents' social media.",
   },
   {
     key: "salary", label: "Salary",
-    desc: "MPs are paid a basic annual salary set by IPSA (the Independent Parliamentary Standards Authority) — an independent body created after the 2009 expenses scandal, precisely so that MPs no longer set their own pay. Extra parliamentary roles (a Cabinet post, a select committee chair, the Speakership) come with additional \"Special Responsibility\" pay on top.",
+    desc: "MPs are paid a basic annual salary set by IPSA (the Independent Parliamentary Standards Authority): an independent body created after the 2009 expenses scandal, precisely so that MPs no longer set their own pay. Extra parliamentary roles (a Cabinet post, a select committee chair, the Speakership) come with additional \"Special Responsibility\" pay on top.",
     visual: <SalaryDiagram />,
   },
   {
     key: "outside-jobs", label: "Second Jobs & Outside Earnings",
-    desc: "MPs are allowed to hold paid work outside Parliament — a doctor keeping up shifts, a barrister still taking cases — provided being an MP stays their main job. Outside earnings above a set threshold must be declared on the Register of Members' Financial Interests within 28 days (see the Financial Interests tab), and MPs can't be paid to advocate for a cause or lobby ministers on someone else's behalf.",
+    desc: "MPs are allowed to hold paid work outside Parliament (a doctor keeping up shifts, a barrister still taking cases) provided being an MP stays their main job. Outside earnings above a set threshold must be declared on the Register of Members' Financial Interests within 28 days (see the Financial Interests tab), and MPs can't be paid to advocate for a cause or lobby ministers on someone else's behalf.",
   },
   {
     key: "staff", label: "Staff & Office Budget",
@@ -321,7 +321,7 @@ const MP_JOB_STAGES = [
   },
   {
     key: "expenses", label: "Expenses (IPSA)",
-    desc: "Since the 2009 scandal, MPs' business costs — travel between Westminster and their constituency, accommodation for MPs who don't represent a London seat, and office running costs — are claimed through IPSA under published rules, rather than self-administered as they were before.",
+    desc: "Since the 2009 scandal, MPs' business costs (travel between Westminster and their constituency, accommodation for MPs who don't represent a London seat, and office running costs) are claimed through IPSA under published rules, rather than self-administered as they were before.",
   },
   {
     key: "pension", label: "Pension",
@@ -329,14 +329,14 @@ const MP_JOB_STAGES = [
   },
   {
     key: "resigning", label: "\"Resigning\"",
-    desc: "An MP can't actually resign — a law dating to 1624 bars a sitting MP from simply quitting their seat. To leave early, they instead apply for a nominal paid \"office of profit under the Crown\" (traditionally Crown Steward and Bailiff of the Chiltern Hundreds, or of the Manor of Northstead), which automatically disqualifies them from sitting as an MP — triggering a by-election.",
+    desc: "An MP can't actually resign: a law dating to 1624 bars a sitting MP from simply quitting their seat. To leave early, they instead apply for a nominal paid \"office of profit under the Crown\" (traditionally Crown Steward and Bailiff of the Chiltern Hundreds, or of the Manor of Northstead), which automatically disqualifies them from sitting as an MP, triggering a by-election.",
   },
 ];
 
 const ELECTION_STAGES = [
   { key: "called", label: "Election Called", desc: "General elections happen at least every 5 years, but the Prime Minister can request one sooner. All 650 Commons seats are contested at once." },
-  { key: "candidates", label: "Candidates Stand", desc: "In each of the UK's 650 constituencies, candidates put themselves forward — representing a party, or standing as independents." },
-  { key: "vote", label: "Voters Vote (FPTP)", desc: "The UK uses First Past The Post: each voter gets one vote in their own constituency, and whoever gets the most votes there wins — even without an outright majority of votes cast.", visual: <FPTPDiagram /> },
+  { key: "candidates", label: "Candidates Stand", desc: "In each of the UK's 650 constituencies, candidates put themselves forward, representing a party, or standing as independents." },
+  { key: "vote", label: "Voters Vote (FPTP)", desc: "The UK uses First Past The Post: each voter gets one vote in their own constituency, and whoever gets the most votes there wins, even without an outright majority of votes cast.", visual: <FPTPDiagram /> },
   { key: "mp", label: "An MP Is Elected", desc: "The winning candidate in each constituency becomes that area's Member of Parliament, taking a seat in the House of Commons." },
   { key: "government-formed", label: "Government Forms", desc: "Whichever party wins more than half of the 650 seats (326+) can form a Government alone. If no party reaches that, parties may form a coalition, or one may govern as a minority.", visual: <MajorityBarDiagram /> },
   { key: "pm-appointed", label: "PM Appointed", desc: "The Monarch formally invites the leader of the party that can command a Commons majority to become Prime Minister and form a Government." },
@@ -485,7 +485,7 @@ function ConstituencyLookup() {
       const res = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(postcode.trim())}`);
       const data = await res.json();
       if (!res.ok || data.status !== 200) {
-        setError("Couldn't find that postcode — double check it's a valid UK postcode.");
+        setError("Couldn't find that postcode, double check it's a valid UK postcode.");
         setLoading(false);
         return;
       }
@@ -493,7 +493,7 @@ function ConstituencyLookup() {
       const { data: matches } = await supabase.from("politicians").select("*").eq("constituency", constituency).limit(1);
       setResult({ constituency, mp: matches?.[0] ?? null });
     } catch {
-      setError("Something went wrong looking that up — please try again.");
+      setError("Something went wrong looking that up, please try again.");
     }
     setLoading(false);
   }
@@ -578,7 +578,7 @@ function ConstituencyLookup() {
             </div>
           ) : (
             <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
-              We don't currently have a matching record for this constituency — it may use a slightly
+              We don't currently have a matching record for this constituency. It may use a slightly
               different name in our data.
             </div>
           )}
@@ -620,7 +620,7 @@ export default function HowParliamentWorks() {
           id="billprocess"
           index={1}
           title="How a bill becomes law"
-          intro="Every law goes through the same basic journey — though it can take anywhere from weeks to years."
+          intro="Every law goes through the same basic journey, though it can take anywhere from weeks to years."
           stages={BILL_PROCESS_STAGES}
           color="#7A4B63"
           showProgress
@@ -640,7 +640,7 @@ export default function HowParliamentWorks() {
           id="mpjob"
           index={3}
           title="The job of an MP"
-          intro="Once elected, what does the role actually involve day to day — and what does it pay?"
+          intro="Once elected, what does the role actually involve day to day, and what does it pay?"
           stages={MP_JOB_STAGES}
           color="#4C6FA6"
           showProgress

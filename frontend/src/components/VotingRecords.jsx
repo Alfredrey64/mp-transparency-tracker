@@ -173,7 +173,7 @@ function BillEntry({ bill, politicians, initiallyOpen }) {
                   <FieldLabel>Related Commons votes</FieldLabel>
                 </div>
                 <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5, marginBottom: 12 }}>
-                  Matched by title against official Commons divisions — this can miss votes, or occasionally pick up an
+                  Matched by title against official Commons divisions. This can miss votes, or occasionally pick up an
                   unrelated one with a similar name.
                 </div>
                 {divisions === null && <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>Checking for matching votes…</div>}
@@ -263,7 +263,7 @@ function DivisionCard({ division }) {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(190px, 100%), 1fr))", gap: 10 }}>
             <VoteGroup label="Voted Aye" color="#2F6F4E" members={division.breakdown.ayes} />
             <VoteGroup label="Voted No" color="#9C3B3B" members={division.breakdown.noes} />
-            <VoteGroup label="Did not vote" color={COLORS.inkSoft} members={division.breakdown.didNotVote} note="Absent, paired, or abstained — Commons records don't distinguish between these." />
+            <VoteGroup label="Did not vote" color={COLORS.inkSoft} members={division.breakdown.didNotVote} note="Absent, paired, or abstained. Commons records don't distinguish between these." />
           </div>
         </motion.div>
       )}

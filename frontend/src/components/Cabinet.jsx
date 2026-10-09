@@ -69,14 +69,14 @@ const AREA_DESCRIPTIONS = {
   "Education": "Sets policy for schools, colleges, universities, and apprenticeships in England.",
   "Business, Trade & Energy": "Covers business regulation, international trade deals, and the UK's energy supply and climate targets.",
   "Housing & Local Government": "Sets housing policy, funds local councils, and oversees local government in England.",
-  "Transport": "Runs national transport policy — roads, rail, aviation, and maritime.",
+  "Transport": "Runs national transport policy, roads, rail, aviation, and maritime.",
   "Environment, Food & Rural Affairs": "Covers farming, fishing, the natural environment, and food policy.",
   "Culture, Media, Digital & Sport": "Covers the arts, media, sport, tourism, and digital and technology policy.",
   "Work & Pensions": "Runs the benefits system, the state pension, and employment support.",
   "Science, Innovation & Technology": "Sets policy for scientific research, innovation funding, and technology regulation.",
   "Scotland, Wales & Northern Ireland": "Represents the UK government in the devolved nations, and manages the relationship between Westminster and the devolved administrations.",
   "Leader of the House": "Organises government business in the Commons and represents the government's interests to MPs.",
-  "Whips Office": "Enforces party discipline, manages the parliamentary timetable, and counts votes — the internal machinery that keeps a government's working majority together.",
+  "Whips Office": "Enforces party discipline, manages the parliamentary timetable, and counts votes: the internal machinery that keeps a government's working majority together.",
   "Other Cabinet Roles": "Cabinet-level responsibilities that don't map neatly onto a single government department.",
 };
 
@@ -110,24 +110,24 @@ const AREA_ICONS = {
 // specific to that particular minister's exact brief.
 const ROLE_DESCRIPTIONS = [
   { test: /^prime minister/i, text: "Leads the government, chairs Cabinet, appoints and dismisses ministers, and answers to the Commons every week at Prime Minister's Questions." },
-  { test: /chancellor of the exchequer/i, text: "The government's chief finance minister — sets tax policy, controls public spending, and delivers the annual Budget." },
-  { test: /chief secretary to the treasury/i, text: "The Treasury's second-in-command on spending — negotiates every other department's budget and polices public spending discipline." },
-  { test: /home secretary/i, text: "Runs the Home Office — responsible for policing, immigration, counter-terrorism, and public safety." },
+  { test: /chancellor of the exchequer/i, text: "The government's chief finance minister, sets tax policy, controls public spending, and delivers the annual Budget." },
+  { test: /chief secretary to the treasury/i, text: "The Treasury's second-in-command on spending, negotiates every other department's budget and polices public spending discipline." },
+  { test: /home secretary/i, text: "Runs the Home Office, responsible for policing, immigration, counter-terrorism, and public safety." },
   { test: /foreign secretary/i, text: "Leads UK diplomacy and foreign policy, and represents the UK abroad." },
   { test: /secretary of state for defence/i, text: "Oversees the armed forces and the UK's defence and national security policy." },
-  { test: /lord chancellor/i, text: "The government's most senior legal officer, traditionally combined with the role of Justice Secretary — responsible for the courts system and judicial independence." },
+  { test: /lord chancellor/i, text: "The government's most senior legal officer, traditionally combined with the role of Justice Secretary, responsible for the courts system and judicial independence." },
   { test: /attorney general/i, text: "The government's chief legal adviser on matters of law and international law." },
   { test: /solicitor general/i, text: "Deputises for the Attorney General as a government legal adviser." },
   { test: /chancellor of the duchy of lancaster/i, text: "A senior Cabinet Office role, traditionally used flexibly for cross-government coordination and special projects." },
   { test: /leader of the house/i, text: "Organises government business in the Commons and represents the government's interests to MPs." },
-  { test: /chief whip|treasurer of hm household|parliamentary secretary to the treasury/i, text: "Enforces party discipline and manages the parliamentary timetable — the government's most senior whip." },
-  { test: /secretary of state for health/i, text: "Runs the Department of Health and Social Care — responsible for the NHS and social care policy in England." },
-  { test: /secretary of state for education/i, text: "Runs the Department for Education — responsible for schools, colleges, universities and apprenticeships." },
+  { test: /chief whip|treasurer of hm household|parliamentary secretary to the treasury/i, text: "Enforces party discipline and manages the parliamentary timetable: the government's most senior whip." },
+  { test: /secretary of state for health/i, text: "Runs the Department of Health and Social Care, responsible for the NHS and social care policy in England." },
+  { test: /secretary of state for education/i, text: "Runs the Department for Education, responsible for schools, colleges, universities and apprenticeships." },
   { test: /secretary of state for.*business/i, text: "Runs the government's business, trade and industrial strategy department." },
   { test: /secretary of state for energy/i, text: "Responsible for the UK's energy supply and its net zero climate targets." },
-  { test: /deputy prime minister/i, text: "Deputises for the Prime Minister, and — combined with a departmental role — usually leads on housing and local government too." },
+  { test: /deputy prime minister/i, text: "Deputises for the Prime Minister, and, combined with a departmental role, usually leads on housing and local government too." },
   { test: /secretary of state for housing/i, text: "Runs housing policy, funds local councils, and oversees local government in England." },
-  { test: /secretary of state for transport/i, text: "Runs national transport policy — roads, rail, aviation and maritime." },
+  { test: /secretary of state for transport/i, text: "Runs national transport policy, roads, rail, aviation and maritime." },
   { test: /secretary of state for environment/i, text: "Runs farming, fishing, environment and food policy." },
   { test: /secretary of state for culture/i, text: "Runs arts, media, sport, tourism and digital policy." },
   { test: /secretary of state for work and pensions/i, text: "Runs the benefits system, the state pension, and employment support." },
@@ -274,7 +274,7 @@ function CabinetCard({ member, area, index, onViewProfile }) {
                   onClick={() => onViewProfile(member)}
                   style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12.5, color, background: "none", border: "none", padding: 0, cursor: "pointer" }}
                 >
-                  View full MP profile — donations, votes & more →
+                  View full MP profile, donations, votes & more
                 </button>
               )}
             </div>
@@ -492,7 +492,7 @@ export default function Cabinet({ onViewProfile }) {
       )}
       {members !== null && !failed && members.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>
-          No Cabinet roles are currently recorded — check back after the next daily update.
+          No Cabinet roles are currently recorded. Check back after the next daily update.
         </div>
       )}
 

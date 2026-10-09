@@ -127,7 +127,7 @@ export default function ByElections() {
         <div style={{ marginBottom: 28 }}>
           <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, color: COLORS.ink, marginBottom: 4 }}>Upcoming elections</h2>
           <p style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 0, marginBottom: 14 }}>
-            A seat with no sitting MP right now — a by-election to fill it is expected, though Parliament doesn't
+            A seat with no sitting MP right now: a by-election to fill it is expected, though Parliament doesn't
             always announce a date immediately.
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -144,7 +144,7 @@ export default function ByElections() {
                   style={{ background: COLORS.paperCard, border: "1px solid #B0473E40", borderLeft: "5px solid #B0473E", borderRadius: 12, padding: 18 }}
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, marginBottom: 12 }}>
-                    <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, color: COLORS.ink }}>{v.constituency_name}</div>
+                    <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 700, color: COLORS.ink }}>{v.constituency_name}</div>
                     <span
                       style={{
                         fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em",
@@ -166,7 +166,7 @@ export default function ByElections() {
                         {v.vacancy_reason ? (
                           <>
                             Seat vacated {v.vacancy_since ? `on ${formatDate(v.vacancy_since)}` : ""}
-                            {v.vacancy_since && daysAgo(v.vacancy_since) ? ` (${daysAgo(v.vacancy_since)})` : ""} — {v.vacancy_reason.toLowerCase()}
+                            {v.vacancy_since && daysAgo(v.vacancy_since) ? ` (${daysAgo(v.vacancy_since)})` : ""}: {v.vacancy_reason.toLowerCase()}
                           </>
                         ) : (
                           "No sitting MP currently recorded for this seat"
@@ -213,7 +213,7 @@ export default function ByElections() {
               >
                 <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", gap: 8, marginBottom: 12 }}>
                   <div style={{ flex: "1 1 170px", minWidth: 0 }}>
-                    <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, color: COLORS.ink }}>{e.constituency_name}</div>
+                    <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 700, color: COLORS.ink }}>{e.constituency_name}</div>
                     <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 2 }}>
                       {formatDate(e.election_date)} · {daysAgo(e.election_date)}
                       {predecessor?.membership_end_reason ? ` · seat vacated by ${predecessor.membership_end_reason.toLowerCase()}` : ""}

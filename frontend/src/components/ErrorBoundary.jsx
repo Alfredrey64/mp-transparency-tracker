@@ -46,7 +46,7 @@ export class ErrorBoundary extends Component {
             Something broke on this page
           </div>
           <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.6, marginBottom: 16 }}>
-            Not the rest of the site — just this one page hit a bug. Pick anything else from the sidebar, or
+            Not the rest of the site: just this one page hit a bug. Pick anything else from the sidebar, or
             reload to try this page again.
           </div>
           <div

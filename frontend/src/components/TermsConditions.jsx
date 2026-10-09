@@ -19,20 +19,20 @@ export default function TermsConditions() {
       <div style={{ maxWidth: 760 }}>
         <Section title="What this site is">
           UK Parliament Tracker is an independent, non-commercial project that aggregates publicly available UK
-          Parliament data — declared financial interests, voting records, bills, and All-Party Parliamentary Group
-          information — into one place. It is not affiliated with, endorsed by, or operated by the UK Parliament,
+          Parliament data, declared financial interests, voting records, bills, and All-Party Parliamentary Group
+          information, into one place. It is not affiliated with, endorsed by, or operated by the UK Parliament,
           the Houses of Commons or Lords, any political party, or Companies House.
         </Section>
 
         <Section title="Accuracy and data sources">
           <p>
             Data comes from official public registers and, in the case of donor industry tags, is cross-referenced
-            against Companies House records by matching names — that matching can be wrong. Specifically:
+            against Companies House records by matching names. That matching can be wrong. Specifically:
           </p>
           <ul style={{ margin: "0 0 12px", paddingLeft: 20 }}>
-            <li style={{ marginBottom: 8 }}>Source registers are updated on their own schedule — this site may lag behind the live official record.</li>
+            <li style={{ marginBottom: 8 }}>Source registers are updated on their own schedule. This site may lag behind the live official record.</li>
             <li style={{ marginBottom: 8 }}>Donor "sector" tags reflect a company's registered industry classification, not a statement about that donor's or MP's views, intentions, or conduct.</li>
-            <li style={{ marginBottom: 8 }}>Where a donor is not confidently identified, no sector is shown — that is not the same as confirming they have no industry ties.</li>
+            <li style={{ marginBottom: 8 }}>Where a donor is not confidently identified, no sector is shown. That is not the same as confirming they have no industry ties.</li>
             <li>Always check the linked official source before relying on any figure for a decision.</li>
           </ul>
           <p style={{ marginBottom: 0 }}>
@@ -44,13 +44,13 @@ export default function TermsConditions() {
         <Section title="Not legal, financial, or professional advice">
           Nothing on this site constitutes legal, financial, journalistic, or professional advice. Aggregated
           correlations shown between donations and voting records are descriptive, not evidence of intent or
-          wrongdoing — correlation is not causation.
+          wrongdoing, correlation is not causation.
         </Section>
 
         <Section title="Acceptable use">
           You may browse and reference this site for personal, educational, or journalistic purposes. You may not
           use it to harass, defame, or make unfounded accusations against any individual named on it. Heavy automated
-          scraping of this site is discouraged — for bulk data needs, please go to the original official registers
+          scraping of this site is discouraged, for bulk data needs, please go to the original official registers
           directly.
         </Section>
 
@@ -61,7 +61,7 @@ export default function TermsConditions() {
         </Section>
 
         <Section title="Corrections">
-          If you identify an inaccuracy — including a misapplied donor sector tag — it can be corrected at the data
+          If you identify an inaccuracy, including a misapplied donor sector tag, it can be corrected at the data
           level and republished. This is a best-effort independent project, not a newsroom with a formal complaints
           process, but errors are taken seriously.
         </Section>

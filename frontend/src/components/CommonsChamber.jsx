@@ -212,7 +212,7 @@ export default function CommonsChamber() {
                 style={{ cursor: "pointer" }}
                 onClick={() => withScrollPreserved(() => setSelected(seat.mp))}
               >
-                <title>{seat.mp.name} — {seat.mp.party}{isPM ? " (Prime Minister)" : ""}</title>
+                <title>{seat.mp.name}, {seat.mp.party}{isPM ? " (Prime Minister)" : ""}</title>
               </circle>
             );
           })}
@@ -232,7 +232,7 @@ export default function CommonsChamber() {
                 style={{ cursor: "pointer" }}
                 onClick={() => withScrollPreserved(() => setSelected(seat.mp))}
               >
-                <title>{seat.mp.name} — {seat.mp.party}{isLeader ? " (Leader of the Opposition)" : ""}</title>
+                <title>{seat.mp.name}, {seat.mp.party}{isLeader ? " (Leader of the Opposition)" : ""}</title>
               </circle>
             );
           })}
@@ -249,7 +249,7 @@ export default function CommonsChamber() {
               style={{ cursor: "pointer" }}
               onClick={() => withScrollPreserved(() => setSelected(layout.speaker))}
             >
-              <title>{layout.speaker.name} — Speaker</title>
+              <title>{layout.speaker.name}, Speaker</title>
             </circle>
           )}
           </g>
@@ -304,7 +304,7 @@ export default function CommonsChamber() {
       </div>
 
       <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.75, marginTop: 12, lineHeight: 1.5 }}>
-        Seats are grouped by party, not individual real assignments — Parliament doesn't publish exactly who sits
+        Seats are grouped by party, not individual real assignments. Parliament doesn't publish exactly who sits
         where. The Speaker, and the Prime Minister and Opposition Leader (outlined, where identifiable from the
         data) are placed for illustration.
       </div>

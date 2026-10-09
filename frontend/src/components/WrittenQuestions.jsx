@@ -192,7 +192,7 @@ function QuestionCard({ q, politicianById, onSelectPolitician, index }) {
             {q.asking_member_name ?? "Unknown member"}
           </button>
           <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft }}>
-            {q.asking_member_party ?? "—"} · {q.house}
+            {q.asking_member_party ?? "No party"} · {q.house}
           </div>
         </div>
         <span
@@ -295,7 +295,7 @@ export default function WrittenQuestions({ onSelectPolitician, initialQuery = ""
           marginTop: 24, marginBottom: 24, fontFamily: FONT_BODY, fontSize: 13, lineHeight: 1.6, color: COLORS.inkSoft,
         }}
       >
-        A rolling {WINDOW_DAYS}-day window, kept up to date daily — not a full historical archive, which runs into the
+        A rolling {WINDOW_DAYS}-day window, kept up to date daily, not a full historical archive, which runs into the
         hundreds of thousands of questions. Answers shown are the government's own words, unedited.
       </div>
 
@@ -377,7 +377,7 @@ export default function WrittenQuestions({ onSelectPolitician, initialQuery = ""
       {rows === null && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>}
       {rows !== null && failed && <LoadFailedNote item="the written questions list" />}
       {rows !== null && !failed && rows.length === 0 && (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No data yet — check back after the next daily update.</div>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No data yet. Check back after the next daily update.</div>
       )}
       {rows !== null && !failed && rows.length > 0 && filtered.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Nothing matches those filters.</div>
@@ -396,7 +396,7 @@ export default function WrittenQuestions({ onSelectPolitician, initialQuery = ""
       </div>
       {filtered.length > 100 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, textAlign: "center", marginTop: 16 }}>
-          Showing the first 100 of {filtered.length} matches — narrow your search to see more specific results.
+          Showing the first 100 of {filtered.length} matches. Narrow your search to see more specific results.
         </div>
       )}
     </div>

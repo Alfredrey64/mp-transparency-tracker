@@ -67,7 +67,7 @@ function PipelineStatus() {
       {failed.length > 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 8, lineHeight: 1.6 }}>
           Didn't update this time: {failed.map((s) => s.label).join(", ")}. Everything else on this page's source
-          list was unaffected — each source is independent, so this is usually a transient issue with that one
+          list was unaffected. Each source is independent, so this is usually a transient issue with that one
           upstream source, not a fault with the site.
         </div>
       )}
@@ -99,12 +99,12 @@ export default function Methodology({ onNavigate }) {
           <p style={{ marginTop: 0 }}>
             UK Parliament Tracker is an independent, unofficial project. It is not affiliated with, endorsed by, or
             connected to the UK Parliament, the Houses of Commons or Lords, HM Government, Companies House, or any
-            political party. It doesn't editorialise, rank MPs, or recommend how to vote — it pulls together public
+            political party. It doesn't editorialise, rank MPs, or recommend how to vote. It pulls together public
             records that already exist and presents them in one place.
           </p>
           <p style={{ marginBottom: 0 }}>
             No accounts, no tracking, no analytics. The only thing stored in your browser is a light/dark mode
-            preference — see the{" "}
+            preference. See the{" "}
             {onNavigate ? (
               <button
                 onClick={() => onNavigate("privacy")}
@@ -233,31 +233,31 @@ export default function Methodology({ onNavigate }) {
               name="UK Parliament Members API"
               url="https://members-api.parliament.uk/"
               auth="No key required"
-              use="Current MPs, party, constituency, photo, cabinet role, and biography — the base record every other page joins against."
+              use="Current MPs, party, constituency, photo, cabinet role, and biography: the base record every other page joins against."
             />
             <SourceRow
               name="UK Parliament Interests API"
               url="https://interests-api.parliament.uk/"
               auth="No key required"
-              use="The Register of Members' Financial Interests — every declared donation, gift, hospitality, shareholding, and outside job, per MP."
+              use="The Register of Members' Financial Interests: every declared donation, gift, hospitality, shareholding, and outside job, per MP."
             />
             <SourceRow
               name="UK Parliament Commons Votes API"
               url="https://commonsvotes-api.parliament.uk/"
               auth="No key required"
-              use="Commons divisions (recorded votes) — how each MP voted, and the official Aye/No totals for each division."
+              use="Commons divisions (recorded votes), how each MP voted, and the official Aye/No totals for each division."
             />
             <SourceRow
               name="UK Parliament Bills API"
               url="https://bills-api.parliament.uk/"
               auth="No key required"
-              use="Every bill currently going through Parliament — summary, sponsor, stage, and department."
+              use="Every bill currently going through Parliament, summary, sponsor, stage, and department."
             />
             <SourceRow
               name="IPSA (Independent Parliamentary Standards Authority)"
               url="https://www.theipsa.org.uk/"
               auth="No key required"
-              use="Every current MP's itemised business cost claims (staffing, travel, accommodation, office running costs), for the Claims tab on their profile and the Business Expenses ranking. Not a documented public API — IPSA publishes this on their own site, which this project reads from directly rather than assuming a stable format, so it's more fragile than the official Parliament APIs above if IPSA's site changes significantly."
+              use="Every current MP's itemised business cost claims (staffing, travel, accommodation, office running costs), for the Claims tab on their profile and the Business Expenses ranking. Not a documented public API: IPSA publishes this on their own site, which this project reads from directly rather than assuming a stable format, so it's more fragile than the official Parliament APIs above if IPSA's site changes significantly."
             />
             <SourceRow
               name="UK Companies House API"
@@ -266,10 +266,10 @@ export default function Methodology({ onNavigate }) {
               use="Matches declared donor names to registered UK companies, to tag donations by industry sector and link to the official company record."
             />
             <SourceRow
-              name="Full Fact — Government Tracker"
+              name="Full Fact: Government Tracker"
               url="https://fullfact.org/government-tracker/"
               auth="Manually reviewed"
-              use="An independent, non-partisan fact-checking charity's verdicts on whether the current government has delivered its manifesto pledges — used as-is on the Government Tracker page, never re-judged by us."
+              use="An independent, non-partisan fact-checking charity's verdicts on whether the current government has delivered its manifesto pledges, used as-is on the Government Tracker page, never re-judged by us."
             />
             <SourceRow
               name="Google News (public RSS)"
@@ -281,7 +281,7 @@ export default function Methodology({ onNavigate }) {
               name="UK Parliament Committees API"
               url="https://committees-api.parliament.uk/"
               auth="No key required"
-              use="Current select committees, their membership and chair, and their open inquiries, for the Select Committees page (scoped to Commons departmental committees, Lords investigative committees, and the two cross-cutting Joint Committees — procedural and administrative committees are left out). Also used for the Standards & Sanctions page, to find every report the Committee on Standards has published about a named MP's individual conduct."
+              use="Current select committees, their membership and chair, and their open inquiries, for the Select Committees page (scoped to Commons departmental committees, Lords investigative committees, and the two cross-cutting Joint Committees, procedural and administrative committees are left out). Also used for the Standards & Sanctions page, to find every report the Committee on Standards has published about a named MP's individual conduct."
             />
             <SourceRow
               name="UK Parliament Written Questions API"
@@ -296,7 +296,7 @@ export default function Methodology({ onNavigate }) {
               use="A curated sample of APPGs' registered financial benefits (secretariat funding, hospitality) on the APPG Memberships page. Published as a PDF roughly every 6 weeks with no API to draw from, so refreshed periodically by hand rather than daily."
             />
             <SourceRow
-              name="OBR — Public Finances Databank"
+              name="OBR: Public Finances Databank"
               url="https://obr.uk/data/"
               auth="Entered by hand"
               use="Headline government spending totals by department, for the Government Budget page. There's no API for a full breakdown at this level of detail, and the official figures themselves are only published a few times a year, so these are updated manually rather than daily like the rest of the site."
@@ -305,13 +305,13 @@ export default function Methodology({ onNavigate }) {
               name="Departmental ministerial transparency returns"
               url="https://www.gov.uk/government/collections/ministers-transparency-publications"
               auth="Entered by hand"
-              use="A curated sample of ministers' declared meetings with outside organisations, for the Ministerial Meetings page. Around twenty departments each publish this separately, on their own schedule, in their own format — there's no single source to automate against, so this is refreshed periodically by hand rather than daily."
+              use="A curated sample of ministers' declared meetings with outside organisations, for the Ministerial Meetings page. Around twenty departments each publish this separately, on their own schedule, in their own format, there's no single source to automate against, so this is refreshed periodically by hand rather than daily."
             />
             <SourceRow
-              name="Electoral Commission — donation rules & published cases"
+              name="Electoral Commission, donation rules & published cases"
               url="https://www.electoralcommission.org.uk/political-party-donations-and-loans-northern-ireland/who-can-you-accept-donations-and-loans/uk-unincorporated-associations"
               auth="Publicly documented"
-              use="The registration thresholds and the Constitutional Research Council/DUP case described on the Dark Money page — a fixed explainer of a legal mechanism and one well-documented real case, not a live feed, so it's only updated if the underlying rules change."
+              use="The registration thresholds and the Constitutional Research Council/DUP case described on the Dark Money page: a fixed explainer of a legal mechanism and one well-documented real case, not a live feed, so it's only updated if the underlying rules change."
             />
             <SourceRow
               name="Independent Adviser on Ministerial Standards / gov.uk business appointment rules"
@@ -323,13 +323,13 @@ export default function Methodology({ onNavigate }) {
               name="Who Funds You?"
               url="https://whofundsyou.org/"
               auth="Independent ratings, entered by hand"
-              use="Every transparency grade on the Think Tank Funding page is this project's own published assessment, not our judgement — see that page for how their A–E scale works. Chosen by hand as a small, illustrative sample, not the full set of UK think tanks they've rated."
+              use="Every transparency grade on the Think Tank Funding page is this project's own published assessment, not our judgement. See that page for how their A–E scale works. Chosen by hand as a small, illustrative sample, not the full set of UK think tanks they've rated."
             />
             <SourceRow
               name="Office of the Registrar of Consultant Lobbyists"
               url="https://registrarofconsultantlobbyists.org.uk/"
               auth="Register downloaded by hand"
-              use="The total count of registered firms and the real recent investigations on the Consultant Lobbyists page. The register only covers paid lobbying-for-hire, not the larger volume of in-house lobbying — explained on that page — and per-firm client lists change every quarter, so this is refreshed periodically by hand rather than automatically."
+              use="The total count of registered firms and the real recent investigations on the Consultant Lobbyists page. The register only covers paid lobbying-for-hire, not the larger volume of in-house lobbying, explained on that page, and per-firm client lists change every quarter, so this is refreshed periodically by hand rather than automatically."
             />
           </div>
         </Section>
@@ -337,9 +337,9 @@ export default function Methodology({ onNavigate }) {
         <Section title="How often it updates">
           <p style={{ marginTop: 0, marginBottom: 0 }}>
             A scheduled job runs once a day, pulling fresh data from every API above and writing it straight to the
-            live database — there's no manual step and no deploy needed for MPs, interests, votes, bills, committees,
+            live database, there's no manual step and no deploy needed for MPs, interests, votes, bills, committees,
             written questions, standards reports, donor-sector tags, or news to refresh. Compare MPs, the "What's
-            Changed" panel on the Overview page, and My MP don't have their own data source at all — they're just
+            Changed" panel on the Overview page, and My MP don't have their own data source at all, they're just
             different views over everything else here, so they're exactly as current as the rest of the site. The exceptions are content
             we've written and curated by hand, which only change when we deliberately update them: the Party Policies
             manifesto summaries, the Government Tracker's selected pledges (though their status still reflects Full
@@ -363,7 +363,7 @@ export default function Methodology({ onNavigate }) {
               <strong>Donor industry tagging (Donors & Lobbying, Companies House):</strong> a declared donor's name is
               matched against Companies House by name similarity. Names with a personal title (Mr, Dr, Lord…) are
               excluded outright as individuals; everything else only counts as a match if the company is currently
-              active and the name overlaps closely enough — loose matches are rejected rather than guessed at, and a
+              active and the name overlaps closely enough, loose matches are rejected rather than guessed at, and a
               second automated pass re-checks every match for anything that still looks like a person. Only the
               largest donors by value have been processed so far, and a company's registered industry code can be a
               poor proxy for what a specific donation was actually for.
@@ -377,27 +377,27 @@ export default function Methodology({ onNavigate }) {
             <CaveatItem>
               <strong>"Did not vote":</strong> when we show an MP as not voting in a division, that's every current MP
               minus everyone recorded as voting Aye or No. Official Commons records don't distinguish between being
-              absent, paired, or deliberately abstaining — so neither can we.
+              absent, paired, or deliberately abstaining, so neither can we.
             </CaveatItem>
             <CaveatItem>
               <strong>"In the News":</strong> a daily headline search for an MP's name, filtered to require their
-              surname appear in the headline. It's a skim, not a verified fact-check — a same-named person, or a
+              surname appear in the headline. It's a skim, not a verified fact-check: a same-named person, or a
               passing mention, can occasionally slip through.
             </CaveatItem>
             <CaveatItem>
               <strong>Standards & Sanctions:</strong> the Committee on Standards publishes both individual MP conduct
               reports and general reports reviewing the rules themselves under one list, with no field distinguishing
-              the two — a report is kept only if its title, once the "Nth Report -" prefix is stripped, reads like a
+              the two: a report is kept only if its title, once the "Nth Report -" prefix is stripped, reads like a
               short person's name rather than a policy topic. That's a good filter in practice, but a report about a
               topic that looks like a name could in principle slip through, or a very unusually worded personal report
               could be missed. The "what happened" and "the outcome" summaries shown on that page are written by
-              hand from each report's own findings — for the most significant, widely reported cases only; where we
+              hand from each report's own findings, for the most significant, widely reported cases only; where we
               haven't summarised a report yet, the page links straight to the Committee's original document instead
               of guessing.
             </CaveatItem>
             <CaveatItem>
               <strong>Party Policies & Government Tracker:</strong> the manifesto summaries are written independently
-              in our own words, not copied from the source documents (which are copyrighted) — always follow the
+              in our own words, not copied from the source documents (which are copyrighted), always follow the
               linked source for the exact original text. Pledge statuses on the Government Tracker are Full Fact's
               own published judgement, not ours, and can change as circumstances develop.
             </CaveatItem>
@@ -406,12 +406,12 @@ export default function Methodology({ onNavigate }) {
 
         <Section title="Something look wrong?">
           <p style={{ marginTop: 0, marginBottom: 0 }}>
-            This is a solo, open-source project, and the matching logic above is exactly that — logic, not manual
+            This is a solo, open-source project, and the matching logic above is exactly that, logic, not manual
             review of every row. If you spot something that looks wrong, the most useful thing you can do is{" "}
             <a href={`${REPO_URL}/issues`} target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
               open an issue on GitHub ↗
             </a>{" "}
-            with the MP, bill, or donor name in question — every report helps tighten the safeguards described above.
+            with the MP, bill, or donor name in question: every report helps tighten the safeguards described above.
           </p>
         </Section>
       </div>

@@ -141,15 +141,14 @@ function IntroScreen({ onStart }) {
           up with you best.
         </p>
         <div style={{ background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 10, padding: "14px 16px", margin: "18px 0", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, lineHeight: 1.6 }}>
-          <strong style={{ color: COLORS.ink }}>Before you start:</strong> this is a simplification by nature —
-          a single number can't fully capture a party's position on a complex issue, and stated
+          <strong style={{ color: COLORS.ink }}>Before you start:</strong> this is a simplification by nature. A single number can't fully capture a party's position on a complex issue, and stated
           positions can shift once a party is in office. The scoring is our own independent, good-faith reading of
           public material, not an official rating from any party. Treat your result as a conversation-starter, not a
-          verdict — and nothing you answer here is saved or sent anywhere; it only exists in your browser for this
+          verdict, and nothing you answer here is saved or sent anywhere; it only exists in your browser for this
           session.
         </div>
         <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} onClick={onStart} style={primaryButtonStyle}>
-          Start →
+          Start
         </motion.button>
       </div>
     </motion.div>
@@ -205,7 +204,7 @@ function PrioritiesScreen({ selected, onToggle, onContinue }) {
           {selected.length} of {MAX_PRIORITIES} selected
         </div>
         <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} onClick={onContinue} style={primaryButtonStyle}>
-          Continue →
+          Continue
         </motion.button>
       </div>
     </motion.div>
@@ -227,12 +226,12 @@ function NationScreen({ selected, onSelect, onContinue, onSkip }) {
           Where do you live?
         </h2>
         <p style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 0, marginBottom: 20, lineHeight: 1.6 }}>
-          A couple of parties in this quiz only stand candidates in one nation — telling us keeps your result to
+          A couple of parties in this quiz only stand candidates in one nation, telling us keeps your result to
           parties you could actually vote for. Nothing here is saved; it only shapes which parties appear in your
           results.
         </p>
         {/* Square cards, and enough clearance above the whole grid (not
-            just above each card's own border) for the pin's full travel —
+            just above each card's own border) for the pin's full travel:
             the pin used to only clear its own card's edge, which still
             left it poking up into the paragraph above (row 1) or the row
             above it (row 2+) once the drop-and-bounce animation was
@@ -288,7 +287,7 @@ function NationScreen({ selected, onSelect, onContinue, onSkip }) {
             onClick={() => selected && onContinue()}
             style={{ ...primaryButtonStyle, opacity: selected ? 1 : 0.45, cursor: selected ? "pointer" : "default" }}
           >
-            Continue →
+            Continue
           </motion.button>
           <button
             onClick={onSkip}
@@ -431,7 +430,7 @@ function ResultsScreen({ results, nation, onRetake }) {
         <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: "12px 16px", marginBottom: 16, fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, lineHeight: 1.6 }}>
           <strong style={{ color: COLORS.ink }}>A note for Northern Ireland:</strong> this quiz scores against parties
           with a comparable UK-wide or devolved-nation platform. Northern Ireland's own parties campaign on a
-          fundamentally different axis — the constitutional question — that this scale doesn't fit, so they're left
+          fundamentally different axis, the constitutional question, that this scale doesn't fit, so they're left
           out rather than force-fitted. The ranking below is the closest match among the parties it does cover, not a
           full picture of your options on the ballot.
         </div>
@@ -504,7 +503,7 @@ function ResultsScreen({ results, nation, onRetake }) {
       </div>
 
       <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, lineHeight: 1.6, marginBottom: 20 }}>
-        This is a simplified, independent tool — not a personalised recommendation, and not a substitute for reading
+        This is a simplified, independent tool, not a personalised recommendation, and not a substitute for reading
         the parties' own manifestos yourself. Positions can and do change; see the Party Policies tab for the full
         picture on any party above.
       </div>

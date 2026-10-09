@@ -275,7 +275,7 @@ export default function LordsNumbers({ onNavigate }) {
             ))}
             {onNavigate && (
               <button type="button" onClick={() => onNavigate("lords")} style={{ marginTop: 14, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accent }}>
-                Browse every peer →
+                Browse every peer
               </button>
             )}
           </Tile>

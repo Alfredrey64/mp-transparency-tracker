@@ -47,7 +47,7 @@
     <line x1="6" y1="112" x2="208" y2="112" stroke="#ffffff" stroke-width="2"/>
   </g>
 
-  <!-- Faint engraved detail — stonework coursing, windows and clock ticks,
+  <!-- Faint engraved detail, stonework coursing, windows and clock ticks,
        drawn as thin low-opacity black strokes on top of the flat white
        silhouette so it reads as etched detail rather than a second, harder
        outline. Same local coordinate space and transform as the silhouette

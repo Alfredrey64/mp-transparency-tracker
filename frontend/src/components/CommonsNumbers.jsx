@@ -343,7 +343,7 @@ export default function CommonsNumbers({ onNavigate }) {
               </div>
               {onNavigate && (
                 <button type="button" onClick={() => onNavigate("byElections")} style={{ marginTop: 14, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accent }}>
-                  See each by-election →
+                  See each by-election
                 </button>
               )}
             </Tile>

@@ -126,7 +126,7 @@ export function BillJourney({ bills }) {
     <div style={{ marginBottom: 36 }}>
       <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 20, color: COLORS.ink, marginBottom: 4 }}>Where bills currently stand</div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginBottom: 18, lineHeight: 1.5, maxWidth: 640 }}>
-        Every live bill's real position in the process, grouped by House — tap a stage to see which bills are sitting
+        Every live bill's real position in the process, grouped by House. Tap a stage to see which bills are sitting
         there right now.
       </div>
 

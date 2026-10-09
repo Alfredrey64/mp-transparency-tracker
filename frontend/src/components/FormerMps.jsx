@@ -110,7 +110,7 @@ export default function FormerMps() {
           marginTop: 24, marginBottom: 24, fontFamily: FONT_BODY, fontSize: 13, lineHeight: 1.6, color: COLORS.inkSoft,
         }}
       >
-        This shows <em>that</em> someone left and Parliament's own recorded reason for it — it can't tell you what
+        This shows <em>that</em> someone left and Parliament's own recorded reason for it. It can't tell you what
         they went on to do afterwards. There's no reliable public source for that, so rather than guess, we've
         simply left it out.
       </div>
@@ -191,7 +191,7 @@ export default function FormerMps() {
       {mps !== null && failed && <LoadFailedNote item="the former MPs list" />}
       {mps !== null && !failed && filtered.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
-          {mps.length === 0 ? "No data yet — check back after the next daily update." : "No one matches that search."}
+          {mps.length === 0 ? "No data yet. Check back after the next daily update." : "No one matches that search."}
         </div>
       )}
 

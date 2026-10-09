@@ -121,7 +121,7 @@ export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Ind
         </g>
       </svg>
       {/* An optional figure set inside the dome, where the empty floor of the
-          chamber is — the way an election-night graphic puts the seat count. */}
+          chamber is: the way an election-night graphic puts the seat count. */}
       {centre && (
         <div className={shown && !reduce ? "hemi-fade" : undefined} style={{ position: "absolute", left: "50%", bottom: "1%", transform: "translateX(-50%)", textAlign: "center", pointerEvents: "none", opacity: shown ? 1 : 0 }}>
           {centre}
@@ -156,7 +156,7 @@ export function PartyHemicycleSection({
   politicians,
   onSelectParty,
   heading = "The Commons, seat by seat",
-  subtitle = "Every current seat, coloured by party — hover a party below to pick it out.",
+  subtitle = "Every current seat, coloured by party. Hover a party below to pick it out.",
   noPartyLabel = "Independent",
   legendCount = 8,
   maxWidth = null,

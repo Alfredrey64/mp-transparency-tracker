@@ -288,11 +288,11 @@ export default function DonorsLobbying() {
                     }}
                     title={
                       d.tag?.source === "companies-house"
-                        ? `Matched to ${d.tag.companyName} (Companies House ${d.tag.companyNumber}) — SIC ${d.tag.sicCode}`
+                        ? `Matched to ${d.tag.companyName} (Companies House ${d.tag.companyNumber}), SIC ${d.tag.sicCode}`
                         : d.tag?.source === "known-union-list"
                         ? "Identified from a manually curated list of known UK trade unions"
                         : d.tag?.source === "manual-override"
-                        ? "Manually verified — automatic company matching was unreliable for this name"
+                        ? "Manually verified, automatic company matching was unreliable for this name"
                         : "Not confidently matched to a registered company"
                     }
                   >
@@ -452,24 +452,24 @@ export default function DonorsLobbying() {
         }}
       >
         <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, marginTop: 0, marginBottom: 10 }}>
-          How This Works — and Its Limits
+          How This Works, and Its Limits
         </h2>
         <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.7 }}>
           <p style={{ marginTop: 0 }}>
             Each declared donor is checked against UK Companies House records. If a confident match is found, the
             company's registered industry code is mapped to one of 16 broad sectors above. This tells you what
-            industry the <em>donor</em> is in — it is not a claim about what the receiving MP believes or how they vote.
+            industry the <em>donor</em> is in. It is not a claim about what the receiving MP believes or how they vote.
           </p>
           <ul style={{ margin: "0 0 12px", paddingLeft: 20 }}>
             <li style={{ marginBottom: 8 }}>
-              <strong style={{ color: COLORS.ink }}>Names with a title (Mr, Dr, Lord, Baroness…) are excluded outright</strong> —
-              that's a reliable signal it's a person, not a company. Everyone else is still checked against Companies
+              <strong style={{ color: COLORS.ink }}>Names with a title (Mr, Dr, Lord, Baroness…) are excluded outright</strong>.
+              That's a reliable signal it's a person, not a company. Everyone else is still checked against Companies
               House, but a match only counts if the company is currently active and its name overlaps closely enough
-              with the donor's — loose or partial matches are rejected rather than guessed at.
+              with the donor's, loose or partial matches are rejected rather than guessed at.
             </li>
             <li style={{ marginBottom: 8 }}>
               <strong style={{ color: COLORS.ink }}>Only the largest ~300 donors by value have been processed</strong>{" "}
-              so far — this covers most of the money but not every entry in the register.
+              so far. This covers most of the money but not every entry in the register.
             </li>
             <li style={{ marginBottom: 8 }}>
               <strong style={{ color: COLORS.ink }}>A company's registered industry code can be a poor proxy</strong>{" "}
@@ -479,7 +479,7 @@ export default function DonorsLobbying() {
               Hover any donor name to see exactly which company record (or list) a tag came from.
             </li>
             <li>
-              This shows correlation, not intent — it does not mean a donation caused any vote or position.
+              This shows correlation, not intent. It does not mean a donation caused any vote or position.
             </li>
           </ul>
         </div>
@@ -531,19 +531,18 @@ function EducationSection() {
         <EducationCard title={'What counts as a "donation"?'}>
           <Bullet>
             Covers cash to fund an MP's work, gifts, hospitality (meals, tickets, travel), shareholdings, property,
-            and paid outside jobs — all declared in the public{" "}
+            and paid outside jobs: all declared in the public{" "}
             <a href="https://www.parliament.uk/mps-lords-and-offices/standards-and-financial-interests/parliamentary-commissioner-for-standards/registers-of-interests/register-of-members-financial-interests/" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
               Register of Members' Financial Interests
             </a>.
           </Bullet>
           <Bullet>
             Reporting thresholds are deliberately low: <strong style={{ color: COLORS.ink }}>£300</strong> for a
-            single gift/hospitality, <strong style={{ color: COLORS.ink }}>£1,500</strong> for donations — both
+            single gift/hospitality, <strong style={{ color: COLORS.ink }}>£1,500</strong> for donations: both
             within 28 days of receipt.
           </Bullet>
           <Bullet>
-            Donations can only legally come from permissible UK sources (registered voters, UK companies, unions) —
-            to keep foreign money out of UK politics.
+            Donations can only legally come from permissible UK sources (registered voters, UK companies, unions), to keep foreign money out of UK politics.
           </Bullet>
           <Bullet>
             Party-level donations are a separate, higher Electoral Commission threshold: £11,180 (£2,230 for
@@ -553,24 +552,24 @@ function EducationSection() {
 
         <EducationCard title={<>What is <GlossaryTerm term="Lobbying">lobbying</GlossaryTerm>?</>}>
           <Bullet>
-            <strong style={{ color: COLORS.ink }}>In-house</strong> — a company's own "public affairs" staff
+            <strong style={{ color: COLORS.ink }}>In-house</strong>: a company's own "public affairs" staff
             contact MPs and ministers directly.
           </Bullet>
           <Bullet>
-            <strong style={{ color: COLORS.ink }}>Consultant lobbying</strong> — paid agencies lobby on a client's
+            <strong style={{ color: COLORS.ink }}>Consultant lobbying</strong>, paid agencies lobby on a client's
             behalf. The only kind covered by the{" "}
             <a href="https://www.legislation.gov.uk/ukpga/2014/4" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
               Lobbying Act 2014
             </a>{" "}
-            register — and only for direct contact with a minister or permanent secretary, not backbench MPs. Most
+            register, and only for direct contact with a minister or permanent secretary, not backbench MPs. Most
             real lobbying, including nearly all in-house lobbying, falls outside it entirely.
           </Bullet>
           <Bullet>
-            <strong style={{ color: COLORS.ink }}>APPGs</strong> — cross-party groups often funded or staffed by
+            <strong style={{ color: COLORS.ink }}>APPGs</strong>, cross-party groups often funded or staffed by
             outside organisations with a stake in the topic. See the "APPG Memberships" tab.
           </Bullet>
           <Bullet>
-            <strong style={{ color: COLORS.ink }}>The "revolving door"</strong> — former ministers taking jobs in
+            <strong style={{ color: COLORS.ink }}>The "revolving door"</strong>, former ministers taking jobs in
             industries they used to regulate, overseen (advisory only, not binding) by{" "}
             <a href="https://www.gov.uk/government/organisations/advisory-committee-on-business-appointments" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
               ACOBA
@@ -581,14 +580,14 @@ function EducationSection() {
         <EducationCard title="Why does it matter politically?">
           <Bullet>
             Legitimate side: campaigns cost money, and government benefits from hearing directly from affected
-            industries, unions, and experts. Most declared interests here are exactly that — routine and lawful.
+            industries, unions, and experts. Most declared interests here are exactly that, routine and lawful.
           </Bullet>
           <Bullet>
-            Concern: money or privileged access could buy influence ordinary constituents don't get — "cash for
+            Concern: money or privileged access could buy influence ordinary constituents don't get, as in the old phrase "cash for
             access."
           </Bullet>
           <Bullet>
-            That's why disclosure rules exist and keep tightening — from 1990s "cash for questions" to more recent
+            That's why disclosure rules exist and keep tightening, from 1990s "cash for questions" to more recent
             undercover lobbying stings.
           </Bullet>
           <Bullet>

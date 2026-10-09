@@ -34,7 +34,7 @@ function RevolvingDoorDiagram() {
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, margin: "16px auto 0", maxWidth: 520 }}>
         The body that reviewed exactly this move for fifty years, ACOBA, handled{" "}
-        <strong style={{ color: COLORS.ink }}>817 applications</strong> in its final four alone — and refused not a
+        <strong style={{ color: COLORS.ink }}>817 applications</strong> in its final four alone, and refused not a
         single one.
       </div>
     </div>
@@ -47,28 +47,28 @@ const CASES = [
     role: "Chancellor of the Exchequer, 2010–2016",
     color: "#9C6B30",
     what: "Sought ACOBA's advice before joining BlackRock as an adviser in January 2017, as the rules required. Two months later, he accepted the editorship of the Evening Standard without clearing it with ACOBA first.",
-    outcome: "A committee of MPs accused him of showing \"disrespect\" for the rules. He went on to take at least ten private-sector roles within five years of leaving the Treasury — none of which ACOBA had any power to block.",
+    outcome: "A committee of MPs accused him of showing \"disrespect\" for the rules. He went on to take at least ten private-sector roles within five years of leaving the Treasury: none of which ACOBA had any power to block.",
   },
   {
     name: "David Cameron",
     role: "Prime Minister, 2010–2016",
     color: "#5B4E8A",
     what: "Became an adviser to Greensill Capital and, when the firm ran into trouble, personally lobbied the Chancellor to grant it access to a state-backed Covid loan scheme.",
-    outcome: "None of it broke any rule — because it happened more than two years after he'd left office, ACOBA's jurisdiction over him had already expired entirely. The case became the clearest illustration of the old system's built-in expiry date.",
+    outcome: "None of it broke any rule, because it happened more than two years after he'd left office, ACOBA's jurisdiction over him had already expired entirely. The case became the clearest illustration of the old system's built-in expiry date.",
   },
   {
     name: "Boris Johnson",
     role: "Prime Minister, 2019–2022",
     color: "#9C3B3B",
-    what: "Broke ACOBA's rules on three separate occasions after leaving government — both during and after his premiership — including taking up paid roles before the committee had signed off on them.",
-    outcome: "ACOBA has no statutory power to fine or block a breach, only to publicly say so — which is what it did each time.",
+    what: "Broke ACOBA's rules on three separate occasions after leaving government, both during and after his premiership, including taking up paid roles before the committee had signed off on them.",
+    outcome: "ACOBA has no statutory power to fine or block a breach, only to publicly say so, which is what it did each time.",
   },
   {
     name: "George Freeman MP",
     role: "Minister for Science, Research and Innovation until November 2023",
     color: "#3F7D5C",
     what: "Became a paid adviser to the satellite-data firm GHGSat in April 2024. ACOBA's advice was explicit: he should not lobby government on the company's behalf. In 2025, leaked emails reported by The Times appeared to show him discussing what to ask ministers with GHGSat's director before tabling written questions on space data and emissions tracking.",
-    outcome: "Freeman self-referred and was investigated by the Registrar of Consultant Lobbyists over whether this amounted to unregistered lobbying — see the Consultant Lobbyists page. The Registrar cleared him on that specific question in October 2025; the rules, he noted, don't stop an MP asking questions on a topic where they have a financial interest, as long as it's properly declared.",
+    outcome: "Freeman self-referred and was investigated by the Registrar of Consultant Lobbyists over whether this amounted to unregistered lobbying. See the Consultant Lobbyists page. The Registrar cleared him on that specific question in October 2025; the rules, he noted, don't stop an MP asking questions on a topic where they have a financial interest, as long as it's properly declared.",
   },
 ];
 
@@ -116,7 +116,7 @@ export default function RevolvingDoor() {
 
       <WhyItMattersBand icon={IconDoor} color="#6E4B6E">
         a minister who could profit from a private-sector job right after leaving office has a reason to make
-        decisions with that job in mind, even without ever consciously meaning to — and for fifty years, the only
+        decisions with that job in mind, even without ever consciously meaning to, and for fifty years, the only
         thing standing in the way was a committee that could ask them nicely, not stop them.
       </WhyItMattersBand>
 
@@ -124,16 +124,16 @@ export default function RevolvingDoor() {
 
       <InfoCard title="Why this is called a 'revolving door'" color="#5A7FA6" icon={IconDoor} index={0}>
         <p style={{ marginTop: 0 }}>
-          Imagine a defence minister who spends years deciding which companies win government contracts — then,
+          Imagine a defence minister who spends years deciding which companies win government contracts, then,
           within months of leaving office, takes a highly paid advisory role at one of those same companies. Nothing
           about that is automatically illegal. But it raises an obvious question: was that job offered because of
-          genuine expertise, or as a reward for decisions made in office — and would a minister make different
+          genuine expertise, or as a reward for decisions made in office, and would a minister make different
           decisions if a future job offer might depend on it? The "revolving door" is the name for this whole
           pattern: people moving freely back and forth between government and the industries government regulates,
           funds, or buys from.
         </p>
         <p style={{ marginBottom: 0 }}>
-          Nobody can read a minister's mind, which is exactly why this is hard to regulate — you can't prove a
+          Nobody can read a minister's mind, which is exactly why this is hard to regulate. You can't prove a
           decision was influenced by a future job that didn't exist yet. The rules below try to manage the
           appearance and opportunity for this, even though they can't police the intentions behind it.
         </p>
@@ -143,14 +143,14 @@ export default function RevolvingDoor() {
         Ministers, senior civil servants and special advisers all have access to confidential information, and make
         decisions that affect specific companies and industries. The business appointment rules exist so that,
         before taking a job connected to their old role, they have to seek advice on whether it risks looking like
-        their government position was used to set up a private payday — or that the new employer is buying access
+        their government position was used to set up a private payday, or that the new employer is buying access
         to people still inside government. Getting advice has always been a requirement; following it has not.
       </InfoCard>
 
       <InfoCard title="ACOBA has gone. Here is what replaced it" color="#9C6B30" icon={IconCompare} index={2}>
         <p style={{ marginTop: 0 }}>
-          The Advisory Committee on Business Appointments (ACOBA) — the body that gave this advice for exactly 50
-          years — was abolished on 13 October 2025. Its work has been split in two: applications from{" "}
+          The Advisory Committee on Business Appointments (ACOBA): the body that gave this advice for exactly 50
+          years, was abolished on 13 October 2025. Its work has been split in two: applications from{" "}
           <strong style={{ color: COLORS.ink }}>former ministers</strong> now go to the Prime Minister's own
           Independent Adviser on Ministerial Standards, while <strong style={{ color: COLORS.ink }}>former{" "}
           <GlossaryTerm term="Civil Service">civil servants</GlossaryTerm> and special advisers</strong> go through the Civil Service Commission. Former ACOBA staff moved
@@ -167,16 +167,16 @@ export default function RevolvingDoor() {
       <InfoCard title="Why the old system struggled" color="#9C3B3B" icon={IconGavel} index={3}>
         <ul style={{ margin: 0, paddingLeft: 20 }}>
           <li style={{ marginBottom: 8 }}>
-            <strong style={{ color: COLORS.ink }}>Advisory, not enforceable</strong> — ACOBA could recommend a
+            <strong style={{ color: COLORS.ink }}>Advisory, not enforceable</strong>: ACOBA could recommend a
             waiting period or a lobbying ban, but had no legal power to block an appointment or penalise someone
             who ignored its advice.
           </li>
           <li style={{ marginBottom: 8 }}>
-            <strong style={{ color: COLORS.ink }}>A hard two-year cutoff</strong> — its jurisdiction over anyone
+            <strong style={{ color: COLORS.ink }}>A hard two-year cutoff</strong>. Its jurisdiction over anyone
             expired two years after they left office, regardless of how directly relevant their new job was.
           </li>
           <li>
-            <strong style={{ color: COLORS.ink }}>Never once said no</strong> — ACOBA has not refused a single
+            <strong style={{ color: COLORS.ink }}>Never once said no</strong>: ACOBA has not refused a single
             application since 2010, whatever the appointment.
           </li>
         </ul>
@@ -187,7 +187,7 @@ export default function RevolvingDoor() {
           Four real cases
         </h2>
         <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16 }}>
-          Chosen to show the range — from a technical process failure, to a case that fell entirely outside the
+          Chosen to show the range, from a technical process failure, to a case that fell entirely outside the
           rules' reach, to one still being tested under the new system.
         </p>
         <div className="box-row" style={{ "--n": 2, "--min": "340px" }}>

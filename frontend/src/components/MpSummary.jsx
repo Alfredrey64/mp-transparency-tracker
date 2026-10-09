@@ -87,7 +87,7 @@ export default function MpSummary({ politician, interests, interestsLoading, int
               </div>
             ))}
             <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, lineHeight: 1.55, color: COLORS.inkSoft, marginTop: 12 }}>
-              Written automatically from official records — the register of interests, Commons votes, IPSA, Hansard and the Standards
+              Written automatically from official records: the register of interests, Commons votes, IPSA, Hansard and the Standards
               Commissioner. It says what is on record, not whether any of it is right or wrong; declaring an interest is what the
               rules require. "Voted the other way" compares them with the majority of their own party, not the whip's actual
               instruction, which is never published.

@@ -138,12 +138,12 @@ export default function AskerQuestionsModal({ person, questions, topic, returnFo
           <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 18px", padding: "12px 20px", borderTop: `1px solid ${COLORS.hairline}`, background: COLORS.paperCard }}>
             {onOpenProfile && (
               <button type="button" onClick={onOpenProfile} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accent }}>
-                See their full profile →
+                See their full profile
               </button>
             )}
             {onOpenAllQuestions && (
               <button type="button" onClick={onOpenAllQuestions} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accent }}>
-                All their written questions →
+                All their written questions
               </button>
             )}
           </div>

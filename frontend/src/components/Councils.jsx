@@ -371,7 +371,7 @@ function Overview({ data }) {
           </div>
           <WhatThisMeans result={changesMeaning({ changesByYear, summary: changes })} style={{ marginTop: 18 }} />
           <div style={{ marginTop: 16 }}>
-            <button type="button" onClick={() => setShowAllChanges((v) => !v)} style={linkButton}>{showAllChanges ? "Hide the list" : `See all ${changes.total} councils that changed hands →`}</button>
+            <button type="button" onClick={() => setShowAllChanges((v) => !v)} style={linkButton}>{showAllChanges ? "Hide the list" : `See all ${changes.total} councils that changed hands`}</button>
             {showAllChanges && (
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))", gap: 8, marginTop: 12 }}>
                 {rawChanges.map((c) => (
@@ -597,7 +597,7 @@ function CouncilView({ council, data, wardName, countyId, detail, failed }) {
         {county && (
           <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 10 }}>
             Your area also has a county council, which looks after other services such as roads and social care:{" "}
-            <button type="button" onClick={() => goCouncil(county.id)} style={linkButton}>{county.name} →</button>
+            <button type="button" onClick={() => goCouncil(county.id)} style={linkButton}>{county.name}</button>
           </div>
         )}
         <div style={{ marginTop: 16 }}>

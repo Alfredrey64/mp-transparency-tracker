@@ -27,7 +27,7 @@ export const CATEGORIES = [
       {
         promise: "No tax rises on \"working people\" (income tax, NI, VAT)",
         status: "not_kept",
-        reality: "Employer National Insurance was raised in the October 2024 Budget. Income tax and employee NI rates themselves haven't risen, and VAT wasn't raised — but Full Fact rates the broad promise as not kept overall.",
+        reality: "Employer National Insurance was raised in the October 2024 Budget. Income tax and employee NI rates themselves haven't risen, and VAT wasn't raised, but Full Fact rates the broad promise as not kept overall.",
       },
       {
         promise: "Cap Corporation Tax at 25% for the parliament",
@@ -37,7 +37,7 @@ export const CATEGORIES = [
       {
         promise: "Set up a National Wealth Fund capitalised with £7.3bn",
         status: "off_track",
-        reality: "The fund itself was established and is investing, but its capital came in below the promised £7.3bn figure — Full Fact rates the funding pledge specifically as not kept.",
+        reality: "The fund itself was established and is investing, but its capital came in below the promised £7.3bn figure. Full Fact rates the funding pledge specifically as not kept.",
       },
       {
         promise: "Abolish non-dom tax status",
@@ -137,7 +137,7 @@ export const CATEGORIES = [
       {
         promise: "Halve sewage pollution from water companies",
         status: "wait_see",
-        reality: "This is a decade-long target — too early in the parliament for a meaningful assessment.",
+        reality: "This is a decade-long target, too early in the parliament for a meaningful assessment.",
       },
     ],
   },
@@ -202,7 +202,7 @@ export const CATEGORIES = [
       {
         promise: "No income tax rate increases",
         status: "disputed",
-        reality: "Full Fact flags this as disputed — it depends on a technical reading of frozen thresholds versus headline rates, which different sides interpret differently.",
+        reality: "Full Fact flags this as disputed. It depends on a technical reading of frozen thresholds versus headline rates, which different sides interpret differently.",
       },
     ],
   },

@@ -155,7 +155,7 @@ export const MINISTERIAL_MEETINGS = [
 ];
 
 export const MINISTERIAL_MEETINGS_UPDATED = "21 September 2026";
-export const MINISTERIAL_MEETINGS_PERIOD = "January – March 2026";
+export const MINISTERIAL_MEETINGS_PERIOD = "January to March 2026";
 // Departments publish this data on a lag of several months — the
 // Jan-Mar 2026 return itself wasn't published until late June 2026 — so
 // this genuinely is the most recent quarter available anywhere, not a
