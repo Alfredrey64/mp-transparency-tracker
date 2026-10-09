@@ -128,6 +128,16 @@ export const DEEP_DIVES = {
 
   // --- Housing ---
   "hpi-uk": { how: HPI_HOW, causes: HPI_CAUSES, levers: HPI_LEVERS },
+  "homes-years-of-pay": {
+    how: "The average UK house price from the UK House Price Index, divided by a year of average pay: the ONS's average weekly earnings across the whole economy, before tax, multiplied by 52. Both are for the same month. Average earnings include part-time work, so they are lower than a full-time worker's pay, and the result is higher than the ONS's official affordability ratio, which uses median full-time earnings.",
+    causes: "House prices rising faster than pay, which happens when mortgages are cheap, homes are scarce or investors buy more. It falls when interest rates rise and cool prices, or when pay rises faster than prices.",
+    levers: "Governments change planning rules and house building targets (supply), Stamp Duty and help-to-buy schemes (demand), and landlord taxes. The Bank of England's interest rate and mortgage lending rules affect what buyers can borrow, and wage policy such as the minimum wage affects the other half of the sum.",
+  },
+  "price-vs-pay-growth": {
+    how: "The UK House Price Index's annual change in average house prices, minus the annual change in average weekly earnings across the whole economy, both for the same month. The result is in percentage points: 3 means house prices grew 3 points faster than pay over the year.",
+    causes: "Mortgage rates and lending rules, how many homes are built compared with how many people want one, and how fast firms raise wages. Pay rises after a burst of inflation can pull the gap below zero even when prices are still rising.",
+    levers: "Governments change planning rules and house building targets, Stamp Duty and help-to-buy schemes, and wage floors such as the minimum wage. The Bank of England's interest rate and mortgage lending rules shape how much buyers can borrow.",
+  },
   "hpi-change": { how: `${HPI_HOW} The annual change compares the latest month with the same month a year earlier.`, causes: HPI_CAUSES, levers: HPI_LEVERS },
   "hpi-england": { how: HPI_HOW, causes: HPI_CAUSES, levers: HPI_LEVERS },
   "hpi-wales": { how: HPI_HOW, causes: `${HPI_CAUSES} Wales has its own Land Transaction Tax instead of Stamp Duty.`, levers: HPI_LEVERS },

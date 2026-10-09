@@ -488,6 +488,16 @@ export const SECTORS = [
         explain: "How much average UK house prices have changed compared with a year earlier.",
         why: "Rising prices help people who already own and make it harder for first-time buyers. Falling prices can hit homeowners who have borrowed a lot.",
       }),
+      d("homes-years-of-pay", { op: "ratio", from: "hpi-uk", of: "awe-weekly", times: 52 }, {
+        label: "Years of average pay to buy the average home", sentenceName: "The average UK home cost", verb: "was", headline: true, format: "multiple", kind: "level",
+        explain: "The average UK house price divided by a year of average pay (average weekly earnings across the whole economy, times 52). It is how many years someone on the average wage would need to earn to pay for the average home, before tax and ignoring any deposit or mortgage. Average earnings include part-time work, so a full-time worker's multiple is lower.",
+        why: "House prices and pay both rise, so the pounds alone do not say whether homes are getting harder to afford. This does: the higher it climbs, the further prices have run ahead of what people earn.",
+      }),
+      d("price-vs-pay-growth", { op: "minus", from: "hpi-change", of: "awe-yoy" }, {
+        label: "House price growth minus pay growth", sentenceName: "House prices grew faster than pay by", verb: "was", format: "pct", kind: "rate",
+        explain: "How much faster, in percentage points, average UK house prices rose over the past year than average pay did. Above zero, prices are outpacing pay and homes are getting harder to afford. Below zero, pay is catching up.",
+        why: "A gap that stays above zero for years is how a home goes from costing four years of pay to eight.",
+      }),
       h("hpi-england", "england", "averagePrice", {
         label: "England", sentenceName: "The average house price in England", headline: true, format: "gbp", kind: "level", nominal: true,
         explain: "The average price paid for a home in England.",
@@ -561,6 +571,8 @@ export const SECTORS = [
       }),
     ],
     inputs: [
+      s("awe-weekly", "KAB9", "lms", EARNINGS, { nominal: true, label: "Average weekly pay", sentenceName: "Average weekly pay", format: "gbp", kind: "level", explain: "Average weekly earnings across the whole economy, before tax. Used to work out how many years of pay a home costs.", why: "A building block for years of pay to buy a home." }),
+      d("awe-yoy", { op: "yoy", from: "awe-weekly" }, { label: "Pay growth on a year earlier", sentenceName: "Pay growth", format: "pct", kind: "rate", explain: "How much average weekly pay has risen over the year, before taking prices into account. Used to compare with house price growth.", why: "A building block for the gap between house price and pay growth." }),
       f("homes-completed-q", "homes-completed", HOUSING_SUPPLY_SOURCE, { label: "New homes completed each quarter", sentenceName: "New homes completed", format: "count", kind: "level", explain: "New homes completed in England each quarter.", why: "A building block for the 12-month total." }),
       f("homes-started-q", "homes-started", HOUSING_SUPPLY_SOURCE, { label: "New homes started each quarter", sentenceName: "New homes started", format: "count", kind: "level", explain: "New homes started in England each quarter.", why: "A building block for the 12-month total." }),
     ],

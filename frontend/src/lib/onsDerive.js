@@ -50,6 +50,13 @@ export function percentOf(a, b) {
   return a.filter(([p]) => lookup.get(p)).map(([p, v]) => [p, (v / lookup.get(p)) * 100]);
 }
 
+// a divided by (b times `times`), where both have a figure for the same period: for example a house price over a year of
+// pay, which is weekly pay times 52.
+export function ratio(a, b, times = 1) {
+  const lookup = new Map(b);
+  return a.filter(([p]) => lookup.get(p)).map(([p, v]) => [p, v / (lookup.get(p) * times)]);
+}
+
 // Works out a derived series from `base`, a map of series id to points.
 export function derive(spec, base) {
   const from = base[spec.from];
@@ -60,6 +67,7 @@ export function derive(spec, base) {
     case "complement": return from.map(([p, v]) => [p, 100 - v]);
     case "plus": return base[spec.of]?.length ? plus(from, base[spec.of]) : [];
     case "minus": return base[spec.of]?.length ? minus(from, base[spec.of]) : [];
+    case "ratio": return base[spec.of]?.length ? ratio(from, base[spec.of], spec.times ?? 1) : [];
     case "percentOf": return base[spec.of]?.length ? percentOf(from, base[spec.of]) : [];
     default: return [];
   }

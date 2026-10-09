@@ -294,7 +294,10 @@ async function main() {
   let refreshed = 0;
   let failed = 0;
 
+  // ONLY=housing,jobs refreshes just those pages, for a quick check after adding a series.
+  const only = process.env.ONLY ? new Set(process.env.ONLY.split(",")) : null;
   for (const sector of SECTORS) {
+    if (only && !only.has(sector.key)) continue;
     const file = path.join(OUT_DIR, `${sector.key}.json`);
     const previous = readExisting(file);
     const out = { fetchedAt: new Date().toISOString(), series: {} };
