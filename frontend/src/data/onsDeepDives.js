@@ -148,6 +148,21 @@ export const DEEP_DIVES = {
     causes: "Mortgage rates and lending rules, how many homes are built compared with how many people want one, and how fast firms raise wages. Pay rises after a burst of inflation can pull the gap below zero even when prices are still rising.",
     levers: "Governments change planning rules and house building targets, Stamp Duty and help-to-buy schemes, and wage floors such as the minimum wage. The Bank of England's interest rate and mortgage lending rules shape how much buyers can borrow.",
   },
+  "hci-index": {
+    how: "The ONS prices what a typical UK household actually pays, using the same price data as CPI but different weights, and adding costs that CPI leaves out: mortgage interest payments, rent, council tax, house depreciation and the cost of buying and running a car. Each month is compared with 2015, which is set to 100. Indices before 2022 come from an ONS extract for all households; the figures are experimental statistics and are revised.",
+    causes: "Prices of everyday goods, energy, rents and mortgage rates. A jump in the Bank of England's interest rate raises this index through mortgage costs even when shop prices barely move.",
+    levers: "The Bank of England's interest rate, the government's decisions on taxes, energy bills and benefits, and housing and planning policy all feed in. Each has trade-offs, and economists disagree on which matters most.",
+  },
+  "hci-rate": {
+    how: "The change in the Household Costs Index (see the index card) compared with the same month a year earlier. It is for the typical household; the figures for different kinds of household are in the comparison chart.",
+    causes: "Energy and food prices, rents, council tax and mortgage interest. In 2022 and 2023 it was driven first by energy and food and then by mortgage rates.",
+    levers: "The Bank of England's interest rate is the main tool. The government can cap or subsidise energy bills, change taxes such as council tax and fuel duty, and change what people receive in benefits and pensions.",
+  },
+  "pay-vs-cost-of-living": {
+    how: "The annual change in average weekly earnings across the whole economy, minus the annual change in the Household Costs Index, both for the same month. It is in percentage points: 1 means pay rose one point faster than the cost of living.",
+    causes: "How tight the jobs market is, how fast prices are rising, and settlements in big pay deals and minimum wage rises. Pay usually trails prices when inflation jumps and catches up later.",
+    levers: "The minimum wage and public sector pay settlements, plus the Bank of England's interest rate and the government's tax and energy-bill decisions that change prices.",
+  },
   "hpi-change": { how: `${HPI_HOW} The annual change compares the latest month with the same month a year earlier.`, causes: HPI_CAUSES, levers: HPI_LEVERS },
   "hpi-england": { how: HPI_HOW, causes: HPI_CAUSES, levers: HPI_LEVERS },
   "hpi-wales": { how: HPI_HOW, causes: `${HPI_CAUSES} Wales has its own Land Transaction Tax instead of Stamp Duty.`, levers: HPI_LEVERS },

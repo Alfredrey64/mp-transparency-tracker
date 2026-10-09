@@ -53,6 +53,20 @@ const BOATS_SOURCE = { name: "Home Office: migrants detected crossing the Englis
 const ONS_MIGRATION_SOURCE = { name: "ONS: long-term international migration, provisional", url: "https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/internationalmigration/bulletins/longterminternationalmigrationprovisional/latest" };
 const HOUSING_SUPPLY_SOURCE = { name: "Ministry of Housing, Communities and Local Government: housing supply statistics", url: "https://www.gov.uk/government/collections/housing-supply-indicators-of-new-supply-england" };
 const BOE_SOURCE = { name: "Bank of England Database", url: "https://www.bankofengland.co.uk/boeapps/database/" };
+const HCI_SOURCE = { name: "Household Costs Indices (ONS, experimental statistics)", url: "https://www.ons.gov.uk/economy/inflationandpriceindices/bulletins/householdcostsindicesforukhouseholdgroups/latest" };
+// The kinds of household the ONS Household Costs Indices cover: [series id, feed, name].
+const HCI_GROUPS = [
+  ["hci-decile1", "hci-decile1", "Lowest-income tenth of households"],
+  ["hci-decile10", "hci-decile10", "Highest-income tenth of households"],
+  ["hci-mortgagor", "hci-mortgagor", "Mortgage holders"],
+  ["hci-outright", "hci-outright", "Owners with no mortgage"],
+  ["hci-renter", "hci-renter", "Private renters"],
+  ["hci-social", "hci-social", "Social renters"],
+  ["hci-retired", "hci-retired", "Retired households"],
+  ["hci-nonretired", "hci-nonretired", "Households with no one retired"],
+  ["hci-children", "hci-children", "Households with children"],
+  ["hci-nochildren", "hci-nochildren", "Households without children"],
+];
 const HPI_SOURCE = { name: "UK House Price Index (HM Land Registry, ONS and others)", url: "https://www.gov.uk/government/collections/uk-house-price-index-reports" };
 const CRIME_URL = "https://www.ons.gov.uk/peoplepopulationandcommunity/crimeandjustice/datasets/crimeinenglandandwalesappendixtables";
 const CSEW = { sheet: "Table A1a", labelCol: 0, source: { name: "Crime Survey for England and Wales (ONS), appendix table A1a", url: CRIME_URL } };
@@ -175,6 +189,21 @@ export const SECTORS = [
         explain: "How much more a typical basket of goods and services costs than a year ago.",
         why: "The Bank of England aims to keep it at 2%. When it is well above target, interest rates tend to rise, which affects mortgages and savings.",
       }),
+      f("hci-index", "hci-all-index", HCI_SOURCE, {
+        label: "Cost of living index (all households)", sentenceName: "The cost of living index", verb: "was", headline: true, format: "index", kind: "level",
+        explain: "The ONS Household Costs Index for the typical household, set to 100 in 2015. Unlike the headline inflation figure it counts what households actually pay, including mortgage interest, rent, council tax, and the cost of buying and running a car. A reading of 150 means the same shopping and bills cost half as much again as in 2015.",
+        why: "It is the closest thing to a single number for the cost of living. Compare it with average pay to see whether households are keeping up.",
+      }),
+      f("hci-rate", "hci-all-rate", HCI_SOURCE, {
+        label: "How fast the cost of living is rising", sentenceName: "The annual rise in the cost of living", verb: "was", headline: true, format: "pct", kind: "rate",
+        explain: "How much the Household Costs Index has risen compared with a year earlier. It differs from CPI inflation because it counts mortgage interest, rent and council tax and weights things by what a typical household spends.",
+        why: "When this is higher than pay growth, households are getting worse off whatever the official inflation rate says.",
+      }),
+      d("pay-vs-cost-of-living", { op: "minus", from: "awe-yoy", of: "hci-rate" }, {
+        label: "Pay growth minus the rise in the cost of living", sentenceName: "The gap between pay growth and the rise in the cost of living", verb: "was", headline: true, format: "pct", kind: "rate",
+        explain: "How much faster, in percentage points, average weekly pay rose over the past year than the Household Costs Index. Above zero, pay is beating the cost of living; below zero, people are falling behind.",
+        why: "It answers the question people actually ask: is my pay keeping up with what things cost me?",
+      }),
       s("cpih", "L55O", "mm23", PRICES, {
         label: "Inflation including housing costs (CPIH)", sentenceName: "Inflation including housing costs (CPIH)", headline: true, format: "pct", kind: "rate",
         explain: "The same as CPI, but it also counts the cost of owning and running a home. It is the ONS's preferred measure.",
@@ -220,6 +249,11 @@ export const SECTORS = [
         explain: "What people pay for meals out, coffee, pubs and hotel stays.",
         why: "It reflects wage and rent costs for hospitality businesses, which employ a large share of young workers.",
       }),
+    ],
+    inputs: [
+      s("awe-weekly", "KAB9", "lms", EARNINGS, { nominal: true, label: "Average weekly pay", sentenceName: "Average weekly pay", format: "gbp", kind: "level", explain: "Average weekly earnings across the whole economy, before tax. Used to compare pay growth with the cost of living.", why: "A building block." }),
+      d("awe-yoy", { op: "yoy", from: "awe-weekly" }, { label: "Pay growth on a year earlier", sentenceName: "Pay growth", format: "pct", kind: "rate", explain: "How much average weekly pay has risen over the year, before taking prices into account.", why: "A building block." }),
+      ...HCI_GROUPS.map(([id, feed, label]) => f(id, feed, HCI_SOURCE, { label, sentenceName: `The annual rise in the cost of living for ${label.toLowerCase()}`, verb: "was", format: "pct", kind: "rate", explain: `How much the cost of living rose over the year for ${label.toLowerCase()}, from the ONS Household Costs Indices.`, why: "A building block for the comparison by type of household." })),
     ],
   },
   {
@@ -494,7 +528,7 @@ export const SECTORS = [
         why: "House prices and pay both rise, so the pounds alone do not say whether homes are getting harder to afford. This does: the higher it climbs, the further prices have run ahead of what people earn.",
       }),
       d("price-vs-pay-growth", { op: "minus", from: "hpi-change", of: "awe-yoy" }, {
-        label: "House price growth minus pay growth", sentenceName: "House prices grew faster than pay by", verb: "was", format: "pct", kind: "rate",
+        label: "House price growth minus pay growth", sentenceName: "The gap between house price growth and pay growth", verb: "was", format: "pct", kind: "rate",
         explain: "How much faster, in percentage points, average UK house prices rose over the past year than average pay did. Above zero, prices are outpacing pay and homes are getting harder to afford. Below zero, pay is catching up.",
         why: "A gap that stays above zero for years is how a home goes from costing four years of pay to eight.",
       }),
@@ -1530,6 +1564,16 @@ BREAKDOWNS.immigration = [
 ];
 // "Compare these": several measures on one page drawn together, with the latest figure of each ranked beside the chart.
 PLACES.prices = [{
+  id: "cost-of-living-households",
+  title: "The cost of living for different households",
+  blurb: "Not everyone faces the same prices: renters, mortgage holders, pensioners, families and the richest and poorest tenth of households spend their money differently. Pick up to six kinds of household to see how much the cost of living rose for each, compared with a year earlier. The bars show every kind, highest first.",
+  format: "pct",
+  members: ["hci-rate", ...HCI_GROUPS.map(([id]) => id)],
+  defaultOn: ["hci-rate", "hci-decile1", "hci-decile10", "hci-renter", "hci-mortgagor"],
+  showAs: "levels",
+  names: { "hci-rate": "All households", ...Object.fromEntries(HCI_GROUPS.map(([id, , label]) => [id, label])) },
+  extra: [],
+}, {
   id: "inflation-by-spending",
   title: "Inflation by type of spending",
   blurb: "Pick up to six kinds of spending to see how fast their prices are rising or falling. The bars show every kind, highest first, so you can see what is pushing the headline figure up or down.",

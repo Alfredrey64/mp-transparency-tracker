@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { headerPeriod, pointsFromRow, pointsFromColumn, pointsFromFlow, monthlySums, serialToPeriod, parseCsv, FEEDS } from "./fetch-tables.js";
+import { headerPeriod, pointsFromRow, pointsFromColumn, pointsFromFlow, monthlySums, serialToPeriod, parseCsv, hciPeriod, latestHciLink, FEEDS } from "./fetch-tables.js";
 import { sectorSeries, SECTORS } from "./frontend/src/data/onsSectors.js";
 
 describe("reading period headings", () => {
@@ -61,5 +61,18 @@ describe("feeds", () => {
     for (const sector of SECTORS) {
       for (const def of sectorSeries(sector).filter((d) => d.feed)) expect(FEEDS[def.feed], `${sector.key}/${def.id}`).toBeTypeOf("function");
     }
+  });
+});
+
+describe("Household Costs Indices", () => {
+  it("reads the month headings in both files", () => {
+    expect(hciPeriod("Jun-2026 [p]")).toBe("2026-06");
+    expect(hciPeriod("Jan-06")).toBe("2006-01");
+    expect(hciPeriod("Description:")).toBeNull();
+  });
+  it("picks the latest quarterly edition from the links", () => {
+    const links = ["/file?uri=/x/referencetables/apriltojune2025/a.xlsx", "/file?uri=/x/referencetables/apriltojune2026/a.xlsx", "/file?uri=/x/referencetables/january2022toseptember2023/a.xlsx", "/file?uri=/x/referencetables/october2025todecember2025/a.xlsx"];
+    expect(latestHciLink(links)).toContain("apriltojune2026");
+    expect(latestHciLink(["/nothing"])).toBeNull();
   });
 });

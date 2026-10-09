@@ -273,7 +273,69 @@ async function ambulanceColumn(code, scale) {
   return byPeriod(points);
 }
 
+// ---------------------------------------------------------------------------
+// ONS Household Costs Indices: the cost of living for different kinds of household, counting mortgage interest, rent, council
+// tax and the other things the main inflation figures leave out. The reference tables start in January 2022; January 2006 to
+// December 2021 comes from an ONS extract for all households (the same index, 2015 = 100).
+
+const HCI_PAGE = "https://www.ons.gov.uk/economy/inflationandpriceindices/datasets/householdcostsindicesforukhouseholdgroupsreferencetables";
+const HCI_LONG = "https://www.ons.gov.uk/file?uri=/economy/inflationandpriceindices/adhocs/1676householdcostsindexallhouseholdsannualinflationratesjanuary2006toseptember2023/allhhhcijan06tosep23.csv";
+const HCI_GROUPS = {
+  "hci-decile1": "Income Decile 1", "hci-decile10": "Income Decile 10", "hci-mortgagor": "Mortgagor and other owner occupier", "hci-outright": "Outright owner occupier",
+  "hci-renter": "Private renter", "hci-social": "Social and other renter", "hci-retired": "Retired", "hci-nonretired": "Non-Retired", "hci-children": "With Children", "hci-nochildren": "Without Children",
+};
+
+// "Jun-2026 [p]" -> "2026-06"; "Jan-06" -> "2006-01".
+export function hciPeriod(text) {
+  const m = /^([A-Za-z]{3})-(\d{2}|\d{4})\b/.exec(String(text ?? "").trim());
+  if (!m || !MONTHS[m[1].toLowerCase()]) return null;
+  return `${m[2].length === 2 ? `20${m[2]}` : m[2]}-${MONTHS[m[1].toLowerCase()]}`;
+}
+
+// The most recent of ONS's quarterly editions, read from the folder names in the links ("apriltojune2026", "october2025todecember2025").
+export function latestHciLink(links) {
+  const ORDER = Object.keys(MONTHS);
+  const scored = links.map((l) => {
+    const m = /\/(?:[a-z]+\d{0,4})to([a-z]+)(\d{4})\//.exec(l);
+    if (!m) return null;
+    const month = ORDER.indexOf(m[1].slice(0, 3));
+    return month < 0 ? null : { l, at: Number(m[2]) * 12 + month };
+  }).filter(Boolean).sort((a, b) => b.at - a.at);
+  return scored[0]?.l ?? null;
+}
+
+const hciBook = () => once("hci", async () => {
+  const html = await getText(HCI_PAGE);
+  const links = [...html.matchAll(/href="(\/file\?uri=[^"]+\.xlsx)"/g)].map((m) => m[1]);
+  const link = latestHciLink(links);
+  if (!link) throw new Error("no Household Costs Indices tables found");
+  return readXlsx(await getBuffer(new URL(link, "https://www.ons.gov.uk").toString()));
+});
+
+const hciLong = () => once("hci-long", async () => {
+  const out = new Map();
+  for (const line of (await getText(HCI_LONG)).split("\n").slice(2)) {
+    const [d, rate, index] = line.split(",");
+    const period = hciPeriod(d);
+    if (period && period < "2022-01" && Number.isFinite(Number(rate)) && Number.isFinite(Number(index))) out.set(period, { rate: Number(rate), index: Number(index) });
+  }
+  return out;
+});
+
+async function hciTable(sheet, column) {
+  const rows = (await hciBook())[sheet];
+  const head = rows.find((r) => r?.[0] === "Description:");
+  const col = head.indexOf(column);
+  if (col < 0) throw new Error(`HCI column ${column} not found`);
+  return rows.map((r) => [hciPeriod(r?.[0]), numeric(r?.[col])]).filter(([p, v]) => p && v !== null);
+}
+
 export const FEEDS = {
+  // ONS: Household Costs Indices, all households: the index (2015 = 100) and how much it rose over 12 months, January 2006 onwards
+  "hci-all-index": async () => byPeriod([...[...(await hciLong())].map(([p, v]) => [p, v.index]), ...(await hciTable("Table 2", "All Households"))]),
+  "hci-all-rate": async () => byPeriod([...[...(await hciLong())].map(([p, v]) => [p, v.rate]), ...(await hciTable("Table 1", "All Households"))]),
+  // ONS: Household Costs Indices, how much the cost of living rose over 12 months for one kind of household, January 2022 onwards
+  ...Object.fromEntries(Object.entries(HCI_GROUPS).map(([id, column]) => [id, async () => byPeriod(await hciTable("Table 1", column))])),
   // NHS England: referral to treatment (RTT) waiting times, England
   "rtt-waiting": () => rttColumn(22),
   "rtt-within-18": () => rttColumn(8, 100),

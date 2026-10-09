@@ -4,6 +4,7 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { IconHistory } from "./icons";
 import { LANDMARK_VOTES, OUTCOME_COLOR } from "../lib/politicalHistoryData";
+import { splitActNames } from "../lib/actNames";
 import { BillIcon } from "./billIcons";
 import { supabase } from "../supabaseClient";
 import { withScrollPreserved } from "../lib/preserveScroll";
@@ -297,10 +298,10 @@ function VoteRow({ vote, index }) {
               {vote.theme}
             </span>
           </div>
-          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink, lineHeight: 1.35, marginBottom: 10, maxWidth: 560 }}>{vote.title}</div>
+          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, fontWeight: 700, color: COLORS.ink, lineHeight: 1.35, marginBottom: 10, maxWidth: 560 }}>{vote.title}</div>
           <ResultPill outcome={vote.outcome}>{vote.result}</ResultPill>
           <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.65, marginTop: 11, maxWidth: 620 }}>
-            {vote.detail}
+            {splitActNames(vote.detail).map((part, i) => (part.bold ? <strong key={i} style={{ color: COLORS.ink, fontWeight: 700 }}>{part.text}</strong> : part.text))}
           </div>
         </div>
       </div>

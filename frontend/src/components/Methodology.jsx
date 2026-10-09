@@ -176,6 +176,12 @@ export default function Methodology({ onNavigate }) {
               use="The Crime Survey for England and Wales and police recorded crime, read from the ONS appendix tables spreadsheet. They cover England and Wales only, and the two measures count different things, so the Crime page shows both and explains the gap."
             />
             <SourceRow
+              name="Household Costs Indices (ONS, experimental statistics)"
+              url="https://www.ons.gov.uk/economy/inflationandpriceindices/bulletins/householdcostsindicesforukhouseholdgroups/latest"
+              auth="No key required, Open Government Licence v3.0"
+              use="The cost of living index and its annual rise on the Prices page, and the comparison between kinds of household. The ONS prices what a typical household pays, including mortgage interest, rent and council tax, which headline inflation leaves out, and weights things by what each kind of household spends. The tables start in January 2022; January 2006 to December 2021 comes from an ONS extract for all households. The figures are experimental and are revised. Refreshed each day, and they change only when the ONS publishes each quarter."
+            />
+            <SourceRow
               name="Who is involved in crime: arrests, stop and search, reoffending, prison and victims (Home Office, Ministry of Justice, ONS)"
               url="https://www.gov.uk/government/statistics/ethnicity-and-the-criminal-justice-system-2024"
               auth="No key required, Open Government Licence v3.0"

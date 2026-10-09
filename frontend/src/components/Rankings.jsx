@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
@@ -136,7 +136,9 @@ function DistributionChart({ data, color, shownCount, formatValue, activeBin, on
         )}
       </div>
 
-      <div style={{ position: "relative", height: 76, marginBottom: 2 }}>
+      <div style={{ position: "relative", height: 92, paddingTop: 16, marginBottom: 2, boxSizing: "border-box" }}>
+        <div aria-hidden="true" style={{ position: "absolute", top: 0, left: `${(thresholdBin / BINS) * 100}%`, right: 0, borderTop: `2px solid ${color}`, borderLeft: `2px solid ${color}`, borderRight: `2px solid ${color}`, height: 8, borderRadius: "4px 4px 0 0", opacity: 0.8 }} />
+        <span aria-hidden="true" style={{ position: "absolute", top: -1, right: 6, transform: "translateY(-100%)", fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color, background: COLORS.paperCard, padding: "0 4px" }}>the {Math.min(shownCount, data.length)} shown below</span>
         <div style={{ display: "flex", alignItems: "flex-end", gap: 2, height: "100%" }}>
           {bins.map((count, i) => {
             const isActive = activeBin === i;
@@ -150,9 +152,10 @@ function DistributionChart({ data, color, shownCount, formatValue, activeBin, on
                 whileHover={count > 0 ? { scaleY: 1.04 } : {}}
                 style={{
                   flex: 1, height: `${Math.max((count / maxBinCount) * 100, count > 0 ? 4 : 0)}%`,
-                  background: color, opacity: isActive ? 1 : i >= thresholdBin ? 0.95 : 0.25,
+                  background: `linear-gradient(180deg, ${color}, ${color}88)`, opacity: isActive ? 1 : i >= thresholdBin ? 0.98 : 0.28,
                   border: isActive ? `2px solid ${COLORS.ink}` : "none",
-                  borderRadius: "2px 2px 0 0", transformOrigin: "bottom", padding: 0,
+                  boxShadow: isActive ? `0 0 14px ${color}` : i >= thresholdBin && count > 0 ? `0 -4px 12px -6px ${color}` : "none",
+                  borderRadius: "6px 6px 0 0", transformOrigin: "bottom", padding: 0,
                   cursor: count > 0 ? "pointer" : "default",
                 }}
                 title={`${count} MP${count === 1 ? "" : "s"}`}
@@ -189,55 +192,149 @@ function DistributionChart({ data, color, shownCount, formatValue, activeBin, on
       </div>
 
       <div style={{ marginTop: 6, fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5 }}>
-        The brighter bars on the right are where the {Math.min(shownCount, data.length)} MPs shown below fall.
+        The bracket marks where the {Math.min(shownCount, data.length)} MPs shown below fall.
       </div>
     </div>
   );
 }
 
-function RankRow({ entry, index, maxValue, color, valueLabel, onSelectPolitician }) {
-  const p = entry.politician;
-  const pColor = partyColour(p.party_colour, COLORS.inkSoft);
-  const isTop3 = entry.rank <= 3;
+const MEDALS = { 1: ["#E8B53A", "#B8862E"], 2: ["#C9CED6", "#8E96A3"], 3: ["#D08A55", "#9A5D2F"] };
 
+function Medal({ rank, size = 26 }) {
+  const [light, dark] = MEDALS[rank] ?? ["#8A8FA8", "#5b6075"];
   return (
-    <motion.button
-      layout
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2, delay: Math.min(index, 12) * 0.02 }}
-      whileHover={{ x: 3 }}
-      onClick={() => onSelectPolitician(p)}
+    <span
+      aria-hidden="true"
       style={{
-        display: "flex", alignItems: "center", gap: 12, width: "100%", textAlign: "left", cursor: "pointer",
-        background: "none", border: "none", borderLeft: `3px solid ${pColor}`, borderBottom: `1px solid ${COLORS.hairline}`,
-        padding: "11px 14px",
+        flexShrink: 0, width: size, height: size, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center",
+        background: `linear-gradient(145deg, ${light}, ${dark})`, color: "#fff", fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: size * 0.5,
+        boxShadow: `0 2px 0 ${dark}, 0 6px 12px ${dark}55`, textShadow: "0 1px 1px rgba(0,0,0,0.35)",
       }}
     >
-      <span
-        style={{
-          flexShrink: 0, width: 24, textAlign: "center", fontFamily: FONT_DISPLAY, fontSize: 15,
-          fontWeight: 700, color: isTop3 ? color : COLORS.inkSoft,
-        }}
-      >
-        {entry.rank}
+      {rank}
+    </span>
+  );
+}
+
+// The top three on a podium: the tallest column in the middle, with the MP's face, their party's colour round it and a medal.
+function Podium({ entries, color, formatValue, maxValue, onSelectPolitician }) {
+  const reduce = useReducedMotion();
+  const order = [entries[1], entries[0], entries[2]].filter(Boolean);
+  return (
+    <div role="list" aria-label="The top three" style={{ display: "grid", gridTemplateColumns: `repeat(${order.length}, minmax(0, 1fr))`, gap: "clamp(6px, 2vw, 18px)", alignItems: "end", margin: "6px 0 22px", padding: "18px clamp(8px, 2vw, 22px) 0", borderRadius: 18, background: `radial-gradient(420px 220px at 50% 0%, ${color}26, transparent 70%)` }}>
+      {order.map((entry) => {
+        const p = entry.politician;
+        const pColor = partyColour(p.party_colour, COLORS.inkSoft);
+        const first = entry.rank === 1;
+        const height = 54 + Math.max(0.18, entry.value / maxValue) * (first ? 120 : 96);
+        const avatar = first ? 84 : 66;
+        return (
+          <motion.button
+            key={p.id} role="listitem" type="button" onClick={() => onSelectPolitician(p)}
+            initial={reduce ? false : { opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: first ? 0.05 : entry.rank === 2 ? 0.2 : 0.32, type: "spring", stiffness: 160, damping: 18 }}
+            whileHover={reduce ? undefined : { y: -4 }}
+            style={{ display: "flex", flexDirection: "column", alignItems: "center", background: "none", border: "none", padding: 0, cursor: "pointer", minWidth: 0, color: "inherit" }}
+          >
+            <span style={{ position: "relative", display: "inline-flex", marginBottom: 8 }}>
+              <span style={{ display: "inline-flex", borderRadius: "50%", padding: 3, background: `linear-gradient(145deg, ${pColor}, ${pColor}88)`, boxShadow: `0 10px 26px -8px ${pColor}aa` }}>
+                <Avatar url={p.thumbnail_url} name={p.name} color={pColor} size={avatar} />
+              </span>
+              <span style={{ position: "absolute", right: -6, bottom: -4 }}><Medal rank={entry.rank} size={first ? 32 : 28} /></span>
+            </span>
+            <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: first ? 14.5 : 13, color: COLORS.ink, textAlign: "center", lineHeight: 1.25, maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{p.name}</span>
+            <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, textAlign: "center", marginBottom: 6, maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.party ?? "—"}</span>
+            <motion.span
+              aria-hidden="true"
+              initial={reduce ? false : { height: 0 }} animate={{ height }} transition={{ delay: 0.1, type: "spring", stiffness: 90, damping: 16 }}
+              style={{ position: "relative", display: "flex", alignItems: "flex-start", justifyContent: "center", width: "100%", borderRadius: "14px 14px 0 0", background: `linear-gradient(180deg, ${color}, ${color}55)`, boxShadow: `inset 0 2px 0 rgba(255,255,255,0.35), 0 -10px 30px -14px ${color}`, overflow: "hidden" }}
+            >
+              <span style={{ marginTop: 10, fontFamily: FONT_MONO, fontWeight: 800, fontSize: first ? 20 : 16, color: "#fff", textShadow: "0 1px 3px rgba(0,0,0,0.4)", letterSpacing: "-0.02em" }}>{formatValue(entry)}</span>
+              <span style={{ position: "absolute", left: 0, right: 0, bottom: -14, textAlign: "center", fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 84, lineHeight: 1, color: "rgba(255,255,255,0.14)" }}>{entry.rank}</span>
+            </motion.span>
+          </motion.button>
+        );
+      })}
+    </div>
+  );
+}
+
+// One MP in the race: their face rides at the end of their bar, so the length of the bar and the position of the face both say how far ahead they are.
+function RaceRow({ entry, index, maxValue, color, valueLabel, onSelectPolitician }) {
+  const reduce = useReducedMotion();
+  const p = entry.politician;
+  const pColor = partyColour(p.party_colour, COLORS.inkSoft);
+  const pct = Math.min(100, Math.max(8, (entry.value / maxValue) * 100));
+  return (
+    <motion.button
+      layout="position"
+      initial={reduce ? false : { opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2, delay: Math.min(index, 12) * 0.02 }}
+      whileHover={reduce ? undefined : { x: 3 }}
+      onClick={() => onSelectPolitician(p)}
+      className="race-row"
+      style={{
+        display: "grid", gridTemplateColumns: "34px minmax(0, 1fr)", gap: "0 12px", alignItems: "center", width: "100%", textAlign: "left", cursor: "pointer",
+        background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "10px 14px 10px 10px",
+      }}
+    >
+      <span style={{ alignSelf: "center", justifySelf: "center" }}>
+        {entry.rank <= 3 ? <Medal rank={entry.rank} size={28} /> : <span style={{ fontFamily: FONT_DISPLAY, fontSize: 14, fontWeight: 700, color: COLORS.inkSoft }}>{entry.rank}</span>}
       </span>
-      <Avatar url={p.thumbnail_url} name={p.name} color={pColor} />
-      <div style={{ minWidth: 0, flex: 1 }}>
-        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
-          <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13.5, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+      <span style={{ minWidth: 0, display: "block" }}>
+        <span style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10 }}>
+          <span style={{ minWidth: 0, fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13.5, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {p.name}
+            <span style={{ fontWeight: 500, fontSize: 11.5, color: COLORS.inkSoft }}>{"  "}{p.party ?? "—"} · {p.constituency ?? "—"}</span>
           </span>
-          <span style={{ flexShrink: 0, fontFamily: FONT_MONO, fontWeight: 700, fontSize: 13, color }}>{valueLabel}</span>
-        </div>
-        <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginBottom: 6, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-          {p.party ?? "—"} · {p.constituency ?? "—"}
-        </div>
-        <div style={{ height: 5, borderRadius: 999, background: COLORS.paper, overflow: "hidden" }}>
-          <div style={{ height: "100%", width: `${Math.max((entry.value / maxValue) * 100, 2)}%`, background: color, borderRadius: 999 }} />
-        </div>
-      </div>
+          <span style={{ flexShrink: 0, fontFamily: FONT_MONO, fontWeight: 800, fontSize: 14, color }}>{valueLabel}</span>
+        </span>
+        <span aria-hidden="true" style={{ position: "relative", display: "block", height: 34, marginTop: 4 }}>
+          <span style={{ position: "absolute", left: 0, right: 0, top: 15, height: 4, borderRadius: 2, background: `repeating-linear-gradient(90deg, ${COLORS.hairline} 0 6px, transparent 6px 12px)` }} />
+          <motion.span
+            initial={reduce ? false : { width: 0 }} animate={{ width: `${pct}%` }} transition={{ delay: Math.min(index, 12) * 0.03, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            style={{ position: "absolute", left: 0, top: 9, height: 16, borderRadius: 8, background: `linear-gradient(90deg, ${color}33, ${color})`, boxShadow: `0 4px 14px -4px ${color}99` }}
+          />
+          <motion.span
+            initial={reduce ? false : { left: "0%" }} animate={{ left: `${pct}%` }} transition={{ delay: Math.min(index, 12) * 0.03, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            style={{ position: "absolute", top: 0, transform: "translateX(-100%)", display: "inline-flex", borderRadius: "50%", padding: 2, background: pColor, boxShadow: `0 4px 10px -2px ${pColor}aa` }}
+          >
+            <Avatar url={p.thumbnail_url} name={p.name} color={pColor} size={30} />
+          </motion.span>
+        </span>
+      </span>
     </motion.button>
+  );
+}
+
+// Who is in the list, by party: one bar split into the parties' colours.
+function PartyStrip({ entries }) {
+  const parts = useMemo(() => {
+    const m = new Map();
+    for (const e of entries) {
+      const key = e.politician.party ?? "No party";
+      const cur = m.get(key) ?? { party: key, colour: partyColour(e.politician.party_colour, COLORS.inkSoft), count: 0 };
+      cur.count++;
+      m.set(key, cur);
+    }
+    return [...m.values()].sort((a, b) => b.count - a.count);
+  }, [entries]);
+  if (entries.length < 4) return null;
+  return (
+    <div style={{ margin: "0 0 18px" }}>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12, color: COLORS.ink, marginBottom: 8 }}>Which parties the {entries.length} MPs below belong to</div>
+      <div role="img" aria-label={parts.map((p) => `${p.party} ${p.count}`).join(", ")} style={{ display: "flex", height: 16, borderRadius: 8, overflow: "hidden", gap: 2 }}>
+        {parts.map((p) => <motion.span key={p.party} initial={{ flexGrow: 0 }} animate={{ flexGrow: p.count }} transition={{ duration: 0.6 }} style={{ flexBasis: 0, background: p.colour, minWidth: 4 }} title={`${p.party}: ${p.count}`} />)}
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "2px 14px", marginTop: 8 }}>
+        {parts.slice(0, 8).map((p) => (
+          <span key={p.party} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: FONT_BODY, fontSize: 12, color: COLORS.ink }}>
+            <span aria-hidden="true" style={{ width: 9, height: 9, borderRadius: "50%", background: p.colour }} />
+            {p.party} <strong style={{ fontFamily: FONT_MONO }}>{p.count}</strong>
+          </span>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -434,6 +531,11 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
   }, [active]);
   const topValueEveryday = active.key === "expenses" || active.key === "earnings" ? active.data?.[0]?.value : null;
   const maxValue = active.data?.[0]?.value || 1;
+  // The podium is for the plain top of the table; a search or a clicked bar shows a plain list instead.
+  const showPodium = !binFilter && !query.trim() && shown.length >= 3 && shown[0]?.rank === 1;
+  const rest = showPodium ? shown.slice(3) : shown;
+  // Below the podium the bars are measured against the first one left, so the gaps between MPs are easy to see.
+  const restMax = showPodium ? rest[0]?.value || maxValue : maxValue;
 
   return (
     <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
@@ -534,12 +636,15 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
 
       <AnimatePresence mode="wait">
         <motion.div key={category} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.18 }} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {shown.map((entry, i) => (
-            <RankRow
+          {showPodium && <Podium entries={shown.slice(0, 3)} color={active.color} formatValue={active.formatValue} maxValue={maxValue} onSelectPolitician={onSelectPolitician} />}
+          {!loading && shown.length > 0 && <PartyStrip entries={shown} />}
+          {showPodium && rest.length > 0 && <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, margin: "-6px 0 2px" }}>The bars below are measured against {rest[0].politician.name}, in 4th place, so the gaps between MPs are easy to see.</div>}
+          {rest.map((entry, i) => (
+            <RaceRow
               key={entry.politician.id}
               entry={entry}
               index={i}
-              maxValue={maxValue}
+              maxValue={restMax}
               color={active.color}
               valueLabel={active.formatValue(entry)}
               onSelectPolitician={onSelectPolitician}
