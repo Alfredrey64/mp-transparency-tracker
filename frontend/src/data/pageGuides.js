@@ -132,9 +132,9 @@ export const PAGE_GUIDES = {
     notShown: "Mortgage rates or home building. House prices come from HM Land Registry with the ONS.",
   },
   crime: {
-    what: "Two ways of counting crime in England and Wales: the Crime Survey, which asks people what happened to them, and crimes recorded by the police.",
+    what: "Two ways of counting crime in England and Wales, the Crime Survey and police records, plus official figures on who is arrested, who is a victim and who is in prison.",
     why: "The two often disagree, and knowing why helps you judge any crime headline.",
-    notShown: "Scotland and Northern Ireland, which count crime separately, or crime in your own area.",
+    notShown: "Scotland and Northern Ireland, which count crime separately, your own area, or the income of people who offend, which no one publishes.",
   },
   howitworks: {
     what: "A plain walk-through of the tiers of government, how a bill becomes law, and who does what along the way.",

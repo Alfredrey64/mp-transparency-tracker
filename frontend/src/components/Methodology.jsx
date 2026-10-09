@@ -176,6 +176,12 @@ export default function Methodology({ onNavigate }) {
               use="The Crime Survey for England and Wales and police recorded crime, read from the ONS appendix tables spreadsheet. They cover England and Wales only, and the two measures count different things, so the Crime page shows both and explains the gap."
             />
             <SourceRow
+              name="Who is involved in crime: arrests, stop and search, reoffending, prison and victims (Home Office, Ministry of Justice, ONS)"
+              url="https://www.gov.uk/government/statistics/ethnicity-and-the-criminal-justice-system-2024"
+              auth="No key required, Open Government Licence v3.0"
+              use="The &quot;Who is involved in crime&quot; section of the Crime page. Arrests, stop and search and reoffending by ethnic group come from the Home Office and Ministry of Justice figures republished on GOV.UK Ethnicity facts and figures; the offence people are held for and the prison population by ethnic group come from the Ministry of Justice's Statistics on Ethnicity and the Criminal Justice System 2024; and who is a victim, by ethnic group, age, household income and area deprivation, comes from the ONS Crime Survey for England and Wales. They cover England and Wales and count contact with the police and courts, not crime itself. The income of people who are arrested or convicted is not published by any source, so it is not shown. Updated by hand when new editions appear."
+            />
+            <SourceRow
               name="NHS England statistics"
               url="https://www.england.nhs.uk/statistics/"
               auth="No key required, Open Government Licence v3.0"

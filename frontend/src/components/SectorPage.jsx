@@ -13,6 +13,7 @@ import { SECTOR_PROMISES } from "../data/onsPromises";
 import ChartActions from "./ChartActions";
 import PopulationExplorer from "./PopulationExplorer";
 import SectorExplorer from "./SectorExplorer";
+import CrimePeople from "./CrimePeople";
 import { sectorByKey, sectorSeries, ONS_SERIES_PAGE, WEEKLY_DEATHS } from "../data/onsSectors";
 import { loadSector, loadDeflator } from "../lib/onsData";
 import { makeDeflator, toReal, canAdjust } from "../lib/onsReal";
@@ -43,6 +44,8 @@ const EXPLORERS = {
   housing: { id: "housing-by-place", label: "Homes by type and place" },
   crime: { id: "crime-by-place", label: "Crime by place" },
 };
+// Extra cards on a page that are not charts of a series, in jump-bar order after the explorer.
+const EXTRA = { crime: [{ id: "crime-who", label: "Who is involved in crime" }] };
 // How many headline tiles to put in a row on a wide screen, so the last row is never a lone box: up to four in one row, then threes or fours.
 const tileColumns = (n) => (n <= 4 ? Math.max(1, n) : n === 5 || n === 6 ? 3 : 4);
 const WHOLE_HISTORY = new Set(["population", "environment", "crime"]);
@@ -567,7 +570,7 @@ export default function SectorPage({ sector, param = null }) {
 
   const Icon = ICONS[sector];
   const shown = useMemo(() => (def && loaded ? def.series.filter((s) => loaded.series[s.id]) : []), [def, loaded]);
-  const extraCards = useMemo(() => (def ? [...(EXPLORERS[def.key] ? [EXPLORERS[def.key]] : []), ...def.breakdowns.map((x) => ({ id: x.id, label: x.title })), ...(def.mortgage ? [{ id: "mortgage-cost", label: "What a mortgage costs" }] : []), ...def.places.map((g) => ({ id: g.id, label: g.title }))] : []), [def]);
+  const extraCards = useMemo(() => (def ? [...(EXPLORERS[def.key] ? [EXPLORERS[def.key]] : []), ...(EXTRA[def.key] ?? []), ...def.breakdowns.map((x) => ({ id: x.id, label: x.title })), ...(def.mortgage ? [{ id: "mortgage-cost", label: "What a mortgage costs" }] : []), ...def.places.map((g) => ({ id: g.id, label: g.title }))] : []), [def]);
   const hasPromises = Boolean(def && SECTOR_PROMISES[def.key]);
   const jumpIds = useMemo(() => [...extraCards.map((x) => x.id), ...shown.map((s) => s.id), ...(def && SECTOR_PROMISES[def.key] ? ["promises"] : [])], [extraCards, shown, def]);
   if (!def) return null;
@@ -651,6 +654,7 @@ export default function SectorPage({ sector, param = null }) {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(480px, 100%), 1fr))", gap: 20, alignItems: "start", marginTop: 8 }}>
             {def.key === "population" && <PopulationExplorer accent={def.accent} />}
             {def.key !== "population" && EXPLORERS[def.key] && <SectorExplorer sector={def.key} accent={def.accent} />}
+            {def.key === "crime" && <CrimePeople accent={def.accent} />}
             {def.breakdowns.map((x) => <BreakdownCard key={x.id} spec={x} series={loaded.series} accent={def.accent} />)}
             {def.mortgage && loaded.series[def.mortgage] && <MortgageCard points={loaded.series[def.mortgage].points} accent={def.accent} />}
             {def.places.map((g) => (
