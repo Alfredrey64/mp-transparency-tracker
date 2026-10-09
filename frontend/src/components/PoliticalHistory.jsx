@@ -5,6 +5,7 @@ import { PageHeader } from "./shared";
 import { IconHistory } from "./icons";
 import { LANDMARK_VOTES, OUTCOME_COLOR } from "../lib/politicalHistoryData";
 import { splitActNames } from "../lib/actNames";
+import { explainerFor } from "../data/landmarkExplainers";
 import { BillIcon } from "./billIcons";
 import { supabase } from "../supabaseClient";
 import { withScrollPreserved } from "../lib/preserveScroll";
@@ -264,8 +265,16 @@ function ResultPill({ outcome, children }) {
 function VoteRow({ vote, index }) {
   const outcomeColor = OUTCOME_COLOR[vote.outcome];
   const themeColor = THEME_COLORS[vote.theme] ?? COLORS.accent;
+  const [open, setOpen] = useState(false);
+  const more = explainerFor(vote);
+  const toggle = () => more && setOpen((o) => !o);
   return (
     <motion.div
+      role={more ? "button" : undefined}
+      tabIndex={more ? 0 : undefined}
+      aria-expanded={more ? open : undefined}
+      onClick={(e) => { if (!window.getSelection()?.toString()) toggle(e); }}
+      onKeyDown={(e) => { if (more && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); toggle(); } }}
       initial={{ opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
@@ -273,7 +282,7 @@ function VoteRow({ vote, index }) {
       whileHover={{ transition: { duration: 0.15, delay: 0 } }}
       style={{
         position: "relative", overflow: "hidden", background: `linear-gradient(135deg, ${themeColor}0a, ${COLORS.paperCard} 55%)`, border: `1px solid ${COLORS.hairline}`,
-        borderLeft: `4px solid ${outcomeColor}`, borderRadius: 13, padding: "17px 20px", marginBottom: 13,
+        borderLeft: `4px solid ${outcomeColor}`, borderRadius: 13, padding: "17px 20px", marginBottom: 13, cursor: more ? "pointer" : "default",
       }}
     >
       <div style={{ position: "relative", display: "flex", gap: 13, alignItems: "flex-start" }}>
@@ -303,6 +312,31 @@ function VoteRow({ vote, index }) {
           <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.65, marginTop: 11, maxWidth: 620 }}>
             {splitActNames(vote.detail).map((part, i) => (part.bold ? <strong key={i} style={{ color: COLORS.ink, fontWeight: 700 }}>{part.text}</strong> : part.text))}
           </div>
+          {more && (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 12, fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: themeColor }}>
+              {open ? "Hide the full story" : "Read the full story"}
+              <span aria-hidden="true" style={{ display: "inline-block", transform: open ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>▾</span>
+            </span>
+          )}
+          <AnimatePresence initial={false}>
+            {more && open && (
+              <motion.div
+                key="more" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25, ease: "easeOut" }}
+                style={{ overflow: "hidden", cursor: "default" }} onClick={(e) => e.stopPropagation()}
+              >
+                <div style={{ marginTop: 14, padding: "4px 0 2px", display: "grid", gap: 14, borderTop: `1px solid ${COLORS.hairline}` }}>
+                  {[["The story behind it", more.b], ["Why it matters", more.w], ["What it means today", more.t]].map(([heading, text]) => (
+                    <div key={heading} style={{ paddingTop: 10 }}>
+                      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: themeColor, marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.04em" }}>{heading}</div>
+                      <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.7, color: COLORS.ink, maxWidth: 640 }}>
+                        {splitActNames(text).map((part, i) => (part.bold ? <strong key={i} style={{ fontWeight: 700 }}>{part.text}</strong> : part.text))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </motion.div>

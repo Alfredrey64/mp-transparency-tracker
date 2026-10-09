@@ -3,6 +3,7 @@ import { supabase } from "../supabaseClient";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { loadAllCareerDetail } from "../lib/careerDetail";
 import { buildOffices, searchOffices, OFFICE_KINDS } from "../lib/offices";
+import { explainOffice } from "../lib/officeExplainers";
 import { duration, monthYear } from "../lib/careerTimeline";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme";
 import { partyColour } from "../lib/format";
@@ -52,6 +53,7 @@ function Holder({ h, now }) {
 
 function OfficeRow({ office, open, onToggle, now }) {
   const colour = KIND_COLOUR[office.kind];
+  const note = explainOffice(office.post, office.kind);
   return (
     <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `3px solid ${colour}`, borderRadius: 12, overflow: "hidden" }}>
       <button
@@ -65,6 +67,12 @@ function OfficeRow({ office, open, onToggle, now }) {
           <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 2 }}>
             <span style={{ color: colour, fontWeight: 700 }}>{OFFICE_KINDS[office.kind]}</span>
             {office.departments.length > 0 && ` · ${office.departments.slice(0, 2).join(", ")}${office.departments.length > 2 ? ` and ${office.departments.length - 2} more` : ""}`}
+          </span>
+          <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.5, color: COLORS.ink, marginTop: 7 }}>
+            <strong>What it does:</strong> {note.what}
+          </span>
+          <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.5, color: COLORS.inkSoft, marginTop: 3 }}>
+            <strong style={{ color: COLORS.ink }}>Why it matters:</strong> {note.why}
           </span>
         </span>
         <span style={{ textAlign: "right" }}>

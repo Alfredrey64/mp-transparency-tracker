@@ -14,6 +14,8 @@ import ChartActions from "./ChartActions";
 import PopulationExplorer from "./PopulationExplorer";
 import SectorExplorer from "./SectorExplorer";
 import CrimePeople from "./CrimePeople";
+import SectorContents from "./SectorContents";
+import { scrollToCard } from "../lib/scrollToCard";
 import { sectorByKey, sectorSeries, ONS_SERIES_PAGE, WEEKLY_DEATHS } from "../data/onsSectors";
 import { loadSector, loadDeflator } from "../lib/onsData";
 import { makeDeflator, toReal, canAdjust } from "../lib/onsReal";
@@ -45,7 +47,7 @@ const EXPLORERS = {
   crime: { id: "crime-by-place", label: "Crime by place" },
 };
 // Extra cards on a page that are not charts of a series, in jump-bar order after the explorer.
-const EXTRA = { crime: [{ id: "crime-who", label: "Who is involved in crime" }] };
+const EXTRA = { crime: [{ id: "crime-who", label: "Crime by ethnic group, age, sex and income" }] };
 // How many headline tiles to put in a row on a wide screen, so the last row is never a lone box: up to four in one row, then threes or fours.
 const tileColumns = (n) => (n <= 4 ? Math.max(1, n) : n === 5 || n === 6 ? 3 : 4);
 const WHOLE_HISTORY = new Set(["population", "environment", "crime"]);
@@ -409,50 +411,6 @@ function Spotlight({ def, item, accent }) {
   );
 }
 
-// Which card is on screen, for the jump bar.
-function useActiveCard(ids) {
-  const [active, setActive] = useState(null);
-  const key = ids.join("|");
-  useEffect(() => {
-    const els = key.split("|").map((id) => document.getElementById(`s-${id}`)).filter(Boolean);
-    if (!els.length) return undefined;
-    const io = new IntersectionObserver(
-      (entries) => {
-        const top = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
-        if (top) setActive(top.target.id.replace(/^s-/, ""));
-      },
-      { rootMargin: "-20% 0px -65% 0px" },
-    );
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, [key]);
-  return active;
-}
-
-// The row of links to each card. It keeps track of which card is on screen in its own state, so scrolling re-draws
-// only this row, never the page's charts and maps.
-function JumpBar({ items, ids, accent }) {
-  const active = useActiveCard(ids);
-  return (
-    <div className="ons-jump" role="navigation" aria-label="Jump to a measure">
-      {items.map((s) => (
-        <a
-          key={s.id}
-          href={`#s-${s.id}`}
-          onClick={(e) => { e.preventDefault(); document.getElementById(`s-${s.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
-          aria-current={active === s.id ? "true" : undefined}
-          style={{
-            fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, whiteSpace: "nowrap", textDecoration: "none", padding: "5px 11px", borderRadius: 999,
-            color: active === s.id ? "#fff" : COLORS.inkSoft, background: active === s.id ? accent : "transparent", border: `1px solid ${active === s.id ? accent : COLORS.hairline}`,
-          }}
-        >
-          {s.label}
-        </a>
-      ))}
-    </div>
-  );
-}
-
 // The three or four things to take away, in plain English, filled in from the latest figures.
 function KeyPoints({ sector, series, accent, skip }) {
   const all = KEY_POINTS[sector] ?? [];
@@ -536,6 +494,8 @@ export default function SectorPage({ sector, param = null }) {
   const [showGovernments, setShowGovernments] = useState(share?.governments ?? false);
   const [real, setReal] = useState(share?.real ?? false);
   const [deflatorData, setDeflatorData] = useState(null);
+  // The one chart shown when "show one chart at a time" is on (null: every chart).
+  const [focusId, setFocusId] = useState(null);
   const hasMoney = Boolean(def && sectorSeries(def).some(canAdjust));
 
   useEffect(() => {
@@ -572,8 +532,12 @@ export default function SectorPage({ sector, param = null }) {
   const shown = useMemo(() => (def && loaded ? def.series.filter((s) => loaded.series[s.id]) : []), [def, loaded]);
   const extraCards = useMemo(() => (def ? [...(EXPLORERS[def.key] ? [EXPLORERS[def.key]] : []), ...(EXTRA[def.key] ?? []), ...def.breakdowns.map((x) => ({ id: x.id, label: x.title })), ...(def.mortgage ? [{ id: "mortgage-cost", label: "What a mortgage costs" }] : []), ...def.places.map((g) => ({ id: g.id, label: g.title }))] : []), [def]);
   const hasPromises = Boolean(def && SECTOR_PROMISES[def.key]);
-  const jumpIds = useMemo(() => [...extraCards.map((x) => x.id), ...shown.map((s) => s.id), ...(def && SECTOR_PROMISES[def.key] ? ["promises"] : [])], [extraCards, shown, def]);
   if (!def) return null;
+  const contents = [
+    { title: "Compare and explore", items: extraCards },
+    { title: "Every measure", items: shown.map((s) => ({ id: s.id, label: s.label })) },
+    ...(hasPromises ? [{ title: "Policy", items: [{ id: "promises", label: "What the government promised" }] }] : []),
+  ];
   const tiles = shown.filter((s) => s.headline);
   const spotlight = tiles[0];
   const compareRefs = tiles.slice(0, 3).map((s) => `${def.key}.${s.id}`).join(",");
@@ -624,6 +588,8 @@ export default function SectorPage({ sector, param = null }) {
 
           <KeyPoints sector={def.key} series={loaded.series} accent={def.accent} skip={spotlight?.id} />
 
+          <SectorContents groups={contents} focusId={focusId} onFocus={setFocusId} accent={def.accent} />
+
           <div className="ons-noprint box-row" style={{ "--n": tileColumns(tiles.length - 1), "--min": "150px", "--gap": "16px", marginTop: 18 }}>
             {tiles.slice(1).map((s) => <Tile key={s.id} def={s} item={loaded.series[s.id]} accent={def.accent} />)}
           </div>
@@ -643,7 +609,17 @@ export default function SectorPage({ sector, param = null }) {
                 <Toggle on={showGovernments} onChange={setShowGovernments}>Show who was in government</Toggle>
               </div>
             </div>
-            <JumpBar items={[...extraCards, ...shown, ...(hasPromises ? [{ id: "promises", label: "What the government promised" }] : [])]} ids={jumpIds} accent={def.accent} />
+            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "8px 12px", marginTop: 10 }}>
+              <label htmlFor="ons-jump-select" style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.ink }}>{focusId ? "Showing" : "Jump to"}</label>
+              <select
+                id="ons-jump-select" className="ons-chip" value={focusId ?? ""} onChange={(e) => { const v = e.target.value; if (focusId !== null) setFocusId(v || null); else if (v) scrollToCard(v); }}
+                style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 600, padding: "7px 10px", borderRadius: 10, border: `1px solid ${COLORS.hairline}`, background: COLORS.paper, color: COLORS.ink, maxWidth: "100%", minWidth: 0, flex: "1 1 220px" }}
+              >
+                {focusId === null && <option value="">A chart or tool on this page…</option>}
+                {contents.flatMap((g) => g.items).map((x) => <option key={x.id} value={x.id}>{x.label}</option>)}
+              </select>
+              {focusId !== null && <button type="button" className="ons-tap" onClick={() => setFocusId(null)} style={{ ...pillStyle(false), fontSize: 13 }}>Show every chart</button>}
+            </div>
           </div>
           {showGovernments && (
             <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "0 0 12px", maxWidth: 780 }}>
@@ -651,7 +627,10 @@ export default function SectorPage({ sector, param = null }) {
             </p>
           )}
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(480px, 100%), 1fr))", gap: 20, alignItems: "start", marginTop: 8 }}>
+          {focusId !== null && (
+            <style>{focusId === "promises" ? ".ons-cards { display: none !important; }" : `.ons-cards > :not(#s-${focusId}) { display: none !important; }`}</style>
+          )}
+          <div className="ons-cards" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(480px, 100%), 1fr))", gap: 20, alignItems: "start", marginTop: 8 }}>
             {def.key === "population" && <PopulationExplorer accent={def.accent} />}
             {def.key !== "population" && EXPLORERS[def.key] && <SectorExplorer sector={def.key} accent={def.accent} />}
             {def.key === "crime" && <CrimePeople accent={def.accent} />}
@@ -669,8 +648,8 @@ export default function SectorPage({ sector, param = null }) {
             ))}
           </div>
 
-          <PromisesCard sector={def.key} series={loaded.series} accent={def.accent} />
-          <InParliament sector={def.key} accent={def.accent} />
+          {(focusId === null || focusId === "promises") && <PromisesCard sector={def.key} series={loaded.series} accent={def.accent} />}
+          {focusId === null && <InParliament sector={def.key} accent={def.accent} />}
 
           <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.6, color: COLORS.inkSoft, marginTop: 32, maxWidth: 780 }}>
             Most figures are from the Office for National Statistics (ONS), published under the Open Government Licence v3.0. House prices come from the UK House Price Index (HM Land Registry with the ONS and others), police recorded crime from the Home Office, and interest rates, mortgage approvals and exchange rates from the Bank of England.

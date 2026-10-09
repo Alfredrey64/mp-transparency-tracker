@@ -290,14 +290,13 @@ function RaceRow({ entry, index, maxValue, color, valueLabel, onSelectPolitician
           <span style={{ flexShrink: 0, fontFamily: FONT_MONO, fontWeight: 800, fontSize: 14, color }}>{valueLabel}</span>
         </span>
         <span aria-hidden="true" style={{ position: "relative", display: "block", height: 34, marginTop: 4 }}>
-          <span style={{ position: "absolute", left: 0, right: 0, top: 15, height: 4, borderRadius: 2, background: `repeating-linear-gradient(90deg, ${COLORS.hairline} 0 6px, transparent 6px 12px)` }} />
           <motion.span
             initial={reduce ? false : { width: 0 }} animate={{ width: `${pct}%` }} transition={{ delay: Math.min(index, 12) * 0.03, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            style={{ position: "absolute", left: 0, top: 9, height: 16, borderRadius: 8, background: `linear-gradient(90deg, ${color}33, ${color})`, boxShadow: `0 4px 14px -4px ${color}99` }}
+            style={{ position: "absolute", left: 0, top: 10, height: 14, borderRadius: 7, background: `linear-gradient(90deg, ${color}55, ${color})` }}
           />
           <motion.span
             initial={reduce ? false : { left: "0%" }} animate={{ left: `${pct}%` }} transition={{ delay: Math.min(index, 12) * 0.03, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            style={{ position: "absolute", top: 0, transform: "translateX(-100%)", display: "inline-flex", borderRadius: "50%", padding: 2, background: pColor, boxShadow: `0 4px 10px -2px ${pColor}aa` }}
+            style={{ position: "absolute", top: 0, transform: "translateX(-100%)", display: "inline-flex", borderRadius: "50%", padding: 2, background: pColor }}
           >
             <Avatar url={p.thumbnail_url} name={p.name} color={pColor} size={30} />
           </motion.span>
@@ -432,7 +431,7 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
       {
         key: "expenses",
         label: "Business Expenses",
-        color: "#9C6B30",
+        color: "#2F6FA3",
         data: expensesRanking,
         formatValue: (e) => `£${Math.round(e.value).toLocaleString()}`,
         intro: (
@@ -459,7 +458,7 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
       {
         key: "earnings",
         label: "Outside Earnings",
-        color: "#B5533C",
+        color: "#1E8E85",
         data: earningsRanking,
         formatValue: (e) => `£${Math.round(e.value).toLocaleString()}`,
         intro: "Total declared outside earnings — ongoing paid roles and one-off payments such as speeches, articles, or consultancy — from the Register of Members' Financial Interests.",
@@ -468,7 +467,7 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
       {
         key: "rebellion",
         label: "Rebellion Rate",
-        color: "#6E4B6E",
+        color: "#7A5BC7",
         data: rebellionRanking,
         formatValue: (e) => `${e.value}%`,
         intro: (
@@ -482,7 +481,7 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
       {
         key: "attendance",
         label: "Attendance",
-        color: "#3F7D5C",
+        color: "#3E9B4F",
         data: attendanceRanking,
         formatValue: (e) => `${e.value}%`,
         intro: (

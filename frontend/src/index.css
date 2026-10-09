@@ -496,7 +496,7 @@ select:focus-visible,
 
 /* Cards a link jumps to stop below the sticky range bar on wide screens. */
 .ons-anchor { scroll-margin-top: 24px; }
-@media (min-width: 900px) and (min-height: 680px) { .ons-anchor { scroll-margin-top: 190px; } }
+@media (min-width: 900px) and (min-height: 680px) { .ons-anchor { scroll-margin-top: 130px; } }
 
 /* Keyboard users can jump past the sidebar; the main region takes focus quietly when the page changes. */
 .skip-link {

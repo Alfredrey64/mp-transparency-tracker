@@ -214,8 +214,8 @@ function Income({ data, accent }) {
 }
 
 const TABS = [
-  { id: "arrests", label: "Arrests", short: "Arrests" },
-  { id: "what", label: "Arrested for what", short: "For what" },
+  { id: "arrests", label: "Arrests by ethnic group", short: "Arrests" },
+  { id: "what", label: "What for, by ethnic group", short: "For what" },
   { id: "victims", label: "Victims", short: "Victims" },
   { id: "prison", label: "Prison and reoffending", short: "Prison" },
   { id: "income", label: "Income and area", short: "Income" },
@@ -233,11 +233,11 @@ export default function CrimePeople({ accent }) {
   if (failed) return null;
 
   return (
-    <section id="crime-who" aria-labelledby="h-crime-who" className="ons-anchor regions-wrap" style={{ ...card, position: "relative", overflow: "hidden", gridColumn: "1 / -1" }}>
+    <section id="s-crime-who" aria-labelledby="h-crime-who" className="ons-anchor regions-wrap" style={{ ...card, position: "relative", overflow: "hidden", gridColumn: "1 / -1" }}>
       <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `linear-gradient(180deg, ${accent}, ${accent}22)` }} />
-      <h2 id="h-crime-who" style={cardTitle}>Who is involved in crime?</h2>
+      <h2 id="h-crime-who" style={cardTitle}>Crime by ethnic group, age, sex and income: who is involved?</h2>
       <p style={para}>
-        Official figures on who the police arrest, what for, who is a victim, and who ends up in prison. Look at the &ldquo;read this first&rdquo; note before the numbers.
+        Official figures broken down by ethnic group, sex and (for victims) age, household income and area: who the police arrest, what for, who is a victim, and who ends up in prison. Please read the note below before the numbers.
       </p>
       <details className="dep-more" open style={{ maxWidth: 780, marginTop: 12 }}>
         <summary className="ons-tap" style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink, cursor: "pointer", padding: "6px 0" }}>Read this first: what these figures can and cannot tell you</summary>
