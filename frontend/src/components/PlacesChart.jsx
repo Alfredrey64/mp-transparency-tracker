@@ -5,6 +5,7 @@ import LineChart from "./LineChart";
 import ChartActions from "./ChartActions";
 import { formatValue, formatAxis, sliceRange, periodLabel, periodToT } from "../lib/onsFormat";
 import { toLineData, yearTicks } from "../lib/onsChart";
+import { hasExtremes } from "../lib/squashScale";
 import { toReal, canAdjust } from "../lib/onsReal";
 import { bandsBetween, PARTY_COLOURS } from "../lib/governments";
 import { buildShareParam, shareUrl } from "../lib/shareLink";
@@ -27,6 +28,8 @@ function initialSlots(group, initial) {
 function PlacesChart({ group, sector, series, range, real, deflator, showGovernments, accent, initial }) {
   const [slots, setSlots] = useState(() => initialSlots(group, initial));
   const [indexed, setIndexed] = useState(() => initial?.indexed ?? group.showAs === "index");
+  // null: squeeze the scale automatically when one line has an extreme spike; true or false once the reader chooses.
+  const [squashPref, setSquashPref] = useState(null);
   const cardId = `s-${group.id}`;
   const selected = slots.filter(Boolean);
 
@@ -83,6 +86,11 @@ function PlacesChart({ group, sector, series, range, real, deflator, showGovernm
     });
   }
 
+  // Percentage lines sometimes have one huge spike (hospitality after the pandemic); a squeezed scale keeps the rest readable.
+  const canSquash = !indexed && group.format === "pct";
+  const extreme = canSquash && hasExtremes(chosen.flatMap((p) => p.data.map((pt) => pt.y)));
+  const squash = canSquash && (squashPref ?? extreme);
+
   const first = chosen[0]?.data[0];
   const last = chosen[0]?.data.at(-1);
   const xFrom = first ? Math.min(...chosen.map((p) => p.data[0].x)) : 0;
@@ -91,7 +99,9 @@ function PlacesChart({ group, sector, series, range, real, deflator, showGovernm
     () => (showGovernments && chosen.length ? bandsBetween(xFrom, xTo + 0.05, NOW).map((b) => ({ ...b, color: PARTY_COLOURS[b.party] })) : []),
     [showGovernments, chosen.length, xFrom, xTo],
   );
-  const sentence = indexed
+  const sentence = squash
+    ? `The vertical scale is squeezed so one huge spike does not flatten the other lines: each step up the axis is a bigger jump than the one before. Hover or touch the chart for the real figures.${real ? " Inflation has been taken out." : ""}`
+    : indexed
     ? `Each place is set to 100 at the start, so the lines show growth, not size.${real ? " Inflation has been taken out." : ""}`
     : `${real ? "Inflation has been taken out. " : ""}Hover or touch the chart to read each place's figure.`;
 
@@ -129,6 +139,12 @@ function PlacesChart({ group, sector, series, range, real, deflator, showGovernm
           <button type="button" role="radio" aria-checked={!indexed} className="ons-tap" style={pillStyle(!indexed)} onClick={() => setIndexed(false)}>Actual figures</button>
           <button type="button" role="radio" aria-checked={indexed} className="ons-tap" style={pillStyle(indexed)} onClick={() => setIndexed(true)}>Growth (start = 100)</button>
         </div>
+        {canSquash && (extreme || squashPref !== null) && (
+          <div role="radiogroup" aria-label="Vertical scale" style={{ display: "inline-flex", gap: 6 }}>
+            <button type="button" role="radio" aria-checked={!squash} className="ons-tap" style={pillStyle(!squash)} onClick={() => setSquashPref(false)}>Even scale</button>
+            <button type="button" role="radio" aria-checked={squash} className="ons-tap" style={pillStyle(squash)} onClick={() => setSquashPref(true)}>Squeeze the extremes</button>
+          </div>
+        )}
         <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>{selected.length} of {MAX_PLACES} places ticked</span>
       </div>
 
@@ -160,7 +176,9 @@ function PlacesChart({ group, sector, series, range, real, deflator, showGovernm
 
       {lines.length > 0 && (
         <LineChart
-          key={`${range}-${indexed}-${real}-${showGovernments}-${selected.join("|")}`}
+          key={`${range}-${indexed}-${real}-${showGovernments}-${squash}-${selected.join("|")}`}
+          yScale={squash ? "squash" : "linear"}
+          height={squash ? 300 : 230}
           lines={lines}
           xTicks={yearTicks(xFrom, xTo)}
           yFormat={indexed ? (v) => String(Math.round(v)) : (v) => formatAxis(group.format, v)}
