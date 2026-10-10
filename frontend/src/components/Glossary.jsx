@@ -97,23 +97,34 @@ function TermDiagram({ diagram, accent }) {
 
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
+// The border is set side by side (never "border" together with "borderLeft"): React only rewrites a property whose value changed,
+// so a shorthand that changes would quietly wipe out an unchanged left edge, which is how the coloured edge used to vanish after a click.
 function TermRow({ t, isOpen, onToggle, accent }) {
+  const edge = isOpen ? `${accent}77` : COLORS.hairline;
+  const preview = t.def.length > 110 ? `${t.def.slice(0, 107).replace(/\s+\S*$/, "")}...` : t.def;
   return (
     <div
+      className={isOpen ? "gl-row gl-open" : "gl-row"}
       style={{
-        borderRadius: 14, border: `1px solid ${isOpen ? `${accent}66` : COLORS.hairline}`, borderLeft: `4px solid ${accent}`,
-        background: isOpen ? `linear-gradient(135deg, ${accent}12, ${COLORS.paperCard} 60%)` : COLORS.paperCard,
-        transition: "background 0.2s, border-color 0.2s, box-shadow 0.2s", boxShadow: isOpen ? "0 16px 34px -26px rgba(0,0,0,0.55)" : "none",
+        borderRadius: 16, borderTop: `1px solid ${edge}`, borderRight: `1px solid ${edge}`, borderBottom: `1px solid ${edge}`, borderLeft: `5px solid ${accent}`,
+        background: isOpen ? `linear-gradient(135deg, ${accent}1c, ${COLORS.paperCard} 65%)` : COLORS.paperCard,
+        boxShadow: isOpen ? `0 18px 36px -26px ${accent}` : "none", transition: "background 0.2s, box-shadow 0.2s",
       }}
     >
       <button
         onClick={onToggle}
         aria-expanded={isOpen}
-        className="ons-chip"
-        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", background: "none", border: "none", padding: "13px 16px", cursor: "pointer", textAlign: "left", gap: 10 }}
+        className="ons-chip gl-row-btn"
+        style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", alignItems: "center", width: "100%", background: "none", border: "none", padding: "14px 18px", cursor: "pointer", textAlign: "left", gap: "2px 14px" }}
       >
-        <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 17, color: COLORS.ink, lineHeight: 1.25 }}>{t.term}</span>
-        <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ color: accent, fontSize: 14, flexShrink: 0 }}>▾</motion.span>
+        <span className="gl-term-line" style={{ minWidth: 0 }}>
+          <span className="gl-term" style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 17, color: COLORS.ink, lineHeight: 1.25 }}>{t.term}</span>
+          {!isOpen && <span className="gl-preview" style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, lineHeight: 1.45 }}>{preview}</span>}
+        </span>
+        <motion.span
+          animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}
+          style={{ width: 28, height: 28, borderRadius: 14, display: "grid", placeItems: "center", background: `${accent}1f`, color: accent, fontSize: 13, flexShrink: 0 }}
+        >▾</motion.span>
       </button>
       <AnimatePresence initial={false}>
         {isOpen && (
@@ -124,12 +135,12 @@ function TermRow({ t, isOpen, onToggle, accent }) {
             transition={{ duration: 0.22, ease: "easeInOut" }}
             style={{ overflow: "hidden" }}
           >
-            <div style={{ padding: "0 16px 18px", display: "flex", flexDirection: "column", gap: 12 }}>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 14.5, color: COLORS.ink, lineHeight: 1.65 }}>{t.def}</div>
+            <div style={{ padding: "0 18px 20px", display: "flex", flexDirection: "column", gap: 14, maxWidth: 700 }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 15, color: COLORS.ink, lineHeight: 1.7 }}>{t.def}</div>
               {t.example && (
-                <div style={{ background: `${accent}12`, borderLeft: `3px solid ${accent}`, borderRadius: 8, padding: "10px 14px" }}>
-                  <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13, color: COLORS.ink }}>Example: </span>
-                  <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>{t.example}</span>
+                <div style={{ background: `${accent}14`, borderLeft: `3px solid ${accent}`, borderRadius: 10, padding: "11px 15px" }}>
+                  <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13.5, color: COLORS.ink }}>Example: </span>
+                  <span style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, lineHeight: 1.6 }}>{t.example}</span>
                 </div>
               )}
               {t.diagram && <TermDiagram diagram={t.diagram} accent={accent} />}
@@ -286,34 +297,45 @@ export default function Glossary() {
         })}
       </div>
 
-      <div style={{ position: "relative", marginTop: 18 }}>
-        <span style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)", color: activeTab.accent, display: "flex" }}>
-          <IconSearch size={18} />
-        </span>
-        <input
-          type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={`Search ${activeTab.label.toLowerCase()}`} aria-label="Search a term"
-          style={{ width: "100%", boxSizing: "border-box", padding: "15px 18px 15px 46px", fontFamily: FONT_BODY, fontSize: 16, border: `2px solid ${COLORS.hairline}`, borderRadius: 16, background: COLORS.paperCard, color: COLORS.ink, outline: "none" }}
-          onFocus={(e) => (e.target.style.borderColor = activeTab.accent)} onBlur={(e) => (e.target.style.borderColor = COLORS.hairline)}
-        />
+      <div style={{ marginTop: 18, padding: "clamp(14px, 2.5vw, 20px)", borderRadius: 20, border: `1px solid ${COLORS.hairline}`, background: COLORS.paperCard, display: "grid", gap: 16 }}>
+        <div style={{ position: "relative" }}>
+          <span style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)", color: activeTab.accent, display: "flex" }}>
+            <IconSearch size={18} />
+          </span>
+          <input
+            type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={`Search ${activeTab.label.toLowerCase()}`} aria-label="Search a term"
+            style={{ width: "100%", boxSizing: "border-box", padding: "14px 18px 14px 46px", fontFamily: FONT_BODY, fontSize: 16, border: `2px solid ${COLORS.hairline}`, borderRadius: 14, background: COLORS.paper, color: COLORS.ink, outline: "none" }}
+            onFocus={(e) => (e.target.style.borderColor = activeTab.accent)} onBlur={(e) => (e.target.style.borderColor = COLORS.hairline)}
+          />
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px 18px" }}>
+          <div role="navigation" aria-label="Jump to a letter" className="gl-az">
+            {LETTERS.map((l) => {
+              const has = present.has(l);
+              return (
+                <button
+                  key={l} type="button" disabled={!has} onClick={() => jump(l)} aria-label={`Jump to ${l}`}
+                  style={{ height: 34, borderRadius: 9, border: "none", cursor: has ? "pointer" : "default", fontFamily: FONT_DISPLAY, fontSize: 14, fontWeight: 700, background: has ? `${activeTab.accent}1f` : "transparent", color: has ? activeTab.accent : COLORS.hairline }}
+                >
+                  {l}
+                </button>
+              );
+            })}
+          </div>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginLeft: "auto" }} aria-live="polite">
+            {filtered.length} term{filtered.length === 1 ? "" : "s"}{query.trim() ? ` matching "${query}"` : ""}
+          </div>
+        </div>
       </div>
+      <style>{`
+        .gl-az { display: grid; grid-template-columns: repeat(13, 34px); gap: 4px; }
+        @media (max-width: 640px) { .gl-az { grid-template-columns: repeat(9, minmax(0, 1fr)); width: 100%; } }
+        .gl-term-line { display: grid; gap: 2px; }
+        @media (min-width: 760px) { .gl-term-line { grid-template-columns: minmax(180px, 250px) minmax(0, 1fr); gap: 16px; align-items: baseline; } .gl-preview { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } }
+        .gl-row:not(.gl-open):hover { background: ${COLORS.paper} !important; }
+      `}</style>
 
-      <div role="navigation" aria-label="Jump to a letter" style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 14 }}>
-        {LETTERS.map((l) => {
-          const has = present.has(l);
-          return (
-            <button
-              key={l} type="button" disabled={!has} onClick={() => jump(l)} aria-label={`Jump to ${l}`}
-              style={{ width: 32, height: 32, borderRadius: 9, border: "none", cursor: has ? "pointer" : "default", fontFamily: FONT_DISPLAY, fontSize: 14, fontWeight: 700, background: has ? `${activeTab.accent}1f` : "transparent", color: has ? activeTab.accent : COLORS.hairline }}
-            >
-              {l}
-            </button>
-          );
-        })}
-      </div>
-
-      <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, margin: "16px 0 20px" }} aria-live="polite">
-        {filtered.length} term{filtered.length === 1 ? "" : "s"}{query.trim() ? ` matching "${query}"` : ""}
-      </div>
+      <div style={{ height: 22 }} />
 
       {filtered.length === 0 ? (
         <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft }}>No terms match "{query}".</div>
