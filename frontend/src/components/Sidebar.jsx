@@ -113,8 +113,8 @@ function SidebarSection({ label, blurb, accent, items, activeView, onNavigate, o
       style={{
         marginTop: 10,
         borderRadius: 14,
-        background: open ? `linear-gradient(160deg, ${accent}1a, ${accent}06 75%)` : "var(--sb-surface)",
-        border: `1px solid ${open ? `${accent}30` : "var(--sb-border)"}`,
+        background: open ? `linear-gradient(160deg, ${accent}2e, ${accent}0f 80%)` : `linear-gradient(160deg, ${accent}1f, ${accent}0a 85%)`,
+        border: `1px solid ${open ? `${accent}66` : `${accent}3d`}`,
         transition: "background 0.2s, border-color 0.2s",
       }}
     >

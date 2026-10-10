@@ -25,7 +25,7 @@ function yearsAgo(year) {
 }
 
 const CHANGE_FEED_TYPES = {
-  donation: { icon: IconCoin, color: readable("#F2622A"), label: "Declared interest" },
+  donation: { icon: IconCoin, color: "#F2622A", label: "Declared interest" },
   bill: { icon: IconBills, color: "#9B4FE0", label: "Bill update" },
   gift: { icon: IconInfluence, color: "#D9A62A", label: "Ministerial gift" },
   petition: { icon: IconPetition, color: "#1FA97C", label: "Petition response" },
@@ -35,7 +35,7 @@ const CHANGE_FEED_TYPES = {
 // here means the same thing everywhere else.
 const FEATURES = [
   { key: "myMP", label: "Find your MP", line: "See who represents you, how they vote and what they have declared.", icon: IconPin, color: "#4F46E5" },
-  { key: "followTheMoney", label: "Follow the money", line: "Trace a donor to every MP and party they have given money to.", icon: IconSearch, color: readable("#F2622A") },
+  { key: "followTheMoney", label: "Follow the money", line: "Trace a donor to every MP and party they have given money to.", icon: IconSearch, color: "#F2622A" },
   { key: "voting", label: "Understand the bills", line: "Plain-English guides to the laws being debated, and how MPs voted.", icon: IconBills, color: "#9B4FE0" },
   { key: "answers", label: "Ask a question", line: "Why is housing so expensive? Get a short answer, the latest figures and what each party says.", icon: IconAsk, color: "#2F80ED" },
   { key: "economy", label: "See the numbers", line: "Prices, jobs, housing, crime and more, in charts you can actually read.", icon: IconTrend, color: "#0E9AA7" },
@@ -274,8 +274,8 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
           {[
             { value: <CountUp value={mpCount} />, label: "MPs tracked", icon: IconGroup, color: COLORS.accent },
             pipelineStatus.generatedAt
-              ? { value: timeAgo(pipelineStatus.generatedAt), label: "last updated", icon: IconPulse, color: readable("#F2622A") }
-              : { value: "Daily", label: "kept up to date", icon: IconPulse, color: readable("#F2622A") },
+              ? { value: timeAgo(pipelineStatus.generatedAt), label: "last updated", icon: IconPulse, color: "#F2622A" }
+              : { value: "Daily", label: "kept up to date", icon: IconPulse, color: "#F2622A" },
             { value: "Official", label: "source data only", icon: IconShield, color: "#1FA97C" },
           ].map((s) => (
             <div key={s.label} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, minWidth: 108 }}>
@@ -339,7 +339,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                 key={f.key} type="button" onClick={() => onNavigate?.(f.key)} whileHover={{ y: -3 }} whileTap={{ scale: 0.98 }}
                 style={{ textAlign: "left", cursor: "pointer", display: "flex", flexDirection: "column", gap: 8, padding: "18px 18px 20px", borderRadius: 20, border: `1px solid ${f.color}40`, background: `linear-gradient(160deg, ${f.color}1c, ${COLORS.paperCard} 62%)` }}
               >
-                <span style={{ width: 42, height: 42, borderRadius: 14, display: "grid", placeItems: "center", background: f.color, color: "#fff" }}><f.icon size={20} /></span>
+                <span style={{ width: 42, height: 42, borderRadius: 14, display: "grid", placeItems: "center", background: solid(f.color), color: "#fff" }}><f.icon size={20} /></span>
                 <span style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 700, color: COLORS.ink, lineHeight: 1.2 }}>{f.label}</span>
                 <span style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.5, color: COLORS.inkSoft }}>{f.line}</span>
               </motion.button>

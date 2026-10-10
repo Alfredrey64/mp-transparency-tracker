@@ -344,7 +344,7 @@ function WeeklyDeaths({ data, accent }) {
   const sentence = `In week ${latest.x} of ${thisYear}, ${latest.y.toLocaleString("en-GB")} deaths were registered in England and Wales${
     gap === null ? "." : `, ${Math.abs(gap) < 0.5 ? "about the same as" : `${Math.abs(gap).toFixed(0)}% ${gap > 0 ? "more than" : "fewer than"}`} the same week of ${lastYear}.`
   }`;
-  const lines = [{ name: thisYear, color: readable(accent), points: now, format: (v) => v.toLocaleString("en-GB") }];
+  const lines = [{ name: thisYear, color: accent, points: now, format: (v) => v.toLocaleString("en-GB") }];
   if (before.length) lines.push({ name: lastYear, color: COLORS.inkSoft, points: before, format: (v) => v.toLocaleString("en-GB") });
   return (
     <motion.section
