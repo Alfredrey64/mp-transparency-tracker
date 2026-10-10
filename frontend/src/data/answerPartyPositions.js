@@ -158,6 +158,17 @@ export const ANSWER_POSITIONS = {
   },
 };
 
+ANSWER_POSITIONS["what-is-national-insurance"] = ANSWER_POSITIONS["where-does-tax-go"];
+ANSWER_POSITIONS["is-the-nhs-short-of-staff"] = NHS;
+ANSWER_POSITIONS["what-is-the-triple-lock"] = {
+  about: "on the state pension",
+  parties: {
+    labour: "Keep the triple lock for the whole parliament.",
+    conservative: "Keep the triple lock and go further with a \"triple lock plus\", so that the state pension is never taxed.",
+    "liberal-democrat": "Keep the triple lock on the state pension.",
+  },
+};
+
 export function positionsFor(answerId) {
   const entry = ANSWER_POSITIONS[answerId];
   if (!entry) return null;
