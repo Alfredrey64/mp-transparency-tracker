@@ -11,6 +11,7 @@ import { toLineData, yearTicks } from "../lib/onsChart";
 import { bandsBetween, governmentAt, PARTY_COLOURS } from "../lib/governments";
 import { IconCompareTime } from "./icons";
 import { card as baseCard } from "../lib/onsStyles";
+import { COMPARE_STORIES } from "../data/compareStories";
 
 // Pick a few measures and watch how they moved over time, side by side, with
 // who was in government shaded behind them. Press play to watch the story
@@ -174,6 +175,17 @@ export default function IndicatorTimeline({ param }) {
   const stop = () => { setPlaying(false); setPlayhead(null); headRef.current = null; };
   const scrub = (v) => { setPlaying(false); headRef.current = v; setPlayhead(v); };
   const preset = (p) => { setFromYear(p.back ? Math.floor(to - p.back) : p.from); stop(); };
+  const applyStory = (story) => {
+    setPicks(story.refs);
+    setFromYear(story.from);
+    setMode(story.mode ?? "separate");
+    setThenYear(null);
+    setQuery("");
+    const first = story.refs[0].split(".")[0];
+    if (TOPICS.some((t) => t.key === first)) setTopicKey(first);
+    stop();
+  };
+  const activeStory = COMPARE_STORIES.find((st) => st.refs.length === picks.length && st.refs.every((r) => picks.includes(r)))?.id;
 
   const sameFormat = chosen.length > 1 && chosen.every((c) => c.def.format === chosen[0].def.format);
   const allLevels = chosen.length > 1 && chosen.every((c) => c.def.kind === "level");
@@ -222,10 +234,29 @@ export default function IndicatorTimeline({ param }) {
 
       {everything && (
         <>
-          <section style={{ ...card, marginTop: 24 }} aria-label="Choose measures">
+          <section style={{ marginTop: 24 }} aria-label="Ready-made comparisons">
+            <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, letterSpacing: "-0.01em", color: COLORS.ink, margin: "0 0 4px" }}>Start with a question</h2>
+            <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, margin: "0 0 12px" }}>Tap one to load the measures that help answer it. You can change them afterwards.</p>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(230px, 100%), 1fr))", gap: 10 }}>
+              {COMPARE_STORIES.map((st) => {
+                const on = st.id === activeStory;
+                return (
+                  <button
+                    key={st.id} type="button" className="ons-chip" aria-pressed={on} onClick={() => applyStory(st)}
+                    style={{ textAlign: "left", display: "block", cursor: "pointer", padding: "13px 15px", borderRadius: 16, fontFamily: FONT_BODY, color: COLORS.ink, background: on ? `${COLORS.accent}18` : COLORS.paperCard, border: `2px solid ${on ? COLORS.accent : COLORS.hairline}`, transition: "background 0.15s, border-color 0.15s" }}
+                  >
+                    <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: 16.5, fontWeight: 700, lineHeight: 1.25 }}>{st.title}</span>
+                    <span style={{ display: "block", fontSize: 13, color: COLORS.inkSoft, marginTop: 4, lineHeight: 1.4 }}>{st.blurb}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+
+          <section style={{ ...card, marginTop: 22 }} aria-label="Choose measures">
             <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 14px", alignItems: "center", justifyContent: "space-between" }}>
               <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, letterSpacing: "-0.01em", color: COLORS.ink, margin: 0 }}>
-                Choose what to compare
+                Or build your own
               </h2>
               <span style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: COLORS.inkSoft }}>{picks.length} of {MAX_PICKED} chosen</span>
             </div>

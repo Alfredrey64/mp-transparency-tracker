@@ -69,6 +69,10 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
   const [glossaryEntries, setGlossaryEntries] = useState([]);
   // Written answers to common questions, loaded on demand for the same reason as the glossary.
   const [answerTools, setAnswerTools] = useState(null);
+  // Statistics, councils and donors, loaded on demand for the same reason.
+  const [siteTools, setSiteTools] = useState(null);
+  const inputRef = useRef(null);
+  const dropdownRef = useRef(null);
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const containerRef = useRef(null);
@@ -86,6 +90,17 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
     }
     load();
     Promise.all([import("../data/answers"), import("../lib/answerSearch")]).then(([a, s]) => setAnswerTools({ answers: a.ANSWERS, find: s.findAnswers }));
+    Promise.all([
+      import("../lib/siteSearch"), import("../data/onsSectors"), import("../data/councilsIndex.json"),
+      import("../data/donorSectors.json"), import("../data/partyDonorSectors.json"), import("../data/donorProfiles.json"),
+    ]).then(([ss, ons, councils, donorsA, donorsB, donorsC]) => {
+      setSiteTools({
+        find: ss,
+        measures: ss.buildMeasureIndex(ons.ALL_SERIES, ons.refOf),
+        councils: ss.buildCouncilIndex(councils.default.index),
+        donors: ss.buildDonorIndex(Object.keys(donorsA.default), Object.keys(donorsB.default), Object.keys(donorsC.default)),
+      });
+    }).catch(() => {});
     import("../data/glossaryTerms").then(({ PROCEDURE_TERMS, POLITICS_TERMS, STATISTICS_TERMS }) => {
       setGlossaryEntries([...PROCEDURE_TERMS, ...POLITICS_TERMS, ...STATISTICS_TERMS]);
     });
@@ -99,9 +114,41 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // "/" or Ctrl/Cmd+K jumps to the search box from anywhere on the page.
+  useEffect(() => {
+    function onKey(e) {
+      const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target?.tagName ?? "") || e.target?.isContentEditable;
+      const wants = (e.key === "/" && !typing && !e.metaKey && !e.ctrlKey && !e.altKey) || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k");
+      if (!wants || !inputRef.current || inputRef.current.offsetParent === null) return;
+      e.preventDefault();
+      inputRef.current.focus();
+      inputRef.current.select();
+      setOpen(true);
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, []);
+
+  // Arrow keys move through the results, Escape closes them.
+  function onBoxKeyDown(e) {
+    if (e.key === "Escape") {
+      setOpen(false);
+      inputRef.current?.blur();
+      return;
+    }
+    if (e.key !== "ArrowDown" && e.key !== "ArrowUp" && !(e.key === "Enter" && e.target === inputRef.current)) return;
+    const buttons = [...(dropdownRef.current?.querySelectorAll("button") ?? [])];
+    if (!buttons.length) return;
+    e.preventDefault();
+    if (e.key === "Enter") { buttons[0].click(); return; }
+    const at = buttons.indexOf(document.activeElement);
+    const next = e.key === "ArrowDown" ? (at + 1) % buttons.length : at <= 0 ? -1 : at - 1;
+    if (next === -1) inputRef.current?.focus(); else buttons[next].focus();
+  }
+
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (q.length < 2) return { mps: [], peers: [], seats: [], careers: [], offices: false, bills: [], pages: [], glossary: [], answers: [] };
+    if (q.length < 2) return { mps: [], peers: [], seats: [], careers: [], offices: false, bills: [], pages: [], glossary: [], answers: [], measures: [], councils: [], donors: [], trace: false };
     // A question, or at least a couple of words, rather than a name.
     const answers = answerTools && q.length >= 4 ? answerTools.find(q, answerTools.answers, 3) : [];
     const mps = politicians
@@ -114,10 +161,13 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
     // Constituencies by name, one entry each, opening that seat's page.
     const seats = [...new Set(politicians.map((p) => p.constituency).filter(Boolean))].filter((c) => c.toLowerCase().includes(q)).slice(0, 3);
     const careers = filtersForPhrase(q).slice(0, 3);
-    return { mps, peers: matchedPeers, seats, careers, offices: OFFICE_WORDS.test(q) && q.length >= 4, bills: matchedBills, pages, glossary, answers };
-  }, [politicians, peers, bills, glossaryEntries, answerTools, query]);
+    const measures = siteTools ? siteTools.find.findMeasures(q, siteTools.measures, 4) : [];
+    const councils = siteTools ? siteTools.find.findCouncils(q, siteTools.councils, 3) : [];
+    const donors = siteTools ? siteTools.find.findDonors(q, siteTools.donors, 3) : [];
+    return { mps, peers: matchedPeers, seats, careers, offices: OFFICE_WORDS.test(q) && q.length >= 4, bills: matchedBills, pages, glossary, answers, measures, councils, donors, trace: q.length >= 3 };
+  }, [politicians, peers, bills, glossaryEntries, answerTools, siteTools, query]);
 
-  const hasResults = results.mps.length > 0 || results.peers.length > 0 || results.seats.length > 0 || results.careers.length > 0 || results.offices || results.bills.length > 0 || results.pages.length > 0 || results.glossary.length > 0 || results.answers.length > 0;
+  const hasResults = results.mps.length > 0 || results.peers.length > 0 || results.seats.length > 0 || results.careers.length > 0 || results.offices || results.bills.length > 0 || results.pages.length > 0 || results.glossary.length > 0 || results.answers.length > 0 || results.measures.length > 0 || results.councils.length > 0 || results.donors.length > 0 || results.trace;
 
   function selectPolitician(p) {
     onSelectPolitician?.(p);
@@ -152,16 +202,19 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
 
   return (
     <div ref={containerRef} style={{ position: "relative", marginBottom: 4 }}>
-      <div style={{ position: "relative" }}>
+      <div style={{ position: "relative" }} onKeyDown={onBoxKeyDown}>
         <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "rgba(226,232,232,0.5)", display: "flex" }}>
           <IconSearch size={14} />
         </span>
         <input
+          ref={inputRef}
+          type="search"
+          aria-label="Search the site"
           value={query}
           onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
           onFocus={(e) => { setOpen(true); e.target.style.borderColor = COLORS.accentOnDark; e.target.style.boxShadow = `0 0 0 3px ${COLORS.accentOnDark}33`; }}
           onBlur={(e) => { e.target.style.borderColor = "rgba(255,255,255,0.09)"; e.target.style.boxShadow = "none"; }}
-          placeholder="Search MPs, councils, topics…"
+          placeholder="Search MPs, donors, numbers… (press /)"
           style={{
             width: "100%", boxSizing: "border-box", padding: "8px 10px 8px 32px",
             fontFamily: FONT_BODY, fontSize: 12.5, borderRadius: 8,
@@ -173,6 +226,8 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
 
       {open && query.trim().length >= 2 && (
         <div
+          ref={dropdownRef}
+          onKeyDown={onBoxKeyDown}
           style={{
             position: "absolute", top: "calc(100% + 6px)", left: 0, right: 0, zIndex: 20,
             background: COLORS.sidebarBgDeep, border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10,
@@ -264,6 +319,33 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
                 </button>
               ))}
             </div>
+          )}
+
+          {results.measures.length > 0 && (
+            <ResultGroup label="Statistics">
+              {results.measures.map((m) => (
+                <ResultRow key={m.ref} onClick={() => openHash(`#/indicators/${m.ref}`)} title={m.label} sub={`${m.sectorLabel}: see how it has changed`} />
+              ))}
+            </ResultGroup>
+          )}
+
+          {results.councils.length > 0 && (
+            <ResultGroup label="Councils">
+              {results.councils.map((c) => (
+                <ResultRow key={c.id} onClick={() => openHash(`#/councils/${c.id}`)} title={c.name} sub={c.control || "Who runs it and who sits on it"} />
+              ))}
+            </ResultGroup>
+          )}
+
+          {(results.donors.length > 0 || results.trace) && (
+            <ResultGroup label="Money">
+              {results.donors.map((d) => (
+                <ResultRow key={d.name} onClick={() => openHash(`#/followTheMoney/${encodeURIComponent(d.name)}`)} title={d.name} sub="Trace everyone this donor has funded" />
+              ))}
+              {results.trace && (
+                <ResultRow onClick={() => openHash(`#/followTheMoney/${encodeURIComponent(query.trim())}`)} title={`Trace “${query.trim()}” as a donor`} sub="Search MPs' interests and party donations for this name" />
+              )}
+            </ResultGroup>
           )}
 
           {results.pages.length > 0 && (

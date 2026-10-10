@@ -14,6 +14,7 @@ import CountUp from "./CountUp";
 import Reveal from "./Reveal";
 
 const SeatElections = lazy(() => import("./SeatElections"));
+const SeatLocalNumbers = lazy(() => import("./SeatLocalNumbers"));
 
 const fmt = (n) => n.toLocaleString("en-GB");
 const pct1 = (n) => `${(Math.round(n * 10) / 10).toFixed(1)}%`;
@@ -124,7 +125,7 @@ function SeatHero({ record, mpInfo, safety, onOpenProfile, opening }) {
 
 function Tabs({ tab, setTab, tabs }) {
   return (
-    <div role="tablist" aria-label="Constituency sections" style={{ display: "flex", gap: 6, margin: "26px 0 4px", borderBottom: `1px solid ${COLORS.hairline}` }}>
+    <div role="tablist" aria-label="Constituency sections" style={{ display: "flex", gap: 2, margin: "26px 0 4px", borderBottom: `1px solid ${COLORS.hairline}`, overflowX: "auto" }}>
       {tabs.map((t) => {
         const active = tab === t.key;
         return (
@@ -136,7 +137,7 @@ function Tabs({ tab, setTab, tabs }) {
             aria-controls={`panel-${t.key}`}
             type="button"
             onClick={() => setTab(t.key)}
-            style={{ position: "relative", background: "none", border: "none", padding: "11px 18px", cursor: "pointer", fontFamily: FONT_DISPLAY, fontSize: 16, fontWeight: 600, color: active ? COLORS.ink : COLORS.inkSoft }}
+            style={{ position: "relative", background: "none", border: "none", padding: "11px 14px", flexShrink: 0, cursor: "pointer", fontFamily: FONT_DISPLAY, fontSize: 16, fontWeight: 600, color: active ? COLORS.ink : COLORS.inkSoft }}
           >
             {t.label}
             {active && <motion.span layoutId="constituency-tab" style={{ position: "absolute", left: 10, right: 10, bottom: -1, height: 3, borderRadius: 3, background: COLORS.accent }} />}
@@ -476,7 +477,7 @@ function History({ record, seats, mpInfo, history }) {
   );
 }
 
-export function SeatDetail({ record, seats, generatedAt, onSelectPolitician, extras = null }) {
+export function SeatDetail({ record, seats, generatedAt, onSelectPolitician, extras = null, regionCode = null }) {
   const { result, mp } = record;
   const safety = result ? seatSafety(result.majorityPct) : null;
   const [tab, setTab] = useState("overview");
@@ -536,8 +537,13 @@ export function SeatDetail({ record, seats, generatedAt, onSelectPolitician, ext
         />
       </div>
       {extras}
-      <Tabs tab={tab} setTab={setTab} tabs={[{ key: "overview", label: "Overview" }, { key: "elections", label: "Elections" }, { key: "history", label: "MPs" }]} />
+      <Tabs tab={tab} setTab={setTab} tabs={[{ key: "overview", label: "Overview" }, { key: "local", label: "Local numbers" }, { key: "elections", label: "Elections" }, { key: "history", label: "MPs" }]} />
       {tab === "overview" && <Overview record={record} seats={seats} safety={safety} />}
+      {tab === "local" && (
+        <Suspense fallback={null}>
+          <SeatLocalNumbers record={record} regionCode={regionCode} />
+        </Suspense>
+      )}
       {tab === "elections" && (
         <Suspense fallback={null}>
           <SeatElections record={record} history={elections?.bySeat?.[seatKey(record.name)]} parties={elections?.parties} loading={!elections} />

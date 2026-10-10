@@ -359,6 +359,7 @@ export default function ConstituencyHub({ seat, onSelectPolitician }) {
                     seats={data.constituencies}
                     generatedAt={data.generatedAt}
                     onSelectPolitician={onSelectPolitician}
+                    regionCode={selected?.region ?? null}
                     extras={selected && selectedRegion ? <SeatExtras cell={selected} cells={cells} uk={uk} region={selectedRegion} onSelect={chooseCode} /> : null}
                   />
                 </>

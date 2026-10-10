@@ -7,6 +7,7 @@ import { partyColour, initials } from "../lib/format";
 import { partyColourByName } from "../lib/careerTimeline";
 import { normalizeDonorKey } from "../lib/donorSectors";
 import { IconSearch } from "./icons";
+import DonorVotes from "./DonorVotes";
 
 const MIN_QUERY_LENGTH = 3;
 const RESULT_CAP = 25;
@@ -186,6 +187,8 @@ function DonorResultCard({ result, index, onSelectPolitician }) {
           />
         )}
       </div>
+
+      <DonorVotes donorName={result.displayName} mps={mpAgg.map((m) => m.politician)} />
     </motion.article>
   );
 }
@@ -222,9 +225,9 @@ function Skeleton() {
   );
 }
 
-export default function FollowTheMoney({ onSelectPolitician }) {
-  const [query, setQuery] = useState("");
-  const [debounced, setDebounced] = useState("");
+export default function FollowTheMoney({ onSelectPolitician, initialQuery = null }) {
+  const [query, setQuery] = useState(initialQuery ?? "");
+  const [debounced, setDebounced] = useState((initialQuery ?? "").trim());
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState(null);
 

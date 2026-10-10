@@ -22,6 +22,7 @@ import { GlossaryTerm } from "./GlossaryTerm";
 // only when someone opens it.
 const CareerTab = lazy(() => import("./CareerTab"));
 import MpSummary from "./MpSummary";
+import MpMoneyProfile from "./MpMoneyProfile";
 import DownloadCsvButton from "./DownloadCsvButton";
 import { explainDivision } from "../lib/divisionExplainer";
 import { fetchAllRows } from "../lib/supabasePagination";
@@ -1079,6 +1080,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
 
           {/* ---- Right column: everything else ---- */}
           <div style={{ display: activeTab === "career" ? "none" : "flex", flexDirection: "column", gap: 16 }}>
+            <MpMoneyProfile interests={interests} loading={loading} />
             <BiographyBox politician={politician} />
             <CurrentRolesBox interests={interests} />
             <FundingBySectorBox interests={interests} />

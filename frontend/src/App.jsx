@@ -361,7 +361,7 @@ export default function App() {
             {view === "revolvingDoor" && <RevolvingDoor />}
             {view === "thinkTanks" && <ThinkTankFunding />}
             {view === "lobbyingRegister" && <LobbyingRegister />}
-            {view === "followTheMoney" && <FollowTheMoney onSelectPolitician={handleViewProfile} />}
+            {view === "followTheMoney" && <FollowTheMoney key={viewParam ?? ""} initialQuery={viewParam} onSelectPolitician={handleViewProfile} />}
             {view === "watchlist" && <WatchlistDigest onSelectPolitician={handleViewProfile} />}
             {view === "numbers" && <ParliamentNumbers house={viewParam} onNavigate={handleNavigate} />}
             {view === "topics" && <AskedAbout initialTopic={viewParam} onSelectPolitician={handleViewProfile} onNavigateForMp={handleNavigateForMp} />}

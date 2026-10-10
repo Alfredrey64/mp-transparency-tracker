@@ -33,4 +33,11 @@ describe("statistics glossary", () => {
     expect(found).not.toContain("Inflation");
     expect(found).not.toContain("Revision");
   });
+
+  it("covers the terms the newer pages lean on", () => {
+    const found = findMentions("The Household Costs Index shows real wages falling, with years of pay to buy a home up. An LSOA in the bottom quintile; A&E waits and a declared interest, plus a political donation.");
+    expect(found).toEqual(expect.arrayContaining([
+      "Household Costs Index (HCI)", "Real Wages", "House Price to Earnings Ratio", "LSOA (Lower Layer Super Output Area)", "Quintile", "A&E (Accident and Emergency)", "Registrable Interest", "Political Donation",
+    ]));
+  });
 });

@@ -27,6 +27,7 @@ export const MORE_PROCEDURE_TERMS = [
 ];
 
 export const MORE_POLITICS_TERMS = [
+  { term: "Political Donation", def: "Money, goods or services given to a party or an MP for political purposes. Gifts above a set value must be reported and are published on the Electoral Commission's register, and MPs must declare the ones they receive personally.", aliases: ["political donations", "party donation", "party donations", "donations to parties"] },
   { term: "Dark Money", def: "Political spending or influence where the real source is hidden, for example when a donor funds a campaign group, think tank or middleman that doesn't have to name its backers. The term isn't an accusation of wrongdoing; it describes a gap in what can be traced." },
   { term: "ACOBA (Advisory Committee on Business Appointments)", def: "The independent body that advises on whether a job taken by a former minister or senior official, within two years of leaving, could look like a conflict of interest or a reward for past decisions. Its advice isn't legally binding.", aliases: ["ACOBA", "Advisory Committee on Business Appointments"] },
   { term: "Business Appointment Rules", def: "The rules that require former ministers and senior civil servants to get advice before taking a new job for two years after leaving government.", aliases: ["business appointments"] },
@@ -73,6 +74,7 @@ export const MORE_POLITICS_TERMS = [
 ];
 
 export const MORE_TERM_OVERRIDES = {
+  "Registrable Interest": { aliases: ["registrable interests", "declared interest", "declared interests", "registered interest", "registered interests"] },
   "Civil Service": { aliases: ["civil servant", "civil servants"] },
   "Short Money": {
     def: "Public funding paid to opposition parties in the Commons to help them carry out their parliamentary work, such as scrutinising the government and researching policy. Named after Edward Short, who introduced it in 1975. Cranborne Money is the equivalent for opposition parties in the Lords, and Policy Development Grants are a separate pot for parties with two or more MPs.",

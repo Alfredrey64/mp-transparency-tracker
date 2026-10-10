@@ -23,6 +23,7 @@ export const STATISTICS_TERMS = [
   { term: "Inflation", def: "How fast prices are rising. At 3% inflation, what cost £100 a year ago now costs £103. It is why a pay rise can still feel like a pay cut.", auto: false },
   { term: "CPI (Consumer Prices Index)", def: "The main measure of UK inflation: how much a typical basket of goods and services costs compared with a year earlier. The Bank of England's target is 2%.", aliases: ["consumer prices index", "consumer price index"] },
   { term: "CPIH", def: "A version of CPI that also counts the cost of owning and running a home. It is the ONS's preferred measure of inflation, though the Bank of England's target uses CPI." },
+  { term: "Household Costs Index (HCI)", def: "The ONS's measure of how fast the cost of living is rising for households, counting what families actually spend on, including rent, mortgage interest and council tax. It can be split by household type, so it shows who is hit hardest.", aliases: ["household costs index", "household costs indices", "household costs"] },
   { term: "Core Inflation", def: "Inflation with the most volatile items, energy, food, alcohol and tobacco, taken out, to show the underlying trend. The Bank of England watches it when deciding interest rates.", aliases: ["underlying inflation"] },
   { term: "Basket of Goods", def: "The list of around 700 everyday items whose prices the ONS tracks to measure inflation, weighted by how much households spend on each.", aliases: ["basket of goods and services", "price basket"] },
   { term: "Deflation", def: "A fall in the general level of prices. It sounds good but can be harmful, because people delay spending and debts become harder to repay. It is different from disinflation, where prices rise more slowly.", auto: false },
@@ -30,6 +31,9 @@ export const STATISTICS_TERMS = [
   { term: "Monetary Policy Committee (MPC)", def: "The nine-person group at the Bank of England that votes on interest rates around eight times a year, aiming to keep inflation at 2%." },
   { term: "Average Weekly Earnings", def: "The ONS's main measure of pay: total pay before tax, per employee per week, from a monthly survey of employers. It is an average, so very high earners pull it up.", aliases: ["average earnings", "pay growth"] },
   { term: "National Living Wage", def: "The legal minimum hourly pay for workers aged 21 and over, set by the government each year on the advice of the Low Pay Commission. Younger workers have lower minimum rates." },
+
+  { term: "Real Wages", def: "Pay after taking account of rising prices. If wages rise 3% but prices rise 5%, real wages have fallen, because the pay buys less than before.", aliases: ["real pay", "real earnings", "real-terms pay"] },
+  { term: "House Price to Earnings Ratio", def: "How many years of typical pay it takes to buy the average home. A figure of 8 means the average home costs eight times typical annual pay. A rising number means buying is getting harder.", aliases: ["years of pay", "years of average pay", "years of pay to buy", "affordability ratio"] },
 
   // Jobs
   { term: "Unemployment Rate", def: "The share of people who are out of work, have looked for a job in the last four weeks and could start soon, as a share of everyone working or looking. It is not the same as the number claiming benefits." },
@@ -73,6 +77,8 @@ export const STATISTICS_TERMS = [
   { term: "Referral to Treatment (RTT)", def: "The measure of how long patients in England wait from being referred by a GP to starting hospital treatment. The NHS standard is that 92% of people waiting should have waited under 18 weeks.", aliases: ["RTT", "18-week standard", "18 weeks standard", "waiting list"] },
   { term: "Faster Diagnosis Standard", def: "The NHS standard that people urgently referred with suspected cancer are told within 28 days whether or not they have cancer. The target is for 80% of patients to meet it.", aliases: ["28-day standard", "28-day faster diagnosis"] },
   { term: "Category 2 Ambulance Call", def: "A 999 call for an emergency such as a stroke, heart attack or serious injury, where the patient is not in immediate danger of dying. The NHS standard is an average response of 18 minutes. Category 1 is for immediately life-threatening cases, with a 7-minute standard.", aliases: ["category 2", "category 1", "ambulance response times"] },
+  { term: "A&E (Accident and Emergency)", def: "The emergency department of a hospital. The NHS aims to see, treat, admit or discharge 95% of patients within four hours, a standard that has not been met for years.", aliases: ["A&E", "accident and emergency", "emergency department"] },
+  { term: "NHS England", def: "The national body that oversees the health service in England, deciding how money is spent and setting standards. The government announced in 2025 that it would be abolished and its work brought into the Department of Health and Social Care." },
 
   // Housing supply
   { term: "Net Additional Dwellings", def: "The official measure of how many homes England gains in a year: new builds and conversions of other buildings, minus homes demolished or merged.", aliases: ["net additional dwelling", "housing supply"] },
@@ -89,6 +95,8 @@ export const STATISTICS_TERMS = [
   { term: "Net Migration", def: "The number of people moving to live in the UK minus the number moving away, over a year. A positive number means the population is growing from migration.", aliases: ["net international migration"] },
   { term: "Index of Multiple Deprivation", def: "The government's official ranking of every small neighbourhood in England, from most to least deprived, combining income, work, health, education, crime, housing and living environment. It ranks places against each other: it does not say how badly off anyone is.", aliases: ["indices of deprivation", "deprivation index", "imd"] },
   { term: "Decile", def: "One of ten equal slices of a ranking. The first decile is the top tenth (here, the most deprived 10% of neighbourhoods) and the tenth is the bottom tenth.", aliases: ["deciles", "tenth"], auto: false },
+  { term: "Quintile", def: "One of five equal-sized groups when people or areas are ranked from lowest to highest. The bottom quintile is the lowest fifth and the top quintile the highest fifth, so it shows how things differ across income or area.", aliases: ["quintiles"] },
+  { term: "LSOA (Lower Layer Super Output Area)", def: "A small neighbourhood of about 1,500 people, the standard area for local statistics in England and Wales. Deprivation scores are worked out for each one, then added up to give a figure for a whole constituency.", aliases: ["LSOA", "LSOAs", "lower layer super output areas", "data zone", "data zones"] },
   { term: "Census", def: "A survey of every household, held every ten years, that gives the most complete picture of who lives where. The latest in England and Wales was in 2021.", auto: false },
   { term: "Fertility Rate", def: "The average number of children a woman would have in her lifetime at current birth rates. About 2.1 is needed for a population to stay stable without migration.", aliases: ["total fertility rate", "birth rate"] },
 
@@ -105,6 +113,7 @@ export const STATISTICS_TERMS = [
   { term: "Crime Survey for England and Wales (CSEW)", def: "A large annual survey asking people about crimes they have experienced, whether or not they reported them. It is considered the most reliable guide to long-run trends, but it only covers households and adults, and it is an estimate.", aliases: ["crime survey", "CSEW"] },
   { term: "Police Recorded Crime", def: "Crimes that were reported to, or found by, the police and logged. It depends on how willing people are to report crime and how carefully forces record it, so a rise does not always mean more crime.", aliases: ["recorded crime", "police recorded"] },
   { term: "Homicide", def: "Murder, manslaughter and infanticide: unlawful killings. The most reliably counted crime, because deaths rarely go unnoticed.", auto: false },
+  { term: "Reoffending Rate", def: "The share of people released from prison or starting a community sentence who are convicted of another offence within a set time, usually a year. Figures count offences that were proven in court, not all offending.", aliases: ["reoffending", "proven reoffending"] },
   { term: "Margin of Error", def: "How far a survey estimate might be from the true figure because only a sample was asked. Small changes between surveys can fall inside the margin of error and mean nothing.", aliases: ["confidence interval", "confidence intervals", "sampling error"] },
 
   // Environment and general statistics
