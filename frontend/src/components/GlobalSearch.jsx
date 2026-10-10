@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { supabase } from "../supabaseClient";
 import { FONT_BODY } from "../theme";
 import { partyColour } from "../lib/format";
@@ -77,8 +77,15 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef(null);
 
-  useEffect(() => {
-    async function load() {
+  // Nothing is fetched until the search box is first used (focused or typed in), so a visitor who never searches never pays for the
+  // MP list, the glossary, the statistics index and the rest. It starts the moment the box is focused, which is before the first key.
+  const [loading, setLoading] = useState(false);
+  const startedRef = useRef(false);
+  const startLoading = useCallback(() => {
+    if (startedRef.current) return;
+    startedRef.current = true;
+    setLoading(true);
+    const people = (async () => {
       const [{ data: p }, { data: b }, { data: l }] = await Promise.all([
         supabase.from("politicians").select("*"),
         supabase.from("bills").select("short_title, current_stage, sponsoring_department"),
@@ -87,10 +94,9 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
       setPoliticians(p ?? []);
       setBills(b ?? []);
       setPeers(l ?? []);
-    }
-    load();
-    Promise.all([import("../data/answers"), import("../lib/answerSearch")]).then(([a, s]) => setAnswerTools({ answers: a.ANSWERS, find: s.findAnswers }));
-    Promise.all([
+    })().catch(() => {});
+    const answers = Promise.all([import("../data/answers"), import("../lib/answerSearch")]).then(([a, s]) => setAnswerTools({ answers: a.ANSWERS, find: s.findAnswers }));
+    const site = Promise.all([
       import("../lib/siteSearch"), import("../data/onsSectors"), import("../data/councilsIndex.json"),
       import("../data/donorSectors.json"), import("../data/partyDonorSectors.json"), import("../data/donorProfiles.json"),
     ]).then(([ss, ons, councils, donorsA, donorsB, donorsC]) => {
@@ -101,9 +107,10 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
         donors: ss.buildDonorIndex(Object.keys(donorsA.default), Object.keys(donorsB.default), Object.keys(donorsC.default)),
       });
     }).catch(() => {});
-    import("../data/glossaryTerms").then(({ PROCEDURE_TERMS, POLITICS_TERMS, STATISTICS_TERMS }) => {
+    const glossary = import("../data/glossaryTerms").then(({ PROCEDURE_TERMS, POLITICS_TERMS, STATISTICS_TERMS }) => {
       setGlossaryEntries([...PROCEDURE_TERMS, ...POLITICS_TERMS, ...STATISTICS_TERMS]);
     });
+    Promise.allSettled([people, answers, site, glossary]).then(() => setLoading(false));
   }, []);
 
   useEffect(() => {
@@ -211,8 +218,8 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
           type="search"
           aria-label="Search the site"
           value={query}
-          onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
-          onFocus={(e) => { setOpen(true); e.target.style.borderColor = "var(--sb-accent)"; e.target.style.boxShadow = "0 0 0 3px rgba(79,70,229,0.22)"; }}
+          onChange={(e) => { startLoading(); setQuery(e.target.value); setOpen(true); }}
+          onFocus={(e) => { startLoading(); setOpen(true); e.target.style.borderColor = "var(--sb-accent)"; e.target.style.boxShadow = "0 0 0 3px rgba(79,70,229,0.22)"; }}
           onBlur={(e) => { e.target.style.borderColor = "var(--sb-border)"; e.target.style.boxShadow = "none"; }}
           placeholder="Search MPs, donors, numbers… (press /)"
           style={{
@@ -236,7 +243,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
         >
           {!hasResults && (
             <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: "var(--sb-soft)", padding: "8px 6px" }}>
-              No matches.
+              {loading ? "Getting ready…" : "No matches."}
             </div>
           )}
 
