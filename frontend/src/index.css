@@ -7,17 +7,17 @@
      considered design. Colour now comes from the accents (see theme.js)
      against a quiet backdrop, not from a tinted page itself. */
   --c-ink: #191A23;
-  --c-ink-soft: #5B5E70;
-  --c-paper: #FBFBFD;
-  --c-paper-card: #F2F3F8;
-  --c-hairline: #E1E3ED;
+  --c-ink-soft: #5E5C68;
+  --c-paper: #F7F2E8;
+  --c-paper-card: #EFE8D9;
+  --c-hairline: #DFD6C3;
   --c-sidebar-bg: #1B1C2E;
   --c-sidebar-bg-deep: #101120;
   --c-sidebar-text: #C7CBDC;
 
   /* The menu column. Light by default, and dark only in the dedicated dark mode (below). */
-  --sb-bg: #F4F5FB;
-  --sb-bg-2: #FFFFFF;
+  --sb-bg: #F1EADB;
+  --sb-bg-2: #F8F4EA;
   --sb-strong: #191A23;
   --sb-text: #383B4E;
   --sb-soft: rgba(25, 26, 35, 0.64);

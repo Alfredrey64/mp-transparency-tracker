@@ -234,12 +234,12 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician, onClose }) {
         type="button"
         onClick={() => onNavigate("home")}
         aria-label="Simple Politics, back to the overview"
-        style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", textAlign: "left", cursor: "pointer", background: "none", border: "none", padding: "2px 2px 4px" }}
+        style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 9, width: "100%", textAlign: "center", cursor: "pointer", background: "none", border: "none", padding: "2px 2px 4px" }}
       >
-        <LogoMark size={44} />
-        <span style={{ minWidth: 0 }}>
-          <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 19, letterSpacing: "-0.02em", color: "var(--sb-strong)", lineHeight: 1.1 }}>Simple Politics</span>
-          <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12, color: "var(--sb-soft)", marginTop: 3 }}>UK politics, made simple</span>
+        <LogoMark size={52} />
+        <span>
+          <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em", color: "var(--sb-strong)", lineHeight: 1.1 }}>Simple Politics</span>
+          <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, color: "var(--sb-soft)", marginTop: 4 }}>UK politics, made simple</span>
         </span>
       </button>
 
