@@ -68,6 +68,7 @@ export const LOADERS = {
   rates: () => import("./components/SectorPage"),
   indicators: () => import("./components/IndicatorTimeline"),
   howtovote: () => import("./components/HowToVote"),
+  localElections: () => import("./components/LocalElections"),
 };
 
 const started = new Set();

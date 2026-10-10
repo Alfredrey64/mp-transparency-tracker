@@ -226,6 +226,11 @@ export const PAGE_GUIDES = {
     why: "You can't vote unless you are registered, and the rules on ID and deadlines trip up people every election. Knowing them in advance makes your vote count.",
     notShown: "Your registration status, or the exact deadline for the next election. Those come from gov.uk, which this page links to. Rules can change, so check there.",
   },
+  localElections: {
+    what: "When each council in the UK next holds an election, how many seats are up, and what is at stake in yours, with a countdown to the next big election day.",
+    why: "Council elections decide who runs local services such as bins, roads, planning and social care, yet many people don't know when theirs is.",
+    notShown: "General or devolved elections, or who is standing. Dates can be moved, for example when councils merge, so check with your council for the final date.",
+  },
   marginals: {
     what: "Which seats are closest, how far the vote would have to move to change each, and a tool to see what a shift between two parties would do.",
     why: "Elections are decided in a few close seats, and swing is how analysts say how much a result would have to change.",
