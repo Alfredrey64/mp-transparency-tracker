@@ -127,7 +127,7 @@ export async function saveChartImage({ svg, title, sentence, source, accent, leg
   for (const line of sourceLines) { y += 18; ctx.fillText(line, pad, y); y += 6; }
   ctx.font = `700 17px ${FONT}`;
   ctx.fillStyle = c.ink;
-  ctx.fillText("UK Parliament Tracker · Britain in numbers", pad, H - pad / 2);
+  ctx.fillText("Simple Politics · Britain in numbers", pad, H - pad / 2);
 
   const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
   if (!blob) throw new Error("The picture could not be saved");

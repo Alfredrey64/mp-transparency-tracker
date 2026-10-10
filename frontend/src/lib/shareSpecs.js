@@ -8,7 +8,7 @@ const pct1 = (n) => `${(Math.round(n * 10) / 10).toFixed(1)}%`;
 const fmt = (n) => Math.round(n).toLocaleString("en-GB");
 const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 
-export const CARD_SITE = "UK Parliament Tracker";
+export const CARD_SITE = "Simple Politics";
 
 // An MP: who they are, how long, and what they have declared.
 // career: the compact row from mpCareers.json (or undefined).
@@ -194,7 +194,7 @@ export function compareSeatsShareSpec({ a, b, link }) {
 
 // Any page with nothing special to show: its name and what it is about.
 export function pageShareSpec({ kicker, title, subtitle, accent, link }) {
-  return { kicker: kicker || "UK Parliament Tracker", title, subtitle: subtitle ?? "", accent: colour(accent, "#4F46E5"), stats: [], footer: CARD_SITE, link };
+  return { kicker: kicker || "Simple Politics", title, subtitle: subtitle ?? "", accent: colour(accent, "#4F46E5"), stats: [], footer: CARD_SITE, link };
 }
 
 // A Britain in numbers page: its headline figures and the history of the main one.

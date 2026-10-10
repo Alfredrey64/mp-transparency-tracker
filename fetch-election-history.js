@@ -28,7 +28,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 async function getText(url) {
   for (let attempt = 1; attempt <= 10; attempt++) {
     try {
-      const res = await fetch(url, { headers: { "User-Agent": "uk-parliament-tracker (independent, non-commercial)" } });
+      const res = await fetch(url, { headers: { "User-Agent": "simple-politics (independent, non-commercial)" } });
       if (res.status === 429) { await sleep(30000); continue; }
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return await res.text();

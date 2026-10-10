@@ -72,7 +72,7 @@ const SECTOR_VIEWS = new Set(["economy", "prices", "jobs", "publicFinances", "po
 // site with the byline stripped from the UI still carries proof of where
 // it came from.
 console.log(
-  "%cUK Parliament Tracker%c\nDesigned and built by Alfred Reynolds.",
+  "%cSimple Politics%c\nDesigned and built by Alfred Reynolds.",
   "font-weight: bold; font-size: 13px; color: #4F46E5;",
   "color: inherit;"
 );
@@ -106,7 +106,7 @@ const PAGE_TITLES = Object.fromEntries(
   SECTIONS.flatMap((section) => section.items.map((item) => [item.key, item.label]))
 );
 Object.assign(PAGE_TITLES, {
-  home: "Follow the money behind every MP",
+  home: "A simple breakdown of UK politics",
   myMP: "My MP",
   watchlist: "My Watchlist",
   methodology: "Data & Methodology",
@@ -116,7 +116,7 @@ Object.assign(PAGE_TITLES, {
 });
 
 function titleForState(view, selected, param) {
-  const base = "UK Parliament Tracker";
+  const base = "Simple Politics";
   if (selected) return `${selected.name} | ${base}`;
   if (view === "numbers" && param === "lords") return `Parliament in Numbers: the Lords | ${base}`;
   // For the Lords the parameter is a peer's id, which makes a poor title.
@@ -232,7 +232,7 @@ export default function App() {
   }, [view, selected, viewParam]);
 
   // The tab title, and the name a bookmark or browser-history entry
-  // actually gets, used to be the same generic "UK Parliament Tracker" on
+  // actually gets, used to be the same generic "Simple Politics" on
   // every single page — no help at all with five tabs open, or finding an
   // MP's page again in history. This is the one piece of per-page SEO a
   // client-only SPA can do for real: a crawler that never executes JS

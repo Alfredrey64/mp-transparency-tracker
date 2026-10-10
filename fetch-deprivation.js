@@ -22,7 +22,7 @@ const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "frontend", 
 const OUT_SEATS = path.join(path.dirname(fileURLToPath(import.meta.url)), "frontend", "src", "data", "deprivationConstituencies.json");
 // Which Westminster constituency each neighbourhood (LSOA, 2021) falls in: the ONS best-fit lookup, for July 2024 boundaries.
 const SEAT_LOOKUP = "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/LSOA21_PCON24_LAD21_EW_LU/FeatureServer/0/query";
-const HEADERS = { "User-Agent": "uk-parliament-tracker (independent, non-commercial; contact via GitHub)" };
+const HEADERS = { "User-Agent": "simple-politics (independent, non-commercial; contact via GitHub)" };
 // File 7 is every neighbourhood with its ranks, deciles and population; file 10 summarises each lower-tier local authority.
 const FILE_7 = "https://assets.publishing.service.gov.uk/media/691ded56d140bbbaa59a2a7d/File_7_IoD2025_All_Ranks_Scores_Deciles_Population_Denominators.csv";
 const FILE_10 = "https://assets.publishing.service.gov.uk/media/6917412ebc34c86ce4e6e7fc/File_10_-_IoD2025_Local_Authority_District_Summaries__lower-tier__v2.xlsx";

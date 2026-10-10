@@ -2,7 +2,8 @@ import { preloadView } from "../pageLoaders";
 import { useWatchlistChanges } from "../lib/useWatchlistChanges";
 import { useEffect, useRef, useState } from "react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
-import { EyebrowLabel, ParliamentSilhouette } from "./shared";
+import { EyebrowLabel } from "./shared";
+import LogoMark from "./LogoMark";
 import GlobalSearch from "./GlobalSearch";
 import { IconHome, IconMethodology, IconSettings, IconPin, IconStar, IconRoute } from "./icons";
 import { SECTIONS } from "../data/sidebarSections";
@@ -232,7 +233,7 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician, onClose }) {
       )}
       <div style={{ marginBottom: 4, textAlign: "center" }}>
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 7 }}>
-          <ParliamentSilhouette width={46} color={COLORS.accentOnDark} opacity={0.95} />
+          <LogoMark size={48} />
         </div>
         {/* No rule here (showRule is for the left-aligned masthead usage next
             to a headline): a leading dash in front of one centred word just
@@ -241,8 +242,9 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician, onClose }) {
           <EyebrowLabel color={COLORS.accentOnDark} showRule={false}>Independent and unofficial</EyebrowLabel>
         </div>
         <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 19, color: "#fff", lineHeight: 1.2, marginTop: 6 }}>
-          UK Parliament Tracker
+          Simple Politics
         </div>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: "rgba(226,232,232,0.6)", marginTop: 2 }}>UK politics, made simple</div>
         <div style={{ display: "flex", justifyContent: "center", marginTop: 10 }}>
           <span style={{ width: 140, height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)" }} />
         </div>
@@ -352,8 +354,8 @@ export default function Sidebar({ activeView, onNavigate, onSelectPolitician }) 
         style={{ alignItems: "center", justifyContent: "space-between", background: COLORS.sidebarBg, padding: "4px 14px" }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <ParliamentSilhouette width={24} color={COLORS.accentOnDark} />
-          <span style={{ fontFamily: FONT_DISPLAY, fontSize: 16, color: "#fff", whiteSpace: "nowrap" }}>UK Parliament Tracker</span>
+          <LogoMark size={28} />
+          <span style={{ fontFamily: FONT_DISPLAY, fontSize: 16, color: "#fff", whiteSpace: "nowrap" }}>Simple Politics</span>
         </div>
         <button
           onClick={() => setOpen(true)}

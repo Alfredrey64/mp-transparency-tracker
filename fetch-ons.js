@@ -25,7 +25,7 @@ import { readXlsx } from "./xlsx-lite.js";
 import { fetchFeed } from "./fetch-tables.js";
 
 const OUT_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), "frontend", "src", "data", "ons");
-const HEADERS = { "User-Agent": "uk-parliament-tracker (independent, non-commercial; contact via GitHub)" };
+const HEADERS = { "User-Agent": "simple-politics (independent, non-commercial; contact via GitHub)" };
 // Keep the whole history: the pages compare today with decades ago.
 const KEEP = { months: 1200, quarters: 400, years: 200 };
 

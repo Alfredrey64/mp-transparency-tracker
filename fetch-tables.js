@@ -12,7 +12,7 @@ import { readXlsx } from "./xlsx-lite.js";
 import { readOds } from "./ods-lite.js";
 import { readXls } from "./xls-lite.js";
 
-const HEADERS = { "User-Agent": "Mozilla/5.0 (uk-parliament-tracker; independent, non-commercial; contact via GitHub)" };
+const HEADERS = { "User-Agent": "Mozilla/5.0 (simple-politics; independent, non-commercial; contact via GitHub)" };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function getBuffer(url, tries = 3) {

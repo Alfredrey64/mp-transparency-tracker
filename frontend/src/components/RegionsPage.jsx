@@ -312,7 +312,7 @@ export default function RegionsPage({ param }) {
         share={() => rankingShareSpec({
           kicker: "Regions and nations", title: `${metric.label}, region by region`, subtitle: `${tLabel(timeline[idx])}: the six highest of the 12 regions and nations`, accent,
           rows: league.map((l) => ({ label: l.name, valueText: l.text, fraction: atIdx[l.key] ?? 0, colour: accent })),
-          note: league.length > 1 ? `Lowest: ${league.at(-1).name}, ${league.at(-1).text}.` : null, footer: "UK Parliament Tracker · Regions and nations", link: window.location.href,
+          note: league.length > 1 ? `Lowest: ${league.at(-1).name}, ${league.at(-1).text}.` : null, footer: "Simple Politics · Regions and nations", link: window.location.href,
         })}
       />
 

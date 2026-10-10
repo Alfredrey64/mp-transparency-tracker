@@ -5,6 +5,9 @@ import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconDevolved, IconNorthernIreland } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
+import { partyColourByName } from "../lib/careerTimeline";
+import { initials } from "../lib/format";
+import LEADER_PORTRAITS from "../data/devolvedLeaders.json";
 
 const ADMINISTRATIONS = [
   {
@@ -65,6 +68,34 @@ const ADMINISTRATIONS = [
 // Who holds each leading post, as last checked. Elections move these, so the date is shown on the page.
 const HOLDERS_CHECKED = "8 October 2026";
 
+// A leader's portrait in a ring of their party's colour, with their post and name beside it. Falls back to initials if the picture
+// cannot load. The credit for each photo is linked at the foot of the page (not here: this sits inside a button).
+function Leader({ holder }) {
+  const [failed, setFailed] = useState(false);
+  const portrait = LEADER_PORTRAITS[holder.name];
+  const ring = partyColourByName({ SNP: "Scottish National Party", DUP: "Democratic Unionist Party" }[holder.party] ?? holder.party);
+  const photo = (
+    <span style={{ position: "relative", flexShrink: 0, width: 76, height: 76, borderRadius: "50%", padding: 3, background: `linear-gradient(145deg, ${ring}, ${ring}55)`, boxShadow: `0 10px 22px -14px ${ring}` }}>
+      {portrait && !failed ? (
+        <img src={portrait.url} alt={`${holder.name}, ${holder.role}`} width={70} height={70} loading="lazy" referrerPolicy="no-referrer" onError={() => setFailed(true)}
+          style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover", objectPosition: "center 20%", display: "block", background: COLORS.paper }} />
+      ) : (
+        <span aria-hidden="true" style={{ width: "100%", height: "100%", borderRadius: "50%", display: "grid", placeItems: "center", background: COLORS.paper, color: ring, fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 24 }}>{initials(holder.name)}</span>
+      )}
+    </span>
+  );
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 14, minWidth: 0 }}>
+      {photo}
+      <div style={{ minWidth: 0 }}>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: ring }}>{holder.role}</div>
+        <div style={{ fontFamily: FONT_DISPLAY, fontSize: 19, fontWeight: 700, color: COLORS.ink, lineHeight: 1.2 }}>{holder.name}</div>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 2 }}>{holder.party}, in post since {holder.since}</div>
+      </div>
+    </div>
+  );
+}
+
 export default function DevolvedAdministrations() {
   const [openIndex, setOpenIndex] = useState(null);
 
@@ -112,19 +143,14 @@ export default function DevolvedAdministrations() {
                   <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ flexShrink: 0, color: COLORS.inkSoft, fontSize: 13, marginTop: 6 }}>▾</motion.span>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(200px, 100%), 1fr))", gap: 14, marginTop: 14, marginBottom: 14 }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "14px 32px", marginTop: 16, padding: "16px 18px", borderRadius: 16, background: `linear-gradient(135deg, ${a.accent}1c, ${COLORS.paper} 70%)`, border: `1px solid ${a.accent}33` }}>
+                  {a.holders.map((h) => <Leader key={h.role} holder={h} />)}
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(200px, 100%), 1fr))", gap: 14, marginTop: 16, marginBottom: 14 }}>
                   <Field label="Established">{a.established}</Field>
                   <Field label="Members">{a.members}</Field>
-                  <Field label="Led by">
-                    <div>{a.led}</div>
-                    {a.holders.map((h) => (
-                      <div key={h.role} style={{ marginTop: 6, color: COLORS.ink }}>
-                        <span style={{ color: COLORS.inkSoft }}>{h.role}: </span>
-                        <strong>{h.name}</strong> ({h.party})
-                        <span style={{ display: "block", fontSize: 11.5, color: COLORS.inkSoft }}>in post since {h.since}</span>
-                      </div>
-                    ))}
-                  </Field>
+                  <Field label="Led by">{a.led}</Field>
                 </div>
 
                 <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.65, marginBottom: 8 }}>{a.powers}</div>
@@ -176,6 +202,12 @@ export default function DevolvedAdministrations() {
       </div>
       <p style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 18, lineHeight: 1.55 }}>
         Office-holders last checked {HOLDERS_CHECKED}, against the devolved governments' own websites and news reports. Leaders can change between our checks, for example after an election or a resignation.
+      </p>
+      <p style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 8, lineHeight: 1.55 }}>
+        Portraits are from Wikipedia and Wikimedia Commons, each under its own licence. Credit and licence for each:{" "}
+        {Object.entries(LEADER_PORTRAITS).map(([name, p], i, all) => (
+          <span key={name}><a href={p.page} target="_blank" rel="noreferrer" style={{ color: COLORS.inkSoft }}>{name}</a>{i < all.length - 1 ? ", " : "."}</span>
+        ))}
       </p>
     </div>
   );

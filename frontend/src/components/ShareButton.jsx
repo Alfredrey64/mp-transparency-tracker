@@ -17,7 +17,7 @@ function IconShare({ size = 15 }) {
 // A "Share" button. getSpec returns what goes on the card (see
 // lib/shareSpecs.js), when the button is clicked, so nothing is worked out
 // until someone asks for it. `filename` names the downloaded image.
-export default function ShareButton({ getSpec, filename = "uk-parliament-tracker", label = "Share", style }) {
+export default function ShareButton({ getSpec, filename = "simple-politics", label = "Share", style }) {
   const [open, setOpen] = useState(null);
   return (
     <>

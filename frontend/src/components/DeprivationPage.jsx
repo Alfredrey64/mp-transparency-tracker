@@ -200,7 +200,7 @@ export default function DeprivationPage() {
         share={nation === "england" ? () => rankingShareSpec({
           kicker: "Deprivation", title: `${domainLabel}: the regions of England`, subtitle: `Share of people who ${end.phrase}`, accent: ACCENT,
           rows: sorted.map(([k, v]) => ({ label: nameOf(k), valueText: `${oneInShort(v)} (${f1(v)})`, fraction: v })),
-          note: `A fair share would be ${fairWord}, ${end.fair}%, in every region.`, footer: "UK Parliament Tracker · Indices of Deprivation 2025", link: window.location.href,
+          note: `A fair share would be ${fairWord}, ${end.fair}%, in every region.`, footer: "Simple Politics · Indices of Deprivation 2025", link: window.location.href,
         }) : undefined}
       />
 

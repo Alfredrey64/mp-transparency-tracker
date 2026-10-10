@@ -7,7 +7,7 @@ import { formatDate, partyColour, shortCategory, timeAgo } from "../lib/format";
 import pipelineStatus from "../data/pipelineStatus.json";
 import { categoriseBill } from "../lib/bills";
 import { getWatchlist, removeFromWatchlist } from "../lib/watchlist";
-import { IconSearch, IconCoin, IconBills, IconInfluence, IconPetition, IconGroup, IconPulse, IconShield, IconRankings, IconManifesto, IconPartyFinance, IconRoute, IconTrend } from "./icons";
+import { IconSearch, IconCoin, IconBills, IconInfluence, IconPetition, IconGroup, IconPulse, IconShield, IconRoute, IconTrend, IconAsk, IconPin, IconSwing, IconCompareTime, IconGlossary } from "./icons";
 import { EyebrowLabel, LoadFailedNote } from "./shared";
 import { PartyHemicycleSection } from "./PartyHemicycle";
 import { withScrollPreserved } from "../lib/preserveScroll";
@@ -31,16 +31,17 @@ const CHANGE_FEED_TYPES = {
   petition: { icon: IconPetition, color: "#1FA97C", label: "Petition response" },
 };
 
-// Each destination keeps the same accent its section uses in the sidebar
-// (see Sidebar.jsx's SECTIONS) — a visitor who clicks "Browse Bills" here
-// and later sees purple again in the sidebar has already learned what that
-// colour means, rather than the homepage inventing its own one-off scheme.
-const QUICK_LINKS = [
-  { key: "voting", label: "Browse bills", icon: IconBills, color: "#9B4FE0" },
-  { key: "parties", label: "Browse party policies", icon: IconManifesto, color: "#2F80ED" },
-  { key: "partyFinances", label: "Browse party funding", icon: IconPartyFinance, color: "#F2622A" },
-  { key: "rankings", label: "Rankings", icon: IconRankings, color: "#D9A62A" },
-  { key: "economy", label: "Britain in numbers", icon: IconTrend, color: "#0E9AA7" },
+// What the site can do, one tile each. Every destination keeps the accent its section uses in the sidebar, so a colour learned
+// here means the same thing everywhere else.
+const FEATURES = [
+  { key: "myMP", label: "Find your MP", line: "See who represents you, how they vote and what they have declared.", icon: IconPin, color: "#4F46E5" },
+  { key: "followTheMoney", label: "Follow the money", line: "Trace a donor to every MP and party they have given money to.", icon: IconSearch, color: "#F2622A" },
+  { key: "voting", label: "Understand the bills", line: "Plain-English guides to the laws being debated, and how MPs voted.", icon: IconBills, color: "#9B4FE0" },
+  { key: "answers", label: "Ask a question", line: "Why is housing so expensive? Get a short answer, the latest figures and what each party says.", icon: IconAsk, color: "#2F80ED" },
+  { key: "economy", label: "See the numbers", line: "Prices, jobs, housing, crime and more, in charts you can actually read.", icon: IconTrend, color: "#0E9AA7" },
+  { key: "marginals", label: "Check your seat", line: "How close your seat was at the last election, and what could flip it.", icon: IconSwing, color: "#E5484D" },
+  { key: "indicators", label: "Compare over time", line: "Pick any figures and watch how they moved under each government.", icon: IconCompareTime, color: "#D9A62A" },
+  { key: "glossary", label: "Learn the language", line: "A jargon buster for the words used in politics and the news.", icon: IconGlossary, color: "#C0478A" },
 ];
 
 // A quiet line for anyone following MPs: how many new things there are for
@@ -258,15 +259,14 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
       >
         <motion.div variants={revealChild}>
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <EyebrowLabel>An independent look at UK Parliament</EyebrowLabel>
+            <EyebrowLabel>Simple Politics</EyebrowLabel>
           </div>
           <h1 style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: "clamp(36px, 6vw, 58px)", color: COLORS.ink, margin: "16px auto 0", lineHeight: 1.08, maxWidth: 760 }}>
-            Follow the money behind every MP.
+            A simple breakdown of UK politics.
           </h1>
-          <p style={{ fontFamily: FONT_BODY, fontSize: 17, color: COLORS.inkSoft, lineHeight: 1.65, maxWidth: 600, margin: "18px auto 0" }}>
-            An objective look at declared gifts, donations, and financial interests for every current Member of
-            Parliament, taken straight from the official Register of Members' Financial Interests and kept up to
-            date.
+          <p style={{ fontFamily: FONT_BODY, fontSize: 17, color: COLORS.inkSoft, lineHeight: 1.65, maxWidth: 640, margin: "18px auto 0" }}>
+            Who your MP is, who funds them, how they vote and what the numbers say about the country. Everything comes from
+            official sources and is explained in plain English, with no jargon and no spin.
           </p>
         </motion.div>
 
@@ -302,22 +302,6 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
             <IconGroup size={16} />
             Browse MPs
           </motion.button>
-          {QUICK_LINKS.map((link) => (
-            <motion.button
-              key={link.key}
-              onClick={() => onNavigate?.(link.key)}
-              whileHover={{ y: -1, borderColor: link.color }}
-              whileTap={{ scale: 0.98 }}
-              style={{
-                fontFamily: FONT_BODY, fontSize: 15, fontWeight: 600, color: link.color, background: `${link.color}12`,
-                border: `1px solid ${link.color}40`, borderRadius: 999, padding: "13px 22px", cursor: "pointer",
-                display: "flex", alignItems: "center", gap: 8,
-              }}
-            >
-              <link.icon size={16} />
-              {link.label}
-            </motion.button>
-          ))}
         </motion.div>
 
         <WatchlistNote onNavigate={onNavigate} />
@@ -343,6 +327,26 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
             </span>
           </motion.button>
         </motion.div>
+
+        <motion.section variants={revealChild} aria-labelledby="h-can-do" style={{ marginTop: 52, textAlign: "left" }}>
+          <h2 id="h-can-do" style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: "clamp(22px, 3.4vw, 28px)", color: COLORS.ink, margin: 0, textAlign: "center" }}>What you can do here</h2>
+          <p style={{ fontFamily: FONT_BODY, fontSize: 15, color: COLORS.inkSoft, lineHeight: 1.6, margin: "8px auto 22px", maxWidth: 560, textAlign: "center" }}>
+            Pick a starting point. Every page explains itself as you go.
+          </p>
+          <div className="home-features" style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 14 }}>
+            {FEATURES.map((f) => (
+              <motion.button
+                key={f.key} type="button" onClick={() => onNavigate?.(f.key)} whileHover={{ y: -3 }} whileTap={{ scale: 0.98 }}
+                style={{ textAlign: "left", cursor: "pointer", display: "flex", flexDirection: "column", gap: 8, padding: "18px 18px 20px", borderRadius: 20, border: `1px solid ${f.color}40`, background: `linear-gradient(160deg, ${f.color}1c, ${COLORS.paperCard} 62%)` }}
+              >
+                <span style={{ width: 42, height: 42, borderRadius: 14, display: "grid", placeItems: "center", background: f.color, color: "#fff" }}><f.icon size={20} /></span>
+                <span style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 700, color: COLORS.ink, lineHeight: 1.2 }}>{f.label}</span>
+                <span style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.5, color: COLORS.inkSoft }}>{f.line}</span>
+              </motion.button>
+            ))}
+          </div>
+          <style>{`.home-features { } @media (max-width: 1000px) { .home-features { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } } @media (max-width: 420px) { .home-features { gap: 10px !important; } .home-features > button { padding: 14px 14px 16px !important; } }`}</style>
+        </motion.section>
       </motion.div>
 
       {/* Latest activity: its own bordered rail, not squeezed beside the

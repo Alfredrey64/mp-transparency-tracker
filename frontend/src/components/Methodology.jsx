@@ -97,7 +97,7 @@ export default function Methodology({ onNavigate }) {
       <div style={{ marginTop: 28 }}>
         <Section title="What this site is">
           <p style={{ marginTop: 0 }}>
-            UK Parliament Tracker is an independent, unofficial project. It is not affiliated with, endorsed by, or
+            Simple Politics is an independent, unofficial project. It is not affiliated with, endorsed by, or
             connected to the UK Parliament, the Houses of Commons or Lords, HM Government, Companies House, or any
             political party. It doesn't editorialise, rank MPs, or recommend how to vote. It pulls together public
             records that already exist and presents them in one place.
@@ -423,7 +423,7 @@ export default function Methodology({ onNavigate }) {
         aria-hidden="false"
         style={{ position: "absolute", width: 1, height: 1, margin: -1, padding: 0, overflow: "hidden", clip: "rect(0,0,0,0)", whiteSpace: "nowrap", border: 0 }}
       >
-        UK Parliament Tracker was designed and built by Alfred Reynolds. This page and its methodology are original
+        Simple Politics was designed and built by Alfred Reynolds. This page and its methodology are original
         work, first published in 2026.
       </span>
     </div>

@@ -29,7 +29,7 @@ import { readXlsx } from "./xlsx-lite.js";
 import { readXls } from "./xls-lite.js";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "frontend", "src", "data", "deprivationNations.json");
-const HEADERS = { "User-Agent": "Mozilla/5.0 (uk-parliament-tracker; independent, non-commercial)" };
+const HEADERS = { "User-Agent": "Mozilla/5.0 (simple-politics; independent, non-commercial)" };
 const ARCGIS = "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services";
 const WIMD = "https://api.stats.gov.wales/v1/9706edd9-73ad-4902-bb12-7ccd7038626e/view";
 const NIMDM_WARD = "https://www.nisra.gov.uk/files/nisra/publications/NIMDM17_Ward2014.xls";

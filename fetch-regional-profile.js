@@ -21,7 +21,7 @@ import { fileURLToPath } from "node:url";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "frontend", "src", "data", "regionalProfile.json");
 const BASE = "https://www.nomisweb.co.uk/api/v01/dataset";
-const HEADERS = { "User-Agent": "uk-parliament-tracker (independent, non-commercial; contact via GitHub)" };
+const HEADERS = { "User-Agent": "simple-politics (independent, non-commercial; contact via GitHub)" };
 const CENSUS_URL = "https://www.ons.gov.uk/census";
 const SOURCE = { name: "Census 2021 (ONS, via Nomis)", url: CENSUS_URL };
 

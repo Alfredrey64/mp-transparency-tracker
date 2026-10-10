@@ -5,6 +5,9 @@ import { PageHeader } from "./shared";
 import { IconAsk, IconSearch } from "./icons";
 import { ANSWERS, ANSWER_TOPICS, answerById } from "../data/answers";
 import { findAnswers } from "../lib/answerSearch";
+import { positionsFor, POSITIONS_AS_OF } from "../data/answerPartyPositions";
+import { PARTY_MANIFESTOS } from "../data/partyManifestos";
+import { partyColourByName } from "../lib/careerTimeline";
 import { loadSector } from "../lib/onsData";
 import { fillKeyPoint } from "../lib/onsKeyPoints";
 import { card, cardTitle, smallTitle } from "../lib/onsStyles";
@@ -42,6 +45,36 @@ function Fact({ fact }) {
       </p>
       <a className="ons-tap" href={`#/${fact.sector}/${encodeURIComponent(`${fact.series}.10.-`)}`} style={{ display: "inline-flex", alignItems: "center", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: COLORS.inkSoft, textDecoration: "underline", textUnderlineOffset: 3 }}>See the chart</a>
     </li>
+  );
+}
+
+// What each party said it would do about the question, from its 2024 manifesto, with a link to the whole manifesto.
+function PartyPositions({ answerId }) {
+  const found = positionsFor(answerId);
+  if (!found) return null;
+  return (
+    <section style={card} aria-labelledby="h-parties">
+      <h3 id="h-parties" style={{ ...cardTitle, fontSize: 19 }}>What the parties said they would do</h3>
+      <p style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, margin: "4px 0 14px", lineHeight: 1.55 }}>
+        The clearest commitments {found.about} in {POSITIONS_AS_OF}. A party is left out where it made no clear commitment we can point to, which does not mean it has no view.
+      </p>
+      <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(250px, 100%), 1fr))", gap: 12 }}>
+        {found.parties.map((p) => {
+          const m = PARTY_MANIFESTOS.find((x) => x.key === p.key);
+          const colour = partyColourByName(p.key === "liberal-democrat" ? "Liberal Democrat" : m.shortName);
+          return (
+            <li key={p.key} style={{ display: "flex", flexDirection: "column", padding: "14px 16px 12px", borderRadius: 16, background: `linear-gradient(160deg, ${colour}16, ${COLORS.paper} 70%)`, border: `1px solid ${colour}44`, borderTop: `4px solid ${colour}` }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: 800, color: COLORS.ink }}>{m.shortName}</div>
+              <p style={{ fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.58, color: COLORS.ink, margin: "6px 0 10px", flex: 1 }}>{p.text}</p>
+              <a href={m.manifestoUrl} target="_blank" rel="noreferrer" style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.inkSoft }}>Read the {m.manifestoYear} manifesto</a>
+            </li>
+          );
+        })}
+      </ul>
+      <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "14px 0 0" }}>
+        We summarise in our own words and do not rank or judge the plans. Parties change their policies after an election, so check each party&apos;s own website for its latest position. Labour has been in government since July 2024, so what it has done in office can differ from what it promised.
+      </p>
+    </section>
   );
 }
 
@@ -96,6 +129,8 @@ function AnswerCard({ answer }) {
           </div>
         </section>
       )}
+
+      <PartyPositions answerId={answer.id} />
 
       <section style={card} aria-labelledby="h-next">
         <h3 id="h-next" style={{ ...cardTitle, fontSize: 19 }}>Look closer</h3>

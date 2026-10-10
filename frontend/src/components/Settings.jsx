@@ -97,7 +97,7 @@ export default function Settings({ onNavigate }) {
         </div>
 
         <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, lineHeight: 1.6 }}>
-          <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 600 }}>UK Parliament Tracker</span> is an independent
+          <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 600 }}>Simple Politics</span> is an independent
           project and is not affiliated with, endorsed by, or connected to the UK Parliament, the Houses of Commons or
           Lords, or Companies House.
         </div>

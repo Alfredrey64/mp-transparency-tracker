@@ -903,7 +903,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
             </div>
             <div style={{ display: "flex", justifyContent: "center", marginTop: 10 }}>
               <ShareButton
-                filename={`${politician.name}-uk-parliament-tracker`}
+                filename={`${politician.name}-simple-politics`}
                 getSpec={async () => {
                   const career = (await import("../data/mpCareers.json")).default.mps[politician.parliament_member_id];
                   return mpShareSpec({ politician, career, interestCount: interests.length, totalDeclared: totalDeclaredValue, link: window.location.href });
