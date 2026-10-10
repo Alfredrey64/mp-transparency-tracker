@@ -12,7 +12,7 @@ const pct1 = (n) => `${(Math.round(n * 10) / 10).toFixed(1)}%`;
 const fmt = (n) => Math.round(n).toLocaleString("en-GB");
 
 function Lines({ list, colourOf }) {
-  const W = 620, H = 260, L = 38, R = 96, T = 14, B = 30;
+  const W = 520, H = 270, L = 44, R = 100, T = 14, B = 34;
   // The parties that came in the top three at least once.
   const names = useMemo(() => {
     const set = new Map();
@@ -28,7 +28,7 @@ function Lines({ list, colourOf }) {
       const p = list.at(-1).parties.find((q) => q.name === name);
       return p ? { name, y: y(p.share) + 4 } : null;
     }).filter(Boolean).sort((a, b) => a.y - b.y);
-    for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 15) ends[i].y = ends[i - 1].y + 15;
+    for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 17) ends[i].y = ends[i - 1].y + 17;
     return Object.fromEntries(ends.map((e) => [e.name, e.y]));
     // y depends only on the chart's fixed size and `top`.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -38,10 +38,10 @@ function Lines({ list, colourOf }) {
       {Array.from({ length: top / 10 + 1 }, (_, i) => i * 10).map((v) => (
         <g key={v}>
           <line x1={L} x2={W - R} y1={y(v)} y2={y(v)} stroke={COLORS.hairline} strokeWidth="1" />
-          <text x={L - 6} y={y(v) + 4} textAnchor="end" fontFamily={FONT_BODY} fontSize="11" fill={COLORS.inkSoft}>{v}%</text>
+          <text x={L - 6} y={y(v) + 4} textAnchor="end" fontFamily={FONT_BODY} fontSize="13" fill={COLORS.inkSoft}>{v}%</text>
         </g>
       ))}
-      {list.map((e, i) => <text key={e.year} x={x(i)} y={H - 8} textAnchor="middle" fontFamily={FONT_BODY} fontSize="12" fontWeight="600" fill={COLORS.inkSoft}>{e.year}</text>)}
+      {list.map((e, i) => <text key={e.year} x={x(i)} y={H - 8} textAnchor="middle" fontFamily={FONT_BODY} fontSize="14" fontWeight="600" fill={COLORS.inkSoft}>{e.year}</text>)}
       {/* The 2024 boundaries differ from the four elections before it. */}
       {list.length > 1 && !list.at(-1).old && list.at(-2)?.old && (
         <line x1={(x(list.length - 1) + x(list.length - 2)) / 2} x2={(x(list.length - 1) + x(list.length - 2)) / 2} y1={T} y2={H - B} stroke={COLORS.inkSoft} strokeWidth="1" strokeDasharray="3 4" opacity="0.6" />
@@ -58,11 +58,30 @@ function Lines({ list, colourOf }) {
           <g key={name}>
             {segs.map((s, k) => <path key={k} d={s.map((p, j) => `${j ? "L" : "M"}${x(p.i).toFixed(1)} ${y(p.v).toFixed(1)}`).join("")} fill="none" stroke={c} strokeWidth="2.6" strokeLinejoin="round" strokeLinecap="round" />)}
             {pts.map((p, i) => p && <circle key={i} cx={x(i)} cy={y(p.v)} r="4" fill={c} stroke={COLORS.paperCard} strokeWidth="1.6"><title>{`${name}, ${list[i].year}: ${pct1(p.v)}`}</title></circle>)}
-            {last && last.i === list.length - 1 && <text x={x(last.i) + 9} y={labelY[name] ?? y(last.v) + 4} fontFamily={FONT_BODY} fontSize="12" fontWeight="700" fill={COLORS.ink}>{shortParty(name)}</text>}
+            {last && last.i === list.length - 1 && <text x={x(last.i) + 9} y={labelY[name] ?? y(last.v) + 4} fontFamily={FONT_BODY} fontSize="14" fontWeight="700" fill={COLORS.ink}>{shortParty(name)}</text>}
           </g>
         );
       })}
     </svg>
+  );
+}
+
+// Who won each election, as a row of coloured blocks, with how far ahead they finished. The quickest read of a seat's history.
+function Winners({ list, colourOf }) {
+  return (
+    <ol aria-label="Winner of each general election" style={{ listStyle: "none", margin: "0 0 18px", padding: 0, display: "flex", gap: 6 }}>
+      {list.map((e) => {
+        const w = e.parties[0];
+        return (
+          <li key={e.year} style={{ flex: 1, minWidth: 0 }}>
+            <span title={`${w.name} won in ${e.year}`} style={{ display: "block", height: 34, borderRadius: 8, background: colourOf(w.name) }} />
+            <span style={{ ...numeric, display: "block", fontSize: 13, fontWeight: 700, color: COLORS.ink, marginTop: 5 }}>{e.year}</span>
+            <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, lineHeight: 1.25, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{shortParty(w.name)}</span>
+            <span style={{ ...numeric, display: "block", fontSize: 12, color: COLORS.inkSoft }}>+{pct1(e.lead ?? 0)}</span>
+          </li>
+        );
+      })}
+    </ol>
   );
 }
 
@@ -92,6 +111,7 @@ export default function SeatElections({ record, history, parties, loading }) {
                 ? `${list[0].parties[0].name} won this seat at every general election from ${list[0].year} to ${list.at(-1).year}.`
                 : `The seat changed party ${changes.length === 1 ? "once" : `${changes.length} times`} between ${list[0].year} and ${list.at(-1).year}: ${changes.map((c) => `${c.year} (${c.from} to ${c.to})`).join(", ")}.`}
             </p>
+            <Winners list={list} colourOf={colourOf} />
             <Lines list={list} colourOf={colourOf} />
             <p style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, margin: "6px 0 0", lineHeight: 1.55 }}>
               Share of the vote for the three leading parties at each election. {olds.length ? "The dashed line marks the 2024 boundary change: elections before it were for the old seat of this name." : ""}
