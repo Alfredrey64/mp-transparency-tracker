@@ -1,9 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, numeric } from "../theme";
 import { PageHeader } from "./shared";
-import { partyColour, initials, formatDate, shortCategory } from "../lib/format";
+import { partyColour, initials, formatDate } from "../lib/format";
+import { mpGiftKind, partyGiftKind, declaredAs } from "../lib/giftPurpose";
 import { partyColourByName } from "../lib/careerTimeline";
 import { normalizeDonorKey } from "../lib/donorSectors";
 import { IconSearch } from "./icons";
@@ -62,7 +63,7 @@ function aggregateByPolitician(rows) {
     const e = map.get(pol.id);
     e.total += r.value_amount ?? 0;
     e.count += 1;
-    e.gifts.push({ date: r.date_registered, amount: r.value_amount, note: r.category ? shortCategory(r.category) : null });
+    e.gifts.push({ date: r.date_registered, amount: r.value_amount, note: mpGiftKind(r.category).short });
   }
   return [...map.values()].sort((a, b) => b.total - a.total);
 }
@@ -74,7 +75,7 @@ function aggregateByParty(rows) {
     const e = map.get(r.party_name);
     e.total += r.value ?? 0;
     e.count += 1;
-    e.gifts.push({ date: r.accepted_date, amount: r.value, note: r.donation_type });
+    e.gifts.push({ date: r.accepted_date, amount: r.value, note: partyGiftKind(r.donation_type).short });
   }
   return [...map.values()].sort((a, b) => b.total - a.total);
 }
@@ -171,10 +172,10 @@ function DonorResultCard({ result, index, onSelectPolitician }) {
   );
   const gifts = result.mpRows.length + result.partyRows.length;
   const [open, setOpen] = useState(true);
+  const declared = useMemo(() => declaredAs(result.mpRows, result.partyRows), [result]);
 
   return (
     <motion.article
-      layout
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: Math.min(index, 6) * 0.05 }}
@@ -202,7 +203,25 @@ function DonorResultCard({ result, index, onSelectPolitician }) {
 
       <div style={{ marginTop: 18 }}><SplitBar mp={result.mpTotal} party={result.partyTotal} /></div>
 
-      {open && (<>
+      <AnimatePresence initial={false}>
+      {open && (
+      <motion.div
+        key="body" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
+        transition={{ duration: 0.2, ease: "easeOut" }} style={{ overflow: "hidden" }}
+      >
+      <div style={{ marginTop: 20 }}>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.ink }}>How these gifts were declared</div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 8 }}>
+          {declared.map((d) => (
+            <span key={d.key} style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, border: `1px solid ${COLORS.hairline}`, background: COLORS.paper, borderRadius: 999, padding: "5px 12px" }}>
+              {d.label} <strong style={numeric}>{money(d.total)}</strong>
+            </span>
+          ))}
+        </div>
+        <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, lineHeight: 1.55, margin: "10px 0 0", maxWidth: 640 }}>
+          The registers record who gave what and how it was declared. They do not record what a gift was meant to achieve, and a donation is not evidence that it changed anything.
+        </p>
+      </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))", gap: "22px 28px", marginTop: 22 }}>
         {mpAgg.length > 0 && (
           <Recipients
@@ -219,7 +238,9 @@ function DonorResultCard({ result, index, onSelectPolitician }) {
       </div>
 
       <DonorVotes donorName={result.displayName} mps={mpAgg.map((m) => m.politician)} />
-      </>)}
+      </motion.div>
+      )}
+      </AnimatePresence>
     </motion.article>
   );
 }

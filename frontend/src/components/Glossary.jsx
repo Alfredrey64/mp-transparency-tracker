@@ -1,16 +1,17 @@
 /** @jsxImportSource react */
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { IconGlossary, IconSearch } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { PROCEDURE_TERMS, POLITICS_TERMS, STATISTICS_TERMS } from "../data/glossaryTerms";
+import { wordOfTheDay, makeQuestion } from "../lib/glossaryGame";
 
 const TABS = [
-  { key: "procedure", label: "Parliamentary Terms", accent: COLORS.accent },
-  { key: "politics", label: "Political Terms & Issues", accent: "#6E4B6E" },
-  { key: "statistics", label: "Statistics & economy", accent: "#0E9AA7" },
+  { key: "procedure", label: "Parliamentary terms", blurb: "How Parliament works: bills, votes, committees and who does what.", accent: "#4F46E5" },
+  { key: "politics", label: "Political terms and issues", blurb: "Parties, elections and the language of political news.", accent: "#C0478A" },
+  { key: "statistics", label: "Statistics and economy", blurb: "The numbers behind the economy and the country.", accent: "#0E9AA7" },
 ];
 const TERMS_BY_TAB = { procedure: PROCEDURE_TERMS, politics: POLITICS_TERMS, statistics: STATISTICS_TERMS };
 
@@ -94,15 +95,25 @@ function TermDiagram({ diagram, accent }) {
   return null;
 }
 
+const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
 function TermRow({ t, isOpen, onToggle, accent }) {
   return (
-    <div style={{ borderBottom: `1px solid ${COLORS.hairline}` }}>
+    <div
+      style={{
+        borderRadius: 14, border: `1px solid ${isOpen ? `${accent}66` : COLORS.hairline}`, borderLeft: `4px solid ${accent}`,
+        background: isOpen ? `linear-gradient(135deg, ${accent}12, ${COLORS.paperCard} 60%)` : COLORS.paperCard,
+        transition: "background 0.2s, border-color 0.2s, box-shadow 0.2s", boxShadow: isOpen ? "0 16px 34px -26px rgba(0,0,0,0.55)" : "none",
+      }}
+    >
       <button
         onClick={onToggle}
-        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", background: "none", border: "none", padding: "13px 2px", cursor: "pointer", textAlign: "left", gap: 10 }}
+        aria-expanded={isOpen}
+        className="ons-chip"
+        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", background: "none", border: "none", padding: "13px 16px", cursor: "pointer", textAlign: "left", gap: 10 }}
       >
-        <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 16.5, color: COLORS.ink }}>{t.term}</span>
-        <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ color: accent, fontSize: 13, flexShrink: 0 }}>▾</motion.span>
+        <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 17, color: COLORS.ink, lineHeight: 1.25 }}>{t.term}</span>
+        <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ color: accent, fontSize: 14, flexShrink: 0 }}>▾</motion.span>
       </button>
       <AnimatePresence initial={false}>
         {isOpen && (
@@ -113,10 +124,10 @@ function TermRow({ t, isOpen, onToggle, accent }) {
             transition={{ duration: 0.22, ease: "easeInOut" }}
             style={{ overflow: "hidden" }}
           >
-            <div style={{ padding: "0 2px 18px", display: "flex", flexDirection: "column", gap: 12 }}>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.65 }}>{t.def}</div>
+            <div style={{ padding: "0 16px 18px", display: "flex", flexDirection: "column", gap: 12 }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 14.5, color: COLORS.ink, lineHeight: 1.65 }}>{t.def}</div>
               {t.example && (
-                <div style={{ background: `${accent}0c`, borderLeft: `3px solid ${accent}`, borderRadius: 6, padding: "9px 13px" }}>
+                <div style={{ background: `${accent}12`, borderLeft: `3px solid ${accent}`, borderRadius: 8, padding: "10px 14px" }}>
                   <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13, color: COLORS.ink }}>Example: </span>
                   <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>{t.example}</span>
                 </div>
@@ -127,6 +138,85 @@ function TermRow({ t, isOpen, onToggle, accent }) {
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+// A different word every day, with the definition up front and a button for another.
+function WordOfTheDay({ onOpen }) {
+  const all = useMemo(() => TABS.flatMap((tab) => TERMS_BY_TAB[tab.key].map((t) => ({ ...t, tab }))), []);
+  const [pick, setPick] = useState(null);
+  const word = pick ?? wordOfTheDay(all);
+  const accent = word.tab.accent;
+  return (
+    <section
+      aria-label="Word of the day"
+      style={{ position: "relative", overflow: "hidden", borderRadius: 24, padding: "clamp(20px, 4vw, 30px)", border: `1px solid ${accent}55`, background: `radial-gradient(520px 260px at 100% 0%, ${accent}38, transparent 70%), radial-gradient(380px 220px at 0% 100%, ${accent}1f, transparent 70%), ${COLORS.paperCard}` }}
+    >
+      <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: accent }}>{pick ? "A random word" : "Word of the day"}</div>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div key={word.term} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
+          <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: "clamp(28px, 6vw, 44px)", fontWeight: 700, letterSpacing: "-0.02em", lineHeight: 1.1, color: COLORS.ink, margin: "6px 0 10px" }}>{word.term}</h2>
+          <p style={{ fontFamily: FONT_BODY, fontSize: 16, lineHeight: 1.65, color: COLORS.ink, margin: 0, maxWidth: 640 }}>{word.def}</p>
+          {word.example && <p style={{ fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.6, color: COLORS.inkSoft, margin: "10px 0 0", maxWidth: 640 }}><strong style={{ color: COLORS.ink }}>Example:</strong> {word.example}</p>}
+        </motion.div>
+      </AnimatePresence>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 18 }}>
+        <button type="button" className="ons-chip" onClick={() => setPick(all[Math.floor(Math.random() * all.length)])} style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, padding: "9px 18px", borderRadius: 999, border: "none", cursor: "pointer", background: accent, color: "#fff" }}>Show me another</button>
+        <button type="button" className="ons-chip" onClick={() => onOpen(word)} style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, padding: "9px 18px", borderRadius: 999, cursor: "pointer", background: "transparent", color: COLORS.ink, border: `1px solid ${COLORS.hairline}` }}>Find it in the list</button>
+      </div>
+    </section>
+  );
+}
+
+// "Which term is this?": a definition with the word blanked out and three to choose from.
+function Quiz({ terms, accent }) {
+  const [q, setQ] = useState(() => makeQuestion(terms));
+  const [chosen, setChosen] = useState(null);
+  const [score, setScore] = useState({ right: 0, total: 0, streak: 0 });
+  if (!q) return null;
+  const done = chosen !== null;
+  const right = chosen === q.answer;
+  const next = () => { setQ(makeQuestion(terms)); setChosen(null); };
+  const answer = (opt) => {
+    if (done) return;
+    setChosen(opt);
+    setScore((s) => ({ right: s.right + (opt === q.answer ? 1 : 0), total: s.total + 1, streak: opt === q.answer ? s.streak + 1 : 0 }));
+  };
+  return (
+    <section aria-label="Quiz" style={{ borderRadius: 24, padding: "clamp(18px, 3.5vw, 26px)", border: `1px solid ${COLORS.hairline}`, background: COLORS.paperCard }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
+        <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, color: COLORS.ink, margin: 0 }}>Which word is this?</h2>
+        <span style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.inkSoft }}>
+          {score.right} of {score.total} right{score.streak >= 2 ? ` · ${score.streak} in a row` : ""}
+        </span>
+      </div>
+      <p style={{ fontFamily: FONT_BODY, fontSize: 15.5, lineHeight: 1.65, color: COLORS.ink, margin: "12px 0 14px", maxWidth: 640 }}>{q.clue}</p>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(210px, 100%), 1fr))", gap: 10 }}>
+        {q.options.map((opt) => {
+          const isAnswer = opt === q.answer;
+          const state = !done ? "idle" : isAnswer ? "right" : opt === chosen ? "wrong" : "dim";
+          const hue = state === "right" ? "#2F9E6E" : state === "wrong" ? "#D9453B" : accent;
+          return (
+            <button
+              key={opt} type="button" className="ons-chip" onClick={() => answer(opt)} disabled={done && state === "dim"}
+              style={{ textAlign: "left", cursor: done ? "default" : "pointer", padding: "12px 14px", borderRadius: 14, fontFamily: FONT_DISPLAY, fontSize: 15.5, fontWeight: 700, lineHeight: 1.25, color: COLORS.ink, background: state === "idle" ? COLORS.paper : `${hue}22`, border: `2px solid ${state === "idle" || state === "dim" ? COLORS.hairline : hue}`, opacity: state === "dim" ? 0.5 : 1, transition: "background 0.15s, border-color 0.15s" }}
+            >
+              {opt}
+              {state === "right" && <span aria-hidden="true" style={{ color: hue }}>  ✓</span>}
+              {state === "wrong" && <span aria-hidden="true" style={{ color: hue }}>  ✗</span>}
+            </button>
+          );
+        })}
+      </div>
+      <div aria-live="polite" style={{ minHeight: 44, marginTop: 14, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12 }}>
+        {done && (
+          <>
+            <span style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: right ? "#2F9E6E" : "#D9453B" }}>{right ? "Correct." : `Not quite. It was ${q.answer}.`}</span>
+            <button type="button" className="ons-chip" onClick={next} style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, padding: "8px 16px", borderRadius: 999, border: "none", cursor: "pointer", background: accent, color: "#fff" }}>Next question</button>
+          </>
+        )}
+      </div>
+    </section>
   );
 }
 
@@ -145,6 +235,7 @@ export default function Glossary() {
   }, [activeTerms, query]);
 
   const groups = useMemo(() => groupByLetter(filtered), [filtered]);
+  const present = useMemo(() => new Set(groups.map((g) => g.letter)), [groups]);
 
   function selectTab(key) {
     withScrollPreserved(() => {
@@ -153,8 +244,18 @@ export default function Glossary() {
     });
   }
 
+  // Opens a term wherever it lives: switches group, clears the search, opens it and scrolls to it.
+  const openWord = useCallback((word) => {
+    setQuery("");
+    setTab(word.tab.key);
+    setOpenTerm(word.term);
+    setTimeout(() => document.getElementById(`term-${word.term.replace(/\W+/g, "-")}`)?.scrollIntoView({ behavior: "smooth", block: "center" }), 80);
+  }, []);
+
+  const jump = (letter) => document.getElementById(`letter-${letter}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+
   return (
-    <div style={{ maxWidth: 760, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 940, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconGlossary}
         kicker="Glossary"
@@ -162,86 +263,79 @@ export default function Glossary() {
         subtitle="Every term you will meet on this site and in most UK political news, explained simply. Pick a group, search, or tap a term to open it. The statistics and economy group covers the figures on the Britain in numbers pages."
       />
 
-      <div style={{ display: "flex", gap: 2, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 24, padding: 3, marginTop: 24, marginBottom: 20, width: "fit-content", maxWidth: "100%", flexWrap: "wrap" }} role="tablist" aria-label="Group of terms">
-        {TABS.map((t) => (
-          <button
-            key={t.key}
-            role="tab"
-            aria-selected={tab === t.key}
-            onClick={() => selectTab(t.key)}
-            style={{
-              position: "relative",
-              fontFamily: FONT_BODY,
-              fontSize: 13,
-              fontWeight: 600,
-              padding: "10px 16px",
-              minHeight: 40,
-              borderRadius: 999,
-              border: "none",
-              cursor: "pointer",
-              background: "transparent",
-              color: tab === t.key ? "#fff" : COLORS.inkSoft,
-              transition: "color 0.15s",
-            }}
-          >
-            {tab === t.key && (
-              <motion.span
-                layoutId="glossary-tab-pill"
-                transition={{ type: "spring", stiffness: 500, damping: 38 }}
-                style={{ position: "absolute", inset: 0, background: t.accent, borderRadius: 999, zIndex: 0 }}
-              />
-            )}
-            <span style={{ position: "relative", zIndex: 1 }}>{t.label}</span>
-          </button>
-        ))}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(420px, 100%), 1fr))", gap: 16, marginTop: 24 }}>
+        <WordOfTheDay onOpen={openWord} />
+        <Quiz key={tab} terms={activeTerms} accent={activeTab.accent} />
       </div>
 
-      <div style={{ position: "relative", marginBottom: 8 }}>
-        <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: COLORS.inkSoft, display: "flex" }}>
-          <IconSearch size={15} />
+      <div role="tablist" aria-label="Group of terms" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(250px, 100%), 1fr))", gap: 12, marginTop: 28 }}>
+        {TABS.map((t) => {
+          const on = tab === t.key;
+          return (
+            <button
+              key={t.key} role="tab" aria-selected={on} className="ons-chip" onClick={() => selectTab(t.key)}
+              style={{ textAlign: "left", cursor: "pointer", padding: "16px 18px", borderRadius: 18, border: `2px solid ${on ? t.accent : COLORS.hairline}`, background: on ? `linear-gradient(135deg, ${t.accent}, ${t.accent}bb)` : `linear-gradient(135deg, ${t.accent}14, ${COLORS.paperCard} 70%)`, color: on ? "#fff" : COLORS.ink, transition: "background 0.2s, border-color 0.2s", boxShadow: on ? `0 18px 36px -24px ${t.accent}` : "none" }}
+            >
+              <span style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10 }}>
+                <span style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 700, lineHeight: 1.2 }}>{t.label}</span>
+                <span style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, opacity: 0.85, flexShrink: 0 }}>{TERMS_BY_TAB[t.key].length}</span>
+              </span>
+              <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 13, lineHeight: 1.45, marginTop: 5, color: on ? "rgba(255,255,255,0.9)" : COLORS.inkSoft }}>{t.blurb}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div style={{ position: "relative", marginTop: 18 }}>
+        <span style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)", color: activeTab.accent, display: "flex" }}>
+          <IconSearch size={18} />
         </span>
         <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search a term…"
-          style={{
-            width: "100%", boxSizing: "border-box", padding: "12px 16px 12px 40px",
-            fontFamily: FONT_BODY, fontSize: 15, border: `1px solid ${COLORS.hairline}`, borderRadius: 10,
-            background: COLORS.paperCard, color: COLORS.ink,
-          }}
+          type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={`Search ${activeTab.label.toLowerCase()}`} aria-label="Search a term"
+          style={{ width: "100%", boxSizing: "border-box", padding: "15px 18px 15px 46px", fontFamily: FONT_BODY, fontSize: 16, border: `2px solid ${COLORS.hairline}`, borderRadius: 16, background: COLORS.paperCard, color: COLORS.ink, outline: "none" }}
+          onFocus={(e) => (e.target.style.borderColor = activeTab.accent)} onBlur={(e) => (e.target.style.borderColor = COLORS.hairline)}
         />
       </div>
 
-      <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginBottom: 20 }}>
+      <div role="navigation" aria-label="Jump to a letter" style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 14 }}>
+        {LETTERS.map((l) => {
+          const has = present.has(l);
+          return (
+            <button
+              key={l} type="button" disabled={!has} onClick={() => jump(l)} aria-label={`Jump to ${l}`}
+              style={{ width: 32, height: 32, borderRadius: 9, border: "none", cursor: has ? "pointer" : "default", fontFamily: FONT_DISPLAY, fontSize: 14, fontWeight: 700, background: has ? `${activeTab.accent}1f` : "transparent", color: has ? activeTab.accent : COLORS.hairline }}
+            >
+              {l}
+            </button>
+          );
+        })}
+      </div>
+
+      <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, margin: "16px 0 20px" }} aria-live="polite">
         {filtered.length} term{filtered.length === 1 ? "" : "s"}{query.trim() ? ` matching "${query}"` : ""}
       </div>
 
       {filtered.length === 0 ? (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No terms match "{query}".</div>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft }}>No terms match "{query}".</div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
           {groups.map((group) => (
-            <div key={group.letter}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 2 }}>
-                <span
-                  style={{
-                    flexShrink: 0, width: 24, height: 24, borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center",
-                    fontFamily: FONT_DISPLAY, fontSize: 13, fontWeight: 700, color: activeTab.accent, background: `${activeTab.accent}1a`,
-                  }}
-                >
-                  {group.letter}
-                </span>
-                <span style={{ flex: 1, height: 1, background: COLORS.hairline }} />
+            <div key={group.letter} id={`letter-${group.letter}`} style={{ scrollMarginTop: 14 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 10 }}>
+                <span style={{ fontFamily: FONT_DISPLAY, fontSize: 40, fontWeight: 700, lineHeight: 1, letterSpacing: "-0.03em", color: activeTab.accent }}>{group.letter}</span>
+                <span style={{ flex: 1, height: 2, borderRadius: 1, background: `linear-gradient(90deg, ${activeTab.accent}66, transparent)` }} />
+                <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>{group.items.length}</span>
               </div>
-              <div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {group.items.map((t) => (
-                  <TermRow
-                    key={t.term}
-                    t={t}
-                    accent={activeTab.accent}
-                    isOpen={openTerm === t.term}
-                    onToggle={() => withScrollPreserved(() => setOpenTerm(openTerm === t.term ? null : t.term))}
-                  />
+                  <div key={t.term} id={`term-${t.term.replace(/\W+/g, "-")}`} style={{ scrollMarginTop: 80 }}>
+                    <TermRow
+                      t={t}
+                      accent={activeTab.accent}
+                      isOpen={openTerm === t.term}
+                      onToggle={() => withScrollPreserved(() => setOpenTerm(openTerm === t.term ? null : t.term))}
+                    />
+                  </div>
                 ))}
               </div>
             </div>
