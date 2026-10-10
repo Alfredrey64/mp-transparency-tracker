@@ -236,7 +236,7 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician, onClose }) {
         aria-label="Simple Politics, back to the overview"
         style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 9, width: "100%", textAlign: "center", cursor: "pointer", background: "none", border: "none", padding: "2px 2px 4px" }}
       >
-        <LogoMark size={52} />
+        <LogoMark width={84} />
         <span>
           <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em", color: "var(--sb-strong)", lineHeight: 1.1 }}>Simple Politics</span>
           <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, color: "var(--sb-soft)", marginTop: 4 }}>UK politics, made simple</span>
@@ -347,7 +347,7 @@ export default function Sidebar({ activeView, onNavigate, onSelectPolitician }) 
         style={{ alignItems: "center", justifyContent: "space-between", background: "var(--sb-bg)", borderBottom: "1px solid var(--sb-border)", padding: "4px 14px" }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <LogoMark size={30} />
+          <LogoMark width={38} />
           <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: "var(--sb-strong)", whiteSpace: "nowrap" }}>Simple Politics</span>
         </div>
         <button
