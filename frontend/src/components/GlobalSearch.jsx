@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_BODY } from "../theme";
+import { FONT_BODY } from "../theme";
 import { partyColour } from "../lib/format";
 import { IconSearch, IconGlossary } from "./icons";
 import { SECTIONS } from "../data/sidebarSections";
@@ -14,7 +14,7 @@ const goHash = (hash) => {
 // Words that suggest someone is looking for who held a government post.
 const OFFICE_WORDS = /\b(secretary|minister|chancellor|leader|whip|chair|speaker|attorney|treasury|lord chancellor)\b/i;
 
-const GROUP_LABEL = { fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "rgba(226,232,232,0.45)", padding: "4px 8px" };
+const GROUP_LABEL = { fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--sb-faint)", padding: "4px 8px" };
 
 function ResultGroup({ label, children }) {
   return (
@@ -31,13 +31,13 @@ function ResultRow({ onClick, title, sub, dot }) {
       type="button"
       onClick={onClick}
       style={{ display: "flex", alignItems: "center", gap: 8, width: "100%", background: "none", border: "none", padding: "7px 8px", borderRadius: 7, cursor: "pointer", textAlign: "left" }}
-      onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}
+      onMouseEnter={(e) => { e.currentTarget.style.background = "var(--sb-hover)"; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
     >
       {dot && <span style={{ width: 6, height: 6, borderRadius: "50%", background: dot, flexShrink: 0 }} />}
       <span style={{ minWidth: 0 }}>
-        <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: "#fff", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{title}</div>
-        {sub && <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: "rgba(226,232,232,0.55)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{sub}</div>}
+        <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: "var(--sb-strong)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{title}</div>
+        {sub && <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: "var(--sb-soft)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{sub}</div>}
       </span>
     </button>
   );
@@ -203,7 +203,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
   return (
     <div ref={containerRef} style={{ position: "relative", marginBottom: 4 }}>
       <div style={{ position: "relative" }} onKeyDown={onBoxKeyDown}>
-        <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "rgba(226,232,232,0.5)", display: "flex" }}>
+        <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "var(--sb-faint)", display: "flex" }}>
           <IconSearch size={14} />
         </span>
         <input
@@ -212,14 +212,14 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
           aria-label="Search the site"
           value={query}
           onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
-          onFocus={(e) => { setOpen(true); e.target.style.borderColor = COLORS.accentOnDark; e.target.style.boxShadow = `0 0 0 3px ${COLORS.accentOnDark}33`; }}
-          onBlur={(e) => { e.target.style.borderColor = "rgba(255,255,255,0.09)"; e.target.style.boxShadow = "none"; }}
+          onFocus={(e) => { setOpen(true); e.target.style.borderColor = "var(--sb-accent)"; e.target.style.boxShadow = "0 0 0 3px rgba(79,70,229,0.22)"; }}
+          onBlur={(e) => { e.target.style.borderColor = "var(--sb-border)"; e.target.style.boxShadow = "none"; }}
           placeholder="Search MPs, donors, numbers… (press /)"
           style={{
             width: "100%", boxSizing: "border-box", padding: "8px 10px 8px 32px",
             fontFamily: FONT_BODY, fontSize: 12.5, borderRadius: 8,
-            border: "1px solid rgba(255,255,255,0.09)", background: "rgba(255,255,255,0.05)",
-            color: "#fff", outline: "none", transition: "border-color 0.15s, box-shadow 0.15s",
+            border: "1px solid var(--sb-border)", background: "var(--sb-surface)",
+            color: "var(--sb-strong)", outline: "none", transition: "border-color 0.15s, box-shadow 0.15s",
           }}
         />
       </div>
@@ -230,12 +230,12 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
           onKeyDown={onBoxKeyDown}
           style={{
             position: "absolute", top: "calc(100% + 6px)", left: 0, right: 0, zIndex: 20,
-            background: COLORS.sidebarBgDeep, border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10,
-            boxShadow: "0 12px 28px rgba(0,0,0,0.4)", padding: 6, maxHeight: 340, overflowY: "auto",
+            background: "var(--sb-bg-2)", border: "1px solid var(--sb-border-strong)", borderRadius: 10,
+            boxShadow: "0 16px 32px -12px rgba(15,15,40,0.35)", padding: 6, maxHeight: 340, overflowY: "auto",
           }}
         >
           {!hasResults && (
-            <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: "rgba(226,232,232,0.55)", padding: "8px 6px" }}>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: "var(--sb-soft)", padding: "8px 6px" }}>
               No matches.
             </div>
           )}
@@ -250,23 +250,23 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
 
           {results.mps.length > 0 && (
             <div style={{ marginBottom: 4 }}>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "rgba(226,232,232,0.45)", padding: "4px 8px" }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--sb-faint)", padding: "4px 8px" }}>
                 MPs
               </div>
               {results.mps.map((p) => {
-                const color = partyColour(p.party_colour, "rgba(226,232,232,0.5)");
+                const color = partyColour(p.party_colour, "var(--sb-faint)");
                 return (
                   <button
                     key={p.id}
                     onClick={() => selectPolitician(p)}
                     style={{ display: "flex", alignItems: "center", gap: 8, width: "100%", background: "none", border: "none", padding: "7px 8px", borderRadius: 7, cursor: "pointer", textAlign: "left" }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = "var(--sb-hover)"; }}
                     onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                   >
                     <span style={{ width: 6, height: 6, borderRadius: "50%", background: color, flexShrink: 0 }} />
                     <span style={{ minWidth: 0 }}>
-                      <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: "#fff", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</div>
-                      <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: "rgba(226,232,232,0.55)" }}>{p.party} · {p.constituency}</div>
+                      <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: "var(--sb-strong)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</div>
+                      <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: "var(--sb-soft)" }}>{p.party} · {p.constituency}</div>
                     </span>
                   </button>
                 );
@@ -277,7 +277,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
           {results.peers.length > 0 && (
             <ResultGroup label="Peers">
               {results.peers.map((p) => (
-                <ResultRow key={p.id} onClick={() => openHash(`#/lords/${p.id}`)} title={p.name} sub={`${p.party ?? "Crossbench"} · ${p.peerage_type ?? "Peer"}`} dot={partyColour(p.party_colour, "rgba(226,232,232,0.5)")} />
+                <ResultRow key={p.id} onClick={() => openHash(`#/lords/${p.id}`)} title={p.name} sub={`${p.party ?? "Crossbench"} · ${p.peerage_type ?? "Peer"}`} dot={partyColour(p.party_colour, "var(--sb-faint)")} />
               ))}
             </ResultGroup>
           )}
@@ -303,7 +303,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
 
           {results.bills.length > 0 && (
             <div style={{ marginBottom: 4 }}>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "rgba(226,232,232,0.45)", padding: "4px 8px" }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--sb-faint)", padding: "4px 8px" }}>
                 Bills
               </div>
               {results.bills.map((b, i) => (
@@ -311,11 +311,11 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
                   key={i}
                   onClick={selectBill}
                   style={{ display: "block", width: "100%", background: "none", border: "none", padding: "7px 8px", borderRadius: 7, cursor: "pointer", textAlign: "left" }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = "var(--sb-hover)"; }}
                   onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                 >
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: "#fff", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{b.short_title}</div>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: "rgba(226,232,232,0.55)" }}>{b.current_stage ?? "Bill"}</div>
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: "var(--sb-strong)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{b.short_title}</div>
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: "var(--sb-soft)" }}>{b.current_stage ?? "Bill"}</div>
                 </button>
               ))}
             </div>
@@ -350,7 +350,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
 
           {results.pages.length > 0 && (
             <div style={{ marginBottom: 4 }}>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "rgba(226,232,232,0.45)", padding: "4px 8px" }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--sb-faint)", padding: "4px 8px" }}>
                 Pages
               </div>
               {results.pages.map((p) => (
@@ -358,13 +358,13 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
                   key={p.key}
                   onClick={() => selectPage(p.key)}
                   style={{ display: "flex", alignItems: "center", gap: 8, width: "100%", background: "none", border: "none", padding: "7px 8px", borderRadius: 7, cursor: "pointer", textAlign: "left" }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = "var(--sb-hover)"; }}
                   onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                 >
-                  <span style={{ display: "flex", color: "rgba(226,232,232,0.55)", flexShrink: 0 }}>
+                  <span style={{ display: "flex", color: "var(--sb-soft)", flexShrink: 0 }}>
                     <p.icon size={13} />
                   </span>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: "#fff", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.label}</div>
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: "var(--sb-strong)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.label}</div>
                 </button>
               ))}
             </div>
@@ -372,7 +372,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
 
           {results.glossary.length > 0 && (
             <div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "rgba(226,232,232,0.45)", padding: "4px 8px" }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--sb-faint)", padding: "4px 8px" }}>
                 Glossary
               </div>
               {results.glossary.map((g) => (
@@ -380,15 +380,15 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
                   key={g.term}
                   onClick={selectGlossaryTerm}
                   style={{ display: "flex", alignItems: "flex-start", gap: 8, width: "100%", background: "none", border: "none", padding: "7px 8px", borderRadius: 7, cursor: "pointer", textAlign: "left" }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = "var(--sb-hover)"; }}
                   onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                 >
-                  <span style={{ display: "flex", color: "rgba(226,232,232,0.55)", flexShrink: 0, marginTop: 2 }}>
+                  <span style={{ display: "flex", color: "var(--sb-soft)", flexShrink: 0, marginTop: 2 }}>
                     <IconGlossary size={13} />
                   </span>
                   <span style={{ minWidth: 0 }}>
-                    <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: "#fff" }}>{g.term}</div>
-                    <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: "rgba(226,232,232,0.55)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{g.def}</div>
+                    <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: "var(--sb-strong)" }}>{g.term}</div>
+                    <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: "var(--sb-soft)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{g.def}</div>
                   </span>
                 </button>
               ))}

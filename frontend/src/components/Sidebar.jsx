@@ -1,7 +1,7 @@
 import { preloadView } from "../pageLoaders";
 import { useWatchlistChanges } from "../lib/useWatchlistChanges";
 import { useEffect, useRef, useState } from "react";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
+import { FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
 import LogoMark from "./LogoMark";
 import GlobalSearch from "./GlobalSearch";
 import { IconHome, IconMethodology, IconSettings, IconPin, IconStar, IconRoute } from "./icons";
@@ -56,8 +56,8 @@ function NavItem({ item, active, accent, onNavigate }) {
         padding: "8px 10px",
         borderRadius: 10,
         border: "none",
-        background: active ? `linear-gradient(90deg, ${accent}30, ${accent}08 78%)` : hover ? "rgba(255,255,255,0.055)" : "transparent",
-        color: item.soon ? "rgba(199,206,224,0.4)" : active ? "#fff" : COLORS.sidebarText,
+        background: active ? `linear-gradient(90deg, ${accent}30, ${accent}08 78%)` : hover ? "var(--sb-hover)" : "transparent",
+        color: item.soon ? "var(--sb-faint)" : active ? "var(--sb-strong)" : "var(--sb-text)",
         fontFamily: FONT_BODY,
         cursor: item.soon ? "default" : "pointer",
         transition: "background 0.15s ease, color 0.15s ease",
@@ -69,8 +69,8 @@ function NavItem({ item, active, accent, onNavigate }) {
           style={{
             display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
             width: 28, height: 28, borderRadius: 8,
-            color: active ? accent : "rgba(220,226,240,0.78)",
-            background: active ? `${accent}24` : "rgba(255,255,255,0.045)",
+            color: active ? accent : "var(--sb-soft)",
+            background: active ? `${accent}24` : "var(--sb-surface)",
             transition: "background 0.15s ease, color 0.15s ease",
           }}
         >
@@ -78,7 +78,7 @@ function NavItem({ item, active, accent, onNavigate }) {
         </span>
         <span style={{ minWidth: 0 }}>
           <span style={{ display: "block", fontSize: 14.5, fontWeight: active ? 700 : 500, lineHeight: 1.25, whiteSpace: "normal" }}>{item.label}</span>
-          {item.hint && <span style={{ display: "block", fontSize: 12, lineHeight: 1.3, marginTop: 1, color: active ? "rgba(255,255,255,0.72)" : "rgba(199,206,224,0.58)" }}>{item.hint}</span>}
+          {item.hint && <span style={{ display: "block", fontSize: 12, lineHeight: 1.3, marginTop: 1, color: "var(--sb-soft)" }}>{item.hint}</span>}
         </span>
       </span>
       {item.badge > 0 && (
@@ -113,8 +113,8 @@ function SidebarSection({ label, blurb, accent, items, activeView, onNavigate, o
       style={{
         marginTop: 10,
         borderRadius: 14,
-        background: open ? `linear-gradient(160deg, ${accent}1a, ${accent}06 75%)` : "rgba(255,255,255,0.02)",
-        border: `1px solid ${open ? `${accent}30` : "rgba(255,255,255,0.06)"}`,
+        background: open ? `linear-gradient(160deg, ${accent}1a, ${accent}06 75%)` : "var(--sb-surface)",
+        border: `1px solid ${open ? `${accent}30` : "var(--sb-border)"}`,
         transition: "background 0.2s, border-color 0.2s",
       }}
     >
@@ -126,14 +126,14 @@ function SidebarSection({ label, blurb, accent, items, activeView, onNavigate, o
       >
         <span style={{ width: 9, height: 9, borderRadius: "50%", background: accent, flexShrink: 0, boxShadow: `0 0 0 4px ${accent}2a` }} />
         <span style={{ minWidth: 0, flex: 1 }}>
-          <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: 15.5, fontWeight: 600, color: "#fff", lineHeight: 1.2 }}>{label}</span>
-          <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12, color: !open && activeItem ? accent : "rgba(199,206,224,0.6)", marginTop: 2, lineHeight: 1.3, fontWeight: !open && activeItem ? 600 : 400 }}>
+          <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: 15.5, fontWeight: 600, color: "var(--sb-strong)", lineHeight: 1.2 }}>{label}</span>
+          <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12, color: !open && activeItem ? accent : "var(--sb-soft)", marginTop: 2, lineHeight: 1.3, fontWeight: !open && activeItem ? 600 : 400 }}>
             {!open && activeItem ? `You're on: ${activeItem.label}` : blurb}
           </span>
         </span>
         <span style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-          <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: "rgba(199,206,224,0.5)" }}>{items.length}</span>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(199,206,224,0.7)" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" style={{ transform: open ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>
+          <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: "var(--sb-faint)" }}>{items.length}</span>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" style={{ transform: open ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>
             <path d="m6 9 6 6 6-6" />
           </svg>
         </span>
@@ -162,13 +162,13 @@ function ModeSwitch({ mode, onChange }) {
       role="radio"
       aria-checked={mode === key}
       onClick={() => onChange(key)}
-      style={{ flex: 1, fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, padding: "7px 10px", borderRadius: 999, border: "none", cursor: "pointer", background: mode === key ? "rgba(255,255,255,0.16)" : "transparent", color: mode === key ? "#fff" : "rgba(199,206,224,0.7)", transition: "background 0.15s, color 0.15s" }}
+      style={{ flex: 1, fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, padding: "7px 10px", borderRadius: 999, border: "none", cursor: "pointer", background: mode === key ? "var(--sb-active)" : "transparent", color: mode === key ? "var(--sb-strong)" : "var(--sb-soft)", transition: "background 0.15s, color 0.15s" }}
     >
       {label}
     </button>
   );
   return (
-    <div role="radiogroup" aria-label="How much of the menu to show" style={{ display: "flex", gap: 2, padding: 3, borderRadius: 999, background: "rgba(255,255,255,0.06)", marginTop: 14 }}>
+    <div role="radiogroup" aria-label="How much of the menu to show" style={{ display: "flex", gap: 2, padding: 3, borderRadius: 999, background: "var(--sb-surface)", marginTop: 14 }}>
       {option("simple", "Simple")}
       {option("all", `All ${TOTAL_PAGES} pages`)}
     </div>
@@ -238,8 +238,8 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician, onClose }) {
       >
         <LogoMark size={40} />
         <span style={{ minWidth: 0 }}>
-          <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 19, letterSpacing: "-0.02em", color: "#fff", lineHeight: 1.1 }}>Simple Politics</span>
-          <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12, color: "rgba(226,232,232,0.62)", marginTop: 3 }}>UK politics, made simple</span>
+          <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 19, letterSpacing: "-0.02em", color: "var(--sb-strong)", lineHeight: 1.1 }}>Simple Politics</span>
+          <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12, color: "var(--sb-soft)", marginTop: 3 }}>UK politics, made simple</span>
         </span>
       </button>
 
@@ -259,8 +259,8 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician, onClose }) {
             <IconRoute size={17} />
           </span>
           <span>
-            <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: 15, fontWeight: 600, color: "#fff" }}>New? Take the tour</span>
-            <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12, color: "rgba(255,255,255,0.72)", marginTop: 1 }}>5 minutes, no jargon needed</span>
+            <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: 15, fontWeight: 600, color: "var(--sb-strong)" }}>New? Take the tour</span>
+            <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12, color: "var(--sb-soft)", marginTop: 1 }}>5 minutes, no jargon needed</span>
           </span>
         </button>
 
@@ -274,7 +274,7 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician, onClose }) {
           <button
             type="button"
             onClick={() => setAll(!allOpen)}
-            style={{ background: "none", border: "none", padding: "3px 4px", cursor: "pointer", fontFamily: FONT_BODY, fontSize: 12, fontWeight: 600, color: "rgba(199,206,224,0.7)" }}
+            style={{ background: "none", border: "none", padding: "3px 4px", cursor: "pointer", fontFamily: FONT_BODY, fontSize: 12, fontWeight: 600, color: "var(--sb-soft)" }}
           >
             {allOpen ? "Fold all groups" : "Open all groups"}
           </button>
@@ -297,14 +297,14 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician, onClose }) {
           <button
             type="button"
             onClick={() => changeMode("all")}
-            style={{ display: "block", width: "100%", marginTop: 12, padding: "10px 12px", borderRadius: 12, border: "1px dashed rgba(255,255,255,0.18)", background: "none", cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: "rgba(220,226,240,0.85)", textAlign: "center" }}
+            style={{ display: "block", width: "100%", marginTop: 12, padding: "10px 12px", borderRadius: 12, border: "1px dashed var(--sb-border-strong)", background: "none", cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: "var(--sb-text)", textAlign: "center" }}
           >
             Looking for something else? Show all {TOTAL_PAGES} pages
           </button>
         )}
       </div>
 
-      <div style={{ paddingTop: 10, marginTop: 14, borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+      <div style={{ paddingTop: 10, marginTop: 14, borderTop: "1px solid var(--sb-border)" }}>
         <NavList items={BOTTOM_NAV_ITEMS} activeView={activeView} onNavigate={onNavigate} />
       </div>
     </>
@@ -344,16 +344,16 @@ export default function Sidebar({ activeView, onNavigate, onSelectPolitician }) 
       <div
         className="mp-mobile-topbar"
         ref={barRef}
-        style={{ alignItems: "center", justifyContent: "space-between", background: COLORS.sidebarBg, padding: "4px 14px" }}
+        style={{ alignItems: "center", justifyContent: "space-between", background: "var(--sb-bg)", borderBottom: "1px solid var(--sb-border)", padding: "4px 14px" }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <LogoMark size={30} />
-          <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: "#fff", whiteSpace: "nowrap" }}>Simple Politics</span>
+          <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: "var(--sb-strong)", whiteSpace: "nowrap" }}>Simple Politics</span>
         </div>
         <button
           onClick={() => setOpen(true)}
           aria-label="Open menu"
-          style={{ background: "transparent", border: "none", color: "#fff", cursor: "pointer", padding: 10, margin: "-2px 0", display: "flex" }}
+          style={{ background: "transparent", border: "none", color: "var(--sb-strong)", cursor: "pointer", padding: 10, margin: "-2px 0", display: "flex" }}
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <line x1="3" y1="6" x2="21" y2="6" />
@@ -370,13 +370,13 @@ export default function Sidebar({ activeView, onNavigate, onSelectPolitician }) 
         style={{
           width: 300,
           flexShrink: 0,
-          background: `linear-gradient(160deg, ${COLORS.sidebarBg}, ${COLORS.sidebarBgDeep})`,
+          background: "linear-gradient(160deg, var(--sb-bg), var(--sb-bg-2))",
           overflowY: "auto",
           alignSelf: "flex-start",
           boxSizing: "border-box",
           display: "flex",
           flexDirection: "column",
-          borderRight: "1px solid rgba(255,255,255,0.05)",
+          borderRight: "1px solid var(--sb-border)",
         }}
       >
         <SidebarInner activeView={activeView} onNavigate={handleNav} onSelectPolitician={handleSelectPolitician} onClose={() => setOpen(false)} />

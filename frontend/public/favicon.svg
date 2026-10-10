@@ -4,17 +4,9 @@
       <stop offset="0" stop-color="#6A60F5"/>
       <stop offset="1" stop-color="#3B33C4"/>
     </linearGradient>
-    <linearGradient id="tick" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0" stop-color="#FFB02E"/>
-      <stop offset="1" stop-color="#FFD97A"/>
-    </linearGradient>
-    <mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64">
-      <rect width="64" height="64" fill="#fff"/>
-      <path d="M23.5 32l6.5 6.5L49.5 13.5" fill="none" stroke="#000" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
-    </mask>
   </defs>
   <rect width="64" height="64" rx="16" fill="url(#bg)"/>
-  <!-- A speech bubble drawn as one clean line, with a tick that breaks out through its corner: a question asked, a clear answer. -->
-  <path mask="url(#cut)" d="M23 15H41A10 10 0 0 1 51 25V33A10 10 0 0 1 41 43H31L21 52V43H23A10 10 0 0 1 13 33V25A10 10 0 0 1 23 15Z" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round"/>
-  <path d="M23.5 32l6.5 6.5L49.5 13.5" fill="none" stroke="url(#tick)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- A bold S for Simple, finished with an amber full stop: plain speaking. -->
+  <path d="M43 21.5C43 16.2 38.2 13 32.3 13C26 13 21.5 16.3 21.5 21.4C21.5 26.6 26.2 28.4 32 30C38 31.7 43.5 33.6 43.5 39.8C43.5 46.4 38.4 50 32 50C25.4 50 20.8 46.6 20.2 40.8" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="47" cy="50" r="4.6" fill="#FFC145"/>
 </svg>

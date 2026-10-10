@@ -14,6 +14,21 @@
   --c-sidebar-bg: #1B1C2E;
   --c-sidebar-bg-deep: #101120;
   --c-sidebar-text: #C7CBDC;
+
+  /* The menu column. Light by default, and dark only in the dedicated dark mode (below). */
+  --sb-bg: #F4F5FB;
+  --sb-bg-2: #FFFFFF;
+  --sb-strong: #191A23;
+  --sb-text: #383B4E;
+  --sb-soft: rgba(25, 26, 35, 0.64);
+  --sb-faint: rgba(25, 26, 35, 0.46);
+  --sb-hover: rgba(79, 70, 229, 0.07);
+  --sb-surface: rgba(25, 26, 35, 0.035);
+  --sb-active: rgba(79, 70, 229, 0.14);
+  --sb-border: rgba(25, 26, 35, 0.09);
+  --sb-border-strong: rgba(25, 26, 35, 0.2);
+  --sb-accent: #4F46E5;
+  --sb-scroll: rgba(25, 26, 35, 0.18);
 }
 
 [data-theme="dark"] {
@@ -26,6 +41,20 @@
   --c-sidebar-bg: #101120;
   --c-sidebar-bg-deep: #0A0B16;
   --c-sidebar-text: #C7CBDC;
+
+  --sb-bg: #101120;
+  --sb-bg-2: #0A0B16;
+  --sb-strong: #FFFFFF;
+  --sb-text: #C7CBDC;
+  --sb-soft: rgba(199, 206, 224, 0.66);
+  --sb-faint: rgba(199, 206, 224, 0.46);
+  --sb-hover: rgba(255, 255, 255, 0.06);
+  --sb-surface: rgba(255, 255, 255, 0.035);
+  --sb-active: rgba(255, 255, 255, 0.16);
+  --sb-border: rgba(255, 255, 255, 0.07);
+  --sb-border-strong: rgba(255, 255, 255, 0.18);
+  --sb-accent: #8B85F5;
+  --sb-scroll: rgba(255, 255, 255, 0.15);
 }
 
 html, body, #root {
@@ -116,7 +145,7 @@ select:focus-visible,
   position: sticky;
   top: 0;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+  scrollbar-color: var(--sb-scroll) transparent;
 }
 
 .mp-sidebar::-webkit-scrollbar {
@@ -124,7 +153,7 @@ select:focus-visible,
 }
 
 .mp-sidebar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--sb-scroll);
   border-radius: 3px;
 }
 
@@ -562,7 +591,7 @@ select:focus-visible,
 /* A close button for the phone menu, so it can be dismissed without hunting for the dimmed area beside it. */
 .mp-sidebar-close { display: none; }
 @media (max-width: 880px) {
-  .mp-sidebar-close { display: inline-flex; align-items: center; justify-content: center; position: sticky; top: 0; align-self: flex-end; width: 44px; height: 44px; margin: -8px -6px -26px 0; z-index: 2; border-radius: 22px; border: none; background: rgba(255, 255, 255, 0.08); color: #fff; cursor: pointer; }
+  .mp-sidebar-close { display: inline-flex; align-items: center; justify-content: center; position: sticky; top: 0; align-self: flex-end; width: 44px; height: 44px; margin: -8px -6px -26px 0; z-index: 2; border-radius: 22px; border: none; background: var(--sb-surface); color: var(--sb-strong); cursor: pointer; }
 }
 
 /* On a narrow screen the colour key shows every other edge, counting back from the top one, so the labels never run together. */
