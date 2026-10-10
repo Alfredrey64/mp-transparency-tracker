@@ -179,8 +179,9 @@ export const PARTY_MANIFESTOS = [
         heading: "Immigration",
         points: [
           "Freeze non-essential immigration",
-          "Leave the ECHR and repeal the Human Rights Act",
-          "Offshore processing of asylum claims",
+          "Leave the European Convention on Human Rights",
+          "Return people who cross the Channel in small boats to France",
+          "Higher employer National Insurance for hiring foreign workers",
         ],
       },
       {

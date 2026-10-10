@@ -8,16 +8,21 @@
 // Each entry is: { about, parties: { <party key>: "what it said" } }.
 
 export const POSITIONS_AS_OF = "the 2024 general election manifestos";
-export const POSITION_PARTY_ORDER = ["labour", "conservative", "liberal-democrat", "reform-uk", "green"];
+export const POSITION_PARTY_ORDER = ["labour", "conservative", "liberal-democrat", "reform-uk", "green", "snp", "plaid-cymru"];
+
+// These two parties only stand in one nation, which the page says wherever they appear.
+export const ONE_NATION_PARTIES = { snp: "Scotland", "plaid-cymru": "Wales" };
 
 const NHS = {
   about: "on the NHS",
   parties: {
     labour: "40,000 more appointments, scans and operations every week, doubling the number of cancer scanners and recruiting 8,500 more mental health staff, paid for by closing tax loopholes such as non-dom status.",
     conservative: "Increase NHS spending above inflation every year and recruit 92,000 more nurses and 28,000 more doctors, with new diagnostic and surgical hubs.",
-    "liberal-democrat": "A guaranteed GP appointment for anyone who needs one, free personal care for older and disabled people, and more pay for care workers.",
+    "liberal-democrat": "The right to see a GP within seven days, or within 24 hours if it is urgent, with 8,000 more GPs, plus free personal care for older and disabled people and better pay for care workers.",
     "reform-uk": "Tax cuts for front-line NHS and social care staff, and tax relief on private health insurance to take pressure off the NHS.",
     green: "An extra £20 billion for NHS budgets over the parliament, and free personal social care for older and disabled people.",
+    snp: "A bill to protect the NHS from privatisation, and a call on the UK government to put £10 billion more into health.",
+    "plaid-cymru": "More funding for the NHS and a National Care Service.",
   },
 };
 
@@ -38,7 +43,7 @@ const BOATS = {
     labour: "Scrap the Rwanda scheme and set up a Border Security Command with counter-terrorism style powers to go after smuggling gangs, with more returns of people with no right to stay.",
     conservative: "Keep the Rwanda scheme, with regular flights, and leave the European Convention on Human Rights if it blocks removals.",
     "liberal-democrat": "Scrap the Rwanda scheme, work with France and other countries on crossings, and open more safe and legal routes.",
-    "reform-uk": "Leave the European Convention on Human Rights, repeal the Human Rights Act and process asylum claims offshore.",
+    "reform-uk": "Return people who cross the Channel in small boats to France, freeze non-essential immigration and leave the European Convention on Human Rights.",
     green: "Scrap the Rwanda scheme and replace it with safe and legal routes for asylum seekers.",
   },
 };
@@ -69,7 +74,7 @@ export const ANSWER_POSITIONS = {
     parties: {
       labour: "End \"no fault\" evictions straight away and bring in Awaab's Law, so landlords have to fix damp and mould quickly.",
       conservative: "Bring in the Renters Reform Bill to end \"no fault\" evictions once the courts can cope.",
-      "liberal-democrat": "End \"no fault\" evictions and give renters more security.",
+      "liberal-democrat": "End \"no fault\" evictions straight away, make three-year tenancies the standard and set up a register of licensed landlords.",
       green: "Bring in rent controls and end \"no fault\" evictions.",
     },
   },
@@ -77,7 +82,7 @@ export const ANSWER_POSITIONS = {
     about: "on the cost of living",
     parties: {
       labour: "No rises in income tax, National Insurance or VAT rates for working people, plus a Warm Homes Plan and a ban on exploitative zero-hours contracts.",
-      conservative: "Cut employee National Insurance by a further 2p, towards halving it by 2027, and protect pensioners with a \"triple lock plus\".",
+      conservative: "Cut employee National Insurance by a further 2p, to 6% by April 2027, and protect pensioners with a \"triple lock plus\".",
       "liberal-democrat": "A nationwide home insulation programme to bring energy bills down.",
       "reform-uk": "Raise the income tax threshold to £20,000 and take VAT off energy bills.",
       green: "Insulate 19 million homes over ten years and raise money from a wealth tax on the richest.",
@@ -91,10 +96,11 @@ export const ANSWER_POSITIONS = {
     about: "on tax",
     parties: {
       labour: "No rises in income tax, National Insurance or VAT rates, corporation tax capped at 25%, and VAT on private school fees.",
-      conservative: "Cut employee National Insurance by a further 2p, abolish the main rate for the self-employed over time and keep pensions income tax free.",
+      conservative: "Cut employee National Insurance by a further 2p, to 6% by April 2027, and scrap the main rate for the self-employed within five years.",
       "liberal-democrat": "Reverse recent cuts to capital gains tax for the highest earners, to pay for public services.",
       "reform-uk": "Raise the income tax threshold to £20,000 and the higher-rate threshold, and scrap IR35 rules for the self-employed.",
       green: "A wealth tax on the richest 1% and higher corporation tax on large firms, raising about £150 billion a year by the end of the parliament.",
+      "plaid-cymru": "A wealth tax, a higher windfall tax on energy firms, VAT on private school fees and capital gains taxed at the same rates as income.",
     },
   },
   "is-debt-too-high": {
@@ -115,7 +121,6 @@ export const ANSWER_POSITIONS = {
       labour: "Clear the backlog of asylum claims by hiring more decision-makers, and set up a new returns and enforcement unit.",
       conservative: "Remove people who arrive by small boat to Rwanda, as a deterrent.",
       "liberal-democrat": "Let asylum seekers work after three months and clear the backlog of claims.",
-      "reform-uk": "Process asylum claims offshore and leave the European Convention on Human Rights.",
     },
   },
   "why-economy-slow": {
@@ -126,6 +131,7 @@ export const ANSWER_POSITIONS = {
       "liberal-democrat": "Closer trade ties with the EU, with a long-term aim of rejoining the single market.",
       "reform-uk": "Cut taxes and regulation and scrap the costs of net zero.",
       green: "A large public investment programme in green infrastructure, paid for by taxes on wealth.",
+      snp: "Rejoin the EU and the single market, which it says would repair damage done by Brexit.",
     },
   },
   "why-wages-stagnant": {
@@ -147,24 +153,33 @@ export const ANSWER_POSITIONS = {
     about: "on crime and policing",
     parties: {
       labour: "Recruit 13,000 more neighbourhood police officers, community support officers and special constables, with new Respect Orders to tackle anti-social behaviour.",
-      conservative: "Recruit 8,000 more police officers, with tougher sentences for serious and repeat offenders and more prison places.",
+      conservative: "Recruit 8,000 more police officers over three years, with tougher sentences for serious and repeat offenders and more prison places.",
+      "reform-uk": "Recruit 40,000 more police officers over five years, with zero tolerance policing.",
+      "plaid-cymru": "Hand full powers over justice and policing to Wales.",
     },
   },
   "north-south-divide": {
     about: "on regional inequality",
     parties: {
       labour: "Give more powers to mayors and councils in England and set up a National Wealth Fund to invest across the regions.",
+      "plaid-cymru": "Reform how Wales is funded, and secure the £4 billion it says it is owed from the HS2 rail project.",
     },
   },
 };
 
 ANSWER_POSITIONS["what-is-national-insurance"] = ANSWER_POSITIONS["where-does-tax-go"];
+ANSWER_POSITIONS["benefits-and-pensions-spending"] = {
+  about: "on benefits",
+  parties: {
+    snp: "Scrap the two-child benefit cap and bring in an \"essentials guarantee\", so everyone can afford basics such as food and energy.",
+  },
+};
 ANSWER_POSITIONS["is-the-nhs-short-of-staff"] = NHS;
 ANSWER_POSITIONS["what-is-the-triple-lock"] = {
   about: "on the state pension",
   parties: {
     labour: "Keep the triple lock for the whole parliament.",
-    conservative: "Keep the triple lock and go further with a \"triple lock plus\", so that the state pension is never taxed.",
+    conservative: "Keep the triple lock and add a \"triple lock plus\", so the tax-free allowance for pensioners rises as fast as the state pension.",
     "liberal-democrat": "Keep the triple lock on the state pension.",
   },
 };

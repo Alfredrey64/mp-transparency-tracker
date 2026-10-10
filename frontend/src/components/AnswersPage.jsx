@@ -5,7 +5,7 @@ import { PageHeader } from "./shared";
 import { IconAsk, IconSearch } from "./icons";
 import { ANSWERS, ANSWER_TOPICS, answerById } from "../data/answers";
 import { findAnswers } from "../lib/answerSearch";
-import { positionsFor, POSITIONS_AS_OF } from "../data/answerPartyPositions";
+import { positionsFor, POSITIONS_AS_OF, ONE_NATION_PARTIES } from "../data/answerPartyPositions";
 import { PARTY_MANIFESTOS } from "../data/partyManifestos";
 import { partyColourByName } from "../lib/careerTimeline";
 import { loadSector } from "../lib/onsData";
@@ -72,7 +72,7 @@ function PartyPositions({ answerId }) {
         })}
       </ul>
       <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "14px 0 0" }}>
-        We summarise in our own words and do not rank or judge the plans. Parties change their policies after an election, so check each party&apos;s own website for its latest position. Labour has been in government since July 2024, so what it has done in office can differ from what it promised.
+        {found.parties.filter((p) => ONE_NATION_PARTIES[p.key]).map((p) => `${PARTY_MANIFESTOS.find((x) => x.key === p.key).shortName} only stands in ${ONE_NATION_PARTIES[p.key]}. `).join("")}We summarise in our own words and do not rank or judge the plans. Parties change their policies after an election, so check each party&apos;s own website for its latest position. Labour has been in government since July 2024, so what it has done in office can differ from what it promised.
       </p>
     </section>
   );
