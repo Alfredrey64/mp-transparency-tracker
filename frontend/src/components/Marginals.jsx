@@ -27,11 +27,12 @@ const votesToFlip = (r) => Math.floor(r.majority / 2) + 1;
 const voters = (n) => `${fmt(n)} ${n === 1 ? "voter" : "voters"}`;
 
 // How safe a seat is, in words, from the winner's lead in points.
+// Colours run from hot to cool: the closer the seat, the hotter.
 const SAFETY = [
-  { max: 5, label: "Marginal", note: "lead under 5 points" },
-  { max: 10, label: "Fairly safe", note: "lead of 5 to 10 points" },
-  { max: 20, label: "Safe", note: "lead of 10 to 20 points" },
-  { max: Infinity, label: "Very safe", note: "lead of 20 points or more" },
+  { max: 5, label: "Marginal", note: "lead under 5 points", hue: "#E5484D" },
+  { max: 10, label: "Fairly safe", note: "lead of 5 to 10 points", hue: "#E8A33A" },
+  { max: 20, label: "Safe", note: "lead of 10 to 20 points", hue: "#2FA58E" },
+  { max: Infinity, label: "Very safe", note: "lead of 20 points or more", hue: "#4F6FD8" },
 ];
 const safetyOf = (lead) => SAFETY.find((b) => lead < b.max);
 
@@ -41,6 +42,108 @@ function Chip({ party, colourHex }) {
       <span aria-hidden="true" style={{ width: 10, height: 10, borderRadius: "50%", background: colour(colourHex), flexShrink: 0 }} />
       {party}
     </span>
+  );
+}
+
+// All the seats in one picture: a bar for each, closest on the left, safest on the right, coloured by the party that won it.
+function Spectrum({ rows }) {
+  const [at, setAt] = useState(0);
+  const W = 1000, H = 210, CAP = 40;
+  const n = rows.length;
+  const bw = W / n;
+  const edges = SAFETY.slice(0, -1).map((b) => rows.findIndex((r) => r.lead >= b.max));
+  const bounds = [0, ...edges.map((e) => (e < 0 ? n : e)), n];
+  const counts = SAFETY.map((_, i) => bounds[i + 1] - bounds[i]);
+  const r = rows[at] ?? rows[0];
+  const band = safetyOf(r.lead);
+  const pick = (e) => {
+    const box = e.currentTarget.getBoundingClientRect();
+    setAt(Math.max(0, Math.min(n - 1, Math.floor(((e.clientX - box.left) / box.width) * n))));
+  };
+  return (
+    <div>
+      <svg
+        viewBox={`0 0 ${W} ${H}`} role="img" tabIndex={0} preserveAspectRatio="none"
+        aria-label={`All ${n} seats as bars from the closest on the left to the safest on the right. Use the left and right arrow keys to move along them.`}
+        style={{ width: "100%", height: "clamp(130px, 22vw, 210px)", display: "block", touchAction: "pan-y", cursor: "crosshair", outline: "none", borderRadius: 10 }}
+        onPointerDown={pick} onPointerMove={(e) => { if (e.pointerType === "mouse" || e.buttons) pick(e); }}
+        onKeyDown={(e) => {
+          if (e.key === "ArrowRight") { e.preventDefault(); setAt((v) => Math.min(n - 1, v + (e.shiftKey ? 10 : 1))); }
+          if (e.key === "ArrowLeft") { e.preventDefault(); setAt((v) => Math.max(0, v - (e.shiftKey ? 10 : 1))); }
+        }}
+      >
+        {SAFETY.map((b, i) => (
+          <rect key={b.label} x={bounds[i] * bw} y={0} width={counts[i] * bw} height={H} fill={b.hue} opacity="0.1" />
+        ))}
+        {rows.map((row, i) => {
+          const h = Math.max(4, (Math.min(row.lead, CAP) / CAP) * (H - 8));
+          return <rect key={row.key} x={i * bw + 0.25} y={H - h} width={Math.max(0.6, bw - 0.5)} height={h} fill={colour(row.winnerColour)} opacity={i === at ? 1 : 0.88} />;
+        })}
+        <rect x={at * bw - 1.5} y={0} width={bw + 3} height={H} fill="none" stroke={COLORS.ink} strokeWidth="2" vectorEffect="non-scaling-stroke" />
+      </svg>
+      <div aria-hidden="true" style={{ display: "flex", height: 7, borderRadius: 4, overflow: "hidden", gap: 2, marginTop: 6 }}>
+        {SAFETY.map((b, i) => <span key={b.label} style={{ flex: counts[i], background: b.hue }} />)}
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 6 }}>
+        <span>Closest result</span>
+        <span>Safest seat</span>
+      </div>
+
+      <div aria-live="polite" style={{ marginTop: 14, padding: "14px 16px", borderRadius: 14, background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderLeft: `5px solid ${colour(r.winnerColour)}`, display: "flex", flexWrap: "wrap", gap: "8px 18px", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>Seat {at + 1} of {n}, from the closest</div>
+          <a href={seatHref(r.name)} style={{ fontFamily: FONT_DISPLAY, fontSize: 19, fontWeight: 700, color: COLORS.ink, textDecoration: "none" }}>{r.name}</a>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 2 }}>
+            <strong style={{ color: COLORS.ink }}>{r.winner}</strong> won by {fmt(r.majority)} {r.majority === 1 ? "vote" : "votes"}, ahead of {r.second}
+          </div>
+        </div>
+        <div style={{ textAlign: "right" }}>
+          <span style={{ display: "inline-block", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: "#fff", background: band.hue, borderRadius: 999, padding: "3px 11px" }}>{band.label}</span>
+          <div style={{ ...numeric, fontSize: 13.5, color: COLORS.ink, marginTop: 5 }}>{voters(votesToFlip(r))} to flip it</div>
+        </div>
+      </div>
+      <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, margin: "10px 0 0" }}>Each bar is one seat. The taller the bar, the further ahead the winner finished. Move across the bars, or tap one, to see the seat.</p>
+    </div>
+  );
+}
+
+// The closest results as head-to-head cards: a tug of war between the winner and the runner-up.
+function Tightest({ rows }) {
+  const top = rows.slice(0, 6);
+  return (
+    <section aria-labelledby="h-tight" style={{ marginTop: 28 }}>
+      <h2 id="h-tight" style={{ ...cardTitle, fontSize: 24 }}>The six closest races</h2>
+      <p style={para}>Each of these seats was decided by {fmt(top.at(-1).majority)} votes or fewer. A busy bus, a wet afternoon or a few postal votes going astray could have changed who won them.</p>
+      <ol style={{ listStyle: "none", margin: "16px 0 0", padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(300px, 100%), 1fr))", gap: 14 }}>
+        {top.map((r, i) => {
+          const win = 50 + r.lead / 2;
+          return (
+            <li key={r.key}>
+              <a href={seatHref(r.name)} className="ons-tap" style={{ display: "block", height: "100%", boxSizing: "border-box", textDecoration: "none", color: COLORS.ink, background: `linear-gradient(160deg, ${colour(r.winnerColour)}1c, ${COLORS.paperCard} 55%)`, border: `1px solid ${COLORS.hairline}`, borderRadius: 20, padding: "16px 18px 18px", boxShadow: "0 18px 40px -30px rgba(0,0,0,0.6)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "baseline" }}>
+                  <span style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 700, lineHeight: 1.2 }}>{r.name}</span>
+                  <span style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: COLORS.inkSoft, flexShrink: 0 }}>No. {i + 1}</span>
+                </div>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 10 }}>
+                  <span style={{ ...numeric, fontSize: 44, fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1 }}>{fmt(r.majority)}</span>
+                  <span style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft }}>{r.majority === 1 ? "vote" : "votes"} in it</span>
+                </div>
+                <div role="img" aria-label={`${r.winner} narrowly ahead of ${r.second}`} style={{ position: "relative", display: "flex", height: 14, borderRadius: 7, overflow: "hidden", gap: 2, margin: "14px 0 8px" }}>
+                  <span style={{ width: `${win}%`, background: colour(r.winnerColour) }} />
+                  <span style={{ flex: 1, background: colour(r.secondColour) }} />
+                  <span aria-hidden="true" style={{ position: "absolute", left: "50%", top: -2, bottom: -2, width: 2, background: COLORS.ink, opacity: 0.55 }} />
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 8, fontFamily: FONT_BODY, fontSize: 13 }}>
+                  <span style={{ minWidth: 0 }}><strong>{r.winner}</strong> won</span>
+                  <span style={{ color: COLORS.inkSoft, textAlign: "right", minWidth: 0 }}>{r.second} second</span>
+                </div>
+                <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 8 }}>{voters(votesToFlip(r))} switching would flip it</div>
+              </a>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
   );
 }
 
@@ -113,17 +216,15 @@ function Bands({ rows, parties }) {
     const inBand = rows.filter((r) => r.lead >= lo && r.lead < b.max);
     return { ...b, total: inBand.length, segs: top.map((p) => ({ party: p.party, colour: p.colour, n: inBand.filter((r) => r.winner === p.party).length })), other: inBand.filter((r) => !topNames.has(r.winner)).length };
   });
-  const max = Math.max(...data.map((d) => d.total), 1);
   return (
     <div>
-      <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 14 }}>
+      <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(210px, 100%), 1fr))", gap: 12 }}>
         {data.map((d) => (
-          <li key={d.label}>
-            <div style={{ display: "flex", justifyContent: "space-between", gap: 10, fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink }}>
-              <span><strong>{d.label}</strong> <span style={{ color: COLORS.inkSoft, fontSize: 12.5 }}>({d.note})</span></span>
-              <span style={{ ...numeric, fontWeight: 700 }}>{d.total} seats</span>
-            </div>
-            <span role="img" aria-label={`${d.total} seats: ${d.segs.filter((s) => s.n).map((s) => `${s.party} ${s.n}`).join(", ")}${d.other ? `, others ${d.other}` : ""}`} style={{ display: "flex", height: 18, width: `${Math.max(3, (d.total / max) * 100)}%`, borderRadius: 5, overflow: "hidden", gap: 2, marginTop: 6 }}>
+          <li key={d.label} style={{ background: `linear-gradient(170deg, ${d.hue}26, ${COLORS.paper} 70%)`, border: `1px solid ${d.hue}55`, borderTop: `5px solid ${d.hue}`, borderRadius: 16, padding: "14px 16px 16px" }}>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink }}>{d.label}</div>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>{d.note}</div>
+            <div style={{ ...numeric, fontSize: 40, fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, color: COLORS.ink, margin: "8px 0 10px" }}>{d.total}<span style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: COLORS.inkSoft, letterSpacing: 0 }}> seats</span></div>
+            <span role="img" aria-label={`${d.total} seats: ${d.segs.filter((s) => s.n).map((s) => `${s.party} ${s.n}`).join(", ")}${d.other ? `, others ${d.other}` : ""}`} style={{ display: "flex", height: 12, borderRadius: 6, overflow: "hidden", gap: 2 }}>
               {d.segs.filter((s) => s.n).map((s) => <span key={s.party} style={{ flex: s.n, background: colour(s.colour) }} />)}
               {d.other > 0 && <span style={{ flex: d.other, background: COLORS.inkSoft, opacity: 0.6 }} />}
             </span>
@@ -289,7 +390,7 @@ function SeatList({ rows, parties }) {
           const s = safetyOf(r.lead);
           return (
             <li key={r.key} style={{ borderTop: `1px solid ${COLORS.hairline}` }}>
-              <a href={seatHref(r.name)} className="ons-tap" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: "4px 14px", alignItems: "center", padding: "11px 4px", textDecoration: "none", color: COLORS.ink }}>
+              <a href={seatHref(r.name)} className="ons-tap" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: "4px 14px", alignItems: "center", padding: "11px 4px 11px 12px", borderLeft: `4px solid ${s.hue}`, textDecoration: "none", color: COLORS.ink }}>
                 <span style={{ minWidth: 0 }}>
                   <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 15, fontWeight: 700 }}>{i + 1}. {r.name}</span>
                   <span style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "2px 8px", marginTop: 3 }}>
@@ -300,7 +401,8 @@ function SeatList({ rows, parties }) {
                 </span>
                 <span style={{ textAlign: "right" }}>
                   <span style={{ ...numeric, display: "block", fontSize: 17, fontWeight: 700 }}>{voters(votesToFlip(r))}</span>
-                  <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>to flip it · {s.label.toLowerCase()}</span>
+                  <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>to flip it</span>
+                  <span style={{ display: "inline-block", marginTop: 3, fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: "#fff", background: s.hue, borderRadius: 999, padding: "1px 9px" }}>{s.label}</span>
                 </span>
               </a>
             </li>
@@ -333,19 +435,24 @@ export default function Marginals() {
       {!failed && !data && <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft }}>Loading the results…</p>}
       {data && rows.length > 0 && (
         <>
-          <div className="box-row" style={{ "--n": 3, "--min": "165px", "--gap": "14px", marginTop: 4 }}>
-            {[
-              [tiny, "seats won by fewer than 1,000 votes", `The closest was ${rows[0].name}, won by ${fmt(rows[0].majority)} ${rows[0].majority === 1 ? "vote" : "votes"}.`],
-              [marginal, "marginal seats", "The winner finished less than 5 points ahead."],
-              [safe, "very safe seats", "The winner finished 20 points or more ahead."],
-            ].map(([n, label, note]) => (
-              <div key={label} style={{ ...card, padding: "16px 18px" }}>
-                <div style={{ ...numeric, fontSize: 40, fontWeight: 700, letterSpacing: "-0.03em", color: COLORS.ink, lineHeight: 1 }}>{n}</div>
-                <div style={{ fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: 700, color: COLORS.ink, marginTop: 6 }}>{label}</div>
-                <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 3, lineHeight: 1.45 }}>{note}</div>
-              </div>
-            ))}
-          </div>
+          <section aria-labelledby="h-spectrum" className="regions-wrap" style={{ ...card, marginTop: 4, padding: "clamp(18px, 3.5vw, 30px)", background: `radial-gradient(700px 320px at 100% 0%, ${SAFETY[0].hue}26, transparent 65%), radial-gradient(600px 300px at 0% 100%, ${SAFETY[3].hue}22, transparent 65%), ${COLORS.paperCard}` }}>
+            <h2 id="h-spectrum" style={{ ...cardTitle, fontSize: "clamp(20px, 3vw, 26px)" }}>{rows.length} seats, from the closest to the safest</h2>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "14px 34px", margin: "16px 0 22px" }}>
+              {[
+                [tiny, "seats won by fewer than 1,000 votes", SAFETY[0].hue],
+                [marginal, "marginal seats, with a lead under 5 points", SAFETY[1].hue],
+                [safe, "very safe seats, with a lead of 20 points or more", SAFETY[3].hue],
+              ].map(([n, label, hue]) => (
+                <div key={label} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <span style={{ ...numeric, fontSize: "clamp(36px, 7vw, 54px)", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1, color: hue }}>{n}</span>
+                  <span style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.35, color: COLORS.ink, maxWidth: 170 }}>{label}</span>
+                </div>
+              ))}
+            </div>
+            <Spectrum rows={rows} />
+          </section>
+
+          <Tightest rows={rows} />
 
           <Finder rows={rows} />
           <Explainer />
