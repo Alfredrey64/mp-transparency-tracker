@@ -9,6 +9,7 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 import { SECTIONS } from "./data/sidebarSections";
 import { LOADERS } from "./pageLoaders";
 import { startGlossDedupe } from "./glossJsx/dedupe";
+import { trackPage } from "./lib/analytics";
 
 // Everything below is code-split per page: a visitor to the homepage
 // shouldn't have to download the other ~30 pages' code up front. Home and
@@ -169,6 +170,8 @@ export default function App() {
   const [mpCount, setMpCount] = useState(null);
 
   useEffect(() => startGlossDedupe(document.getElementById("root")), []);
+  // One anonymous page view each time the page changes (the page's name only; see lib/analytics.js).
+  useEffect(() => { trackPage(selected ? "mp" : view, viewParam); }, [view, selected, viewParam]);
   // Set only when navigating away from an MP's own profile to a page that
   // can be pre-filtered to them (their full voting history, their written
   // questions) — so e.g. clicking a vote on the profile lands you on that

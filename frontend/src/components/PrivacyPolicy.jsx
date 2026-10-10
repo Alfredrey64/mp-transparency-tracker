@@ -14,7 +14,7 @@ function Section({ title, children }) {
 export default function PrivacyPolicy({ onNavigate }) {
   return (
     <div style={{ padding: PAGE_PADDING }}>
-      <PageHeader title="Privacy Policy" subtitle="Last updated 7 September 2026." maxWidth={760} />
+      <PageHeader title="Privacy Policy" subtitle="Last updated 10 October 2026." maxWidth={760} />
 
       <div style={{ maxWidth: 760 }}>
         <Section title="The short version">
@@ -26,8 +26,8 @@ export default function PrivacyPolicy({ onNavigate }) {
 
         <Section title="What we don't do">
           <ul style={{ margin: 0, paddingLeft: 20 }}>
-            <li style={{ marginBottom: 8 }}>No analytics, advertising, or tracking scripts.</li>
-            <li style={{ marginBottom: 8 }}>No cookies used for tracking or advertising.</li>
+            <li style={{ marginBottom: 8 }}>No advertising, and no tracking of you across other sites.</li>
+            <li style={{ marginBottom: 8 }}>No cookies.</li>
             <li style={{ marginBottom: 8 }}>No account creation, sign-in, or password storage.</li>
             <li>No sale or sharing of visitor data. There isn't any to sell.</li>
           </ul>
@@ -36,8 +36,9 @@ export default function PrivacyPolicy({ onNavigate }) {
         <Section title="What is stored, and where">
           <ul style={{ margin: 0, paddingLeft: 20 }}>
             <li style={{ marginBottom: 8 }}>
-              <strong style={{ color: COLORS.ink }}>Your device only:</strong> a single preference (light or dark
-              display mode) is saved in your browser's local storage. It never leaves your device and isn't visible to us.
+              <strong style={{ color: COLORS.ink }}>Your device only:</strong> a few preferences are saved in your
+              browser's local storage: light or dark mode if you choose dark, the MPs you follow, a postcode or
+              constituency you pick, and whether help boxes are open. They never leave your device and aren't visible to us.
             </li>
             <li style={{ marginBottom: 8 }}>
               <strong style={{ color: COLORS.ink }}>Standard web infrastructure:</strong> like any website, the
@@ -45,6 +46,14 @@ export default function PrivacyPolicy({ onNavigate }) {
               address) as part of normal web delivery. This site doesn't request or process that data itself.
             </li>
           </ul>
+        </Section>
+
+        <Section title="Visit counts">
+          We count visits with Vercel Web Analytics, which is built to be private. It uses no cookies and does not follow
+          you across other sites. It counts which page was opened and gives rough, anonymous totals, such as the country
+          and the type of browser or device. It records no names or other personal details. The only thing sent about
+          where you are on this site is the name of the page. We never send the postcode, search, donor name or MP you
+          look up. If your browser sends a Do Not Track or Global Privacy Control signal, we switch counting off.
         </Section>
 
         <Section title="Where the MP data comes from">
@@ -61,7 +70,7 @@ export default function PrivacyPolicy({ onNavigate }) {
         </Section>
 
         <Section title="Changes to this policy">
-          If this site's data practices change (for example, if analytics or a comment feature is ever added), this
+          If this site's data practices change (for example, if a comment feature is ever added), this
           page will be updated and the "last updated" date above will change accordingly.
         </Section>
 

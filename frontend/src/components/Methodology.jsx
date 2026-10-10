@@ -103,8 +103,8 @@ export default function Methodology({ onNavigate }) {
             records that already exist and presents them in one place.
           </p>
           <p style={{ marginBottom: 0 }}>
-            No accounts, no tracking, no analytics. The only thing stored in your browser is a light/dark mode
-            preference. See the{" "}
+            No accounts and no cookies. We count visits anonymously, page by page, and store a few preferences only in
+            your own browser. See the{" "}
             {onNavigate ? (
               <button
                 onClick={() => onNavigate("privacy")}

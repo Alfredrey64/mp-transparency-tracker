@@ -24,9 +24,9 @@ export class ErrorBoundary extends Component {
 
   componentDidCatch(error, info) {
     // No error-tracking service is wired up here on purpose — this site's
-    // own Methodology/Privacy pages state "no accounts, no tracking, no
-    // analytics", and silently phoning a crash report home would quietly
-    // break that promise. This is exactly what the browser console is
+    // own Methodology/Privacy pages promise no accounts, no cookies and only
+    // anonymous page counts, and silently phoning a crash report home would
+    // quietly break that promise. This is exactly what the browser console is
     // for; a visitor who wants to report it has the GitHub link below.
     console.error("Caught by ErrorBoundary:", error, info.componentStack);
   }
