@@ -2,31 +2,36 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 const ThemeContext = createContext(null);
-const STORAGE_KEY = "mp-tracker-theme";
+// A new key, written only when someone picks a theme themselves. (The old key was filled in automatically from the device's setting,
+// so it cannot tell a real choice from a default, and is ignored.)
+const STORAGE_KEY = "simple-politics-theme-choice";
 
+// Every visit starts in light mode, whatever the device's own setting says. Dark mode is there for anyone who switches to it, and the
+// site remembers that choice.
 function getInitialTheme() {
   try {
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    if (stored === "light" || stored === "dark") return stored;
+    return window.localStorage.getItem(STORAGE_KEY) === "dark" ? "dark" : "light";
   } catch {
-    // localStorage unavailable (private browsing) — fall through to system preference.
+    return "light";
   }
-  return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(getInitialTheme);
+  const [theme, setThemeState] = useState(getInitialTheme);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
-    try {
-      window.localStorage.setItem(STORAGE_KEY, theme);
-    } catch {
-      // Theme still applies for this session even if it can't be saved.
-    }
   }, [theme]);
 
-  const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
+  const setTheme = (next) => {
+    setThemeState(next);
+    try {
+      window.localStorage.setItem(STORAGE_KEY, next);
+    } catch {
+      // The choice still applies for this visit even if it can't be saved.
+    }
+  };
+  const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
 
   return <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>{children}</ThemeContext.Provider>;
 }
