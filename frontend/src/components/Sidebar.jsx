@@ -1,7 +1,7 @@
 import { preloadView } from "../pageLoaders";
 import { useWatchlistChanges } from "../lib/useWatchlistChanges";
 import { useEffect, useRef, useState } from "react";
-import { FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
+import { FONT_DISPLAY, FONT_BODY, FONT_MONO, FONT_NUMERIC } from "../theme";
 import LogoMark from "./LogoMark";
 import GlobalSearch from "./GlobalSearch";
 import { IconHome, IconMethodology, IconSettings, IconPin, IconStar, IconRoute } from "./icons";
@@ -230,18 +230,23 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician, onClose }) {
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg>
         </button>
       )}
-      <button
-        type="button"
-        onClick={() => onNavigate("home")}
-        aria-label="Simple Politics, back to the overview"
-        style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 9, width: "100%", textAlign: "center", cursor: "pointer", background: "none", border: "none", padding: "2px 2px 4px" }}
-      >
-        <LogoMark width={84} />
-        <span>
-          <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em", color: "var(--sb-strong)", lineHeight: 1.1 }}>Simple Politics</span>
-          <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, color: "var(--sb-soft)", marginTop: 4 }}>UK politics, made simple</span>
-        </span>
-      </button>
+      <div style={{ position: "relative", margin: "-20px -16px 0", padding: "26px 16px 6px", background: "radial-gradient(220px 120px at 50% 36%, var(--sb-glow), transparent 72%)" }}>
+        <button
+          type="button"
+          onClick={() => onNavigate("home")}
+          aria-label="Simple Politics, back to the overview"
+          style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, width: "100%", textAlign: "center", cursor: "pointer", background: "none", border: "none", padding: 0 }}
+        >
+          <LogoMark width={92} />
+          <span style={{ display: "block", fontFamily: FONT_NUMERIC, fontWeight: 600, fontSize: 26, letterSpacing: "-0.015em", color: "var(--sb-strong)", lineHeight: 1.05 }}>Simple Politics</span>
+        </button>
+        <div aria-hidden="true" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, margin: "11px auto 9px", maxWidth: 190 }}>
+          <span style={{ flex: 1, height: 1, background: "linear-gradient(90deg, transparent, var(--sb-border-strong))" }} />
+          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#F0A92E" }} />
+          <span style={{ flex: 1, height: 1, background: "linear-gradient(270deg, transparent, var(--sb-border-strong))" }} />
+        </div>
+        <div style={{ textAlign: "center", fontFamily: FONT_BODY, fontSize: 12.5, letterSpacing: "0.02em", color: "var(--sb-soft)" }}>UK politics, made simple</div>
+      </div>
 
       <div style={{ marginTop: 14 }}>
         <GlobalSearch onSelectPolitician={onSelectPolitician} onNavigate={onNavigate} />
@@ -348,7 +353,7 @@ export default function Sidebar({ activeView, onNavigate, onSelectPolitician }) 
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <LogoMark width={38} />
-          <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: "var(--sb-strong)", whiteSpace: "nowrap" }}>Simple Politics</span>
+          <span style={{ fontFamily: FONT_NUMERIC, fontWeight: 600, fontSize: 19, letterSpacing: "-0.015em", color: "var(--sb-strong)", whiteSpace: "nowrap" }}>Simple Politics</span>
         </div>
         <button
           onClick={() => setOpen(true)}

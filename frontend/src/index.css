@@ -29,6 +29,7 @@
   --sb-border-strong: rgba(25, 26, 35, 0.2);
   --sb-accent: #4F46E5;
   --sb-scroll: rgba(25, 26, 35, 0.18);
+  --sb-glow: rgba(79, 70, 229, 0.13);
 }
 
 [data-theme="dark"] {
@@ -55,6 +56,7 @@
   --sb-border-strong: rgba(255, 255, 255, 0.18);
   --sb-accent: #8B85F5;
   --sb-scroll: rgba(255, 255, 255, 0.15);
+  --sb-glow: rgba(139, 133, 245, 0.16);
 }
 
 html, body, #root {
