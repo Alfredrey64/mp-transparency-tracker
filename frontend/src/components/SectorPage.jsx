@@ -85,7 +85,7 @@ function ChangeChip({ change, accent }) {
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, color: COLORS.ink, background: `${accent}1f`, borderRadius: 999, padding: "4px 10px" }}>
       <span aria-hidden="true" style={{ color: accent, fontSize: 10 }}>{flat ? "●" : up ? "▲" : "▼"}</span>
-      {changeWords(change)}
+      <span>{changeWords(change)}</span>
     </span>
   );
 }

@@ -30,14 +30,14 @@ function shuffle(list, rand) {
   return out;
 }
 
-// One question: a clue and three terms to pick from, one of them right. `rand` can be swapped for a fixed one in tests.
-export function makeQuestion(terms, rand = Math.random) {
+// One question: a clue and four terms to pick from, one of them right. `rand` can be swapped for a fixed one in tests.
+export function makeQuestion(terms, rand = Math.random, count = 4) {
   const pool = terms.filter((t) => t.def.length >= 50 && t.def.length <= 260);
-  if (pool.length < 1 || terms.length < 3) return null;
+  if (pool.length < 1 || terms.length < count) return null;
   const answer = pool[Math.floor(rand() * pool.length)];
-  // Two other terms, picked by shuffling the rest, so a fixed random source can never get stuck.
+  // The other terms, picked by shuffling the rest, so a fixed random source can never get stuck.
   const others = shuffle(terms.filter((t) => t.term !== answer.term), rand);
-  const picks = others.slice(0, 2);
+  const picks = others.slice(0, count - 1);
   const options = [answer, ...picks];
   const shuffled = shuffle(options, rand);
   return { answer: answer.term, options: shuffled.map((o) => o.term), clue: hideTerm(answer.def, answer), example: answer.example ?? null };

@@ -136,6 +136,7 @@ function Tabs({ tab, setTab, tabs }) {
             aria-selected={active}
             aria-controls={`panel-${t.key}`}
             type="button"
+            className="seat-tab"
             onClick={() => setTab(t.key)}
             style={{ position: "relative", background: "none", border: "none", padding: "11px 14px", flexShrink: 0, cursor: "pointer", fontFamily: FONT_DISPLAY, fontSize: 16, fontWeight: 600, color: active ? COLORS.ink : COLORS.inkSoft }}
           >
@@ -144,6 +145,7 @@ function Tabs({ tab, setTab, tabs }) {
           </button>
         );
       })}
+      <style>{`@media (max-width: 520px) { .seat-tab { padding: 11px 6px !important; font-size: 14px !important; } }`}</style>
     </div>
   );
 }

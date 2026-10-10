@@ -240,24 +240,24 @@ function Bands({ rows, parties }) {
 
 // Seats a party would win as more voters switch, with the chosen number marked.
 function Curve({ curve, points, fromColour, toColour, max }) {
-  const W = 560, H = 190, L = 34, B = 30, T = 10, R = 10;
+  const W = 460, H = 220, L = 34, B = 40, T = 10, R = 10;
   const top = Math.max(...curve.map((c) => c.seats), 5);
   const x = (p) => L + (p / max) * (W - L - R);
   const y = (n) => H - B - (n / top) * (H - B - T);
   const path = curve.map((c, i) => `${i ? "L" : "M"}${x(c.points).toFixed(1)} ${y(c.seats).toFixed(1)}`).join("");
   const at = curve[Math.min(max, Math.max(0, Math.round(points)))];
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Seats won as more voters switch: ${at.seats} seats when ${points} in every 100 switch`} style={{ width: "100%", height: "auto", display: "block", maxWidth: 640 }}>
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Seats won as more voters switch: ${at.seats} seats when ${points} in every 100 switch`} style={{ width: "100%", height: "auto", display: "block", maxWidth: 520 }}>
       {[0, 0.5, 1].map((t) => (
         <g key={t}>
           <line x1={L} x2={W - R} y1={y(top * t)} y2={y(top * t)} stroke={COLORS.hairline} strokeWidth="1" />
-          <text x={L - 6} y={y(top * t) + 4} textAnchor="end" fontFamily={FONT_BODY} fontSize="11" fill={COLORS.inkSoft}>{Math.round(top * t)}</text>
+          <text x={L - 6} y={y(top * t) + 5} textAnchor="end" fontFamily={FONT_BODY} fontSize="14" fill={COLORS.inkSoft}>{Math.round(top * t)}</text>
         </g>
       ))}
       {[0, 5, 10, 15, 20].filter((p) => p <= max).map((p) => (
-        <text key={p} x={x(p)} y={H - 14} textAnchor="middle" fontFamily={FONT_BODY} fontSize="11" fill={COLORS.inkSoft}>{p}</text>
+        <text key={p} x={x(p)} y={H - 20} textAnchor="middle" fontFamily={FONT_BODY} fontSize="14" fill={COLORS.inkSoft}>{p}</text>
       ))}
-      <text x={(L + W - R) / 2} y={H - 1} textAnchor="middle" fontFamily={FONT_BODY} fontSize="11" fill={COLORS.inkSoft}>voters switching, out of every 100</text>
+      <text x={(L + W - R) / 2} y={H - 2} textAnchor="middle" fontFamily={FONT_BODY} fontSize="14" fill={COLORS.inkSoft}>voters switching, out of every 100</text>
       <path d={path} fill="none" stroke={toColour} strokeWidth="3" strokeLinejoin="round" strokeLinecap="round" />
       <line x1={x(points)} x2={x(points)} y1={T} y2={H - B} stroke={fromColour} strokeWidth="2" strokeDasharray="4 4" />
       <circle cx={x(points)} cy={y(at.seats)} r="5.5" fill={toColour} stroke={COLORS.paperCard} strokeWidth="2" />

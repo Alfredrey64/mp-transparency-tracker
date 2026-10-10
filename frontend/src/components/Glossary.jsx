@@ -101,7 +101,6 @@ const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 // so a shorthand that changes would quietly wipe out an unchanged left edge, which is how the coloured edge used to vanish after a click.
 function TermRow({ t, isOpen, onToggle, accent }) {
   const edge = isOpen ? `${accent}77` : COLORS.hairline;
-  const preview = t.def.length > 110 ? `${t.def.slice(0, 107).replace(/\s+\S*$/, "")}...` : t.def;
   return (
     <div
       className={isOpen ? "gl-row gl-open" : "gl-row"}
@@ -119,7 +118,6 @@ function TermRow({ t, isOpen, onToggle, accent }) {
       >
         <span className="gl-term-line" style={{ minWidth: 0 }}>
           <span className="gl-term" style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 17, color: COLORS.ink, lineHeight: 1.25 }}>{t.term}</span>
-          {!isOpen && <span className="gl-preview" style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, lineHeight: 1.45 }}>{preview}</span>}
         </span>
         <motion.span
           animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}
@@ -179,7 +177,7 @@ function WordOfTheDay({ onOpen }) {
   );
 }
 
-// "Which term is this?": a definition with the word blanked out and three to choose from.
+// "Which word is this?": a definition with the word blanked out and four to choose from.
 function Quiz({ terms, accent }) {
   const [q, setQ] = useState(() => makeQuestion(terms));
   const [chosen, setChosen] = useState(null);
@@ -193,38 +191,51 @@ function Quiz({ terms, accent }) {
     setChosen(opt);
     setScore((s) => ({ right: s.right + (opt === q.answer ? 1 : 0), total: s.total + 1, streak: opt === q.answer ? s.streak + 1 : 0 }));
   };
+  const GOOD = "#2F9E6E";
+  const BAD = "#D9453B";
   return (
-    <section aria-label="Quiz" style={{ borderRadius: 24, padding: "clamp(18px, 3.5vw, 26px)", border: `1px solid ${COLORS.hairline}`, background: COLORS.paperCard }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
-        <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, color: COLORS.ink, margin: 0 }}>Which word is this?</h2>
-        <span style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.inkSoft }}>
-          {score.right} of {score.total} right{score.streak >= 2 ? ` · ${score.streak} in a row` : ""}
+    <section
+      aria-label="Quiz"
+      style={{ display: "flex", flexDirection: "column", borderRadius: 24, padding: "clamp(18px, 4vw, 28px)", border: `1px solid ${accent}44`, background: `radial-gradient(420px 220px at 0% 0%, ${accent}22, transparent 70%), ${COLORS.paperCard}` }}
+    >
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+        <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, fontWeight: 700, color: COLORS.ink, margin: 0 }}>Which word is this?</h2>
+        <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: accent, background: `${accent}1c`, borderRadius: 999, padding: "4px 12px", whiteSpace: "nowrap" }}>
+          {score.right} of {score.total} right{score.streak >= 2 ? `, ${score.streak} in a row` : ""}
         </span>
       </div>
-      <p style={{ fontFamily: FONT_BODY, fontSize: 15.5, lineHeight: 1.65, color: COLORS.ink, margin: "12px 0 14px", maxWidth: 640 }}>{q.clue}</p>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(210px, 100%), 1fr))", gap: 10 }}>
-        {q.options.map((opt) => {
+
+      <p style={{ position: "relative", fontFamily: FONT_BODY, fontSize: 16, lineHeight: 1.65, color: COLORS.ink, margin: "16px 0 18px", padding: "14px 16px", borderRadius: 14, background: COLORS.paper, borderLeft: `4px solid ${accent}` }}>
+        {q.clue}
+      </p>
+
+      <div className="gl-opts" role="group" aria-label="Choose the word">
+        {q.options.map((opt, i) => {
           const isAnswer = opt === q.answer;
           const state = !done ? "idle" : isAnswer ? "right" : opt === chosen ? "wrong" : "dim";
-          const hue = state === "right" ? "#2F9E6E" : state === "wrong" ? "#D9453B" : accent;
+          const hue = state === "right" ? GOOD : state === "wrong" ? BAD : accent;
           return (
             <button
-              key={opt} type="button" className="ons-chip" onClick={() => answer(opt)} disabled={done && state === "dim"}
-              style={{ textAlign: "left", cursor: done ? "default" : "pointer", padding: "12px 14px", borderRadius: 14, fontFamily: FONT_DISPLAY, fontSize: 15.5, fontWeight: 700, lineHeight: 1.25, color: COLORS.ink, background: state === "idle" ? COLORS.paper : `${hue}22`, border: `2px solid ${state === "idle" || state === "dim" ? COLORS.hairline : hue}`, opacity: state === "dim" ? 0.5 : 1, transition: "background 0.15s, border-color 0.15s" }}
+              key={opt} type="button" className="ons-chip" onClick={() => answer(opt)} aria-disabled={done || undefined}
+              style={{ display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 12, textAlign: "left", cursor: done ? "default" : "pointer", padding: "12px 14px", minHeight: 58, borderRadius: 16, fontFamily: FONT_DISPLAY, fontSize: 15.5, fontWeight: 700, lineHeight: 1.25, color: COLORS.ink, background: state === "idle" || state === "dim" ? COLORS.paper : `${hue}22`, borderTop: `2px solid ${state === "idle" || state === "dim" ? COLORS.hairline : hue}`, borderRight: `2px solid ${state === "idle" || state === "dim" ? COLORS.hairline : hue}`, borderBottom: `2px solid ${state === "idle" || state === "dim" ? COLORS.hairline : hue}`, borderLeft: `2px solid ${state === "idle" || state === "dim" ? COLORS.hairline : hue}`, opacity: state === "dim" ? 0.5 : 1, transition: "background 0.15s, border-color 0.15s, opacity 0.15s" }}
             >
-              {opt}
-              {state === "right" && <span aria-hidden="true" style={{ color: hue }}>  ✓</span>}
-              {state === "wrong" && <span aria-hidden="true" style={{ color: hue }}>  ✗</span>}
+              <span aria-hidden="true" style={{ flexShrink: 0, width: 28, height: 28, borderRadius: 9, display: "grid", placeItems: "center", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 800, background: state === "idle" || state === "dim" ? `${accent}1f` : hue, color: state === "idle" || state === "dim" ? accent : "#fff" }}>
+                {state === "right" ? "✓" : state === "wrong" ? "✗" : "ABCD"[i]}
+              </span>
+              <span style={{ minWidth: 0, overflowWrap: "anywhere" }}>{opt}</span>
             </button>
           );
         })}
       </div>
-      <div aria-live="polite" style={{ minHeight: 44, marginTop: 14, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12 }}>
-        {done && (
-          <>
-            <span style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: right ? "#2F9E6E" : "#D9453B" }}>{right ? "Correct." : `Not quite. It was ${q.answer}.`}</span>
-            <button type="button" className="ons-chip" onClick={next} style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, padding: "8px 16px", borderRadius: 999, border: "none", cursor: "pointer", background: accent, color: "#fff" }}>Next question</button>
-          </>
+
+      <div aria-live="polite" style={{ marginTop: "auto", paddingTop: 16 }}>
+        {done ? (
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "12px 14px", borderRadius: 14, background: `${right ? GOOD : BAD}18`, border: `1px solid ${right ? GOOD : BAD}55` }}>
+            <span style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink }}>{right ? "Correct." : <>Not quite. It was <span style={{ color: BAD }}>{q.answer}</span>.</>}</span>
+            <button type="button" className="ons-chip" onClick={next} style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, padding: "9px 18px", borderRadius: 999, border: "none", cursor: "pointer", background: accent, color: "#fff" }}>Next question</button>
+          </div>
+        ) : (
+          <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>Tap the word that fits.</span>
         )}
       </div>
     </section>
@@ -279,13 +290,13 @@ export default function Glossary() {
         <Quiz key={tab} terms={activeTerms} accent={activeTab.accent} />
       </div>
 
-      <div role="tablist" aria-label="Group of terms" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(250px, 100%), 1fr))", gap: 12, marginTop: 28 }}>
+      <div role="tablist" aria-label="Group of terms" className="gl-tabs" style={{ marginTop: 28 }}>
         {TABS.map((t) => {
           const on = tab === t.key;
           return (
             <button
               key={t.key} role="tab" aria-selected={on} className="ons-chip" onClick={() => selectTab(t.key)}
-              style={{ textAlign: "left", cursor: "pointer", padding: "16px 18px", borderRadius: 18, border: `2px solid ${on ? t.accent : COLORS.hairline}`, background: on ? `linear-gradient(135deg, ${t.accent}, ${t.accent}bb)` : `linear-gradient(135deg, ${t.accent}14, ${COLORS.paperCard} 70%)`, color: on ? "#fff" : COLORS.ink, transition: "background 0.2s, border-color 0.2s", boxShadow: on ? `0 18px 36px -24px ${t.accent}` : "none" }}
+              style={{ display: "block", width: "100%", textAlign: "left", cursor: "pointer", padding: "16px 18px", borderRadius: 18, border: `2px solid ${on ? t.accent : COLORS.hairline}`, background: on ? `linear-gradient(135deg, ${t.accent}, ${t.accent}bb)` : `linear-gradient(135deg, ${t.accent}14, ${COLORS.paperCard} 70%)`, color: on ? "#fff" : COLORS.ink, transition: "background 0.2s, border-color 0.2s", boxShadow: on ? `0 18px 36px -24px ${t.accent}` : "none" }}
             >
               <span style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10 }}>
                 <span style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 700, lineHeight: 1.2 }}>{t.label}</span>
@@ -330,8 +341,10 @@ export default function Glossary() {
       <style>{`
         .gl-az { display: grid; grid-template-columns: repeat(13, 34px); gap: 4px; }
         @media (max-width: 640px) { .gl-az { grid-template-columns: repeat(9, minmax(0, 1fr)); width: 100%; } }
-        .gl-term-line { display: grid; gap: 2px; }
-        @media (min-width: 760px) { .gl-term-line { grid-template-columns: minmax(180px, 250px) minmax(0, 1fr); gap: 16px; align-items: baseline; } .gl-preview { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } }
+        .gl-tabs { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        @media (min-width: 720px) { .gl-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; } }
+        .gl-opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+        @media (max-width: 520px) { .gl-opts { grid-template-columns: 1fr; } }
         .gl-row:not(.gl-open):hover { background: ${COLORS.paper} !important; }
       `}</style>
 

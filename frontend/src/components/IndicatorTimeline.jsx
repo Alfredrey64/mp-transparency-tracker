@@ -237,7 +237,7 @@ export default function IndicatorTimeline({ param }) {
           <section style={{ marginTop: 24 }} aria-label="Ready-made comparisons">
             <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, letterSpacing: "-0.01em", color: COLORS.ink, margin: "0 0 4px" }}>Start with a question</h2>
             <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, margin: "0 0 12px" }}>Tap one to load the measures that help answer it. You can change them afterwards.</p>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(230px, 100%), 1fr))", gap: 10 }}>
+            <div className="cmp-stories">
               {COMPARE_STORIES.map((st) => {
                 const on = st.id === activeStory;
                 return (
@@ -251,6 +251,15 @@ export default function IndicatorTimeline({ param }) {
                 );
               })}
             </div>
+            <style>{`
+              @media (max-width: 700px) { .cmp-measures { max-height: none !important; overflow: visible !important; padding-right: 0 !important; } }
+              .cmp-stories { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(230px, 100%), 1fr)); gap: 10px; }
+              @media (max-width: 700px) {
+                .cmp-stories { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; --gut: clamp(16px, 5vw, 40px); scroll-padding-left: var(--gut); margin: 0 calc(-1 * var(--gut)); padding: 2px var(--gut) 10px; scrollbar-width: none; }
+                .cmp-stories::-webkit-scrollbar { display: none; }
+                .cmp-stories > button { flex: 0 0 78%; scroll-snap-align: start; }
+              }
+            `}</style>
           </section>
 
           <section style={{ ...card, marginTop: 22 }} aria-label="Choose measures">
@@ -295,7 +304,7 @@ export default function IndicatorTimeline({ param }) {
                   <button
                     key={t.key} type="button" role="tab" aria-selected={on} className="ons-chip"
                     onClick={() => { setTopicKey(t.key); setQuery(""); }}
-                    style={{ position: "relative", textAlign: "left", display: "flex", alignItems: "center", gap: 9, padding: "11px 12px", borderRadius: 14, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink, background: on ? `${t.accent}22` : COLORS.paper, border: `2px solid ${on ? t.accent : COLORS.hairline}`, transition: "background 0.15s, border-color 0.15s" }}
+                    style={{ position: "relative", textAlign: "left", display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 9, padding: "11px 12px", borderRadius: 14, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink, background: on ? `${t.accent}22` : COLORS.paper, border: `2px solid ${on ? t.accent : COLORS.hairline}`, transition: "background 0.15s, border-color 0.15s" }}
                   >
                     <span aria-hidden="true" style={{ flexShrink: 0, width: 12, height: 12, borderRadius: 4, background: t.accent }} />
                     <span style={{ minWidth: 0, lineHeight: 1.2 }}>{t.label}</span>
@@ -308,7 +317,7 @@ export default function IndicatorTimeline({ param }) {
             <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.ink, margin: "18px 0 8px" }}>
               {searching ? `Results for \u201C${query.trim()}\u201D` : `2. Tick the measures you want from ${topic?.label ?? ""}`}
             </div>
-            <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(300px, 100%), 1fr))", gap: 6, maxHeight: 340, overflowY: "auto", paddingRight: 4 }}>
+            <ul className="cmp-measures" style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(300px, 100%), 1fr))", gap: 6, maxHeight: 340, overflowY: "auto", paddingRight: 4 }}>
               {shown.map((c) => {
                 const ref = refOf(c);
                 const idx = picks.indexOf(ref);
@@ -320,7 +329,7 @@ export default function IndicatorTimeline({ param }) {
                     <button
                       type="button" className="ons-chip" role="checkbox" aria-checked={on} disabled={full} onClick={() => toggle(ref)}
                       title={full ? `You can compare up to ${MAX_PICKED} at once. Remove one first.` : undefined}
-                      style={{ width: "100%", textAlign: "left", display: "flex", alignItems: "center", gap: 11, padding: "10px 12px", borderRadius: 12, fontFamily: FONT_BODY, fontSize: 14, fontWeight: on ? 700 : 500, lineHeight: 1.3, color: COLORS.ink, background: on ? `${colour}1f` : "transparent", border: `1px solid ${on ? colour : COLORS.hairline}`, opacity: full ? 0.45 : 1, cursor: full ? "default" : "pointer", transition: "background 0.15s, border-color 0.15s" }}
+                      style={{ width: "100%", textAlign: "left", display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 11, padding: "10px 12px", borderRadius: 12, fontFamily: FONT_BODY, fontSize: 14, fontWeight: on ? 700 : 500, lineHeight: 1.3, color: COLORS.ink, background: on ? `${colour}1f` : "transparent", border: `1px solid ${on ? colour : COLORS.hairline}`, opacity: full ? 0.45 : 1, cursor: full ? "default" : "pointer", transition: "background 0.15s, border-color 0.15s" }}
                     >
                       <span aria-hidden="true" style={{ flexShrink: 0, width: 20, height: 20, borderRadius: 6, display: "grid", placeItems: "center", background: on ? colour : "transparent", border: `2px solid ${on ? colour : COLORS.inkSoft}`, color: "#fff", fontSize: 13, fontWeight: 800 }}>{on ? "\u2713" : ""}</span>
                       <span style={{ minWidth: 0 }}>

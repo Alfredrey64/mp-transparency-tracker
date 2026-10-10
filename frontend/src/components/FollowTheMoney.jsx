@@ -345,11 +345,14 @@ export default function FollowTheMoney({ onSelectPolitician, initialQuery = null
             onBlur={(e) => (e.target.style.borderColor = COLORS.hairline)}
           />
         </div>
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginTop: 14 }}>
-          <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>Try</span>
-          {EXAMPLES.map((e) => (
-            <button key={e} type="button" className="ons-chip" onClick={() => setQuery(e)} style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink, background: "transparent", border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: "6px 14px", cursor: "pointer" }}>{e}</button>
-          ))}
+        <div style={{ marginTop: 14 }}>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginBottom: 8 }}>Try one of these</div>
+          <div className="ftm-try">
+            {EXAMPLES.map((e) => (
+              <button key={e} type="button" className="ons-chip" onClick={() => setQuery(e)} style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 600, color: COLORS.ink, background: "transparent", border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: "6px 16px", cursor: "pointer" }}>{e}</button>
+            ))}
+          </div>
+          <style>{`.ftm-try { display: flex; flex-wrap: wrap; gap: 8px; } @media (max-width: 520px) { .ftm-try { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); } }`}</style>
         </div>
         {!hasSearched && <Steps />}
       </section>

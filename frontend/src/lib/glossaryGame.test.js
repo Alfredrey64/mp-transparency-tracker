@@ -27,11 +27,11 @@ describe("hideTerm", () => {
 });
 
 describe("makeQuestion", () => {
-  it("gives three different options including the answer", () => {
+  it("gives four different options including the answer", () => {
     for (let i = 0; i < 30; i++) {
       const q = makeQuestion(terms);
-      expect(q.options).toHaveLength(3);
-      expect(new Set(q.options).size).toBe(3);
+      expect(q.options).toHaveLength(4);
+      expect(new Set(q.options).size).toBe(4);
       expect(q.options).toContain(q.answer);
     }
   });
@@ -39,7 +39,8 @@ describe("makeQuestion", () => {
     const q = makeQuestion([{ term: "Whip", def: "A whip is an MP who makes sure colleagues vote the way the party wants them to on the day." }, ...terms]);
     expect(q.clue).not.toMatch(/\bwhip\b/i);
   });
-  it("needs at least three terms", () => expect(makeQuestion(terms.slice(0, 2))).toBeNull());
+  it("needs at least four terms", () => expect(makeQuestion(terms.slice(0, 3))).toBeNull());
+  it("can ask for a different number of options", () => expect(makeQuestion(terms, Math.random, 3).options).toHaveLength(3));
   it("is repeatable with a fixed random source", () => {
     const fixed = () => 0.3;
     expect(makeQuestion(terms, fixed)).toEqual(makeQuestion(terms, fixed));

@@ -885,9 +885,12 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
                 <IconStar size={16} filled={watched} />
               </button>
             </div>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontFamily: FONT_BODY, fontSize: 15, color: COLORS.inkSoft, marginTop: 5 }}>
-              <span style={{ width: 9, height: 9, borderRadius: "50%", background: color, flexShrink: 0 }} />
-              {politician.party} ·{" "}
+            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: "2px 8px", fontFamily: FONT_BODY, fontSize: 15, color: COLORS.inkSoft, marginTop: 5, lineHeight: 1.4 }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 6, whiteSpace: "nowrap" }}>
+                <span style={{ width: 9, height: 9, borderRadius: "50%", background: color, flexShrink: 0 }} />
+                {politician.party}
+              </span>
+              <span aria-hidden="true">·</span>
               <button
                 type="button"
                 onClick={() => { window.location.hash = `#/constituency/${encodeURIComponent(politician.constituency)}`; }}
@@ -896,7 +899,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
               >
                 {politician.constituency}
               </button>
-              {office && ` · MP for ${office}`}
+              {office && <span style={{ flexBasis: "100%", textAlign: "center", fontSize: 14 }}>MP for {office}</span>}
             </div>
             <div style={{ display: "flex", justifyContent: "center", marginTop: 10 }}>
               <ShareButton

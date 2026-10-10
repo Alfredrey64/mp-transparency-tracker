@@ -591,6 +591,13 @@ select:focus-visible,
 @media (pointer: coarse), (max-width: 700px) {
   main button[aria-pressed], main button[role="radio"], main button[role="tab"], main button.ons-chip { min-height: 38px; }
   main button[style*="background: none"][style*="border: none"]:not(.tier-slab):not(.bd-sq):not(.gloss-term) { min-height: 32px; }
+  /* Words with a hover definition: a taller invisible area to tap, without moving any text. */
+  .gloss-term { padding-block: 8px; }
+}
+
+/* Nothing in the body copy should be smaller than 12px on a phone. */
+@media (max-width: 700px) {
+  main [style*="font-size: 10px"], main [style*="font-size: 10.5px"], main [style*="font-size: 11px"], main [style*="font-size: 11.5px"] { font-size: 12px !important; }
 }
 
 /* The Committees page's diagrams and cards animate in once, when the page loads. Plain CSS: nothing runs while the page scrolls. */
