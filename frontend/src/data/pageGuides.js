@@ -221,6 +221,11 @@ export const PAGE_GUIDES = {
     why: "Select committees are one of the main ways Parliament holds ministers to account between votes.",
     notShown: "What they find behind closed doors. Only members and published reports are shown.",
   },
+  howtovote: {
+    what: "Who can vote in which elections, how to register, the ways to vote, what photo ID you need and what happens on polling day, in four plain steps.",
+    why: "You can't vote unless you are registered, and the rules on ID and deadlines trip up people every election. Knowing them in advance makes your vote count.",
+    notShown: "Your registration status, or the exact deadline for the next election. Those come from gov.uk, which this page links to. Rules can change, so check there.",
+  },
   marginals: {
     what: "Which seats are closest, how far the vote would have to move to change each, and a tool to see what a shift between two parties would do.",
     why: "Elections are decided in a few close seats, and swing is how analysts say how much a result would have to change.",

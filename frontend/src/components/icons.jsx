@@ -750,3 +750,14 @@ export function IconSeatCompare({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconBallot({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4.5 13h15v6.5a1 1 0 0 1-1 1h-13a1 1 0 0 1-1-1V13Z" />
+      <path d="M8.5 16.5h7" />
+      <path d="M8 3.5h8v8.2H8z" />
+      <path d="m9.9 7.4 1.4 1.4 2.7-2.9" />
+    </svg>
+  );
+}
