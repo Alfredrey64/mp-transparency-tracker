@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { COLORS, FONT_BODY, FONT_DISPLAY } from "../theme";
+import { COLORS, FONT_BODY, FONT_DISPLAY, solid } from "../theme";
 import RegionCompare from "./RegionCompare";
 import { REGIONS, inSentence } from "../data/regionMetrics";
 import { formatValue } from "../lib/onsFormat";
@@ -46,7 +46,7 @@ export default function RegionalExplorer({ id, title, intro, categories, accent,
           <div role="radiogroup" aria-label="Kind of fact" style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             {categories.map((c) => (
               <button key={c.id} type="button" role="radio" aria-checked={cat.id === c.id} className="ons-chip" onClick={() => setCatId(c.id)}
-                style={{ ...pillStyle(cat.id === c.id), background: cat.id === c.id ? accent : "transparent", borderColor: cat.id === c.id ? accent : COLORS.hairline, color: cat.id === c.id ? "#fff" : COLORS.inkSoft }}>
+                style={{ ...pillStyle(cat.id === c.id), background: cat.id === c.id ? solid(accent) : "transparent", borderColor: cat.id === c.id ? solid(accent) : COLORS.hairline, color: cat.id === c.id ? "#fff" : COLORS.inkSoft }}>
                 {c.title}
               </button>
             ))}

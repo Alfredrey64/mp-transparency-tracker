@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme";
+import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric, solid } from "../theme";
 import { partyColour } from "../lib/format";
 import { seatRows, seatsByParty, uniformSwing, swingCurve, challengers } from "../lib/swing";
 import { PageHeader, LoadFailedNote } from "./shared";
@@ -98,7 +98,7 @@ function Spectrum({ rows }) {
           </div>
         </div>
         <div style={{ textAlign: "right" }}>
-          <span style={{ display: "inline-block", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: "#fff", background: band.hue, borderRadius: 999, padding: "3px 11px" }}>{band.label}</span>
+          <span style={{ display: "inline-block", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: "#fff", background: solid(band.hue), borderRadius: 999, padding: "3px 11px" }}>{band.label}</span>
           <div style={{ ...numeric, fontSize: 13.5, color: COLORS.ink, marginTop: 5 }}>{voters(votesToFlip(r))} to flip it</div>
         </div>
       </div>
@@ -402,7 +402,7 @@ function SeatList({ rows, parties }) {
                 <span style={{ textAlign: "right" }}>
                   <span style={{ ...numeric, display: "block", fontSize: 17, fontWeight: 700 }}>{voters(votesToFlip(r))}</span>
                   <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>to flip it</span>
-                  <span style={{ display: "inline-block", marginTop: 3, fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: "#fff", background: s.hue, borderRadius: 999, padding: "1px 9px" }}>{s.label}</span>
+                  <span style={{ display: "inline-block", marginTop: 3, fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: "#fff", background: solid(s.hue), borderRadius: 999, padding: "1px 9px" }}>{s.label}</span>
                 </span>
               </a>
             </li>

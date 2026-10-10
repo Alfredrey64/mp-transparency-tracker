@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme";
+import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric, solid } from "../theme";
 import { PageHeader, LoadFailedNote } from "./shared";
 import LineChart from "./LineChart";
 import { ALL_SERIES, SECTORS, refOf } from "../data/onsSectors";
@@ -276,7 +276,7 @@ export default function IndicatorTimeline({ param }) {
                   key={refOf({ sector: c.sector, id: c.def.id })}
                   onClick={() => toggle(`${c.sector}.${c.def.id}`)}
                   aria-label={`Remove ${c.def.label}`}
-                  style={{ ...pill(true), background: LINE_COLOURS[i % 4], borderColor: LINE_COLOURS[i % 4], color: "#fff", display: "inline-flex", alignItems: "center", gap: 8 }}
+                  style={{ ...pill(true), background: solid(LINE_COLOURS[i % 4]), borderColor: solid(LINE_COLOURS[i % 4]), color: "#fff", display: "inline-flex", alignItems: "center", gap: 8 }}
                 >
                   {c.def.label}
                   <span aria-hidden="true" style={{ fontSize: 15, lineHeight: 1 }}>×</span>
@@ -308,7 +308,7 @@ export default function IndicatorTimeline({ param }) {
                   >
                     <span aria-hidden="true" style={{ flexShrink: 0, width: 12, height: 12, borderRadius: 4, background: t.accent }} />
                     <span style={{ minWidth: 0, lineHeight: 1.2 }}>{t.label}</span>
-                    {n > 0 && <span style={{ marginLeft: "auto", flexShrink: 0, minWidth: 20, height: 20, borderRadius: 10, display: "grid", placeItems: "center", background: t.accent, color: "#fff", fontSize: 12, fontWeight: 800 }}>{n}</span>}
+                    {n > 0 && <span style={{ marginLeft: "auto", flexShrink: 0, minWidth: 20, height: 20, borderRadius: 10, display: "grid", placeItems: "center", background: solid(t.accent), color: "#fff", fontSize: 12, fontWeight: 800 }}>{n}</span>}
                   </button>
                 );
               })}

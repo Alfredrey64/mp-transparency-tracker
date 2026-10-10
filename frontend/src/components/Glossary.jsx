@@ -1,7 +1,7 @@
 /** @jsxImportSource react */
 import { useState, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable, solid } from "../theme";
 import { PageHeader } from "./shared";
 import { IconGlossary, IconSearch } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
@@ -34,7 +34,7 @@ function StageFlowDiagram({ items, accent }) {
     <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 4, rowGap: 8 }}>
       {items.map((s, i) => (
         <div key={i} style={{ display: "flex", alignItems: "center", gap: 4 }}>
-          {i > 0 && <span style={{ color: accent, fontSize: 12, fontWeight: 700 }}>→</span>}
+          {i > 0 && <span style={{ color: readable(accent), fontSize: 12, fontWeight: 700 }}>→</span>}
           <div style={{ background: `${accent}14`, border: `1px solid ${accent}45`, borderRadius: 7, padding: "5px 9px", fontFamily: FONT_BODY, fontWeight: 600, fontSize: 11.5, color: COLORS.ink, whiteSpace: "nowrap" }}>
             {s}
           </div>
@@ -48,7 +48,7 @@ function BackForthDiagram({ a, b, accent }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
       <div style={{ background: `${accent}14`, border: `1px solid ${accent}45`, borderRadius: 8, padding: "8px 16px", fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: COLORS.ink }}>{a}</div>
-      <span style={{ color: accent, fontSize: 18, fontWeight: 700 }}>⇄</span>
+      <span style={{ color: readable(accent), fontSize: 18, fontWeight: 700 }}>⇄</span>
       <div style={{ background: `${accent}14`, border: `1px solid ${accent}45`, borderRadius: 8, padding: "8px 16px", fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: COLORS.ink }}>{b}</div>
     </div>
   );
@@ -121,7 +121,7 @@ function TermRow({ t, isOpen, onToggle, accent }) {
         </span>
         <motion.span
           animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}
-          style={{ width: 28, height: 28, borderRadius: 14, display: "grid", placeItems: "center", background: `${accent}1f`, color: accent, fontSize: 13, flexShrink: 0 }}
+          style={{ width: 28, height: 28, borderRadius: 14, display: "grid", placeItems: "center", background: `${accent}1f`, color: readable(accent), fontSize: 13, flexShrink: 0 }}
         >▾</motion.span>
       </button>
       <AnimatePresence initial={false}>
@@ -161,7 +161,7 @@ function WordOfTheDay({ onOpen }) {
       aria-label="Word of the day"
       style={{ position: "relative", overflow: "hidden", borderRadius: 24, padding: "clamp(20px, 4vw, 30px)", border: `1px solid ${accent}55`, background: `radial-gradient(520px 260px at 100% 0%, ${accent}38, transparent 70%), radial-gradient(380px 220px at 0% 100%, ${accent}1f, transparent 70%), ${COLORS.paperCard}` }}
     >
-      <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: accent }}>{pick ? "A random word" : "Word of the day"}</div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: readable(accent) }}>{pick ? "A random word" : "Word of the day"}</div>
       <AnimatePresence mode="wait" initial={false}>
         <motion.div key={word.term} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
           <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: "clamp(28px, 6vw, 44px)", fontWeight: 700, letterSpacing: "-0.02em", lineHeight: 1.1, color: COLORS.ink, margin: "6px 0 10px" }}>{word.term}</h2>
@@ -170,7 +170,7 @@ function WordOfTheDay({ onOpen }) {
         </motion.div>
       </AnimatePresence>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 18 }}>
-        <button type="button" className="ons-chip" onClick={() => setPick(all[Math.floor(Math.random() * all.length)])} style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, padding: "9px 18px", borderRadius: 999, border: "none", cursor: "pointer", background: accent, color: "#fff" }}>Show me another</button>
+        <button type="button" className="ons-chip" onClick={() => setPick(all[Math.floor(Math.random() * all.length)])} style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, padding: "9px 18px", borderRadius: 999, border: "none", cursor: "pointer", background: solid(accent), color: "#fff" }}>Show me another</button>
         <button type="button" className="ons-chip" onClick={() => onOpen(word)} style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, padding: "9px 18px", borderRadius: 999, cursor: "pointer", background: "transparent", color: COLORS.ink, border: `1px solid ${COLORS.hairline}` }}>Find it in the list</button>
       </div>
     </section>
@@ -191,8 +191,8 @@ function Quiz({ terms, accent }) {
     setChosen(opt);
     setScore((s) => ({ right: s.right + (opt === q.answer ? 1 : 0), total: s.total + 1, streak: opt === q.answer ? s.streak + 1 : 0 }));
   };
-  const GOOD = "#2F9E6E";
-  const BAD = "#D9453B";
+  const GOOD = "#1F7F57";
+  const BAD = "#C5362D";
   return (
     <section
       aria-label="Quiz"
@@ -200,7 +200,7 @@ function Quiz({ terms, accent }) {
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
         <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, fontWeight: 700, color: COLORS.ink, margin: 0 }}>Which word is this?</h2>
-        <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: accent, background: `${accent}1c`, borderRadius: 999, padding: "4px 12px", whiteSpace: "nowrap" }}>
+        <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: readable(accent), background: `${accent}1c`, borderRadius: 999, padding: "4px 12px", whiteSpace: "nowrap" }}>
           {score.right} of {score.total} right{score.streak >= 2 ? `, ${score.streak} in a row` : ""}
         </span>
       </div>
@@ -232,7 +232,7 @@ function Quiz({ terms, accent }) {
         {done ? (
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "12px 14px", borderRadius: 14, background: `${right ? GOOD : BAD}18`, border: `1px solid ${right ? GOOD : BAD}55` }}>
             <span style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink }}>{right ? "Correct." : <>Not quite. It was <span style={{ color: BAD }}>{q.answer}</span>.</>}</span>
-            <button type="button" className="ons-chip" onClick={next} style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, padding: "9px 18px", borderRadius: 999, border: "none", cursor: "pointer", background: accent, color: "#fff" }}>Next question</button>
+            <button type="button" className="ons-chip" onClick={next} style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, padding: "9px 18px", borderRadius: 999, border: "none", cursor: "pointer", background: solid(accent), color: "#fff" }}>Next question</button>
           </div>
         ) : (
           <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>Tap the word that fits.</span>

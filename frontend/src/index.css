@@ -21,7 +21,7 @@
   --sb-strong: #191A23;
   --sb-text: #383B4E;
   --sb-soft: rgba(25, 26, 35, 0.64);
-  --sb-faint: rgba(25, 26, 35, 0.46);
+  --sb-faint: rgba(25, 26, 35, 0.64);
   --sb-hover: rgba(79, 70, 229, 0.07);
   --sb-surface: rgba(25, 26, 35, 0.035);
   --sb-active: rgba(79, 70, 229, 0.14);
@@ -29,6 +29,7 @@
   --sb-border-strong: rgba(25, 26, 35, 0.2);
   --sb-accent: #4F46E5;
   --sb-scroll: rgba(25, 26, 35, 0.18);
+  --acc-text: 50%;
   --sb-glow: rgba(79, 70, 229, 0.13);
 }
 
@@ -56,6 +57,7 @@
   --sb-border-strong: rgba(255, 255, 255, 0.18);
   --sb-accent: #8B85F5;
   --sb-scroll: rgba(255, 255, 255, 0.15);
+  --acc-text: 100%;
   --sb-glow: rgba(139, 133, 245, 0.16);
 }
 
@@ -665,3 +667,9 @@ select:focus-visible,
 .seg .seg-short { display: none; }
 @media (max-width: 560px) { .seg .seg-long { display: none; } .seg .seg-short { display: inline; } }
 @container (max-width: 660px) { .seg .seg-long { display: none; } .seg .seg-short { display: inline; } }
+
+/* Dark mode: the indigo brand colour is too dark to read as small text on a dark page, so wherever it is used as a text colour it is
+   lightened. (Buttons that use indigo as a fill with white text are not affected.) */
+[data-theme="dark"] main [style*=" color: rgb(79, 70, 229)"],
+[data-theme="dark"] main [style^="color: rgb(79, 70, 229)"],
+[data-theme="dark"] main a[style*=" color: rgb(79, 70, 229)"] { color: #A9A4FF !important; }

@@ -1,6 +1,6 @@
 import { memo, useEffect, useId, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme";
+import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric, readable, solid } from "../theme";
 import { PageHeader, LoadFailedNote } from "./shared";
 import LineChart from "./LineChart";
 import PlacesChart from "./PlacesChart";
@@ -84,7 +84,7 @@ function ChangeChip({ change, accent }) {
   const up = change.amount > 0;
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, color: COLORS.ink, background: `${accent}1f`, borderRadius: 999, padding: "4px 10px" }}>
-      <span aria-hidden="true" style={{ color: accent, fontSize: 10 }}>{flat ? "●" : up ? "▲" : "▼"}</span>
+      <span aria-hidden="true" style={{ color: readable(accent), fontSize: 10 }}>{flat ? "●" : up ? "▲" : "▼"}</span>
       <span>{changeWords(change)}</span>
     </span>
   );
@@ -134,7 +134,7 @@ function Strip({ def, points, accent }) {
             <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: COLORS.inkSoft }}>{c.name}</div>
             <div style={{ ...numeric, fontSize: 19, fontWeight: 600, color: COLORS.ink, marginTop: 2 }}>{c.value}</div>
             <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 1 }}>{c.when}</div>
-            {c.note && <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 600, color: accent, marginTop: 1 }}>{c.note}</div>}
+            {c.note && <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 600, color: readable(accent), marginTop: 1 }}>{c.note}</div>}
           </div>
         ))}
        </div>
@@ -185,12 +185,12 @@ function DeepDive({ id, accent }) {
     <details className="ons-dive" style={{ marginTop: 16, border: `1px solid ${accent}55`, borderRadius: 16, background: `${accent}0d`, overflow: "hidden" }}>
       <summary className="ons-tap" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, cursor: "pointer", padding: "13px 18px", fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: 700, color: COLORS.ink, listStyle: "none" }}>
         <span>How it is measured, what drives it and what changes it</span>
-        <span aria-hidden="true" className="ons-dive-chevron" style={{ color: accent, fontSize: 13, flexShrink: 0, transition: "transform 0.2s" }}>▼</span>
+        <span aria-hidden="true" className="ons-dive-chevron" style={{ color: readable(accent), fontSize: 13, flexShrink: 0, transition: "transform 0.2s" }}>▼</span>
       </summary>
       <div style={{ padding: "2px 18px 18px", display: "grid", gap: 16 }}>
         {blocks.map(([title, text], i) => (
           <div key={title} style={{ display: "grid", gridTemplateColumns: "26px 1fr", gap: 10, alignItems: "start" }}>
-            <span aria-hidden="true" style={{ width: 26, height: 26, borderRadius: 13, background: accent, color: "#fff", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, display: "grid", placeItems: "center" }}>{i + 1}</span>
+            <span aria-hidden="true" style={{ width: 26, height: 26, borderRadius: 13, background: solid(accent), color: "#fff", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, display: "grid", placeItems: "center" }}>{i + 1}</span>
             <div style={{ minWidth: 0 }}>
               <h3 style={smallTitle}>{title}</h3>
               <p style={{ fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.6, color: COLORS.inkSoft, margin: 0 }}>{text}</p>
@@ -344,7 +344,7 @@ function WeeklyDeaths({ data, accent }) {
   const sentence = `In week ${latest.x} of ${thisYear}, ${latest.y.toLocaleString("en-GB")} deaths were registered in England and Wales${
     gap === null ? "." : `, ${Math.abs(gap) < 0.5 ? "about the same as" : `${Math.abs(gap).toFixed(0)}% ${gap > 0 ? "more than" : "fewer than"}`} the same week of ${lastYear}.`
   }`;
-  const lines = [{ name: thisYear, color: accent, points: now, format: (v) => v.toLocaleString("en-GB") }];
+  const lines = [{ name: thisYear, color: readable(accent), points: now, format: (v) => v.toLocaleString("en-GB") }];
   if (before.length) lines.push({ name: lastYear, color: COLORS.inkSoft, points: before, format: (v) => v.toLocaleString("en-GB") });
   return (
     <motion.section
@@ -400,7 +400,7 @@ function Spotlight({ def, item, accent }) {
   if (!info) return null;
   return (
     <div style={{ minWidth: 0 }}>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: accent, marginBottom: 4 }}>{def.label}</div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: readable(accent), marginBottom: 4 }}>{def.label}</div>
       <div style={{ ...numeric, fontSize: "clamp(46px, 7vw, 68px)", fontWeight: 600, lineHeight: 1.05, color: COLORS.ink, letterSpacing: "-0.03em" }}>
         {formatValue(def.format, info.value)}
       </div>
@@ -432,7 +432,7 @@ function KeyPoints({ sector, series, accent, skip }) {
       <ol style={{ listStyle: "none", margin: "14px 0 0", padding: 0, display: "grid", gap: 12 }}>
         {points.map((p, i) => (
           <li key={p.id} style={{ display: "grid", gridTemplateColumns: "28px 1fr", gap: 12, alignItems: "start" }}>
-            <span aria-hidden="true" style={{ width: 26, height: 26, borderRadius: 13, background: accent, color: "#fff", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, display: "grid", placeItems: "center", marginTop: 1 }}>{i + 1}</span>
+            <span aria-hidden="true" style={{ width: 26, height: 26, borderRadius: 13, background: solid(accent), color: "#fff", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, display: "grid", placeItems: "center", marginTop: 1 }}>{i + 1}</span>
             <div style={{ minWidth: 0 }}>
               <p style={{ fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.55, color: COLORS.ink, margin: 0 }}>
                 {p.parts.map((part, j) => (part.strong ? <strong key={j} style={{ fontWeight: 800 }}>{part.text}</strong> : <span key={j}>{part.text}</span>))}
@@ -576,7 +576,7 @@ export default function SectorPage({ sector, param = null }) {
               <div>
                 <p style={{ fontFamily: FONT_DISPLAY, fontSize: "clamp(17px, 2.2vw, 21px)", fontWeight: 600, lineHeight: 1.5, letterSpacing: "-0.01em", color: COLORS.ink, margin: 0 }}>{def.story}</p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "10px 14px", marginTop: 20, alignItems: "center" }}>
-                  <a className="ons-tap" href={`#/indicators/${compareRefs}`} style={{ fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: 700, color: "#fff", background: def.accent, borderRadius: 12, padding: "11px 20px", textDecoration: "none", boxShadow: `0 12px 24px -12px ${def.accent}` }}>
+                  <a className="ons-tap" href={`#/indicators/${compareRefs}`} style={{ fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: 700, color: "#fff", background: solid(def.accent), borderRadius: 12, padding: "11px 20px", textDecoration: "none", boxShadow: `0 12px 24px -12px ${def.accent}` }}>
                     Watch these change over time
                   </a>
                   {newest && <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>Latest ONS release: {dateText(newest)}</span>}

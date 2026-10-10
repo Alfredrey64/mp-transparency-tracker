@@ -1,4 +1,4 @@
-import { COLORS, FONT_BODY } from "../theme";
+import { COLORS, FONT_BODY, solid } from "../theme";
 
 // The controls on the Deprivation page, kept in one tidy bar: a segmented switch for a few choices, and a drop-down for a
 // longer list. Both are keyboard friendly (arrow keys move through a switch).
@@ -22,7 +22,7 @@ export function Segmented({ label, value, options, onChange, accent = COLORS.ink
         return (
           <button
             key={o.id} type="button" role="radio" aria-checked={on} tabIndex={on ? 0 : -1} onClick={() => onChange(o.id)} onKeyDown={onKey}
-            style={{ fontFamily: FONT_BODY, fontSize: small ? 13 : 14, fontWeight: on ? 700 : 600, padding: small ? "6px 12px" : "8px 16px", borderRadius: 999, border: "none", cursor: "pointer", background: on ? accent : "transparent", color: on ? (accent === COLORS.ink ? COLORS.paper : "#fff") : COLORS.inkSoft, transition: "background 0.15s, color 0.15s", whiteSpace: "nowrap" }}
+            style={{ fontFamily: FONT_BODY, fontSize: small ? 13 : 14, fontWeight: on ? 700 : 600, padding: small ? "6px 12px" : "8px 16px", borderRadius: 999, border: "none", cursor: "pointer", background: on ? (accent === COLORS.ink ? accent : solid(accent)) : "transparent", color: on ? (accent === COLORS.ink ? COLORS.paper : "#fff") : COLORS.inkSoft, transition: "background 0.15s, color 0.15s", whiteSpace: "nowrap" }}
           >
             <span className="seg-long">{o.label}</span>
             <span className="seg-short">{o.short ?? o.label}</span>

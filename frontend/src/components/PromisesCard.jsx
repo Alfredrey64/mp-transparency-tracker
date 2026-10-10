@@ -1,6 +1,6 @@
 import { memo, useMemo } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { COLORS, FONT_BODY } from "../theme";
+import { COLORS, FONT_BODY, readable } from "../theme";
 import { SECTOR_PROMISES } from "../data/onsPromises";
 import { STATUS, pledgeByPromise, LAST_CHECKED, SOURCE_URL } from "../data/promises";
 import { describeMeasure } from "../lib/onsPledge";
@@ -19,7 +19,7 @@ function Row({ item, def, points, accent }) {
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", gap: "8px 14px" }}>
         <span
           style={{
-            fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: status.color, background: `${status.color}1c`, border: `1px solid ${status.color}55`,
+            fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: readable(status.color), background: `${status.color}1c`, border: `1px solid ${status.color}55`,
             borderRadius: 999, padding: "3px 10px", whiteSpace: "nowrap", flexShrink: 0,
           }}
         >
@@ -29,7 +29,7 @@ function Row({ item, def, points, accent }) {
       </div>
       {measure && (
         <div style={{ margin: "10px 0 0", padding: "10px 14px", borderRadius: 12, background: `${accent}12`, borderLeft: `4px solid ${accent}` }}>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: accent, marginBottom: 3 }}>What the figures show</div>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: readable(accent), marginBottom: 3 }}>What the figures show</div>
           <div style={{ fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.5, color: COLORS.ink }}>{measure.text}</div>
           {measure.progress !== null && (
             <div aria-hidden="true" style={{ height: 8, borderRadius: 4, background: COLORS.hairline, marginTop: 8, overflow: "hidden" }}>

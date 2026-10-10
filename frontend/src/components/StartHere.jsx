@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, readable, solid } from "../theme";
 import { partyColour } from "../lib/format";
 import { searchSeats } from "../lib/constituency";
 import { readRememberedSeat, rememberSeat, forgetSeat } from "../lib/rememberedMp";
@@ -17,8 +17,8 @@ function ActionButton({ children, onClick, disabled, primary = true }) {
       disabled={disabled}
       style={{
         fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 700, padding: "9px 16px", borderRadius: 999, cursor: disabled ? "not-allowed" : "pointer",
-        border: `1px solid ${disabled ? COLORS.hairline : ACCENT}`, background: disabled ? "transparent" : primary ? ACCENT : `${ACCENT}14`,
-        color: disabled ? COLORS.inkSoft : primary ? "#fff" : ACCENT, opacity: disabled ? 0.7 : 1,
+        border: `1px solid ${disabled ? COLORS.hairline : ACCENT}`, background: disabled ? "transparent" : primary ? solid(ACCENT) : `${ACCENT}14`,
+        color: disabled ? COLORS.inkSoft : primary ? "#fff" : readable(ACCENT), opacity: disabled ? 0.7 : 1,
       }}
     >
       {children}
@@ -164,7 +164,7 @@ export default function StartHere({ onNavigate, onNavigateForMp, onViewProfile }
               <button
                 type="button"
                 onClick={change}
-                style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: ACCENT }}
+                style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: readable(ACCENT) }}
               >
                 Change
               </button>
@@ -223,7 +223,7 @@ export default function StartHere({ onNavigate, onNavigateForMp, onViewProfile }
         </ul>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 22px", marginTop: 12 }}>
           {[["howitworks", "How Parliament works"], ["answers", "Ask a question"], ["glossary", "Jargon buster"], ["methodology", "Where the data comes from"]].map(([key, label]) => (
-            <button key={key} type="button" onClick={() => onNavigate?.(key)} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: ACCENT }}>
+            <button key={key} type="button" onClick={() => onNavigate?.(key)} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: readable(ACCENT) }}>
               {label}
             </button>
           ))}

@@ -5,7 +5,7 @@ import { RebelMeaning } from "./MpMeaning";
 import ShareButton from "./ShareButton";
 import { pageShareSpec } from "../lib/shareSpecs";
 import { motion } from "framer-motion";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, readable } from "../theme";
 import { supabase } from "../supabaseClient";
 import { stripHtml, formatDate } from "../lib/format";
 import { matchBillForVote } from "../lib/bills";
@@ -297,7 +297,7 @@ export function EyebrowLabel({ children, color = COLORS.accent, showRule = true 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
       {showRule && <span style={{ width: 16, height: 2, background: color, flexShrink: 0 }} />}
-      <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 500, fontSize: 14.5, letterSpacing: "0.01em", color }}>
+      <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 500, fontSize: 14.5, letterSpacing: "0.01em", color: readable(color) }}>
         {children}
       </span>
     </div>

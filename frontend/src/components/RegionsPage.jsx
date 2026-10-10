@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { LayoutGroup, motion, useReducedMotion } from "framer-motion";
-import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme";
+import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric, readable, solid } from "../theme";
 import { PageHeader, LoadFailedNote } from "./shared";
 import { rankingShareSpec } from "../lib/shareSpecs";
 import RegionMap from "./RegionMap";
@@ -101,7 +101,7 @@ function League({ rows, selected, hover, onHover, onSelect, accent, dateLabel, r
     <section aria-labelledby="h-league" style={card}>
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
         <h2 id="h-league" style={cardTitle}>League table</h2>
-        <span style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: accent }}>{dateLabel}</span>
+        <span style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: readable(accent) }}>{dateLabel}</span>
       </div>
       <p style={{ fontFamily: FONT_BODY, fontSize: 13, lineHeight: 1.5, color: COLORS.inkSoft, margin: "6px 0 12px" }}>
         Highest first. Under each figure is its change on a year earlier; the arrow by the rank shows places gained or lost in a year.
@@ -151,7 +151,7 @@ function Detail({ region, metric, def, values, ukValues, valuesByKey, index, pos
   return (
     <section aria-label="Place detail" style={card}>
       <div aria-live="polite">
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: accent }}>{tLabel(timeline[index])}</div>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: readable(accent) }}>{tLabel(timeline[index])}</div>
         <h2 style={{ ...cardTitle, margin: "2px 0 6px" }}>{region.name}</h2>
         <div style={{ ...numeric, fontSize: 42, fontWeight: 600, lineHeight: 1.05, color: COLORS.ink, letterSpacing: "-0.02em" }}>{v === null ? "No figure" : formatValue(metric.format, v)}</div>
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, margin: "4px 0 12px" }}>{metric.noun}</div>
@@ -358,7 +358,7 @@ export default function RegionsPage({ param }) {
               <div className="play-row" style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 18 }}>
                 <button
                   type="button" className="ons-tap" onClick={() => (playing ? setPlaying(false) : startPlay())}
-                  style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: "#fff", background: accent, border: "none", borderRadius: 10, padding: "9px 16px", minWidth: 100, cursor: "pointer", flexShrink: 0 }}
+                  style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: "#fff", background: solid(accent), border: "none", borderRadius: 10, padding: "9px 16px", minWidth: 100, cursor: "pointer", flexShrink: 0 }}
                 >
                   {playing ? "Pause" : pos >= last - 0.5 ? "Play again" : "Play"}
                 </button>

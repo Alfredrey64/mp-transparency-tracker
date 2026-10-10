@@ -5,7 +5,7 @@ import ShareButton from "./ShareButton";
 import { mpShareSpec } from "../lib/shareSpecs";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING, readable } from "../theme";
 import { partyColour, timeInOffice, shortCategory, formatDate, initials, ONGOING_ROLE_CATEGORIES, stripTrailingAmount, financialYearLabel } from "../lib/format";
 import { getDonorSector, sectorColor } from "../lib/donorSectors";
 import { sectorToBillCategory } from "../lib/sectorBillMapping";
@@ -206,7 +206,7 @@ function MoneyAndVotesBox({ politician, interests }) {
               <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink }}>
                 <strong>£{Math.round(link.sectorTotal).toLocaleString()}</strong> from {link.sector} donors
               </div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: link.color, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: readable(link.color), textTransform: "uppercase", letterSpacing: "0.04em" }}>
                 {link.category} · {link.votes.length} vote{link.votes.length === 1 ? "" : "s"}
               </div>
             </div>
@@ -1050,7 +1050,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
                               <meta.Icon size={16} />
                             </div>
                             <div style={{ minWidth: 0, flex: 1 }}>
-                              <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 11.5, color: meta.color, marginBottom: 6 }}>
+                              <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 11.5, color: readable(meta.color), marginBottom: 6 }}>
                                 {shortCategory(item.category)}
                               </div>
                               <div style={{ fontFamily: FONT_BODY, fontSize: 16, color: COLORS.ink, lineHeight: 1.4 }}>
@@ -1067,7 +1067,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
                               </div>
                             </div>
                             {item.value_amount && (
-                              <div style={{ flexShrink: 0, fontFamily: FONT_BODY, fontSize: 16.5, fontWeight: 700, color: meta.color, whiteSpace: "nowrap", marginRight: 8 }}>
+                              <div style={{ flexShrink: 0, fontFamily: FONT_BODY, fontSize: 16.5, fontWeight: 700, color: readable(meta.color), whiteSpace: "nowrap", marginRight: 8 }}>
                                 £{Number(item.value_amount).toLocaleString()}
                               </div>
                             )}

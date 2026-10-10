@@ -12,6 +12,13 @@
 // Sidebar.jsx's SECTIONS) — that's the main mechanism for telling one part
 // of the site from another at a glance, not a single colour repeated
 // everywhere.
+// Accent colours are bright, which suits fills and icons but is too pale to read as small text on the cream page. For text, this mixes the
+// accent with the ink colour (about half and half in light mode; the pure accent in dark mode, where bright already reads well).
+export const readable = (accent) => `color-mix(in srgb, ${accent} var(--acc-text, 100%), var(--c-ink))`;
+
+// The opposite case: a bright accent used as a fill under white text. Mixed a little towards black so the white stays readable.
+export const solid = (accent) => `color-mix(in srgb, ${accent} 74%, #101018)`;
+
 export const COLORS = {
   ink: "var(--c-ink)",
   inkSoft: "var(--c-ink-soft)",

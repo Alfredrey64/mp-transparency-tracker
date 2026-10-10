@@ -1,4 +1,4 @@
-import { COLORS, FONT_BODY } from "../theme";
+import { COLORS, FONT_BODY, readable } from "../theme";
 import { everyday } from "../lib/everyday";
 import { MEDIAN_SALARY, MP_SALARY } from "../data/referenceFigures";
 
@@ -17,7 +17,7 @@ export default function WhatThisMeans({ result, caveat, style }) {
       style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "4px 10px", marginTop: 12, padding: "9px 12px", borderRadius: 10, background: `${colour}14`, borderLeft: `3px solid ${colour}`, ...style }}
     >
       <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.inkSoft }}>What this means</span>
-      <span style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: colour, background: `${colour}1f`, borderRadius: 999, padding: "2px 9px", whiteSpace: "nowrap" }}>{result.marker}</span>
+      <span style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: readable(colour), background: `${colour}1f`, borderRadius: 999, padding: "2px 9px", whiteSpace: "nowrap" }}>{result.marker}</span>
       <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.5, flex: "1 1 240px" }}>
         {result.text}
         {caveat && <span style={{ color: COLORS.inkSoft }}> {caveat}</span>}

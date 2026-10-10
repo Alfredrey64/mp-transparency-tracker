@@ -2,7 +2,7 @@ import { useWatchlistChanges } from "../lib/useWatchlistChanges";
 import { useState, useEffect, useMemo } from "react";
 import { motion, useMotionValue, animate } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, readable, solid } from "../theme";
 import { formatDate, partyColour, shortCategory, timeAgo } from "../lib/format";
 import pipelineStatus from "../data/pipelineStatus.json";
 import { categoriseBill } from "../lib/bills";
@@ -25,7 +25,7 @@ function yearsAgo(year) {
 }
 
 const CHANGE_FEED_TYPES = {
-  donation: { icon: IconCoin, color: "#F2622A", label: "Declared interest" },
+  donation: { icon: IconCoin, color: readable("#F2622A"), label: "Declared interest" },
   bill: { icon: IconBills, color: "#9B4FE0", label: "Bill update" },
   gift: { icon: IconInfluence, color: "#D9A62A", label: "Ministerial gift" },
   petition: { icon: IconPetition, color: "#1FA97C", label: "Petition response" },
@@ -35,7 +35,7 @@ const CHANGE_FEED_TYPES = {
 // here means the same thing everywhere else.
 const FEATURES = [
   { key: "myMP", label: "Find your MP", line: "See who represents you, how they vote and what they have declared.", icon: IconPin, color: "#4F46E5" },
-  { key: "followTheMoney", label: "Follow the money", line: "Trace a donor to every MP and party they have given money to.", icon: IconSearch, color: "#F2622A" },
+  { key: "followTheMoney", label: "Follow the money", line: "Trace a donor to every MP and party they have given money to.", icon: IconSearch, color: readable("#F2622A") },
   { key: "voting", label: "Understand the bills", line: "Plain-English guides to the laws being debated, and how MPs voted.", icon: IconBills, color: "#9B4FE0" },
   { key: "answers", label: "Ask a question", line: "Why is housing so expensive? Get a short answer, the latest figures and what each party says.", icon: IconAsk, color: "#2F80ED" },
   { key: "economy", label: "See the numbers", line: "Prices, jobs, housing, crime and more, in charts you can actually read.", icon: IconTrend, color: "#0E9AA7" },
@@ -57,7 +57,7 @@ function WatchlistNote({ onNavigate }) {
         onClick={() => onNavigate?.("watchlist")}
         style={{ display: "flex", alignItems: "center", gap: 10, background: "#F2622A14", border: "1px solid #F2622A55", borderRadius: 999, padding: "9px 18px", cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink }}
       >
-        <span style={{ minWidth: 22, height: 22, padding: "0 6px", boxSizing: "border-box", borderRadius: 999, background: "#F2622A", color: "#fff", fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>{watch.changes > 99 ? "99+" : watch.changes}</span>
+        <span style={{ minWidth: 22, height: 22, padding: "0 6px", boxSizing: "border-box", borderRadius: 999, background: solid("#F2622A"), color: "#fff", fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>{watch.changes > 99 ? "99+" : watch.changes}</span>
         New since you last looked, for the {watch.following} MP{watch.following === 1 ? "" : "s"} you follow
       </button>
     </div>
@@ -274,8 +274,8 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
           {[
             { value: <CountUp value={mpCount} />, label: "MPs tracked", icon: IconGroup, color: COLORS.accent },
             pipelineStatus.generatedAt
-              ? { value: timeAgo(pipelineStatus.generatedAt), label: "last updated", icon: IconPulse, color: "#F2622A" }
-              : { value: "Daily", label: "kept up to date", icon: IconPulse, color: "#F2622A" },
+              ? { value: timeAgo(pipelineStatus.generatedAt), label: "last updated", icon: IconPulse, color: readable("#F2622A") }
+              : { value: "Daily", label: "kept up to date", icon: IconPulse, color: readable("#F2622A") },
             { value: "Official", label: "source data only", icon: IconShield, color: "#1FA97C" },
           ].map((s) => (
             <div key={s.label} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, minWidth: 108 }}>
@@ -381,7 +381,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                   borderRadius: 999,
                   border: "none",
                   cursor: "pointer",
-                  background: activeTab === tab.key ? "#F2622A" : "transparent",
+                  background: activeTab === tab.key ? solid("#F2622A") : "transparent",
                   color: activeTab === tab.key ? "#fff" : COLORS.inkSoft,
                   transition: "background 0.15s, color 0.15s",
                 }}
@@ -394,7 +394,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
 
         {activeTab === "donations" && !loading && donations.length > 0 && (
           <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginBottom: 14 }}>
-            <strong style={{ fontFamily: FONT_MONO, color: "#F2622A" }}>£{Math.round(donationsTotal).toLocaleString()}</strong> declared
+            <strong style={{ fontFamily: FONT_MONO, color: readable("#F2622A") }}>£{Math.round(donationsTotal).toLocaleString()}</strong> declared
             across these {donations.length} entries
           </div>
         )}
@@ -447,7 +447,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                     </div>
                   </div>
                   {activeTab === "donations" && item.value_amount && (
-                    <div style={{ flexShrink: 0, fontFamily: FONT_BODY, fontSize: 15, fontWeight: 700, color: "#F2622A" }}>
+                    <div style={{ flexShrink: 0, fontFamily: FONT_BODY, fontSize: 15, fontWeight: 700, color: readable("#F2622A") }}>
                       £{Number(item.value_amount).toLocaleString()}
                     </div>
                   )}
@@ -686,7 +686,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                           <Icon size={14} />
                         </span>
                         <div style={{ minWidth: 0 }}>
-                          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: meta.color, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 2 }}>
+                          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: readable(meta.color), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 2 }}>
                             {meta.label} · {formatDate(item.date)}
                           </div>
                           <div style={{ fontFamily: FONT_DISPLAY, fontSize: 14.5, color: COLORS.ink, lineHeight: 1.35 }}>

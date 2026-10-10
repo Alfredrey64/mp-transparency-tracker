@@ -1,7 +1,7 @@
 import { preloadView } from "../pageLoaders";
 import { useWatchlistChanges } from "../lib/useWatchlistChanges";
 import { useEffect, useRef, useState } from "react";
-import { FONT_DISPLAY, FONT_BODY, FONT_MONO, FONT_BRAND } from "../theme";
+import { FONT_DISPLAY, FONT_BODY, FONT_MONO, FONT_BRAND, readable } from "../theme";
 import LogoMark from "./LogoMark";
 import GlobalSearch from "./GlobalSearch";
 import { IconHome, IconMethodology, IconSettings, IconPin, IconStar, IconRoute } from "./icons";
@@ -127,7 +127,7 @@ function SidebarSection({ label, blurb, accent, items, activeView, onNavigate, o
         <span style={{ width: 9, height: 9, borderRadius: "50%", background: accent, flexShrink: 0, boxShadow: `0 0 0 4px ${accent}2a` }} />
         <span style={{ minWidth: 0, flex: 1 }}>
           <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: 15.5, fontWeight: 600, color: "var(--sb-strong)", lineHeight: 1.2 }}>{label}</span>
-          <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12, color: !open && activeItem ? accent : "var(--sb-soft)", marginTop: 2, lineHeight: 1.3, fontWeight: !open && activeItem ? 600 : 400 }}>
+          <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12, color: !open && activeItem ? readable(accent) : "var(--sb-soft)", marginTop: 2, lineHeight: 1.3, fontWeight: !open && activeItem ? 600 : 400 }}>
             {!open && activeItem ? `You're on: ${activeItem.label}` : blurb}
           </span>
         </span>
