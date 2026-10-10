@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, numeric } from "../theme";
 import { PageHeader } from "./shared";
-import { partyColour, initials } from "../lib/format";
+import { partyColour, initials, formatDate, shortCategory } from "../lib/format";
 import { partyColourByName } from "../lib/careerTimeline";
 import { normalizeDonorKey } from "../lib/donorSectors";
 import { IconSearch } from "./icons";
@@ -58,10 +58,11 @@ function aggregateByPolitician(rows) {
   const map = new Map();
   for (const r of rows) {
     const pol = r.politicians;
-    if (!map.has(pol.id)) map.set(pol.id, { politician: pol, total: 0, count: 0 });
+    if (!map.has(pol.id)) map.set(pol.id, { politician: pol, total: 0, count: 0, gifts: [] });
     const e = map.get(pol.id);
     e.total += r.value_amount ?? 0;
     e.count += 1;
+    e.gifts.push({ date: r.date_registered, amount: r.value_amount, note: r.category ? shortCategory(r.category) : null });
   }
   return [...map.values()].sort((a, b) => b.total - a.total);
 }
@@ -69,10 +70,11 @@ function aggregateByPolitician(rows) {
 function aggregateByParty(rows) {
   const map = new Map();
   for (const r of rows) {
-    if (!map.has(r.party_name)) map.set(r.party_name, { party: r.party_name, total: 0, count: 0 });
+    if (!map.has(r.party_name)) map.set(r.party_name, { party: r.party_name, total: 0, count: 0, gifts: [] });
     const e = map.get(r.party_name);
     e.total += r.value ?? 0;
     e.count += 1;
+    e.gifts.push({ date: r.accepted_date, amount: r.value, note: r.donation_type });
   }
   return [...map.values()].sort((a, b) => b.total - a.total);
 }
@@ -97,9 +99,10 @@ function SplitBar({ mp, party }) {
   );
 }
 
-// One list of recipients with a bar behind each row, so the biggest stands out.
+// One list of recipients with a bar behind each row, so the biggest stands out. Tap a row to see each gift.
 function Recipients({ title, total, accent, rows }) {
   const max = Math.max(...rows.map((r) => r.total), 1);
+  const [openKey, setOpenKey] = useState(null);
   return (
     <div style={{ minWidth: 0 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8, paddingBottom: 8, borderBottom: `2px solid ${accent}` }}>
@@ -107,21 +110,38 @@ function Recipients({ title, total, accent, rows }) {
         <span style={{ ...numeric, fontSize: 14, fontWeight: 700, color: accent }}>{money(total)}</span>
       </div>
       <ul style={{ listStyle: "none", margin: "6px 0 0", padding: 0, display: "grid", gap: 2 }}>
-        {rows.map((r) => (
-          <li key={r.key}>
-            {r.onClick ? (
-              <button type="button" onClick={r.onClick} className="nclick" style={{ ...rowStyle, cursor: "pointer" }}>{rowBody(r, max)}</button>
-            ) : (
-              <div style={rowStyle}>{rowBody(r, max)}</div>
-            )}
-          </li>
-        ))}
+        {rows.map((r) => {
+          const open = openKey === r.key;
+          return (
+            <li key={r.key}>
+              <button type="button" onClick={() => setOpenKey(open ? null : r.key)} aria-expanded={open} className="nclick" style={{ ...rowStyle, cursor: "pointer" }}>{rowBody(r, max, open)}</button>
+              {open && (
+                <div style={{ margin: "2px 0 8px 3px", padding: "8px 12px", borderLeft: `3px solid ${r.colour}`, background: `${r.colour}0f`, borderRadius: "0 10px 10px 0" }}>
+                  <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 6 }}>
+                    {[...r.gifts].sort((x, y) => String(y.date ?? "").localeCompare(String(x.date ?? ""))).map((g, i) => (
+                      <li key={i} style={{ display: "flex", justifyContent: "space-between", gap: 10, fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink }}>
+                        <span style={{ minWidth: 0 }}>
+                          {g.date ? formatDate(g.date) : "Date not given"}
+                          {g.note && <span style={{ color: COLORS.inkSoft }}> · {g.note}</span>}
+                        </span>
+                        <span style={{ ...numeric, flexShrink: 0, fontWeight: 600 }}>{g.amount != null ? money(g.amount) : "No value"}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  {r.onClick && (
+                    <button type="button" onClick={r.onClick} className="ons-chip" style={{ marginTop: 10, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accent }}>Open {r.label}&apos;s profile</button>
+                  )}
+                </div>
+              )}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
 }
 const rowStyle = { position: "relative", display: "block", width: "100%", textAlign: "left", background: "none", border: "none", padding: "9px 8px", borderRadius: 10, overflow: "hidden", font: "inherit", color: "inherit" };
-function rowBody(r, max) {
+function rowBody(r, max, open) {
   return (
     <>
       <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${Math.max(4, (r.total / max) * 100)}%`, background: `${r.colour}1f`, borderLeft: `3px solid ${r.colour}` }} />
@@ -130,9 +150,12 @@ function rowBody(r, max) {
           <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 14, fontWeight: 600, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.label}</span>
           {r.sub && <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>{r.sub}</span>}
         </span>
-        <span style={{ ...numeric, flexShrink: 0, fontSize: 14, fontWeight: 600, color: COLORS.ink, textAlign: "right" }}>
-          {money(r.total)}
-          {r.count > 1 && <span style={{ display: "block", fontFamily: FONT_BODY, fontWeight: 400, fontSize: 11.5, color: COLORS.inkSoft }}>{r.count} gifts</span>}
+        <span style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          <span style={{ ...numeric, fontSize: 14, fontWeight: 600, color: COLORS.ink, textAlign: "right" }}>
+            {money(r.total)}
+            <span style={{ display: "block", fontFamily: FONT_BODY, fontWeight: 400, fontSize: 11.5, color: COLORS.inkSoft }}>{r.count} {r.count === 1 ? "gift" : "gifts"}</span>
+          </span>
+          <span aria-hidden="true" style={{ fontSize: 16, color: COLORS.inkSoft, transform: open ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>⌄</span>
         </span>
       </span>
     </>
@@ -147,6 +170,7 @@ function DonorResultCard({ result, index, onSelectPolitician }) {
     [result]
   );
   const gifts = result.mpRows.length + result.partyRows.length;
+  const [open, setOpen] = useState(true);
 
   return (
     <motion.article
@@ -156,7 +180,11 @@ function DonorResultCard({ result, index, onSelectPolitician }) {
       transition={{ duration: 0.3, delay: Math.min(index, 6) * 0.05 }}
       style={{ position: "relative", overflow: "hidden", background: `linear-gradient(135deg, ${COLORS.accent}0f, ${COLORS.paperCard} 45%)`, border: `1px solid ${COLORS.hairline}`, borderRadius: 20, padding: "clamp(16px, 3vw, 24px)", boxShadow: "0 18px 40px -28px rgba(0,0,0,0.5)" }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+      <div
+        role="button" tabIndex={0} aria-expanded={open} aria-label={`${result.displayName}: ${open ? "hide" : "show"} who got the money`}
+        onClick={() => setOpen(!open)} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setOpen(!open); } }}
+        style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", cursor: "pointer" }}
+      >
         <span aria-hidden="true" style={{ flexShrink: 0, width: 52, height: 52, borderRadius: 16, display: "grid", placeItems: "center", background: `linear-gradient(145deg, ${COLORS.accent}, ${COLORS.accent}99)`, color: "#fff", fontFamily: FONT_DISPLAY, fontSize: 19, fontWeight: 700 }}>{initials(result.displayName)}</span>
         <div style={{ flex: "1 1 220px", minWidth: 0 }}>
           <h3 style={{ margin: 0, fontFamily: FONT_DISPLAY, fontSize: "clamp(19px, 2.6vw, 24px)", fontWeight: 700, color: COLORS.ink, lineHeight: 1.2, overflowWrap: "anywhere" }}>{result.displayName}</h3>
@@ -169,26 +197,29 @@ function DonorResultCard({ result, index, onSelectPolitician }) {
           <div style={{ ...numeric, fontSize: "clamp(26px, 4vw, 34px)", fontWeight: 700, letterSpacing: "-0.03em", color: COLORS.ink, lineHeight: 1 }}>{money(result.grandTotal)}</div>
           <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 3 }}>given in total</div>
         </div>
+        <span aria-hidden="true" style={{ fontSize: 20, color: COLORS.inkSoft, transform: open ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>⌄</span>
       </div>
 
       <div style={{ marginTop: 18 }}><SplitBar mp={result.mpTotal} party={result.partyTotal} /></div>
 
+      {open && (<>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))", gap: "22px 28px", marginTop: 22 }}>
         {mpAgg.length > 0 && (
           <Recipients
             title="Given to MPs personally" total={result.mpTotal} accent="#4F46E5"
-            rows={mpAgg.map((m) => ({ key: m.politician.id, label: m.politician.name, sub: m.politician.party, colour: partyColour(m.politician.party_colour, COLORS.inkSoft), total: m.total, count: m.count, onClick: () => onSelectPolitician?.(m.politician) }))}
+            rows={mpAgg.map((m) => ({ key: m.politician.id, label: m.politician.name, sub: m.politician.party, colour: partyColour(m.politician.party_colour, COLORS.inkSoft), total: m.total, count: m.count, gifts: m.gifts, onClick: () => onSelectPolitician?.(m.politician) }))}
           />
         )}
         {partyAgg.length > 0 && (
           <Recipients
             title="Given to political parties" total={result.partyTotal} accent="#E0367A"
-            rows={partyAgg.map((p) => ({ key: p.party, label: p.party, colour: partyColourByName(p.party), total: p.total, count: p.count }))}
+            rows={partyAgg.map((p) => ({ key: p.party, label: p.party, colour: partyColourByName(p.party), total: p.total, count: p.count, gifts: p.gifts }))}
           />
         )}
       </div>
 
       <DonorVotes donorName={result.displayName} mps={mpAgg.map((m) => m.politician)} />
+      </>)}
     </motion.article>
   );
 }
@@ -244,13 +275,13 @@ export default function FollowTheMoney({ onSelectPolitician, initialQuery = null
       const [interestsRes, donationsRes] = await Promise.all([
         supabase
           .from("financial_interests")
-          .select("donor_name, value_amount, politicians(id, name, party, party_colour, constituency)")
+          .select("donor_name, value_amount, date_registered, category, politicians(id, name, party, party_colour, constituency)")
           .ilike("donor_name", `%${debounced}%`)
           .not("value_amount", "is", null)
           .limit(500),
         supabase
           .from("party_donations")
-          .select("donor_name, value, party_name, company_registration_number")
+          .select("donor_name, value, party_name, company_registration_number, accepted_date, donation_type")
           .ilike("donor_name", `%${debounced}%`)
           .not("value", "is", null)
           .limit(500),
