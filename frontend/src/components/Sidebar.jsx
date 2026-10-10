@@ -230,21 +230,18 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician, onClose }) {
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg>
         </button>
       )}
-      <div style={{ marginBottom: 4 }}>
-        <button
-          type="button"
-          onClick={() => onNavigate("home")}
-          aria-label="Simple Politics, back to the overview"
-          style={{ display: "flex", alignItems: "center", gap: 13, width: "100%", textAlign: "left", cursor: "pointer", padding: "14px 14px", borderRadius: 18, border: "1px solid rgba(255,255,255,0.1)", background: "radial-gradient(260px 130px at 0% 0%, rgba(124,116,255,0.30), transparent 70%), linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02))", boxShadow: "0 14px 28px -20px rgba(0,0,0,0.6)" }}
-        >
-          <LogoMark size={46} />
-          <span style={{ minWidth: 0 }}>
-            <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em", color: "#fff", lineHeight: 1.1 }}>Simple Politics</span>
-            <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, color: "rgba(226,232,232,0.72)", marginTop: 4, lineHeight: 1.3 }}>UK politics, made simple</span>
-          </span>
-        </button>
-        <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: "rgba(226,232,232,0.5)", textAlign: "center", marginTop: 9 }}>Independent and unofficial</div>
-      </div>
+      <button
+        type="button"
+        onClick={() => onNavigate("home")}
+        aria-label="Simple Politics, back to the overview"
+        style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", textAlign: "left", cursor: "pointer", background: "none", border: "none", padding: "2px 2px 4px" }}
+      >
+        <LogoMark size={40} />
+        <span style={{ minWidth: 0 }}>
+          <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 19, letterSpacing: "-0.02em", color: "#fff", lineHeight: 1.1 }}>Simple Politics</span>
+          <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12, color: "rgba(226,232,232,0.62)", marginTop: 3 }}>UK politics, made simple</span>
+        </span>
+      </button>
 
       <div style={{ marginTop: 14 }}>
         <GlobalSearch onSelectPolitician={onSelectPolitician} onNavigate={onNavigate} />

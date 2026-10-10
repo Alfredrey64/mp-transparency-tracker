@@ -259,7 +259,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
       >
         <motion.div variants={revealChild}>
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <EyebrowLabel>Simple Politics</EyebrowLabel>
+            <EyebrowLabel>Independent and unofficial</EyebrowLabel>
           </div>
           <h1 style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: "clamp(36px, 6vw, 58px)", color: COLORS.ink, margin: "16px auto 0", lineHeight: 1.08, maxWidth: 760 }}>
             A simple breakdown of UK politics.

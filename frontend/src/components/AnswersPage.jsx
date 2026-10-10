@@ -215,20 +215,29 @@ export default function AnswersPage({ param }) {
               ))}
             </div>
           )}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 20, marginTop: answer ? 12 : 0 }}>
+          <div style={{ display: "grid", gap: 26, marginTop: answer ? 12 : 0 }}>
             {ANSWER_TOPICS.map((topic) => (
               <div key={topic}>
-                <h3 style={{ ...smallTitle, fontSize: 14, color: ACCENT, margin: "0 0 6px" }}>{topic}</h3>
-                <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 2 }}>
-                  {ANSWERS.filter((a) => a.topic === topic).map((a) => (
-                    <li key={a.id}>
-                      <a className="ons-tap" href={`#/answers/${a.id}`} aria-current={answer?.id === a.id ? "page" : undefined} style={{ display: "flex", alignItems: "center", fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: answer?.id === a.id ? 700 : 500, color: COLORS.ink, textDecoration: "none", padding: "7px 0", minHeight: 36 }}>{a.question}</a>
-                    </li>
-                  ))}
+                <h3 style={{ ...smallTitle, fontSize: 14, color: ACCENT, margin: "0 0 10px" }}>{topic}</h3>
+                <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(270px, 100%), 1fr))", gap: 10 }}>
+                  {ANSWERS.filter((a) => a.topic === topic).map((a) => {
+                    const here = answer?.id === a.id;
+                    return (
+                      <li key={a.id} style={{ display: "flex" }}>
+                        <a
+                          className="ons-tap answer-box" href={`#/answers/${a.id}`} aria-current={here ? "page" : undefined}
+                          style={{ display: "flex", alignItems: "center", width: "100%", boxSizing: "border-box", fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.4, fontWeight: here ? 700 : 600, color: COLORS.ink, textDecoration: "none", padding: "13px 16px", minHeight: 56, borderRadius: 14, background: here ? `${ACCENT}1c` : COLORS.paperCard, borderTop: `1px solid ${here ? ACCENT : COLORS.hairline}`, borderRight: `1px solid ${here ? ACCENT : COLORS.hairline}`, borderBottom: `1px solid ${here ? ACCENT : COLORS.hairline}`, borderLeft: `4px solid ${ACCENT}`, transition: "background 0.15s, transform 0.15s, box-shadow 0.15s" }}
+                        >
+                          {a.question}
+                        </a>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             ))}
           </div>
+          <style>{`.answer-box:hover { background: ${ACCENT}14 !important; transform: translateY(-2px); box-shadow: 0 14px 26px -20px rgba(0, 0, 0, 0.6); } @media (prefers-reduced-motion: reduce) { .answer-box:hover { transform: none; } }`}</style>
         </section>
       )}
     </div>
