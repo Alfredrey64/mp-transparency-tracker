@@ -1,21 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 64 64">
   <defs>
     <linearGradient id="bg" x1="8%" y1="4%" x2="92%" y2="96%">
-      <stop offset="0%" stop-color="#6C63F1"/>
-      <stop offset="50%" stop-color="#4F46E5"/>
-      <stop offset="100%" stop-color="#332DA1"/>
+      <stop offset="0" stop-color="#7C74FF"/>
+      <stop offset=".55" stop-color="#4F46E5"/>
+      <stop offset="1" stop-color="#2B2594"/>
     </linearGradient>
-    <radialGradient id="sheen" cx="30%" cy="14%" r="70%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.22"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    <radialGradient id="sheen" cx="28%" cy="12%" r="75%">
+      <stop offset="0" stop-color="#fff" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
     </radialGradient>
-    <filter id="lift" x="-30%" y="-30%" width="160%" height="170%">
-      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#171248" flood-opacity="0.45"/>
-    </filter>
   </defs>
-  <rect width="512" height="512" fill="url(#bg)"/>
-  <rect width="512" height="512" fill="url(#sheen)"/>
-  <!-- A speech bubble with a tick: a clear answer. -->
-  <path filter="url(#lift)" fill="#ffffff" d="M184 104h144a72 72 0 0 1 72 72v80a72 72 0 0 1-72 72H264l-72 64v-64h-8a72 72 0 0 1-72-72v-80a72 72 0 0 1 72-72z"/>
-  <path fill="none" stroke="#4F46E5" stroke-width="44" stroke-linecap="round" stroke-linejoin="round" d="M190 218l50 50 94-96"/>
+  <rect width="64" height="64" rx="16" fill="url(#bg)"/>
+  <rect width="64" height="64" rx="16" fill="url(#sheen)"/>
+  <!-- Two speech bubbles, the front one with a tick: a conversation that ends in a clear answer. -->
+  <path fill="#fff" fill-opacity=".38" d="M38 9H47A9 9 0 0 1 56 18V24A9 9 0 0 1 47 33H46V40L38 33H38A9 9 0 0 1 29 24V18A9 9 0 0 1 38 9Z"/>
+  <path fill="#fff" d="M17 23H35A9 9 0 0 1 44 32V39A9 9 0 0 1 35 48H27L17 56V48A9 9 0 0 1 8 39V32A9 9 0 0 1 17 23Z"/>
+  <path fill="none" stroke="#4F46E5" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M18.5 36l5.5 5.5L33.5 31"/>
 </svg>

@@ -2,7 +2,6 @@ import { preloadView } from "../pageLoaders";
 import { useWatchlistChanges } from "../lib/useWatchlistChanges";
 import { useEffect, useRef, useState } from "react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
-import { EyebrowLabel } from "./shared";
 import LogoMark from "./LogoMark";
 import GlobalSearch from "./GlobalSearch";
 import { IconHome, IconMethodology, IconSettings, IconPin, IconStar, IconRoute } from "./icons";
@@ -231,23 +230,20 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician, onClose }) {
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg>
         </button>
       )}
-      <div style={{ marginBottom: 4, textAlign: "center" }}>
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: 7 }}>
-          <LogoMark size={48} />
-        </div>
-        {/* No rule here (showRule is for the left-aligned masthead usage next
-            to a headline): a leading dash in front of one centred word just
-            reads as a stray mark. */}
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <EyebrowLabel color={COLORS.accentOnDark} showRule={false}>Independent and unofficial</EyebrowLabel>
-        </div>
-        <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 19, color: "#fff", lineHeight: 1.2, marginTop: 6 }}>
-          Simple Politics
-        </div>
-        <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: "rgba(226,232,232,0.6)", marginTop: 2 }}>UK politics, made simple</div>
-        <div style={{ display: "flex", justifyContent: "center", marginTop: 10 }}>
-          <span style={{ width: 140, height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)" }} />
-        </div>
+      <div style={{ marginBottom: 4 }}>
+        <button
+          type="button"
+          onClick={() => onNavigate("home")}
+          aria-label="Simple Politics, back to the overview"
+          style={{ display: "flex", alignItems: "center", gap: 13, width: "100%", textAlign: "left", cursor: "pointer", padding: "14px 14px", borderRadius: 18, border: "1px solid rgba(255,255,255,0.1)", background: "radial-gradient(260px 130px at 0% 0%, rgba(124,116,255,0.30), transparent 70%), linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02))", boxShadow: "0 14px 28px -20px rgba(0,0,0,0.6)" }}
+        >
+          <LogoMark size={46} />
+          <span style={{ minWidth: 0 }}>
+            <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em", color: "#fff", lineHeight: 1.1 }}>Simple Politics</span>
+            <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, color: "rgba(226,232,232,0.72)", marginTop: 4, lineHeight: 1.3 }}>UK politics, made simple</span>
+          </span>
+        </button>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: "rgba(226,232,232,0.5)", textAlign: "center", marginTop: 9 }}>Independent and unofficial</div>
       </div>
 
       <div style={{ marginTop: 14 }}>
@@ -354,8 +350,8 @@ export default function Sidebar({ activeView, onNavigate, onSelectPolitician }) 
         style={{ alignItems: "center", justifyContent: "space-between", background: COLORS.sidebarBg, padding: "4px 14px" }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <LogoMark size={28} />
-          <span style={{ fontFamily: FONT_DISPLAY, fontSize: 16, color: "#fff", whiteSpace: "nowrap" }}>Simple Politics</span>
+          <LogoMark size={30} />
+          <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: "#fff", whiteSpace: "nowrap" }}>Simple Politics</span>
         </div>
         <button
           onClick={() => setOpen(true)}
