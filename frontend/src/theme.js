@@ -43,8 +43,8 @@ export const COLORS = {
 // sizes. IBM Plex Mono is untouched for tabular figures.
 export const FONT_DISPLAY = "'Space Grotesk', system-ui, sans-serif";
 export const FONT_BODY = "'Archivo', system-ui, sans-serif";
-// The wordmark only: a bold, high-contrast display serif with some presence.
-export const FONT_BRAND = "'Playfair Display', 'Fraunces', Georgia, serif";
+// The wordmark only: a confident, modern geometric sans with presence.
+export const FONT_BRAND = "'Sora', 'Space Grotesk', system-ui, sans-serif";
 export const FONT_MONO = "'IBM Plex Mono', monospace";
 // For figures that are the point of a page — percentages, counts, majorities.
 // Fraunces is a soft, high-contrast serif with distinctive numerals, which

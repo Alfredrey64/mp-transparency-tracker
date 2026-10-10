@@ -238,7 +238,7 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician, onClose }) {
           style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, width: "100%", textAlign: "center", cursor: "pointer", background: "none", border: "none", padding: 0 }}
         >
           <LogoMark width={92} />
-          <span style={{ display: "block", fontFamily: FONT_BRAND, fontWeight: 800, fontSize: 27, letterSpacing: "-0.01em", color: "var(--sb-strong)", lineHeight: 1.05 }}>Simple Politics</span>
+          <span style={{ display: "block", fontFamily: FONT_BRAND, fontWeight: 700, fontSize: 24, letterSpacing: "-0.025em", color: "var(--sb-strong)", lineHeight: 1.05 }}>Simple Politics</span>
         </button>
         <div aria-hidden="true" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, margin: "11px auto 9px", maxWidth: 190 }}>
           <span style={{ flex: 1, height: 1, background: "linear-gradient(90deg, transparent, var(--sb-border-strong))" }} />
@@ -353,7 +353,7 @@ export default function Sidebar({ activeView, onNavigate, onSelectPolitician }) 
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <LogoMark width={38} />
-          <span style={{ fontFamily: FONT_BRAND, fontWeight: 800, fontSize: 20, letterSpacing: "-0.01em", color: "var(--sb-strong)", whiteSpace: "nowrap" }}>Simple Politics</span>
+          <span style={{ fontFamily: FONT_BRAND, fontWeight: 700, fontSize: 18, letterSpacing: "-0.025em", color: "var(--sb-strong)", whiteSpace: "nowrap" }}>Simple Politics</span>
         </div>
         <button
           onClick={() => setOpen(true)}
