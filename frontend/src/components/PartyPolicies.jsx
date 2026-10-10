@@ -7,6 +7,8 @@ import { isTrackedParty, findManifesto } from "../data/partyManifestos";
 import { PageHeader, LoadFailedNote } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconManifesto } from "./icons";
+import { ANSWER_POSITIONS } from "../data/answerPartyPositions";
+import { ANSWERS } from "../data/answers";
 
 // The party-colour dot is the only element that shares a layoutId between
 // the grid card and the modal — like the CommonsBadge morph elsewhere in
@@ -86,6 +88,16 @@ export default function PartyPolicies() {
           </>
         }
       />
+
+      <section aria-labelledby="h-by-question" style={{ margin: "4px 0 22px", padding: "16px 18px", borderRadius: 18, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}` }}>
+        <h2 id="h-by-question" style={{ fontFamily: FONT_DISPLAY, fontSize: 19, fontWeight: 700, color: COLORS.ink, margin: 0 }}>Compare the parties on one question</h2>
+        <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "4px 0 12px", maxWidth: 680 }}>Pick an issue to see what each party said it would do about it, side by side, with the latest figures.</p>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          {ANSWERS.filter((a) => ANSWER_POSITIONS[a.id]).map((a) => (
+            <a key={a.id} className="ons-tap" href={`#/answers/${a.id}`} style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink, textDecoration: "none", padding: "8px 14px", borderRadius: 999, border: `1px solid ${COLORS.hairline}`, background: COLORS.paper }}>{a.question}</a>
+          ))}
+        </div>
+      </section>
 
       {parties === null ? (
         <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, marginTop: 24 }}>Loading…</div>

@@ -140,13 +140,14 @@ export const ANSWER_POSITIONS = {
       labour: "Ban exploitative zero-hours contracts, end \"fire and rehire\" and make the minimum wage a genuine living wage.",
       conservative: "Cut National Insurance so employees keep more of their pay.",
       "reform-uk": "Raise the income tax threshold to £20,000 so lower earners keep more of their pay.",
+      green: "Raise the minimum wage to £15 an hour for all ages and give every worker the same rights from their first day.",
     },
   },
   "why-not-working": {
     about: "on people out of work through illness",
     parties: {
       labour: "Reform the Jobcentre system into a service that helps people into work, with more mental health support.",
-      conservative: "Reform fit notes so GPs are no longer the main route to sick notes, and tighten the rules on benefits for those able to work.",
+      conservative: "Overhaul the fit note and the work capability assessment so GPs are no longer the main route to a sick note, and save £12 billion a year in welfare spending.",
     },
   },
   "is-crime-rising": {
@@ -168,9 +169,23 @@ export const ANSWER_POSITIONS = {
 };
 
 ANSWER_POSITIONS["what-is-national-insurance"] = ANSWER_POSITIONS["where-does-tax-go"];
+ANSWER_POSITIONS["are-young-people-struggling-for-jobs"] = {
+  about: "on jobs for young people",
+  parties: {
+    labour: "A youth guarantee: access to training, an apprenticeship or help to find work for every 18 to 21 year old.",
+  },
+};
+ANSWER_POSITIONS["why-are-there-strikes"] = {
+  about: "on strikes and union law",
+  parties: {
+    labour: "Repeal the Trade Union Act 2016 and the law on minimum service levels during strikes.",
+    green: "Repeal the anti-union laws and bring in a Charter of Workers' Rights, with the right to strike at its heart.",
+  },
+};
 ANSWER_POSITIONS["benefits-and-pensions-spending"] = {
   about: "on benefits",
   parties: {
+    conservative: "Save £12 billion a year in welfare spending by overhauling the fit note and the work capability assessment, and using more sanctions for people who refuse work.",
     snp: "Scrap the two-child benefit cap and bring in an \"essentials guarantee\", so everyone can afford basics such as food and energy.",
   },
 };
