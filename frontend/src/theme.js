@@ -44,7 +44,7 @@ export const COLORS = {
 export const FONT_DISPLAY = "'Space Grotesk', system-ui, sans-serif";
 export const FONT_BODY = "'Archivo', system-ui, sans-serif";
 // The wordmark only: a bold, high-contrast display serif with some presence.
-export const FONT_BRAND = "'DM Serif Display', 'Fraunces', Georgia, serif";
+export const FONT_BRAND = "'Playfair Display', 'Fraunces', Georgia, serif";
 export const FONT_MONO = "'IBM Plex Mono', monospace";
 // For figures that are the point of a page — percentages, counts, majorities.
 // Fraunces is a soft, high-contrast serif with distinctive numerals, which
