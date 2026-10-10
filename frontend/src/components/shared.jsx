@@ -964,15 +964,4 @@ export function LoadFailedNote({ item = "this" }) {
   );
 }
 
-export function PlaceholderBox({ title, note }) {
-  return (
-    <div style={{ paddingTop: 18, borderTop: `1px solid ${COLORS.hairline}` }}>
-      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink, marginBottom: 6 }}>
-        {sentenceCase(title)}
-      </div>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>{note}</div>
-    </div>
-  );
-}
-
 export { FONT_DISPLAY, FONT_BODY, FONT_MONO, COLORS };

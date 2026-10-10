@@ -1,4 +1,3 @@
-import { COLORS, FONT_BODY } from "../theme";
 import { useBenchmarks } from "../lib/useBenchmarks";
 import { describeAmongMps } from "../lib/interpret";
 import WhatThisMeans, { Everyday } from "./WhatThisMeans";
@@ -64,6 +63,3 @@ export function YearsMeaning({ politician }) {
   return <WhatThisMeans result={result} caveat="Some MPs have had breaks in service." />;
 }
 
-export function MeaningNote({ children }) {
-  return <p style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.55, margin: "8px 0 0" }}>{children}</p>;
-}

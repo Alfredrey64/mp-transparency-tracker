@@ -66,9 +66,3 @@ export function challengers(rows, party) {
   return [...counts.entries()].sort((a, b) => b[1] - a[1]).map(([name, seats]) => ({ name, seats }));
 }
 
-// A party's lead in the vote, in points, as a plain phrase.
-export function leadPhrase(points) {
-  if (points == null) return "";
-  if (points < 0.1) return "under 0.1 points";
-  return `${points.toFixed(1)} points`;
-}

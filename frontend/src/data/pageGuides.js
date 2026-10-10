@@ -12,7 +12,7 @@ export const PAGE_GUIDES = {
     notShown: "Anything an MP hasn't declared, and why they do what they do. Declaring something is what the rules require, and does not mean anything is wrong.",
   },
   mp: {
-    what: "One MP's declared interests, voting record, questions, committees, career and what they have said, gathered from official sources.",
+    what: "One MP's declared interests, where the money came from, voting record, questions, committees, career and what they have said, gathered from official sources.",
     why: "It's the quickest way to see what your representative does and who they might owe favours to, without reading dozens of separate government sites.",
     notShown: "Their reasons, conversations, or anything outside the public record. How they vote is not the same as how hard they work for their area.",
   },
@@ -32,9 +32,9 @@ export const PAGE_GUIDES = {
     notShown: "Ethnicity, age and education (not published), and peers' votes and declared interests in a structured form.",
   },
   constituency: {
-    what: "A map of all 650 seats, one equal hexagon each, with the result, MP, petitions and history of any seat you pick.",
-    why: "Your constituency is the way you are represented. This shows how close the last result was, who held it before and what people there care about.",
-    notShown: "Council or local-election results, or anything below constituency level. The map is a rough outline and distances are not to scale.",
+    what: "A map of all 650 seats, one equal hexagon each. Pick any seat for its result, MP, petitions, history and local numbers such as deprivation, house prices, pay and jobs.",
+    why: "Your constituency is the way you are represented. This shows how close the last result was, who held it before, what people there care about and how the area is doing.",
+    notShown: "Council or local-election results. House prices, pay and jobs are for the whole region, not the seat. The map is a rough outline and distances are not to scale.",
   },
   rebels: {
     what: "How often MPs vote against the majority of their own party, which parties split most and which votes caused the biggest rebellions.",
@@ -62,9 +62,9 @@ export const PAGE_GUIDES = {
     notShown: "Individual companies, or profits. Monthly figures are early estimates and are revised.",
   },
   answers: {
-    what: "Plain-English answers to common questions such as why housing is so expensive, with the latest official figures and the main arguments from different sides.",
+    what: "Plain-English answers to common questions such as why housing is so expensive, with the latest figures, the arguments from different sides and what each party said it would do.",
     why: "News and politics often assume you know the background. These answers give it to you, and show where the numbers come from.",
-    notShown: "An answer to every question: they are written by hand, so only the questions listed.",
+    notShown: "An answer to every question: they are written by hand, so only the questions listed. Party positions come from the 2024 manifestos and may have changed.",
   },
   regions: {
     what: "An interactive map of the 12 regions and nations of the UK, coloured by house prices, pay, unemployment, jobs and inactivity, with a label on every place, which you can play through time.",
@@ -92,7 +92,7 @@ export const PAGE_GUIDES = {
     notShown: "Rates on any one deal you could get today. These are averages across lenders.",
   },
   indicators: {
-    what: "A tool for picking up to four measures from the Britain in numbers pages and watching how they moved over time, with who was in government shaded behind.",
+    what: "Pick a topic, then up to four measures from it, or start from a ready-made question, and watch how they moved over time with who was in government shaded behind.",
     why: "Comparing measures over the same years shows how they moved together or apart. Shading by government shows when things changed.",
     notShown: "What caused any change. Most of these figures are shaped by world events, not just one government.",
   },
@@ -172,7 +172,7 @@ export const PAGE_GUIDES = {
     notShown: "Everything that happened outside Parliament. Only governments and landmark bills are included.",
   },
   devolved: {
-    what: "How Scotland, Wales and Northern Ireland run some of their own affairs through their own parliaments, and what is left to Westminster.",
+    what: "How Scotland, Wales and Northern Ireland run some of their own affairs through their own parliaments, who leads each and what is left to Westminster.",
     why: "Who decides your health, schools or police depends on where you live, so knowing who holds which power matters.",
     notShown: "Detailed policy in each nation, or the work of local councils.",
   },
@@ -272,7 +272,7 @@ export const PAGE_GUIDES = {
     notShown: "Anything not in the sources listed. It also says plainly which matches are less certain.",
   },
   glossary: {
-    what: "Plain-English definitions of the jargon used across this site and in political news.",
+    what: "Plain-English definitions of the jargon used across this site and in political news, with a word of the day and a quiz to test yourself.",
     why: "Politics is full of words that sound like they mean one thing and mean another. Knowing them makes the news understandable.",
     notShown: "Every term ever used. It covers the words you'll meet most often.",
   },
@@ -297,9 +297,9 @@ export const PAGE_GUIDES = {
     notShown: "Most lobbying. Lobbyists employed directly by a company, and contact with ordinary MPs, aren't covered.",
   },
   followTheMoney: {
-    what: "Search any company, union or person to see every MP and party they have given declared money to.",
+    what: "Search any company, union or person to see every MP and party they have given declared money to, how each gift was declared and how the MPs they funded voted.",
     why: "It reverses the usual view: instead of looking at an MP's donors, you start from the donor.",
-    notShown: "Money that wasn't declared. Names can be spelled differently across registers, so matches aren't always complete.",
+    notShown: "Money that wasn't declared, or what a gift was meant to achieve. Names can be spelled differently across registers, so matches aren't always complete.",
   },
   watchlist: {
     what: "What's new for the MPs you follow since you last looked: new declarations, votes against their party and news.",

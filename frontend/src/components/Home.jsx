@@ -76,7 +76,7 @@ function CountUp({ value }) {
       onUpdate: (v) => setDisplay(Math.round(v)),
     });
     return () => controls.stop();
-  }, [value]);
+  }, [value, mv]);
 
   return <>{value ? display : "…"}</>;
 }

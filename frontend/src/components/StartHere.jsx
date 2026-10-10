@@ -175,8 +175,8 @@ export default function StartHere({ onNavigate, onNavigateForMp, onViewProfile }
 
         <Step n={2} title="See what they've declared">
           <p style={body}>
-            MPs must publish outside jobs, gifts, donations, shareholdings and trips. Each profile opens with a plain-English summary of all of it, then lists every
-            entry underneath. A declaration is what the rules require. It isn't a sign anything is wrong.
+            MPs must publish outside jobs, gifts, donations, shareholdings and trips. Each profile opens with a plain-English summary of all of it, shows where the money
+            came from, then lists every entry underneath. A declaration is what the rules require. It isn't a sign anything is wrong.
           </p>
           <ActionButton disabled={!ready} onClick={() => onViewProfile?.(mp)}>{ready ? `Open ${name}'s profile` : "Pick your MP in step 1"}</ActionButton>
         </Step>
@@ -205,7 +205,7 @@ export default function StartHere({ onNavigate, onNavigateForMp, onViewProfile }
 
         <Step n={5} title="Look at your area" last>
           <p style={body}>
-            How your constituency voted at the last election, how close it was, and which petitions people near you have been signing.
+            How your constituency voted at the last election, how close it was, which petitions people near you have been signing, and how the area is doing on deprivation, house prices, pay and jobs.
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
             <ActionButton disabled={!picked} onClick={() => goSeat(picked.name)}>{picked ? `See ${picked.name}` : "Pick your MP in step 1"}</ActionButton>
@@ -219,10 +219,10 @@ export default function StartHere({ onNavigate, onNavigateForMp, onViewProfile }
         <ul style={{ margin: 0, paddingLeft: 20, fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.65, color: COLORS.inkSoft }}>
           <li>Everything here comes from official public records. The Data &amp; Methodology page lists every source.</li>
           <li>The records show what was declared, voted or asked. They can't show why, and they can't show what isn't declared.</li>
-          <li>Words with a dotted underline are explained when you hover or tap them, and the Glossary has all of them in one place.</li>
+          <li>Words with a dotted underline are explained when you hover or tap them, and the Jargon buster has all of them in one place.</li>
         </ul>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 22px", marginTop: 12 }}>
-          {[["howitworks", "How Parliament works"], ["glossary", "Glossary"], ["methodology", "Where the data comes from"]].map(([key, label]) => (
+          {[["howitworks", "How Parliament works"], ["answers", "Ask a question"], ["glossary", "Jargon buster"], ["methodology", "Where the data comes from"]].map(([key, label]) => (
             <button key={key} type="button" onClick={() => onNavigate?.(key)} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: ACCENT }}>
               {label}
             </button>

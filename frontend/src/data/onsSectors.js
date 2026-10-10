@@ -1681,8 +1681,6 @@ export const sectorByKey = (key) => SECTORS.find((x) => x.key === key);
 // Every series across all the pages, with the page it belongs to, for the
 // compare-over-time page.
 export const ALL_SERIES = SECTORS.flatMap((sector) => sector.series.map((def) => ({ ...def, sector: sector.key, sectorLabel: sector.label })));
-export const seriesByRef = (sectorKey, id) => ALL_SERIES.find((x) => x.sector === sectorKey && x.id === id);
-
 // The same series can appear on more than one page (for example home energy
 // inflation), so the compare page refers to each by "<sector>.<id>".
 export const refOf = (def) => `${def.sector}.${def.id}`;

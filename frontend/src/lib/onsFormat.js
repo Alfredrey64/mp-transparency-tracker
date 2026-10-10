@@ -42,14 +42,6 @@ export function periodInSentence(p) {
   return /^\d{4}-Q[1-4]$/.test(p) ? `the ${periodLabel(p)} quarter` : periodLabel(p);
 }
 
-export function shortPeriodLabel(p) {
-  const q = /^(\d{4})-Q([1-4])$/.exec(p);
-  if (q) return `Q${q[2]} ${q[1]}`;
-  const m = /^(\d{4})-(\d{2})$/.exec(p);
-  if (m) return `${MONTHS[Number(m[2]) - 1].slice(0, 3)} ${m[1]}`;
-  return p;
-}
-
 const group = (n) => Math.round(n).toLocaleString("en-GB");
 const money = (v, text) => (v < 0 ? `-${text.replace(/^-/, "")}` : text);
 

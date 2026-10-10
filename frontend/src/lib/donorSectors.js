@@ -76,16 +76,3 @@ export function getPartyDonorSector(donorName) {
   return partyNormalizedLookup.get(normalizeDonorKey(trimmed)) ?? null;
 }
 
-export function summariseBySector(interests) {
-  const totals = new Map();
-  for (const item of interests) {
-    if (!item.value_amount) continue;
-    const tag = getDonorSector(item.donor_name);
-    if (!tag) continue;
-    const key = tag.sector;
-    totals.set(key, (totals.get(key) ?? 0) + item.value_amount);
-  }
-  return [...totals.entries()]
-    .map(([sector, total]) => ({ sector, total, color: sectorColor(sector) }))
-    .sort((a, b) => b.total - a.total);
-}
