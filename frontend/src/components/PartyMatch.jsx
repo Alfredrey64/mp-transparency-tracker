@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import {
@@ -8,7 +8,8 @@ import {
   IconGlossary, IconHeart, IconVote, IconDevolved, IconShield, IconFactory, IconInfluence, IconHardHat,
   IconDoor, IconStar, IconPin,
 } from "./icons";
-import { QUESTIONS, ISSUES, ANSWER_SCALE, QUIZ_PARTIES, NATIONS, scoreQuiz } from "../data/partyMatchQuiz";
+import { QUESTIONS, ISSUES, ANSWER_SCALE, QUIZ_PARTIES, NATIONS, QUESTION_ANSWER, scoreQuiz } from "../data/partyMatchQuiz";
+import { explainMatch, STANCE, YOU } from "../lib/quizInsights";
 
 const MAX_PRIORITIES = 5;
 
@@ -374,6 +375,12 @@ function QuestionScreen({ question, index, total, value, onAnswer, onBack }) {
           {question.statement}
         </h2>
         <ExplainerToggle text={question.explainer} />
+        {QUESTION_ANSWER[question.id] && (
+          <p style={{ margin: "-10px 0 18px", fontFamily: FONT_BODY, fontSize: 12.5 }}>
+            <a href={`#/answers/${QUESTION_ANSWER[question.id]}`} target="_blank" rel="noreferrer" style={{ color: readable(COLORS.accent), fontWeight: 700 }}>See what each party said about this</a>
+            <span style={{ color: COLORS.inkSoft }}> (opens in a new tab, so you keep your place)</span>
+          </p>
+        )}
         <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
           {ANSWER_SCALE.map((opt) => {
             const active = value === opt.value;
@@ -421,8 +428,40 @@ function QuestionScreen({ question, index, total, value, onAnswer, onBack }) {
   );
 }
 
-function ResultsScreen({ results, nation, onRetake }) {
+// Why one party scored as it did: where you agree most strongly, and where you are furthest apart, each with a link to what the parties said.
+export function Breakdown({ party, answers }) {
+  const { agree, differ, answered } = useMemo(() => explainMatch(answers, party.key, QUESTIONS), [answers, party.key]);
+  if (!answered) return null;
+  const Row = ({ r }) => (
+    <li style={{ padding: "10px 0", borderTop: `1px solid ${COLORS.hairline}` }}>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.45 }}>{r.statement}</div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 3 }}>
+        You {YOU[r.user]}. {party.name} {STANCE[r.party]}.
+        {QUESTION_ANSWER[r.id] && <> <a href={`#/answers/${QUESTION_ANSWER[r.id]}`} target="_blank" rel="noreferrer" style={{ color: readable(COLORS.accent), fontWeight: 700 }}>What the parties said</a></>}
+      </div>
+    </li>
+  );
+  return (
+    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${party.color}`, borderRadius: 16, padding: "20px clamp(18px, 4vw, 28px)", marginBottom: 20 }}>
+      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, color: COLORS.ink }}>Why {party.name}?</div>
+      <p style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.55, margin: "4px 0 10px" }}>These are the statements where you and {party.name} are closest and furthest apart. Tap another party in the ranking above to see its breakdown.</p>
+      {agree.length > 0 && (<>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.ink, marginTop: 8 }}>Where you agree</div>
+        <ul style={{ listStyle: "none", margin: "4px 0 0", padding: 0 }}>{agree.map((r) => <Row key={r.id} r={r} />)}</ul>
+      </>)}
+      {differ.length > 0 && (<>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.ink, marginTop: 14 }}>Where you differ</div>
+        <ul style={{ listStyle: "none", margin: "4px 0 0", padding: 0 }}>{differ.map((r) => <Row key={r.id} r={r} />)}</ul>
+      </>)}
+      {agree.length === 0 && differ.length === 0 && <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, margin: "6px 0 0" }}>Your answers sit somewhere in the middle, with no strong agreements or clear disagreements.</p>}
+    </div>
+  );
+}
+
+function ResultsScreen({ results, answers, nation, onRetake }) {
   const top = results[0];
+  const [pickedKey, setPickedKey] = useState(null);
+  const shown = results.find((r) => r.key === pickedKey) ?? top;
   const animatedPct = useCountUp(top.pct, true);
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
@@ -465,12 +504,16 @@ function ResultsScreen({ results, nation, onRetake }) {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {results.map((r, i) => (
-            <motion.div
+            <motion.button
+              type="button"
               key={r.key}
+              onClick={() => setPickedKey(r.key)}
+              aria-pressed={shown.key === r.key}
               initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3, delay: i * 0.05 }}
               whileHover={{ x: 2 }}
+              style={{ display: "block", width: "100%", textAlign: "left", background: shown.key === r.key ? `${r.color}14` : "transparent", border: `1px solid ${shown.key === r.key ? `${r.color}66` : "transparent"}`, borderRadius: 12, padding: "8px 10px", margin: "-8px -10px", cursor: "pointer", font: "inherit", color: "inherit" }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5, gap: 10 }}>
                 <span style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
@@ -497,10 +540,12 @@ function ResultsScreen({ results, nation, onRetake }) {
                   style={{ height: "100%", background: r.color, borderRadius: 999 }}
                 />
               </div>
-            </motion.div>
+            </motion.button>
           ))}
         </div>
       </div>
+
+      <Breakdown party={shown} answers={answers} />
 
       <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, lineHeight: 1.6, marginBottom: 20 }}>
         This is a simplified, independent tool, not a personalised recommendation, and not a substitute for reading
@@ -591,7 +636,7 @@ export default function PartyMatch() {
             onBack={() => setStage(stage - 1)}
           />
         )}
-        {stage === "results" && results && <ResultsScreen key="results" results={results} nation={nation} onRetake={retake} />}
+        {stage === "results" && results && <ResultsScreen key="results" results={results} answers={answers} nation={nation} onRetake={retake} />}
       </AnimatePresence>
     </div>
   );

@@ -55,6 +55,21 @@ export const NATIONS = [
   { key: "northern-ireland", label: "Northern Ireland", flagIcon: IconNorthernIreland },
 ];
 
+// Where a quiz statement has a matching question on the Ask a question pages, which shows what each party said it would do and the latest
+// figures. The results link there so you can check the reading for yourself.
+export const QUESTION_ANSWER = {
+  tax: "where-does-tax-go",
+  nhs: "why-nhs-waiting-list",
+  immigration: "what-is-immigration-level",
+  climate: "is-uk-on-track-net-zero",
+  housing: "why-housing-expensive",
+  europe: "why-economy-slow",
+  sentencing: "is-crime-rising",
+  welfare: "benefits-and-pensions-spending",
+  workers: "why-are-there-strikes",
+  asylum: "why-small-boats",
+};
+
 const NATION_RESTRICTED = { snp: "scotland", "plaid-cymru": "wales" };
 
 // A user picks up to 5 of these as "matters most to me" — the matching
