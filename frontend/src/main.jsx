@@ -6,9 +6,11 @@ import App from './App.jsx'
 import { ThemeProvider } from './lib/ThemeContext.jsx'
 import { startAnalytics } from './lib/analytics.js'
 import { installChunkReload } from './lib/chunkReload.js'
+import { registerOffline } from './lib/offline.js'
 
 startAnalytics()
 installChunkReload()
+registerOffline()
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

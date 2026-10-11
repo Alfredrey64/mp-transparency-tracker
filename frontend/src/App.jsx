@@ -11,6 +11,7 @@ import { LOADERS } from "./pageLoaders";
 import { startGlossDedupe } from "./glossJsx/dedupe";
 import { trackPage } from "./lib/analytics";
 import Loading from "./components/Loading";
+import OfflineBanner from "./components/OfflineBanner";
 
 // Everything below is code-split per page: a visitor to the homepage
 // shouldn't have to download the other ~30 pages' code up front. Home and
@@ -350,6 +351,7 @@ export default function App() {
     <GuideKeyContext.Provider value={guideKeyFor(view, viewParam)}>
     <div className="mp-app-shell" style={{ display: "flex", background: COLORS.paper, fontFamily: FONT_BODY }}>
       <button type="button" className="skip-link" onClick={() => { mainRef.current?.focus(); mainRef.current?.scrollIntoView?.(); }}>Skip to main content</button>
+      <OfflineBanner />
       <div className="nav-progress" data-on={navPending ? "true" : "false"} aria-hidden="true" />
       <Sidebar activeView={navTarget} onNavigate={handleNavigate} onSelectPolitician={handleViewProfile} />
       <div style={{ flex: 1, minWidth: 0 }}>

@@ -41,6 +41,11 @@ export default function PrivacyPolicy({ onNavigate }) {
               constituency you pick, and whether help boxes are open. They never leave your device and aren't visible to us.
             </li>
             <li style={{ marginBottom: 8 }}>
+              <strong style={{ color: COLORS.ink }}>Saved copies of pages:</strong> so the site can open without a
+              connection, your browser keeps copies of the site's files and of figures you have looked at. They stay on
+              your device, you can clear them in your browser's site settings, and they are not sent anywhere.
+            </li>
+            <li style={{ marginBottom: 8 }}>
               <strong style={{ color: COLORS.ink }}>Standard web infrastructure:</strong> like any website, the
               hosting provider may log basic technical request data (such as IP address) as part of normal web
               delivery. The fonts are served from this site, so no request goes to a font provider. This site doesn't request or process that data itself.
