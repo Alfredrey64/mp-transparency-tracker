@@ -3,11 +3,13 @@ import { COLORS, FONT_BODY } from "../theme";
 import { pillStyle } from "../lib/onsStyles";
 import { downloadCsv } from "../lib/csv";
 import { saveChartImage } from "../lib/chartImage";
+import EmbedButton from "./EmbedButton";
 
 // Copy a link to this chart, save it as a picture, or download the figures behind it.
 // `getInfo` is called when a button is pressed, so it always reflects what is on screen.
+// `embed` ({ kind: "chart", sector, id }) adds an Embed button that gives out code for putting the chart on another page.
 //   getInfo() -> { url, title, sentence, source, accent, legend, filename, csv: { filename, text } }
-export default function ChartActions({ cardId, getInfo }) {
+export default function ChartActions({ cardId, getInfo, embed }) {
   const [note, setNote] = useState("");
   const timer = useRef(null);
 
@@ -60,6 +62,7 @@ export default function ChartActions({ cardId, getInfo }) {
       <button type="button" className="ons-tap" style={style} onClick={copyLink}>Copy link</button>
       <button type="button" className="ons-tap" style={style} onClick={saveImage}>Save as picture</button>
       <button type="button" className="ons-tap" style={style} onClick={downloadData}>Download data</button>
+      {embed && <EmbedButton spec={embed} title={getInfo().title} />}
       <span role="status" aria-live="polite" style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>{note}</span>
     </div>
   );

@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { resolve } from 'node:path'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -12,6 +13,8 @@ export default defineConfig({
   plugins: [react({ jsxImportSource: '/src/glossJsx' })],
   build: {
     rollupOptions: {
+      // Two pages: the site itself, and the chrome-free card that other sites embed in an iframe (see src/embed.jsx).
+      input: { main: resolve(import.meta.dirname, 'index.html'), embed: resolve(import.meta.dirname, 'embed.html') },
       output: {
         // Every page already lazy-loads on its own, but React, Framer
         // Motion and the Supabase client were all landing in that same

@@ -1,7 +1,7 @@
 {
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/((?!embed).*)",
       "headers": [
         {
           "key": "X-Content-Type-Options",
@@ -22,6 +22,27 @@
         {
           "key": "Content-Security-Policy",
           "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://members-api.parliament.uk https://thumb.wikimedia.org; connect-src 'self' https://xwrxaarxhlddbhbdbjmm.supabase.co wss://xwrxaarxhlddbhbdbjmm.supabase.co https://api.postcodes.io; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+        }
+      ]
+    },
+    {
+      "source": "/embed(.html)?",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "geolocation=(), microphone=(), camera=(), payment=()"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://members-api.parliament.uk https://thumb.wikimedia.org; connect-src 'self' https://xwrxaarxhlddbhbdbjmm.supabase.co wss://xwrxaarxhlddbhbdbjmm.supabase.co https://api.postcodes.io; frame-ancestors *; base-uri 'self'; form-action 'self'; object-src 'none'"
         }
       ]
     }

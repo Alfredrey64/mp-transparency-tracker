@@ -310,7 +310,7 @@ const SeriesCard = memo(function SeriesCard({ def, item, range, accent, showGove
       <DeepDive id={def.id} accent={accent} />
       <div style={{ display: "flex", flexWrap: "wrap", gap: "10px 14px", alignItems: "center", marginTop: 16 }}>
         <a className="ons-tap" href={`#/indicators/${sectorKey}.${def.id}`} style={{ ...pillStyle(false), textDecoration: "none", color: COLORS.ink, borderColor: `${accent}88` }}>Compare over time</a>
-        <ChartActions cardId={`s-${def.id}`} getInfo={getInfo} />
+        <ChartActions cardId={`s-${def.id}`} getInfo={getInfo} embed={{ kind: "chart", sector: sectorKey, id: def.id }} />
       </div>
       <details style={{ marginTop: 8 }}>
         <summary className="ons-tap" style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink, cursor: "pointer", padding: "6px 0" }}>Show the latest figures as a table</summary>

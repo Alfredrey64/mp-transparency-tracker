@@ -9,6 +9,7 @@ import { positionsFor, POSITIONS_AS_OF, ONE_NATION_PARTIES } from "../data/answe
 import { PARTY_MANIFESTOS } from "../data/partyManifestos";
 import { partyColourByName } from "../lib/careerTimeline";
 import { loadSector } from "../lib/onsData";
+import EmbedButton from "./EmbedButton";
 import { fillKeyPoint } from "../lib/onsKeyPoints";
 import { card, cardTitle, smallTitle } from "../lib/onsStyles";
 
@@ -92,6 +93,7 @@ function AnswerCard({ answer }) {
         <h2 id="h-answer" style={{ ...cardTitle, fontSize: "clamp(22px, 4vw, 30px)", margin: "4px 0 14px" }}>{answer.question}</h2>
         <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.inkSoft, marginBottom: 4 }}>In short</div>
         <p style={{ fontFamily: FONT_BODY, fontSize: 16.5, lineHeight: 1.6, color: COLORS.ink, margin: 0, maxWidth: 760 }}>{answer.short}</p>
+        <div style={{ marginTop: 16 }}><EmbedButton spec={{ kind: "answer", id: answer.id }} title={answer.question} /></div>
       </section>
 
       <section style={card} aria-labelledby="h-facts">
