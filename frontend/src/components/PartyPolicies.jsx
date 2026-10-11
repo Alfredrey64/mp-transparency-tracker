@@ -10,6 +10,7 @@ import { GlossaryTerm } from "./GlossaryTerm";
 import { IconManifesto } from "./icons";
 import { ANSWER_POSITIONS } from "../data/answerPartyPositions";
 import { ANSWERS } from "../data/answers";
+import Loading from "./Loading";
 
 // The party-colour dot is the only element that shares a layoutId between
 // the grid card and the modal — like the CommonsBadge morph elsewhere in
@@ -101,7 +102,7 @@ export default function PartyPolicies() {
       </section>
 
       {parties === null ? (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, marginTop: 24 }}>Loading…</div>
+        <Loading />
       ) : failed ? (
         <div style={{ marginTop: 24 }}>
           <LoadFailedNote item="the party list" />

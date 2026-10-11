@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef, lazy, Suspense } from "react";
+import { useState, useEffect, useLayoutEffect, useRef, useTransition, lazy, Suspense } from "react";
 import { GuideKeyContext, guideKeyFor } from "./lib/viewContext";
 import { motion, MotionConfig } from "framer-motion";
 import { supabase } from "./supabaseClient";
-import { COLORS, FONT_BODY, FONT_DISPLAY } from "./theme";
+import { COLORS, FONT_BODY } from "./theme";
 import Sidebar from "./components/Sidebar";
 import Home from "./components/Home";
 import { ErrorBoundary } from "./components/ErrorBoundary";
@@ -10,6 +10,7 @@ import { SECTIONS } from "./data/sidebarSections";
 import { LOADERS } from "./pageLoaders";
 import { startGlossDedupe } from "./glossJsx/dedupe";
 import { trackPage } from "./lib/analytics";
+import Loading from "./components/Loading";
 
 // Everything below is code-split per page: a visitor to the homepage
 // shouldn't have to download the other ~30 pages' code up front. Home and
@@ -81,11 +82,7 @@ console.log(
 );
 
 function PageLoadingFallback() {
-  return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh", fontFamily: FONT_DISPLAY, fontSize: 15, color: COLORS.inkSoft }}>
-      Loading…
-    </div>
-  );
+  return <Loading />;
 }
 
 // Every key the big view === "x" switch below actually handles. The URL
@@ -169,6 +166,10 @@ export default function App() {
   const [viewParam, setViewParam] = useState(() => parseHash().param);
   const [selected, setSelected] = useState(null);
   const [mpCount, setMpCount] = useState(null);
+  // Page changes run as transitions: the page you are on stays on screen until the next one (and its code) is ready, instead of
+  // blanking to "Loading…" first. `navTarget` is where you are heading, so the sidebar highlights it at once.
+  const [navPending, startNav] = useTransition();
+  const [navTarget, setNavTarget] = useState(view);
 
   useEffect(() => startGlossDedupe(document.getElementById("root")), []);
   // One anonymous page view each time the page changes (the page's name only; see lib/analytics.js).
@@ -197,6 +198,16 @@ export default function App() {
   useEffect(() => {
     if (firstPage.current) { firstPage.current = false; return; }
     mainRef.current?.focus({ preventScroll: true });
+  }, [view, selected?.id]);
+
+  // A new page opens at its top, in the same frame it appears, so you never see the new page at the old scroll position or the old
+  // page jumping to the top first. (Changes inside a page, such as a chart's range, do not come through here.)
+  const shownPage = useRef(`${view}|${selected?.id ?? ""}`);
+  useLayoutEffect(() => {
+    const now = `${view}|${selected?.id ?? ""}`;
+    if (shownPage.current === now) return;
+    shownPage.current = now;
+    window.scrollTo(0, 0);
   }, [view, selected?.id]);
 
   useEffect(() => {
@@ -260,16 +271,22 @@ export default function App() {
       isPopping.current = true;
       const parsed = parseHash();
       if (parsed.mpId) {
-        setSelected(null);
-        setViewParam(null);
-        setView("list");
+        setNavTarget("list");
+        startNav(() => {
+          setSelected(null);
+          setViewParam(null);
+          setView("list");
+        });
         supabase.from("politicians").select("*").eq("id", parsed.mpId).single().then(({ data }) => {
-          if (data) setSelected(data);
+          if (data) startNav(() => setSelected(data));
         });
       } else {
-        setSelected(null);
-        setViewParam(parsed.param);
-        setView(parsed.view);
+        setNavTarget(parsed.view);
+        startNav(() => {
+          setSelected(null);
+          setViewParam(parsed.param);
+          setView(parsed.view);
+        });
       }
     }
     window.addEventListener("popstate", syncFromUrl);
@@ -280,40 +297,52 @@ export default function App() {
     };
   }, []);
 
+  // Every page change goes through here: the sidebar highlights the destination straight away, and the page swaps once it is ready.
+  function goTo(key, apply) {
+    // Choosing the page you are already on just takes you back to its top.
+    if (key === view && !selected) window.scrollTo(0, 0);
+    setNavTarget(key);
+    startNav(apply);
+  }
+
   function handleNavigate(key) {
-    setSelected(null);
-    setViewParam(null);
-    setPendingMp(null);
-    setPendingBill(null);
-    setView(key);
-    window.scrollTo(0, 0);
+    goTo(key, () => {
+      setSelected(null);
+      setViewParam(null);
+      setPendingMp(null);
+      setPendingBill(null);
+      setView(key);
+    });
   }
 
   function handleViewProfile(politician) {
-    setSelected(politician);
-    setViewParam(null);
-    setView("list");
-    window.scrollTo(0, 0);
+    goTo("list", () => {
+      setSelected(politician);
+      setViewParam(null);
+      setView("list");
+    });
   }
 
   function handleNavigateForMp(key, politician) {
-    setSelected(null);
-    setViewParam(null);
-    setPendingMp(politician);
-    setView(key);
-    window.scrollTo(0, 0);
+    goTo(key, () => {
+      setSelected(null);
+      setViewParam(null);
+      setPendingMp(politician);
+      setView(key);
+    });
   }
 
   // Mirrors handleNavigateForMp above, for the one other cross-page link
   // that needs to land somewhere more specific than just the top of the
   // target page: a bill clicked on the homepage's own list.
   function handleNavigateForBill(key, bill) {
-    setSelected(null);
-    setViewParam(null);
-    setPendingMp(null);
-    setPendingBill(bill ?? null);
-    setView(key);
-    window.scrollTo(0, 0);
+    goTo(key, () => {
+      setSelected(null);
+      setViewParam(null);
+      setPendingMp(null);
+      setPendingBill(bill ?? null);
+      setView(key);
+    });
   }
 
   return (
@@ -321,7 +350,8 @@ export default function App() {
     <GuideKeyContext.Provider value={guideKeyFor(view, viewParam)}>
     <div className="mp-app-shell" style={{ display: "flex", background: COLORS.paper, fontFamily: FONT_BODY }}>
       <button type="button" className="skip-link" onClick={() => { mainRef.current?.focus(); mainRef.current?.scrollIntoView?.(); }}>Skip to main content</button>
-      <Sidebar activeView={view} onNavigate={handleNavigate} onSelectPolitician={handleViewProfile} />
+      <div className="nav-progress" data-on={navPending ? "true" : "false"} aria-hidden="true" />
+      <Sidebar activeView={navTarget} onNavigate={handleNavigate} onSelectPolitician={handleViewProfile} />
       <div style={{ flex: 1, minWidth: 0 }}>
         {/* The new page fades in straight away. It used to wait for the old
             one to fade out first, which added a visible pause to every click. */}
@@ -330,9 +360,9 @@ export default function App() {
           ref={mainRef}
           tabIndex={-1}
           key={`${view}-${selected?.id ?? ""}`}
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.18, ease: "easeOut" }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.16, ease: "easeOut" }}
         >
             <ErrorBoundary onGoHome={() => handleNavigate("home")}>
             <Suspense fallback={<PageLoadingFallback />}>
@@ -394,11 +424,11 @@ export default function App() {
                 <PoliticianDetail
                   key={selected.id}
                   politician={selected}
-                  onBack={() => { setSelected(null); window.scrollTo(0, 0); }}
+                  onBack={() => startNav(() => setSelected(null))}
                   onNavigate={handleNavigateForMp}
                 />
               ) : (
-                <PoliticianList initialCareer={viewParam} onSelect={(p) => { setSelected(p); window.scrollTo(0, 0); }} />
+                <PoliticianList initialCareer={viewParam} onSelect={(p) => startNav(() => setSelected(p))} />
               ))}
             </Suspense>
             </ErrorBoundary>

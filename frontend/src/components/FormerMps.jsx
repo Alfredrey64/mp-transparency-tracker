@@ -7,6 +7,7 @@ import { PageHeader } from "./shared";
 import { LoadFailedNote } from "./MpCards";
 import { IconFormerMP } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
+import Loading from "./Loading";
 
 const REASON_COLOR = {
   "Resigned": "#B08A2E",
@@ -33,7 +34,7 @@ function Avatar({ url, name, color }) {
   }
   return (
     <div style={{ width: 44, height: 44, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}` }}>
-      <img
+      <img loading="lazy" decoding="async"
         src={url}
         alt=""
         onLoad={() => setLoaded(true)}
@@ -188,7 +189,7 @@ export default function FormerMps() {
         </div>
       </div>
 
-      {mps === null && <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft }}>Loading…</div>}
+      {mps === null && <Loading compact />}
       {mps !== null && failed && <LoadFailedNote item="the former MPs list" />}
       {mps !== null && !failed && filtered.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>

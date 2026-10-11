@@ -165,7 +165,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
                 boxShadow: `0 0 0 2px ${color}55, 0 4px 14px rgba(30,42,68,0.12)`,
               }}
             >
-              <img
+              <img loading="lazy" decoding="async"
                 src={politician.thumbnail_url}
                 alt=""
                 onError={() => setAvatarErrored(true)}

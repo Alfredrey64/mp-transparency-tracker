@@ -53,7 +53,7 @@ function Avatar({ peer, color, size = 40 }) {
   if (peer.thumbnail_url && !errored) {
     return (
       <div style={{ width: size, height: size, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: COLORS.paperCard, border: `2px solid ${COLORS.paperCard}`, boxShadow: `0 0 0 2px ${color}55` }}>
-        <img
+        <img loading="lazy" decoding="async"
           src={peer.thumbnail_url}
           alt=""
           onError={() => setErrored(true)}

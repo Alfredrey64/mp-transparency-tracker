@@ -42,8 +42,8 @@ export default function PrivacyPolicy({ onNavigate }) {
             </li>
             <li style={{ marginBottom: 8 }}>
               <strong style={{ color: COLORS.ink }}>Standard web infrastructure:</strong> like any website, the
-              hosting provider and font provider (Google Fonts) may log basic technical request data (such as IP
-              address) as part of normal web delivery. This site doesn't request or process that data itself.
+              hosting provider may log basic technical request data (such as IP address) as part of normal web
+              delivery. The fonts are served from this site, so no request goes to a font provider. This site doesn't request or process that data itself.
             </li>
           </ul>
         </Section>

@@ -12,12 +12,13 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=12" />
     <link rel="manifest" href="/manifest.json?v=12" />
     <meta name="theme-color" content="#4F46E5" />
-    <!-- Open the connections for fonts and data now, rather than when the
-         first stylesheet and the first query ask for them. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- The fonts come from this site (see src/fonts.css). The four used above the fold are fetched straight away, in parallel with the
+         scripts, and the connection to the data service is opened now rather than when the first query asks for it. -->
+    <link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/sora-latin-700.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preconnect" href="https://xwrxaarxhlddbhbdbjmm.supabase.co" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Sora:wght@700&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Simple Politics</title>
     <meta name="description" content="A simple breakdown of UK politics. See who your MP is, who funds them, how they vote and what the numbers say about the country, all explained in plain English from official sources." />

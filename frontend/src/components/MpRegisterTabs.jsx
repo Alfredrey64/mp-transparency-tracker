@@ -4,6 +4,7 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
 import { formatDate, financialYearLabel } from "../lib/format";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { LoadFailedNote } from "./MpCards";
+import Loading from "./Loading";
 
 // The "Claims" tab: a compact IPSA summary (this year vs last, by category)
 // followed by every itemised claim behind it, so it's clear not just how
@@ -98,7 +99,7 @@ export function ClaimsTabContent({ politician, claims }) {
 // government post; everyone else just sees the explanatory empty state.
 export function GiftsTabContent({ gifts, failed }) {
   if (gifts === null) {
-    return <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft }}>Loading…</div>;
+    return <Loading compact />;
   }
 
   if (failed) {

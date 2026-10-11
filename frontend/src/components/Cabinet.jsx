@@ -11,6 +11,7 @@ import {
   IconGroup, IconQuestion,
 } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
+import Loading from "./Loading";
 
 // Cabinet roles don't carry a clean "department" field of their own — we
 // infer one from the role title itself (most already name their department
@@ -199,7 +200,7 @@ function Avatar({ url, name, color, size = 64 }) {
   }
   return (
     <div style={{ width: size, height: size, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, overflow: "hidden" }}>
-      <img
+      <img loading="lazy" decoding="async"
         src={url}
         alt=""
         onLoad={() => setLoaded(true)}
@@ -484,7 +485,7 @@ export default function Cabinet({ onViewProfile }) {
       />
 
       {members === null && (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>Loading…</div>
+        <Loading />
       )}
       {members !== null && failed && (
         <div style={{ marginTop: 24 }}>

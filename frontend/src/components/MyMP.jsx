@@ -24,7 +24,7 @@ function Avatar({ url, name, color, size = 84 }) {
     );
   }
   return (
-    <img
+    <img loading="lazy" decoding="async"
       src={url}
       alt=""
       onError={() => setErrored(true)}

@@ -56,7 +56,7 @@ function PmAvatar({ name, color, size = 40 }) {
   }
   return (
     <div style={{ width: size, height: size, borderRadius: "50%", flexShrink: 0, overflow: "hidden", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}` }}>
-      <img
+      <img loading="lazy" decoding="async"
         src={url}
         alt=""
         onLoad={() => setLoaded(true)}

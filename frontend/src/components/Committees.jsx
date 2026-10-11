@@ -8,6 +8,7 @@ import { partyColour, stripHtml, formatDate } from "../lib/format";
 import { isScrolling } from "../lib/scrollState";
 import { IconCommittee } from "./icons";
 import CountUp from "./CountUp";
+import Loading from "./Loading";
 
 const HOUSE_FILTERS = ["All", "Commons", "Lords", "Joint"];
 
@@ -314,7 +315,7 @@ export default function Committees() {
       />
 
       {committees === null && (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>Loading…</div>
+        <Loading />
       )}
 
       {committees !== null && failed && (

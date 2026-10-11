@@ -12,6 +12,7 @@ import { EyebrowLabel } from "./shared";
 import { LoadFailedNote } from "./MpCards";
 import { PartyHemicycleSection } from "./PartyHemicycle";
 import { withScrollPreserved } from "../lib/preserveScroll";
+import Loading from "./Loading";
 
 // One orchestrated reveal for the masthead (headline + ticker rail together,
 // staggered as a single moment) rather than every section fading in
@@ -401,7 +402,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
         )}
 
         {loading && (
-          <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>Loading…</div>
+          <Loading compact />
         )}
         {!loading && recentFailed && <LoadFailedNote item="recent declared interests" />}
 
@@ -569,7 +570,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
           <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "0 0 12px" }}>
             A bill becomes law by passing a second reading, committee stage and report stage in each House, then Royal Assent. The stage shown is where each one has got to.
           </p>
-          {loadingExtras && <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>Loading…</div>}
+          {loadingExtras && <Loading compact />}
           <div style={{ display: "flex", flexDirection: "column" }}>
             {upcomingBills.map((bill, i) => {
               const category = categoriseBill(bill);
@@ -644,7 +645,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                 </div>
 
                 {recentChanges === null && (
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>Loading…</div>
+                  <Loading compact />
                 )}
                 {recentChanges !== null && recentChanges.length === 0 && (
                   <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>
@@ -709,7 +710,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                 </div>
 
                 {onThisDay === null && (
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>Loading…</div>
+                  <Loading compact />
                 )}
                 {onThisDay !== null && onThisDay.length === 0 && (
                   <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>

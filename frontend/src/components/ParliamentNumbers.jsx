@@ -3,6 +3,7 @@ import { COLORS, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { IconChartBars } from "./icons";
 import CommonsNumbers from "./CommonsNumbers";
+import Loading from "./Loading";
 
 // Parliament in Numbers has one tab for each House. The tab is part of the
 // address (#/numbers and #/numbers/lords), so each can be linked to and the
@@ -57,7 +58,7 @@ export default function ParliamentNumbers({ house, onNavigate }) {
       <HouseTabs active={active} />
       <div style={{ marginTop: 18 }}>
         {active === "lords" ? (
-          <Suspense fallback={<div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>}>
+          <Suspense fallback={<Loading compact />}>
             <LordsNumbers onNavigate={onNavigate} />
           </Suspense>
         ) : (

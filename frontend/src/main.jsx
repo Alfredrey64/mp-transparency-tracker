@@ -1,11 +1,14 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import './fonts.css'
 import './index.css'
 import App from './App.jsx'
 import { ThemeProvider } from './lib/ThemeContext.jsx'
 import { startAnalytics } from './lib/analytics.js'
+import { installChunkReload } from './lib/chunkReload.js'
 
 startAnalytics()
+installChunkReload()
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

@@ -7,6 +7,7 @@ import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconByElection } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
+import Loading from "./Loading";
 
 function daysAgo(dateStr) {
   if (!dateStr) return null;
@@ -116,7 +117,7 @@ export default function ByElections() {
         </div>
       )}
 
-      {elections === null && <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft, marginTop: 24 }}>Loading…</div>}
+      {elections === null && <Loading />}
       {elections !== null && completed.length === 0 && vacantSeats.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>
           No by-elections recorded since the last general election yet.

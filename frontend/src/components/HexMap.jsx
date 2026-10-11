@@ -41,7 +41,7 @@ function HoverCard({ cell }) {
       style={{ position: "absolute", left: 14, bottom: 14, maxWidth: "calc(100% - 28px)", display: "flex", alignItems: "center", gap: 10, background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderLeft: `4px solid ${colour}`, borderRadius: 12, padding: "9px 14px 9px 10px", boxShadow: "0 8px 24px rgba(0,0,0,0.35)", pointerEvents: "none" }}
     >
       {cell.mp?.thumbnail ? (
-        <img src={cell.mp.thumbnail} alt="" width={40} height={40} style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", objectPosition: "top", flexShrink: 0 }} />
+        <img loading="lazy" decoding="async" src={cell.mp.thumbnail} alt="" width={40} height={40} style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", objectPosition: "top", flexShrink: 0 }} />
       ) : (
         <span style={{ width: 40, height: 40, borderRadius: "50%", background: `${colour}33`, flexShrink: 0 }} />
       )}

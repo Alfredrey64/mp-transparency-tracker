@@ -6,6 +6,7 @@ import { getDonorSector, sectorColor } from "../lib/donorSectors";
 import { partyColour, formatDate } from "../lib/format";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { withScrollPreserved } from "../lib/preserveScroll";
+import Loading from "./Loading";
 
 // This is a company-first view of the same underlying data shown elsewhere
 // on this page donor-first (grouped by MP and by industry sector). Here we
@@ -127,7 +128,7 @@ export function CompanyDonorsView() {
         ))}
       </div>
 
-      {companies === null && <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft }}>Loading…</div>}
+      {companies === null && <Loading compact />}
       {companies !== null && filtered.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No matching companies found.</div>
       )}

@@ -85,7 +85,7 @@ export default function AskerQuestionsModal({ person, questions, topic, returnFo
       >
         <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "18px 20px 14px", borderBottom: `1px solid ${COLORS.hairline}` }}>
           {person.thumbnail ? (
-            <img src={person.thumbnail} alt="" width={52} height={52} style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover", background: COLORS.paperCard, border: `2px solid ${colour}`, flexShrink: 0 }} />
+            <img loading="lazy" decoding="async" src={person.thumbnail} alt="" width={52} height={52} style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover", background: COLORS.paperCard, border: `2px solid ${colour}`, flexShrink: 0 }} />
           ) : (
             <span style={{ width: 52, height: 52, borderRadius: "50%", background: `${colour}33`, flexShrink: 0 }} />
           )}

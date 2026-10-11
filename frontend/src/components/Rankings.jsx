@@ -10,6 +10,7 @@ import { GlossaryTerm } from "./GlossaryTerm";
 import { partyColour, initials } from "../lib/format";
 import { IconRankings, IconSearch } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
+import Loading from "./Loading";
 
 // Independents and the Speaker don't sit under a party whip, so "voted
 // against the party majority" isn't a meaningful idea for them — the same
@@ -45,7 +46,7 @@ function Avatar({ url, name, color, size = 36 }) {
     );
   }
   return (
-    <img
+    <img loading="lazy" decoding="async"
       src={url}
       alt=""
       onError={() => setErrored(true)}
@@ -628,7 +629,7 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
         </div>
       )}
 
-      {loading && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>}
+      {loading && <Loading compact />}
       {!loading && filtered.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No matches.</div>
       )}

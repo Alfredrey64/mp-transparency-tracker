@@ -8,6 +8,7 @@ import { LoadFailedNote } from "./MpCards";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconPetition } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
+import Loading from "./Loading";
 
 function formatDate(dateStr) {
   if (!dateStr) return null;
@@ -187,7 +188,7 @@ export default function Petitions() {
       </div>
 
       {petitions === null && (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>
+        <Loading compact />
       )}
 
       {petitions !== null && failed && <LoadFailedNote item="the petitions list" />}

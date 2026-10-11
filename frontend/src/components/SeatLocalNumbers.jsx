@@ -7,6 +7,7 @@ import { oneIn, sentenceFor } from "../lib/deprivationPlain";
 import { REGION_KEY_BY_CODE, regionSnapshot, yearsOfPay, againstUk, seatDeprivation } from "../lib/seatLocal";
 import { ordinal } from "../lib/constituency";
 import { Panel } from "./Constituency";
+import Loading from "./Loading";
 
 // A seat's local numbers: how deprived the area is (measured for the seat itself) and how its region does on house prices, pay and
 // jobs (published for regions only, and labelled that way).
@@ -54,7 +55,7 @@ export default function SeatLocalNumbers({ record, regionCode }) {
   return (
     <div role="tabpanel" id="panel-local" aria-labelledby="tab-local" style={{ display: "flex", flexDirection: "column", gap: 16, marginTop: 20 }}>
       <Panel title={`How deprived is ${record.name}?`}>
-        {loading && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>}
+        {loading && <Loading compact />}
         {!loading && !deprivation && (
           <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, lineHeight: 1.6 }}>There are no deprivation figures for this seat.</div>
         )}
@@ -81,7 +82,7 @@ export default function SeatLocalNumbers({ record, regionCode }) {
       {region && (
         <Panel title={`Money and work in ${region.name}`}>
           <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, lineHeight: 1.6, margin: "0 0 14px", maxWidth: 680 }}>{REGION_NOTE}</p>
-          {!sectors && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>}
+          {!sectors && <Loading compact />}
           {sectors && snapshot.length === 0 && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>The regional figures could not be loaded.</div>}
           {snapshot.length > 0 && (
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(230px, 100%), 1fr))", gap: 12 }}>

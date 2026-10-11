@@ -13,6 +13,7 @@ import { explainDivision } from "../lib/divisionExplainer";
 import { BillJourney } from "./BillJourney";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { IconVote, IconBills } from "./icons";
+import Loading from "./Loading";
 
 // A division (Commons vote) is stored per-MP with no bill_id — divisions and
 // bills come from two separate parliamentary data sources with no shared
@@ -429,7 +430,7 @@ function MpVotingHistory({ politician, bills, onBack }) {
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
         {politician.thumbnail_url && (
           <div style={{ width: 48, height: 48, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}` }}>
-            <img
+            <img loading="lazy" decoding="async"
               src={politician.thumbnail_url}
               alt=""
               onLoad={() => setAvatarLoaded(true)}
@@ -596,7 +597,7 @@ export default function VotingRecords({ initialMp = null, initialBill = null, in
           ))}
         </div>
 
-        {loadingBills && <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft }}>Loading…</div>}
+        {loadingBills && <Loading compact />}
         {!loadingBills && billsFailed && <LoadFailedNote item="the bills list" />}
         {!loadingBills && !billsFailed && billsShown.length === 0 && (
           <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No bills found in this category right now.</div>

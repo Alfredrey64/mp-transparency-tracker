@@ -161,7 +161,7 @@ export default function PromiseTracker() {
           }}
           title={`${pm.name}, ${pm.cabinet_role}`}
         >
-          <img
+          <img loading="lazy" decoding="async"
             src={pm.thumbnail_url}
             alt=""
             onLoad={() => setPmPhotoLoaded(true)}

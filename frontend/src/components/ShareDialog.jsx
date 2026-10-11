@@ -125,7 +125,7 @@ export default function ShareDialog({ getSpec, filename, returnFocusTo, onClose 
 
         <div style={{ aspectRatio: "1200 / 630", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
           {url ? (
-            <img src={url} alt="The share card: a picture summarising this page" style={{ width: "100%", height: "100%", display: "block" }} />
+            <img loading="lazy" decoding="async" src={url} alt="The share card: a picture summarising this page" style={{ width: "100%", height: "100%", display: "block" }} />
           ) : (
             <span style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>{error ? "Couldn't make the image. Try again in a moment." : "Drawing your card…"}</span>
           )}

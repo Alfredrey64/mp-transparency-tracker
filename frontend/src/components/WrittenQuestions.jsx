@@ -9,6 +9,7 @@ import { formatDate, partyColour, stripHtml } from "../lib/format";
 import { IconQuestion, IconSearch } from "./icons";
 import DownloadCsvButton from "./DownloadCsvButton";
 import { WRITTEN_QUESTION_COLUMNS } from "../lib/exportColumns";
+import Loading from "./Loading";
 
 const WINDOW_DAYS = 30;
 
@@ -112,7 +113,7 @@ function Avatar({ url, name, color, size = 34 }) {
     );
   }
   return (
-    <img
+    <img loading="lazy" decoding="async"
       src={url}
       alt=""
       onError={() => setErrored(true)}
@@ -375,7 +376,7 @@ export default function WrittenQuestions({ onSelectPolitician, initialQuery = ""
         </div>
       </div>
 
-      {rows === null && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>}
+      {rows === null && <Loading compact />}
       {rows !== null && failed && <LoadFailedNote item="the written questions list" />}
       {rows !== null && !failed && rows.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No data yet. Check back after the next daily update.</div>

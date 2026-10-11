@@ -6,6 +6,7 @@ import { searchSeats } from "../lib/constituency";
 import { readRememberedSeat, rememberSeat, forgetSeat } from "../lib/rememberedMp";
 import { PageHeader } from "./shared";
 import { IconRoute, IconSearch } from "./icons";
+import Loading from "./Loading";
 
 const ACCENT = "#1FA97C";
 
@@ -136,7 +137,7 @@ export default function StartHere({ onNavigate, onNavigateForMp, onViewProfile }
               </div>
               {query.trim().length >= 2 && (
                 <div style={{ marginTop: 8, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 10, overflow: "hidden" }}>
-                  {seats === null && <div style={{ padding: "10px 14px", fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>Loading…</div>}
+                  {seats === null && <Loading compact />}
                   {seats !== null && matches.length === 0 && <div style={{ padding: "10px 14px", fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>No constituency or MP matches that.</div>}
                   {matches.map((m) => (
                     <button

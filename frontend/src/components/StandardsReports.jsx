@@ -7,6 +7,7 @@ import { LoadFailedNote } from "./MpCards";
 import { formatDate, partyColour } from "../lib/format";
 import { IconGavel, IconSearch } from "./icons";
 import STANDARDS_REPORT_DETAILS from "../data/standardsReportDetails.json";
+import Loading from "./Loading";
 
 function classifyOutcome(detail) {
   if (!detail) return null;
@@ -106,7 +107,7 @@ function ReportCard({ report, politician, onSelectPolitician, index }) {
       }}
     >
       {politician?.thumbnail_url ? (
-        <img
+        <img loading="lazy" decoding="async"
           src={politician.thumbnail_url}
           alt=""
           style={{ flexShrink: 0, width: 44, height: 44, borderRadius: "50%", objectFit: "cover", background: COLORS.paper, border: `1px solid ${COLORS.hairline}` }}
@@ -324,7 +325,7 @@ export default function StandardsReports({ onSelectPolitician }) {
         </div>
       </div>
 
-      {reports === null && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>}
+      {reports === null && <Loading compact />}
       {reports !== null && failed && <LoadFailedNote item="the standards reports list" />}
       {reports !== null && !failed && reports.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No data yet. Check back after the next daily update.</div>

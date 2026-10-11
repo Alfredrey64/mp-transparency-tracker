@@ -77,7 +77,7 @@ function Leader({ holder }) {
   const photo = (
     <span style={{ position: "relative", flexShrink: 0, width: 76, height: 76, borderRadius: "50%", padding: 3, background: `linear-gradient(145deg, ${ring}, ${ring}55)`, boxShadow: `0 10px 22px -14px ${ring}` }}>
       {portrait && !failed ? (
-        <img src={portrait.url} alt={`${holder.name}, ${holder.role}`} width={70} height={70} loading="lazy" referrerPolicy="no-referrer" onError={() => setFailed(true)}
+        <img decoding="async" src={portrait.url} alt={`${holder.name}, ${holder.role}`} width={70} height={70} loading="lazy" referrerPolicy="no-referrer" onError={() => setFailed(true)}
           style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover", objectPosition: "center 20%", display: "block", background: COLORS.paper }} />
       ) : (
         <span aria-hidden="true" style={{ width: "100%", height: "100%", borderRadius: "50%", display: "grid", placeItems: "center", background: COLORS.paper, color: ring, fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 24 }}>{initials(holder.name)}</span>

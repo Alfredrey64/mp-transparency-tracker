@@ -46,7 +46,7 @@ function Avatar({ politician, color }) {
           boxShadow: `0 0 0 2px ${color}55`,
         }}
       >
-        <img
+        <img loading="lazy" decoding="async"
           src={politician.thumbnail_url}
           alt=""
           onError={() => setErrored(true)}

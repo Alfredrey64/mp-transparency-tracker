@@ -1,0 +1,10 @@
+The fonts in this folder are open source under the SIL Open Font License 1.1 (https://openfontlicense.org), and are served from this site
+instead of from Google so that no request leaves the site for them.
+
+Archivo            Copyright the Archivo Project Authors (Omnibus-Type)
+Space Grotesk      Copyright the Space Grotesk Project Authors (Florian Karsten)
+Fraunces           Copyright the Fraunces Project Authors (Undercase Type)
+Sora               Copyright the Sora Project Authors (Jonathan Barnbrook, Julian Moncada)
+IBM Plex Mono      Copyright IBM Corp.
+
+The files are the Latin and Latin Extended subsets of each font, unchanged.

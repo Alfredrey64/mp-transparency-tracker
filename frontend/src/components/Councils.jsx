@@ -5,6 +5,7 @@ import { LoadFailedNote } from "./MpCards";
 import PageGuide from "./PageGuide";
 import { Hero, Overview } from "./CouncilsOverview";
 import { CouncilView } from "./CouncilDetail";
+import Loading from "./Loading";
 
 // Your Council: the whole country's councils at a glance, then any one
 // council in detail. Data is Open Council Data UK's (CC BY-SA 4.0). A postcode
@@ -58,7 +59,7 @@ export default function Councils({ param }) {
       )}
       <PageGuide viewKey="councils" style={{ marginTop: 18 }} />
       {failed && <div style={{ marginTop: 24 }}><LoadFailedNote item="the council data" /></div>}
-      {!failed && !data && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>Loading…</div>}
+      {!failed && !data && <Loading />}
       {data && (
         <>
           {id && !council && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: "#C0504D", marginTop: 18 }}>We couldn't find that council. Try searching for it by name.</div>}

@@ -18,6 +18,7 @@ import DownloadCsvButton from "./DownloadCsvButton";
 import { SEATS_COLUMNS } from "../lib/exportColumns";
 import { fmt, pct1, pct0, joinNames, family, byName, YEAR_MS, leadText, goMp, goSeat } from "../lib/numbersFormat";
 import { Tile, Figure, SeatsChart, SeatsTable, WomenWaffle, CohortChart, Switches } from "./NumbersKit";
+import Loading from "./Loading";
 
 // ---- Safe seats ------------------------------------------------------------
 function SafetyHistogram({ summary, onOpen }) {
@@ -191,7 +192,7 @@ export default function CommonsNumbers({ onNavigate }) {
         </div>
       )}
 
-      {rows === null && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>Loading…</div>}
+      {rows === null && <Loading />}
       {rows !== null && failed && <div style={{ marginTop: 24 }}><LoadFailedNote item="the list of MPs" /></div>}
 
       {stats && !failed && stats.total > 0 && (

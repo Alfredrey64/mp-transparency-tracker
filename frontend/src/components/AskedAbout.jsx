@@ -97,7 +97,7 @@ function AskerRow({ person, rank, max, onOpen }) {
     >
       <span style={{ ...numeric, fontSize: 14, color: COLORS.inkSoft, textAlign: "right" }}>{rank + 1}</span>
       {person.thumbnail ? (
-        <img src={person.thumbnail} alt="" width={44} height={44} loading="lazy" style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", background: COLORS.paperCard, border: `2px solid ${colour}` }} />
+        <img decoding="async" src={person.thumbnail} alt="" width={44} height={44} loading="lazy" style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", background: COLORS.paperCard, border: `2px solid ${colour}` }} />
       ) : (
         <span style={{ width: 44, height: 44, borderRadius: "50%", background: `${colour}33`, border: `2px solid ${colour}` }} />
       )}

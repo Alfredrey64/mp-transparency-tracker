@@ -8,6 +8,7 @@ import { stripHtml, formatDate } from "../lib/format";
 import { matchBillForVote } from "../lib/bills";
 import { getBillDescription } from "../lib/billDescriptions";
 import { withScrollPreserved } from "../lib/preserveScroll";
+import Loading from "./Loading";
 
 // Lazy: this file is part of the bundle every page load pays for, and the
 // explainer (a table of division-title patterns) is only needed once an MP's
@@ -265,7 +266,7 @@ export function VotingSummaryBox({ politician, onNavigate }) {
   if (votes === null) {
     return (
       <CardShell title="Voting Record">
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>
+        <Loading compact />
       </CardShell>
     );
   }
@@ -397,7 +398,7 @@ export function RebellionRateBox({ politician }) {
   if (stats === undefined) {
     return (
       <CardShell title="Rebellion Rate">
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>
+        <Loading compact />
       </CardShell>
     );
   }
@@ -579,7 +580,7 @@ export function NewsBox({ politician }) {
         Not a verified fact-check: a same-named person or a passing mention can occasionally slip through. See Data
         & Methodology for how this is compiled.
       </div>
-      {articles === null && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading…</div>}
+      {articles === null && <Loading compact />}
       {articles?.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
           No recent news coverage found for this MP in the last two weeks.

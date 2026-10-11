@@ -63,7 +63,7 @@ export function SeatSearch({ seats, autoFocus }) {
               onClick={() => goSeat(m.name)}
               style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", textAlign: "left", background: "none", border: "none", borderBottom: `1px solid ${COLORS.hairline}`, padding: "11px 18px", cursor: "pointer" }}
             >
-              <img src={thumb(m.mp.memberId)} alt="" width={34} height={34} loading="lazy" style={{ width: 34, height: 34, borderRadius: "50%", objectFit: "cover", border: `2px solid ${partyColour(m.mp?.colour, COLORS.inkSoft)}`, background: COLORS.paper }} />
+              <img decoding="async" src={thumb(m.mp.memberId)} alt="" width={34} height={34} loading="lazy" style={{ width: 34, height: 34, borderRadius: "50%", objectFit: "cover", border: `2px solid ${partyColour(m.mp?.colour, COLORS.inkSoft)}`, background: COLORS.paper }} />
               <span style={{ fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: 600, color: COLORS.ink }}>{m.name}</span>
               <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>{m.mp?.name}</span>
             </button>
@@ -93,7 +93,7 @@ function SeatHero({ record, mpInfo, safety, onOpenProfile, opening }) {
         <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: "clamp(34px, 7vw, 58px)", lineHeight: 1.04, letterSpacing: "-0.025em", color: COLORS.ink, margin: 0 }}>{record.name}</h1>
 
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 16, marginTop: 22 }}>
-          <img src={thumb(mp.memberId)} alt="" width={64} height={64} style={{ width: 64, height: 64, borderRadius: "50%", objectFit: "cover", border: `3px solid ${colour}`, background: COLORS.paper, flexShrink: 0 }} />
+          <img loading="lazy" decoding="async" src={thumb(mp.memberId)} alt="" width={64} height={64} style={{ width: 64, height: 64, borderRadius: "50%", objectFit: "cover", border: `3px solid ${colour}`, background: COLORS.paper, flexShrink: 0 }} />
           <div style={{ minWidth: 0 }}>
             <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>Represented by</div>
             <div style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, lineHeight: 1.2 }}>{mp.name}</div>

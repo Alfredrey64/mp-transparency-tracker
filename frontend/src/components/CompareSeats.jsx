@@ -45,7 +45,7 @@ function Picker({ seats, label, current, onPick, exclude }) {
           {matches.map((m) => (
             <li key={m.key} style={{ borderTop: `1px solid ${COLORS.hairline}` }}>
               <button type="button" onClick={() => { onPick(m.name); setQuery(""); }} style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", textAlign: "left", background: "none", border: "none", padding: "9px 12px", cursor: "pointer", color: COLORS.ink, fontFamily: FONT_BODY, fontSize: 14 }}>
-                <img src={thumb(m.mp.memberId)} alt="" width={30} height={30} loading="lazy" style={{ width: 30, height: 30, borderRadius: "50%", objectFit: "cover", border: `2px solid ${colour(m.mp.colour)}`, background: COLORS.paper }} />
+                <img decoding="async" src={thumb(m.mp.memberId)} alt="" width={30} height={30} loading="lazy" style={{ width: 30, height: 30, borderRadius: "50%", objectFit: "cover", border: `2px solid ${colour(m.mp.colour)}`, background: COLORS.paper }} />
                 <span style={{ fontWeight: 700 }}>{m.name}</span>
                 <span style={{ color: COLORS.inkSoft, fontSize: 12.5 }}>{m.mp.name}</span>
               </button>
@@ -83,7 +83,7 @@ function Header({ rec }) {
     <div style={{ minWidth: 0, borderTop: `4px solid ${c}`, paddingTop: 12 }}>
       <a href={`#/constituency/${encodeURIComponent(rec.name)}`} style={{ fontFamily: FONT_DISPLAY, fontSize: "clamp(20px, 4vw, 30px)", lineHeight: 1.1, color: COLORS.ink, textDecoration: "none", letterSpacing: "-0.02em", display: "block", overflowWrap: "anywhere" }}>{rec.name}</a>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 10 }}>
-        <img src={thumb(rec.mp.memberId)} alt="" width={44} height={44} style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", border: `2px solid ${c}`, background: COLORS.paper, flexShrink: 0 }} />
+        <img loading="lazy" decoding="async" src={thumb(rec.mp.memberId)} alt="" width={44} height={44} style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", border: `2px solid ${c}`, background: COLORS.paper, flexShrink: 0 }} />
         <div style={{ minWidth: 0, fontFamily: FONT_BODY }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: COLORS.ink }}>{rec.mp.name}</div>
           <div style={{ fontSize: 12.5, color: COLORS.inkSoft }}>{rec.mp.party}</div>

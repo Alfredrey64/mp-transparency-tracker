@@ -31,6 +31,7 @@ import { bandsBetween, PARTY_COLOURS } from "../lib/governments";
 import { DEEP_DIVES } from "../data/onsDeepDives";
 import { card, cardTitle, smallTitle, pillStyle, dateText } from "../lib/onsStyles";
 import { IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconHouse, IconGlobe, IconLeaf, IconShield, IconTaxes, IconRates, IconMigration, IconFactory } from "./icons";
+import Loading from "./Loading";
 
 // One page per sector, all built from the same pieces: a short story with a
 // spotlight figure, the headline numbers, then a card for every measure with its
@@ -559,7 +560,7 @@ export default function SectorPage({ sector, param = null }) {
       <PageHeader icon={Icon} title={def.title} subtitle={def.subtitle} share={loaded ? shareCard : undefined} />
 
       {failed && <div style={{ marginTop: 24 }}><LoadFailedNote item="these figures" /></div>}
-      {!loaded && !failed && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>Loading…</div>}
+      {!loaded && !failed && <Loading />}
 
       {loaded && (
         <>

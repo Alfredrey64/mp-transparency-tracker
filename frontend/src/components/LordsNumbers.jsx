@@ -16,6 +16,7 @@ import MembersModal from "./MembersModal";
 import DownloadCsvButton from "./DownloadCsvButton";
 import { SEATS_COLUMNS } from "../lib/exportColumns";
 import { Tile, Figure, SeatsChart, SeatsTable, WomenWaffle, CohortChart, Switches } from "./NumbersKit";
+import Loading from "./Loading";
 
 // The House of Lords half of Parliament in Numbers. Same layout and the same
 // tap-to-see-who as the Commons half. The Lords has no election, so the
@@ -80,7 +81,7 @@ export default function LordsNumbers({ onNavigate }) {
 
   const longest = useMemo(() => [...members].filter((m) => m.start).sort((a, b) => String(a.start).localeCompare(String(b.start))).slice(0, 5), [members]);
 
-  if (rows === null) return <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>Loading…</div>;
+  if (rows === null) return <Loading />;
   if (failed) return <div style={{ marginTop: 24 }}><LoadFailedNote item="the list of peers" /></div>;
   if (!stats || stats.total === 0) return null;
 

@@ -33,7 +33,7 @@ function Avatar({ url, name, color, size = 56 }) {
   }
   return (
     <div style={{ width: size, height: size, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, overflow: "hidden" }}>
-      <img
+      <img loading="lazy" decoding="async"
         src={url}
         alt=""
         onLoad={() => setLoaded(true)}

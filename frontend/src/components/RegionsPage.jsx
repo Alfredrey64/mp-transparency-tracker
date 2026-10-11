@@ -15,6 +15,7 @@ import { formatValue, formatAxis, formatCompact, changeBetween, changeShort } fr
 import { monthlyTimeline, valuesOver, ranked, ordinal, domainOf, tLabel, valueAtPosition, niceBands, classOf, classColour } from "../lib/regionData";
 import { isScrolling } from "../lib/scrollState";
 import { card, cardTitle, pillStyle } from "../lib/onsStyles";
+import Loading from "./Loading";
 
 // Regions and nations: an interactive, animated map with a league table beside it. Pick a measure,
 // press play (at a speed you choose) or drag the date, and watch the colours, the key and the table change.
@@ -317,7 +318,7 @@ export default function RegionsPage({ param }) {
         })}
       />
 
-      {!data && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>Loading…</div>}
+      {!data && <Loading />}
 
       {data && series && timeline.length > 1 && (
         <>
