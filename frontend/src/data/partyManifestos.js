@@ -6,6 +6,11 @@
 // `matchNames` are lower-cased exact matches against the `party` field the
 // UK Parliament Members API returns (members-api.parliament.uk), which is
 // what `politicians.party` in the database is populated from.
+//
+// `manifestoUrl` points at the 2024 general election document itself, not the party's home page, because party sites move on to newer
+// manifestos (a party's current Scottish, Welsh or later UK one). Where the party no longer hosts the 2024 file at a stable address, the link
+// goes to a university archive's copy: Lancaster University (UCREL) for the SNP and Plaid Cymru, and Ulster University (CAIN) for the
+// Northern Ireland parties. Check these still work when manifestos are next reviewed.
 export const PARTY_MANIFESTOS = [
   {
     key: "labour",
@@ -68,9 +73,9 @@ export const PARTY_MANIFESTOS = [
     key: "conservative",
     matchNames: ["conservative"],
     shortName: "Conservative",
-    manifestoTitle: "Conservative Party Manifesto",
+    manifestoTitle: "Clear Plan. Bold Action. Secure Future.",
     manifestoYear: 2024,
-    manifestoUrl: "https://www.conservatives.com/our-plan",
+    manifestoUrl: "https://public.conservatives.com/publicweb/GE2024/Accessible-Manifesto/Large-Print-Conservative-Manifesto.pdf",
     highlights: [
       "Cut employee National Insurance further, and abolish it for the self-employed over time",
       "A binding annual parliamentary vote on a legal cap on migration numbers",
@@ -128,7 +133,7 @@ export const PARTY_MANIFESTOS = [
     manifestoUrl: "https://www.libdems.org.uk/manifesto",
     highlights: [
       "Free personal care for older and disabled people",
-      "Guarantee a same-day GP appointment for anyone who needs one",
+      "A right to see a GP within seven days, or within 24 hours if it is urgent",
       "Introduce proportional representation for Westminster elections",
       "Reverse Conservative-era capital gains tax cuts to fund public services",
       "Tougher regulation of water companies over sewage discharges",
@@ -138,7 +143,7 @@ export const PARTY_MANIFESTOS = [
         heading: "Health & Care",
         points: [
           "Free personal care for older and disabled people",
-          "Guaranteed same-day GP access for urgent need",
+          "A right to see a GP within seven days, or within 24 hours if urgent",
           "Regular mental health check-ups for young people",
         ],
       },
@@ -166,11 +171,11 @@ export const PARTY_MANIFESTOS = [
     shortName: "Reform UK",
     manifestoTitle: "Our Contract with You",
     manifestoYear: 2024,
-    manifestoUrl: "https://www.reformparty.uk/policies",
+    manifestoUrl: "https://assets.nationbuilder.com/reformuk/pages/253/attachments/original/1718625371/Reform_UK_Our_Contract_with_You.pdf",
     highlights: [
       "Freeze non-essential immigration and leave the European Convention on Human Rights",
       "Scrap net zero targets and related subsidies",
-      "Raise the Income Tax personal allowance and the higher-rate threshold",
+      "Raise the point at which people start paying Income Tax to £20,000",
       "Fast-track new North Sea oil and gas licences",
       "Cut what they describe as wasteful public-sector and consultancy spending",
     ],
@@ -188,7 +193,6 @@ export const PARTY_MANIFESTOS = [
         heading: "Economy & Tax",
         points: [
           "Raise the Income Tax personal allowance",
-          "Raise the higher-rate Income Tax threshold",
           "Abolish IR35 rules for the self-employed",
         ],
       },
@@ -209,9 +213,9 @@ export const PARTY_MANIFESTOS = [
     manifestoYear: 2024,
     manifestoUrl: "https://greenparty.org.uk/manifesto/",
     highlights: [
-      "A wealth tax on the top 1% of earners",
-      "Insulate 19 million homes over 10 years",
-      "Bring rail, energy, water, and mail back into public ownership",
+      "A wealth tax of 1% on assets over £10 million and 2% over £1 billion",
+      "Invest £29 billion over five years to insulate homes, as part of a ten-year programme",
+      "Bring rail, water and the big five energy retailers back into public ownership",
       "Introduce proportional representation",
       "Free personal social care for older and disabled people",
     ],
@@ -219,8 +223,8 @@ export const PARTY_MANIFESTOS = [
       {
         heading: "Tax & Economy",
         points: [
-          "A wealth tax on the highest earners",
-          "Higher Corporation Tax on large businesses",
+          "A wealth tax on very large fortunes",
+          "Tax investment income at the same rates as pay, and remove the upper limit on National Insurance",
           "Close existing tax loopholes",
         ],
       },
@@ -245,15 +249,15 @@ export const PARTY_MANIFESTOS = [
     key: "snp",
     matchNames: ["scottish national party"],
     shortName: "SNP",
-    manifestoTitle: "Stronger for Scotland",
+    manifestoTitle: "A Future Made in Scotland",
     manifestoYear: 2024,
-    manifestoUrl: "https://www.snp.org/manifesto/",
+    manifestoUrl: "https://ucrel.lancs.ac.uk/wmatrix/ukmanifestos2024/localpdf/SNP.pdf",
     highlights: [
-      "A mandate for a new independence referendum",
+      "A mandate to negotiate independence if the SNP wins a majority of Scottish seats",
       "Scrap the two-child benefit cap UK-wide",
       "Increase NHS funding and cut waiting times in Scotland",
       "Seek Scottish EU membership as an independent country",
-      "A new fund from oil and gas revenue for public services and net zero investment",
+      "Ask the UK government to match its £500 million Just Transition Fund for the North East and Moray",
     ],
     sections: [
       {
@@ -273,7 +277,7 @@ export const PARTY_MANIFESTOS = [
       {
         heading: "Economy",
         points: [
-          "Direct oil and gas revenue into a new fund for public services and renewables",
+          "Press the UK government to invest at least £28 billion a year in the green economy, with a public stake in new energy projects",
           "Invest in Scottish renewable energy jobs",
         ],
       },
@@ -283,9 +287,9 @@ export const PARTY_MANIFESTOS = [
     key: "plaid-cymru",
     matchNames: ["plaid cymru"],
     shortName: "Plaid Cymru",
-    manifestoTitle: "Manifesto 2024",
+    manifestoTitle: "For Fairness, For Ambition, For Wales",
     manifestoYear: 2024,
-    manifestoUrl: "https://www.partyof.wales/manifesto",
+    manifestoUrl: "https://ucrel.lancs.ac.uk/wmatrix/ukmanifestos2024/localpdf/PlaidCymru.pdf",
     highlights: [
       "A fairer UK funding settlement for Wales, reforming the Barnett formula",
       "Further devolution of policing and justice to Wales",
@@ -300,7 +304,7 @@ export const PARTY_MANIFESTOS = [
     shortName: "DUP",
     manifestoTitle: "Manifesto 2024",
     manifestoYear: 2024,
-    manifestoUrl: "https://www.mydup.com/",
+    manifestoUrl: "https://cain.ulster.ac.uk/issues/politics/docs/dup/dup_2024-07-04_ge_man.pdf",
     highlights: [
       "Defend Northern Ireland's place within the United Kingdom",
       "Remove remaining Irish Sea trade barriers under the Windsor Framework",
@@ -314,7 +318,7 @@ export const PARTY_MANIFESTOS = [
     shortName: "Sinn Féin",
     manifestoTitle: "Manifesto 2024",
     manifestoYear: 2024,
-    manifestoUrl: "https://www.sinnfein.ie/manifestos",
+    manifestoUrl: "https://cain.ulster.ac.uk/issues/politics/docs/sf/sf_2024-07-04_ge_man.pdf",
     highlights: [
       "Campaign for a border poll on Irish unity",
       "Sinn Féin MPs follow an abstentionist policy and do not take their seats at Westminster",
@@ -328,7 +332,7 @@ export const PARTY_MANIFESTOS = [
     shortName: "SDLP",
     manifestoTitle: "Manifesto 2024",
     manifestoYear: 2024,
-    manifestoUrl: "https://www.sdlp.ie/",
+    manifestoUrl: "https://cain.ulster.ac.uk/issues/politics/docs/sdlp/sdlp_2024-07-04_ge_man.pdf",
     highlights: [
       "Support Irish unity by consent, achieved through peaceful and democratic means",
       "Pro-EU, seeking closer UK–EU relations for Northern Ireland",
@@ -342,7 +346,7 @@ export const PARTY_MANIFESTOS = [
     shortName: "Alliance",
     manifestoTitle: "Manifesto 2024",
     manifestoYear: 2024,
-    manifestoUrl: "https://www.allianceparty.org/manifesto",
+    manifestoUrl: "https://cain.ulster.ac.uk/issues/politics/docs/apni/apni_2024-07-04_ge_man.pdf",
     highlights: [
       "Cross-community, non-sectarian politics in Northern Ireland",
       "Reform the Assembly's mandatory community-designation system",

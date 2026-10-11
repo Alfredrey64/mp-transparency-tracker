@@ -34,3 +34,7 @@ Any answer, and any chart on a Britain in numbers page, has an **Embed** button 
 - **Caching:** `vercel.json` marks everything under `/assets` and `/fonts` as immutable for a year, since the file names change when the contents do. Pages and data are still checked fresh.
 - **Page changes** run as React transitions (`App.jsx`): the current page stays until the next is ready, a thin line shows only if that takes more than a moment, and the new page opens at its top in the same frame. `lib/preserveScroll.js` keeps tabs and filters from moving the page, and `components/Loading.jsx` holds a page's height while its figures load.
 - **After a new deploy,** a tab left open reloads once if a page file has gone (`lib/chunkReload.js`).
+
+## Checking party positions
+
+What each party promised (`src/data/answerPartyPositions.js`) and the headline lists on the party cards (`src/data/partyManifestos.js`) are written in our own words from the 2024 general election manifestos. Full text of every manifesto is available from Lancaster University's UK Manifestos project (`https://ucrel.lancs.ac.uk/wmatrix/ukmanifestos2024/text/<Party>.txt`, with `Labour`, `Conservatives`, `LiberalDemocrats`, `ReformUK`, `Green`, `SNP` and `PlaidCymru`), which is the quickest way to check a claim: search the text for the figure or phrase. A party is left out of a question unless the manifesto makes a clear commitment on it. The manifesto links point at the 2024 documents; party sites tend to replace them with newer manifestos, so recheck them when reviewing.

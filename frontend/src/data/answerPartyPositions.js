@@ -20,7 +20,7 @@ const NHS = {
     conservative: "Increase NHS spending above inflation every year and recruit 92,000 more nurses and 28,000 more doctors, with new diagnostic and surgical hubs.",
     "liberal-democrat": "The right to see a GP within seven days, or within 24 hours if it is urgent, with 8,000 more GPs, plus free personal care for older and disabled people and better pay for care workers.",
     "reform-uk": "Tax cuts for front-line NHS and social care staff, and tax relief on private health insurance to take pressure off the NHS.",
-    green: "An extra £20 billion for NHS budgets over the parliament, and free personal social care for older and disabled people.",
+    green: "Invest £20 billion in NHS budgets over the parliament for hospital building and repair, and bring in free personal social care for older and disabled people.",
     snp: "A bill to protect the NHS from privatisation, and a call on the UK government to put £10 billion more into health.",
     "plaid-cymru": "More funding for the NHS and a National Care Service.",
   },
@@ -34,6 +34,8 @@ const IMMIGRATION = {
     "liberal-democrat": "A fair, effective immigration system, with a right to work for asylum seekers after three months.",
     "reform-uk": "Freeze non-essential immigration, with exceptions for essential skills such as health care, and charge employers extra National Insurance for foreign workers.",
     green: "Rejoin the EU customs union and restore freedom of movement with Europe.",
+    snp: "Devolve immigration powers to Scotland, with a rural visa pilot to ease labour shortages.",
+    "plaid-cymru": "Oppose restrictions on visas for care workers and their dependants, and make Wales a Nation of Sanctuary for refugees.",
   },
 };
 
@@ -44,7 +46,9 @@ const BOATS = {
     conservative: "Keep the Rwanda scheme, with regular flights, and leave the European Convention on Human Rights if it blocks removals.",
     "liberal-democrat": "Scrap the Rwanda scheme, work with France and other countries on crossings, and open more safe and legal routes.",
     "reform-uk": "Return people who cross the Channel in small boats to France, freeze non-essential immigration and leave the European Convention on Human Rights.",
-    green: "Scrap the Rwanda scheme and replace it with safe and legal routes for asylum seekers.",
+    green: "Create safe routes to sanctuary for people fleeing danger, persecution and war, and end the hostile environment.",
+    snp: "Scrap the Rwanda scheme and give asylum seekers the right to work.",
+    "plaid-cymru": "Oppose the Rwanda scheme, provide safe routes and process claims quickly, including in a third country such as France or at British embassies abroad.",
   },
 };
 
@@ -55,7 +59,9 @@ const ENERGY = {
     conservative: "Hold annual licensing rounds for new North Sea oil and gas, build more nuclear power and keep the 2050 net zero target.",
     "liberal-democrat": "A nationwide home insulation programme to cut bills, with net zero reached by 2045.",
     "reform-uk": "Scrap net zero targets and green levies, take VAT off energy bills and fast-track new North Sea oil and gas licences.",
-    green: "Insulate 19 million homes over ten years, bring energy back into public ownership, oppose new oil and gas licences and reach net zero sooner.",
+    green: "Invest £29 billion over five years to insulate homes, bring the big five energy retailers into public ownership, stop new oil and gas licences and reach net zero well before 2050.",
+    snp: "Press for a cut in standing charges and a social tariff for energy, and for the UK government to invest at least £28 billion a year in the green economy, with a public stake in new energy projects.",
+    "plaid-cymru": "Raise the windfall tax on energy companies and close the loopholes they use, while promoting investment in renewable energy.",
   },
 };
 
@@ -67,6 +73,9 @@ export const ANSWER_POSITIONS = {
       conservative: "Build 1.6 million homes in England, abolish stamp duty for first-time buyers on homes up to £425,000 and bring in a new Help to Buy scheme.",
       "liberal-democrat": "Build 380,000 homes a year, including 150,000 social homes, with new garden cities.",
       green: "Build 150,000 social homes a year, new or by refurbishing older housing.",
+      "reform-uk": "Cut stamp duty to zero on homes under £750,000 and fast-track new housing on brownfield sites.",
+      snp: "Bring back a simplified Help to Buy ISA to help first-time buyers.",
+      "plaid-cymru": "Bring in a legal Right to Adequate Housing and act on empty homes, second homes and holiday homes.",
     },
   },
   "why-rents-rising": {
@@ -76,6 +85,8 @@ export const ANSWER_POSITIONS = {
       conservative: "Bring in the Renters Reform Bill to end \"no fault\" evictions once the courts can cope.",
       "liberal-democrat": "End \"no fault\" evictions straight away, make three-year tenancies the standard and set up a register of licensed landlords.",
       green: "Bring in rent controls and end \"no fault\" evictions.",
+      "reform-uk": "Scrap Section 24, so landlords can again deduct mortgage interest from their rental income tax, and abolish the Renters' Reform Bill.",
+      snp: "Push for an annual rise in Local Housing Allowance, which helps renters with their housing costs.",
     },
   },
   "why-prices-rising": {
@@ -85,7 +96,9 @@ export const ANSWER_POSITIONS = {
       conservative: "Cut employee National Insurance by a further 2p, to 6% by April 2027, and protect pensioners with a \"triple lock plus\".",
       "liberal-democrat": "A nationwide home insulation programme to bring energy bills down.",
       "reform-uk": "Raise the income tax threshold to £20,000 and take VAT off energy bills.",
-      green: "Insulate 19 million homes over ten years and raise money from a wealth tax on the richest.",
+      green: "Invest £29 billion over five years to insulate homes, paid for partly by a wealth tax on very large fortunes.",
+      snp: "Demand an essentials guarantee so everyone can afford basics such as food and utilities, with a social tariff for energy and a cut in standing charges.",
+      "plaid-cymru": "Raise Child Benefit by £20 a week to help families with the cost of living.",
     },
   },
   "why-energy-bills-high": ENERGY,
@@ -98,8 +111,8 @@ export const ANSWER_POSITIONS = {
       labour: "No rises in income tax, National Insurance or VAT rates, corporation tax capped at 25%, and VAT on private school fees.",
       conservative: "Cut employee National Insurance by a further 2p, to 6% by April 2027, and scrap the main rate for the self-employed within five years.",
       "liberal-democrat": "Reverse recent cuts to capital gains tax for the highest earners, to pay for public services.",
-      "reform-uk": "Raise the income tax threshold to £20,000 and the higher-rate threshold, and scrap IR35 rules for the self-employed.",
-      green: "A wealth tax on the richest 1% and higher corporation tax on large firms, raising about £150 billion a year by the end of the parliament.",
+      "reform-uk": "Raise the income tax threshold to £20,000, scrap IR35 rules for the self-employed and cut stamp duty.",
+      green: "A wealth tax of 1% on assets over £10 million and 2% over £1 billion, tax on investment income at the same rates as pay, and no upper limit on National Insurance, which it estimates could raise £50 to £70 billion a year.",
       "plaid-cymru": "A wealth tax, a higher windfall tax on energy firms, VAT on private school fees and capital gains taxed at the same rates as income.",
     },
   },
@@ -109,7 +122,8 @@ export const ANSWER_POSITIONS = {
       labour: "Strict fiscal rules: pay for day-to-day spending from taxes, get debt falling as a share of the economy, and hold one Budget a year checked by the OBR.",
       conservative: "Keep debt falling as a share of the economy, with slower growth in welfare spending and a crackdown on tax avoidance.",
       "reform-uk": "Pay for tax cuts by cutting what it calls wasteful public spending and consultancy costs.",
-      green: "Higher public investment, paid for by new taxes on wealth and large companies.",
+      green: "Borrow to invest rather than follow the current fiscal rules, and raise money with a wealth tax and a carbon tax.",
+      "liberal-democrat": "Get national debt falling as a share of the economy, and make sure day-to-day spending does not exceed what is raised in tax.",
     },
   },
   "what-is-immigration-level": IMMIGRATION,
@@ -121,6 +135,7 @@ export const ANSWER_POSITIONS = {
       labour: "Clear the backlog of asylum claims by hiring more decision-makers, and set up a new returns and enforcement unit.",
       conservative: "Remove people who arrive by small boat to Rwanda, as a deterrent.",
       "liberal-democrat": "Let asylum seekers work after three months and clear the backlog of claims.",
+      snp: "Give asylum seekers the right to work, and house them in accommodation that is safe, suitable and dignified.",
     },
   },
   "why-economy-slow": {
@@ -130,8 +145,9 @@ export const ANSWER_POSITIONS = {
       conservative: "Cut National Insurance, keep the \"full expensing\" tax break for business investment and cut red tape.",
       "liberal-democrat": "Closer trade ties with the EU, with a long-term aim of rejoining the single market.",
       "reform-uk": "Cut taxes and regulation and scrap the costs of net zero.",
-      green: "A large public investment programme in green infrastructure, paid for by taxes on wealth.",
+      green: "An average of £40 billion a year of green investment over the parliament, paid for partly by taxes on wealth.",
       snp: "Rejoin the EU and the single market, which it says would repair damage done by Brexit.",
+      "plaid-cymru": "An Economic Fairness Bill to narrow the gap in performance between the UK's nations and regions, with fair funding for Wales.",
     },
   },
   "why-wages-stagnant": {
@@ -141,6 +157,7 @@ export const ANSWER_POSITIONS = {
       conservative: "Cut National Insurance so employees keep more of their pay.",
       "reform-uk": "Raise the income tax threshold to £20,000 so lower earners keep more of their pay.",
       green: "Raise the minimum wage to £15 an hour for all ages and give every worker the same rights from their first day.",
+      snp: "Devolve employment rights and the minimum wage, scrap zero-hours contracts and raise the minimum wage to at least the level of the national living wage.",
     },
   },
   "why-not-working": {
@@ -148,6 +165,7 @@ export const ANSWER_POSITIONS = {
     parties: {
       labour: "Reform the Jobcentre system into a service that helps people into work, with more mental health support.",
       conservative: "Overhaul the fit note and the work capability assessment so GPs are no longer the main route to a sick note, and save £12 billion a year in welfare spending.",
+      "reform-uk": "Withdraw benefits from job seekers who do not take a job within four months or after two offers, with face-to-face and independent medical assessments for disability benefits.",
     },
   },
   "is-crime-rising": {
@@ -157,6 +175,7 @@ export const ANSWER_POSITIONS = {
       conservative: "Recruit 8,000 more police officers over three years, with tougher sentences for serious and repeat offenders and more prison places.",
       "reform-uk": "Recruit 40,000 more police officers over five years, with zero tolerance policing.",
       "plaid-cymru": "Hand full powers over justice and policing to Wales.",
+      "liberal-democrat": "Restore community policing and make sure every burglary is properly investigated.",
     },
   },
   "north-south-divide": {
@@ -173,13 +192,17 @@ ANSWER_POSITIONS["are-young-people-struggling-for-jobs"] = {
   about: "on jobs for young people",
   parties: {
     labour: "A youth guarantee: access to training, an apprenticeship or help to find work for every 18 to 21 year old.",
+    conservative: "Bring in mandatory National Service for all 18 year olds, with a choice between a competitive military placement or civic service.",
+    "liberal-democrat": "Invest in more apprenticeships and bring in Lifelong Skills Grants for adults to spend on training.",
   },
 };
 ANSWER_POSITIONS["why-are-there-strikes"] = {
   about: "on strikes and union law",
   parties: {
-    labour: "Repeal the Trade Union Act 2016 and the law on minimum service levels during strikes.",
+    labour: "Bring in its New Deal for Working People in full within 100 days, strengthening the collective voice of workers and their unions. The plan includes repealing the Trade Union Act 2016 and the minimum service levels law.",
     green: "Repeal the anti-union laws and bring in a Charter of Workers' Rights, with the right to strike at its heart.",
+    conservative: "Keep implementing the law on minimum service levels, to balance the right to strike against the rights of the public.",
+    snp: "Repeal the Strikes (Minimum Service Levels) Act and protect the right to strike.",
   },
 };
 ANSWER_POSITIONS["benefits-and-pensions-spending"] = {
@@ -187,6 +210,8 @@ ANSWER_POSITIONS["benefits-and-pensions-spending"] = {
   parties: {
     conservative: "Save £12 billion a year in welfare spending by overhauling the fit note and the work capability assessment, and using more sanctions for people who refuse work.",
     snp: "Scrap the two-child benefit cap and bring in an \"essentials guarantee\", so everyone can afford basics such as food and energy.",
+    "reform-uk": "Withdraw benefits from job seekers who do not take a job within four months or after two offers, with face-to-face and independent medical assessments for disability benefits.",
+    "plaid-cymru": "Scrap the two-child limit and the benefit cap, and raise Child Benefit by £20 a week.",
   },
 };
 ANSWER_POSITIONS["is-the-nhs-short-of-staff"] = NHS;
@@ -196,6 +221,8 @@ ANSWER_POSITIONS["what-is-the-triple-lock"] = {
     labour: "Keep the triple lock for the whole parliament.",
     conservative: "Keep the triple lock and add a \"triple lock plus\", so the tax-free allowance for pensioners rises as fast as the state pension.",
     "liberal-democrat": "Keep the triple lock on the state pension.",
+    snp: "Keep the triple lock and move towards a wellbeing pension.",
+    "plaid-cymru": "Keep the triple lock, so the state pension keeps pace with prices and the cost of living.",
   },
 };
 
@@ -213,25 +240,27 @@ ANSWER_POSITIONS["why-uk-has-nuclear-weapons"] = {
   parties: {
     labour: "Keep the nuclear deterrent, including the new Dreadnought submarines.",
     conservative: "Keep the Trident nuclear deterrent and the submarines that carry it.",
-    "liberal-democrat": "Keep a minimum nuclear deterrent and the new submarine programme, but buy three submarines rather than four.",
+    "liberal-democrat": "Keep the nuclear deterrent with four submarines providing continuous cover at sea, while pursuing multilateral disarmament.",
     green: "Cancel Trident and press the UK to sign the United Nations treaty banning nuclear weapons.",
     "plaid-cymru": "Oppose renewing Trident and scrap it.",
+    snp: "Scrap Trident and spend the money on conventional defence and public services.",
   },
 };
 ANSWER_POSITIONS["is-university-worth-it"] = {
   about: "on university fees and funding",
   parties: {
-    conservative: "Keep tuition fees as they are in England, and reform student loans so that no one repays more than they borrowed in real terms.",
+    conservative: "Close university courses in England with the worst outcomes for students, and use the savings to create 100,000 more apprenticeships a year.",
     "liberal-democrat": "Bring back maintenance grants for the most disadvantaged students.",
     green: "Abolish tuition fees and bring back maintenance grants.",
+    snp: "Defend free university tuition for Scottish students.",
   },
 };
 ANSWER_POSITIONS["why-schools-short-of-teachers"] = {
   about: "on schools and teachers",
   parties: {
     labour: "Recruit 6,500 more teachers in key subjects, paid for by ending tax breaks for private schools.",
-    "liberal-democrat": "A teacher workforce plan to make sure there are specialist teachers in every subject at secondary school.",
-    green: "A large increase in education funding, partly paid for by a wealth tax.",
+    "liberal-democrat": "A teacher workforce strategy so every secondary school child is taught by a specialist in their subject, and an independent pay review body with fully funded pay rises.",
+    green: "Reduce pressure in schools by ending high-stakes formal testing at primary and secondary level and abolishing Ofsted.",
   },
 };
 ANSWER_POSITIONS["why-private-schools-charge-vat"] = {
@@ -239,6 +268,70 @@ ANSWER_POSITIONS["why-private-schools-charge-vat"] = {
   parties: {
     labour: "Add VAT to private school fees and end their business rates relief, to pay for 6,500 more state school teachers.",
     green: "Remove the charitable status and the VAT exemption from private schools.",
+    "plaid-cymru": "Bring in VAT on private school fees.",
+    "reform-uk": "Take VAT off private school fees and give 20% tax relief on independent school fees.",
+  },
+};
+
+ANSWER_POSITIONS["debt-or-deficit"] = ANSWER_POSITIONS["is-debt-too-high"];
+ANSWER_POSITIONS["why-state-pension-age-rising"] = {
+  about: "on the state pension age",
+  parties: {
+    snp: "Oppose any further rise in the state pension age, and any speeding up of the changes already planned.",
+  },
+};
+ANSWER_POSITIONS["how-much-tax-goes-unpaid"] = {
+  about: "on tax avoidance and evasion",
+  parties: {
+    labour: "Abolish non-dom status, end the use of offshore trusts to avoid inheritance tax, and modernise HMRC and strengthen its powers, with a focus on large businesses and the wealthy.",
+    conservative: "Raise at least a further £6 billion a year by tackling tax avoidance and evasion by the end of the parliament.",
+    "liberal-democrat": "Give HMRC the resources to tackle avoidance and evasion, and push for a global minimum rate of corporation tax of 21%.",
+    green: "Clamp down on tax dodging, strengthen global agreements against corporate avoidance and make sure HMRC has the resources to narrow the gap between tax due and tax paid.",
+    snp: "With full tax powers, crack down on avoidance and evasion and make international companies more open about the tax they pay.",
+    "plaid-cymru": "Crack down on tax evasion and avoidance and abolish loopholes for non-doms.",
+  },
+};
+ANSWER_POSITIONS["why-high-streets-struggling"] = {
+  about: "on high streets and business rates",
+  parties: {
+    labour: "Replace business rates in England with a new system that raises the same money but levels the playing field between the high street and online giants.",
+    conservative: "Keep easing business rates for high street, leisure and hospitality firms, by raising over time the rate paid on warehouses that serve online shopping.",
+    "liberal-democrat": "Abolish business rates and replace them with a Commercial Landowner Levy to help high streets.",
+    "reform-uk": "Abolish business rates for small firms on the high street, paid for by a 4% Online Delivery Tax on large multinational companies.",
+    green: "Let councils exempt socially and economically essential local businesses from business rates.",
+    "plaid-cymru": "Reform business rates in Wales with a lower rate for high street retail and hospitality, and invest in high streets to keep shops open.",
+  },
+};
+ANSWER_POSITIONS["why-council-tax-rising"] = {
+  about: "on council tax",
+  parties: {
+    conservative: "Promise no new council tax bands, no revaluation and no cuts to discounts, and give local people the final say on council tax rises.",
+    "liberal-democrat": "Let councils increase council tax by up to 500% where homes are bought as second homes.",
+    green: "Revalue council tax bands to reflect changes in house values since the 1990s.",
+  },
+};
+ANSWER_POSITIONS["why-food-prices-rising"] = {
+  about: "on food prices",
+  parties: {
+    labour: "Reduce food prices by removing barriers to businesses trading.",
+    "liberal-democrat": "Tackle rising food prices with a National Food Strategy.",
+    "reform-uk": "Give the Competition and Markets Authority the power to stop supermarket price fixing and make sure prices are fair.",
+  },
+};
+ANSWER_POSITIONS["what-does-boe-do"] = {
+  about: "on the Bank of England",
+  parties: {
+    labour: "Keep a strong, independent Bank of England with its 2% inflation target.",
+    "liberal-democrat": "Protect the Bank of England's independence and keep the 2% inflation target.",
+    "reform-uk": "Stop the Bank of England paying interest to commercial banks on its quantitative easing reserves, which Reform says would save about £35 billion a year.",
+    green: "Change the Bank's mandate so that funding the shift to a sustainable economy becomes a central goal alongside stable prices.",
+  },
+};
+ANSWER_POSITIONS["why-mortgage-rates-high"] = {
+  about: "on mortgage rates",
+  parties: {
+    labour: "Keep mortgage rates as low as possible, with strict fiscal rules and a strong, independent Bank of England.",
+    "liberal-democrat": "Get mortgage rates under control through careful management of the economy.",
   },
 };
 
