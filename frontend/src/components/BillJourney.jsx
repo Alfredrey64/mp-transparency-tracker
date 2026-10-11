@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
+import { scrollRegion } from "../lib/a11y";
 
 // A real institutional fact, not a decorative choice: Commons benches are
 // green, Lords benches are red, and that colour-coding is how the two
@@ -87,6 +88,7 @@ function HouseTrack({ house, stageCounts, activeKey, onSelect }) {
       </div>
       <motion.div
         className="mp-bill-track"
+        {...scrollRegion(`Bill stages in the House of ${house}`)}
         variants={revealParent}
         initial="hidden"
         whileInView="visible"

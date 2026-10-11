@@ -4,6 +4,7 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconBroadcast, IconBook } from "./icons";
+import { keyboardActivate } from "../lib/a11y";
 
 function InfoCard({ title, color, children, index = 0 }) {
   return (
@@ -132,7 +133,7 @@ function OutletCard({ outlet, index, open, onToggle }) {
       }}
       onClick={onToggle}
     >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: 16, paddingBottom: open ? 10 : 16 }}>
+      <div {...keyboardActivate(onToggle, { label: `${outlet.name}. ${open ? "Hide" : "Show"} who owns and funds it`, expanded: open })} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: 16, paddingBottom: open ? 10 : 16 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ width: 10, height: 10, borderRadius: "50%", background: outlet.color, flexShrink: 0, boxShadow: `0 0 0 3px ${outlet.color}2a` }} />
           <span style={{ fontFamily: FONT_DISPLAY, fontSize: 18, color: COLORS.ink }}>{outlet.name}</span>
@@ -149,6 +150,7 @@ function OutletCard({ outlet, index, open, onToggle }) {
       </div>
 
       <motion.div
+        aria-hidden={!open}
         initial={false}
         animate={{ height: open ? "auto" : 0 }}
         transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}

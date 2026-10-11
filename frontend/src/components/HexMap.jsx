@@ -2,6 +2,7 @@ import { useEffect, useRef, memo } from "react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, numeric } from "../theme";
 import { partyColour } from "../lib/format";
 import { hexPoints, ZOOMS } from "../lib/seatMap";
+import { scrollRegion } from "../lib/a11y";
 
 // The hexagon map itself: 650 equal hexagons painted by the chosen view, with
 // zoom buttons, a ring on the selected seat and a preview card for the seat
@@ -84,7 +85,7 @@ export default function HexMap({ cells, bounds, mode, dimmed, selected, hoverCel
 
   return (
     <div style={{ position: "relative", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 16, padding: 8 }}>
-      <div ref={scroller} style={{ overflow: "auto", maxHeight: "min(80vh, 820px)", borderRadius: 12 }}>
+      <div ref={scroller} {...scrollRegion("Map, scrollable")} style={{ overflow: "auto", maxHeight: "min(80vh, 820px)", borderRadius: 12 }}>
         <svg
           role="img"
           aria-label={`Hexagon map of the 650 constituencies, coloured by the "${mode.label}" view. Use the search box to find a seat.`}

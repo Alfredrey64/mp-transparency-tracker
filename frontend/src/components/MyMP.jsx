@@ -83,6 +83,8 @@ function PostcodeForm({ onFound, initialError }) {
           </span>
           <input
             value={postcode}
+            aria-label="Your postcode"
+            autoComplete="postal-code"
             onChange={(e) => setPostcode(e.target.value)}
             placeholder="e.g. SW1A 0AA"
             style={{

@@ -168,7 +168,7 @@ export default function MinisterialMeetings() {
           </FilterList>
         </aside>
 
-        <main style={{ minWidth: 0 }}>
+        <div style={{ minWidth: 0 }}>
           <p style={{ ...text, margin: "0 0 4px", maxWidth: 640 }}>
             Departments publish these returns months after the fact, so this is the freshest record there is. It is also a hand-picked sample, not a
             complete list: each department publishes in its own format, so there is no single feed to collect from. For everything, browse{" "}
@@ -201,7 +201,7 @@ export default function MinisterialMeetings() {
               ))}
             </section>
           ))}
-        </main>
+        </div>
       </div>
       </div>
     </div>

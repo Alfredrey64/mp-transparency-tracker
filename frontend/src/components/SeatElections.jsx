@@ -3,6 +3,7 @@ import { COLORS, FONT_BODY, FONT_DISPLAY, numeric } from "../theme";
 import { partyColour } from "../lib/format";
 import { Panel } from "./Constituency";
 import { electionList, changesOfParty, shortParty } from "../lib/seatElections";
+import { scrollRegion } from "../lib/a11y";
 
 // A seat's general elections side by side: the 2010, 2015, 2017 and 2019 results for the old seat of the same name (from
 // Democracy Club, via electionHistory.json) and the 2024 result for today's seat. Boundaries changed in 2024, so 2024 is not
@@ -118,7 +119,7 @@ export default function SeatElections({ record, history, parties, loading }) {
             </p>
             <details style={{ marginTop: 12 }}>
               <summary className="ons-tap" style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 700, color: COLORS.ink, cursor: "pointer", padding: "6px 0" }}>See the figures as a table</summary>
-              <div style={{ overflowX: "auto" }}>
+              <div {...scrollRegion("Table of election results")} style={{ overflowX: "auto" }}>
                 <table style={{ borderCollapse: "collapse", width: "100%", fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, minWidth: 420 }}>
                   <thead>
                     <tr>{["Year", "Winner", "Share", "Lead", "Majority"].map((h) => <th key={h} scope="col" style={{ textAlign: h === "Year" || h === "Winner" ? "left" : "right", padding: "6px 8px", borderBottom: `1px solid ${COLORS.hairline}`, fontWeight: 700 }}>{h}</th>)}</tr>

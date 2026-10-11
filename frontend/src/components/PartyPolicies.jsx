@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
@@ -12,6 +12,7 @@ import PromiseExplorer from "./PartyPromises";
 import { pillStyle } from "../lib/onsStyles";
 import Loading from "./Loading";
 import { partyWash, partyOutline } from "../lib/partyShade";
+import { useDialog } from "../lib/useDialog";
 
 // The party-colour dot is the only element that shares a layoutId between
 // the grid card and the modal — like the CommonsBadge morph elsewhere in
@@ -65,14 +66,12 @@ export default function PartyPolicies({ param }) {
   const { parties, failed } = useParties();
   const [expandedName, setExpandedName] = useState(null);
 
-  useEffect(() => {
-    if (!expandedName) return;
-    function onKey(e) {
-      if (e.key === "Escape") setExpandedName(null);
-    }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [expandedName]);
+  // The pop-up with a party's full list behaves as a dialog: focus moves in, Tab stays inside, Escape closes, focus returns to what opened it.
+  const panelRef = useRef(null);
+  const openerRef = useRef(null);
+  const closeRef = useRef(null);
+  const openParty = (name, el) => { openerRef.current = el ?? null; setExpandedName(name); };
+  useDialog({ open: Boolean(expandedName), onClose: () => setExpandedName(null), panelRef, returnFocusRef: openerRef, initialFocusRef: closeRef });
 
   const expanded = parties?.find((p) => p.name === expandedName) ?? null;
   const expandedManifesto = expanded ? findManifesto(expanded.name) : null;
@@ -107,7 +106,7 @@ export default function PartyPolicies({ param }) {
           </div>
         ) : (
           <>
-            <SeatBar parties={parties} onPick={setExpandedName} />
+            <SeatBar parties={parties} onPick={openParty} />
             <div
               style={{
                 display: "grid",
@@ -121,7 +120,7 @@ export default function PartyPolicies({ param }) {
                 return (
                   <motion.div
                     key={party.name}
-                    onClick={() => setExpandedName(party.name)}
+                    onClick={(e) => openParty(party.name, e.currentTarget)}
                     whileHover={{ y: -3 }}
                     transition={{ duration: 0.15 }}
                     style={{
@@ -147,7 +146,7 @@ export default function PartyPolicies({ param }) {
                     )}
                     <button
                       type="button"
-                      onClick={(e) => { e.stopPropagation(); setExpandedName(party.name); }}
+                      onClick={(e) => { e.stopPropagation(); openParty(party.name, e.currentTarget); }}
                       style={{
                         display: "inline-flex", alignItems: "center", gap: 5, fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700,
                         color: COLORS.ink, marginTop: 18, padding: "6px 14px", borderRadius: 999, background: `${party.color}1a`, border: `1px solid ${party.color}`, cursor: "pointer",
@@ -190,6 +189,11 @@ export default function PartyPolicies({ param }) {
               }}
             >
               <motion.div
+                ref={panelRef}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="party-dialog-title"
+                tabIndex={-1}
                 initial={{ opacity: 0, scale: 0.94, y: 10 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.96, y: 6, transition: { duration: 0.15 } }}
@@ -209,6 +213,8 @@ export default function PartyPolicies({ param }) {
                 }}
               >
                 <button
+                  ref={closeRef}
+                  type="button"
                   onClick={() => setExpandedName(null)}
                   aria-label="Close"
                   style={{
@@ -292,7 +298,7 @@ function PartyCardHeader({ party, manifesto, dotLayoutId, large }) {
     <div>
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <PartyDot layoutId={dotLayoutId} color={party.color} size={large ? 14 : 10} />
-        <div style={{ fontFamily: FONT_DISPLAY, fontSize: large ? 27 : 19, fontWeight: 500, color: COLORS.ink, lineHeight: 1.2 }}>
+        <div id={large ? "party-dialog-title" : undefined} style={{ fontFamily: FONT_DISPLAY, fontSize: large ? 27 : 19, fontWeight: 500, color: COLORS.ink, lineHeight: 1.2 }}>
           {manifesto?.shortName ?? party.name}
         </div>
       </div>
@@ -320,30 +326,29 @@ function BulletLine({ children, small, color = COLORS.accent }) {
   );
 }
 
-// How the Commons divides between the parties below, as one bar. Each segment opens that party.
+// How the Commons divides between the parties below, as one bar. The bar itself is a picture (the figures are in the list under it, which
+// is what a screen reader reads); each party in the list is a button that opens that party.
 function SeatBar({ parties, onPick }) {
   const total = parties.reduce((n, p) => n + p.seats, 0);
   if (!total) return null;
-  const summary = parties.map((p) => `${findManifesto(p.name)?.shortName ?? p.name} ${p.seats}`).join(", ");
   return (
     <div style={{ margin: "18px 0 6px" }}>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.inkSoft, marginBottom: 6 }}>Seats in the Commons</div>
-      <div role="img" aria-label={`Seats in the Commons: ${summary}`} style={{ display: "flex", gap: 2, height: 14, borderRadius: 7, overflow: "hidden" }}>
+      <div id="seat-bar-title" style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.inkSoft, marginBottom: 6 }}>Seats in the Commons</div>
+      <div aria-hidden="true" style={{ display: "flex", gap: 2, height: 14, borderRadius: 7, overflow: "hidden" }}>
         {parties.map((p) => (
-          <button
-            key={p.name} type="button" tabIndex={-1} aria-hidden="true" onClick={() => onPick(p.name)} title={`${findManifesto(p.name)?.shortName ?? p.name}: ${p.seats} seats`}
-            style={{ flex: `${p.seats} 1 0`, minWidth: 3, background: p.color, border: "none", padding: 0, cursor: "pointer" }}
-          />
+          <span key={p.name} title={`${findManifesto(p.name)?.shortName ?? p.name}: ${p.seats} seats`} style={{ flex: `${p.seats} 1 0`, minWidth: 3, background: p.color }} />
         ))}
       </div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 14px", marginTop: 8, fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
+      <ul aria-labelledby="seat-bar-title" style={{ listStyle: "none", margin: "8px 0 0", padding: 0, display: "flex", flexWrap: "wrap", gap: "4px 14px", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
         {parties.map((p) => (
-          <span key={p.name} style={{ display: "inline-flex", alignItems: "center", gap: 5, whiteSpace: "nowrap" }}>
-            <span aria-hidden="true" style={{ width: 9, height: 9, borderRadius: "50%", background: p.color }} />
-            {findManifesto(p.name)?.shortName ?? p.name} <strong style={{ color: COLORS.ink }}>{p.seats}</strong>
-          </span>
+          <li key={p.name}>
+            <button type="button" onClick={(e) => onPick(p.name, e.currentTarget)} aria-label={`${findManifesto(p.name)?.shortName ?? p.name}, ${p.seats} seats. Open its promises`} style={{ display: "inline-flex", alignItems: "center", gap: 5, whiteSpace: "nowrap", background: "none", border: "none", padding: "2px 0", cursor: "pointer", font: "inherit", color: "inherit" }}>
+              <span aria-hidden="true" style={{ width: 9, height: 9, borderRadius: "50%", background: p.color }} />
+              {findManifesto(p.name)?.shortName ?? p.name} <strong style={{ color: COLORS.ink }}>{p.seats}</strong>
+            </button>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }

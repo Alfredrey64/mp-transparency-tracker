@@ -5,6 +5,7 @@ import { loadCareerDetail } from "../lib/careerDetail";
 import {
   EVENT_KINDS, axisTicks, buildEvents, buildLanes, careerStory, chartRange, duration, monthYear, ms, partyColourByName, summarise,
 } from "../lib/careerTimeline";
+import { scrollRegion } from "../lib/a11y";
 
 // The Career tab on a profile: how an MP's career has progressed. A short
 // story, headline figures, a swimlane chart of every spell (seats, parties,
@@ -43,7 +44,7 @@ function Swimlanes({ detail, now }) {
 
   if (lanes.length === 0 && lost.length === 0) return null;
   return (
-    <div style={{ overflowX: "auto", border: `1px solid ${COLORS.hairline}`, borderRadius: 14, background: COLORS.paperCard }}>
+    <div {...scrollRegion("Career timeline")} style={{ overflowX: "auto", border: `1px solid ${COLORS.hairline}`, borderRadius: 14, background: COLORS.paperCard }}>
       <div style={{ minWidth: 600, padding: "10px 14px 12px" }}>
         {/* year axis */}
         <div style={{ display: "grid", gridTemplateColumns: `${LABEL_W}px minmax(0, 1fr)`, gap: 10 }}>

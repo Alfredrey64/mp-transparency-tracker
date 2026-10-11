@@ -5,6 +5,7 @@ import { partyColour } from "../lib/format";
 import CountUp from "./CountUp";
 import Reveal from "./Reveal";
 import { fmt, pct1, EDGE, COLUMNS } from "../lib/numbersFormat";
+import { scrollRegion } from "../lib/a11y";
 
 // Pieces shared by the Commons and Lords halves of Parliament in Numbers.
 
@@ -125,7 +126,7 @@ export function SeatsChart({ stats, onOpen }) {
 export function SeatsTable({ stats }) {
   const cell = { padding: "7px 10px", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, borderBottom: `1px solid ${COLORS.hairline}`, textAlign: "right" };
   return (
-    <div style={{ overflowX: "auto" }}>
+    <div {...scrollRegion("Table of figures")} style={{ overflowX: "auto" }}>
       <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 420 }}>
         <thead>
           <tr>

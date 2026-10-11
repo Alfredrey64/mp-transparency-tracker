@@ -6,6 +6,7 @@ import { GlossaryTerm } from "./GlossaryTerm";
 import { formatDate } from "../lib/format";
 import { IconRegister, IconGroup, IconShield, IconGavel, IconSearch } from "./icons";
 import LOBBYISTS from "../data/consultantLobbyists.json";
+import { scrollRegion } from "../lib/a11y";
 
 // The whole point of the page, as a picture: a small, fully-counted sliver
 // that's actually visible, next to a much larger amount of lobbying that
@@ -147,6 +148,7 @@ function RegisterSearch() {
       </div>
 
       <div
+        {...scrollRegion("List of registered lobbying firms")}
         style={{
           display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 440px), 1fr))", alignContent: "start", gap: 0, maxHeight: 420, overflowY: "auto",
           border: `1px solid ${COLORS.hairline}`, borderRadius: 12, background: COLORS.paperCard,

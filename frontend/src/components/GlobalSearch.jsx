@@ -176,6 +176,14 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
 
   const hasResults = results.mps.length > 0 || results.peers.length > 0 || results.seats.length > 0 || results.careers.length > 0 || results.offices || results.bills.length > 0 || results.pages.length > 0 || results.glossary.length > 0 || results.answers.length > 0 || results.measures.length > 0 || results.councils.length > 0 || results.donors.length > 0 || results.trace;
 
+  // Said aloud by a screen reader as the results change, since the list appears without the focus moving to it.
+  const resultCount = Object.values(results).reduce((n, v) => n + (Array.isArray(v) ? v.length : v ? 1 : 0), 0);
+  const announcement = !open || query.trim().length < 2
+    ? ""
+    : loading && !hasResults ? "Getting ready."
+    : hasResults ? `${resultCount} ${resultCount === 1 ? "result" : "results"}. Press the down arrow to move through them.`
+    : "No matches.";
+
   function selectPolitician(p) {
     onSelectPolitician?.(p);
     setQuery("");
@@ -217,6 +225,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
           ref={inputRef}
           type="search"
           aria-label="Search the site"
+          autoComplete="off"
           value={query}
           onChange={(e) => { startLoading(); setQuery(e.target.value); setOpen(true); }}
           onFocus={(e) => { startLoading(); setOpen(true); e.target.style.borderColor = "var(--sb-accent)"; e.target.style.boxShadow = "0 0 0 3px rgba(79,70,229,0.22)"; }}
@@ -231,9 +240,13 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
         />
       </div>
 
+      <span className="sr-only" role="status" aria-live="polite">{announcement}</span>
+
       {open && query.trim().length >= 2 && (
         <div
           ref={dropdownRef}
+          role="region"
+          aria-label="Search results"
           onKeyDown={onBoxKeyDown}
           style={{
             position: "absolute", top: "calc(100% + 6px)", left: 0, right: 0, zIndex: 20,

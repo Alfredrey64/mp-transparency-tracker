@@ -7,6 +7,7 @@ import { GOVERNMENTS, LANDMARK_VOTES, OUTCOME_COLOR } from "../lib/politicalHist
 import { BillIcon } from "./billIcons";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import pmPortraits from "../data/pmPortraits.json";
+import { keyboardActivate } from "../lib/a11y";
 
 // A small "time flows downward" connector rendered between consecutive
 // entries in the Full Timeline — a soft gradient line easing into a rounded,
@@ -181,6 +182,7 @@ function GovernmentEntry({ entry, index, showTerm }) {
       transition={{ duration: 0.4, delay: Math.min(index, 10) * 0.03, ease: "easeOut" }}
       whileHover={{ y: -2, transition: { duration: 0.15, delay: 0 } }}
       onClick={() => withScrollPreserved(() => setOpen((v) => !v))}
+      {...keyboardActivate(() => withScrollPreserved(() => setOpen((v) => !v)), { label: `${entry.pm}, ${entry.party}, ${entry.year}. ${open ? "Hide" : "Show"} the details`, expanded: open })}
       style={
         showTerm
           ? {
@@ -325,6 +327,7 @@ function BillEntry({ entry, index }) {
       <div style={{ flexShrink: 0, width: 2, alignSelf: "stretch", background: COLORS.hairline, borderRadius: 2, minHeight: 16 }} />
       <motion.div
         onClick={() => withScrollPreserved(() => setOpen((v) => !v))}
+        {...keyboardActivate(() => withScrollPreserved(() => setOpen((v) => !v)), { label: `${entry.year}: ${entry.title}. ${open ? "Hide" : "Show"} the details`, expanded: open })}
         style={{
           minWidth: 0, flex: 1, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `3px solid ${color}`,
           borderRadius: 10, padding: "16px 17px 12px", cursor: "pointer",

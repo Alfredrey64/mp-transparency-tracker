@@ -3,6 +3,7 @@ import { COLORS, FONT_BODY, FONT_DISPLAY, numeric } from "../theme";
 import { card, cardTitle } from "../lib/onsStyles";
 import { Segmented } from "./DeprivationControls";
 import { GROUPS, timesPhrase, prisonFigures, offenceMatrix, unknownShare } from "../lib/crimePeople";
+import { scrollRegion } from "../lib/a11y";
 
 // "Who is involved in crime": official figures on who is arrested, what for, who is a victim, who is in prison and who reoffends,
 // from crimePeople.json (see fetch-crime-people.js). The figures are about police and court contact and about victims; they do
@@ -71,8 +72,8 @@ function Arrests({ data, accent }) {
       )}
       {sex !== "all" && <p style={para}>{sex === "male" ? "Men" : "Women"} are shown separately because sex makes the biggest difference of all: across everyone, men are arrested at about {f1(a.bySex.male.all / a.bySex.female.all)} times the rate of women.</p>}
 
-      <h4 style={h3}>How the rate has moved</h4>
-      <div style={{ overflowX: "auto" }}>
+      <h3 style={h3}>How the rate has moved</h3>
+      <div {...scrollRegion("How the rate has moved, table")} style={{ overflowX: "auto" }}>
         <table style={{ borderCollapse: "collapse", fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, minWidth: 360 }}>
           <caption style={{ captionSide: "bottom", textAlign: "left", fontSize: 12, color: COLORS.inkSoft, paddingTop: 6 }}>Arrests for every 1,000 people</caption>
           <thead><tr><th scope="col" style={{ textAlign: "left", padding: "6px 14px 6px 0" }}>Year</th>{GROUPS.map((g) => <th key={g.id} scope="col" style={{ textAlign: "right", padding: "6px 10px", fontWeight: 700 }}>{g.label}</th>)}</tr></thead>
@@ -80,7 +81,7 @@ function Arrests({ data, accent }) {
         </table>
       </div>
 
-      <h4 style={h3}>Stopped and searched</h4>
+      <h3 style={h3}>Stopped and searched</h3>
       <Bars rows={stopRows} accent={accent} mark={stop.all.rate} note={`Stop and searches for every 1,000 people of that group, ${stop.period.replace(" to ", " to ")}. The dashed line is everyone: ${f1(stop.all.rate)}. A stop and search is a police decision made on the street, so it says more about how police use the power than about who offends.`} />
 
       <details style={{ marginTop: 14 }}>
@@ -106,7 +107,7 @@ function WhatFor({ data, accent }) {
       <p style={para}>
         When someone is held at a police station they are usually offered free legal advice. The Ministry of Justice counts those cases by the offence the person was suspected of, which gives a view of <strong>what each group is held for</strong>. Each column below is one group&apos;s cases in {data.offences.year}, adding up to 100%.
       </p>
-      <div style={{ overflowX: "auto", marginTop: 12 }}>
+      <div {...scrollRegion("Table of figures by group")} style={{ overflowX: "auto", marginTop: 12 }}>
         <table style={{ borderCollapse: "separate", borderSpacing: 3, width: "100%", minWidth: 460, fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink }}>
           <caption style={{ captionSide: "bottom", textAlign: "left", fontSize: 12, color: COLORS.inkSoft, paddingTop: 8 }}>Share of each group&apos;s police-station legal aid cases, by offence suspected, {data.offences.year}</caption>
           <thead><tr><th scope="col" style={{ textAlign: "left", padding: "4px 8px", fontWeight: 700 }}>Offence suspected</th>{groups.map((g) => <th key={g.id} scope="col" style={{ textAlign: "right", padding: "4px 8px", fontWeight: 700 }}>{g.label}</th>)}</tr></thead>
@@ -184,9 +185,9 @@ function Prison({ data, accent }) {
       <p style={para}>
         On {data.prison.date} there were <strong>{fmt(all)} people in prison</strong> in England and Wales whose ethnic group is recorded, about <strong>{f1(overall)} for every 1,000 people</strong> in the population. Prison reflects years of arrests, charges, convictions and sentences, so differences here add up everything that happens before.
       </p>
-      <h4 style={h3}>In prison for every 1,000 people of the group</h4>
+      <h3 style={h3}>In prison for every 1,000 people of the group</h3>
       <Bars rows={rows} accent={accent} digits={2} mark={overall} note={`Prisoners of known ethnic group divided by the population of that group (2021 Census). The dashed line is everyone: ${f1(overall)}. About ${f1((data.prison.unrecorded / (all + data.prison.unrecorded)) * 100)}% of prisoners have no ethnic group recorded.`} />
-      <h4 style={h3}>Who reoffends</h4>
+      <h3 style={h3}>Who reoffends</h3>
       <p style={para}>Of adults and young people convicted or released from custody in {re.period.replace("April ", "April ").replace(" to ", " to ")}, <strong>{f1(re.all.pct)}%</strong> committed another offence within a year that was later proven in court, on average {f1(re.all.average)} further offences each.</p>
       <Bars rows={re.groups.filter((g) => g.label !== "Unknown").sort((a, b) => b.pct - a.pct).map((g) => ({ label: g.label, value: g.pct, sub: `${g.average} offences each` }))} accent={accent} unit="%" mark={re.all.pct} note="Share who reoffended within a year. The dashed line is everyone. The official table groups Mixed with Other." />
     </div>

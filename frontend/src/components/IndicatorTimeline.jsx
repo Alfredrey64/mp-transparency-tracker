@@ -13,6 +13,7 @@ import { bandsBetween, governmentAt, PARTY_COLOURS } from "../lib/governments";
 import { IconCompareTime } from "./icons";
 import { card as baseCard } from "../lib/onsStyles";
 import { COMPARE_STORIES } from "../data/compareStories";
+import { scrollRegion } from "../lib/a11y";
 
 // Pick a few measures and watch how they moved over time, side by side, with
 // who was in government shaded behind them. Press play to watch the story
@@ -504,7 +505,7 @@ export default function IndicatorTimeline({ param }) {
                     </select>
                   </label>
                 </div>
-                <div style={{ overflowX: "auto", marginTop: 10 }}>
+                <div {...scrollRegion("Table of figures")} style={{ overflowX: "auto", marginTop: 10 }}>
                   <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: FONT_BODY, fontSize: 14, minWidth: 420 }}>
                     <thead>
                       <tr style={{ textAlign: "left", color: COLORS.inkSoft, fontSize: 12.5 }}>

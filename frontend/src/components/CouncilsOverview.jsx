@@ -47,7 +47,7 @@ function Finder({ index }) {
         <form onSubmit={lookup}>
           <label style={{ display: "block", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.ink, marginBottom: 7 }}>Find your council by postcode</label>
           <div style={{ display: "flex", gap: 8 }}>
-            <input value={postcode} onChange={(e) => setPostcode(e.target.value)} placeholder="e.g. E8 1DY" aria-label="Your postcode" style={input} autoComplete="postal-code" />
+            <input value={postcode} autoComplete="postal-code" onChange={(e) => setPostcode(e.target.value)} placeholder="e.g. E8 1DY" aria-label="Your postcode" style={input} autoComplete="postal-code" />
             <button type="submit" disabled={state.busy} style={{ fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: 700, color: "#fff", background: COLORS.accent, border: "none", borderRadius: 12, padding: "0 22px", cursor: "pointer", opacity: state.busy ? 0.7 : 1 }}>
               {state.busy ? "…" : "Find"}
             </button>

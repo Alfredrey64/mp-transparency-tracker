@@ -1,5 +1,5 @@
 /** @jsxImportSource react */
-import { useState, useEffect, useLayoutEffect, useRef, useMemo, useContext, useCallback } from "react";
+import { useState, useEffect, useLayoutEffect, useRef, useMemo, useContext, useCallback, useId } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { COLORS, FONT_BODY } from "../theme";
@@ -100,6 +100,8 @@ export function GlossaryTerm({ term, children }) {
     };
   }, [open, place]);
 
+  const tipId = useId();
+
   // No entry, or sitting inside a link/button where a nested button is
   // invalid: just the plain text.
   if (!entry || blocked) return children;
@@ -131,6 +133,7 @@ export function GlossaryTerm({ term, children }) {
         onFocus={() => setOpen(true)}
         onBlur={() => setOpen(false)}
         aria-expanded={open}
+        aria-describedby={open ? tipId : undefined}
         style={{ cursor: supportsHover ? "help" : "pointer" }}
       >
         {children}
@@ -144,6 +147,7 @@ export function GlossaryTerm({ term, children }) {
           {open && (
             <motion.span
               ref={popoverRef}
+              id={tipId}
               role="tooltip"
               initial={{ opacity: 0, y: pos.above ? -4 : 4, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}

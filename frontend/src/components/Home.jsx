@@ -13,6 +13,7 @@ import { LoadFailedNote } from "./MpCards";
 import { PartyHemicycleSection } from "./PartyHemicycle";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import Loading from "./Loading";
+import { keyboardActivate } from "../lib/a11y";
 
 // One orchestrated reveal for the masthead (headline + ticker rail together,
 // staggered as a single moment) rather than every section fading in
@@ -416,6 +417,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
               <div
                 key={item.id}
                 onClick={() => handleSelectPoliticianById(item.politicians?.id)}
+                {...(item.politicians?.id ? keyboardActivate(() => handleSelectPoliticianById(item.politicians.id)) : {})}
                 style={{
                   padding: "14px 8px",
                   margin: "0 -8px",

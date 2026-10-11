@@ -156,6 +156,8 @@ export default function CommonsChamber() {
 
       <div>
         <svg
+          role="img"
+          aria-label="Seating plan of the House of Commons, one dot per MP. To read about a member, press a dot, or choose them from the list below the plan."
           width="100%"
           viewBox={`0 0 800 ${viewBoxHeight}`}
           style={{ maxWidth: 780, display: "block", margin: "0 auto" }}
@@ -258,6 +260,8 @@ export default function CommonsChamber() {
       </div>
 
       <motion.div
+        role="status"
+        aria-live="polite"
         initial={false}
         animate={{ opacity: 1 }}
         style={{
@@ -279,9 +283,24 @@ export default function CommonsChamber() {
             {selected.cabinet_role && <div style={{ color: COLORS.inkSoft, fontSize: 12, marginTop: 2 }}>{selected.cabinet_role}</div>}
           </div>
         ) : (
-          <span style={{ color: COLORS.inkSoft }}>Click any seat to see who sits there.</span>
+          <span style={{ color: COLORS.inkSoft }}>Click any seat, or choose an MP from the list below, to see who sits there.</span>
         )}
       </motion.div>
+
+      <div style={{ marginTop: 10 }}>
+        <label htmlFor="chamber-pick" style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.inkSoft, marginBottom: 4 }}>Or choose an MP from a list</label>
+        <select
+          id="chamber-pick"
+          value={selected?.id ?? ""}
+          onChange={(e) => setSelected(politicians.find((p) => String(p.id) === e.target.value) ?? null)}
+          style={{ width: "100%", maxWidth: 420, boxSizing: "border-box", padding: "10px 12px", borderRadius: 10, border: `1px solid ${COLORS.hairline}`, background: COLORS.paperCard, color: COLORS.ink, fontFamily: FONT_BODY, fontSize: 16 }}
+        >
+          <option value="">Choose an MP</option>
+          {[...politicians].sort((a, b) => a.name.localeCompare(b.name)).map((p) => (
+            <option key={p.id} value={p.id}>{p.name} ({p.party})</option>
+          ))}
+        </select>
+      </div>
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }}>
         {layout.partyGroups.map((g) => (

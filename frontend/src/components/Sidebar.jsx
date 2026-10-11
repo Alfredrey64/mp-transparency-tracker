@@ -7,6 +7,7 @@ import GlobalSearch from "./GlobalSearch";
 import { IconHome, IconMethodology, IconSettings, IconPin, IconStar, IconRoute } from "./icons";
 import { SECTIONS } from "../data/sidebarSections";
 import { readSectionChoices, writeSectionChoices, readSidebarMode, writeSidebarMode, sectionsForMode, sectionStartsOpen } from "../lib/sidebarState";
+import { useDialog } from "../lib/useDialog";
 
 // The menu, written for someone who has never used the site: plain page
 // names, a few words under each saying what it is, pages grouped by what you
@@ -95,11 +96,11 @@ function NavItem({ item, active, accent, onNavigate }) {
 
 function NavList({ items, activeView, onNavigate, accent = ACCENT_DEFAULT }) {
   return (
-    <nav style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
       {items.map((item) => (
         <NavItem key={item.key} item={item} active={activeView === item.key} accent={accent} onNavigate={onNavigate} />
       ))}
-    </nav>
+    </div>
   );
 }
 
@@ -252,7 +253,7 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician, onClose }) {
         <GlobalSearch onSelectPolitician={onSelectPolitician} onNavigate={onNavigate} />
       </div>
 
-      <div ref={scroller} style={{ flex: 1 }}>
+      <nav ref={scroller} aria-label="Pages" style={{ flex: 1 }}>
         {/* The first thing a newcomer should see. */}
         <button
           type="button"
@@ -307,7 +308,7 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician, onClose }) {
             Looking for something else? Show all {TOTAL_PAGES} pages
           </button>
         )}
-      </div>
+      </nav>
 
       <div style={{ paddingTop: 10, marginTop: 14, borderTop: "1px solid var(--sb-border)" }}>
         <NavList items={BOTTOM_NAV_ITEMS} activeView={activeView} onNavigate={onNavigate} />
@@ -319,6 +320,11 @@ function SidebarInner({ activeView, onNavigate, onSelectPolitician, onClose }) {
 export default function Sidebar({ activeView, onNavigate, onSelectPolitician }) {
   const [open, setOpen] = useState(false);
   const barRef = useRef(null);
+  // On a phone the menu slides over the page and acts as a dialog while open: focus moves into it, Tab stays inside, Escape closes it
+  // and focus goes back to the menu button. (It only opens on a phone; on a wide screen the menu is simply part of the page.)
+  const drawerRef = useRef(null);
+  const menuButtonRef = useRef(null);
+  useDialog({ open, onClose: () => setOpen(false), panelRef: drawerRef, returnFocusRef: menuButtonRef });
 
   // The phone top bar slides away as you read down the page and comes back the moment you scroll up, so it only takes room when wanted.
   useEffect(() => {
@@ -346,7 +352,7 @@ export default function Sidebar({ activeView, onNavigate, onSelectPolitician }) 
 
   return (
     <>
-      <div
+      <header
         className="mp-mobile-topbar"
         ref={barRef}
         style={{ alignItems: "center", justifyContent: "space-between", background: "var(--sb-bg)", borderBottom: "1px solid var(--sb-border)", padding: "4px 14px" }}
@@ -356,8 +362,11 @@ export default function Sidebar({ activeView, onNavigate, onSelectPolitician }) 
           <span style={{ fontFamily: FONT_BRAND, fontWeight: 700, fontSize: 18, letterSpacing: "-0.025em", color: "var(--sb-strong)", whiteSpace: "nowrap" }}>Simple Politics</span>
         </div>
         <button
+          ref={menuButtonRef}
+          type="button"
           onClick={() => setOpen(true)}
           aria-label="Open menu"
+          aria-expanded={open}
           style={{ background: "transparent", border: "none", color: "var(--sb-strong)", cursor: "pointer", padding: 10, margin: "-2px 0", display: "flex" }}
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -366,11 +375,14 @@ export default function Sidebar({ activeView, onNavigate, onSelectPolitician }) 
             <line x1="3" y1="18" x2="21" y2="18" />
           </svg>
         </button>
-      </div>
+      </header>
 
       <div className={`mp-sidebar-backdrop${open ? " mp-sidebar-open" : ""}`} onClick={() => setOpen(false)} />
 
-      <div
+      <aside
+        ref={drawerRef}
+        tabIndex={-1}
+        aria-label="Site menu"
         className={`mp-sidebar${open ? " mp-sidebar-open" : ""}`}
         style={{
           width: 300,
@@ -385,7 +397,7 @@ export default function Sidebar({ activeView, onNavigate, onSelectPolitician }) 
         }}
       >
         <SidebarInner activeView={activeView} onNavigate={handleNav} onSelectPolitician={handleSelectPolitician} onClose={() => setOpen(false)} />
-      </div>
+      </aside>
     </>
   );
 }

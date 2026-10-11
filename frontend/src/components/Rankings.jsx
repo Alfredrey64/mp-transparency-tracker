@@ -222,7 +222,7 @@ function Podium({ entries, color, formatValue, maxValue, onSelectPolitician }) {
   const reduce = useReducedMotion();
   const order = [entries[1], entries[0], entries[2]].filter(Boolean);
   return (
-    <div role="list" aria-label="The top three" style={{ display: "grid", gridTemplateColumns: `repeat(${order.length}, minmax(0, 1fr))`, gap: "clamp(6px, 2vw, 18px)", alignItems: "end", margin: "6px 0 22px", padding: "18px clamp(8px, 2vw, 22px) 0", borderRadius: 18, background: `radial-gradient(420px 220px at 50% 0%, ${color}26, transparent 70%)` }}>
+    <div role="group" aria-label="The top three" style={{ display: "grid", gridTemplateColumns: `repeat(${order.length}, minmax(0, 1fr))`, gap: "clamp(6px, 2vw, 18px)", alignItems: "end", margin: "6px 0 22px", padding: "18px clamp(8px, 2vw, 22px) 0", borderRadius: 18, background: `radial-gradient(420px 220px at 50% 0%, ${color}26, transparent 70%)` }}>
       {order.map((entry) => {
         const p = entry.politician;
         const pColor = partyColour(p.party_colour, COLORS.inkSoft);
@@ -231,7 +231,7 @@ function Podium({ entries, color, formatValue, maxValue, onSelectPolitician }) {
         const avatar = first ? 84 : 66;
         return (
           <motion.button
-            key={p.id} role="listitem" type="button" onClick={() => onSelectPolitician(p)}
+            key={p.id} type="button" onClick={() => onSelectPolitician(p)}
             initial={reduce ? false : { opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: first ? 0.05 : entry.rank === 2 ? 0.2 : 0.32, type: "spring", stiffness: 160, damping: 18 }}
             whileHover={reduce ? undefined : { y: -4 }}
             style={{ display: "flex", flexDirection: "column", alignItems: "center", background: "none", border: "none", padding: 0, cursor: "pointer", minWidth: 0, color: "inherit" }}
