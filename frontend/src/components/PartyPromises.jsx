@@ -7,6 +7,7 @@ import { ANSWERS, ANSWER_TOPICS, answerById } from "../data/answers";
 import { ANSWER_POSITIONS, ONE_NATION_PARTIES, POSITIONS_AS_OF, POSITION_PARTY_ORDER, positionsFor } from "../data/answerPartyPositions";
 import { QUIZ_PARTIES } from "../data/partyMatchQuiz";
 import { findManifesto, PARTY_MANIFESTOS } from "../data/partyManifestos";
+import { partyWash, partyOutline } from "../lib/partyShade";
 
 // "Who promises what": pick a topic, then a question, and see which parties made a clear promise about it and what the promise was.
 // Parties that made no clear promise are named too, so a gap is as visible as a commitment. The chosen question goes in the address
@@ -26,7 +27,7 @@ function PartyCard({ party, text, index }) {
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.22, delay: Math.min(index, 6) * 0.045, ease: "easeOut" }}
-      style={{ display: "flex", flexDirection: "column", borderRadius: 16, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `5px solid ${party.color}`, padding: "16px 18px 14px", minWidth: 0 }}
+      style={{ display: "flex", flexDirection: "column", borderRadius: 16, background: `${partyWash(party.color)}, ${COLORS.paperCard}`, border: partyOutline(party.color), borderTop: `5px solid ${party.color}`, padding: "16px 18px 14px", minWidth: 0 }}
     >
       <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap", gap: "2px 10px" }}>
         <h4 style={{ fontFamily: FONT_DISPLAY, fontSize: 19, fontWeight: 700, color: COLORS.ink, margin: 0, lineHeight: 1.2 }}>{party.name}</h4>

@@ -43,7 +43,7 @@ const BOATS = {
   about: "on small boat crossings",
   parties: {
     labour: "Scrap the Rwanda scheme and set up a Border Security Command with counter-terrorism style powers to go after smuggling gangs, with more returns of people with no right to stay.",
-    conservative: "Keep the Rwanda scheme, with regular flights, and leave the European Convention on Human Rights if it blocks removals.",
+    conservative: "Keep the Rwanda scheme, with regular flights, and put security first if a foreign court, including the European Court of Human Rights, blocks removals.",
     "liberal-democrat": "Scrap the Rwanda scheme, work with France and other countries on crossings, and open more safe and legal routes.",
     "reform-uk": "Return people who cross the Channel in small boats to France, freeze non-essential immigration and leave the European Convention on Human Rights.",
     green: "Create safe routes to sanctuary for people fleeing danger, persecution and war, and end the hostile environment.",
@@ -110,7 +110,7 @@ export const ANSWER_POSITIONS = {
     parties: {
       labour: "No rises in income tax, National Insurance or VAT rates, corporation tax capped at 25%, and VAT on private school fees.",
       conservative: "Cut employee National Insurance by a further 2p, to 6% by April 2027, and scrap the main rate for the self-employed within five years.",
-      "liberal-democrat": "Reverse recent cuts to capital gains tax for the highest earners, to pay for public services.",
+      "liberal-democrat": "Reverse Conservative tax cuts for big banks, raise the Digital Services Tax on tech giants from 2% to 6% and reform capital gains tax to close loopholes used by the super wealthy.",
       "reform-uk": "Raise the income tax threshold to £20,000, scrap IR35 rules for the self-employed and cut stamp duty.",
       green: "A wealth tax of 1% on assets over £10 million and 2% over £1 billion, tax on investment income at the same rates as pay, and no upper limit on National Insurance, which it estimates could raise £50 to £70 billion a year.",
       "plaid-cymru": "A wealth tax, a higher windfall tax on energy firms, VAT on private school fees and capital gains taxed at the same rates as income.",
@@ -132,8 +132,8 @@ export const ANSWER_POSITIONS = {
   "why-asylum-hotels": {
     about: "on asylum claims and hotels",
     parties: {
-      labour: "Clear the backlog of asylum claims by hiring more decision-makers, and set up a new returns and enforcement unit.",
-      conservative: "Remove people who arrive by small boat to Rwanda, as a deterrent.",
+      labour: "Hire more caseworkers to clear the backlog of asylum claims, end the use of asylum hotels and set up a new returns and enforcement unit.",
+      conservative: "Bring the Illegal Migration Act into force, process asylum claims within six months and end the use of hotels.",
       "liberal-democrat": "Let asylum seekers work after three months and clear the backlog of claims.",
       snp: "Give asylum seekers the right to work, and house them in accommodation that is safe, suitable and dignified.",
     },
@@ -174,7 +174,7 @@ export const ANSWER_POSITIONS = {
       labour: "Recruit 13,000 more neighbourhood police officers, community support officers and special constables, with new Respect Orders to tackle anti-social behaviour.",
       conservative: "Recruit 8,000 more police officers over three years, with tougher sentences for serious and repeat offenders and more prison places.",
       "reform-uk": "Recruit 40,000 more police officers over five years, with zero tolerance policing.",
-      "plaid-cymru": "Hand full powers over justice and policing to Wales.",
+      "plaid-cymru": "Transfer justice and policing powers to Wales in full.",
       "liberal-democrat": "Restore community policing and make sure every burglary is properly investigated.",
     },
   },

@@ -11,6 +11,7 @@ import { IconManifesto } from "./icons";
 import PromiseExplorer from "./PartyPromises";
 import { pillStyle } from "../lib/onsStyles";
 import Loading from "./Loading";
+import { partyWash, partyOutline } from "../lib/partyShade";
 
 // The party-colour dot is the only element that shares a layoutId between
 // the grid card and the modal — like the CommonsBadge morph elsewhere in
@@ -126,9 +127,9 @@ export default function PartyPolicies({ param }) {
                     style={{
                       cursor: "pointer",
                       borderRadius: 18,
-                      background: COLORS.paperCard,
-                      border: `1px solid ${party.color}45`,
-                      borderTop: `4px solid ${party.color}`,
+                      background: `${partyWash(party.color)}, ${COLORS.paperCard}`,
+                      border: partyOutline(party.color),
+                      borderTop: `5px solid ${party.color}`,
                       padding: "20px 20px 18px",
                     }}
                   >
@@ -200,9 +201,9 @@ export default function PartyPolicies({ param }) {
                   overflowY: "auto",
                   pointerEvents: "auto",
                   borderRadius: 18,
-                  background: COLORS.paperCard,
-                  border: `1px solid ${expanded.color}45`,
-                  borderTop: `4px solid ${expanded.color}`,
+                  background: `${partyWash(expanded.color, 0.8)}, ${COLORS.paperCard}`,
+                  border: partyOutline(expanded.color),
+                  borderTop: `5px solid ${expanded.color}`,
                   boxShadow: "0 20px 60px rgba(10,16,18,0.35)",
                   padding: "28px 30px 32px",
                 }}
