@@ -120,7 +120,7 @@ function titleForState(view, selected, param) {
   if (selected) return `${selected.name} | ${base}`;
   if (view === "numbers" && param === "lords") return `Parliament in Numbers: the Lords | ${base}`;
   // For the Lords the parameter is a peer's id, which makes a poor title.
-  if (param && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view) && view !== "regions" && view !== "answers" && view !== "deprivation" && view !== "compareSeats") return `${param} | ${PAGE_TITLES[view] ?? base} | ${base}`;
+  if (param && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view) && view !== "regions" && view !== "answers" && view !== "deprivation" && view !== "compareSeats" && view !== "parties") return `${param} | ${PAGE_TITLES[view] ?? base} | ${base}`;
   if (view === "home") return base;
   const label = PAGE_TITLES[view];
   return label ? `${label} | ${base}` : base;
@@ -372,7 +372,7 @@ export default function App() {
             {view === "voting" && <VotingRecords initialMp={pendingMp} initialBill={pendingBill?.bill_id} initialCategory={viewParam} />}
             {view === "donors" && <DonorsLobbying />}
             {view === "partyFinances" && <PartyFinances />}
-            {view === "parties" && <PartyPolicies />}
+            {view === "parties" && <PartyPolicies param={viewParam} />}
             {view === "history" && <PoliticalHistory />}
             {view === "timeline" && <Timeline />}
             {view === "devolved" && <DevolvedAdministrations />}

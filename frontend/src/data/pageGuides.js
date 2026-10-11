@@ -157,7 +157,7 @@ export const PAGE_GUIDES = {
     notShown: "Money below the reporting limits, donations to individual MPs (see Donors), and spending. It's donations only.",
   },
   parties: {
-    what: "Where each main party stands on the big issues, taken from its published manifesto.",
+    what: "Who promised what at the 2024 election, issue by issue, taken from each party's published manifesto. Parties that made no clear promise are named too.",
     why: "A manifesto is the promise a party made to win your vote, so it's the fairest basis for comparing them.",
     notShown: "What a party does once in power, or policies not in the manifesto. Parties can and do change their minds.",
   },

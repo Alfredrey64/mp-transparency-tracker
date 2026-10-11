@@ -8,17 +8,9 @@ import { PageHeader } from "./shared";
 import { LoadFailedNote } from "./MpCards";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconManifesto } from "./icons";
-import { ANSWER_POSITIONS, positionsFor } from "../data/answerPartyPositions";
-import { ANSWERS, ANSWER_TOPICS } from "../data/answers";
-import { groupByTopic } from "../lib/questionTopics";
+import PromiseExplorer from "./PartyPromises";
+import { pillStyle } from "../lib/onsStyles";
 import Loading from "./Loading";
-
-// The questions that have party positions, grouped by topic so the list is short lists to scan rather than one long run of buttons.
-const QUESTION_GROUPS = groupByTopic(ANSWERS.filter((a) => ANSWER_POSITIONS[a.id]), ANSWER_TOPICS);
-const partyCount = (id) => {
-  const n = positionsFor(id)?.parties.length ?? 0;
-  return `${n} ${n === 1 ? "party" : "parties"}`;
-};
 
 // The party-colour dot is the only element that shares a layoutId between
 // the grid card and the modal — like the CommonsBadge morph elsewhere in
@@ -68,7 +60,7 @@ function useParties() {
   return { parties, failed };
 }
 
-export default function PartyPolicies() {
+export default function PartyPolicies({ param }) {
   const { parties, failed } = useParties();
   const [expandedName, setExpandedName] = useState(null);
 
@@ -89,95 +81,94 @@ export default function PartyPolicies() {
       <PageHeader
         icon={IconManifesto}
         kicker="Party Policies"
-        title="Where each party stands"
+        title="What the parties promise"
         subtitle={
           <>
-            A neutral summary of each party's most recent UK general election{" "}
-            <GlossaryTerm term="Manifesto">manifesto</GlossaryTerm> (2024). These are our own summaries, not the
-            original documents. Open a party for more detail, or follow the link to read its manifesto in full.
+            Who promised what at the 2024 general election, issue by issue, and the big pledges in each party's{" "}
+            <GlossaryTerm term="Manifesto">manifesto</GlossaryTerm>. These are our own summaries, not the original documents, and each
+            party's manifesto is linked so you can read it for yourself.
           </>
         }
       />
 
-      <section aria-labelledby="h-by-question" style={{ margin: "4px 0 22px", padding: "16px 18px", borderRadius: 18, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}` }}>
-        <h2 id="h-by-question" style={{ fontFamily: FONT_DISPLAY, fontSize: 19, fontWeight: 700, color: COLORS.ink, margin: 0 }}>Compare the parties on one question</h2>
-        <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "4px 0 12px", maxWidth: 680 }}>Pick an issue to see what each party said it would do about it, side by side, with the latest figures. The number on the right is how many parties made a clear commitment.</p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(250px, 100%), 1fr))", gap: "22px 32px", marginTop: 6 }}>
-          {QUESTION_GROUPS.map((group) => (
-            <div key={group.topic} style={{ minWidth: 0 }}>
-              <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 14.5, fontWeight: 700, color: COLORS.ink, margin: "0 0 4px", paddingBottom: 6, borderBottom: `2px solid ${COLORS.hairline}` }}>{group.topic}</h3>
-              <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-                {group.items.map((a) => (
-                  <li key={a.id} style={{ borderBottom: `1px solid ${COLORS.hairline}` }}>
-                    <a className="ons-tap" href={`#/answers/${a.id}`} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "9px 2px", textDecoration: "none", fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.35, color: COLORS.ink }}>
-                      <span style={{ minWidth: 0 }}>{a.question}</span>
-                      <span style={{ flexShrink: 0, fontSize: 12, color: COLORS.inkSoft, whiteSpace: "nowrap" }}>{partyCount(a.id)}</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
+      <PromiseExplorer initialQuestion={param} />
+
+      <section aria-labelledby="h-each-party">
+        <h2 id="h-each-party" style={{ fontFamily: FONT_DISPLAY, fontSize: "clamp(22px, 4vw, 28px)", fontWeight: 700, color: COLORS.ink, margin: 0, letterSpacing: "-0.01em" }}>Each party's big promises</h2>
+        <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "6px 0 0", maxWidth: 700 }}>
+          The headline pledges from each party's 2024 manifesto. Open a party for the full list and a link to the manifesto itself.
+        </p>
+        {parties === null ? (
+          <Loading />
+        ) : failed ? (
+          <div style={{ marginTop: 24 }}>
+            <LoadFailedNote item="the party list" />
+          </div>
+        ) : (
+          <>
+            <SeatBar parties={parties} onPick={setExpandedName} />
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(min(260px, 100%), 1fr))",
+                gap: 18,
+                marginTop: 14,
+              }}
+            >
+              {parties.map((party) => {
+                const manifesto = findManifesto(party.name);
+                return (
+                  <motion.div
+                    key={party.name}
+                    onClick={() => setExpandedName(party.name)}
+                    whileHover={{ y: -3 }}
+                    transition={{ duration: 0.15 }}
+                    style={{
+                      cursor: "pointer",
+                      borderRadius: 18,
+                      background: COLORS.paperCard,
+                      border: `1px solid ${party.color}45`,
+                      borderTop: `4px solid ${party.color}`,
+                      padding: "20px 20px 18px",
+                    }}
+                  >
+                    <PartyCardHeader party={party} manifesto={manifesto} dotLayoutId={`party-dot-${party.name}`} />
+                    {manifesto ? (
+                      <ul style={{ margin: "16px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
+                        {manifesto.highlights.slice(0, 4).map((h, i) => (
+                          <BulletLine key={i} color={party.color}>{h}</BulletLine>
+                        ))}
+                      </ul>
+                    ) : (
+                      <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 16, lineHeight: 1.6 }}>
+                        No manifesto summary published for this party yet.
+                      </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); setExpandedName(party.name); }}
+                      style={{
+                        display: "inline-flex", alignItems: "center", gap: 5, fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700,
+                        color: COLORS.ink, marginTop: 18, padding: "6px 14px", borderRadius: 999, background: `${party.color}1a`, border: `1px solid ${party.color}`, cursor: "pointer",
+                      }}
+                    >
+                      {manifesto ? "View full details" : "Search official sources"}
+                    </button>
+                  </motion.div>
+                );
+              })}
             </div>
-          ))}
-        </div>
+          </>
+        )}
       </section>
 
-      {parties === null ? (
-        <Loading />
-      ) : failed ? (
-        <div style={{ marginTop: 24 }}>
-          <LoadFailedNote item="the party list" />
+      <div style={{ margin: "34px 0 6px", padding: "22px clamp(18px, 4vw, 28px)", borderRadius: 20, background: `linear-gradient(135deg, ${COLORS.accent}22, ${COLORS.paperCard} 70%)`, border: `1px solid ${COLORS.hairline}`, display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 14 }}>
+        <div style={{ maxWidth: 560 }}>
+          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, color: COLORS.ink }}>Not sure which party you agree with?</div>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.55, color: COLORS.inkSoft, marginTop: 4 }}>Answer a few questions and see which party's promises line up closest with your own views.</div>
         </div>
-      ) : (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(min(260px, 100%), 1fr))",
-            gap: 18,
-            marginTop: 28,
-          }}
-        >
-          {parties.map((party) => {
-            const manifesto = findManifesto(party.name);
-            return (
-              <motion.div
-                key={party.name}
-                onClick={() => setExpandedName(party.name)}
-                whileHover={{ y: -3 }}
-                transition={{ duration: 0.15 }}
-                style={{
-                  cursor: "pointer",
-                  borderRadius: 18,
-                  background: COLORS.paperCard,
-                  border: `1px solid ${party.color}45`,
-                  borderTop: `4px solid ${party.color}`,
-                  padding: "20px 20px 18px",
-                }}
-              >
-                <PartyCardHeader party={party} manifesto={manifesto} dotLayoutId={`party-dot-${party.name}`} />
-                {manifesto ? (
-                  <ul style={{ margin: "16px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
-                    {manifesto.highlights.slice(0, 4).map((h, i) => (
-                      <BulletLine key={i} color={party.color}>{h}</BulletLine>
-                    ))}
-                  </ul>
-                ) : (
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 16, lineHeight: 1.6 }}>
-                    No manifesto summary published for this party yet.
-                  </div>
-                )}
-                <div
-                  style={{
-                    display: "inline-flex", alignItems: "center", gap: 5, fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700,
-                    color: party.color, marginTop: 18, padding: "6px 12px", borderRadius: 999, background: `${party.color}14`,
-                  }}
-                >
-                  {manifesto ? "View full details" : "Search official sources"}
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-      )}
+        <a className="ons-tap" href="#/partymatch" style={{ ...pillStyle(true), textDecoration: "none", display: "inline-flex", alignItems: "center" }}>Take the short quiz</a>
+      </div>
 
       <AnimatePresence>
         {expanded && (
@@ -325,5 +316,33 @@ function BulletLine({ children, small, color = COLORS.accent }) {
       </svg>
       <span style={{ fontFamily: FONT_BODY, fontSize: small ? 13.5 : 14.5, color: COLORS.ink, lineHeight: 1.6 }}>{children}</span>
     </li>
+  );
+}
+
+// How the Commons divides between the parties below, as one bar. Each segment opens that party.
+function SeatBar({ parties, onPick }) {
+  const total = parties.reduce((n, p) => n + p.seats, 0);
+  if (!total) return null;
+  const summary = parties.map((p) => `${findManifesto(p.name)?.shortName ?? p.name} ${p.seats}`).join(", ");
+  return (
+    <div style={{ margin: "18px 0 6px" }}>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.inkSoft, marginBottom: 6 }}>Seats in the Commons</div>
+      <div role="img" aria-label={`Seats in the Commons: ${summary}`} style={{ display: "flex", gap: 2, height: 14, borderRadius: 7, overflow: "hidden" }}>
+        {parties.map((p) => (
+          <button
+            key={p.name} type="button" tabIndex={-1} aria-hidden="true" onClick={() => onPick(p.name)} title={`${findManifesto(p.name)?.shortName ?? p.name}: ${p.seats} seats`}
+            style={{ flex: `${p.seats} 1 0`, minWidth: 3, background: p.color, border: "none", padding: 0, cursor: "pointer" }}
+          />
+        ))}
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 14px", marginTop: 8, fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
+        {parties.map((p) => (
+          <span key={p.name} style={{ display: "inline-flex", alignItems: "center", gap: 5, whiteSpace: "nowrap" }}>
+            <span aria-hidden="true" style={{ width: 9, height: 9, borderRadius: "50%", background: p.color }} />
+            {findManifesto(p.name)?.shortName ?? p.name} <strong style={{ color: COLORS.ink }}>{p.seats}</strong>
+          </span>
+        ))}
+      </div>
+    </div>
   );
 }
