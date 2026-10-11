@@ -8,9 +8,17 @@ import { PageHeader } from "./shared";
 import { LoadFailedNote } from "./MpCards";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconManifesto } from "./icons";
-import { ANSWER_POSITIONS } from "../data/answerPartyPositions";
-import { ANSWERS } from "../data/answers";
+import { ANSWER_POSITIONS, positionsFor } from "../data/answerPartyPositions";
+import { ANSWERS, ANSWER_TOPICS } from "../data/answers";
+import { groupByTopic } from "../lib/questionTopics";
 import Loading from "./Loading";
+
+// The questions that have party positions, grouped by topic so the list is short lists to scan rather than one long run of buttons.
+const QUESTION_GROUPS = groupByTopic(ANSWERS.filter((a) => ANSWER_POSITIONS[a.id]), ANSWER_TOPICS);
+const partyCount = (id) => {
+  const n = positionsFor(id)?.parties.length ?? 0;
+  return `${n} ${n === 1 ? "party" : "parties"}`;
+};
 
 // The party-colour dot is the only element that shares a layoutId between
 // the grid card and the modal — like the CommonsBadge morph elsewhere in
@@ -93,10 +101,22 @@ export default function PartyPolicies() {
 
       <section aria-labelledby="h-by-question" style={{ margin: "4px 0 22px", padding: "16px 18px", borderRadius: 18, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}` }}>
         <h2 id="h-by-question" style={{ fontFamily: FONT_DISPLAY, fontSize: 19, fontWeight: 700, color: COLORS.ink, margin: 0 }}>Compare the parties on one question</h2>
-        <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "4px 0 12px", maxWidth: 680 }}>Pick an issue to see what each party said it would do about it, side by side, with the latest figures.</p>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-          {ANSWERS.filter((a) => ANSWER_POSITIONS[a.id]).map((a) => (
-            <a key={a.id} className="ons-tap" href={`#/answers/${a.id}`} style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink, textDecoration: "none", padding: "8px 14px", borderRadius: 999, border: `1px solid ${COLORS.hairline}`, background: COLORS.paper }}>{a.question}</a>
+        <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "4px 0 12px", maxWidth: 680 }}>Pick an issue to see what each party said it would do about it, side by side, with the latest figures. The number on the right is how many parties made a clear commitment.</p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(250px, 100%), 1fr))", gap: "22px 32px", marginTop: 6 }}>
+          {QUESTION_GROUPS.map((group) => (
+            <div key={group.topic} style={{ minWidth: 0 }}>
+              <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 14.5, fontWeight: 700, color: COLORS.ink, margin: "0 0 4px", paddingBottom: 6, borderBottom: `2px solid ${COLORS.hairline}` }}>{group.topic}</h3>
+              <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+                {group.items.map((a) => (
+                  <li key={a.id} style={{ borderBottom: `1px solid ${COLORS.hairline}` }}>
+                    <a className="ons-tap" href={`#/answers/${a.id}`} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "9px 2px", textDecoration: "none", fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.35, color: COLORS.ink }}>
+                      <span style={{ minWidth: 0 }}>{a.question}</span>
+                      <span style={{ flexShrink: 0, fontSize: 12, color: COLORS.inkSoft, whiteSpace: "nowrap" }}>{partyCount(a.id)}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           ))}
         </div>
       </section>
