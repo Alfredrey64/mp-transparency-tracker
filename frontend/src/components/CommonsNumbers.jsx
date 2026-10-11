@@ -9,7 +9,7 @@ import { COLORS, FONT_BODY, numeric } from "../theme";
 import { partyColour, formatDate } from "../lib/format";
 import { computeParliamentStats, GENERAL_ELECTION_2024 } from "../lib/parliamentStats";
 import { computeCareerStats, cohortKey, ELECTED_BANDS } from "../lib/careerStats";
-import { LoadFailedNote } from "./shared";
+import { LoadFailedNote } from "./MpCards";
 import { PartyHemicycle } from "./PartyHemicycle";
 import BarRow from "./BarRow";
 import CountUp from "./CountUp";

@@ -8,7 +8,7 @@ import { COLORS, FONT_BODY, numeric } from "../theme";
 import { partyColour, formatDate } from "../lib/format";
 import { computeLordsStats, PEER_FIELDS as F } from "../lib/lordsStats";
 import { fmt, pct1, pct0, joinNames, byName, YEAR_MS } from "../lib/numbersFormat";
-import { LoadFailedNote } from "./shared";
+import { LoadFailedNote } from "./MpCards";
 import { PartyHemicycle } from "./PartyHemicycle";
 import BarRow from "./BarRow";
 import CountUp from "./CountUp";

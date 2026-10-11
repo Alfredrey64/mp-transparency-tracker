@@ -3,10 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { partyColour } from "../lib/format";
-import {
-  PageHeader, BiographyBox, ContactBox, CabinetRoleBox,
-  VotingSummaryBox, RebellionRateBox, RecentActivityBox, NewsBox,
-} from "./shared";
+import { PageHeader } from "./shared";
+import { BiographyBox, ContactBox, CabinetRoleBox, VotingSummaryBox, RebellionRateBox, RecentActivityBox, NewsBox } from "./MpCards";
 import { IconPin, IconSearch } from "./icons";
 
 const STORAGE_KEY = "mp-transparency-my-postcode";

@@ -3,7 +3,8 @@ import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme
 import { partyColour } from "../lib/format";
 import { searchSeats, seatKey, seatSafety } from "../lib/constituency";
 import { shortParty } from "../lib/seatElections";
-import { PageHeader, LoadFailedNote } from "./shared";
+import { PageHeader } from "./shared";
+import { LoadFailedNote } from "./MpCards";
 import { IconSeatCompare, IconSearch } from "./icons";
 import ShareButton from "./ShareButton";
 import { compareSeatsShareSpec } from "../lib/shareSpecs";

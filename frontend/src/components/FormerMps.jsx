@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { partyColour, formatDate } from "../lib/format";
-import { PageHeader, LoadFailedNote } from "./shared";
+import { PageHeader } from "./shared";
+import { LoadFailedNote } from "./MpCards";
 import { IconFormerMP } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
 

@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
-import { PageHeader, LoadFailedNote } from "./shared";
+import { PageHeader } from "./shared";
+import { LoadFailedNote } from "./MpCards";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { partyColour, stripHtml, formatDate } from "../lib/format";
 import { isScrolling } from "../lib/scrollState";

@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { COLORS, FONT_BODY, numeric } from "../theme";
 import { sectorColor } from "../lib/donorSectors";
 import { moneyProfile, concentrationPhrase } from "../lib/mpMoney";
-import { CardShell } from "./shared";
+import { CardShell } from "./MpCards";
 
 // The money side of an MP at a glance: the total declared, who it came from and how concentrated it is, with each source linking
 // to Trace a donor so you can see everyone else they have given to.
@@ -34,7 +34,7 @@ export default function MpMoneyProfile({ interests, loading }) {
           return (
             <li key={s.key}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10 }}>
-                <a href={traceHref(s.name)} title={`Trace ${s.name}: see everyone it has given money to`} style={{ minWidth: 0, fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink, textDecoration: "underline", textDecorationColor: `${COLORS.inkSoft}66`, textUnderlineOffset: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.name}</a>
+                <a href={traceHref(s.name)} title={`Trace ${s.name}: see everyone it has given money to`} style={{ minWidth: 0, fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink, textDecorationLine: "underline", textDecorationColor: `${COLORS.inkSoft}66`, textUnderlineOffset: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.name}</a>
                 <span style={{ ...numeric, flexShrink: 0, fontSize: 13.5, fontWeight: 600, color: COLORS.ink }}>{money(s.total)}</span>
               </div>
               <div aria-hidden="true" style={{ height: 7, borderRadius: 4, background: COLORS.paper, overflow: "hidden", marginTop: 5 }}>

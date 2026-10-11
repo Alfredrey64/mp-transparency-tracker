@@ -3,7 +3,8 @@ import { motion } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_BODY, FONT_MONO } from "../theme";
 import { partyColour } from "../lib/format";
-import { CommonsBadge, LoadFailedNote } from "./shared";
+import { CommonsBadge } from "./shared";
+import { LoadFailedNote } from "./MpCards";
 import { withScrollPreserved } from "../lib/preserveScroll";
 
 const PER_ROW = 22;

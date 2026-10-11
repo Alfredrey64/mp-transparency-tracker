@@ -3,7 +3,8 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
-import { PageHeader, LoadFailedNote } from "./shared";
+import { PageHeader } from "./shared";
+import { LoadFailedNote } from "./MpCards";
 import { formatDate, partyColour, stripHtml } from "../lib/format";
 import { IconQuestion, IconSearch } from "./icons";
 import DownloadCsvButton from "./DownloadCsvButton";
@@ -186,7 +187,7 @@ function QuestionCard({ q, politicianById, onSelectPolitician, index }) {
             style={{
               background: "none", border: "none", padding: 0, cursor: clickable ? "pointer" : "default",
               fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 700, color: COLORS.ink, textAlign: "left",
-              textDecoration: clickable ? "underline" : "none", textDecorationColor: `${color}55`,
+              textDecorationLine: clickable ? "underline" : "none", textDecorationColor: `${color}55`,
             }}
           >
             {q.asking_member_name ?? "Unknown member"}

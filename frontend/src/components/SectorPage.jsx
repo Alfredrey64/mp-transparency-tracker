@@ -1,7 +1,8 @@
 import { memo, useEffect, useId, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric, readable, solid } from "../theme";
-import { PageHeader, LoadFailedNote } from "./shared";
+import { PageHeader } from "./shared";
+import { LoadFailedNote } from "./MpCards";
 import LineChart from "./LineChart";
 import PlacesChart from "./PlacesChart";
 import BreakdownCard from "./BreakdownCard";

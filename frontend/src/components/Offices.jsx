@@ -7,7 +7,8 @@ import { explainOffice } from "../lib/officeExplainers";
 import { duration, monthYear } from "../lib/careerTimeline";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme";
 import { partyColour } from "../lib/format";
-import { PageHeader, LoadFailedNote } from "./shared";
+import { PageHeader } from "./shared";
+import { LoadFailedNote } from "./MpCards";
 import { IconCabinet } from "./icons";
 
 // Who has held a government or shadow post, for anyone sitting in Parliament

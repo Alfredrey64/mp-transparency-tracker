@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
 import { partyColour, formatDate, stripHtml } from "../lib/format";
-import { PageHeader, LoadFailedNote } from "./shared";
+import { PageHeader } from "./shared";
+import { LoadFailedNote } from "./MpCards";
 import {
   IconCabinet, IconEconomy, IconGlobe, IconGavel, IconHealth, IconBook, IconFactory, IconHome,
   IconTransport, IconLeaf, IconBroadcast, IconHardHat, IconThinkTank, IconDevolved, IconBills,

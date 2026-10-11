@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric, readable, solid } from "../theme";
-import { PageHeader, LoadFailedNote } from "./shared";
+import { PageHeader } from "./shared";
+import { LoadFailedNote } from "./MpCards";
 import { IconCalendar, IconSearch } from "./icons";
 import { card, cardTitle } from "../lib/onsStyles";
 import { longDate, searchCouncils, councilsForCodes, controlColourOf } from "../lib/councils";

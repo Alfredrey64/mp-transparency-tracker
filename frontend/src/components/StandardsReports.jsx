@@ -2,7 +2,8 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
-import { PageHeader, LoadFailedNote } from "./shared";
+import { PageHeader } from "./shared";
+import { LoadFailedNote } from "./MpCards";
 import { formatDate, partyColour } from "../lib/format";
 import { IconGavel, IconSearch } from "./icons";
 import STANDARDS_REPORT_DETAILS from "../data/standardsReportDetails.json";
@@ -128,7 +129,7 @@ function ReportCard({ report, politician, onSelectPolitician, index }) {
               style={{
                 background: "none", border: "none", padding: 0, cursor: clickable ? "pointer" : "default",
                 fontFamily: FONT_DISPLAY, fontSize: 18, color: COLORS.ink, textAlign: "left",
-                textDecoration: clickable ? "underline" : "none", textDecorationColor: `${color}55`,
+                textDecorationLine: clickable ? "underline" : "none", textDecorationColor: `${color}55`,
               }}
             >
               {report.extracted_name}

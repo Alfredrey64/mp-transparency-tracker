@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_BODY, FONT_DISPLAY } from "../theme";
 import { buildMpSummary } from "../lib/mpSummary";
-import { CardShell } from "./shared";
+import { CardShell } from "./MpCards";
 
 const NO_PARTY_MAJORITY = ["independent", "speaker"];
 

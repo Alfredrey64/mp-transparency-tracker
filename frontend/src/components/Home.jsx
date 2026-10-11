@@ -8,7 +8,8 @@ import pipelineStatus from "../data/pipelineStatus.json";
 import { categoriseBill } from "../lib/bills";
 import { getWatchlist, removeFromWatchlist } from "../lib/watchlist";
 import { IconSearch, IconCoin, IconBills, IconInfluence, IconPetition, IconGroup, IconPulse, IconShield, IconRoute, IconTrend, IconAsk, IconPin, IconSwing, IconCompareTime, IconGlossary } from "./icons";
-import { EyebrowLabel, LoadFailedNote } from "./shared";
+import { EyebrowLabel } from "./shared";
+import { LoadFailedNote } from "./MpCards";
 import { PartyHemicycleSection } from "./PartyHemicycle";
 import { withScrollPreserved } from "../lib/preserveScroll";
 
