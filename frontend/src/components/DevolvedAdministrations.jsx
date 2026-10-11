@@ -52,10 +52,10 @@ const ADMINISTRATIONS = [
     accent: "#6E4B6E",
     established: "1998, under the Good Friday (Belfast) Agreement that ended the Troubles",
     members: "90 MLAs, elected by Single Transferable Vote",
-    led: "A First Minister and deputy First Minister, jointly, from the two largest parties by designation, with equal status in law",
+    led: "A First Minister and Deputy First Minister, jointly, from the two largest parties by designation, with equal status in law",
     holders: [
       { role: "First Minister", name: "Michelle O'Neill", party: "Sinn Féin", since: "February 2024" },
-      { role: "deputy First Minister", name: "Emma Little-Pengelly", party: "DUP", since: "February 2024" },
+      { role: "Deputy First Minister", name: "Emma Little-Pengelly", party: "DUP", since: "February 2024" },
     ],
     powers: "Health, education, justice, policing, and agriculture, among others.",
     reserved: "Defence, foreign affairs, immigration, and national security remain with Westminster. Unlike Scotland and Wales, the Assembly's power-sharing structure has led to several extended suspensions over the years, most recently 2022–2024.",

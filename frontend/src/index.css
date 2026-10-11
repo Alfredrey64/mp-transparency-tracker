@@ -19,9 +19,9 @@
   --sb-bg: #E9E0CA;
   --sb-bg-2: #F1E9D6;
   --sb-strong: #191A23;
-  --sb-text: #383B4E;
-  --sb-soft: rgba(25, 26, 35, 0.64);
-  --sb-faint: rgba(25, 26, 35, 0.64);
+  --sb-text: #1D1F2E;
+  --sb-soft: rgba(25, 26, 35, 0.8);
+  --sb-faint: rgba(25, 26, 35, 0.7);
   --sb-hover: rgba(79, 70, 229, 0.07);
   --sb-surface: rgba(25, 26, 35, 0.035);
   --sb-active: rgba(79, 70, 229, 0.14);
