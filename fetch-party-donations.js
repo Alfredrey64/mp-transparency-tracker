@@ -17,6 +17,7 @@
 
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";
+import { fetchRetry } from "./httpFetch.js";
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -48,7 +49,7 @@ async function fetchAllPartyDonations() {
       `https://search.electoralcommission.org.uk/api/search/Donations` +
       `?rows=${PAGE_SIZE}&start=${start}&sort=AcceptedDate&order=desc` +
       `&et=pp&date=Accepted&from=${fromStr}&to=${toStr}`;
-    const res = await fetch(url, { headers: { Accept: "application/json" } });
+    const res = await fetchRetry(url, { headers: { Accept: "application/json" } });
     if (!res.ok) throw new Error(`Electoral Commission API error: ${res.status}`);
     const data = await res.json();
     const items = data.Result ?? [];

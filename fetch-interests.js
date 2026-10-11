@@ -10,6 +10,7 @@
 
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";
+import { fetchRetry } from "./httpFetch.js";
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -38,7 +39,7 @@ async function fetchAllCurrentMembers() {
 
   while (skip < total) {
     const url = `https://members-api.parliament.uk/api/Members/Search?House=1&IsCurrentMember=true&skip=${skip}&take=${take}`;
-    const res = await fetch(url);
+    const res = await fetchRetry(url);
     if (!res.ok) throw new Error(`Members API error: ${res.status}`);
     const data = await res.json();
 
@@ -96,7 +97,7 @@ async function upsertPolitician(member) {
 // ---- Step 3: fetch a short official biography (Synopsis) ----
 async function fetchSynopsis(memberId) {
   try {
-    const res = await fetch(`https://members-api.parliament.uk/api/Members/${memberId}/Synopsis`);
+    const res = await fetchRetry(`https://members-api.parliament.uk/api/Members/${memberId}/Synopsis`);
     if (!res.ok) return null;
     const data = await res.json();
     if (typeof data.value === "string") {
@@ -112,7 +113,7 @@ async function fetchSynopsis(memberId) {
 // ---- Step 4: fetch parliamentary office contact details ----
 async function fetchContact(memberId) {
   try {
-    const res = await fetch(`https://members-api.parliament.uk/api/Members/${memberId}/Contact`);
+    const res = await fetchRetry(`https://members-api.parliament.uk/api/Members/${memberId}/Contact`);
     if (!res.ok) return null;
     const data = await res.json();
     const office = (data.value ?? []).find((c) => c.type === "Parliamentary office");
@@ -133,7 +134,7 @@ async function fetchContact(memberId) {
 // ---- Step 5: fetch current cabinet/government post, if any ----
 async function fetchCabinetRole(memberId) {
   try {
-    const res = await fetch(`https://members-api.parliament.uk/api/Members/${memberId}/Biography`);
+    const res = await fetchRetry(`https://members-api.parliament.uk/api/Members/${memberId}/Biography`);
     if (!res.ok) return null;
     const data = await res.json();
     const posts = data.value?.governmentPosts ?? [];
@@ -182,7 +183,7 @@ function parseSummary(summary) {
 // ---- Step 7: fetch and save one MP's financial interests ----
 async function fetchAndSaveInterests(politicianRowId, memberId) {
   const url = `https://interests-api.parliament.uk/api/v1/Interests?MemberId=${memberId}&Take=50`;
-  const res = await fetch(url);
+  const res = await fetchRetry(url);
   if (!res.ok) throw new Error(`Interests API error for member ${memberId}: ${res.status}`);
   const data = await res.json();
 

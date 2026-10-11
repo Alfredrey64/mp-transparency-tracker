@@ -18,6 +18,7 @@
 
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";
+import { fetchRetry } from "./httpFetch.js";
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -34,7 +35,7 @@ async function fetchAllFormerMembers() {
   let skip = 0;
   while (true) {
     const url = `https://members-api.parliament.uk/api/Members/Search?House=1&IsCurrentMember=false&skip=${skip}&take=${PAGE_SIZE}`;
-    const res = await fetch(url);
+    const res = await fetchRetry(url);
     if (!res.ok) throw new Error(`Members search API error: ${res.status}`);
     const data = await res.json();
     const items = data.items ?? [];

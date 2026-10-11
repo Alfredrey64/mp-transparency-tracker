@@ -27,6 +27,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { readXlsx } from "./xlsx-lite.js";
 import { readXls } from "./xls-lite.js";
+import { fetchRetry } from "./httpFetch.js";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "frontend", "src", "data", "deprivationNations.json");
 const HEADERS = { "User-Agent": "Mozilla/5.0 (simple-politics; independent, non-commercial)" };
@@ -40,7 +41,7 @@ const round = (x, d = 1) => Math.round(x * 10 ** d) / 10 ** d;
 async function getJson(url) {
   for (let attempt = 1; attempt <= 5; attempt++) {
     try {
-      const res = await fetch(url, { headers: HEADERS });
+      const res = await fetchRetry(url, { headers: HEADERS });
       if (!res.ok) throw new Error(`${url}: HTTP ${res.status}`);
       return await res.json();
     } catch (e) {
@@ -146,7 +147,7 @@ async function scotland() {
     { id: "imd", label: "Overall deprivation" }, { id: "income", label: "Income" }, { id: "employment", label: "Employment" }, { id: "education", label: "Education, skills and training" },
     { id: "health", label: "Health" }, { id: "access", label: "Access to services" }, { id: "crime", label: "Crime" }, { id: "housing", label: "Housing" },
   ];
-  const res = await fetch(SIMD_LOOKUP, { headers: HEADERS });
+  const res = await fetchRetry(SIMD_LOOKUP, { headers: HEADERS });
   if (!res.ok) throw new Error(`SIMD lookup: HTTP ${res.status}`);
   const book = readXlsx(Buffer.from(await res.arrayBuffer()));
   const sheet = book["SIMD 2020v2 DZ lookup data"];
@@ -206,7 +207,7 @@ async function northernIreland() {
     { id: "imd", label: "Overall deprivation" }, { id: "income", label: "Income" }, { id: "employment", label: "Employment" }, { id: "health", label: "Health and disability" },
     { id: "education", label: "Education, skills and training" }, { id: "access", label: "Access to services" }, { id: "living", label: "Living environment" }, { id: "crime", label: "Crime and disorder" },
   ];
-  const res = await fetch(NIMDM_WARD, { headers: HEADERS });
+  const res = await fetchRetry(NIMDM_WARD, { headers: HEADERS });
   if (!res.ok) throw new Error(`NIMDM: HTTP ${res.status}`);
   const sheet = readXls(Buffer.from(await res.arrayBuffer()))["NIMDM 2017"];
   const hoods = sheet.filter((r) => /^N08\d+$/.test(r[2] ?? "")).map((r) => ({ code: r[2], ranks: Object.fromEntries(domains.map((d, i) => [d.id, Number(r[4 + i])])), la: { code: r[0], name: r[0] }, place: r[0] }));

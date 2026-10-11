@@ -19,6 +19,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { readXlsx } from "./xlsx-lite.js";
+import { fetchRetry } from "./httpFetch.js";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "frontend", "src", "data", "regionalBreakdowns.json");
 const HEADERS = { "User-Agent": "simple-politics (independent, non-commercial; contact via GitHub)" };
@@ -46,7 +47,7 @@ async function getText(url, tries = 3) {
   let last;
   for (let i = 0; i < tries; i++) {
     try {
-      const res = await fetch(url, { headers: HEADERS });
+      const res = await fetchRetry(url, { headers: HEADERS });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return await res.text();
     } catch (e) {
@@ -239,7 +240,7 @@ async function crime() {
   if (!latest) throw new Error("police force area tables: no latest release");
   const release = await getJson(`https://www.ons.gov.uk${latest}/data`);
   const file = release.downloads?.[0]?.file;
-  const res = await fetch(`https://www.ons.gov.uk/file?uri=${latest}/${file}`, { headers: HEADERS });
+  const res = await fetchRetry(`https://www.ons.gov.uk/file?uri=${latest}/${file}`, { headers: HEADERS });
   if (!res.ok) throw new Error(`police force area tables: HTTP ${res.status}`);
   const book = readXlsx(Buffer.from(await res.arrayBuffer()));
   const tidy = (x) => String(x ?? "").replace(/\[[^\]]*\]/g, "").replace(/\s+/g, " ").trim();

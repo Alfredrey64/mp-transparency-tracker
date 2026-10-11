@@ -883,21 +883,31 @@ export function RecentActivityBox({ politician, onNavigate }) {
 }
 
 export function NewsBox({ politician }) {
-  const [articles, setArticles] = useState(null);
-  const [failed, setFailed] = useState(false);
+  // Kept with the MP it belongs to, so switching MPs never shows the last one's articles, and a late reply for a previous MP is ignored.
+  const [result, setResult] = useState({ id: null, articles: null, failed: false });
 
   useEffect(() => {
-    async function load() {
-      const { data, error } = await supabase
-        .from("mp_news")
-        .select("headline, source, url, published_date")
-        .eq("politician_id", politician.id)
-        .order("published_date", { ascending: false });
-      setFailed(Boolean(error));
-      setArticles(data ?? []);
-    }
-    load();
+    let alive = true;
+    const done = (articles, failed) => { if (alive) setResult({ id: politician.id, articles, failed }); };
+    (async () => {
+      try {
+        const { data, error } = await supabase
+          .from("mp_news")
+          .select("headline, source, url, published_date")
+          .eq("politician_id", politician.id)
+          .order("published_date", { ascending: false });
+        // Only ordinary web links are ever shown as links.
+        done(error ? [] : (data ?? []).filter((a) => /^https?:\/\//i.test(a.url)), Boolean(error));
+      } catch {
+        done([], true);
+      }
+    })();
+    return () => { alive = false; };
   }, [politician.id]);
+
+  const current = result.id === politician.id;
+  const articles = current ? result.articles : null;
+  const failed = current && result.failed;
 
   if (failed) {
     return (

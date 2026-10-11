@@ -23,6 +23,7 @@ import { SECTORS, WEEKLY_DEATHS, sectorSeries } from "./frontend/src/data/onsSec
 import { normalisePeriod } from "./frontend/src/lib/onsFormat.js";
 import { readXlsx } from "./xlsx-lite.js";
 import { fetchFeed } from "./fetch-tables.js";
+import { fetchRetry } from "./httpFetch.js";
 
 const OUT_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), "frontend", "src", "data", "ons");
 const HEADERS = { "User-Agent": "simple-politics (independent, non-commercial; contact via GitHub)" };
@@ -35,7 +36,7 @@ async function getJson(url, tries = 3) {
   let lastError;
   for (let i = 0; i < tries; i++) {
     try {
-      const res = await fetch(url, { headers: HEADERS });
+      const res = await fetchRetry(url, { headers: HEADERS });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return await res.json();
     } catch (e) {
@@ -110,7 +111,7 @@ async function crimeWorkbook() {
     const release = await getJson(`https://www.ons.gov.uk${latest}/data`);
     const file = release.downloads?.[0]?.file;
     if (!file) throw new Error("crime tables: no file");
-    const res = await fetch(`https://www.ons.gov.uk/file?uri=${latest}/${file}`, { headers: HEADERS });
+    const res = await fetchRetry(`https://www.ons.gov.uk/file?uri=${latest}/${file}`, { headers: HEADERS });
     if (!res.ok) throw new Error(`crime tables: HTTP ${res.status}`);
     crimeBook = { sheets: readXlsx(Buffer.from(await res.arrayBuffer())), updated: release.description?.releaseDate ?? null };
   }
@@ -155,7 +156,7 @@ async function boeData() {
     let lastError;
     for (let i = 0; i < 3 && !text; i++) {
       try {
-        const res = await fetch(url, { headers: { ...HEADERS, "User-Agent": `Mozilla/5.0 ${HEADERS["User-Agent"]}` } });
+        const res = await fetchRetry(url, { headers: { ...HEADERS, "User-Agent": `Mozilla/5.0 ${HEADERS["User-Agent"]}` } });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const body = await res.text();
         if (!body.startsWith("DATE,")) throw new Error("not a data file");
@@ -209,7 +210,7 @@ async function nomisAshe(stat) {
   if (!nomisPay.has(stat)) {
     const years = Array.from({ length: new Date().getFullYear() - 1996 }, (_, i) => 1997 + i).join(",");
     const url = `https://www.nomisweb.co.uk/api/v01/dataset/NM_30_1.data.csv?geography=TYPE480,TYPE499&date=${years}&sex=7&item=${stat}&pay=7&measures=20100&select=date_name,geography_name,obs_value`;
-    const res = await fetch(url, { headers: HEADERS });
+    const res = await fetchRetry(url, { headers: HEADERS });
     if (!res.ok) throw new Error(`Nomis pay: HTTP ${res.status}`);
     const byPlace = new Map();
     for (const line of (await res.text()).trim().split(/\r?\n/).slice(1)) {

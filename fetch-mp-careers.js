@@ -18,6 +18,7 @@
 
 import { writeFileSync, mkdirSync } from "fs";
 import { careerRecord, careerDetail } from "./mpCareers.js";
+import { fetchRetry } from "./httpFetch.js";
 
 const OUTPUT = "frontend/src/data/mpCareers.json";
 const DETAIL_DIR = "frontend/src/data/careerDetail";
@@ -29,7 +30,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 async function getJson(url) {
   for (let attempt = 1; attempt <= 5; attempt++) {
     try {
-      const res = await fetch(url, { headers: { Accept: "application/json" } });
+      const res = await fetchRetry(url, { headers: { Accept: "application/json" } });
       if (res.status === 404) return null;
       if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
       return await res.json();

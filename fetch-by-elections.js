@@ -18,6 +18,7 @@
 
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";
+import { fetchRetry } from "./httpFetch.js";
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -33,7 +34,7 @@ async function fetchAllCurrentMembers() {
   let skip = 0;
   while (true) {
     const url = `https://members-api.parliament.uk/api/Members/Search?House=1&IsCurrentMember=true&skip=${skip}&take=${PAGE_SIZE}`;
-    const res = await fetch(url);
+    const res = await fetchRetry(url);
     if (!res.ok) throw new Error(`Members search API error: ${res.status}`);
     const data = await res.json();
     const items = data.items ?? [];
@@ -46,7 +47,7 @@ async function fetchAllCurrentMembers() {
 }
 
 async function fetchLatestElectionResult(memberId) {
-  const res = await fetch(`https://members-api.parliament.uk/api/Members/${memberId}/LatestElectionResult`);
+  const res = await fetchRetry(`https://members-api.parliament.uk/api/Members/${memberId}/LatestElectionResult`);
   if (!res.ok) return null;
   const data = await res.json();
   return data.value ?? null;
@@ -57,7 +58,7 @@ async function fetchAllConstituencies() {
   let skip = 0;
   while (true) {
     const url = `https://members-api.parliament.uk/api/Location/Constituency/Search?searchText=&skip=${skip}&take=${PAGE_SIZE}`;
-    const res = await fetch(url);
+    const res = await fetchRetry(url);
     if (!res.ok) throw new Error(`Constituency search API error: ${res.status}`);
     const data = await res.json();
     const items = data.items ?? [];

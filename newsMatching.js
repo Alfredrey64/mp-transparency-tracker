@@ -26,6 +26,16 @@ const SAFE_NEIGHBOUR_WORDS = new Set([
   "former", "ex", "new", "veteran", "senior", "backbench", "chief", "deputy", "co", "vs", "v", "why", "how", "what",
   "who", "when", "after", "before", "over", "under", "amid", "against", "despite", "during", "this", "that", "his",
   "her", "their", "its", "it's", "uk", "us", "eu", "ni", "tv", "obe", "mbe", "cbe", "qc", "kc", "at", "no", "yes",
+  // Everyday headline verbs, so "Iain Duncan Smith criticises welfare plans" is not mistaken for a longer name.
+  "criticises", "criticizes", "criticised", "announces", "announced", "accuses", "accused", "claims", "claimed", "admits",
+  "insists", "confirms", "denies", "faces", "joins", "launches", "leads", "named", "quits", "resigns", "reveals", "rejects",
+  "refuses", "plans", "pledges", "promises", "proposes", "questions", "responds", "sparks", "speaks", "stands", "supports",
+  "tells", "told", "wants", "wins", "won", "will", "has", "have", "had", "can", "could", "would", "should", "may", "might",
+  "must", "does", "did", "back", "gets", "get", "takes", "took", "makes", "made", "sets", "set", "puts", "brands", "attacks",
+  "condemns", "welcomes", "slammed", "appointed", "elected", "urged", "called", "warned", "hopes", "fears", "expects",
+  "believes", "thinks", "asks", "asked", "answers", "votes", "voted", "visits", "visited", "opens", "opened", "unveils",
+  "reacts", "remains", "becomes", "became", "returns", "steps", "considers", "suggests", "argues", "challenges", "clashes",
+  "writes", "wrote", "tweets", "posts", "shares", "praises", "mocks", "rebukes", "challenged", "faces", "seeks", "sought",
 ]);
 
 function neighbourLooksLikeName(word) {
@@ -68,10 +78,32 @@ function hasUnrelatedContext(headline) {
   return !POLITICAL_CONTEXT.some((w) => lower.includes(w));
 }
 
-export function isLikelyMatch(headline, mpName) {
-  const name = mpName.trim();
+// Names in the Parliament list can carry a title ("Sir Iain Duncan Smith", "Dr Rupa Huq") that headlines often leave out, and
+// can have accents or curly apostrophes ("Siân Berry", "Stephen O’Brien") that a headline may spell the plain way. Both sides are
+// brought to the same plain form before they are compared, and the search itself uses the name without its title.
+const TITLES = new Set(["sir", "dame", "dr", "rt", "hon", "the", "right", "honourable", "rev", "reverend", "prof", "professor", "mr", "mrs", "ms", "miss", "lord", "lady"]);
+
+export function plainText(text) {
+  return String(text)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[\u2018\u2019\u02bc]/g, "'")
+    .replace(/[\u201c\u201d]/g, '"')
+    .replace(/[\u2010-\u2015]/g, "-")
+    .replace(/\u00a0/g, " ");
+}
+
+export function searchName(name) {
+  const words = plainText(name).trim().split(/\s+/).filter(Boolean);
+  while (words.length > 2 && TITLES.has(words[0].toLowerCase().replace(/\./g, ""))) words.shift();
+  return words.join(" ");
+}
+
+export function isLikelyMatch(rawHeadline, mpName) {
+  const name = searchName(mpName);
   if (!name) return true;
-  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const headline = plainText(rawHeadline);
+  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/ /g, "\\s+");
   const match = headline.match(new RegExp(`\\b${escaped}\\b`, "i"));
   if (!match) return false;
   if (hasUnrelatedContext(headline)) return false;

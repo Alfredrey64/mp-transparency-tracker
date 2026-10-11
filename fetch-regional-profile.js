@@ -18,6 +18,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { readXlsx } from "./xlsx-lite.js";
 import { fileURLToPath } from "node:url";
+import { fetchRetry } from "./httpFetch.js";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "frontend", "src", "data", "regionalProfile.json");
 const BASE = "https://www.nomisweb.co.uk/api/v01/dataset";
@@ -170,7 +171,7 @@ async function getCsv(url, tries = 3) {
   let last;
   for (let i = 0; i < tries; i++) {
     try {
-      const res = await fetch(url, { headers: HEADERS });
+      const res = await fetchRetry(url, { headers: HEADERS });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return await res.text();
     } catch (e) {
@@ -235,7 +236,7 @@ async function ukTable(code) {
     let text;
     for (let i = 0; i < 3 && !text; i++) {
       try {
-        const res = await fetch(url, { headers: BROWSER });
+        const res = await fetchRetry(url, { headers: BROWSER });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         text = (await res.text()).replace(/^\uFEFF/, "");
         if (!text.startsWith('"STATISTIC"')) throw new Error("not a data file");
@@ -271,10 +272,10 @@ async function nationShares(spec) {
 // Scotland's Census 2022 ethnic groups (National Records of Scotland), read from the chart-data workbook linked on the
 // release page, whose address changes, so it is found from the page each time.
 async function scotlandCensus() {
-  const page = await (await fetch("https://www.scotlandscensus.gov.uk/documents/scotlands-census-2022-ethnic-group-national-identity-language-and-religion-chart-data/", { headers: BROWSER })).text();
+  const page = await (await fetchRetry("https://www.scotlandscensus.gov.uk/documents/scotlands-census-2022-ethnic-group-national-identity-language-and-religion-chart-data/", { headers: BROWSER })).text();
   const href = /href="([^"]+\.xlsx)"/i.exec(page)?.[1];
   if (!href) throw new Error("Scotland ethnic groups: workbook link not found");
-  const res = await fetch(new URL(href, "https://www.scotlandscensus.gov.uk").href, { headers: BROWSER });
+  const res = await fetchRetry(new URL(href, "https://www.scotlandscensus.gov.uk").href, { headers: BROWSER });
   if (!res.ok) throw new Error(`Scotland ethnic groups: HTTP ${res.status}`);
   const book = readXlsx(Buffer.from(await res.arrayBuffer()));
   const rows5 = (book["Figure 5"] ?? []).filter((r) => r?.[0] === 2022);

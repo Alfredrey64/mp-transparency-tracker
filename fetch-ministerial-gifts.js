@@ -21,6 +21,7 @@
 
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";
+import { fetchRetry } from "./httpFetch.js";
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -66,7 +67,7 @@ function parseCsv(text) {
 }
 
 async function findLatestPublicationPath() {
-  const res = await fetch("https://www.gov.uk/api/content/government/collections/register-of-ministers-gifts-and-hospitality");
+  const res = await fetchRetry("https://www.gov.uk/api/content/government/collections/register-of-ministers-gifts-and-hospitality");
   if (!res.ok) throw new Error(`Could not load the gifts & hospitality collection: ${res.status}`);
   const data = await res.json();
   const docs = (data.links?.documents ?? []).filter((d) => /^Register of Ministers/i.test(d.title));
@@ -76,7 +77,7 @@ async function findLatestPublicationPath() {
 }
 
 async function fetchAttachments(publicationPath) {
-  const res = await fetch(`https://www.gov.uk/api/content${publicationPath}`);
+  const res = await fetchRetry(`https://www.gov.uk/api/content${publicationPath}`);
   if (!res.ok) throw new Error(`Could not load publication ${publicationPath}: ${res.status}`);
   const data = await res.json();
   return data.details?.attachments ?? [];
@@ -150,7 +151,7 @@ async function main() {
     const { kind, department } = parseAttachmentTitle(att.title);
     if (!kind || !department) continue;
     try {
-      const csvRes = await fetch(att.url);
+      const csvRes = await fetchRetry(att.url);
       if (!csvRes.ok) continue;
       const csvText = await csvRes.text();
       const rows = rowsFromCsv(csvText, department, kind, monthLabel, att.url);

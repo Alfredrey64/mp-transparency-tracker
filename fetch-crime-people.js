@@ -22,6 +22,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { readOds } from "./ods-lite.js";
 import { readXlsx } from "./xlsx-lite.js";
+import { fetchRetry } from "./httpFetch.js";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "frontend", "src", "data", "crimePeople.json");
 const HEADERS = { "User-Agent": "Mozilla/5.0 (simple-politics; independent, non-commercial)" };
@@ -39,7 +40,7 @@ const num = (s) => {
 async function get(url) {
   for (let attempt = 1; attempt <= 4; attempt++) {
     try {
-      const res = await fetch(url, { headers: HEADERS });
+      const res = await fetchRetry(url, { headers: HEADERS });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return res;
     } catch (e) {

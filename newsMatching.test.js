@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { isLikelyMatch } from "./newsMatching.js";
+import { isLikelyMatch, searchName } from "./newsMatching.js";
 
 describe("isLikelyMatch", () => {
   it("matches a genuine headline about the MP", () => {
@@ -41,5 +41,23 @@ describe("isLikelyMatch", () => {
 
   it("rejects a headline that does not contain the name at all", () => {
     expect(isLikelyMatch("Chancellor unveils new budget measures", "Keir Starmer")).toBe(false);
+  });
+});
+
+describe("names with titles, accents and apostrophes", () => {
+  it("finds a headline that leaves out the MP's title", () => {
+    expect(isLikelyMatch("Iain Duncan Smith criticises welfare plans in Commons", "Sir Iain Duncan Smith")).toBe(true);
+    expect(searchName("Dr Rupa Huq")).toBe("Rupa Huq");
+  });
+  it("treats accented and plain spellings, and curly and straight apostrophes, alike", () => {
+    expect(isLikelyMatch("Sian Berry calls for rent controls", "Siân Berry")).toBe(true);
+    expect(isLikelyMatch("Siân Berry calls for rent controls", "Sian Berry")).toBe(true);
+    expect(isLikelyMatch("Stephen O'Brien backs the bill", "Stephen O’Brien")).toBe(true);
+  });
+  it("keeps a two-word name that happens to start with a title word", () => {
+    expect(searchName("Hon Smith")).toBe("Hon Smith");
+  });
+  it("still rejects a longer name containing the plain one", () => {
+    expect(isLikelyMatch("Sher Afzal Khan Marwat says no", "Sir Afzal Khan")).toBe(false);
   });
 });

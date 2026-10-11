@@ -17,6 +17,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { readXlsx } from "./xlsx-lite.js";
+import { fetchRetry } from "./httpFetch.js";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "frontend", "src", "data", "deprivation.json");
 const OUT_SEATS = path.join(path.dirname(fileURLToPath(import.meta.url)), "frontend", "src", "data", "deprivationConstituencies.json");
@@ -82,7 +83,7 @@ async function seatLookup() {
 }
 
 async function get(url) {
-  const res = await fetch(url, { headers: HEADERS });
+  const res = await fetchRetry(url, { headers: HEADERS });
   if (!res.ok) throw new Error(`${url}: HTTP ${res.status}`);
   return res;
 }

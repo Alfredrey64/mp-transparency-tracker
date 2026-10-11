@@ -652,7 +652,7 @@ select:focus-visible,
    may be. If all n fit in one row they share it; if not, as many as fit go in each row and every row stretches to the full width, so there is
    never a lone box beside empty space. On a phone that works out as two to a row, with an odd last box running full width. */
 .box-row { --gap: 14px; display: flex; flex-wrap: wrap; gap: var(--gap); }
-.box-row > * { flex: 1 1 max(var(--min, 150px), calc((100% - (var(--n, 4) - 1) * var(--gap)) / var(--n, 4))); min-width: 0; }
+.box-row > * { flex: 1 1 max(min(100%, var(--min, 150px)), calc((100% - (var(--n, 4) - 1) * var(--gap)) / var(--n, 4))); min-width: 0; }
 @container (max-width: 760px) { .box-row .tile-num { font-size: 30px !important; } }
 @container (max-width: 380px) { .box-row .tile-num { font-size: 26px !important; } }
 

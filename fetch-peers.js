@@ -29,6 +29,7 @@
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";
 import { fetchRecentContributions, fetchRecentWrittenQuestions } from "./memberActivity.js";
+import { fetchRetry } from "./httpFetch.js";
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -66,7 +67,7 @@ async function fetchAllCurrentPeers() {
 
   while (skip < total) {
     const url = `https://members-api.parliament.uk/api/Members/Search?House=2&IsCurrentMember=true&skip=${skip}&take=${take}`;
-    const res = await fetch(url);
+    const res = await fetchRetry(url);
     if (!res.ok) throw new Error(`Members API error: ${res.status}`);
     const data = await res.json();
     total = data.totalResults ?? 0;
@@ -92,7 +93,7 @@ async function fetchAllCurrentPeers() {
 
 async function fetchSynopsis(memberId) {
   try {
-    const res = await fetch(`https://members-api.parliament.uk/api/Members/${memberId}/Synopsis`);
+    const res = await fetchRetry(`https://members-api.parliament.uk/api/Members/${memberId}/Synopsis`);
     if (!res.ok) return null;
     const data = await res.json();
     return typeof data.value === "string" ? stripHtml(data.value) || null : null;
@@ -107,7 +108,7 @@ async function fetchSynopsis(memberId) {
 // fields the API already returns here — no extra request needed.
 async function fetchBiographyDetails(memberId) {
   try {
-    const res = await fetch(`https://members-api.parliament.uk/api/Members/${memberId}/Biography`);
+    const res = await fetchRetry(`https://members-api.parliament.uk/api/Members/${memberId}/Biography`);
     if (!res.ok) return { role: null, startDate: null, ministerialHistory: [], committees: [] };
     const data = await res.json();
 

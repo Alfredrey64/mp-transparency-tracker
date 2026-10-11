@@ -109,8 +109,8 @@ function PartyRing({ parties, total }) {
   // Where each segment starts around the ring.
   const starts = list.map((_, i) => list.slice(0, i).reduce((n, p) => n + (p.count / total) * C, 0));
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 150px) minmax(0, 1fr)", gap: 16, alignItems: "center" }}>
-      <svg viewBox="0 0 160 160" width="100%" role="img" aria-label="Share of committee places by party" style={{ maxWidth: 170, justifySelf: "center" }}>
+    <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center", justifyContent: "center" }}>
+      <svg viewBox="0 0 160 160" width="150" height="150" role="img" aria-label="Share of committee places by party" style={{ flex: "0 0 auto", maxWidth: "100%" }}>
         <circle cx="80" cy="80" r={R} fill="none" stroke={COLORS.hairline} strokeWidth="24" opacity="0.5" />
         <g transform="rotate(-90 80 80)">
           {list.map((p, i) => {
@@ -126,7 +126,7 @@ function PartyRing({ parties, total }) {
         <text x="80" y="78" textAnchor="middle" fontFamily={FONT_DISPLAY} fontSize="26" fontWeight="700" fill={COLORS.ink}>{total}</text>
         <text x="80" y="96" textAnchor="middle" fontFamily={FONT_BODY} fontSize="10.5" fill={COLORS.inkSoft}>places</text>
       </svg>
-      <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 2 }}>
+      <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 2, flex: "1 1 190px", minWidth: 0 }}>
         {list.map((p) => (
           <li key={p.name}
             onPointerEnter={(e) => { if (e.pointerType !== "touch" && !isScrolling()) setHover(p.name); }} onPointerLeave={() => setHover(null)}
@@ -146,7 +146,7 @@ function PartyRing({ parties, total }) {
 function BarList({ items, color, unit, onPick }) {
   const max = Math.max(1, ...items.map((i) => i.value));
   return (
-    <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 7 }}>
+    <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 7 }}>
       {items.map((it, i) => (
         <li key={it.id}>
           <button type="button" onClick={() => onPick(it.name)} style={{ display: "block", width: "100%", textAlign: "left", background: "none", border: "none", padding: 0, cursor: "pointer", font: "inherit" }}>

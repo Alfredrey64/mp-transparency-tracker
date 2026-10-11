@@ -13,6 +13,7 @@
 
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";
+import { fetchRetry } from "./httpFetch.js";
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -49,7 +50,7 @@ function toRow(p) {
 async function fetchPages(query, maxPages) {
   const results = [];
   for (let page = 1; page <= maxPages; page++) {
-    const res = await fetch(`https://petition.parliament.uk/petitions.json?${query}&page=${page}`);
+    const res = await fetchRetry(`https://petition.parliament.uk/petitions.json?${query}&page=${page}`);
     if (!res.ok) break;
     const data = await res.json();
     results.push(...data.data);

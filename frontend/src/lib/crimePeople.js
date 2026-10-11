@@ -9,7 +9,6 @@ export const GROUPS = [
   { id: "other", label: "Other" },
 ];
 
-export const groupLabel = (id) => GROUPS.find((g) => g.id === id)?.label ?? id;
 
 const round = (x, d = 1) => Math.round(x * 10 ** d) / 10 ** d;
 

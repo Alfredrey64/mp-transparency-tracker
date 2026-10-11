@@ -22,7 +22,7 @@ Plain, calm and specific. Short sentences, everyday words, no jargon without an 
 
 - **Name:** Simple Politics
 - **Line:** UK politics, made simple.
-- **Mark:** a speech bubble with a tick in it, a clear answer, on indigo (`public/favicon.svg`, and `src/components/LogoMark.jsx`).
+- **Mark:** the Houses of Parliament as a flat white silhouette on indigo (`public/favicon.svg`, and `src/components/LogoMark.jsx`).
 
 ## Embeddable cards
 

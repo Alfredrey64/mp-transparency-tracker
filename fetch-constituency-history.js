@@ -22,6 +22,7 @@
 
 import { readFileSync, writeFileSync } from "fs";
 import { indexFormerMps } from "./constituencyData.js";
+import { fetchRetry } from "./httpFetch.js";
 
 const OUTPUT = "frontend/src/data/constituencyHistory.json";
 const MIN_MEMBERS = 1000;
@@ -31,7 +32,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 async function getJson(url) {
   for (let attempt = 1; attempt <= 5; attempt++) {
     try {
-      const res = await fetch(url, { headers: { Accept: "application/json" } });
+      const res = await fetchRetry(url, { headers: { Accept: "application/json" } });
       if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
       return await res.json();
     } catch (err) {

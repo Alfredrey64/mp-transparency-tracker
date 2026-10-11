@@ -10,6 +10,7 @@
 // and run it by hand: node fetch-devolved-leaders.js
 
 import fs from "fs";
+import { fetchRetry } from "./httpFetch.js";
 
 const OUTPUT_PATH = "frontend/src/data/devolvedLeaders.json";
 const HEADERS = { "User-Agent": "simple-politics/1.0 (civic information site; contact via GitHub)" };
@@ -26,7 +27,7 @@ async function main() {
   const out = {};
   for (const [name, title] of Object.entries(LEADERS)) {
     const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title.replace(/ /g, "_"))}`;
-    const res = await fetch(url, { headers: HEADERS });
+    const res = await fetchRetry(url, { headers: HEADERS });
     if (!res.ok) {
       console.log(`${name}: lookup failed (${res.status})`);
       continue;

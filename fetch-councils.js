@@ -17,6 +17,7 @@
 
 import { writeFileSync, mkdirSync, rmSync } from "fs";
 import { buildCouncils, shardOf, SHARDS } from "./councils.js";
+import { fetchRetry } from "./httpFetch.js";
 
 const YEAR = new Date().getFullYear();
 const BASE = "https://opencouncildata.co.uk";
@@ -26,7 +27,7 @@ const MIN_COUNCILLORS = 15000;
 async function text(url) {
   for (let attempt = 1; attempt <= 4; attempt++) {
     try {
-      const res = await fetch(url);
+      const res = await fetchRetry(url);
       if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
       return await res.text();
     } catch (err) {

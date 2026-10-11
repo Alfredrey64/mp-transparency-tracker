@@ -22,6 +22,7 @@
 // Run it with: node fetch-pm-portraits.js
 
 import fs from "fs";
+import { fetchRetry } from "./httpFetch.js";
 
 const OUTPUT_PATH = "frontend/src/data/pmPortraits.json";
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -58,7 +59,7 @@ const PM_WIKIPEDIA_TITLES = {
 async function fetchPortrait(pmName, attempt = 1) {
   const title = PM_WIKIPEDIA_TITLES[pmName] ?? pmName;
   const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title.replace(/ /g, "_"))}`;
-  const res = await fetch(url, { headers: { "User-Agent": "mp-transparency-tracker/1.0 (civic transparency site)" } });
+  const res = await fetchRetry(url, { headers: { "User-Agent": "mp-transparency-tracker/1.0 (civic transparency site)" } });
   if (res.status === 429 && attempt <= 3) {
     await sleep(2000 * attempt);
     return fetchPortrait(pmName, attempt + 1);

@@ -19,7 +19,6 @@ const TEXT = {
   },
 };
 
-export const EXPLORER_TEXT = TEXT;
 
 export default function SectorExplorer({ sector, accent }) {
   const [data, setData] = useState(null);

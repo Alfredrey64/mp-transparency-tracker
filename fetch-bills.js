@@ -10,6 +10,7 @@
 
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";
+import { fetchRetry } from "./httpFetch.js";
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -23,7 +24,7 @@ const BILLS_TO_FETCH = 100;
 
 async function fetchRecentBillIds() {
   const url = `https://bills-api.parliament.uk/api/v1/Bills?SortOrder=DateUpdatedDescending&Take=${BILLS_TO_FETCH}`;
-  const res = await fetch(url);
+  const res = await fetchRetry(url);
   if (!res.ok) throw new Error(`Bills list API error: ${res.status}`);
   const data = await res.json();
   return (data.items ?? []).map((b) => b.billId);
@@ -31,7 +32,7 @@ async function fetchRecentBillIds() {
 
 async function fetchBillDetail(billId) {
   const url = `https://bills-api.parliament.uk/api/v1/Bills/${billId}`;
-  const res = await fetch(url);
+  const res = await fetchRetry(url);
   if (!res.ok) throw new Error(`Bill detail API error for ${billId}: ${res.status}`);
   return res.json();
 }

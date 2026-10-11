@@ -54,7 +54,9 @@ function pageHtml({ url, title, description, heading, bodyHtml, go }) {
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}" />
 <link rel="canonical" href="${esc(url)}" />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=12" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=12" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=12" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Simple Politics" />
 <meta property="og:title" content="${esc(title)}" />

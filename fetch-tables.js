@@ -11,6 +11,7 @@
 import { readXlsx } from "./xlsx-lite.js";
 import { readOds } from "./ods-lite.js";
 import { readXls } from "./xls-lite.js";
+import { fetchRetry } from "./httpFetch.js";
 
 const HEADERS = { "User-Agent": "Mozilla/5.0 (simple-politics; independent, non-commercial; contact via GitHub)" };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -19,7 +20,7 @@ async function getBuffer(url, tries = 3) {
   let lastError;
   for (let i = 0; i < tries; i++) {
     try {
-      const res = await fetch(url, { headers: HEADERS, redirect: "follow" });
+      const res = await fetchRetry(url, { headers: HEADERS, redirect: "follow" });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return Buffer.from(await res.arrayBuffer());
     } catch (e) {

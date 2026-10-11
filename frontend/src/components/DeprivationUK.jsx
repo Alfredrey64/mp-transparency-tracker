@@ -181,7 +181,7 @@ export default function DeprivationUK({ kind = "imd" }) {
         <ul className="box-row" style={{ listStyle: "none", margin: 0, padding: 0, "--n": 4, "--min": "190px", "--gap": "10px" }}>
           {callouts.map((c) => (
             <li key={c.id} style={{ border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: "10px 12px", opacity: nation !== "all" && nation !== c.id ? 0.5 : 1 }}>
-              <button type="button" disabled={!c.top} onClick={() => { setPicked(c.top.code); setNation(c.id); }} className="ons-tap" style={{ all: "unset", cursor: "pointer", display: "block", width: "100%" }}>
+              <button type="button" disabled={!c.top} onClick={() => { setPicked(c.top.code); setNation(c.id); }} className="ons-tap" style={{ all: "unset", position: "relative", cursor: "pointer", display: "block", width: "100%" }}>
                 <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: COLORS.inkSoft }}>{c.name}</span>
                 <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: 16, color: COLORS.ink, marginTop: 2 }}>{c.top?.name ?? "n/a"}</span>
                 <span style={{ ...numeric, display: "block", fontSize: 13, color: COLORS.inkSoft }}>{c.topValue == null ? "" : `${oneInShort(c.topValue)} (${f1(c.topValue)})`}</span>

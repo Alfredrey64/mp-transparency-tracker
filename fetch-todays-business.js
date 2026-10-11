@@ -16,6 +16,7 @@
 
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";
+import { fetchRetry } from "./httpFetch.js";
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -36,7 +37,7 @@ async function main() {
   console.log(`Fetching today's (${date}) Commons business...`);
 
   const url = `https://whatson-api.parliament.uk/calendar/events/list.json?startDate=${date}&endDate=${date}&house=Commons`;
-  const res = await fetch(url);
+  const res = await fetchRetry(url);
   if (!res.ok) throw new Error(`What's On API error: ${res.status}`);
   const events = await res.json();
 

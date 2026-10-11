@@ -24,6 +24,7 @@
 
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";
+import { fetchRetry } from "./httpFetch.js";
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -33,7 +34,7 @@ const supabase = createClient(
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function discoverBuildId() {
-  const res = await fetch("https://www.theipsa.org.uk/");
+  const res = await fetchRetry("https://www.theipsa.org.uk/");
   if (!res.ok) throw new Error(`Could not load IPSA homepage: ${res.status}`);
   const html = await res.text();
   const match = html.match(/"buildId":"([^"]+)"/);
@@ -92,7 +93,7 @@ function summariseExpenses(expenses) {
 async function fetchMpExpenses(buildId, memberId) {
   try {
     const url = `https://www.theipsa.org.uk/_next/data/${buildId}/mp-staffing-business-costs/your-mp/mp/${memberId}.json?slug=mp&slug=${memberId}`;
-    const res = await fetch(url);
+    const res = await fetchRetry(url);
     if (!res.ok) return null;
     const data = await res.json();
     return data.pageProps?.mp?.expenses ?? null;

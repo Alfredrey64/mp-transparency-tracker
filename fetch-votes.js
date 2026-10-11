@@ -15,6 +15,7 @@
 
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";
+import { fetchRetry } from "./httpFetch.js";
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -28,7 +29,7 @@ const DIVISIONS_TO_FETCH = 100;
 // ---- Step 1: get a list of the most recent division IDs ----
 async function fetchRecentDivisionIds() {
   const url = `https://commonsvotes-api.parliament.uk/data/divisions.json/search?queryParameters.take=${DIVISIONS_TO_FETCH}`;
-  const res = await fetch(url);
+  const res = await fetchRetry(url);
   if (!res.ok) throw new Error(`Divisions list API error: ${res.status}`);
   const data = await res.json();
   return data.map((d) => d.DivisionId);
@@ -37,7 +38,7 @@ async function fetchRecentDivisionIds() {
 // ---- Step 2: get the full detail (including Ayes/Noes) for one division ----
 async function fetchDivisionDetail(divisionId) {
   const url = `https://commonsvotes-api.parliament.uk/data/division/${divisionId}.json`;
-  const res = await fetch(url);
+  const res = await fetchRetry(url);
   if (!res.ok) throw new Error(`Division detail API error for ${divisionId}: ${res.status}`);
   return res.json();
 }

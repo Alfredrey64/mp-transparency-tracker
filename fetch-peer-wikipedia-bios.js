@@ -21,6 +21,7 @@
 
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";
+import { fetchRetry } from "./httpFetch.js";
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -31,7 +32,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function fetchWikipediaSummary(title, attempt = 1) {
   const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title.replace(/ /g, "_"))}`;
-  const res = await fetch(url, { headers: { "User-Agent": "mp-transparency-tracker/1.0 (civic transparency site)" } });
+  const res = await fetchRetry(url, { headers: { "User-Agent": "mp-transparency-tracker/1.0 (civic transparency site)" } });
   if (res.status === 429 && attempt <= 3) {
     await sleep(2000 * attempt);
     return fetchWikipediaSummary(title, attempt + 1);

@@ -15,11 +15,12 @@
 // Run it with: node fetch-seat-hexes.js
 
 import { writeFileSync } from "fs";
+import { fetchRetry } from "./httpFetch.js";
 
 const SOURCE = "https://raw.githubusercontent.com/odileeds/hexmaps/master/maps/uk-constituencies-2023.hexjson";
 const OUTPUT = "frontend/src/data/seatHexes.json";
 
-const res = await fetch(SOURCE);
+const res = await fetchRetry(SOURCE);
 if (!res.ok) throw new Error(`Download failed: ${res.status}`);
 const data = await res.json();
 const entries = Object.entries(data.hexes ?? {});
