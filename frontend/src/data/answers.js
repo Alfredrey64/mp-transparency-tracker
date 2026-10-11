@@ -11,7 +11,7 @@
 // These are written by hand, not generated, so they only cover the questions here. The facts update
 // themselves; the explanations are our summary and are dated by when the site was last updated.
 
-export const ANSWER_TOPICS = ["Prices and money", "Housing", "Health", "Work and pay", "Government money", "People and borders", "Place and environment"];
+export const ANSWER_TOPICS = ["Prices and money", "Housing", "Health", "Work and pay", "Government money", "People and borders", "Place and environment", "Schools and universities", "Defence and security"];
 
 export const ANSWERS = [
   {
@@ -791,6 +791,212 @@ export const ANSWERS = [
       { who: "Others say", says: "The link to the state pension and benefits matters and gives people a stake in the system. They argue that rates should be set carefully, because they affect both what employees take home and what employers pay to hire." },
     ],
     next: [{ label: "Taxes and spending", href: "#/tax" }, { label: "Where taxes go", href: "#/budget" }],
+  },
+
+  {
+    id: "why-state-pension-age-rising",
+    topic: "Government money",
+    question: "Why is the state pension age going up?",
+    keywords: ["state pension age", "pension age", "retire", "retirement", "retiring", "67", "68", "pension", "pensions", "pensioners", "older", "waspi"],
+    short: "People are living longer, so the state pension is paid for more years than it used to be, and fewer workers pay for each pensioner. Raising the age cuts the bill and asks people to work a little longer. The age is being raised from 66 to 67, and a rise to 68 is set in law for the mid-2040s, with years of notice for each change.",
+    reasons: [
+      { title: "People live longer", text: "Someone reaching pension age today can expect to draw a pension for many more years than earlier generations did. The state pension is paid out of taxes and National Insurance collected from today's workers, so every extra year of payments adds to the bill." },
+      { title: "Fewer workers for each pensioner", text: "The population is getting older, with more people over pension age in proportion to those of working age who pay tax and National Insurance. That makes the cost harder to cover without raising taxes or the age." },
+      { title: "It is the biggest single benefit", text: "The state pension is the largest single payment the government makes to individuals. Small changes to who gets it, and when, move billions of pounds, which is why governments keep coming back to the age." },
+      { title: "The age is set in law, and reviewed", text: "The rise from 66 to 67 is phased in over two years, and a rise to 68 is set in law for the mid-2040s. The law requires the government to review the age regularly and to give at least ten years' notice of any change." },
+    ],
+    facts: [
+      { sector: "tax", series: "benefits-12m", text: "Benefits and pensions cost {value} {when}, {change}." },
+      { sector: "tax", series: "benefits-share", text: "Benefits and pensions are {value} of everything the government spends {when}." },
+      { sector: "prices", series: "hci-retired", text: "The cost of living for retired households is up {value} on a year earlier {when}." },
+    ],
+    views: [
+      { who: "Those who back a higher age say", says: "People are living longer and in better health, so working a little longer is fair, and it keeps the pension affordable without higher taxes on younger workers." },
+      { who: "Those who oppose it say", says: "Life expectancy is much lower in poorer areas and for people in physically hard jobs, so a higher age takes away more years of pension from those who need it most. Many people in their sixties are already out of work through ill health or caring." },
+      { who: "Campaigners for women born in the 1950s say", says: "Whatever the age, people need proper notice. They argue that their pension age rose faster than they were told, leaving many with too little time to plan." },
+    ],
+    next: [{ label: "Taxes and spending", href: "#/tax" }, { label: "Where taxes go", href: "#/budget" }, { label: "Who lives in the UK", href: "#/population" }],
+  },
+  {
+    id: "how-much-tax-goes-unpaid",
+    topic: "Government money",
+    question: "How much tax goes unpaid?",
+    keywords: ["tax avoidance", "tax evasion", "avoidance", "evasion", "avoid", "evade", "tax gap", "loopholes", "hmrc", "non dom", "non-dom", "offshore", "unpaid", "dodge", "dodging", "tax haven"],
+    short: "HMRC estimates that roughly 5 to 7 pence in every pound of tax owed is not paid, which is tens of billions of pounds a year. Most of it is not clever schemes by the very rich: the biggest share comes from small businesses making mistakes, not taking enough care, or leaving income out. Avoidance is legal but goes against the spirit of the rules, and makes up a small part. Evasion is a crime.",
+    reasons: [
+      { title: "Mistakes and carelessness", text: "A large share of the gap is people and businesses getting their returns wrong or not taking reasonable care, especially smaller firms without an accountant to check them." },
+      { title: "Hidden income is evasion", text: "Evasion is breaking the law: not declaring income, hiding money abroad, or running cash-in-hand work off the books. It is a crime and can lead to fines and prosecution." },
+      { title: "Avoidance bends the rules", text: "Avoidance means arranging your affairs to pay less tax in a way that is legal on paper but that Parliament did not intend. When one scheme is closed, new ones can appear." },
+      { title: "It is hard to check everything", text: "HMRC deals with millions of taxpayers and businesses. Governments of both main parties have argued that extra checks usually bring in more than they cost, but there is a limit to how far that goes." },
+      { title: "Big firms and other countries", text: "Large companies can book profits in countries with lower taxes. A global minimum rate of 15% on big multinational companies, which the UK has adopted, is meant to limit this." },
+    ],
+    facts: [
+      { sector: "tax", series: "receipts-12m", text: "The government collected {value} in tax {when}, {change}." },
+      { sector: "tax", series: "paye-12m", text: "Income tax taken from pay came to {value} {when}, {change}." },
+      { sector: "tax", series: "corp-4q", text: "Corporation tax raised {value} {when}, {change}." },
+    ],
+    views: [
+      { who: "Those who want a tougher approach say", says: "More money should go to HMRC to chase unpaid tax, loopholes should be closed and offshore arrangements made more open. They argue this raises money without raising anyone's tax rates." },
+      { who: "Others say", says: "The tax gap is an estimate, and the sums that can realistically be recovered are smaller than the headlines suggest. They warn that heavy checks burden honest taxpayers and small firms, and say a simpler tax system, with fewer rules to get wrong or exploit, would help more." },
+    ],
+    next: [{ label: "Taxes and spending", href: "#/tax" }, { label: "Where taxes go", href: "#/budget" }],
+  },
+  {
+    id: "why-pound-goes-up-and-down",
+    topic: "Prices and money",
+    question: "Why does the pound go up and down?",
+    keywords: ["pound", "sterling", "falling", "fall", "fell", "weaker", "stronger", "exchange rate", "dollar", "euro", "currency", "weak pound", "strong pound", "holiday", "forex", "gbp"],
+    short: "The pound's value depends on how many people want to buy it. It rises when investors expect higher UK interest rates, steady growth or a stable government, and falls when they expect the opposite or lose confidence. Shocks such as the 2016 referendum and the 2022 mini-budget moved it sharply, and so do swings in the US dollar.",
+    reasons: [
+      { title: "Interest rates", text: "Investors move money to where it earns most. When UK interest rates are high compared with other countries, the pound tends to be in demand, and when rates are expected to fall it often weakens." },
+      { title: "Confidence in the economy", text: "Growth, trade and the state of the public finances all affect how safe and rewarding the UK looks. A sudden loss of confidence, as when unfunded tax cuts were announced in September 2022, can send the pound down fast." },
+      { title: "The dollar's own moves", text: "The pound is often measured against the US dollar, so a stronger or weaker dollar moves it even when nothing has changed in Britain." },
+      { title: "Political shocks", text: "The vote to leave the EU in 2016 was followed by a large fall, as markets expected slower trade and growth." },
+      { title: "Why it matters at home", text: "A weaker pound makes imports, fuel and holidays abroad dearer, which can add to inflation, and makes UK exports cheaper to buy overseas. A stronger pound does the reverse." },
+    ],
+    facts: [
+      { sector: "rates", series: "usd", text: "The pound was worth {value} {when}, {change}." },
+      { sector: "rates", series: "eur", text: "The pound was worth {value} {when}, {change}." },
+      { sector: "rates", series: "bank-rate", text: "Bank Rate stands at {value} {when}." },
+    ],
+    views: [
+      { who: "Some say", says: "A weaker pound is not a worry in itself. It helps exporters and tourism, and a currency that moves freely helps the economy adjust to shocks." },
+      { who: "Others say", says: "A weak pound pushes up the price of imports and signals lost confidence. They argue that steady, credible government policy matters more than the exact exchange rate." },
+    ],
+    next: [{ label: "Interest rates and the pound", href: "#/rates" }, { label: "Prices and bills", href: "#/prices" }, { label: "Trade", href: "#/trade" }],
+  },
+  {
+    id: "why-high-streets-struggling",
+    topic: "Place and environment",
+    question: "Why are high streets struggling?",
+    keywords: ["high street", "high streets", "shops", "shopping", "town centre", "town centres", "retail", "closures", "pubs", "online shopping", "empty shops", "business rates", "amazon"],
+    short: "More shopping has moved online, so fewer people visit shops, while rents, business rates, energy and wages have risen for the businesses that remain. The result is empty units in many town centres, though some places, and some kinds of business such as cafes, salons and services, have held up better.",
+    reasons: [
+      { title: "Shopping moved online", text: "A big and lasting share of spending now goes to online retailers, which have no high street rent. Shops that sell goods easily bought online have lost the most." },
+      { title: "Costs have risen", text: "Rent, business rates, energy bills and wages, including higher minimum wages and employers' National Insurance, all take a bigger bite from a shop or pub's takings." },
+      { title: "Tighter household budgets", text: "When the cost of living rises faster than pay, people cut back on non-essentials such as clothes, eating out and days out, which hits the businesses that rely on them." },
+      { title: "People work and travel differently", text: "More people work from home some days, which has cut the footfall in city centres, while many out-of-town centres and retail parks are easier to get to by car." },
+      { title: "Business rates", text: "Business rates are a tax on the value of a property, whatever the business earns. Critics say this falls harder on shops than on online firms based in warehouses." },
+    ],
+    facts: [
+      { sector: "business", series: "online-share", text: "Online shopping is {value} of all retail sales {when}." },
+      { sector: "business", series: "online-sales", text: "People spent {value} online each week {when}." },
+      { sector: "prices", series: "eating-out", text: "Prices in restaurants and hotels are up {value} on a year earlier {when}." },
+    ],
+    views: [
+      { who: "Those who want more help for high streets say", says: "Business rates should be cut or reformed so shops are not taxed more heavily than online sellers, and towns need investment in transport, parking and safety to bring people back." },
+      { who: "Others say", says: "Shopping habits have changed for good and propping up empty shops will not bring customers back. They argue for turning some empty units into homes, workspaces and services." },
+    ],
+    next: [{ label: "Business and industry", href: "#/business" }, { label: "Prices and bills", href: "#/prices" }, { label: "Compare places on a map", href: "#/regions" }],
+  },
+  {
+    id: "is-university-worth-it",
+    topic: "Schools and universities",
+    question: "Is going to university still worth it?",
+    keywords: ["university", "degree", "degrees", "tuition fees", "student loan", "student loans", "graduate", "graduates", "student debt", "uni", "student finance", "college"],
+    short: "On average, graduates still earn more over their working lives than people without a degree, but the gap varies hugely by subject and university, and some graduates earn no more than they would have without one. In England most students leave with a large loan, though it is repaid as a share of earnings above a threshold, more like a tax than a normal debt, and any balance left is eventually written off.",
+    reasons: [
+      { title: "Graduates earn more on average", text: "Studies by bodies such as the Institute for Fiscal Studies find a clear pay gain for most graduates, even after tax and loan repayments. It depends a great deal on the subject and the university, and for some courses the gain is small or none." },
+      { title: "Fees and loans", text: "Home students in England pay more than £9,000 a year in fees, paid for by loans, and borrow more for living costs. Repayments are 9% of earnings above a threshold, so high earners repay most of the loan while many others never repay it in full." },
+      { title: "A degree stands out less", text: "A large share of young people now go to university, so a degree is less of a signal to employers than it was, and some graduates end up in jobs that do not need one." },
+      { title: "Other routes can pay well", text: "Apprenticeships and technical qualifications lead to well-paid work in many trades and fields, often without debt, and the government has been trying to make them easier to choose." },
+      { title: "It depends where you live", text: "Scotland does not charge tuition fees to Scottish students, and fees and support differ in Wales and Northern Ireland, so the same course can cost very different amounts." },
+    ],
+    facts: [
+      { sector: "jobs", series: "youth-unemployment", text: "{value} of 16 to 24 year olds looking for work were unemployed {when}, {change}." },
+      { sector: "jobs", series: "youth-employment", text: "{value} of young people not in full-time education were in work {when}, {change}." },
+      { sector: "prices", series: "education-prices", text: "Education prices are up {value} on a year earlier {when}." },
+    ],
+    views: [
+      { who: "Those who back universities say", says: "A degree still opens doors, raises pay on average and gives people skills and a network that last a lifetime. Universities also drive research and local economies." },
+      { who: "Critics say", says: "Too many degrees do not pay off, students carry heavy debt and taxpayers bear the cost of loans never repaid. They want more money and status for apprenticeships and technical routes." },
+    ],
+    next: [{ label: "Jobs and pay", href: "#/jobs" }, { label: "Prices and bills", href: "#/prices" }, { label: "Taxes and spending", href: "#/tax" }],
+  },
+  {
+    id: "why-schools-short-of-teachers",
+    topic: "Schools and universities",
+    question: "Why are schools short of teachers?",
+    keywords: ["teacher", "teachers", "school", "schools", "teaching", "recruitment", "retention", "teacher pay", "education", "classroom", "headteacher"],
+    short: "Fewer people have been training to teach and more teachers have left than schools can replace, especially in subjects such as maths, physics and computing. Pay fell behind many other graduate jobs for much of the 2010s, and teachers report heavy workloads, which together make the job harder to fill and keep.",
+    reasons: [
+      { title: "Pay compared with other jobs", text: "Teachers' pay fell in real terms for much of the 2010s, and graduates in subjects such as maths and science can often earn more elsewhere." },
+      { title: "Workload and pressure", text: "Many teachers say that planning, marking, paperwork, inspections and behaviour issues make the job too demanding, and that this is why they leave." },
+      { title: "Shortages are worse in some subjects", text: "Recruitment targets for secondary teachers have been missed in most recent years, with the biggest gaps in subjects where graduates have the most alternatives." },
+      { title: "Cost of living", text: "Housing and living costs, especially in London and the South East, make a teacher's pay stretch less far, so some leave or move to better-paid work." },
+    ],
+    facts: [
+      { sector: "jobs", series: "pay-public", text: "Average weekly pay in the public sector was {value} {when}, {change}." },
+      { sector: "jobs", series: "pay-private", text: "Average weekly pay in the private sector was {value} {when}, {change}." },
+      { sector: "jobs", series: "strikes-12m", text: "{value} working days were lost to strikes {when}." },
+    ],
+    views: [
+      { who: "Teaching unions say", says: "Pay and workload are the problem. They argue that pay needs to catch up with other professions and that cutting paperwork and class sizes would keep more teachers in the job." },
+      { who: "Government and others say", says: "Budgets are limited, and they point to pay rises, training bursaries and recruitment drives. They argue that money has to be balanced against other priorities such as the NHS." },
+      { who: "Some also argue", says: "Flexible working, better support for new teachers and a clearer career path would help keep people in the profession, as would reducing the pressure from inspections." },
+    ],
+    next: [{ label: "Jobs and pay", href: "#/jobs" }, { label: "Public finances", href: "#/publicFinances" }, { label: "Where taxes go", href: "#/budget" }],
+  },
+  {
+    id: "why-private-schools-charge-vat",
+    topic: "Schools and universities",
+    question: "Why do private schools now charge VAT?",
+    keywords: ["private school", "private schools", "independent school", "independent schools", "vat", "school fees", "charitable status", "state school", "private education", "public school"],
+    short: "It was a Labour manifesto pledge. Labour argued that private schools should not have a tax break that other services do not have, and that the money raised, together with ending the business rates relief private schools got as charities, would pay for thousands of extra state school teachers. Critics say it raises fees, pushes some children into state schools and may raise less than hoped.",
+    reasons: [
+      { title: "What changed", text: "From the January after the 2024 election, VAT at the standard rate of 20% was added to private school fees, and private schools in England lost their charity relief on business rates." },
+      { title: "Why the government did it", text: "Labour said education is a service where families who can pay for a private option had not paid VAT, and promised to use the money to recruit 6,500 more teachers in state schools." },
+      { title: "What it means for families", text: "Schools can reclaim VAT on some of their own costs, so fees have not all risen by 20%, but many have gone up, and some families have moved their children to state schools." },
+      { title: "What it means for state schools", text: "Pupils who move to the state sector need places, which local councils must find. How many move, and where, is still debated." },
+      { title: "The evidence is disputed", text: "Estimates of how much it raises, how many children move and what that costs the state differ, so supporters and critics read the same figures differently." },
+    ],
+    facts: [],
+    views: [
+      { who: "Supporters say", says: "The tax break was unfair, the money helps pay for teachers in the schools most children attend, and families who can afford private fees can afford a tax on them." },
+      { who: "Opponents say", says: "Families who stretch to pay fees are hit, small schools may close, and children with special needs are caught in it. They also argue that if many pupils move to state schools, the cost to the state could cancel out the money raised." },
+    ],
+    next: [{ label: "Taxes and spending", href: "#/tax" }, { label: "Where taxes go", href: "#/budget" }],
+  },
+  {
+    id: "how-much-does-uk-spend-on-defence",
+    topic: "Defence and security",
+    question: "How much does the UK spend on defence?",
+    keywords: ["defence", "defense", "military", "army", "armed forces", "nato", "soldiers", "navy", "rearm", "ukraine", "war", "defence spending", "raf"],
+    short: "A little over two pence in every pound of national income, which is one of the biggest defence budgets in Europe. The government has said it will raise this to 2.5% of national income by April 2027, and with other NATO countries has agreed to work towards 3.5% on core defence by 2035, plus more on wider security. These targets can change, so check the latest.",
+    reasons: [
+      { title: "The war in Ukraine", text: "It showed that European armies had thinner stocks of ammunition and equipment than they needed, and Western countries have had to replace what they sent to Ukraine." },
+      { title: "Pressure from NATO", text: "NATO members have agreed higher spending targets, and the United States has pushed European members to pay more of their own way." },
+      { title: "Equipment is expensive", text: "New ships, jets and submarines cost billions, take many years to build and are often over budget, so the headline share of national income does not tell you how much real capability it buys." },
+      { title: "It means choices", text: "More on defence has to come from higher taxes, more borrowing or less on something else. The government has cut the overseas aid budget to help pay for part of it." },
+    ],
+    facts: [],
+    views: [
+      { who: "Those who want more spending say", says: "Threats to Europe are growing, deterrence only works if forces are strong, and allies expect Britain to pay its way. Defence also supports skilled jobs in manufacturing and engineering." },
+      { who: "Others say", says: "Money must be balanced against the NHS, schools and living costs, and the amount matters less than whether it is spent well. They point to a long record of delays and cost overruns on equipment." },
+      { who: "Some also argue", says: "European countries should plan and buy equipment together, so each gets more for its money and relies less on the United States." },
+    ],
+    next: [{ label: "Where taxes go", href: "#/budget" }, { label: "Taxes and spending", href: "#/tax" }, { label: "Public finances", href: "#/publicFinances" }],
+  },
+  {
+    id: "why-uk-has-nuclear-weapons",
+    topic: "Defence and security",
+    question: "Why does the UK have nuclear weapons?",
+    keywords: ["nuclear", "trident", "deterrent", "dreadnought", "submarines", "weapons", "bomb", "vanguard", "faslane", "nuclear weapons"],
+    short: "The UK keeps a small nuclear force on submarines as a deterrent: the idea is that an enemy would not attack, knowing it would face a devastating reply. The current Trident system is being replaced with new Dreadnought-class submarines, a programme costing tens of billions of pounds. Supporters see it as the ultimate insurance, while opponents say it is costly and makes no one safer.",
+    reasons: [
+      { title: "A deterrent, not for use", text: "The aim is to prevent an attack. A submarine always on patrol, hidden at sea, means no enemy could hope to destroy the UK's ability to reply." },
+      { title: "How it works", text: "Trident missiles, supplied under an agreement with the United States, are carried on British-built submarines based at Faslane in Scotland, with at least one on patrol at all times." },
+      { title: "Replacement is under way", text: "The ageing Vanguard-class submarines are being replaced by new Dreadnought-class boats, with the first due in the early 2030s." },
+      { title: "The cost", text: "The new submarines and the warheads that go with them cost tens of billions of pounds over their lives, and the UK is one of nine countries with nuclear weapons." },
+      { title: "A promise to work towards disarmament", text: "As a member of the Non-Proliferation Treaty the UK has agreed to work towards a world without nuclear weapons in the long term, which opponents say its plans do not match." },
+    ],
+    facts: [],
+    views: [
+      { who: "Supporters say", says: "Nuclear weapons have helped prevent a major war in Europe, other countries with nuclear weapons are not giving them up, and giving ours up would leave the UK exposed and weaken NATO." },
+      { who: "Opponents say", says: "The money would be better spent on conventional forces or public services, nuclear weapons cannot be used against modern threats like cyber attacks, and keeping them encourages other countries to want them." },
+      { who: "Some say", says: "The UK should keep a smaller force, buying fewer submarines or patrolling less constantly, as a compromise that saves money while keeping a deterrent." },
+    ],
+    next: [{ label: "Where taxes go", href: "#/budget" }, { label: "Public finances", href: "#/publicFinances" }],
   },
 ];
 

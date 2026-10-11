@@ -96,11 +96,13 @@ function AnswerCard({ answer }) {
         <div style={{ marginTop: 16 }}><EmbedButton spec={{ kind: "answer", id: answer.id }} title={answer.question} /></div>
       </section>
 
-      <section style={card} aria-labelledby="h-facts">
-        <h3 id="h-facts" style={{ ...cardTitle, fontSize: 19 }}>The latest figures</h3>
-        <p style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, margin: "4px 0 6px" }}>Taken straight from the official statistics, and updated when new figures are published.</p>
-        <ul style={{ margin: 0, padding: 0 }}>{answer.facts.map((f) => <Fact key={f.series} fact={f} />)}</ul>
-      </section>
+      {answer.facts.length > 0 && (
+        <section style={card} aria-labelledby="h-facts">
+          <h3 id="h-facts" style={{ ...cardTitle, fontSize: 19 }}>The latest figures</h3>
+          <p style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, margin: "4px 0 6px" }}>Taken straight from the official statistics, and updated when new figures are published.</p>
+          <ul style={{ margin: 0, padding: 0 }}>{answer.facts.map((f) => <Fact key={f.series} fact={f} />)}</ul>
+        </section>
+      )}
 
       <section style={card} aria-labelledby="h-why">
         <h3 id="h-why" style={{ ...cardTitle, fontSize: 19 }}>Why it happens</h3>

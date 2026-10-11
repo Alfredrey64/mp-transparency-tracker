@@ -76,7 +76,7 @@ function Answer({ id }) {
           })}
         </ul>
       )}
-      <p style={{ fontSize: 12, color: COLORS.inkSoft, margin: "10px 0 0" }}>Figures from the Office for National Statistics and other official sources.</p>
+      {facts.length > 0 && <p style={{ fontSize: 12, color: COLORS.inkSoft, margin: "10px 0 0" }}>Figures from the Office for National Statistics and other official sources.</p>}
     </Frame>
   );
 }

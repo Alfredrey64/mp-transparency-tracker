@@ -199,6 +199,49 @@ ANSWER_POSITIONS["what-is-the-triple-lock"] = {
   },
 };
 
+ANSWER_POSITIONS["how-much-does-uk-spend-on-defence"] = {
+  about: "on defence spending",
+  parties: {
+    labour: "Spend 2.5% of national income on defence and publish a path to reach it, without setting a date.",
+    conservative: "Reach 2.5% of national income on defence by 2030.",
+    "liberal-democrat": "Increase defence spending every year, treating 2.5% of national income as an ambition.",
+    "reform-uk": "Reach 2.5% of national income on defence within three years and 3% within six.",
+  },
+};
+ANSWER_POSITIONS["why-uk-has-nuclear-weapons"] = {
+  about: "on the nuclear deterrent",
+  parties: {
+    labour: "Keep the nuclear deterrent, including the new Dreadnought submarines.",
+    conservative: "Keep the Trident nuclear deterrent and the submarines that carry it.",
+    "liberal-democrat": "Keep a minimum nuclear deterrent and the new submarine programme, but buy three submarines rather than four.",
+    green: "Cancel Trident and press the UK to sign the United Nations treaty banning nuclear weapons.",
+    "plaid-cymru": "Oppose renewing Trident and scrap it.",
+  },
+};
+ANSWER_POSITIONS["is-university-worth-it"] = {
+  about: "on university fees and funding",
+  parties: {
+    conservative: "Keep tuition fees as they are in England, and reform student loans so that no one repays more than they borrowed in real terms.",
+    "liberal-democrat": "Bring back maintenance grants for the most disadvantaged students.",
+    green: "Abolish tuition fees and bring back maintenance grants.",
+  },
+};
+ANSWER_POSITIONS["why-schools-short-of-teachers"] = {
+  about: "on schools and teachers",
+  parties: {
+    labour: "Recruit 6,500 more teachers in key subjects, paid for by ending tax breaks for private schools.",
+    "liberal-democrat": "A teacher workforce plan to make sure there are specialist teachers in every subject at secondary school.",
+    green: "A large increase in education funding, partly paid for by a wealth tax.",
+  },
+};
+ANSWER_POSITIONS["why-private-schools-charge-vat"] = {
+  about: "on private school fees",
+  parties: {
+    labour: "Add VAT to private school fees and end their business rates relief, to pay for 6,500 more state school teachers.",
+    green: "Remove the charitable status and the VAT exemption from private schools.",
+  },
+};
+
 export function positionsFor(answerId) {
   const entry = ANSWER_POSITIONS[answerId];
   if (!entry) return null;

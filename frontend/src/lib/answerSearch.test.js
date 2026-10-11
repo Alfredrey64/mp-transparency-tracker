@@ -12,6 +12,17 @@ describe("answer search", () => {
 
   it("finds the right answer for questions as people put them", () => {
     const cases = {
+      "why is the state pension age going up": "why-state-pension-age-rising",
+      "what is the difference between tax avoidance and evasion": "how-much-tax-goes-unpaid",
+      "how much tax goes unpaid": "how-much-tax-goes-unpaid",
+      "why is the pound falling": "why-pound-goes-up-and-down",
+      "why are high streets dying": "why-high-streets-struggling",
+      "is university worth it": "is-university-worth-it",
+      "how much are tuition fees": "is-university-worth-it",
+      "why are there not enough teachers": "why-schools-short-of-teachers",
+      "why is there vat on private schools": "why-private-schools-charge-vat",
+      "how much does britain spend on defence": "how-much-does-uk-spend-on-defence",
+      "why do we have trident nuclear weapons": "why-uk-has-nuclear-weapons",
       "why is housing so expensive": "why-housing-expensive",
       "why are house prices so high": "why-housing-expensive",
       "can't afford a home": "why-housing-expensive",
@@ -58,7 +69,8 @@ describe("answer search", () => {
     for (const a of ANSWERS) {
       expect(a.short.length, a.id).toBeGreaterThan(80);
       expect(a.reasons.length, a.id).toBeGreaterThanOrEqual(3);
-      expect(a.facts.length, a.id).toBeGreaterThanOrEqual(1);
+      // A question with no live official series (defence, private school VAT) has no figures box, so the list can be empty.
+      expect(Array.isArray(a.facts), a.id).toBe(true);
       expect(a.next.length, a.id).toBeGreaterThanOrEqual(1);
     }
   });
