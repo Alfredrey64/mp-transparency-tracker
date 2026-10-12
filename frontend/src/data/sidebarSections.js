@@ -66,7 +66,7 @@ export const SECTIONS = [
     blurb: "Results, and how to take part",
     accent: "#7A5AF0",
     items: [
-      { key: "generalElection", label: "General elections", icon: IconVote, hint: "Seats, votes and why they differ", essential: true, aka: ["general election", "election result", "2024 election", "first past the post", "fptp", "seats and votes", "results", "july 2024", "who won"] },
+      { key: "generalElection", label: "General elections", icon: IconVote, hint: "Every result since 1945, and who governed", essential: true, aka: ["general election", "general elections", "election result", "election results", "past elections", "election history", "2024 election", "1997", "landslide", "first past the post", "fptp", "seats and votes", "results", "july 2024", "who won", "governments", "prime ministers", "manifesto promises", "kept promises", "history of governments", "thatcher", "blair", "attlee"] },
       { key: "byElections", label: "By-elections", icon: IconByElection, hint: "Votes between general elections", essential: true, aka: ["elections", "by election", "bye election"] },
       { key: "localElections", label: "Local elections", icon: IconCalendar, hint: "When your council next votes", essential: true, aka: ["council elections", "next election", "polling day", "local vote", "election date", "councillors", "when do i vote"] },
       { key: "howtovote", label: "How to vote", icon: IconBallot, hint: "Register, ID and polling day", essential: true, aka: ["register to vote", "voting", "polling station", "photo id", "postal vote", "proxy vote", "election day", "ballot"] },

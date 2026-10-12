@@ -122,7 +122,7 @@ function titleForState(view, selected, param) {
   if (selected) return `${selected.name} | ${base}`;
   if (view === "numbers" && param === "lords") return `Parliament in Numbers: the Lords | ${base}`;
   // For the Lords the parameter is a peer's id, which makes a poor title.
-  if (param && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view) && view !== "regions" && view !== "answers" && view !== "deprivation" && view !== "compareSeats" && view !== "parties") return `${param} | ${PAGE_TITLES[view] ?? base} | ${base}`;
+  if (param && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view) && view !== "regions" && view !== "answers" && view !== "deprivation" && view !== "compareSeats" && view !== "parties" && view !== "generalElection") return `${param} | ${PAGE_TITLES[view] ?? base} | ${base}`;
   if (view === "home") return base;
   const label = PAGE_TITLES[view];
   return label ? `${label} | ${base}` : base;
@@ -158,7 +158,7 @@ function parseHash() {
 
 function hashForState(view, selected, param) {
   if (selected) return `#/mp/${selected.id}`;
-  if (param) return `#/${view}/${encodeURIComponent(param)}`;
+  if (param) return `#/${view}/${param.split("/").map(encodeURIComponent).join("/")}`;
   return view === "home" ? "#/" : `#/${view}`;
 }
 
@@ -412,7 +412,7 @@ export default function App() {
             {view === "marginals" && <Marginals />}
             {view === "howtovote" && <HowToVote />}
             {view === "localElections" && <LocalElections />}
-            {view === "generalElection" && <GeneralElection />}
+            {view === "generalElection" && <GeneralElection param={viewParam} />}
             {view === "compareSeats" && <CompareSeats param={viewParam} />}
             {SECTOR_VIEWS.has(view) && <SectorPage key={view} sector={view} param={viewParam} />}
             {view === "indicators" && <IndicatorTimeline param={viewParam} />}

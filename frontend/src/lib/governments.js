@@ -27,6 +27,7 @@ export const GOVERNMENTS = [
   { pm: "Truss", short: "Truss", party: "Conservative", from: at(2022, 9) },
   { pm: "Sunak", short: "Sunak", party: "Conservative", from: at(2022, 10) },
   { pm: "Starmer", short: "Starmer", party: "Labour", from: at(2024, 7) },
+  { pm: "Burnham", short: "Burnham", party: "Labour", from: at(2026, 7) },
 ];
 
 export const PARTY_COLOURS = { Labour: "#E4003B", Conservative: "#0087DC" };

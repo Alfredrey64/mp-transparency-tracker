@@ -3,13 +3,15 @@ import { LOADERS } from "../src/pageLoaders.js";
 
 // Every page the site can show, plus the home page and the two that are not lazy-loaded.
 const PAGES = ["home", "list", "partymatch", ...Object.keys(LOADERS)].filter((p, i, all) => all.indexOf(p) === i);
+// Pages that live inside another page's tabs.
+const TABS = ["generalElection/history/1997", "generalElection/history/2024", "generalElection/governments/blair", "generalElection/governments/thatcher"];
 const WIDTHS = [320, 375];
 
 for (const width of WIDTHS) {
   test.describe(`phone, ${width}px wide`, () => {
     test.use({ viewport: { width, height: 740 }, hasTouch: true, isMobile: true });
 
-    for (const view of PAGES) {
+    for (const view of [...PAGES, ...TABS]) {
       test(`${view} fits the screen`, async ({ page }) => {
         const errors = [];
         page.on("pageerror", (e) => errors.push(e.message));
