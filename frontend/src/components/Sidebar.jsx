@@ -27,6 +27,7 @@ const BOTTOM_NAV_ITEMS = [
 
 const ACCENT_DEFAULT = "#8A9694";
 const TOTAL_PAGES = SECTIONS.reduce((n, s) => n + s.items.filter((i) => i.key !== "start").length, 0);
+const MAIN_PAGES = SECTIONS.reduce((n, s) => n + s.items.filter((i) => i.key !== "start" && i.essential).length, 0);
 
 function NavItem({ item, active, accent, onNavigate }) {
   const [hover, setHover] = useState(false);
@@ -154,7 +155,7 @@ function SidebarSection({ label, blurb, accent, items, activeView, onNavigate, o
   );
 }
 
-// "Simple | All pages": the two views of the menu.
+// "Main pages | All pages": the two views of the menu, with a line saying which one you are looking at.
 function ModeSwitch({ mode, onChange }) {
   const option = (key, label) => (
     <button
@@ -163,15 +164,20 @@ function ModeSwitch({ mode, onChange }) {
       role="radio"
       aria-checked={mode === key}
       onClick={() => onChange(key)}
-      style={{ flex: 1, fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, padding: "7px 10px", borderRadius: 999, border: "none", cursor: "pointer", background: mode === key ? "var(--sb-active)" : "transparent", color: mode === key ? "var(--sb-strong)" : "var(--sb-soft)", transition: "background 0.15s, color 0.15s" }}
+      style={{ flex: 1, fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, padding: "7px 10px", borderRadius: 999, border: "none", cursor: "pointer", background: mode === key ? "var(--sb-active)" : "transparent", color: mode === key ? "var(--sb-strong)" : "var(--sb-soft)", boxShadow: mode === key ? "0 1px 4px rgba(0,0,0,0.18)" : "none", transition: "background 0.15s, color 0.15s" }}
     >
       {label}
     </button>
   );
   return (
-    <div role="radiogroup" aria-label="How much of the menu to show" style={{ display: "flex", gap: 2, padding: 3, borderRadius: 999, background: "var(--sb-surface)", marginTop: 14 }}>
-      {option("simple", "Simple")}
-      {option("all", `All ${TOTAL_PAGES} pages`)}
+    <div style={{ marginTop: 14 }}>
+      <div role="radiogroup" aria-label="How many pages to list in the menu" style={{ display: "flex", gap: 2, padding: 3, borderRadius: 999, background: "var(--sb-surface)" }}>
+        {option("simple", `Main pages (${MAIN_PAGES})`)}
+        {option("all", `All pages (${TOTAL_PAGES})`)}
+      </div>
+      <div aria-live="polite" style={{ textAlign: "center", marginTop: 6, fontFamily: FONT_BODY, fontSize: 12, color: "var(--sb-soft)" }}>
+        {mode === "simple" ? "Showing the pages most people need." : "Showing every page on the site."}
+      </div>
     </div>
   );
 }

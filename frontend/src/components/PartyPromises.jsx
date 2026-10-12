@@ -43,6 +43,16 @@ function PartyCard({ party, text, index }) {
   );
 }
 
+// "1  Choose a topic": says what each row of choices is for, in the order to use them.
+function StepLabel({ number, text }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 9, margin: `${number === 1 ? 0 : 20}px 0 9px`, fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 700, color: COLORS.ink }}>
+      <span aria-hidden="true" style={{ width: 22, height: 22, borderRadius: "50%", background: COLORS.ink, color: COLORS.paper, display: "grid", placeItems: "center", fontSize: 12, fontWeight: 700 }}>{number}</span>
+      {text}
+    </div>
+  );
+}
+
 export default function PromiseExplorer({ initialQuestion }) {
   const [qid, setQid] = useState(isQuestion(initialQuestion) ? initialQuestion : DEFAULT_ID);
   // If the address changes from outside (a pasted link, the back button), follow it.
@@ -71,22 +81,34 @@ export default function PromiseExplorer({ initialQuestion }) {
         Choose a topic, then a question. You will see each party that made a clear promise about it, and what the promise was.
       </p>
 
+      <StepLabel number={1} text="Choose a topic" />
       <div role="group" aria-label="Topic" style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
         {GROUPS.map((g) => (
-          <button key={g.topic} type="button" className="ons-tap" aria-pressed={g.topic === group.topic} onClick={() => g.topic !== group.topic && pick(g.items[0].id)} style={pillStyle(g.topic === group.topic)}>
+          <button key={g.topic} type="button" className="ons-tap" aria-pressed={g.topic === group.topic} onClick={() => g.topic !== group.topic && pick(g.items[0].id)} style={{ ...pillStyle(g.topic === group.topic), display: "inline-flex", alignItems: "center", gap: 8 }}>
             {g.topic}
+            <span aria-hidden="true" style={{ fontSize: 11.5, fontWeight: 700, opacity: 0.7 }}>{g.items.length}</span>
           </button>
         ))}
       </div>
 
-      <div role="group" aria-label="Question" style={{ display: "flex", flexWrap: "wrap", gap: "6px 8px", margin: "12px 0 20px", paddingLeft: 2 }}>
+      <StepLabel number={2} text={`Choose a question about ${group.topic.toLowerCase()}`} />
+      <div role="group" aria-label="Question" style={{ display: "flex", flexWrap: "wrap", gap: 8, margin: "0 0 22px" }}>
         {group.items.map((q) => {
           const on = q.id === qid;
           return (
             <button
               key={q.id} type="button" className="ons-tap" aria-pressed={on} onClick={() => pick(q.id)}
-              style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: on ? 700 : 500, color: COLORS.ink, padding: "6px 2px", margin: "0 8px 0 0", background: "none", border: "none", borderBottom: `2px solid ${on ? COLORS.ink : "transparent"}`, cursor: "pointer", textAlign: "left" }}
+              style={{
+                display: "inline-flex", alignItems: "center", gap: 9, textAlign: "left", cursor: "pointer",
+                fontFamily: FONT_BODY, fontSize: 14, fontWeight: on ? 700 : 500, lineHeight: 1.3, color: COLORS.ink,
+                padding: "9px 15px 9px 12px", borderRadius: 12,
+                border: `1px solid ${on ? COLORS.ink : COLORS.hairline}`, boxShadow: on ? `0 0 0 1px ${COLORS.ink}` : "none",
+                background: on ? COLORS.paperCard : "transparent", transition: "background 0.15s, border-color 0.15s, box-shadow 0.15s",
+              }}
             >
+              <span aria-hidden="true" style={{ flexShrink: 0, width: 16, height: 16, borderRadius: "50%", border: `2px solid ${on ? COLORS.ink : COLORS.inkSoft}`, display: "grid", placeItems: "center" }}>
+                {on && <span style={{ width: 8, height: 8, borderRadius: "50%", background: COLORS.ink }} />}
+              </span>
               {q.question}
             </button>
           );
