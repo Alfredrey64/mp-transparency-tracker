@@ -24,7 +24,7 @@ export const GOVERNMENTS = [
     took: "The Conservatives won more seats in 1951 even though Labour won more votes.",
     changes: [
       "Rationing ended: sweets in 1953, sugar in 1953 and meat and all other food in 1954.",
-      "Housing was a priority, and 300,000 homes a year were built by 1953, meeting the party's pledge.",
+      "Housing was a priority, and the party's target of 300,000 new homes a year was reached in 1953.",
       "The steel industry was returned to private ownership in 1953.",
       "Most of Labour's welfare state, including the NHS, was kept in place.",
       "Elizabeth II was crowned in June 1953.",
@@ -35,7 +35,7 @@ export const GOVERNMENTS = [
     took: "Eden succeeded Churchill, then won the May 1955 election with a majority of 60.",
     changes: [
       "Britain, France and Israel took military action against Egypt in the Suez Crisis of October and November 1956, then withdrew under pressure from the United States.",
-      "The Clean Air Act 1956, a response to the 1952 London smog, began to cut smoke pollution in cities.",
+      "The Clean Air Act 1956, passed after the 1952 London smog, created smoke control areas to cut pollution in cities.",
       "Sudan became independent in January 1956.",
       "Eden resigned in January 1957, citing ill health.",
     ],
@@ -97,7 +97,7 @@ export const GOVERNMENTS = [
     id: "callaghan", pm: "James Callaghan", party: "l", from: "1976-04-05", to: "1979-05-04", elections: [],
     took: "Callaghan took over when Wilson resigned. A majority of three was lost to by-elections, and the Liberals backed the government from 1977 to 1978.",
     changes: [
-      "The government agreed a loan of about £2.3 billion ($3.9 billion) from the International Monetary Fund in 1976, with spending cuts as a condition.",
+      "The government agreed a loan of $3.9 billion from the International Monetary Fund in 1976, then the largest the IMF had been asked for, with spending cuts as a condition.",
       "The 1979 referendums on devolution did not lead to change: Wales voted against and Scotland's yes vote fell short of the required 40% of the electorate.",
       "The Race Relations Act 1976 widened the law against discrimination.",
       "Strikes in the winter of 1978-79, known as the Winter of Discontent, damaged the government's standing.",
@@ -108,7 +108,7 @@ export const GOVERNMENTS = [
     id: "thatcher", pm: "Margaret Thatcher", party: "c", from: "1979-05-04", to: "1990-11-28", elections: ["1979", "1983", "1987"],
     took: "The Conservatives won in 1979 under Britain's first woman Prime Minister, then won larger majorities in 1983 and 1987.",
     changes: [
-      "State-owned industries were privatised, including British Telecom in 1984, British Gas in 1986 and the water companies in 1989.",
+      "State-owned industries were privatised, including British Telecom in 1984, British Gas in 1986 and the water companies of England and Wales in 1989.",
       "The Housing Act 1980 gave council tenants the right to buy their homes.",
       "Britain recaptured the Falkland Islands in 1982 after Argentina invaded.",
       "The miners' strike of 1984 to 1985 ended in defeat for the union, and a series of laws limited the power of trade unions.",
@@ -210,7 +210,7 @@ export const GOVERNMENTS = [
     took: "Sunak became Prime Minister after the Conservatives chose him following Truss's resignation. He called the 2024 election, which Labour won.",
     changes: [
       "Inflation fell from a peak of 11.1% in October 2022 to 2.0% in May 2024.",
-      "Bank Rate rose to 5.25% in August 2023, the highest since 2008.",
+      "Bank Rate rose to 5.25% in August 2023, the highest since early 2008.",
       "The Windsor Framework in February 2023 changed how the Brexit rules apply to Northern Ireland.",
       "The Illegal Migration Act 2023 and the Safety of Rwanda Act 2024 were passed. No one was sent to Rwanda before the election.",
       "Employee National Insurance was cut in two steps, in January and April 2024.",

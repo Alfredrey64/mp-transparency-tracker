@@ -12,6 +12,7 @@ import { normSeat, REGIONS } from "../lib/seatMap";
 import ElectionMap from "./ElectionMap";
 import Hemicycle from "./Hemicycle";
 import Loading from "./Loading";
+import { Reveal, CountUp } from "./Motion";
 
 // The past elections tab: pick any general election since 1945 to see the balance of seats and votes, the government that followed, and a map
 // of who won where. Results are from Parliament's constituency data (see scripts/build-election-history.mjs).
@@ -46,8 +47,9 @@ function Stack({ e, kind }) {
   );
 }
 
-function ResultTable({ e }) {
+function ResultTable({ e, prev }) {
   const rows = GROUP_ORDER.filter((k) => (e.seatsWon[k] ?? 0) > 0 || (e.voteShare[k] ?? 0) >= 1);
+  const change = (k) => (e.seatsWon[k] ?? 0) - (prev?.seatsWon[k] ?? 0);
   return (
     <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: FONT_BODY, fontSize: 14, marginTop: 14 }}>
       <caption style={{ position: "absolute", left: -9999 }}>Seats and share of the vote by party, {electionLabel(e)}</caption>
@@ -55,6 +57,7 @@ function ResultTable({ e }) {
         <tr style={{ color: COLORS.inkSoft, textAlign: "right", fontSize: 12.5 }}>
           <th scope="col" style={{ textAlign: "left", fontWeight: 600, padding: "6px 0" }}>Party</th>
           <th scope="col" style={{ fontWeight: 600, padding: "6px 0" }}>Seats</th>
+          <th scope="col" style={{ fontWeight: 600, padding: "6px 0 6px 14px" }}>Change</th>
           <th scope="col" style={{ fontWeight: 600, padding: "6px 0 6px 14px" }}>Votes</th>
         </tr>
       </thead>
@@ -66,11 +69,43 @@ function ResultTable({ e }) {
               {GROUPS[k].label}
             </th>
             <td style={{ ...numeric, textAlign: "right", color: COLORS.ink, fontWeight: 700 }}>{e.seatsWon[k] ?? 0}</td>
+            <td style={{ ...numeric, textAlign: "right", paddingLeft: 14, fontWeight: 600, color: change(k) > 0 ? "color-mix(in srgb, #14603A 60%, var(--c-ink))" : change(k) < 0 ? "color-mix(in srgb, #9E2F27 60%, var(--c-ink))" : COLORS.inkSoft }}>{prev ? (change(k) > 0 ? `+${change(k)}` : change(k) < 0 ? `−${Math.abs(change(k))}` : "0") : "n/a"}</td>
             <td style={{ ...numeric, textAlign: "right", color: COLORS.inkSoft, paddingLeft: 14 }}>{pctText(e.voteShare[k])}</td>
           </tr>
         ))}
       </tbody>
     </table>
+  );
+}
+
+// Every election at a glance: one column for each, as tall as the Commons, split by how many seats each party won. Pick a column to open that
+// election. The colours are the parties', so the swings between Labour and Conservative years are visible at once.
+function ElectionStrip({ selected, onPick }) {
+  return (
+    <div {...scrollRegion("Elections, pick one")} role="group" aria-label="Choose an election" style={{ display: "flex", gap: 6, overflowX: "auto", padding: "10px 4px 8px", marginTop: 8 }}>
+      {ELECTIONS.map((x, i) => {
+        const on = x.id === selected;
+        const parts = GROUP_ORDER.filter((k) => (x.seatsWon[k] ?? 0) > 0);
+        return (
+          <button
+            key={x.id}
+            type="button"
+            aria-pressed={on}
+            aria-label={`${electionLabel(x)}: ${x.majority ? `${GROUPS[x.leader].label} majority` : "no majority"}`}
+            onClick={() => onPick(x.id)}
+            className="ge-col ge-fadein"
+            style={{ animationDelay: `${i * 28}ms`, flex: "1 0 38px", maxWidth: 64, minWidth: 38, display: "flex", flexDirection: "column", alignItems: "center", gap: 5, padding: "6px 3px 7px", borderRadius: 12, cursor: "pointer", background: on ? `color-mix(in srgb, ${GROUPS[x.leader].colour} 14%, ${COLORS.paperCard})` : "transparent", border: `1.5px solid ${on ? GROUPS[x.leader].colour : "transparent"}`, color: COLORS.ink }}
+          >
+            <span aria-hidden="true" style={{ display: "flex", flexDirection: "column-reverse", width: 22, height: 74, borderRadius: 6, overflow: "hidden", background: COLORS.paper, boxShadow: on ? `0 6px 14px -8px ${GROUPS[x.leader].colour}` : "none" }}>
+              {parts.map((k) => <span key={k} style={{ height: `${(x.seatsWon[k] / x.seats) * 100}%`, background: GROUPS[k].colour, minHeight: 1 }} />)}
+            </span>
+            <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: on ? 700 : 500, lineHeight: 1.1, textAlign: "center" }}>
+              {x.id === "1974a" ? "Feb" : x.id === "1974b" ? "Oct" : ""}{x.id.startsWith("1974") ? <br /> : null}{x.id.startsWith("1974") ? "1974" : x.id}
+            </span>
+          </button>
+        );
+      })}
+    </div>
   );
 }
 
@@ -143,27 +178,35 @@ export default function ElectionHistory({ electionId, onPick }) {
   }, [query, hexes]);
 
   const gov = governmentFor(e.id);
+  const prev = ELECTIONS[ELECTIONS.findIndex((x) => x.id === e.id) - 1] ?? null;
+  const leadColour = GROUPS[e.leader].colour;
   const coverage = !is2024 && results ? results.filter(Boolean).length : null;
   const present = results ? GROUP_ORDER.filter((k) => results.some((r) => r?.group === k)) : [];
-  const parties = GROUP_ORDER.filter((k) => (e.seatsWon[k] ?? 0) > 0).map((k) => ({ key: k, colour: GROUPS[k].colour, count: e.seatsWon[k] })).sort((a, b) => ORDER.indexOf(a.key) - ORDER.indexOf(b.key));
+  const parties = GROUP_ORDER.filter((k) => (e.seatsWon[k] ?? 0) > 0).map((k) => ({ key: k, colour: GROUPS[k].colour, count: e.seatsWon[k], name: GROUPS[k].short ?? GROUPS[k].label })).sort((a, b) => ORDER.indexOf(a.key) - ORDER.indexOf(b.key));
   const pickedName = picked != null ? hexes[picked]?.[1] : null;
   const pickedResult = picked != null ? results?.[picked] : null;
 
   return (
     <div>
-      <div {...scrollRegion("Elections")} style={{ display: "flex", gap: 8, overflowX: "auto", padding: "4px 2px 10px", marginTop: 4 }}>
-        {ELECTIONS.map((x) => (
-          <button key={x.id} type="button" aria-pressed={x.id === e.id} onClick={() => onPick(x.id)} style={{ ...pillStyle(x.id === e.id), flexShrink: 0, fontWeight: 600 }}>
-            {electionShort(x)}
-          </button>
-        ))}
-      </div>
+      <ElectionStrip selected={e.id} onPick={onPick} />
 
-      <section aria-labelledby="h-eh-result" style={{ ...card, marginTop: 8 }}>
+      <Reveal key={e.id} as="section" aria-labelledby="h-eh-result" style={{ ...card, marginTop: 8, borderTop: `5px solid ${leadColour}`, background: `linear-gradient(155deg, color-mix(in srgb, ${leadColour} 13%, ${COLORS.paperCard}) 0%, ${COLORS.paperCard} 58%)` }}>
         <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, margin: 0 }}>{dateText(e.date)}</p>
         <h2 id="h-eh-result" style={{ ...cardTitle, fontSize: "clamp(22px, 4.2vw, 32px)", lineHeight: 1.2, marginTop: 4 }}>
           {electionLabel(e)}: {headline(e)}
         </h2>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: 10, marginTop: 16 }}>
+          {[
+            [e.leaderSeats, "", `${GROUPS[e.leader].label} seats`, leadColour, true],
+            [Math.round(e.voteShare[e.leader] ?? 0), "%", `${GROUPS[e.leader].label} votes`, leadColour, false],
+            [e.turnout, "%", "turnout", "#0E9AA7", false],
+          ].map(([n, suffix, label, c, solid]) => (
+            <div key={label} style={{ padding: "12px 15px", borderRadius: 15, background: solid ? c : COLORS.paper, border: solid ? "none" : `1px solid ${COLORS.hairline}`, borderLeft: solid ? "none" : `4px solid ${c}`, color: solid ? "#fff" : COLORS.ink }}>
+              <div style={{ ...numeric, fontSize: "clamp(28px, 7vw, 40px)", fontWeight: 600, lineHeight: 1, letterSpacing: "-0.03em" }}><CountUp value={n} decimals={label === "turnout" ? 1 : 0} suffix={suffix} /></div>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 13, marginTop: 5, color: solid ? "#fff" : COLORS.inkSoft }}>{label}</div>
+            </div>
+          ))}
+        </div>
         <p style={para}>
           {e.majority
             ? `${GROUPS[e.leader].label} won ${e.leaderSeats} of the ${e.seats} seats, with ${Math.round(e.voteShare[e.leader] ?? 0)}% of the votes. ${e.needed} were needed for a majority.`
@@ -172,7 +215,7 @@ export default function ElectionHistory({ electionId, onPick }) {
           {`Turnout was ${e.turnout}%.`}
         </p>
         <div style={{ marginTop: 16 }}>
-          <Hemicycle parties={parties} label={`The ${e.seats} seats after the ${electionLabel(e)} election: ${parties.map((p) => `${GROUPS[p.key].label} ${p.count}`).join(", ")}`} />
+          <Hemicycle replayKey={e.id} parties={parties} label={`The ${e.seats} seats after the ${electionLabel(e)} election: ${parties.map((p) => `${GROUPS[p.key].label} ${p.count}`).join(", ")}`} />
         </div>
         <div style={{ display: "grid", gap: 10, marginTop: 6 }}>
           <div>
@@ -184,21 +227,21 @@ export default function ElectionHistory({ electionId, onPick }) {
             <Stack e={e} kind="votes" />
           </div>
         </div>
-        <ResultTable e={e} />
+        <ResultTable e={e} prev={prev} />
         {gov && (
           <p style={{ ...para, marginTop: 16 }}>
             Government that followed: <a href={`#/generalElection/governments/${gov.id}`} style={{ color: COLORS.ink, fontWeight: 700 }}>{gov.pm}</a>, {GROUPS[gov.party]?.label ?? "Conservative and Liberal Democrat coalition"}.
           </p>
         )}
         <p style={{ ...para, fontSize: 12.5, marginTop: 12 }}>
-          Seats are as won on election day and the Speaker is counted on their own, so some published tables are one seat different for the Speaker's old party. Shares of the vote are rounded to whole numbers.
+          Seats are as won on election day. Where the record lists the Speaker separately they are counted on their own, so some published tables are one seat different for the Speaker's party. Shares of the vote are rounded to whole numbers.
           {e.id === "1945" && " The 1945 figures are the published totals: the 1945 data lists two-member and university seats by votes, not winners, so there is no seat map."}
-          {" "}Conservative includes allied parties (the Scottish Unionists and National Liberals, and the Ulster Unionists until 1970). Liberal Democrat includes the Liberals, the SDP and the Alliance. Source: UK Parliament election results; House of Commons Library.
+          {" "}Conservative includes allied parties (the Scottish Unionists and National Liberals, and the Ulster Unionists until 1970). Liberal Democrat includes the Liberals, the SDP and the Alliance. Sources: UK Parliament's constituency results for 1950 to 2019 and its 2024 results. Turnout and the 1945 and 1950 totals are the figures published by the House of Commons Library, as reported by UK Political Info and Wikipedia.
         </p>
-      </section>
+      </Reveal>
 
       {e.id !== "1945" && (
-        <section aria-labelledby="h-eh-map" style={{ ...card, marginTop: 18 }}>
+        <Reveal as="section" aria-labelledby="h-eh-map" style={{ ...card, marginTop: 18 }}>
           <h2 id="h-eh-map" style={cardTitle}>Who won where</h2>
           <p style={para}>
             {is2024
@@ -214,6 +257,7 @@ export default function ElectionHistory({ electionId, onPick }) {
           </div>
           {results ? (
             <ElectionMap
+              key={e.id}
               seats={hexes}
               flat={flat}
               paint={paint}
@@ -278,7 +322,7 @@ export default function ElectionHistory({ electionId, onPick }) {
               )}
             </div>
           )}
-        </section>
+        </Reveal>
       )}
     </div>
   );

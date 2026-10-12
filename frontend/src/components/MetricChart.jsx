@@ -102,7 +102,7 @@ export default function MetricChart({ metric, prepared, now, selectedId, onSelec
           const sel = g.id === selectedId;
           return (
             <g key={g.id}>
-              <rect x={a} y={M.t} width={Math.max(0, b - a)} height={H - M.t - M.b} fill={bandColour(g.party)} opacity={sel ? 0.28 : 0.1} />
+              <rect x={a} y={M.t} width={Math.max(0, b - a)} height={H - M.t - M.b} fill={bandColour(g.party)} opacity={sel ? 0.28 : 0.1} style={{ transition: "opacity 0.3s" }} />
               <rect x={a} y={M.t - 8} width={Math.max(0, b - a)} height={5} fill={bandColour(g.party)} opacity={0.9} />
               {g.party === "lc" && <rect x={a} y={M.t - 8} width={Math.max(0, b - a) / 2} height={5} fill={GROUPS.d.colour} />}
               {b - a > 34 && (
@@ -121,8 +121,8 @@ export default function MetricChart({ metric, prepared, now, selectedId, onSelec
         {years.map((yr) => (
           <text key={yr} x={geom.x(Date.UTC(yr, 0, 1))} y={H - 8} textAnchor="middle" fontSize="10.5" fontFamily={FONT_BODY} fill={COLORS.inkSoft}>{yr}</text>
         ))}
-        <path d={geom.path} fill="none" stroke={COLORS.ink} strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round" pointerEvents="none" />
-        {shown && <circle cx={geom.x(shown[0])} cy={geom.y(shown[1])} r="4" fill={COLORS.ink} stroke={COLORS.paperCard} strokeWidth="2" pointerEvents="none" />}
+        <path d={geom.path} fill="none" stroke={metric.colour ?? COLORS.ink} strokeWidth="2.2" strokeLinejoin="round" strokeLinecap="round" pointerEvents="none" />
+        {shown && <circle cx={geom.x(shown[0])} cy={geom.y(shown[1])} r="4.5" fill={metric.colour ?? COLORS.ink} stroke={COLORS.paperCard} strokeWidth="2" pointerEvents="none" />}
       </svg>
     </figure>
   );

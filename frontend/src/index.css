@@ -712,3 +712,26 @@ html { scrollbar-gutter: stable; }
 
 /* Tell screen readers a link opens in a new tab or window, without showing anything extra. */
 a[target="_blank"]::after { content: "" / " (opens in a new tab)"; }
+
+/* General elections: blocks ease up into view once, numbers count up, the seat chart's dots arrive in a sweep, and the pages cross-fade. Only
+   opacity and a short rise are animated, never a width or a length. All of it stops when reduced motion is asked for. */
+.reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms); }
+.reveal[data-in="true"] { opacity: 1; transform: none; }
+@keyframes dotIn { from { opacity: 0; transform: scale(0.2); } to { opacity: 1; transform: none; } }
+.hemi-dot { transform-box: fill-box; transform-origin: center; animation: dotIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) backwards; transition: opacity 0.25s ease; }
+@keyframes geFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.ge-fade { animation: geFade 0.45s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+@keyframes geFadeIn { from { opacity: 0; } to { opacity: 1; } }
+.ge-fadein { animation: geFadeIn 0.5s ease-out backwards; }
+.ge-tab { transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, background-color 0.25s ease, border-color 0.25s ease; }
+.ge-tab:hover { transform: translateY(-2px); }
+.ge-col { transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease; }
+.ge-col:hover { transform: translateY(-3px); }
+.ge-pop { animation: gePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) backwards; }
+@keyframes gePop { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .hemi-dot, .ge-fade, .ge-fadein, .ge-pop { animation: none; }
+  .ge-tab, .ge-col { transition: none; }
+  .ge-tab:hover, .ge-col:hover { transform: none; }
+}

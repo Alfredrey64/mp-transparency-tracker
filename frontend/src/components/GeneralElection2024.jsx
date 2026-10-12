@@ -7,6 +7,7 @@ import { GE2024, turnoutPct } from "../data/generalElection2024";
 import { LoadFailedNote } from "./MpCards";
 import Loading from "./Loading";
 import ElectionMap from "./ElectionMap";
+import { Reveal, CountUp } from "./Motion";
 import Hemicycle from "./Hemicycle";
 import hexes2024 from "../data/seatHexes.json";
 import { GROUPS, NO_MATCH, groupOf2024, seatResults2024, shadeFor } from "../lib/electionHistory";
@@ -92,9 +93,10 @@ export default function GeneralElection2024() {
       under40: fought.filter((x) => x.share != null && x.share < 0.4).length,
       gains: fought.filter((x) => x.gain).length,
     };
-    const parties = ["g", "l", "p", "s", "d", "x", "n", "k", "c", "u"].map((k) => ({ key: k, colour: GROUPS[k].colour, count: 0 }));
+    const leadColour = partyColourByName(lead.party);
+    const parties = ["g", "l", "p", "s", "d", "x", "n", "k", "c", "u"].map((k) => ({ key: k, colour: GROUPS[k].colour, count: 0, name: GROUPS[k].short ?? GROUPS[k].label }));
     for (const x of results) if (x) parties.find((p) => p.key === x.group).count += 1;
-    return { summary, rows, lead, changes, replaced, max: Math.ceil(biggest / 10) * 10, reform, results, secondPlaces, insights, parties: parties.filter((p) => p.count > 0) };
+    return { leadColour, summary, rows, lead, changes, replaced, max: Math.ceil(biggest / 10) * 10, reform, results, secondPlaces, insights, parties: parties.filter((p) => p.count > 0) };
   }, [data]);
 
   const paint = useCallback((i) => {
@@ -117,31 +119,41 @@ export default function GeneralElection2024() {
 
       {view && (
         <>
-          <section aria-labelledby="h-ge-headline" style={{ ...card, marginTop: 8 }}>
+          <Reveal as="section" aria-labelledby="h-ge-headline" style={{ ...card, marginTop: 8, borderTop: `5px solid ${view.leadColour}`, background: `linear-gradient(155deg, color-mix(in srgb, ${view.leadColour} 13%, ${COLORS.paperCard}) 0%, ${COLORS.paperCard} 58%)` }}>
             <h2 id="h-ge-headline" style={{ ...cardTitle, fontSize: "clamp(22px, 4.2vw, 32px)", lineHeight: 1.2 }}>
               {view.lead.party} won {pct(view.lead.seatShare)}% of the seats with {pct(view.lead.voteShare)}% of the votes
             </h2>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 18 }}>
+              {[[view.lead.seatShare, "of the seats"], [view.lead.voteShare, "of the votes"]].map(([n, label], i) => (
+                <div key={label} style={{ padding: "14px 16px", borderRadius: 16, background: i === 0 ? view.leadColour : `color-mix(in srgb, ${view.leadColour} 14%, ${COLORS.paper})`, color: i === 0 ? "#fff" : COLORS.ink }}>
+                  <div style={{ ...numeric, fontSize: "clamp(34px, 9vw, 54px)", fontWeight: 600, lineHeight: 1, letterSpacing: "-0.03em" }}>
+                    <CountUp value={Math.round(n)} suffix="%" />
+                  </div>
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, marginTop: 6, opacity: i === 0 ? 0.92 : 1 }}>{label}</div>
+                </div>
+              ))}
+            </div>
             <p style={para}>
               The UK has 650 seats, each with its own election. {view.lead.party} won {view.lead.seats} of them, with about {millions(view.lead.votes)} votes out of {millions(GE2024.validVotes)} cast across the country. In the 2024 election {pct(turnoutPct())}% of registered voters took part.
             </p>
             <div style={{ marginTop: 18 }}>
-              <Hemicycle parties={view.parties} label={`The 650 seats after the 2024 election: ${view.parties.map((p) => `${GROUPS[p.key].label} ${p.count}`).join(", ")}`} />
+              <Hemicycle replayKey="2024" parties={view.parties} label={`The 650 seats after the 2024 election: ${view.parties.map((p) => `${GROUPS[p.key].label} ${p.count}`).join(", ")}`} />
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12, marginTop: 18 }}>
               {[
-                [fmt(view.summary.totalSeats), "seats, each its own contest"],
-                [`${pct(view.lead.voteShare)}%`, `of votes for ${view.lead.party}`],
-                [`${pct(turnoutPct())}%`, "of voters turned out"],
-              ].map(([n, label]) => (
-                <div key={label} style={{ padding: "12px 14px", borderRadius: 14, background: COLORS.paper, border: `1px solid ${COLORS.hairline}` }}>
-                  <div style={{ ...numeric, fontSize: 28, fontWeight: 600, color: COLORS.ink, letterSpacing: "-0.02em" }}>{n}</div>
+                [view.summary.totalSeats, "", "seats, each its own contest", "#7A5AF0"],
+                [view.lead.seats, "", `seats for ${view.lead.party}`, view.leadColour],
+                [Math.round(turnoutPct()), "%", "of voters turned out", "#0E9AA7"],
+              ].map(([n, suffix, label, c]) => (
+                <div key={label} style={{ padding: "12px 14px", borderRadius: 14, background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderLeft: `4px solid ${c}` }}>
+                  <div style={{ ...numeric, fontSize: 28, fontWeight: 600, color: COLORS.ink, letterSpacing: "-0.02em" }}><CountUp value={n} suffix={suffix} /></div>
                   <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 2 }}>{label}</div>
                 </div>
               ))}
             </div>
-          </section>
+          </Reveal>
 
-          <section aria-labelledby="h-ge-parties" style={{ ...card, marginTop: 18 }}>
+          <Reveal as="section" aria-labelledby="h-ge-parties" style={{ ...card, marginTop: 18 }}>
             <h2 id="h-ge-parties" style={cardTitle}>Votes and seats, party by party</h2>
             <p style={para}>Each party has two bars: the share of all votes it won across the country, and the share of the 650 seats it ended up with. A party whose seats bar is much longer than its votes bar was helped by the system. One whose seats bar is much shorter was held back by it.</p>
             <ul style={{ listStyle: "none", margin: "14px 0 0", padding: 0 }}>
@@ -151,9 +163,9 @@ export default function GeneralElection2024() {
               Votes are the published national totals for each party (the Workers Party of Britain, with no seats, is shown because it took over 200,000 votes). Independents, the Speaker and the smallest parties are in the last row, with the votes that are left. Source:{" "}
               <a href={GE2024.sourceUrl} target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>UK Parliament election results</a>.
             </p>
-          </section>
+          </Reveal>
 
-          <section aria-labelledby="h-ge-map" style={{ ...card, marginTop: 18 }}>
+          <Reveal as="section" aria-labelledby="h-ge-map" style={{ ...card, marginTop: 18 }}>
             <h2 id="h-ge-map" style={cardTitle}>Who won where</h2>
             <p style={para}>One hexagon for each of the 650 seats, all the same size so a crowded city counts as much as a whole Highland county. Tap a seat to see how it voted.</p>
             <div role="group" aria-label="What the map shows" style={{ display: "flex", gap: 8, margin: "14px 0", flexWrap: "wrap" }}>
@@ -175,9 +187,9 @@ export default function GeneralElection2024() {
                 <strong>{hexes2024.hexes[picked][1]}</strong>: {GROUPS[view.results[picked].group].label} won{view.results[picked].lead != null ? `, ahead by ${view.results[picked].lead.toFixed(1)} points` : ""}{view.results[picked].runnerUp ? `, with ${view.results[picked].runnerUp} second` : ""}. <a href={seatHref(hexes2024.hexes[picked][1])} style={{ color: COLORS.ink, fontWeight: 700 }}>See this seat in full</a>
               </p>
             )}
-          </section>
+          </Reveal>
 
-          <section aria-labelledby="h-ge-second" style={{ ...card, marginTop: 18 }}>
+          <Reveal as="section" aria-labelledby="h-ge-second" style={{ ...card, marginTop: 18 }}>
             <h2 id="h-ge-second" style={cardTitle}>Second places, and how safe the seats are</h2>
             <p style={para}>Coming second in a seat earns nothing under first past the post, but it shows where a party is the main challenger. Of the {fmt(view.insights.fought)} seats with a full result:</p>
             <ul style={{ listStyle: "none", margin: "14px 0 0", padding: 0 }}>
@@ -194,9 +206,9 @@ export default function GeneralElection2024() {
             <p style={{ ...para, marginTop: 14 }}>
               {fmt(view.insights.marginal)} seats were won by fewer than five points, and {fmt(view.insights.safe)} were won by thirty points or more. {fmt(view.insights.under40)} winners had less than 40% of the votes in their seat.
             </p>
-          </section>
+          </Reveal>
 
-          <section aria-labelledby="h-ge-why" style={{ ...card, marginTop: 18 }}>
+          <Reveal as="section" aria-labelledby="h-ge-why" style={{ ...card, marginTop: 18 }}>
             <h2 id="h-ge-why" style={cardTitle}>Why seats and votes do not match</h2>
             <p style={para}>The UK uses a system called first past the post. It has three features that explain the gap.</p>
             <ol style={{ margin: "14px 0 0", paddingLeft: 22, display: "grid", gap: 14, fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.65, color: COLORS.inkSoft }}>
@@ -216,9 +228,9 @@ export default function GeneralElection2024() {
               </p>
             )}
             <p style={para}>Supporters of first past the post say it gives clear results, one local MP for each area and usually a government that can act. Critics say it leaves many votes without a voice and rewards where voters live more than how many there are. Other countries, and the Scottish Parliament and Welsh Senedd, use systems where seats follow votes more closely.</p>
-          </section>
+          </Reveal>
 
-          <section aria-labelledby="h-ge-2019" style={{ ...card, marginTop: 18 }}>
+          <Reveal as="section" aria-labelledby="h-ge-2019" style={{ ...card, marginTop: 18 }}>
             <h2 id="h-ge-2019" style={cardTitle}>Compared with 2019</h2>
             <p style={para}>Seats won by each party at the two elections. The 2019 figures use the seat boundaries of the time. The boundaries were redrawn for 2024, so a few seats are not exactly like for like.</p>
             <ul style={{ listStyle: "none", margin: "14px 0 0", padding: 0 }}>
@@ -236,9 +248,9 @@ export default function GeneralElection2024() {
                 </li>
               ))}
             </ul>
-          </section>
+          </Reveal>
 
-          <section aria-labelledby="h-ge-close" style={{ ...card, marginTop: 18 }}>
+          <Reveal as="section" aria-labelledby="h-ge-close" style={{ ...card, marginTop: 18 }}>
             <h2 id="h-ge-close" style={cardTitle}>The closest results</h2>
             <p style={para}>A handful of seats were decided by a few dozen votes. Each of these would have gone the other way if a small number of voters had chosen differently.</p>
             <ol style={{ listStyle: "none", margin: "14px 0 0", padding: 0 }}>
@@ -253,7 +265,7 @@ export default function GeneralElection2024() {
               {view.replaced.length > 0 && <>Seven seats have held by-elections since July 2024 ({view.replaced.join(", ")}), so they are not in the list above or in the figures on this page that come from each seat's own result. See <a href="#/byElections" style={{ color: COLORS.ink, fontWeight: 600 }}>By-elections</a> for what happened there. </>}
               For how close every seat was, and what it would take to flip each one, see <a href="#/marginals" style={{ color: COLORS.ink, fontWeight: 600 }}>Marginal seats</a>.
             </p>
-          </section>
+          </Reveal>
 
           <nav aria-label="More about elections" style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 22 }}>
             {[["#/constituency", "Look up your constituency"], ["#/howtovote", "How to vote"], ["#/localElections", "When your council next votes"], ["#/byElections", "By-elections"]].map(([href, label]) => (

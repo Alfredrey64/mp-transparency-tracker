@@ -1,20 +1,23 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
-import { IconVote } from "./icons";
+import { IconCabinet, IconHexMap, IconVote } from "./icons";
 import GeneralElection2024 from "./GeneralElection2024";
 import ElectionHistory from "./ElectionHistory";
 import GovernmentsTab from "./GovernmentsTab";
+import { GROUPS } from "../lib/electionHistory";
 
 // General elections: the 2024 result, every election since 1945, and the governments that followed them. The address carries the tab and the
 // item picked (#/generalElection/history/1997, #/generalElection/governments/thatcher) so any view can be shared.
 
 const TABS = [
-  { key: "2024", label: "2024 result" },
-  { key: "history", label: "Past elections" },
-  { key: "governments", label: "Governments since 1945" },
+  { key: "2024", label: "2024 result", blurb: "Seats, votes and the map", icon: IconVote, colour: "#7A5AF0" },
+  { key: "history", label: "Past elections", blurb: "Every result since 1945", icon: IconHexMap, colour: "#0E9AA7" },
+  { key: "governments", label: "Governments", blurb: "Promises, changes, figures", icon: IconCabinet, colour: "#C7871A" },
 ];
+
+// A strip of party colours under the heading: the parties that have formed governments since 1945, and the third parties that held the balance.
+const RIBBON = [GROUPS.l.colour, GROUPS.c.colour, GROUPS.d.colour, GROUPS.s.colour, GROUPS.g.colour, GROUPS.u.colour, GROUPS.p.colour];
 
 function parse(param) {
   const [tab, item] = String(param ?? "").split("/");
@@ -42,10 +45,14 @@ export default function GeneralElection({ param }) {
         title="General elections"
         subtitle="Who won in 2024 and why, how every election since 1945 went, and what the governments that followed promised and changed."
       />
+      <div aria-hidden="true" className="ge-fadein" style={{ display: "flex", height: 5, borderRadius: 3, overflow: "hidden", marginTop: 4, maxWidth: 360 }}>
+        {RIBBON.map((c, i) => <span key={c} style={{ flex: i < 2 ? 3 : 1, background: c }} />)}
+      </div>
 
-      <div role="tablist" aria-label="General elections sections" style={{ display: "flex", gap: 2, margin: "22px 0 4px", borderBottom: `1px solid ${COLORS.hairline}`, overflowX: "auto" }}>
-        {TABS.map((t) => {
+      <div role="tablist" aria-label="General elections sections" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 200px), 1fr))", gap: 10, margin: "24px 0 6px" }}>
+        {TABS.map((t, i) => {
           const active = nav.tab === t.key;
+          const Icon = t.icon;
           return (
             <button
               key={t.key}
@@ -54,18 +61,30 @@ export default function GeneralElection({ param }) {
               aria-selected={active}
               aria-controls="ge-panel"
               type="button"
-              className="seat-tab"
+              className="ge-tab ge-pop"
               onClick={() => go(t.key)}
-              style={{ position: "relative", background: "none", border: "none", padding: "11px 14px", flexShrink: 0, cursor: "pointer", fontFamily: FONT_DISPLAY, fontSize: 16, fontWeight: 600, color: active ? COLORS.ink : COLORS.inkSoft }}
+              style={{
+                animationDelay: `${i * 70}ms`,
+                display: "flex", alignItems: "center", gap: 12, textAlign: "left", cursor: "pointer", padding: "13px 16px", borderRadius: 16,
+                border: `1.5px solid ${active ? t.colour : COLORS.hairline}`,
+                background: active ? `color-mix(in srgb, ${t.colour} 13%, ${COLORS.paperCard})` : COLORS.paperCard,
+                boxShadow: active ? `0 10px 24px -14px ${t.colour}` : "none",
+                color: COLORS.ink,
+              }}
             >
-              {t.label}
-              {active && <motion.span layoutId="ge-tab" style={{ position: "absolute", left: 10, right: 10, bottom: -1, height: 3, borderRadius: 3, background: COLORS.accent }} />}
+              <span aria-hidden="true" style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 38, height: 38, borderRadius: 11, flexShrink: 0, background: active ? t.colour : `color-mix(in srgb, ${t.colour} 16%, transparent)`, color: active ? "#fff" : `color-mix(in srgb, ${t.colour} 70%, ${COLORS.ink})`, transition: "background 0.25s, color 0.25s" }}>
+                <Icon size={19} />
+              </span>
+              <span style={{ minWidth: 0 }}>
+                <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: 16.5, fontWeight: 700, lineHeight: 1.2 }}>{t.label}</span>
+                <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 2 }}>{t.blurb}</span>
+              </span>
             </button>
           );
         })}
       </div>
 
-      <div role="tabpanel" id="ge-panel" aria-labelledby={`ge-tab-${nav.tab}`} style={{ fontFamily: FONT_BODY }}>
+      <div key={nav.tab} className="ge-fade" role="tabpanel" id="ge-panel" aria-labelledby={`ge-tab-${nav.tab}`} style={{ fontFamily: FONT_BODY }}>
         {nav.tab === "2024" && <GeneralElection2024 />}
         {nav.tab === "history" && <ElectionHistory electionId={nav.item} onPick={(id) => go("history", id)} />}
         {nav.tab === "governments" && <GovernmentsTab id={nav.item} onSelect={(id) => go("governments", id)} onOpenElection={(id) => { go("history", id); window.scrollTo({ top: 0 }); }} />}

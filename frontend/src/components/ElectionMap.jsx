@@ -10,16 +10,17 @@ import { scrollRegion } from "../lib/a11y";
 
 const SIZE = 1;
 
-const Hexes = memo(function Hexes({ cells, flat }) {
+const Hexes = memo(function Hexes({ cells, flat, box }) {
   return (
     <g>
       {cells.map((c) => (
         <polygon
           key={c.code}
           data-i={c.i}
+          className="seat-sweep"
           points={(flat ? flatHexPoints : hexPoints)(c.x, c.y, SIZE * (flat ? 0.96 : 0.97))}
           fill={c.fill}
-          style={{ opacity: c.dim ? 0.18 : 1, transition: "fill 0.3s, opacity 0.2s", cursor: "pointer" }}
+          style={{ opacity: c.dim ? 0.18 : 1, transition: "fill 0.3s, opacity 0.2s", cursor: "pointer", animationDelay: `${(((c.x - box.minX) / box.width) * 1.0).toFixed(3)}s` }}
         />
       ))}
     </g>
@@ -68,7 +69,7 @@ export default function ElectionMap({ seats, flat, paint, selected, onSelect, la
           onMouseLeave={() => setHover(null)}
           onClick={(e) => { const i = at(e); if (i != null) onSelect(i); }}
         >
-          <Hexes cells={painted} flat={flat} />
+          <Hexes cells={painted} flat={flat} box={box} />
           {picked && <polygon points={(flat ? flatHexPoints : hexPoints)(picked.x, picked.y, SIZE * 1.18)} fill="none" stroke={COLORS.ink} strokeWidth={0.4} style={{ pointerEvents: "none" }} />}
         </svg>
       </div>

@@ -7,6 +7,7 @@ import { METRICS, formatChange, formatValue, measureAll } from "../lib/governmen
 import { loadMetric } from "../lib/governmentSeries";
 import MetricChart from "./MetricChart";
 import Loading from "./Loading";
+import { Reveal } from "./Motion";
 
 // Pick a national figure and see how it moved under each government since 1945. The figures are the ONS series from the Britain in numbers pages.
 
@@ -32,14 +33,14 @@ export default function MetricExplorer({ selectedId, onSelect }) {
   const isRate = metric.kind === "rate";
 
   return (
-    <section aria-labelledby="h-gt-metrics" style={{ ...card, marginTop: 18 }}>
+    <Reveal as="section" aria-labelledby="h-gt-metrics" style={{ ...card, marginTop: 18 }}>
       <h2 id="h-gt-metrics" style={cardTitle}>How the numbers moved</h2>
       <p style={para}>
         Pick a figure to see how it changed from government to government. The bands behind the line show who was in power. Many things move these numbers that no government controls, such as wars, oil prices, pandemics and what happens in other countries, so this shows what happened, not who caused it. Find more on each in <a href="#/economy" style={{ color: COLORS.ink, fontWeight: 600 }}>Britain in numbers</a>.
       </p>
       <div {...scrollRegion("Figures")} role="group" aria-label="Choose a figure" style={{ display: "flex", gap: 8, overflowX: "auto", padding: "14px 2px 8px" }}>
         {METRICS.map((m) => (
-          <button key={m.id} type="button" aria-pressed={m.id === metricId} onClick={() => setMetricId(m.id)} style={{ ...pillStyle(m.id === metricId), flexShrink: 0 }}>{m.label}</button>
+          <button key={m.id} type="button" aria-pressed={m.id === metricId} onClick={() => setMetricId(m.id)} style={{ ...pillStyle(m.id === metricId), flexShrink: 0, ...(m.id === metricId ? { background: m.colour, borderColor: m.colour, color: "#fff" } : { borderColor: `color-mix(in srgb, ${m.colour} 45%, ${COLORS.hairline})` }) }}>{m.label}</button>
         ))}
       </div>
       <p style={{ ...para, fontSize: 14, marginTop: 4 }}>{metric.blurb} <a href={`#/${metric.page}`} style={{ color: COLORS.ink, fontWeight: 600 }}>More in Britain in numbers</a></p>
@@ -47,7 +48,7 @@ export default function MetricExplorer({ selectedId, onSelect }) {
       <div style={{ marginTop: 14, minHeight: 330 }}>
         {loaded.failed && loaded.id === metric.id && <p style={para}>This figure could not be loaded just now.</p>}
         {!ready && !(loaded.failed && loaded.id === metric.id) && <Loading />}
-        {ready && <MetricChart metric={metric} prepared={loaded.prepared} now={now} selectedId={selectedId} onSelect={onSelect} />}
+        {ready && <div key={metric.id} className="ge-fadein"><MetricChart metric={metric} prepared={loaded.prepared} now={now} selectedId={selectedId} onSelect={onSelect} /></div>}
       </div>
 
       {ready && (
@@ -101,6 +102,6 @@ export default function MetricExplorer({ selectedId, onSelect }) {
         <li>The Bank of England has set interest rates independently of ministers since May 1997.</li>
         <li>Prices in the older years are in the money of the day, unless the figure says it is adjusted for inflation.</li>
       </ul>
-    </section>
+    </Reveal>
   );
 }

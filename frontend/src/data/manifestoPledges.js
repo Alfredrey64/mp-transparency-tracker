@@ -31,8 +31,8 @@ export const MANIFESTOS = [
   {
     id: "lab2001", election: "2001", party: "Labour", title: "Ambitions for Britain", url: null,
     pledges: [
-      { text: "Not raise the basic or top rate of income tax.", status: "delivered", note: "Neither rate rose in that Parliament. Employees' National Insurance did go up by a point in April 2003.", source: "HM Revenue and Customs rates history" },
-      { text: "Not introduce university top-up fees, and legislate to prevent them.", status: "not", note: "The Higher Education Act 2004 let universities in England charge variable fees of up to £3,000 a year, from 2006. It passed by five votes.", source: "Higher Education Act 2004" },
+      { text: "Not raise the basic or top rate of income tax.", status: "delivered", note: "Neither rate rose in that Parliament. National Insurance, which is a separate charge, went up by a point for employees, employers and the self-employed in April 2003.", source: "HM Revenue and Customs rates history" },
+      { text: "Not introduce university top-up fees, and legislate to prevent them.", status: "not", note: "The Higher Education Act 2004 let universities in England charge variable fees of up to £3,000 a year, from 2006. The bill passed its second reading by five votes.", source: "Higher Education Act 2004" },
       { text: "20,000 more nurses and 10,000 more doctors.", status: "delivered", note: "Between 2001 and 2005 the NHS added about 53,000 nurses and 22,000 doctors.", source: "Channel 4 FactCheck" },
       { text: "6,000 more police recruits, taking numbers to a record.", status: "delivered", note: "Police numbers in England and Wales reached 142,972, an all-time high at the time.", source: "Channel 4 FactCheck" },
       { text: "10,000 more teachers.", status: "delivered", note: "There were 24,700 more teachers than in 2001.", source: "Channel 4 FactCheck" },
@@ -44,11 +44,11 @@ export const MANIFESTOS = [
     pledges: [
       { text: "Hold a referendum on the EU constitutional treaty.", status: "not", note: "France and the Netherlands voted against the treaty in 2005 and the UK dropped its plans. The replacement, the Lisbon Treaty, was approved by Parliament in 2008 without a referendum.", source: "European Union (Amendment) Act 2008" },
       { text: "Not raise the basic or top rates of income tax in the next Parliament.", status: "not", note: "A new 50p rate on income over £150,000 began on 6 April 2010, announced in the 2009 Budget. The basic rate was not raised.", source: "Finance Act 2009" },
-      { text: "By the end of 2008, nobody waits more than 18 weeks from referral to treatment.", status: "partly", note: "The target was set as a standard: 90% of patients having an operation and 95% of others within 18 weeks. NHS England's figures show national waits at about those levels from early 2009.", source: "NHS England referral to treatment statistics" },
+      { text: "By the end of 2008, nobody waits more than 18 weeks from referral to treatment.", status: "partly", note: "In practice the target became a standard: 90% of patients having an operation, and 95% of others, to wait under 18 weeks. NHS England's statistics show the 95% standard met from July 2008 and national performance steady from January 2009.", source: "NHS England referral to treatment statistics" },
       { text: "3,500 Sure Start Children's Centres by 2010.", status: "delivered", note: "The government said the target was met in March 2010, and counted 3,631 designated centres at the end of April.", source: "Department for Education" },
       { text: "Introduce identity cards, including fingerprints, backed by a national register.", status: "partly", note: "The Identity Cards Act 2006 passed and cards were issued to foreign nationals from 2008 and volunteers from 2009. The scheme was scrapped in 2010.", source: "Identity Cards Act 2006; Identity Documents Act 2010" },
       { text: "Ban smoking in pubs that serve food and in enclosed workplaces, with other pubs and clubs able to choose.", status: "delivered", note: "The Health Act 2006 went further than the manifesto: from July 2007 smoking was banned in almost all enclosed public places in England, with no exemption for pubs.", source: "Health Act 2006" },
-      { text: "Complete the reform of the House of Lords.", status: "not", note: "In March 2007 the Commons voted for a fully elected House and the Lords voted for a fully appointed one. No law followed, and hereditary peers stayed until 2026.", source: "Votes of 7 March 2007" },
+      { text: "Complete the reform of the House of Lords.", status: "not", note: "In March 2007 the Commons voted for a fully elected House, but no law followed. Hereditary peers stayed until 2026.", source: "Votes of 7 March 2007" },
     ],
   },
   {
@@ -60,8 +60,8 @@ export const MANIFESTOS = [
       { text: "Raise the income tax personal allowance towards £10,000.", status: "delivered", note: "It was £6,475 in 2010-11 and reached £10,000 in April 2014.", source: "HM Revenue and Customs" },
       { text: "A pupil premium to give schools extra money for disadvantaged pupils.", status: "delivered", note: "It was introduced in April 2011.", source: "Department for Education" },
       { text: "Scrap the identity card scheme.", status: "delivered", note: "The Identity Documents Act 2010 cancelled the cards and the national register.", source: "Identity Documents Act 2010" },
-      { text: "Bring forward proposals for a wholly or mainly elected House of Lords.", status: "not", note: "A bill was introduced in 2012 and dropped in August of that year when Conservative MPs rebelled.", source: "House of Lords Reform Bill 2012" },
-      { text: "Cut the deficit over the course of the Parliament.", status: "partly", note: "Government borrowing fell from £142 billion in 2010-11 to £98 billion in 2014-15, but the deficit was not eliminated.", source: "Office for National Statistics" },
+      { text: "Set up a committee to bring forward proposals for a wholly or mainly elected House of Lords.", status: "partly", note: "A draft bill was published in 2011 and a bill introduced in June 2012, but it was abandoned in August 2012 after 91 Conservative MPs voted against it at second reading. The Lords was not changed.", source: "House of Lords Reform Bill 2012" },
+      { text: "Speed up the reduction of the deficit over the course of the Parliament.", status: "partly", note: "Government borrowing fell from £142 billion in 2010-11 to £98 billion in 2014-15, about a third, but the deficit was not eliminated.", source: "Office for National Statistics" },
     ],
   },
   {
@@ -86,7 +86,7 @@ export const MANIFESTOS = [
       { text: "Replace technical qualifications with new T-levels.", status: "delivered", note: "The first T-levels were taught from September 2020.", source: "Department for Education" },
       { text: "A new law to protect victims of domestic abuse.", status: "delivered", note: "The Domestic Abuse Act 2021 received Royal Assent on 29 April 2021.", source: "Domestic Abuse Act 2021" },
       { text: "A free vote in Parliament on the future of the Hunting Act.", status: "not", note: "No vote was held.", source: "House of Commons records" },
-      { text: "A plan to pay for and provide social care.", status: "not", note: "The funding proposal was changed within days of the manifesto. A government green paper was promised for 2018 and had not been published when Theresa May left office in 2019.", source: "Department of Health and Social Care" },
+      { text: "A plan to pay for and provide social care.", status: "not", note: "The funding proposal was changed within days of the manifesto. A green paper was promised in 2017 and its publication was put back at least five times. It had not appeared when Theresa May left office in 2019.", source: "Department of Health and Social Care" },
     ],
   },
   {
@@ -95,7 +95,7 @@ export const MANIFESTOS = [
       { text: "Get Brexit done in January.", status: "delivered", note: "The UK left the EU on 31 January 2020.", source: "European Union (Withdrawal Agreement) Act 2020" },
       { text: "20,000 more police officers.", status: "delivered", note: "The Home Office counted 20,951 more officers in England and Wales by March 2023.", source: "Home Office police uplift statistics" },
       { text: "50,000 more nurses.", status: "delivered", note: "NHS England counted 51,245 more nurses in September 2023 than in 2019, six months ahead of the target. The Royal College of Nursing noted there were also 42,000 vacancies.", source: "NHS England; Royal College of Nursing" },
-      { text: "Begin building 40 new hospitals.", status: "not", note: "At the 2024 election one of the 40 had been finished, the Dyson Cancer Centre in Bath. The National Audit Office said in 2023 that the 2030 target would not be met.", source: "Full Fact; National Audit Office, 2023" },
+      { text: "Have begun work on 40 new hospitals by the end of the Parliament.", status: "not", note: "The manifesto said work would have begun on 40 by the end of the Parliament. In May 2024 the government counted six hospitals open and 18 more in construction. Full Fact found that only one of the 40 counted schemes, the Dyson Cancer Centre in Bath, had been finished. The National Audit Office said in 2023 that the 2030 target would not be met.", source: "Health and Social Care Secretary's statement, May 2024; Full Fact; National Audit Office, 2023" },
       { text: "Not raise the rate of income tax, VAT or National Insurance.", status: "not", note: "The rate of National Insurance rose by 1.25 points in April 2022 and was reversed in November 2022. Income tax and VAT rates were unchanged.", source: "HM Revenue and Customs rates history" },
       { text: "An Australian-style points-based immigration system.", status: "delivered", note: "It began on 1 January 2021.", source: "Home Office" },
       { text: "Build 300,000 homes a year in England by the mid-2020s.", status: "not", note: "Net additions to the housing stock did not reach 300,000 in any year.", source: "Department for Levelling Up, Housing and Communities" },
