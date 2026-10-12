@@ -43,6 +43,12 @@ What each party promised (`src/data/answerPartyPositions.js`) and the headline l
 
 `public/sw.js` is a small service worker (registered by `src/lib/offline.js`, production only). After a first visit the site opens without a connection: pages are network first with a saved copy as the fallback, built files under `/assets` and `/fonts` are cache first, and reads from the data service are network first with a five second wait before the saved copy is used. `src/components/OfflineBanner.jsx` shows a notice while the connection is down. `src/lib/serviceWorker.test.js` runs the worker against a fake environment. Change `VERSION` in `sw.js` to throw away everything saved so far.
 
+## Phone layout test
+
+`e2e/phone-layout.spec.js` opens every page (the list comes from `src/pageLoaders.js`, so a new page is picked up automatically) in Chromium at 320 and 375 px wide and fails if the page scrolls sideways, does not open at the top, has no single `h1`, or throws an uncaught error. It runs on every push and pull request as the "Phone layout" job in `.github/workflows/ci.yml`. Data requests are refused during the run, so the result does not depend on the network or on live data.
+
+Run it locally with `npm run test:phone` (the first time, `npx playwright install chromium`). It builds the site and serves it on port 4175. If it fails in CI, the failure details are attached to the run as `playwright-report`.
+
 ## Accessibility
 
 The site aims for WCAG 2.2 AA. What is in place, and how to check it:

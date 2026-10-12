@@ -26,3 +26,6 @@ dist-ssr
 # Generated at build time by scripts/build-seo-pages.mjs
 public/p/
 public/sitemap.xml
+
+test-results/
+playwright-report/

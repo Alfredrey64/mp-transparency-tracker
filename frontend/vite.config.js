@@ -11,6 +11,8 @@ export default defineConfig({
   // path, not a package name: a bare name gets pre-bundled by the dev server
   // into a separate, stale copy of the runtime.
   plugins: [react({ jsxImportSource: '/src/glossJsx' })],
+  // Browser tests live in e2e/ and run with Playwright, not Vitest.
+  test: { exclude: ['e2e/**', 'node_modules/**'] },
   build: {
     rollupOptions: {
       // Two pages: the site itself, and the chrome-free card that other sites embed in an iframe (see src/embed.jsx).
