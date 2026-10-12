@@ -522,7 +522,7 @@ export const ANSWERS = [
     keywords: ["net zero", "climate", "emissions", "carbon", "greenhouse", "green", "renewable", "renewables", "climate change", "co2"],
     short: "UK greenhouse gas emissions have fallen by more than two-fifths since 1990, among the fastest falls of any big economy, mostly because coal has been replaced in electricity generation. The harder part is still to come: heating, transport and industry have fallen much less. The legal target is net zero by 2050.",
     reasons: [
-      { title: "Electricity did the heavy lifting", text: "Coal, which gave 40% of power in 1990, has closed. Wind, solar and gas replaced it, cutting emissions most." },
+      { title: "Electricity did the heavy lifting", text: "Coal, which generated about 80% of Britain's electricity in 1990, has closed: the last coal power station shut in 2024. Wind, solar and gas replaced it, cutting emissions most." },
       { title: "Buildings and transport are harder", text: "Heating homes with gas and driving petrol cars still cause most of the remaining emissions, and switching needs heat pumps and electric vehicles." },
       { title: "A legal target and budgets", text: "The Climate Change Act sets five-year carbon budgets. The independent Climate Change Committee reports each year on whether the UK is meeting them." },
     ],
@@ -545,7 +545,7 @@ export const ANSWERS = [
     short: "In recent years almost all of the UK's population growth has come from migration, because deaths are close to births. People are living longer and having fewer children, so the population is ageing, and the share of working age is falling.",
     reasons: [
       { title: "Migration adds more than births", text: "The UK population grew by several hundred thousand a year in the early 2020s, mostly because more people moved in than out." },
-      { title: "Fewer births", text: "The average number of children a woman has is about 1.5, below the 2.1 needed to keep the population stable without migration." },
+      { title: "Fewer births", text: "The average number of children a woman has is about 1.4, a record low and well below the 2.1 needed to keep the population stable without migration." },
       { title: "People are living longer", text: "Life expectancy rose for most of the last century, so there are more older people, and fewer workers for each pensioner." },
     ],
     facts: [
@@ -667,7 +667,7 @@ export const ANSWERS = [
       { title: "Why it was brought in", text: "It was introduced in 2010 after the state pension had slipped behind both prices and wages for many years. The aim was to stop pensioners falling further behind." },
       { title: "How it works", text: "Each year the government compares three figures and picks the biggest, so the pension never rises by less than prices, pay or 2.5%." },
       { title: "Why it costs more over time", text: "The highest figure is picked every year and the gains are never given back, so the pension grows faster than either prices or pay across the long run." },
-      { title: "Why it is argued about", text: "The state pension is the largest single item of public spending. A rising bill has to be paid for by people of working age, through taxes or through cuts elsewhere." },
+      { title: "Why it is argued about", text: "The state pension is the biggest single benefit the government pays. A rising bill has to be paid for by people of working age, through taxes or through cuts elsewhere." },
     ],
     facts: [
       { sector: "prices", series: "cpi", text: "Price inflation is {value} {when}, {change}." },
