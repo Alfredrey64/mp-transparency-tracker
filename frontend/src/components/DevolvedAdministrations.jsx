@@ -31,7 +31,7 @@ const ADMINISTRATIONS = [
     flag: "🏴󠁧󠁢󠁷󠁬󠁳󠁿",
     accent: "#9C6B30",
     established: "1999 as the National Assembly for Wales; renamed the Senedd in 2020",
-    members: "60 Members currently, rising to 96 from the next election, elected by proportional representation",
+    members: "96 Members, elected by a proportional list system since the May 2026 election (it had 60 before)",
     led: "First Minister of Wales",
     holders: [{ role: "First Minister of Wales", name: "Rhun ap Iorwerth", party: "Plaid Cymru", since: "12 May 2026, leading a minority government" }],
     powers: "Powers have expanded steadily since 1999. Since the Wales Act 2017, it works on a \"reserved powers\" model like Scotland's, devolved by default, with only specific matters held back for Westminster.",

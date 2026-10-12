@@ -115,7 +115,7 @@ const OUTLETS = [
     name: "GB News",
     color: "#6E4B6E",
     funding: "Commercial advertising and direct shareholder investment (it has reported significant losses since launch).",
-    ownership: "Privately owned, per Companies House filings, majority-owned by the investment firm Legatum Ventures and the financier Sir Paul Marshall (roughly 41% each), with smaller stakes held by staff and other investors.",
+    ownership: "Privately owned through the holding company All Perspectives Ltd, whose main backers are the investment firm Legatum Ventures and the financier Sir Paul Marshall. The exact shareholdings are in its Companies House filings.",
     regulator: "Regulated by Ofcom for due impartiality, and has been found in breach of the Broadcasting Code on several occasions, including for sitting politicians hosting shows and interviewing ministers from their own party.",
   },
 ];

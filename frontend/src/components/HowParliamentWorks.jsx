@@ -59,7 +59,7 @@ function CommonsLordsDiagram() {
       style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 14 }}
     >
       {chamber("House of Commons", "650 elected MPs", "Directly elected by voters in each constituency", 65, COLORS.accent, true)}
-      {chamber("House of Lords", "~800 members", "Appointed peers, some hereditary members, and bishops", 65, "#7A4B63", false)}
+      {chamber("House of Lords", "~800 members", "Appointed peers and bishops", 65, "#7A4B63", false)}
     </motion.div>
   );
 }
@@ -191,7 +191,7 @@ const STRUCTURE_ROWS = [
     key: "parliament",
     label: "Parliament",
     tagline: "The legislature, makes the laws",
-    desc: "Parliament is made up of two chambers: the elected House of Commons (650 MPs) and the House of Lords (appointed and hereditary members, plus bishops). Together they debate, amend, and vote on new laws.",
+    desc: "Parliament is made up of two chambers: the elected House of Commons (650 MPs) and the House of Lords (appointed members, plus bishops). Together they debate, amend, and vote on new laws.",
     visual: <CommonsLordsDiagram />,
   },
   {
@@ -247,10 +247,10 @@ function SalaryBar({ label, amount, max, color, note }) {
 function SalaryDiagram() {
   return (
     <div style={{ marginTop: 14, maxWidth: 420 }}>
-      <SalaryBar label="MP's basic salary" amount={91346} max={170000} color="#4C6FA6" note="Set independently by IPSA, not by MPs themselves, reviewed each year." />
-      <SalaryBar label="Cabinet minister (total)" amount={162000} max={170000} color="#4C6FA6" note="Basic salary plus roughly £71,000 'Special Responsibility' pay for the ministerial role." />
-      <SalaryBar label="Prime Minister (total)" amount={172000} max={170000} color="#4C6FA6" note="Several recent PMs have voluntarily waived part of this." />
-      <SalaryBar label="UK median full-time salary" amount={37000} max={170000} color={COLORS.inkSoft} note="ONS figure, for comparison: all amounts rounded and reviewed annually, so treat as approximate." />
+      <SalaryBar label="MP's basic salary" amount={98599} max={190000} color="#4C6FA6" note="From April 2026. Set independently by IPSA, not by MPs themselves, reviewed each year." />
+      <SalaryBar label="Cabinet minister (total)" amount={173769} max={190000} color="#4C6FA6" note="Basic salary plus £75,170 for the ministerial role. In practice most take about £8,000 less, because the ministerial pay has been voluntarily waived in part since 2008." />
+      <SalaryBar label="Prime Minister (total)" amount={182436} max={190000} color="#4C6FA6" note="Basic salary plus £83,837 for the role, before the same voluntary reduction." />
+      <SalaryBar label="UK median full-time salary" amount={39039} max={190000} color={COLORS.inkSoft} note="ONS figure for April 2025, for comparison: all amounts rounded and reviewed annually, so treat as approximate." />
     </div>
   );
 }
