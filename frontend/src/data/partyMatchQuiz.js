@@ -11,6 +11,10 @@ import { IconNorthernIreland } from "../components/icons";
 // weighted double for whichever issues the user marked as mattering most
 // to them.
 //
+// Audited in October 2026 against the full text of each party's 2024 manifesto (see "Checking party positions" in the README). A score is
+// +/-2 where the manifesto commits to it or against it clearly, +/-1 for a lean, and 0 where the party is silent or mixed. Where a manifesto
+// says nothing, the score follows the party's long-standing public position, and is kept to +/-1 at most.
+//
 // This is inevitably a simplification — a single number can't fully
 // capture a party's position on a complex issue, and manifestos get
 // reinterpreted or partly abandoned in office. Scores here are our own,
@@ -101,14 +105,14 @@ export const QUESTIONS = [
     issue: "economy",
     statement: "The government should raise taxes on the highest earners to fund public services.",
     explainer: "Income tax is the single biggest source of government revenue. \"Highest earners\" usually means the top additional-rate band (income over £125,140), where exactly that line should sit is itself a political choice, not a fixed definition.",
-    positions: { labour: 1, conservative: -2, "liberal-democrat": 1, "reform-uk": -2, green: 2, snp: 1, "plaid-cymru": 1 },
+    positions: { labour: -1, conservative: -2, "liberal-democrat": 0, "reform-uk": -2, green: 2, snp: 1, "plaid-cymru": 2 },
   },
   {
     id: "nhs",
     issue: "nhs",
     statement: "The NHS should stay fully publicly funded, with no expansion of private-sector involvement.",
     explainer: "A share of NHS treatment is already delivered by private providers under NHS contracts, mainly to cut waiting lists. This question is about whether that share should grow, shrink, or stay as it is, not about introducing charges for patients.",
-    positions: { labour: 1, conservative: 0, "liberal-democrat": 1, "reform-uk": -1, green: 2, snp: 2, "plaid-cymru": 2 },
+    positions: { labour: -1, conservative: -2, "liberal-democrat": 0, "reform-uk": -2, green: 2, snp: 2, "plaid-cymru": 2 },
   },
   {
     id: "immigration",
@@ -129,42 +133,42 @@ export const QUESTIONS = [
     issue: "housing",
     statement: "The target for new homes built each year should rise sharply, including on green belt land if needed.",
     explainer: "England has consistently built fewer homes than the roughly 300,000-a-year target most economists say is needed. \"Green belt\" is protected countryside ringing cities like London, building on it is one of the most contested ways to hit housing targets.",
-    positions: { labour: 2, conservative: 0, "liberal-democrat": 1, "reform-uk": 0, green: -1, snp: 1, "plaid-cymru": 0 },
+    positions: { labour: 2, conservative: -1, "liberal-democrat": 1, "reform-uk": 0, green: -1, snp: 1, "plaid-cymru": 0 },
   },
   {
     id: "europe",
     issue: "europe",
     statement: "The UK should seek to rejoin the EU single market.",
     explainer: "The UK left the EU single market and customs union in January 2021. Rejoining the single market alone (short of full EU membership) would mean accepting EU trade rules and free movement of people, in exchange for tariff-free trade in goods.",
-    positions: { labour: -1, conservative: -2, "liberal-democrat": 2, "reform-uk": -2, green: 2, snp: 2, "plaid-cymru": 1 },
+    positions: { labour: -2, conservative: -2, "liberal-democrat": 2, "reform-uk": -2, green: 2, snp: 2, "plaid-cymru": 2 },
   },
   {
     id: "sentencing",
     issue: "crime",
     statement: "Prison sentences for serious violent crime should be made significantly longer.",
     explainer: "Under current rules, most offenders serve up to two-thirds of their sentence before automatic release. Longer sentencing is often proposed alongside, or as an alternative to, spending more on policing, prevention or prison capacity itself.",
-    positions: { labour: 0, conservative: 2, "liberal-democrat": -1, "reform-uk": 2, green: -1, snp: -1, "plaid-cymru": -1 },
+    positions: { labour: 0, conservative: 2, "liberal-democrat": -1, "reform-uk": 2, green: -1, snp: -1, "plaid-cymru": 0 },
   },
   {
     id: "tuition",
     issue: "education",
     statement: "University tuition fees in England should be abolished.",
     explainer: "English tuition fees are currently £9,250 a year, covered upfront by government-backed loans that graduates repay once they earn above a threshold. Scotland, by contrast, charges its own resident students no fees at all.",
-    positions: { labour: -1, conservative: -2, "liberal-democrat": 1, "reform-uk": -1, green: 2, snp: 2, "plaid-cymru": 1 },
+    positions: { labour: -1, conservative: -2, "liberal-democrat": 0, "reform-uk": -1, green: 2, snp: 1, "plaid-cymru": 0 },
   },
   {
     id: "welfare",
     issue: "welfare",
     statement: "Welfare and disability benefit spending should be reduced to encourage more people into work.",
     explainer: "Welfare, including disability and unemployment benefits, is one of the largest areas of government spending after health and pensions. \"Reducing spending to encourage work\" usually means tighter eligibility rules or stricter sanctions for claimants judged fit to work.",
-    positions: { labour: 0, conservative: 2, "liberal-democrat": -1, "reform-uk": 1, green: -2, snp: -1, "plaid-cymru": -1 },
+    positions: { labour: 0, conservative: 2, "liberal-democrat": -1, "reform-uk": 2, green: -2, snp: -2, "plaid-cymru": -2 },
   },
   {
     id: "pr",
     issue: "voting",
     statement: "Westminster elections should switch from First Past the Post to a proportional system.",
     explainer: "First Past the Post elects one MP per constituency by simple plurality, which can turn a minority of the national vote into a large majority of seats. Proportional systems allocate seats closer to each party's vote share, but tend to produce more coalition governments.",
-    positions: { labour: -1, conservative: -2, "liberal-democrat": 2, "reform-uk": 2, green: 2, snp: 1, "plaid-cymru": 1 },
+    positions: { labour: -1, conservative: -2, "liberal-democrat": 2, "reform-uk": 1, green: 2, snp: 2, "plaid-cymru": 2 },
   },
   {
     id: "devolution",
@@ -178,28 +182,28 @@ export const QUESTIONS = [
     issue: "defence",
     statement: "UK defence spending should be increased significantly.",
     explainer: "UK defence spending currently sits at around 2.3% of GDP, above NATO's 2% minimum. The debate is usually about whether to raise this further, and, if so, what gets cut or taxed elsewhere to pay for it.",
-    positions: { labour: 1, conservative: 1, "liberal-democrat": 0, "reform-uk": 1, green: -1, snp: -1, "plaid-cymru": -1 },
+    positions: { labour: 1, conservative: 1, "liberal-democrat": 1, "reform-uk": 2, green: -1, snp: -1, "plaid-cymru": -1 },
   },
   {
     id: "ownership",
     issue: "ownership",
     statement: "Key utilities like rail and energy should be brought back into public ownership.",
     explainer: "Rail and energy in Great Britain were privatised in the 1980s and 90s. Proposals range from renationalising specific failing operators (as has already happened with some rail franchises) to a wholesale return to state-run utilities.",
-    positions: { labour: 1, conservative: -2, "liberal-democrat": 0, "reform-uk": 0, green: 2, snp: 1, "plaid-cymru": 1 },
+    positions: { labour: 1, conservative: -2, "liberal-democrat": 0, "reform-uk": 1, green: 2, snp: 1, "plaid-cymru": 1 },
   },
   {
     id: "aid",
     issue: "aid",
     statement: "The UK should increase its foreign aid budget back to 0.7% of national income.",
     explainer: "The UK cut foreign aid from 0.7% to 0.5% of national income in 2021 to help fund pandemic recovery spending, and the effective amount spent overseas has fallen further since, as more of the aid budget is used to house asylum seekers domestically.",
-    positions: { labour: 0, conservative: -1, "liberal-democrat": 2, "reform-uk": -2, green: 2, snp: 1, "plaid-cymru": 1 },
+    positions: { labour: 1, conservative: 1, "liberal-democrat": 2, "reform-uk": -2, green: 2, snp: 2, "plaid-cymru": 2 },
   },
   {
     id: "workers",
     issue: "workers",
     statement: "Workers should get stronger employment rights, such as protection from unfair dismissal from day one of a new job.",
     explainer: "Currently, most employees need two years' service before they can claim unfair dismissal. A \"day one\" right would remove that qualifying period: a change businesses argue could make hiring feel riskier, and unions argue is overdue.",
-    positions: { labour: 2, conservative: -1, "liberal-democrat": 1, "reform-uk": -1, green: 2, snp: 1, "plaid-cymru": 1 },
+    positions: { labour: 2, conservative: -1, "liberal-democrat": 1, "reform-uk": -1, green: 2, snp: 1, "plaid-cymru": 2 },
   },
   {
     id: "asylum",
