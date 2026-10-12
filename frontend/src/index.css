@@ -8,8 +8,8 @@
      against a quiet backdrop, not from a tinted page itself. */
   /* The keyboard focus ring: dark indigo on the light pages, light indigo on the dark ones, so it stands out against either. */
   --focus-ring: #3730A3;
-  --c-ink: #191A23;
-  --c-ink-soft: #5E5C68;
+  --c-ink: #0B0C12;
+  --c-ink-soft: #383643;
   --c-paper: #F0E8D5;
   --c-paper-card: #E8DFC8;
   --c-hairline: #D5C9AE;
@@ -20,10 +20,10 @@
   /* The menu column. Light by default, and dark only in the dedicated dark mode (below). */
   --sb-bg: #E9E0CA;
   --sb-bg-2: #F1E9D6;
-  --sb-strong: #191A23;
-  --sb-text: #1D1F2E;
-  --sb-soft: rgba(25, 26, 35, 0.8);
-  --sb-faint: rgba(25, 26, 35, 0.7);
+  --sb-strong: #0B0C12;
+  --sb-text: #101119;
+  --sb-soft: rgba(11, 12, 18, 0.88);
+  --sb-faint: rgba(11, 12, 18, 0.78);
   --sb-hover: rgba(79, 70, 229, 0.07);
   --sb-surface: rgba(25, 26, 35, 0.035);
   --sb-active: rgba(79, 70, 229, 0.14);
@@ -38,8 +38,8 @@
 [data-theme="dark"] {
   --focus-ring: #B7B3FF;
   color-scheme: dark;
-  --c-ink: #F1F2F7;
-  --c-ink-soft: #A8ACC0;
+  --c-ink: #F7F8FC;
+  --c-ink-soft: #C6CADB;
   --c-paper: #14151F;
   --c-paper-card: #1D1F2C;
   --c-hairline: #2C2F42;
@@ -51,8 +51,8 @@
   --sb-bg-2: #0A0B16;
   --sb-strong: #FFFFFF;
   --sb-text: #C7CBDC;
-  --sb-soft: rgba(199, 206, 224, 0.66);
-  --sb-faint: rgba(199, 206, 224, 0.46);
+  --sb-soft: rgba(206, 212, 230, 0.78);
+  --sb-faint: rgba(206, 212, 230, 0.6);
   --sb-hover: rgba(255, 255, 255, 0.06);
   --sb-surface: rgba(255, 255, 255, 0.035);
   --sb-active: rgba(255, 255, 255, 0.16);

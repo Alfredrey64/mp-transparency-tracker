@@ -79,7 +79,11 @@ function NavItem({ item, active, accent, onNavigate }) {
           <Icon size={15} />
         </span>
         <span style={{ minWidth: 0 }}>
-          <span style={{ display: "block", fontSize: 14.5, fontWeight: active ? 700 : 500, lineHeight: 1.25, whiteSpace: "normal" }}>{item.label}</span>
+          {/* A hidden bold copy sits in the same grid cell, so the label is always as wide as its bold form and never rewraps when selected. */}
+          <span style={{ display: "grid", fontSize: 14.5, lineHeight: 1.25 }}>
+            <span style={{ gridArea: "1 / 1", fontWeight: active ? 700 : 500 }}>{item.label}</span>
+            <span aria-hidden="true" style={{ gridArea: "1 / 1", fontWeight: 700, visibility: "hidden" }}>{item.label}</span>
+          </span>
           {item.hint && <span style={{ display: "block", fontSize: 12, lineHeight: 1.3, marginTop: 1, color: "var(--sb-soft)" }}>{item.hint}</span>}
         </span>
       </span>
@@ -129,8 +133,11 @@ function SidebarSection({ label, blurb, accent, items, activeView, onNavigate, o
         <span style={{ width: 9, height: 9, borderRadius: "50%", background: accent, flexShrink: 0, boxShadow: `0 0 0 4px ${accent}2a` }} />
         <span style={{ minWidth: 0, flex: 1 }}>
           <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: 15.5, fontWeight: 600, color: "var(--sb-strong)", lineHeight: 1.2 }}>{label}</span>
-          <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12, color: !open && activeItem ? readable(accent) : "var(--sb-soft)", marginTop: 2, lineHeight: 1.3, fontWeight: !open && activeItem ? 600 : 400 }}>
-            {!open && activeItem ? `You're on: ${activeItem.label}` : blurb}
+          <span style={{ display: "grid", fontFamily: FONT_BODY, fontSize: 12, marginTop: 2, lineHeight: 1.3 }}>
+            <span style={{ gridArea: "1 / 1", color: !open && activeItem ? readable(accent) : "var(--sb-soft)", fontWeight: !open && activeItem ? 600 : 400 }}>
+              {!open && activeItem ? `You're on: ${activeItem.label}` : blurb}
+            </span>
+            <span aria-hidden="true" style={{ gridArea: "1 / 1", fontWeight: 600, visibility: "hidden" }}>{!open && activeItem ? `You're on: ${activeItem.label}` : blurb}</span>
           </span>
         </span>
         <span style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>

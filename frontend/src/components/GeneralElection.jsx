@@ -84,7 +84,7 @@ export default function GeneralElection() {
       <PageHeader
         icon={IconVote}
         kicker="Elections"
-        title="The 2024 general election"
+        title="General elections"
         subtitle="What happened on 4 July 2024: how many seats each party won, how many votes that took, and why the two do not match."
       />
 
