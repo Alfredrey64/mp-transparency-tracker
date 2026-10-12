@@ -5,7 +5,6 @@ import { IconCabinet, IconHexMap, IconVote } from "./icons";
 import GeneralElection2024 from "./GeneralElection2024";
 import ElectionHistory from "./ElectionHistory";
 import GovernmentsTab from "./GovernmentsTab";
-import { GROUPS } from "../lib/electionHistory";
 
 // General elections: the 2024 result, every election since 1945, and the governments that followed them. The address carries the tab and the
 // item picked (#/generalElection/history/1997, #/generalElection/governments/thatcher) so any view can be shared.
@@ -15,9 +14,6 @@ const TABS = [
   { key: "history", label: "Past elections", blurb: "Every result since 1945", icon: IconHexMap, colour: "#0E9AA7" },
   { key: "governments", label: "Governments", blurb: "Promises, changes, figures", icon: IconCabinet, colour: "#C7871A" },
 ];
-
-// A strip of party colours under the heading: the parties that have formed governments since 1945, and the third parties that held the balance.
-const RIBBON = [GROUPS.l.colour, GROUPS.c.colour, GROUPS.d.colour, GROUPS.s.colour, GROUPS.g.colour, GROUPS.u.colour, GROUPS.p.colour];
 
 function parse(param) {
   const [tab, item] = String(param ?? "").split("/");
@@ -45,11 +41,7 @@ export default function GeneralElection({ param }) {
         title="General elections"
         subtitle="Who won in 2024 and why, how every election since 1945 went, and what the governments that followed promised and changed."
       />
-      <div aria-hidden="true" className="ge-fadein" style={{ display: "flex", height: 5, borderRadius: 3, overflow: "hidden", marginTop: 4, maxWidth: 360 }}>
-        {RIBBON.map((c, i) => <span key={c} style={{ flex: i < 2 ? 3 : 1, background: c }} />)}
-      </div>
-
-      <div role="tablist" aria-label="General elections sections" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 200px), 1fr))", gap: 10, margin: "24px 0 6px" }}>
+      <div role="tablist" aria-label="General elections sections" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 168px), 1fr))", gap: 10, margin: "24px 0 6px" }}>
         {TABS.map((t, i) => {
           const active = nav.tab === t.key;
           const Icon = t.icon;
