@@ -4,7 +4,7 @@ import { LOADERS } from "../src/pageLoaders.js";
 // Every page the site can show, plus the home page and the two that are not lazy-loaded.
 const PAGES = ["home", "list", "partymatch", ...Object.keys(LOADERS)].filter((p, i, all) => all.indexOf(p) === i);
 // Pages that live inside another page's tabs.
-const TABS = ["generalElection/history/1997", "generalElection/history/2024", "generalElection/governments/blair", "generalElection/governments/thatcher"];
+const TABS = ["generalElection/history/1997", "generalElection/history/2024", "generalElection/governments/blair", "generalElection/governments/thatcher", "generalElection/devolved/scotland/2021", "generalElection/devolved/ni/2022", "generalElection/explained"];
 const WIDTHS = [320, 375];
 
 for (const width of WIDTHS) {

@@ -6,12 +6,18 @@ import history from "../data/electionsHistory.json";
 import hexes2019 from "../data/seatHexes2019.json";
 import hexes2024 from "../data/seatHexes.json";
 import { REPLACED_SEAT_WINNERS } from "../lib/generalElection";
-import { GROUPS, GROUP_ORDER, NO_MATCH, election2024, outcome, electionLabel, electionShort, seatTimeline, seatResults2024, shadeFor } from "../lib/electionHistory";
+import { GROUPS, GROUP_ORDER, NO_MATCH, electionLabel, seatResults2024, shadeFor } from "../lib/electionHistory";
+import { ELECTIONS, electionSpec, headline } from "../lib/electionSpecs";
+import ShareButton from "./ShareButton";
 import { GOVERNMENTS } from "../data/governments";
-import { normSeat, REGIONS } from "../lib/seatMap";
+import { REGIONS } from "../lib/seatMap";
 import ElectionMap from "./ElectionMap";
 import Hemicycle from "./Hemicycle";
 import Loading from "./Loading";
+import SeatTimeline from "./SeatTimeline";
+import SeatLookup from "./SeatLookup";
+import CompareElections from "./CompareElections";
+import { loadConstituencies } from "../lib/electionData";
 import { Reveal, CountUp } from "./Motion";
 
 // The past elections tab: pick any general election since 1945 to see the balance of seats and votes, the government that followed, and a map
@@ -20,18 +26,11 @@ import { Reveal, CountUp } from "./Motion";
 // Left to right on the half-circle: from the left of politics to the right, then the rest.
 const ORDER = ["g", "l", "p", "s", "d", "x", "n", "k", "c", "u"];
 
-const ELECTIONS = [...history.elections, election2024()].map((e) => ({ ...e, ...outcome(e) }));
 const para = { fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.65, color: COLORS.inkSoft, margin: "6px 0 0", maxWidth: 760 };
 const pctText = (v) => (v == null ? "n/a" : v > 0 && v < 0.5 ? "<1%" : `${Math.round(v)}%`);
 const dateText = (iso) => new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 
 const governmentFor = (id) => GOVERNMENTS.find((g) => g.elections.includes(id));
-
-function headline(e) {
-  const lead = GROUPS[e.leader].label;
-  if (e.majority) return `${lead} won a majority`;
-  return `No party won a majority. ${lead} came first with ${e.leaderSeats} seats`;
-}
 
 function Stack({ e, kind }) {
   const total = kind === "seats" ? e.seats : 100;
@@ -109,29 +108,6 @@ function ElectionStrip({ selected, onPick }) {
   );
 }
 
-function SeatHistory({ index, elections, name }) {
-  const line = seatTimeline(index, elections, history.maps).filter((t) => t.group);
-  const all = [...line];
-  if (!all.length) return null;
-  return (
-    <div style={{ marginTop: 16 }}>
-      <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 18, margin: 0, color: COLORS.ink }}>{name}, election by election</h3>
-      <p style={{ ...para, fontSize: 13.5, marginTop: 4 }}>The party that won a seat with this name at each election it appears in. Boundaries change over time, so an old result may cover a different area from today's seat.</p>
-      <ul {...scrollRegion("Winners by election")} style={{ listStyle: "none", margin: "10px 0 0", padding: "2px 0 6px", display: "flex", gap: 8, overflowX: "auto" }}>
-        {all.map((t) => (
-          <li key={t.id} style={{ flexShrink: 0, textAlign: "center", minWidth: 58 }}>
-            <span title={GROUPS[t.group].label} style={{ display: "block", height: 28, borderRadius: 8, background: shadeFor(GROUPS[t.group].colour, t.band), border: `1px solid ${COLORS.hairline}` }} />
-            <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 4 }}>{electionShort(elections.find((e) => e.id === t.id))}</span>
-            <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.ink, fontWeight: 600 }}>{GROUPS[t.group].short ?? GROUPS[t.group].label}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-let constituenciesPromise = null;
-const loadConstituencies = () => (constituenciesPromise ??= import("../data/constituencies.json").then((m) => m.default.constituencies));
 
 export default function ElectionHistory({ electionId, onPick }) {
   const e = ELECTIONS.find((x) => x.id === electionId) ?? ELECTIONS[ELECTIONS.length - 1];
@@ -141,7 +117,6 @@ export default function ElectionHistory({ electionId, onPick }) {
   const [sel, setSel] = useState({ id: null, i: null });
   const picked = sel.id === e.id ? sel.i : null;
   const setPicked = (i) => setSel({ id: e.id, i });
-  const [query, setQuery] = useState("");
   const [constituencies, setConstituencies] = useState(null);
 
   useEffect(() => {
@@ -171,12 +146,6 @@ export default function ElectionHistory({ electionId, onPick }) {
     return { fill, swatch: colour, note: `${GROUPS[r.group].label}${leadText}` };
   }, [results, mode, is2024]);
 
-  const matches = useMemo(() => {
-    const q = normSeat(query);
-    if (q.length < 2) return [];
-    return hexes.map((h, i) => ({ i, name: h[1] })).filter((h) => normSeat(h.name).includes(q)).slice(0, 8);
-  }, [query, hexes]);
-
   const gov = governmentFor(e.id);
   const prev = ELECTIONS[ELECTIONS.findIndex((x) => x.id === e.id) - 1] ?? null;
   const leadColour = GROUPS[e.leader].colour;
@@ -191,7 +160,10 @@ export default function ElectionHistory({ electionId, onPick }) {
       <ElectionStrip selected={e.id} onPick={onPick} />
 
       <Reveal key={e.id} as="section" aria-labelledby="h-eh-result" style={{ ...card, marginTop: 8, borderTop: `5px solid ${leadColour}`, background: `linear-gradient(155deg, color-mix(in srgb, ${leadColour} 13%, ${COLORS.paperCard}) 0%, ${COLORS.paperCard} 58%)` }}>
-        <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, margin: 0 }}>{dateText(e.date)}</p>
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap", alignItems: "baseline" }}>
+          <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, margin: 0 }}>{dateText(e.date)}</p>
+          <ShareButton filename={`${electionLabel(e)}-general-election`.toLowerCase().replace(/\s+/g, "-")} getSpec={() => electionSpec(e, window.location.href)} />
+        </div>
         <h2 id="h-eh-result" style={{ ...cardTitle, fontSize: "clamp(22px, 4.2vw, 32px)", lineHeight: 1.2, marginTop: 4 }}>
           {electionLabel(e)}: {headline(e)}
         </h2>
@@ -282,26 +254,6 @@ export default function ElectionHistory({ electionId, onPick }) {
           </ul>
           {mode === "lead" && <p style={{ ...para, fontSize: 13, marginTop: 8 }}>Pale seats were close contests. Deep colour means the winner was well ahead: the colour deepens with each five points of lead, up to 45 or more.</p>}
 
-          <div style={{ marginTop: 18 }}>
-            <label htmlFor="eh-seat" style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: COLORS.ink }}>Look up a seat</label>
-            <input
-              id="eh-seat"
-              type="search"
-              value={query}
-              onChange={(ev) => setQuery(ev.target.value)}
-              placeholder="For example Huddersfield"
-              autoComplete="off"
-              style={{ display: "block", width: "100%", maxWidth: 420, marginTop: 6, padding: "10px 14px", borderRadius: 12, border: `1px solid ${COLORS.hairline}`, background: COLORS.paper, color: COLORS.ink, fontFamily: FONT_BODY, fontSize: 15, boxSizing: "border-box" }}
-            />
-            {matches.length > 0 && (
-              <ul style={{ listStyle: "none", margin: "8px 0 0", padding: 0, display: "flex", gap: 6, flexWrap: "wrap" }}>
-                {matches.map((m) => (
-                  <li key={m.i}><button type="button" onClick={() => { setPicked(m.i); setQuery(""); }} style={{ ...pillStyle(false), fontSize: 13 }}>{m.name}</button></li>
-                ))}
-              </ul>
-            )}
-          </div>
-
           {pickedName && (
             <div aria-live="polite" style={{ marginTop: 18, paddingTop: 16, borderTop: `1px solid ${COLORS.hairline}` }}>
               <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
@@ -313,17 +265,14 @@ export default function ElectionHistory({ electionId, onPick }) {
                   ? `${electionLabel(e)}: ${GROUPS[pickedResult.group].label}${pickedResult.lead != null ? `, ahead by ${pickedResult.lead.toFixed(1)} points${pickedResult.runnerUp ? ` of ${pickedResult.runnerUp === "Independent" ? "an independent" : pickedResult.runnerUp} in second place` : ""}` : ""}${pickedResult.byElection ? ". There has been a by-election here since" : ""}.`
                   : `No seat with this name at the ${electionLabel(e)} election.`}
               </p>
-              {is2024 ? (
-                <p style={{ ...para, fontSize: 13.5 }}>
-                  <a href={`#/constituency/${encodeURIComponent(pickedName)}`} style={{ color: COLORS.ink, fontWeight: 700 }}>See this seat in full</a>
-                </p>
-              ) : (
-                <SeatHistory index={picked} elections={ELECTIONS} name={pickedName} />
-              )}
+              <SeatTimeline key={pickedName} name={pickedName} />
             </div>
           )}
         </Reveal>
       )}
+
+      <SeatLookup />
+      <CompareElections />
     </div>
   );
 }

@@ -8,6 +8,9 @@ import { GROUPS } from "../lib/electionHistory";
 import { METRICS, measure } from "../lib/governmentMetrics";
 import { loadMetric } from "../lib/governmentSeries";
 import MetricExplorer from "./MetricExplorer";
+import CompareGovernments from "./CompareGovernments";
+import ShareButton from "./ShareButton";
+import { governmentSpec, lengthOf } from "../lib/electionSpecs";
 import { Reveal, CountUp } from "./Motion";
 import pmPortraits from "../data/pmPortraits.json";
 
@@ -37,18 +40,6 @@ function Portrait({ gov, size = 92 }) {
       {url && !failed ? <img src={url} alt="" loading="lazy" decoding="async" onError={() => setFailed(true)} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} /> : initials}
     </span>
   );
-}
-
-function lengthOf(g, now) {
-  const from = Date.parse(`${g.from}T00:00:00Z`);
-  const to = g.to ? Date.parse(`${g.to}T00:00:00Z`) : now;
-  const months = Math.max(1, Math.round((to - from) / (30.4375 * 86400000)));
-  const y = Math.floor(months / 12);
-  const m = months % 12;
-  const parts = [];
-  if (y) parts.push(`${y} ${y === 1 ? "year" : "years"}`);
-  if (m) parts.push(`${m} ${m === 1 ? "month" : "months"}`);
-  return `${parts.join(" and ")}${g.to ? "" : " so far"}`;
 }
 
 function Swatch({ party, size = 10 }) {
@@ -165,15 +156,14 @@ export default function GovernmentsTab({ id, onSelect, onOpenElection }) {
           </div>
         </div>
         <p style={para}>{gov.took}</p>
-        {gov.elections.length > 0 && (
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 12 }}>
-            {gov.elections.map((e) => (
-              <button key={e} type="button" onClick={() => onOpenElection(e)} style={{ ...pillStyle(false), fontSize: 13 }}>
-                See the {e === "1974a" ? "February 1974" : e === "1974b" ? "October 1974" : e} result
-              </button>
-            ))}
-          </div>
-        )}
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 12, alignItems: "center" }}>
+          {gov.elections.map((e) => (
+            <button key={e} type="button" onClick={() => onOpenElection(e)} style={{ ...pillStyle(false), fontSize: 13 }}>
+              See the {e === "1974a" ? "February 1974" : e === "1974b" ? "October 1974" : e} result
+            </button>
+          ))}
+          <ShareButton filename={`${gov.pm}-government`.toLowerCase().replace(/[^a-z0-9]+/g, "-")} getSpec={() => governmentSpec(gov, window.location.href)} />
+        </div>
 
         <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 18, margin: "22px 0 0", color: COLORS.ink }}>The main changes</h3>
         <ul style={{ margin: "8px 0 0", paddingLeft: 20, display: "grid", gap: 8, fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.6, color: COLORS.ink, maxWidth: 760 }}>
@@ -198,6 +188,8 @@ export default function GovernmentsTab({ id, onSelect, onOpenElection }) {
       </section>
 
       <MetricExplorer selectedId={gov.id} onSelect={onSelect} />
+
+      <CompareGovernments />
 
       <p style={{ ...para, fontSize: 12.5, marginTop: 16 }}>
         Sources: Acts of Parliament and official statistics named beside each item; Channel 4 FactCheck, Full Fact and the National Audit Office where cited. Each pledge was checked against the text of the manifesto, or for 2010 the coalition programme. Last checked October 2026.

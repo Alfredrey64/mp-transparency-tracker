@@ -52,6 +52,11 @@ const dateOf = (voting) => { const m = voting.match(/(\d+) (\w+) (\d{4})/); retu
 
 const elections = [];
 const maps = {};
+// Every seat name that appears in any election 1950 to 2019, with its winner and the size of the lead at each (".": no seat of that name), and for each
+// seat on the 2019 map the gap between Labour's share and the Conservatives' (in points), which the compare tool turns into swings.
+const nameBook = new Map();
+const margins = {};
+const ids = Object.values(raw).map((e) => idOf(e.title)).filter((id) => id !== "1945");
 for (const e of Object.values(raw)) {
   const id = idOf(e.title);
   if (id === "1945") continue; // handled by hand below: multi-member and university seats cannot be read from the votes
@@ -73,10 +78,20 @@ for (const e of Object.values(raw)) {
       band = rows[1] ? Math.min(9, Math.floor(((rows[0][2] - rows[1][2]) / total) * 100 / 5)) : 9;
     }
     seats[g] = (seats[g] ?? 0) + 1;
+    {
+      const key = norm(s.name);
+      const rec = nameBook.get(key) ?? { display: s.name, w: {}, b: {} };
+      rec.w[id] = g; rec.b[id] = band;
+      nameBook.set(key, rec);
+    }
     for (const r of rows) { const k = group(r[1], year); votes[k] = (votes[k] ?? 0) + r[2]; valid += r[2]; }
     const key = norm(s.name);
     const i = hexByName.get(key) ?? hexByBag.get(bag(s.name));
-    if (i !== undefined && !seen.has(i)) { winners[i] = g; bands[i] = String(band); matched += 1; seen.add(i); }
+    if (i !== undefined && !seen.has(i)) {
+      winners[i] = g; bands[i] = String(band); matched += 1; seen.add(i);
+      const share = (grp) => (total ? (rows.filter((r) => group(r[1], year) === grp).reduce((n, r) => n + r[2], 0) / total) * 100 : 0);
+      (margins[id] ??= new Array(hexes.length).fill(null))[i] = Math.round(share("l") - share("c"));
+    }
   }
   const total = e.seats.length;
   const shares = Object.fromEntries(Object.entries(votes).map(([k, v]) => [k, Math.round((v / valid) * 1000) / 10]));
@@ -95,6 +110,14 @@ elections.unshift({
   validVotes: 25095195, matchedSeats: 0, published: true,
 });
 
+const book = [...nameBook.values()].sort((a, b) => a.display.localeCompare(b.display));
+writeFileSync(new URL("../src/data/electionSeatNames.json", import.meta.url), JSON.stringify({
+  elections: ids,
+  names: book.map((b) => b.display),
+  w: book.map((b) => ids.map((id) => b.w[id] ?? ".").join("")),
+  b: book.map((b) => ids.map((id) => (b.b[id] ?? ".")).join("")),
+}));
+writeFileSync(new URL("../src/data/electionMargins.json", import.meta.url), JSON.stringify(margins));
 writeFileSync(new URL("../src/data/electionsHistory.json", import.meta.url), JSON.stringify({
   source: "UK Parliament, UK General Elections Results 1832 - 2019 (Open Parliament Licence); 1945 totals from the House of Commons Library",
   hexOrder: "seatHexes2019.json",

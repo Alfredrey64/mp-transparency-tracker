@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
-import { IconCabinet, IconHexMap, IconVote } from "./icons";
+import { IconCabinet, IconDevolved, IconHexMap, IconQuestion, IconVote } from "./icons";
 import GeneralElection2024 from "./GeneralElection2024";
 import ElectionHistory from "./ElectionHistory";
 import GovernmentsTab from "./GovernmentsTab";
+import DevolvedElections from "./DevolvedElections";
+import ElectionsExplained from "./ElectionsExplained";
+import { specForView } from "../lib/electionSpecs";
 
 // General elections: the 2024 result, every election since 1945, and the governments that followed them. The address carries the tab and the
 // item picked (#/generalElection/history/1997, #/generalElection/governments/thatcher) so any view can be shared.
@@ -13,11 +16,13 @@ const TABS = [
   { key: "2024", label: "2024 result", blurb: "Seats, votes and the map", icon: IconVote, colour: "#7A5AF0" },
   { key: "history", label: "Past elections", blurb: "Every result since 1945", icon: IconHexMap, colour: "#0E9AA7" },
   { key: "governments", label: "Governments", blurb: "Promises, changes, figures", icon: IconCabinet, colour: "#C7871A" },
+  { key: "devolved", label: "Devolved", blurb: "Scotland, Wales, N. Ireland", icon: IconDevolved, colour: "#D6455D" },
+  { key: "explained", label: "How it works", blurb: "Votes, seats, who governs", icon: IconQuestion, colour: "#4D7C3A" },
 ];
 
 function parse(param) {
-  const [tab, item] = String(param ?? "").split("/");
-  return { tab: TABS.some((t) => t.key === tab) ? tab : "2024", item: item || null };
+  const [tab, ...rest] = String(param ?? "").split("/");
+  return { tab: TABS.some((t) => t.key === tab) ? tab : "2024", item: rest.join("/") || null };
 }
 
 export default function GeneralElection({ param }) {
@@ -39,9 +44,10 @@ export default function GeneralElection({ param }) {
         icon={IconVote}
         kicker="Elections"
         title="General elections"
-        subtitle="Who won in 2024 and why, how every election since 1945 went, and what the governments that followed promised and changed."
+        subtitle="Who won in 2024 and why, how every election since 1945 went, what the governments that followed promised and changed, and how the devolved nations vote."
+        share={() => specForView(nav.tab, nav.item, window.location.href)}
       />
-      <div role="tablist" aria-label="General elections sections" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 168px), 1fr))", gap: 10, margin: "24px 0 6px" }}>
+      <div role="tablist" aria-label="General elections sections" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 150px), 1fr))", gap: 10, margin: "24px 0 6px" }}>
         {TABS.map((t, i) => {
           const active = nav.tab === t.key;
           const Icon = t.icon;
@@ -79,6 +85,8 @@ export default function GeneralElection({ param }) {
       <div key={nav.tab} className="ge-fade" role="tabpanel" id="ge-panel" aria-labelledby={`ge-tab-${nav.tab}`} style={{ fontFamily: FONT_BODY }}>
         {nav.tab === "2024" && <GeneralElection2024 />}
         {nav.tab === "history" && <ElectionHistory electionId={nav.item} onPick={(id) => go("history", id)} />}
+        {nav.tab === "devolved" && <DevolvedElections item={nav.item} onPick={(item) => go("devolved", item)} />}
+        {nav.tab === "explained" && <ElectionsExplained onOpen={(tab, item) => { go(tab, item ?? null); window.scrollTo({ top: 0 }); }} />}
         {nav.tab === "governments" && <GovernmentsTab id={nav.item} onSelect={(id) => go("governments", id)} onOpenElection={(id) => { go("history", id); window.scrollTo({ top: 0 }); }} />}
       </div>
     </div>

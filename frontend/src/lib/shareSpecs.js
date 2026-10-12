@@ -119,6 +119,54 @@ export function councilShareSpec({ council, seats, link }) {
   };
 }
 
+// A general election: who won, the figures that matter, and seats by party.
+export function electionShareSpec({ label, headline, date, accent, stats, parties, total, note, link }) {
+  const top = Math.max(1, ...parties.map((p) => p.seats));
+  return {
+    kicker: "General election",
+    title: `${label}: ${headline}`,
+    subtitle: date,
+    accent: colour(accent),
+    stats: stats.slice(0, 4),
+    bars: parties.slice(0, 6).map((p) => ({ label: p.label, valueText: `${fmt(p.seats)} of ${fmt(total)}`, fraction: p.seats / top, colour: colour(p.colour) })),
+    note: note ?? null,
+    footer: `${CARD_SITE} · General elections`,
+    link,
+  };
+}
+
+// A government: who led it and when, how it took office and what changed, with the outcome of what its party promised where there is one.
+export function governmentShareSpec({ pm, party, span, length, took, outcomes, accent, link }) {
+  const top = Math.max(1, ...outcomes.map((o) => o.count));
+  return {
+    kicker: party,
+    title: pm,
+    subtitle: `${span} · ${length}`,
+    accent: colour(accent),
+    stats: [],
+    bars: outcomes.slice(0, 6).map((o) => ({ label: o.label, valueText: String(o.count), fraction: o.count / top, colour: colour(o.colour) })),
+    note: `${took.split(". ")[0].replace(/\.$/, "")}.`,
+    footer: `${CARD_SITE} · Governments since 1945`,
+    link,
+  };
+}
+
+// An election to the Scottish Parliament, the Senedd or the Northern Ireland Assembly.
+export function devolvedShareSpec({ nation, e, facts, parties, link }) {
+  const top = Math.max(1, ...parties.map((p) => p.seats));
+  return {
+    kicker: nation.name,
+    title: `${nation.body} ${e.id}`,
+    subtitle: `${parties[0].label} won most seats: ${facts.leaderSeats} of ${facts.total}`,
+    accent: colour(parties[0].colour),
+    stats: [{ value: `${e.turnout}%`, label: "turnout" }, { value: fmt(facts.total), label: "seats in all" }],
+    bars: parties.slice(0, 6).map((p) => ({ label: p.label, valueText: String(p.seats), fraction: p.seats / top, colour: colour(p.colour) })),
+    note: `Led by: ${e.led}.`,
+    footer: `${CARD_SITE} · devolved elections`,
+    link,
+  };
+}
+
 // Splits text into at most maxLines lines no wider than maxWidth, ending the
 // last line with an ellipsis if the text didn't all fit. `measure` returns the
 // width of a string, so this works with a canvas or with a stand-in.
