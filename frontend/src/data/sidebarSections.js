@@ -52,12 +52,24 @@ export const SECTIONS = [
     items: [
       { key: "constituency", label: "Your constituency", icon: IconHexMap, hint: "Your MP, seat and local results", essential: true, aka: ["constituency", "seat", "map", "election result"] },
       { key: "councils", label: "Your council", icon: IconCouncil, hint: "Councillors and local elections", essential: true, aka: ["councillors", "local elections", "council"] },
-      { key: "howtovote", label: "How to vote", icon: IconBallot, hint: "Register, ID and polling day", essential: true, aka: ["register to vote", "voting", "polling station", "photo id", "postal vote", "proxy vote", "election day", "ballot"] },
-      { key: "localElections", label: "Local elections", icon: IconCalendar, hint: "When your council next votes", aka: ["council elections", "next election", "polling day", "local vote", "election date", "councillors", "when do i vote"] },
       { key: "marginals", label: "Marginal seats", icon: IconSwing, hint: "How close each seat was, and what could flip", aka: ["swing", "marginals", "majority", "safe seat", "target seats", "election"] },
       { key: "compareSeats", label: "Compare constituencies", icon: IconSeatCompare, hint: "Two seats side by side", aka: ["compare seats", "compare constituencies", "versus"] },
       { key: "partymatch", label: "Which party suits me?", icon: IconCompass, hint: "A short quiz", aka: ["find your party", "quiz"] },
       { key: "petitions", label: "Petitions", icon: IconPetition, hint: "Ask Parliament to act", essential: true },
+    ],
+  },
+  {
+    // Everything about elections in one place: the last general election's result, the votes in between, the next council elections, and
+    // how to take part. How to vote and Local elections used to sit under "Your area & your say" and By-elections under "Who's in charge".
+    key: "elections",
+    label: "Elections",
+    blurb: "Results, and how to take part",
+    accent: "#7A5AF0",
+    items: [
+      { key: "generalElection", label: "The 2024 general election", icon: IconVote, hint: "Seats, votes and why they differ", essential: true, aka: ["general election", "election result", "2024 election", "first past the post", "fptp", "seats and votes", "results", "july 2024", "who won"] },
+      { key: "byElections", label: "By-elections", icon: IconByElection, hint: "Votes between general elections", essential: true, aka: ["elections", "by election", "bye election"] },
+      { key: "localElections", label: "Local elections", icon: IconCalendar, hint: "When your council next votes", essential: true, aka: ["council elections", "next election", "polling day", "local vote", "election date", "councillors", "when do i vote"] },
+      { key: "howtovote", label: "How to vote", icon: IconBallot, hint: "Register, ID and polling day", essential: true, aka: ["register to vote", "voting", "polling station", "photo id", "postal vote", "proxy vote", "election day", "ballot"] },
     ],
   },
   {
@@ -72,7 +84,6 @@ export const SECTIONS = [
       { key: "committees", label: "Watchdog committees", icon: IconCommittee, hint: "MPs who question ministers", aka: ["select committees"] },
       { key: "budget", label: "Where taxes go", icon: IconBudget, hint: "Government spending in charts", aka: ["government budget", "spending"] },
       { key: "tracker", label: "Promises tracker", icon: IconTracker, hint: "Has the government kept its word?", aka: ["manifesto promises"] },
-      { key: "byElections", label: "By-elections", icon: IconByElection, hint: "Votes between general elections", aka: ["elections", "by election"] },
     ],
   },
   {

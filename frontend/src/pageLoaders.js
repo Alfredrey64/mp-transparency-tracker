@@ -69,6 +69,7 @@ export const LOADERS = {
   indicators: () => import("./components/IndicatorTimeline"),
   howtovote: () => import("./components/HowToVote"),
   localElections: () => import("./components/LocalElections"),
+  generalElection: () => import("./components/GeneralElection"),
 };
 
 const started = new Set();

@@ -226,6 +226,11 @@ export const PAGE_GUIDES = {
     why: "You can't vote unless you are registered, and the rules on ID and deadlines trip up people every election. Knowing them in advance makes your vote count.",
     notShown: "Your registration status, or the exact deadline for the next election. Those come from gov.uk, which this page links to. Rules can change, so check there.",
   },
+  generalElection: {
+    what: "The result of the 4 July 2024 general election: seats and votes for each party, why the two differ under first past the post, and how it compared with 2019.",
+    why: "The party with the most seats forms the government, but that is not the same as the party most people voted for. Seeing both shows how the system works.",
+    notShown: "Results for each constituency (see Your constituency), or any election since. Seven seats have held by-elections since and are covered under By-elections.",
+  },
   localElections: {
     what: "When each council in the UK next holds an election, how many seats are up, and what is at stake in yours, with a countdown to the next big election day.",
     why: "Council elections decide who runs local services such as bins, roads, planning and social care, yet many people don't know when theirs is.",

@@ -71,6 +71,7 @@ const DeprivationPage = lazy(LOADERS.deprivation);
 const IndicatorTimeline = lazy(LOADERS.indicators);
 const HowToVote = lazy(LOADERS.howtovote);
 const LocalElections = lazy(LOADERS.localElections);
+const GeneralElection = lazy(LOADERS.generalElection);
 const SECTOR_VIEWS = new Set(["economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates", "immigration", "business"]);
 
 // A quiet authorship mark, not a feature — printed once so a copy of this
@@ -95,7 +96,7 @@ const VALID_VIEWS = new Set([
   "committees", "compare", "ministerialMeetings", "writtenQuestions", "standards", "rankings", "myMP",
   "mediaLiteracy", "methodology", "glossary", "settings", "privacy", "terms", "list",
   "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist", "numbers", "topics", "constituency", "start", "rebels", "offices", "councils",
-  "economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates", "immigration", "business", "regions", "answers", "deprivation", "indicators", "marginals", "compareSeats", "howtovote", "localElections",
+  "economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates", "immigration", "business", "regions", "answers", "deprivation", "indicators", "marginals", "compareSeats", "howtovote", "localElections", "generalElection",
 ]);
 
 // The tab title, bookmark name and browser-history entry for every view —
@@ -411,6 +412,7 @@ export default function App() {
             {view === "marginals" && <Marginals />}
             {view === "howtovote" && <HowToVote />}
             {view === "localElections" && <LocalElections />}
+            {view === "generalElection" && <GeneralElection />}
             {view === "compareSeats" && <CompareSeats param={viewParam} />}
             {SECTOR_VIEWS.has(view) && <SectorPage key={view} sector={view} param={viewParam} />}
             {view === "indicators" && <IndicatorTimeline param={viewParam} />}
