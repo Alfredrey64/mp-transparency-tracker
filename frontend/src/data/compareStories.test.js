@@ -1,9 +1,12 @@
 import { describe, it, expect } from "vitest";
 import { COMPARE_STORIES } from "./compareStories";
 import { ALL_SERIES, refOf } from "./onsSectors";
+import { taxRateChoices } from "../lib/taxRateSeries";
 
-const valid = new Set(ALL_SERIES.map(refOf));
-const byRef = new Map(ALL_SERIES.map((s) => [refOf(s), s]));
+// The Compare page lists the tax rates in place of the Taxes and spending series.
+const ALL = [...ALL_SERIES.filter((s) => s.sector !== "tax"), ...taxRateChoices()];
+const valid = new Set(ALL.map(refOf));
+const byRef = new Map(ALL.map((s) => [refOf(s), s]));
 
 describe("compare stories", () => {
   it("have unique ids and plain text", () => {

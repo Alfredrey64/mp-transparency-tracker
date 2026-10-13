@@ -6,6 +6,7 @@ import { LoadFailedNote } from "./MpCards";
 import LineChart from "./LineChart";
 import { ALL_SERIES, SECTORS, refOf } from "../data/onsSectors";
 import { loadEverything } from "../lib/onsData";
+import { taxRateChoices, taxRateEntries } from "../lib/taxRateSeries";
 import { formatValue, formatAxis, periodToT, changeShort, periodLabel } from "../lib/onsFormat";
 import { changeBetween, valueAtOrBefore } from "../lib/onsStats";
 import { toLineData, yearTicks } from "../lib/onsChart";
@@ -26,18 +27,21 @@ const LINE_COLOURS = ["#0E9AA7", "#E07A1F", "#7B5BD6", "#D4577A"];
 const DEFAULT_PICKS = ["prices.cpi", "jobs.unemployment", "jobs.pay-real"];
 
 // The same series can sit on more than one page; list each once.
+// The same series can sit on more than one page; list each once. The Taxes and spending page holds pounds and shares; here its place is taken by
+// the tax rates, which are percentages, so the topic called Tax rates lists only those.
 const CHOICES = (() => {
   const seen = new Set();
-  return ALL_SERIES.filter((s) => {
+  const ons = ALL_SERIES.filter((s) => s.sector !== "tax").filter((s) => {
     const key = s.cdid ? `${s.cdid}|${s.dataset}` : refOf(s);
     if (seen.has(key)) return false;
     seen.add(key);
     return true;
   });
+  return [...ons, ...taxRateChoices()];
 })();
 
 // Topics are the Britain in numbers pages; each holds the measures to choose from.
-const TOPICS = SECTORS.map((t) => ({ key: t.key, label: t.label, accent: t.accent }))
+const TOPICS = SECTORS.map((t) => ({ key: t.key, label: t.key === "tax" ? "Tax rates" : t.label, accent: t.accent }))
   .filter((t) => CHOICES.some((c) => c.sector === t.key));
 
 const PRESETS = [
@@ -116,7 +120,13 @@ export default function IndicatorTimeline({ param }) {
 
   useEffect(() => {
     let alive = true;
-    loadEverything().then((r) => alive && setEverything(r)).catch(() => alive && setFailed(true));
+    loadEverything().then((r) => {
+      if (!alive) return;
+      // Swap the Taxes and spending series for the tax rates.
+      const rest = Object.fromEntries(Object.entries(r).filter(([ref]) => !ref.startsWith("tax.")));
+      const accent = SECTORS.find((t) => t.key === "tax")?.accent;
+      setEverything({ ...rest, ...taxRateEntries(accent) });
+    }).catch(() => alive && setFailed(true));
     return () => { alive = false; };
   }, []);
 

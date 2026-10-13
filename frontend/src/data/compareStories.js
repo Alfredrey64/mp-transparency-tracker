@@ -54,10 +54,17 @@ export const COMPARE_STORIES = [
     from: 2010,
   },
   {
+    id: "taxgrowth",
+    title: "Tax rates and growth",
+    blurb: "Business and income tax rates beside how fast the economy grew.",
+    refs: ["tax.corp_main", "tax.incomeTax_basic", "economy.gdp-year"],
+    from: 1980,
+  },
+  {
     id: "debt",
     title: "What the government owes",
-    blurb: "National debt, and how much of the tax collected goes on the interest.",
-    refs: ["publicFinances.debt", "tax.interest-share", "rates.gilt-10y"],
+    blurb: "National debt, and what it costs the government to borrow.",
+    refs: ["publicFinances.debt", "rates.bank-rate", "rates.gilt-10y"],
     from: 2000,
   },
   {

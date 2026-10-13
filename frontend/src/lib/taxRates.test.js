@@ -189,3 +189,23 @@ describe("by government", () => {
     expect(counted).toBe(total);
   });
 });
+
+describe("tax rates on the Compare over time page", () => {
+  it("offers only percentage rates that are in force, as monthly series up to now", async () => {
+    const { taxRateChoices, taxRateEntries } = await import("./taxRateSeries");
+    const choices = taxRateChoices(NOW);
+    expect(choices.length).toBeGreaterThan(20);
+    const ids = choices.map((c) => c.id);
+    expect(ids).toContain("incomeTax_basic");
+    expect(ids).not.toContain("vat_higher");
+    expect(ids).not.toContain("incomeTax_starting");
+    expect(ids).not.toContain("incomeTax_allowance");
+    expect(choices.every((c) => c.format === "pct" || c.format === "pct2")).toBe(true);
+    const entries = taxRateEntries("#000", NOW);
+    const basic = entries["tax.incomeTax_basic"];
+    expect(basic.points[0]).toEqual(["1945-04", 50]);
+    expect(basic.points.at(-1)).toEqual(["2026-10", 20]);
+    expect(basic.points.find(([p]) => p === "1979-06")[1]).toBe(30);
+    expect(Object.keys(entries)).toHaveLength(choices.length);
+  });
+});
