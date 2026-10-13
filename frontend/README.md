@@ -34,6 +34,7 @@ Any answer, and any chart on a Britain in numbers page, has an **Embed** button 
 - **Caching:** `vercel.json` marks everything under `/assets` and `/fonts` as immutable for a year, since the file names change when the contents do. Pages and data are still checked fresh.
 - **Page changes** run as React transitions (`App.jsx`): the current page stays until the next is ready, a thin line shows only if that takes more than a moment, and the new page opens at its top in the same frame. `lib/preserveScroll.js` keeps tabs and filters from moving the page, and `components/Loading.jsx` holds a page's height while its figures load.
 - **After a new deploy,** a tab left open reloads once if a page file has gone (`lib/chunkReload.js`).
+- **Size budget.** `bundle-budget.json` caps the gzipped size of the JavaScript and CSS loaded on first visit and of the largest single file. `npm run check:size` (run in CI after the build) fails if a limit is passed; raise a limit on purpose, in the same change, when a feature is worth it.
 
 ## Checking party positions
 
@@ -55,6 +56,8 @@ The General elections page (`src/components/GeneralElection.jsx`) has three tabs
 - **Share cards.** `src/lib/electionSpecs.js` works out the card for whatever the page is showing (an election, a government or a devolved election); the Share button in the page header and in each result card use it.
 - **How it works.** `ElectionsExplained.jsx` has a small invented example (clearly labelled) that switches between first past the post and D'Hondt, so the numbers there are not from a real election; the real examples beside it come from the election data.
 - **Motion.** Blocks ease up into view once (`components/Motion.jsx`), numbers count up when they scroll into view, the seat chart's dots arrive in a sweep, and pages cross-fade. Only opacity and a short rise are animated, never a width or a length, and everything stops under `prefers-reduced-motion`. Keep it that way: nothing that grows from full or from zero to its value.
+- **Map gestures.** `src/lib/useMapGestures.js` gives the seat maps (`ElectionMap.jsx`, `HexMap.jsx`) pinch-to-zoom on touch screens, Ctrl or Cmd plus scroll on desktop, zoom buttons, and press-and-hold to pin a seat's card without leaving the map.
+- **Search.** The site search (`GlobalSearch.jsx`) also finds elections, governments, devolved elections and seat histories (`src/lib/electionSearch.js`), which open the matching General elections tab.
 - **Prime Ministers.** When a new Prime Minister takes office, add a government to `governments.js` and end the previous one, and add them to `src/lib/governments.js`, which shades the Britain in numbers charts. `src/data/governments.test.js` checks the two lists agree.
 
 ## Phone layout test

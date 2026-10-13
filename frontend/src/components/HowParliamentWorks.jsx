@@ -329,7 +329,7 @@ const MP_JOB_STAGES = [
   },
   {
     key: "resigning", label: "\"Resigning\"",
-    desc: "An MP can't actually resign: a law dating to 1624 bars a sitting MP from simply quitting their seat. To leave early, they instead apply for a nominal paid \"office of profit under the Crown\" (traditionally Crown Steward and Bailiff of the Chiltern Hundreds, or of the Manor of Northstead), which automatically disqualifies them from sitting as an MP, triggering a by-election.",
+    desc: "An MP can't actually resign: a rule dating to 1624 bars a sitting MP from simply quitting their seat. To leave early, they instead apply for a nominal paid \"office of profit under the Crown\" (traditionally Crown Steward and Bailiff of the Chiltern Hundreds, or of the Manor of Northstead), which automatically disqualifies them from sitting as an MP, triggering a by-election.",
   },
 ];
 

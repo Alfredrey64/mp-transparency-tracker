@@ -32,6 +32,7 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run build
+      - run: npm run check:size
 
   phone-layout:
     name: Phone layout (every page at 320 and 375 px)

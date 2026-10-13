@@ -71,6 +71,8 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
   const [answerTools, setAnswerTools] = useState(null);
   // Statistics, councils and donors, loaded on demand for the same reason.
   const [siteTools, setSiteTools] = useState(null);
+  // Elections, governments, devolved elections and every seat name since 1950, for the General elections page.
+  const [electionTools, setElectionTools] = useState(null);
   const inputRef = useRef(null);
   const dropdownRef = useRef(null);
   const [query, setQuery] = useState("");
@@ -107,10 +109,13 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
         donors: ss.buildDonorIndex(Object.keys(donorsA.default), Object.keys(donorsB.default), Object.keys(donorsC.default)),
       });
     }).catch(() => {});
+    const elections = Promise.all([import("../lib/electionSearch"), import("../data/electionSeatNames.json")]).then(([es, book]) => {
+      setElectionTools({ find: es.findElections, index: es.buildElectionIndex(book.default) });
+    }).catch(() => {});
     const glossary = import("../data/glossaryTerms").then(({ PROCEDURE_TERMS, POLITICS_TERMS, STATISTICS_TERMS }) => {
       setGlossaryEntries([...PROCEDURE_TERMS, ...POLITICS_TERMS, ...STATISTICS_TERMS]);
     });
-    Promise.allSettled([people, answers, site, glossary]).then(() => setLoading(false));
+    Promise.allSettled([people, answers, site, elections, glossary]).then(() => setLoading(false));
   }, []);
 
   useEffect(() => {
@@ -155,7 +160,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (q.length < 2) return { mps: [], peers: [], seats: [], careers: [], offices: false, bills: [], pages: [], glossary: [], answers: [], measures: [], councils: [], donors: [], trace: false };
+    if (q.length < 2) return { mps: [], peers: [], seats: [], careers: [], offices: false, bills: [], pages: [], glossary: [], answers: [], measures: [], councils: [], donors: [], elections: [], trace: false };
     // A question, or at least a couple of words, rather than a name.
     const answers = answerTools && q.length >= 4 ? answerTools.find(q, answerTools.answers, 3) : [];
     const mps = politicians
@@ -171,10 +176,11 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
     const measures = siteTools ? siteTools.find.findMeasures(q, siteTools.measures, 4) : [];
     const councils = siteTools ? siteTools.find.findCouncils(q, siteTools.councils, 3) : [];
     const donors = siteTools ? siteTools.find.findDonors(q, siteTools.donors, 3) : [];
-    return { mps, peers: matchedPeers, seats, careers, offices: OFFICE_WORDS.test(q) && q.length >= 4, bills: matchedBills, pages, glossary, answers, measures, councils, donors, trace: q.length >= 3 };
-  }, [politicians, peers, bills, glossaryEntries, answerTools, siteTools, query]);
+    const elections = electionTools ? electionTools.find(q, electionTools.index, 5) : [];
+    return { mps, peers: matchedPeers, seats, careers, offices: OFFICE_WORDS.test(q) && q.length >= 4, bills: matchedBills, pages, glossary, answers, measures, councils, donors, elections, trace: q.length >= 3 };
+  }, [politicians, peers, bills, glossaryEntries, answerTools, siteTools, electionTools, query]);
 
-  const hasResults = results.mps.length > 0 || results.peers.length > 0 || results.seats.length > 0 || results.careers.length > 0 || results.offices || results.bills.length > 0 || results.pages.length > 0 || results.glossary.length > 0 || results.answers.length > 0 || results.measures.length > 0 || results.councils.length > 0 || results.donors.length > 0 || results.trace;
+  const hasResults = results.mps.length > 0 || results.peers.length > 0 || results.seats.length > 0 || results.careers.length > 0 || results.offices || results.bills.length > 0 || results.pages.length > 0 || results.glossary.length > 0 || results.answers.length > 0 || results.measures.length > 0 || results.councils.length > 0 || results.donors.length > 0 || results.elections.length > 0 || results.trace;
 
   // Said aloud by a screen reader as the results change, since the list appears without the focus moving to it.
   const resultCount = Object.values(results).reduce((n, v) => n + (Array.isArray(v) ? v.length : v ? 1 : 0), 0);
@@ -230,7 +236,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
           onChange={(e) => { startLoading(); setQuery(e.target.value); setOpen(true); }}
           onFocus={(e) => { startLoading(); setOpen(true); e.target.style.borderColor = "var(--sb-accent)"; e.target.style.boxShadow = "0 0 0 3px rgba(79,70,229,0.22)"; }}
           onBlur={(e) => { e.target.style.borderColor = "var(--sb-border)"; e.target.style.boxShadow = "none"; }}
-          placeholder="Search MPs, donors, numbers… (press /)"
+          placeholder="Search MPs, seats, elections, numbers… (press /)"
           style={{
             width: "100%", boxSizing: "border-box", padding: "8px 10px 8px 32px",
             fontFamily: FONT_BODY, fontSize: 12.5, borderRadius: 8,
@@ -339,6 +345,14 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
                 </button>
               ))}
             </div>
+          )}
+
+          {results.elections.length > 0 && (
+            <ResultGroup label="Elections and governments">
+              {results.elections.map((x) => (
+                <ResultRow key={x.hash} onClick={() => openHash(x.hash)} title={x.name} sub={x.sub} />
+              ))}
+            </ResultGroup>
           )}
 
           {results.measures.length > 0 && (

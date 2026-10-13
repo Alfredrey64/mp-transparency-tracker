@@ -84,7 +84,7 @@ export default function GeneralElection({ param }) {
 
       <div key={nav.tab} className="ge-fade" role="tabpanel" id="ge-panel" aria-labelledby={`ge-tab-${nav.tab}`} style={{ fontFamily: FONT_BODY }}>
         {nav.tab === "2024" && <GeneralElection2024 />}
-        {nav.tab === "history" && <ElectionHistory electionId={nav.item} onPick={(id) => go("history", id)} />}
+        {nav.tab === "history" && <ElectionHistory electionId={nav.item?.startsWith("seat/") ? null : nav.item} seat={nav.item?.startsWith("seat/") ? nav.item.slice(5) : null} onPick={(id) => go("history", id)} />}
         {nav.tab === "devolved" && <DevolvedElections item={nav.item} onPick={(item) => go("devolved", item)} />}
         {nav.tab === "explained" && <ElectionsExplained onOpen={(tab, item) => { go(tab, item ?? null); window.scrollTo({ top: 0 }); }} />}
         {nav.tab === "governments" && <GovernmentsTab id={nav.item} onSelect={(id) => go("governments", id)} onOpenElection={(id) => { go("history", id); window.scrollTo({ top: 0 }); }} />}

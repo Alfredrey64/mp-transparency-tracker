@@ -60,7 +60,7 @@ const ADMINISTRATIONS = [
     powers: "Health, education, justice, policing, and agriculture, among others.",
     reserved: "Defence, foreign affairs, immigration, and national security remain with Westminster. Unlike Scotland and Wales, the Assembly's power-sharing structure has led to several extended suspensions over the years, most recently 2022–2024.",
     process: "Passes \"Acts of the Northern Ireland Assembly\". Votes on the most sensitive issues need \"cross-community support\" (backing from both designated unionist and nationalist members, not just a simple majority) a safeguard built into the Good Friday Agreement specifically to protect power-sharing.",
-    relationship: "Also funded via a Westminster block grant. Its Executive is jointly led by the largest unionist and largest nationalist parties with equal legal status. If either side withdraws, the whole Executive, and often the Assembly itself, can collapse, triggering periods of direct rule from Westminster, as happened in 2017–2020 and 2022–2024.",
+    relationship: "Also funded via a Westminster block grant. Its Executive is led jointly by a First Minister and a deputy First Minister, from the largest party and the largest party of the other main community, with equal legal status. If either side withdraws, the whole Executive can collapse. Between 2002 and 2007 Westminster ruled Northern Ireland directly. In 2017–2020 and 2022–2024 there was no Executive and civil servants ran departments, with the Secretary of State setting budgets.",
     url: "https://www.niassembly.gov.uk/",
   },
 ];

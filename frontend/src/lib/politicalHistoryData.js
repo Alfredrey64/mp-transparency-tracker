@@ -52,7 +52,7 @@ export const LANDMARK_VOTES = [
   },
   {
     year: 1972,
-    date: "5 February 1972",
+    date: "17 February 1972",
     theme: "Europe",
     title: "European Communities Bill, Second Reading",
     result: "Passed",
@@ -115,12 +115,12 @@ export const LANDMARK_VOTES = [
   },
   {
     year: 2017,
-    date: "29 March 2017",
+    date: "16 March 2017",
     theme: "Europe",
-    title: "Article 50 (Notification of Withdrawal) Bill",
+    title: "European Union (Notification of Withdrawal) Act 2017",
     result: "Passed",
     outcome: "achieved",
-    detail: "Authorised the government to formally notify the EU of the UK's intention to leave, starting the two-year countdown to Brexit following the 2016 referendum.",
+    detail: "Authorised the government to formally notify the EU of the UK's intention to leave. Theresa May did so on 29 March 2017, starting the two-year countdown to Brexit following the 2016 referendum.",
   },
   {
     year: 2019,
@@ -217,12 +217,12 @@ export const LANDMARK_VOTES = [
   },
   {
     year: 1972,
-    date: "17 March 1972",
+    date: "27 July 1972",
     theme: "Economic",
     title: "Finance Act 1972 (introduction of VAT)",
     result: "Passed",
     outcome: "achieved",
-    detail: "Introduced Value Added Tax, replacing Purchase Tax ahead of EEC entry. VAT remains one of the government's largest single sources of revenue over 50 years later.",
+    detail: "Created Value Added Tax, which began in April 1973 and replaced Purchase Tax ahead of EEC entry. VAT remains one of the government's largest single sources of revenue over 50 years later.",
   },
   {
     year: 1984,
@@ -550,8 +550,8 @@ export const LANDMARK_VOTES = [
     detail: "Gave legal effect to the Anglo-Irish Treaty, creating the Irish Free State as a self-governing dominion and partitioning Ireland, ending the Irish War of Independence, and one of the most consequential and contested Acts this Parliament has ever passed.",
   },
   {
-    year: 2000,
-    date: "11 May 2000",
+    year: 1999,
+    date: "11 November 1999",
     theme: "Constitutional",
     title: "Greater London Authority Act 1999",
     result: "Passed",
@@ -893,8 +893,8 @@ export const GOVERNMENTS = [
   { year: 2019, pm: "Boris Johnson", party: "Conservative", note: "Won a landslide on \"Get Brexit Done,\" completed the UK's EU withdrawal, led the COVID-19 response, and resigned in 2022 over the \"Partygate\" scandal.", events: ["Won a landslide in 2019 on \"Get Brexit Done\"", "Completed the UK's departure from the EU on 31 January 2020", "Led the UK through the COVID-19 pandemic", "Resigned in 2022 following the \"Partygate\" scandal"] },
   { year: 2022, pm: "Liz Truss", party: "Conservative", note: "The shortest-serving PM in British history, 49 days, after her mini-budget triggered a market crisis.", events: ["The shortest-serving PM in British history, 49 days", "Her mini-budget triggered a market crisis and a collapse in the pound", "Resigned after losing the confidence of her own party"] },
   { year: 2022, pm: "Rishi Sunak", party: "Conservative", note: "The UK's first British Asian PM; called and lost the July 2024 general election.", events: ["The UK's first British Asian Prime Minister", "Focused on stabilising the economy after the Truss mini-budget", "Called and lost the July 2024 general election"] },
-  { year: 2024, pm: "Keir Starmer", party: "Labour", note: "Won a landslide in July 2024, ending 14 years of Conservative government.", events: ["Won a landslide general election victory in July 2024", "Ended 14 years of Conservative government"] },
-  { year: 2026, pm: "Andy Burnham", party: "Labour", note: "Became Prime Minister in July 2026. This is drawn directly from this site's own live Cabinet data, not a separately verified historical source. Treat the surrounding circumstances with appropriate caution.", events: ["Became Prime Minister in July 2026, per this site's own live data"] },
+  { year: 2024, pm: "Keir Starmer", party: "Labour", note: "Won a landslide in July 2024, ending 14 years of Conservative government. Announced in June 2026 that he would stand down and left office on 20 July 2026.", events: ["Won a landslide general election victory in July 2024", "Ended 14 years of Conservative government", "Announced in June 2026 that he would stand down, and left office on 20 July 2026"] },
+  { year: 2026, pm: "Andy Burnham", party: "Labour", note: "Became Prime Minister on 20 July 2026 after Keir Starmer stood down. He entered the Commons at the Makerfield by-election on 18 June 2026 and was the only candidate to reach the Labour leadership nomination threshold.", events: ["Won the Makerfield by-election on 18 June 2026", "Confirmed as Labour leader on 17 July 2026 and appointed Prime Minister on 20 July 2026", "Appointed John Healey as Chancellor and Ed Miliband as Foreign Secretary"] },
 ];
 
 export const OUTCOME_COLOR = { achieved: "#2F6F4E", not_kept: "#9C3B3B" };

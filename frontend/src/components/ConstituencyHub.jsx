@@ -223,7 +223,8 @@ export default function ConstituencyHub({ seat, onSelectPolitician }) {
   const [focusParty, setFocusParty] = useState(null);
   const [focusRegion, setFocusRegion] = useState(null);
   const [hover, setHover] = useState(null);
-  const [zoom, setZoom] = useState(() => (typeof window !== "undefined" && window.innerWidth < 640 ? 2 : 0));
+  // On a phone the map starts zoomed in a little, so the hexagons are big enough to tap.
+  const [initialScale] = useState(() => (typeof window !== "undefined" && window.innerWidth < 640 ? 2.4 : 1));
   const detailRef = useRef(null);
   const firstSeat = useRef(true);
 
@@ -337,7 +338,7 @@ export default function ConstituencyHub({ seat, onSelectPolitician }) {
 
           <div className="hub-layout" style={{ marginTop: 18 }}>
             <div className="hub-map">
-              <HexMap cells={cells} bounds={bounds} mode={mode} dimmed={dimmed} selected={selected} hoverCell={hoverCell} byCode={byCode} onSelect={chooseCode} onHover={setHover} zoom={zoom} setZoom={setZoom} />
+              <HexMap cells={cells} bounds={bounds} mode={mode} dimmed={dimmed} selected={selected} hoverCell={hoverCell} byCode={byCode} onSelect={chooseCode} onHover={setHover} initialScale={initialScale} />
               <Legend mode={mode} cells={cells} focusParty={focusParty} onFocusParty={setFocusParty} />
               <div style={{ marginTop: 14 }}>
                 <ShareButton filename={`seat-map-${mode.key}`} label="Share this map as an image" getSpec={() => mapShareSpec({ cells, mode, key: partyKey(cells, 6), link: window.location.href })} />

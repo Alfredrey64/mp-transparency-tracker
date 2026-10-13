@@ -7,7 +7,7 @@
 // Shared by the Promises tracker page and the Britain in numbers pages, which show the
 // pledges that go with each set of figures.
 
-export const LAST_CHECKED = "September 2026";
+export const LAST_CHECKED = "October 2026";
 export const SOURCE_URL = "https://fullfact.org/government-tracker/";
 
 export const STATUS = {
@@ -36,18 +36,13 @@ export const CATEGORIES = [
       },
       {
         promise: "Set up a National Wealth Fund capitalised with £7.3bn",
-        status: "off_track",
+        status: "not_kept",
         reality: "The fund itself was established and is investing, but its capital came in below the promised £7.3bn figure. Full Fact rates the funding pledge specifically as not kept.",
       },
       {
         promise: "Abolish non-dom tax status",
         status: "achieved",
         reality: "The regime was abolished and replaced with a new residence-based tax scheme, as promised.",
-      },
-      {
-        promise: "One major fiscal event (Budget) per year",
-        status: "on_track",
-        reality: "The government has stuck to a single annual Budget so far, giving businesses the predictability promised.",
       },
     ],
   },
@@ -101,8 +96,8 @@ export const CATEGORIES = [
       },
       {
         promise: "Close hotels used to house asylum seekers",
-        status: "off_track",
-        reality: "The transition away from hotel accommodation is underway but well behind the pace needed, per Full Fact.",
+        status: "in_progress",
+        reality: "The move away from hotel accommodation is under way and Full Fact rates the pledge as in progress. It is not yet complete.",
       },
       {
         promise: "Add 1,000 returns-enforcement staff",

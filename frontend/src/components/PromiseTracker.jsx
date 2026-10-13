@@ -40,11 +40,11 @@ const TOTAL_PLEDGES = CATEGORIES.reduce((sum, c) => sum + c.pledges.length, 0);
 const OVERALL = [
   { key: "achieved", count: 23 },
   { key: "on_track", count: 18 },
-  { key: "in_progress", count: 21 },
-  { key: "wait_see", count: 14 },
+  { key: "in_progress", count: 22 },
+  { key: "wait_see", count: 12 },
   { key: "off_track", count: 8 },
   { key: "not_kept", count: 6 },
-  { key: "disputed", count: 4 },
+  { key: "disputed", count: 5 },
 ];
 const OVERALL_TOTAL = 94;
 

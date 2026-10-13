@@ -4,7 +4,7 @@
 // Every pledge was checked against the text of the manifesto (the wording below is a paraphrase, not a quotation), and every outcome against an
 // official statistic, an Act of Parliament or an independent check named in `source`. The Coalition of 2010 published a joint programme for
 // government rather than a manifesto, so that is what it is measured against. Status: "delivered", "partly", "not" (not delivered or not kept) and
-// "under-way" (still running). Checked 12 October 2026. A pledge that was only partly in a government's hands, or that depended on a vote, is
+// "under-way" (still running) and "behind" (still running but behind the pace needed). Checked 12 October 2026. A pledge that was only partly in a government's hands, or that depended on a vote, is
 // marked by what happened, not by whose fault it was.
 
 export const STATUS = {
@@ -12,6 +12,7 @@ export const STATUS = {
   partly: { label: "Partly delivered", colour: "#9C6B30", mark: "~" },
   not: { label: "Not delivered", colour: "#9C3B3B", mark: "✗" },
   "under-way": { label: "Under way", colour: "#4C6FA6", mark: "…" },
+  behind: { label: "Behind the pace", colour: "#B5521B", mark: "!" },
 };
 
 export const MANIFESTOS = [
@@ -106,12 +107,12 @@ export const MANIFESTOS = [
     id: "lab2024", election: "2024", party: "Labour", title: "Change", url: "https://ucrel.lancs.ac.uk/wmatrix/ukmanifestos2024/localpdf/Labour.pdf",
     pledges: [
       { text: "Set up Great British Energy, a publicly owned clean power company.", status: "delivered", note: "The Great British Energy Act 2025 received Royal Assent on 15 May 2025.", source: "Great British Energy Act 2025" },
-      { text: "Bring the railways into public ownership as operator contracts end.", status: "under-way", note: "Train operators have been moving into public ownership in stages since 2025.", source: "Passenger Railway Services (Public Ownership) Act 2024" },
+      { text: "Bring the railways into public ownership as operator contracts end.", status: "under-way", note: "Train operators have been moving into public ownership in stages since 2025. Full Fact rates it as appearing on track.", source: "Passenger Railway Services (Public Ownership) Act 2024; Full Fact Government Tracker" },
       { text: "Abolish Section 21 'no fault' evictions.", status: "delivered", note: "The Renters' Rights Act 2025 received Royal Assent on 27 October 2025. No-fault evictions ended in England on 1 May 2026.", source: "Renters' Rights Act 2025" },
       { text: "Ban exploitative zero-hours contracts, end fire and rehire, and give basic rights from day one.", status: "partly", note: "The Employment Rights Act 2025 received Royal Assent in December 2025 and is being brought in during 2026 and 2027. Protection from unfair dismissal starts after six months, not on day one.", source: "Employment Rights Act 2025" },
       { text: "Remove the right of hereditary peers to sit and vote in the House of Lords.", status: "delivered", note: "The House of Lords (Hereditary Peers) Act 2026 ended it on 29 April 2026.", source: "House of Lords (Hereditary Peers) Act 2026" },
-      { text: "1.5 million new homes in England over the Parliament.", status: "under-way", note: "A five-year target running to 2029.", source: "Ministry of Housing, Communities and Local Government" },
-      { text: "Not increase National Insurance, the basic, higher or additional rates of income tax, or VAT.", status: "delivered", note: "The rates named were not raised under Keir Starmer. Employers' National Insurance rose in April 2025 and the freeze on income tax thresholds was extended to 2031.", source: "HM Revenue and Customs; Autumn Budget 2025" },
+      { text: "1.5 million new homes in England over the Parliament.", status: "behind", note: "A five-year target running to 2029. It needs about 300,000 a year, and housebuilding has been running behind that pace. Full Fact rates it as appearing off track.", source: "Full Fact Government Tracker; ONS" },
+      { text: "Not increase National Insurance, the basic, higher or additional rates of income tax, or VAT.", status: "not", note: "Employers' National Insurance was raised in the October 2024 Budget and income tax thresholds were frozen for longer, to 2031. The rates of income tax and employees' National Insurance, and VAT, were not raised. Full Fact rates the National Insurance pledge as not kept and the income tax one as unclear or disputed.", source: "Full Fact Government Tracker; Autumn Budget 2025" },
     ],
   },
 ];

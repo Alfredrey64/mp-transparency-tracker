@@ -11,11 +11,11 @@ import { Reveal } from "./Motion";
 const para = { fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.65, color: COLORS.inkSoft, margin: "6px 0 0", maxWidth: 760 };
 const field = { display: "block", width: "100%", boxSizing: "border-box", padding: "10px 14px", borderRadius: 12, border: `1px solid ${COLORS.hairline}`, background: COLORS.paper, color: COLORS.ink, fontFamily: FONT_BODY, fontSize: 15 };
 
-export default function SeatLookup({ picked }) {
+export default function SeatLookup({ picked, initial = null }) {
   const [book, setBook] = useState(null);
   const [query, setQuery] = useState("");
   const [postcode, setPostcode] = useState("");
-  const [chosen, setChosen] = useState({ name: null, from: null });
+  const [chosen, setChosen] = useState({ name: initial, from: initial ? "link" : null });
   const [state, setState] = useState({ busy: false, error: null });
 
   useEffect(() => {
@@ -23,6 +23,13 @@ export default function SeatLookup({ picked }) {
     loadSeatBook().then((b) => alive && setBook(b));
     return () => { alive = false; };
   }, []);
+
+  // Arriving from a link or from search, bring the seat into view once the page has settled.
+  useEffect(() => {
+    if (!initial) return undefined;
+    const t = setTimeout(() => document.getElementById("h-eh-seat")?.scrollIntoView({ behavior: "smooth", block: "start" }), 600);
+    return () => clearTimeout(t);
+  }, [initial]);
 
   const matches = useMemo(() => (book ? searchSeats(book, query, 8) : []), [book, query]);
 

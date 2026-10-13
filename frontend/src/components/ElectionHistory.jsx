@@ -109,7 +109,7 @@ function ElectionStrip({ selected, onPick }) {
 }
 
 
-export default function ElectionHistory({ electionId, onPick }) {
+export default function ElectionHistory({ electionId, onPick, seat = null }) {
   const e = ELECTIONS.find((x) => x.id === electionId) ?? ELECTIONS[ELECTIONS.length - 1];
   const is2024 = e.id === "2024";
   const [mode, setMode] = useState("winner");
@@ -271,7 +271,7 @@ export default function ElectionHistory({ electionId, onPick }) {
         </Reveal>
       )}
 
-      <SeatLookup />
+      <SeatLookup key={seat ?? ""} initial={seat} />
       <CompareElections />
     </div>
   );

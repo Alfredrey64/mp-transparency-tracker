@@ -34,7 +34,6 @@ export const SECTOR_PROMISES = {
     { promise: "No income tax rate increases" },
     { promise: "Cap Corporation Tax at 25% for the parliament" },
     { promise: "Abolish non-dom tax status" },
-    { promise: "One major fiscal event (Budget) per year" },
     { promise: "Set up a National Wealth Fund capitalised with £7.3bn" },
   ],
   environment: [
