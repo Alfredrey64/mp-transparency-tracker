@@ -70,6 +70,7 @@ export const LOADERS = {
   howtovote: () => import("./components/HowToVote"),
   localElections: () => import("./components/LocalElections"),
   generalElection: () => import("./components/GeneralElection"),
+  taxRates: () => import("./components/TaxRates"),
 };
 
 const started = new Set();

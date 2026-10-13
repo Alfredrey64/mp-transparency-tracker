@@ -226,6 +226,11 @@ export const PAGE_GUIDES = {
     why: "You can't vote unless you are registered, and the rules on ID and deadlines trip up people every election. Knowing them in advance makes your vote count.",
     notShown: "Your registration status, or the exact deadline for the next election. Those come from gov.uk, which this page links to. Rules can change, so check there.",
   },
+  taxRates: {
+    what: "How the main UK tax rates have changed since 1945, from income tax and VAT to business rates and the duties on drink, tobacco and gambling, with who was in government for each change.",
+    why: "Tax decides what is left in your pay and what things cost, and the biggest changes were made by particular governments at particular Budgets.",
+    notShown: "Whether a change was wise, tax reliefs, taxes set only in Scotland or Wales, and years before an official table begins.",
+  },
   generalElection: {
     what: "The 2024 result, every general election since 1945 with maps and a seat lookup, each government since, devolved elections, and a plain-English guide to how votes turn into seats.",
     why: "The party with the most seats forms the government, which is not always the party most people voted for. Results, promises and outcomes together show how the system works.",
