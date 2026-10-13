@@ -17,7 +17,7 @@ import { makeSquash, squashTicks } from "../lib/squashScale";
 const DEFAULT_W = 640;
 
 export default function LineChart({
-  lines, xTicks, yFormat, ariaLabel, height = 230, accent, bands = [], domainX, hoverX, onHoverX, clipX, animateIn = false, compact = false, refLines, yScale = "linear",
+  lines, xTicks, yFormat, ariaLabel, height = 230, accent, bands = [], domainX, hoverX, onHoverX, clipX, animateIn = false, compact = false, refLines, yScale = "linear", leftPad = 0,
 }) {
   const gid = useId().replace(/:/g, "");
   const ref = useRef(null);
@@ -77,13 +77,13 @@ export default function LineChart({
     const dHi = Math.max(hi, tTicks.at(-1) ?? hi);
     // The left margin grows to fit the longest axis label, so values like £600,000 are never cut off.
     const longest = Math.max(...ticks.map((t) => String(yFormat(t)).length));
-    const M = { ...base, l: Math.max(base.l, Math.ceil(14 + longest * (compact ? 6 : 6.6))) };
+    const M = { ...base, l: Math.max(base.l, leftPad, Math.ceil(14 + longest * (compact ? 6 : 6.6))) };
     const sx = (x) => M.l + ((x - xMin) / (xMax - xMin || 1)) * (W - M.l - M.r);
     const sy = (y) => M.t + (1 - (T(y) - dLo) / (dHi - dLo || 1)) * (H - M.t - M.b);
     return { xMin, xMax, ticks, sx, sy, dLo, dHi, M };
     // yFormat is a new function on every render and only its output length matters here.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lines, refLines, H, domainX, compact, W, base.l, base.r, base.t, base.b, yScale]);
+  }, [lines, refLines, H, domainX, compact, W, base.l, base.r, base.t, base.b, yScale, leftPad]);
 
   if (!geo) return null;
   const { sx, sy, ticks, M } = geo;

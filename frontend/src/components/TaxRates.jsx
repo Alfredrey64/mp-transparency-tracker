@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
-import { IconCabinet, IconQuestion, IconTaxes, IconTrend } from "./icons";
+import { IconCabinet, IconCompareTime, IconQuestion, IconTaxes, IconTrend } from "./icons";
 import { TAXES } from "../data/taxCatalogue";
 import { GOVERNMENTS } from "../data/governments";
 import TaxExplorer from "./TaxExplorer";
 import TaxByGovernment from "./TaxByGovernment";
+import TaxCompare from "./TaxCompare";
 import TaxAbout from "./TaxAbout";
 
 // Tax rates through time: every main tax rate since 1945 where there is a record, who was in government when each changed, and the main rates
@@ -14,6 +15,7 @@ import TaxAbout from "./TaxAbout";
 const TABS = [
   { key: "taxes", label: "By tax", blurb: "How each rate moved", icon: IconTrend, colour: "#0E9AA7" },
   { key: "government", label: "By government", blurb: "What each one changed", icon: IconCabinet, colour: "#C7871A" },
+  { key: "compare", label: "Compare", blurb: "A tax beside growth, jobs, prices", icon: IconCompareTime, colour: "#D6455D" },
   { key: "about", label: "About the figures", blurb: "Sources and limits", icon: IconQuestion, colour: "#7A5AF0" },
 ];
 
@@ -21,10 +23,11 @@ function parse(param) {
   const [first, ...rest] = String(param ?? "").split("/");
   if (first === "government") return { tab: "government", item: rest[0] && GOVERNMENTS.some((g) => g.id === rest[0]) ? rest[0] : GOVERNMENTS[GOVERNMENTS.length - 1].id };
   if (first === "about") return { tab: "about", item: null };
+  if (first === "compare") return { tab: "compare", item: rest.join("/") || "incomeTax.basic/growth" };
   return { tab: "taxes", item: TAXES.some((t) => t.id === first) ? first : "income-tax" };
 }
 
-const hashFor = (tab, item) => `#/taxRates${tab === "taxes" ? (item && item !== "income-tax" ? `/${item}` : "") : tab === "government" ? `/government/${item}` : `/${tab}`}`;
+const hashFor = (tab, item) => `#/taxRates${tab === "taxes" ? (item && item !== "income-tax" ? `/${item}` : "") : tab === "government" ? `/government/${item}` : tab === "compare" ? `/compare/${item}` : `/${tab}`}`;
 
 export default function TaxRates({ param }) {
   const [nav, setNav] = useState(() => parse(param));
@@ -35,7 +38,7 @@ export default function TaxRates({ param }) {
   }
 
   function go(tab, item = null) {
-    const next = { tab, item: item ?? (tab === "taxes" ? "income-tax" : tab === "government" ? GOVERNMENTS[GOVERNMENTS.length - 1].id : null) };
+    const next = { tab, item: item ?? (tab === "taxes" ? "income-tax" : tab === "government" ? GOVERNMENTS[GOVERNMENTS.length - 1].id : tab === "compare" ? "incomeTax.basic/growth" : null) };
     setNav(next);
     window.history.replaceState(null, "", hashFor(next.tab, next.item));
   }
@@ -48,7 +51,7 @@ export default function TaxRates({ param }) {
         title="Tax rates through time"
         subtitle="How the main UK tax rates have changed since 1945, from income tax and VAT to business rates, drink, tobacco and gambling duties, and which government decided each change."
       />
-      <div role="tablist" aria-label="Tax rates sections" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 170px), 1fr))", gap: 10, margin: "24px 0 6px" }}>
+      <div role="tablist" aria-label="Tax rates sections" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 150px), 1fr))", gap: 10, margin: "24px 0 6px" }}>
         {TABS.map((t, i) => {
           const active = nav.tab === t.key;
           const Icon = t.icon;
@@ -72,6 +75,7 @@ export default function TaxRates({ param }) {
       <div key={nav.tab} className="ge-fade" role="tabpanel" id="tx-panel" aria-labelledby={`tx-tab-${nav.tab}`} style={{ fontFamily: FONT_BODY }}>
         {nav.tab === "taxes" && <TaxExplorer taxId={nav.item} onPick={(id) => go("taxes", id)} />}
         {nav.tab === "government" && <TaxByGovernment govId={nav.item} onPick={(id) => go("government", id)} />}
+        {nav.tab === "compare" && <TaxCompare item={nav.item} onChange={(item) => go("compare", item)} />}
         {nav.tab === "about" && <TaxAbout />}
       </div>
     </div>

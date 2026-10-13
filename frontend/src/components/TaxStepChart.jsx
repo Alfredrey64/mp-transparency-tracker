@@ -17,10 +17,14 @@ const isoFromT = (t) => {
   return new Date(start + (t - y) * (end - start)).toISOString().slice(0, 10);
 };
 
-export default function TaxStepChart({ lines, unit, from, to, ariaLabel, height = 250 }) {
+export default function TaxStepChart({ lines, unit, from, to, ariaLabel, height = 250, hoverT, onHoverT, tooltip = true, leftPad = 0 }) {
   const ref = useRef(null);
   const [measuredW, setW] = useState(null);
-  const [hover, setHover] = useState(null);
+  const [localHover, setLocalHover] = useState(null);
+  // Pass hoverT and onHoverT to share one crosshair with another chart.
+  const controlled = onHoverT !== undefined;
+  const hover = controlled ? hoverT ?? null : localHover;
+  const setHover = controlled ? onHoverT : setLocalHover;
   const W = measuredW ?? DEFAULT_W;
   useEffect(() => {
     const el = ref.current;
@@ -51,11 +55,11 @@ export default function TaxStepChart({ lines, unit, from, to, ariaLabel, height 
     while ((ticks.at(-1) ?? 0) < max * 1.01 && step > 0) ticks.push(Number(((ticks.at(-1) ?? 0) + step).toFixed(10)));
     const top = ticks.at(-1) ?? max;
     const longest = Math.max(...ticks.map((t) => String((UNITS[unit] ?? UNITS.pct).axis(t)).length));
-    const M = { l: Math.max(narrow ? 38 : 44, Math.ceil(14 + longest * xlen)), r: narrow ? 10 : 16, t: 18, b: 28 };
+    const M = { l: Math.max(narrow ? 38 : 44, leftPad, Math.ceil(14 + longest * xlen)), r: narrow ? 10 : 16, t: 18, b: 28 };
     const sx = (t) => M.l + ((t - from) / (to - from || 1)) * (W - M.l - M.r);
     const sy = (v) => M.t + (1 - v / (top || 1)) * (H - M.t - M.b);
     return { ticks, M, sx, sy };
-  }, [seqs, to, from, W, H, narrow, unit, xlen]);
+  }, [seqs, to, from, W, H, narrow, unit, xlen, leftPad]);
   const { ticks, M, sx, sy } = geo;
   const xTicks = yearTicks(from, to).filter((t, i, all) => all.findIndex((u) => u.label === t.label) === i);
   const bands = useMemo(() => bandsBetween(from, to, to).map((b) => ({ ...b, color: PARTY_COLOURS[b.party] })), [from, to]);
@@ -131,7 +135,7 @@ export default function TaxStepChart({ lines, unit, from, to, ariaLabel, height 
           )}
         </svg>
       )}
-      {hover !== null && hits.length > 0 && (
+      {tooltip && hover !== null && hits.length > 0 && (
         <div
           style={{ position: "absolute", top: 0, left: `${tipLeft}%`, transform: "translate(-50%, -6px)", pointerEvents: "none", background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 8, padding: "6px 10px", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, boxShadow: "0 4px 14px rgba(0,0,0,0.25)", zIndex: 3, width: "max-content", maxWidth: "min(300px, 90%)" }}
         >
