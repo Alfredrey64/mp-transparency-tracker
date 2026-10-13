@@ -1,10 +1,10 @@
-// Embeddable cards: a question's answer, or one Britain in numbers chart, that anyone can put on their own page in an iframe.
-// The card lives at /embed.html#/answer/<id> or /embed.html#/chart/<page>/<measure>, with ?theme=dark for a dark card.
+// Embeddable cards: a question's answer, one Britain in numbers chart, or one tax's rates, that anyone can put on their own page in an iframe.
+// The card lives at /embed.html#/answer/<id>, /embed.html#/chart/<page>/<measure> or /embed.html#/tax/<tax id>, with ?theme=dark for a dark card.
 
 export const SITE_ORIGIN = "https://simple-politics.vercel.app";
 
 export function embedHash(spec, theme = "light") {
-  const base = spec.kind === "answer" ? `#/answer/${encodeURIComponent(spec.id)}` : `#/chart/${encodeURIComponent(spec.sector)}/${encodeURIComponent(spec.id)}`;
+  const base = spec.kind === "answer" ? `#/answer/${encodeURIComponent(spec.id)}` : spec.kind === "tax" ? `#/tax/${encodeURIComponent(spec.id)}` : `#/chart/${encodeURIComponent(spec.sector)}/${encodeURIComponent(spec.id)}`;
   return theme === "dark" ? `${base}?theme=dark` : base;
 }
 
@@ -17,11 +17,12 @@ export function parseEmbedHash(hash) {
   const parts = path.split("/").filter(Boolean).map((p) => { try { return decodeURIComponent(p); } catch { return p; } });
   const theme = new URLSearchParams(query).get("theme") === "dark" ? "dark" : "light";
   if (parts[0] === "answer" && parts[1]) return { kind: "answer", id: parts[1], theme };
+  if (parts[0] === "tax" && parts[1]) return { kind: "tax", id: parts[1], theme };
   if (parts[0] === "chart" && parts[1] && parts[2]) return { kind: "chart", sector: parts[1], id: parts[2], theme };
   return null;
 }
 
-export const embedHeight = (kind) => (kind === "answer" ? 520 : 440);
+export const embedHeight = (kind) => (kind === "answer" ? 520 : kind === "tax" ? 500 : 440);
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
 

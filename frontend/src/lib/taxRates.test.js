@@ -180,11 +180,11 @@ describe("by government", () => {
     expect(heads.find((h) => h.key === "vat.standard").end).toBe(20);
   });
 
-  it("counts every change under exactly one government", () => {
+  it("counts every UK change under exactly one government (Scottish rates are set by the Scottish Government)", () => {
     const today = "2026-10-13";
     let total = 0;
-    for (const t of allTaxes()) for (const l of t.lines) total += changesOf(l).filter((c) => !c.first && c.date <= today).length;
-    const govIds = [...new Set(allTaxes().flatMap((t) => t.lines.flatMap((l) => changesOf(l).map((c) => c.gov?.id).filter(Boolean))))];
+    for (const t of allTaxes()) for (const l of t.lines) total += changesOf(l).filter((c) => !c.first && c.date <= today && c.gov?.id !== "scottish").length;
+    const govIds = [...new Set(allTaxes().flatMap((t) => t.lines.flatMap((l) => changesOf(l).map((c) => c.gov?.id).filter((id) => id && id !== "scottish"))))];
     const counted = govIds.reduce((n, id) => n + changesByGovernment(id, NOW).length, 0);
     expect(counted).toBe(total);
   });
@@ -207,5 +207,84 @@ describe("tax rates on the Compare over time page", () => {
     expect(basic.points.at(-1)).toEqual(["2026-10", 20]);
     expect(basic.points.find(([p]) => p === "1979-06")[1]).toBe(30);
     expect(Object.keys(entries)).toHaveLength(choices.length);
+  });
+});
+
+describe("pay calculator", () => {
+  it("matches worked examples for income tax and National Insurance", async () => {
+    const { incomeTax, nationalInsurance } = await import("./payCalc");
+    // 2025 to 26, £50,000: personal allowance £12,570, 20% on the next £37,430.
+    expect(Math.round(incomeTax(2025, 50000).tax)).toBe(7486);
+    // 8% of the pay above the weekly primary threshold of £242, over 52 weeks.
+    expect(Math.round(nationalInsurance(2025, 50000))).toBe(2993);
+    // 2008 to 09, £30,000: allowance £6,035, 20% on the rest, NI 11% above £105 a week.
+    expect(Math.round(incomeTax(2008, 30000).tax)).toBe(4793);
+    expect(Math.round(nationalInsurance(2008, 30000))).toBe(2699);
+    // The personal allowance is withdrawn above £100,000: £110,000 loses £5,000 of it.
+    const high = incomeTax(2025, 110000);
+    expect(high.allowance).toBe(7570);
+    expect(Math.round(high.tax)).toBe(33432);
+    // Above £125,140 the top rate applies; below zero tax at low pay.
+    expect(incomeTax(2025, 10000).tax).toBe(0);
+    expect(nationalInsurance(2025, 10000)).toBe(0);
+  });
+
+  it("works for every year the tables cover", async () => {
+    const { payslip, FIRST_YEAR, LAST_YEAR } = await import("./payCalc");
+    for (let y = FIRST_YEAR; y <= LAST_YEAR; y += 1) {
+      for (const pay of [15000, 30000, 60000, 200000]) {
+        const s = payslip(y, pay);
+        expect(s, `${y} ${pay}`).toBeTruthy();
+        expect(s.incomeTax).toBeGreaterThanOrEqual(0);
+        expect(s.ni).toBeGreaterThanOrEqual(0);
+        expect(s.takeHome).toBeLessThanOrEqual(pay);
+        expect(s.totalShare).toBeLessThan(60);
+      }
+    }
+  });
+});
+
+describe("tax search", () => {
+  it("finds taxes by the words people use", async () => {
+    const { buildTaxIndex, findTaxes } = await import("./taxSearch");
+    const index = buildTaxIndex(NOW);
+    expect(findTaxes("petrol", index)[0]).toMatchObject({ hash: "#/taxRates/fuel" });
+    expect(findTaxes("pint", index)[0].hash).toBe("#/taxRates/alcohol");
+    expect(findTaxes("stamp duty", index)[0].hash).toBe("#/taxRates/stamp-duty");
+    expect(findTaxes("sugar tax", index)[0].hash).toBe("#/taxRates/sugar");
+    expect(findTaxes("what would i have paid", index)[0].hash).toBe("#/taxRates/pay");
+    expect(findTaxes("vat", index)[0].name).toBe("VAT");
+    expect(findTaxes("x", index)).toEqual([]);
+  });
+});
+
+describe("tax pledges", () => {
+  it("only name rates that exist and cover a period we can measure", async () => {
+    const { MANIFESTOS } = await import("../data/manifestoPledges");
+    const { windowFor } = await import("./pledgeWindow");
+    let n = 0;
+    for (const m of MANIFESTOS) {
+      for (const p of m.pledges) {
+        if (!p.rates) continue;
+        n += 1;
+        expect(windowFor(m.election), `${m.id} election`).toBeTruthy();
+        for (const key of p.rates) expect(SERIES[key], `${m.id}: ${key}`).toBeTruthy();
+      }
+    }
+    expect(n).toBeGreaterThanOrEqual(6);
+  });
+});
+
+describe("share cards", () => {
+  it("builds a card for every tab and every tax", async () => {
+    const { taxShareSpec } = await import("./taxShare");
+    for (const t of TAXES) {
+      const spec = taxShareSpec({ tab: "taxes", item: t.id }, "https://x.test", NOW);
+      expect(spec.title, t.id).toBe(t.name);
+      expect(spec.stats.length, t.id).toBeGreaterThan(0);
+    }
+    expect(taxShareSpec({ tab: "who", mode: "government", item: "thatcher" }, "x", NOW).stats).toHaveLength(4);
+    expect(taxShareSpec({ tab: "who", mode: "chancellor", item: "Nigel Lawson" }, "x", NOW).title).toContain("Lawson");
+    for (const nav of [{ tab: "who", mode: "budget" }, { tab: "pay" }, { tab: "compare" }, { tab: "about" }]) expect(taxShareSpec(nav, "x", NOW).title.length).toBeGreaterThan(5);
   });
 });

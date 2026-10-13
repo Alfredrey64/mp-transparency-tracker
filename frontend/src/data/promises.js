@@ -26,11 +26,13 @@ export const CATEGORIES = [
     pledges: [
       {
         promise: "No tax rises on \"working people\" (income tax, NI, VAT)",
+        rates: ["incomeTax.basic", "ni.employee", "ni.employer", "vat.standard"],
         status: "not_kept",
         reality: "Employer National Insurance was raised in the October 2024 Budget. Income tax and employee NI rates themselves haven't risen, and VAT wasn't raised, but Full Fact rates the broad promise as not kept overall.",
       },
       {
         promise: "Cap Corporation Tax at 25% for the parliament",
+        rates: ["corp.main"],
         status: "on_track",
         reality: "The rate has been held at 25% throughout.",
       },
@@ -196,6 +198,7 @@ export const CATEGORIES = [
       },
       {
         promise: "No income tax rate increases",
+        rates: ["incomeTax.basic", "incomeTax.top"],
         status: "disputed",
         reality: "Full Fact flags this as disputed. It depends on a technical reading of frozen thresholds versus headline rates, which different sides interpret differently.",
       },

@@ -11,6 +11,7 @@
     "test": "vitest run",
     "test:phone": "playwright test",
     "check:size": "node scripts/check-bundle-size.mjs",
+    "check:tax": "node scripts/check-tax-data.mjs",
     "prebuild": "node scripts/build-seo-pages.mjs"
   },
   "dependencies": {

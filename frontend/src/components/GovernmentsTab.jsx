@@ -4,6 +4,8 @@ import { card, cardTitle, pillStyle } from "../lib/onsStyles";
 import { scrollRegion } from "../lib/a11y";
 import { GOVERNMENTS } from "../data/governments";
 import { STATUS, manifestosFor } from "../data/manifestoPledges";
+import PledgeRates from "./PledgeRates";
+import { windowFor } from "../lib/pledgeWindow";
 import { GROUPS } from "../lib/electionHistory";
 import { METRICS, measure } from "../lib/governmentMetrics";
 import { loadMetric } from "../lib/governmentSeries";
@@ -107,6 +109,7 @@ function Pledges({ m }) {
             </span>
             <div style={{ fontFamily: FONT_BODY, fontSize: 15, fontWeight: 600, color: COLORS.ink, lineHeight: 1.4 }}>{p.text}</div>
             <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.55, marginTop: 3, maxWidth: 720 }}>{p.note}</div>
+            {p.rates && windowFor(m.election) && <PledgeRates keys={p.rates} from={windowFor(m.election).from} to={windowFor(m.election).to} />}
             <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 3 }}>Source: {p.source}</div>
           </li>
         ))}

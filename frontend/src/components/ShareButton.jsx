@@ -1,5 +1,5 @@
 import { useState, lazy, Suspense } from "react";
-import { COLORS, FONT_BODY } from "../theme";
+import { COLORS, FONT_BODY, readable } from "../theme";
 
 // The dialog and the canvas drawing code load only when someone clicks.
 const ShareDialog = lazy(() => import("./ShareDialog"));
@@ -24,7 +24,7 @@ export default function ShareButton({ getSpec, filename = "simple-politics", lab
       <button
         type="button"
         onClick={(e) => setOpen({ opener: e.currentTarget })}
-        style={{ display: "inline-flex", alignItems: "center", gap: 7, fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accent, background: `${COLORS.accent}12`, border: `1px solid ${COLORS.accent}40`, borderRadius: 999, padding: "7px 14px", cursor: "pointer", ...style }}
+        style={{ display: "inline-flex", alignItems: "center", gap: 7, fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: readable(COLORS.accent), background: `${COLORS.accent}12`, border: `1px solid ${COLORS.accent}40`, borderRadius: 999, padding: "7px 14px", cursor: "pointer", ...style }}
       >
         <IconShare />
         {label}

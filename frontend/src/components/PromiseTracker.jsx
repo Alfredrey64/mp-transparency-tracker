@@ -5,6 +5,8 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { STATUS, CATEGORIES, LAST_CHECKED, SOURCE_URL } from "../data/promises";
+import PledgeRates from "./PledgeRates";
+import { windowFor } from "../lib/pledgeWindow";
 
 // Sourced from Full Fact's independent, non-partisan Government Tracker
 // (fullfact.org/government-tracker), which assesses Labour's 2024 manifesto
@@ -107,6 +109,7 @@ function PledgeLine({ pledge }) {
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.2 }} style={{ overflow: "hidden" }}>
             <div style={{ padding: "0 2px 14px 26px", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, lineHeight: 1.6 }}>
               {pledge.reality}
+              {pledge.rates && <PledgeRates keys={pledge.rates} from={windowFor("2024").from} to={null} />}
             </div>
           </motion.div>
         )}

@@ -1,0 +1,20 @@
+name: Tax data check
+
+# Reads HMRC's and GOV.UK's published tax tables every Monday and fails if a rate on the Tax rates through time page no longer matches.
+# It changes nothing: a failure means a Budget, an uprating or a correction needs adding to frontend/src/data/taxSeries.json.
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: Tax rates match the official tables
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node frontend/scripts/check-tax-data.mjs

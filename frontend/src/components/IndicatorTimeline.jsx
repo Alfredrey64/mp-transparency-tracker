@@ -7,6 +7,7 @@ import LineChart from "./LineChart";
 import { ALL_SERIES, SECTORS, refOf } from "../data/onsSectors";
 import { loadEverything } from "../lib/onsData";
 import { taxRateChoices, taxRateEntries } from "../lib/taxRateSeries";
+import { loadTaxTake, takeChoices } from "../lib/taxTake";
 import { formatValue, formatAxis, periodToT, changeShort, periodLabel } from "../lib/onsFormat";
 import { changeBetween, valueAtOrBefore } from "../lib/onsStats";
 import { toLineData, yearTicks } from "../lib/onsChart";
@@ -37,7 +38,7 @@ const CHOICES = (() => {
     seen.add(key);
     return true;
   });
-  return [...ons, ...taxRateChoices()];
+  return [...ons, ...taxRateChoices(), ...takeChoices()];
 })();
 
 // Topics are the Britain in numbers pages; each holds the measures to choose from.
@@ -120,12 +121,12 @@ export default function IndicatorTimeline({ param }) {
 
   useEffect(() => {
     let alive = true;
-    loadEverything().then((r) => {
+    Promise.all([loadEverything(), loadTaxTake()]).then(([r, take]) => {
       if (!alive) return;
       // Swap the Taxes and spending series for the tax rates.
       const rest = Object.fromEntries(Object.entries(r).filter(([ref]) => !ref.startsWith("tax.")));
       const accent = SECTORS.find((t) => t.key === "tax")?.accent;
-      setEverything({ ...rest, ...taxRateEntries(accent) });
+      setEverything({ ...rest, ...taxRateEntries(accent), ...Object.fromEntries(Object.entries(take).map(([id, e]) => [`tax.${id}`, { ...e, sector: "tax", sectorLabel: "Tax rates", accent }])) });
     }).catch(() => alive && setFailed(true));
     return () => { alive = false; };
   }, []);

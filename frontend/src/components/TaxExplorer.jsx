@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, numeric, readable, solid } from "../theme";
 import { card, cardTitle, pillStyle } from "../lib/onsStyles";
 import { GROUPS } from "../data/taxCatalogue";
@@ -6,6 +6,10 @@ import { HEADLINES, allTaxes, comingUp, fmt, getTax, headlineLine, nowSummary, p
 import { Reveal } from "./Motion";
 import TaxStepChart from "./TaxStepChart";
 import TaxSpark from "./TaxSpark";
+import TaxComingUp from "./TaxComingUp";
+import TaxTake from "./TaxTake";
+import EmbedButton from "./EmbedButton";
+import { loadPriceIndex, priceLabel, realLine } from "../lib/priceIndex";
 import ChangeList, { ChangeRow } from "./TaxChangeList";
 
 // Pick a tax and see how its rates have moved, with who was in government behind the line and a list of every change.
@@ -29,17 +33,36 @@ function lineSummary(panel) {
 
 function PanelView({ tax, panel, range, now, nowT }) {
   const [off, setOff] = useState([]);
-  const first = Math.min(...panel.lines.map((l) => l.points[0].t));
+  const [real, setReal] = useState(false);
+  const [index, setIndex] = useState(null);
+  useEffect(() => {
+    if (!real || index) return undefined;
+    let alive = true;
+    loadPriceIndex().then((i) => { if (alive) setIndex(i); }).catch(() => { if (alive) setReal(false); });
+    return () => { alive = false; };
+  }, [real, index]);
+  const isoNow = new Date(now).toISOString().slice(0, 10);
+  const adjusted = real && index;
+  const lines = adjusted ? panel.lines.map((l) => realLine(l, index, isoNow)) : panel.lines;
+  const first = Math.min(...lines.map((l) => l.points[0]?.t ?? Infinity));
   const startT = range.from ?? (range.back ? nowT - range.back : first);
   // A tax that began recently still gets a few years of axis, so a single step is not squeezed against the edge.
   const from = Math.min(Math.max(Math.floor(startT), 1900), Math.floor(nowT) - 2);
-  const shown = panel.lines.filter((l) => !off.includes(l.key));
-  const inRange = shown.filter((l) => l.points[l.points.length - 1].t >= from - 100);
-  const isoNow = new Date(now).toISOString().slice(0, 10);
-  const label = `${tax.name}: ${panel.title.toLowerCase()}, ${from} to now. ${lineSummary(panel)}.`;
+  const shown = lines.filter((l) => !off.includes(l.key));
+  const inRange = shown.filter((l) => l.points.length && l.points[l.points.length - 1].t >= from - 100);
+  const label = `${tax.name}: ${panel.title.toLowerCase()}${adjusted ? ", in today's money" : ""}, ${from} to now. ${lineSummary(panel)}.`;
   return (
     <div style={{ marginTop: 18, padding: "16px clamp(12px, 3vw, 18px) 12px", borderRadius: 18, background: COLORS.paper, border: `1px solid ${COLORS.hairline}` }}>
-      <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 17, fontWeight: 700, color: COLORS.ink, margin: 0 }}>{panel.title}</h3>
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+        <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 17, fontWeight: 700, color: COLORS.ink, margin: 0 }}>{panel.title}{adjusted ? ", in today's money" : ""}</h3>
+        {panel.real && (
+          <div role="group" aria-label="Prices" style={{ display: "inline-flex", padding: 3, gap: 2, borderRadius: 12, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}` }}>
+            {[[false, "As set"], [true, "In today's money"]].map(([v, text]) => (
+              <button key={text} type="button" aria-pressed={real === v} onClick={() => setReal(v)} style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: real === v ? 700 : 600, padding: "6px 12px", borderRadius: 9, border: "none", cursor: "pointer", background: real === v ? COLORS.ink : "transparent", color: real === v ? COLORS.paper : COLORS.inkSoft }}>{text}</button>
+            ))}
+          </div>
+        )}
+      </div>
       {panel.lines.length > 1 && (
         <div role="group" aria-label={`Lines on the chart: ${panel.title}`} style={{ display: "flex", gap: 8, flexWrap: "wrap", margin: "10px 0 6px" }}>
           {panel.lines.map((l) => {
@@ -61,8 +84,12 @@ function PanelView({ tax, panel, range, now, nowT }) {
         <TaxStepChart lines={inRange.length ? inRange : shown} unit={panel.unit} from={from} to={nowT} ariaLabel={label} />
       </div>
       <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, margin: "6px 0 0" }}>
-        {panel.lines.length === 1 ? `Today: ${fmt(panel.unit, panel.lines[0].points.filter((p) => p.date <= isoNow).at(-1)?.value)}. ` : ""}Shaded bands show who was in government. Touch or hover for the rate on any day.
+        {adjusted
+          ? `Adjusted for rising prices to ${priceLabel(index)} prices, using the Retail Prices Index before 1988 and the Consumer Prices Index since, both from the ONS. A figure that stays the same on paper falls in real terms. `
+          : panel.lines.length === 1 ? `Today: ${fmt(panel.unit, panel.lines[0].points.filter((p) => p.date <= isoNow).at(-1)?.value)}. ` : ""}
+        Shaded bands show who was in government. Touch or hover for the rate on any day.
       </p>
+      {real && !index && <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, margin: "4px 0 0" }}>Loading prices...</p>}
     </div>
   );
 }
@@ -99,13 +126,15 @@ function TaxDetail({ tax, now, nowT }) {
         <Stat accent={accent} label="changes in our record">{past.length}</Stat>
       </div>
 
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10, marginTop: 20 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 10, marginTop: 20 }}>
         <div role="group" aria-label="Time range" style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           {RANGES.map((r) => <button key={r.key} type="button" aria-pressed={rangeKey === r.key} onClick={() => setRangeKey(r.key)} style={pillStyle(rangeKey === r.key)}>{r.label}</button>)}
         </div>
+        <EmbedButton spec={{ kind: "tax", id: tax.id }} title={`${tax.name}: tax rates over time`} />
       </div>
 
       {tax.panels.map((panel) => <PanelView key={panel.title} tax={tax} panel={panel} range={range} now={now} nowT={nowT} />)}
+      <TaxTake key={tax.id} taxId={tax.id} nowT={nowT} fromYear={range.from ?? (range.back ? Math.floor(nowT - range.back) : 1960)} accent={accent} />
 
       <a
         href={`#/taxRates/compare/${tax.headline.key}/growth`}
@@ -198,6 +227,7 @@ export default function TaxExplorer({ taxId, onPick }) {
   return (
     <div>
       <TodayStrip now={now} onPick={onPick} />
+      <TaxComingUp now={now} />
 
       <h2 style={{ ...sectionTitle, fontSize: 19, marginTop: 26 }}>Pick a tax</h2>
       <div role="group" aria-label="Kinds of tax" style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
@@ -224,7 +254,7 @@ export default function TaxExplorer({ taxId, onPick }) {
           return (
             <button
               key={t.id} type="button" aria-pressed={on} onClick={() => onPick(t.id)} className="ge-tab ge-fadein"
-              style={{ animationDelay: `${i * 40}ms`, textAlign: "left", cursor: "pointer", padding: "14px 15px 10px", borderRadius: 18, border: `1.5px solid ${on ? group.accent : COLORS.hairline}`, borderTop: `4px solid ${group.accent}`, background: on ? `color-mix(in srgb, ${group.accent} 13%, ${COLORS.paperCard})` : COLORS.paperCard, boxShadow: on ? `0 12px 26px -16px ${group.accent}` : "none", color: COLORS.ink, display: "block" }}
+              style={{ animationDelay: `${i * 40}ms`, textAlign: "left", cursor: "pointer", padding: "14px 15px 10px", borderRadius: 18, borderStyle: "solid", borderWidth: "4px 1.5px 1.5px", borderColor: `${group.accent} ${on ? group.accent : COLORS.hairline} ${on ? group.accent : COLORS.hairline} ${on ? group.accent : COLORS.hairline}`, background: on ? `color-mix(in srgb, ${group.accent} 13%, ${COLORS.paperCard})` : COLORS.paperCard, boxShadow: on ? `0 12px 26px -16px ${group.accent}` : "none", color: COLORS.ink, display: "block" }}
             >
               <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: 16.5, fontWeight: 700, lineHeight: 1.2 }}>{t.name}</span>
               <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 3, lineHeight: 1.4 }}>{t.summary}</span>

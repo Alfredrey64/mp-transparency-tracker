@@ -1,7 +1,8 @@
 import SERIES from "../data/taxSeries.json";
 import { GROUPS, TAXES } from "../data/taxCatalogue";
 import { GOVERNMENTS } from "../data/governments";
-import { chancellorOn } from "../data/chancellors";
+import { CHANCELLORS, chancellorOn } from "../data/chancellors";
+import { APPROX, eventName } from "../data/taxEvents";
 
 // Turns the saved tax rate steps into what the Tax rates through time page shows: values on any date, every change with who decided it, and
 // the headline rates for each government.
@@ -54,12 +55,12 @@ export const PARTY_NAMES = { l: "Labour", c: "Conservative", lc: "Conservative a
 
 // ----- lines and changes -----
 
-function buildLine(taxId, spec, index, panelUnit) {
+function buildLine(taxId, spec, index, panelUnit, setBy) {
   const raw = SERIES[spec.key];
   if (!raw) throw new Error(`No series for ${spec.key}`);
   const budgetDay = spec.key.startsWith("tobacco.");
   const points = raw.map(([date, value, opts = {}]) => ({ date, t: toT(date), value, ann: opts.ann ?? null, note: opts.note ?? null, p: opts.p ?? null, budgetDay }));
-  return { key: spec.key, taxId, label: spec.label, unit: panelUnit, kind: spec.kind ?? "rate", intro: Boolean(spec.intro), colour: COLOURS[index % COLOURS.length], points };
+  return { key: spec.key, taxId, label: spec.label, unit: panelUnit, kind: spec.kind ?? "rate", intro: Boolean(spec.intro), introEffect: spec.introEffect ?? null, setBy: setBy ?? null, colour: COLOURS[index % COLOURS.length], points };
 }
 
 const taxCache = new Map();
@@ -67,7 +68,7 @@ export function getTax(id) {
   if (taxCache.has(id)) return taxCache.get(id);
   const t = TAXES.find((x) => x.id === id);
   if (!t) return null;
-  const panels = t.panels.map((panel) => ({ ...panel, lines: panel.lines.map((l, i) => buildLine(t.id, l, i, panel.unit)) }));
+  const panels = t.panels.map((panel) => ({ ...panel, lines: panel.lines.map((l, i) => buildLine(t.id, l, i, panel.unit, t.setBy)) }));
   const lines = panels.flatMap((p) => p.lines);
   const headline = lines.find((l) => l.key === t.headline) ?? lines[0];
   const out = { ...t, panels, lines, headline, group: GROUPS.find((g) => g.key === t.group) };
@@ -97,7 +98,10 @@ export function pointOn(line, iso) {
 }
 
 // Who set a change. `chancellor` is null when it cannot be named with confidence.
-export function decidedBy(point) {
+export const SCOTTISH_GOVERNMENT = { id: "scottish", pm: "Scottish Government", party: "s" };
+
+export function decidedBy(point, setBy = null) {
+  if (setBy === "scottish") return { gov: SCOTTISH_GOVERNMENT, chancellor: null, decidedEarlier: false };
   const when = point.ann ?? point.date;
   const gov = governmentOn(when);
   const c = chancellorOn(when);
@@ -122,9 +126,9 @@ export function changesOf(line) {
     let effect = null;
     if (move === "up") effect = line.kind === "allowance" ? "less" : "more";
     else if (move === "down") effect = line.kind === "allowance" ? "more" : "less";
-    else if (move === "start") effect = line.kind === "allowance" ? "less" : "more";
+    else if (move === "start") effect = line.introEffect ? (line.introEffect === "none" ? null : line.introEffect) : line.kind === "allowance" ? "less" : "more";
     else if (move === "end") effect = line.kind === "allowance" ? "more" : "less";
-    return { line, point: p, date: p.date, from, to, move, effect, first, ...decidedBy(p) };
+    return { line, point: p, date: p.date, from, to, move, effect, first, ...decidedBy(p, line.setBy) };
   });
 }
 
@@ -181,19 +185,73 @@ export function headlineLine(taxId, key) {
   return getTax(taxId).lines.find((l) => l.key === key);
 }
 
-// The headline rates at the start and end of a government.
-export function headlinesFor(govId, now = Date.now()) {
-  const gov = GOVERNMENTS.find((g) => g.id === govId);
-  if (!gov) return [];
+// The headline rates on two dates: when a spell in office began and its last day (or today).
+export function headlinesBetween(startIso, endIso, now = Date.now()) {
   const today = todayIso(now);
-  const startIso = gov.from;
-  const lastDay = gov.to ? new Date(Date.parse(gov.to) - DAY).toISOString().slice(0, 10) : today;
+  const lastDay = endIso ? new Date(Date.parse(endIso) - DAY).toISOString().slice(0, 10) : today;
   return HEADLINES.map(([taxId, key, label]) => {
     const line = headlineLine(taxId, key);
     const start = valueOn(line, startIso);
     const end = valueOn(line, lastDay);
-    return { taxId, key, label, unit: line.unit, kind: line.kind, start: start === undefined ? undefined : start, end: end === undefined ? undefined : end, firstDate: line.points[0].date };
+    return { taxId, key, label, unit: line.unit, kind: line.kind, start, end, firstDate: line.points[0].date };
   });
+}
+
+// The headline rates at the start and end of a government.
+export function headlinesFor(govId, now = Date.now()) {
+  const gov = GOVERNMENTS.find((g) => g.id === govId);
+  return gov ? headlinesBetween(gov.from, gov.to, now) : [];
+}
+
+// ----- by Chancellor and by Budget -----
+
+// The end of a Chancellor's time in the job (the day the next one began), or null for the current one.
+export function chancellorSpan(name) {
+  const i = CHANCELLORS.findIndex((c) => c.name === name);
+  if (i < 0) return null;
+  return { chancellor: CHANCELLORS[i], from: CHANCELLORS[i].from, to: CHANCELLORS[i + 1]?.from ?? null };
+}
+
+// Changes decided while a Chancellor held the job, counting only those where the Chancellor can be named with confidence.
+export function changesByChancellor(name, now = Date.now()) {
+  const today = todayIso(now);
+  const out = [];
+  for (const tax of allTaxes()) {
+    for (const line of tax.lines) {
+      for (const c of changesOf(line)) {
+        if (c.first || c.date > today) continue;
+        if (c.chancellor && c.chancellor.name === name) out.push({ ...c, tax });
+      }
+    }
+  }
+  return out.sort((a, b) => (a.date < b.date ? -1 : 1));
+}
+
+// The Chancellors who have at least one change we can credit to them, oldest first.
+export function chancellorsWithChanges(now = Date.now()) {
+  return CHANCELLORS.filter((c) => changesByChancellor(c.name, now).length > 0);
+}
+
+// Changes grouped by the Budget or fiscal statement they were decided at. Only changes with a known decision date are included: those where the
+// date is given, and tobacco duty, which always changes on Budget day. Changes that simply took effect on a date, such as 6 April, with no
+// known decision date are left out of this view.
+export function budgetEvents(now = Date.now()) {
+  const today = todayIso(now);
+  const byDate = new Map();
+  for (const tax of allTaxes()) {
+    for (const line of tax.lines) {
+      for (const c of changesOf(line)) {
+        if (c.first) continue;
+        const decided = c.point.ann ?? (c.point.budgetDay ? c.point.date : null);
+        if (!decided || decided > today) continue;
+        if (!byDate.has(decided)) byDate.set(decided, []);
+        byDate.get(decided).push({ ...c, tax });
+      }
+    }
+  }
+  return [...byDate.entries()]
+    .map(([date, changes]) => ({ date, approx: APPROX.has(date), name: eventName(date), gov: governmentOn(date), chancellor: chancellorOn(date), changes: changes.sort((a, b) => (a.tax.name < b.tax.name ? -1 : 1)) }))
+    .sort((a, b) => (a.date < b.date ? 1 : -1));
 }
 
 // What a tax looks like today and when it last changed.

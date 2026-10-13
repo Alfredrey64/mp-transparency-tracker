@@ -9,6 +9,9 @@ import { sentenceFor, sliceRange, formatAxis, formatValue, latestInfo } from "..
 import { toLineData, yearTicks } from "../lib/onsChart";
 import { parseEmbedHash, SITE_ORIGIN } from "../lib/embed";
 import LineChart from "./LineChart";
+import TaxStepChart from "./TaxStepChart";
+import { TAXES } from "../data/taxCatalogue";
+import { fmt, getTax, nowSummary, toT, whenText } from "../lib/taxRates";
 import LogoMark from "./LogoMark";
 
 // The embeddable cards (see lib/embed.js): one answer, or one chart. Rendered inside an iframe on someone else's page, so it
@@ -110,6 +113,33 @@ function Chart({ sector, id }) {
   );
 }
 
+function TaxCard({ id }) {
+  const [now] = useState(() => Date.now());
+  const tax = TAXES.some((t) => t.id === id) ? getTax(id) : null;
+  if (!tax) return <Missing />;
+  const panel = tax.panels[0];
+  const s = nowSummary(tax, now);
+  const accent = tax.group.accent;
+  const from = Math.min(Math.floor(Math.min(...panel.lines.map((l) => l.points[0].t))), Math.floor(toT(new Date(now).toISOString().slice(0, 10))) - 2);
+  return (
+    <Frame href={link(`#/taxRates/${tax.id}`)} label="See every change and who set it">
+      <div style={{ fontSize: 12.5, fontWeight: 700, color: readable(accent) }}>{tax.group.label}</div>
+      <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, lineHeight: 1.2, fontWeight: 700, margin: "4px 0 6px" }}>{tax.name}</h1>
+      <div style={{ ...numeric, fontSize: 38, fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>{fmt(s.line.unit, s.value)}</div>
+      <p style={{ fontSize: 14, lineHeight: 1.5, color: COLORS.inkSoft, margin: "4px 0 8px" }}>{s.line.label}, now{s.since ? `. It last changed in ${whenText({ date: s.since, p: "m" })}.` : "."}</p>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 12px", margin: "0 0 6px" }}>
+        {panel.lines.map((l) => (
+          <span key={l.key} style={{ fontSize: 12.5, color: COLORS.ink, display: "inline-flex", alignItems: "center", gap: 6 }}>
+            <span aria-hidden="true" style={{ width: 9, height: 9, borderRadius: "50%", background: l.colour }} />{l.label}
+          </span>
+        ))}
+      </div>
+      <TaxStepChart lines={panel.lines} unit={panel.unit} from={from} to={toT(new Date(now).toISOString().slice(0, 10))} height={210} ariaLabel={`${tax.name}: ${panel.title.toLowerCase()}. ${s.line.label} now ${fmt(s.line.unit, s.value)}.`} />
+      <p style={{ fontSize: 12, color: COLORS.inkSoft, margin: "8px 0 0" }}>Shaded bands show who was in government. Source: HMRC and other official sources, listed on Simple Politics.</p>
+    </Frame>
+  );
+}
+
 function Missing() {
   return (
     <Frame href={SITE_ORIGIN} label="Open Simple Politics">
@@ -126,5 +156,6 @@ export default function EmbedApp() {
     return () => window.removeEventListener("hashchange", on);
   }, []);
   if (!spec) return <Missing />;
+  if (spec.kind === "tax") return <TaxCard id={spec.id} />;
   return spec.kind === "answer" ? <Answer id={spec.id} /> : <Chart sector={spec.sector} id={spec.id} />;
 }

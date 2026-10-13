@@ -9,6 +9,7 @@ const EFFECT = { more: "More tax", less: "Less tax" };
 const tag = { fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, padding: "2px 8px", borderRadius: 999, whiteSpace: "nowrap", border: `1px solid ${COLORS.hairline}`, color: COLORS.inkSoft };
 
 function whoText(c) {
+  if (c.gov?.id === "scottish") return "Scottish Government and Parliament";
   const party = c.gov ? PARTY_NAMES[c.gov.party] : null;
   const pm = c.gov ? c.gov.pm : null;
   const bits = [];
@@ -34,7 +35,7 @@ export function ChangeRow({ c, showTax, future = false }) {
           {c.effect && <span style={tag}>{EFFECT[c.effect]}</span>}
         </div>
         <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 3, lineHeight: 1.5 }}>
-          {c.gov ? <>Set under the {whoText(c)}.</> : null}
+          {c.gov ? (c.gov.id === "scottish" ? <>Set by the {whoText(c)}.</> : <>Set under the {whoText(c)}.</>) : null}
           {later && c.gov && <> It {future ? "takes" : "took"} effect {c.point.p === "m" ? "in" : "on"} {whenText(c.point)}.</>}
           {c.point.note && <> {c.point.note}</>}
         </div>

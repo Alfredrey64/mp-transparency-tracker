@@ -7,7 +7,8 @@
 // sources named under each tax. Where we could not find a reliable record we left the tax or the years out and say so.
 //
 // Panels group lines that share a unit so they can sit on one chart. `kind: "allowance"` marks a line where a higher figure means less tax
-// (an allowance or a threshold), so a rise counts as a tax cut.
+// (an allowance or a threshold), so a rise counts as a tax cut. `intro: true` marks a line whose first step is the tax or band being brought in;
+// `introEffect` ("more", "less" or "none") says what that did to the tax people pay, where the default (more tax) would be wrong.
 
 export const GROUPS = [
   { key: "pay", label: "Earnings and savings", blurb: "Income tax, National Insurance and tax on dividends", accent: "#2F80ED" },
@@ -30,12 +31,12 @@ export const TAXES = [
       { title: "Rates", unit: "pct", lines: [
         { key: "incomeTax.basic", label: "Basic rate" },
         { key: "incomeTax.top", label: "Top rate" },
-        { key: "incomeTax.starting", intro: true, label: "Starting or lower rate" },
+        { key: "incomeTax.starting", intro: true, introEffect: "less", label: "Starting or lower rate" },
       ] },
-      { title: "Where the tax starts, in pounds a year", unit: "gbp0", lines: [
+      { title: "Where the tax starts, in pounds a year", real: true, unit: "gbp0", lines: [
         { key: "incomeTax.allowance", label: "Tax-free personal allowance", kind: "allowance" },
         { key: "incomeTax.higherStarts", label: "Higher rate starts at", kind: "allowance" },
-        { key: "incomeTax.topStarts", intro: true, label: "Top rate starts at", kind: "allowance" },
+        { key: "incomeTax.topStarts", intro: true, introEffect: "more", label: "Top rate starts at", kind: "allowance" },
       ] },
     ],
     notes: [
@@ -57,16 +58,42 @@ export const TAXES = [
     ],
   },
   {
+    id: "scottish-income-tax", group: "pay", name: "Income tax in Scotland", headline: "scotIncomeTax.higher", setBy: "scottish",
+    summary: "Scotland sets its own income tax rates and bands on pay.",
+    about: "Since April 2017 the Scottish Parliament has set the rates and bands of income tax on most pay and pensions in Scotland. The personal allowance, and tax on savings and dividends, are still set by the UK government. These changes are decided by the Scottish Government in its own Budget, so they are not credited to a UK government or Chancellor.",
+    panels: [
+      { title: "Rates", unit: "pct", lines: [
+        { key: "scotIncomeTax.starter", intro: true, introEffect: "less", label: "Starter rate" },
+        { key: "scotIncomeTax.basic", label: "Basic rate" },
+        { key: "scotIncomeTax.intermediate", intro: true, introEffect: "more", label: "Intermediate rate" },
+        { key: "scotIncomeTax.higher", label: "Higher rate" },
+        { key: "scotIncomeTax.advanced", intro: true, introEffect: "more", label: "Advanced rate" },
+        { key: "scotIncomeTax.top", label: "Top rate" },
+      ] },
+    ],
+    notes: [
+      "In 2017 to 18 the only difference from the rest of the UK was where the higher rate began. In April 2018 Scotland brought in a 19% starter band and a 21% intermediate band, and raised the higher and top rates by a point.",
+      "The higher and top rates rose by a point in April 2023. In April 2024 a new 45% advanced band began on income from £75,000 to £125,140, and the top rate rose to 48%.",
+      "The bands for 2026 to 27, on income above the personal allowance of £12,570, are: starter 19% up to £16,537, basic 20% to £29,526, intermediate 21% to £43,662, higher 42% to £75,000, advanced 45% to £125,140 and top 48% above that.",
+      "The rates for England, Wales and Northern Ireland are under Income tax. Wales has the power to vary its rates but has so far kept them the same as England's.",
+    ],
+    sources: [
+      ["GOV.UK: Income Tax in Scotland", "https://www.gov.uk/scottish-income-tax"],
+      ["Scottish Government: Scottish Income Tax, rates and bands", "https://www.gov.scot/publications/scottish-income-tax-rates-and-bands/"],
+      ["Wikipedia: Income tax in Scotland", "https://en.wikipedia.org/wiki/Income_tax_in_Scotland"],
+    ],
+  },
+  {
     id: "dividends", group: "pay", name: "Tax on dividends", headline: "dividends.basic",
     summary: "The tax on payouts from company shares held outside an ISA or pension.",
     about: "Dividends are payments a company makes to its shareholders. They are taxed at their own rates, which are lower than the rates on pay. Since April 2016 the first slice of dividends each year is tax free, under the dividend allowance. Before 2016 dividends came with a notional tax credit, so the rates are not comparable and the chart starts there.",
     panels: [
       { title: "Rates", unit: "pct", lines: [
-        { key: "dividends.basic", intro: true, label: "Basic rate taxpayers" },
-        { key: "dividends.higher", intro: true, label: "Higher rate taxpayers" },
-        { key: "dividends.additional", intro: true, label: "Top rate taxpayers" },
+        { key: "dividends.basic", intro: true, introEffect: "none", label: "Basic rate taxpayers" },
+        { key: "dividends.higher", intro: true, introEffect: "none", label: "Higher rate taxpayers" },
+        { key: "dividends.additional", intro: true, introEffect: "none", label: "Top rate taxpayers" },
       ] },
-      { title: "Tax-free allowance, in pounds a year", unit: "gbp0", lines: [{ key: "dividends.allowance", intro: true, label: "Dividend allowance", kind: "allowance" }] },
+      { title: "Tax-free allowance, in pounds a year", real: true, unit: "gbp0", lines: [{ key: "dividends.allowance", intro: true, introEffect: "none", label: "Dividend allowance", kind: "allowance" }] },
     ],
     notes: ["From April 2026 the basic and higher dividend rates rose by two points, to 10.75% and 35.75%. The top rate stayed at 39.35%."],
     sources: [
@@ -85,7 +112,7 @@ export const TAXES = [
         { key: "ni.employer", label: "Employers" },
         { key: "ni.selfEmployed", label: "Self-employed (Class 4)" },
       ] },
-      { title: "Pay level at which employers start paying, in pounds a year", unit: "gbp0", lines: [{ key: "ni.employerThreshold", label: "Employer threshold", kind: "allowance" }] },
+      { title: "Pay level at which employers start paying, in pounds a year", real: true, unit: "gbp0", lines: [{ key: "ni.employerThreshold", label: "Employer threshold", kind: "allowance" }] },
     ],
     notes: [
       "Before 1999 employers paid different rates on different slices of pay, and from 1985 to 1989 employees did too. We show the rate on the highest slice for employers and the rate most employees paid.",
@@ -112,7 +139,7 @@ export const TAXES = [
         { key: "vat.higher", intro: true, label: "Higher rate (1974 to 1979)" },
         { key: "vat.gas", intro: true, label: "Home gas and heating" },
         { key: "vat.electricity", intro: true, label: "Home electricity" },
-        { key: "vat.hospitality", intro: true, label: "Hospitality and holidays" },
+        { key: "vat.hospitality", intro: true, introEffect: "less", label: "Hospitality and holidays" },
       ] },
     ],
     notes: [
@@ -146,11 +173,11 @@ export const TAXES = [
     summary: "The tax built into the price of beer, cider, wine and spirits.",
     about: "Alcohol duty is charged by the strength and amount of drink, not by its price. The chart turns HMRC's rates into the duty in a typical serving, so the figures are easy to picture. VAT is charged on top of the drink and its duty.",
     panels: [
-      { title: "Duty in a pint, in pence", unit: "gbpp", lines: [
+      { title: "Duty in a pint, in pence", real: true, unit: "gbpp", lines: [
         { key: "alcohol.beer", label: "Pint of draught beer, 4%" },
         { key: "alcohol.cider", label: "Pint of draught cider, 4.5%" },
       ] },
-      { title: "Duty in a bottle, in pounds", unit: "gbp2", lines: [
+      { title: "Duty in a bottle, in pounds", real: true, unit: "gbp2", lines: [
         { key: "alcohol.wine", label: "Bottle of wine, 75cl at 12.5%" },
         { key: "alcohol.spirits", label: "Bottle of spirits, 70cl at 40%" },
       ] },
@@ -167,7 +194,7 @@ export const TAXES = [
     summary: "The tax on cigarettes and rolling tobacco.",
     about: "Cigarette duty has two parts: a fixed amount for every 20 cigarettes and a share of the shop price. A minimum amount per pack applies too. In recent years duty has gone up every year by inflation plus 2 points.",
     panels: [
-      { title: "Fixed duty, in pounds", unit: "gbp2", lines: [
+      { title: "Fixed duty, in pounds", real: true, unit: "gbp2", lines: [
         { key: "tobacco.specific", label: "Per 20 cigarettes" },
         { key: "tobacco.met", intro: true, label: "Minimum tax per 20 cigarettes (from 2017)" },
         { key: "tobacco.hrt", label: "Per 30g pouch of rolling tobacco" },
@@ -185,7 +212,7 @@ export const TAXES = [
     id: "vaping", group: "sin", name: "Vaping products duty", headline: "vaping.duty",
     summary: "A new tax on vaping liquid, started on 1 October 2026.",
     about: "Vaping products duty is a flat charge on every 10ml of vaping liquid, whatever its nicotine strength. It is paid by manufacturers and importers. Whether the cost is passed on to shoppers is up to the seller. It was first announced by Jeremy Hunt at the Spring Budget 2024, at £2 per 10ml, and the rate was set at £2.20 by Rachel Reeves at the Autumn Budget 2024.",
-    panels: [{ title: "Duty per 10ml of liquid, in pounds", unit: "gbp2", lines: [{ key: "vaping.duty", intro: true, label: "Vaping products duty" }] }],
+    panels: [{ title: "Duty per 10ml of liquid, in pounds", real: true, unit: "gbp2", lines: [{ key: "vaping.duty", intro: true, label: "Vaping products duty" }] }],
     notes: ["A duty stamp scheme runs alongside it, with a grace period for existing stock."],
     sources: [["GOV.UK: New Vaping Products Duty comes into effect", "https://www.gov.uk/government/news/new-vaping-products-duty-comes-into-effect"]],
   },
@@ -196,7 +223,7 @@ export const TAXES = [
     panels: [{ title: "Rates", unit: "pct", lines: [
       { key: "gambling.rgd", intro: true, label: "Online casino games (remote gaming duty)" },
       { key: "gambling.remoteBetting", intro: true, label: "Online sports betting" },
-      { key: "gambling.gbd", intro: true, label: "General betting duty" },
+      { key: "gambling.gbd", intro: true, introEffect: "none", label: "General betting duty" },
     ] }],
     notes: [
       "Bingo duty was abolished on 1 April 2026.",
@@ -212,7 +239,7 @@ export const TAXES = [
     id: "sugar", group: "sin", name: "Sugar levy", headline: "sugar.lower",
     summary: "A charge on soft drinks with a lot of added sugar.",
     about: "The Soft Drinks Industry Levy began in April 2018. It is paid by the makers and importers of drinks with 5g or more of sugar in every 100ml, at a lower rate up to 8g and a higher rate above that. Many firms cut the sugar in their drinks to avoid it.",
-    panels: [{ title: "Charge per litre, in pence", unit: "pence", lines: [
+    panels: [{ title: "Charge per litre, in pence", real: true, unit: "pence", lines: [
       { key: "sugar.lower", intro: true, label: "5g to 8g of sugar per 100ml" },
       { key: "sugar.higher", intro: true, label: "8g or more per 100ml" },
     ] }],
@@ -231,7 +258,7 @@ export const TAXES = [
     id: "fuel", group: "travel", name: "Fuel duty", headline: "fuel.petrol",
     summary: "The tax on a litre of petrol or diesel.",
     about: "Fuel duty is a fixed amount for every litre, whatever the price at the pump. VAT is then charged on the fuel and the duty together. In recent years petrol and diesel have been taxed at the same rate.",
-    panels: [{ title: "Duty per litre, in pence", unit: "pence", lines: [
+    panels: [{ title: "Duty per litre, in pence", real: true, unit: "pence", lines: [
       { key: "fuel.petrol", label: "Unleaded petrol" },
       { key: "fuel.diesel", label: "Diesel" },
     ] }],
@@ -250,7 +277,7 @@ export const TAXES = [
     id: "apd", group: "travel", name: "Air passenger duty", headline: "apd.short_econ",
     summary: "A tax on every passenger flying out of a UK airport.",
     about: "Air passenger duty is charged per passenger on flights leaving the UK. The rate depends on how far the flight goes and whether the ticket is in the lowest class of travel or a higher one. Short-haul means the nearest countries, such as Europe, and long-haul means the next band, such as the United States.",
-    panels: [{ title: "Duty per passenger, in pounds", unit: "gbp0", lines: [
+    panels: [{ title: "Duty per passenger, in pounds", real: true, unit: "gbp0", lines: [
       { key: "apd.short_econ", intro: true, label: "Short-haul, lowest class" },
       { key: "apd.short_std", intro: true, label: "Short-haul, other classes" },
       { key: "apd.long_econ", intro: true, label: "Long-haul, lowest class" },
@@ -267,7 +294,7 @@ export const TAXES = [
     id: "landfill", group: "travel", name: "Landfill tax", headline: "landfill.standard",
     summary: "A charge for every tonne of rubbish buried in landfill.",
     about: "Landfill tax started in October 1996 to push councils and businesses towards recycling. Ordinary waste pays the standard rate, and inert waste such as soil and rubble pays the lower rate. Scotland and Wales run their own landfill taxes, so these are the rates for England and Northern Ireland.",
-    panels: [{ title: "Charge per tonne, in pounds", unit: "gbp2", lines: [
+    panels: [{ title: "Charge per tonne, in pounds", real: true, unit: "gbp2", lines: [
       { key: "landfill.standard", intro: true, label: "Standard rate" },
       { key: "landfill.lower", intro: true, label: "Lower rate" },
     ] }],
@@ -278,7 +305,7 @@ export const TAXES = [
     id: "ccl", group: "travel", name: "Climate change levy", headline: "ccl.electricity",
     summary: "A charge on the energy used by businesses and public bodies.",
     about: "The climate change levy has been charged on the electricity and gas that firms and public services use since April 2001. Homes do not pay it. Energy-intensive industries pay reduced rates.",
-    panels: [{ title: "Main rates, in pence per kilowatt hour", unit: "pence3", lines: [
+    panels: [{ title: "Main rates, in pence per kilowatt hour", real: true, unit: "pence3", lines: [
       { key: "ccl.electricity", intro: true, label: "Electricity" },
       { key: "ccl.gas", intro: true, label: "Gas" },
     ] }],
@@ -289,7 +316,7 @@ export const TAXES = [
     id: "aggregates", group: "travel", name: "Aggregates levy", headline: "aggregates.standard",
     summary: "A charge on sand, gravel and crushed rock dug from the ground.",
     about: "The aggregates levy started in April 2002. It is charged on each tonne of rock, sand and gravel taken from the ground in the UK, to push builders towards recycled materials.",
-    panels: [{ title: "Charge per tonne, in pounds", unit: "gbp2", lines: [{ key: "aggregates.standard", intro: true, label: "Standard rate" }] }],
+    panels: [{ title: "Charge per tonne, in pounds", real: true, unit: "gbp2", lines: [{ key: "aggregates.standard", intro: true, label: "Standard rate" }] }],
     notes: [],
     sources: [["HMRC: Environmental Taxes Bulletin historical rates", `${HMRC}/environmental-taxes-bulletin/environmental-taxes-bulletin-historical-rates`]],
   },
@@ -320,9 +347,9 @@ export const TAXES = [
     panels: [{ title: "Multiplier, in pence in the pound", unit: "pence1", lines: [
       { key: "rates.standard", intro: true, label: "Standard multiplier" },
       { key: "rates.small", intro: true, label: "Small business multiplier" },
-      { key: "rates.rhlStandard", intro: true, label: "Retail, hospitality and leisure, standard (from 2026)" },
-      { key: "rates.rhlSmall", intro: true, label: "Retail, hospitality and leisure, small (from 2026)" },
-      { key: "rates.highValue", intro: true, label: "High-value premises (from 2026)" },
+      { key: "rates.rhlStandard", intro: true, introEffect: "less", label: "Retail, hospitality and leisure, standard (from 2026)" },
+      { key: "rates.rhlSmall", intro: true, introEffect: "less", label: "Retail, hospitality and leisure, small (from 2026)" },
+      { key: "rates.highValue", intro: true, introEffect: "more", label: "High-value premises (from 2026)" },
     ] }],
     notes: [
       "The uniform business rate began in 1990. The multiplier normally rises with inflation each April and drops at a revaluation, which resets rateable values so that the total bill stays about the same.",
@@ -368,7 +395,7 @@ export const TAXES = [
     summary: "The tax paid when buying a home in England and Northern Ireland.",
     about: "Stamp duty land tax is paid by the buyer. Before December 2014 the rate for a price band applied to the whole price, so a small rise in price could cause a big jump in tax. Now each band's rate applies only to the slice of the price inside it. The lines show the main rates for homes bought to live in. Scotland and Wales have their own taxes.",
     panels: [
-      { title: "Price below which there is no tax, in pounds", unit: "gbp0", lines: [
+      { title: "Price below which there is no tax, in pounds", real: true, unit: "gbp0", lines: [
         { key: "sdlt.threshold", label: "Anyone buying a home", kind: "allowance" },
         { key: "sdlt.firstTime", intro: true, label: "First-time buyers", kind: "allowance" },
       ] },
@@ -395,10 +422,10 @@ export const TAXES = [
       { title: "Rates", unit: "pct", lines: [
         { key: "cgt.higher", intro: true, label: "Higher rate taxpayers" },
         { key: "cgt.basic", intro: true, label: "Basic rate taxpayers" },
-        { key: "cgt.property", intro: true, label: "Higher rate, residential property (2016 to 2024)" },
-        { key: "cgt.badr", intro: true, label: "Business asset disposal relief" },
+        { key: "cgt.property", intro: true, introEffect: "none", label: "Higher rate, residential property (2016 to 2024)" },
+        { key: "cgt.badr", intro: true, introEffect: "less", label: "Business asset disposal relief" },
       ] },
-      { title: "Tax-free gains each year, in pounds", unit: "gbp0", lines: [{ key: "cgt.aea", label: "Annual exempt amount", kind: "allowance" }] },
+      { title: "Tax-free gains each year, in pounds", real: true, unit: "gbp0", lines: [{ key: "cgt.aea", label: "Annual exempt amount", kind: "allowance" }] },
     ],
     notes: [
       "From 1965 to 1988 gains were taxed at a flat 30%. From 1988 they were taxed at income tax rates, with taper relief from 1998 that cut the bill on assets held for longer. Taper relief ended in 2008, when a flat 18% began.",
@@ -417,7 +444,7 @@ export const TAXES = [
     summary: "The tax on what is left when someone dies.",
     about: "Inheritance tax is charged on the part of an estate above the nil-rate band. The rate is 40% on the part above it, or 36% if enough is left to charity. Gifts to a spouse are exempt. Since 2017 a second allowance applies when a home is passed to children or grandchildren. Before 1975 the tax was called estate duty, and from 1975 to 1986 capital transfer tax.",
     panels: [
-      { title: "Tax-free amount, in pounds", unit: "gbp0", lines: [
+      { title: "Tax-free amount, in pounds", real: true, unit: "gbp0", lines: [
         { key: "iht.nrb", label: "Nil-rate band", kind: "allowance" },
         { key: "iht.rnrb", intro: true, label: "Extra allowance for a home passed to children", kind: "allowance" },
       ] },
@@ -437,7 +464,7 @@ export const TAXES = [
     id: "council-tax", group: "property", name: "Council tax", headline: "councilTax.bandD",
     summary: "The yearly bill that pays for local services in England.",
     about: "Council tax is set by each council, within limits set by the government. It replaced the community charge, known as the poll tax, in April 1993. The average Band D bill is the usual measure of how high it is, though most homes in England are in a lower band.",
-    panels: [{ title: "Average Band D bill in England, in pounds a year", unit: "gbp0", lines: [{ key: "councilTax.bandD", intro: true, label: "Average Band D council tax" }] }],
+    panels: [{ title: "Average Band D bill in England, in pounds a year", real: true, unit: "gbp0", lines: [{ key: "councilTax.bandD", intro: true, label: "Average Band D council tax" }] }],
     notes: [
       "The community charge, a flat charge per adult, replaced domestic rates in Scotland in 1989 and in England and Wales in 1990. It was replaced by council tax in 1993.",
       "Councils must hold a local vote to raise the bill by more than a limit set by the government, and have been allowed an extra amount for adult social care since 2016.",
@@ -449,9 +476,11 @@ export const TAXES = [
 ];
 
 export const NOT_COVERED = [
-  ["Vehicle excise duty (car tax)", "The rate depends on engine size or emissions and on when the car was registered, so there is no single rate to follow over the years. The standard rate for most cars after the first year is £200 in 2026 to 2027."],
+  ["Vehicle excise duty (car tax)", "The rate depends on engine size or emissions and on when the car was registered, so there is no single rate to follow over the years, and we could not find a verified year-by-year record. The standard rate for most cars after the first year is £200 in 2026 to 2027, up from £195."],
+  ["Fuel, alcohol and tobacco before the records begin", "HMRC's tables start in 1989 for fuel, 1982 for spirits and 1978 for tobacco. Earlier rates are in old Budget reports that we could not check against an official table."],
+  ["Estate duty rates before 1975", "We show the tax-free band back to 1914 but not the rates, which were steeper and changed often."],
   ["Tax rates before the tables begin", "HMRC and other official tables begin at different times, from 1914 for inheritance tax thresholds to 2026 for vaping duty. Where a table starts late, the chart starts there."],
-  ["Taxes set by Scotland, Wales and Northern Ireland", "Scotland sets its own income tax, land and buildings transaction tax and landfill tax. Wales sets its own land transaction tax and landfill disposals tax. They are not included."],
+  ["Other taxes set by Scotland, Wales and Northern Ireland", "Scotland's income tax rates are included. Its land and buildings transaction tax and landfill tax are not, and neither are Wales's land transaction tax and landfill disposals tax or Northern Ireland's domestic rates."],
   ["Tax reliefs and credits", "Pension tax relief, ISAs, tax credits and similar reliefs change what people pay but are not a rate, so they are not tracked here."],
   ["Customs duties and the TV licence", "Customs duties depend on the goods and the country. The TV licence is a fee set by the government, not a tax."],
 ];

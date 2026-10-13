@@ -43,14 +43,14 @@ export default function TaxByGovernment({ govId, onPick }) {
       <p style={{ ...para, marginTop: 8 }}>
         Pick a government to see every change to the rates we follow that it decided, and the main rates when it began and when it ended. The count of changes depends on which rates we follow and when each record starts, so it is not a score.
       </p>
-      <div role="group" aria-label="Choose a government" {...scrollRegion("Governments, scrollable")} style={{ display: "flex", gap: 8, overflowX: "auto", padding: "12px 2px 6px" }}>
+      <div role="group" aria-label="Choose a government" style={{ display: "flex", gap: 8, flexWrap: "wrap", padding: "12px 2px 6px" }}>
         {GOVERNMENTS.map((g) => {
           const on = g.id === gov.id;
           const c = partyColour(g.party);
           return (
             <button
               key={g.id} type="button" aria-pressed={on} onClick={() => { setGroupKey("all"); onPick(g.id); }}
-              style={{ ...pillStyle(false), flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 7, background: on ? solid(c) : "transparent", borderColor: on ? solid(c) : COLORS.hairline, color: on ? "#fff" : COLORS.ink }}
+              style={{ ...pillStyle(false), display: "inline-flex", alignItems: "center", gap: 7, background: on ? solid(c) : "transparent", borderColor: on ? solid(c) : COLORS.hairline, color: on ? "#fff" : COLORS.ink }}
             >
               <span aria-hidden="true" style={{ width: 9, height: 9, borderRadius: "50%", background: on ? "#fff" : c }} />
               {g.pm.split(" and ")[0].split(" ").slice(-1)[0]} <span style={{ fontWeight: 500, opacity: 0.85 }}>{yr(g.from)}</span>

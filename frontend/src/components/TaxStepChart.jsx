@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { COLORS, FONT_BODY } from "../theme";
 import { niceTicks } from "../lib/onsFormat";
@@ -42,6 +43,7 @@ export default function TaxStepChart({ lines, unit, from, to, ariaLabel, height 
   // What each line does within the range: the value in force at the left edge, then every step.
   const seqs = useMemo(() => lines.map((l) => {
     const seq = [];
+    if (l.sampled) return l.points.filter((p) => p.t >= from && p.t <= to).map((p) => ({ t: p.t, value: p.value }));
     const startVal = valueOn(l, isoFromT(from));
     if (startVal !== undefined && l.points[0].t < from) seq.push({ t: from, value: startVal });
     for (const p of l.points) if (p.t >= from && p.t <= to) seq.push({ t: p.t, value: p.value });
@@ -69,6 +71,11 @@ export default function TaxStepChart({ lines, unit, from, to, ariaLabel, height 
     const pieces = [];
     let cur = null;
     const seq = seqs[li];
+    // A line in today's money is drawn as a smooth line, not steps.
+    if (l.sampled) {
+      const d = seq.map((p, i) => `${i ? "L" : "M"}${sx(p.t).toFixed(1)} ${sy(p.value).toFixed(1)}`).join(" ");
+      return { l, pieces: seq.length > 1 ? [{ d }] : [], dots: [] };
+    }
     seq.forEach((p, i) => {
       const nextT = i + 1 < seq.length ? seq[i + 1].t : to;
       if (p.value === null) { cur = null; return; }
@@ -89,7 +96,7 @@ export default function TaxStepChart({ lines, unit, from, to, ariaLabel, height 
     setHover(Math.min(to, Math.max(from, t)));
   };
   const hoverIso = hover === null ? null : isoFromT(hover);
-  const hits = hoverIso ? lines.map((l) => ({ l, v: valueOn(l, hoverIso) })).filter((h) => h.v !== undefined) : [];
+  const hits = hoverIso ? lines.map((l) => ({ l, v: l.valueAt ? l.valueAt(hoverIso) : valueOn(l, hoverIso) })).filter((h) => h.v !== undefined) : [];
   const gov = hoverIso ? governmentOn(hoverIso) : null;
   const tipLeft = hover === null ? 0 : Math.min(84, Math.max(16, (sx(hover) / W) * 100));
 

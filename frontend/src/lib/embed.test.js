@@ -2,11 +2,17 @@ import { describe, it, expect } from "vitest";
 import { embedHash, embedUrl, parseEmbedHash, iframeCode, embedHeight, RESIZE_SNIPPET } from "./embed";
 import { ANSWERS } from "../data/answers";
 import { SECTORS } from "../data/onsSectors";
+import { TAXES } from "../data/taxCatalogue";
 
 describe("embed addresses", () => {
   it("round-trip an answer and a chart", () => {
     expect(parseEmbedHash(embedHash({ kind: "answer", id: "why-housing-expensive" }))).toEqual({ kind: "answer", id: "why-housing-expensive", theme: "light" });
     expect(parseEmbedHash(embedHash({ kind: "chart", sector: "housing", id: "hpi-uk" }, "dark"))).toEqual({ kind: "chart", sector: "housing", id: "hpi-uk", theme: "dark" });
+  });
+  it("round-trip a tax card and can address every tax", () => {
+    expect(parseEmbedHash(embedHash({ kind: "tax", id: "income-tax" }, "dark"))).toEqual({ kind: "tax", id: "income-tax", theme: "dark" });
+    for (const t of TAXES) expect(parseEmbedHash(embedHash({ kind: "tax", id: t.id })).id).toBe(t.id);
+    expect(embedHeight("tax")).toBeGreaterThan(400);
   });
   it("reject anything that is not a card", () => {
     expect(parseEmbedHash("")).toBeNull();
