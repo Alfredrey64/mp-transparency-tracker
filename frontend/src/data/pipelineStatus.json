@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-10-11T18:14:24.109Z",
-  "succeededCount": 21,
+  "generatedAt": "2026-10-13T19:42:44.106Z",
+  "succeededCount": 16,
   "totalCount": 27,
   "sources": [
     {
@@ -73,23 +73,23 @@
     },
     {
       "label": "Written questions",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Standards reports",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Constituency results & petitions",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Constituency history (former MPs)",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "MP careers (terms, posts, party changes)",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Lords careers (arrival, former MPs, posts)",
