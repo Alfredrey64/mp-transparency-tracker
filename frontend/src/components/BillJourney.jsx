@@ -97,7 +97,7 @@ function HouseTrack({ house, stageCounts, activeKey, onSelect }) {
       >
         {STAGE_DEFS.map((stage, i) => (
           <div key={stage.key} style={{ display: "flex", alignItems: "center", flex: i > 0 ? "1 1 auto" : "0 0 auto" }}>
-            {i > 0 && <div style={{ flex: "1 1 20px", minWidth: 14, height: 2, background: COLORS.hairline }} />}
+            {i > 0 && <div className="mp-flow" aria-hidden="true" style={{ "--flow": color, "--delay": `${(i - 1) * -0.4}s` }}><i /></div>}
             <StageNode
               label={stage.label}
               count={stageCounts[stage.key].length}

@@ -63,7 +63,7 @@ export default function GeneralElection({ param }) {
               onClick={() => go(t.key)}
               style={{
                 animationDelay: `${i * 70}ms`,
-                display: "flex", alignItems: "center", gap: 12, textAlign: "left", cursor: "pointer", padding: "13px 16px", borderRadius: 16,
+                display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10, textAlign: "left", cursor: "pointer", padding: "13px 16px", borderRadius: 16,
                 border: `1.5px solid ${active ? t.colour : COLORS.hairline}`,
                 background: active ? `color-mix(in srgb, ${t.colour} 13%, ${COLORS.paperCard})` : COLORS.paperCard,
                 boxShadow: active ? `0 10px 24px -14px ${t.colour}` : "none",
@@ -73,7 +73,7 @@ export default function GeneralElection({ param }) {
               <span aria-hidden="true" style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 38, height: 38, borderRadius: 11, flexShrink: 0, background: active ? t.colour : `color-mix(in srgb, ${t.colour} 16%, transparent)`, color: active ? "#fff" : `color-mix(in srgb, ${t.colour} 70%, ${COLORS.ink})`, transition: "background 0.25s, color 0.25s" }}>
                 <Icon size={19} />
               </span>
-              <span style={{ minWidth: 0 }}>
+              <span style={{ minWidth: 0, flex: "1 1 90px" }}>
                 <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: 16.5, fontWeight: 700, lineHeight: 1.2 }}>{t.label}</span>
                 <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 2 }}>{t.blurb}</span>
               </span>
