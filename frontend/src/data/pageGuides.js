@@ -226,6 +226,21 @@ export const PAGE_GUIDES = {
     why: "Who has what shapes pay, prices, housing and public services, and is at the centre of many arguments about tax and benefits.",
     notShown: "Whether any gap is fair, comparisons with other countries, or how far people move up and down over their lives.",
   },
+  defence: {
+    what: "How much the UK spends on defence, since 1950 and against other countries, what has been promised, the size of the armed forces, and the arguments.",
+    why: "Defence is one of the biggest calls on public money, and what is spent decides what the armed forces can do.",
+    notShown: "What the money buys in detail, how capable the forces are, or the cost of particular equipment.",
+  },
+  education: {
+    what: "How schools in England are doing, the gap between richer and poorer pupils, special needs support, university fees and loans, and the arguments about each.",
+    why: "Schools and universities shape pay and opportunity, and take a large share of public spending and household debt.",
+    notShown: "School funding per pupil, the early years, how England compares abroad, or what graduates go on to do. Scotland, Wales and Northern Ireland are not included.",
+  },
+  ageing: {
+    what: "What the State Pension pays and costs, how it goes up, when you can claim it, how the population is ageing, and the arguments about the triple lock, the pension age and who pays.",
+    why: "The State Pension is one of the biggest items the government pays for, and a smaller share of people of working age will be paying for it.",
+    notShown: "Workplace and private pensions, benefits for older people other than the State Pension, or social care costs.",
+  },
   brexit: {
     what: "What experts say Brexit has done to the economy, trade, people and politics, where they disagree, and the case for and against, topic by topic.",
     why: "It is one of the biggest political decisions of recent times, and people still argue about what it has cost and gained.",

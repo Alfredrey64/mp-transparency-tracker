@@ -94,6 +94,15 @@ Other places the tax data shows up: the site search finds taxes and rates (`lib/
 - **Keeping it right.** `npm run check:tax` (also run every Monday by `.github/workflows/tax-data.yml`) reads HMRC's and GOV.UK's published tables and compares the newest figure in each with `taxSeries.json`. It prints each difference and fails, but changes nothing.
 - **Left out.** Vehicle excise duty (the rate depends on engine size or emissions and registration date, and we could not verify a year-by-year record), fuel, alcohol and tobacco before the official tables begin, estate duty rates before 1975, Scottish and Welsh property and landfill taxes, tax reliefs, customs duties and the TV licence. The About tab says so too.
 
+## Britain in numbers: issue pages
+
+Inequality, Brexit, Defence, Education and Ageing and pensions are one page each, with a row of toggles (the address carries the toggle, for example `/brexit/trade`). Each takes its figures from a primary source and says which, with the date checked, on its Sources toggle.
+
+- **Inequality** reads `src/data/inequalityData.json`, built by `node scripts/build-inequality-data.mjs` from the ONS household income and wealth tables, DWP Households Below Average Income and ONS regional household income. Headline sentences are worked out in `src/lib/inequality.js`, so text and charts cannot drift apart.
+- **Defence** reads `src/data/defenceData.json`, built by `node scripts/build-defence-data.mjs` from the SIPRI military expenditure database. The promises and the armed forces' numbers are in `src/data/defence.js`.
+- **Brexit, Education and Ageing and pensions** keep their figures, with sources, in `src/data/brexit.js`, `education.js` and `ageing.js`. These are read by hand from the original releases, so each file names the release and the date it was checked. Update the figures and `CHECKED` together when a new release comes out.
+- Where a figure is reported but not confirmed (for example a reported change to the State Pension age), the page says so and gives the law as it stands. Keep that when updating.
+
 ## Phone layout test
 
 `e2e/phone-layout.spec.js` opens every page (the list comes from `src/pageLoaders.js`, so a new page is picked up automatically, plus the tabs listed in the spec) in Chromium at 320 and 375 px wide and fails if the page scrolls sideways, does not open at the top, has no single `h1`, or throws an uncaught error. It runs on every push and pull request as the "Phone layout" job in `.github/workflows/ci.yml`. Data requests are refused during the run, so the result does not depend on the network or on live data.
