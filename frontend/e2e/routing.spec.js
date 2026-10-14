@@ -54,3 +54,16 @@ test("an address the site does not know opens the home page", async ({ page }) =
   await expect(page.locator("h1").first()).toBeVisible();
   await expect(page).toHaveURL(/\/$/);
 });
+
+test("the opening text sent with a page shows for that page only, not on addresses answered with the home page's HTML", async ({ page }) => {
+  // The app's scripts are held back so only the HTML and /pre.js are in play.
+  await page.route("**/assets/*.js", (route) => route.abort());
+  // (With a closing slash, so the test server finds the page's own file as Vercel does without one.)
+  await page.goto("/taxRates/vat/");
+  await expect(page.locator(".pre h1")).toBeVisible();
+  await expect(page.locator(".pre h1")).toHaveText("VAT: how the rate has changed");
+  await page.goto("/constituency/Holborn%20and%20St%20Pancras");
+  await expect(page.locator(".pre")).toBeHidden();
+  await page.goto("/");
+  await expect(page.locator(".pre h1")).toHaveText("A simple breakdown of UK politics");
+});

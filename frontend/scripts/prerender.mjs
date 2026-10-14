@@ -4,8 +4,8 @@
 // search engine or a link preview sees the same title and an empty page for all of them, and a visitor sees nothing until the scripts have run. This
 // takes the built dist/index.html and writes a copy for each page (dist/taxRates/vat/index.html and so on) with the page's own title, description and
 // share tags, and a plain heading and introduction already in the page. The app replaces that text when it starts, so nothing else changes, but the
-// first thing a visitor sees now arrives with the HTML instead of after the scripts. Pages with no copy of their own (a seat, an MP) are answered with
-// the plain app.html by the rewrite in vercel.json.
+// first thing a visitor sees now arrives with the HTML instead of after the scripts. Addresses with no copy of their own (a seat, an MP) are answered with
+// the home page's HTML by the rewrite in vercel.json; /pre.js hides its opening text when the address is not the home page.
 //
 //   node scripts/prerender.mjs [distDir]
 
@@ -43,16 +43,14 @@ export function render(template, entry) {
     .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${esc(url)}$2`)
     .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${title}$2`)
     .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${description}$2`);
-  const block = `<div class="pre"><p class="k">Simple Politics</p><h1>${esc(entry.heading)}</h1><p>${esc(entry.lead ?? entry.description)}</p>${entry.bodyHtml ?? ""}</div>`;
-  html = html.replace('<div id="root"></div>', `<div id="root">${block}</div>`).replace("</head>", `<style id="pre-css">${CSS.replace(/\n/g, "")}</style></head>`);
+  const block = `<div class="pre" data-path="${esc(entry.path)}"><p class="k">Simple Politics</p><h1>${esc(entry.heading)}</h1><p>${esc(entry.lead ?? entry.description)}</p>${entry.bodyHtml ?? ""}</div>`;
+  html = html.replace('<div id="root"></div>', `<div id="root">${block}</div><script src="/pre.js"></script>`).replace("</head>", `<style id="pre-css">${CSS.replace(/\n/g, "")}</style></head>`);
   return html;
 }
 
 export function prerender(distDir, sidebarSource) {
   const template = fs.readFileSync(path.join(distDir, "index.html"), "utf8");
   if (!template.includes('<div id="root"></div>')) throw new Error("dist/index.html has no empty root to fill.");
-  // The plain page, with nothing in it, for every address that has no copy of its own: the app starts from it and shows the right page.
-  fs.writeFileSync(path.join(distDir, "app.html"), template);
   let written = 0;
   for (const entry of routeEntries(sidebarSource)) {
     const file = entry.path === "/" ? path.join(distDir, "index.html") : path.join(distDir, entry.path.replace(/^\//, ""), "index.html");

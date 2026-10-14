@@ -71,8 +71,8 @@
   "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/((?!assets/|fonts/|p/)(?!.*\\.(?:js|css|json|png|jpe?g|webp|svg|ico|woff2?|txt|xml|map|html|webmanifest)$).*)",
-      "destination": "/app.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "redirects": [

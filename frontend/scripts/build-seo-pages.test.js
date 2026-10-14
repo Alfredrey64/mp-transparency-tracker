@@ -55,16 +55,16 @@ describe("prerendered pages", () => {
     expect(html).toContain("<title>VAT | Simple Politics</title>");
     expect(html).toContain('content="About &quot;VAT&quot; &amp; more"');
     expect(html).toContain(`href="${SITE}/taxRates/vat"`);
-    expect(html).toContain('<div id="root"><div class="pre"><p class="k">Simple Politics</p><h1>VAT</h1>');
+    expect(html).toContain('<div id="root"><div class="pre" data-path="/taxRates/vat"><p class="k">Simple Politics</p><h1>VAT</h1>');
+    expect(html).toContain('<script src="/pre.js"></script>');
     expect(html.match(/<h1>/g)).toHaveLength(1);
     expect(html).not.toContain("content=\"old\"");
   });
-  it("write a copy of the built page for every address, and a plain one for the rest", () => {
+  it("write a copy of the built page for every address", () => {
     const dist = fs.mkdtempSync(path.join(os.tmpdir(), "dist-"));
     fs.writeFileSync(path.join(dist, "index.html"), template);
     const n = prerender(dist, source);
     expect(n).toBe(routeEntries(source).length);
-    expect(fs.readFileSync(path.join(dist, "app.html"), "utf8")).toBe(template);
     expect(fs.readFileSync(path.join(dist, "taxRates", "vat", "index.html"), "utf8")).toContain("<h1>VAT: how the rate has changed</h1>");
     expect(fs.readFileSync(path.join(dist, "answers", "what-is-gdp", "index.html"), "utf8")).toContain("What is GDP?");
     expect(fs.readFileSync(path.join(dist, "index.html"), "utf8")).toContain("A simple breakdown of UK politics");
