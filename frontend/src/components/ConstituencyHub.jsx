@@ -5,6 +5,7 @@ import { supabase } from "../supabaseClient";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { COLORS, FONT_BODY, PAGE_PADDING, numeric } from "../theme";
 import { partyColour } from "../lib/format";
+import PartyChangeNote from "./PartyChangeNote";
 import { seatKey, ordinal } from "../lib/constituency";
 import { buildCells, boundsOf, MODES, REGIONS, regionName, partyKey, summariseRegion, neighbours, seatRanks, normSeat } from "../lib/seatMap";
 import { rebelRates } from "../lib/rebels";
@@ -81,6 +82,7 @@ function SeatExtras({ cell, cells, uk, region, onSelect }) {
           ))}
         </div>
       )}
+      <PartyChangeNote change={cell.change} style={{ marginTop: 12 }} />
       {mp?.first != null && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 12 }}>
           {mp.name}: MP since {mp.first}
@@ -170,7 +172,9 @@ function AreaSummary({ summary, label, onSeat }) {
 
 function Legend({ mode, cells, focusParty, onFocusParty }) {
   if (mode.key === "party") {
+    const changed = cells.filter((c) => c.change).length;
     return (
+      <>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 16px", marginTop: 14 }}>
         {partyKey(cells, 9).map((p) => {
           const on = focusParty === p.party;
@@ -189,6 +193,10 @@ function Legend({ mode, cells, focusParty, onFocusParty }) {
           );
         })}
       </div>
+      <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.5, color: COLORS.inkSoft, margin: "10px 0 0", maxWidth: 640 }}>
+        Colours show the party each MP sits for today, which can differ from the party they were elected for.{changed > 0 ? ` ${changed} MPs have changed party since the 2024 election. Pick a seat to see who, and the party they were elected for.` : ""}
+      </p>
+      </>
     );
   }
   const l = mode.legend;

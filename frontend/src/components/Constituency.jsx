@@ -13,6 +13,8 @@ import { IconSearch } from "./icons";
 import CountUp from "./CountUp";
 import Reveal from "./Reveal";
 import { navigate } from "../lib/route";
+import PartyChangeNote from "./PartyChangeNote";
+import { partyChange } from "../lib/partyChange";
 
 const SeatElections = lazy(() => import("./SeatElections"));
 const SeatLocalNumbers = lazy(() => import("./SeatLocalNumbers"));
@@ -81,6 +83,7 @@ function SeatHero({ record, mpInfo, safety, onOpenProfile, opening }) {
   const { mp } = record;
   const colour = partyColour(mp.colour, COLORS.accent);
   const since = mpInfo?.membership_start_date;
+  const change = useMemo(() => partyChange(record), [record]);
   return (
     <motion.div
       initial={{ opacity: 0, y: 14 }}
@@ -112,6 +115,8 @@ function SeatHero({ record, mpInfo, safety, onOpenProfile, opening }) {
             {opening ? "Opening…" : "See their full record"}
           </button>
         </div>
+
+        <PartyChangeNote change={change} style={{ marginTop: 18, maxWidth: 640 }} />
 
         {safety && (
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: 20, padding: "7px 14px", borderRadius: 999, background: `${COLORS.accent}1c`, fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.ink }}>
@@ -313,6 +318,7 @@ function Overview({ record, seats, safety }) {
                 </div>
               </div>
               {result.candidates.length > 0 && <VoteShare candidates={result.candidates} />}
+              <PartyChangeNote change={partyChange(record)} style={{ marginTop: 16 }} />
               {safety && (
                 <div style={{ marginTop: 18, padding: "12px 14px", background: COLORS.paper, borderRadius: 12, fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.6, color: COLORS.ink }}>
                   <strong>{safety.label}.</strong> {safety.blurb} There's no official definition of a marginal or safe seat; this site calls a seat marginal when the winner's majority is under{" "}

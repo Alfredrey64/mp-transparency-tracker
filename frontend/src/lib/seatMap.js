@@ -2,6 +2,8 @@
 // result belongs to it, and what colour each view paints it. Pure and
 // tested; the drawing is in components/SeatMap.jsx.
 
+import { partyChange } from "./partyChange";
+
 // "Ashton-under-Lyne" and "Ashton under Lyne" are the same seat: compare
 // names with punctuation and case taken out.
 export const normSeat = (name) => String(name ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -86,6 +88,7 @@ export function buildCells(hexes, seats, mps, size = 1, extras = {}) {
             rebelPct: extras.rebels?.get(mp.id)?.pct ?? null,
           }
         : null,
+      change: mp && seat?.result ? partyChange({ mp: { name: mp.name, party: mp.party, memberId: mp.parliament_member_id ?? null }, result: seat.result }) : null,
       petitions: (seat?.petitions ?? []).reduce((n, p) => n + (p.count ?? 0), 0),
       result: seat?.result
         ? {

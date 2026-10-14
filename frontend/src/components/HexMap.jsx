@@ -50,7 +50,7 @@ function HoverCard({ cell }) {
       <div style={{ minWidth: 0 }}>
         <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, color: COLORS.ink, lineHeight: 1.2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{cell.seatName}</div>
         <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-          {cell.mp ? `${cell.mp.name} · ${cell.mp.party}` : "No MP matched"}
+          {cell.mp ? `${cell.mp.name} · ${cell.mp.party}${cell.change ? ` (elected for ${cell.change.electedAs})` : ""}` : "No MP matched"}
         </div>
         {r && (
           <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 1 }}>

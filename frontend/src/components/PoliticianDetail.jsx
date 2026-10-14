@@ -1,3 +1,5 @@
+import PartyChangeNote from "./PartyChangeNote";
+import { usePartyChange } from "../lib/usePartyChange";
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import PageGuide from "./PageGuide";
 import { DeclaredMeaning } from "./MpMeaning";
@@ -126,6 +128,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
 
   const office = timeInOffice(politician.membership_start_date);
   const color = partyColour(politician.party_colour, COLORS.inkSoft);
+  const partyChangeNote = usePartyChange(politician);
 
   return (
     <motion.div
@@ -230,6 +233,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
               </button>
               {office && <span style={{ flexBasis: "100%", textAlign: "center", fontSize: 14 }}>MP for {office}</span>}
             </div>
+            <PartyChangeNote change={partyChangeNote} style={{ margin: "12px auto 0", maxWidth: 560 }} />
             <div style={{ display: "flex", justifyContent: "center", marginTop: 10 }}>
               <ShareButton
                 filename={`${politician.name}-simple-politics`}

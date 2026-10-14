@@ -1,3 +1,4 @@
+import { partyChange } from "../lib/partyChange";
 import { useEffect, useMemo, useState } from "react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme";
 import { partyColour } from "../lib/format";
@@ -88,6 +89,7 @@ function Header({ rec }) {
         <div style={{ minWidth: 0, fontFamily: FONT_BODY }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: COLORS.ink }}>{rec.mp.name}</div>
           <div style={{ fontSize: 12.5, color: COLORS.inkSoft }}>{rec.mp.party}</div>
+          {partyChange(rec) && <div style={{ fontSize: 12, color: COLORS.inkSoft }}>Elected {partyChange(rec).electedAs === "Independent" ? "as an Independent" : `for ${partyChange(rec).electedAs}`}</div>}
         </div>
       </div>
     </div>
