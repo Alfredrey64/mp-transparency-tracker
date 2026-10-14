@@ -9,10 +9,13 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:phone": "playwright test",
+    "test:phone": "playwright test e2e/phone-layout.spec.js",
+    "test:layout": "playwright test e2e/layout-audit.spec.js",
+    "shots": "node e2e/shots.mjs",
     "check:size": "node scripts/check-bundle-size.mjs",
     "check:tax": "node scripts/check-tax-data.mjs",
-    "prebuild": "node scripts/build-seo-pages.mjs"
+    "prebuild": "node scripts/build-seo-pages.mjs",
+    "check:speed": "npx --yes @lhci/cli@0.15.1 autorun --config=lighthouserc.json"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.8",

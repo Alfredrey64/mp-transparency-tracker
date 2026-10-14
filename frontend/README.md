@@ -88,6 +88,12 @@ Other places the tax data shows up: the site search finds taxes and rates (`lib/
 
 Run it locally with `npm run test:phone` (the first time, `npx playwright install chromium`). It builds the site and serves it on port 4175. If it fails in CI, the failure details are attached to the run as `playwright-report`.
 
+## Layout audit, pictures and speed budget
+
+`npm run test:layout` (`e2e/layout-audit.spec.js`, the "Layout audit" job in CI) opens every page at six sizes (phone 390, tablet portrait 820, tablet landscape 1180, laptop 1366, desktop 1920 and ultrawide 3440 px wide) and fails if anything pokes out of the page sideways outside a scrolling box, there is not exactly one `h1`, an image is broken, a button or link on a touch screen is under 24 px, a long paragraph is wider than 1100 px, or an uncaught error is thrown. `npm run shots` (after `npm run build`) saves pictures of the main pages at five sizes to `screenshots/` with an `index.html` to look at them together (`npm run shots -- taxRates/vat glossary` for particular pages); CI attaches them to every run as `layout-pictures`. A machine can't judge looks, so the pictures are for a person.
+
+`npm run check:speed` (the "Speed" job in CI) builds the site and runs Lighthouse three times on the built pages with the standard mobile settings, using `lighthouserc.json`. It fails if the median performance score falls below 70, accessibility below 95, best practices or SEO below 90, Largest Contentful Paint passes 5.5 seconds, Total Blocking Time passes 300 ms, layout shift passes 0.1 or the page weighs more than 1.2 MB. The limits sit just beyond today's results (performance 76 to 83, Largest Contentful Paint 4.2 to 4.8 seconds on a throttled phone, because the site draws in the browser), so they catch a slide, not a small wobble. Tighten them when the site gets faster.
+
 ## Accessibility
 
 The site aims for WCAG 2.2 AA. What is in place, and how to check it:

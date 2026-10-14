@@ -1,3 +1,5 @@
+import { LOADERS } from "../pageLoaders.js";
+
 // Registers the service worker (public/sw.js) so the site can open without a connection, and tells it which files this visit loaded so
 // the whole app is saved after the first visit. Production only: in development it would hold on to old code.
 
@@ -24,7 +26,6 @@ async function saveWholeApp(ready) {
   const build = document.querySelector('script[type="module"][src*="/assets/"]')?.getAttribute("src") ?? "dev";
   try {
     if (localStorage.getItem("sp-offline-saved") === build) return;
-    const { LOADERS } = await import("../pageLoaders.js");
     for (const load of Object.values(LOADERS)) {
       if (!navigator.onLine) return;
       await load().catch(() => {});
