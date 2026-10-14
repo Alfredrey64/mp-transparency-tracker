@@ -244,7 +244,7 @@ export const ANSWERS = [
       { who: "Those who want lower taxes say", says: "The state takes too much and spends it poorly. Lower taxes would encourage work, investment and growth." },
       { who: "Those who want higher spending say", says: "Public services need more money to meet demand, and the best way is taxes on higher incomes, wealth and companies." },
     ],
-    next: [{ label: "Taxes", href: "#/taxRates" }, { label: "Where taxes go", href: "#/budget" }],
+    next: [{ label: "Taxes", href: "#/taxRates" }, { label: "Where taxes go", href: "#/taxRates/where" }],
   },
   {
     id: "is-debt-too-high",
@@ -634,7 +634,7 @@ export const ANSWERS = [
       { who: "Those who want the bill brought down say", says: "Spending on benefits is rising faster than the economy and is not sustainable as the population ages. They want help getting more people into work and tighter rules on who qualifies." },
       { who: "Others say", says: "Benefits are a safety net that pays out when people need it, and pensions are something people have paid towards. They argue the real causes are low pay, high housing costs and poor health, and that cutting support would push people into poverty." },
     ],
-    next: [{ label: "Taxes", href: "#/taxRates" }, { label: "Where taxes go", href: "#/budget" }, { label: "People out of work through illness", href: "#/answers/why-not-working" }],
+    next: [{ label: "Taxes", href: "#/taxRates" }, { label: "Where taxes go", href: "#/taxRates/where" }, { label: "People out of work through illness", href: "#/answers/why-not-working" }],
   },
   {
     id: "why-council-tax-rising",
@@ -678,7 +678,7 @@ export const ANSWERS = [
       { who: "Supporters say", says: "Pensions in the UK have long been low compared with other rich countries, and the triple lock has helped cut pensioner poverty. People who have paid in all their lives should be able to count on their pension keeping up." },
       { who: "Critics say", says: "It is unfair to younger people, who pay for it and may not get the same deal themselves, and a one-off jump in pay can raise the pension for good. They want a simpler rule, such as linking it to earnings or prices." },
     ],
-    next: [{ label: "Where taxes go", href: "#/budget" }, { label: "Inflation and prices", href: "#/prices" }, { label: "Jobs and pay", href: "#/jobs" }],
+    next: [{ label: "Where taxes go", href: "#/taxRates/where" }, { label: "Inflation and prices", href: "#/prices" }, { label: "Jobs and pay", href: "#/jobs" }],
   },
   {
     id: "why-food-prices-rising",
@@ -790,7 +790,7 @@ export const ANSWERS = [
       { who: "Some say", says: "National Insurance should be merged into income tax, because it works like a tax and the two are confusing together. It is also not charged on income from pensions, savings or property, so it falls mainly on people who work." },
       { who: "Others say", says: "The link to the state pension and benefits matters and gives people a stake in the system. They argue that rates should be set carefully, because they affect both what employees take home and what employers pay to hire." },
     ],
-    next: [{ label: "Taxes", href: "#/taxRates" }, { label: "Where taxes go", href: "#/budget" }],
+    next: [{ label: "Taxes", href: "#/taxRates" }, { label: "Where taxes go", href: "#/taxRates/where" }],
   },
 
   {
@@ -815,7 +815,7 @@ export const ANSWERS = [
       { who: "Those who oppose it say", says: "Life expectancy is much lower in poorer areas and for people in physically hard jobs, so a higher age takes away more years of pension from those who need it most. Many people in their sixties are already out of work through ill health or caring." },
       { who: "Campaigners for women born in the 1950s say", says: "Whatever the age, people need proper notice. They argue that their pension age rose faster than they were told, leaving many with too little time to plan." },
     ],
-    next: [{ label: "Taxes", href: "#/taxRates" }, { label: "Where taxes go", href: "#/budget" }, { label: "Who lives in the UK", href: "#/population" }],
+    next: [{ label: "Taxes", href: "#/taxRates" }, { label: "Where taxes go", href: "#/taxRates/where" }, { label: "Who lives in the UK", href: "#/population" }],
   },
   {
     id: "how-much-tax-goes-unpaid",
@@ -839,7 +839,7 @@ export const ANSWERS = [
       { who: "Those who want a tougher approach say", says: "More money should go to HMRC to chase unpaid tax, loopholes should be closed and offshore arrangements made more open. They argue this raises money without raising anyone's tax rates." },
       { who: "Others say", says: "The tax gap is an estimate, and the sums that can realistically be recovered are smaller than the headlines suggest. They warn that heavy checks burden honest taxpayers and small firms, and say a simpler tax system, with fewer rules to get wrong or exploit, would help more." },
     ],
-    next: [{ label: "Taxes", href: "#/taxRates" }, { label: "Where taxes go", href: "#/budget" }],
+    next: [{ label: "Taxes", href: "#/taxRates" }, { label: "Where taxes go", href: "#/taxRates/where" }],
   },
   {
     id: "why-pound-goes-up-and-down",
@@ -935,7 +935,7 @@ export const ANSWERS = [
       { who: "Government and others say", says: "Budgets are limited, and they point to pay rises, training bursaries and recruitment drives. They argue that money has to be balanced against other priorities such as the NHS." },
       { who: "Some also argue", says: "Flexible working, better support for new teachers and a clearer career path would help keep people in the profession, as would reducing the pressure from inspections." },
     ],
-    next: [{ label: "Jobs and pay", href: "#/jobs" }, { label: "Public finances", href: "#/publicFinances" }, { label: "Where taxes go", href: "#/budget" }],
+    next: [{ label: "Jobs and pay", href: "#/jobs" }, { label: "Public finances", href: "#/publicFinances" }, { label: "Where taxes go", href: "#/taxRates/where" }],
   },
   {
     id: "why-private-schools-charge-vat",
@@ -955,7 +955,7 @@ export const ANSWERS = [
       { who: "Supporters say", says: "The tax break was unfair, the money helps pay for teachers in the schools most children attend, and families who can afford private fees can afford a tax on them." },
       { who: "Opponents say", says: "Families who stretch to pay fees are hit, small schools may close, and children with special needs are caught in it. They also argue that if many pupils move to state schools, the cost to the state could cancel out the money raised." },
     ],
-    next: [{ label: "Taxes", href: "#/taxRates" }, { label: "Where taxes go", href: "#/budget" }],
+    next: [{ label: "Taxes", href: "#/taxRates" }, { label: "Where taxes go", href: "#/taxRates/where" }],
   },
   {
     id: "how-much-does-uk-spend-on-defence",
@@ -975,7 +975,7 @@ export const ANSWERS = [
       { who: "Others say", says: "Money must be balanced against the NHS, schools and living costs, and the amount matters less than whether it is spent well. They point to a long record of delays and cost overruns on equipment." },
       { who: "Some also argue", says: "European countries should plan and buy equipment together, so each gets more for its money and relies less on the United States." },
     ],
-    next: [{ label: "Where taxes go", href: "#/budget" }, { label: "Taxes", href: "#/taxRates" }, { label: "Public finances", href: "#/publicFinances" }],
+    next: [{ label: "Where taxes go", href: "#/taxRates/where" }, { label: "Taxes", href: "#/taxRates" }, { label: "Public finances", href: "#/publicFinances" }],
   },
   {
     id: "why-uk-has-nuclear-weapons",
@@ -996,7 +996,7 @@ export const ANSWERS = [
       { who: "Opponents say", says: "The money would be better spent on conventional forces or public services, nuclear weapons cannot be used against modern threats like cyber attacks, and keeping them encourages other countries to want them." },
       { who: "Some say", says: "The UK should keep a smaller force, buying fewer submarines or patrolling less constantly, as a compromise that saves money while keeping a deterrent." },
     ],
-    next: [{ label: "Where taxes go", href: "#/budget" }, { label: "Public finances", href: "#/publicFinances" }],
+    next: [{ label: "Where taxes go", href: "#/taxRates/where" }, { label: "Public finances", href: "#/publicFinances" }],
   },
 ];
 

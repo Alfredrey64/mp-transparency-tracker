@@ -1,7 +1,7 @@
-import { useRef, useState } from "react";
+import { Suspense, lazy, useRef, useState } from "react";
 import { COLORS, FONT_BODY, PAGE_PADDING, solid } from "../theme";
 import { PageHeader } from "./shared";
-import { IconCabinet, IconCoin, IconCompareTime, IconQuestion, IconTaxes, IconTrend } from "./icons";
+import { IconBudget, IconCabinet, IconCoin, IconCompareTime, IconQuestion, IconTaxes, IconTrend } from "./icons";
 import { TAXES } from "../data/taxCatalogue";
 import { GOVERNMENTS } from "../data/governments";
 import TaxExplorer from "./TaxExplorer";
@@ -15,19 +15,24 @@ import { pillStyle } from "../lib/onsStyles";
 import { taxShareSpec } from "../lib/taxShare";
 import TaxCompare from "./TaxCompare";
 import TaxAbout from "./TaxAbout";
+import Loading from "./Loading";
+import { LOADERS } from "../pageLoaders";
 
-// Taxes: one page with a row of toggles. Overview (rates today, what is coming up, what is collected and spent), each tax's rate through time, who
+// Taxes: one page with a row of toggles. Overview (rates today, what is coming up, what is collected and spent), where the spending goes, each tax's rate through time, who
 // changed them, comparisons, what a salary pays and the sources. The address carries the toggle and what is picked inside it (#/taxRates/vat,
 // #/taxRates/government/thatcher). The old Taxes and spending page, #/tax, is the Overview.
 
 const TABS = [
   { key: "overview", label: "Overview", blurb: "The main rates today, what is coming up, and how much the government collects and spends.", icon: IconTaxes, colour: "#4F46E5" },
+  { key: "where", label: "Where it goes", blurb: "How the government's spending is split, from health and welfare to defence.", icon: IconBudget, colour: "#C0561F" },
   { key: "taxes", label: "Rates over time", blurb: "Pick a tax and see how its rate has moved since 1945.", icon: IconTrend, colour: "#0E9AA7" },
   { key: "who", label: "Who changed them", blurb: "Every change, by government, by Chancellor or Budget by Budget.", icon: IconCabinet, colour: "#C7871A" },
   { key: "compare", label: "Compare", blurb: "Put a tax rate beside growth, jobs, prices and more.", icon: IconCompareTime, colour: "#D6455D" },
   { key: "pay", label: "What I pay", blurb: "Choose a salary and see the income tax and National Insurance, and where it goes.", icon: IconCoin, colour: "#1FA97C" },
   { key: "about", label: "Sources", blurb: "Where the figures come from, and what is left out.", icon: IconQuestion, colour: "#7A5AF0" },
 ];
+
+const GovernmentBudget = lazy(LOADERS.budget);
 
 const slug = (name) => name.toLowerCase().replace(/[^a-z]+/g, "-");
 const chancellorNames = () => chancellorsWithChanges().map((c) => c.name);
@@ -39,6 +44,7 @@ function parse(param) {
   if (first === "chancellor") { const names = chancellorNames(); return { tab: "who", mode: "chancellor", item: names.find((n) => slug(n) === rest[0]) ?? names[names.length - 1] }; }
   if (first === "budget") return { tab: "who", mode: "budget", item: null };
   if (first === "overview") return { tab: "overview", item: rest.join("/") || null };
+  if (first === "where") return { tab: "where", item: null };
   if (first === "about") return { tab: "about", item: null };
   if (first === "pay") return { tab: "pay", item: null };
   if (first === "compare") return { tab: "compare", item: rest.join("/") || "incomeTax.basic/growth" };
@@ -124,6 +130,7 @@ export default function TaxRates({ param }) {
             {nav.mode === "budget" && <TaxByBudget />}
           </>
         )}
+        {nav.tab === "where" && <Suspense fallback={<Loading />}><GovernmentBudget embedded /></Suspense>}
         {nav.tab === "pay" && <TaxPay />}
         {nav.tab === "compare" && <TaxCompare item={nav.item} onChange={(item) => go("compare", item)} />}
         {nav.tab === "about" && <TaxAbout />}

@@ -86,6 +86,7 @@ export function taxShareSpec(nav, link, now = Date.now()) {
   const titles = {
     budget: ["Budget by Budget", "Every tax change tied to the Budget where it was decided, and who made it."],
     compare: ["Tax rates beside the economy", "Put any tax rate next to growth, jobs, prices or house prices, with the governments of the day."],
+    where: ["Where the money goes", "How the UK government's spending is split, from health and welfare to defence and debt interest."],
     pay: ["What would you have paid?", "Income tax and National Insurance on the same pay in every year since 1990."],
     about: ["Taxes: where the figures come from", "Where the rates come from, how a change is credited and what is left out."],
   };

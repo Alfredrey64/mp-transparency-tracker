@@ -1,6 +1,6 @@
 import {
   IconFlow, IconCoin, IconVote, IconGroup, IconInfluence, IconManifesto, IconTracker,
-  IconGlossary, IconHistory, IconDevolved, IconFormerMP, IconBudget, IconCabinet, IconTimeline,
+  IconGlossary, IconHistory, IconDevolved, IconFormerMP, IconCabinet, IconTimeline,
   IconPartyFinance, IconByElection, IconLords, IconPetition, IconCompass, IconCommittee, IconCompare, IconMeeting,
   IconQuestion, IconGavel, IconRankings, IconDarkMoney, IconThinkTank, IconDoor, IconRegister,
   IconSearch, IconBook, IconChartBars, IconTopic, IconRoute, IconSplit, IconHexMap, IconCouncil,
@@ -82,7 +82,6 @@ export const SECTIONS = [
       { key: "offices", label: "Who held which job", icon: IconCabinet, hint: "Search any minister's role", aka: ["who held office", "secretary of state"] },
       { key: "lords", label: "The House of Lords", icon: IconLords, hint: "The unelected second chamber", aka: ["peers", "lords"] },
       { key: "committees", label: "Watchdog committees", icon: IconCommittee, hint: "MPs who question ministers", aka: ["select committees"] },
-      { key: "budget", label: "Where taxes go", icon: IconBudget, hint: "Government spending in charts", aka: ["government budget", "spending"] },
       { key: "tracker", label: "Promises tracker", icon: IconTracker, hint: "Has the government kept its word?", aka: ["manifesto promises"] },
     ],
   },

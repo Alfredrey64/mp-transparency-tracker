@@ -222,7 +222,7 @@ export const PAGE_GUIDES = {
     notShown: "Your registration status, or the exact deadline for the next election. Those come from gov.uk, which this page links to. Rules can change, so check there.",
   },
   taxRates: {
-    what: "The main tax rates today, what the government collects and spends, and how each rate has changed since 1945, with who was in government. Use the buttons at the top to switch.",
+    what: "The main tax rates today, what the government collects and where it spends it, and how each rate has changed since 1945, with who was in government. Use the buttons to switch.",
     why: "Tax decides what is left in your pay and what things cost, and the biggest changes were made by particular governments at particular Budgets.",
     notShown: "Whether a change was wise, who pays each tax, spending by department, tax reliefs, taxes set only in Scotland or Wales, and years before an official table begins.",
   },

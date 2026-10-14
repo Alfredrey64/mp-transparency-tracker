@@ -20,7 +20,8 @@ function formatHousehold(amountBn) {
   return `£${value.toLocaleString()}`;
 }
 
-export default function GovernmentBudget() {
+// `embedded` is for the Taxes page, which already has its own heading and width.
+export default function GovernmentBudget({ embedded = false }) {
   const [activeKey, setActiveKey] = useState(null);
 
   const segments = CATEGORIES.map((c, i) => {
@@ -36,18 +37,25 @@ export default function GovernmentBudget() {
   }
 
   return (
-    <div style={{ maxWidth: 1040, margin: "0 auto", padding: PAGE_PADDING }}>
-      <PageHeader
-        icon={IconBudget}
-        kicker="Government Budget"
-        title="Where taxes go"
-        subtitle="The UK public sector is due to spend about £1,368bn in 2025-26, roughly £48,000 per household. Tap any slice of the ring, or any category, to explore it."
-      />
+    <div style={embedded ? { marginTop: 8 } : { maxWidth: 1040, margin: "0 auto", padding: PAGE_PADDING }}>
+      {!embedded && (
+        <PageHeader
+          icon={IconBudget}
+          kicker="Government Budget"
+          title="Where taxes go"
+          subtitle="The UK public sector is due to spend about £1,368bn in 2025-26, roughly £48,000 per household. Tap any slice of the ring, or any category, to explore it."
+        />
+      )}
+      {embedded && (
+        <p style={{ fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.6, color: COLORS.inkSoft, margin: "0 0 4px", maxWidth: 780 }}>
+          The UK public sector is due to spend about £1,368bn in 2025-26, roughly £48,000 per household. Tap any slice of the ring, or any category, to explore it.
+        </p>
+      )}
 
       <div
         style={{
           background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12,
-          padding: "14px 18px", marginTop: 24, marginBottom: 28,
+          padding: "14px 18px", marginTop: embedded ? 14 : 24, marginBottom: 28,
           fontFamily: FONT_BODY, fontSize: 13, lineHeight: 1.6, color: COLORS.inkSoft,
         }}
       >

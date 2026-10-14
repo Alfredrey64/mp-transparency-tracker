@@ -143,6 +143,8 @@ function parseHash() {
   if (segments[0] === "seatmap") segments[0] = "constituency";
   // Taxes and spending and Tax rates through time became one page, Taxes. Old links to #/tax open its Overview.
   if (segments[0] === "tax") segments.splice(0, 1, "taxRates", "overview");
+  // Where taxes go is now the Where it goes toggle on the Taxes page.
+  if (segments[0] === "budget") segments.splice(0, 1, "taxRates", "where");
   if (segments[0] === "mp" && /^\d+$/.test(segments[1] ?? "")) {
     return { view: "list", mpId: Number(segments[1]), param: null };
   }

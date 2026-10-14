@@ -64,7 +64,7 @@ export const TIERS = [
     links: [
       { label: "Cabinet ministers", href: "#/cabinet" },
       { label: "Who ministers meet", href: "#/ministerialMeetings" },
-      { label: "Where taxes go", href: "#/budget" },
+      { label: "Where taxes go", href: "#/taxRates/where" },
     ],
   },
   {
