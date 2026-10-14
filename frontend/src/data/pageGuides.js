@@ -226,6 +226,11 @@ export const PAGE_GUIDES = {
     why: "Who has what shapes pay, prices, housing and public services, and is at the centre of many arguments about tax and benefits.",
     notShown: "Whether any gap is fair, comparisons with other countries, or how far people move up and down over their lives.",
   },
+  brexit: {
+    what: "What experts say Brexit has done to the economy, trade, people and politics, where they disagree, and the case for and against, topic by topic.",
+    why: "It is one of the biggest political decisions of recent times, and people still argue about what it has cost and gained.",
+    notShown: "Whether leaving was right, which depends on values as well as figures, or the effect on each industry and region.",
+  },
   taxRates: {
     what: "The main tax rates today, what the government collects and where it spends it, and how each rate has changed since 1945, with who was in government. Use the buttons to switch.",
     why: "Tax decides what is left in your pay and what things cost, and the biggest changes were made by particular governments at particular Budgets.",

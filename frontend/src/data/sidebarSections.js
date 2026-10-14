@@ -1,6 +1,6 @@
 import {
   IconFlow, IconCoin, IconVote, IconGroup, IconInfluence, IconManifesto, IconTracker,
-  IconGlossary, IconHistory, IconDevolved, IconFormerMP, IconCabinet, IconScales, IconTimeline,
+  IconGlossary, IconHistory, IconDevolved, IconFormerMP, IconCabinet, IconScales, IconEuStars, IconTimeline,
   IconPartyFinance, IconByElection, IconLords, IconPetition, IconCompass, IconCommittee, IconCompare, IconMeeting,
   IconQuestion, IconGavel, IconRankings, IconDarkMoney, IconThinkTank, IconDoor, IconRegister,
   IconSearch, IconBook, IconChartBars, IconTopic, IconRoute, IconSplit, IconHexMap, IconCouncil,
@@ -98,6 +98,7 @@ export const SECTIONS = [
       { key: "prices", label: "Prices and bills", icon: IconBasket, hint: "Inflation, food, energy and rents", essential: true, aka: ["inflation", "cost of living", "cpi", "food prices", "energy bills"] },
       { key: "jobs", label: "Jobs and pay", icon: IconBriefcase, hint: "Unemployment, wages and vacancies", aka: ["unemployment", "wages", "earnings", "employment", "vacancies"] },
       { key: "inequality", label: "Inequality", icon: IconScales, hint: "Income, wealth and poverty, and who has what", essential: true, aka: ["inequality", "poverty", "wealth", "income inequality", "wealth inequality", "gini", "child poverty", "pay gap", "gender pay gap", "rich and poor", "wealth gap", "regional inequality", "north south divide", "cost of living", "living standards", "disposable income", "median income"] },
+      { key: "brexit", label: "Brexit", icon: IconEuStars, hint: "Ten years on: economy, trade, people and the arguments", essential: true, aka: ["brexit", "eu", "european union", "leave", "remain", "referendum", "trade deal", "single market", "customs union", "windsor framework", "northern ireland protocol", "tca", "trade and cooperation agreement", "erasmus", "reset", "free movement", "fishing", "sovereignty"] },
       { key: "publicFinances", label: "Public finances", icon: IconLedger, hint: "Borrowing, debt and public sector jobs", aka: ["national debt", "borrowing", "deficit", "public sector"] },
       { key: "population", label: "Population", icon: IconPopulation, hint: "How many of us there are", aka: ["census", "people", "growth", "demographics"] },
       { key: "health", label: "Health", icon: IconHeartbeat, hint: "NHS staff, sickness and deaths", aka: ["nhs", "deaths", "sickness", "healthcare"] },

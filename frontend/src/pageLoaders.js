@@ -72,6 +72,7 @@ export const LOADERS = {
   generalElection: () => import("./components/GeneralElection"),
   taxRates: () => import("./components/TaxRates"),
   inequality: () => import("./components/Inequality"),
+  brexit: () => import("./components/Brexit"),
 };
 
 const started = new Set();

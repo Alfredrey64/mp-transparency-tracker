@@ -92,6 +92,29 @@ export function BarRows({ rows, max, accent, label }) {
   );
 }
 
+// Ranges on a line that runs from a loss to a gain. Each row is { label, note, low, high } in percent; a bar starts at `low` and ends at `high`.
+export function RangeRows({ rows, min = -10, max = 10, label, lossColour = "#D6455D", gainColour = "#1FA97C" }) {
+  const span = max - min;
+  const x = (v) => `${((v - min) / span) * 100}%`;
+  return (
+    <ul aria-label={label} style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 14 }}>
+      {rows.map((r) => (
+        <li key={r.label} style={{ fontFamily: FONT_BODY, fontSize: 13.5 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "baseline", flexWrap: "wrap" }}>
+            <span style={{ color: COLORS.ink, fontWeight: 700 }}>{r.label}</span>
+            <span style={{ ...numeric, fontWeight: 600, color: COLORS.ink }}>{r.text}</span>
+          </div>
+          <div aria-hidden="true" style={{ position: "relative", height: 16, margin: "6px 0 4px", borderRadius: 8, background: COLORS.hairline }}>
+            <span style={{ position: "absolute", left: x(0), top: -3, bottom: -3, width: 2, marginLeft: -1, background: COLORS.inkSoft, opacity: 0.7 }} />
+            <span style={{ position: "absolute", top: 0, bottom: 0, left: x(Math.min(r.low, r.high)), width: `${(Math.abs(r.high - r.low) / span) * 100}%`, minWidth: 6, borderRadius: 8, background: r.high <= 0 ? lossColour : r.low >= 0 ? gainColour : COLORS.inkSoft }} />
+          </div>
+          {r.note && <div style={{ color: COLORS.inkSoft, fontSize: 12.5, lineHeight: 1.45 }}>{r.note}</div>}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 // A note about a limit of the figures.
 export function Caution({ children, title = "Worth knowing" }) {
   return (

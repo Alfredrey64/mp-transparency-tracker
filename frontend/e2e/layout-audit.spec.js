@@ -7,7 +7,7 @@ import { LOADERS } from "../src/pageLoaders.js";
 // pictures of the same pages for a person to look at.
 
 const PAGES = ["home", "list", "partymatch", ...Object.keys(LOADERS)].filter((p, i, all) => all.indexOf(p) === i);
-const TABS = ["generalElection/history/1997", "generalElection/governments/blair", "taxRates", "taxRates/where", "taxRates/vat", "inequality/income", "inequality/wealth", "inequality/poverty", "inequality/place", "inequality/groups", "inequality/debate", "taxRates/council-tax", "taxRates/income-tax", "taxRates/government/thatcher", "taxRates/pay", "taxRates/budget", "taxRates/compare/incomeTax.basic/growth", "glossary", "settings"];
+const TABS = ["generalElection/history/1997", "generalElection/governments/blair", "taxRates", "taxRates/where", "taxRates/vat", "inequality/income", "inequality/wealth", "inequality/poverty", "inequality/place", "inequality/groups", "inequality/debate", "brexit/economy", "brexit/trade", "brexit/society", "brexit/politics", "brexit/arguments", "taxRates/council-tax", "taxRates/income-tax", "taxRates/government/thatcher", "taxRates/pay", "taxRates/budget", "taxRates/compare/incomeTax.basic/growth", "glossary", "settings"];
 const SIZES = [
   { name: "phone", width: 390, height: 844, touch: true },
   { name: "tablet portrait", width: 820, height: 1180, touch: true },
