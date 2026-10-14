@@ -8,6 +8,7 @@ export const SOURCES = {
   modBulletin: { label: "Ministry of Defence, Finance and economics annual statistical bulletin: international defence 2025", url: "https://www.gov.uk/government/publications/international-defence-expenditure-2025/finance-and-economics-annual-statistical-bulletin-international-defence-2025" },
   nato: { label: "NATO, Defence expenditure of NATO countries 2014 to 2025", url: "https://www.nato.int/content/dam/nato/webready/documents/finance/def-exp-2025-en.pdf" },
   personnel: { label: "Ministry of Defence, Quarterly service personnel statistics: 1 July 2026", url: "https://www.gov.uk/government/statistics/quarterly-service-personnel-statistics-2026/quarterly-service-personnel-statistics-1-july-2026" },
+  onsGdp: { label: "ONS, Gross Domestic Product at market prices, current prices (quarterly)", url: "https://www.ons.gov.uk/economy/grossdomesticproductgdp" },
   investmentPlan: { label: "Ministry of Defence, The Defence Investment Plan (2026)", url: "https://assets.publishing.service.gov.uk/media/6a44e989167a99cf0018da38/The_Defence_Investment_Plan.pdf" },
   commonsLibrary: { label: "House of Commons Library, UK defence spending", url: "https://commonslibrary.parliament.uk/research-briefings/cbp-8175/" },
 };
@@ -47,3 +48,23 @@ export const RANKING = {
   poland: 3.79,
   countriesMeetingGuideline: 18,
 };
+
+// Moments in the story the spending chart tells, with the UK's share of the economy in each year filled in by the page from the SIPRI series.
+export const MOMENTS = [
+  { year: 1982, text: "The Falklands War. Spending was above 5% of the economy through the early 1980s, and has not been above 5% since 1986." },
+  { year: 1990, text: "The Cold War ended with the fall of the Berlin Wall in 1989. The government announced cuts to the armed forces in its \"Options for Change\" plan, and spending fell for most of the next decade." },
+  { year: 1998, text: "The Strategic Defence Review, the first full review under a new Labour government, set out the shape of the forces after the Cold War." },
+  { year: 2010, text: "A new coalition government's Strategic Defence and Security Review announced further cuts to the armed forces, in the years after the financial crisis." },
+  { year: 2014, text: "At their summit in Wales, NATO members promised to move towards spending 2% of their economies on defence within a decade." },
+  { year: 2022, text: "Russia began its full-scale invasion of Ukraine in February, and European governments began raising defence budgets." },
+  { year: 2025, text: "The Strategic Defence Review and NATO's summit in The Hague. Allies agreed 3.5% of the economy on core defence by 2035, plus up to 1.5% on wider security." },
+];
+
+// Targets to try in the "what would it cost" tool, as a share of the economy.
+export const TARGETS = [
+  { share: 2.3, label: "Now, NATO's count" },
+  { share: 2.5, label: "Promised by 2027" },
+  { share: 3, label: "Promised next Parliament" },
+  { share: 3.5, label: "NATO's 2035 core target" },
+  { share: 5, label: "Core plus wider security" },
+];

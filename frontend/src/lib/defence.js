@@ -2,6 +2,7 @@ import raw from "../data/defenceData.json";
 
 export const D = raw;
 export const last = (a) => a[a.length - 1];
+export const lastNonNull = (a) => { for (let i = a.length - 1; i >= 0; i -= 1) if (a[i] !== null && a[i] !== undefined) return a[i]; return null; };
 export const at = (series, year) => series.values[series.years.indexOf(year)] ?? null;
 
 // The first year from which a UK series stayed under a level.

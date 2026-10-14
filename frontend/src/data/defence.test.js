@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { FORCES, NATO_COUNT, PROMISES, RANKING, SOURCES } from "./defence";
+import { FORCES, MOMENTS, NATO_COUNT, PROMISES, RANKING, SOURCES, TARGETS } from "./defence";
 import { D, at, last, stayedUnder } from "../lib/defence";
 
 describe("defence data", () => {
@@ -34,5 +34,40 @@ describe("defence data", () => {
     for (const s of Object.values(SOURCES)) expect(s.url).toMatch(/^https:\/\//);
     expect(NATO_COUNT.map((r) => r.year)).toEqual([2023, 2024, 2025, 2026]);
     expect(RANKING.natoBySpending).toBe("Third");
+  });
+  it("has the other countries' series lined up with the UK's", () => {
+    const keys = Object.keys(D.countries);
+    expect(keys).toHaveLength(14);
+    for (const k of keys) {
+      expect(D.shareOfGdp[k]).toHaveLength(D.shareOfGdp.years.length);
+      expect(D.realBillions[k]).toHaveLength(D.shareOfGdp.years.length);
+      expect(last(D.shareOfGdp[k])).toBeGreaterThan(0.5);
+    }
+    expect(last(D.shareOfGdp.poland)).toBeGreaterThan(last(D.shareOfGdp.uk));
+    expect(last(D.realBillions.uk)).toBeCloseTo(last(D.ukRealBillions.values), 0);
+  });
+  it("has the armed forces' quarterly series, matching the headline numbers", () => {
+    const f = D.forces;
+    for (const k of ["all", "navy", "army", "airForce"]) expect(f[k]).toHaveLength(f.times.length);
+    expect(f.times[0]).toBe(2012.25);
+    expect(last(f.times)).toBe(2026.5);
+    expect(last(f.all)).toBe(FORCES.trained);
+    expect(last(f.navy)).toBe(FORCES.navy);
+    expect(last(f.army)).toBe(FORCES.army);
+    expect(last(f.airForce)).toBe(FORCES.airForce);
+    for (let i = 0; i < f.times.length; i += 1) expect(Math.abs(f.navy[i] + f.army[i] + f.airForce[i] - f.all[i])).toBeLessThanOrEqual(30);
+    expect(f.all[0]).toBe(170010);
+  });
+  it("has the size of the economy for the cost tool", () => {
+    expect(D.economy.gdpBillions).toBeGreaterThan(2500);
+    expect(D.economy.gdpBillions).toBeLessThan(5000);
+    expect(D.economy.populationMillions).toBeGreaterThan(60);
+    expect(TARGETS.map((t) => t.share)).toEqual([2.3, 2.5, 3, 3.5, 5]);
+  });
+  it("gives each moment a year the series covers and plain wording", () => {
+    for (const m of MOMENTS) expect(D.shareOfGdp.years).toContain(m.year);
+    expect(JSON.stringify(MOMENTS)).not.toMatch(/—|–|→/);
+    expect(at({ years: D.shareOfGdp.years, values: D.shareOfGdp.uk }, 1982)).toBeGreaterThan(5);
+    expect(D.shareOfGdp.uk.filter((v, i) => D.shareOfGdp.years[i] > 1986 && v > 5)).toHaveLength(0);
   });
 });

@@ -11,6 +11,12 @@ export const SOURCES = {
   sen: { label: "DfE, Special educational needs in England (June 2026)", url: `${EES}/special-educational-needs-in-england` },
   ehc: { label: "DfE, Education, health and care plans (June 2026)", url: `${EES}/education-health-and-care-plans` },
   loans: { label: "Student Loans Company and DfE, Student loans in England: financial year 2025-26", url: "https://www.gov.uk/government/statistics/student-loans-in-england-2025-to-2026/student-loans-in-england-financial-year-2025-26" },
+  declining: { label: "House of Commons Library, Declining pupil numbers in England", url: "https://commonslibrary.parliament.uk/research-briefings/cbp-8151/" },
+  absence: { label: "DfE, Pupil absence in schools in England", url: `${EES}/pupil-absence-in-schools-in-england` },
+  ks2: { label: "DfE, Key stage 2 attainment: national headlines", url: `${EES}/key-stage-2-attainment-national-headlines` },
+  freeMeals: { label: "DfE, Free school meals guidance for schools and local authorities", url: "https://www.gov.uk/government/publications/free-school-meals-guidance-for-schools-and-local-authorities" },
+  feeHistory: { label: "House of Commons Library, Tuition fees in England: history, debates and international comparisons", url: "https://commonslibrary.parliament.uk/research-briefings/cbp-10155/" },
+  cpi: { label: "ONS, Consumer price inflation (CPI index, 2015 = 100)", url: "https://www.ons.gov.uk/economy/inflationandpriceindices" },
   fees: { label: "GOV.UK, Student finance for new full-time students", url: "https://www.gov.uk/student-finance/new-fulltime-students" },
   repay: { label: "GOV.UK, Repaying your student loan: what you pay", url: "https://www.gov.uk/repaying-your-student-loan/what-you-pay" },
 };
@@ -57,3 +63,11 @@ export const UNIVERSITY = {
   ],
   rate: 9,
 };
+
+// The most a university in England could charge a full-time undergraduate for each academic year (the year it starts): £9,000 from 2012/13, £9,250
+// from 2017/18, held there until 2024/25, then raised with inflation (House of Commons Library, and GOV.UK for 2025/26 and 2026/27).
+export const FEE_HISTORY = [
+  [2012, 9000], [2013, 9000], [2014, 9000], [2015, 9000], [2016, 9000],
+  [2017, 9250], [2018, 9250], [2019, 9250], [2020, 9250], [2021, 9250], [2022, 9250], [2023, 9250], [2024, 9250],
+  [2025, 9535], [2026, 9790],
+].map(([year, fee]) => ({ year, fee }));

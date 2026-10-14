@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, numeric, solid } from "../theme";
+import { pillStyle } from "../lib/onsStyles";
 import { card, cardTitle } from "../lib/onsStyles";
 import { bandsBetween, PARTY_COLOURS } from "../lib/governments";
 import { yearTicks } from "../lib/onsChart";
@@ -58,7 +60,25 @@ export function SourceLine({ sources }) {
   );
 }
 
-// Headline figures. Up to three in a row on a wide screen, two on a phone, never a lone box.
+// A tiny line with no axes, to show the direction of a headline figure at a glance.
+function Spark({ values, colour }) {
+  const v = values.filter((x) => x !== null && x !== undefined);
+  if (v.length < 2) return null;
+  const lo = Math.min(...v);
+  const hi = Math.max(...v);
+  const W = 120;
+  const H = 30;
+  const pts = v.map((y, i) => `${((i / (v.length - 1)) * (W - 6) + 3).toFixed(1)},${(H - 4 - ((y - lo) / (hi - lo || 1)) * (H - 8)).toFixed(1)}`);
+  const end = pts[pts.length - 1].split(",");
+  return (
+    <svg aria-hidden="true" viewBox={`0 0 ${W} ${H}`} width="100%" height={H} preserveAspectRatio="none" style={{ display: "block", marginTop: 10, maxWidth: 140, overflow: "visible" }}>
+      <polyline points={pts.join(" ")} fill="none" stroke={colour} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+      <circle cx={end[0]} cy={end[1]} r="3" fill={colour} />
+    </svg>
+  );
+}
+
+// Headline figures. Up to three in a row on a wide screen, two on a phone, never a lone box. An item can carry `spark`, a list of values over time.
 export function Stats({ items, accent }) {
   return (
     <div className="box-row" style={{ "--n": items.length <= 4 ? Math.max(items.length, 1) : 3, "--min": "150px", "--gap": "10px" }}>
@@ -67,9 +87,27 @@ export function Stats({ items, accent }) {
           <div style={{ ...numeric, fontSize: "clamp(24px, 5vw, 32px)", fontWeight: 600, lineHeight: 1.05, letterSpacing: "-0.02em", color: COLORS.ink }}>{s.value}</div>
           <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink, marginTop: 6, lineHeight: 1.35 }}>{s.label}</div>
           {s.note && <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 3, lineHeight: 1.4 }}>{s.note}</div>}
+          {s.spark && <Spark values={s.spark} colour={s.accent ?? accent} />}
         </div>
       ))}
     </div>
+  );
+}
+
+// "The short version": a few plain sentences that sum up a page, set apart from the cards.
+export function Takeaways({ title = "The short version", items, accent }) {
+  return (
+    <aside aria-label={title} style={{ marginTop: 18, padding: "16px 20px 14px", borderRadius: 18, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `6px solid ${accent}` }}>
+      <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 17, fontWeight: 700, color: COLORS.ink, margin: 0 }}>{title}</h2>
+      <ul style={{ margin: "8px 0 0", padding: 0, listStyle: "none", display: "grid", gap: 8 }}>
+        {items.map((t, i) => (
+          <li key={i} style={{ display: "grid", gridTemplateColumns: "10px minmax(0, 1fr)", gap: 10, fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.55, color: COLORS.ink }}>
+            <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: 4, background: accent, marginTop: 8 }} />
+            <span>{t}</span>
+          </li>
+        ))}
+      </ul>
+    </aside>
   );
 }
 
@@ -143,7 +181,7 @@ export function SubTitle({ children }) {
 }
 
 // A time chart with a legend, and who was in government behind it if asked. `breaks` are years where the method of the figures changed (a faint line).
-export function TimeChart({ lines, from, to, yFormat, ariaLabel, accent, governments = false, breaks = [], height = 250 }) {
+export function TimeChart({ lines, from, to, yFormat, ariaLabel, accent, governments = false, breaks = [], height = 250, yScale }) {
   const bands = [
     ...(governments ? bandsBetween(from, to, to).map((b) => ({ ...b, color: PARTY_COLOURS[b.party] })) : []),
     ...breaks.map((x) => ({ pm: `break-${x}`, start: x, end: x + 0.05, color: COLORS.ink, short: "" })),
@@ -151,7 +189,95 @@ export function TimeChart({ lines, from, to, yFormat, ariaLabel, accent, governm
   return (
     <div>
       {lines.length > 1 && <Legend items={lines.map((l) => ({ name: l.name, colour: l.color }))} />}
-      <LineChart lines={lines} xTicks={yearTicks(from, to)} yFormat={yFormat} accent={accent} ariaLabel={ariaLabel} bands={bands} domainX={[from, to]} height={height} />
+      <LineChart lines={lines} xTicks={yearTicks(from, to)} yFormat={yFormat} accent={accent} ariaLabel={ariaLabel} bands={bands} domainX={[from, to]} height={height} yScale={yScale} />
+    </div>
+  );
+}
+
+// One chart that can show several things: buttons pick which. Each option is { key, label, lines: [{ name, color, years, values }], from, to, yFormat,
+// offset, labelFn, breaks, change ("points" for percentages, "percent" for amounts), note, governments (can show who was in government) }. Years in
+// `lines` are the first calendar year of each period, and `offset` places them within it. A caption under the chart is written from the figures.
+export function TrendExplorer({ options, accent, height = 260, sources }) {
+  const [key, setKey] = useState(options[0].key);
+  const [gov, setGov] = useState(false);
+  const opt = options.find((o) => o.key === key) ?? options[0];
+  const labelFn = opt.labelFn ?? String;
+  const lines = opt.lines.map((l) => ({ name: l.name, color: l.color ?? accent, points: l.years.map((y, i) => ({ x: y + (opt.offset ?? 0), y: l.values[i], label: labelFn(y) })).filter((p) => p.y !== null && p.y !== undefined) }));
+  const main = lines[0].points;
+  const first = main[0];
+  const lastP = main[main.length - 1];
+  const peak = main.reduce((a, p) => (p.y > a.y ? p : a), main[0]);
+  const low = main.reduce((a, p) => (p.y < a.y ? p : a), main[0]);
+  const f = opt.captionFormat ?? opt.yFormat;
+  const diff = lastP.y - first.y;
+  const dir = diff >= 0 ? "up" : "down";
+  const size = Math.abs(diff);
+  const change = {
+    percent: `${dir} ${Math.round((size / first.y) * 100)}%`,
+    pp: `${dir} ${Math.round(size * 10) / 10} percentage points`,
+    points: `${dir} ${Math.round(size * 10) / 10} points`,
+    index: `${dir} ${Math.round(size * 100) / 100}`,
+  }[opt.change ?? "points"];
+  const extremes = [peak, low].filter((p) => p !== first && p !== lastP).map((p) => (p === peak ? `The highest was ${f(p.y)} in ${p.label}.` : `The lowest was ${f(p.y)} in ${p.label}.`));
+  const caption = `${lines.length > 1 ? `${lines[0].name}: ` : ""}${f(first.y)} in ${first.label}, ${f(lastP.y)} in ${lastP.label}, ${change}. ${extremes.join(" ")}`.trim();
+  const from = opt.from ?? Math.floor(first.x);
+  const to = opt.to ?? Math.ceil(lastP.x) + 1;
+  return (
+    <div>
+      {options.length > 1 && (
+        <div role="group" aria-label="Choose what to chart" style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
+          {options.map((o) => (
+            <button key={o.key} type="button" aria-pressed={o.key === opt.key} onClick={() => setKey(o.key)} style={pillStyle(o.key === opt.key)}>{o.label}</button>
+          ))}
+        </div>
+      )}
+      {opt.governments && (
+        <div role="group" aria-label="Chart options" style={{ marginBottom: 10 }}>
+          <button type="button" aria-pressed={gov} onClick={() => setGov((v) => !v)} style={pillStyle(gov)}>Show who was in government</button>
+        </div>
+      )}
+      <TimeChart lines={lines} from={from} to={to} yFormat={f} accent={accent} height={height} governments={Boolean(opt.governments && gov)} breaks={opt.breaks ?? []} yScale={opt.yScale} ariaLabel={`${opt.label}. ${caption}`} />
+      <p style={{ ...para, marginTop: 10 }}>{caption}</p>
+      {opt.note && <p style={{ ...para, fontSize: 13.5, marginTop: 6 }}>{opt.note}</p>}
+      {(sources?.length > 0 || opt.sources?.length > 0) && <SourceLine sources={[...(sources ?? []), ...(opt.sources ?? [])]} />}
+    </div>
+  );
+}
+
+// Bars cut into parts, for showing how a total divides up. Each row is { label, parts: [{ name, value, colour }], text }. All rows share one scale.
+export function StackBars({ rows, label, format = (v) => String(v), legend }) {
+  const top = Math.max(...rows.map((r) => r.parts.reduce((a, p) => a + p.value, 0)));
+  return (
+    <div>
+      {legend && <Legend items={legend} />}
+      <ul aria-label={label} style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 12 }}>
+        {rows.map((r) => (
+          <li key={r.label} style={{ fontFamily: FONT_BODY, fontSize: 13.5 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "baseline", flexWrap: "wrap" }}>
+              <span style={{ color: COLORS.ink, fontWeight: 700 }}>{r.label}</span>
+              <span style={{ ...numeric, fontWeight: 600, color: COLORS.ink }}>{r.text}</span>
+            </div>
+            <div aria-hidden="true" style={{ display: "flex", gap: 2, height: 22, marginTop: 5, width: `${(r.parts.reduce((a, p) => a + p.value, 0) / top) * 100}%`, minWidth: 80 }}>
+              {r.parts.map((p) => <span key={p.name} title={`${p.name}: ${format(p.value)}`} style={{ flex: `${p.value} 1 0`, background: p.colour, borderRadius: 4, minWidth: 3 }} />)}
+            </div>
+            <div style={{ color: COLORS.inkSoft, fontSize: 12.5, marginTop: 4, lineHeight: 1.45 }}>{r.parts.map((p) => `${p.name} ${format(p.value)}`).join(", ")}</div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+// A slider with its label and the chosen value shown big, for "what if" tools.
+export function RangeField({ id, label, value, min, max, step = 1, onChange, text, hint, accent }) {
+  return (
+    <div style={{ marginBottom: 10 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, flexWrap: "wrap" }}>
+        <label htmlFor={id} style={{ fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: 700, color: COLORS.ink }}>{label}</label>
+        <output htmlFor={id} style={{ ...numeric, fontSize: 22, fontWeight: 600, color: COLORS.ink }}>{text}</output>
+      </div>
+      <input id={id} type="range" min={min} max={max} step={step} value={value} onChange={(e) => onChange(Number(e.target.value))} style={{ width: "100%", height: 32, accentColor: accent, margin: "4px 0 0", cursor: "pointer" }} />
+      {hint && <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, lineHeight: 1.45 }}>{hint}</div>}
     </div>
   );
 }
