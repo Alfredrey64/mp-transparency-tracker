@@ -1,4 +1,5 @@
 /** @jsxImportSource react */
+import { InstallCard } from "./InstallApp";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { useTheme } from "../lib/ThemeContext";
 import { PageHeader } from "./shared";
@@ -75,6 +76,8 @@ export default function Settings({ onNavigate }) {
             description="Switches the app's backgrounds, text, and borders. Saved on this device."
           />
         </div>
+
+        <InstallCard />
 
         <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: 20 }}>
           <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 14 }}>
