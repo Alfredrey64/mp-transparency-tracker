@@ -12,6 +12,7 @@ import {
 import { IconSearch } from "./icons";
 import CountUp from "./CountUp";
 import Reveal from "./Reveal";
+import { navigate } from "../lib/route";
 
 const SeatElections = lazy(() => import("./SeatElections"));
 const SeatLocalNumbers = lazy(() => import("./SeatLocalNumbers"));
@@ -21,7 +22,7 @@ const pct1 = (n) => `${(Math.round(n * 10) / 10).toFixed(1)}%`;
 const thumb = (memberId) => `https://members-api.parliament.uk/api/Members/${memberId}/Thumbnail`;
 
 const goSeat = (name) => {
-  window.location.hash = `#/constituency/${encodeURIComponent(name)}`;
+  navigate(`#/constituency/${encodeURIComponent(name)}`);
 };
 
 export function Panel({ title, children, style }) {

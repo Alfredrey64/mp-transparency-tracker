@@ -90,7 +90,9 @@ async function page(request, url) {
   } catch {
     const own = await caches.match(request, { ignoreSearch: true, ignoreVary: true });
     if (own) return own;
-    if (url.pathname === "/" || url.pathname === "/index.html") {
+    // Every page address (/taxRates/vat) is the same app, so a page that was not saved is opened from the saved home page, which starts the app and
+    // shows whichever page the address names.
+    if (!url.pathname.startsWith("/p/") && !/\.[a-z0-9]+$/i.test(url.pathname)) {
       const shell = await caches.match("/", { ignoreVary: true });
       if (shell) return shell;
     }

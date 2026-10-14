@@ -5,17 +5,19 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/prerender.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
     "test:phone": "playwright test e2e/phone-layout.spec.js",
     "test:layout": "playwright test e2e/layout-audit.spec.js",
+    "test:site": "playwright test e2e/routing.spec.js e2e/offline.spec.js",
     "shots": "node e2e/shots.mjs",
     "check:size": "node scripts/check-bundle-size.mjs",
     "check:tax": "node scripts/check-tax-data.mjs",
     "prebuild": "node scripts/build-seo-pages.mjs",
-    "check:speed": "npx --yes @lhci/cli@0.15.1 autorun --config=lighthouserc.json"
+    "check:speed": "npx --yes @lhci/cli@0.15.1 autorun --config=lighthouserc.json",
+    "check:site": "node scripts/check-site.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.8",

@@ -410,8 +410,8 @@ export default function HouseOfLords({ peerId = null }) {
         formerMp={formerMpById.get(selected.id)}
         onBack={() => {
           setSelected(null);
-          // Opened from a "#/lords/<id>" link? Drop the id from the address.
-          if (/^#\/lords\/\d+/.test(window.location.hash)) window.history.replaceState(null, "", "#/lords");
+          // Opened from a "/lords/<id>" link? Drop the id from the address.
+          if (/^\/lords\/\d+/.test(window.location.pathname)) window.history.replaceState(null, "", "#/lords");
           window.scrollTo(0, 0);
         }}
       />

@@ -18,7 +18,7 @@ for (const width of WIDTHS) {
         // Data requests are refused so the test never depends on the live database.
         await page.route("**/127.0.0.1:54321/**", (route) => route.abort());
 
-        await page.goto(view === "home" ? "/" : `/#/${view}`);
+        await page.goto(view === "home" ? "/" : `/${view}`);
         await expect(page.locator("main h1, h1").first()).toBeVisible({ timeout: 15000 });
         // Let late-sizing content (charts, images, lazy sections) settle before measuring.
         await page.waitForTimeout(600);

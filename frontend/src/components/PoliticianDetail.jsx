@@ -24,6 +24,7 @@ import { BiographyBox, ContactBox, CabinetRoleBox, VotingSummaryBox, RebellionRa
 import { FundingBySectorBox, MoneyAndVotesBox, CommitteeConflictsBox, CrossRegisterBox, CurrentRolesBox } from "./MpFundingBoxes";
 import { ClaimsTabContent, GiftsTabContent } from "./MpRegisterTabs";
 import { ManifestoTabContent } from "./MpManifestoTab";
+import { navigate } from "../lib/route";
 
 const DETAIL_TABS = [
   { key: "all", label: "All" },
@@ -221,7 +222,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
               <span aria-hidden="true">·</span>
               <button
                 type="button"
-                onClick={() => { window.location.hash = `#/constituency/${encodeURIComponent(politician.constituency)}`; }}
+                onClick={() => { navigate(`#/constituency/${encodeURIComponent(politician.constituency)}`); }}
                 title="See how this constituency voted and what people there are petitioning for"
                 style={{ background: "none", border: "none", padding: 0, font: "inherit", color: "inherit", cursor: "pointer", textDecoration: "underline", textDecorationStyle: "dotted", textUnderlineOffset: 3 }}
               >

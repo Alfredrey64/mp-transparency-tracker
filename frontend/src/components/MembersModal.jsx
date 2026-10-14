@@ -4,6 +4,7 @@ import { createPortal } from "react-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import { COLORS, FONT_BODY, FONT_DISPLAY, numeric } from "../theme";
 import { partyColour } from "../lib/format";
+import { navigate } from "../lib/route";
 
 // A pop-up list of the MPs behind a figure: tap a bar or number on the
 // Parliament in Numbers page and see who it counts. Each row opens that MP's
@@ -154,7 +155,7 @@ export default function MembersModal({ title, note, members, badge, returnFocusT
                 className="member-row"
                 onClick={() => {
                   if (onSelect) onSelect(m);
-                  else window.location.hash = `#/mp/${m.id}`;
+                  else navigate(`#/mp/${m.id}`);
                 }}
                 style={{ display: "grid", gridTemplateColumns: "40px minmax(0, 1fr) auto", gap: 12, alignItems: "center", width: "100%", textAlign: "left", background: "none", border: "none", borderBottom: `1px solid ${COLORS.hairline}`, padding: "9px 8px", cursor: "pointer", borderRadius: 8 }}
               >

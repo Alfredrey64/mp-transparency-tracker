@@ -15,6 +15,7 @@ import { IconHexMap } from "./icons";
 import { SeatDetail, SeatSearch, Panel } from "./Constituency";
 import HexMap from "./HexMap";
 import ShareButton from "./ShareButton";
+import { navigate } from "../lib/route";
 
 // Your Constituency and the seat map, as one page. The map is the way in:
 // every one of the 650 seats is a hexagon, coloured by whichever view is
@@ -24,7 +25,7 @@ import ShareButton from "./ShareButton";
 // Chorley), so any seat can be linked to.
 
 const goSeat = (name) => {
-  window.location.hash = name ? `#/constituency/${encodeURIComponent(name)}` : "#/constituency";
+  navigate(name ? `#/constituency/${encodeURIComponent(name)}` : "#/constituency");
 };
 
 // One decimal place, two for a lead under 1% so a 15-vote majority doesn't read as 0.0%.

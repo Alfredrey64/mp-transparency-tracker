@@ -51,7 +51,7 @@ export const mpColumns = (origin) => [
   { header: "Constituency", key: "constituency" },
   { header: "MP since", key: "membership_start_date" },
   { header: "Government post", key: "cabinet_role" },
-  { header: "Profile on this site", value: (p) => `${origin}/#/mp/${p.id}` },
+  { header: "Profile on this site", value: (p) => `${origin}/mp/${p.id}` },
 ];
 
 export const SEATS_COLUMNS = [

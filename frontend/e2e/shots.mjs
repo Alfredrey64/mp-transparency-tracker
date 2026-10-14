@@ -32,7 +32,7 @@ for (const size of SIZES) {
   const page = await ctx.newPage();
   await page.route("**/127.0.0.1:54321/**", (route) => route.abort());
   for (const p of pages) {
-    await page.goto(p === "home" ? `${base}/` : `${base}/#/${p}`);
+    await page.goto(p === "home" ? `${base}/` : `${base}/${p}`);
     await page.locator("h1").first().waitFor({ timeout: 15000 }).catch(() => {});
     await page.waitForTimeout(900);
     const file = `screenshots/${size.name}/${slug(p)}.png`;

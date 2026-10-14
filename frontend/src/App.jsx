@@ -11,6 +11,7 @@ import { LOADERS } from "./pageLoaders";
 import { startGlossDedupe } from "./glossJsx/dedupe";
 import { trackPage } from "./lib/analytics";
 import Loading from "./components/Loading";
+import { currentRoute } from "./lib/route";
 import OfflineBanner from "./components/OfflineBanner";
 import { InstallBanner } from "./components/InstallApp";
 
@@ -136,7 +137,7 @@ function titleForState(view, selected, param) {
 // all) is Home. Hash-based so it needs zero server-side rewrite rules on
 // Vercel — a path-based scheme would 404 on refresh without one.
 function parseHash() {
-  const raw = window.location.hash.replace(/^#\/?/, "");
+  const raw = currentRoute();
   const segments = raw.split("/").filter(Boolean);
   // The seat map used to be its own page; its links now open the merged
   // Your Constituency page.
@@ -162,11 +163,15 @@ function parseHash() {
   return { view: "home", mpId: null, param: null };
 }
 
-function hashForState(view, selected, param) {
-  if (selected) return `#/mp/${selected.id}`;
-  if (param) return `#/${view}/${param.split("/").map(encodeURIComponent).join("/")}`;
-  return view === "home" ? "#/" : `#/${view}`;
+function pathForState(view, selected, param) {
+  if (selected) return `/mp/${selected.id}`;
+  if (param) return `/${view}/${param.split("/").map(encodeURIComponent).join("/")}`;
+  return view === "home" ? "/" : `/${view}`;
 }
+
+const samePath = (a, b) => {
+  try { return decodeURI(a) === decodeURI(b); } catch { return a === b; }
+};
 
 export default function App() {
   const [view, setView] = useState(() => parseHash().view);
@@ -249,9 +254,9 @@ export default function App() {
       return;
     }
     if (initialMpPending.current) return;
-    const nextHash = hashForState(view, selected, viewParam);
-    if (window.location.hash !== nextHash) {
-      window.history.pushState(null, "", nextHash);
+    const next = pathForState(view, selected, viewParam);
+    if (!samePath(window.location.pathname, next)) {
+      window.history.pushState(null, "", next);
     }
   }, [view, selected, viewParam]);
 
@@ -298,11 +303,7 @@ export default function App() {
       }
     }
     window.addEventListener("popstate", syncFromUrl);
-    window.addEventListener("hashchange", syncFromUrl);
-    return () => {
-      window.removeEventListener("popstate", syncFromUrl);
-      window.removeEventListener("hashchange", syncFromUrl);
-    };
+    return () => window.removeEventListener("popstate", syncFromUrl);
   }, []);
 
   // Every page change goes through here: the sidebar highlights the destination straight away, and the page swaps once it is ready.

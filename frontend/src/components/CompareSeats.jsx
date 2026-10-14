@@ -9,6 +9,7 @@ import { IconSeatCompare, IconSearch } from "./icons";
 import ShareButton from "./ShareButton";
 import { compareSeatsShareSpec } from "../lib/shareSpecs";
 import { card, cardTitle, pillStyle } from "../lib/onsStyles";
+import { navigate } from "../lib/route";
 
 // Two constituencies side by side: who holds them, how close the result was, past elections, turnout and deprivation. The
 // pair is in the address (#/compareSeats/Hackney North and Stoke Newington~Gainsborough) so a comparison can be linked to.
@@ -21,7 +22,7 @@ const lead1 = (n) => (n == null ? "–" : n > 0 && n < 1 ? `${n.toFixed(2)}%` : 
 const colour = (hex) => partyColour(hex, COLORS.inkSoft);
 const thumb = (id) => `https://members-api.parliament.uk/api/Members/${id}/Thumbnail`;
 const goPair = (a, b) => {
-  window.location.hash = a || b ? `#/compareSeats/${encodeURIComponent(`${a ?? ""}${SEP}${b ?? ""}`)}` : "#/compareSeats";
+  navigate(a || b ? `#/compareSeats/${encodeURIComponent(`${a ?? ""}${SEP}${b ?? ""}`)}` : "#/compareSeats");
 };
 
 function Picker({ seats, label, current, onPick, exclude }) {

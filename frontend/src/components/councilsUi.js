@@ -1,8 +1,9 @@
 // Small helpers and shared styles for the Your Council page (links, number formatting, party colours for the history chart).
 import { COLORS, FONT_BODY } from "../theme";
+import { navigate } from "../lib/route";
 
 export const goHash = (hash) => {
-  window.location.hash = hash;
+  navigate(hash);
 };
 
 export const goCouncil = (id, ward, county) => {

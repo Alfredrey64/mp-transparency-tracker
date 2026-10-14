@@ -1,0 +1,48 @@
+name: Site health
+
+# Opens the live site every few hours the way a visitor would (see frontend/scripts/check-site.mjs). If something is broken it opens an issue, and
+# GitHub emails the repository's owner. When the site is well again it closes the issue. It changes nothing on the site.
+
+on:
+  schedule:
+    - cron: "11 */3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    name: Site is up and working
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - name: Check the live site
+        id: check
+        run: node scripts/check-site.mjs | tee ../site-check.txt
+      - name: Open an issue if it failed
+        if: failure() && steps.check.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -z "$(gh issue list --state open --label site-health --json number --jq '.[0].number')" ]; then
+            gh label create site-health --color B60205 --description "The live site failed its health check" 2>/dev/null || true
+            gh issue create --label site-health --title "The live site failed its health check" --body "$(printf 'The scheduled check found a problem. Details:\n\n```\n%s\n```\n\nRun: %s/%s/actions/runs/%s' "$(grep -E '^(FAIL|[0-9]+ problem)' ../site-check.txt)" "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID")"
+          fi
+      - name: Close the issue when the site is well again
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for n in $(gh issue list --state open --label site-health --json number --jq '.[].number'); do
+            gh issue close "$n" --comment "The health check passed again, so this is closed."
+          done

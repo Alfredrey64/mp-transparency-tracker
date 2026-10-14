@@ -1,9 +1,9 @@
 // Builds the pages search engines and link previews can read.
 //
-// The app uses addresses like /#/answers/why-housing-expensive, and everything after the # is invisible to a crawler or a link preview, so
-// every page looks like the home page to them. This writes a small static page for each section of the site and each answer, at
-// /p/<page> and /p/answers/<id>, with its own title, description, share image and a plain-text summary. A visitor who lands on one is sent
-// straight to the real page; a crawler or a link preview reads the text. It also writes sitemap.xml listing them all.
+// The app's pages are real paths such as /answers/why-housing-expensive. It is a single-page app, so every path is answered with the same index.html;
+// scripts/prerender.mjs (run after the build) writes a copy of it for each page with that page's own title, description and text. This file writes the
+// older small pages at /p/<page> and /p/answers/<id>, which send a visitor straight on to the real page and which a link preview can read, and
+// sitemap.xml listing the real pages. `routeEntries` is the list of pages, shared with the prerender.
 //
 // Run by `npm run build` (see the prebuild step in package.json). The output goes into public/p and public/sitemap.xml, which are not
 // kept in git.
@@ -13,6 +13,7 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { PAGE_GUIDES, GUIDE_ALIASES } from "../src/data/pageGuides.js";
 import { ANSWERS } from "../src/data/answers.js";
+import { TAXES, GROUPS } from "../src/data/taxCatalogue.js";
 
 export const SITE = "https://simple-politics.vercel.app";
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -35,12 +36,47 @@ export function readSidebarPages(source) {
 export function pageList(sidebarSource) {
   const pages = readSidebarPages(sidebarSource);
   const seen = new Set();
-  const out = [{ key: "home", label: "Simple Politics", hint: "A simple breakdown of UK politics", description: "A simple breakdown of UK politics. See who your MP is, who funds them, how they vote and what the numbers say about the country, all explained in plain English from official sources.", hash: "#/" }];
+  const out = [{ key: "home", label: "Simple Politics", hint: "A simple breakdown of UK politics", description: "A simple breakdown of UK politics. See who your MP is, who funds them, how they vote and what the numbers say about the country, all explained in plain English from official sources.", hash: "/" }];
   for (const p of pages) {
     if (seen.has(p.key)) continue;
     seen.add(p.key);
     const guide = PAGE_GUIDES[p.key] ?? PAGE_GUIDES[GUIDE_ALIASES[p.key]];
-    out.push({ ...p, description: guide?.what ?? p.hint, why: guide?.why ?? "", hash: `#/${p.key}` });
+    out.push({ ...p, description: guide?.what ?? p.hint, why: guide?.why ?? "", hash: `/${p.key}` });
+  }
+  return out;
+}
+
+// The start of some text, cut at the end of a sentence (or a word) so it fits in a search result.
+export function clip(text, max = 200) {
+  const t = String(text ?? "").replace(/\s+/g, " ").trim();
+  if (t.length <= max) return t;
+  const cut = t.slice(0, max);
+  const stop = Math.max(cut.lastIndexOf(". "), cut.lastIndexOf("? "), cut.lastIndexOf("! "));
+  if (stop > 60) return cut.slice(0, stop + 1);
+  return `${cut.slice(0, cut.lastIndexOf(" "))}\u2026`;
+}
+
+// Every page that has an address of its own and something to say before the app starts: { path, title, description, heading, bodyHtml, priority }.
+export function routeEntries(sidebarSource) {
+  const out = [];
+  for (const p of pageList(sidebarSource)) {
+    out.push({
+      path: p.key === "home" ? "/" : `/${p.key}`,
+      title: p.key === "home" ? "Simple Politics | A simple breakdown of UK politics" : `${p.label} | Simple Politics`,
+      description: p.description,
+      heading: p.key === "home" ? "A simple breakdown of UK politics" : p.label,
+      bodyHtml: p.why ? `<p>${esc(p.why)}</p>` : "",
+      priority: p.key === "home" ? "1.0" : "0.7", freq: p.key === "home" ? "daily" : "weekly", key: p.key,
+    });
+  }
+  for (const a of ANSWERS) {
+    const reasons = a.reasons.map((r) => `<li><strong>${esc(r.title)}.</strong> ${esc(r.text)}</li>`).join("");
+    out.push({ path: `/answers/${a.id}`, title: `${a.question} | Simple Politics`, description: a.short, heading: a.question, bodyHtml: `<h2>Why it happens</h2><ul>${reasons}</ul>`, priority: "0.8", freq: "weekly", answer: a.id });
+  }
+  for (const t of TAXES) {
+    const group = GROUPS.find((g) => g.key === t.group);
+    const notes = t.notes?.length ? `<h2>Worth knowing</h2><ul>${t.notes.map((n) => `<li>${esc(n)}</li>`).join("")}</ul>` : "";
+    out.push({ path: `/taxRates/${t.id}`, title: `${t.name}: how the rate has changed | Simple Politics`, description: clip(`${t.summary} ${t.about}`, 200), lead: `${group?.label ?? "Tax"}. ${t.about}`, heading: `${t.name}: how the rate has changed`, bodyHtml: notes, priority: "0.6", freq: "monthly", tax: t.id });
   }
   return out;
 }
@@ -89,19 +125,12 @@ export function buildSeoPages(outDir, sidebarSource) {
   fs.writeFileSync(path.join(pDir, "go.js"), 'var go = document.documentElement.getAttribute("data-go");\nif (go) location.replace(go);\n');
 
   const urls = [];
-  for (const p of pageList(sidebarSource)) {
-    const url = p.key === "home" ? `${SITE}/` : `${SITE}/p/${p.key}`;
-    const title = p.key === "home" ? "Simple Politics | A simple breakdown of UK politics" : `${p.label} | Simple Politics`;
-    const body = `<p>${esc(p.description)}</p>${p.why ? `<p>${esc(p.why)}</p>` : ""}`;
-    if (p.key !== "home") fs.writeFileSync(path.join(pDir, `${p.key}.html`), pageHtml({ url, title, description: p.description, heading: p.label, bodyHtml: body, go: `/${p.hash}` }));
-    urls.push({ loc: url, priority: p.key === "home" ? "1.0" : "0.7", freq: p.key === "home" ? "daily" : "weekly" });
-  }
-  for (const a of ANSWERS) {
-    const url = `${SITE}/p/answers/${a.id}`;
-    const reasons = a.reasons.map((r) => `<li><strong>${esc(r.title)}.</strong> ${esc(r.text)}</li>`).join("");
-    const body = `<p>${esc(a.short)}</p><h2>Why it happens</h2><ul>${reasons}</ul>`;
-    fs.writeFileSync(path.join(pDir, "answers", `${a.id}.html`), pageHtml({ url, title: `${a.question} | Simple Politics`, description: a.short, heading: a.question, bodyHtml: body, go: `/#/answers/${a.id}` }));
-    urls.push({ loc: url, priority: "0.8", freq: "weekly" });
+  for (const e of routeEntries(sidebarSource)) {
+    const url = `${SITE}${e.path === "/" ? "/" : e.path}`;
+    urls.push({ loc: url, priority: e.priority, freq: e.freq });
+    // The older /p/ pages, kept so links already shared keep working. Their canonical address is the real page.
+    if (e.key && e.key !== "home") fs.writeFileSync(path.join(pDir, `${e.key}.html`), pageHtml({ url, title: e.title, description: e.description, heading: e.heading, bodyHtml: `<p>${esc(e.lead ?? e.description)}</p>${e.bodyHtml}`, go: e.path }));
+    if (e.answer) fs.writeFileSync(path.join(pDir, "answers", `${e.answer}.html`), pageHtml({ url, title: e.title, description: e.description, heading: e.heading, bodyHtml: `<p>${esc(e.lead ?? e.description)}</p>${e.bodyHtml}`, go: e.path }));
   }
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

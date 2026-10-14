@@ -68,5 +68,23 @@
       ]
     }
   ],
-  "cleanUrls": true
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/((?!assets/|fonts/|p/)(?!.*\\.(?:js|css|json|png|jpe?g|webp|svg|ico|woff2?|txt|xml|map|html|webmanifest)$).*)",
+      "destination": "/app.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/p/tax",
+      "destination": "/taxRates",
+      "permanent": true
+    },
+    {
+      "source": "/p/budget",
+      "destination": "/taxRates/where",
+      "permanent": true
+    }
+  ]
 }

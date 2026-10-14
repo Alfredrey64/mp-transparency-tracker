@@ -12,6 +12,7 @@ import { loadSector } from "../lib/onsData";
 import EmbedButton from "./EmbedButton";
 import { fillKeyPoint } from "../lib/onsKeyPoints";
 import { card, cardTitle, smallTitle } from "../lib/onsStyles";
+import { navigate } from "../lib/route";
 
 // Ask a question: type one, or pick one, and get a plain-English answer with the latest official
 // figures beside it and the main arguments from different sides. The answers are written by hand
@@ -156,7 +157,7 @@ export default function AnswersPage({ param }) {
   const answer = answerById(param);
   const results = useMemo(() => findAnswers(query, ANSWERS, 6), [query]);
   const searching = query.trim().length > 0;
-  const open = (id) => { setQuery(""); window.location.hash = `#/answers/${id}`; window.scrollTo({ top: 0 }); };
+  const open = (id) => { setQuery(""); navigate(`#/answers/${id}`); window.scrollTo({ top: 0 }); };
 
   return (
     <div style={{ maxWidth: 900, margin: "0 auto", padding: PAGE_PADDING }}>

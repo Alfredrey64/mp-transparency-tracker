@@ -5,7 +5,7 @@
 //   range   years to show, 0 for everything
 //   flags   r = inflation taken out (real terms), g = government shading, i = indexed (places), - = none
 //   places  for a places chart, the places ticked, joined with +
-// For example  #/housing/hpi-london.10.r  or  #/population/population-nations.0.i.england+wales
+// For example  /housing/hpi-london.10.r  or  /population/population-nations.0.i.england+wales
 
 export function buildShareParam({ target, range, real, governments, indexed, places }) {
   const flags = `${real ? "r" : ""}${governments ? "g" : ""}${indexed ? "i" : ""}` || "-";
@@ -28,6 +28,5 @@ export function parseShareParam(param) {
 }
 
 export function shareUrl(view, param) {
-  const { origin, pathname } = window.location;
-  return `${origin}${pathname}#/${view}/${encodeURIComponent(param)}`;
+  return `${window.location.origin}/${view}/${encodeURIComponent(param)}`;
 }

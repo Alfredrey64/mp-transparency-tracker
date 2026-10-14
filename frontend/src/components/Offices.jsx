@@ -10,6 +10,7 @@ import { partyColour } from "../lib/format";
 import { PageHeader } from "./shared";
 import { LoadFailedNote } from "./MpCards";
 import { IconCabinet } from "./icons";
+import { navigate } from "../lib/route";
 
 // Who has held a government or shadow post, for anyone sitting in Parliament
 // today, from their biography records. It can't see people who have left, so
@@ -17,7 +18,7 @@ import { IconCabinet } from "./icons";
 
 const KIND_COLOUR = { gov: "#1FA97C", opp: "#E8A33D" };
 const goHolder = (h) => {
-  window.location.hash = h.house === "lords" ? `#/lords/${h.profileId}` : `#/mp/${h.profileId}`;
+  navigate(h.house === "lords" ? `#/lords/${h.profileId}` : `#/mp/${h.profileId}`);
 };
 
 function Holder({ h, now }) {

@@ -5,10 +5,11 @@ import { partyColour } from "../lib/format";
 import { IconSearch, IconGlossary } from "./icons";
 import { SECTIONS } from "../data/sidebarSections";
 import { filtersForPhrase } from "../lib/careerFilters";
+import { navigate } from "../lib/route";
 
 // Where a search result sends you when it isn't one of the page links.
 const goHash = (hash) => {
-  window.location.hash = hash;
+  navigate(hash);
 };
 
 // Words that suggest someone is looking for who held a government post.

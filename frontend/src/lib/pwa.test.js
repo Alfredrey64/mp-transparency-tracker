@@ -19,8 +19,8 @@ describe("web app manifest", () => {
     expect(manifest.shortcuts.length).toBeGreaterThanOrEqual(3);
     expect(manifest.shortcuts.length).toBeLessThanOrEqual(4);
     for (const s of manifest.shortcuts) {
-      expect(s.url.startsWith("/#/")).toBe(true);
-      expect(keys.has(s.url.slice(3)), s.url).toBe(true);
+      expect(s.url.startsWith("/")).toBe(true);
+      expect(keys.has(s.url.slice(1)), s.url).toBe(true);
       expect(s.name.length).toBeGreaterThan(0);
     }
   });

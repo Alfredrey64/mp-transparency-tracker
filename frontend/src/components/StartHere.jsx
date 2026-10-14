@@ -7,6 +7,7 @@ import { readRememberedSeat, rememberSeat, forgetSeat } from "../lib/rememberedM
 import { PageHeader } from "./shared";
 import { IconRoute, IconSearch } from "./icons";
 import Loading from "./Loading";
+import { navigate } from "../lib/route";
 
 const ACCENT = "#1FA97C";
 
@@ -105,7 +106,7 @@ export default function StartHere({ onNavigate, onNavigateForMp, onViewProfile }
   const name = picked?.mp?.name;
   const ready = Boolean(mp);
   const goSeat = (seatName) => {
-    window.location.hash = seatName ? `#/constituency/${encodeURIComponent(seatName)}` : "#/constituency";
+    navigate(seatName ? `#/constituency/${encodeURIComponent(seatName)}` : "#/constituency");
   };
 
   return (

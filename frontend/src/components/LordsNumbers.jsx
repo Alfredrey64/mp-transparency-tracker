@@ -17,6 +17,7 @@ import DownloadCsvButton from "./DownloadCsvButton";
 import { SEATS_COLUMNS } from "../lib/exportColumns";
 import { Tile, Figure, SeatsChart, SeatsTable, WomenWaffle, CohortChart, Switches } from "./NumbersKit";
 import Loading from "./Loading";
+import { navigate } from "../lib/route";
 
 // The House of Lords half of Parliament in Numbers. Same layout and the same
 // tap-to-see-who as the Commons half. The Lords has no election, so the
@@ -28,7 +29,7 @@ const PEERAGE_NOTES = {
   Bishop: "A Church of England bishop who sits by right (the Lords Spiritual).",
 };
 const goPeer = (id) => {
-  window.location.hash = `#/lords/${id}`;
+  navigate(`#/lords/${id}`);
 };
 
 export default function LordsNumbers({ onNavigate }) {

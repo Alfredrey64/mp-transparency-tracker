@@ -47,7 +47,7 @@
       "name": "Find my MP",
       "short_name": "My MP",
       "description": "Your constituency, MP and local results",
-      "url": "/#/constituency",
+      "url": "/constituency",
       "icons": [
         {
           "src": "/icon-192.png?v=12",
@@ -60,7 +60,7 @@
       "name": "Your council",
       "short_name": "Council",
       "description": "Councillors and local elections",
-      "url": "/#/councils",
+      "url": "/councils",
       "icons": [
         {
           "src": "/icon-192.png?v=12",
@@ -73,7 +73,7 @@
       "name": "Tax rates over time",
       "short_name": "Tax rates",
       "description": "Every main tax rate since 1945, and who set it",
-      "url": "/#/taxRates",
+      "url": "/taxRates",
       "icons": [
         {
           "src": "/icon-192.png?v=12",
@@ -86,7 +86,7 @@
       "name": "Jargon buster",
       "short_name": "Jargon",
       "description": "Plain meanings of political words",
-      "url": "/#/glossary",
+      "url": "/glossary",
       "icons": [
         {
           "src": "/icon-192.png?v=12",

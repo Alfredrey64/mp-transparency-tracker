@@ -87,7 +87,7 @@ for (const size of SIZES) {
         const errors = [];
         page.on("pageerror", (e) => errors.push(e.message));
         await page.route("**/127.0.0.1:54321/**", (route) => route.abort());
-        await page.goto(view === "home" ? "/" : `/#/${view}`);
+        await page.goto(view === "home" ? "/" : `/${view}`);
         await expect(page.locator("h1").first()).toBeVisible({ timeout: 15000 });
         await page.waitForTimeout(700);
 
