@@ -771,3 +771,48 @@ export function IconCalendar({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconScales({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 4v15M7.5 19.5h9M12 6.5 4.5 8M12 6.5 19.5 8" />
+      <path d="M4.5 8 2.4 13.4a3 3 0 0 0 4.2 0L4.5 8ZM19.5 8l-2.1 5.4a3 3 0 0 0 4.2 0L19.5 8Z" />
+    </svg>
+  );
+}
+
+export function IconEuStars({ size = 17 }) {
+  const dots = Array.from({ length: 10 }, (_, i) => [12 + 7.6 * Math.cos((i / 10) * Math.PI * 2 - Math.PI / 2), 12 + 7.6 * Math.sin((i / 10) * Math.PI * 2 - Math.PI / 2)]);
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true">
+      {dots.map(([x, y], i) => <circle key={i} cx={x.toFixed(2)} cy={y.toFixed(2)} r="1.5" />)}
+    </svg>
+  );
+}
+
+export function IconMortarboard({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m2.5 9.5 9.5-4.5 9.5 4.5-9.5 4.5-9.5-4.5Z" />
+      <path d="M6.5 11.8V16c0 1.4 2.5 2.7 5.5 2.7s5.5-1.3 5.5-2.7v-4.2M21.5 9.5V15" />
+    </svg>
+  );
+}
+
+export function IconDefence({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3 4.5 6v5.5c0 4.6 3.1 7.9 7.5 9.5 4.4-1.6 7.5-4.9 7.5-9.5V6L12 3Z" />
+      <path d="m12 8.2 1.2 2.4 2.6.4-1.9 1.8.5 2.6-2.4-1.3-2.4 1.3.5-2.6-1.9-1.8 2.6-.4L12 8.2Z" />
+    </svg>
+  );
+}
+
+export function IconPension({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3.5a8.5 8.5 0 0 0-8.5 8.5h17A8.5 8.5 0 0 0 12 3.5Z" />
+      <path d="M12 12v6.2a2 2 0 0 0 4 0" />
+    </svg>
+  );
+}

@@ -71,6 +71,7 @@ export const LOADERS = {
   localElections: () => import("./components/LocalElections"),
   generalElection: () => import("./components/GeneralElection"),
   taxRates: () => import("./components/TaxRates"),
+  inequality: () => import("./components/Inequality"),
 };
 
 const started = new Set();

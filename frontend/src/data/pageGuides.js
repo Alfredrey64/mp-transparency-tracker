@@ -221,6 +221,11 @@ export const PAGE_GUIDES = {
     why: "You can't vote unless you are registered, and the rules on ID and deadlines trip up people every election. Knowing them in advance makes your vote count.",
     notShown: "Your registration status, or the exact deadline for the next election. Those come from gov.uk, which this page links to. Rules can change, so check there.",
   },
+  inequality: {
+    what: "How unevenly income and wealth are shared in the UK, who is in poverty, how it differs by region and group, and the main arguments about it.",
+    why: "Who has what shapes pay, prices, housing and public services, and is at the centre of many arguments about tax and benefits.",
+    notShown: "Whether any gap is fair, comparisons with other countries, or how far people move up and down over their lives.",
+  },
   taxRates: {
     what: "The main tax rates today, what the government collects and where it spends it, and how each rate has changed since 1945, with who was in government. Use the buttons to switch.",
     why: "Tax decides what is left in your pay and what things cost, and the biggest changes were made by particular governments at particular Budgets.",
