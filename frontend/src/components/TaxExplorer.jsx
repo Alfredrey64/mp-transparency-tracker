@@ -2,11 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, numeric, readable, solid } from "../theme";
 import { card, cardTitle, pillStyle } from "../lib/onsStyles";
 import { GROUPS } from "../data/taxCatalogue";
-import { HEADLINES, allTaxes, comingUp, fmt, getTax, headlineLine, nowSummary, pastChanges, toT, valueOn, todayIso, whenText } from "../lib/taxRates";
+import { allTaxes, comingUp, fmt, getTax, nowSummary, pastChanges, toT, valueOn, whenText } from "../lib/taxRates";
 import { Reveal } from "./Motion";
 import TaxStepChart from "./TaxStepChart";
 import TaxSpark from "./TaxSpark";
-import TaxComingUp from "./TaxComingUp";
 import TaxTake from "./TaxTake";
 import EmbedButton from "./EmbedButton";
 import TaxStories from "./TaxStories";
@@ -230,34 +229,6 @@ function TaxDetail({ tax, now, nowT }) {
   );
 }
 
-// Today's main rates: one tile for each of the rates people ask about most.
-const TODAY = ["incomeTax.basic", "vat.standard", "corp.main", "ni.employee", "fuel.petrol", "councilTax.bandD"];
-
-function TodayStrip({ now, onPick }) {
-  const iso = todayIso(now);
-  return (
-    <section aria-labelledby="h-tax-today" style={{ marginTop: 18 }}>
-      <h2 id="h-tax-today" style={{ ...sectionTitle, fontSize: 19 }}>Today's main rates</h2>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 176px), 1fr))", gap: 10, marginTop: 10 }}>
-        {TODAY.map((key, i) => {
-          const [taxId, , label] = HEADLINES.find(([, k]) => k === key);
-          const line = headlineLine(taxId, key);
-          const tax = getTax(taxId);
-          return (
-            <button
-              key={key} type="button" onClick={() => onPick(taxId)} className="ge-tab ge-pop"
-              style={{ animationDelay: `${i * 60}ms`, textAlign: "left", cursor: "pointer", padding: "13px 15px", borderRadius: 16, border: "none", background: `linear-gradient(145deg, ${solid(tax.group.accent)}, color-mix(in srgb, ${solid(tax.group.accent)} 70%, #000))`, color: "#fff" }}
-            >
-              <span style={{ ...numeric, display: "block", fontSize: "clamp(26px, 6vw, 32px)", fontWeight: 600, lineHeight: 1, letterSpacing: "-0.02em" }}>{fmt(line.unit, valueOn(line, iso))}</span>
-              <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, marginTop: 6, lineHeight: 1.3 }}>{label}</span>
-            </button>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
-
 export default function TaxExplorer({ taxId, onPick }) {
   const [now] = useState(() => Date.now());
   const nowT = toT(new Date(now).toISOString().slice(0, 10));
@@ -268,10 +239,8 @@ export default function TaxExplorer({ taxId, onPick }) {
 
   return (
     <div>
-      <TodayStrip now={now} onPick={onPick} />
-      <TaxComingUp now={now} />
-
-      <h2 style={{ ...sectionTitle, fontSize: 19, marginTop: 26 }}>Pick a tax</h2>
+      <h2 style={{ ...sectionTitle, fontSize: 19, marginTop: 22 }}>Pick a tax</h2>
+      <p style={{ ...para, margin: "4px 0 0", fontSize: 14.5 }}>Choose a kind of tax, then one tax. Its chart appears below. A line stays flat until a government changes the rate, and the coloured bands behind it show who was in power.</p>
       <div role="group" aria-label="Kinds of tax" style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
         {GROUPS.map((g) => {
           const on = g.key === group.key;

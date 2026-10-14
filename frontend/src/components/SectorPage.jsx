@@ -485,7 +485,8 @@ function InParliament({ sector, accent }) {
   );
 }
 
-export default function SectorPage({ sector, param = null }) {
+// `embedded` is for a page that already has its own heading and width (the Taxes page): the header is left out and the padding is not doubled.
+export default function SectorPage({ sector, param = null, embedded = false }) {
   const def = sectorByKey(sector);
   const reduce = useReducedMotion();
   const [loaded, setLoaded] = useState(null);
@@ -556,8 +557,8 @@ export default function SectorPage({ sector, param = null }) {
   };
 
   return (
-    <div className="regions-wrap" style={{ maxWidth: 1280, margin: "0 auto", padding: PAGE_PADDING }}>
-      <PageHeader icon={Icon} title={def.title} subtitle={def.subtitle} share={loaded ? shareCard : undefined} />
+    <div className="regions-wrap" style={embedded ? { marginTop: 8 } : { maxWidth: 1280, margin: "0 auto", padding: PAGE_PADDING }}>
+      {!embedded && <PageHeader icon={Icon} title={def.title} subtitle={def.subtitle} share={loaded ? shareCard : undefined} />}
 
       {failed && <div style={{ marginTop: 24 }}><LoadFailedNote item="these figures" /></div>}
       {!loaded && !failed && <Loading />}

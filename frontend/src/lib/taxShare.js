@@ -6,7 +6,7 @@ import { CHANCELLORS } from "../data/chancellors";
 import { changesByChancellor, changesByGovernment, comingUp, fmt, getTax, headlinesBetween, nowSummary, pastChanges, whenText, chancellorSpan } from "./taxRates";
 import { pageShareSpec, sectorShareSpec } from "./shareSpecs";
 
-const KICKER = "Tax rates through time";
+const KICKER = "Taxes";
 
 const range = (h) => (h.start === undefined || h.end === undefined ? "no record" : h.start === h.end ? fmt(h.unit, h.end) : `${fmt(h.unit, h.start)} to ${fmt(h.unit, h.end)}`);
 const pick = (heads, key) => heads.find((h) => h.key === key);
@@ -87,9 +87,9 @@ export function taxShareSpec(nav, link, now = Date.now()) {
     budget: ["Budget by Budget", "Every tax change tied to the Budget where it was decided, and who made it."],
     compare: ["Tax rates beside the economy", "Put any tax rate next to growth, jobs, prices or house prices, with the governments of the day."],
     pay: ["What would you have paid?", "Income tax and National Insurance on the same pay in every year since 1990."],
-    about: ["Tax rates through time: the figures", "Where the rates come from, how a change is credited and what is left out."],
+    about: ["Taxes: where the figures come from", "Where the rates come from, how a change is credited and what is left out."],
   };
   const key = nav.tab === "who" ? "budget" : nav.tab;
-  const [title, subtitle] = titles[key] ?? ["Tax rates through time", "How the main UK tax rates have changed since 1945 and which government decided each change."];
+  const [title, subtitle] = titles[key] ?? ["Taxes", "The main tax rates today, what the government collects and spends, and how each rate has changed since 1945."];
   return pageShareSpec({ kicker: KICKER, title, subtitle, accent: "#0E9AA7", link });
 }

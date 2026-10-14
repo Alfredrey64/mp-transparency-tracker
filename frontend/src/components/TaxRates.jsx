@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING } from "../theme";
+import { useRef, useState } from "react";
+import { COLORS, FONT_BODY, PAGE_PADDING, solid } from "../theme";
 import { PageHeader } from "./shared";
 import { IconCabinet, IconCoin, IconCompareTime, IconQuestion, IconTaxes, IconTrend } from "./icons";
 import { TAXES } from "../data/taxCatalogue";
 import { GOVERNMENTS } from "../data/governments";
 import TaxExplorer from "./TaxExplorer";
+import TaxOverview from "./TaxOverview";
 import TaxByGovernment from "./TaxByGovernment";
 import TaxByChancellor from "./TaxByChancellor";
 import TaxByBudget from "./TaxByBudget";
@@ -15,15 +16,17 @@ import { taxShareSpec } from "../lib/taxShare";
 import TaxCompare from "./TaxCompare";
 import TaxAbout from "./TaxAbout";
 
-// Tax rates through time: every main tax rate since 1945 where there is a record, who was in government when each changed, and the main rates
-// under each government. The address carries the tab and the item picked (#/taxRates/vat, #/taxRates/government/thatcher).
+// Taxes: one page with a row of toggles. Overview (rates today, what is coming up, what is collected and spent), each tax's rate through time, who
+// changed them, comparisons, what a salary pays and the sources. The address carries the toggle and what is picked inside it (#/taxRates/vat,
+// #/taxRates/government/thatcher). The old Taxes and spending page, #/tax, is the Overview.
 
 const TABS = [
-  { key: "taxes", label: "By tax", blurb: "How each rate moved", icon: IconTrend, colour: "#0E9AA7" },
-  { key: "who", label: "Who set it", blurb: "Government, Chancellor, Budget", icon: IconCabinet, colour: "#C7871A" },
-  { key: "compare", label: "Compare", blurb: "A tax beside growth, jobs, prices", icon: IconCompareTime, colour: "#D6455D" },
-  { key: "pay", label: "Your pay", blurb: "What you would have paid", icon: IconCoin, colour: "#1FA97C" },
-  { key: "about", label: "About the figures", blurb: "Sources and limits", icon: IconQuestion, colour: "#7A5AF0" },
+  { key: "overview", label: "Overview", blurb: "The main rates today, what is coming up, and how much the government collects and spends.", icon: IconTaxes, colour: "#4F46E5" },
+  { key: "taxes", label: "Rates over time", blurb: "Pick a tax and see how its rate has moved since 1945.", icon: IconTrend, colour: "#0E9AA7" },
+  { key: "who", label: "Who changed them", blurb: "Every change, by government, by Chancellor or Budget by Budget.", icon: IconCabinet, colour: "#C7871A" },
+  { key: "compare", label: "Compare", blurb: "Put a tax rate beside growth, jobs, prices and more.", icon: IconCompareTime, colour: "#D6455D" },
+  { key: "pay", label: "What I pay", blurb: "Choose a salary and see the income tax and National Insurance, and where it goes.", icon: IconCoin, colour: "#1FA97C" },
+  { key: "about", label: "Sources", blurb: "Where the figures come from, and what is left out.", icon: IconQuestion, colour: "#7A5AF0" },
 ];
 
 const slug = (name) => name.toLowerCase().replace(/[^a-z]+/g, "-");
@@ -35,14 +38,17 @@ function parse(param) {
   if (first === "government") return { tab: "who", mode: "government", item: rest[0] && GOVERNMENTS.some((g) => g.id === rest[0]) ? rest[0] : lastGov };
   if (first === "chancellor") { const names = chancellorNames(); return { tab: "who", mode: "chancellor", item: names.find((n) => slug(n) === rest[0]) ?? names[names.length - 1] }; }
   if (first === "budget") return { tab: "who", mode: "budget", item: null };
+  if (first === "overview") return { tab: "overview", item: rest.join("/") || null };
   if (first === "about") return { tab: "about", item: null };
   if (first === "pay") return { tab: "pay", item: null };
   if (first === "compare") return { tab: "compare", item: rest.join("/") || "incomeTax.basic/growth" };
-  return { tab: "taxes", item: TAXES.some((t) => t.id === first) ? first : "income-tax" };
+  if (TAXES.some((t) => t.id === first)) return { tab: "taxes", item: first };
+  return { tab: "overview", item: null };
 }
 
 const hashFor = (nav) => {
-  if (nav.tab === "taxes") return `#/taxRates${nav.item && nav.item !== "income-tax" ? `/${nav.item}` : ""}`;
+  if (nav.tab === "overview") return nav.item ? `#/taxRates/overview/${nav.item}` : "#/taxRates";
+  if (nav.tab === "taxes") return `#/taxRates/${nav.item ?? "income-tax"}`;
   if (nav.tab === "who") return nav.mode === "government" ? `#/taxRates/government/${nav.item}` : nav.mode === "chancellor" ? `#/taxRates/chancellor/${slug(nav.item)}` : "#/taxRates/budget";
   if (nav.tab === "compare") return `#/taxRates/compare/${nav.item}`;
   return `#/taxRates/${nav.tab}`;
@@ -53,6 +59,7 @@ const MODES = [["government", "Government"], ["chancellor", "Chancellor"], ["bud
 export default function TaxRates({ param }) {
   const [nav, setNav] = useState(() => parse(param));
   const [seen, setSeen] = useState(param);
+  const tabsRef = useRef(null);
   if (param !== seen) {
     setSeen(param);
     setNav(parse(param));
@@ -68,41 +75,44 @@ export default function TaxRates({ param }) {
     } else {
       next = { tab, item: item ?? (tab === "taxes" ? "income-tax" : tab === "compare" ? "incomeTax.basic/growth" : null) };
     }
+    const moved = next.tab !== nav.tab;
     setNav(next);
     window.history.replaceState(null, "", hashFor(next));
+    // Switching view from further down the page (for example from a tile on the overview) puts the toggles back at the top.
+    if (moved && tabsRef.current && tabsRef.current.getBoundingClientRect().top < 0) tabsRef.current.scrollIntoView({ block: "start" });
   }
 
+  const current = TABS.find((t) => t.key === nav.tab);
   return (
-    <div style={{ maxWidth: 1000, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconTaxes}
         kicker="Britain in numbers"
-        title="Tax rates through time"
-        subtitle="How the main UK tax rates have changed since 1945, from income tax and VAT to business rates, drink, tobacco and gambling duties, and which government decided each change."
+        title="Taxes"
+        subtitle="What the government collects and spends, how each tax rate has changed since 1945, and which government decided each change."
         share={() => taxShareSpec(nav, window.location.href)}
       />
-      <div role="tablist" aria-label="Tax rates sections" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 128px), 1fr))", gap: 8, margin: "24px 0 6px" }}>
-        {TABS.map((t, i) => {
-          const active = nav.tab === t.key;
-          const Icon = t.icon;
-          return (
-            <button
-              key={t.key} role="tab" id={`tx-tab-${t.key}`} aria-selected={active} aria-controls="tx-panel" type="button" className="ge-tab ge-pop"
-              onClick={() => go(t.key)}
-              style={{ animationDelay: `${i * 70}ms`, display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 8, textAlign: "left", cursor: "pointer", padding: "12px 13px", borderRadius: 16, border: `1.5px solid ${active ? t.colour : COLORS.hairline}`, background: active ? `color-mix(in srgb, ${t.colour} 13%, ${COLORS.paperCard})` : COLORS.paperCard, boxShadow: active ? `0 10px 24px -14px ${t.colour}` : "none", color: COLORS.ink }}
-            >
-              <span aria-hidden="true" style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 38, height: 38, borderRadius: 11, flexShrink: 0, background: active ? t.colour : `color-mix(in srgb, ${t.colour} 16%, transparent)`, color: active ? "#fff" : `color-mix(in srgb, ${t.colour} 70%, ${COLORS.ink})`, transition: "background 0.25s, color 0.25s" }}>
-                <Icon size={19} />
-              </span>
-              <span style={{ minWidth: 0 }}>
-                <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: 16.5, fontWeight: 700, lineHeight: 1.2 }}>{t.label}</span>
-                <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 2 }}>{t.blurb}</span>
-              </span>
-            </button>
-          );
-        })}
+      <div ref={tabsRef} style={{ scrollMarginTop: 12 }}>
+        <div role="tablist" aria-label="What to look at" style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          {TABS.map((t) => {
+            const active = nav.tab === t.key;
+            const Icon = t.icon;
+            return (
+              <button
+                key={t.key} role="tab" id={`tx-tab-${t.key}`} aria-selected={active} aria-controls="tx-panel" type="button"
+                onClick={() => go(t.key)}
+                style={{ display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "9px 16px", borderRadius: 999, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 15, fontWeight: 700, lineHeight: 1.2, border: `1.5px solid ${active ? solid(t.colour) : COLORS.hairline}`, background: active ? solid(t.colour) : COLORS.paperCard, color: active ? "#fff" : COLORS.ink, boxShadow: active ? `0 8px 18px -12px ${t.colour}` : "none", transition: "background 0.2s, color 0.2s, border-color 0.2s" }}
+              >
+                <Icon size={17} />
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
+        <p style={{ fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.55, color: COLORS.inkSoft, margin: "12px 2px 0", maxWidth: 780 }}>{current.blurb}</p>
       </div>
       <div key={nav.tab} className="ge-fade" role="tabpanel" id="tx-panel" aria-labelledby={`tx-tab-${nav.tab}`} style={{ fontFamily: FONT_BODY }}>
+        {nav.tab === "overview" && <TaxOverview param={nav.item} onPick={(id) => go("taxes", id)} />}
         {nav.tab === "taxes" && <TaxExplorer taxId={nav.item} onPick={(id) => go("taxes", id)} />}
         {nav.tab === "who" && (
           <>

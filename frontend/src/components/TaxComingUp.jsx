@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, numeric } from "../theme";
-import { card } from "../lib/onsStyles";
+import { card, pillStyle } from "../lib/onsStyles";
 import { NEXT_BUDGET } from "../data/taxEvents";
 import { allTaxes, comingUp, todayIso, whenText } from "../lib/taxRates";
 import { ChangeRow } from "./TaxChangeList";
@@ -9,6 +10,7 @@ import { ChangeRow } from "./TaxChangeList";
 const days = (from, to) => Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86400000);
 
 export default function TaxComingUp({ now }) {
+  const [all, setAll] = useState(false);
   const today = todayIso(now);
   const upcoming = allTaxes().flatMap((tax) => comingUp(tax, now).map((c) => ({ ...c, tax }))).sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
   const budget = NEXT_BUDGET && NEXT_BUDGET.date >= today ? NEXT_BUDGET : null;
@@ -30,8 +32,9 @@ export default function TaxComingUp({ now }) {
         <>
           <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 16, fontWeight: 700, color: COLORS.ink, margin: "18px 0 0" }}>Already decided, not yet in force</h3>
           <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-            {upcoming.map((c) => <ChangeRow key={`${c.line.key}-${c.date}`} c={c} showTax future />)}
+            {(all ? upcoming : upcoming.slice(0, 3)).map((c) => <ChangeRow key={`${c.line.key}-${c.date}`} c={c} showTax future />)}
           </ul>
+          {upcoming.length > 3 && <button type="button" onClick={() => setAll((v) => !v)} aria-expanded={all} style={{ ...pillStyle(false), marginTop: 10 }}>{all ? "Show fewer" : `Show all ${upcoming.length}`}</button>}
         </>
       )}
     </section>

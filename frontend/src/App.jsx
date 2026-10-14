@@ -141,6 +141,8 @@ function parseHash() {
   // The seat map used to be its own page; its links now open the merged
   // Your Constituency page.
   if (segments[0] === "seatmap") segments[0] = "constituency";
+  // Taxes and spending and Tax rates through time became one page, Taxes. Old links to #/tax open its Overview.
+  if (segments[0] === "tax") segments.splice(0, 1, "taxRates", "overview");
   if (segments[0] === "mp" && /^\d+$/.test(segments[1] ?? "")) {
     return { view: "list", mpId: Number(segments[1]), param: null };
   }

@@ -81,11 +81,6 @@ export const PAGE_GUIDES = {
     why: "Immigration is a top political issue and the figures are often muddled. Seeing legal migration, asylum and small boats apart helps you judge claims.",
     notShown: "Where migrants live, or how they affect pay and services. Figures lag by months and are revised.",
   },
-  tax: {
-    what: "How much the government collects in each main tax over the last 12 months, how much it spends on benefits and debt interest, and how each £1 is split.",
-    why: "Tax and spending decisions are what Budgets are about, and these figures show where the money really comes from and goes.",
-    notShown: "Who pays each tax, or spending on each department. Figures are for the whole UK public sector.",
-  },
   rates: {
     what: "The Bank of England's interest rate, what mortgage and savings rates people are offered, the pound's value and how many mortgages are being approved.",
     why: "Interest rates set the cost of borrowing for homes and businesses, and they are the Bank's main tool against inflation.",
@@ -227,9 +222,9 @@ export const PAGE_GUIDES = {
     notShown: "Your registration status, or the exact deadline for the next election. Those come from gov.uk, which this page links to. Rules can change, so check there.",
   },
   taxRates: {
-    what: "How the main UK tax rates have changed since 1945, from income tax and VAT to business rates and the duties on drink, tobacco and gambling, with who was in government for each change.",
+    what: "The main tax rates today, what the government collects and spends, and how each rate has changed since 1945, with who was in government. Use the buttons at the top to switch.",
     why: "Tax decides what is left in your pay and what things cost, and the biggest changes were made by particular governments at particular Budgets.",
-    notShown: "Whether a change was wise, tax reliefs, taxes set only in Scotland or Wales, and years before an official table begins.",
+    notShown: "Whether a change was wise, who pays each tax, spending by department, tax reliefs, taxes set only in Scotland or Wales, and years before an official table begins.",
   },
   generalElection: {
     what: "The 2024 result, every general election since 1945 with maps and a seat lookup, each government since, devolved elections, and a plain-English guide to how votes turn into seats.",

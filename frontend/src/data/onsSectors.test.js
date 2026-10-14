@@ -10,9 +10,11 @@ const dir = path.join(path.dirname(new URL(import.meta.url).pathname), "ons");
 describe("Britain in numbers sectors", () => {
   it("has one sidebar page and one page guide per sector", () => {
     const items = SECTIONS.flatMap((s) => s.items.map((i) => i.key));
+    // The tax figures are the Overview of the Taxes page (taxRates), not a page of their own.
+    const PAGE_FOR = { tax: "taxRates" };
     for (const key of SECTOR_KEYS) {
-      expect(items).toContain(key);
-      expect(PAGE_GUIDES[key]).toBeTruthy();
+      expect(items).toContain(PAGE_FOR[key] ?? key);
+      expect(PAGE_GUIDES[PAGE_FOR[key] ?? key]).toBeTruthy();
     }
   });
 
