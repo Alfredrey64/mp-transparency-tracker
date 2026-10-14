@@ -288,3 +288,20 @@ describe("share cards", () => {
     for (const nav of [{ tab: "who", mode: "budget" }, { tab: "pay" }, { tab: "compare" }, { tab: "about" }]) expect(taxShareSpec(nav, "x", NOW).title.length).toBeGreaterThan(5);
   });
 });
+
+describe("tax stories", () => {
+  it("name real taxes, use plain wording and cover several taxes", async () => {
+    const { TAX_STORIES } = await import("../data/taxStories");
+    const ids = new Set(TAXES.map((t) => t.id));
+    const seen = new Set();
+    for (const s of TAX_STORIES) {
+      expect(seen.has(s.id), `duplicate ${s.id}`).toBe(false);
+      seen.add(s.id);
+      for (const id of s.taxes) expect(ids.has(id), `${s.id}: ${id}`).toBe(true);
+      expect(s.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(`${s.title} ${s.text}`).not.toMatch(/\u2014|\u2013|\u2192|->/);
+      expect(s.text.length).toBeGreaterThan(80);
+    }
+    expect(new Set(TAX_STORIES.flatMap((s) => s.taxes)).size).toBeGreaterThanOrEqual(9);
+  });
+});

@@ -95,6 +95,21 @@ export default function TaxStepChart({ lines, unit, from, to, ariaLabel, height 
     const t = from + ((px - M.l) / (W - M.l - M.r)) * (to - from);
     setHover(Math.min(to, Math.max(from, t)));
   };
+  const [kbd, setKbd] = useState(false);
+  // Arrow keys move the marker for people who cannot use a pointer: a year at a time, five with Shift, Home and End for the ends.
+  const onKey = (e) => {
+    const step = e.shiftKey ? 5 : 1;
+    let next = null;
+    if (e.key === "ArrowLeft") next = (hover ?? to) - step;
+    else if (e.key === "ArrowRight") next = (hover ?? from) + step;
+    else if (e.key === "Home") next = from;
+    else if (e.key === "End") next = to;
+    else if (e.key === "Escape") { setHover(null); setKbd(false); return; }
+    if (next === null) return;
+    e.preventDefault();
+    setKbd(true);
+    setHover(Math.min(to, Math.max(from, next)));
+  };
   const hoverIso = hover === null ? null : isoFromT(hover);
   const hits = hoverIso ? lines.map((l) => ({ l, v: l.valueAt ? l.valueAt(hoverIso) : valueOn(l, hoverIso) })).filter((h) => h.v !== undefined) : [];
   const gov = hoverIso ? governmentOn(hoverIso) : null;
@@ -106,6 +121,7 @@ export default function TaxStepChart({ lines, unit, from, to, ariaLabel, height 
         <svg
           viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label={ariaLabel}
           style={{ display: "block", touchAction: "pan-y", overflow: "visible" }}
+          tabIndex={0} onKeyDown={onKey} onBlur={() => setKbd(false)}
           onPointerMove={pick} onPointerDown={pick} onPointerLeave={() => setHover(null)}
         >
           <defs><clipPath id={`tsc-${lines[0]?.key ?? "x"}`}><rect x={M.l} y={M.t - 4} width={W - M.l - M.r} height={H - M.t - M.b + 8} /></clipPath></defs>
@@ -142,6 +158,9 @@ export default function TaxStepChart({ lines, unit, from, to, ariaLabel, height 
           )}
         </svg>
       )}
+      <span className="sr-only" role="status" aria-live="polite">
+        {kbd && hoverIso ? `${dateLabel(hoverIso)}: ${hits.map((h) => `${h.l.label} ${h.v === null ? "not charged" : fmt(unit, h.v)}`).join(", ")}. Left and right arrows move through the years.` : ""}
+      </span>
       {tooltip && hover !== null && hits.length > 0 && (
         <div
           style={{ position: "absolute", top: 0, left: `${tipLeft}%`, transform: "translate(-50%, -6px)", pointerEvents: "none", background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 8, padding: "6px 10px", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, boxShadow: "0 4px 14px rgba(0,0,0,0.25)", zIndex: 3, width: "max-content", maxWidth: "min(300px, 90%)" }}

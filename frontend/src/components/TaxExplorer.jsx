@@ -9,7 +9,9 @@ import TaxSpark from "./TaxSpark";
 import TaxComingUp from "./TaxComingUp";
 import TaxTake from "./TaxTake";
 import EmbedButton from "./EmbedButton";
+import TaxStories from "./TaxStories";
 import { loadPriceIndex, priceLabel, realLine } from "../lib/priceIndex";
+import { scrollRegion } from "../lib/a11y";
 import ChangeList, { ChangeRow } from "./TaxChangeList";
 
 // Pick a tax and see how its rates have moved, with who was in government behind the line and a list of every change.
@@ -34,6 +36,7 @@ function lineSummary(panel) {
 function PanelView({ tax, panel, range, now, nowT }) {
   const [off, setOff] = useState([]);
   const [real, setReal] = useState(false);
+  const [asTable, setAsTable] = useState(false);
   const [index, setIndex] = useState(null);
   useEffect(() => {
     if (!real || index) return undefined;
@@ -80,18 +83,52 @@ function PanelView({ tax, panel, range, now, nowT }) {
           })}
         </div>
       )}
-      <div style={{ marginTop: 10 }}>
-        <TaxStepChart lines={inRange.length ? inRange : shown} unit={panel.unit} from={from} to={nowT} ariaLabel={label} />
-      </div>
+      {asTable ? (
+        <div {...scrollRegion(`${panel.title} as a table, scrollable`)} style={{ overflowX: "auto", marginTop: 10, maxHeight: 420, overflowY: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: FONT_BODY, fontSize: 13.5 }}>
+            <caption style={{ position: "absolute", left: -9999 }}>{label}</caption>
+            <thead><tr style={{ textAlign: "left", color: COLORS.inkSoft, fontSize: 12.5 }}>
+              <th scope="col" style={{ padding: "6px 8px 6px 0", position: "sticky", top: 0, background: COLORS.paper }}>{adjusted ? "Year" : "From"}</th>
+              {shown.map((l) => <th key={l.key} scope="col" style={{ padding: "6px 8px", fontWeight: 600, position: "sticky", top: 0, background: COLORS.paper }}>{l.label}</th>)}
+            </tr></thead>
+            <tbody>
+              {tableDates(shown, from, nowT, adjusted).map((d) => (
+                <tr key={d} style={{ borderTop: `1px solid ${COLORS.hairline}` }}>
+                  <th scope="row" style={{ textAlign: "left", fontWeight: 600, color: COLORS.ink, padding: "7px 8px 7px 0", whiteSpace: "nowrap" }}>{adjusted ? d.slice(0, 4) : whenText({ date: d })}</th>
+                  {shown.map((l) => { const v = l.valueAt ? l.valueAt(d) : valueOn(l, d); return <td key={l.key} style={{ ...numeric, padding: "7px 8px", color: COLORS.ink }}>{v === undefined ? "" : v === null ? "none" : fmt(panel.unit, v)}</td>; })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div style={{ marginTop: 10 }}>
+          <TaxStepChart lines={inRange.length ? inRange : shown} unit={panel.unit} from={from} to={nowT} ariaLabel={label} />
+        </div>
+      )}
+      <button type="button" aria-pressed={asTable} onClick={() => setAsTable((v) => !v)} style={{ ...pillStyle(false), marginTop: 8, fontSize: 12.5 }}>{asTable ? "Show the chart" : "Show as a table"}</button>
       <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, margin: "6px 0 0" }}>
         {adjusted
           ? `Adjusted for rising prices to ${priceLabel(index)} prices, using the Retail Prices Index before 1988 and the Consumer Prices Index since, both from the ONS. A figure that stays the same on paper falls in real terms. `
           : panel.lines.length === 1 ? `Today: ${fmt(panel.unit, panel.lines[0].points.filter((p) => p.date <= isoNow).at(-1)?.value)}. ` : ""}
-        Shaded bands show who was in government. Touch or hover for the rate on any day.
+        Shaded bands show who was in government. Touch or hover for the rate on any day, or tab to the chart and use the left and right arrow keys.
       </p>
       {real && !index && <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, margin: "4px 0 0" }}>Loading prices...</p>}
     </div>
   );
+}
+
+// The dates to list in a table: every date any shown line changes (or a point in each year when adjusted for prices), within the range.
+function tableDates(lines, fromT, toT, yearly) {
+  const dates = new Set();
+  if (yearly) { for (let y = Math.ceil(fromT); y <= Math.floor(toT); y += 1) dates.add(`${y}-04-15`); return [...dates].reverse(); }
+  const fromIso = `${Math.floor(fromT)}-01-01`;
+  for (const l of lines) {
+    let before = null;
+    for (const p of l.points) { if (p.t > toT) break; if (p.date < fromIso) before = p.date; else dates.add(p.date); }
+    if (before) dates.add(fromIso);
+  }
+  return [...dates].sort().reverse();
 }
 
 const sectionTitle = { fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 700, color: COLORS.ink, margin: 0 };
@@ -135,6 +172,8 @@ function TaxDetail({ tax, now, nowT }) {
 
       {tax.panels.map((panel) => <PanelView key={panel.title} tax={tax} panel={panel} range={range} now={now} nowT={nowT} />)}
       <TaxTake key={tax.id} taxId={tax.id} nowT={nowT} fromYear={range.from ?? (range.back ? Math.floor(nowT - range.back) : 1960)} accent={accent} />
+
+      <TaxStories taxId={tax.id} accent={accent} />
 
       <a
         href={`#/taxRates/compare/${tax.headline.key}/growth`}
