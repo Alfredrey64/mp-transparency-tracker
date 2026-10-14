@@ -7,6 +7,7 @@ import { FIRST_YEAR, LAST_YEAR, payslip, taxYearLabel } from "../lib/payCalc";
 import { loadPriceIndex, priceLabel } from "../lib/priceIndex";
 import { bandsBetween, PARTY_COLOURS } from "../lib/governments";
 import { PARTY_NAMES } from "../lib/taxRates";
+import { CATEGORIES, TOTAL_BN } from "../data/publicSpending";
 import { yearTicks } from "../lib/onsChart";
 import { Reveal } from "./Motion";
 import LineChart from "./LineChart";
@@ -31,6 +32,7 @@ export default function TaxPay() {
   const [text, setText] = useState("30000");
   const [real, setReal] = useState(true);
   const [year, setYear] = useState(LAST_YEAR);
+  const [pensionPct, setPensionPct] = useState(0);
   const [index, setIndex] = useState(null);
   const [failed, setFailed] = useState(false);
   const [hover, setHover] = useState(null);
@@ -46,7 +48,7 @@ export default function TaxPay() {
   // The pay in that year's money.
   const nominal = (y) => (adjusted ? salary / (index.factor(`${y}-04-15`) ?? 1) : salary);
   const years = Array.from({ length: LAST_YEAR - FIRST_YEAR + 1 }, (_, i) => FIRST_YEAR + i);
-  const slips = years.map((y) => payslip(y, nominal(y)));
+  const slips = years.map((y) => payslip(y, nominal(y), { pensionPct }));
   const hoverYear = hover === null ? null : Math.min(LAST_YEAR, Math.max(FIRST_YEAR, Math.floor(hover - 0.27 + 0.5)));
   const shownYear = hoverYear ?? year;
   const slip = slips[shownYear - FIRST_YEAR];
@@ -97,6 +99,11 @@ export default function TaxPay() {
               {real ? (index ? `The pay is ${money(salary)} in ${priceLabel(index)} prices, and the same buying power in earlier years (so less in pounds then).` : "Loading prices...") : `The pay is ${money(salary)} every year, as written, with no allowance for rising prices.`}
             </div>
           </div>
+          <div>
+            <label htmlFor="tp-pension" style={label}>Pension paid in from your pay: <span style={{ ...numeric }}>{pensionPct}%</span></label>
+            <input id="tp-pension" type="range" min={0} max={20} step={1} value={pensionPct} onChange={(e) => setPensionPct(Number(e.target.value))} style={{ width: "100%", accentColor: "#1FA97C" }} aria-describedby="tp-pension-help" />
+            <div id="tp-pension-help" style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 4, lineHeight: 1.45 }}>A share of pay paid into a workplace pension before income tax is worked out (a net pay arrangement). It lowers the income tax but not National Insurance.</div>
+          </div>
         </div>
       </Reveal>
 
@@ -122,7 +129,8 @@ export default function TaxPay() {
                 ["Pay that year", money(slip.gross), "#2F6DB5", false],
                 ["Income tax", money(slip.incomeTax), "#0E9AA7", false],
                 ["National Insurance", money(slip.ni), "#7B5BD6", false],
-                ["Left after both", money(slip.takeHome), "#D6455D", true],
+                ...(slip.pension > 0 ? [["Pension paid in", money(slip.pension), "#1FA97C", false]] : []),
+                ["Left after tax and NI", money(slip.takeHome), "#D6455D", true],
               ].map(([name, v, c, on]) => (
                 <div key={name} style={{ padding: "12px 14px", borderRadius: 15, background: on ? solid(c) : COLORS.paper, border: on ? "none" : `1px solid ${COLORS.hairline}`, borderLeft: on ? "none" : `4px solid ${c}`, color: on ? "#fff" : COLORS.ink }}>
                   <div style={{ ...numeric, fontSize: 24, fontWeight: 600, lineHeight: 1.05 }}>{v}</div>
@@ -132,13 +140,36 @@ export default function TaxPay() {
             </div>
             <p style={{ ...para, fontSize: 14, marginTop: 10 }}>
               In {taxYearLabel(shownYear)}, {pct(slip.totalShare)} of pay went in income tax ({pct(slip.taxShare)}) and National Insurance ({pct(slip.niShare)}). The tax-free personal allowance was {money(slip.allowance)}.
+              {slip.employerNi !== null && <> Your employer paid a further {money(slip.employerNi)} in National Insurance on this pay, which is not part of the figures above.</>}
             </p>
           </>
         )}
         <p style={{ ...para, fontSize: 13, marginTop: 10 }}>
-          This is a simple picture: one job, no pension contributions, no other income, under State Pension age, and no benefits or tax credits. It leaves out employers' National Insurance, VAT and every other tax you pay on spending, so it is for comparing years, not for working out a real bill. The rates and allowances come from HMRC's published tables.
+          This is a simple picture: one job, no pension unless you set one above, no other income, under State Pension age, and no benefits or tax credits. It leaves out Scottish rates, the self-employed, student loan repayments, VAT and every other tax you pay on spending, so it is for comparing years, not for working out a real bill. The rates and allowances come from HMRC's published tables.
         </p>
       </Reveal>
+
+      {slips.every(Boolean) && (() => {
+        const last = slips.at(-1);
+        const paid = last.incomeTax + last.ni;
+        const rows = [...CATEGORIES].sort((a, b) => b.amountBn - a.amountBn);
+        return (
+          <Reveal as="section" aria-labelledby="h-tax-pay-spend" style={{ ...card, marginTop: 16 }}>
+            <h2 id="h-tax-pay-spend" style={{ ...cardTitle, fontSize: 20 }}>Where this year's {money(paid)} goes</h2>
+            <p style={para}>Taxes go into one pot, so no pound is tied to a particular service. This divides the {money(paid)} paid in income tax and National Insurance on {money(last.gross)} in {taxYearLabel(last.y)} in the same proportions as the government's planned spending of £{TOTAL_BN.toLocaleString("en-GB")}bn in 2025 to 26, to show roughly what a payment of that size is part of. Some of that spending is paid for by other taxes and by borrowing.</p>
+            <ul style={{ listStyle: "none", margin: "12px 0 0", padding: 0, display: "grid", gap: 8 }}>
+              {rows.map((c) => (
+                <li key={c.key} style={{ display: "grid", gridTemplateColumns: "minmax(0, 150px) minmax(0, 1fr) auto", gap: 10, alignItems: "center", fontFamily: FONT_BODY, fontSize: 14 }}>
+                  <span style={{ color: COLORS.ink, fontWeight: 600 }}>{c.label}</span>
+                  <span aria-hidden="true" style={{ height: 12, borderRadius: 6, background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, overflow: "hidden" }}><span style={{ display: "block", height: "100%", width: `${(c.amountBn / TOTAL_BN) * 100}%`, background: c.color }} /></span>
+                  <span style={{ ...numeric, color: COLORS.ink, whiteSpace: "nowrap" }}>{money((paid * c.amountBn) / TOTAL_BN)} <span style={{ color: COLORS.inkSoft, fontSize: 12.5 }}>({Math.round((c.amountBn / TOTAL_BN) * 100)}p in the £)</span></span>
+                </li>
+              ))}
+            </ul>
+            <p style={{ ...para, fontSize: 12.5, marginTop: 10 }}>Source: the spending categories on the Where taxes go page, from the Office for Budget Responsibility's 2025 to 26 figures. Categories are the government's own groupings, so "other" lines are the parts not named separately.</p>
+          </Reveal>
+        );
+      })()}
 
       <Reveal as="section" aria-labelledby="h-tax-pay-gov" style={{ ...card, marginTop: 16 }}>
         <h2 id="h-tax-pay-gov" style={{ ...cardTitle, fontSize: 20 }}>Government by government</h2>

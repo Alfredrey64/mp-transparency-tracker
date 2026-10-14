@@ -305,3 +305,35 @@ describe("tax stories", () => {
     expect(new Set(TAX_STORIES.flatMap((s) => s.taxes)).size).toBeGreaterThanOrEqual(9);
   });
 });
+
+describe("pay calculator extras", () => {
+  it("takes a pension off before income tax but not National Insurance, and works out the employer's share", async () => {
+    const { payslip, employerNi, nationalInsurance } = await import("./payCalc");
+    const s = payslip(2025, 30000, { pensionPct: 5 });
+    expect(s.pension).toBe(1500);
+    expect(Math.round(s.incomeTax)).toBe(3186);
+    expect(s.ni).toBe(nationalInsurance(2025, 30000));
+    expect(Math.round(s.takeHome)).toBe(Math.round(30000 - 3186 - s.ni - 1500));
+    // Employer: 15% of pay above £4,992 (£96 a week) in 2025 to 26.
+    expect(Math.round(employerNi(2025, 30000))).toBe(3751);
+    expect(employerNi(1998, 30000)).toBeNull();
+    expect(payslip(2025, 30000).pension).toBe(0);
+  });
+});
+
+describe("council tax by council", () => {
+  it("has a full run of whole-pound figures for each council, and no aggregate rows", async () => {
+    const { default: ct } = await import("../data/councilTaxByCouncil.json");
+    expect(ct.rows.length).toBeGreaterThan(280);
+    expect(new Set(ct.rows.map((r) => r[0])).size).toBe(ct.rows.length);
+    for (const [name, , values] of ct.rows) {
+      expect(name).not.toMatch(/including major precepting/);
+      expect(values).toHaveLength(17);
+      expect(values.at(-1), name).toBeGreaterThan(800);
+      for (const v of values) expect(v === null || (Number.isInteger(v) && v > 300 && v < 4000), name).toBe(true);
+    }
+    const adur = ct.rows.find((r) => r[0] === "Adur");
+    expect(adur[2][0]).toBe(1587);
+    expect(adur[2].at(-1)).toBe(2548);
+  });
+});

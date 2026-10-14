@@ -10,6 +10,7 @@ import TaxComingUp from "./TaxComingUp";
 import TaxTake from "./TaxTake";
 import EmbedButton from "./EmbedButton";
 import TaxStories from "./TaxStories";
+import CouncilTaxLookup from "./CouncilTaxLookup";
 import { loadPriceIndex, priceLabel, realLine } from "../lib/priceIndex";
 import { scrollRegion } from "../lib/a11y";
 import ChangeList, { ChangeRow } from "./TaxChangeList";
@@ -172,6 +173,8 @@ function TaxDetail({ tax, now, nowT }) {
 
       {tax.panels.map((panel) => <PanelView key={panel.title} tax={tax} panel={panel} range={range} now={now} nowT={nowT} />)}
       <TaxTake key={tax.id} taxId={tax.id} nowT={nowT} fromYear={range.from ?? (range.back ? Math.floor(nowT - range.back) : 1960)} accent={accent} />
+
+      {tax.id === "council-tax" && <CouncilTaxLookup accent={accent} />}
 
       <TaxStories taxId={tax.id} accent={accent} />
 

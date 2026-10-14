@@ -1,4 +1,5 @@
 import BANDS from "../data/taxBands.json";
+import { getTax, valueOn } from "./taxRates";
 
 // What an employee would pay in income tax and National Insurance in any tax year from 1990 to 1991, under that year's rules for England, Wales
 // and Northern Ireland. The rates, allowances and bands come from HMRC's published tables (src/data/taxBands.json). It is a simplified picture: a
@@ -49,13 +50,28 @@ export function nationalInsurance(y, gross) {
   return (entry + main + above) * 52;
 }
 
-// Everything for one year: pay, income tax, National Insurance, what is left, and each as a share of pay.
-export function payslip(y, gross) {
-  const it = incomeTax(y, gross);
+// What the employer pays on top of the pay, from 1999 (before then employers paid different rates on different slices of pay). The rate is the one in
+// force at the start of the tax year.
+export function employerNi(y, gross) {
+  if (y < 1999) return null;
+  const ni = getTax("national-insurance");
+  const rate = valueOn(ni.lines.find((l) => l.key === "ni.employer"), `${y}-04-06`);
+  const threshold = valueOn(ni.lines.find((l) => l.key === "ni.employerThreshold"), `${y}-04-06`);
+  return rate === undefined || threshold === undefined ? null : Math.max(0, gross - threshold) * (rate / 100);
+}
+
+// Everything for one year: pay, income tax, National Insurance, what is left, and each as a share of pay. `pensionPct` is the share of pay paid into a
+// workplace pension under a net pay arrangement, which comes off the pay before income tax but not before National Insurance.
+export function payslip(y, gross, { pensionPct = 0 } = {}) {
+  const pension = (gross * pensionPct) / 100;
+  const it = incomeTax(y, gross - pension);
   if (!it) return null;
   const ni = nationalInsurance(y, gross);
   const total = it.tax + ni;
-  return { y, gross, incomeTax: it.tax, ni, total, takeHome: gross - total, allowance: it.allowance, taxShare: (it.tax / gross) * 100, niShare: (ni / gross) * 100, totalShare: (total / gross) * 100 };
+  return {
+    y, gross, pension, incomeTax: it.tax, ni, total, takeHome: gross - total - pension, allowance: it.allowance,
+    taxShare: (it.tax / gross) * 100, niShare: (ni / gross) * 100, totalShare: (total / gross) * 100, employerNi: employerNi(y, gross),
+  };
 }
 
 export const taxYearLabel = (y) => `${y} to ${String(y + 1).slice(2)}`;
