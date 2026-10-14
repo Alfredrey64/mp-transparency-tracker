@@ -736,18 +736,21 @@ a[target="_blank"]::after { content: "" / " (opens in a new tab)"; }
   .ge-tab:hover, .ge-col:hover { transform: none; }
 }
 
-/* The line between two bill stages: a faint run of small arrows drifts along it, one stage to the next, to show that a bill moves through them in order.
-   Each link starts a little later than the one before, so the movement travels along the whole row. Still when the visitor prefers less motion. */
-.mp-flow { position: relative; flex: 1 1 20px; min-width: 14px; height: 14px; }
-.mp-flow::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px; background: var(--c-hairline, rgba(0,0,0,0.12)); }
-.mp-flow > i {
-  position: absolute; inset: 0; background: var(--flow); opacity: 0.5;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='14' viewBox='0 0 16 14'%3E%3Cpath d='M5 3l4.5 4L5 11' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") 0 50% / 16px 14px repeat-x;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='14' viewBox='0 0 16 14'%3E%3Cpath d='M5 3l4.5 4L5 11' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") 0 50% / 16px 14px repeat-x;
-  animation: mp-flow-move 2.4s linear infinite; animation-delay: var(--delay, 0s);
+/* Bills pass between the Commons and the Lords, back and forth, like a ping-pong ball. Faint arrows zig-zag between the two rows of stages, one after another:
+   each is drawn along its length, holds for a moment, then fades away whole (the arrow as a single piece, not cut off at an edge). The delay on each
+   arrow is set inline so they follow one another. Still, and shown softly, when the visitor prefers less motion. */
+.pp-arrow { opacity: 0; animation: pp-fade 5.2s ease-in-out infinite both; }
+.pp-arrow .pp-line { stroke-dasharray: 1; stroke-dashoffset: 1; animation: pp-draw 5.2s cubic-bezier(.3,.1,.2,1) infinite both; animation-delay: inherit; }
+.pp-arrow .pp-head { opacity: 0; animation: pp-head 5.2s ease-out infinite both; animation-delay: inherit; }
+@keyframes pp-fade { 0% { opacity: 0; } 8% { opacity: 0.62; } 36% { opacity: 0.62; } 50% { opacity: 0; } 100% { opacity: 0; } }
+@keyframes pp-draw { 0% { stroke-dashoffset: 1; } 14% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
+@keyframes pp-head { 0%, 9% { opacity: 0; } 15% { opacity: 1; } 100% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .pp-arrow, .pp-arrow .pp-line, .pp-arrow .pp-head { animation: none; }
+  .pp-arrow { opacity: 0.4; }
+  .pp-arrow .pp-line { stroke-dashoffset: 0; }
+  .pp-arrow .pp-head { opacity: 1; }
 }
-@keyframes mp-flow-move { from { -webkit-mask-position: 0 50%; mask-position: 0 50%; } to { -webkit-mask-position: 16px 50%; mask-position: 16px 50%; } }
-@media (prefers-reduced-motion: reduce) { .mp-flow > i { animation: none; opacity: 0.35; } }
 
 /* A row of boxes laid out again by lib/balanceBoxes.js so the last row is never a lone box: twice as many tracks as boxes across, each box two wide,
    so a short last row can be started half a box in and sit in the middle. */

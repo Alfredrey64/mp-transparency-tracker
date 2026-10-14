@@ -1,7 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
-import { scrollRegion } from "../lib/a11y";
 
 // A real institutional fact, not a decorative choice: Commons benches are
 // green, Lords benches are red, and that colour-coding is how the two
@@ -48,30 +47,32 @@ const revealParent = { hidden: {}, visible: { transition: { staggerChildren: 0.0
 const revealNode = { hidden: { opacity: 0, scale: 0.5 }, visible: { opacity: 1, scale: 1, transition: { duration: 0.3, ease: "backOut" } } };
 
 function StageNode({ label, count, color, active, onClick }) {
-  const size = count === 0 ? 26 : Math.min(30 + Math.sqrt(count) * 11, 64);
+  const size = count === 0 ? 26 : Math.min(30 + Math.sqrt(count) * 11, 62);
   return (
     <motion.button
       variants={revealNode}
       onClick={onClick}
       disabled={count === 0}
       style={{
-        display: "flex", flexDirection: "column", alignItems: "center", gap: 8, width: 92, flexShrink: 0,
+        position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 6, width: "100%", minWidth: 0,
         background: "none", border: "none", padding: "4px 0", cursor: count > 0 ? "pointer" : "default",
       }}
     >
-      <div
-        style={{
-          width: size, height: size, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-          background: count === 0 ? "transparent" : active ? color : `${color}22`,
-          border: `2px solid ${count === 0 ? COLORS.hairline : color}`,
-          transition: "background 0.15s",
-          flexShrink: 0,
-        }}
-      >
-        <span style={{ fontFamily: FONT_MONO, fontWeight: 700, fontSize: count === 0 ? 11 : 15, color: count === 0 ? COLORS.inkSoft : active ? "#fff" : color }}>
-          {count}
+      <span style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 64, width: "100%" }}>
+        <span
+          style={{
+            width: size, height: size, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+            background: count === 0 ? COLORS.paper : active ? color : `color-mix(in srgb, ${color} 14%, ${COLORS.paper})`,
+            border: `2px solid ${count === 0 ? COLORS.hairline : color}`,
+            transition: "background 0.15s",
+            flexShrink: 0,
+          }}
+        >
+          <span style={{ fontFamily: FONT_MONO, fontWeight: 700, fontSize: count === 0 ? 11 : 15, color: count === 0 ? COLORS.inkSoft : active ? "#fff" : color }}>
+            {count}
+          </span>
         </span>
-      </div>
+      </span>
       <span style={{ fontFamily: FONT_BODY, fontSize: 11, color: count === 0 ? COLORS.inkSoft : COLORS.ink, textAlign: "center", lineHeight: 1.25, opacity: count === 0 ? 0.6 : 1 }}>
         {label}
       </span>
@@ -79,35 +80,102 @@ function StageNode({ label, count, color, active, onClick }) {
   );
 }
 
-function HouseTrack({ house, stageCounts, activeKey, onSelect }) {
+function HouseRow({ house, stageCounts, activeKey, onSelect }) {
   const color = HOUSE_COLOR[house];
   return (
-    <div style={{ marginBottom: 22 }}>
-      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11.5, color, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 6 }}>
+    <div style={{ position: "relative" }}>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11.5, color, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 2 }}>
         {house === "Commons" ? "House of Commons" : "House of Lords"}
       </div>
       <motion.div
         className="mp-bill-track"
-        {...scrollRegion(`Bill stages in the House of ${house}`)}
+        role="group"
+        aria-label={`Bill stages in the House of ${house}`}
         variants={revealParent}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-40px" }}
-        style={{ display: "flex", alignItems: "center", overflowX: "auto", paddingBottom: 8 }}
+        style={{ position: "relative", display: "grid", gridTemplateColumns: `repeat(${STAGE_DEFS.length}, minmax(0, 1fr))`, alignItems: "start" }}
       >
-        {STAGE_DEFS.map((stage, i) => (
-          <div key={stage.key} style={{ display: "flex", alignItems: "center", flex: i > 0 ? "1 1 auto" : "0 0 auto" }}>
-            {i > 0 && <div className="mp-flow" aria-hidden="true" style={{ "--flow": color, "--delay": `${(i - 1) * -0.4}s` }}><i /></div>}
-            <StageNode
-              label={stage.label}
-              count={stageCounts[stage.key].length}
-              color={color}
-              active={activeKey === `${house}:${stage.key}`}
-              onClick={() => onSelect(house, stage.key, stageCounts[stage.key])}
-            />
-          </div>
+        {/* The line the stages sit on, from the middle of the first to the middle of the last. */}
+        <div aria-hidden="true" style={{ position: "absolute", left: `${50 / STAGE_DEFS.length}%`, right: `${50 / STAGE_DEFS.length}%`, top: 4 + 32 - 1, height: 2, background: COLORS.hairline }} />
+        {STAGE_DEFS.map((stage) => (
+          <StageNode
+            key={stage.key}
+            label={stage.label}
+            count={stageCounts[stage.key].length}
+            color={color}
+            active={activeKey === `${house}:${stage.key}`}
+            onClick={() => onSelect(house, stage.key, stageCounts[stage.key])}
+          />
         ))}
       </motion.div>
+    </div>
+  );
+}
+
+// A bill that one House has finished with goes to the other, and amendments can be sent back and forth between them (parliamentary "ping-pong").
+// Faint arrows zig-zag between the Commons row above and the Lords row below, stage to stage, one after another. Each arrow is a whole piece that is
+// drawn, held and faded away together, so nothing is cut off at an edge. Decorative only: the real positions are in the circles.
+function PingPong({ width }) {
+  const n = STAGE_DEFS.length;
+  const col = width / n;
+  const height = Math.round(Math.min(96, Math.max(60, col * 0.5)));
+  const inset = 10; // gap kept between an arrow and whatever it points at
+  const arrows = [];
+  for (let k = 0; k < n - 1; k += 1) {
+    const down = k % 2 === 0;
+    const x1 = col * (k + 0.5);
+    const x2 = col * (k + 1.5);
+    const y1 = down ? 2 : height - 2;
+    const y2 = down ? height - 2 : 2;
+    const len = Math.hypot(x2 - x1, y2 - y1);
+    const ux = (x2 - x1) / len;
+    const uy = (y2 - y1) / len;
+    arrows.push({
+      k, down, angle: (Math.atan2(y2 - y1, x2 - x1) * 180) / Math.PI,
+      sx: x1 + ux * inset, sy: y1 + uy * inset, ex: x2 - ux * (inset - 2), ey: y2 - uy * (inset - 2),
+    });
+  }
+  const from = (a) => (a.down ? HOUSE_COLOR.Commons : HOUSE_COLOR.Lords);
+  const to = (a) => (a.down ? HOUSE_COLOR.Lords : HOUSE_COLOR.Commons);
+  return (
+    <svg aria-hidden="true" focusable="false" width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ display: "block", overflow: "visible", margin: "2px 0" }}>
+      <defs>
+        {arrows.map((a) => (
+          <linearGradient key={a.k} id={`pp-g${a.k}`} gradientUnits="userSpaceOnUse" x1={a.sx} y1={a.sy} x2={a.ex} y2={a.ey}>
+            <stop offset="0" style={{ stopColor: from(a) }} />
+            <stop offset="1" style={{ stopColor: to(a) }} />
+          </linearGradient>
+        ))}
+      </defs>
+      {arrows.map((a) => (
+        <g key={a.k} className="pp-arrow" style={{ animationDelay: `${a.k * 1.15}s` }}>
+          <line className="pp-line" pathLength="1" x1={a.sx} y1={a.sy} x2={a.ex} y2={a.ey} stroke={`url(#pp-g${a.k})`} strokeWidth="2" strokeLinecap="round" style={{ animationDelay: "inherit" }} />
+          <g className="pp-head" style={{ animationDelay: "inherit" }}>
+            <path d="M -8 -5.5 L 0 0 L -8 5.5" transform={`translate(${a.ex} ${a.ey}) rotate(${a.angle})`} fill="none" style={{ stroke: to(a) }} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </g>
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+function StageBoard({ tracks, activeKey, onSelect }) {
+  const ref = useRef(null);
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    const ro = new ResizeObserver(([entry]) => setWidth(Math.round(entry.contentRect.width)));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  return (
+    <div ref={ref} style={{ marginBottom: 22 }}>
+      <HouseRow house="Commons" stageCounts={tracks.Commons} activeKey={activeKey} onSelect={onSelect} />
+      {width > 0 ? <PingPong width={width} /> : <div style={{ height: 64 }} />}
+      <HouseRow house="Lords" stageCounts={tracks.Lords} activeKey={activeKey} onSelect={onSelect} />
     </div>
   );
 }
@@ -132,8 +200,7 @@ export function BillJourney({ bills }) {
         there right now.
       </div>
 
-      <HouseTrack house="Commons" stageCounts={tracks.Commons} activeKey={selected?.key} onSelect={handleSelect} />
-      <HouseTrack house="Lords" stageCounts={tracks.Lords} activeKey={selected?.key} onSelect={handleSelect} />
+      <StageBoard tracks={tracks} activeKey={selected?.key} onSelect={handleSelect} />
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: 14, fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>
         <span>
