@@ -306,6 +306,33 @@ describe("tax stories", () => {
   });
 });
 
+describe("tax story figures match the series", () => {
+  const at = (key, iso) => {
+    const l = TAXES.flatMap((x) => x.panels.flatMap((p) => p.lines)).find((x) => x.key === key);
+    expect(l, key).toBeTruthy();
+    return valueOn(getTax(TAXES.find((x) => x.panels.some((p) => p.lines.some((y) => y.key === key))).id).lines.find((x) => x.key === key), iso);
+  };
+  it("agrees with every number the newer stories quote", () => {
+    expect([at("ipt.standard", "1994-10-02"), at("ipt.standard", "1997-04-02"), at("ipt.standard", "1999-07-02"), at("ipt.standard", "2011-01-05"), at("ipt.standard", "2015-11-02"), at("ipt.standard", "2016-10-02"), at("ipt.standard", "2017-06-02"), at("ipt.higher", "2011-01-05")]).toEqual([2.5, 4, 5, 6, 9.5, 10, 12, 20]);
+    expect([at("epl.rate", "2022-06-01"), at("epl.rate", "2023-02-01"), at("epl.rate", "2024-12-01")]).toEqual([25, 35, 38]);
+    expect([at("dividends.allowance", "2016-05-01"), at("dividends.allowance", "2018-05-01"), at("dividends.allowance", "2023-05-01"), at("dividends.allowance", "2024-05-01"), at("dividends.basic", "2026-05-01"), at("dividends.higher", "2026-05-01")]).toEqual([5000, 2000, 1000, 500, 10.75, 35.75]);
+    expect([at("sugar.lower", "2018-05-01"), at("sugar.higher", "2018-05-01")]).toEqual([18, 24]);
+    expect([at("landfill.standard", "1996-11-01"), at("landfill.standard", "2007-06-01"), at("landfill.standard", "2014-06-01"), at("landfill.standard", "2025-06-01"), at("landfill.lower", "2025-06-01"), at("landfill.standard", "2026-06-01"), at("landfill.lower", "2026-06-01")]).toEqual([7, 24, 80, 126.15, 4.05, 130.75, 8.65]);
+    expect([at("apd.short_econ", "2006-06-01"), at("apd.short_econ", "2007-03-01"), at("apd.long_econ", "2025-06-01"), at("apd.long_econ", "2026-06-01"), at("apd.long_std", "2025-06-01"), at("apd.long_std", "2026-06-01")]).toEqual([5, 10, 90, 102, 216, 244]);
+    expect([at("rates.standard", "1999-06-01"), at("rates.standard", "2000-06-01")]).toEqual([48.9, 41.6]);
+    expect([at("ccl.electricity", "2019-06-01"), at("ccl.gas", "2019-06-01")]).toEqual([0.847, 0.339]);
+    expect(at("ccl.electricity", "2024-06-01")).toBe(at("ccl.gas", "2024-06-01"));
+    expect(Math.round((at("ccl.electricity", "2019-06-01") / at("ccl.electricity", "2018-06-01") - 1) * 100)).toBe(45);
+    expect(Math.round((at("ccl.gas", "2019-06-01") / at("ccl.gas", "2018-06-01") - 1) * 100)).toBe(67);
+    expect([at("scotIncomeTax.higher", "2024-06-01"), at("scotIncomeTax.advanced", "2024-06-01"), at("scotIncomeTax.top", "2024-06-01"), at("incomeTax.top", "2024-06-01")]).toEqual([42, 45, 48, 45]);
+    expect([at("alcohol.beer", "2012-06-01"), at("alcohol.beer", "2015-06-01")].map((v) => Math.round(v * 100))).toEqual([44, 42]);
+    const rise = (key) => at(key, "2023-09-01") / at(key, "2023-07-01") - 1;
+    expect(Math.round(rise("alcohol.wine") * 100)).toBe(20);
+    expect(Math.round(rise("alcohol.spirits") * 100)).toBe(10);
+    expect(Math.round(rise("alcohol.cider") * 100)).toBe(-2);
+  });
+});
+
 describe("pay calculator extras", () => {
   it("takes a pension off before income tax but not National Insurance, and works out the employer's share", async () => {
     const { payslip, employerNi, nationalInsurance } = await import("./payCalc");
