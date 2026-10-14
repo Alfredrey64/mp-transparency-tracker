@@ -281,3 +281,55 @@ export function RangeField({ id, label, value, min, max, step = 1, onChange, tex
     </div>
   );
 }
+
+// Two or three bars for each row, for comparing the same thing in different ways (before and after tax, three points of a spread). Each row is
+// { label, note, bars: [{ name, value, text, colour }] }; `max` is the length of a full bar and `legend` names the colours.
+export function PairBars({ rows, max, label, legend }) {
+  const top = max ?? Math.max(...rows.flatMap((r) => r.bars.map((b) => Math.abs(b.value))), 1);
+  return (
+    <div>
+      {legend && <Legend items={legend} />}
+      <ul aria-label={label} style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 14 }}>
+        {rows.map((r) => (
+          <li key={r.label} className="pair-row" style={{ display: "grid", gridTemplateColumns: "minmax(0, 11rem) minmax(0, 1fr)", gap: "4px 12px", alignItems: "center", fontFamily: FONT_BODY, fontSize: 13.5 }}>
+            <span style={{ color: COLORS.ink, fontWeight: r.strong ? 700 : 500, lineHeight: 1.3 }}>{r.label}{r.note && <span style={{ display: "block", color: COLORS.inkSoft, fontWeight: 400, fontSize: 12 }}>{r.note}</span>}</span>
+            <span style={{ display: "grid", gap: 4, minWidth: 0 }}>
+              {r.bars.map((b) => (
+                <span key={b.name} title={b.name} style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: 10, alignItems: "center" }}>
+                  <span aria-hidden="true" style={{ height: 11, borderRadius: 6, background: COLORS.hairline, overflow: "hidden", display: "block" }}>
+                    <span style={{ display: "block", height: "100%", width: `${Math.max(1.5, (Math.abs(b.value) / top) * 100)}%`, borderRadius: 6, background: b.colour }} />
+                  </span>
+                  <span style={{ ...numeric, fontSize: 13, fontWeight: 600, color: COLORS.ink, textAlign: "right", minWidth: "5ch" }}><span className="sr-only">{b.name}: </span>{b.text}</span>
+                </span>
+              ))}
+            </span>
+          </li>
+        ))}
+        <style>{`@media (max-width: 520px) { .pair-row { grid-template-columns: minmax(0, 1fr) !important; } }`}</style>
+      </ul>
+    </div>
+  );
+}
+
+// For each row a stretch from a lowest to a highest value on one scale, with a mark for the middle. Each row is { label, low, high, mid, lowText,
+// highText, midText, note }; `min` and `max` are the ends of the scale and `format` writes a value.
+export function SpanRows({ rows, min, max, label, format, accent }) {
+  const x = (v) => `${((v - min) / (max - min)) * 100}%`;
+  return (
+    <ul aria-label={label} style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 16 }}>
+      {rows.map((r) => (
+        <li key={r.label} style={{ fontFamily: FONT_BODY, fontSize: 13.5 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "baseline", flexWrap: "wrap" }}>
+            <span style={{ color: COLORS.ink, fontWeight: 700 }}>{r.label}</span>
+            <span style={{ ...numeric, fontWeight: 600, color: COLORS.ink, fontSize: 13 }}>{format(r.low)} to {format(r.high)}</span>
+          </div>
+          <div aria-hidden="true" style={{ position: "relative", height: 14, margin: "7px 0 5px", borderRadius: 7, background: COLORS.hairline }}>
+            <span style={{ position: "absolute", top: 0, bottom: 0, left: x(r.low), width: `${((r.high - r.low) / (max - min)) * 100}%`, minWidth: 6, borderRadius: 7, background: accent, opacity: 0.85 }} />
+            {r.mid !== undefined && <span style={{ position: "absolute", top: -3, bottom: -3, left: x(r.mid), width: 3, marginLeft: -1.5, background: COLORS.ink, borderRadius: 2 }} />}
+          </div>
+          <div style={{ color: COLORS.inkSoft, fontSize: 12.5, lineHeight: 1.45 }}>{r.note}</div>
+        </li>
+      ))}
+    </ul>
+  );
+}

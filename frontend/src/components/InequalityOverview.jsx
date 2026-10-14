@@ -1,8 +1,11 @@
 import { COLORS, FONT_BODY } from "../theme";
-import { Caution, Panel, Stats, TimeChart } from "./insight";
+import { Caution, Panel, Stats, Takeaways, TimeChart } from "./insight";
 import { D, incomeFacts, last, povertyFacts, regionIndex, wealthFacts } from "../lib/inequality";
 import { INCOME_HEADLINES, SOURCES } from "../data/inequality";
 import { financialYear, money, para, strong, toPoints } from "../lib/insightStyle";
+import { P, gbp } from "../lib/inequalityPlace";
+import { UK, ranking } from "../lib/inequalityAbroad";
+import { pillStyle } from "../lib/onsStyles";
 
 const ACCENT = "#7A5AF0";
 
@@ -16,8 +19,29 @@ export default function InequalityOverview({ onPick }) {
   const northEast = regionIndex("North East");
   const g = D.income.gini;
   const latestYear = last(g.years);
+  const povAll = P.poverty.all.ahc;
+  const regionPov = P.regions.map((r) => ({ name: r.name, v: povAll[r.key].at(-1) })).filter((r) => r.v !== null);
+  const povHigh = regionPov.reduce((a, r) => (r.v > a.v ? r : a));
+  const povLow = regionPov.reduce((a, r) => (r.v < a.v ? r : a));
+  const incHigh = P.income.regions.reduce((a, r) => (r.perHead > a.perHead ? r : a));
+  const incLow = P.income.regions.reduce((a, r) => (r.perHead < a.perHead ? r : a));
+  const oecd = ranking("gini", { membersOnly: true });
+  const ukO = oecd.find((r) => r.code === UK);
+  const ukRank = oecd.findIndex((r) => r.code === UK) + 1;
+  const ord = (n) => { const t = ["th", "st", "nd", "rd"]; const v = n % 100; return `${n}${t[(v - 20) % 10] || t[v] || t[0]}`; };
+  const jump = { fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink, background: "transparent", border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: "8px 16px", cursor: "pointer" };
   return (
     <div>
+      <Takeaways
+        accent={ACCENT}
+        items={[
+          `The typical household has ${money(INCOME_HEADLINES.medianDisposable)} a year after tax. The richest fifth have ${inc.s80s20.toFixed(1)} times the average income of the poorest fifth, and income inequality (the Gini) is ${inc.latest.gini.toFixed(1)}%, against ${inc.first.gini.toFixed(1)}% in ${inc.first.year}.`,
+          `Wealth is shared far less evenly: the richest tenth of households hold ${Math.round(w.top10)}% of it and the poorest half ${Math.round(w.bottom50)}%.`,
+          `${Math.round(pov.all.ahc)}% of people, ${pov.all.millions.ahc} million, are in relative poverty after housing costs, including ${Math.round(pov.children.ahc)}% of children and ${Math.round(pov.pensioners.ahc)}% of pensioners.`,
+          `Place matters. Poverty after housing costs runs from ${povLow.v.toFixed(0)}% in ${povLow.name} to ${povHigh.v.toFixed(0)}% in ${povHigh.name}, and income per head from ${gbp(incLow.perHead)} in ${incLow.name} to ${gbp(incHigh.perHead)} in ${incHigh.name}. The gaps inside regions can be wider still.`,
+          `On the OECD's measure the UK is the ${ord(ukRank)} most unequal of ${oecd.length} OECD members with recent figures, with a Gini of ${ukO.value.toFixed(1)} after tax and benefits.`,
+        ]}
+      />
       <Panel
         id="h-ineq-main" accent={ACCENT} title="The main figures"
         lead="Inequality means how unevenly something is shared out. Income is what people earn and receive each year. Wealth is what they own. Both differ a lot between people and between places."
@@ -28,12 +52,20 @@ export default function InequalityOverview({ onPick }) {
           items={[
             { value: money(INCOME_HEADLINES.medianDisposable), label: "Income of the typical household", note: `A year, after tax, ${financialYear(latestYear)}. Poorest fifth ${money(INCOME_HEADLINES.poorestFifthMedian)}, richest fifth ${money(INCOME_HEADLINES.richestFifthMedian)}` },
             { value: `${inc.s80s20.toFixed(1)} times`, label: "Richest fifth against poorest fifth", note: "Average income after tax" },
-            { value: `${inc.latest.gini.toFixed(1)}%`, label: "Income inequality (Gini)", note: `${inc.first.gini.toFixed(1)}% in ${inc.first.year}. Higher means less equal` },
-            { value: `${Math.round(pov.all.ahc)}%`, label: "In relative poverty after housing costs", note: `${pov.all.millions.ahc} million people. Children ${Math.round(pov.children.ahc)}%, pensioners ${Math.round(pov.pensioners.ahc)}%` },
+            { value: `${inc.latest.gini.toFixed(1)}%`, label: "Income inequality (Gini)", note: `${inc.first.gini.toFixed(1)}% in ${inc.first.year}. Higher means less equal`, spark: g.disposable },
+            { value: `${Math.round(pov.all.ahc)}%`, label: "In relative poverty after housing costs", note: `${pov.all.millions.ahc} million people. Children ${Math.round(pov.children.ahc)}%, pensioners ${Math.round(pov.pensioners.ahc)}%`, spark: D.poverty.all.ahc },
             { value: `${Math.round(w.top10)}%`, label: "Of all wealth held by the richest tenth of households", note: `The poorest half hold ${Math.round(w.bottom50)}%` },
             { value: `${(london.values.at(-1) / 100).toFixed(2)} times`, label: "London's income per head against the UK average", note: `The North East is ${(northEast.values.at(-1) / 100).toFixed(2)} times` },
           ]}
         />
+      </Panel>
+
+      <Panel id="h-ineq-explore" title="Where, and compared with whom" lead="Two things the main figures cannot show. Where in the country the differences fall, and how the UK compares with other rich countries.">
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+          <button type="button" onClick={() => onPick("place")} style={jump}>See the map by region and seat</button>
+          <button type="button" onClick={() => onPick("abroad")} style={jump}>Compare with other countries</button>
+          <button type="button" onClick={() => onPick("poverty")} style={pillStyle(false)}>Poverty over time</button>
+        </div>
       </Panel>
 
       <Panel id="h-ineq-read" title="How to read these figures" lead="A few measures do most of the work on this page. None is perfect, and they can tell different stories.">

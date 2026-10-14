@@ -222,9 +222,9 @@ export const PAGE_GUIDES = {
     notShown: "Your registration status, or the exact deadline for the next election. Those come from gov.uk, which this page links to. Rules can change, so check there.",
   },
   inequality: {
-    what: "How unevenly income and wealth are shared in the UK, who is in poverty, how it differs by region and group, and the main arguments about it.",
+    what: "How unevenly income and wealth are shared in the UK, who is in poverty, where in the country the differences fall, how the UK compares with other rich countries, and the main arguments about it.",
     why: "Who has what shapes pay, prices, housing and public services, and is at the centre of many arguments about tax and benefits.",
-    notShown: "Whether any gap is fair, comparisons with other countries, or how far people move up and down over their lives.",
+    notShown: "Whether any gap is fair, or how far people move up and down over their lives.",
   },
   defence: {
     what: "How much the UK spends on defence, since 1950 and against other countries, what has been promised, the size of the armed forces, and the arguments.",

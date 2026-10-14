@@ -8,6 +8,7 @@ import InequalityIncome from "./InequalityIncome";
 import InequalityWealth from "./InequalityWealth";
 import InequalityPoverty from "./InequalityPoverty";
 import InequalityPlace from "./InequalityPlace";
+import InequalityAbroad from "./InequalityAbroad";
 import InequalityGroups from "./InequalityGroups";
 import InequalityDebate from "./InequalityDebate";
 import InequalityAbout from "./InequalityAbout";
@@ -20,7 +21,8 @@ const TABS = [
   { key: "income", label: "Income", blurb: "How unequal incomes are, what tax and benefits do, and who gains and loses by age and housing.", colour: "#0E9AA7" },
   { key: "wealth", label: "Wealth", blurb: "What households own, how unevenly, and how it differs by age, region and kind of household.", colour: "#C0561F" },
   { key: "poverty", label: "Poverty", blurb: "How many people, children and pensioners are in poverty, and how that has changed since 1994.", colour: "#D6455D" },
-  { key: "place", label: "Place", blurb: "How income differs between regions, nations and local areas.", colour: "#0E7490" },
+  { key: "place", label: "Place", blurb: "Where in the country poverty, income and wealth fall: a map of the regions, local areas, and every English seat.", colour: "#0E7490" },
+  { key: "abroad", label: "Other countries", blurb: "How the UK's inequality compares with other rich countries, before and after tax and benefits.", colour: "#4F46E5" },
   { key: "groups", label: "Groups", blurb: "Pay gaps for women and disabled people, and lasting low income by ethnic group.", colour: "#1FA97C" },
   { key: "debate", label: "The debate", blurb: "The main arguments about what, if anything, should be done, set out fairly.", colour: "#C7871A" },
   { key: "about", label: "Sources", blurb: "Where every figure comes from, and the limits of the figures.", colour: "#6B7280" },
@@ -57,6 +59,7 @@ export default function Inequality({ param }) {
         {tab === "wealth" && <InequalityWealth />}
         {tab === "poverty" && <InequalityPoverty />}
         {tab === "place" && <InequalityPlace onPick={go} />}
+        {tab === "abroad" && <InequalityAbroad onPick={go} />}
         {tab === "groups" && <InequalityGroups />}
         {tab === "debate" && <InequalityDebate />}
         {tab === "about" && <InequalityAbout />}

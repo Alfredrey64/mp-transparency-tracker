@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import Inequality from "./Inequality";
 
-const TABS = ["overview", "income", "wealth", "poverty", "place", "groups", "debate", "about"];
+const TABS = ["overview", "income", "wealth", "poverty", "place", "abroad", "groups", "debate", "about"];
 
 describe("Inequality page", () => {
   for (const tab of TABS) {

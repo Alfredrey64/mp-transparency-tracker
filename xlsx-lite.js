@@ -5,7 +5,7 @@
 
 import zlib from "node:zlib";
 
-export function unzip(buf) {
+export function unzip(buf, { binary = false } = {}) {
   // Find the end-of-central-directory record, then walk the central directory.
   let eocd = -1;
   for (let i = buf.length - 22; i >= Math.max(0, buf.length - 66000); i--) {
@@ -28,7 +28,7 @@ export function unzip(buf) {
     const lExtraLen = buf.readUInt16LE(localOffset + 28);
     const start = localOffset + 30 + lNameLen + lExtraLen;
     const data = buf.subarray(start, start + compSize);
-    files.set(name, () => (method === 0 ? data : zlib.inflateRawSync(data)).toString("utf8"));
+    files.set(name, () => { const bytes = method === 0 ? data : zlib.inflateRawSync(data); return binary ? Buffer.from(bytes) : bytes.toString("utf8"); });
     p += 46 + nameLen + extraLen + commentLen;
   }
   return files;

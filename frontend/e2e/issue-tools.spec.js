@@ -75,11 +75,81 @@ test("countries can be added to and removed from the comparison, up to six", asy
   const panel = card(page, "h-defs-compare");
   await panel.getByRole("button", { name: "Poland" }).click();
   await expect(panel.getByRole("button", { name: "Poland" })).toHaveAttribute("aria-pressed", "true");
-  await panel.getByRole("button", { name: "Italy" }).click();
+  await panel.getByRole("button", { name: "Spain" }).click();
   await panel.getByRole("button", { name: "Spain" }).click();
   await expect(panel.getByRole("button", { name: "Spain" })).toHaveAttribute("aria-pressed", "false");
   await panel.getByRole("button", { name: "France" }).click();
   await expect(panel.getByRole("button", { name: "France" })).toHaveAttribute("aria-pressed", "false");
   await panel.getByRole("button", { name: "Real-terms spending" }).click();
   await expect(panel).toContainText("billion");
+});
+
+test("the regional map changes with the measure and a region can be picked from the list", async ({ page }) => {
+  await page.goto("/inequality/place");
+  const map = card(page, "h-place-map");
+  await expect(map).toContainText("London is highest (26.7%)");
+  await map.getByRole("button", { name: "Children in poverty" }).click();
+  await expect(map.getByRole("button", { name: "Children in poverty" })).toHaveAttribute("aria-pressed", "true");
+  await map.getByRole("button", { name: "Typical wealth" }).click();
+  await expect(map).toContainText("n/a");
+  await map.getByRole("list", { name: /by region, highest first/ }).getByRole("button", { name: /North East/ }).click();
+  await expect(map.getByRole("heading", { name: "North East" })).toBeVisible();
+  await expect(map).toContainText("highest of");
+  await map.getByRole("button", { name: "Clear" }).click();
+  await expect(map).toContainText("Tap a place on the map");
+});
+
+test("the over-time chart follows the chosen region", async ({ page }) => {
+  await page.goto("/inequality/place");
+  const time = card(page, "h-place-time");
+  await time.locator("#ineq-place-region").selectOption("london");
+  await expect(time).toContainText("London: ");
+  await time.getByRole("button", { name: "Children" }).click();
+  await expect(time).toContainText("London: ");
+  await time.getByRole("button", { name: /Income per head against the UK/ }).click();
+  await expect(time).toContainText("London: 1");
+});
+
+test("the seat map loads, can be narrowed to a region, and lists the most deprived seats", async ({ page }) => {
+  await page.goto("/inequality/place");
+  const seats = card(page, "h-place-seats");
+  await expect(seats.getByRole("img")).toHaveAttribute("aria-label", /543 Westminster seats/);
+  await expect(seats).toContainText("Birmingham Ladywood");
+  await seats.locator("#ineq-hex-region").selectOption("london");
+  await expect(seats).toContainText("Most income-deprived seats in London");
+  await expect(seats).not.toContainText("Birmingham Ladywood");
+});
+
+test("the local areas can be ranked within a region", async ({ page }) => {
+  await page.goto("/inequality/place");
+  const within = card(page, "h-place-within");
+  await expect(within).toContainText("Westminster and City of London");
+  await within.locator("#ineq-local-region").selectOption("wales");
+  await within.getByRole("button", { name: "Lowest" }).click();
+  await expect(within.getByRole("list", { name: /lowest income per head/ })).toContainText("Wales");
+});
+
+test("the other-countries tab ranks the UK, and the choices change what is shown", async ({ page }) => {
+  await page.goto("/inequality/abroad");
+  const rank = card(page, "h-abroad-rank");
+  await expect(rank).toContainText("United Kingdom");
+  await expect(rank).toContainText("6th most unequal");
+  await rank.getByRole("button", { name: "Poverty rate" }).click();
+  await expect(rank).toContainText("most unequal");
+  await rank.getByRole("button", { name: /Also Brazil/ }).click();
+  await expect(rank).toContainText("Brazil");
+  const redist = card(page, "h-abroad-redist");
+  await expect(redist).not.toContainText("Slovakia");
+  await redist.getByRole("button", { name: /All \d+ OECD members/ }).click();
+  await expect(redist).toContainText("Slovakia");
+});
+
+test("countries can be added to and removed from the Gini over time", async ({ page }) => {
+  await page.goto("/inequality/abroad");
+  const time = card(page, "h-abroad-time");
+  await time.getByRole("button", { name: "Spain" }).click();
+  await expect(time.getByRole("button", { name: "Spain" })).toHaveAttribute("aria-pressed", "true");
+  await expect(time).toContainText("Spain 31.2 in 2023");
+  await time.getByRole("button", { name: "Germany" }).click();
+  await expect(time.getByRole("button", { name: "Germany" })).toHaveAttribute("aria-pressed", "false");
 });

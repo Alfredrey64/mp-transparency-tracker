@@ -13,6 +13,9 @@ export const SOURCES = {
   disabilityPay: { label: "ONS, Disability pay gaps in the UK: 2014 to 2023", url: "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/disability/articles/disabilitypaygapsintheuk/2014to2023" },
   ethnicityLowIncome: { label: "GOV.UK, Ethnicity facts and figures: persistent low income (DWP, Income Dynamics 2010 to 2023)", url: "https://www.ethnicity-facts-figures.service.gov.uk/work-pay-and-benefits/pay-and-income/low-income/latest" },
   twoChild: { label: "GOV.UK, Removing the two-child limit on Universal Credit: impact on low income poverty levels", url: "https://www.gov.uk/government/publications/poverty-impacts-of-social-security-changes-at-budget-2025/removing-the-two-child-limit-on-universal-credit-impact-on-low-income-poverty-levels-in-the-united-kingdom" },
+  hbaiPlace: { label: "DWP, Households Below Average Income 2024/25, detailed tables (population, children, working-age and pensioner time series by region)", url: "https://www.gov.uk/government/statistics/households-below-average-income-for-financial-years-ending-1995-to-2025" },
+  imd: { label: "Ministry of Housing, Communities and Local Government, English Indices of Deprivation 2025 (income domain), matched to Westminster constituencies", url: "https://www.gov.uk/government/statistics/english-indices-of-deprivation-2025" },
+  oecd: { label: "OECD, Income Distribution Database", url: "https://www.oecd.org/en/data/datasets/oecd-income-distribution-database.html" },
   deaton: { label: "Institute for Fiscal Studies, The IFS Deaton Review of Inequalities", url: "https://ifs.org.uk/inequality" },
 };
 
