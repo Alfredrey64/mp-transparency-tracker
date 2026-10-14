@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
+import { STAGE_DEFS, buildRoute } from "../lib/billRoute";
 
 // A real institutional fact, not a decorative choice: Commons benches are
 // green, Lords benches are red, and that colour-coding is how the two
@@ -9,13 +10,6 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
 // an arbitrary two-colour palette.
 const HOUSE_COLOR = { Commons: COLORS.commonsGreen, Lords: COLORS.garnet };
 
-const STAGE_DEFS = [
-  { key: "1st reading", label: "1st Reading" },
-  { key: "2nd reading", label: "2nd Reading" },
-  { key: "committee", label: "Committee" },
-  { key: "report", label: "Report" },
-  { key: "3rd reading", label: "3rd Reading" },
-];
 
 function normalizeStage(stage) {
   const s = (stage ?? "").toLowerCase();
@@ -80,7 +74,9 @@ function StageNode({ label, count, color, active, onClick }) {
   );
 }
 
-function HouseRow({ house, stageCounts, activeKey, onSelect }) {
+const nodeSize = (count) => (count === 0 ? 26 : Math.min(30 + Math.sqrt(count) * 11, 62));
+
+function HouseRow({ house, stageCounts, activeKey, onSelect, trackRef }) {
   const color = HOUSE_COLOR[house];
   return (
     <div style={{ position: "relative" }}>
@@ -88,6 +84,7 @@ function HouseRow({ house, stageCounts, activeKey, onSelect }) {
         {house === "Commons" ? "House of Commons" : "House of Lords"}
       </div>
       <motion.div
+        ref={trackRef}
         className="mp-bill-track"
         role="group"
         aria-label={`Bill stages in the House of ${house}`}
@@ -114,68 +111,89 @@ function HouseRow({ house, stageCounts, activeKey, onSelect }) {
   );
 }
 
-// A bill that one House has finished with goes to the other, and amendments can be sent back and forth between them (parliamentary "ping-pong").
-// Faint arrows zig-zag between the Commons row above and the Lords row below, stage to stage, one after another. Each arrow is a whole piece that is
-// drawn, held and faded away together, so nothing is cut off at an edge. Decorative only: the real positions are in the circles.
-function PingPong({ width }) {
-  const n = STAGE_DEFS.length;
-  const col = width / n;
-  const height = Math.round(Math.min(96, Math.max(60, col * 0.5)));
-  const inset = 10; // gap kept between an arrow and whatever it points at
-  const arrows = [];
-  for (let k = 0; k < n - 1; k += 1) {
-    const down = k % 2 === 0;
-    const x1 = col * (k + 0.5);
-    const x2 = col * (k + 1.5);
-    const y1 = down ? 2 : height - 2;
-    const y2 = down ? height - 2 : 2;
-    const len = Math.hypot(x2 - x1, y2 - y1);
-    const ux = (x2 - x1) / len;
-    const uy = (y2 - y1) / len;
-    arrows.push({
-      k, down, angle: (Math.atan2(y2 - y1, x2 - x1) * 180) / Math.PI,
-      sx: x1 + ux * inset, sy: y1 + uy * inset, ex: x2 - ux * (inset - 2), ey: y2 - uy * (inset - 2),
-    });
-  }
-  const from = (a) => (a.down ? HOUSE_COLOR.Commons : HOUSE_COLOR.Lords);
-  const to = (a) => (a.down ? HOUSE_COLOR.Lords : HOUSE_COLOR.Commons);
-  return (
-    <svg aria-hidden="true" focusable="false" width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ display: "block", overflow: "visible", margin: "2px 0" }}>
-      <defs>
-        {arrows.map((a) => (
-          <linearGradient key={a.k} id={`pp-g${a.k}`} gradientUnits="userSpaceOnUse" x1={a.sx} y1={a.sy} x2={a.ex} y2={a.ey}>
-            <stop offset="0" style={{ stopColor: from(a) }} />
-            <stop offset="1" style={{ stopColor: to(a) }} />
-          </linearGradient>
-        ))}
-      </defs>
-      {arrows.map((a) => (
-        <g key={a.k} className="pp-arrow" style={{ animationDelay: `${a.k * 1.15}s` }}>
-          <line className="pp-line" pathLength="1" x1={a.sx} y1={a.sy} x2={a.ex} y2={a.ey} stroke={`url(#pp-g${a.k})`} strokeWidth="2" strokeLinecap="round" style={{ animationDelay: "inherit" }} />
-          <g className="pp-head" style={{ animationDelay: "inherit" }}>
-            <path d="M -8 -5.5 L 0 0 L -8 5.5" transform={`translate(${a.ex} ${a.ey}) rotate(${a.angle})`} fill="none" style={{ stroke: to(a) }} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </g>
-        </g>
-      ))}
-    </svg>
-  );
-}
+// ---- The walk-through ----
+// Bills can start in either House, so the animation does not assume one. A glowing ring travels through the stages of the House a bill starts in,
+// hands over to the other House, goes back and forth for a moment (ping-pong, when the Houses disagree on changes) and ends at Royal Assent. It
+// plays one route that starts in the Commons, then one that starts in the Lords, and a caption says what is happening at each step.
 
 function StageBoard({ tracks, activeKey, onSelect }) {
-  const ref = useRef(null);
-  const [width, setWidth] = useState(0);
+  const reduce = useReducedMotion();
+  const boardRef = useRef(null);
+  const commonsRef = useRef(null);
+  const lordsRef = useRef(null);
+  const [geo, setGeo] = useState({ width: 0, commons: 0, lords: 0 });
+  const [onScreen, setOnScreen] = useState(false);
+  const [playing, setPlaying] = useState(!reduce);
+  // Nothing moves until it is started when the visitor prefers less motion; then a caption describes the stages instead.
+  const [started, setStarted] = useState(!reduce);
+  const [route, setRoute] = useState(0);
+  const [stepIndex, setStepIndex] = useState(0);
+  const first = route % 2 === 0 ? "Commons" : "Lords";
+  const steps = useMemo(() => buildRoute(first), [first]);
+  const step = steps[Math.min(stepIndex, steps.length - 1)];
+
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return undefined;
-    const ro = new ResizeObserver(([entry]) => setWidth(Math.round(entry.contentRect.width)));
-    ro.observe(el);
-    return () => ro.disconnect();
+    const board = boardRef.current;
+    if (!board) return undefined;
+    const measure = () => {
+      const top = board.getBoundingClientRect().top;
+      const centre = (el) => (el ? el.getBoundingClientRect().top - top + 4 + 32 : 0);
+      setGeo({ width: Math.round(board.clientWidth), commons: centre(commonsRef.current), lords: centre(lordsRef.current) });
+    };
+    const ro = new ResizeObserver(measure);
+    ro.observe(board);
+    const io = new IntersectionObserver(([entry]) => setOnScreen(entry.isIntersecting), { threshold: 0.35 });
+    io.observe(board);
+    return () => { ro.disconnect(); io.disconnect(); };
   }, []);
+
+  // Move on to the next step after this one has been shown for its time; at the end of a route, start the other route.
+  useEffect(() => {
+    if (!playing || !onScreen) return undefined;
+    const id = setTimeout(() => {
+      if (stepIndex + 1 >= steps.length) { setRoute((r) => r + 1); setStepIndex(0); } else setStepIndex(stepIndex + 1);
+    }, step.ms);
+    return () => clearTimeout(id);
+  }, [playing, onScreen, stepIndex, steps.length, step.ms]);
+
+  const count = tracks[step.house][STAGE_DEFS[step.col].key].length;
+  const size = nodeSize(count) + 20;
+  const x = `${((step.col + 0.5) / STAGE_DEFS.length) * 100}%`;
+  const y = step.house === "Commons" ? geo.commons : geo.lords;
+  const colour = HOUSE_COLOR[step.house];
+  const glide = step.glide && !reduce;
+  const ready = geo.width > 0 && started;
   return (
-    <div ref={ref} style={{ marginBottom: 22 }}>
-      <HouseRow house="Commons" stageCounts={tracks.Commons} activeKey={activeKey} onSelect={onSelect} />
-      {width > 0 ? <PingPong width={width} /> : <div style={{ height: 64 }} />}
-      <HouseRow house="Lords" stageCounts={tracks.Lords} activeKey={activeKey} onSelect={onSelect} />
+    <div style={{ marginBottom: 22 }}>
+      <div ref={boardRef} style={{ position: "relative" }}>
+        <HouseRow house="Commons" stageCounts={tracks.Commons} activeKey={activeKey} onSelect={onSelect} trackRef={commonsRef} />
+        <div style={{ height: 34 }} aria-hidden="true" />
+        <HouseRow house="Lords" stageCounts={tracks.Lords} activeKey={activeKey} onSelect={onSelect} trackRef={lordsRef} />
+        <div
+          aria-hidden="true"
+          className="bill-ring"
+          style={{
+            "--ring": step.done ? COLORS.accent : colour, left: x, top: y, width: size, height: size,
+            opacity: ready && step.show ? 1 : 0,
+            transition: glide ? "left 0.9s cubic-bezier(.45,.05,.2,1), top 0.7s cubic-bezier(.45,.05,.2,1), width 0.4s, height 0.4s, opacity 0.35s, border-color 0.4s" : "opacity 0.35s, width 0.3s, height 0.3s",
+          }}
+        />
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", gap: "8px 14px", marginTop: 14, padding: "12px 14px", borderRadius: 14, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `4px solid ${step.done ? COLORS.accent : colour}` }}>
+        <div style={{ flex: "1 1 260px", minWidth: 0, minHeight: 62 }}>
+          <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 15, color: COLORS.ink }}>{started ? step.title : "How a bill becomes law"}</div>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.5, color: COLORS.inkSoft, marginTop: 2 }}>
+            {started ? step.text : "A bill goes through five stages in one House, then the other, and can go back and forth between them until both agree. Then it gets Royal Assent and becomes law. Bills can start in either House."}
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => { setStarted(true); setPlaying((p) => !p); }}
+          style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, padding: "7px 14px", borderRadius: 999, cursor: "pointer", border: `1px solid ${COLORS.hairline}`, background: "transparent", color: COLORS.ink, flexShrink: 0 }}
+        >
+          {playing ? "Pause the walk-through" : "Play the walk-through"}
+        </button>
+      </div>
     </div>
   );
 }

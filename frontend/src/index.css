@@ -736,21 +736,11 @@ a[target="_blank"]::after { content: "" / " (opens in a new tab)"; }
   .ge-tab:hover, .ge-col:hover { transform: none; }
 }
 
-/* Bills pass between the Commons and the Lords, back and forth, like a ping-pong ball. Faint arrows zig-zag between the two rows of stages, one after another:
-   each is drawn along its length, holds for a moment, then fades away whole (the arrow as a single piece, not cut off at an edge). The delay on each
-   arrow is set inline so they follow one another. Still, and shown softly, when the visitor prefers less motion. */
-.pp-arrow { opacity: 0; animation: pp-fade 5.2s ease-in-out infinite both; }
-.pp-arrow .pp-line { stroke-dasharray: 1; stroke-dashoffset: 1; animation: pp-draw 5.2s cubic-bezier(.3,.1,.2,1) infinite both; animation-delay: inherit; }
-.pp-arrow .pp-head { opacity: 0; animation: pp-head 5.2s ease-out infinite both; animation-delay: inherit; }
-@keyframes pp-fade { 0% { opacity: 0; } 8% { opacity: 0.62; } 36% { opacity: 0.62; } 50% { opacity: 0; } 100% { opacity: 0; } }
-@keyframes pp-draw { 0% { stroke-dashoffset: 1; } 14% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
-@keyframes pp-head { 0%, 9% { opacity: 0; } 15% { opacity: 1; } 100% { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) {
-  .pp-arrow, .pp-arrow .pp-line, .pp-arrow .pp-head { animation: none; }
-  .pp-arrow { opacity: 0.4; }
-  .pp-arrow .pp-line { stroke-dashoffset: 0; }
-  .pp-arrow .pp-head { opacity: 1; }
-}
+/* The ring that travels through the bill stages (BillJourney.jsx). It slides from stage to stage, glows softly, and changes colour with the House. */
+.bill-ring { position: absolute; z-index: 2; border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%); border: 2.5px solid var(--ring); box-shadow: 0 0 0 5px color-mix(in srgb, var(--ring) 16%, transparent), 0 6px 18px -4px color-mix(in srgb, var(--ring) 55%, transparent); }
+.bill-ring::after { content: ""; position: absolute; inset: -9px; border-radius: 50%; border: 1.5px solid var(--ring); opacity: 0; animation: bill-ring-pulse 1.8s ease-out infinite; }
+@keyframes bill-ring-pulse { 0% { transform: scale(0.82); opacity: 0.5; } 100% { transform: scale(1.18); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .bill-ring::after { animation: none; } }
 
 /* A row of boxes laid out again by lib/balanceBoxes.js so the last row is never a lone box: twice as many tracks as boxes across, each box two wide,
    so a short last row can be started half a box in and sit in the middle. */
