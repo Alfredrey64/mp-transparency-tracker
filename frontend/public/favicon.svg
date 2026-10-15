@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
   <rect width="512" height="512" rx="112" fill="#4F46E5"/>
-  <g transform="translate(8 32)" fill="#ffffff">
+  <g transform="translate(71.44 74.56) scale(0.72)" fill="#ffffff" stroke="#ffffff" stroke-width="0.8">
     <rect x="56" y="324" width="200" height="100"/><rect x="56" y="306" width="16" height="18"/><rect x="82" y="306" width="16" height="18"/><rect x="108" y="306" width="16" height="18"/><rect x="134" y="306" width="16" height="18"/><rect x="160" y="306" width="16" height="18"/><rect x="186" y="306" width="16" height="18"/><rect x="212" y="306" width="16" height="18"/><rect x="238" y="306" width="16" height="18"/>
     <rect x="282" y="126" width="96" height="16"/><rect x="292" y="142" width="76" height="282"/>
     <polygon points="292,126 330,52 368,126"/>

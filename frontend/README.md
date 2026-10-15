@@ -22,7 +22,7 @@ Plain, calm and specific. Short sentences, everyday words, no jargon without an 
 
 - **Name:** Simple Politics
 - **Line:** UK politics, made simple.
-- **Mark:** the Houses of Parliament as a flat white silhouette on indigo (`public/favicon.svg`, and `src/components/LogoMark.jsx`).
+- **Mark:** the Houses of Parliament as a flat white silhouette on indigo (`public/favicon.svg`, and `src/components/LogoMark.jsx`). The app icons (`favicon.svg` and the PNG sizes in `public/`) are drawn by `node scripts/build-icons.mjs`, with the mark smaller and nudged up and left so it looks centred; change the scale or position at the top of that script. After changing an icon, bump the `?v=` on its address in `index.html` and `manifest.json` so phones fetch the new one.
 
 ## Embeddable cards
 
