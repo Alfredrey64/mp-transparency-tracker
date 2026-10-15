@@ -80,6 +80,7 @@ export const LOADERS = {
   trust: () => import("./components/Trust"),
   care: () => import("./components/Care"),
   transport: () => import("./components/Transport"),
+  union: () => import("./components/Union"),
   ageing: () => import("./components/Ageing"),
 };
 

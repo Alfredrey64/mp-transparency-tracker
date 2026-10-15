@@ -241,6 +241,11 @@ export const PAGE_GUIDES = {
     why: "The State Pension is one of the biggest items the government pays for, and a smaller share of people of working age will be paying for it.",
     notShown: "Workplace and private pensions, benefits for older people other than the State Pension, or social care costs.",
   },
+  union: {
+    what: "What Scotland, Wales, Northern Ireland and the regions of England spend, raise and produce for each resident, who decides what in each nation, and the arguments about funding, the union and English devolution.",
+    why: "How the UK shares money between its parts, and how much each part decides for itself, is at the centre of arguments about the union.",
+    notShown: "Opinion polls on independence, local government finance, or the detail of each devolved government's powers and borrowing.",
+  },
   transport: {
     what: "How much we drive and what new cars run on, the state of local roads, road deaths, how rail and buses are used, paid for and run, and where it differs across the country, with the arguments.",
     why: "Transport takes a large part of the household budget and the public purse, and it is the biggest source of the UK's greenhouse gases.",

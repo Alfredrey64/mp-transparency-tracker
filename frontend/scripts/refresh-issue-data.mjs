@@ -24,6 +24,7 @@ const STEPS = [
   { name: "ageing", script: "build-ageing-data.mjs", out: "ageingData.json", what: "Ageing and pensions: pension against prices and earnings (ONS)" },
   { name: "brexit", script: "build-brexit-data.mjs", out: "brexitData.json", what: "Brexit: GDP against other economies, trade, migration (OECD, ONS, HMRC)" },
   { name: "energy", script: "build-energy-data.mjs", out: "energyData.json", what: "Net zero and energy bills: emissions, electricity, bills, price cap (DESNZ, Ofgem, ONS, World Bank)" },
+  { name: "union", script: "build-devolution-data.mjs", out: "devolutionData.json", what: "Devolution and the union: spending, public finances and output by nation and region (HM Treasury, ONS)" },
   { name: "transport", script: "build-transport-data.mjs", out: "transportData.json", what: "Transport: roads, cars, road deaths, buses and rail (DfT, ORR)" },
   { name: "care", script: "build-care-data.mjs", out: "careData.json", what: "Social care and childcare: spending, activity, carers, workforce, funded childcare (DHSC, NHS England, Skills for Care, DfE)" },
   { name: "trust", script: "build-trust-data.mjs", out: "trustData.json", what: "Trust in politics: trust in government and institutions (OECD Trust Survey)" },

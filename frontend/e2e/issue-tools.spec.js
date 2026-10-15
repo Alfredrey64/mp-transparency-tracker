@@ -321,3 +321,19 @@ test("the transport map changes with the measure, and the rail and bus charts sw
   await bus.getByRole("button", { name: "Fares" }).click();
   await expect(bus).toContainText("March 2005 as 100");
 });
+
+test("the devolution map changes with the measure and the spending chart picks a place", async ({ page }) => {
+  await page.goto("/union/place");
+  const map = card(page, "h-dp-map");
+  await expect(map).toContainText("Northern Ireland is highest");
+  await map.getByRole("button", { name: "Economic output per person" }).click();
+  await expect(map).toContainText("London is highest");
+  await map.getByRole("list", { name: /by region, highest first/ }).getByRole("button", { name: /Wales/ }).click();
+  await expect(map.getByRole("heading", { name: "Wales" })).toBeVisible();
+  await expect(map).toContainText("Spending on services per person");
+  await page.goto("/union/money");
+  const func = card(page, "h-dm-func");
+  await func.getByRole("button", { name: "Wales" }).click();
+  await expect(func.getByRole("button", { name: "Wales" })).toHaveAttribute("aria-pressed", "true");
+  await expect(func).toContainText("Wales: £");
+});
