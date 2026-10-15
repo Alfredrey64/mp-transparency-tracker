@@ -21,7 +21,7 @@ function Profile({ regionKey, onClear, metrics }) {
         <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 17, fontWeight: 700, color: COLORS.ink, margin: 0 }}>{name}</h3>
         <button type="button" onClick={onClear} style={{ ...pillStyle(false), padding: "4px 10px", fontSize: 12.5 }}>Clear</button>
       </div>
-      <p style={{ ...para, fontSize: 13, marginTop: 4 }}>Against the UK, with where it ranks among the 12 places.</p>
+      <p style={{ ...para, fontSize: 13, marginTop: 4 }}>Against {(metrics[0].ukLabel ?? "the UK")}, with where it ranks among the places with a figure.</p>
       <ul style={{ listStyle: "none", margin: "10px 0 0", padding: 0, display: "grid", gap: 8 }}>
         {metrics.map((m) => {
           const values = m.values();
@@ -31,7 +31,7 @@ function Profile({ regionKey, onClear, metrics }) {
             <li key={m.id} style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: "0 10px", fontFamily: FONT_BODY, fontSize: 13.5 }}>
               <span style={{ color: COLORS.ink, fontWeight: 600 }}>{m.label}</span>
               <span style={{ ...numeric, fontWeight: 600, color: COLORS.ink, textAlign: "right" }}>{v === null || v === undefined ? "n/a" : formatValue(m.format, v)}</span>
-              <span style={{ color: COLORS.inkSoft, fontSize: 12.5 }}>UK {formatValue(m.format, m.uk())}</span>
+              <span style={{ color: COLORS.inkSoft, fontSize: 12.5 }}>{m.ukLabel === "England" ? "England" : "UK"} {formatValue(m.format, m.uk())}</span>
               <span style={{ color: COLORS.inkSoft, fontSize: 12.5, textAlign: "right" }}>{r ? `${ordinal(r.rank)} highest of ${r.of}` : ""}</span>
             </li>
           );
@@ -61,6 +61,7 @@ export default function RegionMetricMap({ id, title, lead, metrics, defaultMetri
   const low = order.at(-1);
   const name = (k) => REGIONS.find((r) => r.key === k).name;
   const sources = metric.source ? [metric.source] : [];
+  const ukName = metric.ukLabel ?? "the UK";
   const groups = [...new Set(metrics.map((m) => m.group).filter(Boolean))];
   return (
     <Panel
@@ -84,13 +85,13 @@ export default function RegionMetricMap({ id, title, lead, metrics, defaultMetri
             <button type="button" aria-pressed={view === "tiles"} onClick={() => setView("tiles")} style={pillStyle(view === "tiles")}>Equal tiles</button>
           </div>
           <p style={{ fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.5, color: COLORS.ink, margin: "0 0 8px" }} aria-live="polite">
-            <strong>{name(high.key)}</strong> is highest ({text(high.key)}) and <strong>{name(low.key)}</strong> lowest ({text(low.key)}). The UK is {formatValue(metric.format, uk)}.
+            <strong>{name(high.key)}</strong> is highest ({text(high.key)}) and <strong>{name(low.key)}</strong> lowest ({text(low.key)}). {ukName.charAt(0).toUpperCase() + ukName.slice(1)} is {formatValue(metric.format, uk)}.
           </p>
           <RegionMap
             regions={REGIONS} view={view} fill={fill} valueText={text} compactText={text} accent={metric.accent} smooth
             a11yLabel={(k) => `${name(k)}: ${text(k)}`} selected={selected} hover={hover} onHover={setHover} onSelect={(k) => onSelect(selected === k ? null : k)}
           />
-          <ColourKey bounds={bounds} accent={metric.accent} format={metric.format} uk={uk} caption="Darker means higher" />
+          <ColourKey bounds={bounds} accent={metric.accent} format={metric.format} uk={uk} ukLabel={ukName === "the UK" ? undefined : ukName} caption="Darker means higher" />
         </div>
         <div style={{ display: "grid", gap: 14, minWidth: 0 }}>
           {selected ? (

@@ -47,7 +47,7 @@ export const MAP_METRICS = [
   { id: "within18", group: "How long they wait", label: "Seen within 18 weeks", format: "pct", accent: "#0F766E", blurb: "The share of people waiting who have waited no more than 18 weeks. The NHS standard is 92%. A higher figure is better.", values: () => perPlace((k) => regionStats(NOW, k).pct18), uk: () => nationalNow().pct18 },
   { id: "median", group: "How long they wait", label: "Typical wait", format: "weeks", accent: "#1D4ED8", blurb: "The median wait so far of people still waiting, in weeks. Half have waited less, and half longer.", values: () => perPlace((k) => regionStats(NOW, k).median), uk: () => NOW.national.median },
   { id: "change", group: "Change in a year", label: "Change in the share within 18 weeks", format: "index", accent: "#7A5AF0", blurb: "How many percentage points the share within 18 weeks changed between the same month a year earlier and now. A positive figure means it improved.", values: () => perPlace((k) => round(regionStats(NOW, k).pct18 - regionStats(YEAR_AGO, k).pct18, 1)), uk: () => round(nationalNow().pct18 - round(pct(YEAR_AGO.national), 1), 1) },
-].map((m) => ({ ...m, year: NOW.label }));
+].map((m) => ({ ...m, year: NOW.label, ukLabel: "England" }));
 
 // How the UK compares (World Bank): the countries with a figure, highest first, for one measure.
 export const COMPARE_MEASURES = {

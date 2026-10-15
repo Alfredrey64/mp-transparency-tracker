@@ -241,6 +241,11 @@ export const PAGE_GUIDES = {
     why: "The State Pension is one of the biggest items the government pays for, and a smaller share of people of working age will be paying for it.",
     notShown: "Workplace and private pensions, benefits for older people other than the State Pension, or social care costs.",
   },
+  care: {
+    what: "What councils spend on adult social care, who pays and who gets help, the care workers and carers who provide it, and funded childcare for young children, with the arguments.",
+    why: "Almost everyone will need care or childcare at some point, and how they are paid for is one of the biggest questions facing councils and the government.",
+    notShown: "Children's social care and children in care, the quality of care homes and nurseries, what people pay for their own care, or Scotland, Wales and Northern Ireland, which run their own systems.",
+  },
   trust: {
     what: "How much people in the UK trust government, parliament and other institutions against other countries, how many vote and what the votes turn into, where to follow the money, and the arguments.",
     why: "Trust is what lets people accept decisions they disagree with, and surveys show it has fallen.",

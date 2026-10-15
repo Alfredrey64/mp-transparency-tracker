@@ -276,3 +276,29 @@ test("the trust comparison changes institution and keeps the UK highlighted, and
   await turnout.getByRole("button", { name: "Labour and Conservative vote share" }).click();
   await expect(turnout).toContainText("two largest parties together");
 });
+
+test("the care map changes with the measure and shows a region on every measure", async ({ page }) => {
+  await page.goto("/care/adult");
+  const map = card(page, "h-ca-map");
+  await expect(map).toContainText("North West is highest");
+  await map.getByRole("button", { name: "A week in a nursing home" }).click();
+  await expect(map).toContainText("is highest");
+  await map.getByRole("list", { name: /by region, highest first/ }).getByRole("button", { name: /London/ }).click();
+  await expect(map.getByRole("heading", { name: "London" })).toBeVisible();
+  await expect(map).toContainText("Spending per adult");
+  await expect(map).toContainText("England");
+});
+
+test("the care charts switch view, and the childcare map and chart work", async ({ page }) => {
+  await page.goto("/care/workers");
+  const trend = card(page, "h-cw-trend");
+  await trend.getByRole("button", { name: "Pay against the minimum wage" }).click();
+  await expect(trend).toContainText("National Minimum or Living Wage");
+  await page.goto("/care/childcare");
+  const map = card(page, "h-cc-map");
+  await map.getByRole("button", { name: /Two year olds taking the hours/ }).click();
+  await expect(map).toContainText("is highest");
+  const funded = card(page, "h-cc-main");
+  await funded.getByRole("button", { name: "Take-up" }).click();
+  await expect(funded).toContainText("registered");
+});
