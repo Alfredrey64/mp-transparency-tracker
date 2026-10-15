@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { PageHeader } from "./shared";
 
 function InfoCard({ title, color, children, index = 0 }) {
@@ -74,7 +74,7 @@ function MemberList({ members }) {
 const REGISTERED_BENEFITS = [
   {
     group: "APPG on Defence Technology",
-    color: "#B5533C",
+    color: readable("#B5533C"),
     detail:
       "Its secretariat took funding from RUK Advanced Systems Limited, a UK subsidiary of the Israeli arms manufacturer Rafael, without properly registering the arrangement. The Parliamentary Commissioner for Standards opened an investigation into the funding, and the group shut itself down in September 2025 rather than continue.",
     sourceUrl: "https://www.thebureauinvestigates.com/stories/2025-09-05/appg-shuts-down-while-under-investigation-over-israeli-arms-funding",
@@ -83,7 +83,7 @@ const REGISTERED_BENEFITS = [
   },
   {
     group: "Scotch Whisky APPG",
-    color: "#9C6B30",
+    color: readable("#9C6B30"),
     detail:
       "Its secretariat is run directly by the Scotch Whisky Association, the industry's own trade body, rather than an independent third party, a common pattern for single-industry APPGs.",
     sourceUrl: "https://publications.parliament.uk/pa/cm/cmallparty/251201/scotch-whisky.htm",
@@ -96,7 +96,7 @@ const REGISTERED_BENEFITS = [
   },
   {
     group: "All-Party Parliamentary Beer Group",
-    color: "#8A7A3D",
+    color: readable("#8A7A3D"),
     detail:
       "Its administration is provided by Ocklynge Consulting, a public affairs firm whose client work includes the brewing and pub sector the group exists to promote.",
     sourceUrl: "https://publications.parliament.uk/pa/cm/cmallparty/251201/beer.htm",
@@ -113,7 +113,7 @@ const APPG_EXAMPLES = [
   {
     name: "APPG on the Less Survivable Cancers",
     tag: "Health",
-    color: "#B5533C",
+    color: readable("#B5533C"),
     desc: "Campaigns for the cancers with the lowest survival rates (brain, liver, lung, pancreatic, oesophageal, and stomach) which between them get a fraction of the research funding and public attention that more survivable cancers receive.",
     secretariat: "Run day-to-day by Pancreatic Cancer UK, via the Less Survivable Cancers Taskforce.",
     members: [
@@ -125,7 +125,7 @@ const APPG_EXAMPLES = [
   {
     name: "All-Party Parliamentary Group for Video Games and Esports",
     tag: "Industry",
-    color: "#8A7A3D",
+    color: readable("#8A7A3D"),
     desc: "Works with the games and interactive entertainment industry to raise its profile in Parliament: one of the UK's biggest creative exports, but one MPs rarely discuss compared with film or music.",
     secretariat: "Its administration is provided by UK Interactive Entertainment (Ukie), the industry's trade body.",
     members: [
@@ -137,7 +137,7 @@ const APPG_EXAMPLES = [
   {
     name: "All-Party Parliamentary Group on Portugal",
     tag: "International",
-    color: "#2E6F6F",
+    color: readable("#2E6F6F"),
     desc: "Builds relationships between UK and Portuguese parliamentarians, and supports trade and cultural ties between the two countries.",
     secretariat: "Administered by the Portuguese Chamber of Commerce in the UK.",
     members: [
@@ -149,7 +149,7 @@ const APPG_EXAMPLES = [
   {
     name: "All-Party Parliamentary Group on Europe",
     tag: "International",
-    color: "#5B4E8A",
+    color: readable("#5B4E8A"),
     desc: "A newer group (founded October 2024) focused on the UK's evolving relationship with Europe and the EU, aiming to encourage informed, cross-party discussion rather than push a single position.",
     secretariat: "Its secretariat is provided by European Movement UK, a campaign group.",
     members: [
@@ -161,7 +161,7 @@ const APPG_EXAMPLES = [
   {
     name: "All-Party Parliamentary Group on Artificial Intelligence",
     tag: "Technology",
-    color: "#4C7A6B",
+    color: readable("#4C7A6B"),
     desc: "Examines how AI is developed and regulated in the UK, bringing together parliamentarians, academics, and industry to look at both the opportunities and the risks as the technology moves fast and policy tries to keep up.",
     secretariat: "Run by the Big Innovation Centre, whose funders for this group include Deloitte, EY, BT Group, and Santander among others.",
     members: [
@@ -173,7 +173,7 @@ const APPG_EXAMPLES = [
   {
     name: "All-Party Parliamentary Group for Chess",
     tag: "Culture",
-    color: "#B0508A",
+    color: readable("#B0508A"),
     desc: "One of the more light-hearted examples, promotes chess in education and community life, and celebrates the game's role in the UK. A reminder that not every APPG is about heavyweight policy.",
     secretariat: "Supported by Chess in Schools and Communities, an education charity.",
     members: [
@@ -251,7 +251,7 @@ export default function AppgMemberships() {
               {b.members ? <MemberList members={b.members} /> : (
                 <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, fontStyle: "italic", marginBottom: 8 }}>{b.note}</div>
               )}
-              <a href={b.sourceUrl} target="_blank" rel="noreferrer" style={{ display: "inline-block", marginTop: 10, fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: b.color }}>
+              <a href={b.sourceUrl} target="_blank" rel="noreferrer" style={{ display: "inline-block", marginTop: 10, fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: readable(b.color) }}>
                 Source ↗
               </a>
             </motion.div>
@@ -293,7 +293,7 @@ export default function AppgMemberships() {
                   fontSize: 11,
                   letterSpacing: "0.06em",
                   textTransform: "uppercase",
-                  color: group.color,
+                  color: readable(group.color),
                   background: `${group.color}1A`,
                   padding: "3px 9px",
                   borderRadius: 999,
@@ -312,7 +312,7 @@ export default function AppgMemberships() {
                 {group.secretariat}
               </div>
               <div style={{ borderTop: `1px solid ${COLORS.hairline}`, marginTop: 12, paddingTop: 10 }}>
-                <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: group.color, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 2 }}>
+                <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: readable(group.color), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 2 }}>
                   Notable members
                 </div>
                 <MemberList members={group.members} />

@@ -241,6 +241,11 @@ export const PAGE_GUIDES = {
     why: "The State Pension is one of the biggest items the government pays for, and a smaller share of people of working age will be paying for it.",
     notShown: "Workplace and private pensions, benefits for older people other than the State Pension, or social care costs.",
   },
+  nhs: {
+    what: "How long people wait for hospital treatment, A&E, ambulances and cancer care in England, where waits are longest, who works in the NHS, what is spent, how the UK compares, and the arguments.",
+    why: "The NHS is the largest single public service, and waits are one of the things people notice most about it.",
+    notShown: "The quality and safety of care, social care, GP appointments, dentistry, or waits in Scotland, Wales and Northern Ireland, which count them differently.",
+  },
   brexit: {
     what: "What experts say Brexit has done to the economy, trade, people and politics, where they disagree, and the case for and against, topic by topic.",
     why: "It is one of the biggest political decisions of recent times, and people still argue about what it has cost and gained.",

@@ -15,6 +15,10 @@ export const SOURCES = {
   onsMigration: { label: "ONS, Long-term international migration, provisional: year ending December 2025", url: "https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/internationalmigration/bulletins/longterminternationalmigrationprovisional/yearendingdecember2025" },
   yougov: { label: "YouGov, What do Britons think of Brexit, 10 years since the referendum?", url: "https://yougov.com/en-gb/articles/54925-what-do-britons-think-of-brexit-10-years-since-the-referendum" },
   yougovTracker: { label: "YouGov, Brexit tracker (24 to 25 September 2026)", url: "https://ygo-assets-websites-editorial-emea.yougov.net/documents/Internal_BrexitTracker_260925.pdf" },
+  oecdGdp: { label: "OECD, Quarterly National Accounts: GDP per capita (US dollars, constant prices and PPPs)", url: "https://data-explorer.oecd.org/" },
+  onsTradeSeries: { label: "ONS, UK trade (quarterly goods trade with the EU and non-EU countries)", url: "https://www.ons.gov.uk/economy/nationalaccounts/balanceofpayments/bulletins/uktrade/latest" },
+  hmrcRegional: { label: "HMRC, UK regional trade in goods statistics, fourth quarter 2025", url: "https://www.gov.uk/government/statistics/uk-regional-trade-in-goods-statistics-fourth-quarter-october-to-december-2025" },
+  onsPopulation: { label: "ONS, Population estimates for the UK, England, Wales, Scotland and Northern Ireland: mid-2025 (table MYE3)", url: "https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/bulletins/annualmidyearpopulationestimates/mid2025" },
   commonUnderstanding: { label: "GOV.UK, UK-EU summit: Common Understanding (19 May 2025)", url: "https://www.gov.uk/government/publications/ukeu-summit-key-documentation/uk-eu-summit-common-understanding-html" },
   windsor: { label: "GOV.UK, Windsor Framework unveiled (27 February 2023)", url: "https://www.gov.uk/government/news/windsor-framework-unveiled-to-fix-problems-of-the-northern-ireland-protocol" },
   ifgRegulation: { label: "Institute for Government, Brexit at 10: Regulation", url: "https://www.instituteforgovernment.org.uk/comment/brexit-10-regulation" },
@@ -50,6 +54,14 @@ export const REFERENDUM = {
     { name: "Scotland", leave: 38.0 },
     { name: "Northern Ireland", leave: 44.2 },
   ],
+};
+
+// The referendum result in each region and nation: votes for Leave and Remain (Electoral Commission). They add up to the UK totals above; the South West
+// includes Gibraltar, as the Commission counted it.
+export const VOTE_BY_REGION = {
+  ne: { leave: 778103, remain: 562595 }, nw: { leave: 1966925, remain: 1699020 }, yh: { leave: 1580937, remain: 1158298 }, em: { leave: 1475479, remain: 1033036 },
+  wm: { leave: 1755687, remain: 1207175 }, east: { leave: 1880367, remain: 1448616 }, london: { leave: 1513232, remain: 2263519 }, se: { leave: 2567965, remain: 2391718 },
+  sw: { leave: 1669711, remain: 1503019 }, wales: { leave: 854572, remain: 772347 }, scotland: { leave: 1018322, remain: 1661191 }, ni: { leave: 349442, remain: 440707 },
 };
 
 // Public opinion: "In hindsight, do you think Britain was right or wrong to vote to leave the European Union?" YouGov, 24 to 25 September 2026.

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable, chip } from "../theme";
 import { partyColour } from "../lib/format";
 import { PageHeader } from "./shared";
 import { BiographyBox, ContactBox, CabinetRoleBox, VotingSummaryBox, RebellionRateBox, RecentActivityBox, NewsBox } from "./MpCards";
@@ -16,7 +16,7 @@ function Avatar({ url, name, color, size = 84 }) {
       <div
         style={{
           width: size, height: size, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
-          background: color, color: "#fff", fontFamily: FONT_DISPLAY, fontSize: size * 0.34, fontWeight: 600,
+          ...chip(color), fontFamily: FONT_DISPLAY, fontSize: size * 0.34, fontWeight: 600,
         }}
       >
         {name?.split(/\s+/).map((w) => w[0]).slice(-2).join("").toUpperCase()}
@@ -105,9 +105,9 @@ function PostcodeForm({ onFound, initialError }) {
         </button>
       </form>
       {error && (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: "#9C3B3B", marginTop: 12, textAlign: "center" }}>{error}</div>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: readable("#9C3B3B"), marginTop: 12, textAlign: "center" }}>{error}</div>
       )}
-      <p style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, textAlign: "center", marginTop: 14, marginBottom: 0, opacity: 0.75 }}>
+      <p style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, textAlign: "center", marginTop: 14, marginBottom: 0 }}>
         Only saved in your own browser, to skip this step next time, never sent anywhere or seen by us. See Privacy Policy.
       </p>
     </div>

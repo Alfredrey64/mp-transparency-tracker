@@ -1,5 +1,5 @@
 // The small building blocks of the Your Council page: cards, headings, stat tiles, chips and bars.
-import { COLORS, FONT_BODY, FONT_DISPLAY, numeric } from "../theme";
+import { COLORS, FONT_BODY, FONT_DISPLAY, numeric, readable } from "../theme";
 import CountUp from "./CountUp";
 import { fmt, signed, scrollToId } from "./councilsUi";
 
@@ -15,7 +15,7 @@ export function Card({ children, style, id }) {
 export function SectionHead({ kicker, title, blurb, accent = COLORS.accent }) {
   return (
     <div style={{ marginBottom: 18 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: accent }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: readable(accent) }}>
         <span style={{ width: 18, height: 3, borderRadius: 2, background: accent }} />
         {kicker}
       </div>
@@ -31,10 +31,10 @@ export function StatCard({ icon: Icon, colour, value, format = fmt, label, capti
   const body = (
     <>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14, gap: 8 }}>
-        <span style={{ width: 38, height: 38, borderRadius: 12, background: `${colour}1f`, color: colour, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+        <span style={{ width: 38, height: 38, borderRadius: 12, background: `${colour}1f`, color: readable(colour), display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
           <Icon size={19} />
         </span>
-        {chip && <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: colour, background: `${colour}1a`, borderRadius: 999, padding: "3px 10px", whiteSpace: "nowrap" }}>{chip}</span>}
+        {chip && <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: readable(colour), background: `${colour}1a`, borderRadius: 999, padding: "3px 10px", whiteSpace: "nowrap" }}>{chip}</span>}
       </div>
       <div style={{ ...numeric, fontSize: "clamp(34px, 4.4vw, 46px)", fontWeight: 600, lineHeight: 1, color: COLORS.ink, letterSpacing: "-0.02em" }}>
         <CountUp value={value} format={format} duration={1.2} />
@@ -67,7 +67,7 @@ export const Arrow = () => <span aria-hidden="true" style={{ color: COLORS.inkSo
 // (compact) the label and value share a line and the bar sits under them, so
 // the bar always has room.
 export function Bar({ label, colour, fraction, value, delta, labelWidth = 170, compact = false }) {
-  const change = delta != null && delta !== 0 && <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, marginLeft: 8, color: delta > 0 ? "#2F8F6A" : "#B5533C" }}>{signed(delta)}</span>;
+  const change = delta != null && delta !== 0 && <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, marginLeft: 8, color: delta > 0 ? readable("#2F8F6A") : readable("#B5533C") }}>{signed(delta)}</span>;
   const track = (
     <span style={{ display: "block", height: 11, borderRadius: 6, background: COLORS.paper, overflow: "hidden" }}>
       <span style={{ display: "block", width: `${Math.max(0, Math.min(1, fraction)) * 100}%`, minWidth: fraction > 0 ? 3 : 0, height: "100%", background: colour, borderRadius: 6 }} />

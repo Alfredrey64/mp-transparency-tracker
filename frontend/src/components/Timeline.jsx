@@ -1,6 +1,6 @@
 import { useState, useId } from "react";
 import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable, chip } from "../theme";
 import { PageHeader } from "./shared";
 import { IconTimeline } from "./icons";
 import { GOVERNMENTS, LANDMARK_VOTES, OUTCOME_COLOR } from "../lib/politicalHistoryData";
@@ -48,7 +48,7 @@ function PmAvatar({ name, color, size = 40 }) {
       <div
         style={{
           width: size, height: size, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
-          background: color, color: "#fff", fontFamily: FONT_DISPLAY, fontSize: size * 0.36, fontWeight: 600,
+          ...chip(color), fontFamily: FONT_DISPLAY, fontSize: size * 0.36, fontWeight: 600,
         }}
       >
         {name.split(/\s+/).map((w) => w[0]).slice(-2).join("").toUpperCase()}
@@ -198,13 +198,13 @@ function GovernmentEntry({ entry, index, showTerm }) {
       }
     >
       <div style={{ flexShrink: 0, width: showTerm ? 68 : 58, textAlign: showTerm ? "center" : "right" }}>
-        <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: showTerm ? 16 : 17, color, lineHeight: 1.15, fontVariantNumeric: "tabular-nums" }}>
+        <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: showTerm ? 16 : 17, color: readable(color), lineHeight: 1.15, fontVariantNumeric: "tabular-nums" }}>
           {entry.year}
         </div>
         {showTerm && (
           <>
             <div style={{ width: 18, height: 1, background: `${color}55`, margin: "5px auto" }} />
-            <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13, color: `${color}cc`, fontVariantNumeric: "tabular-nums" }}>
+            <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13, color: readable(color), fontVariantNumeric: "tabular-nums" }}>
               {term.endYear ?? "Present"}
             </div>
           </>
@@ -223,7 +223,7 @@ function GovernmentEntry({ entry, index, showTerm }) {
           <span
             style={{
               fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em",
-              color, background: `${color}1e`, padding: "2px 9px", borderRadius: 999,
+              color: readable(color), background: `${color}1e`, padding: "2px 9px", borderRadius: 999,
             }}
           >
             {entry.party}
@@ -249,7 +249,7 @@ function GovernmentEntry({ entry, index, showTerm }) {
             <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${color}30` }}>
               {entry.events && entry.events.length > 0 && (
                 <div style={{ marginBottom: 16 }}>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: readable(color), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
                     Major events
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
@@ -270,7 +270,7 @@ function GovernmentEntry({ entry, index, showTerm }) {
               )}
               {lineage && (
                 <div style={{ marginBottom: 16 }}>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 5 }}>
+                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: readable(color), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 5 }}>
                     About the {entry.party}
                   </div>
                   <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, lineHeight: 1.6 }}>{lineage}</div>
@@ -278,7 +278,7 @@ function GovernmentEntry({ entry, index, showTerm }) {
               )}
               {bills.length > 0 && (
                 <div>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>
+                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: readable(color), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>
                     Landmark bills passed under this government
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
@@ -345,7 +345,7 @@ function BillEntry({ entry, index }) {
           <div style={{ minWidth: 0, flex: 1 }}>
             <div style={{ display: "flex", alignItems: "baseline", gap: 9, flexWrap: "wrap", marginBottom: 5 }}>
               <span style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 14.5, color: COLORS.ink }}>{entry.title}</span>
-              <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color, textTransform: "uppercase" }}>{entry.result}</span>
+              <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: readable(color), textTransform: "uppercase" }}>{entry.result}</span>
               <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ marginLeft: "auto", color: COLORS.inkSoft, fontSize: 12 }}>▾</motion.span>
             </div>
             <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.6 }}>{entry.detail}</div>
@@ -375,7 +375,7 @@ function BillEntry({ entry, index }) {
                 <span
                   style={{
                     fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em",
-                    color: govColor, background: `${govColor}1e`, padding: "2px 8px", borderRadius: 999,
+                    color: readable(govColor), background: `${govColor}1e`, padding: "2px 8px", borderRadius: 999,
                   }}
                 >
                   {gov.party}
@@ -554,7 +554,7 @@ export default function Timeline() {
                   onClick={() => jumpTo(era.key)}
                   style={{
                     fontFamily: FONT_BODY, fontSize: 12, fontWeight: 600, padding: "7px 13px", borderRadius: 999,
-                    border: `1px solid ${era.accent}55`, background: `${era.accent}12`, color: era.accent, cursor: "pointer",
+                    border: `1px solid ${era.accent}55`, background: `${era.accent}12`, color: readable(era.accent), cursor: "pointer",
                   }}
                 >
                   {era.label}
@@ -583,7 +583,7 @@ export default function Timeline() {
                   onClick={() => jumpTo(`pm-${era.key}`)}
                   style={{
                     fontFamily: FONT_BODY, fontSize: 12, fontWeight: 600, padding: "7px 13px", borderRadius: 999,
-                    border: `1px solid ${era.accent}55`, background: `${era.accent}12`, color: era.accent, cursor: "pointer",
+                    border: `1px solid ${era.accent}55`, background: `${era.accent}12`, color: readable(era.accent), cursor: "pointer",
                   }}
                 >
                   {era.label}

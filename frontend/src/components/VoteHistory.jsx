@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { COLORS, FONT_BODY, FONT_DISPLAY, FONT_MONO } from "../theme";
+import { COLORS, FONT_BODY, FONT_DISPLAY, FONT_MONO, readable } from "../theme";
 import { formatDate } from "../lib/format";
 import { matchBillForVote } from "../lib/bills";
 import { explainDivision } from "../lib/divisionExplainer";
@@ -18,7 +18,7 @@ function AyeNo({ aye }) {
     <span
       style={{
         fontFamily: FONT_MONO, fontSize: 11, fontWeight: 700, textTransform: "uppercase", padding: "3px 9px", borderRadius: 999,
-        background: aye ? "#E4EEE7" : "#F3E4E2", color: aye ? "#2F6F4E" : "#9C3B3B",
+        background: aye ? "#E4EEE7" : "#F3E4E2", color: aye ? readable("#2F6F4E") : readable("#9C3B3B"),
       }}
     >
       {aye ? "Aye" : "No"}
@@ -30,7 +30,7 @@ function PartyNote({ vote, hasPartyMajorityConcept }) {
   if (!hasPartyMajorityConcept || vote.voted_with_party_majority == null) return null;
   const against = vote.voted_with_party_majority === false;
   return (
-    <span style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: against ? 700 : 400, color: against ? "#9C3B3B" : COLORS.inkSoft }}>
+    <span style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: against ? 700 : 400, color: against ? readable("#9C3B3B") : COLORS.inkSoft }}>
       {against ? "Voted against their party" : "With their party"}
     </span>
   );

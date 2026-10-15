@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable, chip } from "../theme";
 import { partyColour, initials } from "../lib/format";
 import { PageHeader } from "./shared";
 import { IconCoin } from "./icons";
@@ -72,8 +72,7 @@ function Avatar({ politician, color }) {
         fontFamily: FONT_DISPLAY,
         fontSize: 14,
         fontWeight: 600,
-        color: "#fff",
-        background: color,
+        ...chip(color),
       }}
     >
       {initials(politician.name)}
@@ -233,7 +232,7 @@ export default function PoliticianList({ onSelect, initialCareer = null }) {
             >
               <span style={{ width: 8, height: 8, borderRadius: "50%", background: party.color }} />
               {party.name}
-              <span style={{ opacity: 0.6, fontWeight: 400 }}>{party.count}</span>
+              <span style={{ opacity: 0.85, fontWeight: 400 }}>{party.count}</span>
             </button>
           );
         })}
@@ -253,7 +252,7 @@ export default function PoliticianList({ onSelect, initialCareer = null }) {
                   onClick={() => withScrollPreserved(() => setCareerKeys((prev) => (on ? prev.filter((k) => k !== f.key) : [...prev, f.key])))}
                   style={{
                     fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, padding: "7px 14px", borderRadius: 999, cursor: "pointer",
-                    border: `1px solid ${on ? COLORS.accent : COLORS.hairline}`, background: on ? `${COLORS.accent}1f` : "transparent", color: on ? COLORS.accent : COLORS.inkSoft,
+                    border: `1px solid ${on ? COLORS.accent : COLORS.hairline}`, background: on ? `${COLORS.accent}1f` : "transparent", color: on ? COLORS.accentText : COLORS.inkSoft,
                     transition: "background-color 0.15s, border-color 0.15s, color 0.15s",
                   }}
                 >
@@ -293,7 +292,7 @@ export default function PoliticianList({ onSelect, initialCareer = null }) {
       )}
 
       {error && (
-        <div style={{ color: "#9C3B3B", fontFamily: FONT_BODY, fontSize: 13.5, marginBottom: 16 }}>
+        <div style={{ color: readable("#9C3B3B"), fontFamily: FONT_BODY, fontSize: 13.5, marginBottom: 16 }}>
           Couldn't load data: {error}
         </div>
       )}

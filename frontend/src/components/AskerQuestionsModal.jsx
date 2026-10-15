@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, useReducedMotion } from "framer-motion";
-import { COLORS, FONT_BODY, FONT_DISPLAY, numeric } from "../theme";
+import { COLORS, FONT_BODY, FONT_DISPLAY, numeric, readable } from "../theme";
 import { formatDate, partyColour } from "../lib/format";
 
 // The questions one MP or peer has put on a topic, in a pop-up over the page.
@@ -117,7 +117,7 @@ export default function AskerQuestionsModal({ person, questions, topic, returnFo
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 10px", alignItems: "center", fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginBottom: 5 }}>
                   <span>{formatDate(r.date_tabled)}</span>
                   <span>→ {r.answering_body_name ?? "the government"}</span>
-                  <span style={{ fontWeight: 700, color: answered ? COLORS.accent : "#B08A3E" }}>{answered ? `Answered ${formatDate(r.date_answered)}` : "Awaiting answer"}</span>
+                  <span style={{ fontWeight: 700, color: answered ? readable(COLORS.accent) : readable("#B08A3E") }}>{answered ? `Answered ${formatDate(r.date_answered)}` : "Awaiting answer"}</span>
                 </div>
                 {r.heading && <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.inkSoft, marginBottom: 3 }}>{r.heading}</div>}
                 <div style={{ fontFamily: FONT_DISPLAY, fontSize: 14.5, color: COLORS.ink, lineHeight: 1.5 }}>{r.question_text}</div>

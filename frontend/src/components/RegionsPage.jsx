@@ -123,7 +123,7 @@ function League({ rows, selected, hover, onHover, onSelect, accent, dateLabel, r
               >
                 <span style={{ ...numeric, fontSize: 13, color: COLORS.inkSoft, display: "flex", flexDirection: "column", alignItems: "flex-start", lineHeight: 1.15 }}>
                   {r.rank}
-                  {r.moved !== 0 && <span style={{ fontSize: 10.5, fontWeight: 700, color: r.moved > 0 ? "#2F6F4E" : "#9C3B3B" }}>{r.moved > 0 ? "▲" : "▼"}{Math.abs(r.moved)}</span>}
+                  {r.moved !== 0 && <span style={{ fontSize: 10.5, fontWeight: 700, color: r.moved > 0 ? readable("#2F6F4E") : readable("#9C3B3B") }}>{r.moved > 0 ? "▲" : "▼"}{Math.abs(r.moved)}</span>}
                 </span>
                 <span aria-hidden="true" style={{ width: 14, height: 14, borderRadius: 4, background: r.colour, boxShadow: `0 0 0 1px ${COLORS.hairline}` }} />
                 <span style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink, minWidth: 0, lineHeight: 1.25 }}>{r.name}</span>
@@ -326,7 +326,7 @@ export default function RegionsPage({ param }) {
             {METRICS.map((m) => (
               <button
                 key={m.id} type="button" role="radio" aria-checked={metricId === m.id} className="ons-chip" onClick={() => pickMetric(m.id)}
-                style={{ ...pillStyle(metricId === m.id), background: metricId === m.id ? m.accent : "transparent", borderColor: metricId === m.id ? m.accent : COLORS.hairline, color: metricId === m.id ? "#fff" : COLORS.inkSoft }}
+                style={{ ...pillStyle(metricId === m.id), background: metricId === m.id ? solid(m.accent) : "transparent", borderColor: metricId === m.id ? solid(m.accent) : COLORS.hairline, color: metricId === m.id ? "#fff" : COLORS.inkSoft }}
               >
                 {m.label}
               </button>

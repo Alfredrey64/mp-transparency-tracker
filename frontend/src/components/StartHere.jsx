@@ -172,7 +172,7 @@ export default function StartHere({ onNavigate, onNavigateForMp, onViewProfile }
               </button>
             </div>
           )}
-          {mpFailed && <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: "#9C3B3B", marginTop: 8 }}>Couldn't load that MP's record just now. The other steps still work from the menu.</div>}
+          {mpFailed && <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: readable("#9C3B3B"), marginTop: 8 }}>Couldn't load that MP's record just now. The other steps still work from the menu.</div>}
         </Step>
 
         <Step n={2} title="See what they've declared">

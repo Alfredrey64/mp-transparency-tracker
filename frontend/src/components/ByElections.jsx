@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { partyColour, formatDate } from "../lib/format";
 import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
@@ -149,7 +149,7 @@ export default function ByElections() {
                     <span
                       style={{
                         fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em",
-                        color: "#B0473E", background: "#B0473E1e", padding: "4px 10px", borderRadius: 999, flexShrink: 0,
+                        color: readable("#B0473E"), background: "#B0473E1e", padding: "4px 10px", borderRadius: 999, flexShrink: 0,
                       }}
                     >
                       By-election pending
@@ -224,7 +224,7 @@ export default function ByElections() {
                     <span
                       style={{
                         fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em",
-                        color, background: `${color}1e`, padding: "3px 10px", borderRadius: 999,
+                        color: readable(color), background: `${color}1e`, padding: "3px 10px", borderRadius: 999,
                       }}
                     >
                       {e.winning_party} {isGain ? "Gain" : outcome ?? ""}
@@ -307,7 +307,7 @@ export default function ByElections() {
                                 </span>
                                 <span style={{ flexShrink: 0, display: "flex", alignItems: "baseline", gap: 8 }}>
                                   {swing !== null && !Number.isNaN(swing) && (
-                                    <span style={{ fontSize: 11, fontWeight: 600, color: swing >= 0 ? "#3F7D5C" : "#B0473E" }}>
+                                    <span style={{ fontSize: 11, fontWeight: 600, color: swing >= 0 ? readable("#3F7D5C") : readable("#B0473E") }}>
                                       {swing >= 0 ? "+" : ""}{swing}pt
                                     </span>
                                   )}
@@ -327,7 +327,7 @@ export default function ByElections() {
                           );
                         })}
                       </div>
-                      <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, opacity: 0.75, marginTop: 10 }}>
+                      <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginTop: 10 }}>
                         "pt" swing is the change in vote share since the last election, in percentage points.
                       </div>
                     </div>

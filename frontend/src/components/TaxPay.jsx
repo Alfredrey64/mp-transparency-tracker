@@ -54,9 +54,9 @@ export default function TaxPay() {
   const slip = slips[shownYear - FIRST_YEAR];
   const pts = (key) => slips.map((s) => ({ x: s.y + 0.27, y: s[key], label: taxYearLabel(s.y) }));
   const lines = [
-    { name: "Income tax and National Insurance together", points: pts("totalShare"), color: "#D6455D" },
-    { name: "Income tax", points: pts("taxShare"), color: "#0E9AA7" },
-    { name: "National Insurance", points: pts("niShare"), color: "#7B5BD6" },
+    { name: "Income tax and National Insurance together", points: pts("totalShare"), color: readable("#D6455D") },
+    { name: "Income tax", points: pts("taxShare"), color: readable("#0E9AA7") },
+    { name: "National Insurance", points: pts("niShare"), color: readable("#7B5BD6") },
   ];
   const from = FIRST_YEAR;
   const to = LAST_YEAR + 0.9;

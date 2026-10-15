@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, readable } from "../theme";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { STATUS, CATEGORIES, LAST_CHECKED, SOURCE_URL } from "../data/promises";
@@ -67,7 +67,7 @@ function StatusIcon({ icon, color, size = 15 }) {
 function HeroStat({ label, count, color }) {
   return (
     <div style={{ flex: "1 1 120px", minWidth: 110, background: COLORS.paper, borderRadius: 12, padding: "14px 16px", textAlign: "center" }}>
-      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 30, color }}>{count}</div>
+      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 30, color: readable(color) }}>{count}</div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 600, color: COLORS.inkSoft, marginTop: 2 }}>{label}</div>
     </div>
   );
@@ -97,7 +97,7 @@ function PledgeLine({ pledge }) {
         <span
           style={{
             flexShrink: 0, fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase",
-            letterSpacing: "0.03em", padding: "2px 9px", borderRadius: 999, color: s.color, background: `${s.color}18`,
+            letterSpacing: "0.03em", padding: "2px 9px", borderRadius: 999, color: readable(s.color), background: `${s.color}18`,
           }}
         >
           {s.label}
@@ -196,7 +196,7 @@ export default function PromiseTracker() {
       <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 18, marginBottom: 0, lineHeight: 1.65, maxWidth: 780 }}>
         As the sitting government, Labour's <GlossaryTerm term="Manifesto">manifesto</GlossaryTerm> pledges are the only ones that can be checked against real
         outcomes rather than promises. We don't make these calls ourselves: every status here comes from{" "}
-        <a href={SOURCE_URL} target="_blank" rel="noreferrer" style={{ color: LABOUR_RED, fontWeight: 600 }}>
+        <a href={SOURCE_URL} target="_blank" rel="noreferrer" style={{ color: readable(LABOUR_RED), fontWeight: 600 }}>
           Full Fact's independent, non-partisan Government Tracker ↗
         </a>
         , which assesses all {OVERALL_TOTAL} pledges it tracks. This page shows a {TOTAL_PLEDGES}-pledge sample

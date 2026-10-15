@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING, readable } from "../theme";
 import { formatDate, partyColour } from "../lib/format";
 import { categoriseBill } from "../lib/bills";
 import { PageHeader } from "./shared";
@@ -107,7 +107,7 @@ function BillEntry({ bill, politicians, initiallyOpen }) {
         <div
           style={{
             width: 40, height: 40, borderRadius: 10, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
-            background: `${category.color}17`, color: category.color,
+            background: `${category.color}17`, color: readable(category.color),
           }}
         >
           <IconBills size={18} />
@@ -191,7 +191,7 @@ function BillEntry({ bill, politicians, initiallyOpen }) {
                 )}
 
                 <div style={{ marginTop: 16 }}>
-                  <a href={bill.source_url} target="_blank" rel="noreferrer" style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: category.color }}>
+                  <a href={bill.source_url} target="_blank" rel="noreferrer" style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: readable(category.color) }}>
                     View this bill on bills.parliament.uk ↗
                   </a>
                 </div>
@@ -210,7 +210,7 @@ function Dot() {
 
 function StatusPill({ label, color }) {
   return (
-    <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.02em", color, background: `${color}18`, padding: "3px 9px", borderRadius: 999 }}>
+    <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.02em", color: readable(color), background: `${color}18`, padding: "3px 9px", borderRadius: 999 }}>
       {label}
     </span>
   );
@@ -220,7 +220,7 @@ function CategoryPill({ label, color }) {
   return (
     <span
       style={{
-        fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color, background: `${color}15`,
+        fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: readable(color), background: `${color}15`,
         border: `1px solid ${color}30`, padding: "3px 10px", borderRadius: 999, whiteSpace: "nowrap",
       }}
     >
@@ -253,8 +253,8 @@ function DivisionCard({ division }) {
         <div style={{ width: `${100 - ayePct}%`, background: "#9C3B3B" }} />
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, marginBottom: 12 }}>
-        <span style={{ color: "#2F6F4E" }}>Aye {division.aye_count}</span>
-        <span style={{ color: "#9C3B3B" }}>No {division.no_count}</span>
+        <span style={{ color: readable("#2F6F4E") }}>Aye {division.aye_count}</span>
+        <span style={{ color: readable("#9C3B3B") }}>No {division.no_count}</span>
       </div>
 
       {!division.breakdown ? (
@@ -310,10 +310,10 @@ function PartyBreakdownTable({ breakdown }) {
         <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: COLORS.inkSoft, paddingBottom: 6, borderBottom: `1px solid ${COLORS.hairline}` }}>
           Party
         </span>
-        <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: "#2F6F4E", textAlign: "center", paddingBottom: 6, borderBottom: `1px solid ${COLORS.hairline}` }}>
+        <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: readable("#2F6F4E"), textAlign: "center", paddingBottom: 6, borderBottom: `1px solid ${COLORS.hairline}` }}>
           Aye
         </span>
-        <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: "#9C3B3B", textAlign: "center", paddingBottom: 6, borderBottom: `1px solid ${COLORS.hairline}` }}>
+        <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: readable("#9C3B3B"), textAlign: "center", paddingBottom: 6, borderBottom: `1px solid ${COLORS.hairline}` }}>
           No
         </span>
         <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: COLORS.inkSoft, textAlign: "center", paddingBottom: 6, borderBottom: `1px solid ${COLORS.hairline}` }}>
@@ -359,7 +359,7 @@ function CountPill({ value, color }) {
   return (
     <span
       style={{
-        fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color, background: value > 0 ? `${color}18` : "transparent",
+        fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: readable(color), background: value > 0 ? `${color}18` : "transparent",
         borderRadius: 999, textAlign: "center", display: "block", width: "100%", padding: "2px 0",
       }}
     >
@@ -373,7 +373,7 @@ function VoteGroup({ label, color, members, note }) {
   const shown = expanded ? members : members.slice(0, 6);
   return (
     <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 8, padding: 10 }}>
-      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12, color, marginBottom: note ? 2 : 6 }}>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12, color: readable(color), marginBottom: note ? 2 : 6 }}>
         {label} ({members.length})
       </div>
       {note && <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginBottom: 6, lineHeight: 1.4 }}>{note}</div>}
@@ -386,7 +386,7 @@ function VoteGroup({ label, color, members, note }) {
         ))}
       </div>
       {members.length > 6 && (
-        <button onClick={() => setExpanded((v) => !v)} style={{ marginTop: 6, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 11, fontWeight: 600, color }}>
+        <button onClick={() => setExpanded((v) => !v)} style={{ marginTop: 6, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 11, fontWeight: 600, color: readable(color) }}>
           {expanded ? "Show fewer" : `Show all ${members.length}`}
         </button>
       )}
@@ -619,7 +619,7 @@ function FilterPill({ active, onClick, color, children }) {
       style={{
         fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, padding: "6px 13px", borderRadius: 999,
         border: `1px solid ${active ? color : `${color}40`}`, background: active ? `${color}20` : `${color}0d`,
-        color, cursor: "pointer", transition: "all 0.15s",
+        color: readable(color), cursor: "pointer", transition: "all 0.15s",
       }}
     >
       {children}

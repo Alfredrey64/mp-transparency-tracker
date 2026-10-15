@@ -36,6 +36,18 @@ describe("Brexit page", () => {
     expect(html).toContain("Estimated");
     expect(html).toContain("Contested");
   });
+  it("has the short version, the trend charts and the regional tools", () => {
+    const overview = renderToStaticMarkup(<Brexit param="overview" />);
+    expect(overview).toContain("The short version");
+    expect(overview).toContain("How things have changed");
+    expect(renderToStaticMarkup(<Brexit param="economy" />)).toContain("How the UK economy has done against others");
+    const trade = renderToStaticMarkup(<Brexit param="trade" />);
+    expect(trade).toContain("UK goods trade since 2010");
+    expect(trade).toContain("Trade in goods by nation since the deal began");
+    const society = renderToStaticMarkup(<Brexit param="society" />);
+    expect(society).toContain("Where the country voted, and where people have come to live");
+    expect(society).toContain("Arriving and leaving");
+  });
   it("opens at the overview for an unknown toggle", () => {
     expect(renderToStaticMarkup(<Brexit param="nothing" />)).toContain('id="bx-tab-overview" aria-selected="true"');
   });

@@ -1,6 +1,6 @@
 import { useState, useReducer, useRef, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
-import { COLORS, FONT_DISPLAY, FONT_BODY } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, readable } from "../theme";
 import { IconParliament, IconCabinet, IconDevolved, IconTransport, IconCouncil, IconHome, IconGroup } from "./icons";
 import { buildLayout, routeBetween } from "../lib/tierTree";
 import { NATIONS, TIERS, VOTE_FOR, CHECKS, WHO_TO_CONTACT, contactAnswer, SCENARIOS, scenarioSteps, YOU, visibleTierKeys, linkBetween } from "../data/governmentTiers";
@@ -129,7 +129,7 @@ function Slab({ box, tier, figure, selected, active, arriveDelay, tokenLabel, on
       aria-current={active ? "step" : undefined}
       className="tier-slab"
       data-active={active || selected ? "1" : "0"}
-      style={{ left: box.left, top: box.top, width: box.width, height: box.height, "--c": tier.color, "--delay": `${arriveDelay}s` }}
+      style={{ left: box.left, top: box.top, width: box.width, height: box.height, "--c": tier.color, "--ct": readable(tier.color), "--delay": `${arriveDelay}s` }}
     >
       <span className="tier-slab-icon"><Icon size={22} /></span>
       <span style={{ minWidth: 0, flex: 1 }}>
@@ -290,7 +290,7 @@ function TierInfo({ tierKey, order, nation, nationLabel }) {
       {links.length > 0 && (
         <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 16px" }}>
           {links.map((l) => (
-            <a key={l.href} href={l.href} style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color, padding: "5px 0" }}>{l.label}</a>
+            <a key={l.href} href={l.href} style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: readable(color), padding: "5px 0" }}>{l.label}</a>
           ))}
         </div>
       )}

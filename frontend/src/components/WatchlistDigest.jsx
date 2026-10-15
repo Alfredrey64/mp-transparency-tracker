@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { PageHeader } from "./shared";
 import { partyColour, formatDate } from "../lib/format";
 import { getWatchlist, getLastChecked, setLastChecked } from "../lib/watchlist";
@@ -54,7 +54,7 @@ function WatchlistEntryCard({ entry, onSelectPolitician }) {
 
           {rebellions.length > 0 && (
             <div>
-              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: "#9C3B3B", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 6 }}>
+              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: readable("#9C3B3B"), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 6 }}>
                 Voted against their own party
               </div>
               {rebellions.map((v, i) => (

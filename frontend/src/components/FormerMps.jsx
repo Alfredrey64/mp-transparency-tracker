@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable, chip } from "../theme";
 import { partyColour, formatDate } from "../lib/format";
 import { PageHeader } from "./shared";
 import { LoadFailedNote } from "./MpCards";
@@ -27,7 +27,7 @@ function Avatar({ url, name, color }) {
   const [errored, setErrored] = useState(false);
   if (!url || errored) {
     return (
-      <div style={{ width: 44, height: 44, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: color, color: "#fff", fontFamily: FONT_DISPLAY, fontSize: 15, fontWeight: 600 }}>
+      <div style={{ width: 44, height: 44, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", ...chip(color), fontFamily: FONT_DISPLAY, fontSize: 15, fontWeight: 600 }}>
         {name?.split(/\s+/).map((w) => w[0]).slice(-2).join("").toUpperCase()}
       </div>
     );
@@ -157,7 +157,7 @@ export default function FormerMps() {
                 fontFamily: FONT_BODY, fontSize: 12, fontWeight: 600, padding: "6px 12px", borderRadius: 999,
                 border: `1px solid ${reasonFilter === r ? COLORS.accent : COLORS.hairline}`,
                 background: reasonFilter === r ? COLORS.accent : "transparent",
-                color: reasonFilter === r ? COLORS.paper : COLORS.inkSoft,
+                color: reasonFilter === r ? "#fff" : COLORS.inkSoft,
                 cursor: "pointer",
               }}
             >
@@ -223,7 +223,7 @@ export default function FormerMps() {
                 </div>
                 <div style={{ textAlign: "right", flexShrink: 0 }}>
                   <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink }}>{formatDate(m.membership_end_date)}</div>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: reasonColor, marginTop: 2 }}>{m.membership_end_reason}</div>
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: readable(reasonColor), marginTop: 2 }}>{m.membership_end_reason}</div>
                 </div>
                 <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ flexShrink: 0, color: COLORS.inkSoft, fontSize: 11, marginLeft: 4 }}>▾</motion.span>
               </button>
@@ -245,7 +245,7 @@ export default function FormerMps() {
                           href={`https://members.parliament.uk/member/${m.parliament_member_id}/`}
                           target="_blank"
                           rel="noreferrer"
-                          style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13, color: color }}
+                          style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13, color: readable(color) }}
                         >
                           View official Parliament profile ↗
                         </a>

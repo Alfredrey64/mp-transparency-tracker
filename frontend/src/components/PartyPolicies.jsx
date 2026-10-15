@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING, readable } from "../theme";
 import { partyColour } from "../lib/format";
 import { isTrackedParty, findManifesto } from "../data/partyManifestos";
 import { PageHeader } from "./shared";
@@ -240,7 +240,7 @@ export default function PartyPolicies({ param }) {
                             <div
                               style={{
                                 fontFamily: FONT_MONO, fontSize: 11, fontWeight: 700, textTransform: "uppercase",
-                                letterSpacing: "0.07em", color: expanded.color, marginBottom: 8,
+                                letterSpacing: "0.07em", color: readable(expanded.color), marginBottom: 8,
                               }}
                             >
                               {section.heading}
@@ -259,7 +259,7 @@ export default function PartyPolicies({ param }) {
                         href={expandedManifesto.manifestoUrl}
                         target="_blank"
                         rel="noreferrer"
-                        style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13.5, color: expanded.color }}
+                        style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13.5, color: readable(expanded.color) }}
                       >
                         Read the full "{expandedManifesto.manifestoTitle}" manifesto ↗
                       </a>
@@ -277,7 +277,7 @@ export default function PartyPolicies({ param }) {
                       href={`https://www.google.com/search?q=${encodeURIComponent(expanded.name + " UK general election manifesto")}`}
                       target="_blank"
                       rel="noreferrer"
-                      style={{ color: expanded.color, fontWeight: 600 }}
+                      style={{ color: readable(expanded.color), fontWeight: 600 }}
                     >
                       their official manifesto ↗
                     </a>{" "}

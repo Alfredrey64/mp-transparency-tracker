@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, numeric } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, numeric, readable } from "../theme";
 import { PageHeader } from "./shared";
 import { partyColour, initials, formatDate } from "../lib/format";
 import { mpGiftKind, partyGiftKind, declaredAs } from "../lib/giftPurpose";
@@ -108,7 +108,7 @@ function Recipients({ title, total, accent, rows }) {
     <div style={{ minWidth: 0 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8, paddingBottom: 8, borderBottom: `2px solid ${accent}` }}>
         <h4 style={{ margin: 0, fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink }}>{title}</h4>
-        <span style={{ ...numeric, fontSize: 14, fontWeight: 700, color: accent }}>{money(total)}</span>
+        <span style={{ ...numeric, fontSize: 14, fontWeight: 700, color: readable(accent) }}>{money(total)}</span>
       </div>
       <ul style={{ listStyle: "none", margin: "6px 0 0", padding: 0, display: "grid", gap: 2 }}>
         {rows.map((r) => {

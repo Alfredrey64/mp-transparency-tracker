@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import { RebelMeaning } from "./MpMeaning";
 import { motion } from "framer-motion";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, readable } from "../theme";
 import { supabase } from "../supabaseClient";
 import { stripHtml, formatDate } from "../lib/format";
 import { matchBillForVote } from "../lib/bills";
@@ -185,7 +185,7 @@ export function StandardsBox({ politician }) {
               href={r.report_url}
               target="_blank"
               rel="noreferrer"
-              style={{ display: "block", background: "#F3E4E2", borderRadius: 8, padding: "8px 10px", fontFamily: FONT_BODY, fontSize: 12.5, color: "#9C3B3B", fontWeight: 600 }}
+              style={{ display: "block", background: "#F3E4E2", borderRadius: 8, padding: "8px 10px", fontFamily: FONT_BODY, fontSize: 12.5, color: readable("#9C3B3B"), fontWeight: 600 }}
             >
               {r.title} ↗
             </a>
@@ -330,7 +330,7 @@ export function VotingSummaryBox({ politician, onNavigate }) {
                     fontFamily: FONT_MONO, fontSize: 11, fontWeight: 700, textTransform: "uppercase",
                     padding: "2px 7px", borderRadius: 999,
                     background: v.voted_aye ? "#E4EEE7" : "#F3E4E2",
-                    color: v.voted_aye ? "#2F6F4E" : "#9C3B3B",
+                    color: v.voted_aye ? readable("#2F6F4E") : readable("#9C3B3B"),
                   }}
                 >
                   {v.voted_aye ? "Aye" : "No"}
@@ -341,7 +341,7 @@ export function VotingSummaryBox({ politician, onNavigate }) {
                     style={{
                       fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, textTransform: "uppercase",
                       letterSpacing: "0.04em", padding: "2px 7px", borderRadius: 999,
-                      background: "#F3E4E2", color: "#9C3B3B",
+                      background: "#F3E4E2", color: readable("#9C3B3B"),
                     }}
                   >
                     Against party
@@ -420,7 +420,7 @@ export function RebellionRateBox({ politician }) {
   return (
     <CardShell title="Rebellion Rate">
       <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 8 }}>
-        <span style={{ fontFamily: FONT_DISPLAY, fontSize: 30, color: pct > 0 ? "#9C3B3B" : COLORS.ink }}>{pct}%</span>
+        <span style={{ fontFamily: FONT_DISPLAY, fontSize: 30, color: pct > 0 ? readable("#9C3B3B") : COLORS.ink }}>{pct}%</span>
         <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
           of {stats.total} recorded vote{stats.total === 1 ? "" : "s"}
         </span>
@@ -514,7 +514,7 @@ export function RecentActivityBox({ politician, onNavigate }) {
               >
                 <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: COLORS.ink }}>{q.heading}</div>
                 {q.questionText && (
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.ink, opacity: 0.85, lineHeight: 1.5, marginTop: 4 }}>
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.ink, lineHeight: 1.5, marginTop: 4 }}>
                     {stripHtml(q.questionText)}
                   </div>
                 )}
@@ -576,7 +576,7 @@ export function NewsBox({ politician }) {
 
   return (
     <CardShell title="In the News">
-      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.8, marginBottom: 10, lineHeight: 1.5 }}>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 10, lineHeight: 1.5 }}>
         Not a verified fact-check: a same-named person or a passing mention can occasionally slip through. See Data
         & Methodology for how this is compiled.
       </div>
@@ -622,7 +622,7 @@ export function LoadFailedNote({ item = "this" }) {
   return (
     <div
       style={{
-        fontFamily: FONT_BODY, fontSize: 13, color: "#9C3B3B", background: "#9C3B3B14",
+        fontFamily: FONT_BODY, fontSize: 13, color: readable("#9C3B3B"), background: "#9C3B3B14",
         border: "1px solid #9C3B3B33", borderRadius: 8, padding: "10px 13px", lineHeight: 1.5,
       }}
     >

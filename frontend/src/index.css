@@ -474,7 +474,7 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 .tier-slab-short { -webkit-line-clamp: 2; font-size: 13.5px; line-height: 1.35; margin-top: 2px; }
 .tier-slab-keys { -webkit-line-clamp: 1; font-size: 12.5px; margin-top: 3px; opacity: 0.85; }
 .tier-slab-fig { flex: none; text-align: right; }
-.tier-slab-num { display: block; font-family: 'Fraunces', Georgia, serif; font-variant-numeric: lining-nums tabular-nums; font-feature-settings: 'lnum' 1, 'tnum' 1; font-size: 19px; font-weight: 600; line-height: 1.2; color: var(--c); }
+.tier-slab-num { display: block; font-family: 'Fraunces', Georgia, serif; font-variant-numeric: lining-nums tabular-nums; font-feature-settings: 'lnum' 1, 'tnum' 1; font-size: 19px; font-weight: 600; line-height: 1.2; color: var(--ct, var(--c)); }
 .tier-slab-label { display: block; font-family: 'Archivo', system-ui, sans-serif; font-size: 11.5px; color: var(--c-ink-soft); }
 .tier-pill {
   position: absolute; top: 0; right: 14px; transform: translateY(-50%) scale(0.92); opacity: 0; pointer-events: none; white-space: nowrap;
@@ -751,3 +751,6 @@ a[target="_blank"]::after { content: "" / " (opens in a new tab)"; }
 
 /* A paragraph never runs wider than a comfortable line, however wide the screen or the card it sits in. Centred paragraphs and ones that set their own width are left alone. */
 main p:not([style*="text-align: center"]):not([style*="max-width"]) { max-width: min(100%, 820px); }
+
+/* Placeholder text in boxes: dark enough to read on the page, but lighter than what is typed. */
+input::placeholder, textarea::placeholder { color: var(--c-ink-soft); opacity: 0.82; }

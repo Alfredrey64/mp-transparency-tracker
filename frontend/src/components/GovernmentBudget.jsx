@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { PageHeader } from "./shared";
 import { IconBudget } from "./icons";
 
@@ -116,7 +116,7 @@ export default function GovernmentBudget({ embedded = false }) {
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <div style={{ fontFamily: FONT_DISPLAY, fontSize: 27, color: active.color, lineHeight: 1.1 }}>{formatBn(active.amountBn)}</div>
+                  <div style={{ fontFamily: FONT_DISPLAY, fontSize: 27, color: readable(active.color), lineHeight: 1.1 }}>{formatBn(active.amountBn)}</div>
                   <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 600, color: COLORS.ink, marginTop: 6, lineHeight: 1.3 }}>{active.label}</div>
                   <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginTop: 2 }}>{active.pct.toFixed(1)}% of total</div>
                 </motion.div>
@@ -190,7 +190,7 @@ export default function GovernmentBudget({ embedded = false }) {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, flexWrap: "wrap", marginBottom: 10 }}>
               <div style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink }}>{active.label}</div>
               <div style={{ textAlign: "right" }}>
-                <div style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: active.color }}>{formatBn(active.amountBn)}</div>
+                <div style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: readable(active.color) }}>{formatBn(active.amountBn)}</div>
                 <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>{active.pct.toFixed(1)}% of total spending</div>
               </div>
             </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { COLORS, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { loadCouncilDetail } from "../lib/councilDetail";
 import { LoadFailedNote } from "./MpCards";
 import PageGuide from "./PageGuide";
@@ -62,7 +62,7 @@ export default function Councils({ param }) {
       {!failed && !data && <Loading />}
       {data && (
         <>
-          {id && !council && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: "#C0504D", marginTop: 18 }}>We couldn't find that council. Try searching for it by name.</div>}
+          {id && !council && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: readable("#C0504D"), marginTop: 18 }}>We couldn't find that council. Try searching for it by name.</div>}
           {council ? (
             <CouncilView
               key={council.id}

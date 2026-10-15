@@ -183,7 +183,7 @@ function TaxDetail({ tax, now, nowT }) {
       >
         <span>
           <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: 16.5, fontWeight: 700 }}>Compare this with growth, jobs, prices and more</span>
-          <span style={{ display: "block", fontSize: 13.5, marginTop: 2, opacity: 0.95 }}>Put {tax.headline.label.toLowerCase()} beside any of 13 national figures, with the governments of the day.</span>
+          <span style={{ display: "block", fontSize: 13.5, marginTop: 2 }}>Put {tax.headline.label.toLowerCase()} beside any of 13 national figures, with the governments of the day.</span>
         </span>
         <span aria-hidden="true" style={{ fontSize: 22, fontWeight: 700 }}>+</span>
       </a>

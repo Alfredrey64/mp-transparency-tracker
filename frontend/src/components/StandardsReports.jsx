@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { PageHeader } from "./shared";
 import { LoadFailedNote } from "./MpCards";
 import { formatDate, partyColour } from "../lib/format";
@@ -13,25 +13,25 @@ function classifyOutcome(detail) {
   if (!detail) return null;
   const s = detail.sanction.toLowerCase();
   if (s.includes("resigned") || s.includes("stood down") || s.includes("by-election")) {
-    return { label: "Resigned / Stood Down", color: "#9C3B3B" };
+    return { label: "Resigned / Stood Down", color: readable("#9C3B3B") };
   }
   if (s.includes("recall petition") && s.includes("lost his seat")) {
-    return { label: "Recalled", color: "#9C3B3B" };
+    return { label: "Recalled", color: readable("#9C3B3B") };
   }
   if (s.includes("recall petition") && s.includes("succeeded")) {
-    return { label: "Recalled", color: "#9C3B3B" };
+    return { label: "Recalled", color: readable("#9C3B3B") };
   }
   if (s.includes("revoked")) {
-    return { label: "Pass Revoked", color: "#9C3B3B" };
+    return { label: "Pass Revoked", color: readable("#9C3B3B") };
   }
   if (s.includes("suspen")) {
-    return { label: "Suspended", color: "#B5533C" };
+    return { label: "Suspended", color: readable("#B5533C") };
   }
   if (s.includes("no sanction") || s.includes("no further sanction")) {
-    return { label: "No Sanction", color: "#4C7A6B" };
+    return { label: "No Sanction", color: readable("#4C7A6B") };
   }
   if (s.includes("apolog") || s.includes("briefing")) {
-    return { label: "Apology Required", color: "#8A6D1F" };
+    return { label: "Apology Required", color: readable("#8A6D1F") };
   }
   return { label: "Committee Finding", color: COLORS.inkSoft };
 }
@@ -76,7 +76,7 @@ function StatCard({ value, label, color, index }) {
         textAlign: "center",
       }}
     >
-      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 26, color }}>{value}</div>
+      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 26, color: readable(color) }}>{value}</div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 2 }}>{label}</div>
     </motion.div>
   );
@@ -116,7 +116,7 @@ function ReportCard({ report, politician, onSelectPolitician, index }) {
         <div
           style={{
             flexShrink: 0, width: 44, height: 44, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-            background: `${color}22`, color, fontFamily: FONT_DISPLAY, fontSize: 16, fontWeight: 600,
+            background: `${color}22`, color: readable(color), fontFamily: FONT_DISPLAY, fontSize: 16, fontWeight: 600,
           }}
         >
           {report.extracted_name?.split(/\s+/).map((w) => w[0]).slice(-2).join("").toUpperCase()}
@@ -146,7 +146,7 @@ function ReportCard({ report, politician, onSelectPolitician, index }) {
             "No longer a current MP. This Parliament, or since left office"
           )}
         </div>
-        <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, opacity: 0.7, marginBottom: 10 }}>{report.title}</div>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginBottom: 10 }}>{report.title}</div>
 
         {detail ? (
           <div
@@ -162,7 +162,7 @@ function ReportCard({ report, politician, onSelectPolitician, index }) {
             }}
           >
             <div>
-              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: "#9C3B3B", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>
+              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: readable("#9C3B3B"), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>
                 What happened
               </div>
               <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.55 }}>{detail.offence}</div>

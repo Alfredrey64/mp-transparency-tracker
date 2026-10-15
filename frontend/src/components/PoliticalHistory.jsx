@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable, solid } from "../theme";
 import { PageHeader } from "./shared";
 import { IconHistory } from "./icons";
 import { LANDMARK_VOTES, OUTCOME_COLOR } from "../lib/politicalHistoryData";
@@ -32,7 +32,7 @@ function eraForYear(year) {
 const PARTY_HISTORY = [
   {
     party: "Labour Party",
-    color: "#C8102E",
+    color: readable("#C8102E"),
     founded: 1900,
     ideology: "Centre-left · Social democracy",
     dbMatch: ["labour"],
@@ -53,7 +53,7 @@ const PARTY_HISTORY = [
   },
   {
     party: "Conservative Party",
-    color: "#0087DC",
+    color: readable("#0087DC"),
     founded: 1834,
     ideology: "Centre-right · Conservatism",
     dbMatch: ["conservative"],
@@ -72,7 +72,7 @@ const PARTY_HISTORY = [
   },
   {
     party: "Liberal Democrats",
-    color: "#FAA61A",
+    color: readable("#FAA61A"),
     founded: 1988,
     ideology: "Centre · Liberalism",
     dbMatch: ["liberal democrat"],
@@ -93,7 +93,7 @@ const PARTY_HISTORY = [
   },
   {
     party: "Scottish National Party",
-    color: "#B8960C",
+    color: readable("#B8960C"),
     founded: 1934,
     ideology: "Centre-left · Scottish independence",
     dbMatch: ["scottish national"],
@@ -114,7 +114,7 @@ const PARTY_HISTORY = [
   },
   {
     party: "Green Party",
-    color: "#6AB023",
+    color: readable("#6AB023"),
     founded: 1973,
     ideology: "Left-wing · Green politics",
     dbMatch: ["green"],
@@ -135,7 +135,7 @@ const PARTY_HISTORY = [
   },
   {
     party: "Reform UK",
-    color: "#12B6CF",
+    color: readable("#12B6CF"),
     founded: 2019,
     ideology: "Right-wing · National conservatism",
     dbMatch: ["reform uk"],
@@ -156,7 +156,7 @@ const PARTY_HISTORY = [
   },
   {
     party: "Plaid Cymru",
-    color: "#005B54",
+    color: readable("#005B54"),
     founded: 1925,
     ideology: "Centre-left · Welsh independence",
     dbMatch: ["plaid cymru"],
@@ -171,7 +171,7 @@ const PARTY_HISTORY = [
   },
   {
     party: "Democratic Unionist Party",
-    color: "#D46A4C",
+    color: readable("#D46A4C"),
     founded: 1971,
     ideology: "Right-wing · Unionism",
     dbMatch: ["democratic unionist"],
@@ -186,7 +186,7 @@ const PARTY_HISTORY = [
   },
   {
     party: "Sinn Féin",
-    color: "#326760",
+    color: readable("#326760"),
     founded: 1905,
     ideology: "Left-wing · Irish republicanism",
     dbMatch: ["sinn"],
@@ -201,7 +201,7 @@ const PARTY_HISTORY = [
   },
   {
     party: "Social Democratic & Labour Party",
-    color: "#4E9A2A",
+    color: readable("#4E9A2A"),
     founded: 1970,
     ideology: "Centre-left · Irish nationalism",
     dbMatch: ["social democratic", "sdlp"],
@@ -215,7 +215,7 @@ const PARTY_HISTORY = [
   },
   {
     party: "Alliance",
-    color: "#F6CB2F",
+    color: readable("#F6CB2F"),
     founded: 1970,
     ideology: "Centre · Cross-community",
     dbMatch: ["alliance"],
@@ -226,7 +226,7 @@ const PARTY_HISTORY = [
   },
   {
     party: "Ulster Unionist Party",
-    color: "#48A5EE",
+    color: readable("#48A5EE"),
     founded: 1905,
     ideology: "Centre-right · Unionism",
     dbMatch: ["ulster unionist"],
@@ -260,7 +260,7 @@ function ResultPill({ outcome, children }) {
     <span
       style={{
         display: "inline-flex", alignItems: "center", gap: 5, fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12, color: "#fff",
-        background: color, padding: "4px 12px 4px 10px", borderRadius: 999,
+        background: solid(color), padding: "4px 12px 4px 10px", borderRadius: 999,
       }}
     >
       <span style={{ fontSize: 11 }}>{outcome === "achieved" ? "✓" : "✗"}</span>
@@ -296,7 +296,7 @@ function VoteRow({ vote, index }) {
         <span
           style={{
             flexShrink: 0, width: 34, height: 34, borderRadius: 10, background: `${themeColor}16`,
-            display: "flex", alignItems: "center", justifyContent: "center", color: themeColor,
+            display: "flex", alignItems: "center", justifyContent: "center", color: readable(themeColor),
           }}
         >
           <BillIcon title={vote.title} size={18} color={themeColor} />
@@ -308,7 +308,7 @@ function VoteRow({ vote, index }) {
             <span
               style={{
                 fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em",
-                color: themeColor, background: `${themeColor}18`, padding: "2.5px 9px", borderRadius: 999,
+                color: readable(themeColor), background: `${themeColor}18`, padding: "2.5px 9px", borderRadius: 999,
               }}
             >
               {vote.theme}
@@ -320,7 +320,7 @@ function VoteRow({ vote, index }) {
             {splitActNames(vote.detail).map((part, i) => (part.bold ? <strong key={i} style={{ color: COLORS.ink, fontWeight: 700 }}>{part.text}</strong> : part.text))}
           </div>
           {more && (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 12, fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: themeColor }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 12, fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: readable(themeColor) }}>
               {open ? "Hide the full story" : "Read the full story"}
               <span aria-hidden="true" style={{ display: "inline-block", transform: open ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>▾</span>
             </span>
@@ -334,7 +334,7 @@ function VoteRow({ vote, index }) {
                 <div style={{ marginTop: 14, padding: "4px 0 2px", display: "grid", gap: 14, borderTop: `1px solid ${COLORS.hairline}` }}>
                   {[["The story behind it", more.b], ["Why it matters", more.w], ["What it means today", more.t]].map(([heading, text]) => (
                     <div key={heading} style={{ paddingTop: 10 }}>
-                      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: themeColor, marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.04em" }}>{heading}</div>
+                      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: readable(themeColor), marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.04em" }}>{heading}</div>
                       <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.7, color: COLORS.ink, maxWidth: 640 }}>
                         {splitActNames(text).map((part, i) => (part.bold ? <strong key={i} style={{ fontWeight: 700 }}>{part.text}</strong> : part.text))}
                       </div>
@@ -413,7 +413,7 @@ function PartyTimeline({ events, color }) {
                 background: isLast ? color : COLORS.paper, border: `2px solid ${color}`, boxSizing: "border-box",
               }}
             />
-            <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12.5, color }}>{t.year}</span>
+            <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12.5, color: readable(color) }}>{t.year}</span>
             <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.5, marginTop: 2 }}>{t.event}</div>
           </motion.div>
         );
@@ -439,7 +439,7 @@ function PartyCard({ party, index, seatCount }) {
           <div style={{ minWidth: 0 }}>
             <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, color: COLORS.ink, marginBottom: 5 }}>{party.party}</div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-              <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: party.color, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+              <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: readable(party.color), textTransform: "uppercase", letterSpacing: "0.04em" }}>
                 Founded {party.founded}
               </span>
               <span style={{ width: 3, height: 3, borderRadius: "50%", background: COLORS.inkSoft, opacity: 0.5 }} />
@@ -449,7 +449,7 @@ function PartyCard({ party, index, seatCount }) {
           <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
             {seatCount != null && seatCount > 0 && (
               <div style={{ textAlign: "right" }}>
-                <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: party.color, lineHeight: 1 }}>{seatCount}</div>
+                <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: readable(party.color), lineHeight: 1 }}>{seatCount}</div>
                 <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft }}>MPs now</div>
               </div>
             )}
@@ -489,7 +489,7 @@ function PartyCard({ party, index, seatCount }) {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: i * 0.05, duration: 0.2 }}
                       style={{
-                        fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, color: party.color,
+                        fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, color: readable(party.color),
                         background: `${party.color}16`, padding: "4px 10px", borderRadius: 999,
                       }}
                     >

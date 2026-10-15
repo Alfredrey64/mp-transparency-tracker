@@ -75,6 +75,7 @@ export const LOADERS = {
   brexit: () => import("./components/Brexit"),
   defence: () => import("./components/Defence"),
   education: () => import("./components/Education"),
+  nhs: () => import("./components/Nhs"),
   ageing: () => import("./components/Ageing"),
 };
 

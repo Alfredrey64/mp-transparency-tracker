@@ -486,11 +486,11 @@ function ResultsScreen({ results, answers, nation, onRetake }) {
             initial={{ scale: 0, rotate: -20 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ type: "spring", stiffness: 400, damping: 14, delay: 0.15 }}
-            style={{ color: top.color, display: "flex" }}
+            style={{ color: readable(top.color), display: "flex" }}
           >
             <IconStar size={20} filled />
           </motion.span>
-          <span style={{ fontFamily: FONT_DISPLAY, fontSize: 34, color: top.color }}>{top.name}</span>
+          <span style={{ fontFamily: FONT_DISPLAY, fontSize: 34, color: readable(top.color) }}>{top.name}</span>
         </div>
         <div style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.inkSoft, marginBottom: 4 }}>{animatedPct}%</div>
         <p style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.6, marginBottom: 0, maxWidth: 440, marginLeft: "auto", marginRight: "auto" }}>
@@ -520,7 +520,7 @@ function ResultsScreen({ results, answers, nation, onRetake }) {
                   <span
                     style={{
                       display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-                      width: 24, height: 24, borderRadius: "50%", background: `${r.color}22`, color: r.color,
+                      width: 24, height: 24, borderRadius: "50%", background: `${r.color}22`, color: readable(r.color),
                       border: `1.5px solid ${r.color}55`, fontFamily: FONT_BODY, fontWeight: 800, fontSize: 11,
                     }}
                   >

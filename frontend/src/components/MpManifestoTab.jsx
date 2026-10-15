@@ -1,7 +1,7 @@
 // The Manifesto tab on an MP's page: what their party promised, set beside how they voted.
 import { useState, useEffect, useMemo } from "react";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_BODY, FONT_MONO } from "../theme";
+import { COLORS, FONT_BODY, FONT_MONO, readable } from "../theme";
 import { formatDate } from "../lib/format";
 import { categoriseBill, matchBillForVote } from "../lib/bills";
 import { findManifesto } from "../data/partyManifestos";
@@ -63,7 +63,7 @@ function ManifestoSectionCard({ section }) {
                           <span
                             style={{
                               fontFamily: FONT_MONO, fontSize: 11, fontWeight: 700, textTransform: "uppercase", padding: "1px 7px", borderRadius: 999,
-                              background: v.voted_aye ? "#E4EEE7" : "#F3E4E2", color: v.voted_aye ? "#2F6F4E" : "#9C3B3B",
+                              background: v.voted_aye ? "#E4EEE7" : "#F3E4E2", color: v.voted_aye ? readable("#2F6F4E") : readable("#9C3B3B"),
                             }}
                           >
                             {v.voted_aye ? "Aye" : "No"}

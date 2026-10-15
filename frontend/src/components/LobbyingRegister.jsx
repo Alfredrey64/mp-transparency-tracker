@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING, readable } from "../theme";
 import { PageHeader, InfoCard, WhyItMattersBand, ScaleComparison } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { formatDate } from "../lib/format";
@@ -14,26 +14,26 @@ import { scrollRegion } from "../lib/a11y";
 // solid on purpose — its size is illustrative of "bigger and unknown", not
 // a real figure, since nobody actually counts in-house lobbying.
 const VISIBILITY_BARS = [
-  { label: "Registered consultant lobbying", caption: `${LOBBYISTS.length} firms, fully visible`, color: "#5A7FA6", width: 14 },
-  { label: "In-house lobbying by companies' own staff", caption: "Unmeasured: no register covers it", color: "#9C3B3B", width: 94, hatched: true },
+  { label: "Registered consultant lobbying", caption: `${LOBBYISTS.length} firms, fully visible`, color: readable("#5A7FA6"), width: 14 },
+  { label: "In-house lobbying by companies' own staff", caption: "Unmeasured: no register covers it", color: readable("#9C3B3B"), width: 94, hatched: true },
 ];
 
 const CASES = [
   {
     name: "Tony Blair Institute",
-    color: "#5A7FA6",
+    color: readable("#5A7FA6"),
     period: "Investigated October–December 2025",
     detail: "Investigated over whether it had carried out unregistered consultant lobbying. The Registrar concluded it had not, in relation to the matter under investigation.",
   },
   {
     name: "Chamber Group",
-    color: "#9C6B30",
+    color: readable("#9C6B30"),
     period: "Investigated December 2025–February 2026",
     detail: "Also investigated for possible unregistered consultant lobbying, and also cleared: the Registrar found no breach in relation to the matter examined.",
   },
   {
     name: "George Freeman MP",
-    color: "#3F7D5C",
+    color: readable("#3F7D5C"),
     period: "Investigated July–October 2025",
     detail: "Investigated after leaked emails reported by The Times appeared to show him discussing parliamentary questions with the director of GHGSat, a firm paying him as an adviser after he'd been explicitly advised by ACOBA not to lobby on its behalf. Cleared on the narrow lobbying-registration question. See the Revolving Door page for the fuller story.",
   },
@@ -169,7 +169,7 @@ function RegisterSearch() {
                   {firm.name}
                 </span>
                 {focus && (
-                  <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 11, color: "#5A7FA6", marginTop: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 11, color: readable("#5A7FA6"), marginTop: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {focus}
                   </span>
                 )}
@@ -273,7 +273,7 @@ export default function LobbyingRegister() {
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, flexWrap: "wrap", marginBottom: 6 }}>
                 <span style={{ fontFamily: FONT_DISPLAY, fontSize: 16.5, color: COLORS.ink }}>{item.name}</span>
-                <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: item.color, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em" }}>
+                <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: readable(item.color), fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em" }}>
                   {item.period}
                 </span>
               </div>

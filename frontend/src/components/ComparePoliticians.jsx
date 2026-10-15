@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING, readable, chip } from "../theme";
 import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { partyColour, formatDate } from "../lib/format";
@@ -24,7 +24,7 @@ function Avatar({ url, name, color, size = 56 }) {
       <div
         style={{
           width: size, height: size, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
-          background: color, color: "#fff", fontFamily: FONT_DISPLAY, fontSize: size * 0.34, fontWeight: 600,
+          ...chip(color), fontFamily: FONT_DISPLAY, fontSize: size * 0.34, fontWeight: 600,
         }}
       >
         {name?.split(/\s+/).map((w) => w[0]).slice(-2).join("").toUpperCase()}
@@ -236,7 +236,7 @@ function MpHeaderCard({ politician, color, onRemove }) {
 function SectionTitle({ icon: Icon, color, children }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
-      <div style={{ flexShrink: 0, width: 32, height: 32, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", background: `${color}1c`, color }}>
+      <div style={{ flexShrink: 0, width: 32, height: 32, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", background: `${color}1c`, color: readable(color) }}>
         <Icon size={15} />
       </div>
       <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 19, color: COLORS.ink, margin: 0 }}>{children}</h2>
@@ -262,7 +262,7 @@ function MoneyBar({ label, value, max, color, formatted }) {
           style={{ height: "100%", borderRadius: 999, background: color }}
         />
       </div>
-      <span style={{ width: 96, flexShrink: 0, textAlign: "right", fontFamily: FONT_MONO, fontSize: 12.5, fontWeight: 700, color }}>
+      <span style={{ width: 96, flexShrink: 0, textAlign: "right", fontFamily: FONT_MONO, fontSize: 12.5, fontWeight: 700, color: readable(color) }}>
         {formatted}
       </span>
     </div>
@@ -288,7 +288,7 @@ function SectorBreakdown({ politician, color, sectors }) {
 
   return (
     <div style={{ border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 14, background: COLORS.paper, minWidth: 0 }}>
-      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12, color, marginBottom: 8, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12, color: readable(color), marginBottom: 8, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
         {politician.name}, funding by sector
       </div>
       {sectors.length === 0 ? (
@@ -309,7 +309,7 @@ function SectorBreakdown({ politician, color, sectors }) {
           {sectors.length > 3 && (
             <button
               onClick={() => setOpen((v) => !v)}
-              style={{ marginTop: 8, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 11, fontWeight: 600, color }}
+              style={{ marginTop: 8, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 11, fontWeight: 600, color: readable(color) }}
             >
               {open ? "Show fewer" : `Show all ${sectors.length} sectors`}
             </button>
@@ -343,7 +343,7 @@ function VoteCompareRow({ vote, selected }) {
               title={selected[i].name}
               style={{
                 fontFamily: FONT_MONO, fontSize: 11, fontWeight: 700, textTransform: "uppercase", padding: "3px 8px", borderRadius: 999,
-                background: v.voted_aye ? "#E4EEE7" : "#F3E4E2", color: v.voted_aye ? "#2F6F4E" : "#9C3B3B",
+                background: v.voted_aye ? "#E4EEE7" : "#F3E4E2", color: v.voted_aye ? readable("#2F6F4E") : readable("#9C3B3B"),
                 boxShadow: `inset 0 0 0 1.5px ${colorFor(selected[i], i)}`,
               }}
             >
@@ -355,7 +355,7 @@ function VoteCompareRow({ vote, selected }) {
           <span
             style={{
               flexShrink: 0, fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em",
-              padding: "3px 9px", borderRadius: 999, background: agreed ? `${COLORS.accent}18` : "#F3E4E2", color: agreed ? COLORS.accent : "#9C3B3B",
+              padding: "3px 9px", borderRadius: 999, background: agreed ? `${COLORS.accent}18` : "#F3E4E2", color: agreed ? COLORS.accentText : readable("#9C3B3B"),
             }}
           >
             {agreed ? "Agreed" : "Split"}
@@ -376,9 +376,9 @@ function VoteCompareRow({ vote, selected }) {
                     <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", fontFamily: FONT_BODY, fontSize: 12.5 }}>
                       <span style={{ width: 8, height: 8, borderRadius: "50%", background: colorFor(p, i), flexShrink: 0 }} />
                       <span style={{ color: COLORS.ink, fontWeight: 600 }}>{p.name}</span>
-                      <span style={{ color: v.voted_aye ? "#2F6F4E" : "#9C3B3B", fontWeight: 700 }}>{v.voted_aye ? "Voted Aye" : "Voted No"}</span>
+                      <span style={{ color: v.voted_aye ? readable("#2F6F4E") : readable("#9C3B3B"), fontWeight: 700 }}>{v.voted_aye ? "Voted Aye" : "Voted No"}</span>
                       {hasPartyConcept && v.voted_with_party_majority === false && (
-                        <span style={{ color: "#9C3B3B", fontSize: 11 }}>(against their own party)</span>
+                        <span style={{ color: readable("#9C3B3B"), fontSize: 11 }}>(against their own party)</span>
                       )}
                     </div>
                   );

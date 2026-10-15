@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING, readable, solid } from "../theme";
 import { PageHeader, CommonsBadge, FlowNode, FlowArrow } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import CommonsChamber from "./CommonsChamber";
@@ -141,8 +141,8 @@ function MajorityBarDiagram() {
 function FPTPDiagram() {
   const candidates = [
     { name: "Candidate A", pct: 34, color: COLORS.accent, winner: true },
-    { name: "Candidate B", pct: 29, color: "#9C3B3B" },
-    { name: "Candidate C", pct: 24, color: "#2F6F4E" },
+    { name: "Candidate B", pct: 29, color: readable("#9C3B3B") },
+    { name: "Candidate C", pct: 24, color: readable("#2F6F4E") },
     { name: "Candidate D", pct: 13, color: COLORS.inkSoft },
   ];
   return (
@@ -229,7 +229,7 @@ function SalaryBar({ label, amount, max, color, note }) {
     <div style={{ marginBottom: 14 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4, gap: 10 }}>
         <span style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: COLORS.ink }}>{label}</span>
-        <span style={{ fontFamily: FONT_MONO, fontSize: 13, color, flexShrink: 0 }}>£{amount.toLocaleString()}</span>
+        <span style={{ fontFamily: FONT_MONO, fontSize: 13, color: readable(color), flexShrink: 0 }}>£{amount.toLocaleString()}</span>
       </div>
       <div style={{ height: 10, borderRadius: 999, background: `${color}14`, overflow: "hidden" }}>
         <motion.div
@@ -257,7 +257,7 @@ function SalaryDiagram() {
 
 function WeekSplitDiagram() {
   const segments = [
-    { label: "Westminster (Mon–Thu, sitting weeks)", pct: 57, color: "#4C6FA6" },
+    { label: "Westminster (Mon–Thu, sitting weeks)", pct: 57, color: readable("#4C6FA6") },
     { label: "Constituency (Fri–Sun)", pct: 43, color: COLORS.accent },
   ];
   return (
@@ -404,15 +404,15 @@ function StepTimeline({ stages, color, showProgress = false }) {
                   position: "relative", zIndex: 1,
                   flexShrink: 0, width: 30, height: 30, borderRadius: "50%",
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  background: isOpen ? color : COLORS.paperCard, border: `2px solid ${color}`,
-                  color: isOpen ? "#fff" : color, fontFamily: FONT_MONO, fontSize: 12, fontWeight: 700,
+                  background: isOpen ? solid(color) : COLORS.paperCard, border: `2px solid ${color}`,
+                  color: isOpen ? "#fff" : readable(color), fontFamily: FONT_MONO, fontSize: 12, fontWeight: 700,
                   transition: "background 0.2s, color 0.2s",
                 }}
               >
                 {i + 1}
               </span>
               <span style={{ flex: 1, fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 16, color: COLORS.ink }}>{stage.label}</span>
-              <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ flexShrink: 0, color, fontSize: 13 }}>▾</motion.span>
+              <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ flexShrink: 0, color: readable(color), fontSize: 13 }}>▾</motion.span>
             </motion.button>
             <AnimatePresence initial={false}>
               {isOpen && (
@@ -553,7 +553,7 @@ function ConstituencyLookup() {
       </form>
 
       {loading && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Looking up…</div>}
-      {error && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: "#9C3B3B" }}>{error}</div>}
+      {error && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: readable("#9C3B3B") }}>{error}</div>}
 
       {result && (
         <div style={{ borderTop: `1px solid ${COLORS.hairline}`, paddingTop: 16 }}>

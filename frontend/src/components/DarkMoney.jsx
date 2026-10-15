@@ -1,4 +1,4 @@
-import { FONT_DISPLAY, FONT_BODY, PAGE_PADDING, COLORS } from "../theme";
+import { FONT_DISPLAY, FONT_BODY, PAGE_PADDING, COLORS, readable } from "../theme";
 import { PageHeader, InfoCard, WhyItMattersBand, FlowNode, FlowArrow } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconDarkMoney, IconShield, IconHistory, IconGlobe, IconSearch, IconGroup, IconQuestion, IconPartyFinance } from "./icons";
@@ -37,7 +37,7 @@ function ThresholdStep({ number, title, children, color }) {
       <div
         style={{
           flexShrink: 0, width: 34, height: 34, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-          background: `${color}1c`, color, fontFamily: FONT_DISPLAY, fontSize: 15, fontWeight: 600,
+          background: `${color}1c`, color: readable(color), fontFamily: FONT_DISPLAY, fontSize: 15, fontWeight: 600,
         }}
       >
         {number}

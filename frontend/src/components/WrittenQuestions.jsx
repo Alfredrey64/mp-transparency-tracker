@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { PageHeader } from "./shared";
 import { LoadFailedNote } from "./MpCards";
 import { formatDate, partyColour, stripHtml } from "../lib/format";
@@ -81,7 +81,7 @@ function DepartmentDropdown({ value, options, onChange }) {
                   whileHover={{ backgroundColor: `${COLORS.accent}14` }}
                   style={{
                     display: "block", width: "100%", textAlign: "left", fontFamily: FONT_BODY, fontSize: 12.5,
-                    fontWeight: active ? 700 : 500, color: active ? COLORS.accent : COLORS.ink,
+                    fontWeight: active ? 700 : 500, color: active ? COLORS.accentText : COLORS.ink,
                     padding: "8px 10px", borderRadius: 7, border: "none",
                     background: active ? `${COLORS.accent}14` : "transparent", cursor: "pointer",
                     overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
@@ -105,7 +105,7 @@ function Avatar({ url, name, color, size = 34 }) {
       <div
         style={{
           flexShrink: 0, width: size, height: size, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-          background: `${color}22`, color, fontFamily: FONT_DISPLAY, fontSize: size * 0.34, fontWeight: 600,
+          background: `${color}22`, color: readable(color), fontFamily: FONT_DISPLAY, fontSize: size * 0.34, fontWeight: 600,
         }}
       >
         {name?.split(/\s+/).map((w) => w[0]).slice(-2).join("").toUpperCase()}
@@ -201,7 +201,7 @@ function QuestionCard({ q, politicianById, onSelectPolitician, index }) {
           style={{
             flexShrink: 0, fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, padding: "3px 9px", borderRadius: 999,
             textTransform: "uppercase", letterSpacing: "0.03em",
-            color: answered ? COLORS.accent : "#B08A3E", background: answered ? `${COLORS.accent}14` : "#B08A3E1a",
+            color: answered ? readable(COLORS.accent) : readable("#B08A3E"), background: answered ? `${COLORS.accent}14` : "#B08A3E1a",
           }}
         >
           {answered ? "Answered" : "Awaiting answer"}
@@ -357,7 +357,7 @@ export default function WrittenQuestions({ onSelectPolitician, initialQuery = ""
                 style={{
                   fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, padding: "6px 13px", borderRadius: 999,
                   border: `1px solid ${statusFilter === s ? COLORS.accent : COLORS.hairline}`,
-                  background: statusFilter === s ? `${COLORS.accent}18` : "transparent", color: statusFilter === s ? COLORS.accent : COLORS.inkSoft, cursor: "pointer",
+                  background: statusFilter === s ? `${COLORS.accent}18` : "transparent", color: statusFilter === s ? COLORS.accentText : COLORS.inkSoft, cursor: "pointer",
                 }}
               >
                 {s}

@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import PageGuide from "./PageGuide";
 import { motion } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, chip } from "../theme";
 import { partyColour, initials, formatDate, timeInOffice } from "../lib/format";
 import { PageHeader } from "./shared";
 import { CardShell, LoadFailedNote } from "./MpCards";
@@ -64,7 +64,7 @@ function Avatar({ peer, color, size = 40 }) {
     );
   }
   return (
-    <div style={{ width: size, height: size, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: FONT_DISPLAY, fontSize: size * 0.35, fontWeight: 600, color: "#fff", background: color }}>
+    <div style={{ width: size, height: size, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: FONT_DISPLAY, fontSize: size * 0.35, fontWeight: 600, ...chip(color) }}>
       {initials(peer.name)}
     </div>
   );
@@ -165,7 +165,7 @@ function PeerDetail({ peer, onBack, formerMp }) {
             {peer.wikipedia_bio ? (
               <>
                 <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, color: COLORS.ink, lineHeight: 1.65, marginBottom: 8 }}>{peer.wikipedia_bio}</div>
-                <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.75 }}>
+                <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>
                   Via{" "}
                   {peer.wikipedia_url ? (
                     <a href={peer.wikipedia_url} target="_blank" rel="noreferrer" style={{ color: "inherit" }}>Wikipedia ↗</a>
@@ -490,7 +490,7 @@ export default function HouseOfLords({ peerId = null }) {
             >
               <span style={{ width: 8, height: 8, borderRadius: "50%", background: party.color }} />
               {party.name}
-              <span style={{ opacity: 0.6, fontWeight: 400 }}>{party.count}</span>
+              <span style={{ opacity: 0.85, fontWeight: 400 }}>{party.count}</span>
             </button>
           );
         })}
@@ -504,7 +504,7 @@ export default function HouseOfLords({ peerId = null }) {
             style={{
               fontFamily: FONT_BODY, fontSize: 12, fontWeight: 600, padding: "5px 12px", borderRadius: 999,
               border: `1px solid ${activeType === t ? COLORS.accent : COLORS.hairline}`,
-              background: activeType === t ? `${COLORS.accent}14` : "transparent", color: activeType === t ? COLORS.accent : COLORS.inkSoft, cursor: "pointer",
+              background: activeType === t ? `${COLORS.accent}14` : "transparent", color: activeType === t ? COLORS.accentText : COLORS.inkSoft, cursor: "pointer",
             }}
           >
             {t}

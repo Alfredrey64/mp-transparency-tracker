@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, onFill, readable, solid } from "../theme";
 import { PageHeader } from "./shared";
 import { LoadFailedNote } from "./MpCards";
 import { GlossaryTerm } from "./GlossaryTerm";
@@ -36,7 +36,7 @@ function MemberChip({ member, showHouse }) {
         {member.name}{member.is_chair ? " (Chair)" : ""}
       </span>
       {showHouse && houseColor && (
-        <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: houseColor }}>
+        <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: readable(houseColor) }}>
           {member.house}
         </span>
       )}
@@ -195,7 +195,7 @@ function CommitteeCard({ committee, open, onToggle, index = 0 }) {
     >
       <button onClick={onToggle} aria-expanded={open} style={{ display: "block", width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left", font: "inherit" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 10 }}>
-          <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: houseColor, background: `${houseColor}18`, border: `1px solid ${houseColor}44`, borderRadius: 999, padding: "3px 10px", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+          <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: readable(houseColor), background: `${houseColor}18`, border: `1px solid ${houseColor}44`, borderRadius: 999, padding: "3px 10px", textTransform: "uppercase", letterSpacing: "0.04em" }}>
             {committee.house}
           </span>
           {q > 0 && (
@@ -206,7 +206,7 @@ function CommitteeCard({ committee, open, onToggle, index = 0 }) {
         </div>
         <div style={{ fontFamily: FONT_DISPLAY, fontSize: 19, color: COLORS.ink, lineHeight: 1.25, marginBottom: 12 }}>{committee.name}</div>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span aria-hidden="true" style={{ flexShrink: 0, width: 34, height: 34, borderRadius: "50%", background: committee.chair_name ? color : COLORS.hairline, color: "#fff", display: "grid", placeItems: "center", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 800, textShadow: "0 1px 2px rgba(0,0,0,0.35)" }}>
+          <span aria-hidden="true" style={{ flexShrink: 0, width: 34, height: 34, borderRadius: "50%", background: committee.chair_name ? color : COLORS.hairline, color: committee.chair_name ? onFill(color) : COLORS.ink, display: "grid", placeItems: "center", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 800, textShadow: "0 1px 2px rgba(0,0,0,0.35)" }}>
             {committee.chair_name ? initials(committee.chair_name) : "?"}
           </span>
           <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.35, minWidth: 0 }}>
@@ -217,7 +217,7 @@ function CommitteeCard({ committee, open, onToggle, index = 0 }) {
           </span>
         </div>
         <MemberDots members={committee.members} color={houseColor} />
-        <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 600, color: houseColor, marginTop: 12 }}>{open ? "Hide details ▴" : "Show members and inquiries ▾"}</div>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 600, color: readable(houseColor), marginTop: 12 }}>{open ? "Hide details ▴" : "Show members and inquiries ▾"}</div>
       </button>
 
       {open && (
@@ -359,9 +359,9 @@ export default function Committees() {
                 return (
                   <button
                     key={h} role="radio" aria-checked={active} onClick={() => setHouseFilter(h)}
-                    style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, padding: "7px 14px", borderRadius: 999, minHeight: 36, border: `1px solid ${active ? c : COLORS.hairline}`, background: active ? c : "transparent", color: active ? "#fff" : COLORS.inkSoft, cursor: "pointer" }}
+                    style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, padding: "7px 14px", borderRadius: 999, minHeight: 36, border: `1px solid ${active ? c : COLORS.hairline}`, background: active ? solid(c) : "transparent", color: active ? "#fff" : COLORS.inkSoft, cursor: "pointer" }}
                   >
-                    {h} <span style={{ opacity: 0.75 }}>{counts[h] ?? 0}</span>
+                    {h} <span style={{ opacity: 0.9 }}>{counts[h] ?? 0}</span>
                   </button>
                 );
               })}

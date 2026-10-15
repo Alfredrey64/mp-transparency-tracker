@@ -4,7 +4,7 @@ import { GuideKeyContext } from "../lib/viewContext";
 import ShareButton from "./ShareButton";
 import { pageShareSpec } from "../lib/shareSpecs";
 import { motion } from "framer-motion";
-import { COLORS, FONT_DISPLAY, FONT_BODY, readable } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, readable, onFill } from "../theme";
 import { SECTION_ACCENT_BY_ICON, SECTION_LABEL_BY_KEY } from "../data/sidebarSections";
 // An annotated passage, not a dashboard tile: a left margin rule in the
 // page's own accent colour and a soft tint of that same colour, open on
@@ -26,7 +26,7 @@ export function InfoCard({ title, color, children, maxWidth = "none", icon: Icon
     >
       <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 9 }}>
         {Icon && (
-          <span style={{ flexShrink: 0, color, display: "inline-flex", position: "relative", top: 2 }}>
+          <span style={{ flexShrink: 0, color: readable(color), display: "inline-flex", position: "relative", top: 2 }}>
             <Icon size={18} />
           </span>
         )}
@@ -55,7 +55,7 @@ export function WhyItMattersBand({ icon: Icon, color, children }) {
         borderRadius: 14, padding: "16px 20px",
       }}
     >
-      <div style={{ flexShrink: 0, width: 38, height: 38, borderRadius: "50%", background: color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>
+      <div style={{ flexShrink: 0, width: 38, height: 38, borderRadius: "50%", background: color, display: "flex", alignItems: "center", justifyContent: "center", color: onFill(color) }}>
         <Icon size={17} />
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.6 }}>
@@ -76,7 +76,7 @@ export function FlowNode({ icon: Icon, label, color, broken = false }) {
       <div
         style={{
           width: 58, height: 58, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-          background: broken ? "transparent" : `${color}1c`, color,
+          background: broken ? "transparent" : `${color}1c`, color: readable(color),
           border: broken ? `2px dashed ${color}` : `2px solid ${color}40`,
         }}
       >

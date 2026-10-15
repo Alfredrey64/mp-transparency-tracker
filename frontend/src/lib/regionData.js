@@ -44,6 +44,13 @@ export function ranked(valueByKey) {
     .map(([key], i) => ({ key, rank: i + 1 }));
 }
 
+// Where one region stands on a measure, 1 for the highest, among the regions with a figure.
+export function rankOf(values, key) {
+  const ordered = ranked(values);
+  const hit = ordered.find((r) => r.key === key);
+  return hit ? { rank: hit.rank, of: ordered.length } : null;
+}
+
 export const ordinal = (n) => {
   const s = ["th", "st", "nd", "rd"];
   const v = n % 100;

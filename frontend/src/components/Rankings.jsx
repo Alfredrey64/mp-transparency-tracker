@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { fetchAllRows } from "../lib/supabasePagination";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING, readable, chip } from "../theme";
 import { PageHeader } from "./shared";
 import WhatThisMeans, { Everyday } from "./WhatThisMeans";
 import { describeSpread } from "../lib/interpret";
@@ -38,7 +38,7 @@ function Avatar({ url, name, color, size = 36 }) {
       <div
         style={{
           flexShrink: 0, width: size, height: size, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-          background: `${color}22`, color, fontFamily: FONT_DISPLAY, fontSize: size * 0.36, fontWeight: 600,
+          ...chip(color), fontFamily: FONT_DISPLAY, fontSize: size * 0.36, fontWeight: 600,
         }}
       >
         {initials(name)}
@@ -130,7 +130,7 @@ function DistributionChart({ data, color, shownCount, formatValue, activeBin, on
         {activeBin != null && (
           <button
             onClick={() => onSelectBin?.(null)}
-            style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+            style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: readable(color), background: "none", border: "none", cursor: "pointer", padding: 0 }}
           >
             Clear selection ×
           </button>
@@ -139,7 +139,7 @@ function DistributionChart({ data, color, shownCount, formatValue, activeBin, on
 
       <div style={{ position: "relative", height: 92, paddingTop: 16, marginBottom: 2, boxSizing: "border-box" }}>
         <div aria-hidden="true" style={{ position: "absolute", top: 0, left: `${(thresholdBin / BINS) * 100}%`, right: 0, borderTop: `2px solid ${color}`, borderLeft: `2px solid ${color}`, borderRight: `2px solid ${color}`, height: 8, borderRadius: "4px 4px 0 0", opacity: 0.8 }} />
-        <span aria-hidden="true" style={{ position: "absolute", top: -1, right: 6, transform: "translateY(-100%)", fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color, background: COLORS.paperCard, padding: "0 4px" }}>the {Math.min(shownCount, data.length)} shown below</span>
+        <span aria-hidden="true" style={{ position: "absolute", top: -1, right: 6, transform: "translateY(-100%)", fontFamily: FONT_BODY, fontWeight: 700, fontSize: 10.5, color: readable(color), background: COLORS.paperCard, padding: "0 4px" }}>the {Math.min(shownCount, data.length)} shown below</span>
         <div style={{ display: "flex", alignItems: "flex-end", gap: 2, height: "100%" }}>
           {bins.map((count, i) => {
             const isActive = activeBin === i;
@@ -288,7 +288,7 @@ function RaceRow({ entry, index, maxValue, color, valueLabel, onSelectPolitician
             {p.name}
             <span style={{ fontWeight: 500, fontSize: 11.5, color: COLORS.inkSoft }}>{"  "}{p.party ?? "No party"} · {p.constituency ?? "No constituency"}</span>
           </span>
-          <span style={{ flexShrink: 0, fontFamily: FONT_MONO, fontWeight: 800, fontSize: 14, color }}>{valueLabel}</span>
+          <span style={{ flexShrink: 0, fontFamily: FONT_MONO, fontWeight: 800, fontSize: 14, color: readable(color) }}>{valueLabel}</span>
         </span>
         <span aria-hidden="true" style={{ position: "relative", display: "block", height: 34, marginTop: 4 }}>
           <motion.span

@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { PageHeader } from "./shared";
 import { LoadFailedNote } from "./MpCards";
 import { GlossaryTerm } from "./GlossaryTerm";
@@ -60,7 +60,7 @@ function PetitionRow({ petition, index, isOpen, onToggle }) {
             <div style={{ fontFamily: FONT_DISPLAY, fontSize: 16.5, color: COLORS.ink, lineHeight: 1.4 }}>{petition.action}</div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6, flexWrap: "wrap" }}>
               <span style={{ display: "inline-flex", alignItems: "baseline", gap: 5 }}>
-                <span style={{ fontFamily: FONT_DISPLAY, fontSize: 17, fontWeight: 700, color }}>
+                <span style={{ fontFamily: FONT_DISPLAY, fontSize: 17, fontWeight: 700, color: readable(color) }}>
                   {petition.signature_count.toLocaleString()}
                 </span>
                 <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 500, color: COLORS.inkSoft }}>
@@ -95,7 +95,7 @@ function PetitionRow({ petition, index, isOpen, onToggle }) {
 
               {petition.government_response_summary && (
                 <div style={{ background: "#2F6F4E0c", borderLeft: "3px solid #2F6F4E", borderRadius: 6, padding: "9px 13px" }}>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: "#2F6F4E", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>
+                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: readable("#2F6F4E"), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>
                     Government response{petition.government_responded_at ? ` · ${formatDate(petition.government_responded_at)}` : ""}
                   </div>
                   <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, lineHeight: 1.55 }}>{petition.government_response_summary}</div>
@@ -104,7 +104,7 @@ function PetitionRow({ petition, index, isOpen, onToggle }) {
 
               {(petition.debate_outcome_summary || petition.debate_scheduled_on) && (
                 <div style={{ background: "#6E4B6E0c", borderLeft: "3px solid #6E4B6E", borderRadius: 6, padding: "9px 13px" }}>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: "#6E4B6E", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>
+                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: readable("#6E4B6E"), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>
                     {petition.debate_outcome_summary ? "Commons debate" : "Debate scheduled"}
                   </div>
                   <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, lineHeight: 1.55 }}>

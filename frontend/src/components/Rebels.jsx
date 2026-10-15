@@ -5,7 +5,7 @@ import ShareButton from "./ShareButton";
 import { rebelsShareSpec } from "../lib/shareSpecs";
 import { supabase } from "../supabaseClient";
 import { fetchAllRows } from "../lib/supabasePagination";
-import { COLORS, FONT_BODY, PAGE_PADDING, numeric } from "../theme";
+import { COLORS, FONT_BODY, PAGE_PADDING, numeric, readable } from "../theme";
 import { partyColour, formatDate } from "../lib/format";
 import { computeRebels, MIN_VOTES } from "../lib/rebels";
 import { explainDivision } from "../lib/divisionExplainer";
@@ -188,7 +188,7 @@ export default function Rebels({ onNavigate }) {
                       </span>
                     </span>
                     <span style={{ textAlign: "right" }}>
-                      <span style={{ display: "block", ...numeric, fontSize: 20, fontWeight: 700, color: "#C2415D", lineHeight: 1 }}>{d.rebels.length}</span>
+                      <span style={{ display: "block", ...numeric, fontSize: 20, fontWeight: 700, color: readable("#C2415D"), lineHeight: 1 }}>{d.rebels.length}</span>
                       <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft }}>rebel{d.rebels.length === 1 ? "" : "s"}</span>
                     </span>
                   </button>

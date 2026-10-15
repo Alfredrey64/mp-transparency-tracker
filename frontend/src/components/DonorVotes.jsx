@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_BODY, numeric } from "../theme";
+import { COLORS, FONT_BODY, numeric, readable } from "../theme";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { donorPolicyArea, votesInArea } from "../lib/donorVotes";
 import { sectorColor } from "../lib/donorSectors";
@@ -47,7 +47,7 @@ export default function DonorVotes({ donorName, mps }) {
           <span style={{ display: "block", fontSize: 14, fontWeight: 700 }}>How did the MPs it funded vote on {area.category} bills?</span>
           <span style={{ display: "block", fontSize: 12.5, color: COLORS.inkSoft, marginTop: 2 }}>Placed in {area.sector}, the closest policy area is {area.category}.</span>
         </span>
-        <span aria-hidden="true" style={{ flexShrink: 0, fontSize: 18, color: colour, transform: open ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>⌄</span>
+        <span aria-hidden="true" style={{ flexShrink: 0, fontSize: 18, color: readable(colour), transform: open ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>⌄</span>
       </button>
 
       {open && (

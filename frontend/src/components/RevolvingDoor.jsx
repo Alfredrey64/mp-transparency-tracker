@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { PageHeader, InfoCard, WhyItMattersBand, FlowNode, FlowArrow } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconDoor, IconCompare, IconGavel, IconShield, IconCabinet, IconBriefcase } from "./icons";
@@ -45,28 +45,28 @@ const CASES = [
   {
     name: "George Osborne",
     role: "Chancellor of the Exchequer, 2010–2016",
-    color: "#9C6B30",
+    color: readable("#9C6B30"),
     what: "Sought ACOBA's advice before joining BlackRock as an adviser in January 2017, as the rules required. Two months later, he accepted the editorship of the Evening Standard without clearing it with ACOBA first.",
     outcome: "A committee of MPs accused him of showing \"disrespect\" for the rules. He went on to take at least ten private-sector roles within five years of leaving the Treasury: none of which ACOBA had any power to block.",
   },
   {
     name: "David Cameron",
     role: "Prime Minister, 2010–2016",
-    color: "#5B4E8A",
+    color: readable("#5B4E8A"),
     what: "Became an adviser to Greensill Capital and, when the firm ran into trouble, personally lobbied the Chancellor to grant it access to a state-backed Covid loan scheme.",
     outcome: "None of it broke any rule, because it happened more than two years after he'd left office, ACOBA's jurisdiction over him had already expired entirely. The case became the clearest illustration of the old system's built-in expiry date.",
   },
   {
     name: "Boris Johnson",
     role: "Prime Minister, 2019–2022",
-    color: "#9C3B3B",
+    color: readable("#9C3B3B"),
     what: "Broke ACOBA's rules on three separate occasions after leaving government, both during and after his premiership, including taking up paid roles before the committee had signed off on them.",
     outcome: "ACOBA has no statutory power to fine or block a breach, only to publicly say so, which is what it did each time.",
   },
   {
     name: "George Freeman MP",
     role: "Minister for Science, Research and Innovation until November 2023",
-    color: "#3F7D5C",
+    color: readable("#3F7D5C"),
     what: "Became a paid adviser to the satellite-data firm GHGSat in April 2024. ACOBA's advice was explicit: he should not lobby government on the company's behalf. In 2025, leaked emails reported by The Times appeared to show him discussing what to ask ministers with GHGSat's director before tabling written questions on space data and emissions tracking.",
     outcome: "Freeman self-referred and was investigated by the Registrar of Consultant Lobbyists over whether this amounted to unregistered lobbying. See the Consultant Lobbyists page. The Registrar cleared him on that specific question in October 2025; the rules, he noted, don't stop an MP asking questions on a topic where they have a financial interest, as long as it's properly declared.",
   },
@@ -86,7 +86,7 @@ function CaseCard({ item, index }) {
         {item.role}
       </div>
       <div style={{ marginBottom: 10 }}>
-        <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: "#9C3B3B", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>
+        <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: readable("#9C3B3B"), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>
           What happened
         </div>
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.6 }}>{item.what}</div>

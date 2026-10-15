@@ -105,9 +105,21 @@ Inequality, Brexit, Defence, Education and Ageing and pensions are one page each
 - **Education** reads `src/data/educationData.json`, built by `node scripts/build-education-data.mjs` from the Department for Education's open statistics API (key stage 2 and 4 results, the disadvantage gap index, free school meals, absence, special needs and education, health and care plans). The headline figures and fee caps are in `src/data/education.js`, and `src/data/education.test.js` checks the two agree.
 - **Ageing and pensions** reads `src/data/ageingData.json`, built by `node scripts/build-ageing-data.mjs` from the pension rates in `src/data/ageing.js` and the ONS prices and earnings the site already holds (run the ONS fetch first so April's figures are there). The State Pension age tool is `src/lib/pensionAge.js`, tested against GOV.UK's timetable and its worked examples.
 - **Defence** also reads the Ministry of Defence's quarterly service personnel workbook (worksheet 3a) and the latest four quarters of GDP, which `build-defence-data.mjs` fetches and saves in the same file.
-- **Brexit** keeps its figures, with sources, in `src/data/brexit.js`, read by hand from the original releases. Each file names the release and the date it was checked. Update the figures and `CHECKED` together when a new release comes out.
+- **Brexit** keeps its expert estimates, with sources, in `src/data/brexit.js`, read by hand from the original releases, and the referendum result by region (which adds up to the UK totals, checked in `src/lib/brexit.test.js`). Its charts and regional picker read `src/data/brexitData.json`, built by `node scripts/build-brexit-data.mjs` from the OECD (real GDP per head against the G7, the EU and others, 2016 Q2 = 100), the ONS series the site already holds (goods trade with the EU and the rest of the world, migration), HMRC's regional goods trade for the four nations, and the ONS mid-2025 population estimates (migration by region).
+- **The NHS** (`/nhs`) reads `src/data/healthData.json`, built by `node scripts/build-health-data.mjs` from NHS England's "Incomplete Commissioner" waiting-time workbooks (the seven NHS regions, the latest month and the same month in the three years before), the ONS series already held (waiting list, A&E, ambulances, cancer, staff, long-term sickness) and the World Bank (health spending, doctors, nurses, beds). The NHS regions join some of the map's regions, which is why two places can show the same figure. Targets and standards are in `src/data/health.js`.
+- **Weekly refresh.** `.github/workflows/refresh-issue-data.yml` runs `scripts/refresh-issue-data.mjs` every Monday: it re-runs each build script above in order, runs the tests, and opens a pull request with any new figures (and a table of which steps worked) for a person to read. It does not change the site by itself, and it leaves a file as it was if its script fails. The ONS series are refreshed daily by `fetch-data.yml`. A pull request opened with the built-in token does not start CI, so the tests are run in the job and their result is in the pull request. Each file names the release and the date it was checked. Update the figures and `CHECKED` together when a new release comes out.
 - The charts, sliders and pickers shared by these pages are in `src/components/insight.jsx` (`TrendExplorer`, `StackBars`, `RangeField`, `Takeaways`, sparklines in `Stats`). `e2e/issue-tools.spec.js` uses each tool in a real browser.
 - Where a figure is reported but not confirmed (for example a reported change to the State Pension age), the page says so and gives the law as it stands. Keep that when updating.
+
+## Text contrast
+
+Text must read against its background in both the light and the dark pages (4.5 to 1). Never put a bare accent or party colour on the page as text: use the helpers in `src/theme.js`.
+
+- `readable(colour)` for coloured text (it mixes with the ink by just enough, separately for light and dark).
+- `solid(colour)` for a fill under white text, `chip(colour)` for a fill plus its text (initials in a party-coloured circle), `onFill(colour)` when only the text colour is wanted, and `COLORS.accentText` for the accent as text.
+- Do not lower the opacity of text (it lowers the contrast); use `COLORS.inkSoft`.
+
+`e2e/contrast.spec.js` runs axe's colour-contrast rule over the issue pages and the pages that were fixed, in both themes (`npm run test:contrast`).
 
 ## Phone layout test
 

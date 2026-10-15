@@ -116,7 +116,7 @@ export function MoneyAndVotesBox({ politician, interests }) {
           .filter((v) => v.bill?.category.label === targetCategory)
           .sort((a, b) => new Date(b.date) - new Date(a.date));
         if (relatedVotes.length === 0) return null;
-        return { sector: s.sector, color: s.color, sectorTotal: s.total, category: targetCategory, votes: relatedVotes };
+        return { sector: s.sector, color: readable(s.color), sectorTotal: s.total, category: targetCategory, votes: relatedVotes };
       })
       .filter(Boolean);
   }, [votes, bills, interests]);
@@ -149,7 +149,7 @@ export function MoneyAndVotesBox({ politician, interests }) {
                   <span
                     style={{
                       flexShrink: 0, fontWeight: 700, fontSize: 11, textTransform: "uppercase", padding: "1px 7px", borderRadius: 999,
-                      color: v.voted_aye ? "#2F6F4E" : "#9C3B3B", background: v.voted_aye ? "#E4EEE7" : "#F3E4E2",
+                      color: v.voted_aye ? readable("#2F6F4E") : readable("#9C3B3B"), background: v.voted_aye ? "#E4EEE7" : "#F3E4E2",
                     }}
                   >
                     {v.voted_aye ? "Aye" : "No"}
@@ -183,7 +183,7 @@ export function CommitteeConflictsBox({ interests, myCommittees }) {
         if (!targetCommittee) return null;
         const committee = myCommittees.find((c) => c.name === targetCommittee);
         if (!committee) return null;
-        return { sector: s.sector, color: s.color, sectorTotal: s.total, donations: s.donations, committeeName: committee.name };
+        return { sector: s.sector, color: readable(s.color), sectorTotal: s.total, donations: s.donations, committeeName: committee.name };
       })
       .filter(Boolean);
   }, [interests, myCommittees]);
@@ -204,7 +204,7 @@ export function CommitteeConflictsBox({ interests, myCommittees }) {
               <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink }}>
                 <strong>£{Math.round(c.sectorTotal).toLocaleString()}</strong> from {c.sector} donors
               </div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: c.color, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: readable(c.color), textTransform: "uppercase", letterSpacing: "0.04em" }}>
                 Sits on: {c.committeeName}
               </div>
             </div>

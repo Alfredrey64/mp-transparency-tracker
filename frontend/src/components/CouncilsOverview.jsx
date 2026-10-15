@@ -1,6 +1,6 @@
 // The Your Council overview: the finder, the whole-country summary and who changed hands.
 import { useState, useMemo } from "react";
-import { COLORS, FONT_BODY, FONT_DISPLAY, numeric } from "../theme";
+import { COLORS, FONT_BODY, FONT_DISPLAY, numeric, readable } from "../theme";
 import { longDate, searchCouncils, councilsForCodes, nationalSummary, normCouncil, CONTROL_ORDER, controlLabelOf, controlColourOf, controlTrend, changesSummary, defectionSummary, seatChanges } from "../lib/councils";
 import { changesMeaning, defectionMeaning, controlTrendMeaning } from "../lib/councilMeaning";
 import { IconGroup, IconSplit, IconCompare, IconChartBars, IconVote } from "./icons";
@@ -52,7 +52,7 @@ function Finder({ index }) {
               {state.busy ? "…" : "Find"}
             </button>
           </div>
-          {state.error && <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: "#C0504D", marginTop: 8 }}>{state.error}</div>}
+          {state.error && <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: readable("#C0504D"), marginTop: 8 }}>{state.error}</div>}
           <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 7 }}>Looked up once with postcodes.io. Your postcode isn't stored.</div>
         </form>
         <div>
@@ -314,7 +314,7 @@ export function Overview({ data }) {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(230px, 100%), 1fr))", gap: 12 }}>
             {s.nextDates.map((d, i) => (
               <div key={d.date} style={{ background: COLORS.paper, border: `1px solid ${i === 0 ? "#1FA97C" : COLORS.hairline}`, borderRadius: 16, padding: "14px 16px" }}>
-                <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: i === 0 ? "#1FA97C" : COLORS.inkSoft }}>{i === 0 ? "Next up" : "Later"}</div>
+                <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: i === 0 ? readable("#1FA97C") : COLORS.inkSoft }}>{i === 0 ? "Next up" : "Later"}</div>
                 <div style={{ fontFamily: FONT_DISPLAY, fontSize: 19, color: COLORS.ink, margin: "3px 0 8px" }}>{longDate(d.date)}</div>
                 <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>
                   <strong style={{ ...numeric, fontSize: 18, color: COLORS.ink }}>{fmt(d.seats)}</strong> seats · {d.councils} {d.councils === 1 ? "council" : "councils"}
@@ -344,7 +344,7 @@ export function Overview({ data }) {
               <button key={c.id} type="button" className="nclick" onClick={() => goCouncil(c.id)} style={{ textAlign: "left", background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderLeft: `4px solid ${colour}`, borderRadius: 12, padding: "10px 13px", cursor: "pointer", color: "inherit" }}>
                 <span style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "baseline" }}>
                   <span style={{ fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: 600, color: COLORS.ink }}>{c.name}</span>
-                  {changedIds.has(c.id) && <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: "#E0367A", background: "#E0367A1a", borderRadius: 999, padding: "1px 8px", whiteSpace: "nowrap" }}>Changed hands</span>}
+                  {changedIds.has(c.id) && <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: readable("#E0367A"), background: "#E0367A1a", borderRadius: 999, padding: "1px 8px", whiteSpace: "nowrap" }}>Changed hands</span>}
                 </span>
                 <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 2 }}>{c.control} · {c.total} seats</span>
               </button>

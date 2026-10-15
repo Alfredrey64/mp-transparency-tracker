@@ -88,7 +88,11 @@ export function seatDeprivation(seatName, sources) {
     if (!seats.some((s) => seatKey(s.name) === key)) continue;
     const sorted = [...seats].sort((a, b) => b.worst10 - a.worst10 || b.score - a.score);
     const i = sorted.findIndex((s) => seatKey(s.name) === key);
-    return { worst10: sorted[i].worst10, rank: i + 1, of: sorted.length, nation: g.nation, unit: g.unit };
+    // England's file also has each domain (income, employment, health and so on) as the share of residents in the most deprived tenth for that domain.
+    const income = sorted[i].domains?.income ?? null;
+    const byIncome = income === null ? null : [...seats].sort((a, b) => (b.domains?.income ?? 0) - (a.domains?.income ?? 0) || b.score - a.score);
+    const incomeRank = byIncome ? byIncome.findIndex((s) => seatKey(s.name) === key) + 1 : null;
+    return { worst10: sorted[i].worst10, rank: i + 1, of: sorted.length, nation: g.nation, unit: g.unit, income: g.nation === "England" ? income : null, incomeRank: g.nation === "England" ? incomeRank : null };
   }
   return null;
 }

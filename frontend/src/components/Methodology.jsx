@@ -1,4 +1,4 @@
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING, readable } from "../theme";
 import { PageHeader } from "./shared";
 import { IconMethodology } from "./icons";
 import pipelineStatus from "../data/pipelineStatus.json";
@@ -57,7 +57,7 @@ function PipelineStatus() {
 
   return (
     <div style={{ background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 10, padding: "12px 16px" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: allSucceeded ? "#2F6F4E" : "#B5533C" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: allSucceeded ? readable("#2F6F4E") : readable("#B5533C") }}>
         <span style={{ width: 7, height: 7, borderRadius: "50%", background: allSucceeded ? "#2F6F4E" : "#B5533C", flexShrink: 0 }} />
         {succeededCount}/{totalCount} sources updated successfully on the last run
       </div>

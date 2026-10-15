@@ -323,7 +323,7 @@ export default function CommonsChamber() {
         ))}
       </div>
 
-      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.75, marginTop: 12, lineHeight: 1.5 }}>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 12, lineHeight: 1.5 }}>
         Seats are grouped by party, not individual real assignments. Parliament doesn't publish exactly who sits
         where. The Speaker, and the Prime Minister and Opposition Leader (outlined, where identifiable from the
         data) are placed for illustration.

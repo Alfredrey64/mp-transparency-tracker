@@ -181,7 +181,7 @@ export function SubTitle({ children }) {
 }
 
 // A time chart with a legend, and who was in government behind it if asked. `breaks` are years where the method of the figures changed (a faint line).
-export function TimeChart({ lines, from, to, yFormat, ariaLabel, accent, governments = false, breaks = [], height = 250, yScale }) {
+export function TimeChart({ lines, from, to, yFormat, ariaLabel, accent, governments = false, breaks = [], height = 250, yScale, refLines }) {
   const bands = [
     ...(governments ? bandsBetween(from, to, to).map((b) => ({ ...b, color: PARTY_COLOURS[b.party] })) : []),
     ...breaks.map((x) => ({ pm: `break-${x}`, start: x, end: x + 0.05, color: COLORS.ink, short: "" })),
@@ -189,7 +189,7 @@ export function TimeChart({ lines, from, to, yFormat, ariaLabel, accent, governm
   return (
     <div>
       {lines.length > 1 && <Legend items={lines.map((l) => ({ name: l.name, colour: l.color }))} />}
-      <LineChart lines={lines} xTicks={yearTicks(from, to)} yFormat={yFormat} accent={accent} ariaLabel={ariaLabel} bands={bands} domainX={[from, to]} height={height} yScale={yScale} />
+      <LineChart lines={lines} xTicks={yearTicks(from, to)} yFormat={yFormat} accent={accent} ariaLabel={ariaLabel} bands={bands} domainX={[from, to]} height={height} yScale={yScale} refLines={refLines} />
     </div>
   );
 }
@@ -236,7 +236,7 @@ export function TrendExplorer({ options, accent, height = 260, sources }) {
           <button type="button" aria-pressed={gov} onClick={() => setGov((v) => !v)} style={pillStyle(gov)}>Show who was in government</button>
         </div>
       )}
-      <TimeChart lines={lines} from={from} to={to} yFormat={f} accent={accent} height={height} governments={Boolean(opt.governments && gov)} breaks={opt.breaks ?? []} yScale={opt.yScale} ariaLabel={`${opt.label}. ${caption}`} />
+      <TimeChart lines={lines} from={from} to={to} yFormat={opt.yFormat} accent={accent} height={height} governments={Boolean(opt.governments && gov)} breaks={opt.breaks ?? []} yScale={opt.yScale} refLines={opt.refLines} ariaLabel={`${opt.label}. ${caption}`} />
       <p style={{ ...para, marginTop: 10 }}>{caption}</p>
       {opt.note && <p style={{ ...para, fontSize: 13.5, marginTop: 6 }}>{opt.note}</p>}
       {(sources?.length > 0 || opt.sources?.length > 0) && <SourceLine sources={[...(sources ?? []), ...(opt.sources ?? [])]} />}

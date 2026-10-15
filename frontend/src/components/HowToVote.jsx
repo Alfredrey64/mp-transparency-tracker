@@ -85,7 +85,7 @@ function Step({ n, title, last, children }) {
 
 const Tick = ({ children }) => (
   <li style={{ display: "grid", gridTemplateColumns: "20px minmax(0, 1fr)", gap: 8, fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.55, color: COLORS.ink }}>
-    <span aria-hidden="true" style={{ color: "#1F7F57", fontWeight: 800 }}>✓</span>
+    <span aria-hidden="true" style={{ color: readable("#1F7F57"), fontWeight: 800 }}>✓</span>
     <span>{children}</span>
   </li>
 );

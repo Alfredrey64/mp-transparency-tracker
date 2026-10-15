@@ -7,7 +7,7 @@ import ShareButton from "./ShareButton";
 import { mpShareSpec } from "../lib/shareSpecs";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable, chip } from "../theme";
 import { partyColour, timeInOffice, shortCategory, formatDate, initials, ONGOING_ROLE_CATEGORIES, stripTrailingAmount } from "../lib/format";
 import { isWatched, toggleWatch } from "../lib/watchlist";
 import { withScrollPreserved } from "../lib/preserveScroll";
@@ -45,20 +45,20 @@ const DETAIL_TABS = [
 // orange as "Current Outside Roles", the same teal as Foreign Affairs
 // bills, and so on) so a long list of interests reads as distinct kinds of
 // thing at a glance, not one undifferentiated column of grey cards.
-const DEFAULT_CATEGORY_META = { color: "#6B7280", Icon: IconQuestion };
+const DEFAULT_CATEGORY_META = { color: readable("#6B7280"), Icon: IconQuestion };
 const CATEGORY_META = {
   "Donations and other support (including loans) for activities as an MP": { color: COLORS.accent, Icon: IconCoin },
-  "Gifts, benefits and hospitality from UK sources": { color: "#B0508A", Icon: IconMeeting },
-  "Gifts and benefits from sources outside the UK": { color: "#2E6F6F", Icon: IconGlobe },
-  "Visits outside the UK": { color: "#2E6F6F", Icon: IconGlobe },
-  "Land and property (within or outside the UK)": { color: "#A0522D", Icon: IconHome },
-  Shareholdings: { color: "#8A7A3D", Icon: IconEconomy },
-  "Employment and earnings": { color: "#F2622A", Icon: IconBriefcase },
-  "Employment and earnings - Ongoing paid employment": { color: "#F2622A", Icon: IconBriefcase },
-  "Employment and earnings - Ad hoc payments": { color: "#D9A62A", Icon: IconCoin },
+  "Gifts, benefits and hospitality from UK sources": { color: readable("#B0508A"), Icon: IconMeeting },
+  "Gifts and benefits from sources outside the UK": { color: readable("#2E6F6F"), Icon: IconGlobe },
+  "Visits outside the UK": { color: readable("#2E6F6F"), Icon: IconGlobe },
+  "Land and property (within or outside the UK)": { color: readable("#A0522D"), Icon: IconHome },
+  Shareholdings: { color: readable("#8A7A3D"), Icon: IconEconomy },
+  "Employment and earnings": { color: readable("#F2622A"), Icon: IconBriefcase },
+  "Employment and earnings - Ongoing paid employment": { color: readable("#F2622A"), Icon: IconBriefcase },
+  "Employment and earnings - Ad hoc payments": { color: readable("#D9A62A"), Icon: IconCoin },
   Miscellaneous: DEFAULT_CATEGORY_META,
-  "Family members employed": { color: "#6B5B95", Icon: IconGroup },
-  "Family members engaged in third-party lobbying": { color: "#7A4B4B", Icon: IconGroup },
+  "Family members employed": { color: readable("#6B5B95"), Icon: IconGroup },
+  "Family members engaged in third-party lobbying": { color: readable("#7A4B4B"), Icon: IconGroup },
 };
 
 function categoryMeta(category) {
@@ -192,8 +192,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
                 fontFamily: FONT_DISPLAY,
                 fontSize: 30,
                 fontWeight: 600,
-                color: "#fff",
-                background: color,
+                ...chip(color),
                 border: `3px solid ${COLORS.paperCard}`,
                 boxShadow: `0 0 0 2px ${color}55, 0 4px 14px rgba(30,42,68,0.12)`,
               }}
@@ -210,7 +209,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
                 style={{
                   display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
                   width: 32, height: 32, borderRadius: "50%", border: `1px solid ${watched ? COLORS.accent : COLORS.hairline}`,
-                  background: watched ? `${COLORS.accent}14` : "transparent", color: watched ? COLORS.accent : COLORS.inkSoft,
+                  background: watched ? `${COLORS.accent}14` : "transparent", color: watched ? COLORS.accentText : COLORS.inkSoft,
                   cursor: "pointer", transition: "background 0.15s, border-color 0.15s, color 0.15s",
                 }}
               >
@@ -377,7 +376,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
                               style={{
                                 flexShrink: 0, width: 36, height: 36, borderRadius: "50%",
                                 display: "flex", alignItems: "center", justifyContent: "center",
-                                background: `${meta.color}1c`, color: meta.color,
+                                background: `${meta.color}1c`, color: readable(meta.color),
                               }}
                             >
                               <meta.Icon size={16} />

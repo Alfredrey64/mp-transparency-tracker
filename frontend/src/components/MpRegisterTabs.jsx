@@ -86,7 +86,7 @@ export function ClaimsTabContent({ politician, claims }) {
               {c.description && (
                 <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 3 }}>{c.description}</div>
               )}
-              <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, opacity: 0.8, marginTop: 3 }}>{formatDate(c.date)}</div>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginTop: 3 }}>{formatDate(c.date)}</div>
             </div>
           ))}
         </div>

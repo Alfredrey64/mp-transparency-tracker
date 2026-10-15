@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { COLORS, FONT_DISPLAY, FONT_BODY, numeric } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, numeric, readable } from "../theme";
 import { PageHeader } from "./shared";
 import { IconMeeting, IconSearch } from "./icons";
 import { monthLabel, dayParts, shortDepartment, splitAttendees, tally } from "../lib/meetingsView";
@@ -73,7 +73,7 @@ function Meeting({ meeting, color }) {
             <p style={{ ...text, fontSize: 13.5, margin: "6px 0 0" }}>{[...shown, ...rest].join(", ")}</p>
           </details>
         )}
-        <a href={meeting.sourceUrl} target="_blank" rel="noreferrer" style={{ display: "inline-block", margin: "2px 0 -6px", padding: "6px 0", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color }}>
+        <a href={meeting.sourceUrl} target="_blank" rel="noreferrer" style={{ display: "inline-block", margin: "2px 0 -6px", padding: "6px 0", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: readable(color) }}>
           Read the official return
         </a>
       </div>

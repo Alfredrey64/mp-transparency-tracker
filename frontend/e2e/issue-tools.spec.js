@@ -153,3 +153,82 @@ test("countries can be added to and removed from the Gini over time", async ({ p
   await time.getByRole("button", { name: "Germany" }).click();
   await expect(time.getByRole("button", { name: "Germany" })).toHaveAttribute("aria-pressed", "false");
 });
+
+test("the Brexit overview chart switches between income, exports, the EU share and migration", async ({ page }) => {
+  await page.goto("/brexit");
+  const trends = card(page, "h-bx-trends");
+  await expect(trends).toContainText(/United Kingdom: [\d.]+ in 2014 Q1/);
+  await trends.getByRole("button", { name: "Goods exports", exact: true }).click();
+  await expect(trends).toContainText("To the EU: ");
+  await trends.getByRole("button", { name: "EU share of goods exports" }).click();
+  await expect(trends).toContainText("55.7% in 2010 Q1");
+  await trends.getByRole("button", { name: "Net migration" }).click();
+  await expect(trends).toContainText("12 months to");
+});
+
+test("economies can be added to the Brexit income comparison, and the UK stays on", async ({ page }) => {
+  await page.goto("/brexit/economy");
+  const compare = card(page, "h-bxe-compare");
+  await expect(compare.getByRole("button", { name: "United Kingdom" })).toBeDisabled();
+  await compare.getByRole("button", { name: "Germany" }).click();
+  await expect(compare.getByRole("button", { name: "Germany" })).toHaveAttribute("aria-pressed", "true");
+  await expect(compare).toContainText("Germany +");
+  await compare.getByRole("button", { name: "G7 countries" }).click();
+  await expect(compare.getByRole("button", { name: "G7 countries" })).toHaveAttribute("aria-pressed", "false");
+});
+
+test("the Brexit trade tab shows each nation's goods trade", async ({ page }) => {
+  await page.goto("/brexit/trade");
+  const nation = card(page, "h-bxt-nation");
+  await expect(nation).toContainText("England's goods exports to the EU");
+  await nation.getByRole("button", { name: "Scotland" }).click();
+  await expect(nation).toContainText("oil and gas products");
+  await nation.getByRole("button", { name: "Northern Ireland" }).click();
+  await expect(nation).toContainText("Windsor Framework");
+  await nation.getByRole("button", { name: "Imports" }).click();
+  await expect(nation).toContainText("From the EU: ");
+});
+
+test("the Brexit map shows the vote and migration, and a region on all three measures", async ({ page }) => {
+  await page.goto("/brexit/society");
+  const map = card(page, "h-bxs-vote");
+  await expect(map).toContainText("West Midlands is highest (59.3%) and Scotland lowest (38.0%)");
+  await map.getByRole("button", { name: "Net migration" }).click();
+  await expect(map).toContainText("London is highest");
+  await map.getByRole("list", { name: /by region, highest first/ }).getByRole("button", { name: /Wales/ }).click();
+  await expect(map.getByRole("heading", { name: "Wales" })).toBeVisible();
+  await expect(map).toContainText("Voted Leave in 2016");
+});
+
+test("the NHS map changes with the measure and shows a region on every measure", async ({ page }) => {
+  await page.goto("/nhs/waiting");
+  const map = card(page, "h-hw-map");
+  await expect(map).toContainText("North East is highest");
+  await map.getByRole("button", { name: "Waiting list per 1,000 people" }).click();
+  await expect(map).toContainText("is highest");
+  await map.getByRole("list", { name: /by region, highest first/ }).getByRole("button", { name: /London/ }).click();
+  await expect(map.getByRole("heading", { name: "London" })).toBeVisible();
+  await expect(map).toContainText("Seen within 18 weeks");
+});
+
+test("the NHS charts switch measure and show the standard", async ({ page }) => {
+  await page.goto("/nhs");
+  const trends = card(page, "h-hl-trends");
+  await trends.getByRole("button", { name: "Within 18 weeks" }).click();
+  await expect(trends).toContainText("Standard 92%");
+  await trends.getByRole("button", { name: "A&E four-hour wait" }).click();
+  await expect(trends).toContainText("All A&E: 97.2% in November 2010");
+  await page.goto("/nhs/emergency");
+  const cancer = card(page, "h-he-cancer");
+  await cancer.getByRole("button", { name: "Diagnosis within 28 days" }).click();
+  await expect(cancer).toContainText("28 days");
+});
+
+test("the NHS comparison changes measure and keeps the UK highlighted", async ({ page }) => {
+  await page.goto("/nhs/money");
+  const compare = card(page, "h-hm-compare");
+  await expect(compare).toContainText("United Kingdom");
+  await compare.getByRole("button", { name: "Hospital beds per 1,000" }).click();
+  await expect(compare.getByRole("button", { name: "Hospital beds per 1,000" })).toHaveAttribute("aria-pressed", "true");
+  await expect(compare).toContainText("South Korea");
+});

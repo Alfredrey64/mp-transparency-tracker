@@ -1,6 +1,6 @@
 import { memo, useMemo, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { COLORS, FONT_BODY, numeric } from "../theme";
+import { COLORS, FONT_BODY, numeric, readable } from "../theme";
 import { periodLabel, periodToT } from "../lib/onsFormat";
 import { monthlyPayment } from "../lib/mortgage";
 import { card, cardTitle } from "../lib/onsStyles";
@@ -26,10 +26,10 @@ function MortgageCard({ points, accent }) {
       if (p[1] > high[1]) high = p;
     }
     return [
-      { key: "now", name: "Now", when: periodLabel(nowP), rate: nowV, color: accent },
-      yearAgo && { key: "year", name: "A year ago", when: periodLabel(yearAgo[0]), rate: yearAgo[1], color: "#E07A1F" },
-      { key: "low", name: "Lowest on record", when: periodLabel(low[0]), rate: low[1], color: "#3F9B3F" },
-      { key: "high", name: "Highest on record", when: periodLabel(high[0]), rate: high[1], color: "#D4577A" },
+      { key: "now", name: "Now", when: periodLabel(nowP), rate: nowV, color: readable(accent) },
+      yearAgo && { key: "year", name: "A year ago", when: periodLabel(yearAgo[0]), rate: yearAgo[1], color: readable("#E07A1F") },
+      { key: "low", name: "Lowest on record", when: periodLabel(low[0]), rate: low[1], color: readable("#3F9B3F") },
+      { key: "high", name: "Highest on record", when: periodLabel(high[0]), rate: high[1], color: readable("#D4577A") },
     ].filter(Boolean);
   }, [points, accent]);
   if (!rates) return null;

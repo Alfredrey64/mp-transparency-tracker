@@ -61,5 +61,15 @@ describe("seatDeprivation", () => {
     expect(seatDeprivation("Gamma", sources)).toMatchObject({ worst10: 12, rank: 2, of: 3, nation: "England" });
     expect(seatDeprivation("cymru seat", sources)).toMatchObject({ rank: 1, of: 1, nation: "Wales" });
   });
+  it("adds England's income deprivation and its rank, and leaves it out for the other nations", () => {
+    const withIncome = {
+      england: [{ name: "Alpha", worst10: 5, score: 1, domains: { income: 20 } }, { name: "Beta", worst10: 30, score: 3, domains: { income: 10 } }, { name: "Gamma", worst10: 12, score: 2, domains: { income: 40 } }],
+      wales: [{ name: "Cymru Seat", worst10: 8, score: 1, domains: { income: 9 } }],
+    };
+    expect(seatDeprivation("Gamma", withIncome)).toMatchObject({ income: 40, incomeRank: 1, rank: 2 });
+    expect(seatDeprivation("Beta", withIncome)).toMatchObject({ income: 10, incomeRank: 3 });
+    expect(seatDeprivation("Cymru Seat", withIncome)).toMatchObject({ income: null, incomeRank: null });
+    expect(seatDeprivation("Gamma", sources)).toMatchObject({ income: null });
+  });
   it("returns null for a seat with no figures", () => expect(seatDeprivation("Nowhere", sources)).toBeNull());
 });

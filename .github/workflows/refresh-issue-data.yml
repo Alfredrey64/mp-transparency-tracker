@@ -1,0 +1,63 @@
+name: Refresh issue-page data
+
+# Every Monday, re-reads the official sources behind the Inequality, Defence, Education, Ageing and pensions, Brexit and NHS pages (see
+# frontend/scripts/refresh-issue-data.mjs), runs the tests, and opens a pull request with whatever changed for a person to read. It never changes the live
+# site by itself. The ONS series these use are refreshed daily by fetch-data.yml.
+#
+# A pull request opened with the built-in token does not start the CI workflow by itself, so the tests are run here and their result is in the pull request.
+
+on:
+  schedule:
+    - cron: "45 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    name: Rebuild the data and open a pull request
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npm install
+        working-directory: frontend
+      - name: Rebuild each data file
+        id: refresh
+        continue-on-error: true
+        run: node frontend/scripts/refresh-issue-data.mjs --summary refresh-summary.md
+      - name: Run the tests
+        id: tests
+        continue-on-error: true
+        working-directory: frontend
+        run: npm test
+      - name: Open a pull request if anything changed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -z "$(git status --porcelain frontend/src/data)" ]; then
+            echo "No new figures this week."
+            exit 0
+          fi
+          branch="data-refresh/$(date +%F)"
+          if [ -n "$(gh pr list --state open --search 'head:data-refresh/' --json number --jq '.[0].number')" ]; then
+            echo "A refresh pull request is already open."
+            exit 0
+          fi
+          {
+            cat refresh-summary.md
+            echo
+            if [ "${{ steps.tests.outcome }}" = "success" ]; then echo "Tests: passed."; else echo "Tests: **failed**. A check that ties a sentence to its figure may be pointing at something to update."; fi
+          } > pr-body.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add frontend/src/data
+          git commit -m "Refresh issue-page data ($(date +%F))"
+          git push origin "$branch"
+          gh pr create --base main --head "$branch" --title "Refresh issue-page data ($(date +%F))" --body-file pr-body.md

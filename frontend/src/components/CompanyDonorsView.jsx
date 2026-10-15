@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_BODY } from "../theme";
+import { COLORS, FONT_BODY, readable } from "../theme";
 import { getDonorSector, sectorColor } from "../lib/donorSectors";
 import { partyColour, formatDate } from "../lib/format";
 import { fetchAllRows } from "../lib/supabasePagination";
@@ -180,7 +180,7 @@ function CompanyRow({ company, isOpen, onToggle }) {
             <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
               <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
                 <span style={{ width: 6, height: 6, borderRadius: "50%", background: color, flexShrink: 0 }} />
-                <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color }}>
+                <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: readable(color) }}>
                   {company.sector}
                 </span>
               </span>
@@ -219,7 +219,7 @@ function CompanyRow({ company, isOpen, onToggle }) {
                   </div>
                 ))}
               </div>
-              <a href={chUrl} target="_blank" rel="noreferrer" style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color }}>
+              <a href={chUrl} target="_blank" rel="noreferrer" style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: readable(color) }}>
                 View official Companies House record ↗
               </a>
             </div>

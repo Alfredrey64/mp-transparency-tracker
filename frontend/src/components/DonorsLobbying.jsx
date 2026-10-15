@@ -4,7 +4,7 @@ import { concentrationMeaning } from "../lib/moneyMeaning";
 import { everydayShort } from "../lib/everyday";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { getDonorSector, sectorColor, normalizeDonorKey, donorSectorMetadata } from "../lib/donorSectors";
 import { partyColour, formatDate } from "../lib/format";
 import { PageHeader } from "./shared";
@@ -328,7 +328,7 @@ export default function DonorsLobbying() {
                               <span style={{ display: "flex", alignItems: "center", gap: 5, overflow: "hidden" }}>
                                 <span style={{ width: 6, height: 6, borderRadius: "50%", background: r.partyColor, flexShrink: 0 }} />
                                 <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.mpName}</span>
-                                {r.date && <span style={{ opacity: 0.7, flexShrink: 0 }}>· {formatDate(r.date)}</span>}
+                                {r.date && <span style={{ opacity: 0.85, flexShrink: 0 }}>· {formatDate(r.date)}</span>}
                               </span>
                               <span style={{ fontFamily: FONT_BODY, fontWeight: 700, color: COLORS.ink, flexShrink: 0 }}>£{Math.round(r.amount).toLocaleString()}</span>
                             </div>
@@ -397,7 +397,7 @@ export default function DonorsLobbying() {
                 onClick={() => toggleSector(s.sector)}
                 style={{
                   display: "flex", alignItems: "center", gap: 4, marginTop: 10, background: "none", border: "none",
-                  padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontWeight: 600, fontSize: 11.5, color: s.color,
+                  padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontWeight: 600, fontSize: 11.5, color: readable(s.color),
                 }}
               >
                 <motion.span animate={{ rotate: isOpen ? 90 : 0 }} transition={{ duration: 0.15 }} style={{ display: "inline-block" }}>▸</motion.span>
@@ -425,7 +425,7 @@ export default function DonorsLobbying() {
                         </div>
                       ))}
                       {s.allDonations.length > 40 && (
-                        <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, opacity: 0.7, fontStyle: "italic" }}>
+                        <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, fontStyle: "italic" }}>
                           +{s.allDonations.length - 40} more not shown
                         </div>
                       )}
@@ -485,7 +485,7 @@ export default function DonorsLobbying() {
         </div>
       </div>
 
-      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.7, marginTop: 14, maxWidth: "none" }}>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 14, maxWidth: "none" }}>
         As of {new Date(donorSectorMetadata.generatedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })},{" "}
         {donorSectorMetadata.donorsTagged} of the top {donorSectorMetadata.donorsConsidered} donors have a sector tag
         ({donorSectorMetadata.individualsSkipped} excluded as named individuals). See{" "}

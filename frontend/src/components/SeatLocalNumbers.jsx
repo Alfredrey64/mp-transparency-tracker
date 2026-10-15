@@ -30,6 +30,7 @@ function Tile({ label, value, sub, uk, rank, accent, href, linkLabel }) {
 export default function SeatLocalNumbers({ record, regionCode }) {
   const [sectors, setSectors] = useState(null);
   const [dep, setDep] = useState(null);
+  const [place, setPlace] = useState(null);
   const regionKey = REGION_KEY_BY_CODE[regionCode] ?? null;
   const region = REGIONS.find((r) => r.key === regionKey);
 
@@ -41,6 +42,7 @@ export default function SeatLocalNumbers({ record, regionCode }) {
     Promise.all([import("../data/deprivationConstituencies.json"), import("../data/deprivationNations.json")])
       .then(([eng, nat]) => alive && setDep({ england: eng.default.seats, wales: nat.default.wales.seats, scotland: nat.default.scotland.seats, northernireland: nat.default.northernireland.seats }))
       .catch(() => alive && setDep({}));
+    import("../lib/inequalityPlace").then((m) => alive && setPlace(m)).catch(() => alive && setPlace(false));
     return () => { alive = false; };
   }, []);
 
@@ -71,6 +73,11 @@ export default function SeatLocalNumbers({ record, regionCode }) {
                 {" "}That makes it the <strong>{ordinal(deprivation.rank)}</strong> most affected of {deprivation.of} seats in {deprivation.nation}.
               </div>
             </div>
+            {deprivation.income !== null && (
+              <div style={{ marginTop: 14, padding: "12px 14px", borderRadius: 12, background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.55 }}>
+                <strong>Income.</strong> {deprivation.income.toFixed(deprivation.income < 10 ? 1 : 0)}% of residents live in the most income-deprived tenth of neighbourhoods in England, which ranks it <strong>{ordinal(deprivation.incomeRank)}</strong> of {deprivation.of} English seats on that measure. It counts people on low incomes, including those who get benefits or tax credits.
+              </div>
+            )}
             <p style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, lineHeight: 1.55, margin: "14px 0 0" }}>
               Each nation scores its own neighbourhoods, so a rank in Wales is not directly comparable to one in England.{" "}
               <a href="#/deprivation" style={{ color: COLORS.accent, fontWeight: 700, textDecoration: "none" }}>See the whole UK</a>
@@ -111,9 +118,37 @@ export default function SeatLocalNumbers({ record, regionCode }) {
         </Panel>
       )}
 
+      {region && place && (
+        <Panel title={`Income and poverty in ${region.name}`}>
+          <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, lineHeight: 1.6, margin: "0 0 14px", maxWidth: 680 }}>
+            These too are for the whole region. Official figures for income and poverty are published for regions, not single seats, so your own area can be better or worse off than {region.name} as a whole. The seat's own deprivation is above.
+          </p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(230px, 100%), 1fr))", gap: 12 }}>
+            {["income", "median", "poverty", "children", "pensioners", "wealth"].map((id) => {
+              const m = place.metricById(id);
+              const values = m.values();
+              const v = values[regionKey];
+              if (v === null || v === undefined) return null;
+              const r = place.rankOf(values, regionKey);
+              const uk = m.uk();
+              return (
+                <Tile
+                  key={id} label={m.label} accent={m.accent} value={formatValue(m.format, v)}
+                  sub={`${m.year}${id === "median" ? ", after housing costs" : id === "income" ? ", after tax and benefits" : ""}`}
+                  uk={`UK: ${formatValue(m.format, uk)}. This region is ${againstUk(v, uk, { rate: m.format === "pct" })}`}
+                  rank={r ? `${ordinal(r.rank)} highest of ${r.of} regions and nations` : null}
+                  href="#/inequality/place" linkLabel="Inequality by place"
+                />
+              );
+            })}
+          </div>
+        </Panel>
+      )}
+
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
         {[
           ["#/regions", "All regions and nations"],
+          ["#/inequality/place", "Inequality across the UK"],
           ["#/deprivation", "Deprivation across the UK"],
           ["#/crime", "Crime figures"],
           ["#/councils", "Find your council"],

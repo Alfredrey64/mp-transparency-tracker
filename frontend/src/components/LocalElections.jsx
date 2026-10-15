@@ -81,7 +81,7 @@ function Finder({ data }) {
             <input id="le-pc" value={postcode} onChange={(e) => setPostcode(e.target.value)} placeholder="For example SW1A 1AA" autoComplete="postal-code" style={field} />
             <button type="submit" disabled={state.busy} className="ons-chip" style={{ fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: 700, color: "#fff", background: solid(ACCENT), border: "none", borderRadius: 12, padding: "0 18px", cursor: "pointer", flexShrink: 0 }}>{state.busy ? "Looking…" : "Find"}</button>
           </div>
-          {state.error && <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: "#B3382E", marginTop: 8 }}>{state.error}</div>}
+          {state.error && <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: readable("#B3382E"), marginTop: 8 }}>{state.error}</div>}
           <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 7 }}>Looked up once with postcodes.io. Your postcode isn&apos;t stored.</div>
         </form>
         <div>

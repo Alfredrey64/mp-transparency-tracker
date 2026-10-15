@@ -4,7 +4,7 @@ import { partyConcentrationMeaning } from "../lib/moneyMeaning";
 import { everydayShort } from "../lib/everyday";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { getPartyDonorSector, sectorColor, partyDonorSectorMetadata } from "../lib/donorSectors";
 import { getDonorProfile, publicFundDescription } from "../lib/donorProfiles";
 import { normaliseIndividualDonorName, donorGroupingKey, preferDisplayName } from "../lib/donorNames";
@@ -306,7 +306,7 @@ export default function PartyFinances() {
                                 <span
                                   style={{
                                     flexShrink: 0, fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em",
-                                    color: badgeColor, background: `${badgeColor}1a`, padding: "2px 8px", borderRadius: 999,
+                                    color: readable(badgeColor), background: `${badgeColor}1a`, padding: "2px 8px", borderRadius: 999,
                                   }}
                                 >
                                   {d.status}
@@ -348,7 +348,7 @@ export default function PartyFinances() {
       </div>
 
       {partyDonorSectorMetadata.generatedAt && (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.7, marginTop: 14, maxWidth: "none" }}>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 14, maxWidth: "none" }}>
           Sector tags generated {new Date(partyDonorSectorMetadata.generatedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })} ·{" "}
           {partyDonorSectorMetadata.donorsTagged} of {partyDonorSectorMetadata.donorsConsidered} top donors tagged.
           This is a snapshot, not a live feed.

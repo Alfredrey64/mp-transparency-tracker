@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING, readable, chip } from "../theme";
 import { partyColour, formatDate, stripHtml } from "../lib/format";
 import { PageHeader } from "./shared";
 import { LoadFailedNote } from "./MpCards";
@@ -191,7 +191,7 @@ function Avatar({ url, name, color, size = 64 }) {
       <div
         style={{
           width: size, height: size, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
-          background: color, color: "#fff", fontFamily: FONT_DISPLAY, fontSize: size * 0.32, fontWeight: 600,
+          ...chip(color), fontFamily: FONT_DISPLAY, fontSize: size * 0.32, fontWeight: 600,
         }}
       >
         {name?.split(/\s+/).map((w) => w[0]).slice(-2).join("").toUpperCase()}
@@ -234,7 +234,7 @@ function CabinetCard({ member, area, index, onViewProfile }) {
           <Avatar url={member.thumbnail_url} name={member.name} color={color} />
           <div style={{ minWidth: 0, flex: 1 }}>
             <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17.5, color: COLORS.ink, lineHeight: 1.3 }}>{member.name}</div>
-            <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13, color, marginTop: 3, lineHeight: 1.35 }}>{member.cabinet_role}</div>
+            <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13, color: readable(color), marginTop: 3, lineHeight: 1.35 }}>{member.cabinet_role}</div>
             <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6, flexWrap: "wrap" }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: color, flexShrink: 0 }} />
               <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>
@@ -242,7 +242,7 @@ function CabinetCard({ member, area, index, onViewProfile }) {
               </span>
             </div>
             {member.cabinet_role_start_date && (
-              <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.75, marginTop: 3 }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 3 }}>
                 In role since {formatDate(member.cabinet_role_start_date)}
               </div>
             )}
@@ -257,7 +257,7 @@ function CabinetCard({ member, area, index, onViewProfile }) {
             <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${COLORS.hairline}` }}>
               {roleText && (
                 <div style={{ background: `${color}0d`, border: `1px solid ${color}33`, borderRadius: 10, padding: "10px 13px", marginBottom: 14 }}>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>
+                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: readable(color), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>
                     What this role does
                   </div>
                   <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.55 }}>{roleText}</div>
@@ -274,7 +274,7 @@ function CabinetCard({ member, area, index, onViewProfile }) {
               {onViewProfile && (
                 <button
                   onClick={() => onViewProfile(member)}
-                  style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12.5, color, background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                  style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12.5, color: readable(color), background: "none", border: "none", padding: 0, cursor: "pointer" }}
                 >
                   View full MP profile, donations, votes & more
                 </button>
@@ -355,7 +355,7 @@ function OrgChartNode({ group, accent, delay }) {
       <div
         style={{
           width: size, height: size, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-          background: `${accent}20`, border: `2px solid ${accent}`, color: accent, flexShrink: 0,
+          background: `${accent}20`, border: `2px solid ${accent}`, color: readable(accent), flexShrink: 0,
         }}
       >
         <Icon size={Math.round(size * 0.42)} />

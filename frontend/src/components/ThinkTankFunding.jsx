@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { PageHeader, InfoCard, WhyItMattersBand, FlowNode, FlowArrow } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconThinkTank, IconShield, IconSearch, IconBroadcast, IconQuestion } from "./icons";
@@ -106,7 +106,7 @@ function ThinkTankRow({ item, index }) {
       <div
         style={{
           flexShrink: 0, width: 44, height: 44, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-          background: `${color}1c`, color, fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700,
+          background: `${color}1c`, color: readable(color), fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700,
         }}
       >
         {item.grade}

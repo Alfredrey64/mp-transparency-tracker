@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { COLORS, FONT_BODY, FONT_DISPLAY, numeric } from "../theme";
+import { COLORS, FONT_BODY, FONT_DISPLAY, numeric, solid } from "../theme";
 import { card, cardTitle, pillStyle } from "../lib/onsStyles";
 import { scrollRegion } from "../lib/a11y";
 import { GROUPS } from "../lib/electionHistory";
@@ -40,7 +40,7 @@ export default function MetricExplorer({ selectedId, onSelect }) {
       </p>
       <div {...scrollRegion("Figures")} role="group" aria-label="Choose a figure" style={{ display: "flex", gap: 8, overflowX: "auto", padding: "14px 2px 8px" }}>
         {METRICS.map((m) => (
-          <button key={m.id} type="button" aria-pressed={m.id === metricId} onClick={() => setMetricId(m.id)} style={{ ...pillStyle(m.id === metricId), flexShrink: 0, ...(m.id === metricId ? { background: m.colour, borderColor: m.colour, color: "#fff" } : { borderColor: `color-mix(in srgb, ${m.colour} 45%, ${COLORS.hairline})` }) }}>{m.label}</button>
+          <button key={m.id} type="button" aria-pressed={m.id === metricId} onClick={() => setMetricId(m.id)} style={{ ...pillStyle(m.id === metricId), flexShrink: 0, ...(m.id === metricId ? { background: solid(m.colour), borderColor: solid(m.colour), color: "#fff" } : { borderColor: `color-mix(in srgb, ${m.colour} 45%, ${COLORS.hairline})` }) }}>{m.label}</button>
         ))}
       </div>
       <p style={{ ...para, fontSize: 14, marginTop: 4 }}>{metric.blurb} <a href={`#/${metric.page}`} style={{ color: COLORS.ink, fontWeight: 600 }}>More in Britain in numbers</a></p>

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, readable, solid } from "../theme";
 import { STAGE_DEFS, buildRoute } from "../lib/billRoute";
 
 // A real institutional fact, not a decorative choice: Commons benches are
@@ -56,18 +56,18 @@ function StageNode({ label, count, color, active, onClick }) {
         <span
           style={{
             width: size, height: size, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-            background: count === 0 ? COLORS.paper : active ? color : `color-mix(in srgb, ${color} 14%, ${COLORS.paper})`,
+            background: count === 0 ? COLORS.paper : active ? solid(color) : `color-mix(in srgb, ${color} 14%, ${COLORS.paper})`,
             border: `2px solid ${count === 0 ? COLORS.hairline : color}`,
             transition: "background 0.15s",
             flexShrink: 0,
           }}
         >
-          <span style={{ fontFamily: FONT_MONO, fontWeight: 700, fontSize: count === 0 ? 11 : 15, color: count === 0 ? COLORS.inkSoft : active ? "#fff" : color }}>
+          <span style={{ fontFamily: FONT_MONO, fontWeight: 700, fontSize: count === 0 ? 11 : 15, color: count === 0 ? COLORS.inkSoft : active ? "#fff" : readable(color) }}>
             {count}
           </span>
         </span>
       </span>
-      <span style={{ fontFamily: FONT_BODY, fontSize: 11, color: count === 0 ? COLORS.inkSoft : COLORS.ink, textAlign: "center", lineHeight: 1.25, opacity: count === 0 ? 0.6 : 1 }}>
+      <span style={{ fontFamily: FONT_BODY, fontSize: 11, color: count === 0 ? COLORS.inkSoft : COLORS.ink, textAlign: "center", lineHeight: 1.25, opacity: count === 0 ? 0.85 : 1 }}>
         {label}
       </span>
     </motion.button>
@@ -80,7 +80,7 @@ function HouseRow({ house, stageCounts, activeKey, onSelect, trackRef }) {
   const color = HOUSE_COLOR[house];
   return (
     <div style={{ position: "relative" }}>
-      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11.5, color, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 2 }}>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11.5, color: readable(color), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 2 }}>
         {house === "Commons" ? "House of Commons" : "House of Lords"}
       </div>
       <motion.div

@@ -5,7 +5,7 @@ import { loadAllCareerDetail } from "../lib/careerDetail";
 import { buildOffices, searchOffices, OFFICE_KINDS } from "../lib/offices";
 import { explainOffice } from "../lib/officeExplainers";
 import { duration, monthYear } from "../lib/careerTimeline";
-import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme";
+import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric, readable } from "../theme";
 import { partyColour } from "../lib/format";
 import { PageHeader } from "./shared";
 import { LoadFailedNote } from "./MpCards";
@@ -67,7 +67,7 @@ function OfficeRow({ office, open, onToggle, now }) {
         <span style={{ minWidth: 0 }}>
           <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: 600, color: COLORS.ink, lineHeight: 1.35 }}>{office.post}</span>
           <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 2 }}>
-            <span style={{ color: colour, fontWeight: 700 }}>{OFFICE_KINDS[office.kind]}</span>
+            <span style={{ color: readable(colour), fontWeight: 700 }}>{OFFICE_KINDS[office.kind]}</span>
             {office.departments.length > 0 && ` · ${office.departments.slice(0, 2).join(", ")}${office.departments.length > 2 ? ` and ${office.departments.length - 2} more` : ""}`}
           </span>
           <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.5, color: COLORS.ink, marginTop: 7 }}>
@@ -177,7 +177,7 @@ export default function Offices({ initialQuery = "" }) {
                     setKind(key);
                     setOpen(null);
                   }}
-                  style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, padding: "8px 14px", borderRadius: 999, cursor: "pointer", border: `1px solid ${kind === key ? COLORS.accent : COLORS.hairline}`, background: kind === key ? `${COLORS.accent}1f` : "transparent", color: kind === key ? COLORS.accent : COLORS.inkSoft }}
+                  style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, padding: "8px 14px", borderRadius: 999, cursor: "pointer", border: `1px solid ${kind === key ? COLORS.accent : COLORS.hairline}`, background: kind === key ? `${COLORS.accent}1f` : "transparent", color: kind === key ? COLORS.accentText : COLORS.inkSoft }}
                 >
                   {label}
                 </button>

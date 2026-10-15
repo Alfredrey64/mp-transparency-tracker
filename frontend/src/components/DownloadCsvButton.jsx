@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { COLORS, FONT_BODY } from "../theme";
+import { COLORS, FONT_BODY, readable } from "../theme";
 import { toCsv, csvFilename, downloadCsv } from "../lib/csv";
 
 // A quiet text button that downloads a table as a CSV file. Pass `rows`
@@ -27,7 +27,7 @@ export default function DownloadCsvButton({ label, slug, columns, rows, loadRows
       disabled={status === "busy"}
       style={{
         background: "none", border: "none", padding: 0, cursor: status === "busy" ? "progress" : "pointer",
-        fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: status === "error" ? "#9C3B3B" : COLORS.accent, ...style,
+        fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: status === "error" ? readable("#9C3B3B") : COLORS.accent, ...style,
       }}
     >
       {status === "busy" ? "Preparing the file…" : status === "error" ? "Couldn't prepare that. Try again" : `${label} ↓`}

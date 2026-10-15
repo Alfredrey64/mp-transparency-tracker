@@ -3,7 +3,7 @@ import WhatThisMeans from "./WhatThisMeans";
 import { describeAgainst } from "../lib/interpret";
 import { supabase } from "../supabaseClient";
 import { fetchAllRows } from "../lib/supabasePagination";
-import { COLORS, FONT_BODY, PAGE_PADDING, numeric } from "../theme";
+import { COLORS, FONT_BODY, PAGE_PADDING, numeric, readable } from "../theme";
 import { partyColour } from "../lib/format";
 import PartyChangeNote from "./PartyChangeNote";
 import { seatKey, ordinal } from "../lib/constituency";
@@ -377,7 +377,7 @@ export default function ConstituencyHub({ seat, onSelectPolitician }) {
               ) : (
                 <>
                   {seat && (
-                    <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: "#9C3B3B", marginBottom: 14 }}>
+                    <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: readable("#9C3B3B"), marginBottom: 14 }}>
                       We couldn't find a constituency called “{seat}”. It may be vacant, or spelled differently. Try searching, or tap the map.
                     </div>
                   )}

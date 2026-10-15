@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { YearsMeaning } from "./MpMeaning";
-import { COLORS, FONT_BODY, FONT_DISPLAY, numeric } from "../theme";
+import { COLORS, FONT_BODY, FONT_DISPLAY, numeric, readable } from "../theme";
 import { loadCareerDetail } from "../lib/careerDetail";
 import {
   EVENT_KINDS, axisTicks, buildEvents, buildLanes, careerStory, chartRange, duration, monthYear, ms, partyColourByName, summarise,
@@ -172,7 +172,7 @@ function Log({ events, now }) {
                   <span aria-hidden="true" style={{ position: "absolute", left: -23, top: 15, width: 10, height: 10, borderRadius: "50%", background: k.colour, border: `2px solid ${COLORS.paper}` }} />
                   <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "2px 10px" }}>
                     <span style={{ fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: 600, color: COLORS.ink }}>{e.title}</span>
-                    <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: k.colour }}>{k.label}</span>
+                    <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: readable(k.colour) }}>{k.label}</span>
                   </div>
                   {e.sub && <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 1 }}>{e.sub}</div>}
                   <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 2 }}>

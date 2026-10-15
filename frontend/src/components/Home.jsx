@@ -282,7 +282,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
             { value: "Official", label: "source data only", icon: IconShield, color: "#1FA97C" },
           ].map((s) => (
             <div key={s.label} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, minWidth: 108 }}>
-              <div style={{ width: 46, height: 46, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", background: `${s.color}18`, color: s.color }}>
+              <div style={{ width: 46, height: 46, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", background: `${s.color}18`, color: readable(s.color) }}>
                 <s.icon size={20} />
               </div>
               <div className="hero-stat-value" style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 26, color: COLORS.ink }}>{s.value}</div>
@@ -446,7 +446,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                     <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, marginTop: 3 }}>
                       {activeTab === "donations" ? `from ${item.donor_name ?? item.summary}` : item.summary}
                     </div>
-                    <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.75, marginTop: 2 }}>
+                    <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 2 }}>
                       {formatDate(item.date_registered)}
                     </div>
                   </div>
@@ -642,7 +642,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
 
             {parliamentTab === "changes" ? (
               <>
-                <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.75, marginBottom: 14 }}>
+                <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 14 }}>
                   The most recent declared interests, bill updates, ministerial gifts, and petition responses on this site.
                 </div>
 
@@ -684,7 +684,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                         <span
                           style={{
                             flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
-                            width: 28, height: 28, borderRadius: 8, background: `${meta.color}14`, color: meta.color, marginTop: 1,
+                            width: 28, height: 28, borderRadius: 8, background: `${meta.color}14`, color: readable(meta.color), marginTop: 1,
                           }}
                         >
                           <Icon size={14} />
@@ -707,7 +707,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
               </>
             ) : (
               <>
-                <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, opacity: 0.75, marginBottom: 14 }}>
+                <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 14 }}>
                   Debates the Commons actually held on today's date in past years, straight from the official Hansard record.
                 </div>
 

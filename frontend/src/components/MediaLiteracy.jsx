@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconBroadcast, IconBook } from "./icons";
@@ -85,35 +85,35 @@ function BroadcastHero() {
 const OUTLETS = [
   {
     name: "BBC",
-    color: "#5A7FA6",
+    color: readable("#5A7FA6"),
     funding: "The TV licence fee: a statutory charge on households, set by government but collected independently.",
     ownership: "A public corporation operating under a Royal Charter, not owned by shareholders or the state directly.",
     regulator: "Regulated by Ofcom for due impartiality since 2017 (previously self-regulated under its own Charter).",
   },
   {
     name: "ITV",
-    color: "#9C6B30",
+    color: readable("#9C6B30"),
     funding: "Commercial advertising revenue.",
     ownership: "A publicly listed company (ITV plc) on the London Stock Exchange, owned by its shareholders.",
     regulator: "Regulated by Ofcom for due impartiality, like every UK broadcast news service.",
   },
   {
     name: "Channel 4",
-    color: "#B5533C",
+    color: readable("#B5533C"),
     funding: "Commercial advertising revenue, despite public ownership.",
     ownership: "Publicly owned (a state-owned corporation): the government considered privatising it in 2022 but reversed that decision in January 2023.",
     regulator: "Regulated by Ofcom for due impartiality.",
   },
   {
     name: "Sky News",
-    color: "#3F7D5C",
+    color: readable("#3F7D5C"),
     funding: "Subscription and advertising revenue, cross-funded within the wider Sky/Comcast group.",
     ownership: "Owned by Sky Group, itself owned by Comcast, a US media conglomerate, since 2018.",
     regulator: "Regulated by Ofcom for due impartiality.",
   },
   {
     name: "GB News",
-    color: "#6E4B6E",
+    color: readable("#6E4B6E"),
     funding: "Commercial advertising and direct shareholder investment (it has reported significant losses since launch).",
     ownership: "Privately owned through the holding company All Perspectives Ltd, whose main backers are the investment firm Legatum Ventures and the financier Sir Paul Marshall. The exact shareholdings are in its Companies House filings.",
     regulator: "Regulated by Ofcom for due impartiality. Ofcom has found it in breach of the Broadcasting Code on several occasions, for example over a campaign it ran on cash and over an interview a sitting MP did with a minister from their own party. Some of its findings were later overturned in court.",
@@ -157,11 +157,11 @@ function OutletCard({ outlet, index, open, onToggle }) {
         style={{ overflow: "hidden" }}
       >
         <div style={{ padding: "0 16px 16px" }}>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: outlet.color, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>Ownership</div>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: readable(outlet.color), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>Ownership</div>
           <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.55, marginBottom: 10 }}>{outlet.ownership}</div>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: outlet.color, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>Funding</div>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: readable(outlet.color), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>Funding</div>
           <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.55, marginBottom: 10 }}>{outlet.funding}</div>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: outlet.color, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>Regulation</div>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: readable(outlet.color), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>Regulation</div>
           <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.55 }}>{outlet.regulator}</div>
         </div>
       </motion.div>
@@ -254,7 +254,7 @@ function ImpartialityQuiz() {
                   <motion.div
                     initial={{ opacity: 0, y: -4 }}
                     animate={{ opacity: 1, y: 0 }}
-                    style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, marginTop: 10, color: feedback === "correct" ? "#3F7D5C" : "#9C3B3B" }}
+                    style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, marginTop: 10, color: feedback === "correct" ? readable("#3F7D5C") : readable("#9C3B3B") }}
                   >
                     {feedback === "correct" ? "✓ Correct" : `✗ Actually ${current.answer === "broadcast" ? "a broadcaster, legally impartial" : "a newspaper, free to editorialise"}`}
                   </motion.div>
@@ -323,31 +323,31 @@ function ImpartialityQuiz() {
 const CODE_REQUIREMENTS = [
   {
     title: "Due impartiality",
-    color: "#5A7FA6",
+    color: readable("#5A7FA6"),
     rule: "Broadcasting Code, Section 5",
     body: "An \"appropriately wide range of significant views\" must be included and given \"due weight\" on any matter of political or industrial controversy, or current public policy, and the programme itself, not just the channel's output over time, has to achieve this on major matters. A broadcaster can't simply balance things out across a whole week; a single one-sided programme on a big issue can breach the rule on its own.",
   },
   {
     title: "Due accuracy",
-    color: "#4C7A6B",
+    color: readable("#4C7A6B"),
     rule: "Broadcasting Code, Section 5",
     body: "Facts must be checked and significant errors corrected. \"Due\" means accuracy appropriate to the subject and nature of the programme, so a throwaway aside is judged more lightly than a claim central to a news report. Material factual mistakes that could mislead audiences on matters of public importance have to be corrected, and correction has to be proportionate to how prominent the original error was.",
   },
   {
     title: "No politicians as newsreaders or interviewers",
-    color: "#9C6B30",
+    color: readable("#9C6B30"),
     rule: "Broadcasting Code, Section 5.3",
     body: "A sitting politician cannot present, interview, or report in a news programme, and can only appear in other programming (chat shows, current affairs) if there's a clear editorial justification and, critically, their political allegiance is made clear to the audience. The rule is about news programmes: in February 2025 the High Court ruled that it does not cover current affairs programmes, and Ofcom then consulted on widening it.",
   },
   {
     title: "Fairness",
-    color: "#B5533C",
+    color: readable("#B5533C"),
     rule: "Broadcasting Code, Section 7",
     body: "Anyone who could be significantly criticised in a programme should normally be given a chance to respond before broadcast, and contributors shouldn't be treated unjustly through misleading editing or a lack of information about what they were contributing to. This protects the people and organisations covered, not just the audience.",
   },
   {
     title: "Extra care at elections and referendums",
-    color: "#6E4B6E",
+    color: readable("#6E4B6E"),
     rule: "Broadcasting Code, Section 6",
     body: "During an election or referendum period the impartiality duty tightens further, broadcasters must give due weight to all major parties and campaigns, and news coverage of constituency and electoral area campaigns comes with additional rules on candidate participation and airtime.",
   },
@@ -356,7 +356,7 @@ const CODE_REQUIREMENTS = [
 const REAL_CASES = [
   {
     outlet: "GB News",
-    color: "#6E4B6E",
+    color: readable("#6E4B6E"),
     date: "July 2023 (ruled December 2023)",
     programme: "The Live Desk",
     verdict: "Breach",
@@ -365,7 +365,7 @@ const REAL_CASES = [
   },
   {
     outlet: "GB News",
-    color: "#6E4B6E",
+    color: readable("#6E4B6E"),
     date: "March 2023 (ruled September 2023)",
     programme: "Friday & Saturday Morning with Esther and Phil",
     verdict: "Breach",
@@ -374,7 +374,7 @@ const REAL_CASES = [
   },
   {
     outlet: "GB News",
-    color: "#6E4B6E",
+    color: readable("#6E4B6E"),
     date: "May and June 2023 (ruled March 2024)",
     programme: "State of the Nation",
     verdict: "Overturned",
@@ -383,7 +383,7 @@ const REAL_CASES = [
   },
   {
     outlet: "BBC",
-    color: "#5A7FA6",
+    color: readable("#5A7FA6"),
     date: "February 2021 (ruled July 2022)",
     programme: "The World at One (BBC Radio 4)",
     verdict: "Breach",
@@ -392,7 +392,7 @@ const REAL_CASES = [
   },
   {
     outlet: "BBC",
-    color: "#5A7FA6",
+    color: readable("#5A7FA6"),
     date: "December 2021 (ruled November 2022)",
     programme: "News coverage of an antisemitic attack on a bus in London",
     verdict: "Fell short",
@@ -402,9 +402,9 @@ const REAL_CASES = [
 ];
 
 const VERDICT_STYLES = {
-  Breach: { label: "Ruled a breach", color: "#9C3B3B" },
-  Overturned: { label: "Overturned on appeal", color: "#4C7A6B" },
-  "Fell short": { label: "Fell short, not a breach", color: "#9C6B30" },
+  Breach: { label: "Ruled a breach", color: readable("#9C3B3B") },
+  Overturned: { label: "Overturned on appeal", color: readable("#4C7A6B") },
+  "Fell short": { label: "Fell short, not a breach", color: readable("#9C6B30") },
 };
 
 function CaseCard({ item, index }) {
@@ -425,7 +425,7 @@ function CaseCard({ item, index }) {
           <span
             style={{
               fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, letterSpacing: "0.04em", textTransform: "uppercase",
-              color: item.color, background: `${item.color}1A`, padding: "3px 9px", borderRadius: 999,
+              color: readable(item.color), background: `${item.color}1A`, padding: "3px 9px", borderRadius: 999,
             }}
           >
             {item.outlet}
@@ -438,7 +438,7 @@ function CaseCard({ item, index }) {
         <span
           style={{
             fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, letterSpacing: "0.05em", textTransform: "uppercase",
-            color: verdict.color, background: `${verdict.color}1A`, border: `1px solid ${verdict.color}33`, padding: "3px 9px", borderRadius: 999,
+            color: readable(verdict.color), background: `${verdict.color}1A`, border: `1px solid ${verdict.color}33`, padding: "3px 9px", borderRadius: 999,
           }}
         >
           {verdict.label}
@@ -520,7 +520,7 @@ export default function MediaLiteracy() {
               style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${req.color}`, borderRadius: 14, padding: 16 }}
             >
               <div style={{ fontFamily: FONT_DISPLAY, fontSize: 16, color: COLORS.ink, marginBottom: 4 }}>{req.title}</div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: req.color, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: readable(req.color), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>
                 {req.rule}
               </div>
               <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.6 }}>{req.body}</div>

@@ -1,16 +1,52 @@
-import { BarRows, Caution, Panel, RangeRows, Stats } from "./insight";
+import { useState } from "react";
+import { pillStyle } from "../lib/onsStyles";
+import { BarRows, Caution, Panel, RangeRows, Stats, TimeChart } from "./insight";
 import { FOOD_PRICES, GDP_ESTIMATES, NBER_EFFECTS, OBR, SOURCES } from "../data/brexit";
-import { para, strong } from "../lib/insightStyle";
+import { para, strong, toPoints } from "../lib/insightStyle";
+import { B, EVENT_LINES, EVENT_NOTE, GDP_PICKS, last, quarterLabel } from "../lib/brexit";
 
 const ACCENT = "#1D4ED8";
 const li = { margin: "0 0 8px", paddingLeft: 2 };
 
 const phrase = (e) => (e.high <= 0 ? `${Math.abs(e.high)}% to ${Math.abs(e.low)}% smaller` : `${e.low}% to ${e.high}% bigger`);
 
+const GDP_COLOURS = { GBR: ACCENT, G7: "#6B7280", EU: "#C0561F", EA: "#0E9AA7", USA: "#D6455D", FRA: "#7A5AF0", DEU: "#C7871A", ITA: "#0F766E", CAN: "#9D174D", JPN: "#4D7C0F" };
+const MAX_PICKED = 6;
+
+// The UK's income per head against other economies, from the quarter of the referendum.
+function Compare() {
+  const [picked, setPicked] = useState(["GBR", "G7", "EU", "USA"]);
+  const toggle = (c) => setPicked((p) => (c === "GBR" ? p : p.includes(c) ? p.filter((x) => x !== c) : p.length < MAX_PICKED ? [...p, c] : p));
+  const g = B.gdp;
+  const lines = picked.map((c) => ({ name: g.names[c], color: GDP_COLOURS[c], points: toPoints(g.times, g.series[c], quarterLabel) }));
+  const readout = picked.map((c) => `${g.names[c]} ${(last(g.series[c]) - 100 >= 0 ? "+" : "") + (last(g.series[c]) - 100).toFixed(1)}%`).join(", ");
+  const ranking = GDP_PICKS.filter((c) => !["G7", "EU", "EA"].includes(c)).map((c) => ({ c, v: last(g.series[c]) })).sort((a, b) => b.v - a.v);
+  const ukRank = ranking.findIndex((r) => r.c === "GBR") + 1;
+  return (
+    <Panel
+      id="h-bxe-compare" accent={ACCENT} title="How the UK economy has done against others"
+      lead={`Real income per head in each economy, set to 100 in the quarter of the referendum, to ${quarterLabel(g.times.at(-1))}. Choose up to ${MAX_PICKED} lines; the UK stays on.`}
+      sources={[SOURCES.oecdGdp]}
+    >
+      <div role="group" aria-label="Economies" style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
+        {GDP_PICKS.map((c) => (
+          <button key={c} type="button" aria-pressed={picked.includes(c)} disabled={c === "GBR"} onClick={() => toggle(c)} style={{ ...pillStyle(picked.includes(c)), display: "inline-flex", alignItems: "center", gap: 7, opacity: c === "GBR" ? 0.85 : 1 }}>
+            <span aria-hidden="true" style={{ width: 10, height: 10, borderRadius: 5, background: GDP_COLOURS[c], boxShadow: picked.includes(c) ? "0 0 0 2px #fff" : "none", opacity: picked.includes(c) ? 1 : 0.55 }} />{g.names[c]}
+          </button>
+        ))}
+      </div>
+      <TimeChart from={2014} to={2027} yFormat={(v) => `${Math.round(v)}`} accent={ACCENT} height={310} breaks={EVENT_LINES} lines={lines} ariaLabel={`Real GDP per head, ${quarterLabel(g.times[0])} to ${quarterLabel(g.times.at(-1))}, 2016 Q2 equals 100. Change since: ${readout}.`} />
+      <p style={para}>Change since the referendum quarter: {readout}. Among the seven individual countries shown, the UK is {ukRank === 1 ? "first" : `${["", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth"][ukRank]}`} for growth in income per head, from the highest ({g.names[ranking[0].c]}, {(ranking[0].v - 100).toFixed(1)}%) to the lowest ({g.names[ranking.at(-1).c]}, {(ranking.at(-1).v - 100).toFixed(1)}%). {EVENT_NOTE}</p>
+      <Caution title="A comparison, not a measurement of Brexit">Every economy was hit by the pandemic and then by the energy price rise, and they differ in other ways too, so a gap in growth is not all down to Brexit. The estimates below try to separate it out and they disagree about how much.</Caution>
+    </Panel>
+  );
+}
+
 export default function BrexitEconomy() {
   const rows = GDP_ESTIMATES.map((e) => ({ label: e.label, low: e.low, high: e.high, text: phrase(e), note: `${e.who}. ${e.kind}. ${e.note}.` }));
   return (
     <div>
+      <Compare />
       <Panel
         id="h-bxe-gdp" accent={ACCENT} title="How big is the effect on the economy?"
         lead="Estimates of the size of the UK economy compared with how big it would have been if the UK had stayed in the EU. A bar to the left of the line is a loss and a bar to the right is a gain."
