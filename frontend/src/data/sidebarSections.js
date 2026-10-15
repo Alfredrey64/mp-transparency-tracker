@@ -1,6 +1,6 @@
 import {
   IconFlow, IconCoin, IconVote, IconGroup, IconInfluence, IconManifesto, IconTracker,
-  IconGlossary, IconHistory, IconDevolved, IconFormerMP, IconCabinet, IconScales, IconEuStars, IconDefence, IconMortarboard, IconPension, IconPulse, IconBolt, IconHeart, IconTimeline,
+  IconGlossary, IconHistory, IconDevolved, IconFormerMP, IconCabinet, IconScales, IconEuStars, IconDefence, IconMortarboard, IconPension, IconPulse, IconBolt, IconHeart, IconTransport, IconTimeline,
   IconPartyFinance, IconByElection, IconLords, IconPetition, IconCompass, IconCommittee, IconCompare, IconMeeting,
   IconQuestion, IconGavel, IconRankings, IconDarkMoney, IconThinkTank, IconDoor, IconRegister,
   IconSearch, IconBook, IconChartBars, IconTopic, IconRoute, IconSplit, IconHexMap, IconCouncil,
@@ -106,6 +106,7 @@ export const SECTIONS = [
       { key: "energy", label: "Net zero and energy bills", icon: IconBolt, hint: "Emissions, electricity, what bills are made of, and the arguments", essential: true, aka: ["energy", "net zero", "energy bills", "price cap", "ofgem", "electricity", "gas", "emissions", "carbon budget", "climate", "climate change", "renewables", "wind", "solar", "nuclear", "fuel poverty", "heat pump", "clean power", "decarbonisation", "greenhouse gas", "co2", "gas prices", "electricity prices"] },
       { key: "trust", label: "Trust in politics", icon: IconBallot, hint: "Trust in government, turnout, votes against seats, and the arguments", essential: true, aka: ["trust", "trust in government", "trust in politicians", "turnout", "voter turnout", "voting system", "proportional representation", "first past the post", "electoral reform", "political trust", "confidence in parliament", "disillusion", "politicians lie", "honesty", "apathy", "non voters"] },
       { key: "care", label: "Social care and childcare", icon: IconHeart, hint: "Care spending, carers and care workers, and funded childcare", essential: true, aka: ["social care", "adult social care", "care homes", "carers", "unpaid carers", "care workers", "home care", "childcare", "free childcare", "30 hours", "nursery", "early years", "funded hours", "childminders", "care costs", "dementia care", "care funding", "elderly care"] },
+      { key: "transport", label: "Transport", icon: IconTransport, hint: "Roads and cars, trains, buses and where it differs", essential: true, aka: ["transport", "trains", "rail", "railways", "buses", "roads", "potholes", "cars", "electric cars", "ev", "road deaths", "road safety", "traffic", "fares", "great british railways", "network rail", "hs2", "bus franchising", "public transport", "commuting"] },
       { key: "publicFinances", label: "Public finances", icon: IconLedger, hint: "Borrowing, debt and public sector jobs", aka: ["national debt", "borrowing", "deficit", "public sector"] },
       { key: "population", label: "Population", icon: IconPopulation, hint: "How many of us there are", aka: ["census", "people", "growth", "demographics"] },
       { key: "health", label: "Health", icon: IconHeartbeat, hint: "NHS staff, sickness and deaths", aka: ["nhs", "deaths", "sickness", "healthcare"] },

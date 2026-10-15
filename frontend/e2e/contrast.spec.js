@@ -16,6 +16,7 @@ const PAGES = [
   "/energy", "/energy/emissions", "/energy/power", "/energy/bills", "/energy/arguments",
   "/trust", "/trust/trust", "/trust/voting", "/trust/money", "/trust/arguments",
   "/care", "/care/adult", "/care/workers", "/care/childcare", "/care/arguments",
+  "/transport", "/transport/roads", "/transport/rail", "/transport/buses", "/transport/place", "/transport/arguments",
   "/taxRates", "/glossary", "/settings", "/generalElection/history/1997",
 ];
 

@@ -302,3 +302,22 @@ test("the care charts switch view, and the childcare map and chart work", async 
   await funded.getByRole("button", { name: "Take-up" }).click();
   await expect(funded).toContainText("registered");
 });
+
+test("the transport map changes with the measure, and the rail and bus charts switch view", async ({ page }) => {
+  await page.goto("/transport/place");
+  const map = card(page, "h-tp-map");
+  await expect(map).toContainText("South East is highest");
+  await map.getByRole("button", { name: "Bus journeys per person" }).click();
+  await expect(map).toContainText("London is highest");
+  await map.getByRole("list", { name: /by region, highest first/ }).getByRole("button", { name: /Wales/ }).click();
+  await expect(map.getByRole("heading", { name: "Wales" })).toBeVisible();
+  await expect(map).toContainText("Cars per 1,000 people");
+  await page.goto("/transport/rail");
+  const rail = card(page, "h-tt-rail");
+  await rail.getByRole("button", { name: "Fares against prices" }).click();
+  await expect(rail).toContainText("Retail Prices Index");
+  await page.goto("/transport/buses");
+  const bus = card(page, "h-tb-main");
+  await bus.getByRole("button", { name: "Fares" }).click();
+  await expect(bus).toContainText("March 2005 as 100");
+});

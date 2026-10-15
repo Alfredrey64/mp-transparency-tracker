@@ -241,6 +241,11 @@ export const PAGE_GUIDES = {
     why: "The State Pension is one of the biggest items the government pays for, and a smaller share of people of working age will be paying for it.",
     notShown: "Workplace and private pensions, benefits for older people other than the State Pension, or social care costs.",
   },
+  transport: {
+    what: "How much we drive and what new cars run on, the state of local roads, road deaths, how rail and buses are used, paid for and run, and where it differs across the country, with the arguments.",
+    why: "Transport takes a large part of the household budget and the public purse, and it is the biggest source of the UK's greenhouse gases.",
+    notShown: "Walking and cycling in detail, freight, aviation and shipping, the cost of new roads and rail lines, or the price of fuel and owning a car.",
+  },
   care: {
     what: "What councils spend on adult social care, who pays and who gets help, the care workers and carers who provide it, and funded childcare for young children, with the arguments.",
     why: "Almost everyone will need care or childcare at some point, and how they are paid for is one of the biggest questions facing councils and the government.",

@@ -79,6 +79,7 @@ export const LOADERS = {
   energy: () => import("./components/Energy"),
   trust: () => import("./components/Trust"),
   care: () => import("./components/Care"),
+  transport: () => import("./components/Transport"),
   ageing: () => import("./components/Ageing"),
 };
 
