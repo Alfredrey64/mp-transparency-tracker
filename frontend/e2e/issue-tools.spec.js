@@ -232,3 +232,34 @@ test("the NHS comparison changes measure and keeps the UK highlighted", async ({
   await expect(compare.getByRole("button", { name: "Hospital beds per 1,000" })).toHaveAttribute("aria-pressed", "true");
   await expect(compare).toContainText("South Korea");
 });
+
+test("the energy regional map changes with the measure and shows a region on every measure", async ({ page }) => {
+  await page.goto("/energy/emissions");
+  const map = card(page, "h-ne-map");
+  await expect(map).toContainText("Northern Ireland is highest");
+  await map.getByRole("button", { name: "Transport" }).click();
+  await expect(map).toContainText("is highest");
+  await map.getByRole("list", { name: /by region, highest first/ }).getByRole("button", { name: /London/ }).click();
+  await expect(map.getByRole("heading", { name: "London" })).toBeVisible();
+  await expect(map).toContainText("Fall in emissions per person");
+});
+
+test("the energy charts switch view and the bill tool changes with the area and use", async ({ page }) => {
+  await page.goto("/energy");
+  const trends = card(page, "h-no-trends");
+  await trends.getByRole("button", { name: "Fossil fuels in electricity" }).click();
+  await expect(trends).toContainText("Gas, coal and oil");
+  await page.goto("/energy/bills");
+  const cap = card(page, "h-nb-cap");
+  await cap.getByRole("button", { name: "Networks and schemes" }).click();
+  await expect(cap).toContainText("Government schemes");
+  const area = card(page, "h-nb-area");
+  const before = await area.locator("[aria-live=polite]").innerText();
+  await area.getByRole("combobox").selectOption("North Scotland");
+  await area.getByLabel("Electricity used in a year").fill("6000");
+  const after = await area.locator("[aria-live=polite]").innerText();
+  expect(after).not.toEqual(before);
+  await expect(area.locator("[aria-live=polite]")).toContainText("North Scotland");
+  await area.getByRole("button", { name: "Gas", exact: true }).click();
+  await expect(area).toContainText("The gas bill ranges from");
+});

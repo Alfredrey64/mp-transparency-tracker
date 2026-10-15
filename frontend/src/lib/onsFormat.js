@@ -69,6 +69,7 @@ export function formatValue(format, v) {
     case "minutes": return `${v.toFixed(1)} minutes`;
     case "usd": return `$${v.toFixed(2)}`;
     case "eur": return `€${v.toFixed(2)}`;
+    case "tonnes": return `${v.toFixed(1)} t`; // tonnes per person
     default: return String(v);
   }
 }

@@ -1,6 +1,6 @@
 import {
   IconFlow, IconCoin, IconVote, IconGroup, IconInfluence, IconManifesto, IconTracker,
-  IconGlossary, IconHistory, IconDevolved, IconFormerMP, IconCabinet, IconScales, IconEuStars, IconDefence, IconMortarboard, IconPension, IconPulse, IconTimeline,
+  IconGlossary, IconHistory, IconDevolved, IconFormerMP, IconCabinet, IconScales, IconEuStars, IconDefence, IconMortarboard, IconPension, IconPulse, IconBolt, IconTimeline,
   IconPartyFinance, IconByElection, IconLords, IconPetition, IconCompass, IconCommittee, IconCompare, IconMeeting,
   IconQuestion, IconGavel, IconRankings, IconDarkMoney, IconThinkTank, IconDoor, IconRegister,
   IconSearch, IconBook, IconChartBars, IconTopic, IconRoute, IconSplit, IconHexMap, IconCouncil,
@@ -103,6 +103,7 @@ export const SECTIONS = [
       { key: "education", label: "Education", icon: IconMortarboard, hint: "Schools, the attainment gap, special needs and university fees", essential: true, aka: ["education", "schools", "teachers", "gcse", "attainment", "send", "special educational needs", "ehcp", "free school meals", "university", "tuition fees", "student loans", "student finance", "pupil premium", "disadvantage gap"] },
       { key: "ageing", label: "Ageing and pensions", icon: IconPension, hint: "The State Pension, the triple lock, the pension age and the cost", essential: true, aka: ["pensions", "state pension", "triple lock", "pension age", "retirement", "ageing", "older people", "elderly", "pensioners", "old age", "dependency ratio", "national insurance"] },
       { key: "nhs", label: "The NHS", icon: IconPulse, hint: "Waiting times by region, A&E, staff, funding and how the UK compares", essential: true, aka: ["nhs", "waiting list", "waiting lists", "a&e", "ambulance", "cancer waiting", "hospital", "health service", "nhs funding", "doctors", "nurses", "18 weeks", "rtt", "gp", "healthcare"] },
+      { key: "energy", label: "Net zero and energy bills", icon: IconBolt, hint: "Emissions, electricity, what bills are made of, and the arguments", essential: true, aka: ["energy", "net zero", "energy bills", "price cap", "ofgem", "electricity", "gas", "emissions", "carbon budget", "climate", "climate change", "renewables", "wind", "solar", "nuclear", "fuel poverty", "heat pump", "clean power", "decarbonisation", "greenhouse gas", "co2", "gas prices", "electricity prices"] },
       { key: "publicFinances", label: "Public finances", icon: IconLedger, hint: "Borrowing, debt and public sector jobs", aka: ["national debt", "borrowing", "deficit", "public sector"] },
       { key: "population", label: "Population", icon: IconPopulation, hint: "How many of us there are", aka: ["census", "people", "growth", "demographics"] },
       { key: "health", label: "Health", icon: IconHeartbeat, hint: "NHS staff, sickness and deaths", aka: ["nhs", "deaths", "sickness", "healthcare"] },

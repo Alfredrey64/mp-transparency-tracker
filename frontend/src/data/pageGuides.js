@@ -241,6 +241,11 @@ export const PAGE_GUIDES = {
     why: "The State Pension is one of the biggest items the government pays for, and a smaller share of people of working age will be paying for it.",
     notShown: "Workplace and private pensions, benefits for older people other than the State Pension, or social care costs.",
   },
+  energy: {
+    what: "How much the UK releases and whether it is on course for its targets, where its electricity comes from, what households pay for gas and electricity and what the price cap is made of, where it is dearest, and the arguments.",
+    why: "Energy bills hit every household, and the targets for cutting emissions shape what the country spends and builds for decades.",
+    notShown: "The cost of Great Britain's grid in detail, heating and transport technology, North Sea oil and gas, industrial energy prices, or the effect of climate change itself.",
+  },
   nhs: {
     what: "How long people wait for hospital treatment, A&E, ambulances and cancer care in England, where waits are longest, who works in the NHS, what is spent, how the UK compares, and the arguments.",
     why: "The NHS is the largest single public service, and waits are one of the things people notice most about it.",
