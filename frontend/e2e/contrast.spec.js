@@ -14,6 +14,7 @@ const PAGES = [
   "/defence", "/defence/spending", "/defence/people", "/education", "/education/gaps", "/education/send", "/education/university",
   "/ageing", "/ageing/pension", "/ageing/cost", "/ageing/people", "/nhs", "/nhs/waiting", "/nhs/emergency", "/nhs/money", "/nhs/arguments",
   "/energy", "/energy/emissions", "/energy/power", "/energy/bills", "/energy/arguments",
+  "/trust", "/trust/trust", "/trust/voting", "/trust/money", "/trust/arguments",
   "/taxRates", "/glossary", "/settings", "/generalElection/history/1997",
 ];
 

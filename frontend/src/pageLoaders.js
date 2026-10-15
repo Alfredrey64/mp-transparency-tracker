@@ -77,6 +77,7 @@ export const LOADERS = {
   education: () => import("./components/Education"),
   nhs: () => import("./components/Nhs"),
   energy: () => import("./components/Energy"),
+  trust: () => import("./components/Trust"),
   ageing: () => import("./components/Ageing"),
 };
 

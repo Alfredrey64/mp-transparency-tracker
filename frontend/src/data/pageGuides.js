@@ -241,6 +241,11 @@ export const PAGE_GUIDES = {
     why: "The State Pension is one of the biggest items the government pays for, and a smaller share of people of working age will be paying for it.",
     notShown: "Workplace and private pensions, benefits for older people other than the State Pension, or social care costs.",
   },
+  trust: {
+    what: "How much people in the UK trust government, parliament and other institutions against other countries, how many vote and what the votes turn into, where to follow the money, and the arguments.",
+    why: "Trust is what lets people accept decisions they disagree with, and surveys show it has fallen.",
+    notShown: "Why any one person distrusts politicians, trust in the media or the police, local elections, or how trust differs between groups.",
+  },
   energy: {
     what: "How much the UK releases and whether it is on course for its targets, where its electricity comes from, what households pay for gas and electricity and what the price cap is made of, where it is dearest, and the arguments.",
     why: "Energy bills hit every household, and the targets for cutting emissions shape what the country spends and builds for decades.",

@@ -263,3 +263,16 @@ test("the energy charts switch view and the bill tool changes with the area and 
   await area.getByRole("button", { name: "Gas", exact: true }).click();
   await expect(area).toContainText("The gas bill ranges from");
 });
+
+test("the trust comparison changes institution and keeps the UK highlighted, and the voting chart switches", async ({ page }) => {
+  await page.goto("/trust/trust");
+  const compare = card(page, "h-tt-compare");
+  await expect(compare).toContainText("United Kingdom");
+  await compare.getByRole("button", { name: "Courts and legal system" }).click();
+  await expect(compare.getByRole("button", { name: "Courts and legal system" })).toHaveAttribute("aria-pressed", "true");
+  await expect(compare).toContainText("OECD average");
+  await page.goto("/trust/voting");
+  const turnout = card(page, "h-tv-turnout");
+  await turnout.getByRole("button", { name: "Labour and Conservative vote share" }).click();
+  await expect(turnout).toContainText("two largest parties together");
+});
