@@ -38,6 +38,13 @@
     "companyNumber": "13054048",
     "sicCode": "94920"
   },
+  "International Centre of Justice for Palestinians (ICJP)": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "INTERNATIONAL CENTRE OF JUSTICE FOR PALESTINIANS",
+    "companyNumber": "13054048",
+    "sicCode": "94920"
+  },
   "National Liberal Club": {
     "sector": "Other / Uncategorised",
     "source": "companies-house",
@@ -444,6 +451,13 @@
     "companyNumber": "00972224",
     "sicCode": "41100"
   },
+  "Millennium Care (U.K.) Limited": {
+    "sector": "Pharma & Healthcare",
+    "source": "companies-house",
+    "companyName": "MILLENNIUM CARE (U.K.) LIMITED",
+    "companyNumber": "03462318",
+    "sicCode": "86900"
+  },
   "SRE Hotels (Cliveden) Ltd": {
     "sector": "Other / Uncategorised",
     "source": "companies-house",
@@ -666,13 +680,6 @@
     "companyName": "ZARAH SULTANA CAMPAIGNS LTD",
     "companyNumber": "13740182",
     "sicCode": "94920"
-  },
-  "The Football Association Premier League": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "THE FOOTBALL ASSOCIATION PREMIER LEAGUE LIMITED",
-    "companyNumber": "02719699",
-    "sicCode": "93199"
   },
   "London Marathon Events Ltd": {
     "sector": "Other / Uncategorised",

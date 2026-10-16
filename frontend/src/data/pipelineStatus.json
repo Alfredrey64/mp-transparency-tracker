@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-10-13T19:42:44.106Z",
-  "succeededCount": 16,
+  "generatedAt": "2026-10-16T16:51:53.715Z",
+  "succeededCount": 15,
   "totalCount": 27,
   "sources": [
     {
@@ -69,7 +69,7 @@
     },
     {
       "label": "Select committees",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Written questions",
