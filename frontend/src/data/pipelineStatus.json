@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-10-16T16:51:53.715Z",
-  "succeededCount": 15,
+  "generatedAt": "2026-10-17T15:24:09.738Z",
+  "succeededCount": 26,
   "totalCount": 27,
   "sources": [
     {
@@ -69,47 +69,47 @@
     },
     {
       "label": "Select committees",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Written questions",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Standards reports",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Constituency results & petitions",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Constituency history (former MPs)",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "MP careers (terms, posts, party changes)",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Lords careers (arrival, former MPs, posts)",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "MP benchmarks (how each MP compares)",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Councils (councillors, make-up, election dates)",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "ONS statistics (economy, prices, jobs, health, population)",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Regional breakdowns (jobs, housing, crime by place)",
-      "succeeded": false
+      "succeeded": true
     }
   ]
 }
