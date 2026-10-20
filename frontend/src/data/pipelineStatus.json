@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-10-19T18:22:17.865Z",
-  "succeededCount": 22,
+  "generatedAt": "2026-10-20T16:53:28.874Z",
+  "succeededCount": 25,
   "totalCount": 27,
   "sources": [
     {
@@ -97,7 +97,7 @@
     },
     {
       "label": "MP benchmarks (how each MP compares)",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Councils (councillors, make-up, election dates)",
@@ -105,11 +105,11 @@
     },
     {
       "label": "ONS statistics (economy, prices, jobs, health, population)",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Regional breakdowns (jobs, housing, crime by place)",
-      "succeeded": false
+      "succeeded": true
     }
   ]
 }
