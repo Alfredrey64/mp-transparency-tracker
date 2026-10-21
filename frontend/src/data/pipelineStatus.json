@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-10-20T16:53:28.874Z",
-  "succeededCount": 25,
+  "generatedAt": "2026-10-21T17:18:50.936Z",
+  "succeededCount": 11,
   "totalCount": 27,
   "sources": [
     {
@@ -53,7 +53,7 @@
     },
     {
       "label": "MP activity",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "IPSA business cost claims",
@@ -61,55 +61,55 @@
     },
     {
       "label": "Petitions",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Ministerial gifts & hospitality",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Select committees",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Written questions",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Standards reports",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Constituency results & petitions",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Constituency history (former MPs)",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "MP careers (terms, posts, party changes)",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Lords careers (arrival, former MPs, posts)",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "MP benchmarks (how each MP compares)",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Councils (councillors, make-up, election dates)",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "ONS statistics (economy, prices, jobs, health, population)",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Regional breakdowns (jobs, housing, crime by place)",
-      "succeeded": true
+      "succeeded": false
     }
   ]
 }
