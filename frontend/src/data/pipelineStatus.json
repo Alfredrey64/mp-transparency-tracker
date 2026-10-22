@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-10-21T17:18:50.936Z",
-  "succeededCount": 11,
+  "generatedAt": "2026-10-22T17:17:30.880Z",
+  "succeededCount": 14,
   "totalCount": 27,
   "sources": [
     {
@@ -53,15 +53,15 @@
     },
     {
       "label": "MP activity",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "IPSA business cost claims",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Petitions",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Ministerial gifts & hospitality",
