@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-10-22T17:17:30.880Z",
-  "succeededCount": 14,
+  "generatedAt": "2026-10-23T17:08:53.255Z",
+  "succeededCount": 18,
   "totalCount": 27,
   "sources": [
     {
@@ -65,19 +65,19 @@
     },
     {
       "label": "Ministerial gifts & hospitality",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Select committees",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Written questions",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Standards reports",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Constituency results & petitions",
