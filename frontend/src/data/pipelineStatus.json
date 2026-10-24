@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-10-23T17:08:53.255Z",
-  "succeededCount": 18,
+  "generatedAt": "2026-10-24T15:11:04.117Z",
+  "succeededCount": 26,
   "totalCount": 27,
   "sources": [
     {
@@ -81,35 +81,35 @@
     },
     {
       "label": "Constituency results & petitions",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Constituency history (former MPs)",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "MP careers (terms, posts, party changes)",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Lords careers (arrival, former MPs, posts)",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "MP benchmarks (how each MP compares)",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Councils (councillors, make-up, election dates)",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "ONS statistics (economy, prices, jobs, health, population)",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Regional breakdowns (jobs, housing, crime by place)",
-      "succeeded": false
+      "succeeded": true
     }
   ]
 }
