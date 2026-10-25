@@ -75,7 +75,7 @@ export function ClaimsTabContent({ politician, claims }) {
                 </span>
                 <span
                   style={{
-                    fontFamily: FONT_MONO, fontSize: 14, fontWeight: 600, color: COLORS.accent, flexShrink: 0,
+                    fontFamily: FONT_MONO, fontSize: 14, fontWeight: 600, color: COLORS.accentText, flexShrink: 0,
                     lineHeight: 1.5, letterSpacing: "-0.01em", fontVariantNumeric: "tabular-nums", background: `${COLORS.accent}14`,
                     padding: "2px 9px", borderRadius: 999,
                   }}
@@ -128,7 +128,7 @@ export function GiftsTabContent({ gifts, failed }) {
               <span
                 style={{
                   fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em",
-                  color: COLORS.accent, background: `${COLORS.accent}18`, padding: "2px 8px", borderRadius: 999,
+                  color: COLORS.accentText, background: `${COLORS.accent}18`, padding: "2px 8px", borderRadius: 999,
                 }}
               >
                 {g.kind}

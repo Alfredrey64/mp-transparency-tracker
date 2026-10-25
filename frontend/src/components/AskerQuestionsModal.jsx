@@ -125,7 +125,7 @@ export default function AskerQuestionsModal({ person, questions, topic, returnFo
                   href={`https://questions-statements.parliament.uk/written-questions/detail/${r.date_tabled}/${r.uin}`}
                   target="_blank"
                   rel="noreferrer"
-                  style={{ display: "inline-block", marginTop: 6, fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.accent }}
+                  style={{ display: "inline-block", marginTop: 6, fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.accentText }}
                 >
                   Full record, with the answer ↗
                 </a>
@@ -137,12 +137,12 @@ export default function AskerQuestionsModal({ person, questions, topic, returnFo
         {(onOpenProfile || onOpenAllQuestions) && (
           <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 18px", padding: "12px 20px", borderTop: `1px solid ${COLORS.hairline}`, background: COLORS.paperCard }}>
             {onOpenProfile && (
-              <button type="button" onClick={onOpenProfile} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accent }}>
+              <button type="button" onClick={onOpenProfile} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accentText }}>
                 See their full profile
               </button>
             )}
             {onOpenAllQuestions && (
-              <button type="button" onClick={onOpenAllQuestions} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accent }}>
+              <button type="button" onClick={onOpenAllQuestions} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accentText }}>
                 All their written questions
               </button>
             )}

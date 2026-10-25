@@ -174,7 +174,7 @@ export default function MembersModal({ title, note, members, badge, returnFocusT
             <button
               type="button"
               onClick={() => setShown((n) => n + PAGE)}
-              style={{ display: "block", margin: "12px auto 0", background: "none", border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: "8px 18px", cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accent }}
+              style={{ display: "block", margin: "12px auto 0", background: "none", border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: "8px 18px", cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accentText }}
             >
               Show {Math.min(PAGE, filtered.length - shown)} more ({(filtered.length - shown).toLocaleString("en-GB")} left)
             </button>

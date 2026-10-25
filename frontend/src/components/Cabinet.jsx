@@ -441,7 +441,7 @@ function CabinetOrgChart({ groups }) {
           borderRadius: 12, background: `${COLORS.accent}12`, border: `1px solid ${COLORS.accent}40`,
         }}
       >
-        <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 15, color: COLORS.accent }}>Prime Minister</span>
+        <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 15, color: COLORS.accentText }}>Prime Minister</span>
       </motion.div>
       <motion.div
         initial={{ height: 0 }}

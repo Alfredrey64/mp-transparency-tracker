@@ -261,7 +261,7 @@ export default function PoliticianList({ onSelect, initialCareer = null }) {
               );
             })}
             {careerKeys.length > 0 && (
-              <button type="button" onClick={() => withScrollPreserved(() => setCareerKeys([]))} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accent }}>
+              <button type="button" onClick={() => withScrollPreserved(() => setCareerKeys([]))} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accentText }}>
                 Clear
               </button>
             )}

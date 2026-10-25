@@ -154,7 +154,7 @@ function ExpandableText({ children, clampLines, style }) {
       {overflows && (
         <button
           onClick={() => setExpanded((e) => !e)}
-          style={{ marginTop: 6, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.accent }}
+          style={{ marginTop: 6, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.accentText }}
         >
           {expanded ? "Show less" : "Show more"}
         </button>
@@ -227,7 +227,7 @@ function QuestionCard({ q, politicianById, onSelectPolitician, index }) {
           href={`https://questions-statements.parliament.uk/written-questions/detail/${q.date_tabled}/${q.uin}`}
           target="_blank"
           rel="noreferrer"
-          style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: COLORS.accent }}
+          style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: COLORS.accentText }}
         >
           Full record ↗
         </a>

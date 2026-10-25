@@ -92,7 +92,7 @@ export default function LordsNumbers({ onNavigate }) {
   return (
     <div>
       <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, margin: 0 }}>
-        <strong style={{ color: COLORS.accent }}>Tap any bar, party or figure marked “See who”</strong> to list the peers behind it. Each name opens that peer's page.
+        <strong style={{ color: COLORS.accentText }}>Tap any bar, party or figure marked “See who”</strong> to list the peers behind it. Each name opens that peer's page.
       </p>
       <div style={{ marginTop: 12 }}>
         <ShareButton filename="house-of-lords-by-the-numbers" label="Share the chamber as an image" getSpec={() => chamberShareSpec({ house: "lords", stats, link: window.location.href })} />
@@ -149,7 +149,7 @@ export default function LordsNumbers({ onNavigate }) {
               onOpen={(r, e) => see(e, r.key === "others" ? "The smaller groups" : r.label, r.key === "others" ? "Groups with only one or two peers." : "Every peer currently sitting with this group.", (m) => r.parties.includes(m.party))}
             />
             <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 22px", marginTop: 12 }}>
-              <button type="button" onClick={() => setShowTable((v) => !v)} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accent }}>
+              <button type="button" onClick={() => setShowTable((v) => !v)} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accentText }}>
                 {showTable ? "Hide the table" : "View every group as a table"}
               </button>
               <DownloadCsvButton label="Download (CSV)" slug="lords-seats-by-group" columns={SEATS_COLUMNS} rows={stats.seatsByParty} />
@@ -276,7 +276,7 @@ export default function LordsNumbers({ onNavigate }) {
               </button>
             ))}
             {onNavigate && (
-              <button type="button" onClick={() => onNavigate("lords")} style={{ marginTop: 14, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accent }}>
+              <button type="button" onClick={() => onNavigate("lords")} style={{ marginTop: 14, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accentText }}>
                 Browse every peer
               </button>
             )}

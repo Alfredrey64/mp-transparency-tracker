@@ -177,7 +177,7 @@ export async function renderShareCard(spec) {
   canvas.height = H * SCALE;
   const ctx = canvas.getContext("2d");
   ctx.scale(SCALE, SCALE);
-  const accent = spec.accent || "#4F46E5";
+  const accent = spec.accent || "#1E4FB8";
 
   // Background: dark, with a wash of the accent from the top right.
   ctx.fillStyle = BG;

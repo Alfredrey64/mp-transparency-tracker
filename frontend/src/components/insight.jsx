@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { COLORS, FONT_BODY, FONT_DISPLAY, numeric, solid } from "../theme";
+import { COLORS, FONT_BODY, FONT_DISPLAY, numeric } from "../theme";
 import { pillStyle } from "../lib/onsStyles";
 import { card, cardTitle } from "../lib/onsStyles";
 import { bandsBetween, PARTY_COLOURS } from "../lib/governments";
@@ -10,18 +10,18 @@ import { para, strong } from "../lib/insightStyle";
 // Building blocks shared by the issue pages (Inequality, Brexit, and the others): the row of toggles at the top, a card with a title and its source,
 // headline figures, bars for comparing a handful of things, a note about a limit of the figures, and a time chart with who was in government behind it.
 
-// A row of toggles with a line under it saying what the chosen one shows.
+// A row of toggles with a line under it saying what the chosen one shows. Drawn as one segmented control that wraps onto more lines on a narrow screen.
 export function PageToggles({ tabs, current, onPick, label, idPrefix }) {
   const active = tabs.find((t) => t.key === current) ?? tabs[0];
   return (
     <div style={{ scrollMarginTop: 12 }}>
-      <div role="tablist" aria-label={label} style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+      <div role="tablist" aria-label={label} className="seg">
         {tabs.map((t) => {
           const on = t.key === active.key;
           return (
             <button
               key={t.key} role="tab" id={`${idPrefix}-tab-${t.key}`} aria-selected={on} aria-controls={`${idPrefix}-panel`} type="button" onClick={() => onPick(t.key)}
-              style={{ minHeight: 44, padding: "9px 16px", borderRadius: 999, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 15, fontWeight: 700, lineHeight: 1.2, border: `1.5px solid ${on ? solid(t.colour) : COLORS.hairline}`, background: on ? solid(t.colour) : COLORS.paperCard, color: on ? "#fff" : COLORS.ink, boxShadow: on ? `0 8px 18px -12px ${t.colour}` : "none", transition: "background 0.2s, color 0.2s, border-color 0.2s" }}
+              className="seg-btn" style={{ "--c": t.colour }}
             >
               {t.label}
             </button>
@@ -36,10 +36,11 @@ export function PageToggles({ tabs, current, onPick, label, idPrefix }) {
 // A card with a title, an optional one-line lead, and where the figures come from.
 export function Panel({ title, lead, children, sources, accent, id, style }) {
   return (
-    <section aria-labelledby={id} style={{ ...card, marginTop: 18, ...(accent ? { borderTop: `5px solid ${accent}` } : null), ...style }}>
-      <h2 id={id} style={{ ...cardTitle, fontSize: 19 }}>{title}</h2>
-      {lead && <p style={{ ...para, marginTop: 4 }}>{lead}</p>}
-      <div style={{ marginTop: 14 }}>{children}</div>
+    <section aria-labelledby={id} style={{ ...card, marginTop: 20, ...style }}>
+      {accent && <span aria-hidden="true" style={{ display: "block", width: 36, height: 4, borderRadius: 2, background: accent, marginBottom: 14 }} />}
+      <h2 id={id} style={{ ...cardTitle, fontSize: 21 }}>{title}</h2>
+      {lead && <p style={{ ...para, marginTop: 6 }}>{lead}</p>}
+      <div style={{ marginTop: 16 }}>{children}</div>
       {sources?.length > 0 && <SourceLine sources={sources} />}
     </section>
   );
@@ -83,7 +84,8 @@ export function Stats({ items, accent }) {
   return (
     <div className="box-row" style={{ "--n": items.length <= 4 ? Math.max(items.length, 1) : 3, "--min": "150px", "--gap": "10px" }}>
       {items.map((s) => (
-        <div key={s.label} style={{ padding: "14px 16px", borderRadius: 16, background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${s.accent ?? accent}`, minWidth: 0 }}>
+        <div key={s.label} style={{ position: "relative", overflow: "hidden", padding: "16px 18px 16px 20px", borderRadius: 12, background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, minWidth: 0 }}>
+          <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 4, background: s.accent ?? accent }} />
           <div style={{ ...numeric, fontSize: "clamp(24px, 5vw, 32px)", fontWeight: 600, lineHeight: 1.05, letterSpacing: "-0.02em", color: COLORS.ink }}>{s.value}</div>
           <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink, marginTop: 6, lineHeight: 1.35 }}>{s.label}</div>
           {s.note && <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 3, lineHeight: 1.4 }}>{s.note}</div>}
@@ -97,7 +99,8 @@ export function Stats({ items, accent }) {
 // "The short version": a few plain sentences that sum up a page, set apart from the cards.
 export function Takeaways({ title = "The short version", items, accent }) {
   return (
-    <aside aria-label={title} style={{ marginTop: 18, padding: "16px 20px 14px", borderRadius: 18, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `6px solid ${accent}` }}>
+    <aside aria-label={title} style={{ position: "relative", overflow: "hidden", marginTop: 20, padding: "20px 24px 18px 28px", borderRadius: 14, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, boxShadow: "var(--shadow-1)" }}>
+      <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: accent }} />
       <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 17, fontWeight: 700, color: COLORS.ink, margin: 0 }}>{title}</h2>
       <ul style={{ margin: "8px 0 0", padding: 0, listStyle: "none", display: "grid", gap: 8 }}>
         {items.map((t, i) => (

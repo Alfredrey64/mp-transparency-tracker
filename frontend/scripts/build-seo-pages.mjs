@@ -103,7 +103,7 @@ function pageHtml({ url, title, description, heading, bodyHtml, go }) {
 <meta name="twitter:title" content="${esc(title)}" />
 <meta name="twitter:description" content="${esc(description)}" />
 <meta name="twitter:image" content="${SITE}/og-image.png" />
-<style>body{margin:0;background:#F0E8D5;color:#191A23;font-family:system-ui,sans-serif;line-height:1.6}main{max-width:720px;margin:0 auto;padding:40px 20px}h1{font-size:30px;line-height:1.2;margin:0 0 12px}a{color:#4F46E5;font-weight:700}p,li{font-size:16px}.k{font-weight:700;color:#5E5C68;font-size:14px;margin:0 0 6px}</style>
+<style>body{margin:0;background:#F3F5F9;color:#0A1424;font-family:system-ui,sans-serif;line-height:1.6}main{max-width:720px;margin:0 auto;padding:40px 20px}h1{font-size:30px;line-height:1.2;margin:0 0 12px}a{color:#1E4FB8;font-weight:700}p,li{font-size:16px}.k{font-weight:700;color:#5E5C68;font-size:14px;margin:0 0 6px}</style>
 </head>
 <body>
 <main>

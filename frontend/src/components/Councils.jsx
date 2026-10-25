@@ -78,7 +78,7 @@ export default function Councils({ param }) {
           )}
           <p style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.6, marginTop: 28, maxWidth: 800 }}>
             Councillors, parties and election dates come from{" "}
-            <a href="https://opencouncildata.co.uk" target="_blank" rel="noreferrer" style={{ color: COLORS.accent, fontWeight: 600 }}>Open Council Data UK</a>{" "}
+            <a href="https://opencouncildata.co.uk" target="_blank" rel="noreferrer" style={{ color: COLORS.accentText, fontWeight: 600 }}>Open Council Data UK</a>{" "}
             (CC BY-SA 4.0), updated after each round of elections. Council control and changes of hands are worked out from each council's seats. Parish and town councils, and ward-by-ward election results, aren't included. By-elections can change a council between updates.
           </p>
         </>

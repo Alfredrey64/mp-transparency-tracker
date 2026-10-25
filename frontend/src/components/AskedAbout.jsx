@@ -179,7 +179,7 @@ export default function AskedAbout({ onSelectPolitician, onNavigateForMp, initia
         }}
       >
         <div style={{ position: "relative" }}>
-          <span style={{ position: "absolute", left: 18, top: "50%", transform: "translateY(-50%)", color: COLORS.accent, display: "flex" }}>
+          <span style={{ position: "absolute", left: 18, top: "50%", transform: "translateY(-50%)", color: COLORS.accentText, display: "flex" }}>
             <IconSearch size={19} />
           </span>
           <input
@@ -285,7 +285,7 @@ export default function AskedAbout({ onSelectPolitician, onNavigateForMp, initia
                         {r.asking_member_party ? ` · ${r.asking_member_party}` : ""} → {r.answering_body_name ?? "the government"} · {formatDate(r.date_tabled)}
                       </div>
                       <div style={{ fontFamily: FONT_DISPLAY, fontSize: 14.5, color: COLORS.ink, lineHeight: 1.5 }}>{r.question_text}</div>
-                      <a href={`https://questions-statements.parliament.uk/written-questions/detail/${r.date_tabled}/${r.uin}`} target="_blank" rel="noreferrer" style={{ display: "inline-block", marginTop: 6, fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.accent }}>
+                      <a href={`https://questions-statements.parliament.uk/written-questions/detail/${r.date_tabled}/${r.uin}`} target="_blank" rel="noreferrer" style={{ display: "inline-block", marginTop: 6, fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.accentText }}>
                         Full record ↗
                       </a>
                     </div>

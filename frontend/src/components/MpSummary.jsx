@@ -82,7 +82,7 @@ export default function MpSummary({ politician, interests, interestsLoading, int
                   borderBottom: `1px solid ${COLORS.hairline}`,
                 }}
               >
-                <div style={{ flex: "0 0 150px", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accent, paddingTop: 2 }}>{item.label}</div>
+                <div style={{ flex: "0 0 150px", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accentText, paddingTop: 2 }}>{item.label}</div>
                 <div style={{ flex: "1 1 280px", minWidth: 0, fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.6, color: COLORS.ink }}>{item.text}</div>
               </div>
             ))}

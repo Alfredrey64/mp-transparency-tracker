@@ -160,7 +160,7 @@ export function ManifestoTabContent({ politician }) {
           similar name; a policy area with none listed just means no matching bill has come to a vote yet, not that
           nothing has happened.
         </div>
-        <a href={manifesto.manifestoUrl} target="_blank" rel="noreferrer" style={{ display: "inline-block", marginTop: 8, fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: COLORS.accent }}>
+        <a href={manifesto.manifestoUrl} target="_blank" rel="noreferrer" style={{ display: "inline-block", marginTop: 8, fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: COLORS.accentText }}>
           Read {manifesto.shortName}'s full manifesto ↗
         </a>
       </div>

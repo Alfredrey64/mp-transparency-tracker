@@ -7,10 +7,9 @@ import { formatDate, partyColour, shortCategory, timeAgo } from "../lib/format";
 import pipelineStatus from "../data/pipelineStatus.json";
 import { categoriseBill } from "../lib/bills";
 import { getWatchlist, removeFromWatchlist } from "../lib/watchlist";
-import { IconSearch, IconCoin, IconBills, IconInfluence, IconPetition, IconGroup, IconPulse, IconShield, IconRoute, IconTrend, IconAsk, IconPin, IconSwing, IconCompareTime, IconGlossary } from "./icons";
-import { EyebrowLabel } from "./shared";
+import { IconSearch, IconCoin, IconBills, IconInfluence, IconPetition, IconGroup, IconRoute, IconTrend, IconAsk, IconPin, IconSwing, IconCompareTime, IconGlossary } from "./icons";
 import { LoadFailedNote } from "./MpCards";
-import { PartyHemicycleSection } from "./PartyHemicycle";
+import { PartyHemicycle } from "./PartyHemicycle";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import Loading from "./Loading";
 import { keyboardActivate } from "../lib/a11y";
@@ -19,8 +18,12 @@ import { keyboardActivate } from "../lib/a11y";
 // staggered as a single moment) rather than every section fading in
 // independently as it scrolls into view — the latter is the generic default
 // this page used to lean on.
-const revealParent = { hidden: {}, visible: { transition: { staggerChildren: 0.1 } } };
-const revealChild = { hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } } };
+const revealParent = { hidden: {}, visible: { transition: { staggerChildren: 0.09 } } };
+const revealChild = { hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } } };
+
+// The look shared by the white panels further down the page.
+const panel = { background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, boxShadow: "var(--shadow-1)", padding: "clamp(18px, 3vw, 26px)" };
+const panelTitle = { fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 22, letterSpacing: "-0.01em", lineHeight: 1.25, color: COLORS.ink, margin: 0 };
 
 function yearsAgo(year) {
   const n = new Date().getFullYear() - year;
@@ -37,7 +40,7 @@ const CHANGE_FEED_TYPES = {
 // What the site can do, one tile each. Every destination keeps the accent its section uses in the sidebar, so a colour learned
 // here means the same thing everywhere else.
 const FEATURES = [
-  { key: "myMP", label: "Find your MP", line: "See who represents you, how they vote and what they have declared.", icon: IconPin, color: "#4F46E5" },
+  { key: "myMP", label: "Find your MP", line: "See who represents you, how they vote and what they have declared.", icon: IconPin, color: "#1E4FB8" },
   { key: "followTheMoney", label: "Follow the money", line: "Trace a donor to every MP and party they have given money to.", icon: IconSearch, color: "#F2622A" },
   { key: "voting", label: "Understand the bills", line: "Plain-English guides to the laws being debated, and how MPs voted.", icon: IconBills, color: "#9B4FE0" },
   { key: "answers", label: "Ask a question", line: "Why is housing so expensive? Get a short answer, the latest figures and what each party says.", icon: IconAsk, color: "#2F80ED" },
@@ -252,410 +255,195 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
     setWatchlist(getWatchlist());
   }
 
+  const statItems = [
+    { value: <CountUp value={mpCount} />, label: "MPs tracked" },
+    pipelineStatus.generatedAt
+      ? { value: timeAgo(pipelineStatus.generatedAt), label: "last updated" }
+      : { value: "Daily", label: "kept up to date" },
+    { value: "Official", label: "source data only" },
+  ];
+
+  const switcher = (tabs, current, set) => (
+    <div className="seg seg-sm" role="group" aria-label="Choose a list">
+      {tabs.map((tab) => (
+        <button key={tab.key} type="button" className="seg-btn hit-tab" aria-pressed={current === tab.key} onClick={() => withScrollPreserved(() => set(tab.key))} style={{ "--c": "#F2622A" }}>
+          {tab.label}
+        </button>
+      ))}
+    </div>
+  );
+
   return (
-    <div style={{ maxWidth: 1180, margin: "0 auto", padding: "clamp(32px, 6vw, 56px) clamp(16px, 5vw, 24px) 60px", position: "relative" }}>
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={revealParent}
-        style={{ position: "relative", zIndex: 1, textAlign: "center", marginBottom: 48 }}
-      >
-        <motion.div variants={revealChild}>
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <EyebrowLabel>Independent and unofficial</EyebrowLabel>
+    <>
+      <section className="home-hero" aria-labelledby="home-title">
+        <motion.div className="home-hero-inner" initial="hidden" animate="visible" variants={revealParent}>
+          <div className="home-hero-copy">
+            <motion.p variants={revealChild} className="home-pill"><span aria-hidden="true" />Independent and unofficial</motion.p>
+            <motion.h1 variants={revealChild} id="home-title">A simple breakdown of UK politics.</motion.h1>
+            <motion.p variants={revealChild} className="home-lede">
+              Who your MP is, who funds them, how they vote and what the numbers say about the country. Everything comes from
+              official sources and is explained in plain English, with no jargon and no spin.
+            </motion.p>
+            <motion.div variants={revealChild} className="home-cta">
+              <button type="button" className="btn btn-lg btn-on-navy" onClick={onBrowse}><IconGroup size={18} />Browse MPs</button>
+              <button type="button" className="tour-link" onClick={() => onNavigate?.("start")}>
+                <span aria-hidden="true"><IconRoute size={20} /></span>
+                <span><b>Never used this before?</b><small>Take the five-minute guided tour</small></span>
+              </button>
+            </motion.div>
+            <motion.dl variants={revealChild} className="home-stats">
+              {statItems.map((s) => (
+                <div key={s.label}>
+                  <dt>{s.label}</dt>
+                  <dd>{s.value}</dd>
+                </div>
+              ))}
+            </motion.dl>
           </div>
-          <h1 style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: "clamp(36px, 6vw, 58px)", color: COLORS.ink, margin: "16px auto 0", lineHeight: 1.08, maxWidth: 760 }}>
-            A simple breakdown of UK politics.
-          </h1>
-          <p style={{ fontFamily: FONT_BODY, fontSize: 17, color: COLORS.inkSoft, lineHeight: 1.65, maxWidth: 640, margin: "18px auto 0" }}>
-            Who your MP is, who funds them, how they vote and what the numbers say about the country. Everything comes from
-            official sources and is explained in plain English, with no jargon and no spin.
-          </p>
+          <motion.div variants={revealChild} className="home-hero-visual">
+            {allPoliticians.length > 0 ? (
+              <>
+                <PartyHemicycle politicians={allPoliticians} onSelectParty={() => onNavigate?.("list")} legendCount={6} light />
+                <p className="home-hero-caption"><b>The Commons, seat by seat.</b> Every current seat, coloured by party. Hover a party below to pick it out. Labour (Co-op) MPs are Labour MPs who also belong to the Co-operative Party.</p>
+              </>
+            ) : (
+              <div className="home-hero-placeholder" aria-hidden="true" />
+            )}
+          </motion.div>
         </motion.div>
+      </section>
 
-        <motion.div className="hero-stats" variants={revealChild} style={{ display: "flex", justifyContent: "center", gap: "clamp(20px, 5vw, 52px)", flexWrap: "wrap", margin: "38px 0 34px" }}>
-          {[
-            { value: <CountUp value={mpCount} />, label: "MPs tracked", icon: IconGroup, color: COLORS.accent },
-            pipelineStatus.generatedAt
-              ? { value: timeAgo(pipelineStatus.generatedAt), label: "last updated", icon: IconPulse, color: "#F2622A" }
-              : { value: "Daily", label: "kept up to date", icon: IconPulse, color: "#F2622A" },
-            { value: "Official", label: "source data only", icon: IconShield, color: "#1FA97C" },
-          ].map((s) => (
-            <div key={s.label} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, minWidth: 108 }}>
-              <div style={{ width: 46, height: 46, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", background: `${s.color}18`, color: readable(s.color) }}>
-                <s.icon size={20} />
-              </div>
-              <div className="hero-stat-value" style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 26, color: COLORS.ink }}>{s.value}</div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>{s.label}</div>
-            </div>
-          ))}
-        </motion.div>
-
-        <motion.div className="hero-links" variants={revealChild} style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap" }}>
-          <motion.button
-            onClick={onBrowse}
-            whileHover={{ y: -1 }}
-            whileTap={{ scale: 0.98 }}
-            style={{
-              fontFamily: FONT_BODY, fontSize: 15, fontWeight: 700, color: "#fff", background: COLORS.accent,
-              border: "none", borderRadius: 999, padding: "13px 24px", cursor: "pointer",
-              display: "flex", alignItems: "center", gap: 8,
-            }}
-          >
-            <IconGroup size={16} />
-            Browse MPs
-          </motion.button>
-        </motion.div>
-
+      <div style={{ maxWidth: 1180, margin: "0 auto", padding: "clamp(28px, 5vw, 48px) clamp(16px, 5vw, 24px) 24px", position: "relative" }}>
         <WatchlistNote onNavigate={onNavigate} />
 
-        {/* A different kind of thing from the buttons above, so it isn't one more
-            pill in the row: an invitation for anyone who's never been here. */}
-        <motion.div variants={revealChild} style={{ display: "flex", justifyContent: "center", marginTop: 20 }}>
-          <motion.button
-            onClick={() => onNavigate?.("start")}
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.99 }}
-            style={{
-              display: "flex", alignItems: "center", gap: 14, textAlign: "left", maxWidth: 440, width: "100%",
-              background: "#1FA97C14", border: "1px solid #1FA97C55", borderRadius: 18, padding: "13px 18px", cursor: "pointer",
-            }}
-          >
-            <span style={{ width: 42, height: 42, borderRadius: "50%", background: "#1FA97C", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-              <IconRoute size={20} />
-            </span>
-            <span style={{ minWidth: 0 }}>
-              <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: 16, fontWeight: 600, color: COLORS.ink }}>Never used this before?</span>
-              <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 1 }}>Take the five-minute guided tour</span>
-            </span>
-          </motion.button>
-        </motion.div>
-
-        <motion.section variants={revealChild} aria-labelledby="h-can-do" style={{ marginTop: 52, textAlign: "left" }}>
-          <h2 id="h-can-do" style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: "clamp(22px, 3.4vw, 28px)", color: COLORS.ink, margin: 0, textAlign: "center" }}>What you can do here</h2>
-          <p style={{ fontFamily: FONT_BODY, fontSize: 15, color: COLORS.inkSoft, lineHeight: 1.6, margin: "8px auto 22px", maxWidth: 560, textAlign: "center" }}>
+        <section aria-labelledby="h-can-do" style={{ marginBottom: 48 }}>
+          <h2 id="h-can-do" style={{ ...panelTitle, fontSize: "clamp(26px, 3.4vw, 34px)" }}>What you can do here</h2>
+          <p style={{ fontFamily: FONT_BODY, fontSize: 16, color: COLORS.inkSoft, lineHeight: 1.6, margin: "8px 0 24px", maxWidth: 560 }}>
             Pick a starting point. Every page explains itself as you go.
           </p>
-          <div className="home-features" style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 14 }}>
+          <div className="home-features">
             {FEATURES.map((f) => (
-              <motion.button
-                key={f.key} type="button" onClick={() => onNavigate?.(f.key)} whileHover={{ y: -3 }} whileTap={{ scale: 0.98 }}
-                style={{ textAlign: "left", cursor: "pointer", display: "flex", flexDirection: "column", gap: 8, padding: "18px 18px 20px", borderRadius: 20, border: `1px solid ${f.color}40`, background: `linear-gradient(160deg, ${f.color}1c, ${COLORS.paperCard} 62%)` }}
-              >
-                <span style={{ width: 42, height: 42, borderRadius: 14, display: "grid", placeItems: "center", background: solid(f.color), color: "#fff" }}><f.icon size={20} /></span>
-                <span style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 700, color: COLORS.ink, lineHeight: 1.2 }}>{f.label}</span>
-                <span style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.5, color: COLORS.inkSoft }}>{f.line}</span>
-              </motion.button>
-            ))}
-          </div>
-          <style>{`.home-features { } @media (max-width: 1000px) { .home-features { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } } @media (max-width: 420px) { .home-features { gap: 10px !important; } .home-features > button { padding: 14px 14px 16px !important; } }`}</style>
-        </motion.section>
-      </motion.div>
-
-      {/* Latest activity: its own bordered rail, not squeezed beside the
-          hero: the centred masthead above is a single clear opening
-          statement, and this ticker is a distinct, subsequent section. */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.15, ease: "easeOut" }}
-        style={{
-          position: "relative", zIndex: 1, marginBottom: 44, borderRadius: 16,
-          border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid #F2622A`,
-          background: COLORS.paperCard, padding: "22px clamp(18px, 4vw, 30px)",
-        }}
-      >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 4 }}>
-          <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 19, color: COLORS.ink }}>Latest declared interests</div>
-          <div style={{ display: "flex", gap: 4 }}>
-            {[
-              { key: "donations", label: "Donations" },
-              { key: "roles", label: "Roles" },
-            ].map((tab) => (
-              <button
-                key={tab.key}
-                className="hit-tab"
-                onClick={() => withScrollPreserved(() => setActiveTab(tab.key))}
-                style={{
-                  fontFamily: FONT_BODY,
-                  fontSize: 13,
-                  fontWeight: 600,
-                  padding: "6px 14px",
-                  borderRadius: 999,
-                  border: "none",
-                  cursor: "pointer",
-                  background: activeTab === tab.key ? solid("#F2622A") : "transparent",
-                  color: activeTab === tab.key ? "#fff" : COLORS.inkSoft,
-                  transition: "background 0.15s, color 0.15s",
-                }}
-              >
-                {tab.label}
+              <button key={f.key} type="button" className="feature-card" onClick={() => onNavigate?.(f.key)} style={{ "--f": f.color }}>
+                <span className="feature-icon"><f.icon size={22} /></span>
+                <span className="feature-title">{f.label}</span>
+                <span className="feature-line">{f.line}</span>
               </button>
             ))}
           </div>
-        </div>
+        </section>
 
-        {activeTab === "donations" && !loading && donations.length > 0 && (
-          <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginBottom: 14 }}>
-            <strong style={{ fontFamily: FONT_MONO, color: readable("#F2622A") }}>£{Math.round(donationsTotal).toLocaleString()}</strong> declared
-            across these {donations.length} entries
-          </div>
-        )}
+        <div className="home-grid">
+          <div className="home-col">
+          <section aria-labelledby="h-interests" style={panel}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 6 }}>
+              <h2 id="h-interests" style={panelTitle}>Latest declared interests</h2>
+              {switcher([{ key: "donations", label: "Donations" }, { key: "roles", label: "Roles" }], activeTab, setActiveTab)}
+            </div>
 
-        {loading && (
-          <Loading compact />
-        )}
-        {!loading && recentFailed && <LoadFailedNote item="recent declared interests" />}
+            {activeTab === "donations" && !loading && donations.length > 0 && (
+              <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, marginBottom: 12 }}>
+                <strong style={{ fontFamily: FONT_MONO, color: readable("#F2622A") }}>£{Math.round(donationsTotal).toLocaleString()}</strong> declared
+                across these {donations.length} entries
+              </div>
+            )}
 
-        {!loading && !recentFailed && items.length === 0 && (
-          <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>No entries found.</div>
-        )}
+            {loading && <Loading compact />}
+            {!loading && recentFailed && <LoadFailedNote item="recent declared interests" />}
+            {!loading && !recentFailed && items.length === 0 && (
+              <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, padding: "10px 0" }}>No entries found.</div>
+            )}
 
-        {!loading && items.length > 0 && (
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            {items.map((item, i) => (
-              <div
-                key={item.id}
-                onClick={() => handleSelectPoliticianById(item.politicians?.id)}
-                {...(item.politicians?.id ? keyboardActivate(() => handleSelectPoliticianById(item.politicians.id)) : {})}
-                style={{
-                  padding: "14px 8px",
-                  margin: "0 -8px",
-                  borderRadius: 8,
-                  borderBottom: i < items.length - 1 ? `1px solid ${COLORS.hairline}` : "none",
-                  cursor: item.politicians?.id ? "pointer" : "default",
-                  transition: "background 0.15s",
-                }}
-                onMouseEnter={(e) => { if (item.politicians?.id) e.currentTarget.style.background = COLORS.paper; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 16, color: COLORS.ink }}>
-                      {item.politicians?.name ?? "Unknown MP"}
-                    </div>
-                    {item.politicians?.party && (
-                      <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 2 }}>
-                        <span style={{ width: 6, height: 6, borderRadius: "50%", background: partyColour(item.politicians.party_colour, COLORS.inkSoft), flexShrink: 0 }} />
-                        <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>
-                          {item.politicians.party}
-                          {activeTab === "donations" && item.category && ` · ${shortCategory(item.category)}`}
-                        </span>
+            {!loading && items.length > 0 && (
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                {items.map((item, i) => (
+                  <div
+                    key={item.id}
+                    className="row-link"
+                    onClick={() => handleSelectPoliticianById(item.politicians?.id)}
+                    {...(item.politicians?.id ? keyboardActivate(() => handleSelectPoliticianById(item.politicians.id)) : {})}
+                    style={{ borderBottom: i < items.length - 1 ? `1px solid ${COLORS.hairline}` : "none", cursor: item.politicians?.id ? "pointer" : "default" }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 17, color: COLORS.ink }}>{item.politicians?.name ?? "Unknown MP"}</div>
+                        {item.politicians?.party && (
+                          <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 2 }}>
+                            <span style={{ width: 8, height: 8, borderRadius: "50%", background: partyColour(item.politicians.party_colour, COLORS.inkSoft), flexShrink: 0 }} />
+                            <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>
+                              {item.politicians.party}
+                              {activeTab === "donations" && item.category && ` · ${shortCategory(item.category)}`}
+                            </span>
+                          </div>
+                        )}
+                        <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, marginTop: 4 }}>
+                          {activeTab === "donations" ? `from ${item.donor_name ?? item.summary}` : item.summary}
+                        </div>
+                        <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 2 }}>{formatDate(item.date_registered)}</div>
                       </div>
-                    )}
-                    <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, marginTop: 3 }}>
-                      {activeTab === "donations" ? `from ${item.donor_name ?? item.summary}` : item.summary}
-                    </div>
-                    <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 2 }}>
-                      {formatDate(item.date_registered)}
+                      {activeTab === "donations" && item.value_amount && (
+                        <div style={{ flexShrink: 0, fontFamily: FONT_BODY, fontSize: 16, fontWeight: 700, color: readable("#F2622A") }}>£{Number(item.value_amount).toLocaleString()}</div>
+                      )}
                     </div>
                   </div>
-                  {activeTab === "donations" && item.value_amount && (
-                    <div style={{ flexShrink: 0, fontFamily: FONT_BODY, fontSize: 15, fontWeight: 700, color: readable("#F2622A") }}>
-                      £{Number(item.value_amount).toLocaleString()}
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section aria-labelledby="h-bills" style={panel}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, gap: 10 }}>
+              <h2 id="h-bills" style={panelTitle}>Bills going through Parliament</h2>
+              {onNavigate && (
+                <button type="button" className="hit-tab btn-link" onClick={() => onNavigate("voting")}>View all</button>
+              )}
+            </div>
+            <p style={{ fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.55, color: COLORS.inkSoft, margin: "0 0 12px" }}>
+              A bill becomes law by passing a second reading, committee stage and report stage in each House, then Royal Assent. The stage shown is where each one has got to.
+            </p>
+            {loadingExtras && <Loading compact />}
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {upcomingBills.map((bill, i) => {
+                const category = categoriseBill(bill);
+                return (
+                  <div
+                    key={bill.bill_id}
+                    className="row-link"
+                    onClick={() => onNavigate?.("voting", bill)}
+                    role={onNavigate ? "button" : undefined}
+                    tabIndex={onNavigate ? 0 : undefined}
+                    onKeyDown={(e) => { if (onNavigate && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); onNavigate("voting", bill); } }}
+                    style={{ borderLeft: `4px solid ${category.color}`, paddingLeft: 14, borderBottom: i < upcomingBills.length - 1 ? `1px solid ${COLORS.hairline}` : "none", cursor: onNavigate ? "pointer" : "default" }}
+                  >
+                    <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 16.5, color: COLORS.ink }}>{bill.short_title}</div>
+                    <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 2 }}>
+                      {bill.current_stage ?? "Unknown stage"} · Next sitting {formatDate(bill.next_sitting_date)}
                     </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </motion.div>
-
-      {allPoliticians.length > 0 && (
-        <PartyHemicycleSection politicians={allPoliticians} onSelectParty={() => onNavigate?.("list")} subtitle="Every current seat, coloured by party. Hover a party below to pick it out. Labour (Co-op) MPs are Labour MPs who also belong to the Co-operative Party." />
-      )}
-
-      {/* Find Your MP: full-width band */}
-      <div style={{ borderTop: `1px solid ${COLORS.hairline}`, borderBottom: `1px solid ${COLORS.hairline}`, padding: "24px 0", marginBottom: 40 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))", gap: 24, alignItems: "center" }}>
-          <div>
-            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, color: COLORS.ink, marginBottom: 4 }}>Find your MP</div>
-            <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.5 }}>
-              Search by constituency to jump straight to their profile.
-            </div>
-          </div>
-
-          <div>
-            {watchlist.length > 0 && (
-              <div style={{ marginBottom: 14, display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
-                <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em" }}>
-                  Watching:
-                </span>
-                {watchlist.map((p) => {
-                  const wColor = partyColour(p.party_colour, COLORS.inkSoft);
-                  return (
-                    <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 6, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: "4px 6px 4px 10px" }}>
-                      <button
-                        onClick={() => handleSelectPolitician(p)}
-                        style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", padding: 0, cursor: "pointer" }}
-                      >
-                        <span style={{ width: 6, height: 6, borderRadius: "50%", background: wColor, flexShrink: 0 }} />
-                        <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, whiteSpace: "nowrap" }}>{p.name}</span>
-                      </button>
-                      <button
-                        onClick={() => handleRemoveWatched(p.id)}
-                        title="Remove from watchlist"
-                        style={{
-                          display: "flex", alignItems: "center", justifyContent: "center",
-                          width: 24, height: 24, background: "none", border: "none",
-                          color: COLORS.inkSoft, cursor: "pointer", fontSize: 13, opacity: 0.6,
-                        }}
-                      >
-                        ×
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            <div style={{ position: "relative", maxWidth: 440 }}>
-              <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: COLORS.inkSoft, display: "flex" }}>
-                <IconSearch size={15} />
-              </span>
-              <input
-                value={constituencyQuery}
-                onChange={(e) => setConstituencyQuery(e.target.value)}
-                placeholder="e.g. Holborn and St Pancras"
-                style={{
-                  width: "100%", boxSizing: "border-box", padding: "11px 12px 11px 36px", fontFamily: FONT_BODY, fontSize: 13.5,
-                  border: `1px solid ${COLORS.hairline}`, borderRadius: 9, background: COLORS.paperCard, color: COLORS.ink,
-                }}
-              />
-            </div>
-
-            {constituencyQuery.trim().length >= 2 && (
-              <div style={{ marginTop: 8, maxWidth: 440, display: "flex", flexDirection: "column", gap: 2 }}>
-                {constituencyMatches.length === 0 ? (
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, padding: "8px 2px" }}>No constituency matches that search.</div>
-                ) : (
-                  constituencyMatches.map((p) => {
-                    const mColor = partyColour(p.party_colour, COLORS.inkSoft);
-                    return (
-                      <button
-                        key={p.id}
-                        onClick={() => handleSelectPolitician(p)}
-                        style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", padding: "7px 4px", borderRadius: 7, cursor: "pointer", textAlign: "left" }}
-                        onMouseEnter={(e) => { e.currentTarget.style.background = COLORS.paperCard; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-                      >
-                        <span style={{ width: 7, height: 7, borderRadius: "50%", background: mColor, flexShrink: 0 }} />
-                        <span style={{ minWidth: 0 }}>
-                          <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.constituency}</div>
-                          <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>{p.name} · {p.party}</div>
-                        </span>
-                      </button>
-                    );
-                  })
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))", gap: "clamp(24px, 4vw, 32px)", marginBottom: 40 }}>
-        <div style={{ border: `1px solid ${COLORS.hairline}`, borderRadius: 16, padding: "20px 22px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-            <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 20, color: COLORS.ink }}>Bills going through Parliament</div>
-            {onNavigate && (
-              <button
-                className="hit-tab"
-                onClick={() => onNavigate("voting")}
-                style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accent, background: "none", border: "none", cursor: "pointer", padding: 0 }}
-              >
-                View all
-              </button>
-            )}
-          </div>
-          <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "0 0 12px" }}>
-            A bill becomes law by passing a second reading, committee stage and report stage in each House, then Royal Assent. The stage shown is where each one has got to.
-          </p>
-          {loadingExtras && <Loading compact />}
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            {upcomingBills.map((bill, i) => {
-              const category = categoriseBill(bill);
-              return (
-                <div
-                  key={bill.bill_id}
-                  onClick={() => onNavigate?.("voting", bill)}
-                  role={onNavigate ? "button" : undefined}
-                  tabIndex={onNavigate ? 0 : undefined}
-                  onKeyDown={(e) => { if (onNavigate && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); onNavigate("voting", bill); } }}
-                  style={{
-                    borderLeft: `3px solid ${category.color}`,
-                    padding: "10px 10px 10px 12px",
-                    marginRight: -10,
-                    borderRadius: "0 6px 6px 0",
-                    borderBottom: i < upcomingBills.length - 1 ? `1px solid ${COLORS.hairline}` : "none",
-                    cursor: onNavigate ? "pointer" : "default",
-                    transition: "background 0.15s",
-                  }}
-                  onMouseEnter={(e) => { if (onNavigate) e.currentTarget.style.background = COLORS.paperCard; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-                >
-                  <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15.5, color: COLORS.ink }}>
-                    {bill.short_title}
                   </div>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 1 }}>
-                    {bill.current_stage ?? "Unknown stage"} · Next sitting {formatDate(bill.next_sitting_date)}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+                );
+              })}
+            </div>
+          </section>
 
-        <div style={{ border: `1px solid ${COLORS.hairline}`, borderRadius: 16, padding: "20px 22px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4, gap: 10, flexWrap: "wrap" }}>
-            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, color: COLORS.ink }}>
-              {parliamentTab === "changes" ? "What's changed" : "On this day"}
-            </div>
-            <div style={{ display: "flex", gap: 2 }}>
-              {[
-                { key: "changes", label: "What's changed" },
-                { key: "history", label: "On this day" },
-              ].map((tab) => (
-                <button
-                  key={tab.key}
-                  className="hit-tab"
-                  onClick={() => withScrollPreserved(() => setParliamentTab(tab.key))}
-                  style={{
-                    fontFamily: FONT_BODY,
-                    fontSize: 11.5,
-                    fontWeight: 600,
-                    padding: "5px 11px",
-                    borderRadius: 999,
-                    border: "none",
-                    cursor: "pointer",
-                    background: parliamentTab === tab.key ? COLORS.accent : "transparent",
-                    color: parliamentTab === tab.key ? "#fff" : COLORS.inkSoft,
-                    transition: "background 0.15s, color 0.15s",
-                  }}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
           </div>
+          <div className="home-col">
+          <section aria-labelledby="h-changes" style={panel}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6, gap: 12, flexWrap: "wrap" }}>
+              <h2 id="h-changes" style={panelTitle}>{parliamentTab === "changes" ? "What's changed" : "On this day"}</h2>
+              {switcher([{ key: "changes", label: "What's changed" }, { key: "history", label: "On this day" }], parliamentTab, setParliamentTab)}
+            </div>
 
             {parliamentTab === "changes" ? (
               <>
-                <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 14 }}>
+                <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, marginBottom: 14, lineHeight: 1.5 }}>
                   The most recent declared interests, bill updates, ministerial gifts, and petition responses on this site.
                 </div>
 
-                {recentChanges === null && (
-                  <Loading compact />
-                )}
+                {recentChanges === null && <Loading compact />}
                 {recentChanges !== null && recentChanges.length === 0 && (
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>
-                    Nothing to show yet.
-                  </div>
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, padding: "10px 0" }}>Nothing to show yet.</div>
                 )}
 
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                <div style={{ display: "flex", flexDirection: "column" }}>
                   {recentChanges?.map((item, i) => {
                     const meta = CHANGE_FEED_TYPES[item.type];
                     const Icon = meta.icon;
@@ -663,42 +451,22 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                     return (
                       <div
                         key={`${item.type}-${i}`}
+                        className="row-link"
                         onClick={clickable ? () => handleChangeFeedClick(item) : undefined}
                         role={clickable ? "button" : undefined}
                         tabIndex={clickable ? 0 : undefined}
                         onKeyDown={clickable ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleChangeFeedClick(item); } } : undefined}
-                        style={{
-                          display: "flex",
-                          gap: 12,
-                          alignItems: "flex-start",
-                          padding: "0 6px 10px 0",
-                          margin: "0 -6px 0 0",
-                          borderRadius: 6,
-                          borderBottom: i < recentChanges.length - 1 ? `1px solid ${COLORS.hairline}` : "none",
-                          cursor: clickable ? "pointer" : "default",
-                          transition: "background 0.15s",
-                        }}
-                        onMouseEnter={(e) => { if (clickable) e.currentTarget.style.background = COLORS.paperCard; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                        style={{ display: "flex", gap: 14, alignItems: "flex-start", borderBottom: i < recentChanges.length - 1 ? `1px solid ${COLORS.hairline}` : "none", cursor: clickable ? "pointer" : "default" }}
                       >
-                        <span
-                          style={{
-                            flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
-                            width: 28, height: 28, borderRadius: 8, background: `${meta.color}14`, color: readable(meta.color), marginTop: 1,
-                          }}
-                        >
-                          <Icon size={14} />
+                        <span style={{ flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, borderRadius: 9, background: `${meta.color}18`, color: readable(meta.color), marginTop: 1 }}>
+                          <Icon size={16} />
                         </span>
                         <div style={{ minWidth: 0 }}>
-                          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: readable(meta.color), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 2 }}>
+                          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13, color: readable(meta.color), marginBottom: 2 }}>
                             {meta.label} · {formatDate(item.date)}
                           </div>
-                          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 14.5, color: COLORS.ink, lineHeight: 1.35 }}>
-                            {item.title}
-                          </div>
-                          <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 2 }}>
-                            {item.detail}
-                          </div>
+                          <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 16, color: COLORS.ink, lineHeight: 1.35 }}>{item.title}</div>
+                          <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 2 }}>{item.detail}</div>
                         </div>
                       </div>
                     );
@@ -707,56 +475,32 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
               </>
             ) : (
               <>
-                <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 14 }}>
+                <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, marginBottom: 14, lineHeight: 1.5 }}>
                   Debates the Commons actually held on today's date in past years, straight from the official Hansard record.
                 </div>
 
-                {onThisDay === null && (
-                  <Loading compact />
-                )}
+                {onThisDay === null && <Loading compact />}
                 {onThisDay !== null && onThisDay.length === 0 && (
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, padding: "10px 0" }}>
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, padding: "10px 0" }}>
                     Nothing notable turned up in Hansard for today's date. Check back tomorrow.
                   </div>
                 )}
 
-                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <div style={{ display: "flex", flexDirection: "column" }}>
                   {onThisDay?.map((item, i) => (
                     <a
                       key={`${item.year}-${item.title}`}
+                      className="row-link"
                       href={item.source_url}
                       target="_blank"
                       rel="noreferrer"
-                      style={{
-                        display: "flex",
-                        gap: 12,
-                        alignItems: "flex-start",
-                        textDecoration: "none",
-                        paddingBottom: 12,
-                        borderBottom: i < onThisDay.length - 1 ? `1px solid ${COLORS.hairline}` : "none",
-                      }}
+                      style={{ display: "flex", gap: 14, alignItems: "flex-start", textDecoration: "none", borderBottom: i < onThisDay.length - 1 ? `1px solid ${COLORS.hairline}` : "none" }}
                     >
-                      <div
-                        style={{
-                          flexShrink: 0,
-                          fontFamily: FONT_DISPLAY,
-                          fontSize: 13,
-                          fontWeight: 600,
-                          color: "#fff",
-                          background: COLORS.accent,
-                          borderRadius: 999,
-                          padding: "3px 10px",
-                          marginTop: 2,
-                        }}
-                      >
-                        {item.year}
-                      </div>
+                      <span style={{ flexShrink: 0, fontFamily: FONT_MONO, fontSize: 13.5, fontWeight: 600, color: "#fff", background: "var(--c-navy)", borderRadius: 6, padding: "4px 9px", marginTop: 1 }}>{item.year}</span>
                       <div style={{ minWidth: 0 }}>
-                        <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, color: COLORS.ink, lineHeight: 1.35 }}>
-                          {item.title}
-                        </div>
-                        <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 3 }}>
-                          {yearsAgo(item.year)} · Hansard record ↗
+                        <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 16, color: COLORS.ink, lineHeight: 1.35 }}>{item.title}</div>
+                        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 3 }}>
+                          {yearsAgo(item.year)} · Hansard record<span className="sr-only"> (opens in a new tab)</span> ↗
                         </div>
                       </div>
                     </a>
@@ -764,8 +508,61 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                 </div>
               </>
             )}
+          </section>
+
+          <section aria-labelledby="h-find" className="find-card">
+            <h2 id="h-find" style={{ ...panelTitle, color: "#fff" }}>Find your MP</h2>
+            <p style={{ fontFamily: FONT_BODY, fontSize: 15, color: "var(--c-on-navy-soft)", lineHeight: 1.5, margin: "6px 0 16px" }}>
+              Search by constituency to jump straight to their profile.
+            </p>
+
+            {watchlist.length > 0 && (
+              <div style={{ marginBottom: 14, display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+                <span style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 14, color: "var(--c-on-navy-soft)" }}>Watching:</span>
+                {watchlist.map((p) => (
+                  <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 4, background: "#fff", borderRadius: 8, padding: "2px 4px 2px 10px" }}>
+                    <button type="button" onClick={() => handleSelectPolitician(p)} style={{ display: "flex", alignItems: "center", gap: 7, background: "none", border: "none", padding: "8px 0", cursor: "pointer" }}>
+                      <span style={{ width: 8, height: 8, borderRadius: "50%", background: partyColour(p.party_colour, "#5a6478"), flexShrink: 0 }} />
+                      <span style={{ fontFamily: FONT_BODY, fontSize: 14, color: "#0A1424", whiteSpace: "nowrap" }}>{p.name}</span>
+                    </button>
+                    <button type="button" onClick={() => handleRemoveWatched(p.id)} aria-label={`Stop watching ${p.name}`} title="Remove from watchlist" style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, background: "none", border: "none", color: "#3A465A", cursor: "pointer", fontSize: 18 }}>×</button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div style={{ position: "relative" }}>
+              <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "#3A465A", display: "flex" }}><IconSearch size={17} /></span>
+              <input
+                value={constituencyQuery}
+                onChange={(e) => setConstituencyQuery(e.target.value)}
+                aria-label="Search by constituency"
+                placeholder="e.g. Holborn and St Pancras"
+                style={{ width: "100%", boxSizing: "border-box", minHeight: 50, padding: "12px 14px 12px 42px", fontFamily: FONT_BODY, fontSize: 16, border: "1px solid transparent", borderRadius: 10, background: "#fff", color: "#0A1424" }}
+              />
+            </div>
+
+            {constituencyQuery.trim().length >= 2 && (
+              <div style={{ marginTop: 10, display: "flex", flexDirection: "column", gap: 2 }}>
+                {constituencyMatches.length === 0 ? (
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: "var(--c-on-navy-soft)", padding: "8px 2px" }}>No constituency matches that search.</div>
+                ) : (
+                  constituencyMatches.map((p) => (
+                    <button key={p.id} type="button" className="find-result" onClick={() => handleSelectPolitician(p)}>
+                      <span style={{ width: 9, height: 9, borderRadius: "50%", background: partyColour(p.party_colour, "#B9C5DB"), flexShrink: 0, boxShadow: "0 0 0 2px rgba(255,255,255,0.7)" }} />
+                      <span style={{ minWidth: 0 }}>
+                        <span style={{ display: "block", fontSize: 15, fontWeight: 600, color: "#fff", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.constituency}</span>
+                        <span style={{ display: "block", fontSize: 13.5, color: "var(--c-on-navy-soft)" }}>{p.name} · {p.party}</span>
+                      </span>
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
+          </section>
           </div>
         </div>
-    </div>
+      </div>
+    </>
   );
 }

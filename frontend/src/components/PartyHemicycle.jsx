@@ -47,7 +47,7 @@ function computeSeatPositions(total, rows = ROWS, inner = INNER_RADIUS, step = R
 
 // `rows` is how many concentric rows the dome has: fewer for a small body (a
 // council of 57), the default for the Commons.
-export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Independent", legendCount = 8, centre = null, rows: rowCount = ROWS, maxWidth = null, inner = INNER_RADIUS, step = ROW_STEP, seatRadius = SEAT_RADIUS }) {
+export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Independent", legendCount = 8, centre = null, rows: rowCount = ROWS, maxWidth = null, inner = INNER_RADIUS, step = ROW_STEP, seatRadius = SEAT_RADIUS, light = false }) {
   const [hoveredParty, setHoveredParty] = useState(null);
   // The seats sweep in from the left the first time the dome scrolls into
   // view. Until then they are held invisible, so nothing flashes on first paint.
@@ -143,8 +143,8 @@ export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Ind
             }}
           >
             <span style={{ width: 8, height: 8, borderRadius: "50%", background: p.color, flexShrink: 0 }} />
-            <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink }}>{p.name}</span>
-            <span style={{ ...numeric, fontSize: 13, fontWeight: 600, color: COLORS.inkSoft }}>{p.count}</span>
+            <span style={{ fontFamily: FONT_BODY, fontSize: 14, color: light ? "#fff" : COLORS.ink }}>{p.name}</span>
+            <span style={{ ...numeric, fontSize: 14, fontWeight: 600, color: light ? "#B9C5DB" : COLORS.inkSoft }}>{p.count}</span>
           </button>
         ))}
       </div>

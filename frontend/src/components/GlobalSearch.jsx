@@ -15,7 +15,7 @@ const goHash = (hash) => {
 // Words that suggest someone is looking for who held a government post.
 const OFFICE_WORDS = /\b(secretary|minister|chancellor|leader|whip|chair|speaker|attorney|treasury|lord chancellor)\b/i;
 
-const GROUP_LABEL = { fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--sb-faint)", padding: "4px 8px" };
+const GROUP_LABEL = { fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: "var(--sb-faint)", padding: "4px 8px" };
 
 function ResultGroup({ label, children }) {
   return (
@@ -37,8 +37,8 @@ function ResultRow({ onClick, title, sub, dot }) {
     >
       {dot && <span style={{ width: 6, height: 6, borderRadius: "50%", background: dot, flexShrink: 0 }} />}
       <span style={{ minWidth: 0 }}>
-        <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: "var(--sb-strong)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{title}</div>
-        {sub && <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: "var(--sb-soft)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{sub}</div>}
+        <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: "var(--sb-strong)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{title}</div>
+        {sub && <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: "var(--sb-soft)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{sub}</div>}
       </span>
     </button>
   );
@@ -239,13 +239,13 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
           autoComplete="off"
           value={query}
           onChange={(e) => { startLoading(); setQuery(e.target.value); setOpen(true); }}
-          onFocus={(e) => { startLoading(); setOpen(true); e.target.style.borderColor = "var(--sb-accent)"; e.target.style.boxShadow = "0 0 0 3px rgba(79,70,229,0.22)"; }}
+          onFocus={(e) => { startLoading(); setOpen(true); e.target.style.borderColor = "var(--sb-accent)"; e.target.style.boxShadow = "0 0 0 3px rgba(30,79,184,0.22)"; }}
           onBlur={(e) => { e.target.style.borderColor = "var(--sb-border)"; e.target.style.boxShadow = "none"; }}
           placeholder="Search MPs, seats, elections, numbers… (press /)"
           style={{
-            width: "100%", boxSizing: "border-box", padding: "8px 10px 8px 32px",
-            fontFamily: FONT_BODY, fontSize: 12.5, borderRadius: 8,
-            border: "1px solid var(--sb-border)", background: "var(--sb-surface)",
+            width: "100%", boxSizing: "border-box", padding: "11px 12px 11px 36px",
+            fontFamily: FONT_BODY, fontSize: 14, borderRadius: 10,
+            border: "1px solid var(--sb-border-strong)", background: "var(--sb-bg)",
             color: "var(--sb-strong)", outline: "none", transition: "border-color 0.15s, box-shadow 0.15s",
           }}
         />
@@ -262,7 +262,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
           style={{
             position: "absolute", top: "calc(100% + 6px)", left: 0, right: 0, zIndex: 20,
             background: "var(--sb-bg-2)", border: "1px solid var(--sb-border-strong)", borderRadius: 10,
-            boxShadow: "0 16px 32px -12px rgba(15,15,40,0.35)", padding: 6, maxHeight: 340, overflowY: "auto",
+            boxShadow: "0 16px 32px -12px rgba(15,15,40,0.35)", padding: 6, maxHeight: "min(60vh, 440px)", overflowY: "auto",
           }}
         >
           {!hasResults && (
@@ -281,7 +281,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
 
           {results.mps.length > 0 && (
             <div style={{ marginBottom: 4 }}>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--sb-faint)", padding: "4px 8px" }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: "var(--sb-faint)", padding: "4px 8px" }}>
                 MPs
               </div>
               {results.mps.map((p) => {
@@ -296,8 +296,8 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
                   >
                     <span style={{ width: 6, height: 6, borderRadius: "50%", background: color, flexShrink: 0 }} />
                     <span style={{ minWidth: 0 }}>
-                      <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: "var(--sb-strong)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</div>
-                      <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: "var(--sb-soft)" }}>{p.party} · {p.constituency}</div>
+                      <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: "var(--sb-strong)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</div>
+                      <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: "var(--sb-soft)" }}>{p.party} · {p.constituency}</div>
                     </span>
                   </button>
                 );
@@ -334,7 +334,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
 
           {results.bills.length > 0 && (
             <div style={{ marginBottom: 4 }}>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--sb-faint)", padding: "4px 8px" }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: "var(--sb-faint)", padding: "4px 8px" }}>
                 Bills
               </div>
               {results.bills.map((b, i) => (
@@ -345,8 +345,8 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
                   onMouseEnter={(e) => { e.currentTarget.style.background = "var(--sb-hover)"; }}
                   onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                 >
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: "var(--sb-strong)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{b.short_title}</div>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: "var(--sb-soft)" }}>{b.current_stage ?? "Bill"}</div>
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: "var(--sb-strong)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{b.short_title}</div>
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: "var(--sb-soft)" }}>{b.current_stage ?? "Bill"}</div>
                 </button>
               ))}
             </div>
@@ -397,7 +397,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
 
           {results.pages.length > 0 && (
             <div style={{ marginBottom: 4 }}>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--sb-faint)", padding: "4px 8px" }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: "var(--sb-faint)", padding: "4px 8px" }}>
                 Pages
               </div>
               {results.pages.map((p) => (
@@ -411,7 +411,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
                   <span style={{ display: "flex", color: "var(--sb-soft)", flexShrink: 0 }}>
                     <p.icon size={13} />
                   </span>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: "var(--sb-strong)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.label}</div>
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: "var(--sb-strong)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.label}</div>
                 </button>
               ))}
             </div>
@@ -419,7 +419,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
 
           {results.glossary.length > 0 && (
             <div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--sb-faint)", padding: "4px 8px" }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: "var(--sb-faint)", padding: "4px 8px" }}>
                 Glossary
               </div>
               {results.glossary.map((g) => (
@@ -434,8 +434,8 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
                     <IconGlossary size={13} />
                   </span>
                   <span style={{ minWidth: 0 }}>
-                    <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: "var(--sb-strong)" }}>{g.term}</div>
-                    <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: "var(--sb-soft)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{g.def}</div>
+                    <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: "var(--sb-strong)" }}>{g.term}</div>
+                    <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: "var(--sb-soft)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{g.def}</div>
                   </span>
                 </button>
               ))}

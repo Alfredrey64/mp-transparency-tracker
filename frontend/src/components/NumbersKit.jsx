@@ -34,7 +34,7 @@ export function Figure({ value, format, label, note, size = 38, onOpen }) {
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: COLORS.ink, marginTop: 6 }}>{label}</div>
       {note && <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 1, lineHeight: 1.45 }}>{note}</div>}
-      {onOpen && <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.accent, marginTop: 4 }}>See who ›</div>}
+      {onOpen && <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.accentText, marginTop: 4 }}>See who ›</div>}
     </>
   );
   if (!onOpen) return <div>{body}</div>;

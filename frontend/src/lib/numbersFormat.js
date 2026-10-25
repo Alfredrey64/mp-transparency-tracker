@@ -16,5 +16,5 @@ export const goMp = (id) => {
 export const goSeat = (name) => {
   navigate(`#/constituency/${encodeURIComponent(name)}`);
 };
-export const EDGE = { people: "#4F46E5", careers: "#1FA97C", seats: "#E8A33D", change: "#E0367A" };
+export const EDGE = { people: "#1E4FB8", careers: "#1FA97C", seats: "#E8A33D", change: "#E0367A" };
 export const COLUMNS = "minmax(120px, 190px) minmax(0, 1fr) 118px";

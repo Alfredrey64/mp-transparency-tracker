@@ -9,7 +9,7 @@ import { PROCEDURE_TERMS, POLITICS_TERMS, STATISTICS_TERMS } from "../data/gloss
 import { wordOfTheDay, makeQuestion } from "../lib/glossaryGame";
 
 const TABS = [
-  { key: "procedure", label: "Parliamentary terms", blurb: "How Parliament works: bills, votes, committees and who does what.", accent: "#4F46E5" },
+  { key: "procedure", label: "Parliamentary terms", blurb: "How Parliament works: bills, votes, committees and who does what.", accent: "#1E4FB8" },
   { key: "politics", label: "Political terms and issues", blurb: "Parties, elections and the language of political news.", accent: "#C0478A" },
   { key: "statistics", label: "Statistics and economy", blurb: "The numbers behind the economy and the country.", accent: "#0E9AA7" },
 ];

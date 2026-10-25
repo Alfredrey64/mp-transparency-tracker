@@ -78,7 +78,7 @@ export default function DonorVotes({ donorName, mps }) {
                 })}
               </ul>
               {result.bills.length > SHOW && (
-                <button type="button" onClick={() => setAll(!all)} className="ons-chip" style={{ marginTop: 10, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accent }}>
+                <button type="button" onClick={() => setAll(!all)} className="ons-chip" style={{ marginTop: 10, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accentText }}>
                   {all ? "Show fewer" : `Show all ${result.bills.length} votes`}
                 </button>
               )}

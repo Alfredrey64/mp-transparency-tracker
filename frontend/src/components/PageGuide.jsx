@@ -62,7 +62,7 @@ export default function PageGuide({ viewKey, style }) {
         aria-expanded={open}
         style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer", padding: "10px 14px", color: "inherit" }}
       >
-        <span aria-hidden="true" style={{ width: 20, height: 20, borderRadius: "50%", background: `${COLORS.accent}22`, color: COLORS.accent, fontFamily: FONT_BODY, fontSize: 12, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>i</span>
+        <span aria-hidden="true" style={{ width: 20, height: 20, borderRadius: "50%", background: `${COLORS.accent}22`, color: COLORS.accentText, fontFamily: FONT_BODY, fontSize: 12, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>i</span>
         <span style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 700, color: COLORS.ink, flex: 1 }}>What you're looking at</span>
         <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>{open ? "Hide" : "Show"}</span>
         <span aria-hidden="true" style={{ color: COLORS.inkSoft, fontSize: 11, transform: open ? "rotate(180deg)" : "none", transition: "transform 0.15s" }}>▾</span>
@@ -71,7 +71,7 @@ export default function PageGuide({ viewKey, style }) {
         <div style={{ padding: "0 14px 12px 44px", display: "flex", flexDirection: "column", gap: 8 }}>
           {ROWS.map(([key, label]) => (
             <div key={key} style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 1 }}>
-              <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.accent }}>{label}</span>
+              <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.accentText }}>{label}</span>
               <span style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.55 }}>{guide[key]}</span>
             </div>
           ))}

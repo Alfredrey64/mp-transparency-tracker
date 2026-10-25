@@ -60,7 +60,7 @@ export function chamberShareSpec({ house, stats, link }) {
     kicker: house === "lords" ? "House of Lords" : "House of Commons",
     title: house === "lords" ? `${fmt(stats.total)} peers, and no party in control` : `${fmt(stats.total)} MPs, seat by seat`,
     subtitle: top ? `${top.party} is the largest group with ${fmt(top.count)} seats (${pct1(top.pct)})` : "",
-    accent: colour(top?.colour, "#4F46E5"),
+    accent: colour(top?.colour, "#1E4FB8"),
     stats: [{ value: pct1(stats.womenPct), label: "are women" }, { value: fmt(stats.majorityLine ?? Math.floor(stats.total / 2) + 1), label: "seats for a majority" }],
     bars: rows.map((r) => ({ label: r.party, valueText: `${fmt(r.count)} · ${pct1(r.pct)}`, fraction: stats.total ? r.count / (top?.count || 1) : 0, colour: colour(r.colour) })),
     footer: `${CARD_SITE} · Parliament in Numbers`,
@@ -90,7 +90,7 @@ export function mapShareSpec({ cells, mode, key, link }) {
     kicker: "Seat map",
     title: "Every seat in the Commons",
     subtitle: mode.label,
-    accent: "#4F46E5",
+    accent: "#1E4FB8",
     hexes: cells.map((c) => ({ x: c.x, y: c.y, colour: mode.colour(c) })),
     legend: (key ?? []).slice(0, 6).map((k) => ({ label: `${k.party} ${k.count}`, colour: k.colour })),
     note: mode.legend?.type === "ramp" ? `${mode.legend.left} to ${mode.legend.right}` : mode.legend?.text ?? null,
@@ -108,7 +108,7 @@ export function councilShareSpec({ council, seats, link }) {
     kicker: "Local council",
     title: council.name,
     subtitle: `Run by: ${council.control}`,
-    accent: colour(top?.colour, "#4F46E5"),
+    accent: colour(top?.colour, "#1E4FB8"),
     stats: [
       { value: fmt(council.total), label: "councillors" },
       next ? { value: next.slice(0, 4), label: "next election" } : null,
@@ -242,7 +242,7 @@ export function compareSeatsShareSpec({ a, b, link }) {
 
 // Any page with nothing special to show: its name and what it is about.
 export function pageShareSpec({ kicker, title, subtitle, accent, link }) {
-  return { kicker: kicker || "Simple Politics", title, subtitle: subtitle ?? "", accent: colour(accent, "#4F46E5"), stats: [], footer: CARD_SITE, link };
+  return { kicker: kicker || "Simple Politics", title, subtitle: subtitle ?? "", accent: colour(accent, "#1E4FB8"), stats: [], footer: CARD_SITE, link };
 }
 
 // A Britain in numbers page: its headline figures and the history of the main one.
@@ -252,7 +252,7 @@ export function sectorShareSpec({ title, subtitle, accent, tiles, line, newest, 
     kicker: "Britain in numbers",
     title,
     subtitle: subtitle ?? "",
-    accent: colour(accent, "#4F46E5"),
+    accent: colour(accent, "#1E4FB8"),
     stats: (tiles ?? []).slice(0, 4).map((t) => ({ value: t.value, label: t.label })),
     line,
     footer: `${CARD_SITE} · Britain in numbers${newest ? ` · official statistics, updated ${newest}` : ""}`,
@@ -264,7 +264,7 @@ export function sectorShareSpec({ title, subtitle, accent, tiles, line, newest, 
 export function rankingShareSpec({ kicker, title, subtitle, accent, rows, note, footer, link }) {
   const max = Math.max(1e-9, ...rows.map((r) => r.fraction ?? 0));
   return {
-    kicker, title, subtitle: subtitle ?? "", accent: colour(accent, "#4F46E5"),
+    kicker, title, subtitle: subtitle ?? "", accent: colour(accent, "#1E4FB8"),
     bars: rows.slice(0, 6).map((r) => ({ label: r.label, valueText: r.valueText, fraction: (r.fraction ?? 0) / max, colour: colour(r.colour ?? accent) })),
     note: note ?? null,
     footer: footer ?? CARD_SITE,

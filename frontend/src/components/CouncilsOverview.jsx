@@ -79,7 +79,7 @@ export function Hero({ index, subtitle, title, kicker }) {
     <div style={{ position: "relative", overflow: "hidden", borderRadius: 26, border: `1px solid ${COLORS.hairline}`, padding: "clamp(22px, 4vw, 40px)", background: `radial-gradient(900px 340px at 92% -10%, ${COLORS.accent}33, transparent 60%), radial-gradient(520px 260px at 0% 110%, #1FA97C22, transparent 65%), ${COLORS.paperCard}` }}>
       <div aria-hidden="true" style={{ position: "absolute", inset: 0, backgroundImage: `radial-gradient(${COLORS.hairline} 1px, transparent 1px)`, backgroundSize: "22px 22px", opacity: 0.55, maskImage: "linear-gradient(180deg, #000, transparent 75%)", WebkitMaskImage: "linear-gradient(180deg, #000, transparent 75%)" }} />
       <div style={{ position: "relative" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 9, fontFamily: FONT_DISPLAY, fontSize: 14.5, fontWeight: 500, color: COLORS.accent }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 9, fontFamily: FONT_DISPLAY, fontSize: 14.5, fontWeight: 500, color: COLORS.accentText }}>
           <span style={{ width: 16, height: 2, background: COLORS.accent }} />
           {kicker}
         </div>
@@ -143,7 +143,7 @@ export function Overview({ data }) {
       <div>
         <SectionHead kicker={`${latestYear} at a glance`} title="The key numbers" />
         <div className="box-row" style={{ "--n": nextDate ? 5 : 4, "--min": "170px" }}>
-          <StatCard icon={IconGroup} colour="#4F46E5" value={s.councillors} label="councillors" caption={`on ${s.councils} councils across the UK. ${topParty ? `${topParty.short} is the largest party with ${fmt(topParty.count)}.` : ""}`} />
+          <StatCard icon={IconGroup} colour="#1E4FB8" value={s.councillors} label="councillors" caption={`on ${s.councils} councils across the UK. ${topParty ? `${topParty.short} is the largest party with ${fmt(topParty.count)}.` : ""}`} />
           <StatCard
             icon={IconCompare}
             colour="#E0367A"
@@ -300,7 +300,7 @@ export function Overview({ data }) {
       {/* Councillors by party */}
       <Reveal>
         <Card>
-          <SectionHead kicker="Councillors" accent="#4F46E5" title="Councillors by party" blurb={`Every elected councillor, and how each party's number has changed since the ${rawDef?.since ?? latestYear - 1} list. Independents and small local parties are grouped as “Independent or other”.`} />
+          <SectionHead kicker="Councillors" accent="#1E4FB8" title="Councillors by party" blurb={`Every elected councillor, and how each party's number has changed since the ${rawDef?.since ?? latestYear - 1} list. Independents and small local parties are grouped as “Independent or other”.`} />
           {seatDelta.slice(0, 9).map((p) => (
             <Bar key={p.idx} label={p.short} colour={p.colour} fraction={p.count / maxSeats} value={fmt(p.count)} delta={rawDef ? p.change : null} labelWidth={190} />
           ))}
@@ -327,7 +327,7 @@ export function Overview({ data }) {
 
       {/* Every council */}
       <Card id="all-councils">
-        <SectionHead kicker="Browse" accent="#4F46E5" title="Every council" blurb="Tap one to see its councillors, ward by ward, and its recent changes." />
+        <SectionHead kicker="Browse" accent="#1E4FB8" title="Every council" blurb="Tap one to see its councillors, ward by ward, and its recent changes." />
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 14, alignItems: "center" }}>
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Filter by name" aria-label="Filter the list of councils" style={{ ...input, maxWidth: 260, padding: "9px 14px", fontSize: 14 }} />
           {CONTROL_ORDER.filter((k) => (nowCounts[k] ?? 0) > 0).map((k) => (

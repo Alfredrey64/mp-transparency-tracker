@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#4F46E5"/>
+  <rect width="512" height="512" rx="112" fill="#1E4FB8"/>
   <g transform="translate(71.44 74.56) scale(0.72)" fill="#ffffff" stroke="#ffffff" stroke-width="0.8">
     <rect x="56" y="324" width="200" height="100"/><rect x="56" y="306" width="16" height="18"/><rect x="82" y="306" width="16" height="18"/><rect x="108" y="306" width="16" height="18"/><rect x="134" y="306" width="16" height="18"/><rect x="160" y="306" width="16" height="18"/><rect x="186" y="306" width="16" height="18"/><rect x="212" y="306" width="16" height="18"/><rect x="238" y="306" width="16" height="18"/>
     <rect x="282" y="126" width="96" height="16"/><rect x="292" y="142" width="76" height="282"/>
     <polygon points="292,126 330,52 368,126"/>
     <rect x="327" y="24" width="6" height="30"/>
-    <circle cx="330" cy="190" r="22" fill="#4F46E5" stroke="#ffffff" stroke-width="7"/>
+    <circle cx="330" cy="190" r="22" fill="#1E4FB8" stroke="#ffffff" stroke-width="7"/>
     <rect x="396" y="348" width="44" height="76"/><polygon points="396,348 418,306 440,348"/>
     <rect x="40" y="424" width="416" height="6"/>
   </g>

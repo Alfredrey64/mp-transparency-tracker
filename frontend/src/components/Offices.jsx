@@ -46,7 +46,7 @@ function Holder({ h, now }) {
         </span>
         <span style={{ display: "block" }}>
           {duration(h.start, h.end, now)}
-          {!h.end && <strong style={{ color: COLORS.accent }}> · in post</strong>}
+          {!h.end && <strong style={{ color: COLORS.accentText }}> · in post</strong>}
         </span>
       </span>
     </button>

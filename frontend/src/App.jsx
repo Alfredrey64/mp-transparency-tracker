@@ -3,7 +3,10 @@ import { GuideKeyContext, guideKeyFor } from "./lib/viewContext";
 import { motion, MotionConfig } from "framer-motion";
 import { supabase } from "./supabaseClient";
 import { COLORS, FONT_BODY } from "./theme";
-import Sidebar from "./components/Sidebar";
+import SiteHeader from "./components/SiteHeader";
+import SiteFooter from "./components/SiteFooter";
+import "./chrome.css";
+import { HEMICYCLE } from "./lib/seatMark";
 import Home from "./components/Home";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { SECTIONS } from "./data/sidebarSections";
@@ -17,7 +20,7 @@ import { InstallBanner } from "./components/InstallApp";
 
 // Everything below is code-split per page: a visitor to the homepage
 // shouldn't have to download the other ~30 pages' code up front. Home and
-// Sidebar stay eager imports above so the very first paint has no loading
+// SiteHeader stay eager imports above so the very first paint has no loading
 // flash.
 const PoliticianList = lazy(LOADERS.list);
 const PoliticianDetail = lazy(() => import("./components/PoliticianDetail"));
@@ -93,7 +96,7 @@ const SECTOR_VIEWS = new Set(["economy", "prices", "jobs", "publicFinances", "po
 // it came from.
 console.log(
   "%cSimple Politics%c\nDesigned and built by Alfred Reynolds.",
-  "font-weight: bold; font-size: 13px; color: #4F46E5;",
+  "font-weight: bold; font-size: 13px; color: #1E4FB8;",
   "color: inherit;"
 );
 
@@ -368,13 +371,13 @@ export default function App() {
   return (
     <MotionConfig reducedMotion="user">
     <GuideKeyContext.Provider value={guideKeyFor(view, viewParam)}>
-    <div className="mp-app-shell" style={{ display: "flex", background: COLORS.paper, fontFamily: FONT_BODY }}>
+    <div className="mp-app-shell" style={{ display: "flex", flexDirection: "column", background: COLORS.paper, fontFamily: FONT_BODY, "--hemicycle": HEMICYCLE }}>
       <button type="button" className="skip-link" onClick={() => { mainRef.current?.focus(); mainRef.current?.scrollIntoView?.(); }}>Skip to main content</button>
       <OfflineBanner />
       <InstallBanner />
       <div className="nav-progress" data-on={navPending ? "true" : "false"} aria-hidden="true" />
-      <Sidebar activeView={navTarget} onNavigate={handleNavigate} onSelectPolitician={handleViewProfile} />
-      <div style={{ flex: 1, minWidth: 0 }}>
+      <SiteHeader activeView={navTarget} onNavigate={handleNavigate} onSelectPolitician={handleViewProfile} />
+      <div style={{ flex: 1, minWidth: 0, width: "100%" }}>
         {/* The new page fades in straight away. It used to wait for the old
             one to fade out first, which added a visible pause to every click. */}
         <motion.main
@@ -469,6 +472,7 @@ export default function App() {
             </ErrorBoundary>
         </motion.main>
       </div>
+      <SiteFooter onNavigate={handleNavigate} />
     </div>
     </GuideKeyContext.Provider>
     </MotionConfig>

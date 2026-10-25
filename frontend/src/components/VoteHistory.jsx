@@ -50,7 +50,7 @@ function VoteRow({ vote, explanation, hasPartyMajorityConcept, showPlain, first 
           type="button"
           onClick={() => setOpen((o) => !o)}
           aria-expanded={open}
-          style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: COLORS.accent }}
+          style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: COLORS.accentText }}
         >
           {open ? "Hide details" : showPlain ? "What Aye and No meant" : "What was this vote?"}
         </button>
@@ -91,7 +91,7 @@ function BillCard({ group, bill, hasPartyMajorityConcept, index }) {
         href={info?.url ?? billSearchUrl(group.billName)}
         target="_blank"
         rel="noreferrer"
-        style={{ display: "inline-block", marginTop: 6, fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: COLORS.accent }}
+        style={{ display: "inline-block", marginTop: 6, fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: COLORS.accentText }}
       >
         {info ? "Read about this bill ↗" : "Find this bill on Parliament's site ↗"}
       </a>

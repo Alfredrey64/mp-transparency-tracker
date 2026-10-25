@@ -89,11 +89,11 @@ function SplitBar({ mp, party }) {
   return (
     <div>
       <div role="img" aria-label={`${money(mp)} to MPs personally and ${money(party)} to parties`} style={{ display: "flex", height: 10, borderRadius: 5, overflow: "hidden", gap: 2, background: COLORS.hairline }}>
-        {mp > 0 && <span style={{ flex: mp / total, background: "#4F46E5" }} />}
+        {mp > 0 && <span style={{ flex: mp / total, background: "#1E4FB8" }} />}
         {party > 0 && <span style={{ flex: party / total, background: "#E0367A" }} />}
       </div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "2px 16px", marginTop: 7, fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
-        <span><span aria-hidden="true" style={{ display: "inline-block", width: 9, height: 9, borderRadius: 3, background: "#4F46E5", marginRight: 6 }} />To MPs personally <strong style={{ color: COLORS.ink }}>{money(mp)}</strong></span>
+        <span><span aria-hidden="true" style={{ display: "inline-block", width: 9, height: 9, borderRadius: 3, background: "#1E4FB8", marginRight: 6 }} />To MPs personally <strong style={{ color: COLORS.ink }}>{money(mp)}</strong></span>
         <span><span aria-hidden="true" style={{ display: "inline-block", width: 9, height: 9, borderRadius: 3, background: "#E0367A", marginRight: 6 }} />To parties <strong style={{ color: COLORS.ink }}>{money(party)}</strong></span>
       </div>
     </div>
@@ -130,7 +130,7 @@ function Recipients({ title, total, accent, rows }) {
                     ))}
                   </ul>
                   {r.onClick && (
-                    <button type="button" onClick={r.onClick} className="ons-chip" style={{ marginTop: 10, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accent }}>Open {r.label}&apos;s profile</button>
+                    <button type="button" onClick={r.onClick} className="ons-chip" style={{ marginTop: 10, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accentText }}>Open {r.label}&apos;s profile</button>
                   )}
                 </div>
               )}
@@ -225,7 +225,7 @@ function DonorResultCard({ result, index, onSelectPolitician }) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))", gap: "22px 28px", marginTop: 22 }}>
         {mpAgg.length > 0 && (
           <Recipients
-            title="Given to MPs personally" total={result.mpTotal} accent="#4F46E5"
+            title="Given to MPs personally" total={result.mpTotal} accent="#1E4FB8"
             rows={mpAgg.map((m) => ({ key: m.politician.id, label: m.politician.name, sub: m.politician.party, colour: partyColour(m.politician.party_colour, COLORS.inkSoft), total: m.total, count: m.count, gifts: m.gifts, onClick: () => onSelectPolitician?.(m.politician) }))}
           />
         )}
@@ -255,7 +255,7 @@ function Steps() {
     <ol style={{ listStyle: "none", margin: "22px 0 0", padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(220px, 100%), 1fr))", gap: 12 }}>
       {steps.map(([n, t, d]) => (
         <li key={n} style={{ display: "grid", gridTemplateColumns: "32px minmax(0, 1fr)", gap: 12, alignItems: "start", padding: "12px 14px", borderRadius: 14, background: `${COLORS.paper}`, border: `1px solid ${COLORS.hairline}` }}>
-          <span aria-hidden="true" style={{ width: 28, height: 28, borderRadius: 9, display: "grid", placeItems: "center", background: `${COLORS.accent}22`, color: COLORS.accent, fontFamily: FONT_BODY, fontWeight: 800, fontSize: 14 }}>{n}</span>
+          <span aria-hidden="true" style={{ width: 28, height: 28, borderRadius: 9, display: "grid", placeItems: "center", background: `${COLORS.accent}22`, color: COLORS.accentText, fontFamily: FONT_BODY, fontWeight: 800, fontSize: 14 }}>{n}</span>
           <span>
             <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink }}>{t}</span>
             <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.5, color: COLORS.inkSoft, marginTop: 2 }}>{d}</span>
@@ -334,7 +334,7 @@ export default function FollowTheMoney({ onSelectPolitician, initialQuery = null
       <section aria-label="Search for a donor" style={{ marginTop: 22, padding: "clamp(18px, 3vw, 28px)", borderRadius: 24, border: `1px solid ${COLORS.hairline}`, background: `radial-gradient(640px 260px at 90% -20%, ${COLORS.accent}2b, transparent 70%), radial-gradient(420px 220px at 0% 120%, #E0367A1c, transparent 70%), ${COLORS.paperCard}` }}>
         <label htmlFor="donor-q" style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: "clamp(18px, 2.4vw, 22px)", fontWeight: 700, color: COLORS.ink, marginBottom: 12 }}>Who do you want to look up?</label>
         <div style={{ position: "relative" }}>
-          <span style={{ position: "absolute", left: 18, top: "50%", transform: "translateY(-50%)", color: COLORS.accent, display: "flex" }}>
+          <span style={{ position: "absolute", left: 18, top: "50%", transform: "translateY(-50%)", color: COLORS.accentText, display: "flex" }}>
             <IconSearch size={20} />
           </span>
           <input

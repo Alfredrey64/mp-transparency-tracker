@@ -90,7 +90,7 @@ export function CouncilView({ council, data, wardName, countyId, detail, failed 
       </div>
 
       <div className="box-row" style={{ "--n": next ? 5 : 4, "--min": "150px" }}>
-        <StatCard icon={IconGroup} colour="#4F46E5" value={council.total} label="councillors" caption={`${major} seats are needed for a majority.`} />
+        <StatCard icon={IconGroup} colour="#1E4FB8" value={council.total} label="councillors" caption={`${major} seats are needed for a majority.`} />
         <StatCard icon={IconChartBars} colour={controlColourOf(council.control_by_seats)} value={seats[0]?.count ?? 0} label={`seats for ${seats[0]?.short ?? "the largest party"}`} caption={council.control_by_seats === "noc" ? "No party holds a majority of the seats." : `${controlLabelOf(council.control_by_seats)} holds a majority of the seats.`} />
         <StatCard icon={IconCompare} colour="#E0367A" value={change ? 1 : 0} format={(n) => (n ? "Yes" : "No")} label={`changed hands in ${latestYear}`} caption={change ? `From ${controlLabelOf(change.from)} to ${controlLabelOf(change.to)}.` : `Same kind of control as in ${latestYear - 1}.`} />
         <StatCard icon={IconSplit} colour="#E8A33D" value={moved.length} label="councillors changed party" caption={data.defections ? `Since the ${data.defections.since} list.` : undefined} />
@@ -151,7 +151,7 @@ export function CouncilView({ council, data, wardName, countyId, detail, failed 
       )}
 
       <Card>
-        <SectionHead kicker="Your councillors" accent="#4F46E5" title="Ward by ward" blurb="Each ward elects one to three councillors. Use the postcode box at the top of the page to find yours." />
+        <SectionHead kicker="Your councillors" accent="#1E4FB8" title="Ward by ward" blurb="Each ward elects one to three councillors. Use the postcode box at the top of the page to find yours." />
         {wardName && !yourWard && wards.length > 0 && (
           <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginBottom: 12 }}>
             We couldn't match your ward, “{wardName}”, to this council's list. Ward boundaries were redrawn in some areas, so browse or search below.
@@ -159,7 +159,7 @@ export function CouncilView({ council, data, wardName, countyId, detail, failed 
         )}
         {yourWard && (
           <div style={{ background: `${COLORS.accent}14`, border: `1px solid ${COLORS.accent}66`, borderRadius: 16, padding: "14px 16px", marginBottom: 18 }}>
-            <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: COLORS.accent }}>Your ward</div>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: COLORS.accentText }}>Your ward</div>
             <div style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, margin: "2px 0 8px" }}>{yourWard[0]}</div>
             {yourWard[1].map(([name, p]) => (
               <div key={name} style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: FONT_BODY, fontSize: 14.5, color: COLORS.ink, padding: "3px 0" }}>
@@ -198,7 +198,7 @@ export function CouncilView({ council, data, wardName, countyId, detail, failed 
             {visible.length === 0 && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Nobody matches that.</div>}
             <p style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, lineHeight: 1.6, margin: "14px 0 0" }}>
               To contact a councillor, use your council's own website, or{" "}
-              <a href="https://www.gov.uk/find-local-council" target="_blank" rel="noreferrer" style={{ color: COLORS.accent, fontWeight: 600 }}>find your council on GOV.UK ↗</a>.
+              <a href="https://www.gov.uk/find-local-council" target="_blank" rel="noreferrer" style={{ color: COLORS.accentText, fontWeight: 600 }}>find your council on GOV.UK ↗</a>.
             </p>
           </>
         )}

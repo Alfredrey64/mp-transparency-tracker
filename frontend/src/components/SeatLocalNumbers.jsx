@@ -22,7 +22,7 @@ function Tile({ label, value, sub, uk, rank, accent, href, linkLabel }) {
       {sub && <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 3 }}>{sub}</div>}
       {uk && <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, marginTop: 8, lineHeight: 1.45 }}>{uk}</div>}
       {rank && <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 2 }}>{rank}</div>}
-      {href && <a href={href} style={{ display: "inline-block", marginTop: 8, fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accent, textDecoration: "none" }}>{linkLabel}</a>}
+      {href && <a href={href} style={{ display: "inline-block", marginTop: 8, fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accentText, textDecoration: "none" }}>{linkLabel}</a>}
     </div>
   );
 }
@@ -80,7 +80,7 @@ export default function SeatLocalNumbers({ record, regionCode }) {
             )}
             <p style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, lineHeight: 1.55, margin: "14px 0 0" }}>
               Each nation scores its own neighbourhoods, so a rank in Wales is not directly comparable to one in England.{" "}
-              <a href="#/deprivation" style={{ color: COLORS.accent, fontWeight: 700, textDecoration: "none" }}>See the whole UK</a>
+              <a href="#/deprivation" style={{ color: COLORS.accentText, fontWeight: 700, textDecoration: "none" }}>See the whole UK</a>
             </p>
           </>
         )}
@@ -154,7 +154,7 @@ export default function SeatLocalNumbers({ record, regionCode }) {
           ["#/councils", "Find your council"],
           ["#/indicators", "Compare numbers over time"],
         ].map(([href, label]) => (
-          <a key={href} href={href} style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accent, background: `${COLORS.accent}12`, border: `1px solid ${COLORS.accent}40`, borderRadius: 999, padding: "7px 14px", textDecoration: "none" }}>{label}</a>
+          <a key={href} href={href} style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accentText, background: `${COLORS.accent}12`, border: `1px solid ${COLORS.accent}40`, borderRadius: 999, padding: "7px 14px", textDecoration: "none" }}>{label}</a>
         ))}
       </div>
       <p style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, lineHeight: 1.55, margin: 0 }}>

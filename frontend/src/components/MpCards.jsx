@@ -97,7 +97,7 @@ export function BiographyBox({ politician }) {
 export function ContactRow({ label, children }) {
   return (
     <div style={{ marginBottom: 10 }}>
-      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 11, color: COLORS.accent, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 2 }}>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 11, color: COLORS.accentText, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 2 }}>
         {label}
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink }}>{children}</div>
@@ -355,7 +355,7 @@ export function VotingSummaryBox({ politician, onNavigate }) {
       {onNavigate ? (
         <button
           onClick={() => withScrollPreserved(() => onNavigate("voting", politician))}
-          style={{ display: "block", marginTop: 10, fontSize: 12, color: COLORS.accent, fontWeight: 600, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY }}
+          style={{ display: "block", marginTop: 10, fontSize: 12, color: COLORS.accentText, fontWeight: 600, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY }}
         >
           See their full voting history
         </button>
@@ -465,7 +465,7 @@ export function RecentActivityBox({ politician, onNavigate }) {
 
       {contributions.length > 0 && (
         <div style={{ marginBottom: writtenQuestions.length > 0 ? 16 : 0 }}>
-          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.accent, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.accentText, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
             Debate Contributions
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -474,7 +474,7 @@ export function RecentActivityBox({ politician, onNavigate }) {
                 <>
                   <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.4 }}>
                     {c.title}
-                    {c.hansardUrl && <span style={{ color: COLORS.accent }}> ↗</span>}
+                    {c.hansardUrl && <span style={{ color: COLORS.accentText }}> ↗</span>}
                   </div>
                   <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginTop: 3 }}>
                     {formatDate(c.date)} · {c.section}
@@ -499,7 +499,7 @@ export function RecentActivityBox({ politician, onNavigate }) {
 
       {writtenQuestions.length > 0 && (
         <div>
-          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.accent, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.accentText, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
             Written Questions
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -528,7 +528,7 @@ export function RecentActivityBox({ politician, onNavigate }) {
           {onNavigate && (
             <button
               onClick={() => withScrollPreserved(() => onNavigate("writtenQuestions", politician))}
-              style={{ display: "block", marginTop: 10, fontSize: 12, color: COLORS.accent, fontWeight: 600, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY }}
+              style={{ display: "block", marginTop: 10, fontSize: 12, color: COLORS.accentText, fontWeight: 600, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY }}
             >
               See all their written questions
             </button>
@@ -600,7 +600,7 @@ export function NewsBox({ politician }) {
               }}
             >
               <div style={{ fontFamily: FONT_DISPLAY, fontSize: 14.5, color: COLORS.ink, lineHeight: 1.35 }}>{a.headline}</div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.accent, marginTop: 3, fontWeight: 600 }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.accentText, marginTop: 3, fontWeight: 600 }}>
                 {a.source} · {formatDate(a.published_date)} ↗
               </div>
             </a>

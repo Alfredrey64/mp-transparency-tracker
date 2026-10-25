@@ -35,10 +35,10 @@ function Frame({ children, href, label }) {
       {children}
       <footer style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "8px 14px", marginTop: 16, paddingTop: 12, borderTop: `1px solid ${COLORS.hairline}` }}>
         <a href={SITE_ORIGIN} target="_top" rel="noopener" style={{ display: "inline-flex", alignItems: "center", gap: 8, textDecoration: "none", color: COLORS.ink }}>
-          <LogoMark width={34} hole="var(--c-paper-card)" color={readable("#4F46E5")} />
+          <LogoMark width={34} hole="var(--c-paper-card)" color={readable("#1E4FB8")} />
           <span style={{ fontFamily: FONT_BRAND, fontSize: 16, fontWeight: 400, letterSpacing: "-0.02em" }}>Simple Politics</span>
         </a>
-        <a href={href} target="_top" rel="noopener" style={{ fontSize: 13, fontWeight: 700, color: readable("#4F46E5") }}>{label}</a>
+        <a href={href} target="_top" rel="noopener" style={{ fontSize: 13, fontWeight: 700, color: readable("#1E4FB8") }}>{label}</a>
       </footer>
     </article>
   );
@@ -62,7 +62,7 @@ function Answer({ id }) {
   if (!answer) return <Missing />;
   return (
     <Frame href={link(`#/answers/${answer.id}`)} label="Read the full answer">
-      <div style={{ fontSize: 12.5, fontWeight: 700, color: readable("#4F46E5") }}>{answer.topic}</div>
+      <div style={{ fontSize: 12.5, fontWeight: 700, color: readable("#1E4FB8") }}>{answer.topic}</div>
       <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 24, lineHeight: 1.2, fontWeight: 700, margin: "4px 0 12px" }}>{answer.question}</h1>
       <p style={{ fontSize: 15.5, lineHeight: 1.6, margin: 0 }}>{answer.short}</p>
       {facts.length > 0 && (
@@ -90,7 +90,7 @@ function Chart({ sector, id }) {
   const def = sectorByKey(sector);
   if (sectors[sector] === false || (sectors[sector] && !item)) return <Missing />;
   if (!item) return <Frame href={SITE_ORIGIN} label="Open Simple Politics"><p style={{ fontSize: 14, color: COLORS.inkSoft }}>Loading the figures…</p></Frame>;
-  const accent = def?.accent ?? "#4F46E5";
+  const accent = def?.accent ?? "#1E4FB8";
   const points = sliceRange(item.points, 10);
   const data = toLineData(points);
   const info = latestInfo(item.def, item.points);

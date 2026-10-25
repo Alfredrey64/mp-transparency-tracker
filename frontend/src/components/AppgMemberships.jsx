@@ -212,7 +212,7 @@ export default function AppgMemberships() {
               textAlign: "center",
             }}
           >
-            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 24, color: COLORS.accent }}>{fact.label}</div>
+            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 24, color: COLORS.accentText }}>{fact.label}</div>
             <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 2 }}>{fact.note}</div>
           </div>
         ))}

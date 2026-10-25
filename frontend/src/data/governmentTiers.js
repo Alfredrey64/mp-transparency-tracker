@@ -21,7 +21,7 @@ export const TIERS = [
     keywords: "Makes laws, sets taxes, questions ministers",
     short: "Makes the laws and checks the government",
     figure: { value: "650 + ~800", label: "MPs and peers" },
-    color: "#4F46E5",
+    color: "#1E4FB8",
     chosen: "You vote for one MP in your constituency, at least every five years. Peers are appointed, not elected.",
     does: [
       "Debates and passes laws for the whole UK, and for England alone on the things nobody else decides.",

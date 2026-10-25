@@ -42,7 +42,7 @@ export function SeatSearch({ seats, autoFocus }) {
   return (
     <div style={{ maxWidth: 560 }}>
       <div style={{ position: "relative" }}>
-        <span style={{ position: "absolute", left: 18, top: "50%", transform: "translateY(-50%)", color: COLORS.accent, display: "flex" }}>
+        <span style={{ position: "absolute", left: 18, top: "50%", transform: "translateY(-50%)", color: COLORS.accentText, display: "flex" }}>
           <IconSearch size={19} />
         </span>
         <input
@@ -438,7 +438,7 @@ function History({ record, seats, mpInfo, history }) {
                     <div style={{ minWidth: 0 }}>
                       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "2px 10px" }}>
                         <span style={{ fontFamily: FONT_BODY, fontSize: 15, fontWeight: 700, color: COLORS.ink }}>{e.name}</span>
-                        {e.current && <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: COLORS.accent, background: `${COLORS.accent}1c`, padding: "2px 8px", borderRadius: 999 }}>Current MP</span>}
+                        {e.current && <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: COLORS.accentText, background: `${COLORS.accent}1c`, padding: "2px 8px", borderRadius: 999 }}>Current MP</span>}
                       </div>
                       <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 2 }}>
                         {[e.party, e.current ? (e.start ? `MP since ${new Date(e.start).getFullYear()}` : null) : spanLabel(e), e.current ? null : e.years >= 1 ? `${Math.round(e.years)} ${Math.round(e.years) === 1 ? "year" : "years"}` : null].filter(Boolean).join(" · ")}
@@ -477,9 +477,9 @@ function History({ record, seats, mpInfo, history }) {
       <Reveal>
         <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.7 }}>
           Want the longer story? Try{" "}
-          <a href={wiki} target="_blank" rel="noreferrer" style={{ color: COLORS.accent, fontWeight: 600 }}>Wikipedia's page for this seat ↗</a>
+          <a href={wiki} target="_blank" rel="noreferrer" style={{ color: COLORS.accentText, fontWeight: 600 }}>Wikipedia's page for this seat ↗</a>
           {" "}or{" "}
-          <a href="https://electionresults.parliament.uk/" target="_blank" rel="noreferrer" style={{ color: COLORS.accent, fontWeight: 600 }}>Parliament's election results site ↗</a>.
+          <a href="https://electionresults.parliament.uk/" target="_blank" rel="noreferrer" style={{ color: COLORS.accentText, fontWeight: 600 }}>Parliament's election results site ↗</a>.
         </div>
       </Reveal>
     </div>
@@ -536,7 +536,7 @@ export function SeatDetail({ record, seats, generatedAt, onSelectPolitician, ext
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "flex-end", gap: 10, marginTop: 14 }}>
         <a
           href={`#/compareSeats/${encodeURIComponent(`${record.name}~`)}`}
-          style={{ display: "inline-flex", alignItems: "center", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accent, background: `${COLORS.accent}12`, border: `1px solid ${COLORS.accent}40`, borderRadius: 999, padding: "7px 14px", textDecoration: "none" }}
+          style={{ display: "inline-flex", alignItems: "center", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accentText, background: `${COLORS.accent}12`, border: `1px solid ${COLORS.accent}40`, borderRadius: 999, padding: "7px 14px", textDecoration: "none" }}
         >
           Compare with another seat
         </a>

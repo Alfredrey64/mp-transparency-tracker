@@ -13,7 +13,7 @@ import { scrollRegion } from "../lib/a11y";
 // thing as a dated log you can filter. All from Parliament's own biography
 // record for the MP.
 
-const LANE_COLOURS = { lords: "#9B4FE0", commons: "#4F46E5", seat: "#4F46E5", gov: "#1FA97C", opp: "#E8A33D", other: "#7B6CF0", committee: "#2F8FBF" };
+const LANE_COLOURS = { lords: "#9B4FE0", commons: "#1E4FB8", seat: "#1E4FB8", gov: "#1FA97C", opp: "#E8A33D", other: "#7B6CF0", committee: "#2F8FBF" };
 const ROW = 24;
 const LABEL_W = 104;
 
@@ -64,7 +64,7 @@ function Swimlanes({ detail, now }) {
                 <span key={t.year} aria-hidden="true" style={{ position: "absolute", left: pos(t.at), top: 0, bottom: 0, borderLeft: `1px solid ${COLORS.hairline}`, opacity: 0.55 }} />
               ))}
               {lane.items.map((item, i) => {
-                const colour = lane.key === "party" ? partyColourByName(item.label) : lane.key === "seat" ? (i % 2 ? "#6D64E8" : "#4F46E5") : LANE_COLOURS[lane.key];
+                const colour = lane.key === "party" ? partyColourByName(item.label) : lane.key === "seat" ? (i % 2 ? "#6D64E8" : "#1E4FB8") : LANE_COLOURS[lane.key];
                 const widthPct = ((item.to - item.from) / span) * 100;
                 const tip = `${item.label}${item.note ? ` (${item.note})` : ""}: ${monthYear(new Date(item.from).toISOString().slice(0, 10))} to ${item.ongoing ? "now" : monthYear(new Date(item.to).toISOString().slice(0, 10))}`;
                 return (
@@ -154,7 +154,7 @@ function Log({ events, now }) {
             </button>
           );
         })}
-        <button type="button" onClick={() => setNewestFirst((v) => !v)} style={{ marginLeft: "auto", background: "none", border: "none", cursor: "pointer", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accent }}>
+        <button type="button" onClick={() => setNewestFirst((v) => !v)} style={{ marginLeft: "auto", background: "none", border: "none", cursor: "pointer", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accentText }}>
           {newestFirst ? "Show oldest first" : "Show newest first"}
         </button>
       </div>
@@ -178,7 +178,7 @@ function Log({ events, now }) {
                   <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 2 }}>
                     {single ? monthYear(e.start) : `${monthYear(e.start)} to ${e.ongoing ? "now" : monthYear(e.end)}`}
                     {!single && ` · ${duration(e.start, e.end, now)}`}
-                    {e.ongoing && !single && <strong style={{ color: COLORS.accent }}> · current</strong>}
+                    {e.ongoing && !single && <strong style={{ color: COLORS.accentText }}> · current</strong>}
                   </div>
                 </div>
               );

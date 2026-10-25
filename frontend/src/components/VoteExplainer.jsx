@@ -23,7 +23,7 @@ export default function VoteExplainer({ title, votedAye = null, inline = false }
 
   return (
     <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 10, padding: "10px 12px", marginBottom: 10 }}>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: COLORS.accent, marginBottom: 4 }}>What was this vote?</div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: COLORS.accentText, marginBottom: 4 }}>What was this vote?</div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, lineHeight: 1.55, marginBottom: 6 }}>{explanation.plain}</div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 18px", fontFamily: FONT_BODY, fontSize: 12, lineHeight: 1.5 }}>
         <span style={{ color: readable("#2F6F4E"), flex: "1 1 200px" }}><strong>Aye:</strong> {explanation.ayeMeans}</span>

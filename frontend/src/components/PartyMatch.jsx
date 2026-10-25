@@ -263,7 +263,7 @@ function NationScreen({ selected, onSelect, onContinue, onSkip }) {
                       animate={{ y: [-18, 1, -1, 0], opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.5 }}
                       transition={{ duration: 0.5, ease: "easeOut" }}
-                      style={{ position: "absolute", top: -24, color: COLORS.accent, display: "flex" }}
+                      style={{ position: "absolute", top: -24, color: COLORS.accentText, display: "flex" }}
                     >
                       <IconPin size={20} />
                     </motion.span>
@@ -311,7 +311,7 @@ function ExplainerToggle({ text }) {
         aria-expanded={open}
         style={{
           display: "flex", alignItems: "center", gap: 6, fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700,
-          color: COLORS.accent, background: "transparent", border: "none", cursor: "pointer", padding: 0,
+          color: COLORS.accentText, background: "transparent", border: "none", cursor: "pointer", padding: 0,
         }}
       >
         <motion.span
@@ -359,12 +359,12 @@ function QuestionScreen({ question, index, total, value, onAnswer, onBack }) {
           <span
             style={{
               display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-              width: 32, height: 32, borderRadius: 10, background: `${COLORS.accent}14`, color: COLORS.accent,
+              width: 32, height: 32, borderRadius: 10, background: `${COLORS.accent}14`, color: COLORS.accentText,
             }}
           >
             <Icon size={17} />
           </span>
-          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.accent, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.accentText, textTransform: "uppercase", letterSpacing: "0.06em" }}>
             {issueLabel(question.issue)}
             <div style={{ fontWeight: 600, color: COLORS.inkSoft, textTransform: "none", letterSpacing: "normal", marginTop: 2 }}>
               Question {index + 1} of {total}

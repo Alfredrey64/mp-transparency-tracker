@@ -4,7 +4,7 @@ import { MEDIAN_SALARY, MP_SALARY } from "../data/referenceFigures";
 
 // Tone colours are deliberately neutral shades, not red and green: a figure
 // being high or low says where it sits, not whether it is good or bad.
-const TONE = { high: "#4F46E5", mid: "#8A8FA8", low: "#2F8FBF" };
+const TONE = { high: "#1E4FB8", mid: "#8A8FA8", low: "#2F8FBF" };
 
 // One line under a chart or figure saying what it means: a marker for where
 // it sits ("Higher than most") and a sentence. `result` comes from

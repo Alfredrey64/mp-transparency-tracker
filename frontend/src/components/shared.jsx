@@ -191,88 +191,37 @@ export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = 
   const isHero = size === "xl";
   // The page's "What you're looking at" box sits under every header.
   const guideKey = useContext(GuideKeyContext);
-  // Every page passes its own distinct icon here already — reusing it as
-  // the lookup key means each page's header automatically picks up its
-  // sidebar section's colour (see data/sidebarSections.js) with no prop
-  // threading needed through 30-odd page files. Pages outside any section
-  // (Home, Methodology/Settings, standalone pages) just keep the plain
-  // sitewide accent.
+  // Every page passes its own distinct icon here already: reusing it as the lookup key gives each page its menu group's colour (see
+  // data/sidebarSections.js) with nothing passed down through the 60-odd page files. Pages outside any group keep the plain site accent.
   const accent = SECTION_ACCENT_BY_ICON.get(Icon) ?? COLORS.accent;
   const kickerText = SECTION_LABEL_BY_KEY.get(guideKey) ?? kicker;
   return (
-    <div style={{ marginBottom: isHero ? 0 : 28, textAlign: align }}>
-      <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22 }}>
-        <EyebrowLabel color={accent}>{kickerText}</EyebrowLabel>
-      </motion.div>
-      <motion.h1
-        initial={{ opacity: 0, y: 6 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.24, delay: 0.02, ease: "easeOut" }}
-        style={{
-          fontFamily: FONT_DISPLAY,
-          fontSize: isHero ? "clamp(32px, 6vw, 56px)" : "clamp(26px, 4vw, 34px)",
-          color: COLORS.ink,
-          margin: "12px 0 0",
-          lineHeight: 1.15,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: align === "center" ? "center" : "flex-start",
-          gap: 14,
-        }}
-      >
-        {Icon && (
-          <motion.span
-            initial={{ scale: 0.75, rotate: -6, opacity: 0 }}
-            animate={{ scale: 1, rotate: 0, opacity: 1 }}
-            transition={{ duration: 0.3, delay: 0.04, ease: "backOut" }}
-            style={{ display: "inline-flex", color: accent, flexShrink: 0 }}
-          >
-            <Icon size={isHero ? 40 : 30} />
-          </motion.span>
-        )}
-        <span>{title}</span>
-      </motion.h1>
-      <motion.div
-        initial={{ scaleX: 0 }}
-        animate={{ scaleX: 1 }}
-        transition={{ duration: 0.3, delay: 0.08, ease: "easeOut" }}
-        style={{
-          transformOrigin: align === "center" ? "center" : "left",
-          height: 2,
-          width: isHero ? 40 : 28,
-          background: accent,
-          margin: align === "center" ? "16px auto 0" : "14px 0 0",
-        }}
-      />
-      {subtitle && (
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.4 }}
-          style={{
-            fontFamily: FONT_BODY,
-            fontSize: isHero ? 18 : 15,
-            color: COLORS.inkSoft,
-            marginTop: isHero ? 22 : 8,
-            lineHeight: 1.6,
-            maxWidth: isHero ? 620 : 1100,
-            marginLeft: align === "center" ? "auto" : undefined,
-            marginRight: align === "center" ? "auto" : undefined,
-          }}
-        >
-          {subtitle}
-        </motion.p>
-      )}
-      {!isHero && share !== false && (
-        <div className="ons-noprint" style={{ marginTop: 12 }}>
-          <ShareButton
-            filename={String(title).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}
-            getSpec={share ?? (() => pageShareSpec({ kicker: kickerText, title, subtitle, accent, link: window.location.href }))}
-          />
+    <>
+      <div className="page-hero" data-align={align} style={{ "--hero-accent": accent }}>
+        <div className="page-hero-inner">
+          <nav aria-label="Breadcrumb" className="crumbs">
+            <a href="#/">Home</a>
+            <span aria-hidden="true">/</span>
+            <span>{kickerText}</span>
+          </nav>
+          <h1 className="page-hero-title">
+            {Icon && <span className="page-hero-icon"><Icon size={isHero ? 34 : 28} /></span>}
+            <span>{title}</span>
+          </h1>
+          {subtitle && <p className="page-hero-sub">{subtitle}</p>}
+          {!isHero && share !== false && (
+            <div className="ons-noprint" style={{ marginTop: 18 }}>
+              <ShareButton
+                filename={String(title).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}
+                getSpec={share ?? (() => pageShareSpec({ kicker: kickerText, title, subtitle, accent, link: window.location.href }))}
+                style={{ color: "#fff", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.4)", borderRadius: 8, minHeight: 40, padding: "0 16px" }}
+              />
+            </div>
+          )}
         </div>
-      )}
+      </div>
       {!isHero && <PageGuide viewKey={guideKey} />}
-    </div>
+    </>
   );
 }
 

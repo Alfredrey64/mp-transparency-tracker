@@ -140,7 +140,7 @@ function MajorityBarDiagram() {
 
 function FPTPDiagram() {
   const candidates = [
-    { name: "Candidate A", pct: 34, color: COLORS.accent, winner: true },
+    { name: "Candidate A", pct: 34, color: COLORS.accentText, winner: true },
     { name: "Candidate B", pct: 29, color: readable("#9C3B3B") },
     { name: "Candidate C", pct: 24, color: readable("#2F6F4E") },
     { name: "Candidate D", pct: 13, color: COLORS.inkSoft },
@@ -258,7 +258,7 @@ function SalaryDiagram() {
 function WeekSplitDiagram() {
   const segments = [
     { label: "Westminster (Mon–Thu, sitting weeks)", pct: 57, color: readable("#4C6FA6") },
-    { label: "Constituency (Fri–Sun)", pct: 43, color: COLORS.accent },
+    { label: "Constituency (Fri–Sun)", pct: 43, color: COLORS.accentText },
   ];
   return (
     <div style={{ marginTop: 14, maxWidth: 420 }}>

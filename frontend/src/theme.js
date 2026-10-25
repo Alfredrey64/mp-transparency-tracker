@@ -40,8 +40,8 @@ const ratio = (a, b) => { const x = relLum(a); const y = relLum(b); return (Math
 const mixOklab = (a, b, share) => { const p = toOklab(a); const q = toOklab(b); return fromOklab(p.map((v, i) => v * share + q[i] * (1 - share))); };
 // The ink and the darkest backgrounds a bit of text can land on, light and dark (see index.css): the page, a card, a tinted chip.
 const THEME_EDGES = {
-  light: { ink: [11, 12, 18], worst: parseHex("#D2C8AD") },
-  dark: { ink: [247, 248, 252], worst: parseHex("#33364A") },
+  light: { ink: [10, 20, 36], worst: parseHex("#D9DFE9") },
+  dark: { ink: [242, 245, 251], worst: parseHex("#243149") },
 };
 const shareFor = (rgb, edge, min = 4.8) => {
   for (let share = 100; share > 0; share -= 4) if (ratio(mixOklab(rgb, edge.ink, share / 100), edge.worst) >= min) return share;
@@ -109,16 +109,19 @@ export const COLORS = {
   inkSoft: "var(--c-ink-soft)",
   paper: "var(--c-paper)",
   paperCard: "var(--c-paper-card)",
+  paperSunk: "var(--c-paper-sunk)",
+  brand: "var(--c-brand)",
+  navy: "var(--c-navy)",
   hairline: "var(--c-hairline)",
-  accent: "#4F46E5",
+  accent: "#1E4FB8",
   // The accent as text on the page or on a pale tint of itself, readable on both the light and the dark pages.
-  accentText: readable("#4F46E5"),
+  accentText: readable("#1E4FB8"),
   // The base accent is tuned for white text on top of it (buttons) and
   // for text on a light page — against the sidebar's own dark ground it
   // loses almost all contrast, since both sit at a similarly low
   // luminance. This lighter variant is for exactly that one case: accent
   // text/icons directly on the dark sidebar.
-  accentOnDark: "#8B85F5",
+  accentOnDark: "#9DBBFF",
   gold: "#E8B93D",
   commonsGreen: "#1FA97C",
   garnet: "#E63946",
@@ -127,25 +130,16 @@ export const COLORS = {
   sidebarText: "var(--c-sidebar-text)",
 };
 
-// A confident geometric sans for display type instead of another attempt at
-// "distinguished serif" — Newsreader, then Caslon, both still read as
-// old-fashioned once actually on screen, which was the real complaint. Space
-// Grotesk has real character (look at its lowercase "g" and "a") without
-// reaching for a serif's built-in gravitas, and works at both hero and
-// small-label sizes. Archivo stays for body copy — a distinct enough sans
-// that the two don't blur into one typeface, but still calm at reading
-// sizes. IBM Plex Mono is untouched for tabular figures.
-export const FONT_DISPLAY = "'Space Grotesk', system-ui, sans-serif";
-export const FONT_BODY = "'Archivo', system-ui, sans-serif";
-// The wordmark only: a confident, modern geometric sans with presence.
-export const FONT_BRAND = "'Sora', 'Space Grotesk', system-ui, sans-serif";
+// Type: Newsreader, a serif made for reading on screen, for headings and the big numbers of a page; Public Sans, a plain and legible sans designed
+// for public services, for everything else. IBM Plex Mono is for tabular figures in dense tables.
+export const FONT_DISPLAY = "'Newsreader', Georgia, serif";
+export const FONT_BODY = "'Public Sans', system-ui, sans-serif";
+// The wordmark: the same serif, heavier.
+export const FONT_BRAND = "'Newsreader', Georgia, serif";
 export const FONT_MONO = "'IBM Plex Mono', monospace";
-// For figures that are the point of a page — percentages, counts, majorities.
-// Fraunces is a soft, high-contrast serif with distinctive numerals, which
-// sets them apart from the grotesque headings and body text around them.
-// Always used with lining, tabular figures (see numeric below) so columns of
-// numbers line up and a "1" doesn't shrink into the text.
-export const FONT_NUMERIC = "'Fraunces', Georgia, serif";
-export const numeric = { fontFamily: FONT_NUMERIC, fontVariantNumeric: "lining-nums tabular-nums", fontFeatureSettings: "'lnum' 1, 'tnum' 1" };
+// For figures that are the point of a page: percentages, counts, majorities. Public Sans with lining, tabular figures, so columns of numbers
+// line up and a "1" does not shrink into the text.
+export const FONT_NUMERIC = "'Public Sans', system-ui, sans-serif";
+export const numeric = { fontFamily: FONT_NUMERIC, fontVariantNumeric: "lining-nums tabular-nums", fontFeatureSettings: "'lnum' 1, 'tnum' 1", fontWeight: 650, letterSpacing: "-0.01em" };
 
 export const PAGE_PADDING = "clamp(20px, 5vw, 40px) clamp(16px, 5vw, 40px) 60px";

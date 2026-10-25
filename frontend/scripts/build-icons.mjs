@@ -15,7 +15,7 @@ import { chromium } from "playwright";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC = path.join(here, "../public");
-const INDIGO = "#4F46E5";
+const INDIGO = "#1E4FB8";
 
 // The mark in its own units: it spans x 40 to 456 and y 24 to 430, so its middle is (248, 227).
 const SHAPES = `<rect x="56" y="324" width="200" height="100"/><rect x="56" y="306" width="16" height="18"/><rect x="82" y="306" width="16" height="18"/><rect x="108" y="306" width="16" height="18"/><rect x="134" y="306" width="16" height="18"/><rect x="160" y="306" width="16" height="18"/><rect x="186" y="306" width="16" height="18"/><rect x="212" y="306" width="16" height="18"/><rect x="238" y="306" width="16" height="18"/>

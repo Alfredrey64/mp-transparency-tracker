@@ -169,7 +169,7 @@ export function buildEvents(detail) {
 
 export const EVENT_KINDS = [
   { key: "lords", label: "House of Lords", colour: "#9B4FE0" },
-  { key: "seat", label: "Seats", colour: "#4F46E5" },
+  { key: "seat", label: "Seats", colour: "#1E4FB8" },
   { key: "party", label: "Party", colour: "#8A6D3B" },
   { key: "gov", label: "Government", colour: "#1FA97C" },
   { key: "opp", label: "Shadow front bench", colour: "#E8A33D" },

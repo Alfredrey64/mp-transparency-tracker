@@ -2,70 +2,98 @@
   margin: 0;
   padding: 0;
 
-  /* A clean, near-white ground instead of the aged-parchment tan this used
-     to be — that warm tint was reading as dated paper rather than
-     considered design. Colour now comes from the accents (see theme.js)
-     against a quiet backdrop, not from a tinted page itself. */
-  /* The keyboard focus ring: dark indigo on the light pages, light indigo on the dark ones, so it stands out against either. */
-  --focus-ring: #3730A3;
-  --c-ink: #0B0C12;
-  --c-ink-soft: #383643;
-  --c-paper: #F0E8D5;
-  --c-paper-card: #E8DFC8;
-  --c-hairline: #D5C9AE;
-  --c-sidebar-bg: #1B1C2E;
-  --c-sidebar-bg-deep: #101120;
-  --c-sidebar-text: #C7CBDC;
+  /* The design tokens. Everything on the site reads its colour, type, shape and motion from here (and from theme.js), so changing one changes every
+     page. Civic editorial: a cool, quiet ground, white cards with a fine border, deep navy ink and a single blue for actions and links. The
+     colours that carry data (charts, parties, maps) stay as each page sets them. */
+  --focus-ring: #1E4FB8;
+  --c-ink: #0A1424;
+  --c-ink-soft: #3A465A;
+  --c-paper: #F3F5F9;
+  --c-paper-card: #FFFFFF;
+  --c-paper-sunk: #E9EDF4;
+  --c-hairline: #D9DFE9;
+  --c-brand: #1E4FB8;
+  --c-on-brand: #FFFFFF;
+  --c-brand-deep: #0F2A55;
+  --c-navy: #0B1B33;
+  --c-navy-2: #12294A;
+  --c-hero: #0B1B33;
+  --c-on-navy: #F2F5FB;
+  --c-on-navy-soft: #B9C5DB;
+  --c-sidebar-bg: #0B1B33;
+  --c-sidebar-bg-deep: #08142A;
+  --c-sidebar-text: #C9D3E6;
 
-  /* The menu column. Light by default, and dark only in the dedicated dark mode (below). */
-  --sb-bg: #E9E0CA;
-  --sb-bg-2: #F1E9D6;
-  --sb-strong: #0B0C12;
-  --sb-text: #101119;
-  --sb-soft: rgba(11, 12, 18, 0.88);
-  --sb-faint: rgba(11, 12, 18, 0.78);
-  --sb-hover: rgba(79, 70, 229, 0.07);
-  --sb-surface: rgba(25, 26, 35, 0.035);
-  --sb-active: rgba(79, 70, 229, 0.14);
-  --sb-border: rgba(25, 26, 35, 0.09);
-  --sb-border-strong: rgba(25, 26, 35, 0.2);
-  --sb-accent: #4F46E5;
-  --sb-scroll: rgba(25, 26, 35, 0.18);
+  --radius-s: 8px;
+  --radius-m: 12px;
+  --radius-l: 16px;
+  --shadow-1: 0 1px 2px rgba(10, 20, 36, 0.05), 0 1px 1px rgba(10, 20, 36, 0.03);
+  --shadow-2: 0 2px 4px rgba(10, 20, 36, 0.04), 0 8px 24px -8px rgba(10, 20, 36, 0.12);
+  --shadow-3: 0 4px 8px rgba(10, 20, 36, 0.05), 0 20px 48px -12px rgba(10, 20, 36, 0.2);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --header-h: 68px;
+
+  /* The menu (the header, the mega menu and the phone drawer). */
+  --sb-bg: #FFFFFF;
+  --sb-bg-2: #F7F9FC;
+  --sb-strong: #0A1424;
+  --sb-text: #1B2A41;
+  --sb-soft: rgba(10, 20, 36, 0.78);
+  --sb-faint: rgba(10, 20, 36, 0.68);
+  --sb-hover: rgba(30, 79, 184, 0.07);
+  --sb-surface: rgba(10, 20, 36, 0.045);
+  --sb-active: rgba(30, 79, 184, 0.12);
+  --sb-border: rgba(10, 20, 36, 0.1);
+  --sb-border-strong: rgba(10, 20, 36, 0.22);
+  --sb-accent: #1E4FB8;
+  --sb-scroll: rgba(10, 20, 36, 0.2);
   --acc-text: 50%;
-  --sb-glow: rgba(79, 70, 229, 0.13);
+  --sb-glow: rgba(30, 79, 184, 0.1);
 }
 
 [data-theme="dark"] {
-  --focus-ring: #B7B3FF;
+  --focus-ring: #9DBBFF;
   color-scheme: dark;
-  --c-ink: #F7F8FC;
-  --c-ink-soft: #C6CADB;
-  --c-paper: #14151F;
-  --c-paper-card: #1D1F2C;
-  --c-hairline: #2C2F42;
-  --c-sidebar-bg: #101120;
-  --c-sidebar-bg-deep: #0A0B16;
-  --c-sidebar-text: #C7CBDC;
+  --c-ink: #F2F5FB;
+  --c-ink-soft: #BFC9DC;
+  --c-paper: #0A1220;
+  --c-paper-card: #111B2E;
+  --c-paper-sunk: #0D1626;
+  --c-hairline: #243149;
+  --c-brand: #7FA6F5;
+  --c-on-brand: #0A1220;
+  --c-brand-deep: #A9C4FA;
+  --c-navy: #0D1A30;
+  --c-navy-2: #14284A;
+  --c-hero: #12274A;
+  --c-sidebar-bg: #0A1426;
+  --c-sidebar-bg-deep: #070F1D;
+  --c-sidebar-text: #C9D3E6;
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-2: 0 2px 4px rgba(0, 0, 0, 0.25), 0 8px 24px -8px rgba(0, 0, 0, 0.5);
+  --shadow-3: 0 4px 8px rgba(0, 0, 0, 0.3), 0 20px 48px -12px rgba(0, 0, 0, 0.6);
 
-  --sb-bg: #101120;
-  --sb-bg-2: #0A0B16;
+  --sb-bg: #0D1830;
+  --sb-bg-2: #0A1426;
   --sb-strong: #FFFFFF;
-  --sb-text: #C7CBDC;
-  --sb-soft: rgba(206, 212, 230, 0.78);
-  --sb-faint: rgba(206, 212, 230, 0.6);
-  --sb-hover: rgba(255, 255, 255, 0.06);
-  --sb-surface: rgba(255, 255, 255, 0.035);
-  --sb-active: rgba(255, 255, 255, 0.16);
-  --sb-border: rgba(255, 255, 255, 0.07);
-  --sb-border-strong: rgba(255, 255, 255, 0.18);
-  --sb-accent: #8B85F5;
-  --sb-scroll: rgba(255, 255, 255, 0.15);
+  --sb-text: #D3DBEA;
+  --sb-soft: rgba(211, 219, 234, 0.8);
+  --sb-faint: rgba(211, 219, 234, 0.66);
+  --sb-hover: rgba(255, 255, 255, 0.07);
+  --sb-surface: rgba(255, 255, 255, 0.045);
+  --sb-active: rgba(127, 166, 245, 0.2);
+  --sb-border: rgba(255, 255, 255, 0.1);
+  --sb-border-strong: rgba(255, 255, 255, 0.22);
+  --sb-accent: #7FA6F5;
+  --sb-scroll: rgba(255, 255, 255, 0.18);
   --acc-text: 100%;
-  --sb-glow: rgba(139, 133, 245, 0.16);
+  --sb-glow: rgba(127, 166, 245, 0.14);
 }
 
 html, body, #root {
   width: 100%;
+  overflow-x: clip;
   min-height: 100vh;
   margin: 0;
   padding: 0;
@@ -80,19 +108,9 @@ html, body, #root {
    when something is tapped. */
 button, a, [role="button"], input, select, summary { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 
-/* The app shell fills the screen, and the menu column is exactly as tall as the
-   visible screen (dvh follows the browser's collapsing address bar). */
-.mp-app-shell { min-height: 100vh; }
-.mp-sidebar { min-height: 100vh; max-height: 100vh; padding: 20px 16px 16px; }
-@supports (min-height: 100dvh) {
-  .mp-app-shell { min-height: 100dvh; }
-  .mp-sidebar { min-height: 100dvh; max-height: 100dvh; }
-}
 
 /* Notched phones and home-screen apps: keep content clear of the notch, the
    rounded corners and the home bar. */
-.mp-mobile-topbar { position: sticky; top: 0; z-index: 50; transition: transform 0.22s ease; padding-top: calc(4px + env(safe-area-inset-top, 0px)) !important; padding-bottom: 4px !important; padding-left: calc(14px + env(safe-area-inset-left, 0px)) !important; padding-right: calc(8px + env(safe-area-inset-right, 0px)) !important; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
-.mp-sidebar { padding-top: calc(20px + env(safe-area-inset-top, 0px)); padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); padding-left: calc(16px + env(safe-area-inset-left, 0px)); }
 #root { padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
 
 /* iOS zooms the page when you focus a field set below 16px. Keep fields at 16px
@@ -147,34 +165,6 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
   100% { background-position: 0 50%; }
 }
 
-.mp-mobile-topbar {
-  display: none;
-}
-
-.mp-sidebar-backdrop {
-  display: none;
-}
-
-.mp-sidebar {
-  position: sticky;
-  top: 0;
-  scrollbar-width: thin;
-  scrollbar-color: var(--sb-scroll) transparent;
-}
-
-.mp-sidebar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.mp-sidebar::-webkit-scrollbar-thumb {
-  background: var(--sb-scroll);
-  border-radius: 3px;
-}
-
-.mp-sidebar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
 .mp-bill-track {
   scrollbar-width: thin;
   scrollbar-color: var(--c-hairline) transparent;
@@ -191,45 +181,6 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 
 .mp-bill-track::-webkit-scrollbar-track {
   background: transparent;
-}
-
-@media (max-width: 880px) {
-  .mp-app-shell {
-    flex-direction: column;
-  }
-
-  .mp-sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    max-width: 82vw;
-    transform: translateX(-100%);
-    /* While it is off screen it is also hidden from the keyboard and screen readers, once the slide-out has finished. */
-    visibility: hidden;
-    transition: transform 0.28s ease, visibility 0s linear 0.28s;
-    z-index: 60;
-    overflow-y: auto;
-  }
-
-  .mp-sidebar.mp-sidebar-open {
-    visibility: visible;
-    transition: transform 0.28s ease, visibility 0s;
-    transform: translateX(0);
-    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.25);
-  }
-
-  .mp-mobile-topbar {
-    display: flex;
-  }
-
-  .mp-sidebar-backdrop.mp-sidebar-open {
-    display: block;
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 20, 35, 0.45);
-    z-index: 55;
-  }
 }
 
 /* framer-motion's own animations already respect this via the app-wide
@@ -296,9 +247,6 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 .member-row:hover, .member-row:focus-visible { background-color: rgba(127, 127, 160, 0.14) !important; }
 
 /* Sidebar sections: shown or hidden outright. (They used to slide open by animating a grid row from 0fr to 1fr, which some browsers, WebKit among them, can leave clipped when the content changes size after it opens.) */
-.fold { display: none; }
-.fold[data-open="true"] { display: block; }
-.fold-inner { min-height: 0; }
 
 /* Career tab: bars grow out from their left edge, once, when the tab opens. */
 @keyframes careerBar { from { transform: scaleX(0); opacity: 0.4; } to { transform: scaleX(1); opacity: 1; } }
@@ -320,8 +268,8 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
    "Glossary →" links) get an invisible, larger area to tap, without moving
    anything on the page. */
 @media (pointer: coarse) {
-  button:not([style*="position"]):not(.gloss-term):not(.tier-slab) { position: relative; }
-  button:not(.gloss-term)::after { content: ""; position: absolute; inset: -8px -6px; }
+  button:not([style*="position"]):not(.gloss-term):not(.tier-slab):not(.skip-link) { position: relative; }
+  button:not(.gloss-term):not(.skip-link)::after { content: ""; position: absolute; inset: -8px -6px; }
 }
 
 /* The Commons and Lords domes: seats sweep in from the left (delay per seat is
@@ -354,7 +302,6 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 
 /* Menu items are a comfortable size to tap on a phone. */
 @media (pointer: coarse) {
-  .side-item { min-height: 48px; }
 }
 
 /* Ministers' meetings: the summary and filters sit in a column beside the
@@ -469,16 +416,16 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
   box-shadow: 0 8px 26px color-mix(in srgb, var(--c) 24%, transparent); transition-delay: var(--delay, 0s);
 }
 .tier-slab-icon { flex: none; width: 42px; height: 42px; border-radius: 11px; display: inline-flex; align-items: center; justify-content: center; color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); }
-.tier-slab-name { display: block; font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 18px; font-weight: 600; line-height: 1.2; color: var(--c-ink); }
-.tier-slab-short, .tier-slab-keys { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; font-family: 'Archivo', system-ui, sans-serif; color: var(--c-ink-soft); }
+.tier-slab-name { display: block; font-family: 'Newsreader', Georgia, serif; font-size: 18px; font-weight: 600; line-height: 1.2; color: var(--c-ink); }
+.tier-slab-short, .tier-slab-keys { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; font-family: 'Public Sans', system-ui, sans-serif; color: var(--c-ink-soft); }
 .tier-slab-short { -webkit-line-clamp: 2; font-size: 13.5px; line-height: 1.35; margin-top: 2px; }
 .tier-slab-keys { -webkit-line-clamp: 1; font-size: 12.5px; margin-top: 3px; opacity: 0.85; }
 .tier-slab-fig { flex: none; text-align: right; }
-.tier-slab-num { display: block; font-family: 'Fraunces', Georgia, serif; font-variant-numeric: lining-nums tabular-nums; font-feature-settings: 'lnum' 1, 'tnum' 1; font-size: 19px; font-weight: 600; line-height: 1.2; color: var(--ct, var(--c)); }
-.tier-slab-label { display: block; font-family: 'Archivo', system-ui, sans-serif; font-size: 11.5px; color: var(--c-ink-soft); }
+.tier-slab-num { display: block; font-family: 'Public Sans', system-ui, sans-serif; font-variant-numeric: lining-nums tabular-nums; font-feature-settings: 'lnum' 1, 'tnum' 1; font-size: 19px; font-weight: 600; line-height: 1.2; color: var(--ct, var(--c)); }
+.tier-slab-label { display: block; font-family: 'Public Sans', system-ui, sans-serif; font-size: 11.5px; color: var(--c-ink-soft); }
 .tier-pill {
   position: absolute; top: 0; right: 14px; transform: translateY(-50%) scale(0.92); opacity: 0; pointer-events: none; white-space: nowrap;
-  font: 600 12px 'Archivo', system-ui, sans-serif; color: var(--c-ink); padding: 3px 11px; border-radius: 999px;
+  font: 600 12px 'Public Sans', system-ui, sans-serif; color: var(--c-ink); padding: 3px 11px; border-radius: 999px;
   background: color-mix(in srgb, var(--c) 18%, var(--c-paper)); border: 1px solid var(--c);
   transition: opacity 0.3s, transform 0.3s;
 }
@@ -489,7 +436,7 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 
 /* Printing (handy for classrooms): just the page, no menu, on white. */
 @media print {
-  .mp-sidebar, .mp-sidebar-backdrop, .mp-mobile-topbar, .tier-mini { display: none !important; }
+  .site-header, .site-footer, .site-scrim, .tier-mini { display: none !important; }
   :root, [data-theme="dark"] {
     --c-ink: #111; --c-ink-soft: #444; --c-paper: #fff; --c-paper-card: #f6f6f8; --c-hairline: #d5d5dc;
   }
@@ -548,7 +495,7 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 /* Keyboard users can jump past the sidebar; the main region takes focus quietly when the page changes. */
 .skip-link {
   position: fixed; left: 12px; top: -64px; max-width: calc(100vw - 24px); box-sizing: border-box; z-index: 1000; background: #fff; color: #111; font: 700 14px/1 system-ui, sans-serif;
-  padding: 12px 18px; border: 2px solid #4F46E5; border-radius: 10px; cursor: pointer; transition: top 0.15s;
+  padding: 12px 18px; border: 2px solid #1E4FB8; border-radius: 10px; cursor: pointer; transition: top 0.15s;
 }
 .skip-link:focus { top: 12px; }
 #main-content:focus { outline: none; }
@@ -579,7 +526,7 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 .bd-grid[data-active="6"] .bd-sq[data-row="6"], .bd-grid[data-active="7"] .bd-sq[data-row="7"] { opacity: 1; }
 
 /* A small text-style button: "See the chart". Big enough to tap, quiet enough to read around. */
-.ons-linkbtn { background: none; border: none; padding: 8px 0 0; font-family: 'Archivo', system-ui, sans-serif; font-size: 13px; font-weight: 600; line-height: 1.2; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; min-height: 32px; }
+.ons-linkbtn { background: none; border: none; padding: 8px 0 0; font-family: 'Public Sans', system-ui, sans-serif; font-size: 13px; font-weight: 600; line-height: 1.2; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; min-height: 32px; }
 @media (pointer: coarse), (max-width: 700px) { .ons-linkbtn { min-height: 44px; padding-top: 12px; } }
 
 /* Regions page: the map beside the league table on wide screens, stacked on narrow ones. */
@@ -606,17 +553,11 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
   .play-row .play-slider { order: 3; flex: 1 1 100% !important; margin-top: 4px; }
 }
 
-/* A close button for the phone menu, so it can be dismissed without hunting for the dimmed area beside it. */
-.mp-sidebar-close { display: none; }
-@media (max-width: 880px) {
-  .mp-sidebar-close { display: inline-flex; align-items: center; justify-content: center; position: sticky; top: 0; align-self: flex-end; width: 44px; height: 44px; min-height: 44px; flex-shrink: 0; margin: -8px -6px -26px 0; z-index: 2; border-radius: 22px; border: none; background: var(--sb-surface); color: var(--sb-strong); cursor: pointer; }
-}
-
 /* On a narrow screen the colour key shows every other edge, counting back from the top one, so the labels never run together. */
 @media (max-width: 520px) { .key-skip { display: none; } }
 
-/* With the phone top bar stuck to the top, jump targets stop below it. */
-@media (max-width: 880px) { .ons-anchor, [id^="s-"] { scroll-margin-top: 72px; } }
+/* With the header stuck to the top, jump targets stop below it. */
+.ons-anchor, [id^="s-"] { scroll-margin-top: calc(var(--header-h) + 12px); }
 
 /* Editorial pages (the explainers and "what's hidden" pages): a wide reading layout. On a big screen the cards sit in two
    columns; the header, the "why this matters" band, diagrams and tables span both. Phones and narrow windows get one column. */
@@ -670,8 +611,6 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 @container (max-width: 760px) { .box-row .tile-num { font-size: 30px !important; } }
 @container (max-width: 380px) { .box-row .tile-num { font-size: 26px !important; } }
 
-.mp-mobile-topbar.mp-topbar-hidden { transform: translateY(-100%); }
-@media (prefers-reduced-motion: reduce) { .mp-mobile-topbar { transition: none; } }
 
 /* The whole-UK deprivation map: map beside its key on a wide screen, stacked on a phone. */
 .dep-uk-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
@@ -691,7 +630,7 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 /* A thin line along the top that appears only if a page takes more than a moment to arrive, so a slow connection still shows something
    happening. It stays out of the way on a fast one. */
 .nav-progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 60; pointer-events: none; opacity: 0; overflow: hidden; }
-.nav-progress::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, var(--acc-text, #4F46E5), transparent); transform: translateX(-100%); }
+.nav-progress::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, var(--acc-text, #1E4FB8), transparent); transform: translateX(-100%); }
 .nav-progress[data-on="true"] { opacity: 1; transition: opacity 0.15s linear 0.25s; }
 .nav-progress[data-on="true"]::before { animation: nav-progress-run 1.1s ease-in-out infinite 0.25s; }
 @keyframes nav-progress-run { to { transform: translateX(100%); } }

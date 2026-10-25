@@ -183,7 +183,7 @@ export default function CommonsNumbers({ onNavigate }) {
     <div>
       {rows !== null && !failed && (
         <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, margin: "0" }}>
-          <strong style={{ color: COLORS.accent }}>Tap any bar, party or figure marked “See who”</strong> to list the MPs behind it. Each name opens that MP's profile.
+          <strong style={{ color: COLORS.accentText }}>Tap any bar, party or figure marked “See who”</strong> to list the MPs behind it. Each name opens that MP's profile.
         </p>
       )}
       {rows !== null && !failed && stats && (
@@ -230,7 +230,7 @@ export default function CommonsNumbers({ onNavigate }) {
               />
               <WhatThisMeans result={seatsMeaning({ top: stats.seatsByParty[0], total: stats.total, majorityLine: stats.majorityLine })} caveat={sinn ? "Sinn Féin's MPs don't take their seats, so slightly fewer votes are needed in practice." : ""} />
               <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 22px", marginTop: 12 }}>
-                <button type="button" onClick={() => setShowTable((v) => !v)} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accent }}>
+                <button type="button" onClick={() => setShowTable((v) => !v)} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accentText }}>
                   {showTable ? "Hide the table" : "View every party as a table"}
                 </button>
                 <DownloadCsvButton label="Download (CSV)" slug="seats-by-party" columns={SEATS_COLUMNS} rows={stats.seatsByParty} />
@@ -343,7 +343,7 @@ export default function CommonsNumbers({ onNavigate }) {
                 <Figure value={stats.byElections.gains} format={(n) => fmt(Math.round(n))} label="changed hands" note={`${fmt(stats.byElections.holds)} held`} size={34} />
               </div>
               {onNavigate && (
-                <button type="button" onClick={() => onNavigate("byElections")} style={{ marginTop: 14, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accent }}>
+                <button type="button" onClick={() => onNavigate("byElections")} style={{ marginTop: 14, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accentText }}>
                   See each by-election
                 </button>
               )}
@@ -354,7 +354,7 @@ export default function CommonsNumbers({ onNavigate }) {
                 Parliament's official records for MPs cover name, party, gender, constituency, elections, posts and committees, but not ethnicity, age or education. Without
                 an official source, this page won't guess at people's identities. The House of Commons Library publishes research on the make-up of the Commons, drawing
                 on its own surveys:{" "}
-                <a href="https://commonslibrary.parliament.uk/" target="_blank" rel="noreferrer" style={{ color: COLORS.accent, fontWeight: 600 }}>commonslibrary.parliament.uk ↗</a>
+                <a href="https://commonslibrary.parliament.uk/" target="_blank" rel="noreferrer" style={{ color: COLORS.accentText, fontWeight: 600 }}>commonslibrary.parliament.uk ↗</a>
               </p>
             </Tile>
           </div>

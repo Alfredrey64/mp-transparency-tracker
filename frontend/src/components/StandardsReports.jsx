@@ -180,7 +180,7 @@ function ReportCard({ report, politician, onSelectPolitician, index }) {
           </div>
         )}
 
-        <a href={report.report_url} target="_blank" rel="noreferrer" style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.accent }}>
+        <a href={report.report_url} target="_blank" rel="noreferrer" style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.accentText }}>
           Read the Committee's report ↗
         </a>
       </div>

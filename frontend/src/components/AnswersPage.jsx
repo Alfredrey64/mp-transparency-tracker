@@ -18,7 +18,7 @@ import { navigate } from "../lib/route";
 // figures beside it and the main arguments from different sides. The answers are written by hand
 // (see data/answers.js), so this only knows the questions listed, and says so when it doesn't.
 
-const ACCENT = "#4F46E5";
+const ACCENT = "#1E4FB8";
 const SUGGESTED = ["why-housing-expensive", "why-nhs-waiting-list", "why-prices-rising", "why-small-boats", "where-does-tax-go", "why-economy-slow", "why-mortgage-rates-high", "is-crime-rising"];
 
 const sectorCache = new Map();

@@ -22,7 +22,7 @@ const TABS = [
   { key: "wealth", label: "Wealth", blurb: "What households own, how unevenly, and how it differs by age, region and kind of household.", colour: "#C0561F" },
   { key: "poverty", label: "Poverty", blurb: "How many people, children and pensioners are in poverty, and how that has changed since 1994.", colour: "#D6455D" },
   { key: "place", label: "Place", blurb: "Where in the country poverty, income and wealth fall: a map of the regions, local areas, and every English seat.", colour: "#0E7490" },
-  { key: "abroad", label: "Other countries", blurb: "How the UK's inequality compares with other rich countries, before and after tax and benefits.", colour: "#4F46E5" },
+  { key: "abroad", label: "Other countries", blurb: "How the UK's inequality compares with other rich countries, before and after tax and benefits.", colour: "#1E4FB8" },
   { key: "groups", label: "Groups", blurb: "Pay gaps for women and disabled people, and lasting low income by ethnic group.", colour: "#1FA97C" },
   { key: "debate", label: "The debate", blurb: "The main arguments about what, if anything, should be done, set out fairly.", colour: "#C7871A" },
   { key: "about", label: "Sources", blurb: "Where every figure comes from, and the limits of the figures.", colour: "#6B7280" },

@@ -23,7 +23,7 @@ import { LOADERS } from "../pageLoaders";
 // #/taxRates/government/thatcher). The old Taxes and spending page, #/tax, is the Overview.
 
 const TABS = [
-  { key: "overview", label: "Overview", blurb: "The main rates today, what is coming up, and how much the government collects and spends.", icon: IconTaxes, colour: "#4F46E5" },
+  { key: "overview", label: "Overview", blurb: "The main rates today, what is coming up, and how much the government collects and spends.", icon: IconTaxes, colour: "#1E4FB8" },
   { key: "where", label: "Where it goes", blurb: "How the government's spending is split, from health and welfare to defence.", icon: IconBudget, colour: "#C0561F" },
   { key: "taxes", label: "Rates over time", blurb: "Pick a tax and see how its rate has moved since 1945.", icon: IconTrend, colour: "#0E9AA7" },
   { key: "who", label: "Who changed them", blurb: "Every change, by government, by Chancellor or Budget by Budget.", icon: IconCabinet, colour: "#C7871A" },

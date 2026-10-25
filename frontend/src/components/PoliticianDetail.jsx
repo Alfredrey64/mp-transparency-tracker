@@ -47,7 +47,7 @@ const DETAIL_TABS = [
 // thing at a glance, not one undifferentiated column of grey cards.
 const DEFAULT_CATEGORY_META = { color: readable("#6B7280"), Icon: IconQuestion };
 const CATEGORY_META = {
-  "Donations and other support (including loans) for activities as an MP": { color: COLORS.accent, Icon: IconCoin },
+  "Donations and other support (including loans) for activities as an MP": { color: COLORS.accentText, Icon: IconCoin },
   "Gifts, benefits and hospitality from UK sources": { color: readable("#B0508A"), Icon: IconMeeting },
   "Gifts and benefits from sources outside the UK": { color: readable("#2E6F6F"), Icon: IconGlobe },
   "Visits outside the UK": { color: readable("#2E6F6F"), Icon: IconGlobe },
@@ -247,7 +247,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
                 style={{
                   display: "inline-flex", alignItems: "center", gap: 6, marginTop: 10, padding: "6px 14px",
                   borderRadius: 999, background: `${COLORS.accent}14`, fontFamily: FONT_BODY, fontSize: 13,
-                  fontWeight: 700, color: COLORS.accent,
+                  fontWeight: 700, color: COLORS.accentText,
                 }}
               >
                 £{Math.round(totalDeclaredValue).toLocaleString()} total declared value

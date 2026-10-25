@@ -69,7 +69,7 @@ function PostcodeForm({ onFound, initialError }) {
   return (
     <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${COLORS.accent}`, borderRadius: 16, padding: "28px clamp(18px, 4vw, 32px)", maxWidth: 480, margin: "24px auto 0" }}>
       <div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}>
-        <div style={{ width: 48, height: 48, borderRadius: "50%", background: `${COLORS.accent}14`, color: COLORS.accent, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ width: 48, height: 48, borderRadius: "50%", background: `${COLORS.accent}14`, color: COLORS.accentText, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <IconPin size={22} />
         </div>
       </div>
@@ -127,7 +127,7 @@ function MPDashboard({ politician, onForget, onViewFullProfile }) {
             {politician.party} · {politician.constituency}
           </div>
           {politician.cabinet_role && (
-            <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accent, marginTop: 4 }}>{politician.cabinet_role}</div>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accentText, marginTop: 4 }}>{politician.cabinet_role}</div>
           )}
         </div>
         <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>

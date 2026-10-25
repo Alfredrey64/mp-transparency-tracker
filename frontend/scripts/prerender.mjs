@@ -21,9 +21,9 @@ const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").
 // Written to look like the top of a page in the app, which is where it will be replaced. The description is set a little larger than the app's own
 // introduction so the first paint is the largest one on the page.
 const CSS = `
-.pre{box-sizing:border-box;padding:76px 20px 40px;max-width:820px;margin:0 auto;color:var(--c-ink);font-family:'Archivo',system-ui,sans-serif}
+.pre{box-sizing:border-box;padding:76px 20px 40px;max-width:820px;margin:0 auto;color:var(--c-ink);font-family:'Public Sans',system-ui,sans-serif}
 .pre .k{font-size:13px;font-weight:700;color:var(--c-ink-soft);margin:0}
-.pre h1{font-family:'Space Grotesk','Archivo',system-ui,sans-serif;font-size:clamp(26px,4vw,34px);line-height:1.2;margin:12px 0 0}
+.pre h1{font-family:'Newsreader',Georgia,serif;font-size:clamp(26px,4vw,34px);line-height:1.2;margin:12px 0 0}
 .pre p{font-size:18px;line-height:1.6;color:var(--c-ink-soft);max-width:780px;margin:14px 0 0}
 .pre h2{font-size:18px;margin:26px 0 0}
 .pre ul{margin:10px 0 0;padding-left:20px;max-width:780px;color:var(--c-ink-soft);line-height:1.6}

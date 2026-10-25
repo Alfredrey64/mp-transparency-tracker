@@ -130,7 +130,7 @@ export default function Rebels({ onNavigate }) {
               ))}
               <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 6 }}>
                 The full list of every MP's rebellion rate is on the{" "}
-                <button type="button" onClick={() => onNavigate?.("rankings")} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", font: "inherit", fontWeight: 700, color: COLORS.accent }}>Rankings page</button>.
+                <button type="button" onClick={() => onNavigate?.("rankings")} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", font: "inherit", fontWeight: 700, color: COLORS.accentText }}>Rankings page</button>.
               </div>
             </Tile>
 
@@ -195,7 +195,7 @@ export default function Rebels({ onNavigate }) {
                 );
               })}
               {r.rebelDivisions.length > SHOWN_DIVISIONS && (
-                <button type="button" onClick={() => setShowAll((v) => !v)} style={{ marginTop: 10, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accent }}>
+                <button type="button" onClick={() => setShowAll((v) => !v)} style={{ marginTop: 10, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accentText }}>
                   {showAll ? "Show fewer" : `Show all ${r.rebelDivisions.length} votes with a rebel`}
                 </button>
               )}
@@ -207,7 +207,7 @@ export default function Rebels({ onNavigate }) {
                 published, so this is our best available proxy and not a claim about what any MP was told. Some of these are free votes, where MPs are allowed to vote as they choose,
                 and an MP who abstains is not counted as a rebel. Independents and the Speaker sit under no party whip, so they are left out. Voting records come from Parliament's
                 Commons Votes service. To see every vote one MP has cast, open their profile or the{" "}
-                <button type="button" onClick={() => onNavigate?.("voting")} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", font: "inherit", fontWeight: 700, color: COLORS.accent }}>Voting Records page</button>.
+                <button type="button" onClick={() => onNavigate?.("voting")} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", font: "inherit", fontWeight: 700, color: COLORS.accentText }}>Voting Records page</button>.
               </p>
             </Tile>
           </div>

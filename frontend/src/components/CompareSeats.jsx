@@ -33,7 +33,7 @@ function Picker({ seats, label, current, onPick, exclude }) {
     <div style={{ minWidth: 0 }}>
       <label htmlFor={`pick-${label}`} style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.ink, display: "block", marginBottom: 6 }}>{label}</label>
       <div style={{ position: "relative" }}>
-        <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: COLORS.accent, display: "flex" }}><IconSearch size={16} /></span>
+        <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: COLORS.accentText, display: "flex" }}><IconSearch size={16} /></span>
         <input
           id={`pick-${label}`} type="search" className="ons-chip" value={query} autoComplete="off"
           onChange={(e) => setQuery(e.target.value)}
