@@ -25,6 +25,8 @@ const revealChild = { hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0
 const panel = { background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, boxShadow: "var(--shadow-1)", padding: "clamp(18px, 3vw, 26px)" };
 const panelTitle = { fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 22, letterSpacing: "-0.01em", lineHeight: 1.25, color: COLORS.ink, margin: 0 };
 
+const money = (n) => Number(n).toLocaleString("en-GB", { minimumFractionDigits: Number.isInteger(Number(n)) ? 0 : 2, maximumFractionDigits: 2 });
+
 function yearsAgo(year) {
   const n = new Date().getFullYear() - year;
   return n === 1 ? "1 year ago" : `${n} years ago`;
@@ -187,7 +189,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
       const donationItems = (donationsRes.data ?? []).map((d) => ({
         type: "donation", date: d.date_registered,
         title: d.politicians?.name ?? "Unknown MP",
-        detail: `${d.donor_name ?? d.summary}${d.value_amount ? ` · £${Number(d.value_amount).toLocaleString()}` : ""}`,
+        detail: `${d.donor_name ?? d.summary}${d.value_amount ? ` · £${money(d.value_amount)}` : ""}`,
         politicianId: d.politicians?.id ?? null,
       }));
       const billItems = (billsRes.data ?? []).map((b) => ({
@@ -381,7 +383,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                         <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 2 }}>{formatDate(item.date_registered)}</div>
                       </div>
                       {activeTab === "donations" && item.value_amount && (
-                        <div style={{ flexShrink: 0, fontFamily: FONT_BODY, fontSize: 16, fontWeight: 700, color: readable("#F2622A") }}>£{Number(item.value_amount).toLocaleString()}</div>
+                        <div style={{ flexShrink: 0, fontFamily: FONT_BODY, fontSize: 16, fontWeight: 700, color: readable("#F2622A") }}>£{money(item.value_amount)}</div>
                       )}
                     </div>
                   </div>

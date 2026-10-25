@@ -6,6 +6,7 @@ import { bandsBetween, PARTY_COLOURS } from "../lib/governments";
 import { yearTicks } from "../lib/onsChart";
 import LineChart from "./LineChart";
 import { para, strong } from "../lib/insightStyle";
+import CountValue from "./CountValue";
 
 // Building blocks shared by the issue pages (Inequality, Brexit, and the others): the row of toggles at the top, a card with a title and its source,
 // headline figures, bars for comparing a handful of things, a note about a limit of the figures, and a time chart with who was in government behind it.
@@ -73,7 +74,7 @@ function Spark({ values, colour }) {
   const end = pts[pts.length - 1].split(",");
   return (
     <svg aria-hidden="true" viewBox={`0 0 ${W} ${H}`} width="100%" height={H} preserveAspectRatio="none" style={{ display: "block", marginTop: 10, maxWidth: 140, overflow: "visible" }}>
-      <polyline points={pts.join(" ")} fill="none" stroke={colour} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+      <polyline className="spark-line" pathLength="1" points={pts.join(" ")} fill="none" stroke={colour} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
       <circle cx={end[0]} cy={end[1]} r="3" fill={colour} />
     </svg>
   );
@@ -86,7 +87,7 @@ export function Stats({ items, accent }) {
       {items.map((s) => (
         <div key={s.label} style={{ position: "relative", overflow: "hidden", padding: "16px 18px 16px 20px", borderRadius: 12, background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, minWidth: 0 }}>
           <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 4, background: s.accent ?? accent }} />
-          <div style={{ ...numeric, fontSize: "clamp(24px, 5vw, 32px)", fontWeight: 600, lineHeight: 1.05, letterSpacing: "-0.02em", color: COLORS.ink }}>{s.value}</div>
+          <div style={{ ...numeric, fontSize: "clamp(24px, 5vw, 32px)", fontWeight: 600, lineHeight: 1.05, letterSpacing: "-0.02em", color: COLORS.ink }}><CountValue>{s.value}</CountValue></div>
           <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink, marginTop: 6, lineHeight: 1.35 }}>{s.label}</div>
           {s.note && <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 3, lineHeight: 1.4 }}>{s.note}</div>}
           {s.spark && <Spark values={s.spark} colour={s.accent ?? accent} />}
@@ -123,7 +124,7 @@ export function BarRows({ rows, max, accent, label }) {
         <li key={r.label} style={{ display: "grid", gridTemplateColumns: "minmax(0, 11rem) minmax(0, 1fr) auto", gap: "4px 12px", alignItems: "center", fontFamily: FONT_BODY, fontSize: 13.5 }} className="bar-row">
           <span style={{ color: COLORS.ink, fontWeight: r.strong ? 700 : 500, lineHeight: 1.3 }}>{r.label}{r.note && <span style={{ display: "block", color: COLORS.inkSoft, fontWeight: 400, fontSize: 12 }}>{r.note}</span>}</span>
           <span aria-hidden="true" style={{ height: 14, borderRadius: 7, background: COLORS.hairline, overflow: "hidden", display: "block" }}>
-            <span style={{ display: "block", height: "100%", width: `${Math.max(1.5, (Math.abs(r.value) / top) * 100)}%`, borderRadius: 7, background: r.tone ?? accent }} />
+            <span className="bar-grow" style={{ display: "block", height: "100%", width: `${Math.max(1.5, (Math.abs(r.value) / top) * 100)}%`, borderRadius: 7, background: r.tone ?? accent }} />
           </span>
           <span style={{ ...numeric, fontSize: 14, fontWeight: 600, color: COLORS.ink, textAlign: "right", minWidth: "4.5ch" }}>{r.text}</span>
         </li>

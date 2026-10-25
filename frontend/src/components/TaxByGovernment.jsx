@@ -59,7 +59,7 @@ export default function TaxByGovernment({ govId, onPick }) {
         })}
       </div>
 
-      <Reveal key={gov.id} as="section" aria-labelledby="h-tax-gov" style={{ ...card, marginTop: 10, borderTop: `5px solid ${colour}` }}>
+      <Reveal key={gov.id} as="section" aria-labelledby="h-tax-gov" style={{ ...card, marginTop: 10, boxShadow: `var(--shadow-1), inset 0 5px 0 ${colour}` }}>
         <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>{PARTY_NAMES[gov.party]}, {yr(gov.from)} to {gov.to ? yr(gov.to) : "now"}</div>
         <h2 id="h-tax-gov" style={{ ...cardTitle, fontSize: "clamp(22px, 4.2vw, 32px)", marginTop: 2 }}>{gov.pm}</h2>
         <p style={para}>

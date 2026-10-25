@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { preloadView } from "../pageLoaders";
 import { useWatchlistChanges } from "../lib/useWatchlistChanges";
 import { useDialog } from "../lib/useDialog";
+import { solid } from "../theme";
 import LogoMark from "./LogoMark";
 import GlobalSearch from "./GlobalSearch";
 import { IconSearch, IconStar } from "./icons";
@@ -42,15 +43,19 @@ function MegaPanel({ menu, activeView, onNavigate, onClose }) {
       <div className="site-mega-inner">
         {menu.groups.map((group) => {
           const Wide = group.items.length > 9;
+          const GroupIcon = group.items[0]?.icon;
           return (
-            <section key={group.key} className={Wide ? "mega-wide" : undefined}>
-              <h2 className="mega-title"><i aria-hidden="true" style={{ background: group.accent }} />{group.label}</h2>
+            <section key={group.key} className={Wide ? "mega-wide" : undefined} style={{ "--g": group.accent }}>
+              <h2 className="mega-title">
+                {GroupIcon && <i aria-hidden="true" style={{ background: solid(group.accent) }}><GroupIcon size={17} /></i>}
+                {group.label}
+              </h2>
               <p className="mega-blurb">{group.blurb}</p>
               <ul className="mega-list">
-                {group.items.map((item) => {
+                {group.items.map((item, n) => {
                   const Icon = item.icon;
                   return (
-                    <li key={item.key}>
+                    <li key={item.key} style={{ "--n": n }}>
                       <PageLink to={item.key} onNavigate={onNavigate} onAfter={onClose} className="mega-link" aria-current={activeView === item.key ? "page" : undefined}>
                         <span className="ico" aria-hidden="true"><Icon size={16} /></span>
                         <span><b>{item.label}</b>{item.hint && <small>{item.hint}</small>}</span>
@@ -88,7 +93,7 @@ function SearchLayer({ onClose, onNavigate, onSelectPolitician }) {
   );
 }
 
-function Drawer({ activeView, onNavigate, onClose }) {
+function Drawer({ activeView, onNavigate, onClose, onSearch }) {
   const panelRef = useRef(null);
   useDialog({ open: true, onClose, panelRef });
   const groups = MENU.flatMap((m) => m.groups);
@@ -97,34 +102,44 @@ function Drawer({ activeView, onNavigate, onClose }) {
     <>
       <div className="site-drawer-backdrop" onClick={onClose} />
       <div ref={panelRef} className="site-drawer" role="dialog" aria-modal="true" aria-label="Site menu" tabIndex={-1}>
-        <div className="drawer-top">
-          <PageLink to="home" onNavigate={onNavigate} onAfter={onClose} className="site-brand" aria-label="Simple Politics, home">
-            <LogoMark width={50} color="var(--c-brand)" hole="var(--c-paper-card)" />
-            <span>Simple Politics</span>
-          </PageLink>
-          <button type="button" className="site-icon-btn" aria-label="Close menu" onClick={onClose}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg>
+        <div className="drawer-head">
+          <div className="drawer-top">
+            <PageLink to="home" onNavigate={onNavigate} onAfter={onClose} className="site-brand" aria-label="Simple Politics, home">
+              <LogoMark width={54} color="#FFFFFF" hole="var(--c-navy)" />
+              <span>Simple Politics</span>
+            </PageLink>
+            <button type="button" className="site-icon-btn drawer-close" aria-label="Close menu" onClick={onClose}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg>
+            </button>
+          </div>
+          <button type="button" className="drawer-search" onClick={onSearch}>
+            <IconSearch size={18} />
+            <span>Search MPs, pages and words</span>
           </button>
+          <div className="drawer-quick">
+            <PageLink to="myMP" onNavigate={onNavigate} onAfter={onClose} className="btn btn-on-navy">Find your MP</PageLink>
+            <PageLink to="start" onNavigate={onNavigate} onAfter={onClose} className="btn btn-outline-on-navy">Take the tour</PageLink>
+          </div>
         </div>
-        <div className="drawer-quick">
-          <PageLink to="myMP" onNavigate={onNavigate} onAfter={onClose} className="btn btn-primary">Find your MP</PageLink>
-          <PageLink to="start" onNavigate={onNavigate} onAfter={onClose} className="btn btn-secondary">Take the tour</PageLink>
-        </div>
-        <nav aria-label="Pages">
-          {groups.map((group) => {
+        <nav aria-label="Pages" className="drawer-groups">
+          {groups.map((group, gi) => {
             const open = openKey === group.key;
+            const GroupIcon = group.items[0]?.icon;
+            const items = group.items.filter((i) => i.key !== "start");
             return (
-              <div key={group.key} className="drawer-group">
-                <button type="button" aria-expanded={open} onClick={() => setOpenKey(open ? null : group.key)}>
-                  <span>{group.label}<small>{group.blurb}</small></span>
+              <div key={group.key} className="drawer-group" data-open={open} style={{ "--g": group.accent, "--gi": gi }}>
+                <button type="button" aria-expanded={open} aria-controls={`dg-${group.key}`} onClick={() => setOpenKey(open ? null : group.key)}>
+                  <span className="dg-tile" style={{ background: solid(group.accent) }} aria-hidden="true">{GroupIcon && <GroupIcon size={20} />}</span>
+                  <span className="dg-text">{group.label}<small>{group.blurb}</small></span>
+                  <span className="dg-count" aria-hidden="true">{items.length}</span>
                   <Chevron />
                 </button>
-                {open && (
+                <div className="dg-body" id={`dg-${group.key}`} inert={!open}>
                   <ul className="drawer-list">
-                    {group.items.filter((i) => i.key !== "start").map((item) => {
+                    {items.map((item, n) => {
                       const Icon = item.icon;
                       return (
-                        <li key={item.key}>
+                        <li key={item.key} style={{ "--n": n }}>
                           <PageLink to={item.key} onNavigate={onNavigate} onAfter={onClose} aria-current={activeView === item.key ? "page" : undefined}>
                             <span className="ico" aria-hidden="true"><Icon size={16} /></span>
                             <span><b>{item.label}</b>{item.hint && <small>{item.hint}</small>}</span>
@@ -133,7 +148,7 @@ function Drawer({ activeView, onNavigate, onClose }) {
                       );
                     })}
                   </ul>
-                )}
+                </div>
               </div>
             );
           })}
@@ -161,7 +176,12 @@ export default function SiteHeader({ activeView, onNavigate, onSelectPolitician 
 
   // A soft shadow under the header once the page has scrolled beneath it.
   useEffect(() => {
-    const onScroll = () => setStuck(window.scrollY > 4);
+    const onScroll = () => {
+      setStuck(window.scrollY > 4);
+      // How far down the page you are, drawn along the foot of the header without re-rendering anything.
+      const room = document.documentElement.scrollHeight - window.innerHeight;
+      headerRef.current?.style.setProperty("--sp", room > 200 ? String(Math.min(1, window.scrollY / room)) : "0");
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -255,6 +275,7 @@ export default function SiteHeader({ activeView, onNavigate, onSelectPolitician 
             </button>
           </div>
         </div>
+        <div className="site-progress" aria-hidden="true" />
         {open && (
           <div onPointerEnter={(e) => { if (e.pointerType === "mouse") cancelClose(); }}>
             <MegaPanel menu={open} activeView={activeView} onNavigate={onNavigate} onClose={() => setOpenKey(null)} />
@@ -270,7 +291,7 @@ export default function SiteHeader({ activeView, onNavigate, onSelectPolitician 
           onSelectPolitician={onSelectPolitician}
         />
       )}
-      {drawer && <Drawer activeView={activeView} onNavigate={onNavigate} onClose={() => { setDrawer(false); menuButton.current?.focus(); }} />}
+      {drawer && <Drawer activeView={activeView} onNavigate={onNavigate} onClose={() => { setDrawer(false); menuButton.current?.focus(); }} onSearch={() => { setDrawer(false); setSearching(true); }} />}
     </>
   );
 }

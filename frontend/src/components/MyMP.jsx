@@ -67,7 +67,7 @@ function PostcodeForm({ onFound, initialError }) {
   }
 
   return (
-    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${COLORS.accent}`, borderRadius: 16, padding: "28px clamp(18px, 4vw, 32px)", maxWidth: 480, margin: "24px auto 0" }}>
+    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 4px 0 ${COLORS.accent}`, borderRadius: 16, padding: "28px clamp(18px, 4vw, 32px)", maxWidth: 480, margin: "24px auto 0" }}>
       <div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}>
         <div style={{ width: 48, height: 48, borderRadius: "50%", background: `${COLORS.accent}14`, color: COLORS.accentText, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <IconPin size={22} />

@@ -120,7 +120,7 @@ function Tightest({ rows }) {
           const win = 50 + r.lead / 2;
           return (
             <li key={r.key}>
-              <a href={seatHref(r.name)} className="ons-tap" style={{ display: "block", height: "100%", boxSizing: "border-box", textDecoration: "none", color: COLORS.ink, background: `linear-gradient(160deg, ${colour(r.winnerColour)}1c, ${COLORS.paperCard} 55%)`, border: `1px solid ${COLORS.hairline}`, borderRadius: 20, padding: "16px 18px 18px", boxShadow: "0 18px 40px -30px rgba(0,0,0,0.6)" }}>
+              <a href={seatHref(r.name)} className="ons-tap" style={{ display: "block", height: "100%", boxSizing: "border-box", textDecoration: "none", color: COLORS.ink, background: `color-mix(in srgb, ${colour(r.winnerColour)} 7%, ${COLORS.paperCard})`, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "16px 18px 18px", boxShadow: "var(--shadow-2)" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "baseline" }}>
                   <span style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 700, lineHeight: 1.2 }}>{r.name}</span>
                   <span style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: COLORS.inkSoft, flexShrink: 0 }}>No. {i + 1}</span>
@@ -221,7 +221,7 @@ function Bands({ rows, parties }) {
     <div>
       <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(210px, 100%), 1fr))", gap: 12 }}>
         {data.map((d) => (
-          <li key={d.label} style={{ background: `linear-gradient(170deg, ${d.hue}26, ${COLORS.paper} 70%)`, border: `1px solid ${d.hue}55`, borderTop: `5px solid ${d.hue}`, borderRadius: 16, padding: "14px 16px 16px" }}>
+          <li key={d.label} style={{ background: `color-mix(in srgb, ${d.hue} 7%, ${COLORS.paper})`, border: `1px solid ${d.hue}55`, boxShadow: `var(--shadow-1), inset 0 5px 0 ${d.hue}`, borderRadius: 16, padding: "14px 16px 16px" }}>
             <div style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink }}>{d.label}</div>
             <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>{d.note}</div>
             <div style={{ ...numeric, fontSize: 40, fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, color: COLORS.ink, margin: "8px 0 10px" }}>{d.total}<span style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: COLORS.inkSoft, letterSpacing: 0 }}> seats</span></div>
@@ -295,7 +295,7 @@ function SwingTool({ rows, parties }) {
   const changeFrom = (v) => { setFrom(v); setTo(challengers(rows, v)[0]?.name ?? ""); setShowAll(false); };
 
   return (
-    <section aria-labelledby="h-swing-tool" className="regions-wrap" style={{ ...card, marginTop: 20, background: `radial-gradient(560px 300px at 85% 0%, ${toColour}22, transparent 70%), ${COLORS.paperCard}` }}>
+    <section aria-labelledby="h-swing-tool" className="regions-wrap" style={{ ...card, marginTop: 20, background: `${COLORS.paperCard}` }}>
       <h2 id="h-swing-tool" style={cardTitle}>What if voters changed their minds?</h2>
       <p style={para}>
         Try it. Pick a party that loses voters, a party that gains them, and how many voters switch. The page applies the same switch to every seat and counts how many would change hands. It uses the last election&apos;s results and is a rough guide, not a forecast: real elections do not move evenly, and other parties matter too.
@@ -436,7 +436,7 @@ export default function Marginals() {
       {!failed && !data && <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft }}>Loading the results…</p>}
       {data && rows.length > 0 && (
         <>
-          <section aria-labelledby="h-spectrum" className="regions-wrap" style={{ ...card, marginTop: 4, padding: "clamp(18px, 3.5vw, 30px)", background: `radial-gradient(700px 320px at 100% 0%, ${SAFETY[0].hue}26, transparent 65%), radial-gradient(600px 300px at 0% 100%, ${SAFETY[3].hue}22, transparent 65%), ${COLORS.paperCard}` }}>
+          <section aria-labelledby="h-spectrum" className="regions-wrap" style={{ ...card, marginTop: 4, padding: "clamp(18px, 3.5vw, 30px)", background: `${COLORS.paperCard}` }}>
             <h2 id="h-spectrum" style={{ ...cardTitle, fontSize: "clamp(20px, 3vw, 26px)" }}>{rows.length} seats, from the closest to the safest</h2>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "14px 34px", margin: "16px 0 22px" }}>
               {[

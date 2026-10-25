@@ -442,7 +442,7 @@ export function Breakdown({ party, answers }) {
     </li>
   );
   return (
-    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${party.color}`, borderRadius: 16, padding: "20px clamp(18px, 4vw, 28px)", marginBottom: 20 }}>
+    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 4px 0 ${party.color}`, borderRadius: 16, padding: "20px clamp(18px, 4vw, 28px)", marginBottom: 20 }}>
       <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, color: COLORS.ink }}>Why {party.name}?</div>
       <p style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.55, margin: "4px 0 10px" }}>These are the statements where you and {party.name} are closest and furthest apart. Tap another party in the ranking above to see its breakdown.</p>
       {agree.length > 0 && (<>

@@ -51,7 +51,9 @@ describe("education data", () => {
     const h = feeHistory();
     expect(h).toHaveLength(FEE_HISTORY.length);
     expect(h[0].real).toBeGreaterThan(h[0].fee * 1.3);
-    expect(last(h).real).toBe(last(h).fee);
+    // The newest fee is from this autumn, so it is in (almost) today's prices already: once later months of prices are published it moves up a little.
+    expect(last(h).real).toBeGreaterThanOrEqual(last(h).fee);
+    expect(last(h).real).toBeLessThan(last(h).fee * 1.05);
     expect(h.find((x) => x.year === 2024).real).toBeLessThan(h[0].real);
     expect(last(h).fee).toBe(UNIVERSITY.fee2627);
   });

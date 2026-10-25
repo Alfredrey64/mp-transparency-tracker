@@ -26,7 +26,7 @@ export default function CouncilTaxLookup({ accent }) {
   const from = toT(`${years[0]}-04-01`);
   const to = toT(`${years.at(-1)}-12-31`);
   return (
-    <div style={{ marginTop: 18, padding: "16px clamp(12px, 3vw, 18px) 14px", borderRadius: 18, background: COLORS.paper, border: `1px solid ${COLORS.hairline}` }}>
+    <div style={{ marginTop: 18, padding: "16px clamp(12px, 3vw, 18px) 14px", borderRadius: 14, background: COLORS.paper, border: `1px solid ${COLORS.hairline}` }}>
       <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 17, fontWeight: 700, color: COLORS.ink, margin: 0 }}>Find your council</h3>
       <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, margin: "4px 0 10px", lineHeight: 1.5 }}>Type the name of a council in England to see its Band D bill since 2010 to 11.</p>
       <label htmlFor="ct-find" className="sr-only">Council name</label>

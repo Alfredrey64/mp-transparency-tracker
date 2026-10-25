@@ -22,7 +22,7 @@ export function ClaimsTabContent({ politician, claims }) {
 
   return (
     <div>
-      <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.accent}`, borderRadius: 12, padding: 16, marginBottom: 14 }}>
+      <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 3px 0 ${COLORS.accent}`, borderRadius: 12, padding: 16, marginBottom: 14 }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 4 }}>
           <span style={{ fontFamily: FONT_DISPLAY, fontSize: 26, color: COLORS.ink }}>
             £{summary.total.toLocaleString(undefined, { maximumFractionDigits: 0 })}

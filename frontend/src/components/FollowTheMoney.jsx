@@ -179,7 +179,7 @@ function DonorResultCard({ result, index, onSelectPolitician }) {
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: Math.min(index, 6) * 0.05 }}
-      style={{ position: "relative", overflow: "hidden", background: `linear-gradient(135deg, ${COLORS.accent}0f, ${COLORS.paperCard} 45%)`, border: `1px solid ${COLORS.hairline}`, borderRadius: 20, padding: "clamp(16px, 3vw, 24px)", boxShadow: "0 18px 40px -28px rgba(0,0,0,0.5)" }}
+      style={{ position: "relative", overflow: "hidden", background: `color-mix(in srgb, ${COLORS.accent} 7%, ${COLORS.paperCard})`, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "clamp(16px, 3vw, 24px)", boxShadow: "var(--shadow-2)" }}
     >
       <div
         role="button" tabIndex={0} aria-expanded={open} aria-label={`${result.displayName}: ${open ? "hide" : "show"} who got the money`}
@@ -331,7 +331,7 @@ export default function FollowTheMoney({ onSelectPolitician, initialQuery = null
         subtitle="Search any company, union or individual donor to see every MP and party they have given declared money to. It draws on two official registers at once."
       />
 
-      <section aria-label="Search for a donor" style={{ marginTop: 22, padding: "clamp(18px, 3vw, 28px)", borderRadius: 24, border: `1px solid ${COLORS.hairline}`, background: `radial-gradient(640px 260px at 90% -20%, ${COLORS.accent}2b, transparent 70%), radial-gradient(420px 220px at 0% 120%, #E0367A1c, transparent 70%), ${COLORS.paperCard}` }}>
+      <section aria-label="Search for a donor" style={{ marginTop: 22, padding: "clamp(18px, 3vw, 28px)", borderRadius: 14, border: `1px solid ${COLORS.hairline}`, background: `${COLORS.paperCard}` }}>
         <label htmlFor="donor-q" style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: "clamp(18px, 2.4vw, 22px)", fontWeight: 700, color: COLORS.ink, marginBottom: 12 }}>Who do you want to look up?</label>
         <div style={{ position: "relative" }}>
           <span style={{ position: "absolute", left: 18, top: "50%", transform: "translateY(-50%)", color: COLORS.accentText, display: "flex" }}>

@@ -65,7 +65,7 @@ function PartyPositions({ answerId }) {
           const m = PARTY_MANIFESTOS.find((x) => x.key === p.key);
           const colour = partyColourByName(p.key === "liberal-democrat" ? "Liberal Democrat" : m.shortName);
           return (
-            <li key={p.key} style={{ display: "flex", flexDirection: "column", padding: "14px 16px 12px", borderRadius: 16, background: `linear-gradient(160deg, ${colour}16, ${COLORS.paper} 70%)`, border: `1px solid ${colour}44`, borderTop: `4px solid ${colour}` }}>
+            <li key={p.key} style={{ display: "flex", flexDirection: "column", padding: "14px 16px 12px", borderRadius: 16, background: `color-mix(in srgb, ${colour} 7%, ${COLORS.paper})`, border: `1px solid ${colour}44`, boxShadow: `var(--shadow-1), inset 0 4px 0 ${colour}` }}>
               <div style={{ fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: 800, color: COLORS.ink }}>{m.shortName}</div>
               <p style={{ fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.58, color: COLORS.ink, margin: "6px 0 10px", flex: 1 }}>{p.text}</p>
               <a href={m.manifestoUrl} target="_blank" rel="noreferrer" style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.inkSoft }}>Read the {m.manifestoYear} manifesto</a>
@@ -88,8 +88,8 @@ function AnswerCard({ answer }) {
       initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.25 }}
       style={{ display: "grid", gap: 18 }}
     >
-      <section style={{ ...card, position: "relative", overflow: "hidden", background: `radial-gradient(600px 240px at 100% 0%, ${ACCENT}22, transparent 70%), ${COLORS.paperCard}` }}>
-        <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `linear-gradient(180deg, ${ACCENT}, ${ACCENT}22)` }} />
+      <section style={{ ...card, position: "relative", overflow: "hidden", background: `${COLORS.paperCard}` }}>
+        <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `${ACCENT}` }} />
         <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: ACCENT }}>{answer.topic}</div>
         <h2 id="h-answer" style={{ ...cardTitle, fontSize: "clamp(22px, 4vw, 30px)", margin: "4px 0 14px" }}>{answer.question}</h2>
         <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.inkSoft, marginBottom: 4 }}>In short</div>

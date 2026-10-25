@@ -7,7 +7,8 @@ import ShareButton from "./ShareButton";
 import { mpShareSpec } from "../lib/shareSpecs";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable, chip } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
+import { HeroBand } from "./shared";
 import { partyColour, timeInOffice, shortCategory, formatDate, initials, ONGOING_ROLE_CATEGORIES, stripTrailingAmount } from "../lib/format";
 import { isWatched, toggleWatch } from "../lib/watchlist";
 import { withScrollPreserved } from "../lib/preserveScroll";
@@ -138,87 +139,34 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
       transition={{ duration: 0.3, ease: "easeOut" }}
       style={{ padding: PAGE_PADDING }}
     >
-      <button
-        onClick={onBack}
-        style={{
-          background: "none",
-          border: "none",
-          cursor: "pointer",
-          fontFamily: FONT_BODY,
-          fontSize: 13.5,
-          color: COLORS.inkSoft,
-          padding: 0,
-          marginBottom: 20,
-          display: "inline-block",
-          transition: "color 0.15s, transform 0.15s",
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.color = COLORS.ink; e.currentTarget.style.transform = "translateX(-2px)"; }}
-        onMouseLeave={(e) => { e.currentTarget.style.color = COLORS.inkSoft; e.currentTarget.style.transform = "translateX(0)"; }}
-      >
-        ← All MPs
-      </button>
-
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ position: "relative", paddingTop: 10, paddingBottom: 28, borderBottom: `1px solid ${COLORS.hairline}`, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 10 }}>
+      <HeroBand crumbs={[<button key="b" type="button" className="crumb-btn" onClick={onBack}>All MPs</button>, <span key="n">{politician.name}</span>]} accent={color} wide maxWidth={1200}>
+        <div className="mp-band">
           {politician.thumbnail_url && !avatarErrored ? (
-            <div
-              style={{
-                width: 96, height: 96, borderRadius: "50%", flexShrink: 0,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                background: COLORS.paperCard, border: `3px solid ${COLORS.paperCard}`,
-                boxShadow: `0 0 0 2px ${color}55, 0 4px 14px rgba(30,42,68,0.12)`,
-              }}
-            >
-              <img loading="lazy" decoding="async"
-                src={politician.thumbnail_url}
-                alt=""
-                onError={() => setAvatarErrored(true)}
-                onLoad={() => setAvatarLoaded(true)}
-                style={{
-                  width: 70, height: 70, borderRadius: "50%", objectFit: "cover", objectPosition: "center",
-                  opacity: avatarLoaded ? 1 : 0, transition: "opacity 0.25s ease",
-                }}
-              />
+            <div className="mp-band-photo" style={{ boxShadow: `0 0 0 3px ${color}` }}>
+              <img loading="lazy" decoding="async" src={politician.thumbnail_url} alt="" onError={() => setAvatarErrored(true)} onLoad={() => setAvatarLoaded(true)} style={{ opacity: avatarLoaded ? 1 : 0, transition: "opacity 0.25s ease" }} />
             </div>
           ) : (
-            <div
-              style={{
-                width: 96,
-                height: 96,
-                borderRadius: "50%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontFamily: FONT_DISPLAY,
-                fontSize: 30,
-                fontWeight: 600,
-                ...chip(color),
-                border: `3px solid ${COLORS.paperCard}`,
-                boxShadow: `0 0 0 2px ${color}55, 0 4px 14px rgba(30,42,68,0.12)`,
-              }}
-            >
+            <div className="mp-band-photo" style={{ boxShadow: `0 0 0 3px ${color}`, fontFamily: FONT_DISPLAY, fontSize: 32, fontWeight: 700, color: "#fff", background: color === "#FFFFFF" ? "#444" : "rgba(255,255,255,0.12)" }}>
               {initials(politician.name)}
             </div>
           )}
-          <div>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}>
-              <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 30, color: COLORS.ink, margin: 0 }}>{politician.name}</h1>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+              <h1 className="page-hero-title" style={{ fontSize: "clamp(30px, 5vw, 46px)" }}>{politician.name}</h1>
               <button
+                type="button"
                 onClick={() => setWatched(toggleWatch(politician))}
+                aria-pressed={watched}
                 title={watched ? "Remove from your watchlist" : "Add to your watchlist"}
-                style={{
-                  display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-                  width: 32, height: 32, borderRadius: "50%", border: `1px solid ${watched ? COLORS.accent : COLORS.hairline}`,
-                  background: watched ? `${COLORS.accent}14` : "transparent", color: watched ? COLORS.accentText : COLORS.inkSoft,
-                  cursor: "pointer", transition: "background 0.15s, border-color 0.15s, color 0.15s",
-                }}
+                aria-label={watched ? "Remove from your watchlist" : "Add to your watchlist"}
+                style={{ display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, width: 44, height: 44, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.4)", background: watched ? "#fff" : "rgba(255,255,255,0.1)", color: watched ? "#0B1B33" : "#fff", cursor: "pointer", transition: "background 0.15s, color 0.15s" }}
               >
-                <IconStar size={16} filled={watched} />
+                <IconStar size={18} filled={watched} />
               </button>
             </div>
-            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: "2px 8px", fontFamily: FONT_BODY, fontSize: 15, color: COLORS.inkSoft, marginTop: 5, lineHeight: 1.4 }}>
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 6, whiteSpace: "nowrap" }}>
-                <span style={{ width: 9, height: 9, borderRadius: "50%", background: color, flexShrink: 0 }} />
+            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "2px 10px", fontFamily: FONT_BODY, fontSize: 17, color: "var(--c-on-navy-soft)", marginTop: 8, lineHeight: 1.4 }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 8, whiteSpace: "nowrap", color: "#fff", fontWeight: 600 }}>
+                <span style={{ width: 11, height: 11, borderRadius: "50%", background: color, boxShadow: "0 0 0 2px rgba(255,255,255,0.75)", flexShrink: 0 }} />
                 {politician.party}
               </span>
               <span aria-hidden="true">·</span>
@@ -226,36 +174,36 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
                 type="button"
                 onClick={() => { navigate(`#/constituency/${encodeURIComponent(politician.constituency)}`); }}
                 title="See how this constituency voted and what people there are petitioning for"
-                style={{ background: "none", border: "none", padding: 0, font: "inherit", color: "inherit", cursor: "pointer", textDecoration: "underline", textDecorationStyle: "dotted", textUnderlineOffset: 3 }}
+                style={{ background: "none", border: "none", padding: 0, font: "inherit", color: "#fff", cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 4 }}
               >
                 {politician.constituency}
               </button>
-              {office && <span style={{ flexBasis: "100%", textAlign: "center", fontSize: 14 }}>MP for {office}</span>}
+              {office && <span style={{ flexBasis: "100%", fontSize: 15 }}>MP for {office}</span>}
             </div>
-            <PartyChangeNote change={partyChangeNote} style={{ margin: "12px auto 0", maxWidth: 560 }} />
-            <div style={{ display: "flex", justifyContent: "center", marginTop: 10 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12, marginTop: 18 }}>
               <ShareButton
                 filename={`${politician.name}-simple-politics`}
                 getSpec={async () => {
                   const career = (await import("../data/mpCareers.json")).default.mps[politician.parliament_member_id];
                   return mpShareSpec({ politician, career, interestCount: interests.length, totalDeclared: totalDeclaredValue, link: window.location.href });
                 }}
+                style={{ color: "#fff", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.4)", borderRadius: 8, minHeight: 40, padding: "0 16px" }}
               />
+              {totalDeclaredValue > 0 && (
+                <span style={{ display: "inline-flex", alignItems: "center", minHeight: 40, padding: "0 16px", borderRadius: 8, background: "#fff", fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: "#0B1B33" }}>
+                  £{Math.round(totalDeclaredValue).toLocaleString()} total declared value
+                </span>
+              )}
             </div>
-            {totalDeclaredValue > 0 && (
-              <div
-                style={{
-                  display: "inline-flex", alignItems: "center", gap: 6, marginTop: 10, padding: "6px 14px",
-                  borderRadius: 999, background: `${COLORS.accent}14`, fontFamily: FONT_BODY, fontSize: 13,
-                  fontWeight: 700, color: COLORS.accentText,
-                }}
-              >
-                £{Math.round(totalDeclaredValue).toLocaleString()} total declared value
-              </div>
-            )}
-            <DeclaredMeaning politician={politician} total={totalDeclaredValue} />
-            <SectionDivider />
           </div>
+        </div>
+      </HeroBand>
+
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <div style={{ paddingBottom: 18, borderBottom: `1px solid ${COLORS.hairline}`, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 10 }}>
+          <PartyChangeNote change={partyChangeNote} style={{ margin: "0 auto", maxWidth: 560 }} />
+          <DeclaredMeaning politician={politician} total={totalDeclaredValue} />
+          <SectionDivider />
         </div>
 
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "6px 22px", paddingTop: 14 }}>

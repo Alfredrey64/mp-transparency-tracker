@@ -16,7 +16,7 @@ const REGION_NOTE = "These figures are for the whole region. The ONS publishes h
 
 function Tile({ label, value, sub, uk, rank, accent, href, linkLabel }) {
   return (
-    <div style={{ background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${accent}`, borderRadius: 14, padding: "14px 16px", minWidth: 0 }}>
+    <div style={{ background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 3px 0 ${accent}`, borderRadius: 14, padding: "14px 16px", minWidth: 0 }}>
       <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.inkSoft }}>{label}</div>
       <div style={{ ...numeric, fontSize: "clamp(24px, 4vw, 30px)", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.1, color: COLORS.ink, marginTop: 4 }}>{value}</div>
       {sub && <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 3 }}>{sub}</div>}

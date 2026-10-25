@@ -174,8 +174,8 @@ export default function AskedAbout({ onSelectPolitician, onNavigateForMp, initia
 
       <div
         style={{
-          marginTop: 26, padding: "clamp(16px, 3.5vw, 26px)", borderRadius: 22, border: `1px solid ${COLORS.hairline}`,
-          background: `radial-gradient(110% 100% at 100% 0%, ${COLORS.accent}22, transparent 62%), ${COLORS.paperCard}`,
+          marginTop: 26, padding: "clamp(16px, 3.5vw, 26px)", borderRadius: 14, border: `1px solid ${COLORS.hairline}`,
+          background: `${COLORS.paperCard}`,
         }}
       >
         <div style={{ position: "relative" }}>

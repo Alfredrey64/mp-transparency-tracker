@@ -106,7 +106,7 @@ function TermRow({ t, isOpen, onToggle, accent }) {
       className={isOpen ? "gl-row gl-open" : "gl-row"}
       style={{
         borderRadius: 16, borderTop: `1px solid ${edge}`, borderRight: `1px solid ${edge}`, borderBottom: `1px solid ${edge}`, borderLeft: `5px solid ${accent}`,
-        background: isOpen ? `linear-gradient(135deg, ${accent}1c, ${COLORS.paperCard} 65%)` : COLORS.paperCard,
+        background: isOpen ? `color-mix(in srgb, ${accent} 7%, ${COLORS.paperCard})` : COLORS.paperCard,
         boxShadow: isOpen ? `0 18px 36px -26px ${accent}` : "none", transition: "background 0.2s, box-shadow 0.2s",
       }}
     >
@@ -159,7 +159,7 @@ function WordOfTheDay({ onOpen }) {
   return (
     <section
       aria-label="Word of the day"
-      style={{ position: "relative", overflow: "hidden", display: "flex", flexDirection: "column", borderRadius: 24, padding: "clamp(20px, 4vw, 30px)", border: `1px solid ${accent}55`, background: `radial-gradient(520px 260px at 100% 0%, ${accent}38, transparent 70%), radial-gradient(380px 220px at 0% 100%, ${accent}1f, transparent 70%), ${COLORS.paperCard}` }}
+      style={{ position: "relative", overflow: "hidden", display: "flex", flexDirection: "column", borderRadius: 14, padding: "clamp(20px, 4vw, 30px)", border: `1px solid ${accent}55`, background: `${COLORS.paperCard}` }}
     >
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: readable(accent) }}>{pick ? "A random word" : "Word of the day"}</div>
       <AnimatePresence mode="wait" initial={false}>
@@ -196,7 +196,7 @@ function Quiz({ terms, accent }) {
   return (
     <section
       aria-label="Quiz"
-      style={{ display: "flex", flexDirection: "column", borderRadius: 24, padding: "clamp(18px, 4vw, 28px)", border: `1px solid ${accent}44`, background: `radial-gradient(420px 220px at 0% 0%, ${accent}22, transparent 70%), ${COLORS.paperCard}` }}
+      style={{ display: "flex", flexDirection: "column", borderRadius: 14, padding: "clamp(18px, 4vw, 28px)", border: `1px solid ${accent}44`, background: `${COLORS.paperCard}` }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
         <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, fontWeight: 700, color: COLORS.ink, margin: 0 }}>Which word is this?</h2>
@@ -298,7 +298,7 @@ export default function Glossary() {
           return (
             <button
               key={t.key} role="tab" aria-selected={on} className="ons-chip" onClick={() => selectTab(t.key)}
-              style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", height: "100%", boxSizing: "border-box", width: "100%", textAlign: "left", cursor: "pointer", padding: "16px 18px", borderRadius: 18, border: `2px solid ${on ? t.accent : COLORS.hairline}`, background: on ? `linear-gradient(135deg, ${t.accent}, ${t.accent}bb)` : `linear-gradient(135deg, ${t.accent}14, ${COLORS.paperCard} 70%)`, color: on ? "#fff" : COLORS.ink, transition: "background 0.2s, border-color 0.2s", boxShadow: on ? `0 18px 36px -24px ${t.accent}` : "none" }}
+              style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", height: "100%", boxSizing: "border-box", width: "100%", textAlign: "left", cursor: "pointer", padding: "16px 18px", borderRadius: 18, border: `2px solid ${on ? t.accent : COLORS.hairline}`, background: on ? solid(t.accent) : `color-mix(in srgb, ${t.accent} 7%, ${COLORS.paperCard})`, color: on ? "#fff" : COLORS.ink, transition: "background 0.2s, border-color 0.2s", boxShadow: on ? `0 18px 36px -24px ${t.accent}` : "none" }}
             >
               <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 700, lineHeight: 1.2 }}>{t.label}</span>
               <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 13, lineHeight: 1.45, marginTop: 5, color: on ? "rgba(255,255,255,0.9)" : COLORS.inkSoft }}>{t.blurb}</span>
@@ -310,7 +310,7 @@ export default function Glossary() {
         })}
       </div>
 
-      <div style={{ marginTop: 18, padding: "clamp(14px, 2.5vw, 20px)", borderRadius: 20, border: `1px solid ${COLORS.hairline}`, background: COLORS.paperCard, display: "grid", gap: 16 }}>
+      <div style={{ marginTop: 18, padding: "clamp(14px, 2.5vw, 20px)", borderRadius: 14, border: `1px solid ${COLORS.hairline}`, background: COLORS.paperCard, display: "grid", gap: 16 }}>
         <div style={{ position: "relative" }}>
           <span style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)", color: activeTab.accent, display: "flex" }}>
             <IconSearch size={18} />

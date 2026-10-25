@@ -226,7 +226,7 @@ function CabinetCard({ member, area, index, onViewProfile }) {
       whileHover={{ borderColor: color, transition: { duration: 0.15, delay: 0 } }}
       transition={{ duration: 0.32, delay: Math.min(index ?? 0, 8) * 0.03, ease: "easeOut" }}
       style={{
-        background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${color}`, borderRadius: 14, padding: 20,
+        background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 3px 0 ${color}`, borderRadius: 14, padding: 20,
       }}
     >
       <button onClick={() => withScrollPreserved(() => setOpen((v) => !v))} style={{ display: "block", width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" }}>

@@ -293,7 +293,7 @@ function RaceRow({ entry, index, maxValue, color, valueLabel, onSelectPolitician
         <span aria-hidden="true" style={{ position: "relative", display: "block", height: 34, marginTop: 4 }}>
           <motion.span
             initial={reduce ? false : { width: 0 }} animate={{ width: `${pct}%` }} transition={{ delay: Math.min(index, 12) * 0.03, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            style={{ position: "absolute", left: 0, top: 10, height: 14, borderRadius: 7, background: `linear-gradient(90deg, ${color}55, ${color})` }}
+            style={{ position: "absolute", left: 0, top: 10, height: 14, borderRadius: 7, background: `color-mix(in srgb, ${color} 7%, ${color})` }}
           />
           <motion.span
             initial={reduce ? false : { left: "0%" }} animate={{ left: `${pct}%` }} transition={{ delay: Math.min(index, 12) * 0.03, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}

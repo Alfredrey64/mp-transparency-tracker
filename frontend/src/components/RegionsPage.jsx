@@ -338,7 +338,7 @@ export default function RegionsPage({ param }) {
 
           <div className="regions-wrap">
           <div className="regions-grid">
-            <section aria-label="Map" style={{ ...card, background: `radial-gradient(560px 340px at 50% 0%, ${accent}1f, transparent 70%), ${COLORS.paperCard}`, minWidth: 0 }}>
+            <section aria-label="Map" style={{ ...card, background: `${COLORS.paperCard}`, minWidth: 0 }}>
               <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "8px 14px", marginBottom: 6 }}>
                 <Segmented label="Map style" value={view} onChange={setView} options={[{ id: "map", label: "Map" }, { id: "tiles", label: "Equal tiles" }]} />
                 <div style={{ ...numeric, fontFamily: FONT_DISPLAY, fontSize: 26, fontWeight: 700, color: COLORS.ink }} aria-hidden="true">{tLabel(timeline[idx])}</div>

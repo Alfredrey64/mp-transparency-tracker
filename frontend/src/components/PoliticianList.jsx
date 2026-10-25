@@ -320,7 +320,7 @@ export default function PoliticianList({ onSelect, initialCareer = null }) {
                   alignItems: "center",
                   gap: 12,
                   padding: "12px 14px",
-                  background: `linear-gradient(135deg, ${color}1c, ${color}08 55%, ${COLORS.paperCard} 100%)`,
+                  background: `color-mix(in srgb, ${color} 7%, ${COLORS.paperCard})`,
                   border: `1px solid ${COLORS.hairline}`,
                   borderRadius: 12,
                   cursor: "pointer",

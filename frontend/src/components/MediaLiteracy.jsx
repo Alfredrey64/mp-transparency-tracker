@@ -15,7 +15,7 @@ function InfoCard({ title, color, children, index = 0 }) {
       transition={{ duration: 0.35, delay: index * 0.05, ease: "easeOut" }}
       style={{
         background: COLORS.paperCard, borderLeft: `1px solid ${COLORS.hairline}`, borderRight: `1px solid ${COLORS.hairline}`,
-        borderBottom: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${color}`, borderRadius: 16,
+        borderBottom: `1px solid ${COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 4px 0 ${color}`, borderRadius: 16,
         padding: "22px clamp(16px, 4vw, 26px)", marginBottom: 20,
       }}
     >
@@ -473,7 +473,7 @@ export default function MediaLiteracy() {
         transition={{ delay: 0.2, duration: 0.35 }}
         style={{
           display: "flex", alignItems: "center", gap: 14, maxWidth: "none", marginBottom: 28,
-          background: "linear-gradient(135deg, #5A7FA61A, #B5533C14)", border: `1px solid ${COLORS.hairline}`,
+          background: COLORS.paper, border: `1px solid ${COLORS.hairline}`,
           borderRadius: 14, padding: "16px 20px",
         }}
       >
@@ -517,7 +517,7 @@ export default function MediaLiteracy() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.3, delay: (i % 6) * 0.05 }}
-              style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${req.color}`, borderRadius: 14, padding: 16 }}
+              style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 3px 0 ${req.color}`, borderRadius: 14, padding: 16 }}
             >
               <div style={{ fontFamily: FONT_DISPLAY, fontSize: 16, color: COLORS.ink, marginBottom: 4 }}>{req.title}</div>
               <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: readable(req.color), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>

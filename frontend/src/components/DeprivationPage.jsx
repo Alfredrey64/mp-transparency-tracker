@@ -222,7 +222,7 @@ export default function DeprivationPage() {
       {nation === "uk" ? <DeprivationUK kind={kind} /> : nation !== "england" ? <DeprivationNations key={nation} nation={nation} kind={kind} /> : (
         <>
           <section aria-labelledby="h-dep-what" style={{ ...card, marginTop: 20, position: "relative", overflow: "hidden" }}>
-            <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `linear-gradient(180deg, ${ACCENT}, ${ACCENT}22)` }} />
+            <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `${ACCENT}` }} />
             <h2 id="h-dep-what" style={cardTitle}>What this shows</h2>
             <p style={para}>
               The government has ranked every small neighbourhood in England (about 33,000 of them, each with around 1,500 people) from the most deprived to the least. &ldquo;Deprived&rdquo; means more than being short of money. It also covers being out of work, poor health, few qualifications, crime, housing problems and a run-down local area.
@@ -236,7 +236,7 @@ export default function DeprivationPage() {
             </details>
           </section>
 
-          <section aria-label="Map of deprivation by region" style={{ ...card, marginTop: 20, background: `radial-gradient(560px 340px at 50% 0%, ${ACCENT}1a, transparent 70%), ${COLORS.paperCard}` }}>
+          <section aria-label="Map of deprivation by region" style={{ ...card, marginTop: 20, background: `${COLORS.paperCard}` }}>
             <h2 style={cardTitle}>Region by region</h2>
             <p style={{ ...para, fontSize: 16 }} aria-live="polite">
               <strong>{domainLabel}:</strong> in <strong>{inSentence(sorted[0][0])}</strong>, {oneIn(sorted[0][1])} people ({f1(sorted[0][1])}) {end.phrase}. That is {topFair.text} what an even spread would give ({fairWord}), and the highest of any region. In <strong>{inSentence(sorted.at(-1)[0])}</strong> it is {oneIn(sorted.at(-1)[1])} ({f1(sorted.at(-1)[1])}).

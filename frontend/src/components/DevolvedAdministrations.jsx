@@ -143,7 +143,7 @@ export default function DevolvedAdministrations() {
                   <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ flexShrink: 0, color: COLORS.inkSoft, fontSize: 13, marginTop: 6 }}>▾</motion.span>
                 </div>
 
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "14px 32px", marginTop: 16, padding: "16px 18px", borderRadius: 16, background: `linear-gradient(135deg, ${a.accent}1c, ${COLORS.paper} 70%)`, border: `1px solid ${a.accent}33` }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "14px 32px", marginTop: 16, padding: "16px 18px", borderRadius: 16, background: `color-mix(in srgb, ${a.accent} 7%, ${COLORS.paper})`, border: `1px solid ${a.accent}33` }}>
                   {a.holders.map((h) => <Leader key={h.role} holder={h} />)}
                 </div>
 

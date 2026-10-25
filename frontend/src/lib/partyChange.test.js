@@ -38,7 +38,7 @@ describe("party changes", () => {
   it("finds the MPs in the data who have changed, and only real changes", () => {
     const found = Object.values(data.constituencies).map((s) => partyChange(s)).filter(Boolean);
     const names = found.map((c) => c.name);
-    for (const n of ["Karl Turner", "Suella Braverman", "Robert Jenrick", "Danny Kruger", "Andrew Rosindell", "Rupert Lowe", "Rosie Duffield", "Zarah Sultana"]) expect(names, n).toContain(n);
+    for (const n of ["Suella Braverman", "Robert Jenrick", "Danny Kruger", "Andrew Rosindell", "Rupert Lowe", "Rosie Duffield", "Zarah Sultana"]) expect(names, n).toContain(n);
     expect(names).not.toContain("Lindsay Hoyle");
     expect(names).not.toContain("Jack Abbott");
     expect(found.length).toBeGreaterThan(8);
@@ -47,6 +47,7 @@ describe("party changes", () => {
   });
   it("only has accounts for MPs who really have changed party", () => {
     const ids = new Set(Object.values(data.constituencies).filter((s) => partyChange(s)).map((s) => String(s.mp.memberId)));
-    for (const id of Object.keys(DETAILS)) expect(ids.has(id), id).toBe(true);
+    // Karl Turner (4030) sits as a Labour MP again, so his account is kept for the record but no longer shows.
+    for (const id of Object.keys(DETAILS)) if (id !== "4030") expect(ids.has(id), id).toBe(true);
   });
 });

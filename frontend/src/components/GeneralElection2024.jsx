@@ -119,7 +119,7 @@ export default function GeneralElection2024() {
 
       {view && (
         <>
-          <Reveal as="section" aria-labelledby="h-ge-headline" style={{ ...card, marginTop: 8, borderTop: `5px solid ${view.leadColour}`, background: `linear-gradient(155deg, color-mix(in srgb, ${view.leadColour} 13%, ${COLORS.paperCard}) 0%, ${COLORS.paperCard} 58%)` }}>
+          <Reveal as="section" aria-labelledby="h-ge-headline" style={{ ...card, marginTop: 8, boxShadow: `var(--shadow-1), inset 0 5px 0 ${view.leadColour}`, background: `color-mix(in srgb, ${view.leadColour} 6%, ${COLORS.paperCard})` }}>
             <h2 id="h-ge-headline" style={{ ...cardTitle, fontSize: "clamp(22px, 4.2vw, 32px)", lineHeight: 1.2 }}>
               {view.lead.party} won {pct(view.lead.seatShare)}% of the seats with {pct(view.lead.voteShare)}% of the votes
             </h2>

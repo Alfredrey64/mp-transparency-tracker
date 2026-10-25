@@ -162,7 +162,7 @@ export default function PartyPolicies({ param }) {
         )}
       </section>
 
-      <div style={{ margin: "34px 0 6px", padding: "22px clamp(18px, 4vw, 28px)", borderRadius: 20, background: `linear-gradient(135deg, ${COLORS.accent}22, ${COLORS.paperCard} 70%)`, border: `1px solid ${COLORS.hairline}`, display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 14 }}>
+      <div style={{ margin: "34px 0 6px", padding: "22px clamp(18px, 4vw, 28px)", borderRadius: 14, background: `color-mix(in srgb, ${COLORS.accent} 7%, ${COLORS.paperCard})`, border: `1px solid ${COLORS.hairline}`, display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 14 }}>
         <div style={{ maxWidth: 560 }}>
           <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, color: COLORS.ink }}>Not sure which party you agree with?</div>
           <div style={{ fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.55, color: COLORS.inkSoft, marginTop: 4 }}>Answer a few questions and see which party's promises line up closest with your own views.</div>

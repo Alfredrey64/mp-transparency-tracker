@@ -71,21 +71,20 @@ export function CouncilView({ council, data, wardName, countyId, detail, failed 
     <div style={{ marginTop: 22, display: "flex", flexDirection: "column", gap: 22 }}>
       <button type="button" onClick={() => goHash("#/councils")} style={{ ...linkButton, color: COLORS.inkSoft, fontWeight: 400, alignSelf: "flex-start" }}>← All councils</button>
 
-      <div style={{ position: "relative", overflow: "hidden", borderRadius: 24, border: `1px solid ${COLORS.hairline}`, padding: "clamp(20px, 3.6vw, 34px)", background: `radial-gradient(700px 260px at 95% -20%, ${accent}40, transparent 62%), ${COLORS.paperCard}` }}>
-        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 6, background: accent }} />
-        <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.inkSoft }}>Local council</div>
-        <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: "clamp(30px, 5.6vw, 52px)", color: COLORS.ink, margin: "6px 0 0", lineHeight: 1.04, letterSpacing: "-0.025em" }}>{council.name}</h2>
-        <div style={{ fontFamily: FONT_BODY, fontSize: 15, color: COLORS.inkSoft, marginTop: 10 }}>
-          Run by: <strong style={{ color: COLORS.ink }}>{council.control}</strong>
+      <div className="seat-hero" style={{ "--hero-accent": accent }}>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 600, color: "var(--c-on-navy-soft)" }}>Local council</div>
+        <h2 className="page-hero-title" style={{ marginTop: 6 }}>{council.name}</h2>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 16, color: "var(--c-on-navy-soft)", marginTop: 12 }}>
+          Run by: <strong style={{ color: "#fff" }}>{council.control}</strong>
         </div>
         {county && (
-          <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 10 }}>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 14.5, color: "var(--c-on-navy-soft)", marginTop: 12 }}>
             Your area also has a county council, which looks after other services such as roads and social care:{" "}
-            <button type="button" onClick={() => goCouncil(county.id)} style={linkButton}>{county.name}</button>
+            <button type="button" onClick={() => goCouncil(county.id)} style={{ ...linkButton, color: "#fff", textDecoration: "underline" }}>{county.name}</button>
           </div>
         )}
         <div style={{ marginTop: 16 }}>
-          <ShareButton filename={`${council.name}-council`} getSpec={() => councilShareSpec({ council, seats, link: window.location.href })} />
+          <ShareButton filename={`${council.name}-council`} getSpec={() => councilShareSpec({ council, seats, link: window.location.href })} style={{ color: "#fff", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.4)", borderRadius: 8, minHeight: 40, padding: "0 16px" }} />
         </div>
       </div>
 

@@ -7,6 +7,7 @@ import SiteHeader from "./components/SiteHeader";
 import SiteFooter from "./components/SiteFooter";
 import "./chrome.css";
 import { HEMICYCLE } from "./lib/seatMark";
+import { installScrollReveal } from "./lib/scrollReveal";
 import Home from "./components/Home";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { SECTIONS } from "./data/sidebarSections";
@@ -199,6 +200,7 @@ export default function App() {
   const [navTarget, setNavTarget] = useState(view);
 
   useEffect(() => startGlossDedupe(document.getElementById("root")), []);
+  useEffect(() => installScrollReveal(document.getElementById("main-content")?.parentElement), []);
   // One anonymous page view each time the page changes (the page's name only; see lib/analytics.js).
   useEffect(() => { trackPage(selected ? "mp" : view, viewParam); }, [view, selected, viewParam]);
   // Set only when navigating away from an MP's own profile to a page that
@@ -385,9 +387,9 @@ export default function App() {
           ref={mainRef}
           tabIndex={-1}
           key={`${view}-${selected?.id ?? ""}`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.16, ease: "easeOut" }}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
         >
             <ErrorBoundary onGoHome={() => handleNavigate("home")}>
             <Suspense fallback={<PageLoadingFallback />}>

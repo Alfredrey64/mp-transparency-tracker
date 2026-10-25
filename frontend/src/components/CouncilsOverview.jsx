@@ -6,6 +6,7 @@ import { changesMeaning, defectionMeaning, controlTrendMeaning } from "../lib/co
 import { IconGroup, IconSplit, IconCompare, IconChartBars, IconVote } from "./icons";
 import { PartyHemicycle } from "./PartyHemicycle";
 import Reveal from "./Reveal";
+import { HeroBand } from "./shared";
 import WhatThisMeans from "./WhatThisMeans";
 import { goCouncil, fmt, signed, scrollToId, input, linkButton } from "./councilsUi";
 import { Card, SectionHead, StatCard, Chip, Arrow, Bar, MoveRow } from "./CouncilsParts";
@@ -42,7 +43,7 @@ function Finder({ index }) {
   }
 
   return (
-    <div style={{ background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 18, padding: "18px clamp(14px, 2.4vw, 22px) 20px", boxShadow: "0 18px 40px -22px rgba(0,0,0,0.6)" }}>
+    <div style={{ background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "18px clamp(14px, 2.4vw, 22px) 20px", boxShadow: "var(--shadow-2)" }}>
       <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fit, minmax(min(270px, 100%), 1fr))" }}>
         <form onSubmit={lookup}>
           <label style={{ display: "block", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.ink, marginBottom: 7 }}>Find your council by postcode</label>
@@ -76,20 +77,13 @@ function Finder({ index }) {
 
 export function Hero({ index, subtitle, title, kicker }) {
   return (
-    <div style={{ position: "relative", overflow: "hidden", borderRadius: 26, border: `1px solid ${COLORS.hairline}`, padding: "clamp(22px, 4vw, 40px)", background: `radial-gradient(900px 340px at 92% -10%, ${COLORS.accent}33, transparent 60%), radial-gradient(520px 260px at 0% 110%, #1FA97C22, transparent 65%), ${COLORS.paperCard}` }}>
-      <div aria-hidden="true" style={{ position: "absolute", inset: 0, backgroundImage: `radial-gradient(${COLORS.hairline} 1px, transparent 1px)`, backgroundSize: "22px 22px", opacity: 0.55, maskImage: "linear-gradient(180deg, #000, transparent 75%)", WebkitMaskImage: "linear-gradient(180deg, #000, transparent 75%)" }} />
-      <div style={{ position: "relative" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 9, fontFamily: FONT_DISPLAY, fontSize: 14.5, fontWeight: 500, color: COLORS.accentText }}>
-          <span style={{ width: 16, height: 2, background: COLORS.accent }} />
-          {kicker}
-        </div>
-        <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: "clamp(30px, 5.6vw, 52px)", lineHeight: 1.05, letterSpacing: "-0.025em", color: COLORS.ink, margin: "12px 0 0", textAlign: "center", textWrap: "balance" }}>
-          {title}
-        </h1>
-        <p style={{ fontFamily: FONT_BODY, fontSize: "clamp(15px, 1.8vw, 17px)", color: COLORS.inkSoft, lineHeight: 1.6, margin: "14px auto 24px", maxWidth: 680, textAlign: "center", textWrap: "pretty" }}>{subtitle}</p>
+    <HeroBand crumbs={[kicker]} accent={COLORS.accent} wide>
+      <h1 className="page-hero-title">{title}</h1>
+      <p className="page-hero-sub">{subtitle}</p>
+      <div style={{ marginTop: 24, maxWidth: 940 }}>
         <Finder index={index} />
       </div>
-    </div>
+    </HeroBand>
   );
 }
 

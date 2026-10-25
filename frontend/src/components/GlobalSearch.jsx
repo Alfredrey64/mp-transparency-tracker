@@ -262,7 +262,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
           style={{
             position: "absolute", top: "calc(100% + 6px)", left: 0, right: 0, zIndex: 20,
             background: "var(--sb-bg-2)", border: "1px solid var(--sb-border-strong)", borderRadius: 10,
-            boxShadow: "0 16px 32px -12px rgba(15,15,40,0.35)", padding: 6, maxHeight: "min(60vh, 440px)", overflowY: "auto",
+            boxShadow: "var(--shadow-2)", padding: 6, maxHeight: "min(60vh, 440px)", overflowY: "auto",
           }}
         >
           {!hasResults && (

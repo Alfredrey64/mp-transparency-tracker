@@ -110,7 +110,7 @@ export default function DeprivationUK({ kind = "imd" }) {
   return (
     <>
       <section aria-labelledby="h-dep-uk-what" style={{ ...card, marginTop: 24, position: "relative", overflow: "hidden" }}>
-        <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `linear-gradient(180deg, ${ACCENT}, ${ACCENT}22)` }} />
+        <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `${ACCENT}` }} />
         <h2 id="h-dep-uk-what" style={cardTitle}>All four nations on one map</h2>
         <p style={{ fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.6, color: COLORS.ink, margin: "10px 0 0", maxWidth: 780 }}>
           Each hexagon is one of the 650 Westminster constituencies, all drawn the same size so every seat counts equally. The darker the hexagon, the more of that area is among the most deprived in <strong>its own nation</strong>.
@@ -121,7 +121,7 @@ export default function DeprivationUK({ kind = "imd" }) {
         <HowToRead place="its nation" counts="areas" unit="area" />
       </section>
 
-      <section aria-labelledby="h-dep-uk-map" className="regions-wrap" style={{ ...card, background: `radial-gradient(560px 340px at 50% 0%, ${ACCENT}1a, transparent 70%), ${COLORS.paperCard}` }}>
+      <section aria-labelledby="h-dep-uk-map" className="regions-wrap" style={{ ...card, background: `${COLORS.paperCard}` }}>
         <h2 id="h-dep-uk-map" style={cardTitle}>{kindLabel}, seat by seat</h2>
         <div style={{ margin: "12px 0 12px" }}>
           <Segmented label="Show which nation" value={nation} onChange={setNation} small options={[{ id: "all", label: "All of the UK", short: "All UK" }, ...NATIONS.map((n) => ({ id: n.id, label: n.name, short: n.id === "northernireland" ? "N. Ireland" : n.name }))]} accent={ACCENT} />

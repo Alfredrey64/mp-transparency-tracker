@@ -29,7 +29,7 @@ const goSeat = (name) => {
 
 export function Panel({ title, children, style }) {
   return (
-    <section style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 18, padding: "20px 22px", ...style }}>
+    <section style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "20px 22px", ...style }}>
       {title && <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, color: COLORS.ink, margin: "0 0 14px", letterSpacing: "-0.01em" }}>{title}</h2>}
       {children}
     </section>
@@ -77,55 +77,41 @@ export function SeatSearch({ seats, autoFocus }) {
   );
 }
 
-// The seat's name, who holds it, and how safe it is, over a wash of the
-// winning party's colour.
+// The seat's name, who holds it, and how safe it is, in the page's band (drawn in the winning party's colour).
 function SeatHero({ record, mpInfo, safety, onOpenProfile, opening }) {
   const { mp } = record;
   const colour = partyColour(mp.colour, COLORS.accent);
   const since = mpInfo?.membership_start_date;
   const change = useMemo(() => partyChange(record), [record]);
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 14 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.45, ease: "easeOut" }}
-      style={{ position: "relative", overflow: "hidden", borderRadius: 24, border: `1px solid ${COLORS.hairline}`, padding: "clamp(22px, 4.5vw, 38px)", background: `linear-gradient(125deg, ${colour}38, transparent 62%), ${COLORS.paperCard}` }}
-    >
-      <div aria-hidden="true" style={{ position: "absolute", right: -60, top: -60, width: 240, height: 240, borderRadius: "50%", background: `radial-gradient(circle, ${colour}40, transparent 68%)` }} />
-      <div style={{ position: "relative" }}>
-        <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: COLORS.inkSoft, letterSpacing: "0.02em", marginBottom: 6 }}>Constituency</div>
-        <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: "clamp(34px, 7vw, 58px)", lineHeight: 1.04, letterSpacing: "-0.025em", color: COLORS.ink, margin: 0 }}>{record.name}</h1>
-
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 16, marginTop: 22 }}>
-          <img loading="lazy" decoding="async" src={thumb(mp.memberId)} alt="" width={64} height={64} style={{ width: 64, height: 64, borderRadius: "50%", objectFit: "cover", border: `3px solid ${colour}`, background: COLORS.paper, flexShrink: 0 }} />
+    <>
+      <div className="seat-hero" style={{ "--hero-accent": colour }}>
+        <h1 className="page-hero-title">{record.name}</h1>
+        <div className="seat-mp">
+          <img loading="lazy" decoding="async" src={thumb(mp.memberId)} alt="" width={64} height={64} style={{ width: 64, height: 64, borderRadius: "50%", objectFit: "cover", border: `3px solid ${colour}`, background: "#fff", flexShrink: 0 }} />
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>Represented by</div>
-            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, lineHeight: 1.2 }}>{mp.name}</div>
-            <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 2 }}>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: "var(--c-on-navy-soft)" }}>Represented by</div>
+            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 24, fontWeight: 700, color: "#fff", lineHeight: 1.2 }}>{mp.name}</div>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 14.5, color: "var(--c-on-navy-soft)", marginTop: 2 }}>
               {mp.party}
               {since ? ` · MP since ${new Date(since).toLocaleDateString("en-GB", { month: "long", year: "numeric" })}` : ""}
             </div>
           </div>
-          <button
-            type="button"
-            onClick={onOpenProfile}
-            disabled={opening}
-            style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 700, color: "#fff", background: COLORS.accent, border: "none", borderRadius: 999, padding: "10px 18px", cursor: "pointer" }}
-          >
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12, marginTop: 22 }}>
+          <button type="button" className="btn btn-on-navy" onClick={onOpenProfile} disabled={opening}>
             {opening ? "Opening…" : "See their full record"}
           </button>
+          {safety && (
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "9px 16px", borderRadius: 999, background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.25)", fontFamily: FONT_BODY, fontSize: 14, fontWeight: 600, color: "#fff" }}>
+              <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#fff", opacity: safety.key === "marginal" ? 0.45 : safety.key === "fairly-safe" ? 0.75 : 1 }} />
+              {safety.label}
+            </div>
+          )}
         </div>
-
-        <PartyChangeNote change={change} style={{ marginTop: 18, maxWidth: 640 }} />
-
-        {safety && (
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: 20, padding: "7px 14px", borderRadius: 999, background: `${COLORS.accent}1c`, fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.ink }}>
-            <span style={{ width: 8, height: 8, borderRadius: "50%", background: COLORS.accent, opacity: safety.key === "marginal" ? 0.45 : safety.key === "fairly-safe" ? 0.75 : 1 }} />
-            {safety.label}
-          </div>
-        )}
       </div>
-    </motion.div>
+      <PartyChangeNote change={change} style={{ marginTop: 16, maxWidth: 640 }} />
+    </>
   );
 }
 

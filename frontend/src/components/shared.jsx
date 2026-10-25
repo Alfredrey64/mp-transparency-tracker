@@ -51,7 +51,7 @@ export function WhyItMattersBand({ icon: Icon, color, children }) {
       transition={{ delay: 0.2, duration: 0.35 }}
       style={{
         display: "flex", alignItems: "center", gap: 14, marginBottom: 28,
-        background: `linear-gradient(135deg, ${color}1A, ${color}05)`, border: `1px solid ${color}33`,
+        background: `color-mix(in srgb, ${color} 7%, ${COLORS.paperCard})`, border: `1px solid ${color}33`,
         borderRadius: 14, padding: "16px 20px",
       }}
     >
@@ -222,6 +222,27 @@ export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = 
       </div>
       {!isHero && <PageGuide viewKey={guideKey} />}
     </>
+  );
+}
+
+// The navy band at the top of a page, for pages that build their own heading (a council search, a constituency, an MP's profile).
+// `crumbs` is the trail after "Home"; the children sit under the title.
+export function HeroBand({ crumbs, accent, children, wide = false, maxWidth }) {
+  return (
+    <div className="page-hero" style={{ "--hero-accent": accent ?? COLORS.accent }}>
+      <div className={`page-hero-inner${wide ? " wide" : ""}`} style={maxWidth ? { maxWidth, margin: "0 auto" } : undefined}>
+        <nav aria-label="Breadcrumb" className="crumbs">
+          <a href="#/">Home</a>
+          {crumbs.map((c, i) => (
+            <span key={i} style={{ display: "contents" }}>
+              <span aria-hidden="true">/</span>
+              {c}
+            </span>
+          ))}
+        </nav>
+        {children}
+      </div>
+    </div>
   );
 }
 

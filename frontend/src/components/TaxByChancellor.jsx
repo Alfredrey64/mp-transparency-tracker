@@ -55,7 +55,7 @@ export default function TaxByChancellor({ name, onPick }) {
         })}
       </div>
 
-      <Reveal key={chosen.name} as="section" aria-labelledby="h-tax-chan" style={{ ...card, marginTop: 10, borderTop: `5px solid ${colour}` }}>
+      <Reveal key={chosen.name} as="section" aria-labelledby="h-tax-chan" style={{ ...card, marginTop: 10, boxShadow: `var(--shadow-1), inset 0 5px 0 ${colour}` }}>
         <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>Chancellor of the Exchequer, {whenText({ date: span.from })} to {span.to ? whenText({ date: span.to }) : "now"}{gov ? `, under ${gov.pm.split(" and ")[0]} (${PARTY_NAMES[gov.party].split(" and ")[0]})` : ""}</div>
         <h2 id="h-tax-chan" style={{ ...cardTitle, fontSize: "clamp(22px, 4.2vw, 32px)", marginTop: 2 }}>{chosen.name}</h2>
         <p style={para}>

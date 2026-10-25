@@ -39,7 +39,7 @@ function BreakdownCard({ spec, series, accent }) {
       aria-labelledby={`h-${spec.id}`}
       style={{ ...card, position: "relative", overflow: "hidden", gridColumn: "1 / -1" }}
     >
-      <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `linear-gradient(180deg, ${accent}, ${accent}22)` }} />
+      <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `${accent}` }} />
       <h2 id={`h-${spec.id}`} style={cardTitle}>{spec.title}</h2>
       <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.55, color: COLORS.ink, margin: "10px 0 6px", maxWidth: 760 }}>{spec.blurb}</p>
       <p style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, margin: "0 0 18px" }}>

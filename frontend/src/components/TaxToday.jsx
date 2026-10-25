@@ -20,7 +20,7 @@ export default function TaxToday({ now, onPick }) {
           return (
             <button
               key={key} type="button" onClick={() => onPick(taxId)} className="ge-tab ge-pop"
-              style={{ animationDelay: `${i * 60}ms`, textAlign: "left", cursor: "pointer", padding: "13px 15px", borderRadius: 16, border: "none", background: `linear-gradient(145deg, ${solid(tax.group.accent)}, color-mix(in srgb, ${solid(tax.group.accent)} 70%, #000))`, color: "#fff" }}
+              style={{ animationDelay: `${i * 60}ms`, textAlign: "left", cursor: "pointer", padding: "13px 15px", borderRadius: 16, border: "none", background: solid(tax.group.accent), color: "#fff" }}
             >
               <span style={{ ...numeric, display: "block", fontSize: "clamp(26px, 6vw, 32px)", fontWeight: 600, lineHeight: 1, letterSpacing: "-0.02em" }}>{fmt(line.unit, valueOn(line, iso))}</span>
               <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, marginTop: 6, lineHeight: 1.3 }}>{label}</span>

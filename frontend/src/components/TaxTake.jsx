@@ -29,7 +29,7 @@ export default function TaxTake({ taxId, nowT, fromYear, accent }) {
   const to = nowT;
   const bands = bandsBetween(from, to, to).map((b) => ({ ...b, color: PARTY_COLOURS[b.party] }));
   return (
-    <div style={{ marginTop: 18, padding: "16px clamp(12px, 3vw, 18px) 12px", borderRadius: 18, background: COLORS.paper, border: `1px solid ${COLORS.hairline}` }}>
+    <div style={{ marginTop: 18, padding: "16px clamp(12px, 3vw, 18px) 12px", borderRadius: 14, background: COLORS.paper, border: `1px solid ${COLORS.hairline}` }}>
       <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 17, fontWeight: 700, color: COLORS.ink, margin: 0 }}>What it raises: {spec.short.charAt(0).toLowerCase() === spec.short.charAt(0) ? spec.short : spec.short.replace(/^(?=[A-Z][a-z])/, "")} as a share of GDP</h3>
       <div style={{ marginTop: 10 }}>
         <LineChart

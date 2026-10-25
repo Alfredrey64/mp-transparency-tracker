@@ -103,7 +103,7 @@ const Tile = memo(function Tile({ def, item, accent }) {
       onClick={(e) => { e.preventDefault(); document.getElementById(`s-${def.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
       style={{
         ...card, padding: "20px 22px 0", position: "relative", overflow: "hidden", textDecoration: "none", display: "flex", flexDirection: "column", color: "inherit",
-        background: `linear-gradient(180deg, ${accent}14, ${COLORS.paperCard} 55%)`, borderColor: `${accent}40`,
+        background: `color-mix(in srgb, ${accent} 7%, ${COLORS.paperCard})`, borderColor: `${accent}40`,
       }}
     >
       <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, fontWeight: 700, color: COLORS.ink, lineHeight: 1.3 }}>{def.label}</div>
@@ -143,7 +143,7 @@ function Strip({ def, points, accent }) {
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 12, flexWrap: "wrap" }}>
         <div aria-hidden="true" style={{ flex: "1 1 160px", maxWidth: 260, height: 8, borderRadius: 4, background: COLORS.hairline, position: "relative" }}>
-          <div style={{ position: "absolute", inset: 0, width: `${st.higherThanShare}%`, borderRadius: 4, background: `linear-gradient(90deg, ${accent}55, ${accent})` }} />
+          <div style={{ position: "absolute", inset: 0, width: `${st.higherThanShare}%`, borderRadius: 4, background: `color-mix(in srgb, ${accent} 7%, ${accent})` }} />
         </div>
         <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
           {st.higherThanShare === 0
@@ -276,7 +276,7 @@ const SeriesCard = memo(function SeriesCard({ def, item, range, accent, showGove
       aria-labelledby={`h-${def.id}`}
       style={{ ...card, position: "relative", overflow: "hidden" }}
     >
-      <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `linear-gradient(180deg, ${accent}, ${accent}22)` }} />
+      <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `${accent}` }} />
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", gap: "10px 20px" }}>
         <h2 id={`h-${def.id}`} style={{ ...cardTitle, flex: "1 1 240px" }}>{def.label}</h2>
         {info && (
@@ -353,7 +353,7 @@ function WeeklyDeaths({ data, accent }) {
       className="ons-anchor"
       aria-labelledby="h-weekly-deaths" style={{ ...card, position: "relative", overflow: "hidden" }} id="s-weekly-deaths"
     >
-      <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `linear-gradient(180deg, ${accent}, ${accent}22)` }} />
+      <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `${accent}` }} />
       <h2 id="h-weekly-deaths" style={cardTitle}>Deaths registered each week</h2>
       <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.55, color: COLORS.ink, margin: "10px 0 18px" }}>{sentence}</p>
       <LineChart
@@ -429,7 +429,7 @@ function KeyPoints({ sector, series, accent, skip }) {
   const jump = (id) => document.getElementById(`s-${id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
   return (
     <section aria-labelledby="h-key-points" style={{ ...card, marginTop: 18, position: "relative", overflow: "hidden" }}>
-      <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `linear-gradient(180deg, ${accent}, ${accent}22)` }} />
+      <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `${accent}` }} />
       <h2 id="h-key-points" style={cardTitle}>The key points</h2>
       <ol style={{ listStyle: "none", margin: "14px 0 0", padding: 0, display: "grid", gap: 12 }}>
         {points.map((p, i) => (
@@ -456,7 +456,7 @@ function InParliament({ sector, accent }) {
   const chip = { fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink, textDecoration: "none", padding: "8px 14px", borderRadius: 999, border: `1px solid ${accent}77`, background: `${accent}12` };
   return (
     <section aria-labelledby="h-in-parliament" style={{ ...card, marginTop: 28, position: "relative", overflow: "hidden" }}>
-      <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `linear-gradient(180deg, ${accent}, ${accent}22)` }} />
+      <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `${accent}` }} />
       <h2 id="h-in-parliament" style={cardTitle}>Where this reaches Parliament</h2>
       <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "10px 0 18px", maxWidth: 720 }}>
         Numbers like these are what MPs argue about. See who is asking ministers about them, how MPs have voted, and what the parties promise.
@@ -569,12 +569,11 @@ export default function SectorPage({ sector, param = null, embedded = false }) {
             className="ons-noprint"
             initial={reduce ? false : { opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
             style={{
-              position: "relative", overflow: "hidden", borderRadius: 26, padding: "clamp(22px, 4vw, 36px)", marginTop: 26, border: `1px solid ${def.accent}55`,
-              background: `radial-gradient(800px 320px at 100% -10%, ${def.accent}38, transparent 65%), radial-gradient(500px 260px at 0% 120%, ${def.accent}1f, transparent 65%), ${COLORS.paperCard}`,
-              boxShadow: "0 30px 60px -36px rgba(0,0,0,0.6)",
+              position: "relative", overflow: "hidden", borderRadius: 14, padding: "clamp(22px, 4vw, 36px)", marginTop: 26, border: `1px solid ${def.accent}55`,
+              background: `${COLORS.paperCard}`,
+              boxShadow: "var(--shadow-2)",
             }}
           >
-            <div aria-hidden="true" style={{ position: "absolute", inset: 0, backgroundImage: `radial-gradient(${COLORS.hairline} 1px, transparent 1px)`, backgroundSize: "22px 22px", opacity: 0.5, maskImage: "linear-gradient(180deg, #000, transparent 80%)", WebkitMaskImage: "linear-gradient(180deg, #000, transparent 80%)" }} />
             <div style={{ position: "relative", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: "28px 40px", alignItems: "center" }}>
               <div>
                 <p style={{ fontFamily: FONT_DISPLAY, fontSize: "clamp(17px, 2.2vw, 21px)", fontWeight: 600, lineHeight: 1.5, letterSpacing: "-0.01em", color: COLORS.ink, margin: 0 }}>{def.story}</p>

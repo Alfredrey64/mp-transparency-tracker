@@ -114,7 +114,7 @@ export default function ShareDialog({ getSpec, filename, returnFocusTo, onClose 
         role="dialog"
         aria-modal="true"
         aria-label="Share this as an image"
-        style={{ width: "min(720px, 100%)", maxHeight: "92vh", overflowY: "auto", background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${COLORS.accent}`, borderRadius: 18, boxShadow: "0 30px 80px rgba(0,0,0,0.45)", padding: "18px 20px 20px" }}
+        style={{ width: "min(720px, 100%)", maxHeight: "92vh", overflowY: "auto", background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${COLORS.accent}`, borderRadius: 14, boxShadow: "0 30px 80px rgba(0,0,0,0.45)", padding: "18px 20px 20px" }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
           <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, color: COLORS.ink, flex: 1 }}>Share this as an image</div>

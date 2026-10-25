@@ -182,7 +182,7 @@ export default function DeprivationNations({ nation, kind: domain = "imd" }) {
   return (
     <>
       <section aria-labelledby={`h-dep-${nation}-what`} style={{ ...card, marginTop: 20, position: "relative", overflow: "hidden" }}>
-        <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `linear-gradient(180deg, ${ACCENT}, ${ACCENT}22)` }} />
+        <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `${ACCENT}` }} />
         <h2 id={`h-dep-${nation}-what`} style={cardTitle}>What this shows for {note.place}</h2>
         <p style={{ fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.6, color: COLORS.ink, margin: "10px 0 0", maxWidth: 780 }}>{note.intro}</p>
         <HowToRead place={note.place} counts={note.counts} unit={note.counts === "wards" ? "ward" : "neighbourhood"} />
@@ -192,7 +192,7 @@ export default function DeprivationNations({ nation, kind: domain = "imd" }) {
         </details>
       </section>
 
-      <section aria-labelledby={`h-dep-${nation}-bars`} className="regions-wrap" style={{ ...card, marginTop: 20, background: `radial-gradient(560px 340px at 50% 0%, ${ACCENT}1a, transparent 70%), ${COLORS.paperCard}` }}>
+      <section aria-labelledby={`h-dep-${nation}-bars`} className="regions-wrap" style={{ ...card, marginTop: 20, background: `${COLORS.paperCard}` }}>
         <h2 id={`h-dep-${nation}-bars`} style={cardTitle}>Where it is worst</h2>
         <p style={{ fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.55, color: COLORS.ink, margin: "8px 0 16px", maxWidth: 800 }} aria-live="polite">
           <strong>{domainLabel}:</strong> in <strong>{ordered[0].name}</strong>, {oneIn(ordered[0].value)} of its {data.unit ?? "neighbourhoods"} ({f1(ordered[0].value)}) are in the most deprived tenth of {note.place}. That is {againstFair(ordered[0].value).text} a fair share (1 in 10), and the most of any council area. In <strong>{ordered.at(-1).name}</strong> it is {oneIn(ordered.at(-1).value)} ({f1(ordered.at(-1).value)}).

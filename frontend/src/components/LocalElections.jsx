@@ -20,7 +20,7 @@ function When({ council, data }) {
   const a = atStake(council, data.parties);
   const colour = controlColourOf(council.control_by_seats);
   return (
-    <div aria-live="polite" style={{ marginTop: 18, padding: "18px 20px", borderRadius: 18, background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderLeft: `6px solid ${colour}` }}>
+    <div aria-live="polite" style={{ marginTop: 18, padding: "18px 20px", borderRadius: 14, background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderLeft: `6px solid ${colour}` }}>
       <div style={{ fontFamily: FONT_DISPLAY, fontSize: 21, fontWeight: 700, color: COLORS.ink }}>{council.name}</div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 2 }}>{nationOf(council.id)} · {council.control}</div>
       {a ? (
@@ -111,7 +111,7 @@ function Finder({ data }) {
 function DateCard({ group, first, big }) {
   const nations = Object.entries(group.nations).sort((a, b) => b[1] - a[1]);
   return (
-    <li style={{ padding: "16px 18px", borderRadius: 18, background: first ? `linear-gradient(160deg, ${ACCENT}22, ${COLORS.paperCard} 70%)` : COLORS.paperCard, border: `1px solid ${first ? `${ACCENT}77` : COLORS.hairline}` }}>
+    <li style={{ padding: "16px 18px", borderRadius: 14, background: first ? `color-mix(in srgb, ${ACCENT} 7%, ${COLORS.paperCard})` : COLORS.paperCard, border: `1px solid ${first ? `${ACCENT}77` : COLORS.hairline}` }}>
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "baseline", gap: "4px 12px" }}>
         <div style={{ fontFamily: FONT_DISPLAY, fontSize: 21, fontWeight: 700, color: COLORS.ink }}>{longDate(group.date)}</div>
         <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: first ? ink : COLORS.inkSoft }}>{group.days === 0 ? "Today" : `${fmt(group.days)} ${group.days === 1 ? "day" : "days"} to go`}</div>
@@ -160,7 +160,7 @@ export default function LocalElections() {
       {data && (
         <>
           {big && (
-            <section aria-label="The next big election day" style={{ ...card, marginTop: 4, padding: "clamp(20px, 4vw, 30px)", background: `radial-gradient(560px 260px at 100% 0%, ${ACCENT}33, transparent 70%), ${COLORS.paperCard}` }}>
+            <section aria-label="The next big election day" style={{ ...card, marginTop: 4, padding: "clamp(20px, 4vw, 30px)", background: `${COLORS.paperCard}` }}>
               <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: ink }}>The next big election day</div>
               <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "6px 16px", margin: "6px 0 8px" }}>
                 <span style={{ ...numeric, fontSize: "clamp(48px, 10vw, 84px)", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 0.95, color: COLORS.ink }}>{fmt(big.days)}</span>

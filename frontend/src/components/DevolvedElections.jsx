@@ -76,7 +76,7 @@ export default function DevolvedElections({ item, onPick }) {
 
       <Strip nation={nation} selected={e.id} onPick={(id) => onPick(`${nation.key}/${id}`)} />
 
-      <Reveal key={`${nation.key}${e.id}`} as="section" aria-labelledby="h-dv-result" style={{ ...card, marginTop: 8, borderTop: `5px solid ${lead.colour}`, background: `linear-gradient(155deg, color-mix(in srgb, ${lead.colour} 13%, ${COLORS.paperCard}) 0%, ${COLORS.paperCard} 58%)` }}>
+      <Reveal key={`${nation.key}${e.id}`} as="section" aria-labelledby="h-dv-result" style={{ ...card, marginTop: 8, boxShadow: `var(--shadow-1), inset 0 5px 0 ${lead.colour}`, background: `color-mix(in srgb, ${lead.colour} 6%, ${COLORS.paperCard})` }}>
         <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap", alignItems: "baseline" }}>
           <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, margin: 0 }}>{dateText(e.date)}</p>
           <ShareButton filename={`${nation.key}-${e.id}-election`} getSpec={() => devolvedShareSpec({ nation, e, facts: f, parties: rows.map(([k, n]) => ({ label: PARTIES[k].label, seats: n, colour: PARTIES[k].colour })), link: window.location.href })} />

@@ -22,7 +22,7 @@ function WatchlistEntryCard({ entry, onSelectPolitician }) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
-      style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${color}`, borderRadius: 14, padding: 20 }}
+      style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 4px 0 ${color}`, borderRadius: 14, padding: 20 }}
     >
       <button
         onClick={() => onSelectPolitician?.(politician)}

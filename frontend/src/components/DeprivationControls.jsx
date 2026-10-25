@@ -16,7 +16,7 @@ export function Segmented({ label, value, options, onChange, accent = COLORS.ink
     requestAnimationFrame(() => e.currentTarget.parentElement?.querySelector('[aria-checked="true"]')?.focus());
   };
   return (
-    <div role="radiogroup" aria-label={label} className="seg" style={{ display: "inline-flex", flexWrap: "wrap", maxWidth: "100%", gap: 2, padding: 3, border: `1px solid ${COLORS.hairline}`, borderRadius: 20, background: COLORS.paper }}>
+    <div role="radiogroup" aria-label={label} className="seg" style={{ display: "inline-flex", flexWrap: "wrap", maxWidth: "100%", gap: 2, padding: 3, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, background: COLORS.paper }}>
       {options.map((o) => {
         const on = o.id === value;
         return (
@@ -57,7 +57,7 @@ export function Row({ label, children, wide = false }) {
 
 export function ControlBar({ children }) {
   return (
-    <section aria-label="Choose what to show" style={{ marginTop: 22, padding: "16px clamp(14px, 3vw, 22px) 18px", borderRadius: 20, border: `1px solid ${COLORS.hairline}`, background: COLORS.paperCard, display: "grid", gap: "14px 24px", containerType: "inline-size", gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))", alignItems: "end", boxShadow: `0 18px 40px -30px rgba(0,0,0,0.5), inset 0 3px 0 ${ACCENT}` }}>
+    <section aria-label="Choose what to show" style={{ marginTop: 22, padding: "16px clamp(14px, 3vw, 22px) 18px", borderRadius: 14, border: `1px solid ${COLORS.hairline}`, background: COLORS.paperCard, display: "grid", gap: "14px 24px", containerType: "inline-size", gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))", alignItems: "end", boxShadow: `0 18px 40px -30px rgba(0,0,0,0.5), inset 0 3px 0 ${ACCENT}` }}>
       {children}
     </section>
   );

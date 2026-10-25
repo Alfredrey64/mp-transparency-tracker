@@ -16,7 +16,7 @@ export function Tile({ span, edge = "people", title, note, children, delay = 0, 
   return (
     <div className={span} style={{ minWidth: 0 }}>
       <Reveal delay={delay}>
-        <section style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${EDGE[edge]}`, borderRadius: 18, padding: "18px 20px 20px", height: "100%", boxSizing: "border-box", ...style }}>
+        <section style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 3px 0 ${EDGE[edge]}`, borderRadius: 14, padding: "18px 20px 20px", height: "100%", boxSizing: "border-box", ...style }}>
           <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 19, color: COLORS.ink, margin: 0, letterSpacing: "-0.01em" }}>{title}</h2>
           {note && <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, lineHeight: 1.55, margin: "4px 0 0", maxWidth: 560 }}>{note}</p>}
           <div style={{ marginTop: 16 }}>{children}</div>

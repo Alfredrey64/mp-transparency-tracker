@@ -151,7 +151,7 @@ export function ManifestoTabContent({ politician }) {
 
   return (
     <div>
-      <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${COLORS.accent}`, borderRadius: 12, padding: 16, marginBottom: 14 }}>
+      <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 3px 0 ${COLORS.accent}`, borderRadius: 12, padding: 16, marginBottom: 14 }}>
         <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, lineHeight: 1.55 }}>
           {manifesto.shortName}'s {manifesto.manifestoYear} <GlossaryTerm term="Manifesto">manifesto</GlossaryTerm>, <em>{manifesto.manifestoTitle}</em>, summarised
           independently rather than reproduced (manifestos are copyrighted), matched below against{" "}

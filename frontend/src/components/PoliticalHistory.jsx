@@ -288,7 +288,7 @@ function VoteRow({ vote, index }) {
       transition={{ duration: 0.4, delay: Math.min(index, 8) * 0.04, ease: "easeOut" }}
       whileHover={{ transition: { duration: 0.15, delay: 0 } }}
       style={{
-        position: "relative", overflow: "hidden", background: `linear-gradient(135deg, ${themeColor}0a, ${COLORS.paperCard} 55%)`, border: `1px solid ${COLORS.hairline}`,
+        position: "relative", overflow: "hidden", background: `color-mix(in srgb, ${themeColor} 7%, ${COLORS.paperCard})`, border: `1px solid ${COLORS.hairline}`,
         borderLeft: `4px solid ${outcomeColor}`, borderRadius: 13, padding: "17px 20px", marginBottom: 13, cursor: more ? "pointer" : "default",
       }}
     >

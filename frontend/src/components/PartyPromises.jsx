@@ -27,7 +27,7 @@ function PartyCard({ party, text, index }) {
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.22, delay: Math.min(index, 6) * 0.045, ease: "easeOut" }}
-      style={{ display: "flex", flexDirection: "column", borderRadius: 16, background: `${partyWash(party.color)}, ${COLORS.paperCard}`, border: partyOutline(party.color), borderTop: `5px solid ${party.color}`, padding: "16px 18px 14px", minWidth: 0 }}
+      style={{ display: "flex", flexDirection: "column", borderRadius: 16, background: `${partyWash(party.color)}, ${COLORS.paperCard}`, border: partyOutline(party.color), boxShadow: `var(--shadow-1), inset 0 5px 0 ${party.color}`, padding: "16px 18px 14px", minWidth: 0 }}
     >
       <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap", gap: "2px 10px" }}>
         <h4 style={{ fontFamily: FONT_DISPLAY, fontSize: 19, fontWeight: 700, color: COLORS.ink, margin: 0, lineHeight: 1.2 }}>{party.name}</h4>

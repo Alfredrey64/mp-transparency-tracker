@@ -159,7 +159,7 @@ export default function ElectionHistory({ electionId, onPick, seat = null }) {
     <div>
       <ElectionStrip selected={e.id} onPick={onPick} />
 
-      <Reveal key={e.id} as="section" aria-labelledby="h-eh-result" style={{ ...card, marginTop: 8, borderTop: `5px solid ${leadColour}`, background: `linear-gradient(155deg, color-mix(in srgb, ${leadColour} 13%, ${COLORS.paperCard}) 0%, ${COLORS.paperCard} 58%)` }}>
+      <Reveal key={e.id} as="section" aria-labelledby="h-eh-result" style={{ ...card, marginTop: 8, boxShadow: `var(--shadow-1), inset 0 5px 0 ${leadColour}`, background: `color-mix(in srgb, ${leadColour} 6%, ${COLORS.paperCard})` }}>
         <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap", alignItems: "baseline" }}>
           <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, margin: 0 }}>{dateText(e.date)}</p>
           <ShareButton filename={`${electionLabel(e)}-general-election`.toLowerCase().replace(/\s+/g, "-")} getSpec={() => electionSpec(e, window.location.href)} />

@@ -31,7 +31,7 @@ function Frame({ children, href, label }) {
     return () => ro.disconnect();
   }, []);
   return (
-    <article ref={ref} style={{ boxSizing: "border-box", margin: 0, padding: "20px 22px 16px", borderRadius: 18, border: `1px solid ${COLORS.hairline}`, background: COLORS.paperCard, color: COLORS.ink, fontFamily: FONT_BODY }}>
+    <article ref={ref} style={{ boxSizing: "border-box", margin: 0, padding: "20px 22px 16px", borderRadius: 14, border: `1px solid ${COLORS.hairline}`, background: COLORS.paperCard, color: COLORS.ink, fontFamily: FONT_BODY }}>
       {children}
       <footer style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "8px 14px", marginTop: 16, paddingTop: 12, borderTop: `1px solid ${COLORS.hairline}` }}>
         <a href={SITE_ORIGIN} target="_top" rel="noopener" style={{ display: "inline-flex", alignItems: "center", gap: 8, textDecoration: "none", color: COLORS.ink }}>

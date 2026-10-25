@@ -32,7 +32,7 @@ export default function EmbedButton({ spec, title }) {
         ref={dialog}
         aria-labelledby="embed-title"
         onClick={(e) => { if (e.target === dialog.current) dialog.current.close(); }}
-        style={{ width: "min(680px, calc(100vw - 24px))", maxHeight: "calc(100dvh - 24px)", padding: 0, border: `1px solid ${COLORS.hairline}`, borderRadius: 18, background: COLORS.paperCard, color: COLORS.ink }}
+        style={{ width: "min(680px, calc(100vw - 24px))", maxHeight: "calc(100dvh - 24px)", padding: 0, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, background: COLORS.paperCard, color: COLORS.ink }}
       >
         <div style={{ padding: "20px clamp(16px, 4vw, 24px) 22px", fontFamily: FONT_BODY }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>

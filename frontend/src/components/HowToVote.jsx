@@ -55,7 +55,7 @@ function Checker() {
         {rows.map((r) => {
           const R = RESULT[r.result];
           return (
-            <li key={r.key} style={{ padding: "14px 16px", borderRadius: 16, background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${R.colour}` }}>
+            <li key={r.key} style={{ padding: "14px 16px", borderRadius: 16, background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 4px 0 ${R.colour}` }}>
               <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.inkSoft }}>{r.label}</div>
               <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, color: R.colour, margin: "3px 0 6px" }}>{R.label}</div>
               <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.55, color: COLORS.ink, margin: 0 }}>{r.note}</p>

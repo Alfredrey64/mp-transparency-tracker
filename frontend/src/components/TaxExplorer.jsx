@@ -55,7 +55,7 @@ function PanelView({ tax, panel, range, now, nowT }) {
   const inRange = shown.filter((l) => l.points.length && l.points[l.points.length - 1].t >= from - 100);
   const label = `${tax.name}: ${panel.title.toLowerCase()}${adjusted ? ", in today's money" : ""}, ${from} to now. ${lineSummary(panel)}.`;
   return (
-    <div style={{ marginTop: 18, padding: "16px clamp(12px, 3vw, 18px) 12px", borderRadius: 18, background: COLORS.paper, border: `1px solid ${COLORS.hairline}` }}>
+    <div style={{ marginTop: 18, padding: "16px clamp(12px, 3vw, 18px) 12px", borderRadius: 14, background: COLORS.paper, border: `1px solid ${COLORS.hairline}` }}>
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
         <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 17, fontWeight: 700, color: COLORS.ink, margin: 0 }}>{panel.title}{adjusted ? ", in today's money" : ""}</h3>
         {panel.real && (
@@ -152,7 +152,7 @@ function TaxDetail({ tax, now, nowT }) {
   const filtered = lineKey === "all" ? past : past.filter((c) => c.line.key === lineKey);
   const accent = tax.group.accent;
   return (
-    <Reveal as="section" aria-labelledby="h-tax-detail" key={tax.id} style={{ ...card, marginTop: 16, borderTop: `5px solid ${accent}`, background: `linear-gradient(155deg, color-mix(in srgb, ${accent} 12%, ${COLORS.paperCard}) 0%, ${COLORS.paperCard} 46%)` }}>
+    <Reveal as="section" aria-labelledby="h-tax-detail" key={tax.id} style={{ ...card, marginTop: 16, boxShadow: `var(--shadow-1), inset 0 5px 0 ${accent}`, background: `color-mix(in srgb, ${accent} 6%, ${COLORS.paperCard})` }}>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: readable(accent) }}>{tax.group.label}</div>
       <h2 id="h-tax-detail" style={{ ...cardTitle, fontSize: "clamp(24px, 4.4vw, 34px)", marginTop: 2 }}>{tax.name}</h2>
       <p style={para}>{tax.about}</p>

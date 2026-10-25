@@ -90,7 +90,7 @@ const initials = (name) => String(name ?? "").replace(/^(The |Rt Hon |Dame |Sir 
 
 function Stat({ value, label, color }) {
   return (
-    <div style={{ position: "relative", overflow: "hidden", background: `linear-gradient(160deg, ${color}1f, ${COLORS.paperCard} 70%)`, border: `1px solid ${color}44`, borderRadius: 14, padding: "14px 16px" }}>
+    <div style={{ position: "relative", overflow: "hidden", background: `color-mix(in srgb, ${color} 7%, ${COLORS.paperCard})`, border: `1px solid ${color}44`, borderRadius: 14, padding: "14px 16px" }}>
       <span aria-hidden="true" style={{ position: "absolute", right: -18, top: -18, width: 70, height: 70, borderRadius: "50%", background: `${color}22` }} />
       <div style={{ position: "relative", fontFamily: FONT_DISPLAY, fontSize: 30, fontWeight: 700, color: COLORS.ink, lineHeight: 1.1 }}>
         {typeof value === "number" ? <CountUp value={value} format={(n) => Math.round(n).toLocaleString("en-GB")} duration={1.1} /> : value}
@@ -157,7 +157,7 @@ function BarList({ items, color, unit, onPick }) {
               <strong style={{ flexShrink: 0, fontVariantNumeric: "tabular-nums" }}>{it.value} <span style={{ fontWeight: 400, color: COLORS.inkSoft }}>{unit}</span></strong>
             </span>
             <span aria-hidden="true" style={{ display: "block", height: 9, borderRadius: 5, background: `${color}1c`, overflow: "hidden" }}>
-              <span className="cm-bar" style={{ "--i": i, display: "block", height: "100%", width: `${(it.value / max) * 100}%`, borderRadius: 5, background: `linear-gradient(90deg, ${color}aa, ${color})` }} />
+              <span className="cm-bar" style={{ "--i": i, display: "block", height: "100%", width: `${(it.value / max) * 100}%`, borderRadius: 5, background: `color-mix(in srgb, ${color} 7%, ${color})` }} />
             </span>
           </button>
         </li>
@@ -188,8 +188,8 @@ function CommitteeCard({ committee, open, onToggle, index = 0 }) {
     <div
       className="cm-card"
       style={{
-        "--i": index, gridColumn: open ? "1 / -1" : undefined, background: `linear-gradient(160deg, ${houseColor}14, ${COLORS.paperCard} 55%)`,
-        border: `1px solid ${open ? houseColor : COLORS.hairline}`, borderTop: `4px solid ${houseColor}`, borderRadius: 16, padding: 18, minWidth: 0,
+        "--i": index, gridColumn: open ? "1 / -1" : undefined, background: `color-mix(in srgb, ${houseColor} 7%, ${COLORS.paperCard})`,
+        border: `1px solid ${open ? houseColor : COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 4px 0 ${houseColor}`, borderRadius: 16, padding: 18, minWidth: 0,
         transition: "border-color 0.15s",
       }}
     >

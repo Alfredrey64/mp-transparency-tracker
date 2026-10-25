@@ -235,7 +235,7 @@ export default function CrimePeople({ accent }) {
 
   return (
     <section id="s-crime-who" aria-labelledby="h-crime-who" className="ons-anchor regions-wrap" style={{ ...card, position: "relative", overflow: "hidden", gridColumn: "1 / -1" }}>
-      <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `linear-gradient(180deg, ${accent}, ${accent}22)` }} />
+      <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `${accent}` }} />
       <h2 id="h-crime-who" style={cardTitle}>Crime by ethnic group, age, sex and income: who is involved?</h2>
       <p style={para}>
         Official figures broken down by ethnic group, sex and (for victims) age, household income and area: who the police arrest, what for, who is a victim, and who ends up in prison. Please read the note below before the numbers.

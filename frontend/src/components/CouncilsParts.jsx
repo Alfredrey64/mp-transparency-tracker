@@ -6,7 +6,7 @@ import { fmt, signed, scrollToId } from "./councilsUi";
 // ---- Building blocks -----------------------------------------------------------
 export function Card({ children, style, id }) {
   return (
-    <section id={id} style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 20, padding: "22px clamp(16px, 3vw, 26px)", boxShadow: "0 12px 30px -18px rgba(0,0,0,0.45)", scrollMarginTop: 14, ...style }}>
+    <section id={id} style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "22px clamp(16px, 3vw, 26px)", boxShadow: "var(--shadow-2)", scrollMarginTop: 14, ...style }}>
       {children}
     </section>
   );
@@ -43,7 +43,7 @@ export function StatCard({ icon: Icon, colour, value, format = fmt, label, capti
       {caption && <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 3, lineHeight: 1.5 }}>{caption}</div>}
     </>
   );
-  const style = { textAlign: "left", display: "block", width: "100%", boxSizing: "border-box", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${colour}`, borderRadius: 18, padding: "18px 18px 20px", color: "inherit", font: "inherit" };
+  const style = { textAlign: "left", display: "block", width: "100%", boxSizing: "border-box", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 3px 0 ${colour}`, borderRadius: 14, padding: "18px 18px 20px", color: "inherit", font: "inherit" };
   if (!target) return <div style={style}>{body}</div>;
   return (
     <button type="button" className="nclick" onClick={() => scrollToId(target)} style={{ ...style, cursor: "pointer" }}>
