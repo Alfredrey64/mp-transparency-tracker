@@ -40,7 +40,7 @@ const ratio = (a, b) => { const x = relLum(a); const y = relLum(b); return (Math
 const mixOklab = (a, b, share) => { const p = toOklab(a); const q = toOklab(b); return fromOklab(p.map((v, i) => v * share + q[i] * (1 - share))); };
 // The ink and the darkest backgrounds a bit of text can land on, light and dark (see index.css): the page, a card, a tinted chip.
 const THEME_EDGES = {
-  light: { ink: [10, 20, 36], worst: parseHex("#D9DFE9") },
+  light: { ink: [10, 20, 36], worst: parseHex("#CBD3E2") },
   dark: { ink: [242, 245, 251], worst: parseHex("#243149") },
 };
 const shareFor = (rgb, edge, min = 4.8) => {

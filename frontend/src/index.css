@@ -8,10 +8,10 @@
   --focus-ring: #1E4FB8;
   --c-ink: #0A1424;
   --c-ink-soft: #3A465A;
-  --c-paper: #F3F5F9;
+  --c-paper: #ECEFF6;
   --c-paper-card: #FFFFFF;
-  --c-paper-sunk: #E9EDF4;
-  --c-hairline: #D9DFE9;
+  --c-paper-sunk: #E1E6F0;
+  --c-hairline: #CBD3E2;
   --c-brand: #1E4FB8;
   --c-on-brand: #FFFFFF;
   --c-brand-deep: #0F2A55;
@@ -27,7 +27,7 @@
   --radius-s: 8px;
   --radius-m: 12px;
   --radius-l: 16px;
-  --shadow-1: 0 1px 2px rgba(10, 20, 36, 0.05), 0 1px 1px rgba(10, 20, 36, 0.03);
+  --shadow-1: 0 1px 2px rgba(10, 20, 36, 0.07), 0 2px 6px -2px rgba(10, 20, 36, 0.08);
   --shadow-2: 0 2px 4px rgba(10, 20, 36, 0.04), 0 8px 24px -8px rgba(10, 20, 36, 0.12);
   --shadow-3: 0 4px 8px rgba(10, 20, 36, 0.05), 0 20px 48px -12px rgba(10, 20, 36, 0.2);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);

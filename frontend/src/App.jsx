@@ -8,6 +8,7 @@ import SiteFooter from "./components/SiteFooter";
 import "./chrome.css";
 import { HEMICYCLE } from "./lib/seatMark";
 import { installScrollReveal } from "./lib/scrollReveal";
+import { installGlow } from "./lib/glow";
 import Home from "./components/Home";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { SECTIONS } from "./data/sidebarSections";
@@ -200,6 +201,7 @@ export default function App() {
   const [navTarget, setNavTarget] = useState(view);
 
   useEffect(() => startGlossDedupe(document.getElementById("root")), []);
+  useEffect(() => installGlow(), []);
   useEffect(() => installScrollReveal(document.getElementById("main-content")?.parentElement), []);
   // One anonymous page view each time the page changes (the page's name only; see lib/analytics.js).
   useEffect(() => { trackPage(selected ? "mp" : view, viewParam); }, [view, selected, viewParam]);

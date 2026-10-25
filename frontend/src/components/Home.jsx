@@ -325,7 +325,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
           </p>
           <div className="home-features">
             {FEATURES.map((f) => (
-              <button key={f.key} type="button" className="feature-card" onClick={() => onNavigate?.(f.key)} style={{ "--f": f.color }}>
+              <button key={f.key} type="button" className="feature-card glow" onClick={() => onNavigate?.(f.key)} style={{ "--f": f.color, "--k": f.color }}>
                 <span className="feature-icon"><f.icon size={22} /></span>
                 <span className="feature-title">{f.label}</span>
                 <span className="feature-line">{f.line}</span>

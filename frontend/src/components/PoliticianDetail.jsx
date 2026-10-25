@@ -304,50 +304,42 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.15 }}
-                      style={{ display: "flex", flexDirection: "column", gap: 10 }}
+                      style={{ display: "flex", flexDirection: "column", gap: 12 }}
                     >
                       {filteredInterests.map((item, i) => {
                         const meta = categoryMeta(item.category);
                         return (
                           <motion.div
                             key={item.id}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 0.2, delay: Math.min(i, 10) * 0.02 }}
-                            style={{
-                              display: "flex", alignItems: "center", gap: 14,
-                              padding: "14px 16px", background: COLORS.paper, border: `1px solid ${COLORS.hairline}`,
-                              borderLeft: `3px solid ${meta.color}`, borderRadius: 12,
-                            }}
+                            className="contrib glow"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.35, delay: Math.min(i, 10) * 0.04, ease: [0.22, 1, 0.36, 1] }}
+                            style={{ "--k": meta.color }}
                           >
-                            <div
-                              style={{
-                                flexShrink: 0, width: 36, height: 36, borderRadius: "50%",
-                                display: "flex", alignItems: "center", justifyContent: "center",
-                                background: `${meta.color}1c`, color: readable(meta.color),
-                              }}
-                            >
-                              <meta.Icon size={16} />
+                            <span aria-hidden="true" className="contrib-bar" />
+                            <div className="contrib-icon" style={{ color: readable(meta.color) }}>
+                              <meta.Icon size={20} />
                             </div>
                             <div style={{ minWidth: 0, flex: 1 }}>
-                              <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 11.5, color: readable(meta.color), marginBottom: 6 }}>
+                              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13, color: readable(meta.color), marginBottom: 5 }}>
                                 {shortCategory(item.category)}
                               </div>
-                              <div style={{ fontFamily: FONT_BODY, fontSize: 16, color: COLORS.ink, lineHeight: 1.4 }}>
+                              <div style={{ fontFamily: FONT_BODY, fontSize: 17, fontWeight: 500, color: COLORS.ink, lineHeight: 1.4 }}>
                                 {stripTrailingAmount(item.summary)}
                               </div>
-                              <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8, fontSize: 12, color: COLORS.inkSoft }}>
+                              <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8, marginTop: 8, fontSize: 13.5, color: COLORS.inkSoft }}>
                                 {item.date_registered && <span style={{ fontFamily: FONT_BODY }}>{formatDate(item.date_registered)}</span>}
-                                {item.date_registered && item.source_url && <span>·</span>}
+                                {item.date_registered && item.source_url && <span aria-hidden="true">·</span>}
                                 {item.source_url && (
-                                  <a href={item.source_url} target="_blank" rel="noreferrer" style={{ color: COLORS.inkSoft, fontFamily: FONT_BODY }}>
-                                    source ↗
+                                  <a href={item.source_url} target="_blank" rel="noreferrer" style={{ color: COLORS.inkSoft, fontFamily: FONT_BODY, textDecoration: "underline", textUnderlineOffset: 3 }}>
+                                    source ↗<span className="sr-only"> (opens in a new tab)</span>
                                   </a>
                                 )}
                               </div>
                             </div>
                             {item.value_amount && (
-                              <div style={{ flexShrink: 0, fontFamily: FONT_BODY, fontSize: 16.5, fontWeight: 700, color: readable(meta.color), whiteSpace: "nowrap", marginRight: 8 }}>
+                              <div className="contrib-amount" style={{ color: readable(meta.color) }}>
                                 £{Number(item.value_amount).toLocaleString()}
                               </div>
                             )}

@@ -64,12 +64,15 @@ export function CardShell({ title, children }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.3, ease: "easeOut" }}
+      className="glow"
       style={{
-        background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${accent}`,
-        borderRadius: 14, padding: "18px 20px",
+        "--k": accent, position: "relative", overflow: "hidden",
+        background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, boxShadow: "var(--shadow-1)",
+        borderRadius: 14, padding: "24px 22px 20px",
       }}
     >
-      <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 17, color: COLORS.ink, marginBottom: 10 }}>
+      <span aria-hidden="true" style={{ position: "absolute", left: 0, right: 0, top: 0, height: 5, background: accent }} />
+      <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 20, letterSpacing: "-0.01em", color: COLORS.ink, marginBottom: 12 }}>
         {sentenceCase(title)}
       </div>
       {children}
