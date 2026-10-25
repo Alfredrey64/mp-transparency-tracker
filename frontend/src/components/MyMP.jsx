@@ -119,41 +119,41 @@ function MPDashboard({ politician, onForget, onViewFullProfile }) {
 
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 18, flexWrap: "wrap", marginBottom: 24 }}>
-        <Avatar url={politician.thumbnail_url} name={politician.name} color={color} />
+      <section className="my-mp-card glow" aria-label="Your MP" style={{ "--k": color }}>
+        <span aria-hidden="true" className="my-mp-bar" />
+        <Avatar url={politician.thumbnail_url} name={politician.name} color={color} size={112} />
         <div style={{ minWidth: 0, flex: 1 }}>
-          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 26, color: COLORS.ink, lineHeight: 1.2 }}>{politician.name}</div>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, marginTop: 2 }}>
-            {politician.party} · {politician.constituency}
+          <div style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 600, color: COLORS.inkSoft }}>Your MP</div>
+          <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: "clamp(28px, 4vw, 38px)", fontWeight: 700, letterSpacing: "-0.02em", color: COLORS.ink, lineHeight: 1.1, margin: "2px 0 0" }}>{politician.name}</h2>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "6px 10px", marginTop: 10, fontFamily: FONT_BODY, fontSize: 16, color: COLORS.ink }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "5px 12px", borderRadius: 999, background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, fontWeight: 600 }}>
+              <span style={{ width: 10, height: 10, borderRadius: "50%", background: color, flexShrink: 0 }} />
+              {politician.party}
+            </span>
+            <span style={{ color: COLORS.inkSoft }}>{politician.constituency}</span>
           </div>
           {politician.cabinet_role && (
-            <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.accentText, marginTop: 4 }}>{politician.cabinet_role}</div>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: 700, color: COLORS.accentText, marginTop: 10 }}>{politician.cabinet_role}</div>
           )}
         </div>
-        <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
-          <button
-            onClick={() => onViewFullProfile(politician)}
-            style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13, color: "#fff", background: COLORS.accent, border: "none", borderRadius: 999, padding: "9px 18px", cursor: "pointer" }}
-          >
-            Full profile
-          </button>
-          <button
-            onClick={onForget}
-            style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13, color: COLORS.inkSoft, background: "transparent", border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: "9px 16px", cursor: "pointer" }}
-          >
-            Not your MP?
-          </button>
+        <div className="my-mp-actions">
+          <button type="button" className="btn btn-primary" onClick={() => onViewFullProfile(politician)}>Full profile</button>
+          <button type="button" className="btn btn-secondary" onClick={onForget}>Not your MP?</button>
         </div>
-      </div>
+      </section>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))", gap: 16 }}>
-        <RebellionRateBox politician={politician} />
-        <VotingSummaryBox politician={politician} />
-        <CabinetRoleBox politician={politician} />
-        <RecentActivityBox politician={politician} />
-        <BiographyBox politician={politician} />
-        <ContactBox politician={politician} />
-        <NewsBox politician={politician} />
+      <div className="my-mp-cols">
+        <div className="my-mp-col">
+          <RebellionRateBox politician={politician} />
+          <CabinetRoleBox politician={politician} />
+          <BiographyBox politician={politician} />
+          <ContactBox politician={politician} />
+        </div>
+        <div className="my-mp-col">
+          <VotingSummaryBox politician={politician} />
+          <RecentActivityBox politician={politician} />
+          <NewsBox politician={politician} />
+        </div>
       </div>
     </motion.div>
   );
@@ -190,7 +190,7 @@ export default function MyMP({ onViewProfile }) {
   }
 
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconPin}
         kicker="My MP"

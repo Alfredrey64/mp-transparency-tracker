@@ -89,7 +89,7 @@ export function BiographyBox({ politician }) {
           {bio}
         </div>
       ) : (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 15, color: COLORS.inkSoft }}>
           No official biography published for this MP yet.
         </div>
       )}
@@ -100,10 +100,10 @@ export function BiographyBox({ politician }) {
 export function ContactRow({ label, children }) {
   return (
     <div style={{ marginBottom: 10 }}>
-      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 11, color: COLORS.accentText, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 2 }}>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 14, color: COLORS.accentText, marginBottom: 3 }}>
         {label}
       </div>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink }}>{children}</div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 15, color: COLORS.ink }}>{children}</div>
     </div>
   );
 }
@@ -125,7 +125,7 @@ export function ContactBox({ politician }) {
           )}
         </div>
       ) : (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 15, color: COLORS.inkSoft }}>
           No parliamentary contact details published for this MP yet.
         </div>
       )}
@@ -142,13 +142,13 @@ export function CabinetRoleBox({ politician }) {
             {politician.cabinet_role}
           </div>
           {politician.cabinet_role_start_date && (
-            <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 3 }}>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, marginTop: 3 }}>
               Since {formatDate(politician.cabinet_role_start_date)}
             </div>
           )}
         </div>
       ) : (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 15, color: COLORS.inkSoft }}>
           No current government post. This MP is a backbencher.
         </div>
       )}
@@ -188,14 +188,14 @@ export function StandardsBox({ politician }) {
               href={r.report_url}
               target="_blank"
               rel="noreferrer"
-              style={{ display: "block", background: "#F3E4E2", borderRadius: 8, padding: "8px 10px", fontFamily: FONT_BODY, fontSize: 12.5, color: readable("#9C3B3B"), fontWeight: 600 }}
+              style={{ display: "block", background: "#F3E4E2", borderRadius: 8, padding: "8px 10px", fontFamily: FONT_BODY, fontSize: 14, color: readable("#9C3B3B"), fontWeight: 600 }}
             >
               {r.title} ↗
             </a>
           ))}
         </div>
       )}
-      <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.6, marginBottom: 10 }}>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 14.5, color: COLORS.inkSoft, lineHeight: 1.6, marginBottom: 10 }}>
         {reports?.length > 0
           ? "The published finding above is a matter of public record. See the Standards & Sanctions tab for the full context. For anything more recent:"
           : "No published Committee on Standards finding currently matched to this MP. To check for yourself:"}
@@ -205,7 +205,7 @@ export function StandardsBox({ politician }) {
           href="https://committees.parliament.uk/committee/290/committee-on-standards/publications/"
           target="_blank"
           rel="noreferrer"
-          style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, fontWeight: 600 }}
+          style={{ fontFamily: FONT_BODY, fontSize: 14.5, color: COLORS.ink, fontWeight: 600 }}
         >
           Committee on Standards, published findings ↗
         </a>
@@ -213,7 +213,7 @@ export function StandardsBox({ politician }) {
           href={`https://www.parliament.uk/site-information/search/?q=${encodedName}`}
           target="_blank"
           rel="noreferrer"
-          style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, fontWeight: 600 }}
+          style={{ fontFamily: FONT_BODY, fontSize: 14.5, color: COLORS.ink, fontWeight: 600 }}
         >
           Search parliament.uk for "{politician.name}" ↗
         </a>
@@ -285,7 +285,7 @@ export function VotingSummaryBox({ politician, onNavigate }) {
   if (votes.length === 0) {
     return (
       <CardShell title="Voting Record">
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 15, color: COLORS.inkSoft }}>
           No recorded votes found for this MP in the tracked period.
         </div>
       </CardShell>
@@ -294,7 +294,7 @@ export function VotingSummaryBox({ politician, onNavigate }) {
 
   return (
     <CardShell title="Voting Record">
-      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 10 }}>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginBottom: 10 }}>
         Their {votes.length} most recent recorded vote{votes.length === 1 ? "" : "s"}. Tap any of these, or their full
         history below, to see every recorded vote.
       </div>
@@ -314,13 +314,13 @@ export function VotingSummaryBox({ politician, onNavigate }) {
                 borderBottom: i < votes.length - 1 ? `1px solid ${COLORS.hairline}` : "none",
               }}
             >
-              <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: COLORS.ink, lineHeight: 1.4 }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: 600, color: COLORS.ink, lineHeight: 1.4 }}>
                 <Suspense fallback={v.title}>
                   <VoteTitle title={v.title} />
                 </Suspense>
               </div>
               {description && (
-                <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5, marginTop: 3 }}>
+                <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.5, marginTop: 3 }}>
                   {description}
                 </div>
               )}
@@ -330,7 +330,7 @@ export function VotingSummaryBox({ politician, onNavigate }) {
               <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", marginTop: 4 }}>
                 <span
                   style={{
-                    fontFamily: FONT_MONO, fontSize: 11, fontWeight: 700, textTransform: "uppercase",
+                    fontFamily: FONT_MONO, fontSize: 12.5, fontWeight: 700, textTransform: "uppercase",
                     padding: "2px 7px", borderRadius: 999,
                     background: v.voted_aye ? "#E4EEE7" : "#F3E4E2",
                     color: v.voted_aye ? readable("#2F6F4E") : readable("#9C3B3B"),
@@ -338,11 +338,11 @@ export function VotingSummaryBox({ politician, onNavigate }) {
                 >
                   {v.voted_aye ? "Aye" : "No"}
                 </span>
-                <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>{formatDate(v.date)}</span>
+                <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>{formatDate(v.date)}</span>
                 {againstParty && (
                   <span
                     style={{
-                      fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, textTransform: "uppercase",
+                      fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12.5, textTransform: "uppercase",
                       letterSpacing: "0.04em", padding: "2px 7px", borderRadius: 999,
                       background: "#F3E4E2", color: readable("#9C3B3B"),
                     }}
@@ -358,12 +358,12 @@ export function VotingSummaryBox({ politician, onNavigate }) {
       {onNavigate ? (
         <button
           onClick={() => withScrollPreserved(() => onNavigate("voting", politician))}
-          style={{ display: "block", marginTop: 10, fontSize: 12, color: COLORS.accentText, fontWeight: 600, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY }}
+          style={{ display: "block", marginTop: 10, fontSize: 13.5, color: COLORS.accentText, fontWeight: 600, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY }}
         >
           See their full voting history
         </button>
       ) : (
-        <div style={{ marginTop: 10, fontSize: 12, color: COLORS.inkSoft }}>
+        <div style={{ marginTop: 10, fontSize: 13.5, color: COLORS.inkSoft }}>
           See the "Voting Records" tab in the sidebar for their full history.
         </div>
       )}
@@ -424,14 +424,14 @@ export function RebellionRateBox({ politician }) {
     <CardShell title="Rebellion Rate">
       <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 8 }}>
         <span style={{ fontFamily: FONT_DISPLAY, fontSize: 30, color: pct > 0 ? readable("#9C3B3B") : COLORS.ink }}>{pct}%</span>
-        <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
+        <span style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft }}>
           of {stats.total} recorded vote{stats.total === 1 ? "" : "s"}
         </span>
       </div>
       <div style={{ height: 8, borderRadius: 999, background: COLORS.paper, overflow: "hidden", marginBottom: 10 }}>
         <div style={{ width: `${Math.max(pct, pct > 0 ? 2 : 0)}%`, height: "100%", background: "#9C3B3B", borderRadius: 999 }} />
       </div>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5 }}>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.5 }}>
         The share of recorded Commons divisions where this MP voted against the majority of their own party.
         Actual whip instructions are never published, so this is our best available proxy, not a claim about
         what the whip actually told them to do.
@@ -462,24 +462,24 @@ export function RecentActivityBox({ politician, onNavigate }) {
 
   return (
     <CardShell title="Recent Parliamentary Activity">
-      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 12, lineHeight: 1.5 }}>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginBottom: 12, lineHeight: 1.5 }}>
         Their most recent debate contributions and written questions, from Hansard and the official record.
       </div>
 
       {contributions.length > 0 && (
         <div style={{ marginBottom: writtenQuestions.length > 0 ? 16 : 0 }}>
-          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.accentText, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12.5, color: COLORS.accentText, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
             Debate Contributions
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {contributions.map((c, i) => {
               const row = (
                 <>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.4 }}>
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 14.5, color: COLORS.ink, lineHeight: 1.4 }}>
                     {c.title}
                     {c.hansardUrl && <span style={{ color: COLORS.accentText }}> ↗</span>}
                   </div>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginTop: 3 }}>
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 3 }}>
                     {formatDate(c.date)} · {c.section}
                     {c.speechCount > 0 ? ` · ${c.speechCount} speech${c.speechCount === 1 ? "" : "es"}` : ""}
                     {c.questionCount > 0 ? ` · ${c.questionCount} question${c.questionCount === 1 ? "" : "s"}` : ""}
@@ -502,7 +502,7 @@ export function RecentActivityBox({ politician, onNavigate }) {
 
       {writtenQuestions.length > 0 && (
         <div>
-          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.accentText, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12.5, color: COLORS.accentText, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
             Written Questions
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -515,13 +515,13 @@ export function RecentActivityBox({ politician, onNavigate }) {
                   paddingBottom: 10, borderBottom: i < writtenQuestions.length - 1 ? `1px solid ${COLORS.hairline}` : "none",
                 }}
               >
-                <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: COLORS.ink }}>{q.heading}</div>
+                <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 14, color: COLORS.ink }}>{q.heading}</div>
                 {q.questionText && (
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.ink, lineHeight: 1.5, marginTop: 4 }}>
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.5, marginTop: 4 }}>
                     {stripHtml(q.questionText)}
                   </div>
                 )}
-                <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: COLORS.inkSoft, marginTop: 5, letterSpacing: "0.01em" }}>
+                <div style={{ fontFamily: FONT_MONO, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 5, letterSpacing: "0.01em" }}>
                   To {q.department} · tabled {formatDate(q.dateTabled)}
                   {q.dateAnswered ? ` · answered ${formatDate(q.dateAnswered)}` : " · awaiting answer"}
                 </div>
@@ -531,7 +531,7 @@ export function RecentActivityBox({ politician, onNavigate }) {
           {onNavigate && (
             <button
               onClick={() => withScrollPreserved(() => onNavigate("writtenQuestions", politician))}
-              style={{ display: "block", marginTop: 10, fontSize: 12, color: COLORS.accentText, fontWeight: 600, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY }}
+              style={{ display: "block", marginTop: 10, fontSize: 13.5, color: COLORS.accentText, fontWeight: 600, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY }}
             >
               See all their written questions
             </button>
@@ -579,13 +579,13 @@ export function NewsBox({ politician }) {
 
   return (
     <CardShell title="In the News">
-      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 10, lineHeight: 1.5 }}>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginBottom: 10, lineHeight: 1.5 }}>
         Not a verified fact-check: a same-named person or a passing mention can occasionally slip through. See Data
         & Methodology for how this is compiled.
       </div>
       {articles === null && <Loading compact />}
       {articles?.length === 0 && (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 15, color: COLORS.inkSoft }}>
           No recent news coverage found for this MP in the last two weeks.
         </div>
       )}
@@ -603,7 +603,7 @@ export function NewsBox({ politician }) {
               }}
             >
               <div style={{ fontFamily: FONT_DISPLAY, fontSize: 14.5, color: COLORS.ink, lineHeight: 1.35 }}>{a.headline}</div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.accentText, marginTop: 3, fontWeight: 600 }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.accentText, marginTop: 3, fontWeight: 600 }}>
                 {a.source} · {formatDate(a.published_date)} ↗
               </div>
             </a>
@@ -625,7 +625,7 @@ export function LoadFailedNote({ item = "this" }) {
   return (
     <div
       style={{
-        fontFamily: FONT_BODY, fontSize: 13, color: readable("#9C3B3B"), background: "#9C3B3B14",
+        fontFamily: FONT_BODY, fontSize: 14.5, color: readable("#9C3B3B"), background: "#9C3B3B14",
         border: "1px solid #9C3B3B33", borderRadius: 8, padding: "10px 13px", lineHeight: 1.5,
       }}
     >

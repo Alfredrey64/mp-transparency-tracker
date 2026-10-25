@@ -232,7 +232,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
           committees={myCommittees}
         />
 
-        <PageGuide viewKey="mp" style={{ maxWidth: 760, margin: "20px auto 0" }} />
+        <PageGuide viewKey="mp" style={{ maxWidth: 760, marginLeft: "auto", marginRight: "auto", marginTop: 20 }} />
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 24, paddingTop: 24, alignItems: "start" }}>
           {/* ---- Left column: financial interests ---- */}

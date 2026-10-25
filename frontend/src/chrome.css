@@ -442,3 +442,15 @@
   .page-hero::before { translate: none; }
   .drawer-recent { animation: none; }
 }
+
+/* ---- My MP ------------------------------------------------------------------------------------------------------------------------------------ */
+.my-mp-card {
+  --k: var(--c-brand); position: relative; overflow: hidden; display: flex; align-items: center; gap: clamp(16px, 3vw, 28px); flex-wrap: wrap;
+  padding: clamp(20px, 3.4vw, 32px) clamp(20px, 3.4vw, 32px) clamp(20px, 3.4vw, 32px) clamp(26px, 3.8vw, 38px); margin-bottom: 28px;
+  background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-radius: var(--radius-l); box-shadow: var(--shadow-2);
+}
+.my-mp-bar { position: absolute; left: 0; top: 0; bottom: 0; width: 8px; background: var(--k); }
+.my-mp-actions { display: flex; flex-wrap: wrap; gap: 10px; flex-shrink: 0; }
+.my-mp-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: start; }
+.my-mp-col { display: grid; gap: 24px; min-width: 0; }
+@media (max-width: 800px) { .my-mp-cols { grid-template-columns: minmax(0, 1fr); } .my-mp-actions { width: 100%; } .my-mp-actions .btn { flex: 1 1 0; } }
