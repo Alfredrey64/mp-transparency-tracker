@@ -28,22 +28,28 @@ function ActionButton({ children, onClick, disabled, primary = true }) {
   );
 }
 
-// One step on the path. The numbered rail is a real sequence (each step
-// builds on the last), which is what earns the numbers. The line sits
-// behind the circles, never through them.
-function Step({ n, title, last, children }) {
+// One step on the path. The numbered rail is a real sequence (each step builds on the last), which is what earns the numbers. Each step has its
+// own colour, so the five read as five distinct stops rather than one long page.
+const STEP_COLOURS = ["#2F80ED", "#E0367A", "#7A5AF0", "#F2622A", "#1FA97C"];
+function Step({ n, title, children }) {
+  const c = STEP_COLOURS[(n - 1) % STEP_COLOURS.length];
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "40px minmax(0, 1fr)", gap: 16, position: "relative" }}>
-      {!last && <div style={{ position: "absolute", left: 19, top: 40, bottom: 0, width: 2, background: COLORS.hairline, zIndex: 0 }} />}
+    <div
+      className="glow"
+      style={{
+        "--k": c, display: "grid", gridTemplateColumns: "40px minmax(0, 1fr)", gap: 16, position: "relative", marginBottom: 14, padding: "18px 20px 8px 18px",
+        background: `color-mix(in srgb, ${c} 6%, ${COLORS.paperCard})`, border: `1px solid color-mix(in srgb, ${c} 26%, ${COLORS.hairline})`, borderLeft: `5px solid ${c}`, borderRadius: 14, boxShadow: "var(--shadow-1)",
+      }}
+    >
       <div
         style={{
-          position: "relative", zIndex: 1, width: 40, height: 40, borderRadius: "50%", background: COLORS.paperCard, border: `2px solid ${ACCENT}`,
-          display: "flex", alignItems: "center", justifyContent: "center", fontFamily: FONT_DISPLAY, fontSize: 18, color: ACCENT,
+          width: 40, height: 40, borderRadius: "50%", background: c, boxShadow: `0 0 0 5px color-mix(in srgb, ${c} 20%, transparent)`,
+          display: "flex", alignItems: "center", justifyContent: "center", fontFamily: FONT_DISPLAY, fontSize: 19, fontWeight: 700, color: "#fff",
         }}
       >
         {n}
       </div>
-      <div style={{ paddingBottom: last ? 0 : 30 }}>
+      <div style={{ paddingBottom: 12 }}>
         <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, margin: "6px 0 6px" }}>{title}</h2>
         {children}
       </div>
@@ -205,7 +211,7 @@ export default function StartHere({ onNavigate, onNavigateForMp, onViewProfile }
           </div>
         </Step>
 
-        <Step n={5} title="Look at your area" last>
+        <Step n={5} title="Look at your area">
           <p style={body}>
             How your constituency voted at the last election, how close it was, which petitions people near you have been signing, and how the area is doing on deprivation, house prices, pay and jobs.
           </p>

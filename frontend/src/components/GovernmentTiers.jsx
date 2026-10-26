@@ -416,6 +416,13 @@ export default function GovernmentTiers() {
   // Tiers the story reached before this step; their branches are already drawn in.
   const reachedBefore = steps.slice(0, step).map((st) => (st.tier === "vote" ? "you" : st.tier));
   const reachedNow = new Set([...reachedBefore, curKey]);
+  const colors = useMemo(() => Object.fromEntries([...TIERS.map((t) => [t.key, t.color]), ["you", YOU_TIER.color]]), []);
+  // Exploring: the tiers from the top down to the one picked, so the diagram can show the line of who answers to whom.
+  const chain = useMemo(() => {
+    const out = [];
+    for (let k = layout.byKey[selKey]; k && k.parent; k = layout.byKey[k.parent]) out.unshift(k.key);
+    return out;
+  }, [layout, selKey]);
   const toBox = layout.byKey[curKey];
   const beadPath = voting ? layout.trunk : (from !== null ? routeBetween(layout, from === "vote" ? "you" : from, cur.tier) : null) ?? `M ${toBox.left - 9} ${toBox.midY}`;
 
@@ -457,7 +464,7 @@ export default function GovernmentTiers() {
           <div className="tier-diagram" ref={diaRef} data-density={layout.metrics.density} data-in={seen || calm ? "1" : "0"} data-gsap={gsapReady && !still ? "1" : "0"} data-mode={action ? "action" : "explore"} style={{ "--dur": `${dur}s`, height: fullH }}>
             <TierFlow
               layout={layout} action={action} calm={still} visible={onScreen && introDone} curKey={curKey} voting={voting} route={beadPath} dur={dur} color={tokenColor}
-              stepKey={`${scenarioKey}-${step}-${nation}`} reachedBefore={reachedBefore}
+              stepKey={`${scenarioKey}-${step}-${nation}`} reachedBefore={reachedBefore} colors={colors} chain={chain}
             />
             {slabs.map((t, i) => {
               const here = action && i === pos;
@@ -490,7 +497,7 @@ export default function GovernmentTiers() {
           )}
 
           <div className="tier-panelcol">
-          <div className="tier-panel" style={{ background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "18px 20px" }}>
+          <div className="tier-panel" style={{ background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${action ? tokenColor : colors[selKey]}`, borderRadius: 14, padding: "18px 20px", transition: "border-color 0.4s" }}>
             {action ? (
               <ActionPanel
                 scenarioKey={scenarioKey} onScenario={onScenario} steps={steps} step={Math.min(step, steps.length - 1)} playing={playing} finished={finished}

@@ -39,7 +39,7 @@ This covers <em>who</em> sits in the House of Lords, and their recent debates an
       like "adviser to X" or "shareholding in Y", rarely with a declared £ figure), with no equivalent for division
       votes or an attendance percentage either. Rather than force that into a format built for the Commons register,
       it's left out here, but every peer's profile below links straight to their own entry on the{" "}
-      <a href="https://www.parliament.uk/mps-lords-and-offices/standards-and-financial-interests/parliamentary-commissioner-for-standards/registers-of-interests/register-of-lords-interests/" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
+      <a href="https://www.parliament.uk/mps-lords-and-offices/standards-and-financial-interests/register-of-lords-interests/" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
         official Register of Lords' Interests
       </a>
       .

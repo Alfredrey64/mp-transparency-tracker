@@ -80,7 +80,7 @@ async function main() {
   }
   const data = {
     built: new Date().toISOString().slice(0, 10),
-    source: { label: "OECD, Income Distribution Database (IDD)", url: "https://www.oecd.org/en/data/datasets/oecd-income-distribution-database.html" },
+    source: { label: "OECD, Income Distribution Database (IDD)", url: "https://www.oecd.org/en/data/datasets/income-and-wealth-distribution-database.html" },
     countries,
   };
   fs.writeFileSync(OUT, `${JSON.stringify(data)}\n`);

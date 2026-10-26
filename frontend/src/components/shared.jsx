@@ -5,7 +5,7 @@ import ShareButton from "./ShareButton";
 import { pageShareSpec } from "../lib/shareSpecs";
 import { motion } from "motion/react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, readable, onFill } from "../theme";
-import { SECTION_ACCENT_BY_ICON, SECTION_LABEL_BY_KEY } from "../data/sidebarSections";
+import { SECTION_ACCENT_BY_ICON, SECTION_LABEL_BY_KEY, OUTSIDE_ACCENT } from "../data/sidebarSections";
 // An annotated passage, not a dashboard tile: a left margin rule in the
 // page's own accent colour and a soft tint of that same colour, open on
 // every other edge — no bounding box, no radius, no drop shadow, nothing
@@ -203,7 +203,7 @@ export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = 
   const guideKey = useContext(GuideKeyContext);
   // Every page passes its own distinct icon here already: reusing it as the lookup key gives each page its menu group's colour (see
   // data/sidebarSections.js) with nothing passed down through the 60-odd page files. Pages outside any group keep the plain site accent.
-  const accent = SECTION_ACCENT_BY_ICON.get(Icon) ?? COLORS.accent;
+  const accent = SECTION_ACCENT_BY_ICON.get(Icon) ?? OUTSIDE_ACCENT[guideKey] ?? COLORS.accent;
   const kickerText = SECTION_LABEL_BY_KEY.get(guideKey) ?? kicker;
   usePageAccent(accent);
   return (

@@ -1,20 +1,21 @@
 /** @jsxImportSource react */
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
+import { IconBook } from "./icons";
 
 function Section({ title, children }) {
   return (
-    <div style={{ marginBottom: 26 }}>
-      <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 19, color: COLORS.ink, marginBottom: 8 }}>{title}</h2>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.7 }}>{children}</div>
-    </div>
+    <section style={{ marginBottom: 16, padding: "16px 20px 18px", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: "4px solid var(--page-accent, #2F80ED)", borderRadius: 12, boxShadow: "var(--shadow-1)" }}>
+      <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, color: COLORS.ink, margin: "0 0 8px" }}>{title}</h2>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 15, color: COLORS.inkSoft, lineHeight: 1.7 }}>{children}</div>
+    </section>
   );
 }
 
 export default function TermsConditions() {
   return (
     <div style={{ padding: PAGE_PADDING }}>
-      <PageHeader title="Terms & Conditions" subtitle="Last updated 7 September 2026." maxWidth={760} />
+      <PageHeader icon={IconBook} title="Terms & Conditions" subtitle="Last updated 7 September 2026." maxWidth={760} />
 
       <div style={{ maxWidth: 760 }}>
         <Section title="What this site is">

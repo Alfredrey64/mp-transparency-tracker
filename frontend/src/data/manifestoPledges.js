@@ -66,7 +66,7 @@ export const MANIFESTOS = [
     ],
   },
   {
-    id: "con2015", election: "2015", party: "Conservative", title: "Strong leadership, a clear economic plan, a brighter, more secure future", url: "https://ucrel.lancs.ac.uk/wmatrix/ukmanifestos2015/localpdf/Conservatives.pdf",
+    id: "con2015", election: "2015", party: "Conservative", title: "Strong leadership, a clear economic plan, a brighter, more secure future", url: "https://s3-eu-west-1.amazonaws.com/manifesto2015/ConservativeManifesto2015.pdf",
     pledges: [
       { text: "Hold an in-out referendum on EU membership before the end of 2017.", status: "delivered", note: "It was held on 23 June 2016. Leave won with 51.9% on a turnout of 72%.", source: "Electoral Commission" },
       { text: "No rises in VAT, National Insurance or income tax rates.", rates: ["vat.standard", "ni.employee", "incomeTax.basic"], status: "delivered", note: "The rates of all three were unchanged until after the 2017 election.", source: "HM Revenue and Customs rates history" },
@@ -79,7 +79,7 @@ export const MANIFESTOS = [
     ],
   },
   {
-    id: "con2017", election: "2017", party: "Conservative", title: "Forward, together: our plan for a stronger Britain and a prosperous future", url: "https://ucrel.lancs.ac.uk/wmatrix/ukmanifestos2017/localpdf/Conservatives.pdf",
+    id: "con2017", election: "2017", party: "Conservative", title: "Forward, together: our plan for a stronger Britain and a prosperous future", url: "https://spectator.com/article/2017-conservative-manifesto-full-text/",
     pledges: [
       { text: "Leave the single market and the customs union, and seek a deep partnership with a free trade agreement.", status: "delivered", note: "The UK left both on 31 December 2020. The Trade and Cooperation Agreement, signed on 30 December 2020, removed tariffs and quotas on goods that meet its rules of origin.", source: "EU-UK Trade and Cooperation Agreement" },
       { text: "Bring net migration down to the tens of thousands.", status: "not", note: "It was 200,000 in the year to June 2017 and stayed above 180,000 in every year to December 2019.", source: "Office for National Statistics" },
@@ -91,7 +91,7 @@ export const MANIFESTOS = [
     ],
   },
   {
-    id: "con2019", election: "2019", party: "Conservative", title: "Get Brexit done: unleash Britain's potential", url: "https://ucrel.lancs.ac.uk/wmatrix/ukmanifestos2019/localpdf/Conservatives.pdf",
+    id: "con2019", election: "2019", party: "Conservative", title: "Get Brexit done: unleash Britain's potential", url: "https://assets-global.website-files.com/5da42e2cae7ebd3f8bde353c/5dda924905da587992a064ba_Conservative%202019%20Manifesto.pdf",
     pledges: [
       { text: "Get Brexit done in January.", status: "delivered", note: "The UK left the EU on 31 January 2020.", source: "European Union (Withdrawal Agreement) Act 2020" },
       { text: "20,000 more police officers.", status: "delivered", note: "The Home Office counted 20,951 more officers in England and Wales by March 2023.", source: "Home Office police uplift statistics" },

@@ -15,7 +15,7 @@ export const SOURCES = {
   twoChild: { label: "GOV.UK, Removing the two-child limit on Universal Credit: impact on low income poverty levels", url: "https://www.gov.uk/government/publications/poverty-impacts-of-social-security-changes-at-budget-2025/removing-the-two-child-limit-on-universal-credit-impact-on-low-income-poverty-levels-in-the-united-kingdom" },
   hbaiPlace: { label: "DWP, Households Below Average Income 2024/25, detailed tables (population, children, working-age and pensioner time series by region)", url: "https://www.gov.uk/government/statistics/households-below-average-income-for-financial-years-ending-1995-to-2025" },
   imd: { label: "Ministry of Housing, Communities and Local Government, English Indices of Deprivation 2025 (income domain), matched to Westminster constituencies", url: "https://www.gov.uk/government/statistics/english-indices-of-deprivation-2025" },
-  oecd: { label: "OECD, Income Distribution Database", url: "https://www.oecd.org/en/data/datasets/oecd-income-distribution-database.html" },
+  oecd: { label: "OECD, Income Distribution Database", url: "https://www.oecd.org/en/data/datasets/income-and-wealth-distribution-database.html" },
   deaton: { label: "Institute for Fiscal Studies, The IFS Deaton Review of Inequalities", url: "https://ifs.org.uk/inequality" },
 };
 

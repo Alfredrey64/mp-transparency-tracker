@@ -51,7 +51,7 @@ const NHS_SOURCE = { name: "NHS England statistics", url: "https://www.england.n
 const HOME_OFFICE_SOURCE = { name: "Home Office immigration system statistics", url: "https://www.gov.uk/government/collections/migration-statistics" };
 const BOATS_SOURCE = { name: "Home Office: migrants detected crossing the English Channel in small boats", url: "https://www.gov.uk/government/publications/migrants-detected-crossing-the-english-channel-in-small-boats" };
 const ONS_MIGRATION_SOURCE = { name: "ONS: long-term international migration, provisional", url: "https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/internationalmigration/bulletins/longterminternationalmigrationprovisional/latest" };
-const HOUSING_SUPPLY_SOURCE = { name: "Ministry of Housing, Communities and Local Government: housing supply statistics", url: "https://www.gov.uk/government/collections/housing-supply-indicators-of-new-supply-england" };
+const HOUSING_SUPPLY_SOURCE = { name: "Ministry of Housing, Communities and Local Government: housing supply statistics", url: "https://www.gov.uk/government/collections/net-supply-of-housing" };
 const BOE_SOURCE = { name: "Bank of England Database", url: "https://www.bankofengland.co.uk/boeapps/database/" };
 const HCI_SOURCE = { name: "Household Costs Indices (ONS, experimental statistics)", url: "https://www.ons.gov.uk/economy/inflationandpriceindices/bulletins/householdcostsindicesforukhouseholdgroups/latest" };
 // The kinds of household the ONS Household Costs Indices cover: [series id, feed, name].

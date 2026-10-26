@@ -36,12 +36,13 @@ function Arrow({ id, color }) {
   );
 }
 
-export default function TierFlow({ layout, action, calm, visible, curKey, voting, route, dur, color, stepKey, reachedBefore }) {
+export default function TierFlow({ layout, action, calm, visible, curKey, voting, route, dur, color, stepKey, reachedBefore, colors = {}, chain = [] }) {
   const svgRef = useRef(null);
   const routeRef = useRef(null);
   const layerRef = useRef(null);
   const { width, height } = layout;
   const reachedId = reachedBefore.join("|");
+  const chainId = chain.join("|");
 
   // The walk-through: the comet travels the route while the branch it is on fills in behind it.
   useLayoutEffect(() => {
@@ -54,7 +55,11 @@ export default function TierFlow({ layout, action, calm, visible, curKey, voting
     const trail = [...layer.querySelectorAll(".tb-trail")];
     for (const e of fills.values()) setFill(e, 0);
     for (const e of dots.values()) setLit(e, false);
-    if (!action) return undefined;
+    // Exploring: the tiers between the top and the one picked light up in their own colours, so you can see the line of who answers to whom.
+    if (!action) {
+      for (const k of chain) { setFill(fills.get(`edge:${k}`), 1); setLit(dots.get(`down:${k}`), true); }
+      return undefined;
+    }
 
     const before = new Set(reachedBefore);
     for (const k of before) {
@@ -99,7 +104,7 @@ export default function TierFlow({ layout, action, calm, visible, curKey, voting
     return () => cancelAnimationFrame(frame);
   // reachedId stands for reachedBefore, which is a new array on every render.
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [layout, action, calm, curKey, voting, route, dur, stepKey, reachedId]);
+  }, [layout, action, calm, curKey, voting, route, dur, stepKey, reachedId, chainId]);
 
   // Exploring: small packets drift along the branches, red ones carrying laws and money down, green ones carrying votes up.
   useEffect(() => {
@@ -120,6 +125,7 @@ export default function TierFlow({ layout, action, calm, visible, curKey, voting
         const el = packets[used];
         el.style.display = "";
         el.dataset.dir = path.dataset.flow;
+        el.style.background = path.dataset.col ?? "";
         lanes.push({ path, len, el, offset: i / n });
       }
     }
@@ -141,12 +147,12 @@ export default function TierFlow({ layout, action, calm, visible, curKey, voting
     <>
       <svg ref={svgRef} className="tb-svg" width={width} height={height} viewBox={`0 0 ${width} ${height}`} aria-hidden="true">
         <defs>
-          <Arrow id="tb-arr-down" color="#3B4A66" />
+          {layout.edges.map((e) => <Arrow key={e.key} id={`tb-arr-${e.key}`} color={colors[e.key] ?? "#3B4A66"} />)}
           <Arrow id="tb-arr-up" color="#2E7D5B" />
         </defs>
         {layout.edges.map((e) => (
-          <g key={e.key} className="tb-down">
-            <path d={e.d} className="tb-base" markerEnd="url(#tb-arr-down)" data-flow="down" data-marker="down" />
+          <g key={e.key} className="tb-down" style={{ "--ln": colors[e.key] ?? "#3B4A66" }}>
+            <path d={e.d} className="tb-base" markerEnd={`url(#tb-arr-${e.key})`} data-flow="down" data-marker={e.key} data-col={colors[e.key]} />
             <path d={e.d} className="tb-done" pathLength="1" data-f={`edge:${e.key}`} />
           </g>
         ))}
@@ -161,7 +167,7 @@ export default function TierFlow({ layout, action, calm, visible, curKey, voting
           ))}
         </g>
         {layout.dots.map((d) => (
-          <circle key={d.key} cx={d.x} cy={d.y} r="5" className={`tb-dot ${d.up ? "tb-dot-up" : "tb-dot-down"}`} data-dot={`${d.up ? "up" : "down"}:${d.fromLast ? "you" : d.key}`} data-lit="0" />
+          <circle key={d.key} cx={d.x} cy={d.y} r="5" className={`tb-dot ${d.up ? "tb-dot-up" : "tb-dot-down"}`} data-dot={`${d.up ? "up" : "down"}:${d.fromLast ? "you" : d.key}`} data-lit="0" style={d.up ? undefined : { "--dc": colors[d.key] }} />
         ))}
         <path ref={routeRef} d={route} fill="none" stroke="none" />
       </svg>

@@ -239,22 +239,29 @@
 
 /* ---- Page header band --------------------------------------------------------------------------------------------------------------------------- */
 .page-hero {
-  position: relative; isolation: isolate; color: #fff; background: var(--c-hero);
+  --hero-bg: color-mix(in srgb, var(--hero-accent, #2F80ED) 16%, var(--c-hero));
+  position: relative; isolation: isolate; color: #fff; background: var(--hero-bg);
   margin: calc(-1 * clamp(20px, 5vw, 40px)) 0 28px; padding: clamp(26px, 4vw, 44px) 0 clamp(28px, 4vw, 42px);
-  box-shadow: 0 0 0 100vmax var(--c-hero); clip-path: inset(0 -100vmax);
+  box-shadow: 0 0 0 100vmax var(--hero-bg); clip-path: inset(0 -100vmax);
 }
 .page-hero::before {
   content: ""; position: absolute; z-index: -1; right: 0; bottom: 0; width: min(520px, 46%); aspect-ratio: 520 / 270; opacity: 0.1; translate: 0 calc(var(--sy, 0) * 0.14px);
   background: var(--hemicycle) center / contain no-repeat; pointer-events: none;
 }
-.page-hero::after { content: ""; position: absolute; left: -100vmax; right: -100vmax; bottom: 0; height: 4px; background: var(--hero-accent, var(--c-brand)); }
+.page-hero::after {
+  content: ""; position: absolute; left: -100vmax; right: -100vmax; bottom: 0; height: 4px; background-size: 220% 100%;
+  background-image: linear-gradient(90deg, var(--hero-accent, var(--c-brand)) 0%, color-mix(in srgb, var(--hero-accent, var(--c-brand)) 45%, #fff) 35%, var(--hero-accent, var(--c-brand)) 70%);
+  animation: hero-sheen 9s linear infinite;
+}
+@keyframes hero-sheen { from { background-position: 0 0; } to { background-position: -220% 0; } }
 .page-hero-inner { max-width: 760px; }
 /* The band takes on its page's colour: two soft glows of it, one top right and one bottom left, reaching the full width of the screen. */
 .page-hero-inner::before {
   content: ""; position: absolute; z-index: -1; left: -100vmax; right: -100vmax; top: 0; bottom: 0; pointer-events: none;
   background:
-    radial-gradient(620px 300px at calc(50% + 26vw) 0, color-mix(in srgb, var(--hero-accent, var(--c-brand)) 42%, transparent), transparent 72%),
-    radial-gradient(520px 260px at calc(50% - 30vw) 100%, color-mix(in srgb, var(--hero-accent, var(--c-brand)) 24%, transparent), transparent 72%);
+    radial-gradient(640px 320px at calc(50% + 26vw) 0, color-mix(in srgb, var(--hero-accent, var(--c-brand)) 58%, transparent), transparent 72%),
+    radial-gradient(560px 280px at calc(50% - 30vw) 100%, color-mix(in srgb, var(--hero-accent, var(--c-brand)) 34%, transparent), transparent 72%);
+  animation: hero-aurora 16s ease-in-out infinite alternate; will-change: transform;
 }
 .page-hero[data-align="center"] .page-hero-inner { margin: 0 auto; text-align: center; }
 .crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 14px; font-size: 14px; line-height: 1.3; color: var(--c-on-navy-soft); }
@@ -264,8 +271,9 @@
 .page-hero-title { margin: 0; display: flex; align-items: center; gap: 16px; font: 700 clamp(32px, 4.6vw, 48px)/1.1 "Newsreader", Georgia, serif; letter-spacing: -0.02em; color: #fff; }
 .page-hero-icon {
   display: inline-flex; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 12px; flex-shrink: 0;
-  background: color-mix(in srgb, var(--hero-accent) 28%, transparent); color: color-mix(in srgb, var(--hero-accent) 45%, #fff);
+  background: var(--hero-accent); color: #fff; box-shadow: 0 10px 26px -10px var(--hero-accent), inset 0 0 0 1px rgba(255, 255, 255, 0.22);
 }
+@keyframes hero-aurora { from { transform: translate3d(-2.5vw, 0, 0) scale(1); } to { transform: translate3d(2.5vw, 6px, 0) scale(1.06); } }
 .page-hero-sub { margin: 16px 0 0; max-width: 680px; font-size: clamp(16px, 1.6vw, 18px); line-height: 1.6; color: var(--c-on-navy-soft); }
 @media (max-width: 700px) {
   .page-hero::before { display: none; }
@@ -420,7 +428,7 @@ body:has(.tier-mini) .to-top { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .rv { opacity: 1; transform: none; }
-  .page-hero-inner > *, .page-hero::before, .rv-in .bar-grow, .rv-now .bar-grow, .rv-in .spark-line, .rv-now .spark-line { animation: none !important; }
+  .page-hero-inner > *, .page-hero::before, .page-hero::after, .page-hero-inner::before, .rv-in .bar-grow, .rv-now .bar-grow, .rv-in .spark-line, .rv-now .spark-line { animation: none !important; }
 }
 @media print { .rv { opacity: 1 !important; transform: none !important; } }
 

@@ -215,6 +215,8 @@ const OUTSIDE_SECTIONS = {
   terms: "About this site",
   teacher: "For teachers",
 };
+// Pages that sit outside every group still get a colour of their own, so none of them is plain navy.
+export const OUTSIDE_ACCENT = { methodology: "#0E9AA7", settings: "#7A5AF0", privacy: "#1FA97C", terms: "#D9A62A", watchlist: "#E0367A", myMP: "#2F80ED" };
 export const SECTION_LABEL_BY_KEY = new Map([
   ...SECTIONS.flatMap((section) => section.items.map((item) => [item.key, section.label])),
   ...Object.entries(OUTSIDE_SECTIONS),

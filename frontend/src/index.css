@@ -381,23 +381,24 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 /* The branches. Lines are drawn once; what moves is drawn with transforms only (see TierFlow.jsx). */
 .tb-svg { position: absolute; left: 0; top: 0; z-index: 0; overflow: visible; pointer-events: none; }
 .tb-down { --ln: #3B4A66; }
+.tier-diagram[data-mode="explore"] .tb-done { transition: stroke-dashoffset 0.7s cubic-bezier(0.45, 0.05, 0.25, 1), opacity 0.3s; }
 .tb-up { --ln: #2E7D5B; }
 .tb-svg path { fill: none; stroke-linejoin: round; }
-.tb-base { stroke: color-mix(in srgb, var(--ln) 38%, var(--c-hairline)); stroke-width: 2.5; stroke-linecap: round; }
+.tb-base { stroke: color-mix(in srgb, var(--ln) 45%, var(--c-hairline)); stroke-width: 2.5; stroke-linecap: round; }
 /* The part of a branch the story has reached. */
-.tb-done { stroke: var(--ln); stroke-width: 3; stroke-linecap: butt; stroke-dasharray: 1 1; stroke-dashoffset: 1; opacity: 0; }
+.tb-done { stroke: var(--ln); stroke-width: 3.5; stroke-linecap: butt; stroke-dasharray: 1 1; stroke-dashoffset: 1; opacity: 0; }
 
 /* Junctions: where a branch leaves a tier and where a vote branch meets the trunk. */
 .tb-dot { stroke: var(--c-paper-card); stroke-width: 2; transition: fill 0.35s; }
-.tb-dot-down { fill: color-mix(in srgb, #3B4A66 40%, var(--c-hairline)); }
+.tb-dot-down { fill: color-mix(in srgb, var(--dc, #3B4A66) 45%, var(--c-hairline)); }
 .tb-dot-up { fill: color-mix(in srgb, #2E7D5B 40%, var(--c-hairline)); }
-.tb-dot-down[data-lit="1"] { fill: #3B4A66; }
+.tb-dot-down[data-lit="1"] { fill: var(--dc, #3B4A66); }
 .tb-dot-up[data-lit="1"] { fill: #2E7D5B; }
 
 /* Everything that moves lives in one layer, placed with transforms by the animation loop. */
 .tb-layer { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
 .tb-packet, .tb-head, .tb-trail { position: absolute; left: 0; top: 0; border-radius: 50%; will-change: transform; backface-visibility: hidden; }
-.tb-packet { width: 6px; height: 6px; background: #3B4A66; opacity: 0.7; }
+.tb-packet { width: 7px; height: 7px; background: #3B4A66; opacity: 0.85; box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8); }
 .tb-packet[data-dir="up"] { background: #2E7D5B; }
 .tb-head { width: 14px; height: 14px; background: var(--tokc); border: 2px solid #fff; box-sizing: border-box; box-shadow: 0 1px 4px rgba(11, 27, 51, 0.35); }
 .tb-trail { background: var(--tokc); opacity: 0; }
@@ -406,30 +407,35 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 .tier-slab {
   position: absolute; z-index: 1; min-width: 0; overflow: visible;
   display: flex; align-items: center; gap: 14px; padding: 0 18px 0 16px; text-align: left; font: inherit; cursor: pointer;
-  background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-radius: 12px; box-shadow: 0 1px 2px rgba(11, 27, 51, 0.05);
-  transition: border-color 0.25s, box-shadow 0.3s, background-color 0.3s;
+  background: color-mix(in srgb, var(--c) 4%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--c) 22%, var(--c-hairline)); border-radius: 12px;
+  box-shadow: inset 5px 0 0 var(--c), 0 1px 2px rgba(11, 27, 51, 0.05); padding-left: 22px;
+  transition: border-color 0.25s, box-shadow 0.35s, background-color 0.35s;
 }
 /* A spine in the tier's own colour down the left edge. */
-.tier-slab:hover { border-color: color-mix(in srgb, var(--c) 45%, var(--c-hairline)); box-shadow: 0 6px 18px -12px rgba(11, 27, 51, 0.3); }
+.tier-slab:hover { border-color: color-mix(in srgb, var(--c) 55%, var(--c-hairline)); background: color-mix(in srgb, var(--c) 8%, var(--c-paper-card)); box-shadow: inset 5px 0 0 var(--c), 0 8px 20px -12px color-mix(in srgb, var(--c) 60%, rgba(11, 27, 51, 0.4)); }
 .tier-slab:focus-visible { outline: 2px solid var(--c); outline-offset: 2px; }
 /* In the walk-through, tiers still to come sit back, tiers already passed show a tick, and the one the story is at lifts forward. */
 .tier-slab > :not(.tier-pill) { transition: opacity 0.4s; }
 .tier-slab[data-state="todo"] { background: var(--c-paper); }
+.tier-slab[data-state="todo"] { box-shadow: inset 5px 0 0 color-mix(in srgb, var(--c) 40%, var(--c-hairline)); }
 .tier-slab[data-state="todo"] > :not(.tier-pill) { opacity: 0.5; }
 .tier-slab[data-state="done"] { border-color: color-mix(in srgb, var(--c) 35%, var(--c-hairline)); }
-.tier-tick { position: absolute; right: -6px; bottom: -6px; color: var(--c); background: var(--c-paper-card); border-radius: 50%; opacity: 0; transform: scale(0.4); transition: opacity 0.3s, transform 0.4s var(--ease-spring); }
+.tier-tick { z-index: 1; position: absolute; right: -6px; bottom: -6px; color: var(--c); background: var(--c-paper-card); border-radius: 50%; opacity: 0; transform: scale(0.4); transition: opacity 0.3s, transform 0.4s var(--ease-spring); }
 .tier-slab-icon { position: relative; }
 .tier-slab[data-state="done"] .tier-tick { opacity: 1; transform: none; }
 .tier-slab[data-active="1"] {
-  border-color: var(--c); box-shadow: 0 0 0 1px var(--c), 0 10px 26px -16px rgba(11, 27, 51, 0.4); transition-delay: var(--delay, 0s);
+  border-color: var(--c); background: color-mix(in srgb, var(--c) 10%, var(--c-paper-card)); transition-delay: var(--delay, 0s);
+  box-shadow: inset 5px 0 0 var(--c), 0 0 0 1px var(--c), 0 14px 28px -14px color-mix(in srgb, var(--c) 70%, rgba(11, 27, 51, 0.5));
 }
-.tier-slab-icon { flex: none; width: 38px; height: 38px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; color: color-mix(in srgb, var(--c) 82%, var(--c-ink)); background: color-mix(in srgb, var(--c) 11%, var(--c-paper-card)); }
+.tier-slab[data-active="1"] .tier-slab-icon::after { content: ""; position: absolute; inset: -3px; border-radius: 13px; border: 2px solid var(--c); opacity: 0; animation: tierIconPulse 2.2s ease-out infinite; }
+@keyframes tierIconPulse { 0% { transform: scale(0.92); opacity: 0.7; } 100% { transform: scale(1.35); opacity: 0; } }
+.tier-slab-icon { flex: none; width: 38px; height: 38px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; color: #fff; background: var(--c); box-shadow: 0 6px 12px -6px color-mix(in srgb, var(--c) 80%, transparent); }
 .tier-slab-name { display: block; font-family: 'Newsreader', Georgia, serif; font-size: 18px; font-weight: 600; line-height: 1.2; color: var(--c-ink); }
 .tier-slab-short, .tier-slab-keys { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; font-family: 'Public Sans', system-ui, sans-serif; color: var(--c-ink-soft); }
 .tier-slab-short { -webkit-line-clamp: 2; font-size: 13.5px; line-height: 1.35; margin-top: 2px; }
-.tier-slab-keys { -webkit-line-clamp: 1; font-size: 12.5px; margin-top: 3px; opacity: 0.85; }
+.tier-slab-keys { -webkit-line-clamp: 1; font-size: 12.5px; font-weight: 600; margin-top: 3px; color: var(--ct, var(--c)); }
 .tier-slab-fig { flex: none; text-align: right; }
-.tier-slab-num { display: block; font-family: 'Public Sans', system-ui, sans-serif; font-variant-numeric: lining-nums tabular-nums; font-feature-settings: 'lnum' 1, 'tnum' 1; font-size: 19px; font-weight: 600; line-height: 1.2; color: var(--c-ink); }
+.tier-slab-num { display: block; font-family: 'Public Sans', system-ui, sans-serif; font-variant-numeric: lining-nums tabular-nums; font-feature-settings: 'lnum' 1, 'tnum' 1; font-size: 19px; font-weight: 700; line-height: 1.2; color: var(--ct, var(--c-ink)); }
 .tier-slab-label { display: block; font-family: 'Public Sans', system-ui, sans-serif; font-size: 11.5px; color: var(--c-ink-soft); }
 .tier-pill {
   position: absolute; top: 0; right: 14px; transform: translateY(-50%); opacity: 0; pointer-events: none; white-space: nowrap;
@@ -445,7 +451,7 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 .tier-diagram[data-in="1"] .tb-svg { animation: branchWipe 1.1s var(--ease-out) 0.45s backwards; }
 @keyframes slabRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 @keyframes branchWipe { from { opacity: 0; clip-path: inset(0 0 100% 0); } to { opacity: 1; clip-path: inset(-20px); } }
-@media (prefers-reduced-motion: reduce) { .tier-diagram .tier-slab, .tier-diagram .tb-svg { animation: none !important; opacity: 1 !important; } }
+@media (prefers-reduced-motion: reduce) { .tier-diagram .tier-slab, .tier-diagram .tb-svg { animation: none !important; opacity: 1 !important; } .tier-slab-icon::after { animation: none !important; } }
 
 /* A thin bar that fills while the walk-through rests on a step, so you can see when it will move on. */
 .tier-dwell { height: 3px; border-radius: 2px; background: var(--c-hairline); margin-top: 10px; overflow: hidden; flex: none; }

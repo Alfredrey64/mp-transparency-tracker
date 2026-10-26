@@ -387,7 +387,7 @@ function StepTimeline({ stages, color, showProgress = false }) {
 
   return (
     <div style={{ position: "relative" }}>
-      <div style={{ position: "absolute", left: 14, top: 16, bottom: 16, width: 2, background: `${color}30` }} />
+      <div style={{ position: "absolute", left: 14, top: 16, bottom: 16, width: 3, borderRadius: 2, background: `linear-gradient(180deg, ${color}, ${color}33)` }} />
       {stages.map((stage, i) => {
         const isOpen = openKeys.has(stage.key);
         return (
@@ -407,7 +407,8 @@ function StepTimeline({ stages, color, showProgress = false }) {
                   display: "flex", alignItems: "center", justifyContent: "center",
                   background: isOpen ? solid(color) : COLORS.paperCard, border: `2px solid ${color}`,
                   color: isOpen ? "#fff" : readable(color), fontFamily: FONT_MONO, fontSize: 12, fontWeight: 700,
-                  transition: "background 0.2s, color 0.2s",
+                  boxShadow: isOpen ? `0 0 0 5px ${color}26` : `0 0 0 0 ${color}00`,
+                  transition: "background 0.25s, color 0.25s, box-shadow 0.35s",
                 }}
               >
                 {i + 1}
@@ -424,7 +425,7 @@ function StepTimeline({ stages, color, showProgress = false }) {
                   transition={{ duration: 0.25, ease: "easeInOut" }}
                   style={{ overflow: "hidden" }}
                 >
-                  <div style={{ paddingLeft: 42, paddingBottom: 18 }}>
+                  <div style={{ margin: "2px 0 14px 42px", padding: "12px 16px 14px", borderRadius: 12, borderLeft: `3px solid ${color}`, background: `color-mix(in srgb, ${color} 7%, ${COLORS.paperCard})` }}>
                     <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.6, maxWidth: 720 }}>
                       {stage.desc}
                     </div>
@@ -457,6 +458,7 @@ function DiagramSection({ title, intro, stages, color, index = 0, showProgress =
         borderTop: `4px solid ${color}`,
         borderRadius: 16,
         padding: "24px clamp(16px, 4vw, 28px)",
+        backgroundImage: `linear-gradient(180deg, color-mix(in srgb, ${color} 9%, ${COLORS.paperCard}), ${COLORS.paperCard} 190px)`,
       }}
     >
       <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 24, color: COLORS.ink, marginTop: 0, marginBottom: 6 }}>{title}</h2>

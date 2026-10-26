@@ -13,6 +13,8 @@ const urls = new Map();
 for (const file of files) {
   for (const m of readFileSync(file, "utf8").matchAll(/https?:\/\/[A-Za-z0-9._~:/?#@!$&'()*+,;=%-]+/g)) {
     const url = m[0].replace(/[.,;:)]+$/, "");
+    // Pieces of a template (an address that ends in $ or = and has the rest filled in by the code) and the made-up example host in route.js are not links.
+    if (/[$=]$/.test(url) || url.startsWith("https://site/")) continue;
     if (/x\.test|localhost|127\.0\.0\.1|example\.|\$\{|\.supabase\.co|w3\.org|schema\.org/.test(url)) continue;
     if (!urls.has(url)) urls.set(url, file);
   }
