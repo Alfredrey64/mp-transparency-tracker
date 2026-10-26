@@ -7,6 +7,7 @@ import { GlossaryTerm } from "./GlossaryTerm";
 import CommonsChamber from "./CommonsChamber";
 import { IconVote, IconLords } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
+import BillRoute from "./BillRoute";
 import GovernmentTiers from "./GovernmentTiers";
 
 function CrownGraphic() {
@@ -440,7 +441,7 @@ function StepTimeline({ stages, color, showProgress = false }) {
   );
 }
 
-function DiagramSection({ title, intro, stages, color, index = 0, showProgress = false }) {
+function DiagramSection({ title, intro, stages, color, index = 0, showProgress = false, route = false }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -464,6 +465,7 @@ function DiagramSection({ title, intro, stages, color, index = 0, showProgress =
           {intro}
         </p>
       )}
+      {route && <BillRoute stages={stages} color={color} />}
       <StepTimeline stages={stages} color={color} showProgress={showProgress} />
     </motion.div>
   );
@@ -624,6 +626,7 @@ export default function HowParliamentWorks() {
           stages={BILL_PROCESS_STAGES}
           color="#7A4B63"
           showProgress
+          route
         />
 
         <DiagramSection

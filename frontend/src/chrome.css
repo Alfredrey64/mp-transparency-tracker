@@ -593,3 +593,14 @@ body:has(.tier-mini) .to-top { display: none; }
 
 .rv-in .member-dot, .rv-now .member-dot { animation: lm-pop 0.45s var(--ease-spring) var(--d, 0ms) backwards; }
 @media (prefers-reduced-motion: reduce) { .member-dot { animation: none !important; } }
+
+/* ---- The route a bill takes (BillRoute.jsx) ----------------------------------------------------------------------------------------------------- */
+.billroute { display: grid; gap: 14px; margin: 4px 0 26px; padding: 18px clamp(12px, 3vw, 22px) 10px; border-radius: 16px; background: linear-gradient(170deg, color-mix(in srgb, #7A4B63 9%, var(--c-paper-card)), var(--c-paper-card) 70%); border: 1px solid color-mix(in srgb, #7A4B63 26%, var(--c-hairline)); }
+.billroute-svg { display: block; width: 100%; max-width: 420px; height: auto; margin: 0 auto; overflow: visible; }
+.billroute-caption { position: sticky; top: calc(var(--header-h) + 10px); z-index: 3; align-self: start; padding: 14px 16px; border-radius: 14px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-top: 4px solid var(--c); box-shadow: var(--shadow-2); }
+@media (min-width: 820px) {
+  .billroute { grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 30px; align-items: start; }
+  .billroute-caption { grid-column: 2; grid-row: 1; top: calc(var(--header-h) + 24px); padding: 20px 22px; }
+  .billroute-svg { grid-column: 1; grid-row: 1; margin: 0; }
+}
+@media print { .billroute-caption { display: none; } }
