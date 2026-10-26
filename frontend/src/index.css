@@ -448,9 +448,6 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 .tier-slab > * { position: relative; z-index: 1; }
 .tier-slab > .tier-pill { position: absolute; z-index: 3; }
 /* A slow sheen across a box when you point at it. */
-.tier-panel > :not(.tier-panel-mark) { position: relative; z-index: 1; }
-.tier-panel-mark { position: absolute; right: 8px; bottom: 4px; z-index: 0; opacity: 0.08; pointer-events: none; transition: color 0.4s, opacity 0.4s; }
-.tier-panel-mark svg { width: 150px; height: 150px; }
 .tier-slab[data-state="done"] .tier-tick { opacity: 1; transform: none; }
 .tier-slab[data-active="1"] {
   border-color: var(--c); background: color-mix(in srgb, var(--c) 10%, var(--c-paper-card)); transition-delay: var(--delay, 0s);

@@ -16,11 +16,15 @@ export function Sky({ tone = "#DCEBFF", tone2 = "#F4F8FF" }) {
         <radialGradient id="sun" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stopColor="#FFF4C7" stopOpacity="0.95" /><stop offset="0.35" stopColor="#FFF0B8" stopOpacity="0.45" /><stop offset="1" stopColor="#FFF0B8" stopOpacity="0" /></radialGradient>
       </defs>
       <rect width="800" height="450" fill="url(#sky)" />
-      <circle cx="748" cy="44" r="150" fill="url(#sun)" />
+      <circle cx="748" cy="44" r="150" fill="url(#sun)">{!still && <animate attributeName="r" values="150;166;150" dur="9s" repeatCount="indefinite" />}</circle>
       <circle cx="748" cy="44" r="22" fill="#FFF1B0" opacity="0.8" />
       <g aria-hidden="true">
-        <path d="M0 318 Q90 276 200 306 T420 300 T620 286 T800 304 V362 H0Z" fill="#C6DDD0" opacity="0.7" />
-        <path d="M0 336 Q140 304 280 332 T560 326 T800 322 V362 H0Z" fill="#B3D6BC" opacity="0.85" />
+        <path d="M-60 318 Q30 276 140 306 T360 300 T560 286 T800 304 T860 300 V362 H-60Z" fill="#C6DDD0" opacity="0.7">
+          {!still && <animateTransform attributeName="transform" type="translate" values="0 0;-24 0;0 0" dur="46s" repeatCount="indefinite" />}
+        </path>
+        <path d="M-60 336 Q80 304 220 332 T500 326 T800 322 T860 326 V362 H-60Z" fill="#B3D6BC" opacity="0.85">
+          {!still && <animateTransform attributeName="transform" type="translate" values="0 0;18 0;0 0" dur="34s" repeatCount="indefinite" />}
+        </path>
         {!still && [0, 1, 2].map((i) => (
           <g key={i}>
             <path d="M0 0 q5 -6 10 0 q5 -6 10 0" fill="none" stroke="#5B6B86" strokeWidth="1.8" strokeLinecap="round" opacity="0.55" transform={`translate(${-60 - i * 26} ${26 + i * 12}) scale(${1 - i * 0.15})`}>
@@ -188,10 +192,17 @@ export function Coin({ x, y, r = 14 }) {
   );
 }
 
-// A short caption in the picture, with a pale outline so it reads over anything behind it.
+// A short caption in the picture, on a small white label so it reads over anything behind it and is centred in its own box.
 export function Caption({ x, y, size = 18, fill = "#0B1B33", anchor = "middle", children }) {
+  const text = String(children);
+  if (anchor !== "middle") return <text x={x} y={y} textAnchor={anchor} fontSize={size} fontWeight="800" fontFamily="Figures, Public Sans, system-ui, sans-serif" fill={fill} stroke="#F4F8FF" strokeWidth={size * 0.28} paintOrder="stroke" strokeLinejoin="round">{children}</text>;
+  const w = Math.round(text.length * size * 0.56 + size * 1.5);
+  const h = Math.round(size * 1.75);
   return (
-    <text x={x} y={y} textAnchor={anchor} fontSize={size} fontWeight="800" fontFamily="Figures, Public Sans, system-ui, sans-serif" fill={fill} stroke="#F4F8FF" strokeWidth={size * 0.28} paintOrder="stroke" strokeLinejoin="round">{children}</text>
+    <g>
+      <rect x={x - w / 2} y={y - size * 0.35 - h / 2} width={w} height={h} rx={h / 2} fill="#fff" fillOpacity="0.93" stroke="#CBD3E2" strokeWidth="1.5" />
+      <text x={x} y={y} textAnchor="middle" fontSize={size} fontWeight="800" fontFamily="Figures, Public Sans, system-ui, sans-serif" fill={fill}>{children}</text>
+    </g>
   );
 }
 

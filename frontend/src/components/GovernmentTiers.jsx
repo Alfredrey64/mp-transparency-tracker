@@ -181,7 +181,7 @@ function TierInfo({ tierKey, order, nation, nationLabel }) {
   const Icon = ICONS[tierKey];
   const color = isYou ? COLORS.accent : tier.color;
   const name = isYou ? YOU.name : tier.name;
-  const para = { fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.6, color: COLORS.inkSoft, margin: "0 0 14px" };
+  const para = { fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.6, color: COLORS.ink, margin: "0 0 14px" };
   const links = isYou ? YOU.links : tier.links;
   const at = order.indexOf(tierKey);
   const aboveKey = at > 0 ? order[at - 1] : null;
@@ -199,7 +199,7 @@ function TierInfo({ tierKey, order, nation, nationLabel }) {
       ) : (
         <>
           <Heading>What it does</Heading>
-          <ul style={{ margin: "0 0 14px", paddingLeft: 18, fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.6, color: COLORS.inkSoft }}>
+          <ul style={{ margin: "0 0 14px", paddingLeft: 18, fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.6, color: COLORS.ink }}>
             {(isYou ? YOU.does : tier.does).map((d) => <li key={d} style={{ marginBottom: 4 }}>{d}</li>)}
           </ul>
           {!isYou && (
@@ -267,7 +267,7 @@ function ActionPanel({ scenarioKey, onScenario, steps, step, playing, finished, 
                   {on && (
                     <span className="tier-step-body">
                       {tokenLabel && <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, color: SECTION_COLOR, marginTop: 3 }}>Carrying: {tokenLabel}</span>}
-                      <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.55, color: COLORS.inkSoft, marginTop: 3 }}>{s.text}</span>
+                      <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.55, color: COLORS.ink, marginTop: 3 }}>{s.text}</span>
                     </span>
                   )}
                 </span>
@@ -524,9 +524,6 @@ export default function GovernmentTiers() {
 
           <div className="tier-panelcol">
           <div className="tier-panel" data-c="1" style={{ background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${action ? tokenColor : colors[selKey]}`, borderRadius: 14, padding: "18px 20px", transition: "border-color 0.4s" }}>
-            <span className="tier-panel-mark" aria-hidden="true" style={{ color: action ? tokenColor : colors[selKey] }}>
-              {(() => { const MarkIcon = ICONS[action ? (voting ? "you" : cur.tier) : selKey]; return MarkIcon ? <MarkIcon size={150} /> : null; })()}
-            </span>
             {action ? (
               <ActionPanel
                 scenarioKey={scenarioKey} onScenario={onScenario} steps={steps} step={Math.min(step, steps.length - 1)} playing={playing} finished={finished}

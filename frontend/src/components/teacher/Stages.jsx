@@ -119,7 +119,7 @@ export function RunScene() {
     <>
       <Back />
       <g transform="translate(130 372)"><Parliament x={0} y={0} s={0.7} /></g>
-      <Caption x={130} y={398} size={17}>Parliament</Caption>
+      <Caption x={130} y={406} size={17}>Parliament</Caption>
       <B n={1}>
         <g transform="translate(400 372)">
           <rect x="-70" y="-160" width="140" height="160" rx="6" fill="#B66B4B" />
@@ -128,18 +128,18 @@ export function RunScene() {
           <Label x={0} y={-72} size={34} fill="#fff" anchor="middle">10</Label>
         </g>
         <Person x={340} y={400} s={0.9} shirt="#0B1B33" trousers="#16213A" skin={SKIN[0]} hair="#8A5A3C" mood="ok" />
-        <Caption x={400} y={222} size={24}>The government</Caption>
+        <Caption x={400} y={201} size={22}>The government</Caption>
       </B>
       <B n={2}>
         <g transform="translate(640 372)"><rect x="-90" y="-44" width="180" height="44" rx="8" fill="#8A5A3C" /><rect x="-90" y="-54" width="180" height="14" rx="6" fill="#B07A52" /></g>
         <Person x={600} y={400} s={0.9} shirt="#5B6B84" trousers="#16213A" skin={SKIN[3]} hair="#1E1410" long mood="thinking" />
         <Person x={680} y={400} s={0.9} shirt="#5B6B84" trousers="#16213A" skin={SKIN[1]} hair="#6B6B6B" mood="thinking" />
-        <Caption x={640} y={262} size={24}>The opposition</Caption>
+        <Caption x={640} y={262} size={22}>The opposition</Caption>
       </B>
       <B n={3} fx="rise">
         <BallotBox x={400} y={172} />
-        <Caption x={400} y={46} size={26}>General elections</Caption>
-        <Caption x={400} y={74} size={18} fill="#44506B">Every area elects one MP</Caption>
+        <Caption x={400} y={38} size={24}>General elections</Caption>
+        <Caption x={400} y={78} size={16} fill="#44506B">Every area elects one MP</Caption>
       </B>
     </>
   );
@@ -160,6 +160,7 @@ export function PartyIntroScene() {
 // The House of Commons drawn as 650 dots, one for each seat, fanned out in rows. The party's own seats are coloured in from the left and the rest
 // stay grey, so a child can see at a glance how big a party is.
 const SEATS_IN_COMMONS = 650;
+const stillMotionHere = () => typeof window !== "undefined" && Boolean(window.matchMedia?.("(prefers-reduced-motion: reduce)").matches);
 const FAN = (() => {
   const rows = 10, inner = 48, outer = 114;
   const radii = Array.from({ length: rows }, (_, r) => inner + ((outer - inner) * r) / (rows - 1));
@@ -184,25 +185,36 @@ export function PartyScene({ party, seats }) {
   return (
     <>
       <Back tone={`color-mix(in srgb, ${party.colour} 18%, #fff)`} tone2="#FFFFFF" />
-      <g className="t-slidein"><rect x="50" y="40" width="550" height="196" rx="28" fill={background} /></g>
+      <g className="t-slidein">
+        <rect x="50" y="40" width="550" height="196" rx="28" fill={background} />
+        <clipPath id="party-clip"><rect x="50" y="40" width="550" height="196" rx="28" /></clipPath>
+        {!stillMotionHere() && (
+          <g clipPath="url(#party-clip)">
+            <rect x="-140" y="30" width="90" height="220" fill="#fff" opacity="0.22" transform="skewX(-18)">
+              <animate attributeName="x" from="-140" to="760" dur="1.5s" begin="0.7s" fill="freeze" />
+            </rect>
+          </g>
+        )}
+      </g>
       <circle cx="528" cy="112" r="68" fill="#fff" opacity="0.08" />
       <g className="t-slideup" style={{ animationDelay: "0.15s" }}><Label x={90} y={120} size={party.name.length > 14 ? 50 : 62} fill={color} anchor="start" weight={700}>{party.name}</Label></g>
       <g className="t-slideup" style={{ animationDelay: "0.3s" }}><Label x={90} y={168} size={30} fill={color} anchor="start" weight={600}>{party.leader}</Label></g>
       <g className="t-slideup" style={{ animationDelay: "0.42s" }}><Label x={90} y={206} size={party.role.length > 40 ? 17 : 20} fill={color} anchor="start" weight={500}>{party.role.length > 62 ? party.role.slice(0, 60) + "…" : party.role}</Label></g>
       <Person x={690} y={382} s={1.7} shirt="#fff" trousers={`color-mix(in srgb, ${party.colour} 55%, #0B1B33)`} skin={look.skin} hair={look.hair} mood="happy" long={look.long} />
       {mine > 0 && (
-        <g transform="translate(165 354)" role="img" aria-label={`${mine} of ${SEATS_IN_COMMONS} seats in the Commons`}>
+        <g transform="translate(182 372)" role="img" aria-label={`${mine} of ${SEATS_IN_COMMONS} seats in the Commons`}>
+          <rect x="-132" y="-126" width="264" height="156" rx="24" fill="#fff" fillOpacity="0.82" stroke="#CBD3E2" strokeWidth="1.5" />
           {FAN.map((d, i) => (
             i < mine
               ? <circle key={i} className="t-seat" cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r="1.7" fill={party.colour} style={{ animationDelay: `${(0.5 + (i * 1.6) / mine) * 1}s` }} />
               : <circle key={i} cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r="1.7" fill="#C3CCDC" />
           ))}
-          <text y="-18" textAnchor="middle" fontSize="30" fontWeight="800" fontFamily="Figures, Newsreader, Georgia, serif" fill="#0B1B33">{mine}</text>
-          <text y="-2" textAnchor="middle" fontSize="12.5" fontWeight="700" fontFamily="Figures, Public Sans, system-ui, sans-serif" fill="#44506B">of {SEATS_IN_COMMONS} seats</text>
+          <text y="-8" textAnchor="middle" fontSize="32" fontWeight="800" fontFamily="Figures, Newsreader, Georgia, serif" fill="#0B1B33">{mine}</text>
+          <text y="20" textAnchor="middle" fontSize="14" fontWeight="700" fontFamily="Figures, Public Sans, system-ui, sans-serif" fill="#44506B">of {SEATS_IN_COMMONS} seats</text>
         </g>
       )}
-      <B n={1} fx="rise"><Bubble x={330} y={256} w={110} h={86} tail="left"><Bulb x={0} y={0} /></Bubble></B>
-      <B n={2} fx="rise"><Bubble x={460} y={256} w={110} h={86} tail="center"><g><Paper x={0} y={0} /><path d="M-6 4 l7 7 l13 -16" stroke="#16A34A" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" /></g></Bubble></B>
+      <B n={1} fx="rise"><Bubble x={330} y={250} w={116} h={96} tail="left"><g transform="translate(0 -9) scale(0.85)"><Bulb x={0} y={0} /></g><text y="31" textAnchor="middle" fontSize="15" fontWeight="800" fontFamily="Figures, Public Sans, system-ui, sans-serif" fill="#0B1B33">Ideas</text></Bubble></B>
+      <B n={2} fx="rise"><Bubble x={466} y={250} w={116} h={96} tail="center"><g transform="translate(0 -9)"><Paper x={0} y={0} /><path d="M-6 4 l7 7 l13 -16" stroke="#16A34A" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" /></g><text y="31" textAnchor="middle" fontSize="15" fontWeight="800" fontFamily="Figures, Public Sans, system-ui, sans-serif" fill="#0B1B33">A plan</text></Bubble></B>
     </>
   );
 }
