@@ -1,12 +1,17 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING, readable, chip } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable, chip, numeric } from "../theme";
 import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { partyColour, formatDate } from "../lib/format";
 import { getDonorSector, sectorColor } from "../lib/donorSectors";
 import { IconCompare, IconSearch, IconCoin, IconVote, IconBriefcase } from "./icons";
+import VoteExplainer from "./VoteExplainer";
+import { matchBillForVote } from "../lib/bills";
+import { getBillDescription } from "../lib/billDescriptions";
+import { plainSentence } from "../lib/billPlain";
+import "../compare.css";
 
 const MAX_COMPARE = 3;
 const NO_PARTY_MAJORITY_CONCEPT = ["independent", "speaker"];
@@ -207,7 +212,7 @@ function MpHeaderCard({ politician, color, onRemove }) {
         <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
           <Avatar url={politician.thumbnail_url} name={politician.name} color={color} />
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 16.5, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 700, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {politician.name}
             </div>
             <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>{politician.party}</div>
@@ -250,21 +255,17 @@ function SectionTitle({ icon: Icon, color, children }) {
 function MoneyBar({ label, value, max, color, formatted }) {
   const pct = max > 0 ? Math.max((value / max) * 100, value > 0 ? 3 : 0) : 0;
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 7 }}>
-      <span style={{ width: 130, flexShrink: 0, fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-        {label}
-      </span>
-      <div style={{ flex: 1, height: 12, borderRadius: 999, background: COLORS.paper, overflow: "hidden" }}>
+    <div className="cp-bar">
+      <span className="cp-bar-name"><i style={{ background: color }} />{label}</span>
+      <div className="cp-bar-track">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          style={{ height: "100%", borderRadius: 999, background: color }}
+          style={{ height: "100%", borderRadius: 999, background: `linear-gradient(90deg, color-mix(in srgb, ${color} 62%, #fff), ${color})` }}
         />
       </div>
-      <span style={{ width: 96, flexShrink: 0, textAlign: "right", fontFamily: FONT_MONO, fontSize: 12.5, fontWeight: 700, color: readable(color) }}>
-        {formatted}
-      </span>
+      <span className="cp-bar-val" style={{ ...numeric, color: readable(color) }}>{formatted}</span>
     </div>
   );
 }
@@ -272,9 +273,9 @@ function MoneyBar({ label, value, max, color, formatted }) {
 function MoneyMetricGroup({ title, description, rows }) {
   const max = Math.max(1, ...rows.map((r) => r.value));
   return (
-    <div style={{ marginBottom: 20 }}>
-      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13, color: COLORS.ink, marginBottom: description ? 2 : 8 }}>{title}</div>
-      {description && <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 8, lineHeight: 1.5 }}>{description}</div>}
+    <div className="cp-group">
+      <div className="cp-group-title">{title}</div>
+      {description && <div className="cp-group-desc">{description}</div>}
       {rows.map((r) => (
         <MoneyBar key={r.name} label={r.name} value={r.value} max={max} color={r.color} formatted={r.formatted} />
       ))}
@@ -302,7 +303,7 @@ function SectorBreakdown({ politician, color, sectors }) {
                   <span style={{ width: 7, height: 7, borderRadius: "50%", background: sectorColor(s.sector), flexShrink: 0 }} />
                   <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.sector}</span>
                 </span>
-                <span style={{ flexShrink: 0, fontFamily: FONT_MONO, fontSize: 11.5, color: COLORS.inkSoft }}>£{Math.round(s.total).toLocaleString()}</span>
+                <span style={{ flexShrink: 0, ...numeric, fontSize: 13, color: COLORS.ink }}>£{Math.round(s.total).toLocaleString()}</span>
               </div>
             ))}
           </div>
@@ -320,21 +321,25 @@ function SectorBreakdown({ politician, color, sectors }) {
   );
 }
 
-function VoteCompareRow({ vote, selected }) {
+function VoteCompareRow({ vote, selected, bills }) {
+  const bill = bills ? matchBillForVote(vote.title, bills) : null;
+  const aboutBill = bill ? (getBillDescription(bill.short_title, null) ?? plainSentence(bill.long_title)) : null;
   const [open, setOpen] = useState(false);
   const ayeStates = vote.perMp.map((v) => v.voted_aye);
   const agreed = selected.length > 1 && ayeStates.every((a) => a === ayeStates[0]);
   const showVerdict = selected.length > 1;
 
   return (
-    <motion.div layout="position" style={{ border: `1px solid ${COLORS.hairline}`, borderRadius: 12, overflow: "hidden", background: COLORS.paperCard, marginBottom: 10 }}>
+    <motion.div layout="position" className="cp-vote" data-split={showVerdict && !agreed ? "1" : "0"}>
       <button
         onClick={() => setOpen((v) => !v)}
         style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", padding: "12px 16px", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}
       >
         <span style={{ flexShrink: 0, fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, width: 76 }}>{formatDate(vote.date)}</span>
-        <span style={{ flex: 1, minWidth: 0, fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-          {vote.title}
+        <span style={{ flex: 1, minWidth: 0 }}>
+          <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 15, fontWeight: 700, color: COLORS.ink, lineHeight: 1.35 }}>{vote.title}</span>
+          <VoteExplainer title={vote.title} inline />
+          {aboutBill && <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, lineHeight: 1.45, marginTop: 3 }}><strong style={{ color: COLORS.ink }}>The bill:</strong> {aboutBill}</span>}
         </span>
         <span style={{ display: "flex", gap: 6, flexShrink: 0 }}>
           {vote.perMp.map((v, i) => (
@@ -342,7 +347,7 @@ function VoteCompareRow({ vote, selected }) {
               key={i}
               title={selected[i].name}
               style={{
-                fontFamily: FONT_MONO, fontSize: 11, fontWeight: 700, textTransform: "uppercase", padding: "3px 8px", borderRadius: 999,
+                ...numeric, fontSize: 12, textTransform: "uppercase", padding: "3px 9px", borderRadius: 999,
                 background: v.voted_aye ? "#E4EEE7" : "#F3E4E2", color: v.voted_aye ? readable("#2F6F4E") : readable("#9C3B3B"),
                 boxShadow: `inset 0 0 0 1.5px ${colorFor(selected[i], i)}`,
               }}
@@ -361,7 +366,7 @@ function VoteCompareRow({ vote, selected }) {
             {agreed ? "Agreed" : "Split"}
           </span>
         )}
-        <span style={{ flexShrink: 0, fontFamily: FONT_MONO, fontSize: 12, color: COLORS.inkSoft }}>{open ? "▾" : "▸"}</span>
+        <span style={{ flexShrink: 0, fontSize: 12, color: COLORS.inkSoft }}>{open ? "▾" : "▸"}</span>
       </button>
 
       <AnimatePresence>
@@ -369,6 +374,7 @@ function VoteCompareRow({ vote, selected }) {
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} style={{ overflow: "hidden" }}>
             <div style={{ padding: "0 16px 16px", borderTop: `1px solid ${COLORS.hairline}`, marginTop: -1 }}>
               <div style={{ paddingTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+                <VoteExplainer title={vote.title} />
                 {selected.map((p, i) => {
                   const v = vote.perMp[i];
                   const hasPartyConcept = !NO_PARTY_MAJORITY_CONCEPT.includes((p.party ?? "").toLowerCase());
@@ -411,7 +417,7 @@ function CareerCompare({ selected, careers }) {
   const rows = (pick, format) => selected.map((p, i) => ({ name: p.name, color: colorFor(p, i), value: c(p) ? pick(c(p)) ?? 0 : 0, formatted: c(p) ? format(c(p)) : "no career record" }));
   const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
   return (
-    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 16, padding: "22px clamp(16px, 4vw, 26px)", marginBottom: 20 }}>
+    <div className="cp-card">
       <SectionTitle icon={IconBriefcase} color="#1FA97C">Career</SectionTitle>
       <MoneyMetricGroup title="Time as an MP" description="Years since each MP first entered the Commons. Some have had breaks in service." rows={rows((x) => (x[0] ? year - x[0] : 0), (x) => (x[0] ? `since ${x[0]}` : "unknown"))} />
       <MoneyMetricGroup title="Elections won" description="Every general election and by-election each MP has won." rows={rows((x) => x[1], (x) => `${x[1]}`)} />
@@ -438,12 +444,14 @@ export default function ComparePoliticians() {
   const [politicians, setPoliticians] = useState([]);
   const [selected, setSelected] = useState([]);
   const [careers, setCareers] = useState(null);
+  const [bills, setBills] = useState(null);
 
   useEffect(() => {
     supabase
       .from("politicians")
       .select("id, name, party, party_colour, constituency, thumbnail_url, cabinet_role, parliament_member_id, ipsa_expenses")
       .then(({ data }) => setPoliticians(data ?? []));
+    supabase.from("bills").select("short_title, long_title").then(({ data }) => setBills(data ?? []));
     import("../data/mpCareers.json").then((m) => setCareers(m.default.mps)).catch(() => setCareers(null));
   }, []);
 
@@ -489,7 +497,7 @@ export default function ComparePoliticians() {
 
           {careers && <CareerCompare selected={selected} careers={careers} />}
 
-          <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 16, padding: "22px clamp(16px, 4vw, 26px)", marginBottom: 20 }}>
+          <div className="cp-card">
             <SectionTitle icon={IconCoin} color={COLORS.accent}>Money</SectionTitle>
 
             <MoneyMetricGroup
@@ -523,7 +531,7 @@ export default function ComparePoliticians() {
             </div>
           </div>
 
-          <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 16, padding: "22px clamp(16px, 4vw, 26px)" }}>
+          <div className="cp-card">
             <SectionTitle icon={IconVote} color="#5A7FA6">Recent votes</SectionTitle>
             <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginBottom: 14, lineHeight: 1.5 }}>
               {selected.length >= 2
@@ -535,7 +543,7 @@ export default function ComparePoliticians() {
                 {selected.length >= 2 ? "No overlapping recorded votes found for these MPs yet." : "No recorded votes found for this MP yet."}
               </div>
             ) : (
-              voteComparisons.map((v) => <VoteCompareRow key={v.divisionId} vote={v} selected={selected} />)
+              voteComparisons.map((v) => <VoteCompareRow key={v.divisionId} vote={v} selected={selected} bills={bills} />)
             )}
           </div>
         </>

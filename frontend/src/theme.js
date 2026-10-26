@@ -132,14 +132,14 @@ export const COLORS = {
 
 // Type: Newsreader, a serif made for reading on screen, for headings and the big numbers of a page; Public Sans, a plain and legible sans designed
 // for public services, for everything else. IBM Plex Mono is for tabular figures in dense tables.
-export const FONT_DISPLAY = "'Newsreader', Georgia, serif";
-export const FONT_BODY = "'Public Sans', system-ui, sans-serif";
+export const FONT_DISPLAY = "'Figures', 'Newsreader', Georgia, serif";
+export const FONT_BODY = "'Figures', 'Public Sans', system-ui, sans-serif";
 // The wordmark: the same serif, heavier.
-export const FONT_BRAND = "'Newsreader', Georgia, serif";
-export const FONT_MONO = "'IBM Plex Mono', monospace";
+export const FONT_BRAND = "'Figures', 'Newsreader', Georgia, serif";
+export const FONT_MONO = "'Figures', 'IBM Plex Mono', monospace";
 // For figures that are the point of a page: percentages, counts, majorities. Public Sans with lining, tabular figures, so columns of numbers
 // line up and a "1" does not shrink into the text.
-export const FONT_NUMERIC = "'Public Sans', system-ui, sans-serif";
+export const FONT_NUMERIC = "'Figures', 'Public Sans', system-ui, sans-serif";
 export const numeric = { fontFamily: FONT_NUMERIC, fontVariantNumeric: "lining-nums tabular-nums", fontFeatureSettings: "'lnum' 1, 'tnum' 1", fontWeight: 650, letterSpacing: "-0.01em" };
 
 export const PAGE_PADDING = "clamp(20px, 5vw, 40px) clamp(16px, 5vw, 40px) 60px";

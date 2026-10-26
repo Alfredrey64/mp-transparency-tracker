@@ -9,6 +9,7 @@ import { isScrolling } from "../lib/scrollState";
 import { IconCommittee } from "./icons";
 import CountUp from "./CountUp";
 import Loading from "./Loading";
+import "../committees.css";
 
 const HOUSE_FILTERS = ["All", "Commons", "Lords", "Joint"];
 
@@ -88,14 +89,16 @@ function MemberDots({ members, color }) {
 
 const initials = (name) => String(name ?? "").replace(/^(The |Rt Hon |Dame |Sir |Lord |Baroness |Lady |Dr |Mr |Mrs |Ms )+/i, "").split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
 
-function Stat({ value, label, color }) {
+// The four headline figures as one clean band, divided by thin lines, instead of four separate coloured boxes.
+function Ledger({ items }) {
   return (
-    <div style={{ position: "relative", overflow: "hidden", background: `color-mix(in srgb, ${color} 7%, ${COLORS.paperCard})`, border: `1px solid ${color}44`, borderRadius: 14, padding: "14px 16px" }}>
-      <span aria-hidden="true" style={{ position: "absolute", right: -18, top: -18, width: 70, height: 70, borderRadius: "50%", background: `${color}22` }} />
-      <div style={{ position: "relative", fontFamily: FONT_DISPLAY, fontSize: 30, fontWeight: 700, color: COLORS.ink, lineHeight: 1.1 }}>
-        {typeof value === "number" ? <CountUp value={value} format={(n) => Math.round(n).toLocaleString("en-GB")} duration={1.1} /> : value}
-      </div>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 2 }}>{label}</div>
+    <div className="cm-ledger">
+      {items.map((it) => (
+        <div key={it.label} style={{ "--lc": it.color }}>
+          <b>{typeof it.value === "number" ? <CountUp value={it.value} format={(n) => Math.round(n).toLocaleString("en-GB")} duration={1.1} /> : it.value}</b>
+          <span>{it.label}</span>
+        </div>
+      ))}
     </div>
   );
 }
@@ -153,7 +156,7 @@ function BarList({ items, color, unit, onPick }) {
         <li key={it.id}>
           <button type="button" onClick={() => onPick(it.name)} style={{ display: "block", width: "100%", textAlign: "left", background: "none", border: "none", padding: 0, cursor: "pointer", font: "inherit" }}>
             <span style={{ display: "flex", justifyContent: "space-between", gap: 8, fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, marginBottom: 3 }}>
-              <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{it.name}</span>
+              <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontWeight: 800 }}>{it.name}</span>
               <strong style={{ flexShrink: 0, fontVariantNumeric: "tabular-nums" }}>{it.value} <span style={{ fontWeight: 400, color: COLORS.inkSoft }}>{unit}</span></strong>
             </span>
             <span aria-hidden="true" style={{ display: "block", height: 9, borderRadius: 5, background: `${color}1c`, overflow: "hidden" }}>
@@ -204,7 +207,7 @@ function CommitteeCard({ committee, open, onToggle, index = 0 }) {
             </span>
           )}
         </div>
-        <div style={{ fontFamily: FONT_DISPLAY, fontSize: 19, color: COLORS.ink, lineHeight: 1.25, marginBottom: 12 }}>{committee.name}</div>
+        <div style={{ fontFamily: FONT_DISPLAY, fontSize: 21, fontWeight: 800, color: COLORS.ink, lineHeight: 1.22, marginBottom: 12, letterSpacing: "-0.01em" }}>{committee.name}</div>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <span aria-hidden="true" style={{ flexShrink: 0, width: 34, height: 34, borderRadius: "50%", background: committee.chair_name ? color : COLORS.hairline, color: committee.chair_name ? onFill(color) : COLORS.ink, display: "grid", placeItems: "center", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 800, textShadow: "0 1px 2px rgba(0,0,0,0.35)" }}>
             {committee.chair_name ? initials(committee.chair_name) : "?"}
@@ -332,12 +335,12 @@ export default function Committees() {
 
       {committees !== null && committees.length > 0 && (
         <>
-          <div className="box-row" style={{ "--n": 4, "--min": "140px", "--gap": "12px", marginTop: 24 }}>
-            <Stat value={counts.All} label="committees" color={COLORS.accent} />
-            <Stat value={counts.members} label="places held by MPs and peers" color={HOUSE_COLOR.Commons} />
-            <Stat value={counts.inquiries} label="open inquiries" color="#E07A1F" />
-            <Stat value={`${counts.Commons ?? 0} / ${counts.Lords ?? 0}`} label="Commons / Lords (plus joint)" color={HOUSE_COLOR.Lords} />
-          </div>
+          <Ledger items={[
+            { value: counts.All, label: "committees", color: COLORS.accent },
+            { value: counts.members, label: "places held by MPs and peers", color: HOUSE_COLOR.Commons },
+            { value: counts.inquiries, label: "open inquiries", color: "#E07A1F" },
+            { value: `${counts.Commons ?? 0} / ${counts.Lords ?? 0}`, label: "Commons / Lords, plus joint", color: HOUSE_COLOR.Lords },
+          ]} />
 
           <div className="box-row" style={{ "--n": 3, "--min": "300px", "--gap": "14px", marginTop: 14 }}>
             <Panel title="Who holds the seats" note="Every committee place, by party">

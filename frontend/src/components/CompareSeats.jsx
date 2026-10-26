@@ -227,8 +227,8 @@ export default function CompareSeats({ param }) {
               <svg viewBox="0 0 200 110" className="cmp-hexes" aria-hidden="true">
                 <polygon points="58,12 92,31 92,69 58,88 24,69 24,31" fill="#1E4FB8" />
                 <polygon points="142,22 176,41 176,79 142,98 108,79 108,41" fill="#E0367A" />
-                <text x="58" y="58" textAnchor="middle" fontSize="26" fontWeight="800" fill="#fff" fontFamily="Public Sans, system-ui, sans-serif">A</text>
-                <text x="142" y="68" textAnchor="middle" fontSize="26" fontWeight="800" fill="#fff" fontFamily="Public Sans, system-ui, sans-serif">B</text>
+                <text x="58" y="58" textAnchor="middle" fontSize="26" fontWeight="800" fill="#fff" fontFamily="Figures, Public Sans, system-ui, sans-serif">A</text>
+                <text x="142" y="68" textAnchor="middle" fontSize="26" fontWeight="800" fill="#fff" fontFamily="Figures, Public Sans, system-ui, sans-serif">B</text>
               </svg>
               <h2 style={cardTitle}>Pick two seats to begin</h2>
               <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "8px auto 16px", maxWidth: 560 }}>Search for a constituency or its MP in each box. Or start from a pair that is worth a look:</p>

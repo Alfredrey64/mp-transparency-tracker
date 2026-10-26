@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useLayoutEffect } from "react";
+import { createPortal } from "react-dom";
 import { COLORS, FONT_BODY, FONT_DISPLAY, numeric, readable } from "../theme";
 import { pillStyle } from "../lib/onsStyles";
 import { card, cardTitle } from "../lib/onsStyles";
@@ -7,6 +8,7 @@ import { yearTicks } from "../lib/onsChart";
 import LineChart from "./LineChart";
 import { para, strong } from "../lib/insightStyle";
 import CountValue from "./CountValue";
+import "../tabfoot.css";
 
 // Building blocks shared by the issue pages (Inequality, Brexit, and the others): the row of toggles at the top, a card with a title and its source,
 // headline figures, bars for comparing a handful of things, a note about a limit of the figures, and a time chart with who was in government behind it.
@@ -14,6 +16,17 @@ import CountValue from "./CountValue";
 // A row of toggles with a line under it saying what the chosen one shows. Drawn as one segmented control that wraps onto more lines on a narrow screen.
 export function PageToggles({ tabs, current, onPick, label, idPrefix }) {
   const active = tabs.find((t) => t.key === current) ?? tabs[0];
+  const at = tabs.indexOf(active);
+  // The foot of the page below: where to go next. The panel is found after each change of tab, and the footer is drawn into the end of it.
+  const [panel, setPanel] = useState(null);
+  useLayoutEffect(() => {
+    const el = document.getElementById(`${idPrefix}-panel`);
+    // The panel only exists once this render has been committed, so it can only be looked for now.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setPanel((prev) => (prev === el ? prev : el));
+  }, [idPrefix, current]);
+  const next = tabs[at + 1];
+  const prev = tabs[at - 1];
   return (
     <div style={{ scrollMarginTop: 12 }}>
       <div role="tablist" aria-label={label} className="seg">
@@ -30,15 +43,21 @@ export function PageToggles({ tabs, current, onPick, label, idPrefix }) {
         })}
       </div>
       <p style={{ fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.55, color: COLORS.inkSoft, margin: "12px 2px 0", maxWidth: 780 }}>{active.blurb}</p>
+      {panel && (next || prev) && createPortal(
+        <nav className="tabfoot" aria-label="Move to another view">
+          {prev ? <button type="button" className="tabfoot-prev" onClick={() => { onPick(prev.key); document.getElementById(`${idPrefix}-tab-${prev.key}`)?.scrollIntoView({ block: "center" }); }}><small>Back</small><b>{prev.label}</b></button> : <span />}
+          {next && <button type="button" className="tabfoot-next" style={{ "--c": next.colour }} onClick={() => { onPick(next.key); document.getElementById(`${idPrefix}-tab-${next.key}`)?.scrollIntoView({ block: "center" }); }}><small>Next view</small><b>{next.label}</b><span>{next.blurb}</span></button>}
+        </nav>,
+        panel,
+      )}
     </div>
   );
 }
 
 // A card with a title, an optional one-line lead, and where the figures come from.
-export function Panel({ title, lead, children, sources, accent, id, style }) {
+export function Panel({ title, lead, children, sources, id, style }) {
   return (
     <section aria-labelledby={id} style={{ ...card, marginTop: 20, ...style }}>
-      {accent && <span aria-hidden="true" style={{ display: "block", width: 36, height: 4, borderRadius: 2, background: accent, marginBottom: 14 }} />}
       <h2 id={id} style={{ ...cardTitle, fontSize: 21 }}>{title}</h2>
       {lead && <p style={{ ...para, marginTop: 6 }}>{lead}</p>}
       <div style={{ marginTop: 16 }}>{children}</div>

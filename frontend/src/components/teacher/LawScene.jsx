@@ -61,8 +61,8 @@ export default function LawScene({ beat, calm }) {
         return (
           <g key={LAW_STEPS[i].key} transform={`translate(${p.x} ${p.y})`}>
             <circle r="30" fill={lit ? COLOURS[i] : "#fff"} stroke={COLOURS[i]} strokeWidth="5" style={{ transition: "fill 0.4s" }} />
-            <text y="9" textAnchor="middle" fontSize="26" fontWeight="800" fontFamily="Public Sans, system-ui, sans-serif" fill={lit ? "#fff" : COLOURS[i]}>{i + 1}</text>
-            <text y={i % 2 === 0 ? 62 : -46} textAnchor="middle" fontSize="23" fontWeight="800" fontFamily="Public Sans, system-ui, sans-serif" fill="#0B1B33" stroke="#F8FAFF" strokeWidth="5" paintOrder="stroke">{LAW_STEPS[i].label}</text>
+            <text y="9" textAnchor="middle" fontSize="26" fontWeight="800" fontFamily="Figures, Public Sans, system-ui, sans-serif" fill={lit ? "#fff" : COLOURS[i]}>{i + 1}</text>
+            <text y={i % 2 === 0 ? 62 : -46} textAnchor="middle" fontSize="23" fontWeight="800" fontFamily="Figures, Public Sans, system-ui, sans-serif" fill="#0B1B33" stroke="#F8FAFF" strokeWidth="5" paintOrder="stroke">{LAW_STEPS[i].label}</text>
           </g>
         );
       })}
@@ -70,7 +70,7 @@ export default function LawScene({ beat, calm }) {
         <g transform={`translate(${points[3].x + 40} 74)`} aria-hidden="true">
           <g className="t-stamp" style={{ animationDelay: "1.15s" }}>
             <rect x="-86" y="-24" width="172" height="48" rx="10" fill="none" stroke="#C0392B" strokeWidth="5" />
-            <text y="9" textAnchor="middle" fontSize="25" fontWeight="800" fontFamily="Public Sans, system-ui, sans-serif" fill="#C0392B" letterSpacing="1.5">APPROVED</text>
+            <text y="9" textAnchor="middle" fontSize="25" fontWeight="800" fontFamily="Figures, Public Sans, system-ui, sans-serif" fill="#C0392B" letterSpacing="1.5">APPROVED</text>
           </g>
         </g>
       )}

@@ -1,0 +1,13 @@
+/* The end of each view on the Britain in numbers pages: back, and on to the next view. */
+.tabfoot { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 12px; margin: 30px 0 4px; }
+.tabfoot > span { display: block; }
+.tabfoot button { display: grid; gap: 2px; align-content: center; text-align: left; padding: 14px 18px; border-radius: 16px; cursor: pointer; border: 1px solid var(--c-hairline); background: var(--c-paper-card); color: var(--c-ink); font: inherit; transition: border-color 0.2s, box-shadow 0.2s, background 0.2s; }
+.tabfoot button:hover { border-color: var(--c-ink-soft); box-shadow: var(--shadow-2); }
+.tabfoot small { font: 700 12px "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.tabfoot b { font: 700 18px "Newsreader", Georgia, serif; }
+.tabfoot .tabfoot-next { background: linear-gradient(120deg, color-mix(in srgb, var(--c) 88%, #000), color-mix(in srgb, var(--c) 62%, #000)); color: #fff; border-color: transparent; }
+.tabfoot .tabfoot-next small { color: rgba(255, 255, 255, 0.85); }
+.tabfoot .tabfoot-next span { font: 400 13.5px/1.45 "Public Sans", system-ui, sans-serif; opacity: 0.92; }
+.tabfoot .tabfoot-next:hover { box-shadow: 0 16px 26px -14px var(--c); }
+@media (max-width: 640px) { .tabfoot { grid-template-columns: 1fr; } }
+@media print { .tabfoot { display: none; } }

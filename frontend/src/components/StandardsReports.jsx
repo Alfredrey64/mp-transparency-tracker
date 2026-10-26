@@ -130,7 +130,7 @@ function ReportCard({ report, politician, onSelectPolitician, index }) {
               onClick={clickable ? () => onSelectPolitician(politician) : undefined}
               style={{
                 background: "none", border: "none", padding: 0, cursor: clickable ? "pointer" : "default",
-                fontFamily: FONT_DISPLAY, fontSize: 18, color: COLORS.ink, textAlign: "left",
+                fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, color: COLORS.ink, textAlign: "left",
                 textDecorationLine: clickable ? "underline" : "none", textDecorationColor: `${color}55`,
               }}
             >

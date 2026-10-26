@@ -13,6 +13,20 @@ import CountUp from "./CountUp";
 import DownloadCsvButton from "./DownloadCsvButton";
 import AskerQuestionsModal from "./AskerQuestionsModal";
 import { WRITTEN_QUESTION_COLUMNS } from "../lib/exportColumns";
+import { HowToRead } from "./GlanceStrip";
+import "../asked.css";
+
+const TOPIC_COLOURS = ["#1E4FB8", "#E0367A", "#7A5AF0", "#E8741A", "#4C6FA6", "#0E9AA7", "#1FA97C", "#C7871A"];
+const TOPIC_HINTS = {
+  nhs: "Waiting lists, GPs and hospitals",
+  housing: "Rents, building and homelessness",
+  immigration: "Visas, asylum and borders",
+  "energy bills": "Prices, the cap and net zero",
+  defence: "The armed forces and security",
+  water: "Bills, sewage and regulators",
+  schools: "Teachers, funding and places",
+  climate: "Emissions, weather and nature",
+};
 
 // PostgREST's default page size; a single request can't return more.
 const FETCH_LIMIT = 1000;
@@ -214,10 +228,24 @@ export default function AskedAbout({ onSelectPolitician, onNavigateForMp, initia
 
       {view === "idle" && input.trim().length > 0 && <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 20 }}>Type at least {MIN_TOPIC_LENGTH} letters.</div>}
       {view === "idle" && input.trim().length === 0 && (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.65, marginTop: 24, maxWidth: 640 }}>
-          Written questions are one of the clearest day-to-day signals of what an MP is actually pressing the government on. Pick a topic above, or type your own. It
-          searches both the question itself and the subject heading it was filed under. Then tap any name to read their questions.
-        </div>
+        <>
+          <HowToRead title="How it works" steps={[
+            { title: "Pick a topic", text: "Tap one below, or type your own word." },
+            { title: "See who is asking", text: "Parties, MPs, peers and the departments they questioned, from the last 30 days." },
+            { title: "Read their questions", text: "Tap any name to read exactly what they asked the government." },
+          ]} />
+          <h2 className="ab-h">Start with a topic</h2>
+          <div className="ab-tiles">
+            {SUGGESTED_TOPICS.map((t, i) => (
+              <button key={t} type="button" className="ab-tile" style={{ "--tc": TOPIC_COLOURS[i % TOPIC_COLOURS.length] }} onClick={() => setInput(t)}>
+                <span className="ab-tile-icon" aria-hidden="true"><IconTopic size={20} /></span>
+                <b>{t}</b>
+                <small>{TOPIC_HINTS[t.toLowerCase()] ?? "See who is asking"}</small>
+              </button>
+            ))}
+          </div>
+          <p className="ab-note">Written questions are one of the clearest day-to-day signs of what an MP is pressing the government on. The search covers the question and the subject it was filed under.</p>
+        </>
       )}
       {view === "loading" && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 28 }}>Searching…</div>}
       {view === "error" && <div style={{ marginTop: 28 }}><LoadFailedNote item="the written questions search" /></div>}

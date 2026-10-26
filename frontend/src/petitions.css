@@ -1,24 +1,24 @@
 /* Petitions. Each petition takes the colour of where it has got to: pink while open, green once the government has answered, purple once debated. */
 .pt-how { margin-top: 22px; padding: clamp(16px, 3vw, 24px); border-radius: 20px; background: linear-gradient(160deg, color-mix(in srgb, #E0367A 8%, var(--c-paper-card)), var(--c-paper-card) 70%); border: 1px solid color-mix(in srgb, #E0367A 22%, var(--c-hairline)); box-shadow: var(--shadow-1); }
-.pt-how p { margin: 0; font: 400 15px/1.65 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); max-width: 720px; }
+.pt-how p { margin: 0; font: 400 15px/1.65 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); max-width: 720px; }
 .pt-how ol { list-style: none; margin: 16px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr)); gap: 12px; }
 .pt-how li { display: grid; gap: 2px; padding: 14px 16px; border-radius: 16px; background: var(--c-paper-card); border: 1px solid color-mix(in srgb, var(--hc) 30%, var(--c-hairline)); border-left: 5px solid var(--hc); }
-.pt-how li b { font: 700 clamp(24px, 3vw, 30px)/1.1 "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--hc) 78%, var(--c-ink)); font-variant-numeric: tabular-nums; }
-.pt-how li span { font: 500 13.5px/1.45 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.pt-how li b { font: 700 clamp(24px, 3vw, 30px)/1.1 "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--hc) 78%, var(--c-ink)); font-variant-numeric: tabular-nums; }
+.pt-how li span { font: 500 13.5px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .pt-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr)); gap: 12px; margin-top: 16px; }
 .pt-stats > div { display: grid; gap: 2px; padding: 14px 16px 15px; border-radius: 18px; background: linear-gradient(160deg, color-mix(in srgb, var(--sc) 12%, var(--c-paper-card)), var(--c-paper-card) 75%); border: 1px solid color-mix(in srgb, var(--sc) 28%, var(--c-hairline)); box-shadow: var(--shadow-1), inset 0 4px 0 var(--sc); }
-.pt-stats b { font: 700 clamp(26px, 3.4vw, 34px)/1 "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--sc) 78%, var(--c-ink)); font-variant-numeric: tabular-nums; }
-.pt-stats span { font: 600 13px "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.pt-stats b { font: 700 clamp(26px, 3.4vw, 34px)/1 "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--sc) 78%, var(--c-ink)); font-variant-numeric: tabular-nums; }
+.pt-stats span { font: 600 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .pt-list { display: grid; gap: 12px; }
 .pt-card { overflow: hidden; border-radius: 18px; background: linear-gradient(165deg, color-mix(in srgb, var(--pc) 7%, var(--c-paper-card)), var(--c-paper-card) 120px); border: 1px solid color-mix(in srgb, var(--pc) 26%, var(--c-hairline)); border-left: 5px solid var(--pc); box-shadow: var(--shadow-1); transition: box-shadow 0.25s var(--ease-out), transform 0.25s var(--ease-out); }
 .pt-card:hover { box-shadow: var(--shadow-3); transform: scale(1.012); }
 .pt-card[data-open="1"] { box-shadow: var(--shadow-2), 0 0 0 3px color-mix(in srgb, var(--pc) 20%, transparent); transform: none; }
 .pt-head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 14px; width: 100%; padding: 16px 18px; text-align: left; background: none; border: 0; cursor: pointer; color: inherit; font: inherit; }
-.pt-rank { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 12px; background: color-mix(in srgb, var(--pc) 15%, transparent); color: color-mix(in srgb, var(--pc) 80%, var(--c-ink)); font: 800 14px "Public Sans", system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+.pt-rank { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 12px; background: color-mix(in srgb, var(--pc) 15%, transparent); color: color-mix(in srgb, var(--pc) 80%, var(--c-ink)); font: 800 14px "Figures", "Public Sans", system-ui, sans-serif; font-variant-numeric: tabular-nums; }
 .pt-main { display: grid; gap: 8px; min-width: 0; }
-.pt-action { font: 700 clamp(16px, 2vw, 18px)/1.35 "Newsreader", Georgia, serif; color: var(--c-ink); }
+.pt-action { font: 700 clamp(16px, 2vw, 18px)/1.35 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
 .pt-meta { display: flex; flex-wrap: wrap; gap: 6px; }
-.pt-chip { padding: 2px 10px; border-radius: 999px; font: 700 11.5px "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--pc) 78%, var(--c-ink)); background: color-mix(in srgb, var(--pc) 14%, transparent); border: 1px solid color-mix(in srgb, var(--pc) 34%, transparent); }
+.pt-chip { padding: 2px 10px; border-radius: 999px; font: 700 11.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--pc) 78%, var(--c-ink)); background: color-mix(in srgb, var(--pc) 14%, transparent); border: 1px solid color-mix(in srgb, var(--pc) 34%, transparent); }
 .pt-chip-soft { color: var(--c-ink-soft); background: transparent; border-color: var(--c-hairline); }
 .pt-ladder { position: relative; height: 10px; }
 .pt-ladder-bar { height: 8px; margin-top: 1px; border-radius: 4px; background: color-mix(in srgb, var(--pc) 12%, var(--c-paper)); overflow: hidden; }
@@ -26,13 +26,13 @@
 .pt-mark { position: absolute; top: -2px; width: 3px; height: 12px; border-radius: 2px; background: color-mix(in srgb, var(--c-ink-soft) 55%, transparent); }
 .pt-mark[data-hit="1"] { background: var(--c-paper-card); box-shadow: 0 0 0 1.5px var(--pc); }
 .pt-sigs { display: grid; justify-items: end; }
-.pt-sigs b { font: 700 clamp(20px, 2.6vw, 26px)/1 "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--pc) 80%, var(--c-ink)); font-variant-numeric: tabular-nums; }
-.pt-sigs span { font: 600 11.5px "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.pt-sigs b { font: 700 clamp(20px, 2.6vw, 26px)/1 "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--pc) 80%, var(--c-ink)); font-variant-numeric: tabular-nums; }
+.pt-sigs span { font: 600 11.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .pt-chev { color: var(--c-ink-soft); font-size: 13px; }
 .pt-more { display: grid; gap: 14px; margin: 0 18px; padding: 16px 0 18px; border-top: 1px dashed color-mix(in srgb, var(--pc) 40%, transparent); }
 .pt-note { padding: 12px 14px; border-radius: 12px; background: color-mix(in srgb, var(--nc) 8%, var(--c-paper)); border-left: 4px solid var(--nc); }
-.pt-note b { font: 700 12.5px "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--nc) 78%, var(--c-ink)); }
-.pt-note p { margin: 4px 0 0; font: 400 13.5px/1.6 "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
-.pt-link { font: 700 13.5px "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--pc) 75%, var(--c-ink)); }
+.pt-note b { font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--nc) 78%, var(--c-ink)); }
+.pt-note p { margin: 4px 0 0; font: 400 13.5px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.pt-link { font: 700 13.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--pc) 75%, var(--c-ink)); }
 @media (max-width: 600px) { .pt-head { grid-template-columns: auto minmax(0, 1fr); } .pt-sigs { grid-column: 2; justify-items: start; grid-auto-flow: column; gap: 6px; align-items: baseline; } .pt-chev { display: none; } }
 @media (prefers-reduced-motion: reduce) { .pt-card { transition: none; } }

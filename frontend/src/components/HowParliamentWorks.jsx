@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING, readable, solid } from "../theme";
-import { PageHeader, CommonsBadge, FlowNode, FlowArrow } from "./shared";
+import { PageHeader, CommonsBadge } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import CommonsChamber from "./CommonsChamber";
-import { IconVote, IconLords } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import BillRoute from "./BillRoute";
 import GovernmentTiers from "./GovernmentTiers";
@@ -98,20 +97,30 @@ function DeliveryDiagram() {
 // travel back and forth instead of one-way, which is the whole point of
 // "ping pong".
 function PingPongDiagram() {
+  // A paper travels between the two Houses and back again, for as long as they disagree. Drawn to fit whatever width it is given.
+  const calm = useReducedMotion();
+  const G = COLORS.commonsGreen;
+  const P = "#7A4B63";
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35 }}
-      style={{
-        display: "flex", alignItems: "center", justifyContent: "center", gap: 4, marginTop: 14,
-        padding: "18px 14px", background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 12,
-      }}
-    >
-      <FlowNode icon={IconVote} label="Commons" color={COLORS.commonsGreen} />
-      <FlowArrow color="#7A4B63" oscillate showGlyph={false} glyph="" trackWidth={64} />
-      <FlowNode icon={IconLords} label="Lords" color="#7A4B63" />
-    </motion.div>
+    <div style={{ marginTop: 14, padding: "14px 12px 10px", background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 14 }}>
+      <svg viewBox="0 0 320 128" role="img" aria-label="A bill going back and forth between the Commons and the Lords" style={{ display: "block", width: "100%", height: "auto", maxWidth: 380, margin: "0 auto" }}>
+        <circle cx="52" cy="52" r="30" fill={`color-mix(in srgb, ${G} 16%, transparent)`} stroke={G} strokeWidth="3" />
+        <circle cx="268" cy="52" r="30" fill={`color-mix(in srgb, ${P} 16%, transparent)`} stroke={P} strokeWidth="3" />
+        <text x="52" y="60" textAnchor="middle" fontSize="22" fontWeight="800" fill={G} fontFamily={FONT_BODY}>MPs</text>
+        <text x="268" y="60" textAnchor="middle" fontSize="20" fontWeight="800" fill={P} fontFamily={FONT_BODY}>Peers</text>
+        <text x="52" y="108" textAnchor="middle" fontSize="15" fontWeight="700" fill={COLORS.ink} fontFamily={FONT_BODY}>Commons</text>
+        <text x="268" y="108" textAnchor="middle" fontSize="15" fontWeight="700" fill={COLORS.ink} fontFamily={FONT_BODY}>Lords</text>
+        <path d="M94 52 H226" stroke={COLORS.hairline} strokeWidth="3" strokeDasharray="2 8" strokeLinecap="round" />
+        <path d="M100 44 l-8 8 l8 8 M220 44 l8 8 l-8 8" fill="none" stroke={P} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+        <g transform="translate(112 38)">
+          <g>
+            <rect width="22" height="28" rx="3" fill="#fff" stroke={P} strokeWidth="2.5" />
+            <path d="M5 8 h12 M5 14 h12 M5 20 h7" stroke={P} strokeWidth="2" strokeLinecap="round" />
+            {!calm && <animateTransform attributeName="transform" type="translate" values="0 0;74 0;0 0" dur="3.2s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.45 0 0.55 1;0.45 0 0.55 1" />}
+          </g>
+        </g>
+      </svg>
+    </div>
   );
 }
 

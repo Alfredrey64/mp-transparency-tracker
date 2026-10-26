@@ -1,41 +1,10 @@
+import { useState } from "react";
 import { motion } from "motion/react";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
+import { COLORS, PAGE_PADDING, readable } from "../theme";
 import { PageHeader } from "./shared";
-
-function InfoCard({ title, color, children, index = 0 }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 14 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.35, delay: index * 0.05, ease: "easeOut" }}
-      style={{
-        background: COLORS.paperCard,
-        borderLeft: `1px solid ${COLORS.hairline}`,
-        borderRight: `1px solid ${COLORS.hairline}`,
-        borderBottom: `1px solid ${COLORS.hairline}`,
-        borderTop: `4px solid ${color}`,
-        borderRadius: 16,
-        padding: "22px clamp(16px, 4vw, 26px)",
-        
-        marginBottom: 20,
-      }}
-    >
-      <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, marginTop: 0, marginBottom: 10 }}>
-        {title}
-      </h2>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 14.5, color: COLORS.inkSoft, lineHeight: 1.7, maxWidth: 760 }}>
-        {children}
-      </div>
-    </motion.div>
-  );
-}
-
-const QUICK_FACTS = [
-  { label: "500+", note: "active groups registered" },
-  { label: "No", note: "power to pass laws" },
-  { label: "Cross-Party", note: "by constitution" },
-];
+import { IconGroup } from "./icons";
+import { GlanceStrip } from "./GlanceStrip";
+import "../appg.css";
 
 // Standard UK party colours, used only for the small notable-member dots
 // below — not the app-wide partyColour() helper, which expects a hex value
@@ -51,16 +20,19 @@ const PARTY_DOT = {
   "Non-affiliated": COLORS.inkSoft,
 };
 
+const initialsOf = (name) => String(name).replace(/ MP$/, "").replace(/^(Dr|Lord|Baroness|Rt Hon|Sir|Dame) /, "").split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+
+// The people who run a group, as small pills: their initials in their party's colour, their name in bold, and what they do.
 function MemberList({ members }) {
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "5px 12px", marginTop: 8 }}>
+    <ul className="ap-members">
       {members.map((m) => (
-        <span key={m.name} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: FONT_BODY, fontSize: 12, color: COLORS.ink }}>
-          <span style={{ width: 7, height: 7, borderRadius: "50%", background: PARTY_DOT[m.party] ?? COLORS.inkSoft, flexShrink: 0 }} />
-          {m.name} <span style={{ color: COLORS.inkSoft }}>· {m.role}</span>
-        </span>
+        <li key={m.name} data-chair={/chair/.test(m.role) && !/vice/.test(m.role) ? "1" : "0"}>
+          <span className="ap-av" style={{ background: PARTY_DOT[m.party] ?? COLORS.inkSoft }} aria-hidden="true">{initialsOf(m.name)}</span>
+          <span><b>{m.name}</b><small>{m.role} · {m.party}</small></span>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }
 
@@ -184,10 +156,22 @@ const APPG_EXAMPLES = [
   },
 ];
 
+const TAGS = ["All", ...new Set(APPG_EXAMPLES.map((g) => g.tag))];
+
+const RULES = [
+  { big: "20+", text: "members, with officers from more than one political party", color: "#1E4FB8" },
+  { big: "2", text: "meetings a year, one of them an annual general meeting", color: "#1FA97C" },
+  { big: "£", text: "income or benefits above a set amount must be declared, including secretariat support", color: "#E8741A" },
+  { big: "6 wks", text: "roughly how often a group must re-register, or it is dissolved", color: "#7A5AF0" },
+];
+
 export default function AppgMemberships() {
+  const [tag, setTag] = useState("All");
+  const shown = APPG_EXAMPLES.filter((g) => tag === "All" || g.tag === tag);
   return (
     <div className="editorial" style={{ padding: PAGE_PADDING }}>
       <PageHeader
+        icon={IconGroup}
         title="Cross-party groups"
         subtitle="All-party parliamentary groups (APPGs) are informal groups that MPs and peers join to focus on one topic. They are one of the earliest and least visible ways outside organisations get access to Parliament."
         maxWidth={900}
@@ -195,195 +179,88 @@ export default function AppgMemberships() {
 
       <div className="editorial-body">
 
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.35 }}
-        className="box-row" style={{ "--n": 3, "--min": "100px", marginBottom: 28 }}
-      >
-        {QUICK_FACTS.map((fact) => (
-          <div
-            key={fact.label}
-            style={{
-              background: COLORS.paperCard,
-              border: `1px solid ${COLORS.hairline}`,
-              borderRadius: 12,
-              padding: "14px 16px",
-              textAlign: "center",
-            }}
-          >
-            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 24, color: COLORS.accentText }}>{fact.label}</div>
-            <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 2 }}>{fact.note}</div>
-          </div>
-        ))}
-      </motion.div>
+      <GlanceStrip items={[
+        { value: "500+", label: "active groups", sub: "registered with Parliament", colour: "#1E4FB8" },
+        { value: "None", label: "power to pass laws", sub: "they advise and campaign", colour: "#E0367A" },
+        { value: "Cross-party", label: "by rule", sub: "officers from more than one party", colour: "#1FA97C" },
+      ]} />
 
-      <InfoCard title="What is an APPG?" color={COLORS.accent} index={0}>
-        An All-Party Parliamentary Group brings together MPs and members of the House of Lords who share
-        an interest in a topic, such as a country, a health condition, an industry or a social issue. They have{" "}
-        <strong style={{ color: COLORS.ink }}>no official power in Parliament</strong> and can't pass laws, but
-        they regularly host outside speakers, run inquiries and publish reports that can shape how MPs and
-        ministers think about an issue.
-      </InfoCard>
+      <section className="ap-what" aria-labelledby="h-ap-what">
+        <h2 id="h-ap-what">What is an APPG?</h2>
+        <ol>
+          <li><span>1</span><div><b>A shared interest</b><p>MPs and peers join up around one topic: a country, a health condition, an industry or a social issue.</p></div></li>
+          <li><span>2</span><div><b>No official power</b><p>A group cannot pass laws or make decisions for Parliament.</p></div></li>
+          <li><span>3</span><div><b>But real influence</b><p>They host speakers, run inquiries and publish reports that shape how MPs and ministers think.</p></div></li>
+        </ol>
+      </section>
 
-      <div style={{ marginBottom: 32, maxWidth: "none" }}>
-        <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>
-          Registered financial benefits
-        </h2>
-        <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16 }}>
-          A hand-picked sample of publicly reported cases. It is not a complete or automatically updating record.
-          The full Register of APPGs is published as a PDF roughly every 6 weeks with no API to draw from
-          automatically, so this is refreshed periodically by hand instead, the same approach used for the
-          Ministerial Meetings page.
-        </p>
-        <div className="ed-list">
+      <section className="ap-sec" aria-labelledby="h-ap-ex">
+        <h2 id="h-ap-ex">A few real examples</h2>
+        <p className="ap-lead">APPGs cover almost every topic. Pick a kind to filter.</p>
+        <div className="ap-tags" role="group" aria-label="Kind of group">
+          {TAGS.map((t) => <button key={t} type="button" aria-pressed={tag === t} onClick={() => setTag(t)}>{t}</button>)}
+        </div>
+        <div className="ap-grid">
+          {shown.map((group, i) => (
+            <motion.article
+              key={group.name}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: Math.min(i, 5) * 0.05, ease: "easeOut" }}
+              className="ap-card" style={{ "--gc": group.color }}
+            >
+              <span className="ap-tag">{group.tag}</span>
+              <h3>{group.name}</h3>
+              <p className="ap-desc">{group.desc}</p>
+              <div className="ap-run"><b>Who runs it</b><span>{group.secretariat}</span></div>
+              <div className="ap-sub">Notable members</div>
+              <MemberList members={group.members} />
+            </motion.article>
+          ))}
+        </div>
+      </section>
+
+      <section className="ap-sec" aria-labelledby="h-ap-ben">
+        <h2 id="h-ap-ben">Registered financial benefits</h2>
+        <p className="ap-lead">A hand-picked sample of publicly reported cases, not a complete record. The official register is a PDF published about every 6 weeks, so this is refreshed by hand.</p>
+        <div className="ap-grid ap-grid-wide">
           {REGISTERED_BENEFITS.map((b, i) => (
-            <motion.div
+            <motion.article
               key={b.group}
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.3, delay: i * 0.05 }}
-              style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `3px solid ${b.color}`, borderRadius: 12, padding: "16px 20px" }}
+              className="ap-card" style={{ "--gc": b.color }}
             >
-              <div style={{ fontFamily: FONT_DISPLAY, fontSize: 16.5, color: COLORS.ink, marginBottom: 6 }}>{b.group}</div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, lineHeight: 1.6, marginBottom: 8 }}>{b.detail}</div>
-              {b.members ? <MemberList members={b.members} /> : (
-                <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, fontStyle: "italic", marginBottom: 8 }}>{b.note}</div>
-              )}
-              <a href={b.sourceUrl} target="_blank" rel="noreferrer" style={{ display: "inline-block", marginTop: 10, fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: readable(b.color) }}>
-                Source ↗
-              </a>
-            </motion.div>
+              <h3>{b.group}</h3>
+              <p className="ap-desc">{b.detail}</p>
+              {b.members ? <MemberList members={b.members} /> : <p className="ap-note">{b.note}</p>}
+              <a href={b.sourceUrl} target="_blank" rel="noreferrer" className="ap-src">Source ↗</a>
+            </motion.article>
           ))}
         </div>
-      </div>
+      </section>
 
-      <div style={{ marginBottom: 20 }}>
-        <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>
-          A Few Real Examples
-        </h2>
-        <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16 }}>
-          APPGs cover almost every topic imaginable, here's a small, varied sample.
-        </p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))", gap: 14 }}>
-          {APPG_EXAMPLES.map((group, i) => (
-            <motion.div
-              key={group.name}
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.3, delay: (i % 6) * 0.05, ease: "easeOut" }}
-              style={{
-                background: COLORS.paperCard,
-                borderTop: `1px solid ${COLORS.hairline}`,
-                borderRight: `1px solid ${COLORS.hairline}`,
-                borderBottom: `1px solid ${COLORS.hairline}`,
-                borderLeft: `5px solid ${group.color}`,
-                borderRadius: 12,
-                padding: 16,
-                
-              }}
-            >
-              <div
-                style={{
-                  display: "inline-block",
-                  fontFamily: FONT_BODY,
-                  fontWeight: 700,
-                  fontSize: 11,
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
-                  color: readable(group.color),
-                  background: `${group.color}1A`,
-                  padding: "3px 9px",
-                  borderRadius: 999,
-                  marginBottom: 8,
-                }}
-              >
-                {group.tag}
-              </div>
-              <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink, marginBottom: 6 }}>
-                {group.name}
-              </div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, lineHeight: 1.55, marginBottom: 8 }}>
-                {group.desc}
-              </div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, fontStyle: "italic" }}>
-                {group.secretariat}
-              </div>
-              <div style={{ borderTop: `1px solid ${COLORS.hairline}`, marginTop: 12, paddingTop: 10 }}>
-                <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: readable(group.color), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 2 }}>
-                  Notable members
-                </div>
-                <MemberList members={group.members} />
-              </div>
-            </motion.div>
-          ))}
+      <section className="ap-why" aria-labelledby="h-ap-why">
+        <h2 id="h-ap-why">Why this matters</h2>
+        <p>Running a group takes staff, called a "secretariat". That help often comes from an outside body with a stake in the topic: a charity, a trade body or a public affairs firm. It isn't necessarily improper, but it is an early sign of who an MP works closely with, often long before any donation is declared.</p>
+      </section>
+
+      <section className="ap-sec" aria-labelledby="h-ap-rules">
+        <h2 id="h-ap-rules">The rules a group must follow</h2>
+        <ol className="ap-rules">
+          {RULES.map((r) => <li key={r.big} style={{ "--rc": r.color }}><b>{r.big}</b><span>{r.text}</span></li>)}
+        </ol>
+      </section>
+
+      <section className="ap-look" aria-labelledby="h-ap-look">
+        <div>
+          <h2 id="h-ap-look">Look up any MP's memberships</h2>
+          <p>The full official register is public and searchable. Find an MP to see every group they chair or belong to, and what funding each has declared.</p>
         </div>
-      </div>
-
-      <InfoCard title="Why this matters" color="#8A6D1F" index={1}>
-        Running a group takes staff and admin, and that support, called a "secretariat", is very often
-        provided by an outside organisation with a direct stake in the topic: a charity, a trade body, or
-        a public affairs firm working for an industry. That's not necessarily improper. It's how these
-        groups are usually formed, but it's a genuine, early signal of who an MP is working closely with,
-        often well before any formal donation would ever be declared elsewhere.
-      </InfoCard>
-
-      <InfoCard title="The rules APPGs must follow" color="#2F6F4E" index={2}>
-        <ul style={{ margin: 0, paddingLeft: 20 }}>
-          <li style={{ marginBottom: 8 }}>At least 20 members, with officers from more than one political party</li>
-          <li style={{ marginBottom: 8 }}>At least two meetings a year, including one Annual General Meeting</li>
-          <li style={{ marginBottom: 8 }}>Must publicly declare income or benefits above a set threshold, including secretariat support</li>
-          <li>Must re-register roughly every 6 weeks, or the group is automatically dissolved</li>
-        </ul>
-      </InfoCard>
-
-      <motion.div
-        initial={{ opacity: 0, y: 14 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.35, delay: 0.15, ease: "easeOut" }}
-        style={{
-          background: COLORS.paperCard,
-          borderLeft: `1px solid ${COLORS.hairline}`,
-          borderRight: `1px solid ${COLORS.hairline}`,
-          borderBottom: `1px solid ${COLORS.hairline}`,
-          borderTop: `4px solid ${COLORS.ink}`,
-          borderRadius: 16,
-          padding: "22px clamp(16px, 4vw, 26px)",
-          
-          maxWidth: "none",
-        }}
-      >
-        <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, marginTop: 0, marginBottom: 10 }}>
-          Look Up Any MP's Memberships
-        </h2>
-        <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, color: COLORS.inkSoft, lineHeight: 1.6, marginTop: 0 }}>
-          The full official register is public and searchable. Find any MP by name to see every group
-          they chair or belong to, and what funding each one has declared. It's updated every few weeks,
-          so it's always the most current source.
-        </p>
-        <motion.a
-          href="https://publications.parliament.uk/pa/cm/cmallparty/register/contents.htm"
-          target="_blank"
-          rel="noreferrer"
-          style={{
-            display: "inline-block",
-            marginTop: 6,
-            fontFamily: FONT_BODY,
-            fontWeight: 600,
-            fontSize: 14,
-            color: "#fff",
-            background: COLORS.accent,
-            padding: "10px 20px",
-            borderRadius: 10,
-            textDecoration: "none",
-          }}
-        >
-          Open the official APPG Register ↗
-        </motion.a>
-      </motion.div>
+        <a href="https://publications.parliament.uk/pa/cm/cmallparty/register/contents.htm" target="_blank" rel="noreferrer">Open the official register ↗</a>
+      </section>
       </div>
     </div>
   );

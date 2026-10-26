@@ -2,9 +2,10 @@ import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { PageHeader } from "./shared";
-import { GlossaryTerm } from "./GlossaryTerm";
 import { IconBroadcast, IconBook } from "./icons";
 import { keyboardActivate } from "../lib/a11y";
+import { GlanceStrip } from "./GlanceStrip";
+import "../media.css";
 
 function InfoCard({ title, color, children, index = 0 }) {
   return (
@@ -85,6 +86,7 @@ function BroadcastHero() {
 const OUTLETS = [
   {
     name: "BBC",
+    tag: "Licence fee · Public corporation",
     color: readable("#5A7FA6"),
     funding: "The TV licence fee: a statutory charge on households, set by government but collected independently.",
     ownership: "A public corporation operating under a Royal Charter, not owned by shareholders or the state directly.",
@@ -92,6 +94,7 @@ const OUTLETS = [
   },
   {
     name: "ITV",
+    tag: "Adverts · Listed company",
     color: readable("#9C6B30"),
     funding: "Commercial advertising revenue.",
     ownership: "A publicly listed company (ITV plc) on the London Stock Exchange, owned by its shareholders.",
@@ -99,6 +102,7 @@ const OUTLETS = [
   },
   {
     name: "Channel 4",
+    tag: "Adverts · Publicly owned",
     color: readable("#B5533C"),
     funding: "Commercial advertising revenue, despite public ownership.",
     ownership: "Publicly owned (a state-owned corporation): the government considered privatising it in 2022 but reversed that decision in January 2023.",
@@ -106,6 +110,7 @@ const OUTLETS = [
   },
   {
     name: "Sky News",
+    tag: "Subscriptions and adverts · Owned by Comcast",
     color: readable("#3F7D5C"),
     funding: "Subscription and advertising revenue, cross-funded within the wider Sky/Comcast group.",
     ownership: "Owned by Sky Group, itself owned by Comcast, a US media conglomerate, since 2018.",
@@ -113,6 +118,7 @@ const OUTLETS = [
   },
   {
     name: "GB News",
+    tag: "Adverts and investors · Private company",
     color: readable("#6E4B6E"),
     funding: "Commercial advertising and direct shareholder investment (it has reported significant losses since launch).",
     ownership: "Privately owned through the holding company All Perspectives Ltd, whose main backers are the investment firm Legatum Ventures and the financier Sir Paul Marshall. The exact shareholdings are in its Companies House filings.",
@@ -136,7 +142,10 @@ function OutletCard({ outlet, index, open, onToggle }) {
       <div {...keyboardActivate(onToggle, { label: `${outlet.name}. ${open ? "Hide" : "Show"} who owns and funds it`, expanded: open })} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: 16, paddingBottom: open ? 10 : 16 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ width: 10, height: 10, borderRadius: "50%", background: outlet.color, flexShrink: 0, boxShadow: `0 0 0 3px ${outlet.color}2a` }} />
-          <span style={{ fontFamily: FONT_DISPLAY, fontSize: 18, color: COLORS.ink }}>{outlet.name}</span>
+          <span style={{ display: "grid", gap: 2 }}>
+            <span style={{ fontFamily: FONT_DISPLAY, fontSize: 22, fontWeight: 700, color: COLORS.ink }}>{outlet.name}</span>
+            <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, color: COLORS.inkSoft }}>{outlet.tag}</span>
+          </span>
         </div>
         <motion.span
           animate={{ rotate: open ? 90 : 0 }}
@@ -323,30 +332,35 @@ function ImpartialityQuiz() {
 const CODE_REQUIREMENTS = [
   {
     title: "Due impartiality",
+    short: "Give the different sides of a big political argument a fair share of airtime.",
     color: readable("#5A7FA6"),
     rule: "Broadcasting Code, Section 5",
     body: "An \"appropriately wide range of significant views\" must be included and given \"due weight\" on any matter of political or industrial controversy, or current public policy, and the programme itself, not just the channel's output over time, has to achieve this on major matters. A broadcaster can't simply balance things out across a whole week; a single one-sided programme on a big issue can breach the rule on its own.",
   },
   {
     title: "Due accuracy",
+    short: "Check the facts, and correct big mistakes.",
     color: readable("#4C7A6B"),
     rule: "Broadcasting Code, Section 5",
     body: "Facts must be checked and significant errors corrected. \"Due\" means accuracy appropriate to the subject and nature of the programme, so a throwaway aside is judged more lightly than a claim central to a news report. Material factual mistakes that could mislead audiences on matters of public importance have to be corrected, and correction has to be proportionate to how prominent the original error was.",
   },
   {
     title: "No politicians as newsreaders or interviewers",
+    short: "A sitting MP can't read the news or interview people on a news show.",
     color: readable("#9C6B30"),
     rule: "Broadcasting Code, Section 5.3",
     body: "A sitting politician cannot present, interview, or report in a news programme, and can only appear in other programming (chat shows, current affairs) if there's a clear editorial justification and, critically, their political allegiance is made clear to the audience. The rule is about news programmes: in February 2025 the High Court ruled that it does not cover current affairs programmes, and Ofcom then consulted on widening it.",
   },
   {
     title: "Fairness",
+    short: "If a programme criticises you, you should get the chance to reply.",
     color: readable("#B5533C"),
     rule: "Broadcasting Code, Section 7",
     body: "Anyone who could be significantly criticised in a programme should normally be given a chance to respond before broadcast, and contributors shouldn't be treated unjustly through misleading editing or a lack of information about what they were contributing to. This protects the people and organisations covered, not just the audience.",
   },
   {
     title: "Extra care at elections and referendums",
+    short: "During a campaign the rules get stricter.",
     color: readable("#6E4B6E"),
     rule: "Broadcasting Code, Section 6",
     body: "During an election or referendum period the impartiality duty tightens further, broadcasters must give due weight to all major parties and campaigns, and news coverage of constituency and electoral area campaigns comes with additional rules on candidate participation and airtime.",
@@ -359,6 +373,7 @@ const REAL_CASES = [
     color: readable("#6E4B6E"),
     date: "July 2023 (ruled December 2023)",
     programme: "The Live Desk",
+    headline: "Promoted its own cash campaign on air.",
     verdict: "Breach",
     rule: "Due impartiality",
     summary: "An episode promoted a GB News campaign, \"Don't Kill Cash\", asking viewers to sign a petition to protect cash as legal tender until at least 2050, with an on-screen QR code. Ofcom said how far cash should be protected is a matter of political controversy and current public policy, that the channel clearly endorsed the campaign, and that the programme gave only limited reference to other views. It recorded a breach of the due impartiality rules (5.4 and 5.5). Ofcom was clear that broadcasters may run campaigns and cover the subject, provided they keep to the impartiality rules.",
@@ -368,6 +383,7 @@ const REAL_CASES = [
     color: readable("#6E4B6E"),
     date: "March 2023 (ruled September 2023)",
     programme: "Friday & Saturday Morning with Esther and Phil",
+    headline: "Two Conservative MPs interviewed the Chancellor days before the Budget.",
     verdict: "Breach",
     rule: "Due impartiality",
     summary: "Conservative MPs Esther McVey and Philip Davies, who co-hosted a weekend programme, interviewed the Conservative Chancellor, Jeremy Hunt, days before the Spring Budget, in a pre-recorded segment that drew 45 complaints. Ofcom found a breach of due impartiality and said the channel should have taken additional steps to keep it. It did not find a breach of the rule on politicians as presenters, because the show counted as current affairs rather than news.",
@@ -377,6 +393,7 @@ const REAL_CASES = [
     color: readable("#6E4B6E"),
     date: "May and June 2023 (ruled March 2024)",
     programme: "State of the Nation",
+    headline: "Ofcom's ruling on an MP presenting was overturned by the High Court.",
     verdict: "Overturned",
     rule: "Politicians as presenters",
     summary: "Ofcom ruled in March 2024 that Jacob Rees-Mogg, then a sitting Conservative MP, had acted as a newsreader on his show, by reading a \"breaking news\" item on a US civil case against Donald Trump and a live update from Nottingham. In February 2025 the High Court quashed both decisions, ruling that the rule applies to news programmes and these were current affairs programmes. Ofcom withdrew the findings. A useful reminder that Ofcom's own rulings go through a real appeals process, and don't always stand.",
@@ -386,6 +403,7 @@ const REAL_CASES = [
     color: readable("#5A7FA6"),
     date: "February 2021 (ruled July 2022)",
     programme: "The World at One (BBC Radio 4)",
+    headline: "A guest's strong views were not balanced by others.",
     verdict: "Breach",
     rule: "Due impartiality",
     summary: "Coverage of the dispute between Alex Salmond and the Scottish Government over harassment complaints included an interview with Baroness Ruth Davidson giving strongly critical views, without due weight given to alternative perspectives on a matter of intense, live political controversy. Ofcom found this a breach: a reminder that the impartiality duty applies to the BBC exactly as it does to any commercial broadcaster.",
@@ -395,6 +413,7 @@ const REAL_CASES = [
     color: readable("#5A7FA6"),
     date: "December 2021 (ruled November 2022)",
     programme: "News coverage of an antisemitic attack on a bus in London",
+    headline: "A disputed claim was not described as disputed quickly enough.",
     verdict: "Fell short",
     rule: "Due accuracy",
     summary: "The BBC reported a disputed interpretation of an audio recording without making clear, promptly enough, that its meaning was contested. Ofcom called it a \"serious editorial misjudgement\" not to say on air that the claim was disputed, and said the BBC failed to follow its own editorial guidelines online, but it did not find a breach of the Broadcasting Code in the television news. It's a more nuanced example: coverage can fall short of best practice without crossing the regulatory line.",
@@ -445,7 +464,11 @@ function CaseCard({ item, index }) {
         </span>
         <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, fontStyle: "italic" }}>{item.rule}</span>
       </div>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.6 }}>{item.summary}</div>
+      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 600, color: COLORS.ink, lineHeight: 1.35 }}>{item.headline}</div>
+      <details className="ml-fold ml-fold-case" style={{ "--rc": item.color }}>
+        <summary>What happened<span aria-hidden="true">▾</span></summary>
+        <p>{item.summary}</p>
+      </details>
     </motion.div>
   );
 }
@@ -487,19 +510,30 @@ export default function MediaLiteracy() {
         </div>
       </motion.div>
 
-      <InfoCard title="The legal difference between broadcasters and newspapers" color="#5A7FA6" index={0}>
-        <p style={{ marginTop: 0 }}>
-          UK television and radio news is legally required to be impartial. Ofcom's Broadcasting Code sets out a "due
-          impartiality" rule: broadcasters must give an appropriately wide range of significant views due weight on
-          matters of political controversy, and can't take an editorial side. This applies equally to the BBC, ITV, Sky
-          News, Channel 4, and GB News, public or private, licence-fee-funded or commercial makes no difference.
-        </p>
-        <p style={{ marginBottom: 0 }}>
-          Newspapers and news websites have no equivalent legal duty. They're free to editorialise, endorse a party at
-          an election, and run an openly partisan front page, which is exactly why a paper's political lean is
-          common knowledge in a way a broadcaster's legally isn't supposed to be.
-        </p>
-      </InfoCard>
+      <GlanceStrip items={[
+        { value: "2", label: "kinds of news, two sets of rules", sub: "broadcast and print", colour: "#5A7FA6" },
+        { value: "5", label: "rules in the Broadcasting Code", sub: "explained below", colour: "#9C6B30" },
+        { value: "5", label: "real Ofcom cases", sub: "breaches, near misses and one overturned", colour: "#9C3B3B" },
+        { value: "8", label: "outlets to sort in the quiz", colour: "#1FA97C" },
+      ]} />
+
+      <section className="ml-split" aria-labelledby="h-ml-split">
+        <h2 id="h-ml-split">The big difference</h2>
+        <div className="ml-split-grid">
+          <div style={{ "--sc": "#5A7FA6" }}>
+            <span className="ml-split-icon" aria-hidden="true"><IconBroadcast size={26} /></span>
+            <b>TV and radio news</b>
+            <em>Must be impartial</em>
+            <p>The BBC, ITV, Sky News, Channel 4 and GB News all follow Ofcom's Broadcasting Code. Public or private, licence fee or adverts, it makes no difference.</p>
+          </div>
+          <div style={{ "--sc": "#B5533C" }}>
+            <span className="ml-split-icon" aria-hidden="true"><IconBook size={26} /></span>
+            <b>Newspapers and news websites</b>
+            <em>Free to take a side</em>
+            <p>They can back a party at an election and run an openly one-sided front page. That is why a paper's lean is well known, and a broadcaster's legally should not be.</p>
+          </div>
+        </div>
+      </section>
 
       <div style={{ marginBottom: 32, maxWidth: "none" }}>
         <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>
@@ -517,13 +551,16 @@ export default function MediaLiteracy() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.3, delay: (i % 6) * 0.05 }}
-              style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 3px 0 ${req.color}`, borderRadius: 14, padding: 16 }}
+              className="ml-rule" style={{ "--rc": req.color }}
             >
-              <div style={{ fontFamily: FONT_DISPLAY, fontSize: 16, color: COLORS.ink, marginBottom: 4 }}>{req.title}</div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: readable(req.color), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>
-                {req.rule}
-              </div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.6 }}>{req.body}</div>
+              <span className="ml-rule-n" aria-hidden="true">{i + 1}</span>
+              <div className="ml-rule-title">{req.title}</div>
+              <p className="ml-rule-short">{req.short}</p>
+              <details className="ml-fold">
+                <summary>Read the rule<span aria-hidden="true">▾</span></summary>
+                <div className="ml-fold-ref">{req.rule}</div>
+                <p>{req.body}</p>
+              </details>
             </motion.div>
           ))}
         </div>
@@ -567,9 +604,7 @@ export default function MediaLiteracy() {
 
       <InfoCard title="Where to find the official rulings" color="#3F7D5C" index={2}>
         <p style={{ marginTop: 0 }}>
-          Rather than trust anyone's scorecard, including any you find elsewhere, Ofcom itself publishes every
-          impartiality complaint it upholds, with its full written reasoning, in its weekly Broadcast and On Demand
-          Bulletin. It's slower and less satisfying than a single number, but it's the actual adjudication, not a guess.
+          Ofcom publishes every impartiality ruling it upholds, with its reasoning, in a weekly bulletin. Read the ruling itself, not anyone's scorecard.
         </p>
         <ul style={{ margin: 0, paddingLeft: 20 }}>
           <li style={{ marginBottom: 8 }}>
@@ -591,14 +626,19 @@ export default function MediaLiteracy() {
         </ul>
       </InfoCard>
 
-      <InfoCard title="Reading any outlet critically" color="#9C6B30" index={3}>
-        <ul style={{ margin: 0, paddingLeft: 20 }}>
-          <li style={{ marginBottom: 8 }}>Separate news reporting from opinion/comment sections, outlets label these differently, and the impartiality rules above apply far more strictly to the former.</li>
-          <li style={{ marginBottom: 8 }}>Check who's speaking, not just what's said: a guest's job title or affiliation (a <GlossaryTerm term="Think Tank">think tank</GlossaryTerm>, a trade body, a party) tells you their starting position.</li>
-          <li style={{ marginBottom: 8 }}>A single outlet's framing of a story is one angle, cross-checking a second, differently-owned outlet is the cheapest way to spot what's been left out.</li>
-          <li>For anything on this site specifically (donations, votes, interests) you don't need to trust anyone's framing at all: every figure links to the original official document.</li>
-        </ul>
-      </InfoCard>
+      <section className="ml-tips" aria-labelledby="h-ml-tips">
+        <h2 id="h-ml-tips">Four habits for reading any news</h2>
+        <ol>
+          {[
+            ["News or opinion?", "Check which one you are reading. The impartiality rules bite far harder on news than on comment.", "#5A7FA6"],
+            ["Who is speaking?", "A guest's job tells you where they start from: a think tank, a trade body or a party.", "#9C6B30"],
+            ["Check a second source", "A different outlet is the cheapest way to spot what was left out.", "#3F7D5C"],
+            ["Go to the source", "Every figure on this site links to the official document. You never need to trust anyone's framing.", "#B5533C"],
+          ].map(([t, x, c], i) => (
+            <li key={t} style={{ "--tc": c }}><span aria-hidden="true">{i + 1}</span><div><b>{t}</b><p>{x}</p></div></li>
+          ))}
+        </ol>
+      </section>
       </div>
     </div>
   );

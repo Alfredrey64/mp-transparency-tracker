@@ -4,5 +4,6 @@ instead of from Google so that no request leaves the site for them.
 Newsreader         Copyright the Newsreader Project Authors (Production Type)
 Public Sans        Copyright the Public Sans Project Authors (USWDS, GSA)
 IBM Plex Mono      Copyright IBM Corp.
+Fraunces           Copyright the Fraunces Project Authors (Undercase Type); only the digits, % and pound sign are included (fraunces-figures.woff2)
 
 The files are the Latin and Latin Extended subsets of each font, unchanged.

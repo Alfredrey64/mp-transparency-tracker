@@ -1,0 +1,43 @@
+.ap-sec { margin: 34px 0 0; max-width: none; }
+.ap-sec h2, .ap-what h2, .ap-why h2 { margin: 0 0 6px; font: 700 26px "Newsreader", Georgia, serif; color: var(--c-ink); }
+.ap-lead { margin: 0 0 14px; max-width: 680px; font: 400 14.5px/1.6 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ap-what { margin: 26px 0 0; max-width: none; }
+.ap-what ol { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); gap: 12px; }
+.ap-what li { display: flex; gap: 14px; padding: 16px; border-radius: 18px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); }
+.ap-what li > span { display: grid; place-items: center; flex: none; width: 36px; height: 36px; border-radius: 12px; background: var(--c-brand, #1E4FB8); color: #fff; font: 800 17px "Public Sans", system-ui, sans-serif; }
+.ap-what li:nth-child(2) > span { background: #E0367A; }
+.ap-what li:nth-child(3) > span { background: #1FA97C; }
+.ap-what b { font: 700 18px "Newsreader", Georgia, serif; color: var(--c-ink); }
+.ap-what p { margin: 2px 0 0; font: 400 14px/1.55 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ap-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.ap-tags button { min-height: 38px; padding: 0 16px; border-radius: 999px; cursor: pointer; font: 700 13.5px "Public Sans", system-ui, sans-serif; color: var(--c-ink); background: var(--c-paper-card); border: 1px solid var(--c-hairline); transition: background 0.2s, border-color 0.2s; }
+.ap-tags button:hover { border-color: var(--c-ink-soft); }
+.ap-tags button[aria-pressed="true"] { background: var(--c-ink); color: var(--c-paper); border-color: var(--c-ink); }
+.ap-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 14px; align-items: start; }
+.ap-grid-wide { grid-template-columns: repeat(auto-fill, minmax(min(380px, 100%), 1fr)); }
+.ap-card { display: grid; gap: 8px; padding: 18px 20px 20px; border-radius: 20px; background: linear-gradient(165deg, color-mix(in srgb, var(--gc) 9%, var(--c-paper-card)), var(--c-paper-card) 120px); border: 1px solid color-mix(in srgb, var(--gc) 28%, var(--c-hairline)); border-left: 6px solid var(--gc); box-shadow: var(--shadow-1); }
+.ap-tag { justify-self: start; padding: 3px 11px; border-radius: 999px; font: 700 11.5px "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--gc) 78%, var(--c-ink)); background: color-mix(in srgb, var(--gc) 14%, transparent); border: 1px solid color-mix(in srgb, var(--gc) 32%, transparent); }
+.ap-card h3 { margin: 0; font: 700 21px/1.25 "Newsreader", Georgia, serif; color: var(--c-ink); letter-spacing: -0.01em; }
+.ap-desc { margin: 0; font: 400 14px/1.6 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ap-run { display: grid; gap: 1px; padding: 10px 12px; border-radius: 12px; background: color-mix(in srgb, var(--gc) 8%, var(--c-paper)); }
+.ap-run b { font: 700 11.5px "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--gc) 78%, var(--c-ink)); }
+.ap-run span { font: 500 13px/1.5 "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ap-sub { margin-top: 4px; font: 700 12px "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ap-members { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.ap-members li { display: flex; align-items: center; gap: 10px; }
+.ap-av { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 50%; color: #fff; font: 800 12px "Public Sans", system-ui, sans-serif; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); }
+.ap-members li[data-chair="1"] .ap-av { box-shadow: 0 0 0 2px var(--c-paper-card), 0 0 0 4px var(--c-ink); }
+.ap-members b { display: block; font: 700 14px/1.25 "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ap-members small { display: block; font: 500 12px/1.3 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ap-note { margin: 0; font: italic 400 13px "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ap-src { justify-self: start; font: 700 13px "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--gc) 78%, var(--c-ink)); }
+.ap-why { margin: 34px 0 0; padding: 20px 24px; border-radius: 22px; max-width: none; background: linear-gradient(135deg, color-mix(in srgb, #C7871A 12%, var(--c-paper-card)), var(--c-paper-card) 80%); border: 1px solid color-mix(in srgb, #C7871A 30%, var(--c-hairline)); border-left: 6px solid #C7871A; }
+.ap-why p { margin: 0; max-width: 780px; font: 400 15px/1.7 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ap-rules { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px; }
+.ap-rules li { display: grid; gap: 4px; padding: 16px 18px; border-radius: 18px; background: color-mix(in srgb, var(--rc) 8%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--rc) 28%, var(--c-hairline)); }
+.ap-rules b { font: 700 36px/1 "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--rc) 80%, var(--c-ink)); }
+.ap-rules span { font: 500 14px/1.5 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ap-look { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; margin: 34px 0 0; padding: 22px 26px; border-radius: 22px; max-width: none; background: linear-gradient(135deg, #1E3A6E, #16264A); color: #fff; }
+.ap-look h2 { margin: 0; font: 700 22px "Newsreader", Georgia, serif; color: #fff; }
+.ap-look p { margin: 4px 0 0; max-width: 560px; font: 400 14.5px/1.55 "Public Sans", system-ui, sans-serif; color: rgba(255, 255, 255, 0.85); }
+.ap-look a { padding: 12px 22px; border-radius: 999px; background: #fff; color: #16264A; font: 700 14.5px "Public Sans", system-ui, sans-serif; text-decoration: none; }

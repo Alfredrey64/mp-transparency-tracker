@@ -39,13 +39,13 @@ function ShopScene() {
       <B n={1}>
         <g transform="translate(120 240)">
           <rect x="-34" y="-26" width="68" height="46" rx="12" fill="#fff" stroke="#CBD3E2" strokeWidth="2.5" />
-          <text y="9" textAnchor="middle" fontSize="28" fontWeight="800" fontFamily="Public Sans, system-ui, sans-serif" fill="#0B1B33">£</text>
+          <text y="9" textAnchor="middle" fontSize="28" fontWeight="800" fontFamily="Figures, Public Sans, system-ui, sans-serif" fill="#0B1B33">£</text>
           <g className="t-bob"><Arrow x={46} y={-4} /></g>
         </g>
       </B>
       <B n={3} fx="rise"><Bubble x={90} y={38} w={86} h={70} tail="center"><Coin x={0} y={0} r={17} /><rect x="-12" y="-2.5" width="24" height="5" rx="2.5" fill="#fff" opacity="0.9" /></Bubble></B>
       <B n={3} fx="rise"><Bubble x={206} y={26} w={86} h={70} tail="center"><g transform="translate(0 -2)"><Paper x={0} y={0} /><path d="M-4 4 l6 6 l12 -14" stroke="#16A34A" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" /></g></Bubble></B>
-      <B n={3} fx="rise"><Bubble x={322} y={38} w={86} h={70} tail="center"><g><Arrow x={0} y={0} /><text y="28" textAnchor="middle" fontSize="14" fontWeight="800" fontFamily="Public Sans, system-ui, sans-serif" fill="#0B1B33">PAY</text></g></Bubble></B>
+      <B n={3} fx="rise"><Bubble x={322} y={38} w={86} h={70} tail="center"><g><Arrow x={0} y={0} /><text y="28" textAnchor="middle" fontSize="14" fontWeight="800" fontFamily="Figures, Public Sans, system-ui, sans-serif" fill="#0B1B33">PAY</text></g></Bubble></B>
       <B n={4} fx="rise"><BallotBox x={425} y={392} /></B>
       <B n={4} fx="drop"><Paper x={425} y={290} rot={-8} /></B>
       <B n={5}><Bulb x={335} y={262} /></B>

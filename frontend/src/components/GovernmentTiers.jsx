@@ -377,6 +377,13 @@ export default function GovernmentTiers() {
     if (still || !seen || !gsapReady || !dia) return undefined;
     let ctx;
     let dead = false;
+    // A safety net: whatever happens to the animation, the boxes and branches are put back to plain and visible after a few seconds.
+    const guard = setTimeout(() => {
+      dia.querySelectorAll(".tier-slab, .tier-slab-icon, .tb-base, .tb-dot").forEach((el) => {
+        el.style.removeProperty("visibility"); el.style.removeProperty("opacity"); el.style.removeProperty("transform");
+      });
+      setIntroFlag(true);
+    }, 4500);
     loadGsapCore().then(({ gsap }) => {
       if (dead) return;
       ctx = gsap.context(() => {
@@ -390,6 +397,7 @@ export default function GovernmentTiers() {
           onComplete: () => {
             bases.forEach((b) => b.setAttribute("marker-end", `url(#tb-arr-${b.dataset.marker})`));
             setIntroFlag(true);
+            clearTimeout(guard);
           },
         });
         tl.fromTo(slabs, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.09, clearProps: "transform,opacity,visibility" }, 0);
@@ -398,7 +406,7 @@ export default function GovernmentTiers() {
         tl.fromTo(dots, { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.3, ease: "power2.out", stagger: 0.04, clearProps: "transform" }, 0.8);
       }, dia);
     }).catch(() => setIntroFlag(true));
-    return () => { dead = true; ctx?.revert(); };
+    return () => { dead = true; clearTimeout(guard); ctx?.revert(); };
   }, [seen, gsapReady, still]);
 
   // Auto-advance: once the marker has arrived, rest on the step for a moment, then move on. The page itself never scrolls on its own, so nothing moves

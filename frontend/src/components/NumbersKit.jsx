@@ -73,7 +73,8 @@ export function SeatsChart({ stats, onOpen }) {
             </span>
           ))}
         </div>
-        <span style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, textAlign: "right" }}>seats · share</span>
+        <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.inkSoft, textAlign: "right" }}>seats</span>
+        <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.inkSoft, textAlign: "right" }}>share</span>
       </div>
       {rows.map((r, i) => (
         <div
@@ -106,10 +107,8 @@ export function SeatsChart({ stats, onOpen }) {
             />
             <span aria-hidden="true" style={{ position: "absolute", left: `${(major / total) * 100}%`, top: -5, bottom: -5, borderLeft: `2px dashed ${COLORS.ink}`, opacity: 0.75 }} />
           </div>
-          <div style={{ textAlign: "right", whiteSpace: "nowrap" }}>
-            <span style={{ ...numeric, fontSize: 15, fontWeight: 700, color: COLORS.ink }}>{fmt(r.count)}</span>
-            <span style={{ ...numeric, fontSize: 12.5, color: COLORS.inkSoft }}> · {pct1(r.pct)}</span>
-          </div>
+          <div style={{ ...numeric, textAlign: "right", fontSize: 17, fontWeight: 700, color: COLORS.ink }}>{fmt(r.count)}</div>
+          <div style={{ ...numeric, textAlign: "right", whiteSpace: "nowrap", fontSize: 13.5, fontWeight: 500, color: COLORS.inkSoft }}>{pct1(r.pct)}</div>
         </div>
       ))}
       <div style={{ display: "grid", gridTemplateColumns: COLUMNS, columnGap: 12, marginTop: 6 }}>
@@ -117,7 +116,7 @@ export function SeatsChart({ stats, onOpen }) {
         <div style={{ position: "relative", height: 16 }}>
           <span style={{ position: "absolute", left: `${(major / total) * 100}%`, transform: "translateX(-50%)", fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: COLORS.ink, whiteSpace: "nowrap" }}>{major} = majority</span>
         </div>
-        <span />
+        <span /><span />
       </div>
     </div>
   );

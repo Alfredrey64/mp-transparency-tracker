@@ -88,7 +88,7 @@ function NameTag({ x, y, text, accent }) {
   return (
     <g transform={`translate(${x} ${y + 24})`} className="t-tag">
       <rect x={-w / 2} y="-12" width={w} height="24" rx="12" fill="#fff" fillOpacity="0.94" stroke={accent} strokeWidth="2" />
-      <text y="5.5" textAnchor="middle" fontSize="14.5" fontWeight="800" fontFamily="Public Sans, system-ui, sans-serif" fill="#1B2438">{text}</text>
+      <text y="5.5" textAnchor="middle" fontSize="14.5" fontWeight="800" fontFamily="Figures, Public Sans, system-ui, sans-serif" fill="#1B2438">{text}</text>
     </g>
   );
 }
@@ -135,7 +135,7 @@ export function Coin({ x, y, r = 14 }) {
   return (
     <g transform={`translate(${x} ${y})`}>
       <circle r={r} fill="#F2B632" stroke="#C7871A" strokeWidth="2.5" />
-      <text y={r * 0.36} textAnchor="middle" fontSize={r * 1.15} fontWeight="800" fontFamily="Public Sans, system-ui, sans-serif" fill="#8A5A0E">£</text>
+      <text y={r * 0.36} textAnchor="middle" fontSize={r * 1.15} fontWeight="800" fontFamily="Figures, Public Sans, system-ui, sans-serif" fill="#8A5A0E">£</text>
     </g>
   );
 }
@@ -143,7 +143,7 @@ export function Coin({ x, y, r = 14 }) {
 // A short caption in the picture, with a pale outline so it reads over anything behind it.
 export function Caption({ x, y, size = 18, fill = "#0B1B33", anchor = "middle", children }) {
   return (
-    <text x={x} y={y} textAnchor={anchor} fontSize={size} fontWeight="800" fontFamily="Public Sans, system-ui, sans-serif" fill={fill} stroke="#F4F8FF" strokeWidth={size * 0.28} paintOrder="stroke" strokeLinejoin="round">{children}</text>
+    <text x={x} y={y} textAnchor={anchor} fontSize={size} fontWeight="800" fontFamily="Figures, Public Sans, system-ui, sans-serif" fill={fill} stroke="#F4F8FF" strokeWidth={size * 0.28} paintOrder="stroke" strokeLinejoin="round">{children}</text>
   );
 }
 
@@ -171,7 +171,7 @@ export function Shop({ x, y }) {
       <rect x="20" y="-118" width="110" height="78" rx="6" fill="none" stroke="#fff" strokeWidth="4" />
       <rect x="28" y="-62" width="20" height="20" rx="3" fill="#E0775A" /><rect x="54" y="-70" width="16" height="28" rx="3" fill="#6AB023" /><rect x="76" y="-60" width="22" height="18" rx="3" fill="#F2B632" /><rect x="102" y="-68" width="18" height="26" rx="3" fill="#7A5AF0" />
       <rect x="152" y="-110" width="58" height="110" rx="6" fill="#8A5A3C" /><circle cx="198" cy="-52" r="4" fill="#F2B632" />
-      <rect x="62" y="-166" width="106" height="26" rx="6" fill="#fff" /><text x="115" y="-146" textAnchor="middle" fontSize="20" fontWeight="800" fontFamily="Public Sans, system-ui, sans-serif" fill="#8E241A">SHOP</text>
+      <rect x="62" y="-166" width="106" height="26" rx="6" fill="#fff" /><text x="115" y="-146" textAnchor="middle" fontSize="20" fontWeight="800" fontFamily="Figures, Public Sans, system-ui, sans-serif" fill="#8E241A">SHOP</text>
     </g>
   );
 }
@@ -299,7 +299,7 @@ export function BusStop({ x, y }) {
     <g transform={`translate(${x} ${y})`}>
       <rect x="-4" y="-130" width="8" height="130" fill="#6B7A90" />
       <rect x="-30" y="-168" width="60" height="42" rx="8" fill="#E0365B" />
-      <text y="-138" textAnchor="middle" fontSize="26" fontWeight="800" fontFamily="Public Sans, system-ui, sans-serif" fill="#fff">12</text>
+      <text y="-138" textAnchor="middle" fontSize="26" fontWeight="800" fontFamily="Figures, Public Sans, system-ui, sans-serif" fill="#fff">12</text>
     </g>
   );
 }
@@ -343,7 +343,7 @@ export function Bulb({ x, y }) {
 }
 
 export function QuestionMark({ s = 1 }) {
-  return <text textAnchor="middle" y={14 * s} fontSize={44 * s} fontWeight="800" fontFamily="Newsreader, Georgia, serif" fill="#1E4FB8">?</text>;
+  return <text textAnchor="middle" y={14 * s} fontSize={44 * s} fontWeight="800" fontFamily="Figures, Newsreader, Georgia, serif" fill="#1E4FB8">?</text>;
 }
 
 export function Arrow({ x, y, up = true }) {

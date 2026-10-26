@@ -17,7 +17,7 @@ const Back = ({ tone = "#E3EEFF", tone2 = "#F7FAFF", ground = "#D2E8D2", path = 
 );
 
 const Label = ({ x, y, size = 30, fill = "#fff", anchor = "middle", weight = 800, children }) => (
-  <text x={x} y={y} textAnchor={anchor} fontSize={size} fontWeight={weight} fontFamily="Public Sans, system-ui, sans-serif" fill={fill}>{children}</text>
+  <text x={x} y={y} textAnchor={anchor} fontSize={size} fontWeight={weight} fontFamily="Figures, Public Sans, system-ui, sans-serif" fill={fill}>{children}</text>
 );
 
 const Crown = ({ x, y, s = 1 }) => (
@@ -48,7 +48,7 @@ export function ChapterScene({ chapter }) {
       <Sky tone={`color-mix(in srgb, ${c} 22%, #fff)`} tone2="#FFFFFF" />
       <g className="t-float"><circle cx="640" cy="120" r="150" fill={c} opacity="0.12" /></g>
       <g className="t-float" style={{ animationDelay: "-3s" }}><circle cx="120" cy="360" r="190" fill={c} opacity="0.1" /></g>
-      <g className="t-numeral"><text x="692" y="214" textAnchor="end" fontSize="230" fontWeight="800" fontFamily="Newsreader, Georgia, serif" fill={c} opacity="0.2">{n}</text></g>
+      <g className="t-numeral"><text x="692" y="214" textAnchor="end" fontSize="230" fontWeight="800" fontFamily="Figures, Newsreader, Georgia, serif" fill={c} opacity="0.2">{n}</text></g>
       <Ground colour={`color-mix(in srgb, ${c} 18%, #E6F0E6)`} path="#EFE8D8" />
       {chapter.key === "why" && <><Person x={300} y={392} shirt={c} skin={SKIN[2]} mood="happy" /><Person x={380} y={392} kid long shirt="#1E4FB8" skin={SKIN[2]} mood="happy" /><Person x={450} y={392} shirt="#0E9AA7" skin={SKIN[1]} mood="happy" /><B n={0}><Bulb x={380} y={200} /></B></>}
       {chapter.key === "who" && <><TownHall x={120} y={370} /><g transform="translate(480 370)"><Parliament x={0} y={0} s={0.9} /></g></>}
@@ -197,8 +197,8 @@ export function PartyScene({ party, seats }) {
               ? <circle key={i} className="t-seat" cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r="1.7" fill={party.colour} style={{ animationDelay: `${(0.5 + (i * 1.6) / mine) * 1}s` }} />
               : <circle key={i} cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r="1.7" fill="#C3CCDC" />
           ))}
-          <text y="-18" textAnchor="middle" fontSize="30" fontWeight="800" fontFamily="Newsreader, Georgia, serif" fill="#0B1B33">{mine}</text>
-          <text y="-2" textAnchor="middle" fontSize="12.5" fontWeight="700" fontFamily="Public Sans, system-ui, sans-serif" fill="#44506B">of {SEATS_IN_COMMONS} seats</text>
+          <text y="-18" textAnchor="middle" fontSize="30" fontWeight="800" fontFamily="Figures, Newsreader, Georgia, serif" fill="#0B1B33">{mine}</text>
+          <text y="-2" textAnchor="middle" fontSize="12.5" fontWeight="700" fontFamily="Figures, Public Sans, system-ui, sans-serif" fill="#44506B">of {SEATS_IN_COMMONS} seats</text>
         </g>
       )}
       <B n={1} fx="rise"><Bubble x={330} y={256} w={110} h={86} tail="left"><Bulb x={0} y={0} /></Bubble></B>
@@ -242,7 +242,7 @@ export function VoiceScene() {
         <Person x={330} y={392} kid long shirt="#E0365B" skin={SKIN[2]} mood="happy" />
         <Person x={410} y={392} kid shirt="#0E9AA7" skin={SKIN[3]} mood="happy" />
         <Person x={490} y={392} kid long shirt="#F2622A" skin={SKIN[0]} mood="happy" />
-        <Bubble x={240} y={150} w={100} h={74} tail="left"><text y="14" textAnchor="middle" fontSize="48" fontWeight="800" fontFamily="Newsreader, Georgia, serif" fill="#E0365B">!</text></Bubble>
+        <Bubble x={240} y={150} w={100} h={74} tail="left"><text y="14" textAnchor="middle" fontSize="48" fontWeight="800" fontFamily="Figures, Newsreader, Georgia, serif" fill="#E0365B">!</text></Bubble>
         <Bubble x={430} y={120} w={120} h={74} tail="right"><Letter x={0} y={0} /></Bubble>
       </B>
       {VOICES.map((v, i) => {
@@ -279,7 +279,7 @@ export function VoteScene({ votes = [0, 0] }) {
         <g key={c.x}>
           <rect x={c.x - 56} y="104" width="112" height="196" rx="16" fill={c.colour} opacity="0.1" />
           <rect className="t-bar" x={c.x - 56} y="104" width="112" height="196" rx="16" fill={c.colour} style={{ transform: `scaleY(${Math.max(votes[i] / top, 0.012)})` }} />
-          <text x={c.x} y="86" textAnchor="middle" fontSize="50" fontWeight="800" fontFamily="Newsreader, Georgia, serif" fill="#0B1B33">{votes[i]}</text>
+          <text x={c.x} y="86" textAnchor="middle" fontSize="50" fontWeight="800" fontFamily="Figures, Newsreader, Georgia, serif" fill="#0B1B33">{votes[i]}</text>
           {c.icon}
         </g>
       ))}
@@ -292,7 +292,7 @@ export function QuizScene({ beat }) {
   return (
     <>
       <Back tone="#EDE7FF" tone2="#FAF8FF" />
-      <g className="t-bob"><text x="400" y="230" textAnchor="middle" fontSize="170" fontWeight="800" fontFamily="Newsreader, Georgia, serif" fill="#7A5AF0" opacity="0.9">?</text></g>
+      <g className="t-bob"><text x="400" y="230" textAnchor="middle" fontSize="170" fontWeight="800" fontFamily="Figures, Newsreader, Georgia, serif" fill="#7A5AF0" opacity="0.9">?</text></g>
       <B n={0} until={1}><Person x={240} y={392} shirt="#7A5AF0" skin={SKIN[1]} mood="thinking" /></B>
       <B n={1} until={2} fx="fade"><Person x={240} y={392} shirt="#7A5AF0" skin={SKIN[1]} mood="happy" /></B>
       <B n={2} fx="fade"><Person x={240} y={392} shirt="#7A5AF0" skin={SKIN[1]} mood="worried" /></B>

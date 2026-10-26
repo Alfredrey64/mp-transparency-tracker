@@ -1,0 +1,7 @@
+.cm-ledger { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr)); margin-top: 24px; border-radius: 22px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); overflow: hidden; }
+.cm-ledger > div { display: grid; gap: 2px; align-content: center; padding: 20px 24px; border-left: 1px solid var(--c-hairline); position: relative; }
+.cm-ledger > div:first-child { border-left: 0; }
+.cm-ledger > div::before { content: ""; position: absolute; left: 0; top: 18px; bottom: 18px; width: 4px; border-radius: 0 3px 3px 0; background: var(--lc); }
+.cm-ledger > div > b { font: 700 clamp(32px, 4vw, 44px)/1.05 "Newsreader", Georgia, serif; color: var(--c-ink); letter-spacing: -0.015em; }
+.cm-ledger > div > span { font: 600 13.5px/1.35 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+@media (max-width: 520px) { .cm-ledger > div { border-left: 0; border-top: 1px solid var(--c-hairline); } .cm-ledger > div:first-child { border-top: 0; } }

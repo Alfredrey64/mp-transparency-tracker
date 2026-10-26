@@ -1,12 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import "../pagetools.css";
 
-// Two helpers for every page, added from the outside so no page has to ask for them.
-//  1. "On this page": once a long page has been scrolled, a small button lists the page's own headings and jumps to any of them, lighting the one in view.
-//  2. A coloured edge on the page's big white cards (see pagetools.css): cards are found by looking at what is on the page, so a new page gets the look too.
+// A helper for every page, added from the outside so no page has to ask for it. "On this page": once a long page has been scrolled, a small button lists the page's own headings and jumps to any of them, lighting the one in view.
 const SKIP = ".page-hero, .sn, [role='dialog'], .site-footer, .t-root, .tm-sheet";
-const MIN_W = 260;
-const MIN_H = 96;
 
 function slug(text, used) {
   const base = text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "section";
@@ -26,14 +22,6 @@ function scan(main) {
     if (!h.id || h.id.startsWith("pt-")) h.id = slug(text, used); else used.add(h.id);
     h.style.scrollMarginTop = "92px";
     found.push({ id: h.id, text });
-  }
-  // The big white cards.
-  for (const el of main.querySelectorAll('div[style*="var(--c-paper-card)"], section[style*="var(--c-paper-card)"], article[style*="var(--c-paper-card)"]')) {
-    if (el.dataset.card || el.closest(SKIP) || el.classList.contains("ycard")) continue;
-    const r = el.getBoundingClientRect();
-    if (r.width < MIN_W || r.height < MIN_H) continue;
-    if (parseFloat(getComputedStyle(el).borderTopLeftRadius) < 9) continue;
-    el.dataset.card = "1";
   }
   return found;
 }
