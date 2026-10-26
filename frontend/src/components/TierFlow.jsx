@@ -41,6 +41,7 @@ export default function TierFlow({ layout, action, calm, visible, curKey, voting
   const routeRef = useRef(null);
   const layerRef = useRef(null);
   const { width, height } = layout;
+  const lastTier = [...layout.nodes].reverse().find((n) => !n.isYou);
   const reachedId = reachedBefore.join("|");
   const chainId = chain.join("|");
 
@@ -148,20 +149,36 @@ export default function TierFlow({ layout, action, calm, visible, curKey, voting
       <svg ref={svgRef} className="tb-svg" width={width} height={height} viewBox={`0 0 ${width} ${height}`} aria-hidden="true">
         <defs>
           {layout.edges.map((e) => <Arrow key={e.key} id={`tb-arr-${e.key}`} color={colors[e.key] ?? "#3B4A66"} />)}
+          {layout.edges.map((e) => {
+            // Each branch fades from its parent's colour to its own, so you can see where it leaves and where it arrives.
+            const child = layout.byKey[e.key];
+            const parent = layout.byKey[child.parent ?? lastTier.key];
+            const [c0, c1] = [colors[parent.key] ?? "#3B4A66", colors[e.key] ?? "#3B4A66"];
+            const at = { gradientUnits: "userSpaceOnUse", x1: parent.spineX, y1: parent.bottom, x2: child.left, y2: child.isYou ? child.top : child.midY };
+            return (
+              <g key={e.key}>
+                <linearGradient id={`tbg-${e.key}`} {...at}><stop offset="0" stopColor={c0} stopOpacity="0.34" /><stop offset="1" stopColor={c1} stopOpacity="0.34" /></linearGradient>
+                <linearGradient id={`tbs-${e.key}`} {...at}><stop offset="0" stopColor={c0} /><stop offset="1" stopColor={c1} /></linearGradient>
+              </g>
+            );
+          })}
           <Arrow id="tb-arr-up" color="#2E7D5B" />
         </defs>
         {layout.edges.map((e) => (
           <g key={e.key} className="tb-down" style={{ "--ln": colors[e.key] ?? "#3B4A66" }}>
-            <path d={e.d} className="tb-base" markerEnd={`url(#tb-arr-${e.key})`} data-flow="down" data-marker={e.key} data-col={colors[e.key]} />
-            <path d={e.d} className="tb-done" pathLength="1" data-f={`edge:${e.key}`} />
+            <path d={e.d} className="tb-base" style={{ stroke: `url(#tbg-${e.key})` }} markerEnd={`url(#tb-arr-${e.key})`} data-flow="down" data-marker={e.key} data-col={colors[e.key]} />
+            <path d={e.d} className="tb-run" />
+            <path d={e.d} className="tb-done" pathLength="1" style={{ stroke: `url(#tbs-${e.key})` }} data-f={`edge:${e.key}`} />
           </g>
         ))}
         <g className="tb-up">
           <path d={layout.trunk} className="tb-base" markerEnd="url(#tb-arr-up)" data-flow="up" data-marker="up" />
+          <path d={layout.trunk} className="tb-run" />
           <path d={layout.trunk} className="tb-done" pathLength="1" data-f="trunk" />
           {layout.stubs.map((st) => (
             <g key={st.key}>
               <path d={st.d} className="tb-base" markerEnd="url(#tb-arr-up)" data-flow="up" data-marker="up" />
+              <path d={st.d} className="tb-run" />
               <path d={st.d} className="tb-done" pathLength="1" data-f={`stub:${st.key}`} />
             </g>
           ))}

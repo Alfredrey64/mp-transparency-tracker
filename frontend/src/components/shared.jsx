@@ -197,13 +197,13 @@ function usePageAccent(accent) {
   }, [accent]);
 }
 
-export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = "left", size = "lg", icon: Icon, share }) {
+export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = "left", size = "lg", icon: Icon, share, accent: accentProp }) {
   const isHero = size === "xl";
   // The page's "What you're looking at" box sits under every header.
   const guideKey = useContext(GuideKeyContext);
   // Every page passes its own distinct icon here already: reusing it as the lookup key gives each page its menu group's colour (see
   // data/sidebarSections.js) with nothing passed down through the 60-odd page files. Pages outside any group keep the plain site accent.
-  const accent = SECTION_ACCENT_BY_ICON.get(Icon) ?? OUTSIDE_ACCENT[guideKey] ?? COLORS.accent;
+  const accent = accentProp ?? OUTSIDE_ACCENT[guideKey] ?? SECTION_ACCENT_BY_ICON.get(Icon) ?? COLORS.accent;
   const kickerText = SECTION_LABEL_BY_KEY.get(guideKey) ?? kicker;
   usePageAccent(accent);
   return (

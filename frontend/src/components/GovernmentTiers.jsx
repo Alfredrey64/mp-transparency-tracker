@@ -13,6 +13,18 @@ const DWELL_MS = 3800;
 const ICONS = { parliament: IconParliament, government: IconCabinet, devolved: IconDevolved, combined: IconTransport, council: IconCouncil, parish: IconHome, you: IconGroup };
 const YOU_TIER = { key: "you", name: YOU.name, short: YOU.short, color: COLORS.accent, figure: YOU.figure, links: YOU.links };
 
+// How far a tier reaches, from the whole country down to your own front door: drawn as rings inside each box, with the tier's own ring filled in.
+const SCOPE = { parliament: 0, government: 0, devolved: 1, combined: 2, council: 3, parish: 4, you: 5 };
+const SCOPE_NAME = ["the whole UK", "a nation", "a city region", "a council area", "a village or town", "your home"];
+function ScopeRings({ at }) {
+  return (
+    <svg className="tier-rings" viewBox="10 0 100 100" aria-hidden="true">
+      {[46, 38, 30, 22, 14].map((r, i) => <circle key={r} cx="60" cy="50" r={r} className={i === at ? "tier-ring tier-ring-on" : "tier-ring"} />)}
+      <circle cx="60" cy="50" r="5.5" className={at === 5 ? "tier-ring tier-ring-on" : "tier-ring"} />
+    </svg>
+  );
+}
+
 // Where the marker sits for a step: a tier's place in the stack (0 at the top),
 // or the voter at the bottom for "you" and "vote".
 function positionOf(tierKey, order) {
@@ -100,6 +112,10 @@ function Legend() {
     <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 26px", marginBottom: 16 }}>
       {item(true, "Laws, rules and money flow down")}
       {item(false, "Votes and scrutiny flow up")}
+      <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>
+        <svg width="18" height="18" viewBox="10 0 100 100" aria-hidden="true" fill="none" stroke="#6B7A90" strokeWidth="6">{[46, 32, 18].map((r) => <circle key={r} cx="60" cy="50" r={r} />)}</svg>
+        Rings show how far a tier reaches: the whole UK outside, your home in the middle
+      </span>
     </div>
   );
 }
@@ -124,6 +140,7 @@ function Slab({ box, tier, figure, selected, active, state, index, arriveDelay, 
         <span className="tier-sub tier-slab-short">{tier.short}</span>
         {tier.keywords && <span className="tier-keys tier-slab-keys">{tier.keywords}</span>}
       </span>
+      <span className="tier-slab-scope" role="img" aria-label={`Covers ${SCOPE_NAME[SCOPE[tier.key]]}`} title={`Covers ${SCOPE_NAME[SCOPE[tier.key]]}`}><ScopeRings at={SCOPE[tier.key]} /></span>
       <span className="tier-slab-fig">
         <span className="tier-slab-num">{figure.value}</span>
         <span className="tier-sub tier-slab-label">{figure.label}</span>
@@ -461,7 +478,7 @@ export default function GovernmentTiers() {
 
       <div className="tier-wrap" ref={stageRef}>
         <div className="tier-grid" style={{ "--len": `${fullH}px` }}>
-          <div className="tier-diagram" ref={diaRef} data-density={layout.metrics.density} data-in={seen || calm ? "1" : "0"} data-gsap={gsapReady && !still ? "1" : "0"} data-mode={action ? "action" : "explore"} style={{ "--dur": `${dur}s`, height: fullH }}>
+          <div className="tier-diagram" ref={diaRef} data-density={layout.metrics.density} data-in={seen || calm ? "1" : "0"} data-gsap={gsapReady && !still ? "1" : "0"} data-mode={action ? "action" : "explore"} data-run={!action && !still && onScreen && introDone ? "1" : "0"} style={{ "--dur": `${dur}s`, height: fullH }}>
             <TierFlow
               layout={layout} action={action} calm={still} visible={onScreen && introDone} curKey={curKey} voting={voting} route={beadPath} dur={dur} color={tokenColor}
               stepKey={`${scenarioKey}-${step}-${nation}`} reachedBefore={reachedBefore} colors={colors} chain={chain}
@@ -497,7 +514,10 @@ export default function GovernmentTiers() {
           )}
 
           <div className="tier-panelcol">
-          <div className="tier-panel" style={{ background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${action ? tokenColor : colors[selKey]}`, borderRadius: 14, padding: "18px 20px", transition: "border-color 0.4s" }}>
+          <div className="tier-panel" data-c="1" style={{ background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${action ? tokenColor : colors[selKey]}`, borderRadius: 14, padding: "18px 20px", transition: "border-color 0.4s" }}>
+            <span className="tier-panel-mark" aria-hidden="true" style={{ color: action ? tokenColor : colors[selKey] }}>
+              {(() => { const MarkIcon = ICONS[action ? (voting ? "you" : cur.tier) : selKey]; return MarkIcon ? <MarkIcon size={150} /> : null; })()}
+            </span>
             {action ? (
               <ActionPanel
                 scenarioKey={scenarioKey} onScenario={onScenario} steps={steps} step={Math.min(step, steps.length - 1)} playing={playing} finished={finished}

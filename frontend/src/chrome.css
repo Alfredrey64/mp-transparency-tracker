@@ -239,7 +239,7 @@
 
 /* ---- Page header band --------------------------------------------------------------------------------------------------------------------------- */
 .page-hero {
-  --hero-bg: color-mix(in srgb, var(--hero-accent, #2F80ED) 16%, var(--c-hero));
+  --hero-bg: color-mix(in oklab, var(--hero-accent, #2F80ED) 9%, var(--c-hero));
   position: relative; isolation: isolate; color: #fff; background: var(--hero-bg);
   margin: calc(-1 * clamp(20px, 5vw, 40px)) 0 28px; padding: clamp(26px, 4vw, 44px) 0 clamp(28px, 4vw, 42px);
   box-shadow: 0 0 0 100vmax var(--hero-bg); clip-path: inset(0 -100vmax);
@@ -259,8 +259,8 @@
 .page-hero-inner::before {
   content: ""; position: absolute; z-index: -1; left: -100vmax; right: -100vmax; top: 0; bottom: 0; pointer-events: none;
   background:
-    radial-gradient(640px 320px at calc(50% + 26vw) 0, color-mix(in srgb, var(--hero-accent, var(--c-brand)) 58%, transparent), transparent 72%),
-    radial-gradient(560px 280px at calc(50% - 30vw) 100%, color-mix(in srgb, var(--hero-accent, var(--c-brand)) 34%, transparent), transparent 72%);
+    radial-gradient(640px 320px at calc(50% + 26vw) 0, color-mix(in oklab, color-mix(in oklab, var(--hero-accent, var(--c-brand)) 78%, #fff) 40%, transparent), transparent 72%),
+    radial-gradient(560px 280px at calc(50% - 30vw) 100%, color-mix(in oklab, color-mix(in oklab, var(--hero-accent, var(--c-brand)) 78%, #fff) 22%, transparent), transparent 72%);
   animation: hero-aurora 16s ease-in-out infinite alternate; will-change: transform;
 }
 .page-hero[data-align="center"] .page-hero-inner { margin: 0 auto; text-align: center; }
@@ -296,6 +296,12 @@
 .seg-btn[aria-selected="true"], .seg-btn[aria-pressed="true"] { background: var(--c-paper-card); color: var(--c-ink); font-weight: 700; box-shadow: var(--shadow-1), 0 0 0 1px var(--c-hairline); }
 .seg-btn[aria-selected="true"]::before, .seg-btn[aria-pressed="true"]::before { content: ""; position: absolute; left: 14px; right: 14px; bottom: 5px; height: 3px; border-radius: 2px; background: var(--c, var(--c-brand)); }
 .seg-btn[aria-selected="true"], .seg-btn[aria-pressed="true"] { padding-bottom: 4px; }
+/* A tab that is picked draws its coloured line out from the middle and settles with a small lift. */
+.seg-btn[aria-selected="true"]::before, .seg-btn[aria-pressed="true"]::before { animation: seg-line 0.4s var(--ease-out) both; transform-origin: center; }
+.seg-btn[aria-selected="true"], .seg-btn[aria-pressed="true"] { animation: seg-pop 0.35s var(--ease-spring) both; }
+@keyframes seg-line { from { transform: scaleX(0); opacity: 0; } to { transform: scaleX(1); opacity: 1; } }
+@keyframes seg-pop { 0% { transform: scale(0.96); } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .seg-btn[aria-selected="true"], .seg-btn[aria-pressed="true"], .seg-btn[aria-selected="true"]::before, .seg-btn[aria-pressed="true"]::before { animation: none; } }
 .seg-sm { flex-wrap: nowrap; }
 .tab-pills { display: flex; flex-wrap: wrap; gap: 8px; }
 /* On a phone the toggles become an even grid, and an odd one out spans the full row, so no row ends on a stray button. */

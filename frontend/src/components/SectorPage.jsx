@@ -25,6 +25,7 @@ import { sectorShareSpec } from "../lib/shareSpecs";
 import { seriesCsv } from "../lib/onsDownload";
 import { PARLIAMENT_LINKS } from "../data/onsParliament";
 import { periodToT, formatValue, formatAxis, latestInfo, changeWords, changeShort, sentenceFor, sliceRange, labelFor } from "../lib/onsFormat";
+import CountValue from "./CountValue";
 import { compareStats } from "../lib/onsStats";
 import { toLineData, yearTicks } from "../lib/onsChart";
 import { bandsBetween, PARTY_COLOURS } from "../lib/governments";
@@ -107,7 +108,7 @@ const Tile = memo(function Tile({ def, item, accent }) {
       }}
     >
       <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, fontWeight: 700, color: COLORS.ink, lineHeight: 1.3 }}>{def.label}</div>
-      <div className="tile-num" style={{ ...numeric, fontSize: 42, fontWeight: 600, lineHeight: 1.1, color: COLORS.ink, marginTop: 10, letterSpacing: "-0.02em" }}>{formatValue(def.format, info.value)}</div>
+      <div className="tile-num" style={{ ...numeric, fontSize: 42, fontWeight: 600, lineHeight: 1.1, color: COLORS.ink, marginTop: 10, letterSpacing: "-0.02em" }}><CountValue>{formatValue(def.format, info.value)}</CountValue></div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, margin: "2px 0 10px" }}>{info.label}</div>
       <div><ChangeChip change={info.change} accent={accent} /></div>
       <div style={{ margin: "14px -22px 0" }}><Spark points={item.points} color={accent} /></div>
@@ -404,7 +405,7 @@ function Spotlight({ def, item, accent }) {
     <div style={{ minWidth: 0 }}>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: readable(accent), marginBottom: 4 }}>{def.label}</div>
       <div style={{ ...numeric, fontSize: "clamp(46px, 7vw, 68px)", fontWeight: 600, lineHeight: 1.05, color: COLORS.ink, letterSpacing: "-0.03em" }}>
-        {formatValue(def.format, info.value)}
+        <CountValue>{formatValue(def.format, info.value)}</CountValue>
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, margin: "4px 0 10px" }}>{info.label}</div>
       <ChangeChip change={info.change} accent={accent} />
@@ -558,7 +559,7 @@ export default function SectorPage({ sector, param = null, embedded = false }) {
 
   return (
     <div className="regions-wrap" style={embedded ? { marginTop: 8 } : { maxWidth: 1280, margin: "0 auto", padding: PAGE_PADDING }}>
-      {!embedded && <PageHeader icon={Icon} title={def.title} subtitle={def.subtitle} share={loaded ? shareCard : undefined} />}
+      {!embedded && <PageHeader icon={Icon} accent={def.accent} title={def.title} subtitle={def.subtitle} share={loaded ? shareCard : undefined} />}
 
       {failed && <div style={{ marginTop: 24 }}><LoadFailedNote item="these figures" /></div>}
       {!loaded && !failed && <Loading />}

@@ -216,7 +216,12 @@ const OUTSIDE_SECTIONS = {
   teacher: "For teachers",
 };
 // Pages that sit outside every group still get a colour of their own, so none of them is plain navy.
-export const OUTSIDE_ACCENT = { methodology: "#0E9AA7", settings: "#7A5AF0", privacy: "#1FA97C", terms: "#D9A62A", watchlist: "#E0367A", myMP: "#2F80ED" };
+export const OUTSIDE_ACCENT = {
+  methodology: "#0E9AA7", settings: "#7A5AF0", privacy: "#1FA97C", terms: "#C9962A", watchlist: "#E0367A", myMP: "#2F80ED",
+  // The Britain in numbers pages each get their own colour (the data pages already do, from onsSectors.js), so the section is not one long run of teal.
+  inequality: "#A66BBE", brexit: "#3D5AFE", defence: "#4C6FA6", education: "#E07A1F", ageing: "#B5651D", nhs: "#1FA97C", energy: "#3F9B3F",
+  trust: "#7B5BD6", care: "#D4577A", transport: "#2C7DA0", union: "#D9453B", taxRates: "#2E86C1", publicFinances: "#2F9E6E",
+};
 export const SECTION_LABEL_BY_KEY = new Map([
   ...SECTIONS.flatMap((section) => section.items.map((item) => [item.key, section.label])),
   ...Object.entries(OUTSIDE_SECTIONS),

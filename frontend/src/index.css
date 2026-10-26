@@ -329,6 +329,12 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
   display: grid; gap: 24px; grid-template-columns: minmax(0, 1fr);
 }
 .tier-diagram { position: relative; container-type: inline-size; container-name: tierdia; overflow-x: clip; }
+/* A faint drawing-board grid behind the boxes, fading out at the edges. */
+.tier-diagram::before {
+  content: ""; position: absolute; inset: -8px -6px; z-index: 0; pointer-events: none; border-radius: 18px;
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--c-ink) 16%, transparent) 1px, transparent 1.4px); background-size: 18px 18px;
+  -webkit-mask-image: radial-gradient(ellipse at 40% 45%, #000 35%, transparent 78%); mask-image: radial-gradient(ellipse at 40% 45%, #000 35%, transparent 78%);
+}
 .tier-panelcol { min-width: 0; }
 /* The panel stays in view beside the diagram using plain sticky positioning: it can never leave its column, so it can never sit on top of the
    sections below, and there is no script chasing the scroll. */
@@ -358,23 +364,33 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 /* What fits in a box depends on how wide the diagram is, not the page. */
 @container tierdia (max-width: 599px) {
   .tier-diagram .tier-keys, .tier-diagram .tier-slab-label { display: none; }
-  .tier-diagram .tier-slab-short { -webkit-line-clamp: 1; }
-  .tier-diagram .tier-slab { padding: 0 14px; gap: 12px; }
-  .tier-diagram .tier-slab-icon { width: 36px; height: 36px; }
+  .tier-diagram .tier-slab-short { -webkit-line-clamp: 1; font-size: 12.5px; }
+  .tier-diagram .tier-slab { padding: 0 14px 0 20px; gap: 11px; }
+  .tier-diagram .tier-slab-icon { width: 34px; height: 34px; border-radius: 9px; }
   .tier-diagram .tier-slab-name { font-size: 16px; }
   .tier-diagram .tier-slab-num { font-size: 17px; }
+  .tier-diagram .tier-slab-scope { width: 40px; height: 40px; }
 }
 @container tierdia (max-width: 429px) {
-  .tier-diagram .tier-sub { display: none; }
-  .tier-diagram .tier-slab { padding: 0 10px; gap: 9px; }
-  .tier-diagram .tier-slab > .tier-slab-icon { display: none; }
-  .tier-diagram .tier-slab-name { font-size: 14px; line-height: 1.2; overflow-wrap: anywhere; }
+  .tier-diagram .tier-slab { padding: 0 11px 0 17px; gap: 9px; }
+  .tier-diagram .tier-slab-icon { width: 30px; height: 30px; border-radius: 8px; }
+  .tier-diagram .tier-slab-icon svg:not(.tier-tick) { width: 17px; height: 17px; }
+  .tier-diagram .tier-slab-short { font-size: 12px; line-height: 1.3; }
+  .tier-diagram .tier-slab-name { font-size: 14.5px; line-height: 1.2; overflow-wrap: anywhere; }
   .tier-diagram .tier-slab-num { font-size: 14.5px; }
+  .tier-diagram .tier-slab-scope { width: 32px; height: 32px; }
+}
+@container tierdia (max-width: 339px) {
+  .tier-diagram .tier-slab-scope, .tier-diagram .tier-sub { display: none; }
+  .tier-diagram .tier-slab { padding: 0 10px 0 15px; gap: 8px; }
+  .tier-diagram .tier-slab-icon { width: 26px; height: 26px; border-radius: 7px; }
+  .tier-diagram .tier-slab-icon svg:not(.tier-tick) { width: 15px; height: 15px; }
+  .tier-diagram .tier-tick { width: 11px; height: 11px; right: -4px; bottom: -4px; }
 }
 /* When the stack is squeezed to fit the screen, boxes show less. */
 .tier-diagram[data-density="mid"] .tier-keys { display: none; }
 .tier-diagram[data-density="mid"] .tier-slab-short { -webkit-line-clamp: 1; }
-.tier-diagram[data-density="tight"] .tier-keys, .tier-diagram[data-density="tight"] .tier-sub { display: none; }
+.tier-diagram[data-density="tight"] .tier-keys, .tier-diagram[data-density="tight"] .tier-slab-label { display: none; }
 .tier-diagram[data-density="tight"] .tier-slab-icon { width: 30px; height: 30px; }
 .tier-diagram[data-density="tight"] .tier-slab-name { font-size: 15px; }
 
@@ -384,9 +400,14 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 .tier-diagram[data-mode="explore"] .tb-done { transition: stroke-dashoffset 0.7s cubic-bezier(0.45, 0.05, 0.25, 1), opacity 0.3s; }
 .tb-up { --ln: #2E7D5B; }
 .tb-svg path { fill: none; stroke-linejoin: round; }
-.tb-base { stroke: color-mix(in srgb, var(--ln) 45%, var(--c-hairline)); stroke-width: 2.5; stroke-linecap: round; }
+.tb-base { stroke: color-mix(in srgb, var(--ln) 40%, var(--c-paper-card)); stroke-width: 7; stroke-linecap: round; }
+.tb-up .tb-base { stroke: color-mix(in srgb, #2E7D5B 38%, var(--c-paper-card)); }
+/* Beads that run along each branch while you explore, so the branches read as pipes carrying something. */
+.tb-run { stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 0.1 13; opacity: 0; transition: opacity 0.6s; filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.9)); }
+.tier-diagram[data-run="1"] .tb-run { opacity: 0.95; animation: tbRun 1.5s linear infinite; }
+@keyframes tbRun { to { stroke-dashoffset: -13.1; } }
 /* The part of a branch the story has reached. */
-.tb-done { stroke: var(--ln); stroke-width: 3.5; stroke-linecap: butt; stroke-dasharray: 1 1; stroke-dashoffset: 1; opacity: 0; }
+.tb-done { stroke: var(--ln); stroke-width: 4.5; stroke-linecap: butt; stroke-dasharray: 1 1; stroke-dashoffset: 1; opacity: 0; }
 
 /* Junctions: where a branch leaves a tier and where a vote branch meets the trunk. */
 .tb-dot { stroke: var(--c-paper-card); stroke-width: 2; transition: fill 0.35s; }
@@ -422,6 +443,20 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 .tier-slab[data-state="done"] { border-color: color-mix(in srgb, var(--c) 35%, var(--c-hairline)); }
 .tier-tick { z-index: 1; position: absolute; right: -6px; bottom: -6px; color: var(--c); background: var(--c-paper-card); border-radius: 50%; opacity: 0; transform: scale(0.4); transition: opacity 0.3s, transform 0.4s var(--ease-spring); }
 .tier-slab-icon { position: relative; }
+/* The rings: how far a tier reaches, from the whole UK in the outer ring to your own home in the middle. The tier's own ring is filled. */
+.tier-slab-scope { flex: none; width: 48px; height: 48px; display: grid; place-items: center; }
+.tier-rings { width: 100%; height: 100%; overflow: visible; }
+.tier-ring { fill: none; stroke: color-mix(in srgb, var(--c) 38%, transparent); stroke-width: 1.6; }
+.tier-ring-on { fill: color-mix(in srgb, var(--c) 34%, transparent); stroke: var(--c); stroke-width: 2.2; }
+.tier-slab > * { position: relative; z-index: 1; }
+.tier-slab > .tier-pill { position: absolute; z-index: 3; }
+/* A slow sheen across a box when you point at it. */
+.tier-slab::after { content: ""; position: absolute; inset: 0; z-index: 2; border-radius: inherit; pointer-events: none; background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.5) 50%, transparent 62%); transform: translateX(-120%); }
+.tier-slab:hover::after { transform: translateX(120%); transition: transform 0.9s var(--ease-out); }
+.tier-panel { position: relative; }
+.tier-panel > :not(.tier-panel-mark) { position: relative; z-index: 1; }
+.tier-panel-mark { position: absolute; right: 8px; bottom: 4px; z-index: 0; opacity: 0.08; pointer-events: none; transition: color 0.4s, opacity 0.4s; }
+.tier-panel-mark svg { width: 150px; height: 150px; }
 .tier-slab[data-state="done"] .tier-tick { opacity: 1; transform: none; }
 .tier-slab[data-active="1"] {
   border-color: var(--c); background: color-mix(in srgb, var(--c) 10%, var(--c-paper-card)); transition-delay: var(--delay, 0s);
@@ -451,7 +486,7 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 .tier-diagram[data-in="1"] .tb-svg { animation: branchWipe 1.1s var(--ease-out) 0.45s backwards; }
 @keyframes slabRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 @keyframes branchWipe { from { opacity: 0; clip-path: inset(0 0 100% 0); } to { opacity: 1; clip-path: inset(-20px); } }
-@media (prefers-reduced-motion: reduce) { .tier-diagram .tier-slab, .tier-diagram .tb-svg { animation: none !important; opacity: 1 !important; } .tier-slab-icon::after { animation: none !important; } }
+@media (prefers-reduced-motion: reduce) { .tier-diagram .tier-slab, .tier-diagram .tb-svg { animation: none !important; opacity: 1 !important; } .tier-slab-icon::after, .tb-run { animation: none !important; } .tier-slab::after { display: none; } }
 
 /* A thin bar that fills while the walk-through rests on a step, so you can see when it will move on. */
 .tier-dwell { height: 3px; border-radius: 2px; background: var(--c-hairline); margin-top: 10px; overflow: hidden; flex: none; }
@@ -498,8 +533,10 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 }
 
 /* The headline tiles do not move on hover: lifting a tile under a stationary pointer makes it flicker while the page scrolls past. */
-.ons-tile { transition: box-shadow 0.2s ease; }
-.ons-tile:hover, .ons-tile:focus-visible { box-shadow: 0 16px 30px -18px rgba(0, 0, 0, 0.55); }
+.ons-tile { transition: box-shadow 0.25s ease, transform 0.3s var(--ease-out), border-color 0.25s; }
+.ons-tile:hover, .ons-tile:focus-visible { box-shadow: 0 16px 30px -18px rgba(0, 0, 0, 0.55); transform: translateY(-3px); }
+.ons-tile:active { transform: translateY(-1px) scale(0.99); }
+@media (prefers-reduced-motion: reduce) { .ons-tile:hover, .ons-tile:active { transform: none; } }
 
 .ons-cardvalue { text-align: right; }
 @media (max-width: 700px) { .ons-cardvalue { text-align: left; flex: 1 1 100%; } }
