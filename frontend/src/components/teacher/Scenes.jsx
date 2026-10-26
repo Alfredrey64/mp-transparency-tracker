@@ -1,6 +1,6 @@
 /** @jsxImportSource react */
 import { SKIN } from "./palette";
-import { Sky, Ground, Cloud, Person, Coin, Bubble, Shop, Basket, Parliament, BallotBox, Paper, Hospital, Calendar, Clock, School, Drip, Books, Letter, BusStop, Bus, TownHall, Bulb, QuestionMark, Arrow, Tree, Caption } from "./art";
+import { Sky, Ground, Cloud, Person, Coin, Bubble, Shop, Basket, Parliament, BallotBox, Paper, Hospital, Calendar, Clock, School, Drip, Books, Letter, BusStop, Bus, TownHall, Bulb, QuestionMark, Arrow, Tree, Caption, MoneyFlow } from "./art";
 
 // The four story pictures. Each piece is wrapped in <B n={beat}>: it is hidden until that step of the story and then arrives with the effect
 // named by `fx`. `until` hides it again at a later step (so a worried face can replace a smiling one). `exit` slides it away when it goes.
@@ -30,7 +30,7 @@ function ShopScene() {
       <Backdrop tone="#DCEBFF" tone2="#F6F9FF" ground="#CFE6CF" path="#E9E1D0" trees={[750]} />
       <Shop x={470} y={362} />
       <B n={2}><g transform="translate(660 126)"><Parliament x={0} y={0} s={0.38} /></g><Caption x={662} y={150} size={16}>Parliament</Caption></B>
-      <B n={2} until={3} fx="rise"><Bubble x={150} y={110} w={80} h={66} tail="left"><QuestionMark /></Bubble></B>
+      <B n={2} until={3} fx="rise"><Bubble x={218} y={132} w={80} h={66} tail="center"><QuestionMark /></Bubble></B>
       <B n={0} until={1}><Person s={1.2} x={250} y={392} tag="Dad" shirt="#1E4FB8" mood="happy" skin={SKIN[2]} hair="#2B1D14" /></B>
       <B n={1} until={4} fx="fade"><Person s={1.2} x={250} y={392} tag="Dad" shirt="#1E4FB8" mood="worried" skin={SKIN[2]} hair="#2B1D14" /></B>
       <B n={4} fx="fade"><Person s={1.2} x={250} y={392} tag="Dad" shirt="#1E4FB8" mood="happy" skin={SKIN[2]} hair="#2B1D14" /></B>
@@ -65,14 +65,7 @@ function HospitalScene() {
       <B n={1} until={2}><Calendar x={130} y={166} /></B>
       <B n={1} until={2}><Clock x={250} y={166} /></B>
       <B n={2} until={3} fx="rise"><g transform="translate(405 208)"><Parliament x={0} y={0} s={0.4} /></g><Caption x={405} y={236} size={16}>Parliament</Caption></B>
-      <B n={2} until={3} fx="fade">
-        <g>
-          <path d="M458 120 H640" stroke="#1E4FB8" strokeWidth="3" strokeDasharray="4 10" strokeLinecap="round" fill="none" />
-          <g className="t-coinflow"><Coin x={458} y={120} r={12} /></g>
-          <g className="t-coinflow" style={{ animationDelay: "-1.2s" }}><Coin x={458} y={120} r={12} /></g>
-          <g className="t-coinflow" style={{ animationDelay: "-2.4s" }}><Coin x={458} y={120} r={12} /></g>
-        </g>
-      </B>
+      <B n={2} until={3} fx="fade"><MoneyFlow from={[456, 128]} to={[598, 158]} lift={78} coins={3} /></B>
       <B n={3} fx="rise"><Bubble x={70} y={110} w={86} h={70} tail="center"><Coin x={0} y={0} r={17} /></Bubble></B>
       <B n={3} fx="rise"><Bubble x={195} y={110} w={86} h={70} tail="center"><g><rect x="-6" y="-24" width="12" height="48" rx="3" fill="#16A34A" /><rect x="-24" y="-6" width="48" height="12" rx="3" fill="#16A34A" /></g></Bubble></B>
       <B n={3} fx="rise"><Bubble x={320} y={110} w={86} h={70} tail="center"><g><circle r="14" fill="none" stroke="#7A5AF0" strokeWidth="5" /><path d="M0 -24 v8 M0 16 v8 M-24 0 h8 M16 0 h8" stroke="#7A5AF0" strokeWidth="5" strokeLinecap="round" /></g></Bubble></B>
@@ -95,13 +88,7 @@ function SchoolScene() {
       <Person s={1.2} x={335} y={392} tag="Mum" long shirt="#E0365B" skin={SKIN[1]} hair="#5C3A21" mood="ok" />
       <B n={4} fx="fade"><Books x={395} y={362} /></B>
       <B n={1} until={2} fx="rise"><g transform="translate(140 176)"><Parliament x={0} y={0} s={0.42} /></g><Caption x={140} y={204} size={16}>Parliament</Caption></B>
-      <B n={1} until={2} fx="fade">
-        <g>
-          <path d="M215 118 H590" stroke="#1E4FB8" strokeWidth="3" strokeDasharray="4 10" strokeLinecap="round" fill="none" />
-          <g className="t-coinflow"><Coin x={215} y={118} r={12} /></g>
-          <g className="t-coinflow" style={{ animationDelay: "-1.5s" }}><Coin x={215} y={118} r={12} /></g>
-        </g>
-      </B>
+      <B n={1} until={2} fx="fade"><MoneyFlow from={[205, 126]} to={[585, 178]} lift={96} coins={3} dur={4.4} /></B>
       <B n={2} until={3} fx="rise"><Bubble x={70} y={110} w={86} h={70} tail="center"><g><Person x={0} y={22} s={0.42} kid shirt="#0E9AA7" skin={SKIN[1]} /></g></Bubble></B>
       <B n={2} until={3} fx="rise"><Bubble x={195} y={110} w={86} h={70} tail="center"><g><circle r="19" fill="#fff" stroke="#E0775A" strokeWidth="5" /><circle r="8" fill="#E0775A" /></g></Bubble></B>
       <B n={2} until={3} fx="rise"><Bubble x={320} y={110} w={86} h={70} tail="center"><g><path d="M-22 6 l22 -22 l22 22z" fill="#B5533C" /><rect x="-15" y="6" width="30" height="16" fill="#E9B88A" /></g></Bubble></B>

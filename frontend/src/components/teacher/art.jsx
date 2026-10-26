@@ -8,12 +8,27 @@ import { INK, SKIN } from "./palette";
 import { NamesContext } from "./characters";
 
 export function Sky({ tone = "#DCEBFF", tone2 = "#F4F8FF" }) {
+  const still = stillMotion();
   return (
     <>
       <defs>
         <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={tone} /><stop offset="1" stopColor={tone2} /></linearGradient>
+        <radialGradient id="sun" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stopColor="#FFF4C7" stopOpacity="0.95" /><stop offset="0.35" stopColor="#FFF0B8" stopOpacity="0.45" /><stop offset="1" stopColor="#FFF0B8" stopOpacity="0" /></radialGradient>
       </defs>
       <rect width="800" height="450" fill="url(#sky)" />
+      <circle cx="748" cy="44" r="150" fill="url(#sun)" />
+      <circle cx="748" cy="44" r="22" fill="#FFF1B0" opacity="0.8" />
+      <g aria-hidden="true">
+        <path d="M0 318 Q90 276 200 306 T420 300 T620 286 T800 304 V362 H0Z" fill="#C6DDD0" opacity="0.7" />
+        <path d="M0 336 Q140 304 280 332 T560 326 T800 322 V362 H0Z" fill="#B3D6BC" opacity="0.85" />
+        {!still && [0, 1, 2].map((i) => (
+          <g key={i}>
+            <path d="M0 0 q5 -6 10 0 q5 -6 10 0" fill="none" stroke="#5B6B86" strokeWidth="1.8" strokeLinecap="round" opacity="0.55" transform={`translate(${-60 - i * 26} ${26 + i * 12}) scale(${1 - i * 0.15})`}>
+              <animateTransform attributeName="transform" type="translate" additive="sum" from="0 0" to="940 -14" dur={`${52 + i * 9}s`} begin={`${-(i * 17)}s`} repeatCount="indefinite" />
+            </path>
+          </g>
+        ))}
+      </g>
     </>
   );
 }
@@ -131,6 +146,39 @@ export function Person({ x, y, s = 1, skin = SKIN[1], shirt = "#1E4FB8", trouser
   );
 }
 
+// Money travelling from one place to another along a curve: coins leave, arc through the air, and each one lands with a soft green ring where it arrives.
+export function MoneyFlow({ from, to, lift = 70, coins = 3, dur = 3.8 }) {
+  const still = stillMotion();
+  const [x1, y1] = from;
+  const [x2, y2] = to;
+  const cx = (x1 + x2) / 2;
+  const cy = Math.min(y1, y2) - lift;
+  const d = `M${x1} ${y1} Q${cx} ${cy} ${x2} ${y2}`;
+  const at = (t) => [(1 - t) * (1 - t) * x1 + 2 * (1 - t) * t * cx + t * t * x2, (1 - t) * (1 - t) * y1 + 2 * (1 - t) * t * cy + t * t * y2];
+  return (
+    <g aria-hidden="true">
+      <path d={d} stroke="#8FAEE8" strokeWidth="3" strokeDasharray="1 9" strokeLinecap="round" fill="none" />
+      {Array.from({ length: coins }, (_, i) => {
+        const begin = `${-((i * dur) / coins).toFixed(2)}s`;
+        if (still) { const [x, y] = at(0.2 + (i * 0.6) / Math.max(coins - 1, 1)); return <Coin key={i} x={x} y={y} r={12} />; }
+        return (
+          <g key={i}>
+            <circle cx={x2} cy={y2} r="6" fill="none" stroke="#16A34A" strokeWidth="3" opacity="0">
+              <animate attributeName="r" values="6;6;10;30" keyTimes="0;0.86;0.9;1" dur={`${dur}s`} begin={begin} repeatCount="indefinite" />
+              <animate attributeName="opacity" values="0;0;0.85;0" keyTimes="0;0.86;0.9;1" dur={`${dur}s`} begin={begin} repeatCount="indefinite" />
+            </circle>
+            <g opacity="0">
+              <Coin x={0} y={0} r={12} />
+              <animateMotion path={d} dur={`${dur}s`} begin={begin} repeatCount="indefinite" calcMode="spline" keyTimes="0;1" keySplines="0.35 0 0.55 1" />
+              <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.86;1" dur={`${dur}s`} begin={begin} repeatCount="indefinite" />
+            </g>
+          </g>
+        );
+      })}
+    </g>
+  );
+}
+
 export function Coin({ x, y, r = 14 }) {
   return (
     <g transform={`translate(${x} ${y})`}>
@@ -164,6 +212,7 @@ export function Bubble({ x, y, w = 90, h = 70, tail = "left", children, fill = "
 export function Shop({ x, y }) {
   return (
     <g transform={`translate(${x} ${y})`}>
+      <ellipse cx="115" cy="4" rx="133" ry="9" fill="#000" opacity="0.09" />
       <rect x="0" y="-150" width="230" height="150" rx="8" fill="#F7E3C4" />
       <rect x="-8" y="-170" width="246" height="34" rx="6" fill="#C0392B" />
       {[0, 1, 2, 3, 4, 5].map((i) => <rect key={i} x={-8 + i * 41} y="-170" width="20.5" height="34" fill="#fff" opacity="0.88" />)}
@@ -227,6 +276,7 @@ export function Paper({ x, y, rot = 0 }) {
 export function Hospital({ x, y }) {
   return (
     <g transform={`translate(${x} ${y})`}>
+      <ellipse cx="100" cy="4" rx="115" ry="9" fill="#000" opacity="0.09" />
       <rect x="0" y="-170" width="200" height="170" rx="8" fill="#EAF2FA" />
       <rect x="70" y="-215" width="60" height="50" rx="6" fill="#fff" stroke="#D3DEEA" strokeWidth="3" />
       <rect x="94" y="-206" width="12" height="32" fill="#E0365B" /><rect x="84" y="-196" width="32" height="12" fill="#E0365B" />
@@ -249,10 +299,10 @@ export function Calendar({ x, y }) {
 
 // The hands turn clockwise by an animation written into the picture itself, so they always start from the top and turn the right way round
 // whichever browser draws them. For anyone who has asked for less motion they stand still.
-const stillClock = () => typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+const stillMotion = () => typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
 export function Clock({ x, y }) {
-  const still = stillClock();
+  const still = stillMotion();
   return (
     <g transform={`translate(${x} ${y})`}>
       <circle r="34" fill="#fff" stroke="#CBD3E2" strokeWidth="4" />
@@ -271,6 +321,7 @@ export function Clock({ x, y }) {
 export function School({ x, y }) {
   return (
     <g transform={`translate(${x} ${y})`}>
+      <ellipse cx="125" cy="4" rx="145" ry="9" fill="#000" opacity="0.09" />
       <rect x="0" y="-130" width="250" height="130" rx="6" fill="#E9B88A" />
       <path d="M-10 -130 l135 -52 l135 52z" fill="#B5533C" />
       <rect x="100" y="-90" width="50" height="90" rx="5" fill="#8A5A3C" />
@@ -331,6 +382,7 @@ export function Bus({ x, y }) {
 export function TownHall({ x, y }) {
   return (
     <g transform={`translate(${x} ${y})`}>
+      <ellipse cx="110" cy="4" rx="127" ry="9" fill="#000" opacity="0.09" />
       <rect x="0" y="-110" width="220" height="110" fill="#E9D8B6" />
       <path d="M-10 -110 l120 -52 l120 52z" fill="#B58A5A" />
       {[0, 1, 2, 3, 4].map((i) => <rect key={i} x={16 + i * 40} y="-92" width="14" height="76" rx="4" fill="#CDB892" />)}
