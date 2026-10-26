@@ -67,7 +67,6 @@ function PetitionRow({ petition, rank, isOpen, onToggle }) {
   const panelId = `pet-${petition.id}`;
   return (
     <motion.article
-      layout="position"
       initial={{ opacity: 0, y: 12 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}

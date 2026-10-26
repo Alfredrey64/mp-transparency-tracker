@@ -426,13 +426,14 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
   display: flex; align-items: center; gap: 14px; padding: 0 18px 0 16px; text-align: left; font: inherit; cursor: pointer;
   background: color-mix(in srgb, var(--c) 4%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--c) 22%, var(--c-hairline)); border-radius: 12px;
   box-shadow: inset 5px 0 0 var(--c), 0 1px 2px rgba(11, 27, 51, 0.05); padding-left: 22px;
-  transition: border-color 0.25s, box-shadow 0.35s, background-color 0.35s;
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
 }
 /* A spine in the tier's own colour down the left edge. */
-.tier-slab:hover { border-color: color-mix(in srgb, var(--c) 55%, var(--c-hairline)); background: color-mix(in srgb, var(--c) 8%, var(--c-paper-card)); box-shadow: inset 5px 0 0 var(--c), 0 0 0 3px color-mix(in srgb, var(--c) 18%, transparent), 0 8px 20px -12px color-mix(in srgb, var(--c) 60%, rgba(11, 27, 51, 0.4)); }
+.tier-slab:hover { border-color: color-mix(in srgb, var(--c) 55%, var(--c-hairline)); background: color-mix(in srgb, var(--c) 8%, var(--c-paper-card)); box-shadow: inset 5px 0 0 var(--c), 0 0 0 3px color-mix(in srgb, var(--c) 22%, transparent); }
 .tier-slab:focus-visible { outline: 2px solid var(--c); outline-offset: 2px; }
 /* In the walk-through, tiers still to come sit back, tiers already passed show a tick, and the one the story is at lifts forward. */
-.tier-slab > :not(.tier-pill) { transition: opacity 0.4s; }
+.tier-diagram[data-mode="action"] .tier-slab > :not(.tier-pill) { transition: opacity 0.4s; }
+.tier-panel { -webkit-font-smoothing: antialiased; }
 .tier-slab[data-state="todo"] { background: var(--c-paper); }
 .tier-slab[data-state="todo"] { box-shadow: inset 5px 0 0 color-mix(in srgb, var(--c) 40%, var(--c-hairline)); }
 .tier-slab[data-state="todo"] > :not(.tier-pill) { opacity: 0.5; }
@@ -453,7 +454,7 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 .tier-slab[data-state="done"] .tier-tick { opacity: 1; transform: none; }
 .tier-slab[data-active="1"] {
   border-color: var(--c); background: color-mix(in srgb, var(--c) 10%, var(--c-paper-card)); transition-delay: var(--delay, 0s);
-  box-shadow: inset 5px 0 0 var(--c), 0 0 0 1px var(--c), 0 0 0 5px color-mix(in srgb, var(--c) 20%, transparent), 0 14px 28px -14px color-mix(in srgb, var(--c) 70%, rgba(11, 27, 51, 0.5));
+  box-shadow: inset 5px 0 0 var(--c), 0 0 0 1px var(--c), 0 0 0 5px color-mix(in srgb, var(--c) 22%, transparent);
 }
 /* The ring round the icon only pulses while the walk-through is at that tier; a tier you have picked just sits there, slightly larger, and stays still. */
 .tier-diagram[data-mode="action"] .tier-slab[data-active="1"] .tier-slab-icon::after { content: ""; position: absolute; inset: -5px; border-radius: 15px; border: 3px solid var(--c); opacity: 0; animation: tierIconPulse 2.2s ease-out infinite; }

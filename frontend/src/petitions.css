@@ -5,15 +5,15 @@
 .pet-how li { display: grid; gap: 2px; padding: 14px 16px; border-radius: 16px; background: var(--c-paper-card); border: 1px solid color-mix(in srgb, var(--hc) 30%, var(--c-hairline)); border-left: 5px solid var(--hc); }
 .pet-how li b { font: 700 clamp(24px, 3vw, 30px)/1.1 "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--hc) 78%, var(--c-ink)); font-variant-numeric: tabular-nums; }
 .pet-how li span { font: 500 13.5px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.pet-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr)); gap: 12px; margin-top: 16px; }
+.pet-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr)); gap: 12px; margin-top: 16px; }
 .pet-stats > div { display: grid; gap: 2px; padding: 14px 16px 15px; border-radius: 18px; background: linear-gradient(160deg, color-mix(in srgb, var(--sc) 12%, var(--c-paper-card)), var(--c-paper-card) 75%); border: 1px solid color-mix(in srgb, var(--sc) 28%, var(--c-hairline)); box-shadow: var(--shadow-1), inset 0 4px 0 var(--sc); }
 .pet-stats b { font: 700 clamp(26px, 3.4vw, 34px)/1 "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--sc) 78%, var(--c-ink)); font-variant-numeric: tabular-nums; }
 .pet-stats span { font: 600 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .pet-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 460px), 1fr)); gap: 14px; align-items: start; }
 .pet-card[data-open="1"] { grid-column: 1 / -1; }
-.pet-card { overflow: hidden; border-radius: 18px; background: linear-gradient(165deg, color-mix(in srgb, var(--pc) 7%, var(--c-paper-card)), var(--c-paper-card) 120px); border: 1px solid color-mix(in srgb, var(--pc) 26%, var(--c-hairline)); border-left: 5px solid var(--pc); box-shadow: var(--shadow-1); transition: box-shadow 0.25s var(--ease-out), transform 0.25s var(--ease-out); }
-.pet-card:hover { box-shadow: var(--shadow-3); transform: scale(1.012); }
-.pet-card[data-open="1"] { box-shadow: var(--shadow-2), 0 0 0 3px color-mix(in srgb, var(--pc) 20%, transparent); transform: none; }
+.pet-card { overflow: hidden; border-radius: 18px; background: linear-gradient(165deg, color-mix(in srgb, var(--pc) 7%, var(--c-paper-card)), var(--c-paper-card) 120px); border: 1px solid color-mix(in srgb, var(--pc) 26%, var(--c-hairline)); border-left: 5px solid var(--pc); box-shadow: var(--shadow-1); -webkit-font-smoothing: antialiased; }
+.pet-card:hover { box-shadow: var(--shadow-2), 0 0 0 3px color-mix(in srgb, var(--pc) 16%, transparent); }
+.pet-card[data-open="1"] { box-shadow: var(--shadow-2), 0 0 0 3px color-mix(in srgb, var(--pc) 22%, transparent); }
 .pet-head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 14px; width: 100%; padding: 16px 18px; text-align: left; background: none; border: 0; cursor: pointer; color: inherit; font: inherit; }
 .pet-rank { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 12px; background: color-mix(in srgb, var(--pc) 15%, transparent); color: color-mix(in srgb, var(--pc) 80%, var(--c-ink)); font: 800 14px "Figures", "Public Sans", system-ui, sans-serif; font-variant-numeric: tabular-nums; }
 .pet-main { display: grid; gap: 8px; min-width: 0; }
