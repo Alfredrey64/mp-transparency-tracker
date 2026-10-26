@@ -1,5 +1,5 @@
 import { SKIN } from "./palette";
-import { Sky, Ground, Cloud, Person, Coin, Bubble, Shop, Basket, Parliament, BallotBox, Paper, Hospital, Calendar, Clock, School, Drip, Books, Letter, BusStop, Bus, TownHall, Bulb, QuestionMark, Arrow } from "./art";
+import { Sky, Ground, Cloud, Person, Coin, Bubble, Shop, Basket, Parliament, BallotBox, Paper, Hospital, Calendar, Clock, School, Drip, Books, Letter, BusStop, Bus, TownHall, Bulb, QuestionMark, Arrow, Tree, Caption } from "./art";
 
 // The four story pictures. Each piece is wrapped in <B n={beat}>: it is hidden until that step of the story and then arrives with the effect
 // named by `fx`. `until` hides it again at a later step (so a worried face can replace a smiling one). `exit` slides it away when it goes.
@@ -11,13 +11,14 @@ export function B({ n = 0, until, fx = "pop", exit, stagger, children }) {
   );
 }
 
-const Backdrop = ({ tone, tone2, ground, path }) => (
+const Backdrop = ({ tone, tone2, ground, path, trees = [] }) => (
   <>
     <Sky tone={tone} tone2={tone2} />
     <Cloud x={120} y={70} s={1} />
     <Cloud x={430} y={46} s={0.7} delay={-6} />
     <Cloud x={690} y={96} s={0.9} delay={-12} />
     <Ground colour={ground} path={path} />
+    {trees.map((x) => <Tree key={x} x={x} s={0.8} />)}
   </>
 );
 
@@ -25,10 +26,10 @@ const Backdrop = ({ tone, tone2, ground, path }) => (
 function ShopScene() {
   return (
     <>
-      <Backdrop tone="#DCEBFF" tone2="#F6F9FF" ground="#CFE6CF" path="#E9E1D0" />
+      <Backdrop tone="#DCEBFF" tone2="#F6F9FF" ground="#CFE6CF" path="#E9E1D0" trees={[750]} />
       <Shop x={470} y={362} />
-      <B n={2}><g transform="translate(610 190)"><Parliament x={0} y={0} s={0.5} /></g></B>
-      <B n={2}><Bubble x={150} y={110} w={80} h={66} tail="left"><QuestionMark /></Bubble></B>
+      <B n={2}><g transform="translate(660 126)"><Parliament x={0} y={0} s={0.38} /></g><Caption x={662} y={150} size={16}>Parliament</Caption></B>
+      <B n={2} until={3} fx="rise"><Bubble x={150} y={110} w={80} h={66} tail="left"><QuestionMark /></Bubble></B>
       <B n={0} until={1}><Person s={1.2} x={250} y={392} tag="Dad" shirt="#1E4FB8" mood="happy" skin={SKIN[2]} hair="#2B1D14" /></B>
       <B n={1} until={4} fx="fade"><Person s={1.2} x={250} y={392} tag="Dad" shirt="#1E4FB8" mood="worried" skin={SKIN[2]} hair="#2B1D14" /></B>
       <B n={4} fx="fade"><Person s={1.2} x={250} y={392} tag="Dad" shirt="#1E4FB8" mood="happy" skin={SKIN[2]} hair="#2B1D14" /></B>
@@ -55,14 +56,14 @@ function ShopScene() {
 function HospitalScene() {
   return (
     <>
-      <Backdrop tone="#E4F1FF" tone2="#F8FBFF" ground="#D2E8D2" path="#E9E1D0" />
+      <Backdrop tone="#E4F1FF" tone2="#F8FBFF" ground="#D2E8D2" path="#E9E1D0" trees={[58]} />
       <Hospital x={500} y={362} />
       <Person s={1.2} x={190} y={392} who="maya" kid long shirt="#7A5AF0" skin={SKIN[3]} hair="#1E1410" mood="happy" />
       <B n={0} until={1}><Person s={1.2} x={275} y={392} tag="Grandad" shirt="#8FA6C0" trousers="#4A5568" skin={SKIN[0]} hair="#D6D6D6" mood="ok" /></B>
       <B n={1} fx="fade"><Person s={1.2} x={275} y={392} tag="Grandad" shirt="#8FA6C0" trousers="#4A5568" skin={SKIN[0]} hair="#D6D6D6" mood="worried" /></B>
       <B n={1}><Calendar x={140} y={214} /></B>
       <B n={1}><Clock x={268} y={210} /></B>
-      <B n={2} fx="rise"><g transform="translate(70 128)"><Parliament x={0} y={0} s={0.42} /></g></B>
+      <B n={2} fx="rise"><g transform="translate(70 128)"><Parliament x={0} y={0} s={0.42} /></g><Caption x={72} y={150} size={16}>Parliament</Caption></B>
       <B n={2} fx="fade">
         <g>
           <path d="M170 78 H480" stroke="#1E4FB8" strokeWidth="3" strokeDasharray="4 10" strokeLinecap="round" fill="none" />
@@ -92,7 +93,7 @@ function SchoolScene() {
       <Person s={1.2} x={215} y={392} who="leo" kid shirt="#0E9AA7" skin={SKIN[1]} hair="#2B1D14" mood="worried" />
       <Person s={1.2} x={290} y={392} tag="Mum" long shirt="#E0365B" skin={SKIN[1]} hair="#5C3A21" mood="ok" />
       <B n={4} fx="fade"><Books x={400} y={362} /></B>
-      <B n={1} fx="rise"><g transform="translate(90 180)"><Parliament x={0} y={0} s={0.5} /></g></B>
+      <B n={1} fx="rise"><g transform="translate(90 180)"><Parliament x={0} y={0} s={0.5} /></g><Caption x={92} y={204} size={16}>Parliament</Caption></B>
       <B n={1} fx="fade">
         <g>
           <path d="M215 112 H500" stroke="#1E4FB8" strokeWidth="3" strokeDasharray="4 10" strokeLinecap="round" fill="none" />

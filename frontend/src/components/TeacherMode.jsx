@@ -157,7 +157,7 @@ export default function TeacherMode() {
         </p>
       </section>
 
-      {open && createPortal(<Presenter open startAt={startAt} names={tidyNames} onClose={() => setOpen(false)} openerRef={opener} />, document.body)}
+      {open && createPortal(<Presenter open startAt={startAt} names={names} onNames={setAndSave} onClose={() => setOpen(false)} openerRef={opener} />, document.body)}
     </div>
   );
 }

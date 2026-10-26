@@ -62,3 +62,34 @@ test("the notes button shows a question for the class", async ({ page }) => {
   await page.getByRole("button", { name: "Notes" }).click();
   await expect(page.getByRole("complementary", { name: "Notes for the teacher" })).toContainText("Can you think of something in your own life");
 });
+
+test("the teacher can rename the children in the middle of a lesson without the slides moving on", async ({ page }) => {
+  await page.route("**/127.0.0.1:54321/**", (route) => route.abort());
+  await page.goto("/teacher");
+  await page.getByRole("button", { name: "Start the lesson" }).click();
+  // Go to the first story, where the names are used.
+  for (let i = 0; i < 3; i++) await page.keyboard.press("ArrowRight");
+  const title = () => page.locator(".t-kicker").textContent();
+  const before = await title();
+  await page.getByRole("button", { name: "Names" }).click();
+  const box = page.locator(".t-names").getByLabel(/The weekly shop/);
+  await box.fill("Priya");
+  // Arrow keys inside the box move the cursor and do not change slide.
+  await box.press("ArrowLeft");
+  await box.press("ArrowRight");
+  expect(await title()).toBe(before);
+  await expect(page.locator(".t-svg")).toContainText("Priya");
+  await page.getByRole("button", { name: "Names" }).click();
+  await expect(page.locator(".t-captionbody")).toContainText("Priya");
+});
+
+test("names for the stories can come from a pasted class list", async ({ page }) => {
+  await page.route("**/127.0.0.1:54321/**", (route) => route.abort());
+  await page.goto("/teacher");
+  await page.getByText("Use names from my class").click();
+  await page.locator("#tm-classlist").fill("Ava\nKofi\nPriya\nOllie\nZara");
+  await page.getByRole("button", { name: "Pick four at random" }).click();
+  const names = await page.locator(".tm-names-grid input").evaluateAll((els) => els.map((e) => e.value));
+  expect(new Set(names).size).toBe(4);
+  for (const n of names) expect(["Ava", "Kofi", "Priya", "Ollie", "Zara"]).toContain(n);
+});

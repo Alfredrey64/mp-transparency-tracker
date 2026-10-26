@@ -17,22 +17,64 @@ export function Sky({ tone = "#DCEBFF", tone2 = "#F4F8FF" }) {
   );
 }
 
+// A small repeatable "random": the same picture every time it is drawn, so nothing jumps when a slide is redrawn.
+const wob = (i, k) => { const v = Math.sin(i * 12.9898 + k * 78.233) * 43758.5453; return v - Math.floor(v); };
+
+// The ground, a path along its top edge and a row of grass tufts and flowers that sway in a breeze, each a little out of step with its neighbours.
 export function Ground({ colour = "#CFE6CF", path = "#E9E1D0" }) {
+  const blade = `color-mix(in srgb, ${colour} 55%, #2F8F3C)`;
+  const tufts = Array.from({ length: 36 }, (_, i) => {
+    const x = 10 + i * 22 + wob(i, 1) * 10;
+    const h = 11 + wob(i, 2) * 9;
+    return { x, h, d: -wob(i, 3) * 4, flower: i % 7 === 3 };
+  });
   return (
     <>
       <rect x="0" y="360" width="800" height="90" fill={colour} />
       <rect x="0" y="360" width="800" height="26" fill={path} />
+      <g aria-hidden="true">
+        {tufts.map((t, i) => (
+          <g key={i} transform={`translate(${t.x.toFixed(1)} 392)`}>
+            <g className="t-sway" style={{ animationDelay: `${t.d.toFixed(2)}s`, animationDuration: `${(2.6 + wob(i, 4) * 1.6).toFixed(2)}s` }}>
+              <path d={`M-4 0 q1 -${(t.h * 0.7).toFixed(1)} 0 -${t.h.toFixed(1)} q4 ${(t.h * 0.35).toFixed(1)} 4 ${t.h.toFixed(1)}z`} fill={blade} />
+              <path d={`M1 0 q2 -${(t.h * 0.6).toFixed(1)} 5 -${(t.h * 0.85).toFixed(1)} q0 ${(t.h * 0.4).toFixed(1)} -1 ${(t.h * 0.85).toFixed(1)}z`} fill={blade} opacity="0.85" />
+              {t.flower && <g transform={`translate(2 -${(t.h + 3).toFixed(1)})`}><circle r="3.2" fill={["#F2B632", "#E0365B", "#fff"][i % 3]} /><circle r="1.2" fill="#8A5A0E" /></g>}
+            </g>
+          </g>
+        ))}
+      </g>
     </>
   );
 }
 
+// A cloud that drifts slowly across and rises and falls a little, at a pace of its own.
 export function Cloud({ x, y, s = 1, delay = 0 }) {
+  const seed = Math.abs(x * 3 + y * 7);
   return (
-    <g className="t-drift" style={{ animationDelay: `${delay}s` }}>
-      <g transform={`translate(${x} ${y}) scale(${s})`} fill="#fff" opacity="0.92">
-        <ellipse cx="0" cy="0" rx="46" ry="16" />
-        <ellipse cx="-20" cy="-10" rx="22" ry="16" />
-        <ellipse cx="14" cy="-14" rx="26" ry="19" />
+    <g className="t-cloud" style={{ animationDelay: `${delay}s`, animationDuration: `${34 + (seed % 17)}s`, "--cx": `${50 + (seed % 40)}px` }}>
+      <g className="t-bobble" style={{ animationDelay: `${-(seed % 5)}s`, animationDuration: `${6 + (seed % 4)}s` }}>
+        <g transform={`translate(${x} ${y}) scale(${s})`} fill="#fff" opacity="0.94">
+          <ellipse cx="0" cy="0" rx="46" ry="16" />
+          <ellipse cx="-20" cy="-10" rx="22" ry="16" />
+          <ellipse cx="14" cy="-14" rx="26" ry="19" />
+          <ellipse cx="36" cy="-4" rx="18" ry="12" />
+        </g>
+      </g>
+    </g>
+  );
+}
+
+// A tree at the edge of a scene: the whole crown sways from the trunk, and the leaves shimmer as if in a breeze.
+export function Tree({ x, y = 392, s = 1 }) {
+  return (
+    <g transform={`translate(${x} ${y}) scale(${s})`} aria-hidden="true">
+      <ellipse cx="0" cy="2" rx="30" ry="6" fill="#000" opacity="0.08" />
+      <rect x="-7" y="-70" width="14" height="72" rx="5" fill="#8A5A3C" />
+      <g className="t-tree">
+        <circle cx="-22" cy="-92" r="30" fill="#4FA85E" />
+        <circle cx="22" cy="-92" r="30" fill="#4FA85E" />
+        <circle cx="0" cy="-118" r="34" fill="#5CB96B" />
+        <circle cx="-8" cy="-96" r="26" fill="#68C477" opacity="0.9" />
       </g>
     </g>
   );
@@ -97,13 +139,22 @@ export function Coin({ x, y, r = 14 }) {
   );
 }
 
+// A short caption in the picture, with a pale outline so it reads over anything behind it.
+export function Caption({ x, y, size = 18, fill = "#0B1B33", anchor = "middle", children }) {
+  return (
+    <text x={x} y={y} textAnchor={anchor} fontSize={size} fontWeight="800" fontFamily="Public Sans, system-ui, sans-serif" fill={fill} stroke="#F4F8FF" strokeWidth={size * 0.28} paintOrder="stroke" strokeLinejoin="round">{children}</text>
+  );
+}
+
 export function Bubble({ x, y, w = 90, h = 70, tail = "left", children, fill = "#fff", stroke = "#CBD3E2" }) {
+  // The tail is drawn over the bottom edge of the box; a small patch of the fill hides the edge's line only where the tail joins, and nowhere else.
+  const base = tail === "left" ? [x + 18, x + 34] : tail === "right" ? [x + w - 34, x + w - 18] : [x + w / 2 - 12, x + w / 2 + 12];
   const t = tail === "left" ? `M${x + 18} ${y + h - 1} l-14 20 l30 -20z` : tail === "right" ? `M${x + w - 18} ${y + h - 1} l14 20 l-30 -20z` : `M${x + w / 2 - 12} ${y + h - 1} l12 22 l12 -22z`;
   return (
     <g>
       <rect x={x} y={y} width={w} height={h} rx="22" fill={fill} stroke={stroke} strokeWidth="2.5" />
       <path d={t} fill={fill} stroke={stroke} strokeWidth="2.5" strokeLinejoin="round" />
-      <rect x={x + 3} y={y + h - 4} width={w - 6} height="7" fill={fill} />
+      <rect x={base[0] + 2.5} y={y + h - 2.6} width={base[1] - base[0] - 5} height="3.4" fill={fill} />
       <g transform={`translate(${x + w / 2} ${y + h / 2})`}>{children}</g>
     </g>
   );

@@ -1,6 +1,6 @@
 import { chip } from "../../theme";
 import { SKIN } from "./palette";
-import { Sky, Ground, Cloud, Person, Bubble, Parliament, BallotBox, Paper, Bulb, Letter, TownHall, QuestionMark, Confetti, Bus } from "./art";
+import { Sky, Ground, Cloud, Person, Bubble, Caption, Parliament, BallotBox, Paper, Bulb, Letter, TownHall, QuestionMark, Confetti, Bus } from "./art";
 import { B } from "./Scenes";
 import { LAYERS, VOICES, CHAPTERS } from "../../data/teacherMode";
 
@@ -103,10 +103,13 @@ export function HousesScene() {
 }
 
 export function RunScene() {
+  // Three places, left to right: Parliament makes the laws, 10 Downing Street is where the government works, and the opposition sits across from it.
+  // The election, which picks who is in each, comes last and sits above them in the sky.
   return (
     <>
       <Back />
       <g transform="translate(130 372)"><Parliament x={0} y={0} s={0.7} /></g>
+      <Caption x={130} y={398} size={17}>Parliament</Caption>
       <B n={1}>
         <g transform="translate(400 372)">
           <rect x="-70" y="-160" width="140" height="160" rx="6" fill="#B66B4B" />
@@ -115,13 +118,19 @@ export function RunScene() {
           <Label x={0} y={-72} size={34} fill="#fff" anchor="middle">10</Label>
         </g>
         <Person x={340} y={400} s={0.9} shirt="#0B1B33" trousers="#16213A" skin={SKIN[0]} hair="#8A5A3C" mood="ok" />
+        <Caption x={400} y={222} size={24}>The government</Caption>
       </B>
       <B n={2}>
         <g transform="translate(640 372)"><rect x="-90" y="-44" width="180" height="44" rx="8" fill="#8A5A3C" /><rect x="-90" y="-54" width="180" height="14" rx="6" fill="#B07A52" /></g>
         <Person x={600} y={400} s={0.9} shirt="#5B6B84" trousers="#16213A" skin={SKIN[3]} hair="#1E1410" long mood="thinking" />
         <Person x={680} y={400} s={0.9} shirt="#5B6B84" trousers="#16213A" skin={SKIN[1]} hair="#6B6B6B" mood="thinking" />
+        <Caption x={640} y={262} size={24}>The opposition</Caption>
       </B>
-      <B n={3} fx="rise"><BallotBox x={400} y={250} /><Label x={400} y={150} size={30} fill="#0B1B33">One MP for each area</Label></B>
+      <B n={3} fx="rise">
+        <BallotBox x={400} y={172} />
+        <Caption x={400} y={46} size={26}>General elections</Caption>
+        <Caption x={400} y={74} size={18} fill="#44506B">Every area elects one MP</Caption>
+      </B>
     </>
   );
 }

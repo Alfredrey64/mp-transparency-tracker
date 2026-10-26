@@ -47,6 +47,32 @@ export function shuffleNames(rand = Math.random) {
   return { sam: pick(), maya: pick(), leo: pick(), amira: pick() };
 }
 
+// A class list: names the teacher pastes in (one a line, or separated by commas). Four are picked from it at random for the four children.
+export function parseClassList(text) {
+  const seen = new Set();
+  const out = [];
+  for (const raw of String(text ?? "").split(/[\n,;]+/)) {
+    const n = cleanName(raw, "");
+    if (n && !seen.has(n.toLowerCase())) { seen.add(n.toLowerCase()); out.push(n); }
+  }
+  return out;
+}
+
+export function pickFromList(list, rand = Math.random) {
+  if (!list || list.length < 4) return null;
+  const pool = [...list];
+  const pick = () => pool.splice(Math.floor(rand() * pool.length), 1)[0];
+  return { sam: pick(), maya: pick(), leo: pick(), amira: pick() };
+}
+
+const LIST_KEY = "sp.teacher.classlist";
+export function loadClassList() {
+  try { return String(localStorage.getItem(LIST_KEY) ?? ""); } catch { return ""; }
+}
+export function saveClassList(text) {
+  try { if (text) localStorage.setItem(LIST_KEY, text); else localStorage.removeItem(LIST_KEY); } catch { /* storage blocked */ }
+}
+
 const KEY = "sp.teacher.names";
 export function loadNames() {
   try { return cleanNames(JSON.parse(localStorage.getItem(KEY) ?? "{}")); } catch { return { ...DEFAULT_NAMES }; }

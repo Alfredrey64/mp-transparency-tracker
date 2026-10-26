@@ -6,7 +6,8 @@ import { supabase } from "../../supabaseClient";
 import { CHAPTERS, QUIZ, PARTIES, VOTE } from "../../data/teacherMode";
 import { PARTY_MANIFESTOS } from "../../data/partyManifestos";
 import { buildSlides } from "./slides";
-import { DEFAULT_NAMES, NamesContext } from "./characters";
+import { DEFAULT_NAMES, NamesContext, cleanNames } from "./characters";
+import { NameFields } from "./NameThem";
 import { useBeats } from "./useBeats";
 import { SCENES } from "./sceneList";
 import { ChapterScene, LayersScene, HousesScene, RunScene, PartyIntroScene, PartyScene, NiScene, VoiceScene, VoteScene, QuizScene } from "./Stages";
@@ -138,10 +139,12 @@ function useSeats(open) {
   return seats;
 }
 
-export default function Presenter({ open, startAt = 0, onClose, openerRef, names = DEFAULT_NAMES }) {
+export default function Presenter({ open, startAt = 0, onClose, openerRef, names: rawNames = DEFAULT_NAMES, onNames }) {
   const calm = Boolean(useReducedMotion()) || lowData();
   const seats = useSeats(open);
+  const names = useMemo(() => cleanNames(rawNames), [rawNames]);
   const slides = useMemo(() => buildSlides(seats, names), [seats, names]);
+  const [namesOpen, setNamesOpen] = useState(false);
   const [at, setAt] = useState({ i: startAt, beat: 0 });
   const [notes, setNotes] = useState(false);
   const [full, setFull] = useState(false);
@@ -176,6 +179,8 @@ export default function Presenter({ open, startAt = 0, onClose, openerRef, names
     if (!open) return undefined;
     function onKey(e) {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
+      // Typing in a box (the names, say) must never turn the slides over.
+      if (e.target.closest?.("input, select, textarea, [contenteditable]")) return;
       const typing = e.target.closest?.("button, a, input, select, textarea");
       if (e.key === "ArrowRight" || e.key === "PageDown") { e.preventDefault(); next(); }
       else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); back(); }
@@ -209,7 +214,7 @@ export default function Presenter({ open, startAt = 0, onClose, openerRef, names
   return (
     <div ref={root} className="t-root" role="dialog" aria-modal="true" aria-label={`Teacher mode: ${chapter.title}`} tabIndex={-1} data-calm={calm ? "1" : undefined} style={{ "--tc": chapter.colour }}>
       <header className="t-top">
-        <button type="button" className="btn btn-secondary t-exit" onClick={onClose}>Exit</button>
+        <button type="button" className="btn btn-secondary t-exit" onClick={onClose} aria-label="Exit"><span className="t-exit-text">Exit</span><span className="t-exit-x" aria-hidden="true">✕</span></button>
         <nav className="t-chapters" aria-label="Chapters">
           {CHAPTERS.map((c, n) => (
             <button key={c.key} type="button" className="t-chap" aria-label={`Chapter ${n + 1}: ${c.title}`} aria-current={c.key === slide.chapter ? "step" : undefined} style={{ "--c": c.colour }} onClick={() => jump(firstOf(c.key))}>
@@ -218,7 +223,8 @@ export default function Presenter({ open, startAt = 0, onClose, openerRef, names
           ))}
         </nav>
         <div className="t-tools">
-          <button type="button" className="btn btn-secondary" onClick={() => setNotes((v) => !v)} aria-pressed={notes}>Notes</button>
+          <button type="button" className="btn btn-secondary" onClick={() => { setNotes((v) => !v); setNamesOpen(false); }} aria-pressed={notes}>Notes</button>
+          {onNames && <button type="button" className="btn btn-secondary" onClick={() => { setNamesOpen((v) => !v); setNotes(false); }} aria-pressed={namesOpen} aria-expanded={namesOpen}>Names</button>}
           <button type="button" className="btn btn-secondary t-full" onClick={toggleFull} aria-pressed={full}>{full ? "Leave full screen" : "Full screen"}</button>
         </div>
       </header>
@@ -239,6 +245,14 @@ export default function Presenter({ open, startAt = 0, onClose, openerRef, names
         </div>
         <button ref={nextRef} type="button" className="btn btn-primary btn-lg" onClick={atEnd ? onClose : next}>{atEnd ? "Finish" : "Next"}</button>
       </footer>
+
+      {namesOpen && onNames && (
+        <aside className="t-names" aria-label="Names of the children in the stories">
+          <h3>Names in the stories</h3>
+          <p>Change a name and it changes on the slide at once, in the words and on the name tag.</p>
+          <NameFields names={rawNames} onChange={onNames} compact />
+        </aside>
+      )}
 
       {notes && (
         <aside className="t-notes" aria-label="Notes for the teacher">
