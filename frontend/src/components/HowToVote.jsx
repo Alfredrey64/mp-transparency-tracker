@@ -70,11 +70,40 @@ function Checker() {
   );
 }
 
+// The three deadlines that matter, drawn as bars hanging back from polling day: the longer the bar, the earlier you have to act.
+const DEADLINES = [
+  { label: "Register to vote", days: 12, colour: "#E0367A" },
+  { label: "Apply for a postal vote", days: 11, colour: "#7A5AF0" },
+  { label: "Apply for a proxy vote", days: 6, colour: "#0E9AA7" },
+];
+
+function Deadlines() {
+  return (
+    <figure style={{ margin: "18px 0 0", padding: "16px 16px 14px", borderRadius: 14, background: COLORS.paper, border: `1px solid ${COLORS.hairline}` }}>
+      <figcaption style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink }}>Last day to act, counted back from polling day</figcaption>
+      <ul style={{ listStyle: "none", margin: "14px 0 0", padding: 0, display: "grid", gap: 14 }}>
+        {DEADLINES.map((d) => (
+          <li key={d.label}>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 12, fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink }}>
+              <span style={{ fontWeight: 600 }}>{d.label}</span>
+              <span style={{ color: COLORS.inkSoft, whiteSpace: "nowrap" }}><strong style={{ color: COLORS.ink }}>{d.days}</strong> working days before</span>
+            </div>
+            <div aria-hidden="true" style={{ display: "flex", justifyContent: "flex-end", marginTop: 6, height: 12, borderRadius: 6, background: `color-mix(in srgb, ${COLORS.hairline} 60%, transparent)` }}>
+              <span className="bar-grow-r" style={{ width: `${(d.days / 12) * 100}%`, borderRadius: 6, background: d.colour }} />
+            </div>
+          </li>
+        ))}
+      </ul>
+      <div aria-hidden="true" style={{ display: "flex", justifyContent: "flex-end", marginTop: 8, fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.inkSoft }}>Polling day</div>
+    </figure>
+  );
+}
+
 function Step({ n, title, last, children }) {
   return (
-    <li style={{ display: "grid", gridTemplateColumns: "42px minmax(0, 1fr)", gap: 16, position: "relative" }}>
-      {!last && <span aria-hidden="true" style={{ position: "absolute", left: 20, top: 42, bottom: -4, width: 2, background: COLORS.hairline }} />}
-      <span aria-hidden="true" style={{ position: "relative", zIndex: 1, width: 42, height: 42, borderRadius: "50%", background: solid(ACCENT), color: "#fff", display: "grid", placeItems: "center", fontFamily: FONT_DISPLAY, fontSize: 19, fontWeight: 700 }}>{n}</span>
+    <li style={{ display: "grid", gridTemplateColumns: "42px minmax(0, 1fr)", gap: 16, position: "relative", "--i": n - 1 }}>
+      {!last && <span aria-hidden="true" className="step-line" style={{ position: "absolute", left: 20, top: 42, bottom: -4, width: 2, background: COLORS.hairline }} />}
+      <span aria-hidden="true" className="step-dot" style={{ position: "relative", zIndex: 1, width: 42, height: 42, borderRadius: "50%", background: solid(ACCENT), color: "#fff", display: "grid", placeItems: "center", fontFamily: FONT_DISPLAY, fontSize: 19, fontWeight: 700 }}>{n}</span>
       <div style={{ paddingBottom: last ? 0 : 28, minWidth: 0 }}>
         <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 21, fontWeight: 700, color: COLORS.ink, margin: "6px 0 2px" }}>{title}</h3>
         {children}
@@ -104,6 +133,7 @@ export default function HowToVote() {
 
       <section aria-labelledby="h-steps" style={{ ...card, marginTop: 20 }}>
         <h2 id="h-steps" style={cardTitle}>Four steps to voting</h2>
+        <Deadlines />
         <ol style={{ listStyle: "none", margin: "22px 0 0", padding: 0, display: "grid", gap: 4 }}>
           <Step n={1} title="Register to vote">
             <p style={para}>It takes about five minutes online. You need your date of birth, your address and your National Insurance number (you can still register without one). Registering is separate from being on any other list, so do it even if you think you already have.</p>

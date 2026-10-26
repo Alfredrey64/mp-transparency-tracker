@@ -99,7 +99,7 @@ export default function TaxRates({ param }) {
         share={() => taxShareSpec(nav, window.location.href)}
       />
       <div ref={tabsRef} style={{ scrollMarginTop: 12 }}>
-        <div role="tablist" aria-label="What to look at" style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+        <div role="tablist" aria-label="What to look at" className="tab-pills">
           {TABS.map((t) => {
             const active = nav.tab === t.key;
             const Icon = t.icon;
@@ -107,7 +107,7 @@ export default function TaxRates({ param }) {
               <button
                 key={t.key} role="tab" id={`tx-tab-${t.key}`} aria-selected={active} aria-controls="tx-panel" type="button"
                 onClick={() => go(t.key)}
-                style={{ display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "9px 16px", borderRadius: 999, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 15, fontWeight: 700, lineHeight: 1.2, border: `1.5px solid ${active ? solid(t.colour) : COLORS.hairline}`, background: active ? solid(t.colour) : COLORS.paperCard, color: active ? "#fff" : COLORS.ink, boxShadow: active ? `0 8px 18px -12px ${t.colour}` : "none", transition: "background 0.2s, color 0.2s, border-color 0.2s" }}
+                style={{ display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "9px 16px", borderRadius: 999, textAlign: "left", cursor: "pointer", fontFamily: FONT_BODY, fontSize: 15, fontWeight: 700, lineHeight: 1.2, border: `1.5px solid ${active ? solid(t.colour) : COLORS.hairline}`, background: active ? solid(t.colour) : COLORS.paperCard, color: active ? "#fff" : COLORS.ink, boxShadow: active ? `0 8px 18px -12px ${t.colour}` : "none", transition: "background 0.2s, color 0.2s, border-color 0.2s" }}
               >
                 <Icon size={17} />
                 {t.label}

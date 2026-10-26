@@ -49,7 +49,7 @@ export function SeatSearch({ seats, autoFocus }) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           autoFocus={autoFocus}
-          placeholder="A constituency or MP, e.g. Gainsborough"
+          placeholder="Search a constituency or MP"
           aria-label="Search for a constituency or an MP"
           style={{ width: "100%", boxSizing: "border-box", padding: "16px 20px 16px 50px", fontFamily: FONT_DISPLAY, fontSize: 17, border: `1.5px solid ${COLORS.hairline}`, borderRadius: 999, background: COLORS.paperCard, color: COLORS.ink, outline: "none" }}
           onFocus={(e) => (e.target.style.borderColor = COLORS.accent)}

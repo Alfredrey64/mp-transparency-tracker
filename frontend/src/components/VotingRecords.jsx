@@ -582,7 +582,7 @@ export default function VotingRecords({ initialMp = null, initialBill = null, in
           <IconBills size={18} />
           Bills going through Parliament
         </div>
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 4, marginBottom: 16 }}>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 8, marginBottom: 16, lineHeight: 1.5 }}>
           Tap any bill for its full summary, sponsor, and how MPs and parties voted on it.
         </div>
 

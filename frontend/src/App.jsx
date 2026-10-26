@@ -5,6 +5,7 @@ import { supabase } from "./supabaseClient";
 import { COLORS, FONT_BODY } from "./theme";
 import SiteHeader from "./components/SiteHeader";
 import SiteFooter from "./components/SiteFooter";
+import BackToTop from "./components/BackToTop";
 import "./chrome.css";
 import { HEMICYCLE } from "./lib/seatMark";
 import { installScrollReveal } from "./lib/scrollReveal";
@@ -477,6 +478,7 @@ export default function App() {
         </motion.main>
       </div>
       <SiteFooter onNavigate={handleNavigate} />
+      <BackToTop />
     </div>
     </GuideKeyContext.Provider>
     </MotionConfig>

@@ -520,7 +520,7 @@ function Bullet({ children }) {
 function EducationSection() {
   return (
     <div style={{ marginBottom: 32, maxWidth: "none" }}>
-      <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 23, color: COLORS.ink, marginBottom: 4 }}>
+      <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 23, color: COLORS.ink, marginBottom: 8 }}>
         Money & Influence in Parliament, Explained
       </h2>
       <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 18, maxWidth: 760 }}>

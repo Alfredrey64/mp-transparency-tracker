@@ -11,7 +11,7 @@ export default function TaxToday({ now, onPick }) {
   return (
     <section aria-labelledby="h-tax-today" style={{ marginTop: 22 }}>
       <h2 id="h-tax-today" style={sectionTitle}>The main rates today</h2>
-      <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "4px 0 0" }}>Pick one to see how it has changed since it began.</p>
+      <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "8px 0 0" }}>Pick one to see how it has changed since it began.</p>
       <div className="box-row" style={{ "--n": 3, "--min": "150px", "--gap": "10px", marginTop: 10 }}>
         {TODAY.map((key, i) => {
           const [taxId, , label] = HEADLINES.find(([, k]) => k === key);

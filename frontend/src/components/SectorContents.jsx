@@ -40,7 +40,7 @@ export default function SectorContents({ groups, focusId, onFocus, accent }) {
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "10px 20px" }}>
         <div>
           <h2 id="h-contents" style={cardTitle}>Everything on this page</h2>
-          <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, margin: "4px 0 0" }}>{all.length} charts and tools. {focusMode ? "Pick one to see only that." : "Tap one to jump to it."}</p>
+          <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, margin: "8px 0 0" }}>{all.length} charts and tools. {focusMode ? "Pick one to see only that." : "Tap one to jump to it."}</p>
         </div>
         <button
           type="button" role="switch" aria-checked={focusMode} onClick={() => onFocus(focusMode ? null : all[0]?.id ?? null)} className="ons-tap"

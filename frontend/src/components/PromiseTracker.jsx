@@ -81,15 +81,14 @@ function PledgeLine({ pledge }) {
       <button
         onClick={() => withScrollPreserved(() => setOpen((v) => !v))}
         style={{
-          display: "flex", alignItems: "center", gap: 10, width: "100%", padding: "11px 2px",
+          display: "flex", alignItems: "center", gap: 10, width: "100%", padding: "12px 2px",
           background: "none", border: "none", cursor: "pointer", textAlign: "left",
         }}
       >
         <StatusIcon icon={s.icon} color={s.color} size={16} />
         <span
           style={{
-            flex: 1, minWidth: 0, fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink,
-            whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+            flex: 1, minWidth: 0, fontFamily: FONT_BODY, fontSize: 14, fontWeight: 600, color: COLORS.ink, lineHeight: 1.4,
           }}
         >
           {pledge.promise}
@@ -175,7 +174,7 @@ export default function PromiseTracker() {
           />
         </div>
       )}
-      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 16, paddingRight: pm?.thumbnail_url ? 72 : 0 }}>
         <div
           style={{
             width: 56, height: 56, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center",
@@ -211,7 +210,12 @@ export default function PromiseTracker() {
       </div>
       <div style={{ height: 10, borderRadius: 999, overflow: "hidden", display: "flex", background: COLORS.paper, marginTop: 14 }}>
         {OVERALL.map((o) => (
-          <div key={o.key} title={`${STATUS[o.key].label}: ${o.count}`} style={{ width: `${(o.count / OVERALL_TOTAL) * 100}%`, background: STATUS[o.key].color }} />
+          <motion.div
+            key={o.key} title={`${STATUS[o.key].label}: ${o.count}`}
+            initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true, margin: "0px 0px -10% 0px" }}
+            transition={{ duration: 0.7, delay: 0.1 + OVERALL.indexOf(o) * 0.09, ease: [0.16, 1, 0.3, 1] }}
+            style={{ width: `${(o.count / OVERALL_TOTAL) * 100}%`, background: STATUS[o.key].color, transformOrigin: "left center" }}
+          />
         ))}
       </div>
 

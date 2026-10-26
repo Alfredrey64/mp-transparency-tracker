@@ -29,7 +29,7 @@ export default function TaxOverview({ param, onPick }) {
       <TaxComingUp now={now} />
       <section aria-labelledby="h-tax-money" style={{ marginTop: 34 }}>
         <h2 id="h-tax-money" style={{ fontFamily: FONT_DISPLAY, fontSize: 19, fontWeight: 700, color: COLORS.ink, margin: 0 }}>How much is collected and spent</h2>
-        <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "4px 0 0", maxWidth: 780 }}>
+        <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "8px 0 0", maxWidth: 780 }}>
           Official figures for the whole UK from the Office for National Statistics: what each tax brings in, what the government spends it on, and how each £1 is split.
         </p>
         <div ref={anchor} style={{ minHeight: showMoney ? undefined : 600 }}>
