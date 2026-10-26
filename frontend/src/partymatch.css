@@ -1,0 +1,4 @@
+.pm-steps { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr)); gap: 10px; margin: 0 0 18px; padding: 0; }
+.pm-steps li { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; background: color-mix(in srgb, var(--sc) 9%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--sc) 28%, var(--c-hairline)); }
+.pm-steps b { display: grid; place-items: center; flex: none; width: 34px; height: 34px; border-radius: 12px; background: var(--sc); color: #fff; font: 800 16px "Public Sans", system-ui, sans-serif; }
+.pm-steps span { font: 600 13.5px/1.4 "Public Sans", system-ui, sans-serif; color: var(--c-ink); }

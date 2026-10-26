@@ -11,6 +11,7 @@ import ShareButton from "./ShareButton";
 import { compareSeatsShareSpec } from "../lib/shareSpecs";
 import { card, cardTitle, pillStyle } from "../lib/onsStyles";
 import { navigate } from "../lib/route";
+import "../compareseats.css";
 
 // Two constituencies side by side: who holds them, how close the result was, past elections, turnout and deprivation. The
 // pair is in the address (#/compareSeats/Hackney North and Stoke Newington~Gainsborough) so a comparison can be linked to.

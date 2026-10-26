@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import "../ycards.css";
 import WhatThisMeans from "./WhatThisMeans";
 import { describeAgainst } from "../lib/interpret";
 import { supabase } from "../supabaseClient";

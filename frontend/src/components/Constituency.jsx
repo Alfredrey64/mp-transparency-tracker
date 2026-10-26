@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import "../ycards.css";
 import ShareButton from "./ShareButton";
 import { seatShareSpec } from "../lib/shareSpecs";
 import { motion, useReducedMotion } from "motion/react";

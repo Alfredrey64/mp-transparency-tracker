@@ -1,0 +1,33 @@
+/* ---- The Cabinet chart --------------------------------------------------------------------------------------------------------------------------- */
+.cab-chart { margin-top: 30px; padding: clamp(18px, 3vw, 30px); border-radius: 24px; background: linear-gradient(170deg, color-mix(in srgb, var(--page-accent, #2F80ED) 7%, var(--c-paper-card)), var(--c-paper-card) 55%); border: 1px solid color-mix(in srgb, var(--page-accent, #2F80ED) 22%, var(--c-hairline)); box-shadow: var(--shadow-2); }
+.cab-chart-title { margin: 0; text-align: center; font: 700 clamp(24px, 3.4vw, 32px)/1.2 "Newsreader", Georgia, serif; color: var(--c-ink); }
+.cab-chart-lead { margin: 8px auto 24px; max-width: 620px; text-align: center; font: 400 15px/1.6 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.cab-pm { display: flex; align-items: center; gap: 16px; padding: 14px 24px 14px 16px; border-radius: 22px; background: linear-gradient(135deg, var(--pc), color-mix(in srgb, var(--pc) 70%, #000)); color: #fff; box-shadow: 0 18px 34px -16px var(--pc); }
+.cab-pm > span { display: grid; gap: 1px; text-align: left; }
+.cab-pm em { font: 700 12.5px "Public Sans", system-ui, sans-serif; font-style: normal; opacity: 0.88; }
+.cab-pm strong { font: 700 clamp(20px, 3vw, 26px)/1.15 "Newsreader", Georgia, serif; }
+.cab-pm small { font: 500 12.5px "Public Sans", system-ui, sans-serif; opacity: 0.88; }
+.cab-node { position: relative; display: grid; gap: 10px; align-content: start; padding: 0 0 12px; overflow: visible; text-align: left; cursor: pointer; border-radius: 18px; background: var(--c-paper-card); border: 1px solid color-mix(in srgb, var(--ca) 34%, var(--c-hairline)); box-shadow: var(--shadow-1); font: inherit; color: inherit; transition: box-shadow 0.25s var(--ease-out); }
+.cab-node:hover { box-shadow: var(--shadow-3), 0 0 0 3px color-mix(in srgb, var(--ca) 24%, transparent); }
+.cab-stem { position: absolute; top: -20px; left: 50%; width: 3px; margin-left: -1.5px; border-radius: 2px; background: color-mix(in srgb, var(--c-ink-soft) 40%, var(--c-hairline)); }
+.cab-node-head { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 17px 17px 0 0; background: linear-gradient(110deg, var(--ca), color-mix(in srgb, var(--ca) 70%, #000)); color: #fff; }
+.cab-node-head b { font: 700 12.5px/1.25 "Public Sans", system-ui, sans-serif; }
+.cab-node-icon { display: grid; place-items: center; flex: none; width: 28px; height: 28px; border-radius: 9px; background: rgba(255, 255, 255, 0.22); }
+.cab-node-lead { display: flex; align-items: center; gap: 10px; padding: 0 12px; }
+.cab-node-lead > span:last-child { display: grid; min-width: 0; }
+.cab-node-lead strong { font: 700 14px/1.25 "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.cab-node-lead em { font: 500 11.5px/1.3 "Public Sans", system-ui, sans-serif; font-style: normal; color: var(--c-ink-soft); }
+.cab-node-team { display: grid; gap: 6px; margin: 0 12px; padding-top: 10px; border-top: 1px dashed color-mix(in srgb, var(--ca) 40%, transparent); }
+.cab-faces { display: flex; align-items: center; }
+.cab-faces > div { margin-left: -7px; box-shadow: 0 0 0 2px var(--c-paper-card); }
+.cab-faces > div:first-child { margin-left: 0; }
+.cab-faces i { margin-left: 6px; font: 700 12px "Public Sans", system-ui, sans-serif; font-style: normal; color: color-mix(in srgb, var(--ca) 75%, var(--c-ink)); }
+.cab-node-count { font: 600 12px/1.3 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.cab-ranks { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 10px; margin: 26px 0 0; padding: 0; }
+.cab-ranks li { display: grid; gap: 3px; padding: 12px 14px; border-radius: 14px; background: var(--c-paper); border: 1px solid var(--c-hairline); border-left: 4px solid var(--page-accent, #2F80ED); }
+.cab-ranks b { font: 700 13.5px "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.cab-ranks span { font: 400 13px/1.45 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.cab-rank { padding: 2px 9px; border-radius: 999px; font: 700 11px "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); background: var(--c-paper); border: 1px solid var(--c-hairline); }
+.cab-rank[data-rank="0"], .cab-rank[data-rank="1"] { color: color-mix(in srgb, var(--page-accent, #2F80ED) 75%, var(--c-ink)); background: color-mix(in srgb, var(--page-accent, #2F80ED) 12%, transparent); border-color: color-mix(in srgb, var(--page-accent, #2F80ED) 35%, transparent); }
+.cab-boss { font: 500 11.5px "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); align-self: center; }
+.cab-clamp { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }

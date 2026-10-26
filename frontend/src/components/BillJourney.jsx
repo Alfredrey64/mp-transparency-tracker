@@ -4,6 +4,7 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, readable, solid } from "../
 import { STAGE_DEFS, buildRoute } from "../lib/billRoute";
 import { plainSentence } from "../lib/billPlain";
 import { getBillDescription } from "../lib/billDescriptions";
+import "../billcap.css";
 
 // A real institutional fact, not a decorative choice: Commons benches are
 // green, Lords benches are red, and that colour-coding is how the two

@@ -12,6 +12,7 @@ import {
 } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import Loading from "./Loading";
+import "../cabinet.css";
 
 // Cabinet roles don't carry a clean "department" field of their own — we
 // infer one from the role title itself (most already name their department

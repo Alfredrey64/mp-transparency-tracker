@@ -747,29 +747,6 @@ a[target="_blank"]::after { content: "" / " (opens in a new tab)"; }
 @keyframes bill-ring-pulse { 0% { transform: scale(0.82); opacity: 0.5; } 100% { transform: scale(1.18); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .bill-ring::after { animation: none; } }
 
-/* The caption under the bills walk-through. */
-.bill-cap { font-family: var(--fb); position: relative; overflow: hidden; margin-top: 14px; padding: 16px 18px 20px; border-radius: 16px; border: 1px solid color-mix(in srgb, var(--hc) 30%, var(--c-hairline)); background: linear-gradient(135deg, color-mix(in srgb, var(--hc) 12%, var(--c-paper-card)), var(--c-paper-card) 72%); box-shadow: 0 12px 28px -20px color-mix(in srgb, var(--hc) 70%, transparent); transition: border-color 0.5s, background 0.5s, box-shadow 0.5s; }
-.bill-cap-row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 12px 16px; }
-.bill-cap-badge { flex: none; width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; color: #fff; text-align: center; box-shadow: 0 0 0 5px color-mix(in srgb, var(--hc) 20%, transparent); transition: background 0.4s, box-shadow 0.5s; }
-.bill-cap-badge b { display: block; font-family: var(--fm); font-size: 21px; line-height: 1; }
-.bill-cap-badge i { display: block; font-style: normal; font-size: 10px; line-height: 1.2; opacity: 0.9; margin-top: 1px; }
-.bill-cap-words { flex: 1 1 240px; min-width: 0; display: grid; }
-.bill-cap-step { grid-area: 1 / 1; visibility: hidden; opacity: 0; }
-.bill-cap-step[data-on="1"] { visibility: visible; opacity: 1; animation: bill-cap-in 0.45s var(--ease-out) backwards; }
-@keyframes bill-cap-in { from { opacity: 0; transform: translateY(7px); } }
-.bill-cap-title { font-family: var(--fd); font-weight: 700; font-size: 18px; line-height: 1.25; color: var(--c-ink); }
-.bill-cap-text { margin-top: 3px; font-size: 14.5px; line-height: 1.55; color: var(--c-ink-soft); }
-.bill-cap-btn { flex: none; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--hc) 40%, var(--c-hairline)); background: color-mix(in srgb, var(--hc) 8%, var(--c-paper-card)); color: var(--c-ink); font: 700 13px var(--fb); cursor: pointer; transition: background 0.2s, border-color 0.2s; }
-.bill-cap-btn:hover { background: color-mix(in srgb, var(--hc) 16%, var(--c-paper-card)); }
-.bill-cap-phases { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 0; padding: 0; }
-.bill-cap-phases li { padding: 4px 11px; border-radius: 999px; font-size: 12px; font-weight: 700; border: 1px solid var(--c-hairline); color: var(--c-ink-soft); background: transparent; transition: background 0.35s, color 0.35s, border-color 0.35s; }
-.bill-cap-phases li[data-state="done"] { border-color: color-mix(in srgb, var(--pc) 45%, var(--c-hairline)); color: var(--c-ink); background: color-mix(in srgb, var(--pc) 10%, transparent); }
-.bill-cap-phases li[data-state="now"] { border-color: var(--pc); color: var(--c-ink); background: color-mix(in srgb, var(--pc) 20%, var(--c-paper-card)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--pc) 16%, transparent); }
-.bill-cap-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: color-mix(in srgb, var(--hc) 12%, transparent); }
-.bill-cap-bar i { position: absolute; inset: 0; background: var(--hc); transform-origin: left center; animation: bill-cap-fill linear both; }
-@keyframes bill-cap-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-@media (prefers-reduced-motion: reduce) { .bill-cap-step[data-on="1"] { animation: none; } .bill-cap-bar i { animation: none; transform: scaleX(1); opacity: 0.4; } }
-@media (max-width: 520px) { .bill-cap { padding: 14px 14px 18px; } .bill-cap-btn { width: 100%; justify-content: center; } }
 
 /* A row of boxes laid out again by lib/balanceBoxes.js so the last row is never a lone box: twice as many tracks as boxes across, each box two wide,
    so a short last row can be started half a box in and sit in the middle. */

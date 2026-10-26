@@ -1,5 +1,6 @@
 // The small building blocks of the Your Council page: cards, headings, stat tiles, chips and bars.
 import { COLORS, FONT_BODY, FONT_DISPLAY, numeric, readable } from "../theme";
+import "../ycards.css";
 import CountUp from "./CountUp";
 import { fmt, signed, scrollToId } from "./councilsUi";
 
