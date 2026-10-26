@@ -96,3 +96,15 @@
   .v-step-icon { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .v-route::before, .v-route li, .v-ticket, .v-ballot-x { animation: none; } }
+
+/* Each question's answers: a stacked list of equal-width cards, the chosen one filled in. */
+.v-choices { display: grid; gap: 8px; }
+.v-choice { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 46px; padding: 0 14px; text-align: left; font: 600 15px/1.25 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); background: var(--c-paper-card); border: 1.5px solid var(--c-hairline); border-radius: 14px; cursor: pointer; transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s; }
+.v-choice:hover { border-color: #E0367A; box-shadow: 0 0 0 3px rgba(224, 54, 122, 0.12); }
+.v-choice-dot { flex: none; position: relative; width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--c-ink-soft); background: transparent; transition: border-color 0.2s, background-color 0.2s; }
+.v-choice-dot::after { content: ""; position: absolute; inset: 3px; border-radius: 50%; background: #fff; opacity: 0; transition: opacity 0.2s; }
+.v-choice[aria-checked="true"] { background: color-mix(in srgb, #E0367A 10%, var(--c-paper-card)); border-color: #E0367A; box-shadow: 0 0 0 3px rgba(224, 54, 122, 0.14); }
+.v-choice[aria-checked="true"] .v-choice-dot { background: #E0367A; border-color: #E0367A; }
+.v-choice[aria-checked="true"] .v-choice-dot::after { opacity: 1; }
+.v-choice:focus-visible { outline: 2px solid #E0367A; outline-offset: 2px; }
+@media (max-width: 560px) { .v-choice { min-height: 48px; } }

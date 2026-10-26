@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { COLORS, FONT_BODY, PAGE_PADDING, solid } from "../theme";
+import { COLORS, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { IconBallot } from "./icons";
-import { Segmented } from "./DeprivationControls";
 import { canIVote } from "../lib/canIVote";
 import { Reveal } from "./Motion";
 import "../howtovote.css";
@@ -11,7 +10,6 @@ import "../howtovote.css";
 // Plain steps with links to the official sites. Deadlines are given as "working days before polling day" so they never go out of date;
 // anything that changes with the law points to gov.uk. Northern Ireland has its own register, so it is called out.
 
-const ACCENT = "#E0367A";
 
 const REGISTER = "https://www.gov.uk/register-to-vote";
 const HOW = "https://www.gov.uk/how-to-vote";
@@ -51,6 +49,20 @@ const RESULT = {
   no: { label: "You can't vote", colour: "#B3382E", icon: "cross" },
 };
 
+// One question's answers as a stacked list of radio cards: every card the same width, the chosen one filled in.
+function Choices({ label, value, onChange, options }) {
+  return (
+    <div className="v-choices" role="radiogroup" aria-label={label}>
+      {options.map((o) => (
+        <button key={o.id} type="button" role="radio" aria-checked={value === o.id} className="v-choice" onClick={() => onChange(o.id)}>
+          <span className="v-choice-dot" aria-hidden="true" />
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function Question({ n, title, children }) {
   return (
     <div className="v-q">
@@ -71,13 +83,13 @@ function Checker() {
       <p style={para}>Answer three quick questions to see which elections you can vote in. Nothing you pick is saved or sent anywhere.</p>
       <div className="v-qs">
         <Question n={1} title="How old are you?">
-          <Segmented label="How old are you" value={age} onChange={setAge} accent={solid(ACCENT)} options={[{ id: "adult", label: "18 or over" }, { id: "teen", label: "16 or 17" }, { id: "child", label: "Under 16" }]} />
+          <Choices label="How old are you" value={age} onChange={setAge} options={[{ id: "adult", label: "18 or over" }, { id: "teen", label: "16 or 17" }, { id: "child", label: "Under 16" }]} />
         </Question>
         <Question n={2} title="Where do you live?">
-          <Segmented label="Where do you live" value={nation} onChange={setNation} accent={solid(ACCENT)} options={[{ id: "england", label: "England" }, { id: "scotland", label: "Scotland" }, { id: "wales", label: "Wales" }, { id: "ni", label: "Northern Ireland", short: "N. Ireland" }]} />
+          <Choices label="Where do you live" value={nation} onChange={setNation} options={[{ id: "england", label: "England" }, { id: "scotland", label: "Scotland" }, { id: "wales", label: "Wales" }, { id: "ni", label: "Northern Ireland", short: "N. Ireland" }]} />
         </Question>
         <Question n={3} title="Which best describes your citizenship?">
-          <Segmented label="Citizenship" value={citizenship} onChange={setCitizenship} accent={solid(ACCENT)} options={[{ id: "british-irish", label: "British or Irish" }, { id: "commonwealth", label: "Commonwealth" }, { id: "eu", label: "EU" }, { id: "other", label: "Other" }]} />
+          <Choices label="Citizenship" value={citizenship} onChange={setCitizenship} options={[{ id: "british-irish", label: "British or Irish" }, { id: "commonwealth", label: "Commonwealth" }, { id: "eu", label: "EU" }, { id: "other", label: "Other" }]} />
         </Question>
       </div>
       <ul aria-live="polite" className="v-tickets">

@@ -17,7 +17,7 @@ import LawScene from "./LawScene";
 // The full-screen presenter. Everything on it keeps its place from slide to slide: the picture is always the same shape, the words always go in the
 // same box, and the buttons never move, so clicking Next only changes what is drawn, never where anything is.
 
-function Picture({ slide, beat, calm, label, seats, votes, names }) {
+function Picture({ slide, beat, calm, label, seats, votes, names, quizQ }) {
   const ref = useRef(null);
   useBeats(ref, beat, calm);
   let inner;
@@ -33,12 +33,12 @@ function Picture({ slide, beat, calm, label, seats, votes, names }) {
     case "ni": inner = <NiScene />; break;
     case "voice": inner = <VoiceScene />; break;
     case "vote": inner = <VoteScene votes={votes} />; break;
-    default: inner = <QuizScene beat={beat} />;
+    default: inner = <QuizScene beat={beat} q={quizQ} />;
   }
-  return <svg ref={ref} className="t-svg" viewBox="0 0 800 450" role="img" aria-label={label}><NamesContext.Provider value={names}>{inner}</NamesContext.Provider></svg>;
+  return <svg ref={ref} className="t-svg" viewBox="0 0 800 450" role={slide.kind === "voice" ? "group" : "img"} aria-label={label}><NamesContext.Provider value={names}>{inner}</NamesContext.Provider></svg>;
 }
 
-function Quiz({ onBeat }) {
+function Quiz({ onBeat, onQuestion }) {
   const [q, setQ] = useState(0);
   const [picked, setPicked] = useState(null);
   const [score, setScore] = useState(0);
@@ -49,14 +49,14 @@ function Quiz({ onBeat }) {
     setPicked(i);
     if (i === item.answer) { setScore((s) => s + 1); onBeat(1); } else onBeat(2);
   };
-  const advance = () => { setQ((n) => n + 1); setPicked(null); onBeat(q + 1 >= QUIZ.length ? 3 : 0); };
+  const advance = () => { setQ((n) => n + 1); onQuestion(q + 1); setPicked(null); onBeat(q + 1 >= QUIZ.length ? 3 : 0); };
   if (done) {
     return (
       <div className="t-quiz">
         <div className="t-kicker">Quick quiz</div>
         <h2 className="t-title">You got {score} out of {QUIZ.length}</h2>
         <p className="t-text">{score === QUIZ.length ? "Brilliant. You know your way around politics." : score >= 3 ? "Well done. You know a lot already." : "A good start. Go back through the chapters and try again."}</p>
-        <button type="button" className="btn btn-secondary" onClick={() => { setQ(0); setPicked(null); setScore(0); onBeat(0); }}>Try again</button>
+        <button type="button" className="btn btn-secondary" onClick={() => { setQ(0); onQuestion(0); setPicked(null); setScore(0); onBeat(0); }}>Try again</button>
       </div>
     );
   }
@@ -158,6 +158,7 @@ export default function Presenter({ open, startAt = 0, onClose, openerRef, names
   const [notes, setNotes] = useState(false);
   const [full, setFull] = useState(false);
   const [quizBeat, setQuizBeat] = useState(0);
+  const [quizQ, setQuizQ] = useState(0);
   const [votes, setVotes] = useState([0, 0]);
   const root = useRef(null);
   const nextRef = useRef(null);
@@ -176,13 +177,13 @@ export default function Presenter({ open, startAt = 0, onClose, openerRef, names
 
   const next = useCallback(() => {
     if (at.beat < slide.steps.length - 1) setAt({ i: at.i, beat: at.beat + 1 });
-    else if (at.i < last) { setQuizBeat(0); setAt({ i: at.i + 1, beat: 0 }); }
+    else if (at.i < last) { setQuizBeat(0); setQuizQ(0); setAt({ i: at.i + 1, beat: 0 }); }
   }, [at, slide, last]);
   const back = useCallback(() => {
     if (at.beat > 0) setAt({ i: at.i, beat: at.beat - 1 });
-    else if (at.i > 0) { setQuizBeat(0); setAt({ i: at.i - 1, beat: slides[at.i - 1].steps.length - 1 }); }
+    else if (at.i > 0) { setQuizBeat(0); setQuizQ(0); setAt({ i: at.i - 1, beat: slides[at.i - 1].steps.length - 1 }); }
   }, [at, slides]);
-  const jump = (i) => { setQuizBeat(0); setAt({ i, beat: 0 }); };
+  const jump = (i) => { setQuizBeat(0); setQuizQ(0); setAt({ i, beat: 0 }); };
 
   useEffect(() => {
     if (!open) return undefined;
@@ -240,10 +241,10 @@ export default function Presenter({ open, startAt = 0, onClose, openerRef, names
 
       <main className="t-main" onTouchStart={(e) => { touch.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }; }} onTouchEnd={onTouchEnd}>
         <div className="t-stage" key={slide.id}>
-          <Picture slide={slide} beat={beat} calm={calm} seats={seats} votes={votes} names={names} label={[step.title, step.text].filter(Boolean).join(". ")} />
+          <Picture slide={slide} beat={beat} calm={calm} seats={seats} votes={votes} names={names} quizQ={quizQ} label={[step.title, step.text].filter(Boolean).join(". ")} />
         </div>
         <section className="t-caption" aria-live="polite" aria-label="What to say">
-          {quiz ? <Quiz key={slide.id} onBeat={setQuizBeat} /> : vote ? <Vote votes={votes} setVotes={setVotes} /> : <Caption step={step} />}
+          {quiz ? <Quiz key={slide.id} onBeat={setQuizBeat} onQuestion={setQuizQ} /> : vote ? <Vote votes={votes} setVotes={setVotes} /> : <Caption step={step} />}
         </section>
       </main>
 

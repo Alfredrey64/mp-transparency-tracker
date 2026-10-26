@@ -1,0 +1,49 @@
+/* The countdown: a deep green band, the number counted up on arrival, with the day's figures beneath. */
+.le-hero { position: relative; overflow: hidden; margin-top: 4px; padding: clamp(22px, 4vw, 34px); border-radius: 24px; color: #fff; background: linear-gradient(135deg, #0B3B2E 0%, #0F5D49 55%, #138264 100%); box-shadow: var(--shadow-2); isolation: isolate; }
+.le-hero::before { content: ""; position: absolute; inset: -40% -10% auto auto; width: 70%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, 0.16), transparent 62%); animation: leDrift 14s ease-in-out infinite alternate; z-index: -1; }
+.le-hero::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(255, 255, 255, 0.13) 1.2px, transparent 1.4px); background-size: 22px 22px; mask-image: linear-gradient(120deg, transparent 35%, #000); z-index: -1; }
+@keyframes leDrift { to { transform: translate(-12%, 14%) scale(1.12); } }
+.le-hero-kicker { font: 700 14px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: rgba(255, 255, 255, 0.82); }
+.le-hero-count { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 18px; margin: 8px 0 14px; }
+.le-hero-n { font: 700 clamp(56px, 11vw, 96px)/0.95 "Figures", "Newsreader", Georgia, serif; letter-spacing: -0.03em; }
+.le-hero-t { font: 600 clamp(18px, 3vw, 25px)/1.25 "Figures", "Newsreader", Georgia, serif; }
+.le-hero-stats { display: flex; flex-wrap: wrap; gap: 10px; }
+.le-hero-stats > span { padding: 8px 14px; border-radius: 999px; background: rgba(255, 255, 255, 0.14); border: 1px solid rgba(255, 255, 255, 0.22); font: 500 14px/1.2 "Figures", "Public Sans", system-ui, sans-serif; }
+.le-hero-stats strong { font: 700 17px "Figures", "Public Sans", system-ui, sans-serif; margin-right: 3px; }
+.le-hero-note { margin: 14px 0 0; font: 500 14.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: rgba(255, 255, 255, 0.86); }
+
+/* Columns: one per election day, as tall as the seats up that day. */
+.le-sky { margin-top: 26px; padding: clamp(18px, 3vw, 26px); border-radius: 22px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); }
+.le-cols { list-style: none; margin: 18px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 10px; }
+.le-cols button { display: grid; grid-template-rows: auto 150px auto; gap: 8px; justify-items: center; width: 100%; padding: 8px 4px 6px; background: none; border: 0; border-radius: 14px; cursor: pointer; font: inherit; color: var(--c-ink); transition: background-color 0.2s; }
+.le-cols button:hover, .le-cols button:focus-visible { background: color-mix(in srgb, var(--sc) 10%, transparent); }
+.le-col-n { font: 700 17px/1.1 "Figures", "Public Sans", system-ui, sans-serif; }
+.le-col-track { position: relative; width: min(46px, 70%); height: 150px; border-radius: 12px 12px 6px 6px; background: color-mix(in srgb, var(--sc) 12%, transparent); display: flex; align-items: flex-end; overflow: hidden; }
+.le-col-track > i { display: block; width: 100%; border-radius: 10px 10px 4px 4px; background: linear-gradient(180deg, var(--sc), color-mix(in srgb, var(--sc) 70%, #000)); transform-origin: bottom; animation: leRise 0.9s var(--ease-out) calc(var(--i, 0) * 80ms + 150ms) backwards; }
+@keyframes leRise { from { transform: scaleY(0); } }
+.le-col-d { font: 600 12.5px/1.2 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); text-align: center; }
+
+/* One card for each election day: a coloured edge, a bar for how big the day is, and the nations taking part. */
+.le-date { position: relative; padding: 18px 20px 16px 24px; border-radius: 18px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); overflow: hidden; animation: leIn 0.5s var(--ease-out) calc(var(--i, 0) * 60ms) backwards; }
+.le-date::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--sc); }
+.le-date[data-first="1"] { background: color-mix(in srgb, var(--sc) 7%, var(--c-paper-card)); border-color: color-mix(in srgb, var(--sc) 50%, var(--c-hairline)); }
+@keyframes leIn { from { opacity: 0; transform: translateY(10px); } }
+.le-date-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; }
+.le-date-name { font: 700 22px/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.le-date-days { font: 700 13px/1 "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--sc) 70%, var(--c-ink)); padding: 6px 12px; border-radius: 999px; background: color-mix(in srgb, var(--sc) 12%, transparent); }
+.le-date-figs { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 18px; margin: 10px 0 8px; font: 500 14.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.le-date-figs strong { font: 700 22px "Figures", "Newsreader", Georgia, serif; }
+.le-badge { font: 700 12px/1 "Figures", "Public Sans", system-ui, sans-serif; color: #fff; background: #138264; border-radius: 999px; padding: 5px 11px; align-self: center; }
+.le-meter { height: 8px; border-radius: 4px; background: color-mix(in srgb, var(--sc) 14%, transparent); overflow: hidden; margin-bottom: 12px; }
+.le-meter > i { display: block; height: 100%; border-radius: 4px; background: var(--sc); transform: scaleX(var(--w, 1)); transform-origin: left; animation: leGrow 1s var(--ease-out) 0.2s backwards; }
+@keyframes leGrow { from { transform: scaleX(0); } }
+.le-nations { display: flex; flex-wrap: wrap; gap: 6px; }
+.le-nations > span { display: inline-flex; align-items: center; gap: 7px; font: 600 12.5px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); border: 1px solid var(--c-hairline); border-radius: 999px; padding: 6px 11px; background: var(--c-paper); }
+.le-nations > span > i { width: 8px; height: 8px; border-radius: 50%; }
+.le-more { margin-top: 10px; }
+.le-more summary { font: 700 13.5px/1.2 "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--sc) 70%, var(--c-ink)); cursor: pointer; padding: 8px 0; }
+.le-more ul { list-style: none; margin: 6px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(210px, 100%), 1fr)); gap: 2px 14px; }
+.le-more a { display: flex; align-items: center; gap: 8px; font: 500 13.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); text-decoration: none; padding: 5px 0; }
+.le-more a > span { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.le-more a:hover { text-decoration: underline; }
+@media (prefers-reduced-motion: reduce) { .le-hero::before, .le-col-track > i, .le-date, .le-meter > i { animation: none; } }

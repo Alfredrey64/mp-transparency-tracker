@@ -247,12 +247,22 @@ export function Calendar({ x, y }) {
   );
 }
 
+// The hands turn clockwise by an animation written into the picture itself, so they always start from the top and turn the right way round
+// whichever browser draws them. For anyone who has asked for less motion they stand still.
+const stillClock = () => typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
 export function Clock({ x, y }) {
+  const still = stillClock();
   return (
     <g transform={`translate(${x} ${y})`}>
       <circle r="34" fill="#fff" stroke="#CBD3E2" strokeWidth="4" />
-      <g className="t-hands"><path d="M0 0 v-22" stroke={INK} strokeWidth="4" strokeLinecap="round" /></g>
-      <path d="M0 0 l14 8" stroke={INK} strokeWidth="4" strokeLinecap="round" />
+      {[0, 90, 180, 270].map((a) => <path key={a} d="M0 -29 v5" stroke="#CBD3E2" strokeWidth="3" strokeLinecap="round" transform={`rotate(${a})`} />)}
+      <path d="M0 0 v-14" stroke={INK} strokeWidth="4.5" strokeLinecap="round" transform="rotate(300)">
+        {!still && <animateTransform attributeName="transform" type="rotate" from="300 0 0" to="660 0 0" dur="96s" repeatCount="indefinite" />}
+      </path>
+      <path d="M0 0 v-23" stroke={INK} strokeWidth="3.2" strokeLinecap="round">
+        {!still && <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="8s" repeatCount="indefinite" />}
+      </path>
       <circle r="4" fill={INK} />
     </g>
   );

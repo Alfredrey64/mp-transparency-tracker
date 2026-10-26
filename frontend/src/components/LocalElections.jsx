@@ -6,6 +6,8 @@ import { IconCalendar, IconSearch } from "./icons";
 import { card, cardTitle } from "../lib/onsStyles";
 import { longDate, searchCouncils, councilsForCodes, controlColourOf } from "../lib/councils";
 import { upcomingDates, biggestDate, atStake, nationOf } from "../lib/localElections";
+import CountUp from "./CountUp";
+import "../localelections.css";
 
 // Local elections: when your council next votes, what is up for grabs, and which councils vote on each date. Everything comes from
 // councilsIndex.json (the same file as the Your council page), so it updates when that does.
@@ -108,28 +110,34 @@ function Finder({ data }) {
   );
 }
 
-function DateCard({ group, first, big }) {
+const NATION_COLOUR = { England: "#D4432F", Scotland: "#2A6FDB", Wales: "#1E9E5F", "Northern Ireland": "#E08A00" };
+const STRIPE = ["#1FA97C", "#2A6FDB", "#7A5AF0", "#E0367A", "#E08A00", "#0E9AA7"];
+
+function DateCard({ group, first, big, index, mostSeats }) {
   const nations = Object.entries(group.nations).sort((a, b) => b[1] - a[1]);
+  const stripe = STRIPE[index % STRIPE.length];
   return (
-    <li style={{ padding: "16px 18px", borderRadius: 14, background: first ? `color-mix(in srgb, ${ACCENT} 7%, ${COLORS.paperCard})` : COLORS.paperCard, border: `1px solid ${first ? `${ACCENT}77` : COLORS.hairline}` }}>
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "baseline", gap: "4px 12px" }}>
-        <div style={{ fontFamily: FONT_DISPLAY, fontSize: 21, fontWeight: 700, color: COLORS.ink }}>{longDate(group.date)}</div>
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: first ? ink : COLORS.inkSoft }}>{group.days === 0 ? "Today" : `${fmt(group.days)} ${group.days === 1 ? "day" : "days"} to go`}</div>
+    <li id={`le-d-${group.date}`} className="le-date" data-first={first ? "1" : "0"} style={{ "--sc": stripe, "--i": Math.min(index, 8) }}>
+      <div className="le-date-top">
+        <div className="le-date-name">{longDate(group.date)}</div>
+        <div className="le-date-days">{group.days === 0 ? "Today" : `${fmt(group.days)} ${group.days === 1 ? "day" : "days"} to go`}</div>
       </div>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, margin: "6px 0 10px", lineHeight: 1.5 }}>
-        <strong style={{ ...numeric, fontSize: 20 }}>{fmt(group.councils.length)}</strong> {group.councils.length === 1 ? "council" : "councils"}, <strong style={{ ...numeric, fontSize: 20 }}>{fmt(group.seats)}</strong> seats
-        {big && <span style={{ marginLeft: 8, fontSize: 12, fontWeight: 700, color: "#fff", background: solid(ACCENT), borderRadius: 999, padding: "2px 10px", whiteSpace: "nowrap" }}>Biggest day</span>}
+      <div className="le-date-figs">
+        <span><strong>{fmt(group.councils.length)}</strong> {group.councils.length === 1 ? "council" : "councils"}</span>
+        <span><strong>{fmt(group.seats)}</strong> seats</span>
+        {big && <span className="le-badge">Biggest day</span>}
       </div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-        {nations.map(([n, c]) => <span key={n} style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: "2px 10px" }}>{n}: {c}</span>)}
+      <div className="le-meter" role="img" aria-label={`${fmt(group.seats)} seats, ${Math.round((group.seats / mostSeats) * 100)}% of the biggest day`}><i style={{ "--w": Math.max(group.seats / mostSeats, 0.02) }} /></div>
+      <div className="le-nations">
+        {nations.map(([n, c]) => <span key={n}><i style={{ background: NATION_COLOUR[n] ?? COLORS.inkSoft }} />{n}: {c}</span>)}
       </div>
-      <details style={{ marginTop: 12 }}>
-        <summary className="ons-tap" style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 700, color: ink, cursor: "pointer", padding: "6px 0" }}>See which councils vote</summary>
-        <ul style={{ listStyle: "none", margin: "8px 0 0", padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(210px, 100%), 1fr))", gap: "4px 14px" }}>
+      <details className="le-more">
+        <summary className="ons-tap">See which councils vote</summary>
+        <ul>
           {group.councils.map((c) => (
             <li key={c.id}>
-              <a href={`#/councils/${c.id}`} style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, textDecoration: "none", padding: "5px 0" }}>
-                <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: "50%", background: controlColourOf(c.controlKey), flexShrink: 0 }} />
+              <a href={`#/councils/${c.id}`}>
+                <span aria-hidden="true" style={{ background: controlColourOf(c.controlKey) }} />
                 {c.name}
               </a>
             </li>
@@ -137,6 +145,30 @@ function DateCard({ group, first, big }) {
         </ul>
       </details>
     </li>
+  );
+}
+
+// The next election days as columns: the taller the column, the more seats are up that day. Pressing one jumps to its card.
+function Skyline({ dates }) {
+  const shown = dates.slice(0, 8);
+  const most = Math.max(...shown.map((g) => g.seats), 1);
+  const go = (date) => document.getElementById(`le-d-${date}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+  return (
+    <section aria-labelledby="h-sky" className="le-sky">
+      <h2 id="h-sky" style={{ ...cardTitle, fontSize: 22 }}>Seats up for election, date by date</h2>
+      <p style={para}>The taller the column, the more council seats are up on that day. Press one to see the details.</p>
+      <ol className="le-cols">
+        {shown.map((g, i) => (
+          <li key={g.date} style={{ "--sc": STRIPE[i % STRIPE.length], "--i": i }}>
+            <button type="button" onClick={() => go(g.date)} aria-label={`${longDate(g.date)}: ${fmt(g.seats)} seats in ${fmt(g.councils.length)} councils`}>
+              <span className="le-col-n">{fmt(g.seats)}</span>
+              <span className="le-col-track"><i style={{ height: `${Math.max((g.seats / most) * 100, 4)}%` }} /></span>
+              <span className="le-col-d">{new Date(`${g.date}T12:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "2-digit", timeZone: "UTC" })}</span>
+            </button>
+          </li>
+        ))}
+      </ol>
+    </section>
   );
 }
 
@@ -160,23 +192,32 @@ export default function LocalElections() {
       {data && (
         <>
           {big && (
-            <section aria-label="The next big election day" style={{ ...card, marginTop: 4, padding: "clamp(20px, 4vw, 30px)", background: `${COLORS.paperCard}` }}>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: ink }}>The next big election day</div>
-              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "6px 16px", margin: "6px 0 8px" }}>
-                <span style={{ ...numeric, fontSize: "clamp(48px, 10vw, 84px)", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 0.95, color: COLORS.ink }}>{fmt(big.days)}</span>
-                <span style={{ fontFamily: FONT_DISPLAY, fontSize: "clamp(18px, 3vw, 24px)", color: COLORS.ink }}>days to {longDate(big.date)}</span>
+            <section aria-label="The next big election day" className="le-hero">
+              <div className="le-hero-kicker">The next big election day</div>
+              <div className="le-hero-count">
+                <span className="le-hero-n"><CountUp value={big.days} format={(n) => fmt(n)} duration={1.4} /></span>
+                <span className="le-hero-t">days to {longDate(big.date)}</span>
               </div>
-              <p style={{ ...para, color: COLORS.ink }}>On that day <strong>{fmt(big.councils.length)} councils</strong> hold elections, with <strong>{fmt(big.seats)} seats</strong> up for election.{soonest && soonest.date !== big.date ? ` The first vote of all is on ${longDate(soonest.date)}, in ${soonest.councils.length === 1 ? "one council" : `${soonest.councils.length} councils`}.` : ""}</p>
+              <div className="le-hero-stats">
+                <span><strong>{fmt(big.councils.length)}</strong> councils vote</span>
+                <span><strong>{fmt(big.seats)}</strong> seats up for election</span>
+                <span><strong>{Object.keys(big.nations).length}</strong> {Object.keys(big.nations).length === 1 ? "nation" : "nations"}</span>
+              </div>
+              {soonest && soonest.date !== big.date && (
+                <p className="le-hero-note">The very next vote is sooner: <strong>{longDate(soonest.date)}</strong>, with {fmt(soonest.councils.length)} {soonest.councils.length === 1 ? "council" : "councils"}.</p>
+              )}
             </section>
           )}
 
           <Finder data={data} />
 
+          {dates.length > 1 && <Skyline dates={dates} />}
+
           <section aria-labelledby="h-dates" style={{ marginTop: 26 }}>
             <h2 id="h-dates" style={{ ...cardTitle, fontSize: 24 }}>Every upcoming election date</h2>
             <p style={para}>Some councils elect everyone at once, every four years. Others elect a third or a half at a time, so they vote more often but change more slowly.</p>
             <ol style={{ listStyle: "none", margin: "16px 0 0", padding: 0, display: "grid", gap: 12 }}>
-              {dates.map((g, i) => <DateCard key={g.date} group={g} first={i === 0} big={big && g.date === big.date} />)}
+              {dates.map((g, i) => <DateCard key={g.date} group={g} first={i === 0} big={big && g.date === big.date} index={i} mostSeats={Math.max(...dates.map((d) => d.seats), 1)} />)}
             </ol>
           </section>
 

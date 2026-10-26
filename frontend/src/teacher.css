@@ -183,7 +183,7 @@
 @keyframes t-word { from { transform: translateY(0.45em); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 .t-root[data-calm="1"] *, .t-root[data-calm="1"] { animation: none !important; transition: none !important; }
 @media (prefers-reduced-motion: reduce) {
-  .t-drift, .t-cloud, .t-bobble, .t-sway, .t-tree, .t-bob, .t-glow, .t-drip, .t-coinflow, .t-hands, .t-idle, .t-eyes, .t-ripple, .t-confetti, .t-ray, .t-stamp, .t-slidein, .t-slideup, .t-seat, .t-numeral, .t-float, .t-w, .t-root, .t-stage, .t-captionbody, .t-chips li, .t-list li, .t-notes { animation: none !important; }
+  .t-link-pill, .t-drift, .t-cloud, .t-bobble, .t-sway, .t-tree, .t-bob, .t-glow, .t-drip, .t-coinflow, .t-hands, .t-idle, .t-eyes, .t-ripple, .t-confetti, .t-ray, .t-stamp, .t-slidein, .t-slideup, .t-seat, .t-numeral, .t-float, .t-w, .t-root, .t-stage, .t-captionbody, .t-chips li, .t-list li, .t-notes { animation: none !important; }
   .t-progress span, .t-bar { transition: none; }
 }
 
@@ -266,3 +266,12 @@
   .t-list li { font-size: clamp(14px, 3.6vh, 18px); }
   .t-chips li { font-size: 14px; padding: 6px 12px; }
 }
+
+/* The one box in the picture that is a link. It lifts a little and its button darkens, so it plainly looks clickable. */
+.t-link { cursor: pointer; outline: none; }
+.t-link-box { transition: fill 0.2s, stroke-width 0.2s; }
+.t-link-pill rect { transition: filter 0.2s; }
+.t-link:hover .t-link-box, .t-link:focus-visible .t-link-box { fill: #EEF3FF; stroke-width: 6; }
+.t-link:hover .t-link-pill rect, .t-link:focus-visible .t-link-pill rect { filter: brightness(0.82); }
+.t-link-pill { animation: t-linkpulse 2.4s ease-in-out infinite; }
+@keyframes t-linkpulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.82; } }

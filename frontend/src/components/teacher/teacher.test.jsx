@@ -85,7 +85,7 @@ describe("Teacher mode", () => {
 
   it("only throws confetti at the end of the quiz", () => {
     expect(renderToStaticMarkup(<svg><QuizScene beat={0} /></svg>)).not.toContain("t-confetti");
-    expect(renderToStaticMarkup(<svg><QuizScene beat={3} /></svg>)).toContain("t-confetti");
+    expect(renderToStaticMarkup(<svg><QuizScene beat={3} q={5} /></svg>)).toContain("t-confetti");
   });
 
   it("draws a party's seats out of 650 only when the number is known", () => {

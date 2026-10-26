@@ -90,13 +90,24 @@ function MemberDots({ members, color }) {
 const initials = (name) => String(name ?? "").replace(/^(The |Rt Hon |Dame |Sir |Lord |Baroness |Lady |Dr |Mr |Mrs |Ms )+/i, "").split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
 
 // The four headline figures as one clean band, divided by thin lines, instead of four separate coloured boxes.
+const ledIcon = (d) => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{d}</svg>;
+const IconPeople = () => ledIcon(<><circle cx="9" cy="8" r="3.5" /><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6" /><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.4c2.2.7 3.5 2.6 3.5 5.6" /></>);
+const IconSearch = () => ledIcon(<><circle cx="11" cy="11" r="6.5" /><path d="m16 16 5 5" /></>);
+const IconSplitHouses = () => ledIcon(<><rect x="3" y="5" width="8" height="14" rx="2" /><rect x="13" y="5" width="8" height="14" rx="2" /></>);
+
 function Ledger({ items }) {
   return (
     <div className="cm-ledger">
-      {items.map((it) => (
-        <div key={it.label} style={{ "--lc": it.color }}>
+      {items.map((it, i) => (
+        <div key={it.label} style={{ "--lc": it.color, "--i": i }}>
+          <span className="cm-led-icon" aria-hidden="true">{it.icon}</span>
           <b>{typeof it.value === "number" ? <CountUp value={it.value} format={(n) => Math.round(n).toLocaleString("en-GB")} duration={1.1} /> : it.value}</b>
-          <span>{it.label}</span>
+          <span className="cm-led-label">{it.label}</span>
+          {it.split ? (
+            <span className="cm-led-bar cm-led-split" role="img" aria-label={it.splitLabel}>
+              {it.split.map((p) => <i key={p.label} style={{ flexGrow: p.value, background: p.color }} title={`${p.label}: ${p.value}`} />)}
+            </span>
+          ) : <span className="cm-led-bar" aria-hidden="true"><i style={{ background: it.color }} /></span>}
         </div>
       ))}
     </div>
@@ -192,11 +203,11 @@ function CommitteeCard({ committee, open, onToggle, index = 0 }) {
       className="cm-card"
       style={{
         "--i": index, gridColumn: open ? "1 / -1" : undefined, background: `color-mix(in srgb, ${houseColor} 7%, ${COLORS.paperCard})`,
-        border: `1px solid ${open ? houseColor : COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 4px 0 ${houseColor}`, borderRadius: 16, padding: 18, minWidth: 0,
+        border: `1px solid ${open ? houseColor : COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 4px 0 ${houseColor}`, borderRadius: 16, padding: 18, minWidth: 0, display: "flex", flexDirection: "column",
         transition: "border-color 0.15s",
       }}
     >
-      <button onClick={onToggle} aria-expanded={open} style={{ display: "block", width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left", font: "inherit" }}>
+      <button onClick={onToggle} aria-expanded={open} style={{ display: "flex", flexDirection: "column", flex: 1, width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left", font: "inherit" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 10 }}>
           <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: readable(houseColor), background: `${houseColor}18`, border: `1px solid ${houseColor}44`, borderRadius: 999, padding: "3px 10px", textTransform: "uppercase", letterSpacing: "0.04em" }}>
             {committee.house}
@@ -207,7 +218,7 @@ function CommitteeCard({ committee, open, onToggle, index = 0 }) {
             </span>
           )}
         </div>
-        <div style={{ fontFamily: FONT_DISPLAY, fontSize: 21, fontWeight: 800, color: COLORS.ink, lineHeight: 1.22, marginBottom: 12, letterSpacing: "-0.01em" }}>{committee.name}</div>
+        <div title={committee.name} style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 800, color: COLORS.ink, lineHeight: 1.22, marginBottom: 12, letterSpacing: "-0.01em", ...(open ? {} : { minHeight: "3.66em", display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 3, overflow: "hidden" }) }}>{committee.name}</div>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <span aria-hidden="true" style={{ flexShrink: 0, width: 34, height: 34, borderRadius: "50%", background: committee.chair_name ? color : COLORS.hairline, color: committee.chair_name ? onFill(color) : COLORS.ink, display: "grid", placeItems: "center", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 800, textShadow: "0 1px 2px rgba(0,0,0,0.35)" }}>
             {committee.chair_name ? initials(committee.chair_name) : "?"}
@@ -219,8 +230,10 @@ function CommitteeCard({ committee, open, onToggle, index = 0 }) {
             <strong style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink }}>{n}</strong>members
           </span>
         </div>
-        <MemberDots members={committee.members} color={houseColor} />
-        <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 600, color: readable(houseColor), marginTop: 12 }}>{open ? "Hide details ▴" : "Show members and inquiries ▾"}</div>
+        <div style={{ marginTop: "auto" }}>
+          <MemberDots members={committee.members} color={houseColor} />
+          <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 600, color: readable(houseColor), marginTop: 12 }}>{open ? "Hide details ▴" : "Show members and inquiries ▾"}</div>
+        </div>
       </button>
 
       {open && (
@@ -336,10 +349,11 @@ export default function Committees() {
       {committees !== null && committees.length > 0 && (
         <>
           <Ledger items={[
-            { value: counts.All, label: "committees", color: COLORS.accent },
-            { value: counts.members, label: "places held by MPs and peers", color: HOUSE_COLOR.Commons },
-            { value: counts.inquiries, label: "open inquiries", color: "#E07A1F" },
-            { value: `${counts.Commons ?? 0} / ${counts.Lords ?? 0}`, label: "Commons / Lords, plus joint", color: HOUSE_COLOR.Lords },
+            { value: counts.All, label: "committees watching the government", color: COLORS.accent, icon: <IconCommittee size={20} /> },
+            { value: counts.members, label: "places held by MPs and peers", color: HOUSE_COLOR.Commons, icon: <IconPeople /> },
+            { value: counts.inquiries, label: "open inquiries right now", color: "#E07A1F", icon: <IconSearch /> },
+            { value: `${counts.Commons ?? 0} / ${counts.Lords ?? 0}`, label: "Commons and Lords committees", color: HOUSE_COLOR.Lords, icon: <IconSplitHouses />, splitLabel: `${counts.Commons ?? 0} Commons, ${counts.Lords ?? 0} Lords, ${counts.Joint ?? 0} joint`,
+              split: [{ label: "Commons", value: counts.Commons ?? 0, color: HOUSE_COLOR.Commons }, { label: "Lords", value: counts.Lords ?? 0, color: HOUSE_COLOR.Lords }, { label: "Joint", value: counts.Joint ?? 0, color: COLORS.inkSoft }].filter((p) => p.value > 0) },
           ]} />
 
           <div className="box-row" style={{ "--n": 3, "--min": "300px", "--gap": "14px", marginTop: 14 }}>
@@ -382,7 +396,7 @@ export default function Committees() {
           </div>
 
           {filtered.length === 0 && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No committee matches that.</div>}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 340px), 1fr))", gap: 14, alignItems: "start" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 340px), 1fr))", gap: 14, alignItems: "stretch" }}>
             {filtered.map((c, i) => (
               <CommitteeCard key={c.id} index={i} committee={c} open={openId === c.id} onToggle={() => setOpenId(openId === c.id ? null : c.id)} />
             ))}

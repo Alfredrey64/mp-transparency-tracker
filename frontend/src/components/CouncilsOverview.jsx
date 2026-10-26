@@ -136,7 +136,7 @@ export function Overview({ data }) {
       {/* Key numbers */}
       <div>
         <SectionHead kicker={`${latestYear} at a glance`} title="The key numbers" />
-        <div className="box-row" style={{ "--n": nextDate ? 5 : 4, "--min": "170px" }}>
+        <div className="ystat-grid">
           <StatCard icon={IconGroup} colour="#1E4FB8" value={s.councillors} label="councillors" caption={`on ${s.councils} councils across the UK. ${topParty ? `${topParty.short} is the largest party with ${fmt(topParty.count)}.` : ""}`} />
           <StatCard
             icon={IconCompare}

@@ -62,8 +62,8 @@ function HospitalScene() {
       <Person s={1.2} x={170} y={392} who="maya" kid long shirt="#7A5AF0" skin={SKIN[3]} hair="#1E1410" mood="happy" />
       <B n={0} until={1}><Person s={1.2} x={290} y={392} tag="Grandad" shirt="#8FA6C0" trousers="#4A5568" skin={SKIN[0]} hair="#D6D6D6" mood="ok" /></B>
       <B n={1} fx="fade"><Person s={1.2} x={290} y={392} tag="Grandad" shirt="#8FA6C0" trousers="#4A5568" skin={SKIN[0]} hair="#D6D6D6" mood="worried" /></B>
-      <B n={1} until={3}><Calendar x={130} y={166} /></B>
-      <B n={1} until={3}><Clock x={250} y={166} /></B>
+      <B n={1} until={2}><Calendar x={130} y={166} /></B>
+      <B n={1} until={2}><Clock x={250} y={166} /></B>
       <B n={2} until={3} fx="rise"><g transform="translate(405 208)"><Parliament x={0} y={0} s={0.4} /></g><Caption x={405} y={236} size={16}>Parliament</Caption></B>
       <B n={2} until={3} fx="fade">
         <g>

@@ -44,7 +44,7 @@ export function StatCard({ icon: Icon, colour, value, format = fmt, label, capti
       {caption && <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 3, lineHeight: 1.5 }}>{caption}</div>}
     </>
   );
-  const style = { "--sc": colour, textAlign: "left", display: "block", width: "100%", boxSizing: "border-box", color: "inherit", font: "inherit" };
+  const style = { "--sc": colour, textAlign: "left", width: "100%", boxSizing: "border-box", color: "inherit", font: "inherit" };
   if (!target) return <div className="ystat" style={style}>{body}</div>;
   return (
     <button type="button" className="nclick ystat" onClick={() => scrollToId(target)} style={{ ...style, cursor: "pointer" }}>

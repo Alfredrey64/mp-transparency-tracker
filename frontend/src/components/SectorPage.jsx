@@ -107,7 +107,7 @@ const Tile = memo(function Tile({ def, item, accent }) {
         background: `color-mix(in srgb, ${accent} 7%, ${COLORS.paperCard})`, borderColor: `${accent}40`,
       }}
     >
-      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, fontWeight: 700, color: COLORS.ink, lineHeight: 1.3 }}>{def.label}</div>
+      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, fontWeight: 700, color: COLORS.ink, lineHeight: 1.3, minHeight: "2.6em" }}>{def.label}</div>
       <div className="tile-num" style={{ ...numeric, fontSize: 42, fontWeight: 600, lineHeight: 1.1, color: COLORS.ink, marginTop: 10, letterSpacing: "-0.02em" }}><CountValue>{formatValue(def.format, info.value)}</CountValue></div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, margin: "2px 0 10px" }}>{info.label}</div>
       <div><ChangeChip change={info.change} accent={accent} /></div>

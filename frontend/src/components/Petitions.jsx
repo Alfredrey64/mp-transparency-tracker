@@ -53,10 +53,10 @@ const statusOf = (p) => (p.debate_outcome_summary || p.debate_scheduled_on ? STA
 function Ladder({ count }) {
   const pct = Math.min(100, (count / 100000) * 100);
   return (
-    <div className="pt-ladder" aria-hidden="true">
-      <div className="pt-ladder-bar"><span className="bar-grow" style={{ width: `${pct}%` }} /></div>
-      <i className="pt-mark" style={{ left: "10%" }} data-hit={count >= 10000 ? "1" : "0"} />
-      <i className="pt-mark" style={{ left: "calc(100% - 2px)" }} data-hit={count >= 100000 ? "1" : "0"} />
+    <div className="pet-ladder" aria-hidden="true">
+      <div className="pet-ladder-bar"><span className="bar-grow" style={{ width: `${pct}%` }} /></div>
+      <i className="pet-mark" style={{ left: "10%" }} data-hit={count >= 10000 ? "1" : "0"} />
+      <i className="pet-mark" style={{ left: "calc(100% - 2px)" }} data-hit={count >= 100000 ? "1" : "0"} />
     </div>
   );
 }
@@ -64,7 +64,7 @@ function Ladder({ count }) {
 function PetitionRow({ petition, rank, isOpen, onToggle }) {
   const st = statusOf(petition);
   const isOpenState = petition.state === "open";
-  const panelId = `pt-${petition.id}`;
+  const panelId = `pet-${petition.id}`;
   return (
     <motion.article
       layout="position"
@@ -72,26 +72,26 @@ function PetitionRow({ petition, rank, isOpen, onToggle }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.35, ease: "easeOut" }}
-      className="pt-card" data-open={isOpen ? "1" : "0"} style={{ "--pc": st.colour }}
+      className="pet-card" data-open={isOpen ? "1" : "0"} style={{ "--pc": st.colour }}
     >
-      <button type="button" onClick={onToggle} aria-expanded={isOpen} aria-controls={panelId} className="pt-head">
-        <span className="pt-rank" aria-hidden="true">{rank}</span>
-        <span className="pt-main">
-          <span className="pt-action">{petition.action}</span>
-          <span className="pt-meta">
-            <span className="pt-chip">{st.label}</span>
-            {isOpenState && st !== STATUS.open && <span className="pt-chip pt-chip-soft">Still open</span>}
+      <button type="button" onClick={onToggle} aria-expanded={isOpen} aria-controls={panelId} className="pet-head">
+        <span className="pet-rank" aria-hidden="true">{rank}</span>
+        <span className="pet-main">
+          <span className="pet-action">{petition.action}</span>
+          <span className="pet-meta">
+            <span className="pet-chip">{st.label}</span>
+            {isOpenState && st !== STATUS.open && <span className="pet-chip pet-chip-soft">Still open</span>}
           </span>
           <Ladder count={petition.signature_count} />
         </span>
-        <span className="pt-sigs"><b>{petition.signature_count.toLocaleString("en-GB")}</b><span>signatures</span></span>
-        <motion.span aria-hidden="true" className="pt-chev" animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>▾</motion.span>
+        <span className="pet-sigs"><b>{petition.signature_count.toLocaleString("en-GB")}</b><span>signatures</span></span>
+        <motion.span aria-hidden="true" className="pet-chev" animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>▾</motion.span>
       </button>
 
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div id={panelId} initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.22 }} style={{ overflow: "hidden" }}>
-            <div className="pt-more">
+            <div className="pet-more">
               {petition.background && <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.65 }}>{petition.background}</div>}
 
               {isOpenState && (
@@ -102,20 +102,20 @@ function PetitionRow({ petition, rank, isOpen, onToggle }) {
               )}
 
               {petition.government_response_summary && (
-                <div className="pt-note" style={{ "--nc": "#1FA97C" }}>
+                <div className="pet-note" style={{ "--nc": "#1FA97C" }}>
                   <b>Government response{petition.government_responded_at ? `, ${formatDate(petition.government_responded_at)}` : ""}</b>
                   <p>{petition.government_response_summary}</p>
                 </div>
               )}
 
               {(petition.debate_outcome_summary || petition.debate_scheduled_on) && (
-                <div className="pt-note" style={{ "--nc": "#7A5AF0" }}>
+                <div className="pet-note" style={{ "--nc": "#7A5AF0" }}>
                   <b>{petition.debate_outcome_summary ? "Commons debate" : "Debate scheduled"}</b>
                   <p>{petition.debate_outcome_summary || `Scheduled for ${formatDate(petition.debate_scheduled_on)}`}</p>
                 </div>
               )}
 
-              <a className="pt-link" href={petition.url} target="_blank" rel="noreferrer">View the full petition on petitions.parliament.uk ↗</a>
+              <a className="pet-link" href={petition.url} target="_blank" rel="noreferrer">View the full petition on petitions.parliament.uk ↗</a>
             </div>
           </motion.div>
         )}
@@ -161,7 +161,7 @@ export default function Petitions() {
   }, [petitions, filter]);
 
   return (
-    <div style={{ maxWidth: 940, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1180, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconPetition}
         kicker="Petitions"
@@ -169,7 +169,7 @@ export default function Petitions() {
         subtitle="The most-signed petitions that are open now, plus recent ones that got a government response or a Commons debate. They come straight from petitions.parliament.uk, with no picking and choosing from us."
       />
 
-      <section className="pt-how" aria-label="How petitions work">
+      <section className="pet-how" aria-label="How petitions work">
         <p>Any UK citizen or resident can create or sign a <GlossaryTerm term="Petition">petition</GlossaryTerm> to Parliament. Petitions run for six months from opening, and each one is moderated before publication.</p>
         <ol>
           <li style={{ "--hc": "#1FA97C" }}><b>10,000</b><span>signatures, and the government must respond in writing</span></li>
@@ -179,7 +179,7 @@ export default function Petitions() {
       </section>
 
       {petitions !== null && !failed && (
-        <div className="pt-stats">
+        <div className="pet-stats">
           <div style={{ "--sc": "#E0367A" }}><b>{counts.open.toLocaleString("en-GB")}</b><span>petitions open</span></div>
           <div style={{ "--sc": "#C7871A" }}><b>{counts.signatures.toLocaleString("en-GB")}</b><span>signatures on them</span></div>
           <div style={{ "--sc": "#1FA97C" }}><b>{counts.responded.toLocaleString("en-GB")}</b><span>got a response</span></div>
@@ -201,7 +201,7 @@ export default function Petitions() {
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, padding: "20px 0" }}>No petitions match this filter right now.</div>
       )}
 
-      <div className="pt-list">
+      <div className="pet-list">
         {filtered.slice(0, shown).map((p, i) => (
           <PetitionRow key={p.id} petition={p} rank={i + 1} isOpen={openId === p.id} onToggle={() => withScrollPreserved(() => setOpenId(openId === p.id ? null : p.id))} />
         ))}

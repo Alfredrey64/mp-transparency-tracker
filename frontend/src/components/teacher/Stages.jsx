@@ -208,15 +208,15 @@ export function PartyScene({ party, seats }) {
 }
 
 export function NiScene() {
-  const cols = [["#D46A4C", "Unionist", 60], ["#326760", "Nationalist", 295], ["#C7871A", "Neither", 530]];
+  const cols = [["#D46A4C", "Unionist", 56], ["#326760", "Nationalist", 298], ["#C7871A", "Neither", 540]];
   return (
     <>
       <Back />
       {cols.map(([c, label, x], i) => (
         <B key={label} n={i + 1} fx="rise">
-          <rect x={x} y={120} width="210" height="190" rx="24" fill={c} />
-          <Label x={x + 105} y="168" size={26}>{label}</Label>
-          <Person x={x + 105} y={300} s={0.85} shirt="#fff" skin={SKIN[i + 1]} mood="ok" />
+          <rect x={x} y={120} width="204" height="190" rx="24" fill={c} />
+          <Label x={x + 102} y="168" size={25}>{label}</Label>
+          <Person x={x + 102} y={300} s={0.85} shirt="#fff" skin={SKIN[i + 1]} mood="ok" />
         </B>
       ))}
       <Caption x={400} y={74} size={30}>Northern Ireland has its own parties</Caption>
@@ -249,6 +249,23 @@ export function VoiceScene() {
         const n = Math.floor(i / 2) + 1;
         const x = 66 + (i % 3) * 232;
         const y = i < 3 ? 70 : 230;
+        if (v.title === "Write to your MP") {
+          // This one is a real link: the class can look up their own MP, in a new tab so the lesson stays open.
+          return (
+            <B key={v.title} n={n} fx="pop">
+              <a className="t-link" href="/myMP" target="_blank" rel="noopener noreferrer" aria-label="Write to your MP: find your MP, opens in a new tab">
+                <rect className="t-link-box" x={x} y={y} width="206" height="140" rx="22" fill="#fff" stroke={v.colour} strokeWidth="4" />
+                <g transform={`translate(${x + 103} ${y + 40}) scale(0.8)`}>{ICONS[i]}</g>
+                <Label x={x + 103} y={y + 86} size={18.5} fill="#0B1B33" weight={800}>{v.title}</Label>
+                <g className="t-link-pill">
+                  <rect x={x + 33} y={y + 98} width="140" height="30" rx="15" fill={v.colour} />
+                  <text x={x + 93} y={y + 118} textAnchor="middle" fontSize="14.5" fontWeight="800" fontFamily="Figures, Public Sans, system-ui, sans-serif" fill="#fff">Find your MP</text>
+                  <path d={`M${x + 144} ${y + 118} l7 -8 M${x + 146} ${y + 109.5} h5.5 v5.5`} stroke="#fff" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                </g>
+              </a>
+            </B>
+          );
+        }
         return (
           <B key={v.title} n={n} fx="pop">
             <rect x={x} y={y} width="206" height="140" rx="22" fill="#fff" stroke={v.colour} strokeWidth="4" />
@@ -288,16 +305,107 @@ export function VoteScene({ votes = [0, 0] }) {
   );
 }
 
-export function QuizScene({ beat }) {
+// Each quiz question has its own picture, drawn from what the question is about. The right answer is marked once an answer has been picked.
+const Tick = ({ x, y, r = 20 }) => (
+  <g transform={`translate(${x} ${y})`}><circle r={r} fill="#16A34A" stroke="#fff" strokeWidth="3.5" /><path d={`M${-r * 0.42} ${r * 0.02} l${r * 0.3} ${r * 0.32} l${r * 0.55} ${-r * 0.65}`} stroke="#fff" strokeWidth={r * 0.2} fill="none" strokeLinecap="round" strokeLinejoin="round" /></g>
+);
+const Cross = ({ x, y, r = 20 }) => (
+  <g transform={`translate(${x} ${y})`}><circle r={r} fill="#E0365B" stroke="#fff" strokeWidth="3.5" /><path d={`M${-r * 0.4} ${-r * 0.4} l${r * 0.8} ${r * 0.8} M${r * 0.4} ${-r * 0.4} l${-r * 0.8} ${r * 0.8}`} stroke="#fff" strokeWidth={r * 0.2} strokeLinecap="round" /></g>
+);
+const Bin = ({ x, y, colour }) => (
+  <g transform={`translate(${x} ${y})`}>
+    <path d="M-26 -78 h52 l-5 78 h-42z" fill={colour} />
+    <rect x="-30" y="-90" width="60" height="14" rx="5" fill={colour} stroke="#fff" strokeOpacity="0.5" strokeWidth="2" />
+    <path d="M-10 -62 v44 M0 -62 v44 M10 -62 v44" stroke="#fff" strokeOpacity="0.35" strokeWidth="3" strokeLinecap="round" />
+    <circle cx="-18" cy="2" r="6" fill="#2D3A55" /><circle cx="18" cy="2" r="6" fill="#2D3A55" />
+  </g>
+);
+
+function QuizBins() {
+  return (
+    <>
+      <TownHall x={470} y={372} />
+      <Bin x={170} y={380} colour="#2F9E6B" /><Bin x={250} y={380} colour="#1E4FB8" /><Bin x={330} y={380} colour="#6B7A90" />
+      <Bubble x={190} y={150} w={100} h={74} tail="center"><QuestionMark s={1.1} /></Bubble>
+      <B n={1} fx="pop"><Tick x={580} y={244} r={26} /><Caption x={580} y={206} size={19}>The local council</Caption></B>
+    </>
+  );
+}
+
+function QuizSeats() {
+  return (
+    <>
+      <g transform="translate(400 392) scale(2.3)">
+        {FAN.map((d, i) => <circle key={i} cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r="1.7" fill="#7A5AF0" opacity="0.85" />)}
+      </g>
+      <g className="t-bob"><text x="400" y="344" textAnchor="middle" fontSize="92" fontWeight="800" fontFamily="Figures, Newsreader, Georgia, serif" fill="#7A5AF0">?</text></g>
+      <B n={1} fx="pop"><rect x="318" y="288" width="164" height="76" rx="18" fill="#fff" stroke="#7A5AF0" strokeWidth="4" /><text x="400" y="346" textAnchor="middle" fontSize="58" fontWeight="800" fontFamily="Figures, Newsreader, Georgia, serif" fill="#0B1B33">650</text></B>
+    </>
+  );
+}
+
+function QuizHouses() {
+  return (
+    <>
+      <Seats x={225} y={330} colour="#2F9E6B" rows={4} /><Seats x={575} y={330} colour="#C13A4E" rows={4} />
+      <Caption x={225} y={374} size={22}>The Commons</Caption><Caption x={575} y={374} size={22}>The Lords</Caption>
+      <B n={1} fx="pop">
+        <BallotBox x={225} y={200} />
+        <Caption x={225} y={226} size={18}>Chosen by voters</Caption>
+        <Crown x={575} y={190} s={0.8} />
+        <Caption x={575} y={226} size={18}>Not elected</Caption>
+        <Tick x={575} y={256} r={22} />
+      </B>
+    </>
+  );
+}
+
+function QuizParty() {
+  const colour = "#1E4FB8";
+  return (
+    <>
+      <g transform="translate(400 392)"><rect x="-2" y="-250" width="4" height="250" fill="#6B7A90" /><path d="M2 -250 h120 l-26 36 l26 36 h-120z" fill={colour} /></g>
+      {[0, 1, 2, 3, 4].map((i) => <Person key={i} x={230 + i * 85} y={392} s={1.1} shirt={colour} skin={SKIN[i % 5]} mood="happy" long={i % 2 === 1} />)}
+      <Bubble x={190} y={120} w={100} h={74} tail="center"><QuestionMark s={1.1} /></Bubble>
+      <B n={1} fx="rise"><Bubble x={540} y={130} w={110} h={80} tail="left"><Bulb x={0} y={0} /></Bubble></B>
+    </>
+  );
+}
+
+function QuizAnyone() {
+  const cards = [
+    { x: 70, icon: <g><g transform="scale(0.8)"><BallotBox x={0} y={30} /></g><g transform="translate(34 -34)"><rect x="-26" y="-14" width="52" height="28" rx="14" fill="#E0365B" /><text y="7" textAnchor="middle" fontSize="19" fontWeight="800" fontFamily="Figures, Public Sans, system-ui, sans-serif" fill="#fff">18+</text></g></g> },
+    { x: 300, icon: <g transform="scale(1.5)"><Letter x={0} y={0} /></g> },
+    { x: 530, icon: <g><rect x="-34" y="-62" width="68" height="104" rx="8" fill="#1B2438" /><text y="-18" textAnchor="middle" fontSize="38" fontWeight="800" fontFamily="Figures, Newsreader, Georgia, serif" fill="#fff">10</text><circle cx="20" cy="16" r="4" fill="#F2B632" /></g> },
+  ];
+  return (
+    <>
+      {cards.map((c, i) => (
+        <g key={c.x}>
+          <rect x={c.x} y="110" width="200" height="190" rx="24" fill="#fff" stroke="#CBD3E2" strokeWidth="4" />
+          <g transform={`translate(${c.x + 100} 205)`}>{c.icon}</g>
+          <B n={1} fx="pop">{i === 1 ? <Tick x={c.x + 168} y={140} r={24} /> : <Cross x={c.x + 168} y={140} r={24} />}</B>
+        </g>
+      ))}
+      <Person x={400} y={400} s={0.8} kid long shirt="#E0365B" skin={SKIN[2]} mood="happy" />
+    </>
+  );
+}
+
+export function QuizScene({ beat, q = 0 }) {
+  const done = q >= 5;
+  const pick = [QuizBins, QuizSeats, QuizHouses, QuizParty, QuizAnyone][q];
+  const Pic = pick ?? null;
   return (
     <>
       <Back tone="#EDE7FF" tone2="#FAF8FF" />
-      <g className="t-bob"><text x="400" y="230" textAnchor="middle" fontSize="170" fontWeight="800" fontFamily="Figures, Newsreader, Georgia, serif" fill="#7A5AF0" opacity="0.9">?</text></g>
-      <B n={0} until={1}><Person x={240} y={392} shirt="#7A5AF0" skin={SKIN[1]} mood="thinking" /></B>
-      <B n={1} until={2} fx="fade"><Person x={240} y={392} shirt="#7A5AF0" skin={SKIN[1]} mood="happy" /></B>
-      <B n={2} fx="fade"><Person x={240} y={392} shirt="#7A5AF0" skin={SKIN[1]} mood="worried" /></B>
-      <Person x={560} y={392} kid long shirt="#E0365B" skin={SKIN[2]} mood={beat === 1 || beat === 3 ? "happy" : "ok"} />
-      {beat === 3 && <Confetti />}
+      {Pic ? <Pic key={q} /> : (
+        <>
+          <Person x={300} y={392} s={1.2} shirt="#7A5AF0" skin={SKIN[1]} mood="happy" />
+          <Person x={500} y={392} s={1.2} kid long shirt="#E0365B" skin={SKIN[2]} mood="happy" />
+        </>
+      )}
+      {done && beat === 3 && <Confetti />}
     </>
   );
 }
