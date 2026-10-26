@@ -44,3 +44,39 @@ test("changing page cross-fades and ends on the new page at its top, with the ad
   await page.goBack();
   await expect(page.locator("h1")).toContainText("A simple breakdown of UK politics");
 });
+
+test("a stage of the bill route can be picked, and the panel and the marker follow", async ({ page }) => {
+  await page.goto("/howitworks");
+  await page.locator(".billroute").scrollIntoViewIfNeeded();
+  await page.getByRole("button", { name: "Stage 4: Committee Stage" }).click();
+  await expect(page.locator(".billroute-caption")).toContainText("Committee Stage");
+  await expect(page.locator(".billroute-caption")).toContainText("Who decides");
+  await page.getByRole("button", { name: "Next stage" }).click();
+  await expect(page.locator(".billroute-caption")).toContainText("Report Stage");
+});
+
+test("choosing a tier in the diagram does not move the box or the page", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("/howitworks");
+  await page.locator("#tiers").waitFor();
+  await page.evaluate(() => document.querySelector("#tiers").scrollIntoView());
+  await page.waitForTimeout(4500);
+  const slab = page.locator(".tier-slab").nth(3);
+  await slab.click();
+  await page.waitForTimeout(700);
+  const a = await slab.boundingBox();
+  await page.waitForTimeout(1500);
+  const b = await slab.boundingBox();
+  expect(b).toEqual(a);
+  // The explaining panel starts level with the top box.
+  const tops = await page.evaluate(() => [document.querySelector(".tier-slab").getBoundingClientRect().top, document.querySelector(".tier-panel").getBoundingClientRect().top].map(Math.round));
+  expect(tops[1]).toBe(tops[0]);
+});
+
+test("pages show a way on to the next ones in their group, and a list of their own headings", async ({ page }) => {
+  await page.goto("/darkMoney");
+  await expect(page.getByRole("navigation", { name: /More in/ })).toBeVisible();
+  await page.evaluate(() => window.scrollTo(0, 900));
+  await page.getByRole("button", { name: "On this page" }).click();
+  await expect(page.getByRole("navigation", { name: "On this page" })).toBeVisible();
+});

@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { GlanceStrip } from "./GlanceStrip";
 import { motion } from "motion/react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING, readable } from "../theme";
 import { PageHeader, InfoCard, WhyItMattersBand, ScaleComparison } from "./shared";
@@ -203,6 +204,12 @@ export default function LobbyingRegister() {
       />
 
       <div className="editorial-body">
+
+      <GlanceStrip items={[
+        { value: String(LOBBYISTS.length), label: "firms on the register", sub: "paid to lobby ministers for someone else", colour: "#5A7FA6" },
+        { value: "2014", label: "the year the register was created", sub: "by the Transparency of Lobbying Act", colour: "#E0367A" },
+        { value: String(CASES.length), label: "investigations explained below", colour: "#E8741A" },
+      ]} />
 
       <WhyItMattersBand icon={IconRegister} color="#5A7FA6">
         this register makes one narrow slice of professional persuasion visible, but most real-world lobbying,

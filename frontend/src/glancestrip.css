@@ -1,0 +1,18 @@
+/* "At a glance" figures and "How to read this page" cards. Loaded only with the pages that use them. */
+.glance { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px; margin: 22px 0 6px; }
+.glance-tile { position: relative; display: grid; gap: 3px; align-content: start; padding: 16px 18px 17px; border-radius: 20px; overflow: hidden; background: linear-gradient(160deg, color-mix(in srgb, var(--gc) 14%, var(--c-paper-card)), var(--c-paper-card) 78%); border: 1px solid color-mix(in srgb, var(--gc) 28%, var(--c-hairline)); box-shadow: var(--shadow-1); transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out); animation: glance-in 0.55s var(--ease-out) calc(var(--gi) * 70ms) backwards; }
+.glance-tile::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, var(--gc), color-mix(in srgb, var(--gc) 45%, #fff)); }
+.glance-tile::after { content: ""; position: absolute; right: -26px; bottom: -34px; width: 110px; height: 110px; border-radius: 50%; background: color-mix(in srgb, var(--gc) 12%, transparent); }
+.glance-tile:hover { transform: translateY(-3px); box-shadow: var(--shadow-3); }
+.glance-tile b { position: relative; z-index: 1; font: 700 clamp(30px, 3.6vw, 42px)/1.05 "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--gc) 80%, var(--c-ink)); font-variant-numeric: lining-nums tabular-nums; letter-spacing: -0.015em; overflow-wrap: anywhere; }
+.glance-tile span { position: relative; z-index: 1; font: 700 14px/1.35 "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.glance-tile small { position: relative; z-index: 1; font: 400 12.5px/1.45 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+@keyframes glance-in { from { opacity: 0; transform: translateY(14px); } }
+.howread { margin: 18px 0 8px; }
+.howread h2 { margin: 0 0 10px; font: 700 18px "Newsreader", Georgia, serif; color: var(--c-ink); }
+.howread ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); gap: 12px; }
+.howread li { display: flex; gap: 12px; padding: 14px 16px; border-radius: 16px; background: color-mix(in srgb, var(--hc) 7%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--hc) 24%, var(--c-hairline)); }
+.howread li > span { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 11px; background: var(--hc); color: #fff; font: 800 15px "Public Sans", system-ui, sans-serif; }
+.howread b { font: 700 14.5px "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.howread p { margin: 2px 0 0; font: 400 13.5px/1.55 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+@media (prefers-reduced-motion: reduce) { .glance-tile { animation: none; transition: none; } .glance-tile:hover { transform: none; } }

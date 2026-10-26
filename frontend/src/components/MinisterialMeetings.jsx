@@ -1,3 +1,4 @@
+import { GlanceStrip, HowToRead } from "./GlanceStrip";
 import { useState, useMemo } from "react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, numeric, readable } from "../theme";
 import { PageHeader } from "./shared";
@@ -124,6 +125,18 @@ export default function MinisterialMeetings() {
         subtitle="Ministers have to publish who they meet outside government: companies, charities, unions and industry bodies. This is a sample of those meetings, copied from each department's own return."
         maxWidth={720}
       />
+
+      <GlanceStrip items={[
+        { value: String(MINISTERIAL_MEETINGS.length), label: "declared meetings", sub: MINISTERIAL_MEETINGS_PERIOD, colour: "#E0367A" },
+        { value: String(byMinister.length), label: "ministers in the sample", colour: "#1E4FB8" },
+        { value: String(byDepartment.length), label: "departments", colour: "#1FA97C" },
+        { value: String(new Set(MINISTERIAL_MEETINGS.map((m) => m.organisation)).size), label: "different groups met", sub: "companies, charities, unions and bodies", colour: "#E8741A" },
+      ]} />
+      <HowToRead steps={[
+        { title: "Search or filter", text: "Type a name or topic, or tap a minister or department in the side list." },
+        { title: "Read each meeting", text: "Each entry gives the date, who the minister met and why, with a link to the department's own return." },
+        { title: "Remember it is a sample", text: "Departments publish late and in their own formats, so this is not every meeting a minister held." },
+      ]} />
 
       <div className="mm-wrap">
       <div className="mm-layout">

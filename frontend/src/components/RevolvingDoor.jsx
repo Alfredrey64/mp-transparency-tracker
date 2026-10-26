@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import { GlanceStrip } from "./GlanceStrip";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { PageHeader, InfoCard, WhyItMattersBand, FlowNode, FlowArrow } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
@@ -113,6 +114,13 @@ export default function RevolvingDoor() {
       />
 
       <div className="editorial-body">
+
+      <GlanceStrip items={[
+        { value: "50 years", label: "an advisory committee, ACOBA, checked moves", sub: "it could ask, not stop", colour: "#6E4B6E" },
+        { value: "817", label: "applications in its last four years", colour: "#E0367A" },
+        { value: "0", label: "refused", sub: "not a single one", colour: "#9C3B3B" },
+        { value: String(CASES.length), label: "cases explained below", colour: "#E8741A" },
+      ]} />
 
       <WhyItMattersBand icon={IconDoor} color="#6E4B6E">
         a minister who could profit from a private-sector job right after leaving office has a reason to make

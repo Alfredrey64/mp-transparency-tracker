@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import { GlanceStrip } from "./GlanceStrip";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { PageHeader, InfoCard, WhyItMattersBand, FlowNode, FlowArrow } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
@@ -143,6 +144,12 @@ export default function ThinkTankFunding() {
       />
 
       <div className="editorial-body">
+
+      <GlanceStrip items={[
+        { value: "200", label: "UK think tanks rated", sub: "by the transparency watchdog Transparify", colour: "#9C6B30" },
+        { value: "4", label: "refuse to name a single donor", colour: "#9C3B3B" },
+        { value: "A to E", label: "the grades they are given", sub: "A is open, E is undisclosed", colour: "#1E4FB8" },
+      ]} />
 
       <WhyItMattersBand icon={IconThinkTank} color="#9C6B30">
         the "expert" quoted on the news tonight could be paid, indirectly, by exactly the industry their comments

@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect, useRef, useTransition, Suspense } from "react";
+import { useState, useEffect, useLayoutEffect, useRef, useTransition, Suspense, lazy } from "react";
 import { flushSync } from "react-dom";
 import { GuideKeyContext, guideKeyFor } from "./lib/viewContext";
 import { MotionConfig } from "motion/react";
@@ -29,6 +29,8 @@ import { InstallBanner } from "./components/InstallApp";
 // SiteHeader stay eager imports above so the very first paint has no loading
 // flash.
 const PoliticianList = lazyPage(LOADERS.list);
+const SectionNav = lazy(() => import("./components/SectionNav"));
+const PageTools = lazy(() => import("./components/PageTools"));
 const LOAD_DETAIL = () => import("./components/PoliticianDetail");
 const PoliticianDetail = lazyPage(LOAD_DETAIL);
 const VotingRecords = lazyPage(LOADERS.voting);
@@ -509,10 +511,14 @@ export default function App() {
               ))}
             </Suspense>
             </ErrorBoundary>
+            {!selected && view !== "home" && view !== "teacher" && (
+              <Suspense fallback={null}><SectionNav view={view} onNavigate={handleNavigate} /></Suspense>
+            )}
         </main>
       </div>
       <SiteFooter onNavigate={handleNavigate} />
       <BackToTop />
+      <Suspense fallback={null}><PageTools key={`${view}-${selected?.id ?? ""}`} view={view} selected={Boolean(selected)} /></Suspense>
     </div>
     </GuideKeyContext.Provider>
     </MotionConfig>

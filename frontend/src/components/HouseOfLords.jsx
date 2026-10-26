@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { GlanceStrip } from "./GlanceStrip";
 import PageGuide from "./PageGuide";
 import { motion } from "motion/react";
 import { supabase } from "../supabaseClient";
@@ -432,6 +433,15 @@ export default function HouseOfLords({ peerId = null }) {
             : `Every current member of the House of Lords: ${peers.length} peers in total.`
         }
       />
+
+      {!loading && !failed && peers.length > 0 && (
+        <GlanceStrip items={[
+          { value: String(peers.length), label: "peers sit in the Lords", sub: "none of them is elected", colour: "#C0392B" },
+          { value: String(peers.filter((p) => p.peerage_type === "Bishop").length), label: "Church of England bishops", sub: "they sit automatically", colour: "#7A5AF0" },
+          { value: String(parties.length ? new Set(peers.map((p) => p.party).filter(Boolean)).size : 0), label: "parties and groups", sub: "including crossbenchers and non-affiliated", colour: "#1E4FB8" },
+          { value: `${Math.round((peers.filter((p) => p.gender === "F").length / peers.length) * 100)}%`, label: "are women", colour: "#E0367A" },
+        ]} />
+      )}
 
       <DataScopeNote />
 

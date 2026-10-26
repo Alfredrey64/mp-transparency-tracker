@@ -1,4 +1,5 @@
 import { FONT_DISPLAY, FONT_BODY, PAGE_PADDING, COLORS, readable } from "../theme";
+import { GlanceStrip } from "./GlanceStrip";
 import { PageHeader, InfoCard, WhyItMattersBand, FlowNode, FlowArrow } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconDarkMoney, IconShield, IconHistory, IconGlobe, IconSearch, IconGroup, IconQuestion, IconPartyFinance } from "./icons";
@@ -62,6 +63,13 @@ export default function DarkMoney() {
       />
 
       <div className="editorial-body">
+
+      <GlanceStrip items={[
+        { value: "£435,000", label: "the DUP's referendum donation", sub: "its original source has never been named", colour: "#9C3B3B" },
+        { value: "£500", label: "gifts below this are not counted", sub: "by an association", colour: "#E8741A" },
+        { value: "£7,500", label: "from one source in a year", sub: "above this an association must tell the Electoral Commission", colour: "#7A5AF0" },
+        { value: "£37,270", label: "total donations before any duty", sub: "below it, there is no registration at all", colour: "#1E4FB8" },
+      ]} />
 
       <WhyItMattersBand icon={IconDarkMoney} color="#9C3B3B">
         if you can't see who really paid for a party's campaign, you can't judge whether their policies end up

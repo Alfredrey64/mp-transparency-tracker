@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
+import { GlanceStrip, HowToRead } from "./GlanceStrip";
+import { shortMoney } from "../lib/shortMoney";
 import WhatThisMeans from "./WhatThisMeans";
 import { partyConcentrationMeaning } from "../lib/moneyMeaning";
 import { everydayShort } from "../lib/everyday";
@@ -144,6 +146,18 @@ export default function PartyFinances() {
       />
 
       <div className="editorial-body">
+
+      <GlanceStrip items={[
+        { value: shortMoney(stats.totalValue), label: "given to parties", sub: "in the last 12 months", colour: "#E8741A" },
+        { value: String(stats.parties.length), label: "parties received money", sub: "from registered donors", colour: "#7A5AF0" },
+        { value: shortMoney(stats.parties[0]?.total), label: `went to ${stats.parties[0]?.name?.replace(/ and Unionist Party/, "")}`, sub: `${Math.round(((stats.parties[0]?.total ?? 0) / Math.max(1, stats.totalValue)) * 100)}% of the total`, colour: "#E0367A" },
+        { value: `${taggedPct}%`, label: "traced to an industry", sub: "the rest is individuals or unmatched", colour: "#1FA97C" },
+      ]} />
+      <HowToRead steps={[
+        { title: "Start with the totals", text: "The bars show how much each party was given. Longer means more money." },
+        { title: "See where it came from", text: "The industry panel groups donors by the kind of business they work in, where that can be shown with confidence." },
+        { title: "Open a party", text: "The list further down opens to name that party's biggest donors, with what is known about each." },
+      ]} />
 
       {/* The actual numbers, first — this used to sit below a rules
           explainer and three separate text boxes, most of which just
