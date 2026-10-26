@@ -330,7 +330,9 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 }
 .tier-diagram { position: relative; container-type: inline-size; container-name: tierdia; overflow-x: clip; }
 .tier-panelcol { min-width: 0; }
-.tier-panel { height: 290px; overflow: hidden; transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.35s ease; will-change: transform; }
+/* The panel stays in view beside the diagram using plain sticky positioning: it can never leave its column, so it can never sit on top of the
+   sections below, and there is no script chasing the scroll. */
+.tier-panel { height: 290px; overflow: hidden; }
 .tier-mini {
   display: none; position: sticky; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 30;
   background: var(--c-paper); border: 1px solid var(--c-hairline); border-radius: 16px; padding: 12px 14px 13px;
@@ -340,10 +342,8 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 @media (max-height: 520px) { .tier-mini-text { display: none; } }
 @container tierwrap (min-width: 780px) {
   .tier-grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 28px; }
-  .tier-panel { height: min(480px, calc(100vh - 40px), var(--len)); }
-  /* Extra room below the diagram (cancelled by the negative margin, so the
-     layout is unchanged) lets the panel stay on screen while the last tier is. */
-  .tier-panelcol { align-self: stretch; padding-bottom: 360px; margin-bottom: -360px; }
+  .tier-panelcol { align-self: stretch; }
+  .tier-panel { position: sticky; top: calc(var(--header-h) + 16px); height: min(480px, calc(100vh - var(--header-h) - 32px), var(--len)); }
 }
 @container tierwrap (max-width: 779px) {
   .tier-step[data-active="0"] { display: none; }
@@ -372,19 +372,14 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 .tier-diagram[data-density="tight"] .tier-slab-icon { width: 30px; height: 30px; }
 .tier-diagram[data-density="tight"] .tier-slab-name { font-size: 15px; }
 
-/* The branches. */
+/* The branches. Lines are drawn once; what moves is drawn with transforms only (see TierFlow.jsx). */
 .tb-svg { position: absolute; left: 0; top: 0; z-index: 0; overflow: visible; pointer-events: none; }
 .tb-down { --ln: #D4573A; }
 .tb-up { --ln: #1FA97C; }
 .tb-svg path { fill: none; stroke-linejoin: round; }
 .tb-base { stroke: color-mix(in srgb, var(--ln) 30%, var(--c-hairline)); stroke-width: 4; stroke-linecap: round; }
-/* Dots drifting along a branch, in the direction it was drawn. */
-.tb-flow { stroke: var(--ln); stroke-width: 4.4; stroke-linecap: round; stroke-dasharray: 0.01 11; animation: tbDash 1.5s linear infinite; transition: opacity 0.3s; }
-@keyframes tbDash { to { stroke-dashoffset: -11.01; } }
-.tb-svg[data-mode="action"] .tb-flow { opacity: 0; }
-/* In the walk-through, a branch fills in as the story reaches it. */
-.tb-done { stroke: var(--ln); stroke-width: 4.6; stroke-linecap: butt; stroke-dasharray: 1 1; stroke-dashoffset: 1; opacity: 0; transition: stroke-dashoffset var(--dur, 0.6s) var(--ease), opacity 0.2s; }
-.tb-done[data-done="1"] { stroke-dashoffset: 0; opacity: 1; }
+/* The part of a branch the story has reached. */
+.tb-done { stroke: var(--ln); stroke-width: 4.6; stroke-linecap: butt; stroke-dasharray: 1 1; stroke-dashoffset: 1; opacity: 0; }
 
 /* Junctions: where a branch leaves a tier and where a vote branch meets the trunk. */
 .tb-dot { stroke: var(--c-paper-card); stroke-width: 2.5; transition: fill 0.35s; }
@@ -393,17 +388,15 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 .tb-dot-down[data-lit="1"] { fill: #D4573A; }
 .tb-dot-up[data-lit="1"] { fill: #1FA97C; }
 
-/* The bead that travels the branches. */
-.tb-bead {
-  position: absolute; left: 0; top: 0; width: 16px; height: 16px; border-radius: 50%; z-index: 4; opacity: 0; pointer-events: none;
-  offset-rotate: 0deg; offset-distance: 100%;
-  background: var(--tokc); border: 2.5px solid #fff; box-shadow: 0 0 0 5px color-mix(in srgb, var(--tokc) 30%, transparent), 0 0 18px var(--tokc);
-}
-.tb-bead[data-on="1"] { opacity: 1; animation: tbTravel var(--dur, 0.8s) var(--ease) both; }
-@keyframes tbTravel { from { offset-distance: 0%; } to { offset-distance: 100%; } }
+/* Everything that moves lives in one layer, placed with transforms by the animation loop. */
+.tb-layer { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+.tb-packet, .tb-head, .tb-trail { position: absolute; left: 0; top: 0; border-radius: 50%; will-change: transform; backface-visibility: hidden; }
+.tb-packet { width: 8px; height: 8px; background: #D4573A; opacity: 0.85; box-shadow: 0 0 0 2px color-mix(in srgb, #D4573A 22%, transparent); }
+.tb-packet[data-dir="up"] { background: #1FA97C; box-shadow: 0 0 0 2px color-mix(in srgb, #1FA97C 22%, transparent); }
+.tb-head { width: 16px; height: 16px; background: var(--tokc); border: 2.5px solid #fff; box-sizing: border-box; box-shadow: 0 0 0 5px color-mix(in srgb, var(--tokc) 30%, transparent), 0 0 16px var(--tokc); }
+.tb-trail { background: var(--tokc); opacity: 0; }
 .tier-ripple { position: absolute; inset: -2px; border-radius: 50%; border: 2px solid var(--tokc); opacity: 0; animation: tokRipple 1.3s ease-out var(--dur, 0.6s) 2 both; }
 @keyframes tokRipple { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(3.2); opacity: 0; } }
-
 .tier-slab {
   position: absolute; z-index: 1; min-width: 0; overflow: visible;
   display: flex; align-items: center; gap: 14px; padding: 0 18px; text-align: left; font: inherit; cursor: pointer;
@@ -411,6 +404,14 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
   transition: transform 0.4s ease, border-color 0.3s, box-shadow 0.4s, background-color 0.4s;
 }
 .tier-slab:hover { border-color: color-mix(in srgb, var(--c) 55%, var(--c-hairline)); }
+/* In the walk-through, tiers still to come sit back, tiers already passed show a tick, and the one the story is at lifts forward. */
+.tier-slab > :not(.tier-pill) { transition: opacity 0.4s; }
+.tier-slab[data-state="todo"] { background: color-mix(in srgb, var(--c-paper) 70%, var(--c-hairline)); }
+.tier-slab[data-state="todo"] > :not(.tier-pill) { opacity: 0.55; }
+.tier-slab[data-state="done"] { border-color: color-mix(in srgb, var(--c) 40%, var(--c-hairline)); }
+.tier-tick { position: absolute; right: -5px; bottom: -5px; color: var(--c); opacity: 0; transform: scale(0.4); transition: opacity 0.3s, transform 0.4s var(--ease-spring); }
+.tier-slab-icon { position: relative; }
+.tier-slab[data-state="done"] .tier-tick { opacity: 1; transform: none; }
 .tier-slab[data-active="1"] {
   border-color: var(--c); transform: scale(1.012); background: color-mix(in srgb, var(--c) 8%, var(--c-paper));
   box-shadow: 0 8px 26px color-mix(in srgb, var(--c) 24%, transparent); transition-delay: var(--delay, 0s);
@@ -430,6 +431,19 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
   transition: opacity 0.3s, transform 0.3s;
 }
 .tier-pill[data-on="1"] { opacity: 1; transform: translateY(-50%) scale(1); transition-delay: var(--delay, 0s); }
+
+/* When the diagram first scrolls into view its tiers rise into place one after another, then the branches wipe in behind them. */
+.tier-diagram[data-in="0"] .tier-slab, .tier-diagram[data-in="0"] .tb-svg { opacity: 0; }
+.tier-diagram[data-in="1"] .tier-slab { animation: slabRise 0.6s var(--ease-out) calc(var(--i, 0) * 110ms) backwards; }
+.tier-diagram[data-in="1"] .tb-svg { animation: branchWipe 1.1s var(--ease-out) 0.45s backwards; }
+@keyframes slabRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes branchWipe { from { opacity: 0; clip-path: inset(0 0 100% 0); } to { opacity: 1; clip-path: inset(-20px); } }
+@media (prefers-reduced-motion: reduce) { .tier-diagram .tier-slab, .tier-diagram .tb-svg { animation: none !important; opacity: 1 !important; } }
+
+/* A thin bar that fills while the walk-through rests on a step, so you can see when it will move on. */
+.tier-dwell { height: 3px; border-radius: 2px; background: var(--c-hairline); margin-top: 10px; overflow: hidden; flex: none; }
+.tier-dwell > span { display: block; height: 100%; width: 100%; background: #B5533C; transform-origin: left center; animation: dwell linear both; }
+@keyframes dwell { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
 .tier-step-body { display: block; animation: stepIn 0.4s ease both; }
 @keyframes stepIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }

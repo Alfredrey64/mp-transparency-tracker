@@ -71,13 +71,19 @@ export function buildLayout(nation, width, availH) {
   const tx = width - m.trunk / 2;
   const first = tiers[0];
   const trunk = `M ${you.right} ${you.midY} H ${tx - r} Q ${tx} ${you.midY} ${tx} ${you.midY - r} V ${first.midY + r} Q ${tx} ${first.midY} ${tx - r} ${first.midY} H ${first.right + 1}`;
-  const stubs = tiers.slice(1).map((n) => ({ key: n.key, d: `M ${tx} ${n.midY} H ${n.right + 1}`, at: 1 - n.midY / height }));
+  // How far along the trunk (0 to 1) a bead has gone when it passes each tier's level, so a vote branch can light up exactly as the bead reaches it.
+  const arc = (Math.PI * r) / 2;
+  const reach = tx - r - you.right;
+  const rise = you.midY - r - (first.midY + r);
+  const total = reach + arc + rise + arc + (tx - r - (first.right + 1));
+  const trunkAt = (y) => Math.min(1, Math.max(0, (reach + arc + (you.midY - r - y)) / total));
+  const stubs = tiers.slice(1).map((n) => ({ key: n.key, d: `M ${tx} ${n.midY} H ${n.right + 1}`, at: trunkAt(n.midY) }));
 
   // Small round junctions where a branch leaves a tier, and where a vote branch taps the trunk.
   const dots = [
     ...tiers.filter((n) => tiers.some((c) => c.parent === n.key)).map((n) => ({ key: n.key, x: n.spineX, y: n.bottom, up: false })),
     { key: "you", x: last.spineX, y: last.bottom, up: false, fromLast: true },
-    ...tiers.map((n) => ({ key: `vote-${n.key}`, x: tx, y: n.midY, up: true, at: 1 - n.midY / height })),
+    ...tiers.map((n) => ({ key: `vote-${n.key}`, x: tx, y: n.midY, up: true, at: trunkAt(n.midY) })),
   ];
 
   return { metrics: m, nodes, byKey, height, edges, trunk, stubs, dots, trunkX: tx, width };

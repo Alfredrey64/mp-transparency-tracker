@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useMemo } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable, solid } from "../theme";
 import { PageHeader } from "./shared";
 import { IconHistory } from "./icons";
 import { LANDMARK_VOTES, OUTCOME_COLOR } from "../lib/politicalHistoryData";
+import { spanEras, landmarkId } from "../lib/landmarkLayout";
+import LandmarkMap from "./LandmarkMap";
 import { splitActNames } from "../lib/actNames";
 import { explainerFor } from "../data/landmarkExplainers";
 import { BillIcon } from "./billIcons";
@@ -17,12 +19,12 @@ const VOTE_THEMES = ["General", ...new Set(LANDMARK_VOTES.map((v) => v.theme))];
 // long, visually uniform stack of cards into a chronological narrative
 // with real hierarchy, rather than trying to make each card busier.
 const HISTORY_ERAS = [
-  { key: "georgian", label: "Georgian Britain", to: 1831, accent: "#8A6D3B" },
-  { key: "victorian", label: "Victorian Era", to: 1900, accent: "#4C7A6B" },
-  { key: "wartime", label: "Edwardian Britain & the World Wars", to: 1945, accent: "#7A4B4B" },
-  { key: "postwar", label: "The Post-War Consensus", to: 1978, accent: "#3F7D5C" },
-  { key: "thatcher", label: "Thatcher to New Labour", to: 2009, accent: "#5A7FA6" },
-  { key: "modern", label: "Coalition, Brexit & Beyond", to: Infinity, accent: "#6E4B6E" },
+  { key: "georgian", short: "Georgian", label: "Georgian Britain", to: 1831, accent: "#8A6D3B" },
+  { key: "victorian", short: "Victorian", label: "Victorian Era", to: 1900, accent: "#4C7A6B" },
+  { key: "wartime", short: "Edwardian & wars", label: "Edwardian Britain & the World Wars", to: 1945, accent: "#7A4B4B" },
+  { key: "postwar", short: "Post-war", label: "The Post-War Consensus", to: 1978, accent: "#3F7D5C" },
+  { key: "thatcher", short: "Thatcher to Blair", label: "Thatcher to New Labour", to: 2009, accent: "#5A7FA6" },
+  { key: "modern", short: "Coalition to now", label: "Coalition, Brexit & Beyond", to: Infinity, accent: "#6E4B6E" },
 ];
 
 function eraForYear(year) {
@@ -269,11 +271,17 @@ function ResultPill({ outcome, children }) {
   );
 }
 
-function VoteRow({ vote, index }) {
+function VoteRow({ vote, index, pulse }) {
   const outcomeColor = OUTCOME_COLOR[vote.outcome];
   const themeColor = THEME_COLORS[vote.theme] ?? COLORS.accent;
   const [open, setOpen] = useState(false);
+  const [seenPulse, setSeenPulse] = useState(null);
   const more = explainerFor(vote);
+  // Opens when the chart at the top sends you here.
+  if (pulse && pulse !== seenPulse && pulse.id === landmarkId(vote)) {
+    setSeenPulse(pulse);
+    if (more) setOpen(true);
+  }
   const toggle = () => more && setOpen((o) => !o);
   return (
     <motion.div
@@ -542,7 +550,22 @@ function seatCountFor(counts, party) {
 export default function PoliticalHistory() {
   const [tab, setTab] = useState("votes");
   const [voteFilter, setVoteFilter] = useState("General");
+  const [selectedId, setSelectedId] = useState(null);
+  const [pulse, setPulse] = useState(null);
+  const [flashId, setFlashId] = useState(null);
+  const calm = useReducedMotion();
   const seatCounts = useSeatCounts();
+  const eras = useMemo(() => spanEras(HISTORY_ERAS, LANDMARK_VOTES), []);
+  const lanes = useMemo(() => VOTE_THEMES.slice(1).map((t) => ({ key: t, label: t, color: THEME_COLORS[t] ?? COLORS.accent })), []);
+  const jump = (id) => {
+    setVoteFilter("General");
+    setSelectedId(null);
+    setPulse({ id });
+    setFlashId(id);
+    requestAnimationFrame(() => requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ behavior: calm ? "auto" : "smooth", block: "center" })));
+    setTimeout(() => setFlashId((cur) => (cur === id ? null : cur)), 2200);
+  };
+  const carried = LANDMARK_VOTES.filter((v) => v.outcome === "achieved").length;
   const sortedVotes = [...LANDMARK_VOTES]
     .filter((v) => voteFilter === "General" || v.theme === voteFilter)
     .sort((a, b) => (a.year - b.year) || a.date.localeCompare(b.date));
@@ -582,7 +605,22 @@ export default function PoliticalHistory() {
       <AnimatePresence mode="wait">
         {tab === "votes" && (
           <motion.div key="votes" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.22 }}>
-            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 22 }}>
+            <section aria-labelledby="h-lm-map" style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 16, padding: "20px clamp(14px, 3vw, 24px) 16px", marginBottom: 26, boxShadow: "var(--shadow-1)" }}>
+              <h2 id="h-lm-map" style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, margin: 0 }}>The votes at a glance</h2>
+              <p style={{ fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.6, color: COLORS.inkSoft, margin: "6px 0 14px", maxWidth: 720 }}>
+                Each dot is one vote. Time runs left to right and the rows group votes by theme. The shaded bands are the eras below, given room in proportion to how many votes
+                they hold, so the start year of each era is marked along the bottom. Tap or hover a dot to see what it was.
+              </p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 22px", marginBottom: 14, fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 7 }}><span aria-hidden="true" style={{ width: 11, height: 11, borderRadius: "50%", background: COLORS.inkSoft }} /><strong style={{ color: COLORS.ink }}>{carried}</strong> carried</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 7 }}><span aria-hidden="true" style={{ width: 11, height: 11, borderRadius: "50%", boxShadow: `inset 0 0 0 2.5px ${COLORS.inkSoft}` }} /><strong style={{ color: COLORS.ink }}>{LANDMARK_VOTES.length - carried}</strong> lost or failed</span>
+                <span>{LANDMARK_VOTES.length} votes across {eras.at(-1).end - eras[0].start} years</span>
+              </div>
+              <LandmarkMap votes={LANDMARK_VOTES} eras={eras} themes={lanes} filter={voteFilter} selectedId={selectedId} onSelect={setSelectedId} onJump={jump} />
+              <p className="sr-only">The list below holds the same votes in date order.</p>
+            </section>
+
+            <div className="chip-grid" style={{ marginBottom: 26 }}>
               {VOTE_THEMES.map((theme) => {
                 const active = voteFilter === theme;
                 return (
@@ -607,18 +645,31 @@ export default function PoliticalHistory() {
               </div>
             ) : (
               <div>
-                {voteEraGroups.map((era) => (
-                  <div key={era.key} style={{ marginBottom: 36 }}>
-                    <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 14 }}>
-                      <span style={{ width: 9, height: 9, borderRadius: "50%", background: era.accent, flexShrink: 0 }} />
-                      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 19, color: COLORS.ink }}>{era.label}</div>
-                      <span style={{ flex: 1, height: 1, background: COLORS.hairline }} />
-                    </div>
-                    {era.votes.map((v, i) => (
-                      <VoteRow key={v.title} vote={v} index={i} />
-                    ))}
-                  </div>
-                ))}
+                {voteEraGroups.map((era) => {
+                  const full = eras.find((e) => e.key === era.key);
+                  return (
+                    <section key={era.key} aria-labelledby={`h-${era.key}`} style={{ marginBottom: 44, "--a": era.accent }}>
+                      <div className="lm-erahead">
+                        <h2 id={`h-${era.key}`}>{era.label}</h2>
+                        <span className="lm-erayears">{full.start}{" to "}{full.end}</span>
+                        <span className="lm-eracount">{era.votes.length} {era.votes.length === 1 ? "vote" : "votes"}</span>
+                      </div>
+                      <div className="lm-spine">
+                        <motion.span
+                          aria-hidden="true" className="lm-line" initial={{ scaleY: calm ? 1 : 0 }} whileInView={{ scaleY: 1 }}
+                          viewport={{ once: true, margin: "0px 0px -8% 0px" }} transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+                        />
+                        {era.votes.map((v, i) => (
+                          <div key={v.title} className={`lm-item${flashId === landmarkId(v) ? " lm-flash" : ""}`} id={landmarkId(v)} style={{ scrollMarginTop: 160 }}>
+                            <span className="lm-year" aria-hidden="true">{v.year}</span>
+                            <span className="lm-node" aria-hidden="true" />
+                            <VoteRow vote={v} index={i} pulse={pulse} />
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+                  );
+                })}
               </div>
             )}
           </motion.div>
