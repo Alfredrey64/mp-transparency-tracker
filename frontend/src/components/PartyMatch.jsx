@@ -9,6 +9,7 @@ import {
   IconDoor, IconStar, IconPin,
 } from "./icons";
 import { QUESTIONS, ISSUES, ANSWER_SCALE, QUIZ_PARTIES, NATIONS, QUESTION_ANSWER, scoreQuiz } from "../data/partyMatchQuiz";
+import { EVIDENCE, MANIFESTO_SOURCES, CHECKED_ON } from "../data/partyMatchEvidence";
 import { explainMatch, STANCE, YOU } from "../lib/quizInsights";
 
 const MAX_PRIORITIES = 5;
@@ -437,6 +438,7 @@ export function Breakdown({ party, answers }) {
       <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.45 }}>{r.statement}</div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 3 }}>
         You {YOU[r.user]}. {party.name} {STANCE[r.party]}.
+        {EVIDENCE[r.id]?.[party.key] && <span style={{ display: "block", marginTop: 3 }}>What its manifesto says: {EVIDENCE[r.id][party.key]}</span>}
         {QUESTION_ANSWER[r.id] && <> <a href={`#/answers/${QUESTION_ANSWER[r.id]}`} target="_blank" rel="noreferrer" style={{ color: readable(COLORS.accent), fontWeight: 700 }}>What the parties said</a></>}
       </div>
     </li>
@@ -453,6 +455,10 @@ export function Breakdown({ party, answers }) {
         <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.ink, marginTop: 14 }}>Where you differ</div>
         <ul style={{ listStyle: "none", margin: "4px 0 0", padding: 0 }}>{differ.map((r) => <Row key={r.id} r={r} />)}</ul>
       </>)}
+      <p style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, lineHeight: 1.55, margin: "14px 0 0" }}>
+        Page numbers are those of the party's 2024 general election manifesto PDF, which is still its latest UK-wide manifesto. Scores were checked against it on {CHECKED_ON}.{" "}
+        {MANIFESTO_SOURCES[party.key] && <a href={MANIFESTO_SOURCES[party.key]} target="_blank" rel="noreferrer" style={{ color: readable(COLORS.accent), fontWeight: 700 }}>Read it yourself<span className="sr-only"> (opens in a new tab)</span></a>}
+      </p>
       {agree.length === 0 && differ.length === 0 && <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, margin: "6px 0 0" }}>Your answers sit somewhere in the middle, with no strong agreements or clear disagreements.</p>}
     </div>
   );

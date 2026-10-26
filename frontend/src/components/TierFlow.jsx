@@ -141,8 +141,8 @@ export default function TierFlow({ layout, action, calm, visible, curKey, voting
     <>
       <svg ref={svgRef} className="tb-svg" width={width} height={height} viewBox={`0 0 ${width} ${height}`} aria-hidden="true">
         <defs>
-          <Arrow id="tb-arr-down" color="#D4573A" />
-          <Arrow id="tb-arr-up" color="#1FA97C" />
+          <Arrow id="tb-arr-down" color="#3B4A66" />
+          <Arrow id="tb-arr-up" color="#2E7D5B" />
         </defs>
         {layout.edges.map((e) => (
           <g key={e.key} className="tb-down">

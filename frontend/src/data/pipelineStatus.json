@@ -1,47 +1,47 @@
 {
-  "generatedAt": "2026-10-25T16:17:15.602Z",
-  "succeededCount": 26,
+  "generatedAt": "2026-10-26T11:56:35.940Z",
+  "succeededCount": 0,
   "totalCount": 27,
   "sources": [
     {
       "label": "Financial interests",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Voting records",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Bills",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "MP news",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Donor sector tagging",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Party donations",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Party donor sector tagging",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Former MPs",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "By-elections",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "On this day",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Today's Commons business",
@@ -49,67 +49,67 @@
     },
     {
       "label": "House of Lords peers",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "MP activity",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "IPSA business cost claims",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Petitions",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Ministerial gifts & hospitality",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Select committees",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Written questions",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Standards reports",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Constituency results & petitions",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Constituency history (former MPs)",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "MP careers (terms, posts, party changes)",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Lords careers (arrival, former MPs, posts)",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "MP benchmarks (how each MP compares)",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Councils (councillors, make-up, election dates)",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "ONS statistics (economy, prices, jobs, health, population)",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Regional breakdowns (jobs, housing, crime by place)",
-      "succeeded": true
+      "succeeded": false
     }
   ]
 }

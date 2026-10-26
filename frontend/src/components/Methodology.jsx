@@ -207,7 +207,7 @@ export default function Methodology({ onNavigate }) {
             />
             <SourceRow
               name="Housing supply statistics (Ministry of Housing, Communities and Local Government)"
-              url="https://www.gov.uk/government/collections/housing-supply-indicators-of-new-supply-england"
+              url="https://www.gov.uk/government/statistics/housing-supply-indicators-of-new-supply-england-january-to-march-2026/housing-supply-indicators-of-new-supply-england-january-to-march-2026"
               auth="No key required, Open Government Licence v3.0"
               use="Net additional dwellings and new homes started and completed in England, from the department's live tables, for the Housing page and the 1.5 million homes pledge."
             />

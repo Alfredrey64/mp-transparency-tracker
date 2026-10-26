@@ -8,7 +8,7 @@ import { IconParliament, IconCabinet, IconDevolved, IconTransport, IconCouncil, 
 import { buildLayout, routeBetween } from "../lib/tierTree";
 import { NATIONS, TIERS, VOTE_FOR, CHECKS, WHO_TO_CONTACT, contactAnswer, SCENARIOS, scenarioSteps, YOU, visibleTierKeys, linkBetween } from "../data/governmentTiers";
 
-const SECTION_COLOR = "#B5533C";
+const SECTION_COLOR = "#1E3A6E";
 const DWELL_MS = 3800;
 const ICONS = { parliament: IconParliament, government: IconCabinet, devolved: IconDevolved, combined: IconTransport, council: IconCouncil, parish: IconHome, you: IconGroup };
 const YOU_TIER = { key: "you", name: YOU.name, short: YOU.short, color: COLORS.accent, figure: YOU.figure, links: YOU.links };
@@ -90,7 +90,7 @@ function Control({ onClick, disabled, primary, children }) {
 function Legend() {
   const item = (down, text) => (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>
-      <svg width="12" height="16" viewBox="0 0 12 16" aria-hidden="true" fill="none" stroke={down ? SECTION_COLOR : COLORS.commonsGreen} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="12" height="16" viewBox="0 0 12 16" aria-hidden="true" fill="none" stroke={down ? "#3B4A66" : "#2E7D5B"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         {down ? <path d="M6 2v11M2 9l4 4 4-4" /> : <path d="M6 14V3M2 7l4-4 4 4" />}
       </svg>
       {text}
@@ -374,10 +374,10 @@ export default function GovernmentTiers() {
             setIntroFlag(true);
           },
         });
-        tl.fromTo(slabs, { autoAlpha: 0, x: -40 }, { autoAlpha: 1, x: 0, duration: 0.75, stagger: 0.12, clearProps: "transform,opacity,visibility" }, 0);
-        tl.fromTo(icons, { scale: 0, rotate: -30 }, { scale: 1, rotate: 0, duration: 0.65, ease: "back.out(2.6)", stagger: 0.12, clearProps: "transform" }, 0.2);
-        tl.fromTo(bases, { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.7, ease: "power2.inOut", stagger: 0.09, clearProps: "strokeDasharray,strokeDashoffset" }, 0.5);
-        tl.fromTo(dots, { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.4, ease: "back.out(3)", stagger: 0.05, clearProps: "transform" }, 0.9);
+        tl.fromTo(slabs, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.09, clearProps: "transform,opacity,visibility" }, 0);
+        tl.fromTo(icons, { scale: 0.7, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.45, ease: "power2.out", stagger: 0.09, clearProps: "transform,opacity,visibility" }, 0.12);
+        tl.fromTo(bases, { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.6, ease: "power2.inOut", stagger: 0.08, clearProps: "strokeDasharray,strokeDashoffset" }, 0.4);
+        tl.fromTo(dots, { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.3, ease: "power2.out", stagger: 0.04, clearProps: "transform" }, 0.8);
       }, dia);
     }).catch(() => setIntroFlag(true));
     return () => { dead = true; ctx?.revert(); };

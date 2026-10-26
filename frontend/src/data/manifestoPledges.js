@@ -104,7 +104,7 @@ export const MANIFESTOS = [
     ],
   },
   {
-    id: "lab2024", election: "2024", party: "Labour", title: "Change", url: "https://ucrel.lancs.ac.uk/wmatrix/ukmanifestos2024/localpdf/Labour.pdf",
+    id: "lab2024", election: "2024", party: "Labour", title: "Change", url: "https://labour.org.uk/wp-content/uploads/2024/06/Labour-Party-manifesto-2024.pdf",
     pledges: [
       { text: "Set up Great British Energy, a publicly owned clean power company.", status: "delivered", note: "The Great British Energy Act 2025 received Royal Assent on 15 May 2025.", source: "Great British Energy Act 2025" },
       { text: "Bring the railways into public ownership as operator contracts end.", status: "under-way", note: "Train operators have been moving into public ownership in stages since 2025. Full Fact rates it as appearing on track.", source: "Passenger Railway Services (Public Ownership) Act 2024; Full Fact Government Tracker" },

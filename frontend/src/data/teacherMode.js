@@ -72,7 +72,7 @@ export const STORIES = {
       { text: "Dad wonders why. Many things change prices, like what it costs to grow and ship food. But some things are decided in Parliament: how much tax people pay, how much help families can get, and the lowest pay a worker can be given." },
       { text: "Before an election, every party says what it would do. They don't all agree. Each of these is an idea someone might promise.", chips: ["Lower taxes", "More help with bills", "A higher minimum wage"] },
       { text: "Dad reads what the parties promise and picks the one he thinks will work best for his family. Millions of other people pick too. The party that wins the most seats usually runs the country." },
-      { text: "One day Sam will vote too. The more she understands now, the better she can choose.", fact: "In a UK general election you have to be 18 to vote. In Scotland and Wales you can vote in some other elections at 16." },
+      { text: "One day Sam will vote too. The more she understands now, the better she can choose.", fact: "At the moment you have to be 18 to vote in a UK general election, though a bill to lower it to 16 is going through Parliament. In Scotland and Wales you can already vote in some other elections at 16." },
     ],
     ask: ["What did Dad do that anybody can do?", "Why might two families choose different parties even if they both want to afford the shopping?"],
   },
@@ -108,7 +108,7 @@ export const STORIES = {
       { text: "One day the bus stops running. The route has been cut, and Nan can't get to the shops." },
       { text: "Local buses are often decided by the local council or a regional mayor, working with the bus companies. This is local politics." },
       { text: "The councillors have a limited amount of money. They have to weigh up many needs. Different councillors decide differently.", chips: ["Pay for a bus route", "Repair the roads", "Keep council tax low"] },
-      { text: "Councillors are elected in local elections. If people don't like how decisions are made, they can vote for someone else.", fact: "In Scotland and Wales you can vote in council elections at 16. In England and Northern Ireland you have to be 18." },
+      { text: "Councillors are elected in local elections. If people don't like how decisions are made, they can vote for someone else.", fact: "In Scotland and Wales you can vote in council elections at 16. In England and Northern Ireland you have to be 18 at the moment, though a bill going through Parliament would lower it to 16." },
     ],
     ask: ["Why is a local decision sometimes more important to you than one made in London?", "Who could Amira and Nan talk to?"],
   },
@@ -194,7 +194,7 @@ export const VOICES = [
   { title: "Write to your MP", text: "Anyone can write to their MP, at any age. MPs want to know what people in their area think.", colour: "#1E4FB8" },
   { title: "Sign a petition", text: "Anyone who lives in the UK can sign a petition on the Parliament website. At 10,000 signatures the government has to reply. At 100,000 MPs consider a debate.", colour: "#E0367A" },
   { title: "Join a youth group", text: "There are youth councils and youth parliaments, and groups that train young people to speak to decision-makers.", colour: "#7A5AF0" },
-  { title: "Vote when you can", text: "UK general elections are for people aged 18 and over. Scotland and Wales let 16 and 17 year olds vote in their own elections and in council elections.", colour: "#C7871A" },
+  { title: "Vote when you can", text: "UK general elections are for people aged 18 and over at the moment, though a bill to lower it to 16 is going through Parliament. Scotland and Wales already let 16 and 17 year olds vote in their own elections and in council elections.", colour: "#C7871A" },
   { title: "Check what you read", text: "A fact can be checked. An opinion is what someone thinks. Ask who is saying it, and how they know.", colour: "#0E9AA7" },
 ];
 
@@ -203,7 +203,7 @@ export const QUIZ = [
   { q: "How many MPs are there in the House of Commons?", options: ["100", "650", "5,000"], answer: 1, why: "There are 650 MPs, one for each of 650 areas called constituencies." },
   { q: "Which House has members who are not elected?", options: ["The House of Commons", "The House of Lords", "Both of them"], answer: 1, why: "Peers in the Lords are not elected. MPs in the Commons are." },
   { q: "What is a political party?", options: ["A group of people who share ideas about how the country should be run", "A birthday celebration", "A kind of government office"], answer: 0, why: "Parties offer voters a set of ideas, and try to win seats so they can put those ideas into action." },
-  { q: "Which of these can anyone, of any age, do?", options: ["Vote in a general election", "Write to their MP", "Become Prime Minister"], answer: 1, why: "Anyone can write to their MP. You have to be 18 to vote in a UK general election." },
+  { q: "Which of these can anyone, of any age, do?", options: ["Vote in a general election", "Write to their MP", "Become Prime Minister"], answer: 1, why: "Anyone can write to their MP. At the moment you have to be 18 to vote in a UK general election." },
 ];
 
 // ---- Teacher's notes on the whole mode ---------------------------------------------------------------------------------------------------------

@@ -578,7 +578,7 @@ export default function MediaLiteracy() {
             </a>
           </li>
           <li style={{ marginBottom: 8 }}>
-            <a href="https://www.ofcom.org.uk/tv-radio-and-on-demand/broadcast-standards/broadcast-decisions" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
+            <a href="https://www.ofcom.org.uk/tv-radio-and-on-demand/broadcast-standards/broadcast-and-on-demand-bulletin-decisions" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
               Ofcom's published broadcast standards decisions ↗
             </a>
           </li>

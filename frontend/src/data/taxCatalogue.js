@@ -385,7 +385,7 @@ export const TAXES = [
     notes: ["The bank surcharge was cut from 8% to 3% in April 2023 when the main corporation tax rate went up, so banks pay 28% in total on their profits above a threshold."],
     sources: [
       ["GOV.UK: Apprenticeship Levy", "https://www.gov.uk/guidance/pay-apprenticeship-levy"],
-      ["GOV.UK: Bank corporation tax surcharge", "https://www.gov.uk/government/publications/changes-to-the-bank-corporation-tax-surcharge"],
+      ["GOV.UK: Bank corporation tax surcharge", "https://www.gov.uk/government/publications/bank-corporation-tax-surcharge/bank-corporation-tax-surcharge"],
     ],
   },
 

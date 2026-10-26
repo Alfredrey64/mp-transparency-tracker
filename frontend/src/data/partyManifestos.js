@@ -9,7 +9,7 @@
 //
 // `manifestoUrl` points at the 2024 general election document itself, not the party's home page, because party sites move on to newer
 // manifestos (a party's current Scottish, Welsh or later UK one). Where the party no longer hosts the 2024 file at a stable address, the link
-// goes to a university archive's copy: Lancaster University (UCREL) for the SNP and Plaid Cymru, and Ulster University (CAIN) for the
+// goes to the party's own PDF where it still hosts one, and to Ulster University's CAIN archive for the
 // Northern Ireland parties. Check these still work when manifestos are next reviewed.
 export const PARTY_MANIFESTOS = [
   {
@@ -86,7 +86,7 @@ export const PARTY_MANIFESTOS = [
     shortName: "Conservative",
     manifestoTitle: "Clear Plan. Bold Action. Secure Future.",
     manifestoYear: 2024,
-    manifestoUrl: "https://public.conservatives.com/publicweb/GE2024/Accessible-Manifesto/Large-Print-Conservative-Manifesto.pdf",
+    manifestoUrl: "https://public.conservatives.com/static/documents/GE2024/Conservative-Manifesto-GE2024.pdf",
     highlights: [
       "Cut employee National Insurance by another 2p, to 6% by April 2027, and abolish the main rate for the self-employed by the end of the parliament",
       "A binding legal cap on migration, with Parliament voting on the level every year",
@@ -328,7 +328,7 @@ export const PARTY_MANIFESTOS = [
     shortName: "SNP",
     manifestoTitle: "A Future Made in Scotland",
     manifestoYear: 2024,
-    manifestoUrl: "https://ucrel.lancs.ac.uk/wmatrix/ukmanifestos2024/localpdf/SNP.pdf",
+    manifestoUrl: "https://s3-eu-west-2.amazonaws.com/www.snp.org/uploads/2024/06/2024-06-17-SNP-UK-Election-Manifesto-2024.pdf",
     highlights: [
       "If the SNP wins a majority of Scottish seats, begin negotiations on Scottish independence",
       "Scrap the two-child benefit cap across the UK",
@@ -387,7 +387,7 @@ export const PARTY_MANIFESTOS = [
     shortName: "Plaid Cymru",
     manifestoTitle: "For Fairness, For Ambition, For Wales",
     manifestoYear: 2024,
-    manifestoUrl: "https://ucrel.lancs.ac.uk/wmatrix/ukmanifestos2024/localpdf/PlaidCymru.pdf",
+    manifestoUrl: "https://assets.nationbuilder.com/plaid2016/pages/10962/attachments/original/1718214059/Plaid_Cymru_Maniffesto_2024_ENGLISH.pdf",
     highlights: [
       "A needs-based funding formula for Wales to replace the Barnett formula, and the £4 billion it says Wales is owed from HS2",
       "Raise Child Benefit by £20 a week, which Plaid says would take 60,000 children out of poverty in Wales",

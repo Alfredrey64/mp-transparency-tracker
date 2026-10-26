@@ -21,5 +21,5 @@ export const MP_SALARY = {
 export const WOMEN_POPULATION_SHARE = {
   value: 51,
   source: "ONS, Census 2021 (England and Wales): about 51% of people are women",
-  url: "https://www.ons.gov.uk/peoplepopulationandcommunity/culturalidentity/sex/bulletins/sexandgenderidentity/2021",
+  url: "https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/bulletins/populationandhouseholdestimatesenglandandwales/census2021",
 };
