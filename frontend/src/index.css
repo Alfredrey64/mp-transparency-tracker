@@ -402,10 +402,6 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 .tb-svg path { fill: none; stroke-linejoin: round; }
 .tb-base { stroke: color-mix(in srgb, var(--ln) 40%, var(--c-paper-card)); stroke-width: 7; stroke-linecap: round; }
 .tb-up .tb-base { stroke: color-mix(in srgb, #2E7D5B 38%, var(--c-paper-card)); }
-/* Beads that run along each branch while you explore, so the branches read as pipes carrying something. */
-.tb-run { stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 0.1 13; opacity: 0; transition: opacity 0.6s; filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.9)); }
-.tier-diagram[data-run="1"] .tb-run { opacity: 0.95; animation: tbRun 1.5s linear infinite; }
-@keyframes tbRun { to { stroke-dashoffset: -13.1; } }
 /* The part of a branch the story has reached. */
 .tb-done { stroke: var(--ln); stroke-width: 4.5; stroke-linecap: butt; stroke-dasharray: 1 1; stroke-dashoffset: 1; opacity: 0; }
 
@@ -419,7 +415,7 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 /* Everything that moves lives in one layer, placed with transforms by the animation loop. */
 .tb-layer { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
 .tb-packet, .tb-head, .tb-trail { position: absolute; left: 0; top: 0; border-radius: 50%; will-change: transform; backface-visibility: hidden; }
-.tb-packet { width: 7px; height: 7px; background: #3B4A66; opacity: 0.85; box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8); }
+.tb-packet { width: 9px; height: 9px; background: #3B4A66; opacity: 0; box-shadow: 0 0 0 2px #fff, 0 0 10px 2px color-mix(in srgb, var(--pc, #3B4A66) 70%, transparent); }
 .tb-packet[data-dir="up"] { background: #2E7D5B; }
 .tb-head { width: 14px; height: 14px; background: var(--tokc); border: 2px solid #fff; box-sizing: border-box; box-shadow: 0 1px 4px rgba(11, 27, 51, 0.35); }
 .tb-trail { background: var(--tokc); opacity: 0; }
@@ -430,10 +426,11 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
   display: flex; align-items: center; gap: 14px; padding: 0 18px 0 16px; text-align: left; font: inherit; cursor: pointer;
   background: color-mix(in srgb, var(--c) 4%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--c) 22%, var(--c-hairline)); border-radius: 12px;
   box-shadow: inset 5px 0 0 var(--c), 0 1px 2px rgba(11, 27, 51, 0.05); padding-left: 22px;
-  transition: border-color 0.25s, box-shadow 0.35s, background-color 0.35s;
+  transition: border-color 0.25s, box-shadow 0.35s, background-color 0.35s, transform 0.35s var(--ease-out);
+  transform-origin: 40% 50%; will-change: transform;
 }
 /* A spine in the tier's own colour down the left edge. */
-.tier-slab:hover { border-color: color-mix(in srgb, var(--c) 55%, var(--c-hairline)); background: color-mix(in srgb, var(--c) 8%, var(--c-paper-card)); box-shadow: inset 5px 0 0 var(--c), 0 8px 20px -12px color-mix(in srgb, var(--c) 60%, rgba(11, 27, 51, 0.4)); }
+.tier-slab:hover { transform: scale(1.012); border-color: color-mix(in srgb, var(--c) 55%, var(--c-hairline)); background: color-mix(in srgb, var(--c) 8%, var(--c-paper-card)); box-shadow: inset 5px 0 0 var(--c), 0 8px 20px -12px color-mix(in srgb, var(--c) 60%, rgba(11, 27, 51, 0.4)); }
 .tier-slab:focus-visible { outline: 2px solid var(--c); outline-offset: 2px; }
 /* In the walk-through, tiers still to come sit back, tiers already passed show a tick, and the one the story is at lifts forward. */
 .tier-slab > :not(.tier-pill) { transition: opacity 0.4s; }
@@ -453,16 +450,19 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 /* A slow sheen across a box when you point at it. */
 .tier-slab::after { content: ""; position: absolute; inset: 0; z-index: 2; border-radius: inherit; pointer-events: none; background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.5) 50%, transparent 62%); transform: translateX(-120%); }
 .tier-slab:hover::after { transform: translateX(120%); transition: transform 0.9s var(--ease-out); }
-.tier-panel { position: relative; }
 .tier-panel > :not(.tier-panel-mark) { position: relative; z-index: 1; }
 .tier-panel-mark { position: absolute; right: 8px; bottom: 4px; z-index: 0; opacity: 0.08; pointer-events: none; transition: color 0.4s, opacity 0.4s; }
 .tier-panel-mark svg { width: 150px; height: 150px; }
 .tier-slab[data-state="done"] .tier-tick { opacity: 1; transform: none; }
 .tier-slab[data-active="1"] {
+  transform: scale(1.02);
   border-color: var(--c); background: color-mix(in srgb, var(--c) 10%, var(--c-paper-card)); transition-delay: var(--delay, 0s);
   box-shadow: inset 5px 0 0 var(--c), 0 0 0 1px var(--c), 0 14px 28px -14px color-mix(in srgb, var(--c) 70%, rgba(11, 27, 51, 0.5));
 }
-.tier-slab[data-active="1"] .tier-slab-icon::after { content: ""; position: absolute; inset: -3px; border-radius: 13px; border: 2px solid var(--c); opacity: 0; animation: tierIconPulse 2.2s ease-out infinite; }
+/* The ring round the icon only pulses while the walk-through is at that tier; a tier you have picked just sits there, slightly larger, and stays still. */
+.tier-diagram[data-mode="action"] .tier-slab[data-active="1"] .tier-slab-icon::after { content: ""; position: absolute; inset: -3px; border-radius: 13px; border: 2px solid var(--c); opacity: 0; animation: tierIconPulse 2.2s ease-out infinite; }
+.tier-slab[data-ping="1"] .tier-slab-icon::before { content: ""; position: absolute; inset: -2px; border-radius: 12px; border: 2px solid var(--c); opacity: 0; animation: tierPing 0.9s ease-out; pointer-events: none; }
+@keyframes tierPing { 0% { transform: scale(0.95); opacity: 0.75; } 100% { transform: scale(1.7); opacity: 0; } }
 @keyframes tierIconPulse { 0% { transform: scale(0.92); opacity: 0.7; } 100% { transform: scale(1.35); opacity: 0; } }
 .tier-slab-icon { flex: none; width: 38px; height: 38px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; color: #fff; background: var(--c); box-shadow: 0 6px 12px -6px color-mix(in srgb, var(--c) 80%, transparent); }
 .tier-slab-name { display: block; font-family: 'Newsreader', Georgia, serif; font-size: 18px; font-weight: 600; line-height: 1.2; color: var(--c-ink); }
@@ -486,7 +486,7 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 .tier-diagram[data-in="1"] .tb-svg { animation: branchWipe 1.1s var(--ease-out) 0.45s backwards; }
 @keyframes slabRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 @keyframes branchWipe { from { opacity: 0; clip-path: inset(0 0 100% 0); } to { opacity: 1; clip-path: inset(-20px); } }
-@media (prefers-reduced-motion: reduce) { .tier-diagram .tier-slab, .tier-diagram .tb-svg { animation: none !important; opacity: 1 !important; } .tier-slab-icon::after, .tb-run { animation: none !important; } .tier-slab::after { display: none; } }
+@media (prefers-reduced-motion: reduce) { .tier-diagram .tier-slab, .tier-diagram .tb-svg { animation: none !important; opacity: 1 !important; } .tier-slab-icon::after, .tier-slab-icon::before { animation: none !important; } .tier-slab::after { display: none; } }
 
 /* A thin bar that fills while the walk-through rests on a step, so you can see when it will move on. */
 .tier-dwell { height: 3px; border-radius: 2px; background: var(--c-hairline); margin-top: 10px; overflow: hidden; flex: none; }

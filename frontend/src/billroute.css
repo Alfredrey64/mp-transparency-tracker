@@ -1,0 +1,35 @@
+.billroute { display: grid; gap: 14px; margin: 4px 0 26px; padding: 18px clamp(12px, 3vw, 22px) 14px; border-radius: 20px; background: linear-gradient(170deg, color-mix(in srgb, #7A4B63 9%, var(--c-paper-card)), var(--c-paper-card) 70%); border: 1px solid color-mix(in srgb, #7A4B63 26%, var(--c-hairline)); }
+.billroute-svg { display: block; width: 100%; max-width: 420px; height: auto; margin: 0 auto; overflow: visible; }
+.billroute-stop { cursor: pointer; outline: none; }
+.billroute-stop:hover circle:not(.billroute-halo) { filter: drop-shadow(0 0 5px var(--c)); }
+.billroute-stop:focus-visible circle:first-of-type { stroke-width: 5; }
+.billroute-halo { transform-box: fill-box; transform-origin: center; animation: br-halo 1.8s ease-out infinite; }
+@keyframes br-halo { from { transform: scale(0.8); opacity: 0.8; } to { transform: scale(1.5); opacity: 0; } }
+.billroute-caption { position: sticky; top: calc(var(--header-h) + 10px); z-index: 3; align-self: start; padding: 16px 18px 18px; border-radius: 18px; background: var(--c-paper-card); border: 1px solid color-mix(in srgb, var(--c) 28%, var(--c-hairline)); border-top: 5px solid var(--c); box-shadow: var(--shadow-2); }
+.billroute-count { font: 700 12.5px "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.billroute-title { margin: 2px 0 8px; font: 700 clamp(24px, 3vw, 32px)/1.15 "Newsreader", Georgia, serif; color: var(--c-ink); animation: br-in 0.4s var(--ease-out) both; }
+@keyframes br-in { from { opacity: 0; transform: translateY(6px); } }
+.billroute-desc { margin: 0; font: 400 15px/1.6 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.billroute-facts { display: grid; gap: 10px; margin: 16px 0 0; }
+.billroute-facts > div { padding: 10px 14px; border-radius: 12px; background: color-mix(in srgb, var(--c) 8%, var(--c-paper)); border-left: 4px solid var(--c); }
+.billroute-facts dt { font: 700 11.5px "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--c) 78%, var(--c-ink)); }
+.billroute-facts dd { margin: 1px 0 0; font: 500 14px/1.5 "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.billroute-visual { margin-top: 14px; }
+.billroute-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.billroute-nav button { min-height: 42px; padding: 0 16px; border-radius: 999px; cursor: pointer; font: 700 14px "Public Sans", system-ui, sans-serif; color: var(--c-ink); background: transparent; border: 1px solid var(--c-hairline); transition: background 0.2s, border-color 0.2s; }
+.billroute-nav button:hover:not(:disabled) { border-color: var(--c); background: color-mix(in srgb, var(--c) 8%, transparent); }
+.billroute-nav button:disabled { opacity: 0.4; cursor: default; }
+.billroute-nav .billroute-primary { background: var(--c); border-color: var(--c); color: #fff; }
+.billroute-nav .billroute-primary:hover:not(:disabled) { background: color-mix(in srgb, var(--c) 85%, #000); }
+.billroute-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 0; padding: 0; }
+.billroute-chips button { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; font: 700 13px "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--c) 78%, var(--c-ink)); background: transparent; border: 2px solid color-mix(in srgb, var(--c) 40%, transparent); transition: background 0.2s, color 0.2s, transform 0.2s var(--ease-out); }
+.billroute-chips button:hover { transform: translateY(-2px); border-color: var(--c); }
+.billroute-chips button[data-done="1"] { background: color-mix(in srgb, var(--c) 18%, transparent); }
+.billroute-chips button[aria-current="step"] { background: var(--c); color: #fff; border-color: var(--c); }
+@media (min-width: 880px) {
+  .billroute { grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 30px; align-items: start; }
+  .billroute-caption { grid-column: 2; grid-row: 1; top: calc(var(--header-h) + 24px); padding: 24px 28px 26px; min-height: 560px; }
+  .billroute-svg { grid-column: 1; grid-row: 1; margin: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .billroute-halo, .billroute-title { animation: none; } }
+@media print { .billroute-caption { display: none; } }

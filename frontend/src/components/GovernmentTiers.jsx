@@ -130,6 +130,7 @@ function Slab({ box, tier, figure, selected, active, state, index, arriveDelay, 
       aria-pressed={selected}
       aria-current={active ? "step" : undefined}
       className="tier-slab"
+      data-key={tier.key}
       data-active={active || selected ? "1" : "0"}
       data-state={state}
       style={{ left: box.left, top: box.top, width: box.width, height: box.height, "--c": tier.color, "--ct": readable(tier.color), "--delay": `${arriveDelay}s`, "--i": index }}

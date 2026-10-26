@@ -13,9 +13,7 @@ const TRAIL = [
   { size: 8, opacity: 0.26, lag: 0.15 },
   { size: 6, opacity: 0.14, lag: 0.2 },
 ];
-const PACKETS = 30;
-const PACKET_SPEED = 46; // pixels a second
-const PACKET_GAP = 120; // pixels between packets on a branch
+const PACKETS = 24;
 
 const clamp = (n, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, n));
 const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
@@ -107,42 +105,115 @@ export default function TierFlow({ layout, action, calm, visible, curKey, voting
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [layout, action, calm, curKey, voting, route, dur, stepKey, reachedId, chainId]);
 
-  // Exploring: small packets drift along the branches, red ones carrying laws and money down, green ones carrying votes up.
+  // Exploring: one small glowing packet at a time leaves the top and runs down to a tier, then the next leaves for the next tier, and so on round the
+  // tiers, always the same time apart. Where tiers share a stretch of branch the packets are therefore evenly spaced on it, never bunched. Votes do the
+  // same in the other direction, from you up the trunk and across to each tier. A packet takes the colour of the tier whose branch it is on.
   useEffect(() => {
     const svg = svgRef.current;
     const layer = layerRef.current;
     if (!svg || !layer) return undefined;
-    const packets = [...layer.querySelectorAll(".tb-packet")];
-    for (const p of packets) p.style.display = "none";
+    const slots = [...layer.querySelectorAll(".tb-packet")];
+    for (const p of slots) p.style.display = "none";
     if (action || calm || !visible) return undefined;
 
-    const lanes = [];
-    let used = 0;
-    for (const path of svg.querySelectorAll("[data-flow]")) {
-      const len = path.getTotalLength();
-      if (len < 24) continue;
-      const n = Math.max(1, Math.round(len / PACKET_GAP));
-      for (let i = 0; i < n && used < PACKETS; i++, used++) {
-        const el = packets[used];
-        el.style.display = "";
-        el.dataset.dir = path.dataset.flow;
-        el.style.background = path.dataset.col ?? "";
-        lanes.push({ path, len, el, offset: i / n });
-      }
-    }
+    const dia = svg.closest(".tier-diagram");
+    const slab = (key) => dia?.querySelector(`.tier-slab[data-key="${key}"]`);
+    const ping = (key) => {
+      const el = slab(key);
+      if (!el) return;
+      el.removeAttribute("data-ping");
+      // Restart the ring: the attribute has to leave the page for one frame before it comes back.
+      void el.getBoundingClientRect();
+      el.setAttribute("data-ping", "1");
+    };
+    const measure = (path) => ({ path, len: path.getTotalLength(), col: path.dataset.col });
+    const edge = (k) => { const p = svg.querySelector(`[data-flow="down"][data-marker="${k}"]`); return p ? measure(p) : null; };
+    const tiers = layout.nodes.filter((n) => !n.isYou);
+    const SPEED = 96; // pixels a second
+    const EVERY = 1.15; // seconds between one packet leaving and the next
+
+    // A route is a list of pieces; `hidden` pieces are the way through a box, where the packet cannot be seen. `ping` names the box it reaches.
+    const downRoute = (target) => {
+      const keys = [];
+      let node = target.isYou ? layout.byKey[tiers[tiers.length - 1].key] : target;
+      if (target.isYou) keys.push("you");
+      while (node?.parent) { keys.push(node.key); node = layout.byKey[node.parent]; }
+      keys.reverse();
+      const pieces = [];
+      keys.forEach((k, i) => {
+        const e = edge(k);
+        if (!e) return;
+        pieces.push({ ...e, col: colors[k] ?? "#3B4A66" });
+        const here = layout.byKey[k];
+        const last = i === keys.length - 1;
+        if (k !== "you") pieces.push({ hidden: true, len: last ? 0 : here.height * 0.78, ping: k });
+      });
+      return pieces;
+    };
+    const trunk = svg.querySelector('[data-lane="trunk"]');
+    const trunkLen = trunk?.getTotalLength() ?? 0;
+    const upRoute = (target, i) => {
+      if (!trunk) return [];
+      if (i === 0) return [{ path: trunk, len: trunkLen, col: "#2E7D5B", from: 0 }];
+      const st = layout.stubs.find((x) => x.key === target.key);
+      const sp = svg.querySelector(`[data-lane="stub:${target.key}"]`);
+      const lead = (st?.at ?? 1) * trunkLen;
+      return [{ path: trunk, len: lead, col: "#2E7D5B", from: 0 }, ...(sp ? [{ path: sp, len: sp.getTotalLength(), col: "#2E7D5B", from: 0 }] : [])];
+    };
+
+    const downs = [...tiers.slice(1), layout.byKey.you].map((t) => downRoute(t)).filter((r) => r.length);
+    const ups = tiers.map((t, i) => upRoute(t, i)).filter((r) => r.length);
+    const total = (r) => r.reduce((t, p) => t + p.len, 0);
+    const live = [];
+    let nextDown = 0;
+    let nextUp = 0;
+    let lastDown = -Infinity;
+    let lastUp = -Infinity;
     let frame = 0;
     const start = performance.now();
+
+    const launch = (route, dir, now) => {
+      const el = slots.find((sl) => !live.some((l) => l.el === sl));
+      if (!el) return;
+      el.style.display = "";
+      el.dataset.dir = dir;
+      live.push({ el, route, born: now, total: total(route), pinged: new Set() });
+    };
+
     const tick = (now) => {
-      const travelled = ((now - start) / 1000) * PACKET_SPEED;
-      for (const l of lanes) {
-        const pt = l.path.getPointAtLength(((l.offset + travelled / l.len) % 1) * l.len);
-        place(l.el, pt.x, pt.y, 8);
+      const t = (now - start) / 1000;
+      if (downs.length && t - lastDown >= EVERY) { launch(downs[nextDown++ % downs.length], "down", t); lastDown = t; }
+      if (ups.length && t - lastUp >= EVERY && t >= EVERY / 2) { launch(ups[nextUp++ % ups.length], "up", t); lastUp = t; }
+      for (let i = live.length - 1; i >= 0; i--) {
+        const l = live[i];
+        const d = (t - l.born) * SPEED;
+        if (d >= l.total) {
+          l.el.style.display = "none";
+          live.splice(i, 1);
+          continue;
+        }
+        let at = d;
+        let piece = l.route[0];
+        for (const p of l.route) {
+          if (at <= p.len) { piece = p; break; }
+          at -= p.len;
+          piece = p;
+        }
+        if (piece.ping && !l.pinged.has(piece.ping) && at > piece.len * 0.5) { l.pinged.add(piece.ping); ping(piece.ping); }
+        if (piece.hidden) { l.el.style.opacity = "0"; continue; }
+        const pt = piece.path.getPointAtLength(Math.min(piece.len, Math.max(0, at)));
+        place(l.el, pt.x, pt.y, 9);
+        l.el.style.background = piece.col;
+        l.el.style.setProperty("--pc", piece.col);
+        // Fade in as it leaves and out as it arrives, so it never pops.
+        const edgeFade = Math.min(1, d / 18, (l.total - d) / 18);
+        l.el.style.opacity = String(Math.max(0, Math.min(1, edgeFade)) * 0.95);
       }
       frame = requestAnimationFrame(tick);
     };
     frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
-  }, [layout, action, calm, visible]);
+    return () => { cancelAnimationFrame(frame); for (const p of slots) p.style.display = "none"; };
+  }, [layout, action, calm, visible, colors]);
 
   return (
     <>
@@ -167,18 +238,15 @@ export default function TierFlow({ layout, action, calm, visible, curKey, voting
         {layout.edges.map((e) => (
           <g key={e.key} className="tb-down" style={{ "--ln": colors[e.key] ?? "#3B4A66" }}>
             <path d={e.d} className="tb-base" style={{ stroke: `url(#tbg-${e.key})` }} markerEnd={`url(#tb-arr-${e.key})`} data-flow="down" data-marker={e.key} data-col={colors[e.key]} />
-            <path d={e.d} className="tb-run" />
             <path d={e.d} className="tb-done" pathLength="1" style={{ stroke: `url(#tbs-${e.key})` }} data-f={`edge:${e.key}`} />
           </g>
         ))}
         <g className="tb-up">
-          <path d={layout.trunk} className="tb-base" markerEnd="url(#tb-arr-up)" data-flow="up" data-marker="up" />
-          <path d={layout.trunk} className="tb-run" />
+          <path d={layout.trunk} className="tb-base" markerEnd="url(#tb-arr-up)" data-flow="up" data-marker="up" data-lane="trunk" />
           <path d={layout.trunk} className="tb-done" pathLength="1" data-f="trunk" />
           {layout.stubs.map((st) => (
             <g key={st.key}>
-              <path d={st.d} className="tb-base" markerEnd="url(#tb-arr-up)" data-flow="up" data-marker="up" />
-              <path d={st.d} className="tb-run" />
+              <path d={st.d} className="tb-base" markerEnd="url(#tb-arr-up)" data-flow="up" data-marker="up" data-lane={`stub:${st.key}`} />
               <path d={st.d} className="tb-done" pathLength="1" data-f={`stub:${st.key}`} />
             </g>
           ))}
