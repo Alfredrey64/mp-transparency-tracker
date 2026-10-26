@@ -2,7 +2,7 @@
 // them draw in at the same moment (see .rv-in in chrome.css). Anything already on screen when a page opens is left alone, so nothing flashes, and
 // people who ask for less motion get none of it.
 const TARGETS = "section, aside, article, .box-row > *, .home-features > *, .home-col > *";
-const SKIP = "[role='dialog'], .page-hero, .site-header, .site-footer, .ons-noprint";
+const SKIP = "[role='dialog'], .page-hero, .site-header, .site-footer, .ons-noprint, .tm-print-card";
 
 export function installScrollReveal(root) {
   if (typeof window === "undefined" || !root || typeof IntersectionObserver === "undefined" || !window.matchMedia) return () => {};

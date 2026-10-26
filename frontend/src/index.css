@@ -456,10 +456,10 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
   box-shadow: inset 5px 0 0 var(--c), 0 0 0 1px var(--c), 0 0 0 5px color-mix(in srgb, var(--c) 20%, transparent), 0 14px 28px -14px color-mix(in srgb, var(--c) 70%, rgba(11, 27, 51, 0.5));
 }
 /* The ring round the icon only pulses while the walk-through is at that tier; a tier you have picked just sits there, slightly larger, and stays still. */
-.tier-diagram[data-mode="action"] .tier-slab[data-active="1"] .tier-slab-icon::after { content: ""; position: absolute; inset: -3px; border-radius: 13px; border: 2px solid var(--c); opacity: 0; animation: tierIconPulse 2.2s ease-out infinite; }
-.tier-slab[data-ping="1"] .tier-slab-icon::before { content: ""; position: absolute; inset: -2px; border-radius: 12px; border: 2px solid var(--c); opacity: 0; animation: tierPing 0.9s ease-out; pointer-events: none; }
-@keyframes tierPing { 0% { transform: scale(0.95); opacity: 0.75; } 100% { transform: scale(1.7); opacity: 0; } }
-@keyframes tierIconPulse { 0% { transform: scale(0.92); opacity: 0.7; } 100% { transform: scale(1.35); opacity: 0; } }
+.tier-diagram[data-mode="action"] .tier-slab[data-active="1"] .tier-slab-icon::after { content: ""; position: absolute; inset: -5px; border-radius: 15px; border: 3px solid var(--c); opacity: 0; animation: tierIconPulse 2.2s ease-out infinite; }
+.tier-slab[data-ping="1"] .tier-slab-icon::before { content: ""; position: absolute; inset: -5px; border-radius: 15px; border: 3px solid var(--c); opacity: 0; animation: tierPing 0.9s ease-out; pointer-events: none; }
+@keyframes tierPing { 0% { opacity: 0.8; } 100% { opacity: 0; } }
+@keyframes tierIconPulse { 0% { opacity: 0.7; } 100% { opacity: 0; } }
 .tier-slab-icon { flex: none; width: 38px; height: 38px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; color: #fff; background: var(--c); box-shadow: 0 6px 12px -6px color-mix(in srgb, var(--c) 80%, transparent); }
 .tier-slab-name { display: block; font-family: 'Figures', 'Newsreader', Georgia, serif; font-size: 18px; font-weight: 600; line-height: 1.2; color: var(--c-ink); }
 .tier-slab-short, .tier-slab-keys { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; font-family: 'Figures', 'Public Sans', system-ui, sans-serif; color: var(--c-ink-soft); }

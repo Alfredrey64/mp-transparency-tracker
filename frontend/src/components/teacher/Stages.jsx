@@ -184,12 +184,12 @@ export function PartyScene({ party, seats }) {
   return (
     <>
       <Back tone={`color-mix(in srgb, ${party.colour} 18%, #fff)`} tone2="#FFFFFF" />
-      <g className="t-slidein"><rect x="50" y="40" width="700" height="196" rx="28" fill={background} /></g>
-      <circle cx="660" cy="100" r="110" fill="#fff" opacity="0.08" />
+      <g className="t-slidein"><rect x="50" y="40" width="550" height="196" rx="28" fill={background} /></g>
+      <circle cx="528" cy="112" r="68" fill="#fff" opacity="0.08" />
       <g className="t-slideup" style={{ animationDelay: "0.15s" }}><Label x={90} y={120} size={party.name.length > 14 ? 50 : 62} fill={color} anchor="start" weight={700}>{party.name}</Label></g>
       <g className="t-slideup" style={{ animationDelay: "0.3s" }}><Label x={90} y={168} size={30} fill={color} anchor="start" weight={600}>{party.leader}</Label></g>
       <g className="t-slideup" style={{ animationDelay: "0.42s" }}><Label x={90} y={206} size={party.role.length > 40 ? 17 : 20} fill={color} anchor="start" weight={500}>{party.role.length > 62 ? party.role.slice(0, 60) + "…" : party.role}</Label></g>
-      <Person x={650} y={382} s={1.7} shirt="#fff" trousers={`color-mix(in srgb, ${party.colour} 55%, #0B1B33)`} skin={look.skin} hair={look.hair} mood="happy" long={look.long} />
+      <Person x={690} y={382} s={1.7} shirt="#fff" trousers={`color-mix(in srgb, ${party.colour} 55%, #0B1B33)`} skin={look.skin} hair={look.hair} mood="happy" long={look.long} />
       {mine > 0 && (
         <g transform="translate(165 354)" role="img" aria-label={`${mine} of ${SEATS_IN_COMMONS} seats in the Commons`}>
           {FAN.map((d, i) => (
@@ -208,18 +208,18 @@ export function PartyScene({ party, seats }) {
 }
 
 export function NiScene() {
-  const cols = [["#D46A4C", "Unionist", 70], ["#326760", "Nationalist", 290], ["#C7871A", "Neither", 510]];
+  const cols = [["#D46A4C", "Unionist", 60], ["#326760", "Nationalist", 295], ["#C7871A", "Neither", 530]];
   return (
     <>
       <Back />
       {cols.map(([c, label, x], i) => (
         <B key={label} n={i + 1} fx="rise">
-          <rect x={x} y={110} width="220" height="190" rx="24" fill={c} />
-          <Label x={x + 110} y="162" size={32}>{label}</Label>
-          <Person x={x + 110} y={292} s={0.85} shirt="#fff" skin={SKIN[i + 1]} mood="ok" />
+          <rect x={x} y={120} width="210" height="190" rx="24" fill={c} />
+          <Label x={x + 105} y="168" size={26}>{label}</Label>
+          <Person x={x + 105} y={300} s={0.85} shirt="#fff" skin={SKIN[i + 1]} mood="ok" />
         </B>
       ))}
-      <Label x={400} y={70} size={30} fill="#0B1B33">Northern Ireland has its own parties</Label>
+      <Caption x={400} y={74} size={30}>Northern Ireland has its own parties</Caption>
     </>
   );
 }

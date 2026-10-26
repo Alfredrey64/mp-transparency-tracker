@@ -48,7 +48,7 @@ function ShopScene() {
       <B n={3} fx="rise"><Bubble x={322} y={38} w={86} h={70} tail="center"><g><Arrow x={0} y={0} /><text y="28" textAnchor="middle" fontSize="14" fontWeight="800" fontFamily="Figures, Public Sans, system-ui, sans-serif" fill="#0B1B33">PAY</text></g></Bubble></B>
       <B n={4} fx="rise"><BallotBox x={425} y={392} /></B>
       <B n={4} fx="drop"><Paper x={425} y={290} rot={-8} /></B>
-      <B n={5}><Bulb x={335} y={262} /></B>
+      <B n={5}><Bulb x={335} y={206} /></B>
     </>
   );
 }
@@ -59,23 +59,23 @@ function HospitalScene() {
     <>
       <Backdrop tone="#E4F1FF" tone2="#F8FBFF" ground="#D2E8D2" path="#E9E1D0" trees={[58]} />
       <Hospital x={500} y={362} />
-      <Person s={1.2} x={190} y={392} who="maya" kid long shirt="#7A5AF0" skin={SKIN[3]} hair="#1E1410" mood="happy" />
-      <B n={0} until={1}><Person s={1.2} x={275} y={392} tag="Grandad" shirt="#8FA6C0" trousers="#4A5568" skin={SKIN[0]} hair="#D6D6D6" mood="ok" /></B>
-      <B n={1} fx="fade"><Person s={1.2} x={275} y={392} tag="Grandad" shirt="#8FA6C0" trousers="#4A5568" skin={SKIN[0]} hair="#D6D6D6" mood="worried" /></B>
-      <B n={1}><Calendar x={140} y={214} /></B>
-      <B n={1}><Clock x={268} y={210} /></B>
-      <B n={2} fx="rise"><g transform="translate(70 128)"><Parliament x={0} y={0} s={0.42} /></g><Caption x={72} y={150} size={16}>Parliament</Caption></B>
-      <B n={2} fx="fade">
+      <Person s={1.2} x={170} y={392} who="maya" kid long shirt="#7A5AF0" skin={SKIN[3]} hair="#1E1410" mood="happy" />
+      <B n={0} until={1}><Person s={1.2} x={290} y={392} tag="Grandad" shirt="#8FA6C0" trousers="#4A5568" skin={SKIN[0]} hair="#D6D6D6" mood="ok" /></B>
+      <B n={1} fx="fade"><Person s={1.2} x={290} y={392} tag="Grandad" shirt="#8FA6C0" trousers="#4A5568" skin={SKIN[0]} hair="#D6D6D6" mood="worried" /></B>
+      <B n={1} until={3}><Calendar x={130} y={166} /></B>
+      <B n={1} until={3}><Clock x={250} y={166} /></B>
+      <B n={2} until={3} fx="rise"><g transform="translate(405 208)"><Parliament x={0} y={0} s={0.4} /></g><Caption x={405} y={236} size={16}>Parliament</Caption></B>
+      <B n={2} until={3} fx="fade">
         <g>
-          <path d="M170 78 H480" stroke="#1E4FB8" strokeWidth="3" strokeDasharray="4 10" strokeLinecap="round" fill="none" />
-          <g className="t-coinflow"><Coin x={170} y={78} r={12} /></g>
-          <g className="t-coinflow" style={{ animationDelay: "-1.2s" }}><Coin x={170} y={78} r={12} /></g>
-          <g className="t-coinflow" style={{ animationDelay: "-2.4s" }}><Coin x={170} y={78} r={12} /></g>
+          <path d="M458 120 H640" stroke="#1E4FB8" strokeWidth="3" strokeDasharray="4 10" strokeLinecap="round" fill="none" />
+          <g className="t-coinflow"><Coin x={458} y={120} r={12} /></g>
+          <g className="t-coinflow" style={{ animationDelay: "-1.2s" }}><Coin x={458} y={120} r={12} /></g>
+          <g className="t-coinflow" style={{ animationDelay: "-2.4s" }}><Coin x={458} y={120} r={12} /></g>
         </g>
       </B>
-      <B n={3} fx="rise"><Bubble x={120} y={96} w={86} h={70} tail="center"><Coin x={0} y={0} r={17} /></Bubble></B>
-      <B n={3} fx="rise"><Bubble x={235} y={84} w={86} h={70} tail="center"><g><rect x="-6" y="-24" width="12" height="48" rx="3" fill="#16A34A" /><rect x="-24" y="-6" width="48" height="12" rx="3" fill="#16A34A" /></g></Bubble></B>
-      <B n={3} fx="rise"><Bubble x={350} y={96} w={86} h={70} tail="center"><g><circle r="14" fill="none" stroke="#7A5AF0" strokeWidth="5" /><path d="M0 -24 v8 M0 16 v8 M-24 0 h8 M16 0 h8" stroke="#7A5AF0" strokeWidth="5" strokeLinecap="round" /></g></Bubble></B>
+      <B n={3} fx="rise"><Bubble x={70} y={110} w={86} h={70} tail="center"><Coin x={0} y={0} r={17} /></Bubble></B>
+      <B n={3} fx="rise"><Bubble x={195} y={110} w={86} h={70} tail="center"><g><rect x="-6" y="-24" width="12" height="48" rx="3" fill="#16A34A" /><rect x="-24" y="-6" width="48" height="12" rx="3" fill="#16A34A" /></g></Bubble></B>
+      <B n={3} fx="rise"><Bubble x={320} y={110} w={86} h={70} tail="center"><g><circle r="14" fill="none" stroke="#7A5AF0" strokeWidth="5" /><path d="M0 -24 v8 M0 16 v8 M-24 0 h8 M16 0 h8" stroke="#7A5AF0" strokeWidth="5" strokeLinecap="round" /></g></Bubble></B>
       <B n={4} fx="rise"><BallotBox x={400} y={392} /></B>
       <B n={4} fx="drop"><Paper x={400} y={290} rot={6} /></B>
     </>
@@ -90,25 +90,25 @@ function SchoolScene() {
       <School x={470} y={362} />
       <g className="t-drips"><Drip x={540} y={236} /><Drip x={585} y={236} /></g>
       <path d="M560 232 h22" stroke="#4DA3E6" strokeWidth="3" strokeLinecap="round" opacity="0.7" />
-      <B n={0} until={4}><Books x={400} y={362} few /></B>
-      <Person s={1.2} x={215} y={392} who="leo" kid shirt="#0E9AA7" skin={SKIN[1]} hair="#2B1D14" mood="worried" />
-      <Person s={1.2} x={290} y={392} tag="Mum" long shirt="#E0365B" skin={SKIN[1]} hair="#5C3A21" mood="ok" />
-      <B n={4} fx="fade"><Books x={400} y={362} /></B>
-      <B n={1} fx="rise"><g transform="translate(90 180)"><Parliament x={0} y={0} s={0.5} /></g><Caption x={92} y={204} size={16}>Parliament</Caption></B>
-      <B n={1} fx="fade">
+      <B n={0} until={4}><Books x={395} y={362} few /></B>
+      <Person s={1.2} x={230} y={392} who="leo" kid shirt="#0E9AA7" skin={SKIN[1]} hair="#2B1D14" mood="worried" />
+      <Person s={1.2} x={335} y={392} tag="Mum" long shirt="#E0365B" skin={SKIN[1]} hair="#5C3A21" mood="ok" />
+      <B n={4} fx="fade"><Books x={395} y={362} /></B>
+      <B n={1} until={2} fx="rise"><g transform="translate(140 176)"><Parliament x={0} y={0} s={0.42} /></g><Caption x={140} y={204} size={16}>Parliament</Caption></B>
+      <B n={1} until={2} fx="fade">
         <g>
-          <path d="M215 112 H500" stroke="#1E4FB8" strokeWidth="3" strokeDasharray="4 10" strokeLinecap="round" fill="none" />
-          <g className="t-coinflow"><Coin x={215} y={112} r={12} /></g>
-          <g className="t-coinflow" style={{ animationDelay: "-1.5s" }}><Coin x={215} y={112} r={12} /></g>
+          <path d="M215 118 H590" stroke="#1E4FB8" strokeWidth="3" strokeDasharray="4 10" strokeLinecap="round" fill="none" />
+          <g className="t-coinflow"><Coin x={215} y={118} r={12} /></g>
+          <g className="t-coinflow" style={{ animationDelay: "-1.5s" }}><Coin x={215} y={118} r={12} /></g>
         </g>
       </B>
-      <B n={2} fx="rise"><Bubble x={120} y={40} w={86} h={70} tail="center"><g><Person x={0} y={22} s={0.42} kid shirt="#0E9AA7" skin={SKIN[1]} /></g></Bubble></B>
-      <B n={2} fx="rise"><Bubble x={235} y={26} w={86} h={70} tail="center"><g><circle r="19" fill="#fff" stroke="#E0775A" strokeWidth="5" /><circle r="8" fill="#E0775A" /></g></Bubble></B>
-      <B n={2} fx="rise"><Bubble x={350} y={40} w={86} h={70} tail="center"><g><path d="M-22 6 l22 -22 l22 22z" fill="#B5533C" /><rect x="-15" y="6" width="30" height="16" fill="#E9B88A" /></g></Bubble></B>
-      <B n={3} fx="rise"><Letter x={365} y={300} /></B>
-      <B n={3} fx="rise"><g><path d="M330 292 q-20 -70 -150 -66" stroke="#1E4FB8" strokeWidth="3" strokeDasharray="3 9" strokeLinecap="round" fill="none" /></g></B>
-      <B n={3}><Person x={140} y={392} shirt="#16398A" trousers="#16213A" skin={SKIN[3]} hair="#1E1410" mood="happy" s={0.9} /></B>
-      <B n={4}><Bulb x={215} y={252} /></B>
+      <B n={2} until={3} fx="rise"><Bubble x={70} y={110} w={86} h={70} tail="center"><g><Person x={0} y={22} s={0.42} kid shirt="#0E9AA7" skin={SKIN[1]} /></g></Bubble></B>
+      <B n={2} until={3} fx="rise"><Bubble x={195} y={110} w={86} h={70} tail="center"><g><circle r="19" fill="#fff" stroke="#E0775A" strokeWidth="5" /><circle r="8" fill="#E0775A" /></g></Bubble></B>
+      <B n={2} until={3} fx="rise"><Bubble x={320} y={110} w={86} h={70} tail="center"><g><path d="M-22 6 l22 -22 l22 22z" fill="#B5533C" /><rect x="-15" y="6" width="30" height="16" fill="#E9B88A" /></g></Bubble></B>
+      <B n={3} until={4}><Person x={95} y={392} tag="MP" shirt="#16398A" trousers="#16213A" skin={SKIN[3]} hair="#1E1410" mood="happy" s={1.2} /></B>
+      <B n={3} until={4} fx="rise"><Letter x={215} y={196} /></B>
+      <B n={3} until={4} fx="fade"><path d="M325 236 q-20 -62 -100 -40 M205 205 q-70 6 -100 56" stroke="#1E4FB8" strokeWidth="3" strokeDasharray="3 9" strokeLinecap="round" fill="none" /></B>
+      <B n={4}><Bulb x={230} y={214} /></B>
     </>
   );
 }
@@ -120,13 +120,13 @@ function BusScene() {
       <Backdrop tone="#E3EEFF" tone2="#F7FAFF" ground="#D2E8D2" path="#E3E0D8" />
       <rect x="0" y="372" width="800" height="48" fill="#6B7A90" />
       <path d="M0 396 h800" stroke="#fff" strokeWidth="3" strokeDasharray="30 24" opacity="0.7" />
-      <BusStop x={230} y={366} />
-      <B n={0} until={1} exit><Bus x={400} y={382} /></B>
-      <Person s={1.2} x={290} y={366} who="amira" kid long shirt="#F2622A" skin={SKIN[2]} hair="#1E1410" mood="happy" />
-      <B n={0} until={1}><Person s={1.2} x={350} y={366} tag="Nan" shirt="#9B6BB8" trousers="#4A5568" skin={SKIN[1]} hair="#E5E5E5" long mood="ok" /></B>
-      <B n={1} fx="fade"><Person s={1.2} x={350} y={366} tag="Nan" shirt="#9B6BB8" trousers="#4A5568" skin={SKIN[1]} hair="#E5E5E5" long mood="worried" /></B>
+      <BusStop x={190} y={366} />
+      <B n={0} until={1} exit><Bus x={440} y={382} /></B>
+      <Person s={1.2} x={275} y={366} who="amira" kid long shirt="#F2622A" skin={SKIN[2]} hair="#1E1410" mood="happy" />
+      <B n={0} until={1}><Person s={1.2} x={385} y={366} tag="Nan" shirt="#9B6BB8" trousers="#4A5568" skin={SKIN[1]} hair="#E5E5E5" long mood="ok" /></B>
+      <B n={1} fx="fade"><Person s={1.2} x={385} y={366} tag="Nan" shirt="#9B6BB8" trousers="#4A5568" skin={SKIN[1]} hair="#E5E5E5" long mood="worried" /></B>
       <B n={1}>
-        <g transform="translate(335 214)"><rect x="-34" y="-20" width="68" height="40" rx="10" fill="#fff" stroke="#E0365B" strokeWidth="3" /><path d="M-14 -8 l28 16 M14 -8 l-28 16" stroke="#E0365B" strokeWidth="5" strokeLinecap="round" /></g>
+        <g transform="translate(385 166)"><rect x="-34" y="-20" width="68" height="40" rx="10" fill="#fff" stroke="#E0365B" strokeWidth="3" /><path d="M-14 -8 l28 16 M14 -8 l-28 16" stroke="#E0365B" strokeWidth="5" strokeLinecap="round" /></g>
       </B>
       <B n={2} fx="rise"><TownHall x={470} y={366} /></B>
       <B n={3}><Person x={500} y={394} s={0.8} shirt="#16398A" trousers="#16213A" skin={SKIN[0]} hair="#8A5A3C" mood="thinking" /></B>
@@ -135,8 +135,8 @@ function BusScene() {
       <B n={3} fx="rise"><Bubble x={480} y={60} w={84} h={66} tail="left"><g transform="scale(0.2) translate(-125 40)"><Bus x={0} y={0} /></g></Bubble></B>
       <B n={3} fx="rise"><Bubble x={585} y={50} w={84} h={66} tail="center"><g><rect x="-22" y="-6" width="44" height="12" rx="2" fill="#6B7A90" /><path d="M-22 0 h44" stroke="#fff" strokeWidth="2" strokeDasharray="6 5" /></g></Bubble></B>
       <B n={3} fx="rise"><Bubble x={690} y={60} w={72} h={66} tail="right"><Coin x={0} y={0} r={16} /></Bubble></B>
-      <B n={4} fx="rise"><BallotBox x={110} y={392} /></B>
-      <B n={4} fx="drop"><Paper x={110} y={296} rot={-6} /></B>
+      <B n={4} fx="rise"><BallotBox x={95} y={392} /></B>
+      <B n={4} fx="drop"><Paper x={95} y={296} rot={-6} /></B>
     </>
   );
 }

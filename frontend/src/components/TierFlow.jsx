@@ -121,10 +121,9 @@ export default function TierFlow({ layout, action, calm, visible, curKey, voting
     const ping = (key) => {
       const el = slab(key);
       if (!el) return;
+      // Restart the glow: the attribute leaves the page for one frame before it comes back, with no layout read to force it.
       el.removeAttribute("data-ping");
-      // Restart the ring: the attribute has to leave the page for one frame before it comes back.
-      void el.getBoundingClientRect();
-      el.setAttribute("data-ping", "1");
+      requestAnimationFrame(() => el.setAttribute("data-ping", "1"));
     };
     const measure = (path) => ({ path, len: path.getTotalLength(), col: path.dataset.col });
     const edge = (k) => { const p = svg.querySelector(`[data-flow="down"][data-marker="${k}"]`); return p ? measure(p) : null; };
