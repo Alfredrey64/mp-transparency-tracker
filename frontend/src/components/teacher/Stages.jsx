@@ -354,7 +354,7 @@ function QuizHouses() {
         <Caption x={225} y={226} size={18}>Chosen by voters</Caption>
         <Crown x={575} y={190} s={0.8} />
         <Caption x={575} y={226} size={18}>Not elected</Caption>
-        <Tick x={575} y={256} r={22} />
+        <Tick x={650} y={190} r={22} />
       </B>
     </>
   );
@@ -374,8 +374,8 @@ function QuizParty() {
 
 function QuizAnyone() {
   const cards = [
-    { x: 70, icon: <g><g transform="scale(0.8)"><BallotBox x={0} y={30} /></g><g transform="translate(34 -34)"><rect x="-26" y="-14" width="52" height="28" rx="14" fill="#E0365B" /><text y="7" textAnchor="middle" fontSize="19" fontWeight="800" fontFamily="Figures, Public Sans, system-ui, sans-serif" fill="#fff">18+</text></g></g> },
-    { x: 300, icon: <g transform="scale(1.5)"><Letter x={0} y={0} /></g> },
+    { x: 70, icon: <g><g transform="scale(0.8)"><BallotBox x={0} y={10} /></g><g transform="translate(0 52)"><rect x="-26" y="-14" width="52" height="28" rx="14" fill="#E0365B" /><text y="7" textAnchor="middle" fontSize="19" fontWeight="800" fontFamily="Figures, Public Sans, system-ui, sans-serif" fill="#fff">18+</text></g></g> },
+    { x: 300, icon: <g transform="scale(1.7)"><Letter x={0} y={0} /><path d="M-30 -18 l30 24 l30 -24" fill="none" stroke="#6B7A90" strokeWidth="2.5" strokeLinejoin="round" /></g> },
     { x: 530, icon: <g><rect x="-34" y="-62" width="68" height="104" rx="8" fill="#1B2438" /><text y="-18" textAnchor="middle" fontSize="38" fontWeight="800" fontFamily="Figures, Newsreader, Georgia, serif" fill="#fff">10</text><circle cx="20" cy="16" r="4" fill="#F2B632" /></g> },
   ];
   return (
