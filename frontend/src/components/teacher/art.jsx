@@ -48,6 +48,7 @@ export function Person({ x, y, s = 1, skin = SKIN[1], shirt = "#1E4FB8", trouser
   return (
     <g transform={`translate(${x} ${y}) scale(${flip ? -k : k} ${k})`}>
       <ellipse cx="0" cy="2" rx="26" ry="5" fill="#000" opacity="0.1" />
+      <g className="t-idle" style={{ animationDelay: `${-((Math.abs(x) * 7 + Math.abs(y)) % 40) / 10}s` }}>
       <rect x="-15" y="-36" width="11" height="36" rx="5" fill={trousers} />
       <rect x="4" y="-36" width="11" height="36" rx="5" fill={trousers} />
       <rect x="-31" y="-80" width="12" height="40" rx="6" fill={shirt} />
@@ -58,10 +59,13 @@ export function Person({ x, y, s = 1, skin = SKIN[1], shirt = "#1E4FB8", trouser
       {long && <path d="M-19 -108 q-6 22 -2 40 l7 -6 l0 -30z M19 -108 q6 22 2 40 l-7 -6 l0 -30z" fill={hair} />}
       <circle cx="0" cy="-101" r="18" fill={skin} />
       <path d={long ? "M-19 -104 a19 19 0 0 1 38 0 q-19 -12 -38 0z" : "M-18 -105 a18 18 0 0 1 36 0 q-18 -9 -36 0z"} fill={hair} />
-      <circle cx="-6.5" cy="-101" r="2.3" fill={INK} />
-      <circle cx="6.5" cy="-101" r="2.3" fill={INK} />
+      <g className="t-eyes" style={{ animationDelay: `${-((Math.abs(x) * 13 + Math.abs(y) * 3) % 50) / 10}s` }}>
+        <circle cx="-6.5" cy="-101" r="2.3" fill={INK} />
+        <circle cx="6.5" cy="-101" r="2.3" fill={INK} />
+      </g>
       {mood === "worried" && <path d="M-11 -108 l7 -3 M11 -108 l-7 -3" stroke={INK} strokeWidth="2" strokeLinecap="round" />}
       {mouth}
+      </g>
     </g>
   );
 }
@@ -276,6 +280,35 @@ export function Arrow({ x, y, up = true }) {
   return (
     <g transform={`translate(${x} ${y}) ${up ? "" : "rotate(180)"}`}>
       <path d="M0 14 V-12 M-10 -2 L0 -14 L10 -2" fill="none" stroke="#E0365B" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+    </g>
+  );
+}
+
+// A burst of paper confetti that falls once, from the top of the picture. Pieces are fixed, not random, so it looks the same every time.
+const CONFETTI = ["#E0367A", "#F2B632", "#1E4FB8", "#16A34A", "#7A5AF0", "#0E9AA7"];
+export function Confetti({ x = 400, y = 20, spread = 330, n = 34, delay = 0 }) {
+  return (
+    <g aria-hidden="true">
+      {Array.from({ length: n }, (_, i) => {
+        const px = x + (((i * 97) % 100) / 100 - 0.5) * spread * 2;
+        const w = 7 + (i % 3) * 3;
+        return (
+          <rect key={i} className="t-confetti" x={px} y={y} width={w} height={w * 1.7} rx="2" fill={CONFETTI[i % CONFETTI.length]}
+            style={{ "--dx": `${(((i * 53) % 60) - 30)}px`, "--r": `${(i % 2 ? 1 : -1) * (240 + (i % 5) * 70)}deg`, animationDelay: `${delay + (i % 9) * 70}ms`, animationDuration: `${1.9 + (i % 4) * 0.25}s` }} />
+        );
+      })}
+    </g>
+  );
+}
+
+// Lines that fly out from a point, to mark a moment: a stamp coming down, a law passing.
+export function Burst({ x, y, r = 56, colour = "#F2B632", delay = 0 }) {
+  return (
+    <g transform={`translate(${x} ${y})`} aria-hidden="true">
+      {Array.from({ length: 12 }, (_, i) => {
+        const a = (i / 12) * Math.PI * 2;
+        return <line key={i} className="t-ray" x1={Math.cos(a) * r * 0.55} y1={Math.sin(a) * r * 0.55} x2={Math.cos(a) * r} y2={Math.sin(a) * r} stroke={colour} strokeWidth="5" strokeLinecap="round" style={{ "--rx": `${Math.cos(a) * 14}px`, "--ry": `${Math.sin(a) * 14}px`, animationDelay: `${delay}ms` }} />;
+      })}
     </g>
   );
 }

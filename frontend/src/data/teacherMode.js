@@ -10,6 +10,7 @@ export const CHECKED = "26 October 2026";
 export const CHAPTERS = [
   {
     key: "why",
+    words: ["tax: money people pay so the country can run schools, hospitals and roads", "election: a day when people vote to choose who will speak for them", "MP: a Member of Parliament, elected to speak for your area", "party: a group of people who share ideas about how to run the country"],
     title: "Why politics matters to you",
     short: "Why it matters",
     minutes: 15,
@@ -20,6 +21,7 @@ export const CHAPTERS = [
   },
   {
     key: "who",
+    words: ["council: the local group of elected people who run local services", "devolved: decided in Scotland, Wales or Northern Ireland, not in London", "constituency: the area one MP is elected to speak for", "government: the people who run the country day to day"],
     title: "Who decides what?",
     short: "Who decides",
     minutes: 8,
@@ -30,6 +32,7 @@ export const CHAPTERS = [
   },
   {
     key: "parliament",
+    words: ["bill: an idea for a law, before it has been agreed", "Commons: the part of Parliament made up of elected MPs", "Lords: the part of Parliament that checks new laws", "Royal Assent: the King's signature that turns a bill into law"],
     title: "How Parliament works",
     short: "Parliament",
     minutes: 12,
@@ -40,6 +43,7 @@ export const CHAPTERS = [
   },
   {
     key: "parties",
+    words: ["manifesto: a party's list of promises before an election", "leader: the person who heads a party", "opposition: the biggest party that is not in government", "coalition: two or more parties sharing the government"],
     title: "The parties and their leaders",
     short: "The parties",
     minutes: 15,
@@ -50,6 +54,7 @@ export const CHAPTERS = [
   },
   {
     key: "voice",
+    words: ["petition: a request that lots of people sign", "register to vote: put your name on the list of voters, once you are old enough", "fact: something that can be checked", "opinion: what someone thinks or feels"],
     title: "Your voice",
     short: "Your voice",
     minutes: 10,
@@ -198,6 +203,18 @@ export const VOICES = [
   { title: "Check what you read", text: "A fact can be checked. An opinion is what someone thinks. Ask who is saying it, and how they know.", colour: "#0E9AA7" },
 ];
 
+// The class vote: a made-up choice that shows why decisions are hard. Both options are good ideas and neither is a party's policy.
+export const VOTE = {
+  kicker: "Try it: a class vote",
+  title: "One town, one pot of money",
+  text: "One town, one pot of money. It can pay for a new playground or a longer bus route, not both. Raise a hand for the one you would pick.",
+  options: ["A new playground", "A longer bus route"],
+  colours: ["#2F9E6B", "#1E4FB8"],
+  after: "Someone always misses out. Councillors and MPs face that choice every day.",
+  tie: "A tie. How would you break it?",
+  ask: ["Was it easy to choose? What would you want to know first?", "If you lost the vote, what could you do next?"],
+};
+
 export const QUIZ = [
   { q: "Who decides when your bins are collected?", options: ["The local council", "The King", "The Prime Minister"], answer: 0, why: "Councils look after local services such as bins, parks and libraries." },
   { q: "How many MPs are there in the House of Commons?", options: ["100", "650", "5,000"], answer: 1, why: "There are 650 MPs, one for each of 650 areas called constituencies." },
@@ -212,6 +229,7 @@ export const GUIDE = [
   "Press the right arrow, the space bar or Next to go on, and the left arrow or Back to go back. Escape closes the presenter.",
   "Each picture builds up one step at a time, so you can stop and ask a question before the next step appears.",
   "Press N or the Notes button for a question to ask the class on the slide you are on.",
+  "The Your voice chapter has a class vote. Tap once for each hand that goes up and the columns grow.",
   "Nothing here tells pupils who to vote for. When a story shows people choosing, the choices are described, not ranked.",
   "Party leaders and seat numbers change. They were last checked on " + CHECKED + ".",
 ];

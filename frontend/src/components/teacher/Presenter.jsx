@@ -3,18 +3,18 @@ import { useReducedMotion } from "motion/react";
 import { useDialog } from "../../lib/useDialog";
 import { lowData } from "../../lib/lowData";
 import { supabase } from "../../supabaseClient";
-import { CHAPTERS, QUIZ, PARTIES } from "../../data/teacherMode";
+import { CHAPTERS, QUIZ, PARTIES, VOTE } from "../../data/teacherMode";
 import { PARTY_MANIFESTOS } from "../../data/partyManifestos";
 import { buildSlides } from "./slides";
 import { useBeats } from "./useBeats";
 import { SCENES } from "./sceneList";
-import { ChapterScene, LayersScene, HousesScene, RunScene, PartyIntroScene, PartyScene, NiScene, VoiceScene, QuizScene } from "./Stages";
+import { ChapterScene, LayersScene, HousesScene, RunScene, PartyIntroScene, PartyScene, NiScene, VoiceScene, VoteScene, QuizScene } from "./Stages";
 import LawScene from "./LawScene";
 
 // The full-screen presenter. Everything on it keeps its place from slide to slide: the picture is always the same shape, the words always go in the
 // same box, and the buttons never move, so clicking Next only changes what is drawn, never where anything is.
 
-function Picture({ slide, beat, calm, label }) {
+function Picture({ slide, beat, calm, label, seats, votes }) {
   const ref = useRef(null);
   useBeats(ref, beat, calm);
   let inner;
@@ -26,9 +26,10 @@ function Picture({ slide, beat, calm, label }) {
     case "law": inner = <LawScene beat={beat} calm={calm} />; break;
     case "run": inner = <RunScene />; break;
     case "partyIntro": inner = <PartyIntroScene />; break;
-    case "party": inner = <PartyScene party={slide.party} />; break;
+    case "party": inner = <PartyScene party={slide.party} seats={seats[slide.party.key]} />; break;
     case "ni": inner = <NiScene />; break;
     case "voice": inner = <VoiceScene />; break;
+    case "vote": inner = <VoteScene votes={votes} />; break;
     default: inner = <QuizScene beat={beat} />;
   }
   return <svg ref={ref} className="t-svg" viewBox="0 0 800 450" role="img" aria-label={label}>{inner}</svg>;
@@ -45,14 +46,14 @@ function Quiz({ onBeat }) {
     setPicked(i);
     if (i === item.answer) { setScore((s) => s + 1); onBeat(1); } else onBeat(2);
   };
-  const advance = () => { setQ((n) => n + 1); setPicked(null); onBeat(0); };
+  const advance = () => { setQ((n) => n + 1); setPicked(null); onBeat(q + 1 >= QUIZ.length ? 3 : 0); };
   if (done) {
     return (
       <div className="t-quiz">
         <div className="t-kicker">Quick quiz</div>
         <h2 className="t-title">You got {score} out of {QUIZ.length}</h2>
         <p className="t-text">{score === QUIZ.length ? "Brilliant. You know your way around politics." : score >= 3 ? "Well done. You know a lot already." : "A good start. Go back through the chapters and try again."}</p>
-        <button type="button" className="btn btn-secondary" onClick={() => { setQ(0); setPicked(null); setScore(0); }}>Try again</button>
+        <button type="button" className="btn btn-secondary" onClick={() => { setQ(0); setPicked(null); setScore(0); onBeat(0); }}>Try again</button>
       </div>
     );
   }
@@ -73,12 +74,39 @@ function Quiz({ onBeat }) {
   );
 }
 
+// The class vote. The teacher taps once for each hand that goes up, and the columns in the picture grow. The words and buttons stay where they are.
+function Vote({ votes, setVotes }) {
+  const total = votes[0] + votes[1];
+  return (
+    <div className="t-votebox">
+      <div className="t-kicker">{VOTE.kicker}</div>
+      <p className="t-text t-vote-q">{VOTE.text}</p>
+      <div className="t-votes" role="group" aria-label="Count the hands">
+        {VOTE.options.map((o, i) => (
+          <button key={o} type="button" className="t-option t-vote" style={{ "--oc": VOTE.colours[i] }} onClick={() => setVotes((v) => v.map((n, k) => (k === i ? n + 1 : n)))}>
+            <span>{o}</span><b aria-hidden="true">+1</b>
+          </button>
+        ))}
+        <button type="button" className="btn btn-secondary" onClick={() => setVotes([0, 0])} disabled={total === 0}>Start again</button>
+      </div>
+      <p className="t-why t-vote-why" aria-live="polite">{total === 0 ? " " : votes[0] === votes[1] ? VOTE.tie : VOTE.after}</p>
+    </div>
+  );
+}
+
+// Splits what is said into words so each can rise into place in turn. A long passage is capped so the last word never waits more than about a second.
+function Words({ text }) {
+  const words = text.split(" ");
+  const step = Math.min(26, 900 / words.length);
+  return words.map((w, i) => <span key={i}><span className="t-w" style={{ "--w": i, animationDelay: `${(i * step).toFixed(0)}ms` }}>{w}</span>{i < words.length - 1 ? " " : ""}</span>);
+}
+
 function Caption({ step }) {
   return (
     <div className="t-captionbody" key={`${step.kicker}-${step.title}-${step.text}`}>
       {step.kicker && <div className="t-kicker">{step.kicker}</div>}
       {step.title && <h2 className="t-title">{step.title}</h2>}
-      {step.text && <p className="t-text">{step.text}</p>}
+      {step.text && <p className="t-text" aria-label={step.text}><Words text={step.text} /></p>}
       {step.chips && <ul className="t-chips">{step.chips.map((c, i) => <li key={c} style={{ "--i": i }}>{c}</li>)}</ul>}
       {step.list && <ul className="t-list">{step.list.map((c, i) => <li key={c} style={{ "--i": i }}>{c}</li>)}</ul>}
       {step.fact && <p className="t-fact"><strong>Did you know?</strong> {step.fact}</p>}
@@ -117,6 +145,7 @@ export default function Presenter({ open, startAt = 0, onClose, openerRef }) {
   const [notes, setNotes] = useState(false);
   const [full, setFull] = useState(false);
   const [quizBeat, setQuizBeat] = useState(0);
+  const [votes, setVotes] = useState([0, 0]);
   const root = useRef(null);
   const nextRef = useRef(null);
   const touch = useRef(null);
@@ -125,10 +154,12 @@ export default function Presenter({ open, startAt = 0, onClose, openerRef }) {
   const slide = slides[Math.min(at.i, slides.length - 1)];
   const last = slides.length - 1;
   const quiz = slide.kind === "quiz";
+  const vote = slide.kind === "vote";
   const beat = quiz ? quizBeat : Math.min(at.beat, slide.steps.length - 1);
   const step = slide.steps[Math.min(beat, slide.steps.length - 1)];
   const chapter = CHAPTERS.find((c) => c.key === slide.chapter);
   const atEnd = at.i === last && (quiz || beat >= slide.steps.length - 1);
+  const own = quiz || vote;
 
   const next = useCallback(() => {
     if (at.beat < slide.steps.length - 1) setAt({ i: at.i, beat: at.beat + 1 });
@@ -175,7 +206,7 @@ export default function Presenter({ open, startAt = 0, onClose, openerRef }) {
   const firstOf = (key) => slides.findIndex((s) => s.chapter === key);
 
   return (
-    <div ref={root} className="t-root" role="dialog" aria-modal="true" aria-label={`Teacher mode: ${chapter.title}`} tabIndex={-1} style={{ "--tc": chapter.colour }}>
+    <div ref={root} className="t-root" role="dialog" aria-modal="true" aria-label={`Teacher mode: ${chapter.title}`} tabIndex={-1} data-calm={calm ? "1" : undefined} style={{ "--tc": chapter.colour }}>
       <header className="t-top">
         <button type="button" className="btn btn-secondary t-exit" onClick={onClose}>Exit</button>
         <nav className="t-chapters" aria-label="Chapters">
@@ -193,17 +224,17 @@ export default function Presenter({ open, startAt = 0, onClose, openerRef }) {
 
       <main className="t-main" onTouchStart={(e) => { touch.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }; }} onTouchEnd={onTouchEnd}>
         <div className="t-stage" key={slide.id}>
-          <Picture slide={slide} beat={beat} calm={calm} label={[step.title, step.text].filter(Boolean).join(". ")} />
+          <Picture slide={slide} beat={beat} calm={calm} seats={seats} votes={votes} label={[step.title, step.text].filter(Boolean).join(". ")} />
         </div>
         <section className="t-caption" aria-live="polite" aria-label="What to say">
-          {quiz ? <Quiz key={slide.id} onBeat={setQuizBeat} /> : <Caption step={step} />}
+          {quiz ? <Quiz key={slide.id} onBeat={setQuizBeat} /> : vote ? <Vote votes={votes} setVotes={setVotes} /> : <Caption step={step} />}
         </section>
       </main>
 
       <footer className="t-bottom">
         <button type="button" className="btn btn-secondary btn-lg" onClick={back} disabled={at.i === 0 && beat === 0}>Back</button>
         <div className="t-progress" role="progressbar" aria-valuemin={1} aria-valuemax={slides.length} aria-valuenow={at.i + 1} aria-label={`Slide ${at.i + 1} of ${slides.length}`}>
-          <span style={{ width: `${((at.i + (quiz ? 1 : (beat + 1) / slide.steps.length)) / slides.length) * 100}%` }} />
+          <span style={{ width: `${((at.i + (own ? 1 : (beat + 1) / slide.steps.length)) / slides.length) * 100}%` }} />
         </div>
         <button ref={nextRef} type="button" className="btn btn-primary btn-lg" onClick={atEnd ? onClose : next}>{atEnd ? "Finish" : "Next"}</button>
       </footer>

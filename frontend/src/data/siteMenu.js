@@ -12,10 +12,10 @@ export const MENU_GROUPS = [
 
 const byKey = new Map(SECTIONS.map((s) => [s.key, s]));
 
-// Each menu heading with its page groups filled in (the tour page is not listed, it has its own button).
+// Each menu heading with its page groups filled in (the tour page has its own button, and Teacher mode has its own tile at the foot of the menu).
 export const MENU = MENU_GROUPS.map((g) => ({
   ...g,
-  groups: g.sections.map((k) => byKey.get(k)).filter(Boolean).map((s) => ({ ...s, items: s.items.filter((i) => i.key !== "start") })),
+  groups: g.sections.map((k) => byKey.get(k)).filter(Boolean).map((s) => ({ ...s, items: s.items.filter((i) => i.key !== "start" && !i.standalone) })),
 }));
 
 // Which menu heading holds a page, or null.

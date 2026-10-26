@@ -23,13 +23,21 @@ for (const [name, viewport, touch] of [["phone", { width: 390, height: 844 }, tr
       expect(first.wide, "the page scrolls sideways").toBe(false);
 
       let steps = 0;
+      let voted = false;
       for (; steps < 140; steps++) {
         const now = await boxes();
         expect({ ...now, wide: false }, `nothing may move (step ${steps})`).toEqual({ ...first, wide: false });
+        if (await page.locator(".t-votebox").count() && !voted) {
+          // The class vote: tapping the buttons grows the columns, and nothing else moves.
+          voted = true;
+          for (const n of [0, 1, 0, 0, 1]) { await page.locator(".t-vote").nth(n).click(); expect({ ...(await boxes()), wide: false }, "voting moves nothing").toEqual({ ...first, wide: false }); }
+          await page.getByRole("button", { name: "Start again" }).click();
+        }
         if (await page.locator(".t-quiz").count()) break;
         await page.keyboard.press("ArrowRight");
         await page.waitForTimeout(60);
       }
+      expect(voted, "the class vote is in the lesson").toBe(true);
       expect(steps, "the lesson has plenty to go through").toBeGreaterThan(40);
 
       // The quiz: answer every question, and nothing moves while doing it.

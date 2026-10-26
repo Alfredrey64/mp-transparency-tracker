@@ -9,7 +9,6 @@ const COLUMNS = [
       ["start", "Take the guided tour"],
       ["answers", "Ask a question"],
       ["howitworks", "How Parliament works"],
-      ["teacher", "Teacher mode"],
       ["glossary", "Jargon buster"],
       ["numbers", "Parliament in numbers"],
     ],
@@ -31,6 +30,7 @@ const COLUMNS = [
       ["settings", "Settings"],
       ["privacy", "Privacy"],
       ["terms", "Terms"],
+      ["teacher", "Teacher mode"],
     ],
   },
 ];

@@ -3,9 +3,9 @@ import { Sky, Ground, Cloud, Person, Coin, Bubble, Shop, Basket, Parliament, Bal
 
 // The four story pictures. Each piece is wrapped in <B n={beat}>: it is hidden until that step of the story and then arrives with the effect
 // named by `fx`. `until` hides it again at a later step (so a worried face can replace a smiling one). `exit` slides it away when it goes.
-export function B({ n = 0, until, fx = "pop", exit, children }) {
+export function B({ n = 0, until, fx = "pop", exit, stagger, children }) {
   return (
-    <g data-beat={n} data-fx={fx} data-until={until} data-exit={exit ? "1" : undefined} style={n > 0 ? { visibility: "hidden" } : undefined}>
+    <g data-beat={n} data-fx={fx} data-until={until} data-exit={exit ? "1" : undefined} data-stagger={stagger ? "1" : undefined} style={n > 0 ? { visibility: "hidden" } : undefined}>
       {children}
     </g>
   );

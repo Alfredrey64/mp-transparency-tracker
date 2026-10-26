@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { loadGsapCore } from "../../lib/gsapLoader";
 import { LAW_STEPS } from "../../data/teacherMode";
-import { Sky, Ground, Cloud, Paper, Bulb } from "./art";
+import { Sky, Ground, Cloud, Paper, Bulb, Confetti, Burst } from "./art";
 
 // An idea travelling to become a law. The line draws itself and a sheet of paper rides along it from stop to stop as the steps advance; each stop
 // lights up when the paper has been there. The stops are spaced evenly along the line, and their places are read from the line itself.
@@ -65,6 +65,20 @@ export default function LawScene({ beat, calm }) {
           </g>
         );
       })}
+      {points.length > 0 && beat === 3 && (
+        <g transform={`translate(${points[3].x + 40} 74)`} aria-hidden="true">
+          <g className="t-stamp" style={{ animationDelay: "1.15s" }}>
+            <rect x="-86" y="-24" width="172" height="48" rx="10" fill="none" stroke="#C0392B" strokeWidth="5" />
+            <text y="9" textAnchor="middle" fontSize="25" fontWeight="800" fontFamily="Public Sans, system-ui, sans-serif" fill="#C0392B" letterSpacing="1.5">APPROVED</text>
+          </g>
+        </g>
+      )}
+      {points.length > 0 && beat === 4 && (
+        <>
+          <Burst x={points[4].x} y={points[4].y} r={62} delay={1100} colour="#1E4FB8" />
+          <Confetti x={points[4].x - 120} y={20} spread={260} n={26} delay={1100} />
+        </>
+      )}
       <g ref={bead}><g transform="translate(0 -4)"><Paper x={0} y={0} /></g></g>
       {beat === 0 && <g transform="translate(70 238)" className="t-glow"><Bulb x={0} y={0} /></g>}
     </>

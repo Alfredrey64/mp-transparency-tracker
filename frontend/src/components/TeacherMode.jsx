@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useReducedMotion } from "motion/react";
 import { createPortal } from "react-dom";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
@@ -7,13 +8,76 @@ import { CHAPTERS, GUIDE } from "../data/teacherMode";
 import { card, cardTitle } from "../lib/onsStyles";
 import Presenter from "./teacher/Presenter";
 import { ShopScene } from "./teacher/Scenes";
+import { useBeats } from "./teacher/useBeats";
+import { loadGsap } from "../lib/gsapLoader";
+import { lowData } from "../lib/lowData";
 import { buildSlides } from "./teacher/slides";
 import "../teacher.css";
 
 // Teacher mode: a separate way to use the site. This page explains it and starts it; the lesson itself is the full-screen presenter.
 const FIRST = Object.fromEntries(CHAPTERS.map((c) => [c.key, buildSlides().findIndex((s) => s.chapter === c.key)]));
 
+// The picture on the front of the page plays the first story on a loop, a step every couple of seconds, while it is on screen. With less motion
+// asked for it just shows the finished picture.
+function Preview({ calm }) {
+  const ref = useRef(null);
+  const [beat, setBeat] = useState(calm ? 5 : 0);
+  const [seen, setSeen] = useState(false);
+  useBeats(ref, calm ? 5 : beat, calm);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || calm || !("IntersectionObserver" in window)) return undefined;
+    const io = new IntersectionObserver(([e]) => setSeen(e.isIntersecting), { threshold: 0.35 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [calm]);
+  useEffect(() => {
+    if (calm || !seen) return undefined;
+    const id = setInterval(() => { if (!document.hidden) setBeat((b) => (b + 1) % 6); }, 2300);
+    return () => clearInterval(id);
+  }, [calm, seen]);
+  return <svg ref={ref} viewBox="0 0 800 450"><ShopScene /></svg>;
+}
+
+// Five stops along a line: the line fills in as the page scrolls into view, and each stop starts its chapter.
+function Route({ calm, onStart }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    if (calm) { el.style.setProperty("--p", "1"); return undefined; }
+    let ctx;
+    let alive = true;
+    loadGsap().then(({ gsap, ScrollTrigger }) => {
+      if (!alive) return;
+      ctx = gsap.context(() => {
+        const nodes = el.querySelectorAll(".tm-route-n");
+        gsap.set(nodes, { scale: 0.4, autoAlpha: 0 });
+        const t = gsap.timeline({ scrollTrigger: { trigger: el, start: "top 85%", once: true } });
+        t.to(el, { "--p": 1, duration: 1.6, ease: "power2.inOut" }, 0);
+        t.to(nodes, { scale: 1, autoAlpha: 1, duration: 0.5, ease: "back.out(2.4)", stagger: 0.32 }, 0.1);
+      }, el);
+      ScrollTrigger.refresh();
+    }).catch(() => { el.style.setProperty("--p", "1"); });
+    return () => { alive = false; ctx?.revert(); };
+  }, [calm]);
+  return (
+    <ol className="tm-route" ref={ref} aria-label="The five chapters in order">
+      {CHAPTERS.map((c, n) => (
+        <li key={c.key} style={{ "--c": c.colour }}>
+          <button type="button" onClick={(e) => onStart(FIRST[c.key], e.currentTarget)} aria-label={`Start chapter ${n + 1}: ${c.title}`}>
+            <span className="tm-route-n">{n + 1}</span>
+            <b>{c.short}</b>
+            <small>{c.minutes} min</small>
+          </button>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
 export default function TeacherMode() {
+  const calm = Boolean(useReducedMotion()) || lowData();
   const [open, setOpen] = useState(false);
   const [startAt, setStartAt] = useState(0);
   const opener = useRef(null);
@@ -42,13 +106,14 @@ export default function TeacherMode() {
           <ul className="tm-guide">{GUIDE.map((g) => <li key={g}>{g}</li>)}</ul>
         </div>
         <div className="tm-preview" aria-hidden="true">
-          <svg viewBox="0 0 800 450"><ShopScene /></svg>
+          <Preview calm={calm} />
         </div>
       </section>
 
       <section aria-labelledby="h-tm-chapters" style={{ marginTop: 34 }}>
         <h2 id="h-tm-chapters" style={{ fontFamily: FONT_DISPLAY, fontSize: 26, fontWeight: 700, color: COLORS.ink, margin: 0 }}>The five chapters</h2>
         <p style={{ fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.55, color: COLORS.inkSoft, margin: "6px 0 18px", maxWidth: 640 }}>Start anywhere. Each chapter has a question to ask the class.</p>
+        <Route calm={calm} onStart={start} />
         <div className="box-row" style={{ "--n": 3, "--min": "300px", "--gap": "18px" }}>
           {CHAPTERS.map((c, n) => (
             <article key={c.key} className="tm-chapter" style={{ "--c": c.colour }}>

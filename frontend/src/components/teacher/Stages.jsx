@@ -1,8 +1,8 @@
 import { chip } from "../../theme";
 import { SKIN } from "./palette";
-import { Sky, Ground, Cloud, Person, Bubble, Parliament, BallotBox, Paper, Bulb, Letter, TownHall, QuestionMark } from "./art";
+import { Sky, Ground, Cloud, Person, Bubble, Parliament, BallotBox, Paper, Bulb, Letter, TownHall, QuestionMark, Confetti, Bus } from "./art";
 import { B } from "./Scenes";
-import { LAYERS, VOICES } from "../../data/teacherMode";
+import { LAYERS, VOICES, CHAPTERS } from "../../data/teacherMode";
 
 // The pictures for everything that is not one of the four stories. Same rules as Scenes.jsx: a piece appears on the step named by its n.
 const Back = ({ tone = "#E3EEFF", tone2 = "#F7FAFF", ground = "#D2E8D2", path = "#EADFC9" }) => (
@@ -32,7 +32,7 @@ function Seats({ x, y, colour, rows = 4 }) {
     const n = 7 + r * 3;
     for (let i = 0; i < n; i++) {
       const a = Math.PI * (i / (n - 1));
-      dots.push(<circle key={`${r}-${i}`} cx={x - Math.cos(a) * (36 + r * 17)} cy={y - Math.sin(a) * (36 + r * 17)} r="4.2" fill={colour} />);
+      dots.push(<circle key={`${r}-${i}`} data-s="" cx={x - Math.cos(a) * (36 + r * 17)} cy={y - Math.sin(a) * (36 + r * 17)} r="4.2" fill={colour} />);
     }
   }
   return <g>{dots}</g>;
@@ -40,11 +40,13 @@ function Seats({ x, y, colour, rows = 4 }) {
 
 export function ChapterScene({ chapter }) {
   const c = chapter.colour;
+  const n = CHAPTERS.findIndex((x) => x.key === chapter.key) + 1;
   return (
     <>
       <Sky tone={`color-mix(in srgb, ${c} 22%, #fff)`} tone2="#FFFFFF" />
-      <circle cx="640" cy="120" r="150" fill={c} opacity="0.12" />
-      <circle cx="120" cy="360" r="190" fill={c} opacity="0.1" />
+      <g className="t-float"><circle cx="640" cy="120" r="150" fill={c} opacity="0.12" /></g>
+      <g className="t-float" style={{ animationDelay: "-3s" }}><circle cx="120" cy="360" r="190" fill={c} opacity="0.1" /></g>
+      <g className="t-numeral"><text x="692" y="214" textAnchor="end" fontSize="230" fontWeight="800" fontFamily="Newsreader, Georgia, serif" fill={c} opacity="0.2">{n}</text></g>
       <Ground colour={`color-mix(in srgb, ${c} 18%, #E6F0E6)`} path="#EFE8D8" />
       {chapter.key === "why" && <><Person x={300} y={392} shirt={c} skin={SKIN[2]} mood="happy" /><Person x={380} y={392} kid long shirt="#1E4FB8" skin={SKIN[2]} mood="happy" /><Person x={450} y={392} shirt="#0E9AA7" skin={SKIN[1]} mood="happy" /><B n={0}><Bulb x={380} y={200} /></B></>}
       {chapter.key === "who" && <><TownHall x={120} y={370} /><g transform="translate(480 370)"><Parliament x={0} y={0} s={0.9} /></g></>}
@@ -69,6 +71,7 @@ export function LayersScene() {
       {band(216, LAYERS[1].colour, "Scotland, Wales, Northern Ireland", 2)}
       {band(282, LAYERS[0].colour, "Your local council", 1)}
       <B n={3} fx="fade"><g transform="translate(176 150)"><Parliament x={0} y={0} s={0.12} /></g></B>
+      <B n={0}><g className="t-ripple"><ellipse cx="400" cy="412" rx="92" ry="16" fill="none" stroke="#E0365B" strokeWidth="3" /></g></B>
       <Person x={340} y={410} s={0.85} shirt="#E0365B" skin={SKIN[2]} mood="happy" />
       <Person x={400} y={410} s={0.85} kid long shirt="#0E9AA7" skin={SKIN[2]} mood="happy" />
       <Person x={460} y={410} s={0.85} shirt="#1E4FB8" skin={SKIN[1]} mood="happy" />
@@ -87,8 +90,8 @@ export function HousesScene() {
     <>
       <Back />
       <g transform="translate(400 372)"><Parliament x={0} y={0} s={1.35} /></g>
-      <B n={1}><rect x="40" y="70" width="250" height="150" rx="20" fill="#16A34A" opacity="0.14" /><Seats x={165} y={196} colour="#16A34A" /><Label x={165} y={104} size={26} fill="#0F6B30">The Commons</Label></B>
-      <B n={2}><rect x="510" y="70" width="250" height="150" rx="20" fill="#C0392B" opacity="0.14" /><Seats x={635} y={196} colour="#C0392B" /><Label x={635} y={104} size={26} fill="#8E241A">The Lords</Label></B>
+      <B n={1} stagger><rect x="40" y="70" width="250" height="150" rx="20" fill="#16A34A" opacity="0.14" /><Seats x={165} y={196} colour="#16A34A" /><Label x={165} y={104} size={26} fill="#0F6B30">The Commons</Label></B>
+      <B n={2} stagger><rect x="510" y="70" width="250" height="150" rx="20" fill="#C0392B" opacity="0.14" /><Seats x={635} y={196} colour="#C0392B" /><Label x={635} y={104} size={26} fill="#8E241A">The Lords</Label></B>
       <B n={3} fx="drop"><Crown x={400} y={90} s={1.1} /></B>
     </>
   );
@@ -130,19 +133,51 @@ export function PartyIntroScene() {
   );
 }
 
-export function PartyScene({ party }) {
+// The House of Commons drawn as 650 dots, one for each seat, fanned out in rows. The party's own seats are coloured in from the left and the rest
+// stay grey, so a child can see at a glance how big a party is.
+const SEATS_IN_COMMONS = 650;
+const FAN = (() => {
+  const rows = 10, inner = 48, outer = 114;
+  const radii = Array.from({ length: rows }, (_, r) => inner + ((outer - inner) * r) / (rows - 1));
+  const total = radii.reduce((t, r) => t + r, 0);
+  let left = SEATS_IN_COMMONS;
+  const pts = [];
+  radii.forEach((r, row) => {
+    const n = row === rows - 1 ? left : Math.round((SEATS_IN_COMMONS * r) / total);
+    left -= n;
+    for (let k = 0; k < n; k++) {
+      const a = Math.PI * (k / (n - 1));
+      pts.push({ x: -Math.cos(a) * r, y: -Math.sin(a) * r, a, row });
+    }
+  });
+  return pts.sort((p, q) => p.a - q.a || p.row - q.row);
+})();
+
+export function PartyScene({ party, seats }) {
   const { background, color } = chip(party.colour);
+  const mine = seats ? Math.min(seats, SEATS_IN_COMMONS) : 0;
   return (
     <>
       <Back tone={`color-mix(in srgb, ${party.colour} 18%, #fff)`} tone2="#FFFFFF" />
-      <rect x="50" y="52" width="700" height="250" rx="28" fill={background} />
-      <circle cx="660" cy="112" r="120" fill="#fff" opacity="0.08" />
-      <Label x={90} y={140} size={party.name.length > 14 ? 54 : 66} fill={color} anchor="start" weight={700}>{party.name}</Label>
-      <Label x={90} y={192} size={32} fill={color} anchor="start" weight={600}>{party.leader}</Label>
-      <Label x={90} y={236} size={22} fill={color} anchor="start" weight={500}>{party.role.length > 40 ? party.role.slice(0, 38) + "…" : party.role}</Label>
-      <Person x={640} y={382} s={1.7} shirt="#fff" trousers={`color-mix(in srgb, ${party.colour} 55%, #0B1B33)`} skin={SKIN[(party.key.length) % 4]} mood="happy" long={party.key.length % 2 === 0} />
-      <B n={1} fx="rise"><Bubble x={90} y={262} w={110} h={86} tail="left"><Bulb x={0} y={0} /></Bubble></B>
-      <B n={2} fx="rise"><Bubble x={240} y={262} w={110} h={86} tail="center"><g><Paper x={0} y={0} /><path d="M-6 4 l7 7 l13 -16" stroke="#16A34A" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" /></g></Bubble></B>
+      <g className="t-slidein"><rect x="50" y="40" width="700" height="196" rx="28" fill={background} /></g>
+      <circle cx="660" cy="100" r="110" fill="#fff" opacity="0.08" />
+      <g className="t-slideup" style={{ animationDelay: "0.15s" }}><Label x={90} y={120} size={party.name.length > 14 ? 50 : 62} fill={color} anchor="start" weight={700}>{party.name}</Label></g>
+      <g className="t-slideup" style={{ animationDelay: "0.3s" }}><Label x={90} y={168} size={30} fill={color} anchor="start" weight={600}>{party.leader}</Label></g>
+      <g className="t-slideup" style={{ animationDelay: "0.42s" }}><Label x={90} y={206} size={20} fill={color} anchor="start" weight={500}>{party.role.length > 44 ? party.role.slice(0, 42) + "…" : party.role}</Label></g>
+      <Person x={650} y={382} s={1.7} shirt="#fff" trousers={`color-mix(in srgb, ${party.colour} 55%, #0B1B33)`} skin={SKIN[(party.key.length) % 4]} mood="happy" long={party.key.length % 2 === 0} />
+      {mine > 0 && (
+        <g transform="translate(165 354)" role="img" aria-label={`${mine} of ${SEATS_IN_COMMONS} seats in the Commons`}>
+          {FAN.map((d, i) => (
+            i < mine
+              ? <circle key={i} className="t-seat" cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r="1.7" fill={party.colour} style={{ animationDelay: `${(0.5 + (i * 1.6) / mine) * 1}s` }} />
+              : <circle key={i} cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r="1.7" fill="#C3CCDC" />
+          ))}
+          <text y="-18" textAnchor="middle" fontSize="30" fontWeight="800" fontFamily="Newsreader, Georgia, serif" fill="#0B1B33">{mine}</text>
+          <text y="-2" textAnchor="middle" fontSize="12.5" fontWeight="700" fontFamily="Public Sans, system-ui, sans-serif" fill="#44506B">of {SEATS_IN_COMMONS} seats</text>
+        </g>
+      )}
+      <B n={1} fx="rise"><Bubble x={330} y={256} w={110} h={86} tail="left"><Bulb x={0} y={0} /></Bubble></B>
+      <B n={2} fx="rise"><Bubble x={460} y={256} w={110} h={86} tail="center"><g><Paper x={0} y={0} /><path d="M-6 4 l7 7 l13 -16" stroke="#16A34A" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" /></g></Bubble></B>
     </>
   );
 }
@@ -201,6 +236,33 @@ export function VoiceScene() {
   );
 }
 
+// The class vote: two columns that grow as the teacher taps in each hand that goes up.
+export function VoteScene({ votes = [0, 0] }) {
+  const top = Math.max(8, ...votes);
+  const cols = [
+    { x: 215, colour: "#2F9E6B", icon: (
+      <g transform="translate(215 384)">
+        <path d="M-52 0 L-30 -62 M52 0 L30 -62 M-30 -62 H30" stroke="#6B7A90" strokeWidth="6" strokeLinecap="round" fill="none" />
+        <path d="M-14 -62 v44 M14 -62 v44" stroke="#8A5A3C" strokeWidth="3" /><rect x="-20" y="-20" width="40" height="8" rx="3" fill="#E0775A" />
+      </g>) },
+    { x: 585, colour: "#1E4FB8", icon: <g transform="translate(585 384) scale(0.6) translate(-125 0)"><Bus x={0} y={0} /></g> },
+  ];
+  return (
+    <>
+      <Back tone="#EDE7FF" tone2="#FAF8FF" />
+      {cols.map((c, i) => (
+        <g key={c.x}>
+          <rect x={c.x - 56} y="104" width="112" height="196" rx="16" fill={c.colour} opacity="0.1" />
+          <rect className="t-bar" x={c.x - 56} y="104" width="112" height="196" rx="16" fill={c.colour} style={{ transform: `scaleY(${Math.max(votes[i] / top, 0.012)})` }} />
+          <text x={c.x} y="86" textAnchor="middle" fontSize="50" fontWeight="800" fontFamily="Newsreader, Georgia, serif" fill="#0B1B33">{votes[i]}</text>
+          {c.icon}
+        </g>
+      ))}
+      {[330, 380, 430, 480].map((x, i) => <Person key={x} x={x} y={400} s={0.7} kid long={i % 2 === 0} shirt={["#7A5AF0", "#E0365B", "#0E9AA7", "#F2622A"][i]} skin={SKIN[(i + 1) % 5]} mood="thinking" />)}
+    </>
+  );
+}
+
 export function QuizScene({ beat }) {
   return (
     <>
@@ -209,7 +271,8 @@ export function QuizScene({ beat }) {
       <B n={0} until={1}><Person x={240} y={392} shirt="#7A5AF0" skin={SKIN[1]} mood="thinking" /></B>
       <B n={1} until={2} fx="fade"><Person x={240} y={392} shirt="#7A5AF0" skin={SKIN[1]} mood="happy" /></B>
       <B n={2} fx="fade"><Person x={240} y={392} shirt="#7A5AF0" skin={SKIN[1]} mood="worried" /></B>
-      <Person x={560} y={392} kid long shirt="#E0365B" skin={SKIN[2]} mood={beat === 1 ? "happy" : "ok"} />
+      <Person x={560} y={392} kid long shirt="#E0365B" skin={SKIN[2]} mood={beat === 1 || beat === 3 ? "happy" : "ok"} />
+      {beat === 3 && <Confetti />}
     </>
   );
 }

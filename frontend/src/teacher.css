@@ -19,6 +19,24 @@
 .tm-chapter-body h4 { margin: 4px 0 0; font: 700 13px/1.3 "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .tm-chapter-body ul { margin: 4px 0 0; padding-left: 18px; display: grid; gap: 4px; }
 
+.tm-route { --p: 0; position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; margin: 0 0 22px; padding: 0; list-style: none; }
+.tm-route::before, .tm-route::after { content: ""; position: absolute; top: 24px; left: 10%; right: 10%; height: 4px; border-radius: 2px; background: var(--c-hairline); }
+.tm-route::after { background: linear-gradient(90deg, #E0367A, #7A5AF0, #1E4FB8, #0E9AA7, #2F9E6B); transform-origin: left center; transform: scaleX(var(--p)); }
+.tm-route li { position: relative; z-index: 1; }
+.tm-route button { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; padding: 0 2px 6px; border: 0; background: none; font: inherit; color: var(--c-ink); text-align: center; cursor: pointer; }
+.tm-route-n { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--c); color: #fff; font: 700 21px/1 "Newsreader", Georgia, serif; box-shadow: 0 0 0 5px var(--c-paper), 0 6px 14px -6px color-mix(in srgb, var(--c) 70%, transparent); transition: transform 0.25s var(--ease-out); }
+.tm-route button:hover .tm-route-n, .tm-route button:focus-visible .tm-route-n { transform: scale(1.1); }
+.tm-route b { font: 700 13.5px/1.25 "Public Sans", system-ui, sans-serif; overflow-wrap: anywhere; }
+.tm-route small { font: 500 12px/1 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+@media (max-width: 480px) { .tm-route b { font-size: 12.5px; } .tm-route-n { width: 42px; height: 42px; font-size: 18px; } .tm-route::before, .tm-route::after { top: 21px; } }
+.t-votes { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 10px 0 4px; }
+.t-vote { display: flex; align-items: center; gap: 12px; width: auto; min-width: min(100%, 220px); border-color: color-mix(in srgb, var(--oc) 55%, var(--c-hairline)); }
+.t-vote b { margin-left: auto; padding: 4px 10px; border-radius: 999px; background: var(--oc); color: #fff; font-size: 15px; }
+.t-vote-q { margin: 2px 0 0; }
+.t-vote-why { min-height: 2.9em; margin: 4px 0 0; font-size: clamp(14px, 1.5vw, 17px); }
+.t-vote:active:not(:disabled) { transform: scale(0.97); }
+.t-root[data-calm="1"] .t-ray, .t-root[data-calm="1"] .t-confetti { display: none; }
+
 /* ---- The presenter ---------------------------------------------------------------------------------------------------------------------- */
 .t-root {
   --top: 64px; --bot: 88px; --cap: 238px;
@@ -59,7 +77,7 @@
 .t-notes h3 { margin: 0 0 8px; font: 700 18px/1.2 "Newsreader", Georgia, serif; }
 .t-notes ul { margin: 0; padding-left: 20px; display: grid; gap: 8px; font-size: 16px; line-height: 1.45; }
 .t-notes-hint { margin: 12px 0 0; font-size: 13px; color: var(--c-ink-soft); }
-.t-quiz { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.t-quiz, .t-votebox { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
 .t-options { display: grid; gap: 10px; width: min(100%, 640px); margin: 8px 0 4px; }
 .t-option { text-align: left; min-height: 52px; padding: 10px 16px; border-radius: 14px; border: 2px solid var(--c-hairline); background: var(--c-paper-card); font: 600 clamp(16px, 1.8vw, 20px)/1.3 "Public Sans", system-ui, sans-serif; color: var(--c-ink); cursor: pointer; transition: border-color 0.2s, background-color 0.2s; }
 .t-option:hover:not(:disabled) { border-color: var(--tc); }
@@ -96,7 +114,36 @@
 @keyframes t-coinflow { 0% { transform: translateX(0); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateX(270px); opacity: 0; } }
 .t-hands { transform-box: fill-box; transform-origin: 50% 100%; animation: t-spin 6s linear infinite; }
 @keyframes t-spin { to { transform: rotate(360deg); } }
+/* People breathe and blink, a little differently each, so a crowd never moves in step. */
+.t-idle { transform-box: fill-box; transform-origin: 50% 100%; animation: t-idle 3.6s ease-in-out infinite; }
+@keyframes t-idle { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.017); } }
+.t-eyes { transform-box: fill-box; transform-origin: 50% 50%; animation: t-blink 5s ease-in-out infinite; }
+@keyframes t-blink { 0%, 94%, 100% { transform: scaleY(1); } 96.5% { transform: scaleY(0.1); } }
+.t-ripple { transform-box: fill-box; transform-origin: center; animation: t-ripple 2.8s ease-out infinite; }
+@keyframes t-ripple { 0% { transform: scale(0.6); opacity: 0.55; } 100% { transform: scale(1.5); opacity: 0; } }
+.t-confetti { transform-box: fill-box; transform-origin: center; animation: t-confetti 2.2s cubic-bezier(0.3, 0.6, 0.5, 1) both; }
+@keyframes t-confetti { 0% { transform: translate(0, -30px) rotate(0); opacity: 0; } 12% { opacity: 1; } 100% { transform: translate(var(--dx), 440px) rotate(var(--r)); opacity: 0.9; } }
+.t-ray { animation: t-ray 0.8s ease-out both; }
+@keyframes t-ray { 0% { transform: translate(0, 0); opacity: 0; } 25% { opacity: 1; } 100% { transform: translate(var(--rx), var(--ry)); opacity: 0; } }
+.t-stamp { transform-box: fill-box; transform-origin: center; animation: t-stamp 0.55s cubic-bezier(0.2, 1.6, 0.4, 1) both; }
+@keyframes t-stamp { 0% { transform: scale(2.6) rotate(-14deg); opacity: 0; } 55% { opacity: 1; } 100% { transform: scale(1) rotate(-8deg); opacity: 1; } }
+.t-slidein { animation: t-slidein 0.7s var(--ease-out) both; }
+@keyframes t-slidein { from { transform: translateX(-46px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+.t-slideup { animation: t-slideup 0.7s var(--ease-out) both; }
+@keyframes t-slideup { from { transform: translateY(18px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.t-seat { animation: t-seat 0.45s var(--ease-out) both; }
+@keyframes t-seat { from { fill: var(--seat-from, #D5DBE7); } }
+.t-numeral { animation: t-numeral 1s var(--ease-out) both; }
+@keyframes t-numeral { from { transform: translateX(60px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+.t-float { animation: t-float 7s ease-in-out infinite alternate; }
+@keyframes t-float { from { transform: translateY(0); } to { transform: translateY(-14px); } }
+.t-svg [data-s] { transform-box: fill-box; transform-origin: center; }
+.t-bar { transform-box: fill-box; transform-origin: 50% 100%; transition: transform 0.7s cubic-bezier(0.34, 1.4, 0.5, 1); }
+/* Each word of what is said rises into place a moment after the one before it. Only opacity and transform change, so the text never moves the layout. */
+.t-w { display: inline-block; animation: t-word 0.5s var(--ease-out) calc(var(--w) * 26ms) both; }
+@keyframes t-word { from { transform: translateY(0.45em); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.t-root[data-calm="1"] *, .t-root[data-calm="1"] { animation: none !important; transition: none !important; }
 @media (prefers-reduced-motion: reduce) {
-  .t-drift, .t-bob, .t-glow, .t-drip, .t-coinflow, .t-hands, .t-root, .t-stage, .t-captionbody, .t-chips li, .t-list li, .t-notes { animation: none !important; }
-  .t-progress span { transition: none; }
+  .t-drift, .t-bob, .t-glow, .t-drip, .t-coinflow, .t-hands, .t-idle, .t-eyes, .t-ripple, .t-confetti, .t-ray, .t-stamp, .t-slidein, .t-slideup, .t-seat, .t-numeral, .t-float, .t-w, .t-root, .t-stage, .t-captionbody, .t-chips li, .t-list li, .t-notes { animation: none !important; }
+  .t-progress span, .t-bar { transition: none; }
 }

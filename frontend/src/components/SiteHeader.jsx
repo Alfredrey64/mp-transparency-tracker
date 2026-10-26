@@ -5,7 +5,7 @@ import { useDialog } from "../lib/useDialog";
 import { solid } from "../theme";
 import LogoMark from "./LogoMark";
 import GlobalSearch from "./GlobalSearch";
-import { IconSearch, IconStar, IconMethodology, IconSettings, IconShield, IconBook, IconHistory } from "./icons";
+import { IconSearch, IconStar, IconMethodology, IconSettings, IconShield, IconBook, IconHistory, IconClassroom } from "./icons";
 import { MENU, menuKeyFor, pathFor } from "../data/siteMenu";
 
 // The site's header: the name, five menus that open into a panel of pages, search, the watchlist and the one button most people want (finding their MP).
@@ -32,6 +32,7 @@ const FOOT_TILES = [
   ["settings", "Settings", IconSettings],
   ["privacy", "Privacy", IconShield],
   ["terms", "Terms", IconBook],
+  ["teacher", "Teacher mode", IconClassroom],
 ];
 
 // A link that goes to a page without reloading, unless it is opened in a new tab or window.

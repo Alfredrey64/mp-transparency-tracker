@@ -2,8 +2,9 @@ import { describe, it, expect } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { buildSlides } from "./slides";
 import { SCENES } from "./sceneList";
-import { LayersScene, HousesScene, RunScene, PartyIntroScene, PartyScene, NiScene, VoiceScene } from "./Stages";
-import { CHAPTERS, PARTIES, STORIES, QUIZ, CHECKED } from "../../data/teacherMode";
+import { LayersScene, HousesScene, RunScene, PartyIntroScene, PartyScene, NiScene, VoiceScene, VoteScene, QuizScene } from "./Stages";
+import { MENU } from "../../data/siteMenu";
+import { CHAPTERS, PARTIES, STORIES, QUIZ, VOTE, CHECKED } from "../../data/teacherMode";
 import { PARTY_MANIFESTOS } from "../../data/partyManifestos";
 
 // Each picture is drawn in pieces tagged with the step they arrive on. The words for a step and the pieces for it have to line up, or a step would
@@ -60,5 +61,41 @@ describe("Teacher mode", () => {
   it("never tells a child who to vote for", () => {
     const text = JSON.stringify([buildSlides(), STORIES]).toLowerCase();
     for (const phrase of ["you should vote", "vote for labour", "vote for the conservative", "vote conservative", "vote reform", "best party", "worst party"]) expect(text).not.toContain(phrase);
+  });
+
+  it("gives every chapter four words to learn, each with its meaning", () => {
+    for (const c of CHAPTERS) {
+      expect(c.words, c.key).toHaveLength(4);
+      for (const w of c.words) expect(w, w).toMatch(/^[^:]+: .{12,}/);
+    }
+    const slide = buildSlides().find((s) => s.kind === "chapter");
+    expect(slide.steps.map((x) => x.title)).toContain("Words you will meet");
+  });
+
+  it("has a class vote with two options, drawn as two columns that grow with the count", () => {
+    const slide = buildSlides().find((s) => s.kind === "vote");
+    expect(slide.chapter).toBe("voice");
+    expect(VOTE.options).toHaveLength(2);
+    const none = renderToStaticMarkup(<svg><VoteScene votes={[0, 0]} /></svg>);
+    const some = renderToStaticMarkup(<svg><VoteScene votes={[8, 4]} /></svg>);
+    expect(none).toContain("scaleY(0.012)");
+    expect(some).toContain("scaleY(1)");
+    expect(some).toContain("scaleY(0.5)");
+  });
+
+  it("only throws confetti at the end of the quiz", () => {
+    expect(renderToStaticMarkup(<svg><QuizScene beat={0} /></svg>)).not.toContain("t-confetti");
+    expect(renderToStaticMarkup(<svg><QuizScene beat={3} /></svg>)).toContain("t-confetti");
+  });
+
+  it("draws a party's seats out of 650 only when the number is known", () => {
+    const withSeats = renderToStaticMarkup(<svg><PartyScene party={PARTIES[0]} seats={405} /></svg>);
+    expect(withSeats).toContain("405");
+    expect((withSeats.match(/class="t-seat"/g) ?? []).length).toBe(405);
+    expect(renderToStaticMarkup(<svg><PartyScene party={PARTIES[0]} /></svg>)).not.toContain("t-seat");
+  });
+
+  it("sits in the foot of the menu, not in a menu group", () => {
+    expect(MENU.flatMap((m) => m.groups.flatMap((g) => g.items.map((i) => i.key)))).not.toContain("teacher");
   });
 });

@@ -34,7 +34,7 @@ export const SECTIONS = [
       { key: "howitworks", label: "How Parliament works", icon: IconFlow, hint: "From idea to law, step by step", essential: true, aka: ["parliament", "laws"] },
       { key: "devolved", label: "Scotland, Wales & N. Ireland", icon: IconDevolved, hint: "Who decides what where you live", aka: ["devolved administrations", "devolution"] },
       { key: "parties", label: "What parties promise", icon: IconManifesto, hint: "Manifesto positions side by side", aka: ["party policies", "manifesto"] },
-      { key: "teacher", label: "Teacher mode", icon: IconClassroom, hint: "Animated lessons for a class", aka: ["teacher", "teachers", "school", "lesson", "classroom", "children", "kids", "pupils", "students", "education", "citizenship"] },
+      { key: "teacher", label: "Teacher mode", standalone: true, icon: IconClassroom, hint: "Animated lessons for a class", aka: ["teacher", "teachers", "school", "lesson", "classroom", "children", "kids", "pupils", "students", "education", "citizenship"] },
       { key: "glossary", label: "Jargon buster", icon: IconGlossary, hint: "Plain meanings of political words", essential: true, aka: ["glossary", "terms", "definitions"] },
       { key: "mediaLiteracy", label: "How news is regulated", icon: IconBook, hint: "Telling fact from opinion", aka: ["media literacy", "bbc", "impartiality"] },
       { key: "numbers", label: "Parliament in numbers", icon: IconChartBars, hint: "Who sits there, in charts", essential: true, aka: ["statistics", "stats", "women", "lords"] },
@@ -213,8 +213,9 @@ const OUTSIDE_SECTIONS = {
   settings: "About this site",
   privacy: "About this site",
   terms: "About this site",
+  teacher: "For teachers",
 };
 export const SECTION_LABEL_BY_KEY = new Map([
-  ...Object.entries(OUTSIDE_SECTIONS),
   ...SECTIONS.flatMap((section) => section.items.map((item) => [item.key, section.label])),
+  ...Object.entries(OUTSIDE_SECTIONS),
 ]);

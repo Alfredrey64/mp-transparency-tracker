@@ -41,18 +41,23 @@ export function useBeats(ref, beat, calm) {
       const show = n <= beat && beat < until;
       const was = !first && n <= prev.current && prev.current < until;
       if (!first && show === was) return;
-      if (gsap) gsap.killTweensOf(node);
+      const bits = node.dataset.stagger ? node.querySelectorAll("[data-s]") : [];
+      if (gsap) { gsap.killTweensOf(node); if (bits.length) gsap.killTweensOf(bits); }
       if (first || calm || !gsap) {
-        if (gsap) gsap.set(node, { clearProps: "transform,opacity" });
+        if (gsap) gsap.set(bits.length ? [node, ...bits] : node, { clearProps: "transform,opacity,visibility" });
         node.style.visibility = show ? "visible" : "hidden";
         return;
       }
       const fx = node.dataset.fx in FROM ? node.dataset.fx : "pop";
       if (show) {
-        gsap.fromTo(node, FROM[fx], { ...TO[fx], delay: order++ * 0.12, clearProps: "transform" });
+        const delay = order++ * 0.12;
+        gsap.fromTo(node, FROM[fx], { ...TO[fx], delay, clearProps: "transform" });
+        // Seats, and anything else marked data-s, then pop in one after another from the middle outwards.
+        if (bits.length) gsap.fromTo(bits, { scale: 0, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.35, ease: "back.out(3)", delay: delay + 0.3, stagger: { amount: 0.8, from: "center" }, clearProps: "transform,opacity,visibility" });
       } else if (node.dataset.exit) {
         gsap.to(node, { x: 420, autoAlpha: 0, duration: 0.9, ease: "power2.in" });
       } else {
+        if (bits.length) gsap.set(bits, { clearProps: "transform,opacity,visibility" });
         gsap.to(node, { autoAlpha: 0, duration: 0.3 });
       }
     });
@@ -62,6 +67,6 @@ export function useBeats(ref, beat, calm) {
 
   useEffect(() => () => {
     const root = ref.current;
-    if (root && gsapRef.current) gsapRef.current.killTweensOf(root.querySelectorAll("[data-beat]"));
+    if (root && gsapRef.current) gsapRef.current.killTweensOf(root.querySelectorAll("[data-beat], [data-s]"));
   }, [ref]);
 }

@@ -1,4 +1,4 @@
-import { CHAPTERS, STORIES, LAYERS, HOUSES, LAW_STEPS, WHO_RUNS, PARTIES, NI_PARTIES, VOICES, CHECKED } from "../../data/teacherMode";
+import { CHAPTERS, STORIES, LAYERS, HOUSES, LAW_STEPS, WHO_RUNS, PARTIES, NI_PARTIES, VOICES, VOTE, CHECKED } from "../../data/teacherMode";
 import { PARTY_MANIFESTOS } from "../../data/partyManifestos";
 
 // The whole presentation as a flat list of slides. A slide has `steps`: what to say under the picture at each step of it (the picture builds up
@@ -13,7 +13,11 @@ export function buildSlides(seats = {}) {
   for (const ch of CHAPTERS) {
     add(ch.key, {
       kind: "chapter",
-      steps: [{ kicker: `Chapter ${chapterIndex(ch.key) + 1} of ${CHAPTERS.length}`, title: ch.title, text: ch.blurb, list: ch.aims, fact: `About ${ch.minutes} minutes.` }],
+      steps: [
+        { kicker: `Chapter ${chapterIndex(ch.key) + 1} of ${CHAPTERS.length}, about ${ch.minutes} minutes`, title: ch.title, text: ch.blurb },
+        { kicker: `Chapter ${chapterIndex(ch.key) + 1} of ${CHAPTERS.length}`, title: "By the end you will", list: ch.aims },
+        { kicker: `Chapter ${chapterIndex(ch.key) + 1} of ${CHAPTERS.length}`, title: "Words you will meet", list: ch.words },
+      ],
       ask: ch.ask,
     });
 
@@ -105,6 +109,7 @@ export function buildSlides(seats = {}) {
         ],
         ask: ["What is one thing you would change in your school or town, and who would you tell?", "How do you tell a fact from an opinion?"],
       });
+      add(ch.key, { kind: "vote", steps: [{ kicker: VOTE.kicker, title: VOTE.title, text: VOTE.text }], ask: VOTE.ask });
       add(ch.key, { kind: "quiz", steps: [{ kicker: "Quick quiz", text: "" }], ask: [] });
     }
   }
