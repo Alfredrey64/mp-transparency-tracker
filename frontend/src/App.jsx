@@ -1,6 +1,7 @@
-import { useState, useEffect, useLayoutEffect, useRef, useTransition, lazy, Suspense } from "react";
+import { useState, useEffect, useLayoutEffect, useRef, useTransition, Suspense } from "react";
+import { flushSync } from "react-dom";
 import { GuideKeyContext, guideKeyFor } from "./lib/viewContext";
-import { motion, MotionConfig } from "motion/react";
+import { MotionConfig } from "motion/react";
 import { supabase } from "./supabaseClient";
 import { COLORS, FONT_BODY } from "./theme";
 import SiteHeader from "./components/SiteHeader";
@@ -16,6 +17,8 @@ import { SECTIONS } from "./data/sidebarSections";
 import { LOADERS } from "./pageLoaders";
 import { startGlossDedupe } from "./glossJsx/dedupe";
 import { trackPage } from "./lib/analytics";
+import { lowData } from "./lib/lowData";
+import { lazyPage, preloadPage } from "./lib/lazyPage";
 import Loading from "./components/Loading";
 import { currentRoute } from "./lib/route";
 import OfflineBanner from "./components/OfflineBanner";
@@ -25,74 +28,77 @@ import { InstallBanner } from "./components/InstallApp";
 // shouldn't have to download the other ~30 pages' code up front. Home and
 // SiteHeader stay eager imports above so the very first paint has no loading
 // flash.
-const PoliticianList = lazy(LOADERS.list);
-const PoliticianDetail = lazy(() => import("./components/PoliticianDetail"));
-const VotingRecords = lazy(LOADERS.voting);
-const HowParliamentWorks = lazy(LOADERS.howitworks);
-const AppgMemberships = lazy(LOADERS.appg);
-const DonorsLobbying = lazy(LOADERS.donors);
-const PartyFinances = lazy(LOADERS.partyFinances);
-const PartyPolicies = lazy(LOADERS.parties);
-const GovernmentTracker = lazy(LOADERS.tracker);
-const Methodology = lazy(LOADERS.methodology);
-const Glossary = lazy(LOADERS.glossary);
-const PoliticalHistory = lazy(LOADERS.history);
-const Timeline = lazy(LOADERS.timeline);
-const DevolvedAdministrations = lazy(LOADERS.devolved);
-const FormerMps = lazy(LOADERS.formerMps);
-const ByElections = lazy(LOADERS.byElections);
-const GovernmentBudget = lazy(LOADERS.budget);
-const Cabinet = lazy(LOADERS.cabinet);
-const HouseOfLords = lazy(LOADERS.lords);
-const Petitions = lazy(LOADERS.petitions);
-const PartyMatch = lazy(LOADERS.partymatch);
-const Settings = lazy(LOADERS.settings);
-const PrivacyPolicy = lazy(LOADERS.privacy);
-const TermsConditions = lazy(LOADERS.terms);
-const Committees = lazy(LOADERS.committees);
-const ComparePoliticians = lazy(LOADERS.compare);
-const MinisterialMeetings = lazy(LOADERS.ministerialMeetings);
-const WrittenQuestions = lazy(LOADERS.writtenQuestions);
-const StandardsReports = lazy(LOADERS.standards);
-const MyMP = lazy(LOADERS.myMP);
-const MediaLiteracy = lazy(LOADERS.mediaLiteracy);
-const Rankings = lazy(LOADERS.rankings);
-const DarkMoney = lazy(LOADERS.darkMoney);
-const RevolvingDoor = lazy(LOADERS.revolvingDoor);
-const ThinkTankFunding = lazy(LOADERS.thinkTanks);
-const LobbyingRegister = lazy(LOADERS.lobbyingRegister);
-const FollowTheMoney = lazy(LOADERS.followTheMoney);
-const WatchlistDigest = lazy(LOADERS.watchlist);
-const ParliamentNumbers = lazy(LOADERS.numbers);
-const AskedAbout = lazy(LOADERS.topics);
-const Constituency = lazy(LOADERS.constituency);
-const Marginals = lazy(LOADERS.marginals);
-const CompareSeats = lazy(LOADERS.compareSeats);
-const StartHere = lazy(LOADERS.start);
-const Rebels = lazy(LOADERS.rebels);
-const Offices = lazy(LOADERS.offices);
-const Councils = lazy(LOADERS.councils);
-const SectorPage = lazy(LOADERS.economy);
-const RegionsPage = lazy(LOADERS.regions);
-const AnswersPage = lazy(LOADERS.answers);
-const DeprivationPage = lazy(LOADERS.deprivation);
-const IndicatorTimeline = lazy(LOADERS.indicators);
-const HowToVote = lazy(LOADERS.howtovote);
-const TeacherMode = lazy(LOADERS.teacher);
-const LocalElections = lazy(LOADERS.localElections);
-const GeneralElection = lazy(LOADERS.generalElection);
-const TaxRates = lazy(LOADERS.taxRates);
-const Inequality = lazy(LOADERS.inequality);
-const Brexit = lazy(LOADERS.brexit);
-const Defence = lazy(LOADERS.defence);
-const Education = lazy(LOADERS.education);
-const Nhs = lazy(LOADERS.nhs);
-const Energy = lazy(LOADERS.energy);
-const Trust = lazy(LOADERS.trust);
-const Care = lazy(LOADERS.care);
-const Transport = lazy(LOADERS.transport);
-const Union = lazy(LOADERS.union);
-const Ageing = lazy(LOADERS.ageing);
+const PoliticianList = lazyPage(LOADERS.list);
+const LOAD_DETAIL = () => import("./components/PoliticianDetail");
+const PoliticianDetail = lazyPage(LOAD_DETAIL);
+const VotingRecords = lazyPage(LOADERS.voting);
+const HowParliamentWorks = lazyPage(LOADERS.howitworks);
+const AppgMemberships = lazyPage(LOADERS.appg);
+const DonorsLobbying = lazyPage(LOADERS.donors);
+const PartyFinances = lazyPage(LOADERS.partyFinances);
+const PartyPolicies = lazyPage(LOADERS.parties);
+const GovernmentTracker = lazyPage(LOADERS.tracker);
+const Methodology = lazyPage(LOADERS.methodology);
+const Glossary = lazyPage(LOADERS.glossary);
+const PoliticalHistory = lazyPage(LOADERS.history);
+const Timeline = lazyPage(LOADERS.timeline);
+const DevolvedAdministrations = lazyPage(LOADERS.devolved);
+const FormerMps = lazyPage(LOADERS.formerMps);
+const ByElections = lazyPage(LOADERS.byElections);
+const GovernmentBudget = lazyPage(LOADERS.budget);
+const Cabinet = lazyPage(LOADERS.cabinet);
+const HouseOfLords = lazyPage(LOADERS.lords);
+const Petitions = lazyPage(LOADERS.petitions);
+const PartyMatch = lazyPage(LOADERS.partymatch);
+const Settings = lazyPage(LOADERS.settings);
+const PrivacyPolicy = lazyPage(LOADERS.privacy);
+const TermsConditions = lazyPage(LOADERS.terms);
+const Committees = lazyPage(LOADERS.committees);
+const ComparePoliticians = lazyPage(LOADERS.compare);
+const MinisterialMeetings = lazyPage(LOADERS.ministerialMeetings);
+const WrittenQuestions = lazyPage(LOADERS.writtenQuestions);
+const StandardsReports = lazyPage(LOADERS.standards);
+const MyMP = lazyPage(LOADERS.myMP);
+const MediaLiteracy = lazyPage(LOADERS.mediaLiteracy);
+const Rankings = lazyPage(LOADERS.rankings);
+const DarkMoney = lazyPage(LOADERS.darkMoney);
+const RevolvingDoor = lazyPage(LOADERS.revolvingDoor);
+const ThinkTankFunding = lazyPage(LOADERS.thinkTanks);
+const LobbyingRegister = lazyPage(LOADERS.lobbyingRegister);
+const FollowTheMoney = lazyPage(LOADERS.followTheMoney);
+const WatchlistDigest = lazyPage(LOADERS.watchlist);
+const ParliamentNumbers = lazyPage(LOADERS.numbers);
+const AskedAbout = lazyPage(LOADERS.topics);
+const Constituency = lazyPage(LOADERS.constituency);
+const Marginals = lazyPage(LOADERS.marginals);
+const CompareSeats = lazyPage(LOADERS.compareSeats);
+const StartHere = lazyPage(LOADERS.start);
+const Rebels = lazyPage(LOADERS.rebels);
+const Offices = lazyPage(LOADERS.offices);
+const Councils = lazyPage(LOADERS.councils);
+const SectorPage = lazyPage(LOADERS.economy);
+const RegionsPage = lazyPage(LOADERS.regions);
+const AnswersPage = lazyPage(LOADERS.answers);
+const DeprivationPage = lazyPage(LOADERS.deprivation);
+const IndicatorTimeline = lazyPage(LOADERS.indicators);
+const HowToVote = lazyPage(LOADERS.howtovote);
+const TeacherMode = lazyPage(LOADERS.teacher);
+const LocalElections = lazyPage(LOADERS.localElections);
+const GeneralElection = lazyPage(LOADERS.generalElection);
+const TaxRates = lazyPage(LOADERS.taxRates);
+const Inequality = lazyPage(LOADERS.inequality);
+const Brexit = lazyPage(LOADERS.brexit);
+const Defence = lazyPage(LOADERS.defence);
+const Education = lazyPage(LOADERS.education);
+const Nhs = lazyPage(LOADERS.nhs);
+const Energy = lazyPage(LOADERS.energy);
+const Trust = lazyPage(LOADERS.trust);
+const Care = lazyPage(LOADERS.care);
+const Transport = lazyPage(LOADERS.transport);
+const Union = lazyPage(LOADERS.union);
+const Ageing = lazyPage(LOADERS.ageing);
+const Calculators = lazyPage(LOADERS.calculators);
+const Funding = lazyPage(LOADERS.funding);
 const SECTOR_VIEWS = new Set(["economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates", "immigration", "business"]);
 
 // A quiet authorship mark, not a feature — printed once so a copy of this
@@ -117,7 +123,7 @@ const VALID_VIEWS = new Set([
   "committees", "compare", "ministerialMeetings", "writtenQuestions", "standards", "rankings", "myMP",
   "mediaLiteracy", "methodology", "glossary", "settings", "privacy", "terms", "list",
   "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist", "numbers", "topics", "constituency", "start", "rebels", "offices", "councils",
-  "economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates", "immigration", "business", "regions", "answers", "deprivation", "indicators", "marginals", "compareSeats", "howtovote", "teacher", "localElections", "generalElection", "taxRates", "inequality", "brexit", "defence", "education", "ageing", "nhs", "energy", "trust", "care", "transport", "union",
+  "economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates", "immigration", "business", "regions", "answers", "deprivation", "indicators", "marginals", "compareSeats", "howtovote", "teacher", "localElections", "generalElection", "taxRates", "inequality", "brexit", "defence", "education", "ageing", "nhs", "energy", "trust", "care", "transport", "union", "calculators", "funding",
 ]);
 
 // The tab title, bookmark name and browser-history entry for every view —
@@ -143,7 +149,7 @@ function titleForState(view, selected, param) {
   if (selected) return `${selected.name} | ${base}`;
   if (view === "numbers" && param === "lords") return `Parliament in Numbers: the Lords | ${base}`;
   // For the Lords the parameter is a peer's id, which makes a poor title.
-  if (param && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view) && view !== "regions" && view !== "answers" && view !== "deprivation" && view !== "compareSeats" && view !== "parties" && view !== "generalElection" && view !== "taxRates" && view !== "inequality" && view !== "brexit" && view !== "defence" && view !== "education" && view !== "ageing" && view !== "nhs" && view !== "energy" && view !== "trust" && view !== "care" && view !== "transport" && view !== "union") return `${param} | ${PAGE_TITLES[view] ?? base} | ${base}`;
+  if (param && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view) && view !== "regions" && view !== "answers" && view !== "deprivation" && view !== "compareSeats" && view !== "parties" && view !== "generalElection" && view !== "taxRates" && view !== "inequality" && view !== "brexit" && view !== "defence" && view !== "education" && view !== "ageing" && view !== "nhs" && view !== "energy" && view !== "trust" && view !== "care" && view !== "transport" && view !== "union" && view !== "calculators") return `${param} | ${PAGE_TITLES[view] ?? base} | ${base}`;
   if (view === "home") return base;
   const label = PAGE_TITLES[view];
   return label ? `${label} | ${base}` : base;
@@ -201,6 +207,9 @@ export default function App() {
   // blanking to "Loading…" first. `navTarget` is where you are heading, so the sidebar highlights it at once.
   const [navPending, startNav] = useTransition();
   const [navTarget, setNavTarget] = useState(view);
+  // True while the next page's code is still on its way, before the cross-fade starts (see swapPage).
+  const [fetching, setFetching] = useState(false);
+  const navId = useRef(0);
 
   useEffect(() => startGlossDedupe(document.getElementById("root")), []);
   useEffect(() => installGlow(), []);
@@ -304,8 +313,7 @@ export default function App() {
       isPopping.current = true;
       const parsed = parseHash();
       if (parsed.mpId) {
-        setNavTarget("list");
-        startNav(() => {
+        swapPage("list", () => {
           setSelected(null);
           setViewParam(null);
           setView("list");
@@ -314,8 +322,7 @@ export default function App() {
           if (data) startNav(() => setSelected(data));
         });
       } else {
-        setNavTarget(parsed.view);
-        startNav(() => {
+        swapPage(parsed.view, () => {
           setSelected(null);
           setViewParam(parsed.param);
           setView(parsed.view);
@@ -326,12 +333,38 @@ export default function App() {
     return () => window.removeEventListener("popstate", syncFromUrl);
   }, []);
 
+  // Changes the page. Where the browser can cross-fade between two states of a page (View Transitions), the next page's code is
+  // fetched first while the current page stays put, then the two dissolve into each other, so there is no blank flash, no jump and
+  // no half-built page. Elsewhere (or for people who ask for less motion, or on a slow connection) it falls back to React's own
+  // transition, which also keeps the old page up until the new one is ready. Either way the change happens on the click.
+  function swapPage(key, apply, preload) {
+    setNavTarget(key);
+    const root = document.documentElement;
+    const loader = preload ?? LOADERS[key];
+    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (typeof document.startViewTransition !== "function" || reduce || lowData() || (!loader && key !== "home")) {
+      startNav(apply);
+      return;
+    }
+    const id = ++navId.current;
+    setFetching(true);
+    const wait = new Promise((resolve) => setTimeout(resolve, 2500));
+    Promise.race([preloadPage(loader), wait]).then(() => {
+      // A newer click has taken over: let that one win.
+      if (id !== navId.current) return;
+      setFetching(false);
+      root.dataset.vt = "1";
+      const t = document.startViewTransition(() => { flushSync(apply); });
+      const done = () => { if (id === navId.current) delete root.dataset.vt; };
+      t.finished.then(done, done);
+    });
+  }
+
   // Every page change goes through here: the sidebar highlights the destination straight away, and the page swaps once it is ready.
-  function goTo(key, apply) {
+  function goTo(key, apply, preload) {
     // Choosing the page you are already on just takes you back to its top.
     if (key === view && !selected) window.scrollTo(0, 0);
-    setNavTarget(key);
-    startNav(apply);
+    swapPage(key, apply, preload);
   }
 
   function handleNavigate(key) {
@@ -381,19 +414,16 @@ export default function App() {
       <button type="button" className="skip-link" onClick={() => { mainRef.current?.focus(); mainRef.current?.scrollIntoView?.(); }}>Skip to main content</button>
       <OfflineBanner />
       <InstallBanner />
-      <div className="nav-progress" data-on={navPending ? "true" : "false"} aria-hidden="true" />
+      <div className="nav-progress" data-on={navPending || fetching ? "true" : "false"} aria-hidden="true" />
       <SiteHeader activeView={navTarget} onNavigate={handleNavigate} onSelectPolitician={handleViewProfile} />
       <div style={{ flex: 1, minWidth: 0, width: "100%" }}>
         {/* The new page fades in straight away. It used to wait for the old
             one to fade out first, which added a visible pause to every click. */}
-        <motion.main
+        <main
           id="main-content"
           ref={mainRef}
           tabIndex={-1}
           key={`${view}-${selected?.id ?? ""}`}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
         >
             <ErrorBoundary onGoHome={() => handleNavigate("home")}>
             <Suspense fallback={<PageLoadingFallback />}>
@@ -454,6 +484,7 @@ export default function App() {
             {view === "care" && <Care param={viewParam} />}
             {view === "transport" && <Transport param={viewParam} />}
             {view === "union" && <Union param={viewParam} />}
+            {view === "calculators" && <Calculators param={viewParam} onNavigate={handleNavigate} />}
             {view === "compareSeats" && <CompareSeats param={viewParam} />}
             {SECTOR_VIEWS.has(view) && <SectorPage key={view} sector={view} param={viewParam} />}
             {view === "indicators" && <IndicatorTimeline param={viewParam} />}
@@ -464,20 +495,21 @@ export default function App() {
             {view === "settings" && <Settings onNavigate={handleNavigate} />}
             {view === "privacy" && <PrivacyPolicy onNavigate={handleNavigate} />}
             {view === "terms" && <TermsConditions />}
+            {view === "funding" && <Funding onNavigate={handleNavigate} />}
             {view === "list" &&
               (selected ? (
                 <PoliticianDetail
                   key={selected.id}
                   politician={selected}
-                  onBack={() => startNav(() => setSelected(null))}
+                  onBack={() => swapPage("list", () => setSelected(null))}
                   onNavigate={handleNavigateForMp}
                 />
               ) : (
-                <PoliticianList initialCareer={viewParam} onSelect={(p) => startNav(() => setSelected(p))} />
+                <PoliticianList initialCareer={viewParam} onSelect={(p) => swapPage("list", () => setSelected(p), LOAD_DETAIL)} />
               ))}
             </Suspense>
             </ErrorBoundary>
-        </motion.main>
+        </main>
       </div>
       <SiteFooter onNavigate={handleNavigate} />
       <BackToTop />

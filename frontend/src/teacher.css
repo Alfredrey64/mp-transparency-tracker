@@ -147,3 +147,41 @@
   .t-drift, .t-bob, .t-glow, .t-drip, .t-coinflow, .t-hands, .t-idle, .t-eyes, .t-ripple, .t-confetti, .t-ray, .t-stamp, .t-slidein, .t-slideup, .t-seat, .t-numeral, .t-float, .t-w, .t-root, .t-stage, .t-captionbody, .t-chips li, .t-list li, .t-notes { animation: none !important; }
   .t-progress span, .t-bar { transition: none; }
 }
+
+/* ---- Print and take away ---------------------------------------------------------------------------------------------------------------- */
+.tm-print-card { display: flex; flex-direction: column; gap: 10px; padding: 18px; border-radius: 18px; background: linear-gradient(160deg, color-mix(in srgb, var(--c) 10%, var(--c-paper-card)), var(--c-paper-card) 60%); border: 1px solid color-mix(in srgb, var(--c) 30%, var(--c-hairline)); border-top: 5px solid var(--c); box-shadow: var(--shadow-1); transition: box-shadow 0.25s var(--ease-out), transform 0.25s var(--ease-out); }
+.tm-print-card:hover { box-shadow: var(--shadow-3); transform: translateY(-2px); }
+.tm-print-card h3 { margin: 0; font: 600 20px/1.2 "Newsreader", Georgia, serif; color: var(--c-ink); }
+.tm-print-card p { margin: 0; font-size: 14.5px; line-height: 1.55; color: var(--c-ink-soft); }
+.tm-print-pick { display: grid; gap: 4px; font-size: 13px; font-weight: 700; color: var(--c-ink); }
+.tm-print-pick select { min-height: 42px; padding: 0 10px; border-radius: 10px; border: 1px solid var(--c-hairline); background: var(--c-paper); color: var(--c-ink); font: 600 14px "Public Sans", system-ui, sans-serif; }
+
+/* The sheet itself: out of sight on screen, and the only thing printed while a sheet is chosen. */
+.tm-sheet { display: none; }
+@media print {
+  body.tm-printing > #root, body.tm-printing > .skip-link { display: none !important; }
+  body.tm-printing .tm-sheet { display: block !important; color: #111; background: #fff; font: 14px/1.5 "Public Sans", system-ui, sans-serif; }
+  .tm-page { break-after: page; padding: 0; }
+  .tm-page:last-child { break-after: auto; }
+  .tm-page h1 { margin: 0 0 4px; font: 700 26px/1.2 "Newsreader", Georgia, serif; }
+  .tm-page h2 { margin: 16px 0 6px; font: 700 15px/1.3 "Public Sans", system-ui, sans-serif; }
+  .tm-page h3 { margin: 0 0 6px; font: 700 16px/1.2 "Newsreader", Georgia, serif; }
+  .tm-meta { margin: 0 0 12px; color: #444; }
+  .tm-page ul, .tm-page ol { margin: 4px 0 0; padding-left: 20px; }
+  .tm-page li { margin: 2px 0; }
+  .tm-page table { width: 100%; border-collapse: collapse; }
+  .tm-page th, .tm-page td { border: 1px solid #999; padding: 8px 10px; text-align: left; vertical-align: top; }
+  .tm-page th { width: 120px; background: #eee; }
+  .tm-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; }
+  .tm-cards-one { grid-template-columns: 1fr; }
+  .tm-card { break-inside: avoid; display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border: 1px dashed #666; border-left: 8px solid var(--c); min-height: 70px; }
+  .tm-card b { font: 700 17px/1.2 "Newsreader", Georgia, serif; }
+  .tm-ballots { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .tm-ballot { break-inside: avoid; padding: 12px 14px; border: 2px solid #111; }
+  .tm-ballot p { margin: 4px 0; }
+  .tm-ballot-rule { font-weight: 700; }
+  .tm-ballot-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 8px 0; }
+  .tm-ballot-row i { flex: none; width: 24px; height: 24px; border: 2px solid #111; }
+  .tm-tally td { height: 56px; }
+  .tm-foot { margin: 24px 0 0; color: #666; font-size: 12px; }
+}

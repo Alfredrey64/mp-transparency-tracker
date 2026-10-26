@@ -4,7 +4,7 @@ import {
   IconPartyFinance, IconByElection, IconLords, IconPetition, IconCompass, IconCommittee, IconCompare, IconMeeting,
   IconQuestion, IconGavel, IconRankings, IconDarkMoney, IconThinkTank, IconDoor, IconRegister,
   IconSearch, IconBook, IconChartBars, IconTopic, IconRoute, IconSplit, IconHexMap, IconCouncil,
-  IconTaxes, IconRates, IconMigration, IconMap, IconAsk, IconDeprivation, IconSwing, IconSeatCompare, IconFactory, IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconBallot, IconCalendar, IconHouse, IconGlobe, IconLeaf, IconCompareTime, IconShield,
+  IconTaxes, IconCalculator, IconRates, IconMigration, IconMap, IconAsk, IconDeprivation, IconSwing, IconSeatCompare, IconFactory, IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconBallot, IconCalendar, IconHouse, IconGlobe, IconLeaf, IconCompareTime, IconShield,
 } from "../components/icons";
 
 // Lives outside both Sidebar.jsx and shared.jsx specifically so neither has
@@ -35,6 +35,7 @@ export const SECTIONS = [
       { key: "devolved", label: "Scotland, Wales & N. Ireland", icon: IconDevolved, hint: "Who decides what where you live", aka: ["devolved administrations", "devolution"] },
       { key: "parties", label: "What parties promise", icon: IconManifesto, hint: "Manifesto positions side by side", aka: ["party policies", "manifesto"] },
       { key: "teacher", label: "Teacher mode", standalone: true, icon: IconClassroom, hint: "Animated lessons for a class", aka: ["teacher", "teachers", "school", "lesson", "classroom", "children", "kids", "pupils", "students", "education", "citizenship"] },
+      { key: "funding", label: "Funding and independence", standalone: true, icon: IconLedger, hint: "Who pays for this site, and the rules that keep it fair", aka: ["funding", "who pays", "independence", "sponsors", "advertising", "neutral", "bias", "who runs this", "about us"] },
       { key: "glossary", label: "Jargon buster", icon: IconGlossary, hint: "Plain meanings of political words", essential: true, aka: ["glossary", "terms", "definitions"] },
       { key: "mediaLiteracy", label: "How news is regulated", icon: IconBook, hint: "Telling fact from opinion", aka: ["media literacy", "bbc", "impartiality"] },
       { key: "numbers", label: "Parliament in numbers", icon: IconChartBars, hint: "Who sits there, in charts", essential: true, aka: ["statistics", "stats", "women", "lords"] },
@@ -118,6 +119,7 @@ export const SECTIONS = [
       { key: "business", label: "Business and industry", icon: IconFactory, hint: "Output by industry and online shopping", aka: ["industry", "manufacturing", "construction", "retail", "online shopping", "high street", "hospitality", "farming", "factories"] },
       { key: "immigration", label: "Immigration", icon: IconMigration, hint: "Net migration, small boats and asylum", essential: true, aka: ["migration", "asylum", "small boats", "channel crossings", "visas", "refugees", "net migration", "deportation", "returns"] },
       { key: "taxRates", label: "Taxes", icon: IconTaxes, hint: "What is collected, every rate since 1945, and who set it", essential: true, aka: ["tax rates", "income tax rate", "vat rate", "basic rate", "top rate", "corporation tax rate", "business rates", "council tax", "fuel duty", "alcohol duty", "beer duty", "tobacco duty", "sin tax", "sugar tax", "stamp duty", "capital gains tax", "inheritance tax", "national insurance rate", "air passenger duty", "gambling tax", "landfill tax", "tax history", "who raised taxes", "tax cuts", "tax rises", "taxes and spending", "tax", "income tax", "vat", "national insurance", "corporation tax", "public spending", "welfare", "benefits", "debt interest", "where taxes go", "how much tax", "tax receipts"] },
+      { key: "calculators", label: "Money calculators", icon: IconCalculator, hint: "Take-home pay and stamp duty", essential: true, aka: ["calculator", "take home pay", "salary", "after tax", "net pay", "stamp duty", "sdlt", "house buying", "first time buyer", "second home", "buy to let", "wage", "payslip"] },
       { key: "rates", label: "Interest rates", icon: IconRates, hint: "Mortgages, savings and the pound", essential: true, aka: ["bank rate", "mortgage", "mortgages", "savings", "exchange rate", "pound", "dollar", "gilt", "base rate"] },
       { key: "environment", label: "Energy and environment", icon: IconLeaf, hint: "Emissions and energy use", aka: ["climate", "emissions", "net zero", "carbon", "energy"] },
       { key: "deprivation", label: "Deprivation", icon: IconDeprivation, hint: "The most and least deprived areas, in four nations", essential: true, aka: ["poverty", "poor", "imd", "index of multiple deprivation", "deprived", "wealthy", "rich", "left behind", "levelling up", "council"] },
@@ -214,10 +216,11 @@ const OUTSIDE_SECTIONS = {
   privacy: "About this site",
   terms: "About this site",
   teacher: "For teachers",
+  funding: "About this site",
 };
 // Pages that sit outside every group still get a colour of their own, so none of them is plain navy.
 export const OUTSIDE_ACCENT = {
-  methodology: "#0E9AA7", settings: "#7A5AF0", privacy: "#1FA97C", terms: "#C9962A", watchlist: "#E0367A", myMP: "#2F80ED",
+  methodology: "#0E9AA7", settings: "#7A5AF0", privacy: "#1FA97C", terms: "#C9962A", funding: "#2A9D8F", watchlist: "#E0367A", myMP: "#2F80ED",
   // The Britain in numbers pages each get their own colour (the data pages already do, from onsSectors.js), so the section is not one long run of teal.
   inequality: "#A66BBE", brexit: "#3D5AFE", defence: "#4C6FA6", education: "#E07A1F", ageing: "#B5651D", nhs: "#1FA97C", energy: "#3F9B3F",
   trust: "#7B5BD6", care: "#D4577A", transport: "#2C7DA0", union: "#D9453B", taxRates: "#2E86C1", publicFinances: "#2F9E6E",

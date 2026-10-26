@@ -1,4 +1,5 @@
 import { getBillDescription } from "./billDescriptions";
+import { plainSentence } from "./billPlain";
 
 // A short "what is this bill for?" line. Where a hand-written plain-English
 // description exists it's used; otherwise the bill's own official long title
@@ -30,7 +31,7 @@ export function purposeFromLongTitle(longTitle) {
 export function summariseBill(bill) {
   if (!bill) return null;
   const hand = getBillDescription(bill.short_title, null);
-  const summary = hand ?? purposeFromLongTitle(bill.long_title);
+  const summary = hand ?? plainSentence(bill.long_title) ?? purposeFromLongTitle(bill.long_title);
 
   const context = [];
   if (bill.is_act) context.push("Became law");

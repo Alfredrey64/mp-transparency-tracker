@@ -7,6 +7,7 @@ import { categoriseBill, matchBillForVote } from "../lib/bills";
 import { findManifesto } from "../data/partyManifestos";
 import { manifestoSectionToBillCategory } from "../lib/manifestoBillMapping";
 import { getBillDescription } from "../lib/billDescriptions";
+import { plainSentence } from "../lib/billPlain";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { explainDivision } from "../lib/divisionExplainer";
 
@@ -130,7 +131,7 @@ export function ManifestoTabContent({ politician }) {
       for (const v of relatedVotes) {
         const key = v.bill.short_title;
         if (!billIndex.has(key)) {
-          const entry = { short_title: v.bill.short_title, description: getBillDescription(v.bill.short_title, v.bill.long_title), votes: [] };
+          const entry = { short_title: v.bill.short_title, description: getBillDescription(v.bill.short_title, plainSentence(v.bill.long_title) ?? v.bill.long_title), votes: [] };
           billIndex.set(key, entry);
           relatedBills.push(entry);
         }

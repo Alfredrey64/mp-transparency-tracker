@@ -14,6 +14,8 @@ import { BillJourney } from "./BillJourney";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { IconVote, IconBills } from "./icons";
 import Loading from "./Loading";
+import { plainPoints, plainSentence } from "../lib/billPlain";
+import { getBillDescription } from "../lib/billDescriptions";
 
 // A division (Commons vote) is stored per-MP with no bill_id — divisions and
 // bills come from two separate parliamentary data sources with no shared
@@ -89,6 +91,10 @@ function BillEntry({ bill, politicians, initiallyOpen }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initiallyOpen]);
 
+  const hand = getBillDescription(bill.short_title, null);
+  const plain = useMemo(() => plainPoints(bill.long_title), [bill.long_title]);
+  const oneLine = hand ?? plainSentence(bill.long_title);
+
   return (
     <motion.div
       ref={ref}
@@ -113,7 +119,10 @@ function BillEntry({ bill, politicians, initiallyOpen }) {
           <IconBills size={18} />
         </div>
         <div style={{ minWidth: 0, flex: 1 }}>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 15.5, fontWeight: 600, color: COLORS.ink, marginBottom: 5, lineHeight: 1.35 }}>{bill.short_title}</div>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 15.5, fontWeight: 600, color: COLORS.ink, marginBottom: oneLine ? 3 : 5, lineHeight: 1.35 }}>{bill.short_title}</div>
+          {oneLine && (
+            <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.45, marginBottom: 6, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{oneLine}</div>
+          )}
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
             <CategoryPill label={category.label} color={category.color} />
             <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>{bill.current_stage ?? "Unknown stage"} · {bill.current_house}</span>
@@ -135,10 +144,24 @@ function BillEntry({ bill, politicians, initiallyOpen }) {
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.2 }} style={{ overflow: "hidden" }}>
             <div style={{ padding: "0 20px 20px 20px", borderTop: `1px solid ${COLORS.hairline}`, marginTop: -1 }}>
               <div style={{ paddingTop: 16 }}>
-                {bill.long_title && (
-                  <div style={{ marginBottom: 12 }}>
-                    <FieldLabel>What it does</FieldLabel>
-                    <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.6 }}>{bill.long_title}</div>
+                {(plain || bill.long_title) && (
+                  <div style={{ marginBottom: 12, padding: "12px 14px", borderRadius: 12, background: `${category.color}0d`, borderLeft: `4px solid ${category.color}` }}>
+                    <FieldLabel>What it does, in plain English</FieldLabel>
+                    {hand && <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.6 }}>{hand}</div>}
+                    {!hand && plain.length > 0 && (
+                      <ul style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 4 }}>
+                        {plain.slice(0, 6).map((pt, i) => (
+                          <li key={i} style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.55 }}>{pt}</li>
+                        ))}
+                        {plain.length > 6 && <li style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, listStyle: "none", marginLeft: -18 }}>and {plain.length - 6} more points. See the official wording below.</li>}
+                      </ul>
+                    )}
+                    {!hand && plain.length === 0 && <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.6 }}>{bill.long_title}</div>}
+                    {bill.long_title && (
+                      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5, marginTop: 8 }}>
+                        Official wording: {bill.long_title}
+                      </div>
+                    )}
                   </div>
                 )}
                 {bill.summary && (

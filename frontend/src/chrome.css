@@ -618,3 +618,19 @@ body:has(.tier-mini) .to-top { display: none; }
   .billroute-svg { grid-column: 1; grid-row: 1; margin: 0; }
 }
 @media print { .billroute-caption { display: none; } }
+
+/* ---- Page changes ------------------------------------------------------------------------------------------------------------------------------
+   Browsers that can cross-fade between two states of the page (data-vt is set for the length of one change) dissolve the old page into the new
+   one, with the header held still so only the content seems to change. Elsewhere the new page fades in over the old one's place. */
+@keyframes page-in { from { opacity: 0; } }
+html:not([data-vt]) #main-content { animation: page-in 0.26s var(--ease-out) backwards; }
+html[data-vt] .site-header { view-transition-name: site-header; }
+html[data-vt]::view-transition-old(site-header) { display: none; }
+html[data-vt]::view-transition-new(site-header) { animation: none; mix-blend-mode: normal; }
+html[data-vt]::view-transition-group(site-header) { animation: none; }
+html[data-vt]::view-transition-old(root) { animation: none; mix-blend-mode: normal; }
+html[data-vt]::view-transition-new(root) { animation: vt-in 0.24s var(--ease-out) both; mix-blend-mode: normal; }
+@keyframes vt-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-vt]) #main-content { animation: none; }
+}

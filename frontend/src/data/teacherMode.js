@@ -233,3 +233,18 @@ export const GUIDE = [
   "Nothing here tells pupils who to vote for. When a story shows people choosing, the choices are described, not ranked.",
   "Party leaders and seat numbers change. They were last checked on " + CHECKED + ".",
 ];
+
+// ---- Print and take away ---------------------------------------------------------------------------------------------------------------------
+
+// The steps of a bill, written as cards to cut out and put in order, with the right order for the teacher.
+export const BILL_STEPS = [
+  "The bill is introduced in the first House. This is the first reading. Nothing is debated yet.",
+  "MPs or peers debate the main idea of the bill. This is the second reading.",
+  "A small group goes through the bill line by line and suggests changes. This is the committee stage.",
+  "The changes are looked at again by the whole House. This is the report stage.",
+  "A final vote on the bill in that House. This is the third reading.",
+  "The bill goes to the other House, which goes through the same stages.",
+  "If the Houses disagree on changes, the bill goes back and forth until both agree.",
+  "The King gives Royal Assent and the bill becomes a law, called an Act of Parliament.",
+];
+export const STEP_ORDER_SHUFFLE = [4, 7, 1, 6, 3, 0, 5, 2];

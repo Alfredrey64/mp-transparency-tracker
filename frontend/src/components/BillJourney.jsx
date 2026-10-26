@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, readable, solid } from "../theme";
 import { STAGE_DEFS, buildRoute } from "../lib/billRoute";
+import { plainSentence } from "../lib/billPlain";
+import { getBillDescription } from "../lib/billDescriptions";
 
 // A real institutional fact, not a decorative choice: Commons benches are
 // green, Lords benches are red, and that colour-coding is how the two
@@ -179,20 +181,65 @@ function StageBoard({ tracks, activeKey, onSelect }) {
           }}
         />
       </div>
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", gap: "8px 14px", marginTop: 14, padding: "12px 14px", borderRadius: 14, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `4px solid ${step.done ? COLORS.accent : colour}` }}>
-        <div style={{ flex: "1 1 260px", minWidth: 0, minHeight: 62 }}>
-          <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 15, color: COLORS.ink }}>{started ? step.title : "How a bill becomes law"}</div>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.5, color: COLORS.inkSoft, marginTop: 2 }}>
-            {started ? step.text : "A bill goes through five stages in one House, then the other, and can go back and forth between them until both agree. Then it gets Royal Assent and becomes law. Bills can start in either House."}
-          </div>
+      <Caption steps={steps} stepIndex={Math.min(stepIndex, steps.length - 1)} route={route} first={first} started={started} playing={playing} onScreen={onScreen}
+        onToggle={() => { setStarted(true); setPlaying((p) => !p); }} />
+    </div>
+  );
+}
+
+// The box under the board that says what is happening. Every step's words sit in the same grid cell with only the current one showing, so the
+// box is always as tall as the longest step and nothing around it moves when the words change. A thin bar along the foot fills over the time the
+// step is shown, and the four chips show how far through the journey it is.
+const PHASES = (first) => {
+  const second = first === "Commons" ? "Lords" : "Commons";
+  return [{ label: first, color: HOUSE_COLOR[first] }, { label: second, color: HOUSE_COLOR[second] }, { label: "Ping-pong", color: COLORS.inkSoft }, { label: "Royal Assent", color: COLORS.accent }];
+};
+
+function StepBadge({ step, color }) {
+  const icon = step.done ? "tick" : step.phase === 2 ? "swap" : !step.show ? "swap" : null;
+  return (
+    <span className="bill-cap-badge" style={{ background: solid(color) }} aria-hidden="true">
+      {icon === "tick" && <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>}
+      {icon === "swap" && <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M4 8h13M13 4l4 4-4 4M20 16H7M11 12l-4 4 4 4" /></svg>}
+      {!icon && <span><b>{step.col + 1}</b><i>of {STAGE_DEFS.length}</i></span>}
+    </span>
+  );
+}
+
+function Caption({ steps, stepIndex, route, first, started, playing, onScreen, onToggle }) {
+  const step = steps[stepIndex];
+  const colour = step.done ? COLORS.accent : HOUSE_COLOR[step.house];
+  const phases = PHASES(first);
+  const running = started && playing && onScreen;
+  return (
+    <div className="bill-cap" style={{ "--hc": colour, "--fd": FONT_DISPLAY, "--fm": FONT_MONO, "--fb": FONT_BODY }} data-done={step.done ? "1" : "0"}>
+      <div className="bill-cap-row">
+        <StepBadge step={started ? step : { col: 0, show: true, phase: 0 }} color={colour} />
+        <div className="bill-cap-words" aria-live="off">
+          {started ? steps.map((st, i) => (
+            <div key={i} className="bill-cap-step" data-on={i === stepIndex ? "1" : "0"} aria-hidden={i === stepIndex ? undefined : "true"}>
+              <div className="bill-cap-title">{st.title}</div>
+              <div className="bill-cap-text">{st.text}</div>
+            </div>
+          )) : (
+            <div className="bill-cap-step" data-on="1">
+              <div className="bill-cap-title">How a bill becomes law</div>
+              <div className="bill-cap-text">A bill goes through five stages in one House, then the other, and can go back and forth between them until both agree. Then it gets Royal Assent and becomes law. Bills can start in either House.</div>
+            </div>
+          )}
         </div>
-        <button
-          type="button"
-          onClick={() => { setStarted(true); setPlaying((p) => !p); }}
-          style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, padding: "7px 14px", borderRadius: 999, cursor: "pointer", border: `1px solid ${COLORS.hairline}`, background: "transparent", color: COLORS.ink, flexShrink: 0 }}
-        >
+        <button type="button" className="bill-cap-btn" onClick={onToggle}>
+          <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" fill="currentColor">{playing ? <path d="M2.5 1.5h2.6v9H2.5zM6.9 1.5h2.6v9H6.9z" /> : <path d="M3 1.5l7 4.5-7 4.5z" />}</svg>
           {playing ? "Pause the walk-through" : "Play the walk-through"}
         </button>
+      </div>
+      <ol className="bill-cap-phases" aria-label="Where the walk-through has got to">
+        {phases.map((ph, i) => (
+          <li key={ph.label} style={{ "--pc": ph.color }} data-state={!started ? "todo" : i < step.phase ? "done" : i === step.phase ? "now" : "todo"}>{ph.label}</li>
+        ))}
+      </ol>
+      <div className="bill-cap-bar" aria-hidden="true">
+        {started && <i key={`${route}-${stepIndex}`} style={{ animationDuration: `${step.ms}ms`, animationPlayState: running ? "running" : "paused" }} />}
       </div>
     </div>
   );
@@ -244,22 +291,31 @@ export function BillJourney({ bills }) {
           >
             <div
               style={{
-                marginTop: 16, padding: "14px 16px", borderRadius: 12,
-                background: `${HOUSE_COLOR[selected.house]}0f`, border: `1px solid ${HOUSE_COLOR[selected.house]}33`,
+                marginTop: 16, padding: "16px 18px", borderRadius: 16,
+                background: `linear-gradient(135deg, color-mix(in srgb, ${HOUSE_COLOR[selected.house]} 11%, ${COLORS.paperCard}), ${COLORS.paperCard} 70%)`,
+                border: `1px solid color-mix(in srgb, ${HOUSE_COLOR[selected.house]} 32%, ${COLORS.hairline})`,
+                borderLeft: `5px solid ${HOUSE_COLOR[selected.house]}`,
               }}
             >
-              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11.5, color: HOUSE_COLOR[selected.house], textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 8 }}>
-                {selected.house} · {STAGE_DEFS.find((s) => s.key === selected.stageKey)?.label}
+              <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 17, color: COLORS.ink, marginBottom: 10 }}>
+                {selected.list.length} {selected.list.length === 1 ? "bill" : "bills"} at {STAGE_DEFS.find((s) => s.key === selected.stageKey)?.label} in the House of {selected.house}
               </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                {selected.list.slice(0, 12).map((b) => (
-                  <div key={b.bill_id} style={{ fontFamily: FONT_DISPLAY, fontSize: 14.5, color: COLORS.ink }}>
-                    {b.short_title}
-                  </div>
-                ))}
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {selected.list.slice(0, 12).map((b) => {
+                  const line = getBillDescription(b.short_title, null) ?? plainSentence(b.long_title);
+                  return (
+                    <div key={b.bill_id} style={{ display: "flex", gap: 10 }}>
+                      <span aria-hidden="true" style={{ flex: "none", width: 8, height: 8, borderRadius: "50%", background: HOUSE_COLOR[selected.house], marginTop: 7 }} />
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 14.5, color: COLORS.ink, lineHeight: 1.35 }}>{b.short_title}</div>
+                        {line && <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.45, marginTop: 1 }}>{line}</div>}
+                      </div>
+                    </div>
+                  );
+                })}
                 {selected.list.length > 12 && (
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 2 }}>
-                    +{selected.list.length - 12} more
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
+                    +{selected.list.length - 12} more below in the full list
                   </div>
                 )}
               </div>

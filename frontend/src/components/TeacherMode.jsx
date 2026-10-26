@@ -7,6 +7,7 @@ import { IconClassroom } from "./icons";
 import { CHAPTERS, GUIDE } from "../data/teacherMode";
 import { card, cardTitle } from "../lib/onsStyles";
 import Presenter from "./teacher/Presenter";
+import Printables from "./teacher/Printables";
 import { ShopScene } from "./teacher/Scenes";
 import { useBeats } from "./teacher/useBeats";
 import { loadGsap } from "../lib/gsapLoader";
@@ -135,6 +136,8 @@ export default function TeacherMode() {
           ))}
         </div>
       </section>
+
+      <Printables />
 
       <section aria-labelledby="h-tm-fair" style={{ ...card, marginTop: 34 }}>
         <h2 id="h-tm-fair" style={cardTitle}>Fair to every party</h2>

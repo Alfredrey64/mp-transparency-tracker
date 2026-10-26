@@ -82,6 +82,8 @@ export const LOADERS = {
   care: () => import("./components/Care"),
   transport: () => import("./components/Transport"),
   union: () => import("./components/Union"),
+  calculators: () => import("./components/Calculators"),
+  funding: () => import("./components/Funding"),
   ageing: () => import("./components/Ageing"),
 };
 

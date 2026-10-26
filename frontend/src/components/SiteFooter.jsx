@@ -31,6 +31,7 @@ const COLUMNS = [
       ["privacy", "Privacy"],
       ["terms", "Terms"],
       ["teacher", "Teacher mode"],
+      ["funding", "Funding and independence"],
     ],
   },
 ];

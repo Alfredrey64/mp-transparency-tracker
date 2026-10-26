@@ -18,6 +18,16 @@ export function IconFlow({ size = 17 }) {
   );
 }
 
+export function IconCalculator({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="5" y="3" width="14" height="18" rx="2.5" />
+      <path d="M8.5 7.5h7" />
+      <path d="M8.6 12h.01M12 12h.01M15.4 12h.01M8.6 15.5h.01M12 15.5h.01M15.4 15.5h.01" strokeWidth="2.4" />
+    </svg>
+  );
+}
+
 export function IconCoin({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">

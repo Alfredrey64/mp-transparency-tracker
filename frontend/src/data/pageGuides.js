@@ -221,6 +221,16 @@ export const PAGE_GUIDES = {
     why: "Children are affected by political decisions long before they can vote. Understanding how those decisions are made is the start of being able to take part.",
     notShown: "Any advice on who to vote for. The stories describe ideas without ranking them, and the party slides say what each party says about itself. Leaders and seat numbers change, so check them before a lesson.",
   },
+  calculators: {
+    what: "Two calculators. One shows what is left of a salary after income tax and National Insurance, and where the tax goes. The other works out stamp duty on a home in England or Northern Ireland, band by band.",
+    why: "Pay and house prices are where most people feel the tax system. Seeing the sums, with the rates they come from, makes it clear what the headline numbers mean for you.",
+    notShown: "Student loans, other income, unusual tax codes or special stamp duty cases. Scotland's and Wales's property taxes are linked, not worked out. Your payslip and GOV.UK have the final word.",
+  },
+  funding: {
+    what: "Who pays for this site, who does not, and the rules it keeps whatever the funding is, including a public log of any money received.",
+    why: "A site about who funds politics should say who funds it. Knowing there is no party, donor or advertiser behind a page helps you judge how far to trust it.",
+    notShown: "Nothing is hidden here. If the site ever takes money, it will appear in the funding log on this page.",
+  },
   howtovote: {
     what: "Who can vote in which elections, how to register, the ways to vote, what photo ID you need and what happens on polling day, in four plain steps.",
     why: "You can't vote unless you are registered, and the rules on ID and deadlines trip up people every election. Knowing them in advance makes your vote count.",

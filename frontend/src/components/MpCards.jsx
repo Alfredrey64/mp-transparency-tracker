@@ -7,6 +7,7 @@ import { supabase } from "../supabaseClient";
 import { stripHtml, formatDate } from "../lib/format";
 import { matchBillForVote } from "../lib/bills";
 import { getBillDescription } from "../lib/billDescriptions";
+import { plainSentence } from "../lib/billPlain";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import Loading from "./Loading";
 
@@ -261,7 +262,7 @@ export function VotingSummaryBox({ politician, onNavigate }) {
     for (const v of votes ?? []) {
       if (map.has(v.title)) continue;
       const bill = matchBillForVote(v.title, bills);
-      if (bill) map.set(v.title, getBillDescription(bill.short_title, bill.long_title));
+      if (bill) map.set(v.title, getBillDescription(bill.short_title, plainSentence(bill.long_title) ?? bill.long_title));
     }
     return map;
   }, [votes, bills]);
