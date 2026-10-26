@@ -58,41 +58,46 @@ export function ChapterScene({ chapter }) {
 }
 
 export function LayersScene() {
+  // The three groups stack above the street, nearest to you at the bottom, so the picture reads from "you" outwards.
   const band = (y, c, title, n) => (
     <B n={n} fx="rise">
-      <rect x="150" y={y} width="500" height="58" rx="16" fill={c} />
-      <Label x={400} y={y + 38} size={27}>{title}</Label>
+      <rect x="150" y={y} width="500" height="50" rx="15" fill={c} />
+      <Label x={400} y={y + 34} size={25}>{title}</Label>
     </B>
   );
   return (
     <>
       <Back />
-      {band(150, LAYERS[2].colour, "UK Parliament and government", 3)}
-      {band(216, LAYERS[1].colour, "Scotland, Wales, Northern Ireland", 2)}
-      {band(282, LAYERS[0].colour, "Your local council", 1)}
-      <B n={3} fx="fade"><g transform="translate(176 150)"><Parliament x={0} y={0} s={0.12} /></g></B>
-      <B n={0}><g className="t-ripple"><ellipse cx="400" cy="412" rx="92" ry="16" fill="none" stroke="#E0365B" strokeWidth="3" /></g></B>
-      <Person x={340} y={410} s={0.85} shirt="#E0365B" skin={SKIN[2]} mood="happy" />
-      <Person x={400} y={410} s={0.85} kid long shirt="#0E9AA7" skin={SKIN[2]} mood="happy" />
-      <Person x={460} y={410} s={0.85} shirt="#1E4FB8" skin={SKIN[1]} mood="happy" />
+      {band(46, LAYERS[2].colour, "UK Parliament and government", 3)}
+      {band(104, LAYERS[1].colour, "Scotland, Wales, Northern Ireland", 2)}
+      {band(162, LAYERS[0].colour, "Your local council", 1)}
+      <B n={3} fx="fade"><g transform="translate(176 46)"><Parliament x={0} y={0} s={0.12} /></g></B>
+      <B n={0}><g className="t-ripple"><ellipse cx="400" cy="408" rx="92" ry="16" fill="none" stroke="#E0365B" strokeWidth="3" /></g></B>
       <B n={0}>
-        <Label x={400} y={118} size={30} fill="#0B1B33">You live here</Label>
-        {[[120, "#E9B88A", "#B5533C"], [230, "#F4E2B5", "#8A5A3C"], [570, "#D6E6F5", "#4A6FA5"], [680, "#E9B88A", "#B5533C"]].map(([x, wall, roof]) => (
-          <g key={x} transform={`translate(${x} 362)`}><rect x="-38" y="-70" width="76" height="70" fill={wall} /><path d="M-46 -70 l46 -36 l46 36z" fill={roof} /><rect x="-10" y="-40" width="20" height="40" fill="#8A5A3C" /><rect x="14" y="-58" width="16" height="16" fill="#BFE0F5" /></g>
+        {[[110, "#E9B88A", "#B5533C"], [215, "#F4E2B5", "#8A5A3C"], [585, "#D6E6F5", "#4A6FA5"], [690, "#E9B88A", "#B5533C"]].map(([x, wall, roof]) => (
+          <g key={x} transform={`translate(${x} 366)`}><rect x="-38" y="-70" width="76" height="70" fill={wall} /><path d="M-46 -70 l46 -36 l46 36z" fill={roof} /><rect x="-10" y="-40" width="20" height="40" fill="#8A5A3C" /><rect x="14" y="-58" width="16" height="16" fill="#BFE0F5" /></g>
         ))}
+        <g transform="translate(400 286)">
+          <rect x="-84" y="-17" width="168" height="34" rx="17" fill="#fff" fillOpacity="0.95" stroke="#E0365B" strokeWidth="2.5" />
+          <Label x={0} y={8} size={21} fill="#0B1B33">You live here</Label>
+        </g>
       </B>
+      <Person x={340} y={406} s={0.8} shirt="#E0365B" skin={SKIN[2]} mood="happy" />
+      <Person x={400} y={406} s={0.8} kid long shirt="#0E9AA7" skin={SKIN[2]} mood="happy" />
+      <Person x={460} y={406} s={0.8} shirt="#1E4FB8" skin={SKIN[1]} mood="happy" />
     </>
   );
 }
 
 export function HousesScene() {
+  // The clock tower stands between the two Houses, with the King's crown on the open ground to its right.
   return (
     <>
       <Back />
-      <g transform="translate(400 372)"><Parliament x={0} y={0} s={1.35} /></g>
-      <B n={1} stagger><rect x="40" y="70" width="250" height="150" rx="20" fill="#16A34A" opacity="0.14" /><Seats x={165} y={196} colour="#16A34A" /><Label x={165} y={104} size={26} fill="#0F6B30">The Commons</Label></B>
-      <B n={2} stagger><rect x="510" y="70" width="250" height="150" rx="20" fill="#C0392B" opacity="0.14" /><Seats x={635} y={196} colour="#C0392B" /><Label x={635} y={104} size={26} fill="#8E241A">The Lords</Label></B>
-      <B n={3} fx="drop"><Crown x={400} y={90} s={1.1} /></B>
+      <g transform="translate(300 376)"><Parliament x={0} y={0} s={1.3} /></g>
+      <B n={1} stagger><rect x="24" y="30" width="250" height="158" rx="20" fill="#16A34A" opacity="0.14" /><Seats x={149} y={176} colour="#16A34A" /><Label x={149} y={64} size={25} fill="#0F6B30">The Commons</Label></B>
+      <B n={2} stagger><rect x="526" y="30" width="250" height="158" rx="20" fill="#C0392B" opacity="0.14" /><Seats x={651} y={176} colour="#C0392B" /><Label x={651} y={64} size={25} fill="#8E241A">The Lords</Label></B>
+      <B n={3} fx="drop"><Crown x={640} y={312} s={1.1} /><Label x={640} y={352} size={24} fill="#7A5008">The King</Label></B>
     </>
   );
 }
@@ -163,7 +168,7 @@ export function PartyScene({ party, seats }) {
       <circle cx="660" cy="100" r="110" fill="#fff" opacity="0.08" />
       <g className="t-slideup" style={{ animationDelay: "0.15s" }}><Label x={90} y={120} size={party.name.length > 14 ? 50 : 62} fill={color} anchor="start" weight={700}>{party.name}</Label></g>
       <g className="t-slideup" style={{ animationDelay: "0.3s" }}><Label x={90} y={168} size={30} fill={color} anchor="start" weight={600}>{party.leader}</Label></g>
-      <g className="t-slideup" style={{ animationDelay: "0.42s" }}><Label x={90} y={206} size={20} fill={color} anchor="start" weight={500}>{party.role.length > 44 ? party.role.slice(0, 42) + "…" : party.role}</Label></g>
+      <g className="t-slideup" style={{ animationDelay: "0.42s" }}><Label x={90} y={206} size={party.role.length > 40 ? 17 : 20} fill={color} anchor="start" weight={500}>{party.role.length > 62 ? party.role.slice(0, 60) + "…" : party.role}</Label></g>
       <Person x={650} y={382} s={1.7} shirt="#fff" trousers={`color-mix(in srgb, ${party.colour} 55%, #0B1B33)`} skin={SKIN[(party.key.length) % 4]} mood="happy" long={party.key.length % 2 === 0} />
       {mine > 0 && (
         <g transform="translate(165 354)" role="img" aria-label={`${mine} of ${SEATS_IN_COMMONS} seats in the Commons`}>
@@ -190,8 +195,8 @@ export function NiScene() {
       {cols.map(([c, label, x], i) => (
         <B key={label} n={i + 1} fx="rise">
           <rect x={x} y={110} width="220" height="190" rx="24" fill={c} />
-          <Label x={x + 110} y="196" size={32}>{label}</Label>
-          <Person x={x + 110} y={288} s={0.8} shirt="#fff" skin={SKIN[i + 1]} mood="ok" />
+          <Label x={x + 110} y="162" size={32}>{label}</Label>
+          <Person x={x + 110} y={292} s={0.85} shirt="#fff" skin={SKIN[i + 1]} mood="ok" />
         </B>
       ))}
       <Label x={400} y={70} size={30} fill="#0B1B33">Northern Ireland has its own parties</Label>
@@ -228,7 +233,7 @@ export function VoiceScene() {
           <B key={v.title} n={n} fx="pop">
             <rect x={x} y={y} width="206" height="140" rx="22" fill="#fff" stroke={v.colour} strokeWidth="4" />
             <g transform={`translate(${x + 103} ${y + 56}) scale(0.9)`}>{ICONS[i]}</g>
-            <Label x={x + 103} y={y + 124} size={21} fill="#0B1B33" weight={800}>{v.title}</Label>
+            <Label x={x + 103} y={y + 124} size={18.5} fill="#0B1B33" weight={800}>{v.title}</Label>
           </B>
         );
       })}

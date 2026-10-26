@@ -133,32 +133,28 @@ function SeatExtras({ cell, cells, uk, region, onSelect }) {
 // What the map shows when no seat is chosen: the whole UK, or the chosen region.
 function AreaSummary({ summary, label, onSeat }) {
   const max = Math.max(1, ...summary.parties.map((p) => p.count));
+  const tiles = [
+    [summary.seats.toLocaleString("en-GB"), "seats", "#1E4FB8"],
+    [summary.marginal.toLocaleString("en-GB"), "marginal (lead under 5%)", "#E0367A"],
+    [summary.gains.toLocaleString("en-GB"), "changed hands in 2024", "#E8741A"],
+    [summary.women.toLocaleString("en-GB"), "women MPs", "#7A5AF0"],
+    ...(summary.avgTurnout != null ? [[pct1(summary.avgTurnout), "average turnout", "#1FA97C"]] : []),
+  ];
   return (
     <Panel title={label}>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "12px 26px", marginBottom: 14 }}>
-        {[
-          [summary.seats, "seats"],
-          [summary.marginal, "marginal (lead under 5%)"],
-          [summary.gains, "changed hands in 2024"],
-          [summary.women, "women MPs"],
-        ].map(([v, l]) => (
-          <div key={l}>
-            <div style={{ ...numeric, fontSize: 26, fontWeight: 600, color: COLORS.ink, lineHeight: 1.05 }}>{v.toLocaleString("en-GB")}</div>
-            <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>{l}</div>
+      <div className="hub-tiles">
+        {tiles.map(([v, l, c]) => (
+          <div key={l} style={{ "--sc": c }}>
+            <b>{v}</b>
+            <span>{l}</span>
           </div>
         ))}
-        {summary.avgTurnout != null && (
-          <div>
-            <div style={{ ...numeric, fontSize: 26, fontWeight: 600, color: COLORS.ink, lineHeight: 1.05 }}>{pct1(summary.avgTurnout)}</div>
-            <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>average turnout</div>
-          </div>
-        )}
       </div>
       {summary.parties.slice(0, 7).map((p) => (
-        <div key={p.party} style={{ display: "grid", gridTemplateColumns: "minmax(90px, 160px) minmax(0, 1fr) 36px", gap: 10, alignItems: "center", padding: "3px 0" }}>
+        <div key={p.party} style={{ display: "grid", gridTemplateColumns: "minmax(90px, 160px) minmax(0, 1fr) 36px", gap: 10, alignItems: "center", padding: "4px 0" }}>
           <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.party}</span>
-          <span style={{ height: 10, borderRadius: 5, background: COLORS.paper, overflow: "hidden" }}>
-            <span style={{ display: "block", width: `${(p.count / max) * 100}%`, height: "100%", background: p.colour, borderRadius: 5, transition: "width 0.4s" }} />
+          <span style={{ height: 12, borderRadius: 6, background: `color-mix(in srgb, ${p.colour} 12%, ${COLORS.paper})`, overflow: "hidden" }}>
+            <span style={{ display: "block", width: `${(p.count / max) * 100}%`, height: "100%", background: `linear-gradient(90deg, color-mix(in srgb, ${p.colour} 65%, #fff), ${p.colour})`, borderRadius: 6, transition: "width 0.5s var(--ease-out)" }} />
           </span>
           <span style={{ ...numeric, fontSize: 13, fontWeight: 700, textAlign: "right", color: COLORS.ink }}>{p.count}</span>
         </div>
@@ -217,8 +213,9 @@ function Legend({ mode, cells, focusParty, onFocusParty }) {
 
 const chip = (on) => ({
   fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, padding: "7px 14px", borderRadius: 999, cursor: "pointer",
-  border: `1px solid ${on ? COLORS.accent : COLORS.hairline}`, background: on ? COLORS.accent : "transparent", color: on ? "#fff" : COLORS.inkSoft,
-  transition: "background-color 0.15s, color 0.15s, border-color 0.15s",
+  border: `1px solid ${on ? "color-mix(in srgb, var(--page-accent, #2F80ED) 80%, #000)" : COLORS.hairline}`, background: on ? "color-mix(in srgb, var(--page-accent, #2F80ED) 80%, #000)" : COLORS.paperCard, color: on ? "#fff" : COLORS.inkSoft,
+  boxShadow: on ? "0 8px 16px -10px var(--page-accent, #2F80ED)" : "none",
+  transition: "background-color 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.2s",
 });
 
 export default function ConstituencyHub({ seat, onSelectPolitician }) {

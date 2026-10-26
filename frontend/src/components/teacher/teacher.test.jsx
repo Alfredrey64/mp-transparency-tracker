@@ -99,3 +99,36 @@ describe("Teacher mode", () => {
     expect(MENU.flatMap((m) => m.groups.flatMap((g) => g.items.map((i) => i.key)))).not.toContain("teacher");
   });
 });
+
+import { applyNames, cleanNames, DEFAULT_NAMES, shuffleNames } from "./characters";
+import { buildSlides as buildNamedSlides } from "./slides";
+
+describe("naming the characters", () => {
+  it("swaps the original names in the words, including possessives", () => {
+    expect(applyNames("This is Sam and her dad. Leo's school.", { ...DEFAULT_NAMES, sam: "Priya", leo: "Kofi" })).toBe("This is Priya and her dad. Kofi's school.");
+  });
+  it("leaves other words alone", () => {
+    expect(applyNames("Samuel and Leopold", { ...DEFAULT_NAMES, sam: "Priya" })).toBe("Samuel and Leopold");
+  });
+  it("tidies what is typed: letters only, cut short, never empty", () => {
+    const n = cleanNames({ sam: "  <b>Alexandria-Mae</b> the Great  ", maya: "", leo: 42, amira: "D'Arcy" });
+    expect(n.sam).toBe("bAlexandria-Mae".slice(0, 12).trim());
+    expect(n.sam.length).toBeLessThanOrEqual(12);
+    expect(n.maya).toBe("Maya");
+    expect(n.leo).toBe("Leo");
+    expect(n.amira).toBe("D'Arcy");
+  });
+  it("puts the chosen names into the story slides only", () => {
+    const names = { sam: "Priya", maya: "Ava", leo: "Kofi", amira: "Zara" };
+    const slides = buildNamedSlides({}, names);
+    const text = (kind) => JSON.stringify(slides.filter((s) => s.kind === kind));
+    expect(text("story")).toContain("Priya");
+    expect(text("story")).toContain("Kofi");
+    expect(text("story")).not.toMatch(/\bSam\b|\bLeo\b|\bMaya\b|\bAmira\b/);
+    expect(JSON.stringify(slides)).toBe(JSON.stringify(buildNamedSlides({}, names)));
+  });
+  it("shuffles to four different names", () => {
+    const n = shuffleNames();
+    expect(new Set(Object.values(n)).size).toBe(4);
+  });
+});

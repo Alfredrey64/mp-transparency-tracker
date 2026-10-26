@@ -2,7 +2,9 @@
 // ground at y = 360. A piece never carries its own transform on the group that is animated: the animation owns that, so each piece positions
 // itself with its own inner group.
 
+import { useContext } from "react";
 import { INK, SKIN } from "./palette";
+import { NamesContext } from "./characters";
 
 export function Sky({ tone = "#DCEBFF", tone2 = "#F4F8FF" }) {
   return (
@@ -37,7 +39,20 @@ export function Cloud({ x, y, s = 1, delay = 0 }) {
 }
 
 // A person standing with their feet at (x, y). `kid` makes them smaller and rounder. `mood`: ok, worried, happy, thinking.
-export function Person({ x, y, s = 1, skin = SKIN[1], shirt = "#1E4FB8", trousers = "#2D3A55", hair = "#3B2A20", kid = false, mood = "ok", long = false, flip = false }) {
+// A small name tag under someone's feet. `who` is one of the four children (their name comes from the class's choice); `tag` is a fixed word such as "Dad".
+function NameTag({ x, y, text, accent }) {
+  const w = Math.max(44, text.length * 8.6 + 20);
+  return (
+    <g transform={`translate(${x} ${y + 24})`} className="t-tag">
+      <rect x={-w / 2} y="-12" width={w} height="24" rx="12" fill="#fff" fillOpacity="0.94" stroke={accent} strokeWidth="2" />
+      <text y="5.5" textAnchor="middle" fontSize="14.5" fontWeight="800" fontFamily="Public Sans, system-ui, sans-serif" fill="#1B2438">{text}</text>
+    </g>
+  );
+}
+
+export function Person({ x, y, s = 1, skin = SKIN[1], shirt = "#1E4FB8", trousers = "#2D3A55", hair = "#3B2A20", kid = false, mood = "ok", long = false, flip = false, who, tag }) {
+  const names = useContext(NamesContext);
+  const label = who ? names[who] : tag;
   const k = (kid ? 0.74 : 1) * s;
   const mouth = {
     ok: <path d="M-5 -93 q5 3 10 0" stroke={INK} strokeWidth="2" fill="none" strokeLinecap="round" />,
@@ -46,6 +61,8 @@ export function Person({ x, y, s = 1, skin = SKIN[1], shirt = "#1E4FB8", trouser
     thinking: <path d="M-5 -92 h10" stroke={INK} strokeWidth="2.4" fill="none" strokeLinecap="round" />,
   }[mood];
   return (
+    <>
+    {label && <NameTag x={x} y={y} text={label} accent={shirt} />}
     <g transform={`translate(${x} ${y}) scale(${flip ? -k : k} ${k})`}>
       <ellipse cx="0" cy="2" rx="26" ry="5" fill="#000" opacity="0.1" />
       <g className="t-idle" style={{ animationDelay: `${-((Math.abs(x) * 7 + Math.abs(y)) % 40) / 10}s` }}>
@@ -67,6 +84,7 @@ export function Person({ x, y, s = 1, skin = SKIN[1], shirt = "#1E4FB8", trouser
       {mouth}
       </g>
     </g>
+    </>
   );
 }
 

@@ -2,11 +2,13 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
+import { COLORS, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { LoadFailedNote } from "./MpCards";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconPetition } from "./icons";
+import { Segmented } from "./DeprivationControls";
+import "../petitions.css";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import Loading from "./Loading";
 
@@ -17,8 +19,8 @@ function formatDate(dateStr) {
 
 const FILTERS = [
   { key: "open", label: "Open now" },
-  { key: "responded", label: "Got a government response" },
-  { key: "debated", label: "Debated in Parliament" },
+  { key: "responded", label: "Got a government response", short: "Responded" },
+  { key: "debated", label: "Debated in Parliament", short: "Debated" },
 ];
 
 function SignatureBar({ count, threshold, label, color }) {
@@ -39,96 +41,97 @@ function SignatureBar({ count, threshold, label, color }) {
   );
 }
 
-function PetitionRow({ petition, index, isOpen, onToggle }) {
-  const isOpenState = petition.state === "open";
-  const color = petition.debate_outcome_summary || petition.debate_scheduled_on ? "#6E4B6E" : petition.government_responded_at ? "#2F6F4E" : COLORS.accent;
+const STATUS = {
+  debate: { colour: "#7A5AF0", label: "Debated" },
+  response: { colour: "#1FA97C", label: "Government responded" },
+  open: { colour: "#E0367A", label: "Open" },
+  closed: { colour: "#6B7A90", label: "Closed" },
+};
+const statusOf = (p) => (p.debate_outcome_summary || p.debate_scheduled_on ? STATUS.debate : p.government_responded_at ? STATUS.response : p.state === "open" ? STATUS.open : STATUS.closed);
 
+// How far a petition has got: a bar to 100,000 signatures with a mark at 10,000, where the government has to respond.
+function Ladder({ count }) {
+  const pct = Math.min(100, (count / 100000) * 100);
   return (
-    <motion.div
+    <div className="pt-ladder" aria-hidden="true">
+      <div className="pt-ladder-bar"><span className="bar-grow" style={{ width: `${pct}%` }} /></div>
+      <i className="pt-mark" style={{ left: "10%" }} data-hit={count >= 10000 ? "1" : "0"} />
+      <i className="pt-mark" style={{ left: "calc(100% - 2px)" }} data-hit={count >= 100000 ? "1" : "0"} />
+    </div>
+  );
+}
+
+function PetitionRow({ petition, rank, isOpen, onToggle }) {
+  const st = statusOf(petition);
+  const isOpenState = petition.state === "open";
+  const panelId = `pt-${petition.id}`;
+  return (
+    <motion.article
+      layout="position"
       initial={{ opacity: 0, y: 12 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.35, delay: Math.min(index, 10) * 0.03, ease: "easeOut" }}
-      style={{
-        background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `4px solid ${color}`,
-        borderRadius: 12, padding: "16px 20px", marginBottom: 12,
-      }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
+      className="pt-card" data-open={isOpen ? "1" : "0"} style={{ "--pc": st.colour }}
     >
-      <button onClick={onToggle} style={{ display: "block", width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
-          <div style={{ minWidth: 0, flex: 1 }}>
-            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 16.5, color: COLORS.ink, lineHeight: 1.4 }}>{petition.action}</div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6, flexWrap: "wrap" }}>
-              <span style={{ display: "inline-flex", alignItems: "baseline", gap: 5 }}>
-                <span style={{ fontFamily: FONT_DISPLAY, fontSize: 17, fontWeight: 700, color: readable(color) }}>
-                  {petition.signature_count.toLocaleString()}
-                </span>
-                <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 500, color: COLORS.inkSoft }}>
-                  signatures
-                </span>
-              </span>
-              <span style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft }}>
-                {isOpenState ? "Open" : "Closed"}
-                {petition.government_responded_at ? " · Government responded" : ""}
-                {petition.debate_scheduled_on || petition.debate_outcome_summary ? " · Debated" : ""}
-              </span>
-            </div>
-          </div>
-          <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ color: COLORS.inkSoft, fontSize: 12, flexShrink: 0, marginTop: 4 }}>▾</motion.span>
-        </div>
+      <button type="button" onClick={onToggle} aria-expanded={isOpen} aria-controls={panelId} className="pt-head">
+        <span className="pt-rank" aria-hidden="true">{rank}</span>
+        <span className="pt-main">
+          <span className="pt-action">{petition.action}</span>
+          <span className="pt-meta">
+            <span className="pt-chip">{st.label}</span>
+            {isOpenState && st !== STATUS.open && <span className="pt-chip pt-chip-soft">Still open</span>}
+          </span>
+          <Ladder count={petition.signature_count} />
+        </span>
+        <span className="pt-sigs"><b>{petition.signature_count.toLocaleString("en-GB")}</b><span>signatures</span></span>
+        <motion.span aria-hidden="true" className="pt-chev" animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>▾</motion.span>
       </button>
 
       <AnimatePresence initial={false}>
         {isOpen && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.22 }} style={{ overflow: "hidden" }}>
-            <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${COLORS.hairline}`, display: "flex", flexDirection: "column", gap: 12 }}>
-              {petition.background && (
-                <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.6 }}>{petition.background}</div>
-              )}
+          <motion.div id={panelId} initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.22 }} style={{ overflow: "hidden" }}>
+            <div className="pt-more">
+              {petition.background && <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.65 }}>{petition.background}</div>}
 
               {isOpenState && (
                 <div>
-                  <SignatureBar count={petition.signature_count} threshold={10000} label="Threshold for a government response" color="#2F6F4E" />
-                  <SignatureBar count={petition.signature_count} threshold={100000} label="Threshold for a Commons debate" color="#6E4B6E" />
+                  <SignatureBar count={petition.signature_count} threshold={10000} label="Threshold for a government response" color="#1FA97C" />
+                  <SignatureBar count={petition.signature_count} threshold={100000} label="Threshold for a Commons debate" color="#7A5AF0" />
                 </div>
               )}
 
               {petition.government_response_summary && (
-                <div style={{ background: "#2F6F4E0c", borderLeft: "3px solid #2F6F4E", borderRadius: 6, padding: "9px 13px" }}>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: readable("#2F6F4E"), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>
-                    Government response{petition.government_responded_at ? ` · ${formatDate(petition.government_responded_at)}` : ""}
-                  </div>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, lineHeight: 1.55 }}>{petition.government_response_summary}</div>
+                <div className="pt-note" style={{ "--nc": "#1FA97C" }}>
+                  <b>Government response{petition.government_responded_at ? `, ${formatDate(petition.government_responded_at)}` : ""}</b>
+                  <p>{petition.government_response_summary}</p>
                 </div>
               )}
 
               {(petition.debate_outcome_summary || petition.debate_scheduled_on) && (
-                <div style={{ background: "#6E4B6E0c", borderLeft: "3px solid #6E4B6E", borderRadius: 6, padding: "9px 13px" }}>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: readable("#6E4B6E"), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>
-                    {petition.debate_outcome_summary ? "Commons debate" : "Debate scheduled"}
-                  </div>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, lineHeight: 1.55 }}>
-                    {petition.debate_outcome_summary || `Scheduled for ${formatDate(petition.debate_scheduled_on)}`}
-                  </div>
+                <div className="pt-note" style={{ "--nc": "#7A5AF0" }}>
+                  <b>{petition.debate_outcome_summary ? "Commons debate" : "Debate scheduled"}</b>
+                  <p>{petition.debate_outcome_summary || `Scheduled for ${formatDate(petition.debate_scheduled_on)}`}</p>
                 </div>
               )}
 
-              <a href={petition.url} target="_blank" rel="noreferrer" style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, color: COLORS.ink }}>
-                View full petition on petitions.parliament.uk ↗
-              </a>
+              <a className="pt-link" href={petition.url} target="_blank" rel="noreferrer">View the full petition on petitions.parliament.uk ↗</a>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </motion.article>
   );
 }
+
+const PAGE = 25;
 
 export default function Petitions() {
   const [petitions, setPetitions] = useState(null);
   const [failed, setFailed] = useState(false);
   const [filter, setFilter] = useState("open");
   const [openId, setOpenId] = useState(null);
+  const [shown, setShown] = useState(PAGE);
 
   useEffect(() => {
     async function load() {
@@ -139,6 +142,16 @@ export default function Petitions() {
     load();
   }, []);
 
+  const counts = useMemo(() => {
+    const list = petitions ?? [];
+    return {
+      open: list.filter((p) => p.state === "open").length,
+      responded: list.filter((p) => p.government_responded_at).length,
+      debated: list.filter((p) => p.debate_outcome_summary || p.debate_scheduled_on).length,
+      signatures: list.filter((p) => p.state === "open").reduce((t, p) => t + (p.signature_count ?? 0), 0),
+    };
+  }, [petitions]);
+
   const filtered = useMemo(() => {
     if (!petitions) return [];
     if (filter === "open") return petitions.filter((p) => p.state === "open");
@@ -148,7 +161,7 @@ export default function Petitions() {
   }, [petitions, filter]);
 
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 940, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconPetition}
         kicker="Petitions"
@@ -156,58 +169,50 @@ export default function Petitions() {
         subtitle="The most-signed petitions that are open now, plus recent ones that got a government response or a Commons debate. They come straight from petitions.parliament.uk, with no picking and choosing from us."
       />
 
-      <div
-        style={{
-          background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: "14px 18px",
-          marginTop: 24, marginBottom: 22, fontFamily: FONT_BODY, fontSize: 13, lineHeight: 1.6, color: COLORS.inkSoft,
-        }}
-      >
-        Any UK citizen or resident can create or sign a <GlossaryTerm term="Petition">petition</GlossaryTerm> to Parliament. At <strong style={{ color: COLORS.ink }}>10,000 signatures</strong>,
-        the government must respond in writing; at <strong style={{ color: COLORS.ink }}>100,000</strong>, it's considered for a
-        Commons debate, though a debate isn't guaranteed, and neither a response nor a debate changes the law by itself. Petitions run
-        for six months from opening, and each one is moderated before publication.
-      </div>
+      <section className="pt-how" aria-label="How petitions work">
+        <p>Any UK citizen or resident can create or sign a <GlossaryTerm term="Petition">petition</GlossaryTerm> to Parliament. Petitions run for six months from opening, and each one is moderated before publication.</p>
+        <ol>
+          <li style={{ "--hc": "#1FA97C" }}><b>10,000</b><span>signatures, and the government must respond in writing</span></li>
+          <li style={{ "--hc": "#7A5AF0" }}><b>100,000</b><span>signatures, and it is considered for a Commons debate</span></li>
+          <li style={{ "--hc": "#E8741A" }}><b>No promise</b><span>A debate isn't guaranteed, and neither a response nor a debate changes the law by itself</span></li>
+        </ol>
+      </section>
 
-      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 22 }}>
-        {FILTERS.map((f) => {
-          const active = filter === f.key;
-          return (
-            <button
-              key={f.key}
-              onClick={() => withScrollPreserved(() => setFilter(f.key))}
-              style={{
-                fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, padding: "7px 14px", borderRadius: 999,
-                border: `1px solid ${active ? COLORS.accent : COLORS.hairline}`, background: active ? COLORS.accent : "transparent",
-                color: active ? "#fff" : COLORS.inkSoft, cursor: "pointer", transition: "all 0.15s",
-              }}
-            >
-              {f.label}
-            </button>
-          );
-        })}
-      </div>
-
-      {petitions === null && (
-        <Loading compact />
-      )}
-
-      {petitions !== null && failed && <LoadFailedNote item="the petitions list" />}
-
-      {petitions !== null && !failed && filtered.length === 0 && (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, padding: "20px 0" }}>
-          No petitions match this filter right now.
+      {petitions !== null && !failed && (
+        <div className="pt-stats">
+          <div style={{ "--sc": "#E0367A" }}><b>{counts.open.toLocaleString("en-GB")}</b><span>petitions open</span></div>
+          <div style={{ "--sc": "#C7871A" }}><b>{counts.signatures.toLocaleString("en-GB")}</b><span>signatures on them</span></div>
+          <div style={{ "--sc": "#1FA97C" }}><b>{counts.responded.toLocaleString("en-GB")}</b><span>got a response</span></div>
+          <div style={{ "--sc": "#7A5AF0" }}><b>{counts.debated.toLocaleString("en-GB")}</b><span>debated</span></div>
         </div>
       )}
 
-      {filtered.map((p, i) => (
-        <PetitionRow
-          key={p.id}
-          petition={p}
-          index={i}
-          isOpen={openId === p.id}
-          onToggle={() => withScrollPreserved(() => setOpenId(openId === p.id ? null : p.id))}
+      <div style={{ margin: "22px 0 18px" }}>
+        <Segmented
+          label="Which petitions" value={filter} accent="#E0367A"
+          onChange={(k) => withScrollPreserved(() => { setFilter(k); setShown(PAGE); setOpenId(null); })}
+          options={FILTERS.map((f) => ({ id: f.key, label: f.label, short: f.short }))}
         />
-      ))}
+      </div>
+
+      {petitions === null && <Loading compact />}
+      {petitions !== null && failed && <LoadFailedNote item="the petitions list" />}
+      {petitions !== null && !failed && filtered.length === 0 && (
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, padding: "20px 0" }}>No petitions match this filter right now.</div>
+      )}
+
+      <div className="pt-list">
+        {filtered.slice(0, shown).map((p, i) => (
+          <PetitionRow key={p.id} petition={p} rank={i + 1} isOpen={openId === p.id} onToggle={() => withScrollPreserved(() => setOpenId(openId === p.id ? null : p.id))} />
+        ))}
+      </div>
+      {filtered.length > shown && (
+        <div style={{ textAlign: "center", marginTop: 20 }}>
+          <button type="button" className="btn btn-secondary btn-lg" onClick={() => withScrollPreserved(() => setShown((n) => n + PAGE))}>
+            Show {Math.min(PAGE, filtered.length - shown)} more of {filtered.length - shown} left
+          </button>
+        </div>
+      )}
     </div>
   );
 }

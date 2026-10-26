@@ -1,0 +1,66 @@
+/* The timeline page. Loaded only with it. Each era has one colour (--ea) and each card one (--cc). */
+.tl-tabs { position: relative; display: flex; gap: 4px; width: fit-content; margin: 8px auto 0; padding: 5px; border-radius: 999px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); }
+.tl-tabs button { position: relative; border: 0; background: none; padding: 10px 22px; border-radius: 999px; cursor: pointer; font: 700 14.5px "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.tl-tabs button[aria-selected="true"] { color: #fff; }
+.tl-tabs button span { position: absolute; inset: 0; border-radius: 999px; background: linear-gradient(120deg, var(--c-brand), #6E4B6E); box-shadow: 0 8px 18px -8px var(--c-brand); }
+.tl-tabs i { position: relative; font-style: normal; }
+.tl-key { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 20px; margin: 22px 0 6px; font: 500 13px "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.tl-key span { display: inline-flex; align-items: center; gap: 7px; }
+.tl-key i { width: 12px; height: 12px; border-radius: 4px; }
+.tl-lead { margin: 22px auto 6px; max-width: 640px; text-align: center; font: 400 15px/1.6 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.tl-nav { position: sticky; top: 0; z-index: 8; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 10px -8px 18px; padding: 12px 8px; background: color-mix(in srgb, var(--c-paper) 92%, transparent); backdrop-filter: blur(8px); }
+.tl-nav button { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; cursor: pointer; font: 600 13px "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--ea) 70%, var(--c-ink)); background: color-mix(in srgb, var(--ea) 9%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--ea) 34%, transparent); transition: background 0.25s, color 0.25s, transform 0.25s var(--ease-out), box-shadow 0.25s; }
+.tl-nav button span { width: 9px; height: 9px; border-radius: 50%; background: var(--ea); transition: transform 0.25s var(--ease-out); }
+.tl-nav button:hover { transform: translateY(-2px); }
+.tl-nav button[aria-current="true"] { background: var(--ea); color: #fff; box-shadow: 0 8px 18px -10px var(--ea); }
+.tl-nav button[aria-current="true"] span { background: #fff; transform: scale(1.25); }
+
+.tl-era { margin-bottom: 70px; scroll-margin-top: 88px; }
+.tl-banner { position: relative; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px 24px; overflow: hidden; padding: 24px clamp(18px, 4vw, 34px); border-radius: 22px; color: #fff; background: linear-gradient(120deg, color-mix(in srgb, var(--ea) 92%, #000), color-mix(in srgb, var(--ea) 60%, #000)); box-shadow: 0 20px 34px -22px var(--ea); }
+.tl-banner::after { content: ""; position: absolute; right: -40px; top: -60px; width: 220px; height: 220px; border-radius: 50%; background: rgba(255, 255, 255, 0.12); }
+.tl-banner::before { content: ""; position: absolute; right: 90px; bottom: -80px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255, 255, 255, 0.08); }
+.tl-banner h2 { position: relative; margin: 2px 0 0; font: 700 clamp(26px, 4vw, 38px)/1.1 "Newsreader", Georgia, serif; letter-spacing: -0.015em; z-index: 1; }
+.tl-banner-range { position: relative; z-index: 1; font: 700 15px "Public Sans", system-ui, sans-serif; opacity: 0.9; font-variant-numeric: tabular-nums; }
+.tl-banner-stat { position: relative; z-index: 1; padding: 6px 14px; border-radius: 999px; background: rgba(255, 255, 255, 0.18); font: 600 13px "Public Sans", system-ui, sans-serif; }
+
+/* The track: a spine with a node and a card for each entry. On a phone the spine sits on the left and every card on the right of it. */
+.tl-track { position: relative; margin-top: 30px; padding-left: 44px; }
+.tl-spine, .tl-spine-fill { position: absolute; left: 16px; top: 0; bottom: 0; width: 4px; margin-left: -2px; border-radius: 2px; }
+.tl-spine { background: color-mix(in srgb, var(--ea) 18%, var(--c-hairline)); }
+.tl-spine-fill { background: linear-gradient(var(--ea), color-mix(in srgb, var(--ea) 70%, #fff)); transform-origin: top; box-shadow: 0 0 14px color-mix(in srgb, var(--ea) 50%, transparent); }
+.tl-row { position: relative; margin: 0 0 22px; }
+.tl-node { position: absolute; left: -44px; top: 20px; z-index: 2; display: grid; place-items: center; width: 56px; height: 28px; margin-left: -12px; padding: 0 2px; border-radius: 999px; background: var(--c-paper-card); border: 3px solid var(--ea); box-shadow: 0 0 0 4px var(--c-paper), 0 6px 14px -6px var(--ea); }
+.tl-node b { font: 800 12.5px "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--ea) 70%, var(--c-ink)); font-variant-numeric: tabular-nums; }
+@media (min-width: 880px) {
+  .tl-track { padding-left: 0; }
+  .tl-spine, .tl-spine-fill { left: 50%; }
+  .tl-row { display: grid; grid-template-columns: minmax(0, 1fr) 0 minmax(0, 1fr); column-gap: 0; }
+  .tl-node { left: 50%; top: 22px; margin-left: -28px; }
+  .tl-row[data-side="l"] .tl-card { grid-column: 1; margin-right: 50px; }
+  .tl-row[data-side="r"] .tl-card { grid-column: 3; margin-left: 50px; }
+  .tl-row[data-side="l"] .tl-card::after, .tl-row[data-side="r"] .tl-card::after { content: ""; position: absolute; top: 31px; width: 14px; height: 14px; background: inherit; transform: rotate(45deg); border: 1px solid color-mix(in srgb, var(--cc) 32%, var(--c-hairline)); }
+  .tl-row[data-side="l"] .tl-card::after { right: -8px; border-left: 0; border-bottom: 0; }
+  .tl-row[data-side="r"] .tl-card::after { left: -8px; border-right: 0; border-top: 0; }
+}
+
+.tl-card { position: relative; padding: 16px 18px 15px; border-radius: 18px; cursor: pointer; background: linear-gradient(160deg, color-mix(in srgb, var(--cc) 11%, var(--c-paper-card)), var(--c-paper-card) 70%); border: 1px solid color-mix(in srgb, var(--cc) 32%, var(--c-hairline)); border-top: 4px solid var(--cc); box-shadow: var(--shadow-1); transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out); }
+.tl-card:hover { transform: translateY(-3px) rotate(-0.3deg); box-shadow: var(--shadow-3); }
+.tl-card[data-open="1"] { box-shadow: var(--shadow-2), 0 0 0 3px color-mix(in srgb, var(--cc) 20%, transparent); }
+.tl-gov-top, .tl-bill-top { display: flex; align-items: center; gap: 14px; }
+.tl-ring { flex: none; display: grid; place-items: center; padding: 3px; border-radius: 50%; background: conic-gradient(var(--cc), color-mix(in srgb, var(--cc) 35%, #fff), var(--cc)); transition: transform 0.4s var(--ease-out); }
+.tl-card:hover .tl-ring { transform: rotate(8deg) scale(1.05); }
+.tl-gov-who { min-width: 0; flex: 1; }
+.tl-gov-name { font: 700 clamp(18px, 2.2vw, 21px)/1.2 "Newsreader", Georgia, serif; color: var(--c-ink); }
+.tl-gov-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 5px; }
+.tl-party { padding: 2px 10px; border-radius: 999px; font: 700 11.5px "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--cc) 72%, var(--c-ink)); background: color-mix(in srgb, var(--cc) 16%, transparent); border: 1px solid color-mix(in srgb, var(--cc) 32%, transparent); }
+.tl-term { font: 500 12.5px "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.tl-chev { flex: none; align-self: flex-start; color: var(--c-ink-soft); font-size: 13px; }
+.tl-note { margin-top: 10px; font: 400 13.5px/1.6 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.tl-more { margin-top: 14px; padding-top: 14px; border-top: 1px dashed color-mix(in srgb, var(--cc) 40%, transparent); }
+.tl-bill-icon { flex: none; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 13px; background: linear-gradient(145deg, color-mix(in srgb, var(--cc) 24%, transparent), color-mix(in srgb, var(--cc) 10%, transparent)); color: var(--cc); transition: transform 0.3s var(--ease-out); }
+.tl-card:hover .tl-bill-icon { transform: rotate(-8deg) scale(1.08); }
+.tl-bill-title { font: 700 15.5px/1.3 "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.tl-bill-meta { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 3px; font: 500 12px "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.tl-result { font-weight: 800; color: color-mix(in srgb, var(--cc) 80%, var(--c-ink)); }
+@media (prefers-reduced-motion: reduce) { .tl-card, .tl-ring, .tl-bill-icon, .tl-nav button { transition: none; } .tl-card:hover { transform: none; } }
+@media (max-width: 700px) { .tl-nav { position: static; margin: 14px 0 6px; padding: 0; background: none; backdrop-filter: none; } .tl-nav button { padding: 7px 12px; font-size: 12.5px; } }

@@ -29,8 +29,8 @@ const goSeat = (name) => {
 
 export function Panel({ title, children, style }) {
   return (
-    <section style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "20px 22px", ...style }}>
-      {title && <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, color: COLORS.ink, margin: "0 0 14px", letterSpacing: "-0.01em" }}>{title}</h2>}
+    <section className="ycard" style={{ "--ca": "var(--page-accent, #2F80ED)", padding: "22px 24px", ...style }}>
+      {title && <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, margin: "0 0 14px", letterSpacing: "-0.01em" }}>{title}</h2>}
       {children}
     </section>
   );

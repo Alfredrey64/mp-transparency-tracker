@@ -1,5 +1,5 @@
-import { useState, useId } from "react";
-import { motion, AnimatePresence, useScroll, useSpring } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence, useScroll, useSpring, useReducedMotion } from "motion/react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable, chip } from "../theme";
 import { PageHeader } from "./shared";
 import { IconTimeline } from "./icons";
@@ -8,35 +8,7 @@ import { BillIcon } from "./billIcons";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import pmPortraits from "../data/pmPortraits.json";
 import { keyboardActivate } from "../lib/a11y";
-
-// A small "time flows downward" connector rendered between consecutive
-// entries in the Full Timeline — a soft gradient line easing into a rounded,
-// curved chevron, animated into view the same way the boxes are so the
-// whole chain feels like one continuous reveal rather than a static rail.
-function TimelineArrow({ color, index = 0 }) {
-  const gradientId = useId();
-  return (
-    <motion.div
-      initial={{ opacity: 0, scaleY: 0.4 }}
-      whileInView={{ opacity: 1, scaleY: 1 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.4, delay: Math.min(index, 10) * 0.03, ease: "easeOut" }}
-      style={{ display: "flex", justifyContent: "center", margin: "-3px 0", y: -4, transformOrigin: "top" }}
-      aria-hidden="true"
-    >
-      <svg width="22" height="26" viewBox="0 0 22 26" fill="none">
-        <defs>
-          <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={color} stopOpacity="0.1" />
-            <stop offset="100%" stopColor={color} stopOpacity="0.95" />
-          </linearGradient>
-        </defs>
-        <line x1="11" y1="0" x2="11" y2="14" stroke={`url(#${gradientId})`} strokeWidth="2.25" strokeLinecap="round" />
-        <path d="M3 13 L11 23 L19 13" stroke={color} strokeWidth="2.25" fill="none" strokeLinecap="round" strokeLinejoin="miter" />
-      </svg>
-    </motion.div>
-  );
-}
+import "../timeline.css";
 
 function PmAvatar({ name, color, size = 40 }) {
   const [loaded, setLoaded] = useState(false);
@@ -167,102 +139,51 @@ function termFor(gov) {
   return { endYear, years: endYear ? endYear - gov.year : new Date().getFullYear() - gov.year };
 }
 
-function GovernmentEntry({ entry, index, showTerm }) {
+const Label = ({ color, children }) => (
+  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12, color: readable(color), marginBottom: 7 }}>{children}</div>
+);
+
+// A government, as a card: the Prime Minister's portrait in a ring of their party's colour, their name, the party, and a note. Open it for the events of
+// those years, where the party came from and the landmark bills passed on their watch.
+function GovernmentEntry({ entry, showTerm }) {
   const [open, setOpen] = useState(false);
   const color = historicPartyColor(entry.party);
   const lineage = PARTY_LINEAGE[entry.party];
   const bills = open ? billsDuringGovernment(entry) : [];
-  const term = showTerm ? termFor(entry) : null;
+  const term = termFor(entry);
+  const toggle = () => withScrollPreserved(() => setOpen((v) => !v));
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -16, scale: 0.98 }}
-      whileInView={{ opacity: 1, x: 0, scale: 1 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.4, delay: Math.min(index, 10) * 0.03, ease: "easeOut" }}
-      whileHover={{ y: -2, transition: { duration: 0.15, delay: 0 } }}
-      onClick={() => withScrollPreserved(() => setOpen((v) => !v))}
-      {...keyboardActivate(() => withScrollPreserved(() => setOpen((v) => !v)), { label: `${entry.pm}, ${entry.party}, ${entry.year}. ${open ? "Hide" : "Show"} the details`, expanded: open })}
-      style={
-        showTerm
-          ? {
-              display: "flex", gap: 16, alignItems: "center", background: `${color}0c`,
-              border: `1px solid ${color}30`, borderRadius: 12, padding: "19px 20px 15px", margin: "26px 0",
-              cursor: "pointer",
-            }
-          : {
-              display: "flex", gap: 16, alignItems: "center", background: COLORS.paperCard,
-              border: `1px solid ${COLORS.hairline}`, borderLeft: `3px solid ${color}`, borderRadius: 10,
-              padding: "16px 17px 12px", margin: "16px 0", cursor: "pointer",
-            }
-      }
+    <div
+      className="tl-card tl-gov" data-open={open ? "1" : "0"} style={{ "--cc": color }}
+      onClick={toggle}
+      {...keyboardActivate(toggle, { label: `${entry.pm}, ${entry.party}, ${entry.year}. ${open ? "Hide" : "Show"} the details`, expanded: open })}
     >
-      <div style={{ flexShrink: 0, width: showTerm ? 68 : 58, textAlign: showTerm ? "center" : "right" }}>
-        <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: showTerm ? 16 : 17, color: readable(color), lineHeight: 1.15, fontVariantNumeric: "tabular-nums" }}>
-          {entry.year}
+      <div className="tl-gov-top">
+        <span className="tl-ring"><PmAvatar name={entry.pm} color={color} size={showTerm ? 58 : 52} /></span>
+        <div className="tl-gov-who">
+          <div className="tl-gov-name">{entry.pm}</div>
+          <div className="tl-gov-meta">
+            <span className="tl-party">{entry.party}</span>
+            <span className="tl-term">{entry.year} to {term.endYear ?? "now"}{term.years >= 1 ? `, ${term.years} ${term.years === 1 ? "year" : "years"}` : ", under a year"}</span>
+          </div>
         </div>
-        {showTerm && (
-          <>
-            <div style={{ width: 18, height: 1, background: `${color}55`, margin: "5px auto" }} />
-            <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13, color: readable(color), fontVariantNumeric: "tabular-nums" }}>
-              {term.endYear ?? "Present"}
-            </div>
-          </>
-        )}
+        <motion.span aria-hidden="true" className="tl-chev" animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}>▾</motion.span>
       </div>
-      <div
-        style={{
-          flexShrink: 0, width: 2, alignSelf: "stretch", borderRadius: 2, minHeight: 20,
-          background: showTerm ? color : COLORS.hairline, opacity: showTerm ? 0.5 : 1,
-        }}
-      />
-      <PmAvatar name={entry.pm} color={color} size={showTerm ? 40 : 36} />
-      <div style={{ minWidth: 0, flex: 1 }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
-          <span style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink }}>{entry.pm}</span>
-          <span
-            style={{
-              fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em",
-              color: readable(color), background: `${color}1e`, padding: "2px 9px", borderRadius: 999,
-            }}
-          >
-            {entry.party}
-          </span>
-          {showTerm && (
-            <span style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft }}>
-              {term.years < 1 ? "Less than a year" : `${term.years} ${term.years === 1 ? "year" : "years"}`} in office
-            </span>
-          )}
-          <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ marginLeft: "auto", color: COLORS.inkSoft, fontSize: 12 }}>▾</motion.span>
-        </div>
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.6, marginTop: 6 }}>{entry.note}</div>
+      <div className="tl-note">{entry.note}</div>
 
-        <AnimatePresence initial={false}>
+      <AnimatePresence initial={false}>
         {open && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-            style={{ overflow: "hidden" }}
-          >
-            <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${color}30` }}>
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.25, ease: "easeInOut" }} style={{ overflow: "hidden" }}>
+            <div className="tl-more">
               {entry.events && entry.events.length > 0 && (
                 <div style={{ marginBottom: 16 }}>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: readable(color), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
-                    Major events
-                  </div>
+                  <Label color={color}>Major events</Label>
                   <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
                     {entry.events.map((e, i) => (
-                      <motion.div
-                        key={i}
-                        initial={{ opacity: 0, x: -8 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.06, duration: 0.25 }}
-                        style={{ display: "flex", gap: 9, alignItems: "flex-start" }}
-                      >
-                        <span style={{ flexShrink: 0, width: 5, height: 5, borderRadius: "50%", background: color, marginTop: 7 }} />
-                        <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.55 }}>{e}</span>
+                      <motion.div key={i} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.06, duration: 0.25 }} style={{ display: "flex", gap: 9, alignItems: "flex-start" }}>
+                        <span style={{ flexShrink: 0, width: 6, height: 6, borderRadius: "50%", background: color, marginTop: 7 }} />
+                        <span style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.55 }}>{e}</span>
                       </motion.div>
                     ))}
                   </div>
@@ -270,21 +191,17 @@ function GovernmentEntry({ entry, index, showTerm }) {
               )}
               {lineage && (
                 <div style={{ marginBottom: 16 }}>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: readable(color), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 5 }}>
-                    About the {entry.party}
-                  </div>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, lineHeight: 1.6 }}>{lineage}</div>
+                  <Label color={color}>About the {entry.party}</Label>
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.6 }}>{lineage}</div>
                 </div>
               )}
               {bills.length > 0 && (
                 <div>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: readable(color), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>
-                    Landmark bills passed under this government
-                  </div>
+                  <Label color={color}>Landmark bills passed under this government</Label>
                   <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
                     {bills.map((b) => (
-                      <div key={b.title} style={{ display: "flex", gap: 8, fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
-                        <span style={{ color: COLORS.ink, fontWeight: 600, flexShrink: 0 }}>{b.year}</span>
+                      <div key={b.title} style={{ display: "flex", gap: 8, fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>
+                        <span style={{ color: COLORS.ink, fontWeight: 700, flexShrink: 0 }}>{b.year}</span>
                         <span>{b.title}</span>
                       </div>
                     ))}
@@ -294,190 +211,139 @@ function GovernmentEntry({ entry, index, showTerm }) {
             </div>
           </motion.div>
         )}
-        </AnimatePresence>
-      </div>
-    </motion.div>
+      </AnimatePresence>
+    </div>
   );
 }
 
-function BillEntry({ entry, index }) {
+// A landmark bill, as a smaller card with its picture.
+function BillEntry({ entry }) {
   const [open, setOpen] = useState(false);
   const color = OUTCOME_COLOR[entry.outcome];
   const gov = governmentAt(entry.year);
   const govColor = gov ? historicPartyColor(gov.party) : null;
+  const toggle = () => withScrollPreserved(() => setOpen((v) => !v));
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -16 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.35, delay: Math.min(index, 10) * 0.03, ease: "easeOut" }}
-      style={{ display: "flex", gap: 16, alignItems: "center", margin: "16px 0" }}
+    <div
+      className="tl-card tl-bill" data-open={open ? "1" : "0"} style={{ "--cc": color }}
+      onClick={toggle}
+      {...keyboardActivate(toggle, { label: `${entry.year}: ${entry.title}. ${open ? "Hide" : "Show"} the details`, expanded: open })}
     >
-      <div style={{ flexShrink: 0, width: 58, textAlign: "right" }}>
-        <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 15, color: COLORS.ink, lineHeight: 1.15, fontVariantNumeric: "tabular-nums" }}>
-          {entry.year}
-        </div>
-        {shortDate(entry.date) && (
-          <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginTop: 2, textTransform: "uppercase", letterSpacing: "0.03em" }}>
-            {shortDate(entry.date)}
+      <div className="tl-bill-top">
+        <span className="tl-bill-icon"><BillIcon title={entry.title} size={20} color={color} /></span>
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <div className="tl-bill-title">{entry.title}</div>
+          <div className="tl-bill-meta">
+            <span className="tl-result">{entry.result}</span>
+            {shortDate(entry.date) && <span>{shortDate(entry.date)} {entry.year}</span>}
           </div>
-        )}
+        </div>
+        <motion.span aria-hidden="true" className="tl-chev" animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}>▾</motion.span>
       </div>
-      <div style={{ flexShrink: 0, width: 2, alignSelf: "stretch", background: COLORS.hairline, borderRadius: 2, minHeight: 16 }} />
-      <motion.div
-        onClick={() => withScrollPreserved(() => setOpen((v) => !v))}
-        {...keyboardActivate(() => withScrollPreserved(() => setOpen((v) => !v)), { label: `${entry.year}: ${entry.title}. ${open ? "Hide" : "Show"} the details`, expanded: open })}
-        style={{
-          minWidth: 0, flex: 1, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `3px solid ${color}`,
-          borderRadius: 10, padding: "16px 17px 12px", cursor: "pointer",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
-          <span
-            style={{
-              flexShrink: 0, width: 30, height: 30, borderRadius: 9, background: `${color}16`,
-              display: "flex", alignItems: "center", justifyContent: "center", color,
-            }}
-          >
-            <BillIcon title={entry.title} size={17} color={color} />
-          </span>
-          <div style={{ minWidth: 0, flex: 1 }}>
-            <div style={{ display: "flex", alignItems: "baseline", gap: 9, flexWrap: "wrap", marginBottom: 5 }}>
-              <span style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 14.5, color: COLORS.ink }}>{entry.title}</span>
-              <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: readable(color), textTransform: "uppercase" }}>{entry.result}</span>
-              <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ marginLeft: "auto", color: COLORS.inkSoft, fontSize: 12 }}>▾</motion.span>
-            </div>
-            <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.6 }}>{entry.detail}</div>
-          </div>
-        </div>
+      <div className="tl-note">{entry.detail}</div>
 
-        <AnimatePresence initial={false}>
+      <AnimatePresence initial={false}>
         {open && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-            style={{ overflow: "hidden" }}
-          >
-            <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${COLORS.hairline}` }}>
-              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>
-                Passed under
-              </div>
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.25, ease: "easeInOut" }} style={{ overflow: "hidden" }}>
+            <div className="tl-more">
+              <Label color={COLORS.inkSoft}>Passed under</Label>
               {!gov ? (
-                <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, lineHeight: 1.55 }}>
+                <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.55 }}>
                   This predates Robert Walpole's 1721 premiership: the office of Prime Minister didn't exist yet.
                 </div>
               ) : (
-              <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                <span style={{ fontFamily: FONT_DISPLAY, fontSize: 14.5, color: COLORS.ink }}>{gov.pm}</span>
-                <span
-                  style={{
-                    fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em",
-                    color: readable(govColor), background: `${govColor}1e`, padding: "2px 8px", borderRadius: 999,
-                  }}
-                >
-                  {gov.party}
-                </span>
-                <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>since {gov.year}</span>
-              </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                  <span style={{ fontFamily: FONT_DISPLAY, fontSize: 15, color: COLORS.ink }}>{gov.pm}</span>
+                  <span className="tl-party" style={{ "--cc": govColor }}>{gov.party}</span>
+                  <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>since {gov.year}</span>
+                </div>
               )}
             </div>
           </motion.div>
         )}
-        </AnimatePresence>
-      </motion.div>
-    </motion.div>
+      </AnimatePresence>
+    </div>
   );
 }
 
-function EraSection({ era }) {
+// One era: a banner with its colour, then a spine down the middle that fills in as you scroll, with a card on alternate sides. The spine's year
+// markers pop in as they arrive.
+function Era({ era, idPrefix = "", renderEntry, stat }) {
+  const track = useRef(null);
+  const calm = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: track, offset: ["start 75%", "end 55%"] });
+  const fill = useSpring(scrollYProgress, { stiffness: 140, damping: 30, restDelta: 0.001 });
   return (
-    <div id={era.key} style={{ marginBottom: 64, scrollMarginTop: 90 }}>
-      <motion.div
-        initial={{ opacity: 0, y: 14 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.4 }}
-        style={{ display: "flex", alignItems: "baseline", gap: 14, marginBottom: 6 }}
-      >
-        <span style={{ width: 11, height: 11, borderRadius: "50%", background: era.accent, flexShrink: 0 }} />
-        <div style={{ fontFamily: FONT_DISPLAY, fontSize: 25, color: COLORS.ink }}>{era.label}</div>
-        <span style={{ flex: 1, height: 1, background: COLORS.hairline }} />
-        <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, flexShrink: 0 }}>{era.range}</span>
-      </motion.div>
-      <div style={{ paddingLeft: 26, position: "relative" }}>
-        <motion.div
-          aria-hidden="true"
-          initial={{ scaleY: 0, opacity: 0 }}
-          whileInView={{ scaleY: 1, opacity: 1 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          style={{
-            position: "absolute", left: 5, top: 4, bottom: 4, width: 2, borderRadius: 2, transformOrigin: "top",
-            background: `linear-gradient(${era.accent}00, ${era.accent}70 8%, ${era.accent}70 92%, ${era.accent}00)`,
-          }}
-        />
+    <section id={`${idPrefix}${era.key}`} className="tl-era" style={{ "--ea": era.accent }} aria-label={era.label}>
+      <header className="tl-banner">
+        <div>
+          <div className="tl-banner-range">{era.range}</div>
+          <h2>{era.label}</h2>
+        </div>
+        <div className="tl-banner-stat">{stat}</div>
+      </header>
+      <div className="tl-track" ref={track}>
+        <span className="tl-spine" aria-hidden="true" />
+        <motion.span className="tl-spine-fill" aria-hidden="true" style={calm ? { scaleY: 1 } : { scaleY: fill }} />
         {era.entries.map((entry, i) => (
-          <div key={`entry-${entry.year}-${entry.type}-${i}`} style={{ position: "relative" }}>
+          <motion.div
+            key={`${entry.year}-${entry.type ?? "g"}-${entry.pm ?? entry.title}-${i}`}
+            className="tl-row" data-side={i % 2 === 0 ? "l" : "r"}
+            initial={calm ? false : { opacity: 0, x: i % 2 === 0 ? -34 : 34 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-70px" }}
+            transition={{ type: "spring", stiffness: 190, damping: 24 }}
+          >
             <motion.span
-              aria-hidden="true"
-              initial={{ scale: 0, opacity: 0 }}
-              whileInView={{ scale: 1, opacity: 1 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.3, delay: Math.min(i, 10) * 0.03, ease: "easeOut" }}
-              style={{
-                position: "absolute", left: -24, top: "50%", marginTop: -4, width: 8, height: 8, borderRadius: "50%",
-                background: era.accent, boxShadow: `0 0 0 3px ${COLORS.paper}, 0 0 0 4px ${era.accent}40`,
-              }}
-            />
-            {i > 0 && <TimelineArrow color={era.accent} index={i} />}
-            {entry.type === "government" ? (
-              <GovernmentEntry entry={entry} index={i} />
-            ) : (
-              <BillEntry entry={entry} index={i} />
-            )}
-          </div>
+              className="tl-node" aria-hidden="true"
+              initial={calm ? false : { scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true, margin: "-70px" }}
+              transition={{ type: "spring", stiffness: 420, damping: 18, delay: 0.08 }}
+            >
+              <b>{entry.year}</b>
+            </motion.span>
+            {renderEntry(entry)}
+          </motion.div>
         ))}
       </div>
-    </div>
+    </section>
   );
 }
 
-function PmEraSection({ era }) {
-  return (
-    <div id={`pm-${era.key}`} style={{ marginBottom: 64, scrollMarginTop: 90 }}>
-      <motion.div
-        initial={{ opacity: 0, y: 14 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.4 }}
-        style={{ display: "flex", alignItems: "baseline", gap: 14, marginBottom: 6 }}
-      >
-        <span style={{ width: 11, height: 11, borderRadius: "50%", background: era.accent, flexShrink: 0 }} />
-        <div style={{ fontFamily: FONT_DISPLAY, fontSize: 25, color: COLORS.ink }}>{era.label}</div>
-        <span style={{ flex: 1, height: 1, background: COLORS.hairline }} />
-        <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, flexShrink: 0 }}>{era.range}</span>
-      </motion.div>
-      <div style={{ paddingLeft: 26 }}>
-        {era.entries.map((entry, i) => (
-          <GovernmentEntry
-            key={`pm-${entry.year}-${entry.pm}-${i}`}
-            entry={entry}
-            index={i}
-            showTerm
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+const eraStat = (era) => {
+  const govs = era.entries.filter((e) => (e.type ?? "government") === "government").length;
+  const bills = era.entries.length - govs;
+  return `${plural(govs, "government", "governments")}${bills ? `, ${plural(bills, "landmark bill", "landmark bills")}` : ""}`;
+};
 
 const TABS = [
   { key: "timeline", label: "Full Timeline" },
   { key: "pms", label: "Prime Ministers" },
 ];
+
+// The row of era buttons stays in view while reading, and the one for the era on screen is lit.
+function EraNav({ groups, idPrefix = "", onJump }) {
+  const [active, setActive] = useState(groups[0]?.key);
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return undefined;
+    const io = new IntersectionObserver((entries) => {
+      const seen = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+      if (seen) setActive(seen.target.id.slice(idPrefix.length));
+    }, { rootMargin: "-20% 0px -65% 0px" });
+    groups.forEach((g) => { const el = document.getElementById(`${idPrefix}${g.key}`); if (el) io.observe(el); });
+    return () => io.disconnect();
+  }, [groups, idPrefix]);
+  return (
+    <nav className="tl-nav" aria-label="Jump to an era">
+      {groups.map((era) => (
+        <button key={era.key} type="button" aria-current={active === era.key ? "true" : undefined} style={{ "--ea": era.accent }} onClick={() => onJump(`${idPrefix}${era.key}`)}>
+          <span aria-hidden="true" />{era.label}
+        </button>
+      ))}
+    </nav>
+  );
+}
 
 export default function Timeline() {
   const [tab, setTab] = useState("timeline");
@@ -489,7 +355,7 @@ export default function Timeline() {
   }
 
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto", padding: PAGE_PADDING, position: "relative" }}>
+    <div style={{ maxWidth: 1000, margin: "0 auto", padding: PAGE_PADDING, position: "relative" }}>
       <motion.div
         aria-hidden
         style={{
@@ -505,95 +371,35 @@ export default function Timeline() {
         subtitle="Every government formed since Robert Walpole took office in 1721, alongside the landmark bills passed along the way: who held power, and what they did with it. Tap any entry for more detail."
       />
 
-      <div style={{ display: "flex", gap: 4, marginTop: 28, marginBottom: 8, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: 4, width: "fit-content" }}>
+      <div className="tl-tabs" role="tablist" aria-label="Which timeline">
         {TABS.map((t) => (
-          <button
-            key={t.key}
-            onClick={() => withScrollPreserved(() => setTab(t.key))}
-            style={{
-              position: "relative", fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, padding: "9px 18px",
-              borderRadius: 999, border: "none", cursor: "pointer", background: "transparent",
-              color: tab === t.key ? "#fff" : COLORS.inkSoft, zIndex: 1,
-            }}
-          >
-            {tab === t.key && (
-              <motion.span layoutId="timeline-tab-pill" transition={{ type: "spring", stiffness: 500, damping: 35 }} style={{ position: "absolute", inset: 0, background: COLORS.accent, borderRadius: 999, zIndex: -1 }} />
-            )}
-            {t.label}
+          <button key={t.key} type="button" role="tab" aria-selected={tab === t.key} onClick={() => withScrollPreserved(() => setTab(t.key))}>
+            {tab === t.key && <motion.span layoutId="timeline-tab-pill" transition={{ type: "spring", stiffness: 500, damping: 35 }} />}
+            <i>{t.label}</i>
           </button>
         ))}
       </div>
 
       {tab === "timeline" && (
         <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.35, delay: 0.15 }}
-            style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", margin: "24px 0 24px", fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}
-          >
-            <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ width: 12, height: 12, borderRadius: 3, background: `${COLORS.accent}20`, border: `1px solid ${COLORS.accent}` }} />
-              New government. Click to expand
-            </span>
-            <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ width: 3, height: 12, borderRadius: 2, background: OUTCOME_COLOR.achieved }} />
-              Bill passed
-            </span>
-            <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ width: 3, height: 12, borderRadius: 2, background: OUTCOME_COLOR.not_kept }} />
-              Bill/motion defeated
-            </span>
-          </motion.div>
-
-          <div style={{ position: "sticky", top: 0, zIndex: 5, background: COLORS.paper, paddingTop: 14, paddingBottom: 16, marginBottom: 16 }}>
-            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-              {ERA_GROUPS.map((era) => (
-                <button
-                  key={era.key}
-                  onClick={() => jumpTo(era.key)}
-                  style={{
-                    fontFamily: FONT_BODY, fontSize: 12, fontWeight: 600, padding: "7px 13px", borderRadius: 999,
-                    border: `1px solid ${era.accent}55`, background: `${era.accent}12`, color: readable(era.accent), cursor: "pointer",
-                  }}
-                >
-                  {era.label}
-                </button>
-              ))}
-            </div>
+          <div className="tl-key">
+            <span><i style={{ background: COLORS.accent }} />A new government. Tap to open</span>
+            <span><i style={{ background: OUTCOME_COLOR.achieved }} />Bill passed</span>
+            <span><i style={{ background: OUTCOME_COLOR.not_kept }} />Bill or motion defeated</span>
           </div>
-
+          <EraNav groups={ERA_GROUPS} onJump={jumpTo} />
           {ERA_GROUPS.map((era) => (
-            <EraSection key={era.key} era={era} />
+            <Era key={era.key} era={era} stat={eraStat(era)} renderEntry={(e) => (e.type === "government" ? <GovernmentEntry entry={e} /> : <BillEntry entry={e} />)} />
           ))}
         </>
       )}
 
       {tab === "pms" && (
         <>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.6, margin: "24px 0 24px" }}>
-            All {SORTED_GOVERNMENTS.length} government formations since Robert Walpole in 1721. Click any Prime Minister for their party's lineage and the landmark bills passed on their watch.
-          </div>
-
-          <div style={{ position: "sticky", top: 0, zIndex: 5, background: COLORS.paper, paddingTop: 14, paddingBottom: 16, marginBottom: 16 }}>
-            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-              {PM_ERA_GROUPS.map((era) => (
-                <button
-                  key={era.key}
-                  onClick={() => jumpTo(`pm-${era.key}`)}
-                  style={{
-                    fontFamily: FONT_BODY, fontSize: 12, fontWeight: 600, padding: "7px 13px", borderRadius: 999,
-                    border: `1px solid ${era.accent}55`, background: `${era.accent}12`, color: readable(era.accent), cursor: "pointer",
-                  }}
-                >
-                  {era.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
+          <p className="tl-lead">All {SORTED_GOVERNMENTS.length} government formations since Robert Walpole in 1721. Tap any Prime Minister for their party's lineage and the landmark bills passed on their watch.</p>
+          <EraNav groups={PM_ERA_GROUPS} idPrefix="pm-" onJump={jumpTo} />
           {PM_ERA_GROUPS.map((era) => (
-            <PmEraSection key={era.key} era={era} />
+            <Era key={era.key} era={era} idPrefix="pm-" stat={plural(era.entries.length, "government", "governments")} renderEntry={(e) => <GovernmentEntry entry={e} showTerm />} />
           ))}
         </>
       )}

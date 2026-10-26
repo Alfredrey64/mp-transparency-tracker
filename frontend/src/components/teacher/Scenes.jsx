@@ -29,10 +29,10 @@ function ShopScene() {
       <Shop x={470} y={362} />
       <B n={2}><g transform="translate(610 190)"><Parliament x={0} y={0} s={0.5} /></g></B>
       <B n={2}><Bubble x={150} y={110} w={80} h={66} tail="left"><QuestionMark /></Bubble></B>
-      <B n={0} until={1}><Person x={250} y={392} shirt="#1E4FB8" mood="happy" skin={SKIN[2]} hair="#2B1D14" /></B>
-      <B n={1} until={4} fx="fade"><Person x={250} y={392} shirt="#1E4FB8" mood="worried" skin={SKIN[2]} hair="#2B1D14" /></B>
-      <B n={4} fx="fade"><Person x={250} y={392} shirt="#1E4FB8" mood="happy" skin={SKIN[2]} hair="#2B1D14" /></B>
-      <Person x={335} y={392} kid long shirt="#E0365B" skin={SKIN[2]} hair="#2B1D14" mood="happy" />
+      <B n={0} until={1}><Person s={1.2} x={250} y={392} tag="Dad" shirt="#1E4FB8" mood="happy" skin={SKIN[2]} hair="#2B1D14" /></B>
+      <B n={1} until={4} fx="fade"><Person s={1.2} x={250} y={392} tag="Dad" shirt="#1E4FB8" mood="worried" skin={SKIN[2]} hair="#2B1D14" /></B>
+      <B n={4} fx="fade"><Person s={1.2} x={250} y={392} tag="Dad" shirt="#1E4FB8" mood="happy" skin={SKIN[2]} hair="#2B1D14" /></B>
+      <Person s={1.2} x={335} y={392} who="sam" kid long shirt="#E0365B" skin={SKIN[2]} hair="#2B1D14" mood="happy" />
       <B n={1}><Basket x={195} y={392} /></B>
       <B n={1}>
         <g transform="translate(120 240)">
@@ -57,11 +57,11 @@ function HospitalScene() {
     <>
       <Backdrop tone="#E4F1FF" tone2="#F8FBFF" ground="#D2E8D2" path="#E9E1D0" />
       <Hospital x={500} y={362} />
-      <Person x={190} y={392} kid long shirt="#7A5AF0" skin={SKIN[3]} hair="#1E1410" mood="happy" />
-      <B n={0} until={1}><Person x={275} y={392} shirt="#8FA6C0" trousers="#4A5568" skin={SKIN[0]} hair="#D6D6D6" mood="ok" /></B>
-      <B n={1} fx="fade"><Person x={275} y={392} shirt="#8FA6C0" trousers="#4A5568" skin={SKIN[0]} hair="#D6D6D6" mood="worried" /></B>
-      <B n={1}><Calendar x={130} y={250} /></B>
-      <B n={1}><Clock x={238} y={256} /></B>
+      <Person s={1.2} x={190} y={392} who="maya" kid long shirt="#7A5AF0" skin={SKIN[3]} hair="#1E1410" mood="happy" />
+      <B n={0} until={1}><Person s={1.2} x={275} y={392} tag="Grandad" shirt="#8FA6C0" trousers="#4A5568" skin={SKIN[0]} hair="#D6D6D6" mood="ok" /></B>
+      <B n={1} fx="fade"><Person s={1.2} x={275} y={392} tag="Grandad" shirt="#8FA6C0" trousers="#4A5568" skin={SKIN[0]} hair="#D6D6D6" mood="worried" /></B>
+      <B n={1}><Calendar x={140} y={214} /></B>
+      <B n={1}><Clock x={268} y={210} /></B>
       <B n={2} fx="rise"><g transform="translate(70 128)"><Parliament x={0} y={0} s={0.42} /></g></B>
       <B n={2} fx="fade">
         <g>
@@ -71,9 +71,9 @@ function HospitalScene() {
           <g className="t-coinflow" style={{ animationDelay: "-2.4s" }}><Coin x={170} y={78} r={12} /></g>
         </g>
       </B>
-      <B n={3} fx="rise"><Bubble x={120} y={110} w={86} h={70} tail="center"><Coin x={0} y={0} r={17} /></Bubble></B>
-      <B n={3} fx="rise"><Bubble x={235} y={96} w={86} h={70} tail="center"><g><rect x="-6" y="-24" width="12" height="48" rx="3" fill="#16A34A" /><rect x="-24" y="-6" width="48" height="12" rx="3" fill="#16A34A" /></g></Bubble></B>
-      <B n={3} fx="rise"><Bubble x={350} y={110} w={86} h={70} tail="center"><g><circle r="14" fill="none" stroke="#7A5AF0" strokeWidth="5" /><path d="M0 -24 v8 M0 16 v8 M-24 0 h8 M16 0 h8" stroke="#7A5AF0" strokeWidth="5" strokeLinecap="round" /></g></Bubble></B>
+      <B n={3} fx="rise"><Bubble x={120} y={96} w={86} h={70} tail="center"><Coin x={0} y={0} r={17} /></Bubble></B>
+      <B n={3} fx="rise"><Bubble x={235} y={84} w={86} h={70} tail="center"><g><rect x="-6" y="-24" width="12" height="48" rx="3" fill="#16A34A" /><rect x="-24" y="-6" width="48" height="12" rx="3" fill="#16A34A" /></g></Bubble></B>
+      <B n={3} fx="rise"><Bubble x={350} y={96} w={86} h={70} tail="center"><g><circle r="14" fill="none" stroke="#7A5AF0" strokeWidth="5" /><path d="M0 -24 v8 M0 16 v8 M-24 0 h8 M16 0 h8" stroke="#7A5AF0" strokeWidth="5" strokeLinecap="round" /></g></Bubble></B>
       <B n={4} fx="rise"><BallotBox x={400} y={392} /></B>
       <B n={4} fx="drop"><Paper x={400} y={290} rot={6} /></B>
     </>
@@ -89,8 +89,8 @@ function SchoolScene() {
       <g className="t-drips"><Drip x={540} y={236} /><Drip x={585} y={236} /></g>
       <path d="M560 232 h22" stroke="#4DA3E6" strokeWidth="3" strokeLinecap="round" opacity="0.7" />
       <B n={0} until={4}><Books x={400} y={362} few /></B>
-      <Person x={215} y={392} kid shirt="#0E9AA7" skin={SKIN[1]} hair="#2B1D14" mood="worried" />
-      <Person x={290} y={392} long shirt="#E0365B" skin={SKIN[1]} hair="#5C3A21" mood="ok" />
+      <Person s={1.2} x={215} y={392} who="leo" kid shirt="#0E9AA7" skin={SKIN[1]} hair="#2B1D14" mood="worried" />
+      <Person s={1.2} x={290} y={392} tag="Mum" long shirt="#E0365B" skin={SKIN[1]} hair="#5C3A21" mood="ok" />
       <B n={4} fx="fade"><Books x={400} y={362} /></B>
       <B n={1} fx="rise"><g transform="translate(90 180)"><Parliament x={0} y={0} s={0.5} /></g></B>
       <B n={1} fx="fade">
@@ -120,9 +120,9 @@ function BusScene() {
       <path d="M0 396 h800" stroke="#fff" strokeWidth="3" strokeDasharray="30 24" opacity="0.7" />
       <BusStop x={230} y={366} />
       <B n={0} until={1} exit><Bus x={400} y={382} /></B>
-      <Person x={290} y={366} kid long shirt="#F2622A" skin={SKIN[2]} hair="#1E1410" mood="happy" />
-      <B n={0} until={1}><Person x={350} y={366} shirt="#9B6BB8" trousers="#4A5568" skin={SKIN[1]} hair="#E5E5E5" long mood="ok" /></B>
-      <B n={1} fx="fade"><Person x={350} y={366} shirt="#9B6BB8" trousers="#4A5568" skin={SKIN[1]} hair="#E5E5E5" long mood="worried" /></B>
+      <Person s={1.2} x={290} y={366} who="amira" kid long shirt="#F2622A" skin={SKIN[2]} hair="#1E1410" mood="happy" />
+      <B n={0} until={1}><Person s={1.2} x={350} y={366} tag="Nan" shirt="#9B6BB8" trousers="#4A5568" skin={SKIN[1]} hair="#E5E5E5" long mood="ok" /></B>
+      <B n={1} fx="fade"><Person s={1.2} x={350} y={366} tag="Nan" shirt="#9B6BB8" trousers="#4A5568" skin={SKIN[1]} hair="#E5E5E5" long mood="worried" /></B>
       <B n={1}>
         <g transform="translate(335 214)"><rect x="-34" y="-20" width="68" height="40" rx="10" fill="#fff" stroke="#E0365B" strokeWidth="3" /><path d="M-14 -8 l28 16 M14 -8 l-28 16" stroke="#E0365B" strokeWidth="5" strokeLinecap="round" /></g>
       </B>

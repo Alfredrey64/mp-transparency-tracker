@@ -12,7 +12,18 @@ import VoteHistory from "./VoteHistory";
 import { explainDivision } from "../lib/divisionExplainer";
 import { BillJourney } from "./BillJourney";
 import { withScrollPreserved } from "../lib/preserveScroll";
-import { IconVote, IconBills } from "./icons";
+import { IconVote, IconBills, IconHealth, IconDefence, IconCoin, IconTransport, IconBolt, IconGavel, IconLeaf, IconMortarboard, IconPension, IconHouse, IconGlobe, IconBroadcast } from "./icons";
+
+// Each bill category has its own picture, so the list can be read at a glance as well as by colour.
+const BILL_ICONS = {
+  Health: IconHealth, Defence: IconDefence, "Economy & Finance": IconCoin, Transport: IconTransport, "Science & Tech": IconBolt,
+  "Justice & Home Affairs": IconGavel, "Environment & Energy": IconLeaf, Education: IconMortarboard, "Work & Pensions": IconPension,
+  "Housing & Communities": IconHouse, "Foreign Affairs": IconGlobe, "Culture & Media": IconBroadcast, General: IconBills,
+};
+function CategoryIcon({ label, size }) {
+  const Icon = BILL_ICONS[label] ?? IconBills;
+  return <Icon size={size} />;
+}
 import Loading from "./Loading";
 import { plainPoints, plainSentence } from "../lib/billPlain";
 import { getBillDescription } from "../lib/billDescriptions";
@@ -113,10 +124,11 @@ function BillEntry({ bill, politicians, initiallyOpen }) {
         <div
           style={{
             width: 40, height: 40, borderRadius: 10, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
-            background: `${category.color}17`, color: readable(category.color),
+            background: `linear-gradient(145deg, ${category.color}30, ${category.color}14)`, color: readable(category.color),
+            boxShadow: `inset 0 0 0 1px ${category.color}30`,
           }}
         >
-          <IconBills size={18} />
+          <CategoryIcon label={category.label} size={21} />
         </div>
         <div style={{ minWidth: 0, flex: 1 }}>
           <div style={{ fontFamily: FONT_BODY, fontSize: 15.5, fontWeight: 600, color: COLORS.ink, marginBottom: oneLine ? 3 : 5, lineHeight: 1.35 }}>{bill.short_title}</div>
@@ -243,10 +255,12 @@ function CategoryPill({ label, color }) {
   return (
     <span
       style={{
+        display: "inline-flex", alignItems: "center", gap: 5,
         fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: readable(color), background: `${color}15`,
-        border: `1px solid ${color}30`, padding: "3px 10px", borderRadius: 999, whiteSpace: "nowrap",
+        border: `1px solid ${color}30`, padding: "3px 10px 3px 8px", borderRadius: 999, whiteSpace: "nowrap",
       }}
     >
+      <CategoryIcon label={label} size={13} />
       {label}
     </span>
   );
@@ -615,6 +629,7 @@ export default function VotingRecords({ initialMp = null, initialBill = null, in
           </FilterPill>
           {billCategories.map((cat) => (
             <FilterPill key={cat.label} active={billCategory === cat.label} color={cat.color} onClick={() => withScrollPreserved(() => setBillCategory(cat.label))}>
+              <CategoryIcon label={cat.label} size={14} />
               {cat.label}
             </FilterPill>
           ))}
@@ -640,6 +655,7 @@ function FilterPill({ active, onClick, color, children }) {
     <button
       onClick={onClick}
       style={{
+        display: "inline-flex", alignItems: "center", gap: 6,
         fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, padding: "6px 13px", borderRadius: 999,
         border: `1px solid ${active ? color : `${color}40`}`, background: active ? `${color}20` : `${color}0d`,
         color: readable(color), cursor: "pointer", transition: "all 0.15s",

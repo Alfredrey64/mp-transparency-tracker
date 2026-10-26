@@ -26,19 +26,24 @@ const goPair = (a, b) => {
   navigate(a || b ? `#/compareSeats/${encodeURIComponent(`${a ?? ""}${SEP}${b ?? ""}`)}` : "#/compareSeats");
 };
 
+const SIDE = { "First seat": "#1E4FB8", "Second seat": "#E0367A" };
+
 function Picker({ seats, label, current, onPick, exclude }) {
   const [query, setQuery] = useState("");
   const matches = useMemo(() => searchSeats(seats, query, 6).filter((m) => m.key !== exclude), [seats, query, exclude]);
   return (
     <div style={{ minWidth: 0 }}>
-      <label htmlFor={`pick-${label}`} style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.ink, display: "block", marginBottom: 6 }}>{label}</label>
+      <label htmlFor={`pick-${label}`} style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.ink, display: "flex", alignItems: "center", gap: 8, marginBottom: 7 }}>
+        <span aria-hidden="true" style={{ display: "grid", placeItems: "center", width: 22, height: 22, clipPath: "polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)", background: SIDE[label], color: "#fff", fontSize: 11, fontWeight: 800 }}>{label === "First seat" ? "A" : "B"}</span>
+        {label}
+      </label>
       <div style={{ position: "relative" }}>
-        <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: COLORS.accentText, display: "flex" }}><IconSearch size={16} /></span>
+        <span style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)", color: SIDE[label], display: "flex" }}><IconSearch size={18} /></span>
         <input
           id={`pick-${label}`} type="search" className="ons-chip" value={query} autoComplete="off"
           onChange={(e) => setQuery(e.target.value)}
           placeholder={current ? `${current} (change)` : "A constituency or MP"}
-          style={{ fontFamily: FONT_BODY, fontSize: 16, padding: "10px 12px 10px 36px", borderRadius: 12, border: `1.5px solid ${COLORS.hairline}`, background: COLORS.paper, color: COLORS.ink, width: "100%", boxSizing: "border-box" }}
+          style={{ fontFamily: FONT_BODY, fontSize: 16, height: 50, padding: "0 16px 0 42px", borderRadius: 999, border: `2px solid color-mix(in srgb, ${SIDE[label]} 45%, ${COLORS.hairline})`, background: COLORS.paperCard, color: COLORS.ink, width: "100%", boxSizing: "border-box", boxShadow: "var(--shadow-1)" }}
         />
       </div>
       {query.trim().length >= 2 && (
@@ -217,12 +222,22 @@ export default function CompareSeats({ param }) {
           {(nameA && !a) || (nameB && !b) ? <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 12 }}>We could not find {nameA && !a ? `"${nameA}"` : `"${nameB}"`}. Search for it above.</p> : null}
 
           {!both && (
-            <section style={{ ...card, marginTop: 24 }}>
+            <section className="ycard cmp-empty" style={{ "--ca": "var(--page-accent, #E0367A)", marginTop: 24 }}>
+              <svg viewBox="0 0 200 110" className="cmp-hexes" aria-hidden="true">
+                <polygon points="58,12 92,31 92,69 58,88 24,69 24,31" fill="#1E4FB8" />
+                <polygon points="142,22 176,41 176,79 142,98 108,79 108,41" fill="#E0367A" />
+                <text x="58" y="58" textAnchor="middle" fontSize="26" fontWeight="800" fill="#fff" fontFamily="Public Sans, system-ui, sans-serif">A</text>
+                <text x="142" y="68" textAnchor="middle" fontSize="26" fontWeight="800" fill="#fff" fontFamily="Public Sans, system-ui, sans-serif">B</text>
+              </svg>
               <h2 style={cardTitle}>Pick two seats to begin</h2>
-              <p style={{ fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.55, color: COLORS.inkSoft, margin: "8px 0 14px", maxWidth: 640 }}>Search for a constituency or its MP in each box. Or start from a pair that is worth a look:</p>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "8px auto 16px", maxWidth: 560 }}>Search for a constituency or its MP in each box. Or start from a pair that is worth a look:</p>
+              <div className="cmp-pairs">
                 {[["Blackpool South", "Chelsea and Fulham"], ["Hackney North and Stoke Newington", "Gainsborough"], ["Glasgow North East", "East Renfrewshire"]].map(([x, y]) => (
-                  <button key={x} type="button" className="ons-chip" onClick={() => goPair(x, y)} style={pillStyle(false)}>{x} and {y}</button>
+                  <button key={x} type="button" onClick={() => goPair(x, y)}>
+                    <span><i style={{ background: "#1E4FB8" }} />{x}</span>
+                    <b aria-hidden="true">vs</b>
+                    <span><i style={{ background: "#E0367A" }} />{y}</span>
+                  </button>
                 ))}
               </div>
             </section>

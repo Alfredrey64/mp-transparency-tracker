@@ -1,12 +1,13 @@
 import { CHAPTERS, STORIES, LAYERS, HOUSES, LAW_STEPS, WHO_RUNS, PARTIES, NI_PARTIES, VOICES, VOTE, CHECKED } from "../../data/teacherMode";
 import { PARTY_MANIFESTOS } from "../../data/partyManifestos";
+import { applyNamesDeep } from "./characters";
 
 // The whole presentation as a flat list of slides. A slide has `steps`: what to say under the picture at each step of it (the picture builds up
 // in step with them). `ask` is the question for the class that goes in the teacher's notes.
 
 const chapterIndex = (key) => CHAPTERS.findIndex((c) => c.key === key);
 
-export function buildSlides(seats = {}) {
+export function buildSlides(seats = {}, names) {
   const out = [];
   const add = (chapter, slide) => out.push({ chapter, id: `${chapter}-${out.length}`, ...slide });
 
@@ -113,6 +114,7 @@ export function buildSlides(seats = {}) {
       add(ch.key, { kind: "quiz", steps: [{ kicker: "Quick quiz", text: "" }], ask: [] });
     }
   }
-  return out;
+  // The class's own names for the children in the stories.
+  return names ? out.map((sl) => (sl.kind === "story" ? { ...sl, steps: applyNamesDeep(sl.steps, names), ask: applyNamesDeep(sl.ask, names) } : sl)) : out;
 }
 

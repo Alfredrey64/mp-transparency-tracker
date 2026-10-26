@@ -4,9 +4,9 @@ import CountUp from "./CountUp";
 import { fmt, signed, scrollToId } from "./councilsUi";
 
 // ---- Building blocks -----------------------------------------------------------
-export function Card({ children, style, id }) {
+export function Card({ children, style, id, accent = "var(--page-accent, #2F80ED)" }) {
   return (
-    <section id={id} style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "22px clamp(16px, 3vw, 26px)", boxShadow: "var(--shadow-2)", scrollMarginTop: 14, ...style }}>
+    <section id={id} className="ycard" style={{ "--ca": accent, scrollMarginTop: 14, ...style }}>
       {children}
     </section>
   );
@@ -15,11 +15,11 @@ export function Card({ children, style, id }) {
 export function SectionHead({ kicker, title, blurb, accent = COLORS.accent }) {
   return (
     <div style={{ marginBottom: 18 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: readable(accent) }}>
-        <span style={{ width: 18, height: 3, borderRadius: 2, background: accent }} />
+      <div className="ykicker" style={{ "--ka": accent }}>
+        <span aria-hidden="true" />
         {kicker}
       </div>
-      <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: "clamp(22px, 3.4vw, 28px)", color: COLORS.ink, margin: "6px 0 0", letterSpacing: "-0.015em", lineHeight: 1.15 }}>{title}</h2>
+      <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: "clamp(22px, 3.4vw, 30px)", color: COLORS.ink, margin: "10px 0 0", letterSpacing: "-0.015em", lineHeight: 1.15 }}>{title}</h2>
       {blurb && <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.6, margin: "8px 0 0", maxWidth: 680 }}>{blurb}</p>}
     </div>
   );
@@ -43,10 +43,10 @@ export function StatCard({ icon: Icon, colour, value, format = fmt, label, capti
       {caption && <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 3, lineHeight: 1.5 }}>{caption}</div>}
     </>
   );
-  const style = { textAlign: "left", display: "block", width: "100%", boxSizing: "border-box", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 3px 0 ${colour}`, borderRadius: 14, padding: "18px 18px 20px", color: "inherit", font: "inherit" };
-  if (!target) return <div style={style}>{body}</div>;
+  const style = { "--sc": colour, textAlign: "left", display: "block", width: "100%", boxSizing: "border-box", color: "inherit", font: "inherit" };
+  if (!target) return <div className="ystat" style={style}>{body}</div>;
   return (
-    <button type="button" className="nclick" onClick={() => scrollToId(target)} style={{ ...style, cursor: "pointer" }}>
+    <button type="button" className="nclick ystat" onClick={() => scrollToId(target)} style={{ ...style, cursor: "pointer" }}>
       {body}
     </button>
   );
@@ -69,8 +69,8 @@ export const Arrow = () => <span aria-hidden="true" style={{ color: COLORS.inkSo
 export function Bar({ label, colour, fraction, value, delta, labelWidth = 170, compact = false }) {
   const change = delta != null && delta !== 0 && <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, marginLeft: 8, color: delta > 0 ? readable("#2F8F6A") : readable("#B5533C") }}>{signed(delta)}</span>;
   const track = (
-    <span style={{ display: "block", height: 11, borderRadius: 6, background: COLORS.paper, overflow: "hidden" }}>
-      <span style={{ display: "block", width: `${Math.max(0, Math.min(1, fraction)) * 100}%`, minWidth: fraction > 0 ? 3 : 0, height: "100%", background: colour, borderRadius: 6 }} />
+    <span style={{ display: "block", height: 12, borderRadius: 6, background: `color-mix(in srgb, ${colour} 10%, ${COLORS.paper})`, overflow: "hidden" }}>
+      <span className="bar-grow" style={{ display: "block", width: `${Math.max(0, Math.min(1, fraction)) * 100}%`, minWidth: fraction > 0 ? 3 : 0, height: "100%", background: `linear-gradient(90deg, color-mix(in srgb, ${colour} 62%, #fff), ${colour})`, borderRadius: 6 }} />
     </span>
   );
   if (compact) {

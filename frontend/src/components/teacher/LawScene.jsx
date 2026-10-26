@@ -5,7 +5,7 @@ import { Sky, Ground, Cloud, Paper, Bulb, Confetti, Burst } from "./art";
 
 // An idea travelling to become a law. The line draws itself and a sheet of paper rides along it from stop to stop as the steps advance; each stop
 // lights up when the paper has been there. The stops are spaced evenly along the line, and their places are read from the line itself.
-const ROUTE = "M70 310 C150 310 160 170 260 170 S380 320 470 320 S560 170 650 170 S720 300 740 300";
+const ROUTE = "M70 310 C150 310 160 170 260 170 S380 320 470 320 S560 170 650 170 S680 300 704 300";
 const COLOURS = ["#F2B632", "#16A34A", "#C0392B", "#C7871A", "#1E4FB8"];
 
 export default function LawScene({ beat, calm }) {

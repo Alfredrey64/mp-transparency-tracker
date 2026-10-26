@@ -173,7 +173,7 @@ export function Overview({ data }) {
 
       {/* Who controls the councils */}
       <Reveal>
-        <Card id="control">
+        <Card id="control" accent="#2F80ED">
           <SectionHead kicker="Control" title="Who runs Britain's councils" blurb="Every dot is one council, coloured by the party that holds more than half its seats. Grey dots are councils where no party does. Tap a party to list its councils." />
           <div className="council-split">
             <div>
@@ -205,7 +205,7 @@ export function Overview({ data }) {
 
       {/* Changed hands */}
       <Reveal>
-        <Card id="changes">
+        <Card id="changes" accent="#E0367A">
           <SectionHead kicker="Changes of control" accent="#E0367A" title={`${changes.total} councils changed hands since ${latestYear - 1}`} blurb="A council changes hands when the party that holds a majority of its seats changes, or when a party loses its majority and no one replaces it." />
           <div className="council-split">
             <div>
@@ -245,7 +245,7 @@ export function Overview({ data }) {
       {/* Defections */}
       {def && (
         <Reveal>
-          <Card id="defections">
+          <Card id="defections" accent="#E8A33D">
             <SectionHead kicker="Defections" accent="#E8A33D" title={`${fmt(def.total)} councillors changed party since ${def.since}`} blurb={`Found by comparing the ${def.since} and ${latestYear} lists of councillors: the same person, in the same ward, under a different party. Many councillors who leave a party become independents.`} />
             <div className="council-split">
               <div>
@@ -278,7 +278,7 @@ export function Overview({ data }) {
 
       {/* Trend */}
       <Reveal>
-        <Card>
+        <Card accent="#2F8FBF">
           <SectionHead kicker="Since 2016" accent="#2F8FBF" title="How control has shifted" blurb="For each year, how many of today's councils were controlled by each party, or by no one. A council is controlled when one party holds more than half its seats." />
           <ControlTrend trend={trend} />
           <WhatThisMeans result={controlTrendMeaning({ trend })} style={{ marginTop: 16 }} />
@@ -293,7 +293,7 @@ export function Overview({ data }) {
 
       {/* Councillors by party */}
       <Reveal>
-        <Card>
+        <Card accent="#1E4FB8">
           <SectionHead kicker="Councillors" accent="#1E4FB8" title="Councillors by party" blurb={`Every elected councillor, and how each party's number has changed since the ${rawDef?.since ?? latestYear - 1} list. Independents and small local parties are grouped as “Independent or other”.`} />
           {seatDelta.slice(0, 9).map((p) => (
             <Bar key={p.idx} label={p.short} colour={p.colour} fraction={p.count / maxSeats} value={fmt(p.count)} delta={rawDef ? p.change : null} labelWidth={190} />
@@ -303,7 +303,7 @@ export function Overview({ data }) {
 
       {/* Elections */}
       <Reveal>
-        <Card id="elections">
+        <Card id="elections" accent="#1FA97C">
           <SectionHead kicker="Elections" accent="#1FA97C" title="When councils next vote" blurb="The date each council's next election falls on. Some councils elect everyone at once; others elect a third or a half at a time." />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(230px, 100%), 1fr))", gap: 12 }}>
             {s.nextDates.map((d, i) => (
@@ -320,7 +320,7 @@ export function Overview({ data }) {
       </Reveal>
 
       {/* Every council */}
-      <Card id="all-councils">
+      <Card id="all-councils" accent="#1E4FB8">
         <SectionHead kicker="Browse" accent="#1E4FB8" title="Every council" blurb="Tap one to see its councillors, ward by ward, and its recent changes." />
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 14, alignItems: "center" }}>
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Filter by name" aria-label="Filter the list of councils" style={{ ...input, maxWidth: 260, padding: "9px 14px", fontSize: 14 }} />

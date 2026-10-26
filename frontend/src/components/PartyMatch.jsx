@@ -117,16 +117,17 @@ function ProgressBar({ current, total }) {
 }
 
 const cardStyle = {
-  background: COLORS.paperCard,
-  border: `1px solid ${COLORS.hairline}`,
-  borderTop: `4px solid ${COLORS.accent}`,
-  borderRadius: 16,
-  padding: "28px clamp(18px, 4vw, 32px)",
+  background: "linear-gradient(165deg, color-mix(in srgb, var(--page-accent, #E0367A) 8%, var(--c-paper-card)), var(--c-paper-card) 260px)",
+  border: "1px solid color-mix(in srgb, var(--page-accent, #E0367A) 20%, var(--c-hairline))",
+  borderTop: "5px solid var(--page-accent, #E0367A)",
+  borderRadius: 22,
+  boxShadow: "var(--shadow-2)",
+  padding: "28px clamp(18px, 4vw, 34px)",
 };
 
 const primaryButtonStyle = {
   fontFamily: FONT_BODY, fontWeight: 700, fontSize: 14.5, color: "#fff", background: COLORS.accent,
-  border: "none", borderRadius: 999, padding: "12px 26px", cursor: "pointer",
+  border: "none", borderRadius: 999, padding: "14px 34px", cursor: "pointer", boxShadow: "0 14px 24px -12px var(--page-accent, #E0367A)",
 };
 
 function IntroScreen({ onStart }) {
@@ -136,6 +137,11 @@ function IntroScreen({ onStart }) {
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 18 }}>
           <MatchOrbitDiagram />
         </div>
+        <ol className="pm-steps" aria-label="How it works">
+          <li style={{ "--sc": "#E0367A" }}><b>1</b><span>Pick the issues that matter most to you</span></li>
+          <li style={{ "--sc": "#7A5AF0" }}><b>2</b><span>Answer {QUESTIONS.length} short policy statements</span></li>
+          <li style={{ "--sc": "#1FA97C" }}><b>3</b><span>See which party lines up closest, and why</span></li>
+        </ol>
         <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, color: COLORS.ink, lineHeight: 1.7, marginTop: 0 }}>
           Pick which issues matter most to you, then say how much you agree or disagree with {QUESTIONS.length} policy
           statements. We'll match your answers against each major party's actual 2024 manifesto commitments (and,

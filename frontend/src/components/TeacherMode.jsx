@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
 import { createPortal } from "react-dom";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING } from "../theme";
@@ -8,6 +8,8 @@ import { CHAPTERS, GUIDE } from "../data/teacherMode";
 import { card, cardTitle } from "../lib/onsStyles";
 import Presenter from "./teacher/Presenter";
 import Printables from "./teacher/Printables";
+import NameThem from "./teacher/NameThem";
+import { NamesContext, cleanNames, loadNames, saveNames } from "./teacher/characters";
 import { ShopScene } from "./teacher/Scenes";
 import { useBeats } from "./teacher/useBeats";
 import { loadGsap } from "../lib/gsapLoader";
@@ -20,7 +22,7 @@ const FIRST = Object.fromEntries(CHAPTERS.map((c) => [c.key, buildSlides().findI
 
 // The picture on the front of the page plays the first story on a loop, a step every couple of seconds, while it is on screen. With less motion
 // asked for it just shows the finished picture.
-function Preview({ calm }) {
+function Preview({ calm, names }) {
   const ref = useRef(null);
   const [beat, setBeat] = useState(calm ? 5 : 0);
   const [seen, setSeen] = useState(false);
@@ -37,7 +39,7 @@ function Preview({ calm }) {
     const id = setInterval(() => { if (!document.hidden) setBeat((b) => (b + 1) % 6); }, 2300);
     return () => clearInterval(id);
   }, [calm, seen]);
-  return <svg ref={ref} viewBox="0 0 800 450"><ShopScene /></svg>;
+  return <svg ref={ref} viewBox="0 0 800 450"><NamesContext.Provider value={names}><ShopScene /></NamesContext.Provider></svg>;
 }
 
 // Five stops along a line: the line fills in as the page scrolls into view, and each stop starts its chapter.
@@ -81,6 +83,10 @@ export default function TeacherMode() {
   const calm = Boolean(useReducedMotion()) || lowData();
   const [open, setOpen] = useState(false);
   const [startAt, setStartAt] = useState(0);
+  const [names, setNames] = useState(loadNames);
+  const setAndSave = (n) => { setNames(n); saveNames(cleanNames(n)); };
+  // What the lesson uses is always tidy, even while a name is half typed.
+  const tidyNames = useMemo(() => cleanNames(names), [names]);
   const opener = useRef(null);
   const start = (i, el) => { opener.current = el; setStartAt(i); setOpen(true); };
 
@@ -107,7 +113,7 @@ export default function TeacherMode() {
           <ul className="tm-guide">{GUIDE.map((g) => <li key={g}>{g}</li>)}</ul>
         </div>
         <div className="tm-preview" aria-hidden="true">
-          <Preview calm={calm} />
+          <Preview calm={calm} names={tidyNames} />
         </div>
       </section>
 
@@ -137,6 +143,8 @@ export default function TeacherMode() {
         </div>
       </section>
 
+      <NameThem names={names} onChange={setAndSave} />
+
       <Printables />
 
       <section aria-labelledby="h-tm-fair" style={{ ...card, marginTop: 34 }}>
@@ -149,7 +157,7 @@ export default function TeacherMode() {
         </p>
       </section>
 
-      {open && createPortal(<Presenter open startAt={startAt} onClose={() => setOpen(false)} openerRef={opener} />, document.body)}
+      {open && createPortal(<Presenter open startAt={startAt} names={tidyNames} onClose={() => setOpen(false)} openerRef={opener} />, document.body)}
     </div>
   );
 }

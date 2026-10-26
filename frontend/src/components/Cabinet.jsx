@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING, readable, chip } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable, chip } from "../theme";
 import { partyColour, formatDate, stripHtml } from "../lib/format";
 import { PageHeader } from "./shared";
 import { LoadFailedNote } from "./MpCards";
@@ -211,7 +211,7 @@ function Avatar({ url, name, color, size = 64 }) {
   );
 }
 
-function CabinetCard({ member, area, index, onViewProfile }) {
+function CabinetCard({ member, area, index, onViewProfile, boss }) {
   const [open, setOpen] = useState(false);
   const color = partyColour(member.party_colour, COLORS.inkSoft);
   const bio = stripHtml(member.biography);
@@ -235,6 +235,10 @@ function CabinetCard({ member, area, index, onViewProfile }) {
           <div style={{ minWidth: 0, flex: 1 }}>
             <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17.5, color: COLORS.ink, lineHeight: 1.3 }}>{member.name}</div>
             <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13, color: readable(color), marginTop: 3, lineHeight: 1.35 }}>{member.cabinet_role}</div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 7 }}>
+              <span className="cab-rank" data-rank={rankOf(member.cabinet_role)}>{RANK_LABEL[rankOf(member.cabinet_role)]}</span>
+              {boss && <span className="cab-boss">Works for {boss.name}</span>}
+            </div>
             <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6, flexWrap: "wrap" }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: color, flexShrink: 0 }} />
               <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>
@@ -288,8 +292,21 @@ function CabinetCard({ member, area, index, onViewProfile }) {
 }
 
 const SECTION_ACCENTS = [
-  "#9C6B30", "#5A7FA6", "#6E4B6E", "#3F7D5C", "#B0473E", "#4A5A6A", "#8A6D3B", "#3C6E8F",
+  "#1E4FB8", "#0E9AA7", "#7A5AF0", "#E0367A", "#E8741A", "#1FA97C", "#C7871A", "#D6455D", "#2E86C1", "#8E5BB5", "#3F9B3F", "#C0561F", "#2A9D8F", "#B5651D", "#5B6B84", "#6E4B6E", "#4C6FA6",
 ];
+
+// How senior a role is, so each department can show who leads it and who works for them. 0 is the Prime Minister, 1 a head of a department (a
+// Secretary of State or an equivalent), 2 a Minister of State, 3 a junior minister, 4 anything else.
+function rankOf(role) {
+  const r = String(role ?? "");
+  if (/^prime minister/i.test(r)) return 0;
+  if (/deputy prime minister|^secretary of state|chancellor of the exchequer|^home secretary|^foreign secretary|lord chancellor|chancellor of the duchy|leader of the house|chief whip|attorney general|chief secretary to the treasury/i.test(r)) return 1;
+  if (/minister of state/i.test(r)) return 2;
+  if (/parliamentary under|parliamentary secretary|assistant whip|lord[s]? in waiting|lord commissioner|vice-chamberlain|solicitor general|treasurer of hm household|comptroller/i.test(r)) return 3;
+  return 4;
+}
+const RANK_LABEL = ["Prime Minister", "Heads a department", "Minister of State", "Junior minister", "Other role"];
+const shortRole = (role) => String(role ?? "").replace(/\s*\(.*$/, "").replace(/^Secretary of State for /i, "Secretary of State, ");
 
 function jumpToArea(area) {
   document.getElementById(`cabinet-${area}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -309,8 +326,8 @@ function jumpToArea(area) {
 // width, going off the window's width picked a column count that didn't
 // actually fit the much narrower content column next to the sidebar,
 // clipping the row's rightmost node instead of wrapping it.
-const NODE_WIDTH = 108;
-const NODE_GAP = 22;
+const NODE_WIDTH = 190;
+const NODE_GAP = 18;
 
 function useResponsiveColumns(containerRef) {
   const [columns, setColumns] = useState(3);
@@ -319,7 +336,7 @@ function useResponsiveColumns(containerRef) {
     if (!el) return;
     function update(width) {
       const fit = Math.floor((width + NODE_GAP) / (NODE_WIDTH + NODE_GAP));
-      setColumns(Math.max(2, fit));
+      setColumns(Math.max(1, fit));
     }
     update(el.getBoundingClientRect().width);
     const observer = new ResizeObserver(([entry]) => update(entry.contentRect.width));
@@ -329,151 +346,125 @@ function useResponsiveColumns(containerRef) {
   return columns;
 }
 
-function OrgChartNode({ group, accent, delay }) {
+// One department in the chart: its name and colour, the person who leads it, and the small team that works for them.
+function DeptNode({ group, delay }) {
   const Icon = AREA_ICONS[group.area] ?? IconQuestion;
-  const size = group.size;
+  const accent = group.accent;
+  const head = group.head;
+  const team = group.members.filter((m) => m !== head);
+  const shown = team.slice(0, 5);
   return (
     <motion.button
+      type="button"
       onClick={() => jumpToArea(group.area)}
-      initial={{ opacity: 0, y: -8 }}
+      initial={{ opacity: 0, y: -10 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.3, delay: delay + 0.1, ease: "easeOut" }}
-      whileHover={{ y: -3 }}
-      style={{
-        position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
-        width: 108, background: "none", border: "none", cursor: "pointer", padding: 0,
-      }}
+      transition={{ duration: 0.35, delay: delay + 0.1, ease: "easeOut" }}
+      whileHover={{ y: -4 }}
+      className="cab-node" style={{ "--ca": accent, width: NODE_WIDTH }}
+      aria-label={`${group.area}: led by ${head?.name ?? "no one listed"}, with ${team.length} ${team.length === 1 ? "minister" : "ministers"} working for them. Jump to the list.`}
     >
-      <motion.div
-        initial={{ height: 0 }}
-        whileInView={{ height: 20 }}
-        viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.2, delay, ease: "easeOut" }}
-        style={{ position: "absolute", top: -20, width: 1, background: COLORS.hairline }}
-      />
-      <div
-        style={{
-          width: size, height: size, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-          background: `${accent}20`, border: `2px solid ${accent}`, color: readable(accent), flexShrink: 0,
-        }}
-      >
-        <Icon size={Math.round(size * 0.42)} />
-      </div>
-      <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 600, color: COLORS.ink, textAlign: "center", lineHeight: 1.3 }}>
-        {group.area}
-      </span>
-      <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: COLORS.inkSoft }}>
-        {group.members.length} {group.members.length === 1 ? "minister" : "ministers"}
+      <motion.span aria-hidden="true" className="cab-stem" initial={{ height: 0 }} whileInView={{ height: 20 }} viewport={{ once: true, margin: "-40px" }} transition={{ duration: 0.2, delay }} />
+      <span className="cab-node-head"><span className="cab-node-icon"><Icon size={17} /></span><b>{group.area}</b></span>
+      {head && (
+        <span className="cab-node-lead">
+          <Avatar url={head.thumbnail_url} name={head.name} color={partyColour(head.party_colour, COLORS.inkSoft)} size={44} />
+          <span>
+            <strong>{head.name}</strong>
+            <em className="cab-clamp">{shortRole(head.cabinet_role)}</em>
+          </span>
+        </span>
+      )}
+      <span className="cab-node-team">
+        {team.length > 0 ? (
+          <>
+            <span className="cab-faces" aria-hidden="true">
+              {shown.map((m) => <Avatar key={m.id} url={m.thumbnail_url} name={m.name} color={partyColour(m.party_colour, COLORS.inkSoft)} size={26} />)}
+              {team.length > shown.length && <i>+{team.length - shown.length}</i>}
+            </span>
+            <span className="cab-node-count">{team.length} {team.length === 1 ? "minister works" : "ministers work"} for them</span>
+          </>
+        ) : <span className="cab-node-count">Works on their own</span>}
       </span>
     </motion.button>
   );
 }
 
-// One tier of the chart: a spine sized to exactly this row's own nodes
-// (an absolutely-positioned line pinned edge-to-edge inside a wrapper
-// that's only as wide as the row's flex content, not the full column) —
-// so it's never wider or narrower than the branches actually hanging off
-// it, whether the row holds two departments or six. A row of exactly one
-// node skips the spine entirely; there's nothing for a horizontal line to
-// span.
+// One tier of the chart: a line along the top of just this row's nodes, with a short stem down to each.
 function OrgChartRow({ row, baseDelay }) {
   return (
     <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", position: "relative" }}>
       {row.length > 1 && (
         <motion.div
-          initial={{ scaleX: 0 }}
-          whileInView={{ scaleX: 1 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.35, delay: baseDelay, ease: "easeOut" }}
-          style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: COLORS.hairline }}
+          initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true, margin: "-40px" }} transition={{ duration: 0.35, delay: baseDelay, ease: "easeOut" }}
+          style={{ position: "absolute", top: 0, left: NODE_WIDTH / 2, right: NODE_WIDTH / 2, height: 3, borderRadius: 2, background: "color-mix(in srgb, var(--c-ink-soft) 40%, var(--c-hairline))", transformOrigin: "center" }}
         />
       )}
-      <div style={{ display: "flex", justifyContent: "center", gap: "18px 22px", paddingTop: 20, flexWrap: "nowrap" }}>
-        {row.map((group, i) => (
-          <OrgChartNode
-            key={group.area}
-            group={group}
-            accent={group.accent}
-            delay={baseDelay + i * 0.04}
-          />
-        ))}
+      <div style={{ display: "flex", justifyContent: "center", gap: `22px ${NODE_GAP}px`, paddingTop: 20 }}>
+        {row.map((group, i) => <DeptNode key={group.area} group={group} delay={baseDelay + i * 0.04} />)}
       </div>
     </div>
   );
 }
 
-// A real org chart, not a card grid standing in for one: the Prime
-// Minister at the top with a single trunk line down to a tiered spine —
-// every department branching off the row it actually sits in, sized by
-// how many ministers sit there. Tapping a department jumps straight to
-// its full list below (the same jumpToArea the pill row already used),
-// so the diagram is a real way to navigate, not just decoration in front
-// of the list. Reveals itself the way an actual org chart gets drawn —
-// trunk down from the PM, then row by row, each branch line landing
-// right as its own node pops in — rather than everything fading in
-// together. Each row's delay picks up where the previous one's animation
-// finished, so however many rows there are, the sequence still reads as
-// one continuous draw from the top down, not several unrelated
-// animations that happen to overlap.
-function CabinetOrgChart({ groups }) {
+// An org chart you can read from the top: the Prime Minister, who appoints the head of every department; under each head, the ministers who work
+// for them. A line joins every box to the one above it. Tap a department to jump to its full list.
+function CabinetOrgChart({ groups, pm }) {
   const containerRef = useRef(null);
   const columns = useResponsiveColumns(containerRef);
   if (groups.length === 0) return null;
-  const maxCount = Math.max(...groups.map((g) => g.members.length));
-  const sized = groups.map((g, gi) => ({
-    ...g,
-    accent: SECTION_ACCENTS[gi % SECTION_ACCENTS.length],
-    size: Math.round(36 + (g.members.length / maxCount) * 26),
-  }));
   const rows = [];
-  for (let i = 0; i < sized.length; i += columns) rows.push(sized.slice(i, i + columns));
-
+  for (let i = 0; i < groups.length; i += columns) rows.push(groups.slice(i, i + columns));
+  const pmColor = pm ? partyColour(pm.party_colour, COLORS.accent) : COLORS.accent;
   return (
-    <div ref={containerRef} style={{ marginTop: 32, marginBottom: 8, display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <motion.div
-        initial={{ opacity: 0, y: -8, scale: 0.9 }}
-        whileInView={{ opacity: 1, y: 0, scale: 1 }}
-        viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.35, ease: "backOut" }}
-        style={{
-          display: "flex", flexDirection: "column", alignItems: "center", gap: 6, padding: "10px 20px",
-          borderRadius: 12, background: `${COLORS.accent}12`, border: `1px solid ${COLORS.accent}40`,
-        }}
-      >
-        <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 15, color: COLORS.accentText }}>Prime Minister</span>
-      </motion.div>
-      <motion.div
-        initial={{ height: 0 }}
-        whileInView={{ height: 22 }}
-        viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.25, delay: 0.3, ease: "easeOut" }}
-        style={{ width: 2, background: COLORS.hairline }}
-      />
-      {rows.map((row, ri) => {
-        const rowDelay = 0.55 + ri * 0.35;
-        return (
-          <div key={ri} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-            {ri > 0 && (
-              <motion.div
-                initial={{ height: 0 }}
-                whileInView={{ height: 20 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.2, delay: rowDelay - 0.12, ease: "easeOut" }}
-                style={{ width: 1, background: COLORS.hairline }}
-              />
-            )}
-            <OrgChartRow row={row} baseDelay={rowDelay} />
-          </div>
-        );
-      })}
-    </div>
+    <section aria-labelledby="h-cab-chart" className="cab-chart">
+      <h2 id="h-cab-chart" className="cab-chart-title">Who works for whom</h2>
+      <p className="cab-chart-lead">The Prime Minister picks the head of each department. Each head leads a team of ministers who answer to them. Tap a box to see the whole team.</p>
+      <div ref={containerRef} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <motion.div
+          initial={{ opacity: 0, y: -8, scale: 0.92 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true, margin: "-40px" }} transition={{ duration: 0.4, ease: "backOut" }}
+          className="cab-pm" style={{ "--pc": pmColor }}
+        >
+          {pm && <Avatar url={pm.thumbnail_url} name={pm.name} color={pmColor} size={64} />}
+          <span>
+            <em>Prime Minister</em>
+            <strong>{pm?.name ?? "The Prime Minister"}</strong>
+            <small>Leads the government and appoints every minister</small>
+          </span>
+        </motion.div>
+        <motion.div initial={{ height: 0 }} whileInView={{ height: 26 }} viewport={{ once: true, margin: "-40px" }} transition={{ duration: 0.25, delay: 0.3, ease: "easeOut" }} style={{ width: 3, borderRadius: 2, background: "color-mix(in srgb, var(--c-ink-soft) 40%, var(--c-hairline))" }} />
+        {rows.map((row, ri) => {
+          const rowDelay = 0.55 + ri * 0.35;
+          return (
+            <div key={ri} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+              {ri > 0 && <motion.div initial={{ height: 0 }} whileInView={{ height: 20 }} viewport={{ once: true, margin: "-40px" }} transition={{ duration: 0.2, delay: rowDelay - 0.12, ease: "easeOut" }} style={{ width: 3, borderRadius: 2, background: "color-mix(in srgb, var(--c-ink-soft) 40%, var(--c-hairline))" }} />}
+              <OrgChartRow row={row} baseDelay={rowDelay} />
+            </div>
+          );
+        })}
+      </div>
+      <ul className="cab-ranks" aria-label="What the ranks mean">
+        <li><b>Head of department</b><span>Usually a Secretary of State. Sits in Cabinet.</span></li>
+        <li><b>Minister of State</b><span>Works for the head, and leads on a part of the department's job.</span></li>
+        <li><b>Junior minister</b><span>Works for the head and the ministers above, on a narrower area.</span></li>
+      </ul>
+    </section>
   );
 }
 
 export default function Cabinet({ onViewProfile }) {
   const { members, failed } = useCabinet();
   const groups = members ? groupByArea(members) : [];
+  const pm = members?.find((m) => rankOf(m.cabinet_role) === 0) ?? null;
+  // For the chart: each department's head and team, with the Prime Minister taken out of the Cabinet Office's team.
+  const chartGroups = groups
+    .map((g, gi) => {
+      const people = g.members.filter((m) => m !== pm);
+      const head = [...people].sort((x, y) => rankOf(x.cabinet_role) - rankOf(y.cabinet_role))[0] ?? null;
+      return { ...g, members: people, head, accent: SECTION_ACCENTS[gi % SECTION_ACCENTS.length] };
+    })
+    .filter((g) => g.members.length > 0);
 
   return (
     <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
@@ -498,7 +489,7 @@ export default function Cabinet({ onViewProfile }) {
         </div>
       )}
 
-      {groups.length > 1 && <CabinetOrgChart groups={groups} />}
+      {chartGroups.length > 1 && <CabinetOrgChart groups={chartGroups} pm={pm} />}
 
       {groups.map((g, gi) => {
         const accent = SECTION_ACCENTS[gi % SECTION_ACCENTS.length];
@@ -524,9 +515,10 @@ export default function Cabinet({ onViewProfile }) {
               </div>
             )}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(320px, 100%), 1fr))", gap: 14 }}>
-              {g.members.map((m, mi) => (
-                <CabinetCard key={m.id} member={m} area={g.area} index={mi} onViewProfile={onViewProfile} />
-              ))}
+              {[...g.members].sort((x, y) => rankOf(x.cabinet_role) - rankOf(y.cabinet_role)).map((m, mi) => {
+                const head = chartGroups.find((c) => c.area === g.area)?.head;
+                return <CabinetCard key={m.id} member={m} area={g.area} index={mi} onViewProfile={onViewProfile} boss={head && head !== m && rankOf(m.cabinet_role) > 1 ? head : null} />;
+              })}
             </div>
           </div>
         );

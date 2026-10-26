@@ -197,7 +197,7 @@ function usePageAccent(accent) {
   }, [accent]);
 }
 
-export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = "left", size = "lg", icon: Icon, share, accent: accentProp }) {
+export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = "center", size = "lg", icon: Icon, share, accent: accentProp }) {
   const isHero = size === "xl";
   // The page's "What you're looking at" box sits under every header.
   const guideKey = useContext(GuideKeyContext);
