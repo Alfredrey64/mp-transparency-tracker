@@ -2,7 +2,7 @@
 .pt-tools { position: fixed; left: max(14px, env(safe-area-inset-left)); bottom: max(18px, env(safe-area-inset-bottom)); z-index: 40; display: grid; gap: 8px; justify-items: start; opacity: 0; visibility: hidden; transform: translateY(14px); transition: opacity 0.25s var(--ease-out), transform 0.3s var(--ease-spring), visibility 0s linear 0.3s; }
 .pt-tools[data-on="1"] { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
 .pt-btn { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--page-accent, var(--c-brand)) 40%, var(--c-hairline)); background: var(--c-paper-card); color: var(--c-ink); font: 700 14px "Public Sans", system-ui, sans-serif; cursor: pointer; box-shadow: var(--shadow-3); transition: background 0.2s, transform 0.2s var(--ease-out); }
-.pt-btn:hover { background: color-mix(in srgb, var(--page-accent, var(--c-brand)) 10%, var(--c-paper-card)); transform: translateY(-2px); }
+.pt-btn:hover { background: color-mix(in srgb, var(--page-accent, var(--c-brand)) 10%, var(--c-paper-card)); transform: scale(1.012); }
 .pt-btn svg { color: var(--page-accent, var(--c-brand)); }
 .pt-list { width: min(320px, calc(100vw - 28px)); max-height: min(60vh, 440px); overflow-y: auto; padding: 12px; border-radius: 18px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-top: 4px solid var(--page-accent, var(--c-brand)); box-shadow: var(--shadow-3); overscroll-behavior: contain; animation: pt-in 0.2s var(--ease-out) both; }
 @keyframes pt-in { from { opacity: 0; transform: translateY(8px); } }

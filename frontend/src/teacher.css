@@ -8,7 +8,7 @@
 .tm-preview svg { display: block; width: 100%; height: 100%; }
 .tm-guide { margin: 14px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 15px; line-height: 1.5; color: var(--c-ink-soft); }
 .tm-guide li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 10px; }
-.tm-guide li::before { content: ""; width: 8px; height: 8px; margin-top: 7px; border-radius: 50%; background: #7A5AF0; }
+.tm-guide li::before { content: ""; width: 8px; height: 8px; margin-top: calc(0.75em - 4px); border-radius: 50%; background: #7A5AF0; }
 .tm-chapter { display: flex; flex-direction: column; overflow: hidden; border-radius: 18px; background: var(--c-paper-card); border: 1px solid color-mix(in srgb, var(--c) 30%, var(--c-hairline)); box-shadow: var(--shadow-1); transition: box-shadow 0.25s var(--ease-out), border-color 0.25s; }
 .tm-chapter:hover { box-shadow: var(--shadow-3); border-color: color-mix(in srgb, var(--c) 60%, var(--c-hairline)); }
 .tm-chapter-head { display: flex; align-items: center; gap: 14px; padding: 16px 18px; background: linear-gradient(110deg, var(--c), color-mix(in srgb, var(--c) 70%, #000)); color: #fff; }
@@ -67,7 +67,8 @@
 .t-chips li { padding: 9px 16px; border-radius: 999px; background: color-mix(in srgb, var(--tc) 14%, var(--c-paper-card)); border: 1.5px solid color-mix(in srgb, var(--tc) 40%, var(--c-hairline)); font: 700 clamp(15px, 1.6vw, 19px)/1.2 "Public Sans", system-ui, sans-serif; color: var(--c-ink); animation: fade-in 0.5s var(--ease-out) calc(var(--i, 0) * 130ms + 150ms) both; }
 .t-list { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; max-width: 70ch; }
 .t-list li { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 12px; font: 500 clamp(16px, min(1.8vw, 2.5vh), 21px)/1.45 "Public Sans", system-ui, sans-serif; color: var(--c-ink); animation: fade-in 0.5s var(--ease-out) calc(var(--i, 0) * 140ms + 100ms) both; }
-.t-list li::before { content: ""; width: 10px; height: 10px; margin-top: 0.55em; border-radius: 50%; background: var(--tc); }
+.t-term { color: color-mix(in srgb, var(--tc) 78%, var(--c-ink)); font-weight: 800; }
+.t-list li::before { content: ""; width: 10px; height: 10px; margin-top: calc(0.725em - 5px); border-radius: 50%; background: var(--tc); }
 .t-fact { margin: 14px 0 0; padding: 10px 14px; border-radius: 12px; background: color-mix(in srgb, #F2B632 20%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, #C7871A 40%, var(--c-hairline)); font: 500 clamp(15px, 1.6vw, 18px)/1.45 "Public Sans", system-ui, sans-serif; color: var(--c-ink); max-width: 70ch; }
 .t-bottom { display: flex; align-items: center; gap: 16px; min-height: var(--bot); padding: 12px max(16px, env(safe-area-inset-left)) calc(12px + env(safe-area-inset-bottom)); }
 .t-bottom .btn { min-width: 112px; }
@@ -182,7 +183,7 @@
 
 /* ---- Print and take away ---------------------------------------------------------------------------------------------------------------- */
 .tm-print-card { display: flex; flex-direction: column; gap: 10px; padding: 18px; border-radius: 18px; background: linear-gradient(160deg, color-mix(in srgb, var(--c) 10%, var(--c-paper-card)), var(--c-paper-card) 60%); border: 1px solid color-mix(in srgb, var(--c) 30%, var(--c-hairline)); border-top: 5px solid var(--c); box-shadow: var(--shadow-1); transition: box-shadow 0.25s var(--ease-out), transform 0.25s var(--ease-out); }
-.tm-print-card:hover { box-shadow: var(--shadow-3); transform: translateY(-2px); }
+.tm-print-card:hover { box-shadow: var(--shadow-3); transform: scale(1.012); }
 .tm-print-card h3 { margin: 0; font: 600 20px/1.2 "Newsreader", Georgia, serif; color: var(--c-ink); }
 .tm-print-card p { margin: 0; font-size: 14.5px; line-height: 1.55; color: var(--c-ink-soft); }
 .tm-print-pick { display: grid; gap: 4px; font-size: 13px; font-weight: 700; color: var(--c-ink); }

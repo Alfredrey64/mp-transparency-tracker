@@ -5,13 +5,13 @@
 .sn-head p { margin: 0; font: 400 14px "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .sn-pn { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 10px; margin-top: 14px; }
 .sn-step { display: grid; gap: 1px; padding: 12px 18px; border-radius: 16px; text-decoration: none; background: linear-gradient(135deg, color-mix(in srgb, var(--sc) 90%, #000), color-mix(in srgb, var(--sc) 62%, #000)); color: #fff; box-shadow: 0 14px 24px -16px var(--sc); transition: transform 0.22s var(--ease-out), box-shadow 0.22s; }
-.sn-step:hover { transform: translateY(-2px); box-shadow: 0 18px 28px -14px var(--sc); }
+.sn-step:hover { transform: scale(1.012); box-shadow: 0 18px 28px -14px var(--sc); }
 .sn-step small { font: 600 12px "Public Sans", system-ui, sans-serif; opacity: 0.85; }
 .sn-step b { font: 700 17px "Newsreader", Georgia, serif; }
 .sn-next { text-align: right; }
 .sn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr)); gap: 10px; margin-top: 12px; }
 .sn-card { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 16px; text-decoration: none; color: inherit; background: color-mix(in srgb, var(--sc) 6%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--sc) 24%, var(--c-hairline)); transition: transform 0.22s var(--ease-out), box-shadow 0.22s, border-color 0.22s; }
-.sn-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-2); border-color: var(--sc); }
+.sn-card:hover { transform: scale(1.012); box-shadow: var(--shadow-2); border-color: var(--sc); }
 .sn-icon { display: grid; place-items: center; flex: none; width: 40px; height: 40px; border-radius: 12px; background: color-mix(in srgb, var(--sc) 16%, transparent); color: color-mix(in srgb, var(--sc) 80%, var(--c-ink)); }
 .sn-text { display: grid; min-width: 0; }
 .sn-text b { font: 700 14.5px/1.3 "Public Sans", system-ui, sans-serif; color: var(--c-ink); }

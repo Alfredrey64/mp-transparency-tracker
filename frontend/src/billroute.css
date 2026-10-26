@@ -23,7 +23,7 @@
 .billroute-nav .billroute-primary:hover:not(:disabled) { background: color-mix(in srgb, var(--c) 85%, #000); }
 .billroute-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 0; padding: 0; }
 .billroute-chips button { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; font: 700 13px "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--c) 78%, var(--c-ink)); background: transparent; border: 2px solid color-mix(in srgb, var(--c) 40%, transparent); transition: background 0.2s, color 0.2s, transform 0.2s var(--ease-out); }
-.billroute-chips button:hover { transform: translateY(-2px); border-color: var(--c); }
+.billroute-chips button:hover { transform: scale(1.012); border-color: var(--c); }
 .billroute-chips button[data-done="1"] { background: color-mix(in srgb, var(--c) 18%, transparent); }
 .billroute-chips button[aria-current="step"] { background: var(--c); color: #fff; border-color: var(--c); }
 @media (min-width: 880px) {

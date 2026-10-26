@@ -11,7 +11,7 @@
 .pt-stats span { font: 600 13px "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .pt-list { display: grid; gap: 12px; }
 .pt-card { overflow: hidden; border-radius: 18px; background: linear-gradient(165deg, color-mix(in srgb, var(--pc) 7%, var(--c-paper-card)), var(--c-paper-card) 120px); border: 1px solid color-mix(in srgb, var(--pc) 26%, var(--c-hairline)); border-left: 5px solid var(--pc); box-shadow: var(--shadow-1); transition: box-shadow 0.25s var(--ease-out), transform 0.25s var(--ease-out); }
-.pt-card:hover { box-shadow: var(--shadow-3); transform: translateY(-2px); }
+.pt-card:hover { box-shadow: var(--shadow-3); transform: scale(1.012); }
 .pt-card[data-open="1"] { box-shadow: var(--shadow-2), 0 0 0 3px color-mix(in srgb, var(--pc) 20%, transparent); transform: none; }
 .pt-head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 14px; width: 100%; padding: 16px 18px; text-align: left; background: none; border: 0; cursor: pointer; color: inherit; font: inherit; }
 .pt-rank { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 12px; background: color-mix(in srgb, var(--pc) 15%, transparent); color: color-mix(in srgb, var(--pc) 80%, var(--c-ink)); font: 800 14px "Public Sans", system-ui, sans-serif; font-variant-numeric: tabular-nums; }

@@ -5,7 +5,7 @@
 .ykicker span { width: 10px; height: 10px; border-radius: 50%; background: var(--ka); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ka) 24%, transparent); }
 .ystat { padding: 18px 18px 20px; border-radius: 18px; background: linear-gradient(165deg, color-mix(in srgb, var(--sc) 13%, var(--c-paper-card)), var(--c-paper-card) 75%); border: 1px solid color-mix(in srgb, var(--sc) 28%, var(--c-hairline)); box-shadow: var(--shadow-1), inset 0 4px 0 var(--sc); transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out); }
 button.ystat { cursor: pointer; }
-.ystat:hover { transform: translateY(-3px); box-shadow: var(--shadow-3), inset 0 4px 0 var(--sc); }
+.ystat:hover { transform: scale(1.016); box-shadow: var(--shadow-3), inset 0 4px 0 var(--sc); }
 
 
 .hub-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 0 0 16px; }

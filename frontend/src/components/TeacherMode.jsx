@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
 import { createPortal } from "react-dom";
@@ -117,6 +118,8 @@ export default function TeacherMode() {
         </div>
       </section>
 
+      <NameThem names={names} onChange={setAndSave} />
+
       <section aria-labelledby="h-tm-chapters" style={{ marginTop: 34 }}>
         <h2 id="h-tm-chapters" style={{ fontFamily: FONT_DISPLAY, fontSize: 26, fontWeight: 700, color: COLORS.ink, margin: 0 }}>The five chapters</h2>
         <p style={{ fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.55, color: COLORS.inkSoft, margin: "6px 0 18px", maxWidth: 640 }}>Start anywhere. Each chapter has a question to ask the class.</p>
@@ -142,8 +145,6 @@ export default function TeacherMode() {
           ))}
         </div>
       </section>
-
-      <NameThem names={names} onChange={setAndSave} />
 
       <Printables />
 

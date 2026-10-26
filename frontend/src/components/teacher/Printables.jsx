@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { COLORS, FONT_BODY, FONT_DISPLAY } from "../../theme";

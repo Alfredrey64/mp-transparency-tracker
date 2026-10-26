@@ -5,7 +5,7 @@
 .v-small { margin: 14px 0 0; font: 400 12.5px/1.6 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .v-small a { color: var(--c-ink-soft); }
 .v-link { display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 999px; font: 700 14px "Public Sans", system-ui, sans-serif; text-decoration: none; color: color-mix(in srgb, var(--sc) 70%, var(--c-ink)); background: color-mix(in srgb, var(--sc) 12%, transparent); border: 1px solid color-mix(in srgb, var(--sc) 40%, transparent); transition: background 0.2s, transform 0.2s var(--ease-out); }
-.v-link:hover { background: color-mix(in srgb, var(--sc) 22%, transparent); transform: translateY(-1px); }
+.v-link:hover { background: color-mix(in srgb, var(--sc) 22%, transparent); transform: scale(1.01); }
 .v-links { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0 0; }
 
 /* The route: four coloured stops in a row, joined by a line that draws itself. */
@@ -30,7 +30,7 @@
 .v-q-title span { display: grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 50%; background: #E0367A; color: #fff; font-size: 13px; }
 .v-tickets { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 14px; }
 .v-ticket { position: relative; display: grid; grid-template-columns: 62px minmax(0, 1fr); overflow: hidden; border-radius: 18px; background: var(--c-paper-card); border: 1px solid color-mix(in srgb, var(--rc) 35%, var(--c-hairline)); box-shadow: var(--shadow-1); animation: v-pop 0.4s var(--ease-out) backwards; transition: box-shadow 0.25s, transform 0.25s var(--ease-out); }
-.v-ticket:hover { transform: translateY(-2px); box-shadow: var(--shadow-3); }
+.v-ticket:hover { transform: scale(1.012); box-shadow: var(--shadow-3); }
 .v-ticket-stub { display: grid; place-items: center; position: relative; background: linear-gradient(170deg, var(--rc), color-mix(in srgb, var(--rc) 72%, #000)); color: #fff; }
 .v-ticket-stub svg { width: 28px; height: 28px; stroke-width: 2.6; }
 .v-ticket-stub::after { content: ""; position: absolute; top: 8px; bottom: 8px; right: -1px; border-right: 3px dotted var(--c-paper-card); }
@@ -68,7 +68,7 @@
 .v-ticks svg { width: 14px; height: 14px; stroke-width: 3; }
 .v-ways { list-style: none; margin: 14px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px; }
 .v-ways li { display: grid; align-content: start; gap: 6px; padding: 16px; border-radius: 16px; background: color-mix(in srgb, var(--wc) 9%, var(--c-paper)); border: 1px solid color-mix(in srgb, var(--wc) 32%, var(--c-hairline)); border-top: 4px solid var(--wc); font: 400 14px/1.55 "Public Sans", system-ui, sans-serif; color: var(--c-ink); transition: transform 0.25s var(--ease-out), box-shadow 0.25s; }
-.v-ways li:hover { transform: translateY(-3px); box-shadow: var(--shadow-2); }
+.v-ways li:hover { transform: scale(1.016); box-shadow: var(--shadow-2); }
 .v-ways svg { width: 30px; height: 30px; color: var(--wc); }
 .v-ways b { font: 700 18px/1.2 "Newsreader", Georgia, serif; }
 .v-day { display: grid; gap: 18px; }
@@ -85,7 +85,7 @@
 .v-after-grid span { font: 500 14px/1.45 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .v-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 18px; }
 .v-chips a { padding: 9px 18px; border-radius: 999px; font: 700 14px "Public Sans", system-ui, sans-serif; text-decoration: none; color: var(--c-ink); background: var(--c-paper-card); border: 1px solid var(--c-hairline); transition: background 0.2s, border-color 0.2s, transform 0.2s var(--ease-out); }
-.v-chips a:hover { border-color: #E0367A; background: color-mix(in srgb, #E0367A 10%, var(--c-paper-card)); transform: translateY(-2px); }
+.v-chips a:hover { border-color: #E0367A; background: color-mix(in srgb, #E0367A 10%, var(--c-paper-card)); transform: scale(1.012); }
 
 @media (max-width: 560px) {
   .v-route { gap: 4px; }

@@ -11,7 +11,7 @@
 .tl-nav { position: sticky; top: 0; z-index: 8; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 10px -8px 18px; padding: 12px 8px; background: color-mix(in srgb, var(--c-paper) 92%, transparent); backdrop-filter: blur(8px); }
 .tl-nav button { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; cursor: pointer; font: 600 13px "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--ea) 70%, var(--c-ink)); background: color-mix(in srgb, var(--ea) 9%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--ea) 34%, transparent); transition: background 0.25s, color 0.25s, transform 0.25s var(--ease-out), box-shadow 0.25s; }
 .tl-nav button span { width: 9px; height: 9px; border-radius: 50%; background: var(--ea); transition: transform 0.25s var(--ease-out); }
-.tl-nav button:hover { transform: translateY(-2px); }
+.tl-nav button:hover { transform: scale(1.012); }
 .tl-nav button[aria-current="true"] { background: var(--ea); color: #fff; box-shadow: 0 8px 18px -10px var(--ea); }
 .tl-nav button[aria-current="true"] span { background: #fff; transform: scale(1.25); }
 
@@ -44,7 +44,7 @@
 }
 
 .tl-card { position: relative; padding: 16px 18px 15px; border-radius: 18px; cursor: pointer; background: linear-gradient(160deg, color-mix(in srgb, var(--cc) 11%, var(--c-paper-card)), var(--c-paper-card) 70%); border: 1px solid color-mix(in srgb, var(--cc) 32%, var(--c-hairline)); border-top: 4px solid var(--cc); box-shadow: var(--shadow-1); transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out); }
-.tl-card:hover { transform: translateY(-3px) rotate(-0.3deg); box-shadow: var(--shadow-3); }
+.tl-card:hover { transform: scale(1.016) rotate(-0.3deg); box-shadow: var(--shadow-3); }
 .tl-card[data-open="1"] { box-shadow: var(--shadow-2), 0 0 0 3px color-mix(in srgb, var(--cc) 20%, transparent); }
 .tl-gov-top, .tl-bill-top { display: flex; align-items: center; gap: 14px; }
 .tl-ring { flex: none; display: grid; place-items: center; padding: 3px; border-radius: 50%; background: conic-gradient(var(--cc), color-mix(in srgb, var(--cc) 35%, #fff), var(--cc)); transition: transform 0.4s var(--ease-out); }

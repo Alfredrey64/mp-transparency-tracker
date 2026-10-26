@@ -1,7 +1,9 @@
+/** @jsxImportSource react */
 import { chip } from "../../theme";
 import { SKIN } from "./palette";
 import { Sky, Ground, Cloud, Person, Bubble, Caption, Parliament, BallotBox, Paper, Bulb, Letter, TownHall, QuestionMark, Confetti, Bus } from "./art";
 import { B } from "./Scenes";
+import { leaderLook } from "./leaderLooks";
 import { LAYERS, VOICES, CHAPTERS } from "../../data/teacherMode";
 
 // The pictures for everything that is not one of the four stories. Same rules as Scenes.jsx: a piece appears on the step named by its n.
@@ -50,7 +52,7 @@ export function ChapterScene({ chapter }) {
       <Ground colour={`color-mix(in srgb, ${c} 18%, #E6F0E6)`} path="#EFE8D8" />
       {chapter.key === "why" && <><Person x={300} y={392} shirt={c} skin={SKIN[2]} mood="happy" /><Person x={380} y={392} kid long shirt="#1E4FB8" skin={SKIN[2]} mood="happy" /><Person x={450} y={392} shirt="#0E9AA7" skin={SKIN[1]} mood="happy" /><B n={0}><Bulb x={380} y={200} /></B></>}
       {chapter.key === "who" && <><TownHall x={120} y={370} /><g transform="translate(480 370)"><Parliament x={0} y={0} s={0.9} /></g></>}
-      {chapter.key === "parliament" && <g transform="translate(400 372)"><Parliament x={0} y={0} s={1.6} /></g>}
+      {chapter.key === "parliament" && <g transform="translate(400 372)"><Parliament x={0} y={0} s={1.3} /></g>}
       {chapter.key === "parties" && [0, 1, 2, 3, 4, 5, 6].map((i) => <g key={i} transform={`translate(${150 + i * 85} 372)`}><rect x="-2" y="-170" width="4" height="170" fill="#6B7A90" /><path d={`M2 -170 h56 l-14 20 l14 20 h-56z`} fill={["#DC241F", "#0087DC", "#E08A00", "#12B6CF", "#6AB023", "#E3B400", "#005B54"][i]} /></g>)}
       {chapter.key === "voice" && <><BallotBox x={400} y={392} /><Bubble x={210} y={150} w={96} h={72} tail="right"><Letter x={0} y={0} /></Bubble><Bubble x={494} y={150} w={96} h={72} tail="left"><Paper x={0} y={0} /></Bubble></>}
     </>
@@ -58,26 +60,34 @@ export function ChapterScene({ chapter }) {
 }
 
 export function LayersScene() {
-  // The three groups stack above the street, nearest to you at the bottom, so the picture reads from "you" outwards.
-  const band = (y, c, title, n) => (
+  // Three bands, nearest to you at the bottom. The further a group reaches from your front door, the wider its band, so the shape itself says "bigger
+  // area, further away". Each has a little picture of itself and says how far it reaches.
+  const GLYPHS = {
+    council: <g transform="translate(-13 12) scale(0.12)"><TownHall x={0} y={0} /></g>,
+    devolved: <g fill="#7A5AF0"><path d="M0 -14 a9 9 0 0 1 9 9 c0 6 -9 17 -9 17 s-9 -11 -9 -17 a9 9 0 0 1 9 -9z" /><circle cx="0" cy="-5" r="3.4" fill="#fff" /></g>,
+    uk: <g transform="translate(-13 14) scale(0.12)"><Parliament x={0} y={0} /></g>,
+  };
+  const band = (key, y, w, c, title, reach, n) => (
     <B n={n} fx="rise">
-      <rect x="150" y={y} width="500" height="50" rx="15" fill={c} />
-      <Label x={400} y={y + 34} size={25}>{title}</Label>
+      <rect x={400 - w / 2} y={y} width={w} height="58" rx="18" fill={c} />
+      <circle cx={400 - w / 2 + 34} cy={y + 29} r="22" fill="#fff" />
+      <g transform={`translate(${400 - w / 2 + 34} ${y + 29})`}>{GLYPHS[key]}</g>
+      <Label x={400 - w / 2 + 68} y={y + 37} size={w < 500 ? 22 : 23} anchor="start">{title}</Label>
+      <Label x={400 + w / 2 - 20} y={y + 36} size={15} anchor="end" weight={700} fill="#fff"><tspan opacity="0.9">{reach}</tspan></Label>
     </B>
   );
   return (
     <>
       <Back />
-      {band(46, LAYERS[2].colour, "UK Parliament and government", 3)}
-      {band(104, LAYERS[1].colour, "Scotland, Wales, Northern Ireland", 2)}
-      {band(162, LAYERS[0].colour, "Your local council", 1)}
-      <B n={3} fx="fade"><g transform="translate(176 46)"><Parliament x={0} y={0} s={0.12} /></g></B>
+      {band("uk", 50, 720, LAYERS[2].colour, "UK Parliament and government", "The whole UK", 3)}
+      {band("devolved", 118, 560, LAYERS[1].colour, "Scotland, Wales, N. Ireland", "Your nation", 2)}
+      {band("council", 186, 400, LAYERS[0].colour, "Your local council", "Your area", 1)}
       <B n={0}><g className="t-ripple"><ellipse cx="400" cy="408" rx="92" ry="16" fill="none" stroke="#E0365B" strokeWidth="3" /></g></B>
       <B n={0}>
         {[[110, "#E9B88A", "#B5533C"], [215, "#F4E2B5", "#8A5A3C"], [585, "#D6E6F5", "#4A6FA5"], [690, "#E9B88A", "#B5533C"]].map(([x, wall, roof]) => (
           <g key={x} transform={`translate(${x} 366)`}><rect x="-38" y="-70" width="76" height="70" fill={wall} /><path d="M-46 -70 l46 -36 l46 36z" fill={roof} /><rect x="-10" y="-40" width="20" height="40" fill="#8A5A3C" /><rect x="14" y="-58" width="16" height="16" fill="#BFE0F5" /></g>
         ))}
-        <g transform="translate(400 286)">
+        <g transform="translate(400 296)">
           <rect x="-84" y="-17" width="168" height="34" rx="17" fill="#fff" fillOpacity="0.95" stroke="#E0365B" strokeWidth="2.5" />
           <Label x={0} y={8} size={21} fill="#0B1B33">You live here</Label>
         </g>
@@ -170,6 +180,7 @@ const FAN = (() => {
 export function PartyScene({ party, seats }) {
   const { background, color } = chip(party.colour);
   const mine = seats ? Math.min(seats, SEATS_IN_COMMONS) : 0;
+  const look = leaderLook(party.leader);
   return (
     <>
       <Back tone={`color-mix(in srgb, ${party.colour} 18%, #fff)`} tone2="#FFFFFF" />
@@ -178,7 +189,7 @@ export function PartyScene({ party, seats }) {
       <g className="t-slideup" style={{ animationDelay: "0.15s" }}><Label x={90} y={120} size={party.name.length > 14 ? 50 : 62} fill={color} anchor="start" weight={700}>{party.name}</Label></g>
       <g className="t-slideup" style={{ animationDelay: "0.3s" }}><Label x={90} y={168} size={30} fill={color} anchor="start" weight={600}>{party.leader}</Label></g>
       <g className="t-slideup" style={{ animationDelay: "0.42s" }}><Label x={90} y={206} size={party.role.length > 40 ? 17 : 20} fill={color} anchor="start" weight={500}>{party.role.length > 62 ? party.role.slice(0, 60) + "…" : party.role}</Label></g>
-      <Person x={650} y={382} s={1.7} shirt="#fff" trousers={`color-mix(in srgb, ${party.colour} 55%, #0B1B33)`} skin={SKIN[(party.key.length) % 4]} mood="happy" long={party.key.length % 2 === 0} />
+      <Person x={650} y={382} s={1.7} shirt="#fff" trousers={`color-mix(in srgb, ${party.colour} 55%, #0B1B33)`} skin={look.skin} hair={look.hair} mood="happy" long={look.long} />
       {mine > 0 && (
         <g transform="translate(165 354)" role="img" aria-label={`${mine} of ${SEATS_IN_COMMONS} seats in the Commons`}>
           {FAN.map((d, i) => (

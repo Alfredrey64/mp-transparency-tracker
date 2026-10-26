@@ -3,7 +3,7 @@
 .glance-tile { position: relative; display: grid; gap: 3px; align-content: start; padding: 16px 18px 17px; border-radius: 20px; overflow: hidden; background: linear-gradient(160deg, color-mix(in srgb, var(--gc) 14%, var(--c-paper-card)), var(--c-paper-card) 78%); border: 1px solid color-mix(in srgb, var(--gc) 28%, var(--c-hairline)); box-shadow: var(--shadow-1); transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out); animation: glance-in 0.55s var(--ease-out) calc(var(--gi) * 70ms) backwards; }
 .glance-tile::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, var(--gc), color-mix(in srgb, var(--gc) 45%, #fff)); }
 .glance-tile::after { content: ""; position: absolute; right: -26px; bottom: -34px; width: 110px; height: 110px; border-radius: 50%; background: color-mix(in srgb, var(--gc) 12%, transparent); }
-.glance-tile:hover { transform: translateY(-3px); box-shadow: var(--shadow-3); }
+.glance-tile:hover { transform: scale(1.016); box-shadow: var(--shadow-3); }
 .glance-tile b { position: relative; z-index: 1; font: 700 clamp(30px, 3.6vw, 42px)/1.05 "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--gc) 80%, var(--c-ink)); font-variant-numeric: lining-nums tabular-nums; letter-spacing: -0.015em; overflow-wrap: anywhere; }
 .glance-tile span { position: relative; z-index: 1; font: 700 14px/1.35 "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .glance-tile small { position: relative; z-index: 1; font: 400 12.5px/1.45 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }

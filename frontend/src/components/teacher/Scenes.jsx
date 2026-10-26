@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import { SKIN } from "./palette";
 import { Sky, Ground, Cloud, Person, Coin, Bubble, Shop, Basket, Parliament, BallotBox, Paper, Hospital, Calendar, Clock, School, Drip, Books, Letter, BusStop, Bus, TownHall, Bulb, QuestionMark, Arrow, Tree, Caption } from "./art";
 

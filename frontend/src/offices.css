@@ -11,7 +11,7 @@
 .off-lead { margin: 16px 0 20px; max-width: 700px; font: 400 13px/1.65 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .off-list { display: grid; gap: 14px; }
 .off-card { overflow: hidden; border-radius: 20px; background: linear-gradient(165deg, color-mix(in srgb, var(--oc) 9%, var(--c-paper-card)), var(--c-paper-card) 140px); border: 1px solid color-mix(in srgb, var(--oc) 28%, var(--c-hairline)); box-shadow: var(--shadow-1); transition: box-shadow 0.25s var(--ease-out), transform 0.25s var(--ease-out); }
-.off-card:hover { box-shadow: var(--shadow-3); transform: translateY(-2px); }
+.off-card:hover { box-shadow: var(--shadow-3); transform: scale(1.012); }
 .off-card[data-open="1"] { box-shadow: var(--shadow-2), 0 0 0 3px color-mix(in srgb, var(--oc) 22%, transparent); transform: none; }
 .off-head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 14px; width: 100%; padding: 16px 18px 12px; text-align: left; background: none; border: 0; cursor: pointer; color: inherit; font: inherit; }
 .off-icon { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 16px; background: linear-gradient(145deg, var(--oc), color-mix(in srgb, var(--oc) 68%, #000)); color: #fff; box-shadow: 0 10px 20px -10px var(--oc); transition: transform 0.3s var(--ease-out); }

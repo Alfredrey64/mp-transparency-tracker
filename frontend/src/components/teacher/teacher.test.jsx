@@ -132,3 +132,13 @@ describe("naming the characters", () => {
     expect(new Set(Object.values(n)).size).toBe(4);
   });
 });
+
+import { LEADER_LOOKS, leaderLook, NEUTRAL_LOOK } from "./leaderLooks";
+describe("leaders in the pictures", () => {
+  it("every party leader has a look chosen for them, so nobody is drawn as someone else", () => {
+    for (const p of PARTIES) expect(LEADER_LOOKS[p.leader], `${p.leader} needs an entry in leaderLooks.js`).toBeTruthy();
+  });
+  it("a leader with no entry is drawn neutrally", () => {
+    expect(leaderLook("Somebody New")).toBe(NEUTRAL_LOOK);
+  });
+});

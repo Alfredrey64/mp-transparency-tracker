@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
 import { useDialog } from "../../lib/useDialog";
@@ -110,7 +111,15 @@ function Caption({ step }) {
       {step.title && <h2 className="t-title">{step.title}</h2>}
       {step.text && <p className="t-text" aria-label={step.text}><Words text={step.text} /></p>}
       {step.chips && <ul className="t-chips">{step.chips.map((c, i) => <li key={c} style={{ "--i": i }}>{c}</li>)}</ul>}
-      {step.list && <ul className="t-list">{step.list.map((c, i) => <li key={c} style={{ "--i": i }}>{c}</li>)}</ul>}
+      {step.list && (
+        <ul className="t-list">
+          {step.list.map((c, i) => {
+            // The word list is written "term: meaning"; the term is picked out so a class can find it.
+            const m = step.title === "Words you will meet" ? /^([^:]{2,40}):\s*(.+)$/.exec(c) : null;
+            return <li key={c} style={{ "--i": i }}><span>{m ? <><b className="t-term">{m[1]}</b>: {m[2]}</> : c}</span></li>;
+          })}
+        </ul>
+      )}
       {step.fact && <p className="t-fact"><strong>Did you know?</strong> {step.fact}</p>}
     </div>
   );

@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import { useState } from "react";
 import { COLORS, FONT_BODY, FONT_DISPLAY } from "../../theme";
 import { Person } from "./art";

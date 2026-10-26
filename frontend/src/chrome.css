@@ -379,7 +379,7 @@
   background: linear-gradient(160deg, color-mix(in srgb, var(--f, var(--c-brand)) 13%, var(--c-paper-card)), var(--c-paper-card) 62%); border: 1px solid color-mix(in srgb, var(--f, var(--c-brand)) 26%, var(--c-hairline)); box-shadow: var(--shadow-1);
   transition: transform 0.22s var(--ease-out), box-shadow 0.22s var(--ease-out), border-color 0.22s var(--ease-out);
 }
-.feature-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-2); border-color: var(--f, var(--c-brand)); }
+.feature-card:hover { transform: scale(1.016); box-shadow: var(--shadow-2); border-color: var(--f, var(--c-brand)); }
 .feature-card:active { transform: translateY(-1px) scale(0.99); }
 .feature-icon { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 12px; margin-bottom: 6px; background: color-mix(in srgb, var(--f) 22%, var(--c-paper-card)); color: color-mix(in srgb, var(--f) 70%, var(--c-ink)); transition: background-color 0.22s var(--ease-out), color 0.22s var(--ease-out); }
 .feature-card:hover .feature-icon { background: var(--f); color: #fff; }
@@ -473,7 +473,7 @@ body:has(.tier-mini) .to-top { display: none; }
   background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-radius: var(--radius-m); box-shadow: var(--shadow-1);
   transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out), border-color 0.25s var(--ease-out);
 }
-.contrib:hover { transform: translateY(-2px); box-shadow: var(--shadow-2); border-color: color-mix(in srgb, var(--k) 50%, var(--c-hairline)); }
+.contrib:hover { transform: scale(1.012); box-shadow: var(--shadow-2); border-color: color-mix(in srgb, var(--k) 50%, var(--c-hairline)); }
 .contrib-bar { position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--k); transition: width 0.25s var(--ease-out); }
 .contrib:hover .contrib-bar { width: 9px; }
 .contrib-icon {
@@ -588,7 +588,7 @@ body:has(.tier-mini) .to-top { display: none; }
 
 /* ---- Party promise cards ------------------------------------------------------------------------------------------------------------------------ */
 .party-card { display: flex; flex-direction: column; overflow: hidden; cursor: pointer; border: 1px solid var(--c-hairline); border-radius: 18px; background: var(--c-paper-card); box-shadow: var(--shadow-1); transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out); }
-.party-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-3); }
+.party-card:hover { transform: scale(1.018); box-shadow: var(--shadow-3); }
 .party-band { display: flex; align-items: center; gap: 14px; padding: 18px 20px; }
 .party-band[data-large="1"] { margin: 0 calc(-1 * clamp(18px, 4vw, 30px)) 0; padding: 24px clamp(18px, 4vw, 30px) 22px; padding-right: 64px; }
 .party-ring { position: relative; flex: none; width: 68px; height: 68px; }
@@ -613,7 +613,7 @@ body:has(.tier-mini) .to-top { display: none; }
 @media print { .mp-app-shell > div:has(> main)::before { display: none; } }
 
 .stat-tile { transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out); }
-.stat-tile:hover { transform: translateY(-3px); box-shadow: 0 10px 24px -14px color-mix(in srgb, var(--t) 60%, transparent); }
+.stat-tile:hover { transform: scale(1.016); box-shadow: 0 10px 24px -14px color-mix(in srgb, var(--t) 60%, transparent); }
 @media (hover: none) { .stat-tile:hover { transform: none; box-shadow: none; } }
 
 .col-grow { transform-origin: bottom center; }

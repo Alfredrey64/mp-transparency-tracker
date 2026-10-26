@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { loadGsapCore } from "../../lib/gsapLoader";
 import { LAW_STEPS } from "../../data/teacherMode";

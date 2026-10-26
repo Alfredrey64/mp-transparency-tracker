@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 // The pieces the story pictures are drawn from: flat, friendly shapes in the site's colours. Everything is drawn on an 800 by 450 sheet with the
 // ground at y = 360. A piece never carries its own transform on the group that is animated: the animation owns that, so each piece positions
 // itself with its own inner group.

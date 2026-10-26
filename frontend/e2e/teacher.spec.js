@@ -93,3 +93,13 @@ test("names for the stories can come from a pasted class list", async ({ page })
   expect(new Set(names).size).toBe(4);
   for (const n of names) expect(["Ava", "Kofi", "Priya", "Ollie", "Zara"]).toContain(n);
 });
+
+test("no glossary underlining or buttons are made inside the lesson, so no words break apart", async ({ page }) => {
+  await page.route("**/127.0.0.1:54321/**", (route) => route.abort());
+  await page.goto("/teacher");
+  await page.getByRole("button", { name: "Start the lesson" }).click();
+  for (let i = 0; i < 70; i++) {
+    expect(await page.locator(".t-root .gloss-term").count()).toBe(0);
+    await page.keyboard.press("ArrowRight");
+  }
+});
