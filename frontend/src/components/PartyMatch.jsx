@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";

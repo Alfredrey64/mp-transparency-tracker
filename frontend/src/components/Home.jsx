@@ -1,13 +1,13 @@
 import { useWatchlistChanges } from "../lib/useWatchlistChanges";
 import { useState, useEffect, useMemo } from "react";
-import { motion, useMotionValue, animate } from "framer-motion";
+import { motion, useMotionValue, animate } from "motion/react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, readable, solid } from "../theme";
 import { formatDate, partyColour, shortCategory, timeAgo } from "../lib/format";
 import pipelineStatus from "../data/pipelineStatus.json";
 import { categoriseBill } from "../lib/bills";
 import { getWatchlist, removeFromWatchlist } from "../lib/watchlist";
-import { IconSearch, IconCoin, IconBills, IconInfluence, IconPetition, IconGroup, IconRoute, IconTrend, IconAsk, IconPin, IconSwing, IconCompareTime, IconGlossary } from "./icons";
+import { IconSearch, IconCoin, IconBills, IconInfluence, IconPetition, IconGroup, IconRoute, IconTrend, IconAsk, IconPin, IconSwing, IconCompareTime, IconGlossary, IconClassroom } from "./icons";
 import { LoadFailedNote } from "./MpCards";
 import { PartyHemicycle } from "./PartyHemicycle";
 import { withScrollPreserved } from "../lib/preserveScroll";
@@ -291,6 +291,10 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
               <button type="button" className="tour-link" onClick={() => onNavigate?.("start")}>
                 <span aria-hidden="true"><IconRoute size={20} /></span>
                 <span><b>Never used this before?</b><small>Take the five-minute guided tour</small></span>
+              </button>
+              <button type="button" className="tour-link" style={{ "--ic": "#7A5AF0" }} onClick={() => onNavigate?.("teacher")}>
+                <span aria-hidden="true"><IconClassroom size={20} /></span>
+                <span><b>Teaching a class?</b><small>Open Teacher mode</small></span>
               </button>
             </motion.div>
             <motion.dl variants={revealChild} className="home-stats">

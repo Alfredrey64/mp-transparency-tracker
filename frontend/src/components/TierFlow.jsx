@@ -146,16 +146,16 @@ export default function TierFlow({ layout, action, calm, visible, curKey, voting
         </defs>
         {layout.edges.map((e) => (
           <g key={e.key} className="tb-down">
-            <path d={e.d} className="tb-base" markerEnd="url(#tb-arr-down)" data-flow="down" />
+            <path d={e.d} className="tb-base" markerEnd="url(#tb-arr-down)" data-flow="down" data-marker="down" />
             <path d={e.d} className="tb-done" pathLength="1" data-f={`edge:${e.key}`} />
           </g>
         ))}
         <g className="tb-up">
-          <path d={layout.trunk} className="tb-base" markerEnd="url(#tb-arr-up)" data-flow="up" />
+          <path d={layout.trunk} className="tb-base" markerEnd="url(#tb-arr-up)" data-flow="up" data-marker="up" />
           <path d={layout.trunk} className="tb-done" pathLength="1" data-f="trunk" />
           {layout.stubs.map((st) => (
             <g key={st.key}>
-              <path d={st.d} className="tb-base" markerEnd="url(#tb-arr-up)" data-flow="up" />
+              <path d={st.d} className="tb-base" markerEnd="url(#tb-arr-up)" data-flow="up" data-marker="up" />
               <path d={st.d} className="tb-done" pathLength="1" data-f={`stub:${st.key}`} />
             </g>
           ))}

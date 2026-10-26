@@ -68,6 +68,7 @@ export const LOADERS = {
   rates: () => import("./components/SectorPage"),
   indicators: () => import("./components/IndicatorTimeline"),
   howtovote: () => import("./components/HowToVote"),
+  teacher: () => import("./components/TeacherMode"),
   localElections: () => import("./components/LocalElections"),
   generalElection: () => import("./components/GeneralElection"),
   taxRates: () => import("./components/TaxRates"),

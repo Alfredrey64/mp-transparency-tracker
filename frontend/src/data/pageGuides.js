@@ -216,6 +216,11 @@ export const PAGE_GUIDES = {
     why: "Select committees are one of the main ways Parliament holds ministers to account between votes.",
     notShown: "What they find behind closed doors. Only members and published reports are shown.",
   },
+  teacher: {
+    what: "A separate way to use the site for a class: animated stories about why politics touches everyday life, a simple map of who decides what, how Parliament works, and what each main party tends to believe and who leads it.",
+    why: "Children are affected by political decisions long before they can vote. Understanding how those decisions are made is the start of being able to take part.",
+    notShown: "Any advice on who to vote for. The stories describe ideas without ranking them, and the party slides say what each party says about itself. Leaders and seat numbers change, so check them before a lesson.",
+  },
   howtovote: {
     what: "Who can vote in which elections, how to register, the ways to vote, what photo ID you need and what happens on polling day, in four plain steps.",
     why: "You can't vote unless you are registered, and the rules on ID and deadlines trip up people every election. Knowing them in advance makes your vote count.",

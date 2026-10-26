@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useReducedMotion } from "framer-motion";
+import { useReducedMotion } from "motion/react";
 import { useInView } from "../lib/useInView";
 
 // A block that eases up and fades in the first time it scrolls into view. Nothing slides or grows: the content is already the right size

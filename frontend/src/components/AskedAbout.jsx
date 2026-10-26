@@ -1,6 +1,6 @@
 /** @jsxImportSource react */
 import { useState, useEffect, useMemo, useRef } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme";
 import { formatDate, partyColour } from "../lib/format";

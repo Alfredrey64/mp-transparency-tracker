@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, readable, solid } from "../theme";
 import { STAGE_DEFS, buildRoute } from "../lib/billRoute";
 

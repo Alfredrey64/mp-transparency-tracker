@@ -1,7 +1,7 @@
 /** @jsxImportSource react */
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "motion/react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, numeric, readable } from "../theme";
 import { formatDate, partyColour } from "../lib/format";
 

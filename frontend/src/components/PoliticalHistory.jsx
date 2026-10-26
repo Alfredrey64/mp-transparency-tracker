@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable, solid } from "../theme";
 import { PageHeader } from "./shared";
 import { IconHistory } from "./icons";

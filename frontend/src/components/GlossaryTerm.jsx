@@ -1,7 +1,7 @@
 /** @jsxImportSource react */
 import { useState, useEffect, useLayoutEffect, useRef, useMemo, useContext, useCallback, useId } from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { COLORS, FONT_BODY } from "../theme";
 import { findGlossaryEntry } from "../data/glossaryTerms";
 import { GlossBlockedContext } from "../glossJsx/blockContext";

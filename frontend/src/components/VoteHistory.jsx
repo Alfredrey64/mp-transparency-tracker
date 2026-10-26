@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, FONT_MONO, readable } from "../theme";
 import { formatDate } from "../lib/format";
 import { matchBillForVote } from "../lib/bills";

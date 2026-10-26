@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { motion, useReducedMotion, useInView } from "framer-motion";
+import { motion, useReducedMotion, useInView } from "motion/react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, numeric } from "../theme";
 import { partyColour } from "../lib/format";
 import CountUp from "./CountUp";

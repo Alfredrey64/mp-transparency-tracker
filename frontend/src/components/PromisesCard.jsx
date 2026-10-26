@@ -1,5 +1,5 @@
 import { memo, useMemo } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "motion/react";
 import { COLORS, FONT_BODY, readable } from "../theme";
 import { SECTOR_PROMISES } from "../data/onsPromises";
 import { STATUS, pledgeByPromise, LAST_CHECKED, SOURCE_URL } from "../data/promises";

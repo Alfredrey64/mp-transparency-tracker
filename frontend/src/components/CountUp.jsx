@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { animate, useInView, useReducedMotion } from "framer-motion";
+import { animate, useInView, useReducedMotion } from "motion/react";
 
 // A number that counts up to its value the first time it scrolls into view.
 // Shows the final value straight away for anyone who prefers reduced motion,

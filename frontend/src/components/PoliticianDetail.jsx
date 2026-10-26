@@ -5,7 +5,7 @@ import PageGuide from "./PageGuide";
 import { DeclaredMeaning } from "./MpMeaning";
 import ShareButton from "./ShareButton";
 import { mpShareSpec } from "../lib/shareSpecs";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { HeroBand } from "./shared";

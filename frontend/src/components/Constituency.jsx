@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import ShareButton from "./ShareButton";
 import { seatShareSpec } from "../lib/shareSpecs";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "motion/react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_BODY, FONT_DISPLAY, numeric } from "../theme";
 import { formatDate, partyColour } from "../lib/format";

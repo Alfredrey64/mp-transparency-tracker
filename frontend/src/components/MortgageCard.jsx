@@ -1,5 +1,5 @@
 import { memo, useMemo, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "motion/react";
 import { COLORS, FONT_BODY, numeric, readable } from "../theme";
 import { periodLabel, periodToT } from "../lib/onsFormat";
 import { monthlyPayment } from "../lib/mortgage";

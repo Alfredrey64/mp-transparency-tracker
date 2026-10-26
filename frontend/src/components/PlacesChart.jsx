@@ -1,5 +1,5 @@
 import { memo, useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { COLORS, FONT_BODY, numeric } from "../theme";
 import LineChart from "./LineChart";
 import ChartActions from "./ChartActions";

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { animate, useInView } from "framer-motion";
+import { animate, useInView } from "motion/react";
 
 // A headline figure that counts up to its value the first time it scrolls into view. The text it settles on is exactly the text it was given
 // ("£39,200", "5.6 times", "32.7%"); a value that is not a plain figure, or a visitor who asks for less motion, just gets the text.

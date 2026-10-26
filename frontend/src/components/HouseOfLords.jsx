@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import PageGuide from "./PageGuide";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, chip } from "../theme";
 import { partyColour, initials, formatDate, timeInOffice } from "../lib/format";

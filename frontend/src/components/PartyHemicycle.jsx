@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import { useInView, useReducedMotion } from "framer-motion";
+import { useInView, useReducedMotion } from "motion/react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, numeric } from "../theme";
 import { partyColour } from "../lib/format";
 

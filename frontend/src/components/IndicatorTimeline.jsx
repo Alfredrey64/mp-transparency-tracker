@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "motion/react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric, solid } from "../theme";
 import { PageHeader } from "./shared";
 import { LoadFailedNote } from "./MpCards";

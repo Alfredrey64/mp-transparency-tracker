@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { PageHeader, InfoCard, WhyItMattersBand, FlowNode, FlowArrow } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";

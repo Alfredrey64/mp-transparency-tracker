@@ -333,9 +333,11 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 /* The panel stays in view beside the diagram using plain sticky positioning: it can never leave its column, so it can never sit on top of the
    sections below, and there is no script chasing the scroll. */
 .tier-panel { height: 290px; overflow: hidden; }
+/* The walk-through's bar on a phone. Its holder takes no room in the page and rides at the bottom of the screen while the section is in view, so
+   switching modes never changes the height of anything. */
+.tier-mini-wrap { display: none; }
 .tier-mini {
-  display: none; position: sticky; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 30;
-  background: var(--c-paper); border: 1px solid var(--c-hairline); border-radius: 16px; padding: 12px 14px 13px;
+  display: block; z-index: 30; background: var(--c-paper); border: 1px solid var(--c-hairline); border-radius: 16px; padding: 12px 14px 13px;
   box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.35);
 }
 .tier-mini-text { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
@@ -347,7 +349,11 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 }
 @container tierwrap (max-width: 779px) {
   .tier-step[data-active="0"] { display: none; }
-  .tier-grid .tier-mini { display: block; }
+  .tier-grid { grid-template-rows: auto auto; }
+  .tier-diagram { grid-row: 1; grid-column: 1; }
+  .tier-panelcol { grid-row: 2; grid-column: 1; }
+  .tier-mini-wrap { display: block; grid-row: 1 / -1; grid-column: 1; align-self: end; position: sticky; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); height: 184px; z-index: 30; pointer-events: none; }
+  .tier-mini-wrap .tier-mini { position: absolute; left: 0; right: 0; bottom: 0; max-height: 100%; overflow: hidden; pointer-events: auto; }
 }
 /* What fits in a box depends on how wide the diagram is, not the page. */
 @container tierdia (max-width: 599px) {
@@ -399,24 +405,28 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 @keyframes tokRipple { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(3.2); opacity: 0; } }
 .tier-slab {
   position: absolute; z-index: 1; min-width: 0; overflow: visible;
-  display: flex; align-items: center; gap: 14px; padding: 0 18px; text-align: left; font: inherit; cursor: pointer;
-  background: var(--c-paper); border: 1px solid var(--c-hairline); border-radius: 14px;
-  transition: transform 0.4s ease, border-color 0.3s, box-shadow 0.4s, background-color 0.4s;
+  display: flex; align-items: center; gap: 14px; padding: 0 18px 0 22px; text-align: left; font: inherit; cursor: pointer;
+  background: linear-gradient(105deg, color-mix(in srgb, var(--c) 15%, var(--c-paper-card)) 0%, var(--c-paper-card) 58%);
+  border: 1px solid color-mix(in srgb, var(--c) 30%, var(--c-hairline)); border-radius: 16px; box-shadow: 0 1px 2px rgba(11, 27, 51, 0.06);
+  transition: border-color 0.3s, box-shadow 0.35s, background-color 0.4s;
 }
-.tier-slab:hover { border-color: color-mix(in srgb, var(--c) 55%, var(--c-hairline)); }
+/* A spine in the tier's own colour down the left edge. */
+.tier-slab::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 5px; border-radius: 0 4px 4px 0; background: var(--c); }
+.tier-slab:hover { border-color: color-mix(in srgb, var(--c) 60%, var(--c-hairline)); box-shadow: 0 10px 24px -14px color-mix(in srgb, var(--c) 70%, transparent); }
+.tier-slab:focus-visible { outline: 3px solid color-mix(in srgb, var(--c) 70%, #fff); outline-offset: 2px; }
 /* In the walk-through, tiers still to come sit back, tiers already passed show a tick, and the one the story is at lifts forward. */
 .tier-slab > :not(.tier-pill) { transition: opacity 0.4s; }
 .tier-slab[data-state="todo"] { background: color-mix(in srgb, var(--c-paper) 70%, var(--c-hairline)); }
 .tier-slab[data-state="todo"] > :not(.tier-pill) { opacity: 0.55; }
-.tier-slab[data-state="done"] { border-color: color-mix(in srgb, var(--c) 40%, var(--c-hairline)); }
-.tier-tick { position: absolute; right: -5px; bottom: -5px; color: var(--c); opacity: 0; transform: scale(0.4); transition: opacity 0.3s, transform 0.4s var(--ease-spring); }
+.tier-slab[data-state="done"] { border-color: color-mix(in srgb, var(--c) 45%, var(--c-hairline)); }
+.tier-tick { position: absolute; right: -6px; bottom: -6px; color: var(--c); background: var(--c-paper-card); border-radius: 50%; opacity: 0; transform: scale(0.4); transition: opacity 0.3s, transform 0.4s var(--ease-spring); }
 .tier-slab-icon { position: relative; }
 .tier-slab[data-state="done"] .tier-tick { opacity: 1; transform: none; }
 .tier-slab[data-active="1"] {
-  border-color: var(--c); transform: scale(1.012); background: color-mix(in srgb, var(--c) 8%, var(--c-paper));
-  box-shadow: 0 8px 26px color-mix(in srgb, var(--c) 24%, transparent); transition-delay: var(--delay, 0s);
+  border-color: var(--c); background: linear-gradient(105deg, color-mix(in srgb, var(--c) 22%, var(--c-paper-card)) 0%, color-mix(in srgb, var(--c) 6%, var(--c-paper-card)) 70%);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 35%, transparent), 0 14px 30px -12px color-mix(in srgb, var(--c) 55%, transparent); transition-delay: var(--delay, 0s);
 }
-.tier-slab-icon { flex: none; width: 42px; height: 42px; border-radius: 11px; display: inline-flex; align-items: center; justify-content: center; color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); }
+.tier-slab-icon { flex: none; width: 46px; height: 46px; border-radius: 13px; display: inline-flex; align-items: center; justify-content: center; color: #fff; background: linear-gradient(145deg, var(--c), color-mix(in srgb, var(--c) 78%, #000)); box-shadow: 0 6px 14px -8px var(--c); }
 .tier-slab-name { display: block; font-family: 'Newsreader', Georgia, serif; font-size: 18px; font-weight: 600; line-height: 1.2; color: var(--c-ink); }
 .tier-slab-short, .tier-slab-keys { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; font-family: 'Public Sans', system-ui, sans-serif; color: var(--c-ink-soft); }
 .tier-slab-short { -webkit-line-clamp: 2; font-size: 13.5px; line-height: 1.35; margin-top: 2px; }
@@ -434,6 +444,7 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 
 /* When the diagram first scrolls into view its tiers rise into place one after another, then the branches wipe in behind them. */
 .tier-diagram[data-in="0"] .tier-slab, .tier-diagram[data-in="0"] .tb-svg { opacity: 0; }
+.tier-diagram[data-gsap="1"][data-in="1"] .tier-slab, .tier-diagram[data-gsap="1"][data-in="1"] .tb-svg { animation: none; }
 .tier-diagram[data-in="1"] .tier-slab { animation: slabRise 0.6s var(--ease-out) calc(var(--i, 0) * 110ms) backwards; }
 .tier-diagram[data-in="1"] .tb-svg { animation: branchWipe 1.1s var(--ease-out) 0.45s backwards; }
 @keyframes slabRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
@@ -445,6 +456,8 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 .tier-dwell > span { display: block; height: 100%; width: 100%; background: #B5533C; transform-origin: left center; animation: dwell linear both; }
 @keyframes dwell { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
+.tier-info-head { display: flex; align-items: center; gap: 12px; margin: 0 0 14px; padding: 10px 12px; border-radius: 14px; background: linear-gradient(105deg, color-mix(in srgb, var(--c) 18%, var(--c-paper-card)), color-mix(in srgb, var(--c) 5%, var(--c-paper-card))); border: 1px solid color-mix(in srgb, var(--c) 30%, var(--c-hairline)); }
+.tier-scroll { height: 100%; overflow-y: auto; padding-right: 6px; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--c-ink-soft) 40%, transparent) transparent; overscroll-behavior: contain; }
 .tier-step-body { display: block; animation: stepIn 0.4s ease both; }
 @keyframes stepIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 

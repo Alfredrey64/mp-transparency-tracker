@@ -1,4 +1,4 @@
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "motion/react";
 import { COLORS, FONT_BODY, numeric } from "../theme";
 
 // One row of a horizontal bar chart: a label, a thin bar with a rounded

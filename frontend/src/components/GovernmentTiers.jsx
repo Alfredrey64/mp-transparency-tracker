@@ -1,7 +1,8 @@
 import { useState, useReducer, useRef, useEffect, useMemo } from "react";
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "motion/react";
 import TierFlow from "./TierFlow";
 import { lowData } from "../lib/lowData";
+import { loadGsapCore } from "../lib/gsapLoader";
 import { COLORS, FONT_DISPLAY, FONT_BODY, readable } from "../theme";
 import { IconParliament, IconCabinet, IconDevolved, IconTransport, IconCouncil, IconHome, IconGroup } from "./icons";
 import { buildLayout, routeBetween } from "../lib/tierTree";
@@ -171,9 +172,9 @@ function TierInfo({ tierKey, order, nation, nationLabel }) {
   const below = belowKey && belowKey !== "you" ? linkBetween(tierKey, belowKey) : null;
   return (
     <div>
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
-        <span className="tier-slab-icon" style={{ "--c": color }}><Icon size={22} /></span>
-        <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 600, color: COLORS.ink, margin: 0, lineHeight: 1.25 }}>{name}</h3>
+      <div className="tier-info-head" style={{ "--c": color }}>
+        <span className="tier-slab-icon"><Icon size={24} /></span>
+        <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 21, fontWeight: 700, color: COLORS.ink, margin: 0, lineHeight: 1.2 }}>{name}</h3>
       </div>
       {!exists ? (
         <p style={para}>{tier.absentNote ?? `There is no ${tier.name.toLowerCase()} in ${nationLabel}.`}</p>
@@ -286,6 +287,10 @@ export default function GovernmentTiers() {
   const calm = useReducedMotion();
   const seen = useInView(diaRef, { once: true, margin: "0px 0px -12% 0px" });
   const onScreen = useInView(diaRef, { margin: "120px 0px 120px 0px" });
+  const still = Boolean(calm) || lowData();
+  const [gsapReady, setGsapReady] = useState(false);
+  const [introFlag, setIntroFlag] = useState(false);
+  const introDone = still || introFlag;
   // A first guess at the diagram's width (refined as soon as it is measured), so a phone never starts from a desktop-sized layout.
   // A first guess at the page column's width (refined once measured): the screen minus the menu, if the menu is showing.
   const [wrapWidth, setWrapWidth] = useState(() => (typeof window === "undefined" ? 1000 : window.innerWidth > 880 ? window.innerWidth - 380 : window.innerWidth - 72));
@@ -306,8 +311,10 @@ export default function GovernmentTiers() {
   // Size the diagram so the whole thing fits on screen: less room is kept back
   // on a big screen, more on a phone where the walk-through sheet takes the bottom.
   const stacked = wrapWidth < 780;
-  const availH = Math.max(320, screenH - (stacked ? (action ? 270 : 150) : 190));
+  // The same room is kept in every mode and for every nation, so choosing one never changes how tall the diagram is, and nothing below it moves.
+  const availH = Math.max(320, screenH - (stacked ? 270 : 190));
   const layout = useMemo(() => buildLayout(nation, width, availH), [nation, width, availH]);
+  const fullH = useMemo(() => Math.max(...NATIONS.map((n) => buildLayout(n.key, width, availH).height)), [width, availH]);
   const curKey = voting ? "you" : cur.tier;
   const selKey = order.includes(selected) ? selected : order[0];
   const runs = action && playing && !finished;
@@ -337,6 +344,45 @@ export default function GovernmentTiers() {
     };
   }, []);
 
+  // GSAP is fetched as soon as the section is on the page, so it is ready by the time the diagram scrolls into view.
+  useEffect(() => {
+    if (still) return undefined;
+    let alive = true;
+    loadGsapCore().then(() => { if (alive) setGsapReady(true); }).catch(() => {});
+    return () => { alive = false; };
+  }, [still]);
+
+  // The entrance: the tiers slide in one after another, their icons pop, and the branches draw themselves between them. Everything is put back
+  // to its normal state when it ends, and the drifting dots only start then.
+  useEffect(() => {
+    const dia = diaRef.current;
+    if (still || !seen || !gsapReady || !dia) return undefined;
+    let ctx;
+    let dead = false;
+    loadGsapCore().then(({ gsap }) => {
+      if (dead) return;
+      ctx = gsap.context(() => {
+        const slabs = dia.querySelectorAll(".tier-slab");
+        const icons = dia.querySelectorAll(".tier-slab-icon");
+        const bases = dia.querySelectorAll(".tb-base");
+        const dots = dia.querySelectorAll(".tb-dot");
+        bases.forEach((b) => b.setAttribute("marker-end", "none"));
+        const tl = gsap.timeline({
+          defaults: { ease: "power3.out" },
+          onComplete: () => {
+            bases.forEach((b) => b.setAttribute("marker-end", `url(#tb-arr-${b.dataset.marker})`));
+            setIntroFlag(true);
+          },
+        });
+        tl.fromTo(slabs, { autoAlpha: 0, x: -40 }, { autoAlpha: 1, x: 0, duration: 0.75, stagger: 0.12, clearProps: "transform,opacity,visibility" }, 0);
+        tl.fromTo(icons, { scale: 0, rotate: -30 }, { scale: 1, rotate: 0, duration: 0.65, ease: "back.out(2.6)", stagger: 0.12, clearProps: "transform" }, 0.2);
+        tl.fromTo(bases, { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.7, ease: "power2.inOut", stagger: 0.09, clearProps: "strokeDasharray,strokeDashoffset" }, 0.5);
+        tl.fromTo(dots, { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.4, ease: "back.out(3)", stagger: 0.05, clearProps: "transform" }, 0.9);
+      }, dia);
+    }).catch(() => setIntroFlag(true));
+    return () => { dead = true; ctx?.revert(); };
+  }, [seen, gsapReady, still]);
+
   // Auto-advance: once the marker has arrived, rest on the step for a moment, then move on. The page itself never scrolls on its own, so nothing moves
   // except the diagram.
   useEffect(() => {
@@ -345,14 +391,13 @@ export default function GovernmentTiers() {
     return () => clearTimeout(id);
   }, [runs, step, steps, dur]);
 
-  const bringIntoView = () => requestAnimationFrame(() => stageRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
   const wrapped = (a) => {
     dispatch(a);
     if (a.user) {
       setPlaying(false);
     }
   };
-  const enterAction = () => { setMode("action"); dispatch({ type: "reset" }); setPlaying(true); bringIntoView(); };
+  const enterAction = () => { setMode("action"); dispatch({ type: "reset" }); setPlaying(true); };
   const onMode = (k) => (k === "action" ? enterAction() : (setMode("explore"), setPlaying(false)));
   const onNation = (k) => { setNation(k); dispatch({ type: "reset" }); };
   const onScenario = (k) => { setScenarioKey(k); dispatch({ type: "reset" }); setPlaying(true); };
@@ -408,10 +453,10 @@ export default function GovernmentTiers() {
       <Legend />
 
       <div className="tier-wrap" ref={stageRef}>
-        <div className="tier-grid" style={{ "--len": `${layout.height}px` }}>
-          <div className="tier-diagram" ref={diaRef} data-density={layout.metrics.density} data-in={seen || calm ? "1" : "0"} data-mode={action ? "action" : "explore"} style={{ "--dur": `${dur}s`, height: layout.height }}>
+        <div className="tier-grid" style={{ "--len": `${fullH}px` }}>
+          <div className="tier-diagram" ref={diaRef} data-density={layout.metrics.density} data-in={seen || calm ? "1" : "0"} data-gsap={gsapReady && !still ? "1" : "0"} data-mode={action ? "action" : "explore"} style={{ "--dur": `${dur}s`, height: fullH }}>
             <TierFlow
-              layout={layout} action={action} calm={Boolean(calm) || lowData()} visible={onScreen} curKey={curKey} voting={voting} route={beadPath} dur={dur} color={tokenColor}
+              layout={layout} action={action} calm={still} visible={onScreen && introDone} curKey={curKey} voting={voting} route={beadPath} dur={dur} color={tokenColor}
               stepKey={`${scenarioKey}-${step}-${nation}`} reachedBefore={reachedBefore}
             />
             {slabs.map((t, i) => {
@@ -436,10 +481,12 @@ export default function GovernmentTiers() {
           </div>
 
           {action && (
+            <div className="tier-mini-wrap">
             <PhoneSheet
               sheetRef={sheetRef} steps={steps} step={Math.min(step, steps.length - 1)} playing={playing} finished={finished}
               dispatch={wrapped} onPlayPause={onPlayPause} color={tokenColor}
             />
+            </div>
           )}
 
           <div className="tier-panelcol">
@@ -450,7 +497,7 @@ export default function GovernmentTiers() {
                 dispatch={wrapped} onPlayPause={onPlayPause} tokenLabel={cur.token} dur={dur}
               />
             ) : (
-              <div style={{ height: "100%", overflowY: "auto" }}>
+              <div className="tier-scroll">
                 <TierInfo tierKey={selKey} order={order} nation={nation} nationLabel={nationLabel} />
               </div>
             )}

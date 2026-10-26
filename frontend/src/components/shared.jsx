@@ -3,7 +3,7 @@ import PageGuide from "./PageGuide";
 import { GuideKeyContext } from "../lib/viewContext";
 import ShareButton from "./ShareButton";
 import { pageShareSpec } from "../lib/shareSpecs";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, readable, onFill } from "../theme";
 import { SECTION_ACCENT_BY_ICON, SECTION_LABEL_BY_KEY } from "../data/sidebarSections";
 // An annotated passage, not a dashboard tile: a left margin rule in the

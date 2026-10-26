@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useReducedMotion } from "framer-motion";
+import { useReducedMotion } from "motion/react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, solid } from "../theme";
 import { loadGsap } from "../lib/gsapLoader";
 import { lowData } from "../lib/lowData";

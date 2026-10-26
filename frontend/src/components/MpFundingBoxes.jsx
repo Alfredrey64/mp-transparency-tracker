@@ -1,6 +1,6 @@
 // The money boxes on an MP's page: who funds them, how that lines up with their votes and committees, and their outside roles.
 import { useState, useEffect, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_BODY, readable } from "../theme";
 import { formatDate, ONGOING_ROLE_CATEGORIES } from "../lib/format";

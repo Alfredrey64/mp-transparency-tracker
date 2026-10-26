@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useInView } from "framer-motion";
+import { useInView } from "motion/react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, readable } from "../theme";
 import { DOT, layoutLandmarks, nearestNode } from "../lib/landmarkLayout";
 

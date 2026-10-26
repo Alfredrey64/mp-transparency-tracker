@@ -1,7 +1,7 @@
 // The boxes on an MP's page (biography, contact, standards, voting, rebellions, activity, news) and the shell they share.
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import { RebelMeaning } from "./MpMeaning";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, readable } from "../theme";
 import { supabase } from "../supabaseClient";
 import { stripHtml, formatDate } from "../lib/format";

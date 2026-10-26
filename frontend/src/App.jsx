@@ -1,6 +1,6 @@
 import { useState, useEffect, useLayoutEffect, useRef, useTransition, lazy, Suspense } from "react";
 import { GuideKeyContext, guideKeyFor } from "./lib/viewContext";
-import { motion, MotionConfig } from "framer-motion";
+import { motion, MotionConfig } from "motion/react";
 import { supabase } from "./supabaseClient";
 import { COLORS, FONT_BODY } from "./theme";
 import SiteHeader from "./components/SiteHeader";
@@ -78,6 +78,7 @@ const AnswersPage = lazy(LOADERS.answers);
 const DeprivationPage = lazy(LOADERS.deprivation);
 const IndicatorTimeline = lazy(LOADERS.indicators);
 const HowToVote = lazy(LOADERS.howtovote);
+const TeacherMode = lazy(LOADERS.teacher);
 const LocalElections = lazy(LOADERS.localElections);
 const GeneralElection = lazy(LOADERS.generalElection);
 const TaxRates = lazy(LOADERS.taxRates);
@@ -116,7 +117,7 @@ const VALID_VIEWS = new Set([
   "committees", "compare", "ministerialMeetings", "writtenQuestions", "standards", "rankings", "myMP",
   "mediaLiteracy", "methodology", "glossary", "settings", "privacy", "terms", "list",
   "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist", "numbers", "topics", "constituency", "start", "rebels", "offices", "councils",
-  "economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates", "immigration", "business", "regions", "answers", "deprivation", "indicators", "marginals", "compareSeats", "howtovote", "localElections", "generalElection", "taxRates", "inequality", "brexit", "defence", "education", "ageing", "nhs", "energy", "trust", "care", "transport", "union",
+  "economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates", "immigration", "business", "regions", "answers", "deprivation", "indicators", "marginals", "compareSeats", "howtovote", "teacher", "localElections", "generalElection", "taxRates", "inequality", "brexit", "defence", "education", "ageing", "nhs", "energy", "trust", "care", "transport", "union",
 ]);
 
 // The tab title, bookmark name and browser-history entry for every view —
@@ -438,6 +439,7 @@ export default function App() {
             {view === "deprivation" && <DeprivationPage />}
             {view === "marginals" && <Marginals />}
             {view === "howtovote" && <HowToVote />}
+            {view === "teacher" && <TeacherMode />}
             {view === "localElections" && <LocalElections />}
             {view === "generalElection" && <GeneralElection param={viewParam} />}
             {view === "taxRates" && <TaxRates param={viewParam} />}

@@ -799,6 +799,17 @@ export function IconMortarboard({ size = 17 }) {
   );
 }
 
+// A board with a pointer in front of a class: Teacher mode.
+export function IconClassroom({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3.5" width="18" height="11" rx="1.8" />
+      <path d="M7 8.2h6M7 11h3.5M16.5 8.2l1.5 1.5" />
+      <path d="M12 14.5v3M8 20.5l4-3 4 3" />
+    </svg>
+  );
+}
+
 export function IconDefence({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">

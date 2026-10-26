@@ -1,5 +1,5 @@
 import { useState, useId } from "react";
-import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useSpring } from "motion/react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable, chip } from "../theme";
 import { PageHeader } from "./shared";
 import { IconTimeline } from "./icons";

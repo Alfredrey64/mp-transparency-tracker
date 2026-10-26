@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_BODY, FONT_MONO } from "../theme";
 import { partyColour } from "../lib/format";
