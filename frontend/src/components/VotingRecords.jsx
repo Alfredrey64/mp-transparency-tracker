@@ -26,6 +26,7 @@ function CategoryIcon({ label, size }) {
 }
 import Loading from "./Loading";
 import { plainPoints, plainSentence } from "../lib/billPlain";
+import { explainStage, whoItAffects } from "../lib/billExplain";
 import { getBillDescription } from "../lib/billDescriptions";
 
 // A division (Commons vote) is stored per-MP with no bill_id — divisions and
@@ -103,6 +104,7 @@ function BillEntry({ bill, politicians, initiallyOpen }) {
   }, [initiallyOpen]);
 
   const hand = getBillDescription(bill.short_title, null);
+  const stageNote = explainStage(bill.current_stage, { isAct: bill.is_act, isDefeated: bill.is_defeated });
   const plain = useMemo(() => plainPoints(bill.long_title), [bill.long_title]);
   const oneLine = hand ?? plainSentence(bill.long_title);
 
@@ -176,6 +178,15 @@ function BillEntry({ bill, politicians, initiallyOpen }) {
                     )}
                   </div>
                 )}
+                  <div style={{ marginBottom: 12, padding: "12px 14px", borderRadius: 12, background: COLORS.paper, border: `1px solid ${COLORS.hairline}` }}>
+                    <FieldLabel>Explain this: what happens next, and who it could affect</FieldLabel>
+                    <ul style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 5 }}>
+                      {stageNote && <li style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.55 }}><strong>Where it is:</strong> {stageNote.means}</li>}
+                      {stageNote && <li style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.55 }}><strong>What happens next:</strong> {stageNote.next}</li>}
+                      <li style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.55 }}><strong>Who it could affect:</strong> {whoItAffects(category.label)}</li>
+                      <li style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.55 }}><strong>Have your say:</strong> <a href="#/myMP" style={{ color: COLORS.ink, fontWeight: 700 }}>find your MP</a> and write to them, or see how it moves on <a href="#/thisWeek" style={{ color: COLORS.ink, fontWeight: 700 }}>what changed this week</a>.</li>
+                    </ul>
+                  </div>
                 {bill.summary && (
                   <div style={{ marginBottom: 12 }}>
                     <FieldLabel>Summary</FieldLabel>

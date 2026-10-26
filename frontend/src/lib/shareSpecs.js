@@ -32,6 +32,31 @@ export function mpShareSpec({ politician, career, interestCount = 0, totalDeclar
   };
 }
 
+// An MP's report card: the numbers that say what they do with the job, on one image. Anything not known is left out, never shown as a zero.
+// votes: { cast, withParty } from the voting record this site holds; committees and questions are counts.
+export function mpReportSpec({ politician, career, votes, interestCount = 0, totalDeclared = 0, committees = 0, questions = 0, link }) {
+  const stats = [];
+  if (votes?.cast > 0) {
+    stats.push({ value: `${Math.round((votes.withParty / votes.cast) * 100)}%`, label: "of votes with their party" });
+    stats.push({ value: fmt(votes.cast), label: "votes recorded" });
+  }
+  if (interestCount > 0) stats.push({ value: String(interestCount), label: interestCount === 1 ? "declared interest" : "declared interests" });
+  if (committees > 0) stats.push({ value: String(committees), label: committees === 1 ? "committee" : "committees" });
+  if (questions > 0 && stats.length < 4) stats.push({ value: fmt(questions), label: "written questions asked" });
+  const first = Array.isArray(career) && career[0] != null ? `First elected ${career[0]}. ` : "";
+  const money = totalDeclared > 0 ? `Declared interests with a stated value total £${fmt(totalDeclared)}.` : "";
+  return {
+    kicker: "MP report card",
+    title: politician.name,
+    subtitle: [politician.party, politician.constituency].filter(Boolean).join(" · "),
+    accent: colour(politician.party_colour),
+    stats: stats.slice(0, 4),
+    note: `${first}${money}`.trim() || null,
+    footer: `${CARD_SITE} · from Parliament's official records`,
+    link,
+  };
+}
+
 // A seat's 2024 result: who won, by how much, and the top candidates' shares.
 export function seatShareSpec({ name, mp, result, link }) {
   const candidates = (result?.candidates ?? []).slice(0, 5);

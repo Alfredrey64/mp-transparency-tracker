@@ -1,0 +1,23 @@
+/* What changed this week. Loaded only with that page. */
+.tw-window { display: inline-flex; gap: 6px; padding: 5px; border-radius: 999px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); margin: 22px 0 4px; }
+.tw-window button { min-height: 40px; padding: 0 18px; border-radius: 999px; border: 0; background: transparent; font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); cursor: pointer; transition: background-color 0.2s, color 0.2s; }
+.tw-window button[aria-pressed="true"] { background: var(--tw-accent, #E0367A); color: #fff; }
+.tw-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 6px; }
+.tw-chip { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1.5px solid var(--c-hairline); background: var(--c-paper-card); font: 600 13.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); cursor: pointer; }
+.tw-chip i { width: 10px; height: 10px; border-radius: 50%; background: var(--kc); }
+.tw-chip b { font: 700 13.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--kc) 80%, var(--c-ink)); }
+.tw-chip[aria-pressed="true"] { background: color-mix(in srgb, var(--kc) 13%, var(--c-paper-card)); border-color: var(--kc); }
+.tw-feed { margin: 20px 0 0; padding: 0 0 0 22px; position: relative; list-style: none; display: grid; gap: 26px; }
+.tw-feed::before { content: ""; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 3px; border-radius: 2px; background: linear-gradient(var(--tw-accent, #E0367A), color-mix(in srgb, var(--tw-accent, #E0367A) 10%, transparent)); }
+.tw-day { position: relative; }
+.tw-day::before { content: ""; position: absolute; left: -22px; top: 6px; width: 15px; height: 15px; border-radius: 50%; background: var(--c-paper); border: 4px solid var(--tw-accent, #E0367A); box-sizing: border-box; }
+.tw-day > h2 { margin: 0 0 10px; font: 700 20px "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.tw-items { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr)); gap: 12px; }
+.tw-card { display: grid; gap: 5px; align-content: start; height: 100%; box-sizing: border-box; padding: 13px 15px 14px; border-radius: 16px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-left: 6px solid var(--kc); box-shadow: var(--shadow-1); text-decoration: none; color: inherit; }
+a.tw-card:hover { box-shadow: var(--shadow-2), 0 0 0 3px color-mix(in srgb, var(--kc) 16%, transparent); }
+.tw-kind { font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--kc) 80%, var(--c-ink)); }
+.tw-card b { font: 700 16px/1.35 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.tw-card span.tw-detail { font: 400 14px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.tw-empty { padding: 28px 22px; border-radius: 18px; border: 1.5px dashed var(--c-hairline); text-align: center; font: 500 15px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); margin-top: 22px; }
+.tw-note { margin-top: 18px; padding: 12px 16px; border-radius: 14px; border-left: 5px solid #E8741A; background: color-mix(in srgb, #E8741A 8%, var(--c-paper)); font: 400 14px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+@media (prefers-reduced-motion: reduce) { .tw-window button { transition: none; } }

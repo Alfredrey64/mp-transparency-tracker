@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import PageGuide from "./PageGuide";
 import { DeclaredMeaning } from "./MpMeaning";
 import ShareButton from "./ShareButton";
-import { mpShareSpec } from "../lib/shareSpecs";
+import { mpReportSpec } from "../lib/shareSpecs";
 import { motion, AnimatePresence } from "motion/react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
@@ -182,10 +182,17 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12, marginTop: 18 }}>
               <ShareButton
-                filename={`${politician.name}-simple-politics`}
+                filename={`${politician.name}-report-card`}
+                label="Share report card"
                 getSpec={async () => {
-                  const career = (await import("../data/mpCareers.json")).default.mps[politician.parliament_member_id];
-                  return mpShareSpec({ politician, career, interestCount: interests.length, totalDeclared: totalDeclaredValue, link: window.location.href });
+                  const [careers, rows, questions] = await Promise.all([
+                    import("../data/mpCareers.json").then((m) => m.default),
+                    fetchAllRows(() => supabase.from("voting_records").select("voted_with_party_majority").eq("politician_id", politician.id)).catch(() => []),
+                    supabase.from("written_questions").select("*", { count: "exact", head: true }).eq("politician_id", politician.id).then((r) => r.count ?? 0).catch(() => 0),
+                  ]);
+                  const counted = rows.filter((r) => r.voted_with_party_majority !== null && r.voted_with_party_majority !== undefined);
+                  const votes = counted.length ? { cast: counted.length, withParty: counted.filter((r) => r.voted_with_party_majority).length } : null;
+                  return mpReportSpec({ politician, career: careers.mps[politician.parliament_member_id], votes, interestCount: interests.length, totalDeclared: totalDeclaredValue, committees: myCommittees.length, questions, link: window.location.href });
                 }}
                 style={{ color: "#fff", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.4)", borderRadius: 8, minHeight: 40, padding: "0 16px" }}
               />

@@ -7,6 +7,9 @@ import { GlossaryTerm } from "./GlossaryTerm";
 import { STATUS, CATEGORIES, LAST_CHECKED, SOURCE_URL } from "../data/promises";
 import PledgeRates from "./PledgeRates";
 import { windowFor } from "../lib/pledgeWindow";
+import AllPledges from "./AllPledges";
+import { countsByStatus, prepare } from "../lib/pledgeList";
+import fullFact from "../data/fullFactPledges.json";
 
 // Sourced from Full Fact's independent, non-partisan Government Tracker
 // (fullfact.org/government-tracker), which assesses Labour's 2024 manifesto
@@ -39,16 +42,10 @@ function RoseEmblem({ size = 30 }) {
 }
 
 const TOTAL_PLEDGES = CATEGORIES.reduce((sum, c) => sum + c.pledges.length, 0);
-const OVERALL = [
-  { key: "achieved", count: 23 },
-  { key: "on_track", count: 18 },
-  { key: "in_progress", count: 22 },
-  { key: "wait_see", count: 12 },
-  { key: "off_track", count: 8 },
-  { key: "not_kept", count: 6 },
-  { key: "disputed", count: 5 },
-];
-const OVERALL_TOTAL = 94;
+// The totals come from the full list of pledges, so they are always the sum of what is shown below.
+const FULL_COUNTS = countsByStatus(prepare(fullFact));
+const OVERALL = ["achieved", "on_track", "in_progress", "wait_see", "off_track", "not_kept", "disputed"].map((key) => ({ key, count: FULL_COUNTS[key] ?? 0 }));
+const OVERALL_TOTAL = fullFact.pledges.length;
 
 function StatusIcon({ icon, color, size = 15 }) {
   const stroke = { stroke: color, strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round", fill: "none" };
@@ -198,8 +195,7 @@ export default function PromiseTracker() {
         <a href={SOURCE_URL} target="_blank" rel="noreferrer" style={{ color: readable(LABOUR_RED), fontWeight: 600 }}>
           Full Fact's independent, non-partisan Government Tracker ↗
         </a>
-        , which assesses all {OVERALL_TOTAL} pledges it tracks. This page shows a {TOTAL_PLEDGES}-pledge sample
-        spanning every major policy area, last checked {LAST_CHECKED}.
+        , which assesses all {OVERALL_TOTAL} pledges it tracks. The {TOTAL_PLEDGES} pledges below come with our own plain-English note on what happened, and every one of the {OVERALL_TOTAL} is listed further down. Last checked {LAST_CHECKED}.
       </p>
 
       {/* Hero stats */}
@@ -257,8 +253,10 @@ export default function PromiseTracker() {
         )}
       </div>
 
+      <AllPledges />
+
       <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 24, paddingTop: 16, borderTop: `1px solid ${COLORS.hairline}`, lineHeight: 1.6 }}>
-        This is a curated sample of the {OVERALL_TOTAL} pledges Full Fact tracks. See{" "}
+        The {TOTAL_PLEDGES} pledges with notes are a sample of the {OVERALL_TOTAL} Full Fact tracks. See{" "}
         <a href={SOURCE_URL} target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
           their full tracker ↗
         </a>{" "}

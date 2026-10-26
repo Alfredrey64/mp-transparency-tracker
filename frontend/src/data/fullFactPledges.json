@@ -1,0 +1,664 @@
+{
+ "generatedAt": "2026-10-26",
+ "source": "https://fullfact.org/government-tracker/",
+ "pledges": [
+  {
+   "slug": "community-led-policing",
+   "area": "Crime, police and justice",
+   "pledge": "A named, contactable officer for every neighbourhood, responsive to local problems. Residents and local businesses will be able to have a say on the police’s priorities for their area.",
+   "status": "appears-on-track",
+   "updated": "2026-10-21"
+  },
+  {
+   "slug": "neighbourhood-police-guarantee-police-back-on-the-beat",
+   "area": "Crime, police and justice",
+   "pledge": "A Neighbourhood Policing Team in every local area, carrying out intelligence-led and visible patrols, including in town centres and on high streets. We will hold forces to account for ensuring neighbourhood policing teams are protected, so they remain focussed on serving communities.",
+   "status": "in-progress",
+   "updated": "2026-07-29"
+  },
+  {
+   "slug": "knife-possession-youth-offending-team",
+   "area": "Crime, police and justice",
+   "pledge": "Every young person caught in possession of a knife will be referred to a Youth Offending Team and will receive a mandatory plan to prevent reoffending, with penalties including curfews, tagging, and custody for the most serious cases",
+   "status": "in-progress",
+   "updated": "2026-05-29"
+  },
+  {
+   "slug": "retail-staff-assault-offence",
+   "area": "Crime, police and justice",
+   "pledge": "Labour will … create a new specific offence for assaults on shopworkers that will protect them from threats and violence",
+   "status": "appears-on-track",
+   "updated": "2026-07-23"
+  },
+  {
+   "slug": "respect-orders-introduction",
+   "area": "Crime, police and justice",
+   "pledge": "Labour will [introduce] new Respect Orders - powers to ban persistent adult offenders from town centres, which will stamp out issues such as public drinking and drug use",
+   "status": "appears-on-track",
+   "updated": "2026-07-27"
+  },
+  {
+   "slug": "non-crime-hate-incidents",
+   "area": "Crime, police and justice",
+   "pledge": "Labour will also reverse the Conservatives’ decision to downgrade the monitoring of antisemitic and Islamophobic hate",
+   "status": "in-progress",
+   "updated": "2026-08-14"
+  },
+  {
+   "slug": "sentencing-review-pledge",
+   "area": "Crime, police and justice",
+   "pledge": "Labour will carry out a review of sentencing to ensure it is brought up to date",
+   "status": "achieved",
+   "updated": "2026-07-01"
+  },
+  {
+   "slug": "young-futures-hubs",
+   "area": "Crime, police and justice",
+   "pledge": "Labour will intervene earlier to stop young people being drawn into crime, creating a new Young Futures programme with a network of hubs reaching every community",
+   "status": "in-progress",
+   "updated": "2026-02-20"
+  },
+  {
+   "slug": "hillsborough-law-candour-duty",
+   "area": "Crime, police and justice",
+   "pledge": "Labour will introduce a ‘Hillsborough Law’ which will place a legal duty of candour on public servants and authorities, and provide legal aid for victims of disasters or state-related deaths",
+   "status": "appears-on-track",
+   "updated": "2026-07-15"
+  },
+  {
+   "slug": "neighbourhood-policing-guarantee",
+   "area": "Crime, police and justice",
+   "pledge": "Labour will introduce a new Neighbourhood Policing Guarantee",
+   "status": "achieved",
+   "updated": "2026-06-01"
+  },
+  {
+   "slug": "immunity-shoplifting-law",
+   "area": "Crime, police and justice",
+   "pledge": "Labour will scrap the effective immunity for some shoplifting",
+   "status": "appears-on-track",
+   "updated": "2026-07-23"
+  },
+  {
+   "slug": "safer-town-centres",
+   "area": "Crime, police and justice",
+   "pledge": "Neighbourhood policing teams will crack down on shop theft, street theft and assaults against retail workers, so local people can take back their streets from thugs and thieves.",
+   "status": "in-progress",
+   "updated": "2026-06-19"
+  },
+  {
+   "slug": "crackdown-on-anti-social-behaviour",
+   "area": "Crime, police and justice",
+   "pledge": "Neighbourhood policing teams will have tougher powers, and be supported by other agencies, to tackle persistent anti-social behaviour. This includes [...] a dedicated lead officer in every force working with communities to develop a local anti-social behaviour action plan.",
+   "status": "appears-off-track",
+   "updated": "2026-07-27"
+  },
+  {
+   "slug": "neighbourhood-policing-performance-standards",
+   "area": "Crime, police and justice",
+   "pledge": "New training for officers and standards for professional excellence will ensure neighbourhood policing is developed as a specialist policing capability",
+   "status": "in-progress",
+   "updated": "2026-07-28"
+  },
+  {
+   "slug": "raise-confidence-criminal-justice",
+   "area": "Crime, police and justice",
+   "pledge": "Raising confidence in the … criminal justice system to its highest levels",
+   "status": "unclear-or-disputed",
+   "updated": "2026-06-26"
+  },
+  {
+   "slug": "raise-confidence-police",
+   "area": "Crime, police and justice",
+   "pledge": "Raising confidence in the police … to its highest levels",
+   "status": "wait-and-see",
+   "updated": "2026-08-05"
+  },
+  {
+   "slug": "halving-violent-crime",
+   "area": "Crime, police and justice",
+   "pledge": "Take back our streets by halving serious violent crime",
+   "status": "unclear-or-disputed",
+   "updated": "2026-09-16"
+  },
+  {
+   "slug": "13000-neighbourhood-police",
+   "area": "Crime, police and justice",
+   "pledge": "We will [...] put 13,000 additional police officers, PCSOs and special constables into neighbourhood policing roles.",
+   "status": "appears-on-track",
+   "updated": "2026-06-23"
+  },
+  {
+   "slug": "ticket-resales-consumer-protections",
+   "area": "Culture and society",
+   "pledge": "Access to music, drama and sport has become difficult and expensive because of ticket touting. Labour will put fans back at the heart of events by introducing new consumer protections on ticket resales.",
+   "status": "in-progress",
+   "updated": "2026-08-24"
+  },
+  {
+   "slug": "digital-id",
+   "area": "Culture and society",
+   "pledge": "Digital ID will be mandatory for Right to Work checks by the end of the Parliament",
+   "status": "not-kept",
+   "updated": "2026-07-20"
+  },
+  {
+   "slug": "trans-conversion-practices-ban",
+   "area": "Culture and society",
+   "pledge": "Labour will finally deliver a full trans-inclusive ban on conversion practices",
+   "status": "in-progress",
+   "updated": "2026-07-06"
+  },
+  {
+   "slug": "race-equality-act",
+   "area": "Culture and society",
+   "pledge": "Labour will introduce a landmark Race Equality Act, to enshrine in law the full right to equal pay for Black, Asian, and other ethnic minority people, strengthen protections against dual discrimination and root out other racial inequalities",
+   "status": "in-progress",
+   "updated": "2026-05-12"
+  },
+  {
+   "slug": "nationwide-5g-rollout",
+   "area": "Culture and society",
+   "pledge": "Labour will make a renewed push to fulfil the ambition of … national 5G coverage by 2030",
+   "status": "wait-and-see",
+   "updated": "2026-05-28"
+  },
+  {
+   "slug": "is-the-national-roll-out-of-gigabit-broadband-on-track",
+   "area": "Culture and society",
+   "pledge": "Labour will make a renewed push to fulfil the ambition of full gigabit [broadband] … by 2030",
+   "status": "appears-off-track",
+   "updated": "2026-07-14"
+  },
+  {
+   "slug": "gender-recognition-act",
+   "area": "Culture and society",
+   "pledge": "We will also modernise, simplify, and reform the intrusive and outdated gender recognition law to a new process",
+   "status": "wait-and-see",
+   "updated": "2026-07-13"
+  },
+  {
+   "slug": "football-governance-bill",
+   "area": "Culture and society",
+   "pledge": "We will introduce a Football Governance Bill, which will establish an independent regulator to ensure financial sustainability of football clubs in England",
+   "status": "achieved",
+   "updated": "2026-08-24"
+  },
+  {
+   "slug": "strategic-defence-review",
+   "area": "Defence",
+   "pledge": "Labour will conduct a Strategic Defence Review within our first year in government",
+   "status": "achieved",
+   "updated": "2026-08-26"
+  },
+  {
+   "slug": "defence-spending-2-5-percent-2027",
+   "area": "Defence",
+   "pledge": "We will deliver our commitment to spend 2.5% of GDP on defence, but we will bring it forward so that we reach that level in 2027 and we will maintain that for the rest of this Parliament",
+   "status": "appears-on-track",
+   "updated": "2026-10-12"
+  },
+  {
+   "slug": "defence-spending-percent",
+   "area": "Defence",
+   "pledge": "We will set out the path to spending 2.5 per cent of GDP on defence",
+   "status": "achieved",
+   "updated": "2026-05-28"
+  },
+  {
+   "slug": "voter-id",
+   "area": "Democracy",
+   "pledge": "Labour will [...] address the inconsistencies in voter ID rules that prevent legitimate voters from voting. For example, in the case of HM Armed Forces Veteran Cards",
+   "status": "appears-on-track",
+   "updated": "2026-05-12"
+  },
+  {
+   "slug": "house-of-lords-retirement-age",
+   "area": "Democracy",
+   "pledge": "Labour will also introduce a mandatory retirement age. At the end of the Parliament in which a member reaches 80 years of age, they will be required to retire from the House of Lords",
+   "status": "in-progress",
+   "updated": "2026-07-22"
+  },
+  {
+   "slug": "house-of-lords-hereditary-peers",
+   "area": "Democracy",
+   "pledge": "The next Labour government will therefore bring about an immediate modernisation, by introducing legislation to remove the right of hereditary peers to sit and vote in the House of Lords",
+   "status": "achieved",
+   "updated": "2026-05-12"
+  },
+  {
+   "slug": "votes-16-17-year-olds",
+   "area": "Democracy",
+   "pledge": "We will … [give] 16- and 17-year-olds the right to vote in all elections",
+   "status": "appears-on-track",
+   "updated": "2026-09-24"
+  },
+  {
+   "slug": "ethics-integrity-commission",
+   "area": "Democracy",
+   "pledge": "We will establish a new independent Ethics and Integrity Commission, with its own independent Chair, to ensure probity in government",
+   "status": "achieved",
+   "updated": "2026-06-01"
+  },
+  {
+   "slug": "house-of-lords-participation",
+   "area": "Democracy",
+   "pledge": "We will introduce a new participation requirement [for House of Lords members]",
+   "status": "in-progress",
+   "updated": "2026-07-24"
+  },
+  {
+   "slug": "national-wealth-fund-capital",
+   "area": "Economy",
+   "pledge": "Capitalised with £7.3 billion over the course of the next Parliament, the National Wealth Fund will have a remit to support Labour’s growth and clean energy missions",
+   "status": "not-kept",
+   "updated": "2026-10-07"
+  },
+  {
+   "slug": "obr-changes",
+   "area": "Economy",
+   "pledge": "Every fiscal event making significant changes to taxation or spending will be subject to an independent OBR forecast",
+   "status": "achieved",
+   "updated": "2026-10-07"
+  },
+  {
+   "slug": "150-major-infrastructure-projects",
+   "area": "Economy",
+   "pledge": "Fast-tracking planning decisions on at least 150 major economic infrastructure projects",
+   "status": "in-progress",
+   "updated": "2026-09-08"
+  },
+  {
+   "slug": "employment-rights-bill",
+   "area": "Economy",
+   "pledge": "Labour will [implement] ‘Labour’s Plan to Make Work Pay: Delivering a New Deal for Working People’ in full – introducing legislation within 100 days",
+   "status": "not-kept",
+   "updated": "2026-09-24"
+  },
+  {
+   "slug": "corporation-tax-cap",
+   "area": "Economy",
+   "pledge": "Labour will cap corporation tax at the current level of 25%, the lowest in the G7, for the entire parliament",
+   "status": "appears-on-track",
+   "updated": "2026-10-07"
+  },
+  {
+   "slug": "national-wealth-fund",
+   "area": "Economy",
+   "pledge": "Labour will establish a National Wealth Fund",
+   "status": "achieved",
+   "updated": "2026-05-28"
+  },
+  {
+   "slug": "taxes-on-working-people",
+   "area": "Economy",
+   "pledge": "Labour will not increase taxes on working people",
+   "status": "not-kept",
+   "updated": "2026-10-12"
+  },
+  {
+   "slug": "income-tax-rates",
+   "area": "Economy",
+   "pledge": "Labour will not increase taxes on working people, which is why we will not increase [...] the basic, higher, or additional rates of Income Tax",
+   "status": "unclear-or-disputed",
+   "updated": "2026-10-12"
+  },
+  {
+   "slug": "value-added-tax",
+   "area": "Economy",
+   "pledge": "Labour will not increase taxes on working people, which is why we will not increase [...] VAT",
+   "status": "appears-on-track",
+   "updated": "2026-10-12"
+  },
+  {
+   "slug": "national-insurance-increase",
+   "area": "Economy",
+   "pledge": "Labour will not increase taxes on working people, which is why we will not increase National Insurance",
+   "status": "not-kept",
+   "updated": "2026-10-12"
+  },
+  {
+   "slug": "business-rates-reform",
+   "area": "Economy",
+   "pledge": "Labour will replace the business rates system, so we can raise the same revenue but in a fairer way",
+   "status": "wait-and-see",
+   "updated": "2026-05-28"
+  },
+  {
+   "slug": "budget-fiscal-rules",
+   "area": "Economy",
+   "pledge": "Our fiscal rules are non-negotiable … This means that the current budget must move into balance, so that day-to-day costs are met by revenues and debt must be falling as a share of the economy by the fifth year of the forecast",
+   "status": "appears-on-track",
+   "updated": "2026-10-15"
+  },
+  {
+   "slug": "productivity-growth",
+   "area": "Economy",
+   "pledge": "Productivity growth in every part of the country",
+   "status": "wait-and-see",
+   "updated": "2026-10-21"
+  },
+  {
+   "slug": "raising-living-standards",
+   "area": "Economy",
+   "pledge": "The government will deliver a milestone of higher living standards in every part of the United Kingdom by the end of the Parliament",
+   "status": "appears-on-track",
+   "updated": "2026-10-21"
+  },
+  {
+   "slug": "non-dom-status",
+   "area": "Economy",
+   "pledge": "We will abolish non-dom status once and for all, replacing it with a modern scheme for people genuinely in the country for a short period",
+   "status": "achieved",
+   "updated": "2026-05-27"
+  },
+  {
+   "slug": "offshore-trust-inheritance-tax",
+   "area": "Economy",
+   "pledge": "We will end the use of offshore trusts to avoid inheritance tax so that everyone who makes their home here in the UK pays their taxes here",
+   "status": "achieved",
+   "updated": "2026-05-20"
+  },
+  {
+   "slug": "75-percent-ready-to-learn",
+   "area": "Education",
+   "pledge": "Giving children the best start in life, with a record 75% of 5-year-olds in England ready to learn when they start school",
+   "status": "wait-and-see",
+   "updated": "2026-07-13"
+  },
+  {
+   "slug": "vat-business-rates-private-schools",
+   "area": "Education",
+   "pledge": "Labour will end the VAT exemption and business rates relief for private schools",
+   "status": "achieved",
+   "updated": "2026-05-28"
+  },
+  {
+   "slug": "6500-new-expert-teachers",
+   "area": "Education",
+   "pledge": "Recruit 6,500 new expert teachers in key subjects",
+   "status": "appears-on-track",
+   "updated": "2026-06-09"
+  },
+  {
+   "slug": "school-uniform-cost",
+   "area": "Education",
+   "pledge": "We will … bring down the cost of school by limiting the number of branded items of uniform and PE kit that schools can require",
+   "status": "in-progress",
+   "updated": "2026-06-04"
+  },
+  {
+   "slug": "breakfast-clubs-primary-schools",
+   "area": "Education",
+   "pledge": "We will support families with children by introducing free breakfast clubs in every primary school",
+   "status": "in-progress",
+   "updated": "2026-10-26"
+  },
+  {
+   "slug": "energy-independence-act",
+   "area": "Energy",
+   "pledge": "A new Energy Independence Act will establish the framework for Labour’s energy and climate policies",
+   "status": "wait-and-see",
+   "updated": "2026-08-24"
+  },
+  {
+   "slug": "gb-energy-8-3-billion",
+   "area": "Energy",
+   "pledge": "Labour will capitalise Great British Energy with £8.3 billion, over the next parliament",
+   "status": "in-progress",
+   "updated": "2026-05-28"
+  },
+  {
+   "slug": "great-british-energy",
+   "area": "Energy",
+   "pledge": "Labour will create a new publicly-owned company, Great British Energy",
+   "status": "achieved",
+   "updated": "2026-05-28"
+  },
+  {
+   "slug": "new-coal-licences",
+   "area": "Energy",
+   "pledge": "We will not grant new coal licences",
+   "status": "appears-on-track",
+   "updated": "2026-08-06"
+  },
+  {
+   "slug": "new-oil-gas-field-licences",
+   "area": "Energy",
+   "pledge": "We will not issue new licences to explore new [oil and gas] fields",
+   "status": "appears-on-track",
+   "updated": "2026-10-21"
+  },
+  {
+   "slug": "national-forests-woodlands-england",
+   "area": "Environment",
+   "pledge": "[Labour will] establish three new National Forests in England, whilst planting millions of trees and creating new woodlands",
+   "status": "appears-on-track",
+   "updated": "2026-09-08"
+  },
+  {
+   "slug": "diesel-petrol-new-cars-ban",
+   "area": "Environment",
+   "pledge": "Labour will support the transition to electric vehicles … restoring the phase-out date of 2030 for new cars with internal combustion engines",
+   "status": "wait-and-see",
+   "updated": "2026-08-21"
+  },
+  {
+   "slug": "sewage-rivers-discharges-pollution",
+   "area": "Environment",
+   "pledge": "This Government will cut water companies’ sewage pollution in half by the end of the decade",
+   "status": "wait-and-see",
+   "updated": "2026-08-21"
+  },
+  {
+   "slug": "trail-hunting-dogs-ban",
+   "area": "Environment",
+   "pledge": "We will ban trail hunting",
+   "status": "in-progress",
+   "updated": "2026-05-27"
+  },
+  {
+   "slug": "water-companies-pollution-criminal-charges",
+   "area": "Environment",
+   "pledge": "We will give regulators new powers to … bring criminal charges against persistent law breakers [water companies]",
+   "status": "achieved",
+   "updated": "2026-05-27"
+  },
+  {
+   "slug": "foreign-aid-development-spending",
+   "area": "Foreign policy",
+   "pledge": "Labour is committed to restoring development spending at the level of 0.7 per cent of gross national income as soon as fiscal circumstances allow",
+   "status": "appears-off-track",
+   "updated": "2026-10-14"
+  },
+  {
+   "slug": "palestine-state-recognition",
+   "area": "Foreign policy",
+   "pledge": "We are committed to recognising a Palestinian state as a contribution to a renewed peace process which results in a two-state solution with a safe and secure Israel alongside a viable and sovereign Palestinian state",
+   "status": "achieved",
+   "updated": "2026-05-28"
+  },
+  {
+   "slug": "nhs-app-improvements",
+   "area": "Health and social care",
+   "pledge": "[We will] transform the NHS App into a world-leading tool for patient access, empowerment and care planning. By 2028, the app will be a full front door to the entire NHS.",
+   "status": "in-progress",
+   "updated": "2026-02-16"
+  },
+  {
+   "slug": "40000-nhs-appointments-per-week",
+   "area": "Health and social care",
+   "pledge": "As a first step, in England, we will deliver an extra two million NHS operations, scans, and appointments every year; that is 40,000 more appointments every week",
+   "status": "achieved",
+   "updated": "2026-06-23"
+  },
+  {
+   "slug": "cigarettes-buy-next-generation",
+   "area": "Health and social care",
+   "pledge": "Labour will ensure the next generation can never legally buy cigarettes",
+   "status": "achieved",
+   "updated": "2026-08-25"
+  },
+  {
+   "slug": "double-mri-ct-scanners",
+   "area": "Health and social care",
+   "pledge": "Labour will introduce a new ‘Fit For the Future’ fund to double the number of CT and MRI scanners, allowing the NHS to catch cancer and other conditions earlier, saving lives",
+   "status": "appears-off-track",
+   "updated": "2026-06-08"
+  },
+  {
+   "slug": "700000-dental-appointments",
+   "area": "Health and social care",
+   "pledge": "Labour will tackle the immediate crisis with a rescue plan to provide 700,000 more urgent dental appointments",
+   "status": "in-progress",
+   "updated": "2025-07-16"
+  },
+  {
+   "slug": "national-care-service-nhs",
+   "area": "Health and social care",
+   "pledge": "Labour will undertake a programme of reform to create a National Care Service, underpinned by national standards, delivering consistency of care across the country",
+   "status": "in-progress",
+   "updated": "2026-10-19"
+  },
+  {
+   "slug": "supervised-tooth-brushing-scheme",
+   "area": "Health and social care",
+   "pledge": "We will also introduce a supervised tooth-brushing scheme for 3- to 5-year-olds, targeting the areas of highest need",
+   "status": "achieved",
+   "updated": "2026-05-27"
+  },
+  {
+   "slug": "mental-health-8500-additional-staff",
+   "area": "Health and social care",
+   "pledge": "We will recruit an additional 8,500 new staff to treat children and adults through our first term",
+   "status": "appears-on-track",
+   "updated": "2026-08-05"
+  },
+  {
+   "slug": "cut-waiting-times-18-week-standard",
+   "area": "Health and social care",
+   "pledge": "We will return to meeting NHS performance standards. That means patients should expect to wait no longer than 18 weeks from referral for consultant-led treatment of non-urgent health conditions",
+   "status": "in-progress",
+   "updated": "2026-09-02"
+  },
+  {
+   "slug": "train-thousands-more-gps",
+   "area": "Health and social care",
+   "pledge": "We will train thousands more GPs",
+   "status": "unclear-or-disputed",
+   "updated": "2026-02-20"
+  },
+  {
+   "slug": "thousands-midwives-nhs-trained",
+   "area": "Health and social care",
+   "pledge": "We will train thousands more midwives as part of the NHS Workforce Plan",
+   "status": "unclear-or-disputed",
+   "updated": "2026-09-24"
+  },
+  {
+   "slug": "end-rough-sleeping",
+   "area": "Housing",
+   "pledge": "I will soon go through that door behind me and issue my first instruction: to end rough sleeping in our country.",
+   "status": "wait-and-see",
+   "updated": "2026-10-26"
+  },
+  {
+   "slug": "1-5-million-homes",
+   "area": "Housing",
+   "pledge": "Labour will get Britain building again … with 1.5 million new homes over the next parliament",
+   "status": "appears-off-track",
+   "updated": "2026-10-09"
+  },
+  {
+   "slug": "section-21-no-fault-evictions",
+   "area": "Housing",
+   "pledge": "We will immediately abolish Section 21 ‘no fault’ evictions",
+   "status": "achieved",
+   "updated": "2026-07-14"
+  },
+  {
+   "slug": "national-planning-policy-framework",
+   "area": "Housing",
+   "pledge": "We will immediately update the National Policy Planning Framework [sic] to undo damaging Conservative changes, including restoring mandatory housing targets",
+   "status": "achieved",
+   "updated": "2026-05-28"
+  },
+  {
+   "slug": "ending-rwanda-agreement",
+   "area": "Migration",
+   "pledge": "Ending the wasteful Migration and Economic Development partnership with Rwanda",
+   "status": "achieved",
+   "updated": "2026-09-24"
+  },
+  {
+   "slug": "net-migration-fall-labour-government",
+   "area": "Migration",
+   "pledge": "Labour will reduce net migration",
+   "status": "appears-on-track",
+   "updated": "2026-09-24"
+  },
+  {
+   "slug": "1000-additional-returns-enforcement-staff",
+   "area": "Migration",
+   "pledge": "Labour will set up a new returns and enforcement unit, with an additional 1,000 staff, to fast-track removals to safe countries for people who do not have the right to stay here",
+   "status": "not-kept",
+   "updated": "2026-07-01"
+  },
+  {
+   "slug": "asylum-hotels",
+   "area": "Migration",
+   "pledge": "We will … end asylum hotels, saving the taxpayer billions of pounds",
+   "status": "in-progress",
+   "updated": "2026-10-07"
+  },
+  {
+   "slug": "safe-third-countries",
+   "area": "Migration",
+   "pledge": "We will [...] increase the number of safe countries that failed asylum seekers can swiftly be sent back to",
+   "status": "wait-and-see",
+   "updated": "2026-06-23"
+  },
+  {
+   "slug": "border-security-command",
+   "area": "Migration",
+   "pledge": "We will create a new Border Security Command, with hundreds of new investigators, intelligence officers, and cross-border police officers",
+   "status": "achieved",
+   "updated": "2026-06-08"
+  },
+  {
+   "slug": "returns-arrangements",
+   "area": "Migration",
+   "pledge": "We will negotiate additional returns arrangements to speed up returns",
+   "status": "achieved",
+   "updated": "2026-05-28"
+  },
+  {
+   "slug": "million-additional-potholes",
+   "area": "Transport",
+   "pledge": "We will fix an additional one million potholes across England in each year of the next parliament",
+   "status": "appears-off-track",
+   "updated": "2026-07-24"
+  },
+  {
+   "slug": "railways-public-ownership",
+   "area": "Transport",
+   "pledge": "We will put passengers at the heart of the service by reforming the railways and bringing them into public ownership",
+   "status": "appears-on-track",
+   "updated": "2026-10-01"
+  },
+  {
+   "slug": "universal-credit-review",
+   "area": "Work and benefits",
+   "pledge": "Labour is committed to reviewing Universal Credit so that it makes work pay and tackles poverty",
+   "status": "in-progress",
+   "updated": "2026-09-15"
+  },
+  {
+   "slug": "adjusted-triple-lock",
+   "area": "Work and benefits",
+   "pledge": "The Government will legislate for the change [to the triple lock] during this Parliament.",
+   "status": "wait-and-see",
+   "updated": "2026-10-22"
+  }
+ ]
+}

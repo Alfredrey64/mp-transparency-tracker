@@ -845,3 +845,49 @@ export function IconBolt({ size = 17 }) {
     </svg>
   );
 }
+
+// A newspaper: the "what changed this week" feed.
+export function IconFeed({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 4.5h11.5a1.5 1.5 0 0 1 1.5 1.5v13H6.5A1.5 1.5 0 0 1 5 17.5z" />
+      <path d="M18 8.5h1.5A1.5 1.5 0 0 1 21 10v7.5a2 2 0 0 1-3 1.7" />
+      <path d="M8.5 8.5h6M8.5 12h6M8.5 15.5h3.5" />
+    </svg>
+  );
+}
+
+// A map pin with a house in it: everything about where you live.
+export function IconPinHome({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 21.5s6.5-5.6 6.5-11a6.5 6.5 0 1 0-13 0c0 5.4 6.5 11 6.5 11z" />
+      <path d="M8.9 11 12 8.2l3.1 2.8" />
+      <path d="M9.9 10.6v3h4.2v-3" />
+    </svg>
+  );
+}
+
+// A person wearing a rosette: a local councillor.
+export function IconCouncillor({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="10" cy="7.5" r="3.3" />
+      <path d="M3.5 20c.3-3.9 3-6.2 6.5-6.2 1.2 0 2.3.3 3.2.8" />
+      <circle cx="17.5" cy="16.5" r="3" />
+      <path d="m16.2 19 -.8 2.5 2.1-1 2.1 1-.8-2.5" />
+    </svg>
+  );
+}
+
+// Two benches facing each other with a tick: how the Lords divide.
+export function IconLordsVote({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 18.5h7.5M13.5 18.5H21" />
+      <path d="M4.5 18.5v-4h4v4M15.5 18.5v-4h4v4" />
+      <path d="m7 9 2.2 2.2L13 6.5" />
+      <path d="M16 6.5l3 3M19 6.5l-3 3" />
+    </svg>
+  );
+}

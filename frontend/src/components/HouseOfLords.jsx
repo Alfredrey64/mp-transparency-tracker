@@ -33,13 +33,13 @@ function DataScopeNote() {
         marginBottom: 24, fontFamily: FONT_BODY, fontSize: 13, lineHeight: 1.6, color: COLORS.inkSoft,
       }}
     >
-This covers <em>who</em> sits in the House of Lords, and their recent debates and written questions, but not what
-      they've declared or how they've voted. The official source the rest of this site draws on for that (the
-      Commons register of financial interests) is available as structured data; the Lords equivalent, checked
-      directly against Parliament's own systems, is not. It's published only as free-text entries per peer (things
-      like "adviser to X" or "shareholding in Y", rarely with a declared £ figure), with no equivalent for division
-      votes or an attendance percentage either. Rather than force that into a format built for the Commons register,
-      it's left out here, but every peer's profile below links straight to their own entry on the{" "}
+This covers <em>who</em> sits in the House of Lords, their recent debates and written questions, and how they have
+      voted (see <a href="#/lordsVotes" style={{ color: COLORS.ink, fontWeight: 600 }}>How peers vote</a>). It does not cover what
+      they've declared. The official source the rest of this site draws on for that (the Commons register of financial
+      interests) is available as structured data; the Lords equivalent, checked directly against Parliament's own systems,
+      is not. It's published only as free-text entries per peer (things like "adviser to X" or "shareholding in Y", rarely
+      with a declared £ figure), and there is no attendance percentage either. Rather than force that into a format built
+      for the Commons register, it's left out here, but every peer's profile below links straight to their own entry on the{" "}
       <a href="https://www.parliament.uk/mps-lords-and-offices/standards-and-financial-interests/register-of-lords-interests/" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
         official Register of Lords' Interests
       </a>
@@ -101,6 +101,33 @@ function LordsInterestsLink({ peer }) {
       </div>
       <span style={{ flexShrink: 0, fontFamily: FONT_BODY, fontWeight: 700, fontSize: 15, color: COLORS.accentText }}>↗</span>
     </a>
+  );
+}
+
+// This peer's votes over the last 12 months, from data/lordsVotes.json. Shown only for peers who voted in that time.
+function PeerVotes({ peerId }) {
+  const [row, setRow] = useState(undefined);
+  useEffect(() => {
+    let alive = true;
+    import("../data/lordsVotes.json").then((m) => {
+      const d = m.default;
+      const p = d.peers[String(peerId)];
+      if (alive) setRow(p ? { voted: p[4], whipped: p[5], against: p[6], divisions: d.divisions, since: d.since } : null);
+    }).catch(() => alive && setRow(null));
+    return () => { alive = false; };
+  }, [peerId]);
+  if (!row) return null;
+  const share = Math.round((row.voted / row.divisions) * 100);
+  return (
+    <CardShell title="How they vote">
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "10px 28px", alignItems: "baseline" }}>
+        <div><span style={{ fontFamily: FONT_DISPLAY, fontSize: 30, fontWeight: 700, color: COLORS.ink }}>{row.voted}</span> <span style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>of {row.divisions} votes ({share}%)</span></div>
+        <div><span style={{ fontFamily: FONT_DISPLAY, fontSize: 30, fontWeight: 700, color: COLORS.ink }}>{row.whipped ? row.against : "None"}</span> <span style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>{row.whipped ? "against their party" : "no party whip to go against"}</span></div>
+      </div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 10, lineHeight: 1.5 }}>
+        Recorded votes since {formatDate(row.since)}. A peer can attend without voting. <a href="#/lordsVotes" style={{ color: COLORS.ink, fontWeight: 600 }}>How peers vote</a> explains the figures.
+      </div>
+    </CardShell>
   );
 }
 
@@ -272,11 +299,13 @@ function PeerDetail({ peer, onBack, formerMp }) {
             </CardShell>
           )}
 
+          <PeerVotes peerId={peer.id} />
+
           {(peer.recent_activity?.contributions?.length > 0 || peer.recent_activity?.writtenQuestions?.length > 0) && (
             <CardShell title="Recent Parliamentary Activity">
               <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginBottom: 14, lineHeight: 1.5 }}>
                 Their most recent debate contributions and written questions, from Hansard and the official record. Not a
-                voting record or attendance figure: neither is published for the Lords.
+                voting record: that is in the box above. No attendance figure is published for the Lords.
               </div>
 
               {peer.recent_activity.contributions?.length > 0 && (

@@ -45,6 +45,9 @@ const SCRIPTS = [
   { id: "fetch_lords_careers", label: "Lords careers (arrival, former MPs, posts)" },
   { id: "build_benchmarks", label: "MP benchmarks (how each MP compares)" },
   { id: "fetch_councils", label: "Councils (councillors, make-up, election dates)" },
+  { id: "build_councillors", label: "Councillor list (searchable, every council)" },
+  { id: "fetch_lords_votes", label: "Lords votes (how every peer voted)" },
+  { id: "fetch_fullfact_tracker", label: "Full Fact pledge list" },
   { id: "fetch_ons", label: "ONS statistics (economy, prices, jobs, health, population)" },
   { id: "fetch_regional_breakdowns", label: "Regional breakdowns (jobs, housing, crime by place)" },
 ];

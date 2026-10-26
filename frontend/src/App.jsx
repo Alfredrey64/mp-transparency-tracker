@@ -101,6 +101,10 @@ const Union = lazyPage(LOADERS.union);
 const Ageing = lazyPage(LOADERS.ageing);
 const Calculators = lazyPage(LOADERS.calculators);
 const Funding = lazyPage(LOADERS.funding);
+const MyArea = lazyPage(LOADERS.myArea);
+const ThisWeek = lazyPage(LOADERS.thisWeek);
+const Councillors = lazyPage(LOADERS.councillors);
+const LordsVotes = lazyPage(LOADERS.lordsVotes);
 const SECTOR_VIEWS = new Set(["economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates", "immigration", "business"]);
 
 // A quiet authorship mark, not a feature — printed once so a copy of this
@@ -125,7 +129,7 @@ const VALID_VIEWS = new Set([
   "committees", "compare", "ministerialMeetings", "writtenQuestions", "standards", "rankings", "myMP",
   "mediaLiteracy", "methodology", "glossary", "settings", "privacy", "terms", "list",
   "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist", "numbers", "topics", "constituency", "start", "rebels", "offices", "councils",
-  "economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates", "immigration", "business", "regions", "answers", "deprivation", "indicators", "marginals", "compareSeats", "howtovote", "teacher", "localElections", "generalElection", "taxRates", "inequality", "brexit", "defence", "education", "ageing", "nhs", "energy", "trust", "care", "transport", "union", "calculators", "funding",
+  "economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates", "immigration", "business", "regions", "answers", "deprivation", "indicators", "marginals", "compareSeats", "howtovote", "teacher", "localElections", "generalElection", "taxRates", "inequality", "brexit", "defence", "education", "ageing", "nhs", "energy", "trust", "care", "transport", "union", "calculators", "funding", "myArea", "thisWeek", "councillors", "lordsVotes",
 ]);
 
 // The tab title, bookmark name and browser-history entry for every view —
@@ -498,6 +502,10 @@ export default function App() {
             {view === "privacy" && <PrivacyPolicy onNavigate={handleNavigate} />}
             {view === "terms" && <TermsConditions />}
             {view === "funding" && <Funding onNavigate={handleNavigate} />}
+            {view === "myArea" && <MyArea />}
+            {view === "thisWeek" && <ThisWeek />}
+            {view === "councillors" && <Councillors param={viewParam} />}
+            {view === "lordsVotes" && <LordsVotes />}
             {view === "list" &&
               (selected ? (
                 <PoliticianDetail

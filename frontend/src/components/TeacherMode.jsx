@@ -9,6 +9,7 @@ import { CHAPTERS, GUIDE } from "../data/teacherMode";
 import { card, cardTitle } from "../lib/onsStyles";
 import Presenter from "./teacher/Presenter";
 import Printables from "./teacher/Printables";
+import Classroom from "./teacher/Classroom";
 import NameThem from "./teacher/NameThem";
 import { NamesContext, cleanNames, loadNames, saveNames } from "./teacher/characters";
 import { ShopScene } from "./teacher/Scenes";
@@ -145,6 +146,8 @@ export default function TeacherMode() {
           ))}
         </div>
       </section>
+
+      <Classroom />
 
       <Printables />
 

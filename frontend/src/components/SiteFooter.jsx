@@ -17,8 +17,11 @@ const COLUMNS = [
     title: "Your area",
     links: [
       ["myMP", "Find your MP"],
+      ["myArea", "Your area"],
       ["constituency", "Your constituency"],
       ["councils", "Your council"],
+      ["councillors", "Your councillors"],
+      ["thisWeek", "What changed this week"],
       ["generalElection", "General elections"],
       ["howtovote", "How to vote"],
     ],

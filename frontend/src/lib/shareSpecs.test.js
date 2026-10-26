@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { mpShareSpec, seatShareSpec, chamberShareSpec, rebelsShareSpec, mapShareSpec, councilShareSpec, wrapLines } from "./shareSpecs";
+import { mpShareSpec, mpReportSpec, seatShareSpec, chamberShareSpec, rebelsShareSpec, mapShareSpec, councilShareSpec, wrapLines } from "./shareSpecs";
 
 describe("mpShareSpec", () => {
   it("shows career facts and declared interests", () => {
@@ -82,5 +82,20 @@ describe("wrapLines", () => {
   it("copes with empty text and one very long word", () => {
     expect(wrapLines("", measure, 100, 2)).toEqual([]);
     expect(wrapLines("supercalifragilistic", measure, 50, 2)).toEqual(["supercalifragilistic"]);
+  });
+});
+
+describe("mpReportSpec", () => {
+  const politician = { name: "Ann Smith", party: "Labour", constituency: "Seat", party_colour: "d50000" };
+  it("puts the numbers that describe the job on one card", () => {
+    const s = mpReportSpec({ politician, career: [2019, 2, 0], votes: { cast: 200, withParty: 190 }, interestCount: 3, totalDeclared: 12500, committees: 2, questions: 40, link: "x" });
+    expect(s.kicker).toBe("MP report card");
+    expect(s.stats.map((x) => x.value)).toEqual(["95%", "200", "3", "2"]);
+    expect(s.note).toBe("First elected 2019. Declared interests with a stated value total £12,500.");
+  });
+  it("leaves out anything it does not know, rather than showing a zero", () => {
+    const s = mpReportSpec({ politician, link: "x" });
+    expect(s.stats).toEqual([]);
+    expect(s.note).toBeNull();
   });
 });

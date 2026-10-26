@@ -1,0 +1,37 @@
+/* Councillors: the searchable directory and each person's page. Loaded only with that page. */
+.cl-tools { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; margin: 22px 0 8px; align-items: center; }
+.cl-search { position: relative; }
+.cl-search svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--c-ink-soft); pointer-events: none; }
+.cl-tools input, .cl-tools select { font: 500 16px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); background: var(--c-paper-card); border: 1.5px solid var(--c-hairline); border-radius: 14px; padding: 0 14px; min-height: 50px; box-sizing: border-box; width: 100%; }
+.cl-search input { padding-left: 42px; }
+.cl-tools label.cl-check { display: inline-flex; align-items: center; gap: 8px; font: 600 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); white-space: nowrap; }
+.cl-count { font: 600 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); margin: 6px 2px 14px; }
+.cl-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 12px; }
+.cl-card { display: grid; gap: 3px; align-content: start; height: 100%; padding: 14px 16px 15px; border-radius: 16px; text-decoration: none; color: inherit; background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-top: 5px solid var(--pc); box-shadow: var(--shadow-1); box-sizing: border-box; }
+.cl-card:hover { box-shadow: var(--shadow-2), 0 0 0 3px color-mix(in srgb, var(--pc) 16%, transparent); }
+.cl-card b { font: 700 17px/1.25 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.cl-card span { font: 500 13.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.cl-chip { display: inline-flex; align-items: center; gap: 7px; justify-self: start; margin-top: 6px; padding: 3px 10px 3px 8px; border-radius: 999px; background: color-mix(in srgb, var(--pc) 12%, transparent); border: 1px solid color-mix(in srgb, var(--pc) 35%, transparent); font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--pc) 75%, var(--c-ink)); }
+.cl-chip i { width: 9px; height: 9px; border-radius: 50%; background: var(--pc); }
+.cl-more { display: flex; justify-content: center; margin-top: 18px; }
+.cl-profile { margin-top: 22px; border-radius: 24px; overflow: hidden; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-2); }
+.cl-profile-top { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; padding: clamp(18px, 3vw, 28px); color: #fff; background: linear-gradient(135deg, var(--pc), color-mix(in srgb, var(--pc) 55%, #0B1B33)); }
+.cl-avatar { flex: none; display: grid; place-items: center; width: 84px; height: 84px; border-radius: 50%; background: rgba(255, 255, 255, 0.22); border: 3px solid rgba(255, 255, 255, 0.55); font: 700 30px "Figures", "Newsreader", Georgia, serif; }
+.cl-profile-top h2 { margin: 0; font: 700 clamp(26px, 4vw, 36px)/1.1 "Figures", "Newsreader", Georgia, serif; }
+.cl-profile-top p { margin: 4px 0 0; font: 500 16px/1.4 "Figures", "Public Sans", system-ui, sans-serif; opacity: 0.94; }
+.cl-profile-body { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 18px 28px; padding: clamp(18px, 3vw, 28px); }
+.cl-box { display: grid; gap: 10px; align-content: start; }
+.cl-box h3 { margin: 0; font: 700 18px "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.cl-box p, .cl-box li { font: 400 14.5px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); margin: 0; }
+.cl-box ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.cl-seats { display: flex; height: 18px; border-radius: 9px; overflow: hidden; background: var(--c-hairline); gap: 2px; }
+.cl-seats > i { display: block; min-width: 3px; }
+.cl-key { display: flex; flex-wrap: wrap; gap: 4px 14px; font: 600 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.cl-key i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; }
+.cl-mate { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--c-ink); padding: 8px 10px; border-radius: 12px; border: 1px solid var(--c-hairline); border-left: 5px solid var(--pc); }
+.cl-mate:hover { box-shadow: 0 0 0 3px color-mix(in srgb, var(--pc) 16%, transparent); }
+.cl-mate b { font: 700 14.5px "Figures", "Public Sans", system-ui, sans-serif; }
+.cl-mate small { display: block; font: 500 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.cl-links { display: flex; flex-wrap: wrap; gap: 10px; padding: 0 clamp(18px, 3vw, 28px) clamp(18px, 3vw, 26px); }
+.cl-note { margin: 0 clamp(18px, 3vw, 28px) clamp(18px, 3vw, 26px); padding: 14px 16px; border-radius: 14px; background: color-mix(in srgb, var(--pc) 8%, var(--c-paper)); border-left: 5px solid var(--pc); font: 400 14px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+@media (max-width: 640px) { .cl-tools { grid-template-columns: minmax(0, 1fr); } .cl-profile-top { gap: 14px; } .cl-avatar { width: 64px; height: 64px; font-size: 24px; } }

@@ -1,0 +1,42 @@
+/* My area: one postcode, everything about where you live. Loaded only with that page. */
+.ma-form { display: flex; flex-wrap: wrap; gap: 10px; max-width: 620px; margin: 22px auto 0; }
+.ma-form input { flex: 1 1 240px; font: 500 17px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); background: var(--c-paper-card); border: 1.5px solid var(--c-hairline); border-radius: 14px; padding: 0 16px; min-height: 52px; box-sizing: border-box; text-transform: uppercase; }
+.ma-form input::placeholder { text-transform: none; }
+.ma-form .btn { min-height: 52px; }
+.ma-help { text-align: center; font: 400 12.5px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); margin: 10px auto 0; max-width: 560px; }
+.ma-err { text-align: center; font: 600 14px "Figures", "Public Sans", system-ui, sans-serif; color: #B3382E; margin-top: 12px; }
+.ma-where { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin: 26px 0 6px; }
+.ma-where h2 { margin: 0; font: 700 clamp(24px, 4vw, 32px) "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.ma-where p { margin: 4px 0 0; font: 500 15px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 16px; margin-top: 16px; }
+.ma-card { position: relative; display: grid; gap: 10px; align-content: start; box-sizing: border-box; padding: 18px 20px 18px; border-radius: 22px; background: linear-gradient(165deg, color-mix(in srgb, var(--mc) 9%, var(--c-paper-card)), var(--c-paper-card) 55%); border: 1px solid color-mix(in srgb, var(--mc) 28%, var(--c-hairline)); box-shadow: var(--shadow-1); overflow: hidden; animation: maIn 0.55s var(--ease-out) calc(var(--i, 0) * 80ms) backwards; }
+.ma-card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 5px; background: var(--mc); }
+@keyframes maIn { from { opacity: 0; transform: translateY(12px); } }
+.ma-card > header { display: flex; align-items: center; gap: 12px; }
+.ma-icon { flex: none; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 13px; background: color-mix(in srgb, var(--mc) 16%, transparent); color: color-mix(in srgb, var(--mc) 80%, var(--c-ink)); }
+.ma-card h3 { margin: 0; font: 700 19px/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.ma-card p, .ma-card li { margin: 0; font: 400 14.5px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ma-big { font: 700 clamp(26px, 3.4vw, 32px)/1.1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.ma-sub { font: 500 13.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-card ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.ma-mp { display: flex; align-items: center; gap: 14px; }
+.ma-photo { flex: none; width: 72px; height: 72px; border-radius: 50%; object-fit: cover; background: var(--c-paper); border: 3px solid var(--c-paper-card); box-shadow: 0 0 0 3px color-mix(in srgb, var(--mc) 60%, transparent); }
+.ma-photo-fallback { display: grid; place-items: center; font: 700 24px "Figures", "Newsreader", Georgia, serif; color: #fff; background: var(--mc); }
+.ma-link { display: inline-flex; align-items: center; min-height: 44px; font: 700 14.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--mc) 78%, var(--c-ink)); text-decoration: none; }
+.ma-link:hover { text-decoration: underline; }
+.ma-figs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.ma-fig { display: grid; gap: 2px; padding: 12px 12px 11px; border-radius: 14px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-top: 4px solid var(--fc); text-decoration: none; color: inherit; }
+.ma-fig:hover { box-shadow: 0 0 0 3px color-mix(in srgb, var(--fc) 16%, transparent); }
+.ma-fig b { font: 700 22px/1.1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.ma-fig span { font: 600 12.5px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ma-fig small { font: 500 12px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-people { display: flex; flex-wrap: wrap; gap: 8px; }
+.ma-person { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px 6px 10px; border-radius: 999px; text-decoration: none; background: var(--c-paper-card); border: 1px solid var(--c-hairline); font: 700 13.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ma-person i { width: 10px; height: 10px; border-radius: 50%; background: var(--pc); }
+.ma-person small { font: 500 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-todo li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 10px; align-items: start; }
+.ma-todo li > span { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 10px; background: var(--mc); color: #fff; font: 800 14px "Figures", "Public Sans", system-ui, sans-serif; }
+.ma-todo a { font-weight: 700; color: color-mix(in srgb, var(--mc) 78%, var(--c-ink)); }
+.ma-forget { background: none; border: 0; cursor: pointer; min-height: 44px; padding: 0 6px; font: 600 13.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); text-decoration: underline; }
+@media (max-width: 420px) { .ma-figs { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .ma-card { animation: none; } }

@@ -4,7 +4,7 @@ import {
   IconPartyFinance, IconByElection, IconLords, IconPetition, IconCompass, IconCommittee, IconCompare, IconMeeting,
   IconQuestion, IconGavel, IconRankings, IconDarkMoney, IconThinkTank, IconDoor, IconRegister,
   IconSearch, IconBook, IconChartBars, IconTopic, IconRoute, IconSplit, IconHexMap, IconCouncil,
-  IconTaxes, IconCalculator, IconRates, IconMigration, IconMap, IconAsk, IconDeprivation, IconSwing, IconSeatCompare, IconFactory, IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconBallot, IconCalendar, IconHouse, IconGlobe, IconLeaf, IconCompareTime, IconShield,
+  IconTaxes, IconCalculator, IconRates, IconMigration, IconMap, IconAsk, IconDeprivation, IconSwing, IconSeatCompare, IconFactory, IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconBallot, IconCalendar, IconHouse, IconGlobe, IconLeaf, IconCompareTime, IconShield, IconLordsVote, IconCouncillor, IconFeed, IconPinHome
 } from "../components/icons";
 
 // Lives outside both Sidebar.jsx and shared.jsx specifically so neither has
@@ -30,6 +30,7 @@ export const SECTIONS = [
     accent: "#2F80ED",
     items: [
       { key: "start", label: "Take the guided tour", icon: IconRoute, hint: "5 minutes, no jargon", essential: true },
+      { key: "thisWeek", label: "What changed this week", icon: IconFeed, hint: "New votes, bills, money and petitions", essential: true, aka: ["news", "latest", "this week", "new", "updates", "what happened", "recent"] },
       { key: "answers", label: "Ask a question", icon: IconAsk, hint: "Why is housing so expensive?", essential: true, aka: ["why", "how", "explain", "question", "questions", "answers", "faq", "ask"] },
       { key: "howitworks", label: "How Parliament works", icon: IconFlow, hint: "From idea to law, step by step", essential: true, aka: ["parliament", "laws"] },
       { key: "devolved", label: "Scotland, Wales & N. Ireland", icon: IconDevolved, hint: "Who decides what where you live", aka: ["devolved administrations", "devolution"] },
@@ -52,8 +53,10 @@ export const SECTIONS = [
     blurb: "Things you can look up and do",
     accent: "#E0367A",
     items: [
+      { key: "myArea", label: "Your area", icon: IconPinHome, hint: "One postcode, everything local", essential: true, aka: ["my area", "postcode", "local", "near me", "where i live", "dashboard"] },
       { key: "constituency", label: "Your constituency", icon: IconHexMap, hint: "Your MP, seat and local results", essential: true, aka: ["constituency", "seat", "map", "election result"] },
       { key: "councils", label: "Your council", icon: IconCouncil, hint: "Councillors and local elections", essential: true, aka: ["councillors", "local elections", "council"] },
+      { key: "councillors", label: "Your councillors", icon: IconCouncillor, hint: "Search every councillor in the UK", essential: true, aka: ["councillor", "cllr", "ward", "local councillor", "who is my councillor", "defected"] },
       { key: "marginals", label: "Marginal seats", icon: IconSwing, hint: "How close each seat was, and what could flip", aka: ["swing", "marginals", "majority", "safe seat", "target seats", "election"] },
       { key: "compareSeats", label: "Compare constituencies", icon: IconSeatCompare, hint: "Two seats side by side", aka: ["compare seats", "compare constituencies", "versus"] },
       { key: "partymatch", label: "Which party suits me?", icon: IconCompass, hint: "A short quiz", aka: ["find your party", "quiz"] },
@@ -83,6 +86,7 @@ export const SECTIONS = [
       { key: "cabinet", label: "Cabinet ministers", icon: IconCabinet, hint: "The top government jobs", aka: ["cabinet", "prime minister"] },
       { key: "offices", label: "Who held which job", icon: IconCabinet, hint: "Search any minister's role", aka: ["who held office", "secretary of state"] },
       { key: "lords", label: "The House of Lords", icon: IconLords, hint: "The unelected second chamber", aka: ["peers", "lords"] },
+      { key: "lordsVotes", label: "How peers vote", icon: IconLordsVote, hint: "Loyalty, rebels and defeats in the Lords", aka: ["lords votes", "peers voting", "lords divisions", "lords rebels", "content not content"] },
       { key: "committees", label: "Watchdog committees", icon: IconCommittee, hint: "MPs who question ministers", aka: ["select committees"] },
       { key: "tracker", label: "Promises tracker", icon: IconTracker, hint: "Has the government kept its word?", aka: ["manifesto promises"] },
     ],

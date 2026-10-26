@@ -1,0 +1,22 @@
+/* Every pledge, one by one. Loaded with the Promises tracker. */
+.pl-all { margin-top: 30px; padding-top: 24px; border-top: 2px solid var(--c-ink); }
+.pl-all h3 { margin: 0; font: 700 24px "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.pl-all > p { margin: 6px 0 0; max-width: 760px; font: 400 14.5px/1.65 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.pl-tools { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; margin: 18px 0 12px; }
+.pl-tools input, .pl-tools select { font: 500 15px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); background: var(--c-paper); border: 1.5px solid var(--c-hairline); border-radius: 12px; padding: 0 14px; min-height: 46px; box-sizing: border-box; width: 100%; }
+.pl-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.pl-chip { display: inline-flex; align-items: center; gap: 8px; min-height: 38px; padding: 0 12px; border-radius: 999px; border: 1.5px solid var(--c-hairline); background: transparent; font: 600 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); cursor: pointer; }
+.pl-chip b { font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--sc) 80%, var(--c-ink)); }
+.pl-chip i { width: 9px; height: 9px; border-radius: 50%; background: var(--sc); }
+.pl-chip[aria-pressed="true"] { background: color-mix(in srgb, var(--sc) 14%, var(--c-paper-card)); border-color: var(--sc); }
+.pl-count { font: 600 13.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); margin: 4px 2px 12px; }
+.pl-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: 12px; }
+.pl-card { display: grid; gap: 10px; align-content: start; height: 100%; box-sizing: border-box; padding: 14px 16px 14px; border-radius: 16px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-left: 6px solid var(--sc); box-shadow: var(--shadow-1); }
+.pl-card-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.pl-status { display: inline-flex; align-items: center; gap: 7px; padding: 3px 11px 3px 9px; border-radius: 999px; background: color-mix(in srgb, var(--sc) 14%, transparent); font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--sc) 80%, var(--c-ink)); }
+.pl-area { padding: 3px 10px; border-radius: 999px; border: 1px solid var(--c-hairline); font: 600 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.pl-card p { margin: 0; font: 600 15px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.pl-card-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; align-self: end; font: 500 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.pl-card-foot a { font-weight: 700; color: var(--c-ink); }
+.pl-more { display: flex; justify-content: center; margin-top: 16px; }
+@media (max-width: 640px) { .pl-tools { grid-template-columns: minmax(0, 1fr); } }

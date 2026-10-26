@@ -189,7 +189,7 @@ export const PAGE_GUIDES = {
   lords: {
     what: "Every current member of the House of Lords, the second chamber that reviews and can delay laws.",
     why: "Peers help shape every law but nobody votes for them, so who they are and how they got there matters.",
-    notShown: "Peers' votes and declared interests in a structured form. Each peer's page links to the official register.",
+    notShown: "Peers' declared interests in a structured form. Each peer's page links to the official register. Their votes are on the How peers vote page.",
   },
   formerMps: {
     what: "The MPs who have most recently left the Commons, and why: resignation, an election, or death.",
@@ -225,6 +225,26 @@ export const PAGE_GUIDES = {
     what: "Two calculators. One shows what is left of a salary after income tax and National Insurance, and where the tax goes. The other works out stamp duty on a home in England or Northern Ireland, band by band.",
     why: "Pay and house prices are where most people feel the tax system. Seeing the sums, with the rates they come from, makes it clear what the headline numbers mean for you.",
     notShown: "Student loans, other income, unusual tax codes or special stamp duty cases. Scotland's and Wales's property taxes are linked, not worked out. Your payslip and GOV.UK have the final word.",
+  },
+  lordsVotes: {
+    what: "How often each peer voted in the Lords over the last 12 months, how united each party was, and the votes where peers broke ranks or the government lost.",
+    why: "Peers can change and delay every law but nobody votes for them. Their votes show whether the second chamber is a rubber stamp, a brake or a rival.",
+    notShown: "Attendance beyond recorded votes, speeches, or peers' declared interests. Crossbenchers and bishops have no whip, so their independence is not counted as rebellion.",
+  },
+  councillors: {
+    what: "A search of every councillor in the UK, and a page for each one: their ward, party, who runs their council and who else represents their ward.",
+    why: "Councillors decide the services you use every day, but few people can name theirs. Finding out who they are is the first step to asking them for something.",
+    notShown: "Parish and town councillors, contact details, declared interests or voting records, none of which are published as open data. Party changes are spotted by comparing yearly lists.",
+  },
+  thisWeek: {
+    what: "A running list of what changed lately: votes held, bills that moved, money declared, petitions answered, conduct reports and by-elections.",
+    why: "Politics is a stream of small decisions. Seeing them in one place, with the date, helps you notice what matters before it is in the headlines.",
+    notShown: "Anything Parliament has not yet published, the reasons behind a decision, or speeches and debates. It follows the daily data refresh, so today's news can lag a day.",
+  },
+  myArea: {
+    what: "Your postcode, turned into your MP, constituency, council, ward councillors, next elections and a comparison of your region with the UK.",
+    why: "Politics is easier to care about when it is about your street. Everything that decides local life, from the bin collection to the law, is a few taps away.",
+    notShown: "Anything below ward level, parish councils, or street-level figures. Regional figures are for your whole region, not your town. Your postcode is kept only in your browser.",
   },
   funding: {
     what: "Who pays for this site, who does not, and the rules it keeps whatever the funding is, including a public log of any money received.",

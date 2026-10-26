@@ -85,6 +85,10 @@ export const LOADERS = {
   calculators: () => import("./components/Calculators"),
   funding: () => import("./components/Funding"),
   ageing: () => import("./components/Ageing"),
+  myArea: () => import("./components/MyArea"),
+  thisWeek: () => import("./components/ThisWeek"),
+  councillors: () => import("./components/Councillors"),
+  lordsVotes: () => import("./components/LordsVotes"),
 };
 
 const started = new Set();
