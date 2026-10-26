@@ -8,6 +8,8 @@ import { GlossaryTerm } from "./GlossaryTerm";
 import { IconByElection } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import Loading from "./Loading";
+import { GlanceCard, StackBar } from "./Glance";
+import { Stats } from "./insight";
 
 function daysAgo(dateStr) {
   if (!dateStr) return null;
@@ -73,6 +75,17 @@ export default function ByElections() {
     return { gains, holds };
   }, [completed]);
 
+  const winners = useMemo(() => {
+    const by = new Map();
+    for (const e of completed) {
+      if (!e.winning_party) continue;
+      const row = by.get(e.winning_party) ?? { label: e.winning_party, value: 0, colour: partyColour(e.winning_party_colour, "#8A93A6") };
+      row.value += 1;
+      by.set(e.winning_party, row);
+    }
+    return [...by.values()].sort((a, b) => b.value - a.value);
+  }, [completed]);
+
   return (
     <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
@@ -90,31 +103,23 @@ export default function ByElections() {
       />
 
       {elections !== null && (completed.length > 0 || vacantSeats.length > 0) && (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 24, marginBottom: 24 }}>
-          {vacantSeats.length > 0 && (
-            <div style={{ display: "flex", alignItems: "center", gap: 8, background: "#B0473E14", border: "1px solid #B0473E40", borderRadius: 10, padding: "9px 14px" }}>
-              <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#B0473E", flexShrink: 0 }} />
-              <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink }}>
-                <strong>{vacantSeats.length}</strong> <span style={{ color: COLORS.inkSoft }}>seat{vacantSeats.length === 1 ? "" : "s"} currently vacant</span>
-              </span>
+        <GlanceCard id="h-be-glance" title="By-elections at a glance" lead="Since the last general election. A seat counts as a gain when a different party wins it than held it before.">
+          <Stats
+            accent="#1E4FB8"
+            items={[
+              { value: String(completed.length), label: `by-election${completed.length === 1 ? "" : "s"} held` },
+              { value: String(stats.gains), label: `seat${stats.gains === 1 ? "" : "s"} changed hands`, accent: "#E0367A" },
+              { value: String(stats.holds), label: `seat${stats.holds === 1 ? "" : "s"} held by the same party`, accent: "#2F9E6B" },
+              ...(vacantSeats.length ? [{ value: String(vacantSeats.length), label: `seat${vacantSeats.length === 1 ? "" : "s"} vacant now`, accent: "#B0473E" }] : []),
+            ]}
+          />
+          {winners.length > 0 && (
+            <div style={{ marginTop: 22 }}>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink, marginBottom: 10 }}>Who won them</div>
+              <StackBar items={winners} label={`By-election winners: ${winners.map((w) => `${w.label} ${w.value}`).join(", ")}`} />
             </div>
           )}
-          <div style={{ display: "flex", alignItems: "center", gap: 8, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 10, padding: "9px 14px" }}>
-            <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink }}>
-              <strong>{completed.length}</strong> <span style={{ color: COLORS.inkSoft }}>by-election{completed.length === 1 ? "" : "s"} since the last general election</span>
-            </span>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 10, padding: "9px 14px" }}>
-            <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink }}>
-              <strong>{stats.gains}</strong> <span style={{ color: COLORS.inkSoft }}>seat{stats.gains === 1 ? "" : "s"} changed hands (Gain)</span>
-            </span>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 10, padding: "9px 14px" }}>
-            <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink }}>
-              <strong>{stats.holds}</strong> <span style={{ color: COLORS.inkSoft }}>seat{stats.holds === 1 ? "" : "s"} held by the same party</span>
-            </span>
-          </div>
-        </div>
+        </GlanceCard>
       )}
 
       {elections === null && <Loading />}

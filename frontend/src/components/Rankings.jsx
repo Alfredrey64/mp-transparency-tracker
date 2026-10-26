@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { fetchAllRows } from "../lib/supabasePagination";
+import { LoadFailedNote } from "./MpCards";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING, readable, chip } from "../theme";
 import { PageHeader } from "./shared";
 import WhatThisMeans, { Everyday } from "./WhatThisMeans";
@@ -340,6 +341,7 @@ function PartyStrip({ entries }) {
 
 export default function Rankings({ onSelectPolitician, onNavigate }) {
   const [politicians, setPoliticians] = useState(null);
+  const [failed, setFailed] = useState(false);
   const [votingRows, setVotingRows] = useState(null);
   const [interestRows, setInterestRows] = useState(null);
   const [category, setCategory] = useState("expenses");
@@ -362,7 +364,7 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
       setVotingRows(v);
       setInterestRows(i);
     }
-    load();
+    load().catch(() => setFailed(true));
   }, []);
 
   const politicianById = useMemo(() => new Map((politicians ?? []).map((p) => [p.id, p])), [politicians]);
@@ -505,7 +507,7 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
   );
 
   const active = CATEGORIES.find((c) => c.key === category);
-  const loading = active.data === null;
+  const loading = active.data === null && !failed;
 
   const filtered = useMemo(() => {
     if (!active.data) return [];
@@ -630,7 +632,8 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
       )}
 
       {loading && <Loading compact />}
-      {!loading && filtered.length === 0 && (
+      {failed && active.data === null && <LoadFailedNote item="the rankings" />}
+      {!loading && !failed && filtered.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No matches.</div>
       )}
 

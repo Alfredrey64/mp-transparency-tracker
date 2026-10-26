@@ -6,6 +6,8 @@ import { COLORS, FONT_BODY, FONT_DISPLAY } from "../theme";
 export const card = {
   background: COLORS.paperCard,
   border: `1px solid ${COLORS.hairline}`,
+  // A line in the page's own colour along the top, so every page has its colour all the way down and not only in its band.
+  borderTop: "3px solid color-mix(in srgb, var(--page-accent, var(--c-brand)) 60%, var(--c-hairline))",
   borderRadius: 14,
   padding: "clamp(18px, 4.5vw, 28px)",
   boxShadow: "var(--shadow-1)",

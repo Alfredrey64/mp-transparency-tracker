@@ -249,6 +249,13 @@
 }
 .page-hero::after { content: ""; position: absolute; left: -100vmax; right: -100vmax; bottom: 0; height: 4px; background: var(--hero-accent, var(--c-brand)); }
 .page-hero-inner { max-width: 760px; }
+/* The band takes on its page's colour: two soft glows of it, one top right and one bottom left, reaching the full width of the screen. */
+.page-hero-inner::before {
+  content: ""; position: absolute; z-index: -1; left: -100vmax; right: -100vmax; top: 0; bottom: 0; pointer-events: none;
+  background:
+    radial-gradient(620px 300px at calc(50% + 26vw) 0, color-mix(in srgb, var(--hero-accent, var(--c-brand)) 42%, transparent), transparent 72%),
+    radial-gradient(520px 260px at calc(50% - 30vw) 100%, color-mix(in srgb, var(--hero-accent, var(--c-brand)) 24%, transparent), transparent 72%);
+}
 .page-hero[data-align="center"] .page-hero-inner { margin: 0 auto; text-align: center; }
 .crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 14px; font-size: 14px; line-height: 1.3; color: var(--c-on-navy-soft); }
 .crumbs a { color: var(--c-on-navy-soft); text-decoration: none; }
@@ -339,12 +346,12 @@
 .home-features { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
 .feature-card {
   display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 22px; text-align: left; cursor: pointer; border-radius: var(--radius-m);
-  background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--f, var(--c-brand)) 13%, var(--c-paper-card)), var(--c-paper-card) 62%); border: 1px solid color-mix(in srgb, var(--f, var(--c-brand)) 26%, var(--c-hairline)); box-shadow: var(--shadow-1);
   transition: transform 0.22s var(--ease-out), box-shadow 0.22s var(--ease-out), border-color 0.22s var(--ease-out);
 }
 .feature-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-2); border-color: var(--f, var(--c-brand)); }
 .feature-card:active { transform: translateY(-1px) scale(0.99); }
-.feature-icon { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 12px; margin-bottom: 6px; background: color-mix(in srgb, var(--f) 14%, var(--c-paper-card)); color: color-mix(in srgb, var(--f) 70%, var(--c-ink)); transition: background-color 0.22s var(--ease-out), color 0.22s var(--ease-out); }
+.feature-icon { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 12px; margin-bottom: 6px; background: color-mix(in srgb, var(--f) 22%, var(--c-paper-card)); color: color-mix(in srgb, var(--f) 70%, var(--c-ink)); transition: background-color 0.22s var(--ease-out), color 0.22s var(--ease-out); }
 .feature-card:hover .feature-icon { background: var(--f); color: #fff; }
 .feature-title { font: 700 20px/1.2 "Newsreader", Georgia, serif; letter-spacing: -0.01em; color: var(--c-ink); }
 .feature-line { font-size: 15px; line-height: 1.5; color: var(--c-ink-soft); }
@@ -548,3 +555,41 @@ body:has(.tier-mini) .to-top { display: none; }
   .chip-grid > button { width: 100%; min-height: 40px; }
   .chip-grid > :last-child:nth-child(odd) { grid-column: 1 / -1; }
 }
+
+/* ---- Party promise cards ------------------------------------------------------------------------------------------------------------------------ */
+.party-card { display: flex; flex-direction: column; overflow: hidden; cursor: pointer; border: 1px solid var(--c-hairline); border-radius: 18px; background: var(--c-paper-card); box-shadow: var(--shadow-1); transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out); }
+.party-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-3); }
+.party-band { display: flex; align-items: center; gap: 14px; padding: 18px 20px; }
+.party-band[data-large="1"] { margin: 0 calc(-1 * clamp(18px, 4vw, 30px)) 0; padding: 24px clamp(18px, 4vw, 30px) 22px; padding-right: 64px; }
+.party-ring { position: relative; flex: none; width: 68px; height: 68px; }
+.party-ring-num { position: absolute; inset: 0; display: grid; place-items: center; font: 600 20px/1 "Public Sans", system-ui, sans-serif; font-variant-numeric: lining-nums tabular-nums; }
+.party-card-body { display: flex; flex-direction: column; flex: 1; padding: 20px 20px 20px; background: linear-gradient(180deg, color-mix(in srgb, var(--p) 8%, var(--c-paper-card)), var(--c-paper-card) 55%); }
+.party-card-cta { margin-top: 18px; min-height: 46px; border: none; border-radius: 12px; font: 700 15px/1 "Public Sans", system-ui, sans-serif; cursor: pointer; transition: filter 0.2s, transform 0.2s var(--ease-out); }
+.party-card-cta:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.ring-draw { transition: none; }
+.rv-in .ring-draw, .rv-now .ring-draw { animation: ring-sweep 1.2s var(--ease-out) 0.2s backwards; }
+@keyframes ring-sweep { from { stroke-dashoffset: 1; } }
+@media (prefers-reduced-motion: reduce) { .ring-draw { animation: none !important; } }
+
+/* ---- Colour that runs down the page ------------------------------------------------------------------------------------------------------------ */
+/* A soft wash of the page's colour just under the band, fading out over the first screen or two, so a page is not a single flat ground. */
+.mp-app-shell > div:has(> main) { position: relative; isolation: isolate; }
+.mp-app-shell > div:has(> main)::before {
+  content: ""; position: absolute; z-index: -1; left: 0; right: 0; top: 0; height: 900px; pointer-events: none;
+  background:
+    radial-gradient(1000px 520px at 10% 0, color-mix(in srgb, var(--page-accent, transparent) 22%, transparent), transparent 72%),
+    radial-gradient(900px 460px at 94% 160px, color-mix(in srgb, var(--page-accent, transparent) 15%, transparent), transparent 72%);
+}
+@media print { .mp-app-shell > div:has(> main)::before { display: none; } }
+
+.stat-tile { transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out); }
+.stat-tile:hover { transform: translateY(-3px); box-shadow: 0 10px 24px -14px color-mix(in srgb, var(--t) 60%, transparent); }
+@media (hover: none) { .stat-tile:hover { transform: none; box-shadow: none; } }
+
+.col-grow { transform-origin: bottom center; }
+.rv-in .col-grow, .rv-now .col-grow { animation: col-rise 0.8s var(--ease-out) both; animation-delay: var(--rv-d, 0ms); }
+@keyframes col-rise { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@media (prefers-reduced-motion: reduce) { .col-grow { animation: none !important; } }
+
+.rv-in .member-dot, .rv-now .member-dot { animation: lm-pop 0.45s var(--ease-spring) var(--d, 0ms) backwards; }
+@media (prefers-reduced-motion: reduce) { .member-dot { animation: none !important; } }

@@ -13,6 +13,7 @@ import { IconInfluence } from "./icons";
 import { CompanyDonorsView } from "./CompanyDonorsView";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { fetchAllRows } from "../lib/supabasePagination";
+import { LoadFailedNote } from "./MpCards";
 
 const UNTAGGED_COLOR = COLORS.inkSoft;
 const UNTAGGED_LABEL = "Untagged / individual donors";
@@ -25,6 +26,7 @@ const NOT_A_REAL_DONOR = /^(agreement( starting.*)?|payment received.*|undisclos
 
 export default function DonorsLobbying() {
   const [rows, setRows] = useState(null);
+  const [failed, setFailed] = useState(false);
   const [expandedSectors, setExpandedSectors] = useState(() => new Set());
   const [expandedDonor, setExpandedDonor] = useState(null);
   const [view, setView] = useState("byDonor");
@@ -50,7 +52,7 @@ export default function DonorsLobbying() {
       );
       setRows(data);
     }
-    load();
+    load().catch(() => setFailed(true));
   }, []);
 
   const stats = useMemo(() => {
@@ -140,7 +142,8 @@ export default function DonorsLobbying() {
   if (!stats) {
     return (
       <div className="editorial" style={{ padding: PAGE_PADDING }}>
-        <PageHeader icon={IconInfluence} title="Who funds MPs" subtitle="Loading…" />
+        <PageHeader icon={IconInfluence} title="Who funds MPs" subtitle={failed ? "The figures could not be loaded." : "Loading…"} />
+        {failed && <LoadFailedNote item="the donation figures" />}
       </div>
     );
   }

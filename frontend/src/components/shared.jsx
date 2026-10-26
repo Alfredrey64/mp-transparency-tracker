@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useLayoutEffect } from "react";
 import PageGuide from "./PageGuide";
 import { GuideKeyContext } from "../lib/viewContext";
 import ShareButton from "./ShareButton";
@@ -187,6 +187,16 @@ export function ScaleComparison({ bars, maxWidth = 900 }) {
 
 // share: a function returning what goes on the page's share card (see lib/shareSpecs.js); leave it out for a plain card of the
 // title and subtitle, or pass false on a page that has its own Share button.
+// Tells the rest of the page which colour it belongs to (its menu group's), so the soft wash under the band and the thin line on top of each card
+// can pick it up. Set on the page shell and removed again when the page changes.
+function usePageAccent(accent) {
+  useLayoutEffect(() => {
+    const shell = document.querySelector(".mp-app-shell");
+    shell?.style.setProperty("--page-accent", accent);
+    return () => shell?.style.removeProperty("--page-accent");
+  }, [accent]);
+}
+
 export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = "left", size = "lg", icon: Icon, share }) {
   const isHero = size === "xl";
   // The page's "What you're looking at" box sits under every header.
@@ -195,6 +205,7 @@ export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = 
   // data/sidebarSections.js) with nothing passed down through the 60-odd page files. Pages outside any group keep the plain site accent.
   const accent = SECTION_ACCENT_BY_ICON.get(Icon) ?? COLORS.accent;
   const kickerText = SECTION_LABEL_BY_KEY.get(guideKey) ?? kicker;
+  usePageAccent(accent);
   return (
     <>
       <div className="page-hero" data-align={align} style={{ "--hero-accent": accent }}>
@@ -228,6 +239,7 @@ export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = 
 // The navy band at the top of a page, for pages that build their own heading (a council search, a constituency, an MP's profile).
 // `crumbs` is the trail after "Home"; the children sit under the title.
 export function HeroBand({ crumbs, accent, children, wide = false, maxWidth }) {
+  usePageAccent(accent ?? COLORS.accent);
   return (
     <div className="page-hero" style={{ "--hero-accent": accent ?? COLORS.accent }}>
       <div className={`page-hero-inner${wide ? " wide" : ""}`} style={maxWidth ? { maxWidth, margin: "0 auto" } : undefined}>

@@ -18,9 +18,9 @@ export default defineConfig({
       // Two pages: the site itself, and the chrome-free card that other sites embed in an iframe (see src/embed.jsx).
       input: { main: resolve(import.meta.dirname, 'index.html'), embed: resolve(import.meta.dirname, 'embed.html') },
       output: {
-        // Every page already lazy-loads on its own, but React, Framer
-        // Motion and the Supabase client were all landing in that same
-        // eagerly-loaded entry chunk regardless — three large libraries
+        // Every page already lazy-loads on its own, but React and Framer
+        // Motion were both landing in that same
+        // eagerly-loaded entry chunk regardless — two large libraries
         // that change far less often than this app's own code does.
         // Splitting them into their own chunks means a browser that's
         // already cached them from a previous visit only has to
@@ -30,7 +30,6 @@ export default defineConfig({
           if (!id.includes("node_modules")) return undefined;
           if (id.includes("react-dom") || id.includes("/react/") || id.includes("scheduler")) return "vendor-react";
           if (id.includes("framer-motion") || id.includes("motion-dom") || id.includes("motion-utils")) return "vendor-motion";
-          if (id.includes("@supabase")) return "vendor-supabase";
           return undefined;
         },
       },

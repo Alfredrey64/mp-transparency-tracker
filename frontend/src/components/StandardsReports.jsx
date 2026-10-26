@@ -8,6 +8,7 @@ import { formatDate, partyColour } from "../lib/format";
 import { IconGavel, IconSearch } from "./icons";
 import STANDARDS_REPORT_DETAILS from "../data/standardsReportDetails.json";
 import Loading from "./Loading";
+import { GlanceCard, YearColumns } from "./Glance";
 
 function classifyOutcome(detail) {
   if (!detail) return null;
@@ -234,6 +235,15 @@ export default function StandardsReports({ onSelectPolitician }) {
     return { total: reports.length, suspended, resigned };
   }, [reports]);
 
+  const byYear = useMemo(() => {
+    const counts = new Map();
+    for (const r of reports ?? []) {
+      const year = (r.publication_date ?? "").slice(0, 4);
+      if (year) counts.set(year, (counts.get(year) ?? 0) + 1);
+    }
+    return [...counts.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([year, value]) => ({ year, parts: [{ label: "Reports", value, colour: "#B5533C" }] }));
+  }, [reports]);
+
   const filtered = useMemo(() => {
     if (!reports) return [];
     const q = query.trim().toLowerCase();
@@ -269,6 +279,12 @@ export default function StandardsReports({ onSelectPolitician }) {
           <StatCard value={stats.suspended} label="Ended in suspension" color="#B5533C" index={1} />
           <StatCard value={stats.resigned} label="Resigned or recalled" color="#9C3B3B" index={2} />
         </div>
+      )}
+
+      {byYear.length > 1 && (
+        <GlanceCard id="h-sr-glance" title="Reports by year" lead="How many reports the committee published about a named MP in each year." style={{ marginTop: 0, marginBottom: 20 }}>
+          <YearColumns years={byYear} label="Number of standards reports published each year" />
+        </GlanceCard>
       )}
 
       <div

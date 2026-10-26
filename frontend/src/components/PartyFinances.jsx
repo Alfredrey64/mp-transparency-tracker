@@ -9,6 +9,7 @@ import { getPartyDonorSector, sectorColor, partyDonorSectorMetadata } from "../l
 import { getDonorProfile, publicFundDescription } from "../lib/donorProfiles";
 import { normaliseIndividualDonorName, donorGroupingKey, preferDisplayName } from "../lib/donorNames";
 import { fetchAllRows } from "../lib/supabasePagination";
+import { LoadFailedNote } from "./MpCards";
 import { PageHeader } from "./shared";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { IconPartyFinance } from "./icons";
@@ -44,6 +45,7 @@ const NEUTRAL_TAG_COLOR = "#8A94A3";
 
 export default function PartyFinances() {
   const [rows, setRows] = useState(null);
+  const [failed, setFailed] = useState(false);
   const [expandedParty, setExpandedParty] = useState(null);
 
   useEffect(() => {
@@ -58,7 +60,7 @@ export default function PartyFinances() {
       );
       setRows(data);
     }
-    load();
+    load().catch(() => setFailed(true));
   }, []);
 
   const stats = useMemo(() => {
@@ -122,7 +124,8 @@ export default function PartyFinances() {
   if (!stats) {
     return (
       <div className="editorial" style={{ padding: PAGE_PADDING }}>
-        <PageHeader icon={IconPartyFinance} title="Who funds the parties" subtitle="Loading…" />
+        <PageHeader icon={IconPartyFinance} title="Who funds the parties" subtitle={failed ? "The figures could not be loaded." : "Loading…"} />
+        {failed && <LoadFailedNote item="the party donation figures" />}
       </div>
     );
   }

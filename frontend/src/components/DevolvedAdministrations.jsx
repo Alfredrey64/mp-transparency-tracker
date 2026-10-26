@@ -8,6 +8,7 @@ import { withScrollPreserved } from "../lib/preserveScroll";
 import { partyColourByName } from "../lib/careerTimeline";
 import { initials } from "../lib/format";
 import LEADER_PORTRAITS from "../data/devolvedLeaders.json";
+import { card } from "../lib/onsStyles";
 
 const ADMINISTRATIONS = [
   {
@@ -96,6 +97,42 @@ function Leader({ holder }) {
   );
 }
 
+// The three legislatures side by side: one dot for each member, so the sizes can be compared at a glance. The numbers are read from each entry's own
+// description, so the picture and the text cannot drift apart.
+function Legislatures() {
+  const rows = ADMINISTRATIONS.map((a) => ({
+    key: a.name,
+    short: a.name.startsWith("Scottish") ? "Scotland" : a.name.startsWith("Senedd") ? "Wales" : "Northern Ireland",
+    accent: a.accent,
+    members: Number(/^\d+/.exec(a.members)?.[0] ?? 0),
+    since: /\b(19\d\d|20\d\d)\b/.exec(a.established)?.[1],
+  }));
+  return (
+    <section aria-labelledby="h-dv-size" style={{ ...card, marginTop: 24 }}>
+      <h2 id="h-dv-size" style={{ fontFamily: FONT_DISPLAY, fontSize: 21, fontWeight: 700, color: COLORS.ink, margin: 0 }}>The three legislatures, member by member</h2>
+      <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "6px 0 0", maxWidth: 640 }}>
+        One dot for each person elected. For scale, the House of Commons at Westminster has 650 MPs.
+      </p>
+      <div className="box-row" style={{ "--n": 3, "--min": "200px", "--gap": "14px", marginTop: 18 }}>
+        {rows.map((r) => (
+          <figure key={r.key} aria-label={`${r.short}: ${r.members} members`} style={{ margin: 0, padding: "16px 16px 14px", borderRadius: 14, background: `color-mix(in srgb, ${r.accent} 8%, ${COLORS.paperCard})`, border: `1px solid color-mix(in srgb, ${r.accent} 30%, ${COLORS.hairline})` }}>
+            <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
+              <span style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 700, color: COLORS.ink }}>{r.short}</span>
+              <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>since {r.since}</span>
+            </div>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 34, fontWeight: 600, letterSpacing: "-0.02em", color: COLORS.ink, lineHeight: 1.1, margin: "4px 0 10px", fontVariantNumeric: "tabular-nums" }}>{r.members}</div>
+            <div aria-hidden="true" style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+              {Array.from({ length: r.members }, (_, i) => (
+                <span key={i} className="member-dot" style={{ width: 9, height: 9, borderRadius: "50%", background: r.accent, "--d": `${Math.min(i * 9, 900)}ms` }} />
+              ))}
+            </div>
+          </figure>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export default function DevolvedAdministrations() {
   const [openIndex, setOpenIndex] = useState(null);
 
@@ -114,6 +151,8 @@ export default function DevolvedAdministrations() {
           </>
         }
       />
+
+      <Legislatures />
 
       <div style={{ marginTop: 24, display: "flex", flexDirection: "column", gap: 18 }}>
         {ADMINISTRATIONS.map((a, i) => {

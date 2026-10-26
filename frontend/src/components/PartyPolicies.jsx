@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING, readable } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING, readable, chip } from "../theme";
 import { partyColour } from "../lib/format";
 import { isTrackedParty, findManifesto } from "../data/partyManifestos";
 import { PageHeader } from "./shared";
@@ -13,6 +13,7 @@ import { pillStyle } from "../lib/onsStyles";
 import Loading from "./Loading";
 import { partyWash, partyOutline } from "../lib/partyShade";
 import { useDialog } from "../lib/useDialog";
+import CountValue from "./CountValue";
 
 // The party-colour dot is the only element that shares a layoutId between
 // the grid card and the modal — like the CommonsBadge morph elsewhere in
@@ -106,55 +107,43 @@ export default function PartyPolicies({ param }) {
           </div>
         ) : (
           <>
-            <SeatBar parties={parties} onPick={openParty} />
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(min(260px, 100%), 1fr))",
-                gap: 18,
-                marginTop: 14,
-              }}
-            >
+            <div className="box-row" style={{ "--n": 3, "--min": "290px", "--gap": "20px", marginTop: 22 }}>
               {parties.map((party) => {
                 const manifesto = findManifesto(party.name);
+                const shown = manifesto ? manifesto.highlights.slice(0, 3) : [];
+                const more = manifesto ? manifesto.highlights.length - shown.length : 0;
                 return (
-                  <motion.div
+                  <motion.article
                     key={party.name}
+                    className="party-card glow"
                     onClick={(e) => openParty(party.name, e.currentTarget)}
-                    whileHover={{ y: -3 }}
-                    transition={{ duration: 0.15 }}
-                    style={{
-                      cursor: "pointer",
-                      borderRadius: 18,
-                      background: `${partyWash(party.color)}, ${COLORS.paperCard}`,
-                      border: partyOutline(party.color),
-                      borderTop: `5px solid ${party.color}`,
-                      padding: "20px 20px 18px",
-                    }}
+                    style={{ "--p": party.color, borderColor: `color-mix(in srgb, ${party.color} 40%, ${COLORS.hairline})` }}
                   >
-                    <PartyCardHeader party={party} manifesto={manifesto} dotLayoutId={`party-dot-${party.name}`} />
-                    {manifesto ? (
-                      <ul style={{ margin: "16px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
-                        {manifesto.highlights.slice(0, 4).map((h, i) => (
-                          <BulletLine key={i} color={party.color}>{h}</BulletLine>
-                        ))}
-                      </ul>
-                    ) : (
-                      <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 16, lineHeight: 1.6 }}>
-                        No manifesto summary published for this party yet.
-                      </div>
-                    )}
-                    <button
-                      type="button"
-                      onClick={(e) => { e.stopPropagation(); openParty(party.name, e.currentTarget); }}
-                      style={{
-                        display: "inline-flex", alignItems: "center", gap: 5, fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700,
-                        color: COLORS.ink, marginTop: 18, padding: "6px 14px", borderRadius: 999, background: `${party.color}1a`, border: `1px solid ${party.color}`, cursor: "pointer",
-                      }}
-                    >
-                      {manifesto ? "View full details" : "Search official sources"}
-                    </button>
-                  </motion.div>
+                    <PartyBand party={party} manifesto={manifesto} dotLayoutId={`party-dot-${party.name}`} />
+                    <div className="party-card-body">
+                      {manifesto ? (
+                        <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 12 }}>
+                          {shown.map((h, i) => (
+                            <BulletLine key={i} color={party.color}>{h}</BulletLine>
+                          ))}
+                        </ul>
+                      ) : (
+                        <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.6 }}>
+                          No manifesto summary published for this party yet.
+                        </div>
+                      )}
+                      <div style={{ flex: 1 }} />
+                      {more > 0 && <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: COLORS.inkSoft, margin: "16px 0 0" }}>and {more} more headline {more === 1 ? "promise" : "promises"}</div>}
+                      <button
+                        type="button"
+                        className="party-card-cta"
+                        onClick={(e) => { e.stopPropagation(); openParty(party.name, e.currentTarget); }}
+                        style={{ ...chip(party.color) }}
+                      >
+                        {manifesto ? "View full details" : "Search official sources"}
+                      </button>
+                    </div>
+                  </motion.article>
                 );
               })}
             </div>
@@ -207,9 +196,8 @@ export default function PartyPolicies({ param }) {
                   borderRadius: 18,
                   background: `${partyWash(expanded.color, 0.8)}, ${COLORS.paperCard}`,
                   border: partyOutline(expanded.color),
-                  borderTop: `5px solid ${expanded.color}`,
                   boxShadow: "0 20px 60px rgba(10,16,18,0.35)",
-                  padding: "28px 30px 32px",
+                  padding: "0 clamp(18px, 4vw, 30px) 30px",
                 }}
               >
                 <button
@@ -218,17 +206,17 @@ export default function PartyPolicies({ param }) {
                   onClick={() => setExpandedName(null)}
                   aria-label="Close"
                   style={{
-                    position: "absolute", top: 18, right: 18, width: 30, height: 30, borderRadius: "50%",
+                    position: "absolute", top: 14, right: 14, zIndex: 2, width: 34, height: 34, borderRadius: "50%",
                     border: `1px solid ${COLORS.hairline}`, background: COLORS.paperCard, color: COLORS.inkSoft,
                     cursor: "pointer", fontSize: 15, lineHeight: "28px", textAlign: "center", padding: 0,
                   }}
                 >
                   ✕
                 </button>
-                <PartyCardHeader party={expanded} manifesto={expandedManifesto} dotLayoutId={`party-dot-${expanded.name}`} large />
+                <PartyBand party={expanded} manifesto={expandedManifesto} dotLayoutId={`party-dot-${expanded.name}`} large />
                 {expandedManifesto ? (
                   <>
-                    <ul style={{ margin: "22px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 11 }}>
+                    <ul style={{ margin: "24px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 11 }}>
                       {expandedManifesto.highlights.map((h, i) => (
                         <BulletLine key={i} color={expanded.color}>{h}</BulletLine>
                       ))}
@@ -293,22 +281,30 @@ export default function PartyPolicies({ param }) {
   );
 }
 
-function PartyCardHeader({ party, manifesto, dotLayoutId, large }) {
+// The coloured top of a party's card: its name and manifesto, and a ring showing its share of the 650 seats (the number in the middle counts up).
+const SEATS = 650;
+const RING_R = 27;
+
+function PartyBand({ party, manifesto, dotLayoutId, large }) {
+  const { background, color } = chip(party.color);
+  const share = Math.min(1, party.seats / SEATS);
   return (
-    <div>
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <PartyDot layoutId={dotLayoutId} color={party.color} size={large ? 14 : 10} />
-        <div id={large ? "party-dialog-title" : undefined} style={{ fontFamily: FONT_DISPLAY, fontSize: large ? 27 : 19, fontWeight: 500, color: COLORS.ink, lineHeight: 1.2 }}>
+    <div className="party-band" data-large={large ? "1" : "0"} style={{ background, color }}>
+      <div style={{ minWidth: 0, flex: 1 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+          <PartyDot layoutId={dotLayoutId} color={color} size={large ? 12 : 10} />
+          <span style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, letterSpacing: "0.02em", opacity: 0.88 }}>{manifesto ? `${manifesto.manifestoYear} manifesto: "${manifesto.manifestoTitle}"` : "Party"}</span>
+        </div>
+        <div id={large ? "party-dialog-title" : undefined} style={{ fontFamily: FONT_DISPLAY, fontSize: large ? 30 : 25, fontWeight: 600, lineHeight: 1.15, marginTop: 6, letterSpacing: "-0.01em" }}>
           {manifesto?.shortName ?? party.name}
         </div>
       </div>
-      <div
-        style={{
-          display: "inline-block", fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 600, color: COLORS.inkSoft,
-          marginTop: 8, padding: "3px 10px", borderRadius: 999, background: COLORS.paper,
-        }}
-      >
-        {party.seats} {party.seats === 1 ? "seat" : "seats"} in the Commons
+      <div className="party-ring" role="img" aria-label={`${party.seats} of the 650 seats in the Commons`}>
+        <svg width="68" height="68" viewBox="0 0 68 68" aria-hidden="true">
+          <circle cx="34" cy="34" r={RING_R} fill="none" stroke="currentColor" strokeOpacity="0.25" strokeWidth="6" />
+          <circle className="ring-draw" cx="34" cy="34" r={RING_R} fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" pathLength="1" strokeDasharray="1 1" strokeDashoffset={1 - Math.max(share, 0.012)} transform="rotate(-90 34 34)" />
+        </svg>
+        <span className="party-ring-num"><CountValue>{String(party.seats)}</CountValue></span>
       </div>
     </div>
   );
@@ -323,32 +319,5 @@ function BulletLine({ children, small, color = COLORS.accent }) {
       </svg>
       <span style={{ fontFamily: FONT_BODY, fontSize: small ? 13.5 : 14.5, color: COLORS.ink, lineHeight: 1.6 }}>{children}</span>
     </li>
-  );
-}
-
-// How the Commons divides between the parties below, as one bar. The bar itself is a picture (the figures are in the list under it, which
-// is what a screen reader reads); each party in the list is a button that opens that party.
-function SeatBar({ parties, onPick }) {
-  const total = parties.reduce((n, p) => n + p.seats, 0);
-  if (!total) return null;
-  return (
-    <div style={{ margin: "18px 0 6px" }}>
-      <div id="seat-bar-title" style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.inkSoft, marginBottom: 6 }}>Seats in the Commons</div>
-      <div aria-hidden="true" style={{ display: "flex", gap: 2, height: 14, borderRadius: 7, overflow: "hidden" }}>
-        {parties.map((p) => (
-          <span key={p.name} title={`${findManifesto(p.name)?.shortName ?? p.name}: ${p.seats} seats`} style={{ flex: `${p.seats} 1 0`, minWidth: 3, background: p.color }} />
-        ))}
-      </div>
-      <ul aria-labelledby="seat-bar-title" style={{ listStyle: "none", margin: "8px 0 0", padding: 0, display: "flex", flexWrap: "wrap", gap: "4px 14px", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
-        {parties.map((p) => (
-          <li key={p.name}>
-            <button type="button" onClick={(e) => onPick(p.name, e.currentTarget)} aria-label={`${findManifesto(p.name)?.shortName ?? p.name}, ${p.seats} seats. Open its promises`} style={{ display: "inline-flex", alignItems: "center", gap: 5, whiteSpace: "nowrap", background: "none", border: "none", padding: "2px 0", cursor: "pointer", font: "inherit", color: "inherit" }}>
-              <span aria-hidden="true" style={{ width: 9, height: 9, borderRadius: "50%", background: p.color }} />
-              {findManifesto(p.name)?.shortName ?? p.name} <strong style={{ color: COLORS.ink }}>{p.seats}</strong>
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
   );
 }

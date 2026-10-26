@@ -19,6 +19,9 @@ const FETCH_LIMIT = 1000;
 const fmt = (n) => n.toLocaleString("en-GB");
 const pct0 = (n) => `${Math.round(n)}%`;
 
+// What a visitor types goes into a filter string where commas, brackets and quotes mean something, so they are swapped for spaces first.
+const orSafe = (text) => String(text).replace(/[,()"\\*%]/g, " ").trim();
+
 const SELECT =
   "id, uin, house, heading, date_tabled, date_answered, question_text, answering_body_name, " +
   "asking_member_id, asking_member_name, asking_member_party, asking_member_party_colour, asking_member_thumbnail_url, politician_id";
@@ -137,7 +140,7 @@ export default function AskedAbout({ onSelectPolitician, onNavigateForMp, initia
       const { data, error, count } = await supabase
         .from("written_questions")
         .select(SELECT, { count: "exact" })
-        .or(`question_text.ilike.*${query}*,heading.ilike.*${query}*`)
+        .or(`question_text.ilike.*${orSafe(query)}*,heading.ilike.*${orSafe(query)}*`)
         .order("date_tabled", { ascending: false })
         .range(0, FETCH_LIMIT - 1);
       if (id !== requestId.current) return;

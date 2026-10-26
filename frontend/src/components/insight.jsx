@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { COLORS, FONT_BODY, FONT_DISPLAY, numeric } from "../theme";
+import { COLORS, FONT_BODY, FONT_DISPLAY, numeric, readable } from "../theme";
 import { pillStyle } from "../lib/onsStyles";
 import { card, cardTitle } from "../lib/onsStyles";
 import { bandsBetween, PARTY_COLOURS } from "../lib/governments";
@@ -81,18 +81,27 @@ function Spark({ values, colour }) {
 }
 
 // Headline figures. Up to three in a row on a wide screen, two on a phone, never a lone box. An item can carry `spark`, a list of values over time.
+// Tile colours for a row of figures that do not name their own: the page's colour first, then partners for it that sit well beside it.
+const TILE_COLOURS = ["#1E4FB8", "#0E9AA7", "#7A5AF0", "#E0367A", "#C7871A", "#2F9E6B"];
+
 export function Stats({ items, accent }) {
   return (
-    <div className="box-row" style={{ "--n": items.length <= 4 ? Math.max(items.length, 1) : 3, "--min": "150px", "--gap": "10px" }}>
-      {items.map((s) => (
-        <div key={s.label} style={{ position: "relative", overflow: "hidden", padding: "16px 18px 16px 20px", borderRadius: 12, background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, minWidth: 0 }}>
-          <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 4, background: s.accent ?? accent }} />
-          <div style={{ ...numeric, fontSize: "clamp(24px, 5vw, 32px)", fontWeight: 600, lineHeight: 1.05, letterSpacing: "-0.02em", color: COLORS.ink }}><CountValue>{s.value}</CountValue></div>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink, marginTop: 6, lineHeight: 1.35 }}>{s.label}</div>
-          {s.note && <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 3, lineHeight: 1.4 }}>{s.note}</div>}
-          {s.spark && <Spark values={s.spark} colour={s.accent ?? accent} />}
-        </div>
-      ))}
+    <div className="box-row" style={{ "--n": items.length <= 4 ? Math.max(items.length, 1) : 3, "--min": "150px", "--gap": "12px" }}>
+      {items.map((s, i) => {
+        const c = s.accent ?? (i === 0 ? accent : TILE_COLOURS[(i + 1) % TILE_COLOURS.length]);
+        return (
+          <div
+            key={s.label} className="stat-tile"
+            style={{ "--t": c, position: "relative", overflow: "hidden", padding: "18px 18px 16px 20px", borderRadius: 14, background: `color-mix(in srgb, ${c} 9%, ${COLORS.paperCard})`, border: `1px solid color-mix(in srgb, ${c} 30%, ${COLORS.hairline})`, minWidth: 0 }}
+          >
+            <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: c }} />
+            <div style={{ ...numeric, fontSize: "clamp(26px, 5vw, 34px)", fontWeight: 600, lineHeight: 1.05, letterSpacing: "-0.02em", color: readable(c) }}><CountValue>{s.value}</CountValue></div>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.ink, marginTop: 6, lineHeight: 1.35 }}>{s.label}</div>
+            {s.note && <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 3, lineHeight: 1.4 }}>{s.note}</div>}
+            {s.spark && <Spark values={s.spark} colour={c} />}
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -100,7 +109,7 @@ export function Stats({ items, accent }) {
 // "The short version": a few plain sentences that sum up a page, set apart from the cards.
 export function Takeaways({ title = "The short version", items, accent }) {
   return (
-    <aside aria-label={title} style={{ position: "relative", overflow: "hidden", marginTop: 20, padding: "20px 24px 18px 28px", borderRadius: 14, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, boxShadow: "var(--shadow-1)" }}>
+    <aside aria-label={title} style={{ position: "relative", overflow: "hidden", marginTop: 20, padding: "20px 24px 18px 28px", borderRadius: 14, background: `color-mix(in srgb, ${accent} 7%, ${COLORS.paperCard})`, border: `1px solid color-mix(in srgb, ${accent} 26%, ${COLORS.hairline})`, boxShadow: "var(--shadow-1)" }}>
       <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: accent }} />
       <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 17, fontWeight: 700, color: COLORS.ink, margin: 0 }}>{title}</h2>
       <ul style={{ margin: "8px 0 0", padding: 0, listStyle: "none", display: "grid", gap: 8 }}>

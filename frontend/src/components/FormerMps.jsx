@@ -8,12 +8,17 @@ import { LoadFailedNote } from "./MpCards";
 import { IconFormerMP } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import Loading from "./Loading";
+import { GlanceCard, YearColumns } from "./Glance";
+import { Stats } from "./insight";
 
 const REASON_COLOR = {
   "Resigned": "#B08A2E",
   "Did not return at the next election": COLORS.inkSoft,
   "Death": "#6B5B95",
 };
+// Hex versions of the same colours, for the chart (which mixes and checks them).
+const REASON_HEX = { "Resigned": "#C7871A", "Did not return at the next election": "#5B77B8", "Death": "#7A5AF0" };
+const OTHER_HEX = "#8A93A6";
 
 const REASON_ORDER = ["Resigned", "Did not return at the next election", "Death"];
 
@@ -83,6 +88,22 @@ export default function FormerMps() {
     return counts;
   }, [mps]);
 
+  const leavers = useMemo(() => {
+    const byYear = new Map();
+    for (const m of mps ?? []) {
+      const year = (m.membership_end_date ?? "").slice(0, 4);
+      if (!year) continue;
+      const reason = m.membership_end_reason ?? "Other";
+      const parts = byYear.get(year) ?? new Map();
+      parts.set(reason, (parts.get(reason) ?? 0) + 1);
+      byYear.set(year, parts);
+    }
+    return [...byYear.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([year, parts]) => ({
+      year,
+      parts: [...parts.entries()].sort(([a], [b]) => (REASON_ORDER.indexOf(a) + 1 || 9) - (REASON_ORDER.indexOf(b) + 1 || 9)).map(([label, value]) => ({ label, value, colour: REASON_HEX[label] ?? OTHER_HEX })),
+    }));
+  }, [mps]);
+
   const filtered = useMemo(() => {
     if (!mps) return [];
     const q = query.trim().toLowerCase();
@@ -117,23 +138,22 @@ export default function FormerMps() {
         simply left it out.
       </div>
 
-      {reasonCounts && reasonCounts.size > 0 && (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 24 }}>
-          {reasons.map((r) => (
-            <div
-              key={r}
-              style={{
-                display: "flex", alignItems: "center", gap: 8, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`,
-                borderRadius: 10, padding: "9px 14px",
-              }}
-            >
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: REASON_COLOR[r] ?? COLORS.inkSoft, flexShrink: 0 }} />
-              <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink }}>
-                <strong>{reasonCounts.get(r) ?? 0}</strong> <span style={{ color: COLORS.inkSoft }}>{r}</span>
-              </span>
-            </div>
-          ))}
-        </div>
+      {mps && mps.length > 0 && (
+        <GlanceCard id="h-fm-glance" title="Who has left, and why" lead="Each column is a year, split by the reason Parliament recorded for the MP leaving." style={{ marginTop: 0, marginBottom: 24 }}>
+          <Stats
+            accent="#1E4FB8"
+            items={[
+              { value: String(mps.length), label: "MPs have left the Commons" },
+              ...REASON_ORDER.filter((r) => reasonCounts?.get(r)).map((r) => ({ value: String(reasonCounts.get(r)), label: r === "Death" ? "died in office" : r === "Resigned" ? "resigned" : "did not return at the election", accent: REASON_HEX[r] })),
+            ]}
+          />
+          <div style={{ marginTop: 22 }}>
+            <YearColumns
+              label="Number of MPs who left the Commons each year, by recorded reason"
+              years={leavers}
+            />
+          </div>
+        </GlanceCard>
       )}
 
       <input

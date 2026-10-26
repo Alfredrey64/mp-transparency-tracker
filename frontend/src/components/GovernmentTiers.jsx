@@ -1,6 +1,7 @@
 import { useState, useReducer, useRef, useEffect, useMemo } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import TierFlow from "./TierFlow";
+import { lowData } from "../lib/lowData";
 import { COLORS, FONT_DISPLAY, FONT_BODY, readable } from "../theme";
 import { IconParliament, IconCabinet, IconDevolved, IconTransport, IconCouncil, IconHome, IconGroup } from "./icons";
 import { buildLayout, routeBetween } from "../lib/tierTree";
@@ -410,7 +411,7 @@ export default function GovernmentTiers() {
         <div className="tier-grid" style={{ "--len": `${layout.height}px` }}>
           <div className="tier-diagram" ref={diaRef} data-density={layout.metrics.density} data-in={seen || calm ? "1" : "0"} data-mode={action ? "action" : "explore"} style={{ "--dur": `${dur}s`, height: layout.height }}>
             <TierFlow
-              layout={layout} action={action} calm={Boolean(calm)} visible={onScreen} curKey={curKey} voting={voting} route={beadPath} dur={dur} color={tokenColor}
+              layout={layout} action={action} calm={Boolean(calm) || lowData()} visible={onScreen} curKey={curKey} voting={voting} route={beadPath} dur={dur} color={tokenColor}
               stepKey={`${scenarioKey}-${step}-${nation}`} reachedBefore={reachedBefore}
             />
             {slabs.map((t, i) => {

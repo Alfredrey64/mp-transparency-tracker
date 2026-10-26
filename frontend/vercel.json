@@ -17,11 +17,11 @@
         },
         {
           "key": "Permissions-Policy",
-          "value": "geolocation=(), microphone=(), camera=(), payment=()"
+          "value": "geolocation=(), microphone=(), camera=(), payment=(), usb=(), serial=(), bluetooth=(), accelerometer=(), gyroscope=(), magnetometer=(), interest-cohort=(), browsing-topics=()"
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://members-api.parliament.uk https://thumb.wikimedia.org; connect-src 'self' https://xwrxaarxhlddbhbdbjmm.supabase.co wss://xwrxaarxhlddbhbdbjmm.supabase.co https://api.postcodes.io; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+          "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://members-api.parliament.uk https://thumb.wikimedia.org; connect-src 'self' https://xwrxaarxhlddbhbdbjmm.supabase.co https://api.postcodes.io; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; frame-src 'none'; worker-src 'self'; manifest-src 'self'; media-src 'none'; upgrade-insecure-requests"
         },
         {
           "key": "Strict-Transport-Security",
@@ -30,6 +30,18 @@
         {
           "key": "Cross-Origin-Opener-Policy",
           "value": "same-origin"
+        },
+        {
+          "key": "Cross-Origin-Resource-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "Origin-Agent-Cluster",
+          "value": "?1"
+        },
+        {
+          "key": "X-DNS-Prefetch-Control",
+          "value": "off"
         }
       ]
     },
@@ -46,11 +58,11 @@
         },
         {
           "key": "Permissions-Policy",
-          "value": "geolocation=(), microphone=(), camera=(), payment=()"
+          "value": "geolocation=(), microphone=(), camera=(), payment=(), usb=(), serial=(), bluetooth=(), accelerometer=(), gyroscope=(), magnetometer=(), interest-cohort=(), browsing-topics=()"
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://members-api.parliament.uk https://thumb.wikimedia.org; connect-src 'self' https://xwrxaarxhlddbhbdbjmm.supabase.co wss://xwrxaarxhlddbhbdbjmm.supabase.co https://api.postcodes.io; frame-ancestors *; base-uri 'self'; form-action 'self'; object-src 'none'"
+          "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://members-api.parliament.uk https://thumb.wikimedia.org; connect-src 'self' https://xwrxaarxhlddbhbdbjmm.supabase.co https://api.postcodes.io; frame-ancestors *; base-uri 'self'; form-action 'self'; object-src 'none'; frame-src 'none'; worker-src 'self'; manifest-src 'self'; media-src 'none'; upgrade-insecure-requests"
         },
         {
           "key": "Strict-Transport-Security",

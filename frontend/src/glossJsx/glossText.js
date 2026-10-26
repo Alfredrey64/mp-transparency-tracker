@@ -1,5 +1,6 @@
 import { memo, useContext, useSyncExternalStore } from "react";
 import { GlossBlockedContext } from "./blockContext";
+import { lowData } from "../lib/lowData";
 
 // Not JSX on purpose: files in this folder are what the JSX transform itself
 // depends on, so they can't be compiled through it.
@@ -14,6 +15,8 @@ let loading = null;
 const listeners = new Set();
 
 function loadEngine() {
+  // The underlining is an extra: on a data-saving or 2G connection the glossary is not fetched at all.
+  if (lowData()) return;
   loading ??= new Promise((resolve) => setTimeout(resolve, 150))
     .then(() => import("../components/glossEngine"))
     .then((m) => {
