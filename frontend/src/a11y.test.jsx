@@ -5,6 +5,8 @@ import { act } from "react";
 import { createRoot } from "react-dom/client";
 import PromiseExplorer from "./components/PartyPromises";
 import Loading from "./components/Loading";
+import AccessibilityControls from "./components/AccessibilityControls";
+import { ThemeProvider } from "./lib/ThemeContext";
 import { keyboardActivate, scrollRegion } from "./lib/a11y";
 
 // Runs the axe accessibility checker over pieces of the site that can be drawn without a network. Colour contrast and page-level landmark
@@ -52,5 +54,17 @@ describe("accessibility checks", () => {
     const box = node.querySelector('[aria-expanded]');
     await act(async () => { box.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true, cancelable: true })); });
     expect(clicks).toBe(1);
+  });
+
+  it("the accessibility controls have no violations, and each switch has a name and a state", async () => {
+    const node = await draw(<ThemeProvider><AccessibilityControls /></ThemeProvider>);
+    expect(await violations(node)).toEqual([]);
+    const switches = [...node.querySelectorAll('[role="switch"]')];
+    expect(switches.length).toBeGreaterThanOrEqual(6);
+    for (const sw of switches) {
+      expect(sw.getAttribute("aria-checked")).toMatch(/true|false/);
+      const label = document.getElementById(sw.getAttribute("aria-labelledby"));
+      expect(label?.textContent.length).toBeGreaterThan(3);
+    }
   });
 });

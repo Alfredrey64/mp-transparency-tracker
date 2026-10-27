@@ -75,6 +75,9 @@ export default function Settings({ onNavigate }) {
             label="Dark mode"
             description="Switches the app's backgrounds, text, and borders. Saved on this device."
           />
+          <button type="button" onClick={() => onNavigate("accessibility")} style={{ marginTop: 14, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontWeight: 700, fontSize: 14, color: COLORS.ink, textDecoration: "underline" }}>
+            Text size, easy-to-read letters, listening and more
+          </button>
         </div>
 
         <InstallCard />

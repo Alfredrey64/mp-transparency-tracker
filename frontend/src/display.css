@@ -1,0 +1,39 @@
+/* The look a visitor can switch on in the accessibility panel (see lib/display.js). Loaded only when one of them is on. The rules use !important because the
+   pages set most of their type and colour in the page itself, and these are the visitor's own choices. */
+
+/* A typeface made to be easy to tell apart letter by letter, and no italics or tight tracking. Atkinson Hyperlegible is used if the device has it; the rest
+   are plain, widely installed faces that the British Dyslexia Association suggests. */
+html[data-readable] body, html[data-readable] body *:not(svg):not(svg *) {
+  font-family: "Atkinson Hyperlegible", Verdana, Tahoma, "Trebuchet MS", "Segoe UI", system-ui, sans-serif !important;
+  font-style: normal !important;
+  font-synthesis: none;
+}
+/* Roomier text: the spacing in WCAG 1.4.12 (lines 1.5 times the size, letters 0.12, words 0.16), and left-aligned lines. */
+html[data-spacing] body p, html[data-spacing] body li, html[data-spacing] body dd, html[data-spacing] body dt, html[data-spacing] body td, html[data-spacing] body th, html[data-spacing] body label, html[data-spacing] body blockquote, html[data-spacing] body figcaption {
+  line-height: 1.7 !important; letter-spacing: 0.04em !important; word-spacing: 0.14em !important; text-align: left !important;
+}
+html[data-spacing] body p { margin-bottom: 0.9em; }
+/* Stronger contrast: softer greys become the full ink, the thin lines darken, and focus is a thicker ring. */
+html[data-contrast] { --c-ink-soft: var(--c-ink); --c-hairline: #5B6784; --sb-soft: var(--sb-strong); --sb-faint: var(--sb-text); --c-on-navy-soft: #FFFFFF; --c-sidebar-text: #FFFFFF; }
+html[data-contrast][data-theme="dark"] { --c-hairline: #8C9AB5; }
+html[data-contrast] :focus-visible { outline: 4px solid var(--focus-ring) !important; outline-offset: 3px !important; }
+html[data-contrast] body * { text-shadow: none !important; }
+/* Every link underlined, so they never rely on colour alone. */
+html[data-links] body a:not(.btn):not([class*="btn"]) { text-decoration: underline !important; text-decoration-thickness: 2px !important; text-underline-offset: 3px !important; }
+/* Calmer: nothing moves, drifts, fades or slides on its own. */
+html[data-calm] *, html[data-calm] *::before, html[data-calm] *::after { animation-duration: 0.001ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; transition-delay: 0ms !important; scroll-behavior: auto !important; }
+
+/* The header's phone layout, switched on early when bigger or wider text would make the menu run into the buttons beside it (see compactHeader in lib/display.js). */
+html[data-compact] .site-bar { gap: 12px; padding: 0 16px; height: 60px; }
+html[data-compact] .site-nav, html[data-compact] .site-cta, html[data-compact] .site-watch, html[data-compact] .site-mega, html[data-compact] .site-scrim { display: none !important; }
+html[data-compact] .site-actions { margin-left: auto; }
+html[data-compact] .site-search-btn { width: 44px; padding: 0; justify-content: center; }
+html[data-compact] .site-search-btn span, html[data-compact] .site-search-btn kbd { display: none; }
+html[data-compact] .site-burger { display: inline-flex; }
+html[data-compact] .site-brand { font-size: 21px; }
+@media (max-width: 520px) {
+  html[data-readable] .site-brand, html[data-text-size="1"] .site-brand, html[data-text-size="2"] .site-brand { font-size: 15px; gap: 6px; }
+  html[data-readable] .site-brand svg, html[data-text-size="1"] .site-brand svg, html[data-text-size="2"] .site-brand svg { width: 40px; height: auto; }
+  html[data-readable] .site-bar, html[data-text-size="1"] .site-bar, html[data-text-size="2"] .site-bar { gap: 4px; padding: 0 10px; }
+  html[data-readable] .site-icon-btn, html[data-text-size="1"] .site-icon-btn, html[data-text-size="2"] .site-icon-btn, html[data-readable] .site-search-btn, html[data-text-size="1"] .site-search-btn, html[data-text-size="2"] .site-search-btn { width: 40px; min-width: 40px; }
+}

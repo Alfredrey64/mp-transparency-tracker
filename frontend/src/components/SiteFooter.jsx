@@ -33,6 +33,8 @@ const COLUMNS = [
       ["settings", "Settings"],
       ["privacy", "Privacy"],
       ["terms", "Terms"],
+      ["accessibility", "Accessibility"],
+      ["whatsnew", "What's new"],
       ["teacher", "Teacher mode"],
       ["funding", "Funding and independence"],
     ],

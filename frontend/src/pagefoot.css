@@ -1,0 +1,22 @@
+/* The foot of each page (refer, print, report) and its dialog. Loaded after the page, never with the first paint. */
+.pf { display: grid; gap: 10px; max-width: 1100px; margin: 36px auto 0; padding: 0 clamp(16px, 5vw, 40px); box-sizing: border-box; }
+.pf::before { content: ""; height: 1px; background: var(--c-hairline); margin-bottom: 6px; }
+.pf > b { font: 800 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.pf-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.pf-row button, .pf-row a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid var(--c-hairline); background: var(--c-paper-card); color: var(--c-ink); font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; text-decoration: none; cursor: pointer; }
+.pf-row button:hover, .pf-row a:hover { border-color: var(--c-brand); background: color-mix(in srgb, var(--c-brand) 8%, var(--c-paper-card)); }
+.pf small { font: 400 13px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.pf-printed { display: none; margin: 0; font-size: 12px; }
+.pf-layer { position: fixed; inset: 0; z-index: 120; display: grid; place-items: start center; padding: 80px 16px 16px; background: rgba(8, 16, 34, 0.5); overflow-y: auto; }
+.pf-box { width: min(620px, 100%); padding: 22px 24px; border-radius: 24px; background: var(--c-paper-card); color: var(--c-ink); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-3); outline: none; display: grid; gap: 12px; }
+.pf-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.pf-head h2 { margin: 0; font: 700 22px "Figures", "Newsreader", Georgia, serif; }
+.pf-x { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--c-hairline); background: var(--c-paper); color: var(--c-ink); font-size: 26px; line-height: 1; cursor: pointer; }
+.pf-box p { margin: 0; font: 400 14.5px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.pf-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+.pf-tabs button { min-height: 44px; padding: 0 16px; border-radius: 999px; border: 2px solid var(--c-hairline); background: var(--c-paper); color: var(--c-ink); font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; cursor: pointer; }
+.pf-tabs button[aria-pressed="true"] { border-color: var(--c-brand); background: color-mix(in srgb, var(--c-brand) 14%, var(--c-paper-card)); }
+.pf-cite { margin: 0; padding: 14px 16px; min-height: 5.5em; border-radius: 14px; background: var(--c-paper); border: 1px solid var(--c-hairline); font: 500 13.5px/1.6 "IBM Plex Mono", ui-monospace, monospace; color: var(--c-ink); white-space: pre-wrap; overflow-wrap: anywhere; }
+.pf-actions { display: flex; align-items: center; gap: 12px; }
+@media print { .pf-row, .pf > b, .pf small { display: none !important; } .pf::before { background: #999; } .pf-printed { display: block; } }
+@media (max-width: 560px) { .pf-box { padding: 18px 16px; } .pf-layer { padding-top: 56px; } }

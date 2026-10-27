@@ -9,8 +9,10 @@ import { installChunkReload } from './lib/chunkReload.js'
 import { registerOffline } from './lib/offline.js'
 import { startBalancingBoxes } from './lib/balanceBoxes.js'
 import { installRouting } from './lib/route.js'
+import { start as startDisplay } from './lib/display.js'
 
 installRouting()
+startDisplay()
 startAnalytics()
 installChunkReload()
 registerOffline()

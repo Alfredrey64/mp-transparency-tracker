@@ -891,3 +891,13 @@ export function IconLordsVote({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconAccess({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9.5" />
+      <circle cx="12" cy="7.6" r="1.1" fill="currentColor" />
+      <path d="M7 10.5c3.2.9 6.8.9 10 0M12 11v3.2M12 14.2l-2.4 3.8M12 14.2l2.4 3.8" />
+    </svg>
+  );
+}

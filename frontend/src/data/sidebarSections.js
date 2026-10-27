@@ -219,12 +219,14 @@ const OUTSIDE_SECTIONS = {
   settings: "About this site",
   privacy: "About this site",
   terms: "About this site",
+  accessibility: "About this site",
+  whatsnew: "About this site",
   teacher: "For teachers",
   funding: "About this site",
 };
 // Pages that sit outside every group still get a colour of their own, so none of them is plain navy.
 export const OUTSIDE_ACCENT = {
-  methodology: "#0E9AA7", settings: "#7A5AF0", privacy: "#1FA97C", terms: "#C9962A", funding: "#2A9D8F", watchlist: "#E0367A", myMP: "#2F80ED",
+  methodology: "#0E9AA7", settings: "#7A5AF0", privacy: "#1FA97C", terms: "#C9962A", accessibility: "#1E4FB8", whatsnew: "#E8741A", funding: "#2A9D8F", watchlist: "#E0367A", myMP: "#2F80ED",
   // The Britain in numbers pages each get their own colour (the data pages already do, from onsSectors.js), so the section is not one long run of teal.
   inequality: "#A66BBE", brexit: "#3D5AFE", defence: "#4C6FA6", education: "#E07A1F", ageing: "#B5651D", nhs: "#1FA97C", energy: "#3F9B3F",
   trust: "#7B5BD6", care: "#D4577A", transport: "#2C7DA0", union: "#D9453B", taxRates: "#2E86C1", publicFinances: "#2F9E6E",

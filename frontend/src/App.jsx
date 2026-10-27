@@ -1,4 +1,5 @@
 import { useState, useEffect, useLayoutEffect, useRef, useTransition, Suspense, lazy } from "react";
+import { useDisplay, LISTEN_EVENT } from "./lib/useDisplay";
 import { flushSync } from "react-dom";
 import { GuideKeyContext, guideKeyFor } from "./lib/viewContext";
 import { MotionConfig } from "motion/react";
@@ -32,6 +33,8 @@ import { InstallBanner } from "./components/InstallApp";
 const PoliticianList = lazyPage(LOADERS.list);
 const SectionNav = lazy(() => import("./components/SectionNav"));
 const PageTools = lazy(() => import("./components/PageTools"));
+const ReadAloud = lazy(() => import("./components/ReadAloud"));
+const PageFoot = lazy(() => import("./components/PageFoot"));
 const LOAD_DETAIL = () => import("./components/PoliticianDetail");
 const PoliticianDetail = lazyPage(LOAD_DETAIL);
 const VotingRecords = lazyPage(LOADERS.voting);
@@ -56,6 +59,8 @@ const PartyMatch = lazyPage(LOADERS.partymatch);
 const Settings = lazyPage(LOADERS.settings);
 const PrivacyPolicy = lazyPage(LOADERS.privacy);
 const TermsConditions = lazyPage(LOADERS.terms);
+const Accessibility = lazyPage(LOADERS.accessibility);
+const WhatsNew = lazyPage(LOADERS.whatsnew);
 const Committees = lazyPage(LOADERS.committees);
 const ComparePoliticians = lazyPage(LOADERS.compare);
 const MinisterialMeetings = lazyPage(LOADERS.ministerialMeetings);
@@ -128,7 +133,7 @@ const VALID_VIEWS = new Set([
   "home", "appg", "howitworks", "voting", "donors", "partyFinances", "parties", "history", "timeline",
   "devolved", "tracker", "budget", "cabinet", "lords", "formerMps", "byElections", "petitions", "partymatch",
   "committees", "compare", "ministerialMeetings", "writtenQuestions", "standards", "rankings", "myMP",
-  "mediaLiteracy", "methodology", "glossary", "settings", "privacy", "terms", "list",
+  "mediaLiteracy", "methodology", "glossary", "settings", "privacy", "terms", "accessibility", "whatsnew", "list",
   "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist", "numbers", "topics", "constituency", "start", "rebels", "offices", "councils",
   "economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates", "immigration", "business", "regions", "answers", "deprivation", "indicators", "marginals", "compareSeats", "howtovote", "teacher", "localElections", "generalElection", "taxRates", "inequality", "brexit", "defence", "education", "ageing", "nhs", "energy", "trust", "care", "transport", "union", "calculators", "funding", "myArea", "thisWeek", "councillors", "lordsVotes",
 ]);
@@ -149,6 +154,8 @@ Object.assign(PAGE_TITLES, {
   settings: "Settings",
   privacy: "Privacy Policy",
   terms: "Terms & Conditions",
+  accessibility: "Accessibility",
+  whatsnew: "What's new",
 });
 
 function titleForState(view, selected, param) {
@@ -205,6 +212,14 @@ const samePath = (a, b) => {
 };
 
 export default function App() {
+  // Reading a page aloud, and calmer motion, both come from the accessibility panel (components/AccessibilityControls.jsx).
+  const [display] = useDisplay();
+  const [listening, setListening] = useState(false);
+  useEffect(() => {
+    const on = () => setListening(true);
+    window.addEventListener(LISTEN_EVENT, on);
+    return () => window.removeEventListener(LISTEN_EVENT, on);
+  }, []);
   const [view, setView] = useState(() => parseHash().view);
   // The page-specific part of the URL after the view name, if any.
   const [viewParam, setViewParam] = useState(() => parseHash().param);
@@ -415,7 +430,7 @@ export default function App() {
   }
 
   return (
-    <MotionConfig reducedMotion="user">
+    <MotionConfig reducedMotion={display.calm ? "always" : "user"}>
     <GuideKeyContext.Provider value={guideKeyFor(view, viewParam)}>
     <div className="mp-app-shell" style={{ display: "flex", flexDirection: "column", background: COLORS.paper, fontFamily: FONT_BODY, "--hemicycle": HEMICYCLE }}>
       <button type="button" className="skip-link" onClick={() => { mainRef.current?.focus(); mainRef.current?.scrollIntoView?.(); }}>Skip to main content</button>
@@ -503,6 +518,8 @@ export default function App() {
             {view === "settings" && <Settings onNavigate={handleNavigate} />}
             {view === "privacy" && <PrivacyPolicy onNavigate={handleNavigate} />}
             {view === "terms" && <TermsConditions />}
+            {view === "accessibility" && <Accessibility />}
+            {view === "whatsnew" && <WhatsNew onNavigate={handleNavigate} />}
             {view === "funding" && <Funding onNavigate={handleNavigate} />}
             {view === "myArea" && <MyArea />}
             {view === "thisWeek" && <ThisWeek />}
@@ -524,9 +541,11 @@ export default function App() {
             {!selected && view !== "home" && view !== "teacher" && (
               <Suspense fallback={null}><SectionNav view={view} onNavigate={handleNavigate} /></Suspense>
             )}
+            {view !== "teacher" && <Suspense fallback={null}><PageFoot key={`${view}-${selected?.id ?? ""}`} view={view} name={selected?.name} /></Suspense>}
         </main>
       </div>
       <SiteFooter onNavigate={handleNavigate} />
+      {listening && <Suspense fallback={null}><ReadAloud key={`${view}-${selected?.id ?? ""}`} onClose={() => setListening(false)} /></Suspense>}
       <BackToTop />
       <Suspense fallback={null}><PageTools key={`${view}-${selected?.id ?? ""}`} view={view} selected={Boolean(selected)} /></Suspense>
     </div>

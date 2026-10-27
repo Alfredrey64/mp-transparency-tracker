@@ -28,4 +28,6 @@ export const FOOTER_LINKS = [
   { key: "settings", label: "Settings" },
   { key: "privacy", label: "Privacy" },
   { key: "terms", label: "Terms" },
+  { key: "accessibility", label: "Accessibility" },
+  { key: "whatsnew", label: "What's new" },
 ];

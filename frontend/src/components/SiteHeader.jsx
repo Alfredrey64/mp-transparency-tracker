@@ -1,13 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { preloadView } from "../pageLoaders";
 import { useWatchlistChanges } from "../lib/useWatchlistChanges";
 import { useDialog } from "../lib/useDialog";
 import { solid } from "../theme";
 import LogoMark from "./LogoMark";
 import GlobalSearch from "./GlobalSearch";
-import { IconSearch, IconStar, IconMethodology, IconSettings, IconShield, IconBook, IconHistory, IconClassroom } from "./icons";
+import { IconSearch, IconStar, IconMethodology, IconSettings, IconShield, IconBook, IconHistory, IconClassroom, IconAccess } from "./icons";
 import { MENU, menuKeyFor, pathFor } from "../data/siteMenu";
 import { hubLead } from "../data/sidebarSections";
+
+const AccessibilityDialog = lazy(() => import("./AccessibilityDialog"));
 
 // The site's header: the name, five menus that open into a panel of pages, search, the watchlist and the one button most people want (finding their MP).
 // On a phone or tablet the menus become a menu button that opens a full-height list. Every page entry is a real link, so it opens in a new tab,
@@ -33,6 +35,7 @@ const FOOT_TILES = [
   ["settings", "Settings", IconSettings],
   ["privacy", "Privacy", IconShield],
   ["terms", "Terms", IconBook],
+  ["accessibility", "Accessibility", IconAccess],
   ["teacher", "Teacher mode", IconClassroom],
 ];
 
@@ -250,6 +253,8 @@ export default function SiteHeader({ activeView: viewHere, onNavigate, onSelectP
   const closeTimer = useRef(null);
   const searchButton = useRef(null);
   const menuButton = useRef(null);
+  const accessButton = useRef(null);
+  const [access, setAccess] = useState(false);
   const watch = useWatchlistChanges();
   const here = menuKeyFor(activeView);
   const navRef = useRef(null);
@@ -363,6 +368,9 @@ export default function SiteHeader({ activeView: viewHere, onNavigate, onSelectP
               <span>Search</span>
               <kbd aria-hidden="true">/</kbd>
             </button>
+            <button ref={accessButton} type="button" className="site-icon-btn site-access" aria-label="Accessibility: text size, easy-to-read letters, listen" aria-haspopup="dialog" onClick={() => { setOpenKey(null); setAccess(true); }}>
+              <IconAccess size={21} />
+            </button>
             <PageLink to="watchlist" onNavigate={onNavigate} className="site-icon-btn site-watch" aria-label={watch?.changes > 0 ? `My watchlist, ${watch.changes} new` : "My watchlist"}>
               <IconStar size={20} />
               {watch?.changes > 0 && <span className="site-badge" aria-hidden="true">{watch.changes > 99 ? "99+" : watch.changes}</span>}
@@ -389,6 +397,7 @@ export default function SiteHeader({ activeView: viewHere, onNavigate, onSelectP
           onSelectPolitician={onSelectPolitician}
         />
       )}
+      {access && <Suspense fallback={null}><AccessibilityDialog onClose={() => { setAccess(false); accessButton.current?.focus(); }} returnFocusRef={accessButton} onNavigate={onNavigate} /></Suspense>}
       {drawer && <Drawer activeView={activeView} onNavigate={onNavigate} onClose={() => { setDrawer(false); menuButton.current?.focus(); }} onSearch={() => { setDrawer(false); setSearching(true); }} />}
     </>
   );

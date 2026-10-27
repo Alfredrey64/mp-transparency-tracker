@@ -1,0 +1,19 @@
+// What has changed on the site, newest first, in plain words. Each entry has the day it went live, a short name, what it is, and a page to see it on. Add new entries
+// at the top.
+export const UPDATES = [
+  { date: "2026-10-27", kind: "New", title: "Make the site easier to use", text: "A person icon at the top opens a panel for larger text, easy-to-read letters, roomier spacing, stronger contrast, underlined links and calmer motion. The same panel can read any page aloud.", page: "accessibility", cta: "Open the Accessibility page" },
+  { date: "2026-10-27", kind: "New", title: "Refer to, print or report any page", text: "The foot of every page now has a button to copy a reference in Harvard, APA or BibTeX style, a button to print or save the page as a PDF, and a link to report a problem.", page: "methodology", cta: "See where our data comes from" },
+  { date: "2026-10-27", kind: "New", title: "Teacher mode: sixteen activities and games", text: "Teacher mode now has three tabs. The activities tab holds games on who decides, how a law is made, coalitions, election day, a letter to your MP, bingo and more, with an owl coach, stars and confetti.", page: "teacher", cta: "Open Teacher mode" },
+  { date: "2026-10-27", kind: "Improved", title: "Parties described by their main ideas", text: "The party slides in Teacher mode describe what each party wants in plain words, without labels like left or right that pupils may not know.", page: "teacher", cta: "Open Teacher mode" },
+  { date: "2026-10-27", kind: "Improved", title: "A fuller MP report card", text: "The MP report card and share card now say more: where the money comes from, how they vote, claims, their role and committees. Debates and written questions on an MP's profile open the real record.", page: "list", cta: "Find an MP" },
+  { date: "2026-10-27", kind: "Improved", title: "Related pages grouped under one menu entry", text: "Pages on the same subject now sit under one entry with tabs across the top. Your area is a dashboard, How peers voted has a scoreboard, and What changed this week has a panel for each day.", page: "thisWeek", cta: "See what changed this week" },
+  { date: "2026-10-26", kind: "New", title: "What changed this week, Your area and Your councillors", text: "New pages show this week's votes, bills, money and petitions, a dashboard for where you live, and your local councillors with their interests. How peers vote shows the Lords' divisions.", page: "myArea", cta: "Open Your area" },
+  { date: "2026-10-26", kind: "New", title: "Every Full Fact pledge on the Promises tracker", text: "The Promises tracker lists every pledge that Full Fact is following, with the latest status.", page: "tracker", cta: "Open the tracker" },
+  { date: "2026-10-26", kind: "New", title: "Teacher mode", text: "Animated stories and a full lesson for a class: who decides, how Parliament works, the parties, and how young people can be heard, with printable sheets and a link and QR code to share.", page: "teacher", cta: "Open Teacher mode" },
+  { date: "2026-10-26", kind: "Improved", title: "Smoother pages and funding page", text: "Pages now change with a gentle cross-fade, bills have a plain-English walk-through, there are money calculators, and the Funding page explains how the site is paid for.", page: "funding", cta: "Read how we are funded" },
+];
+
+export const dayText = (iso) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+};
