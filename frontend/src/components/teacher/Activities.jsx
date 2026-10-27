@@ -5,6 +5,10 @@ import WhoDecides from "./games/WhoDecides";
 import MakeALaw from "./games/MakeALaw";
 import BuildMajority from "./games/BuildMajority";
 import RoleDetective from "./games/RoleDetective";
+import FollowTenPounds from "./games/FollowTenPounds";
+import ElectionDay from "./games/ElectionDay";
+import SpotTheLayer from "./games/SpotTheLayer";
+import TeamQuiz from "./games/TeamQuiz";
 import "../../classroom.css";
 import "../../games.css";
 
@@ -15,6 +19,10 @@ const ACTIVITIES = [
   { key: "law", title: "Make a law", kind: "Game", time: "6 min", colour: "#1E4FB8", learn: "Put the eight steps of a bill in order and watch it travel to Royal Assent.", icon: "route", Component: MakeALaw },
   { key: "majority", title: "Build a majority", kind: "Game", time: "10 min", colour: "#2F9E6B", learn: "Join parties together to reach 326 of 650 seats, and see why coalitions happen.", icon: "seats", Component: BuildMajority },
   { key: "role", title: "Role detective", kind: "Game", time: "8 min", colour: "#7A5AF0", learn: "Work out who is who in politics from three clues. Guess early for more points.", icon: "search", Component: RoleDetective },
+  { key: "ten", title: "Follow the £10", kind: "Game", time: "10 min", colour: "#0E9AA7", learn: "Share out ten pounds of public spending, then see where it really goes.", icon: "pound", Component: FollowTenPounds },
+  { key: "day", title: "Election day", kind: "Game", time: "8 min", colour: "#E0367A", learn: "Put ten events in order from the poll card to the new Prime Minister.", icon: "clock", Component: ElectionDay },
+  { key: "spot", title: "Spot the layer", kind: "Game", time: "10 min", colour: "#E8741A", learn: "Sort the things in a town by who decides, then try another nation and watch some answers change.", icon: "town", Component: SpotTheLayer },
+  { key: "quiz", title: "Team quiz", kind: "Class activity", time: "15 min", colour: "#7A5AF0", learn: "Run a buzzer quiz for two to four teams, with a countdown and a scoreboard.", icon: "buzzer", Component: TeamQuiz },
   { key: "election", title: "Run a mock election", kind: "Class activity", time: "20 min", colour: "#E0367A", learn: "Hold a vote by area, then announce the results like a real election night.", icon: "ballot", Component: MockElection },
   { key: "budget", title: "Build the budget", kind: "Class activity", time: "20 min", colour: "#E8741A", learn: "Share out the real public budget, and see what every choice costs.", icon: "coin", Component: BudgetGame },
   { key: "petition", title: "Run a petition", kind: "Class activity", time: "10 min", colour: "#0E9AA7", learn: "Gather signatures and see what 10,000 and 100,000 really do in Parliament.", icon: "paper", Component: PetitionGame },
@@ -26,7 +34,11 @@ const ICONS = {
   seats: <><path d="M3 18a9 9 0 0 1 18 0" /><path d="M7 18a5 5 0 0 1 10 0" /><circle cx="12" cy="18" r="0.8" /></>,
   search: <><circle cx="10" cy="10" r="6" /><path d="m15 15 6 6" /><path d="M8 10h4" /></>,
   ballot: <><rect x="5" y="9" width="14" height="11" rx="2" /><path d="M9 9V6l3-3 3 3v3M9 14l2 2 4-4" /></>,
-  coin: <><circle cx="12" cy="12" r="8" /><path d="M9.500 9.500a3 3 0 0 1 5 1c0 2-3 2-3 4M12 17.500v.01" /></>,
+  coin: <><circle cx="12" cy="12" r="8" /><path d="M9.5 9.5a3 3 0 0 1 5 1c0 2-3 2-3 4M12 17.5v.01" /></>,
+  pound: <><circle cx="12" cy="12" r="8" /><path d="M14.5 8.5c-1-1-3.5-1-4.5.5-.8 1.300-.2 2.5-.5 4-.2 1-.8 1.5-1.5 2h8M8.5 12.5h5" /></>,
+  clock: <><circle cx="12" cy="12" r="8" /><path d="M12 7v5l3 2" /></>,
+  town: <><path d="M3 20V10l5-3 5 3v10M13 20v-7l4-2 4 2v7M3 20h18" /><path d="M6 13h4M6 16h4" /></>,
+  buzzer: <><path d="M5 17h14l-1-5a6 6 0 0 0-12 0z" /><path d="M12 6V3M9 20h6" /></>,
   paper: <><path d="M6 3h9l4 4v14H6z" /><path d="M14 3v5h5M9 12h6M9 16h6" /></>,
 };
 

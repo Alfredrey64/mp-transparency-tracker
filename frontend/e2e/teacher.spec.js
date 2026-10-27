@@ -167,3 +167,58 @@ test("the games run: sort a decision, order a bill, build a majority and solve a
   await page.locator(".gm-card").first().click();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
+
+test("the new games run: follow the £10, election day, spot the layer and the team quiz", async ({ page }) => {
+  await page.route("**/127.0.0.1:54321/**", (route) => route.abort());
+  await page.goto("/teacher/activities");
+  const back = () => page.getByRole("button", { name: /All activities and games/ }).click();
+
+  await page.getByRole("button", { name: /Follow the £10/ }).click();
+  const plus = page.getByRole("button", { name: /Put a pound on/ });
+  for (let i = 0; i < 10; i++) await plus.nth(i % 3).click();
+  await expect(page.locator(".gm-purse-n")).toHaveText("All placed");
+  await page.getByRole("button", { name: /Show where it really goes/ }).click();
+  await expect(page.locator(".gm-real").first()).toContainText("Really £");
+  await expect(page.locator(".gm-feedback")).toContainText("different place");
+  await back();
+
+  await page.getByRole("button", { name: /Election day/ }).click();
+  const slots = ["Before the day", "Polling day", "10pm", "Overnight", "The days after"];
+  const slot = (s) => page.locator(".gm-choice").filter({ has: page.locator("b", { hasText: new RegExp(`^${s}$`) }) });
+  for (const s of slots) await expect(slot(s)).toBeVisible();
+  let guard = 0;
+  while (await page.locator(".gm-prompt").count() && guard++ < 40) {
+    for (const s of slots) {
+      await slot(s).click();
+      if (await page.locator(".gm-feedback[data-right='1']").count()) break;
+    }
+    const nextBtn = page.getByRole("button", { name: /Next event|See how you did/ });
+    await nextBtn.click();
+  }
+  await expect(page.locator(".gm-end")).toContainText("right first time");
+  await back();
+
+  await page.getByRole("button", { name: /Spot the layer/ }).click();
+  await page.locator(".gm-thing-btn", { hasText: "The hospital" }).click();
+  await page.locator(".gm-choice").nth(2).click();
+  await expect(page.locator(".gm-feedback")).toContainText("run by the UK government");
+  await page.getByRole("tab", { name: "Scotland" }).click();
+  await expect(page.locator(".gm-thing-btn", { hasText: "The hospital" })).toContainText("Tap to sort");
+  await page.locator(".gm-thing-btn", { hasText: "The hospital" }).click();
+  await page.locator(".gm-choice").nth(1).click();
+  await expect(page.locator(".gm-feedback")).toContainText("NHS Scotland");
+  await back();
+
+  await page.getByRole("button", { name: /Team quiz/ }).click();
+  await page.getByRole("button", { name: "Start the quiz" }).click();
+  await page.keyboard.press("2");
+  await expect(page.locator(".gm-board li[data-on='1']")).toContainText("Team 2");
+  for (const t of [1, 0, 2]) {
+    if (await page.locator(".gm-feedback[data-right='1']").count()) break;
+    if (await page.locator(".gm-buzzbtn:not(:disabled)").count()) { const b = page.locator(".gm-buzzbtn").nth(t); if (await b.isEnabled()) await b.click(); }
+    await page.locator(".gm-choices-q .gm-choice:not(:disabled)").first().click();
+  }
+  await expect(page.locator(".gm-feedback")).toContainText("2 points");
+  await page.getByRole("button", { name: "Next question" }).click();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+});

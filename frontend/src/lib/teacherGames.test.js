@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { DECIDERS, DECISIONS, shuffled, isRight, BILL_PLACES, nextCorrect, SEATS, majorityOf, SCENARIOS, seatsOf, smallestCoalitions, verdict, hemicycle, ROLES, options, pointsFor } from "./teacherGames";
+import { DECIDERS, DECISIONS, shuffled, isRight, BILL_PLACES, nextCorrect, SEATS, majorityOf, SCENARIOS, seatsOf, smallestCoalitions, verdict, hemicycle, ROLES, options, pointsFor, tenPounds, howFar, DAY_SLOTS, DAY_EVENTS, TOWN, NATIONS, answerFor, tally, changesWith, TEAM_QUESTIONS, pickQuestions, rankTeams } from "./teacherGames";
 import { BILL_STEPS, LAYERS } from "../data/teacherMode";
 
 describe("who decides", () => {
@@ -61,4 +61,67 @@ describe("role detective", () => {
     }
   });
   it("scores more for fewer clues", () => { expect([1, 2, 3].map(pointsFor)).toEqual([3, 2, 1]); });
+});
+
+describe("Follow the £10", () => {
+  it("splits ten pounds into slices that add up to ten", () => {
+    const real = tenPounds();
+    expect(real).toHaveLength(8);
+    expect(real.reduce((t, r) => t + r.pounds, 0)).toBeCloseTo(10, 6);
+    expect(real.find((r) => r.key === "welfare").pounds).toBeGreaterThan(real.find((r) => r.key === "defence").pounds);
+  });
+  it("scores a perfect guess as nothing misplaced, and a wild one as a lot", () => {
+    const real = tenPounds();
+    const perfect = Object.fromEntries(real.map((r) => [r.key, r.pounds]));
+    expect(howFar(perfect).misplaced).toBeCloseTo(0, 6);
+    const wild = howFar({ defence: 10 });
+    expect(wild.misplaced).toBeGreaterThan(8);
+    expect(wild.biggest.key).toBe("defence");
+  });
+});
+
+describe("Election day", () => {
+  it("puts every event in a real slot, with at least one event in each slot", () => {
+    const keys = DAY_SLOTS.map((s) => s.key);
+    for (const e of DAY_EVENTS) expect(keys).toContain(e.slot);
+    for (const k of keys) expect(DAY_EVENTS.some((e) => e.slot === k)).toBe(true);
+  });
+});
+
+describe("Spot the layer", () => {
+  it("has an answer and a reason for every thing in every nation", () => {
+    for (const i of TOWN) for (const n of NATIONS) { expect(["council", "devolved", "uk"]).toContain(answerFor(i, n.key)); expect(i.answers[n.key][1].length).toBeGreaterThan(10); }
+  });
+  it("changes the answer for the hospital between England and Scotland, and not for the bins", () => {
+    const get = (id) => TOWN.find((i) => i.id === id);
+    expect(answerFor(get("hospital"), "england")).toBe("uk");
+    expect(answerFor(get("hospital"), "scotland")).toBe("devolved");
+    expect(answerFor(get("bins"), "wales")).toBe("council");
+    expect(changesWith("england").map((i) => i.id).sort()).toEqual(["hospital", "police", "school"]);
+  });
+  it("counts the layers", () => {
+    expect(tally("england")).toEqual({ uk: 5, council: 3 });
+    expect(tally("scotland").devolved).toBe(3);
+  });
+});
+
+describe("Team quiz", () => {
+  it("has well-formed questions", () => {
+    const ids = new Set(TEAM_QUESTIONS.map((q) => q.id));
+    expect(ids.size).toBe(TEAM_QUESTIONS.length);
+    for (const q of TEAM_QUESTIONS) { expect(q.answer).toBeGreaterThanOrEqual(0); expect(q.answer).toBeLessThan(q.options.length); expect(q.why.length).toBeGreaterThan(10); }
+  });
+  it("picks a fixed number of different questions", () => {
+    const qs = pickQuestions(10);
+    expect(qs).toHaveLength(10);
+    expect(new Set(qs.map((q) => q.id)).size).toBe(10);
+    expect(pickQuestions(10, 3).map((q) => q.id)).not.toEqual(qs.map((q) => q.id));
+  });
+  it("ranks teams, and gives tied teams the same place", () => {
+    const r = rankTeams([{ name: "A", score: 4 }, { name: "B", score: 8 }, { name: "C", score: 4 }]);
+    expect(r.map((t) => t.name)).toEqual(["B", "A", "C"]);
+    expect(r.map((t) => t.place)).toEqual([1, 2, 2]);
+    expect(r[1].tied).toBe(true);
+    expect(r[0].tied).toBe(false);
+  });
 });
