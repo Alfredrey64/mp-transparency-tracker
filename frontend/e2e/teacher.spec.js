@@ -119,14 +119,51 @@ test("a chapter link opens that chapter straight away, and the notes carry quest
 
 test("the class can announce an election result area by area, and run a petition", async ({ page }) => {
   await page.route("**/127.0.0.1:54321/**", (route) => route.abort());
-  await page.goto("/teacher");
+  await page.goto("/teacher/activities");
+  await page.getByRole("button", { name: /Run a mock election/ }).click();
   await page.getByRole("button", { name: "Start voting" }).click();
   for (let i = 0; i < 4; i++) await page.getByRole("button", { name: /Add a vote for The Sunshine Party in area 1/ }).click();
   await page.getByRole("button", { name: "Election night: announce the results" }).click();
   await expect(page.getByText("Nobody has won yet.")).toBeVisible();
   await page.getByRole("button", { name: "Declare the next area" }).click();
   await expect(page.getByText("The Sunshine Party wins").first()).toBeVisible();
-  await page.getByRole("tab", { name: "Run a petition" }).click();
+  await page.getByRole("button", { name: /All activities and games/ }).click();
+  await page.getByRole("button", { name: /Run a petition/ }).click();
   await page.getByRole("button", { name: /A class of 30 signs/ }).click();
   await expect(page.locator(".cp-count")).toHaveText("30");
+  await page.getByRole("button", { name: /The whole town signs/ }).click();
+  await expect(page.locator(".cp-count")).toHaveText("20,030");
+  await expect(page.getByLabel(/How many people does each pupil stand for/)).toHaveCount(0);
+});
+
+test("Teacher mode has three tabs, and the address keeps the tab", async ({ page }) => {
+  await page.route("**/127.0.0.1:54321/**", (route) => route.abort());
+  await page.goto("/teacher");
+  await expect(page.getByRole("heading", { name: "The five chapters" })).toBeVisible();
+  await page.getByRole("tab", { name: "Activities and games" }).click();
+  await expect(page).toHaveURL(/\/teacher\/activities$/);
+  await expect(page.getByRole("heading", { name: "Activities and games" }).first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "The five chapters" })).toHaveCount(0);
+  await page.getByRole("tab", { name: "For the teacher" }).click();
+  await expect(page.getByRole("heading", { name: "Fair to every party" })).toBeVisible();
+});
+
+test("the games run: sort a decision, order a bill, build a majority and solve a clue", async ({ page }) => {
+  await page.route("**/127.0.0.1:54321/**", (route) => route.abort());
+  await page.goto("/teacher/activities");
+  await page.getByRole("button", { name: /Who decides\?/ }).click();
+  await page.locator(".gm-choice").first().click();
+  await expect(page.locator(".gm-feedback")).not.toBeEmpty();
+  await page.getByRole("button", { name: /All activities and games/ }).click();
+  await page.getByRole("button", { name: /Build a majority/ }).click();
+  await page.locator(".gm-party").first().click();
+  await expect(page.locator(".gm-verdict")).not.toBeEmpty();
+  await page.getByRole("button", { name: /All activities and games/ }).click();
+  await page.getByRole("button", { name: /Role detective/ }).click();
+  await expect(page.locator(".gm-clue[data-open='1']")).toHaveCount(1);
+  await page.locator(".gm-choice").first().click();
+  await page.getByRole("button", { name: /All activities and games/ }).click();
+  await page.getByRole("button", { name: /Make a law/ }).click();
+  await page.locator(".gm-card").first().click();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });

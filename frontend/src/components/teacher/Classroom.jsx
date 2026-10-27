@@ -17,7 +17,7 @@ const SAMPLE = ["The Sunshine Party", "The Book Club Party", "The Pizza Party"];
 
 const emptyVotes = (areas, parties) => Array.from({ length: areas }, () => Array.from({ length: parties }, () => 0));
 
-function MockElection() {
+export function MockElection() {
   const [step, setStep] = useState("setup");
   const [title, setTitle] = useState("Our class election");
   const [names, setNames] = useState(SAMPLE);
@@ -227,14 +227,13 @@ function Night({ title, labels, result, declared, onDeclare, onAll, onDone, onBa
 
 // ---- A class petition --------------------------------------------------------------------------------------------------------------------------
 
-const GROUPS = [["One pupil", 1], ["A table of 5", 5], ["A class of 30", 30], ["A year group of 120", 120]];
+const GROUPS = [["One pupil", 1], ["A table of 5", 5], ["A class of 30", 30], ["A year group of 120", 120], ["The whole community", 1000], ["The whole town", 20000]];
 const pnum = (n) => Math.round(n).toLocaleString("en-GB");
 
 // Run a petition: the class chooses what to ask for, then signatures are added and the ladder shows what each milestone would really do in Parliament.
-function PetitionGame() {
+export function PetitionGame() {
   const [ask, setAsk] = useState("More trees in our town centre");
   const [count, setCount] = useState(0);
-  const [each, setEach] = useState(1);
   const pct = Math.min(100, (count / 100000) * 100);
   const supporters = Math.min(count, 5);
   return (
@@ -252,18 +251,9 @@ function PetitionGame() {
         </div>
       </div>
       <div className="cr-row" role="group" aria-label="Add signatures">
-        {GROUPS.map(([label, n]) => <button key={label} type="button" className="btn btn-primary btn-lg" onClick={() => setCount((c) => Math.min(100000, c + n * each))}>{label} signs <small style={{ opacity: 0.85 }}>(+{pnum(n * each)})</small></button>)}
+        {GROUPS.map(([label, n]) => <button key={label} type="button" className="btn btn-primary btn-lg" onClick={() => setCount((c) => Math.min(100000, c + n))}>{label} signs <small style={{ opacity: 0.85 }}>(+{pnum(n)})</small></button>)}
         <button type="button" className="btn btn-secondary btn-lg" onClick={() => setCount(0)} disabled={count === 0}>Start again</button>
       </div>
-      <label className="cr-field" style={{ maxWidth: 360, marginTop: 12 }}>
-        <span>How many people does each pupil stand for?</span>
-        <select value={each} onChange={(e) => setEach(Number(e.target.value))}>
-          <option value={1}>Just themselves: one signature</option>
-          <option value={10}>Their family: about 10 people</option>
-          <option value={100}>Their year and friends: about 100 people</option>
-          <option value={1000}>Their whole town: about 1,000 people</option>
-        </select>
-      </label>
       <ol className="cp-steps">
         {PETITION_STEPS.map((m) => {
           const hit = m.at === 5 ? supporters >= 5 : count >= m.at;
@@ -282,7 +272,7 @@ function PetitionGame() {
 
 // ---- The budget game ------------------------------------------------------------------------------------------------------------------------
 
-function BudgetGame() {
+export function BudgetGame() {
   const [alloc, setAlloc] = useState(realBudget);
   const [tax, setTax] = useState(0);
   const [card, setCard] = useState(0);
@@ -367,21 +357,5 @@ function BudgetGame() {
       </div>
       <p className="cr-note">These are headline totals for 2025 to 2026 from the Office for Budget Responsibility, in billions of pounds, shown in a simplified way: the real budget has thousands of lines and many cannot be moved. The tax slider shares the change out equally between the country's households, about £48,000 of public spending each a year. There is no right answer: the aim is to see that every choice has a cost. <a href="#/taxRates/where" style={{ fontWeight: 700 }}>See where the money really goes</a>.</p>
     </div>
-  );
-}
-
-export default function Classroom() {
-  const [tab, setTab] = useState("election");
-  return (
-    <section className="cr" aria-labelledby="h-tm-cr">
-      <h2 id="h-tm-cr">Classroom activities</h2>
-      <p>Three activities to run after the lesson, or on their own. All work on a big screen and nothing you type is saved or sent anywhere.</p>
-      <div className="cr-tabs" role="tablist" aria-label="Activity">
-        <button type="button" role="tab" aria-selected={tab === "election"} onClick={() => setTab("election")}>Run a mock election</button>
-        <button type="button" role="tab" aria-selected={tab === "budget"} onClick={() => setTab("budget")}>Build the budget</button>
-        <button type="button" role="tab" aria-selected={tab === "petition"} onClick={() => setTab("petition")}>Run a petition</button>
-      </div>
-      {tab === "election" ? <MockElection /> : tab === "budget" ? <BudgetGame /> : <PetitionGame />}
-    </section>
   );
 }
