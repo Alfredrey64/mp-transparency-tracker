@@ -115,13 +115,13 @@ function BusScene() {
       <B n={1}>
         <g transform="translate(385 166)"><rect x="-34" y="-20" width="68" height="40" rx="10" fill="#fff" stroke="#E0365B" strokeWidth="3" /><path d="M-14 -8 l28 16 M14 -8 l-28 16" stroke="#E0365B" strokeWidth="5" strokeLinecap="round" /></g>
       </B>
-      <B n={2} fx="rise"><TownHall x={470} y={366} /></B>
-      <B n={3}><Person x={500} y={394} s={0.8} shirt="#16398A" trousers="#16213A" skin={SKIN[0]} hair="#8A5A3C" mood="thinking" /></B>
-      <B n={3}><Person x={575} y={394} s={0.8} long shirt="#B52746" trousers="#16213A" skin={SKIN[3]} hair="#1E1410" mood="thinking" /></B>
-      <B n={3}><Person x={650} y={394} s={0.8} shirt="#1B7F52" trousers="#16213A" skin={SKIN[1]} hair="#3B2A20" mood="thinking" /></B>
-      <B n={3} fx="rise"><Bubble x={480} y={60} w={84} h={66} tail="left"><g transform="scale(0.2) translate(-125 40)"><Bus x={0} y={0} /></g></Bubble></B>
-      <B n={3} fx="rise"><Bubble x={585} y={50} w={84} h={66} tail="center"><g><rect x="-22" y="-6" width="44" height="12" rx="2" fill="#6B7A90" /><path d="M-22 0 h44" stroke="#fff" strokeWidth="2" strokeDasharray="6 5" /></g></Bubble></B>
-      <B n={3} fx="rise"><Bubble x={690} y={60} w={72} h={66} tail="right"><Coin x={0} y={0} r={16} /></Bubble></B>
+      <B n={2} until={3} fx="rise"><TownHall x={470} y={366} /></B>
+      <B n={3}><Person x={480} y={394} s={0.8} shirt="#16398A" trousers="#16213A" skin={SKIN[0]} hair="#8A5A3C" mood="thinking" /></B>
+      <B n={3}><Person x={590} y={394} s={0.8} long shirt="#B52746" trousers="#16213A" skin={SKIN[3]} hair="#1E1410" mood="thinking" /></B>
+      <B n={3}><Person x={700} y={394} s={0.8} shirt="#1B7F52" trousers="#16213A" skin={SKIN[1]} hair="#3B2A20" mood="thinking" /></B>
+      <B n={3} fx="rise"><Bubble x={438} y={198} w={84} h={66} tail="center"><g transform="scale(0.2) translate(-125 40)"><Bus x={0} y={0} /></g></Bubble></B>
+      <B n={3} fx="rise"><Bubble x={548} y={198} w={84} h={66} tail="center"><g><rect x="-22" y="-6" width="44" height="12" rx="2" fill="#6B7A90" /><path d="M-22 0 h44" stroke="#fff" strokeWidth="2" strokeDasharray="6 5" /></g></Bubble></B>
+      <B n={3} fx="rise"><Bubble x={658} y={198} w={84} h={66} tail="center"><Coin x={0} y={0} r={16} /></Bubble></B>
       <B n={4} fx="rise"><BallotBox x={95} y={392} /></B>
       <B n={4} fx="drop"><Paper x={95} y={296} rot={-6} /></B>
     </>
