@@ -1,5 +1,6 @@
 import { Component } from "react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
+import { t } from "../lib/i18n";
 
 const REPO_ISSUES_URL = "https://github.com/Alfredrey64/mp-transparency-tracker/issues";
 
@@ -43,11 +44,10 @@ export class ErrorBoundary extends Component {
           }}
         >
           <div style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 8 }}>
-            Something broke on this page
+            {t("Something broke on this page")}
           </div>
           <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.6, marginBottom: 16 }}>
-            Not the rest of the site: just this one page hit a bug. Pick anything else from the sidebar, or
-            reload to try this page again.
+            {t("Not the rest of the site: just this one page hit a bug. Pick anything else from the menu, or reload to try this page again.")}
           </div>
           <div
             style={{
@@ -66,7 +66,7 @@ export class ErrorBoundary extends Component {
                 border: "none", background: "#9C3B3B", color: "#fff", cursor: "pointer",
               }}
             >
-              Reload this page
+              {t("Reload this page")}
             </button>
             {this.props.onGoHome && (
               <button
@@ -76,7 +76,7 @@ export class ErrorBoundary extends Component {
                   border: `1px solid ${COLORS.hairline}`, background: "transparent", color: COLORS.ink, cursor: "pointer",
                 }}
               >
-                Back to Overview
+                {t("Back to Overview")}
               </button>
             )}
             <a
@@ -89,7 +89,7 @@ export class ErrorBoundary extends Component {
                 textDecoration: "none", display: "inline-flex", alignItems: "center",
               }}
             >
-              Report this on GitHub ↗
+              {t("Report this on GitHub")} ↗
             </a>
           </div>
         </div>

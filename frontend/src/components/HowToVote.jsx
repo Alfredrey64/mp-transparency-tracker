@@ -3,7 +3,9 @@ import { COLORS, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { IconBallot } from "./icons";
 import { canIVote } from "../lib/canIVote";
+import { STEPS, DEADLINES, RESULT_LABEL, AFTER_LINKS } from "../data/voteSteps";
 import { Reveal } from "./Motion";
+import { useT } from "../lib/useLang";
 import "../howtovote.css";
 
 // How to vote: who can vote in what, then the four practical steps (register, choose how, get your ID, polling day), then what happens next.
@@ -19,13 +21,7 @@ const NI = "https://www.eoni.org.uk/Register-To-Vote";
 
 const para = { fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.65, color: COLORS.inkSoft, margin: "6px 0 0", maxWidth: 720 };
 
-// The four steps: each has its own colour all the way through, from the route at the top to the card it opens.
-const STEPS = [
-  { n: 1, id: "register", title: "Register to vote", short: "Register", colour: "#E0367A", fact: "12", unit: "working days before polling day", line: "Five minutes online" },
-  { n: 2, id: "how", title: "Choose how you will vote", short: "Choose how", colour: "#7A5AF0", fact: "3", unit: "ways to vote", line: "Post, proxy or in person" },
-  { n: 3, id: "id", title: "Get your photo ID ready", short: "Photo ID", colour: "#0E9AA7", fact: "Free", unit: "ID card if you have none", line: "Passport or licence will do" },
-  { n: 4, id: "day", title: "Polling day", short: "Polling day", colour: "#E8741A", fact: "7am", unit: "to 10pm, and the queue at 10pm still votes", line: "A few minutes at the station" },
-];
+
 
 const Svg = ({ children, size = 26 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>
@@ -44,9 +40,9 @@ const ICONS = {
 };
 
 const RESULT = {
-  yes: { label: "You can vote", colour: "#1F7F57", icon: "tick" },
-  check: { label: "Check on gov.uk", colour: "#9A6A00", icon: "unsure" },
-  no: { label: "You can't vote", colour: "#B3382E", icon: "cross" },
+  yes: { colour: "#1F7F57", icon: "tick" },
+  check: { colour: "#9A6A00", icon: "unsure" },
+  no: { colour: "#B3382E", icon: "cross" },
 };
 
 // One question's answers as a stacked list of radio cards: every card the same width, the chosen one filled in.
@@ -73,23 +69,24 @@ function Question({ n, title, children }) {
 }
 
 function Checker() {
+  const t = useT();
   const [age, setAge] = useState("adult");
   const [nation, setNation] = useState("england");
   const [citizenship, setCitizenship] = useState("british-irish");
   const rows = canIVote({ age, nation, citizenship });
   return (
     <Reveal as="section" aria-labelledby="h-can" className="v-can">
-      <h2 id="h-can" className="v-h2">Can I vote?</h2>
-      <p style={para}>Answer three quick questions to see which elections you can vote in. Nothing you pick is saved or sent anywhere.</p>
+      <h2 id="h-can" className="v-h2">{t("Can I vote?")}</h2>
+      <p style={para}>{t("Answer three quick questions to see which elections you can vote in. Nothing you pick is saved or sent anywhere.")}</p>
       <div className="v-qs">
-        <Question n={1} title="How old are you?">
-          <Choices label="How old are you" value={age} onChange={setAge} options={[{ id: "adult", label: "18 or over" }, { id: "teen", label: "16 or 17" }, { id: "child", label: "Under 16" }]} />
+        <Question n={1} title={t("How old are you?")}>
+          <Choices label={t("How old are you")} value={age} onChange={setAge} options={[{ id: "adult", label: t("18 or over") }, { id: "teen", label: t("16 or 17") }, { id: "child", label: t("Under 16") }]} />
         </Question>
-        <Question n={2} title="Where do you live?">
-          <Choices label="Where do you live" value={nation} onChange={setNation} options={[{ id: "england", label: "England" }, { id: "scotland", label: "Scotland" }, { id: "wales", label: "Wales" }, { id: "ni", label: "Northern Ireland", short: "N. Ireland" }]} />
+        <Question n={2} title={t("Where do you live?")}>
+          <Choices label={t("Where do you live")} value={nation} onChange={setNation} options={[{ id: "england", label: t("England") }, { id: "scotland", label: t("Scotland") }, { id: "wales", label: t("Wales") }, { id: "ni", label: t("Northern Ireland") }]} />
         </Question>
-        <Question n={3} title="Which best describes your citizenship?">
-          <Choices label="Citizenship" value={citizenship} onChange={setCitizenship} options={[{ id: "british-irish", label: "British or Irish" }, { id: "commonwealth", label: "Commonwealth" }, { id: "eu", label: "EU" }, { id: "other", label: "Other" }]} />
+        <Question n={3} title={t("Which best describes your citizenship?")}>
+          <Choices label={t("Citizenship")} value={citizenship} onChange={setCitizenship} options={[{ id: "british-irish", label: t("British or Irish") }, { id: "commonwealth", label: t("Commonwealth") }, { id: "eu", label: t("EU") }, { id: "other", label: t("Other") }]} />
         </Question>
       </div>
       <ul aria-live="polite" className="v-tickets">
@@ -99,16 +96,16 @@ function Checker() {
             <li key={r.key} className="v-ticket" style={{ "--rc": R.colour }}>
               <div className="v-ticket-stub" aria-hidden="true">{ICONS[R.icon]}</div>
               <div className="v-ticket-body">
-                <div className="v-ticket-label">{r.label}</div>
-                <div className="v-ticket-result">{R.label}</div>
-                <p>{r.note}</p>
+                <div className="v-ticket-label">{t(r.label)}</div>
+                <div className="v-ticket-result">{t(RESULT_LABEL[r.result])}</div>
+                <p>{t(r.note)}</p>
               </div>
             </li>
           );
         })}
       </ul>
       <p className="v-small">
-        This is a guide, not legal advice. The rules change, and some cases (such as EU citizens, or people living abroad) depend on details. <a href={HOW} target="_blank" rel="noreferrer">gov.uk</a> has the final word.
+        {t("This is a guide, not legal advice. The rules change, and some cases (such as EU citizens, or people living abroad) depend on details.")} <a href={HOW} target="_blank" rel="noreferrer">gov.uk</a> {t("has the final word.")}
       </p>
     </Reveal>
   );
@@ -116,14 +113,15 @@ function Checker() {
 
 // The road to polling day: the four steps in a row, each in its own colour, and each a link down to its card.
 function Route() {
+  const t = useT();
   return (
-    <ol className="v-route" aria-label="The four steps, in order">
+    <ol className="v-route" aria-label={t("The four steps, in order")}>
       {STEPS.map((s) => (
         <li key={s.id} style={{ "--sc": s.colour, "--i": s.n - 1 }}>
           <a href={`#v-${s.id}`} onClick={(e) => { e.preventDefault(); document.getElementById(`v-${s.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}>
             <span className="v-route-icon">{ICONS[s.id]}<b>{s.n}</b></span>
-            <span className="v-route-title">{s.short}</span>
-            <span className="v-route-line">{s.line}</span>
+            <span className="v-route-title">{t(s.short)}</span>
+            <span className="v-route-line">{t(s.line)}</span>
           </a>
         </li>
       ))}
@@ -131,26 +129,22 @@ function Route() {
   );
 }
 
-// The three deadlines that matter, drawn as bars hanging back from polling day: the longer the bar, the earlier you have to act.
-const DEADLINES = [
-  { label: "Register to vote", days: 12, colour: "#E0367A" },
-  { label: "Apply for a postal vote", days: 11, colour: "#7A5AF0" },
-  { label: "Apply for a proxy vote", days: 6, colour: "#0E9AA7" },
-];
+
 
 function Deadlines() {
+  const t = useT();
   return (
     <figure className="v-deadlines">
-      <figcaption>Last day to act, counted back from polling day</figcaption>
+      <figcaption>{t("Last day to act, counted back from polling day")}</figcaption>
       <ul>
         {DEADLINES.map((d) => (
           <li key={d.label} style={{ "--dc": d.colour }}>
-            <div className="v-dl-row"><span>{d.label}</span><span className="v-dl-days"><strong>{d.days}</strong> working days before</span></div>
+            <div className="v-dl-row"><span>{t(d.label)}</span><span className="v-dl-days"><strong>{d.days}</strong> {t("working days before")}</span></div>
             <div aria-hidden="true" className="v-dl-track"><span className="bar-grow-r" style={{ width: `${(d.days / 12) * 100}%` }} /></div>
           </li>
         ))}
       </ul>
-      <div aria-hidden="true" className="v-dl-end"><span>Polling day</span></div>
+      <div aria-hidden="true" className="v-dl-end"><span>{t("Polling day")}</span></div>
     </figure>
   );
 }
@@ -160,18 +154,19 @@ const Tick = ({ children }) => (
 );
 
 function StepCard({ step, children }) {
+  const t = useT();
   return (
     <Reveal as="section" id={`v-${step.id}`} className="v-step" style={{ "--sc": step.colour }} aria-labelledby={`h-${step.id}`}>
       <header className="v-step-head">
         <span className="v-step-n" aria-hidden="true">{step.n}</span>
-        <h3 id={`h-${step.id}`}>{step.title}</h3>
+        <h3 id={`h-${step.id}`}>{t(step.title)}</h3>
         <span className="v-step-icon" aria-hidden="true">{ICONS[step.id]}</span>
       </header>
       <div className="v-step-body">
         <div className="v-step-main">{children}</div>
-        <aside className="v-step-fact" aria-label="Key fact">
-          <b>{step.fact}</b>
-          <span>{step.unit}</span>
+        <aside className="v-step-fact" aria-label={t("Key fact")}>
+          <b>{t(step.fact)}</b>
+          <span>{t(step.unit)}</span>
         </aside>
       </div>
     </Reveal>
@@ -192,62 +187,63 @@ const Ballot = () => (
 );
 
 export default function HowToVote() {
+  const t = useT();
   return (
     <div style={{ maxWidth: 1000, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconBallot}
         kicker="Your say"
-        title="How to vote"
-        subtitle="Who can vote, how to register, what to bring and what happens on the day, in plain steps with links to the official sites. If you only read one thing, read step 1: you can't vote unless you are registered."
+        title={t("How to vote")}
+        subtitle={t("Who can vote, how to register, what to bring and what happens on the day, in plain steps with links to the official sites. If you only read one thing, read step 1: you can't vote unless you are registered.")}
       />
 
       <Route />
       <Checker />
 
       <section aria-labelledby="h-steps" className="v-steps">
-        <h2 id="h-steps" className="v-h2 v-h2-centre">Four steps to voting</h2>
+        <h2 id="h-steps" className="v-h2 v-h2-centre">{t("Four steps to voting")}</h2>
         <Deadlines />
 
         <StepCard step={STEPS[0]}>
-          <p style={para}>It takes about five minutes online. You need your date of birth, your address and your National Insurance number (you can still register without one). Registering is separate from being on any other list, so do it even if you think you already have.</p>
+          <p style={para}>{t("It takes about five minutes online. You need your date of birth, your address and your National Insurance number (you can still register without one). Registering is separate from being on any other list, so do it even if you think you already have.")}</p>
           <ul className="v-ticks">
-            <Tick>The deadline is 12 working days before polling day. Register early, as the queue builds up just before an election.</Tick>
-            <Tick>If you move house, register again at your new address.</Tick>
-            <Tick>Students with two addresses can register at both, but may only vote once in the same election.</Tick>
-            <Tick>In Northern Ireland, you register with the Electoral Office for Northern Ireland, which is a separate system.</Tick>
+            <Tick>{t("The deadline is 12 working days before polling day. Register early, as the queue builds up just before an election.")}</Tick>
+            <Tick>{t("If you move house, register again at your new address.")}</Tick>
+            <Tick>{t("Students with two addresses can register at both, but may only vote once in the same election.")}</Tick>
+            <Tick>{t("In Northern Ireland, you register with the Electoral Office for Northern Ireland, which is a separate system.")}</Tick>
           </ul>
-          <p className="v-links"><Link href={REGISTER}>Register on gov.uk</Link><Link href={NI}>Northern Ireland</Link></p>
+          <p className="v-links"><Link href={REGISTER}>{t("Register on gov.uk")}</Link><Link href={NI}>{t("Northern Ireland")}</Link></p>
         </StepCard>
 
         <StepCard step={STEPS[1]}>
-          <p style={para}>Most people vote in person at a polling station, but there are two other ways.</p>
+          <p style={para}>{t("Most people vote in person at a polling station, but there are two other ways.")}</p>
           <ul className="v-ways">
-            <li style={{ "--wc": "#7A5AF0" }}>{ICONS.person}<b>In person</b><span>Your poll card says where. Nothing more to arrange.</span></li>
-            <li style={{ "--wc": "#E0367A" }}>{ICONS.post}<b>By post</b><span>Apply at least 11 working days before polling day. Your ballot comes in the post and has to be back in time to be counted.</span></li>
-            <li style={{ "--wc": "#0E9AA7" }}>{ICONS.proxy}<b>By proxy</b><span>A person you trust votes for you. Apply at least 6 working days before polling day, or ask for an emergency proxy if something unexpected happens.</span></li>
+            <li style={{ "--wc": "#7A5AF0" }}>{ICONS.person}<b>{t("In person")}</b><span>{t("Your poll card says where. Nothing more to arrange.")}</span></li>
+            <li style={{ "--wc": "#E0367A" }}>{ICONS.post}<b>{t("By post")}</b><span>{t("Apply at least 11 working days before polling day. Your ballot comes in the post and has to be back in time to be counted.")}</span></li>
+            <li style={{ "--wc": "#0E9AA7" }}>{ICONS.proxy}<b>{t("By proxy")}</b><span>{t("A person you trust votes for you. Apply at least 6 working days before polling day, or ask for an emergency proxy if something unexpected happens.")}</span></li>
           </ul>
         </StepCard>
 
         <StepCard step={STEPS[2]}>
-          <p style={para}>In Great Britain you need photo ID to vote in person at UK general elections and at council elections in England. A passport or a driving licence is accepted, and so are several other kinds, including some older people's and disabled people's bus passes. Scottish and Welsh parliament and council elections do not need ID. Northern Ireland has its own photo ID rules.</p>
+          <p style={para}>{t("In Great Britain you need photo ID to vote in person at UK general elections and at council elections in England. A passport or a driving licence is accepted, and so are several other kinds, including some older people's and disabled people's bus passes. Scottish and Welsh parliament and council elections do not need ID. Northern Ireland has its own photo ID rules.")}</p>
           <ul className="v-ticks">
-            <Tick>It does not have to be in date, as long as it still looks like you.</Tick>
-            <Tick>No photo ID? You can apply for a free Voter Authority Certificate, and you should do it well before polling day.</Tick>
+            <Tick>{t("It does not have to be in date, as long as it still looks like you.")}</Tick>
+            <Tick>{t("No photo ID? You can apply for a free Voter Authority Certificate, and you should do it well before polling day.")}</Tick>
           </ul>
-          <p className="v-links"><Link href={HOW}>Which ID is accepted, on gov.uk</Link></p>
+          <p className="v-links"><Link href={HOW}>{t("Which ID is accepted, on gov.uk")}</Link></p>
         </StepCard>
 
         <StepCard step={STEPS[3]}>
           <div className="v-day">
             <div>
-              <p style={para}>Polling stations are open from 7am to 10pm. If you are in the queue at 10pm, you can still vote.</p>
+              <p style={para}>{t("Polling stations are open from 7am to 10pm. If you are in the queue at 10pm, you can still vote.")}</p>
               <ul className="v-ticks">
-                <Tick>Go to the polling station named on your poll card. You can look yours up with your postcode.</Tick>
-                <Tick>Give your name and address and show your ID if you need it.</Tick>
-                <Tick>You are handed a ballot paper. Mark an X in the box next to one candidate, fold it and put it in the ballot box.</Tick>
-                <Tick>It usually takes just a few minutes.</Tick>
+                <Tick>{t("Go to the polling station named on your poll card. You can look yours up with your postcode.")}</Tick>
+                <Tick>{t("Give your name and address and show your ID if you need it.")}</Tick>
+                <Tick>{t("You are handed a ballot paper. Mark an X in the box next to one candidate, fold it and put it in the ballot box.")}</Tick>
+                <Tick>{t("It usually takes just a few minutes.")}</Tick>
               </ul>
-              <p className="v-links"><Link href={POLLING}>Find your polling station</Link></p>
+              <p className="v-links"><Link href={POLLING}>{t("Find your polling station")}</Link></p>
             </div>
             <Ballot />
           </div>
@@ -255,25 +251,25 @@ export default function HowToVote() {
       </section>
 
       <Reveal as="section" aria-labelledby="h-after" className="v-after">
-        <h2 id="h-after" className="v-h2 v-h2-centre">What happens after you vote</h2>
+        <h2 id="h-after" className="v-h2 v-h2-centre">{t("What happens after you vote")}</h2>
         <div className="v-after-grid">
-          <div style={{ "--ac": "#7A5AF0" }}><b>650</b><span>constituencies, each electing one MP</span></div>
-          <div style={{ "--ac": "#0E9AA7" }}><b>Overnight</b><span>the votes are counted, and most results are known by morning</span></div>
-          <div style={{ "--ac": "#E8741A" }}><b>326</b><span>seats, more than half, is what a party needs to form the government</span></div>
+          <div style={{ "--ac": "#7A5AF0" }}><b>650</b><span>{t("constituencies, each electing one MP")}</span></div>
+          <div style={{ "--ac": "#0E9AA7" }}><b>{t("Overnight")}</b><span>{t("the votes are counted, and most results are known by morning")}</span></div>
+          <div style={{ "--ac": "#E8741A" }}><b>326</b><span>{t("seats, more than half, is what a party needs to form the government")}</span></div>
         </div>
-        <p style={{ ...para, marginInline: "auto", textAlign: "center" }}>Whoever gets the most votes in a constituency wins it, even without more than half. This is called first past the post. If no party wins more than half the seats, it is a hung parliament, and parties have to work together or govern as a minority.</p>
+        <p style={{ ...para, marginInline: "auto", textAlign: "center" }}>{t("Whoever gets the most votes in a constituency wins it, even without more than half. This is called first past the post. If no party wins more than half the seats, it is a hung parliament, and parties have to work together or govern as a minority.")}</p>
         <div className="v-chips">
-          {[["/marginals", "Which seats are close"], ["/constituency", "Look up your seat"], ["/partymatch", "Which party suits me?"], ["/howitworks", "How Parliament works"]].map(([href, label]) => (
-            <a key={href} className="ons-tap" href={href}>{label}</a>
+          {AFTER_LINKS.map(([href, label]) => (
+            <a key={href} className="ons-tap" href={href}>{t(label)}</a>
           ))}
         </div>
       </Reveal>
 
       <p className="v-small" style={{ marginTop: 22, maxWidth: 760 }}>
-        This page is a plain guide to the usual rules. Deadlines and ID rules can change, so always check the official pages before an election:{" "}
+        {t("This page is a plain guide to the usual rules. Deadlines and ID rules can change, so always check the official pages before an election:")}{" "}
         <a href={REGISTER} target="_blank" rel="noreferrer">gov.uk</a>,{" "}
-        <a href={COMMISSION} target="_blank" rel="noreferrer">the Electoral Commission</a> and{" "}
-        <a href={NI} target="_blank" rel="noreferrer">the Electoral Office for Northern Ireland</a>.
+        <a href={COMMISSION} target="_blank" rel="noreferrer">{t("the Electoral Commission")}</a> {t("and")}{" "}
+        <a href={NI} target="_blank" rel="noreferrer">{t("the Electoral Office for Northern Ireland")}</a>.
       </p>
     </div>
   );

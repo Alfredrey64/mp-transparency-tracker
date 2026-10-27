@@ -10,9 +10,9 @@ import { nextVote } from "../lib/localElections";
 import { loadAreaFigures } from "../lib/areaFigures";
 import { REGIONS } from "../data/regionMetrics";
 import { navigate } from "../lib/route";
-import { pairFromParam, pairPath, nationOf, regionKeyFor, taxFor, deprivationFor, ordinal, pounds, differenceText } from "../lib/compareCouncils";
+import { pairFromParam, pairPath, nationOf, regionKeyFor, taxFor, deprivationFor, ordinal, pounds, differenceText, controlText, partyName } from "../lib/compareCouncils";
 import { fullDate } from "../lib/ballots";
-import { dateLocale } from "../lib/i18n";
+import { dateLocale, isWelsh } from "../lib/i18n";
 import { useT } from "../lib/useLang";
 import "../comparecouncils.css";
 
@@ -79,7 +79,7 @@ function Head({ c, side, t }) {
   return (
     <div className="cc-head" style={{ borderTopColor: SIDE[side] }}>
       <a href={`#/councils/${c.id}`}>{c.name}</a>
-      <div className="cc-sub"><i aria-hidden="true" style={{ background: controlColourOf(c.control_by_seats) }} />{c.control}</div>
+      <div className="cc-sub"><i aria-hidden="true" style={{ background: controlColourOf(c.control_by_seats) }} />{controlText(c.control, t)}</div>
       <div className="cc-sub">{t(nationOf(c))}</div>
     </div>
   );
@@ -90,19 +90,26 @@ function Seats({ c, parties, t }) {
   const rows = seatsByParty(c, parties);
   const shown = rows.slice(0, 4);
   const rest = rows.slice(4).reduce((n, r) => n + r.count, 0);
-  const label = rows.map((r) => `${r.short} ${r.count}`).join(", ");
+  const label = rows.map((r) => `${partyName(r.short, t)} ${r.count}`).join(", ");
   return (
     <>
       <div className="cc-seatbar" role="img" aria-label={`${c.name}: ${label}`}>
         {rows.map((r) => <i key={r.idx} style={{ flexGrow: r.count, background: r.colour ?? "#909090" }} />)}
       </div>
       <ul className="cc-legend">
-        {shown.map((r) => <li key={r.idx}><i aria-hidden="true" style={{ background: r.colour ?? "#909090" }} />{r.short} <strong>{r.count}</strong></li>)}
+        {shown.map((r) => <li key={r.idx}><i aria-hidden="true" style={{ background: r.colour ?? "#909090" }} />{partyName(r.short, t)} <strong>{r.count}</strong></li>)}
         {rest > 0 && <li>{t("Others")} <strong>{rest}</strong></li>}
       </ul>
     </>
   );
 }
+
+// A sentence for each nation, written out whole: Welsh changes the start of a place name after "in", so the name cannot just be dropped into one sentence.
+const OTHER_TAX = {
+  Scotland: (t) => t("Council tax is set differently in Scotland, so it is not shown here."),
+  Wales: (t) => t("Council tax is set differently in Wales, so it is not shown here."),
+  "Northern Ireland": (t) => t("Council tax is set differently in Northern Ireland, so it is not shown here."),
+};
 
 function Tax({ c, tax, other, t }) {
   if (tax) {
@@ -115,11 +122,13 @@ function Tax({ c, tax, other, t }) {
     );
   }
   const nation = nationOf(c);
-  return <div className="cc-sub">{nation !== "England" ? t("Council tax is set differently in {nation}, so it is not shown here.", { nation: t(nation) }) : c.id.startsWith("E10") ? t("A county council has no bill of its own: its charge is part of the bill from the district council.") : t("No figure for this council.")}</div>;
+  return <div className="cc-sub">{nation !== "England" ? OTHER_TAX[nation]?.(t) ?? t("No figure for this council.") : c.id.startsWith("E10") ? t("A county council has no bill of its own: its charge is part of the bill from the district council.") : t("No figure for this council.")}</div>;
 }
 
 function Deprivation({ c, info, t }) {
   if (!info) return <div className="cc-sub">{nationOf(c) === "England" ? t("This council is not in the ranking.") : t("Not comparable: each nation ranks only its own areas, on a differently built index.")}</div>;
+  // Welsh ordinals do not follow one simple rule, so in Welsh the rank is a plain number with its meaning spelled out.
+  if (isWelsh()) return <Big name={c.name} sub={t("Rank out of {of} English councils (1 is the most deprived)", { of: info.of })}>{info.rank}</Big>;
   return <Big name={c.name} sub={t("most deprived of {of} English councils (1st is the most)", { of: info.of })}>{ordinal(info.rank)}</Big>;
 }
 
@@ -161,7 +170,7 @@ export default function CompareCouncils({ param }) {
   }, [extra, keyA, keyB]);
 
   const go = (x, y) => navigate(pairPath(x, y));
-  const regionName = (k) => (k ? REGIONS.find((r) => r.key === k)?.name : null);
+  const regionName = (k) => { const n = k ? REGIONS.find((r) => r.key === k)?.name : null; return n ? t(n) : null; };
   const taxA = both && extra ? taxFor(a, extra.tax) : null;
   const taxB = both && extra ? taxFor(b, extra.tax) : null;
   const depA = both && extra ? deprivationFor(a, extra.dep) : null;
@@ -205,19 +214,19 @@ export default function CompareCouncils({ param }) {
           {both && (
             <section aria-label={t("{a} compared with {b}", { a: a.name, b: b.name })} style={{ ...card, marginTop: 24 }}>
               <div className="cc-pair cc-heads"><Head c={a} side="a" t={t} /><Head c={b} side="b" t={t} /></div>
-              <Pair title={t("Who runs it")} tall left={<><Big name={a.name}>{a.control}</Big><Seats c={a} parties={data.parties} t={t} /></>} right={<><Big name={b.name}>{b.control}</Big><Seats c={b} parties={data.parties} t={t} /></>} />
+              <Pair title={t("Who runs it")} tall left={<><Big name={a.name}>{controlText(a.control, t)}</Big><Seats c={a} parties={data.parties} t={t} /></>} right={<><Big name={b.name}>{controlText(b.control, t)}</Big><Seats c={b} parties={data.parties} t={t} /></>} />
               <Pair title={t("Seats")} left={<Big name={a.name} sub={t("{n} needed for a majority", { n: majorityOf(a.total) })}>{a.total}</Big>} right={<Big name={b.name} sub={t("{n} needed for a majority", { n: majorityOf(b.total) })}>{b.total}</Big>} />
               <Pair title={t("Next election")} left={when(a, vsA)} right={when(b, vsB)} />
               {!extra ? <p className="cc-note">{t("Loading the figures…")}</p> : (
                 <>
                   <Pair title={t("Council tax, Band D, this year (the whole bill)")} tall left={<Tax c={a} tax={taxA} other={taxB} t={t} />} right={<Tax c={b} tax={taxB} other={taxA} t={t} />}
-                    note={diff ? t("{a}'s bill is £{n} {dir} than {b}'s.", { a: a.name, b: b.name, n: fmt(diff.amount), dir: diff.more ? t("higher") : t("lower") }) : null} />
+                    note={diff ? t("The bill in {a} is £{n} {dir} than in {b}.", { a: a.name, b: b.name, n: fmt(diff.amount), dir: diff.more ? t("higher") : t("lower") }) : null} />
                   <Pair title={t("Deprivation")} tall left={<Deprivation c={a} info={depA} t={t} />} right={<Deprivation c={b} info={depB} t={t} />}
                     note={depA && depB ? null : nationOf(a) !== nationOf(b) ? t("These councils are in different nations, whose deprivation indices are built differently, so they cannot be ranked against each other.") : null} />
                   {(figA.length > 0 || figB.length > 0) && (
                     <div className="cc-region">
                       <div className="cc-row-title">{t("Typical figures for the region")}</div>
-                      <p className="cc-note" style={{ marginTop: 0 }}>{keyA === keyB ? t("Both councils are in {region}, so the regional figures are the same. They describe the region, not the council.", { region: regionName(keyA) }) : t("These are for the region each council is in ({a} and {b}), not for the councils themselves.", { a: regionName(keyA) ?? "–", b: regionName(keyB) ?? "–" })}</p>
+                      <p className="cc-note" style={{ marginTop: 0 }}>{keyA === keyB ? t("Both councils are in the same region: {region}. So the regional figures are the same, and they describe the region, not the council.", { region: regionName(keyA) }) : t("These are for the region each council is in ({a} and {b}), not for the councils themselves.", { a: regionName(keyA) ?? "–", b: regionName(keyB) ?? "–" })}</p>
                       {[...ids].map((id) => {
                         const fa = figA.find((f) => f.id === id);
                         const fb = figB.find((f) => f.id === id);

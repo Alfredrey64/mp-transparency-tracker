@@ -25,6 +25,10 @@ import Loading from "./components/Loading";
 import { currentRoute } from "./lib/route";
 import OfflineBanner from "./components/OfflineBanner";
 import { InstallBanner } from "./components/InstallApp";
+import { useLang, useT } from "./lib/useLang";
+import { hasWelsh } from "./i18n/views";
+import EnglishOnlyNotice from "./components/EnglishOnlyNotice";
+import LangBar from "./components/LangBar";
 
 // Everything below is code-split per page: a visitor to the homepage
 // shouldn't have to download the other ~30 pages' code up front. Home and
@@ -160,15 +164,15 @@ Object.assign(PAGE_TITLES, {
   whatsnew: "What's new",
 });
 
-function titleForState(view, selected, param) {
+function titleForState(view, selected, param, tr = (x) => x) {
   const base = "Simple Politics";
   if (selected) return `${selected.name} | ${base}`;
   if (view === "numbers" && param === "lords") return `Parliament in Numbers: the Lords | ${base}`;
   // For the Lords the parameter is a peer's id, which makes a poor title.
-  if (param && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view) && view !== "regions" && view !== "answers" && view !== "deprivation" && view !== "compareSeats" && view !== "compareCouncils" && view !== "parties" && view !== "generalElection" && view !== "taxRates" && view !== "inequality" && view !== "brexit" && view !== "defence" && view !== "education" && view !== "ageing" && view !== "nhs" && view !== "energy" && view !== "trust" && view !== "care" && view !== "transport" && view !== "union" && view !== "calculators" && view !== "teacher") return `${param} | ${PAGE_TITLES[view] ?? base} | ${base}`;
+  if (param && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view) && view !== "regions" && view !== "answers" && view !== "deprivation" && view !== "compareSeats" && view !== "compareCouncils" && view !== "parties" && view !== "generalElection" && view !== "taxRates" && view !== "inequality" && view !== "brexit" && view !== "defence" && view !== "education" && view !== "ageing" && view !== "nhs" && view !== "energy" && view !== "trust" && view !== "care" && view !== "transport" && view !== "union" && view !== "calculators" && view !== "teacher") return `${param} | ${tr(PAGE_TITLES[view] ?? base)} | ${base}`;
   if (view === "home") return base;
   const label = PAGE_TITLES[view];
-  return label ? `${label} | ${base}` : base;
+  return label ? `${tr(label)} | ${base}` : base;
 }
 
 // A minimal hash router — no react-router dependency needed for a flat set
@@ -225,6 +229,10 @@ export default function App() {
   const [view, setView] = useState(() => parseHash().view);
   // The page-specific part of the URL after the view name, if any.
   const [viewParam, setViewParam] = useState(() => parseHash().param);
+  const [lang] = useLang();
+  const t = useT();
+  // Whether this page has a Welsh version. If not, and Welsh is on, the page says it is English only (see components/EnglishOnlyNotice.jsx).
+  const welsh = hasWelsh(view);
   const [selected, setSelected] = useState(null);
   const [mpCount, setMpCount] = useState(null);
   // Page changes run as transitions: the page you are on stays on screen until the next one (and its code) is ready, instead of
@@ -321,9 +329,10 @@ export default function App() {
   // still only ever sees index.html's static title, but the document
   // title itself, and what search engines that DO render JS index, follow
   // the actual page.
+  // The title is in Welsh only on a page that has a Welsh version, so it always matches the page it names.
   useEffect(() => {
-    document.title = titleForState(view, selected, viewParam);
-  }, [view, selected, viewParam]);
+    document.title = titleForState(view, selected, viewParam, welsh ? t : undefined);
+  }, [view, selected, viewParam, welsh, t]);
 
   // Re-sync app state whenever the URL changes from outside our own
   // pushState calls: "popstate" covers the browser's back/forward buttons,
@@ -378,9 +387,9 @@ export default function App() {
       if (id !== navId.current) return;
       setFetching(false);
       root.dataset.vt = "1";
-      const t = document.startViewTransition(() => { flushSync(apply); });
+      const transition = document.startViewTransition(() => { flushSync(apply); });
       const done = () => { if (id === navId.current) delete root.dataset.vt; };
-      t.finished.then(done, done);
+      transition.finished.then(done, done);
     });
   }
 
@@ -435,10 +444,11 @@ export default function App() {
     <MotionConfig reducedMotion={display.calm ? "always" : "user"}>
     <GuideKeyContext.Provider value={guideKeyFor(view, viewParam)}>
     <div className="mp-app-shell" style={{ display: "flex", flexDirection: "column", background: COLORS.paper, fontFamily: FONT_BODY, "--hemicycle": HEMICYCLE }}>
-      <button type="button" className="skip-link" onClick={() => { mainRef.current?.focus(); mainRef.current?.scrollIntoView?.(); }}>Skip to main content</button>
+      <button type="button" className="skip-link" onClick={() => { mainRef.current?.focus(); mainRef.current?.scrollIntoView?.(); }}>{t("Skip to main content")}</button>
       <OfflineBanner />
       <InstallBanner />
       <div className="nav-progress" data-on={navPending || fetching ? "true" : "false"} aria-hidden="true" />
+      <LangBar />
       <SiteHeader activeView={navTarget} onNavigate={handleNavigate} onSelectPolitician={handleViewProfile} />
       <div style={{ flex: 1, minWidth: 0, width: "100%" }}>
         {/* The new page fades in straight away. It used to wait for the old
@@ -448,7 +458,9 @@ export default function App() {
           ref={mainRef}
           tabIndex={-1}
           key={`${view}-${selected?.id ?? ""}`}
+          lang={lang === "cy" && !welsh ? "en" : undefined}
         >
+            {lang === "cy" && !welsh && <EnglishOnlyNotice />}
             {!selected && view !== "home" && <HubTabs view={view} onNavigate={handleNavigate} />}
             <ErrorBoundary onGoHome={() => handleNavigate("home")}>
             <Suspense fallback={<PageLoadingFallback />}>

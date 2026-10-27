@@ -32,7 +32,7 @@ export function canIVote({ age, nation, citizenship }) {
   if (DEVOLVED[nation]) {
     let devolved;
     if (votesYoung(nation)) {
-      if (adult || teen) devolved = { result: "yes", note: `Anyone aged 16 or over who is legally living in ${nation === "scotland" ? "Scotland" : "Wales"} can vote, whatever their nationality.` };
+      if (adult || teen) devolved = { result: "yes", note: nation === "scotland" ? "Anyone aged 16 or over who is legally living in Scotland can vote, whatever their nationality." : "Anyone aged 16 or over who is legally living in Wales can vote, whatever their nationality." };
       else devolved = { result: "no", note: "You have to be 16 to vote here." };
     } else if (adult && (citizenship === "british-irish" || citizenship === "commonwealth")) {
       devolved = { result: "yes", note: "You can vote in Northern Ireland Assembly elections." };

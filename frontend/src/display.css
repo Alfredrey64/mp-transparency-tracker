@@ -25,7 +25,7 @@ html[data-calm] *, html[data-calm] *::before, html[data-calm] *::after { animati
 
 /* The header's phone layout, switched on early when bigger or wider text would make the menu run into the buttons beside it (see compactHeader in lib/display.js). */
 html[data-compact] .site-bar { gap: 12px; padding: 0 16px; height: 60px; }
-html[data-compact] .site-nav, html[data-compact] .site-cta, html[data-compact] .site-watch, html[data-compact] .site-mega, html[data-compact] .site-scrim { display: none !important; }
+html[data-compact] .site-nav, html[data-compact] .site-cta, html[data-compact] .site-watch, html[data-compact] .langbar, html[data-compact] .site-mega, html[data-compact] .site-scrim { display: none !important; }
 html[data-compact] .site-actions { margin-left: auto; }
 html[data-compact] .site-search-btn { width: 44px; padding: 0; justify-content: center; }
 html[data-compact] .site-search-btn span, html[data-compact] .site-search-btn kbd { display: none; }

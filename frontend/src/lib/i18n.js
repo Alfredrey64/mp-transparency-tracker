@@ -39,13 +39,23 @@ export function translate(words, text, vars) {
 
 const state = { lang: "en", words: null, ver: 0 };
 const listeners = new Set();
-const tell = () => { state.ver += 1; listeners.forEach((fn) => fn()); };
+const tell = () => {
+  state.ver += 1;
+  listeners.forEach((fn) => fn());
+  if (typeof window !== "undefined") window.dispatchEvent(new Event("sp-lang"));
+};
 
 export const getLang = () => state.lang;
 export const isWelsh = () => state.lang === "cy";
 export const subscribe = (fn) => { listeners.add(fn); return () => listeners.delete(fn); };
 export const getVersion = () => state.ver;
-export const t = (text, vars) => translate(state.lang === "cy" ? state.words : null, text, vars);
+export const t = (text, vars) => {
+  // For tests only: when a test sets window.__i18nTrack, any sentence asked for in Welsh that has no Welsh is noted in window.__i18nMissing.
+  if (state.lang === "cy" && state.words && typeof window !== "undefined" && window.__i18nTrack && typeof text === "string" && /\p{L}/u.test(text) && !Object.hasOwn(state.words, text)) {
+    (window.__i18nMissing ??= new Set()).add(text);
+  }
+  return translate(state.lang === "cy" ? state.words : null, text, vars);
+};
 
 // Dates and numbers follow the language, so "27 October 2026" becomes "27 Hydref 2026".
 export const dateLocale = () => (state.lang === "cy" ? "cy-GB" : "en-GB");

@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect } from "vitest";
-import { chunk, collectBlocks, createReader, pickVoice } from "./readAloud";
+import { chunk, collectBlocks, createReader, pickVoice, langOf } from "./readAloud";
 
 describe("chunk", () => {
   it("keeps short text whole and splits at the ends of sentences", () => {
@@ -72,5 +72,30 @@ describe("the reader", () => {
     r.skip(1); r.skip(1); expect(f.spoken.at(-1).text).toBe("Three.");
     r.skip(-2); expect(f.spoken.at(-1).text).toBe("One.");
     r.setRate(1.5); expect(f.spoken.at(-1).rate).toBe(1.5);
+  });
+});
+
+describe("reading in Welsh", () => {
+  it("only picks a Welsh voice for Welsh, and none if the device has none", () => {
+    expect(pickVoice([{ lang: "en-GB", name: "a" }, { lang: "cy-GB", name: "w" }], "cy").name).toBe("w");
+    expect(pickVoice([{ lang: "en-GB", name: "a" }], "cy")).toBe(null);
+    expect(pickVoice([{ lang: "cy-GB", name: "w" }])).toBe(null);
+  });
+  it("finds the language of an element from the nearest lang attribute", () => {
+    const root = { lang: "cy" };
+    const el = (lang) => ({ closest: () => ({ getAttribute: () => lang }) });
+    expect(langOf(el("en"), root)).toBe("en");
+    expect(langOf(el("cy"), root)).toBe("cy");
+    expect(langOf({ closest: () => null }, root)).toBe("cy");
+    expect(langOf(undefined, { lang: "en" })).toBe("en");
+  });
+  it("speaks in the chosen language", () => {
+    const spoken = [];
+    class U { constructor(t) { this.text = t; } }
+    const synth = { cancel() {}, speak(u) { spoken.push(u); }, getVoices: () => [{ lang: "cy-GB", name: "w" }, { lang: "en-GB", name: "e" }] };
+    const r = createReader({ synth, Utterance: U, lang: "cy" });
+    r.play([{ el: null, text: "Helo byd." }]);
+    expect(spoken[0].lang).toBe("cy-GB");
+    expect(spoken[0].voice.name).toBe("w");
   });
 });

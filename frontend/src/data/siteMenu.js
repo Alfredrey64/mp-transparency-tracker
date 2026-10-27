@@ -31,3 +31,15 @@ export const FOOTER_LINKS = [
   { key: "accessibility", label: "Accessibility" },
   { key: "whatsnew", label: "What's new" },
 ];
+
+// The three columns of links in the page footer.
+export const FOOTER_COLUMNS = [
+  { title: "Start here", links: [["start", "Take the guided tour"], ["answers", "Ask a question"], ["howitworks", "How Parliament works"], ["glossary", "Jargon buster"], ["numbers", "Parliament in numbers"]] },
+  { title: "Your area", links: [["myMP", "Find your MP"], ["myArea", "Your area"], ["constituency", "Your constituency"], ["councils", "Your council"], ["councillors", "Your councillors"], ["thisWeek", "What changed this week"], ["generalElection", "General elections"], ["howtovote", "How to vote"]] },
+  { title: "About", links: [["methodology", "Where our data comes from"], ["settings", "Settings"], ["privacy", "Privacy"], ["terms", "Terms"], ["accessibility", "Accessibility"], ["whatsnew", "What's new"], ["teacher", "Teacher mode"], ["funding", "Funding and independence"]] },
+];
+
+// The short list at the foot of the phone menu, as [page, name]. The header gives each its icon.
+export const DRAWER_FOOT = [
+  ["watchlist", "My watchlist"], ["methodology", "Where our data comes from"], ["settings", "Settings"], ["privacy", "Privacy"], ["terms", "Terms"], ["accessibility", "Accessibility"], ["teacher", "Teacher mode"],
+];

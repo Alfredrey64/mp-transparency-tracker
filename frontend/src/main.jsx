@@ -10,9 +10,11 @@ import { registerOffline } from './lib/offline.js'
 import { startBalancingBoxes } from './lib/balanceBoxes.js'
 import { installRouting } from './lib/route.js'
 import { start as startDisplay } from './lib/display.js'
+import { start as startLanguage } from './lib/i18n.js'
 
 installRouting()
 startDisplay()
+startLanguage()
 startAnalytics()
 installChunkReload()
 registerOffline()

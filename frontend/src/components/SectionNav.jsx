@@ -1,5 +1,6 @@
 import { SECTIONS, collapseItems, hubLead } from "../data/sidebarSections";
 import { PageLink } from "./SiteHeader";
+import { useT } from "../lib/useLang";
 import "../sectionnav.css";
 
 // Under every page that belongs to a menu group: where to go next. The page before and after in the group, then the pages nearest to it, each in its
@@ -7,6 +8,7 @@ import "../sectionnav.css";
 const SHOWN = 8;
 
 export default function SectionNav({ view, onNavigate }) {
+  const t = useT();
   const found = (() => {
     for (const section of SECTIONS) {
       const items = collapseItems(section.items.filter((i) => i.key !== "start" && !i.standalone));
@@ -33,20 +35,20 @@ export default function SectionNav({ view, onNavigate }) {
     return (
       <PageLink key={i.key} to={i.key} onNavigate={onNavigate} className="sn-card" style={{ "--sc": section.accent }} {...extra}>
         <span className="sn-icon" aria-hidden="true">{Icon && <Icon size={20} />}</span>
-        <span className="sn-text"><b>{i.label}</b>{i.hint && <small>{i.hint}</small>}</span>
+        <span className="sn-text"><b>{t(i.label)}</b>{i.hint && <small>{t(i.hint)}</small>}</span>
       </PageLink>
     );
   };
   return (
-    <nav className="sn" aria-label={`More in ${section.label}`} style={{ "--sc": section.accent }}>
+    <nav className="sn" aria-label={t("More in {name}", { name: t(section.label) })} style={{ "--sc": section.accent }}>
       <div className="sn-head">
         <span className="sn-dot" aria-hidden="true" />
-        <h2>More in {section.label}</h2>
-        {section.blurb && <p>{section.blurb}</p>}
+        <h2>{t("More in {name}", { name: t(section.label) })}</h2>
+        {section.blurb && <p>{t(section.blurb)}</p>}
       </div>
       <div className="sn-pn">
-        <PageLink to={prev.key} onNavigate={onNavigate} className="sn-step" rel="prev"><small>Previous</small><b>{prev.label}</b></PageLink>
-        <PageLink to={next.key} onNavigate={onNavigate} className="sn-step sn-next" rel="next"><small>Next</small><b>{next.label}</b></PageLink>
+        <PageLink to={prev.key} onNavigate={onNavigate} className="sn-step" rel="prev"><small>{t("Previous")}</small><b>{t(prev.label)}</b></PageLink>
+        <PageLink to={next.key} onNavigate={onNavigate} className="sn-step sn-next" rel="next"><small>{t("Next")}</small><b>{t(next.label)}</b></PageLink>
       </div>
       <div className="sn-grid">{near.map((i) => card(i))}</div>
     </nav>

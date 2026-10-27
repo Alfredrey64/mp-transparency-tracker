@@ -651,3 +651,16 @@ html[data-vt]::view-transition-new(root) { animation: vt-in 0.24s var(--ease-out
 [role="tabpanel"] > * { animation: tab-fade 0.28s var(--ease-out) backwards; }
 @keyframes tab-fade { from { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { [role="tabpanel"] > * { animation: none; } }
+
+/* The language switch: a slim strip above the header on wide screens (the phone menu, the footer and the accessibility panel hold it elsewhere). */
+.langbar { display: flex; justify-content: flex-end; width: 100%; box-sizing: border-box; max-width: 1360px; margin: 0 auto; padding: 4px 32px 0; }
+.langbar-btn { padding: 3px 4px; border: 0; background: none; color: var(--c-ink-soft); font: 600 13px "Public Sans", system-ui, sans-serif; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.langbar-btn:hover { color: var(--c-ink); }
+@media (max-width: 1100px) { .langbar { display: none; } }
+@media print { .langbar { display: none; } }
+.drawer-lang, .footer-lang { padding: 8px 14px; border: 1px solid rgba(255, 255, 255, 0.35); border-radius: 10px; background: none; color: #fff; font: 700 14px "Public Sans", system-ui, sans-serif; cursor: pointer; }
+.drawer-lang { grid-column: 1 / -1; min-height: 44px; }
+.footer-lang:hover, .drawer-lang:hover { border-color: #fff; }
+.lang-notice { max-width: 940px; margin: 0 auto; padding: 12px 16px 0; }
+.lang-notice p { margin: 0; padding: 8px 14px; border-left: 4px solid var(--c-brand); background: color-mix(in srgb, var(--c-brand) 8%, var(--c-paper-card)); font: 500 14px/1.5 "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.lang-notice p + p { border-top: 1px solid var(--c-hairline); padding-top: 6px; color: var(--c-ink-soft); }

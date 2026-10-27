@@ -67,3 +67,25 @@ export function differenceText(a, b) {
   if (a == null || b == null || Math.round(a) === Math.round(b)) return null;
   return { more: a > b, amount: Math.abs(Math.round(a - b)) };
 }
+
+// The words that describe a council's make-up, so a page can show them in either language. Only the national parties have Welsh names; the many local
+// groups keep the names they were registered under. `t` is a translating function, so this stays pure and testable.
+export const PARTY_NAMES = ["Labour", "Conservative", "Liberal Democrat", "Green", "Independent", "Independent or other", "Vacant"];
+export const CONTROL_PHRASES = ["{party} majority", "{party} minority", "{party} largest party", "{party} elected mayor", "No overall control", "partnership", "partnership, minority"];
+export const NATION_NAMES = ["England", "Scotland", "Wales", "Northern Ireland", "UK"];
+export const COUNCIL_PHRASES = [...PARTY_NAMES, ...CONTROL_PHRASES, ...NATION_NAMES];
+
+// A party's name in the language being read: the national parties have Welsh names, and every other name (hundreds of local groups, and names such as Reform UK
+// or SNP that are the same in Welsh) is left exactly as registered, without going near the translator.
+export const partyName = (name, t) => (PARTY_NAMES.includes(name) ? t(name) : name);
+
+// "Labour majority" and its kin, from the label the council data gives, through `t`. Anything in a shape it does not know is returned as it is.
+export function controlText(label, t) {
+  const text = String(label ?? "");
+  if (/^No overall control/i.test(text)) return t("No overall control");
+  const group = /^(.+?) \((partnership(?:, minority)?)\)$/.exec(text);
+  if (group) return `${group[1].split(", ").map((p) => partyName(p, t)).join(", ")} (${t(group[2])})`;
+  const m = /^(.+?) (majority|minority|largest party|elected mayor)$/i.exec(text);
+  if (m) return t(`{party} ${m[2].toLowerCase()}`, { party: partyName(m[1], t) });
+  return text;
+}

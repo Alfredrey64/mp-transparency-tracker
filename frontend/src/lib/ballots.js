@@ -33,12 +33,27 @@ export function daysTo(iso, today = new Date()) {
   return Math.round((Date.UTC(y, m - 1, d) - a) / 86400000);
 }
 
-export const prettyDate = (iso, locale = "en-GB") =>
-  new Intl.DateTimeFormat(locale, { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${iso}T00:00:00Z`));
-export const fullDate = (iso, locale = "en-GB") =>
-  new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${iso}T00:00:00Z`));
-export const shortDate = (iso, locale = "en-GB") =>
-  new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", timeZone: "UTC" }).format(new Date(`${iso}T00:00:00Z`));
+// Dates are written here rather than left to the browser, because a browser may not have Welsh date names (some do not), and a Welsh page must never show an
+// English date. English still uses the browser's own en-GB.
+const CY_MONTHS = ["Ionawr", "Chwefror", "Mawrth", "Ebrill", "Mai", "Mehefin", "Gorffennaf", "Awst", "Medi", "Hydref", "Tachwedd", "Rhagfyr"];
+const CY_DAYS = ["Dydd Sul", "Dydd Llun", "Dydd Mawrth", "Dydd Mercher", "Dydd Iau", "Dydd Gwener", "Dydd Sadwrn"];
+const parts = (iso) => { const d = new Date(`${iso}T00:00:00Z`); return { d: d.getUTCDate(), m: d.getUTCMonth(), y: d.getUTCFullYear(), w: d.getUTCDay() }; };
+
+// "Thursday 26 November 2026" / "Dydd Iau 26 Tachwedd 2026".
+export function prettyDate(iso, locale = "en-GB") {
+  if (/^cy/i.test(locale)) { const p = parts(iso); return `${CY_DAYS[p.w]} ${p.d} ${CY_MONTHS[p.m]} ${p.y}`; }
+  return new Intl.DateTimeFormat(locale, { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${iso}T00:00:00Z`));
+}
+// "26 November 2026" / "26 Tachwedd 2026".
+export function fullDate(iso, locale = "en-GB") {
+  if (/^cy/i.test(locale)) { const p = parts(iso); return `${p.d} ${CY_MONTHS[p.m]} ${p.y}`; }
+  return new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${iso}T00:00:00Z`));
+}
+// "26 November" / "26 Tachwedd".
+export function shortDate(iso, locale = "en-GB") {
+  if (/^cy/i.test(locale)) { const p = parts(iso); return `${p.d} ${CY_MONTHS[p.m]}`; }
+  return new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", timeZone: "UTC" }).format(new Date(`${iso}T00:00:00Z`));
+}
 
 const ROLES = { "Local Councillor": "Councillor", "Member of Parliament": "MP", "Police and Crime Commissioner": "Police and crime commissioner" };
 export const roleText = (role) => ROLES[role] ?? (role ? role.charAt(0).toUpperCase() + role.slice(1) : null);
@@ -174,3 +189,19 @@ export async function lookUpBallots(postcode, opts = {}) {
   }));
   return { contests: withPeople, more: Math.max(0, all.length - shown.length) };
 }
+
+// What to tell someone when a postcode lookup does not work, by what went wrong.
+export const BALLOT_ERRORS = {
+  shape: "That doesn't look like a UK postcode. Check it and try again, for example SW1A 1AA.",
+  notfound: "We couldn't find that postcode. Check it is a full, valid UK postcode.",
+  down: "The lookup isn't working right now. Please try again in a minute.",
+};
+
+// Every plain-English phrase this file builds from an API field and that a page then shows, so the Welsh dictionary can be checked against it.
+export const BALLOT_PHRASES = [
+  ...Object.values(ROLES), "Mayor",
+  ...Object.keys(REASONS).map((k) => byElectionText(k)), byElectionText("OTHER"),
+  ...DEADLINES.map(([, label]) => label),
+  ...Object.values(BALLOT_ERRORS),
+  ...["FPTP", "STV", "SV"].flatMap((system) => [1, 2].map((n) => howToMarkParts(system, n)?.text)),
+].filter(Boolean);

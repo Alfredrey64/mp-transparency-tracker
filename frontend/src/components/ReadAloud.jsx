@@ -1,6 +1,7 @@
 /** @jsxImportSource react */
 import { useEffect, useRef, useState } from "react";
-import { createReader, collectBlocks } from "../lib/readAloud";
+import { createReader, collectBlocks, langOf, hasVoice } from "../lib/readAloud";
+import { useT } from "../lib/useLang";
 import "../access.css";
 
 // The small player that appears while a page is being read aloud: play or pause, back and forward a paragraph, speed, and stop. The paragraph being read is
@@ -8,6 +9,10 @@ import "../access.css";
 const RATES = [0.8, 1, 1.25, 1.5];
 
 export default function ReadAloud({ onClose }) {
+  const t = useT();
+  // The language of what will be read: Welsh only where the page itself is in Welsh.
+  const [lang] = useState(() => langOf(document.getElementById("main-content")));
+  const noVoice = lang === "cy" && !hasVoice("cy");
   const [state, setState] = useState("idle");
   const [now, setNow] = useState(-1);
   const [info, setInfo] = useState({ text: "", count: 0 });
@@ -29,7 +34,8 @@ export default function ReadAloud({ onClose }) {
   };
 
   useEffect(() => {
-    const r = createReader({ onBlock: (i) => { if (i < 0) { clear(); setNow(-1); } else show(i); }, onState: setState });
+    if (noVoice) return undefined;
+    const r = createReader({ lang, onBlock: (i) => { if (i < 0) { clear(); setNow(-1); } else show(i); }, onState: setState });
     reader.current = r;
     const sel = window.getSelection?.();
     const chosen = sel && !sel.isCollapsed ? sel.toString().replace(/\s+/g, " ").trim() : "";
@@ -45,23 +51,31 @@ export default function ReadAloud({ onClose }) {
   const excerpt = info.text;
   const toggle = () => { const r = reader.current; if (state === "playing") r.pause(); else if (state === "paused") r.resume(); else r.play(blocks.current, 0); };
   const ended = state === "idle";
+  if (noVoice) {
+    return (
+      <div className="ra-bar" role="region" aria-label={t("Reading aloud")}>
+        <div className="ra-text"><small>{t("No Welsh voice")}</small><span>{t("This device has no Welsh voice, so it cannot read this page aloud. A screen reader that speaks Welsh will still work.")}</span></div>
+        <div className="ra-ctl"><button type="button" onClick={onClose} aria-label={t("Stop and close")}><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg></button></div>
+      </div>
+    );
+  }
   return (
-    <div className="ra-bar" role="region" aria-label="Reading aloud">
-      <div className="ra-text" aria-live="off"><small>{ended ? "Finished" : state === "paused" ? "Paused" : `Reading ${now + 1} of ${info.count}`}</small><span>{ended ? "Press play to hear it again." : excerpt.slice(0, 110) + (excerpt.length > 110 ? "…" : "")}</span></div>
+    <div className="ra-bar" role="region" aria-label={t("Reading aloud")}>
+      <div className="ra-text" aria-live="off"><small>{ended ? t("Finished") : state === "paused" ? t("Paused") : t("Reading {n} of {total}", { n: now + 1, total: info.count })}</small><span>{ended ? t("Press play to hear it again.") : excerpt.slice(0, 110) + (excerpt.length > 110 ? "…" : "")}</span></div>
       <div className="ra-ctl">
-        <button type="button" onClick={() => reader.current.skip(-1)} aria-label="Back a paragraph" disabled={ended}><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M6 6h2v12H6zM20 6v12L9.5 12z" /></svg></button>
-        <button type="button" className="ra-play" onClick={toggle} aria-label={state === "playing" ? "Pause" : "Play"}>
+        <button type="button" onClick={() => reader.current.skip(-1)} aria-label={t("Back a paragraph")} disabled={ended}><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M6 6h2v12H6zM20 6v12L9.5 12z" /></svg></button>
+        <button type="button" className="ra-play" onClick={toggle} aria-label={state === "playing" ? t("Pause") : t("Play")}>
           {state === "playing"
             ? <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z" /></svg>
             : <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>}
         </button>
-        <button type="button" onClick={() => reader.current.skip(1)} aria-label="Forward a paragraph" disabled={ended}><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M16 6h2v12h-2zM4 6v12l10.5-6z" /></svg></button>
-        <label className="ra-rate"><span className="sr-only">Speed, times normal</span>
+        <button type="button" onClick={() => reader.current.skip(1)} aria-label={t("Forward a paragraph")} disabled={ended}><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M16 6h2v12h-2zM4 6v12l10.5-6z" /></svg></button>
+        <label className="ra-rate"><span className="sr-only">{t("Speed, times normal")}</span>
           <select value={rate} onChange={(e) => { const v = Number(e.target.value); setRate(v); reader.current.setRate(v); }}>
             {RATES.map((r) => <option key={r} value={r}>{`${r}x`}</option>)}
           </select>
         </label>
-        <button type="button" onClick={onClose} aria-label="Stop and close"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg></button>
+        <button type="button" onClick={onClose} aria-label={t("Stop and close")}><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg></button>
       </div>
     </div>
   );

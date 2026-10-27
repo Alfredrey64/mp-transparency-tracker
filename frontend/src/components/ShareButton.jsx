@@ -1,5 +1,6 @@
 import { useState, lazy, Suspense } from "react";
 import { COLORS, FONT_BODY, readable } from "../theme";
+import { useT } from "../lib/useLang";
 
 // The dialog and the canvas drawing code load only when someone clicks.
 const ShareDialog = lazy(() => import("./ShareDialog"));
@@ -18,6 +19,7 @@ function IconShare({ size = 15 }) {
 // lib/shareSpecs.js), when the button is clicked, so nothing is worked out
 // until someone asks for it. `filename` names the downloaded image.
 export default function ShareButton({ getSpec, filename = "simple-politics", label = "Share", style }) {
+  const t = useT();
   const [open, setOpen] = useState(null);
   return (
     <>
@@ -27,7 +29,7 @@ export default function ShareButton({ getSpec, filename = "simple-politics", lab
         style={{ display: "inline-flex", alignItems: "center", gap: 7, fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: readable(COLORS.accent), background: `${COLORS.accent}12`, border: `1px solid ${COLORS.accent}40`, borderRadius: 999, padding: "7px 14px", cursor: "pointer", ...style }}
       >
         <IconShare />
-        {label}
+        {t(label)}
       </button>
       {open && (
         <Suspense fallback={null}>

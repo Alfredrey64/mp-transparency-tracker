@@ -2,11 +2,13 @@ import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { preloadView } from "../pageLoaders";
 import { useWatchlistChanges } from "../lib/useWatchlistChanges";
 import { useDialog } from "../lib/useDialog";
+import { useT } from "../lib/useLang";
+import LanguageSwitch from "./LanguageSwitch";
 import { solid } from "../theme";
 import LogoMark from "./LogoMark";
 import GlobalSearch from "./GlobalSearch";
 import { IconSearch, IconStar, IconMethodology, IconSettings, IconShield, IconBook, IconHistory, IconClassroom, IconAccess } from "./icons";
-import { MENU, menuKeyFor, pathFor } from "../data/siteMenu";
+import { MENU, DRAWER_FOOT, menuKeyFor, pathFor } from "../data/siteMenu";
 import { hubLead } from "../data/sidebarSections";
 
 const AccessibilityDialog = lazy(() => import("./AccessibilityDialog"));
@@ -29,15 +31,8 @@ const writeRecent = (view) => {
   try { localStorage.setItem(RECENT_KEY, JSON.stringify([view, ...readRecent().filter((k) => k !== view)].slice(0, 6))); } catch { /* storage blocked: the list just does not remember */ }
 };
 
-const FOOT_TILES = [
-  ["watchlist", "My watchlist", IconStar],
-  ["methodology", "Where our data comes from", IconMethodology],
-  ["settings", "Settings", IconSettings],
-  ["privacy", "Privacy", IconShield],
-  ["terms", "Terms", IconBook],
-  ["accessibility", "Accessibility", IconAccess],
-  ["teacher", "Teacher mode", IconClassroom],
-];
+const FOOT_ICONS = { watchlist: IconStar, methodology: IconMethodology, settings: IconSettings, privacy: IconShield, terms: IconBook, accessibility: IconAccess, teacher: IconClassroom };
+const FOOT_TILES = DRAWER_FOOT.map(([key, label]) => [key, label, FOOT_ICONS[key]]);
 
 // A link that goes to a page without reloading, unless it is opened in a new tab or window.
 export function PageLink({ to, onNavigate, onAfter, children, ...rest }) {
@@ -61,8 +56,9 @@ export function PageLink({ to, onNavigate, onAfter, children, ...rest }) {
 }
 
 function MegaPanel({ menu, activeView, onNavigate, onClose }) {
+  const t = useT();
   return (
-    <div className="site-mega" id={`mega-${menu.key}`} role="region" aria-label={`${menu.label} pages`}>
+    <div className="site-mega" id={`mega-${menu.key}`} role="region" aria-label={t("{name} pages", { name: t(menu.label) })}>
       <div className="site-mega-inner">
         {menu.groups.map((group) => {
           const Wide = group.items.length > 9;
@@ -71,9 +67,9 @@ function MegaPanel({ menu, activeView, onNavigate, onClose }) {
             <section key={group.key} className={Wide ? "mega-wide" : undefined} style={{ "--g": group.accent }}>
               <h2 className="mega-title">
                 {GroupIcon && <i aria-hidden="true" style={{ background: solid(group.accent) }}><GroupIcon size={17} /></i>}
-                {group.label}
+                {t(group.label)}
               </h2>
-              <p className="mega-blurb">{group.blurb}</p>
+              <p className="mega-blurb">{t(group.blurb)}</p>
               <ul className="mega-list">
                 {group.items.map((item, n) => {
                   const Icon = item.icon;
@@ -81,7 +77,7 @@ function MegaPanel({ menu, activeView, onNavigate, onClose }) {
                     <li key={item.key} style={{ "--n": n }}>
                       <PageLink to={item.key} onNavigate={onNavigate} onAfter={onClose} className="mega-link" aria-current={activeView === item.key ? "page" : undefined}>
                         <span className="ico" aria-hidden="true"><Icon size={16} /></span>
-                        <span><b>{item.label}</b>{item.hint && <small>{item.hint}</small>}</span>
+                        <span><b>{t(item.label)}</b>{item.hint && <small>{t(item.hint)}</small>}</span>
                       </PageLink>
                     </li>
                   );
@@ -96,6 +92,7 @@ function MegaPanel({ menu, activeView, onNavigate, onClose }) {
 }
 
 function SearchLayer({ onClose, onNavigate, onSelectPolitician }) {
+  const t = useT();
   const panelRef = useRef(null);
   useDialog({ open: true, onClose, panelRef });
   useEffect(() => {
@@ -104,19 +101,20 @@ function SearchLayer({ onClose, onNavigate, onSelectPolitician }) {
   }, []);
   return (
     <div className="search-layer" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <div ref={panelRef} className="search-box" role="dialog" aria-modal="true" aria-label="Search the site" tabIndex={-1}>
-        <h2>Search</h2>
+      <div ref={panelRef} className="search-box" role="dialog" aria-modal="true" aria-label={t("Search the site")} tabIndex={-1}>
+        <h2>{t("Search")}</h2>
         <GlobalSearch
           onSelectPolitician={(p) => { onSelectPolitician?.(p); onClose(); }}
           onNavigate={(key) => { onNavigate(key); onClose(); }}
         />
-        <p className="search-hint">Find an MP, a constituency, a page, an election or a word you want explained.</p>
+        <p className="search-hint">{t("Find an MP, a constituency, a page, an election or a word you want explained.")}</p>
       </div>
     </div>
   );
 }
 
 function Drawer({ activeView, onNavigate, onClose, onSearch }) {
+  const t = useT();
   const panelRef = useRef(null);
   useDialog({ open: true, onClose, panelRef });
   const groups = MENU.flatMap((m) => m.groups);
@@ -149,29 +147,30 @@ function Drawer({ activeView, onNavigate, onClose, onSearch }) {
   return (
     <>
       <div className="site-drawer-backdrop" onClick={onClose} />
-      <div ref={panelRef} className="site-drawer" role="dialog" aria-modal="true" aria-label="Site menu" tabIndex={-1} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}>
+      <div ref={panelRef} className="site-drawer" role="dialog" aria-modal="true" aria-label={t("Site menu")} tabIndex={-1} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}>
         <div className="drawer-head">
           <div className="drawer-top">
-            <PageLink to="home" onNavigate={onNavigate} onAfter={onClose} className="site-brand" aria-label="Simple Politics, home">
+            <PageLink to="home" onNavigate={onNavigate} onAfter={onClose} className="site-brand" aria-label={t("Simple Politics, home")}>
               <LogoMark width={54} color="#FFFFFF" hole="var(--c-navy)" />
               <span>Simple Politics</span>
             </PageLink>
-            <button type="button" className="site-icon-btn drawer-close" aria-label="Close menu" onClick={onClose}>
+            <button type="button" className="site-icon-btn drawer-close" aria-label={t("Close menu")} onClick={onClose}>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg>
             </button>
           </div>
           <button type="button" className="drawer-search" onClick={onSearch}>
             <IconSearch size={18} />
-            <span>Search MPs, pages and words</span>
+            <span>{t("Search MPs, pages and words")}</span>
           </button>
           <div className="drawer-quick">
-            <PageLink to="myMP" onNavigate={onNavigate} onAfter={onClose} className="btn btn-on-navy">Find your MP</PageLink>
-            <PageLink to="start" onNavigate={onNavigate} onAfter={onClose} className="btn btn-outline-on-navy">Take the tour</PageLink>
+            <PageLink to="myMP" onNavigate={onNavigate} onAfter={onClose} className="btn btn-on-navy">{t("Find your MP")}</PageLink>
+            <PageLink to="start" onNavigate={onNavigate} onAfter={onClose} className="btn btn-outline-on-navy">{t("Take the tour")}</PageLink>
+            <LanguageSwitch className="drawer-lang" />
           </div>
         </div>
         {recent.length > 0 && (
-          <section className="drawer-recent" aria-label="Pages you looked at recently">
-            <h2><IconHistory size={15} />Pick up where you left off</h2>
+          <section className="drawer-recent" aria-label={t("Pages you looked at recently")}>
+            <h2><IconHistory size={15} />{t("Pick up where you left off")}</h2>
             <ul>
               {recent.map((k) => {
                 const item = ITEM_BY_KEY.get(k);
@@ -180,7 +179,7 @@ function Drawer({ activeView, onNavigate, onClose, onSearch }) {
                   <li key={k} style={{ "--g": item.accent }}>
                     <PageLink to={k} onNavigate={onNavigate} onAfter={onClose}>
                       <span className="ico" aria-hidden="true"><Icon size={15} /></span>
-                      {item.label}
+                      {t(item.label)}
                     </PageLink>
                   </li>
                 );
@@ -188,7 +187,7 @@ function Drawer({ activeView, onNavigate, onClose, onSearch }) {
             </ul>
           </section>
         )}
-        <nav aria-label="Pages" className="drawer-groups">
+        <nav aria-label={t("Pages")} className="drawer-groups">
           {groups.map((group, gi) => {
             const open = openKey === group.key;
             const GroupIcon = group.items[0]?.icon;
@@ -206,7 +205,7 @@ function Drawer({ activeView, onNavigate, onClose, onSearch }) {
                   }}
                 >
                   <span className="dg-tile" style={{ background: solid(group.accent) }} aria-hidden="true">{GroupIcon && <GroupIcon size={20} />}</span>
-                  <span className="dg-text">{group.label}<small>{group.blurb}</small></span>
+                  <span className="dg-text">{t(group.label)}<small>{t(group.blurb)}</small></span>
                   <span className="dg-count" aria-hidden="true">{items.length}</span>
                   <Chevron />
                 </button>
@@ -218,7 +217,7 @@ function Drawer({ activeView, onNavigate, onClose, onSearch }) {
                         <li key={item.key} style={{ "--n": n }}>
                           <PageLink to={item.key} onNavigate={onNavigate} onAfter={onClose} aria-current={activeView === item.key ? "page" : undefined}>
                             <span className="ico" aria-hidden="true"><Icon size={16} /></span>
-                            <span><b>{item.label}</b>{item.hint && <small>{item.hint}</small>}</span>
+                            <span><b>{t(item.label)}</b>{item.hint && <small>{t(item.hint)}</small>}</span>
                           </PageLink>
                         </li>
                       );
@@ -229,11 +228,11 @@ function Drawer({ activeView, onNavigate, onClose, onSearch }) {
             );
           })}
         </nav>
-        <nav className="drawer-foot" aria-label="About the site">
+        <nav className="drawer-foot" aria-label={t("About the site")}>
           {FOOT_TILES.map(([key, label, Icon]) => (
             <PageLink key={key} to={key} onNavigate={onNavigate} onAfter={onClose} aria-current={activeView === key ? "page" : undefined}>
               <span className="ico" aria-hidden="true"><Icon size={17} /></span>
-              <span>{label}</span>
+              <span>{t(label)}</span>
             </PageLink>
           ))}
         </nav>
@@ -243,6 +242,7 @@ function Drawer({ activeView, onNavigate, onClose, onSearch }) {
 }
 
 export default function SiteHeader({ activeView: viewHere, onNavigate, onSelectPolitician }) {
+  const t = useT();
   // A page that is one of a group is shown in the menus as the group's entry.
   const activeView = hubLead(viewHere);
   const [openKey, setOpenKey] = useState(null);
@@ -291,8 +291,8 @@ export default function SiteHeader({ activeView: viewHere, onNavigate, onSelectP
   // "/" or Ctrl/Cmd+K opens search from anywhere (unless you are typing in a box).
   useEffect(() => {
     function onKey(e) {
-      const t = e.target;
-      const typing = t instanceof HTMLElement && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
+      const target = e.target;
+      const typing = target instanceof HTMLElement && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName));
       const wants = (e.key === "/" && !typing && !e.metaKey && !e.ctrlKey && !e.altKey) || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k");
       if (!wants) return;
       e.preventDefault();
@@ -336,12 +336,12 @@ export default function SiteHeader({ activeView: viewHere, onNavigate, onSelectP
         onBlur={(e) => { if (!headerRef.current?.contains(e.relatedTarget)) setOpenKey(null); }}
       >
         <div className="site-bar">
-          <PageLink to="home" onNavigate={onNavigate} className="site-brand" aria-label="Simple Politics, home">
+          <PageLink to="home" onNavigate={onNavigate} className="site-brand" aria-label={t("Simple Politics, home")}>
             <LogoMark width={54} color="var(--c-brand)" hole="var(--c-paper-card)" />
             <span>Simple Politics</span>
           </PageLink>
 
-          <nav ref={navRef} className="site-nav" aria-label="Main" onPointerLeave={restPill}>
+          <nav ref={navRef} className="site-nav" aria-label={t("Main")} onPointerLeave={restPill}>
             <span className="nav-pill" aria-hidden="true" />
             {MENU.map((m) => (
               <button
@@ -356,27 +356,27 @@ export default function SiteHeader({ activeView: viewHere, onNavigate, onSelectP
                 onPointerEnter={(e) => { if (e.pointerType === "mouse") { cancelClose(); setOpenKey(m.key); movePill(e.currentTarget); } }}
                 onFocus={(e) => movePill(e.currentTarget)}
               >
-                {m.label}
+                {t(m.label)}
                 <Chevron />
               </button>
             ))}
           </nav>
 
           <div className="site-actions">
-            <button ref={searchButton} type="button" className="site-search-btn" aria-label="Search the site" onClick={() => { setOpenKey(null); setSearching(true); }}>
+            <button ref={searchButton} type="button" className="site-search-btn" aria-label={t("Search the site")} onClick={() => { setOpenKey(null); setSearching(true); }}>
               <IconSearch size={16} />
-              <span>Search</span>
+              <span>{t("Search")}</span>
               <kbd aria-hidden="true">/</kbd>
             </button>
-            <button ref={accessButton} type="button" className="site-icon-btn site-access" aria-label="Accessibility: text size, easy-to-read letters, listen" aria-haspopup="dialog" onClick={() => { setOpenKey(null); setAccess(true); }}>
+            <button ref={accessButton} type="button" className="site-icon-btn site-access" aria-label={t("Accessibility: text size, easy-to-read letters, listen")} aria-haspopup="dialog" onClick={() => { setOpenKey(null); setAccess(true); }}>
               <IconAccess size={21} />
             </button>
-            <PageLink to="watchlist" onNavigate={onNavigate} className="site-icon-btn site-watch" aria-label={watch?.changes > 0 ? `My watchlist, ${watch.changes} new` : "My watchlist"}>
+            <PageLink to="watchlist" onNavigate={onNavigate} className="site-icon-btn site-watch" aria-label={watch?.changes > 0 ? t("My watchlist, {n} new", { n: watch.changes }) : t("My watchlist")}>
               <IconStar size={20} />
               {watch?.changes > 0 && <span className="site-badge" aria-hidden="true">{watch.changes > 99 ? "99+" : watch.changes}</span>}
             </PageLink>
-            <PageLink to="myMP" onNavigate={onNavigate} className="btn btn-primary site-cta">Find your MP</PageLink>
-            <button ref={menuButton} type="button" className="site-icon-btn site-burger" aria-label="Open menu" aria-expanded={drawer} onClick={() => setDrawer(true)}>
+            <PageLink to="myMP" onNavigate={onNavigate} className="btn btn-primary site-cta">{t("Find your MP")}</PageLink>
+            <button ref={menuButton} type="button" className="site-icon-btn site-burger" aria-label={t("Open menu")} aria-expanded={drawer} onClick={() => setDrawer(true)}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><line x1="3" y1="7" x2="21" y2="7" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="17" x2="21" y2="17" /></svg>
             </button>
           </div>

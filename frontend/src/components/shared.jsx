@@ -6,6 +6,7 @@ import { pageShareSpec } from "../lib/shareSpecs";
 import { motion } from "motion/react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, readable, onFill } from "../theme";
 import { SECTION_ACCENT_BY_ICON, SECTION_LABEL_BY_KEY, OUTSIDE_ACCENT } from "../data/sidebarSections";
+import { useT } from "../lib/useLang";
 // An annotated passage, not a dashboard tile: a left margin rule in the
 // page's own accent colour and a soft tint of that same colour, open on
 // every other edge — no bounding box, no radius, no drop shadow, nothing
@@ -204,14 +205,15 @@ export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = 
   // Every page passes its own distinct icon here already: reusing it as the lookup key gives each page its menu group's colour (see
   // data/sidebarSections.js) with nothing passed down through the 60-odd page files. Pages outside any group keep the plain site accent.
   const accent = accentProp ?? OUTSIDE_ACCENT[guideKey] ?? SECTION_ACCENT_BY_ICON.get(Icon) ?? COLORS.accent;
-  const kickerText = SECTION_LABEL_BY_KEY.get(guideKey) ?? kicker;
+  const t = useT();
+  const kickerText = t(SECTION_LABEL_BY_KEY.get(guideKey) ?? kicker);
   usePageAccent(accent);
   return (
     <>
       <div className="page-hero" data-align={align} style={{ "--hero-accent": accent }}>
         <div className="page-hero-inner">
-          <nav aria-label="Breadcrumb" className="crumbs">
-            <a href="#/">Home</a>
+          <nav aria-label={t("Breadcrumb")} className="crumbs">
+            <a href="#/">{t("Home")}</a>
             <span aria-hidden="true">/</span>
             <span>{kickerText}</span>
           </nav>
@@ -239,12 +241,13 @@ export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = 
 // The navy band at the top of a page, for pages that build their own heading (a council search, a constituency, an MP's profile).
 // `crumbs` is the trail after "Home"; the children sit under the title.
 export function HeroBand({ crumbs, accent, children, wide = false, maxWidth }) {
+  const t = useT();
   usePageAccent(accent ?? COLORS.accent);
   return (
     <div className="page-hero" style={{ "--hero-accent": accent ?? COLORS.accent }}>
       <div className={`page-hero-inner${wide ? " wide" : ""}`} style={maxWidth ? { maxWidth, margin: "0 auto" } : undefined}>
-        <nav aria-label="Breadcrumb" className="crumbs">
-          <a href="#/">Home</a>
+        <nav aria-label={t("Breadcrumb")} className="crumbs">
+          <a href="#/">{t("Home")}</a>
           {crumbs.map((c, i) => (
             <span key={i} style={{ display: "contents" }}>
               <span aria-hidden="true">/</span>

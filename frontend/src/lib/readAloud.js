@@ -56,13 +56,20 @@ export function chunk(text, max = 180) {
   return out;
 }
 
-// A British voice if the device has one, otherwise any English voice, otherwise the device's own.
-export function pickVoice(voices) {
+// "cy" for Welsh, "en" for anything else, from the nearest lang attribute of an element (the page's own if it has none).
+export const langOf = (el, root = typeof document === "undefined" ? null : document.documentElement) =>
+  /^cy/i.test(el?.closest?.("[lang]")?.getAttribute("lang") ?? root?.lang ?? "") ? "cy" : "en";
+
+// A British voice if the device has one, otherwise any English voice, otherwise the device's own. For Welsh, only a Welsh voice will do: there is no
+// good reason to read Welsh in an English voice, so with none the answer is null and the caller says so.
+export function pickVoice(voices, lang = "en") {
   const list = voices ?? [];
+  if (lang === "cy") return list.find((v) => /^cy/i.test(v.lang)) ?? null;
   return list.find((v) => /^en[-_]GB$/i.test(v.lang)) ?? list.find((v) => /^en/i.test(v.lang)) ?? null;
 }
+export const hasVoice = (lang, synth) => Boolean(pickVoice((synth ?? window.speechSynthesis)?.getVoices?.(), lang));
 
-export function createReader({ synth, Utterance, onBlock = () => {}, onState = () => {} } = {}) {
+export function createReader({ synth, Utterance, lang = "en", onBlock = () => {}, onState = () => {} } = {}) {
   const S = synth ?? window.speechSynthesis;
   const U = Utterance ?? window.SpeechSynthesisUtterance;
   let blocks = [];
@@ -84,8 +91,8 @@ export function createReader({ synth, Utterance, onBlock = () => {}, onState = (
     }
     if (pi === 0) onBlock(bi);
     const u = new U(pieces[pi]);
-    u.rate = rate; u.lang = "en-GB";
-    const voice = pickVoice(S.getVoices?.());
+    u.rate = rate; u.lang = lang === "cy" ? "cy-GB" : "en-GB";
+    const voice = pickVoice(S.getVoices?.(), lang);
     if (voice) u.voice = voice;
     u.onend = () => { if (mine !== token) return; pi += 1; speak(); };
     u.onerror = (e) => { if (mine !== token) return; if (e?.error === "canceled" || e?.error === "interrupted") return; set("idle"); onBlock(-1); };

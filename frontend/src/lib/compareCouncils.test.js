@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { pairFromParam, pairPath, nationOf, regionKeyFor, normName, taxFor, deprivationFor, ordinal, pounds, differenceText, SEP } from "./compareCouncils";
+import { pairFromParam, pairPath, nationOf, regionKeyFor, normName, taxFor, deprivationFor, ordinal, pounds, differenceText, controlText, partyName, COUNCIL_PHRASES, SEP } from "./compareCouncils";
 import councilsIndex from "../data/councilsIndex.json";
 import tax from "../data/councilTaxByCouncil.json";
 import deprivation from "../data/deprivation.json";
@@ -96,5 +96,46 @@ describe("words and numbers", () => {
     expect(differenceText(2200, 2500)).toEqual({ more: false, amount: 300 });
     expect(differenceText(2200, 2200.4)).toBeNull();
     expect(differenceText(null, 2200)).toBeNull();
+  });
+});
+
+describe("how a council is run, in words", () => {
+  // A stand-in translator that marks what it translated, so each piece can be seen to have gone through it.
+  const t = (text, vars) => { const base = `<${text}>`; return vars ? base.replace(/\{(\w+)\}/g, (m, k) => vars[k]) : base; };
+  it("puts the party through the translator inside each kind of label", () => {
+    expect(controlText("Labour majority", t)).toBe("<<Labour> majority>");
+    expect(controlText("Conservative minority", t)).toBe("<<Conservative> minority>");
+    expect(controlText("Green elected mayor", t)).toContain("elected mayor");
+    expect(controlText("Reform UK largest party", t)).toContain("largest party");
+    expect(controlText("No overall control", t)).toBe("<No overall control>");
+  });
+  it("handles partnerships, with each party translated and the kind of partnership too", () => {
+    expect(controlText("Liberal Democrat, Green (partnership)", t)).toBe("<Liberal Democrat>, <Green> (<partnership>)");
+    expect(controlText("Liberal Democrat, Green, Independent (partnership, minority)", t)).toBe("<Liberal Democrat>, <Green>, <Independent> (<partnership, minority>)");
+  });
+  it("leaves a label in a shape it does not know exactly as it is", () => {
+    expect(controlText("Something else entirely", t)).toBe("Something else entirely");
+    expect(controlText(undefined, t)).toBe("");
+  });
+  it("covers every kind of label the council data actually uses", () => {
+    const kinds = new Set();
+    for (const c of councilsIndex.index) {
+      const m = /^(.+?) (majority|minority|largest party|elected mayor)$/i.exec(c.control);
+      if (m) kinds.add(`{party} ${m[2].toLowerCase()}`);
+      else if (/^No overall control/i.test(c.control)) kinds.add("No overall control");
+      else if (/\(partnership, minority\)$/.test(c.control)) kinds.add("partnership, minority");
+      else if (/\(partnership\)$/.test(c.control)) kinds.add("partnership");
+      else kinds.add(`UNKNOWN: ${c.control}`);
+    }
+    for (const k of kinds) expect(COUNCIL_PHRASES, k).toContain(k);
+  });
+  it("only sends parties that have Welsh names to the translator, and leaves every other name as it was registered", () => {
+    expect(partyName("Labour", t)).toBe("<Labour>");
+    expect(partyName("Reform UK", t)).toBe("Reform UK");
+    expect(partyName("Whitnash Residents Association", t)).toBe("Whitnash Residents Association");
+    expect(controlText("Reform UK majority", t)).toBe("<Reform UK majority>");
+  });
+  it("lists the nations in full", () => {
+    expect(COUNCIL_PHRASES).toEqual(expect.arrayContaining(["England", "Scotland", "Wales", "Northern Ireland", "UK"]));
   });
 });

@@ -4,7 +4,7 @@ import { COLORS, FONT_BODY, PAGE_PADDING, readable, solid } from "../theme";
 import { PageHeader } from "./shared";
 import { IconWhoStands } from "./icons";
 import { card, cardTitle } from "../lib/onsStyles";
-import { lookUpBallots, cleanPostcode, howToMarkParts, daysTo, prettyDate, shortDate } from "../lib/ballots";
+import { lookUpBallots, cleanPostcode, howToMarkParts, daysTo, prettyDate, shortDate, BALLOT_ERRORS } from "../lib/ballots";
 import { councilsForCodes } from "../lib/councils";
 import { nextVote } from "../lib/localElections";
 import { dateLocale } from "../lib/i18n";
@@ -22,11 +22,6 @@ const para = { fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.65, color: C
 const initials = (name) => {
   const w = String(name).split(/\s+/).filter(Boolean);
   return ((w[0]?.[0] ?? "") + (w.length > 1 ? w[w.length - 1][0] : "")).toUpperCase();
-};
-const ERRORS = {
-  shape: "That doesn't look like a UK postcode. Check it and try again, for example SW1A 1AA.",
-  notfound: "We couldn't find that postcode. Check it is a full, valid UK postcode.",
-  down: "The lookup isn't working right now. Please try again in a minute.",
 };
 const safeId = (id) => /^[a-z0-9._:-]+$/i.test(id);
 
@@ -204,7 +199,7 @@ export default function MyBallot() {
             <input id="mb-pc" value={postcode} onChange={(e) => setPostcode(e.target.value)} placeholder={t("For example SW1A 1AA")} autoComplete="postal-code" aria-describedby={state.phase === "error" ? "mb-err" : undefined} aria-invalid={state.phase === "error" ? "true" : undefined} style={field} />
             <button type="submit" disabled={state.phase === "busy"} className="ons-chip" style={{ fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: 700, color: "#fff", background: solid(ACCENT), border: "none", borderRadius: 12, padding: "0 20px", cursor: "pointer", flexShrink: 0 }}>{state.phase === "busy" ? t("Looking…") : t("Find")}</button>
           </div>
-          {state.phase === "error" && <div id="mb-err" role="alert" style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: readable("#B3382E"), marginTop: 8 }}>{t(ERRORS[state.kind])}</div>}
+          {state.phase === "error" && <div id="mb-err" role="alert" style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: readable("#B3382E"), marginTop: 8 }}>{t(BALLOT_ERRORS[state.kind])}</div>}
         </form>
       </section>
 

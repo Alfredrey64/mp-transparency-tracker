@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import {
-  cleanPostcode, surnameOf, bySurname, daysTo, prettyDate, fullDate, roleText, byElectionText, howToMark, howToMarkParts, deadlinesOf, toContest, contests, candidatesOf,
+  cleanPostcode, surnameOf, bySurname, daysTo, prettyDate, fullDate, shortDate, roleText, byElectionText, howToMark, howToMarkParts, deadlinesOf, toContest, contests, candidatesOf,
   findContests, findCandidates, lookUpBallots, ELECTIONS_URL, BALLOTS_URL, MAX_CONTESTS,
 } from "./ballots";
 
@@ -51,8 +51,11 @@ describe("dates", () => {
   });
   it("writes dates in either language", () => {
     expect(prettyDate("2026-11-26")).toMatch(/^Thursday,? 26 November 2026$/);
-    expect(prettyDate("2026-11-26", "cy-GB")).toMatch(/2026/);
+    expect(prettyDate("2026-11-26", "cy-GB")).toBe("Dydd Iau 26 Tachwedd 2026");
     expect(fullDate("2026-11-26")).toBe("26 November 2026");
+    expect(fullDate("2026-11-26", "cy-GB")).toBe("26 Tachwedd 2026");
+    expect(shortDate("2026-11-26")).toBe("26 November");
+    expect(shortDate("2026-11-26", "cy-GB")).toBe("26 Tachwedd");
   });
 });
 
@@ -190,5 +193,18 @@ describe("fetching", () => {
     const out = await lookUpBallots("M94FP", { fetchImpl: f });
     expect(out.contests).toHaveLength(MAX_CONTESTS);
     expect(out.more).toBe(3);
+  });
+});
+
+describe("Welsh dates", () => {
+  it("names every month and every day of the week, with no browser data needed", () => {
+    const months = Array.from({ length: 12 }, (_, i) => fullDate(`2026-${String(i + 1).padStart(2, "0")}-05`, "cy").split(" ")[1]);
+    expect(months).toEqual(["Ionawr", "Chwefror", "Mawrth", "Ebrill", "Mai", "Mehefin", "Gorffennaf", "Awst", "Medi", "Hydref", "Tachwedd", "Rhagfyr"]);
+    const days = Array.from({ length: 7 }, (_, i) => prettyDate(`2026-11-${String(22 + i).padStart(2, "0")}`, "cy").replace(/ \d.*$/, ""));
+    expect(days).toEqual(["Dydd Sul", "Dydd Llun", "Dydd Mawrth", "Dydd Mercher", "Dydd Iau", "Dydd Gwener", "Dydd Sadwrn"]);
+  });
+  it("does not shift a date across midnight, whatever the time zone", () => {
+    expect(fullDate("2026-01-01", "cy")).toBe("1 Ionawr 2026");
+    expect(fullDate("2026-12-31", "cy")).toBe("31 Rhagfyr 2026");
   });
 });

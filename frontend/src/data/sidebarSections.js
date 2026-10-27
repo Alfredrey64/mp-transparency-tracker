@@ -226,6 +226,8 @@ const OUTSIDE_SECTIONS = {
   teacher: "For teachers",
   funding: "About this site",
 };
+// The section names those pages go under, without repeats (used to keep the Welsh in step).
+export const OUTSIDE_SECTIONS_LIST = [...new Set(Object.values(OUTSIDE_SECTIONS))];
 // Pages that sit outside every group still get a colour of their own, so none of them is plain navy.
 export const OUTSIDE_ACCENT = {
   methodology: "#0E9AA7", settings: "#7A5AF0", privacy: "#1FA97C", terms: "#C9962A", accessibility: "#1E4FB8", whatsnew: "#E8741A", funding: "#2A9D8F", watchlist: "#E0367A", myMP: "#2F80ED",

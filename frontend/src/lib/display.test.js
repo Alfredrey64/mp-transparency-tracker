@@ -34,6 +34,12 @@ describe("display preferences", () => {
     expect(compactHeader({ ...DEFAULTS, size: 1 }, 1500)).toBe(false);
     expect(compactHeader({ ...DEFAULTS, readable: true }, 1280)).toBe(true);
     expect(compactHeader({ ...DEFAULTS, readable: true }, 1920)).toBe(false);
+    // The Welsh header needs about 300 pixels more than the English one.
+    expect(compactHeader(DEFAULTS, 1280, "cy")).toBe(true);
+    expect(compactHeader(DEFAULTS, 1400, "cy")).toBe(true);
+    expect(compactHeader(DEFAULTS, 1401, "cy")).toBe(false);
+    expect(compactHeader(DEFAULTS, 1280, "en")).toBe(false);
+    expect(compactHeader({ ...DEFAULTS, readable: true }, 1700, "cy")).toBe(true);
   });
   it("puts the choices on the page as attributes", () => {
     const root = fakeRoot();

@@ -6,6 +6,7 @@ import { IconSearch, IconGlossary } from "./icons";
 import { SECTIONS } from "../data/sidebarSections";
 import { filtersForPhrase } from "../lib/careerFilters";
 import { navigate } from "../lib/route";
+import { useT } from "../lib/useLang";
 
 // Where a search result sends you when it isn't one of the page links.
 const goHash = (hash) => {
@@ -56,6 +57,7 @@ const PAGES = SECTIONS.flatMap((s) => s.items).filter((i) => i.key !== "glossary
 // memory once fetched and filter client-side on every keystroke — a live
 // Supabase query per keystroke would be slower and add no real benefit here.
 export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
+  const t = useT();
   const [politicians, setPoliticians] = useState([]);
   const [bills, setBills] = useState([]);
   const [peers, setPeers] = useState([]);
@@ -171,7 +173,8 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
       .filter((p) => p.name?.toLowerCase().includes(q) || p.constituency?.toLowerCase().includes(q) || p.party?.toLowerCase().includes(q))
       .slice(0, 5);
     const matchedBills = bills.filter((b) => b.short_title?.toLowerCase().includes(q)).slice(0, 5);
-    const pages = PAGES.filter((p) => [p.label, p.hint, ...(p.aka ?? [])].some((t) => t?.toLowerCase().includes(q))).slice(0, 4);
+    // Pages match on their English name and on their name in the language being read, so a Welsh search finds Welsh page names.
+    const pages = PAGES.filter((p) => [p.label, p.hint, t(p.label), t(p.hint), ...(p.aka ?? [])].some((w) => w?.toLowerCase().includes(q))).slice(0, 4);
     const glossary = glossaryEntries.filter((g) => g.term.toLowerCase().includes(q) || (g.aliases ?? []).some((a) => a.toLowerCase().includes(q))).slice(0, 4);
     const matchedPeers = peers.filter((p) => p.name?.toLowerCase().includes(q)).slice(0, 4);
     // Constituencies by name, one entry each, opening that seat's page.
@@ -183,7 +186,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
     const elections = electionTools ? electionTools.find(q, electionTools.index, 5) : [];
     const taxes = taxTools ? taxTools.find(q, taxTools.index, 4) : [];
     return { mps, peers: matchedPeers, seats, careers, offices: OFFICE_WORDS.test(q) && q.length >= 4, bills: matchedBills, pages, glossary, answers, measures, councils, donors, elections, taxes, trace: q.length >= 3 };
-  }, [politicians, peers, bills, glossaryEntries, answerTools, siteTools, electionTools, taxTools, query]);
+  }, [politicians, peers, bills, glossaryEntries, answerTools, siteTools, electionTools, taxTools, query, t]);
 
   const hasResults = results.mps.length > 0 || results.peers.length > 0 || results.seats.length > 0 || results.careers.length > 0 || results.offices || results.bills.length > 0 || results.pages.length > 0 || results.glossary.length > 0 || results.answers.length > 0 || results.measures.length > 0 || results.councils.length > 0 || results.donors.length > 0 || results.elections.length > 0 || results.taxes.length > 0 || results.trace;
 
@@ -191,9 +194,9 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
   const resultCount = Object.values(results).reduce((n, v) => n + (Array.isArray(v) ? v.length : v ? 1 : 0), 0);
   const announcement = !open || query.trim().length < 2
     ? ""
-    : loading && !hasResults ? "Getting ready."
-    : hasResults ? `${resultCount} ${resultCount === 1 ? "result" : "results"}. Press the down arrow to move through them.`
-    : "No matches.";
+    : loading && !hasResults ? t("Getting ready.")
+    : hasResults ? (resultCount === 1 ? t("1 result. Press the down arrow to move through them.") : t("{n} results. Press the down arrow to move through them.", { n: resultCount }))
+    : t("No matches.");
 
   function selectPolitician(p) {
     onSelectPolitician?.(p);
@@ -235,13 +238,13 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
         <input
           ref={inputRef}
           type="search"
-          aria-label="Search the site"
+          aria-label={t("Search the site")}
           autoComplete="off"
           value={query}
           onChange={(e) => { startLoading(); setQuery(e.target.value); setOpen(true); }}
           onFocus={(e) => { startLoading(); setOpen(true); e.target.style.borderColor = "var(--sb-accent)"; e.target.style.boxShadow = "0 0 0 3px rgba(30,79,184,0.22)"; }}
           onBlur={(e) => { e.target.style.borderColor = "var(--sb-border)"; e.target.style.boxShadow = "none"; }}
-          placeholder="Search MPs, seats, elections, numbers… (press /)"
+          placeholder={t("Search MPs, seats, elections, numbers… (press /)")}
           style={{
             width: "100%", boxSizing: "border-box", padding: "11px 12px 11px 36px",
             fontFamily: FONT_BODY, fontSize: 14, borderRadius: 10,
@@ -257,7 +260,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
         <div
           ref={dropdownRef}
           role="region"
-          aria-label="Search results"
+          aria-label={t("Search results")}
           onKeyDown={onBoxKeyDown}
           style={{
             position: "absolute", top: "calc(100% + 6px)", left: 0, right: 0, zIndex: 20,
@@ -267,14 +270,14 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
         >
           {!hasResults && (
             <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: "var(--sb-soft)", padding: "8px 6px" }}>
-              {loading ? "Getting ready…" : "No matches."}
+              {loading ? t("Getting ready…") : t("No matches.")}
             </div>
           )}
 
           {results.answers.length > 0 && (
-            <ResultGroup label="Answers">
+            <ResultGroup label={t("Answers")}>
               {results.answers.map((a) => (
-                <ResultRow key={a.id} onClick={() => openHash(`#/answers/${a.id}`)} title={a.question} sub="A plain-English answer with the latest figures" />
+                <ResultRow key={a.id} onClick={() => openHash(`#/answers/${a.id}`)} title={a.question} sub={t("A plain-English answer with the latest figures")} />
               ))}
             </ResultGroup>
           )}
@@ -282,7 +285,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
           {results.mps.length > 0 && (
             <div style={{ marginBottom: 4 }}>
               <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: "var(--sb-faint)", padding: "4px 8px" }}>
-                MPs
+                {t("MPs")}
               </div>
               {results.mps.map((p) => {
                 const color = partyColour(p.party_colour, "var(--sb-faint)");
@@ -306,7 +309,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
           )}
 
           {results.peers.length > 0 && (
-            <ResultGroup label="Peers">
+            <ResultGroup label={t("Peers")}>
               {results.peers.map((p) => (
                 <ResultRow key={p.id} onClick={() => openHash(`#/lords/${p.id}`)} title={p.name} sub={`${p.party ?? "Crossbench"} · ${p.peerage_type ?? "Peer"}`} dot={partyColour(p.party_colour, "var(--sb-faint)")} />
               ))}
@@ -314,20 +317,20 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
           )}
 
           {results.seats.length > 0 && (
-            <ResultGroup label="Constituencies">
+            <ResultGroup label={t("Constituencies")}>
               {results.seats.map((c) => (
-                <ResultRow key={c} onClick={() => openHash(`#/constituency/${encodeURIComponent(c)}`)} title={c} sub="Result, history and local petitions" />
+                <ResultRow key={c} onClick={() => openHash(`#/constituency/${encodeURIComponent(c)}`)} title={c} sub={t("Result, history and local petitions")} />
               ))}
             </ResultGroup>
           )}
 
           {(results.careers.length > 0 || results.offices) && (
-            <ResultGroup label="Explore">
+            <ResultGroup label={t("Explore")}>
               {results.careers.map((f) => (
-                <ResultRow key={f.key} onClick={() => openHash(`#/list/career=${f.key}`)} title={`MPs: ${f.label.toLowerCase()}`} sub="Filter the MP list" />
+                <ResultRow key={f.key} onClick={() => openHash(`#/list/career=${f.key}`)} title={`MPs: ${f.label.toLowerCase()}`} sub={t("Filter the MP list")} />
               ))}
               {results.offices && (
-                <ResultRow onClick={() => openHash(`#/offices/${encodeURIComponent(query.trim())}`)} title={`Who has held “${query.trim()}”?`} sub="Search government and shadow posts" />
+                <ResultRow onClick={() => openHash(`#/offices/${encodeURIComponent(query.trim())}`)} title={`Who has held “${query.trim()}”?`} sub={t("Search government and shadow posts")} />
               )}
             </ResultGroup>
           )}
@@ -335,7 +338,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
           {results.bills.length > 0 && (
             <div style={{ marginBottom: 4 }}>
               <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: "var(--sb-faint)", padding: "4px 8px" }}>
-                Bills
+                {t("Bills")}
               </div>
               {results.bills.map((b, i) => (
                 <button
@@ -353,7 +356,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
           )}
 
           {results.elections.length > 0 && (
-            <ResultGroup label="Elections and governments">
+            <ResultGroup label={t("Elections and governments")}>
               {results.elections.map((x) => (
                 <ResultRow key={x.hash} onClick={() => openHash(x.hash)} title={x.name} sub={x.sub} />
               ))}
@@ -361,7 +364,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
           )}
 
           {results.taxes.length > 0 && (
-            <ResultGroup label="Tax rates">
+            <ResultGroup label={t("Tax rates")}>
               {results.taxes.map((x) => (
                 <ResultRow key={x.hash + x.name} onClick={() => openHash(x.hash)} title={x.name} sub={x.sub} />
               ))}
@@ -369,7 +372,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
           )}
 
           {results.measures.length > 0 && (
-            <ResultGroup label="Statistics">
+            <ResultGroup label={t("Statistics")}>
               {results.measures.map((m) => (
                 <ResultRow key={m.ref} onClick={() => openHash(`#/indicators/${m.ref}`)} title={m.label} sub={`${m.sectorLabel}: see how it has changed`} />
               ))}
@@ -377,7 +380,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
           )}
 
           {results.councils.length > 0 && (
-            <ResultGroup label="Councils">
+            <ResultGroup label={t("Councils")}>
               {results.councils.map((c) => (
                 <ResultRow key={c.id} onClick={() => openHash(`#/councils/${c.id}`)} title={c.name} sub={c.control || "Who runs it and who sits on it"} />
               ))}
@@ -385,12 +388,12 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
           )}
 
           {(results.donors.length > 0 || results.trace) && (
-            <ResultGroup label="Money">
+            <ResultGroup label={t("Money")}>
               {results.donors.map((d) => (
-                <ResultRow key={d.name} onClick={() => openHash(`#/followTheMoney/${encodeURIComponent(d.name)}`)} title={d.name} sub="Trace everyone this donor has funded" />
+                <ResultRow key={d.name} onClick={() => openHash(`#/followTheMoney/${encodeURIComponent(d.name)}`)} title={d.name} sub={t("Trace everyone this donor has funded")} />
               ))}
               {results.trace && (
-                <ResultRow onClick={() => openHash(`#/followTheMoney/${encodeURIComponent(query.trim())}`)} title={`Trace “${query.trim()}” as a donor`} sub="Search MPs' interests and party donations for this name" />
+                <ResultRow onClick={() => openHash(`#/followTheMoney/${encodeURIComponent(query.trim())}`)} title={`Trace “${query.trim()}” as a donor`} sub={t("Search MPs' interests and party donations for this name")} />
               )}
             </ResultGroup>
           )}
@@ -398,7 +401,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
           {results.pages.length > 0 && (
             <div style={{ marginBottom: 4 }}>
               <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: "var(--sb-faint)", padding: "4px 8px" }}>
-                Pages
+                {t("Pages")}
               </div>
               {results.pages.map((p) => (
                 <button
@@ -411,7 +414,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
                   <span style={{ display: "flex", color: "var(--sb-soft)", flexShrink: 0 }}>
                     <p.icon size={13} />
                   </span>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: "var(--sb-strong)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.label}</div>
+                  <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: "var(--sb-strong)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t(p.label)}</div>
                 </button>
               ))}
             </div>
@@ -420,7 +423,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
           {results.glossary.length > 0 && (
             <div>
               <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: "var(--sb-faint)", padding: "4px 8px" }}>
-                Glossary
+                {t("Glossary")}
               </div>
               {results.glossary.map((g) => (
                 <button

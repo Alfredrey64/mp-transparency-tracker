@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useT } from "../lib/useLang";
 
 // A round button that appears once a long page has been scrolled, with a ring around it that fills as you read down the page. Tapping it
 // returns to the top.
@@ -6,6 +7,7 @@ const R = 21;
 const CIRC = 2 * Math.PI * R;
 
 export default function BackToTop() {
+  const t = useT();
   const ref = useRef(null);
   const [on, setOn] = useState(false);
 
@@ -33,7 +35,7 @@ export default function BackToTop() {
   return (
     <button
       ref={ref} type="button" className={`to-top${on ? " to-top-on" : ""}`} onClick={toTop}
-      aria-label="Back to top" tabIndex={on ? 0 : -1} aria-hidden={on ? undefined : "true"}
+      aria-label={t("Back to top")} tabIndex={on ? 0 : -1} aria-hidden={on ? undefined : "true"}
       style={{ position: "fixed" }}
     >
       <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden="true" focusable="false">

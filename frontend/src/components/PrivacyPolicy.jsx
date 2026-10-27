@@ -38,7 +38,8 @@ export default function PrivacyPolicy({ onNavigate }) {
           <ul style={{ margin: 0, paddingLeft: 20 }}>
             <li style={{ marginBottom: 8 }}>
               <strong style={{ color: COLORS.ink }}>Your device only:</strong> a few preferences are saved in your
-              browser's local storage: light or dark mode if you choose dark, the MPs you follow, a postcode or
+              browser's local storage: light or dark mode if you choose dark, your text and display choices, whether you
+              read the site in English or Welsh, the MPs you follow, a postcode or
               constituency you pick, and whether help boxes are open. They never leave your device and aren't visible to us.
             </li>
             <li style={{ marginBottom: 8 }}>

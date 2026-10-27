@@ -19,7 +19,7 @@ test("a pair in the address shows both councils, line by line, without a verdict
   await expect(tax).toContainText("£2,5");
   await expect(tax).toContainText("£1,050");
   await expect(tax).toContainText("up 66% since 2010 to 11");
-  await expect(main.getByText(/Blackpool's bill is £[\d,]+ higher than Westminster's\./)).toBeVisible();
+  await expect(main.getByText(/The bill in Blackpool is £[\d,]+ higher than in Westminster\./)).toBeVisible();
 
   const dep = main.getByRole("group", { name: "Deprivation" });
   await expect(dep).toContainText("1st");
