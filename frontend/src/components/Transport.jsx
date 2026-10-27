@@ -187,7 +187,7 @@ export default function Transport({ param }) {
     if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ block: "start" });
   }
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader icon={IconTransport} kicker="Britain in numbers" title="Transport" subtitle="How much we drive and what in, how many people die on the roads, how rail and buses are used and paid for, where it differs across the country, and the arguments." />
       <div ref={ref} style={{ scrollMarginTop: 12 }}>
         <PageToggles tabs={TABS} current={tab} onPick={go} label="What to look at" idPrefix="to" />

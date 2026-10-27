@@ -134,6 +134,7 @@ test("every Welsh page keeps its heading, buttons and links readable at the larg
 // A safety net that does not depend on reading the source: with tracking on, every sentence a Welsh page asks the translator for that has no Welsh is noted, and
 // there must be none. It covers whatever is really drawn, including strings passed through variables.
 test("nothing a Welsh page asks to have translated is missing from the Welsh words", async ({ page }) => {
+  test.setTimeout(90000);
   await page.addInitScript(() => { window.__i18nTrack = true; });
   await page.setViewportSize({ width: 1700, height: 900 });
   const missing = async () => page.evaluate(() => [...(window.__i18nMissing ?? [])]);

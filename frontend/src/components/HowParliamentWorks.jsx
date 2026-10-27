@@ -603,7 +603,7 @@ function ConstituencyLookup() {
 
 export default function HowParliamentWorks() {
   return (
-    <div style={{ padding: PAGE_PADDING, maxWidth: 1180, margin: "0 auto" }}>
+    <div style={{ padding: PAGE_PADDING, maxWidth: 1100, margin: "0 auto" }}>
       <PageHeader
         title="How Parliament works"
         subtitle={

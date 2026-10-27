@@ -137,7 +137,7 @@ export default function DevolvedAdministrations() {
   const [openIndex, setOpenIndex] = useState(null);
 
   return (
-    <div style={{ maxWidth: 1120, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconDevolved}
         kicker="Devolved Administrations"

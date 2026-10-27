@@ -239,7 +239,7 @@ export default function MyArea() {
   const forget = () => { write(""); setPostcode(""); setState({ status: "idle", data: null, error: null }); };
   const submit = (e) => { e.preventDefault(); if (postcode.trim()) run(postcode); };
   return (
-    <div style={{ maxWidth: 1180, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconPinHome}
         kicker="Your area & your say"

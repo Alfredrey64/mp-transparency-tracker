@@ -621,7 +621,7 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 
 /* Editorial pages (the explainers and "what's hidden" pages): a wide reading layout. On a big screen the cards sit in two
    columns; the header, the "why this matters" band, diagrams and tables span both. Phones and narrow windows get one column. */
-.editorial { max-width: 1320px; margin: 0 auto; container-type: inline-size; }
+.editorial { max-width: 1240px; margin: 0 auto; container-type: inline-size; }
 .editorial-body { display: grid; grid-template-columns: minmax(0, 1fr); column-gap: 28px; }
 .editorial-body > * { grid-column: 1 / -1; min-width: 0; }
 @container (min-width: 900px) {

@@ -349,7 +349,7 @@ export default function Trust({ param }) {
     if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ block: "start" });
   }
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader icon={IconBallot} kicker="Britain in numbers" title="Trust in politics" subtitle="How much people trust government and parliament, here and in other countries, how many vote and what their votes turn into, where to follow the money, and the arguments." />
       <div ref={ref} style={{ scrollMarginTop: 12 }}>
         <PageToggles tabs={TABS} current={tab} onPick={go} label="What to look at" idPrefix="tr" />

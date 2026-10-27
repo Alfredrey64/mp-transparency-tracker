@@ -279,7 +279,7 @@ export default function Glossary() {
   const jump = (letter) => document.getElementById(`letter-${letter}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   return (
-    <div style={{ maxWidth: 940, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1000, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconGlossary}
         kicker="Glossary"

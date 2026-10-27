@@ -156,7 +156,7 @@ export default function DonorsLobbying() {
   const taggedPct = stats.totalValue > 0 ? Math.round((stats.taggedValue / stats.totalValue) * 100) : 0;
 
   return (
-    <div style={{ padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconInfluence}
         title="Who funds MPs"

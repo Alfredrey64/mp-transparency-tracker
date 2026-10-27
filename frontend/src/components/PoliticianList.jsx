@@ -100,7 +100,7 @@ export default function PoliticianList({ onSelect, initialCareer = null }) {
   }, [politicians, query, activeParty, sortBy, careers, careerKeys]);
 
   return (
-    <div style={{ padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconCoin}
         title="What your MPs have declared"

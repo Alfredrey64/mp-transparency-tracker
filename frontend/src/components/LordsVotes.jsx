@@ -216,7 +216,7 @@ export default function LordsVotes() {
   }, [data]);
 
   return (
-    <div style={{ maxWidth: 1180, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconLordsVote}
         kicker="Who's in charge"

@@ -120,7 +120,7 @@ export default function TeacherMode({ param = null }) {
   const start = (i, el) => { opener.current = el; setStartAt(i); setOpen(true); };
 
   return (
-    <div style={{ maxWidth: 1120, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconClassroom}
         kicker="Teacher mode"

@@ -7,7 +7,7 @@
 .ax { display: grid; gap: 20px; margin-top: 14px; }
 .ax h3 { margin: 0 0 8px; font: 800 15px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .ax-seg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-.ax-seg button { min-height: 48px; border-radius: 14px; border: 2px solid var(--c-hairline); background: var(--c-paper); color: var(--c-ink); font-family: "Figures", "Public Sans", system-ui, sans-serif; font-weight: 700; cursor: pointer; }
+.ax-seg button { min-height: 48px; border-radius: 14px; border: 2px solid var(--c-hairline); background: var(--c-paper); color: var(--c-ink); font-family: "Figures", "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; }
 .ax-seg button[aria-pressed="true"] { border-color: var(--c-brand); background: color-mix(in srgb, var(--c-brand) 14%, var(--c-paper-card)); }
 .ax-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
 .ax-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--c-hairline); }

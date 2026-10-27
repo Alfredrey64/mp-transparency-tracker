@@ -174,7 +174,7 @@ export default function Care({ param }) {
     if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ block: "start" });
   }
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader icon={IconHeart} kicker="Britain in numbers" title="Social care and childcare" subtitle="What councils spend on adult social care and who gets help, the people who provide it and the carers who do the rest, funded childcare for young children, and the arguments." />
       <div ref={ref} style={{ scrollMarginTop: 12 }}>
         <PageToggles tabs={TABS} current={tab} onPick={go} label="What to look at" idPrefix="co" />

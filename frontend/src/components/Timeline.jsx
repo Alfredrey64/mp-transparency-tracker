@@ -355,7 +355,7 @@ export default function Timeline() {
   }
 
   return (
-    <div style={{ maxWidth: 1000, margin: "0 auto", padding: PAGE_PADDING, position: "relative" }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING, position: "relative" }}>
       <motion.div
         aria-hidden
         style={{

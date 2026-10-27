@@ -37,7 +37,7 @@ export default function GovernmentBudget({ embedded = false }) {
   }
 
   return (
-    <div style={embedded ? { marginTop: 8 } : { maxWidth: 1040, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={embedded ? { marginTop: 8 } : { maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
       {!embedded && (
         <PageHeader
           icon={IconBudget}

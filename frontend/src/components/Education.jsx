@@ -394,7 +394,7 @@ export default function Education({ param }) {
     if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ block: "start" });
   }
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader icon={IconMortarboard} kicker="Britain in numbers" title="Education" subtitle="How schools in England are doing, the gap between richer and poorer pupils, special needs support, university fees and loans, and the arguments about each." />
       <div ref={ref} style={{ scrollMarginTop: 12 }}>
         <PageToggles tabs={TABS} current={tab} onPick={go} label="What to look at" idPrefix="edu" />

@@ -1,4 +1,3 @@
-import { PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconDarkMoney, IconShield, IconSearch, IconGroup, IconPartyFinance } from "./icons";
@@ -11,7 +10,7 @@ const pounds = (n) => `£${Math.round(n).toLocaleString("en-GB")}`;
 
 export default function DarkMoney() {
   return (
-    <div className="st" style={{ paddingTop: PAGE_PADDING }}>
+    <div className="st" style={{ paddingTop: "clamp(20px, 5vw, 40px)" }}>
       <PageHeader
         icon={IconDarkMoney}
         kicker="Transparency Gaps"

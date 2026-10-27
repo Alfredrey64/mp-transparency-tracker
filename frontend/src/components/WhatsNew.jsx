@@ -12,7 +12,7 @@ const ISSUES = "https://github.com/Alfredrey64/mp-transparency-tracker/issues";
 export default function WhatsNew({ onNavigate }) {
   const go = onNavigate ?? ((key) => { window.location.assign(`/${key}`); });
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1000, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader icon={IconFeed} kicker="About this site" title="What's new" subtitle="New pages and changes to the site, newest first, in plain words." />
       <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 14 }}>
         {UPDATES.map((u) => (

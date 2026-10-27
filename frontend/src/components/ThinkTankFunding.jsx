@@ -1,4 +1,3 @@
-import { PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconThinkTank, IconSearch, IconBroadcast, IconQuestion } from "./icons";
@@ -67,7 +66,7 @@ const SHORT = {"Institute of Economic Affairs": "IEA", "Adam Smith Institute": "
 export default function ThinkTankFunding() {
   const ladder = THINK_TANKS.map((t) => ({ ...t, short: SHORT[t.name] ?? t.name }));
   return (
-    <div className="st" style={{ paddingTop: PAGE_PADDING }}>
+    <div className="st" style={{ paddingTop: "clamp(20px, 5vw, 40px)" }}>
       <PageHeader
         icon={IconThinkTank}
         kicker="Transparency Gaps"

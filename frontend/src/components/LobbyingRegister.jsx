@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Board, Why, Chapter, Split, Pull, Cards } from "./story/Kit";
 import { TwoRoutes, Iceberg } from "./story/LobbyArt";
-import { COLORS, FONT_BODY, PAGE_PADDING, readable } from "../theme";
+import { COLORS, FONT_BODY, readable } from "../theme";
 import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { formatDate } from "../lib/format";
@@ -133,7 +133,7 @@ function RegisterSearch() {
 
 export default function LobbyingRegister() {
   return (
-    <div className="st" style={{ paddingTop: PAGE_PADDING }}>
+    <div className="st" style={{ paddingTop: "clamp(20px, 5vw, 40px)" }}>
       <PageHeader
         icon={IconRegister}
         kicker="Transparency Gaps"

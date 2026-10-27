@@ -450,7 +450,7 @@ export default function HouseOfLords({ peerId = null }) {
   }
 
   return (
-    <div style={{ padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconLords}
         kicker="House of Lords"

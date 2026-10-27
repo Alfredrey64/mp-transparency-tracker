@@ -187,7 +187,7 @@ export default function MyBallot() {
 
   const pcText = state.pc ? `${state.pc.slice(0, -3)} ${state.pc.slice(-3)}` : "";
   return (
-    <div style={{ maxWidth: 940, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1000, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader icon={IconWhoStands} kicker="Your say" title={t("Who is on my ballot")} subtitle={t("Put in a postcode to see the elections coming up where you live and the people standing in them.")} />
 
       <section aria-labelledby="h-mb-find" style={{ ...card, marginTop: 24 }}>

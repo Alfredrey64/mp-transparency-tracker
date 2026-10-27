@@ -6,7 +6,7 @@ import PromiseTracker from "./PromiseTracker";
 
 export default function GovernmentTracker() {
   return (
-    <div style={{ maxWidth: 1080, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconTracker}
         kicker="Promises Tracker"

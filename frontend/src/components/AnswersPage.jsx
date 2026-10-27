@@ -160,7 +160,7 @@ export default function AnswersPage({ param }) {
   const open = (id) => { setQuery(""); navigate(`#/answers/${id}`); window.scrollTo({ top: 0 }); };
 
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1000, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader icon={IconAsk} title="Ask a question" subtitle="Type a question, such as why housing is so expensive, or pick one below. You get a plain answer, the latest official figures, and the main arguments from different sides." maxWidth={720} />
 
       <form role="search" onSubmit={(e) => { e.preventDefault(); if (results[0]) open(results[0].id); }} style={{ position: "relative", margin: "22px 0 16px" }}>

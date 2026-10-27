@@ -46,7 +46,7 @@ export default function Councils({ param }) {
   }, [id]);
 
   return (
-    <div style={{ maxWidth: 1120, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
       {data ? (
         <Hero
           index={data.index}

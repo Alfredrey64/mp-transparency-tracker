@@ -115,6 +115,8 @@ function BillEntry({ bill, politicians, initiallyOpen }) {
       transition={{ duration: 0.15 }}
       style={{
         gridColumn: open ? "1 / -1" : undefined, minWidth: 0,
+        // Cards in a row are the same height, with the text in each centred in it.
+        display: "flex", flexDirection: "column",
         background: COLORS.paperCard,
         border: `1px solid ${COLORS.hairline}`,
         borderRadius: 14,
@@ -122,7 +124,7 @@ function BillEntry({ bill, politicians, initiallyOpen }) {
         overflow: "hidden",
       }}
     >
-      <button onClick={toggle} style={{ display: "flex", alignItems: "center", gap: 14, width: "100%", background: "none", border: "none", padding: 16, cursor: "pointer", textAlign: "left" }}>
+      <button onClick={toggle} style={{ display: "flex", alignItems: "center", gap: 14, width: "100%", flex: "1 0 auto", background: "none", border: "none", padding: 16, cursor: "pointer", textAlign: "left" }}>
         <div
           style={{
             width: 40, height: 40, borderRadius: 10, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
@@ -651,7 +653,7 @@ export default function VotingRecords({ initialMp = null, initialBill = null, in
         {!loadingBills && !billsFailed && billsShown.length === 0 && (
           <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No bills found in this category right now.</div>
         )}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 520px), 1fr))", gap: 12, alignItems: "start" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 520px), 1fr))", gap: 12 }}>
           {billsShown.map((bill) => (
             <BillEntry key={bill.bill_id} bill={bill} politicians={politicians} initiallyOpen={bill.bill_id === initialBill} />
           ))}

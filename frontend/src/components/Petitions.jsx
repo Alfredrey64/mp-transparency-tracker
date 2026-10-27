@@ -160,7 +160,7 @@ export default function Petitions() {
   }, [petitions, filter]);
 
   return (
-    <div style={{ maxWidth: 1180, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconPetition}
         kicker="Petitions"

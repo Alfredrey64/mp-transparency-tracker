@@ -338,7 +338,7 @@ export default function Nhs({ param }) {
     if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ block: "start" });
   }
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader icon={IconPulse} kicker="Britain in numbers" title="The NHS" subtitle="How long people wait for hospital treatment, emergency and cancer care, where waits are longest, who works in the NHS and what the country spends, how the UK compares, and the arguments about it." />
       <div ref={ref} style={{ scrollMarginTop: 12 }}>
         <PageToggles tabs={TABS} current={tab} onPick={go} label="What to look at" idPrefix="hl" />

@@ -150,7 +150,7 @@ export default function Offices({ initialQuery = "" }) {
   const govCount = data ? data.filter((o) => o.kind === "gov").length : 0;
   const oppCount = data ? data.length - govCount : 0;
   return (
-    <div style={{ maxWidth: 960, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconCabinet}
         accent="#C7871A"

@@ -17,7 +17,7 @@ export default function TermsConditions() {
     <div style={{ padding: PAGE_PADDING }}>
       <PageHeader icon={IconBook} title="Terms & Conditions" subtitle="Last updated 7 September 2026." maxWidth={760} />
 
-      <div style={{ maxWidth: 760 }}>
+      <div style={{ maxWidth: 760, margin: "0 auto" }}>
         <Section title="What this site is">
           Simple Politics is an independent, non-commercial project that aggregates publicly available UK
           Parliament data, declared financial interests, voting records, bills, and All-Party Parliamentary Group
@@ -32,7 +32,7 @@ export default function TermsConditions() {
           </p>
           <ul style={{ margin: "0 0 12px", paddingLeft: 20 }}>
             <li style={{ marginBottom: 8 }}>Source registers are updated on their own schedule. This site may lag behind the live official record.</li>
-            <li style={{ marginBottom: 8 }}>Donor "sector" tags reflect a company's registered industry classification, not a statement about that donor's or MP's views, intentions, or conduct.</li>
+            <li style={{ marginBottom: 8 }}>Donor “sector” tags reflect a company's registered industry classification, not a statement about that donor's or MP's views, intentions, or conduct.</li>
             <li style={{ marginBottom: 8 }}>Where a donor is not confidently identified, no sector is shown. That is not the same as confirming they have no industry ties.</li>
             <li>Always check the linked official source before relying on any figure for a decision.</li>
           </ul>

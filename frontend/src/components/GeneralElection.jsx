@@ -39,7 +39,7 @@ export default function GeneralElection({ param }) {
   }
 
   return (
-    <div style={{ maxWidth: 1000, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconVote}
         kicker="Elections"

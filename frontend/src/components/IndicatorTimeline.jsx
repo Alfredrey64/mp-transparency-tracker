@@ -234,7 +234,7 @@ export default function IndicatorTimeline({ param }) {
   });
 
   return (
-    <div style={{ maxWidth: 1080, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconCompareTime}
         title="Compare the numbers over time"

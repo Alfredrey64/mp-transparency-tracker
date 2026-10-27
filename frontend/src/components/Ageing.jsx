@@ -358,7 +358,7 @@ export default function Ageing({ param }) {
     if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ block: "start" });
   }
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader icon={IconPension} kicker="Britain in numbers" title="Ageing and pensions" subtitle="What the State Pension pays and costs, when you can claim it, how the population is ageing, and the arguments about the triple lock, the pension age and who pays." />
       <div ref={ref} style={{ scrollMarginTop: 12 }}>
         <PageToggles tabs={TABS} current={tab} onPick={go} label="What to look at" idPrefix="age" />

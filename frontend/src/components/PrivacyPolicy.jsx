@@ -17,11 +17,11 @@ export default function PrivacyPolicy({ onNavigate }) {
     <div style={{ padding: PAGE_PADDING }}>
       <PageHeader icon={IconShield} title="Privacy Policy" subtitle="Last updated 27 October 2026." maxWidth={760} />
 
-      <div style={{ maxWidth: 760 }}>
+      <div style={{ maxWidth: 760, margin: "0 auto" }}>
         <Section title="The short version">
           This site does not have user accounts, does not ask you to log in, and does not collect names, emails, or
-          payment details from visitors. It's a read-only tool for browsing public UK Parliament data. The "personal
-          data" you'll see on this site is about Members of Parliament, public figures acting in their public role,
+          payment details from visitors. It's a read-only tool for browsing public UK Parliament data. The “personal
+          data” you'll see on this site is about Members of Parliament, public figures acting in their public role,
           published under the UK Parliament's own official registers.
         </Section>
 

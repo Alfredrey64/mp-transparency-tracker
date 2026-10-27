@@ -1,4 +1,3 @@
-import { PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconDoor, IconShield, IconGavel, IconCompare } from "./icons";
@@ -32,7 +31,7 @@ const CASES = [
 
 export default function RevolvingDoor() {
   return (
-    <div className="st" style={{ paddingTop: PAGE_PADDING }}>
+    <div className="st" style={{ paddingTop: "clamp(20px, 5vw, 40px)" }}>
       <PageHeader
         icon={IconDoor}
         kicker="Transparency Gaps"

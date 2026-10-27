@@ -90,7 +90,7 @@ export default function TaxRates({ param }) {
 
   const current = TABS.find((t) => t.key === nav.tab);
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconTaxes}
         kicker="Britain in numbers"

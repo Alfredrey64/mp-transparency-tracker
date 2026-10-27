@@ -323,7 +323,7 @@ export default function FollowTheMoney({ onSelectPolitician, initialQuery = null
   const totalGiven = shownResults.reduce((n, r) => n + r.grandTotal, 0);
 
   return (
-    <div style={{ padding: PAGE_PADDING, maxWidth: 1000, margin: "0 auto" }}>
+    <div style={{ padding: PAGE_PADDING, maxWidth: 1240, margin: "0 auto" }}>
       <PageHeader
         icon={IconSearch}
         kicker="Follow the Money"

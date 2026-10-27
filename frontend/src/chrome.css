@@ -309,6 +309,8 @@
   font: 600 15px/1.2 "Figures", "Public Sans", system-ui, sans-serif; transition: background-color 0.18s var(--ease-out), color 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out);
 }
 .seg-btn:hover { color: var(--c-ink); background: color-mix(in srgb, var(--c-paper-card) 60%, transparent); }
+/* A page's tabs, when they wrap on a narrow screen, share each row out evenly so no tab is left alone and lopsided. */
+@media (max-width: 560px) { [role="tablist"].seg > .seg-btn { flex: 1 1 auto; text-align: center; } }
 .seg-btn[aria-selected="true"], .seg-btn[aria-pressed="true"] { background: color-mix(in srgb, var(--c, var(--c-brand)) 82%, #000); color: #fff; box-shadow: 0 8px 16px -10px var(--c, var(--c-brand)); }
 .seg-btn[aria-selected="true"]::before, .seg-btn[aria-pressed="true"]::before { content: none; }
 .seg-btn { color: var(--c-ink); }

@@ -23,7 +23,7 @@ const list = { margin: 0, paddingLeft: 20, display: "grid", gap: 8 };
 
 export default function Funding({ onNavigate }) {
   return (
-    <div style={{ padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1000, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconLedger}
         accent="#2A9D8F"

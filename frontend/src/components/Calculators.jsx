@@ -262,7 +262,7 @@ export default function Calculators({ param, onNavigate }) {
   const go = (key) => { setTab(key); window.history.replaceState(null, "", key === "pay" ? "/calculators" : `/calculators/${key}`); };
   const current = TABS.find((t) => t.key === tab);
   return (
-    <div style={{ maxWidth: 1000, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconCalculator}
         accent={ACCENT}

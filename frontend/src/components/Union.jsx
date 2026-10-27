@@ -197,7 +197,7 @@ export default function Union({ param }) {
     if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ block: "start" });
   }
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader icon={IconSplit} kicker="Britain in numbers" title="Devolution and the union" subtitle="What Scotland, Wales, Northern Ireland and the regions of England spend, raise and produce, who decides what, and the arguments about funding, the union and English devolution." />
       <div ref={ref} style={{ scrollMarginTop: 12 }}>
         <PageToggles tabs={TABS} current={tab} onPick={go} label="What to look at" idPrefix="un" />

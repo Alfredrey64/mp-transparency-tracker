@@ -2,6 +2,8 @@
 import { InstallCard } from "./InstallApp";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { useTheme } from "../lib/ThemeContext";
+import { useLang } from "../lib/useLang";
+import { LANGS, LANG_NAMES } from "../lib/i18n";
 import { PageHeader } from "./shared";
 import { IconSettings } from "./icons";
 
@@ -59,12 +61,13 @@ function ToggleSwitch({ checked, onChange, label, description }) {
 
 export default function Settings({ onNavigate }) {
   const { theme, toggleTheme } = useTheme();
+  const [lang, setLang] = useLang();
 
   return (
     <div style={{ padding: PAGE_PADDING }}>
       <PageHeader icon={IconSettings} title="Settings" subtitle="Display preferences and legal information." maxWidth={700} />
 
-      <div style={{ maxWidth: 560, display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{ maxWidth: 640, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
         <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: 20 }}>
           <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 14 }}>
             Display
@@ -75,6 +78,12 @@ export default function Settings({ onNavigate }) {
             label="Dark mode"
             description="Switches the app's backgrounds, text, and borders. Saved on this device."
           />
+          <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${COLORS.hairline}` }}>
+            <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 14.5, color: COLORS.ink, marginBottom: 8 }}>Language</div>
+            <div className="seg" role="group" aria-label="Language" style={{ display: "inline-flex" }}>
+              {LANGS.map((code) => <button key={code} type="button" lang={code} className="seg-btn" aria-pressed={lang === code} onClick={() => setLang(code)}>{LANG_NAMES[code]}</button>)}
+            </div>
+          </div>
           <button type="button" onClick={() => onNavigate("accessibility")} style={{ marginTop: 14, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontWeight: 700, fontSize: 14, color: COLORS.ink, textDecoration: "underline" }}>
             Text size, easy-to-read letters, listening and more
           </button>
@@ -91,13 +100,13 @@ export default function Settings({ onNavigate }) {
               onClick={() => onNavigate("privacy")}
               style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, textAlign: "left" }}
             >
-              Privacy Policy
+              Privacy Policy<span aria-hidden="true" style={{ color: COLORS.inkSoft }}>›</span>
             </button>
             <button
               onClick={() => onNavigate("terms")}
               style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, textAlign: "left" }}
             >
-              Terms & Conditions
+              Terms & Conditions<span aria-hidden="true" style={{ color: COLORS.inkSoft }}>›</span>
             </button>
           </div>
         </div>

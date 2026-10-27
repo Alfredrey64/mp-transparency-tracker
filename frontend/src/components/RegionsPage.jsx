@@ -270,7 +270,7 @@ export default function RegionsPage({ param }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playing, speedId, timeline.length]);
 
-  if (failed) return <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}><LoadFailedNote item="the regional figures" /></div>;
+  if (failed) return <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}><LoadFailedNote item="the regional figures" /></div>;
 
   const nClasses = bounds.length - 1;
   const colour = (key) => (valid(atIdx[key]) ? classColour(accent, classOf(atIdx[key], bounds), nClasses) : COLORS.hairline);

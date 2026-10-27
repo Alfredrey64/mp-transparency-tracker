@@ -181,7 +181,7 @@ export default function AskedAbout({ onSelectPolitician, onNavigateForMp, initia
   const openQuestions = openPerson ? questionsBy(state.rows, openPerson.key) : [];
 
   return (
-    <div style={{ maxWidth: 940, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconTopic}
         kicker="Written Questions"

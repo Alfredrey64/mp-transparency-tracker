@@ -558,7 +558,7 @@ export default function SectorPage({ sector, param = null, embedded = false }) {
   };
 
   return (
-    <div className="regions-wrap" style={embedded ? { marginTop: 8 } : { maxWidth: 1280, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div className="regions-wrap" style={embedded ? { marginTop: 8 } : { maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
       {!embedded && <PageHeader icon={Icon} accent={def.accent} title={def.title} subtitle={def.subtitle} share={loaded ? shareCard : undefined} />}
 
       {failed && <div style={{ marginTop: 24 }}><LoadFailedNote item="these figures" /></div>}

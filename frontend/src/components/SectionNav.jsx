@@ -46,10 +46,11 @@ export default function SectionNav({ view, onNavigate }) {
         <h2>{t("More in {name}", { name: t(section.label) })}</h2>
         {section.blurb && <p>{t(section.blurb)}</p>}
       </div>
-      <div className="sn-pn">
+      {/* With only one other page, "previous" and "next" would be the same link twice, so the one page is shown below instead. */}
+      {items.length > 2 && <div className="sn-pn">
         <PageLink to={prev.key} onNavigate={onNavigate} className="sn-step" rel="prev"><small>{t("Previous")}</small><b>{t(prev.label)}</b></PageLink>
         <PageLink to={next.key} onNavigate={onNavigate} className="sn-step sn-next" rel="next"><small>{t("Next")}</small><b>{t(next.label)}</b></PageLink>
-      </div>
+      </div>}
       <div className="sn-grid">{near.map((i) => card(i))}</div>
     </nav>
   );

@@ -210,7 +210,7 @@ export default function CompareSeats({ param }) {
   const colourFor = (r) => colour(r.mp.colour);
 
   return (
-    <div className="regions-wrap" style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div className="regions-wrap" style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader icon={IconSeatCompare} title="Compare constituencies" subtitle="Pick any two seats to see who holds them, how close the results were, how they have voted before and how deprived each area is." share={false} />
       {failed && <LoadFailedNote item="the constituency data" />}
       {!failed && !data && <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft }}>Loading the constituencies…</p>}

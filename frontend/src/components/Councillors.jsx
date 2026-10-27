@@ -164,7 +164,7 @@ export default function Councillors({ param }) {
   }, []);
   const target = parseParam(param);
   return (
-    <div style={{ maxWidth: 1180, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconCouncillor}
         kicker="Your area & your say"
