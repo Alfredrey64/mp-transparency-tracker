@@ -190,7 +190,7 @@ export default function TeacherMode({ param = null }) {
         <h2 id="h-tm-fair" style={cardTitle}>Fair to every party</h2>
         <p style={{ fontFamily: FONT_BODY, fontSize: 15.5, lineHeight: 1.65, color: COLORS.inkSoft, margin: "8px 0 0", maxWidth: 760 }}>
           Nothing in Teacher mode tells a child who to vote for. In the stories, people weigh up ideas, and the ideas are described, not ranked. On the party
-          slides each party gets the same space: who leads it, what it tends to believe, and what it promised at the 2024 election, taken from the summaries on
+          slides each party gets the same space: who leads it, its main ideas, and what it promised at the 2024 election, taken from the summaries on
           the <a href="#/parties" style={{ color: COLORS.ink, fontWeight: 700 }}>party promises page</a>. Where a number or a leader can change, the slide says when it was last
           checked. If you spot anything that looks wrong, please tell us.
         </p>

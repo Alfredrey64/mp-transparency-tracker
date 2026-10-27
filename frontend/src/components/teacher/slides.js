@@ -72,7 +72,7 @@ export function buildSlides(seats = {}, names) {
         steps: [
           { kicker: "Political parties", title: "What is a party?", text: "A political party is a group of people who share ideas about how the country should be run." },
           { kicker: "Political parties", text: "Each party chooses a leader and tries to win seats in Parliament by persuading people to vote for it. The party with the most support usually forms the government." },
-          { kicker: "Political parties", title: "A fair warning", text: "We are not telling anyone who to vote for. The next slides show what each party tends to believe, who leads it and what it promised in 2024.", fact: `Leaders and seat numbers change. They were last checked on ${CHECKED}.` },
+          { kicker: "Political parties", title: "A fair warning", text: "We are not telling anyone who to vote for. The next slides show the main ideas of each party, who leads it and what it promised in 2024.", fact: `Leaders and seat numbers change. They were last checked on ${CHECKED}.` },
         ],
         ask: ["Why do people join a party?", "Can two people who disagree still both want the best for the country?"],
       });
@@ -83,7 +83,7 @@ export function buildSlides(seats = {}, names) {
           kind: "party", party: p,
           steps: [
             { kicker: "The parties", title: p.name, text: `${p.leader} is the ${p.role.charAt(0).toLowerCase() + p.role.slice(1)}. ${p.status}`, fact: mps ? `${p.name} has ${mps} MPs in the House of Commons.` : undefined },
-            { kicker: "The parties", title: "What it tends to believe", text: p.idea },
+            { kicker: "The parties", title: "Its main ideas", text: p.idea },
             { kicker: "The parties", title: "What it promised in 2024", list: m ? m.highlights.slice(0, 3) : undefined, text: m ? undefined : "See the party's own website." },
           ],
           ask: ["What question would you like to ask this party's leader?", "What would you check before believing a promise?"],

@@ -48,7 +48,7 @@ export const CHAPTERS = [
     short: "The parties",
     minutes: 15,
     colour: "#0E9AA7",
-    blurb: "What each main party tends to believe, who leads it, and what it promised at the 2024 election. No party is recommended.",
+    blurb: "The main ideas of each main party, who leads it, and what it promised at the 2024 election. No party is recommended.",
     aims: ["Explain what a political party is.", "Tell the difference between the party that governs and the opposition."],
     ask: ["Why might two people who both want a fairer country disagree about how to get there?", "How could you check whether a promise has been kept?"],
   },
@@ -172,11 +172,11 @@ export const WHO_RUNS = [
 // Ireland posts are those already shown on the Scotland, Wales and Northern Ireland page of this site.
 
 export const PARTIES = [
-  { key: "labour", name: "Labour", colour: "#DC241F", manifesto: "labour", leader: "Andy Burnham", role: "Leader and Prime Minister", status: "Won the 2024 election, so it runs the government.", idea: "A centre-left party. It tends to believe the government should play a big part in running services like the NHS and schools, and in protecting workers." },
-  { key: "conservative", name: "Conservative", colour: "#0087DC", manifesto: "conservative", leader: "Kemi Badenoch", role: "Leader and Leader of the Opposition", status: "The biggest party that is not in government.", idea: "A centre-right party. It tends to believe in lower taxes, in helping businesses to grow, and in strong police and armed forces." },
-  { key: "liberal-democrat", name: "Liberal Democrats", colour: "#E08A00", manifesto: "liberal-democrat", leader: "Ed Davey", role: "Leader", status: "The third biggest party in the Commons.", idea: "A centrist party. It tends to believe in fairer voting, in protecting people's freedoms, in good health and care services, and in a closer relationship with Europe." },
-  { key: "reform-uk", name: "Reform UK", colour: "#12B6CF", manifesto: "reform-uk", leader: "Nigel Farage", role: "Leader", status: "A newer party that won its first MPs in 2024.", idea: "A right-wing party. It wants much lower immigration and lower taxes, and big changes to how some public services and institutions work." },
-  { key: "green", name: "Green Party", colour: "#6AB023", manifesto: "green", leader: "Zack Polanski", role: "Leader of the Green Party of England and Wales", status: "A smaller party with a few MPs.", idea: "A party that puts protecting nature and fighting climate change at the centre of its ideas, and that wants more spending on public services." },
+  { key: "labour", name: "Labour", colour: "#DC241F", manifesto: "labour", leader: "Andy Burnham", role: "Leader and Prime Minister", status: "Won the 2024 election, so it runs the government.", idea: "Its main ideas are that the government should play a big part in running services like the NHS and schools, that more homes should be built, and that workers should be protected." },
+  { key: "conservative", name: "Conservative", colour: "#0087DC", manifesto: "conservative", leader: "Kemi Badenoch", role: "Leader and Leader of the Opposition", status: "The biggest party that is not in government.", idea: "Its main ideas are lower taxes, helping businesses to grow, and strong police and armed forces." },
+  { key: "liberal-democrat", name: "Liberal Democrats", colour: "#E08A00", manifesto: "liberal-democrat", leader: "Ed Davey", role: "Leader", status: "The third biggest party in the Commons.", idea: "Its main ideas are fairer voting, protecting people's freedoms, good health and care services, and a closer relationship with Europe." },
+  { key: "reform-uk", name: "Reform UK", colour: "#12B6CF", manifesto: "reform-uk", leader: "Nigel Farage", role: "Leader", status: "A newer party that won its first MPs in 2024.", idea: "Its main ideas are much lower immigration, lower taxes, and big changes to how some public services and institutions work." },
+  { key: "green", name: "Green Party", colour: "#6AB023", manifesto: "green", leader: "Zack Polanski", role: "Leader of the Green Party of England and Wales", status: "A smaller party with a few MPs.", idea: "Its main ideas are protecting nature, fighting climate change, and spending more on public services." },
   { key: "snp", name: "SNP", colour: "#E3B400", manifesto: "snp", leader: "John Swinney", role: "Leader and First Minister of Scotland", status: "Runs the Scottish Government and has MPs at Westminster.", idea: "The Scottish National Party wants Scotland to become an independent country, separate from the rest of the UK." },
   { key: "plaid-cymru", name: "Plaid Cymru", colour: "#005B54", manifesto: "plaid-cymru", leader: "Rhun ap Iorwerth", role: "Leader and First Minister of Wales", status: "Leads the Welsh Government and has MPs at Westminster.", idea: "A party that wants Wales to have much more control over its own affairs and, in the long run, to become independent." },
 ];

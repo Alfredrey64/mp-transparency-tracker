@@ -217,7 +217,7 @@ export const PAGE_GUIDES = {
     notShown: "What they find behind closed doors. Only members and published reports are shown.",
   },
   teacher: {
-    what: "A separate way to use the site for a class: animated stories about why politics touches everyday life, a simple map of who decides what, how Parliament works, and what each main party tends to believe and who leads it.",
+    what: "A separate way to use the site for a class: animated stories about why politics touches everyday life, a simple map of who decides what, how Parliament works, and the main ideas of each main party and who leads it.",
     why: "Children are affected by political decisions long before they can vote. Understanding how those decisions are made is the start of being able to take part.",
     notShown: "Any advice on who to vote for. The stories describe ideas without ranking them, and the party slides say what each party says about itself. Leaders and seat numbers change, so check them before a lesson.",
   },
