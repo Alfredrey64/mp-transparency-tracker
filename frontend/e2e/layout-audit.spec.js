@@ -43,7 +43,8 @@ function audit({ touch, maxLine }) {
   // other target that a 24 pixel square around it overlaps none of theirs.
   if (touch) {
     const sel = "button, a[href], input:not([type=hidden]), select, textarea, [role=button], [role=tab]";
-    const all = [...document.body.querySelectorAll(sel)].filter((e) => e.offsetParent !== null && !e.closest(".sr-only, .skip-link"));
+    // The floating "On this page" button sits over whatever is scrolled beneath it, so where it lands on the page is down to the scroll, not the layout.
+    const all = [...document.body.querySelectorAll(sel)].filter((e) => e.offsetParent !== null && !e.closest(".sr-only, .skip-link, .pt-tools"));
     // Buttons get an invisible larger area to tap on touch screens (see the pointer: coarse rule in index.css), so that area is what counts for them.
     const grown = (e) => (e.tagName === "BUTTON" && !e.classList.contains("gloss-term") ? { x: 6, y: 8 } : { x: 0, y: 0 });
     const box = (e) => { const r = e.getBoundingClientRect(); const g = grown(e); const w = Math.max(r.width + g.x * 2, 24); const h = Math.max(r.height + g.y * 2, 24); const cx = r.left + r.width / 2; const cy = r.top + r.height / 2; return { l: cx - w / 2, r: cx + w / 2, t: cy - h / 2, b: cy + h / 2 }; };

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { peerRows, partyUnity, mostDivided, governmentDefeats, filterPeers, hexOf } from "./lordsVotesView";
+import { peerRows, partyUnity, mostDivided, governmentDefeats, filterPeers, hexOf, perMonth, regulars } from "./lordsVotesView";
 
 const data = {
   divisions: 10,
@@ -34,5 +34,18 @@ describe("Lords votes view", () => {
     expect(filterPeers(rows, { party: "Labour" }).map((p) => p.id)).toEqual(["1"]);
     expect(filterPeers(rows, { sort: "fewest" })[0].id).toBe("2");
     expect(filterPeers(rows, { sort: "against" })[0].id).toBe("1");
+  });
+  it("counts votes in each of the last twelve months", () => {
+    const d = { generatedAt: "2026-10-26", list: [{ date: "2026-10-20" }, { date: "2026-10-02" }, { date: "2026-09-15" }, { date: "2025-11-03" }, { date: "2024-01-01" }] };
+    const m = perMonth(d);
+    expect(m).toHaveLength(12);
+    expect(m[11]).toMatchObject({ key: "2026-10", n: 2 });
+    expect(m[10].n).toBe(1);
+    expect(m[0]).toMatchObject({ key: "2025-11", n: 1 });
+  });
+  it("counts the peers who vote regularly", () => {
+    expect(regulars(peerRows(data), 10)).toBe(2); // 9 of 10 and 4 of 10
+    expect(regulars(peerRows(data), 10, 0.5)).toBe(1);
+    expect(regulars(peerRows(data), 10, 0.45)).toBe(1);
   });
 });

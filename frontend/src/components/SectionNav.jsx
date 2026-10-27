@@ -1,4 +1,4 @@
-import { SECTIONS } from "../data/sidebarSections";
+import { SECTIONS, collapseItems, hubLead } from "../data/sidebarSections";
 import { PageLink } from "./SiteHeader";
 import "../sectionnav.css";
 
@@ -9,8 +9,8 @@ const SHOWN = 8;
 export default function SectionNav({ view, onNavigate }) {
   const found = (() => {
     for (const section of SECTIONS) {
-      const items = section.items.filter((i) => i.key !== "start" && !i.standalone);
-      const at = items.findIndex((i) => i.key === view);
+      const items = collapseItems(section.items.filter((i) => i.key !== "start" && !i.standalone));
+      const at = items.findIndex((i) => i.key === hubLead(view));
       if (at >= 0) return { section, items, at };
     }
     return null;
@@ -23,9 +23,9 @@ export default function SectionNav({ view, onNavigate }) {
   const near = [];
   for (let d = 1; near.length < Math.min(SHOWN, items.length - 1); d++) {
     const a = items[(at + d) % items.length];
-    if (!near.includes(a) && a.key !== view) near.push(a);
+    if (!near.includes(a) && a.key !== items[at].key) near.push(a);
     const b = items[(at - d + items.length * 4) % items.length];
-    if (!near.includes(b) && b.key !== view && near.length < Math.min(SHOWN, items.length - 1)) near.push(b);
+    if (!near.includes(b) && b.key !== items[at].key && near.length < Math.min(SHOWN, items.length - 1)) near.push(b);
     if (d > items.length) break;
   }
   const card = (i, extra) => {

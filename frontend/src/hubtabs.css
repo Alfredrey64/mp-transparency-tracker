@@ -1,0 +1,9 @@
+/* The strip of tabs across the top of a page that is one of a group. */
+.hubtabs { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 10px max(16px, calc((100% - 1180px) / 2)); background: var(--c-paper-card); border-bottom: 1px solid var(--c-hairline); }
+.hubtabs-name { font: 700 13.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--hc) 78%, var(--c-ink)); display: inline-flex; align-items: center; gap: 8px; }
+.hubtabs-name::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--hc); }
+.hubtabs ul { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.hubtabs-tab { display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1.5px solid var(--c-hairline); background: var(--c-paper); color: var(--c-ink); font: 600 14px "Figures", "Public Sans", system-ui, sans-serif; text-decoration: none; }
+.hubtabs-tab:hover { border-color: var(--hc); background: color-mix(in srgb, var(--hc) 8%, var(--c-paper)); }
+.hubtabs-tab[aria-current="page"] { background: var(--hc); border-color: var(--hc); color: #fff; }
+@media (max-width: 640px) { .hubtabs { flex-direction: column; align-items: stretch; } .hubtabs ul { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 2px; } .hubtabs-tab { white-space: nowrap; } }

@@ -46,7 +46,7 @@ export async function loadAreaFigures(regionKey) {
     if (!here || !nation) continue;
     out.push({
       id, label: m.label, accent: m.accent, link: m.link, value: formatValue(a.def.format, here.value), uk: formatValue(b.def.format, nation.value), when: here.label,
-      higher: here.value > nation.value, same: here.value === nation.value, change: here.change ? changeWords(here.change) : "",
+      raw: here.value, ukRaw: nation.value, higher: here.value > nation.value, same: here.value === nation.value, change: here.change ? changeWords(here.change) : "",
     });
   }
   return out;

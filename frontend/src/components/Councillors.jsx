@@ -1,5 +1,5 @@
 /** @jsxImportSource react */
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { COLORS, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { IconCouncillor, IconSearch } from "./icons";
@@ -7,7 +7,8 @@ import { GlanceStrip } from "./GlanceStrip";
 import { LoadFailedNote } from "./MpCards";
 import Loading from "./Loading";
 import { loadCouncilDetail } from "../lib/councilDetail";
-import { seatsByParty, nextElectionText, longDate } from "../lib/councils";
+import { seatsByParty, nextElectionText, longDate, historyRows } from "../lib/councils";
+import { HistoryChart } from "./CouncilDetail";
 import { loadCouncillorList, search, councillorPath, parseParam, partyCounts } from "../lib/councillorsView";
 import "../councillors.css";
 
@@ -71,12 +72,12 @@ function Directory({ prepared }) {
 function Profile({ prepared, target }) {
   const { rows, parties } = prepared;
   const r = rows.find((x) => x.councilId === target.councilId && x.ward === target.ward && x.name === target.name);
-  const [ctx, setCtx] = useState({ council: null, moves: [] });
+  const [ctx, setCtx] = useState({ council: null, moves: [], history: [] });
   useEffect(() => {
     if (!r) return undefined;
     let alive = true;
     Promise.all([import("../data/councilsIndex.json"), loadCouncilDetail(r.councilId).catch(() => null)]).then(([m, detail]) => {
-      if (alive) setCtx({ council: m.default.index.find((c) => c.id === r.councilId) ?? null, moves: detail?.moved ?? [] });
+      if (alive) setCtx({ council: m.default.index.find((c) => c.id === r.councilId) ?? null, moves: detail?.moved ?? [], history: detail ? historyRows(detail, m.default.historyColumns) : [] });
     }).catch(() => {});
     return () => { alive = false; };
   }, [r]);
@@ -117,6 +118,25 @@ function Profile({ prepared, target }) {
             })}</ul>
           ) : <p>Some wards elect one councillor, and some elect up to three. This ward has only one on the list.</p>}
         </section>
+        {ctx.history.length > 1 && (
+          <section className="cl-box cl-wide" aria-labelledby="cl-h-hist">
+            <h3 id="cl-h-hist">How {r.council} has changed since {ctx.history[0].year}</h3>
+            <p>Each column is one year's council, split by party. The taller a colour, the more seats that party held.</p>
+            <HistoryChart rows={ctx.history} />
+          </section>
+        )}
+        <section className="cl-box cl-wide cl-interests" aria-labelledby="cl-h-int">
+          <h3 id="cl-h-int">Their declared interests</h3>
+          <p>Every councillor has to declare certain interests in a public register kept by their council. We can't show {r.name.split(" ")[0]}'s entry here, because councils publish them on their own websites in their own formats rather than as open data. The register has to cover:</p>
+          <ul className="cl-ticks">
+            <li>jobs, businesses and trades they take part in</li>
+            <li>sponsorship, such as money towards election costs</li>
+            <li>contracts between them (or firms they are linked to) and the council</li>
+            <li>land and property in the council's area</li>
+            <li>shares in firms that do business with the council</li>
+          </ul>
+          <p>To read it, <a href="https://www.gov.uk/find-local-council" target="_blank" rel="noreferrer" style={{ color: COLORS.accentText, fontWeight: 700 }}>find {r.council}'s website on GOV.UK</a> and look for "councillors" and then "register of interests", or ask the council's monitoring officer, who is responsible for it. Concerns about a councillor's conduct go to the same office.</p>
+        </section>
         <section className="cl-box" aria-labelledby="cl-h-do">
           <h3 id="cl-h-do">What a councillor does</h3>
           <p>Councillors vote on the council's budget, planning decisions and local services such as bins, roads, libraries, housing and social care. They also help residents with problems. Most councils decide things through committees, and a few have an elected mayor.</p>
@@ -133,6 +153,8 @@ function Profile({ prepared, target }) {
 }
 
 export default function Councillors({ param }) {
+  // Opening a councillor from the list, or going back to it, always starts at the top of the page.
+  useLayoutEffect(() => { window.scrollTo(0, 0); }, [param]);
   const [prepared, setPrepared] = useState(null);
   const [failed, setFailed] = useState(false);
   useEffect(() => {

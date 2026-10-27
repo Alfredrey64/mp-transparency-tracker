@@ -13,7 +13,7 @@ import { goHash, goCouncil, HISTORY_COLOURS, HISTORY_LABELS, HKEYS, input, linkB
 import { Card, SectionHead, StatCard, Chip, Arrow, Bar } from "./CouncilsParts";
 
 // ---- One council --------------------------------------------------------------
-function HistoryChart({ rows }) {
+export function HistoryChart({ rows }) {
   if (rows.length < 2) return null;
   return (
     <div>

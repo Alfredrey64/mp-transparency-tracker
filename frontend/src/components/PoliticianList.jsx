@@ -1,9 +1,9 @@
 import { useState, useMemo, useEffect } from "react";
-import { motion } from "motion/react";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable, chip } from "../theme";
-import { partyColour, initials } from "../lib/format";
+import { COLORS, FONT_BODY, PAGE_PADDING, readable } from "../theme";
+import { partyColour } from "../lib/format";
 import { PageHeader } from "./shared";
+import PersonCard from "./PersonCard";
 import { IconCoin } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { fetchAllRows } from "../lib/supabasePagination";
@@ -33,53 +33,6 @@ function SkeletonCard() {
   );
 }
 
-function Avatar({ politician, color }) {
-  const [errored, setErrored] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-  if (politician.thumbnail_url && !errored) {
-    return (
-      <div
-        style={{
-          width: 40, height: 40, borderRadius: "50%", flexShrink: 0,
-          display: "flex", alignItems: "center", justifyContent: "center",
-          background: COLORS.paperCard, border: `2px solid ${COLORS.paperCard}`,
-          boxShadow: `0 0 0 2px ${color}55`,
-        }}
-      >
-        <img loading="lazy" decoding="async"
-          src={politician.thumbnail_url}
-          alt=""
-          onError={() => setErrored(true)}
-          onLoad={() => setLoaded(true)}
-          style={{
-            width: 29, height: 29, borderRadius: "50%", objectFit: "cover", objectPosition: "center",
-            opacity: loaded ? 1 : 0, transition: "opacity 0.25s ease",
-          }}
-        />
-      </div>
-    );
-  }
-  return (
-    <div
-      style={{
-        width: 40,
-        height: 40,
-        borderRadius: "50%",
-        flexShrink: 0,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontFamily: FONT_DISPLAY,
-        fontSize: 14,
-        fontWeight: 600,
-        ...chip(color),
-      }}
-    >
-      {initials(politician.name)}
-    </div>
-  );
-}
-// "career=minister,govNow" -> the filter keys it names; anything else -> none.
 function keysFromParam(param) {
   const m = /^career=(.+)$/.exec(param ?? "");
   return m ? m[1].split(",").filter((k) => CAREER_FILTERS.some((f) => f.key === k)) : [];
@@ -305,42 +258,16 @@ export default function PoliticianList({ onSelect, initialCareer = null }) {
           filtered.map((p, i) => {
             const color = partyColour(p.party_colour, COLORS.inkSoft);
             return (
-              <motion.button
+              <PersonCard
                 key={p.id}
+                index={i}
+                name={p.name}
+                photo={p.thumbnail_url}
+                color={color}
+                line={`${p.party} · ${p.constituency}`}
+                extra={careers && careerLine(careers[p.parliament_member_id]) ? careerLine(careers[p.parliament_member_id]) : null}
                 onClick={() => onSelect(p)}
-                initial={{ opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "80px" }}
-                transition={{ duration: 0.25, delay: (i % 16) * 0.02, ease: "easeOut" }}
-                whileHover={{ borderColor: color }}
-                whileTap={{ y: 0 }}
-                style={{
-                  textAlign: "left",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  padding: "12px 14px",
-                  background: `color-mix(in srgb, ${color} 7%, ${COLORS.paperCard})`,
-                  border: `1px solid ${COLORS.hairline}`,
-                  borderRadius: 12,
-                  cursor: "pointer",
-                }}
-              >
-                <Avatar politician={p} color={color} />
-                <span style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 16.5, color: COLORS.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    {p.name}
-                  </div>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    {p.party} · {p.constituency}
-                  </div>
-                  {careers && careerLine(careers[p.parliament_member_id]) && (
-                    <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: 1 }}>
-                      {careerLine(careers[p.parliament_member_id])}
-                    </div>
-                  )}
-                </span>
-              </motion.button>
+              />
             );
           })}
 

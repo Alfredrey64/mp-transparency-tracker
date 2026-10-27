@@ -74,7 +74,7 @@ test("choosing a tier in the diagram does not move the box or the page", async (
 });
 
 test("pages show a way on to the next ones in their group, and a list of their own headings", async ({ page }) => {
-  await page.goto("/darkMoney");
+  await page.goto("/howitworks");
   await expect(page.getByRole("navigation", { name: /More in/ })).toBeVisible();
   await page.evaluate(() => window.scrollTo(0, 900));
   await page.getByRole("button", { name: "On this page" }).click();

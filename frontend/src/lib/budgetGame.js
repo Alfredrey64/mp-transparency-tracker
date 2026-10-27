@@ -23,6 +23,34 @@ export function setAmount(alloc, key, value, taxChangeBn) {
   return { ...alloc, [key]: Math.max(0, Math.min(Math.round(value), room)) };
 }
 
+// Sets one category and keeps the total fixed: whatever is not already free in the pot is taken from the other categories, in proportion to their size,
+// so a slider can always be moved. Lowering a category frees money for the class to place somewhere else. Returns the new amounts and where the money
+// came from (for a line of explanation).
+export function shift(alloc, key, value, taxChangeBn) {
+  if (LOCKED.has(key) || !(key in alloc)) return { alloc, took: [] };
+  const others = Object.keys(alloc).filter((k) => k !== key && !LOCKED.has(k));
+  const pool = others.reduce((t, k) => t + alloc[k], 0);
+  const free = Math.max(0, Math.floor(leftToSpend(alloc, taxChangeBn)));
+  const target = Math.max(0, Math.min(Math.round(value), alloc[key] + free + pool));
+  const next = { ...alloc, [key]: target };
+  const need = target - alloc[key] - free;
+  const took = [];
+  if (need > 0 && pool > 0) {
+    let left = need;
+    const order = [...others].sort((a, b) => alloc[b] - alloc[a]);
+    for (const k of order) {
+      const share = Math.min(alloc[k], Math.floor((need * alloc[k]) / pool));
+      next[k] -= share; left -= share;
+      if (share > 0) took.push([k, share]);
+    }
+    for (const k of order) { // the pounds lost to rounding come off the biggest categories, one at a time
+      if (left <= 0) break;
+      if (next[k] > 0) { next[k] -= 1; left -= 1; const t = took.find(([x]) => x === k); if (t) t[1] += 1; else took.push([k, 1]); }
+    }
+  }
+  return { alloc: next, took };
+}
+
 // How each category differs from the real budget, biggest changes first.
 export function changes(alloc) {
   const real = realBudget();
@@ -34,7 +62,8 @@ export function changes(alloc) {
 export function describeChange(c) {
   const up = c.diff > 0;
   const amount = `£${Math.abs(c.diff)}bn`;
-  return `${c.label}: ${up ? "up" : "down"} ${amount} (${up ? "+" : "-"}${Math.abs(Math.round(c.pct))}%).`;
+  const pct = Math.abs(Math.round(c.pct));
+  return `${c.label}: ${up ? "up" : "down"} ${amount} (${pct === 0 ? "under 1%" : `${up ? "+" : "-"}${pct}%`}).`;
 }
 
 // Questions to put to the class, whatever they chose.

@@ -14,6 +14,7 @@ import { installGlow } from "./lib/glow";
 import Home from "./components/Home";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { SECTIONS } from "./data/sidebarSections";
+import HubTabs from "./components/HubTabs";
 import { LOADERS } from "./pageLoaders";
 import { startGlossDedupe } from "./glossJsx/dedupe";
 import { trackPage } from "./lib/analytics";
@@ -431,6 +432,7 @@ export default function App() {
           tabIndex={-1}
           key={`${view}-${selected?.id ?? ""}`}
         >
+            {!selected && view !== "home" && <HubTabs view={view} onNavigate={handleNavigate} />}
             <ErrorBoundary onGoHome={() => handleNavigate("home")}>
             <Suspense fallback={<PageLoadingFallback />}>
             {view === "home" && <Home onBrowse={() => handleNavigate("list")} onNavigate={handleNavigateForBill} onViewProfile={handleViewProfile} mpCount={mpCount} />}

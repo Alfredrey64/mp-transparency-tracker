@@ -233,3 +233,47 @@ export const SECTION_LABEL_BY_KEY = new Map([
   ...SECTIONS.flatMap((section) => section.items.map((item) => [item.key, section.label])),
   ...Object.entries(OUTSIDE_SECTIONS),
 ]);
+
+// Pages that belong together are shown as ONE entry in the menus, with a strip of tabs across the top of each of them to move between the pages in
+// the group. Every page keeps its own address and its own name in search, so nothing is lost: only the menus get shorter. The first page in a
+// group is the one the menu entry opens. All the pages of a group sit in the same menu section.
+export const HUBS = [
+  { key: "ministers", label: "Ministers and their jobs", hint: "Who is in the Cabinet, and who held every post", pages: [["cabinet", "Cabinet now"], ["offices", "Who held which job"]] },
+  { key: "lords", label: "The House of Lords", hint: "Who the peers are, and how they vote", pages: [["lords", "The peers"], ["lordsVotes", "How peers vote"]] },
+  { key: "mpvotes", label: "How MPs vote", hint: "Every vote, and who breaks ranks", pages: [["voting", "How MPs voted"], ["rebels", "MPs who defy their party"]] },
+  { key: "mpcompare", label: "Compare MPs", hint: "Side by side, and in league tables", pages: [["compare", "Compare MPs"], ["rankings", "League tables"]] },
+  { key: "questions", label: "Questions to ministers", hint: "What MPs ask, and who asks about what", pages: [["writtenQuestions", "Questions to ministers"], ["topics", "Who's asking about a topic"]] },
+  { key: "funders", label: "Who funds politics", hint: "Donors to MPs and to parties, and a donor's trail", pages: [["donors", "Who funds MPs"], ["partyFinances", "Who funds the parties"], ["followTheMoney", "Trace a donor"]] },
+  { key: "hidden", label: "What's hidden", hint: "Where the public records run out", pages: [["darkMoney", "Hidden donations"], ["revolvingDoor", "Ministers' later jobs"], ["lobbyingRegister", "Paid lobbyists"], ["thinkTanks", "Think tank funding"]] },
+  { key: "results", label: "Election results", hint: "General, by- and local elections", pages: [["generalElection", "General elections"], ["byElections", "By-elections"], ["localElections", "Local elections"]] },
+  { key: "seat", label: "Your constituency", hint: "Your seat, close contests, and two seats side by side", pages: [["constituency", "Your constituency"], ["marginals", "Marginal seats"], ["compareSeats", "Compare seats"]] },
+  { key: "council", label: "Your council", hint: "Who runs it, and who your councillors are", pages: [["councils", "Your council"], ["councillors", "Your councillors"]] },
+  { key: "past", label: "History", hint: "Landmark votes, every government, and recent departures", pages: [["history", "Landmark votes"], ["timeline", "Every government"], ["formerMps", "Recent departures"]] },
+  { key: "economy", label: "The economy", hint: "Growth, jobs, public money and trade", pages: [["economy", "The economy"], ["jobs", "Jobs and pay"], ["publicFinances", "Public finances"], ["trade", "Trade"], ["business", "Business"]] },
+  { key: "living", label: "Cost of living", hint: "Prices, homes, rates, taxes and energy bills", pages: [["prices", "Prices and bills"], ["housing", "Housing"], ["rates", "Interest rates"], ["taxRates", "Taxes"], ["calculators", "Calculators"], ["energy", "Energy bills"]] },
+  { key: "care", label: "Health and care", hint: "The NHS, care, pensions and ageing", pages: [["nhs", "The NHS"], ["health", "Health"], ["care", "Social care"], ["ageing", "Ageing and pensions"]] },
+  { key: "services", label: "Public services", hint: "Schools, defence, transport and crime", pages: [["education", "Education"], ["defence", "Defence"], ["transport", "Transport"], ["crime", "Crime"]] },
+  { key: "society", label: "People and places", hint: "Population, migration, inequality and where you live", pages: [["population", "Population"], ["immigration", "Immigration"], ["inequality", "Inequality"], ["deprivation", "Deprivation"], ["regions", "Regions and nations"]] },
+  { key: "questions2", label: "The big questions", hint: "Brexit, the union, trust and the environment", pages: [["brexit", "Brexit"], ["union", "The union"], ["trust", "Trust in politics"], ["environment", "Environment"]] },
+];
+
+export const HUB_BY_PAGE = new Map(HUBS.flatMap((h) => h.pages.map(([key], i) => [key, { ...h, at: i }])));
+// The page a group's menu entry opens: for a page in a group, the group's first page; for any other page, itself.
+export const hubLead = (key) => HUB_BY_PAGE.get(key)?.pages[0][0] ?? key;
+
+// A menu section's pages with each group shown once: the first page stands for the group, under the group's name.
+export function collapseItems(items) {
+  const out = [];
+  for (const item of items) {
+    const hub = HUB_BY_PAGE.get(item.key);
+    if (!hub) { out.push(item); continue; }
+    if (hub.at !== 0) continue;
+    const members = hub.pages.map(([k]) => items.find((i) => i.key === k)).filter(Boolean);
+    out.push({ ...item, label: hub.label, hint: hub.hint, hub: hub.key, essential: members.some((m) => m.essential) || undefined });
+  }
+  // The groups are listed in the order written in HUBS, in the places the groups already held; other pages stay where they were.
+  const slots = out.flatMap((i, n) => (i.hub ? [n] : []));
+  const sorted = slots.map((n) => out[n]).sort((a, b) => HUBS.findIndex((h) => h.key === a.hub) - HUBS.findIndex((h) => h.key === b.hub));
+  slots.forEach((n, k) => { out[n] = sorted[k]; });
+  return out;
+}

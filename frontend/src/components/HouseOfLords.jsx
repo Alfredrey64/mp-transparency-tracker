@@ -6,6 +6,7 @@ import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, chip } from "../theme";
 import { partyColour, initials, formatDate, timeInOffice } from "../lib/format";
 import { PageHeader } from "./shared";
+import PersonCard from "./PersonCard";
 import { CardShell, LoadFailedNote } from "./MpCards";
 import { PartyHemicycleSection } from "./PartyHemicycle";
 import { IconLords } from "./icons";
@@ -556,29 +557,15 @@ export default function HouseOfLords({ peerId = null }) {
           filtered.map((p, i) => {
             const color = partyColour(p.party_colour, COLORS.inkSoft);
             return (
-              <motion.button
+              <PersonCard
                 key={p.id}
+                index={i}
+                name={p.name}
+                photo={p.thumbnail_url}
+                color={color}
+                line={`${p.party ?? "Crossbench"} · ${p.peerage_type}`}
                 onClick={() => { setSelected(p); window.scrollTo(0, 0); }}
-                initial={{ opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "80px" }}
-                transition={{ duration: 0.25, delay: (i % 16) * 0.02, ease: "easeOut" }}
-                style={{
-                  textAlign: "left", display: "flex", alignItems: "center", gap: 12, padding: "12px 14px",
-                  background: `color-mix(in srgb, ${color} 7%, ${COLORS.paperCard})`,
-                  border: `1px solid ${COLORS.hairline}`, borderRadius: 12, cursor: "pointer",
-                }}
-              >
-                <Avatar peer={p} color={color} />
-                <span style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    {p.name}
-                  </div>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    {p.party ?? "Crossbench"} · {p.peerage_type}
-                  </div>
-                </span>
-              </motion.button>
+              />
             );
           })}
 

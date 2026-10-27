@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { CATEGORIES } from "../../data/publicSpending";
 import { count, seatsFptp, seatsProportional, story, cleanName, PALETTE, MIN_PARTIES, MAX_PARTIES, MAX_AREAS } from "../../lib/mockElection";
-import { realBudget, totalOf, LOCKED, TAX_RANGE, potFor, leftToSpend, perHousehold, setAmount, changes, describeChange, CHALLENGES } from "../../lib/budgetGame";
+import { realBudget, totalOf, LOCKED, TAX_RANGE, potFor, leftToSpend, perHousehold, shift, changes, describeChange, CHALLENGES } from "../../lib/budgetGame";
 import "../../classroom.css";
 
 // Classroom activities for Teacher mode: a mock election the class can run in a few minutes, and a budget game that makes the trade-offs of public
@@ -169,14 +169,22 @@ function BudgetGame() {
   const [alloc, setAlloc] = useState(realBudget);
   const [tax, setTax] = useState(0);
   const [card, setCard] = useState(0);
+  const [note, setNote] = useState("");
   const left = leftToSpend(alloc, tax);
   const moved = changes(alloc);
   const real = realBudget();
+  const label = (k) => CATEGORIES.find((c) => c.key === k)?.label ?? k;
 
-  const move = (key, v) => setAlloc((a) => setAmount(a, key, v, tax));
-  // Lowering the tax pot below what is already spent would leave a negative balance: take the shortfall off the categories that can move.
+  // A slider (or a plus or minus button) sets one category; money that is not free comes off the others in proportion, so it always moves.
+  const move = (key, v) => {
+    const out = shift(alloc, key, v, tax);
+    setAlloc(out.alloc);
+    setNote(out.took.length ? `The extra came from ${out.took.map(([k, n]) => `${label(k)} (£${n}bn)`).join(", ")}.` : "");
+  };
+  // Lowering the tax pot below what is already spent takes the shortfall off the biggest categories that can move.
   const changeTax = (v) => {
     setTax(v);
+    setNote("");
     setAlloc((a) => {
       let next = { ...a };
       let over = Math.round(totalOf(next) - potFor(v));
@@ -190,18 +198,21 @@ function BudgetGame() {
       return next;
     });
   };
-  const reset = () => { setAlloc(realBudget()); setTax(0); };
+  const reset = () => { setAlloc(realBudget()); setTax(0); setNote(""); };
 
   return (
     <div className="cr-panel">
-      <div className="cr-meters">
-        <div className="cr-meter"><b>£{potFor(tax).toLocaleString("en-GB")}bn</b><span>in the pot to spend this year</span></div>
-        <div className="cr-meter" data-done={left === 0 ? "1" : "0"} data-warn={left !== 0 ? "1" : "0"}><b>£{left}bn</b><span>{left === 0 ? "left to spend: every pound is shared out" : "left to share out: move the sliders"}</span></div>
-        <div className="cr-meter"><b>£{moved.reduce((t, c) => t + Math.max(0, c.diff), 0)}bn</b><span>moved from the real budget</span></div>
+      <div className="cr-sticky">
+        <div className="cr-meters">
+          <div className="cr-meter"><b>£{potFor(tax).toLocaleString("en-GB")}bn</b><span>in the pot</span></div>
+          <div className="cr-meter" data-done={left === 0 ? "1" : "0"} data-warn={left !== 0 ? "1" : "0"}><b>£{left}bn</b><span>{left === 0 ? "all shared out" : "still to place"}</span></div>
+          <div className="cr-meter"><b>£{moved.reduce((t, c) => t + Math.max(0, c.diff), 0)}bn</b><span>moved so far</span></div>
+        </div>
+        <p className="cr-flash" aria-live="polite">{note || "Move a slider, or press plus and minus. If the pot is full, the money comes from the other categories."}</p>
       </div>
       <div className="cr-tax">
         <label htmlFor="cr-tax"><span>{tax === 0 ? "Tax as it is now" : tax > 0 ? `Raise tax by £${tax}bn` : `Cut tax by £${-tax}bn`}</span><em>{tax === 0 ? "No change for households" : `About £${Math.abs(perHousehold(tax)).toLocaleString("en-GB")} a year ${tax > 0 ? "more" : "less"} for the average household`}</em></label>
-        <input id="cr-tax" type="range" min={-TAX_RANGE} max={TAX_RANGE} step={5} value={tax} onChange={(e) => changeTax(Number(e.target.value))} />
+        <input id="cr-tax" className="cr-range" type="range" min={-TAX_RANGE} max={TAX_RANGE} step={5} value={tax} onChange={(e) => changeTax(Number(e.target.value))} />
       </div>
       <ul className="cr-cats">
         {CATEGORIES.map((c) => {
@@ -212,7 +223,11 @@ function BudgetGame() {
               <div className="cr-cat-top"><b>{c.label}</b><strong>£{alloc[c.key]}bn</strong></div>
               {locked ? <small>Fixed. The interest on the national debt has to be paid, whatever anyone decides.</small> : (
                 <>
-                  <input type="range" min={0} max={max} step={1} value={alloc[c.key]} onChange={(e) => move(c.key, Number(e.target.value))} aria-label={`${c.label}, in billions of pounds`} />
+                  <div className="cr-slide">
+                    <button type="button" className="cr-step" onClick={() => move(c.key, alloc[c.key] - 5)} aria-label={`Take £5bn off ${c.label}`}>&minus;</button>
+                    <input className="cr-range" type="range" min={0} max={max} step={1} value={alloc[c.key]} onChange={(e) => move(c.key, Number(e.target.value))} aria-label={`${c.label}, in billions of pounds`} />
+                    <button type="button" className="cr-step" onClick={() => move(c.key, alloc[c.key] + 5)} aria-label={`Add £5bn to ${c.label}`}>+</button>
+                  </div>
                   <small>Real budget: £{real[c.key]}bn. {c.summary}</small>
                 </>
               )}
@@ -220,12 +235,12 @@ function BudgetGame() {
           );
         })}
       </ul>
-      {moved.length > 0 ? (
-        <>
-          <h3 className="cr-h">What the class changed</h3>
+      <div className="cr-changed">
+        <h3 className="cr-h" style={{ marginTop: 0 }}>What the class changed</h3>
+        {moved.length > 0 ? (
           <ul className="cr-changes">{moved.map((c) => <li key={c.key} style={{ "--pc": c.color }}>{describeChange(c)}</li>)}</ul>
-        </>
-      ) : <p className="cr-hint">This is the real budget for 2025 to 2026. Move the sliders to share the money out differently, or use the tax slider to raise or cut the pot.</p>}
+        ) : <p className="cr-hint" style={{ margin: 0 }}>Nothing yet: this is the real budget for 2025 to 2026.</p>}
+      </div>
       <div className="cr-card" aria-live="polite">
         <p>{CHALLENGES[card]}</p>
         <div className="cr-row" style={{ marginTop: 0 }}>

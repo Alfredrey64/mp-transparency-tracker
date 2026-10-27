@@ -15,6 +15,7 @@ import "../thisweek.css";
 
 const WINDOWS = [{ days: 7, label: "7 days" }, { days: 14, label: "14 days" }, { days: 30, label: "30 days" }];
 const MAX_DAYS = 30;
+const DAY_COLOURS = ["#E0367A", "#1E4FB8", "#1FA97C", "#E8741A", "#7A5AF0", "#0E9AA7"];
 const fmt = (n) => Math.round(n).toLocaleString("en-GB");
 
 // One query that may fail without taking the others with it: a failed one is reported by name.
@@ -91,9 +92,9 @@ export default function ThisWeek() {
             <div className="tw-empty">Nothing new in this window. Parliament may be in recess, or try a longer window.</div>
           ) : (
             <ol className="tw-feed" style={{ "--tw-accent": "#E0367A" }}>
-              {groups.map((g) => (
-                <li key={g.date} className="tw-day">
-                  <h2>{dayLabel(g.date)}</h2>
+              {groups.map((g, gi) => (
+                <li key={g.date} className="tw-day" style={{ "--dc": DAY_COLOURS[gi % DAY_COLOURS.length] }}>
+                  <h2>{dayLabel(g.date)}<span className="tw-n">{g.items.length} {g.items.length === 1 ? "change" : "changes"}</span></h2>
                   <ul className="tw-items">
                     {g.items.map((i) => {
                       const k = KINDS[i.kind];

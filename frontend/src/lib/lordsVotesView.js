@@ -39,3 +39,20 @@ export function filterPeers(rows, { query = "", party = "all", sort = "voted" } 
 
 const LONG = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 export const longDay = (iso) => LONG.format(new Date(`${iso}T12:00:00Z`));
+
+// Divisions in each of the last 12 months, oldest first: [{ key: "2026-03", label: "Mar", n }].
+export function perMonth(data, months = 12) {
+  const end = new Date(`${data.list[0]?.date ?? data.generatedAt}T12:00:00Z`);
+  const out = [];
+  for (let i = months - 1; i >= 0; i--) {
+    const d = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth() - i, 1));
+    out.push({ key: d.toISOString().slice(0, 7), label: d.toLocaleDateString("en-GB", { month: "short", timeZone: "UTC" }), n: 0 });
+  }
+  for (const r of data.list) { const m = out.find((x) => x.key === r.date.slice(0, 7)); if (m) m.n += 1; }
+  return out;
+}
+
+// How many peers voted in at least a quarter of the divisions: the regulars, as against peers who vote now and then.
+export function regulars(rows, divisions, share = 0.25) {
+  return rows.filter((p) => divisions && p.voted / divisions >= share).length;
+}

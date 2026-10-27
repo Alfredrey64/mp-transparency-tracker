@@ -1,4 +1,4 @@
-import { SECTIONS } from "./sidebarSections";
+import { SECTIONS, collapseItems, hubLead } from "./sidebarSections";
 
 // The top menu: five headings, each opening a panel that holds one or two of the page groups in sidebarSections.js. The groups are the same
 // ones the page headers, the search and the phone menu use, so a page is always found under the same name.
@@ -15,11 +15,11 @@ const byKey = new Map(SECTIONS.map((s) => [s.key, s]));
 // Each menu heading with its page groups filled in (the tour page has its own button, and Teacher mode has its own tile at the foot of the menu).
 export const MENU = MENU_GROUPS.map((g) => ({
   ...g,
-  groups: g.sections.map((k) => byKey.get(k)).filter(Boolean).map((s) => ({ ...s, items: s.items.filter((i) => i.key !== "start" && !i.standalone) })),
+  groups: g.sections.map((k) => byKey.get(k)).filter(Boolean).map((s) => ({ ...s, items: collapseItems(s.items.filter((i) => i.key !== "start" && !i.standalone)) })),
 }));
 
 // Which menu heading holds a page, or null.
-export const menuKeyFor = (view) => MENU.find((m) => m.groups.some((s) => s.items.some((i) => i.key === view)))?.key ?? null;
+export const menuKeyFor = (view) => MENU.find((m) => m.groups.some((s) => s.items.some((i) => i.key === hubLead(view))))?.key ?? null;
 
 export const pathFor = (key) => (key === "home" ? "/" : `/${key}`);
 

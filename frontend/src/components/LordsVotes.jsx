@@ -3,10 +3,11 @@ import { useEffect, useMemo, useState } from "react";
 import { COLORS, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { IconLordsVote } from "./icons";
-import { GlanceStrip, HowToRead } from "./GlanceStrip";
+import { HowToRead } from "./GlanceStrip";
+import CountUp from "./CountUp";
 import { LoadFailedNote } from "./MpCards";
 import Loading from "./Loading";
-import { peerRows, partyUnity, mostDivided, governmentDefeats, filterPeers, longDay } from "../lib/lordsVotesView";
+import { peerRows, partyUnity, mostDivided, governmentDefeats, filterPeers, longDay, perMonth, regulars, hexOf } from "../lib/lordsVotesView";
 import "../lordsvotes.css";
 
 // How peers vote: how united each party is in the Lords, the votes where peers broke ranks, and a searchable list of every peer's record. All of it
@@ -16,6 +17,56 @@ const fmt = (n) => Math.round(n).toLocaleString("en-GB");
 const pct = (x, d = 1) => `${(x * 100).toFixed(d)}%`;
 const heading = { fontFamily: "'Figures', 'Newsreader', Georgia, serif", fontSize: 24, fontWeight: 700, color: COLORS.ink, margin: 0 };
 const lede = { fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.65, color: COLORS.inkSoft, margin: "6px 0 0", maxWidth: 720 };
+
+// The page's headline figures, each with a picture of itself: votes by month, peers who turn up, loyalty as a dial, and defeats as dots.
+function Ring({ value, colour }) {
+  const R = 46;
+  const C = 2 * Math.PI * R;
+  return (
+    <svg className="lv-ring" viewBox="0 0 110 110" aria-hidden="true">
+      <circle cx="55" cy="55" r={R} className="lv-ring-bg" />
+      <circle cx="55" cy="55" r={R} className="lv-ring-fg" stroke={colour} strokeDasharray={C} style={{ "--c": C, "--to": C * (1 - Math.max(0, Math.min(1, value))) }} transform="rotate(-90 55 55)" />
+    </svg>
+  );
+}
+
+function Scoreboard({ data, view }) {
+  const months = useMemo(() => perMonth(data), [data]);
+  const top = Math.max(1, ...months.map((m) => m.n));
+  const loyal = view.votes ? 1 - view.against / view.votes : 1;
+  const regs = regulars(view.rows, data.divisions);
+  const lost = view.defeats.length;
+  return (
+    <section className="lv-board" aria-label="The Lords votes at a glance">
+      <article className="lv-tile" style={{ "--tc": "#9B8CFF", "--i": 0 }}>
+        <span className="lv-tile-label">Votes in the Lords</span>
+        <b><CountUp value={data.divisions} /></b>
+        <div className="lv-months" role="img" aria-label="Votes in each of the last 12 months">
+          {months.map((m) => <span key={m.key} title={`${m.label}: ${m.n}`}><i style={{ "--h": m.n / top }} /><small>{m.label[0]}</small></span>)}
+        </div>
+        <span className="lv-tile-sub">since {longDay(data.since)}</span>
+      </article>
+      <article className="lv-tile" style={{ "--tc": "#FF7A8A", "--i": 1 }}>
+        <span className="lv-tile-label">Peers who took part</span>
+        <div className="lv-gauge"><Ring value={view.rows.length ? regs / view.rows.length : 0} colour="#FF7A8A" /><div><b><CountUp value={view.rows.length} /></b></div></div>
+        <span className="lv-tile-sub"><strong>{fmt(regs)}</strong> voted in at least a quarter of the votes</span>
+      </article>
+      <article className="lv-tile" style={{ "--tc": "#6FB1FF", "--i": 2 }}>
+        <span className="lv-tile-label">Loyal to their party</span>
+        <div className="lv-gauge"><Ring value={loyal} colour="#6FB1FF" /><div><b><CountUp value={loyal * 100} format={(n) => `${n.toFixed(1)}%`} /></b></div></div>
+        <span className="lv-tile-sub">{fmt(view.votes - view.against)} of {fmt(view.votes)} party votes went the party's way</span>
+      </article>
+      <article className="lv-tile" style={{ "--tc": "#FFB45E", "--i": 3 }}>
+        <span className="lv-tile-label">Government defeats</span>
+        <b><CountUp value={lost} /><small> of {fmt(data.divisions)}</small></b>
+        <div className="lv-dots" role="img" aria-label={`${lost} of ${data.divisions} votes were lost by the government`}>
+          {data.list.map((d, n) => <i key={d.id} data-lost={d.govWin === false ? "1" : "0"} style={{ "--n": n }} />)}
+        </div>
+        <span className="lv-tile-sub">each dot is a vote; lit dots are defeats</span>
+      </article>
+    </section>
+  );
+}
 
 function Unity({ parties }) {
   return (
@@ -35,7 +86,7 @@ function Unity({ parties }) {
   );
 }
 
-function Division({ d }) {
+function Division({ d, colours }) {
   const total = d.content + d.notContent || 1;
   return (
     <li className="lv-div">
@@ -52,7 +103,13 @@ function Division({ d }) {
       </div>
       {d.splits.length > 0 && (
         <div className="lv-splits">
-          {d.splits.map(([party, c, n]) => <span key={party} className="lv-split"><i style={{ background: "currentColor" }} />{party}: {c} yes, {n} no</span>)}
+          {d.splits.map(([party, c, n]) => (
+            <span key={party} className="lv-split" style={{ "--pc": colours[party] ?? "#8A94A6" }}>
+              <b><i />{party}</b>
+              <span className="lv-mini" role="img" aria-label={`${party}: ${c} yes, ${n} no`}><i style={{ flexGrow: c }} /><u style={{ flexGrow: n }} /></span>
+              <small>{c} yes, {n} no</small>
+            </span>
+          ))}
         </div>
       )}
     </li>
@@ -113,7 +170,7 @@ export default function LordsVotes() {
     const unity = partyUnity(data);
     const against = unity.reduce((t, p) => t + p.against, 0);
     const votes = unity.reduce((t, p) => t + p.votes, 0);
-    return { rows, unity, against, votes, divided: mostDivided(data, 8), defeats: governmentDefeats(data), parties: data.parties.filter((p) => p.peers >= 1) };
+    return { colours: Object.fromEntries(data.parties.map((p) => [p.name, hexOf(p.colour)])), rows, unity, against, votes, divided: mostDivided(data, 8), defeats: governmentDefeats(data), parties: data.parties.filter((p) => p.peers >= 1) };
   }, [data]);
 
   return (
@@ -128,12 +185,7 @@ export default function LordsVotes() {
       {!failed && !data && <Loading />}
       {data && view && (
         <>
-          <GlanceStrip items={[
-            { value: fmt(data.divisions), label: "votes in the Lords", sub: `since ${longDay(data.since)}`, colour: "#7A5AF0" },
-            { value: fmt(view.rows.length), label: "peers took part", sub: "at least once", colour: "#C13A4E" },
-            { value: pct(view.votes ? view.against / view.votes : 0, 2), label: "of party votes went against the party", sub: `${fmt(view.against)} of ${fmt(view.votes)} votes`, colour: "#1E4FB8" },
-            { value: fmt(view.defeats.length), label: view.defeats.length === 1 ? "defeat for the government" : "defeats for the government", sub: "the Lords can amend and delay, not block", colour: "#E8741A" },
-          ]} />
+          <Scoreboard data={data} view={view} />
           <HowToRead steps={[
             { title: "Content and not content", text: "In the Lords a yes vote is \"Content\" and a no vote is \"Not content\"." },
             { title: "Against their party", text: "On a whipped vote, the side most of a party's peers took is its line. A peer on the other side has voted against it. Crossbenchers, bishops and non-affiliated peers have no whip." },
@@ -143,13 +195,13 @@ export default function LordsVotes() {
           <section aria-labelledby="h-divided" style={{ marginTop: 32 }}>
             <h2 id="h-divided" style={heading}>Votes that split a party</h2>
             <p style={lede}>The divisions where the most peers voted against the way their own party voted.</p>
-            <ul className="lv-list">{view.divided.map((d) => <Division key={d.id} d={d} />)}</ul>
+            <ul className="lv-list">{view.divided.map((d) => <Division key={d.id} d={d} colours={view.colours} />)}</ul>
           </section>
           {view.defeats.length > 0 && (
             <section aria-labelledby="h-defeats" style={{ marginTop: 32 }}>
               <h2 id="h-defeats" style={heading}>When the government lost</h2>
               <p style={lede}>The Lords often amends bills and sends them back to the Commons, where the government can usually overturn the change.</p>
-              <ul className="lv-list">{view.defeats.slice(0, 8).map((d) => <Division key={d.id} d={d} />)}</ul>
+              <ul className="lv-list">{view.defeats.slice(0, 8).map((d) => <Division key={d.id} d={d} colours={view.colours} />)}</ul>
             </section>
           )}
           <Peers rows={view.rows} parties={view.parties} divisions={data.divisions} />

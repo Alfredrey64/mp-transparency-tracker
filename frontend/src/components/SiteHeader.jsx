@@ -7,6 +7,7 @@ import LogoMark from "./LogoMark";
 import GlobalSearch from "./GlobalSearch";
 import { IconSearch, IconStar, IconMethodology, IconSettings, IconShield, IconBook, IconHistory, IconClassroom } from "./icons";
 import { MENU, menuKeyFor, pathFor } from "../data/siteMenu";
+import { hubLead } from "../data/sidebarSections";
 
 // The site's header: the name, five menus that open into a panel of pages, search, the watchlist and the one button most people want (finding their MP).
 // On a phone or tablet the menus become a menu button that opens a full-height list. Every page entry is a real link, so it opens in a new tab,
@@ -238,7 +239,9 @@ function Drawer({ activeView, onNavigate, onClose, onSearch }) {
   );
 }
 
-export default function SiteHeader({ activeView, onNavigate, onSelectPolitician }) {
+export default function SiteHeader({ activeView: viewHere, onNavigate, onSelectPolitician }) {
+  // A page that is one of a group is shown in the menus as the group's entry.
+  const activeView = hubLead(viewHere);
   const [openKey, setOpenKey] = useState(null);
   const [searching, setSearching] = useState(false);
   const [drawer, setDrawer] = useState(false);

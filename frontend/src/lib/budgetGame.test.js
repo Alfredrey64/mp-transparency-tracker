@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { realBudget, totalOf, leftToSpend, potFor, perHousehold, setAmount, changes, describeChange, LOCKED, BASE_BN } from "./budgetGame";
+import { realBudget, totalOf, leftToSpend, potFor, perHousehold, setAmount, shift, changes, describeChange, LOCKED, BASE_BN } from "./budgetGame";
 import { CATEGORIES } from "../data/publicSpending";
 
 describe("budget game", () => {
@@ -43,5 +43,29 @@ describe("budget game", () => {
     expect(c[0].key).toBe("welfare");
     expect(describeChange(c[0])).toMatch(/Welfare & Pensions: down £34bn \(-10%\)/);
     expect(changes(realBudget())).toEqual([]);
+  });
+  it("shifts money from the other categories so a slider can always move, keeping the total fixed", () => {
+    const real = realBudget();
+    const { alloc, took } = shift(real, "health", real.health + 30, 0);
+    expect(alloc.health).toBe(real.health + 30);
+    expect(totalOf(alloc)).toBe(BASE_BN);
+    expect(took.reduce((t, [, n]) => t + n, 0)).toBe(30);
+    expect(alloc.debt).toBe(real.debt);
+    expect(took.every(([k]) => k !== "debt" && k !== "health")).toBe(true);
+  });
+  it("uses money already free before taking any, and frees money when a category is lowered", () => {
+    const real = realBudget();
+    const lowered = shift(real, "defence", real.defence - 20, 0).alloc;
+    expect(leftToSpend(lowered, 0)).toBe(20);
+    const raised = shift(lowered, "education", lowered.education + 20, 0);
+    expect(raised.took).toEqual([]);
+    expect(totalOf(raised.alloc)).toBe(BASE_BN);
+  });
+  it("cannot take more than the other categories have, and leaves fixed ones alone", () => {
+    const real = realBudget();
+    const { alloc } = shift(real, "health", 100000, 0);
+    expect(alloc.debt).toBe(real.debt);
+    expect(totalOf(alloc)).toBe(BASE_BN);
+    expect(shift(real, "debt", 0, 0).alloc).toBe(real);
   });
 });

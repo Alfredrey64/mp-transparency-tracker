@@ -35,3 +35,9 @@
 .cl-links { display: flex; flex-wrap: wrap; gap: 10px; padding: 0 clamp(18px, 3vw, 28px) clamp(18px, 3vw, 26px); }
 .cl-note { margin: 0 clamp(18px, 3vw, 28px) clamp(18px, 3vw, 26px); padding: 14px 16px; border-radius: 14px; background: color-mix(in srgb, var(--pc) 8%, var(--c-paper)); border-left: 5px solid var(--pc); font: 400 14px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 @media (max-width: 640px) { .cl-tools { grid-template-columns: minmax(0, 1fr); } .cl-profile-top { gap: 14px; } .cl-avatar { width: 64px; height: 64px; font-size: 24px; } }
+.cl-wide { grid-column: 1 / -1; }
+.cl-ticks { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 8px 18px; }
+.cl-ticks li { position: relative; padding-left: 26px; }
+.cl-ticks li::before { content: ""; position: absolute; left: 0; top: 5px; width: 16px; height: 16px; border-radius: 50%; background: var(--pc); opacity: 0.85; }
+.cl-ticks li::after { content: ""; position: absolute; left: 5px; top: 9px; width: 6px; height: 3px; border: solid #fff; border-width: 0 0 2px 2px; transform: rotate(-45deg); }
+.cl-interests { padding: 16px 18px; border-radius: 18px; background: color-mix(in srgb, var(--pc) 6%, var(--c-paper)); border: 1.5px dashed color-mix(in srgb, var(--pc) 40%, var(--c-hairline)); }
