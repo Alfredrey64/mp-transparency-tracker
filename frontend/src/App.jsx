@@ -156,7 +156,7 @@ function titleForState(view, selected, param) {
   if (selected) return `${selected.name} | ${base}`;
   if (view === "numbers" && param === "lords") return `Parliament in Numbers: the Lords | ${base}`;
   // For the Lords the parameter is a peer's id, which makes a poor title.
-  if (param && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view) && view !== "regions" && view !== "answers" && view !== "deprivation" && view !== "compareSeats" && view !== "parties" && view !== "generalElection" && view !== "taxRates" && view !== "inequality" && view !== "brexit" && view !== "defence" && view !== "education" && view !== "ageing" && view !== "nhs" && view !== "energy" && view !== "trust" && view !== "care" && view !== "transport" && view !== "union" && view !== "calculators") return `${param} | ${PAGE_TITLES[view] ?? base} | ${base}`;
+  if (param && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view) && view !== "regions" && view !== "answers" && view !== "deprivation" && view !== "compareSeats" && view !== "parties" && view !== "generalElection" && view !== "taxRates" && view !== "inequality" && view !== "brexit" && view !== "defence" && view !== "education" && view !== "ageing" && view !== "nhs" && view !== "energy" && view !== "trust" && view !== "care" && view !== "transport" && view !== "union" && view !== "calculators" && view !== "teacher") return `${param} | ${PAGE_TITLES[view] ?? base} | ${base}`;
   if (view === "home") return base;
   const label = PAGE_TITLES[view];
   return label ? `${label} | ${base}` : base;
@@ -477,7 +477,7 @@ export default function App() {
             {view === "deprivation" && <DeprivationPage />}
             {view === "marginals" && <Marginals />}
             {view === "howtovote" && <HowToVote />}
-            {view === "teacher" && <TeacherMode />}
+            {view === "teacher" && <TeacherMode param={viewParam} />}
             {view === "localElections" && <LocalElections />}
             {view === "generalElection" && <GeneralElection param={viewParam} />}
             {view === "taxRates" && <TaxRates param={viewParam} />}

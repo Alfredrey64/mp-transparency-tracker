@@ -4,6 +4,7 @@ import { createPortal } from "react-dom";
 import { CATEGORIES } from "../../data/publicSpending";
 import { count, seatsFptp, seatsProportional, story, cleanName, PALETTE, MIN_PARTIES, MAX_PARTIES, MAX_AREAS } from "../../lib/mockElection";
 import { realBudget, totalOf, LOCKED, TAX_RANGE, potFor, leftToSpend, perHousehold, shift, changes, describeChange, CHALLENGES } from "../../lib/budgetGame";
+import { PETITION_STEPS } from "../../data/teacherExtras";
 import "../../classroom.css";
 
 // Classroom activities for Teacher mode: a mock election the class can run in a few minutes, and a budget game that makes the trade-offs of public
@@ -45,7 +46,8 @@ function MockElection() {
   const setName = (i, value) => setNames((n) => n.map((x, j) => (j === i ? value : x)));
   const addParty = () => setNames((n) => (n.length < MAX_PARTIES ? [...n, ""] : n));
   const removeParty = (i) => setNames((n) => (n.length > MIN_PARTIES ? n.filter((_, j) => j !== i) : n));
-  const stepIndex = { setup: 0, vote: 1, results: 2 }[step];
+  const stepIndex = { setup: 0, vote: 1, night: 2, results: 2 }[step];
+  const [declared, setDeclared] = useState(0);
 
   return (
     <div className="cr-panel">
@@ -97,10 +99,15 @@ function MockElection() {
             ))}
           </div>
           <div className="cr-row" style={{ marginTop: 20 }}>
-            <button type="button" className="btn btn-primary btn-lg" onClick={() => setStep("results")} disabled={result.cast === 0}>Count the votes</button>
+            <button type="button" className="btn btn-primary btn-lg" onClick={() => { setDeclared(0); setStep("night"); }} disabled={result.cast === 0}>Election night: announce the results</button>
+            <button type="button" className="btn btn-secondary btn-lg" onClick={() => setStep("results")} disabled={result.cast === 0}>Show all the results at once</button>
             <button type="button" className="btn btn-secondary btn-lg" onClick={() => setStep("setup")}>Back to set up</button>
           </div>
         </>
+      )}
+
+      {step === "night" && (
+        <Night title={title} labels={labels} result={result} declared={declared} onDeclare={() => setDeclared((n) => Math.min(n + 1, result.areas.length))} onAll={() => setDeclared(result.areas.length)} onDone={() => setStep("results")} onBack={() => setStep("vote")} />
       )}
 
       {step === "results" && (
@@ -159,6 +166,116 @@ function MockElection() {
         </div>,
         document.body,
       )}
+    </div>
+  );
+}
+
+// ---- Election night ---------------------------------------------------------------------------------------------------------------------------
+
+// The count, one area at a time, like a real election night: each area is declared with a flourish, the seats board fills in, and a line shows how
+// close any party is to a majority. It is shown on a big screen, so everything is large.
+function Night({ title, labels, result, declared, onDeclare, onAll, onDone, onBack }) {
+  const n = result.areas.length;
+  const majority = Math.floor(n / 2) + 1;
+  const seats = labels.map(() => 0);
+  result.areas.slice(0, declared).forEach((a) => { if (a.winner !== null) seats[a.winner] += 1; });
+  const lead = seats.indexOf(Math.max(...seats));
+  const finished = declared >= n;
+  const won = seats[lead] >= majority ? lead : null;
+  return (
+    <div className="cn">
+      <div className="cn-head">
+        <div><h3>{title || "Our class election"}</h3><p>{finished ? "All areas declared" : `${declared} of ${n} ${n === 1 ? "area" : "areas"} declared`}</p></div>
+        <div className="cn-need"><b>{majority}</b><span>{majority === 1 ? "area" : "areas"} needed to win overall</span></div>
+      </div>
+      <div className="cn-board" role="list" aria-label="Seats won so far">
+        {labels.map((l, p) => (
+          <div key={p} className="cn-row" role="listitem" style={{ "--pc": PALETTE[p % PALETTE.length] }}>
+            <b>{l}</b>
+            <span className="cn-track">{Array.from({ length: n }, (_, k) => <i key={k} data-on={k < seats[p] ? "1" : "0"} />)}<u style={{ left: `${(majority / n) * 100}%` }} aria-hidden="true" /></span>
+            <strong>{seats[p]}</strong>
+          </div>
+        ))}
+      </div>
+      <ul className="cn-areas">
+        {result.areas.map((a, k) => {
+          const shown = k < declared;
+          const fresh = k === declared - 1;
+          return (
+            <li key={k} data-shown={shown ? "1" : "0"} data-fresh={fresh ? "1" : "0"} style={shown && a.winner !== null ? { "--pc": PALETTE[a.winner % PALETTE.length] } : undefined}>
+              <span>Area {k + 1}</span>
+              {shown ? (
+                <>
+                  <b>{a.winner !== null ? `${labels[a.winner]} wins` : a.tied ? "Tied: a recount" : "No votes"}</b>
+                  <small>{a.votes} {a.votes === 1 ? "vote" : "votes"}{a.winner !== null ? `, ${a.counts[a.winner]} for the winner` : ""}</small>
+                </>
+              ) : <b className="cn-wait">Counting…</b>}
+            </li>
+          );
+        })}
+      </ul>
+      <p className="cn-banner" data-on={won !== null ? "1" : "0"} aria-live="polite">{won !== null ? `${labels[won]} has won enough areas to win overall.` : finished ? "No party won enough areas. In a real election this is called a hung parliament, and parties might need to work together." : "Nobody has won yet."}</p>
+      <div className="cr-row">
+        {!finished && <button type="button" className="btn btn-primary btn-lg" onClick={onDeclare}>Declare the next area</button>}
+        {!finished && <button type="button" className="btn btn-secondary btn-lg" onClick={onAll}>Declare them all</button>}
+        {finished && <button type="button" className="btn btn-primary btn-lg" onClick={onDone}>See the full results</button>}
+        <button type="button" className="btn btn-secondary btn-lg" onClick={onBack}>Back to voting</button>
+      </div>
+    </div>
+  );
+}
+
+// ---- A class petition --------------------------------------------------------------------------------------------------------------------------
+
+const GROUPS = [["One pupil", 1], ["A table of 5", 5], ["A class of 30", 30], ["A year group of 120", 120]];
+const pnum = (n) => Math.round(n).toLocaleString("en-GB");
+
+// Run a petition: the class chooses what to ask for, then signatures are added and the ladder shows what each milestone would really do in Parliament.
+function PetitionGame() {
+  const [ask, setAsk] = useState("More trees in our town centre");
+  const [count, setCount] = useState(0);
+  const [each, setEach] = useState(1);
+  const pct = Math.min(100, (count / 100000) * 100);
+  const supporters = Math.min(count, 5);
+  return (
+    <div className="cr-panel">
+      <label className="cr-field"><span>What does the petition ask Parliament to do?</span><input type="text" value={ask} maxLength={80} onChange={(e) => setAsk(e.target.value)} /></label>
+      <div className="cp-card">
+        <p className="cp-label">Petition</p>
+        <h3>{ask.trim() || "Our petition"}</h3>
+        <b className="cp-count">{pnum(count)}</b><span className="cp-of">signatures{supporters < 5 ? `, ${5 - supporters} more ${5 - supporters === 1 ? "supporter" : "supporters"} to be checked` : ""}</span>
+        <div className="cp-ladder" role="img" aria-label={`${pnum(count)} of 100,000 signatures`}>
+          <span className="cp-track"><i style={{ width: `${pct}%` }} /></span>
+          {PETITION_STEPS.slice(1).map((m) => (
+            <span key={m.at} className="cp-mark" data-hit={count >= m.at ? "1" : "0"} style={{ left: `${(m.at / 100000) * 100}%`, "--pc": m.colour }}><i /><small>{m.title.split(" ")[0]}</small></span>
+          ))}
+        </div>
+      </div>
+      <div className="cr-row" role="group" aria-label="Add signatures">
+        {GROUPS.map(([label, n]) => <button key={label} type="button" className="btn btn-primary btn-lg" onClick={() => setCount((c) => Math.min(100000, c + n * each))}>{label} signs <small style={{ opacity: 0.85 }}>(+{pnum(n * each)})</small></button>)}
+        <button type="button" className="btn btn-secondary btn-lg" onClick={() => setCount(0)} disabled={count === 0}>Start again</button>
+      </div>
+      <label className="cr-field" style={{ maxWidth: 360, marginTop: 12 }}>
+        <span>How many people does each pupil stand for?</span>
+        <select value={each} onChange={(e) => setEach(Number(e.target.value))}>
+          <option value={1}>Just themselves: one signature</option>
+          <option value={10}>Their family: about 10 people</option>
+          <option value={100}>Their year and friends: about 100 people</option>
+          <option value={1000}>Their whole town: about 1,000 people</option>
+        </select>
+      </label>
+      <ol className="cp-steps">
+        {PETITION_STEPS.map((m) => {
+          const hit = m.at === 5 ? supporters >= 5 : count >= m.at;
+          return (
+            <li key={m.at} data-hit={hit ? "1" : "0"} style={{ "--pc": m.colour }}>
+              <span aria-hidden="true">{hit ? "\u2713" : ""}</span>
+              <div><b>{m.title}</b><p>{m.text}</p></div>
+            </li>
+          );
+        })}
+      </ol>
+      <p className="cr-note">This is a pretend petition and nothing is sent anywhere. Real petitions run for six months, are checked before they are published, and anyone living in the UK can sign one. A response or a debate does not change the law by itself. <a href="https://petition.parliament.uk/" target="_blank" rel="noreferrer" style={{ fontWeight: 700 }}>Start a real petition</a>.</p>
     </div>
   );
 }
@@ -258,12 +375,13 @@ export default function Classroom() {
   return (
     <section className="cr" aria-labelledby="h-tm-cr">
       <h2 id="h-tm-cr">Classroom activities</h2>
-      <p>Two activities to run after the lesson, or on their own. Both work on a big screen and nothing you type is saved or sent anywhere.</p>
+      <p>Three activities to run after the lesson, or on their own. All work on a big screen and nothing you type is saved or sent anywhere.</p>
       <div className="cr-tabs" role="tablist" aria-label="Activity">
         <button type="button" role="tab" aria-selected={tab === "election"} onClick={() => setTab("election")}>Run a mock election</button>
         <button type="button" role="tab" aria-selected={tab === "budget"} onClick={() => setTab("budget")}>Build the budget</button>
+        <button type="button" role="tab" aria-selected={tab === "petition"} onClick={() => setTab("petition")}>Run a petition</button>
       </div>
-      {tab === "election" ? <MockElection /> : <BudgetGame />}
+      {tab === "election" ? <MockElection /> : tab === "budget" ? <BudgetGame /> : <PetitionGame />}
     </section>
   );
 }

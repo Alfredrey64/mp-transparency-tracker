@@ -103,3 +103,30 @@ test("no glossary underlining or buttons are made inside the lesson, so no words
     await page.keyboard.press("ArrowRight");
   }
 });
+
+test("a chapter link opens that chapter straight away, and the notes carry questions and a level switch", async ({ page }) => {
+  await page.route("**/127.0.0.1:54321/**", (route) => route.abort());
+  await page.goto("/teacher/parliament");
+  await expect(page.locator(".t-root")).toBeVisible();
+  await expect(page.locator(".t-kicker").first()).toContainText("Chapter 3 of 5");
+  await page.getByRole("button", { name: "Notes" }).click();
+  await expect(page.getByRole("complementary", { name: "Notes for the teacher" })).toContainText("Can the Lords stop a law?");
+  await page.getByRole("radio", { name: "Younger" }).click();
+  await expect(page.locator(".t-level-chip")).toContainText("Younger");
+  await page.getByRole("radio", { name: "Standard" }).click();
+  await expect(page.locator(".t-level-chip")).toHaveCount(0);
+});
+
+test("the class can announce an election result area by area, and run a petition", async ({ page }) => {
+  await page.route("**/127.0.0.1:54321/**", (route) => route.abort());
+  await page.goto("/teacher");
+  await page.getByRole("button", { name: "Start voting" }).click();
+  for (let i = 0; i < 4; i++) await page.getByRole("button", { name: /Add a vote for The Sunshine Party in area 1/ }).click();
+  await page.getByRole("button", { name: "Election night: announce the results" }).click();
+  await expect(page.getByText("Nobody has won yet.")).toBeVisible();
+  await page.getByRole("button", { name: "Declare the next area" }).click();
+  await expect(page.getByText("The Sunshine Party wins").first()).toBeVisible();
+  await page.getByRole("tab", { name: "Run a petition" }).click();
+  await page.getByRole("button", { name: /A class of 30 signs/ }).click();
+  await expect(page.locator(".cp-count")).toHaveText("30");
+});

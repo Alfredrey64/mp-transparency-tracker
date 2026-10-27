@@ -10,6 +10,8 @@ import { card, cardTitle } from "../lib/onsStyles";
 import Presenter from "./teacher/Presenter";
 import Printables from "./teacher/Printables";
 import Classroom from "./teacher/Classroom";
+import ShareLesson from "./teacher/ShareLesson";
+import CurriculumMap from "./teacher/CurriculumMap";
 import NameThem from "./teacher/NameThem";
 import { NamesContext, cleanNames, loadNames, saveNames } from "./teacher/characters";
 import { ShopScene } from "./teacher/Scenes";
@@ -81,10 +83,12 @@ function Route({ calm, onStart }) {
   );
 }
 
-export default function TeacherMode() {
+export default function TeacherMode({ param = null }) {
   const calm = Boolean(useReducedMotion()) || lowData();
-  const [open, setOpen] = useState(false);
-  const [startAt, setStartAt] = useState(0);
+  // An address such as /teacher/parliament opens that chapter straight away, for a pupil who was sent the link or scanned the code.
+  const linked = param && FIRST[param] >= 0 ? FIRST[param] : null;
+  const [open, setOpen] = useState(linked !== null);
+  const [startAt, setStartAt] = useState(linked ?? 0);
   const [names, setNames] = useState(loadNames);
   const setAndSave = (n) => { setNames(n); saveNames(cleanNames(n)); };
   // What the lesson uses is always tidy, even while a name is half typed.
@@ -150,6 +154,10 @@ export default function TeacherMode() {
       <Classroom />
 
       <Printables />
+
+      <ShareLesson />
+
+      <CurriculumMap />
 
       <section aria-labelledby="h-tm-fair" style={{ ...card, marginTop: 34 }}>
         <h2 id="h-tm-fair" style={cardTitle}>Fair to every party</h2>

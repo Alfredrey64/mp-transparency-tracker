@@ -11,6 +11,8 @@ import { DEFAULT_NAMES, NamesContext, cleanNames } from "./characters";
 import { NameFields } from "./NameThem";
 import { useBeats } from "./useBeats";
 import { SCENES } from "./sceneList";
+import { LEVELS, readLevel, writeLevel, shape } from "./level";
+import { TEACHER_NOTES, GO_FURTHER } from "../../data/teacherExtras";
 import { ChapterScene, LayersScene, HousesScene, RunScene, PartyIntroScene, PartyScene, NiScene, VoiceScene, VoteScene, QuizScene } from "./Stages";
 import LawScene from "./LawScene";
 
@@ -121,6 +123,7 @@ function Caption({ step }) {
         </ul>
       )}
       {step.fact && <p className="t-fact"><strong>Did you know?</strong> {step.fact}</p>}
+      {step.further && <p className="t-further"><strong>Go further.</strong> {step.further}</p>}
     </div>
   );
 }
@@ -156,6 +159,8 @@ export default function Presenter({ open, startAt = 0, onClose, openerRef, names
   const [namesOpen, setNamesOpen] = useState(false);
   const [at, setAt] = useState({ i: startAt, beat: 0 });
   const [notes, setNotes] = useState(false);
+  const [level, setLevelState] = useState(readLevel);
+  const setLevel = (v) => { setLevelState(v); writeLevel(v); };
   const [full, setFull] = useState(false);
   const [quizBeat, setQuizBeat] = useState(0);
   const [quizQ, setQuizQ] = useState(0);
@@ -170,7 +175,8 @@ export default function Presenter({ open, startAt = 0, onClose, openerRef, names
   const quiz = slide.kind === "quiz";
   const vote = slide.kind === "vote";
   const beat = quiz ? quizBeat : Math.min(at.beat, slide.steps.length - 1);
-  const step = slide.steps[Math.min(beat, slide.steps.length - 1)];
+  const rawStep = slide.steps[Math.min(beat, slide.steps.length - 1)];
+  const step = shape(rawStep, level, beat >= slide.steps.length - 1 ? GO_FURTHER[slide.kind] : undefined);
   const chapter = CHAPTERS.find((c) => c.key === slide.chapter);
   const atEnd = at.i === last && (quiz || beat >= slide.steps.length - 1);
   const own = quiz || vote;
@@ -245,6 +251,7 @@ export default function Presenter({ open, startAt = 0, onClose, openerRef, names
         </div>
         <section className="t-caption" aria-live="polite" aria-label="What to say">
           {quiz ? <Quiz key={slide.id} onBeat={setQuizBeat} onQuestion={setQuizQ} /> : vote ? <Vote votes={votes} setVotes={setVotes} /> : <Caption step={step} />}
+          {level !== "standard" && !own && <span className="t-level-chip">{level === "younger" ? "Younger level" : "Older level"}</span>}
         </section>
       </main>
 
@@ -268,6 +275,33 @@ export default function Presenter({ open, startAt = 0, onClose, openerRef, names
         <aside className="t-notes" aria-label="Notes for the teacher">
           <h3>Ask the class</h3>
           {slide.ask?.length ? <ul>{slide.ask.map((a) => <li key={a}>{a}</li>)}</ul> : <p>Let the pupils discuss their answers in pairs.</p>}
+          {TEACHER_NOTES[slide.chapter]?.pause && (
+            <>
+              <h3>Good places to pause</h3>
+              <ul>{TEACHER_NOTES[slide.chapter].pause.map((a) => <li key={a}>{a}</li>)}</ul>
+            </>
+          )}
+          {TEACHER_NOTES[slide.chapter]?.qa && (
+            <>
+              <h3>Questions pupils ask</h3>
+              <dl className="t-qa">
+                {TEACHER_NOTES[slide.chapter].qa.map((x) => (
+                  <div key={x.q}>
+                    <dt>{x.q}</dt>
+                    <dd>{x.a}{" "}
+                      {x.link && <a href={x.link.href} target="_blank" rel="noreferrer">{x.link.label}</a>}
+                      {x.page && <a href={x.page.href} target="_blank" rel="noreferrer">{x.page.label}</a>}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </>
+          )}
+          <h3>Level for this class</h3>
+          <div className="t-levels" role="radiogroup" aria-label="Level">
+            {LEVELS.map((l) => <button key={l.key} type="button" role="radio" aria-checked={level === l.key} onClick={() => setLevel(l.key)}>{l.label}</button>)}
+          </div>
+          <p className="t-notes-hint">{LEVELS.find((l) => l.key === level).hint}</p>
           <p className="t-notes-hint">Slide {at.i + 1} of {slides.length}. Press N to hide this.</p>
         </aside>
       )}
