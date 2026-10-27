@@ -10,7 +10,7 @@ const cards = async (page) => {
 
 test("every card on the hub shows its code, and typing a code opens that game", async ({ page }) => {
   await page.goto("/teacher/activities");
-  await expect(page.locator(".act-code code")).toHaveCount(16);
+  await expect(page.locator(".act-code code")).toHaveCount(17);
   const codes = await page.locator(".act-code code").allTextContents();
   expect(codes).toContain("BINGO");
   expect(codes).toContain("QUIZ");
@@ -27,7 +27,7 @@ test("a code that is not ours is explained, and the hub stays put", async ({ pag
   await page.getByLabel("Got a class code?").fill("NOPE-3");
   await page.getByRole("button", { name: "Open the game" }).click();
   await expect(page.getByRole("alert")).toContainText("not one of ours");
-  await expect(page.locator(".act-card")).toHaveCount(16);
+  await expect(page.locator(".act-card")).toHaveCount(17);
 });
 
 test("the code follows the setup, and can be copied as a code or a link", async ({ page, context }) => {

@@ -3,7 +3,7 @@
 // (or opens the same address, or scans its QR code) gets that game. Pure and tested.
 
 // Every game and activity a code can open, by the key the hub uses for it. A test keeps this in step with the hub.
-export const GAME_KEYS = ["decide", "spot", "law", "pingpong", "majority", "coalition", "role", "day", "letter", "ten", "bingo", "jargon", "quiz", "election", "budget", "petition"];
+export const GAME_KEYS = ["decide", "spot", "law", "pingpong", "majority", "coalition", "role", "day", "letter", "ten", "bingo", "jargon", "spin", "quiz", "election", "budget", "petition"];
 
 // The setup a game can be given by a code, in order. Anything a code leaves out, or gets wrong, falls back to the default, so a mistyped code never breaks a game.
 export const SETUP = {

@@ -6,6 +6,8 @@ import { createRoot } from "react-dom/client";
 import PromiseExplorer from "./components/PartyPromises";
 import Loading from "./components/Loading";
 import AccessibilityControls from "./components/AccessibilityControls";
+import SpotTheSpin from "./components/teacher/games/SpotTheSpin";
+import ClassCode from "./components/teacher/ClassCode";
 import { ThemeProvider } from "./lib/ThemeContext";
 import { keyboardActivate, scrollRegion } from "./lib/a11y";
 
@@ -66,5 +68,13 @@ describe("accessibility checks", () => {
       const label = document.getElementById(sw.getAttribute("aria-labelledby"));
       expect(label?.textContent.length).toBeGreaterThan(3);
     }
+  });
+  it("the spot-the-spin game has no violations at the start, and its class code strip has none either", async () => {
+    const node = await draw(<SpotTheSpin />);
+    expect(await violations(node)).toEqual([]);
+    act(() => root.unmount());
+    host.remove();
+    const code = await draw(<ClassCode code="QUIZ-4-5-99" />);
+    expect(await violations(code)).toEqual([]);
   });
 });

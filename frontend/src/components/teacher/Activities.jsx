@@ -14,6 +14,7 @@ import CoalitionNegotiator from "./games/CoalitionNegotiator";
 import LetterToMP from "./games/LetterToMP";
 import ParliamentBingo from "./games/ParliamentBingo";
 import JargonMatcher from "./games/JargonMatcher";
+import SpotTheSpin from "./games/SpotTheSpin";
 import { HowTo } from "./games/kit";
 import ClassCode from "./ClassCode";
 import { GAME_KEYS, decode, encode, gamePath } from "../../lib/classCode";
@@ -35,6 +36,7 @@ const ACTIVITIES = [
   { key: "ten", title: "Follow the £10", kind: "Game", time: "12 min", colour: "#0E9AA7", learn: "Share out ten pounds of public spending, see where it really goes, then play higher or lower.", how: ["Place all ten coins on the slices you think get most.", "Find out where the money really goes.", "Play higher or lower with five pairs."], icon: "pound", Component: FollowTenPounds },
   { key: "bingo", title: "Parliament bingo", kind: "Game", time: "10 min", colour: "#E8741A", learn: "A clue rolls out of the bingo machine. Find the word on your card and stamp it. Get a line, then a full house.", how: ["Read the clue.", "Tap the word on your card that it describes.", "Make a line for a bingo, then fill the card."], icon: "bingo", Component: ParliamentBingo },
   { key: "jargon", title: "Jargon matcher", kind: "Game", time: "8 min", colour: "#0E9AA7", learn: "Match hard political words with their plain-English meanings, over three rounds.", how: ["Tap a word on the left.", "Tap the meaning on the right.", "Match all six to finish the round."], icon: "cards", Component: JargonMatcher },
+  { key: "spin", title: "Spot the spin", kind: "Game", time: "15 min", colour: "#D4577A", learn: "Read nine made-up news claims, name the trick that makes each one misleading, ask the question that gets to the truth, then trace where a number really came from.", how: ["Read the made-up claim and look at its picture.", "Name the trick, then pick the best question to ask.", "Watch the picture flip to the fair version."], icon: "spin", Component: SpotTheSpin },
   { key: "quiz", title: "Team quiz", kind: "Class activity", time: "15 min", colour: "#7A5AF0", learn: "Run a buzzer quiz for two to four teams, with a countdown and a scoreboard.", how: ["Split the class into teams.", "Tap the team that calls out first.", "Tap the answer they give."], icon: "buzzer", Component: TeamQuiz },
   { key: "election", title: "Run a mock election", kind: "Class activity", time: "20 min", colour: "#E0367A", learn: "Hold a vote by area, then announce the results like a real election night.", how: ["Name the parties and areas.", "Count the class's votes.", "Announce the results area by area."], icon: "ballot", Component: MockElection },
   { key: "budget", title: "Build the budget", kind: "Class activity", time: "20 min", colour: "#E8741A", learn: "Share out the real public budget, and see what every choice costs.", how: ["Move the sliders to share out the money.", "Watch what is left to place.", "Try the challenges."], icon: "coin", Component: BudgetGame },
@@ -45,6 +47,7 @@ const ICONS = {
   layers: <><path d="M4 8h16M6 13h12M8 18h8" /><path d="M12 3v2" /></>,
   route: <><circle cx="5" cy="6" r="2" /><circle cx="19" cy="18" r="2" /><path d="M7 6h6a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h8" /></>,
   seats: <><path d="M3 18a9 9 0 0 1 18 0" /><path d="M7 18a5 5 0 0 1 10 0" /><circle cx="12" cy="18" r="0.8" /></>,
+  spin: <><circle cx="10" cy="10" r="6" /><path d="m15 15 6 6" /><path d="M7 12l2-2.6 2 1.6 2.2-3.2" /></>,
   search: <><circle cx="10" cy="10" r="6" /><path d="m15 15 6 6" /><path d="M8 10h4" /></>,
   ballot: <><rect x="5" y="9" width="14" height="11" rx="2" /><path d="M9 9V6l3-3 3 3v3M9 14l2 2 4-4" /></>,
   coin: <><circle cx="12" cy="12" r="8" /><path d="M9.5 9.5a3 3 0 0 1 5 1c0 2-3 2-3 4M12 17.5v.01" /></>,

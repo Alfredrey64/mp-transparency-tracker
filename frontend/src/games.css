@@ -385,3 +385,37 @@ a.act-back { text-decoration: none; }
 .cc-qr summary { cursor: pointer; font: 700 13.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .cc-qr > div { width: 180px; margin-top: 8px; background: #fff; border-radius: 12px; padding: 4px; }
 .cc-qr svg { display: block; width: 100%; height: auto; }
+
+/* Spot the spin: a made-up news card whose picture flips to the fair version. Space is kept for what is revealed, so nothing shifts when it appears. */
+.gm-spin { --ac: #d4577a; }
+.sp-card { margin: 0; display: grid; gap: 10px; padding: 14px clamp(14px, 3vw, 22px); border-radius: 20px; background: var(--c-paper); border: 1px solid var(--c-hairline); }
+.sp-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; }
+.sp-ribbon { padding: 3px 11px; border-radius: 999px; background: color-mix(in srgb, #e8741a 16%, transparent); font: 800 11.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.sp-paper { font: italic 600 14px "Newsreader", Georgia, serif; color: var(--c-ink-soft); }
+.sp-head { margin: 0; font: 800 clamp(22px, 3.6vw, 32px)/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.sp-head mark { padding: 0 6px; border-radius: 6px; color: #a02a3c; background: color-mix(in srgb, #c13a4e 14%, transparent); }
+.sp-pic { display: grid; place-items: center; min-height: 190px; }
+.sp-pic > svg { width: min(100%, 420px); height: auto; }
+.sp-crowds svg { width: auto; height: 34px; flex: none; }
+.sp-bar { transform-box: fill-box; transform-origin: 50% 100%; transition: transform 0.9s var(--ease-out); }
+.sp-big { font: 800 clamp(64px, 14vw, 112px)/1 "Figures", "Newsreader", Georgia, serif; color: #c13a4e; }
+.sp-quote { margin: 0; display: grid; align-content: center; min-height: 130px; font: italic 600 clamp(20px, 3.2vw, 28px)/1.45 "Newsreader", Georgia, serif; color: var(--c-ink); }
+.sp-quote p { margin: 0; }
+.sp-card[data-kind="loaded"] .sp-pic { min-height: 0; }
+.sp-rest { color: #1fa97c; animation: gmIn 0.6s var(--ease-out); }
+.sp-old { display: grid; justify-items: center; gap: 12px; }
+.sp-old > div:first-child { display: grid; justify-items: center; }
+.sp-old b { font: 800 clamp(42px, 9vw, 72px)/1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.sp-old span { font: 600 15px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.sp-stamp { padding: 6px 16px; border: 4px solid #c13a4e; border-radius: 10px; font: 800 clamp(16px, 3vw, 22px) "Figures", "Public Sans", system-ui, sans-serif; text-transform: uppercase; color: #c13a4e; transform: rotate(-6deg); }
+.sp-crowds { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 14px; margin-top: 8px; font: 800 22px "Figures", serif; color: var(--c-ink-soft); }
+.sp-fair { padding: 10px 14px; border-radius: 12px; border: 1px dashed color-mix(in srgb, #1fa97c 45%, var(--c-hairline)); background: color-mix(in srgb, #1fa97c 8%, transparent); font: 500 15px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.sp-fair[data-on="0"] { visibility: hidden; }
+.sp-fair b { font-weight: 800; }
+.sp-in { animation: gmIn 0.55s var(--ease-out); }
+.sp-letter { display: inline-grid; place-items: center; width: 24px; height: 24px; margin-right: 9px; border-radius: 50%; font: 800 12.5px "Figures", "Public Sans", system-ui, sans-serif; background: color-mix(in srgb, var(--gc) 18%, transparent); }
+.sp-kit { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; width: 100%; max-width: 680px; }
+.sp-kit li { display: grid; gap: 2px; padding: 12px 16px; border-radius: 14px; border: 1px solid var(--c-hairline); background: var(--c-paper); }
+.sp-kit b { font: 800 17px "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.sp-kit span { font: 400 14.5px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+@media (prefers-reduced-motion: reduce) { .sp-bar { transition: none; } .sp-in, .sp-rest { animation: none; } }
