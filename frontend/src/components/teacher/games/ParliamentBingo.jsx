@@ -1,13 +1,15 @@
 /** @jsxImportSource react */
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { bingoCard, completedLines, CARD } from "../../../lib/teacherGamesMore";
 import { starsFor } from "../../../lib/teacherGamesMore";
 import { Coach, Confetti, Stars } from "./kit";
+import { settingsFor } from "../../../lib/classCode";
 
 // Parliament bingo: a card of sixteen words from Parliament. A clue rolls out of the bingo machine, and the class finds the word it describes and stamps it.
 // A row, a column or a diagonal is a bingo. Keep going for a full house.
-export default function ParliamentBingo() {
-  const [seed, setSeed] = useState(3);
+export default function ParliamentBingo({ settings, onSettings }) {
+  const [seed, setSeed] = useState(() => settingsFor("bingo", settings).seed);
+  useEffect(() => { onSettings?.({ seed }); }, [seed, onSettings]);
   const { card, calls } = useMemo(() => bingoCard(seed), [seed]);
   const [order, setOrder] = useState(() => calls.map((c) => c.term));
   const [marked, setMarked] = useState([]);
@@ -54,7 +56,7 @@ export default function ParliamentBingo() {
       <Coach mood={line?.mood ?? "think"} right={line?.mood === "happy" || line?.mood === "cheer"}>{line?.text ?? "Read the clue, then tap the word on your card that matches."}</Coach>
       <div className="cr-row">
         {!full && <button type="button" className="btn btn-secondary" onClick={skip}>Skip this clue for now</button>}
-        <button type="button" className="btn btn-secondary" onClick={() => fresh(seed + 1)}>{full ? "Play again with a new card" : "Deal a new card"}</button>
+        <button type="button" className="btn btn-secondary" onClick={() => fresh((seed % 999) + 1)}>{full ? "Play again with a new card" : "Deal a new card"}</button>
       </div>
       {full && <div className="gm-end"><Stars n={starsFor(Math.floor(mistakes / 2))} /><b>{mistakes === 0 ? "A perfect card" : `${mistakes} ${mistakes === 1 ? "slip" : "slips"} on the way`}</b><p>You stamped all sixteen words. Every one of them is used in the lesson, and you can find them in the Jargon buster too.</p></div>}
     </div>

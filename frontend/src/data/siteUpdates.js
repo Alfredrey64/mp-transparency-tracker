@@ -1,6 +1,7 @@
 // What has changed on the site, newest first, in plain words. Each entry has the day it went live, a short name, what it is, and a page to see it on. Add new entries
 // at the top.
 export const UPDATES = [
+  { date: "2026-10-27", kind: "New", title: "Class codes for the games", text: "Every game in Teacher mode now has a short code, such as BINGO-12, that a teacher can write on the board. Pupils type it in, open the link or scan the QR code and get the same game with the same setup, with no account and nothing recorded.", page: "teacher", cta: "Open the games" },
   { date: "2026-10-27", kind: "New", title: "Compare councils", text: "Pick any two councils to see who runs each, how their seats are split, when they next vote, what Band D council tax costs, how deprived each area is, and the region's typical pay and house prices.", page: "compareCouncils", cta: "Compare two councils" },
   { date: "2026-10-27", kind: "New", title: "Who is on my ballot", text: "Put in a postcode to see the elections coming up where you live, the people standing in each (listed by surname, with no ranking), how to mark the paper, and the dates to register or apply for a postal or proxy vote.", page: "myBallot", cta: "Find your ballot" },
   { date: "2026-10-27", kind: "New", title: "Make the site easier to use", text: "A person icon at the top opens a panel for larger text, easy-to-read letters, roomier spacing, stronger contrast, underlined links and calmer motion. The same panel can read any page aloud.", page: "accessibility", cta: "Open the Accessibility page" },

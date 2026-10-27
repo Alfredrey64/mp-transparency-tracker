@@ -11,6 +11,7 @@ import { card, cardTitle } from "../lib/onsStyles";
 import Presenter from "./teacher/Presenter";
 import Printables from "./teacher/Printables";
 import Activities from "./teacher/Activities";
+import { GAME_KEYS, decode } from "../lib/classCode";
 import ShareLesson from "./teacher/ShareLesson";
 import CurriculumMap from "./teacher/CurriculumMap";
 import NameThem from "./teacher/NameThem";
@@ -103,6 +104,9 @@ export default function TeacherMode({ param = null }) {
     window.history.replaceState(null, "", next === "lessons" ? "#/teacher" : `#/teacher/${next}`);
     if (moved && toggles.current && toggles.current.getBoundingClientRect().top < 0) toggles.current.scrollIntoView({ block: "start" });
   }
+  // An address such as /teacher/activities/BINGO-12 is a class code. It opens that game with the teacher's tabs out of the way, for a pupil sent the link or QR code.
+  const code = tab === "activities" && String(param ?? "").startsWith("activities/") ? String(param).slice("activities/".length).split("/")[0] || null : null;
+  const pupil = Boolean(code && decode(code, GAME_KEYS));
   const calm = Boolean(useReducedMotion()) || lowData();
   // An address such as /teacher/parliament opens that chapter straight away, for a pupil who was sent the link or scanned the code.
   const linked = param && FIRST[param] >= 0 ? FIRST[param] : null;
@@ -124,10 +128,12 @@ export default function TeacherMode({ param = null }) {
         subtitle="Animated stories and plain explanations for a class: why politics touches everyday life, who decides what, how Parliament works, what the main parties believe and who leads them, and how young people can be heard."
       />
 
-      <div ref={toggles} style={{ scrollMarginTop: 12 }}>
-        <PageToggles tabs={TABS} current={tab} onPick={go} label="Teacher mode sections" idPrefix="tm" />
-      </div>
-      <div key={tab} className="ge-fade" role="tabpanel" id="tm-panel" aria-labelledby={`tm-tab-${tab}`}>
+      {!pupil && (
+        <div ref={toggles} style={{ scrollMarginTop: 12 }}>
+          <PageToggles tabs={TABS} current={tab} onPick={go} label="Teacher mode sections" idPrefix="tm" />
+        </div>
+      )}
+      <div key={tab} className="ge-fade" {...(pupil ? {} : { role: "tabpanel", id: "tm-panel", "aria-labelledby": `tm-tab-${tab}` })}>
         {tab === "lessons" && (
           <>
       <section className="tm-start" aria-labelledby="h-tm-start">
@@ -177,7 +183,7 @@ export default function TeacherMode({ param = null }) {
       </section>
           </>
         )}
-        {tab === "activities" && <Activities />}
+        {tab === "activities" && <Activities key={code ?? ""} code={code} pupil={pupil} />}
         {tab === "info" && (
           <>
       <Printables />

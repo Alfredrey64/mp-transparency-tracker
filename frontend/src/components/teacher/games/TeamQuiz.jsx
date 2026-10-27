@@ -2,19 +2,23 @@
 import { useEffect, useMemo, useState } from "react";
 import { Coach, Confetti } from "./kit";
 import { TEAM_COLOURS, QUESTION_POINTS, pickQuestions, rankTeams } from "../../../lib/teacherGames";
+import { settingsFor } from "../../../lib/classCode";
 
 // Team quiz: made to be run from the front of the class. The teams are named, a question comes up with a countdown, and the first team to call out gets to
 // answer: the teacher taps that team, then the answer they gave. Right earns points. A wrong answer locks that team out and the clock carries on for the rest.
 const SECONDS = 20;
 const LETTERS = ["A", "B", "C", "D"];
+// New questions each time, kept inside the 1 to 999 a class code can carry.
+const nextSeed = (s) => ((s + 6) % 999) + 1;
 const tidy = (v, fallback) => v.replace(/\s+/g, " ").trim().slice(0, 20) || fallback;
 
-export default function TeamQuiz() {
+export default function TeamQuiz({ settings, onSettings }) {
+  const start = settingsFor("quiz", settings);
   const [step, setStep] = useState("setup");
-  const [count, setCount] = useState(3);
+  const [count, setCount] = useState(start.teams);
   const [names, setNames] = useState(["Team 1", "Team 2", "Team 3", "Team 4"]);
-  const [rounds, setRounds] = useState(10);
-  const [seed, setSeed] = useState(11);
+  const [rounds, setRounds] = useState(start.rounds);
+  const [seed, setSeed] = useState(start.seed);
   const [scores, setScores] = useState([0, 0, 0, 0]);
   const [at, setAt] = useState(0);
   const [phase, setPhase] = useState("open");
@@ -25,6 +29,8 @@ export default function TeamQuiz() {
   const [chosen, setChosen] = useState([]);
   const [burst, setBurst] = useState(0);
 
+  // The class code follows the setup, so it always names the game as it is now.
+  useEffect(() => { onSettings?.({ teams: count, rounds, seed }); }, [count, rounds, seed, onSettings]);
   const questions = useMemo(() => pickQuestions(rounds, seed), [rounds, seed]);
   const q = questions[at];
   const labels = names.slice(0, count).map((n, i) => tidy(n, `Team ${i + 1}`));
@@ -61,7 +67,7 @@ export default function TeamQuiz() {
     }
   };
   const next = () => { if (at + 1 >= questions.length) { setStep("end"); return; } setAt(at + 1); resetQuestion(); };
-  const again = () => { setSeed((s) => s + 7); setStep("setup"); };
+  const again = () => { setSeed(nextSeed); setStep("setup"); };
 
   useEffect(() => {
     if (step !== "play" || phase !== "open") return undefined;
@@ -114,7 +120,7 @@ export default function TeamQuiz() {
           {ranked.map((t) => <li key={t.i} style={{ "--tc": t.colour }}><span>{t.place}</span><b>{t.name}</b><em>{t.score} points</em></li>)}
         </ol>
         <div className="cr-row">
-          <button type="button" className="btn btn-primary btn-lg" onClick={() => { setSeed((s) => s + 7); begin(); }}>Play again, new questions</button>
+          <button type="button" className="btn btn-primary btn-lg" onClick={() => { setSeed(nextSeed); begin(); }}>Play again, new questions</button>
           <button type="button" className="btn btn-secondary btn-lg" onClick={again}>Change the teams</button>
         </div>
       </div>
