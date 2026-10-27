@@ -782,6 +782,16 @@ export function IconWhoStands({ size = 17 }) {
   );
 }
 
+export function IconCompareAreas({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3.5 20.5V9.5L8 6.5l4.5 3v11" />
+      <path d="M12.5 20.5v-7.5l4-2.5 4 2.5v7.5" />
+      <path d="M2.5 20.5h19M6.2 13.5h3.6M6.2 16.8h3.6M15 16.2h3" />
+    </svg>
+  );
+}
+
 export function IconCalendar({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">

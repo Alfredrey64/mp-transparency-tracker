@@ -43,6 +43,7 @@ export const LOADERS = {
   constituency: () => import("./components/ConstituencyHub"),
   marginals: () => import("./components/Marginals"),
   compareSeats: () => import("./components/CompareSeats"),
+  compareCouncils: () => import("./components/CompareCouncils"),
   methodology: () => import("./components/Methodology"),
   glossary: () => import("./components/Glossary"),
   settings: () => import("./components/Settings"),

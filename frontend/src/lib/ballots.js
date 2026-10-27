@@ -35,6 +35,8 @@ export function daysTo(iso, today = new Date()) {
 
 export const prettyDate = (iso, locale = "en-GB") =>
   new Intl.DateTimeFormat(locale, { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${iso}T00:00:00Z`));
+export const fullDate = (iso, locale = "en-GB") =>
+  new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${iso}T00:00:00Z`));
 export const shortDate = (iso, locale = "en-GB") =>
   new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", timeZone: "UTC" }).format(new Date(`${iso}T00:00:00Z`));
 

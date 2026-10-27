@@ -256,6 +256,11 @@ export const PAGE_GUIDES = {
     why: "You can't vote unless you are registered, and the rules on ID and deadlines trip up people every election. Knowing them in advance makes your vote count.",
     notShown: "Your registration status, or the exact deadline for the next election. Those come from gov.uk, which this page links to. Rules can change, so check there.",
   },
+  compareCouncils: {
+    what: "Two councils side by side: who runs each, how seats are split, when each next votes, the council tax bill, how deprived the area is, and the region's typical pay and house prices.",
+    why: "Where you live shapes the services and bills you get. Putting two places next to each other shows what is different and what is not, with the figures and not an opinion.",
+    notShown: "Which council is better run, or what the bills pay for. County councils have no bill of their own, and only England has the deprivation ranking used here.",
+  },
   myBallot: {
     what: "The contests your postcode votes in that are coming up, who is standing in each, how to mark the ballot paper, and the dates to register or apply for a postal or proxy vote.",
     why: "You can only choose well if you know who is on the ballot. Lists are published only a few weeks before polling day, and many people never see them.",

@@ -4,7 +4,7 @@ import {
   IconPartyFinance, IconByElection, IconLords, IconPetition, IconCompass, IconCommittee, IconCompare, IconMeeting,
   IconQuestion, IconGavel, IconRankings, IconDarkMoney, IconThinkTank, IconDoor, IconRegister,
   IconSearch, IconBook, IconChartBars, IconTopic, IconRoute, IconSplit, IconHexMap, IconCouncil,
-  IconTaxes, IconCalculator, IconRates, IconMigration, IconMap, IconAsk, IconDeprivation, IconSwing, IconSeatCompare, IconFactory, IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconBallot, IconCalendar, IconHouse, IconGlobe, IconLeaf, IconCompareTime, IconShield, IconLordsVote, IconCouncillor, IconFeed, IconPinHome, IconWhoStands
+  IconTaxes, IconCalculator, IconRates, IconMigration, IconMap, IconAsk, IconDeprivation, IconSwing, IconSeatCompare, IconFactory, IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconBallot, IconCalendar, IconHouse, IconGlobe, IconLeaf, IconCompareTime, IconShield, IconLordsVote, IconCouncillor, IconFeed, IconPinHome, IconWhoStands, IconCompareAreas
 } from "../components/icons";
 
 // Lives outside both Sidebar.jsx and shared.jsx specifically so neither has
@@ -59,6 +59,7 @@ export const SECTIONS = [
       { key: "councillors", label: "Your councillors", icon: IconCouncillor, hint: "Search every councillor in the UK", essential: true, aka: ["councillor", "cllr", "ward", "local councillor", "who is my councillor", "defected"] },
       { key: "marginals", label: "Marginal seats", icon: IconSwing, hint: "How close each seat was, and what could flip", aka: ["swing", "marginals", "majority", "safe seat", "target seats", "election"] },
       { key: "compareSeats", label: "Compare constituencies", icon: IconSeatCompare, hint: "Two seats side by side", aka: ["compare seats", "compare constituencies", "versus"] },
+      { key: "compareCouncils", label: "Compare councils", icon: IconCompareAreas, hint: "Two areas side by side", essential: true, aka: ["compare areas", "compare places", "compare councils", "compare towns", "compare cities", "compare my area", "versus", "council tax", "who runs", "deprivation"] },
       { key: "partymatch", label: "Which party suits me?", icon: IconCompass, hint: "A short quiz", aka: ["find your party", "quiz"] },
       { key: "petitions", label: "Petitions", icon: IconPetition, hint: "Ask Parliament to act", essential: true },
     ],
@@ -251,7 +252,7 @@ export const HUBS = [
   { key: "results", label: "Election results", hint: "General, by- and local elections", pages: [["generalElection", "General elections"], ["byElections", "By-elections"], ["localElections", "Local elections"]] },
   { key: "yourvote", label: "Your vote", hint: "How to vote, and who is on your ballot", pages: [["howtovote", "How to vote"], ["myBallot", "Who is on my ballot"]] },
   { key: "seat", label: "Your constituency", hint: "Your seat, and close contests", pages: [["constituency", "Your constituency"], ["marginals", "Marginal seats"], ["compareSeats", "Compare seats"]] },
-  { key: "council", label: "Your council", hint: "Who runs it, and your councillors", pages: [["councils", "Your council"], ["councillors", "Your councillors"]] },
+  { key: "council", label: "Your council", hint: "Who runs it, your councillors, and how it compares", pages: [["councils", "Your council"], ["councillors", "Your councillors"], ["compareCouncils", "Compare councils"]] },
   { key: "past", label: "History", hint: "Landmark votes and every government", pages: [["history", "Landmark votes"], ["timeline", "Every government"], ["formerMps", "Recent departures"]] },
   { key: "economy", label: "The economy", hint: "Growth, jobs, public money and trade", pages: [["economy", "The economy"], ["jobs", "Jobs and pay"], ["publicFinances", "Public finances"], ["trade", "Trade"], ["business", "Business"]] },
   { key: "living", label: "Cost of living", hint: "Prices, homes, taxes and bills", pages: [["prices", "Prices and bills"], ["housing", "Housing"], ["rates", "Interest rates"], ["taxRates", "Taxes"], ["calculators", "Calculators"], ["energy", "Energy bills"]] },

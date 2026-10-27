@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import {
-  cleanPostcode, surnameOf, bySurname, daysTo, prettyDate, roleText, byElectionText, howToMark, howToMarkParts, deadlinesOf, toContest, contests, candidatesOf,
+  cleanPostcode, surnameOf, bySurname, daysTo, prettyDate, fullDate, roleText, byElectionText, howToMark, howToMarkParts, deadlinesOf, toContest, contests, candidatesOf,
   findContests, findCandidates, lookUpBallots, ELECTIONS_URL, BALLOTS_URL, MAX_CONTESTS,
 } from "./ballots";
 
@@ -52,6 +52,7 @@ describe("dates", () => {
   it("writes dates in either language", () => {
     expect(prettyDate("2026-11-26")).toMatch(/^Thursday,? 26 November 2026$/);
     expect(prettyDate("2026-11-26", "cy-GB")).toMatch(/2026/);
+    expect(fullDate("2026-11-26")).toBe("26 November 2026");
   });
 });
 

@@ -80,6 +80,7 @@ const AskedAbout = lazyPage(LOADERS.topics);
 const Constituency = lazyPage(LOADERS.constituency);
 const Marginals = lazyPage(LOADERS.marginals);
 const CompareSeats = lazyPage(LOADERS.compareSeats);
+const CompareCouncils = lazyPage(LOADERS.compareCouncils);
 const StartHere = lazyPage(LOADERS.start);
 const Rebels = lazyPage(LOADERS.rebels);
 const Offices = lazyPage(LOADERS.offices);
@@ -136,7 +137,7 @@ const VALID_VIEWS = new Set([
   "committees", "compare", "ministerialMeetings", "writtenQuestions", "standards", "rankings", "myMP",
   "mediaLiteracy", "methodology", "glossary", "settings", "privacy", "terms", "accessibility", "whatsnew", "list",
   "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist", "numbers", "topics", "constituency", "start", "rebels", "offices", "councils",
-  "economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates", "immigration", "business", "regions", "answers", "deprivation", "indicators", "marginals", "compareSeats", "howtovote", "myBallot", "teacher", "localElections", "generalElection", "taxRates", "inequality", "brexit", "defence", "education", "ageing", "nhs", "energy", "trust", "care", "transport", "union", "calculators", "funding", "myArea", "thisWeek", "councillors", "lordsVotes",
+  "economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates", "immigration", "business", "regions", "answers", "deprivation", "indicators", "marginals", "compareSeats", "compareCouncils", "howtovote", "myBallot", "teacher", "localElections", "generalElection", "taxRates", "inequality", "brexit", "defence", "education", "ageing", "nhs", "energy", "trust", "care", "transport", "union", "calculators", "funding", "myArea", "thisWeek", "councillors", "lordsVotes",
 ]);
 
 // The tab title, bookmark name and browser-history entry for every view —
@@ -164,7 +165,7 @@ function titleForState(view, selected, param) {
   if (selected) return `${selected.name} | ${base}`;
   if (view === "numbers" && param === "lords") return `Parliament in Numbers: the Lords | ${base}`;
   // For the Lords the parameter is a peer's id, which makes a poor title.
-  if (param && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view) && view !== "regions" && view !== "answers" && view !== "deprivation" && view !== "compareSeats" && view !== "parties" && view !== "generalElection" && view !== "taxRates" && view !== "inequality" && view !== "brexit" && view !== "defence" && view !== "education" && view !== "ageing" && view !== "nhs" && view !== "energy" && view !== "trust" && view !== "care" && view !== "transport" && view !== "union" && view !== "calculators" && view !== "teacher") return `${param} | ${PAGE_TITLES[view] ?? base} | ${base}`;
+  if (param && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view) && view !== "regions" && view !== "answers" && view !== "deprivation" && view !== "compareSeats" && view !== "compareCouncils" && view !== "parties" && view !== "generalElection" && view !== "taxRates" && view !== "inequality" && view !== "brexit" && view !== "defence" && view !== "education" && view !== "ageing" && view !== "nhs" && view !== "energy" && view !== "trust" && view !== "care" && view !== "transport" && view !== "union" && view !== "calculators" && view !== "teacher") return `${param} | ${PAGE_TITLES[view] ?? base} | ${base}`;
   if (view === "home") return base;
   const label = PAGE_TITLES[view];
   return label ? `${label} | ${base}` : base;
@@ -511,6 +512,7 @@ export default function App() {
             {view === "union" && <Union param={viewParam} />}
             {view === "calculators" && <Calculators param={viewParam} onNavigate={handleNavigate} />}
             {view === "compareSeats" && <CompareSeats param={viewParam} />}
+            {view === "compareCouncils" && <CompareCouncils param={viewParam} />}
             {SECTOR_VIEWS.has(view) && <SectorPage key={view} sector={view} param={viewParam} />}
             {view === "indicators" && <IndicatorTimeline param={viewParam} />}
             {view === "start" && <StartHere onNavigate={handleNavigate} onNavigateForMp={handleNavigateForMp} onViewProfile={handleViewProfile} />}
