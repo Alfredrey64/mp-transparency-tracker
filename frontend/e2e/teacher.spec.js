@@ -157,7 +157,7 @@ test("the games run: sort a decision, order a bill, build a majority and solve a
   await page.getByRole("button", { name: /All activities and games/ }).click();
   await page.getByRole("button", { name: /Build a majority/ }).click();
   await page.locator(".gm-party").first().click();
-  await expect(page.locator(".gm-verdict")).not.toBeEmpty();
+  await expect(page.locator(".gm-feedback")).not.toBeEmpty();
   await page.getByRole("button", { name: /All activities and games/ }).click();
   await page.getByRole("button", { name: /Role detective/ }).click();
   await expect(page.locator(".gm-clue[data-open='1']")).toHaveCount(1);
@@ -220,5 +220,168 @@ test("the new games run: follow the £10, election day, spot the layer and the t
   }
   await expect(page.locator(".gm-feedback")).toContainText("2 points");
   await page.getByRole("button", { name: "Next question" }).click();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+});
+
+test("the deeper rounds: stars after a round, bill in trouble, test your government, bonus building, higher or lower, count the votes, passport", async ({ page }) => {
+  await page.route("**/127.0.0.1:54321/**", (route) => route.abort());
+  await page.goto("/teacher/activities");
+  const back = () => page.getByRole("button", { name: /All activities and games/ }).click();
+
+  // Who decides?: finish round one and get stars.
+  await page.getByRole("button", { name: /Who decides\?/ }).click();
+  for (let i = 0; i < 4; i++) {
+    for (let k = 0; k < 3; k++) {
+      await page.locator(".gm-choice:not(:disabled)").nth(k).click();
+      if (await page.locator(".gm-feedback[data-right='1']").count()) break;
+    }
+    await page.getByRole("button", { name: /Next decision|Finish the round/ }).click();
+  }
+  await expect(page.locator(".gm-end")).toContainText("Round 1 done");
+  await expect(page.locator(".gm-stars")).toBeVisible();
+  await page.getByRole("button", { name: /Start round 2/ }).click();
+  await expect(page.locator(".gm-score")).toContainText("Round 2 of 3");
+  await back();
+
+  // Make a law: put the bill in order, then take the challenge.
+  await page.getByRole("button", { name: /Make a law/ }).click();
+  for (let i = 0; i < 8; i++) {
+    const cards = page.locator(".gm-card");
+    const n = await cards.count();
+    for (let k = 0; k < n; k++) {
+      await cards.nth(k).click();
+      if ((await page.locator(".gm-dots li[data-state='done']").count()) > i) break;
+    }
+  }
+  await page.getByRole("button", { name: /Bill in trouble/ }).click();
+  for (let q = 0; q < 3; q++) {
+    for (let k = 0; k < 3; k++) {
+      await page.locator(".gm-choice:not(:disabled)").nth(k).click();
+      if (await page.locator(".gm-feedback[data-right='1']").count()) break;
+    }
+    await page.getByRole("button", { name: /Next challenge|Finish/ }).click();
+  }
+  await back();
+
+  // Build a majority: build the smallest government and test it.
+  await page.getByRole("button", { name: /Build a majority/ }).click();
+  await page.locator(".gm-party").first().click();
+  await page.getByRole("button", { name: "Test your government" }).click();
+  for (let e = 0; e < 3; e++) {
+    await page.getByRole("button", { name: /Yes, it wins/ }).click();
+    await page.getByRole("button", { name: /Next vote|Finish/ }).click();
+  }
+  await expect(page.locator(".gm-end")).toContainText("votes won");
+  await back();
+
+  // Role detective: guess, then pick a building for the bonus point.
+  await page.getByRole("button", { name: /Role detective/ }).click();
+  for (let k = 0; k < 4; k++) {
+    const b = page.locator(".gm-choices .gm-choice:not(:disabled)").first();
+    if (!(await b.count())) break;
+    await b.click();
+    if (await page.locator(".gm-places").count()) break;
+  }
+  await expect(page.locator(".gm-places")).toBeVisible();
+  await back();
+
+  // Follow the £10: place the coins, reveal, then higher or lower.
+  await page.getByRole("button", { name: /Follow the £10/ }).click();
+  const plus = page.getByRole("button", { name: /Put a pound on/ });
+  for (let i = 0; i < 10; i++) await plus.nth(i % 3).click();
+  await page.getByRole("button", { name: /Show where it really goes/ }).click();
+  await page.getByRole("button", { name: /Next: higher or lower/ }).click();
+  for (let i = 0; i < 5; i++) {
+    await page.locator(".gm-vs-card").first().click();
+    await page.getByRole("button", { name: /Next pair|Finish/ }).click();
+  }
+  await expect(page.locator(".gm-end")).toContainText("right");
+  await back();
+
+  // Election day: skip through the events, then count the twelve papers.
+  await page.getByRole("button", { name: /Election day/ }).click();
+  const slots = ["Before the day", "Polling day", "10pm", "Overnight", "The days after"];
+  const slot = (s) => page.locator(".gm-choice").filter({ has: page.locator("b", { hasText: new RegExp(`^${s}$`) }) });
+  for (let g = 0; g < 10; g++) {
+    for (const s of slots) { await slot(s).click(); if (await page.locator(".gm-feedback[data-right='1']").count()) break; }
+    await page.getByRole("button", { name: /Next event|See how you did/ }).click();
+  }
+  await page.getByRole("button", { name: "Count the votes" }).click();
+  const papers = ["a", "b", "a", "x", "c", "b", "a", "b", "a", "c", "b", "a"];
+  const pile = { a: 0, b: 1, c: 2, x: 3 };
+  for (const p of papers) await page.locator(".gm-pile").nth(pile[p]).click();
+  await expect(page.locator(".gm-end")).toContainText("The Sunshine Party wins");
+  await back();
+
+  // Spot the layer: sort a whole town to earn a passport stamp.
+  await page.getByRole("button", { name: /Spot the layer/ }).click();
+  const answers = { "The hospital": 2, "The school": 2, "The police station": 2, "The tax office": 2, "The bin lorry": 0, "The park": 0, "The new flats": 0, "The warship": 2 };
+  for (const [name, k] of Object.entries(answers)) {
+    await page.locator(".gm-thing-btn", { hasText: name }).click();
+    await page.locator(".gm-choice").nth(k).click();
+  }
+  await expect(page.locator(".gm-visa[data-on='1']")).toHaveCount(1);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+});
+
+test("the new games: ping-pong, coalition, letter to your MP, bingo and jargon matcher", async ({ page }) => {
+  await page.route("**/127.0.0.1:54321/**", (route) => route.abort());
+  await page.goto("/teacher/activities");
+  const back = () => page.getByRole("button", { name: /All activities and games/ }).click();
+
+  await page.getByRole("button", { name: /Lords and Commons ping-pong/ }).click();
+  for (let a = 0; a < 3; a++) {
+    await page.getByRole("button", { name: /Accept the change/ }).click();
+    await page.getByRole("button", { name: /Next change|Send the bill to the King/ }).click();
+  }
+  await expect(page.locator(".gm-end")).toContainText("Royal Assent");
+  await back();
+
+  await page.getByRole("button", { name: /Coalition negotiator/ }).click();
+  await page.locator(".gm-seat-card", { hasText: "Red" }).click();
+  await page.locator(".gm-seat-card", { hasText: "Green" }).click();
+  for (const p of ["Cheaper bus fares", "Free swimming for under-16s", "Plant a million trees", "More bike lanes"]) await page.locator(".gm-policy", { hasText: p }).click();
+  await page.getByRole("button", { name: "Propose the deal" }).click();
+  await expect(page.locator(".gm-feedback")).toContainText("A government!", { timeout: 8000 });
+  await back();
+
+  await page.getByRole("button", { name: /Letter to your MP/ }).click();
+  await page.locator(".gm-issue", { hasText: "Too much plastic wrapping" }).click();
+  await page.locator(".gm-choice", { hasText: "Your MP" }).click();
+  await expect(page.locator(".gm-paper")).toBeVisible({ timeout: 5000 });
+  for (let i = 0; i < 5; i++) {
+    const cards = page.locator(".gm-write .gm-card");
+    const n = await cards.count();
+    for (let k = 0; k < n; k++) { await cards.nth(k).click(); if ((await page.locator(".gm-line:not(.gm-line-ghost)").count()) > i) break; }
+  }
+  await page.getByRole("button", { name: /Seal it and send it/ }).click();
+  await expect(page.locator(".gm-next")).toBeVisible({ timeout: 8000 });
+  await back();
+
+  await page.getByRole("button", { name: /Parliament bingo/ }).click();
+  for (let i = 0; i < 16; i++) {
+    const clue = await page.locator(".gm-ball b").textContent();
+    const squares = page.locator(".gm-sq:not([data-state='on'])");
+    const n = await squares.count();
+    for (let k = 0; k < n; k++) {
+      await squares.nth(k).click();
+      if (!(await page.locator(".gm-ball b").textContent()).includes(clue.slice(0, 20)) || (await page.locator(".gm-sq[data-state='on']").count()) > i) break;
+    }
+  }
+  await expect(page.locator(".gm-end")).toContainText("sixteen words");
+  await back();
+
+  await page.getByRole("button", { name: /Jargon matcher/ }).click();
+  for (let r = 0; r < 3; r++) {
+    for (let w = 0; w < 6; w++) {
+      const word = page.locator(".gm-word:not(:disabled)").first();
+      await word.click();
+      const means = page.locator(".gm-mean:not(:disabled)");
+      const n = await means.count();
+      for (let k = 0; k < n; k++) { await means.nth(k).click(); if ((await page.locator(".gm-word[data-state='done']").count()) > w) break; if (!(await page.locator(".gm-word[data-state='picked']").count())) break; }
+    }
+    await page.getByRole("button", { name: /Next round|See how you did/ }).click();
+  }
+  await expect(page.locator(".gm-end")).toContainText("eighteen words");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });

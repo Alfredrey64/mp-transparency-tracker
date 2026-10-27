@@ -1,5 +1,6 @@
 /** @jsxImportSource react */
 import { useState } from "react";
+import { Coach, Confetti, Dots } from "./kit";
 import { DECIDERS, NATIONS, TOWN, answerFor, whyFor, tally, changesWith } from "../../../lib/teacherGames";
 
 // Spot the layer: a little town with eight things in it. Tap one (in the picture or in the list) and say who decides about it. Pick a different nation and
@@ -38,6 +39,8 @@ export default function SpotTheLayer() {
   const [done, setDone] = useState({});
   const [picked, setPicked] = useState(null);
   const [feedback, setFeedback] = useState(null);
+  const [stamps, setStamps] = useState([]);
+  const [burst, setBurst] = useState(0);
   const n = NATIONS.find((x) => x.key === nation);
   const item = TOWN.find((i) => i.id === picked);
   const finished = Object.keys(done).length === TOWN.length;
@@ -47,7 +50,9 @@ export default function SpotTheLayer() {
   const answer = (layer) => {
     if (!item) return;
     if (layer === answerFor(item, nation)) {
-      setDone((d) => ({ ...d, [item.id]: layer }));
+      const nextDone = { ...done, [item.id]: layer };
+      setDone(nextDone);
+      if (Object.keys(nextDone).length === TOWN.length) { setStamps((s) => (s.includes(nation) ? s : [...s, nation])); setBurst((b) => b + 1); }
       setFeedback({ right: true, why: whyFor(item, nation) });
       setPicked(null);
     } else {
@@ -60,8 +65,13 @@ export default function SpotTheLayer() {
 
   return (
     <div className="gm gm-spot">
+      <Confetti burst={burst} />
       <div className="gm-scen" role="tablist" aria-label="Which nation is the town in?">
         {NATIONS.map((x) => <button key={x.key} type="button" role="tab" aria-selected={nation === x.key} onClick={() => choose(x.key)}>{x.name}</button>)}
+      </div>
+      <div className="gm-passport" aria-label={`Passport: ${stamps.length} of ${NATIONS.length} nations sorted`}>
+        <b>Passport</b>
+        {NATIONS.map((x) => <span key={x.key} className="gm-visa" data-on={stamps.includes(x.key) ? "1" : "0"}><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="M7 12.5l3.5 3.5L17 8.5" /></svg>{x.name}</span>)}
       </div>
       <p className="gm-help">This town is in <b>{n.name}</b>. Tap something in the town, then say who decides about it. Try another nation afterwards: the town stays the same, but some answers change.</p>
       <svg className="gm-pyramid gm-town" viewBox="0 0 800 300" aria-hidden="true">
@@ -97,6 +107,7 @@ export default function SpotTheLayer() {
       </ul>
       {!finished ? (
         <>
+          <Dots at={Object.keys(done).length} total={TOWN.length} label="Things sorted" />
           <div className="gm-prompt" data-empty={item ? "0" : "1"}>
             <small>{Object.keys(done).length} of {TOWN.length} sorted</small>
             <b>{item ? `Who decides ${item.ask}?` : "Pick something in the town."}</b>
@@ -110,7 +121,7 @@ export default function SpotTheLayer() {
               </button>
             ))}
           </div>
-          <p className="gm-feedback" data-right={feedback?.right ? "1" : "0"} aria-live="polite">{feedback ? (feedback.right ? `Yes. ${feedback.why}` : feedback.why) : "Your answer will show here."}</p>
+          <Coach mood={feedback ? (feedback.right ? "happy" : "oops") : "think"} right={feedback?.right}>{feedback ? (feedback.right ? `Yes. ${feedback.why}` : feedback.why) : "Your answer will show here."}</Coach>
         </>
       ) : (
         <div className="gm-end">
@@ -119,6 +130,9 @@ export default function SpotTheLayer() {
             In {n.name}, {counts.council ?? 0} {counts.council === 1 ? "thing is" : "things are"} looked after by the council, {counts.devolved ?? 0} by {nation === "england" ? "a devolved government (England has none, so it is never the answer here)" : n.devolved}, and {counts.uk ?? 0} by the UK government.
             {changes.length > 0 && ` Try another nation. The ${changes.map((c) => c.name.replace(/^The /, "")).join(", ")} change${changes.length === 1 ? "s" : ""} from place to place.`}
           </p>
+          {stamps.length < NATIONS.length
+            ? <p className="gm-help">Passport stamp {stamps.length} of {NATIONS.length}. Pick another nation to collect more stamps, and watch the hospital, school and police station change.</p>
+            : <p className="gm-help"><b>Passport full!</b> You have sorted the same town in all four nations.</p>}
           <button type="button" className="btn btn-primary btn-lg" onClick={() => choose(nation)}>Sort it again</button>
         </div>
       )}

@@ -1,5 +1,6 @@
 /** @jsxImportSource react */
 import { useEffect, useMemo, useState } from "react";
+import { Coach, Confetti } from "./kit";
 import { TEAM_COLOURS, QUESTION_POINTS, pickQuestions, rankTeams } from "../../../lib/teacherGames";
 
 // Team quiz: made to be run from the front of the class. The teams are named, a question comes up with a countdown, and the first team to call out gets to
@@ -22,6 +23,7 @@ export default function TeamQuiz() {
   const [outcome, setOutcome] = useState(null);
   const [left, setLeft] = useState(SECONDS);
   const [chosen, setChosen] = useState([]);
+  const [burst, setBurst] = useState(0);
 
   const questions = useMemo(() => pickQuestions(rounds, seed), [rounds, seed]);
   const q = questions[at];
@@ -48,6 +50,7 @@ export default function TeamQuiz() {
     setChosen((c) => [...c, o]);
     if (o === q.answer) {
       setScores((s) => s.map((v, i) => (i === who ? v + QUESTION_POINTS : v)));
+      setBurst((b) => b + 1);
       setOutcome({ kind: "right", team: who });
       setPhase("done");
     } else {
@@ -121,6 +124,7 @@ export default function TeamQuiz() {
   const revealed = phase === "done";
   return (
     <div className="gm gm-quiz">
+      <Confetti burst={burst} />
       <ol className="gm-board" aria-label="Scores">
         {teams.map((t) => (
           <li key={t.i} style={{ "--tc": t.colour }} data-on={who === t.i ? "1" : "0"} data-out={locked.includes(t.i) ? "1" : "0"}>
@@ -153,12 +157,12 @@ export default function TeamQuiz() {
           </button>
         ))}
       </div>
-      <p className="gm-feedback" data-right={outcome?.kind === "right" ? "1" : "0"} aria-live="polite">
+      <Coach mood={outcome?.kind === "right" ? "cheer" : outcome ? "oops" : phase === "answering" ? "think" : "think"} right={outcome?.kind === "right"}>
         {outcome?.kind === "right" ? `${labels[outcome.team]} get ${QUESTION_POINTS} points. ${q.why}`
           : outcome?.kind === "time" ? `Time is up. The answer is ${q.options[q.answer]}. ${q.why}`
           : outcome?.kind === "none" ? `No team got it. The answer is ${q.options[q.answer]}. ${q.why}`
           : phase === "answering" ? "A wrong answer locks that team out and the clock carries on." : "Read the question out, and wait for a team to call."}
-      </p>
+      </Coach>
       <div className="cr-row">
         {revealed && <button type="button" className="btn btn-primary btn-lg" onClick={next}>{at + 1 >= questions.length ? "See the scores" : "Next question"}</button>}
         {!revealed && phase === "open" && <button type="button" className="btn btn-secondary btn-lg" onClick={() => { setOutcome({ kind: "none" }); setPhase("done"); }}>Skip: show the answer</button>}
