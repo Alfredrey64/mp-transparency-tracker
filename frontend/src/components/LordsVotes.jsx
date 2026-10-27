@@ -7,7 +7,10 @@ import { HowToRead } from "./GlanceStrip";
 import CountUp from "./CountUp";
 import { LoadFailedNote } from "./MpCards";
 import Loading from "./Loading";
-import { peerRows, partyUnity, mostDivided, governmentDefeats, filterPeers, longDay, perMonth, regulars, hexOf } from "../lib/lordsVotesView";
+import { supabase } from "../supabaseClient";
+import { getBillDescription } from "../lib/billDescriptions";
+import { plainPoints } from "../lib/billPlain";
+import { peerRows, partyUnity, mostDivided, governmentDefeats, filterPeers, longDay, perMonth, regulars, hexOf, findBill, outcomeOf } from "../lib/lordsVotesView";
 import "../lordsvotes.css";
 
 // How peers vote: how united each party is in the Lords, the votes where peers broke ranks, and a searchable list of every peer's record. All of it
@@ -86,30 +89,69 @@ function Unity({ parties }) {
   );
 }
 
+// The bills table, fetched once the first time a vote is opened, to say in plain English what the bill is for.
+let billsPromise = null;
+const loadBills = () => {
+  if (!billsPromise) {
+    billsPromise = supabase.from("bills").select("short_title, long_title, summary, source_url").then(({ data, error }) => { if (error) throw error; return data ?? []; }).catch(() => { billsPromise = null; return null; });
+  }
+  return billsPromise;
+};
+
+// One vote, kept simple: the bill, the date, how it went and one bar. Press it to read what was voted on, what the bill does and how each party split.
 function Division({ d, colours }) {
+  const [open, setOpen] = useState(false);
+  const [bill, setBill] = useState(undefined);
   const total = d.content + d.notContent || 1;
+  const toggle = () => {
+    setOpen((v) => !v);
+    if (bill === undefined) loadBills().then((rows) => setBill(rows ? findBill(d.title, rows) : null));
+  };
+  const plain = bill ? (getBillDescription(bill.short_title, null) ? [getBillDescription(bill.short_title, null)] : plainPoints(bill.long_title)) : [];
+  const agreed = outcomeOf(d) === "Agreed";
   return (
-    <li className="lv-div">
-      <div className="lv-div-top"><b>{d.title}</b><span>{longDay(d.date)}</span></div>
-      <div className="lv-tally" role="img" aria-label={`${d.content} content, ${d.notContent} not content`}>
-        <i className="lv-tally-c" style={{ width: `${(d.content / total) * 100}%` }} />
-        <i className="lv-tally-n" style={{ width: `${(d.notContent / total) * 100}%` }} />
-      </div>
-      <div className="lv-tally-legend">
-        <span><i style={{ background: "#2F9E6B" }} />{fmt(d.content)} Content (yes)</span>
-        <span><i style={{ background: "#C13A4E" }} />{fmt(d.notContent)} Not content (no)</span>
-        {d.rebels > 0 && <span>{fmt(d.rebels)} against their own party</span>}
-        {d.govWin === false && <span style={{ color: COLORS.accentText }}>Government lost</span>}
-      </div>
-      {d.splits.length > 0 && (
-        <div className="lv-splits">
-          {d.splits.map(([party, c, n]) => (
-            <span key={party} className="lv-split" style={{ "--pc": colours[party] ?? "#8A94A6" }}>
-              <b><i />{party}</b>
-              <span className="lv-mini" role="img" aria-label={`${party}: ${c} yes, ${n} no`}><i style={{ flexGrow: c }} /><u style={{ flexGrow: n }} /></span>
-              <small>{c} yes, {n} no</small>
-            </span>
-          ))}
+    <li className="lv-div" data-open={open ? "1" : "0"}>
+      <button type="button" className="lv-div-btn" onClick={toggle} aria-expanded={open}>
+        <span className="lv-div-top">
+          <b>{d.title}</b>
+          <span className="lv-div-date">{longDay(d.date)}</span>
+        </span>
+        <span className="lv-tally" role="img" aria-label={`${d.content} content, ${d.notContent} not content`}>
+          <i className="lv-tally-c" style={{ width: `${(d.content / total) * 100}%` }}>{fmt(d.content)}</i>
+          <i className="lv-tally-n" style={{ width: `${(d.notContent / total) * 100}%` }}>{fmt(d.notContent)}</i>
+        </span>
+        <span className="lv-div-meta">
+          <span className="lv-pill" data-tone={agreed ? "ok" : "no"}>{agreed ? "Motion agreed" : "Motion rejected"}</span>
+          {d.govWin === false && <span className="lv-pill" data-tone="warn">Government lost</span>}
+          {d.rebels > 0 && <span className="lv-pill" data-tone="plain">{fmt(d.rebels)} against their party</span>}
+          <span className="lv-div-chev" aria-hidden="true">{open ? "Hide the detail" : "What was this?"}</span>
+        </span>
+      </button>
+      {open && (
+        <div className="lv-detail">
+          {d.note && <section><h4>What was voted on</h4><p>{d.note.replace(/\s*The House divided:?\s*$/i, "")}</p></section>}
+          <section>
+            <h4>What the bill does, in plain English</h4>
+            {bill === undefined && <p>Looking it up…</p>}
+            {bill === null && <p>We couldn't match this vote to a bill we hold. Parliament's page for it has the full text.</p>}
+            {bill && plain.length > 0 && <ul>{plain.slice(0, 5).map((pt, i) => <li key={i}>{pt}</li>)}</ul>}
+            {bill && plain.length === 0 && <p>{bill.long_title ?? bill.short_title}</p>}
+            {bill?.source_url && <p><a href={bill.source_url} target="_blank" rel="noreferrer">Read the bill on Parliament's site</a></p>}
+          </section>
+          {d.splits.length > 0 && (
+            <section>
+              <h4>How each party voted</h4>
+              <div className="lv-splits">
+                {d.splits.map(([party, c, n]) => (
+                  <span key={party} className="lv-split" style={{ "--pc": colours[party] ?? "#8A94A6" }}>
+                    <b><i />{party}</b>
+                    <span className="lv-mini" role="img" aria-label={`${party}: ${c} yes, ${n} no`}><i style={{ flexGrow: c }} /><u style={{ flexGrow: n }} /></span>
+                    <small>{c} yes, {n} no</small>
+                  </span>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       )}
     </li>

@@ -1,41 +1,9 @@
-import { motion } from "motion/react";
-import { GlanceStrip } from "./GlanceStrip";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
-import { PageHeader, InfoCard, WhyItMattersBand, FlowNode, FlowArrow } from "./shared";
+import { PAGE_PADDING } from "../theme";
+import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
-import { IconThinkTank, IconShield, IconSearch, IconBroadcast, IconQuestion } from "./icons";
-
-// The full chain the page is about, not just its two endpoints: money
-// starts with a funder nobody has to name, passes through a think tank
-// that has no duty to disclose it either, and comes out the other end as
-// an "independent expert" on air. Drawing it left-to-right, hidden source
-// to visible face, means the arrow and the coin travelling along it both
-// point the same way the money actually moves — the previous two-node
-// version pointed its static arrow one way and animated the coin the
-// other, which read as a contradiction rather than a broken chain.
-function MaskedExpertDiagram() {
-  return (
-    <div
-      className="ed-half"
-      style={{
-        padding: "30px 20px 24px", marginBottom: 30, maxWidth: "none", textAlign: "center",
-        background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 18,
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, flexWrap: "wrap" }}>
-        <FlowNode icon={IconQuestion} label="Undisclosed funder" color="#9C3B3B" broken />
-        <FlowArrow color="#9C3B3B" trackWidth={44} />
-        <FlowNode icon={IconThinkTank} label="The think tank" color="#9C6B30" />
-        <FlowArrow color="#5A7FA6" trackWidth={44} />
-        <FlowNode icon={IconBroadcast} label={'"Independent expert" on air'} color="#5A7FA6" />
-      </div>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, margin: "18px auto 0", maxWidth: 520 }}>
-        The audience only ever sees the circle on the right. Everything feeding it from the left is invisible by
-        law: the sample below shows what turns up on the rare occasions someone actually checked.
-      </div>
-    </div>
-  );
-}
+import { IconThinkTank, IconSearch, IconBroadcast, IconQuestion } from "./icons";
+import { Board, Why, Chapter, Pull, Cards } from "./story/Kit";
+import { Masked, Ladder } from "./story/ThinkArt";
 
 const GRADE_COLOR = {
   A: "#3F7D5C",
@@ -94,143 +62,97 @@ const THINK_TANKS = [
   },
 ];
 
-function ThinkTankRow({ item, index }) {
-  const color = GRADE_COLOR[item.grade];
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.3, delay: (index % 8) * 0.05 }}
-      style={{ display: "flex", gap: 16, alignItems: "flex-start", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `4px solid ${color}`, borderRadius: 12, padding: "16px 20px" }}
-    >
-      <div
-        style={{
-          flexShrink: 0, width: 44, height: 44, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-          background: `${color}1c`, color: readable(color), fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700,
-        }}
-      >
-        {item.grade}
-      </div>
-      <div style={{ minWidth: 0, flex: 1 }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap", marginBottom: 3 }}>
-          <span style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink }}>{item.name}</span>
-        </div>
-        <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 8 }}>
-          {item.lean}
-        </div>
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.6 }}>{item.detail}</div>
-      </div>
-    </motion.div>
-  );
-}
+const SHORT = {"Institute of Economic Affairs": "IEA", "Adam Smith Institute": "Adam Smith Institute", "TaxPayers' Alliance": "TaxPayers' Alliance", "Centre for Policy Studies": "Centre for Policy Studies", "Institute for Public Policy Research (IPPR)": "IPPR", "Resolution Foundation": "Resolution Foundation", "Institute for Fiscal Studies (IFS)": "IFS"};
 
 export default function ThinkTankFunding() {
+  const ladder = THINK_TANKS.map((t) => ({ ...t, short: SHORT[t.name] ?? t.name }));
   return (
-    <div className="editorial" style={{ padding: PAGE_PADDING }}>
+    <div className="st" style={{ paddingTop: PAGE_PADDING }}>
       <PageHeader
         icon={IconThinkTank}
         kicker="Transparency Gaps"
         title="Who funds the think tanks you hear from?"
         subtitle={
           <>
-            <GlossaryTerm term="Think Tank">Think tank</GlossaryTerm> staff appear on the news as independent
-            experts every day, but UK law puts no obligation on any of them to say who pays for their research.
-            This page shows what an independent transparency project has actually found when it asked, across the
+            <GlossaryTerm term="Think Tank">Think tank</GlossaryTerm> staff appear on the news as independent experts every day, but UK law puts no obligation on any
+            of them to say who pays for their research. This page shows what an independent transparency project has actually found when it asked, across the
             political spectrum.
           </>
         }
         maxWidth={900}
       />
 
-      <div className="editorial-body">
-
-      <GlanceStrip items={[
-        { value: "200", label: "UK think tanks rated", sub: "by the transparency watchdog Transparify", colour: "#9C6B30" },
-        { value: "4", label: "refuse to name a single donor", colour: "#9C3B3B" },
-        { value: "A to E", label: "the grades they are given", sub: "A is open, E is undisclosed", colour: "#1E4FB8" },
+      <Board tiles={[
+        { label: "UK think tanks rated", value: 200, colour: "#FFB45E", sub: "by the transparency watchdog Transparify" },
+        { label: "Refuse to name a single donor", value: 4, colour: "#FF7A8A", sub: "out of those assessed" },
+        { label: "The grades they are given", value: "A to E", colour: "#6FB1FF", sub: "A is open, E is undisclosed" },
       ]} />
 
-      <WhyItMattersBand icon={IconThinkTank} color="#9C6B30">
-        the "expert" quoted on the news tonight could be paid, indirectly, by exactly the industry their comments
-        defend, and under UK law, neither they nor the broadcaster interviewing them has to tell you that.
-      </WhyItMattersBand>
+      <Why icon={IconThinkTank} colour="#9C6B30">
+        The "expert" quoted on the news tonight could be paid, indirectly, by exactly the industry their comments defend, and under UK law, neither they nor the
+        broadcaster interviewing them has to tell you that.
+      </Why>
 
-      <MaskedExpertDiagram />
-
-      <InfoCard title="What a think tank is" color="#5A7FA6" icon={IconQuestion} index={0}>
-        <p style={{ marginTop: 0 }}>
-          A think tank is an organisation that researches policy questions, such as the economy, health, immigration
-          or climate, and publishes reports and recommendations aimed at influencing government and public debate.
-          Some are independent researchers with no fixed agenda. Others exist largely to make a particular
-          industry's or ideology's case sound like neutral expert analysis. That is why who funds one matters: it is
-          one of the few clues to which kind you are looking at.
-        </p>
-        <p style={{ marginBottom: 0 }}>
-          They're not fringe voices. Think tank staff are quoted in newspapers, interviewed on the radio, and
-          invited to brief select committees and ministers on a near-daily basis, almost always introduced by their
-          job title alone, with no mention of who pays their salary.
-        </p>
-      </InfoCard>
-
-      <InfoCard title="Why there's no legal requirement to say" color="#9C3B3B" icon={IconShield} index={1}>
-        <p style={{ marginTop: 0 }}>
-          A political party has to name a donor who gives more than a few hundred pounds. A think tank, even one
-          whose staff regularly brief ministers and appear on broadcast news, has no equivalent duty at all.
-        </p>
-        <p style={{ marginBottom: 0 }}>
-          Most register as <strong style={{ color: COLORS.ink }}>educational charities</strong>. Charity law's rules
-          are built around a completely different question, making sure a charity's money is spent on its stated
-          charitable purpose, and were simply never designed to answer "who is trying to influence government
-          policy through this organisation?" the way election law is. Several UK think tanks have used that mismatch
-          to keep every donor's identity confidential, entirely lawfully.
-        </p>
-      </InfoCard>
-
-      <InfoCard title="Who Funds You?: an independent scorecard, not ours" color="#3F7D5C" icon={IconSearch} index={2}>
-        <p style={{ marginTop: 0 }}>
-          Rather than judge any organisation's transparency ourselves, every grade below is taken directly from{" "}
-          <a href="https://whofundsyou.org/" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
-            Who Funds You? ↗
-          </a>
-          , an independent project that has assessed UK think tanks and campaign groups on an A (fully transparent)
-          to E (undisclosed) scale since 2011. It ran a comprehensive annual review through 2024; funding
-          constraints mean it now runs rolling, risk-based updates rather than reassessing everyone every year, so a
-          rating here may be a couple of years old for some organisations.
-        </p>
-        <p style={{ marginBottom: 0 }}>
-          A poor grade is not proof that a specific claim from that organisation is wrong, but it does mean their
-          independence can't be checked the way a party donation or an MP's outside earnings can be, everywhere
-          else on this site.
-        </p>
-      </InfoCard>
-
-      <div style={{ marginBottom: 24, maxWidth: "none" }}>
-        <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>
-          A sample, across the spectrum
-        </h2>
-        <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16 }}>
-          Seven prominent UK think tanks with a published Who Funds You? grade: three free-market organisations
-          rated poorly, one left-leaning and two non-partisan organisations rated highly. This is a hand-picked
-          sample to illustrate the range, not a comprehensive or systematically balanced survey of every think tank
-          in Britain; Who Funds You? itself has assessed dozens more, in both directions.
-        </p>
-        <div className="ed-list">
-          {THINK_TANKS.map((item, i) => (
-            <ThinkTankRow key={item.name} item={item} index={i} />
-          ))}
+      <Chapter n={1} title="What a think tank is" colour="#5A7FA6" lede="An organisation that researches policy questions and publishes reports and recommendations aimed at influencing government and public debate.">
+        <figure className="st-visual"><Masked /></figure>
+        <div className="st-split" data-flip="0">
+          <div className="st-prose" style={{ "--tc": "#5A7FA6" }}>
+            <p>
+              Think tanks research questions such as the economy, health, immigration or climate. Some are independent researchers with no fixed agenda. Others exist
+              largely to make a particular industry's or ideology's case sound like neutral expert analysis. That is why who funds one matters: it is one of the few
+              clues to which kind you are looking at.
+            </p>
+          </div>
+          <div className="st-prose" style={{ "--tc": "#5A7FA6" }}>
+            <p>
+              They're not fringe voices. Think tank staff are quoted in newspapers, interviewed on the radio, and invited to brief select committees and ministers on a
+              near-daily basis, almost always introduced by their job title alone, with no mention of who pays their salary.
+            </p>
+          </div>
         </div>
-      </div>
+      </Chapter>
 
-      <InfoCard title="Why this matters for what you see on the news" color="#9C6B30" icon={IconBroadcast} index={3}>
-        A think tank fellow introduced on air as an "independent" or "leading" analyst is giving their institution's
-        view a platform without the audience necessarily knowing who funds that institution: a gap that sits right
-        alongside the questions raised on the{" "}
-        <strong style={{ color: COLORS.ink }}>Media Literacy</strong> page about who's regulated to be impartial and
-        who isn't. Knowing an organisation's transparency grade doesn't tell you whether a specific argument is
-        right or wrong, but it's a reasonable prompt to ask who benefits before taking "independent" at face value.
-      </InfoCard>
-      </div>
+      <Chapter n={2} title="Why there's no legal requirement to say" colour="#9C3B3B" lede="A political party has to name a donor who gives more than a few hundred pounds. A think tank has no equivalent duty at all.">
+        <Pull colour="#9C3B3B">
+          Most register as <strong>educational charities</strong>. Charity law is built around a different question, making sure a charity's money is spent on its stated
+          charitable purpose, and was never designed to answer "who is trying to influence government policy through this organisation?" the way election law is.
+          Several UK think tanks have used that mismatch to keep every donor's identity confidential, entirely lawfully.
+        </Pull>
+      </Chapter>
+
+      <Chapter n={3} title="Who Funds You?: an independent scorecard, not ours" colour="#3F7D5C" lede="Rather than judge any organisation's transparency ourselves, every grade here is taken directly from an independent project.">
+        <div className="st-prose" style={{ "--tc": "#3F7D5C" }}>
+          <p>
+            <a href="https://whofundsyou.org/" target="_blank" rel="noreferrer" style={{ fontWeight: 700 }}>Who Funds You?</a> has assessed UK think tanks and campaign groups
+            on an A (fully transparent) to E (undisclosed) scale since 2011. It ran a comprehensive annual review through 2024; funding constraints mean it now runs
+            rolling, risk-based updates rather than reassessing everyone every year, so a rating here may be a couple of years old for some organisations.
+          </p>
+          <p>
+            A poor grade is not proof that a specific claim from that organisation is wrong, but it does mean their independence can't be checked the way a party
+            donation or an MP's outside earnings can be, everywhere else on this site.
+          </p>
+        </div>
+      </Chapter>
+
+      <Chapter n={4} title="A sample, across the spectrum" colour="#E8741A" lede="Seven prominent UK think tanks with a published Who Funds You? grade: three free-market organisations rated poorly, one left-leaning and two non-partisan organisations rated highly. A hand-picked sample to illustrate the range, not a comprehensive or systematically balanced survey.">
+        <figure className="st-visual"><Ladder tanks={ladder} /></figure>
+        <ul className="st-case-grid">
+          {THINK_TANKS.map((t) => (
+            <li key={t.name} className="st-case" style={{ "--tc": GRADE_COLOR[t.grade] }}>
+              <header><span className="st-avatar" aria-hidden="true">{t.grade}</span><div><h3>{t.name}</h3><p>{t.lean}</p></div></header>
+              <section><h4>What was found</h4><p>{t.detail}</p></section>
+            </li>
+          ))}
+        </ul>
+      </Chapter>
+
+      <Chapter n={5} title="Why this matters for what you see on the news" colour="#9C6B30" lede="A think tank fellow introduced on air as an 'independent' or 'leading' analyst is giving their institution's view a platform without the audience necessarily knowing who funds it.">
+        <Cards items={[
+          { icon: IconBroadcast, colour: "#5A7FA6", title: "The same gap as on air", text: "It sits right alongside the questions raised on the Media Literacy page about who's regulated to be impartial and who isn't." },
+          { icon: IconQuestion, colour: "#9C6B30", title: "A grade is a prompt, not a verdict", text: "Knowing an organisation's transparency grade doesn't tell you whether a specific argument is right or wrong." },
+          { icon: IconSearch, colour: "#3F7D5C", title: "Ask who benefits", text: "It is a reasonable prompt to ask who benefits before taking \"independent\" at face value." },
+        ]} />
+      </Chapter>
     </div>
   );
 }

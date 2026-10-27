@@ -61,7 +61,7 @@ function Segmented({ label, value, onChange, options, small }) {
             aria-checked={on}
             onClick={() => onChange(o.key)}
             style={{
-              fontFamily: FONT_BODY, fontSize: small ? 13 : 13.5, fontWeight: on ? 700 : 500, padding: small ? "6px 12px" : "7px 14px", borderRadius: 8, cursor: "pointer",
+              fontFamily: FONT_BODY, fontSize: small ? 13 : 13.5, fontWeight: 600, padding: small ? "6px 12px" : "7px 14px", borderRadius: 8, cursor: "pointer",
               border: `1px solid ${on ? COLORS.ink : COLORS.hairline}`, background: on ? COLORS.ink : "transparent",
               color: on ? COLORS.paper : COLORS.inkSoft, transition: "background 0.15s, color 0.15s", display: "inline-flex", alignItems: "center", gap: 7,
             }}

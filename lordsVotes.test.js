@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { summariseLordsVotes, partyLines, hasWhip, votersOf, MIN_VOTERS } from "./lordsVotes.js";
+import { summariseLordsVotes, partyLines, hasWhip, votersOf, plainNote, MIN_VOTERS } from "./lordsVotes.js";
 
 const m = (id, party, extra = {}) => ({ memberId: id, name: `Lord ${id}`, party, partyColour: "ff0000", memberFrom: "Life peer", ...extra });
 const many = (start, n, party) => Array.from({ length: n }, (_, i) => m(start + i, party));
@@ -38,5 +38,12 @@ describe("Lords votes", () => {
     expect(hasWhip("Crossbench")).toBe(false);
     expect(hasWhip("Bishops")).toBe(false);
     expect(hasWhip(null)).toBe(false);
+  });
+
+  it("turns the Lords' description of a motion into plain text", () => {
+    expect(plainNote("<p>Viscount Camrose moved amendment 164, to insert the new clause <em>Register of foreign powers</em>. The House divided:</p>")).toBe("Viscount Camrose moved amendment 164, to insert the new clause Register of foreign powers. The House divided:");
+    expect(plainNote(null)).toBeNull();
+    expect(plainNote("<p>  </p>")).toBeNull();
+    expect(plainNote("word ".repeat(200), 50).length).toBeLessThanOrEqual(50);
   });
 });

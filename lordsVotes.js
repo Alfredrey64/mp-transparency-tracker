@@ -11,6 +11,16 @@
 export const MIN_VOTERS = 5;
 const NO_WHIP = new Set(["Crossbench", "Non-affiliated", "Bishops", "Other", "Independent Social Democrat"]);
 
+// The Lords' own description of what was moved ("Viscount Camrose moved amendment 164, after clause 58, to insert ..."), as plain text.
+export function plainNote(html, max = 420) {
+  const text = String(html ?? "")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#?\w+;/g, "")
+    .replace(/\s+/g, " ").replace(/\s+([.,;:!?])/g, "$1").trim();
+  if (!text) return null;
+  return text.length > max ? `${text.slice(0, max - 1).replace(/\s+\S*$/, "")}…` : text;
+}
+
 export const hasWhip = (party) => Boolean(party) && !NO_WHIP.has(party);
 
 // One division in, the vote of each peer out: [{ id, name, party, colour, side }] with side "c" (Content) or "n" (Not content).
@@ -74,7 +84,7 @@ export function summariseLordsVotes(divisions, { since = null, now = new Date() 
       .map(([party, t]) => [party, t.c, t.n]);
     rows.push({
       id: d.divisionId, date: String(d.date).slice(0, 10), title: d.title, content: d.contents?.length ?? 0, notContent: d.notContents?.length ?? 0,
-      govWin: d.isGovernmentWin ?? null, whipped: isWhipped, rebels, splits,
+      govWin: d.isGovernmentWin ?? null, whipped: isWhipped, rebels, splits, note: plainNote(d.amendmentMotionNotes ?? d.notes),
     });
   }
 

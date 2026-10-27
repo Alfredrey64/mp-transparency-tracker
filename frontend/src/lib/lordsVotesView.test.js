@@ -49,3 +49,20 @@ describe("Lords votes view", () => {
     expect(regulars(peerRows(data), 10, 0.45)).toBe(1);
   });
 });
+
+import { normTitle, findBill, outcomeOf } from "./lordsVotesView";
+describe("matching a Lords vote to its bill", () => {
+  const bills = [{ short_title: "Border Security, Asylum and Immigration Bill" }, { short_title: "Health Bill [HL]" }, { short_title: "Tobacco and Vapes Bill" }];
+  it("ignores marks that differ between lists", () => {
+    expect(normTitle("Health Bill [HL]")).toBe("health bill");
+    expect(findBill("Border Security, Asylum and Immigration Bill", bills)).toBe(bills[0]);
+    expect(findBill("Health Bill", bills)).toBe(bills[1]);
+    expect(findBill("Tobacco and Vapes Bill: Report", bills)).toBe(bills[2]);
+    expect(findBill("Something Else Bill", bills)).toBeNull();
+    expect(findBill("", bills)).toBeNull();
+  });
+  it("says whether a motion was agreed", () => {
+    expect(outcomeOf({ content: 10, notContent: 4 })).toBe("Agreed");
+    expect(outcomeOf({ content: 4, notContent: 10 })).toBe("Rejected");
+  });
+});

@@ -1,3 +1,4 @@
+import AreaSummaryCard from "./AreaSummaryCard";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import "../ycards.css";
 import WhatThisMeans from "./WhatThisMeans";
@@ -133,38 +134,7 @@ function SeatExtras({ cell, cells, uk, region, onSelect }) {
 
 // What the map shows when no seat is chosen: the whole UK, or the chosen region.
 function AreaSummary({ summary, label, onSeat }) {
-  const max = Math.max(1, ...summary.parties.map((p) => p.count));
-  const tiles = [
-    [summary.seats.toLocaleString("en-GB"), "seats", "#1E4FB8"],
-    [summary.marginal.toLocaleString("en-GB"), "marginal (lead under 5%)", "#E0367A"],
-    [summary.gains.toLocaleString("en-GB"), "changed hands in 2024", "#E8741A"],
-    [summary.women.toLocaleString("en-GB"), "women MPs", "#7A5AF0"],
-    ...(summary.avgTurnout != null ? [[pct1(summary.avgTurnout), "average turnout", "#1FA97C"]] : []),
-  ];
-  return (
-    <Panel title={label}>
-      <div className="hub-tiles">
-        {tiles.map(([v, l, c]) => (
-          <div key={l} style={{ "--sc": c }}>
-            <b>{v}</b>
-            <span>{l}</span>
-          </div>
-        ))}
-      </div>
-      {summary.parties.slice(0, 7).map((p) => (
-        <div key={p.party} style={{ display: "grid", gridTemplateColumns: "minmax(90px, 160px) minmax(0, 1fr) 36px", gap: 10, alignItems: "center", padding: "4px 0" }}>
-          <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.party}</span>
-          <span style={{ height: 12, borderRadius: 6, background: `color-mix(in srgb, ${p.colour} 12%, ${COLORS.paper})`, overflow: "hidden" }}>
-            <span style={{ display: "block", width: `${(p.count / max) * 100}%`, height: "100%", background: `linear-gradient(90deg, color-mix(in srgb, ${p.colour} 65%, #fff), ${p.colour})`, borderRadius: 6, transition: "width 0.5s var(--ease-out)" }} />
-          </span>
-          <span style={{ ...numeric, fontSize: 13, fontWeight: 700, textAlign: "right", color: COLORS.ink }}>{p.count}</span>
-        </div>
-      ))}
-      <p style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.6, margin: "14px 0 0" }}>
-        Tap any hexagon, or search above, to see that seat's result, petitions, history and MP. {onSeat}
-      </p>
-    </Panel>
-  );
+  return <AreaSummaryCard summary={summary} label={label} hint={`Tap any hexagon, or search above, to see that seat's result, petitions, history and MP. ${onSeat}`} />;
 }
 
 function Legend({ mode, cells, focusParty, onFocusParty }) {
@@ -184,7 +154,7 @@ function Legend({ mode, cells, focusParty, onFocusParty }) {
               style={{ display: "flex", alignItems: "center", gap: 7, background: "none", border: "none", padding: 0, cursor: "pointer", opacity: focusParty && !on ? 0.45 : 1, transition: "opacity 0.15s" }}
             >
               <span style={{ width: 10, height: 10, borderRadius: 3, background: p.colour, flexShrink: 0 }} />
-              <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, fontWeight: on ? 700 : 400 }}>{p.party}</span>
+              <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, fontWeight: 600 }}>{p.party}</span>
               <span style={{ ...numeric, fontSize: 13, fontWeight: 600, color: COLORS.inkSoft }}>{p.count}</span>
             </button>
           );

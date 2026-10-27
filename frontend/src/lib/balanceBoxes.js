@@ -45,7 +45,7 @@ function candidates(root) {
   const out = [];
   for (const el of root.querySelectorAll("*")) {
     const n = el.children.length;
-    if (n < MIN_KIDS || n > MAX_KIDS || !(el instanceof HTMLElement) || el.closest("[data-no-balance], svg")) continue;
+    if (n < MIN_KIDS || n > MAX_KIDS || !(el instanceof HTMLElement) || el.closest("[data-no-balance], svg, .cr, .ma-bento, .lv-board, .hubtabs")) continue;
     out.push(el);
   }
   return out;

@@ -56,3 +56,16 @@ export function perMonth(data, months = 12) {
 export function regulars(rows, divisions, share = 0.25) {
   return rows.filter((p) => divisions && p.voted / divisions >= share).length;
 }
+
+// A bill's name with the marks that differ between lists ("[HL]", brackets, capitals, punctuation) taken out.
+export const normTitle = (t) => String(t ?? "").toLowerCase().replace(/\[[^\]]*\]|\([^)]*\)/g, " ").replace(/[^a-z0-9]+/g, " ").trim();
+
+// The bill a Lords vote was on, from the list of bills, or null: the vote's title is the bill's name.
+export function findBill(title, bills) {
+  const t = normTitle(title);
+  if (!t) return null;
+  return bills.find((b) => normTitle(b.short_title) === t) ?? bills.find((b) => { const n = normTitle(b.short_title); return n && (t.startsWith(n) || n.startsWith(t)); }) ?? null;
+}
+
+// "Agreed" when more peers voted Content than Not content, "Rejected" otherwise.
+export const outcomeOf = (d) => (d.content > d.notContent ? "Agreed" : "Rejected");

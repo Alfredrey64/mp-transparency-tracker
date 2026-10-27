@@ -1,23 +1,12 @@
 import { useState, useMemo } from "react";
-import { GlanceStrip } from "./GlanceStrip";
-import { motion } from "motion/react";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING, readable } from "../theme";
-import { PageHeader, InfoCard, WhyItMattersBand, ScaleComparison } from "./shared";
+import { Board, Why, Chapter, Split, Pull, Cards } from "./story/Kit";
+import { TwoRoutes, Iceberg } from "./story/LobbyArt";
+import { COLORS, FONT_BODY, PAGE_PADDING, readable } from "../theme";
+import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { formatDate } from "../lib/format";
-import { IconRegister, IconGroup, IconShield, IconGavel, IconSearch } from "./icons";
+import { IconRegister, IconShield, IconGavel, IconSearch } from "./icons";
 import LOBBYISTS from "../data/consultantLobbyists.json";
-import { scrollRegion } from "../lib/a11y";
-
-// The whole point of the page, as a picture: a small, fully-counted sliver
-// that's actually visible, next to a much larger amount of lobbying that
-// simply isn't measured at all. The second bar is hatched rather than
-// solid on purpose — its size is illustrative of "bigger and unknown", not
-// a real figure, since nobody actually counts in-house lobbying.
-const VISIBILITY_BARS = [
-  { label: "Registered consultant lobbying", caption: `${LOBBYISTS.length} firms, fully visible`, color: readable("#5A7FA6"), width: 14 },
-  { label: "In-house lobbying by companies' own staff", caption: "Unmeasured: no register covers it", color: readable("#9C3B3B"), width: 94, hatched: true },
-];
 
 const CASES = [
   {
@@ -40,7 +29,6 @@ const CASES = [
   },
 ];
 
-const DISPLAY_CAP = 60;
 
 // This register itself doesn't say what a firm lobbies about or for whom
 // — only that they're registered at all (see the intro paragraph below).
@@ -103,98 +91,49 @@ const LOBBYIST_FOCUS = {
 
 function RegisterSearch() {
   const [query, setQuery] = useState("");
-
+  const [shown, setShown] = useState(24);
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return LOBBYISTS;
     return LOBBYISTS.filter((f) => f.name.toLowerCase().includes(q));
   }, [query]);
-
-  const shown = filtered.slice(0, DISPLAY_CAP);
-
   return (
-    <div style={{ marginBottom: 32, maxWidth: "none" }}>
-      <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>
-        Search the register yourself
-      </h2>
-      <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16 }}>
-        Every firm currently registered as a consultant lobbyist: a snapshot taken by hand from the official
-        register (see Data & Methodology for exactly when). This list shows who's registered, not who they
-        lobbied for or when; tap "official register" on any Data & Methodology source row for a firm's live,
-        quarter-by-quarter client list. Where a firm's general practice area is well-established public knowledge,
-        it's shown alongside their name: a broad category only, not a claim about a specific client or issue (the
-        register itself doesn't disclose that, and most firms below are smaller consultancies this site can't
-        confidently categorise, so they're left unlabelled rather than guessed at).
+    <div>
+      <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.65, margin: "0 0 16px", maxWidth: 760 }}>
+        A snapshot taken by hand from the official register (see Data & Methodology for when). It shows who's registered, not who they lobbied for or when. Where a
+        firm's general practice area is well-established public knowledge it is shown under the name: a broad category only, not a claim about a client or issue.
+        Most firms are smaller consultancies this site can't confidently categorise, so they're left unlabelled rather than guessed at.
       </p>
-
-      <div style={{ position: "relative", maxWidth: 420, marginBottom: 14 }}>
-        <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: COLORS.inkSoft, display: "flex" }}>
-          <IconSearch size={15} />
-        </span>
+      <div style={{ position: "relative", maxWidth: 440, marginBottom: 14 }}>
+        <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: COLORS.inkSoft, display: "flex" }}><IconSearch size={16} /></span>
         <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search by firm name…"
-          style={{
-            width: "100%", boxSizing: "border-box", padding: "11px 14px 11px 36px", fontFamily: FONT_BODY, fontSize: 13.5,
-            border: `1px solid ${COLORS.hairline}`, borderRadius: 10, background: COLORS.paperCard, color: COLORS.ink,
-          }}
+          value={query} onChange={(e) => { setQuery(e.target.value); setShown(24); }} placeholder="Search by firm name" aria-label="Search the register"
+          style={{ width: "100%", boxSizing: "border-box", padding: "0 14px 0 40px", minHeight: 50, fontFamily: FONT_BODY, fontSize: 16, border: `1.5px solid ${COLORS.hairline}`, borderRadius: 14, background: COLORS.paperCard, color: COLORS.ink }}
         />
       </div>
-
-      <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginBottom: 10 }}>
-        {filtered.length === 0
-          ? "No matches."
-          : `Showing ${shown.length} of ${filtered.length}${filtered.length !== LOBBYISTS.length ? ` matching firms (${LOBBYISTS.length} total)` : " registered firms"}.`}
+      <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, color: COLORS.inkSoft, marginBottom: 12 }} aria-live="polite">
+        {filtered.length === 0 ? "No matches." : filtered.length === LOBBYISTS.length ? `All ${LOBBYISTS.length} registered firms` : `${filtered.length} of ${LOBBYISTS.length} firms match`}
       </div>
-
-      <div
-        {...scrollRegion("List of registered lobbying firms")}
-        style={{
-          display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 440px), 1fr))", alignContent: "start", gap: 0, maxHeight: 420, overflowY: "auto",
-          border: `1px solid ${COLORS.hairline}`, borderRadius: 12, background: COLORS.paperCard,
-        }}
-      >
-        {shown.map((firm, i) => {
+      <ul className="st-firms">
+        {filtered.slice(0, shown).map((firm) => {
           const focus = LOBBYIST_FOCUS[firm.name];
           return (
-            <div
-              key={firm.name}
-              style={{
-                display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, padding: "10px 16px",
-                borderBottom: i < shown.length - 1 ? `1px solid ${COLORS.hairline}` : "none",
-              }}
-            >
-              <span style={{ minWidth: 0, overflow: "hidden" }}>
-                <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  {firm.name}
-                </span>
-                {focus && (
-                  <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 11, color: readable("#5A7FA6"), marginTop: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {focus}
-                  </span>
-                )}
-              </span>
-              <span style={{ flexShrink: 0, fontFamily: FONT_MONO, fontSize: 11, color: COLORS.inkSoft }}>
-                since {formatDate(firm.registeredSince)}
-              </span>
-            </div>
+            <li key={firm.name} className="st-firm">
+              <b>{firm.name}</b>
+              <span>{focus ?? "Practice area not stated here"}</span>
+              <small>On the register since {formatDate(firm.registeredSince)}</small>
+            </li>
           );
         })}
-      </div>
-
-      {filtered.length > DISPLAY_CAP && (
-        <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 10 }}>
-          Showing the first {DISPLAY_CAP} matches. Narrow your search to see a specific firm.
-        </div>
-      )}
+      </ul>
+      {filtered.length > shown && <div style={{ display: "flex", justifyContent: "center", marginTop: 16 }}><button type="button" className="btn btn-secondary btn-lg" onClick={() => setShown((n) => n + 24)}>Show {Math.min(24, filtered.length - shown)} more of {filtered.length - shown} left</button></div>}
     </div>
   );
 }
 
 export default function LobbyingRegister() {
   return (
-    <div className="editorial" style={{ padding: PAGE_PADDING }}>
+    <div className="st" style={{ paddingTop: PAGE_PADDING }}>
       <PageHeader
         icon={IconRegister}
         kicker="Transparency Gaps"
@@ -203,115 +142,72 @@ export default function LobbyingRegister() {
         maxWidth={900}
       />
 
-      <div className="editorial-body">
-
-      <GlanceStrip items={[
-        { value: String(LOBBYISTS.length), label: "firms on the register", sub: "paid to lobby ministers for someone else", colour: "#5A7FA6" },
-        { value: "2014", label: "the year the register was created", sub: "by the Transparency of Lobbying Act", colour: "#E0367A" },
-        { value: String(CASES.length), label: "investigations explained below", colour: "#E8741A" },
+      <Board tiles={[
+        { label: "Firms on the register", value: LOBBYISTS.length, colour: "#6FB1FF", sub: "paid to lobby ministers for someone else" },
+        { label: "The year the register was created", value: "2014", colour: "#FF7A8A", sub: "by the Transparency of Lobbying Act" },
+        { label: "Investigations explained below", value: CASES.length, colour: "#FFB45E", sub: "all of them cleared" },
       ]} />
 
-      <WhyItMattersBand icon={IconRegister} color="#5A7FA6">
-        this register makes one narrow slice of professional persuasion visible, but most real-world lobbying,
-        done in-house by a company's own staff, leaves no public trace at all. Knowing exactly what this register
-        does and doesn't cover is the only way to read it without being misled by its silences.
-      </WhyItMattersBand>
+      <Why icon={IconRegister} colour="#5A7FA6">
+        This register makes one narrow slice of professional persuasion visible, but most real-world lobbying, done in-house by a company's own staff, leaves no
+        public trace at all. Knowing exactly what this register does and doesn't cover is the only way to read it without being misled by its silences.
+      </Why>
 
-      <ScaleComparison bars={VISIBILITY_BARS} />
+      <Chapter n={1} title={<>What '<GlossaryTerm term="Lobbying">lobbying</GlossaryTerm>' actually means</>} colour="#5A7FA6" lede="Trying to persuade someone in government to make a particular decision, support a bill, change a regulation, award a contract.">
+        <Split visual={<TwoRoutes firms={LOBBYISTS.length} />}>
+          <p>
+            It isn't inherently improper: charities, trade unions, patient groups and residents' associations all lobby government too, not only corporations. The
+            concern isn't that persuasion happens. It's whether the public can see who's doing it, for whom, and why, so a minister's eventual decision can be judged
+            with that context in mind.
+          </p>
+          <p>This particular register only captures one specific slice of that activity: the top route in the picture.</p>
+        </Split>
+      </Chapter>
 
-      <InfoCard title={<>What '<GlossaryTerm term="Lobbying">lobbying</GlossaryTerm>' actually means</>} color="#5A7FA6" icon={IconGroup} index={0}>
-        <p style={{ marginTop: 0 }}>
-          Lobbying just means trying to persuade someone in government to make a particular decision, support a
-          bill, change a regulation, award a contract. It isn't inherently improper: charities, trade unions,
-          patient groups and residents' associations all lobby government too, not only corporations. The concern
-          isn't that persuasion happens. It's whether the public can see who's doing it, for whom, and why, so a
-          minister's eventual decision can be judged with that context in mind.
-        </p>
-        <p style={{ marginBottom: 0 }}>
-          This particular register only captures one specific slice of that activity. Read on for exactly which.
-        </p>
-      </InfoCard>
+      <Chapter n={2} title="What has to be registered" colour="#3F7D5C" lede="One specific, narrow activity.">
+        <Pull colour="#3F7D5C">
+          A <strong>consultant lobbyist</strong>: a firm or individual paid by a client to lobby on their behalf, as opposed to lobbying for their own organisation, communicating <strong>directly and personally with a government minister or a department's permanent secretary</strong>. Every firm on the register files a quarterly return naming every client they lobbied for in that way, or confirms they had none.
+        </Pull>
+        <p className="st-note">The Transparency of Lobbying, Non-Party Campaigning and Trade Union Administration Act 2014 created this duty. A permanent secretary is the most senior civil servant in a department, who runs it day to day.</p>
+      </Chapter>
 
-      <InfoCard title="What has to be registered" color="#3F7D5C" icon={IconRegister} index={1}>
-        The Transparency of Lobbying, Non-Party Campaigning and Trade Union Administration Act 2014 created a
-        statutory duty for one specific, narrow activity: a{" "}
-        <strong style={{ color: COLORS.ink }}>consultant lobbyist</strong>: a firm or individual paid by a client to
-        lobby on their behalf, as opposed to lobbying for their own organisation, communicating{" "}
-        <strong style={{ color: COLORS.ink }}>directly and personally with a government minister or a department's
-        permanent secretary</strong> (the most senior civil servant in that department, who runs it day to day).
-        Every firm on the register has to file a quarterly return naming every client they lobbied for in that way,
-        or confirm they had none.
-      </InfoCard>
+      <Chapter n={3} title="Search the register yourself" colour="#5A7FA6" lede="Every firm currently registered as a consultant lobbyist.">
+        <RegisterSearch />
+      </Chapter>
 
-      <RegisterSearch />
+      <Chapter n={4} title="The big gap: in-house lobbyists aren't covered at all" colour="#9C3B3B" lede="The rule only catches lobbying-for-hire.">
+        <Split visual={<Iceberg firms={LOBBYISTS.length} />} flip>
+          <p>
+            A company's own government-affairs team, lobbying ministers directly on their employer's behalf, isn't "consultant" lobbying at all, and doesn't have to
+            register or disclose anything. In-house teams are estimated to account for a larger share of all lobbying activity than the consultancies that actually
+            appear on this register.
+          </p>
+          <p>
+            This isn't a settled question: a <GlossaryTerm term="Private Member's Bill">private member's bill</GlossaryTerm>, the Lobbying Transparency (In-house Lobbyists) Bill, was introduced
+            in the House of Lords in 2026 specifically to close this gap. The government has so far resisted widening the register to cover it.
+          </p>
+        </Split>
+      </Chapter>
 
-      <InfoCard title="The big gap: in-house lobbyists aren't covered at all" color="#9C3B3B" icon={IconGavel} index={2} wide>
-        <p style={{ marginTop: 0 }}>
-          The rule only catches lobbying-for-hire. A company's own government-affairs team, lobbying ministers
-          directly on their employer's behalf, isn't "consultant" lobbying at all, and doesn't have to register or
-          disclose anything. In-house teams are estimated to account for a larger share of all lobbying activity
-          than the consultancies that actually appear on this register.
-        </p>
-        <p style={{ marginBottom: 0 }}>
-          This isn't a settled question: a <GlossaryTerm term="Private Member's Bill">private member's bill</GlossaryTerm>, the Lobbying Transparency (In-house Lobbyists)
-          Bill, was introduced in the House of Lords in 2026 specifically to close this gap. The government has so
-          far resisted widening the register to cover it.
-        </p>
-      </InfoCard>
-
-      <div style={{ marginBottom: 24, maxWidth: "none" }}>
-        <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>
-          The register in action: real recent investigations
-        </h2>
-        <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16 }}>
-          The Registrar can and does open investigations into whether lobbying should have been registered and
-          wasn't. Three recent examples: all ultimately cleared, which is itself informative about how narrow the
-          legal definition is.
-        </p>
-        <div className="ed-list">
-          {CASES.map((item, i) => (
-            <motion.div
-              key={item.name}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.3, delay: i * 0.05 }}
-              style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `3px solid ${item.color}`, borderRadius: 12, padding: "16px 20px" }}
-            >
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, flexWrap: "wrap", marginBottom: 6 }}>
-                <span style={{ fontFamily: FONT_DISPLAY, fontSize: 16.5, color: COLORS.ink }}>{item.name}</span>
-                <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: readable(item.color), fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em" }}>
-                  {item.period}
-                </span>
-              </div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.6 }}>{item.detail}</div>
-            </motion.div>
+      <Chapter n={5} title="The register in action: real recent investigations" colour="#E8741A" lede="The Registrar can and does open investigations into whether lobbying should have been registered and wasn't. Three recent examples: all ultimately cleared, which is itself informative about how narrow the legal definition is.">
+        <ul className="st-case-grid">
+          {CASES.map((c) => (
+            <li key={c.name} className="st-case" style={{ "--tc": c.color }}>
+              <header><span className="st-avatar" aria-hidden="true">{c.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span><div><h3>{c.name}</h3><p>{c.period}</p></div></header>
+              <section><h4>What the Registrar looked at</h4><p>{c.detail}</p></section>
+            </li>
           ))}
-        </div>
-      </div>
-
-      <InfoCard title="Where this leaves you as a reader" color="#9C6B30" icon={IconShield} index={3} wide>
-        <ul style={{ margin: 0, paddingLeft: 20 }}>
-          <li style={{ marginBottom: 8 }}>
-            If a firm appears on this register, that's a genuine, useful signal. It's telling you a client paid
-            someone specifically to approach the very top of government.
-          </li>
-          <li style={{ marginBottom: 8 }}>
-            If a company <em>isn't</em> on it, that tells you nothing either way: the vast majority of real-world
-            lobbying, done in-house or aimed at officials below permanent secretary level, simply never has to
-            appear here.
-          </li>
-          <li>
-            The list above was taken from the live register in September 2026 and is refreshed periodically by
-            hand, not daily, for current, quarter-by-quarter client lists per firm, search the{" "}
-            <a href="https://registrarofconsultantlobbyists.org.uk/" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
-              official register itself ↗
-            </a>
-            .
-          </li>
         </ul>
-      </InfoCard>
-      </div>
+      </Chapter>
+
+      <Chapter n={6} title="Where this leaves you as a reader" colour="#9C6B30" lede="Three things to take away.">
+        <Cards items={[
+          { icon: IconShield, colour: "#3F7D5C", title: "On the register is a real signal", text: "If a firm appears on this register, that's a genuine, useful signal. It's telling you a client paid someone specifically to approach the very top of government." },
+          { icon: IconSearch, colour: "#9C3B3B", title: "Absent tells you nothing", text: "If a company isn't on it, that tells you nothing either way: the vast majority of real-world lobbying, done in-house or aimed at officials below permanent secretary level, simply never has to appear here." },
+          { icon: IconGavel, colour: "#5A7FA6", title: "A snapshot, not a live feed", text: "The list above was taken from the live register in September 2026 and is refreshed periodically by hand, not daily. For current, quarter-by-quarter client lists per firm, search the official register at registrarofconsultantlobbyists.org.uk." },
+        ]} />
+        <p className="st-note"><a href="https://registrarofconsultantlobbyists.org.uk/" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>Open the official register</a></p>
+      </Chapter>
     </div>
   );
 }

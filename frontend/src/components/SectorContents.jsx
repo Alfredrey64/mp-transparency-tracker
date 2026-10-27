@@ -18,7 +18,7 @@ function Item({ n, item, on, accent, onPick }) {
         }}
       >
         <span aria-hidden="true" style={{ width: 26, height: 26, borderRadius: 8, display: "grid", placeItems: "center", fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, background: on ? accent : `${accent}22`, color: on ? "#fff" : COLORS.ink }}>{n}</span>
-        <span style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: on ? 700 : 600, lineHeight: 1.3, overflowWrap: "anywhere" }}>{item.label}</span>
+        <span style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, lineHeight: 1.3, overflowWrap: "anywhere" }}>{item.label}</span>
       </button>
     </li>
   );

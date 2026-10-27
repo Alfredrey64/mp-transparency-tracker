@@ -81,7 +81,7 @@ function DepartmentDropdown({ value, options, onChange }) {
                   whileHover={{ backgroundColor: `${COLORS.accent}14` }}
                   style={{
                     display: "block", width: "100%", textAlign: "left", fontFamily: FONT_BODY, fontSize: 12.5,
-                    fontWeight: active ? 700 : 500, color: active ? COLORS.accentText : COLORS.ink,
+                    fontWeight: 600, color: active ? COLORS.accentText : COLORS.ink,
                     padding: "8px 10px", borderRadius: 7, border: "none",
                     background: active ? `${COLORS.accent}14` : "transparent", cursor: "pointer",
                     overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",

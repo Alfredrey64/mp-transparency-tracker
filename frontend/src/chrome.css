@@ -163,11 +163,11 @@
 .dg-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.35s var(--ease-out); }
 .drawer-group[data-open="true"] .dg-body { grid-template-rows: 1fr; }
 .dg-body > .drawer-list { min-height: 0; overflow: hidden; }
-.drawer-list { list-style: none; margin: 0; padding: 0 8px; display: grid; gap: 1px; align-content: start; }
-.drawer-group[data-open="true"] .drawer-list { padding-bottom: 10px; }
+.drawer-list { list-style: none; margin: 0; padding: 4px 10px 0; display: grid; gap: 6px; align-content: start; }
+.drawer-group[data-open="true"] .drawer-list { padding-bottom: 14px; }
 .drawer-list li { opacity: 0; transform: translateX(-10px); transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out); }
 .drawer-group[data-open="true"] .drawer-list li { opacity: 1; transform: none; transition-delay: calc(var(--n, 0) * 28ms + 90ms); }
-.drawer-list a { position: relative; display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 6px 10px; border-radius: var(--radius-s); text-decoration: none; color: var(--c-ink); transition: background-color 0.15s var(--ease-out); }
+.drawer-list a { position: relative; display: flex; align-items: center; gap: 14px; min-height: 60px; padding: 10px 14px; border-radius: var(--radius-s); text-decoration: none; color: var(--c-ink); transition: background-color 0.15s var(--ease-out); }
 .drawer-list a:hover, .drawer-list a:active { background: color-mix(in srgb, var(--g) 12%, transparent); }
 .drawer-list a[aria-current="page"] { background: color-mix(in srgb, var(--g) 16%, transparent); }
 .drawer-list a[aria-current="page"]::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 4px; border-radius: 2px; background: var(--g); }
@@ -309,7 +309,7 @@
   font: 600 15px/1.2 "Figures", "Public Sans", system-ui, sans-serif; transition: background-color 0.18s var(--ease-out), color 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out);
 }
 .seg-btn:hover { color: var(--c-ink); background: color-mix(in srgb, var(--c-paper-card) 60%, transparent); }
-.seg-btn[aria-selected="true"], .seg-btn[aria-pressed="true"] { background: color-mix(in srgb, var(--c, var(--c-brand)) 82%, #000); color: #fff; font-weight: 700; box-shadow: 0 8px 16px -10px var(--c, var(--c-brand)); }
+.seg-btn[aria-selected="true"], .seg-btn[aria-pressed="true"] { background: color-mix(in srgb, var(--c, var(--c-brand)) 82%, #000); color: #fff; box-shadow: 0 8px 16px -10px var(--c, var(--c-brand)); }
 .seg-btn[aria-selected="true"]::before, .seg-btn[aria-pressed="true"]::before { content: none; }
 .seg-btn { color: var(--c-ink); }
 .seg-btn:not([aria-selected="true"]):not([aria-pressed="true"]):hover { background: color-mix(in srgb, var(--c, var(--c-brand)) 12%, var(--c-paper-card)); }
@@ -643,3 +643,11 @@ html[data-vt]::view-transition-new(root) { animation: vt-in 0.24s var(--ease-out
   html:not([data-vt]) #main-content { animation: none; }
 }
 
+
+/* Moving between the tabs of a page: the line under the tabs keeps the height of the longest one, and the new view fades in without moving. */
+.tab-blurbs { display: grid; }
+.tab-blurbs > p { grid-area: 1 / 1; margin: 0; }
+.tab-blurbs > p[data-on="0"] { visibility: hidden; }
+[role="tabpanel"] > * { animation: tab-fade 0.28s var(--ease-out) backwards; }
+@keyframes tab-fade { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { [role="tabpanel"] > * { animation: none; } }

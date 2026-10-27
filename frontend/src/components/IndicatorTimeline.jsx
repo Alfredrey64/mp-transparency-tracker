@@ -56,7 +56,7 @@ const PRESETS = [
 
 const card = { ...baseCard, padding: "clamp(16px, 4.5vw, 22px)" };
 const pill = (on) => ({
-  fontFamily: FONT_BODY, fontSize: 13, fontWeight: on ? 700 : 500, padding: "6px 12px", borderRadius: 999, cursor: "pointer",
+  fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, padding: "6px 12px", borderRadius: 999, cursor: "pointer",
   border: `1px solid ${on ? COLORS.ink : COLORS.hairline}`, background: on ? COLORS.ink : "transparent", color: on ? COLORS.paper : COLORS.inkSoft,
 });
 
@@ -342,7 +342,7 @@ export default function IndicatorTimeline({ param }) {
                     <button
                       type="button" className="ons-chip" role="checkbox" aria-checked={on} disabled={full} onClick={() => toggle(ref)}
                       title={full ? `You can compare up to ${MAX_PICKED} at once. Remove one first.` : undefined}
-                      style={{ width: "100%", textAlign: "left", display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 11, padding: "10px 12px", borderRadius: 12, fontFamily: FONT_BODY, fontSize: 14, fontWeight: on ? 700 : 500, lineHeight: 1.3, color: COLORS.ink, background: on ? `${colour}1f` : "transparent", border: `1px solid ${on ? colour : COLORS.hairline}`, opacity: full ? 0.45 : 1, cursor: full ? "default" : "pointer", transition: "background 0.15s, border-color 0.15s" }}
+                      style={{ width: "100%", textAlign: "left", display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 11, padding: "10px 12px", borderRadius: 12, fontFamily: FONT_BODY, fontSize: 14, fontWeight: 600, lineHeight: 1.3, color: COLORS.ink, background: on ? `${colour}1f` : "transparent", border: `1px solid ${on ? colour : COLORS.hairline}`, opacity: full ? 0.45 : 1, cursor: full ? "default" : "pointer", transition: "background 0.15s, border-color 0.15s" }}
                     >
                       <span aria-hidden="true" style={{ flexShrink: 0, width: 20, height: 20, borderRadius: 6, display: "grid", placeItems: "center", background: on ? colour : "transparent", border: `2px solid ${on ? colour : COLORS.inkSoft}`, color: "#fff", fontSize: 13, fontWeight: 800 }}>{on ? "\u2713" : ""}</span>
                       <span style={{ minWidth: 0 }}>

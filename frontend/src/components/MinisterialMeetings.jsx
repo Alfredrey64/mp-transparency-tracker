@@ -27,7 +27,7 @@ function FilterRow({ label, count, max, color, active, onClick }) {
         padding: "7px 0 7px 12px", borderLeft: `2px solid ${active ? color : "transparent"}`, font: "inherit",
       }}
     >
-      <span style={{ display: "flex", justifyContent: "space-between", gap: 10, fontFamily: FONT_BODY, fontSize: 14, color: active ? COLORS.ink : COLORS.inkSoft, fontWeight: active ? 700 : 500 }}>
+      <span style={{ display: "flex", justifyContent: "space-between", gap: 10, fontFamily: FONT_BODY, fontSize: 14, color: active ? COLORS.ink : COLORS.inkSoft, fontWeight: 600 }}>
         <span>{label}</span>
         <span style={{ ...numeric, fontSize: 14 }}>{count}</span>
       </span>

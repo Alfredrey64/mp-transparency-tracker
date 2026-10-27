@@ -42,7 +42,10 @@ export function PageToggles({ tabs, current, onPick, label, idPrefix }) {
           );
         })}
       </div>
-      <p style={{ fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.55, color: COLORS.inkSoft, margin: "12px 2px 0", maxWidth: 780 }}>{active.blurb}</p>
+      {/* Every tab's blurb sits in the same grid cell and only the current one shows, so the line is as tall as the longest and nothing below it moves when a tab is picked. */}
+      <div className="tab-blurbs" style={{ fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.55, color: COLORS.inkSoft, margin: "12px 2px 0", maxWidth: 780 }}>
+        {tabs.map((t) => <p key={t.key} aria-hidden={t.key === active.key ? undefined : "true"} data-on={t.key === active.key ? "1" : "0"}>{t.blurb}</p>)}
+      </div>
       {panel && (next || prev) && createPortal(
         <nav className="tabfoot" aria-label="Move to another view">
           {prev ? <button type="button" className="tabfoot-prev" onClick={() => { onPick(prev.key); document.getElementById(`${idPrefix}-tab-${prev.key}`)?.scrollIntoView({ block: "center" }); }}><small>Back</small><b>{prev.label}</b></button> : <span />}

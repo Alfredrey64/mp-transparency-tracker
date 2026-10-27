@@ -162,7 +162,7 @@ function PlacesChart({ group, sector, series, range, real, deflator, showGovernm
               disabled={full}
               onClick={() => toggle(p.id)}
               style={{
-                fontFamily: FONT_BODY, fontSize: 13, fontWeight: on ? 700 : 600, display: "inline-flex", alignItems: "center", gap: 7, padding: "6px 12px", borderRadius: 999,
+                fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 7, padding: "6px 12px", borderRadius: 999,
                 cursor: full ? "not-allowed" : "pointer", opacity: full ? 0.45 : 1, color: COLORS.ink,
                 border: `1.5px solid ${on ? SLOTS[at] : COLORS.hairline}`, background: on ? `${SLOTS[at]}22` : "transparent",
               }}
@@ -207,7 +207,7 @@ function PlacesChart({ group, sector, series, range, real, deflator, showGovernm
               className="ons-chip"
               style={{ display: "grid", gridTemplateColumns: "minmax(96px, 150px) 1fr auto", alignItems: "center", gap: 10, background: "none", border: "none", padding: "5px 0", cursor: "pointer", textAlign: "left", font: "inherit", minWidth: 0 }}
             >
-              <span style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: on ? 700 : 500, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</span>
+              <span style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</span>
               <span aria-hidden="true" style={{ height: 10, borderRadius: 5, background: COLORS.hairline, position: "relative", overflow: "hidden" }}>
                 <span style={{ position: "absolute", inset: "0 auto 0 0", width, borderRadius: 5, background: on ? SLOTS[at] : `${accent}77` }} />
               </span>

@@ -100,7 +100,7 @@ export default function PromiseExplorer({ initialQuestion }) {
               key={q.id} type="button" className="ons-tap" aria-pressed={on} onClick={() => pick(q.id)}
               style={{
                 display: "inline-flex", alignItems: "center", gap: 9, textAlign: "left", cursor: "pointer",
-                fontFamily: FONT_BODY, fontSize: 14, fontWeight: on ? 700 : 500, lineHeight: 1.3, color: COLORS.ink,
+                fontFamily: FONT_BODY, fontSize: 14, fontWeight: 600, lineHeight: 1.3, color: COLORS.ink,
                 padding: "9px 15px 9px 12px", borderRadius: 12,
                 border: `1px solid ${on ? COLORS.ink : COLORS.hairline}`, boxShadow: on ? `0 0 0 1px ${COLORS.ink}` : "none",
                 background: on ? COLORS.paperCard : "transparent", transition: "background 0.15s, border-color 0.15s, box-shadow 0.15s",

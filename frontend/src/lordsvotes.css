@@ -1,6 +1,6 @@
 /* How peers vote. Loaded only with that page. */
 /* The scoreboard: four dark tiles, each with a picture of its own number. */
-.lv-board { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 14px; margin-top: 22px; padding: clamp(14px, 2.4vw, 22px); border-radius: 28px; background: radial-gradient(120% 140% at 0% 0%, #1B2B57, #0B1530 70%); box-shadow: var(--shadow-2); }
+.lv-board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 22px; padding: clamp(14px, 2.4vw, 22px); border-radius: 28px; background: radial-gradient(120% 140% at 0% 0%, #1B2B57, #0B1530 70%); box-shadow: var(--shadow-2); }
 .lv-tile { position: relative; display: grid; align-content: start; gap: 8px; padding: 18px 18px 16px; border-radius: 22px; color: #fff; background: linear-gradient(160deg, color-mix(in srgb, var(--tc) 22%, rgba(255, 255, 255, 0.05)), rgba(255, 255, 255, 0.05) 70%); border: 1px solid color-mix(in srgb, var(--tc) 45%, rgba(255, 255, 255, 0.12)); overflow: hidden; animation: lvIn 0.6s var(--ease-out) calc(var(--i) * 90ms) backwards; }
 .lv-tile::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--tc); }
 @keyframes lvIn { from { opacity: 0; transform: translateY(14px); } }
@@ -35,24 +35,36 @@
 @keyframes lvGrow { from { transform: scaleX(0); } }
 .lv-bar > span { font: 700 15px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); text-align: right; min-width: 64px; }
 .lv-list { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 12px; }
-.lv-div { padding: 14px 16px 15px; border-radius: 16px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); display: grid; gap: 8px; }
-.lv-div-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; align-items: baseline; }
-.lv-div-top b { font: 700 16px/1.3 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
-.lv-div-top span { font: 600 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.lv-tally { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: var(--c-hairline); }
-.lv-tally > i { display: block; }
-.lv-tally-c { background: #2F9E6B; }
-.lv-tally-n { background: #C13A4E; }
-.lv-tally-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font: 600 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
-.lv-tally-legend i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; }
-.lv-splits { display: flex; flex-wrap: wrap; gap: 6px; }
-.lv-split { display: grid; grid-template-columns: auto 90px auto; align-items: center; gap: 8px; padding: 5px 12px 5px 10px; border-radius: 999px; background: var(--c-paper); border: 1px solid var(--c-hairline); border-left: 5px solid var(--pc); font: 600 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
-.lv-split b { display: inline-flex; align-items: center; gap: 6px; font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; }
+.lv-div { border-radius: 20px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); overflow: hidden; }
+.lv-div[data-open="1"] { border-color: #7A5AF0; box-shadow: var(--shadow-2), 0 0 0 3px rgba(122, 90, 240, 0.14); }
+.lv-div-btn { display: grid; gap: 12px; width: 100%; padding: 16px 18px 16px; text-align: left; background: none; border: 0; cursor: pointer; font: inherit; color: inherit; }
+.lv-div-btn:hover { background: color-mix(in srgb, #7A5AF0 5%, transparent); }
+.lv-div-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 14px; }
+.lv-div-top b { font: 700 17px/1.3 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.lv-div-date { font: 600 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.lv-tally { display: flex; height: 28px; border-radius: 14px; overflow: hidden; background: var(--c-hairline); }
+.lv-tally > i { display: flex; align-items: center; padding: 0 12px; font: 800 13px "Figures", "Public Sans", system-ui, sans-serif; color: #fff; font-style: normal; min-width: 0; overflow: hidden; white-space: nowrap; }
+.lv-tally-c { background: #2F9E6B; justify-content: flex-start; }
+.lv-tally-n { background: #C13A4E; justify-content: flex-end; }
+.lv-div-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.lv-pill { padding: 4px 11px; border-radius: 999px; font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; background: var(--c-paper); border: 1px solid var(--c-hairline); color: var(--c-ink); }
+.lv-pill[data-tone="ok"] { background: color-mix(in srgb, #2F9E6B 14%, transparent); border-color: color-mix(in srgb, #2F9E6B 45%, transparent); color: #1D6F49; }
+.lv-pill[data-tone="no"] { background: color-mix(in srgb, #C13A4E 12%, transparent); border-color: color-mix(in srgb, #C13A4E 45%, transparent); color: #9C2A3C; }
+.lv-pill[data-tone="warn"] { background: color-mix(in srgb, #E8741A 14%, transparent); border-color: color-mix(in srgb, #E8741A 50%, transparent); color: #A24B0B; }
+.lv-div-chev { margin-left: auto; font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; color: #5B3FD0; }
+.lv-detail { display: grid; gap: 16px; padding: 4px 18px 18px; border-top: 1px dashed var(--c-hairline); animation: lvIn 0.35s var(--ease-out) backwards; }
+.lv-detail h4 { margin: 14px 0 6px; font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.lv-detail p, .lv-detail li { margin: 0; font: 400 14.5px/1.65 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.lv-detail ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.lv-detail a { font-weight: 700; color: #5B3FD0; }
+.lv-splits { display: grid; gap: 8px; }
+.lv-split { display: grid; grid-template-columns: minmax(130px, 200px) minmax(80px, 1fr) auto; align-items: center; gap: 12px; padding: 6px 12px; border-radius: 12px; background: var(--c-paper); border-left: 5px solid var(--pc); font: 600 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.lv-split b { display: inline-flex; align-items: center; gap: 6px; font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; }
 .lv-split b i { width: 8px; height: 8px; border-radius: 50%; background: var(--pc); }
-.lv-mini { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: var(--c-hairline); }
+.lv-mini { display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: var(--c-hairline); }
 .lv-mini > i { background: #2F9E6B; display: block; }
 .lv-mini > u { background: #C13A4E; display: block; text-decoration: none; }
-.lv-split small { font: 500 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.lv-split small { font: 500 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .lv-tools { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin: 16px 0 10px; }
 .lv-tools input, .lv-tools select { font: 500 15px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); background: var(--c-paper-card); border: 1.5px solid var(--c-hairline); border-radius: 12px; padding: 10px 14px; min-height: 44px; box-sizing: border-box; }
 .lv-tools input { flex: 1 1 240px; max-width: 380px; }
@@ -66,5 +78,7 @@
 .lv-peer .lv-track { grid-column: 1 / -1; height: 8px; }
 .lv-more { display: flex; justify-content: center; margin-top: 16px; }
 @media (max-width: 560px) { .lv-bar { grid-template-columns: minmax(0, 1fr) auto; } .lv-bar .lv-track { grid-column: 1 / -1; order: 3; } }
-@media (max-width: 560px) { .lv-split { grid-template-columns: auto 70px; } .lv-split small { grid-column: 1 / -1; } }
+@media (max-width: 560px) { .lv-split { grid-template-columns: minmax(0, 1fr) 70px; } .lv-split small { grid-column: 1 / -1; } .lv-div-chev { margin-left: 0; } }
 @media (prefers-reduced-motion: reduce) { .lv-track > i, .lv-tile, .lv-months i, .lv-ring-fg, .lv-dots i { animation: none; } }
+@media (max-width: 1060px) { .lv-board { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .lv-board { grid-template-columns: minmax(0, 1fr); } }

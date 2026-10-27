@@ -35,7 +35,7 @@ function Strip({ nation, selected, onPick }) {
             <span aria-hidden="true" style={{ display: "flex", flexDirection: "column-reverse", width: 26, height: 74, borderRadius: 6, overflow: "hidden", background: COLORS.paper }}>
               {nation.parties.filter((k) => x.seats[k]).map((k) => <span key={k} style={{ height: `${(x.seats[k] / total) * 100}%`, background: PARTIES[k].colour, minHeight: 1 }} />)}
             </span>
-            <span style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: on ? 700 : 500 }}>{x.id}</span>
+            <span style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 600 }}>{x.id}</span>
           </button>
         );
       })}

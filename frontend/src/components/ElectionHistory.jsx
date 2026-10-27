@@ -98,7 +98,7 @@ function ElectionStrip({ selected, onPick }) {
             <span aria-hidden="true" style={{ display: "flex", flexDirection: "column-reverse", width: 22, height: 74, borderRadius: 6, overflow: "hidden", background: COLORS.paper, boxShadow: on ? `0 6px 14px -8px ${GROUPS[x.leader].colour}` : "none" }}>
               {parts.map((k) => <span key={k} style={{ height: `${(x.seatsWon[k] / x.seats) * 100}%`, background: GROUPS[k].colour, minHeight: 1 }} />)}
             </span>
-            <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: on ? 700 : 500, lineHeight: 1.1, textAlign: "center" }}>
+            <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 600, lineHeight: 1.1, textAlign: "center" }}>
               {x.id === "1974a" ? "Feb" : x.id === "1974b" ? "Oct" : ""}{x.id.startsWith("1974") ? <br /> : null}{x.id.startsWith("1974") ? "1974" : x.id}
             </span>
           </button>

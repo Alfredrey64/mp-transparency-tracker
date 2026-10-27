@@ -6,19 +6,21 @@ import { concentrationMeaning } from "../lib/moneyMeaning";
 import { everydayShort } from "../lib/everyday";
 import { motion, AnimatePresence } from "motion/react";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { getDonorSector, sectorColor, normalizeDonorKey, donorSectorMetadata } from "../lib/donorSectors";
 import { partyColour, formatDate } from "../lib/format";
 import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconInfluence } from "./icons";
+import SectorIcon from "./SectorIcon";
+import "../donors.css";
 import { CompanyDonorsView } from "./CompanyDonorsView";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { LoadFailedNote } from "./MpCards";
 
 const UNTAGGED_COLOR = COLORS.inkSoft;
-const UNTAGGED_LABEL = "Untagged / individual donors";
+const UNTAGGED_LABEL = "Individuals and unclassified donors";
 
 // Some declared entries have no real donor name in the source data — just a
 // parsed fragment like "Agreement starting 08 July 2025" (usually outside
@@ -248,28 +250,19 @@ export default function DonorsLobbying() {
             Declared Value by Sector
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {stats.sectorBars.map((s, i) => (
-              <motion.div
-                key={s.sector}
-                initial={{ opacity: 0, x: -8 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: i * 0.03 }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, marginBottom: 3 }}>
-                  <span>{s.sector}</span>
-                  <span style={{ fontFamily: FONT_BODY, fontWeight: 700, color: COLORS.ink }}>£{Math.round(s.total).toLocaleString()}</span>
+            {stats.sectorBars.map((s) => (
+              <div key={s.sector}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, marginBottom: 4 }}>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+                    <span className="dn-ico" style={{ "--sc": s.color }}><SectorIcon sector={s.sector === UNTAGGED_LABEL ? "Individuals" : s.sector} size={15} /></span>
+                    <span>{s.sector}</span>
+                  </span>
+                  <span style={{ fontFamily: FONT_BODY, fontWeight: 700, color: COLORS.ink, flexShrink: 0 }}>£{Math.round(s.total).toLocaleString()}</span>
                 </div>
-                <div style={{ height: 7, borderRadius: 999, background: COLORS.paper, overflow: "hidden" }}>
-                  <motion.div
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${(s.total / maxSectorBar) * 100}%` }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: 0.05 + i * 0.03, ease: "easeOut" }}
-                    style={{ height: "100%", borderRadius: 999, background: s.color }}
-                  />
+                <div style={{ height: 8, borderRadius: 999, background: COLORS.paper, overflow: "hidden" }}>
+                  <div style={{ width: `${(s.total / maxSectorBar) * 100}%`, height: "100%", borderRadius: 999, background: s.color }} />
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -321,7 +314,7 @@ export default function DonorsLobbying() {
                       <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 1 }}>
                         <span style={{ width: 6, height: 6, borderRadius: "50%", background: d.tag ? sectorColor(d.tag.sector) : UNTAGGED_COLOR, flexShrink: 0 }} />
                         <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>
-                          {d.tag?.sector ?? "Untagged"} · {d.mpCount} MP{d.mpCount === 1 ? "" : "s"}
+                          {d.tag?.sector ?? "Individual or unclassified"} · {d.mpCount} MP{d.mpCount === 1 ? "" : "s"}
                           {everydayShort(d.total) ? ` · ${everydayShort(d.total)}` : ""}
                         </span>
                       </div>
@@ -370,87 +363,44 @@ export default function DonorsLobbying() {
         </p>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))", gap: 14, marginBottom: 32, alignItems: "start" }}>
-        {stats.sectorLeaderboards.map((s, i) => {
+      <div className="dn-grid">
+        {stats.sectorLeaderboards.map((s) => {
           const isOpen = expandedSectors.has(s.sector);
+          const lead = s.topMps[0]?.total || 1;
           return (
-            <motion.div
-              key={s.sector}
-              layout="position"
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.3, delay: (i % 8) * 0.04 }}
-              style={{
-                background: isOpen ? `${s.color}0a` : COLORS.paperCard,
-                border: `1px solid ${COLORS.hairline}`,
-                borderLeft: `5px solid ${s.color}`,
-                borderRadius: 12,
-                padding: 16,
-                transition: "background 0.2s",
-              }}
-            >
-              <button
-                onClick={() => toggleSector(s.sector)}
-                style={{ display: "block", width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8, marginBottom: 8 }}>
-                  <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13.5, color: COLORS.ink }}>{s.sector}</span>
-                  <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12.5, color: COLORS.ink, flexShrink: 0 }}>£{Math.round(s.total).toLocaleString()}</span>
+            <article key={s.sector} className="dn-card" data-open={isOpen ? "1" : "0"} style={{ "--sc": s.color }}>
+              <header className="dn-card-head">
+                <span className="dn-card-ico" aria-hidden="true"><SectorIcon sector={s.sector} size={26} /></span>
+                <div>
+                  <h3>{s.sector}</h3>
+                  <p><b>£{Math.round(s.total).toLocaleString()}</b> declared across {s.allDonations.length} {s.allDonations.length === 1 ? "donation" : "donations"}</p>
                 </div>
-              </button>
-              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                {s.topMps.map((mp) => (
-                  <div key={mp.name} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>
-                    <span style={{ display: "flex", alignItems: "center", gap: 6, overflow: "hidden", marginRight: 8 }}>
-                      <span style={{ width: 6, height: 6, borderRadius: "50%", background: mp.partyColor, flexShrink: 0 }} />
-                      <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{mp.name}</span>
-                    </span>
-                    <span style={{ fontFamily: FONT_BODY, fontWeight: 700, color: COLORS.ink, flexShrink: 0 }}>£{Math.round(mp.total).toLocaleString()}</span>
-                  </div>
+              </header>
+              <ol className="dn-rank">
+                {s.topMps.map((mp, n) => (
+                  <li key={mp.name} style={{ "--pc": mp.partyColor }}>
+                    <span className="dn-medal" data-n={n + 1}>{n + 1}</span>
+                    <span className="dn-who"><b>{mp.name}</b><i style={{ "--w": mp.total / lead }} /></span>
+                    <span className="dn-amt">£{Math.round(mp.total).toLocaleString()}</span>
+                  </li>
                 ))}
-              </div>
-              <button
-                onClick={() => toggleSector(s.sector)}
-                style={{
-                  display: "flex", alignItems: "center", gap: 4, marginTop: 10, background: "none", border: "none",
-                  padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontWeight: 600, fontSize: 11.5, color: readable(s.color),
-                }}
-              >
-                <motion.span animate={{ rotate: isOpen ? 90 : 0 }} transition={{ duration: 0.15 }} style={{ display: "inline-block" }}>▸</motion.span>
-                {isOpen ? "Hide full list" : `See all ${s.allDonations.length} donations`}
+              </ol>
+              <button type="button" className="dn-more" aria-expanded={isOpen} onClick={() => toggleSector(s.sector)}>
+                <span aria-hidden="true">{isOpen ? "▾" : "▸"}</span>
+                {isOpen ? "Hide the full list" : `See all ${s.allDonations.length} donations`}
               </button>
-              <AnimatePresence>
-                {isOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.2 }}
-                    style={{ overflow: "hidden" }}
-                  >
-                    <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${COLORS.hairline}`, maxHeight: 260, overflowY: "auto", display: "flex", flexDirection: "column", gap: 6 }}>
-                      {s.allDonations.slice(0, 40).map((don, di) => (
-                        <div key={di} style={{ display: "flex", justifyContent: "space-between", gap: 8, fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft }}>
-                          <span style={{ display: "flex", alignItems: "center", gap: 5, overflow: "hidden" }}>
-                            <span style={{ width: 5, height: 5, borderRadius: "50%", background: don.partyColor, flexShrink: 0 }} />
-                            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                              {don.donor} → {don.mpName}
-                            </span>
-                          </span>
-                          <span style={{ fontFamily: FONT_BODY, fontWeight: 700, color: COLORS.ink, flexShrink: 0 }}>£{Math.round(don.amount).toLocaleString()}</span>
-                        </div>
-                      ))}
-                      {s.allDonations.length > 40 && (
-                        <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, fontStyle: "italic" }}>
-                          +{s.allDonations.length - 40} more not shown
-                        </div>
-                      )}
+              {isOpen && (
+                <div className="dn-all">
+                  {s.allDonations.slice(0, 40).map((don, di) => (
+                    <div key={di} className="dn-row" style={{ "--pc": don.partyColor }}>
+                      <span><i />{don.donor} to {don.mpName}</span>
+                      <b>£{Math.round(don.amount).toLocaleString()}</b>
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
+                  ))}
+                  {s.allDonations.length > 40 && <div className="dn-row"><span>+{s.allDonations.length - 40} more not shown</span></div>}
+                </div>
+              )}
+            </article>
           );
         })}
       </div>
