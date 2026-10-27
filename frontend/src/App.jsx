@@ -90,6 +90,7 @@ const AnswersPage = lazyPage(LOADERS.answers);
 const DeprivationPage = lazyPage(LOADERS.deprivation);
 const IndicatorTimeline = lazyPage(LOADERS.indicators);
 const HowToVote = lazyPage(LOADERS.howtovote);
+const MyBallot = lazyPage(LOADERS.myBallot);
 const TeacherMode = lazyPage(LOADERS.teacher);
 const LocalElections = lazyPage(LOADERS.localElections);
 const GeneralElection = lazyPage(LOADERS.generalElection);
@@ -135,7 +136,7 @@ const VALID_VIEWS = new Set([
   "committees", "compare", "ministerialMeetings", "writtenQuestions", "standards", "rankings", "myMP",
   "mediaLiteracy", "methodology", "glossary", "settings", "privacy", "terms", "accessibility", "whatsnew", "list",
   "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist", "numbers", "topics", "constituency", "start", "rebels", "offices", "councils",
-  "economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates", "immigration", "business", "regions", "answers", "deprivation", "indicators", "marginals", "compareSeats", "howtovote", "teacher", "localElections", "generalElection", "taxRates", "inequality", "brexit", "defence", "education", "ageing", "nhs", "energy", "trust", "care", "transport", "union", "calculators", "funding", "myArea", "thisWeek", "councillors", "lordsVotes",
+  "economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates", "immigration", "business", "regions", "answers", "deprivation", "indicators", "marginals", "compareSeats", "howtovote", "myBallot", "teacher", "localElections", "generalElection", "taxRates", "inequality", "brexit", "defence", "education", "ageing", "nhs", "energy", "trust", "care", "transport", "union", "calculators", "funding", "myArea", "thisWeek", "councillors", "lordsVotes",
 ]);
 
 // The tab title, bookmark name and browser-history entry for every view —
@@ -492,6 +493,7 @@ export default function App() {
             {view === "deprivation" && <DeprivationPage />}
             {view === "marginals" && <Marginals />}
             {view === "howtovote" && <HowToVote />}
+            {view === "myBallot" && <MyBallot />}
             {view === "teacher" && <TeacherMode param={viewParam} />}
             {view === "localElections" && <LocalElections />}
             {view === "generalElection" && <GeneralElection param={viewParam} />}

@@ -4,7 +4,7 @@ import {
   IconPartyFinance, IconByElection, IconLords, IconPetition, IconCompass, IconCommittee, IconCompare, IconMeeting,
   IconQuestion, IconGavel, IconRankings, IconDarkMoney, IconThinkTank, IconDoor, IconRegister,
   IconSearch, IconBook, IconChartBars, IconTopic, IconRoute, IconSplit, IconHexMap, IconCouncil,
-  IconTaxes, IconCalculator, IconRates, IconMigration, IconMap, IconAsk, IconDeprivation, IconSwing, IconSeatCompare, IconFactory, IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconBallot, IconCalendar, IconHouse, IconGlobe, IconLeaf, IconCompareTime, IconShield, IconLordsVote, IconCouncillor, IconFeed, IconPinHome
+  IconTaxes, IconCalculator, IconRates, IconMigration, IconMap, IconAsk, IconDeprivation, IconSwing, IconSeatCompare, IconFactory, IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconBallot, IconCalendar, IconHouse, IconGlobe, IconLeaf, IconCompareTime, IconShield, IconLordsVote, IconCouncillor, IconFeed, IconPinHome, IconWhoStands
 } from "../components/icons";
 
 // Lives outside both Sidebar.jsx and shared.jsx specifically so neither has
@@ -75,6 +75,7 @@ export const SECTIONS = [
       { key: "byElections", label: "By-elections", icon: IconByElection, hint: "Votes between general elections", essential: true, aka: ["elections", "by election", "bye election"] },
       { key: "localElections", label: "Local elections", icon: IconCalendar, hint: "When your council next votes", essential: true, aka: ["council elections", "next election", "polling day", "local vote", "election date", "councillors", "when do i vote"] },
       { key: "howtovote", label: "How to vote", icon: IconBallot, hint: "Register, ID and polling day", essential: true, aka: ["register to vote", "voting", "polling station", "photo id", "postal vote", "proxy vote", "election day", "ballot"] },
+      { key: "myBallot", label: "Who is on my ballot", icon: IconWhoStands, hint: "The candidates standing where you live", essential: true, aka: ["candidates", "who is standing", "who can i vote for", "ballot paper", "my ballot", "by-election", "candidate list", "who is running", "postcode", "whocanivotefor"] },
     ],
   },
   {
@@ -248,6 +249,7 @@ export const HUBS = [
   { key: "funders", label: "Who funds politics", hint: "Donors to MPs and parties", pages: [["donors", "Who funds MPs"], ["partyFinances", "Who funds the parties"], ["followTheMoney", "Trace a donor"]] },
   { key: "hidden", label: "What's hidden", hint: "Where the public records run out", pages: [["darkMoney", "Hidden donations"], ["revolvingDoor", "Ministers' later jobs"], ["lobbyingRegister", "Paid lobbyists"], ["thinkTanks", "Think tank funding"]] },
   { key: "results", label: "Election results", hint: "General, by- and local elections", pages: [["generalElection", "General elections"], ["byElections", "By-elections"], ["localElections", "Local elections"]] },
+  { key: "yourvote", label: "Your vote", hint: "How to vote, and who is on your ballot", pages: [["howtovote", "How to vote"], ["myBallot", "Who is on my ballot"]] },
   { key: "seat", label: "Your constituency", hint: "Your seat, and close contests", pages: [["constituency", "Your constituency"], ["marginals", "Marginal seats"], ["compareSeats", "Compare seats"]] },
   { key: "council", label: "Your council", hint: "Who runs it, and your councillors", pages: [["councils", "Your council"], ["councillors", "Your councillors"]] },
   { key: "past", label: "History", hint: "Landmark votes and every government", pages: [["history", "Landmark votes"], ["timeline", "Every government"], ["formerMps", "Recent departures"]] },

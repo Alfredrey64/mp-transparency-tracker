@@ -1,0 +1,41 @@
+/* Who is on my ballot: one card for each contest, a date and countdown at the top, then the people standing, listed by surname. Nothing moves on hover or press. */
+.mb-list { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 14px; }
+.mb-card { position: relative; padding: 20px clamp(16px, 3vw, 24px) 18px clamp(20px, 3.4vw, 28px); border-radius: 18px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); overflow: hidden; animation: mbIn 0.4s ease calc(var(--i, 0) * 50ms) backwards; }
+.mb-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--page-accent, #7a5af0); }
+@keyframes mbIn { from { opacity: 0; } }
+
+.mb-when { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font: 600 14px/1.3 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.mb-days { padding: 3px 11px; border-radius: 999px; font: 700 12.5px/1.4 "Public Sans", system-ui, sans-serif; color: var(--c-ink); background: color-mix(in srgb, var(--page-accent, #7a5af0) 14%, transparent); }
+.mb-days[data-soon="1"] { color: #fff; background: color-mix(in srgb, var(--page-accent, #7a5af0) 82%, #000); }
+.mb-title { margin: 8px 0 0; font: 700 clamp(20px, 3.4vw, 25px)/1.25 "Newsreader", Georgia, serif; letter-spacing: -0.01em; color: var(--c-ink); overflow-wrap: anywhere; }
+.mb-role { margin: 4px 0 0; font: 500 14px/1.5 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.mb-sub { margin: 18px 0 8px; font: 700 13.5px/1.3 "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+
+.mb-people { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(270px, 100%), 1fr)); gap: 8px; }
+.mb-people li { display: flex; align-items: flex-start; gap: 12px; min-width: 0; padding: 10px 12px; border-radius: 12px; background: color-mix(in srgb, var(--page-accent, #7a5af0) 5%, var(--c-paper-card)); border: 1px solid var(--c-hairline); }
+.mb-av { flex: none; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; font: 700 13px/1 "Public Sans", system-ui, sans-serif; color: var(--c-ink); background: color-mix(in srgb, var(--page-accent, #7a5af0) 16%, var(--c-paper-card)); }
+.mb-who { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.mb-who strong { font: 700 15px/1.3 "Public Sans", system-ui, sans-serif; color: var(--c-ink); overflow-wrap: anywhere; }
+.mb-who span { font: 500 13px/1.35 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); overflow-wrap: anywhere; }
+.mb-who .mb-more { align-self: flex-start; margin-top: 2px; padding: 5px 0; font: 600 12.5px/1.3 "Public Sans", system-ui, sans-serif; color: var(--c-ink); text-decoration: underline; text-underline-offset: 3px; }
+.mb-who .mb-more:hover { text-decoration-thickness: 2px; }
+
+.mb-note { margin: 10px 0 0; padding: 9px 12px; border-radius: 10px; font: 500 13.5px/1.55 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); background: color-mix(in srgb, var(--c-ink) 5%, transparent); }
+.mb-how { margin-top: 14px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--c-hairline); }
+.mb-how p { margin: 0; font: 400 14px/1.6 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.mb-how p + p { margin-top: 6px; }
+.mb-how strong { color: var(--c-ink); }
+
+.mb-dates { margin-top: 12px; }
+.mb-dates summary { cursor: pointer; font: 700 13.5px/1.3 "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.mb-dates ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 4px; }
+.mb-dates li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 14px; padding: 8px 0; border-top: 1px solid var(--c-hairline); font: 400 14px/1.45 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.mb-dates li strong { font-weight: 700; color: var(--c-ink); }
+.mb-dates li[data-passed="1"] { opacity: 0.75; }
+
+.mb-empty { margin-top: 14px; padding: clamp(18px, 3vw, 26px); border-radius: 18px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); }
+.mb-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.mb-links a { font: 700 14px/1.2 "Public Sans", system-ui, sans-serif; color: var(--c-ink); text-decoration: none; padding: 10px 16px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--page-accent, #7a5af0) 45%, var(--c-hairline)); background: color-mix(in srgb, var(--page-accent, #7a5af0) 9%, transparent); }
+.mb-links a:hover { background: color-mix(in srgb, var(--page-accent, #7a5af0) 16%, transparent); }
+
+@media (prefers-reduced-motion: reduce) { .mb-card { animation: none; } }

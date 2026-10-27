@@ -772,6 +772,16 @@ export function IconBallot({ size = 17 }) {
   );
 }
 
+export function IconWhoStands({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="4.5" y="3.5" width="15" height="17" rx="2.5" />
+      <circle cx="12" cy="9.2" r="2.4" />
+      <path d="M7.9 16.6c.6-2 2.1-3.1 4.1-3.1s3.5 1.1 4.1 3.1" />
+    </svg>
+  );
+}
+
 export function IconCalendar({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">

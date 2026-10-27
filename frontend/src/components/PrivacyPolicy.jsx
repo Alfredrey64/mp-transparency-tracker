@@ -15,7 +15,7 @@ function Section({ title, children }) {
 export default function PrivacyPolicy({ onNavigate }) {
   return (
     <div style={{ padding: PAGE_PADDING }}>
-      <PageHeader icon={IconShield} title="Privacy Policy" subtitle="Last updated 10 October 2026." maxWidth={760} />
+      <PageHeader icon={IconShield} title="Privacy Policy" subtitle="Last updated 27 October 2026." maxWidth={760} />
 
       <div style={{ maxWidth: 760 }}>
         <Section title="The short version">
@@ -52,6 +52,13 @@ export default function PrivacyPolicy({ onNavigate }) {
               delivery. The fonts are served from this site, so no request goes to a font provider. This site doesn't request or process that data itself.
             </li>
           </ul>
+        </Section>
+
+        <Section title="Postcode lookups">
+          Some pages can look up a postcode: your MP, your area, your council, when you next vote, and who is on your ballot. When you press Find, your
+          browser sends the postcode straight to the service that answers it, and we never see it and do not keep it. The services are postcodes.io (which
+          turns a postcode into the areas it sits in) and, only on the Who is on my ballot page, Democracy Club (which says which elections a postcode votes in
+          and who is standing). Each has its own privacy policy, and they may keep ordinary request logs. We do not send your name or anything else with the postcode.
         </Section>
 
         <Section title="Visit counts">

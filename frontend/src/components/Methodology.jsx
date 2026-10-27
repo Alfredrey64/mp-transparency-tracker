@@ -128,6 +128,12 @@ export default function Methodology({ onNavigate }) {
               use="Every UK councillor with their ward, party and next election date, and each council's party make-up since 2016. The Your Council page is built from it; the two files derived from it are shared on the same licence."
             />
             <SourceRow
+              name="Elections and candidates (Democracy Club)"
+              url="https://elections.democracyclub.org.uk/"
+              auth="No key required, open data"
+              use="The Who is on my ballot page: which elections a postcode votes in (dates, the key deadlines, whether photo ID is needed) from the Democracy Club elections service, and who is standing in each from its candidates database, which volunteers fill in from the official notices of who has been nominated. Looked up live from the visitor's own browser each time, so it is as fresh as Democracy Club's data, which can lag a little behind the official notices. People are listed by surname and nothing else."
+            />
+            <SourceRow
               name="Office for National Statistics"
               url="https://www.ons.gov.uk/"
               auth="No key required, Open Government Licence v3.0"

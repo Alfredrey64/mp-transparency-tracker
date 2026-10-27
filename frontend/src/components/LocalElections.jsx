@@ -40,6 +40,7 @@ function When({ council, data }) {
       )}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 14 }}>
         <a className="ons-tap" href={`#/councils/${council.id}`} style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: ink, textDecoration: "none", padding: "9px 16px", borderRadius: 999, border: `1px solid ${ACCENT}66`, background: `${ACCENT}12` }}>See the councillors</a>
+        <a className="ons-tap" href="#/myBallot" style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: ink, textDecoration: "none", padding: "9px 16px", borderRadius: 999, border: `1px solid ${ACCENT}66`, background: `${ACCENT}12` }}>Who is standing</a>
         <a className="ons-tap" href="#/howtovote" style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: ink, textDecoration: "none", padding: "9px 16px", borderRadius: 999, border: `1px solid ${ACCENT}66`, background: `${ACCENT}12` }}>How to vote</a>
       </div>
     </div>

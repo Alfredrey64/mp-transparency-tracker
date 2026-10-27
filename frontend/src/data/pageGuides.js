@@ -256,6 +256,11 @@ export const PAGE_GUIDES = {
     why: "You can't vote unless you are registered, and the rules on ID and deadlines trip up people every election. Knowing them in advance makes your vote count.",
     notShown: "Your registration status, or the exact deadline for the next election. Those come from gov.uk, which this page links to. Rules can change, so check there.",
   },
+  myBallot: {
+    what: "The contests your postcode votes in that are coming up, who is standing in each, how to mark the ballot paper, and the dates to register or apply for a postal or proxy vote.",
+    why: "You can only choose well if you know who is on the ballot. Lists are published only a few weeks before polling day, and many people never see them.",
+    notShown: "What the candidates believe or promise, or any ranking of them. People are listed by surname, as on the ballot paper. Lists can change until nominations close.",
+  },
   inequality: {
     what: "How unevenly income and wealth are shared in the UK, who is in poverty, where in the country the differences fall, how the UK compares with other rich countries, and the main arguments about it.",
     why: "Who has what shapes pay, prices, housing and public services, and is at the centre of many arguments about tax and benefits.",
