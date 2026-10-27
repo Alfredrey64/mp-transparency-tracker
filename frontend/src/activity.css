@@ -1,0 +1,12 @@
+/* What an MP has done lately: debates and written questions as cards that open the real thing. */
+.act-h { margin: 0 0 10px; font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); letter-spacing: 0.03em; text-transform: uppercase; }
+.act-list { display: grid; gap: 12px; }
+.act-card { display: grid; gap: 10px; padding: 14px 16px 12px; border-radius: 16px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-left: 6px solid var(--ac); box-shadow: var(--shadow-1); }
+.act-card header { display: grid; gap: 3px; }
+.act-card header b { font: 700 16px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.act-card header span { font: 500 13px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.act-said { display: grid; gap: 6px; }
+.act-said small { font: 800 11.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--ac) 75%, var(--c-ink)); letter-spacing: 0.04em; text-transform: uppercase; }
+.act-said blockquote { margin: 0; padding: 10px 14px; border-radius: 12px; background: color-mix(in srgb, var(--ac) 7%, var(--c-paper)); font: 400 14.5px/1.65 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.act-link { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--ac) 80%, var(--c-ink)); text-decoration: none; }
+.act-link:hover { text-decoration: underline; }

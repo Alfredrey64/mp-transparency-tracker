@@ -55,6 +55,36 @@ function roundRect(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
+// The right-hand panel of the MP report card: a heading, up to four bars, then up to two short facts, each with a small label.
+function drawPanel(ctx, spec, x, y, w, accent) {
+  let top = y;
+  if (spec.panelTitle) {
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = lighten(accent, 0.4);
+    ctx.font = `700 19px ${FONT_BODY}`;
+    ctx.fillText(fit(ctx, spec.panelTitle.toUpperCase(), w), x, top + 10);
+    top += 34;
+  }
+  if (spec.bars?.length) {
+    const rows = spec.bars.slice(0, 4);
+    drawBars(ctx, rows, x, top, w, rows.length * 56);
+    top += rows.length * 56 + 6;
+  }
+  (spec.panelFacts ?? []).forEach((f) => {
+    ctx.fillStyle = "rgba(255,255,255,0.12)";
+    ctx.fillRect(x, top, w, 1);
+    ctx.fillStyle = FAINT;
+    ctx.font = `700 15px ${FONT_BODY}`;
+    ctx.fillText(f.label.toUpperCase(), x, top + 24);
+    ctx.fillStyle = INK;
+    ctx.font = `500 21px ${FONT_BODY}`;
+    const lines = wrapLines(f.text, (t) => ctx.measureText(t).width, w, 2);
+    lines.forEach((line, i) => ctx.fillText(line, x, top + 50 + i * 27));
+    top += 50 + lines.length * 28;
+  });
+}
+
 function drawBars(ctx, bars, x, y, w, h) {
   const rows = bars.slice(0, 6);
   const rowH = Math.min(78, h / Math.max(rows.length, 1));
@@ -190,7 +220,7 @@ export async function renderShareCard(spec) {
   ctx.fillStyle = accent;
   ctx.fillRect(0, 0, 14, H);
 
-  const hasPanel = Boolean(spec.bars?.length || spec.hexes?.length || spec.line?.points?.length);
+  const hasPanel = Boolean(spec.bars?.length || spec.panelFacts?.length || spec.hexes?.length || spec.line?.points?.length);
   const leftW = hasPanel ? 540 : W - PAD * 2;
   const panelX = 700;
   const panelW = W - PAD - panelX;
@@ -253,7 +283,7 @@ export async function renderShareCard(spec) {
   }
 
   // Right-hand panel: bars or the hexagon map.
-  if (spec.bars?.length) drawBars(ctx, spec.bars, panelX, 86, panelW, H - 86 - 100);
+  if (spec.bars?.length || spec.panelFacts?.length) drawPanel(ctx, spec, panelX, 86, panelW, accent);
   if (spec.line?.points?.length) drawLine(ctx, spec.line, panelX, 86, panelW, H - 86 - 100, accent);
   if (spec.hexes?.length) drawHexes(ctx, spec.hexes, panelX - 20, 70, panelW + 20, H - 70 - 90);
 

@@ -65,7 +65,7 @@ export function LayersScene() {
   const GLYPHS = {
     council: <g transform="translate(-13 12) scale(0.12)"><TownHall x={0} y={0} /></g>,
     devolved: <g fill="#7A5AF0"><path d="M0 -14 a9 9 0 0 1 9 9 c0 6 -9 17 -9 17 s-9 -11 -9 -17 a9 9 0 0 1 9 -9z" /><circle cx="0" cy="-5" r="3.4" fill="#fff" /></g>,
-    uk: <g transform="translate(-13 14) scale(0.12)"><Parliament x={0} y={0} /></g>,
+    uk: <g transform="translate(0 15) scale(0.12)"><Parliament x={0} y={0} /></g>,
   };
   const band = (key, y, w, c, title, reach, n) => (
     <B n={n} fx="rise">

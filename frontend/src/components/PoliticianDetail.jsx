@@ -185,14 +185,15 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
                 filename={`${politician.name}-report-card`}
                 label="Share report card"
                 getSpec={async () => {
-                  const [careers, rows, questions] = await Promise.all([
+                  const [careers, rows, questions, money] = await Promise.all([
                     import("../data/mpCareers.json").then((m) => m.default),
-                    fetchAllRows(() => supabase.from("voting_records").select("voted_with_party_majority").eq("politician_id", politician.id)).catch(() => []),
+                    fetchAllRows(() => supabase.from("voting_records").select("title, date, voted_with_party_majority").eq("politician_id", politician.id).order("date", { ascending: false })).catch(() => []),
                     supabase.from("written_questions").select("*", { count: "exact", head: true }).eq("politician_id", politician.id).then((r) => r.count ?? 0).catch(() => 0),
+                    import("../lib/mpMoney").then((m) => m.topSources(interests, 4)),
                   ]);
                   const counted = rows.filter((r) => r.voted_with_party_majority !== null && r.voted_with_party_majority !== undefined);
-                  const votes = counted.length ? { cast: counted.length, withParty: counted.filter((r) => r.voted_with_party_majority).length } : null;
-                  return mpReportSpec({ politician, career: careers.mps[politician.parliament_member_id], votes, interestCount: interests.length, totalDeclared: totalDeclaredValue, committees: myCommittees.length, questions, link: window.location.href });
+                  const votes = counted.length ? { cast: counted.length, withParty: counted.filter((r) => r.voted_with_party_majority).length, against: counted.filter((r) => !r.voted_with_party_majority).map((r) => ({ title: r.title, date: r.date })), hasParty: !/^(independent|speaker)/i.test(politician.party ?? "") } : null;
+                  return mpReportSpec({ politician, career: careers.mps[politician.parliament_member_id], votes, interests, expenses: politician.ipsa_expenses ?? null, committees: myCommittees.map((c) => c.name), questions, topSources: money, link: window.location.href });
                 }}
                 style={{ color: "#fff", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.4)", borderRadius: 8, minHeight: 40, padding: "0 16px" }}
               />

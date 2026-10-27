@@ -32,26 +32,71 @@ export function mpShareSpec({ politician, career, interestCount = 0, totalDeclar
   };
 }
 
-// An MP's report card: the numbers that say what they do with the job, on one image. Anything not known is left out, never shown as a zero.
-// votes: { cast, withParty } from the voting record this site holds; committees and questions are counts.
-export function mpReportSpec({ politician, career, votes, interestCount = 0, totalDeclared = 0, committees = 0, questions = 0, link }) {
+// An MP's report card: what this particular MP does with the job, on one image. The left shows the headline figures and their role; the panel on the
+// right shows where their declared money came from (or, failing that, what they claimed in business costs), then specifics on how they vote and claim.
+// Anything not known is left out, never shown as a zero.
+// votes: { cast, withParty, against: [{ title, date }] } (against newest first); interests: their declared interests (rows); expenses: the IPSA summary.
+export function mpReportSpec({ politician, career, votes, interests = [], expenses = null, committees = [], questions = 0, link, topSources = [] }) {
   const stats = [];
   if (votes?.cast > 0) {
-    stats.push({ value: `${Math.round((votes.withParty / votes.cast) * 100)}%`, label: "of votes with their party" });
+    if (votes.hasParty !== false) stats.push({ value: `${Math.round((votes.withParty / votes.cast) * 100)}%`, label: "of votes with their party" });
     stats.push({ value: fmt(votes.cast), label: "votes recorded" });
   }
-  if (interestCount > 0) stats.push({ value: String(interestCount), label: interestCount === 1 ? "declared interest" : "declared interests" });
-  if (committees > 0) stats.push({ value: String(committees), label: committees === 1 ? "committee" : "committees" });
-  if (questions > 0 && stats.length < 4) stats.push({ value: fmt(questions), label: "written questions asked" });
-  const first = Array.isArray(career) && career[0] != null ? `First elected ${career[0]}. ` : "";
-  const money = totalDeclared > 0 ? `Declared interests with a stated value total £${fmt(totalDeclared)}.` : "";
+  const valued = interests.filter((i) => Number(i.value_amount) > 0);
+  const total = valued.reduce((t, i) => t + Number(i.value_amount), 0);
+  if (interests.length > 0) stats.push({ value: total > 0 ? `£${fmt(total)}` : String(interests.length), label: total > 0 ? `declared, in ${plural(valued.length, "entry", "entries")}` : interests.length === 1 ? "declared interest" : "declared interests" });
+  if (questions > 0) stats.push({ value: fmt(questions), label: "written questions asked" });
+  if (stats.length < 4 && committees.length > 0) stats.push({ value: String(committees.length), label: committees.length === 1 ? "committee" : "committees" });
+
+  const bits = [];
+  if (politician.cabinet_role) bits.push(politician.cabinet_role);
+  if (Array.isArray(career) && career[0] != null) bits.push(`MP since ${career[0]}`);
+  if (committees.length) bits.push(`Sits on ${committees.slice(0, 2).join(" and ")}${committees.length > 2 ? ` and ${committees.length - 2} more` : ""}`);
+
+  // The panel: declared money by source, else business costs by category.
+  let panelTitle = null;
+  let bars = [];
+  if (topSources.length) {
+    const max = topSources[0].total || 1;
+    panelTitle = "Biggest declared sources of money";
+    bars = topSources.slice(0, 4).map((t) => ({ label: t.name, valueText: `£${fmt(t.total)}`, fraction: t.total / max, colour: colour(politician.party_colour) }));
+  } else if (expenses?.byCategory?.length) {
+    const cats = expenses.byCategory.filter((c) => c.amount > 0).slice(0, 4);
+    const max = cats[0]?.amount || 1;
+    panelTitle = `Business costs claimed, ${String(expenses.year ?? "").replace("_", "/")}`;
+    bars = cats.map((c) => ({ label: c.category, valueText: `£${fmt(c.amount)}`, fraction: c.amount / max, colour: colour(politician.party_colour) }));
+  }
+
+  const panelFacts = [];
+  if (votes?.cast > 0 && votes.hasParty !== false) {
+    const n = votes.against?.length ?? 0;
+    panelFacts.push({
+      label: "How they vote",
+      text: n === 0 ? `With their party in all ${fmt(votes.cast)} recorded votes.` : `Voted against their party ${plural(n, "time", "times")}. Most recent: ${votes.against[0].title}.`,
+    });
+  }
+  if (expenses?.total > 0) {
+    const prev = expenses.previousYear?.total;
+    panelFacts.push({
+      label: "Business costs",
+      text: `£${fmt(expenses.total)} claimed in ${String(expenses.year).replace("_", "/")}${prev > 0 ? `, against £${fmt(prev)} the year before` : ""}.`,
+    });
+  }
+  if (topSources.length && total > 0) {
+    const share = topSources[0].total / total;
+    if (share >= 0.5 && topSources.length > 1) panelFacts.push({ label: "Where the money came from", text: `${Math.round(share * 100)}% of the declared value came from ${topSources[0].name}.` });
+  }
+
   return {
     kicker: "MP report card",
     title: politician.name,
     subtitle: [politician.party, politician.constituency].filter(Boolean).join(" · "),
     accent: colour(politician.party_colour),
     stats: stats.slice(0, 4),
-    note: `${first}${money}`.trim() || null,
+    note: bits.length ? bits.join(". ") + "." : null,
+    panelTitle,
+    bars,
+    panelFacts: panelFacts.slice(0, 2),
     footer: `${CARD_SITE} · from Parliament's official records`,
     link,
   };

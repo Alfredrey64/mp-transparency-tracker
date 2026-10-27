@@ -86,16 +86,40 @@ describe("wrapLines", () => {
 });
 
 describe("mpReportSpec", () => {
-  const politician = { name: "Ann Smith", party: "Labour", constituency: "Seat", party_colour: "d50000" };
-  it("puts the numbers that describe the job on one card", () => {
-    const s = mpReportSpec({ politician, career: [2019, 2, 0], votes: { cast: 200, withParty: 190 }, interestCount: 3, totalDeclared: 12500, committees: 2, questions: 40, link: "x" });
+  const politician = { name: "Ann Smith", party: "Labour", constituency: "Seat", party_colour: "d50000", cabinet_role: "Minister for Rail" };
+  const interests = [{ value_amount: 9000 }, { value_amount: 3500 }, { value_amount: null }];
+  const topSources = [{ name: "Acme Ltd", total: 9000 }, { name: "Big Co", total: 3500 }];
+  it("says specific things about this MP: their money, their votes and their claims", () => {
+    const s = mpReportSpec({
+      politician, career: [2019, 2, 0], interests, topSources, committees: ["Transport Committee", "Treasury Committee", "Home Affairs Committee"], questions: 40,
+      votes: { cast: 200, withParty: 190, against: [{ title: "Rail Bill", date: "2026-03-01" }, { title: "Tax Bill" }] },
+      expenses: { year: "25_26", total: 4119, previousYear: { total: 26352 }, byCategory: [{ category: "Staffing", amount: 3000 }] },
+      link: "x",
+    });
     expect(s.kicker).toBe("MP report card");
-    expect(s.stats.map((x) => x.value)).toEqual(["95%", "200", "3", "2"]);
-    expect(s.note).toBe("First elected 2019. Declared interests with a stated value total £12,500.");
+    expect(s.stats.map((x) => x.value)).toEqual(["95%", "200", "£12,500", "40"]);
+    expect(s.stats[2].label).toBe("declared, in 2 entries");
+    expect(s.note).toBe("Minister for Rail. MP since 2019. Sits on Transport Committee and Treasury Committee and 1 more.");
+    expect(s.panelTitle).toBe("Biggest declared sources of money");
+    expect(s.bars.map((b) => [b.label, b.valueText, b.fraction])).toEqual([["Acme Ltd", "£9,000", 1], ["Big Co", "£3,500", 3500 / 9000]]);
+    expect(s.panelFacts).toHaveLength(2);
+    expect(s.panelFacts[0].text).toBe("Voted against their party 2 times. Most recent: Rail Bill.");
+    expect(s.panelFacts[1].text).toBe("£4,119 claimed in 25/26, against £26,352 the year before.");
+  });
+  it("falls back to business costs for the panel when nothing is declared", () => {
+    const s = mpReportSpec({ politician, expenses: { year: "25_26", total: 100, byCategory: [{ category: "Travel", amount: 60 }, { category: "Staffing", amount: 40 }] }, link: "x" });
+    expect(s.panelTitle).toBe("Business costs claimed, 25/26");
+    expect(s.bars.map((b) => b.label)).toEqual(["Travel", "Staffing"]);
+  });
+  it("says so when an MP has always voted with their party", () => {
+    const s = mpReportSpec({ politician, votes: { cast: 30, withParty: 30, against: [] }, link: "x" });
+    expect(s.panelFacts[0].text).toBe("With their party in all 30 recorded votes.");
   });
   it("leaves out anything it does not know, rather than showing a zero", () => {
-    const s = mpReportSpec({ politician, link: "x" });
+    const s = mpReportSpec({ politician: { name: "B", party: "Independent" }, link: "x" });
     expect(s.stats).toEqual([]);
     expect(s.note).toBeNull();
+    expect(s.bars).toEqual([]);
+    expect(s.panelFacts).toEqual([]);
   });
 });

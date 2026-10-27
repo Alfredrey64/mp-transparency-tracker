@@ -4,7 +4,8 @@ import { RebelMeaning } from "./MpMeaning";
 import { motion } from "motion/react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, readable } from "../theme";
 import { supabase } from "../supabaseClient";
-import { stripHtml, formatDate } from "../lib/format";
+import { stripHtml, formatDate, partyColour } from "../lib/format";
+import "../activity.css";
 import { matchBillForVote } from "../lib/bills";
 import { getBillDescription } from "../lib/billDescriptions";
 import { plainSentence } from "../lib/billPlain";
@@ -455,94 +456,86 @@ export function RebellionRateBox({ politician }) {
 // does carry the debate's own id, which resolves to a real, working
 // Hansard URL (verified against several live debates), so a click there
 // goes to the actual transcript instead of nowhere.
+const QUESTION_URL = (q) => (q.uin && q.dateTabled ? `https://questions-statements.parliament.uk/written-questions/detail/${q.dateTabled}/${q.uin}` : null);
+
+// One debate the MP spoke in: the title, when and where, how much they said, and a few lines of what they actually said, with the official transcript
+// one click away. The whole card opens the transcript.
+function DebateCard({ c, colour }) {
+  const counts = [
+    c.speechCount > 0 && `${c.speechCount} speech${c.speechCount === 1 ? "" : "es"}`,
+    c.questionCount > 0 && `${c.questionCount} question${c.questionCount === 1 ? "" : "s"}`,
+    c.interventionCount > 0 && `${c.interventionCount} intervention${c.interventionCount === 1 ? "" : "s"}`,
+  ].filter(Boolean);
+  return (
+    <article className="act-card" style={{ "--ac": colour }}>
+      <header>
+        <b>{c.title}</b>
+        <span>{formatDate(c.date)} · {c.section}{counts.length ? ` · ${counts.join(", ")}` : ""}</span>
+      </header>
+      {c.said?.length > 0 && (
+        <div className="act-said">
+          <small>What they said</small>
+          {c.said.map((t, i) => <blockquote key={i}>{t}</blockquote>)}
+        </div>
+      )}
+      {c.hansardUrl && <a className="act-link" href={c.hansardUrl} target="_blank" rel="noreferrer">Read the whole debate on Hansard <span aria-hidden="true">↗</span><span className="sr-only"> (opens in a new tab)</span></a>}
+    </article>
+  );
+}
+
+// One written question: the question in full, who it went to and when, and the start of the answer, with the official page for the question one click away.
+function QuestionCard({ q, colour }) {
+  const url = QUESTION_URL(q);
+  return (
+    <article className="act-card" style={{ "--ac": colour }}>
+      <header>
+        <b>{q.heading}</b>
+        <span>To {q.department ?? "a department"} · tabled {formatDate(q.dateTabled)}{q.dateAnswered ? ` · answered ${formatDate(q.dateAnswered)}` : " · awaiting an answer"}</span>
+      </header>
+      {q.questionText && <div className="act-said"><small>The question</small><blockquote>{stripHtml(q.questionText)}</blockquote></div>}
+      {q.answerText && <div className="act-said"><small>The answer, from the start</small><blockquote>{q.answerText}</blockquote></div>}
+      {url && <a className="act-link" href={url} target="_blank" rel="noreferrer">Read the full question and answer on Parliament's site <span aria-hidden="true">↗</span><span className="sr-only"> (opens in a new tab)</span></a>}
+    </article>
+  );
+}
+
 export function RecentActivityBox({ politician, onNavigate }) {
   const activity = politician.recent_activity;
   const contributions = activity?.contributions ?? [];
   const writtenQuestions = activity?.writtenQuestions ?? [];
   if (contributions.length === 0 && writtenQuestions.length === 0) return null;
+  const colour = partyColour(politician.party_colour, COLORS.accent);
 
   return (
-    <CardShell title="Recent Parliamentary Activity">
-      <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginBottom: 12, lineHeight: 1.5 }}>
-        Their most recent debate contributions and written questions, from Hansard and the official record.
+    <CardShell title="What they have done in Parliament lately">
+      <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginBottom: 14, lineHeight: 1.5 }}>
+        Their most recent debates and written questions, from Hansard and the official record. Each one opens the real thing on Parliament's own site.
       </div>
 
       {contributions.length > 0 && (
-        <div style={{ marginBottom: writtenQuestions.length > 0 ? 16 : 0 }}>
-          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12.5, color: COLORS.accentText, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
-            Debate Contributions
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {contributions.map((c, i) => {
-              const row = (
-                <>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 14.5, color: COLORS.ink, lineHeight: 1.4 }}>
-                    {c.title}
-                    {c.hansardUrl && <span style={{ color: COLORS.accentText }}> ↗</span>}
-                  </div>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 3 }}>
-                    {formatDate(c.date)} · {c.section}
-                    {c.speechCount > 0 ? ` · ${c.speechCount} speech${c.speechCount === 1 ? "" : "es"}` : ""}
-                    {c.questionCount > 0 ? ` · ${c.questionCount} question${c.questionCount === 1 ? "" : "s"}` : ""}
-                    {c.interventionCount > 0 ? ` · ${c.interventionCount} intervention${c.interventionCount === 1 ? "" : "s"}` : ""}
-                  </div>
-                </>
-              );
-              const rowStyle = { display: "block", paddingBottom: 10, borderBottom: i < contributions.length - 1 ? `1px solid ${COLORS.hairline}` : "none" };
-              return c.hansardUrl ? (
-                <a key={i} href={c.hansardUrl} target="_blank" rel="noreferrer" style={{ ...rowStyle, textDecoration: "none" }}>
-                  {row}
-                </a>
-              ) : (
-                <div key={i} style={rowStyle}>{row}</div>
-              );
-            })}
-          </div>
-        </div>
+        <section aria-labelledby="act-debates" style={{ marginBottom: writtenQuestions.length > 0 ? 20 : 0 }}>
+          <h3 id="act-debates" className="act-h">Debates they spoke in</h3>
+          <div className="act-list">{contributions.map((c, i) => <DebateCard key={i} c={c} colour={colour} />)}</div>
+        </section>
       )}
 
       {writtenQuestions.length > 0 && (
-        <div>
-          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12.5, color: COLORS.accentText, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
-            Written Questions
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {writtenQuestions.map((q, i) => (
-              <button
-                key={i}
-                onClick={() => withScrollPreserved(() => onNavigate?.("writtenQuestions", politician))}
-                style={{
-                  display: "block", width: "100%", textAlign: "left", background: "none", border: "none", cursor: onNavigate ? "pointer" : "default", padding: 0,
-                  paddingBottom: 10, borderBottom: i < writtenQuestions.length - 1 ? `1px solid ${COLORS.hairline}` : "none",
-                }}
-              >
-                <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 14, color: COLORS.ink }}>{q.heading}</div>
-                {q.questionText && (
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.5, marginTop: 4 }}>
-                    {stripHtml(q.questionText)}
-                  </div>
-                )}
-                <div style={{ fontFamily: FONT_MONO, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 5, letterSpacing: "0.01em" }}>
-                  To {q.department} · tabled {formatDate(q.dateTabled)}
-                  {q.dateAnswered ? ` · answered ${formatDate(q.dateAnswered)}` : " · awaiting answer"}
-                </div>
-              </button>
-            ))}
-          </div>
+        <section aria-labelledby="act-questions">
+          <h3 id="act-questions" className="act-h">Questions they asked ministers</h3>
+          <div className="act-list">{writtenQuestions.map((q, i) => <QuestionCard key={i} q={q} colour={colour} />)}</div>
           {onNavigate && (
             <button
               onClick={() => withScrollPreserved(() => onNavigate("writtenQuestions", politician))}
-              style={{ display: "block", marginTop: 10, fontSize: 13.5, color: COLORS.accentText, fontWeight: 600, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY }}
+              style={{ display: "block", marginTop: 12, minHeight: 44, fontSize: 14, color: COLORS.accentText, fontWeight: 700, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY }}
             >
               See all their written questions
             </button>
           )}
-        </div>
+        </section>
       )}
     </CardShell>
   );
 }
-
 export function NewsBox({ politician }) {
   // Kept with the MP it belongs to, so switching MPs never shows the last one's articles, and a late reply for a previous MP is ignored.
   const [result, setResult] = useState({ id: null, articles: null, failed: false });
