@@ -20,7 +20,7 @@ export default function DarkMoney() {
       />
 
       <Board variant="lead" tiles={[
-        { label: "The DUP's referendum donation", value: 435000, format: pounds, colour: "#FF7A8A", sub: "its original source has never been named" },
+        { label: "The DUP's referendum donation", value: 435000, format: pounds, colour: "#FF7A8A", visual: <Redacted />, sub: "its original source has never been named" },
         { label: "Gifts below this are not counted", value: 500, format: pounds, colour: "#FFB45E", w: "30%", sub: "by an association" },
         { label: "From one source in a year", value: 7500, format: pounds, colour: "#B79CFF", w: "62%", sub: "above this an association must tell the Electoral Commission" },
         { label: "Total donations before any duty", value: 37270, format: pounds, colour: "#6FB1FF", w: "100%", sub: "below it, there is no registration at all" },
@@ -112,6 +112,16 @@ export default function DarkMoney() {
           { icon: IconSearch, colour: "#3F7D5C", title: "Most donations are traceable", text: "It doesn't mean donations are untraceable everywhere on this site: every donation shown on the Party Finances and Financial Interests pages comes from the official register precisely because it was disclosed under these same rules working as intended." },
         ]} />
       </Chapter>
+    </div>
+  );
+}
+
+// A scrap of the register for the lead figure: the donor of record is named, and where its money came from is blacked out.
+function Redacted() {
+  return (
+    <div className="st-redact">
+      <div><span>Donor of record</span><strong>Constitutional Research Council</strong></div>
+      <div><span>Where its money came from</span><i /></div>
     </div>
   );
 }

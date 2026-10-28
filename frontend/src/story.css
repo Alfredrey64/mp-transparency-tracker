@@ -83,14 +83,23 @@
 /* Board, "lead": the first figure takes the left half; the others stack as a ladder, each with a bar showing how far up it is. */
 .st-board[data-variant="lead"] { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); grid-template-rows: repeat(3, auto); }
 .st-board[data-variant="lead"] .st-tile:first-child { grid-row: 1 / span 3; display: flex; flex-direction: column; gap: 12px; padding: clamp(20px, 3vw, 30px); min-height: 260px; }
-.st-board[data-variant="lead"] .st-tile:first-child .st-tile-label { margin-bottom: auto; font-size: 15px; }
+.st-board[data-variant="lead"] .st-tile:first-child .st-tile-label { order: 1; font-size: 15px; }
+.st-board[data-variant="lead"] .st-tile:first-child .st-tile-visual { order: 2; margin-block: auto; padding-block: 18px; }
+.st-board[data-variant="lead"] .st-tile:first-child b { order: 3; }
+.st-board[data-variant="lead"] .st-tile:first-child .st-tile-sub { order: 4; }
+.st-redact { display: grid; gap: 10px; max-width: 420px; padding: 14px 16px; border-radius: 12px; background: #F4EFE4; color: #1B2438; box-shadow: 0 6px 22px rgba(0, 0, 0, 0.3); transform: rotate(-1.2deg); }
+.st-redact > div { display: grid; gap: 3px; }
+.st-redact span { font: 700 11.5px/1.2 "Figures", "Public Sans", system-ui, sans-serif; color: #5B6784; }
+.st-redact strong { font: 700 16px/1.25 "Figures", "Newsreader", Georgia, serif; color: #1B2438; }
+.st-redact i { display: block; height: 18px; width: 72%; border-radius: 3px; background: #0B1226; transform-origin: left; animation: stGrow 0.9s var(--ease-out) 0.7s backwards; }
+@media (prefers-reduced-motion: reduce) { .st-redact i { animation: none; } }
 .st-board[data-variant="lead"] .st-tile:first-child b { font-size: clamp(44px, 7.4vw, 84px); }
 .st-board[data-variant="lead"] .st-tile:first-child .st-tile-sub { margin-top: 0; font-size: 14.5px; }
 .st-board[data-variant="lead"] .st-tile:not(:first-child) { grid-template-columns: minmax(104px, 34%) minmax(0, 1fr); grid-template-areas: "v l" "v s" "bar bar"; column-gap: 18px; row-gap: 2px; align-content: center; padding: 14px 18px 18px; }
 .st-board[data-variant="lead"] .st-tile:not(:first-child)::before { inset: 0 auto 0 0; width: 4px; height: auto; }
 .st-board[data-variant="lead"] .st-tile:not(:first-child) b { grid-area: v; align-self: center; font-size: clamp(26px, 3vw, 34px); }
 .st-board[data-variant="lead"] .st-tile:not(:first-child) .st-tile-label { grid-area: l; align-self: end; }
-.st-board[data-variant="lead"] .st-tile:not(:first-child) .st-tile-sub { grid-area: s; margin-top: 0; align-self: start; }
+.st-board[data-variant="lead"] .st-tile:not(:first-child) .st-tile-sub { grid-area: s; margin-top: 0; align-self: start; text-wrap: pretty; }
 .st-board[data-variant="lead"] .st-tile:not(:first-child)::after { content: ""; grid-area: bar; margin-top: 10px; height: 6px; width: var(--w, 100%); border-radius: 3px; background: var(--tc); transform-origin: left; animation: stGrow 0.9s var(--ease-out) calc(0.3s + var(--i) * 140ms) backwards; }
 /* Board, "rail": the figures sit on one line, each a stop on the route, with no boxes around them. */
 .st-board[data-variant="rail"] { gap: 0; padding: clamp(18px, 3vw, 30px) clamp(8px, 2vw, 18px) clamp(14px, 2.4vw, 24px); }

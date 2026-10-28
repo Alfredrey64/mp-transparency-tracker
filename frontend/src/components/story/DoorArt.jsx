@@ -8,7 +8,7 @@ const S = "Newsreader, Georgia, serif";
 
 // A revolving door seen from above. Its wings turn at a steady pace; each person steps into the gap between two wings on one side, is carried half way round,
 // and steps out on the other side changed: a minister in, a paid adviser out, and the other way too. The people are drawn on paths timed to the turn, so each
-// stays inside its own gap all the way round. All of it is written into the picture, so it needs no script and stands still for anyone who has asked for less motion.
+// stays inside its own gap all the way round. Everyone stays a person throughout: the colour shows which side they are from, and a £ badge shows they are now paid by industry. All of it is written into the picture, so it needs no script and stands still for anyone who has asked for less motion.
 const TURN = 12; // seconds for a full turn of the wings
 const RIDE = TURN / 2; // a half turn, from one opening to the other
 const WALK = 1.2; // seconds to walk in, and to walk out
@@ -16,6 +16,7 @@ const CYCLE = TURN; // one trip, padded to a full turn so each person's timing r
 const GAP_R = 62; // how far from the centre people stand while inside
 const WINGS_AT = 180 - 45 - (360 / TURN) * WALK; // the angle the wings start at, so a gap faces the left opening just as the first person steps in
 const HOUSING = 112;
+const IND_GOLD = "#9C6B30";
 
 const Walker = ({ delay, fromColour, toColour, flip }) => {
   const reach = 158; // how far outside the door the walk starts, measured from its centre
@@ -35,13 +36,12 @@ const Walker = ({ delay, fromColour, toColour, flip }) => {
       <circle r="13" stroke="#fff" strokeWidth="2.500">
         <animate attributeName="fill" values={`${fromColour};${fromColour};${toColour};${toColour}`} keyTimes={swap} dur={`${CYCLE}s`} begin={begin} repeatCount="indefinite" />
       </circle>
-      <g>
-        <circle cy="-3.500" r="3.500" fill="#fff" /><path d="M -6 7 q 6 -10 12 0z" fill="#fff" />
-        <animate attributeName="opacity" values={flip ? "0;0;1;1" : "1;1;0;0"} keyTimes={swap} dur={`${CYCLE}s`} begin={begin} repeatCount="indefinite" />
+      <circle cy="-3.500" r="3.500" fill="#fff" /><path d="M -6 7 q 6 -10 12 0z" fill="#fff" />
+      <g transform="translate(10 -10)" opacity={flip ? 1 : 0}>
+        <circle r="7.500" fill="#fff" stroke={IND_GOLD} strokeWidth="1.500" />
+        <text y="3.500" textAnchor="middle" fontSize="10" fontWeight="800" fill={IND_GOLD} fontFamily={F}>£</text>
+        <animate attributeName="opacity" values={flip ? "1;1;0;0" : "0;0;1;1"} keyTimes={swap} dur={`${CYCLE}s`} begin={begin} repeatCount="indefinite" />
       </g>
-      <text y="4.500" textAnchor="middle" fontSize="13" fontWeight="800" fill="#fff" fontFamily={F} opacity={flip ? 1 : 0}>
-        £<animate attributeName="opacity" values={flip ? "1;1;0;0" : "0;0;1;1"} keyTimes={swap} dur={`${CYCLE}s`} begin={begin} repeatCount="indefinite" />
-      </text>
     </g>
   );
 };
@@ -84,6 +84,7 @@ export function Door() {
         ) : (
           <g>
             <circle cx="-158" r="13" fill={GOV} stroke="#fff" strokeWidth="2.500" /><circle cx="158" r="13" fill={IND} stroke="#fff" strokeWidth="2.500" />
+            <circle cx="-158" cy="-3.500" r="3.500" fill="#fff" /><path d="M -164 7 q 6 -10 12 0z" fill="#fff" /><circle cx="158" cy="-3.500" r="3.500" fill="#fff" /><path d="M 152 7 q 6 -10 12 0z" fill="#fff" />
           </g>
         )}
       </g>
