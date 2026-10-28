@@ -2,6 +2,7 @@
 // React.lazy; Sidebar also calls preloadView() when a link is hovered, focused
 // or touched, so by the time it is clicked the page is usually already here.
 
+
 export const LOADERS = {
   appg: () => import("./components/AppgMemberships"),
   howitworks: () => import("./components/HowParliamentWorks"),
@@ -94,6 +95,28 @@ export const LOADERS = {
   councillors: () => import("./components/Councillors"),
   lordsVotes: () => import("./components/LordsVotes"),
 };
+
+// The pages drawn from data each have their own file, loaded the same way.
+const EXPLAINER_LOADERS = {
+  govContracts: () => import("./components/explainers/govContracts"),
+  honours: () => import("./components/explainers/honours"),
+  electionSpending: () => import("./components/explainers/electionSpending"),
+  foreignInfluence: () => import("./components/explainers/foreignInfluence"),
+  mayors: () => import("./components/explainers/mayors"),
+  councilSpending: () => import("./components/explainers/councilSpending"),
+  policeCommissioners: () => import("./components/explainers/policeCommissioners"),
+  planning: () => import("./components/explainers/planning"),
+  civilService: () => import("./components/explainers/civilService"),
+  constitution: () => import("./components/explainers/constitution"),
+  monarchy: () => import("./components/explainers/monarchy"),
+  watchdogs: () => import("./components/explainers/watchdogs"),
+  justice: () => import("./components/explainers/justice"),
+  water: () => import("./components/explainers/water"),
+  mpProfile: () => import("./components/explainers/mpProfile"),
+  polling: () => import("./components/explainers/polling"),
+  foreignPolicy: () => import("./components/explainers/foreignPolicy"),
+};
+Object.assign(LOADERS, EXPLAINER_LOADERS);
 
 const started = new Set();
 

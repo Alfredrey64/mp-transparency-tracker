@@ -87,7 +87,7 @@ export function Cards({ items, min = 260 }) {
         const Icon = c.icon;
         return (
           <li key={c.title} style={{ "--tc": c.colour, "--i": i }}>
-            <span className="st-card-icon" aria-hidden="true">{Icon && <Icon size={22} />}</span>
+            {Icon && <span className="st-card-icon" aria-hidden="true"><Icon size={22} /></span>}
             <b>{c.title}</b>
             <p>{c.text}</p>
           </li>

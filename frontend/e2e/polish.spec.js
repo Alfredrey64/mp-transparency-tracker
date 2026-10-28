@@ -152,3 +152,26 @@ for (const width of [1440, 390]) {
     expect(spill).toEqual([]);
   });
 }
+
+// The pages written as data (components/explainers) all draw, carry a list of sources with links, and fit a phone as well as a wide screen.
+import { EXPLAINER_KEYS } from "../src/data/explainerKeys.js";
+for (const width of [1440, 390]) {
+  test(`every explainer page draws with a heading, sources and no sideways scroll, at ${width}px`, async ({ page }) => {
+    test.setTimeout(240000);
+    await page.setViewportSize({ width, height: 900 });
+    const bad = [];
+    for (const key of EXPLAINER_KEYS) {
+      await page.goto(`/${key}`);
+      await page.waitForSelector(".st-chapter", { timeout: 10000 }).catch(() => bad.push(`${key}: did not draw`));
+      const r = await page.evaluate(() => ({
+        h1: document.querySelector("h1")?.textContent?.length ?? 0,
+        links: document.querySelectorAll(".st-sources a[href^='https://']").length,
+        side: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      }));
+      if (!r.h1) bad.push(`${key}: no heading`);
+      if (r.links < 1) bad.push(`${key}: no source links`);
+      if (r.side > 0) bad.push(`${key}: ${r.side}px sideways`);
+    }
+    expect(bad).toEqual([]);
+  });
+}

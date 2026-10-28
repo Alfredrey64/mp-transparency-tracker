@@ -411,6 +411,91 @@ export const PAGE_GUIDES = {
     why: "Lobbying shapes laws. This is the one public list of who is being paid to try.",
     notShown: "Most lobbying. Lobbyists employed directly by a company, and contact with ordinary MPs, aren't covered.",
   },
+  govContracts: {
+    what: "How public bodies award contracts, what must be published, and what the National Audit Office found about contracts awarded in a hurry in 2020.",
+    why: "Contracts are where public money becomes private income. The notices let anyone check who got one.",
+    notShown: "Whether any contract was fair. A notice shows who won and when, not why, and this site does not link contracts to donations.",
+  },
+  honours: {
+    what: "Who sits in the House of Lords, how a person becomes a peer, and what the law says about buying a title.",
+    why: "Seats in the Lords are given by patronage, and this shows the rules around it and where to look at the money.",
+    notShown: "Which peers gave money to parties. A gift and a peerage in the same year do not prove a link.",
+  },
+  electionSpending: {
+    what: "The legal limits on what parties and candidates may spend on an election campaign, and the totals reported for 2024.",
+    why: "Limits only work if spending is declared and checked, so they are the other half of the donations story.",
+    notShown: "Spending that falls outside the rules' definition of campaign spending, and any breach. The 2024 totals come from press reports of Electoral Commission data.",
+  },
+  foreignInfluence: {
+    what: "The register of people acting in the UK for a foreign government: who must register, the two tiers and the penalties.",
+    why: "It makes foreign state influence visible without banning it.",
+    notShown: "Who has registered. Some entries are not published and the register is new.",
+  },
+  mayors: {
+    what: "What regional authorities and directly elected mayors in England are for, what the 2026 Act says about them, and how London compares.",
+    why: "Decisions on transport, housing, skills and policing are moving to this level.",
+    notShown: "A current list of every mayor, because that changes as new authorities are set up.",
+  },
+  councilSpending: {
+    what: "Where English councils plan to spend about \u00a3149 billion in 2026 to 2027, the big items, and what a section 114 notice is.",
+    why: "Two services take much of a council's money, which explains the trade-offs councils describe.",
+    notShown: "Your own council's budget. The national totals are estimates from 406 of 415 councils.",
+  },
+  policeCommissioners: {
+    what: "What the government announced in November 2025 about ending police and crime commissioners, and what is not yet settled.",
+    why: "It is about who answers to the public for policing, and whether you vote for them.",
+    notShown: "Whether a law making the change has passed. The date and details may change.",
+  },
+  planning: {
+    what: "Who decides planning applications in England, the latest figures for decisions, and what the 2025 Planning and Infrastructure Act covers.",
+    why: "Planning is where housing targets, local objections and national policy meet.",
+    notShown: "How many homes are built. A permission is not a home, and the figures cover district-level councils in England.",
+  },
+  civilService: {
+    what: "How many civil servants there are, how they differ from ministers and special advisers, and the Civil Service Code.",
+    why: "They run the departments and deliver policy, and their impartiality is a basic rule of the system.",
+    notShown: "How well any department works. The figures describe the workforce, not its performance.",
+  },
+  constitution: {
+    what: "What courts can and cannot do about an Act of Parliament, how judges are kept independent, and why the UK has no single written constitution.",
+    why: "It explains why a court ruling against the government is not the same as overruling voters.",
+    notShown: "How particular cases came out. It covers the rules, not rulings.",
+  },
+  monarchy: {
+    what: "The King's constitutional role, how the Sovereign Grant is worked out, the 2026 to 2027 amount and a proposed cut.",
+    why: "The Grant is public money set by a formula few people have seen.",
+    notShown: "The King's private wealth and income, and the cost of security, which are not part of the Grant.",
+  },
+  watchdogs: {
+    what: "What the National Audit Office, the Office for Budget Responsibility and public inquiries do, and their powers in law.",
+    why: "Ministers answer to Parliament, but these bodies check the sums and investigate failures.",
+    notShown: "The findings of particular reports or inquiries, except where another page uses them.",
+  },
+  mpProfile: {
+    what: "The gender, schooling, university and ethnic background of MPs, from official lists and independent studies.",
+    why: "MPs make laws for everyone, so how closely they resemble the people they represent matters.",
+    notShown: "Age, earnings and previous careers, because no single official record exists.",
+  },
+  polling: {
+    what: "What an opinion poll measures, why votes are not seats, and what the British Polling Council says about the 2024 polls.",
+    why: "Polls shape the news, and knowing their limits makes headlines easier to judge.",
+    notShown: "Today's poll numbers. They change weekly and this page does not report them.",
+  },
+  justice: {
+    what: "The latest official figures on court caseloads, the prison population and police numbers in England and Wales.",
+    why: "A crime only has a consequence if the police, the courts and the prisons all have the capacity to act.",
+    notShown: "Crime itself, which is on the crime page, and Scotland and Northern Ireland, which run separate systems.",
+  },
+  water: {
+    what: "Storm overflow spills in 2025, the companies' environmental ratings for 2024, and what the Water (Special Measures) Act 2025 requires.",
+    why: "Households pay a water company and cannot switch, so the data shows what the money delivers.",
+    notShown: "Bills and company finances. The 2025 fall in spills was partly because it was a dry year.",
+  },
+  foreignPolicy: {
+    what: "The UK's overseas aid spending and the cut planned to 2027, and how Parliament gets to object to treaties.",
+    why: "Aid and treaties are two parts of foreign policy with a public record.",
+    notShown: "Diplomacy, intelligence and military operations, which are mostly not public.",
+  },
   followTheMoney: {
     what: "Search any company, union or person to see every MP and party they have given declared money to, how each gift was declared and how the MPs they funded voted.",
     why: "It reverses the usual view: instead of looking at an MP's donors, you start from the donor.",

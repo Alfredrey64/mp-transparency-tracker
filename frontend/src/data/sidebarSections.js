@@ -6,6 +6,10 @@ import {
   IconSearch, IconBook, IconChartBars, IconTopic, IconRoute, IconSplit, IconHexMap, IconCouncil,
   IconTaxes, IconCalculator, IconRates, IconMigration, IconMap, IconAsk, IconDeprivation, IconSwing, IconSeatCompare, IconFactory, IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconBallot, IconCalendar, IconHouse, IconGlobe, IconLeaf, IconCompareTime, IconShield, IconLordsVote, IconCouncillor, IconFeed, IconPinHome, IconWhoStands, IconCompareAreas
 } from "../components/icons";
+import {
+  IconContract, IconPeerage, IconElectionSpend, IconForeignAgent, IconMayor, IconCouncilBudget, IconPolice, IconPlanning, IconCivilService, IconCourt, IconCrown, IconAudit,
+  IconJustice, IconWater, IconWhoMps, IconPoll, IconAid,
+} from "../components/newIcons";
 
 // Lives outside both Sidebar.jsx and shared.jsx specifically so neither has
 // to import the other to share this data: Sidebar renders these groups,
@@ -39,6 +43,11 @@ export const SECTIONS = [
       { key: "funding", label: "Funding and independence", standalone: true, icon: IconLedger, hint: "Who pays for this site, and the rules that keep it fair", aka: ["funding", "who pays", "independence", "sponsors", "advertising", "neutral", "bias", "who runs this", "about us"] },
       { key: "glossary", label: "Jargon buster", icon: IconGlossary, hint: "Plain meanings of political words", essential: true, aka: ["glossary", "terms", "definitions"] },
       { key: "mediaLiteracy", label: "How news is regulated", icon: IconBook, hint: "Telling fact from opinion", aka: ["media literacy", "bbc", "impartiality"] },
+      { key: "civilService", label: "The Civil Service", icon: IconCivilService, hint: "Who runs the departments", aka: ["civil servants", "special advisers", "whitehall", "permanent secretary"] },
+      { key: "constitution", label: "Courts and the constitution", icon: IconCourt, hint: "Judges, laws and the rules behind them", aka: ["supreme court", "human rights act", "judges"] },
+      { key: "monarchy", label: "The monarchy", icon: IconCrown, hint: "The King's role and the money", aka: ["king", "sovereign grant", "royal family", "crown estate"] },
+      { key: "watchdogs", label: "Watchdogs and inquiries", icon: IconAudit, hint: "Auditors, forecasters and inquiries", aka: ["nao", "obr", "public inquiry", "national audit office"] },
+      { key: "mpProfile", label: "Who MPs are", icon: IconWhoMps, hint: "Backgrounds, gender and schooling", aka: ["mp backgrounds", "diversity", "private school", "women mps"] },
       { key: "numbers", label: "Parliament in numbers", icon: IconChartBars, hint: "Who sits there, in charts", essential: true, aka: ["statistics", "stats", "women", "lords"] },
     ],
   },
@@ -62,6 +71,10 @@ export const SECTIONS = [
       { key: "compareCouncils", label: "Compare councils", icon: IconCompareAreas, hint: "Two areas side by side", essential: true, aka: ["compare areas", "compare places", "compare councils", "compare towns", "compare cities", "compare my area", "versus", "council tax", "who runs", "deprivation"] },
       { key: "partymatch", label: "Which party suits me?", icon: IconCompass, hint: "A short quiz", aka: ["find your party", "quiz"] },
       { key: "petitions", label: "Petitions", icon: IconPetition, hint: "Ask Parliament to act", essential: true },
+      { key: "mayors", label: "Mayors and regional authorities", icon: IconMayor, hint: "England's elected regional leaders", aka: ["combined authorities", "metro mayors", "devolution"] },
+      { key: "councilSpending", label: "Council budgets", icon: IconCouncilBudget, hint: "Where your council spends", aka: ["council spending", "section 114", "social care spending"] },
+      { key: "policeCommissioners", label: "Police and crime commissioners", icon: IconPolice, hint: "Who answers for your police force", aka: ["pcc", "police commissioner"] },
+      { key: "planning", label: "Planning and building", icon: IconPlanning, hint: "Who decides what gets built", aka: ["planning permission", "nimby", "planning committee"] },
     ],
   },
   {
@@ -77,6 +90,7 @@ export const SECTIONS = [
       { key: "localElections", label: "Local elections", icon: IconCalendar, hint: "When your council next votes", essential: true, aka: ["council elections", "next election", "polling day", "local vote", "election date", "councillors", "when do i vote"] },
       { key: "howtovote", label: "How to vote", icon: IconBallot, hint: "Register, ID and polling day", essential: true, aka: ["register to vote", "voting", "polling station", "photo id", "postal vote", "proxy vote", "election day", "ballot"] },
       { key: "myBallot", label: "Who is on my ballot", icon: IconWhoStands, hint: "The candidates standing where you live", essential: true, aka: ["candidates", "who is standing", "who can i vote for", "ballot paper", "my ballot", "by-election", "candidate list", "who is running", "postcode", "whocanivotefor"] },
+      { key: "polling", label: "Opinion polls explained", icon: IconPoll, hint: "How polls work, and when they miss", aka: ["polls", "polling", "mrp", "voting intention"] },
     ],
   },
   {
@@ -113,6 +127,9 @@ export const SECTIONS = [
       { key: "nhs", label: "The NHS", icon: IconPulse, hint: "Waiting times by region, A&E, staff, funding and how the UK compares", essential: true, aka: ["nhs", "waiting list", "waiting lists", "a&e", "ambulance", "cancer waiting", "hospital", "health service", "nhs funding", "doctors", "nurses", "18 weeks", "rtt", "gp", "healthcare"] },
       { key: "energy", label: "Net zero and energy bills", icon: IconBolt, hint: "Emissions, electricity, what bills are made of, and the arguments", essential: true, aka: ["energy", "net zero", "energy bills", "price cap", "ofgem", "electricity", "gas", "emissions", "carbon budget", "climate", "climate change", "renewables", "wind", "solar", "nuclear", "fuel poverty", "heat pump", "clean power", "decarbonisation", "greenhouse gas", "co2", "gas prices", "electricity prices"] },
       { key: "trust", label: "Trust in politics", icon: IconBallot, hint: "Trust in government, turnout, votes against seats, and the arguments", essential: true, aka: ["trust", "trust in government", "trust in politicians", "turnout", "voter turnout", "voting system", "proportional representation", "first past the post", "electoral reform", "political trust", "confidence in parliament", "disillusion", "politicians lie", "honesty", "apathy", "non voters"] },
+      { key: "justice", label: "Courts, police and prisons", icon: IconJustice, hint: "Backlogs, officers and prisoners", aka: ["crown court backlog", "prisons", "police numbers"] },
+      { key: "water", label: "Water and sewage", icon: IconWater, hint: "Spills, ratings and the new law", aka: ["sewage", "thames water", "storm overflows", "water companies"] },
+      { key: "foreignPolicy", label: "The UK abroad", icon: IconAid, hint: "Overseas aid and treaties", aka: ["foreign aid", "overseas aid", "treaties", "oda"] },
       { key: "care", label: "Social care and childcare", icon: IconHeart, hint: "Care spending, carers and care workers, and funded childcare", essential: true, aka: ["social care", "adult social care", "care homes", "carers", "unpaid carers", "care workers", "home care", "childcare", "free childcare", "30 hours", "nursery", "early years", "funded hours", "childminders", "care costs", "dementia care", "care funding", "elderly care"] },
       { key: "transport", label: "Transport", icon: IconTransport, hint: "Roads and cars, trains, buses and where it differs", essential: true, aka: ["transport", "trains", "rail", "railways", "buses", "roads", "potholes", "cars", "electric cars", "ev", "road deaths", "road safety", "traffic", "fares", "great british railways", "network rail", "hs2", "bus franchising", "public transport", "commuting"] },
       { key: "union", label: "Devolution and the union", icon: IconSplit, hint: "Spending, taxes and output by nation and region, and who decides what", essential: true, aka: ["devolution", "union", "scottish independence", "independence", "barnett formula", "block grant", "regional inequality", "north south divide", "english devolution", "mayors", "combined authorities", "levelling up", "welsh", "stormont", "holyrood", "senedd", "border poll"] },
@@ -168,6 +185,10 @@ export const SECTIONS = [
       { key: "revolvingDoor", label: "Ministers' later jobs", icon: IconDoor, hint: "From government into industry", aka: ["revolving door"] },
       { key: "lobbyingRegister", label: "Paid lobbyists", icon: IconRegister, hint: "The official list, and its limits", aka: ["consultant lobbyists", "lobbyists"] },
       { key: "thinkTanks", label: "Who funds think tanks", icon: IconThinkTank, hint: "The money behind the experts", aka: ["think tank funding"] },
+      { key: "govContracts", label: "Government contracts", icon: IconContract, hint: "Who wins public money, and how", aka: ["procurement", "ppe", "tenders", "vip lane"] },
+      { key: "honours", label: "Peerages and honours", icon: IconPeerage, hint: "Who ends up in the Lords", aka: ["peers", "lords appointments", "cash for honours", "holac"] },
+      { key: "electionSpending", label: "Election spending", icon: IconElectionSpend, hint: "What campaigns may spend", aka: ["campaign spending", "spending limits", "election expenses"] },
+      { key: "foreignInfluence", label: "Foreign influence", icon: IconForeignAgent, hint: "The register of foreign agents", aka: ["firs", "foreign agents", "foreign influence registration scheme"] },
     ],
   },
   {
@@ -251,17 +272,20 @@ export const HUBS = [
   { key: "questions", label: "Questions to ministers", hint: "What MPs ask ministers", pages: [["writtenQuestions", "Questions to ministers"], ["topics", "Who's asking about a topic"]] },
   { key: "funders", label: "Who funds politics", hint: "Donors to MPs and parties", pages: [["donors", "Who funds MPs"], ["partyFinances", "Who funds the parties"], ["followTheMoney", "Trace a donor"]] },
   { key: "hidden", label: "What's hidden", hint: "Where the public records run out", pages: [["darkMoney", "Hidden donations"], ["revolvingDoor", "Ministers' later jobs"], ["lobbyingRegister", "Paid lobbyists"], ["thinkTanks", "Think tank funding"]] },
-  { key: "results", label: "Election results", hint: "General, by- and local elections", pages: [["generalElection", "General elections"], ["byElections", "By-elections"], ["localElections", "Local elections"]] },
+  { key: "publicmoney", label: "Contracts, honours and spending", hint: "Public contracts, peerages, campaign spending and foreign influence", pages: [["govContracts", "Government contracts"], ["honours", "Peerages"], ["electionSpending", "Election spending"], ["foreignInfluence", "Foreign influence"]] },
+  { key: "results", label: "Election results", hint: "General, by- and local elections", pages: [["generalElection", "General elections"], ["byElections", "By-elections"], ["localElections", "Local elections"], ["polling", "Polls explained"]] },
   { key: "yourvote", label: "Your vote", hint: "How to vote, and who is on your ballot", pages: [["howtovote", "How to vote"], ["myBallot", "Who is on my ballot"]] },
   { key: "seat", label: "Your constituency", hint: "Your seat, and close contests", pages: [["constituency", "Your constituency"], ["marginals", "Marginal seats"], ["compareSeats", "Compare seats"]] },
-  { key: "council", label: "Your council", hint: "Who runs it, your councillors, and how it compares", pages: [["councils", "Your council"], ["councillors", "Your councillors"], ["compareCouncils", "Compare councils"]] },
+  { key: "council", label: "Your council", hint: "Who runs it, your councillors, and how it compares", pages: [["councils", "Your council"], ["councillors", "Your councillors"], ["compareCouncils", "Compare councils"], ["councilSpending", "Budgets"]] },
+  { key: "localpower", label: "Local power", hint: "Mayors, police commissioners and planning", pages: [["mayors", "Mayors"], ["policeCommissioners", "Police commissioners"], ["planning", "Planning"]] },
+  { key: "state", label: "How the state works", hint: "The Civil Service, the courts, the Crown and the watchdogs", pages: [["civilService", "Civil Service"], ["constitution", "Courts"], ["monarchy", "Monarchy"], ["watchdogs", "Watchdogs"]] },
   { key: "past", label: "History", hint: "Landmark votes and every government", pages: [["history", "Landmark votes"], ["timeline", "Every government"], ["formerMps", "Recent departures"]] },
   { key: "economy", label: "The economy", hint: "Growth, jobs, public money and trade", pages: [["economy", "The economy"], ["jobs", "Jobs and pay"], ["publicFinances", "Public finances"], ["trade", "Trade"], ["business", "Business"]] },
   { key: "living", label: "Cost of living", hint: "Prices, homes, taxes and bills", pages: [["prices", "Prices and bills"], ["housing", "Housing"], ["rates", "Interest rates"], ["taxRates", "Taxes"], ["calculators", "Calculators"], ["energy", "Energy bills"]] },
   { key: "care", label: "Health and care", hint: "The NHS, care, pensions and ageing", pages: [["nhs", "The NHS"], ["health", "Health"], ["care", "Social care"], ["ageing", "Ageing and pensions"]] },
-  { key: "services", label: "Public services", hint: "Schools, defence, transport and crime", pages: [["education", "Education"], ["defence", "Defence"], ["transport", "Transport"], ["crime", "Crime"]] },
+  { key: "services", label: "Public services", hint: "Schools, defence, transport and crime", pages: [["education", "Education"], ["defence", "Defence"], ["transport", "Transport"], ["crime", "Crime"], ["justice", "Courts and prisons"]] },
   { key: "society", label: "People and places", hint: "Population, migration, inequality", pages: [["population", "Population"], ["immigration", "Immigration"], ["inequality", "Inequality"], ["deprivation", "Deprivation"], ["regions", "Regions and nations"]] },
-  { key: "questions2", label: "The big questions", hint: "Brexit, the union, trust and the environment", pages: [["brexit", "Brexit"], ["union", "The union"], ["trust", "Trust in politics"], ["environment", "Environment"]] },
+  { key: "questions2", label: "The big questions", hint: "Brexit, the union, trust and the environment", pages: [["brexit", "Brexit"], ["union", "The union"], ["trust", "Trust in politics"], ["environment", "Environment"], ["water", "Water"], ["foreignPolicy", "The UK abroad"]] },
 ];
 
 export const HUB_BY_PAGE = new Map(HUBS.flatMap((h) => h.pages.map(([key], i) => [key, { ...h, at: i }])));

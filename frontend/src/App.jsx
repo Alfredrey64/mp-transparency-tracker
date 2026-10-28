@@ -17,6 +17,7 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 import { SECTIONS } from "./data/sidebarSections";
 import HubTabs from "./components/HubTabs";
 import { LOADERS } from "./pageLoaders";
+import { EXPLAINER_KEYS } from "./data/explainerKeys";
 import { startGlossDedupe } from "./glossJsx/dedupe";
 import { trackPage } from "./lib/analytics";
 import { lowData } from "./lib/lowData";
@@ -77,6 +78,7 @@ const DarkMoney = lazyPage(LOADERS.darkMoney);
 const RevolvingDoor = lazyPage(LOADERS.revolvingDoor);
 const ThinkTankFunding = lazyPage(LOADERS.thinkTanks);
 const LobbyingRegister = lazyPage(LOADERS.lobbyingRegister);
+const EXPLAINERS = Object.fromEntries(EXPLAINER_KEYS.map((k) => [k, lazyPage(LOADERS[k])]));
 const FollowTheMoney = lazyPage(LOADERS.followTheMoney);
 const WatchlistDigest = lazyPage(LOADERS.watchlist);
 const ParliamentNumbers = lazyPage(LOADERS.numbers);
@@ -128,6 +130,11 @@ console.log(
   "color: inherit;"
 );
 
+// A page drawn from data, handed in as the component to show.
+function ExplainerView({ page: Page }) {
+  return <Page />;
+}
+
 function PageLoadingFallback() {
   return <Loading />;
 }
@@ -136,6 +143,7 @@ function PageLoadingFallback() {
 // hash is user-editable (typed, pasted, bookmarked from an old link) so an
 // unrecognised segment falls back to Home rather than rendering nothing.
 const VALID_VIEWS = new Set([
+  ...EXPLAINER_KEYS,
   "home", "appg", "howitworks", "voting", "donors", "partyFinances", "parties", "history", "timeline",
   "devolved", "tracker", "budget", "cabinet", "lords", "formerMps", "byElections", "petitions", "partymatch",
   "committees", "compare", "ministerialMeetings", "writtenQuestions", "standards", "rankings", "myMP",
@@ -493,6 +501,7 @@ export default function App() {
             {view === "darkMoney" && <DarkMoney />}
             {view === "revolvingDoor" && <RevolvingDoor />}
             {view === "thinkTanks" && <ThinkTankFunding />}
+            {EXPLAINERS[view] && <ExplainerView page={EXPLAINERS[view]} />}
             {view === "lobbyingRegister" && <LobbyingRegister />}
             {view === "followTheMoney" && <FollowTheMoney key={viewParam ?? ""} initialQuery={viewParam} onSelectPolitician={handleViewProfile} />}
             {view === "watchlist" && <WatchlistDigest onSelectPolitician={handleViewProfile} />}
