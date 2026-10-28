@@ -5,11 +5,13 @@ import "../../story.css";
 // The building blocks of the "What's hidden" pages, so the four of them read as one family: a dark scoreboard of headline figures, numbered chapters
 // each with its own colour, pull quotes, myth-and-fact cards and a fold-out for the long version of a point. Pages bring their own diagrams.
 
-export function Board({ tiles }) {
+// `variant` changes how the figures are laid out, so the four pages do not all open with the same row of tiles: "lead" gives the first figure the space and
+// stacks the rest as a ladder (each tile's `w` is how far along its rung is), "rail" strings them on one line like stops on a route.
+export function Board({ tiles, variant }) {
   return (
-    <section className="st-board" data-n={tiles.length} aria-label="At a glance">
+    <section className="st-board" data-n={tiles.length} data-variant={variant} aria-label="At a glance">
       {tiles.map((t, i) => (
-        <article key={t.label} className="st-tile" style={{ "--tc": t.colour, "--i": i }}>
+        <article key={t.label} className="st-tile" style={{ "--tc": t.colour, "--i": i, "--w": t.w }}>
           <span className="st-tile-label">{t.label}</span>
           <b>{typeof t.value === "number" ? <CountUp value={t.value} format={t.format} /> : t.value}</b>
           {t.visual && <div className="st-tile-visual" aria-hidden="true">{t.visual}</div>}

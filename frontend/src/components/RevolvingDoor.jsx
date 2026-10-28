@@ -40,7 +40,7 @@ export default function RevolvingDoor() {
         maxWidth={900}
       />
 
-      <Board tiles={[
+      <Board variant="rail" tiles={[
         { label: "An advisory committee checked moves", value: 50, format: (n) => `${Math.round(n)} years`, colour: "#B79CFF", sub: "ACOBA could ask, not stop" },
         { label: "Applications in its last four years", value: 817, colour: "#FF7A8A", sub: "every one of them dealt with" },
         { label: "Refused", value: 0, colour: "#FFB45E", sub: "not a single one" },

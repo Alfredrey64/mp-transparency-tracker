@@ -82,3 +82,20 @@ test("a group with only two pages shows one 'next' link, not the same page as bo
   const links = await page.locator(".sn-pn a").evaluateAll((els) => els.map((e) => e.getAttribute("href")));
   expect(new Set(links).size).toBe(links.length);
 });
+
+test("the first two What's hidden pages open with differently laid out figure bars, and the two diagrams on the dark money page keep their words inside their boxes", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  const variant = async (path) => { await page.goto(path); await page.waitForSelector(".st-board"); return page.locator(".st-board").getAttribute("data-variant"); };
+  const seen = [await variant("/darkMoney"), await variant("/revolvingDoor"), await variant("/lobbyingRegister"), await variant("/thinkTanks")];
+  expect(new Set(seen.slice(0, 2)).size, `the first two bars: ${seen}`).toBe(2);
+  expect(seen[0] && seen[1]).toBeTruthy();
+
+  await page.goto("/darkMoney");
+  await page.waitForSelector(".st-chapter figure svg");
+  const label = page.locator("svg text").filter({ hasText: /^the association$/ });
+  const fit = await label.evaluate((t) => { const box = t.getBBox(); const pill = t.previousElementSibling.previousElementSibling; return { text: box.width, pill: Number(pill.getAttribute("width")) }; });
+  expect(fit.text, "the party's 'the association' label").toBeLessThanOrEqual(fit.pill - 8);
+  // Each step on the thresholds picture has room for its title and its line.
+  const over = await page.locator("svg foreignObject").evaluateAll((els) => els.filter((f) => f.firstElementChild && f.firstElementChild.getBoundingClientRect().height > f.getBoundingClientRect().height + 1).map((f) => f.textContent.slice(0, 30)));
+  expect(over).toEqual([]);
+});

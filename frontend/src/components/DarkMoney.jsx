@@ -19,11 +19,11 @@ export default function DarkMoney() {
         maxWidth={900}
       />
 
-      <Board tiles={[
+      <Board variant="lead" tiles={[
         { label: "The DUP's referendum donation", value: 435000, format: pounds, colour: "#FF7A8A", sub: "its original source has never been named" },
-        { label: "Gifts below this are not counted", value: 500, format: pounds, colour: "#FFB45E", sub: "by an association" },
-        { label: "From one source in a year", value: 7500, format: pounds, colour: "#B79CFF", sub: "above this an association must tell the Electoral Commission" },
-        { label: "Total donations before any duty", value: 37270, format: pounds, colour: "#6FB1FF", sub: "below it, there is no registration at all" },
+        { label: "Gifts below this are not counted", value: 500, format: pounds, colour: "#FFB45E", w: "30%", sub: "by an association" },
+        { label: "From one source in a year", value: 7500, format: pounds, colour: "#B79CFF", w: "62%", sub: "above this an association must tell the Electoral Commission" },
+        { label: "Total donations before any duty", value: 37270, format: pounds, colour: "#6FB1FF", w: "100%", sub: "below it, there is no registration at all" },
       ]} />
 
       <Why icon={IconDarkMoney} colour="#9C3B3B">

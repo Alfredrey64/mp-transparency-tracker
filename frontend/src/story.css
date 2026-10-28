@@ -50,7 +50,7 @@
 .st-steps p { margin: 4px 0 0; font: 400 15px/1.65 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .st-note { margin: 0; font: italic 400 13.5px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 @media (max-width: 860px) { .st-split, .st-split[data-flip="1"] { grid-template-columns: minmax(0, 1fr); } .st-split[data-flip="1"] > .st-visual { order: 0; } }
-@media (prefers-reduced-motion: reduce) { .st-tile { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .st-tile, .st-tile::after { animation: none !important; } }
 @keyframes stRise { from { transform: scaleY(0); opacity: 0; } }
 @keyframes stGrow { from { transform: scaleX(0); opacity: 0; } }
 @keyframes stDrop { from { transform: translateY(-16px); opacity: 0; } }
@@ -80,5 +80,36 @@
 .st-firm span { font: 600 13px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: #3F5F85; }
 .st-firm small { font: 500 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .st-prose a { color: color-mix(in srgb, var(--tc, #1E4FB8) 80%, var(--c-ink)); font-weight: 700; }
-@media (max-width: 1060px) { .st-board[data-n="4"] { --cols: 2; } .st-board[data-n="3"] { --cols: 3; } }
-@media (max-width: 760px) { .st-board { --cols: 1 !important; } }
+/* Board, "lead": the first figure takes the left half; the others stack as a ladder, each with a bar showing how far up it is. */
+.st-board[data-variant="lead"] { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); grid-template-rows: repeat(3, auto); }
+.st-board[data-variant="lead"] .st-tile:first-child { grid-row: 1 / span 3; display: flex; flex-direction: column; gap: 12px; padding: clamp(20px, 3vw, 30px); min-height: 260px; }
+.st-board[data-variant="lead"] .st-tile:first-child .st-tile-label { margin-bottom: auto; font-size: 15px; }
+.st-board[data-variant="lead"] .st-tile:first-child b { font-size: clamp(44px, 7.4vw, 84px); }
+.st-board[data-variant="lead"] .st-tile:first-child .st-tile-sub { margin-top: 0; font-size: 14.5px; }
+.st-board[data-variant="lead"] .st-tile:not(:first-child) { grid-template-columns: minmax(104px, 34%) minmax(0, 1fr); grid-template-areas: "v l" "v s" "bar bar"; column-gap: 18px; row-gap: 2px; align-content: center; padding: 14px 18px 18px; }
+.st-board[data-variant="lead"] .st-tile:not(:first-child)::before { inset: 0 auto 0 0; width: 4px; height: auto; }
+.st-board[data-variant="lead"] .st-tile:not(:first-child) b { grid-area: v; align-self: center; font-size: clamp(26px, 3vw, 34px); }
+.st-board[data-variant="lead"] .st-tile:not(:first-child) .st-tile-label { grid-area: l; align-self: end; }
+.st-board[data-variant="lead"] .st-tile:not(:first-child) .st-tile-sub { grid-area: s; margin-top: 0; align-self: start; }
+.st-board[data-variant="lead"] .st-tile:not(:first-child)::after { content: ""; grid-area: bar; margin-top: 10px; height: 6px; width: var(--w, 100%); border-radius: 3px; background: var(--tc); transform-origin: left; animation: stGrow 0.9s var(--ease-out) calc(0.3s + var(--i) * 140ms) backwards; }
+/* Board, "rail": the figures sit on one line, each a stop on the route, with no boxes around them. */
+.st-board[data-variant="rail"] { gap: 0; padding: clamp(18px, 3vw, 30px) clamp(8px, 2vw, 18px) clamp(14px, 2.4vw, 24px); }
+.st-board[data-variant="rail"] .st-tile { background: none; border: 0; border-radius: 0; overflow: visible; padding: 34px clamp(10px, 1.6vw, 20px) 0; }
+.st-board[data-variant="rail"] .st-tile::before { inset: 8px auto auto clamp(10px, 1.6vw, 20px); width: 14px; height: 14px; border-radius: 50%; box-shadow: 0 0 0 5px color-mix(in srgb, var(--tc) 28%, transparent); }
+.st-board[data-variant="rail"] .st-tile::after { content: ""; position: absolute; top: 14px; left: calc(clamp(10px, 1.6vw, 20px) + 22px); right: 0; height: 2px; background: linear-gradient(90deg, color-mix(in srgb, var(--tc) 70%, transparent), rgba(255, 255, 255, 0.14)); transform-origin: left; animation: stGrow 0.8s var(--ease-out) calc(var(--i) * 140ms) backwards; }
+.st-board[data-variant="rail"] .st-tile:last-child::after { display: none; }
+.st-board[data-variant="rail"] .st-tile-label { order: 2; }
+.st-board[data-variant="rail"] .st-tile b { order: 1; font-size: clamp(34px, 4.6vw, 52px); }
+.st-board[data-variant="rail"] .st-tile-sub { order: 3; margin-top: 0; }
+@media (max-width: 1060px) { .st-board[data-n="4"]:not([data-variant]) { --cols: 2; } .st-board[data-n="3"] { --cols: 3; } .st-board[data-variant="rail"] { --cols: 2; row-gap: 18px; } .st-board[data-variant="rail"] .st-tile:nth-child(2n)::after { display: none; } }
+@media (max-width: 760px) {
+  .st-board:not([data-variant]) { --cols: 1 !important; }
+  .st-board[data-variant="lead"] { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; }
+  .st-board[data-variant="lead"] .st-tile:first-child { grid-row: auto; min-height: 0; }
+  .st-board[data-variant="rail"] { --cols: 1 !important; row-gap: 0; }
+  .st-board[data-variant="rail"] .st-tile { padding: 0 0 22px 34px; }
+  .st-board[data-variant="rail"] .st-tile::before { inset: 4px auto auto 6px; }
+  .st-board[data-variant="rail"] .st-tile::after, .st-board[data-variant="rail"] .st-tile:nth-child(2n)::after { display: block; top: 24px; bottom: 0; left: 12px; right: auto; width: 2px; height: auto; background: linear-gradient(180deg, color-mix(in srgb, var(--tc) 70%, transparent), rgba(255, 255, 255, 0.14)); transform-origin: top; }
+  .st-board[data-variant="rail"] .st-tile:last-child::after { display: none; }
+  .st-board[data-variant="rail"] .st-tile:last-child { padding-bottom: 0; }
+}

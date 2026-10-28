@@ -21,7 +21,7 @@ export function MoneyTrail() {
   const still = useReducedMotion();
   const donors = [{ y: 62, c: "#2A6FDB", l: "A" }, { y: 150, c: "#1FA97C", l: "B" }, { y: 238, c: "#E8741A", l: "C" }];
   const into = (y) => `M 200 ${y} C 300 ${y}, 330 150, 400 150`;
-  const out = "M 540 150 L 720 150";
+  const out = "M 540 150 L 718 150";
   const dur = "7s";
   return (
     <svg viewBox="0 0 900 300" role="img" aria-label="Money from named donors goes into an unincorporated association, which gives to a party under its own name only">
@@ -42,10 +42,11 @@ export function MoneyTrail() {
         <text y="38" textAnchor="middle" fontSize="13" fontWeight="800" fill="#7A2E2E" fontFamily="Public Sans, system-ui, sans-serif">association</text>
       </g>
       <g transform="translate(800 150)">
-        <rect x="-76" y="-52" width="152" height="104" rx="22" fill="#fff" stroke="#3F7D5C" strokeWidth="3.500" />
-        <text y="-14" textAnchor="middle" fontSize="15" fontWeight="800" fill={INK} fontFamily="Public Sans, system-ui, sans-serif">The party</text>
-        <rect x="-60" y="2" width="120" height="30" rx="8" fill="#E7F3EC" />
-        <text y="22" textAnchor="middle" fontSize="12.500" fontWeight="700" fill="#2B5E43" fontFamily="Public Sans, system-ui, sans-serif">Donor: the association</text>
+        <rect x="-76" y="-62" width="152" height="124" rx="22" fill="#fff" stroke="#3F7D5C" strokeWidth="3.500" />
+        <text y="-30" textAnchor="middle" fontSize="15" fontWeight="800" fill={INK} fontFamily="Public Sans, system-ui, sans-serif">The party</text>
+        <rect x="-62" y="-12" width="124" height="60" rx="10" fill="#E7F3EC" />
+        <text y="10" textAnchor="middle" fontSize="12.500" fontWeight="700" fill="#2B5E43" fontFamily="Public Sans, system-ui, sans-serif">Donor:</text>
+        <text y="30" textAnchor="middle" fontSize="13.500" fontWeight="800" fill="#2B5E43" fontFamily="Public Sans, system-ui, sans-serif">the association</text>
       </g>
       {!still && donors.map((d, n) => (
         <g key={`c${d.l}`} opacity="0">
@@ -70,25 +71,30 @@ export function MoneyTrail() {
 
 // The three amounts that decide what an association must report, as steps climbing from nothing to a duty to tell the Electoral Commission.
 export function Thresholds() {
+  const base = 340;
   const steps = [
-    { x: 30, w: 250, h: 70, c: "#9AA6B8", t: "Under £500", s: "Not even counted by the association" },
-    { x: 290, w: 280, h: 150, c: "#E8741A", t: "£500 and over", s: "Counted, but not yet reported" },
-    { x: 580, w: 290, h: 230, c: "#9C3B3B", t: "Over £7,500 from one source", s: "Must be reported, but only once total gifts pass £37,270 a year" },
+    { x: 30, w: 250, h: 112, c: "#9AA6B8", t: "Under £500", s: "Not even counted by the association" },
+    { x: 290, w: 280, h: 176, c: "#E8741A", t: "£500 and over", s: "Counted, but not yet reported" },
+    { x: 580, w: 290, h: 240, c: "#9C3B3B", t: "Over £7,500 from one source", s: "Must be reported, but only once total gifts pass £37,270 a year" },
   ];
   return (
-    <svg viewBox="0 0 900 330" role="img" aria-label="Three steps: under 500 pounds is not counted, 500 pounds and over is counted, over 7,500 pounds from one source must be reported once yearly donations pass 37,270 pounds">
-      <line x1="20" y1="290" x2="880" y2="290" stroke="#C9D3E6" strokeWidth="3" />
+    <svg viewBox="0 0 900 360" role="img" aria-label="Three steps: under 500 pounds is not counted, 500 pounds and over is counted, over 7,500 pounds from one source must be reported once yearly donations pass 37,270 pounds">
+      <line x1="20" y1={base} x2="880" y2={base} stroke="#C9D3E6" strokeWidth="3" />
       {steps.map((s, i) => (
-        <g key={s.t} style={{ animation: `stRise 0.9s var(--ease-out) ${0.15 + i * 0.25}s backwards`, transformOrigin: `${s.x + s.w / 2}px 290px`, transformBox: "view-box" }}>
-          <rect x={s.x} y={290 - s.h} width={s.w} height={s.h} rx="14" fill={s.c} opacity="0.16" />
-          <rect x={s.x} y={290 - s.h} width={s.w} height="8" rx="4" fill={s.c} />
-          <text x={s.x + 16} y={290 - s.h + 40} fontSize="22" fontWeight="800" fill={INK} fontFamily="Newsreader, Georgia, serif">{s.t}</text>
-          <foreignObject x={s.x + 12} y={290 - s.h + 48} width={s.w - 24} height="70"><div xmlns="http://www.w3.org/1999/xhtml" style={{ font: "600 13.5px/1.4 Public Sans, system-ui, sans-serif", color: SOFT }}>{s.s}</div></foreignObject>
+        <g key={s.t} style={{ animation: `stRise 0.9s var(--ease-out) ${0.15 + i * 0.25}s backwards`, transformOrigin: `${s.x + s.w / 2}px ${base}px`, transformBox: "view-box" }}>
+          <rect x={s.x} y={base - s.h} width={s.w} height={s.h} rx="14" fill={s.c} opacity="0.16" />
+          <rect x={s.x} y={base - s.h} width={s.w} height="8" rx="4" fill={s.c} />
+          <foreignObject x={s.x + 16} y={base - s.h + 20} width={s.w - 32} height={s.h - 28}>
+            <div xmlns="http://www.w3.org/1999/xhtml" style={{ display: "grid", gap: "6px", alignContent: "start" }}>
+              <div style={{ font: "800 21px/1.2 Newsreader, Georgia, serif", color: INK }}>{s.t}</div>
+              <div style={{ font: "600 13.5px/1.4 Public Sans, system-ui, sans-serif", color: SOFT }}>{s.s}</div>
+            </div>
+          </foreignObject>
         </g>
       ))}
-      <g transform="translate(580 38)">
-        <rect width="290" height="34" rx="17" fill="#fff" stroke="#9C3B3B" strokeWidth="2.500" />
-        <text x="145" y="22" textAnchor="middle" fontSize="13.500" fontWeight="800" fill="#7A2E2E" fontFamily="Public Sans, system-ui, sans-serif">Below £37,270 a year: no registration at all</text>
+      <g transform="translate(540 30)">
+        <rect width="330" height="36" rx="18" fill="#fff" stroke="#9C3B3B" strokeWidth="2.500" />
+        <text x="165" y="23.500" textAnchor="middle" fontSize="13" fontWeight="800" fill="#7A2E2E" fontFamily="Public Sans, system-ui, sans-serif">Below £37,270 a year: no registration at all</text>
       </g>
     </svg>
   );

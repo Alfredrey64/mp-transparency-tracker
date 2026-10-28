@@ -6,37 +6,88 @@ const SOFT = "#5B6784";
 const F = "Public Sans, system-ui, sans-serif";
 const S = "Newsreader, Georgia, serif";
 
-// A revolving door that turns, with a minister going in on one side and coming out as an industry adviser on the other.
+// A revolving door seen from above. Its wings turn at a steady pace; each person steps into the gap between two wings on one side, is carried half way round,
+// and steps out on the other side changed: a minister in, a paid adviser out, and the other way too. The people are drawn on paths timed to the turn, so each
+// stays inside its own gap all the way round. All of it is written into the picture, so it needs no script and stands still for anyone who has asked for less motion.
+const TURN = 12; // seconds for a full turn of the wings
+const RIDE = TURN / 2; // a half turn, from one opening to the other
+const WALK = 1.2; // seconds to walk in, and to walk out
+const CYCLE = TURN; // one trip, padded to a full turn so each person's timing repeats exactly as the wings do (a gap faces an opening every TURN / 4 seconds)
+const GAP_R = 62; // how far from the centre people stand while inside
+const WINGS_AT = 180 - 45 - (360 / TURN) * WALK; // the angle the wings start at, so a gap faces the left opening just as the first person steps in
+const HOUSING = 112;
+
+const Walker = ({ delay, fromColour, toColour, flip }) => {
+  const reach = 158; // how far outside the door the walk starts, measured from its centre
+  const into = flip ? reach : -reach;
+  const side = flip ? GAP_R : -GAP_R;
+  const path = `M ${into} 0 L ${side} 0 A ${GAP_R} ${GAP_R} 0 0 1 ${-side} 0 L ${-into} 0`;
+  const walk = reach - GAP_R, arc = Math.PI * GAP_R, total = walk * 2 + arc;
+  const t1 = WALK / CYCLE, t2 = (WALK + RIDE) / CYCLE, t3 = (WALK + RIDE + WALK) / CYCLE;
+  const k1 = walk / total, k2 = (walk + arc) / total;
+  const begin = `${delay}s`;
+  const mid = (t1 + t2) / 2;
+  const swap = [0, mid - 0.02, mid + 0.02, 1].join(";");
+  return (
+    <g opacity="0">
+      <animateMotion dur={`${CYCLE}s`} begin={begin} repeatCount="indefinite" path={path} keyPoints={`0;${k1};${k2};1;1`} keyTimes={`0;${t1};${t2};${t3};1`} calcMode="linear" />
+      <animate attributeName="opacity" values="0;1;1;0;0" keyTimes={`0;0.04;${t3 - 0.04};${t3};1`} dur={`${CYCLE}s`} begin={begin} repeatCount="indefinite" />
+      <circle r="13" stroke="#fff" strokeWidth="2.500">
+        <animate attributeName="fill" values={`${fromColour};${fromColour};${toColour};${toColour}`} keyTimes={swap} dur={`${CYCLE}s`} begin={begin} repeatCount="indefinite" />
+      </circle>
+      <g>
+        <circle cy="-3.500" r="3.500" fill="#fff" /><path d="M -6 7 q 6 -10 12 0z" fill="#fff" />
+        <animate attributeName="opacity" values={flip ? "0;0;1;1" : "1;1;0;0"} keyTimes={swap} dur={`${CYCLE}s`} begin={begin} repeatCount="indefinite" />
+      </g>
+      <text y="4.500" textAnchor="middle" fontSize="13" fontWeight="800" fill="#fff" fontFamily={F} opacity={flip ? 1 : 0}>
+        £<animate attributeName="opacity" values={flip ? "1;1;0;0" : "0;0;1;1"} keyTimes={swap} dur={`${CYCLE}s`} begin={begin} repeatCount="indefinite" />
+      </text>
+    </g>
+  );
+};
+
 export function Door() {
   const still = useReducedMotion();
+  const GOV = "#6E4B6E", IND = "#9C6B30";
+  const arcs = { top: `M -95 -59.300 A ${HOUSING} ${HOUSING} 0 0 1 95 -59.300`, bottom: `M 95 59.300 A ${HOUSING} ${HOUSING} 0 0 1 -95 59.300` };
   return (
-    <svg viewBox="0 0 900 320" role="img" aria-label="A revolving door between government and industry: a minister goes in, a paid adviser comes out, and nothing stops them going back">
-      <rect x="20" y="30" width="270" height="250" rx="26" fill="#EFE7F2" stroke="#6E4B6E" strokeWidth="3" />
-      <text x="155" y="64" textAnchor="middle" fontSize="18" fontWeight="800" fill="#6E4B6E" fontFamily={F}>Government</text>
-      <rect x="610" y="30" width="270" height="250" rx="26" fill="#F7EBDC" stroke="#9C6B30" strokeWidth="3" />
-      <text x="745" y="64" textAnchor="middle" fontSize="18" fontWeight="800" fill="#9C6B30" fontFamily={F}>Industry</text>
-      {[{ x: 155, y: 150, c: "#6E4B6E", t: "Decides who gets contracts" }, { x: 745, y: 150, c: "#9C6B30", t: "Pays for advice" }].map((b) => (
+    <svg viewBox="0 0 900 330" role="img" aria-label="A revolving door between government and industry: a minister goes in on one side and comes out a paid adviser on the other, and someone from industry can go the other way">
+      <rect x="20" y="30" width="270" height="250" rx="26" fill="#EFE7F2" stroke={GOV} strokeWidth="3" />
+      <text x="155" y="64" textAnchor="middle" fontSize="18" fontWeight="800" fill={GOV} fontFamily={F}>Government</text>
+      <rect x="610" y="30" width="270" height="250" rx="26" fill="#F7EBDC" stroke={IND} strokeWidth="3" />
+      <text x="745" y="64" textAnchor="middle" fontSize="18" fontWeight="800" fill={IND} fontFamily={F}>Industry</text>
+      {[{ x: 155, c: GOV, t: "Decides who gets contracts" }, { x: 745, c: IND, t: "Pays for advice" }].map((b) => (
         <g key={b.t}>
-          <circle cx={b.x} cy={b.y} r="44" fill="#fff" stroke={b.c} strokeWidth="3" />
-          <circle cx={b.x} cy={b.y - 12} r="13" fill={b.c} /><path d={`M ${b.x - 24} ${b.y + 30} q 24 -34 48 0z`} fill={b.c} />
-          <text x={b.x} y={b.y + 76} textAnchor="middle" fontSize="14" fontWeight="700" fill={INK} fontFamily={F}>{b.t}</text>
+          <circle cx={b.x} cy="150" r="44" fill="#fff" stroke={b.c} strokeWidth="3" />
+          <circle cx={b.x} cy="138" r="13" fill={b.c} /><path d={`M ${b.x - 24} 180 q 24 -34 48 0z`} fill={b.c} />
+          <text x={b.x} y="226" textAnchor="middle" fontSize="14" fontWeight="700" fill={INK} fontFamily={F}>{b.t}</text>
         </g>
       ))}
       <g transform="translate(450 160)">
-        <circle r="112" fill="#fff" stroke="#C9D3E6" strokeWidth="3" />
-        <g>
-          {[0, 120, 240].map((a) => <g key={a} transform={`rotate(${a})`}><rect x="-5" y="-104" width="10" height="104" rx="5" fill="#6E4B6E" /><rect x="-26" y="-108" width="52" height="8" rx="4" fill="#9C6B30" /></g>)}
-          {!still && <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="14s" repeatCount="indefinite" />}
+        <circle r="124" fill="#F4F6FB" />
+        <circle r={HOUSING - 6} fill="#fff" stroke="#E3E8F2" strokeWidth="2" />
+        <circle r={GAP_R} fill="none" stroke="#E3E8F2" strokeWidth="26" opacity="0.6" />
+        <g transform={`rotate(${WINGS_AT})`}>
+          {!still && <animateTransform attributeName="transform" type="rotate" from={WINGS_AT} to={WINGS_AT + 360} dur={`${TURN}s`} repeatCount="indefinite" />}
+          <rect x="-102" y="-4" width="204" height="8" rx="4" fill={GOV} /><rect x="-4" y="-102" width="8" height="204" rx="4" fill={GOV} />
+          {[0, 90, 180, 270].map((a) => <rect key={a} transform={`rotate(${a})`} x="-18" y="-109" width="36" height="7" rx="3.500" fill={IND} />)}
         </g>
-        <circle r="14" fill="#1B2438" />
+        <path d={arcs.top} fill="none" stroke="#1B2438" strokeWidth="7" strokeLinecap="round" />
+        <path d={arcs.bottom} fill="none" stroke="#1B2438" strokeWidth="7" strokeLinecap="round" />
+        <circle r="13" fill="#1B2438" />
+        {!still ? (
+          <>
+            {/* Each gap carries one person at a time: the two sides step in on alternate gaps, so nobody shares a gap with someone stepping out. */}
+            {[0, 6].map((d) => <Walker key={`g${d}`} delay={-d} fromColour={GOV} toColour={IND} />)}
+            {[3, 9].map((d) => <Walker key={`i${d}`} delay={-d} fromColour={IND} toColour={GOV} flip />)}
+          </>
+        ) : (
+          <g>
+            <circle cx="-158" r="13" fill={GOV} stroke="#fff" strokeWidth="2.500" /><circle cx="158" r="13" fill={IND} stroke="#fff" strokeWidth="2.500" />
+          </g>
+        )}
       </g>
-      {!still && (
-        <>
-          <g><circle r="9" fill="#6E4B6E" stroke="#fff" strokeWidth="2.500" /><animateMotion dur="9s" repeatCount="indefinite" path="M 200 150 C 300 150, 340 160, 450 160 S 600 150, 700 150" /><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="9s" repeatCount="indefinite" /></g>
-          <g><circle r="9" fill="#9C6B30" stroke="#fff" strokeWidth="2.500" /><animateMotion dur="9s" begin="-4.500s" repeatCount="indefinite" path="M 700 190 C 600 190, 560 160, 450 160 S 300 190, 200 190" /><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="9s" begin="-4.500s" repeatCount="indefinite" /></g>
-        </>
-      )}
-      <text x="450" y="308" textAnchor="middle" fontSize="14" fontWeight="700" fill={SOFT} fontFamily={F}>Nothing stops the same person passing through, in either direction</text>
+      <text x="450" y="318" textAnchor="middle" fontSize="14" fontWeight="700" fill={SOFT} fontFamily={F}>Nothing stops the same person passing through, in either direction</text>
     </svg>
   );
 }
