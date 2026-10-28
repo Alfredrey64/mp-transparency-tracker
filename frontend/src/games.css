@@ -1,14 +1,27 @@
 /* The Teacher mode games and the grid that holds them. Loaded only with Teacher mode. */
 .act-grid { list-style: none; margin: 18px 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
-.act-card { position: relative; display: grid; gap: 8px; align-content: start; width: 100%; height: 100%; box-sizing: border-box; padding: 18px 18px 16px; text-align: left; border-radius: 24px; cursor: pointer; background: linear-gradient(165deg, color-mix(in srgb, var(--ac) 11%, var(--c-paper-card)), var(--c-paper-card) 60%); border: 1px solid color-mix(in srgb, var(--ac) 32%, var(--c-hairline)); box-shadow: var(--shadow-1); overflow: hidden; font: inherit; color: inherit; }
-.act-card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 5px; background: var(--ac); }
-.act-card:hover { box-shadow: var(--shadow-2), 0 0 0 3px color-mix(in srgb, var(--ac) 18%, transparent); }
-.act-ico { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 16px; background: var(--ac); color: #fff; box-shadow: 0 10px 18px -10px color-mix(in srgb, var(--ac) 80%, transparent); }
-.act-tags { display: flex; gap: 6px; }
-.act-tags i { font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; padding: 3px 10px; border-radius: 999px; background: color-mix(in srgb, var(--ac) 13%, transparent); color: color-mix(in srgb, var(--ac) 75%, var(--c-ink)); }
-.act-card b { font: 700 21px/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
-.act-card small { font: 400 14.5px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.act-card em { font: 800 14px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: color-mix(in srgb, var(--ac) 80%, var(--c-ink)); }
+/* A game is drawn as a box off a shelf: a solid cover in the game's own colour with its own pattern, then a paper ticket below with the class code as the stub. */
+.act-card { --pn: color-mix(in srgb, var(--ac) 66%, #0A1128); position: relative; display: grid; grid-template-rows: auto 1fr auto; width: 100%; height: 100%; box-sizing: border-box; padding: 0; text-align: left; border-radius: 22px; cursor: pointer; background: var(--c-paper-card); border: 2px solid var(--pn); box-shadow: 6px 6px 0 color-mix(in srgb, var(--ac) 30%, transparent); overflow: hidden; font: inherit; color: inherit; transition: box-shadow 0.2s ease; }
+.act-card:hover { box-shadow: 6px 6px 0 color-mix(in srgb, var(--ac) 60%, transparent); }
+.act-card:focus-visible { outline: 3px solid var(--c-ink); outline-offset: 4px; }
+.act-cover { position: relative; display: grid; gap: 14px; align-content: space-between; height: 184px; box-sizing: border-box; padding: 16px 18px 18px; background-color: var(--pn); color: #fff; }
+.act-cover::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 1; }
+.act-card[data-pat="0"] .act-cover::before { background: radial-gradient(rgba(255, 255, 255, 0.2) 1.6px, transparent 1.8px) 0 0 / 14px 14px; }
+.act-card[data-pat="1"] .act-cover::before { background: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.11) 0 7px, transparent 7px 16px); }
+.act-card[data-pat="2"] .act-cover::before { background: linear-gradient(rgba(255, 255, 255, 0.11) 1.5px, transparent 1.5px) 0 0 / 18px 18px, linear-gradient(90deg, rgba(255, 255, 255, 0.11) 1.5px, transparent 1.5px) 0 0 / 18px 18px; }
+.act-card[data-pat="3"] .act-cover::before { background: repeating-radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.14) 0 2px, transparent 2px 20px); }
+.act-cover > * { position: relative; }
+.act-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.act-ico { display: grid; place-items: center; flex: none; width: 48px; height: 48px; border-radius: 14px; background: #fff; color: var(--pn); box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.22); }
+.act-tags { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+.act-tags i { font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; padding: 3px 10px; border-radius: 999px; border: 1.5px solid rgba(255, 255, 255, 0.7); color: #fff; }
+.act-card b { font: 700 24px/1.12 "Figures", "Newsreader", Georgia, serif; color: #fff; text-wrap: balance; }
+.act-card small { display: block; padding: 16px 18px 14px; font: 400 14.5px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.act-stub { display: grid; gap: 10px; padding: 12px 18px 16px; border-top: 2px dashed color-mix(in srgb, var(--ac) 45%, var(--c-hairline)); }
+.act-stub .act-code { margin: 0; }
+.act-card em { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border-radius: 999px; background: var(--pn); color: #fff; font: 800 14px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; transition: background-color 0.2s ease; }
+.act-card em::before { content: ""; width: 9px; height: 11px; background: #fff; clip-path: polygon(0 0, 100% 50%, 0 100%); }
+.act-card:hover em { background: color-mix(in srgb, var(--pn) 78%, #000); }
 .act-back { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; margin-bottom: 12px; border-radius: 999px; border: 1.5px solid var(--c-hairline); background: var(--c-paper-card); font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); cursor: pointer; }
 .gm { display: grid; gap: 14px; padding: clamp(16px, 3vw, 26px); border-radius: 26px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); }
 .gm svg { max-width: 100%; height: auto; }
@@ -419,3 +432,4 @@ a.act-back { text-decoration: none; }
 .sp-kit b { font: 800 17px "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
 .sp-kit span { font: 400 14.5px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 @media (prefers-reduced-motion: reduce) { .sp-bar { transition: none; } .sp-in, .sp-rest { animation: none; } }
+.act h2:focus { outline: none; }

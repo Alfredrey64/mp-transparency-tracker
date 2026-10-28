@@ -1,5 +1,5 @@
 /** @jsxImportSource react */
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { MockElection, BudgetGame, PetitionGame } from "./Classroom";
 import WhoDecides from "./games/WhoDecides";
 import MakeALaw from "./games/MakeALaw";
@@ -75,6 +75,14 @@ export default function Activities({ code = null, pupil = false }) {
   const shown = ACTIVITIES.filter((x) => kind === "All" || x.kind === kind);
   const a = ACTIVITIES.find((x) => x.key === picked);
   const current = a ? encode(a.key, settings) : null;
+  // Opening a game, or going back to the list, brings the top of what is now shown into view, so a card clicked far down the page does not leave its game below the fold.
+  const top = useRef(null);
+  const first = useRef(true);
+  useEffect(() => {
+    if (first.current) { first.current = false; return; }
+    top.current?.scrollIntoView({ block: "start" });
+    top.current?.querySelector("h2")?.focus({ preventScroll: true });
+  }, [picked]);
 
   // The address follows the game and its setup, so a link copied from the browser is the same as the class code.
   useEffect(() => {
@@ -93,11 +101,11 @@ export default function Activities({ code = null, pupil = false }) {
   if (a) {
     const Component = a.Component;
     return (
-      <section className="cr act" aria-labelledby="h-tm-act" style={{ "--ac": a.colour }}>
+      <section ref={top} className="cr act" aria-labelledby="h-tm-act" style={{ "--ac": a.colour, scrollMarginTop: "calc(var(--header-h, 70px) + 12px)" }}>
         {pupil
           ? <a className="act-back" href="#/teacher/activities">More activities and games</a>
           : <button type="button" className="act-back" onClick={() => setPicked(null)}>All activities and games</button>}
-        <h2 id="h-tm-act">{a.title}</h2>
+        <h2 id="h-tm-act" tabIndex={-1}>{a.title}</h2>
         <p>{a.learn}</p>
         <HowTo steps={a.how} />
         {!pupil && <ClassCode code={current} />}
@@ -106,8 +114,8 @@ export default function Activities({ code = null, pupil = false }) {
     );
   }
   return (
-    <section className="cr act" aria-labelledby="h-tm-acts">
-      <h2 id="h-tm-acts">Activities and games</h2>
+    <section ref={top} className="cr act" aria-labelledby="h-tm-acts" style={{ scrollMarginTop: "calc(var(--header-h, 70px) + 12px)" }}>
+      <h2 id="h-tm-acts" tabIndex={-1}>Activities and games</h2>
       <p>Pick one. Each runs on a big screen or on pupils' own tablets, and nothing anyone does is saved or sent anywhere. The games teach one idea each, with a picture that moves as you play. The class activities are bigger and work well in groups. Every one has a class code to write on the board.</p>
       <form className="act-join" onSubmit={join}>
         <label htmlFor="act-code">Got a class code?</label>
@@ -121,15 +129,21 @@ export default function Activities({ code = null, pupil = false }) {
         {["All", "Game", "Class activity"].map((k) => <button key={k} type="button" aria-pressed={kind === k} onClick={() => setKind(k)}>{k === "Game" ? "Games" : k === "Class activity" ? "Class activities" : "All"} <i>{ACTIVITIES.filter((x) => k === "All" || x.kind === k).length}</i></button>)}
       </div>
       <ul className="act-grid">
-        {shown.map((x) => (
+        {shown.map((x, n) => (
           <li key={x.key}>
-            <button type="button" className="act-card" style={{ "--ac": x.colour }} onClick={() => open(x.key)}>
-              <span className="act-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{ICONS[x.icon]}</svg></span>
-              <span className="act-tags"><i>{x.kind}</i><i>{x.time}</i></span>
-              <b>{x.title}</b>
+            <button type="button" className="act-card" data-pat={n % 4} style={{ "--ac": x.colour }} onClick={() => open(x.key)}>
+              <span className="act-cover">
+                <span className="act-top">
+                  <span className="act-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{ICONS[x.icon]}</svg></span>
+                  <span className="act-tags"><i>{x.kind}</i><i>{x.time}</i></span>
+                </span>
+                <b>{x.title}</b>
+              </span>
               <small>{x.learn}</small>
-              <span className="act-code">Class code <code>{encode(x.key)}</code></span>
-              <em>Play</em>
+              <span className="act-stub">
+                <span className="act-code">Class code <code>{encode(x.key)}</code></span>
+                <em>Play</em>
+              </span>
             </button>
           </li>
         ))}

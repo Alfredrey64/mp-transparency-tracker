@@ -109,3 +109,22 @@ for (const width of [1440, 390]) {
     expect(fit.text, "the label").toBeLessThanOrEqual(fit.bar - 12);
   });
 }
+
+for (const width of [1440, 390]) {
+  test(`opening a game from far down the Activities list brings its top into view, and going back does too, at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/teacher/activities");
+    const cards = page.locator(".act-card");
+    await expect(cards).toHaveCount(17);
+    const last = cards.nth(12);
+    await last.scrollIntoViewIfNeeded();
+    expect(await page.evaluate(() => scrollY)).toBeGreaterThan(900);
+    await last.click();
+    const heading = page.locator(".act h2");
+    await expect(heading).toBeFocused();
+    await expect.poll(() => heading.evaluate((h) => Math.round(h.getBoundingClientRect().top))).toBeLessThan(260);
+    expect(await heading.evaluate((h) => h.getBoundingClientRect().top)).toBeGreaterThan(0);
+    await page.locator(".act-back").click();
+    await expect.poll(() => page.locator(".act h2").evaluate((h) => Math.round(h.getBoundingClientRect().top))).toBeLessThan(260);
+  });
+}
