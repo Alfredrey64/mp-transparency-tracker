@@ -176,6 +176,7 @@ function titleForState(view, selected, param, tr = (x) => x) {
   const base = "Simple Politics";
   if (selected) return `${selected.name} | ${base}`;
   if (view === "numbers" && param === "lords") return `Parliament in Numbers: the Lords | ${base}`;
+  if (view === "numbers" && param === "who") return `Parliament in Numbers: who they are | ${base}`;
   // For the Lords the parameter is a peer's id, which makes a poor title.
   if (param && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view) && view !== "regions" && view !== "answers" && view !== "deprivation" && view !== "compareSeats" && view !== "compareCouncils" && view !== "parties" && view !== "generalElection" && view !== "taxRates" && view !== "inequality" && view !== "brexit" && view !== "defence" && view !== "education" && view !== "ageing" && view !== "nhs" && view !== "energy" && view !== "trust" && view !== "care" && view !== "transport" && view !== "union" && view !== "calculators" && view !== "teacher") return `${param} | ${tr(PAGE_TITLES[view] ?? base)} | ${base}`;
   if (view === "home") return base;
@@ -194,6 +195,8 @@ function parseHash() {
   // The seat map used to be its own page; its links now open the merged
   // Your Constituency page.
   if (segments[0] === "seatmap") segments[0] = "constituency";
+  // Who MPs are was folded into Parliament in numbers as its third tab.
+  if (segments[0] === "mpProfile") segments.splice(0, 1, "numbers", "who");
   // Taxes and spending and Tax rates through time became one page, Taxes. Old links to #/tax open its Overview.
   if (segments[0] === "tax") segments.splice(0, 1, "taxRates", "overview");
   // Where taxes go is now the Where it goes toggle on the Taxes page.

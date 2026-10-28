@@ -22,9 +22,9 @@ export const PAGE_GUIDES = {
     notShown: "Declared interests and voting records in a form we can show. For interests, the page links to the official Register of Lords' Interests.",
   },
   numbers: {
-    what: "The House of Commons in numbers: who sits there, how long they have served, how safe their seats are and what their careers look like.",
+    what: "Parliament in numbers: who sits in the Commons and Lords, how long they have served, how safe their seats are, what their careers look like, and their gender, schooling and background.",
     why: "It turns 650 names into a picture of who really runs the country, and how different from the public that group is.",
-    notShown: "Anything not in Parliament's records. They hold no ethnicity, age or education for MPs, so those are missing, and we don't guess.",
+    notShown: "Anything not in Parliament's records. They hold no ethnicity, age or education for MPs, so the Who they are tab takes school and ethnic background from two outside studies, and says which.",
   },
   numbersLords: {
     what: "The House of Lords in numbers: its party balance, how peers got their seats, when they arrived and where they came from.",
@@ -470,11 +470,6 @@ export const PAGE_GUIDES = {
     what: "What the National Audit Office, the Office for Budget Responsibility and public inquiries do, and their powers in law.",
     why: "Ministers answer to Parliament, but these bodies check the sums and investigate failures.",
     notShown: "The findings of particular reports or inquiries, except where another page uses them.",
-  },
-  mpProfile: {
-    what: "The gender, schooling, university and ethnic background of MPs, from official lists and independent studies.",
-    why: "MPs make laws for everyone, so how closely they resemble the people they represent matters.",
-    notShown: "Age, earnings and previous careers, because no single official record exists.",
   },
   polling: {
     what: "What an opinion poll measures, why votes are not seats, and what the British Polling Council says about the 2024 polls.",

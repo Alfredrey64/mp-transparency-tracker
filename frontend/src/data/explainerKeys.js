@@ -14,7 +14,6 @@ export const EXPLAINER_KEYS = [
   "watchdogs",
   "justice",
   "water",
-  "mpProfile",
   "polling",
   "foreignPolicy",
 ];

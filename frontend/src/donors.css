@@ -1,8 +1,7 @@
 /* Who funds MPs: sector pictograms and the "who receives the most" cards. Loaded only with that page. */
 .dn-ico { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 8px; flex: none; background: color-mix(in srgb, var(--sc) 16%, transparent); color: color-mix(in srgb, var(--sc) 80%, var(--c-ink)); }
 .dn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 370px), 1fr)); gap: 16px; margin-bottom: 32px; align-items: start; }
-.dn-card { position: relative; display: grid; gap: 14px; padding: 18px 18px 14px; border-radius: 22px; background: linear-gradient(165deg, color-mix(in srgb, var(--sc) 11%, var(--c-paper-card)), var(--c-paper-card) 60%); border: 1px solid color-mix(in srgb, var(--sc) 30%, var(--c-hairline)); box-shadow: var(--shadow-1); overflow: hidden; }
-.dn-card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 5px; background: linear-gradient(90deg, var(--sc), color-mix(in srgb, var(--sc) 40%, #fff)); }
+.dn-card { position: relative; display: grid; gap: 14px; padding: 18px 18px 14px; border-radius: 22px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1), inset 4px 0 0 var(--sc); overflow: hidden; }
 .dn-card-head { display: flex; align-items: center; gap: 14px; }
 .dn-card-ico { display: grid; place-items: center; flex: none; width: 52px; height: 52px; border-radius: 16px; background: var(--sc); color: #fff; box-shadow: 0 8px 16px -8px color-mix(in srgb, var(--sc) 80%, transparent); }
 .dn-card h3 { margin: 0; font: 700 18px/1.25 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }

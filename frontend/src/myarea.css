@@ -25,11 +25,10 @@
 
 /* The cards: a bento grid, each its own colour, arriving one after another. */
 .ma-bento { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
-.ma-mpcard { grid-column: span 5; } .ma-votes { grid-column: span 4; } .ma-seat { grid-column: span 3; }
+.ma-mpcard { grid-column: span 4; } .ma-votes { grid-column: span 4; } .ma-seat { grid-column: span 4; }
 .ma-council { grid-column: span 6; } .ma-people-card { grid-column: span 6; }
 .ma-region { grid-column: span 8; } .ma-todo-card { grid-column: span 4; }
-.ma-card { position: relative; display: grid; gap: 12px; align-content: start; box-sizing: border-box; padding: 18px 20px 18px; border-radius: 24px; background: linear-gradient(165deg, color-mix(in srgb, var(--mc) 10%, var(--c-paper-card)), var(--c-paper-card) 58%); border: 1px solid color-mix(in srgb, var(--mc) 30%, var(--c-hairline)); box-shadow: var(--shadow-1); overflow: hidden; animation: maIn 0.6s var(--ease-out) calc(var(--i, 0) * 90ms + 200ms) backwards; }
-.ma-card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 5px; background: linear-gradient(90deg, var(--mc), color-mix(in srgb, var(--mc) 40%, #fff)); }
+.ma-card { position: relative; display: flex; flex-direction: column; gap: 14px; box-sizing: border-box; padding: 20px 22px 20px 26px; border-radius: 18px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1), inset 5px 0 0 var(--mc); overflow: hidden; animation: maIn 0.6s var(--ease-out) calc(var(--i, 0) * 90ms + 200ms) backwards; }
 @keyframes maIn { from { opacity: 0; transform: translateY(16px) scale(0.98); } }
 .ma-card > header { display: flex; align-items: center; gap: 12px; }
 .ma-icon { flex: none; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 13px; background: color-mix(in srgb, var(--mc) 16%, transparent); color: color-mix(in srgb, var(--mc) 80%, var(--c-ink)); }
@@ -37,30 +36,33 @@
 .ma-card p, .ma-card li { margin: 0; font: 400 14.5px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .ma-big { font: 700 clamp(24px, 3vw, 30px)/1.12 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); overflow-wrap: break-word; }
 .ma-sub { font: 500 13.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.ma-link { display: inline-flex; align-items: center; min-height: 44px; font: 700 14.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--mc) 78%, var(--c-ink)); text-decoration: none; }
+.ma-link { margin-top: auto; display: inline-flex; align-items: center; min-height: 44px; font: 700 14.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--mc) 78%, var(--c-ink)); text-decoration: none; }
 .ma-link:hover { text-decoration: underline; }
 .ma-mp { display: flex; align-items: center; gap: 16px; }
 .ma-photo { flex: none; width: 96px; height: 96px; border-radius: 50%; object-fit: cover; background: var(--c-paper); border: 4px solid var(--c-paper-card); box-shadow: 0 0 0 4px color-mix(in srgb, var(--mc) 70%, transparent), 0 10px 24px -8px rgba(11, 27, 51, 0.5); animation: maPop 0.7s var(--ease-spring) 0.5s backwards; }
 @keyframes maPop { from { transform: scale(0.5); opacity: 0; } }
 .ma-photo-fallback { display: grid; place-items: center; font: 700 32px "Figures", "Newsreader", Georgia, serif; color: #fff; background: var(--mc); }
 .ma-name { font: 700 clamp(22px, 2.6vw, 28px)/1.15 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
-.ma-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-.ma-stats > div { display: grid; gap: 2px; padding: 12px 12px 11px; border-radius: 16px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-top: 4px solid var(--mc); }
-.ma-stats b { font: 800 clamp(22px, 2.6vw, 28px)/1.1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
-.ma-stats span { font: 600 12.5px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.ma-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.ma-stats { display: grid; gap: 0; border: 1px solid var(--c-hairline); border-radius: 16px; overflow: hidden; background: var(--c-paper); }
+.ma-stats > div { display: flex; align-items: center; gap: 18px; padding: 16px 20px; }
+.ma-stats > div + div { border-top: 1px solid var(--c-hairline); }
+.ma-stats b { flex: none; min-width: 3ch; font: 800 clamp(40px, 4.6vw, 56px)/1 "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--mc) 65%, var(--c-ink)); letter-spacing: -0.02em; font-variant-numeric: lining-nums tabular-nums; }
+.ma-stats b span { font: inherit; color: inherit; letter-spacing: inherit; }
+.ma-stats > div > span { font: 700 15px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto; }
 /* The countdown ring. */
-.ma-ring { position: relative; width: 150px; height: 150px; margin: 2px auto 0; }
+.ma-ring { position: relative; width: 200px; height: 200px; margin: 4px auto 0; }
 .ma-ring svg { width: 100%; height: 100%; }
 .ma-ring circle { fill: none; stroke-width: 10; }
 .ma-ring-bg { stroke: color-mix(in srgb, var(--mc) 16%, var(--c-hairline)); }
 .ma-ring-fg { stroke: var(--mc); stroke-linecap: round; stroke-dashoffset: var(--to); animation: maFill 1.6s var(--ease-out) 0.5s backwards; }
 @keyframes maFill { from { stroke-dashoffset: var(--c); } }
 .ma-ring > div { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
-.ma-ring b { font: 800 34px/1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
-.ma-ring span { font: 600 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-ring b { font: 800 56px/1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.ma-ring b span { font: inherit; color: inherit; }
+.ma-ring > div > span { font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 /* Your seat among the 650. */
-.ma-dots { width: 100%; max-width: 230px; height: auto; margin: 0 auto; display: block; }
+.ma-dots { width: 100%; max-width: 250px; height: auto; margin: 0 auto; display: block; }
 .ma-dot { fill: color-mix(in srgb, var(--mc) 35%, var(--c-hairline)); animation: maDot 0.6s ease-out backwards; }
 @keyframes maDot { from { opacity: 0; transform: scale(0.2); } }
 .ma-dot, .ma-dot-ring { transform-box: fill-box; transform-origin: center; }
@@ -101,3 +103,14 @@
 @media (max-width: 1000px) { .ma-mpcard, .ma-votes, .ma-seat, .ma-council, .ma-people-card, .ma-region, .ma-todo-card { grid-column: span 6; } .ma-mpcard, .ma-region { grid-column: 1 / -1; } }
 @media (max-width: 640px) { .ma-bento > * { grid-column: 1 / -1 !important; } .ma-bar { grid-template-columns: minmax(0, 1fr); } .ma-hero-art { display: none; } .ma-photo { width: 76px; height: 76px; } }
 @media (prefers-reduced-motion: reduce) { .ma-card, .ma-pin, .ma-photo, .ma-tile, .ma-seatbar > i, .ma-bar-row > i, .ma-ring-fg, .ma-dot, .ma-dot-ring, .ma-hero-art i { animation: none; } }
+
+/* Dates and facts that fill out the cards. */
+.ma-dates { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.ma-dates li { display: grid; gap: 2px; padding: 12px 14px; border-radius: 14px; background: color-mix(in srgb, var(--mc) 7%, var(--c-paper)); }
+.ma-dates span { font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--mc) 70%, var(--c-ink)); }
+.ma-dates b { font: 700 22px/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.ma-dates small { font: 500 13px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-facts { display: grid; gap: 8px; margin: 0; }
+.ma-facts > div { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--c-hairline); }
+.ma-facts dt { font: 600 13.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-facts dd { margin: 0; font: 700 14.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); text-align: right; }

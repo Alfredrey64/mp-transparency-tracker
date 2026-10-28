@@ -1,6 +1,6 @@
 .ab-h { margin: 30px 0 12px; font: 700 24px "Newsreader", Georgia, serif; color: var(--c-ink); }
 .ab-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 1fr)); gap: 12px; }
-.ab-tile { display: grid; gap: 3px; align-content: start; text-align: left; padding: 16px 18px 18px; border-radius: 20px; cursor: pointer; font: inherit; color: var(--c-ink); background: linear-gradient(160deg, color-mix(in srgb, var(--tc) 14%, var(--c-paper-card)), var(--c-paper-card) 80%); border: 1px solid color-mix(in srgb, var(--tc) 30%, var(--c-hairline)); box-shadow: var(--shadow-1); transition: box-shadow 0.22s var(--ease-out), border-color 0.22s; }
+.ab-tile { display: grid; gap: 3px; align-content: start; text-align: left; padding: 16px 18px 18px; border-radius: 20px; cursor: pointer; font: inherit; color: var(--c-ink); background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1), inset 4px 0 0 var(--tc); transition: box-shadow 0.22s var(--ease-out), border-color 0.22s; }
 .ab-tile:hover { box-shadow: var(--shadow-3), 0 0 0 3px color-mix(in srgb, var(--tc) 20%, transparent); border-color: var(--tc); }
 .ab-tile-icon { display: grid; place-items: center; width: 40px; height: 40px; margin-bottom: 6px; border-radius: 13px; color: #fff; background: linear-gradient(145deg, var(--tc), color-mix(in srgb, var(--tc) 68%, #000)); box-shadow: 0 10px 16px -10px var(--tc); }
 .ab-tile b { font: 800 20px/1.2 "Newsreader", Georgia, serif; text-transform: capitalize; }

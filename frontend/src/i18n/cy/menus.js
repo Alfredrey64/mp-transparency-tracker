@@ -48,7 +48,7 @@ export default {
   "How news is regulated": "Sut mae newyddion yn cael ei reoleiddio",
   "Telling fact from opinion": "Gwahaniaethu rhwng ffaith a barn",
   "Parliament in numbers": "Senedd y DU mewn rhifau",
-  "Who sits there, in charts": "Pwy sy'n eistedd yno, mewn siartiau",
+  "Who sits there, and who they are": "Pwy sy'n eistedd yno, a phwy ydyn nhw",
 
   // Your area and your say
   "Your area": "Eich ardal",
@@ -288,8 +288,6 @@ export default {
   "The King's role and the money": "Rôl y Brenin a'r arian",
   "Watchdogs and inquiries": "Cyrff gwarchod ac ymchwiliadau",
   "Auditors, forecasters and inquiries": "Archwilwyr, rhagolygwyr ac ymchwiliadau",
-  "Who MPs are": "Pwy yw'r ASau",
-  "Backgrounds, gender and schooling": "Cefndiroedd, rhyw ac addysg",
   "Mayors and regional authorities": "Meiri ac awdurdodau rhanbarthol",
   "England's elected regional leaders": "Arweinwyr rhanbarthol etholedig Lloegr",
   "Council budgets": "Cyllidebau cynghorau",

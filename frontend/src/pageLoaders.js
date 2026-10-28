@@ -112,7 +112,6 @@ const EXPLAINER_LOADERS = {
   watchdogs: () => import("./components/explainers/watchdogs"),
   justice: () => import("./components/explainers/justice"),
   water: () => import("./components/explainers/water"),
-  mpProfile: () => import("./components/explainers/mpProfile"),
   polling: () => import("./components/explainers/polling"),
   foreignPolicy: () => import("./components/explainers/foreignPolicy"),
 };

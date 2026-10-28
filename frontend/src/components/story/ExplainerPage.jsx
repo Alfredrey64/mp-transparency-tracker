@@ -13,6 +13,9 @@ import { Board, Why, Chapter, Pull, Cards, Steps, Disclose } from "./Kit";
 //   compare   [{ title, colour, items: [] }]   two or more columns side by side
 //   timeline  [{ when, text }]                 dated events down a line
 //   more      { title, text: [] }              a fold-out for the longer version of a point
+//   pipeline  [{ label, value, note, colour }]         stations in a row joined by arrows, each with its figure
+//   duo       { items: [{ label, before, after, beforeText, afterText }], beforeName, afterName, note }   two bars per row, then and now
+//   meter     { rows: [{ label, value, of, text }], note }           a row of marks, some filled in
 //   chips     { items: [], note }              a wrapped set of short labels, numbered in order
 //   note      a small italic line
 
@@ -21,6 +24,53 @@ function Block({ b, colour }) {
   if (b.pull) return <Pull colour={b.colour ?? colour}>{b.pull}</Pull>;
   if (b.cards) return <Cards items={b.cards.map((c) => ({ colour: colour, ...c }))} />;
   if (b.steps) return <Steps steps={b.steps.map((s) => ({ colour, ...s }))} />;
+  if (b.pipeline) {
+    return (
+      <ol className="st-pipe">
+        {b.pipeline.map((p, i) => (
+          <li key={p.label} style={{ "--tc": p.colour ?? colour }}>
+            <span className="st-pipe-step" aria-hidden="true">{i + 1}</span>
+            <h3>{p.label}</h3>
+            <b>{p.value}</b>
+            <p>{p.note}</p>
+          </li>
+        ))}
+      </ol>
+    );
+  }
+  if (b.duo) {
+    const top = b.duo.max ?? Math.max(...b.duo.items.flatMap((i) => [i.before, i.after]));
+    return (
+      <figure className="st-duo-fig" style={{ "--tc": colour }}>
+        <p className="st-duo-key"><span><i className="then" />{b.duo.beforeName}</span><span><i className="now" />{b.duo.afterName}</span></p>
+        <ul className="st-duo">
+          {b.duo.items.map((it) => (
+            <li key={it.label}>
+              <span className="st-duo-label">{it.label}</span>
+              <span className="st-duo-row"><i className="then" style={{ width: `${Math.max(2, (it.before / top) * 100)}%` }} /><b>{it.beforeText}</b></span>
+              <span className="st-duo-row"><i className="now" style={{ width: `${Math.max(2, (it.after / top) * 100)}%` }} /><b>{it.afterText}</b></span>
+            </li>
+          ))}
+        </ul>
+        {b.duo.note && <figcaption>{b.duo.note}</figcaption>}
+      </figure>
+    );
+  }
+  if (b.meter) {
+    return (
+      <figure className="st-meter-fig" style={{ "--tc": colour }}>
+        {b.meter.rows.map((r) => (
+          <div key={r.label} className="st-meter">
+            <span className="st-meter-label">{r.label}<b>{r.text}</b></span>
+            <span className="st-meter-marks" role="img" aria-label={`${r.value} out of ${r.of}`}>
+              {Array.from({ length: r.of }, (_, n) => <i key={n} className={n < r.value ? "on" : ""} />)}
+            </span>
+          </div>
+        ))}
+        {b.meter.note && <figcaption>{b.meter.note}</figcaption>}
+      </figure>
+    );
+  }
   if (b.chips) {
     return (
       <figure className="st-chips-fig" style={{ "--tc": colour }}>
@@ -83,11 +133,11 @@ function Block({ b, colour }) {
   return null;
 }
 
-// `narrow` matches the width of the older pages that sit in the same menu group (Election results, Your council), so moving between tabs does not shift the page.
-export default function ExplainerPage({ icon, kicker, title, subtitle, tiles, tileVariant, why, chapters, sources, checked, narrow = false }) {
+// Everything under the page header: the figures, the reason it matters, the chapters and the list of sources. A page that already has its own header
+// (a tab of another page, for instance) draws just this.
+export function ExplainerBody({ icon, tiles, tileVariant, why, chapters, sources, checked }) {
   return (
-    <div className="st" style={{ paddingTop: "clamp(20px, 5vw, 40px)", ...(narrow ? { maxWidth: 1084 } : null) }}>
-      <PageHeader icon={icon} kicker={kicker} title={title} subtitle={subtitle} />
+    <>
       {tiles && <Board tiles={tiles} variant={tileVariant} />}
       {why && <Why icon={icon} colour={why.colour}>{why.text}</Why>}
       {chapters.map((c, i) => (
@@ -102,6 +152,16 @@ export default function ExplainerPage({ icon, kicker, title, subtitle, tiles, ti
           ))}
         </ul>
       </Chapter>
+    </>
+  );
+}
+
+// `narrow` matches the width of the older pages that sit in the same menu group (Election results, Your council), so moving between tabs does not shift the page.
+export default function ExplainerPage({ icon, kicker, title, subtitle, tiles, tileVariant, why, chapters, sources, checked, narrow = false }) {
+  return (
+    <div className="st" style={{ paddingTop: "clamp(20px, 5vw, 40px)", ...(narrow ? { maxWidth: 1084 } : null) }}>
+      <PageHeader icon={icon} kicker={kicker} title={title} subtitle={subtitle} />
+      <ExplainerBody icon={icon} tiles={tiles} tileVariant={tileVariant} why={why} chapters={chapters} sources={sources} checked={checked} />
     </div>
   );
 }

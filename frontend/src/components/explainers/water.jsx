@@ -19,10 +19,12 @@ const PAGE = {
       lede: "From the Environment Agency's annual monitoring data, published on 26 March 2026.",
       colour: "#5A7FA6",
       blocks: [
+        { duo: { beforeName: "2024", afterName: "2025", items: [
+          { label: "Spills per storm overflow, on average", before: 31.8, after: 20.5, beforeText: "31.8", afterText: "20.5" },
+        ], max: 35, note: "Total spill events fell 35% to 291,492, and total spill time fell 48%." } },
         { facts: [
-          { label: "Spill events", value: "291,492", note: "Down 35% on 2024." },
-          { label: "Average spills per overflow", value: "20.5", note: "Against 31.8 in 2024." },
-          { label: "Companies' cuts in spill time", value: "40% to 70%", note: "Many water companies saw reductions in this range." },
+          { label: "Spill events in 2025", value: "291,492", note: "Down 35% on 2024." },
+          { label: "Total spill time", value: "-48%", note: "Compared with 2024. Many companies saw cuts of 40% to 70%." },
         ] },
         { pull: "The Environment Agency's chair said the numbers are heavily influenced by rainfall. 2025 was unusually dry after a particularly wet 2024, so the fall is not simply a sign the system was fixed." },
         { text: [
@@ -33,19 +35,18 @@ const PAGE = {
     },
     {
       title: "How the companies were rated for 2024",
-      lede: "The Environment Agency scores each company out of four stars on its environmental performance.",
+      lede: "The Environment Agency scores each of the nine water and sewerage companies out of four stars. Thirty-six stars was the most they could win between them.",
       colour: "#9C3B3B",
       blocks: [
-        { bars: { items: [
-          { label: "Stars won in 2023", value: 25, text: "25", colour: "#5A7FA6" },
-          { label: "Stars won in 2024", value: 19, text: "19", colour: "#9C3B3B" },
-        ], note: "Total stars across the nine water and sewerage companies in England. The most possible is 36." } },
-        { cards: [
-          { title: "Only one company got four stars", text: "Severn Trent Water. The regulator called the results poor." },
-          { title: "Serious pollution incidents rose 60%", text: "Incidents causing significant environmental harm increased by 60% in 2024 alone." },
-          { title: "Three companies, most of the serious incidents", text: "Thames Water, Southern Water and Yorkshire Water were responsible for 81% of them." },
+        { meter: { rows: [
+          { label: "Stars won for 2023", value: 25, of: 36, text: "25 of 36" },
+          { label: "Stars won for 2024", value: 19, of: 36, text: "19 of 36" },
+        ], note: "The lowest total since the ratings began in 2011. The agency says it has tightened the criteria since then, so this does not mean performance has declined since 2011." } },
+        { facts: [
+          { label: "Companies with four stars", value: "1", note: "Severn Trent Water. The regulator called the results poor." },
+          { label: "Rise in serious pollution incidents", value: "+60%", note: "Incidents causing significant environmental harm, in 2024 alone." },
+          { label: "Share caused by three companies", value: "81%", note: "Thames Water, Southern Water and Yorkshire Water." },
         ] },
-        { note: "The agency says it has tightened the criteria since 2011, so the 2024 result does not mean performance has declined since then." },
       ],
     },
     {
@@ -53,6 +54,11 @@ const PAGE = {
       lede: "The Water (Special Measures) Act 2025 became law on 24 February 2025.",
       colour: "#3F7D5C",
       blocks: [
+        { timeline: [
+          { when: "24 February 2025", text: "The Water (Special Measures) Act 2025 becomes law." },
+          { when: "23 October 2025", text: "The Environment Agency publishes the 2024 ratings: 19 stars across the nine companies." },
+          { when: "26 March 2026", text: "The 2025 monitoring data shows 291,492 spill events, 35% fewer than in 2024." },
+        ] },
         { cards: [
           { title: "Bonuses can be banned", text: "Ofwat has the power to set rules banning executive bonuses where a company fails to meet high standards on the environment, customers and finances." },
           { title: "Prison for obstruction", text: "Water executives who obstruct investigations could face tougher penalties, including imprisonment." },

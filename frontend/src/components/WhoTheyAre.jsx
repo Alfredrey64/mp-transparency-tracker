@@ -1,12 +1,9 @@
 /** @jsxImportSource react */
-import ExplainerPage from "../story/ExplainerPage";
-import { IconWhoMps } from "../newIcons";
+import { ExplainerBody } from "./story/ExplainerPage";
+import { IconWhoMps } from "./newIcons";
 
 const PAGE = {
   icon: IconWhoMps,
-  kicker: "Understand it",
-  title: "Who MPs are",
-  subtitle: "Parliament makes laws for everyone, so it matters whether the people in it look and sound like the people they represent. This page compares the Commons with the country on gender, schooling, university and background, using official lists and independent studies.",
   tiles: [
     { label: "Women among the 650 MPs today", value: "41%", colour: "#FFB45E", sub: "267 women, 383 men, from the Parliament members list" },
     { label: "MPs educated at private school", value: "23%", colour: "#6FB1FF", sub: "a record low, according to the Sutton Trust's July 2024 study" },
@@ -25,7 +22,7 @@ const PAGE = {
           { label: "Conservative", value: 23.7, text: "28 of 118", colour: "#1E4FB8" },
           { label: "House of Lords", value: 35.4, text: "289 of 816", colour: "#6E4B6E" },
         ], max: 100, note: "Women as a share of each group, in per cent, on 28 October 2026, from the Parliament members list. Bars show the percentage." } },
-        { text: [<>The party counts here are for the three largest groups of MPs. Every MP is listed on <a href="#/list">the MPs page</a>, and the full party split is on <a href="#/numbers">Parliament in numbers</a>.</>] },
+        { text: [<>The party counts here are for the three largest groups of MPs. The full party split for each House is on the House of Commons and House of Lords tabs, and every MP is listed on <a href="#/list">the MPs page</a>.</>] },
       ],
     },
     {
@@ -63,7 +60,7 @@ const PAGE = {
       ],
     },
     {
-      title: "What this page does not show",
+      title: "What this tab does not show",
       lede: "A snapshot of background is not a measure of how well anyone does the job.",
       colour: "#9C6B30",
       blocks: [
@@ -79,6 +76,7 @@ const PAGE = {
   checked: "28 October 2026",
 };
 
-export default function MpProfile() {
-  return <ExplainerPage {...PAGE} />;
+// The third tab of Parliament in numbers: who the members are, beyond the counts the first two tabs give.
+export default function WhoTheyAre() {
+  return <ExplainerBody {...PAGE} />;
 }

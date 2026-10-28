@@ -8,7 +8,7 @@ import {
 } from "../components/icons";
 import {
   IconContract, IconPeerage, IconElectionSpend, IconForeignAgent, IconMayor, IconCouncilBudget, IconPolice, IconPlanning, IconCivilService, IconCourt, IconCrown, IconAudit,
-  IconJustice, IconWater, IconWhoMps, IconPoll, IconAid,
+  IconJustice, IconWater, IconPoll, IconAid,
 } from "../components/newIcons";
 
 // Lives outside both Sidebar.jsx and shared.jsx specifically so neither has
@@ -47,8 +47,7 @@ export const SECTIONS = [
       { key: "constitution", label: "Courts and the constitution", icon: IconCourt, hint: "Judges, laws and the rules behind them", aka: ["supreme court", "human rights act", "judges"] },
       { key: "monarchy", label: "The monarchy", icon: IconCrown, hint: "The King's role and the money", aka: ["king", "sovereign grant", "royal family", "crown estate"] },
       { key: "watchdogs", label: "Watchdogs and inquiries", icon: IconAudit, hint: "Auditors, forecasters and inquiries", aka: ["nao", "obr", "public inquiry", "national audit office"] },
-      { key: "mpProfile", label: "Who MPs are", icon: IconWhoMps, hint: "Backgrounds, gender and schooling", aka: ["mp backgrounds", "diversity", "private school", "women mps"] },
-      { key: "numbers", label: "Parliament in numbers", icon: IconChartBars, hint: "Who sits there, in charts", essential: true, aka: ["statistics", "stats", "women", "lords"] },
+      { key: "numbers", label: "Parliament in numbers", icon: IconChartBars, hint: "Who sits there, and who they are", essential: true, aka: ["statistics", "stats", "women", "lords", "mp backgrounds", "diversity", "private school", "women mps", "who mps are"] },
     ],
   },
   {

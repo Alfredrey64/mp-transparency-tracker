@@ -157,8 +157,10 @@ function Dashboard({ data, onForget }) {
 
         <Card i={1} colour="#7A5AF0" icon={<IconCalendar size={20} />} title="Your next votes" className="ma-votes">
           {days !== null ? <Countdown days={days} /> : <p className="ma-big">No date set</p>}
-          <p className="ma-sub" style={{ textAlign: "center" }}>{next ? `${longDate(next[0])}: ` : ""}{council ? nextElectionText(council) : "Your council's next election date is not recorded."}</p>
-          <p className="ma-sub" style={{ textAlign: "center" }}>The next general election is due by 2029 at the latest.</p>
+          <ul className="ma-dates">
+            <li><span>{council ? `${council.name} election` : "Your council's election"}</span><b>{next ? longDate(next[0]) : "No date recorded"}</b><small>{council ? nextElectionText(council) : "Your council's next election date is not recorded."}</small></li>
+            <li><span>General election</span><b>By 2029</b><small>The next one is due by then at the latest.</small></li>
+          </ul>
           <a className="ma-link" href="#/howtovote">Register and check what ID you need</a>
         </Card>
 
@@ -166,6 +168,11 @@ function Dashboard({ data, onForget }) {
           <SeatDots name={r.parliamentary_constituency} colour="#1FA97C" />
           <div className="ma-big">{r.parliamentary_constituency}</div>
           <p className="ma-sub">One of 650 seats in the House of Commons.</p>
+          <dl className="ma-facts">
+            <div><dt>Region</dt><dd>{regionName}</dd></div>
+            <div><dt>Council area</dt><dd>{council?.name ?? r.admin_district ?? "Not matched"}</dd></div>
+            {mp && <div><dt>MP</dt><dd>{mp.name}</dd></div>}
+          </dl>
           <a className="ma-link" href={`#/constituency/${encodeURIComponent(r.parliamentary_constituency)}`}>How close the last election was</a>
         </Card>
 

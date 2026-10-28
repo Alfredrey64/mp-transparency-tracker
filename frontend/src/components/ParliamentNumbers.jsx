@@ -5,11 +5,12 @@ import { IconChartBars } from "./icons";
 import CommonsNumbers from "./CommonsNumbers";
 import Loading from "./Loading";
 
-// Parliament in Numbers has one tab for each House. The tab is part of the
+// Parliament in Numbers has one tab for each House, and a third for who the members are. The tab is part of the
 // address (#/numbers and #/numbers/lords), so each can be linked to and the
 // browser's back button moves between them. The Lords half loads only when
 // its tab is opened.
 const LordsNumbers = lazy(() => import("./LordsNumbers"));
+const WhoTheyAre = lazy(() => import("./WhoTheyAre"));
 
 const HOUSES = {
   commons: {
@@ -23,6 +24,12 @@ const HOUSES = {
     title: "The House of Lords, by the numbers",
     subtitle: "Who sits in the Lords right now, how they got there and where they came from. All worked out from live parliamentary records.",
     hash: "#/numbers/lords",
+  },
+  who: {
+    label: "Who they are",
+    title: "Who sits in Parliament",
+    subtitle: "Parliament makes laws for everyone, so it matters whether the people in it look and sound like the people they represent. This compares both Houses with the country on gender, schooling, university and background.",
+    hash: "#/numbers/who",
   },
 };
 
@@ -50,20 +57,24 @@ function HouseTabs({ active }) {
 }
 
 export default function ParliamentNumbers({ house, onNavigate }) {
-  const active = house === "lords" ? "lords" : "commons";
+  const active = house === "lords" ? "lords" : house === "who" ? "who" : "commons";
   const h = HOUSES[active];
   return (
     <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader icon={IconChartBars} kicker="Parliament in numbers" title={h.title} subtitle={h.subtitle} share={false} />
       <HouseTabs active={active} />
       <div style={{ marginTop: 18 }}>
-        {active === "lords" ? (
+        {active === "lords" && (
           <Suspense fallback={<Loading compact />}>
             <LordsNumbers onNavigate={onNavigate} />
           </Suspense>
-        ) : (
-          <CommonsNumbers onNavigate={onNavigate} />
         )}
+        {active === "who" && (
+          <Suspense fallback={<Loading compact />}>
+            <div className="st" style={{ padding: 0, maxWidth: "none" }}><WhoTheyAre /></div>
+          </Suspense>
+        )}
+        {active === "commons" && <CommonsNumbers onNavigate={onNavigate} />}
       </div>
     </div>
   );

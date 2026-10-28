@@ -15,18 +15,33 @@ const PAGE = {
   why: { colour: "#5A7FA6", text: "A crime only has a consequence if someone is charged, a court hears the case in a reasonable time and there is a place for the person if they are sentenced. A queue at one stage is felt at the others." },
   chapters: [
     {
+      title: "One chain, three links",
+      lede: "A crime only has a consequence if the police act, a court hears the case in time, and there is somewhere to hold the person if they are sentenced.",
+      colour: "#5A7FA6",
+      blocks: [
+        { pipeline: [
+          { label: "Police", value: "145,886", note: "full-time officers in England and Wales at 31 March 2026. They investigate and charge.", colour: "#3F7D5C" },
+          { label: "Courts", value: "80,829", note: "cases waiting in the Crown Court at the end of June 2026. Judges and juries decide.", colour: "#9C3B3B" },
+          { label: "Prisons", value: "85,858", note: "people held on 30 June 2026. This is where a custodial sentence is served.", colour: "#6E4B6E" },
+        ] },
+      ],
+    },
+    {
       title: "Courts: a record queue",
       lede: "More cases are coming in than the courts are finishing, so the number waiting keeps rising.",
       colour: "#9C3B3B",
       blocks: [
+        { duo: { beforeName: "End of June 2025", afterName: "End of June 2026", items: [
+          { label: "Crown Court: open cases", before: 78226, after: 80829, beforeText: "78,226", afterText: "80,829" },
+          { label: "Magistrates' courts: open cases", before: 347365, after: 380230, beforeText: "347,365", afterText: "380,230" },
+        ], max: 400000, note: "Both are the highest since the series began. Open means the case has not yet reached a final outcome." } },
         { facts: [
-          { label: "Crown Court: open cases", value: "80,829", note: "A series peak at the end of June 2026, up from 78,226 a year earlier." },
-          { label: "Open for a year or more", value: "23,706", note: "A series peak, 22% higher than a year earlier." },
-          { label: "Magistrates' courts: open cases", value: "380,230", note: "A series peak, up 9% on a year earlier." },
+          { label: "Crown Court cases open for a year or more", value: "23,706", note: "A series peak, 22% higher than a year earlier." },
+          { label: "Rise in the Crown Court queue over the year", value: "+3%", note: "From 78,226 to 80,829 open cases." },
         ] },
         { text: [
           "The Ministry of Justice says receipts into the criminal courts remained above the number of cases the courts finished, which made open caseloads rise. The Crown Court has had a continued rise in receipts for sexual offence and rape cases, with rape receipts at a series peak.",
-          "\"Open\" means the case has not yet reached a final outcome. A long wait is a delay for victims, witnesses and defendants alike.",
+          "A long wait is a delay for victims, witnesses and defendants alike.",
         ] },
       ],
     },
@@ -39,23 +54,22 @@ const PAGE = {
           { label: "Prisoners on 30 June 2026", value: "85,858", note: "In England and Wales. Down 2% on the same date in 2025." },
           { label: "First prison receptions, January to March 2026", value: "17,945", note: "A 5% fall on the same period in 2025." },
         ] },
-        { text: [<>The Ministry of Justice also publishes weekly prison population figures, and five-year projections. See the projections for how the population is expected to move. The <a href="#/crime">crime</a> page covers recorded crime.</>] },
+        { text: [<>The Ministry of Justice also publishes weekly prison population figures, and five-year projections. The <a href="#/crime">crime</a> page covers recorded crime.</>] },
       ],
     },
     {
       title: "Police",
-      lede: "The police workforce was slightly smaller than a year earlier, with more of it in neighbourhood roles.",
+      lede: "The number of officers is slightly below its peak, with more of the workforce in neighbourhood roles.",
       colour: "#3F7D5C",
       blocks: [
-        { bars: { items: [
-          { label: "Peak, March 2024", value: 147745, text: "147,745", colour: "#3F7D5C" },
-          { label: "March 2026", value: 145886, text: "145,886", colour: "#5A7FA6" },
-        ], note: "Police officers in England and Wales, full-time equivalent. The March 2026 figure is 1,859 (1.3%) below the March 2024 peak." } },
-        { cards: [
-          { title: "The whole paid workforce", text: "234,441 full-time equivalents including officers, staff, community support officers and designated officers, down 0.6% on the year." },
-          { title: "Neighbourhood policing", text: "20,989 full-time equivalent officers and community support officers, up 22.2% (3,814) on the March 2025 baseline." },
-          { title: "Who is accountable", text: <>Police and crime commissioners are due to be replaced. See <a href="#/policeCommissioners">police and crime commissioners</a>.</> },
+        { duo: { beforeName: "Earlier", afterName: "31 March 2026", items: [
+          { label: "Police officers, against the March 2024 peak", before: 147745, after: 145886, beforeText: "147,745", afterText: "145,886" },
+          { label: "Neighbourhood policing, against the March 2025 baseline", before: 17175, after: 20989, beforeText: "17,175", afterText: "20,989" },
+        ], max: 150000, note: "Full-time equivalents. Officers are 1.3% below the peak. Neighbourhood policing counts officers and community support officers, and has grown 22.2%." } },
+        { facts: [
+          { label: "The whole paid workforce", value: "234,441", note: "Officers, staff, community support officers and designated officers. Down 0.6% on the year." },
         ] },
+        { text: [<>Police and crime commissioners are due to be replaced. See <a href="#/policeCommissioners">police and crime commissioners</a>.</>] },
       ],
     },
   ],
