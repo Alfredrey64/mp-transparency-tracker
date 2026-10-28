@@ -99,3 +99,13 @@ test("the first two What's hidden pages open with differently laid out figure ba
   const over = await page.locator("svg:not(.st-trail-tall) foreignObject").evaluateAll((els) => els.filter((f) => f.firstElementChild && f.firstElementChild.getBoundingClientRect().height > f.getBoundingClientRect().height + 1).map((f) => f.textContent.slice(0, 30)));
   expect(over).toEqual([]);
 });
+
+for (const width of [1440, 390]) {
+  test(`the think tank diagram's 'Independent expert' label fits inside its bar, at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/thinkTanks");
+    await page.waitForSelector(".st-chapter figure svg", { state: "attached" });
+    const fit = await page.locator("svg:visible text").filter({ hasText: /^Independent expert$/ }).evaluate((t) => ({ text: t.getBBox().width, bar: Number(t.previousElementSibling.getAttribute("width")) }));
+    expect(fit.text, "the label").toBeLessThanOrEqual(fit.bar - 12);
+  });
+}

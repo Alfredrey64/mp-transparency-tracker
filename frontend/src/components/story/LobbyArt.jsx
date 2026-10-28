@@ -7,34 +7,50 @@ const F = "Public Sans, system-ui, sans-serif";
 const S = "Newsreader, Georgia, serif";
 
 // Who is counted: a company paying a consultant to lobby a minister has to be declared; a company's own staff lobbying the same minister does not.
+// Drawn upright, two routes side by side running down to one minister, because it sits in a half-width column where a wide picture would be too small to read.
 export function TwoRoutes({ firms }) {
   const still = useReducedMotion();
+  const left = "M 95 100 L 95 278 C 95 308, 150 304, 150 332";
+  const right = "M 265 100 L 265 278 C 265 308, 210 304, 210 332";
   return (
-    <svg viewBox="0 0 900 360" role="img" aria-label="Two routes to a minister: through a paid consultancy, which is registered and visible, and through the company's own staff, which is not registered at all">
-      <g transform="translate(30 40)">
-        <rect width="190" height="100" rx="22" fill="#fff" stroke="#5A7FA6" strokeWidth="3.500" />
-        <text x="95" y="42" textAnchor="middle" fontSize="17" fontWeight="800" fill={INK} fontFamily={S}>A company</text>
-        <text x="95" y="66" textAnchor="middle" fontSize="12.500" fontWeight="600" fill={SOFT} fontFamily={F}>wants a decision changed</text>
-      </g>
-      <path d="M 220 70 C 300 70, 320 70, 400 70" fill="none" stroke="#5A7FA6" strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" />
-      <g transform="translate(400 24)"><rect width="200" height="92" rx="22" fill="#E8F0FA" stroke="#5A7FA6" strokeWidth="3.500" /><text x="100" y="40" textAnchor="middle" fontSize="16" fontWeight="800" fill={INK} fontFamily={S}>A consultancy</text><text x="100" y="62" textAnchor="middle" fontSize="12.500" fontWeight="700" fill="#3F5F85" fontFamily={F}>paid to lobby for them</text></g>
-      <path d="M 600 70 C 680 70, 700 90, 730 110" fill="none" stroke="#5A7FA6" strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" />
-      <g transform="translate(700 110)"><rect width="170" height="110" rx="22" fill="#fff" stroke="#1B2438" strokeWidth="3.500" /><circle cx="85" cy="40" r="15" fill="#1B2438" /><path d="M 55 90 q 30 -40 60 0z" fill="#1B2438" /><text x="85" y="104" textAnchor="middle" fontSize="12.500" fontWeight="800" fill={INK} fontFamily={F}>A minister</text></g>
-      <g transform="translate(400 150)"><rect width="200" height="26" rx="13" fill="#E1F1E8" stroke="#3F7D5C" strokeWidth="2.500" /><text x="100" y="18" textAnchor="middle" fontSize="13" fontWeight="800" fill="#2B5E43" fontFamily={F}>On the public register</text></g>
-      <g transform="translate(30 220)">
-        <rect width="190" height="100" rx="22" fill="#fff" stroke="#9C3B3B" strokeWidth="3.500" />
-        <text x="95" y="42" textAnchor="middle" fontSize="17" fontWeight="800" fill={INK} fontFamily={S}>The same company</text>
-        <text x="95" y="66" textAnchor="middle" fontSize="12.500" fontWeight="600" fill={SOFT} fontFamily={F}>its own staff</text>
-      </g>
-      <path d="M 220 270 C 400 270, 560 250, 700 190" fill="none" stroke="#9C3B3B" strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" opacity="0.55" />
-      <g transform="translate(330 262)"><rect width="230" height="26" rx="13" fill="#F7E7E7" stroke="#9C3B3B" strokeWidth="2.500" strokeDasharray="6 4" /><text x="115" y="18" textAnchor="middle" fontSize="13" fontWeight="800" fill="#7A2E2E" fontFamily={F}>Not on any register</text></g>
-      <text x="450" y="346" textAnchor="middle" fontSize="14" fontWeight="700" fill={SOFT} fontFamily={F}>{firms} consultancies are registered. In-house lobbying is not counted at all.</text>
+    <svg viewBox="0 0 360 520" role="img" aria-label="Two routes to a minister: through a paid consultancy, which is registered and visible, and through the company's own staff, which is not registered at all">
+      <defs>
+        <marker id="lr-arrow" markerWidth="14" markerHeight="14" refX="5" refY="3" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 6 6"><path d="M0 0 6 3 0 6z" fill={SOFT} /></marker>
+      </defs>
+      <path d="M 95 100 V 138" fill="none" stroke="#5A7FA6" strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" markerEnd="url(#lr-arrow)" />
+      <path d="M 265 100 V 246" fill="none" stroke="#9C3B3B" strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" opacity="0.7" />
+      <path d="M 95 278 C 95 308, 150 304, 150 332" fill="none" stroke="#5A7FA6" strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" markerEnd="url(#lr-arrow)" />
+      <path d="M 265 278 C 265 308, 210 304, 210 332" fill="none" stroke="#9C3B3B" strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" opacity="0.7" markerEnd="url(#lr-arrow)" />
       {!still && (
         <>
-          <g opacity="0"><circle r="9" fill="#5A7FA6" stroke="#fff" strokeWidth="2.500" /><animateMotion dur="5s" repeatCount="indefinite" path="M 220 70 C 300 70, 320 70, 400 70 L 600 70 C 680 70, 700 90, 730 110" /><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="5s" repeatCount="indefinite" /></g>
-          <g opacity="0"><circle r="9" fill="#9C3B3B" stroke="#fff" strokeWidth="2.500" /><animateMotion dur="5s" begin="-2.500s" repeatCount="indefinite" path="M 220 270 C 400 270, 560 250, 700 190" /><animate attributeName="opacity" values="0;0.8;0.8;0" keyTimes="0;0.1;0.9;1" dur="5s" begin="-2.500s" repeatCount="indefinite" /></g>
+          <g opacity="0"><circle r="9" fill="#5A7FA6" stroke="#fff" strokeWidth="2.500" /><animateMotion dur="5s" repeatCount="indefinite" path={left} /><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="5s" repeatCount="indefinite" /></g>
+          <g opacity="0"><circle r="9" fill="#9C3B3B" stroke="#fff" strokeWidth="2.500" /><animateMotion dur="5s" begin="-2.500s" repeatCount="indefinite" path={right} /><animate attributeName="opacity" values="0;0.8;0.8;0" keyTimes="0;0.1;0.9;1" dur="5s" begin="-2.500s" repeatCount="indefinite" /></g>
         </>
       )}
+      <g transform="translate(15 10)">
+        <rect width="160" height="90" rx="22" fill="#fff" stroke="#5A7FA6" strokeWidth="3.500" />
+        <text x="80" y="40" textAnchor="middle" fontSize="18" fontWeight="800" fill={INK} fontFamily={S}>A company</text>
+        <text x="80" y="62" textAnchor="middle" fontSize="12.500" fontWeight="600" fill={SOFT} fontFamily={F}>wants a decision changed</text>
+      </g>
+      <g transform="translate(185 10)">
+        <rect width="160" height="90" rx="22" fill="#fff" stroke="#9C3B3B" strokeWidth="3.500" />
+        <text x="80" y="40" textAnchor="middle" fontSize="18" fontWeight="800" fill={INK} fontFamily={S}>The same company</text>
+        <text x="80" y="62" textAnchor="middle" fontSize="12.500" fontWeight="600" fill={SOFT} fontFamily={F}>its own staff</text>
+      </g>
+      <g transform="translate(15 140)">
+        <rect width="160" height="92" rx="22" fill="#E8F0FA" stroke="#5A7FA6" strokeWidth="3.500" />
+        <text x="80" y="42" textAnchor="middle" fontSize="17" fontWeight="800" fill={INK} fontFamily={S}>A consultancy</text>
+        <text x="80" y="64" textAnchor="middle" fontSize="12.500" fontWeight="700" fill="#3F5F85" fontFamily={F}>paid to lobby for them</text>
+      </g>
+      <g transform="translate(15 246)"><rect width="160" height="32" rx="16" fill="#E1F1E8" stroke="#3F7D5C" strokeWidth="2.500" /><text x="80" y="21" textAnchor="middle" fontSize="13" fontWeight="800" fill="#2B5E43" fontFamily={F}>On the public register</text></g>
+      <g transform="translate(185 246)"><rect width="160" height="32" rx="16" fill="#F7E7E7" stroke="#9C3B3B" strokeWidth="2.500" strokeDasharray="6 4" /><text x="80" y="21" textAnchor="middle" fontSize="13" fontWeight="800" fill="#7A2E2E" fontFamily={F}>Not on any register</text></g>
+      <g transform="translate(90 336)">
+        <rect width="180" height="120" rx="22" fill="#fff" stroke="#1B2438" strokeWidth="3.500" />
+        <circle cx="90" cy="38" r="16" fill="#1B2438" /><path d="M 62 82 q 28 -36 56 0z" fill="#1B2438" />
+        <text x="90" y="104" textAnchor="middle" fontSize="14" fontWeight="800" fill={INK} fontFamily={F}>A minister</text>
+      </g>
+      <text x="180" y="488" textAnchor="middle" fontSize="14" fontWeight="700" fill={SOFT} fontFamily={F}>{firms} consultancies are registered.</text>
+      <text x="180" y="508" textAnchor="middle" fontSize="14" fontWeight="700" fill={SOFT} fontFamily={F}>In-house lobbying is not counted at all.</text>
     </svg>
   );
 }

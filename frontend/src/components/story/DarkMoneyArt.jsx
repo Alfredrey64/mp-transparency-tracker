@@ -52,16 +52,16 @@ function MoneyTrailWide() {
       {donors.map((d) => <Person key={d.l} x={135} y={d.y} colour={d.c} letter={d.l} />)}
       <g transform={`translate(450 ${mid})`}>
         <rect x="-86" y="-76" width="172" height="152" rx="26" fill="url(#dm-hatch)" stroke="#9C3B3B" strokeWidth="3.500" strokeDasharray="10 6" />
-        <text y="-6" textAnchor="middle" fontSize="48" fontWeight="800" fill="#9C3B3B" fontFamily="Newsreader, Georgia, serif">?</text>
-        <text y="30" textAnchor="middle" fontSize="15" fontWeight="800" fill="#7A2E2E">Unincorporated</text>
-        <text y="48" textAnchor="middle" fontSize="15" fontWeight="800" fill="#7A2E2E">association</text>
+        <text y="-11" textAnchor="middle" fontSize="48" fontWeight="800" fill="#9C3B3B" fontFamily="Newsreader, Georgia, serif">?</text>
+        <text y="25" textAnchor="middle" fontSize="15" fontWeight="800" fill="#7A2E2E">Unincorporated</text>
+        <text y="43" textAnchor="middle" fontSize="15" fontWeight="800" fill="#7A2E2E">association</text>
       </g>
       <g transform={`translate(765 ${mid})`}>
         <rect x="-90" y="-76" width="180" height="152" rx="22" fill="#fff" stroke="#3F7D5C" strokeWidth="3.500" />
-        <text y="-40" textAnchor="middle" fontSize="17" fontWeight="800" fill={INK}>The party</text>
-        <rect x="-74" y="-16" width="148" height="74" rx="12" fill="#E7F3EC" />
-        <text y="12" textAnchor="middle" fontSize="14" fontWeight="700" fill="#2B5E43">Donor:</text>
-        <text y="38" textAnchor="middle" fontSize="16" fontWeight="800" fill="#2B5E43">the association</text>
+        <text y="-43" textAnchor="middle" fontSize="17" fontWeight="800" fill={INK}>The party</text>
+        <rect x="-74" y="-19" width="148" height="74" rx="12" fill="#E7F3EC" />
+        <text y="9" textAnchor="middle" fontSize="14" fontWeight="700" fill="#2B5E43">Donor:</text>
+        <text y="35" textAnchor="middle" fontSize="16" fontWeight="800" fill="#2B5E43">the association</text>
       </g>
       {!still && donors.map((d, n) => (
         <g key={`c${d.l}`} opacity="0">
@@ -114,17 +114,17 @@ function MoneyTrailTall() {
       {donors.map((d) => <Person key={d.l} x={180} y={d.y} colour={d.c} letter={d.l} />)}
       <g transform="translate(180 480)">
         <rect x="-86" y="-60" width="172" height="120" rx="26" fill="url(#dm-hatch-t)" stroke="#9C3B3B" strokeWidth="3.500" strokeDasharray="10 6" />
-        <text y="-4" textAnchor="middle" fontSize="44" fontWeight="800" fill="#9C3B3B" fontFamily="Newsreader, Georgia, serif">?</text>
-        <text y="28" textAnchor="middle" fontSize="15" fontWeight="800" fill="#7A2E2E">Unincorporated</text>
-        <text y="46" textAnchor="middle" fontSize="15" fontWeight="800" fill="#7A2E2E">association</text>
+        <text y="-9" textAnchor="middle" fontSize="44" fontWeight="800" fill="#9C3B3B" fontFamily="Newsreader, Georgia, serif">?</text>
+        <text y="23" textAnchor="middle" fontSize="15" fontWeight="800" fill="#7A2E2E">Unincorporated</text>
+        <text y="41" textAnchor="middle" fontSize="15" fontWeight="800" fill="#7A2E2E">association</text>
       </g>
       <text x="180" y="574" textAnchor="middle" fontSize="14.500" fill="#2A6FDB" fontWeight="700">The association may know who they are</text>
       <g transform="translate(180 779)">
         <rect x="-90" y="-62" width="180" height="136" rx="22" fill="#fff" stroke="#3F7D5C" strokeWidth="3.500" />
-        <text y="-30" textAnchor="middle" fontSize="17" fontWeight="800" fill={INK}>The party</text>
-        <rect x="-74" y="-12" width="148" height="74" rx="12" fill="#E7F3EC" />
-        <text y="16" textAnchor="middle" fontSize="14" fontWeight="700" fill="#2B5E43">Donor:</text>
-        <text y="42" textAnchor="middle" fontSize="16" fontWeight="800" fill="#2B5E43">the association</text>
+        <text y="-34" textAnchor="middle" fontSize="17" fontWeight="800" fill={INK}>The party</text>
+        <rect x="-74" y="-16" width="148" height="74" rx="12" fill="#E7F3EC" />
+        <text y="12" textAnchor="middle" fontSize="14" fontWeight="700" fill="#2B5E43">Donor:</text>
+        <text y="38" textAnchor="middle" fontSize="16" fontWeight="800" fill="#2B5E43">the association</text>
       </g>
       <text x="180" y="880" textAnchor="middle" fontSize="14.500" fill="#3F7D5C" fontWeight="700">The public sees only the association</text>
       {!still && donors.map((d, n) => (
