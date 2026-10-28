@@ -11,12 +11,11 @@
 .act-card[data-pat="2"] .act-cover::before { background: linear-gradient(rgba(255, 255, 255, 0.11) 1.5px, transparent 1.5px) 0 0 / 18px 18px, linear-gradient(90deg, rgba(255, 255, 255, 0.11) 1.5px, transparent 1.5px) 0 0 / 18px 18px; }
 .act-card[data-pat="3"] .act-cover::before { background: repeating-radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.14) 0 2px, transparent 2px 20px); }
 .act-cover > * { position: relative; }
-.act-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
-.act-ico { display: grid; place-items: center; flex: none; width: 48px; height: 48px; border-radius: 14px; background: #fff; color: var(--pn); box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.22); }
-.act-tags { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+.act-cover > .act-art { position: absolute; top: 0; left: 0; width: 100%; height: 124px; }
+.act-tags { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 6px; }
 .act-tags i { font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; padding: 3px 10px; border-radius: 999px; border: 1.5px solid rgba(255, 255, 255, 0.7); color: #fff; }
 /* The title sits on a plate of the same colour taken nearly to black, so white type on it is always easy to read whatever pattern is above. */
-.act-card b { margin: 0 -18px -18px; padding: 12px 18px 14px; background: color-mix(in srgb, var(--ac) 36%, #0A1128); font: 700 24px/1.12 "Figures", "Newsreader", Georgia, serif; color: #fff; text-wrap: balance; }
+.act-card b { margin: 0 -18px -18px; padding: 12px 18px 14px; background: color-mix(in srgb, var(--ac) 36%, #0A1128); font: 700 22px/1.14 "Figures", "Newsreader", Georgia, serif; color: #fff; text-wrap: balance; }
 .act-card small { display: block; padding: 16px 18px 14px; font: 400 14.5px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .act-stub { display: grid; gap: 10px; padding: 12px 18px 16px; border-top: 2px dashed color-mix(in srgb, var(--ac) 45%, var(--c-hairline)); }
 .act-stub .act-code { margin: 0; }
