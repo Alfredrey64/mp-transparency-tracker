@@ -1,7 +1,7 @@
 import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconDoor, IconShield, IconGavel, IconCompare } from "./icons";
-import { Board, Why, Chapter, Split, Pull, Cards } from "./story/Kit";
+import { Board, Why, Chapter, Show, Pull, Cards } from "./story/Kit";
 import { Door, Ticks, Cutoff, Replaced } from "./story/DoorArt";
 
 // The revolving door between government and industry, as a story: the idea, what the rules are for, what replaced the old committee, why the old system
@@ -100,8 +100,8 @@ export default function RevolvingDoor() {
           { icon: IconCompare, colour: "#9C6B30", title: "A hard two-year cutoff", text: "Its jurisdiction over anyone expired two years after they left office, regardless of how directly relevant their new job was." },
           { icon: IconGavel, colour: "#9C3B3B", title: "Never once said no", text: "ACOBA has not refused a single application since 2010, whatever the appointment." },
         ]} />
-        <Split visual={<Cutoff />}><p>The cutoff is easiest to see on a line of time. Anything that happens in the red part is outside the rules.</p></Split>
-        <Split visual={<Ticks />} flip><p>In its last four years the committee dealt with <strong>817 applications</strong>. Each dot is one. None was refused.</p></Split>
+        <Show visual={<Cutoff />} caption="The case of the former Prime Minister who lobbied for Greensill fell into the red part, so nothing was breached."><p>The cutoff is easiest to see on a line of time. Anything that happens in the red part is outside the rules.</p></Show>
+        <Show visual={<Ticks />}><p>In its last four years the committee dealt with <strong>817 applications</strong>. Each dot is one. None was refused.</p></Show>
       </Chapter>
 
       <Chapter n={5} title="Four real cases" colour="#E8741A" lede="Chosen to show the range, from a technical process failure, to a case that fell entirely outside the rules' reach, to one still being tested under the new system.">

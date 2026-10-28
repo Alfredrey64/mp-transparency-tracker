@@ -128,3 +128,27 @@ for (const width of [1440, 390]) {
     await expect.poll(() => page.locator(".act h2").evaluate((h) => Math.round(h.getBoundingClientRect().top))).toBeLessThan(260);
   });
 }
+
+// Every word drawn inside a box on the What's hidden pictures stays inside that box, on a wide screen and on a phone.
+for (const width of [1440, 390]) {
+  test(`words in the What's hidden pictures stay inside their boxes, at ${width}px`, async ({ page }) => {
+    test.setTimeout(120000);
+    await page.setViewportSize({ width, height: 900 });
+    const spill = [];
+    for (const key of ["darkMoney", "revolvingDoor", "lobbyingRegister", "thinkTanks"]) {
+      await page.goto(`/${key}`);
+      await page.waitForSelector(".st-chapter figure svg", { state: "attached" });
+      const found = await page.evaluate(() => [...document.querySelectorAll("figure svg")].filter((s) => s.getBoundingClientRect().width > 0).flatMap((s) => [...s.querySelectorAll("g")].flatMap((g) => {
+        const rect = [...g.children].find((c) => c.tagName === "rect" && c.getAttribute("width"));
+        if (!rect) return [];
+        const x = Number(rect.getAttribute("x") ?? 0), w = Number(rect.getAttribute("width"));
+        return [...g.children].filter((c) => c.tagName === "text").flatMap((t) => {
+          const b = t.getBBox();
+          return b.x < x + 2 || b.x + b.width > x + w - 2 ? [`${t.textContent.slice(0, 30)} (${Math.round(b.width)} in ${w})`] : [];
+        });
+      })));
+      for (const f of found) spill.push(`${key}: ${f}`);
+    }
+    expect(spill).toEqual([]);
+  });
+}

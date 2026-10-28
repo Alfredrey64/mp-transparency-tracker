@@ -93,36 +93,58 @@ export function Door() {
   );
 }
 
-// 817 applications in ACOBA's last four years, every one of them a tick: not one refused.
+// 817 applications in ACOBA's last four years, every one of them a tick: not one refused. The two figures are written out above the dots, where they can be read.
 export function Ticks() {
   const COLS = 41;
   return (
-    <svg viewBox="0 0 820 440" role="img" aria-label="817 applications, none refused">
-      {Array.from({ length: 817 }, (_, n) => (
-        <circle key={n} cx={10 + (n % COLS) * 20} cy={10 + Math.floor(n / COLS) * 20} r="6" fill="#3F7D5C" opacity="0.85" style={{ animation: `stDot 0.4s ease-out ${(n % COLS) * 14 + Math.floor(n / COLS) * 9}ms backwards` }} />
-      ))}
-      <g transform="translate(0 424)"><text x="0" y="0" fontSize="15" fontWeight="800" fill={INK} fontFamily={F}>Each dot is one application. 817 approved or cleared, 0 refused.</text></g>
-    </svg>
+    <>
+      <div className="st-ticks-head"><span><b>817</b>approved or cleared</span><span><b>0</b>refused</span></div>
+      <svg viewBox="0 0 820 400" role="img" aria-label="817 dots, one for each application, all green: none was refused">
+        {Array.from({ length: 817 }, (_, n) => (
+          <circle key={n} cx={10 + (n % COLS) * 20} cy={10 + Math.floor(n / COLS) * 20} r="7" fill="#3F7D5C" opacity="0.85" style={{ animation: `stDot 0.4s ease-out ${(n % COLS) * 14 + Math.floor(n / COLS) * 9}ms backwards` }} />
+        ))}
+      </svg>
+    </>
   );
 }
 
-// ACOBA's authority ended two years after someone left office: a line of time with the cutoff marked and Cameron's lobbying falling beyond it.
+// ACOBA's authority ended two years after someone left office: a line of time with the cutoff marked and the lobbying falling beyond it. Drawn along the page on a
+// wide screen and down it on a phone.
+const STOPS = [{ t: "Leaves office", c: "#6E4B6E" }, { t: "Two years on", c: "#9C3B3B" }, { t: "Lobbying for a firm: no rule broken", c: "#9C6B30" }];
+
 export function Cutoff() {
   return (
-    <svg viewBox="0 0 900 230" role="img" aria-label="A timeline: leaving office, a two-year window in which the old committee had authority, and the point after which it had none">
-      <rect x="150" y="96" width="300" height="40" rx="20" fill="#E8DDF0" stroke="#6E4B6E" strokeWidth="3" />
-      <text x="300" y="122" textAnchor="middle" fontSize="15" fontWeight="800" fill="#6E4B6E" fontFamily={F}>Two years: the committee's reach</text>
-      <rect x="450" y="96" width="400" height="40" rx="20" fill="#F7E7E7" stroke="#9C3B3B" strokeWidth="3" strokeDasharray="10 6" />
-      <text x="650" y="122" textAnchor="middle" fontSize="15" fontWeight="800" fill="#9C3B3B" fontFamily={F}>No authority at all</text>
-      {[{ x: 150, t: "Leaves office", c: "#6E4B6E" }, { x: 450, t: "Two years on", c: "#9C3B3B" }, { x: 700, t: "Lobbying for a firm: no rule broken", c: "#9C6B30" }].map((m, i) => (
-        <g key={m.t} style={{ animation: `stDrop 0.7s var(--ease-spring) ${0.3 + i * 0.3}s backwards` }}>
-          <line x1={m.x} y1="64" x2={m.x} y2="96" stroke={m.c} strokeWidth="3" />
-          <circle cx={m.x} cy="116" r="11" fill={m.c} stroke="#fff" strokeWidth="3.500" />
-          <text x={m.x} y="52" textAnchor={i === 0 ? "start" : "middle"} fontSize="15" fontWeight="800" fill={m.c} fontFamily={F}>{m.t}</text>
-        </g>
-      ))}
-      <text x="0" y="190" fontSize="14" fontWeight="600" fill={SOFT} fontFamily={F}>The case of the former Prime Minister who lobbied for Greensill fell into the red part, so nothing was breached.</text>
-    </svg>
+    <>
+      <svg className="st-trail-wide" viewBox="0 0 900 180" role="img" aria-label="A timeline: leaving office, a two-year window in which the old committee had authority, and the point after which it had none">
+        <rect x="60" y="106" width="360" height="52" rx="26" fill="#E8DDF0" stroke="#6E4B6E" strokeWidth="3" />
+        <text x="240" y="138" textAnchor="middle" fontSize="18" fontWeight="800" fill="#6E4B6E" fontFamily={F}>Two years: the committee's reach</text>
+        <rect x="420" y="106" width="420" height="52" rx="26" fill="#F7E7E7" stroke="#9C3B3B" strokeWidth="3" strokeDasharray="10 6" />
+        <text x="545" y="138" textAnchor="middle" fontSize="18" fontWeight="800" fill="#9C3B3B" fontFamily={F}>No authority at all</text>
+        {[60, 420, 700].map((x, i) => (
+          <g key={x} style={{ animation: `stDrop 0.7s var(--ease-spring) ${0.3 + i * 0.3}s backwards` }}>
+            <line x1={x} y1="52" x2={x} y2="106" stroke={STOPS[i].c} strokeWidth="3" />
+            <circle cx={x} cy="132" r="12" fill={STOPS[i].c} stroke="#fff" strokeWidth="3.500" />
+            <text x={x} y="38" textAnchor={i === 0 ? "start" : "middle"} dx={i === 0 ? -8 : 0} fontSize="18" fontWeight="800" fill={STOPS[i].c} fontFamily={F}>{STOPS[i].t}</text>
+          </g>
+        ))}
+      </svg>
+      <svg className="st-trail-tall" viewBox="0 0 360 400" aria-hidden="true">
+        <rect x="44" y="40" width="40" height="150" rx="20" fill="#E8DDF0" stroke="#6E4B6E" strokeWidth="3" />
+        <rect x="44" y="190" width="40" height="190" rx="20" fill="#F7E7E7" stroke="#9C3B3B" strokeWidth="3" strokeDasharray="10 6" />
+        {[40, 190, 300].map((y, i) => (
+          <g key={y} style={{ animation: `stDrop 0.7s var(--ease-spring) ${0.3 + i * 0.3}s backwards` }}>
+            <circle cx="64" cy={y + (i === 0 ? 14 : 0)} r="12" fill={STOPS[i].c} stroke="#fff" strokeWidth="3.500" />
+          </g>
+        ))}
+        <text x="104" y="60" fontSize="17" fontWeight="800" fill={STOPS[0].c} fontFamily={F}>Leaves office</text>
+        <text x="104" y="108" fontSize="15" fontWeight="800" fill="#6E4B6E" fontFamily={F}>Two years: the</text>
+        <text x="104" y="128" fontSize="15" fontWeight="800" fill="#6E4B6E" fontFamily={F}>committee's reach</text>
+        <text x="104" y="196" fontSize="17" fontWeight="800" fill={STOPS[1].c} fontFamily={F}>Two years on</text>
+        <text x="104" y="238" fontSize="15" fontWeight="800" fill="#9C3B3B" fontFamily={F}>No authority at all</text>
+        <text x="104" y="298" fontSize="17" fontWeight="800" fill={STOPS[2].c} fontFamily={F}>Lobbying for a firm:</text>
+        <text x="104" y="320" fontSize="17" fontWeight="800" fill={STOPS[2].c} fontFamily={F}>no rule broken</text>
+      </svg>
+    </>
   );
 }
 

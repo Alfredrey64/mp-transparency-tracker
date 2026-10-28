@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Board, Why, Chapter, Split, Pull, Cards } from "./story/Kit";
+import { Board, Why, Chapter, Show, Pull, Cards } from "./story/Kit";
 import { TwoRoutes, Iceberg } from "./story/LobbyArt";
 import { COLORS, FONT_BODY, readable } from "../theme";
 import { PageHeader } from "./shared";
@@ -154,14 +154,14 @@ export default function LobbyingRegister() {
       </Why>
 
       <Chapter n={1} title={<>What '<GlossaryTerm term="Lobbying">lobbying</GlossaryTerm>' actually means</>} colour="#5A7FA6" lede="Trying to persuade someone in government to make a particular decision, support a bill, change a regulation, award a contract.">
-        <Split visual={<TwoRoutes firms={LOBBYISTS.length} />}>
+        <Show visual={<TwoRoutes firms={LOBBYISTS.length} />}>
           <p>
             It isn't inherently improper: charities, trade unions, patient groups and residents' associations all lobby government too, not only corporations. The
             concern isn't that persuasion happens. It's whether the public can see who's doing it, for whom, and why, so a minister's eventual decision can be judged
             with that context in mind.
           </p>
-          <p>This particular register only captures one specific slice of that activity: the top route in the picture.</p>
-        </Split>
+          <p>This particular register only captures one specific slice of that activity: the route through a consultancy.</p>
+        </Show>
       </Chapter>
 
       <Chapter n={2} title="What has to be registered" colour="#3F7D5C" lede="One specific, narrow activity.">
@@ -176,7 +176,7 @@ export default function LobbyingRegister() {
       </Chapter>
 
       <Chapter n={4} title="The big gap: in-house lobbyists aren't covered at all" colour="#9C3B3B" lede="The rule only catches lobbying-for-hire.">
-        <Split visual={<Iceberg firms={LOBBYISTS.length} />} flip>
+        <Show visual={<Iceberg firms={LOBBYISTS.length} />} caption="The size of the hidden part is only a picture of &quot;bigger and unknown&quot;, not a real figure.">
           <p>
             A company's own government-affairs team, lobbying ministers directly on their employer's behalf, isn't "consultant" lobbying at all, and doesn't have to
             register or disclose anything. In-house teams are estimated to account for a larger share of all lobbying activity than the consultancies that actually
@@ -186,7 +186,7 @@ export default function LobbyingRegister() {
             This isn't a settled question: a <GlossaryTerm term="Private Member's Bill">private member's bill</GlossaryTerm>, the Lobbying Transparency (In-house Lobbyists) Bill, was introduced
             in the House of Lords in 2026 specifically to close this gap. The government has so far resisted widening the register to cover it.
           </p>
-        </Split>
+        </Show>
       </Chapter>
 
       <Chapter n={5} title="The register in action: real recent investigations" colour="#E8741A" lede="The Registrar can and does open investigations into whether lobbying should have been registered and wasn't. Three recent examples: all ultimately cleared, which is itself informative about how narrow the legal definition is.">

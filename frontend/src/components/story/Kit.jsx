@@ -56,6 +56,16 @@ export function Split({ visual, children, flip = false }) {
   );
 }
 
+// A picture given the whole width, with its words underneath: for pictures that carry a lot of writing and would be too small in half a column.
+export function Show({ visual, caption, children }) {
+  return (
+    <div className="st-show">
+      <figure className="st-visual st-visual-wide">{visual}{caption && <figcaption>{caption}</figcaption>}</figure>
+      {children && <div className="st-prose st-show-text">{children}</div>}
+    </div>
+  );
+}
+
 export function Pull({ colour, children }) {
   return <blockquote className="st-pull" style={{ "--tc": colour }}>{children}</blockquote>;
 }
