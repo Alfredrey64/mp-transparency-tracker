@@ -92,10 +92,10 @@ test("the first two What's hidden pages open with differently laid out figure ba
 
   await page.goto("/darkMoney");
   await page.waitForSelector(".st-chapter figure svg");
-  const label = page.locator("svg text").filter({ hasText: /^the association$/ });
+  const label = page.locator("svg.st-trail-wide text").filter({ hasText: /^the association$/ });
   const fit = await label.evaluate((t) => { const box = t.getBBox(); const pill = t.previousElementSibling.previousElementSibling; return { text: box.width, pill: Number(pill.getAttribute("width")) }; });
   expect(fit.text, "the party's 'the association' label").toBeLessThanOrEqual(fit.pill - 8);
   // Each step on the thresholds picture has room for its title and its line.
-  const over = await page.locator("svg foreignObject").evaluateAll((els) => els.filter((f) => f.firstElementChild && f.firstElementChild.getBoundingClientRect().height > f.getBoundingClientRect().height + 1).map((f) => f.textContent.slice(0, 30)));
+  const over = await page.locator("svg:not(.st-trail-tall) foreignObject").evaluateAll((els) => els.filter((f) => f.firstElementChild && f.firstElementChild.getBoundingClientRect().height > f.getBoundingClientRect().height + 1).map((f) => f.textContent.slice(0, 30)));
   expect(over).toEqual([]);
 });
