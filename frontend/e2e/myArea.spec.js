@@ -34,7 +34,7 @@ for (const width of [1440, 390]) {
     await expect(page.locator(".ma-map polygon")).toHaveCount(652);
     await expect(page.locator(".ma-hist-stack")).not.toHaveCount(0);
     await expect(page.locator(".ma-track-dot").first()).toBeAttached();
-    for (const want of ["How Bristol Central voted in 2024", "Where Bristol Central sits among the 650", "How your council has changed", "Elections coming up where you live", "Your council tax", "Who does what here", "Your neighbourhood", "Where South West ranks", "Who lives in South West", "Useful links for where you live", "Before polling day"]) expect(text).toContain(want);
+    for (const want of ["How Bristol Central voted in 2024", "Where Bristol Central sits among the 650", "What Test Member has been doing", "How your council has changed", "Elections coming up where you live", "Your council tax", "Who does what here", "Your neighbourhood", "Where South West ranks", "Who lives in South West", "Useful links for where you live", "Before polling day"]) expect(text).toContain(want);
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
   });
 }
@@ -55,4 +55,16 @@ test("elections the lookup lists are shown with their dates and the photo ID not
   await page.goto("/myArea");
   await expect(page.locator(".ma-contest-list li")).toHaveCount(1, { timeout: 20000 });
   await expect(page.locator(".ma-contest-list")).toContainText("Photo ID needed");
+});
+
+test("the MP's activity opens on a tab with something in it and the tabs work from the keyboard", async ({ page }) => {
+  await page.setViewportSize({ width: 1100, height: 900 });
+  await mockServices(page);
+  await page.goto("/myArea");
+  const tabs = page.getByRole("tablist", { name: "Kinds of activity" });
+  await expect(tabs).toBeVisible({ timeout: 20000 });
+  await tabs.getByRole("tab", { name: /^Debates/ }).focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(tabs.getByRole("tab", { name: /^Questions/ })).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByRole("tabpanel")).toBeVisible();
 });

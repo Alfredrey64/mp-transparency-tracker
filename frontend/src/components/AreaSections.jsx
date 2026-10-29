@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useInView } from "motion/react";
 import CountUp from "./CountUp";
+import { firstTab } from "../lib/mpDoing";
 import { HISTORY_COLOURS, HISTORY_LABELS, HKEYS } from "./councilsUi";
 import { hexPoints } from "../lib/seatMap";
 import regionGeo from "../data/regionMap.json";
@@ -106,36 +107,51 @@ export function JumpNav() {
   );
 }
 
-// How the seat voted: every candidate's share, then the facts around it.
+// How the seat voted. Left: every candidate's share and the facts around it. Right: how close it was against every seat, and what it would take to change the winner.
 export function SeatResult({ x, name, i }) {
   const s = x?.seat;
+  const second = s?.candidates?.[1];
   return (
     <Card i={i} colour="#3F6FD8" icon={<IconHexMap size={20} />} title={`How ${name} voted ${s?.when?.in ?? "in 2024"}`} className="ma-result">
       {x?.seat === undefined ? <Skel lines={5} /> : !s ? <Missing>No saved result for this seat.</Missing> : (
-        <>
-          <ul className="ma-cands">
-            {s.candidates.slice(0, 6).map((c, n) => (
-              <li key={`${c.name}-${c.party}`} style={{ "--pc": hex(c.colour), "--w": c.share, "--n": n }}>
-                <span className="ma-cand-name"><b>{c.name}</b><small>{c.party}</small></span>
-                <span className="ma-cand-bar" aria-hidden="true"><i /></span>
-                <span className="ma-cand-pct"><b>{(c.share * 100).toFixed(1)}%</b><small>{c.votes.toLocaleString("en-GB")} votes</small></span>
-              </li>
-            ))}
-          </ul>
-          {s.others && <p className="ma-sub">All other candidates together won {(s.others.share * 100).toFixed(1)}% of the vote ({s.others.votes.toLocaleString("en-GB")} votes). Only the leading candidates are shown above.</p>}
-          {s.when.byElection && <p className="ma-sub">This seat voted again at a by-election, so these are the by-election figures. Its 2024 general election result is no longer the current one.</p>}
-          <dl className="ma-trio">
-            <div><dt>Won by</dt><dd>{s.result.majority.toLocaleString("en-GB")}</dd><small>votes ({s.result.majorityPct.toFixed(1)} points)</small></div>
-            <div><dt>Turnout</dt><dd>{s.turnout ? `${s.turnout.pct.toFixed(1)}%` : "Not saved"}</dd><small>{s.turnout ? `${ordinal(s.turnout.rank)} highest of ${s.turnout.of} seats` : ""}</small></div>
-            <div><dt>Voters on the register</dt><dd>{s.result.electorate ? s.result.electorate.toLocaleString("en-GB") : "Not saved"}</dd><small>{s.result.turnout ? `${s.result.turnout.toLocaleString("en-GB")} voted` : ""}</small></div>
-          </dl>
-          {s.safety && <p className="ma-callout"><strong>{s.safety.label}.</strong> {s.safety.blurb} This site calls a lead of under 5 points marginal and over 20 safe. These are our bands, not an official rule.</p>}
-          <h4>How close it was, against every seat</h4>
-          <LeadChart bins={s.bins} majorityPct={s.result.majorityPct} />
-          {s.national?.changedHands && (
-            <p className="ma-sub">At the 2024 general election {s.national.changedHands} of {s.national.total} seats changed party{s.national.underHalf ? `, and ${s.national.underHalf} were won with less than half the vote` : ""}.</p>
-          )}
-        </>
+        <div className="ma-result-grid">
+          <div className="ma-result-main">
+            <ul className="ma-cands">
+              {s.candidates.slice(0, 6).map((c, n) => (
+                <li key={`${c.name}-${c.party}`} style={{ "--pc": hex(c.colour), "--w": c.share, "--n": n }}>
+                  <span className="ma-cand-name"><b>{c.name}</b><small>{c.party}</small></span>
+                  <span className="ma-cand-bar" aria-hidden="true"><i /></span>
+                  <span className="ma-cand-pct"><b>{(c.share * 100).toFixed(1)}%</b><small>{c.votes.toLocaleString("en-GB")} votes</small></span>
+                </li>
+              ))}
+            </ul>
+            {s.others && <p className="ma-sub">All other candidates together won {(s.others.share * 100).toFixed(1)}% of the vote ({s.others.votes.toLocaleString("en-GB")} votes). Only the leading candidates are shown above.</p>}
+            {s.when.byElection && <p className="ma-sub">This seat voted again at a by-election, so these are the by-election figures. Its 2024 general election result is no longer the current one.</p>}
+            <dl className="ma-trio">
+              <div><dt>Won by</dt><dd>{s.result.majority.toLocaleString("en-GB")}</dd><small>votes ({s.result.majorityPct.toFixed(1)} points)</small></div>
+              <div><dt>Turnout</dt><dd>{s.turnout ? `${s.turnout.pct.toFixed(1)}%` : "Not saved"}</dd><small>{s.turnout ? `${ordinal(s.turnout.rank)} highest of ${s.turnout.of} seats` : ""}</small></div>
+              <div><dt>Voters on the register</dt><dd>{s.result.electorate ? s.result.electorate.toLocaleString("en-GB") : "Not saved"}</dd><small>{s.result.turnout ? `${s.result.turnout.toLocaleString("en-GB")} voted` : ""}</small></div>
+            </dl>
+            {s.safety && <p className="ma-callout"><strong>{s.safety.label}.</strong> {s.safety.blurb} This site calls a lead of under 5 points marginal and over 20 safe. These are our bands, not an official rule.</p>}
+          </div>
+          <div className="ma-result-side">
+            <h4>How close it was, against every seat</h4>
+            <LeadChart bins={s.bins} majorityPct={s.result.majorityPct} />
+            {s.national?.changedHands && (
+              <p className="ma-sub">At the 2024 general election {s.national.changedHands} of {s.national.total} seats changed party{s.national.underHalf ? `, and ${s.national.underHalf} were won with less than half the vote` : ""}.</p>
+            )}
+            {second && (
+              <>
+                <h4>What it would take to change the winner</h4>
+                <dl className="ma-trio ma-trio-2">
+                  <div><dt>Swing</dt><dd>{(s.result.majorityPct / 2).toFixed(1)} points</dd><small>moving from {shortParty(s.candidates[0].party)} to {shortParty(second.party)}</small></div>
+                  <div><dt>Voters changing sides</dt><dd>{(Math.floor(s.result.majority / 2) + 1).toLocaleString("en-GB")}</dd><small>{s.result.turnout ? `about ${Math.max(1, Math.round(((Math.floor(s.result.majority / 2) + 1) / s.result.turnout) * 100))}% of those who voted` : ""}</small></div>
+                </dl>
+                <p className="ma-sub">A voter who switches takes one vote from the winner and gives it to the runner-up, so the gap closes by two. This counts only those two parties.</p>
+              </>
+            )}
+          </div>
+        </div>
       )}
     </Card>
   );
@@ -155,7 +171,7 @@ function LeadChart({ bins, majorityPct }) {
   );
 }
 
-// Who has won here before, how this seat compares with the rest, and the MPs before the current one.
+// Who has won here before, and the MPs before the current one.
 export function SeatHistory({ x, i }) {
   const s = x?.seat;
   const second = s?.candidates?.[1];
@@ -175,17 +191,7 @@ export function SeatHistory({ x, i }) {
             : s.changes.length === 0
             ? `The seat has gone to the same party at each of the ${s.runs.length} general elections from ${s.runs[0].year}.`
             : `It changed party ${plural(s.changes.length, "time", "times")} in the ${s.runs.length} general elections from ${s.runs[0].year}: ${s.changes.map((c) => `${shortParty(c.to)} in ${c.year}`).join(", ")}.`}</p>
-          {second && (
-            <>
-              <p className="ma-callout"><strong>{second.party}</strong> came second with {(second.share * 100).toFixed(1)}% of the vote, {(s.result.majority).toLocaleString("en-GB")} votes behind.</p>
-              <h4>What it would take to change the winner</h4>
-              <dl className="ma-trio ma-trio-2">
-                <div><dt>Swing</dt><dd>{(s.result.majorityPct / 2).toFixed(1)} points</dd><small>moving from {shortParty(s.candidates[0].party)} to {shortParty(second.party)}</small></div>
-                <div><dt>Voters changing sides</dt><dd>{(Math.floor(s.result.majority / 2) + 1).toLocaleString("en-GB")}</dd><small>{s.result.turnout ? `about ${Math.max(1, Math.round(((Math.floor(s.result.majority / 2) + 1) / s.result.turnout) * 100))}% of those who voted` : ""}</small></div>
-              </dl>
-              <p className="ma-sub">A voter who switches takes one vote from the winner and gives it to the runner-up, so the gap closes by two. This counts only those two parties.</p>
-            </>
-          )}
+          {second && <p className="ma-callout"><strong>{second.party}</strong> came second with {(second.share * 100).toFixed(1)}% of the vote, {(s.result.majority).toLocaleString("en-GB")} votes behind.</p>}
           {s.former.length > 0 && (
             <>
               <h4>MPs before the current one</h4>
@@ -196,6 +202,127 @@ export function SeatHistory({ x, i }) {
               </ul>
             </>
           )}
+        </>
+      )}
+    </Card>
+  );
+}
+
+// A meter from the most to the least of 650 (or 543) seats, with a marker where this seat falls.
+function RankMeter({ label, value, rank, of, low, high }) {
+  const at = of > 1 ? ((rank - 1) / (of - 1)) * 100 : 50;
+  return (
+    <li className="ma-meter">
+      <span className="ma-meter-top"><b>{label}</b><em>{value}</em></span>
+      <span className="ma-meter-track" role="img" aria-label={`${label}: ${ordinal(rank)} of ${of}`}><i style={{ "--at": `${at}%` }} /><u style={{ "--at": `${at}%` }} /></span>
+      <span className="ma-meter-ends" aria-hidden="true"><small>{low}</small><small>{high}</small></span>
+    </li>
+  );
+}
+
+// The seat as a card of its own: its name and who holds it, then where it ranks among all the seats on four things.
+export function SeatCard({ x, name, mp, mpColour, i }) {
+  const s = x?.seat;
+  const win = s?.candidates?.[0];
+  return (
+    <Card i={i} colour="#1FA97C" icon={<IconHexMap size={20} />} title="Your constituency" className="ma-seat">
+      <div className="ma-seat-head" style={{ "--pc": hex(win?.colour, mpColour ?? "#1FA97C") }}>
+        <small>One of 650 seats</small>
+        <b>{name}</b>
+        {mp && <span><i aria-hidden="true" />{mp.name}, {mp.party}</span>}
+      </div>
+      {x?.seat === undefined ? <Skel lines={4} /> : (
+        <ul className="ma-meters">
+          {s?.result?.electorate && <li className="ma-meter-plain"><span>Voters on the register</span><b><CountUp value={s.result.electorate} /></b></li>}
+          {s?.standing && <RankMeter label="How close the result was" value={`${ordinal(s.standing.rankNarrowest)} narrowest of ${s.standing.of}`} rank={s.standing.rankNarrowest} of={s.standing.of} low="Closest" high="Safest" />}
+          {s?.turnout && <RankMeter label="Turnout" value={`${ordinal(s.turnout.rank)} highest of ${s.turnout.of}`} rank={s.turnout.rank} of={s.turnout.of} low="Highest" high="Lowest" />}
+          {x.seatDep && <RankMeter label="Deprivation" value={`${ordinal(x.seatDep.rank)} most affected of ${x.seatDep.of}`} rank={x.seatDep.rank} of={x.seatDep.of} low="Most affected" high="Least" />}
+        </ul>
+      )}
+      <a className="ma-link" href={`#/constituency/${encodeURIComponent(name)}`}>Everything on this seat</a>
+    </Card>
+  );
+}
+
+// What the MP has been doing in Parliament, from Parliament's own records, in four tabs.
+const DOING_TABS = [["debates", "Debates"], ["questions", "Questions"], ["votes", "Votes"], ["proposed", "Bills and committees"]];
+export function MpDoing({ x, mp, i }) {
+  const d = x?.doing;
+  const [picked, setPicked] = useState(null);
+  const tab = picked ?? firstTab(d);
+  const count = (k) => (!d ? 0 : k === "proposed" ? d.bills.length + d.committees.length : d[k].length);
+  const onKey = (e) => {
+    const at = DOING_TABS.findIndex(([k]) => k === tab);
+    const next = e.key === "ArrowRight" ? at + 1 : e.key === "ArrowLeft" ? at - 1 : null;
+    if (next === null) return;
+    e.preventDefault();
+    const [k] = DOING_TABS[(next + DOING_TABS.length) % DOING_TABS.length];
+    setPicked(k);
+    document.getElementById(`ma-doing-tab-${k}`)?.focus();
+  };
+  const fmt = (iso) => (iso ? longDate(iso) : "");
+  return (
+    <Card i={i} colour="#C0478A" icon={<IconVote size={20} />} title={mp ? `What ${mp.name} has been doing` : "What your MP has been doing"} className="ma-doing">
+      {x?.doing === undefined ? <Skel lines={5} /> : !d ? <Missing>We could not match this postcode to a current MP.</Missing> : (
+        <>
+          <p className="ma-sub">Taken from Parliament's own records. Parliament publishes what a member has said, asked, voted on and put forward. It does not publish what they intend to do, or their work for people in the seat.</p>
+          <div className="ma-doing-stats" aria-hidden="true">
+            {DOING_TABS.map(([k, label]) => <span key={k}><b>{count(k)}</b>{label}</span>)}
+          </div>
+          <div className="ma-tabs" role="tablist" aria-label="Kinds of activity" onKeyDown={onKey}>
+            {DOING_TABS.map(([k, label]) => (
+              <button key={k} id={`ma-doing-tab-${k}`} type="button" role="tab" aria-selected={tab === k} aria-controls="ma-doing-panel" tabIndex={tab === k ? 0 : -1} onClick={() => setPicked(k)}>{label}<small>{count(k)}</small></button>
+            ))}
+          </div>
+          <div id="ma-doing-panel" role="tabpanel" aria-labelledby={`ma-doing-tab-${tab}`} key={tab} className="ma-feed">
+            {tab === "debates" && (d.debates.length === 0 ? <p className="ma-sub">No recent debates are stored for them.</p> : (
+              <ul>{d.debates.map((c, n) => (
+                <li key={`${c.title}-${c.date}`} style={{ "--n": n }}>
+                  <span className="ma-feed-date">{fmt(c.date)}</span>
+                  {c.url ? <a href={c.url} target="_blank" rel="noreferrer"><b>{c.title}</b><span className="sr-only"> (opens Hansard in a new tab)</span></a> : <b>{c.title}</b>}
+                  {c.said && <q>{c.said.length > 190 ? `${c.said.slice(0, 188).replace(/\s+\S*$/, "")}…` : c.said}</q>}
+                </li>
+              ))}</ul>
+            ))}
+            {tab === "questions" && (d.questions.length === 0 ? <p className="ma-sub">No recent written questions are stored for them.</p> : (
+              <>
+                <ul>{d.questions.map((q, n) => (
+                  <li key={`${q.heading}-${q.tabled}-${n}`} style={{ "--n": n }}>
+                    <span className="ma-feed-date">Asked {fmt(q.tabled)}</span>
+                    <b>{q.heading}</b>
+                    <span className="ma-feed-meta">{[q.department, q.answered ? `Answered ${fmt(q.answered)}` : "Waiting for an answer"].filter(Boolean).join(". ")}</span>
+                  </li>
+                ))}</ul>
+                <a className="ma-link" href="#/writtenQuestions">Every written question</a>
+              </>
+            ))}
+            {tab === "votes" && (d.votes.length === 0 ? <p className="ma-sub">No recent votes are stored for them.</p> : (
+              <>
+                {d.withParty && <p className="ma-callout">In their latest {d.withParty.of} votes, they voted with their party in <strong>{d.withParty.with}</strong>{d.withParty.with === d.withParty.of ? "." : ` and against it in ${d.withParty.of - d.withParty.with}.`}</p>}
+                <ul>{d.votes.map((v, n) => (
+                  <li key={`${v.title}-${v.date}`} style={{ "--n": n }}>
+                    <span className="ma-feed-date">{fmt(v.date)}</span>
+                    <b>{v.title}</b>
+                    <span className="ma-feed-meta"><i className={v.aye ? "aye" : "no"}>{v.aye ? "Voted aye" : "Voted no"}</i>{v.withParty === false ? <i className="against">Against their party</i> : null}</span>
+                  </li>
+                ))}</ul>
+                {mp && <a className="ma-link" href={`#/mp/${mp.id}`}>Their full voting record</a>}
+              </>
+            ))}
+            {tab === "proposed" && (d.bills.length + d.committees.length === 0 ? <p className="ma-sub">They are not recorded as sponsoring a bill or sitting on a select committee.</p> : (
+              <>
+                {d.bills.length > 0 && <><h5>Bills they sponsor</h5>
+                  <ul>{d.bills.map((b, n) => (
+                    <li key={b.id} style={{ "--n": n }}>
+                      {b.url ? <a href={b.url} target="_blank" rel="noreferrer"><b>{b.title}</b><span className="sr-only"> (opens in a new tab)</span></a> : <b>{b.title}</b>}
+                      <span className="ma-feed-meta"><i className={b.isAct ? "aye" : b.defeated ? "no" : ""}>{b.isAct ? "Became law" : b.defeated ? "Defeated" : b.stage ?? "In progress"}</i></span>
+                    </li>
+                  ))}</ul></>}
+                {d.committees.length > 0 && <><h5>Committees they sit on</h5><p className="ma-chiprow">{d.committees.map((c) => <span key={c}>{c}</span>)}</p></>}
+                {d.role && <p className="ma-sub">Government role: {d.role}.</p>}
+              </>
+            ))}
+          </div>
         </>
       )}
     </Card>

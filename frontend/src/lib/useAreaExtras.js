@@ -5,6 +5,8 @@ import { loadSector } from "./onsData";
 import { findContests } from "./ballots";
 import { regionKeyOf } from "./areaFigures";
 import { loadCouncilDetail } from "./councilDetail";
+import { supabase } from "../supabaseClient";
+import { doingFromRows } from "./mpDoing";
 import { historyRows } from "./councils";
 import { seatProfile, councilTaxProfile, neighbourhoodRank, censusFacts, placeFacts, whoDoesWhat, responsibilities, nextContests, seatMapProfile, councilYears } from "./areaProfile";
 
@@ -12,12 +14,12 @@ const soft = (p) => Promise.resolve(p).catch(() => null);
 
 const load = (file) => soft(file.then((m) => m.default));
 
-// Everything the sections need, loaded once the postcode lookup has answered. It arrives in three stages so each card can fill in as soon as its own files
-// are here, instead of every card waiting for the largest: the small files first, then the 2024 results and history, then the elections lookup. A field is
+// Everything the sections need, loaded once the postcode lookup has answered. It arrives in four stages so each card can fill in as soon as its own files
+// are here, instead of every card waiting for the largest: the small files first, then the 2024 results and history, then the elections lookup and what the MP has been doing. A field is
 // `undefined` while it is still on its way, and `null` or empty once it is known that there is nothing to show.
 export function useAreaExtras(data) {
   const [x, setX] = useState(null);
-  const { result: r, council, county } = data;
+  const { result: r, council, county, mp } = data;
   useEffect(() => {
     let alive = true;
     const put = (patch) => { if (alive) setX((prev) => ({ ...prev, ...patch })); };
@@ -57,7 +59,16 @@ export function useAreaExtras(data) {
 
     // Stage 3: the elections coming up, which need the network.
     soft(findContests(r.postcode)).then((contests) => put({ contests: contests ? nextContests(contests) : null }));
+
+    // Stage 4: what their MP has been doing, from the tables the MP's own page uses.
+    if (mp) {
+      Promise.all([
+        soft(supabase.from("voting_records").select("title, date, voted_aye, voted_with_party_majority, source_url").eq("politician_id", mp.id).order("date", { ascending: false }).limit(6)),
+        soft(supabase.from("bills").select("bill_id, short_title, current_stage, is_act, is_defeated, source_url, last_updated").eq("sponsor_member_id", mp.parliament_member_id).order("last_updated", { ascending: false }).limit(5)),
+        soft(supabase.from("committees").select("id, name, members")),
+      ]).then(([votes, bills, committees]) => put({ doing: doingFromRows({ mp, votes: votes?.data, bills: bills?.data, committees: committees?.data }) }));
+    } else put({ doing: null });
     return () => { alive = false; };
-  }, [r, council, county]);
+  }, [r, council, county, mp]);
   return x;
 }

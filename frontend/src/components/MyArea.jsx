@@ -4,16 +4,15 @@ import { supabase } from "../supabaseClient";
 import { COLORS, FONT_BODY, PAGE_PADDING } from "../theme";
 import { partyColour } from "../lib/format";
 import { PageHeader } from "./shared";
-import { IconPinHome, IconSearch, IconCouncil, IconVote, IconHexMap, IconTrend, IconCalendar, IconPetition } from "./icons";
+import { IconPinHome, IconSearch, IconCouncil, IconVote, IconTrend, IconCalendar, IconPetition } from "./icons";
 import { councilsForCodes, nextElectionText, longDate, controlColourOf, seatsByParty } from "../lib/councils";
 import { daysUntil } from "../lib/localElections";
 import CountUp from "./CountUp";
 import { loadCouncillorList, councillorPath } from "../lib/councillorsView";
 import { regionKeyOf, wardCouncillors, loadAreaFigures } from "../lib/areaFigures";
 import { REGIONS } from "../data/regionMetrics";
-import { Card, Section, Glance, JumpNav, SeatResult, SeatHistory, Neighbours, CouncilHistory, RegionOutline, LocalPetitions, CouncilTax, WhoDoes, Neighbourhood, PlaceFacts, RegionRanks, Census, Contests, Help, Deeper } from "./AreaSections";
+import { Card, Section, Glance, JumpNav, SeatResult, SeatHistory, SeatCard, MpDoing, Neighbours, CouncilHistory, RegionOutline, LocalPetitions, CouncilTax, WhoDoes, Neighbourhood, PlaceFacts, RegionRanks, Census, Contests, Help, Deeper } from "./AreaSections";
 import { useAreaExtras } from "../lib/useAreaExtras";
-import { ordinal } from "../lib/constituency";
 import "../myarea.css";
 
 // My area: type a postcode once and see your MP, constituency, council, councillors, next elections and how your region compares, on one page. The
@@ -133,20 +132,10 @@ function Dashboard({ data, onForget }) {
             </>
           ) : <p>We found the constituency ({r.parliamentary_constituency}) but couldn't match it to a current MP.</p>}
         </Card>
-        <SeatResult x={x} name={r.parliamentary_constituency} i={1} />
+        <MpDoing x={x} mp={mp} i={1} />
+        <SeatResult x={x} name={r.parliamentary_constituency} i={2} />
 
-        <Card i={2} colour="#1FA97C" icon={<IconHexMap size={20} />} title="Your constituency" className="ma-seat">
-          <div className="ma-big">{r.parliamentary_constituency}</div>
-          <p className="ma-sub">One of 650 seats in the House of Commons.</p>
-          <dl className="ma-facts">
-            {mp && <div><dt>MP</dt><dd>{mp.name}</dd></div>}
-            {x?.seat && <div><dt>Voters on the register</dt><dd>{x.seat.result.electorate?.toLocaleString("en-GB") ?? "Not saved"}</dd></div>}
-            {x?.seat?.standing && <div><dt>Closeness of the result</dt><dd>{ordinal(x.seat.standing.rankNarrowest)} narrowest of {x.seat.standing.of}</dd></div>}
-            {x?.seat?.turnout && <div><dt>Turnout rank</dt><dd>{ordinal(x.seat.turnout.rank)} of {x.seat.turnout.of}</dd></div>}
-            {x?.seatDep && <div><dt>Deprivation rank</dt><dd>{ordinal(x.seatDep.rank)} most affected of {x.seatDep.of}</dd></div>}
-          </dl>
-          <a className="ma-link" href={`#/constituency/${encodeURIComponent(r.parliamentary_constituency)}`}>How close the last election was</a>
-        </Card>
+        <SeatCard x={x} name={r.parliamentary_constituency} mp={mp} mpColour={mpColour} i={2} />
         <SeatHistory x={x} i={3} />
         <LocalPetitions x={x} name={r.parliamentary_constituency} i={4} />
         <Neighbours x={x} name={r.parliamentary_constituency} i={5} />
