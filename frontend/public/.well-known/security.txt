@@ -1,0 +1,7 @@
+# How to report a security problem on Simple Politics (RFC 9116).
+# Please report it privately, not in a public issue, and give the page and what you did, so it can be reproduced.
+Contact: https://github.com/Alfredrey64/mp-transparency-tracker/security/advisories/new
+Expires: 2027-10-29T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://simple-politics.vercel.app/.well-known/security.txt
+Policy: https://simple-politics.vercel.app/privacy

@@ -111,6 +111,8 @@ test("on a phone the menu holds the language switch, and it works both ways", as
 test("search is in Welsh, and finds a page by its Welsh name", async ({ page }) => {
   await page.setViewportSize({ width: 1700, height: 900 });
   await page.goto("/?lang=cy");
+  await expect(page.getByRole("button", { name: "Chwilio'r safle" })).toBeVisible();
+  await page.waitForLoadState("networkidle");
   await page.keyboard.press("/");
   const box = page.getByRole("dialog", { name: "Chwilio'r safle" });
   await expect(box).toBeVisible();

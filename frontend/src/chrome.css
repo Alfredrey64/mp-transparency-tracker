@@ -127,7 +127,7 @@
   position: relative; overflow: hidden; color: #fff; margin: calc(-14px - env(safe-area-inset-top, 0px)) -18px 12px; padding: calc(14px + env(safe-area-inset-top, 0px)) 18px 20px;
   background: linear-gradient(160deg, var(--c-navy-2), var(--c-navy) 70%);
 }
-.drawer-head::before { content: ""; position: absolute; right: -50px; bottom: -30px; width: 300px; aspect-ratio: 520 / 270; opacity: 0.12; background: var(--hemicycle) center / contain no-repeat; pointer-events: none; animation: drift 14s ease-in-out infinite alternate; }
+.drawer-head::before { content: ""; position: absolute; right: -50px; bottom: -30px; width: 300px; aspect-ratio: 520 / 270; opacity: 0.12; background: var(--hemicycle) center / contain no-repeat; pointer-events: none; animation: drift 14s ease-in-out 2 alternate; }
 @keyframes drift { from { transform: translate(0, 0) scale(1); } to { transform: translate(-14px, -8px) scale(1.04); } }
 .drawer-head > * { position: relative; }
 .drawer-head .site-brand { color: #fff; font-size: 21px; }
@@ -197,12 +197,16 @@
 .drawer-foot a:nth-child(odd):last-child { grid-column: 1 / -1; }
 .site-drawer { touch-action: pan-y; }
 
-@media (max-width: 1100px) {
+/* The five menus, the search box and the buttons need about 1330px side by side. Down to 1230px the search shrinks to its icon to make the room; below that
+   the menus fold into the menu button. (Before this, the last menu ran underneath the search box between about 1100 and 1320px.) */
+@media (max-width: 1340px) {
+  .site-search-btn { width: 44px; padding: 0; justify-content: center; }
+  .site-search-btn span, .site-search-btn kbd { display: none; }
+}
+@media (max-width: 1230px) {
   .site-bar { gap: 12px; padding: 0 16px; height: 60px; }
   .site-nav, .site-cta, .site-watch, .site-mega, .site-scrim { display: none !important; }
   .site-actions { margin-left: auto; }
-  .site-search-btn { width: 44px; padding: 0; justify-content: center; }
-  .site-search-btn span, .site-search-btn kbd { display: none; }
   .site-burger { display: inline-flex; }
   .site-brand { font-size: 21px; }
 }
@@ -255,9 +259,10 @@
   background: var(--hemicycle) center / contain no-repeat; pointer-events: none;
 }
 .page-hero::after {
+  /* The glow and the sheen play twice and then rest: a page left open should not keep the screen repainting. */
   content: ""; position: absolute; left: -100vmax; right: -100vmax; bottom: 0; height: 4px; background-size: 220% 100%;
   background-image: linear-gradient(90deg, var(--hero-accent, var(--c-brand)) 0%, color-mix(in srgb, var(--hero-accent, var(--c-brand)) 45%, #fff) 35%, var(--hero-accent, var(--c-brand)) 70%);
-  animation: hero-sheen 9s linear infinite;
+  animation: hero-sheen 9s linear 2;
 }
 @keyframes hero-sheen { from { background-position: 0 0; } to { background-position: -220% 0; } }
 .page-hero-inner { max-width: 760px; }
@@ -268,7 +273,7 @@
   background:
     radial-gradient(640px 320px at calc(50% + 26vw) 0, color-mix(in oklab, color-mix(in oklab, var(--hero-accent, var(--c-brand)) 78%, #fff) 40%, transparent), transparent 72%),
     radial-gradient(560px 280px at calc(50% - 30vw) 100%, color-mix(in oklab, color-mix(in oklab, var(--hero-accent, var(--c-brand)) 78%, #fff) 22%, transparent), transparent 72%);
-  animation: hero-aurora 16s ease-in-out infinite alternate; will-change: transform;
+  animation: hero-aurora 16s ease-in-out 2 alternate;
 }
 .page-hero[data-align="center"] .page-hero-inner { margin: 0 auto; text-align: center; }
 /* Centred header: the page's picture in a glowing tile above the title, and everything on the middle line. */
@@ -660,7 +665,7 @@ html[data-vt]::view-transition-new(root) { animation: vt-in 0.24s var(--ease-out
 .langbar { display: flex; justify-content: flex-end; width: 100%; box-sizing: border-box; max-width: 1360px; margin: 0 auto; padding: 4px 32px 0; }
 .langbar-btn { padding: 3px 4px; border: 0; background: none; color: var(--c-ink-soft); font: 600 13px "Public Sans", system-ui, sans-serif; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .langbar-btn:hover { color: var(--c-ink); }
-@media (max-width: 1100px) { .langbar { display: none; } }
+@media (max-width: 1230px) { .langbar { display: none; } }
 @media print { .langbar { display: none; } }
 .drawer-lang, .footer-lang { padding: 8px 14px; border: 1px solid rgba(255, 255, 255, 0.35); border-radius: 10px; background: none; color: #fff; font: 700 14px "Public Sans", system-ui, sans-serif; cursor: pointer; }
 .drawer-lang { grid-column: 1 / -1; min-height: 44px; }

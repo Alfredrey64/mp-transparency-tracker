@@ -8,9 +8,16 @@ on:
 permissions:
   contents: write
 
+# One refresh at a time: a second run started while the first is still crawling would write the same tables and push the same files.
+concurrency:
+  group: fetch-data
+  cancel-in-progress: false
+
 jobs:
   fetch-data:
     runs-on: ubuntu-latest
+    # A crawl that hangs should end the run, not use the six-hour default.
+    timeout-minutes: 240
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
@@ -19,9 +26,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       # continue-on-error is set on every fetch step below deliberately: each
       # one writes to its own, independent Supabase table, so one script
@@ -353,4 +361,6 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add frontend/src/data/constituencies.json frontend/src/data/constituencySummary.json frontend/src/data/constituencyHistory.json frontend/src/data/mpCareers.json frontend/src/data/careerDetail frontend/src/data/lordsCareers.json frontend/src/data/benchmarks.json frontend/src/data/councilsIndex.json frontend/src/data/councilDetail frontend/src/data/ons frontend/src/data/regionalBreakdowns.json frontend/src/data/lordsCareerDetail frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json frontend/src/data/partyDonorSectors.json frontend/src/data/partyDonorSectorsMeta.json frontend/src/data/pipelineStatus.json frontend/src/data/lordsVotes.json frontend/src/data/fullFactPledges.json frontend/public/data/councillors.json
           git diff --staged --quiet || git commit -m "chore: daily data refresh"
+          # Someone may have pushed while the crawl ran: sit this commit on top of theirs rather than being refused.
+          git pull --rebase --autostash origin "$GITHUB_REF_NAME"
           git push

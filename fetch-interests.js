@@ -11,6 +11,7 @@
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";
 import { fetchRetry } from "./httpFetch.js";
+import { staleRows, staleWarning } from "./mpRoster.js";
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -234,6 +235,14 @@ async function main() {
   }
 
   console.log(`\nDone. ${members.length} MPs processed, ${totalInterests} interests saved/updated.`);
+
+  // Anyone who has left is still in the table: say so in the log, so a person can decide what to do about it (see mpRoster.js).
+  const { data: all, error } = await supabase.from("politicians").select("id, name, constituency, parliament_member_id");
+  if (error) console.error("  ⚠ Could not check for MPs who have left:", error.message);
+  else {
+    const warning = staleWarning(staleRows(all, members.map((m) => m.memberId)));
+    if (warning) console.log(warning);
+  }
 }
 
 main().catch((err) => {

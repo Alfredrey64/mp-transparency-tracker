@@ -18,7 +18,8 @@
     "check:tax": "node scripts/check-tax-data.mjs",
     "prebuild": "node scripts/build-seo-pages.mjs",
     "check:speed": "npx --yes @lhci/cli@0.15.1 autorun --config=lighthouserc.json",
-    "check:site": "node scripts/check-site.mjs"
+    "check:site": "node scripts/check-site.mjs",
+    "test:more": "playwright test e2e/accessibility.spec.js e2e/ballot.spec.js e2e/calculators.spec.js e2e/classCodes.spec.js e2e/compareCouncils.spec.js e2e/contrast.spec.js e2e/issue-tools.spec.js e2e/menu.spec.js e2e/myArea.spec.js e2e/polish.spec.js e2e/spin.spec.js e2e/teacher.spec.js e2e/welsh.spec.js e2e/welshPages.spec.js"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

@@ -40,3 +40,24 @@ test("on a short laptop screen, each dropdown panel ends inside the window", asy
     await page.waitForTimeout(350);
   }
 });
+
+test("the English header never lets a menu run under the search box, at any width", async ({ page }) => {
+  for (const width of [1231, 1240, 1280, 1320, 1366, 1440, 1920]) {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto("/");
+    await expect(page.locator(".site-burger")).toBeHidden();
+    const gap = await page.evaluate(() => {
+      const items = [...document.querySelectorAll(".site-nav button, .site-nav a")].filter((e) => e.offsetParent);
+      const last = items.at(-1).getBoundingClientRect().right;
+      return Math.round(document.querySelector(".site-search-btn").getBoundingClientRect().left - last);
+    });
+    expect(gap, `${width}px: space between the last menu and search`).toBeGreaterThanOrEqual(8);
+  }
+});
+
+test("below 1230px the menus fold into the menu button", async ({ page }) => {
+  await page.setViewportSize({ width: 1220, height: 800 });
+  await page.goto("/");
+  await expect(page.locator(".site-burger")).toBeVisible();
+  await expect(page.locator(".site-nav")).toBeHidden();
+});
