@@ -26,7 +26,7 @@
 /* The cards: a bento grid, each its own colour, arriving one after another. */
 .ma-bento { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
 .ma-mpcard, .ma-votes, .ma-seat, .ma-history, .ma-petitions, .ma-todo-card, .ma-help-card, .ma-deeper { grid-column: span 4; }
-.ma-council, .ma-people-card, .ma-tax, .ma-who { grid-column: span 6; }
+.ma-council, .ma-people-card { grid-column: span 6; } .ma-tax { grid-column: span 5; } .ma-who { grid-column: span 7; }
 .ma-region { grid-column: 1 / -1; } .ma-ranks { grid-column: span 7 !important; } .ma-census { grid-column: span 5; }
 .ma-result, .ma-contests { grid-column: span 8; }
 .ma-hood { grid-column: span 7; } .ma-placefacts { grid-column: span 5; } .ma-ranks { grid-column: 1 / -1; }
@@ -64,7 +64,7 @@
 .ma-ring b span { font: inherit; color: inherit; }
 .ma-ring > div > span { font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 /* Your seat among the 650. */
-.ma-dots { width: 100%; max-width: 250px; height: auto; margin: 0 auto; display: block; }
+.ma-dots { width: 100%; max-width: 210px; height: auto; margin: 0 auto; display: block; }
 .ma-dot { fill: color-mix(in srgb, var(--mc) 35%, var(--c-hairline)); animation: maDot 0.6s ease-out backwards; }
 @keyframes maDot { from { opacity: 0; transform: scale(0.2); } }
 .ma-dot, .ma-dot-ring { transform-box: fill-box; transform-origin: center; }
@@ -254,3 +254,22 @@
 .ma-steps li { counter-increment: ma; position: relative; padding-left: 40px; }
 .ma-steps li::before { content: counter(ma); position: absolute; left: 0; top: 0; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 9px; background: color-mix(in srgb, var(--mc) 16%, transparent); color: color-mix(in srgb, var(--mc) 75%, var(--c-ink)); font: 800 14px "Figures", "Public Sans", system-ui, sans-serif; }
 @media (max-width: 520px) { .ma-topics > div { grid-template-columns: minmax(0, 1fr); } }
+
+/* The lead chart: how close this seat was against all of them. */
+.ma-lead { margin: 0; display: grid; gap: 6px; }
+.ma-lead-bars { display: grid; grid-template-columns: repeat(11, minmax(0, 1fr)); gap: 4px; align-items: end; height: 96px; }
+.ma-lead-bars span { position: relative; display: flex; align-items: flex-end; height: 100%; }
+.ma-lead-bars i { display: block; width: 100%; height: calc(var(--h) * 100%); min-height: 3px; border-radius: 4px 4px 0 0; background: color-mix(in srgb, var(--mc) 28%, var(--c-hairline)); }
+.ma-lead-bars span.me i { background: var(--mc); }
+.ma-lead-bars em { position: absolute; left: 50%; bottom: calc(var(--h) * 100% + 4px); transform: translateX(-50%); font: 800 11.5px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: var(--c-ink); }
+.ma-lead-scale { display: flex; justify-content: space-between; margin: 0 !important; font: 600 12px "Figures", "Public Sans", system-ui, sans-serif !important; color: var(--c-ink-soft) !important; }
+.ma-lead figcaption { font: 500 12.5px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+
+.ma-mpcard .ma-stats { flex: 1 1 auto; grid-auto-rows: 1fr; }
+.ma-result .ma-lead-bars { height: 120px; }
+
+.ma-trio-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ma-who .ma-topics { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 22px; }
+.ma-who .ma-topics > div { grid-template-columns: minmax(0, 1fr); gap: 1px; align-content: start; }
+@media (max-width: 1000px) { .ma-who .ma-topics { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .ma-who .ma-topics, .ma-trio-2 { grid-template-columns: minmax(0, 1fr); } }

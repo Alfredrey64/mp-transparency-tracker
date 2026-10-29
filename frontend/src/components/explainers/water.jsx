@@ -2,15 +2,32 @@
 import ExplainerPage from "../story/ExplainerPage";
 import { IconWater } from "../newIcons";
 
+// The small pictures inside the three figures at the top. Each is drawn from numbers stated on this page.
+const Bars = ({ a, b, max }) => (
+  <div className="wt-bars">
+    <span><em>2024</em><i style={{ "--w": `${(a.v / max) * 100}%` }} /><b>{a.t}</b></span>
+    <span><em>2025</em><i style={{ "--w": `${(b.v / max) * 100}%` }} /><b>{b.t}</b></span>
+  </div>
+);
+const Stars = () => (
+  <>
+    <div className="wt-marks" role="img" aria-label="19 of 36 stars won for 2024, 6 fewer than the 25 won for 2023">
+      {Array.from({ length: 36 }, (_, n) => <i key={n} className={n < 19 ? "on" : n < 25 ? "lost" : ""} />)}
+    </div>
+    <p className="wt-key">19 won. The 6 dashed are the stars lost since 2023.</p>
+  </>
+);
+
 const PAGE = {
+  look: "water",
   icon: IconWater,
   kicker: "Britain in numbers",
   title: "Water and sewage",
   subtitle: "Water companies in England are private businesses that are allowed to release sewage from storm overflows when it rains. This page shows how often it happened in 2025, how the companies were rated for 2024, and what the law now requires of them.",
   tiles: [
-    { label: "Storm overflow spills in England, 2025", value: "291,492", colour: "#6FB1FF", sub: "35% fewer than in 2024" },
-    { label: "Total spill time against 2024", value: "-48%", colour: "#3F7D5C", sub: "the Environment Agency says much of this is a drier year" },
-    { label: "Stars won by all nine companies for 2024", value: "19", colour: "#FF7A8A", sub: "down from 25 in 2023, and the lowest since 2011" },
+    { label: "Storm overflow spills in England, 2025", value: "291,492", colour: "#6FB1FF", sub: "35% fewer than in 2024", visual: <Bars a={{ v: 31.8, t: "31.8" }} b={{ v: 20.5, t: "20.5" }} max={31.8} /> },
+    { label: "Total spill time against 2024", value: "-48%", colour: "#3F7D5C", sub: "the Environment Agency says much of this is a drier year", visual: <Bars a={{ v: 100, t: "100" }} b={{ v: 52, t: "52" }} max={100} /> },
+    { label: "Stars won by all nine companies for 2024", value: "19", colour: "#FF7A8A", sub: "down from 25 in 2023, and the lowest since 2011", visual: <Stars /> },
   ],
   why: { colour: "#5A7FA6", text: "Most households pay a water company a bill every month and cannot switch. The rules on spills, bonuses and monitoring are the way the public finds out what that money delivers." },
   chapters: [
@@ -23,13 +40,21 @@ const PAGE = {
           { label: "Spills per storm overflow, on average", before: 31.8, after: 20.5, beforeText: "31.8", afterText: "20.5" },
         ], max: 35, note: "Total spill events fell 35% to 291,492, and total spill time fell 48%." } },
         { facts: [
-          { label: "Spill events in 2025", value: "291,492", note: "Down 35% on 2024." },
-          { label: "Total spill time", value: "-48%", note: "Compared with 2024. Many companies saw cuts of 40% to 70%." },
+          { label: "Spill events a day, on average", value: "about 800", note: "291,492 spills over 365 days, worked out for this page. A spill can last minutes or many hours." },
+          { label: "Cuts in spill time at many companies", value: "40% to 70%", note: "Compared with 2024, against a fall of 48% across England." },
+          { label: "Overflows with a monitor", value: "All", note: "Every storm overflow in England now has an event duration monitor fitted." },
         ] },
-        { pull: "The Environment Agency's chair said the numbers are heavily influenced by rainfall. 2025 was unusually dry after a particularly wet 2024, so the fall is not simply a sign the system was fixed." },
-        { text: [
-          "Every storm overflow in England now has an event duration monitor fitted. The government says the monitoring data has already supported £10.2 billion of investment in overflow upgrades, as part of £104 billion planned on water infrastructure over five years.",
-          "The Minister said that, even so, there is still an unacceptable amount of sewage entering waterways.",
+        { compare: [
+          { title: "What may explain the fall", colour: "#3F9BD8", items: [
+            "The Environment Agency's chair said the numbers are heavily influenced by rainfall.",
+            "2025 was unusually dry after a particularly wet 2024.",
+            "The government says the monitoring data has already supported £10.2 billion of investment in overflow upgrades, as part of £104 billion planned on water infrastructure over five years.",
+          ] },
+          { title: "What the fall does not show", colour: "#9C3B3B", items: [
+            "It is not simply a sign that the system was fixed.",
+            "The Minister said that, even so, there is still an unacceptable amount of sewage entering waterways.",
+            "Spill time fell by 48% while the number of spills fell by 35%.",
+          ] },
         ] },
       ],
     },
@@ -66,6 +91,19 @@ const PAGE = {
           { title: "Real-time data", text: "Independent monitoring of every sewage outlet, with real-time data published for all emergency overflows, reported within an hour of the spill." },
         ] },
         { text: ["The government has also said it plans a new, single regulator in place of the present arrangement. At the time of checking this page, that was a stated intention, so look at the Department for Environment, Food and Rural Affairs for its progress."] },
+      ],
+    },
+    {
+      title: "How to check for yourself",
+      lede: "The data is public, down to each overflow.",
+      colour: "#1B6FA8",
+      blocks: [
+        { steps: [
+          { title: "Find your water company", text: "Your sewage is handled by the company on your sewerage bill. In some areas a different company supplies your water, so you may receive two bills." },
+          { title: "Look up the overflow data", text: "The Environment Agency publishes every storm overflow's spill count and hours each year, overflow by overflow. The link is in the list of sources below." },
+          { title: "Read the company's rating", text: "The Environment Agency's performance report gives each company its star rating and the reasons, in the same list of sources." },
+          { title: "Ask the people who can act", text: "Your MP and your councillors can raise it. You can find them on Your area." },
+        ] },
       ],
     },
   ],

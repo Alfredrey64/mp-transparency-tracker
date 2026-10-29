@@ -96,15 +96,35 @@ export function SeatResult({ x, name, i }) {
             <div><dt>Voters on the register</dt><dd>{s.result.electorate ? s.result.electorate.toLocaleString("en-GB") : "Not saved"}</dd><small>{s.result.turnout ? `${s.result.turnout.toLocaleString("en-GB")} voted` : ""}</small></div>
           </dl>
           {s.safety && <p className="ma-callout"><strong>{s.safety.label}.</strong> {s.safety.blurb} This site calls a lead of under 5 points marginal and over 20 safe. These are our bands, not an official rule.</p>}
+          <h4>How close it was, against every seat</h4>
+          <LeadChart bins={s.bins} majorityPct={s.result.majorityPct} />
+          {s.national?.changedHands && (
+            <p className="ma-sub">At the 2024 general election {s.national.changedHands} of {s.national.total} seats changed party{s.national.underHalf ? `, and ${s.national.underHalf} were won with less than half the vote` : ""}.</p>
+          )}
         </>
       )}
     </Card>
   );
 }
 
-// Who has won here before, and the MPs who sat before the current one.
+// How this seat's lead compares with every seat's: one bar for each five points of the vote, with this seat's marked.
+function LeadChart({ bins, majorityPct }) {
+  const top = Math.max(...bins.counts, 1);
+  return (
+    <figure className="ma-lead">
+      <div className="ma-lead-bars" role="img" aria-label={`Seats grouped by the winner's lead. Yours, at ${majorityPct.toFixed(1)} points, is in the group marked.`}>
+        {bins.counts.map((n, i) => <span key={i} className={i === bins.mineBin ? "me" : ""} style={{ "--h": n / top }}>{i === bins.mineBin && <em>You</em>}<i /></span>)}
+      </div>
+      <p className="ma-lead-scale" aria-hidden="true"><span>Close</span><span>{bins.step * (bins.counts.length - 1)}+ points ahead</span></p>
+      <figcaption>Each bar is the number of seats whose winner led by that many points of the vote.</figcaption>
+    </figure>
+  );
+}
+
+// Who has won here before, how this seat compares with the rest, and the MPs before the current one.
 export function SeatHistory({ x, i }) {
   const s = x?.seat;
+  const second = s?.candidates?.[1];
   return (
     <Card i={i} colour="#7A5AF0" icon={<IconCalendar size={20} />} title="Who has won here" className="ma-history">
       {!x ? <Skel lines={4} /> : !s ? <Missing>No election history is saved for this seat.</Missing> : (
@@ -121,6 +141,17 @@ export function SeatHistory({ x, i }) {
             : s.changes.length === 0
             ? `The seat has gone to the same party at each of the ${s.runs.length} general elections from ${s.runs[0].year}.`
             : `It changed party ${plural(s.changes.length, "time", "times")} in the ${s.runs.length} general elections from ${s.runs[0].year}: ${s.changes.map((c) => `${shortParty(c.to)} in ${c.year}`).join(", ")}.`}</p>
+          {second && (
+            <>
+              <p className="ma-callout"><strong>{second.party}</strong> came second with {(second.share * 100).toFixed(1)}% of the vote, {(s.result.majority).toLocaleString("en-GB")} votes behind.</p>
+              <h4>What it would take to change the winner</h4>
+              <dl className="ma-trio ma-trio-2">
+                <div><dt>Swing</dt><dd>{(s.result.majorityPct / 2).toFixed(1)} points</dd><small>moving from {shortParty(s.candidates[0].party)} to {shortParty(second.party)}</small></div>
+                <div><dt>Voters changing sides</dt><dd>{(Math.floor(s.result.majority / 2) + 1).toLocaleString("en-GB")}</dd><small>{s.result.turnout ? `about ${Math.max(1, Math.round(((Math.floor(s.result.majority / 2) + 1) / s.result.turnout) * 100))}% of those who voted` : ""}</small></div>
+              </dl>
+              <p className="ma-sub">A voter who switches takes one vote from the winner and gives it to the runner-up, so the gap closes by two. This counts only those two parties.</p>
+            </>
+          )}
           {s.former.length > 0 && (
             <>
               <h4>MPs before the current one</h4>

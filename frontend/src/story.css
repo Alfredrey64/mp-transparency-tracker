@@ -216,7 +216,7 @@
 .st[data-look="ledger"] .st-tile + .st-tile { border-left: 1px solid var(--c-hairline); }
 .st[data-look="ledger"] .st-tile::before { inset: 0 auto auto clamp(12px, 2vw, 24px); width: 38px; height: 4px; }
 .st[data-look="ledger"] .st-tile-label { color: color-mix(in srgb, var(--tc) 70%, var(--c-ink)); }
-.st[data-look="ledger"] .st-tile b { color: var(--c-ink); }
+.st[data-look="ledger"] .st-tile > b { color: var(--c-ink); }
 .st[data-look="ledger"] .st-tile-sub { color: var(--c-ink-soft); }
 .st[data-look="ledger"] .st-why { display: block; padding: 20px 0 18px; border: 0; border-block: 1px solid var(--c-hairline); border-radius: 0; background: none; }
 .st[data-look="ledger"] .st-why-icon { display: none; }
@@ -232,7 +232,7 @@
 .st[data-look="poster"] .st-tile { border: 0; border-radius: 20px; background: radial-gradient(120% 90% at 100% 0%, rgba(255, 255, 255, 0.18), transparent 60%), color-mix(in srgb, var(--tc) 46%, #0B1226); }
 .st[data-look="poster"] .st-tile::before { display: none; }
 .st[data-look="poster"] .st-tile-label { color: rgba(255, 255, 255, 0.9); }
-.st[data-look="poster"] .st-tile b { font-size: clamp(40px, 5.4vw, 60px); }
+.st[data-look="poster"] .st-tile > b { font-size: clamp(32px, 4vw, 48px); }
 .st[data-look="poster"] .st-why { padding: 22px 26px; border: 0; border-radius: 20px; background: color-mix(in srgb, var(--tc) 46%, #0B1226); }
 .st[data-look="poster"] .st-why-icon { background: rgba(255, 255, 255, 0.16); }
 .st[data-look="poster"] .st-why p, .st[data-look="poster"] .st-why strong { color: #fff; }
@@ -249,7 +249,7 @@
 .st[data-look="field"] .st-tile + .st-tile { border-left: 1px dashed var(--c-hairline); }
 .st[data-look="field"] .st-tile::before { inset: 27px auto auto 22px; width: 10px; height: 10px; border-radius: 50%; }
 .st[data-look="field"] .st-tile-label { padding-left: 18px; color: var(--c-ink-soft); }
-.st[data-look="field"] .st-tile b { color: color-mix(in srgb, var(--tc) 78%, var(--c-ink)); }
+.st[data-look="field"] .st-tile > b { color: color-mix(in srgb, var(--tc) 78%, var(--c-ink)); }
 .st[data-look="field"] .st-tile-sub { color: var(--c-ink-soft); }
 .st[data-look="field"] .st-why { padding: 18px 0; border: 0; border-block: 1px solid var(--c-hairline); border-radius: 0; background: none; }
 .st[data-look="field"] .st-why-icon { display: none; }
@@ -270,3 +270,38 @@
   .st[data-look="field"] .st-why p { grid-template-columns: minmax(0, 1fr); }
   .st[data-look="field"] .st-why strong { padding-right: 0; border-right: 0; }
 }
+
+/* The figures along the top line up across tiles: each tile shares the board's rows, so the label rows are as tall as the longest label and every figure starts at the same height. */
+.st-board:not([data-variant]) { grid-template-rows: repeat(4, auto); row-gap: 0; column-gap: 14px; }
+@media (max-width: 1060px) { .st-board[data-n="4"]:not([data-variant]) .st-tile:nth-child(n+3) { margin-top: 14px; } }
+@media (max-width: 560px) { .st-board:not([data-variant]) .st-tile + .st-tile { margin-top: 14px; } }
+.st-board:not([data-variant]) .st-tile { grid-row: span 4; grid-template-rows: subgrid; row-gap: 0; align-content: stretch; }
+.st-board:not([data-variant]) .st-tile-label { grid-row: 1; }
+.st-board:not([data-variant]) .st-tile > b { grid-row: 2; margin-top: 8px; }
+.st-board:not([data-variant]) .st-tile-visual { grid-row: 3; margin-top: 10px; }
+.st-board:not([data-variant]) .st-tile-sub { grid-row: 4; margin-top: 6px; align-self: start; }
+/* field look: the dot sits beside the first line of the label, whatever the label's length. */
+.st[data-look="field"] .st-tile::before { display: none; }
+.st[data-look="field"] .st-tile-label { display: grid; grid-template-columns: 10px minmax(0, 1fr); gap: 0 8px; padding-left: 0; }
+.st[data-look="field"] .st-tile-label::before { content: ""; width: 10px; height: 10px; margin-top: 0.38em; border-radius: 50%; background: var(--tc); }
+
+/* water: pale water-blue tiles with a wave along the foot and a small picture of each figure. */
+.st[data-look="water"] .st-board { padding: 0; gap: 14px; border-radius: 0; background: none; box-shadow: none; }
+.st[data-look="water"] .st-tile { overflow: hidden; border: 1px solid color-mix(in srgb, #3F9BD8 32%, var(--c-hairline)); border-radius: 22px; padding: 20px 20px 46px; color: var(--c-ink); background: linear-gradient(180deg, color-mix(in srgb, #3F9BD8 8%, var(--c-paper-card)), color-mix(in srgb, #3F9BD8 22%, var(--c-paper-card))); }
+.st[data-look="water"] .st-tile::before { display: none; }
+.st[data-look="water"] .st-tile::after { content: ""; position: absolute; inset: auto 0 0 0; height: 30px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 30' preserveAspectRatio='none'%3E%3Cpath d='M0 14 Q15 4 30 14 T60 14 T90 14 T120 14 V30 H0Z' fill='%233F9BD8' fill-opacity='0.28'/%3E%3Cpath d='M0 20 Q15 12 30 20 T60 20 T90 20 T120 20 V30 H0Z' fill='%231B6FA8' fill-opacity='0.26'/%3E%3C/svg%3E") repeat-x bottom / 120px 30px; pointer-events: none; }
+.st[data-look="water"] .st-tile-label { color: color-mix(in srgb, #1B6FA8 78%, var(--c-ink)); }
+.st[data-look="water"] .st-tile > b { color: var(--c-ink); font-size: clamp(40px, 5vw, 58px); }
+.st[data-look="water"] .st-tile-sub { color: var(--c-ink-soft); }
+.wt-bars { display: grid; gap: 6px; }
+.wt-bars span { display: grid; grid-template-columns: 38px minmax(0, 1fr) 40px; gap: 8px; align-items: center; font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.wt-bars i { display: block; height: 12px; width: var(--w); border-radius: 6px; background: color-mix(in srgb, #1B6FA8 45%, transparent); }
+.wt-bars span:last-child i { background: #1B6FA8; }
+.wt-bars em { font-style: normal; }
+.st[data-look="water"] .st-tile-visual { align-content: center; }
+.st .st-tile .wt-bars b { font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0; text-align: right; color: var(--c-ink); }
+.wt-marks { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 3px; }
+.wt-marks i { aspect-ratio: 1; border-radius: 4px; border: 1.5px solid color-mix(in srgb, #1B6FA8 35%, transparent); }
+.wt-marks i.on { background: #1B6FA8; border-color: #1B6FA8; }
+.wt-marks i.lost { border: 1.5px dashed #B3382E; background: color-mix(in srgb, #B3382E 14%, transparent); }
+.wt-key { margin: 6px 0 0; font: 600 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }

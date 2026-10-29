@@ -13,6 +13,7 @@ import { regionKeyOf, wardCouncillors, loadAreaFigures } from "../lib/areaFigure
 import { REGIONS } from "../data/regionMetrics";
 import { Card, Section, Glance, JumpNav, SeatResult, SeatHistory, LocalPetitions, CouncilTax, WhoDoes, Neighbourhood, PlaceFacts, RegionRanks, Census, Contests, Help, Deeper } from "./AreaSections";
 import { useAreaExtras } from "../lib/useAreaExtras";
+import { ordinal } from "../lib/constituency";
 import "../myarea.css";
 
 // My area: type a postcode once and see your MP, constituency, council, councillors, next elections and how your region compares, on one page. The
@@ -158,9 +159,11 @@ function Dashboard({ data, onForget }) {
           <div className="ma-big">{r.parliamentary_constituency}</div>
           <p className="ma-sub">One of 650 seats in the House of Commons.</p>
           <dl className="ma-facts">
-            <div><dt>Region</dt><dd>{regionName}</dd></div>
-            <div><dt>Council area</dt><dd>{council?.name ?? r.admin_district ?? "Not matched"}</dd></div>
             {mp && <div><dt>MP</dt><dd>{mp.name}</dd></div>}
+            {x?.seat && <div><dt>Voters on the register</dt><dd>{x.seat.result.electorate?.toLocaleString("en-GB") ?? "Not saved"}</dd></div>}
+            {x?.seat?.standing && <div><dt>Closeness of the result</dt><dd>{ordinal(x.seat.standing.rankNarrowest)} narrowest of {x.seat.standing.of}</dd></div>}
+            {x?.seat?.turnout && <div><dt>Turnout rank</dt><dd>{ordinal(x.seat.turnout.rank)} of {x.seat.turnout.of}</dd></div>}
+            {x?.seatDep && <div><dt>Deprivation rank</dt><dd>{ordinal(x.seatDep.rank)} most affected of {x.seatDep.of}</dd></div>}
           </dl>
           <a className="ma-link" href={`#/constituency/${encodeURIComponent(r.parliamentary_constituency)}`}>How close the last election was</a>
         </Card>

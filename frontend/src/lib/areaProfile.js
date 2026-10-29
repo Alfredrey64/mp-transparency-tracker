@@ -2,7 +2,7 @@
 // sits on the deprivation index, what the council tax bill is, what the region's census says, and who does what locally. Every function is pure, so
 // the figures can be tested; the files they read are loaded by the page and passed in.
 
-import { seatSafety, majorityStanding, ordinal } from "./constituency";
+import { seatSafety, majorityStanding, majorityBins, ordinal } from "./constituency";
 import { electionList, changesOfParty } from "./seatElections";
 import { normCouncil } from "./councils";
 
@@ -45,6 +45,8 @@ export function seatProfile({ key, seats, summary, history, elections }) {
     changes: changesOfParty(list),
     former,
     petitions: record.petitions ?? [],
+    bins: majorityBins(seats, result.majorityPct),
+    national: summary ? { changedHands: summary.changedHandsAtGeneralElection ?? null, underHalf: summary.wonWithUnderHalf ?? null, total: summary.total ?? null } : null,
   };
 }
 
