@@ -5,6 +5,8 @@
 import { inject, pageview } from "@vercel/analytics";
 
 let started = false;
+let ready = false;
+let latest = null;
 
 export function analyticsAllowed(nav = typeof navigator === "undefined" ? {} : navigator) {
   return nav.doNotTrack !== "1" && nav.globalPrivacyControl !== true;
@@ -16,18 +18,28 @@ export function pathFor(view, param) {
   return `/${view}`;
 }
 
-export function startAnalytics() {
+// Vercel only serves its counting script once Web Analytics is switched on for the project. Until then the address falls through to this
+// site's own page, which the browser refuses as a script and logs as an error. So ask first, and start only when a script comes back.
+export function isScript(res) {
+  return !!res && res.ok && /javascript/i.test(res.headers?.get("content-type") || "");
+}
+
+export async function startAnalytics(probe = (url) => fetch(url, { method: "HEAD", credentials: "omit" })) {
   if (started || !import.meta.env?.PROD || !analyticsAllowed()) return;
   started = true;
   try {
+    if (!isScript(await probe("/_vercel/insights/script.js"))) throw new Error("not switched on");
     inject({ disableAutoTrack: true });
+    ready = true;
+    if (latest) trackPage(...latest);
   } catch {
     started = false;
   }
 }
 
 export function trackPage(view, param) {
-  if (!started) return;
+  latest = [view, param];
+  if (!ready) return;
   const path = pathFor(view, param);
   try {
     pageview({ route: path, path });

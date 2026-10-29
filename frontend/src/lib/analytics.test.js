@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { analyticsAllowed, pathFor } from "./analytics";
+import { analyticsAllowed, pathFor, isScript } from "./analytics";
 
 describe("analytics privacy", () => {
   it("stays off when the browser asks not to be tracked", () => {
@@ -17,5 +17,13 @@ describe("analytics privacy", () => {
   it("keeps the question for an answer page, which is not personal", () => {
     expect(pathFor("answers", "why-housing-expensive")).toBe("/answers/why-housing-expensive");
     expect(pathFor("answers", null)).toBe("/answers");
+  });
+
+  it("only starts when Vercel serves a real script, so a switched-off project causes no console error", () => {
+    const res = (ok, type) => ({ ok, headers: { get: () => type } });
+    expect(isScript(res(true, "text/javascript; charset=utf-8"))).toBe(true);
+    expect(isScript(res(true, "text/html; charset=utf-8"))).toBe(false);
+    expect(isScript(res(false, "text/javascript"))).toBe(false);
+    expect(isScript(undefined)).toBe(false);
   });
 });
