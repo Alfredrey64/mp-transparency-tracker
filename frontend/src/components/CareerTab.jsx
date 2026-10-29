@@ -70,7 +70,7 @@ function Swimlanes({ detail, now }) {
                 return (
                   <div
                     key={`${item.label}-${item.from}-${i}`}
-                    className="career-bar"
+                    className="career-bar keep-line"
                     title={tip}
                     style={{
                       position: "absolute", left: pos(item.from), width: `${Math.max(widthPct, 0.5)}%`, top: item.row * ROW + 2, height: ROW - 6,

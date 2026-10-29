@@ -8,9 +8,6 @@ import { partyChange } from "./partyChange";
 // names with punctuation and case taken out.
 export const normSeat = (name) => String(name ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 
-// How far in the map zooms: each step is a bigger share of the picture.
-export const ZOOMS = [1, 1.6, 2.4, 3.6];
-
 const SQRT3 = Math.sqrt(3);
 
 // Pointy-topped hexagons in rows, every other row shifted half a hexagon

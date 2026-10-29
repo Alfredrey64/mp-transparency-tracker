@@ -28,11 +28,23 @@ export function tenthWords(decile) {
 
 // The seat's 2024 result and history, from the files saved with the site.
 // `seats` is constituencies.json's list by seat key, `summary` is constituencySummary.json, `history` is constituencyHistory.json's bySeat, `elections` is electionHistory.json.
+// When a seat's saved result was: "in 2024" for the general election, or "at the October 2026 by-election" for a seat that has voted again since.
+export function electionWhen(result) {
+  if (result?.isGeneralElection === false && /^\d{4}-\d{2}-\d{2}$/.test(result.date ?? "")) {
+    const month = new Intl.DateTimeFormat("en-GB", { month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${result.date}T00:00:00Z`));
+    return { byElection: true, in: `at the ${month} by-election`, short: "the by-election", year: Number(result.date.slice(0, 4)) };
+  }
+  const year = Number(String(result?.date ?? "2024").slice(0, 4)) || 2024;
+  return { byElection: false, in: `in ${year}`, short: String(year), year };
+}
+
 export function seatProfile({ key, seats, summary, history, elections }) {
   const record = seats?.[key];
   const result = record?.result;
   if (!record || !result?.candidates?.length) return null;
   const candidates = [...result.candidates].sort((a, b) => b.votes - a.votes);
+  // The saved list holds the leading candidates only; whatever the rest won is the difference from the votes cast.
+  const otherVotes = Math.max(0, (result.turnout ?? 0) - candidates.reduce((n, c) => n + c.votes, 0));
   const turnouts = Object.values(seats).map((s) => s.result?.turnoutPct).filter((v) => typeof v === "number");
   const turnout = typeof result.turnoutPct === "number"
     ? { pct: result.turnoutPct, average: summary?.turnout?.average ?? null, rank: turnouts.filter((v) => v > result.turnoutPct).length + 1, of: turnouts.length }
@@ -40,7 +52,8 @@ export function seatProfile({ key, seats, summary, history, elections }) {
   const list = electionList(elections?.bySeat?.[key], record);
   const former = [...(history?.[key] ?? [])].sort((a, b) => String(b.end ?? "").localeCompare(String(a.end ?? ""))).slice(0, 4);
   return {
-    record, result, candidates, turnout,
+    record, result, candidates, turnout, when: electionWhen(result),
+    others: otherVotes > 0 && result.turnout ? { votes: otherVotes, share: otherVotes / result.turnout } : null,
     safety: seatSafety(result.majorityPct),
     standing: majorityStanding(seats, key),
     runs: list.map((e) => ({ year: e.year, party: e.parties[0]?.name ?? "", share: e.parties[0]?.share ?? null, lead: e.lead, colour: e.parties[0]?.colour ?? elections?.parties?.[e.parties[0]?.name] ?? null })),
@@ -60,13 +73,18 @@ export function councilTaxProfile(tax, councilName, countyName = null) {
   for (const w of wanted) { row = tax.rows.find((r) => normCouncil(r[0]) === w); if (row) break; }
   if (!row) return null;
   const series = row[2];
+  // A council formed recently has no bills for the years before it existed, so its history starts at its first bill.
+  const start = series.findIndex((v) => Number.isFinite(v));
   const last = series.at(-1);
-  const first = series[0];
+  if (start < 0 || !Number.isFinite(last)) return null;
+  const first = series[start];
+  const earlier = series.at(-2);
   const lasts = tax.rows.map((r) => r[2].at(-1)).filter((v) => Number.isFinite(v));
   const average = lasts.reduce((a, b) => a + b, 0) / lasts.length;
   return {
-    name: row[0], type: row[1], series, from: tax.from, to: tax.from + series.length - 1, last, first,
-    sinceFirst: ((last - first) / first) * 100, sinceLast: series.length > 1 ? ((last - series.at(-2)) / series.at(-2)) * 100 : null,
+    name: row[0], type: row[1], series, start, from: tax.from + start, to: tax.from + series.length - 1, last, first,
+    sinceFirst: start < series.length - 1 ? ((last - first) / first) * 100 : null,
+    sinceLast: Number.isFinite(earlier) ? ((last - earlier) / earlier) * 100 : null,
     average, rank: lasts.filter((v) => v > last).length + 1, of: lasts.length,
   };
 }

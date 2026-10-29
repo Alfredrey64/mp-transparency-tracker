@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useInView } from "motion/react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, readable } from "../theme";
 import { DOT, layoutLandmarks, nearestNode } from "../lib/landmarkLayout";
+import { watchWidth } from "../lib/watchWidth";
 
 // Landmark votes at a glance: one dot for each vote, with time running across and the theme running down. Hover or tap a dot to read what it was;
 // "Read it below" jumps to its card. Filled dots are votes that were carried, hollow ones were lost or failed. The cards underneath hold the same
@@ -47,9 +48,7 @@ export default function LandmarkMap({ votes, eras, themes, filter, selectedId, o
   useEffect(() => {
     const el = boxRef.current;
     if (!el) return undefined;
-    const ro = new ResizeObserver(([entry]) => setW(Math.round(entry.contentRect.width)));
-    ro.observe(el);
-    return () => ro.disconnect();
+    return watchWidth(el, (width) => setW(Math.round(width)));
   }, []);
 
   const wide = w >= WIDE;

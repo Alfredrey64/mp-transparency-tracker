@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { watchSize } from "./watchWidth";
 
 // Phone gestures for the hexagon maps: pinch with two fingers to zoom (and a trackpad pinch or Ctrl and the wheel on a laptop), and press and hold a
 // seat for about half a second to pin its card without selecting it. Scrolling a zoomed map is the browser's own.
@@ -26,12 +27,7 @@ export function useMapGestures({ aspect, vh = 0.7, initialScale = 1, maxScale = 
   useEffect(() => {
     const el = scroller;
     if (!el) return undefined;
-    const measure = () => setBoxW(el.clientWidth);
-    measure();
-    if (typeof ResizeObserver === "undefined") return undefined;
-    const ro = new ResizeObserver(measure);
-    ro.observe(el);
-    return () => ro.disconnect();
+    return watchSize(el, () => setBoxW(el.clientWidth));
   }, [scroller]);
 
   const setScale = useCallback((next, focal) => {

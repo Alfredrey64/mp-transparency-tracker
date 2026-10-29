@@ -44,6 +44,7 @@ test("the jump links move to their section", async ({ page }) => {
   await mockServices(page);
   await page.goto("/myArea");
   await expect(page.locator(".ma-section")).toHaveCount(6, { timeout: 20000 });
+  await expect(page.locator(".ma-skel")).toHaveCount(0, { timeout: 20000 });
   await page.getByRole("button", { name: "Council", exact: true }).click();
   await expect.poll(() => page.evaluate(() => Math.round(document.getElementById("ma-council").getBoundingClientRect().top)), { timeout: 5000 }).toBeLessThan(200);
 });

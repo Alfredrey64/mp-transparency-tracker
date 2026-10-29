@@ -5,6 +5,7 @@ import { STAGE_DEFS, buildRoute } from "../lib/billRoute";
 import { plainSentence } from "../lib/billPlain";
 import { getBillDescription } from "../lib/billDescriptions";
 import "../billcap.css";
+import { watchSize } from "../lib/watchWidth";
 
 // A real institutional fact, not a decorative choice: Commons benches are
 // green, Lords benches are red, and that colour-coding is how the two
@@ -143,11 +144,10 @@ function StageBoard({ tracks, activeKey, onSelect }) {
       const centre = (el) => (el ? el.getBoundingClientRect().top - top + 4 + 32 : 0);
       setGeo({ width: Math.round(board.clientWidth), commons: centre(commonsRef.current), lords: centre(lordsRef.current) });
     };
-    const ro = new ResizeObserver(measure);
-    ro.observe(board);
+    const stop = watchSize(board, measure);
     const io = new IntersectionObserver(([entry]) => setOnScreen(entry.isIntersecting), { threshold: 0.35 });
     io.observe(board);
-    return () => { ro.disconnect(); io.disconnect(); };
+    return () => { stop(); io.disconnect(); };
   }, []);
 
   // Move on to the next step after this one has been shown for its time; at the end of a route, start the other route.

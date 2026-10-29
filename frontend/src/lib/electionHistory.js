@@ -77,16 +77,7 @@ export function allElections(history) {
 
 export const electionLabel = (e) => (e.id === "1974a" ? "February 1974" : e.id === "1974b" ? "October 1974" : e.id);
 
-// Short label for chips.
-export const electionShort = (e) => (e.id === "1974a" ? "Feb 1974" : e.id === "1974b" ? "Oct 1974" : e.id);
-
 export const percent = (n) => `${Math.round(n)}%`;
-
-// What the map says for each seat in an election: the winner's group letter and how big the lead was, band 0 (under 5 points) to 9 (45 or more).
-export function decodeMap(entry) {
-  if (!entry) return [];
-  return Array.from(entry.w, (g, i) => (g === "." ? null : { group: g, band: Number(entry.b[i]) }));
-}
 
 // A seat's winner at every election it can be matched in, oldest first. `maps` is history.maps; `elections` the list with ids.
 export function seatTimeline(index, elections, maps) {

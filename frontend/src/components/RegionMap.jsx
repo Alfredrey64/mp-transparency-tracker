@@ -2,6 +2,7 @@ import { memo, useCallback, useState, useSyncExternalStore } from "react";
 import { COLORS, FONT_BODY, numeric } from "../theme";
 import { isScrolling } from "../lib/scrollState";
 import geo from "../data/regionMap.json";
+import { watchSize } from "../lib/watchWidth";
 
 // The 12 regions and nations drawn two ways: as a map, and as a grid of equal tiles (so London,
 // which is tiny on the map, gets the same room as Scotland). Both share one set of colours, hover,
@@ -35,9 +36,7 @@ function useBoxWidth() {
   const [box, setBox] = useState(null);
   const subscribe = useCallback((notify) => {
     if (!box) return () => {};
-    const ro = new ResizeObserver(notify);
-    ro.observe(box);
-    return () => ro.disconnect();
+    return watchSize(box, notify);
   }, [box]);
   const width = useSyncExternalStore(subscribe, () => box?.clientWidth ?? 0, () => 0);
   return [setBox, width];

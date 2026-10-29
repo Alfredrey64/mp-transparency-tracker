@@ -58,4 +58,3 @@ export const MAP_METRICS = [
 
 // The GDP-per-head lines available to compare.
 export const GDP_PICKS = ["GBR", "G7", "EU", "EA", "USA", "FRA", "DEU", "ITA", "CAN", "JPN"];
-export function gdpSummary(code) { const s = B.gdp.series[code]; return { name: B.gdp.names[code], value: last(s) }; }

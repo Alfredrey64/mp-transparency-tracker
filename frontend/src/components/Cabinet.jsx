@@ -13,6 +13,7 @@ import {
 import { withScrollPreserved } from "../lib/preserveScroll";
 import Loading from "./Loading";
 import "../cabinet.css";
+import { watchWidth } from "../lib/watchWidth";
 
 // Cabinet roles don't carry a clean "department" field of their own — we
 // infer one from the role title itself (most already name their department
@@ -339,10 +340,7 @@ function useResponsiveColumns(containerRef) {
       const fit = Math.floor((width + NODE_GAP) / (NODE_WIDTH + NODE_GAP));
       setColumns(Math.max(1, fit));
     }
-    update(el.getBoundingClientRect().width);
-    const observer = new ResizeObserver(([entry]) => update(entry.contentRect.width));
-    observer.observe(el);
-    return () => observer.disconnect();
+    return watchWidth(el, update);
   }, [containerRef]);
   return columns;
 }

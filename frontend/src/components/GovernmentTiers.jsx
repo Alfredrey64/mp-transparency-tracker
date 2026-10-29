@@ -7,6 +7,7 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, readable } from "../theme";
 import { IconParliament, IconCabinet, IconDevolved, IconTransport, IconCouncil, IconHome, IconGroup } from "./icons";
 import { buildLayout, routeBetween } from "../lib/tierTree";
 import { NATIONS, TIERS, VOTE_FOR, CHECKS, WHO_TO_CONTACT, contactAnswer, SCENARIOS, scenarioSteps, YOU, visibleTierKeys, linkBetween } from "../data/governmentTiers";
+import { watchWidth } from "../lib/watchWidth";
 
 const SECTION_COLOR = "#1E3A6E";
 const DWELL_MS = 3800;
@@ -341,11 +342,8 @@ export default function GovernmentTiers() {
   useEffect(() => {
     const el = diaRef.current;
     if (!el) return undefined;
-    const ro = new ResizeObserver(([entry]) => setWidth(Math.max(240, Math.round(entry.contentRect.width))));
-    ro.observe(el);
-    const wrap = stageRef.current;
-    const ro2 = wrap ? new ResizeObserver(([entry]) => setWrapWidth(Math.round(entry.contentRect.width))) : null;
-    if (wrap) ro2.observe(wrap);
+    const stopDia = watchWidth(el, (width) => setWidth(Math.max(240, Math.round(width))));
+    const stopWrap = watchWidth(stageRef.current, (width) => setWrapWidth(Math.round(width)));
     // A phone's address bar slides away as you scroll and changes the window height by a few dozen pixels; redrawing the diagram for that makes it jump.
     let lastW = window.innerWidth;
     const onResize = () => {
@@ -356,8 +354,8 @@ export default function GovernmentTiers() {
     };
     window.addEventListener("resize", onResize);
     return () => {
-      ro.disconnect();
-      ro2?.disconnect();
+      stopDia();
+      stopWrap();
       window.removeEventListener("resize", onResize);
     };
   }, []);

@@ -400,6 +400,9 @@ export default function App() {
       root.dataset.vt = "1";
       const transition = document.startViewTransition(() => { flushSync(apply); });
       const done = () => { if (id === navId.current) delete root.dataset.vt; };
+      // A click that arrives mid-transition aborts it: that is expected, so the other promises are answered too rather than left to report an error.
+      transition.ready.catch(() => {});
+      transition.updateCallbackDone.catch(() => {});
       transition.finished.then(done, done);
     });
   }

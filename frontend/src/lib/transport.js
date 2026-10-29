@@ -27,14 +27,12 @@ export const NC = V.newCars;
 export const NC_LAST = last(NC.years);
 export const share = (key, year = NC_LAST) => round((at(NC.years, NC[key], year) / at(NC.years, NC.total, year)) * 100, 1);
 export const fuelShares = (year = NC_LAST) => ({ petrol: share("petrol", year), diesel: share("diesel", year), hybrid: share("hybrid", year), plugin: share("plugin", year), battery: share("battery", year), other: share("other", year) });
-export const ICE_SHARE = (year = NC_LAST) => round(share("petrol", year) + share("diesel", year), 1);
 export const carsLicensed = () => ({ year: last(V.licensed.years), millions: round(last(V.licensed.thousands) / 1000, 1), first: round(V.licensed.thousands[0] / 1000, 1), firstYear: V.licensed.years[0] });
 export const newCarSeries = (key) => NC[key].map((v, i) => round((v / NC.total[i]) * 100, 1));
 
 // ---- Road deaths ------------------------------------------------------------------------------------------------------------------------------------------------
 export const DE = D.deaths;
 export const DE_LAST = last(DE.years);
-export const deathsPeak = () => { let b = 0; DE.all.forEach((v, i) => { if (v > DE.all[b]) b = i; }); return { year: DE.years[b], value: DE.all[b] }; };
 export const deathsAt = (year) => at(DE.years, DE.all, year);
 // The highest year since the war, since 1941 was the worst of all and the first years are not comparable with later ones.
 export const deathsPeakSince = (from = 1949) => { let b = -1; DE.all.forEach((v, i) => { if (DE.years[i] >= from && (b < 0 || v > DE.all[b])) b = i; }); return { year: DE.years[b], value: DE.all[b] }; };

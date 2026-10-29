@@ -233,12 +233,11 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 .bento-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
 .bento-grid > .s4 { grid-column: span 4; }
 .bento-grid > .s5 { grid-column: span 5; }
-.bento-grid > .s6 { grid-column: span 6; }
 .bento-grid > .s7 { grid-column: span 7; }
 .bento-grid > .s8 { grid-column: span 8; }
 .bento-grid > .s12 { grid-column: span 12; }
 @container (max-width: 780px) {
-  .bento-grid > .s4, .bento-grid > .s5, .bento-grid > .s6, .bento-grid > .s7, .bento-grid > .s8, .bento-grid > .s12 { grid-column: 1 / -1; }
+  .bento-grid > .s4, .bento-grid > .s5, .bento-grid > .s7, .bento-grid > .s8, .bento-grid > .s12 { grid-column: 1 / -1; }
 }
 
 /* Figures and bars you can tap to see the MPs behind them. */
@@ -252,17 +251,6 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 @keyframes careerBar { from { transform: scaleX(0); opacity: 0.4; } to { transform: scaleX(1); opacity: 1; } }
 .career-bar { transform-origin: left center; animation: careerBar 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; }
 @media (prefers-reduced-motion: reduce) { .career-bar { animation: none; } }
-
-/* Home hero on a phone: the three facts sit in one tidy row and the quick
-   links become an even two-column grid instead of ragged, uneven pills. */
-@media (max-width: 560px) {
-  .hero-stats { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px !important; margin: 30px 0 26px !important; }
-  .hero-stats > div { min-width: 0 !important; text-align: center; }
-  .hero-stat-value { font-size: 19px !important; }
-  .hero-links { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .hero-links > button { justify-content: center; padding: 12px 8px !important; font-size: 14px !important; text-align: center; min-width: 0; white-space: normal !important; line-height: 1.25; }
-  .hero-links > button:first-child { grid-column: 1 / -1; }
-}
 
 /* Touch screens: small text-link buttons (a row of 14px-high "Download" or
    "Glossary →" links) get an invisible, larger area to tap, without moving
@@ -638,7 +626,10 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
    "Show more") get a taller row to tap. (Nothing here changes how a button is positioned.) */
 @media (pointer: coarse), (max-width: 700px) {
   main button[aria-pressed], main button[role="radio"], main button[role="tab"], main button.ons-chip { min-height: 38px; }
-  main button[style*="background: none"][style*="border: none"]:not(.tier-slab):not(.bd-sq):not(.gloss-term) { min-height: 32px; }
+  /* Safari writes "border: none" as "border: medium", so the match is on the background and the zero padding, which every browser writes the same way. */
+  main button[style*="background: none"][style*="padding: 0px"]:not(.tier-slab):not(.bd-sq):not(.gloss-term) { min-height: 32px; }
+  /* A plain text link gets a few more pixels above and below to tap. On a link inside a line of text this changes nothing on the page; it only widens the area that answers a tap. */
+  :where(main a:not([class])) { padding-block: 5px; }
   /* Words with a hover definition: a taller invisible area to tap, without moving any text. */
   .gloss-term { padding-block: 8px; }
 }
@@ -646,6 +637,8 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 /* Nothing in the body copy should be smaller than 12px on a phone. */
 @media (max-width: 700px) {
   main [style*="font-size: 10px"], main [style*="font-size: 10.5px"], main [style*="font-size: 11px"], main [style*="font-size: 11.5px"] { font-size: 12px !important; }
+  /* A name or label that was cut short with "…" wraps instead, so a phone shows all of it. Rows that need one fixed line say so with .keep-line. */
+  main [style*="text-overflow: ellipsis"]:not(.keep-line), .dn-who b, .dn-row span, .cp-bar-name, .as-parties b { white-space: normal !important; overflow: visible !important; text-overflow: clip !important; overflow-wrap: anywhere; }
 }
 
 /* The Committees page's diagrams and cards animate in once, when the page loads. Plain CSS: nothing runs while the page scrolls. */

@@ -21,7 +21,6 @@ export const INSTITUTIONS = {
   courts: { label: "Courts and legal system", blurb: "The share who say they trust the courts and legal system to a high or moderately high degree." },
 };
 export const INSTITUTION_KEYS = Object.keys(INSTITUTIONS);
-export const YEARS = ["2021", "2023"];
 // The share with high or moderately high trust for an institution in one wave. Government is stored with its whole spread.
 export const trustOf = (code, year, key) => {
   const y = T.countries[code]?.years?.[year];

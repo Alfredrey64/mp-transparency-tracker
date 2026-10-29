@@ -121,7 +121,6 @@ export const areaBill = (fuel, area, year = BILL_LAST) => {
   const src = fuel === "gas" ? BL.gasRegions : BL.elecRegions;
   return src?.[area]?.[year] ?? null;
 };
-export const areaYears = Object.keys(BL.elecRegions["United Kingdom"]).map(Number).sort();
 export const hasGas = (area) => Boolean(BL.gasRegions?.[area]);
 export const UK_AREA = "United Kingdom";
 
@@ -136,7 +135,6 @@ export const FP = E.fuelPoverty;
 
 // The ONS monthly rise in the price of electricity, gas and other fuels.
 export const INF = E.inflation;
-export const infAt = (label) => INF.rate[INF.months.indexOf(label)];
 export const infPeak = () => { let best = 0; INF.rate.forEach((v, i) => { if (v > INF.rate[best]) best = i; }); return { rate: INF.rate[best], month: INF.months[best], time: INF.times[best] }; };
 
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];

@@ -5,6 +5,7 @@ import { niceTicks } from "../lib/onsFormat";
 import { yearTicks } from "../lib/onsChart";
 import { bandsBetween, PARTY_COLOURS } from "../lib/governments";
 import { UNITS, fmt, governmentOn, valueOn } from "../lib/taxRates";
+import { watchWidth } from "../lib/watchWidth";
 
 // A step chart for tax rates: a rate holds until the day it changes, so the line moves in steps rather than slopes. Who was in government is
 // shaded behind it. Touch or hover shows the rate on that day.
@@ -30,11 +31,7 @@ export default function TaxStepChart({ lines, unit, from, to, ariaLabel, height 
   useEffect(() => {
     const el = ref.current;
     if (!el) return undefined;
-    const fit = (width) => { if (width > 0) setW(Math.min(960, Math.max(260, Math.round(width)))); };
-    const ro = new ResizeObserver(([entry]) => fit(entry.contentRect.width));
-    ro.observe(el);
-    const frame = requestAnimationFrame(() => fit(el.getBoundingClientRect().width));
-    return () => { cancelAnimationFrame(frame); ro.disconnect(); };
+    return watchWidth(el, (width) => setW(Math.min(960, Math.max(260, Math.round(width)))));
   }, []);
 
   const narrow = W < 420;

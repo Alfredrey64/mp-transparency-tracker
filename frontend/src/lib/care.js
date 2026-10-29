@@ -28,15 +28,11 @@ export const shares = () => {
   return { clients: round((f.clients / F.gross.cash.at(-1)) * 100, 0), long: round((F.careType.long / F.careType.total) * 100, 0), short: round((F.careType.short / F.careType.total) * 100, 0), other: round((F.careType.other / F.careType.total) * 100, 0) };
 };
 export const perAdult = () => F.regions.england.perAdult;
-export const peakRealYear = () => { let b = 0; F.gross.real.forEach((v, i) => { if (v < F.gross.real[b]) b = i; }); return { year: F.gross.years[b], value: F.gross.real[b] }; };
-
 // ---- People ------------------------------------------------------------------------------------------------------------------------------------------------------
 export const A = C.activity.regions.england;
 export const requestsTotal = () => A.requests1864 + A.requests65;
 export const cl = C.carers;
 export const carerYears = cl.years;
-export const carerYearText = (y) => yearText(y);
-
 // ---- Workforce ----------------------------------------------------------------------------------------------------------------------------------------
 export const W = C.workforce;
 export const WYEAR = last(W.vacancy.all.years);

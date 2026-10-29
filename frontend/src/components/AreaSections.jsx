@@ -54,7 +54,7 @@ const Missing = ({ children }) => <p className="ma-sub">{children}</p>;
 // Six facts across the top, the ones most people ask first.
 export function Glance({ data, x }) {
   const { result: r, council, regionName } = data;
-  if (!x) return <div className="ma-glance" aria-hidden="true">{Array.from({ length: 6 }, (_, n) => <div key={n} className="ma-g ma-g-skel"><Skel lines={2} /></div>)}</div>;
+  if (!x || x.seat === undefined || x.tax === undefined || x.snapshot === undefined) return <div className="ma-glance" aria-hidden="true">{Array.from({ length: 6 }, (_, n) => <div key={n} className="ma-g ma-g-skel"><Skel lines={2} /></div>)}</div>;
   const s = x.seat;
   const pay = x.snapshot.find((m) => m.metric.id === "pay");
   const nextDate = x.contests?.[0]?.date ?? council?.next?.[0]?.[0] ?? null;
@@ -62,7 +62,7 @@ export function Glance({ data, x }) {
   const up = (value, format) => <CountUp value={value} format={format} />;
   const tiles = [
     s && { c: "#3F6FD8", label: "Your MP's majority", value: up(s.result.majority), sub: `${s.safety?.label ?? "Seat"}. ${s.standing ? `The ${ordinal(s.standing.rankNarrowest)} narrowest of ${s.standing.of}.` : ""}` },
-    s?.turnout && { c: "#1FA97C", label: "Turnout in 2024", value: up(s.turnout.pct, (n) => `${n.toFixed(1)}%`), sub: s.turnout.average ? `The average seat was ${s.turnout.average.toFixed(1)}%.` : "" },
+    s?.turnout && { c: "#1FA97C", label: `Turnout ${s.when.in}`, value: up(s.turnout.pct, (n) => `${n.toFixed(1)}%`), sub: s.turnout.average ? `The average seat was ${s.turnout.average.toFixed(1)}%.` : "" },
     x.tax && { c: "#E8741A", label: `Band D council tax, ${taxYear(x.tax.to)}`, value: up(x.tax.last, money), sub: `The England average is ${money(x.tax.average)}.` },
     !x.tax && council && { c: "#E8741A", label: "Who runs your council", value: council.control, sub: `${council.total} councillors.` },
     x.nb && { c: "#C0478A", label: "Your neighbourhood", value: ordinal(x.nb.decile) + " tenth", sub: x.nb.decile === 1 ? `Among the most deprived tenth in ${x.nb.nation}.` : `1st is the most deprived tenth in ${x.nb.nation}.` },
@@ -110,8 +110,8 @@ export function JumpNav() {
 export function SeatResult({ x, name, i }) {
   const s = x?.seat;
   return (
-    <Card i={i} colour="#3F6FD8" icon={<IconHexMap size={20} />} title={`How ${name} voted in 2024`} className="ma-result">
-      {!x ? <Skel lines={5} /> : !s ? <Missing>No saved result for this seat.</Missing> : (
+    <Card i={i} colour="#3F6FD8" icon={<IconHexMap size={20} />} title={`How ${name} voted ${s?.when?.in ?? "in 2024"}`} className="ma-result">
+      {x?.seat === undefined ? <Skel lines={5} /> : !s ? <Missing>No saved result for this seat.</Missing> : (
         <>
           <ul className="ma-cands">
             {s.candidates.slice(0, 6).map((c, n) => (
@@ -122,7 +122,8 @@ export function SeatResult({ x, name, i }) {
               </li>
             ))}
           </ul>
-          {s.candidates.length > 6 && <p className="ma-sub">and {s.candidates.length - 6} other {s.candidates.length - 6 === 1 ? "candidate" : "candidates"}.</p>}
+          {s.others && <p className="ma-sub">All other candidates together won {(s.others.share * 100).toFixed(1)}% of the vote ({s.others.votes.toLocaleString("en-GB")} votes). Only the leading candidates are shown above.</p>}
+          {s.when.byElection && <p className="ma-sub">This seat voted again at a by-election, so these are the by-election figures. Its 2024 general election result is no longer the current one.</p>}
           <dl className="ma-trio">
             <div><dt>Won by</dt><dd>{s.result.majority.toLocaleString("en-GB")}</dd><small>votes ({s.result.majorityPct.toFixed(1)} points)</small></div>
             <div><dt>Turnout</dt><dd>{s.turnout ? `${s.turnout.pct.toFixed(1)}%` : "Not saved"}</dd><small>{s.turnout ? `${ordinal(s.turnout.rank)} highest of ${s.turnout.of} seats` : ""}</small></div>
@@ -160,7 +161,7 @@ export function SeatHistory({ x, i }) {
   const second = s?.candidates?.[1];
   return (
     <Card i={i} colour="#7A5AF0" icon={<IconCalendar size={20} />} title="Who has won here" className="ma-history">
-      {!x ? <Skel lines={4} /> : !s ? <Missing>No election history is saved for this seat.</Missing> : (
+      {x?.seat === undefined ? <Skel lines={4} /> : !s ? <Missing>No election history is saved for this seat.</Missing> : (
         <>
           <ol className="ma-runs">
             {s.runs.map((e) => (
@@ -206,7 +207,7 @@ export function LocalPetitions({ x, name, i }) {
   const list = x?.seat?.petitions ?? [];
   return (
     <Card i={i} colour="#E8741A" icon={<IconPetition size={20} />} title="What people here are signing" className="ma-petitions">
-      {!x ? <Skel lines={3} /> : list.length === 0 ? <Missing>No local signatures found on the most-signed open petitions.</Missing> : (
+      {x?.seat === undefined ? <Skel lines={3} /> : list.length === 0 ? <Missing>No local signatures found on the most-signed open petitions.</Missing> : (
         <>
           <p className="ma-sub">Among the most-signed open petitions in the country, the ones that drew the most signatures from {name}.</p>
           <ul className="ma-pets">
@@ -227,25 +228,33 @@ export function LocalPetitions({ x, name, i }) {
 export function CouncilTax({ x, i }) {
   const t = x?.tax;
   const W = 300, H = 90, P = 6;
-  const pts = t ? t.series.map((v, n) => [P + (n / (t.series.length - 1)) * (W - 2 * P), H - P - ((v - Math.min(...t.series)) / (Math.max(...t.series) - Math.min(...t.series) || 1)) * (H - 2 * P)]) : [];
+  const values = t ? t.series.slice(t.start) : [];
+  const lo = Math.min(...values);
+  const hi = Math.max(...values);
+  const pts = values.map((v, n) => [P + (n / Math.max(1, values.length - 1)) * (W - 2 * P), H - P - ((v - lo) / (hi - lo || 1)) * (H - 2 * P)]);
   const line = pts.map((p) => p.join(",")).join(" ");
   return (
     <Card i={i} colour="#E8741A" icon={<IconTrend size={20} />} title="Your council tax" className="ma-tax">
-      {!x ? <Skel lines={4} /> : !t ? <Missing>We hold council tax bills for councils in England only, and could not match this one.</Missing> : (
+      {x?.tax === undefined ? <Skel lines={4} /> : !t ? <Missing>We hold council tax bills for councils in England only, and could not match this one.</Missing> : (
         <>
           <div className="ma-taxhead"><b>{money(t.last)}</b><span>a year for a Band D home in {taxYear(t.to)}</span></div>
-          <svg className="ma-spark" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Band D council tax in ${t.name}, ${t.from} to ${t.to}: from ${money(t.first)} to ${money(t.last)}`} preserveAspectRatio="none">
-            <polygon points={`${P},${H - P} ${line} ${W - P},${H - P}`} className="ma-spark-fill" />
-            <polyline points={line} className="ma-spark-line" pathLength="1" />
-            <circle cx={pts.at(-1)[0]} cy={pts.at(-1)[1]} r="4" className="ma-spark-dot" />
-          </svg>
-          <p className="ma-sub ma-spark-cap"><span>{t.from} to {String(t.from + 1).slice(2)}: {money(t.first)}</span><span>{taxYear(t.to)}: {money(t.last)}</span></p>
+          {pts.length > 1 && (
+            <>
+              <svg className="ma-spark" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Band D council tax in ${t.name}, ${t.from} to ${t.to}: from ${money(t.first)} to ${money(t.last)}`} preserveAspectRatio="none">
+                <polygon points={`${P},${H - P} ${line} ${W - P},${H - P}`} className="ma-spark-fill" />
+                <polyline points={line} className="ma-spark-line" pathLength="1" />
+                <circle cx={pts.at(-1)[0]} cy={pts.at(-1)[1]} r="4" className="ma-spark-dot" />
+              </svg>
+              <p className="ma-sub ma-spark-cap"><span>{taxYear(t.from)}: {money(t.first)}</span><span>{taxYear(t.to)}: {money(t.last)}</span></p>
+            </>
+          )}
           <dl className="ma-facts">
-            <div><dt>Change since {t.from}</dt><dd>{t.sinceFirst >= 0 ? "Up" : "Down"} {Math.abs(t.sinceFirst).toFixed(0)}%</dd></div>
+            {t.sinceFirst !== null && <div><dt>Change since {t.from}</dt><dd>{t.sinceFirst >= 0 ? "Up" : "Down"} {Math.abs(t.sinceFirst).toFixed(0)}%</dd></div>}
             {t.sinceLast !== null && <div><dt>Change on last year</dt><dd>{t.sinceLast >= 0 ? "Up" : "Down"} {Math.abs(t.sinceLast).toFixed(1)}%</dd></div>}
             <div><dt>Average across English councils</dt><dd>{money(t.average)}</dd></div>
             <div><dt>Where yours ranks</dt><dd>{ordinal(t.rank)} highest of {t.of}</dd></div>
           </dl>
+          {t.start > 0 && <p className="ma-sub">{t.name} was created in {t.from}, so there are no earlier bills for it.</p>}
           <p className="ma-sub">This is the whole Band D bill for the area, which includes the county, police, fire and any London or combined authority share. Your own band, and any discount, will differ.</p>
         </>
       )}
@@ -258,7 +267,7 @@ export function WhoDoes({ x, i }) {
   const w = x?.who;
   return (
     <Card i={i} colour="#2F9E6E" icon={<IconCouncil size={20} />} title="Who does what here" className="ma-who">
-      {!x ? <Skel lines={4} /> : !w ? <Missing>We could not match this postcode to a council.</Missing> : (
+      {x?.who === undefined ? <Skel lines={4} /> : !w ? <Missing>We could not match this postcode to a council.</Missing> : (
         <>
           <p className="ma-sub">{w.title}.</p>
           <ul className="ma-roles">
@@ -285,7 +294,7 @@ export function Neighbourhood({ x, i }) {
   const DOMAINS = [["income", "Income"], ["employment", "Employment"], ["education", "Education, skills and training"], ["health", "Health and disability"], ["crime", "Crime"], ["barriers", "Barriers to housing and services"], ["living", "Living environment"]];
   return (
     <Card i={i} colour="#C0478A" icon={<IconSearch size={20} />} title="Your neighbourhood" className="ma-hood">
-      {!x ? <Skel lines={5} /> : (
+      {x?.seatDep === undefined ? <Skel lines={5} /> : (
         <>
           {nb ? (
             <>
@@ -321,7 +330,7 @@ export function Neighbourhood({ x, i }) {
 export function PlaceFacts({ x, i }) {
   return (
     <Card i={i} colour="#0E9AA7" icon={<IconPinHome size={20} />} title="About where you live" className="ma-placefacts">
-      {!x ? <Skel lines={5} /> : x.facts.length === 0 ? <Missing>No further details were found for this postcode.</Missing> : (
+      {x?.facts === undefined ? <Skel lines={5} /> : x.facts.length === 0 ? <Missing>No further details were found for this postcode.</Missing> : (
         <dl className="ma-facts">{x.facts.map((f) => <div key={f.label}><dt>{f.label}</dt><dd>{f.value}</dd></div>)}</dl>
       )}
     </Card>
@@ -333,7 +342,7 @@ export function RegionRanks({ x, regionName, i }) {
   const rows = x?.snapshot ?? [];
   return (
     <Card i={i} colour="#7A5AF0" icon={<IconTrend size={20} />} title={`Where ${regionName ?? "your region"} ranks`} className="ma-ranks">
-      {!x ? <Skel lines={5} /> : rows.length === 0 ? <Missing>Regional rankings are not available for this area.</Missing> : (
+      {x?.snapshot === undefined ? <Skel lines={5} /> : rows.length === 0 ? <Missing>Regional rankings are not available for this area.</Missing> : (
         <>
           <ul className="ma-rankrows">
             {rows.map((s) => (
@@ -358,7 +367,7 @@ export function Census({ x, regionName, i }) {
   const rows = x?.census ?? [];
   return (
     <Card i={i} colour="#0E9AA7" icon={<IconHexMap size={20} />} title={`Who lives in ${regionName ?? "your region"}`} className="ma-census">
-      {!x ? <Skel lines={5} /> : rows.length === 0 ? <Missing>Census figures are not available for this area.</Missing> : (
+      {x?.census === undefined ? <Skel lines={5} /> : rows.length === 0 ? <Missing>Census figures are not available for this area.</Missing> : (
         <>
           <ul className="ma-census-rows">
             {rows.map((f) => {
@@ -384,8 +393,8 @@ export function Contests({ x, council, i }) {
   const list = x?.contests;
   return (
     <Card i={i} colour="#E0367A" icon={<IconVote size={20} />} title="Elections coming up where you live" className="ma-contests">
-      {x && <DatesLine contests={list} council={council} />}
-      {!x ? <Skel lines={4} /> : list === null ? (
+      {x?.contests !== undefined && <DatesLine contests={list} council={council} />}
+      {x?.contests === undefined ? <Skel lines={4} /> : list === null ? (
         <Missing>We could not reach the elections lookup just now{council?.next?.[0] ? `. Your council's next election is on ${longDate(council.next[0][0])}.` : "."}</Missing>
       ) : list.length === 0 ? (
         <Missing>No elections are listed for this postcode yet{council?.next?.[0] ? `. Your council's next scheduled election is on ${longDate(council.next[0][0])}.` : "."}</Missing>
@@ -465,7 +474,7 @@ export function Deeper({ i }) {
 export function SeatMap({ x, name }) {
   const m = x?.map;
   const polys = useMemo(() => (m ? m.cells.map((c) => hexPoints(c.x, c.y, 0.97)) : []), [m]);
-  if (!x) return <Skel lines={5} />;
+  if (!x || x.map === undefined) return <Skel lines={5} />;
   if (!m) return <p className="ma-sub">{name} is one of 650 seats in the House of Commons.</p>;
   const { box } = m;
   const me = m.cells[m.mine];
@@ -486,7 +495,7 @@ export function Neighbours({ x, name, i }) {
   const near = x?.map?.neighbours ?? [];
   return (
     <Card i={i} colour="#1FA97C" icon={<IconHexMap size={20} />} title={`Where ${name} sits among the 650`} className="ma-near-card">
-      {!x ? <Skel lines={4} /> : !x.map ? <Missing>We could not place this seat on the map.</Missing> : (
+      {x?.map === undefined ? <Skel lines={4} /> : !x.map ? <Missing>We could not place this seat on the map.</Missing> : (
         <div className="ma-where">
           <SeatMap x={x} name={name} />
           <div className="ma-where-list">
@@ -515,7 +524,7 @@ export function CouncilHistory({ x, council, i }) {
   const last = rows.at(-1);
   return (
     <Card i={i} colour="#E8741A" icon={<IconTrend size={20} />} title="How your council has changed" className="ma-hist-card">
-      {!x ? <Skel lines={4} /> : !council ? <Missing>We could not match this postcode to a council.</Missing> : rows.length < 2 ? <Missing>No election-by-election history is saved for this council.</Missing> : (
+      {x?.years === undefined ? <Skel lines={4} /> : !council ? <Missing>We could not match this postcode to a council.</Missing> : rows.length < 2 ? <Missing>No election-by-election history is saved for this council.</Missing> : (
         <>
           <div className="ma-hist" role="img" aria-label={`Seats won by each party on ${council.name} council, ${first.year} to ${last.year}`} style={{ "--cols": rows.length }}>
             {rows.map((r, n) => (

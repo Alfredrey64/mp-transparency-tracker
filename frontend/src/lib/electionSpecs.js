@@ -3,7 +3,7 @@
 
 import history from "../data/electionsHistory.json";
 import { GOVERNMENTS } from "../data/governments";
-import { MANIFESTOS, STATUS, manifestosFor } from "../data/manifestoPledges";
+import { STATUS, manifestosFor } from "../data/manifestoPledges";
 import { NATIONS, PARTIES, devolvedFacts } from "../data/devolvedElections";
 import { GROUPS, GROUP_ORDER, election2024, electionLabel, outcome } from "./electionHistory";
 import { devolvedShareSpec, electionShareSpec, governmentShareSpec } from "./shareSpecs";
@@ -83,4 +83,3 @@ export function specForView(tab, item, link) {
   return electionSpec(ELECTIONS.at(-1), link);
 }
 
-export const manifestoCount = MANIFESTOS.length;

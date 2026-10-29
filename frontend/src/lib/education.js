@@ -12,8 +12,6 @@ export const at = (years, values, year) => values[years.indexOf(year)] ?? null;
 
 // 2024 -> "2024/25": the academic year that starts in 2024.
 export const academicYear = (y) => `${y}/${String(y + 1).slice(2)}`;
-// The January census or return that belongs to an academic year (the 2025/26 year's is January 2026).
-export const januaryOf = (y) => String(y + 1);
 // Academic years start in September, so a point for 2024/25 sits two thirds of the way into 2024 on a chart.
 export const AUTUMN = 0.67;
 

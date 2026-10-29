@@ -11,11 +11,8 @@ export const gbp = (v) => `£${Math.round(v).toLocaleString("en-GB")}`;
 export const yearText = (y) => `${y} to ${String(y + 1).slice(2)}`;
 
 export const NAMES = { uk: "the UK", england: "England", scotland: "Scotland", wales: "Wales", ni: "Northern Ireland", ne: "North East", nw: "North West", yh: "Yorkshire and the Humber", em: "East Midlands", wm: "West Midlands", east: "East of England", london: "London", se: "South East", sw: "South West" };
-export const NATION_KEYS = ["england", "scotland", "wales", "ni"];
-
 // ---- Spending ----------------------------------------------------------------------------------------------------------------------------------------------
 export const S = D.spending;
-export const S_YEARS = S.years;
 export const S_LAST = last(S.years);
 export const perHead = (k, i = S.years.length - 1) => S.perHead[k][i];
 export const indexOf = (k, i = S.years.length - 1) => S.index[k][i];

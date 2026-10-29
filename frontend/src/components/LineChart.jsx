@@ -2,6 +2,7 @@ import { useState, useMemo, useId, useRef, useEffect } from "react";
 import { COLORS, FONT_BODY } from "../theme";
 import { niceTicks } from "../lib/onsFormat";
 import { makeSquash, squashTicks } from "../lib/squashScale";
+import { watchWidth } from "../lib/watchWidth";
 
 // A line chart for one or more series, drawn as SVG that scales to its width.
 //
@@ -28,12 +29,7 @@ export default function LineChart({
   useEffect(() => {
     const el = ref.current;
     if (!el) return undefined;
-    const fit = (width) => { if (width > 0) setW(Math.min(960, Math.max(260, Math.round(width)))); };
-    const ro = new ResizeObserver(([entry]) => fit(entry.contentRect.width));
-    ro.observe(el);
-    // Measure straight away too, in case the first observation is slow to arrive.
-    const frame = requestAnimationFrame(() => fit(el.getBoundingClientRect().width));
-    return () => { cancelAnimationFrame(frame); ro.disconnect(); };
+    return watchWidth(el, (width) => setW(Math.min(960, Math.max(260, Math.round(width)))));
   }, []);
   const narrow = W < 420;
   const base = compact ? { l: 44, r: 12, t: 8, b: 22 } : { l: narrow ? 42 : 48, r: narrow ? 10 : 16, t: 16, b: 28 };

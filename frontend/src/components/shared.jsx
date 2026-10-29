@@ -4,7 +4,7 @@ import { GuideKeyContext } from "../lib/viewContext";
 import ShareButton from "./ShareButton";
 import { pageShareSpec } from "../lib/shareSpecs";
 import { motion } from "motion/react";
-import { COLORS, FONT_DISPLAY, FONT_BODY, readable, onFill } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, readable } from "../theme";
 import { SECTION_ACCENT_BY_ICON, SECTION_LABEL_BY_KEY, OUTSIDE_ACCENT } from "../data/sidebarSections";
 import { useT } from "../lib/useLang";
 // An annotated passage, not a dashboard tile: a left margin rule in the
@@ -35,34 +35,6 @@ export function InfoCard({ title, color, children, maxWidth = "none", icon: Icon
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 14.5, color: COLORS.inkSoft, lineHeight: 1.7 }}>{children}</div>
     </div>
-  );
-}
-
-// A short, high-visibility "here's why you should care" band for pages that
-// need to land their real-world stakes before a reader gets into the
-// mechanics — a single diagonal-tinted strip in the page's own colour,
-// not another full card, so it reads as a headline rather than one more
-// section to work through.
-export function WhyItMattersBand({ icon: Icon, color, children }) {
-  return (
-    <motion.div
-      className="ed-half"
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.2, duration: 0.35 }}
-      style={{
-        display: "flex", alignItems: "center", gap: 14, marginBottom: 28,
-        background: `color-mix(in srgb, ${color} 7%, ${COLORS.paperCard})`, border: `1px solid ${color}33`,
-        borderRadius: 14, padding: "16px 20px",
-      }}
-    >
-      <div style={{ flexShrink: 0, width: 38, height: 38, borderRadius: "50%", background: color, display: "flex", alignItems: "center", justifyContent: "center", color: onFill(color) }}>
-        <Icon size={17} />
-      </div>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.6 }}>
-        <strong>Why this matters:</strong> {children}
-      </div>
-    </motion.div>
   );
 }
 
@@ -154,38 +126,6 @@ export function FlowArrow({ color, animated = true, oscillate = false, reverse =
   );
 }
 
-// A simple two-bar comparison for "here's the visible slice vs. the much
-// larger part nothing requires anyone to measure" — the second bar is
-// deliberately drawn with a diagonal hatch rather than a solid fill, so it
-// reads as "illustrative, not a real measurement" rather than a precise
-// (and made-up) figure.
-export function ScaleComparison({ bars, maxWidth = 900 }) {
-  return (
-    <div style={{ maxWidth, marginBottom: 30 }}>
-      {bars.map((bar, i) => (
-        <div key={bar.label} style={{ marginBottom: i < bars.length - 1 ? 16 : 0 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, flexWrap: "wrap", marginBottom: 6 }}>
-            <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13, color: COLORS.ink }}>{bar.label}</span>
-            <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: bar.color, fontWeight: 700 }}>{bar.caption}</span>
-          </div>
-          <div style={{ height: 14, borderRadius: 999, background: COLORS.paper, overflow: "hidden" }}>
-            <motion.div
-              initial={{ width: 0 }}
-              whileInView={{ width: `${bar.width}%` }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.9, delay: i * 0.15, ease: "easeOut" }}
-              style={{
-                height: "100%", borderRadius: 999, background: bar.color,
-                backgroundImage: bar.hatched ? "repeating-linear-gradient(45deg, rgba(255,255,255,0.16) 0 7px, transparent 7px 14px)" : "none",
-              }}
-            />
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 // share: a function returning what goes on the page's share card (see lib/shareSpecs.js); leave it out for a plain card of the
 // title and subtitle, or pass false on a page that has its own Share button.
 // Tells the rest of the page which colour it belongs to (its menu group's), so the soft wash under the band and the thin line on top of each card
@@ -257,22 +197,6 @@ export function HeroBand({ crumbs, accent, children, wide = false, maxWidth }) {
         </nav>
         {children}
       </div>
-    </div>
-  );
-}
-
-// A masthead-style section marker rather than a tracked-out uppercase
-// tag — a short accent rule plus the label set in medium-weight Space
-// Grotesk. Deliberately not italic: Space Grotesk has no real italic cut,
-// so fontStyle:"italic" was forcing the browser's synthetic slant, which
-// just reads as skewed rather than as a proper italic.
-export function EyebrowLabel({ children, color = COLORS.accent, showRule = true }) {
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-      {showRule && <span style={{ width: 16, height: 2, background: color, flexShrink: 0 }} />}
-      <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 500, fontSize: 14.5, letterSpacing: "0.01em", color: readable(color) }}>
-        {children}
-      </span>
     </div>
   );
 }

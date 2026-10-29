@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { neighbourhoodRank, tenthWords, seatProfile, councilTaxProfile, taxYear, censusFacts, placeFacts, whoDoesWhat, responsibilities, nextContests, seatMapProfile, councilYears } from "./areaProfile";
+import { neighbourhoodRank, tenthWords, seatProfile, councilTaxProfile, taxYear, censusFacts, placeFacts, whoDoesWhat, responsibilities, nextContests, seatMapProfile, councilYears, electionWhen } from "./areaProfile";
 import tax from "../data/councilTaxByCouncil.json";
 import census from "../data/regionalProfile.json";
 import seats from "../data/constituencies.json";
@@ -60,6 +60,13 @@ describe("council tax profile", () => {
   it("falls back to the county, and is null for a council not in England", () => {
     expect(councilTaxProfile(tax, "Nowhere District", "Adur").name).toBe("Adur");
     expect(councilTaxProfile(tax, "Aberdeen City")).toBeNull();
+  });
+  it("starts a newly created council's history at its first bill, instead of showing NaN", () => {
+    const t = councilTaxProfile(tax, "Somerset");
+    expect(t.start).toBeGreaterThan(0);
+    expect(t.from).toBe(2010 + t.start);
+    expect(Number.isFinite(t.first)).toBe(true);
+    expect(Number.isFinite(t.sinceFirst)).toBe(true);
   });
   it("writes a tax year the way a bill does", () => { expect(taxYear(2026)).toBe("2026 to 27"); });
 });
@@ -144,5 +151,22 @@ describe("council years", () => {
     expect(y[0].year).toBe(2016);
     expect(y.at(-1).year).toBe(2026);
     expect(councilYears(null)).toEqual([]);
+  });
+});
+
+describe("when a seat's saved result was", () => {
+  it("says 2024 for the general election and names the month for a by-election", () => {
+    expect(electionWhen({ isGeneralElection: true, date: "2024-07-04" }).in).toBe("in 2024");
+    expect(electionWhen({ isGeneralElection: false, date: "2026-10-08" }).in).toBe("at the October 2026 by-election");
+    expect(electionWhen(undefined).in).toBe("in 2024");
+  });
+  it("is the by-election for the seats that have voted again", () => {
+    const p = seatProfile({ key: "holborn and st pancras", seats: seats.constituencies, summary, history: history.bySeat, elections });
+    expect(p.when.byElection).toBe(true);
+  });
+  it("counts the votes of candidates the saved list leaves out", () => {
+    const p = seatProfile({ key: "hackney north and stoke newington", seats: seats.constituencies, summary, history: history.bySeat, elections });
+    expect(p.others.votes).toBe(2310);
+    expect(p.others.share).toBeGreaterThan(0.05);
   });
 });
