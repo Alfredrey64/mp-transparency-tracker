@@ -1,11 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { neighbourhoodRank, tenthWords, seatProfile, councilTaxProfile, taxYear, censusFacts, placeFacts, whoDoesWhat, responsibilities, nextContests } from "./areaProfile";
+import { neighbourhoodRank, tenthWords, seatProfile, councilTaxProfile, taxYear, censusFacts, placeFacts, whoDoesWhat, responsibilities, nextContests, seatMapProfile, councilYears } from "./areaProfile";
 import tax from "../data/councilTaxByCouncil.json";
 import census from "../data/regionalProfile.json";
 import seats from "../data/constituencies.json";
 import summary from "../data/constituencySummary.json";
 import history from "../data/constituencyHistory.json";
 import elections from "../data/electionHistory.json";
+import hexData from "../data/seatHexes.json";
 
 describe("neighbourhood rank", () => {
   it("turns a rank in the nation's index into a tenth, 1 being the most deprived", () => {
@@ -113,5 +114,35 @@ describe("next contests", () => {
     const list = [{ date: "2026-01-01" }, { date: "2026-11-05", cancelled: true }, { date: "2026-11-06" }, { date: "2027-05-06" }];
     expect(nextContests(list, new Date("2026-10-29T10:00:00Z"), 5).map((c) => c.date)).toEqual(["2026-11-06", "2027-05-06"]);
     expect(nextContests(list, new Date("2026-10-29T10:00:00Z"), 1)).toHaveLength(1);
+  });
+});
+
+describe("seat map profile", () => {
+  const m = seatMapProfile({ hexes: hexData.hexes, seats: seats.constituencies, key: "bristol central" });
+  it("draws every seat once and finds the one asked about", () => {
+    expect(m.cells).toHaveLength(650);
+    expect(m.cells[m.mine].name).toBe("Bristol Central");
+    expect(m.box.w).toBeGreaterThan(10);
+  });
+  it("lists the seats touching it, nearest first, with their MP and party", () => {
+    expect(m.neighbours.length).toBeGreaterThanOrEqual(3);
+    expect(m.neighbours.length).toBeLessThanOrEqual(6);
+    expect(m.neighbours.every((n) => n.name !== "Bristol Central")).toBe(true);
+    expect(m.neighbours[0].mp).toBeTruthy();
+  });
+  it("is null for a seat that is not on the map", () => {
+    expect(seatMapProfile({ hexes: hexData.hexes, seats: seats.constituencies, key: "nowhere" })).toBeNull();
+    expect(seatMapProfile({ hexes: [], seats: {}, key: "x" })).toBeNull();
+  });
+});
+
+describe("council years", () => {
+  it("keeps the latest years that have seats, oldest first", () => {
+    const rows = Array.from({ length: 14 }, (_, i) => ({ year: 2013 + i, total: i === 0 ? 0 : 50 }));
+    const y = councilYears(rows, 11);
+    expect(y).toHaveLength(11);
+    expect(y[0].year).toBe(2016);
+    expect(y.at(-1).year).toBe(2026);
+    expect(councilYears(null)).toEqual([]);
   });
 });

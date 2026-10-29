@@ -11,7 +11,7 @@ import CountUp from "./CountUp";
 import { loadCouncillorList, councillorPath } from "../lib/councillorsView";
 import { regionKeyOf, wardCouncillors, loadAreaFigures } from "../lib/areaFigures";
 import { REGIONS } from "../data/regionMetrics";
-import { Card, Section, Glance, JumpNav, SeatResult, SeatHistory, LocalPetitions, CouncilTax, WhoDoes, Neighbourhood, PlaceFacts, RegionRanks, Census, Contests, Help, Deeper } from "./AreaSections";
+import { Card, Section, Glance, JumpNav, SeatResult, SeatHistory, Neighbours, CouncilHistory, RegionOutline, LocalPetitions, CouncilTax, WhoDoes, Neighbourhood, PlaceFacts, RegionRanks, Census, Contests, Help, Deeper } from "./AreaSections";
 import { useAreaExtras } from "../lib/useAreaExtras";
 import { ordinal } from "../lib/constituency";
 import "../myarea.css";
@@ -48,25 +48,6 @@ async function lookUp(postcode) {
     people: council && councillors ? wardCouncillors(councillors.rows, council.id, r.admin_ward) : [], councillorParties: councillors?.parties ?? [],
     regionName: REGIONS.find((x) => x.key === regionKey)?.name ?? r.region ?? r.country, figures,
   };
-}
-
-// 650 dots, one for each seat in the Commons. Yours lights up and pulses; the rest ripple in from the corner.
-function SeatDots({ name, colour }) {
-  const COLS = 26;
-  let h = 0;
-  for (const ch of String(name)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
-  const mine = h % 650;
-  return (
-    <svg className="ma-dots" viewBox={`0 0 ${COLS * 10} ${Math.ceil(650 / COLS) * 10}`} role="img" aria-label={`${name} is one of 650 seats`}>
-      {Array.from({ length: 650 }, (_, n) => {
-        const x = (n % COLS) * 10 + 5;
-        const y = Math.floor(n / COLS) * 10 + 5;
-        return n === mine
-          ? <g key={n}><circle className="ma-dot-ring" cx={x} cy={y} r="4" fill="none" stroke={colour} strokeWidth="1.5" /><circle cx={x} cy={y} r="4.2" fill={colour} /></g>
-          : <circle key={n} className="ma-dot" cx={x} cy={y} r="2.1" style={{ animationDelay: `${((n % COLS) + Math.floor(n / COLS)) * 14}ms` }} />;
-      })}
-    </svg>
-  );
 }
 
 // The time between this council election and the one before it, as a ring that fills, with the days still to go counted in the middle.
@@ -155,7 +136,6 @@ function Dashboard({ data, onForget }) {
         <SeatResult x={x} name={r.parliamentary_constituency} i={1} />
 
         <Card i={2} colour="#1FA97C" icon={<IconHexMap size={20} />} title="Your constituency" className="ma-seat">
-          <SeatDots name={r.parliamentary_constituency} colour="#1FA97C" />
           <div className="ma-big">{r.parliamentary_constituency}</div>
           <p className="ma-sub">One of 650 seats in the House of Commons.</p>
           <dl className="ma-facts">
@@ -169,6 +149,7 @@ function Dashboard({ data, onForget }) {
         </Card>
         <SeatHistory x={x} i={3} />
         <LocalPetitions x={x} name={r.parliamentary_constituency} i={4} />
+        <Neighbours x={x} name={r.parliamentary_constituency} i={5} />
       </Section>
 
       <Section id="ma-council" title="Your council" lede="The council looks after the services closest to your front door. Here is who runs it, who your councillors are, and what it costs." colour="#E8741A">
@@ -203,8 +184,9 @@ function Dashboard({ data, onForget }) {
           ) : <p>We couldn't match your ward to the councillor list. You can search it by name or council.</p>}
           <a className="ma-link" href="#/councillors">Search every councillor</a>
         </Card>
-        <CouncilTax x={x} i={2} />
-        <WhoDoes x={x} i={3} />
+        <CouncilHistory x={x} council={council} i={2} />
+        <CouncilTax x={x} i={3} />
+        <WhoDoes x={x} i={4} />
       </Section>
 
       <Section id="ma-place" title="Your neighbourhood" lede="How the place you live compares with the rest of the country, and which bodies cover it." colour="#C0478A">
@@ -214,7 +196,7 @@ function Dashboard({ data, onForget }) {
 
       <Section id="ma-region" title={`Your region: ${regionName ?? "the UK"}`} lede="Figures published for the whole region, set against the rest of the UK. They describe the region, not your street." colour="#2F9E6E">
         <Card i={0} colour="#2F9E6E" icon={<IconTrend size={20} />} title={`How ${regionName ?? "your region"} compares`} className="ma-region">
-          {figures.length > 0 ? <Bars figures={figures} /> : <p>Regional figures aren't available for this area.</p>}
+          {figures.length > 0 ? <div className="ma-region-grid"><RegionOutline regionKey={x?.regionKey} regionName={regionName} /><Bars figures={figures} /></div> : <p>Regional figures aren't available for this area.</p>}
           <a className="ma-link" href="#/regions">Compare every region</a>
         </Card>
         <RegionRanks x={x} regionName={regionName} i={1} />

@@ -1,4 +1,10 @@
 /** @jsxImportSource react */
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useInView } from "motion/react";
+import CountUp from "./CountUp";
+import { HISTORY_COLOURS, HISTORY_LABELS, HKEYS } from "./councilsUi";
+import { hexPoints } from "../lib/seatMap";
+import regionGeo from "../data/regionMap.json";
 import { IconPinHome, IconSearch, IconCouncil, IconVote, IconHexMap, IconTrend, IconCalendar, IconPetition } from "./icons";
 import { ordinal } from "../lib/constituency";
 import { shortParty } from "../lib/seatElections";
@@ -15,9 +21,17 @@ const money = (n) => `£${Math.round(n).toLocaleString("en-GB")}`;
 const hex = (c, fallback = "#8A94A6") => (c ? `#${String(c).replace(/^#/, "")}` : fallback);
 const plural = (n, one, many) => `${n.toLocaleString("en-GB")} ${n === 1 ? one : many}`;
 
+// Each card and section notes when it has first scrolled into view, so its bars, lines and numbers can draw themselves once, at the moment they can be seen.
+function useSeen(margin = "0px 0px -12% 0px") {
+  const ref = useRef(null);
+  const seen = useInView(ref, { once: true, margin });
+  return [ref, seen];
+}
+
 export function Card({ i, colour, icon, title, className = "", children }) {
+  const [ref, seen] = useSeen();
   return (
-    <div className={`ma-card ${className}`} role="region" style={{ "--mc": colour, "--i": i }} aria-label={title}>
+    <div ref={ref} className={`ma-card ${className}`} role="region" data-in={seen} style={{ "--mc": colour, "--i": i }} aria-label={title}>
       <header><span className="ma-icon" aria-hidden="true">{icon}</span><h3>{title}</h3></header>
       {children}
     </div>
@@ -25,8 +39,9 @@ export function Card({ i, colour, icon, title, className = "", children }) {
 }
 
 export function Section({ id, title, lede, colour, children }) {
+  const [ref, seen] = useSeen("0px 0px -8% 0px");
   return (
-    <section className="ma-section" id={id} aria-labelledby={`${id}-h`} style={{ "--mc": colour }}>
+    <section ref={ref} className="ma-section" id={id} data-in={seen} aria-labelledby={`${id}-h`} style={{ "--mc": colour }}>
       <header><h2 id={`${id}-h`}>{title}</h2>{lede && <p>{lede}</p>}</header>
       <div className="ma-bento">{children}</div>
     </section>
@@ -44,14 +59,15 @@ export function Glance({ data, x }) {
   const pay = x.snapshot.find((m) => m.metric.id === "pay");
   const nextDate = x.contests?.[0]?.date ?? council?.next?.[0]?.[0] ?? null;
   const days = nextDate ? daysUntil(nextDate) : null;
+  const up = (value, format) => <CountUp value={value} format={format} />;
   const tiles = [
-    s && { c: "#3F6FD8", label: "Your MP's majority", value: s.result.majority.toLocaleString("en-GB"), sub: `${s.safety?.label ?? "Seat"}. ${s.standing ? `The ${ordinal(s.standing.rankNarrowest)} narrowest of ${s.standing.of}.` : ""}` },
-    s?.turnout && { c: "#1FA97C", label: "Turnout in 2024", value: `${s.turnout.pct.toFixed(1)}%`, sub: s.turnout.average ? `The average seat was ${s.turnout.average.toFixed(1)}%.` : "" },
-    x.tax && { c: "#E8741A", label: `Band D council tax, ${taxYear(x.tax.to)}`, value: money(x.tax.last), sub: `The England average is ${money(x.tax.average)}.` },
+    s && { c: "#3F6FD8", label: "Your MP's majority", value: up(s.result.majority), sub: `${s.safety?.label ?? "Seat"}. ${s.standing ? `The ${ordinal(s.standing.rankNarrowest)} narrowest of ${s.standing.of}.` : ""}` },
+    s?.turnout && { c: "#1FA97C", label: "Turnout in 2024", value: up(s.turnout.pct, (n) => `${n.toFixed(1)}%`), sub: s.turnout.average ? `The average seat was ${s.turnout.average.toFixed(1)}%.` : "" },
+    x.tax && { c: "#E8741A", label: `Band D council tax, ${taxYear(x.tax.to)}`, value: up(x.tax.last, money), sub: `The England average is ${money(x.tax.average)}.` },
     !x.tax && council && { c: "#E8741A", label: "Who runs your council", value: council.control, sub: `${council.total} councillors.` },
     x.nb && { c: "#C0478A", label: "Your neighbourhood", value: ordinal(x.nb.decile) + " tenth", sub: x.nb.decile === 1 ? `Among the most deprived tenth in ${x.nb.nation}.` : `1st is the most deprived tenth in ${x.nb.nation}.` },
-    pay && { c: "#7A5AF0", label: `Typical pay in ${regionName}`, value: formatValue(pay.metric.format, pay.value), sub: pay.uk != null ? `${againstUk(pay.value, pay.uk)}.`.replace(/^./, (c) => c.toUpperCase()) : "" },
-    days !== null && { c: "#E0367A", label: "Next election here", value: days <= 0 ? "Today" : plural(days, "day", "days"), sub: longDate(nextDate) },
+    pay && { c: "#7A5AF0", label: `Typical pay in ${regionName}`, value: up(pay.value, (n) => formatValue(pay.metric.format, n)), sub: pay.uk != null ? `${againstUk(pay.value, pay.uk)}.`.replace(/^./, (c) => c.toUpperCase()) : "" },
+    days !== null && { c: "#E0367A", label: "Next election here", value: days <= 0 ? "Today" : up(days, (n) => plural(Math.round(n), "day", "days")), sub: longDate(nextDate) },
   ].filter(Boolean).slice(0, 6);
   return (
     <div className="ma-glance" role="list" aria-label={`At a glance in ${r.parliamentary_constituency}`}>
@@ -65,12 +81,29 @@ export function Glance({ data, x }) {
 }
 
 const JUMPS = [["ma-mp", "MP and seat"], ["ma-council", "Council"], ["ma-place", "Neighbourhood"], ["ma-region", "Region"], ["ma-vote", "Elections"], ["ma-act", "Get help"]];
+
+// Stays under the header while the page scrolls, and marks the section being read.
 export function JumpNav() {
+  const [active, setActive] = useState(null);
+  useEffect(() => {
+    if (typeof IntersectionObserver !== "function") return undefined;
+    const seen = new Map();
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) seen.set(e.target.id, e.isIntersecting);
+      setActive(JUMPS.map(([id]) => id).find((id) => seen.get(id)) ?? null);
+    }, { rootMargin: "-30% 0px -60% 0px" });
+    for (const [id] of JUMPS) { const el = document.getElementById(id); if (el) io.observe(el); }
+    return () => io.disconnect();
+  }, []);
   const go = (id) => {
     const reduce = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
     document.getElementById(id)?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
   };
-  return <nav className="ma-jump" aria-label="Sections of this page">{JUMPS.map(([id, label]) => <button key={id} type="button" onClick={() => go(id)}>{label}</button>)}</nav>;
+  return (
+    <nav className="ma-jump" aria-label="Sections of this page">
+      {JUMPS.map(([id, label]) => <button key={id} type="button" aria-current={active === id ? "true" : undefined} onClick={() => go(id)}>{label}</button>)}
+    </nav>
+  );
 }
 
 // How the seat voted: every candidate's share, then the facts around it.
@@ -203,7 +236,7 @@ export function CouncilTax({ x, i }) {
           <div className="ma-taxhead"><b>{money(t.last)}</b><span>a year for a Band D home in {taxYear(t.to)}</span></div>
           <svg className="ma-spark" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Band D council tax in ${t.name}, ${t.from} to ${t.to}: from ${money(t.first)} to ${money(t.last)}`} preserveAspectRatio="none">
             <polygon points={`${P},${H - P} ${line} ${W - P},${H - P}`} className="ma-spark-fill" />
-            <polyline points={line} className="ma-spark-line" />
+            <polyline points={line} className="ma-spark-line" pathLength="1" />
             <circle cx={pts.at(-1)[0]} cy={pts.at(-1)[1]} r="4" className="ma-spark-dot" />
           </svg>
           <p className="ma-sub ma-spark-cap"><span>{t.from} to {String(t.from + 1).slice(2)}: {money(t.first)}</span><span>{taxYear(t.to)}: {money(t.last)}</span></p>
@@ -271,7 +304,7 @@ export function Neighbourhood({ x, i }) {
               <h4>Where in your seat people are most affected</h4>
               <ul className="ma-domains">
                 {DOMAINS.filter(([k]) => typeof dom[k] === "number").map(([k, label]) => (
-                  <li key={k}><span>{label}</span><i aria-hidden="true"><b style={{ width: `${Math.max(1, Math.min(100, dom[k]))}%` }} /></i><em>{Math.round(dom[k])}%</em></li>
+                  <li key={k}><span>{label}</span><i aria-hidden="true"><b style={{ "--w": Math.max(0.01, Math.min(1, dom[k] / 100)) }} /></i><em>{Math.round(dom[k])}%</em></li>
                 ))}
               </ul>
               <p className="ma-sub">Each bar is the share of residents in your seat living in the most deprived tenth of neighbourhoods in England for that kind of deprivation.</p>
@@ -333,8 +366,8 @@ export function Census({ x, regionName, i }) {
               return (
                 <li key={f.id}>
                   <span>{f.label}<small>{f.of}</small></span>
-                  <span className="ma-pair"><i style={{ width: `${(f.value / top) * 100}%` }} /><b>{f.value}%</b></span>
-                  {f.uk != null && <span className="ma-pair ma-pair-uk"><i style={{ width: `${(f.uk / top) * 100}%` }} /><b>{f.uk}%</b></span>}
+                  <span className="ma-pair"><i style={{ "--w": f.value / top }} /><b>{f.value}%</b></span>
+                  {f.uk != null && <span className="ma-pair ma-pair-uk"><i style={{ "--w": f.uk / top }} /><b>{f.uk}%</b></span>}
                 </li>
               );
             })}
@@ -351,6 +384,7 @@ export function Contests({ x, council, i }) {
   const list = x?.contests;
   return (
     <Card i={i} colour="#E0367A" icon={<IconVote size={20} />} title="Elections coming up where you live" className="ma-contests">
+      {x && <DatesLine contests={list} council={council} />}
       {!x ? <Skel lines={4} /> : list === null ? (
         <Missing>We could not reach the elections lookup just now{council?.next?.[0] ? `. Your council's next election is on ${longDate(council.next[0][0])}.` : "."}</Missing>
       ) : list.length === 0 ? (
@@ -426,3 +460,125 @@ export function Deeper({ i }) {
   );
 }
 
+
+// Your seat as one of the 650: every seat is a hexagon in the colour of its 2024 winner, and yours is ringed.
+export function SeatMap({ x, name }) {
+  const m = x?.map;
+  const polys = useMemo(() => (m ? m.cells.map((c) => hexPoints(c.x, c.y, 0.97)) : []), [m]);
+  if (!x) return <Skel lines={5} />;
+  if (!m) return <p className="ma-sub">{name} is one of 650 seats in the House of Commons.</p>;
+  const { box } = m;
+  const me = m.cells[m.mine];
+  return (
+    <figure className="ma-mapfig">
+      <svg className="ma-map" viewBox={`${box.x} ${box.y} ${box.w} ${box.h}`} role="img" aria-label={`Map of the 650 seats, each coloured by its 2024 winner. ${name} is ringed.`}>
+        {m.cells.map((c, n) => <polygon key={n} points={polys[n]} fill={c.colour ?? "var(--c-hairline)"} style={{ "--d": `${Math.round(((c.x - box.x) / box.w) * 700)}ms` }} />)}
+        <polygon className="ma-map-me" points={hexPoints(me.x, me.y, 1.9)} />
+        <polygon className="ma-map-ring" points={hexPoints(me.x, me.y, 1.9)} />
+      </svg>
+      <figcaption>The 650 seats as equal hexagons, coloured by who won in 2024. Yours is ringed.</figcaption>
+    </figure>
+  );
+}
+
+// Where the seat sits among the 650, and the seats touching it on that map, with who won them.
+export function Neighbours({ x, name, i }) {
+  const near = x?.map?.neighbours ?? [];
+  return (
+    <Card i={i} colour="#1FA97C" icon={<IconHexMap size={20} />} title={`Where ${name} sits among the 650`} className="ma-near-card">
+      {!x ? <Skel lines={4} /> : !x.map ? <Missing>We could not place this seat on the map.</Missing> : (
+        <div className="ma-where">
+          <SeatMap x={x} name={name} />
+          <div className="ma-where-list">
+            <h4>Seats beside yours on the map</h4>
+            <ul className="ma-near">
+              {near.map((n, k) => (
+                <li key={n.key} style={{ "--pc": n.colour ?? "#8A94A6", "--n": k }}>
+                  <a href={`#/constituency/${encodeURIComponent(n.name)}`}><b>{n.name}</b><span>{[n.mp, n.party].filter(Boolean).join(", ")}</span>{n.majority != null && <small>Won by {n.majority.toLocaleString("en-GB")} votes</small>}</a>
+                </li>
+              ))}
+            </ul>
+            <p className="ma-sub">On this map every seat is the same size, so these touch yours on the map, not necessarily on the ground.</p>
+          </div>
+        </div>
+      )}
+    </Card>
+  );
+}
+
+// How many seats each party has held on the council at each election.
+export function CouncilHistory({ x, council, i }) {
+  const rows = x?.years ?? [];
+  const keys = HKEYS.filter((k) => rows.some((r) => r[k] > 0));
+  const lead = (r) => HKEYS.reduce((best, k) => (r[k] > (r[best] ?? 0) ? k : best), "other");
+  const first = rows[0];
+  const last = rows.at(-1);
+  return (
+    <Card i={i} colour="#E8741A" icon={<IconTrend size={20} />} title="How your council has changed" className="ma-hist-card">
+      {!x ? <Skel lines={4} /> : !council ? <Missing>We could not match this postcode to a council.</Missing> : rows.length < 2 ? <Missing>No election-by-election history is saved for this council.</Missing> : (
+        <>
+          <div className="ma-hist" role="img" aria-label={`Seats won by each party on ${council.name} council, ${first.year} to ${last.year}`} style={{ "--cols": rows.length }}>
+            {rows.map((r, n) => (
+              <div key={r.year} style={{ "--n": n }}>
+                <span className="ma-hist-stack" title={keys.filter((k) => r[k] > 0).map((k) => `${HISTORY_LABELS[k]} ${r[k]}`).join(", ")}>
+                  {keys.filter((k) => r[k] > 0).map((k) => <i key={k} style={{ height: `${(r[k] / r.total) * 100}%`, background: HISTORY_COLOURS[k] }} />)}
+                </span>
+                <em>{String(r.year).slice(2)}</em>
+              </div>
+            ))}
+            <u aria-hidden="true" title="Majority line" />
+          </div>
+          <p className="ma-key">{keys.map((k) => <span key={k}><i style={{ background: HISTORY_COLOURS[k] }} />{HISTORY_LABELS[k]}</span>)}</p>
+          <p>In {first.year}, {HISTORY_LABELS[lead(first)]} held {first[lead(first)]} of {first.total} seats. In {last.year}, {HISTORY_LABELS[lead(last)]} hold {last[lead(last)]} of {last.total}.</p>
+          <p className="ma-sub">Each bar is one year's seats, from {first.year} to {last.year}. The dashed line marks a majority.</p>
+        </>
+      )}
+      {council && <a className="ma-link" href={`#/councils/${council.id}`}>Wards, councillors and every change</a>}
+    </Card>
+  );
+}
+
+// The region on a map of the UK.
+export function RegionOutline({ regionKey, regionName }) {
+  if (!regionKey) return null;
+  return (
+    <figure className="ma-outline">
+      <svg viewBox={`0 0 ${regionGeo.width} ${regionGeo.height}`} role="img" aria-label={`${regionName} highlighted on a map of the UK`}>
+        {regionGeo.regions.map((g) => <path key={g.key} d={g.d} className={g.key === regionKey ? "me" : undefined} />)}
+      </svg>
+      <figcaption>{regionName}</figcaption>
+    </figure>
+  );
+}
+
+// From today to the general election: the dates ahead on one line, each marked by a number that the list below explains.
+function DatesLine({ contests, council }) {
+  const today = new Date();
+  const todayIso = today.toISOString().slice(0, 10);
+  const end = new Date(Date.UTC(2029, 11, 31));
+  const raw = [
+    ...(contests ?? []).map((c) => ({ date: c.date, label: c.title })),
+    ...(council?.next?.[0] ? [{ date: council.next[0][0], label: `${council.name} council election` }] : []),
+  ].filter((e) => e.date >= todayIso).sort((a, b) => a.date.localeCompare(b.date));
+  const merged = [];
+  for (const e of raw) { const hit = merged.find((m) => m.date === e.date); if (hit) { if (!hit.labels.includes(e.label)) hit.labels.push(e.label); } else merged.push({ date: e.date, labels: [e.label] }); }
+  const stops = merged.slice(0, 4);
+  const span = end - today;
+  const at = (iso) => Math.min(100, Math.max(0, ((new Date(`${iso}T00:00:00Z`) - today) / span) * 100));
+  const years = [2027, 2028, 2029].filter((y) => at(`${y}-01-01`) > 12);
+  return (
+    <div className="ma-dates-line">
+      <div className="ma-track" role="img" aria-label="A line from today to the general election, with the dates listed below marked on it">
+        <i className="ma-track-line" />
+        {years.map((y) => <span key={y} className="ma-track-year" style={{ left: `${at(`${y}-01-01`)}%` }}>{y}</span>)}
+        <b className="ma-track-dot ma-track-now" style={{ left: "0%" }}>Today</b>
+        {stops.map((s, n) => <b key={s.date} className="ma-track-dot" style={{ left: `${at(s.date)}%`, "--n": n + 1 }}>{n + 1}</b>)}
+        <b className="ma-track-dot ma-track-ge" style={{ left: "100%", "--n": stops.length + 1 }}>{stops.length + 1}</b>
+      </div>
+      <ol className="ma-track-list">
+        {stops.map((s) => <li key={s.date}><b>{longDate(s.date)}</b><span>{s.labels.join(". ")}</span></li>)}
+        <li><b>By 2029</b><span>The latest the next general election can be held.</span></li>
+      </ol>
+    </div>
+  );
+}

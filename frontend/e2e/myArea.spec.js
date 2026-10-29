@@ -31,7 +31,10 @@ for (const width of [1440, 390]) {
     await expect(page.locator(".ma-g:not(.ma-g-skel)")).toHaveCount(6, { timeout: 20000 });
     await expect(page.locator(".ma-skel")).toHaveCount(0, { timeout: 20000 });
     const text = await page.locator("main").innerText();
-    for (const want of ["How Bristol Central voted in 2024", "Your council tax", "Who does what here", "Your neighbourhood", "Where South West ranks", "Who lives in South West", "Useful links for where you live", "Before polling day"]) expect(text).toContain(want);
+    await expect(page.locator(".ma-map polygon")).toHaveCount(652);
+    await expect(page.locator(".ma-hist-stack")).not.toHaveCount(0);
+    await expect(page.locator(".ma-track-dot").first()).toBeAttached();
+    for (const want of ["How Bristol Central voted in 2024", "Where Bristol Central sits among the 650", "How your council has changed", "Elections coming up where you live", "Your council tax", "Who does what here", "Your neighbourhood", "Where South West ranks", "Who lives in South West", "Useful links for where you live", "Before polling day"]) expect(text).toContain(want);
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
   });
 }

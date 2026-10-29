@@ -73,10 +73,11 @@
 /* The panel under a menu heading. */
 .site-mega {
   position: absolute; left: 0; right: 0; top: 100%; background: var(--c-paper-card); border-bottom: 1px solid var(--c-hairline);
-  box-shadow: var(--shadow-3); animation: mega-in 0.22s var(--ease-out) both; max-height: calc(100vh - var(--header-h)); overflow-y: auto;
+  box-shadow: var(--shadow-3); animation: mega-in 0.22s var(--ease-out) both; max-height: calc(100vh - var(--header-h) - 28px); overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable;
+  background: linear-gradient(var(--c-paper-card) 30%, transparent) top / 100% 22px no-repeat local, linear-gradient(transparent, var(--c-paper-card) 70%) bottom / 100% 22px no-repeat local, radial-gradient(farthest-side at 50% 100%, rgba(10, 20, 36, 0.22), transparent) bottom / 100% 9px no-repeat scroll, var(--c-paper-card);
 }
 @keyframes mega-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
-.site-mega-inner { max-width: 1360px; margin: 0 auto; padding: 28px 32px 32px; display: grid; gap: 36px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.site-mega-inner { max-width: 1360px; margin: 0 auto; padding: 28px 32px 40px; display: grid; gap: 36px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
 .mega-title { margin: 0; font: 700 19px/1.2 "Figures", "Newsreader", Georgia, serif; letter-spacing: -0.01em; color: var(--c-ink); display: flex; align-items: center; gap: 10px; }
 .mega-title i { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 9px; color: #fff; flex-shrink: 0; }
 .mega-blurb { margin: 4px 0 14px; font-size: 14px; line-height: 1.45; color: var(--c-ink-soft); }
@@ -119,7 +120,7 @@
 .site-drawer-backdrop { position: fixed; inset: 0; z-index: 55; background: rgba(8, 20, 42, 0.5); animation: fade-in 0.2s ease both; }
 .site-drawer {
   position: fixed; top: 0; right: 0; bottom: 0; z-index: 60; width: min(420px, 94vw); background: var(--c-paper-card); overflow-y: auto; overscroll-behavior: contain;
-  box-shadow: var(--shadow-3); padding: calc(14px + env(safe-area-inset-top, 0px)) 18px calc(28px + env(safe-area-inset-bottom, 0px)); animation: drawer-in 0.32s var(--ease-out) both;
+  box-shadow: var(--shadow-3); padding: calc(14px + env(safe-area-inset-top, 0px)) 18px calc(40px + env(safe-area-inset-bottom, 0px)); scroll-padding-bottom: 24px; animation: drawer-in 0.32s var(--ease-out) both;
 }
 @keyframes drawer-in { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
 .drawer-head {

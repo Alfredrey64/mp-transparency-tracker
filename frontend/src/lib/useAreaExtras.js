@@ -4,7 +4,9 @@ import { seatDeprivation, regionSnapshot, yearsOfPay } from "./seatLocal";
 import { loadSector } from "./onsData";
 import { findContests } from "./ballots";
 import { regionKeyOf } from "./areaFigures";
-import { seatProfile, councilTaxProfile, neighbourhoodRank, censusFacts, placeFacts, whoDoesWhat, responsibilities, nextContests } from "./areaProfile";
+import { loadCouncilDetail } from "./councilDetail";
+import { historyRows } from "./councils";
+import { seatProfile, councilTaxProfile, neighbourhoodRank, censusFacts, placeFacts, whoDoesWhat, responsibilities, nextContests, seatMapProfile, councilYears } from "./areaProfile";
 
 const soft = (p) => Promise.resolve(p).catch(() => null);
 
@@ -17,7 +19,7 @@ export function useAreaExtras(data) {
     (async () => {
       const key = seatKey(r.parliamentary_constituency);
       const regionKey = regionKeyOf(r);
-      const [seats, summary, history, elections, taxFile, depSeats, depNations, depAreas, census, housing, jobs, regions, contests] = await Promise.all([
+      const [seats, summary, history, elections, taxFile, depSeats, depNations, depAreas, census, housing, jobs, regions, contests, hexFile, councilIndex, councilDetail] = await Promise.all([
         soft(import("../data/constituencies.json").then((m) => m.default.constituencies)),
         soft(import("../data/constituencySummary.json").then((m) => m.default)),
         soft(import("../data/constituencyHistory.json").then((m) => m.default.bySeat)),
@@ -29,6 +31,9 @@ export function useAreaExtras(data) {
         soft(import("../data/regionalProfile.json").then((m) => m.default)),
         soft(loadSector("housing")), soft(loadSector("jobs")), soft(loadSector("regions")),
         soft(findContests(r.postcode)),
+        soft(import("../data/seatHexes.json").then((m) => m.default.hexes)),
+        soft(import("../data/councilsIndex.json").then((m) => m.default)),
+        council ? soft(loadCouncilDetail(council.id)) : null,
       ]);
       const sectors = { housing, jobs, regions };
       const tax = councilTaxProfile(taxFile, council?.name, county?.name);
@@ -44,6 +49,9 @@ export function useAreaExtras(data) {
         snapshot, pay: yearsOfPay(snapshot), census: censusFacts(census, regionKey),
         facts: placeFacts(r), who: whoDoesWhat({ council, county, taxType: tax?.type }), topics: council ? responsibilities({ council, county, result: r }) : [],
         contests: contests ? nextContests(contests) : null,
+        map: hexFile && seats ? seatMapProfile({ hexes: hexFile, seats, key }) : null,
+        years: councilIndex && councilDetail ? councilYears(historyRows(councilDetail, councilIndex.historyColumns)) : [],
+        regionKey,
       };
       if (alive) setX(next);
     })();

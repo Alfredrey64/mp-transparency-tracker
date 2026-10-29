@@ -57,8 +57,22 @@ export function PageLink({ to, onNavigate, onAfter, children, ...rest }) {
 
 function MegaPanel({ menu, activeView, onNavigate, onClose }) {
   const t = useT();
+  const ref = useRef(null);
+  // The panel hangs from the header, which may sit below a strip at the top of the page, so its height is what is left under it, not the window's height less the header's.
+  useEffect(() => {
+    const fit = () => {
+      const el = ref.current;
+      if (!el) return;
+      const top = el.getBoundingClientRect().top;
+      el.style.maxHeight = `${Math.max(240, Math.floor(window.innerHeight - top - 12))}px`;
+    };
+    fit();
+    window.addEventListener("resize", fit);
+    window.addEventListener("scroll", fit, { passive: true });
+    return () => { window.removeEventListener("resize", fit); window.removeEventListener("scroll", fit); };
+  }, [menu.key]);
   return (
-    <div className="site-mega" id={`mega-${menu.key}`} role="region" aria-label={t("{name} pages", { name: t(menu.label) })}>
+    <div ref={ref} className="site-mega" id={`mega-${menu.key}`} role="region" aria-label={t("{name} pages", { name: t(menu.label) })}>
       <div className="site-mega-inner">
         {menu.groups.map((group) => {
           const Wide = group.items.length > 9;
@@ -120,6 +134,19 @@ function Drawer({ activeView, onNavigate, onClose, onSearch }) {
   const groups = MENU.flatMap((m) => m.groups);
   const [openKey, setOpenKey] = useState(() => groups.find((g) => g.items.some((i) => i.key === activeView))?.key ?? null);
   const [recent] = useState(() => readRecent().filter((k) => k !== activeView).slice(0, 4));
+
+  // Once a group has finished opening, bring all of it into view: its last page as well as its heading, unless the group is taller than the menu, in which case its heading stays at the top.
+  const showGroup = (group) => {
+    const panel = panelRef.current;
+    if (!group || !panel) return;
+    const g = group.getBoundingClientRect();
+    const p = panel.getBoundingClientRect();
+    const room = p.height - 24;
+    const delta = g.height > room ? g.top - p.top - 8 : g.bottom - (p.bottom - 16);
+    if (Math.abs(delta) < 2) return;
+    const calm = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    panel.scrollBy({ top: delta, behavior: calm ? "auto" : "smooth" });
+  };
 
   // Drag the menu to the right to put it away: it follows the finger and either closes or springs back.
   const drag = useRef(null);
@@ -201,7 +228,7 @@ function Drawer({ activeView, onNavigate, onClose, onSearch }) {
                   onClick={(e) => {
                     const btn = e.currentTarget;
                     setOpenKey(open ? null : group.key);
-                    if (!open) window.setTimeout(() => btn.scrollIntoView({ behavior: "smooth", block: "nearest" }), 120);
+                    if (!open) window.setTimeout(() => showGroup(btn.closest(".drawer-group")), 420);
                   }}
                 >
                   <span className="dg-tile" style={{ background: solid(group.accent) }} aria-hidden="true">{GroupIcon && <GroupIcon size={20} />}</span>

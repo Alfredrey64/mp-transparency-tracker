@@ -5,6 +5,8 @@
 import { seatSafety, majorityStanding, majorityBins, ordinal } from "./constituency";
 import { electionList, changesOfParty } from "./seatElections";
 import { normCouncil } from "./councils";
+import { hexPosition } from "./seatMap";
+import { seatKey } from "./constituency";
 
 // How many neighbourhoods each nation's deprivation index ranks. The postcode lookup gives a neighbourhood's rank within its own nation, 1 being the most deprived.
 export const IMD_TOTALS = { England: 32844, Wales: 1909, Scotland: 6976, "Northern Ireland": 890 };
@@ -148,6 +150,40 @@ export function responsibilities({ council, county, result }) {
     ["GPs and hospitals", devolved ? `${health === "Your local NHS body" ? "Your local health board" : health}, run by the ${devolved}` : health],
     ["Benefits, pensions and passports", country === "Scotland" ? "UK government. Some benefits come from Social Security Scotland" : "UK government"],
   ];
+}
+
+// The hexagon map of all 650 seats, each in the colour of its 2024 winner, with the seat asked about marked and the seats touching it listed. The map is a cartogram:
+// every seat is the same size, so "beside" means beside on the map, not on the ground.
+export function seatMapProfile({ hexes, seats, key }) {
+  if (!hexes?.length) return null;
+  const cells = hexes.map(([, name, q, r]) => {
+    const { x, y } = hexPosition(q, r, 1);
+    const k = seatKey(name);
+    const rec = seats?.[k];
+    const colour = rec?.result?.candidates?.[0]?.colour;
+    return { x, y, name, key: k, colour: colour ? `#${String(colour).replace(/^#/, "")}` : null, rec };
+  });
+  const mine = cells.findIndex((c) => c.key === key);
+  if (mine < 0) return null;
+  const me = cells[mine];
+  const near = cells
+    .map((c, i) => ({ c, i, d: Math.hypot(c.x - me.x, c.y - me.y) }))
+    .filter((o) => o.i !== mine && o.d < 1.8)
+    .sort((a, b) => a.d - b.d || a.c.x - b.c.x)
+    .slice(0, 6);
+  const xs = cells.map((c) => c.x);
+  const ys = cells.map((c) => c.y);
+  return {
+    cells: cells.map(({ x, y, colour, name }) => ({ x, y, colour, name })),
+    mine,
+    box: { x: Math.min(...xs) - 1, y: Math.min(...ys) - 1, w: Math.max(...xs) - Math.min(...xs) + 2, h: Math.max(...ys) - Math.min(...ys) + 2 },
+    neighbours: near.map(({ c, i }) => ({ index: i, name: c.name, mp: c.rec?.mp?.name ?? null, party: c.rec?.mp?.party ?? c.rec?.result?.candidates?.[0]?.party ?? null, colour: c.colour, majority: c.rec?.result?.majority ?? null, key: c.key })),
+  };
+}
+
+// A council's seats at each election, for the years it has them, oldest first and no more than `max`.
+export function councilYears(rows, max = 11) {
+  return (rows ?? []).filter((r) => r && Number.isFinite(r.year) && r.total > 0).slice(-max);
 }
 
 // The next elections for a postcode, trimmed to what the page shows.
