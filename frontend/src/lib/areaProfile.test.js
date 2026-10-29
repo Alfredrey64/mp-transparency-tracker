@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { neighbourhoodRank, tenthWords, seatProfile, councilTaxProfile, taxYear, censusFacts, placeFacts, whoDoesWhat, responsibilities, nextContests, seatMapProfile, councilYears, electionWhen, seatStory, ageProfile } from "./areaProfile";
+import { neighbourhoodRank, tenthWords, seatProfile, councilTaxProfile, taxYear, censusFacts, placeFacts, whoDoesWhat, responsibilities, nextContests, seatMapProfile, councilYears, electionWhen, seatStory, ageProfile, yearsSince, seatHeadline } from "./areaProfile";
 import tax from "../data/councilTaxByCouncil.json";
 import census from "../data/regionalProfile.json";
 import seats from "../data/constituencies.json";
@@ -206,4 +206,38 @@ describe("age profile", () => {
     expect(Math.abs(a.reduce((n, p) => n + p.uk, 0) - 100)).toBeLessThan(0.5);
   });
   it("gives nothing without a region", () => { expect(ageProfile(census, null)).toBeNull(); });
+});
+
+describe("years since", () => {
+  it("counts whole years, never below nought, and copes with a bad date", () => {
+    expect(yearsSince("2005-05-05", new Date("2026-10-29T00:00:00Z"))).toBe(21);
+    expect(yearsSince("2026-07-05", new Date("2026-10-29T00:00:00Z"))).toBe(0);
+    expect(yearsSince("2030-01-01", new Date("2026-10-29T00:00:00Z"))).toBe(0);
+    expect(yearsSince("nope")).toBe(0);
+  });
+});
+
+describe("the seat's headline", () => {
+  const mk = (runs, changed) => { let n = 1; while (n < runs.length && runs[runs.length - 1 - n].party === runs.at(-1).party) n += 1; return { story: { streak: { party: runs.at(-1).party, since: 2015, elections: n }, changed }, runs }; };
+  const four = [{ year: 2010, party: "Labour" }, { year: 2015, party: "Conservative" }, { year: 2017, party: "Conservative" }, { year: 2024, party: "Conservative", share: 41.2 }];
+  it("calls a long hold a long hold, and a seat that keeps changing a swing seat", () => {
+    expect(seatHeadline({ ...mk(four.map((r) => ({ ...r, party: "Conservative" })), 0) }).head).toBe("A Conservative seat: held for 4 elections running");
+    expect(seatHeadline({ ...mk(four, 3) }).head).toMatch(/A seat that swings: it has changed hands 3 times since 2010/);
+    expect(seatHeadline({ ...mk([{ year: 2010, party: "Labour" }, { year: 2017, party: "Labour" }, { year: 2024, party: "Conservative" }], 1) }).head).toBe("Changed hands once since 2010, and now Conservative");
+  });
+  it("says only what one result shows when that is all there is", () => {
+    expect(seatHeadline(mk([{ year: 2024, party: "Labour", share: 56.6 }], 0)).head).toBe("Labour won here in 2024 with 57%");
+  });
+  it("adds how safe it is and the lead", () => {
+    const h = seatHeadline({ ...mk([{ year: 2024, party: "Labour", share: 50 }], 0), safety: { label: "Fairly safe seat" }, lead: 7.8 });
+    expect(h.sub).toBe("Fairly safe seat: the winner led by 7.8 points.");
+    expect(seatHeadline({ story: null, runs: [] })).toBeNull();
+  });
+  it("works out how long the current party has held the seat from the MPs' own dates", () => {
+    const former = [{ name: "A", party: "Lab", start: "1990-01-01", end: "2005-05-01" }, { name: "B", party: "Con", start: "2005-05-05", end: "2015-03-30" }];
+    const s = seatStory({ runs: four, changes: [], former }, { name: "C", party: "Con", membership_start_date: "2015-05-08" });
+    expect(s.heldFor.party).toBe("Con");
+    expect(s.heldFor.since).toBe("2005-05-05");
+    expect(s.heldFor.years).toBeGreaterThan(20);
+  });
 });

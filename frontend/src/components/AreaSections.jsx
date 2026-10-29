@@ -19,7 +19,7 @@ import { againstUk } from "../lib/seatLocal";
 import { formatValue, periodLabel } from "../lib/onsFormat";
 import { longDate } from "../lib/councils";
 import { daysUntil } from "../lib/localElections";
-import { taxYear, tenthWords, seatStory } from "../lib/areaProfile";
+import { taxYear, tenthWords, seatStory, seatHeadline } from "../lib/areaProfile";
 
 // The sections of the Your area page that come from the files saved with the site rather than from the postcode lookup. They load after the page is
 // drawn, each on its own, so a slow or missing file leaves one card saying so and nothing else.
@@ -181,16 +181,18 @@ function LeadChart({ bins, majorityPct }) {
 export function SeatHistory({ x, mp, i }) {
   const s = x?.seat;
   const story = s ? seatStory(s, mp) : null;
+  const head = story ? seatHeadline({ story, runs: s.runs, safety: s.safety, lead: s.result.majorityPct }) : null;
   const maxShare = s ? Math.max(40, ...s.runs.flatMap((r) => [r.share ?? 0, r.second?.share ?? 0])) : 100;
   const totalYears = story ? story.tenures.reduce((n, m) => n + m.years, 0) : 0;
   return (
     <Card i={i} colour="#7A5AF0" icon={<IconCalendar size={20} />} title="Who has won here" className="ma-history">
       {x?.seat === undefined ? <Skel lines={6} /> : !s || !story ? <Missing>No election history is saved for this seat.</Missing> : (
         <>
-          <dl className="ma-trio ma-trio-3">
-            <div><dt>Held by</dt><dd>{shortParty(story.streak.party)}</dd><small>{story.streak.elections > 1 ? `since ${story.streak.since}, ${story.streak.elections} elections running` : `won in ${story.streak.since}`}</small></div>
-            <div><dt>Changed hands</dt><dd><CountUp value={story.changed} /></dd><small>{s.runs.length > 1 ? `in ${s.runs.length} elections since ${s.runs[0].year}` : "only one result saved"}</small></div>
-            <div><dt>Biggest lead</dt><dd>{story.biggest ? `${story.biggest.lead.toFixed(0)} pts` : "None"}</dd><small>{story.biggest ? `${shortParty(story.biggest.party)} in ${story.biggest.year}` : ""}</small></div>
+          {head && <div className="ma-story" style={{ "--pc": hex(s.runs.at(-1)?.colour) }}><b>{head.head}</b>{head.sub && <span>{head.sub}</span>}</div>}
+          <dl className="ma-trio ma-trio-3 ma-tiles3">
+            <div style={{ "--pc": hex(s.runs.at(-1)?.colour) }}><dt>Held by</dt><dd>{story.heldFor && story.heldFor.years >= 1 ? <><CountUp value={Math.round(story.heldFor.years)} /> <em>years</em></> : shortParty(story.streak.party)}</dd><small>{story.heldFor && story.heldFor.years >= 1 ? `by the ${story.heldFor.party}, since ${story.heldFor.since.slice(0, 4)}` : `won in ${story.streak.since}`}</small></div>
+            <div style={{ "--pc": "#7A5AF0" }}><dt>Changed hands</dt><dd><CountUp value={story.changed} /> <em>{story.changed === 1 ? "time" : "times"}</em></dd><small>{s.runs.length > 1 ? `in ${s.runs.length} elections since ${s.runs[0].year}` : "only one result compares"}</small></div>
+            <div style={{ "--pc": "#1FA97C" }}><dt>Biggest lead</dt><dd>{story.biggest ? <><CountUp value={Math.round(story.biggest.lead)} /> <em>points</em></> : "None"}</dd><small>{story.biggest ? `${shortParty(story.biggest.party)} in ${story.biggest.year}` : ""}</small></div>
           </dl>
           {s.runs.length >= 3 ? (
             <>

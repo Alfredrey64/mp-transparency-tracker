@@ -80,7 +80,28 @@ export function seatStory({ runs, changes, former }, mp) {
   spans.sort((a, b) => a.start.localeCompare(b.start));
   const days = (a, b) => Math.max(1, Math.round((new Date(b) - new Date(a)) / 86400000));
   const tenures = spans.map((m) => ({ ...m, years: days(m.start, m.end) / 365.25 }));
-  return { streak, changed: changes?.length ?? 0, biggest, closest, tenures, longest: [...tenures].sort((a, b) => b.years - a.years)[0] ?? null };
+  // How long MPs of the current party have held the seat without a break, from the MPs' own dates (more exact than counting elections).
+  let heldFor = null;
+  if (tenures.length > 0) {
+    let k = tenures.length - 1;
+    while (k > 0 && tenures[k - 1].party === tenures.at(-1).party) k -= 1;
+    heldFor = { party: tenures.at(-1).party, since: tenures[k].start, years: tenures.slice(k).reduce((n, m) => n + m.years, 0) };
+  }
+  return { streak, changed: changes?.length ?? 0, biggest, closest, tenures, heldFor, longest: [...tenures].sort((a, b) => b.years - a.years)[0] ?? null };
+}
+
+// The one sentence that sums the seat up, and a line under it. Only says what the results show.
+export function seatHeadline({ story, runs, safety, lead }) {
+  if (!story || !runs?.length) return null;
+  const party = story.streak.party;
+  const first = runs[0].year;
+  let head;
+  if (runs.length >= 3 && story.changed >= 2) head = `A seat that swings: it has changed hands ${story.changed} times since ${first}`;
+  else if (runs.length >= 3 && story.streak.elections >= 3) head = `A ${party} seat: held for ${story.streak.elections} elections running`;
+  else if (runs.length >= 3 && story.changed === 1) head = `Changed hands once since ${first}, and now ${party}`;
+  else head = `${party} won here in ${runs.at(-1).year} with ${runs.at(-1).share != null ? `${Math.round(runs.at(-1).share)}%` : "the most votes"}`;
+  const sub = [safety?.label, typeof lead === "number" ? `the winner led by ${lead.toFixed(1)} points` : null].filter(Boolean).join(": ");
+  return { head, sub: sub ? `${sub.charAt(0).toUpperCase()}${sub.slice(1)}.` : null };
 }
 
 // Five age groups for a region against the UK (or England and Wales where the UK is not published), as shares of everyone, for a stacked bar.
@@ -114,6 +135,12 @@ export function councilTaxProfile(tax, councilName, countyName = null) {
     sinceLast: Number.isFinite(earlier) ? ((last - earlier) / earlier) * 100 : null,
     average, rank: lasts.filter((v) => v > last).length + 1, of: lasts.length,
   };
+}
+
+// Whole years since a date, never below nought.
+export function yearsSince(iso, today = new Date()) {
+  const t = new Date(`${String(iso).slice(0, 10)}T00:00:00Z`).getTime();
+  return Number.isFinite(t) ? Math.max(0, Math.floor((today.getTime() - t) / 31557600000)) : 0;
 }
 
 // A year range as it is written on a council tax bill: 2026 is "2026 to 27".

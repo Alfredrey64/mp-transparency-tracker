@@ -41,18 +41,11 @@
 .ma-sub { font: 500 13.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .ma-link { margin-top: auto; display: inline-flex; align-items: center; min-height: 44px; font: 700 14.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--mc) 78%, var(--c-ink)); text-decoration: none; }
 .ma-link:hover { text-decoration: underline; }
-.ma-mp { display: flex; align-items: center; gap: 16px; }
 .ma-photo { flex: none; width: 96px; height: 96px; border-radius: 50%; object-fit: cover; background: var(--c-paper); border: 4px solid var(--c-paper-card); box-shadow: 0 0 0 4px color-mix(in srgb, var(--mc) 70%, transparent), 0 10px 24px -8px rgba(11, 27, 51, 0.5); animation: maPop 0.7s var(--ease-spring) 0.5s backwards; }
 @keyframes maPop { from { transform: scale(0.5); opacity: 0; } }
 .ma-photo-fallback { display: grid; place-items: center; font: 700 32px "Figures", "Newsreader", Georgia, serif; color: #fff; background: var(--mc); }
 .ma-name { font: 700 clamp(22px, 2.6vw, 28px)/1.15 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
-.ma-stats { display: grid; gap: 0; border: 1px solid var(--c-hairline); border-radius: 16px; overflow: hidden; background: var(--c-paper); }
-.ma-stats > div { display: flex; align-items: center; gap: 18px; padding: 16px 20px; }
-.ma-stats > div + div { border-top: 1px solid var(--c-hairline); }
-.ma-stats b { flex: none; min-width: 3ch; font: 800 clamp(40px, 4.6vw, 56px)/1 "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--mc) 65%, var(--c-ink)); letter-spacing: -0.02em; font-variant-numeric: lining-nums tabular-nums; }
-.ma-stats b span { font: inherit; color: inherit; letter-spacing: inherit; }
-.ma-stats > div > span { font: 700 15px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.ma-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto; }
+.ma-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: auto; padding-top: 6px; }
 /* The countdown ring. */
 .ma-ring { position: relative; width: 200px; height: 200px; margin: 4px auto 0; }
 .ma-ring svg { width: 100%; height: 100%; }
@@ -257,8 +250,7 @@
 .ma-lead-scale { display: flex; justify-content: space-between; margin: 0 !important; font: 600 12px "Figures", "Public Sans", system-ui, sans-serif !important; color: var(--c-ink-soft) !important; }
 .ma-lead figcaption { font: 500 12.5px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 
-.ma-mpcard .ma-stats { flex: 1 1 auto; grid-auto-rows: 1fr; }
-.ma-result .ma-lead-bars { height: 120px; }
+.ma-mpcard .ma-result .ma-lead-bars { height: 120px; }
 
 .ma-trio-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .ma-who .ma-topics { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 22px; }
@@ -443,16 +435,8 @@
 
 /* A card that has the whole row to itself lays its contents out across it instead of stacking them. */
 @container ma (max-width: 980px) {
-  .ma-mpcard .ma-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .ma-mpcard .ma-stats > div { flex-direction: column; align-items: flex-start; gap: 4px; padding: 14px 16px; }
-  .ma-mpcard .ma-stats > div + div { border-top: 0; border-left: 1px solid var(--c-hairline); }
   .ma-mpcard .ma-actions { margin-top: 0; }
   .ma-ranks .ma-rankrows li { grid-template-columns: minmax(130px, 1.1fr) minmax(110px, 0.8fr) minmax(0, 1.4fr) minmax(110px, auto); }
-}
-@container ma (max-width: 620px) {
-  .ma-mpcard .ma-stats { grid-template-columns: minmax(0, 1fr); }
-  .ma-mpcard .ma-stats > div { flex-direction: row; align-items: center; gap: 18px; }
-  .ma-mpcard .ma-stats > div + div { border-left: 0; border-top: 1px solid var(--c-hairline); }
 }
 
 /* Council tax: the bill's path with its grid, the England average as a dashed line, a dot that is a true circle, and the years set out beneath it. */
@@ -561,3 +545,40 @@
 .ma-feed .ma-ctx ul { list-style: disc; }
 .ma-feed .ma-ctx li { display: list-item; padding: 0; border: 0; animation: none; }
 .ma-feed .ma-ctx li::before, .ma-feed .ma-ctx li::after { content: none; display: none; }
+
+/* Who the MP is: a portrait in a ring that draws itself in their party's colour, over a soft wash of the same colour. */
+.ma-id { flex: 1; display: grid; justify-items: center; align-content: center; gap: 8px; padding: 26px 16px 22px; border-radius: 18px; text-align: center;
+  background: radial-gradient(260px 200px at 50% 0, color-mix(in srgb, var(--pc) 22%, transparent), transparent 75%), linear-gradient(180deg, color-mix(in srgb, var(--pc) 7%, var(--c-paper)), var(--c-paper)); border: 1px solid color-mix(in srgb, var(--pc) 22%, var(--c-hairline)); }
+.ma-id-photo { position: relative; width: clamp(128px, 14vw, 156px); aspect-ratio: 1; margin-bottom: 6px; }
+.ma-id-photo svg { position: absolute; inset: -7px; width: calc(100% + 14px); height: calc(100% + 14px); }
+.ma-id-track { fill: none; stroke: color-mix(in srgb, var(--pc) 20%, transparent); stroke-width: 3; }
+.ma-id-ring { fill: none; stroke: var(--pc); stroke-width: 3.5; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; transition: stroke-dashoffset 1.6s var(--ease-out) 0.3s; }
+.ma-card:not([data-in="true"]) .ma-id-ring { stroke-dashoffset: 1; }
+.ma-id-photo img, .ma-id-fallback { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; object-position: top; border: 4px solid var(--c-paper-card); box-sizing: border-box; background: var(--c-paper); box-shadow: 0 14px 28px -12px color-mix(in srgb, var(--pc) 70%, #0B1B33); transition: transform 0.9s var(--ease-spring) 0.2s, opacity 0.5s var(--ease-out) 0.2s; }
+.ma-id-fallback { display: grid; place-items: center; font: 700 44px "Figures", "Newsreader", Georgia, serif; color: #fff; background: var(--pc); }
+.ma-card:not([data-in="true"]) .ma-id-photo img, .ma-card:not([data-in="true"]) .ma-id-fallback { transform: scale(0.7); opacity: 0; }
+.ma-id-name { margin: 4px 0 0; font: 700 clamp(24px, 2.6vw, 30px)/1.15 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); text-wrap: balance; }
+.ma-id-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 0 !important; }
+.ma-id-chips span { display: inline-flex; align-items: center; gap: 7px; padding: 5px 12px; border-radius: 999px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ma-id-party i { width: 10px; height: 10px; border-radius: 50%; background: var(--pc); }
+.ma-id-seat { margin: 2px 0 0 !important; font: 500 14px/1.5 "Figures", "Public Sans", system-ui, sans-serif !important; color: var(--c-ink-soft) !important; }
+.ma-id-seat b { color: var(--c-ink); font-weight: 700; }
+.ma-id-years { margin: 0 !important; font: 600 13px "Figures", "Public Sans", system-ui, sans-serif !important; color: color-mix(in srgb, var(--pc) 70%, var(--c-ink)) !important; }
+.ma-id-years b, .ma-id-years b span { font: 800 22px "Figures", "Newsreader", Georgia, serif; }
+.ma-id-name, .ma-id-chips, .ma-id-seat, .ma-id-years { transition: opacity 0.6s var(--ease-out) 0.6s, transform 0.6s var(--ease-out) 0.6s; }
+.ma-card:not([data-in="true"]) :is(.ma-id-name, .ma-id-chips, .ma-id-seat, .ma-id-years) { opacity: 0; transform: translateY(8px); }
+@container ma (max-width: 980px) and (min-width: 621px) {
+  .ma-mpcard .ma-id { grid-template-columns: auto minmax(0, 1fr); justify-items: start; text-align: left; column-gap: 28px; padding: 22px 28px; align-content: center; }
+  .ma-mpcard .ma-id-photo { grid-row: 1 / span 4; margin: 0; }
+  .ma-mpcard .ma-id-chips { justify-content: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) { .ma-id-ring, .ma-id-photo img, .ma-id-fallback, .ma-id-name, .ma-id-chips, .ma-id-seat, .ma-id-years { transition: none; } }
+
+/* Who has won here: a headline for the seat, and three tinted figures. */
+.ma-story { display: grid; gap: 4px; padding: 14px 16px; border-radius: 14px; border-left: 5px solid var(--pc); background: linear-gradient(100deg, color-mix(in srgb, var(--pc) 14%, var(--c-paper)), var(--c-paper)); }
+.ma-story b { font: 700 clamp(19px, 2.2vw, 24px)/1.25 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); text-wrap: balance; }
+.ma-story span { font: 500 13.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-tiles3 > div { border-top: 4px solid var(--pc); background: linear-gradient(180deg, color-mix(in srgb, var(--pc) 10%, var(--c-paper)), var(--c-paper)); }
+.ma-tiles3 dt { color: color-mix(in srgb, var(--pc) 70%, var(--c-ink)); }
+.ma-tiles3 dd { font-size: clamp(26px, 3vw, 36px); color: color-mix(in srgb, var(--pc) 45%, var(--c-ink)); }
+.ma-tiles3 dd em { font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: var(--c-ink-soft); }

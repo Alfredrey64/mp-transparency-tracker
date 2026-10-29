@@ -14,6 +14,7 @@ import { regionKeyOf, wardCouncillors, loadAreaFigures } from "../lib/areaFigure
 import { REGIONS } from "../data/regionMetrics";
 import { Card, Section, Glance, JumpNav, SeatResult, SeatHistory, SeatCard, MpDoing, Neighbours, CouncilHistory, RegionOutline, LocalPetitions, CouncilTax, WhoDoes, Neighbourhood, PlaceFacts, RegionRanks, Census, Contests, Help, Deeper } from "./AreaSections";
 import { useAreaExtras } from "../lib/useAreaExtras";
+import { yearsSince } from "../lib/areaProfile";
 import "../myarea.css";
 
 // My area: type a postcode once and see your MP, constituency, council, councillors, next elections and how your region compares, on one page. The
@@ -40,10 +41,7 @@ async function lookUp(postcode) {
   const regionKey = regionKeyOf(r);
   const figures = await loadAreaFigures(regionKey).catch(() => []);
   const mp = mpRes?.data?.[0] ?? null;
-  const count = (table) => supabase.from(table).select("*", { count: "exact", head: true }).eq("politician_id", mp.id).then((x) => x.count ?? null).catch(() => null);
-  const mpStats = mp ? await Promise.all([count("voting_records"), count("financial_interests"), count("written_questions")]) : null;
   return {
-    mpStats,
     result: r, mp, council, county: district && county ? county : null, parties: index.parties,
     people: council && councillors ? wardCouncillors(councillors.rows, council.id, r.admin_ward) : [], councillorParties: councillors?.parties ?? [],
     regionName: REGIONS.find((x) => x.key === regionKey)?.name ?? r.region ?? r.country, figures,
@@ -85,7 +83,7 @@ function Bars({ figures }) {
 
 function Dashboard({ data, onForget }) {
   const x = useAreaExtras(data);
-  const { result: r, mp, mpStats, council, county, people, councillorParties, figures, regionName, parties } = data;
+  const { result: r, mp, council, county, people, councillorParties, figures, regionName, parties } = data;
   const next = council?.next?.[0];
   const days = next ? daysUntil(next[0]) : null;
   const mpColour = partyColour(mp?.party_colour, "#1E4FB8");
@@ -116,17 +114,19 @@ function Dashboard({ data, onForget }) {
         <Card i={0} colour={mpColour} icon={<IconVote size={20} />} title="Your MP" className="ma-mpcard">
           {mp ? (
             <>
-              <div className="ma-mp">
-                {mp.thumbnail_url ? <img className="ma-photo" src={mp.thumbnail_url} alt="" loading="lazy" decoding="async" /> : <span className="ma-photo ma-photo-fallback" aria-hidden="true">{initials(mp.name)}</span>}
-                <div><div className="ma-name">{mp.name}</div><div className="ma-sub">{mp.party}{mp.cabinet_role ? `, ${mp.cabinet_role}` : ""}</div><div className="ma-sub">MP for {r.parliamentary_constituency}{mp.membership_start_date ? `, since ${longDate(String(mp.membership_start_date).slice(0, 10))}` : ""}</div></div>
-              </div>
-              {mpStats && (
-                <div className="ma-stats">
-                  {[["votes recorded", mpStats[0]], ["declared interests", mpStats[1]], ["questions asked", mpStats[2]]].filter(([, n]) => n !== null).map(([label, n]) => (
-                    <div key={label}><b><CountUp value={n} /></b><span>{label}</span></div>
-                  ))}
+              <div className="ma-id" style={{ "--pc": mpColour }}>
+                <div className="ma-id-photo">
+                  <svg viewBox="0 0 120 120" aria-hidden="true"><circle className="ma-id-track" cx="60" cy="60" r="55" /><circle className="ma-id-ring" cx="60" cy="60" r="55" pathLength="1" transform="rotate(-90 60 60)" /></svg>
+                  {mp.thumbnail_url ? <img src={mp.thumbnail_url} alt="" loading="lazy" decoding="async" /> : <span className="ma-id-fallback" aria-hidden="true">{initials(mp.name)}</span>}
                 </div>
-              )}
+                <h4 className="ma-id-name">{mp.name}</h4>
+                <p className="ma-id-chips">
+                  <span className="ma-id-party"><i aria-hidden="true" />{mp.party}</span>
+                  {mp.cabinet_role && <span>{mp.cabinet_role}</span>}
+                </p>
+                <p className="ma-id-seat">MP for <b>{r.parliamentary_constituency}</b>{mp.membership_start_date ? <>, since {longDate(String(mp.membership_start_date).slice(0, 10))}</> : null}</p>
+                {mp.membership_start_date && <p className="ma-id-years"><b><CountUp value={yearsSince(mp.membership_start_date)} /></b> years as an MP</p>}
+              </div>
               <div className="ma-actions">
                 <a className="btn btn-primary" href={`#/mp/${mp.id}`}>Their record</a>
                 <a className="btn btn-secondary" href="https://www.writetothem.com/" target="_blank" rel="noreferrer">Write to them</a>
