@@ -1,8 +1,14 @@
 /** @jsxImportSource react */
 import { useEffect, useMemo, useRef, useState } from "react";
+import { supabase } from "../supabaseClient";
 import { useInView } from "motion/react";
 import CountUp from "./CountUp";
 import { firstTab } from "../lib/mpDoing";
+import { debateKind, contributionWords, departmentInfo, questionStatus, connections, NO_WHY } from "../lib/mpContext";
+import { explainDivision, describeVote } from "../lib/divisionExplainer";
+import { summariseBill, billSearchUrl } from "../lib/billSummary";
+import { plainPoints } from "../lib/billPlain";
+import { explainStage } from "../lib/billExplain";
 import { HISTORY_COLOURS, HISTORY_LABELS, HKEYS } from "./councilsUi";
 import { hexPoints } from "../lib/seatMap";
 import regionGeo from "../data/regionMap.json";
@@ -275,81 +281,186 @@ export function SeatCard({ x, name, mp, mpColour, i }) {
   );
 }
 
-// What the MP has been doing in Parliament, from Parliament's own records, in four tabs.
+// One line of the feed that opens, with a smooth slide, to say in plain English what it is. Only one is open at a time.
+function Entry({ id, open, onToggle, date, title, chips, n, children }) {
+  return (
+    <li className="ma-entry" data-open={open} style={{ "--n": n }}>
+      <button type="button" className="ma-entry-head" aria-expanded={open} aria-controls={`ma-e-${id}`} onClick={onToggle}>
+        <span className="ma-entry-text">
+          {date && <span className="ma-feed-date">{date}</span>}
+          <b>{title}</b>
+          {chips}
+        </span>
+        <span className="ma-entry-more" aria-hidden="true"><i /></span>
+        <span className="sr-only">{open ? "Hide the explanation" : "Explain this in plain English"}</span>
+      </button>
+      <div className="ma-entry-body" id={`ma-e-${id}`} inert={!open}><div className="ma-entry-inner">{children}</div></div>
+    </li>
+  );
+}
+
+const Block = ({ title, children }) => <div className="ma-ctx"><h6>{title}</h6>{children}</div>;
+const Links = ({ list }) => (list.length > 0 ? <Block title="Links the records show">{<ul className="ma-ctx-links">{list.map((t) => <li key={t}>{t}</li>)}</ul>}</Block> : null);
+const Source = ({ href, label }) => (href ? <a className="ma-src" href={href} target="_blank" rel="noreferrer">{label}<span className="sr-only"> (opens in a new tab)</span></a> : null);
+
+// What a vote's bill is for, looked up the first time the entry is opened.
+function useBillFor(name, open) {
+  const [bill, setBill] = useState(undefined);
+  useEffect(() => {
+    if (!open || !name || bill !== undefined) return undefined;
+    let alive = true;
+    supabase.from("bills").select("short_title, long_title, current_stage, current_house, sponsoring_department, is_act, is_defeated, source_url").ilike("short_title", name).limit(1)
+      .then(({ data }) => { if (alive) setBill(data?.[0] ?? null); }, () => { if (alive) setBill(null); });
+    return () => { alive = false; };
+  }, [open, name, bill]);
+  return bill;
+}
+
+function BillBlock({ bill, heading = "What the bill is for" }) {
+  const sum = summariseBill(bill);
+  const points = plainPoints(bill.long_title);
+  const stage = explainStage(bill.current_stage, { isAct: bill.is_act, isDefeated: bill.is_defeated });
+  return (
+    <>
+      <Block title={heading}>
+        <p>{sum?.summary ?? "Its official title is too general to put more simply."}</p>
+        {points.length > 1 && <ul className="ma-ctx-points">{points.slice(0, 4).map((pt) => <li key={pt}>{pt}</li>)}</ul>}
+      </Block>
+      {stage && <Block title={bill.is_act ? "Where it ended up" : "Where it has got to"}><p>{stage.means} {stage.next && !bill.is_act && !bill.is_defeated ? `Next: ${stage.next}` : ""}</p></Block>}
+      {sum?.context && <p className="ma-sub">{sum.context}</p>}
+    </>
+  );
+}
+
+function VoteBody({ v, mp, links }) {
+  const exp = useMemo(() => explainDivision(v.title), [v.title]);
+  const theirs = exp ? describeVote(exp, v.aye) : null;
+  return (
+    <>
+      {exp ? (
+        <>
+          <Block title="What was being voted on"><p>{exp.plain}</p></Block>
+          <div className="ma-ayeno"><span className="aye"><b>Aye</b>{exp.ayeMeans}</span><span className="no"><b>No</b>{exp.noMeans}</span></div>
+          <Block title="How they voted"><p>{mp?.name ?? "They"} voted <strong>{v.aye ? "Aye" : "No"}</strong>.{theirs ? ` ${theirs}` : ""}{v.withParty === true ? " That was the same way as most of their party." : v.withParty === false ? " That was against most of their own party." : ""}</p></Block>
+        </>
+      ) : <Block title="What was being voted on"><p>Parliament gives this vote only the title above, so we cannot say more than that. They voted {v.aye ? "Aye" : "No"}.</p></Block>}
+      {exp?.billName && <BillFromVote name={exp.billName} />}
+      <Links list={links} />
+      <p className="ma-sub">{NO_WHY}</p>
+      <Source href={v.url} label="The vote on Parliament's site" />
+    </>
+  );
+}
+
+function BillFromVote({ name }) {
+  const bill = useBillFor(name, true);
+  if (bill === undefined) return <p className="ma-sub">Looking up the bill…</p>;
+  if (!bill) return <Block title="The bill"><p>{name}. We do not hold a summary of it. Parliament's own bill page explains it: <a href={billSearchUrl(name)} target="_blank" rel="noreferrer">search for it<span className="sr-only"> (opens in a new tab)</span></a>.</p></Block>;
+  return <BillBlock bill={bill} heading={`What the ${name} is for`} />;
+}
+
+// What the MP has been doing in Parliament, from Parliament's own records, in four tabs. Each line opens to say in plain English what it is.
 const DOING_TABS = [["debates", "Debates"], ["questions", "Questions"], ["votes", "Votes"], ["proposed", "Bills and committees"]];
 export function MpDoing({ x, mp, i }) {
   const d = x?.doing;
   const [picked, setPicked] = useState(null);
+  const [openId, setOpenId] = useState(null);
   const tab = picked ?? firstTab(d);
   const count = (k) => (!d ? 0 : k === "proposed" ? d.bills.length + d.committees.length : d[k].length);
+  const choose = (k) => { setPicked(k); setOpenId(null); };
   const onKey = (e) => {
     const at = DOING_TABS.findIndex(([k]) => k === tab);
     const next = e.key === "ArrowRight" ? at + 1 : e.key === "ArrowLeft" ? at - 1 : null;
     if (next === null) return;
     e.preventDefault();
     const [k] = DOING_TABS[(next + DOING_TABS.length) % DOING_TABS.length];
-    setPicked(k);
+    choose(k);
     document.getElementById(`ma-doing-tab-${k}`)?.focus();
   };
   const fmt = (iso) => (iso ? longDate(iso) : "");
+  const ctx = d ? { seatName: x?.seat?.record?.name ?? x?.seatName, committees: d.committees, petitions: (x?.seat?.petitions ?? []).map((p) => p.action), sponsored: d.bills.map((b) => b.title) } : null;
+  const toggle = (id) => setOpenId((cur) => (cur === id ? null : id));
   return (
     <Card i={i} colour="#C0478A" icon={<IconVote size={20} />} title={mp ? `What ${mp.name} has been doing` : "What your MP has been doing"} className="ma-doing">
       {x?.doing === undefined ? <Skel lines={5} /> : !d ? <Missing>We could not match this postcode to a current MP.</Missing> : (
         <>
-          <p className="ma-sub">Taken from Parliament's own records. Parliament publishes what a member has said, asked, voted on and put forward. It does not publish what they intend to do, or their work for people in the seat.</p>
+          <p className="ma-sub">Taken from Parliament's own records. Press any line to see in plain English what it is. Parliament publishes what a member has said, asked, voted on and put forward. It does not publish why, or what they intend to do.</p>
           <div className="ma-doing-stats" aria-hidden="true">
             {DOING_TABS.map(([k, label]) => <span key={k}><b>{count(k)}</b>{label}</span>)}
           </div>
           <div className="ma-tabs" role="tablist" aria-label="Kinds of activity" onKeyDown={onKey}>
             {DOING_TABS.map(([k, label]) => (
-              <button key={k} id={`ma-doing-tab-${k}`} type="button" role="tab" aria-selected={tab === k} aria-controls="ma-doing-panel" tabIndex={tab === k ? 0 : -1} onClick={() => setPicked(k)}>{label}<small>{count(k)}</small></button>
+              <button key={k} id={`ma-doing-tab-${k}`} type="button" role="tab" aria-selected={tab === k} aria-controls="ma-doing-panel" tabIndex={tab === k ? 0 : -1} onClick={() => choose(k)}>{label}<small>{count(k)}</small></button>
             ))}
           </div>
           <div id="ma-doing-panel" role="tabpanel" aria-labelledby={`ma-doing-tab-${tab}`} key={tab} className="ma-feed">
             {tab === "debates" && (d.debates.length === 0 ? <p className="ma-sub">No recent debates are stored for them.</p> : (
-              <ul>{d.debates.map((c, n) => (
-                <li key={`${c.title}-${c.date}`} style={{ "--n": n }}>
-                  <span className="ma-feed-date">{fmt(c.date)}</span>
-                  {c.url ? <a href={c.url} target="_blank" rel="noreferrer"><b>{c.title}</b><span className="sr-only"> (opens Hansard in a new tab)</span></a> : <b>{c.title}</b>}
-                  {c.said && <q>{c.said.length > 190 ? `${c.said.slice(0, 188).replace(/\s+\S*$/, "")}…` : c.said}</q>}
-                </li>
-              ))}</ul>
+              <ul>{d.debates.map((c, n) => {
+                const id = `d${n}`; const kind = debateKind(c.section);
+                return (
+                  <Entry key={id} id={id} n={n} open={openId === id} onToggle={() => toggle(id)} date={fmt(c.date)} title={c.title} chips={<span className="ma-feed-meta"><i>{kind.label}</i></span>}>
+                    <Block title="What this debate was"><p>{kind.plain}</p></Block>
+                    <Block title="What they did"><p>{contributionWords(c)}</p></Block>
+                    {c.saidAll.length > 0 && <Block title="In their words">{c.saidAll.map((t) => <q key={t}>{t}</q>)}</Block>}
+                    <Links list={connections({ ...ctx, text: c.title })} />
+                    <p className="ma-sub">{NO_WHY}</p>
+                    <Source href={c.url} label="The full debate on Hansard" />
+                  </Entry>
+                );
+              })}</ul>
             ))}
             {tab === "questions" && (d.questions.length === 0 ? <p className="ma-sub">No recent written questions are stored for them.</p> : (
               <>
-                <ul>{d.questions.map((q, n) => (
-                  <li key={`${q.heading}-${q.tabled}-${n}`} style={{ "--n": n }}>
-                    <span className="ma-feed-date">Asked {fmt(q.tabled)}</span>
-                    <b>{q.heading}</b>
-                    <span className="ma-feed-meta">{[q.department, q.answered ? `Answered ${fmt(q.answered)}` : "Waiting for an answer"].filter(Boolean).join(". ")}</span>
-                  </li>
-                ))}</ul>
+                <ul>{d.questions.map((q, n) => {
+                  const id = `q${n}`; const st = questionStatus(q); const dept = departmentInfo(q.department);
+                  return (
+                    <Entry key={id} id={id} n={n} open={openId === id} onToggle={() => toggle(id)} date={`Asked ${fmt(q.tabled)}`} title={q.heading}
+                      chips={<span className="ma-feed-meta">{q.department && <i>{q.department}</i>}<i className={st.answered ? "aye" : "against"}>{st.answered ? "Answered" : "Waiting"}</i></span>}>
+                      <Block title="What they asked">{q.text ? <p>{q.text}</p> : <p>The full wording is on Parliament's site.</p>}</Block>
+                      <Block title="Who it went to"><p>{q.department ?? "A government department"}{dept ? `. ${dept}` : ""}</p></Block>
+                      <Block title="Where it stands"><p>{st.plain}</p></Block>
+                      {q.answer && <Block title="The answer, shortened"><q>{q.answer}</q></Block>}
+                      <Links list={connections({ ...ctx, text: `${q.heading} ${q.text ?? ""}` })} />
+                      <p className="ma-sub">A written question is a question an MP puts to a minister in writing. The minister has to reply in writing, and both are published.</p>
+                      <p className="ma-sub">{NO_WHY}</p>
+                      <Source href={q.url} label="The question and answer on Parliament's site" />
+                    </Entry>
+                  );
+                })}</ul>
                 <a className="ma-link" href="#/writtenQuestions">Every written question</a>
               </>
             ))}
             {tab === "votes" && (d.votes.length === 0 ? <p className="ma-sub">No recent votes are stored for them.</p> : (
               <>
                 {d.withParty && <p className="ma-callout">In their latest {d.withParty.of} votes, they voted with their party in <strong>{d.withParty.with}</strong>{d.withParty.with === d.withParty.of ? "." : ` and against it in ${d.withParty.of - d.withParty.with}.`}</p>}
-                <ul>{d.votes.map((v, n) => (
-                  <li key={`${v.title}-${v.date}`} style={{ "--n": n }}>
-                    <span className="ma-feed-date">{fmt(v.date)}</span>
-                    <b>{v.title}</b>
-                    <span className="ma-feed-meta"><i className={v.aye ? "aye" : "no"}>{v.aye ? "Voted aye" : "Voted no"}</i>{v.withParty === false ? <i className="against">Against their party</i> : null}</span>
-                  </li>
-                ))}</ul>
+                <ul>{d.votes.map((v, n) => {
+                  const id = `v${n}`;
+                  return (
+                    <Entry key={id} id={id} n={n} open={openId === id} onToggle={() => toggle(id)} date={fmt(v.date)} title={v.title}
+                      chips={<span className="ma-feed-meta"><i className={v.aye ? "aye" : "no"}>{v.aye ? "Voted aye" : "Voted no"}</i>{v.withParty === false ? <i className="against">Against their party</i> : null}</span>}>
+                      {openId === id && <VoteBody v={v} mp={mp} links={connections({ ...ctx, text: v.title })} />}
+                    </Entry>
+                  );
+                })}</ul>
                 {mp && <a className="ma-link" href={`#/mp/${mp.id}`}>Their full voting record</a>}
               </>
             ))}
             {tab === "proposed" && (d.bills.length + d.committees.length === 0 ? <p className="ma-sub">They are not recorded as sponsoring a bill or sitting on a select committee.</p> : (
               <>
                 {d.bills.length > 0 && <><h5>Bills they sponsor</h5>
-                  <ul>{d.bills.map((b, n) => (
-                    <li key={b.id} style={{ "--n": n }}>
-                      {b.url ? <a href={b.url} target="_blank" rel="noreferrer"><b>{b.title}</b><span className="sr-only"> (opens in a new tab)</span></a> : <b>{b.title}</b>}
-                      <span className="ma-feed-meta"><i className={b.isAct ? "aye" : b.defeated ? "no" : ""}>{b.isAct ? "Became law" : b.defeated ? "Defeated" : b.stage ?? "In progress"}</i></span>
-                    </li>
-                  ))}</ul></>}
-                {d.committees.length > 0 && <><h5>Committees they sit on</h5><p className="ma-chiprow">{d.committees.map((c) => <span key={c}>{c}</span>)}</p></>}
+                  <ul>{d.bills.map((b, n) => {
+                    const id = `b${n}`;
+                    return (
+                      <Entry key={id} id={id} n={n} open={openId === id} onToggle={() => toggle(id)} title={b.title}
+                        chips={<span className="ma-feed-meta"><i className={b.isAct ? "aye" : b.defeated ? "no" : ""}>{b.isAct ? "Became law" : b.defeated ? "Defeated" : b.stage ?? "In progress"}</i></span>}>
+                        <BillBlock bill={{ short_title: b.title, long_title: b.longTitle, current_stage: b.stage, current_house: b.house, sponsoring_department: b.department, is_act: b.isAct, is_defeated: b.defeated, source_url: b.url }} />
+                        <Block title="What sponsoring means"><p>The sponsor is the member who puts a bill forward. For a government bill this is a minister. For a private member's bill it is a backbencher, and most of those do not become law.</p></Block>
+                        <Source href={b.url} label="The bill on Parliament's site" />
+                      </Entry>
+                    );
+                  })}</ul></>}
+                {d.committees.length > 0 && <><h5>Committees they sit on</h5><p className="ma-chiprow">{d.committees.map((c) => <span key={c}>{c}</span>)}</p>
+                  <p className="ma-sub">A select committee is a small cross-party group of MPs that examines one area of government, questions ministers and experts, and publishes reports the government must reply to.</p></>}
                 {d.role && <p className="ma-sub">Government role: {d.role}.</p>}
               </>
             ))}

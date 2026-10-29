@@ -10,6 +10,14 @@
 .st-tile b { font: 700 clamp(36px, 4.6vw, 50px)/1 "Figures", "Newsreader", Georgia, serif; letter-spacing: -0.02em; color: #fff; }
 .st-tile-sub { margin-top: auto; font: 500 13px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: rgba(255, 255, 255, 0.78); }
 .st-tile-visual { min-height: 48px; display: grid; align-items: end; }
+/* The row of figures at the top of a page, light: each figure is a card of its own, tinted with its colour, with the colour's strip along the top and a soft circle behind the number.
+   The two story pages that ask for the dark "lead" and "rail" boards keep them (data-variant). */
+.st-board:not([data-variant]) { padding: 0; gap: 14px; border-radius: 0; background: none; box-shadow: none; }
+.st-board:not([data-variant]) .st-tile { color: var(--c-ink); border: 1px solid color-mix(in srgb, var(--tc) 30%, var(--c-hairline)); border-radius: 22px; padding: 20px 20px 18px; box-shadow: var(--shadow-1);
+  background: radial-gradient(130px 130px at 100% 0, color-mix(in srgb, var(--tc) 20%, transparent), transparent 70%), linear-gradient(170deg, color-mix(in srgb, var(--tc) 11%, var(--c-paper-card)), var(--c-paper-card) 75%); }
+.st-board:not([data-variant]) .st-tile-label { color: color-mix(in srgb, var(--tc) 48%, var(--c-ink)); }
+.st-board:not([data-variant]) .st-tile > b { color: color-mix(in srgb, var(--tc) 38%, var(--c-ink)); }
+.st-board:not([data-variant]) .st-tile-sub { color: var(--c-ink-soft); }
 .st-why { display: flex; align-items: flex-start; gap: 16px; padding: 18px 22px; border-radius: 22px; background: linear-gradient(120deg, color-mix(in srgb, var(--tc) 12%, var(--c-paper-card)), var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--tc) 35%, var(--c-hairline)); border-left: 8px solid var(--tc); }
 .st-why-icon { flex: none; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 15px; background: var(--tc); color: #fff; }
 .st-why p { margin: 0; font: 400 16px/1.65 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
@@ -213,7 +221,7 @@
 /* Looks. The same blocks dressed three other ways, so the pages written as data do not all read alike. A page picks one with `look` in its PAGE (see ExplainerPage). Without one it keeps the first look above. */
 /* ledger: plain, ruled and printed, like a table in a report. */
 .st[data-look="ledger"] .st-board { gap: 0; padding: 0; border-radius: 0; background: none; box-shadow: none; border-block: 3px double var(--c-ink-soft); }
-.st[data-look="ledger"] .st-tile { border: 0; border-radius: 0; background: none; color: var(--c-ink); padding: 24px clamp(12px, 2vw, 24px) 20px; }
+.st[data-look="ledger"] .st-tile { box-shadow: none; border: 0; border-radius: 0; background: none; color: var(--c-ink); padding: 24px clamp(12px, 2vw, 24px) 20px; }
 .st[data-look="ledger"] .st-tile + .st-tile { border-left: 1px solid var(--c-hairline); }
 .st[data-look="ledger"] .st-tile::before { inset: 0 auto auto clamp(12px, 2vw, 24px); width: 38px; height: 4px; }
 .st[data-look="ledger"] .st-tile-label { color: color-mix(in srgb, var(--tc) 70%, var(--c-ink)); }
@@ -230,9 +238,11 @@
 
 /* poster: solid blocks of colour. */
 .st[data-look="poster"] .st-board { padding: 0; gap: 12px; border-radius: 0; background: none; box-shadow: none; }
-.st[data-look="poster"] .st-tile { border: 0; border-radius: 20px; background: radial-gradient(120% 90% at 100% 0%, rgba(255, 255, 255, 0.18), transparent 60%), color-mix(in srgb, var(--tc) 46%, #0B1226); }
+.st[data-look="poster"] .st-tile { box-shadow: none; border: 0; border-radius: 20px; background: radial-gradient(120% 90% at 100% 0%, rgba(255, 255, 255, 0.18), transparent 60%), color-mix(in srgb, var(--tc) 46%, #0B1226); }
 .st[data-look="poster"] .st-tile::before { display: none; }
 .st[data-look="poster"] .st-tile-label { color: rgba(255, 255, 255, 0.9); }
+.st[data-look="poster"] .st-tile > b { color: #fff; }
+.st[data-look="poster"] .st-tile-sub { color: rgba(255, 255, 255, 0.85); }
 .st[data-look="poster"] .st-tile > b { font-size: clamp(32px, 4vw, 48px); }
 .st[data-look="poster"] .st-why { padding: 22px 26px; border: 0; border-radius: 20px; background: color-mix(in srgb, var(--tc) 46%, #0B1226); }
 .st[data-look="poster"] .st-why-icon { background: rgba(255, 255, 255, 0.16); }
@@ -246,7 +256,7 @@
 
 /* field: light and open, with a rule over each part. */
 .st[data-look="field"] .st-board { padding: 0; gap: 0; overflow: hidden; border-radius: 18px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); }
-.st[data-look="field"] .st-tile { border: 0; border-radius: 0; background: none; color: var(--c-ink); padding: 22px 22px 20px; }
+.st[data-look="field"] .st-tile { box-shadow: none; border: 0; border-radius: 0; background: none; color: var(--c-ink); padding: 22px 22px 20px; }
 .st[data-look="field"] .st-tile + .st-tile { border-left: 1px dashed var(--c-hairline); }
 .st[data-look="field"] .st-tile::before { inset: 27px auto auto 22px; width: 10px; height: 10px; border-radius: 50%; }
 .st[data-look="field"] .st-tile-label { padding-left: 18px; color: var(--c-ink-soft); }

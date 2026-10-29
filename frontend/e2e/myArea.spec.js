@@ -10,13 +10,13 @@ const result = {
 const mp = [{ id: 1, name: "Test Member", party: "Labour", party_colour: "d50000", thumbnail_url: null, cabinet_role: null }];
 const cors = { "access-control-allow-origin": "*", "access-control-expose-headers": "content-range" };
 
-async function mockServices(page, { elections = { results: [] } } = {}) {
+async function mockServices(page, { elections = { results: [] }, votes = [] } = {}) {
   await page.addInitScript(() => localStorage.setItem("mp-transparency-my-postcode", "BS1 5TR"));
   await page.route("**/127.0.0.1:54321/**", (route) => {
     const req = route.request();
     if (req.method() === "OPTIONS") return route.fulfill({ status: 204, headers: { ...cors, "access-control-allow-headers": "*", "access-control-allow-methods": "*" } });
     if (req.method() === "HEAD") return route.fulfill({ status: 200, headers: { ...cors, "content-range": "0-0/42" }, body: "" });
-    return route.fulfill({ status: 200, contentType: "application/json", headers: cors, body: JSON.stringify(req.url().includes("/politicians") ? mp : []) });
+    return route.fulfill({ status: 200, contentType: "application/json", headers: cors, body: JSON.stringify(req.url().includes("/politicians") ? mp : req.url().includes("/voting_records") ? votes : []) });
   });
   await page.route("**/api.postcodes.io/**", (route) => route.fulfill({ status: 200, contentType: "application/json", headers: cors, body: JSON.stringify({ status: 200, result }) }));
   await page.route("**/elections.democracyclub.org.uk/**", (route) => route.fulfill({ status: 200, contentType: "application/json", headers: cors, body: JSON.stringify(elections) }));
@@ -70,4 +70,25 @@ test("the MP's activity opens on a tab with something in it and the tabs work fr
   await page.keyboard.press("ArrowRight");
   await expect(tabs.getByRole("tab", { name: /^Questions/ })).toHaveAttribute("aria-selected", "true");
   await expect(page.getByRole("tabpanel")).toBeVisible();
+});
+
+test("a vote opens to explain itself in plain English, one at a time, and closes again", async ({ page }) => {
+  await page.setViewportSize({ width: 1100, height: 900 });
+  await mockServices(page, { votes: [
+    { title: "Finance Bill: Second Reading", date: "2026-10-22", voted_aye: true, voted_with_party_majority: true },
+    { title: "Finance Bill: Third Reading", date: "2026-10-15", voted_aye: false, voted_with_party_majority: false },
+  ] });
+  await page.goto("/myArea");
+  await page.getByRole("tab", { name: /^Votes/ }).click({ timeout: 20000 });
+  const heads = page.locator(".ma-entry-head");
+  await expect(heads).toHaveCount(2);
+  await expect(heads.first()).toHaveAttribute("aria-expanded", "false");
+  await heads.first().click();
+  await expect(heads.first()).toHaveAttribute("aria-expanded", "true");
+  await expect(page.locator(".ma-entry").first()).toContainText("What was being voted on");
+  await heads.nth(1).click();
+  await expect(heads.first()).toHaveAttribute("aria-expanded", "false");
+  await expect(heads.nth(1)).toHaveAttribute("aria-expanded", "true");
+  await heads.nth(1).click();
+  await expect(heads.nth(1)).toHaveAttribute("aria-expanded", "false");
 });

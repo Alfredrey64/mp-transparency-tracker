@@ -64,7 +64,7 @@ export function useAreaExtras(data) {
     if (mp) {
       Promise.all([
         soft(supabase.from("voting_records").select("title, date, voted_aye, voted_with_party_majority, source_url").eq("politician_id", mp.id).order("date", { ascending: false }).limit(6)),
-        soft(supabase.from("bills").select("bill_id, short_title, current_stage, is_act, is_defeated, source_url, last_updated").eq("sponsor_member_id", mp.parliament_member_id).order("last_updated", { ascending: false }).limit(5)),
+        soft(supabase.from("bills").select("bill_id, short_title, long_title, current_stage, current_house, sponsoring_department, is_act, is_defeated, source_url, last_updated").eq("sponsor_member_id", mp.parliament_member_id).order("last_updated", { ascending: false }).limit(5)),
         soft(supabase.from("committees").select("id, name, members")),
       ]).then(([votes, bills, committees]) => put({ doing: doingFromRows({ mp, votes: votes?.data, bills: bills?.data, committees: committees?.data }) }));
     } else put({ doing: null });
