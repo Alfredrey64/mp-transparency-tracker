@@ -50,19 +50,46 @@ export function seatProfile({ key, seats, summary, history, elections }) {
     ? { pct: result.turnoutPct, average: summary?.turnout?.average ?? null, rank: turnouts.filter((v) => v > result.turnoutPct).length + 1, of: turnouts.length }
     : null;
   const list = electionList(elections?.bySeat?.[key], record);
-  const former = [...(history?.[key] ?? [])].sort((a, b) => String(b.end ?? "").localeCompare(String(a.end ?? ""))).slice(0, 4);
+  const former = [...(history?.[key] ?? [])].sort((a, b) => String(b.end ?? "").localeCompare(String(a.end ?? ""))).slice(0, 8);
   return {
     record, result, candidates, turnout, when: electionWhen(result),
     others: otherVotes > 0 && result.turnout ? { votes: otherVotes, share: otherVotes / result.turnout } : null,
     safety: seatSafety(result.majorityPct),
     standing: majorityStanding(seats, key),
-    runs: list.map((e) => ({ year: e.year, party: e.parties[0]?.name ?? "", share: e.parties[0]?.share ?? null, lead: e.lead, colour: e.parties[0]?.colour ?? elections?.parties?.[e.parties[0]?.name] ?? null })),
+    runs: list.map((e) => ({ year: e.year, party: e.parties[0]?.name ?? "", share: e.parties[0]?.share ?? null, lead: e.lead, second: e.parties[1] ? { party: e.parties[1].name, share: e.parties[1].share ?? null, colour: e.parties[1].colour ?? elections?.parties?.[e.parties[1].name] ?? null } : null, colour: e.parties[0]?.colour ?? elections?.parties?.[e.parties[0]?.name] ?? null })),
     changes: changesOfParty(list),
     former,
     petitions: record.petitions ?? [],
     bins: majorityBins(seats, result.majorityPct),
     national: summary ? { changedHands: summary.changedHandsAtGeneralElection ?? null, underHalf: summary.wonWithUnderHalf ?? null, total: summary.total ?? null } : null,
   };
+}
+
+// The seat's story in three facts and a ribbon: how long the current party has held it, how many times it has changed hands, and who has been its MP.
+// `runs` and `former` come from seatProfile; `mp` is the current MP's row.
+export function seatStory({ runs, changes, former }, mp) {
+  if (!runs?.length) return null;
+  let at = runs.length - 1;
+  while (at > 0 && runs[at - 1].party === runs[runs.length - 1].party) at -= 1;
+  const streak = { party: runs.at(-1).party, since: runs[at].year, elections: runs.length - at };
+  const biggest = runs.filter((r) => typeof r.lead === "number").sort((a, b) => b.lead - a.lead)[0] ?? null;
+  const closest = runs.filter((r) => typeof r.lead === "number").sort((a, b) => a.lead - b.lead)[0] ?? null;
+  const today = new Date().toISOString().slice(0, 10);
+  const spans = [...(former ?? []).filter((m) => m.start).map((m) => ({ name: m.name, party: m.party, colour: m.colour ?? null, start: String(m.start).slice(0, 10), end: m.end ? String(m.end).slice(0, 10) : today }))];
+  if (mp?.name) spans.push({ name: mp.name, party: mp.party ?? "", colour: mp.party_colour ?? null, start: String(mp.membership_start_date ?? "").slice(0, 10) || today, end: today, current: true });
+  spans.sort((a, b) => a.start.localeCompare(b.start));
+  const days = (a, b) => Math.max(1, Math.round((new Date(b) - new Date(a)) / 86400000));
+  const tenures = spans.map((m) => ({ ...m, years: days(m.start, m.end) / 365.25 }));
+  return { streak, changed: changes?.length ?? 0, biggest, closest, tenures, longest: [...tenures].sort((a, b) => b.years - a.years)[0] ?? null };
+}
+
+// Five age groups for a region against the UK (or England and Wales where the UK is not published), as shares of everyone, for a stacked bar.
+const AGE_GROUPS = [["under-15", "Under 15"], ["15-24", "15 to 24"], ["25-44", "25 to 44"], ["45-64", "45 to 64"], ["65-plus", "65 and over"]];
+export function ageProfile(profile, regionKey) {
+  const cat = profile?.categories?.find((c) => c.id === "age");
+  if (!cat || !regionKey) return null;
+  const parts = AGE_GROUPS.map(([id, label]) => { const g = cat.groups.find((x) => x.id === id); return { label, region: g?.values?.[regionKey], uk: g?.uk ?? g?.all }; });
+  return parts.every((p) => typeof p.region === "number" && typeof p.uk === "number") ? parts : null;
 }
 
 // A council's Band D bill: the whole bill for the area, each year since the file starts. Null where the council is not in England's list.

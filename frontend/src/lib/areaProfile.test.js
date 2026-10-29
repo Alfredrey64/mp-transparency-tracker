@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { neighbourhoodRank, tenthWords, seatProfile, councilTaxProfile, taxYear, censusFacts, placeFacts, whoDoesWhat, responsibilities, nextContests, seatMapProfile, councilYears, electionWhen } from "./areaProfile";
+import { neighbourhoodRank, tenthWords, seatProfile, councilTaxProfile, taxYear, censusFacts, placeFacts, whoDoesWhat, responsibilities, nextContests, seatMapProfile, councilYears, electionWhen, seatStory, ageProfile } from "./areaProfile";
 import tax from "../data/councilTaxByCouncil.json";
 import census from "../data/regionalProfile.json";
 import seats from "../data/constituencies.json";
@@ -169,4 +169,41 @@ describe("when a seat's saved result was", () => {
     expect(p.others.votes).toBe(2310);
     expect(p.others.share).toBeGreaterThan(0.05);
   });
+});
+
+describe("the seat's story", () => {
+  const runs = [
+    { year: 2010, party: "Labour", lead: 12 }, { year: 2015, party: "Conservative", lead: 3 },
+    { year: 2017, party: "Conservative", lead: 8 }, { year: 2019, party: "Conservative", lead: 20 }, { year: 2024, party: "Conservative", lead: 8 },
+  ];
+  it("finds how long the current party has held the seat, and how often it changed hands", () => {
+    const s = seatStory({ runs, changes: [{ year: 2015 }], former: [] }, null);
+    expect(s.streak).toEqual({ party: "Conservative", since: 2015, elections: 4 });
+    expect(s.changed).toBe(1);
+    expect(s.biggest.year).toBe(2019);
+    expect(s.closest.year).toBe(2015);
+  });
+  it("lays the MPs out oldest first, ending with the current one, and finds the longest serving", () => {
+    const former = [{ name: "B", party: "Con", start: "2015-05-08", end: "2024-05-30" }, { name: "A", party: "Lab", start: "2005-05-06", end: "2015-03-30" }];
+    const s = seatStory({ runs, changes: [], former }, { name: "C", party: "Reform", membership_start_date: "2024-07-05" });
+    expect(s.tenures.map((m) => m.name)).toEqual(["A", "B", "C"]);
+    expect(s.tenures.at(-1).current).toBe(true);
+    expect(s.longest.name).toBe("A");
+  });
+  it("copes with a seat that has one result and no history", () => {
+    const s = seatStory({ runs: [{ year: 2024, party: "Labour", lead: 5 }], changes: [], former: [] }, { name: "C", party: "Labour", membership_start_date: "2024-07-05" });
+    expect(s.streak.since).toBe(2024);
+    expect(s.tenures).toHaveLength(1);
+    expect(seatStory({ runs: [] }, null)).toBeNull();
+  });
+});
+
+describe("age profile", () => {
+  it("gives five age groups for a region against the UK, which add to about 100", () => {
+    const a = ageProfile(census, "london");
+    expect(a).toHaveLength(5);
+    expect(Math.abs(a.reduce((n, p) => n + p.region, 0) - 100)).toBeLessThan(0.5);
+    expect(Math.abs(a.reduce((n, p) => n + p.uk, 0) - 100)).toBeLessThan(0.5);
+  });
+  it("gives nothing without a region", () => { expect(ageProfile(census, null)).toBeNull(); });
 });

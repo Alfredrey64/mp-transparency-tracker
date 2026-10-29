@@ -13,7 +13,7 @@ import { againstUk } from "../lib/seatLocal";
 import { formatValue, periodLabel } from "../lib/onsFormat";
 import { longDate } from "../lib/councils";
 import { daysUntil } from "../lib/localElections";
-import { taxYear, tenthWords } from "../lib/areaProfile";
+import { taxYear, tenthWords, seatStory } from "../lib/areaProfile";
 
 // The sections of the Your area page that come from the files saved with the site rather than from the postcode lookup. They load after the page is
 // drawn, each on its own, so a slow or missing file leaves one card saying so and nothing else.
@@ -171,35 +171,66 @@ function LeadChart({ bins, majorityPct }) {
   );
 }
 
-// Who has won here before, and the MPs before the current one.
-export function SeatHistory({ x, i }) {
+// Who has won here: three facts, every election as a pair of columns (the winner's share against the runner-up's), and a ribbon of the MPs the seat has had.
+export function SeatHistory({ x, mp, i }) {
   const s = x?.seat;
-  const second = s?.candidates?.[1];
+  const story = s ? seatStory(s, mp) : null;
+  const maxShare = s ? Math.max(40, ...s.runs.flatMap((r) => [r.share ?? 0, r.second?.share ?? 0])) : 100;
+  const totalYears = story ? story.tenures.reduce((n, m) => n + m.years, 0) : 0;
   return (
     <Card i={i} colour="#7A5AF0" icon={<IconCalendar size={20} />} title="Who has won here" className="ma-history">
-      {x?.seat === undefined ? <Skel lines={4} /> : !s ? <Missing>No election history is saved for this seat.</Missing> : (
+      {x?.seat === undefined ? <Skel lines={6} /> : !s || !story ? <Missing>No election history is saved for this seat.</Missing> : (
         <>
-          <ol className="ma-runs">
-            {s.runs.map((e) => (
-              <li key={e.year} style={{ "--pc": hex(e.colour) }}>
-                <span>{e.year}</span><b>{shortParty(e.party)}</b>{typeof e.lead === "number" && <small>by {e.lead.toFixed(0)} pts</small>}
-              </li>
-            ))}
-          </ol>
-          <p>{s.runs.length < 2
-            ? `Only the ${s.runs[0].year} result is saved for this seat. Many seats had their boundaries redrawn in 2024, so earlier results are not always comparable.`
-            : s.changes.length === 0
-            ? `The seat has gone to the same party at each of the ${s.runs.length} general elections from ${s.runs[0].year}.`
-            : `It changed party ${plural(s.changes.length, "time", "times")} in the ${s.runs.length} general elections from ${s.runs[0].year}: ${s.changes.map((c) => `${shortParty(c.to)} in ${c.year}`).join(", ")}.`}</p>
-          {second && <p className="ma-callout"><strong>{second.party}</strong> came second with {(second.share * 100).toFixed(1)}% of the vote, {(s.result.majority).toLocaleString("en-GB")} votes behind.</p>}
-          {s.former.length > 0 && (
+          <dl className="ma-trio ma-trio-3">
+            <div><dt>Held by</dt><dd>{shortParty(story.streak.party)}</dd><small>{story.streak.elections > 1 ? `since ${story.streak.since}, ${story.streak.elections} elections running` : `won in ${story.streak.since}`}</small></div>
+            <div><dt>Changed hands</dt><dd><CountUp value={story.changed} /></dd><small>{s.runs.length > 1 ? `in ${s.runs.length} elections since ${s.runs[0].year}` : "only one result saved"}</small></div>
+            <div><dt>Biggest lead</dt><dd>{story.biggest ? `${story.biggest.lead.toFixed(0)} pts` : "None"}</dd><small>{story.biggest ? `${shortParty(story.biggest.party)} in ${story.biggest.year}` : ""}</small></div>
+          </dl>
+          {s.runs.length >= 3 ? (
             <>
-              <h4>MPs before the current one</h4>
-              <ul className="ma-former">
-                {s.former.map((m) => (
-                  <li key={`${m.id}-${m.start}`} style={{ "--pc": hex(m.colour) }}><i aria-hidden="true" /><b>{m.name}</b><span>{m.party}, {String(m.start).slice(0, 4)} to {String(m.end).slice(0, 4)}</span></li>
+              <div className="ma-elect" role="img" aria-label={`The winner's share of the vote at each election since ${s.runs[0].year}, against the runner-up's`}>
+                {s.runs.map((e, n) => (
+                  <div key={e.year} className="ma-elect-col" style={{ "--n": n }}>
+                    <em>{e.share != null ? `${Math.round(e.share)}%` : ""}</em>
+                    <span className="ma-elect-pair">
+                      <i style={{ "--h": (e.share ?? 0) / maxShare, "--pc": hex(e.colour) }} title={`${e.party}, ${e.share != null ? e.share.toFixed(1) : "?"}%`} />
+                      {e.second && <i className="second" style={{ "--h": (e.second.share ?? 0) / maxShare, "--pc": hex(e.second.colour) }} title={`${e.second.party}, ${e.second.share != null ? e.second.share.toFixed(1) : "?"}%`} />}
+                    </span>
+                    <b>{shortParty(e.party)}</b>
+                    <small>{e.year}</small>
+                  </div>
                 ))}
-              </ul>
+              </div>
+              <p className="ma-sub ma-elect-note">Each pair is the winner's share of the vote (left) and the runner-up's (right).</p>
+            </>
+          ) : (
+            <>
+              <div className="ma-elect" role="img" aria-label={`Share of the vote won by each of the leading candidates ${s.when.in}`}>
+                {s.candidates.slice(0, 5).map((c, n) => (
+                  <div key={`${c.name}-${c.party}`} className="ma-elect-col" style={{ "--n": n }}>
+                    <em>{(c.share * 100).toFixed(0)}%</em>
+                    <span className="ma-elect-pair"><i style={{ "--h": c.share / Math.max(0.4, s.candidates[0].share), "--pc": hex(c.colour) }} title={`${c.name}, ${c.party}`} /></span>
+                    <b>{shortParty(c.party)}</b>
+                    <small>{c.name.split(" ").at(-1)}</small>
+                  </div>
+                ))}
+              </div>
+              <p className="ma-sub ma-elect-note">Only the {s.runs[0].year} result is saved for this seat, as many seats had their boundaries redrawn in 2024, so this shows who stood in it.</p>
+            </>
+          )}
+          {story.tenures.length > 0 && (
+            <>
+              <h4>Who has been its MP</h4>
+              <ol className="ma-tenure" aria-label="MPs for this seat, oldest first">
+                {story.tenures.map((m, n) => (
+                  <li key={`${m.name}-${m.start}`} className={m.current ? "now" : ""} style={{ "--pc": hex(m.colour), "--g": Math.max(0.6, m.years) , "--n": n }} title={`${m.name}, ${m.party}`}>
+                    <i aria-hidden="true" />
+                    <b>{m.name.replace(/^(Rt Hon |Dr |Sir |Dame |Ms |Mr |Mrs |Miss )+/i, "")}</b>
+                    <small>{m.start.slice(0, 4)} to {m.current ? "now" : m.end.slice(0, 4)}</small>
+                  </li>
+                ))}
+              </ol>
+              {story.longest && totalYears > 0 && <p className="ma-sub">{story.longest.current ? "The current MP is the longest serving of those listed" : `${story.longest.name.replace(/^(Rt Hon |Dr |Sir |Dame |Ms |Mr |Mrs |Miss )+/i, "")} served longest of those listed`}, at about {Math.round(story.longest.years)} years.</p>}
             </>
           )}
         </>
@@ -354,31 +385,42 @@ export function LocalPetitions({ x, name, i }) {
 
 export function CouncilTax({ x, i }) {
   const t = x?.tax;
-  const W = 300, H = 90, P = 6;
   const values = t ? t.series.slice(t.start) : [];
-  const lo = Math.min(...values);
-  const hi = Math.max(...values);
-  const pts = values.map((v, n) => [P + (n / Math.max(1, values.length - 1)) * (W - 2 * P), H - P - ((v - lo) / (hi - lo || 1)) * (H - 2 * P)]);
-  const line = pts.map((p) => p.join(",")).join(" ");
+  // The scale takes in the England average too, so the dashed line for it is always on the chart.
+  const lo = t ? Math.min(...values, t.average) * 0.96 : 0;
+  const hi = t ? Math.max(...values, t.average) * 1.03 : 1;
+  const y = (v) => 100 - ((v - lo) / (hi - lo || 1)) * 100;
+  const pts = values.map((v, n) => [(n / Math.max(1, values.length - 1)) * 100, y(v)]);
+  const line = pts.map((p) => p.map((n) => n.toFixed(2)).join(",")).join(" ");
+  const mid = t ? t.from + Math.round((t.to - t.from) / 2) : 0;
+  const bigger = t ? Math.max(t.last, t.average) : 1;
   return (
     <Card i={i} colour="#E8741A" icon={<IconTrend size={20} />} title="Your council tax" className="ma-tax">
       {x?.tax === undefined ? <Skel lines={4} /> : !t ? <Missing>We hold council tax bills for councils in England only, and could not match this one.</Missing> : (
         <>
-          <div className="ma-taxhead"><b>{money(t.last)}</b><span>a year for a Band D home in {taxYear(t.to)}</span></div>
+          <div className="ma-taxhead"><b><CountUp value={t.last} format={money} /></b><span>a year for a Band D home in {taxYear(t.to)}</span></div>
           {pts.length > 1 && (
-            <>
-              <svg className="ma-spark" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Band D council tax in ${t.name}, ${t.from} to ${t.to}: from ${money(t.first)} to ${money(t.last)}`} preserveAspectRatio="none">
-                <polygon points={`${P},${H - P} ${line} ${W - P},${H - P}`} className="ma-spark-fill" />
-                <polyline points={line} className="ma-spark-line" pathLength="1" />
-                <circle cx={pts.at(-1)[0]} cy={pts.at(-1)[1]} r="4" className="ma-spark-dot" />
-              </svg>
-              <p className="ma-sub ma-spark-cap"><span>{taxYear(t.from)}: {money(t.first)}</span><span>{taxYear(t.to)}: {money(t.last)}</span></p>
-            </>
+            <figure className="ma-taxfig">
+              <div className="ma-taxplot" role="img" aria-label={`Band D council tax in ${t.name}, ${t.from} to ${t.to}: from ${money(t.first)} to ${money(t.last)}. The England average for ${taxYear(t.to)} was ${money(t.average)}.`}>
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                  {[25, 50, 75].map((g) => <line key={g} x1="0" x2="100" y1={g} y2={g} className="ma-spark-grid" />)}
+                  <line x1="0" x2="100" y1={y(t.average)} y2={y(t.average)} className="ma-spark-avg" />
+                  <polygon points={`0,100 ${line} 100,100`} className="ma-spark-fill" />
+                  <polyline points={line} className="ma-spark-line" pathLength="1" />
+                </svg>
+                <span className="ma-spark-dot" style={{ left: `${pts.at(-1)[0]}%`, top: `${pts.at(-1)[1]}%` }} aria-hidden="true" />
+                <span className="ma-spark-tag" style={{ top: `${y(t.average)}%` }} aria-hidden="true">England average {money(t.average)}</span>
+              </div>
+              <div className="ma-taxaxis" aria-hidden="true"><span>{taxYear(t.from)}<b>{money(t.first)}</b></span><span>{taxYear(mid)}</span><span>{taxYear(t.to)}<b>{money(t.last)}</b></span></div>
+            </figure>
           )}
+          <div className="ma-taxvs" role="img" aria-label={`${t.name} ${money(t.last)}, England average ${money(t.average)}`}>
+            <span><em>{t.name}</em><i style={{ "--w": t.last / bigger }} /><b>{money(t.last)}</b></span>
+            <span className="avg"><em>England average</em><i style={{ "--w": t.average / bigger }} /><b>{money(t.average)}</b></span>
+          </div>
           <dl className="ma-facts">
             {t.sinceFirst !== null && <div><dt>Change since {t.from}</dt><dd>{t.sinceFirst >= 0 ? "Up" : "Down"} {Math.abs(t.sinceFirst).toFixed(0)}%</dd></div>}
             {t.sinceLast !== null && <div><dt>Change on last year</dt><dd>{t.sinceLast >= 0 ? "Up" : "Down"} {Math.abs(t.sinceLast).toFixed(1)}%</dd></div>}
-            <div><dt>Average across English councils</dt><dd>{money(t.average)}</dd></div>
             <div><dt>Where yours ranks</dt><dd>{ordinal(t.rank)} highest of {t.of}</dd></div>
           </dl>
           {t.start > 0 && <p className="ma-sub">{t.name} was created in {t.from}, so there are no earlier bills for it.</p>}
@@ -496,6 +538,18 @@ export function Census({ x, regionName, i }) {
     <Card i={i} colour="#0E9AA7" icon={<IconHexMap size={20} />} title={`Who lives in ${regionName ?? "your region"}`} className="ma-census">
       {x?.census === undefined ? <Skel lines={5} /> : rows.length === 0 ? <Missing>Census figures are not available for this area.</Missing> : (
         <>
+          {x.ages && (
+            <figure className="ma-ages">
+              <figcaption>How old people are</figcaption>
+              {[["region", regionName ?? "Your region"], ["uk", "The UK"]].map(([k, label]) => (
+                <div key={k} className={`ma-agebar ${k}`} role="img" aria-label={`${label}: ${x.ages.map((a) => `${a.label} ${a[k]}%`).join(", ")}`}>
+                  <em>{label}</em>
+                  <span>{x.ages.map((a, n) => <i key={a.label} style={{ "--g": a[k], "--n": n }}><b>{Math.round(a[k])}%</b></i>)}</span>
+                </div>
+              ))}
+              <p className="ma-agekey" aria-hidden="true">{x.ages.map((a, n) => <span key={a.label} style={{ "--n": n }}><i />{a.label}</span>)}</p>
+            </figure>
+          )}
           <ul className="ma-census-rows">
             {rows.map((f) => {
               const top = Math.max(f.value, f.uk ?? 0, 1);

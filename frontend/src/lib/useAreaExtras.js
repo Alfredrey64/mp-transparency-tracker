@@ -8,7 +8,7 @@ import { loadCouncilDetail } from "./councilDetail";
 import { supabase } from "../supabaseClient";
 import { doingFromRows } from "./mpDoing";
 import { historyRows } from "./councils";
-import { seatProfile, councilTaxProfile, neighbourhoodRank, censusFacts, placeFacts, whoDoesWhat, responsibilities, nextContests, seatMapProfile, councilYears } from "./areaProfile";
+import { seatProfile, councilTaxProfile, neighbourhoodRank, censusFacts, placeFacts, whoDoesWhat, responsibilities, nextContests, seatMapProfile, councilYears, ageProfile } from "./areaProfile";
 
 const soft = (p) => Promise.resolve(p).catch(() => null);
 
@@ -38,7 +38,7 @@ export function useAreaExtras(data) {
       const snapshot = regionKey && housing ? regionSnapshot(regionKey, (ref) => sectors[ref.sector]?.series?.[ref.id] ?? null) : [];
       const sources = depSeats && depNations ? { england: depSeats.seats, wales: depNations.wales?.seats, scotland: depNations.scotland?.seats, northernireland: depNations.northernireland?.seats } : null;
       put({
-        tax, regionKey, snapshot, pay: yearsOfPay(snapshot), census: censusFacts(census, regionKey),
+        tax, regionKey, snapshot, pay: yearsOfPay(snapshot), census: censusFacts(census, regionKey), ages: ageProfile(census, regionKey),
         nb: neighbourhoodRank(r),
         seatDep: sources ? seatDeprivation(r.parliamentary_constituency, sources) : null,
         seatDomains: depSeats?.seats?.find((z) => seatKey(z.name) === key)?.domains ?? null,

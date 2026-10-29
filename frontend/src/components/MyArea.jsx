@@ -1,5 +1,6 @@
 /** @jsxImportSource react */
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { PartyHemicycle } from "./PartyHemicycle";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_BODY, PAGE_PADDING } from "../theme";
 import { partyColour } from "../lib/format";
@@ -88,7 +89,8 @@ function Dashboard({ data, onForget }) {
   const next = council?.next?.[0];
   const days = next ? daysUntil(next[0]) : null;
   const mpColour = partyColour(mp?.party_colour, "#1E4FB8");
-  const seats = council ? seatsByParty(council, parties) : [];
+  const seats = useMemo(() => (council ? seatsByParty(council, parties) : []), [council, parties]);
+  const chamber = useMemo(() => seats.flatMap((st) => Array.from({ length: st.count }, () => ({ party: st.short, party_colour: st.colour }))), [seats]);
   const place = [r.admin_ward, council?.name ?? r.admin_district ?? r.parliamentary_constituency].filter(Boolean).join(", ");
   return (
     <>
@@ -136,7 +138,7 @@ function Dashboard({ data, onForget }) {
         <SeatResult x={x} name={r.parliamentary_constituency} i={2} />
 
         <SeatCard x={x} name={r.parliamentary_constituency} mp={mp} mpColour={mpColour} i={2} />
-        <SeatHistory x={x} i={3} />
+        <SeatHistory x={x} mp={mp} i={3} />
         <LocalPetitions x={x} name={r.parliamentary_constituency} i={4} />
         <Neighbours x={x} name={r.parliamentary_constituency} i={5} />
       </Section>
@@ -147,9 +149,9 @@ function Dashboard({ data, onForget }) {
             <>
               <div className="ma-big">{council.name}</div>
               <p>{council.control}. {council.total} councillors in all.</p>
-              <div className="ma-seatbar" role="img" aria-label="Seats by party">
-                {seats.map((st, n) => <i key={st.idx} style={{ flexGrow: st.count, background: st.colour ?? "#8A94A6", "--n": n }} title={`${st.short}: ${st.count}`} />)}
-                <u aria-hidden="true" title="Majority line" />
+              <div className="ma-chamber">
+                <PartyHemicycle politicians={chamber} rows={Math.max(3, Math.min(7, Math.round(Math.sqrt(council.total) / 1.8)))} legendCount={0} maxWidth={420}
+                  centre={<div><div className="ma-chamber-n">{council.total}</div><div className="ma-chamber-l">councillors</div></div>} />
               </div>
               <div className="ma-key">{seats.slice(0, 5).map((st) => <span key={st.idx}><i style={{ background: st.colour ?? "#8A94A6" }} />{st.short} <b>{st.count}</b></span>)}</div>
               {county && <p className="ma-sub">County services such as roads and social care come from {county.name}.</p>}

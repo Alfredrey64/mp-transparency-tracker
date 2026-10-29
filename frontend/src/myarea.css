@@ -105,8 +105,8 @@
 .ma-dates span { font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--mc) 70%, var(--c-ink)); }
 .ma-dates b { font: 700 22px/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
 .ma-dates small { font: 500 13px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.ma-facts { display: grid; gap: 8px; margin: 0; }
-.ma-facts > div { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--c-hairline); }
+.ma-facts { display: grid; gap: 0; margin: 0; }
+.ma-facts > div { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 48px; padding: 8px 0; border-top: 1px solid var(--c-hairline); }
 .ma-facts dt { font: 600 13.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .ma-facts dd { margin: 0; font: 700 14.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); text-align: right; }
 
@@ -174,11 +174,6 @@
 .ma-taxhead { display: grid; gap: 2px; }
 .ma-taxhead b { font: 800 clamp(38px, 4.4vw, 52px)/1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); letter-spacing: -0.02em; font-variant-numeric: lining-nums tabular-nums; }
 .ma-taxhead span { font: 600 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.ma-spark { width: 100%; height: 90px; display: block; }
-.ma-spark-fill { fill: color-mix(in srgb, var(--mc) 16%, transparent); }
-.ma-spark-line { fill: none; stroke: var(--mc); stroke-width: 2.5; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
-.ma-spark-dot { fill: var(--mc); }
-.ma-spark-cap { display: flex; justify-content: space-between; gap: 10px; margin-top: -6px !important; }
 .ma-roles { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
 .ma-roles li { display: grid; gap: 2px; padding: 12px 14px; border-radius: 14px; background: var(--c-paper); border: 1px solid var(--c-hairline); }
 .ma-roles b { font: 700 16px "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
@@ -285,11 +280,6 @@
 .ma-lead-bars span:nth-child(7) { --k: 6; } .ma-lead-bars span:nth-child(8) { --k: 7; } .ma-lead-bars span:nth-child(9) { --k: 8; } .ma-lead-bars span:nth-child(10) { --k: 9; } .ma-lead-bars span:nth-child(11) { --k: 10; }
 .ma-lead-bars em { transition: opacity 0.5s var(--ease-out) 1s; }
 .ma-card:not([data-in="true"]) .ma-lead-bars em { opacity: 0; }
-.ma-spark-line { stroke-dasharray: 1; stroke-dashoffset: 0; transition: stroke-dashoffset 1.6s var(--ease-out) 0.2s; }
-.ma-card:not([data-in="true"]) .ma-spark-line { stroke-dashoffset: 1; }
-.ma-spark-fill, .ma-spark-dot { transition: opacity 0.8s var(--ease-out) 1.2s; }
-.ma-card:not([data-in="true"]) .ma-spark-fill, .ma-card:not([data-in="true"]) .ma-spark-dot { opacity: 0; }
-.ma-deciles li { transition: opacity 0.5s var(--ease-out) calc(var(--d, 0) * 60ms + 150ms), transform 0.5s var(--ease-out) calc(var(--d, 0) * 60ms + 150ms); }
 .ma-card:not([data-in="true"]) .ma-deciles li { opacity: 0; transform: translateY(8px); }
 .ma-deciles li.me span { transition: opacity 0.4s var(--ease-out) 1s; }
 .ma-card:not([data-in="true"]) .ma-deciles li.me span { opacity: 0; }
@@ -464,3 +454,76 @@
   .ma-mpcard .ma-stats > div { flex-direction: row; align-items: center; gap: 18px; }
   .ma-mpcard .ma-stats > div + div { border-left: 0; border-top: 1px solid var(--c-hairline); }
 }
+
+/* Council tax: the bill's path with its grid, the England average as a dashed line, a dot that is a true circle, and the years set out beneath it. */
+.ma-taxhead { display: grid; gap: 6px; }
+.ma-taxfig { margin: 0; display: grid; gap: 10px; }
+.ma-taxplot { position: relative; height: clamp(120px, 14vw, 150px); margin: 22px 8px 0 0; }
+.ma-taxplot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.ma-spark-grid { stroke: var(--c-hairline); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.ma-spark-avg { stroke: var(--c-ink-soft); stroke-width: 1.5; stroke-dasharray: 5 5; vector-effect: non-scaling-stroke; opacity: 0.7; }
+.ma-spark-fill { fill: color-mix(in srgb, var(--mc) 15%, transparent); }
+.ma-spark-line { fill: none; stroke: var(--mc); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+/* The line and the area under it are uncovered from left to right, rather than dashed in, so the line is never broken. */
+.ma-taxplot svg { clip-path: inset(-6px -6px -6px 0); transition: clip-path 1.7s var(--ease-out) 0.2s; }
+.ma-card:not([data-in="true"]) .ma-taxplot svg { clip-path: inset(-6px 100% -6px 0); }
+.ma-taxhead b, .ma-taxhead b span { font: 800 clamp(38px, 4.4vw, 52px)/1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); letter-spacing: -0.02em; font-variant-numeric: lining-nums tabular-nums; }
+.ma-spark-dot { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--mc); border: 3px solid var(--c-paper-card); box-shadow: 0 0 0 1px var(--mc), 0 3px 8px rgba(10, 20, 36, 0.25); transition: opacity 0.5s var(--ease-out) 1.6s, transform 0.6s var(--ease-spring) 1.6s; }
+.ma-spark-tag { position: absolute; left: 0; transform: translateY(-130%); padding: 2px 8px; border-radius: 6px; background: color-mix(in srgb, var(--c-paper-card) 88%, transparent); font: 600 11.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-card:not([data-in="true"]) .ma-spark-dot { opacity: 0; transform: scale(0.3); }
+.ma-taxaxis { display: grid; grid-template-columns: 1fr auto 1fr; align-items: start; gap: 8px; padding-top: 10px; border-top: 1px solid var(--c-hairline); font: 600 12.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-taxaxis span { display: grid; gap: 2px; }
+.ma-taxaxis span:nth-child(2) { text-align: center; align-self: center; }
+.ma-taxaxis span:last-child { text-align: right; }
+.ma-taxaxis b { font: 700 15px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); font-variant-numeric: lining-nums tabular-nums; }
+.ma-taxvs { display: grid; gap: 8px; padding: 12px 0; }
+.ma-taxvs span { display: grid; grid-template-columns: minmax(96px, 150px) minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+.ma-taxvs em { font: 600 13px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: var(--c-ink); overflow-wrap: anywhere; }
+.ma-taxvs i { display: block; height: 14px; border-radius: 7px; background: var(--mc); transform-origin: left; transform: scaleX(var(--w)); transition: transform 1.1s var(--ease-out) 0.5s; }
+.ma-taxvs .avg i { background: var(--c-ink-soft); opacity: 0.55; }
+.ma-card:not([data-in="true"]) .ma-taxvs i { transform: scaleX(0); }
+.ma-taxvs b { font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); min-width: 60px; text-align: right; }
+
+/* Who has won here. */
+.ma-history { gap: 14px; }
+.ma-trio-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.ma-elect { flex: 1; min-height: 190px; display: flex; align-items: stretch; justify-content: space-around; gap: 10px; padding: 14px 8px 4px; border-radius: 14px; background: linear-gradient(var(--c-paper), color-mix(in srgb, var(--mc) 5%, var(--c-paper))); border: 1px solid var(--c-hairline); }
+.ma-elect-col { flex: 1 1 0; max-width: 92px; display: grid; grid-template-rows: auto 1fr auto auto; justify-items: center; gap: 4px; min-width: 0; }
+.ma-elect-col em { font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: var(--c-ink); }
+.ma-elect-pair { display: flex; align-items: flex-end; justify-content: center; gap: 4px; width: 100%; min-height: 110px; border-bottom: 2px solid var(--c-hairline); }
+.ma-elect-pair i { flex: 1 1 0; max-width: 28px; height: calc(var(--h) * 100%); min-height: 3px; border-radius: 6px 6px 0 0; background: var(--pc); transform-origin: bottom; transition: transform 0.9s var(--ease-out) calc(var(--n, 0) * 90ms + 200ms); }
+.ma-elect-pair i.second { background: color-mix(in srgb, var(--pc) 45%, var(--c-paper)); }
+.ma-elect-col b { font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); text-align: center; }
+.ma-elect-col small { font: 600 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-card:not([data-in="true"]) .ma-elect-pair i { transform: scaleY(0); }
+.ma-elect-note { margin-top: -4px !important; }
+.ma-tenure { list-style: none; margin: 0; padding: 0; display: flex; gap: 4px; }
+.ma-tenure li { flex: var(--g) 1 0; min-width: 70px; display: grid; gap: 2px; align-content: start; padding: 0 0 2px; transition: opacity 0.6s var(--ease-out) calc(var(--n, 0) * 100ms + 300ms), transform 0.6s var(--ease-out) calc(var(--n, 0) * 100ms + 300ms); }
+.ma-tenure li i { display: block; height: 12px; border-radius: 6px; background: var(--pc); }
+.ma-tenure li.now i { box-shadow: 0 0 0 2px var(--c-paper-card), 0 0 0 4px var(--pc); margin: 2px 4px 2px 2px; }
+.ma-tenure b { font: 700 12.5px/1.25 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); overflow-wrap: anywhere; }
+.ma-tenure small { font: 500 11.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-card:not([data-in="true"]) .ma-tenure li { opacity: 0; transform: translateY(6px); }
+
+/* The council chamber. */
+.ma-chamber { margin: 4px auto 0; width: 100%; max-width: 420px; }
+.ma-chamber-n { font: 800 clamp(24px, 3vw, 34px)/1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.ma-chamber-l { font: 600 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+
+/* How old people are. */
+.ma-ages { margin: 0; display: grid; gap: 8px; padding-bottom: 6px; }
+.ma-ages figcaption { font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ma-agebar { display: grid; grid-template-columns: minmax(70px, 110px) minmax(0, 1fr); gap: 10px; align-items: center; }
+.ma-agebar em { font: 600 12.5px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: var(--c-ink-soft); overflow-wrap: anywhere; }
+.ma-agebar > span { display: flex; gap: 2px; height: 34px; border-radius: 9px; overflow: hidden; }
+.ma-agebar i { flex: var(--g) 1 0; min-width: 0; display: grid; place-items: center; transform-origin: left; transition: transform 1s var(--ease-out) calc(var(--n, 0) * 90ms + 200ms); }
+.ma-agebar i b { font: 700 11.5px "Figures", "Public Sans", system-ui, sans-serif; color: #fff; }
+.ma-agebar i:nth-child(1) { background: #7BCFD4; } .ma-agebar i:nth-child(2) { background: #3DB4BD; } .ma-agebar i:nth-child(3) { background: #0E9AA7; } .ma-agebar i:nth-child(4) { background: #0B7A86; } .ma-agebar i:nth-child(5) { background: #0A5A66; }
+.ma-agebar.uk i { filter: saturate(0.25); opacity: 0.8; }
+.ma-card:not([data-in="true"]) .ma-agebar i { transform: scaleX(0); }
+.ma-agekey { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 0 !important; font: 600 12px "Figures", "Public Sans", system-ui, sans-serif !important; color: var(--c-ink-soft) !important; }
+.ma-agekey span { display: inline-flex; align-items: center; gap: 6px; }
+.ma-agekey i { width: 10px; height: 10px; border-radius: 3px; }
+.ma-agekey span:nth-child(1) i { background: #7BCFD4; } .ma-agekey span:nth-child(2) i { background: #3DB4BD; } .ma-agekey span:nth-child(3) i { background: #0E9AA7; } .ma-agekey span:nth-child(4) i { background: #0B7A86; } .ma-agekey span:nth-child(5) i { background: #0A5A66; }
+@container ma (max-width: 560px) { .ma-trio-3 { grid-template-columns: minmax(0, 1fr); } .ma-taxvs span { grid-template-columns: minmax(0, 1fr) auto; } .ma-taxvs i { grid-column: 1 / -1; grid-row: 2; } .ma-agebar { grid-template-columns: minmax(0, 1fr); gap: 4px; } .ma-agebar i b { font-size: 10.5px; } .ma-tenure { flex-direction: column; } .ma-tenure li { min-width: 0; } }
+@media (prefers-reduced-motion: reduce) { .ma-taxplot svg, .ma-spark-dot, .ma-taxvs i, .ma-elect-pair i, .ma-tenure li, .ma-agebar i { transition: none; } }
