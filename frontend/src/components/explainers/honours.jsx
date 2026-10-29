@@ -3,6 +3,7 @@ import ExplainerPage from "../story/ExplainerPage";
 import { IconPeerage } from "../newIcons";
 
 const PAGE = {
+  look: "ledger",
   icon: IconPeerage,
   kicker: "Money & influence",
   title: "Peerages and honours",

@@ -208,3 +208,65 @@
   .st-pipe li:not(:last-child)::before { right: auto; left: 50%; top: auto; bottom: -4px; margin: 0 0 0 -5px; transform: rotate(135deg); }
 }
 @media (prefers-reduced-motion: reduce) { .st-duo-row i, .st-bars-track i { animation: none; } }
+
+/* Looks. The same blocks dressed three other ways, so the pages written as data do not all read alike. A page picks one with `look` in its PAGE (see ExplainerPage). Without one it keeps the first look above. */
+/* ledger: plain, ruled and printed, like a table in a report. */
+.st[data-look="ledger"] .st-board { gap: 0; padding: 0; border-radius: 0; background: none; box-shadow: none; border-block: 3px double var(--c-ink-soft); }
+.st[data-look="ledger"] .st-tile { border: 0; border-radius: 0; background: none; color: var(--c-ink); padding: 24px clamp(12px, 2vw, 24px) 20px; }
+.st[data-look="ledger"] .st-tile + .st-tile { border-left: 1px solid var(--c-hairline); }
+.st[data-look="ledger"] .st-tile::before { inset: 0 auto auto clamp(12px, 2vw, 24px); width: 38px; height: 4px; }
+.st[data-look="ledger"] .st-tile-label { color: color-mix(in srgb, var(--tc) 70%, var(--c-ink)); }
+.st[data-look="ledger"] .st-tile b { color: var(--c-ink); }
+.st[data-look="ledger"] .st-tile-sub { color: var(--c-ink-soft); }
+.st[data-look="ledger"] .st-why { display: block; padding: 20px 0 18px; border: 0; border-block: 1px solid var(--c-hairline); border-radius: 0; background: none; }
+.st[data-look="ledger"] .st-why-icon { display: none; }
+.st[data-look="ledger"] .st-why p { max-width: 64ch; font: 500 clamp(18px, 2.1vw, 21px)/1.6 "Figures", "Newsreader", Georgia, serif; }
+.st[data-look="ledger"] .st-why strong { display: block; margin-bottom: 6px; font: 700 13.5px "Figures", "Public Sans", system-ui, sans-serif; }
+.st[data-look="ledger"] .st-chapter > header { align-items: center; gap: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--c-hairline); }
+.st[data-look="ledger"] .st-n { width: auto; min-width: 1.1ch; height: auto; border-radius: 0; background: none; box-shadow: none; color: color-mix(in srgb, var(--tc) 85%, var(--c-ink)); font: 700 clamp(46px, 6vw, 66px)/0.9 "Figures", "Newsreader", Georgia, serif; letter-spacing: -0.03em; }
+.st[data-look="ledger"] .st-cards li, .st[data-look="ledger"] .st-facts > div, .st[data-look="ledger"] .st-compare section { border: 0; border-top: 3px solid var(--tc); border-radius: 0; background: none; box-shadow: none; padding: 14px 4px 6px; }
+.st[data-look="ledger"] .st-pull { padding: 6px 0 6px 22px; border-radius: 0; border-left: 3px solid var(--tc); background: none; font-style: italic; }
+
+/* poster: solid blocks of colour. */
+.st[data-look="poster"] .st-board { padding: 0; gap: 12px; border-radius: 0; background: none; box-shadow: none; }
+.st[data-look="poster"] .st-tile { border: 0; border-radius: 20px; background: radial-gradient(120% 90% at 100% 0%, rgba(255, 255, 255, 0.18), transparent 60%), color-mix(in srgb, var(--tc) 46%, #0B1226); }
+.st[data-look="poster"] .st-tile::before { display: none; }
+.st[data-look="poster"] .st-tile-label { color: rgba(255, 255, 255, 0.9); }
+.st[data-look="poster"] .st-tile b { font-size: clamp(40px, 5.4vw, 60px); }
+.st[data-look="poster"] .st-why { padding: 22px 26px; border: 0; border-radius: 20px; background: color-mix(in srgb, var(--tc) 46%, #0B1226); }
+.st[data-look="poster"] .st-why-icon { background: rgba(255, 255, 255, 0.16); }
+.st[data-look="poster"] .st-why p, .st[data-look="poster"] .st-why strong { color: #fff; }
+.st[data-look="poster"] .st-chapter > header { flex-direction: column; gap: 10px; }
+.st[data-look="poster"] .st-n { display: block; justify-self: start; white-space: nowrap; width: auto; height: auto; padding: 5px 14px; border-radius: 999px; box-shadow: none; font: 800 13.5px "Figures", "Public Sans", system-ui, sans-serif; }
+.st[data-look="poster"] .st-n::before { content: "Part "; }
+.st[data-look="poster"] .st-cards li, .st[data-look="poster"] .st-facts > div, .st[data-look="poster"] .st-compare section { padding: 22px; border: 1px solid color-mix(in srgb, var(--tc) 22%, var(--c-hairline)); border-radius: 20px; background: color-mix(in srgb, var(--tc) 9%, var(--c-paper-card)); box-shadow: none; }
+.st[data-look="poster"] .st-cards b { color: color-mix(in srgb, var(--tc) 75%, var(--c-ink)); }
+.st[data-look="poster"] .st-pull { border-left: 0; border-radius: 20px; background: color-mix(in srgb, var(--tc) 46%, #0B1226); color: #fff; }
+
+/* field: light and open, with a rule over each part. */
+.st[data-look="field"] .st-board { padding: 0; gap: 0; overflow: hidden; border-radius: 18px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); }
+.st[data-look="field"] .st-tile { border: 0; border-radius: 0; background: none; color: var(--c-ink); padding: 22px 22px 20px; }
+.st[data-look="field"] .st-tile + .st-tile { border-left: 1px dashed var(--c-hairline); }
+.st[data-look="field"] .st-tile::before { inset: 27px auto auto 22px; width: 10px; height: 10px; border-radius: 50%; }
+.st[data-look="field"] .st-tile-label { padding-left: 18px; color: var(--c-ink-soft); }
+.st[data-look="field"] .st-tile b { color: color-mix(in srgb, var(--tc) 78%, var(--c-ink)); }
+.st[data-look="field"] .st-tile-sub { color: var(--c-ink-soft); }
+.st[data-look="field"] .st-why { padding: 18px 0; border: 0; border-block: 1px solid var(--c-hairline); border-radius: 0; background: none; }
+.st[data-look="field"] .st-why-icon { display: none; }
+.st[data-look="field"] .st-why p { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 6px 26px; }
+.st[data-look="field"] .st-why strong { align-self: start; padding-right: 18px; border-right: 1px solid var(--c-hairline); font-size: 14px; }
+.st[data-look="field"] .st-chapter > header { flex-direction: column; gap: 6px; padding-top: 14px; border-top: 2px solid var(--tc); }
+.st[data-look="field"] .st-n { display: block; white-space: nowrap; width: auto; height: auto; border-radius: 0; background: none; box-shadow: none; color: color-mix(in srgb, var(--tc) 80%, var(--c-ink)); font: 700 14.5px "Figures", "Public Sans", system-ui, sans-serif; }
+.st[data-look="field"] .st-n::before { content: "Chapter "; }
+.st[data-look="field"] .st-cards li, .st[data-look="field"] .st-facts > div, .st[data-look="field"] .st-compare section { padding: 20px; border-radius: 14px; border-bottom: 4px solid var(--tc); box-shadow: none; }
+.st[data-look="field"] .st-pull { padding: 24px 8px; border-radius: 0; border-left: 0; border-block: 1px solid var(--c-hairline); background: none; text-align: center; }
+
+@media (max-width: 1060px) {
+  .st[data-look="ledger"] .st-board[data-n="4"] .st-tile:nth-child(odd), .st[data-look="field"] .st-board[data-n="4"] .st-tile:nth-child(odd) { border-left: 0; }
+  .st[data-look="ledger"] .st-board[data-n="4"] .st-tile:nth-child(n+3), .st[data-look="field"] .st-board[data-n="4"] .st-tile:nth-child(n+3) { border-top: 1px solid var(--c-hairline); }
+}
+@media (max-width: 560px) {
+  .st[data-look="ledger"] .st-tile + .st-tile, .st[data-look="field"] .st-tile + .st-tile { border-left: 0 !important; border-top: 1px solid var(--c-hairline) !important; }
+  .st[data-look="field"] .st-why p { grid-template-columns: minmax(0, 1fr); }
+  .st[data-look="field"] .st-why strong { padding-right: 0; border-right: 0; }
+}

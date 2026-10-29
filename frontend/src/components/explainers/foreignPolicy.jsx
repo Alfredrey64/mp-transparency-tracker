@@ -3,6 +3,7 @@ import ExplainerPage from "../story/ExplainerPage";
 import { IconAid } from "../newIcons";
 
 const PAGE = {
+  look: "field",
   icon: IconAid,
   kicker: "Britain in numbers",
   title: "The UK abroad: aid and treaties",

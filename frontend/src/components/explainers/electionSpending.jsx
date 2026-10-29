@@ -3,6 +3,7 @@ import ExplainerPage from "../story/ExplainerPage";
 import { IconElectionSpend } from "../newIcons";
 
 const PAGE = {
+  look: "poster",
   icon: IconElectionSpend,
   kicker: "Money & influence",
   title: "What election campaigns can spend",

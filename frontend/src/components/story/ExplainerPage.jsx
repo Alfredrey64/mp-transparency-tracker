@@ -156,10 +156,11 @@ export function ExplainerBody({ icon, tiles, tileVariant, why, chapters, sources
   );
 }
 
+// `look` is how the page is dressed: "ledger", "poster" or "field" (see story.css); left out, it keeps the first look.
 // `narrow` matches the width of the older pages that sit in the same menu group (Election results, Your council), so moving between tabs does not shift the page.
-export default function ExplainerPage({ icon, kicker, title, subtitle, tiles, tileVariant, why, chapters, sources, checked, narrow = false }) {
+export default function ExplainerPage({ icon, kicker, title, subtitle, tiles, tileVariant, why, chapters, sources, checked, narrow = false, look }) {
   return (
-    <div className="st" style={{ paddingTop: "clamp(20px, 5vw, 40px)", ...(narrow ? { maxWidth: 1084 } : null) }}>
+    <div className="st" data-look={look} style={{ paddingTop: "clamp(20px, 5vw, 40px)", ...(narrow ? { maxWidth: 1084 } : null) }}>
       <PageHeader icon={icon} kicker={kicker} title={title} subtitle={subtitle} />
       <ExplainerBody icon={icon} tiles={tiles} tileVariant={tileVariant} why={why} chapters={chapters} sources={sources} checked={checked} />
     </div>

@@ -25,9 +25,11 @@
 
 /* The cards: a bento grid, each its own colour, arriving one after another. */
 .ma-bento { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
-.ma-mpcard { grid-column: span 4; } .ma-votes { grid-column: span 4; } .ma-seat { grid-column: span 4; }
-.ma-council { grid-column: span 6; } .ma-people-card { grid-column: span 6; }
-.ma-region { grid-column: span 8; } .ma-todo-card { grid-column: span 4; }
+.ma-mpcard, .ma-votes, .ma-seat, .ma-history, .ma-petitions, .ma-todo-card, .ma-help-card, .ma-deeper { grid-column: span 4; }
+.ma-council, .ma-people-card, .ma-tax, .ma-who { grid-column: span 6; }
+.ma-region { grid-column: 1 / -1; } .ma-ranks { grid-column: span 7 !important; } .ma-census { grid-column: span 5; }
+.ma-result, .ma-contests { grid-column: span 8; }
+.ma-hood { grid-column: span 7; } .ma-placefacts { grid-column: span 5; } .ma-ranks { grid-column: 1 / -1; }
 .ma-card { position: relative; display: flex; flex-direction: column; gap: 14px; box-sizing: border-box; padding: 20px 22px 20px 26px; border-radius: 18px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1), inset 5px 0 0 var(--mc); overflow: hidden; animation: maIn 0.6s var(--ease-out) calc(var(--i, 0) * 90ms + 200ms) backwards; }
 @keyframes maIn { from { opacity: 0; transform: translateY(16px) scale(0.98); } }
 .ma-card > header { display: flex; align-items: center; gap: 12px; }
@@ -100,7 +102,7 @@
 .ma-todo li { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 12px; align-items: start; }
 .ma-todo li > span { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 11px; background: var(--mc); color: #fff; font: 800 15px "Figures", "Public Sans", system-ui, sans-serif; }
 .ma-todo a { font-weight: 700; color: color-mix(in srgb, var(--mc) 78%, var(--c-ink)); }
-@media (max-width: 1000px) { .ma-mpcard, .ma-votes, .ma-seat, .ma-council, .ma-people-card, .ma-region, .ma-todo-card { grid-column: span 6; } .ma-mpcard, .ma-region { grid-column: 1 / -1; } }
+@media (max-width: 1000px) { .ma-bento > * { grid-column: span 6 !important; } .ma-mpcard, .ma-result, .ma-hood, .ma-contests, .ma-ranks, .ma-petitions, .ma-census { grid-column: 1 / -1 !important; } }
 @media (max-width: 640px) { .ma-bento > * { grid-column: 1 / -1 !important; } .ma-bar { grid-template-columns: minmax(0, 1fr); } .ma-hero-art { display: none; } .ma-photo { width: 76px; height: 76px; } }
 @media (prefers-reduced-motion: reduce) { .ma-card, .ma-pin, .ma-photo, .ma-tile, .ma-seatbar > i, .ma-bar-row > i, .ma-ring-fg, .ma-dot, .ma-dot-ring, .ma-hero-art i { animation: none; } }
 
@@ -114,3 +116,141 @@
 .ma-facts > div { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--c-hairline); }
 .ma-facts dt { font: 600 13.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .ma-facts dd { margin: 0; font: 700 14.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); text-align: right; }
+
+/* The sections: each a heading, a line saying what it is, then its cards. */
+.ma-section { margin-top: 46px; scroll-margin-top: 96px; }
+.ma-section > header { padding-top: 16px; border-top: 2px solid color-mix(in srgb, var(--mc) 55%, var(--c-hairline)); }
+.ma-section > header h2 { margin: 0; font: 700 clamp(24px, 3.2vw, 32px)/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.ma-section > header p { margin: 6px 0 0; max-width: 700px; font: 400 16px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-section .ma-bento { margin-top: 18px; }
+.ma-card h4 { margin: 4px 0 -4px; font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--mc) 70%, var(--c-ink)); }
+.ma-card p.ma-callout { padding: 12px 14px; border-radius: 12px; background: color-mix(in srgb, var(--mc) 8%, var(--c-paper)); }
+.ma-card p.ma-sub { font: 500 13.5px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+
+/* Six facts across the top. */
+.ma-glance { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+@media (max-width: 760px) { .ma-glance { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 440px) { .ma-glance { grid-template-columns: minmax(0, 1fr); } }
+.ma-g { display: grid; align-content: start; gap: 4px; padding: 16px 18px 16px 22px; border-radius: 16px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1), inset 5px 0 0 var(--mc); animation: maIn 0.5s var(--ease-out) calc(var(--n, 0) * 70ms) backwards; }
+.ma-g > span { font: 700 13px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--mc) 70%, var(--c-ink)); }
+.ma-g > b { font: 700 clamp(28px, 3.2vw, 38px)/1.1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); letter-spacing: -0.02em; font-variant-numeric: lining-nums tabular-nums; }
+.ma-g > small { font: 500 13px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-g-skel { min-height: 110px; box-shadow: var(--shadow-1); }
+.ma-jump { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.ma-jump button { min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--c-hairline); background: var(--c-paper-card); font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); cursor: pointer; }
+.ma-jump button:hover { border-color: var(--c-ink-soft); }
+.ma-skel i { display: block; height: 14px; margin: 10px 0; border-radius: 7px; background: linear-gradient(90deg, var(--c-hairline) 0%, var(--c-paper) 50%, var(--c-hairline) 100%); background-size: 200% 100%; animation: maShimmer 1.4s linear infinite; }
+@keyframes maShimmer { to { background-position: -200% 0; } }
+
+/* The result: every candidate's share. */
+.ma-cands { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.ma-cands li { display: grid; grid-template-columns: minmax(130px, 220px) minmax(0, 1fr) minmax(86px, auto); gap: 4px 14px; align-items: center; }
+.ma-cand-name, .ma-cand-pct { display: grid; }
+.ma-cand-name b, .ma-cand-pct b { font: 700 14.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ma-cand-name small, .ma-cand-pct small { font: 500 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-cand-pct { text-align: right; }
+.ma-cand-bar { height: 16px; border-radius: 8px; background: color-mix(in srgb, var(--pc) 14%, var(--c-hairline)); overflow: hidden; }
+.ma-cand-bar i { display: block; height: 100%; border-radius: 8px; background: var(--pc); transform-origin: left; transform: scaleX(var(--w)); animation: maBarGrow 1s var(--ease-out) calc(var(--n, 0) * 100ms + 300ms) backwards; }
+.ma-trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0; }
+.ma-trio > div { display: grid; align-content: start; gap: 2px; padding: 12px 14px; border-radius: 14px; background: var(--c-paper); border: 1px solid var(--c-hairline); }
+.ma-trio dt { font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-trio dd { margin: 0; font: 700 clamp(24px, 2.6vw, 32px)/1.1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); font-variant-numeric: lining-nums tabular-nums; overflow-wrap: anywhere; }
+.ma-trio small { font: 500 12.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+
+/* Who won before, and the MPs before. */
+.ma-runs { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.ma-runs li { display: grid; gap: 1px; min-width: 64px; padding: 8px 10px 7px; border-radius: 10px; background: var(--c-paper); border: 1px solid var(--c-hairline); border-bottom: 4px solid var(--pc); }
+.ma-runs span { font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-runs b { font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ma-runs small { font: 500 11.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-former { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.ma-former li { display: grid; grid-template-columns: 12px minmax(0, 1fr); gap: 2px 10px; align-items: baseline; }
+.ma-former i { width: 12px; height: 12px; border-radius: 50%; background: var(--pc); grid-row: span 2; align-self: center; }
+.ma-former b { font: 700 14.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ma-former span { font: 500 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-pets { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.ma-pets li { display: grid; gap: 3px; padding-top: 12px; border-top: 1px solid var(--c-hairline); }
+.ma-pets a { font: 700 14.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); text-decoration-color: color-mix(in srgb, var(--mc) 60%, transparent); }
+.ma-pets span { font: 500 13px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+
+/* Council tax. */
+.ma-taxhead { display: grid; gap: 2px; }
+.ma-taxhead b { font: 800 clamp(38px, 4.4vw, 52px)/1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); letter-spacing: -0.02em; font-variant-numeric: lining-nums tabular-nums; }
+.ma-taxhead span { font: 600 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-spark { width: 100%; height: 90px; display: block; }
+.ma-spark-fill { fill: color-mix(in srgb, var(--mc) 16%, transparent); }
+.ma-spark-line { fill: none; stroke: var(--mc); stroke-width: 2.5; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.ma-spark-dot { fill: var(--mc); }
+.ma-spark-cap { display: flex; justify-content: space-between; gap: 10px; margin-top: -6px !important; }
+.ma-roles { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.ma-roles li { display: grid; gap: 2px; padding: 12px 14px; border-radius: 14px; background: var(--c-paper); border: 1px solid var(--c-hairline); }
+.ma-roles b { font: 700 16px "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.ma-roles small { font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--mc) 70%, var(--c-ink)); }
+.ma-roles p { margin-top: 4px !important; }
+
+/* The neighbourhood. */
+.ma-deciles { list-style: none; margin: 18px 0 0; padding: 0; display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 3px; }
+.ma-deciles li { position: relative; height: 28px; border-radius: 6px; background: var(--dc); }
+.ma-deciles li.me { outline: 3px solid var(--c-ink); outline-offset: 2px; }
+.ma-deciles li.me span { position: absolute; left: 50%; bottom: calc(100% + 6px); transform: translateX(-50%); font: 800 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ma-deciles li:nth-child(1) { --dc: #7C1D4F; } .ma-deciles li:nth-child(2) { --dc: #9A2A63; } .ma-deciles li:nth-child(3) { --dc: #B53B77; } .ma-deciles li:nth-child(4) { --dc: #C85A8E; } .ma-deciles li:nth-child(5) { --dc: #D77BA6; }
+.ma-deciles li:nth-child(6) { --dc: #E29BBE; } .ma-deciles li:nth-child(7) { --dc: #EBB9D1; } .ma-deciles li:nth-child(8) { --dc: #F2D2E1; } .ma-deciles li:nth-child(9) { --dc: #F7E4EE; } .ma-deciles li:nth-child(10) { --dc: #FBF1F6; box-shadow: inset 0 0 0 1px var(--c-hairline); }
+.ma-scale { display: flex; justify-content: space-between; margin-top: -6px !important; font: 600 12.5px "Figures", "Public Sans", system-ui, sans-serif !important; color: var(--c-ink-soft) !important; }
+.ma-domains { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.ma-domains li { display: grid; grid-template-columns: minmax(130px, 230px) minmax(0, 1fr) 42px; gap: 12px; align-items: center; }
+.ma-domains span { font: 600 13.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ma-domains i { height: 10px; border-radius: 5px; background: color-mix(in srgb, var(--mc) 14%, var(--c-hairline)); overflow: hidden; }
+.ma-domains i b { display: block; height: 100%; border-radius: 5px; background: var(--mc); }
+.ma-domains em { font: 700 13.5px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; text-align: right; color: var(--c-ink); }
+
+/* The region. */
+.ma-rankrows { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.ma-rankrows li { display: grid; grid-template-columns: minmax(130px, 1.1fr) minmax(110px, 0.8fr) minmax(0, 1.2fr) minmax(110px, auto); gap: 6px 18px; align-items: center; padding: 12px 0; border-top: 1px solid var(--c-hairline); }
+.ma-rank-label, .ma-rank-value { display: grid; }
+.ma-rank-label b { font: 700 15px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ma-rank-label small, .ma-rank-value small, .ma-rank-note { font: 500 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-rank-value { font: 700 22px "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--fc) 62%, var(--c-ink)); font-variant-numeric: lining-nums tabular-nums; }
+.ma-rank-dots { display: flex; justify-content: space-between; align-items: center; }
+.ma-rank-dots i { width: 11px; height: 11px; border-radius: 50%; background: var(--c-hairline); }
+.ma-rank-dots i.me { width: 18px; height: 18px; background: var(--fc); box-shadow: 0 0 0 3px color-mix(in srgb, var(--fc) 25%, transparent); }
+.ma-rank-note { text-align: right; }
+.ma-census-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.ma-census-rows li { display: grid; gap: 4px; }
+.ma-census-rows li > span:first-child { font: 700 14px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ma-census-rows small { margin-left: 8px; font: 500 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-pair { display: grid; grid-template-columns: minmax(0, 1fr) 54px; gap: 10px; align-items: center; }
+.ma-pair i { display: block; height: 12px; border-radius: 6px; background: #0E9AA7; }
+.ma-pair-uk i { height: 8px; background: #9AA6B8; }
+.ma-pair b { font: 700 13.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); text-align: right; }
+
+/* Elections and links. */
+.ma-contest-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.ma-contest-list li { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 14px; padding: 12px 0; border-top: 1px solid var(--c-hairline); }
+.ma-contest-list time { display: grid; place-content: center; text-align: center; width: 58px; height: 62px; border-radius: 12px; background: color-mix(in srgb, var(--mc) 12%, var(--c-paper)); border: 1px solid color-mix(in srgb, var(--mc) 30%, var(--c-hairline)); }
+.ma-contest-list time b { font: 800 24px/1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.ma-contest-list time span { font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--mc) 70%, var(--c-ink)); }
+.ma-contest-list li > div { display: grid; gap: 2px; align-content: start; }
+.ma-contest-list li > div b { font: 700 15px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ma-contest-list small { font: 500 13px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-helplist { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.ma-helplist li { display: grid; gap: 1px; padding: 10px 0; border-top: 1px solid var(--c-hairline); }
+.ma-helplist li:first-child { border-top: 0; padding-top: 0; }
+.ma-helplist a { font: 700 14.5px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--mc) 78%, var(--c-ink)); }
+.ma-helplist span { font: 500 13px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+
+@media (max-width: 760px) {
+  .ma-cands li { grid-template-columns: minmax(0, 1fr) auto; } .ma-cand-bar { grid-column: 1 / -1; grid-row: 2; }
+  .ma-trio { grid-template-columns: minmax(0, 1fr); }
+  .ma-rankrows li { grid-template-columns: minmax(0, 1fr) auto; } .ma-rank-dots { grid-column: 1 / -1; } .ma-rank-note { grid-column: 1 / -1; text-align: left; }
+  .ma-domains li { grid-template-columns: minmax(0, 1fr) 42px; } .ma-domains i { grid-column: 1 / -1; grid-row: 2; }
+}
+@media (prefers-reduced-motion: reduce) { .ma-g, .ma-skel i, .ma-cand-bar i { animation: none; } }
+
+.ma-topics { display: grid; margin: 0; }
+.ma-topics > div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 4px 14px; padding: 9px 0; border-top: 1px solid var(--c-hairline); }
+.ma-topics dt { font: 600 13.5px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-topics dd { margin: 0; font: 700 14px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ma-steps { list-style: none; counter-reset: ma; margin: 0; padding: 0; display: grid; gap: 10px; }
+.ma-steps li { counter-increment: ma; position: relative; padding-left: 40px; }
+.ma-steps li::before { content: counter(ma); position: absolute; left: 0; top: 0; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 9px; background: color-mix(in srgb, var(--mc) 16%, transparent); color: color-mix(in srgb, var(--mc) 75%, var(--c-ink)); font: 800 14px "Figures", "Public Sans", system-ui, sans-serif; }
+@media (max-width: 520px) { .ma-topics > div { grid-template-columns: minmax(0, 1fr); } }

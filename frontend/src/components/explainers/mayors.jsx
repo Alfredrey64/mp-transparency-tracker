@@ -3,6 +3,7 @@ import ExplainerPage from "../story/ExplainerPage";
 import { IconMayor } from "../newIcons";
 
 const PAGE = {
+  look: "poster",
   icon: IconMayor,
   kicker: "Your area & your say",
   title: "Mayors and regional authorities",

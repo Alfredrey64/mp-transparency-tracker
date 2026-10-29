@@ -3,6 +3,7 @@ import ExplainerPage from "../story/ExplainerPage";
 import { IconForeignAgent } from "../newIcons";
 
 const PAGE = {
+  look: "poster",
   icon: IconForeignAgent,
   kicker: "Money & influence",
   title: "The register of foreign influence",

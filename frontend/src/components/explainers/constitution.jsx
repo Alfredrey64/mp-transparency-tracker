@@ -3,6 +3,7 @@ import ExplainerPage from "../story/ExplainerPage";
 import { IconCourt } from "../newIcons";
 
 const PAGE = {
+  look: "ledger",
   icon: IconCourt,
   kicker: "Understand it",
   title: "Courts and the constitution",

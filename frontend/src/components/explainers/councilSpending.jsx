@@ -3,6 +3,7 @@ import ExplainerPage from "../story/ExplainerPage";
 import { IconCouncilBudget } from "../newIcons";
 
 const PAGE = {
+  look: "field",
   icon: IconCouncilBudget,
   kicker: "Your area & your say",
   title: "Where council money goes",

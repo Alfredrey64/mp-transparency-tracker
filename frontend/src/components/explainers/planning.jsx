@@ -3,6 +3,7 @@ import ExplainerPage from "../story/ExplainerPage";
 import { IconPlanning } from "../newIcons";
 
 const PAGE = {
+  look: "field",
   icon: IconPlanning,
   kicker: "Your area & your say",
   title: "Planning: who decides what gets built",

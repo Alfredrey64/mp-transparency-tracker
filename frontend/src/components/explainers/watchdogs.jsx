@@ -3,6 +3,7 @@ import ExplainerPage from "../story/ExplainerPage";
 import { IconAudit } from "../newIcons";
 
 const PAGE = {
+  look: "ledger",
   icon: IconAudit,
   kicker: "Understand it",
   title: "Watchdogs and inquiries",

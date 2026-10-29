@@ -3,6 +3,7 @@ import ExplainerPage from "../story/ExplainerPage";
 import { IconPoll } from "../newIcons";
 
 const PAGE = {
+  look: "poster",
   icon: IconPoll,
   kicker: "Elections",
   title: "How to read an opinion poll",

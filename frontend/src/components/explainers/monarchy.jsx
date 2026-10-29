@@ -3,6 +3,7 @@ import ExplainerPage from "../story/ExplainerPage";
 import { IconCrown } from "../newIcons";
 
 const PAGE = {
+  look: "ledger",
   icon: IconCrown,
   kicker: "Understand it",
   title: "The monarchy: role and money",

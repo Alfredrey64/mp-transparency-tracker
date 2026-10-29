@@ -11,6 +11,8 @@ import CountUp from "./CountUp";
 import { loadCouncillorList, councillorPath } from "../lib/councillorsView";
 import { regionKeyOf, wardCouncillors, loadAreaFigures } from "../lib/areaFigures";
 import { REGIONS } from "../data/regionMetrics";
+import { Card, Section, Glance, JumpNav, SeatResult, SeatHistory, LocalPetitions, CouncilTax, WhoDoes, Neighbourhood, PlaceFacts, RegionRanks, Census, Contests, Help, Deeper } from "./AreaSections";
+import { useAreaExtras } from "../lib/useAreaExtras";
 import "../myarea.css";
 
 // My area: type a postcode once and see your MP, constituency, council, councillors, next elections and how your region compares, on one page. The
@@ -45,15 +47,6 @@ async function lookUp(postcode) {
     people: council && councillors ? wardCouncillors(councillors.rows, council.id, r.admin_ward) : [], councillorParties: councillors?.parties ?? [],
     regionName: REGIONS.find((x) => x.key === regionKey)?.name ?? r.region ?? r.country, figures,
   };
-}
-
-function Card({ i, colour, icon, title, className = "", children }) {
-  return (
-    <div className={`ma-card ${className}`} role="region" style={{ "--mc": colour, "--i": i }} aria-label={title}>
-      <header><span className="ma-icon" aria-hidden="true">{icon}</span><h3>{title}</h3></header>
-      {children}
-    </div>
-  );
 }
 
 // 650 dots, one for each seat in the Commons. Yours lights up and pulses; the rest ripple in from the corner.
@@ -109,6 +102,7 @@ function Bars({ figures }) {
 }
 
 function Dashboard({ data, onForget }) {
+  const x = useAreaExtras(data);
   const { result: r, mp, mpStats, council, county, people, councillorParties, figures, regionName, parties } = data;
   const next = council?.next?.[0];
   const days = next ? daysUntil(next[0]) : null;
@@ -132,13 +126,16 @@ function Dashboard({ data, onForget }) {
         <button type="button" className="ma-forget" onClick={onForget}>Use a different postcode</button>
       </div>
 
-      <div className="ma-bento">
+      <Glance data={data} x={x} />
+      <JumpNav />
+
+      <Section id="ma-mp" title="Your MP and your seat" lede={`${r.parliamentary_constituency} is one of 650 seats. Here is who represents it, how it voted and how it has changed hands.`} colour={mpColour}>
         <Card i={0} colour={mpColour} icon={<IconVote size={20} />} title="Your MP" className="ma-mpcard">
           {mp ? (
             <>
               <div className="ma-mp">
                 {mp.thumbnail_url ? <img className="ma-photo" src={mp.thumbnail_url} alt="" loading="lazy" decoding="async" /> : <span className="ma-photo ma-photo-fallback" aria-hidden="true">{initials(mp.name)}</span>}
-                <div><div className="ma-name">{mp.name}</div><div className="ma-sub">{mp.party}{mp.cabinet_role ? `, ${mp.cabinet_role}` : ""}</div><div className="ma-sub">MP for {r.parliamentary_constituency}</div></div>
+                <div><div className="ma-name">{mp.name}</div><div className="ma-sub">{mp.party}{mp.cabinet_role ? `, ${mp.cabinet_role}` : ""}</div><div className="ma-sub">MP for {r.parliamentary_constituency}{mp.membership_start_date ? `, since ${longDate(String(mp.membership_start_date).slice(0, 10))}` : ""}</div></div>
               </div>
               {mpStats && (
                 <div className="ma-stats">
@@ -154,15 +151,7 @@ function Dashboard({ data, onForget }) {
             </>
           ) : <p>We found the constituency ({r.parliamentary_constituency}) but couldn't match it to a current MP.</p>}
         </Card>
-
-        <Card i={1} colour="#7A5AF0" icon={<IconCalendar size={20} />} title="Your next votes" className="ma-votes">
-          {days !== null ? <Countdown days={days} /> : <p className="ma-big">No date set</p>}
-          <ul className="ma-dates">
-            <li><span>{council ? `${council.name} election` : "Your council's election"}</span><b>{next ? longDate(next[0]) : "No date recorded"}</b><small>{council ? nextElectionText(council) : "Your council's next election date is not recorded."}</small></li>
-            <li><span>General election</span><b>By 2029</b><small>The next one is due by then at the latest.</small></li>
-          </ul>
-          <a className="ma-link" href="#/howtovote">Register and check what ID you need</a>
-        </Card>
+        <SeatResult x={x} name={r.parliamentary_constituency} i={1} />
 
         <Card i={2} colour="#1FA97C" icon={<IconHexMap size={20} />} title="Your constituency" className="ma-seat">
           <SeatDots name={r.parliamentary_constituency} colour="#1FA97C" />
@@ -175,8 +164,12 @@ function Dashboard({ data, onForget }) {
           </dl>
           <a className="ma-link" href={`#/constituency/${encodeURIComponent(r.parliamentary_constituency)}`}>How close the last election was</a>
         </Card>
+        <SeatHistory x={x} i={3} />
+        <LocalPetitions x={x} name={r.parliamentary_constituency} i={4} />
+      </Section>
 
-        <Card i={3} colour={council ? controlColourOf(council.control_by_seats) : "#E8741A"} icon={<IconCouncil size={20} />} title="Your council" className="ma-council">
+      <Section id="ma-council" title="Your council" lede="The council looks after the services closest to your front door. Here is who runs it, who your councillors are, and what it costs." colour="#E8741A">
+        <Card i={0} colour={council ? controlColourOf(council.control_by_seats) : "#E8741A"} icon={<IconCouncil size={20} />} title="Your council" className="ma-council">
           {council ? (
             <>
               <div className="ma-big">{council.name}</div>
@@ -191,8 +184,7 @@ function Dashboard({ data, onForget }) {
             </>
           ) : <p>We couldn't match this postcode to a council. Try the <a href="#/councils">Your council</a> page.</p>}
         </Card>
-
-        <Card i={4} colour="#E0367A" icon={<IconSearch size={20} />} title={r.admin_ward ? `Your ${r.admin_ward} councillors` : "Your councillors"} className="ma-people-card">
+        <Card i={1} colour="#E0367A" icon={<IconSearch size={20} />} title={r.admin_ward ? `Your ${r.admin_ward} councillors` : "Your councillors"} className="ma-people-card">
           {people.length > 0 ? (
             <div className="ma-tiles">
               {people.map((p, n) => {
@@ -208,20 +200,50 @@ function Dashboard({ data, onForget }) {
           ) : <p>We couldn't match your ward to the councillor list. You can search it by name or council.</p>}
           <a className="ma-link" href="#/councillors">Search every councillor</a>
         </Card>
+        <CouncilTax x={x} i={2} />
+        <WhoDoes x={x} i={3} />
+      </Section>
 
-        <Card i={5} colour="#2F9E6E" icon={<IconTrend size={20} />} title={`How ${regionName ?? "your region"} compares`} className="ma-region">
+      <Section id="ma-place" title="Your neighbourhood" lede="How the place you live compares with the rest of the country, and which bodies cover it." colour="#C0478A">
+        <Neighbourhood x={x} i={0} />
+        <PlaceFacts x={x} i={1} />
+      </Section>
+
+      <Section id="ma-region" title={`Your region: ${regionName ?? "the UK"}`} lede="Figures published for the whole region, set against the rest of the UK. They describe the region, not your street." colour="#2F9E6E">
+        <Card i={0} colour="#2F9E6E" icon={<IconTrend size={20} />} title={`How ${regionName ?? "your region"} compares`} className="ma-region">
           {figures.length > 0 ? <Bars figures={figures} /> : <p>Regional figures aren't available for this area.</p>}
           <a className="ma-link" href="#/regions">Compare every region</a>
         </Card>
+        <RegionRanks x={x} regionName={regionName} i={1} />
+        <Census x={x} regionName={regionName} i={2} />
+      </Section>
 
-        <Card i={6} colour="#E8741A" icon={<IconPetition size={20} />} title="Things you can do" className="ma-todo-card">
+      <Section id="ma-vote" title="Elections and your vote" lede="What you can vote in, when, and what to do before polling day." colour="#7A5AF0">
+        <Card i={0} colour="#7A5AF0" icon={<IconCalendar size={20} />} title="Your next votes" className="ma-votes">
+          {days !== null ? <Countdown days={days} /> : <p className="ma-big">No date set</p>}
+          <ul className="ma-dates">
+            <li><span>{council ? `${council.name} election` : "Your council's election"}</span><b>{next ? longDate(next[0]) : "No date recorded"}</b><small>{council ? nextElectionText(council) : "Your council's next election date is not recorded."}</small></li>
+            <li><span>General election</span><b>By 2029</b><small>The next one is due by then at the latest.</small></li>
+          </ul>
+          <a className="ma-link" href="#/howtovote">Register and check what ID you need</a>
+        </Card>
+        <Contests x={x} council={council} i={1} />
+      </Section>
+
+      <Section id="ma-act" title="Get things done" lede="Contact the right person, report a problem, or read more about how it all works." colour="#E8741A">
+        <Card i={0} colour="#E8741A" icon={<IconPetition size={20} />} title="Things you can do" className="ma-todo-card">
           <ul className="ma-todo">
             <li><span>1</span><p>Write to {mp ? mp.name : "your MP"} for free with <a href="https://www.writetothem.com/" target="_blank" rel="noreferrer">WriteToThem</a>. It also reaches your councillors.</p></li>
             <li><span>2</span><p>Check you're on the electoral register at <a href="https://www.gov.uk/register-to-vote" target="_blank" rel="noreferrer">gov.uk/register-to-vote</a>.</p></li>
-            <li><span>3</span><p>Back a cause: <a href="#/petitions">sign or read the petitions</a> Parliament is looking at.</p></li>
+            <li><span>3</span><p>See <a href="#/myBallot">who is on your ballot</a> before the next election.</p></li>
+            <li><span>4</span><p>Check <a href="#/voting">how MPs voted</a> on the issues you care about.</p></li>
+            <li><span>5</span><p>Compare your council with a neighbour on <a href="#/compareCouncils">Compare councils</a>.</p></li>
+            <li><span>6</span><p>Back a cause: <a href="#/petitions">sign or read the petitions</a> Parliament is looking at.</p></li>
           </ul>
         </Card>
-      </div>
+        <Help i={1} />
+        <Deeper i={2} />
+      </Section>
     </>
   );
 }
