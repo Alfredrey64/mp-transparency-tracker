@@ -65,7 +65,7 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run test:phone
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-report
@@ -90,13 +90,13 @@ jobs:
       - run: npm run test:layout
       - run: npm run shots
         if: always()
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: layout-pictures
           path: frontend/screenshots
           retention-days: 7
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: layout-report
@@ -138,7 +138,7 @@ jobs:
             if (!fs.existsSync(f)) { console.log("::error::Lighthouse wrote no results"); process.exit(0); }
             for (const r of JSON.parse(fs.readFileSync(f, "utf8"))) console.log(`::error::${r.url.replace(/^https?:\/\/[^/]+/, "") || "/"} ${r.auditId} ${r.operator}${r.expected} but was ${Number(r.actual).toFixed(2)}`);
           '
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: lighthouse-report
@@ -161,7 +161,7 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run test:site
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: site-report
@@ -184,7 +184,7 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run test:more
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: browser-report
