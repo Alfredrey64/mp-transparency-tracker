@@ -110,7 +110,7 @@ function RegionMap({ regions, view, fill, valueText, compactText, deltaText, a11
         <rect x={left ? x - 200 : x - 6} y={y - 34} width="206" height="76" fill="transparent" />
         <text x={x} y={y - 11} textAnchor={anchor} fontFamily={FONT_BODY} fontSize="19" fontWeight={active(key) ? 800 : 700} fill={COLORS.ink}>{short(key)}</text>
         <text x={x} y={y + 13} textAnchor={anchor} fontFamily={numeric.fontFamily} fontSize="25" fontWeight="600" fill={COLORS.ink}>{valueText(key)}</text>
-        {delta && <text x={x} y={y + 30} textAnchor={anchor} fontFamily={FONT_BODY} fontSize="15" fontWeight="600" fill={COLORS.inkSoft}>{delta}</text>}
+        {delta && <text x={x} y={y + 37} textAnchor={anchor} fontFamily={FONT_BODY} fontSize="20" fontWeight="600" fill={COLORS.inkSoft}>{delta}</text>}
       </g>
     );
   };
@@ -121,7 +121,7 @@ function RegionMap({ regions, view, fill, valueText, compactText, deltaText, a11
       <g key={key} pointerEvents="none">
         {wide && <text x={at[0]} y={at[1] - 10} textAnchor="middle" fontFamily={FONT_BODY} fontSize={size} fontWeight="700" fill={COLORS.ink} style={halo}>{short(key)}</text>}
         <text x={at[0]} y={at[1] + (wide ? 18 : 5)} textAnchor="middle" fontFamily={numeric.fontFamily} fontSize={wide ? size + 6 : size} fontWeight="600" fill={COLORS.ink} style={halo}>{wide ? valueText(key) : (compactText ?? valueText)(key)}</text>
-        {delta && <text x={at[0]} y={at[1] + 40} textAnchor="middle" fontFamily={FONT_BODY} fontSize="17" fontWeight="600" fill={COLORS.ink} style={halo}>{delta}</text>}
+        {delta && <text x={at[0]} y={at[1] + 46} textAnchor="middle" fontFamily={FONT_BODY} fontSize="20" fontWeight="600" fill={COLORS.ink} style={halo}>{delta}</text>}
       </g>
     );
   };
@@ -149,12 +149,12 @@ function RegionMap({ regions, view, fill, valueText, compactText, deltaText, a11
             {/* London is tiny at this scale, so it also gets a marker you can actually hit. */}
             <g className="rm-in" style={{ "--i": 12 }}>
               <circle
-                cx={LONDON.cx} cy={LONDON.cy} r="16" pointerEvents="none"
+                cx={LONDON.cx} cy={LONDON.cy} r="19" pointerEvents="none"
                 style={{ fill: fill("london"), stroke: outline("london"), strokeWidth: selected === "london" ? 3 : 2, transition: smooth ? "fill 0.45s ease" : "none" }}
               />
               {/* A bigger invisible circle, so there is a comfortable target for a finger. */}
               <circle cx={LONDON.cx} cy={LONDON.cy} r="26" {...handlers("london")} style={{ fill: "transparent", cursor: "pointer", outline: "none" }} />
-              {!wide && <text x={LONDON.cx} y={LONDON.cy + 4} textAnchor="middle" fontSize="10" fontWeight="800" fontFamily={FONT_BODY} fill={COLORS.paper} stroke={COLORS.ink} strokeWidth="2.6" paintOrder="stroke" pointerEvents="none">L</text>}
+              {!wide && <text x={LONDON.cx} y={LONDON.cy + 6} textAnchor="middle" fontSize="14" fontWeight="800" fontFamily={FONT_BODY} fill={COLORS.paper} stroke={COLORS.ink} strokeWidth="2.6" paintOrder="stroke" pointerEvents="none">L</text>}
             </g>
             {wide ? (
               <>
@@ -165,7 +165,7 @@ function RegionMap({ regions, view, fill, valueText, compactText, deltaText, a11
               <>
                 {geo.regions.map((r) => {
                   const at = COMPACT[r.key] ?? [r.cx, r.cy];
-                  return insideLabel(r.key, at, 15);
+                  return insideLabel(r.key, at, 19);
                 })}
               </>
             )}

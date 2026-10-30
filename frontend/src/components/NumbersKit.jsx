@@ -226,7 +226,7 @@ export function Switches({ switchers, onOpen }) {
         <button type="button" className="nclick" onClick={(e) => onOpen(t, e)} key={`${t.from}-${t.to}`} title={t.names.join(", ")} style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) 90px", gap: 12, alignItems: "center", padding: "7px 4px", width: "100%", textAlign: "left", background: "none", color: "inherit", border: "none", borderRadius: 0, borderTop: i === 0 ? "none" : `1px solid ${COLORS.hairline}` }}>
           <div style={{ minWidth: 0 }}>
             <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink }}>
-              <strong>{t.from}</strong> <span style={{ color: COLORS.inkSoft }}>→</span> <strong>{t.to}</strong>
+              <strong>{t.from}</strong> <span style={{ color: COLORS.inkSoft }}>to</span> <strong>{t.to}</strong>
             </div>
             <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.names.slice(0, 4).join(", ")}{t.names.length > 4 ? ` and ${t.names.length - 4} more` : ""}</div>
           </div>

@@ -84,7 +84,7 @@ function DeliveryDiagram() {
             <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12.5, color: COLORS.ink }}>{step.label}</div>
             <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginTop: 2 }}>{step.note}</div>
           </div>
-          {i < steps.length - 1 && <span style={{ color: COLORS.inkSoft, opacity: 0.5, fontSize: 16 }}>→</span>}
+          {i < steps.length - 1 && <span style={{ color: COLORS.inkSoft, opacity: 0.5, fontSize: 16 }}>›</span>}
         </div>
       ))}
     </motion.div>

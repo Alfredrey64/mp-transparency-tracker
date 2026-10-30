@@ -116,7 +116,7 @@ export default function AskerQuestionsModal({ person, questions, topic, returnFo
               <div key={r.id} style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `3px solid ${answered ? COLORS.accent : "#B08A3E"}`, borderRadius: 12, padding: "12px 14px" }}>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 10px", alignItems: "center", fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginBottom: 5 }}>
                   <span>{formatDate(r.date_tabled)}</span>
-                  <span>→ {r.answering_body_name ?? "the government"}</span>
+                  <span>Asked to {r.answering_body_name ?? "the government"}</span>
                   <span style={{ fontWeight: 700, color: answered ? readable(COLORS.accent) : readable("#B08A3E") }}>{answered ? `Answered ${formatDate(r.date_answered)}` : "Awaiting answer"}</span>
                 </div>
                 {r.heading && <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.inkSoft, marginBottom: 3 }}>{r.heading}</div>}

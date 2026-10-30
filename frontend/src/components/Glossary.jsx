@@ -34,7 +34,7 @@ function StageFlowDiagram({ items, accent }) {
     <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 4, rowGap: 8 }}>
       {items.map((s, i) => (
         <div key={i} style={{ display: "flex", alignItems: "center", gap: 4 }}>
-          {i > 0 && <span style={{ color: readable(accent), fontSize: 12, fontWeight: 700 }}>→</span>}
+          {i > 0 && <span style={{ color: readable(accent), fontSize: 12, fontWeight: 700 }}>›</span>}
           <div style={{ background: `${accent}14`, border: `1px solid ${accent}45`, borderRadius: 7, padding: "5px 9px", fontFamily: FONT_BODY, fontWeight: 600, fontSize: 11.5, color: COLORS.ink, whiteSpace: "nowrap" }}>
             {s}
           </div>

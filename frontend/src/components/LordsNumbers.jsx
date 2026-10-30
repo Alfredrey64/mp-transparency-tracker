@@ -254,7 +254,7 @@ export default function LordsNumbers({ onNavigate }) {
                   switchers={career.switchers}
                   onOpen={(t, e) => {
                     const set = ids(t.memberIds);
-                    see(e, `${t.from} → ${t.to}`, "Current peers who left one party and now sit with another group.", (m) => set.has(m.id));
+                    see(e, `${t.from} to ${t.to}`, "Current peers who left one party and now sit with another group.", (m) => set.has(m.id));
                   }}
                 />
               </Tile>

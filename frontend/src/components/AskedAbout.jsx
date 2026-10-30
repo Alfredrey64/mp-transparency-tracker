@@ -313,7 +313,7 @@ export default function AskedAbout({ onSelectPolitician, onNavigateForMp, initia
                     <div key={r.id} style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "13px 16px" }}>
                       <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginBottom: 4 }}>
                         <strong style={{ color: COLORS.ink }}>{r.asking_member_name ?? "Unknown member"}</strong>
-                        {r.asking_member_party ? ` · ${r.asking_member_party}` : ""} → {r.answering_body_name ?? "the government"} · {formatDate(r.date_tabled)}
+                        {r.asking_member_party ? ` · ${r.asking_member_party}` : ""} · asked to {r.answering_body_name ?? "the government"} · {formatDate(r.date_tabled)}
                       </div>
                       <div style={{ fontFamily: FONT_DISPLAY, fontSize: 14.5, color: COLORS.ink, lineHeight: 1.5 }}>{r.question_text}</div>
                       <a href={`https://questions-statements.parliament.uk/written-questions/detail/${r.date_tabled}/${r.uin}`} target="_blank" rel="noreferrer" style={{ display: "inline-block", marginTop: 6, fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.accentText }}>

@@ -287,7 +287,7 @@ export default function CommonsNumbers({ onNavigate }) {
                     switchers={career.switchers}
                     onOpen={(t, e) => {
                       const set = ids(t.memberIds);
-                      see(e, `${t.from} → ${t.to}`, "Current MPs who left one party and now sit with another, or as an independent.", (m) => set.has(m.mid));
+                      see(e, `${t.from} to ${t.to}`, "Current MPs who left one party and now sit with another, or as an independent.", (m) => set.has(m.mid));
                     }}
                   />
                 </Tile>

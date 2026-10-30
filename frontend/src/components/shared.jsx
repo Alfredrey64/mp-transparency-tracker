@@ -92,7 +92,7 @@ export function FlowArrow({ color, animated = true, oscillate = false, reverse =
   const travelEnd = trackWidth - COIN_SIZE - OSCILLATE_CLEARANCE;
   return (
     <div aria-hidden="true" style={{ position: "relative", width: trackWidth, height: 24, flexShrink: 0, alignSelf: "center", display: "flex", alignItems: "center", justifyContent: "center" }}>
-      {showGlyph && <span style={{ fontSize: 22, color: color ?? COLORS.inkSoft, opacity: 0.55 }}>→</span>}
+      {showGlyph && <span style={{ fontSize: 22, color: color ?? COLORS.inkSoft, opacity: 0.55 }}>›</span>}
       {animated && (
         <motion.div
           animate={

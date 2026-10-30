@@ -1,5 +1,7 @@
 /** @jsxImportSource react */
+import { useEffect, useState } from "react";
 import CountUp from "../CountUp";
+import { scrollRegion } from "../../lib/a11y";
 import AnimatedValue from "./AnimatedValue";
 import "../../story.css";
 
@@ -47,11 +49,27 @@ export function Chapter({ n, title, lede, colour, children, wide = false }) {
   );
 }
 
+// True on a phone-sized screen, and follows the screen if it changes. Pictures too detailed to shrink to a phone scroll sideways there instead, and need to be
+// reachable from a keyboard only when they do.
+function useNarrow(px = 700) {
+  const query = `(max-width: ${px}px)`;
+  const [narrow, setNarrow] = useState(() => typeof matchMedia === "function" && matchMedia(query).matches);
+  useEffect(() => {
+    if (typeof matchMedia !== "function") return undefined;
+    const m = matchMedia(query);
+    const on = () => setNarrow(m.matches);
+    m.addEventListener("change", on);
+    return () => m.removeEventListener("change", on);
+  }, [query]);
+  return narrow;
+}
+
 // Text beside a picture: the picture first on a phone, side by side on a wide screen.
 export function Split({ visual, children, flip = false }) {
+  const narrow = useNarrow();
   return (
     <div className="st-split" data-flip={flip ? "1" : "0"}>
-      <figure className="st-visual">{visual}</figure>
+      <figure className="st-visual" {...(narrow ? scrollRegion("Picture, scrolls sideways") : null)}>{visual}</figure>
       <div className="st-prose">{children}</div>
     </div>
   );
@@ -59,9 +77,10 @@ export function Split({ visual, children, flip = false }) {
 
 // A picture given the whole width, with its words underneath: for pictures that carry a lot of writing and would be too small in half a column.
 export function Show({ visual, caption, children }) {
+  const narrow = useNarrow();
   return (
     <div className="st-show">
-      <figure className="st-visual st-visual-wide">{visual}{caption && <figcaption>{caption}</figcaption>}</figure>
+      <figure className="st-visual st-visual-wide" {...(narrow ? scrollRegion("Picture, scrolls sideways") : null)}>{visual}{caption && <figcaption>{caption}</figcaption>}</figure>
       {children && <div className="st-prose st-show-text">{children}</div>}
     </div>
   );

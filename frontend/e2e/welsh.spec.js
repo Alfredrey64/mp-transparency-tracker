@@ -80,8 +80,9 @@ test("the Welsh header never collides with itself or scrolls sideways, at any wi
       const overlap = a.l < b.r - 1 && b.l < a.r - 1 && a.t < b.b - 1 && b.t < a.b - 1;
       expect(overlap, `${width}px: ${a.n} overlaps ${b.n}`).toBe(false);
     }
-    const folded = await page.locator(".site-burger").isVisible();
-    expect(folded, `${width}px folds into the menu button ${width <= 1400 ? "" : "not "}`).toBe(width <= 1400);
+    // The header settles a moment after the page opens (the language is read first), so this waits for it instead of looking once.
+    if (width <= 1400) await expect(page.locator(".site-burger"), `${width}px folds into the menu button`).toBeVisible();
+    else await expect(page.locator(".site-burger"), `${width}px does not fold into the menu button`).toBeHidden();
   }
 });
 

@@ -370,7 +370,7 @@ function LineageDiagram({ nodes, color }) {
               transition={{ delay: i * 0.06, duration: 0.2 }}
               style={{ color, fontSize: 16, fontWeight: 700 }}
             >
-              →
+              ›
             </motion.span>
           )}
           <motion.div

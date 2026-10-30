@@ -62,7 +62,7 @@ export function Chip({ colour, children, style }) {
   );
 }
 
-export const Arrow = () => <span aria-hidden="true" style={{ color: COLORS.inkSoft, fontSize: 14 }}>→</span>;
+export const Arrow = () => <span aria-hidden="true" style={{ color: COLORS.inkSoft, fontSize: 14 }}>›</span>;
 
 // A horizontal bar with a value and an optional change. In a narrow column
 // (compact) the label and value share a line and the bar sits under them, so

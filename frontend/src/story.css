@@ -373,3 +373,11 @@
   .st-facts > div:hover, .st-cards li:hover { transform: none; }
 }
 @media print { .st * { animation: none !important; } }
+
+/* A picture too detailed to shrink to a phone (it has no tall version of its own) keeps a size its words can be read at and scrolls sideways inside its box, with a
+   line saying so. Pictures that do have a tall version (st-trail-tall) are swapped for it instead. */
+@media (max-width: 700px) {
+  .st-visual:has(> svg:not(.st-trail-wide):not(.st-trail-tall)) { overflow-x: auto; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; }
+  .st-visual > svg:not(.st-trail-wide):not(.st-trail-tall) { min-width: 800px; }
+  .st-visual:has(> svg:not(.st-trail-wide):not(.st-trail-tall))::after { content: "Swipe sideways to see all of it"; position: sticky; left: 0; display: block; width: calc(100vw - 80px); max-width: 100%; margin-top: 10px; font: 600 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+}

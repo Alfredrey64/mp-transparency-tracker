@@ -21,5 +21,5 @@ input[style*="Newsreader"], textarea[style*="Newsreader"], .tm-names-grid input 
 /* Every number on the site is set in Fraunces, a serif with clear, even figures. Only the digits, the % sign and the pound sign are in this file, so it is
    small (about 7 kB) and everything else on the page stays in its own font. "Figures" is listed first in every font stack (see theme.js), and the browser
    takes just these characters from it. */
-@font-face { font-family: 'Figures'; font-style: normal; font-display: swap; font-weight: 100 900; src: url(/fonts/fraunces-figures.woff2) format('woff2'); unicode-range: U+0030-0039, U+0025, U+00A3; }
+@font-face { font-family: 'Figures'; font-style: normal; font-display: block; font-weight: 100 900; src: url(/fonts/fraunces-figures.woff2) format('woff2'); unicode-range: U+0030-0039, U+0025, U+00A3; }
 body, input, textarea, select, button { font-variant-numeric: lining-nums tabular-nums; font-feature-settings: 'lnum' 1, 'tnum' 1; }

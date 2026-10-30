@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { watchWidth } from "../lib/watchWidth";
 import { COLORS, FONT_BODY } from "../theme";
 import { GOVERNMENTS } from "../data/governments";
 import { GROUPS } from "../lib/electionHistory";
@@ -7,7 +8,9 @@ import { formatValue } from "../lib/governmentMetrics";
 // A line chart of one national figure from 1945 to now, with a coloured band behind it for each government. Tap or hover to read a value;
 // tap a band's label to open that government. The table beside it carries the same numbers for anyone who cannot use the chart.
 
-const W = 760;
+// The chart is drawn at the width of the space it is in (760 until that is measured), so its labels stay the size they are written at on a phone
+// instead of being shrunk with the picture.
+const WIDE = 760;
 const H = 290;
 const M = { l: 52, r: 10, t: 26, b: 28 };
 const START = Date.UTC(1945, 6, 26);
@@ -27,6 +30,9 @@ function niceTicks(min, max, n = 4) {
 
 export default function MetricChart({ metric, prepared, now, selectedId, onSelect }) {
   const [hover, setHover] = useState(null);
+  const figRef = useRef(null);
+  const [W, setW] = useState(WIDE);
+  useEffect(() => watchWidth(figRef.current, (w) => setW(Math.min(WIDE, Math.max(280, Math.round(w))))), []);
 
   const geom = useMemo(() => {
     const pts = prepared.points.filter(([t]) => t >= START - 365 * 86400000);
@@ -54,7 +60,7 @@ export default function MetricChart({ metric, prepared, now, selectedId, onSelec
       : niceTicks(lo, hi, 6);
     const path = thin.map(([t, v], i) => `${i ? "L" : "M"}${x(t).toFixed(1)},${y(v).toFixed(1)}`).join("");
     return { thin, x, y, ticks, path, t0, t1 };
-  }, [prepared, metric, now]);
+  }, [prepared, metric, now, W]);
 
   const years = useMemo(() => {
     const out = [];
@@ -77,7 +83,7 @@ export default function MetricChart({ metric, prepared, now, selectedId, onSelec
   const shown = hover ?? null;
 
   return (
-    <figure style={{ margin: 0 }}>
+    <figure ref={figRef} style={{ margin: 0 }}>
       <div aria-live="polite" style={{ minHeight: 44, fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft }}>
         {shown ? (
           <>

@@ -693,11 +693,13 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 html { scrollbar-gutter: stable; }
 
 /* The placeholder shown while a page's figures load (see components/Loading.jsx). */
-.loading-block { display: flex; align-items: flex-start; padding: 18px 2px; }
+/* The placeholder only appears if the page is still not there after a third of a second, so a page that loads quickly never flashes it. */
+.loading-block { display: flex; align-items: flex-start; padding: 18px 2px; animation: loading-in 0.3s ease 0.35s backwards; }
+@keyframes loading-in { from { opacity: 0; } }
 .loading-bars { display: grid; gap: 12px; width: 100%; max-width: 640px; }
 .loading-bars i { display: block; height: 14px; border-radius: 7px; background: linear-gradient(90deg, var(--c-hairline) 25%, color-mix(in srgb, var(--c-hairline) 45%, transparent) 50%, var(--c-hairline) 75%); background-size: 300% 100%; animation: loading-shimmer 1.6s ease-in-out infinite; }
 @keyframes loading-shimmer { from { background-position: 100% 0; } to { background-position: 0 0; } }
-@media (prefers-reduced-motion: reduce) { .loading-bars i { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .loading-bars i, .loading-block { animation: none; } }
 
 /* Text for screen readers only. */
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
