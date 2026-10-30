@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { neighbourhoodRank, tenthWords, seatProfile, councilTaxProfile, taxYear, censusFacts, placeFacts, whoDoesWhat, responsibilities, nextContests, seatMapProfile, councilYears, electionWhen, seatStory, ageProfile, yearsSince, seatHeadline } from "./areaProfile";
+import { neighbourhoodRank, tenthWords, seatProfile, councilTaxProfile, taxYear, censusFacts, placeFacts, whoDoesWhat, responsibilities, nextContests, seatMapProfile, councilYears, electionWhen, seatStory, ageProfile, yearsSince, seatHeadline, homesAndCrime } from "./areaProfile";
+import breakdowns from "../data/regionalBreakdowns.json";
 import tax from "../data/councilTaxByCouncil.json";
 import census from "../data/regionalProfile.json";
 import seats from "../data/constituencies.json";
@@ -239,5 +240,26 @@ describe("the seat's headline", () => {
     expect(s.heldFor.party).toBe("Con");
     expect(s.heldFor.since).toBe("2005-05-05");
     expect(s.heldFor.years).toBeGreaterThan(20);
+  });
+});
+
+describe("homesAndCrime", () => {
+  it("gives a region's housing and crime figures with the whole-country figure and the rank", () => {
+    const rows = homesAndCrime(breakdowns, "london");
+    const price = rows.find((r) => r.label === "Average home price");
+    expect(price.rank).toBe(1);
+    expect(price.of).toBeGreaterThanOrEqual(10);
+    expect(price.value).toBeGreaterThan(price.whole);
+    expect(rows.some((r) => r.topic === "crime")).toBe(true);
+    for (const r of rows) { expect(Number.isFinite(r.value), r.label).toBe(true); expect(r.rank).toBeGreaterThanOrEqual(1); expect(r.rank).toBeLessThanOrEqual(r.of); expect(r.source?.url).toMatch(/^https:/); }
+  });
+  it("leaves out crime where the table does not cover the nation, rather than showing a blank", () => {
+    const rows = homesAndCrime(breakdowns, "scotland");
+    expect(rows.some((r) => r.topic === "crime")).toBe(false);
+    expect(rows.some((r) => r.topic === "homes")).toBe(true);
+  });
+  it("gives nothing without a region or data", () => {
+    expect(homesAndCrime(breakdowns, null)).toEqual([]);
+    expect(homesAndCrime(null, "london")).toEqual([]);
   });
 });

@@ -12,13 +12,14 @@ import { explainStage } from "../lib/billExplain";
 import { HISTORY_COLOURS, HISTORY_LABELS, HKEYS } from "./councilsUi";
 import { hexPoints } from "../lib/seatMap";
 import regionGeo from "../data/regionMap.json";
-import { IconPinHome, IconSearch, IconCouncil, IconVote, IconHexMap, IconTrend, IconCalendar, IconPetition } from "./icons";
+import { IconPinHome, IconSearch, IconCouncil, IconVote, IconHexMap, IconTrend, IconCalendar, IconPetition, IconHouse, IconShield } from "./icons";
 import { ordinal } from "../lib/constituency";
 import { shortParty } from "../lib/seatElections";
 import { againstUk } from "../lib/seatLocal";
 import { formatValue, periodLabel } from "../lib/onsFormat";
 import { longDate } from "../lib/councils";
 import { daysUntil } from "../lib/localElections";
+import { buildIcs, electionEvents, downloadIcs } from "../lib/calendar";
 import { taxYear, tenthWords, seatStory, seatHeadline } from "../lib/areaProfile";
 
 // The sections of the Your area page that come from the files saved with the site rather than from the postcode lookup. They load after the page is
@@ -645,6 +646,44 @@ export function RegionRanks({ x, regionName, i }) {
   );
 }
 
+// Housing and crime for the region, each figure set against the whole country and placed among the regions.
+export function HomesCrime({ x, regionName, i }) {
+  const rows = x?.homes ?? [];
+  const groups = [["homes", "Homes", "#2F9E6E", "#/housing", "House prices and rents in detail"], ["crime", "Crime", "#D9453B", "#/crime", "Crime in detail"]];
+  return (
+    <Card i={i} colour="#2F9E6E" icon={<IconHouse size={20} />} title={`Homes and crime in ${regionName ?? "your region"}`} className="ma-ranks ma-homes">
+      {x?.homes === undefined ? <Skel lines={5} /> : rows.length === 0 ? <Missing>Housing and crime figures are not available for this area.</Missing> : (
+        <>
+          <div className="ma-homes-grid">
+            {groups.map(([topic, title, colour, href, link]) => {
+              const list = rows.filter((r) => r.topic === topic);
+              if (list.length === 0) return null;
+              return (
+                <section key={topic} style={{ "--fc": colour }}>
+                  <h4>{topic === "crime" ? <IconShield size={16} /> : <IconHouse size={16} />}{title}</h4>
+                  <ul className="ma-rankrows">
+                    {list.map((s) => (
+                      <li key={s.label} style={{ "--fc": colour }}>
+                        <span className="ma-rank-label"><b>{s.label}</b><small>{s.period}</small></span>
+                        <span className="ma-rank-value">{formatValue(s.format, s.value)}{s.whole != null && <small>{s.wholeName} {formatValue(s.format, s.whole)}</small>}</span>
+                        <span className="ma-rank-dots" role="img" aria-label={`${ordinal(s.rank)} highest of ${s.of} places`}>{Array.from({ length: s.of }, (_, n) => <i key={n} className={n + 1 === s.rank ? "me" : ""} />)}</span>
+                        <small className="ma-rank-note">{ordinal(s.rank)} highest of {s.of}</small>
+                      </li>
+                    ))}
+                  </ul>
+                  <a className="ma-link" href={href}>{link}</a>
+                </section>
+              );
+            })}
+          </div>
+          {x.pay && <p className="ma-callout">A typical home costs about <strong>{x.pay.years.toFixed(1)} years</strong> of typical pay here{x.pay.ukYears ? `, against ${x.pay.ukYears.toFixed(1)} across the UK` : ""}.</p>}
+          <p className="ma-sub">These are figures for the whole region, from HM Land Registry, the ONS and police recorded crime, not for your street. Crime is recorded for England and Wales only, and more recorded crime can mean more reporting as well as more crime. For your own streets see <a href="https://www.police.uk/" target="_blank" rel="noreferrer">police.uk</a>. For schools, <a href="https://www.gov.uk/find-school-in-england" target="_blank" rel="noreferrer">find a school in England</a> or <a href="https://www.gov.uk/school-term-holiday-dates" target="_blank" rel="noreferrer">check term dates</a>.</p>
+        </>
+      )}
+    </Card>
+  );
+}
+
 export function Census({ x, regionName, i }) {
   const rows = x?.census ?? [];
   return (
@@ -685,6 +724,7 @@ export function Census({ x, regionName, i }) {
 
 export function Contests({ x, council, i }) {
   const list = x?.contests;
+  const calendar = x?.contests === undefined ? [] : electionEvents(list, council);
   return (
     <Card i={i} colour="#E0367A" icon={<IconVote size={20} />} title="Elections coming up where you live" className="ma-contests">
       {x?.contests !== undefined && <DatesLine contests={list} council={council} />}
@@ -718,6 +758,7 @@ export function Contests({ x, council, i }) {
         <li><b>Postal or proxy.</b> You can apply to vote by post, or ask someone you trust to vote for you. Apply early: postal votes close 11 working days before, proxies 6.</li>
       </ol>
       <p className="ma-sub">Check the exact dates for your election on gov.uk, as they change with each one.</p>
+      {calendar.length > 0 && <button type="button" className="btn btn-secondary ma-cal" onClick={() => downloadIcs("my-election-dates.ics", buildIcs(calendar, { name: `Election dates${council ? ` for ${council.name}` : ""}` }))}>Add these {calendar.length} dates to your calendar</button>}
       <a className="ma-link" href="#/myBallot">Who is standing, and how to mark the ballot</a>
     </Card>
   );

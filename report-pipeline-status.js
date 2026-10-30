@@ -44,6 +44,7 @@ const SCRIPTS = [
   { id: "fetch_mp_careers", label: "MP careers (terms, posts, party changes)" },
   { id: "fetch_lords_careers", label: "Lords careers (arrival, former MPs, posts)" },
   { id: "build_benchmarks", label: "MP benchmarks (how each MP compares)" },
+  { id: "fetch_representatives", label: "Other elected representatives (police, mayors, devolved members)" },
   { id: "fetch_councils", label: "Councils (councillors, make-up, election dates)" },
   { id: "build_councillors", label: "Councillor list (searchable, every council)" },
   { id: "fetch_lords_votes", label: "Lords votes (how every peer voted)" },

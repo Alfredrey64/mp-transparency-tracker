@@ -8,7 +8,8 @@ import { loadCouncilDetail } from "./councilDetail";
 import { supabase } from "../supabaseClient";
 import { doingFromRows } from "./mpDoing";
 import { historyRows } from "./councils";
-import { seatProfile, councilTaxProfile, neighbourhoodRank, censusFacts, placeFacts, whoDoesWhat, responsibilities, nextContests, seatMapProfile, councilYears, ageProfile } from "./areaProfile";
+import { policeFor, mayorFor, devolvedFor, holyroodSeatAt } from "./areaReps";
+import { seatProfile, councilTaxProfile, neighbourhoodRank, censusFacts, placeFacts, whoDoesWhat, responsibilities, nextContests, seatMapProfile, councilYears, ageProfile, homesAndCrime } from "./areaProfile";
 
 const soft = (p) => Promise.resolve(p).catch(() => null);
 
@@ -28,18 +29,18 @@ export function useAreaExtras(data) {
 
     // Stage 1: small files.
     Promise.all([
-      load(import("../data/councilTaxByCouncil.json")), load(import("../data/deprivationConstituencies.json")), load(import("../data/deprivationNations.json")),
+      load(import("../data/regionalBreakdowns.json")), load(import("../data/councilTaxByCouncil.json")), load(import("../data/deprivationConstituencies.json")), load(import("../data/deprivationNations.json")),
       load(import("../data/deprivation.json")), load(import("../data/regionalProfile.json")), load(import("../data/councilsIndex.json")),
       soft(loadSector("housing")), soft(loadSector("jobs")), soft(loadSector("regions")),
       council ? soft(loadCouncilDetail(council.id)) : null,
-    ]).then(([taxFile, depSeats, depNations, depAreas, census, councilIndex, housing, jobs, regions, councilDetail]) => {
+    ]).then(([breakdowns, taxFile, depSeats, depNations, depAreas, census, councilIndex, housing, jobs, regions, councilDetail]) => {
       const sectors = { housing, jobs, regions };
       const tax = councilTaxProfile(taxFile, council?.name, county?.name);
       const snapshot = regionKey && housing ? regionSnapshot(regionKey, (ref) => sectors[ref.sector]?.series?.[ref.id] ?? null) : [];
       const sources = depSeats && depNations ? { england: depSeats.seats, wales: depNations.wales?.seats, scotland: depNations.scotland?.seats, northernireland: depNations.northernireland?.seats } : null;
       put({
         tax, regionKey, snapshot, pay: yearsOfPay(snapshot), census: censusFacts(census, regionKey), ages: ageProfile(census, regionKey),
-        nb: neighbourhoodRank(r),
+        nb: neighbourhoodRank(r), homes: homesAndCrime(breakdowns, regionKey),
         seatDep: sources ? seatDeprivation(r.parliamentary_constituency, sources) : null,
         seatDomains: depSeats?.seats?.find((z) => seatKey(z.name) === key)?.domains ?? null,
         councilDep: depAreas?.areas && council ? (() => { const a = depAreas.areas.find((z) => z.code === council.id); return a ? { rank: a.rank, of: depAreas.areas.length, worst10: a.worst10 } : null; })() : null,
@@ -60,6 +61,21 @@ export function useAreaExtras(data) {
     // Stage 3: the elections coming up, which need the network.
     soft(findContests(r.postcode)).then((contests) => put({ contests: contests ? nextContests(contests) : null }));
 
+    // Stage 3b: the other elected people for this postcode: police, regional mayor, and the devolved parliament if there is one.
+    load(import("../data/representatives.json")).then(async (reps) => {
+      if (!reps) return put({ reps: null });
+      const seat = r.country === "Scotland" ? await holyroodSeatAt(r.longitude, r.latitude) : null;
+      put({
+        reps: {
+          checked: reps.checked,
+          police: policeFor({ pfa: r.pfa, country: r.country }, reps),
+          mayor: mayorFor({ country: r.country, districtCode: r.codes?.admin_district }, reps),
+          devolved: devolvedFor({ country: r.country, senedd: r.senedd_constituency, westminster: r.parliamentary_constituency, holyroodSeat: seat }, reps),
+          scotlandLookupFailed: r.country === "Scotland" && !seat,
+        },
+      });
+    });
+
     // Stage 4: what their MP has been doing, from the tables the MP's own page uses.
     if (mp) {
       Promise.all([
@@ -67,7 +83,8 @@ export function useAreaExtras(data) {
         soft(supabase.from("bills").select("bill_id, short_title, long_title, current_stage, current_house, sponsoring_department, is_act, is_defeated, source_url, last_updated").eq("sponsor_member_id", mp.parliament_member_id).order("last_updated", { ascending: false }).limit(5)),
         soft(supabase.from("committees").select("id, name, members")),
       ]).then(([votes, bills, committees]) => put({ doing: doingFromRows({ mp, votes: votes?.data, bills: bills?.data, committees: committees?.data }) }));
-    } else put({ doing: null });
+      soft(supabase.from("financial_interests").select("category, donor_name, value_amount, date_registered").eq("politician_id", mp.id)).then((res) => put({ interests: res?.error ? null : res?.data ?? null }));
+    } else put({ doing: null, interests: null });
     return () => { alive = false; };
   }, [r, council, county, mp]);
   return x;

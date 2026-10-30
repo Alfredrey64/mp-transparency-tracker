@@ -264,4 +264,34 @@ export function nextContests(list, today = new Date(), max = 5) {
   return (list ?? []).filter((c) => !c.cancelled && c.date >= todayIso).slice(0, max);
 }
 
+// Housing and crime for the postcode's region, from the saved regional tables (data/regionalBreakdowns.json): the figure, the figure for the whole
+// country it is compared with, and where the region ranks among those the table covers (1 is the highest). Crime is published for England and Wales
+// only, so a region the table leaves blank is left out rather than shown as nothing.
+const HOME_PICKS = [
+  { sector: "housing", cat: "price", group: "averagePrice", label: "Average home price", topic: "homes" },
+  { sector: "housing", cat: "affordability", group: "years-averagePrice", label: "Years of typical pay to buy a home", topic: "homes" },
+  { sector: "housing", cat: "buyer", group: "averagePriceFirstTimeBuyer", label: "Average first-time buyer's price", topic: "homes" },
+  { sector: "housing", cat: "change", group: "percentageAnnualChange", label: "Change in home prices over a year", topic: "homes" },
+  { sector: "crime", cat: "rate", group: "total-recorded-crime-excluding-fraud-", label: "Recorded crimes per 1,000 people", topic: "crime" },
+  { sector: "crime", cat: "rate", group: "violence-against-the-person", label: "Violence against the person, per 1,000", topic: "crime" },
+  { sector: "crime", cat: "rate", group: "burglary", label: "Burglaries per 1,000", topic: "crime" },
+  { sector: "crime", cat: "rate", group: "shoplifting", label: "Shoplifting offences per 1,000", topic: "crime" },
+  { sector: "crime", cat: "change", group: "total-recorded-crime-excluding-fraud-", label: "Change in recorded crime over a year", topic: "crime" },
+];
+
+export function homesAndCrime(breakdowns, regionKey) {
+  if (!breakdowns?.sectors || !regionKey) return [];
+  const out = [];
+  for (const pick of HOME_PICKS) {
+    const cat = breakdowns.sectors[pick.sector]?.categories?.find((c) => c.id === pick.cat);
+    const group = cat?.groups?.find((g) => g.id === pick.group);
+    const mine = group?.values?.[regionKey];
+    if (!cat || !group || !Number.isFinite(mine)) continue;
+    const all = Object.entries(group.values).filter(([, v]) => Number.isFinite(v));
+    const rank = 1 + all.filter(([, v]) => v > mine).length;
+    out.push({ ...pick, value: mine, whole: Number.isFinite(group.all) ? group.all : null, wholeName: cat.whole, format: cat.format, period: cat.period, source: cat.source, rank, of: all.length });
+  }
+  return out;
+}
+
 export { ordinal };

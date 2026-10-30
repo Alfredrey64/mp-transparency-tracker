@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { mpShareSpec, mpReportSpec, seatShareSpec, chamberShareSpec, rebelsShareSpec, mapShareSpec, councilShareSpec, wrapLines } from "./shareSpecs";
+import { areaShareSpec, mpShareSpec, mpReportSpec, seatShareSpec, chamberShareSpec, rebelsShareSpec, mapShareSpec, councilShareSpec, wrapLines } from "./shareSpecs";
 
 describe("mpShareSpec", () => {
   it("shows career facts and declared interests", () => {
@@ -121,5 +121,21 @@ describe("mpReportSpec", () => {
     expect(s.note).toBeNull();
     expect(s.bars).toEqual([]);
     expect(s.panelFacts).toEqual([]);
+  });
+});
+
+describe("areaShareSpec", () => {
+  it("puts the place, the MP and the figures that are known on the card, and leaves out the rest", () => {
+    const s = areaShareSpec({ place: "Hotwells, Bristol", constituency: "Bristol Central", regionName: "South West", mp: { name: "Carla Denyer", party: "Green Party", party_colour: "78b82a" }, majority: 10407, turnoutPct: 60.3, taxBandD: null, nextElection: { value: "190", label: "days to the next election" }, council: { name: "Bristol", control: "No overall control" }, link: "https://x" });
+    expect(s.title).toBe("Hotwells, Bristol");
+    expect(s.subtitle).toBe("Bristol Central · South West");
+    expect(s.stats.map((x) => x.value)).toEqual(["10,407", "60.3%", "190"]);
+    expect(s.note).toBe("MP: Carla Denyer, Green Party. Council: Bristol, No overall control.");
+    expect(s.accent).toBe("#78b82a");
+  });
+  it("copes with nothing but a place", () => {
+    const s = areaShareSpec({ place: "Somewhere" });
+    expect(s.stats).toEqual([]);
+    expect(s.note).toBeNull();
   });
 });

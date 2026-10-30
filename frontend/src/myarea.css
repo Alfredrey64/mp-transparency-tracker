@@ -29,6 +29,8 @@
 .ma-council, .ma-people-card { grid-column: span 6; } .ma-tax { grid-column: span 5; } .ma-who { grid-column: span 7; }
 .ma-region { grid-column: 1 / -1; } .ma-ranks { grid-column: span 7; } .ma-census { grid-column: span 5; }
 .ma-doing, .ma-contests { grid-column: span 8; }
+.ma-money, .ma-indep { grid-column: span 6; }
+.ma-reps, .ma-tools { grid-column: 1 / -1; }
 .ma-result { grid-column: 1 / -1; }
 .ma-hood { grid-column: span 7; } .ma-placefacts { grid-column: span 5; } .ma-ranks { grid-column: 1 / -1; }
 .ma-card { position: relative; display: flex; flex-direction: column; gap: 14px; box-sizing: border-box; padding: 20px 22px 20px 26px; border-radius: 18px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1), inset 5px 0 0 var(--mc); overflow: hidden; animation: maIn 0.6s var(--ease-out) calc(var(--i, 0) * 90ms + 200ms) backwards; }
@@ -361,7 +363,7 @@
 .ma-section { container: ma / inline-size; }
 @container ma (max-width: 980px) {
   .ma-bento > * { grid-column: 1 / -1; }
-  .ma-bento > :is(.ma-seat, .ma-history, .ma-council, .ma-people-card, .ma-todo-card, .ma-deeper, .ma-votes, .ma-petitions) { grid-column: span 6; }
+  .ma-bento > :is(.ma-seat, .ma-history, .ma-council, .ma-people-card, .ma-todo-card, .ma-deeper, .ma-votes, .ma-petitions, .ma-money, .ma-indep) { grid-column: span 6; }
 }
 @container ma (max-width: 620px) {
   .ma-bento > * { grid-column: 1 / -1 !important; }
@@ -582,3 +584,80 @@
 .ma-tiles3 dt { color: color-mix(in srgb, var(--pc) 70%, var(--c-ink)); }
 .ma-tiles3 dd { font-size: clamp(26px, 3vw, 36px); color: color-mix(in srgb, var(--pc) 45%, var(--c-ink)); }
 .ma-tiles3 dd em { font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: var(--c-ink-soft); }
+
+/* What the MP has declared and claimed, and how often they vote against their party. */
+.ma-money-figs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.ma-money-figs > div { display: grid; align-content: start; gap: 3px; padding: 12px 14px; border-radius: 14px; background: color-mix(in srgb, var(--mc) 9%, var(--c-paper)); }
+.ma-money-figs span { font: 600 12.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-money-figs b { font: 700 clamp(22px, 2.6vw, 28px)/1.1 "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--mc) 72%, var(--c-ink)); font-variant-numeric: lining-nums tabular-nums; }
+.ma-money-figs b span { font: inherit; color: inherit; }
+.ma-money-figs small { font: 500 12.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-money-groups { list-style: none; margin: 0; padding: 0; display: grid; gap: 11px; }
+.ma-money-groups li { display: grid; gap: 5px; padding: 0; }
+.ma-money-groups span { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.ma-money-groups b { font: 700 13.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ma-money-groups em { font: 600 12.5px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: var(--c-ink-soft); }
+.ma-money-groups i { display: block; height: 8px; border-radius: 4px; background: linear-gradient(90deg, color-mix(in srgb, var(--mc) 40%, transparent), var(--mc)); width: calc(var(--w) * 100%); min-width: 8px; transform-origin: left; transition: transform 0.9s var(--ease-out) calc(var(--n) * 70ms + 0.2s); }
+.ma-card:not([data-in="true"]) .ma-money-groups i { transform: scaleX(0); }
+.ma-money-notes { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.ma-money-notes li { position: relative; padding-left: 16px; font-size: 14px; }
+.ma-money-notes li::before { content: ""; position: absolute; left: 2px; top: 0.7em; width: 6px; height: 6px; border-radius: 50%; background: var(--mc); }
+.ma-indep-big { display: grid; gap: 2px; }
+.ma-indep-big b { font: 700 clamp(34px, 5vw, 46px)/1 "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--mc) 72%, var(--c-ink)); font-variant-numeric: lining-nums tabular-nums; }
+.ma-indep-big b span { font: inherit; color: inherit; }
+.ma-indep-big > span { font: 500 14px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-indep-line { display: grid; gap: 8px; padding-top: 6px; }
+.ma-indep-track { position: relative; display: block; height: 10px; border-radius: 5px; background: color-mix(in srgb, var(--mc) 16%, var(--c-hairline)); }
+.ma-indep-track i { position: absolute; left: 0; top: 0; bottom: 0; width: var(--at); border-radius: 5px; background: linear-gradient(90deg, color-mix(in srgb, var(--mc) 35%, transparent), var(--mc)); transform-origin: left; transition: transform 1.1s var(--ease-out) 0.2s; }
+.ma-indep-track s { position: absolute; top: -5px; bottom: -5px; left: var(--at); width: 2px; margin-left: -1px; background: var(--c-ink-soft); text-decoration: none; opacity: 0.7; }
+.ma-indep-track u { position: absolute; top: 50%; left: var(--at); width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; background: var(--c-paper-card); border: 4px solid var(--mc); box-shadow: 0 2px 6px rgba(10, 20, 36, 0.25); transition: left 1.1s var(--ease-out) 0.2s, opacity 0.4s var(--ease-out) 0.2s; }
+.ma-card:not([data-in="true"]) .ma-indep-track i { transform: scaleX(0); }
+.ma-card:not([data-in="true"]) .ma-indep-track u { left: 0; opacity: 0; }
+.ma-indep-ends { position: relative; display: flex; justify-content: space-between; min-height: 18px; }
+.ma-indep-ends small { font: 600 11.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-indep-ends .ma-indep-mid { position: absolute; left: clamp(0px, calc(var(--at) - 14%), calc(100% - 9em)); top: 0; white-space: nowrap; }
+.ma-spread { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; align-items: end; padding-top: 4px; }
+.ma-spread span { display: grid; grid-template-rows: 78px auto auto; justify-items: center; align-items: end; gap: 3px; min-width: 0; }
+.ma-spread i { display: block; width: 100%; height: calc(var(--h) * 100%); min-height: 3px; border-radius: 5px 5px 2px 2px; background: color-mix(in srgb, var(--mc) 28%, var(--c-hairline)); transform-origin: bottom; transition: transform 0.8s var(--ease-out) calc(var(--n) * 60ms + 0.2s); }
+.ma-spread .mine i { background: var(--mc); box-shadow: 0 0 0 3px color-mix(in srgb, var(--mc) 22%, transparent); }
+.ma-spread b { font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); font-variant-numeric: tabular-nums; }
+.ma-spread small { font: 600 10.5px/1.2 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); text-align: center; overflow-wrap: anywhere; }
+.ma-card:not([data-in="true"]) .ma-spread i { transform: scaleY(0); }
+@container ma (max-width: 560px) { .ma-money-figs { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .ma-money-groups i, .ma-indep-track i, .ma-indep-track u, .ma-spread i { transition: none; } }
+
+/* The other elected people for the postcode. */
+.ma-rep-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 14px 22px; }
+.ma-reps h4 { margin: 0 0 4px; font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.02em; color: color-mix(in srgb, var(--mc) 75%, var(--c-ink)); }
+.ma-rep-groups section, .ma-rep-dev { display: grid; align-content: start; gap: 7px; padding: 14px 16px; border-radius: 14px; background: color-mix(in srgb, var(--mc) 6%, var(--c-paper)); }
+.ma-rep-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.ma-rep-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); }
+.ma-rep { display: grid; grid-template-columns: 38px minmax(0, 1fr); grid-template-areas: "av name" "av party"; column-gap: 11px; align-items: center; padding: 8px 10px; border-radius: 12px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); animation: maIn 0.5s var(--ease-out) calc(var(--n) * 50ms + 150ms) backwards; }
+.ma-rep-av { grid-area: av; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: color-mix(in srgb, var(--pc) 16%, var(--c-paper)); color: color-mix(in srgb, var(--pc) 80%, var(--c-ink)); font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; box-shadow: 0 0 0 2px var(--pc); }
+.ma-rep b { grid-area: name; font: 700 14px/1.25 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); overflow-wrap: anywhere; }
+.ma-rep small { grid-area: party; font: 600 12px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+@media (prefers-reduced-motion: reduce) { .ma-rep { animation: none; } }
+.ma-rep-sub { margin: 4px 0 0; font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+
+/* Homes and crime: two columns of the same ranked rows the region card uses. */
+.ma-homes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 18px 30px; }
+.ma-homes-grid section { display: grid; align-content: start; gap: 10px; }
+.ma-homes-grid h4 { display: flex; align-items: center; gap: 8px; margin: 0; font: 700 15px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--fc) 70%, var(--c-ink)); }
+
+/* Share, print or compare. */
+.ma-tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 18px 36px; }
+.ma-tools-grid > div { display: grid; align-content: start; gap: 10px; }
+.ma-tools h4 { margin: 0; font: 700 15px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ma-tools-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.ma-tools-form { display: flex; gap: 10px; flex-wrap: wrap; }
+.ma-tools-form input { flex: 1 1 180px; min-width: 0; min-height: 46px; box-sizing: border-box; padding: 0 16px; border-radius: 999px; border: 2px solid color-mix(in srgb, var(--mc) 40%, var(--c-hairline)); background: var(--c-paper-card); color: var(--c-ink); font: 500 16px "Figures", "Public Sans", system-ui, sans-serif; }
+.ma-tools-near { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.ma-tools-near span { font: 600 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-chipbtn { min-height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--mc) 40%, var(--c-hairline)); background: color-mix(in srgb, var(--mc) 8%, var(--c-paper-card)); color: var(--c-ink); font: 600 13px "Figures", "Public Sans", system-ui, sans-serif; cursor: pointer; transition: background 0.15s var(--ease-out); }
+.ma-chipbtn:hover { background: color-mix(in srgb, var(--mc) 16%, var(--c-paper-card)); }
+.ma-cal { align-self: flex-start; }
+@media print { .ma-tools, .ma-forget, .ma-cal { display: none !important; } }
+.ma-homes .ma-rankrows li { grid-template-columns: minmax(0, 1fr) auto; }
+.ma-homes .ma-rank-dots, .ma-homes .ma-rank-note { grid-column: 1 / -1; }
+.ma-homes .ma-rank-note { text-align: left; }
+.ma-homes .ma-rank-value { text-align: right; justify-items: end; }

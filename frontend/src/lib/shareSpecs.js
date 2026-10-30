@@ -310,6 +310,25 @@ export function compareSeatsShareSpec({ a, b, link }) {
   };
 }
 
+// Your area, as one card: where, who represents it, and the four figures people ask about first. Anything not known is left out.
+export function areaShareSpec({ place, constituency, regionName, mp, majority, turnoutPct, taxBandD, nextElection, council, link }) {
+  const stats = [];
+  if (majority != null) stats.push({ value: fmt(majority), label: "winner's majority, 2024" });
+  if (turnoutPct != null) stats.push({ value: pct1(turnoutPct), label: "turnout, 2024" });
+  if (taxBandD != null) stats.push({ value: `£${fmt(taxBandD)}`, label: "Band D council tax" });
+  if (nextElection) stats.push({ value: nextElection.value, label: nextElection.label });
+  return {
+    kicker: "Your area",
+    title: place,
+    subtitle: [constituency, regionName].filter(Boolean).join(" · "),
+    accent: colour(mp?.party_colour, "#1E4FB8"),
+    stats: stats.slice(0, 4),
+    note: [mp ? `MP: ${mp.name}, ${mp.party}.` : null, council ? `Council: ${council.name}, ${council.control}.` : null].filter(Boolean).join(" ") || null,
+    footer: CARD_SITE,
+    link,
+  };
+}
+
 // Any page with nothing special to show: its name and what it is about.
 export function pageShareSpec({ kicker, title, subtitle, accent, link }) {
   return { kicker: kicker || "Simple Politics", title, subtitle: subtitle ?? "", accent: colour(accent, "#1E4FB8"), stats: [], footer: CARD_SITE, link };

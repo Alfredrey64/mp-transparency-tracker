@@ -10,7 +10,7 @@ const result = {
 const mp = [{ id: 1, name: "Test Member", party: "Labour", party_colour: "d50000", thumbnail_url: null, cabinet_role: null }];
 const cors = { "access-control-allow-origin": "*", "access-control-expose-headers": "content-range" };
 
-async function mockServices(page, { elections = { results: [] }, votes = [] } = {}) {
+async function mockServices(page, { elections = { results: [] }, votes = [], over = {} } = {}) {
   await page.addInitScript(() => localStorage.setItem("mp-transparency-my-postcode", "BS1 5TR"));
   await page.route("**/127.0.0.1:54321/**", (route) => {
     const req = route.request();
@@ -18,7 +18,7 @@ async function mockServices(page, { elections = { results: [] }, votes = [] } = 
     if (req.method() === "HEAD") return route.fulfill({ status: 200, headers: { ...cors, "content-range": "0-0/42" }, body: "" });
     return route.fulfill({ status: 200, contentType: "application/json", headers: cors, body: JSON.stringify(req.url().includes("/politicians") ? mp : req.url().includes("/voting_records") ? votes : []) });
   });
-  await page.route("**/api.postcodes.io/**", (route) => route.fulfill({ status: 200, contentType: "application/json", headers: cors, body: JSON.stringify({ status: 200, result }) }));
+  await page.route("**/api.postcodes.io/**", (route) => route.fulfill({ status: 200, contentType: "application/json", headers: cors, body: JSON.stringify({ status: 200, result: { ...result, ...over } }) }));
   await page.route("**/elections.democracyclub.org.uk/**", (route) => route.fulfill({ status: 200, contentType: "application/json", headers: cors, body: JSON.stringify(elections) }));
 }
 
@@ -37,7 +37,7 @@ for (const width of [1440, 390]) {
     await expect(page.locator(".ma-spark-dot")).toBeAttached();
     await expect(page.locator(".ma-agebar")).toHaveCount(2);
     await expect(page.locator(".ma-track-dot").first()).toBeAttached();
-    for (const want of ["How Bristol Central voted in 2024", "Where Bristol Central sits among the 650", "What Test Member has been doing", "How your council has changed", "Elections coming up where you live", "Your council tax", "Who does what here", "Your neighbourhood", "Where South West ranks", "Who lives in South West", "Useful links for where you live", "Before polling day"]) expect(text).toContain(want);
+    for (const want of ["How Bristol Central voted in 2024", "Where Bristol Central sits among the 650", "What Test Member has been doing", "How your council has changed", "Elections coming up where you live", "Your council tax", "Who does what here", "Your neighbourhood", "Where South West ranks", "Who lives in South West", "Useful links for where you live", "Before polling day", "has declared and claimed", "How often they vote against their party", "Everyone else who speaks for you", "Homes and crime in South West", "Share it, print it or compare it"]) expect(text).toContain(want);
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
   });
 }
@@ -91,4 +91,40 @@ test("a vote opens to explain itself in plain English, one at a time, and closes
   await expect(heads.nth(1)).toHaveAttribute("aria-expanded", "true");
   await heads.nth(1).click();
   await expect(heads.nth(1)).toHaveAttribute("aria-expanded", "false");
+});
+
+test("a Welsh postcode shows its police commissioner and its six Senedd members", async ({ page }) => {
+  await page.setViewportSize({ width: 1200, height: 900 });
+  await mockServices(page, { over: { country: "Wales", region: null, pfa: "South Wales", senedd_constituency: "Caerdydd Penarth", parliamentary_constituency: "Cardiff South and Penarth", admin_district: "Cardiff", admin_ward: "Butetown", codes: { admin_district: "W06000015", admin_county: "W99999999", admin_ward: "W05001274" } } });
+  await page.goto("/myArea");
+  const card = page.locator(".ma-reps");
+  await expect(card).toContainText("South Wales Police", { timeout: 20000 });
+  await expect(card).toContainText("Senedd: Caerdydd Penarth");
+  await expect(card.locator(".ma-rep-dev .ma-rep")).toHaveCount(6);
+  await expect(card).toContainText("Police and crime commissioner");
+});
+
+test("the elections card offers a calendar file with the dates listed", async ({ page }) => {
+  await page.setViewportSize({ width: 1200, height: 900 });
+  await mockServices(page, { elections: { results: [{ election_id: "local.bristol.2099-05-06", poll_open_date: "2099-05-06", election_title: "Bristol local election", elected_role: "Local Councillor", requires_voter_id: "EA-2022", voting_system: { slug: "FPTP", name: "First past the post" }, seats_contested: 1, election_type: { election_type: "local" }, timetable: { registration_deadline: "2099-04-16" } }] } });
+  await page.goto("/myArea");
+  const button = page.getByRole("button", { name: /dates to your calendar/ });
+  await expect(button).toBeVisible({ timeout: 20000 });
+  const [download] = await Promise.all([page.waitForEvent("download"), button.click()]);
+  expect(download.suggestedFilename()).toBe("my-election-dates.ics");
+  const text = await (await import("node:fs/promises")).readFile(await download.path(), "utf8");
+  expect(text).toContain("BEGIN:VCALENDAR");
+  expect(text).toContain("DTSTART;VALUE=DATE:20990506");
+  expect(text).toContain("DTSTART;VALUE=DATE:20990416");
+});
+
+test("comparing with a postcode in the same seat says so instead of opening a comparison", async ({ page }) => {
+  await page.setViewportSize({ width: 1200, height: 900 });
+  await mockServices(page);
+  await page.goto("/myArea");
+  const form = page.locator(".ma-tools-form");
+  await expect(form).toBeVisible({ timeout: 20000 });
+  await form.getByLabel("A postcode to compare with").fill("BS1 5TR");
+  await form.getByRole("button", { name: "Compare" }).click();
+  await expect(page.locator(".ma-tools .ma-err")).toContainText("too");
 });
