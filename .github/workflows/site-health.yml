@@ -65,7 +65,7 @@ jobs:
           echo "hours=$hours" >> "$GITHUB_OUTPUT"
           echo "The last daily data refresh was $hours hours ago."
       - name: Open an issue if the refresh has stopped
-        if: steps.age.outputs.hours > 50
+        if: steps.age.outputs.hours > 30
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -74,7 +74,7 @@ jobs:
             gh issue create --label data-stale --title "The daily data refresh has stopped" --body "The last daily data refresh was ${{ steps.age.outputs.hours }} hours ago, so the site is showing old figures. Open the 'Fetch MP financial interests...' workflow in the Actions tab to see which job failed or timed out. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/workflows/fetch-data.yml"
           fi
       - name: Close the issue when the data is fresh again
-        if: steps.age.outputs.hours <= 50
+        if: steps.age.outputs.hours <= 30
         env:
           GH_TOKEN: ${{ github.token }}
         run: |

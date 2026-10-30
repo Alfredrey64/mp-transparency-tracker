@@ -15,7 +15,7 @@
 //
 // Run it with: node report-pipeline-status.js (normally only from CI)
 
-import { writeFileSync } from "fs";
+import { appendFileSync, writeFileSync } from "fs";
 
 // id (matches each step's `id:` in fetch-data.yml) -> a short, page-ready
 // label. Order here is the order the status list renders in.
@@ -74,4 +74,17 @@ writeFileSync("frontend/src/data/pipelineStatus.json", JSON.stringify(output, nu
 console.log(`Pipeline status: ${output.succeededCount}/${output.totalCount} sources succeeded.`);
 if (output.succeededCount < output.totalCount) {
   console.log("Failed:", results.filter((r) => !r.succeeded).map((r) => r.label).join(", "));
+}
+
+// The same, as a table on the run's summary page, so a failing source can be seen without opening a log.
+if (process.env.GITHUB_STEP_SUMMARY) {
+  const lines = [
+    `## Data refresh: ${output.succeededCount} of ${output.totalCount} sources succeeded`,
+    "",
+    "| Source | Result |",
+    "| --- | --- |",
+    ...results.map((r) => `| ${r.label} | ${r.succeeded ? "Succeeded" : "**Failed or did not run**"} |`),
+    "",
+  ];
+  appendFileSync(process.env.GITHUB_STEP_SUMMARY, lines.join("\n"));
 }

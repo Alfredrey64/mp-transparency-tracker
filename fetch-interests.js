@@ -10,7 +10,7 @@
 
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";
-import { fetchRetry } from "./httpFetch.js";
+import { fetchRetry, mapLimit, tooManyFailed } from "./httpFetch.js";
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -219,8 +219,11 @@ async function main() {
   const members = await fetchAllCurrentMembers();
   console.log(`Found ${members.length} current MPs.\n`);
 
+  // Three MPs at a time (one at a time took about 45 minutes). An MP who fails keeps what is already saved for them; the run is reported as failed only if more
+  // than one in ten fail.
   let totalInterests = 0;
-  for (const [i, member] of members.entries()) {
+  let failed = 0;
+  await mapLimit(members, 3, async (member, i) => {
     try {
       const politicianRow = await upsertPolitician(member);
       await saveBiographyContactAndCabinet(politicianRow.id, member.memberId);
@@ -228,13 +231,13 @@ async function main() {
       totalInterests += count;
       console.log(`[${i + 1}/${members.length}] ${member.name} — ${count} interest(s)`);
     } catch (err) {
+      failed += 1;
       console.error(`  ⚠ Failed for ${member.name}: ${err.message}`);
     }
-    await sleep(150);
-  }
+  }, { pauseMs: 100 });
 
-  console.log(`\nDone. ${members.length} MPs processed, ${totalInterests} interests saved/updated.`);
-
+  console.log(`\nDone. ${members.length} MPs processed, ${totalInterests} interests saved/updated, ${failed} failed.`);
+  if (tooManyFailed(failed, members.length)) throw new Error(`${failed} of ${members.length} MPs failed`);
 }
 
 main().catch((err) => {

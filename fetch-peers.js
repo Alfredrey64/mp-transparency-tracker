@@ -29,7 +29,7 @@
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";
 import { fetchRecentContributions, fetchRecentWrittenQuestions } from "./memberActivity.js";
-import { fetchRetry } from "./httpFetch.js";
+import { fetchRetry, mapLimit, tooManyFailed } from "./httpFetch.js";
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -153,26 +153,37 @@ async function main() {
   const peers = await fetchAllCurrentPeers();
   console.log(`Found ${peers.length} current peers. Fetching biography and government role for each...\n`);
 
-  const rows = [];
-  for (const [i, peer] of peers.entries()) {
-    const [biography, bioDetails, contributions, writtenQuestions] = await Promise.all([
-      fetchSynopsis(peer.id),
-      fetchBiographyDetails(peer.id),
-      fetchRecentContributions(peer.id),
-      fetchRecentWrittenQuestions(peer.id),
-    ]);
-    rows.push({
-      ...peer,
-      biography,
-      government_role: bioDetails.role,
-      government_role_start_date: bioDetails.startDate,
-      ministerial_history: bioDetails.ministerialHistory,
-      committees: bioDetails.committees,
-      recent_activity: { contributions, writtenQuestions },
-    });
-    if ((i + 1) % 50 === 0) console.log(`  ...${i + 1}/${peers.length} done`);
-    await sleep(120);
-  }
+  // A few peers at a time (one at a time took over two hours). A peer whose lookup fails is skipped, and keeps the row already saved for them, rather than
+  // overwriting it with blanks; the run is reported as failed only if more than one in ten fail.
+  let done = 0;
+  const failed = [];
+  const results = await mapLimit(peers, 4, async (peer) => {
+    try {
+      const [biography, bioDetails, contributions, writtenQuestions] = await Promise.all([
+        fetchSynopsis(peer.id),
+        fetchBiographyDetails(peer.id),
+        fetchRecentContributions(peer.id),
+        fetchRecentWrittenQuestions(peer.id),
+      ]);
+      return {
+        ...peer,
+        biography,
+        government_role: bioDetails.role,
+        government_role_start_date: bioDetails.startDate,
+        ministerial_history: bioDetails.ministerialHistory,
+        committees: bioDetails.committees,
+        recent_activity: { contributions, writtenQuestions },
+      };
+    } catch (err) {
+      failed.push(peer.id);
+      console.error(`  ⚠ Failed for peer ${peer.id}: ${err.message}`);
+      return null;
+    } finally {
+      done += 1;
+      if (done % 50 === 0) console.log(`  ...${done}/${peers.length} done`);
+    }
+  }, { pauseMs: 100 });
+  const rows = results.filter(Boolean);
 
   const BATCH_SIZE = 200;
   for (let i = 0; i < rows.length; i += BATCH_SIZE) {
@@ -181,7 +192,8 @@ async function main() {
     if (error) throw error;
   }
 
-  console.log(`\nDone. Saved ${rows.length} peers.`);
+  console.log(`\nDone. Saved ${rows.length} peers, ${failed.length} failed.`);
+  if (tooManyFailed(failed.length, peers.length)) throw new Error(`${failed.length} of ${peers.length} peers failed`);
 }
 
 main().catch((err) => {

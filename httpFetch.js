@@ -53,3 +53,25 @@ export async function fetchRetry(url, options = {}, { retries = 3, timeoutMs = 6
   }
   throw new Error(`${lastError?.message ?? "Request failed"} (${url}, after ${retries + 1} tries)`);
 }
+
+// Runs `fn(item, index)` over the items with at most `limit` running at once, and answers with the results in the order of the items. The data scripts used to
+// handle one MP or peer at a time, and with the Parliament APIs taking several seconds to answer, the Lords alone took over two hours. A few at a time is
+// several times quicker and still polite: each worker waits `pauseMs` between its own requests, and fetchRetry already backs off when a server says "busy".
+// An error thrown by `fn` is not caught here: a caller that wants to carry on past one bad item catches it inside `fn`.
+export async function mapLimit(items, limit, fn, { pauseMs = 0 } = {}) {
+  const results = new Array(items.length);
+  let next = 0;
+  async function worker() {
+    while (next < items.length) {
+      const i = next++;
+      results[i] = await fn(items[i], i);
+      if (pauseMs) await sleep(pauseMs);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.max(1, Math.min(limit, items.length)) }, worker));
+  return results;
+}
+
+// A run in which more than this share of the items failed is reported as failed (so the pipeline's status says so), though what did succeed is still saved.
+export const MAX_FAILURE_SHARE = 0.1;
+export const tooManyFailed = (failed, total) => total > 0 && failed / total > MAX_FAILURE_SHARE;

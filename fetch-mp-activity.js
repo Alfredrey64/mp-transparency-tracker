@@ -18,13 +18,12 @@
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";
 import { fetchRecentContributions, fetchRecentWrittenQuestions } from "./memberActivity.js";
+import { mapLimit, tooManyFailed } from "./httpFetch.js";
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY
 );
-
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function main() {
   const { data: politicians, error } = await supabase
@@ -34,29 +33,34 @@ async function main() {
 
   console.log(`Fetching recent activity for ${politicians.length} current MPs...\n`);
 
+  // Five MPs at a time (one at a time took about two hours). An MP whose lookup fails keeps the snapshot already saved, and the run is reported as failed only if
+  // more than one in ten fail.
   let saved = 0;
-  for (const [i, mp] of politicians.entries()) {
-    if (!mp.parliament_member_id) continue;
-    const [contributions, writtenQuestions] = await Promise.all([
-      fetchRecentContributions(mp.parliament_member_id),
-      fetchRecentWrittenQuestions(mp.parliament_member_id),
-    ]);
-
-    const { error: updateError } = await supabase
-      .from("politicians")
-      .update({ recent_activity: { contributions, writtenQuestions } })
-      .eq("id", mp.id);
-    if (updateError) {
-      console.error(`  ⚠ Failed to save activity for ${mp.name}: ${updateError.message}`);
-    } else {
+  let done = 0;
+  const failed = [];
+  await mapLimit(politicians.filter((mp) => mp.parliament_member_id), 5, async (mp) => {
+    try {
+      const [contributions, writtenQuestions] = await Promise.all([
+        fetchRecentContributions(mp.parliament_member_id),
+        fetchRecentWrittenQuestions(mp.parliament_member_id),
+      ]);
+      const { error: updateError } = await supabase
+        .from("politicians")
+        .update({ recent_activity: { contributions, writtenQuestions } })
+        .eq("id", mp.id);
+      if (updateError) throw new Error(updateError.message);
       saved++;
+    } catch (err) {
+      failed.push(mp.id);
+      console.error(`  ⚠ Failed to save activity for ${mp.name}: ${err.message}`);
+    } finally {
+      done += 1;
+      if (done % 50 === 0) console.log(`  ...${done}/${politicians.length} done`);
     }
-
-    if ((i + 1) % 50 === 0) console.log(`  ...${i + 1}/${politicians.length} done`);
-    await sleep(120);
-  }
+  }, { pauseMs: 100 });
 
   console.log(`\nDone. Saved recent activity for ${saved} of ${politicians.length} MPs.`);
+  if (tooManyFailed(failed.length, politicians.length)) throw new Error(`${failed.length} of ${politicians.length} MPs failed`);
 }
 
 main().catch((err) => {
