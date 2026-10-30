@@ -384,35 +384,34 @@ export default function App() {
     return () => window.removeEventListener("popstate", syncFromUrl);
   }, []);
 
-  // Changes the page. Where the browser can cross-fade between two states of a page (View Transitions), the next page's code is
-  // fetched first while the current page stays put, then the two dissolve into each other, so there is no blank flash, no jump and
-  // no half-built page. Elsewhere (or for people who ask for less motion, or on a slow connection) it falls back to React's own
-  // transition, which also keeps the old page up until the new one is ready. Either way the change happens on the click.
+  // Changes the page. The page you are on fades out quickly while the next page's code is fetched, then the two are swapped (and the new page opened at its top)
+  // while nothing of the old one is showing, and the new page fades in. Only the page's own content fades, so the header and everything fixed to the screen stay
+  // exactly as they are. (This used to ask the browser to cross-fade a picture of the old page into the new one: with the old page scrolled part way down and the
+  // new one at its top, the two showed through each other for a moment, and the header and tab strip appeared doubled.) For people who ask for less motion, or on a
+  // slow connection, the page is simply swapped, with React keeping the old page up until the new one is ready. Either way the change happens on the click.
   function swapPage(key, apply, preload) {
     setNavTarget(key);
     const root = document.documentElement;
+    // From the first click on, pages change by the fade below, so the opening fade of the first page is not repeated on top of it.
+    root.dataset.nav = "1";
     const loader = preload ?? LOADERS[key];
     const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    if (typeof document.startViewTransition !== "function" || reduce || lowData() || (!loader && key !== "home")) {
+    if (reduce || lowData() || (!loader && key !== "home")) {
       startNav(apply);
       return;
     }
     const id = ++navId.current;
     setFetching(true);
-    // The page you are leaving dims at once, so the click is answered in the same frame even while the next page is still on its way.
     root.dataset.leaving = "1";
-    const wait = new Promise((resolve) => setTimeout(resolve, 2500));
-    Promise.race([preloadPage(loader), wait]).then(() => {
+    const fadedOut = new Promise((resolve) => setTimeout(resolve, 110));
+    const gaveUp = new Promise((resolve) => setTimeout(resolve, 2500));
+    Promise.race([Promise.all([preloadPage(loader), fadedOut]), gaveUp]).then(() => {
       // A newer click has taken over: let that one win.
       if (id !== navId.current) return;
       setFetching(false);
-      root.dataset.vt = "1";
-      const transition = document.startViewTransition(() => { delete root.dataset.leaving; flushSync(apply); });
-      const done = () => { if (id === navId.current) { delete root.dataset.vt; delete root.dataset.leaving; } };
-      // A click that arrives mid-transition aborts it: that is expected, so the other promises are answered too rather than left to report an error.
-      transition.ready.catch(() => {});
-      transition.updateCallbackDone.catch(() => {});
-      transition.finished.then(done, done);
+      flushSync(apply);
+      // The new page is in, and still transparent. One frame later it is allowed to fade in.
+      requestAnimationFrame(() => requestAnimationFrame(() => { if (id === navId.current) delete root.dataset.leaving; }));
     });
   }
 

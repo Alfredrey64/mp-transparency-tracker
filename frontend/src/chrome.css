@@ -636,26 +636,16 @@ body:has(.tier-mini) .to-top { display: none; }
 /* ---- The route a bill takes (BillRoute.jsx) ----------------------------------------------------------------------------------------------------- */
 
 /* ---- Page changes ------------------------------------------------------------------------------------------------------------------------------
-   Browsers that can cross-fade between two states of the page (data-vt is set for the length of one change) dissolve the old page into the new
-   one, with the header held still so only the content seems to change. Elsewhere the new page fades in over the old one's place. */
+   Changing page: the page's content fades out (html gets data-leaving the moment you click), the pages are swapped while it is invisible, and the new one
+   fades in as data-leaving is taken off. Only #main-content fades, so the header and the buttons fixed to the screen never move or double. */
+#main-content { transition: opacity 0.22s var(--ease-out); }
+html[data-leaving] #main-content { opacity: 0; transition-duration: 0.1s; transition-timing-function: ease-in; }
+/* The first time the page opens it fades in once, but not the placeholder that stands in for it, so a page that arrives quickly is not shown as a blank frame first. */
 @keyframes page-in { from { opacity: 0; } }
-/* The page fades in, not the placeholder that stands in for it, so a page that arrives quickly is not shown as a blank frame first. */
-html:not([data-vt]) #main-content > :not(.page-loading) { animation: page-in 0.26s var(--ease-out) backwards; }
-html[data-vt] .site-header { view-transition-name: site-header; }
-html[data-vt]::view-transition-old(site-header) { display: none; }
-html[data-vt]::view-transition-new(site-header) { animation: none; mix-blend-mode: normal; }
-html[data-vt]::view-transition-group(site-header) { animation: none; }
-/* The old page eases away quickly and the new one comes in just behind it, rising a few pixels, so two pages at different scroll positions are never both
-   fully visible at once. */
-html[data-vt]::view-transition-old(root) { animation: vt-out 0.14s ease-in both; mix-blend-mode: normal; }
-html[data-vt]::view-transition-new(root) { animation: vt-in 0.26s var(--ease-out) 0.08s both; mix-blend-mode: normal; }
-@keyframes vt-out { to { opacity: 0; } }
-@keyframes vt-in { from { opacity: 0; transform: translateY(8px); } }
-/* The click is answered at once: the page being left dims while the next one's code arrives. */
-html[data-leaving] #main-content { opacity: 0.5; transition: opacity 0.16s ease-out; }
+html:not([data-nav]) #main-content > :not(.page-loading) { animation: page-in 0.26s var(--ease-out) backwards; }
 @media (prefers-reduced-motion: reduce) {
-  html:not([data-vt]) #main-content > :not(.page-loading) { animation: none; }
-  html[data-leaving] #main-content { opacity: 1; transition: none; }
+  #main-content { transition: none; }
+  html:not([data-nav]) #main-content > :not(.page-loading) { animation: none; }
 }
 
 
