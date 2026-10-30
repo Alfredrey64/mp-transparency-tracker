@@ -122,6 +122,9 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
       - run: npm run build
+      # The runner image no longer comes with a Chrome that Lighthouse can find, so the same Chromium the browser tests use is installed and named.
+      - run: npx playwright install --with-deps chromium
+      - run: echo "CHROME_PATH=$(node -e "console.log(require('@playwright/test').chromium.executablePath())")" >> "$GITHUB_ENV"
       # The page asks the data service for a few counts as it loads, so a stand-in answers with empty lists instead of the console filling with failed requests.
       - run: nohup node scripts/mock-data-service.mjs 54321 > mock.log 2>&1 &
       - run: npx --yes @lhci/cli@0.15.1 autorun --config=lighthouserc.json

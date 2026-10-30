@@ -35,9 +35,9 @@ test("the repayment slider changes what is repaid", async ({ page }) => {
 test("the group comparison switches measure", async ({ page }) => {
   await page.goto("/education/gaps");
   const groups = card(page, "h-edug-groups");
-  await expect(groups).toContainText("50.4");
+  await expect(groups).toContainText("50.7");
   await groups.getByRole("button", { name: /English and maths/ }).click();
-  await expect(groups).toContainText("53.1%");
+  await expect(groups).toContainText("54.3%");
 });
 
 test("the date of birth box gives the State Pension age", async ({ page }) => {

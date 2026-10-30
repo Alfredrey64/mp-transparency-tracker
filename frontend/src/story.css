@@ -351,16 +351,18 @@
   .st-facts p { margin-top: 8px; }
 }
 
+/* Cards fade in rather than slide, so nothing is ever in the wrong place while it arrives. */
+@keyframes stFade { from { opacity: 0; } }
 /* Drawn in when the chapter comes into view (lib/scrollReveal.js adds rv-in, or rv-now for what is already on screen). Without it, everything is simply shown. */
 .st-bars-track i, .st-duo-row i { animation: none; }
 .rv-in .st-bars-track i, .rv-now .st-bars-track i { animation: stGrow 1s var(--ease-out) backwards; animation-delay: calc(var(--k, 0) * 110ms + 250ms); }
 .rv-in .st-duo-row i, .rv-now .st-duo-row i { animation: stGrow 1.1s var(--ease-out) backwards; animation-delay: calc(var(--k, 0) * 140ms + 250ms); }
 .rv-in .st-duo-row + .st-duo-row i, .rv-now .st-duo-row + .st-duo-row i { animation-delay: calc(var(--k, 0) * 140ms + 520ms); }
-.rv-in .st-bars li > b, .rv-now .st-bars li > b, .rv-in .st-duo-row b, .rv-now .st-duo-row b { animation: stIn 0.6s var(--ease-out) backwards; animation-delay: calc(var(--k, 0) * 110ms + 700ms); }
-.rv-in .st-facts > div, .rv-now .st-facts > div, .rv-in .st-cards li, .rv-now .st-cards li, .rv-in .st-compare section, .rv-now .st-compare section, .rv-in .st-pipe li, .rv-now .st-pipe li { animation: stIn 0.65s var(--ease-out) backwards; animation-delay: calc(var(--i, 0) * 100ms + 150ms); }
-.rv-in .st-timeline li, .rv-now .st-timeline li { animation: stIn 0.6s var(--ease-out) backwards; animation-delay: calc(var(--i, 0) * 130ms + 150ms); }
+.rv-in .st-bars li > b, .rv-now .st-bars li > b, .rv-in .st-duo-row b, .rv-now .st-duo-row b { animation: stFade 0.6s var(--ease-out) backwards; animation-delay: calc(var(--k, 0) * 110ms + 700ms); }
+.rv-in .st-facts > div, .rv-now .st-facts > div, .rv-in .st-cards li, .rv-now .st-cards li, .rv-in .st-compare section, .rv-now .st-compare section, .rv-in .st-pipe li, .rv-now .st-pipe li { animation: stFade 0.55s var(--ease-out) backwards; animation-delay: calc(var(--i, 0) * 80ms + 100ms); }
+.rv-in .st-timeline li, .rv-now .st-timeline li { animation: stFade 0.55s var(--ease-out) backwards; animation-delay: calc(var(--i, 0) * 130ms + 150ms); }
 .rv-in .st-timeline li::before, .rv-now .st-timeline li::before { animation: stDot 0.5s var(--ease-spring) backwards; animation-delay: calc(var(--i, 0) * 130ms + 250ms); }
-.rv-in .st-chips li, .rv-now .st-chips li { animation: stIn 0.5s var(--ease-out) backwards; animation-delay: calc(var(--i, 0) * 60ms + 150ms); }
+.rv-in .st-chips li, .rv-now .st-chips li { animation: stFade 0.5s var(--ease-out) backwards; animation-delay: calc(var(--i, 0) * 60ms + 150ms); }
 .rv-in .st-n, .rv-now .st-n { animation: stDot 0.6s var(--ease-spring) backwards; }
 .rv-in .st-meter-marks i.on, .rv-now .st-meter-marks i.on { animation: stDot 0.4s var(--ease-spring) backwards; }
 /* A lift on hover for the cards that carry a figure, so the page answers the pointer. */
