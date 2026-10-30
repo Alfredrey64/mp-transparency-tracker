@@ -18,6 +18,7 @@ import { CompanyDonorsView } from "./CompanyDonorsView";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { LoadFailedNote } from "./MpCards";
+import Loading from "./Loading";
 
 const UNTAGGED_COLOR = COLORS.inkSoft;
 const UNTAGGED_LABEL = "Individuals and unclassified donors";
@@ -146,8 +147,8 @@ export default function DonorsLobbying() {
   if (!stats) {
     return (
       <div className="editorial" style={{ padding: PAGE_PADDING }}>
-        <PageHeader icon={IconInfluence} title="Who funds MPs" subtitle={failed ? "The figures could not be loaded." : "Loading…"} />
-        {failed && <LoadFailedNote item="the donation figures" />}
+        <PageHeader icon={IconInfluence} title="Who funds MPs" subtitle="Who is funding Parliament, grouped by industry where that can be identified with confidence. It is not a judgement on any MP's views." />
+        {failed ? <LoadFailedNote item="the donation figures" /> : <Loading />}
       </div>
     );
   }

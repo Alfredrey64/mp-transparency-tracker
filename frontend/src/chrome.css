@@ -282,12 +282,13 @@
   width: 72px; height: 72px; border-radius: 22px;
   background: linear-gradient(145deg, color-mix(in srgb, var(--hero-accent) 78%, #fff), var(--hero-accent) 60%, color-mix(in srgb, var(--hero-accent) 80%, #000));
   box-shadow: 0 0 0 8px color-mix(in srgb, var(--hero-accent) 22%, transparent), 0 18px 36px -12px var(--hero-accent), inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
-  animation: hero-icon-in 0.7s var(--ease-out) backwards;
+  animation: hero-icon-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.06s backwards;
 }
 .page-hero[data-align="center"] .page-hero-icon svg { width: 36px; height: 36px; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.25)); }
 .page-hero[data-align="center"] .page-hero-sub { margin-left: auto; margin-right: auto; text-wrap: pretty; }
 .page-hero[data-align="center"] .ons-noprint { display: flex; justify-content: center; }
-@keyframes hero-icon-in { from { opacity: 0; transform: translateY(10px) scale(0.7) rotate(-8deg); } }
+/* The icon simply grows into place: no sideways or upward movement and no turn, so it does not wobble against the heading rising beside it. */
+@keyframes hero-icon-in { from { opacity: 0; transform: scale(0.78); } }
 .crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 14px; font-size: 14px; line-height: 1.3; color: var(--c-on-navy-soft); }
 .crumbs a { color: var(--c-on-navy-soft); text-decoration: none; padding-block: 4px; margin-block: -4px; }
 .crumbs a:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
@@ -449,7 +450,7 @@ body:has(.tier-mini) .to-top { display: none; }
 @keyframes hero-rise { from { transform: translateY(8px); } to { transform: none; } }
 .page-hero::before { animation: hero-pattern 1.4s var(--ease-out) both; }
 /* After a click the page change is one quiet fade: the header's parts and pattern are simply there, not moving in on top of it. */
-html[data-nav] .page-hero-inner > *, html[data-nav] .page-hero::before, html[data-nav] .page-hero[data-align="center"] .page-hero-icon { animation: none; }
+html[data-nav] .page-hero-inner > *, html[data-nav] .page-hero::before { animation: none; }
 @keyframes hero-pattern { from { opacity: 0; transform: translateY(24px) scale(0.96); } to { opacity: 0.1; transform: none; } }
 
 /* Reading progress, drawn along the foot of the header. */
@@ -643,6 +644,10 @@ html[data-nav] .page-hero-inner > *, html[data-nav] .page-hero::before, html[dat
 #main-content { transition: opacity 0.1s var(--ease-out); }
 /* The page dips rather than going blank, so there is no flash of empty background between two pages. */
 html[data-leaving] #main-content { opacity: 0.2; transition-duration: 0.045s; transition-timing-function: ease-in; }
+/* The section links and page foot arrive after the page has settled (App.jsx, AfterSettle), so they ease in rather than appear. */
+@keyframes foot-in { from { opacity: 0; } }
+#main-content > .sn, #main-content > .pf { animation: foot-in 0.3s var(--ease-out) backwards; }
+@media (prefers-reduced-motion: reduce) { #main-content > .sn, #main-content > .pf { animation: none; } }
 /* The first time the page opens it fades in once, but not the placeholder that stands in for it, so a page that arrives quickly is not shown as a blank frame first. */
 @keyframes page-in { from { opacity: 0; } }
 html:not([data-nav]) #main-content > :not(.page-loading) { animation: page-in 0.26s var(--ease-out) backwards; }

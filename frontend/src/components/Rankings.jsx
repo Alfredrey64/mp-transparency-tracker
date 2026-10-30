@@ -580,7 +580,7 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
         <div style={{ color: COLORS.inkSoft, fontSize: 12.5 }}>{active.caveat}</div>
       </div>
 
-      {!loading && active.data.length > 0 && (
+      {!loading && active.data?.length > 0 && (
         <>
           {spread && (
             <WhatThisMeans

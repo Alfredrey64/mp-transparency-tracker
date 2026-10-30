@@ -457,7 +457,7 @@ export default function HouseOfLords({ peerId = null }) {
         title="Who's in the House of Lords"
         subtitle={
           loading
-            ? "Loading current peers…"
+            ? "Every current member of the House of Lords, with the full list of peers on its way."
             : failed
             ? "Couldn't load the current peers. This looks like a connection problem, not an empty House."
             : `Every current member of the House of Lords: ${peers.length} peers in total.`

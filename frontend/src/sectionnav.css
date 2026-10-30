@@ -1,4 +1,4 @@
-.sn { max-width: 1100px; margin: 36px auto 0; padding: 0 clamp(16px, 5vw, 40px); }
+.sn { max-width: 1100px; margin: 36px auto 0; padding: 0 clamp(16px, 5vw, 40px); container-type: inline-size; }
 .sn-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
 .sn-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--sc); box-shadow: 0 0 0 4px color-mix(in srgb, var(--sc) 22%, transparent); align-self: center; }
 .sn-head h2 { margin: 0; font: 700 22px "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
@@ -9,7 +9,17 @@
 .sn-step small { font: 600 12px "Figures", "Public Sans", system-ui, sans-serif; opacity: 0.85; }
 .sn-step b { font: 700 17px "Figures", "Newsreader", Georgia, serif; }
 .sn-next { text-align: right; }
-.sn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr)); gap: 10px; margin-top: 12px; }
+/* Equal cards in rows that fill the width, with a short last row centred under them rather than left hanging at one side. Four cards sit in one row
+   or two even rows, two sit side by side. */
+.sn-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 12px; }
+.sn-grid > * { flex: 0 0 100%; min-width: 0; box-sizing: border-box; }
+@container (min-width: 520px) { .sn-grid > * { flex-basis: calc((100% - 10px) / 2); } }
+@container (min-width: 760px) {
+  .sn-grid > * { flex-basis: calc((100% - 20px) / 3); }
+  .sn-grid:has(> :nth-child(2):last-child) > * { flex-basis: calc((100% - 10px) / 2); }
+  .sn-grid:has(> :nth-child(4):last-child) > * { flex-basis: calc((100% - 10px) / 2); }
+}
+@container (min-width: 900px) { .sn-grid:has(> :nth-child(4):last-child) > * { flex-basis: calc((100% - 30px) / 4); } }
 .sn-card { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 16px; text-decoration: none; color: inherit; background: color-mix(in srgb, var(--sc) 6%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--sc) 24%, var(--c-hairline)); transition: transform 0.22s var(--ease-out), box-shadow 0.22s, border-color 0.22s; }
 .sn-card:hover { transform: scale(1.012); box-shadow: var(--shadow-2); border-color: var(--sc); }
 .sn-icon { display: grid; place-items: center; flex: none; width: 40px; height: 40px; border-radius: 12px; background: color-mix(in srgb, var(--sc) 16%, transparent); color: color-mix(in srgb, var(--sc) 80%, var(--c-ink)); }

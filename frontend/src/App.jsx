@@ -141,6 +141,29 @@ function PageLoadingFallback() {
   return <div className="page-loading" style={{ minHeight: "100vh" }}><Loading /></div>;
 }
 
+// The "More in this section" links and the page's foot sit under the page, so while its figures are still arriving they used to show right under the
+// half-built content and then be pushed down the screen as it grew (the layout shift Lighthouse measured at up to 0.5). They are put in once the page has
+// stopped changing, a moment after its last figures land, and only then, so nothing is ever pushed by them or under them.
+function AfterSettle({ root, children }) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    const el = root.current;
+    const watching = Boolean(el) && typeof MutationObserver !== "undefined";
+    let quiet = 0;
+    let cap = 0;
+    let mo = null;
+    const done = () => { mo?.disconnect(); clearTimeout(quiet); clearTimeout(cap); setReady(true); };
+    if (watching) {
+      mo = new MutationObserver(() => { clearTimeout(quiet); quiet = setTimeout(done, 350); });
+      mo.observe(el, { childList: true, subtree: true });
+      cap = setTimeout(done, 4000);
+    }
+    quiet = setTimeout(done, watching ? 350 : 0);
+    return () => { mo?.disconnect(); clearTimeout(quiet); clearTimeout(cap); };
+  }, [root]);
+  return ready ? children : null;
+}
+
 // Every key the big view === "x" switch below actually handles. The URL
 // hash is user-editable (typed, pasted, bookmarked from an old link) so an
 // unrecognised segment falls back to Home rather than rendering nothing.
@@ -583,10 +606,12 @@ export default function App() {
               ))}
             </Suspense>
             </ErrorBoundary>
-            {!selected && view !== "home" && view !== "teacher" && (
-              <Suspense fallback={null}><SectionNav view={view} onNavigate={handleNavigate} /></Suspense>
-            )}
-            {view !== "teacher" && <Suspense fallback={null}><PageFoot key={`${view}-${selected?.id ?? ""}`} view={view} name={selected?.name} /></Suspense>}
+            <AfterSettle root={mainRef} key={`${view}-${selected?.id ?? ""}`}>
+              {!selected && view !== "home" && view !== "teacher" && (
+                <Suspense fallback={null}><SectionNav view={view} onNavigate={handleNavigate} /></Suspense>
+              )}
+              {view !== "teacher" && <Suspense fallback={null}><PageFoot view={view} name={selected?.name} /></Suspense>}
+            </AfterSettle>
         </main>
       </div>
       <SiteFooter onNavigate={handleNavigate} />

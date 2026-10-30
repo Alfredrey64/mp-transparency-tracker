@@ -15,6 +15,7 @@ import { LoadFailedNote } from "./MpCards";
 import { PageHeader } from "./shared";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { IconPartyFinance } from "./icons";
+import Loading from "./Loading";
 
 // The Electoral Commission's own party names don't always match the short
 // forms used elsewhere on this site (party_colour on politicians comes from
@@ -126,8 +127,8 @@ export default function PartyFinances() {
   if (!stats) {
     return (
       <div className="editorial" style={{ padding: PAGE_PADDING }}>
-        <PageHeader icon={IconPartyFinance} title="Who funds the parties" subtitle={failed ? "The figures could not be loaded." : "Loading…"} />
-        {failed && <LoadFailedNote item="the party donation figures" />}
+        <PageHeader icon={IconPartyFinance} title="Who funds the parties" subtitle="Donations made directly to political parties over the last 12 months. This is a separate system from MPs' own declared interests, regulated and published by the Electoral Commission rather than Parliament." />
+        {failed ? <LoadFailedNote item="the party donation figures" /> : <Loading />}
       </div>
     );
   }

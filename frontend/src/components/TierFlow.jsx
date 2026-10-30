@@ -24,7 +24,8 @@ function setFill(el, f) {
   el.style.opacity = f > 0.001 ? "1" : "0";
 }
 const setLit = (el, on) => el && el.setAttribute("data-lit", on ? "1" : "0");
-const place = (el, x, y, size) => { el.style.transform = `translate3d(${(x - size / 2).toFixed(1)}px, ${(y - size / 2).toFixed(1)}px, 0)`; };
+const place = (el, x, y, size, scale = 1) => { el.style.transform = `translate3d(${(x - size / 2).toFixed(1)}px, ${(y - size / 2).toFixed(1)}px, 0)${scale === 1 ? "" : ` scale(${scale.toFixed(3)})`}`; };
+const smooth = (t) => { const c = clamp(t); return c * c * (3 - 2 * c); };
 
 function Arrow({ id, color }) {
   return (
@@ -77,7 +78,7 @@ export default function TierFlow({ layout, action, calm, visible, curKey, voting
       trail.forEach((el, i) => {
         const q = at(ease(clamp(t - TRAIL[i].lag / Math.max(dur, 0.3))));
         place(el, q.x, q.y, TRAIL[i].size);
-        el.style.opacity = t >= 1 ? "0" : String(TRAIL[i].opacity);
+        el.style.opacity = String(TRAIL[i].opacity * (1 - smooth((t - 0.86) / 0.14)));
       });
       if (voting) {
         setFill(fills.get("trunk"), p);
@@ -147,17 +148,19 @@ export default function TierFlow({ layout, action, calm, visible, curKey, voting
         const last = i === keys.length - 1;
         if (k !== "you") pieces.push({ hidden: true, len: last ? 0 : here.height * 0.78, ping: k });
       });
+      pieces.dest = target.isYou ? "you" : target.key;
       return pieces;
     };
     const trunk = svg.querySelector('[data-lane="trunk"]');
     const trunkLen = trunk?.getTotalLength() ?? 0;
     const upRoute = (target, i) => {
       if (!trunk) return [];
-      if (i === 0) return [{ path: trunk, len: trunkLen, col: "#2E7D5B", from: 0 }];
+      const routeTo = (pieces) => Object.assign(pieces, { dest: target.key });
+      if (i === 0) return routeTo([{ path: trunk, len: trunkLen, col: "#2E7D5B", from: 0 }]);
       const st = layout.stubs.find((x) => x.key === target.key);
       const sp = svg.querySelector(`[data-lane="stub:${target.key}"]`);
       const lead = (st?.at ?? 1) * trunkLen;
-      return [{ path: trunk, len: lead, col: "#2E7D5B", from: 0 }, ...(sp ? [{ path: sp, len: sp.getTotalLength(), col: "#2E7D5B", from: 0 }] : [])];
+      return routeTo([{ path: trunk, len: lead, col: "#2E7D5B", from: 0 }, ...(sp ? [{ path: sp, len: sp.getTotalLength(), col: "#2E7D5B", from: 0 }] : [])]);
     };
 
     const downs = [...tiers.slice(1), layout.byKey.you].map((t) => downRoute(t)).filter((r) => r.length);
@@ -201,12 +204,14 @@ export default function TierFlow({ layout, action, calm, visible, curKey, voting
         if (piece.ping && !l.pinged.has(piece.ping) && at > piece.len * 0.5) { l.pinged.add(piece.ping); ping(piece.ping); }
         if (piece.hidden) { l.el.style.opacity = "0"; continue; }
         const pt = piece.path.getPointAtLength(Math.min(piece.len, Math.max(0, at)));
-        place(l.el, pt.x, pt.y, 9);
+        // Arriving: over its last stretch the packet eases out and shrinks a little as it melts into the box, which glows once as it does.
+        const arrive = smooth((l.total - d) / 34);
+        if (l.route.dest && !l.pinged.has("dest") && l.total - d < 22) { l.pinged.add("dest"); ping(l.route.dest); }
+        place(l.el, pt.x, pt.y, 9, 0.55 + 0.45 * arrive);
         l.el.style.background = piece.col;
         l.el.style.setProperty("--pc", piece.col);
-        // Fade in as it leaves and out as it arrives, so it never pops.
-        const edgeFade = Math.min(1, d / 18, (l.total - d) / 18);
-        l.el.style.opacity = String(Math.max(0, Math.min(1, edgeFade)) * 0.95);
+        // Fade in as it leaves, so it never pops.
+        l.el.style.opacity = String(Math.min(smooth(d / 18), arrive) * 0.95);
       }
       frame = requestAnimationFrame(tick);
     };

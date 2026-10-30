@@ -91,6 +91,8 @@ for (const size of SIZES) {
         await page.goto(view === "home" ? "/" : `/${view}`);
         await expect(page.locator("h1").first()).toBeVisible({ timeout: 15000 });
         await page.waitForTimeout(700);
+        // Measure the page at rest: boxes still rising or growing into place would read as out of line.
+        await page.evaluate(() => Promise.race([Promise.all(document.getAnimations().filter((a) => a.effect?.getComputedTiming().endTime !== Infinity).map((a) => a.finished.catch(() => {}))), new Promise((r) => setTimeout(r, 1800))]));
 
         const base = await page.evaluate(() => ({ scrollWidth: document.documentElement.scrollWidth, clientWidth: document.documentElement.clientWidth, h1s: document.querySelectorAll("h1").length }));
         const found = await page.evaluate(audit, { touch: size.touch, maxLine: MAX_LINE_PX });
