@@ -335,3 +335,39 @@
 .st-check-links li { display: grid; gap: 2px; }
 .st-check-links a { font-weight: 700; }
 .st-check-links span { font-size: 13.5px; color: var(--c-ink-soft); }
+
+/* ---- Bars, figures and lists: aligned, and drawn in as they arrive ----------------------------------------------------------------------------- */
+/* Then-and-now bars: every bar is measured against the same track, with the figure in a column of its own, so a longer figure cannot shorten its bar. */
+.st-duo-row { display: grid; grid-template-columns: minmax(0, 1fr) clamp(118px, 17vw, 176px); gap: 12px; align-items: center; }
+.st-duo-row i { flex: none; min-width: 4px; }
+.st-duo-row b { text-align: left; }
+
+/* Big figures in a row: the label, the number and the note each sit on a line shared by every card in the row, whatever length the label is. */
+.st-facts { column-gap: 14px; row-gap: 0; }
+.st-facts > div { margin-bottom: 14px; }
+@supports (grid-template-rows: subgrid) {
+  .st-facts > div { display: grid; grid-row: span 3; grid-template-rows: subgrid; align-content: start; }
+  .st-facts dd { margin-top: 4px; align-self: end; }
+  .st-facts p { margin-top: 8px; }
+}
+
+/* Drawn in when the chapter comes into view (lib/scrollReveal.js adds rv-in, or rv-now for what is already on screen). Without it, everything is simply shown. */
+.st-bars-track i, .st-duo-row i { animation: none; }
+.rv-in .st-bars-track i, .rv-now .st-bars-track i { animation: stGrow 1s var(--ease-out) backwards; animation-delay: calc(var(--k, 0) * 110ms + 250ms); }
+.rv-in .st-duo-row i, .rv-now .st-duo-row i { animation: stGrow 1.1s var(--ease-out) backwards; animation-delay: calc(var(--k, 0) * 140ms + 250ms); }
+.rv-in .st-duo-row + .st-duo-row i, .rv-now .st-duo-row + .st-duo-row i { animation-delay: calc(var(--k, 0) * 140ms + 520ms); }
+.rv-in .st-bars li > b, .rv-now .st-bars li > b, .rv-in .st-duo-row b, .rv-now .st-duo-row b { animation: stIn 0.6s var(--ease-out) backwards; animation-delay: calc(var(--k, 0) * 110ms + 700ms); }
+.rv-in .st-facts > div, .rv-now .st-facts > div, .rv-in .st-cards li, .rv-now .st-cards li, .rv-in .st-compare section, .rv-now .st-compare section, .rv-in .st-pipe li, .rv-now .st-pipe li { animation: stIn 0.65s var(--ease-out) backwards; animation-delay: calc(var(--i, 0) * 100ms + 150ms); }
+.rv-in .st-timeline li, .rv-now .st-timeline li { animation: stIn 0.6s var(--ease-out) backwards; animation-delay: calc(var(--i, 0) * 130ms + 150ms); }
+.rv-in .st-timeline li::before, .rv-now .st-timeline li::before { animation: stDot 0.5s var(--ease-spring) backwards; animation-delay: calc(var(--i, 0) * 130ms + 250ms); }
+.rv-in .st-chips li, .rv-now .st-chips li { animation: stIn 0.5s var(--ease-out) backwards; animation-delay: calc(var(--i, 0) * 60ms + 150ms); }
+.rv-in .st-n, .rv-now .st-n { animation: stDot 0.6s var(--ease-spring) backwards; }
+.rv-in .st-meter-marks i.on, .rv-now .st-meter-marks i.on { animation: stDot 0.4s var(--ease-spring) backwards; }
+/* A lift on hover for the cards that carry a figure, so the page answers the pointer. */
+.st-facts > div, .st-cards li { transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out); }
+@media (hover: hover) { .st-facts > div:hover, .st-cards li:hover { transform: translateY(-3px); box-shadow: var(--shadow-2, 0 12px 24px -12px rgba(10, 20, 36, 0.3)), inset 5px 0 0 var(--tc); } }
+@media (prefers-reduced-motion: reduce) {
+  .st-facts > div, .st-cards li, .st-timeline li, .st-timeline li::before, .st-chips li, .st-n, .st-meter-marks i, .st-bars li > b, .st-duo-row b, .st-compare section, .st-pipe li, .st-bars-track i, .st-duo-row i { animation: none !important; transition: none !important; }
+  .st-facts > div:hover, .st-cards li:hover { transform: none; }
+}
+@media print { .st * { animation: none !important; } }

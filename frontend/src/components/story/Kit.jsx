@@ -1,5 +1,6 @@
 /** @jsxImportSource react */
 import CountUp from "../CountUp";
+import AnimatedValue from "./AnimatedValue";
 import "../../story.css";
 
 // The building blocks of the "What's hidden" pages, so the four of them read as one family: a dark scoreboard of headline figures, numbered chapters
@@ -13,7 +14,7 @@ export function Board({ tiles, variant }) {
       {tiles.map((t, i) => (
         <article key={t.label} className="st-tile" style={{ "--tc": t.colour, "--i": i, "--w": t.w }}>
           <span className="st-tile-label">{t.label}</span>
-          <b>{typeof t.value === "number" ? <CountUp value={t.value} format={t.format} /> : t.value}</b>
+          <b>{typeof t.value === "number" ? <CountUp value={t.value} format={t.format} /> : <AnimatedValue text={t.value} />}</b>
           {t.visual && <div className="st-tile-visual" aria-hidden="true">{t.visual}</div>}
           {t.sub && <span className="st-tile-sub">{t.sub}</span>}
         </article>

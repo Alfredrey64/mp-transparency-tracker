@@ -1,6 +1,7 @@
 /** @jsxImportSource react */
 import { PageHeader } from "../shared";
 import { Board, Why, Chapter, Pull, Cards, Steps, Disclose } from "./Kit";
+import AnimatedValue from "./AnimatedValue";
 
 // One page of plain explanation, laid out from a description of its content, so the pages added in October 2026 read as one family with the "What's hidden"
 // pages. A page says what it holds as data (the figures at the top, why it matters, its chapters, where each fact comes from); this decides how it looks.
@@ -30,7 +31,7 @@ function Block({ b, colour }) {
     return (
       <ol className="st-pipe">
         {b.pipeline.map((p, i) => (
-          <li key={p.label} style={{ "--tc": p.colour ?? colour }}>
+          <li key={p.label} style={{ "--tc": p.colour ?? colour, "--i": i }}>
             <span className="st-pipe-step" aria-hidden="true">{i + 1}</span>
             <h3>{p.label}</h3>
             <b>{p.value}</b>
@@ -46,8 +47,8 @@ function Block({ b, colour }) {
       <figure className="st-duo-fig" style={{ "--tc": colour }}>
         <p className="st-duo-key"><span><i className="then" />{b.duo.beforeName}</span><span><i className="now" />{b.duo.afterName}</span></p>
         <ul className="st-duo">
-          {b.duo.items.map((it) => (
-            <li key={it.label}>
+          {b.duo.items.map((it, k) => (
+            <li key={it.label} style={{ "--k": k }}>
               <span className="st-duo-label">{it.label}</span>
               <span className="st-duo-row"><i className="then" style={{ width: `${Math.max(2, (it.before / top) * 100)}%` }} /><b>{it.beforeText}</b></span>
               <span className="st-duo-row"><i className="now" style={{ width: `${Math.max(2, (it.after / top) * 100)}%` }} /><b>{it.afterText}</b></span>
@@ -76,7 +77,7 @@ function Block({ b, colour }) {
   if (b.chips) {
     return (
       <figure className="st-chips-fig" style={{ "--tc": colour }}>
-        <ol className="st-chips">{b.chips.items.map((c, i) => <li key={c}><b aria-hidden="true">{i + 1}</b>{c}</li>)}</ol>
+        <ol className="st-chips">{b.chips.items.map((c, i) => <li key={c} style={{ "--i": i }}><b aria-hidden="true">{i + 1}</b>{c}</li>)}</ol>
         {b.chips.note && <figcaption>{b.chips.note}</figcaption>}
       </figure>
     );
@@ -88,8 +89,8 @@ function Block({ b, colour }) {
     return (
       <figure className="st-bars-fig">
         <ul className="st-bars">
-          {b.bars.items.map((it) => (
-            <li key={it.label} style={{ "--tc": it.colour ?? colour }}>
+          {b.bars.items.map((it, k) => (
+            <li key={it.label} style={{ "--tc": it.colour ?? colour, "--k": k }}>
               <span className="st-bars-label">{it.label}</span>
               <span className="st-bars-track" aria-hidden="true"><i style={{ width: `${Math.max(2, (it.value / top) * 100)}%` }} /></span>
               <b>{it.text}</b>
@@ -103,10 +104,10 @@ function Block({ b, colour }) {
   if (b.facts) {
     return (
       <dl className="st-facts">
-        {b.facts.map((f) => (
-          <div key={f.label} style={{ "--tc": f.colour ?? colour }}>
+        {b.facts.map((f, i) => (
+          <div key={f.label} style={{ "--tc": f.colour ?? colour, "--i": i }}>
             <dt>{f.label}</dt>
-            <dd>{f.value}</dd>
+            <dd><AnimatedValue text={f.value} /></dd>
             {f.note && <p>{f.note}</p>}
           </div>
         ))}
@@ -116,8 +117,8 @@ function Block({ b, colour }) {
   if (b.compare) {
     return (
       <div className="st-compare" style={{ "--n": b.compare.length }}>
-        {b.compare.map((c) => (
-          <section key={c.title} style={{ "--tc": c.colour ?? colour }}>
+        {b.compare.map((c, i) => (
+          <section key={c.title} style={{ "--tc": c.colour ?? colour, "--i": i }}>
             <h3>{c.title}</h3>
             <ul>{c.items.map((it, i) => <li key={i}>{it}</li>)}</ul>
           </section>
@@ -128,7 +129,7 @@ function Block({ b, colour }) {
   if (b.timeline) {
     return (
       <ol className="st-timeline" style={{ "--tc": colour }}>
-        {b.timeline.map((t) => <li key={t.when}><b>{t.when}</b><span>{t.text}</span></li>)}
+        {b.timeline.map((t, i) => <li key={t.when} style={{ "--i": i }}><b>{t.when}</b><span>{t.text}</span></li>)}
       </ol>
     );
   }

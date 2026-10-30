@@ -108,7 +108,7 @@ const TILE_COLOURS = ["#1E4FB8", "#0E9AA7", "#7A5AF0", "#E0367A", "#C7871A", "#2
 
 export function Stats({ items, accent }) {
   return (
-    <div className="box-row" style={{ "--n": items.length <= 4 ? Math.max(items.length, 1) : 3, "--min": "150px", "--gap": "12px" }}>
+    <div className="box-row" style={{ "--n": items.length <= 4 ? Math.max(items.length, 1) : 3, "--min": "150px", "--gap": "12px", marginBottom: 18 }}>
       {items.map((s, i) => {
         const c = s.accent ?? (i === 0 ? accent : TILE_COLOURS[(i + 1) % TILE_COLOURS.length]);
         return (
