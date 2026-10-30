@@ -94,6 +94,7 @@ export function mpReportSpec({ politician, career, votes, interests = [], expens
     accent: colour(politician.party_colour),
     stats: stats.slice(0, 4),
     note: bits.length ? bits.join(". ") + "." : null,
+    noteParts: bits,
     panelTitle,
     bars,
     panelFacts: panelFacts.slice(0, 2),

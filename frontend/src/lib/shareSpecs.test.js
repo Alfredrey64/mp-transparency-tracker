@@ -69,6 +69,14 @@ describe("councilShareSpec", () => {
   });
 });
 
+describe("mpReportSpec note", () => {
+  it("keeps the note as whole parts so the card can drop one from the end instead of cutting a sentence", () => {
+    const spec = mpReportSpec({ politician: { name: "A B", party: "Labour", cabinet_role: "Minister of State", party_colour: "#E4003B" }, career: [1994, 3, 0], votes: { cast: 10, withParty: 9, against: [] }, committees: ["Treasury Committee"] });
+    expect(spec.noteParts).toEqual(["Minister of State", "MP since 1994", "Sits on Treasury Committee"]);
+    expect(spec.note).toBe("Minister of State. MP since 1994. Sits on Treasury Committee.");
+  });
+});
+
 describe("wrapLines", () => {
   const measure = (t) => t.length * 10;
   it("wraps on word boundaries", () => {

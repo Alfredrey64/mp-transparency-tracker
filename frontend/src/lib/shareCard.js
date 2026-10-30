@@ -55,23 +55,63 @@ function roundRect(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
-// The right-hand panel of the MP report card: a heading, up to four bars, then up to two short facts, each with a small label.
+// Room for the right-hand panel: from its top to just above the footer rule.
+const PANEL_TOP = 86;
+const PANEL_BOTTOM = H - 92;
+
+// How a bar's label breaks into lines beside its value: whole words on up to two lines, so a long name is never cut off part-way through.
+function barLayout(ctx, b, w) {
+  ctx.font = `700 22px ${FONT_NUMERIC}`;
+  const valueW = ctx.measureText(b.valueText).width;
+  ctx.font = `500 22px ${FONT_BODY}`;
+  const lines = wrapLines(b.label, (t) => ctx.measureText(t).width, w - valueW - 18, 2);
+  return { lines: lines.length ? lines : [""], valueW };
+}
+
+const barHeight = (layout) => 56 + (layout.lines.length - 1) * 26;
+
+function factLines(ctx, f, w) {
+  ctx.font = `500 21px ${FONT_BODY}`;
+  return wrapLines(f.text, (t) => ctx.measureText(t).width, w, 4);
+}
+
+// The right-hand panel of the MP report card: a heading, the bars, then up to two short facts, each with a small label. Whatever does not fit above the
+// footer is left off from the bottom (the second fact first, then the last bars) rather than running into it.
 function drawPanel(ctx, spec, x, y, w, accent) {
+  const titled = Boolean(spec.panelTitle);
+  const bars = (spec.bars ?? []).slice(0, titled || spec.panelFacts?.length ? 4 : 6);
+  const facts = (spec.panelFacts ?? []).slice(0, 2);
+  const head = titled ? 34 : 0;
+  const plan = (nBars, nFacts) => {
+    const rows = bars.slice(0, nBars).map((b) => ({ b, layout: barLayout(ctx, b, w) }));
+    const fs = facts.slice(0, nFacts).map((f) => ({ f, lines: factLines(ctx, f, w) }));
+    const height = head + rows.reduce((t, r) => t + barHeight(r.layout), 0) + (rows.length ? 6 : 0) + fs.reduce((t, r) => t + 50 + r.lines.length * 28, 0);
+    return { rows, fs, height };
+  };
+  let nBars = bars.length;
+  let nFacts = facts.length;
+  let layout = plan(nBars, nFacts);
+  while (y + layout.height > PANEL_BOTTOM && (nFacts > 0 || nBars > 3)) {
+    if (nFacts > 0) nFacts -= 1;
+    else nBars -= 1;
+    layout = plan(nBars, nFacts);
+  }
+
   let top = y;
-  if (spec.panelTitle) {
+  if (titled) {
     ctx.textAlign = "left";
     ctx.textBaseline = "alphabetic";
     ctx.fillStyle = lighten(accent, 0.4);
     ctx.font = `700 19px ${FONT_BODY}`;
     ctx.fillText(fit(ctx, spec.panelTitle.toUpperCase(), w), x, top + 10);
-    top += 34;
+    top += head;
   }
-  if (spec.bars?.length) {
-    const rows = spec.bars.slice(0, 4);
-    drawBars(ctx, rows, x, top, w, rows.length * 56);
-    top += rows.length * 56 + 6;
-  }
-  (spec.panelFacts ?? []).forEach((f) => {
+  layout.rows.forEach((r) => {
+    drawBar(ctx, r.b, r.layout, x, top, w);
+    top += barHeight(r.layout);
+  });
+  if (layout.rows.length) top += 6;
+  layout.fs.forEach(({ f, lines }) => {
     ctx.fillStyle = "rgba(255,255,255,0.12)";
     ctx.fillRect(x, top, w, 1);
     ctx.fillStyle = FAINT;
@@ -79,35 +119,27 @@ function drawPanel(ctx, spec, x, y, w, accent) {
     ctx.fillText(f.label.toUpperCase(), x, top + 24);
     ctx.fillStyle = INK;
     ctx.font = `500 21px ${FONT_BODY}`;
-    const lines = wrapLines(f.text, (t) => ctx.measureText(t).width, w, 2);
     lines.forEach((line, i) => ctx.fillText(line, x, top + 50 + i * 27));
     top += 50 + lines.length * 28;
   });
 }
 
-function drawBars(ctx, bars, x, y, w, h) {
-  const rows = bars.slice(0, 6);
-  const rowH = Math.min(78, h / Math.max(rows.length, 1));
-  rows.forEach((b, i) => {
-    const top = y + i * rowH;
-    ctx.font = `600 22px ${FONT_BODY}`;
-    ctx.fillStyle = INK;
-    ctx.textAlign = "left";
-    ctx.textBaseline = "alphabetic";
-    ctx.font = `700 22px ${FONT_NUMERIC}`;
-    const valueW = ctx.measureText(b.valueText).width;
-    ctx.textAlign = "right";
-    ctx.fillText(b.valueText, x + w, top + 26);
-    ctx.textAlign = "left";
-    ctx.font = `500 22px ${FONT_BODY}`;
-    ctx.fillText(fit(ctx, b.label, w - valueW - 18), x, top + 26);
-    ctx.fillStyle = "rgba(255,255,255,0.09)";
-    roundRect(ctx, x, top + 38, w, 14, 7);
-    ctx.fill();
-    ctx.fillStyle = b.colour;
-    roundRect(ctx, x, top + 38, Math.max(10, Math.min(1, b.fraction) * w), 14, 7);
-    ctx.fill();
-  });
+function drawBar(ctx, b, layout, x, top, w) {
+  ctx.textAlign = "right";
+  ctx.textBaseline = "alphabetic";
+  ctx.fillStyle = INK;
+  ctx.font = `700 22px ${FONT_NUMERIC}`;
+  ctx.fillText(b.valueText, x + w, top + 26);
+  ctx.textAlign = "left";
+  ctx.font = `500 22px ${FONT_BODY}`;
+  layout.lines.forEach((line, i) => ctx.fillText(line, x, top + 26 + i * 26));
+  const barY = top + 38 + (layout.lines.length - 1) * 26;
+  ctx.fillStyle = "rgba(255,255,255,0.09)";
+  roundRect(ctx, x, barY, w, 14, 7);
+  ctx.fill();
+  ctx.fillStyle = b.colour;
+  roundRect(ctx, x, barY, Math.max(10, Math.min(1, b.fraction) * w), 14, 7);
+  ctx.fill();
 }
 
 // A line chart of one series: the line, a soft fill under it, the first and last values, and the years at each end.
@@ -232,32 +264,46 @@ export async function renderShareCard(spec) {
   ctx.font = `700 20px ${FONT_BODY}`;
   ctx.fillText(String(spec.kicker ?? "").toUpperCase(), PAD, 92);
   ctx.fillStyle = INK;
-  ctx.font = `700 54px ${FONT_DISPLAY}`;
-  const titleLines = wrapLines(spec.title, (t) => ctx.measureText(t).width, leftW, 2);
-  titleLines.forEach((line, i) => ctx.fillText(line, PAD, 160 + i * 62));
-  let y = 160 + titleLines.length * 62 - 10;
+  // A long title is set a little smaller, in whole words on two lines, before it is ever cut short.
+  let titleSize = 54;
+  let titleLines = [];
+  for (const size of [54, 46, 40]) {
+    titleSize = size;
+    ctx.font = `700 ${size}px ${FONT_DISPLAY}`;
+    titleLines = wrapLines(spec.title, (t) => ctx.measureText(t).width, leftW, 2);
+    if (!titleLines.at(-1)?.endsWith("…") || String(spec.title).endsWith("…")) break;
+  }
+  const titlePitch = titleSize + 8;
+  titleLines.forEach((line, i) => ctx.fillText(line, PAD, 160 + i * titlePitch));
+  let y = 160 + titleLines.length * titlePitch - 10;
   ctx.fillStyle = SOFT;
   ctx.font = `400 26px ${FONT_BODY}`;
   const subLines = wrapLines(spec.subtitle, (t) => ctx.measureText(t).width, leftW, 2);
   subLines.forEach((line, i) => ctx.fillText(line, PAD, y + 24 + i * 34));
   y += 24 + subLines.length * 34;
 
-  // Big figures.
+  // Big figures. A label that is too long for its column wraps onto a second line instead of being cut off.
   const stats = (spec.stats ?? []).slice(0, 4);
+  let statsBottom = y;
   if (stats.length) {
     const cols = hasPanel ? 2 : Math.min(4, stats.length);
     const colW = leftW / cols;
-    const startY = Math.max(y + 56, hasPanel ? 360 : 380);
+    const startY = Math.max(y + 52, hasPanel ? 350 : 380);
+    ctx.font = `400 20px ${FONT_BODY}`;
+    const labels = stats.map((s) => wrapLines(s.label, (t) => ctx.measureText(t).width, colW - 16, 2));
+    const rowsN = Math.ceil(stats.length / cols);
+    const pitch = labels.some((l) => l.length > 1) ? 112 : 96;
     stats.forEach((s, i) => {
       const cx = PAD + (i % cols) * colW;
-      const cy = startY + Math.floor(i / cols) * 104;
+      const cy = startY + Math.floor(i / cols) * pitch;
       ctx.fillStyle = INK;
       ctx.font = `600 52px ${FONT_NUMERIC}`;
       ctx.fillText(fit(ctx, s.value, colW - 16), cx, cy);
       ctx.fillStyle = SOFT;
       ctx.font = `400 20px ${FONT_BODY}`;
-      ctx.fillText(fit(ctx, s.label, colW - 16), cx, cy + 28);
+      labels[i].forEach((line, j) => ctx.fillText(line, cx, cy + 28 + j * 24));
     });
+    statsBottom = startY + (rowsN - 1) * pitch + 28 + (Math.max(...labels.map((l) => l.length)) - 1) * 24;
   }
 
   // A key for the map's colours.
@@ -275,15 +321,26 @@ export async function renderShareCard(spec) {
     });
   }
 
+  // The note sits under the figures, never over them, and takes a second line only if there is room above the footer rule. A note made of parts
+  // (noteParts) loses whole parts from the end before any is cut off part-way.
   if (spec.note) {
     ctx.fillStyle = SOFT;
     ctx.font = `400 19px ${FONT_BODY}`;
-    const lines = wrapLines(spec.note, (t) => ctx.measureText(t).width, leftW, 2);
-    lines.forEach((line, i) => ctx.fillText(line, PAD, H - 118 + i * 26));
+    const noteTop = Math.max(statsBottom + 34, H - 124);
+    const room = Math.max(1, Math.min(2, Math.floor((H - 84 - noteTop) / 25) + 1));
+    const measure = (t) => ctx.measureText(t).width;
+    let lines = wrapLines(spec.note, measure, leftW, room);
+    const parts = spec.noteParts ?? [];
+    for (let k = parts.length; k >= 1; k--) {
+      const text = `${parts.slice(0, k).join(". ")}.`;
+      lines = wrapLines(text, measure, leftW, room);
+      if (!lines.at(-1)?.endsWith("…") || text.endsWith("…")) break;
+    }
+    lines.forEach((line, i) => ctx.fillText(line, PAD, noteTop + i * 25));
   }
 
   // Right-hand panel: bars or the hexagon map.
-  if (spec.bars?.length || spec.panelFacts?.length) drawPanel(ctx, spec, panelX, 86, panelW, accent);
+  if (spec.bars?.length || spec.panelFacts?.length) drawPanel(ctx, spec, panelX, PANEL_TOP, panelW, accent);
   if (spec.line?.points?.length) drawLine(ctx, spec.line, panelX, 86, panelW, H - 86 - 100, accent);
   if (spec.hexes?.length) drawHexes(ctx, spec.hexes, panelX - 20, 70, panelW + 20, H - 70 - 90);
 
