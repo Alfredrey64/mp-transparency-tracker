@@ -114,6 +114,10 @@ const EXPLAINER_LOADERS = {
   water: () => import("./components/explainers/water"),
   polling: () => import("./components/explainers/polling"),
   foreignPolicy: () => import("./components/explainers/foreignPolicy"),
+  welfare: () => import("./components/explainers/welfare"),
+  farming: () => import("./components/explainers/farming"),
+  flooding: () => import("./components/explainers/flooding"),
+  digital: () => import("./components/explainers/digital"),
 };
 Object.assign(LOADERS, EXPLAINER_LOADERS);
 

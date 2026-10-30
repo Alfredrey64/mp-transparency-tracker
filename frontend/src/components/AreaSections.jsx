@@ -793,6 +793,10 @@ const DEEPER = [
   ["#/councilSpending", "Where council money goes", "What councils spend, and why social care dominates."],
   ["#/water", "Water and sewage", "Who runs your water, and how often sewage spills."],
   ["#/justice", "Courts, police and prisons", "How crime, courts and prisons connect."],
+  ["#/flooding", "Flooding and air quality", "Homes at risk, live flood warnings and the 2025 air results."],
+  ["#/welfare", "Welfare and benefits", "What each benefit pays and who gets it."],
+  ["#/farming", "Farming and food", "What farms produce and how farmers are paid."],
+  ["#/digital", "Digital and online safety", "Broadband, the Online Safety Act and children online."],
 ];
 export function Deeper({ i }) {
   return (

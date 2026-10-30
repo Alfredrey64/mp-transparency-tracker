@@ -16,4 +16,8 @@ export const EXPLAINER_KEYS = [
   "water",
   "polling",
   "foreignPolicy",
+  "welfare",
+  "farming",
+  "flooding",
+  "digital",
 ];

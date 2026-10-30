@@ -18,8 +18,10 @@ import { Board, Why, Chapter, Pull, Cards, Steps, Disclose } from "./Kit";
 //   meter     { rows: [{ label, value, of, text }], note }           a row of marks, some filled in
 //   chips     { items: [], note }              a wrapped set of short labels, numbered in order
 //   note      a small italic line
+//   node      a piece of the page that is more than text (a postcode check, say): any React element
 
 function Block({ b, colour }) {
+  if (b.node) return <div className="st-node">{b.node}</div>;
   if (b.text) return <div className="st-prose" style={{ "--tc": colour }}>{b.text.map((p, i) => <p key={i}>{p}</p>)}</div>;
   if (b.pull) return <Pull colour={b.colour ?? colour}>{b.pull}</Pull>;
   if (b.cards) return <Cards items={b.cards.map((c) => ({ colour: colour, ...c }))} />;

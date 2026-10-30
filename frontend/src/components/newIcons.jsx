@@ -135,3 +135,27 @@ export function IconAid({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconWheat({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 21V9" /><path d="M12 9c0-2 1-3.500 2.500-4.500C14.500 6.500 13.800 8 12 9Z" /><path d="M12 9c0-2-1-3.500-2.500-4.500C9.500 6.500 10.200 8 12 9Z" /><path d="M12 14c0-2 1.500-3.500 3.500-4C15.500 12 14.200 13.500 12 14Z" /><path d="M12 14c0-2-1.500-3.500-3.500-4C8.500 12 9.800 13.500 12 14Z" /><path d="M12 19c0-1.800 1.200-3 3-3.500C15 17.300 14 18.500 12 19Z" /><path d="M12 19c0-1.800-1.200-3-3-3.500C9 17.300 10 18.500 12 19Z" />
+    </svg>
+  );
+}
+
+export function IconFlood({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 9.500c1.800 0 1.800-1.500 3.600-1.500S8.400 9.500 10.200 9.500 12 8 13.800 8s1.800 1.500 3.600 1.500S19.200 8 21 8" /><path d="M3 14c1.800 0 1.800-1.500 3.600-1.500S8.400 14 10.200 14s1.800-1.500 3.600-1.500 1.800 1.500 3.600 1.500S19.200 12.500 21 12.500" /><path d="M3 18.500c1.800 0 1.800-1.500 3.600-1.500s1.800 1.500 3.600 1.500S12 17 13.800 17s1.800 1.500 3.600 1.500S19.200 17 21 17" /><path d="M7 4.500h10" />
+    </svg>
+  );
+}
+
+export function IconSignal({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3.500 9.500a12 12 0 0 1 17 0" /><path d="M6.500 12.800a7.800 7.800 0 0 1 11 0" /><path d="M9.300 15.800a3.800 3.800 0 0 1 5.400 0" /><circle cx="12" cy="19" r="1" />
+    </svg>
+  );
+}

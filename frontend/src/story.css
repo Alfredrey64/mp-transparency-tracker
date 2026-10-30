@@ -316,3 +316,22 @@
 .wt-marks i.on { background: #1B6FA8; border-color: #1B6FA8; }
 .wt-marks i.lost { border: 1.5px dashed #B3382E; background: color-mix(in srgb, #B3382E 14%, transparent); }
 .wt-key { margin: 6px 0 0; font: 600 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+
+/* A postcode check inside a page: one input, then what it found. */
+.st-check { display: grid; gap: 12px; padding: 18px 20px; border-radius: 16px; border: 1px solid var(--c-hairline); background: var(--c-paper-card); box-shadow: var(--shadow-1); }
+.st-check-form { display: grid; gap: 6px; }
+.st-check-form label { font: 700 14px "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.st-check-form > div { display: flex; flex-wrap: wrap; gap: 10px; }
+.st-check-form input { flex: 1 1 200px; min-width: 0; min-height: 46px; box-sizing: border-box; padding: 0 16px; border-radius: 999px; border: 2px solid var(--c-hairline); background: var(--c-paper); color: var(--c-ink); font-size: 16px; }
+.st-check-err { margin: 0; font-weight: 600; color: #B3382E; }
+.st-check-out { display: grid; gap: 10px; }
+.st-check-out h4 { margin: 0; font: 700 18px "Newsreader", Georgia, serif; color: var(--c-ink); }
+.st-check-out p { margin: 0; line-height: 1.55; }
+.st-check-ok { padding: 12px 14px; border-radius: 12px; background: color-mix(in srgb, #3F7D5C 10%, var(--c-paper)); }
+.st-warns, .st-check-links { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.st-warns li { display: grid; gap: 2px; padding: 10px 14px; border-radius: 12px; border-left: 5px solid var(--wc); background: color-mix(in srgb, var(--wc) 9%, var(--c-paper)); }
+.st-warns b { color: var(--wc); }
+.st-warns small { color: var(--c-ink-soft); }
+.st-check-links li { display: grid; gap: 2px; }
+.st-check-links a { font-weight: 700; }
+.st-check-links span { font-size: 13.5px; color: var(--c-ink-soft); }

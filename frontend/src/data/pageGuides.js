@@ -486,6 +486,26 @@ export const PAGE_GUIDES = {
     why: "Households pay a water company and cannot switch, so the data shows what the money delivers.",
     notShown: "Bills and company finances. The 2025 fall in spills was partly because it was a dry year.",
   },
+  welfare: {
+    what: "What the government spends on benefits and pensions, what each main benefit pays in 2026-27, how many people get each, how the rates are set, and what the official watchdog says about fraud and error.",
+    why: "Benefits and pensions are the biggest single item of public spending, and most people claim something at some point.",
+    notShown: "Who is entitled to what, or how to claim. Scotland's own benefits are run by Social Security Scotland and are not in the DWP figures.",
+  },
+  farming: {
+    what: "What UK farming produces and employs, how much of our food is grown here, how English farmers are paid, the change to inheritance tax on farms, and food price inflation.",
+    why: "Farmers manage most of the country's land, and subsidy, tax and trade decisions shape what is grown and what shoppers pay.",
+    notShown: "Farming in Scotland, Wales and Northern Ireland, which set their own policy, and the amounts paid under each English scheme beyond the 2026 Sustainable Farming Incentive.",
+  },
+  flooding: {
+    what: "How many properties in England are at risk of flooding, what is being spent on flood defences, the 2025 air quality results, and a postcode check for live flood warnings and the official risk and air quality checkers.",
+    why: "Whether your home floods or your street has clean air depends on where you live, and both depend on public money and rules.",
+    notShown: "Live flood warnings outside England, and the air quality at your own address. The check links to the official services for both.",
+  },
+  digital: {
+    what: "How many homes can get gigabit and full fibre broadband, what Ofcom has done under the Online Safety Act, the government's plan to stop under-16s having social media accounts, and where AI law stands.",
+    why: "Being online is part of getting a job, a doctor's appointment or a benefit, and the rules for children online are being rewritten now.",
+    notShown: "Mobile coverage, what individual apps do, and how well services comply overall. The plan for under-16s is not yet law.",
+  },
   foreignPolicy: {
     what: "The UK's overseas aid spending and the cut planned to 2027, and how Parliament gets to object to treaties.",
     why: "Aid and treaties are two parts of foreign policy with a public record.",

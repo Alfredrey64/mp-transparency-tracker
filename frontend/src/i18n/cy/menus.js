@@ -280,6 +280,14 @@ export default {
   "Mark one X for your first choice and one for your second. If nobody has more than half the first choices, the top two go through and second choices are counted.": "Rhowch un X ar gyfer eich dewis cyntaf ac un ar gyfer eich ail ddewis. Os nad oes gan neb fwy na hanner y dewisiadau cyntaf, mae'r ddau uchaf yn mynd drwodd ac mae'r ail ddewisiadau'n cael eu cyfrif.",
 
   // Pages added in October 2026
+  "Welfare and benefits": "Lles a budd-daliadau",
+  "What is spent, who gets it and what each pays": "Faint a werir, pwy sy'n ei gael a beth mae pob un yn ei dalu",
+  "Farming and food": "Ffermio a bwyd",
+  "What farms produce, how farmers are paid and food prices": "Beth mae ffermydd yn ei gynhyrchu, sut mae ffermwyr yn cael eu talu a phrisiau bwyd",
+  "Flooding and air quality": "Llifogydd ac ansawdd aer",
+  "Homes at risk, defences and the 2025 air results, with a postcode check": "Cartrefi mewn perygl, amddiffynfeydd a chanlyniadau aer 2025, gyda gwiriad cod post",
+  "Digital and online safety": "Diogelwch digidol ac ar-lein",
+  "Broadband, the Online Safety Act, children and social media, and AI": "Band eang, y Ddeddf Diogelwch Ar-lein, plant a'r cyfryngau cymdeithasol, a deallusrwydd artiffisial",
   "The Civil Service": "Y Gwasanaeth Sifil",
   "Who runs the departments": "Pwy sy'n rhedeg yr adrannau",
   "Courts and the constitution": "Y llysoedd a'r cyfansoddiad",
