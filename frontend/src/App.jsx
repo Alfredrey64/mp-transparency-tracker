@@ -135,8 +135,10 @@ function ExplainerView({ page: Page }) {
   return <Page />;
 }
 
+// While a page's code is on its way the footer must stay below the fold: a short placeholder left it half way up the screen, and it then jumped down
+// when the page arrived (the layout shift Lighthouse measured at 0.2 to 0.3).
 function PageLoadingFallback() {
-  return <Loading />;
+  return <div style={{ minHeight: "100vh" }}><Loading /></div>;
 }
 
 // Every key the big view === "x" switch below actually handles. The URL

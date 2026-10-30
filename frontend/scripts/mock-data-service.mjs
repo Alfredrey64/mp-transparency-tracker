@@ -3,7 +3,7 @@
 import http from "node:http";
 
 const port = Number(process.argv[2] ?? 54321);
-const cors = { "access-control-allow-origin": "*", "access-control-allow-headers": "*", "access-control-allow-methods": "GET, HEAD, OPTIONS", "access-control-expose-headers": "content-range" };
+const cors = { "access-control-allow-origin": "*", "access-control-allow-headers": "authorization, apikey, content-type, accept, prefer, range, x-client-info", "access-control-allow-methods": "GET, HEAD, OPTIONS", "access-control-expose-headers": "content-range" };
 
 http.createServer((req, res) => {
   if (req.method === "OPTIONS") { res.writeHead(204, cors); return res.end(); }
