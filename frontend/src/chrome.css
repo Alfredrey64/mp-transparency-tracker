@@ -638,8 +638,8 @@ body:has(.tier-mini) .to-top { display: none; }
 /* ---- Page changes ------------------------------------------------------------------------------------------------------------------------------
    Changing page: the page's content fades out (html gets data-leaving the moment you click), the pages are swapped while it is invisible, and the new one
    fades in as data-leaving is taken off. Only #main-content fades, so the header and the buttons fixed to the screen never move or double. */
-#main-content { transition: opacity 0.22s var(--ease-out); }
-html[data-leaving] #main-content { opacity: 0; transition-duration: 0.1s; transition-timing-function: ease-in; }
+#main-content { transition: opacity 0.12s var(--ease-out); }
+html[data-leaving] #main-content { opacity: 0; transition-duration: 0.06s; transition-timing-function: ease-in; }
 /* The first time the page opens it fades in once, but not the placeholder that stands in for it, so a page that arrives quickly is not shown as a blank frame first. */
 @keyframes page-in { from { opacity: 0; } }
 html:not([data-nav]) #main-content > :not(.page-loading) { animation: page-in 0.26s var(--ease-out) backwards; }
