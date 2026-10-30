@@ -98,18 +98,19 @@ async function finance() {
   const t3 = sheetRows(fin, "Table_3");
   const h3 = t3.find((r) => r[0] === "Geography code");
   const eng = t3.find((r) => r[4] === "England" && !r[2]);
-  const col = (re) => { const i = h3.findIndex((h) => re.test(String(h))); if (i < 0) throw new Error(`No ${re}`); return num(eng[i]); };
+  // Header wording changes between releases (the 2025 release wrote "expenditure:" in lower case), so the match ignores case.
+  const col = (re) => { const i = h3.findIndex((h) => new RegExp(re.source, "i").test(String(h))); if (i < 0) throw new Error(`No ${re}`); return num(eng[i]); };
   const flows = { ownProvision: col(/^Expenditure: own provision/), byOthers: col(/^Expenditure: provision by others/), grants: col(/^Expenditure: grants/), expenditure: col(/^Expenditure: total/), clients: col(/^Income: client contributions/), joint: col(/^Income: joint/), nhs: col(/^Income: income from NHS/), otherIncome: col(/^Income: other income/), income: col(/^Income: total/) };
   const t14 = sheetRows(fin, "Table_14");
   const h14 = t14.find((r) => r[0] === "Geography code");
   const e14 = t14.find((r) => r[4] === "England" && !r[2]);
-  const c14 = (re) => num(e14[h14.findIndex((h) => re.test(String(h)))]);
+  const c14 = (re) => num(e14[h14.findIndex((h) => new RegExp(re.source, "i").test(String(h)))]);
   const careType = { long: c14(/^Long term care$/), short: c14(/^Short term care$/), other: c14(/^Other$/), total: c14(/^Total$/) };
   // The table has two years side by side; the later year's columns are the last matches.
   const t16 = sheetRows(fin, "Table_16");
   const h16 = t16.find((r) => r[0] === "Geography code");
-  const latest = (re) => { const idx = h16.map((h, i) => (re.test(String(h)) ? i : -1)).filter((i) => i >= 0); return idx.at(-1); };
-  const prev = (re) => { const idx = h16.map((h, i) => (re.test(String(h)) ? i : -1)).filter((i) => i >= 0); return idx.at(-2); };
+  const latest = (re) => { const idx = h16.map((h, i) => (new RegExp(re.source, "i").test(String(h)) ? i : -1)).filter((i) => i >= 0); return idx.at(-1); };
+  const prev = (re) => { const idx = h16.map((h, i) => (new RegExp(re.source, "i").test(String(h)) ? i : -1)).filter((i) => i >= 0); return idx.at(-2); };
   const ix = { gross: latest(/^Gross current expenditure: /), pop: latest(/^Population 18\+/), per: latest(/per 100,000 adults/), perPrev: prev(/per 100,000 adults/) };
   const regions = {};
   for (const r of t16.slice(t16.indexOf(h16) + 1)) {
