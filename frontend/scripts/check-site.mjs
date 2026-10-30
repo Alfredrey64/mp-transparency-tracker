@@ -61,6 +61,8 @@ for (const p of ["/", "/taxRates", "/taxRates/income-tax", "/constituency", "/vo
     if (p === "/") {
       const mps = /(\d[\d,]*)\s*\n?\s*MPs tracked/.exec(info.text);
       if (!mps || Number(mps[1].replace(/,/g, "")) < 500) errors.push("the home page figures did not load (MPs tracked)");
+      // There are 650 seats, so there can never be more than 650 sitting MPs: more means someone who has left is still in the table (see remove-departed-mps.js).
+      else if (Number(mps[1].replace(/,/g, "")) > 650) errors.push(`the home page counts ${mps[1]} MPs for 650 seats, so someone who has left is still listed`);
       const age = /(\d+)d ago\s*\n?\s*last updated/.exec(info.text);
       if (age && Number(age[1]) > 3) errors.push(`the data was last updated ${age[1]} days ago`);
       if (/Updated\s*\n?\s*(\d+) weeks? ago/.test(info.text)) errors.push("the data is weeks old");

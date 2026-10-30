@@ -19,6 +19,7 @@
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";
 import { fetchRetry } from "./httpFetch.js";
+import { formerMpRow } from "./mpRoster.js";
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -47,16 +48,6 @@ async function fetchAllFormerMembers() {
   return all;
 }
 
-function readableReason(raw) {
-  if (!raw) return null;
-  // "Resignation (Chiltern Hundreds)" / "Resignation (Northstead)" are the
-  // two ceremonial Crown offices MPs formally apply for, since they can't
-  // resign a Commons seat directly — both just mean "resigned".
-  if (raw.toLowerCase().startsWith("resignation")) return "Resigned";
-  if (raw === "Dissolution") return "Did not return at the next election";
-  return raw;
-}
-
 async function main() {
   console.log("Fetching all former MPs (paginated, 20 at a time)...");
   const members = await fetchAllFormerMembers();
@@ -68,16 +59,7 @@ async function main() {
   );
   const recent = withEndDate.slice(0, KEEP_MOST_RECENT);
 
-  const rows = recent.map((m) => ({
-    parliament_member_id: m.id,
-    name: m.nameDisplayAs,
-    party: m.latestParty?.name ?? null,
-    party_colour: m.latestParty?.backgroundColour ?? null,
-    constituency: m.latestHouseMembership?.membershipFrom ?? null,
-    membership_end_date: m.latestHouseMembership.membershipEndDate.slice(0, 10),
-    membership_end_reason: readableReason(m.latestHouseMembership?.membershipEndReason),
-    thumbnail_url: m.thumbnailUrl ?? null,
-  }));
+  const rows = recent.map(formerMpRow);
 
   const { error } = await supabase.from("former_mps").upsert(rows, { onConflict: "parliament_member_id" });
   if (error) throw error;

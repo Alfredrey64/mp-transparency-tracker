@@ -24,7 +24,7 @@ describe("MPs who are still in the table after leaving", () => {
   it("says nothing when there is nothing to say", () => { expect(staleWarning([])).toBe(""); });
 });
 
-import { removalPlan, PROFILE_TABLES, RECORD_TABLES } from "./mpRoster.js";
+import { removalPlan, PROFILE_TABLES, RECORD_TABLES, readableReason, formerMpRow } from "./mpRoster.js";
 
 describe("removalPlan", () => {
   const rows = [{ id: 1, name: "A", parliament_member_id: 1 }, { id: 2, name: "B", parliament_member_id: 2 }, { id: 3, name: "C", parliament_member_id: 3 }];
@@ -50,5 +50,22 @@ describe("removalPlan", () => {
     expect(PROFILE_TABLES).toContain("financial_interests");
     expect(RECORD_TABLES).toEqual(expect.arrayContaining(["standards_reports", "ministerial_gifts"]));
     expect(PROFILE_TABLES.filter((t) => RECORD_TABLES.includes(t))).toEqual([]);
+  });
+});
+
+describe("formerMpRow", () => {
+  it("turns a Members API record of someone who has left into a Former MPs row, with a plain reason", () => {
+    const row = formerMpRow({ id: 4514, nameDisplayAs: "Sir Keir Starmer", latestParty: { name: "Labour", backgroundColour: "d50000" }, latestHouseMembership: { membershipFrom: "Holborn and St Pancras", membershipEndDate: "2026-09-01T00:00:00", membershipEndReason: "Resignation (Chiltern)" }, thumbnailUrl: "t.jpg" });
+    expect(row).toEqual({ parliament_member_id: 4514, name: "Sir Keir Starmer", party: "Labour", party_colour: "d50000", constituency: "Holborn and St Pancras", membership_end_date: "2026-09-01", membership_end_reason: "Resigned", thumbnail_url: "t.jpg" });
+  });
+  it("is null for someone still sitting, or for no record at all", () => {
+    expect(formerMpRow({ id: 1, latestHouseMembership: { membershipEndDate: null } })).toBeNull();
+    expect(formerMpRow(null)).toBeNull();
+  });
+  it("words the reasons plainly", () => {
+    expect(readableReason("Resignation (Northstead)")).toBe("Resigned");
+    expect(readableReason("Dissolution")).toBe("Did not return at the next election");
+    expect(readableReason("Died")).toBe("Died");
+    expect(readableReason(null)).toBeNull();
   });
 });

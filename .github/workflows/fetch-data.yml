@@ -49,6 +49,16 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-interests.js
 
+      # Takes MPs who have left the Commons out of the MPs table (keeping their name on the Former MPs page), so the site counts 650 MPs for 650 seats. It is a
+      # step of its own, not part of the interests fetch, so a failure there cannot stop it. It does nothing if the list of current MPs looks wrong.
+      - name: Take MPs who have left out of the MPs table
+        id: remove_departed_mps
+        continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node remove-departed-mps.js --apply
+
       - name: Run the voting records fetch script
         id: fetch_votes
         continue-on-error: true
@@ -141,6 +151,7 @@ jobs:
         if: always()
         run: |
           echo "STATUS_fetch_interests=${{ steps.fetch_interests.outcome }}" >> status.env
+          echo "STATUS_remove_departed_mps=${{ steps.remove_departed_mps.outcome }}" >> status.env
           echo "STATUS_fetch_votes=${{ steps.fetch_votes.outcome }}" >> status.env
           echo "STATUS_fetch_bills=${{ steps.fetch_bills.outcome }}" >> status.env
           echo "STATUS_fetch_mp_news=${{ steps.fetch_mp_news.outcome }}" >> status.env

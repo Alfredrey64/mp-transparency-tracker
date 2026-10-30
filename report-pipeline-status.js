@@ -21,6 +21,7 @@ import { writeFileSync } from "fs";
 // label. Order here is the order the status list renders in.
 const SCRIPTS = [
   { id: "fetch_interests", label: "Financial interests" },
+  { id: "remove_departed_mps", label: "MPs who have left removed from the MPs table" },
   { id: "fetch_votes", label: "Voting records" },
   { id: "fetch_bills", label: "Bills" },
   { id: "fetch_mp_news", label: "MP news" },

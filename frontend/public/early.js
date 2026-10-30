@@ -13,5 +13,5 @@
       var zoom = Math.max(1, Math.min(sizes[p.size], window.innerWidth / 340));
       if (zoom > 1) d.style.zoom = String(zoom);
     }
-  } catch (e) { /* storage is blocked: the page opens in the standard look */ }
+  } catch { /* storage is blocked: the page opens in the standard look */ }
 })();

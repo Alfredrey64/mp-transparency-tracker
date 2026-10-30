@@ -38,3 +38,28 @@ export function removalPlan(rows, currentIds, { minCurrent = MIN_CURRENT, maxRem
   if (stale.length > maxRemovals) return { remove: [], reason: `${stale.length} MPs look as if they have left, which is more than ${maxRemovals} at once, so nobody was removed` };
   return { remove: stale, reason: "" };
 }
+
+// "Resignation (Chiltern Hundreds)" and "Resignation (Northstead)" are the two ceremonial Crown offices MPs apply for, since they cannot resign a Commons
+// seat directly: both just mean "resigned".
+export function readableReason(raw) {
+  if (!raw) return null;
+  if (raw.toLowerCase().startsWith("resignation")) return "Resigned";
+  if (raw === "Dissolution") return "Did not return at the next election";
+  return raw;
+}
+
+// A member from the Members API as a row of the Former MPs table, or null if the API does not say they have left the Commons.
+export function formerMpRow(m) {
+  const end = m?.latestHouseMembership?.membershipEndDate;
+  if (!m || !end) return null;
+  return {
+    parliament_member_id: m.id,
+    name: m.nameDisplayAs,
+    party: m.latestParty?.name ?? null,
+    party_colour: m.latestParty?.backgroundColour ?? null,
+    constituency: m.latestHouseMembership?.membershipFrom ?? null,
+    membership_end_date: String(end).slice(0, 10),
+    membership_end_reason: readableReason(m.latestHouseMembership?.membershipEndReason),
+    thumbnail_url: m.thumbnailUrl ?? null,
+  };
+}

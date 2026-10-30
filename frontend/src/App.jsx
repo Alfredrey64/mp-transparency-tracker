@@ -247,6 +247,9 @@ export default function App() {
   // Whether this page has a Welsh version. If not, and Welsh is on, the page says it is English only (see components/EnglishOnlyNotice.jsx).
   const welsh = hasWelsh(view);
   const [selected, setSelected] = useState(null);
+  // True when a link to one MP's profile found nobody: an MP who has left the Commons is taken out of the MPs table (their name stays on the Former MPs page), so an
+  // old bookmark or shared link to them lands on the list with a note saying so, rather than on a broken page.
+  const [missingMp, setMissingMp] = useState(false);
   const [mpCount, setMpCount] = useState(null);
   // Page changes run as transitions: the page you are on stays on screen until the next one (and its code) is ready, instead of
   // blanking to "Loading…" first. `navTarget` is where you are heading, so the sidebar highlights it at once.
@@ -314,7 +317,8 @@ export default function App() {
     initialMpPending.current = true;
     async function loadMp() {
       const { data } = await supabase.from("politicians").select("*").eq("id", mpId).single();
-      if (data) setSelected(data);
+      if (data?.id) setSelected(data);
+      else setMissingMp(true);
       initialMpPending.current = false;
     }
     loadMp();
@@ -365,7 +369,8 @@ export default function App() {
           setView("list");
         });
         supabase.from("politicians").select("*").eq("id", parsed.mpId).single().then(({ data }) => {
-          if (data) startNav(() => setSelected(data));
+          if (data?.id) startNav(() => setSelected(data));
+          else setMissingMp(true);
         });
       } else {
         swapPage(parsed.view, () => {
@@ -560,6 +565,12 @@ export default function App() {
             {view === "thisWeek" && <ThisWeek />}
             {view === "councillors" && <Councillors param={viewParam} />}
             {view === "lordsVotes" && <LordsVotes />}
+            {view === "list" && !selected && missingMp && (
+              <p role="status" className="mp-gone" style={{ maxWidth: 760, margin: "20px auto 0", padding: "14px 18px", borderRadius: 14, border: `1px solid ${COLORS.hairline}`, background: COLORS.paperCard, fontFamily: FONT_BODY, fontSize: 15, lineHeight: 1.6, color: COLORS.ink }}>
+                That MP is no longer sitting, so their profile has been taken down. Their name stays on the <a href="/formerMps" onClick={(e) => { e.preventDefault(); setMissingMp(false); handleNavigate("formerMps"); }}>Former MPs page</a>.
+                {" "}<button type="button" onClick={() => setMissingMp(false)} style={{ background: "none", border: "none", padding: "0 0 0 4px", font: "inherit", fontWeight: 700, color: "inherit", textDecoration: "underline", cursor: "pointer" }}>Dismiss</button>
+              </p>
+            )}
             {view === "list" &&
               (selected ? (
                 <PoliticianDetail

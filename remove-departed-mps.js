@@ -3,9 +3,11 @@
 // What this does, in plain terms:
 // 1. Takes the MPs table and the Members API's list of MPs who are sitting now, and finds the rows for people who are not (see mpRoster.js for the rules,
 //    including the checks that stop it acting on a list that looks wrong).
-// 2. For each, takes out what the site shows about a sitting MP: their declared interests, votes, written questions and news, then the profile itself.
-//    Their name stays in the Former MPs page, the seat's history and the governments they were in. An MP who has a standards report or a ministerial gift
-//    on record is left in place and reported, because those are records in their own right.
+// 2. For each, first writes them into the Former MPs list (so their name is kept for good, whatever else happens), then takes out what the site shows
+//    about a sitting MP: their declared interests, votes, written questions and news, then the profile itself. Their name stays on the Former MPs page, in the
+//    seat's history and in the governments they were in. An MP who has a standards report or a ministerial gift on record is left in place and reported,
+//    because those are records in their own right. An MP the Members API still lists as sitting is never removed, and if the Former MPs list cannot be
+//    written the profile is left alone, so nobody is ever removed without their name being kept.
 //
 // fetch-interests.js calls this every day. To see what it would do, or to run it by hand:
 //   node remove-departed-mps.js            (shows what it would remove, changes nothing)
@@ -14,9 +16,17 @@
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";
 import { fetchRetry } from "./httpFetch.js";
-import { removalPlan, PROFILE_TABLES, RECORD_TABLES } from "./mpRoster.js";
+import { removalPlan, formerMpRow, PROFILE_TABLES, RECORD_TABLES } from "./mpRoster.js";
 
-export async function removeDepartedMps(supabase, currentIds, { apply = true, log = console.log } = {}) {
+// The Members API's record of one member, or null.
+export async function lookUpMember(id) {
+  try {
+    const res = await fetchRetry(`https://members-api.parliament.uk/api/Members/${id}`);
+    return res.ok ? (await res.json()).value ?? null : null;
+  } catch { return null; }
+}
+
+export async function removeDepartedMps(supabase, currentIds, { apply = true, log = console.log, lookup = lookUpMember } = {}) {
   const { data: rows, error } = await supabase.from("politicians").select("id, name, constituency, parliament_member_id");
   if (error) { log(`  ⚠ Could not read the MPs table to look for MPs who have left: ${error.message}`); return { removed: [], kept: [] }; }
   const plan = removalPlan(rows, currentIds);
@@ -31,9 +41,15 @@ export async function removeDepartedMps(supabase, currentIds, { apply = true, lo
       records += count ?? 0;
     }
     if (records > 0) { kept.push(mp); log(`::warning title=${mp.name} has left but has records on file::${mp.name} (${mp.constituency ?? "no seat"}) is no longer a sitting MP but has a standards report or ministerial gift on record, so the profile was left in place.`); continue; }
+    // The Members API must agree that they have left, and it is where the Former MPs entry comes from.
+    const member = await lookup(mp.parliament_member_id);
+    const former = formerMpRow(member);
+    if (!former) { kept.push(mp); log(`::warning title=${mp.name} was not removed::${mp.name} is not on the current list, but the Members API does not say they have left the Commons, so the profile was left in place.`); continue; }
     if (!apply) { log(`  Would remove ${mp.name} (${mp.constituency ?? "no seat"}, id ${mp.id}).`); removed.push(mp); continue; }
     let failed = null;
-    for (const table of PROFILE_TABLES) {
+    const { error: keepError } = await supabase.from("former_mps").upsert([former], { onConflict: "parliament_member_id" });
+    if (keepError) failed = `former_mps: ${keepError.message}`;
+    for (const table of failed ? [] : PROFILE_TABLES) {
       const { error: e } = await supabase.from(table).delete().eq("politician_id", mp.id);
       if (e) { failed = `${table}: ${e.message}`; break; }
     }
