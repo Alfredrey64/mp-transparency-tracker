@@ -23,3 +23,32 @@ describe("MPs who are still in the table after leaving", () => {
   });
   it("says nothing when there is nothing to say", () => { expect(staleWarning([])).toBe(""); });
 });
+
+import { removalPlan, PROFILE_TABLES, RECORD_TABLES } from "./mpRoster.js";
+
+describe("removalPlan", () => {
+  const rows = [{ id: 1, name: "A", parliament_member_id: 1 }, { id: 2, name: "B", parliament_member_id: 2 }, { id: 3, name: "C", parliament_member_id: 3 }];
+  const current = (n) => Array.from({ length: n }, (_, i) => i + 2);
+
+  it("removes the rows that are not on a full list of current MPs", () => {
+    const plan = removalPlan(rows, current(650));
+    expect(plan.remove.map((r) => r.id)).toEqual([1]);
+    expect(plan.reason).toBe("");
+  });
+  it("removes nobody if the list of current MPs is far too short, which would mean the lookup failed", () => {
+    const plan = removalPlan(rows, current(40));
+    expect(plan.remove).toEqual([]);
+    expect(plan.reason).toMatch(/too few to trust/);
+  });
+  it("removes nobody if an implausible number appear to have left at once", () => {
+    const many = Array.from({ length: 30 }, (_, i) => ({ id: 100 + i, name: `X${i}`, parliament_member_id: 5000 + i }));
+    const plan = removalPlan(many, current(650));
+    expect(plan.remove).toEqual([]);
+    expect(plan.reason).toMatch(/more than 15 at once/);
+  });
+  it("keeps profile data and records apart, so a record is never deleted with a profile", () => {
+    expect(PROFILE_TABLES).toContain("financial_interests");
+    expect(RECORD_TABLES).toEqual(expect.arrayContaining(["standards_reports", "ministerial_gifts"]));
+    expect(PROFILE_TABLES.filter((t) => RECORD_TABLES.includes(t))).toEqual([]);
+  });
+});
