@@ -196,13 +196,13 @@
 .drawer-foot a:nth-child(odd):last-child { grid-column: 1 / -1; }
 .site-drawer { touch-action: pan-y; }
 
-/* The five menus, the search box and the buttons need about 1330px side by side. Down to 1230px the search shrinks to its icon to make the room; below that
-   the menus fold into the menu button. (Before this, the last menu ran underneath the search box between about 1100 and 1320px.) */
+/* The five menus, the search box and the buttons need about 1330px side by side. Down to 1260px the search shrinks to its icon to make the room; below that
+   the menus fold into the menu button. 1260 and not 1230 because a Windows or Linux scrollbar takes about 15px of the width, which at 1231px left the last menu under the search box. (Before this, the last menu ran underneath the search box between about 1100 and 1320px.) */
 @media (max-width: 1340px) {
   .site-search-btn { width: 44px; padding: 0; justify-content: center; }
   .site-search-btn span, .site-search-btn kbd { display: none; }
 }
-@media (max-width: 1230px) {
+@media (max-width: 1260px) {
   .site-bar { gap: 12px; padding: 0 16px; height: 60px; }
   .site-nav, .site-cta, .site-watch, .site-mega, .site-scrim { display: none !important; }
   .site-actions { margin-left: auto; }
@@ -670,7 +670,7 @@ html[data-leaving] #main-content { opacity: 0.5; transition: opacity 0.16s ease-
 .langbar { display: flex; justify-content: flex-end; width: 100%; box-sizing: border-box; max-width: 1360px; margin: 0 auto; padding: 4px 32px 0; }
 .langbar-btn { padding: 3px 4px; border: 0; background: none; color: var(--c-ink-soft); font: 600 13px "Public Sans", system-ui, sans-serif; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .langbar-btn:hover { color: var(--c-ink); }
-@media (max-width: 1230px) { .langbar { display: none; } }
+@media (max-width: 1260px) { .langbar { display: none; } }
 @media print { .langbar { display: none; } }
 .drawer-lang, .footer-lang { padding: 8px 14px; border: 1px solid rgba(255, 255, 255, 0.35); border-radius: 10px; background: none; color: #fff; font: 700 14px "Public Sans", system-ui, sans-serif; cursor: pointer; }
 .drawer-lang { grid-column: 1 / -1; min-height: 44px; }

@@ -1,8 +1,8 @@
 // How the government plans to spend money in 2025-26, by category. Shared by the Where taxes go page and the pay calculator.
 // Figures are for 2025-26 (the most recent year with published headline
 // totals at the time this was written), drawn from the OBR's "brief guide
-// to the public finances" and, for the Welfare & Pensions split, Full
-// Fact's benefit-spending breakdown. This is a curated snapshot of
+// to the public finances". Welfare is the OBR-basis £332.9bn in the DWP's Spring Forecast 2026 tables, and the State Pension within it is £146.1bn
+// (checked 30 October 2026); the eight categories add up to the £1,368bn total. This is a curated snapshot of
 // well-sourced headline totals, not a live feed — it needs updating by
 // hand whenever a new Budget or Spending Review resets these numbers.
 // "Other departmental spending" and "Other annually managed expenditure"
@@ -17,7 +17,7 @@ export const CATEGORIES = [
   {
     key: "welfare",
     label: "Welfare & Pensions",
-    amountBn: 334,
+    amountBn: 333,
     color: "#B0473E",
     summary: "The single biggest slice of the budget, benefits and pensions paid directly to individuals.",
     detail:

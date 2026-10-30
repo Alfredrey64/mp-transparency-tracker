@@ -34,6 +34,7 @@ describe("education data", () => {
     expect(last(a8)).toBe(ATTAINMENT.attainment8Gap);
     expect(a8.at(-2)).toBe(ATTAINMENT.attainment8GapLast);
     expect(last(gap(E.ks4.notDisadvantaged.grade5, E.ks4.disadvantaged.grade5))).toBe(ATTAINMENT.englishMathsGap);
+    expect(last(E.ks4.disadvantagedShare)).toBe(ATTAINMENT.disadvantagedShare);
     expect(last(E.gapIndex.values)).toBe(ATTAINMENT.gapIndex);
     expect(E.gapIndex.years[0]).toBe(2010);
   });

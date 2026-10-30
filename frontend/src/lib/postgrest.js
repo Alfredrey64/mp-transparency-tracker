@@ -100,7 +100,9 @@ class Query {
   }
 }
 
+// With no address or key (a build made without the data service's settings, such as a test run), the reader still exists and every request simply fails
+// and is reported as an error, so a page says it could not load something instead of the whole site failing to start.
 export function createReader({ url, key, fetch: doFetch = (...a) => fetch(...a), retries = 2, wait = 500 }) {
-  const client = { url: url.replace(/\/+$/, ""), fetch: doFetch, retries, wait, headers: { apikey: key, Authorization: `Bearer ${key}`, Accept: "application/json" } };
+  const client = { url: String(url ?? "").replace(/\/+$/, ""), fetch: doFetch, retries, wait, headers: { apikey: key ?? "", Authorization: `Bearer ${key ?? ""}`, Accept: "application/json" } };
   return { from: (table) => new Query(client, table) };
 }

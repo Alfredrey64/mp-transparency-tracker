@@ -34,7 +34,7 @@ function TwoRoutesTall({ firms }) {
       <g transform="translate(12 10)">
         <rect width="166" height="90" rx="22" fill="#fff" stroke="#5A7FA6" strokeWidth="3.500" />
         <text x="83" y="40" textAnchor="middle" fontSize="17" fontWeight="800" fill={INK} fontFamily={S}>A company</text>
-        <text x="83" y="62" textAnchor="middle" fontSize="13" fontWeight="600" fill={SOFT} fontFamily={F}>wants a decision changed</text>
+        <text x="83" y="62" textAnchor="middle" fontSize="12" fontWeight="600" fill={SOFT} fontFamily={F}>wants a decision changed</text>
       </g>
       <g transform="translate(182 10)">
         <rect width="166" height="90" rx="22" fill="#fff" stroke="#9C3B3B" strokeWidth="3.500" />
@@ -119,7 +119,7 @@ function IcebergTall({ firms }) {
       <text x="10" y="106" fontSize="14" fontWeight="800" fill="#3F5F85" fontFamily={F}>What the public can see</text>
       <text x="10" y="146" fontSize="14" fontWeight="800" fill="#7A2E2E" fontFamily={F}>What it cannot</text>
       <path d="M 240 120 L 285 52 L 330 120 Z" fill="#5A7FA6" />
-      <g transform="translate(10 12)"><rect width="230" height="44" rx="22" fill="#fff" stroke="#5A7FA6" strokeWidth="3" /><text x="115" y="28" textAnchor="middle" fontSize="15" fontWeight="800" fill="#3F5F85" fontFamily={F}>{firms} registered consultancies</text></g>
+      <g transform="translate(10 12)"><rect width="230" height="44" rx="22" fill="#fff" stroke="#5A7FA6" strokeWidth="3" /><text x="115" y="28" textAnchor="middle" fontSize="13.5" fontWeight="800" fill="#3F5F85" fontFamily={F}>{firms} registered consultancies</text></g>
       <path d="M 240 34 L 270 66" stroke="#5A7FA6" strokeWidth="3" strokeLinecap="round" />
       <path d="M 240 120 L 330 120 L 350 200 L 300 322 L 100 334 L 22 224 Z" fill="url(#ice-ht)" stroke="#9C3B3B" strokeWidth="3" strokeDasharray="10 6" />
       <text x="180" y="214" textAnchor="middle" fontSize="18" fontWeight="800" fill="#7A2E2E" fontFamily={F}>In-house lobbying</text>
@@ -143,7 +143,7 @@ function IcebergWide({ firms }) {
       <text x="400" y="168" textAnchor="middle" fontSize="15" fontWeight="800" fill="#7A2E2E" fontFamily={F}>In-house lobbying</text>
       <text x="400" y="190" textAnchor="middle" fontSize="13" fontWeight="600" fill="#7A2E2E" fontFamily={F}>Bigger, and unmeasured:</text>
       <text x="400" y="208" textAnchor="middle" fontSize="13" fontWeight="600" fill="#7A2E2E" fontFamily={F}>no register covers it</text>
-      <g transform="translate(40 40)"><rect width="240" height="48" rx="24" fill="#fff" stroke="#5A7FA6" strokeWidth="3" /><text x="120" y="30" textAnchor="middle" fontSize="15" fontWeight="800" fill="#3F5F85" fontFamily={F}>{firms} registered consultancies</text></g>
+      <g transform="translate(40 40)"><rect width="240" height="48" rx="24" fill="#fff" stroke="#5A7FA6" strokeWidth="3" /><text x="120" y="30" textAnchor="middle" fontSize="13.5" fontWeight="800" fill="#3F5F85" fontFamily={F}>{firms} registered consultancies</text></g>
       <path d="M 280 64 L 372 70" stroke="#5A7FA6" strokeWidth="3" strokeLinecap="round" />
     </svg>
   );

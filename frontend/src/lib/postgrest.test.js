@@ -81,3 +81,12 @@ describe("the small data reader", () => {
     expect([a.error, b.error]).toEqual([null, null]);
   });
 });
+
+describe("createReader with no settings", () => {
+  it("still builds, and reports a failed request as an error instead of throwing", async () => {
+    const reader = createReader({ fetch: async () => { throw new Error("offline"); }, retries: 0, wait: 0 });
+    const res = await reader.from("politicians").select("id").limit(1);
+    expect(res.data ?? null).toBeNull();
+    expect(res.error).toBeTruthy();
+  });
+});

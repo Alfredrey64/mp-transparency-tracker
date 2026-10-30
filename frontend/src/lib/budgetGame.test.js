@@ -41,7 +41,7 @@ describe("budget game", () => {
     const a = setAmount(setAmount(realBudget(), "defence", 19, 0), "welfare", 300, 0);
     const c = changes(a);
     expect(c[0].key).toBe("welfare");
-    expect(describeChange(c[0])).toMatch(/Welfare & Pensions: down £34bn \(-10%\)/);
+    expect(describeChange(c[0])).toMatch(/Welfare & Pensions: down £33bn \(-10%\)/);
     expect(changes(realBudget())).toEqual([]);
   });
   it("shifts money from the other categories so a slider can always move, keeping the total fixed", () => {

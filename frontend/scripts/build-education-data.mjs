@@ -101,6 +101,8 @@ async function main() {
     ks4: {
       years: ks4Years,
       disadvantaged: pair(group("Disadvantage status", "Disadvantaged")),
+      // The share of pupils at the end of key stage 4 who are counted as disadvantaged, so the page can quote it for the same year as the gap.
+      disadvantagedShare: series(group("Disadvantage status", "Disadvantaged"), (r) => round(num(r.pupil_percent), 1), ks4Years),
       notDisadvantaged: pair(group("Disadvantage status", "Not known to be disadvantaged")),
       all: pair(group("Total")),
       girls: pair(group("Sex", "Girls")),

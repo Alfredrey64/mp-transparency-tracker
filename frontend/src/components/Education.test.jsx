@@ -14,7 +14,7 @@ describe("Education page", () => {
     });
   }
   it("shows the main figures", () => {
-    expect(renderToStaticMarkup(<Education param="gaps" />)).toContain("15.5 points");
+    expect(renderToStaticMarkup(<Education param="gaps" />)).toContain("15.1 points");
     expect(renderToStaticMarkup(<Education param="send" />)).toContain("718,838");
     expect(renderToStaticMarkup(<Education param="university" />)).toContain("£9,790");
   });

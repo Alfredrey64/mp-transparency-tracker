@@ -34,11 +34,11 @@ export const SCHOOLS = {
 };
 
 export const ATTAINMENT = {
-  year: "2024/25",
-  attainment8Gap: 15.5, attainment8GapLast: 15.4, attainment8Gap201819: 13.6,
-  englishMathsGap: 27.3,
-  disadvantagedShare: 28.2,
-  gapIndex: 3.92,
+  year: "2025/26",
+  attainment8Gap: 15.1, attainment8GapLast: 15.5, attainment8Gap201819: 13.6,
+  englishMathsGap: 26.8,
+  disadvantagedShare: 29.8,
+  gapIndex: 3.82,
 };
 
 export const SEND = {
