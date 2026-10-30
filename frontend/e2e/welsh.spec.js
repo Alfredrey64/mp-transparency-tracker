@@ -62,6 +62,8 @@ test("no notice on an English page, and none appears in English mode", async ({ 
 });
 
 test("the Welsh header never collides with itself or scrolls sideways, at any width", async ({ page }) => {
+  // It loads the page at ten widths in a row, which takes longer than the usual limit when the whole suite is running at once.
+  test.setTimeout(90000);
   for (const width of [1101, 1280, 1366, 1400, 1401, 1440, 1536, 1700, 1920, 2560]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/howtovote?lang=cy");

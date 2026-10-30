@@ -48,3 +48,36 @@ jobs:
           for n in $(gh issue list --state open --label site-health --json number --jq '.[].number'); do
             gh issue close "$n" --comment "The health check passed again, so this is closed."
           done
+
+  fresh:
+    name: The data has been refreshed lately
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 200
+      - name: Find the last daily data refresh
+        id: age
+        run: |
+          last=$(git log -1 --format=%ct --grep="^chore: daily data refresh")
+          now=$(date +%s)
+          if [ -z "$last" ]; then hours=9999; else hours=$(( (now - last) / 3600 )); fi
+          echo "hours=$hours" >> "$GITHUB_OUTPUT"
+          echo "The last daily data refresh was $hours hours ago."
+      - name: Open an issue if the refresh has stopped
+        if: steps.age.outputs.hours > 50
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -z "$(gh issue list --state open --label data-stale --json number --jq '.[0].number')" ]; then
+            gh label create data-stale --color D93F0B --description "The daily data refresh has stopped" 2>/dev/null || true
+            gh issue create --label data-stale --title "The daily data refresh has stopped" --body "The last daily data refresh was ${{ steps.age.outputs.hours }} hours ago, so the site is showing old figures. Open the 'Fetch MP financial interests...' workflow in the Actions tab to see which job failed or timed out. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/workflows/fetch-data.yml"
+          fi
+      - name: Close the issue when the data is fresh again
+        if: steps.age.outputs.hours <= 50
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for n in $(gh issue list --state open --label data-stale --json number --jq '.[].number'); do
+            gh issue close "$n" --comment "The data has been refreshed again, so this is closed."
+          done

@@ -23,19 +23,22 @@ export function installScrollReveal(root) {
   function scan() {
     // Only the outermost candidates are handled: a card inside a card rises with its parent.
     const outer = [...root.querySelectorAll(TARGETS)].filter((el) => !seen.has(el) && !el.closest(SKIP) && !el.parentElement?.closest(TARGETS));
+    // Every measurement first, then every change: reading a size after a change forces the page to lay itself out again each time, which on a long
+    // page is what made a page change stutter.
+    const rects = outer.map((el) => { seen.add(el); return el.getBoundingClientRect(); });
+    const cutoff = window.innerHeight * 0.92;
     const groups = new Map();
-    for (const el of outer) {
-      seen.add(el);
-      const r = el.getBoundingClientRect();
-      if (r.height < 40) continue;
-      if (r.top < window.innerHeight * 0.92) { el.classList.add("rv-now"); continue; }
+    outer.forEach((el, i) => {
+      const r = rects[i];
+      if (r.height < 40) return;
+      if (r.top < cutoff) { el.classList.add("rv-now"); return; }
       const parent = el.parentElement;
       const n = groups.get(parent) ?? 0;
       groups.set(parent, n + 1);
       el.style.setProperty("--rv-d", `${Math.min(n, 5) * 70}ms`);
       el.classList.add("rv");
       io.observe(el);
-    }
+    });
   }
 
   let frame = 0;

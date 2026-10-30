@@ -392,14 +392,16 @@ export default function App() {
     }
     const id = ++navId.current;
     setFetching(true);
+    // The page you are leaving dims at once, so the click is answered in the same frame even while the next page is still on its way.
+    root.dataset.leaving = "1";
     const wait = new Promise((resolve) => setTimeout(resolve, 2500));
     Promise.race([preloadPage(loader), wait]).then(() => {
       // A newer click has taken over: let that one win.
       if (id !== navId.current) return;
       setFetching(false);
       root.dataset.vt = "1";
-      const transition = document.startViewTransition(() => { flushSync(apply); });
-      const done = () => { if (id === navId.current) delete root.dataset.vt; };
+      const transition = document.startViewTransition(() => { delete root.dataset.leaving; flushSync(apply); });
+      const done = () => { if (id === navId.current) { delete root.dataset.vt; delete root.dataset.leaving; } };
       // A click that arrives mid-transition aborts it: that is expected, so the other promises are answered too rather than left to report an error.
       transition.ready.catch(() => {});
       transition.updateCallbackDone.catch(() => {});

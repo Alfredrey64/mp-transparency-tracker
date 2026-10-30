@@ -661,3 +661,11 @@
 .ma-homes .ma-rank-dots, .ma-homes .ma-rank-note { grid-column: 1 / -1; }
 .ma-homes .ma-rank-note { text-align: left; }
 .ma-homes .ma-rank-value { text-align: right; justify-items: end; }
+
+/* The figures in the ranked rows (homes and crime, and the region card): each sits in an outlined badge in its row's colour, so the number stands out from the words around it. */
+.ma-ranks .ma-rank-value { justify-self: end; align-self: center; gap: 2px; padding: 8px 14px 7px; border-radius: 14px; border: 2px solid color-mix(in srgb, var(--fc) 55%, var(--c-hairline)); background: color-mix(in srgb, var(--fc) 9%, var(--c-paper-card)); box-shadow: 0 1px 0 color-mix(in srgb, var(--fc) 20%, transparent); }
+.ma-ranks .ma-rank-value small { font-weight: 600; color: var(--c-ink-soft); }
+.ma-ranks .ma-rank-label b { font-size: 14.5px; font-weight: 600; }
+.ma-ranks .ma-rank-label small { font-size: 12px; opacity: 0.85; }
+.ma-homes .ma-rankrows li { gap: 8px 12px; padding: 14px 0; }
+.ma-homes .ma-rank-value { min-width: 7.2em; text-align: right; justify-items: end; }

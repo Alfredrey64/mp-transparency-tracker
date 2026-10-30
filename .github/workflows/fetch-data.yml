@@ -1,4 +1,4 @@
-name: Fetch MP Financial Interests, Voting Records, Bills, Donor Sectors, News, Former MPs, On This Day, Today's Business, Party Finances, By-Elections, House of Lords Peers, MP Activity, IPSA Expenses, Petitions, Ministerial Gifts, Select Committees, Written Questions, Standards Reports, and Constituencies
+name: Fetch MP financial interests, voting records, bills, news, donors, Lords, petitions, constituencies, councils, statistics and office-holders
 
 on:
   schedule:
@@ -13,11 +13,20 @@ concurrency:
   group: fetch-data
   cancel-in-progress: false
 
+# The refresh is split into jobs that run side by side. Run one after another, its steps took more than six hours (the Lords step alone over two),
+# which is GitHub's limit for a job, so from 26 October every run was cancelled before it reached the later steps and nothing after the first
+# dozen was refreshed. Each job below keeps its own steps, saves the data files it wrote, and the last job gathers them, builds the benchmarks
+# that need every table, reports what happened and commits once.
+#
+# continue-on-error is set on every fetch step deliberately: each one writes to its own, independent table or file, so one script having a bad day
+# (a flaky upstream API, a transient network error) shouldn't stop the others, and the final job still publishes whatever succeeded.
 jobs:
-  fetch-data:
+
+  records:
+    name: "The MP and money records (database tables)"
     runs-on: ubuntu-latest
-    # A crawl that hangs should end the run, not use the six-hour default.
-    timeout-minutes: 240
+    # A crawl that hangs should end the job, not use the six-hour default.
+    timeout-minutes: 300
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
@@ -31,13 +40,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # continue-on-error is set on every fetch step below deliberately: each
-      # one writes to its own, independent Supabase table, so one script
-      # having a bad day (a flaky upstream API, a transient network error)
-      # shouldn't stop every step after it from running too — that's what
-      # used to happen here, and was why the donor-sector commit at the very
-      # end (the step that actually deploys anything) kept getting skipped
-      # whenever an earlier, unrelated step failed.
 
       - name: Run the financial interests fetch script
         id: fetch_interests
@@ -135,6 +137,55 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-todays-business.js
 
+      - name: Note how each step went
+        if: always()
+        run: |
+          echo "STATUS_fetch_interests=${{ steps.fetch_interests.outcome }}" >> status.env
+          echo "STATUS_fetch_votes=${{ steps.fetch_votes.outcome }}" >> status.env
+          echo "STATUS_fetch_bills=${{ steps.fetch_bills.outcome }}" >> status.env
+          echo "STATUS_fetch_mp_news=${{ steps.fetch_mp_news.outcome }}" >> status.env
+          echo "STATUS_fetch_donor_sectors=${{ steps.fetch_donor_sectors.outcome }}" >> status.env
+          echo "STATUS_fetch_party_donations=${{ steps.fetch_party_donations.outcome }}" >> status.env
+          echo "STATUS_fetch_party_donor_sectors=${{ steps.fetch_party_donor_sectors.outcome }}" >> status.env
+          echo "STATUS_fetch_former_mps=${{ steps.fetch_former_mps.outcome }}" >> status.env
+          echo "STATUS_fetch_by_elections=${{ steps.fetch_by_elections.outcome }}" >> status.env
+          echo "STATUS_fetch_on_this_day=${{ steps.fetch_on_this_day.outcome }}" >> status.env
+          echo "STATUS_fetch_todays_business=${{ steps.fetch_todays_business.outcome }}" >> status.env
+
+      - name: Save the outcomes and the files this job wrote
+        if: always()
+        run: |
+          existing=""
+          for p in frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json frontend/src/data/partyDonorSectors.json frontend/src/data/partyDonorSectorsMeta.json; do [ -e "$p" ] && existing="$existing $p"; done
+          tar -cf data.tar status.env $existing
+
+      - name: Upload them for the last job
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: result-records
+          path: data.tar
+          retention-days: 2
+
+  lords:
+    name: "The House of Lords, who sits there, their careers and how they vote"
+    runs-on: ubuntu-latest
+    # A crawl that hangs should end the job, not use the six-hour default.
+    timeout-minutes: 300
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+
       # ~815 peers, each needing four follow-up requests (biography,
       # government role, recent debate contributions, recent written
       # questions) — expect this step to take several minutes.
@@ -145,6 +196,61 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-peers.js
+
+      # The same for every current peer, for the Lords tab of Parliament in
+      # Numbers (~800 requests).
+      - name: Run the Lords careers fetch script
+        id: fetch_lords_careers
+        continue-on-error: true
+        run: node fetch-lords-careers.js
+
+      # How every peer voted in the last 12 months, from Parliament's Lords
+      # Votes API, for the How peers vote page (~250 requests).
+      - name: Run the Lords votes fetch script
+        id: fetch_lords_votes
+        continue-on-error: true
+        run: node fetch-lords-votes.js
+
+      - name: Note how each step went
+        if: always()
+        run: |
+          echo "STATUS_fetch_peers=${{ steps.fetch_peers.outcome }}" >> status.env
+          echo "STATUS_fetch_lords_careers=${{ steps.fetch_lords_careers.outcome }}" >> status.env
+          echo "STATUS_fetch_lords_votes=${{ steps.fetch_lords_votes.outcome }}" >> status.env
+
+      - name: Save the outcomes and the files this job wrote
+        if: always()
+        run: |
+          existing=""
+          for p in frontend/src/data/lordsCareers.json frontend/src/data/lordsCareerDetail frontend/src/data/lordsVotes.json; do [ -e "$p" ] && existing="$existing $p"; done
+          tar -cf data.tar status.env $existing
+
+      - name: Upload them for the last job
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: result-lords
+          path: data.tar
+          retention-days: 2
+
+  activity:
+    name: "What MPs have been doing: activity, claims, petitions, committees and questions"
+    runs-on: ubuntu-latest
+    # A crawl that hangs should end the job, not use the six-hour default.
+    timeout-minutes: 300
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
 
       # ~650 MPs, two requests each (debate contributions, written
       # questions) — the Commons equivalent of the Lords activity above.
@@ -212,6 +318,51 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-standards-reports.js
 
+      - name: Note how each step went
+        if: always()
+        run: |
+          echo "STATUS_fetch_mp_activity=${{ steps.fetch_mp_activity.outcome }}" >> status.env
+          echo "STATUS_fetch_ipsa_expenses=${{ steps.fetch_ipsa_expenses.outcome }}" >> status.env
+          echo "STATUS_fetch_petitions=${{ steps.fetch_petitions.outcome }}" >> status.env
+          echo "STATUS_fetch_ministerial_gifts=${{ steps.fetch_ministerial_gifts.outcome }}" >> status.env
+          echo "STATUS_fetch_committees=${{ steps.fetch_committees.outcome }}" >> status.env
+          echo "STATUS_fetch_written_questions=${{ steps.fetch_written_questions.outcome }}" >> status.env
+          echo "STATUS_fetch_standards_reports=${{ steps.fetch_standards_reports.outcome }}" >> status.env
+
+      - name: Save the outcomes and the files this job wrote
+        if: always()
+        run: |
+          existing=""
+          for p in ; do [ -e "$p" ] && existing="$existing $p"; done
+          tar -cf data.tar status.env $existing
+
+      - name: Upload them for the last job
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: result-activity
+          path: data.tar
+          retention-days: 2
+
+  static:
+    name: "Results, councils, statistics and office-holders saved as files with the site"
+    runs-on: ubuntu-latest
+    # A crawl that hangs should end the job, not use the six-hour default.
+    timeout-minutes: 300
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+
       # No Supabase credentials needed: this one writes a JSON file into the
       # repo (frontend/src/data/constituencies.json) rather than a table,
       # committed by the last step below. ~650 requests for election results
@@ -238,13 +389,6 @@ jobs:
         continue-on-error: true
         run: node fetch-mp-careers.js
 
-      # The same for every current peer, for the Lords tab of Parliament in
-      # Numbers (~800 requests).
-      - name: Run the Lords careers fetch script
-        id: fetch_lords_careers
-        continue-on-error: true
-        run: node fetch-lords-careers.js
-
       # Every UK councillor, council make-up and election dates, from Open
       # Council Data UK (CC BY-SA 4.0), for the Your Council page.
       - name: Run the councils fetch script
@@ -259,13 +403,6 @@ jobs:
         id: build_councillors
         continue-on-error: true
         run: node frontend/scripts/build-councillors.mjs
-
-      # How every peer voted in the last 12 months, from Parliament's Lords
-      # Votes API, for the How peers vote page (~250 requests).
-      - name: Run the Lords votes fetch script
-        id: fetch_lords_votes
-        continue-on-error: true
-        run: node fetch-lords-votes.js
 
       # The list of pledges and verdicts on Full Fact's Government Tracker,
       # for the full pledge list on the Promises tracker page.
@@ -289,6 +426,80 @@ jobs:
         continue-on-error: true
         run: node fetch-regional-breakdowns.js
 
+      # Who holds the other elected offices a postcode is covered by (police
+      # commissioners, regional mayors, Senedd members, MSPs and MLAs), for the
+      # Your area page. Stops without writing if a source has changed shape.
+      - name: Fetch the other elected representatives
+        id: fetch_representatives
+        continue-on-error: true
+        run: node fetch-representatives.js
+
+      - name: Note how each step went
+        if: always()
+        run: |
+          echo "STATUS_fetch_constituencies=${{ steps.fetch_constituencies.outcome }}" >> status.env
+          echo "STATUS_fetch_constituency_history=${{ steps.fetch_constituency_history.outcome }}" >> status.env
+          echo "STATUS_fetch_mp_careers=${{ steps.fetch_mp_careers.outcome }}" >> status.env
+          echo "STATUS_fetch_councils=${{ steps.fetch_councils.outcome }}" >> status.env
+          echo "STATUS_build_councillors=${{ steps.build_councillors.outcome }}" >> status.env
+          echo "STATUS_fetch_fullfact_tracker=${{ steps.fetch_fullfact_tracker.outcome }}" >> status.env
+          echo "STATUS_fetch_ons=${{ steps.fetch_ons.outcome }}" >> status.env
+          echo "STATUS_fetch_regional_breakdowns=${{ steps.fetch_regional_breakdowns.outcome }}" >> status.env
+          echo "STATUS_fetch_representatives=${{ steps.fetch_representatives.outcome }}" >> status.env
+
+      - name: Save the outcomes and the files this job wrote
+        if: always()
+        run: |
+          existing=""
+          for p in frontend/src/data/constituencies.json frontend/src/data/constituencySummary.json frontend/src/data/constituencyHistory.json frontend/src/data/mpCareers.json frontend/src/data/careerDetail frontend/src/data/councilsIndex.json frontend/src/data/councilDetail frontend/src/data/ons frontend/src/data/regionalBreakdowns.json frontend/src/data/fullFactPledges.json frontend/src/data/representatives.json frontend/public/data/councillors.json; do [ -e "$p" ] && existing="$existing $p"; done
+          tar -cf data.tar status.env $existing
+
+      - name: Upload them for the last job
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: result-static
+          path: data.tar
+          retention-days: 2
+
+  publish:
+    name: "Build the benchmarks, report what happened and commit"
+    needs: [records, lords, activity, static]
+    # Publishes whatever the other jobs produced, even if one of them failed or ran out of time.
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Collect what the other jobs saved
+        uses: actions/download-artifact@v4
+        with:
+          pattern: result-*
+          path: results
+
+      - name: Put their files in place and read their outcomes
+        run: |
+          shopt -s nullglob
+          for t in results/*/data.tar; do
+            d=$(mktemp -d)
+            tar -xf "$t" -C "$d"
+            [ -f "$d/status.env" ] && cat "$d/status.env" >> "$GITHUB_ENV"
+            rm -f "$d/status.env"
+            cp -R "$d"/. .
+          done
+
+
       # How each MP compares with the rest (declared value, outside earnings,
       # expenses, rebellion rate, attendance, years served), for the "what
       # this means" lines on the site. Reads the tables the steps above fill
@@ -301,14 +512,6 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node build-benchmarks.js
 
-      # Who holds the other elected offices a postcode is covered by (police
-      # commissioners, regional mayors, Senedd members, MSPs and MLAs), for the
-      # Your area page. Stops without writing if a source has changed shape.
-      - name: Fetch the other elected representatives
-        id: fetch_representatives
-        continue-on-error: true
-        run: node fetch-representatives.js
-
       # continue-on-error above means the workflow run itself can show green
       # even when several scripts above silently failed — nothing surfaced
       # that anywhere except by opening this run and reading every step by
@@ -319,37 +522,7 @@ jobs:
       - name: Report pipeline run status
         if: always()
         env:
-          STATUS_fetch_interests: ${{ steps.fetch_interests.outcome }}
-          STATUS_fetch_votes: ${{ steps.fetch_votes.outcome }}
-          STATUS_fetch_bills: ${{ steps.fetch_bills.outcome }}
-          STATUS_fetch_mp_news: ${{ steps.fetch_mp_news.outcome }}
-          STATUS_fetch_donor_sectors: ${{ steps.fetch_donor_sectors.outcome }}
-          STATUS_fetch_party_donations: ${{ steps.fetch_party_donations.outcome }}
-          STATUS_fetch_party_donor_sectors: ${{ steps.fetch_party_donor_sectors.outcome }}
-          STATUS_fetch_former_mps: ${{ steps.fetch_former_mps.outcome }}
-          STATUS_fetch_by_elections: ${{ steps.fetch_by_elections.outcome }}
-          STATUS_fetch_on_this_day: ${{ steps.fetch_on_this_day.outcome }}
-          STATUS_fetch_todays_business: ${{ steps.fetch_todays_business.outcome }}
-          STATUS_fetch_peers: ${{ steps.fetch_peers.outcome }}
-          STATUS_fetch_mp_activity: ${{ steps.fetch_mp_activity.outcome }}
-          STATUS_fetch_ipsa_expenses: ${{ steps.fetch_ipsa_expenses.outcome }}
-          STATUS_fetch_petitions: ${{ steps.fetch_petitions.outcome }}
-          STATUS_fetch_ministerial_gifts: ${{ steps.fetch_ministerial_gifts.outcome }}
-          STATUS_fetch_committees: ${{ steps.fetch_committees.outcome }}
-          STATUS_fetch_written_questions: ${{ steps.fetch_written_questions.outcome }}
-          STATUS_fetch_standards_reports: ${{ steps.fetch_standards_reports.outcome }}
-          STATUS_fetch_constituencies: ${{ steps.fetch_constituencies.outcome }}
-          STATUS_fetch_constituency_history: ${{ steps.fetch_constituency_history.outcome }}
-          STATUS_fetch_mp_careers: ${{ steps.fetch_mp_careers.outcome }}
-          STATUS_fetch_lords_careers: ${{ steps.fetch_lords_careers.outcome }}
           STATUS_build_benchmarks: ${{ steps.build_benchmarks.outcome }}
-          STATUS_fetch_representatives: ${{ steps.fetch_representatives.outcome }}
-          STATUS_fetch_ons: ${{ steps.fetch_ons.outcome }}
-          STATUS_fetch_regional_breakdowns: ${{ steps.fetch_regional_breakdowns.outcome }}
-          STATUS_fetch_councils: ${{ steps.fetch_councils.outcome }}
-          STATUS_build_councillors: ${{ steps.build_councillors.outcome }}
-          STATUS_fetch_lords_votes: ${{ steps.fetch_lords_votes.outcome }}
-          STATUS_fetch_fullfact_tracker: ${{ steps.fetch_fullfact_tracker.outcome }}
         run: node report-pipeline-status.js
 
       # The scripts above write straight to Supabase, so the live site picks
