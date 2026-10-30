@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-26",
+ "generatedAt": "2026-10-30",
  "source": "https://fullfact.org/government-tracker/",
  "pledges": [
   {
@@ -266,7 +266,7 @@
    "area": "Economy",
    "pledge": "Fast-tracking planning decisions on at least 150 major economic infrastructure projects",
    "status": "in-progress",
-   "updated": "2026-09-08"
+   "updated": "2026-10-27"
   },
   {
    "slug": "employment-rights-bill",
@@ -322,7 +322,7 @@
    "area": "Economy",
    "pledge": "Labour will replace the business rates system, so we can raise the same revenue but in a fairer way",
    "status": "wait-and-see",
-   "updated": "2026-05-28"
+   "updated": "2026-10-27"
   },
   {
    "slug": "budget-fiscal-rules",
