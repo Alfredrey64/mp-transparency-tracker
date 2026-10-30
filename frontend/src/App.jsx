@@ -403,7 +403,7 @@ export default function App() {
     const id = ++navId.current;
     setFetching(true);
     root.dataset.leaving = "1";
-    const fadedOut = new Promise((resolve) => setTimeout(resolve, 70));
+    const fadedOut = new Promise((resolve) => setTimeout(resolve, 50));
     const gaveUp = new Promise((resolve) => setTimeout(resolve, 2500));
     Promise.race([Promise.all([preloadPage(loader), fadedOut]), gaveUp]).then(() => {
       // A newer click has taken over: let that one win.

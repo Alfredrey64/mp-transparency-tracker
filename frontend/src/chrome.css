@@ -448,6 +448,8 @@ body:has(.tier-mini) .to-top { display: none; }
 .page-hero-inner > :nth-child(4) { animation-delay: 210ms; }
 @keyframes hero-rise { from { transform: translateY(8px); } to { transform: none; } }
 .page-hero::before { animation: hero-pattern 1.4s var(--ease-out) both; }
+/* After a click the page change is one quiet fade: the header's parts and pattern are simply there, not moving in on top of it. */
+html[data-nav] .page-hero-inner > *, html[data-nav] .page-hero::before, html[data-nav] .page-hero[data-align="center"] .page-hero-icon { animation: none; }
 @keyframes hero-pattern { from { opacity: 0; transform: translateY(24px) scale(0.96); } to { opacity: 0.1; transform: none; } }
 
 /* Reading progress, drawn along the foot of the header. */
@@ -638,8 +640,9 @@ body:has(.tier-mini) .to-top { display: none; }
 /* ---- Page changes ------------------------------------------------------------------------------------------------------------------------------
    Changing page: the page's content fades out (html gets data-leaving the moment you click), the pages are swapped while it is invisible, and the new one
    fades in as data-leaving is taken off. Only #main-content fades, so the header and the buttons fixed to the screen never move or double. */
-#main-content { transition: opacity 0.12s var(--ease-out); }
-html[data-leaving] #main-content { opacity: 0; transition-duration: 0.06s; transition-timing-function: ease-in; }
+#main-content { transition: opacity 0.1s var(--ease-out); }
+/* The page dips rather than going blank, so there is no flash of empty background between two pages. */
+html[data-leaving] #main-content { opacity: 0.2; transition-duration: 0.045s; transition-timing-function: ease-in; }
 /* The first time the page opens it fades in once, but not the placeholder that stands in for it, so a page that arrives quickly is not shown as a blank frame first. */
 @keyframes page-in { from { opacity: 0; } }
 html:not([data-nav]) #main-content > :not(.page-loading) { animation: page-in 0.26s var(--ease-out) backwards; }
