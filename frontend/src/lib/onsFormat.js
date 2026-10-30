@@ -20,13 +20,17 @@ export function normalisePeriod(freq, raw) {
   return /^\d{4}$/.test(s) ? s : null;
 }
 
-// A number you can sort and compare: the year, plus how far through it.
+// A number you can sort and compare: the year, plus how far through it. The same few hundred period names are asked about over and over (every point of every
+// line, for every date on a timeline), so each is worked out once.
+const tCache = new Map();
 export function periodToT(p) {
+  let t = tCache.get(p);
+  if (t !== undefined) return t;
   const q = /^(\d{4})-Q([1-4])$/.exec(p);
-  if (q) return Number(q[1]) + (Number(q[2]) - 1) / 4;
-  const m = /^(\d{4})-(\d{2})$/.exec(p);
-  if (m) return Number(m[1]) + (Number(m[2]) - 1) / 12;
-  return Number(p);
+  const m = q ? null : /^(\d{4})-(\d{2})$/.exec(p);
+  t = q ? Number(q[1]) + (Number(q[2]) - 1) / 4 : m ? Number(m[1]) + (Number(m[2]) - 1) / 12 : Number(p);
+  tCache.set(p, t);
+  return t;
 }
 
 export function periodLabel(p) {

@@ -94,3 +94,38 @@ describe("whole-number colour classes", () => {
     expect(new Set(colours).size).toBe(6);
   });
 });
+
+import { valueAtOrBefore } from "./onsStats";
+import { periodToT } from "./onsFormat";
+
+describe("valuesOver against the plain search it replaced", () => {
+  const pts = (n, start = 1990) => Array.from({ length: n }, (_, i) => [`${start + Math.floor(i / 12)}-${String((i % 12) + 1).padStart(2, "0")}`, (i * 7) % 13]);
+  const plain = (points, timeline) => timeline.map((t) => valueAtOrBefore(points, t + 1e-6)?.[1] ?? null);
+
+  it("gives the same answer for every date of a long timeline", () => {
+    const points = pts(400);
+    const timeline = monthlyTimeline([points], 0).length ? monthlyTimeline([points]) : [];
+    expect(timeline.length).toBeGreaterThan(300);
+    expect(valuesOver(points, timeline)).toEqual(plain(points, timeline));
+  });
+  it("gives the same answer for dates before the series starts and after it ends", () => {
+    const points = pts(24, 2000);
+    const timeline = [1999, 2000, 2000 + 5 / 12, 2001.9, 2002.1, 2030];
+    expect(valuesOver(points, timeline)).toEqual(plain(points, timeline));
+    expect(valuesOver(points, timeline)[0]).toBeNull();
+  });
+  it("still answers correctly if the timeline is out of order, and for quarterly series", () => {
+    const points = [["2020-Q1", 1], ["2020-Q2", 2], ["2020-Q3", 3]];
+    const timeline = [2020.6, 2020, 2020.3, 2020.9];
+    expect(valuesOver(points, timeline)).toEqual(plain(points, timeline));
+  });
+  it("reads a gap in the data as no value, not as the one before", () => {
+    expect(valuesOver([["2020-01", null], ["2020-02", 4]], [2020, 2020 + 1 / 12])).toEqual([null, 4]);
+  });
+  it("works out each period once and gives the same numbers as before", () => {
+    expect(periodToT("2020-Q3")).toBe(2020.5);
+    expect(periodToT("2020-04")).toBeCloseTo(2020 + 3 / 12, 10);
+    expect(periodToT("2020")).toBe(2020);
+    expect(periodToT("2020-Q3")).toBe(2020.5);
+  });
+});

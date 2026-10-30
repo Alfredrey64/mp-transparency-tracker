@@ -2,7 +2,6 @@
 // and turning a value into a colour.
 
 import { periodToT } from "./onsFormat";
-import { valueAtOrBefore } from "./onsStats";
 
 const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
@@ -32,8 +31,19 @@ export function monthlyTimeline(seriesList) {
 }
 
 // For one region: its value at each point in time of the timeline (the latest reading on or before it).
+// Walks the points once alongside the timeline instead of searching them afresh for every date (which, with hundreds of dates and hundreds of points a
+// region, was most of the time the Regions page took to open). A timeline that is not in order is still answered correctly, just not as quickly.
 export function valuesOver(points, timeline) {
-  return timeline.map((t) => valueAtOrBefore(points, t + 1e-6)?.[1] ?? null);
+  const ts = points.map((p) => periodToT(p[0]));
+  let at = -1;
+  let before = -Infinity;
+  return timeline.map((t) => {
+    const limit = t + 1e-6 + 1e-9;
+    if (limit < before) at = -1;
+    before = limit;
+    while (at + 1 < ts.length && ts[at + 1] <= limit) at += 1;
+    return at >= 0 ? points[at][1] ?? null : null;
+  });
 }
 
 // Highest first. Regions with no value go to the bottom.
