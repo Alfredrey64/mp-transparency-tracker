@@ -1,0 +1,53 @@
+name: Content check
+
+# Every Monday, checks that what the site says is still sound (see frontend/scripts/audit-content.mjs): pages of facts whose figures were last checked against
+# their sources more than 60 days ago, saved data that has stopped refreshing, and source links that have gone. If anything needs a look it opens an issue,
+# and GitHub emails the repository's owner. When everything is clear again it closes the issue. It changes nothing on the site.
+
+on:
+  schedule:
+    - cron: "30 7 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    name: Facts, data and links are still sound
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Run the check
+        id: audit
+        run: node scripts/audit-content.mjs | tee ../content-check.md
+      - name: Open or update an issue if something needs a look
+        if: failure() && steps.audit.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create content-review --color 5319E7 --description "Facts, data or links that need a look" 2>/dev/null || true
+          n=$(gh issue list --state open --label content-review --json number --jq '.[0].number')
+          if [ -z "$n" ]; then
+            gh issue create --label content-review --title "Content needs a look" --body-file ../content-check.md
+          else
+            gh issue comment "$n" --body-file ../content-check.md
+          fi
+      - name: Close the issue when everything is clear
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for n in $(gh issue list --state open --label content-review --json number --jq '.[].number'); do
+            gh issue close "$n" --comment "The weekly content check found nothing to look at, so this is closed."
+          done
