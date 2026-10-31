@@ -639,11 +639,15 @@ html[data-nav] .page-hero-inner > *, html[data-nav] .page-hero::before { animati
 /* ---- The route a bill takes (BillRoute.jsx) ----------------------------------------------------------------------------------------------------- */
 
 /* ---- Page changes ------------------------------------------------------------------------------------------------------------------------------
-   Changing page: the page's content fades out (html gets data-leaving the moment you click), the pages are swapped while it is invisible, and the new one
-   fades in as data-leaving is taken off. Only #main-content fades, so the header and the buttons fixed to the screen never move or double. */
-#main-content { transition: opacity 0.1s var(--ease-out); }
+   Changing page: the page's content eases down (html gets data-leaving the moment you click), the pages are swapped while it is dim, and the new one
+   fades back up as data-leaving is taken off while its content settles into place from a few pixels below, so the change reads as one movement
+   rather than a blink. Only #main-content fades and only the page's own blocks move, so the header and the buttons fixed to the screen never move or double. */
+#main-content { transition: opacity 0.18s var(--ease-out); }
 /* The page dips rather than going blank, so there is no flash of empty background between two pages. */
-html[data-leaving] #main-content { opacity: 0.2; transition-duration: 0.045s; transition-timing-function: ease-in; }
+html[data-leaving] #main-content { opacity: 0.3; transition-duration: 0.06s; transition-timing-function: ease-in; }
+@keyframes page-rise { from { transform: translateY(10px); } }
+html[data-nav]:not([data-leaving]) #main-content > :not(.page-loading):not(.sn):not(.pf) { animation: page-rise 0.36s var(--ease-out) backwards; }
+@media (prefers-reduced-motion: reduce) { html[data-nav]:not([data-leaving]) #main-content > :not(.page-loading):not(.sn):not(.pf) { animation: none; } }
 /* The section links and page foot arrive after the page has settled (App.jsx, AfterSettle), so they ease in rather than appear. */
 @keyframes foot-in { from { opacity: 0; } }
 #main-content > .sn, #main-content > .pf { animation: foot-in 0.3s var(--ease-out) backwards; }
