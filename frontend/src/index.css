@@ -707,6 +707,11 @@ html { scrollbar-gutter: stable; }
 /* Tell screen readers a link opens in a new tab or window, without showing anything extra. */
 a[target="_blank"]::after { content: "" / " (opens in a new tab)"; }
 
+/* A person in the MPs and Lords lists: waits low and transparent until it is near the screen (see PersonCard.jsx), and its edge takes the party colour on hover. */
+.pc { border: 1px solid var(--c-hairline); opacity: 1; transition: opacity 0.25s ease-out var(--pc-d, 0s), transform 0.25s ease-out var(--pc-d, 0s), border-color 0.2s ease; }
+.pc[data-pc] { opacity: 0; transform: translateY(8px); }
+.pc:hover { border-color: var(--pc-c); }
+
 /* General elections: blocks ease up into view once, numbers count up, the seat chart's dots arrive in a sweep, and the pages cross-fade. Only
    opacity and a short rise are animated, never a width or a length. All of it stops when reduced motion is asked for. */
 .reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms); }

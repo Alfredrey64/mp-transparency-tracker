@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { motion } from "motion/react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, chip } from "../theme";
 import { initials } from "../lib/format";
 
@@ -23,18 +22,35 @@ function Avatar({ url, name, color }) {
   );
 }
 
+// One watcher for every card on the page. A card starts a few pixels low and transparent and eases up once it is near the screen; it is plain CSS
+// (.pc in index.css) rather than an animated component each, because taking hundreds of those away when you leave the MPs list froze the page change.
+let watcher;
+function revealWhenNear(el) {
+  if (!el) return undefined;
+  if (typeof IntersectionObserver === "undefined" || window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return undefined;
+  watcher ??= new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting && e.boundingClientRect.top > 0) continue;
+        e.target.removeAttribute("data-pc");
+        watcher.unobserve(e.target);
+      }
+    },
+    { rootMargin: "80px" },
+  );
+  el.setAttribute("data-pc", "wait");
+  watcher.observe(el);
+  return () => watcher.unobserve(el);
+}
+
 export default function PersonCard({ name, photo, color, line, extra, onClick, index = 0 }) {
   return (
-    <motion.button
+    <button
       type="button"
+      className="pc"
       onClick={onClick}
-      initial={{ opacity: 0, y: 8 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "80px" }}
-      transition={{ duration: 0.25, delay: (index % 16) * 0.02, ease: "easeOut" }}
-      whileHover={{ borderColor: color }}
-      whileTap={{ y: 0 }}
-      style={{ textAlign: "left", display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", background: `color-mix(in srgb, ${color} 7%, ${COLORS.paperCard})`, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, cursor: "pointer" }}
+      ref={revealWhenNear}
+      style={{ "--pc-c": color, "--pc-d": `${(index % 16) * 0.02}s`, textAlign: "left", display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", background: `color-mix(in srgb, ${color} 7%, ${COLORS.paperCard})`, borderRadius: 12, cursor: "pointer" }}
     >
       <Avatar url={photo} name={name} color={color} />
       <span style={{ flex: 1, minWidth: 0 }}>
@@ -42,6 +58,6 @@ export default function PersonCard({ name, photo, color, line, extra, onClick, i
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{line}</div>
         {extra && <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: 1 }}>{extra}</div>}
       </span>
-    </motion.button>
+    </button>
   );
 }
