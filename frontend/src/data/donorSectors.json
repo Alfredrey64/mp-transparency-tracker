@@ -38,12 +38,26 @@
     "companyNumber": "13054048",
     "sicCode": "94920"
   },
+  "International Centre of Justice for Palestinians (ICJP)": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "INTERNATIONAL CENTRE OF JUSTICE FOR PALESTINIANS",
+    "companyNumber": "13054048",
+    "sicCode": "94920"
+  },
   "National Liberal Club": {
     "sector": "Other / Uncategorised",
     "source": "companies-house",
     "companyName": "NATIONAL LIBERAL CLUB LIMITED(THE)",
     "companyNumber": "01355034",
     "sicCode": "56302"
+  },
+  "Best for Britain Limited": {
+    "sector": "Tech & Telecoms",
+    "source": "companies-house",
+    "companyName": "BEST FOR BRITAIN LIMITED",
+    "companyNumber": "10436078",
+    "sicCode": "63990"
   },
   "Palace Yard Events Ltd": {
     "sector": "Other / Uncategorised",
@@ -65,13 +79,6 @@
     "companyName": "J.C. BAMFORD EXCAVATORS LIMITED",
     "companyNumber": "00561597",
     "sicCode": "28922"
-  },
-  "The Arsenal Football Club Limited": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "THE ARSENAL FOOTBALL CLUB LIMITED",
-    "companyNumber": "00109244",
-    "sicCode": "93120"
   },
   "Small Axe Communications Ltd": {
     "sector": "Tech & Telecoms",
@@ -133,6 +140,13 @@
     "companyNumber": "16507092",
     "sicCode": "96090"
   },
+  "Silverstone Circuits Ltd": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "SILVERSTONE CIRCUITS LIMITED",
+    "companyNumber": "00882843",
+    "sicCode": "93110"
+  },
   "Flowidea Limited": {
     "sector": "Finance & Banking",
     "source": "companies-house",
@@ -189,13 +203,6 @@
     "companyNumber": "01132389",
     "sicCode": "94990"
   },
-  "Silverstone Circuits Ltd": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "SILVERSTONE CIRCUITS LIMITED",
-    "companyNumber": "00882843",
-    "sicCode": "93110"
-  },
   "The Police Federation": {
     "sector": "Trade Unions",
     "source": "known-union-list"
@@ -250,6 +257,13 @@
     "companyName": "GOOGLE UK LIMITED",
     "companyNumber": "03977902",
     "sicCode": "82990"
+  },
+  "Lawn Tennis Association": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "LAWN TENNIS ASSOCIATION LIMITED",
+    "companyNumber": "07459469",
+    "sicCode": "93199"
   },
   "KBR (Aspire Construction) Limited": {
     "sector": "Other / Uncategorised",
@@ -313,13 +327,6 @@
     "companyName": "PRS FOR MUSIC LIMITED",
     "companyNumber": "03444246",
     "sicCode": "82990"
-  },
-  "Lawn Tennis Association": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "LAWN TENNIS ASSOCIATION LIMITED",
-    "companyNumber": "07459469",
-    "sicCode": "93199"
   },
   "Homes for Britain Ltd": {
     "sector": "Legal & Professional Services",
@@ -416,12 +423,26 @@
     "sector": "Media & Publishing",
     "source": "manual-override"
   },
+  "Premier League": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "PREMIER LEAGUE LIMITED",
+    "companyNumber": "SC117540",
+    "sicCode": "96090"
+  },
   "The Lawn Tennis Association": {
     "sector": "Other / Uncategorised",
     "source": "companies-house",
     "companyName": "LAWN TENNIS ASSOCIATION LIMITED",
     "companyNumber": "07459469",
     "sicCode": "93199"
+  },
+  "Carlton Club": {
+    "sector": "Alcohol & Gambling",
+    "source": "companies-house",
+    "companyName": "CARLTON CLUBS LIMITED",
+    "companyNumber": "SC123870",
+    "sicCode": "92000"
   },
   "Global Foods (Birmingham) Limited": {
     "sector": "Retail & Consumer",
@@ -443,6 +464,13 @@
     "companyName": "STRATHGROVE LIMITED",
     "companyNumber": "00972224",
     "sicCode": "41100"
+  },
+  "Millennium Care (U.K.) Limited": {
+    "sector": "Pharma & Healthcare",
+    "source": "companies-house",
+    "companyName": "MILLENNIUM CARE (U.K.) LIMITED",
+    "companyNumber": "03462318",
+    "sicCode": "86900"
   },
   "SRE Hotels (Cliveden) Ltd": {
     "sector": "Other / Uncategorised",
@@ -530,13 +558,6 @@
     "sector": "Trade Unions",
     "source": "known-union-list"
   },
-  "Ascot Authority (Holdings) Limited": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "ASCOT AUTHORITY (HOLDINGS) LIMITED",
-    "companyNumber": "04274507",
-    "sicCode": "93110"
-  },
   "Lloyds Banking Group PLC": {
     "sector": "Finance & Banking",
     "source": "companies-house",
@@ -590,13 +611,6 @@
     "companyNumber": "02719699",
     "sicCode": "93199"
   },
-  "Carlton Club": {
-    "sector": "Alcohol & Gambling",
-    "source": "companies-house",
-    "companyName": "CARLTON CLUBS LIMITED",
-    "companyNumber": "SC123870",
-    "sicCode": "92000"
-  },
   "Tottenham Hotspur Limited": {
     "sector": "Other / Uncategorised",
     "source": "companies-house",
@@ -645,54 +659,5 @@
     "companyName": "SME4LABOUR LTD",
     "companyNumber": "10685562",
     "sicCode": "94920"
-  },
-  "The Football Association Ltd": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "THE FOOTBALL ASSOCIATION PREMIER LEAGUE LIMITED",
-    "companyNumber": "02719699",
-    "sicCode": "93199"
-  },
-  "Persimmon PLC": {
-    "sector": "Finance & Banking",
-    "source": "companies-house",
-    "companyName": "PERSIMMON PUBLIC LIMITED COMPANY",
-    "companyNumber": "01818486",
-    "sicCode": "64203"
-  },
-  "Zarah Sultana Campaigns Ltd": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "ZARAH SULTANA CAMPAIGNS LTD",
-    "companyNumber": "13740182",
-    "sicCode": "94920"
-  },
-  "The Football Association Premier League": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "THE FOOTBALL ASSOCIATION PREMIER LEAGUE LIMITED",
-    "companyNumber": "02719699",
-    "sicCode": "93199"
-  },
-  "London Marathon Events Ltd": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "LONDON MARATHON EVENTS LIMITED",
-    "companyNumber": "01528489",
-    "sicCode": "93199"
-  },
-  "The Football Association": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "THE FOOTBALL ASSOCIATION PREMIER LEAGUE LIMITED",
-    "companyNumber": "02719699",
-    "sicCode": "93199"
-  },
-  "Knights Tailoring Ltd": {
-    "sector": "Chemicals & Manufacturing",
-    "source": "companies-house",
-    "companyName": "KNIGHTS TAILORING LTD",
-    "companyNumber": "07036550",
-    "sicCode": "14120"
   }
 }

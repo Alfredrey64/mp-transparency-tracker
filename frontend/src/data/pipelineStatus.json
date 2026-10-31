@@ -1,10 +1,14 @@
 {
-  "generatedAt": "2026-10-30T16:58:34.579Z",
-  "succeededCount": 30,
-  "totalCount": 31,
+  "generatedAt": "2026-10-31T10:59:48.626Z",
+  "succeededCount": 31,
+  "totalCount": 32,
   "sources": [
     {
       "label": "Financial interests",
+      "succeeded": true
+    },
+    {
+      "label": "MPs who have left removed from the MPs table",
       "succeeded": true
     },
     {
