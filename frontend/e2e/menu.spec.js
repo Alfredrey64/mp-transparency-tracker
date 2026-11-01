@@ -11,9 +11,11 @@ test("on a phone, opening a group in the menu does not scroll the menu", async (
   const n = await groups.count();
   expect(n).toBeGreaterThan(5);
   for (const i of [n - 1, 3, 0]) {
-    await groups.nth(i).locator("> button").click();
+    // The click is sent from inside the page, so the test itself never scrolls the menu to reach the button.
+    const before = await page.evaluate(() => document.querySelector(".site-drawer").scrollTop);
+    await groups.nth(i).locator("> button").evaluate((el) => el.click());
     await page.waitForTimeout(1000);
-    expect(await page.evaluate(() => document.querySelector(".site-drawer").scrollTop), `group ${i}`).toBe(0);
+    expect(await page.evaluate(() => document.querySelector(".site-drawer").scrollTop), `group ${i}`).toBe(before);
   }
 });
 
