@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { preloadView } from "../pageLoaders";
 import { useWatchlistChanges } from "../lib/useWatchlistChanges";
 import { useDialog } from "../lib/useDialog";
@@ -138,6 +139,9 @@ function Drawer({ activeView, onNavigate, onClose: closeNow, onSearch }) {
   useDialog({ open: true, onClose: easeAway, panelRef });
   const groups = MENU.flatMap((m) => m.groups);
   const [openKey, setOpenKey] = useState(() => groups.find((g) => g.items.some((i) => i.key === activeView))?.key ?? null);
+  // A group's pages are drawn the first time it is opened (the others are not needed yet), so the menu itself opens quickly. A group that is about to open is drawn
+  // closed first and opened straight after, so its pages still ease in one after another.
+  const [drawn, setDrawn] = useState(() => new Set(openKey ? [openKey] : []));
   const [recent] = useState(() => readRecent().filter((k) => k !== activeView).slice(0, 4));
 
   // Once a group has finished opening, bring all of it into view: its last page as well as its heading, unless the group is taller than the menu, in which case its heading stays at the top.
@@ -232,7 +236,13 @@ function Drawer({ activeView, onNavigate, onClose: closeNow, onSearch }) {
                   aria-controls={`dg-${group.key}`}
                   onClick={(e) => {
                     const btn = e.currentTarget;
-                    setOpenKey(open ? null : group.key);
+                    if (open) setOpenKey(null);
+                    else if (drawn.has(group.key)) setOpenKey(group.key);
+                    else {
+                      flushSync(() => setDrawn(new Set(drawn).add(group.key)));
+                      btn.closest(".drawer-group")?.getBoundingClientRect();
+                      setOpenKey(group.key);
+                    }
                     if (!open) window.setTimeout(() => showGroup(btn.closest(".drawer-group")), 420);
                   }}
                 >
@@ -242,7 +252,7 @@ function Drawer({ activeView, onNavigate, onClose: closeNow, onSearch }) {
                   <Chevron />
                 </button>
                 <div className="dg-body" id={`dg-${group.key}`} inert={!open}>
-                  <ul className="drawer-list">
+                  {drawn.has(group.key) && <ul className="drawer-list">
                     {items.map((item, n) => {
                       const Icon = item.icon;
                       return (
@@ -254,7 +264,7 @@ function Drawer({ activeView, onNavigate, onClose: closeNow, onSearch }) {
                         </li>
                       );
                     })}
-                  </ul>
+                  </ul>}
                 </div>
               </div>
             );
