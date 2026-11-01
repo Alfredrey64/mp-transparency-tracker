@@ -62,6 +62,7 @@ for (const view of [...PAGES, ...(ONLY ? TABS.filter((t) => ONLY.includes(t)) : 
     await page.goto(`${base}/${view === "home" ? "" : view}`, { waitUntil: "load" });
     await page.waitForSelector("h1", { timeout: 15000 });
     await page.waitForTimeout(500);
+    await page.evaluate(() => window.dispatchEvent(new Event("ons-show-all-cards")));
     // Scroll through so charts that draw on arrival are drawn and measured.
     await page.evaluate(async () => { for (let y = 0; y < document.documentElement.scrollHeight; y += 600) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 60)); } window.scrollTo(0, 0); });
     await page.waitForTimeout(900);

@@ -32,3 +32,21 @@ test("two quick clicks end on the second page, fully visible", async ({ page }) 
   await expect.poll(() => page.evaluate(() => Number(getComputedStyle(document.querySelector("#main-content")).opacity)), { timeout: 5000 }).toBe(1);
   expect(await page.evaluate(() => document.documentElement.dataset.leaving ?? "none")).toBe("none");
 });
+
+// A page with dozens of charts draws the first few with the page and the rest soon after, so changing to it is quick. Asking for a chart that is not there yet
+// (from the "Jump to" list) draws them all first.
+test("a long page of charts draws the rest after the first few, and a jump to a late chart finds it", async ({ page }) => {
+  await page.route("**/127.0.0.1:54321/**", (r) => r.abort());
+  await page.goto("/housing");
+  await expect(page.locator("h1").first()).toBeVisible({ timeout: 15000 });
+  const cards = () => page.locator(".ons-cards > [id^='s-']").count();
+  const first = await expect.poll(cards, { timeout: 5000 }).toBeGreaterThan(0).then(cards);
+  await expect.poll(cards, { timeout: 15000 }).toBeGreaterThan(first);
+
+  // A fresh visit, then straight to the last chart on the list.
+  await page.goto("/housing");
+  await expect(page.locator("#ons-jump-select")).toBeVisible({ timeout: 15000 });
+  const last = await page.locator("#ons-jump-select option").last().getAttribute("value");
+  await page.selectOption("#ons-jump-select", last);
+  await expect(page.locator(`#s-${last}`)).toBeAttached();
+});

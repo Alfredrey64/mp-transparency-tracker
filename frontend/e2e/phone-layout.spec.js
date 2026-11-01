@@ -22,6 +22,7 @@ for (const width of WIDTHS) {
         await expect(page.locator("main h1, h1").first()).toBeVisible({ timeout: 15000 });
         // Let late-sizing content (charts, images, lazy sections) settle before measuring.
         await page.waitForTimeout(600);
+        await page.evaluate(() => window.dispatchEvent(new Event("ons-show-all-cards")));
 
         const m = await page.evaluate(() => ({
           scrollWidth: document.documentElement.scrollWidth,

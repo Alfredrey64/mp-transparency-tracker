@@ -1,4 +1,5 @@
 import { memo, useEffect, useId, useMemo, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { motion, useReducedMotion } from "motion/react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric, readable, solid } from "../theme";
 import { PageHeader } from "./shared";
@@ -16,7 +17,7 @@ import PopulationExplorer from "./PopulationExplorer";
 import SectorExplorer from "./SectorExplorer";
 import CrimePeople from "./CrimePeople";
 import SectorContents from "./SectorContents";
-import { scrollToCard } from "../lib/scrollToCard";
+import { scrollToCard, SHOW_ALL_CARDS } from "../lib/scrollToCard";
 import { sectorByKey, sectorSeries, ONS_SERIES_PAGE, WEEKLY_DEATHS } from "../data/onsSectors";
 import { loadSector, loadDeflator } from "../lib/onsData";
 import { makeDeflator, toReal, canAdjust } from "../lib/onsReal";
@@ -55,6 +56,8 @@ const EXTRA = { crime: [{ id: "crime-who", label: "Crime by ethnic group, age, s
 const tileColumns = (n) => (n <= 4 ? Math.max(1, n) : n === 5 || n === 6 ? 3 : 4);
 const WHOLE_HISTORY = new Set(["population", "environment", "crime"]);
 const NOW = new Date().getFullYear() + 1;
+const FIRST_CARDS = 4;
+const MORE_CARDS = 4;
 
 // A small line with a soft fill under it. Drawn once and left alone: it does not animate while the page scrolls.
 function Spark({ points, color, height = 44 }) {
@@ -536,6 +539,22 @@ export default function SectorPage({ sector, param = null, embedded = false }) {
   const shown = useMemo(() => (def && loaded ? def.series.filter((s) => loaded.series[s.id]) : []), [def, loaded]);
   const extraCards = useMemo(() => (def ? [...(EXPLORERS[def.key] ? [EXPLORERS[def.key]] : []), ...(EXTRA[def.key] ?? []), ...def.breakdowns.map((x) => ({ id: x.id, label: x.title })), ...(def.mortgage ? [{ id: "mortgage-cost", label: "What a mortgage costs" }] : []), ...def.places.map((g) => ({ id: g.id, label: g.title }))] : []), [def]);
   const hasPromises = Boolean(def && SECTOR_PROMISES[def.key]);
+
+  // A page can hold dozens of charts. The first few are drawn with the page and the rest follow a few at a time once it has settled in, so changing to the page
+  // is quick. Anything that needs them all (a link to one chart, showing one chart, printing) gets them at once.
+  const [cardLimit, setCardLimit] = useState(FIRST_CARDS);
+  const allCards = focusId !== null || Boolean(target);
+  useEffect(() => {
+    if (!loaded || cardLimit >= shown.length) return undefined;
+    const timer = setTimeout(() => setCardLimit((n) => n + MORE_CARDS), cardLimit === FIRST_CARDS ? 600 : 80);
+    return () => clearTimeout(timer);
+  }, [loaded, cardLimit, shown.length]);
+  useEffect(() => {
+    const everything = () => flushSync(() => setCardLimit(Infinity));
+    window.addEventListener(SHOW_ALL_CARDS, everything);
+    window.addEventListener("beforeprint", everything);
+    return () => { window.removeEventListener(SHOW_ALL_CARDS, everything); window.removeEventListener("beforeprint", everything); };
+  }, []);
   if (!def) return null;
   const contents = [
     { title: "Compare and explore", items: extraCards },
@@ -646,7 +665,7 @@ export default function SectorPage({ sector, param = null, embedded = false }) {
               />
             ))}
             {loaded.data.weeklyDeaths && <WeeklyDeaths data={loaded.data.weeklyDeaths} accent={def.accent} />}
-            {shown.map((s) => (
+            {shown.slice(0, allCards ? shown.length : cardLimit).map((s) => (
               <SeriesCard key={s.id} def={s} item={loaded.series[s.id]} range={range} accent={def.accent} showGovernments={showGovernments} sectorKey={def.key} real={real} deflator={deflator} />
             ))}
           </div>

@@ -6,6 +6,7 @@ import { MotionConfig } from "motion/react";
 import { supabase } from "./supabaseClient";
 import { COLORS, FONT_BODY } from "./theme";
 import SiteHeader from "./components/SiteHeader";
+import { setNavState, useNavState } from "./lib/navState";
 import SiteFooter from "./components/SiteFooter";
 import BackToTop from "./components/BackToTop";
 import "./chrome.css";
@@ -131,6 +132,18 @@ console.log(
 );
 
 // A page drawn from data, handed in as the component to show.
+// The line under the header while a page change is under way.
+function NavProgress({ pending }) {
+  const { fetching } = useNavState();
+  return <div className="nav-progress" data-on={pending || fetching ? "true" : "false"} aria-hidden="true" />;
+}
+
+// The header, with the link for the page you are heading to highlighted from the click on.
+function ActiveHeader({ view, ...props }) {
+  const { target } = useNavState();
+  return <SiteHeader activeView={target ?? view} {...props} />;
+}
+
 function ExplainerView({ page: Page }) {
   return <Page />;
 }
@@ -277,10 +290,8 @@ export default function App() {
   // Page changes run as transitions: the page you are on stays on screen until the next one (and its code) is ready, instead of
   // blanking to "Loading…" first. `navTarget` is where you are heading, so the sidebar highlights it at once.
   const [navPending, startNav] = useTransition();
-  const [navTarget, setNavTarget] = useState(view);
-  // True while the next page's code is still on its way, before the cross-fade starts (see swapPage).
-  const [fetching, setFetching] = useState(false);
   const navId = useRef(0);
+  // The destination and the "code on its way" flag live in lib/navState (read by NavProgress and ActiveHeader), so a click does not redraw this page.
 
   useEffect(() => startGlossDedupe(document.getElementById("root")), []);
   useEffect(() => installGlow(), []);
@@ -413,7 +424,7 @@ export default function App() {
   // new one at its top, the two showed through each other for a moment, and the header and tab strip appeared doubled.) For people who ask for less motion, or on a
   // slow connection, the page is simply swapped, with React keeping the old page up until the new one is ready. Either way the change happens on the click.
   function swapPage(key, apply, preload) {
-    setNavTarget(key);
+    setNavState({ target: key });
     const root = document.documentElement;
     // From the first click on, pages change by the fade below, so the opening fade of the first page is not repeated on top of it.
     root.dataset.nav = "1";
@@ -424,14 +435,14 @@ export default function App() {
       return;
     }
     const id = ++navId.current;
-    setFetching(true);
+    setNavState({ fetching: true });
     root.dataset.leaving = "1";
     const fadedOut = new Promise((resolve) => setTimeout(resolve, 60));
     const gaveUp = new Promise((resolve) => setTimeout(resolve, 2500));
     Promise.race([Promise.all([preloadPage(loader), fadedOut]), gaveUp]).then(() => {
       // A newer click has taken over: let that one win.
       if (id !== navId.current) return;
-      setFetching(false);
+      setNavState({ fetching: false });
       flushSync(apply);
       // The new page is in, and still transparent. One frame later it is allowed to fade in.
       requestAnimationFrame(() => requestAnimationFrame(() => { if (id === navId.current) delete root.dataset.leaving; }));
@@ -492,9 +503,9 @@ export default function App() {
       <button type="button" className="skip-link" onClick={() => { mainRef.current?.focus(); mainRef.current?.scrollIntoView?.(); }}>{t("Skip to main content")}</button>
       <OfflineBanner />
       <InstallBanner />
-      <div className="nav-progress" data-on={navPending || fetching ? "true" : "false"} aria-hidden="true" />
+      <NavProgress pending={navPending} />
       <LangBar />
-      <SiteHeader activeView={navTarget} onNavigate={handleNavigate} onSelectPolitician={handleViewProfile} />
+      <ActiveHeader view={view} onNavigate={handleNavigate} onSelectPolitician={handleViewProfile} />
       <div style={{ flex: 1, minWidth: 0, width: "100%" }}>
         {/* The new page fades in straight away. It used to wait for the old
             one to fade out first, which added a visible pause to every click. */}

@@ -3,6 +3,10 @@
 // or touched, so by the time it is clicked the page is usually already here.
 
 
+// A page's code together with the data file it asks for first, fetched side by side, so the page opens with its figures instead of fetching them after it appears.
+// A data file that fails to arrive is left for the page to ask for again and to report.
+const withData = (page, ...data) => () => Promise.all([page(), ...data.map((d) => d().catch(() => {}))]).then(([m]) => m);
+
 export const LOADERS = {
   appg: () => import("./components/AppgMemberships"),
   howitworks: () => import("./components/HowParliamentWorks"),
@@ -40,9 +44,9 @@ export const LOADERS = {
   start: () => import("./components/StartHere"),
   rebels: () => import("./components/Rebels"),
   offices: () => import("./components/Offices"),
-  councils: () => import("./components/Councils"),
-  constituency: () => import("./components/ConstituencyHub"),
-  marginals: () => import("./components/Marginals"),
+  councils: withData(() => import("./components/Councils"), () => import("./data/councilsIndex.json")),
+  constituency: withData(() => import("./components/ConstituencyHub"), () => import("./data/seatHexes.json"), () => import("./data/constituencies.json")),
+  marginals: withData(() => import("./components/Marginals"), () => import("./data/constituencies.json")),
   compareSeats: () => import("./components/CompareSeats"),
   compareCouncils: () => import("./components/CompareCouncils"),
   methodology: () => import("./components/Methodology"),
@@ -74,7 +78,7 @@ export const LOADERS = {
   howtovote: () => import("./components/HowToVote"),
   myBallot: () => import("./components/MyBallot"),
   teacher: () => import("./components/TeacherMode"),
-  localElections: () => import("./components/LocalElections"),
+  localElections: withData(() => import("./components/LocalElections"), () => import("./data/councilsIndex.json")),
   generalElection: () => import("./components/GeneralElection"),
   taxRates: () => import("./components/TaxRates"),
   inequality: () => import("./components/Inequality"),
@@ -90,10 +94,10 @@ export const LOADERS = {
   calculators: () => import("./components/Calculators"),
   funding: () => import("./components/Funding"),
   ageing: () => import("./components/Ageing"),
-  myArea: () => import("./components/MyArea"),
+  myArea: withData(() => import("./components/MyArea"), () => import("./data/councilsIndex.json")),
   thisWeek: () => import("./components/ThisWeek"),
   councillors: () => import("./components/Councillors"),
-  lordsVotes: () => import("./components/LordsVotes"),
+  lordsVotes: withData(() => import("./components/LordsVotes"), () => import("./data/lordsVotes.json")),
 };
 
 // The pages drawn from data each have their own file, loaded the same way.

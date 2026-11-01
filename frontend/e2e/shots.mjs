@@ -35,6 +35,8 @@ for (const size of SIZES) {
     await page.goto(p === "home" ? `${base}/` : `${base}/${p}`);
     await page.locator("h1").first().waitFor({ timeout: 15000 }).catch(() => {});
     await page.waitForTimeout(900);
+    await page.evaluate(() => window.dispatchEvent(new Event("ons-show-all-cards")));
+    await page.waitForTimeout(300);
     const file = `screenshots/${size.name}/${slug(p)}.png`;
     // A tall page is cut at five screens so an ultrawide picture stays a sensible size.
     const height = await page.evaluate(() => document.documentElement.scrollHeight);

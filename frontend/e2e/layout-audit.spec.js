@@ -91,6 +91,8 @@ for (const size of SIZES) {
         await page.goto(view === "home" ? "/" : `/${view}`);
         await expect(page.locator("h1").first()).toBeVisible({ timeout: 15000 });
         await page.waitForTimeout(700);
+        // Charts further down a long page are drawn a little after it; ask for them all so every one is measured.
+        await page.evaluate(() => window.dispatchEvent(new Event("ons-show-all-cards")));
         // Measure the page at rest: boxes still rising or growing into place would read as out of line.
         await page.evaluate(() => Promise.race([Promise.all(document.getAnimations().filter((a) => a.effect?.getComputedTiming().endTime !== Infinity).map((a) => a.finished.catch(() => {}))), new Promise((r) => setTimeout(r, 1800))]));
 

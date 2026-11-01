@@ -30,6 +30,7 @@ for (const theme of ["light", "dark"]) {
       await page.goto(path, { waitUntil: "load" });
       await page.evaluate((t) => { document.documentElement.dataset.theme = t; }, theme);
       await page.waitForTimeout(1200);
+      await page.evaluate(() => window.dispatchEvent(new Event("ons-show-all-cards")));
       await page.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 700) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 40)); } window.scrollTo(0, 0); });
       await page.waitForTimeout(2200);
       await page.evaluate(axeSource);
