@@ -6,6 +6,7 @@ import { PageHeader } from "./shared";
 import { partyColour, formatDate } from "../lib/format";
 import { getWatchlist, getLastChecked, setLastChecked } from "../lib/watchlist";
 import { IconStar } from "./icons";
+import { LoadFailedNote } from "./MpCards";
 
 // First-ever visit has no "last checked" timestamp to compare against, so
 // it falls back to a fixed lookback window rather than showing either
@@ -93,6 +94,7 @@ export default function WatchlistDigest({ onSelectPolitician }) {
   const [watchlist] = useState(() => getWatchlist());
   const [previousCheck] = useState(() => getLastChecked());
   const [entries, setEntries] = useState(() => (watchlist.length === 0 ? [] : null));
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     if (watchlist.length === 0) return;
@@ -122,6 +124,8 @@ export default function WatchlistDigest({ onSelectPolitician }) {
           .gte("published_date", sinceDate),
       ]);
       if (cancelled) return;
+      // A failed request must not look like "nothing changed", and the last-checked time must not move, or what was missed would never be shown.
+      if (interestsRes.error || votesRes.error || newsRes.error) { setFailed(true); return; }
 
       const byId = new Map(watchlist.map((p) => [p.id, { politician: p, interests: [], rebellions: [], news: [] }]));
       for (const r of interestsRes.data ?? []) byId.get(r.politician_id)?.interests.push(r);
@@ -135,7 +139,7 @@ export default function WatchlistDigest({ onSelectPolitician }) {
       setEntries(list);
       setLastChecked(Date.now());
     }
-    load();
+    load().catch(() => { if (!cancelled) setFailed(true); });
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -163,7 +167,9 @@ export default function WatchlistDigest({ onSelectPolitician }) {
         </div>
       )}
 
-      {watchlist.length > 0 && entries === null && (
+      {failed && <div style={{ marginTop: 20 }}><LoadFailedNote item="your watchlist updates" /></div>}
+
+      {watchlist.length > 0 && entries === null && !failed && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 20 }}>Checking for updates…</div>
       )}
 

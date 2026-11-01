@@ -17,3 +17,13 @@ test("a donor search that cannot reach the registers says so, not that there are
   await expect(page.getByText("Couldn't load the donor registers.")).toBeVisible();
   await expect(page.getByText(/No donor called/)).toHaveCount(0);
 });
+
+test("a watchlist that cannot reach the database says so and does not mark the updates as seen", async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("mp-tracker-watchlist", JSON.stringify([{ id: 1, name: "Test Member", party: "Labour", party_colour: "#d50000", constituency: "Testford" }]));
+  });
+  await page.goto("/watchlist");
+  await expect(page.getByText("Couldn't load your watchlist updates.")).toBeVisible();
+  const lastChecked = await page.evaluate(() => Object.keys(localStorage).filter((k) => /check/i.test(k)).map((k) => localStorage.getItem(k)));
+  expect(lastChecked).toEqual([]);
+});

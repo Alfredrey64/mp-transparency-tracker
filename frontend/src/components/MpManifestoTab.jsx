@@ -9,6 +9,7 @@ import { manifestoSectionToBillCategory } from "../lib/manifestoBillMapping";
 import { getBillDescription } from "../lib/billDescriptions";
 import { plainSentence } from "../lib/billPlain";
 import { GlossaryTerm } from "./GlossaryTerm";
+import { LoadFailedNote } from "./MpCards";
 import { explainDivision } from "../lib/divisionExplainer";
 
 // One manifesto policy area, its actual promises, and — where the heading
@@ -92,21 +93,23 @@ function ManifestoSectionCard({ section }) {
 export function ManifestoTabContent({ politician }) {
   const [votes, setVotes] = useState(null);
   const [bills, setBills] = useState(null);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     async function load() {
-      const [{ data: v }, { data: b }] = await Promise.all([
+      const [{ data: v, error: ve }, { data: b, error: be }] = await Promise.all([
         supabase.from("voting_records").select("title, date, voted_aye").eq("politician_id", politician.id),
         supabase.from("bills").select("short_title, long_title, sponsoring_department"),
       ]);
+      if (ve || be) { setFailed(true); return; }
       setVotes(v ?? []);
       setBills(b ?? []);
     }
-    load();
+    load().catch(() => setFailed(true));
   }, [politician.id]);
 
   const manifesto = useMemo(() => findManifesto(politician.party), [politician.party]);
-  const loading = votes === null || bills === null;
+  const loading = !failed && (votes === null || bills === null);
 
   const sections = useMemo(() => {
     if (!manifesto?.sections || loading) return null;
@@ -168,7 +171,9 @@ export function ManifestoTabContent({ politician }) {
 
       {loading && <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft, textAlign: "center", padding: "20px 0" }}>Checking voting history…</div>}
 
-      {!loading && sections && (
+      {failed && <LoadFailedNote item="their voting history" />}
+
+      {!loading && !failed && sections && (
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {sections.map((section) => (
             <ManifestoSectionCard key={section.heading} section={section} />

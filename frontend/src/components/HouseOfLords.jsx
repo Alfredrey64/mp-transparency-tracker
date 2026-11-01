@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { useDataFile } from "../lib/useDataFile";
+import { lordsVotes } from "../lib/dataFiles";
 import { GlanceStrip } from "./GlanceStrip";
 import PageGuide from "./PageGuide";
 import { motion } from "motion/react";
@@ -107,16 +109,9 @@ function LordsInterestsLink({ peer }) {
 
 // This peer's votes over the last 12 months, from data/lordsVotes.json. Shown only for peers who voted in that time.
 function PeerVotes({ peerId }) {
-  const [row, setRow] = useState(undefined);
-  useEffect(() => {
-    let alive = true;
-    import("../data/lordsVotes.json").then((m) => {
-      const d = m.default;
-      const p = d.peers[String(peerId)];
-      if (alive) setRow(p ? { voted: p[4], whipped: p[5], against: p[6], divisions: d.divisions, since: d.since } : null);
-    }).catch(() => alive && setRow(null));
-    return () => { alive = false; };
-  }, [peerId]);
+  const { data: d } = useDataFile(lordsVotes);
+  const p = d?.peers[String(peerId)];
+  const row = p ? { voted: p[4], whipped: p[5], against: p[6], divisions: d.divisions, since: d.since } : null;
   if (!row) return null;
   const share = Math.round((row.voted / row.divisions) * 100);
   return (
