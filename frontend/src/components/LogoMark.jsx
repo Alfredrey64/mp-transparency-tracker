@@ -1,22 +1,30 @@
-// The Domesday Live mark: the Houses of Parliament as a flat, single-colour silhouette. No tile, no gradient. The same drawing as
-// public/favicon.svg (which sits it on a plain indigo square). `hole` is the colour behind the building, shown through the clock face.
-export default function LogoMark({ width = 76, color = "var(--sb-accent)", hole = "var(--sb-bg)", title }) {
+// The Domesday Live mark: an open book with "UK Politics" on its pages, flat and single colour. `hole` is the colour behind the mark, which the words
+// and page lines are drawn in. The app icon is a separate drawing (the Parliament silhouette, see scripts/build-icons.mjs). With `animate` the book grows in and three pages turn
+// to show the words, once, when it first draws (see .lg in chrome.css). The pages are drawn already turned, so a still mark and reduced motion both show
+// the open book.
+const RIGHT = "M62 19C74 11 94 10 114 14V67C94 63 74 64 62 72Z";
+const LEFT = "M58 19C46 11 26 10 6 14V67C26 63 46 64 58 72Z";
+const WORDS = { fontFamily: "'Public Sans', system-ui, sans-serif", fontSize: 12.5, fontWeight: 800, textAnchor: "middle" };
+
+export default function LogoMark({ width = 76, color = "var(--sb-accent)", hole = "var(--sb-bg)", title, animate }) {
+  const lines = (cx) => [[48, 34], [54, 28], [60, 32]].map(([y, w]) => <path key={y} d={`M${cx - w / 2} ${y}h${w}`} stroke={hole} strokeOpacity=".35" strokeWidth="1.8" strokeLinecap="round" />);
+  const leaf = (cls, d, cx, i, words) => (
+    <g key={cls + i} className={cls} style={{ "--i": i }}>
+      <path d={d} fill={color} stroke={hole} strokeWidth=".9" />
+      {words && <text x={cx} y="39" fill={hole} {...WORDS}>{words}</text>}
+      {lines(cx)}
+    </g>
+  );
   return (
-    <svg width={width} viewBox="0 -8 240 122" fill="none" role={title ? "img" : undefined} aria-label={title} aria-hidden={title ? undefined : true} style={{ display: "block", flexShrink: 0 }}>
-      <line x1="0" y1="112" x2="240" y2="112" stroke={color} strokeWidth="1.5" />
-      <rect x="18" y="70" width="120" height="42" fill={color} />
-      {[18, 30, 42, 54, 66, 78, 90, 102, 114, 126].map((x) => (
-        <rect key={x} x={x} y="64" width="6" height="8" fill={color} />
-      ))}
-      <rect x="10" y="58" width="10" height="54" fill={color} />
-      <polygon points="10,58 15,46 20,58" fill={color} />
-      <rect x="150" y="30" width="26" height="82" fill={color} />
-      <rect x="146" y="24" width="34" height="8" fill={color} />
-      <polygon points="150,24 163,4 176,24" fill={color} />
-      <circle cx="163" cy="46" r="7" fill={hole} stroke={color} strokeWidth="2" />
-      <line x1="163" y1="4" x2="163" y2="-6" stroke={color} strokeWidth="2" />
-      <rect x="190" y="80" width="14" height="32" fill={color} />
-      <polygon points="190,80 197,66 204,80" fill={color} />
+    <svg className="lg" data-play={animate || undefined} width={width} viewBox="0 0 120 84" fill="none" role={title ? "img" : undefined} aria-label={title} aria-hidden={title ? undefined : true} style={{ display: "block", flexShrink: 0 }}>
+      <g className="lg-g">
+        <path d="M3 71C24 66 46 67 60 76C74 67 96 66 117 71" stroke={color} strokeWidth="2.6" strokeLinecap="round" />
+        <path d={RIGHT} fill={color} />
+        <text x="88" y="39" fill={hole} {...WORDS}>Politics</text>
+        {lines(88)}
+        {[2, 1, 0].map((i) => leaf("lg-f", RIGHT, 88, i))}
+        {[0, 1, 2].map((i) => leaf("lg-b", LEFT, 32, i, i === 2 && "UK"))}
+      </g>
     </svg>
   );
 }

@@ -47,8 +47,8 @@ export function PageToggles({ tabs, current, onPick, label, idPrefix }) {
         {tabs.map((t) => <p key={t.key} aria-hidden={t.key === active.key ? undefined : "true"} data-on={t.key === active.key ? "1" : "0"}>{t.blurb}</p>)}
       </div>
       {panel && (next || prev) && createPortal(
-        <nav className="tabfoot" aria-label="Move to another view">
-          {prev ? <button type="button" className="tabfoot-prev" onClick={() => { onPick(prev.key); document.getElementById(`${idPrefix}-tab-${prev.key}`)?.scrollIntoView({ block: "center" }); }}><small>Back</small><b>{prev.label}</b></button> : <span />}
+        <nav className="tabfoot" data-solo={prev && next ? undefined : "1"} aria-label="Move to another view">
+          {prev && <button type="button" className="tabfoot-prev" style={{ "--c": prev.colour }} onClick={() => { onPick(prev.key); document.getElementById(`${idPrefix}-tab-${prev.key}`)?.scrollIntoView({ block: "center" }); }}><small>Back</small><b>{prev.label}</b>{prev.blurb && <span>{prev.blurb}</span>}</button>}
           {next && <button type="button" className="tabfoot-next" style={{ "--c": next.colour }} onClick={() => { onPick(next.key); document.getElementById(`${idPrefix}-tab-${next.key}`)?.scrollIntoView({ block: "center" }); }}><small>Next view</small><b>{next.label}</b><span>{next.blurb}</span></button>}
         </nav>,
         panel,

@@ -22,12 +22,15 @@ export default function SectionNav({ view, onNavigate }) {
   const prev = items[(at - 1 + items.length) % items.length];
   const next = items[(at + 1) % items.length];
   // The pages nearest this one, alternating after and before it.
+  // With five or more pages, the two already shown as Previous and Next are left out so the tiles below add pages rather than repeat them.
+  const steps = items.length >= 5 ? [prev.key, next.key] : [];
+  const room = Math.min(SHOWN, items.length - 1 - steps.length);
   const near = [];
-  for (let d = 1; near.length < Math.min(SHOWN, items.length - 1); d++) {
+  for (let d = 1; near.length < room; d++) {
     const a = items[(at + d) % items.length];
-    if (!near.includes(a) && a.key !== items[at].key) near.push(a);
+    if (!near.includes(a) && a.key !== items[at].key && !steps.includes(a.key)) near.push(a);
     const b = items[(at - d + items.length * 4) % items.length];
-    if (!near.includes(b) && b.key !== items[at].key && near.length < Math.min(SHOWN, items.length - 1)) near.push(b);
+    if (!near.includes(b) && b.key !== items[at].key && !steps.includes(b.key) && near.length < room) near.push(b);
     if (d > items.length) break;
   }
   const card = (i, extra) => {
@@ -48,8 +51,8 @@ export default function SectionNav({ view, onNavigate }) {
       </div>
       {/* With only one other page, "previous" and "next" would be the same link twice, so the one page is shown below instead. */}
       {items.length > 2 && <div className="sn-pn">
-        <PageLink to={prev.key} onNavigate={onNavigate} className="sn-step" rel="prev"><small>{t("Previous")}</small><b>{t(prev.label)}</b></PageLink>
-        <PageLink to={next.key} onNavigate={onNavigate} className="sn-step sn-next" rel="next"><small>{t("Next")}</small><b>{t(next.label)}</b></PageLink>
+        <PageLink to={prev.key} onNavigate={onNavigate} className="sn-step" rel="prev"><small>{t("Previous")}</small><b>{t(prev.label)}</b>{prev.hint && <span>{t(prev.hint)}</span>}</PageLink>
+        <PageLink to={next.key} onNavigate={onNavigate} className="sn-step sn-next" rel="next"><small>{t("Next")}</small><b>{t(next.label)}</b>{next.hint && <span>{t(next.hint)}</span>}</PageLink>
       </div>}
       <div className="sn-grid">{near.map((i) => card(i))}</div>
     </nav>

@@ -34,6 +34,20 @@
   display: inline-flex; align-items: center; gap: 12px; text-decoration: none; color: var(--c-ink); flex-shrink: 0; border-radius: var(--radius-s);
   font-family: "Figures", "Newsreader", Georgia, serif; font-weight: 700; font-size: 23px; letter-spacing: -0.02em; line-height: 1;
 }
+/* The book mark: drawn open, so a still mark and reduced motion show it as it rests. With data-play the book grows in and three pages turn once. Each turn is
+   two halves that meet at the spine: the page narrows to an edge (eased in), then widens on the left (eased out), tilting a little so it reads as a turn. */
+.lg-g { transform-box: view-box; transform-origin: 60px 52px; }
+.lg-f, .lg-b { transform-box: fill-box; }
+.lg-f { transform-origin: 0 50%; transform: scaleX(0); }
+.lg-b { transform-origin: 100% 50%; }
+@media (prefers-reduced-motion: no-preference) {
+  .lg[data-play] .lg-g { animation: lg-grow 1.6s cubic-bezier(0.2, 0.9, 0.25, 1.06) both; }
+  .lg[data-play] .lg-f { animation: lg-f 0.44s cubic-bezier(0.35, 0, 0.85, 0.6) calc(0.35s + var(--i) * 0.22s) both; }
+  .lg[data-play] .lg-b { animation: lg-b 0.44s cubic-bezier(0.15, 0.4, 0.65, 1) calc(0.79s + var(--i) * 0.22s) both; }
+}
+@keyframes lg-grow { from { transform: scale(0.5) translateY(8px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes lg-f { from { transform: scaleX(1); opacity: 1; } to { transform: scaleX(0) skewY(-9deg); opacity: 0.7; } }
+@keyframes lg-b { from { transform: scaleX(0) skewY(9deg); opacity: 0.7; } to { transform: scaleX(1); opacity: 1; } }
 .site-nav { position: relative; display: flex; align-items: center; gap: 2px; flex: 1; min-width: 0; }
 .nav-pill { position: absolute; left: 0; top: 50%; height: 44px; width: var(--pw, 0px); border-radius: var(--radius-s); background: var(--sb-active); transform: translate(var(--px, 0px), -50%); opacity: 0.9; pointer-events: none; transition: transform 0.35s var(--ease-out), width 0.35s var(--ease-out); }
 .site-nav-btn {
@@ -230,14 +244,15 @@ dialog[open]::backdrop { animation: fade-in 0.15s ease both; }
 /* ---- Footer ------------------------------------------------------------------------------------------------------------------------------------- */
 .site-footer { background: var(--c-navy); color: var(--c-on-navy-soft); margin-top: 72px; }
 .site-footer-inner { max-width: 1360px; margin: 0 auto; padding: 56px 32px 36px; }
-.footer-top { display: grid; grid-template-columns: minmax(0, 1.2fr) repeat(3, minmax(0, 1fr)); gap: 40px; }
+.footer-top { display: grid; grid-template-columns: minmax(0, 1.3fr) repeat(3, minmax(0, 1fr)); gap: 40px 56px; }
 .footer-brand { display: inline-flex; align-items: center; gap: 12px; color: #fff; text-decoration: none; font: 700 22px/1 "Figures", "Newsreader", Georgia, serif; letter-spacing: -0.02em; }
-.footer-about { margin: 16px 0 0; max-width: 360px; font-size: 15px; line-height: 1.6; color: var(--c-on-navy-soft); }
-.footer-col h3 { margin: 0 0 14px; font: 700 16px/1.2 "Figures", "Newsreader", Georgia, serif; color: #fff; }
-.footer-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
-.footer-col a { display: inline-flex; align-items: center; min-height: 36px; font-size: 15px; color: var(--c-on-navy-soft); text-decoration: none; transition: color 0.15s var(--ease-out); }
+.footer-about { margin: 18px 0 0; max-width: 340px; font-size: 15px; line-height: 1.65; color: var(--c-on-navy-soft); }
+.footer-brandcol .footer-lang { margin-top: 28px; }
+.footer-col h3 { margin: 0 0 14px; padding-bottom: 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.16); font: 700 21px/1.2 "Figures", "Newsreader", Georgia, serif; letter-spacing: -0.01em; color: #fff; }
+.footer-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.footer-col a { display: inline-flex; align-items: center; min-height: 36px; font-size: 15.5px; line-height: 1.35; color: var(--c-on-navy-soft); text-decoration: none; transition: color 0.15s var(--ease-out); }
 .footer-col a:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
-.footer-bottom { margin-top: 44px; padding-top: 22px; border-top: 1px solid rgba(255, 255, 255, 0.14); display: flex; flex-wrap: wrap; gap: 8px 28px; justify-content: space-between; font-size: 14px; line-height: 1.55; }
+.footer-bottom { margin-top: 52px; padding-top: 24px; border-top: 1px solid rgba(255, 255, 255, 0.14); display: flex; flex-wrap: wrap; gap: 8px 28px; justify-content: space-between; font-size: 14px; line-height: 1.55; }
 .footer-bottom p { margin: 0; max-width: 760px; }
 @media (max-width: 900px) {
   .footer-top { grid-template-columns: 1fr 1fr; }
@@ -247,7 +262,7 @@ dialog[open]::backdrop { animation: fade-in 0.15s ease both; }
   .site-footer-inner { padding: 40px 20px 28px; }
   .footer-top { grid-template-columns: 1fr 1fr; gap: 28px 20px; }
   .footer-col:last-of-type { grid-column: 1 / -1; }
-  .footer-col:last-of-type ul { grid-template-columns: 1fr 1fr; column-gap: 20px; }
+  .footer-col:last-of-type ul { grid-template-columns: 1fr 1fr; column-gap: 20px; align-items: start; }
   .footer-col a { min-height: 40px; font-size: 14.5px; }
 }
 

@@ -858,6 +858,15 @@ export function IconPension({ size = 17 }) {
   );
 }
 
+// An elderly man with glasses, a moustache and a beard, for Ageing and pensions. A filled silhouette, so it takes the colour of the text around it.
+export function IconElder({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" fillRule="evenodd" aria-hidden="true">
+      <path d="M12 1.8C15.4 1.8 17.7 4.2 17.7 7.5c0 .4 0 .7-.1 1 1-.3 1.8.4 1.7 1.4-.1.9-.9 1.5-1.8 1.3.1 3.1-1.5 5.4-5.5 6.700-4-1.300-5.600-3.600-5.500-6.700-.9.200-1.700-.4-1.800-1.300-.1-1 .7-1.700 1.700-1.400-.1-.3-.1-.6-.1-1C6.300 4.200 8.600 1.800 12 1.800ZM9.500 5.900a1.900 1.900 0 1 0 0 3.800 1.900 1.900 0 1 0 0-3.800ZM9.500 6.700a1.100 1.100 0 1 1 0 2.200 1.100 1.100 0 1 1 0-2.200ZM14.500 5.900a1.900 1.900 0 1 0 0 3.800 1.900 1.900 0 1 0 0-3.800ZM14.500 6.700a1.100 1.100 0 1 1 0 2.200 1.100 1.100 0 1 1 0-2.200ZM11.300 7.500h1.400v.7h-1.400ZM11.700 12.100c-1 .8-2.600.8-3.700-.3l.5-.5c.9.8 2 .8 3.200.2ZM12.300 12.100c1 .8 2.600.8 3.700-.3l-.5-.5c-.9.8-2 .8-3.200.2ZM9.200 14.200c.5 1.100 1.400 1.900 2.400 2.400l.2-.6c-.9-.5-1.600-1.100-2-2ZM14.800 14.200c-.5 1.100-1.400 1.900-2.400 2.400l-.2-.6c.9-.5 1.600-1.100 2-2ZM2.600 22.200c0-2.700 2.300-4.200 5.300-4.900l4.100 2.400 4.100-2.400c3 .7 5.300 2.200 5.300 4.900Z" />
+    </svg>
+  );
+}
+
 export function IconBolt({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">

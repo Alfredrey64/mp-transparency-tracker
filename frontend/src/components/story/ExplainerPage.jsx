@@ -103,11 +103,11 @@ function Block({ b, colour }) {
   }
   if (b.facts) {
     return (
-      <dl className="st-facts">
+      <dl className="st-facts" style={{ "--vl": Math.max(...b.facts.map((f) => String(f.value).length)) }}>
         {b.facts.map((f, i) => (
           <div key={f.label} style={{ "--tc": f.colour ?? colour, "--i": i }}>
             <dt>{f.label}</dt>
-            <dd><AnimatedValue text={f.value} /></dd>
+            <dd><span className="st-v"><AnimatedValue text={f.value} /></span></dd>
             {f.note && <p>{f.note}</p>}
           </div>
         ))}

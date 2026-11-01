@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING } from "../theme";
 import { pillStyle } from "../lib/onsStyles";
 import { PageHeader } from "./shared";
-import { IconPension } from "./icons";
+import { IconElder } from "./icons";
 import { BarRows, Caution, Legend, PageToggles, Panel, StackBars, Stats, Takeaways, TrendExplorer } from "./insight";
 import { CHECKED, LIFE_STAGES, OBR_LONG_RUN, PENSION_AGE, PENSION_RATES, POPULATION, SET_BY, SOURCES, STATE_PENSION } from "../data/ageing";
 import { A, countSetBy, indexed, rises, shareOfEarnings, whatIf } from "../lib/ageing";
@@ -359,7 +359,7 @@ export default function Ageing({ param }) {
   }
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
-      <PageHeader icon={IconPension} kicker="Britain in numbers" title="Ageing and pensions" subtitle="What the State Pension pays and costs, when you can claim it, how the population is ageing, and the arguments about the triple lock, the pension age and who pays." />
+      <PageHeader icon={IconElder} kicker="Britain in numbers" title="Ageing and pensions" subtitle="What the State Pension pays and costs, when you can claim it, how the population is ageing, and the arguments about the triple lock, the pension age and who pays." />
       <div ref={ref} style={{ scrollMarginTop: 12 }}>
         <PageToggles tabs={TABS} current={tab} onPick={go} label="What to look at" idPrefix="age" />
       </div>

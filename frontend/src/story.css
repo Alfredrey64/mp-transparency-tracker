@@ -152,7 +152,13 @@
 .st-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 14px; margin: 0; }
 .st-facts > div { padding: 20px 20px 18px 26px; border-radius: 16px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1), inset 5px 0 0 var(--tc); }
 .st-facts dt { font: 700 13.5px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--tc) 75%, var(--c-ink)); }
-.st-facts dd { margin: 4px 0 0; font: 700 clamp(38px, 5vw, 58px)/1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); letter-spacing: -0.02em; font-variant-numeric: lining-nums tabular-nums; }
+.st-facts dd { margin: 4px 0 0; }
+.st-v { display: block; font: 700 clamp(38px, 5vw, 58px)/1.05 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); letter-spacing: -0.02em; font-variant-numeric: lining-nums tabular-nums; }
+/* Every figure in a row is one size, chosen so the longest fits its card on one line, so a long figure never wraps and leaves the others floating above a gap. */
+@supports (width: 1cqi) {
+  .st-facts dd { container-type: inline-size; }
+  .st-v { font-size: clamp(26px, calc(100cqi / (var(--vl, 6) * 0.56)), 58px); white-space: nowrap; }
+}
 .st-facts p { margin: 8px 0 0; font: 400 14.5px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .st-compare { display: grid; grid-template-columns: repeat(var(--n, 2), minmax(0, 1fr)); gap: 14px; }
 .st-compare section { padding: 22px 22px 20px 26px; border-radius: 16px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1), inset 5px 0 0 var(--tc); }
@@ -347,7 +353,7 @@
 .st-facts > div { margin-bottom: 14px; }
 @supports (grid-template-rows: subgrid) {
   .st-facts > div { display: grid; grid-row: span 3; grid-template-rows: subgrid; align-content: start; }
-  .st-facts dd { margin-top: 4px; align-self: end; }
+  .st-facts dd { margin-top: 4px; align-self: start; }
   .st-facts p { margin-top: 8px; }
 }
 
