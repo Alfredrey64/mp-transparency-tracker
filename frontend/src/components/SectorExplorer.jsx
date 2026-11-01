@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useDataFile } from "../lib/useDataFile";
+import { regionalBreakdowns } from "../lib/dataFiles";
 import RegionalExplorer from "./RegionalExplorer";
 
 // The "by place" map on a Britain in numbers page, drawn from regionalBreakdowns.json (see fetch-regional-breakdowns.js).
@@ -21,13 +22,7 @@ const TEXT = {
 
 
 export default function SectorExplorer({ sector, accent }) {
-  const [data, setData] = useState(null);
-  const [failed, setFailed] = useState(false);
-  useEffect(() => {
-    let alive = true;
-    import("../data/regionalBreakdowns.json").then((m) => alive && setData(m.default)).catch(() => alive && setFailed(true));
-    return () => { alive = false; };
-  }, []);
+  const { data: data, failed } = useDataFile(regionalBreakdowns);
   const text = TEXT[sector];
   const categories = data?.sectors?.[sector]?.categories;
   if (!text || failed || (data && !categories?.length)) return null;

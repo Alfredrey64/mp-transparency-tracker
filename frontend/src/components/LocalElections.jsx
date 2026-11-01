@@ -1,4 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { useDataFile } from "../lib/useDataFile";
+import { councilsIndex } from "../lib/dataFiles";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric, readable, solid } from "../theme";
 import { PageHeader } from "./shared";
 import { LoadFailedNote } from "./MpCards";
@@ -174,13 +176,7 @@ function Skyline({ dates }) {
 }
 
 export default function LocalElections() {
-  const [data, setData] = useState(null);
-  const [failed, setFailed] = useState(false);
-  useEffect(() => {
-    let alive = true;
-    import("../data/councilsIndex.json").then((m) => alive && setData(m.default)).catch(() => alive && setFailed(true));
-    return () => { alive = false; };
-  }, []);
+  const { data: data, failed } = useDataFile(councilsIndex);
   const dates = useMemo(() => (data ? upcomingDates(data.index) : []), [data]);
   const big = useMemo(() => biggestDate(dates), [dates]);
   const soonest = dates[0];

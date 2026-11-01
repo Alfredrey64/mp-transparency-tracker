@@ -1,4 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { useDataFile } from "../lib/useDataFile";
+import { crimePeople } from "../lib/dataFiles";
 import { COLORS, FONT_BODY, FONT_DISPLAY, numeric } from "../theme";
 import { card, cardTitle } from "../lib/onsStyles";
 import { Segmented } from "./DeprivationControls";
@@ -223,14 +225,8 @@ const TABS = [
 ];
 
 export default function CrimePeople({ accent }) {
-  const [data, setData] = useState(null);
-  const [failed, setFailed] = useState(false);
   const [tab, setTab] = useState("arrests");
-  useEffect(() => {
-    let alive = true;
-    import("../data/crimePeople.json").then((m) => alive && setData(m.default)).catch(() => alive && setFailed(true));
-    return () => { alive = false; };
-  }, []);
+  const { data: data, failed } = useDataFile(crimePeople);
   if (failed) return null;
 
   return (

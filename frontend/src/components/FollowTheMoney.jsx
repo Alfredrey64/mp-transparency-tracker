@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, numeric, readable } from "../theme";
 import { PageHeader } from "./shared";
+import { LoadFailedNote } from "./MpCards";
 import { partyColour, initials, formatDate } from "../lib/format";
 import { mpGiftKind, partyGiftKind, declaredAs } from "../lib/giftPurpose";
 import { partyColourByName } from "../lib/careerTimeline";
@@ -281,6 +282,7 @@ export default function FollowTheMoney({ onSelectPolitician, initialQuery = null
   const [query, setQuery] = useState(initialQuery ?? "");
   const [debounced, setDebounced] = useState((initialQuery ?? "").trim());
   const [loading, setLoading] = useState(false);
+  const [failed, setFailed] = useState(false);
   const [results, setResults] = useState(null);
 
   useEffect(() => {
@@ -293,6 +295,7 @@ export default function FollowTheMoney({ onSelectPolitician, initialQuery = null
     let cancelled = false;
     async function run() {
       setLoading(true);
+      setFailed(false);
       const [interestsRes, donationsRes] = await Promise.all([
         supabase
           .from("financial_interests")
@@ -308,10 +311,11 @@ export default function FollowTheMoney({ onSelectPolitician, initialQuery = null
           .limit(500),
       ]);
       if (cancelled) return;
+      if (interestsRes.error || donationsRes.error) { setFailed(true); setLoading(false); return; }
       setResults(groupDonors(interestsRes.data ?? [], donationsRes.data ?? []));
       setLoading(false);
     }
-    run();
+    run().catch(() => { if (!cancelled) { setFailed(true); setLoading(false); } });
     return () => { cancelled = true; };
   }, [debounced]);
 
@@ -364,7 +368,9 @@ export default function FollowTheMoney({ onSelectPolitician, initialQuery = null
 
         {!isTooShort && hasSearched && loading && <Skeleton />}
 
-        {!isTooShort && hasSearched && !loading && activeResults?.length === 0 && (
+        {!isTooShort && hasSearched && !loading && failed && <LoadFailedNote item="the donor registers" />}
+
+        {!isTooShort && hasSearched && !loading && !failed && activeResults?.length === 0 && (
           <div style={{ padding: "22px 24px", borderRadius: 18, border: `1px dashed ${COLORS.hairline}`, background: COLORS.paperCard }}>
             <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 700, color: COLORS.ink }}>No donor called &ldquo;{debounced}&rdquo; in either register</div>
             <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.6, maxWidth: 600, margin: "8px 0 0" }}>
@@ -373,7 +379,7 @@ export default function FollowTheMoney({ onSelectPolitician, initialQuery = null
           </div>
         )}
 
-        {!isTooShort && hasSearched && !loading && activeResults?.length > 0 && (
+        {!isTooShort && hasSearched && !loading && !failed && activeResults?.length > 0 && (
           <div style={{ display: "grid", gap: 18 }}>
             <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", justifyContent: "space-between", gap: "6px 20px" }}>
               <h2 style={{ margin: 0, fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, color: COLORS.ink }}>

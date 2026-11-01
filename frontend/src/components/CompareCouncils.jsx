@@ -1,5 +1,7 @@
 /** @jsxImportSource react */
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useDataFile } from "../lib/useDataFile";
+import { councilsIndex } from "../lib/dataFiles";
 import { COLORS, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { LoadFailedNote } from "./MpCards";
@@ -135,16 +137,10 @@ function Deprivation({ c, info, t }) {
 export default function CompareCouncils({ param }) {
   const t = useT();
   const loc = dateLocale();
-  const [data, setData] = useState(null);
-  const [failed, setFailed] = useState(false);
   const [extra, setExtra] = useState(null);
   const [idA, idB] = useMemo(() => pairFromParam(param), [param]);
 
-  useEffect(() => {
-    let alive = true;
-    import("../data/councilsIndex.json").then((m) => alive && setData(m.default)).catch(() => alive && setFailed(true));
-    return () => { alive = false; };
-  }, []);
+  const { data: data, failed } = useDataFile(councilsIndex);
   const a = data && idA ? data.index.find((c) => c.id === idA) : null;
   const b = data && idB ? data.index.find((c) => c.id === idB) : null;
   const both = a && b;

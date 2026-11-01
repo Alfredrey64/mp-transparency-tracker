@@ -1,5 +1,7 @@
 import { partyChange } from "../lib/partyChange";
 import { useEffect, useMemo, useState } from "react";
+import { useDataFile } from "../lib/useDataFile";
+import { constituencies } from "../lib/dataFiles";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric } from "../theme";
 import { partyColour } from "../lib/format";
 import { searchSeats, seatKey, seatSafety } from "../lib/constituency";
@@ -173,16 +175,10 @@ function summary(a, b) {
 }
 
 export default function CompareSeats({ param }) {
-  const [data, setData] = useState(null);
-  const [failed, setFailed] = useState(false);
   const [history, setHistory] = useState(null);
   const [dep, setDep] = useState(null);
 
-  useEffect(() => {
-    let alive = true;
-    import("../data/constituencies.json").then((m) => alive && setData(m.default)).catch(() => alive && setFailed(true));
-    return () => { alive = false; };
-  }, []);
+  const { data: data, failed } = useDataFile(constituencies);
 
   const [nameA, nameB] = useMemo(() => {
     const [a, b] = String(param ?? "").split(SEP);

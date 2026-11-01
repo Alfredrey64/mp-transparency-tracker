@@ -39,6 +39,10 @@ function keysFromParam(param) {
   return m ? m[1].split(",").filter((k) => CAREER_FILTERS.some((f) => f.key === k)) : [];
 }
 
+// While the MPs are still arriving, the party buttons are drawn invisibly from this list (party, then MPs) so the row already takes the room it will need and
+// the list below does not move down when the real ones replace it. It only holds space: if the parties change, the real row simply replaces it.
+const PARTY_SPACE = [["Labour", 361], ["Conservative", 118], ["Liberal Democrat", 71], ["Labour (Co-op)", 43], ["Independent", 11], ["Reform UK", 8], ["Scottish National Party", 8], ["Sinn Féin", 7], ["Green Party", 5], ["Democratic Unionist Party", 5], ["Plaid Cymru", 4], ["Social Democratic & Labour Party", 2], ["Your Party", 2], ["Traditional Unionist Voice", 1], ["Ulster Unionist Party", 1], ["Restore Britain", 1], ["Speaker", 1], ["Alliance", 1]];
+
 export default function PoliticianList({ onSelect, initialCareer = null }) {
   const [politicians, setPoliticians] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -163,13 +167,15 @@ export default function PoliticianList({ onSelect, initialCareer = null }) {
         >
           All parties
         </button>
-        {parties.map((party) => {
+        {(loading ? PARTY_SPACE.map(([name, count]) => ({ name, count, color: COLORS.inkSoft, space: true })) : parties).map((party) => {
           const active = activeParty === party.name;
           return (
             <button
               key={party.name}
               onClick={() => withScrollPreserved(() => setActiveParty(active ? "All" : party.name))}
+              {...(party.space ? { disabled: true, tabIndex: -1, "aria-hidden": "true" } : null)}
               style={{
+                visibility: party.space ? "hidden" : undefined,
                 fontFamily: FONT_BODY,
                 fontSize: 13,
                 fontWeight: 600,

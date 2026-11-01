@@ -7,6 +7,7 @@ import { partyColour, formatDate } from "../lib/format";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import Loading from "./Loading";
+import { LoadFailedNote } from "./MpCards";
 
 // This is a company-first view of the same underlying data shown elsewhere
 // on this page donor-first (grouped by MP and by industry sector). Here we
@@ -19,6 +20,7 @@ import Loading from "./Loading";
 // that are *also* declared donors — not a general business directory.
 function useDonorCompanies() {
   const [companies, setCompanies] = useState(null);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -62,14 +64,14 @@ function useDonorCompanies() {
         .sort((a, b) => b.total - a.total);
       setCompanies(list);
     }
-    load();
+    load().catch(() => setFailed(true));
   }, []);
 
-  return companies;
+  return { companies, failed };
 }
 
 export function CompanyDonorsView() {
-  const companies = useDonorCompanies();
+  const { companies, failed } = useDonorCompanies();
   const [query, setQuery] = useState("");
   const [sectorFilter, setSectorFilter] = useState("All");
   const [expandedNumber, setExpandedNumber] = useState(null);
@@ -128,7 +130,8 @@ export function CompanyDonorsView() {
         ))}
       </div>
 
-      {companies === null && <Loading compact />}
+      {companies === null && !failed && <Loading compact />}
+      {failed && <LoadFailedNote item="the company donors" />}
       {companies !== null && filtered.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No matching companies found.</div>
       )}

@@ -4,6 +4,7 @@ import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { partyColour, formatDate } from "../lib/format";
 import { PageHeader } from "./shared";
+import { LoadFailedNote } from "./MpCards";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconByElection } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
@@ -34,17 +35,19 @@ export default function ByElections() {
   const [elections, setElections] = useState(null);
   const [formerMps, setFormerMps] = useState([]);
   const [expanded, setExpanded] = useState(null);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     async function load() {
-      const [{ data: byElections }, { data: former }] = await Promise.all([
+      const [{ data: byElections, error }, { data: former }] = await Promise.all([
         supabase.from("by_elections").select("*").order("election_date", { ascending: false }),
         supabase.from("former_mps").select("name, constituency, party, party_colour, membership_end_date, membership_end_reason"),
       ]);
+      if (error) { setFailed(true); return; }
       setElections(byElections ?? []);
       setFormerMps(former ?? []);
     }
-    load();
+    load().catch(() => setFailed(true));
   }, []);
 
   const predecessorFor = useMemo(() => {
@@ -122,7 +125,8 @@ export default function ByElections() {
         </GlanceCard>
       )}
 
-      {elections === null && <Loading />}
+      {elections === null && !failed && <Loading />}
+      {failed && <LoadFailedNote item="the by-elections" />}
       {elections !== null && completed.length === 0 && vacantSeats.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>
           No by-elections recorded since the last general election yet.

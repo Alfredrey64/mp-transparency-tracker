@@ -48,12 +48,12 @@ for (const path of ["/terms", "/privacy", "/settings"]) {
   test(`${path} is centred on a wide screen, not pushed to the left`, async ({ page }) => {
     await page.setViewportSize({ width: 1920, height: 1000 });
     await page.goto(path);
-    const first = page.locator("main h2, main section, main > div > div:nth-of-type(2)").locator("visible=true").first();
-    await expect(first).toBeVisible();
-    const box = await first.boundingBox();
-    const left = box.x;
-    const right = 1920 - (box.x + box.width);
-    expect(Math.abs(left - right), `${path}: ${Math.round(left)}px on the left, ${Math.round(right)}px on the right`).toBeLessThanOrEqual(24);
+    const target = page.locator("main h2, main section, main > div > div:nth-of-type(2)").locator("visible=true").first();
+    // The page may still be swapping a placeholder for its content, so the measure is retried until it settles.
+    await expect.poll(async () => {
+      const box = await target.boundingBox({ timeout: 1000 }).catch(() => null);
+      return box ? Math.abs(box.x - (1920 - (box.x + box.width))) : 9999;
+    }, { message: `${path} is centred`, timeout: 8000 }).toBeLessThanOrEqual(24);
   });
 }
 

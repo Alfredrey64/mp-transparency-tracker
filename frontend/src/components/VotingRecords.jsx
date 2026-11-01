@@ -621,6 +621,7 @@ export default function VotingRecords({ initialMp = null, initialBill = null, in
         )}
       </div>
 
+      {loadingBills && <div aria-hidden="true" className="bj-hold" />}
       {!loadingBills && bills.length > 0 && (
         <div style={{ marginTop: 32 }}>
           <BillJourney bills={bills} />

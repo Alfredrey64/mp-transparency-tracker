@@ -1,4 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { useDataFile } from "../lib/useDataFile";
+import { constituencies } from "../lib/dataFiles";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric, solid } from "../theme";
 import { partyColour } from "../lib/format";
 import { seatRows, seatsByParty, uniformSwing, swingCurve, challengers } from "../lib/swing";
@@ -416,13 +418,7 @@ function SeatList({ rows, parties }) {
 }
 
 export default function Marginals() {
-  const [data, setData] = useState(null);
-  const [failed, setFailed] = useState(false);
-  useEffect(() => {
-    let alive = true;
-    import("../data/constituencies.json").then((m) => alive && setData(m.default)).catch(() => alive && setFailed(true));
-    return () => { alive = false; };
-  }, []);
+  const { data: data, failed } = useDataFile(constituencies);
   const rows = useMemo(() => (data ? seatRows(data.constituencies) : []), [data]);
   const parties = useMemo(() => seatsByParty(rows), [rows]);
   const marginal = rows.filter((r) => r.lead < 5).length;

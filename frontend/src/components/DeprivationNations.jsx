@@ -1,4 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { useDataFile } from "../lib/useDataFile";
+import { deprivationNations } from "../lib/dataFiles";
 import { COLORS, FONT_BODY, FONT_DISPLAY, numeric } from "../theme";
 import { card, cardTitle, pillStyle } from "../lib/onsStyles";
 import { HowToRead, Row as Field, Segmented, SelectField } from "./DeprivationControls";
@@ -162,15 +164,9 @@ function List({ nation, data, domain, domainLabel }) {
 }
 
 export default function DeprivationNations({ nation, kind: domain = "imd" }) {
-  const [all, setAll] = useState(null);
-  const [failed, setFailed] = useState(false);
   const note = NOTES[nation];
 
-  useEffect(() => {
-    let alive = true;
-    import("../data/deprivationNations.json").then((m) => alive && setAll(m.default)).catch(() => alive && setFailed(true));
-    return () => { alive = false; };
-  }, []);
+  const { data: all, failed } = useDataFile(deprivationNations);
 
   const data = all?.[nation];
   const domainLabel = KINDS[nation].find((d) => d.id === domain)?.label ?? "Overall deprivation";

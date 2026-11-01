@@ -1,5 +1,7 @@
 /** @jsxImportSource react */
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { useDataFile } from "../lib/useDataFile";
+import { lordsVotes } from "../lib/dataFiles";
 import { COLORS, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { IconLordsVote } from "./icons";
@@ -199,13 +201,7 @@ function Peers({ rows, parties, divisions }) {
 }
 
 export default function LordsVotes() {
-  const [data, setData] = useState(null);
-  const [failed, setFailed] = useState(false);
-  useEffect(() => {
-    let alive = true;
-    import("../data/lordsVotes.json").then((m) => alive && setData(m.default)).catch(() => alive && setFailed(true));
-    return () => { alive = false; };
-  }, []);
+  const { data: data, failed } = useDataFile(lordsVotes);
   const view = useMemo(() => {
     if (!data) return null;
     const rows = peerRows(data);
