@@ -1,3 +1,4 @@
+import Collapse from "./Collapse";
 import { useState, useEffect } from "react";
 import { COLORS, FONT_BODY } from "../theme";
 import { useT } from "../lib/useLang";
@@ -69,7 +70,8 @@ export default function PageGuide({ viewKey, style }) {
         <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>{open ? t("Hide") : t("Show")}</span>
         <span aria-hidden="true" style={{ color: COLORS.inkSoft, fontSize: 11, transform: open ? "rotate(180deg)" : "none", transition: "transform 0.15s" }}>▾</span>
       </button>
-      {open && (
+      <Collapse open={open}>
+        {() => (
         <div style={{ padding: "0 18px 16px 46px", display: "flex", flexDirection: "column", gap: 12 }}>
           {ROWS.map(([key, label]) => (
             <div key={key} style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 1 }}>
@@ -78,7 +80,8 @@ export default function PageGuide({ viewKey, style }) {
             </div>
           ))}
         </div>
-      )}
+        )}
+      </Collapse>
     </section>
   );
 }

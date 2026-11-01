@@ -666,6 +666,12 @@ html[data-nav] .page-hero-inner > *, html[data-nav] .page-hero::before { animati
 
 /* ---- The route a bill takes (BillRoute.jsx) ----------------------------------------------------------------------------------------------------- */
 
+/* ---- Fold-outs (components/Collapse.jsx) ---------------------------------------------------------------------------------------------------------- */
+.collapse { display: grid; grid-template-rows: 0fr; opacity: 0; visibility: hidden; transition: grid-template-rows 0.28s var(--ease-out), opacity 0.2s ease-out, visibility 0s linear 0.28s; }
+.collapse[data-open="true"] { grid-template-rows: 1fr; opacity: 1; visibility: visible; transition-delay: 0s, 0.04s, 0s; }
+.collapse-in { min-height: 0; overflow: hidden; }
+@media (prefers-reduced-motion: reduce) { .collapse, .collapse[data-open="true"] { transition: none; } }
+
 /* ---- Page changes ------------------------------------------------------------------------------------------------------------------------------
    Changing page: the page's content fades right out (html gets data-leaving the moment you click), the pages are swapped and drawn while nothing is showing,
    and once the browser has caught up the new one fades in as data-leaving is taken off while its content settles into place from a few pixels below, so
