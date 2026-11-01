@@ -157,8 +157,11 @@ test("nothing a Welsh page asks to have translated is missing from the Welsh wor
     await page.waitForTimeout(500);
   }
   await page.keyboard.press("Escape");
+  await expect(box).toBeHidden();
   await page.getByRole("button", { name: /Hygyrchedd/ }).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
   await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toBeHidden();
   await page.getByRole("button", { name: "Cyfeirio at y dudalen hon" }).click();
   await page.keyboard.press("Escape");
   await page.locator("footer").scrollIntoViewIfNeeded();

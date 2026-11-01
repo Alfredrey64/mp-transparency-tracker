@@ -1,5 +1,5 @@
 /** @jsxImportSource react */
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { COLORS, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { LoadFailedNote } from "./MpCards";
@@ -169,7 +169,10 @@ export default function CompareCouncils({ param }) {
     return () => { alive = false; };
   }, [extra, keyA, keyB]);
 
-  const go = (x, y) => navigate(pairPath(x, y));
+  // A page change takes a moment to draw, so the pair on screen can lag a pick the visitor has just made. Picks build on the latest choice, not the drawn one.
+  const chosen = useRef([idA, idB]);
+  useEffect(() => { chosen.current = [idA, idB]; }, [idA, idB]);
+  const go = (x, y) => { chosen.current = [x, y]; navigate(pairPath(x, y)); };
   const regionName = (k) => { const n = k ? REGIONS.find((r) => r.key === k)?.name : null; return n ? t(n) : null; };
   const taxA = both && extra ? taxFor(a, extra.tax) : null;
   const taxB = both && extra ? taxFor(b, extra.tax) : null;
@@ -192,8 +195,8 @@ export default function CompareCouncils({ param }) {
       {data && (
         <>
           <div className="cc-pickers">
-            <Picker side="a" index={data.index} current={a?.name} exclude={b?.id} onPick={(id) => go(id, idB)} />
-            <Picker side="b" index={data.index} current={b?.name} exclude={a?.id} onPick={(id) => go(idA, id)} />
+            <Picker side="a" index={data.index} current={a?.name} exclude={b?.id} onPick={(id) => go(id, chosen.current[1])} />
+            <Picker side="b" index={data.index} current={b?.name} exclude={a?.id} onPick={(id) => go(chosen.current[0], id)} />
           </div>
           {((idA && !a) || (idB && !b)) && <p className="cc-note" role="status">{t("We could not find one of those councils. Search for it above.")}</p>}
 

@@ -754,3 +754,11 @@ main p:not([style*="text-align: center"]):not([style*="max-width"]) { max-width:
 
 /* Placeholder text in boxes: dark enough to read on the page, but lighter than what is typed. */
 input::placeholder, textarea::placeholder { color: var(--c-ink-soft); opacity: 0.82; }
+
+/* The career filters on the MPs list arrive a moment after the list. Until they do, their place is held at about the height they will take (the chips wrap onto
+   more lines on a narrow screen), so the list does not move when they land. */
+.pl-careers:empty { height: 94px; margin-bottom: 20px; }
+@media (max-width: 880px) { .pl-careers:empty { height: 133px; } }
+@media (max-width: 680px) { .pl-careers:empty { height: 199px; } }
+@media (max-width: 440px) { .pl-careers:empty { height: 245px; } }
+@media (max-width: 350px) { .pl-careers:empty { height: 337px; } }

@@ -1,4 +1,5 @@
 import Collapse from "./Collapse";
+import { pageGuideData, loadPageGuides, guideFor } from "../lib/pageGuideData";
 import { useState, useEffect } from "react";
 import { COLORS, FONT_BODY } from "../theme";
 import { useT } from "../lib/useLang";
@@ -27,24 +28,19 @@ const ROWS = [
 
 export default function PageGuide({ viewKey, style }) {
   const t = useT();
-  // The loaded text and the page it belongs to, so a stale one is never shown.
-  const [loaded, setLoaded] = useState({ key: null, guide: null });
+  // The loaded text. It is usually in hand already (App asks for it when a page change starts); if not, the box's place is held until it arrives.
+  const [data, setData] = useState(() => pageGuideData);
   const [open, setOpen] = useState(readOpen);
 
   useEffect(() => {
+    if (data || !viewKey) return undefined;
     let cancelled = false;
-    if (!viewKey) return undefined;
-    import("../data/pageGuides")
-      .then((m) => {
-        if (!cancelled) setLoaded({ key: viewKey, guide: m.PAGE_GUIDES[m.GUIDE_ALIASES[viewKey] ?? viewKey] ?? null });
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, [viewKey]);
+    loadPageGuides().then((m) => { if (!cancelled) setData(m); }).catch(() => {});
+    return () => { cancelled = true; };
+  }, [data, viewKey]);
 
-  const guide = loaded.key === viewKey ? loaded.guide : null;
+  if (viewKey && !data) return <div aria-hidden="true" style={{ height: 50, marginTop: 0, marginBottom: 28, ...style }} />;
+  const guide = data && viewKey ? guideFor(data, viewKey) : null;
   if (!guide) return null;
 
   function toggle() {

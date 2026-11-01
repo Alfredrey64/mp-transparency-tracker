@@ -194,9 +194,9 @@ export default function PoliticianList({ onSelect, initialCareer = null }) {
       </div>
 
       {/* The career filters arrive a moment after the list: their place is kept, so the list does not move down when they appear. */}
-      {!careers && !careersFailed && <div aria-hidden="true" style={{ minHeight: 117, marginBottom: 20 }} />}
+      {!careers && !careersFailed && <div aria-hidden="true" className="pl-careers" />}
       {careers && (
-        <div style={{ marginBottom: 20 }}>
+        <div className="pl-careers" style={{ marginBottom: 20 }}>
           <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.inkSoft, marginBottom: 8 }}>Filter by career</div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
             {CAREER_FILTERS.map((f) => {

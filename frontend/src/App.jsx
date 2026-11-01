@@ -7,6 +7,7 @@ import { supabase } from "./supabaseClient";
 import { COLORS, FONT_BODY } from "./theme";
 import SiteHeader from "./components/SiteHeader";
 import { setNavState, useNavState } from "./lib/navState";
+import { loadPageGuides } from "./lib/pageGuideData";
 import SiteFooter from "./components/SiteFooter";
 import BackToTop from "./components/BackToTop";
 import "./chrome.css";
@@ -453,6 +454,7 @@ export default function App() {
     const root = document.documentElement;
     // From the first click on, pages change by the fade below, so the opening fade of the first page is not repeated on top of it.
     root.dataset.nav = "1";
+    loadPageGuides().catch(() => {});
     const loader = preload ?? LOADERS[key];
     const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     if (reduce || lowData() || (!loader && key !== "home")) {

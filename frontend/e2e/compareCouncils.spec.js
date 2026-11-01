@@ -36,8 +36,7 @@ test("swapping the two changes the address and the order", async ({ page }) => {
   await page.goto("/compareCouncils/E06000009~E09000033");
   await page.getByRole("button", { name: "Swap the two" }).click();
   await expect(page).toHaveURL(/compareCouncils\/E09000033~E06000009$|compareCouncils\/E09000033%7EE06000009$/);
-  const heads = await page.locator(".cc-head a").allTextContents();
-  expect(heads).toEqual(["Westminster", "Blackpool"]);
+  await expect(page.locator(".cc-head a")).toHaveText(["Westminster", "Blackpool"]);
 });
 
 test("search finds a council and puts it in the address", async ({ page }) => {

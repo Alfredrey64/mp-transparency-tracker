@@ -36,7 +36,7 @@ test("the calculators page does not scroll sideways on a phone", async ({ page }
 test("changing page cross-fades and ends on the new page at its top, with the address changed", async ({ page }) => {
   await page.goto("/");
   await page.evaluate(() => window.scrollTo(0, 500));
-  await page.locator('a[href="/howitworks"]').first().click({ force: true });
+  await page.locator('a[href="/howitworks"]:visible').first().click({ force: true });
   await expect(page.locator("h1")).toHaveText("How Parliament works");
   expect(new URL(page.url()).pathname).toBe("/howitworks");
   expect(await page.evaluate(() => window.scrollY)).toBe(0);

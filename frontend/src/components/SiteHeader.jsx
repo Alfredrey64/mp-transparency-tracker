@@ -13,7 +13,8 @@ import { IconSearch, IconStar, IconMethodology, IconSettings, IconShield, IconBo
 import { MENU, DRAWER_FOOT, menuKeyFor, pathFor } from "../data/siteMenu";
 import { hubLead } from "../data/sidebarSections";
 
-const AccessibilityDialog = lazy(() => import("./AccessibilityDialog"));
+const loadAccessibility = () => import("./AccessibilityDialog");
+const AccessibilityDialog = lazy(loadAccessibility);
 
 // The site's header: the name, five menus that open into a panel of pages, search, the watchlist and the one button most people want (finding their MP).
 // On a phone or tablet the menus become a menu button that opens a full-height list. Every page entry is a real link, so it opens in a new tab,
@@ -396,7 +397,7 @@ export default function SiteHeader({ activeView: viewHere, onNavigate, onSelectP
               <span>{t("Search")}</span>
               <kbd aria-hidden="true">/</kbd>
             </button>
-            <button ref={accessButton} type="button" className="site-icon-btn site-access" aria-label={t("Accessibility: text size, easy-to-read letters, listen")} aria-haspopup="dialog" onClick={() => { setOpenKey(null); setAccess(true); }}>
+            <button ref={accessButton} type="button" className="site-icon-btn site-access" aria-label={t("Accessibility: text size, easy-to-read letters, listen")} aria-haspopup="dialog" onPointerEnter={loadAccessibility} onFocus={loadAccessibility} onClick={() => { setOpenKey(null); setAccess(true); }}>
               <IconAccess size={21} />
             </button>
             <PageLink to="watchlist" onNavigate={onNavigate} className="site-icon-btn site-watch" aria-label={watch?.changes > 0 ? t("My watchlist, {n} new", { n: watch.changes }) : t("My watchlist")}>
