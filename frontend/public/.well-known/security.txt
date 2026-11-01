@@ -1,4 +1,4 @@
-# How to report a security problem on Simple Politics (RFC 9116).
+# How to report a security problem on Domesday Live (RFC 9116).
 # Please report it privately, not in a public issue, and give the page and what you did, so it can be reproduced.
 Contact: https://github.com/Alfredrey64/mp-transparency-tracker/security/advisories/new
 Expires: 2027-10-29T00:00:00.000Z

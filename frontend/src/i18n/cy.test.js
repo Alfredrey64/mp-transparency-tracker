@@ -17,7 +17,7 @@ const wanted = new Map([...sourceKeys(covered)]);
 for (const k of dataKeys()) wanted.set(k, [...(wanted.get(k) ?? []), "data"]);
 
 // Sentences that are the same in both languages: names, and words Welsh borrows as they are.
-const SAME = new Set(["Simple Politics", "Brexit"]);
+const SAME = new Set(["Domesday Live", "Brexit"]);
 const holes = (text) => (text.match(/\{\w+\}/g) ?? []).sort();
 
 describe("the Welsh words", () => {

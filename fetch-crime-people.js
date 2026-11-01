@@ -25,7 +25,7 @@ import { readXlsx } from "./xlsx-lite.js";
 import { fetchRetry } from "./httpFetch.js";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "frontend", "src", "data", "crimePeople.json");
-const HEADERS = { "User-Agent": "Mozilla/5.0 (simple-politics; independent, non-commercial)" };
+const HEADERS = { "User-Agent": "Mozilla/5.0 (domesday-live; independent, non-commercial)" };
 const EFF = "https://www.ethnicity-facts-figures.service.gov.uk/crime-justice-and-the-law";
 const MOJ = "https://assets.publishing.service.gov.uk/media";
 const MOJ_PAGE = "https://www.gov.uk/government/statistics/ethnicity-and-the-criminal-justice-system-2024";

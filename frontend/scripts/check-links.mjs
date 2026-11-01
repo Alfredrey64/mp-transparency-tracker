@@ -27,7 +27,7 @@ async function check(url) {
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), 20000);
   try {
-    const res = await fetch(url, { redirect: "follow", signal: ctl.signal, headers: { "User-Agent": "SimplePoliticsLinkCheck/1.0 (+https://simple-politics.vercel.app)" } });
+    const res = await fetch(url, { redirect: "follow", signal: ctl.signal, headers: { "User-Agent": "DomesdayLiveLinkCheck/1.0 (+https://simple-politics.vercel.app)" } });
     await res.body?.cancel();
     return { url, status: res.status, final: res.url !== url ? res.url : null };
   } catch (e) {

@@ -13,7 +13,7 @@ const decode = (s) => s
   .replace(/&quot;/g, '"').replace(/&#x27;|&#39;/g, "'").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
   .replace(/&hellip;/g, "…").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
 
-const res = await fetch(TRACKER, { headers: { "User-Agent": "SimplePoliticsBot/1.0 (+https://simple-politics.vercel.app)" } });
+const res = await fetch(TRACKER, { headers: { "User-Agent": "DomesdayLiveBot/1.0 (+https://simple-politics.vercel.app)" } });
 if (!res.ok) throw new Error(`Full Fact answered ${res.status}`);
 const html = await res.text();
 

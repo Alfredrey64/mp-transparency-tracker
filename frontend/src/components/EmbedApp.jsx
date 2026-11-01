@@ -15,7 +15,7 @@ import { fmt, getTax, nowSummary, toT, whenText } from "../lib/taxRates";
 import LogoMark from "./LogoMark";
 
 // The embeddable cards (see lib/embed.js): one answer, or one chart. Rendered inside an iframe on someone else's page, so it
-// links back to Simple Politics with target="_top" and tells the page how tall it is.
+// links back to Domesday Live with target="_top" and tells the page how tall it is.
 
 const link = (hash) => `${SITE_ORIGIN}/${hash}`;
 
@@ -36,7 +36,7 @@ function Frame({ children, href, label }) {
       <footer style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "8px 14px", marginTop: 16, paddingTop: 12, borderTop: `1px solid ${COLORS.hairline}` }}>
         <a href={SITE_ORIGIN} target="_top" rel="noopener" style={{ display: "inline-flex", alignItems: "center", gap: 8, textDecoration: "none", color: COLORS.ink }}>
           <LogoMark width={34} hole="var(--c-paper-card)" color={readable("#1E4FB8")} />
-          <span style={{ fontFamily: FONT_BRAND, fontSize: 16, fontWeight: 400, letterSpacing: "-0.02em" }}>Simple Politics</span>
+          <span style={{ fontFamily: FONT_BRAND, fontSize: 16, fontWeight: 400, letterSpacing: "-0.02em" }}>Domesday Live</span>
         </a>
         <a href={href} target="_top" rel="noopener" style={{ fontSize: 13, fontWeight: 700, color: readable("#1E4FB8") }}>{label}</a>
       </footer>
@@ -89,14 +89,14 @@ function Chart({ sector, id }) {
   const item = sectors[sector]?.series?.[id];
   const def = sectorByKey(sector);
   if (sectors[sector] === false || (sectors[sector] && !item)) return <Missing />;
-  if (!item) return <Frame href={SITE_ORIGIN} label="Open Simple Politics"><p style={{ fontSize: 14, color: COLORS.inkSoft }}>Loading the figures…</p></Frame>;
+  if (!item) return <Frame href={SITE_ORIGIN} label="Open Domesday Live"><p style={{ fontSize: 14, color: COLORS.inkSoft }}>Loading the figures…</p></Frame>;
   const accent = def?.accent ?? "#1E4FB8";
   const points = sliceRange(item.points, 10);
   const data = toLineData(points);
   const info = latestInfo(item.def, item.points);
   const sentence = sentenceFor(item.def, item.points);
   return (
-    <Frame href={link(`#/${sector}`)} label="See more on Simple Politics">
+    <Frame href={link(`#/${sector}`)} label="See more on Domesday Live">
       <div style={{ fontSize: 12.5, fontWeight: 700, color: readable(accent) }}>{def?.label ?? "Britain in numbers"}</div>
       <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, lineHeight: 1.2, fontWeight: 700, margin: "4px 0 6px" }}>{item.def.label}</h1>
       {info && <div style={{ ...numeric, fontSize: 38, fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>{formatValue(item.def.format, info.value)}</div>}
@@ -135,14 +135,14 @@ function TaxCard({ id }) {
         ))}
       </div>
       <TaxStepChart lines={panel.lines} unit={panel.unit} from={from} to={toT(new Date(now).toISOString().slice(0, 10))} height={210} ariaLabel={`${tax.name}: ${panel.title.toLowerCase()}. ${s.line.label} now ${fmt(s.line.unit, s.value)}.`} />
-      <p style={{ fontSize: 12, color: COLORS.inkSoft, margin: "8px 0 0" }}>Shaded bands show who was in government. Source: HMRC and other official sources, listed on Simple Politics.</p>
+      <p style={{ fontSize: 12, color: COLORS.inkSoft, margin: "8px 0 0" }}>Shaded bands show who was in government. Source: HMRC and other official sources, listed on Domesday Live.</p>
     </Frame>
   );
 }
 
 function Missing() {
   return (
-    <Frame href={SITE_ORIGIN} label="Open Simple Politics">
+    <Frame href={SITE_ORIGIN} label="Open Domesday Live">
       <p style={{ fontSize: 15, margin: 0 }}>This card could not be found. It may have been renamed.</p>
     </Frame>
   );

@@ -1,4 +1,4 @@
-// The Simple Politics mark: the Houses of Parliament as a flat, single-colour silhouette. No tile, no gradient. The same drawing as
+// The Domesday Live mark: the Houses of Parliament as a flat, single-colour silhouette. No tile, no gradient. The same drawing as
 // public/favicon.svg (which sits it on a plain indigo square). `hole` is the colour behind the building, shown through the clock face.
 export default function LogoMark({ width = 76, color = "var(--sb-accent)", hole = "var(--sb-bg)", title }) {
   return (

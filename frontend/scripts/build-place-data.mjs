@@ -46,7 +46,7 @@ const round = (v, n = 1) => (v === null ? null : Math.round(v * 10 ** n) / 10 **
 async function load(key, folder) {
   const { name, url } = FILES[key];
   if (folder && fs.existsSync(path.join(folder, name))) return fs.readFileSync(path.join(folder, name));
-  const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0 simple-politics" } });
+  const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0 domesday-live" } });
   if (!res.ok) throw new Error(`${url}: ${res.status}`);
   return Buffer.from(await res.arrayBuffer());
 }

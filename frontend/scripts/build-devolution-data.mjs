@@ -16,7 +16,7 @@ import { readXlsx } from "../../xlsx-lite.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(here, "../src/data/devolutionData.json");
-const UA = { "User-Agent": "Mozilla/5.0 simple-politics" };
+const UA = { "User-Agent": "Mozilla/5.0 domesday-live" };
 const round = (v, d = 1) => Math.round(v * 10 ** d) / 10 ** d;
 const num = (v) => (typeof v === "number" && Number.isFinite(v) ? v : null);
 const getBuf = async (url) => {

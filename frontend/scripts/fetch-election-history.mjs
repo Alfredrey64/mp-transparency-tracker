@@ -15,7 +15,7 @@ const text = (h) => h.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>
 async function get(url, tries = 5) {
   for (let i = 0; i < tries; i++) {
     try {
-      const r = await fetch(url, { headers: { "user-agent": "simple-politics-data-build" } });
+      const r = await fetch(url, { headers: { "user-agent": "domesday-live-data-build" } });
       if (r.ok) return await r.text();
       if (r.status !== 429 && r.status < 500) throw new Error(`${r.status} ${url}`);
     } catch (e) {

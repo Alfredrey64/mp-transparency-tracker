@@ -49,9 +49,9 @@ test("every page can be referred to, printed and reported", async ({ page }) => 
   await expect(page.getByRole("complementary", { name: "Use this page" })).toBeVisible();
   await page.getByRole("button", { name: "Refer to this page" }).click();
   const dialog = page.getByRole("dialog", { name: "Refer to this page" });
-  await expect(dialog.locator(".pf-cite")).toContainText(/Simple Politics \(\d{4}\)/);
+  await expect(dialog.locator(".pf-cite")).toContainText(/Domesday Live \(\d{4}\)/);
   await dialog.getByRole("button", { name: "BibTeX" }).click();
-  await expect(dialog.locator(".pf-cite")).toContainText("@misc{simplepolitics");
+  await expect(dialog.locator(".pf-cite")).toContainText("@misc{domesdaylive");
   await page.keyboard.press("Escape");
   await expect(dialog).toBeHidden();
   const report = page.getByRole("link", { name: /Report a problem/ });

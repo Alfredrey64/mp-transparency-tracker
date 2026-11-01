@@ -174,9 +174,9 @@ function Drawer({ activeView, onNavigate, onClose: closeNow, onSearch }) {
       <div ref={panelRef} className="site-drawer" data-closing={closing || undefined} role="dialog" aria-modal="true" aria-label={t("Site menu")} tabIndex={-1} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}>
         <div className="drawer-head">
           <div className="drawer-top">
-            <PageLink to="home" onNavigate={onNavigate} onAfter={onClose} className="site-brand" aria-label={t("Simple Politics, home")}>
+            <PageLink to="home" onNavigate={onNavigate} onAfter={onClose} className="site-brand" aria-label={t("Domesday Live, home")}>
               <LogoMark width={54} color="#FFFFFF" hole="var(--c-navy)" />
-              <span>Simple Politics</span>
+              <span>Domesday Live</span>
             </PageLink>
             <button type="button" className="site-icon-btn drawer-close" aria-label={t("Close menu")} onClick={easeAway}>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg>
@@ -365,9 +365,9 @@ export default function SiteHeader({ activeView: viewHere, onNavigate, onSelectP
         onBlur={(e) => { if (!headerRef.current?.contains(e.relatedTarget)) setOpenKey(null); }}
       >
         <div className="site-bar">
-          <PageLink to="home" onNavigate={onNavigate} className="site-brand" aria-label={t("Simple Politics, home")}>
+          <PageLink to="home" onNavigate={onNavigate} className="site-brand" aria-label={t("Domesday Live, home")}>
             <LogoMark width={54} color="var(--c-brand)" hole="var(--c-paper-card)" />
-            <span>Simple Politics</span>
+            <span>Domesday Live</span>
           </PageLink>
 
           <nav ref={navRef} className="site-nav" aria-label={t("Main")} onPointerLeave={restPill}>

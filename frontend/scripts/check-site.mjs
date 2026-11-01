@@ -19,7 +19,7 @@ async function get(path, { json = false, text = false } = {}) {
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), 15000);
   try {
-    const res = await fetch(`${SITE}${path}`, { signal: ctl.signal, headers: { "User-Agent": "simple-politics-site-check" } });
+    const res = await fetch(`${SITE}${path}`, { signal: ctl.signal, headers: { "User-Agent": "domesday-live-site-check" } });
     if (res.status !== 200) { fail(`${path} answered ${res.status}`); return null; }
     const body = json ? await res.json() : text ? await res.text() : null;
     ok(path);

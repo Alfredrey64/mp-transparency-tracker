@@ -40,7 +40,7 @@ async function check(url) {
     try {
       const c = new AbortController();
       const t = setTimeout(() => c.abort(), 20000);
-      const res = await fetch(url, { redirect: "follow", signal: c.signal, headers: { "User-Agent": "simple-politics-content-check/1.0 (+https://simple-politics.vercel.app)" } });
+      const res = await fetch(url, { redirect: "follow", signal: c.signal, headers: { "User-Agent": "domesday-live-content-check/1.0 (+https://simple-politics.vercel.app)" } });
       clearTimeout(t);
       if (res.status === 429 && attempt === 0) { await new Promise((r) => setTimeout(r, 5000)); continue; }
       return { url, status: res.status };

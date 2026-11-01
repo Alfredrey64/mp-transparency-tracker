@@ -19,7 +19,7 @@ import { readXlsx } from "../../xlsx-lite.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(here, "../src/data/healthData.json");
-const UA = { "User-Agent": "Mozilla/5.0 simple-politics" };
+const UA = { "User-Agent": "Mozilla/5.0 domesday-live" };
 const round = (v, d = 1) => Math.round(v * 10 ** d) / 10 ** d;
 const getBuf = async (url) => { const r = await fetch(url, { headers: UA }); if (!r.ok) throw new Error(`${url}: ${r.status}`); return Buffer.from(await r.arrayBuffer()); };
 

@@ -161,7 +161,7 @@ export function MockElection() {
               <thead><tr><th>Party</th><th>Votes</th><th>Areas</th></tr></thead>
               <tbody>{labels.map((l, p) => <tr key={p}><td>{l}</td><td>{result.total[p]}</td><td>{fptp[p]}</td></tr>)}</tbody>
             </table>
-            <p style={{ marginTop: 18, fontSize: 13 }}>Simple Politics &middot; Teacher mode</p>
+            <p style={{ marginTop: 18, fontSize: 13 }}>Domesday Live &middot; Teacher mode</p>
           </div>
         </div>,
         document.body,

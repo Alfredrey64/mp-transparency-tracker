@@ -36,7 +36,7 @@ function parseCsv(text) {
 
 async function pull(measure) {
   const url = `${BASE}/.A.${measure}....METH2012.D_CUR.?startPeriod=${FROM}`;
-  const res = await fetch(url, { headers: { Accept: "application/vnd.sdmx.data+csv;version=1.0.0", "User-Agent": "Mozilla/5.0 simple-politics" } });
+  const res = await fetch(url, { headers: { Accept: "application/vnd.sdmx.data+csv;version=1.0.0", "User-Agent": "Mozilla/5.0 domesday-live" } });
   if (!res.ok) throw new Error(`${measure}: ${res.status}`);
   return parseCsv(await res.text());
 }

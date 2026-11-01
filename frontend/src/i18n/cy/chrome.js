@@ -8,7 +8,7 @@ export default {
   "Search": "Chwilio",
   "Find an MP, a constituency, a page, an election or a word you want explained.": "Dewch o hyd i AS, etholaeth, tudalen, etholiad neu air yr hoffech ei egluro.",
   "Site menu": "Dewislen y safle",
-  "Simple Politics, home": "Simple Politics, hafan",
+  "Domesday Live, home": "Domesday Live, hafan",
   "Close menu": "Cau'r ddewislen",
   "Search MPs, pages and words": "Chwilio am ASau, tudalennau a geiriau",
   "Find your MP": "Dod o hyd i'ch AS",
@@ -56,7 +56,7 @@ export default {
   "Print or save as PDF": "Argraffu neu gadw fel PDF",
   "Report a problem": "Rhoi gwybod am broblem",
   "Reporting opens a public page on GitHub. Please leave out personal details.": "Mae rhoi gwybod yn agor tudalen gyhoeddus ar GitHub. Peidiwch â chynnwys manylion personol.",
-  "Printed from {address} on {date}. Simple Politics is independent and unofficial.": "Wedi'i argraffu o {address} ar {date}. Mae Simple Politics yn annibynnol ac yn answyddogol.",
+  "Printed from {address} on {date}. Domesday Live is independent and unofficial.": "Wedi'i argraffu o {address} ar {date}. Mae Domesday Live yn annibynnol ac yn answyddogol.",
 
   // Search
   "Getting ready.": "Yn paratoi.",

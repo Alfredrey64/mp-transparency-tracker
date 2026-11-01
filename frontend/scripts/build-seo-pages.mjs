@@ -36,7 +36,7 @@ export function readSidebarPages(source) {
 export function pageList(sidebarSource) {
   const pages = readSidebarPages(sidebarSource);
   const seen = new Set();
-  const out = [{ key: "home", label: "Simple Politics", hint: "A simple breakdown of UK politics", description: "A simple breakdown of UK politics. See who your MP is, who funds them, how they vote and what the numbers say about the country, all explained in plain English from official sources.", hash: "/" }];
+  const out = [{ key: "home", label: "Domesday Live", hint: "A simple breakdown of UK politics", description: "A simple breakdown of UK politics. See who your MP is, who funds them, how they vote and what the numbers say about the country, all explained in plain English from official sources.", hash: "/" }];
   for (const p of pages) {
     if (seen.has(p.key)) continue;
     seen.add(p.key);
@@ -62,7 +62,7 @@ export function routeEntries(sidebarSource) {
   for (const p of pageList(sidebarSource)) {
     out.push({
       path: p.key === "home" ? "/" : `/${p.key}`,
-      title: p.key === "home" ? "Simple Politics | A simple breakdown of UK politics" : `${p.label} | Simple Politics`,
+      title: p.key === "home" ? "Domesday Live | A simple breakdown of UK politics" : `${p.label} | Domesday Live`,
       description: p.description,
       heading: p.key === "home" ? "A simple breakdown of UK politics" : p.label,
       bodyHtml: p.why ? `<p>${esc(p.why)}</p>` : "",
@@ -71,12 +71,12 @@ export function routeEntries(sidebarSource) {
   }
   for (const a of ANSWERS) {
     const reasons = a.reasons.map((r) => `<li><strong>${esc(r.title)}.</strong> ${esc(r.text)}</li>`).join("");
-    out.push({ path: `/answers/${a.id}`, title: `${a.question} | Simple Politics`, description: a.short, heading: a.question, bodyHtml: `<h2>Why it happens</h2><ul>${reasons}</ul>`, priority: "0.8", freq: "weekly", answer: a.id });
+    out.push({ path: `/answers/${a.id}`, title: `${a.question} | Domesday Live`, description: a.short, heading: a.question, bodyHtml: `<h2>Why it happens</h2><ul>${reasons}</ul>`, priority: "0.8", freq: "weekly", answer: a.id });
   }
   for (const t of TAXES) {
     const group = GROUPS.find((g) => g.key === t.group);
     const notes = t.notes?.length ? `<h2>Worth knowing</h2><ul>${t.notes.map((n) => `<li>${esc(n)}</li>`).join("")}</ul>` : "";
-    out.push({ path: `/taxRates/${t.id}`, title: `${t.name}: how the rate has changed | Simple Politics`, description: clip(`${t.summary} ${t.about}`, 200), lead: `${group?.label ?? "Tax"}. ${t.about}`, heading: `${t.name}: how the rate has changed`, bodyHtml: notes, priority: "0.6", freq: "monthly", tax: t.id });
+    out.push({ path: `/taxRates/${t.id}`, title: `${t.name}: how the rate has changed | Domesday Live`, description: clip(`${t.summary} ${t.about}`, 200), lead: `${group?.label ?? "Tax"}. ${t.about}`, heading: `${t.name}: how the rate has changed`, bodyHtml: notes, priority: "0.6", freq: "monthly", tax: t.id });
   }
   return out;
 }
@@ -94,7 +94,7 @@ function pageHtml({ url, title, description, heading, bodyHtml, go }) {
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=12" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=12" />
 <meta property="og:type" content="website" />
-<meta property="og:site_name" content="Simple Politics" />
+<meta property="og:site_name" content="Domesday Live" />
 <meta property="og:title" content="${esc(title)}" />
 <meta property="og:description" content="${esc(description)}" />
 <meta property="og:url" content="${esc(url)}" />
@@ -107,10 +107,10 @@ function pageHtml({ url, title, description, heading, bodyHtml, go }) {
 </head>
 <body>
 <main>
-<p class="k">Simple Politics</p>
+<p class="k">Domesday Live</p>
 <h1>${esc(heading)}</h1>
 ${bodyHtml}
-<p><a href="${esc(go)}">Open this page on Simple Politics</a></p>
+<p><a href="${esc(go)}">Open this page on Domesday Live</a></p>
 </main>
 <script src="/p/go.js" defer></script>
 </body>

@@ -13,7 +13,7 @@ import fs from "fs";
 import { fetchRetry } from "./httpFetch.js";
 
 const OUTPUT_PATH = "frontend/src/data/devolvedLeaders.json";
-const HEADERS = { "User-Agent": "simple-politics/1.0 (civic information site; contact via GitHub)" };
+const HEADERS = { "User-Agent": "domesday-live/1.0 (civic information site; contact via GitHub)" };
 
 // Leader name on the page: the exact Wikipedia article for that person.
 const LEADERS = {

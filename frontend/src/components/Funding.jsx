@@ -33,7 +33,7 @@ export default function Funding({ onNavigate }) {
       />
       <div style={{ maxWidth: 760 }}>
         <Section title="Who runs it">
-          Simple Politics is an independent project, designed and built by Alfred Reynolds. It is not part of, and is not paid for by, any political party,
+          Domesday Live is an independent project, designed and built by Alfred Reynolds. It is not part of, and is not paid for by, any political party,
           government body, campaign group or company that lobbies Parliament.
         </Section>
 

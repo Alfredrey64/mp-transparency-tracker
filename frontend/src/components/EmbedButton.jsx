@@ -40,7 +40,7 @@ export default function EmbedButton({ spec, title }) {
             <button type="button" className="ons-tap" onClick={() => dialog.current?.close()} style={pillStyle(false)}>Close</button>
           </div>
           <p style={{ fontSize: 14, lineHeight: 1.55, color: COLORS.inkSoft, margin: "6px 0 14px" }}>
-            Free to use on a website, blog or in a lesson. The figures update by themselves, and the card links back to Simple Politics. Please keep that link in place.
+            Free to use on a website, blog or in a lesson. The figures update by themselves, and the card links back to Domesday Live. Please keep that link in place.
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", marginBottom: 12 }}>
             <span style={{ fontSize: 13, fontWeight: 700 }}>Card</span>

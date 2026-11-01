@@ -10,7 +10,7 @@
 // scripts/add-tax-change.mjs. The suggested series are guesses from the headings, so look before using them.
 
 const API = "https://www.gov.uk/api";
-const HEADERS = { "User-Agent": "simple-politics-tax-check" };
+const HEADERS = { "User-Agent": "domesday-live-tax-check" };
 
 const SERIES_HINTS = [
   [/Income Tax rates$/, /^Basic rate/, "incomeTax.basic"],

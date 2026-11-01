@@ -127,7 +127,7 @@ const SECTOR_VIEWS = new Set(["economy", "prices", "jobs", "publicFinances", "po
 // site with the byline stripped from the UI still carries proof of where
 // it came from.
 console.log(
-  "%cSimple Politics%c\nDesigned and built by Alfred Reynolds.",
+  "%cDomesday Live%c\nDesigned and built by Alfred Reynolds.",
   "font-weight: bold; font-size: 13px; color: #1E4FB8;",
   "color: inherit;"
 );
@@ -237,7 +237,7 @@ Object.assign(PAGE_TITLES, {
 });
 
 function titleForState(view, selected, param, tr = (x) => x) {
-  const base = "Simple Politics";
+  const base = "Domesday Live";
   if (selected) return `${selected.name} | ${base}`;
   if (view === "numbers" && param === "lords") return `Parliament in Numbers: the Lords | ${base}`;
   if (view === "numbers" && param === "who") return `Parliament in Numbers: who they are | ${base}`;
@@ -399,7 +399,7 @@ export default function App() {
   }, [view, selected, viewParam]);
 
   // The tab title, and the name a bookmark or browser-history entry
-  // actually gets, used to be the same generic "Simple Politics" on
+  // actually gets, used to be the same generic "Domesday Live" on
   // every single page — no help at all with five tabs open, or finding an
   // MP's page again in history. This is the one piece of per-page SEO a
   // client-only SPA can do for real: a crawler that never executes JS

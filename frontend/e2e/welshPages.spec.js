@@ -12,7 +12,7 @@ test("a translated page is in Welsh all through, with no English-only notice, a 
   await page.goto("/howtovote?lang=cy");
   await expect(page.locator(".lang-notice")).toHaveCount(0);
   await expect(page.locator("main")).not.toHaveAttribute("lang", "en");
-  await expect(page).toHaveTitle("Sut i bleidleisio | Simple Politics");
+  await expect(page).toHaveTitle("Sut i bleidleisio | Domesday Live");
   await expect(page.getByRole("heading", { level: 1, name: "Sut i bleidleisio" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Ga i bleidleisio?" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Pedwar cam i bleidleisio" })).toBeVisible();
@@ -45,7 +45,7 @@ test("the compare page is Welsh, in the party names and how each council is run 
   await page.setViewportSize({ width: 1700, height: 900 });
   await page.goto("/compareCouncils/E06000009~E09000033?lang=cy");
   const main = page.locator("main");
-  await expect(page).toHaveTitle("Cymharu cynghorau | Simple Politics");
+  await expect(page).toHaveTitle("Cymharu cynghorau | Domesday Live");
   const runs = main.getByRole("group", { name: "Pwy sy'n ei redeg" });
   await expect(runs).toContainText("Mwyafrif Llafur");
   await expect(runs).toContainText("Mwyafrif Ceidwadwyr");
@@ -80,7 +80,7 @@ test("the ballot page is Welsh, with its dates, voting lines and candidate list 
   await page.route("**/candidates.democracyclub.org.uk/**", (r) => r.fulfill(json({ candidates_locked: false, candidacies: [{ person: { id: 1, name: "Ann Zed" }, party_name: "Independent" }] })));
   await page.setViewportSize({ width: 1700, height: 900 });
   await page.goto("/myBallot?lang=cy");
-  await expect(page).toHaveTitle("Pwy sydd ar fy mhapur pleidleisio | Simple Politics");
+  await expect(page).toHaveTitle("Pwy sydd ar fy mhapur pleidleisio | Domesday Live");
   await page.getByLabel("Eich cod post").fill("M9 4FP");
   await page.getByRole("button", { name: "Chwilio", exact: true }).click();
   const card = page.locator(".mb-card");

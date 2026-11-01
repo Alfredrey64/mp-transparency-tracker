@@ -24,7 +24,7 @@ const nextDay = (iso) => { const d = new Date(`${iso}T00:00:00Z`); d.setUTCDate(
 
 // events: [{ date: "2027-05-06", title, note?, remindDays? }]. Each gets a reminder `remindDays` days before (default 7, 0 for none).
 export function buildIcs(events, { name = "Dates that matter for your votes", now = new Date() } = {}) {
-  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Simple Politics//Your area//EN", "CALSCALE:GREGORIAN", "METHOD:PUBLISH", `X-WR-CALNAME:${icsText(name)}`];
+  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Domesday Live//Your area//EN", "CALSCALE:GREGORIAN", "METHOD:PUBLISH", `X-WR-CALNAME:${icsText(name)}`];
   events.filter((e) => /^\d{4}-\d{2}-\d{2}$/.test(e.date ?? "")).forEach((e, i) => {
     lines.push("BEGIN:VEVENT", `UID:${compact(e.date)}-${i}@simple-politics.vercel.app`, `DTSTAMP:${stamp(now)}`, `DTSTART;VALUE=DATE:${compact(e.date)}`, `DTEND;VALUE=DATE:${nextDay(e.date)}`, `SUMMARY:${icsText(e.title)}`);
     if (e.note) lines.push(`DESCRIPTION:${icsText(e.note)}`);

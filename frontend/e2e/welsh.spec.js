@@ -51,7 +51,7 @@ test("a page with no Welsh version says so in both languages and is marked as En
   await expect(page.locator("main")).toHaveAttribute("lang", "en");
   await expect(page.locator("html")).toHaveAttribute("lang", "cy");
   // The tab title matches the page it names, so it stays in English here.
-  await expect(page).toHaveTitle(/^The economy \| Simple Politics$/);
+  await expect(page).toHaveTitle(/^The economy \| Domesday Live$/);
   await expect(page.getByRole("link", { name: "Hafan" }).first()).toBeVisible();
 });
 

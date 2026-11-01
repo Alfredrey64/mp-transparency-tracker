@@ -14,7 +14,7 @@ import { fileURLToPath } from "node:url";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(here, "../src/data/trustData.json");
-const UA = { "User-Agent": "Mozilla/5.0 simple-politics" };
+const UA = { "User-Agent": "Mozilla/5.0 domesday-live" };
 const FLOW = "OECD.GOV.GIP,DSD_GOV_INT@DF_GOV_TDG_2025,1.1";
 const MEASURES = { TRUST_NG: "government", TRUST_LE: "parliament", TRUST_CS: "civilService", TRUST_LG: "localGovernment", TRUST_CL: "courts", TRUST_PE_EXT: "voice", TRUST_PE_INT: "ownSay" };
 const round = (v, d = 1) => Math.round(v * 10 ** d) / 10 ** d;

@@ -14,7 +14,7 @@ import { readOds } from "../../ods-lite.js";
 
 const SERIES = JSON.parse(readFileSync(fileURLToPath(new URL("../src/data/taxSeries.json", import.meta.url)), "utf8"));
 const API = "https://www.gov.uk/api/content";
-const HEADERS = { "User-Agent": "simple-politics-tax-check" };
+const HEADERS = { "User-Agent": "domesday-live-tax-check" };
 
 const MONTHS = { January: 1, February: 2, March: 3, April: 4, May: 5, June: 6, July: 7, August: 8, September: 9, October: 10, November: 11, December: 12 };
 const iso = (s) => {

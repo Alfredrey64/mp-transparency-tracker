@@ -15,9 +15,9 @@ export default function SiteFooter({ onNavigate }) {
       <div className="site-footer-inner">
         <div className="footer-top">
           <div className="footer-brandcol">
-            <PageLink to="home" onNavigate={onNavigate} className="footer-brand" aria-label={t("Simple Politics, home")}>
+            <PageLink to="home" onNavigate={onNavigate} className="footer-brand" aria-label={t("Domesday Live, home")}>
               <LogoMark width={56} color="#FFFFFF" hole="var(--c-navy)" />
-              <span>Simple Politics</span>
+              <span>Domesday Live</span>
             </PageLink>
             <p className="footer-about">{t("An independent guide to UK politics. It explains who represents you, who pays them and what the official numbers say, in plain English and without spin.")}</p>
             <LanguageSwitch className="footer-lang" />

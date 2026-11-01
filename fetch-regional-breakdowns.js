@@ -22,7 +22,7 @@ import { readXlsx } from "./xlsx-lite.js";
 import { fetchRetry } from "./httpFetch.js";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "frontend", "src", "data", "regionalBreakdowns.json");
-const HEADERS = { "User-Agent": "simple-politics (independent, non-commercial; contact via GitHub)" };
+const HEADERS = { "User-Agent": "domesday-live (independent, non-commercial; contact via GitHub)" };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // The 12 regions and nations, with the name each source uses for them (lower case, trimmed).

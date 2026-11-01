@@ -26,7 +26,7 @@ import { fetchFeed } from "./fetch-tables.js";
 import { fetchRetry } from "./httpFetch.js";
 
 const OUT_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), "frontend", "src", "data", "ons");
-const HEADERS = { "User-Agent": "simple-politics (independent, non-commercial; contact via GitHub)" };
+const HEADERS = { "User-Agent": "domesday-live (independent, non-commercial; contact via GitHub)" };
 // Keep the whole history: the pages compare today with decades ago.
 const KEEP = { months: 1200, quarters: 400, years: 200 };
 

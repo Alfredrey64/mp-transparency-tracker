@@ -43,7 +43,7 @@ export function render(template, entry) {
     .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${esc(url)}$2`)
     .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${title}$2`)
     .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${description}$2`);
-  const block = `<div class="pre" data-path="${esc(entry.path)}"><p class="k">Simple Politics</p><h1>${esc(entry.heading)}</h1><p>${esc(entry.lead ?? entry.description)}</p>${entry.bodyHtml ?? ""}</div>`;
+  const block = `<div class="pre" data-path="${esc(entry.path)}"><p class="k">Domesday Live</p><h1>${esc(entry.heading)}</h1><p>${esc(entry.lead ?? entry.description)}</p>${entry.bodyHtml ?? ""}</div>`;
   html = html.replace('<div id="root"></div>', `<div id="root">${block}</div><script src="/pre.js"></script>`).replace("</head>", `<style id="pre-css">${CSS.replace(/\n/g, "")}</style></head>`);
   return html;
 }

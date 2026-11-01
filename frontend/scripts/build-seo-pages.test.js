@@ -22,7 +22,7 @@ describe("search and link-preview pages", () => {
     expect(urls.length).toBeGreaterThan(pageList(source).length + ANSWERS.length);
     for (const a of ANSWERS) expect(fs.existsSync(path.join(dir, "p", "answers", `${a.id}.html`)), a.id).toBe(true);
     const page = fs.readFileSync(path.join(dir, "p", "howtovote.html"), "utf8");
-    expect(page).toContain("<title>How to vote | Simple Politics</title>");
+    expect(page).toContain("<title>How to vote | Domesday Live</title>");
     expect(page).toContain(`${SITE}/howtovote`);
     expect(page).toContain('data-go="/howtovote"');
     expect(page).toContain('og:image');
@@ -49,13 +49,13 @@ describe("search and link-preview pages", () => {
 });
 
 describe("prerendered pages", () => {
-  const template = '<!doctype html><html><head><title>Simple Politics</title><meta name="description" content="old" /><link rel="canonical" href="https://x/" /><meta property="og:title" content="old" /><meta property="og:description" content="old" /><meta property="og:url" content="https://x/" /><meta name="twitter:title" content="old" /><meta name="twitter:description" content="old" /></head><body><div id="root"></div></body></html>';
+  const template = '<!doctype html><html><head><title>Domesday Live</title><meta name="description" content="old" /><link rel="canonical" href="https://x/" /><meta property="og:title" content="old" /><meta property="og:description" content="old" /><meta property="og:url" content="https://x/" /><meta name="twitter:title" content="old" /><meta name="twitter:description" content="old" /></head><body><div id="root"></div></body></html>';
   it("give a page its own title, tags and opening text", () => {
-    const html = render(template, { path: "/taxRates/vat", title: "VAT | Simple Politics", description: "About \"VAT\" & more", heading: "VAT", bodyHtml: "<ul><li>x</li></ul>" });
-    expect(html).toContain("<title>VAT | Simple Politics</title>");
+    const html = render(template, { path: "/taxRates/vat", title: "VAT | Domesday Live", description: "About \"VAT\" & more", heading: "VAT", bodyHtml: "<ul><li>x</li></ul>" });
+    expect(html).toContain("<title>VAT | Domesday Live</title>");
     expect(html).toContain('content="About &quot;VAT&quot; &amp; more"');
     expect(html).toContain(`href="${SITE}/taxRates/vat"`);
-    expect(html).toContain('<div id="root"><div class="pre" data-path="/taxRates/vat"><p class="k">Simple Politics</p><h1>VAT</h1>');
+    expect(html).toContain('<div id="root"><div class="pre" data-path="/taxRates/vat"><p class="k">Domesday Live</p><h1>VAT</h1>');
     expect(html).toContain('<script src="/pre.js"></script>');
     expect(html.match(/<h1>/g)).toHaveLength(1);
     expect(html).not.toContain("content=\"old\"");

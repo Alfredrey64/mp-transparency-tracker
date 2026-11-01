@@ -14,7 +14,7 @@ function Steps() {
     <ol style={{ margin: "8px 0 0", paddingLeft: 20, fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.6, color: COLORS.inkSoft }}>
       <li>Tap the Share button in Safari (the square with an arrow pointing up).</li>
       <li>Scroll down and tap Add to Home Screen.</li>
-      <li>Tap Add. Simple Politics then opens like any other app.</li>
+      <li>Tap Add. Domesday Live then opens like any other app.</li>
     </ol>
   );
 }
@@ -23,8 +23,8 @@ export function InstallCard() {
   const { standalone, canPrompt, ios } = useInstall();
   const [asked, setAsked] = useState(false);
   let body;
-  if (standalone) body = "You are using Simple Politics as an app on this device.";
-  else if (canPrompt) body = "Add Simple Politics to your home screen or desktop. It opens in its own window, works offline for pages you have already visited, and uses no extra storage to speak of.";
+  if (standalone) body = "You are using Domesday Live as an app on this device.";
+  else if (canPrompt) body = "Add Domesday Live to your home screen or desktop. It opens in its own window, works offline for pages you have already visited, and uses no extra storage to speak of.";
   else if (ios) body = "On iPhone and iPad you add it from Safari:";
   else body = "In Chrome or Edge, open the browser menu and choose Install app or Add to Home Screen. Firefox and desktop Safari can add it as a bookmark instead.";
   return (
@@ -50,7 +50,7 @@ export function InstallBanner() {
       aria-label="Install the app"
       style={{ position: "fixed", left: "50%", transform: "translateX(-50%)", bottom: "max(14px, env(safe-area-inset-bottom))", zIndex: 60, width: "min(520px, calc(100vw - 24px))", boxSizing: "border-box", padding: "14px 16px", borderRadius: 16, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, boxShadow: "0 12px 34px rgba(0,0,0,0.22)" }}
     >
-      <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 16, color: COLORS.ink }}>Keep Simple Politics on your phone</div>
+      <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: 16, color: COLORS.ink }}>Keep Domesday Live on your phone</div>
       <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.5, color: COLORS.inkSoft, margin: "3px 0 0" }}>Add it to your home screen to open it in one tap, even with a poor signal.</p>
       {steps && <Steps />}
       <div style={{ display: "flex", gap: 10, marginTop: 12, flexWrap: "wrap" }}>

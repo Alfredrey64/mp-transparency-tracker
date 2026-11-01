@@ -68,7 +68,7 @@ export default function PageFoot() {
         </a>
       </div>
       <small>{t("Reporting opens a public page on GitHub. Please leave out personal details.")}</small>
-      <p className="pf-printed">{t("Printed from {address} on {date}. Simple Politics is independent and unofficial.", { address: citeAddress(window.location), date: fullDate(todayIso(), dateLocale()) })}</p>
+      <p className="pf-printed">{t("Printed from {address} on {date}. Domesday Live is independent and unofficial.", { address: citeAddress(window.location), date: fullDate(todayIso(), dateLocale()) })}</p>
       {cite && <CiteDialog onClose={() => { setCite(false); citeButton.current?.focus(); }} returnFocusRef={citeButton} />}
     </aside>
   );

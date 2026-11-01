@@ -23,7 +23,7 @@ const PUB = {
   absence: "cbbd299f-8297-44bc-92ac-558bcf51f8ad",
 };
 
-const headers = { "User-Agent": "Mozilla/5.0 simple-politics" };
+const headers = { "User-Agent": "Mozilla/5.0 domesday-live" };
 const getJson = async (url) => (await fetch(url, { headers })).json();
 
 async function dataSet(pub, titleStart) {

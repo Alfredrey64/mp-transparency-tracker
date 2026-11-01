@@ -1,10 +1,10 @@
 // How to refer to a page of this site in an essay, a report or a news story. Three common styles, built from the page's name, its address and today's date.
 
-export const SITE = "Simple Politics";
+export const SITE = "Domesday Live";
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 export const longDate = (d) => `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
 
-// The page's own name, without the site's name on the end ("Voting records | Simple Politics" becomes "Voting records").
+// The page's own name, without the site's name on the end ("Voting records | Domesday Live" becomes "Voting records").
 export function pageName(title) {
   const t = String(title ?? "").split("|").map((s) => s.trim()).filter((s) => s && s !== SITE);
   return t.length ? t.join(": ") : SITE;
@@ -26,7 +26,7 @@ export function citations(title, url, now = new Date()) {
   return [
     { key: "harvard", label: "Harvard", text: `${SITE} (${year}) ${title}. Available at: ${url} (Accessed: ${day}).` },
     { key: "apa", label: "APA", text: `${SITE}. (n.d.). ${title}. Retrieved ${MONTHS[now.getMonth()]} ${now.getDate()}, ${year}, from ${url}` },
-    { key: "bibtex", label: "BibTeX", text: `@misc{simplepolitics${year}${slug(title)},\n  author = {{${SITE}}},\n  title = {${title}},\n  year = {${year}},\n  url = {${url}},\n  note = {Accessed ${day}}\n}` },
+    { key: "bibtex", label: "BibTeX", text: `@misc{domesdaylive${year}${slug(title)},\n  author = {{${SITE}}},\n  title = {${title}},\n  year = {${year}},\n  url = {${url}},\n  note = {Accessed ${day}}\n}` },
   ];
 }
 

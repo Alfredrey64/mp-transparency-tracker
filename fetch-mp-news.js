@@ -32,7 +32,7 @@ const WINDOW_DAYS = 14;
 async function fetchNewsFor(mpName) {
   const q = encodeURIComponent(`"${searchName(mpName)}" when:${WINDOW_DAYS}d`);
   const url = `https://news.google.com/rss/search?q=${q}&hl=en-GB&gl=GB&ceid=GB:en`;
-  const res = await fetchRetry(url, { headers: { "User-Agent": "simple-politics (independent, non-commercial)" } });
+  const res = await fetchRetry(url, { headers: { "User-Agent": "domesday-live (independent, non-commercial)" } });
   if (!res.ok) throw new Error(`Google News RSS error: ${res.status}`);
   const xml = await res.text();
   // An error or consent page is not "no news": throwing here leaves this MP's stored articles as they were.

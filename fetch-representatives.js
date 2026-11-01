@@ -16,7 +16,7 @@ import { fetchRetry } from "./httpFetch.js";
 import { parsePcc, parseMayors, parseSenedd, scotlandFrom, niFrom } from "./representatives.js";
 
 const OUTPUT_PATH = "frontend/src/data/representatives.json";
-const HEADERS = { "User-Agent": "simple-politics/1.0 (civic information site; contact via GitHub)" };
+const HEADERS = { "User-Agent": "domesday-live/1.0 (civic information site; contact via GitHub)" };
 
 async function json(url) {
   const res = await fetchRetry(url, { headers: HEADERS });

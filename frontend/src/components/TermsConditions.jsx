@@ -19,7 +19,7 @@ export default function TermsConditions() {
 
       <div style={{ maxWidth: 760, margin: "0 auto" }}>
         <Section title="What this site is">
-          Simple Politics is an independent, non-commercial project that aggregates publicly available UK
+          Domesday Live is an independent, non-commercial project that aggregates publicly available UK
           Parliament data, declared financial interests, voting records, bills, and All-Party Parliamentary Group
           information, into one place. It is not affiliated with, endorsed by, or operated by the UK Parliament,
           the Houses of Commons or Lords, any political party, or Companies House.

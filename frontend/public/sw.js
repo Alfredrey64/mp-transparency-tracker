@@ -1,4 +1,4 @@
-// Simple Politics service worker: lets the site open and keep working without a connection, using what was loaded before.
+// Domesday Live service worker: lets the site open and keep working without a connection, using what was loaded before.
 //
 //   Pages           network first; if offline, the copy saved last time (the app shell for the main address)
 //   Built files     (/assets, /fonts) cache first. Their names change whenever their contents do, so a saved copy is never stale
@@ -16,7 +16,7 @@ const MAX_FILES = 500;
 const MAX_DATA = 150;
 const DATA_WAIT_MS = 5000;
 
-const OFFLINE_PAGE = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Offline | Simple Politics</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#EDE5D3;color:#1c1b22;font-family:system-ui,sans-serif;padding:24px;text-align:center}main{max-width:420px}h1{font-size:24px;margin:0 0 8px}p{line-height:1.55;margin:0 0 16px}a{color:#3730a3;font-weight:600}</style></head><body><main><h1>You are offline</h1><p>This page was not saved the last time you were connected. Pages you have already opened will still work, and everything loads again once you are back online.</p><p><a href="/">Try the home page</a></p></main></body></html>`;
+const OFFLINE_PAGE = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Offline | Domesday Live</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#EDE5D3;color:#1c1b22;font-family:system-ui,sans-serif;padding:24px;text-align:center}main{max-width:420px}h1{font-size:24px;margin:0 0 8px}p{line-height:1.55;margin:0 0 16px}a{color:#3730a3;font-weight:600}</style></head><body><main><h1>You are offline</h1><p>This page was not saved the last time you were connected. Pages you have already opened will still work, and everything loads again once you are back online.</p><p><a href="/">Try the home page</a></p></main></body></html>`;
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

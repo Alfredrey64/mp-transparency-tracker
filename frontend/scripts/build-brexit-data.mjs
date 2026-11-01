@@ -21,7 +21,7 @@ import { readOds } from "../../ods-lite.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(here, "../src/data/brexitData.json");
-const UA = { "User-Agent": "Mozilla/5.0 simple-politics" };
+const UA = { "User-Agent": "Mozilla/5.0 domesday-live" };
 const round = (v, d = 1) => Math.round(v * 10 ** d) / 10 ** d;
 // The OECD's service now and then answers with a server error, so a request is tried a few times.
 const fetchBuf = async (url, headers = {}) => {

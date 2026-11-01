@@ -58,7 +58,7 @@ function PlanSheet({ chapter }) {
         <li>This chapter fits the political system, Parliament, voting and the role of parties in Key Stage 3 Citizenship in England. Scotland, Wales and Northern Ireland have their own curricula, so match it to yours.</li>
         <li>Facts were last checked on {CHECKED}. If something looks out of date, check it on the page it comes from.</li>
       </ul>
-      <p className="tm-foot">Simple Politics &middot; Teacher mode</p>
+      <p className="tm-foot">Domesday Live &middot; Teacher mode</p>
     </div>
   );
 }
@@ -76,7 +76,7 @@ function WordsSheet() {
           </div>
         ))}
       </div>
-      <p className="tm-foot">Simple Politics &middot; Teacher mode</p>
+      <p className="tm-foot">Domesday Live &middot; Teacher mode</p>
     </div>
   );
 }
@@ -90,7 +90,7 @@ function OrderSheet() {
         <div className="tm-cards tm-cards-one">
           {STEP_ORDER_SHUFFLE.map((i) => <div key={i} className="tm-card" style={{ "--c": "#1E4FB8" }}><span>{BILL_STEPS[i]}</span></div>)}
         </div>
-        <p className="tm-foot">Simple Politics &middot; Teacher mode</p>
+        <p className="tm-foot">Domesday Live &middot; Teacher mode</p>
       </div>
       <div className="tm-page">
         <h1>Answers: how a bill becomes a law</h1>
@@ -107,7 +107,7 @@ function MeetSheet() {
   return (
     <div className="tm-page">
       <h1>Meet your MP</h1>
-      <p className="tm-meta">Find out who speaks for your area in Parliament. Use the Your area page on Simple Politics, or ask your teacher to look it up with a postcode.</p>
+      <p className="tm-meta">Find out who speaks for your area in Parliament. Use the Your area page on Domesday Live, or ask your teacher to look it up with a postcode.</p>
       <table>
         <tbody>
           <tr><th>My postcode area</th><td>{line}</td></tr>
@@ -132,7 +132,7 @@ function MeetSheet() {
       </ul>
       <h2>Think about it</h2>
       <p>What might an MP not be able to do about your question? Who else could you ask?</p>
-      <p className="tm-foot">Simple Politics &middot; Teacher mode</p>
+      <p className="tm-foot">Domesday Live &middot; Teacher mode</p>
     </div>
   );
 }
@@ -152,7 +152,7 @@ function RolesSheet() {
         </ul>
         <h2>The eight steps</h2>
         <ol>{BILL_STEPS.map((x) => <li key={x}>{x}</li>)}</ol>
-        <p className="tm-foot">Simple Politics &middot; Teacher mode</p>
+        <p className="tm-foot">Domesday Live &middot; Teacher mode</p>
       </div>
       <div className="tm-page">
         <h1>Role cards</h1>
@@ -167,7 +167,7 @@ function RolesSheet() {
             </div>
           ))}
         </div>
-        <p className="tm-foot">Simple Politics &middot; Teacher mode</p>
+        <p className="tm-foot">Domesday Live &middot; Teacher mode</p>
       </div>
     </>
   );
@@ -189,7 +189,7 @@ function FitSheet() {
       <h2>Scotland, Wales and Northern Ireland</h2>
       <p>These nations set their own curricula. The topics here (how decisions are made, Parliament, parties, voting and having a say) belong in these areas, but check the detailed outcomes on each site:</p>
       <ul>{OTHER_NATIONS.map((n) => <li key={n.nation}><b>{n.nation}:</b> {n.area} ({n.href})</li>)}</ul>
-      <p className="tm-foot">Source: {ENGLAND.source.label}. Simple Politics &middot; Teacher mode.</p>
+      <p className="tm-foot">Source: {ENGLAND.source.label}. Domesday Live &middot; Teacher mode.</p>
     </div>
   );
 }
@@ -202,7 +202,7 @@ function LinkSheet({ chapter }) {
       <p className="tm-meta">Open this lesson on your own device. Nothing is saved or sent: you go through it at your own pace.</p>
       <div className="tm-qr" dangerouslySetInnerHTML={{ __html: qrSvg(url, { cell: 10 }) }} />
       <p className="tm-url">{url}</p>
-      <p className="tm-foot">Point your camera at the code, or type the address. Simple Politics &middot; Teacher mode</p>
+      <p className="tm-foot">Point your camera at the code, or type the address. Domesday Live &middot; Teacher mode</p>
     </div>
   );
 }
@@ -222,7 +222,7 @@ function BallotSheet() {
         <h1>Mock vote</h1>
         <p className="tm-meta">Pick a choice that belongs to the class, such as the book to read, the trip or the class charity. Write the question and three options on the board, then pupils copy them on.</p>
         <div className="tm-ballots">{[1, 2, 3, 4, 5, 6].map(ballot)}</div>
-        <p className="tm-foot">Simple Politics &middot; Teacher mode</p>
+        <p className="tm-foot">Domesday Live &middot; Teacher mode</p>
       </div>
       <div className="tm-page">
         <h1>Tally sheet</h1>
@@ -237,7 +237,7 @@ function BallotSheet() {
           <li>What if the winner got only 9 of 30 votes? Is that enough?</li>
           <li>In a real election, who counts the votes and how is it checked?</li>
         </ul>
-        <p className="tm-foot">Simple Politics &middot; Teacher mode</p>
+        <p className="tm-foot">Domesday Live &middot; Teacher mode</p>
       </div>
     </>
   );
