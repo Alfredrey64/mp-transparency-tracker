@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, onFill, readable, solid } from "../theme";
 import { PageHeader } from "./shared";
@@ -191,10 +191,53 @@ function Panel({ title, note, children }) {
   );
 }
 
+// The details of the open committee: members and open inquiries. They open as a panel under the row the card is in, growing downward, so no card moves
+// sideways or changes size. The panel is drawn closed, opens on the next frame, and is taken away again once it has closed.
+function CommitteeDetails({ committee, open, onGone }) {
+  const houseColor = HOUSE_COLOR[committee.house] ?? COLORS.inkSoft;
+  const purpose = stripHtml(committee.purpose);
+  const n = committee.members?.length ?? 0;
+  const q = committee.inquiries?.length ?? 0;
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => requestAnimationFrame(() => setMounted(true)));
+    return () => cancelAnimationFrame(frame);
+  }, []);
+  useEffect(() => {
+    if (open) return undefined;
+    const timer = setTimeout(onGone, 360);
+    return () => clearTimeout(timer);
+  }, [open, onGone]);
+  const shown = open && mounted;
+  return (
+    <div id={`cm-detail-${committee.id}`} className="cm-detail" data-open={shown ? "true" : "false"} inert={!shown} role="region" aria-label={`${committee.name}: members and inquiries`}>
+      <div className="cm-detail-in">
+        <div style={{ border: `1px solid ${houseColor}`, borderRadius: 16, background: `color-mix(in srgb, ${houseColor} 5%, ${COLORS.paperCard})`, boxShadow: `var(--shadow-1), inset 0 4px 0 ${houseColor}`, padding: "20px 20px 18px" }}>
+          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, fontWeight: 800, color: COLORS.ink, marginBottom: 14, lineHeight: 1.25 }}>{committee.name}</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))", gap: "16px 28px" }}>
+          <div style={{ minWidth: 0 }}>
+            {purpose && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.6, marginBottom: 14 }}>{purpose}</div>}
+            <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>Members ({n})</div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {(committee.members ?? []).map((m, i) => <MemberChip key={i} member={m} showHouse={committee.house === "Joint"} />)}
+            </div>
+          </div>
+          {q > 0 && (
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>Open inquiries</div>
+              {committee.inquiries.map((inq, i) => <InquiryRow key={i} inquiry={inq} />)}
+            </div>
+          )}
+        </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function CommitteeCard({ committee, open, onToggle, index = 0 }) {
   const color = partyColour(committee.chair_party_colour, COLORS.accent);
   const houseColor = HOUSE_COLOR[committee.house] ?? COLORS.inkSoft;
-  const purpose = stripHtml(committee.purpose);
   const n = committee.members?.length ?? 0;
   const q = committee.inquiries?.length ?? 0;
 
@@ -202,12 +245,12 @@ function CommitteeCard({ committee, open, onToggle, index = 0 }) {
     <div
       className="cm-card"
       style={{
-        "--i": index, gridColumn: open ? "1 / -1" : undefined, background: `color-mix(in srgb, ${houseColor} 7%, ${COLORS.paperCard})`,
+        "--i": index, background: `color-mix(in srgb, ${houseColor} 7%, ${COLORS.paperCard})`,
         border: `1px solid ${open ? houseColor : COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 4px 0 ${houseColor}`, borderRadius: 16, padding: 18, minWidth: 0, display: "flex", flexDirection: "column",
-        transition: "border-color 0.15s",
+        transition: "border-color 0.2s",
       }}
     >
-      <button onClick={onToggle} aria-expanded={open} style={{ display: "flex", flexDirection: "column", flex: 1, width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left", font: "inherit" }}>
+      <button onClick={onToggle} aria-expanded={open} aria-controls={`cm-detail-${committee.id}`} style={{ display: "flex", flexDirection: "column", flex: 1, width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left", font: "inherit" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 10 }}>
           <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: readable(houseColor), background: `${houseColor}18`, border: `1px solid ${houseColor}44`, borderRadius: 999, padding: "3px 10px", textTransform: "uppercase", letterSpacing: "0.04em" }}>
             {committee.house}
@@ -218,7 +261,7 @@ function CommitteeCard({ committee, open, onToggle, index = 0 }) {
             </span>
           )}
         </div>
-        <div title={committee.name} style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 800, color: COLORS.ink, lineHeight: 1.22, marginBottom: 12, letterSpacing: "-0.01em", ...(open ? {} : { minHeight: "3.66em", display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 3, overflow: "hidden" }) }}>{committee.name}</div>
+        <div title={committee.name} style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 800, color: COLORS.ink, lineHeight: 1.22, marginBottom: 12, letterSpacing: "-0.01em", ...{ minHeight: "3.66em", display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 3, overflow: "hidden" } }}>{committee.name}</div>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <span aria-hidden="true" style={{ flexShrink: 0, width: 34, height: 34, borderRadius: "50%", background: committee.chair_name ? color : COLORS.hairline, color: committee.chair_name ? onFill(color) : COLORS.ink, display: "grid", placeItems: "center", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 800, textShadow: "0 1px 2px rgba(0,0,0,0.35)" }}>
             {committee.chair_name ? initials(committee.chair_name) : "?"}
@@ -236,23 +279,6 @@ function CommitteeCard({ committee, open, onToggle, index = 0 }) {
         </div>
       </button>
 
-      {open && (
-        <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${COLORS.hairline}`, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))", gap: "16px 28px" }}>
-          <div style={{ minWidth: 0 }}>
-            {purpose && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.6, marginBottom: 14 }}>{purpose}</div>}
-            <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>Members ({n})</div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-              {(committee.members ?? []).map((m, i) => <MemberChip key={i} member={m} showHouse={committee.house === "Joint"} />)}
-            </div>
-          </div>
-          {q > 0 && (
-            <div style={{ minWidth: 0 }}>
-              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>Open inquiries</div>
-              {committee.inquiries.map((inq, i) => <InquiryRow key={i} inquiry={inq} />)}
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 }
@@ -270,6 +296,25 @@ export default function Committees() {
   const [sortId, setSortId] = useState("name");
   const [query, setQuery] = useState("");
   const [openId, setOpenId] = useState(null);
+  // The committees whose details panel is on the page: the open one, and one that is still closing.
+  const [panelIds, setPanelIds] = useState([]);
+  const gridRef = useRef(null);
+  const [columns, setColumns] = useState(1);
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid || typeof ResizeObserver === "undefined") return undefined;
+    const measure = () => setColumns(Math.max(1, getComputedStyle(grid).gridTemplateColumns.split(" ").filter(Boolean).length));
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(grid);
+    return () => ro.disconnect();
+  }, [committees]);
+  const toggleCommittee = (id) => {
+    if (openId === id) { setOpenId(null); return; }
+    setPanelIds((ids) => (ids.includes(id) ? ids : [...ids, id]));
+    setOpenId(id);
+  };
+  const dropPanel = useCallback((id) => setPanelIds((ids) => ids.filter((x) => x !== id)), []);
 
   useEffect(() => {
     supabase.from("committees").select("*").order("name", { ascending: true }).then(({ data, error }) => {
@@ -396,10 +441,16 @@ export default function Committees() {
           </div>
 
           {filtered.length === 0 && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No committee matches that.</div>}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 340px), 1fr))", gap: 14, alignItems: "stretch" }}>
-            {filtered.map((c, i) => (
-              <CommitteeCard key={c.id} index={i} committee={c} open={openId === c.id} onToggle={() => setOpenId(openId === c.id ? null : c.id)} />
-            ))}
+          <div ref={gridRef} className="cm-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 340px), 1fr))", gap: 14, alignItems: "stretch" }}>
+            {filtered.flatMap((c, i) => {
+              const out = [<CommitteeCard key={c.id} index={i} committee={c} open={openId === c.id} onToggle={() => toggleCommittee(c.id)} />];
+              // A committee's details sit under the last card of the row it is in.
+              const rowEnd = (at) => Math.min(filtered.length - 1, (Math.floor(at / columns) + 1) * columns - 1);
+              filtered.forEach((d, at) => {
+                if (rowEnd(at) === i && at <= i && panelIds.includes(d.id)) out.push(<CommitteeDetails key={`detail-${d.id}`} committee={d} open={openId === d.id} onGone={() => dropPanel(d.id)} />);
+              });
+              return out;
+            })}
           </div>
           <p style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 18, lineHeight: 1.55 }}>
             Each dot is one member, in their party's colour; a ringed dot is the chair. Hover a dot for the name.

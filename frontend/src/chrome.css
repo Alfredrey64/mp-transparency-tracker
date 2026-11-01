@@ -679,6 +679,10 @@ html[data-nav] .page-hero-inner > *, html[data-nav] .page-hero::before { animati
 #main-content { transition: opacity 0.24s var(--ease-out); }
 /* The page dips rather than going blank, so there is no flash of empty background between two pages. */
 html[data-leaving] #main-content { opacity: 0; transition-duration: 0.09s; transition-timing-function: ease-in; }
+/* While a whole page is still loading, what sits under it (the footer, "More in this section", the page's foot) waits and then fades in, so it is never seen sliding
+   down the screen as the figures arrive. */
+.site-footer, #main-content > .sn, #main-content > .pf { transition: opacity 0.3s var(--ease-out); }
+.mp-app-shell:has(#main-content .loading-block) .site-footer, #main-content:has(.loading-block) > .sn, #main-content:has(.loading-block) > .pf { opacity: 0; visibility: hidden; transition: none; }
 /* The footer is part of the page: it fades with it, so it never shows jumping as the page above it changes height. */
 .site-footer { transition: opacity 0.24s var(--ease-out); }
 html[data-leaving] .site-footer { opacity: 0; transition-duration: 0.09s; transition-timing-function: ease-in; }

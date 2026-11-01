@@ -8,7 +8,7 @@ import { useT } from "../lib/useLang";
 export default function Loading({ compact = false }) {
   const t = useT();
   return (
-    <div role="status" aria-live="polite" className="loading-block" style={{ minHeight: compact ? 96 : "min(55vh, 520px)", color: COLORS.inkSoft }}>
+    <div role="status" aria-live="polite" className={compact ? "loading-block" : "loading-block loading-page"} style={{ minHeight: compact ? 96 : "min(55vh, 520px)", color: COLORS.inkSoft }}>
       <span className="sr-only">{t("Loading…")}</span>
       <span aria-hidden="true" className="loading-bars">
         <i style={{ width: "62%" }} />

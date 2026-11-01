@@ -183,11 +183,13 @@ function AfterSettle({ root, children }) {
     let quiet = 0;
     let cap = 0;
     let mo = null;
-    const done = () => { mo?.disconnect(); clearTimeout(quiet); clearTimeout(cap); setReady(true); };
+    const finish = () => { mo?.disconnect(); clearTimeout(quiet); clearTimeout(cap); setReady(true); };
+    // Not while the whole page is still a loading placeholder: the figures are on their way and the page will grow.
+    const done = () => { if (el?.querySelector(".loading-page")) { quiet = setTimeout(done, 250); return; } finish(); };
     if (watching) {
       mo = new MutationObserver(() => { clearTimeout(quiet); quiet = setTimeout(done, 350); });
       mo.observe(el, { childList: true, subtree: true });
-      cap = setTimeout(done, 4000);
+      cap = setTimeout(finish, 9000);
     }
     quiet = setTimeout(done, watching ? 350 : 0);
     return () => { mo?.disconnect(); clearTimeout(quiet); clearTimeout(cap); };
