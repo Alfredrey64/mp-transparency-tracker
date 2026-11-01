@@ -72,9 +72,14 @@ jobs:
           path: frontend/test-results
           retention-days: 7
 
+  # The layout audit opens every page at five sizes and took half an hour in one piece; it is cut into four parts that run side by side.
   layout-audit:
-    name: Layout audit (phone, tablet, laptop, desktop and ultrawide)
+    name: Layout audit, part ${{ matrix.shard }} of 4 (phone, tablet, laptop, desktop and ultrawide)
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
     defaults:
       run:
         working-directory: frontend
@@ -87,20 +92,39 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
       - run: npx playwright install --with-deps chromium
-      - run: npm run test:layout
-      - run: npm run shots
-        if: always()
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: layout-pictures
-          path: frontend/screenshots
-          retention-days: 7
+      - run: npm run test:layout -- --shard=${{ matrix.shard }}/4
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: layout-report
+          name: layout-report-${{ matrix.shard }}
           path: frontend/test-results
+          retention-days: 7
+
+  # The pictures are for a person to look at, so they are made alongside the audit instead of making it wait.
+  pictures:
+    name: Layout pictures (for looking at)
+    runs-on: ubuntu-latest
+    env:
+      VITE_SUPABASE_URL: http://127.0.0.1:54321
+      VITE_SUPABASE_ANON_KEY: test-key-not-real
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run shots
+      - uses: actions/upload-artifact@v4
+        with:
+          name: layout-pictures
+          path: frontend/screenshots
           retention-days: 7
 
   speed:
@@ -169,8 +193,12 @@ jobs:
           retention-days: 7
 
   browser-tests:
-    name: Browser tests (accessibility, contrast, polish, Your area, menus, Welsh, games and the rest)
+    name: Browser tests, part ${{ matrix.shard }} of 2 (accessibility, contrast, polish, Your area, menus, Welsh, games and the rest)
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
     defaults:
       run:
         working-directory: frontend
@@ -183,10 +211,10 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
       - run: npx playwright install --with-deps chromium
-      - run: npm run test:more
+      - run: npm run test:more -- --shard=${{ matrix.shard }}/2
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: browser-report
+          name: browser-report-${{ matrix.shard }}
           path: frontend/test-results
           retention-days: 7

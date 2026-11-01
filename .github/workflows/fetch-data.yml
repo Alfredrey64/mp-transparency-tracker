@@ -19,7 +19,9 @@ concurrency:
 # The refresh is split into jobs that run side by side. Run one after another, its steps took more than six hours (the Lords step alone over two),
 # which is GitHub's limit for a job, so from 26 October every run was cancelled before it reached the later steps and nothing after the first
 # dozen was refreshed. Each job below keeps its own steps, saves the data files it wrote, and the last job gathers them, builds the benchmarks
-# that need every table, reports what happened and commits once.
+# that need every table, reports what happened and commits once. The slowest chains are kept short on purpose: the Lords, MP claims and written
+# questions each have a job of their own, so the whole refresh takes about as long as its slowest single part (the Lords, around 40 minutes) rather
+# than the sum of them (the MP activity job alone took 75 minutes when it held all of its steps in turn).
 #
 # continue-on-error is set on every fetch step deliberately: each one writes to its own, independent table or file, so one script having a bad day
 # (a flaky upstream API, a transient network error) shouldn't stop the others, and the final job still publishes whatever succeeded.
@@ -209,7 +211,7 @@ jobs:
   lords:
     needs: gate
     if: needs.gate.outputs.run == 'true'
-    name: "The House of Lords, who sits there, their careers and how they vote"
+    name: "The House of Lords: who sits there (database table)"
     runs-on: ubuntu-latest
     # A crawl that hangs should end the job, not use the six-hour default.
     timeout-minutes: 300
@@ -238,6 +240,47 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-peers.js
 
+
+      - name: Note how each step went
+        if: always()
+        run: |
+          echo "STATUS_fetch_peers=${{ steps.fetch_peers.outcome }}" >> status.env
+
+      - name: Save the outcomes and the files this job wrote
+        if: always()
+        run: |
+          existing=""
+          for p in ; do [ -e "$p" ] && existing="$existing $p"; done
+          tar -cf data.tar status.env $existing
+
+      - name: Upload them for the last job
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: result-lords
+          path: data.tar
+          retention-days: 2
+
+  lords_files:
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
+    name: "The House of Lords: careers and how every peer voted (saved as files with the site)"
+    runs-on: ubuntu-latest
+    # A crawl that hangs should end the job, not use the six-hour default.
+    timeout-minutes: 300
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
       # The same for every current peer, for the Lords tab of Parliament in
       # Numbers (~800 requests).
       - name: Run the Lords careers fetch script
@@ -252,10 +295,10 @@ jobs:
         continue-on-error: true
         run: node fetch-lords-votes.js
 
+
       - name: Note how each step went
         if: always()
         run: |
-          echo "STATUS_fetch_peers=${{ steps.fetch_peers.outcome }}" >> status.env
           echo "STATUS_fetch_lords_careers=${{ steps.fetch_lords_careers.outcome }}" >> status.env
           echo "STATUS_fetch_lords_votes=${{ steps.fetch_lords_votes.outcome }}" >> status.env
 
@@ -270,14 +313,14 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: result-lords
+          name: result-lords_files
           path: data.tar
           retention-days: 2
 
   activity:
     needs: gate
     if: needs.gate.outputs.run == 'true'
-    name: "What MPs have been doing: activity, claims, petitions, committees and questions"
+    name: "What MPs have been doing: debates, petitions, gifts and standards reports"
     runs-on: ubuntu-latest
     # A crawl that hangs should end the job, not use the six-hour default.
     timeout-minutes: 300
@@ -305,17 +348,6 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-mp-activity.js
 
-      # Relies on IPSA's own site internals (a Next.js build id, rediscovered
-      # each run) rather than a documented API — see the script's own header
-      # comment for why, and the caveat that comes with that.
-      - name: Run the IPSA business cost claims fetch script
-        id: fetch_ipsa_expenses
-        continue-on-error: true
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node fetch-ipsa-expenses.js
-
       - name: Run the petitions fetch script
         id: fetch_petitions
         continue-on-error: true
@@ -331,6 +363,109 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-ministerial-gifts.js
+
+      - name: Run the standards reports fetch script
+        id: fetch_standards_reports
+        continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node fetch-standards-reports.js
+
+      - name: Note how each step went
+        if: always()
+        run: |
+          echo "STATUS_fetch_mp_activity=${{ steps.fetch_mp_activity.outcome }}" >> status.env
+          echo "STATUS_fetch_petitions=${{ steps.fetch_petitions.outcome }}" >> status.env
+          echo "STATUS_fetch_ministerial_gifts=${{ steps.fetch_ministerial_gifts.outcome }}" >> status.env
+          echo "STATUS_fetch_standards_reports=${{ steps.fetch_standards_reports.outcome }}" >> status.env
+
+      - name: Save the outcomes and the files this job wrote
+        if: always()
+        run: |
+          existing=""
+          for p in ; do [ -e "$p" ] && existing="$existing $p"; done
+          tar -cf data.tar status.env $existing
+
+      - name: Upload them for the last job
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: result-activity
+          path: data.tar
+          retention-days: 2
+
+  claims:
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
+    name: "What MPs have claimed: business cost claims from IPSA"
+    runs-on: ubuntu-latest
+    # A crawl that hangs should end the job, not use the six-hour default.
+    timeout-minutes: 300
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Relies on IPSA's own site internals (a Next.js build id, rediscovered
+      # each run) rather than a documented API — see the script's own header
+      # comment for why, and the caveat that comes with that.
+      - name: Run the IPSA business cost claims fetch script
+        id: fetch_ipsa_expenses
+        continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node fetch-ipsa-expenses.js
+
+
+      - name: Note how each step went
+        if: always()
+        run: |
+          echo "STATUS_fetch_ipsa_expenses=${{ steps.fetch_ipsa_expenses.outcome }}" >> status.env
+
+      - name: Save the outcomes and the files this job wrote
+        if: always()
+        run: |
+          existing=""
+          for p in ; do [ -e "$p" ] && existing="$existing $p"; done
+          tar -cf data.tar status.env $existing
+
+      - name: Upload them for the last job
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: result-claims
+          path: data.tar
+          retention-days: 2
+
+  questions:
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
+    name: "What MPs have been asked and are on: select committees and written questions"
+    runs-on: ubuntu-latest
+    # A crawl that hangs should end the job, not use the six-hour default.
+    timeout-minutes: 300
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
 
       # ~45 committees, three requests each (details, current members,
       # open inquiries) — see the script's own header comment for exactly
@@ -353,24 +488,12 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-written-questions.js
 
-      - name: Run the standards reports fetch script
-        id: fetch_standards_reports
-        continue-on-error: true
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node fetch-standards-reports.js
 
       - name: Note how each step went
         if: always()
         run: |
-          echo "STATUS_fetch_mp_activity=${{ steps.fetch_mp_activity.outcome }}" >> status.env
-          echo "STATUS_fetch_ipsa_expenses=${{ steps.fetch_ipsa_expenses.outcome }}" >> status.env
-          echo "STATUS_fetch_petitions=${{ steps.fetch_petitions.outcome }}" >> status.env
-          echo "STATUS_fetch_ministerial_gifts=${{ steps.fetch_ministerial_gifts.outcome }}" >> status.env
           echo "STATUS_fetch_committees=${{ steps.fetch_committees.outcome }}" >> status.env
           echo "STATUS_fetch_written_questions=${{ steps.fetch_written_questions.outcome }}" >> status.env
-          echo "STATUS_fetch_standards_reports=${{ steps.fetch_standards_reports.outcome }}" >> status.env
 
       - name: Save the outcomes and the files this job wrote
         if: always()
@@ -383,7 +506,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: result-activity
+          name: result-questions
           path: data.tar
           retention-days: 2
 
@@ -509,7 +632,7 @@ jobs:
 
   publish:
     name: "Build the benchmarks, report what happened and commit"
-    needs: [gate, records, lords, activity, static]
+    needs: [gate, records, lords, lords_files, activity, claims, questions, static]
     # Publishes whatever the other jobs produced, even if one of them failed or ran out of time (but not when the gate said no refresh was due).
     if: always() && needs.gate.outputs.run == 'true'
     runs-on: ubuntu-latest
