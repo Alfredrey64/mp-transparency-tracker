@@ -1,5 +1,10 @@
 /* The accessibility panel, its controls and the read-aloud player. Loaded with them, not with the first page. */
 .ax-layer { position: fixed; inset: 0; z-index: 120; display: grid; place-items: start center; padding: 72px 16px 16px; background: rgba(8, 16, 34, 0.5); overflow-y: auto; overscroll-behavior: contain; }
+.ax-layer { animation: fade-in 0.15s ease both; }
+.ax-box { animation: pop-in 0.22s var(--ease-out) both; }
+.ax-layer[data-closing] { animation: fade-out 0.15s ease-in both; pointer-events: none; }
+.ax-layer[data-closing] .ax-box { animation: pop-out 0.15s ease-in both; }
+@media (prefers-reduced-motion: reduce) { .ax-layer, .ax-box { animation: none !important; } }
 .ax-box { width: min(560px, 100%); padding: 22px 24px 20px; border-radius: 24px; background: var(--c-paper-card); color: var(--c-ink); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-3); outline: none; }
 .ax-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .ax-head h2 { margin: 0; font: 700 22px/1.25 "Figures", "Newsreader", Georgia, serif; }

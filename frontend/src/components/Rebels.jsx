@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { AnimatePresence } from "motion/react";
 import WhatThisMeans from "./WhatThisMeans";
 import { rebelsMeaning } from "../lib/numbersMeaning";
 import ShareButton from "./ShareButton";
@@ -214,7 +215,7 @@ export default function Rebels({ onNavigate }) {
         </div>
       )}
 
-      {panel && <MembersModal title={panel.title} note={panel.note} members={panel.list} badge={panel.badge} returnFocusTo={panel.opener} onClose={() => setPanel(null)} />}
+      <AnimatePresence>{panel && <MembersModal title={panel.title} note={panel.note} members={panel.list} badge={panel.badge} returnFocusTo={panel.opener} onClose={() => setPanel(null)} />}</AnimatePresence>
     </div>
   );
 }

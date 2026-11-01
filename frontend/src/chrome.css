@@ -101,7 +101,7 @@
 .mega-link b { display: block; font-size: 15px; font-weight: 600; line-height: 1.25; }
 .mega-link[aria-current="page"] b { color: color-mix(in srgb, var(--g) 65%, var(--c-ink)); }
 .mega-link small { display: block; margin-top: 2px; font-size: 13px; line-height: 1.35; color: var(--c-ink-soft); }
-.site-scrim { position: fixed; inset: 0; z-index: 45; background: rgba(8, 20, 42, 0.35); backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity 0.2s var(--ease-out); }
+.site-scrim { position: fixed; inset: 0; z-index: 45; background: rgba(8, 20, 42, 0.42); opacity: 0; pointer-events: none; transition: opacity 0.2s var(--ease-out); }
 .site-scrim[data-on="true"] { opacity: 1; pointer-events: auto; }
 
 /* ---- Search (a centred box over the page) --------------------------------------------------------------------------------------------------- */
@@ -114,6 +114,20 @@
 .search-box [role="region"] { position: static !important; box-shadow: none !important; border: none !important; background: transparent !important; padding: 6px 0 0 !important; margin-top: 6px; max-height: min(52vh, 420px) !important; }
 .search-hint { margin: 10px 2px 0; font-size: 13px; color: var(--c-ink-soft); }
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fade-out { to { opacity: 0; } }
+@keyframes pop-out { to { opacity: 0; transform: translateY(-6px) scale(0.985); } }
+@keyframes drawer-out { to { transform: translateX(24px); opacity: 0; } }
+/* Boxes that ease away when closed (see lib/useExit): the dimmed layer fades while the box lifts a little, and the phone menu slides back out. */
+.search-layer[data-closing], .site-drawer-backdrop[data-closing] { animation: fade-out 0.15s ease-in both; pointer-events: none; }
+.search-layer[data-closing] .search-box { animation: pop-out 0.15s ease-in both; }
+.pop-layer { animation: fade-in 0.15s ease both; }
+.pop-box { animation: pop-in 0.22s var(--ease-out) both; }
+.pop-layer[data-closing] { animation: fade-out 0.15s ease-in both; pointer-events: none; }
+.pop-layer[data-closing] .pop-box { animation: pop-out 0.15s ease-in both; }
+dialog[open] { animation: pop-in 0.22s var(--ease-out) both; }
+dialog[open]::backdrop { animation: fade-in 0.15s ease both; }
+@media (prefers-reduced-motion: reduce) { .pop-layer, .pop-box, dialog[open], dialog[open]::backdrop { animation: none !important; } }
+.site-drawer[data-closing] { animation: drawer-out 0.18s ease-in both; pointer-events: none; }
 @keyframes pop-in { from { opacity: 0; transform: translateY(-8px) scale(0.98); } to { opacity: 1; transform: none; } }
 
 /* ---- The phone and tablet menu --------------------------------------------------------------------------------------------------------------- */
@@ -242,7 +256,7 @@
   .drawer-group, .drawer-head::before, .mega-list > li { animation: none !important; }
   .drawer-list li { opacity: 1; transform: none; transition: none; }
   .dg-body, .dg-tile { transition: none; }
-  .site-mega, .search-layer, .search-box, .site-drawer, .site-drawer-backdrop { animation: none !important; }
+  .site-mega, .search-layer, .search-box, .site-drawer, .site-drawer-backdrop, .search-layer[data-closing] .search-box { animation: none !important; }
   .site-nav-btn::after { transition: none; }
 }
 
@@ -478,6 +492,17 @@ html[data-nav] .page-hero-inner > *, html[data-nav] .page-hero::before { animati
 .mp-band-photo { width: 112px; height: 112px; border-radius: 50%; flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #fff; }
 .mp-band-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
 @media (max-width: 520px) { .mp-band-photo { width: 88px; height: 88px; } }
+/* On a phone the photo sits above the name, so the whole banner is centred: photo, name and star, party and seat, and the buttons. */
+@media (max-width: 700px) {
+  .mp-band { flex-direction: column; justify-content: center; text-align: center; }
+  .mp-band-text { width: 100%; }
+  .mp-band-name, .mp-band-meta, .mp-band-actions { justify-content: center; }
+  .mp-band-meta { text-align: center; }
+}
+@media (max-width: 520px) {
+  .mp-band-dot { display: none; }
+  .mp-band-meta > button { flex-basis: 100%; }
+}
 
 /* ---- Contribution cards on an MP's page --------------------------------------------------------------------------------------------------- */
 .contrib {
@@ -615,12 +640,15 @@ html[data-nav] .page-hero-inner > *, html[data-nav] .page-hero::before { animati
 
 /* ---- Colour that runs down the page ------------------------------------------------------------------------------------------------------------ */
 /* A soft wash of the page's colour just under the band, fading out over the first screen or two, so a page is not a single flat ground. */
+/* The wash takes its colour from --page-accent through --wash-accent, a registered colour, so when the page changes the wash eases from one colour to the next instead of snapping. */
+@property --wash-accent { syntax: "<color>"; inherits: true; initial-value: transparent; }
+.mp-app-shell { --wash-accent: var(--page-accent, transparent); transition: --wash-accent 0.4s var(--ease-out); }
 .mp-app-shell > div:has(> main) { position: relative; isolation: isolate; }
 .mp-app-shell > div:has(> main)::before {
   content: ""; position: absolute; z-index: -1; left: 0; right: 0; top: 0; height: 900px; pointer-events: none;
   background:
-    radial-gradient(1000px 520px at 10% 0, color-mix(in srgb, var(--page-accent, transparent) 22%, transparent), transparent 72%),
-    radial-gradient(900px 460px at 94% 160px, color-mix(in srgb, var(--page-accent, transparent) 15%, transparent), transparent 72%);
+    radial-gradient(1000px 520px at 10% 0, color-mix(in srgb, var(--wash-accent) 22%, transparent), transparent 72%),
+    radial-gradient(900px 460px at 94% 160px, color-mix(in srgb, var(--wash-accent) 15%, transparent), transparent 72%);
 }
 @media print { .mp-app-shell > div:has(> main)::before { display: none; } }
 
@@ -639,14 +667,17 @@ html[data-nav] .page-hero-inner > *, html[data-nav] .page-hero::before { animati
 /* ---- The route a bill takes (BillRoute.jsx) ----------------------------------------------------------------------------------------------------- */
 
 /* ---- Page changes ------------------------------------------------------------------------------------------------------------------------------
-   Changing page: the page's content eases down (html gets data-leaving the moment you click), the pages are swapped while it is dim, and the new one
-   fades back up as data-leaving is taken off while its content settles into place from a few pixels below, so the change reads as one movement
-   rather than a blink. Only #main-content fades and only the page's own blocks move, so the header and the buttons fixed to the screen never move or double. */
-#main-content { transition: opacity 0.18s var(--ease-out); }
+   Changing page: the page's content fades right out (html gets data-leaving the moment you click), the pages are swapped and drawn while nothing is showing,
+   and once the browser has caught up the new one fades in as data-leaving is taken off while its content settles into place from a few pixels below, so
+   the change reads as one movement. Nothing is swapped, drawn or measured in view, so a slow phone shows no stutter. Only #main-content fades and only the page's own blocks move, so the header and the buttons fixed to the screen never move or double. */
+#main-content { transition: opacity 0.24s var(--ease-out); }
 /* The page dips rather than going blank, so there is no flash of empty background between two pages. */
-html[data-leaving] #main-content { opacity: 0.3; transition-duration: 0.06s; transition-timing-function: ease-in; }
+html[data-leaving] #main-content { opacity: 0; transition-duration: 0.09s; transition-timing-function: ease-in; }
+/* The footer is part of the page: it fades with it, so it never shows jumping as the page above it changes height. */
+.site-footer { transition: opacity 0.24s var(--ease-out); }
+html[data-leaving] .site-footer { opacity: 0; transition-duration: 0.09s; transition-timing-function: ease-in; }
 @keyframes page-rise { from { transform: translateY(10px); } }
-html[data-nav]:not([data-leaving]) #main-content > :not(.page-loading):not(.sn):not(.pf) { animation: page-rise 0.36s var(--ease-out) backwards; }
+html[data-nav]:not([data-leaving]) #main-content > :not(.page-loading):not(.sn):not(.pf) { animation: page-rise 0.34s var(--ease-out) backwards; }
 @media (prefers-reduced-motion: reduce) { html[data-nav]:not([data-leaving]) #main-content > :not(.page-loading):not(.sn):not(.pf) { animation: none; } }
 /* The section links and page foot arrive after the page has settled (App.jsx, AfterSettle), so they ease in rather than appear. */
 @keyframes foot-in { from { opacity: 0; } }
@@ -656,7 +687,7 @@ html[data-nav]:not([data-leaving]) #main-content > :not(.page-loading):not(.sn):
 @keyframes page-in { from { opacity: 0; } }
 html:not([data-nav]) #main-content > :not(.page-loading) { animation: page-in 0.26s var(--ease-out) backwards; }
 @media (prefers-reduced-motion: reduce) {
-  #main-content { transition: none; }
+  #main-content, .site-footer, .mp-app-shell { transition: none; }
   html:not([data-nav]) #main-content > :not(.page-loading) { animation: none; }
 }
 

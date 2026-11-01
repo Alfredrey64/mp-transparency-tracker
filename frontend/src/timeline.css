@@ -8,7 +8,7 @@
 .tl-key span { display: inline-flex; align-items: center; gap: 7px; }
 .tl-key i { width: 12px; height: 12px; border-radius: 4px; }
 .tl-lead { margin: 22px auto 6px; max-width: 640px; text-align: center; font: 400 15px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.tl-nav { position: sticky; top: 0; z-index: 8; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 10px -8px 18px; padding: 12px 8px; background: color-mix(in srgb, var(--c-paper) 92%, transparent); backdrop-filter: blur(8px); }
+.tl-nav { position: sticky; top: 0; z-index: 8; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 10px -8px 18px; padding: 12px 8px; background: color-mix(in srgb, var(--c-paper) 92%, transparent);  }
 .tl-nav button { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; cursor: pointer; font: 600 13px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--ea) 70%, var(--c-ink)); background: color-mix(in srgb, var(--ea) 9%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--ea) 34%, transparent); transition: background 0.25s, color 0.25s, transform 0.25s var(--ease-out), box-shadow 0.25s; }
 .tl-nav button span { width: 9px; height: 9px; border-radius: 50%; background: var(--ea); transition: transform 0.25s var(--ease-out); }
 .tl-nav button:hover { transform: scale(1.012); }
@@ -63,4 +63,4 @@
 .tl-bill-meta { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 3px; font: 500 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .tl-result { font-weight: 800; color: color-mix(in srgb, var(--cc) 80%, var(--c-ink)); }
 @media (prefers-reduced-motion: reduce) { .tl-card, .tl-ring, .tl-bill-icon, .tl-nav button { transition: none; } .tl-card:hover { transform: none; } }
-@media (max-width: 700px) { .tl-nav { position: static; margin: 14px 0 6px; padding: 0; background: none; backdrop-filter: none; } .tl-nav button { padding: 7px 12px; font-size: 12.5px; } }
+@media (max-width: 700px) { .tl-nav { position: static; margin: 14px 0 6px; padding: 0; background: none; } .tl-nav button { padding: 7px 12px; font-size: 12.5px; } }

@@ -50,3 +50,17 @@ test("a long page of charts draws the rest after the first few, and a jump to a 
   await page.selectOption("#ons-jump-select", last);
   await expect(page.locator(`#s-${last}`)).toBeAttached();
 });
+
+// Pop-outs ease away instead of vanishing: closing marks them as closing for a moment, then they are gone and focus is back on the button.
+test("the search box and the accessibility panel ease away when closed, then are gone", async ({ page }) => {
+  await page.route("**/127.0.0.1:54321/**", (r) => r.abort());
+  await page.goto("/care");
+  await expect(page.locator("h1").first()).toBeVisible({ timeout: 15000 });
+  for (const [open, layer] of [[".site-search-btn", ".search-layer"], [".site-access", ".ax-layer"]]) {
+    await page.locator(open).click();
+    await expect(page.locator(layer)).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.locator(`${layer}[data-closing]`)).toHaveCount(1);
+    await expect(page.locator(layer)).toHaveCount(0);
+  }
+});

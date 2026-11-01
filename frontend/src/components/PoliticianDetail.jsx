@@ -150,8 +150,8 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
               {initials(politician.name)}
             </div>
           )}
-          <div style={{ minWidth: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+          <div className="mp-band-text" style={{ minWidth: 0 }}>
+            <div className="mp-band-name" style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
               <h1 className="page-hero-title" style={{ fontSize: "clamp(30px, 5vw, 46px)" }}>{politician.name}</h1>
               <button
                 type="button"
@@ -164,12 +164,12 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
                 <IconStar size={18} filled={watched} />
               </button>
             </div>
-            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "2px 10px", fontFamily: FONT_BODY, fontSize: 17, color: "var(--c-on-navy-soft)", marginTop: 8, lineHeight: 1.4 }}>
+            <div className="mp-band-meta" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "2px 10px", fontFamily: FONT_BODY, fontSize: 17, color: "var(--c-on-navy-soft)", marginTop: 8, lineHeight: 1.4 }}>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 8, whiteSpace: "nowrap", color: "#fff", fontWeight: 600 }}>
                 <span style={{ width: 11, height: 11, borderRadius: "50%", background: color, boxShadow: "0 0 0 2px rgba(255,255,255,0.75)", flexShrink: 0 }} />
                 {politician.party}
               </span>
-              <span aria-hidden="true">·</span>
+              <span className="mp-band-dot" aria-hidden="true">·</span>
               <button
                 type="button"
                 onClick={() => { navigate(`#/constituency/${encodeURIComponent(politician.constituency)}`); }}
@@ -180,7 +180,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
               </button>
               {office && <span style={{ flexBasis: "100%", fontSize: 15 }}>MP for {office}</span>}
             </div>
-            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12, marginTop: 18 }}>
+            <div className="mp-band-actions" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12, marginTop: 18 }}>
               <ShareButton
                 filename={`${politician.name}-report-card`}
                 label="Share report card"

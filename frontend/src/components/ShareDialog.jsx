@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { COLORS, FONT_BODY, FONT_DISPLAY } from "../theme";
 import { renderShareCard } from "../lib/shareCard";
+import { useExit } from "../lib/useExit";
 
 // The pop-up behind a Share button: draws the card, shows it, and offers to
 // share it with the device's own share sheet (phones), download it as a PNG,
@@ -10,7 +11,8 @@ import { renderShareCard } from "../lib/shareCard";
 // above) because it is mostly a picture. Behaves like a proper dialog:
 // focus moves in and returns, Escape and a click outside close it, Tab stays
 // inside, and the page behind doesn't scroll.
-export default function ShareDialog({ getSpec, filename, returnFocusTo, onClose }) {
+export default function ShareDialog({ getSpec, filename, returnFocusTo, onClose: closeNow }) {
+  const [closing, onClose] = useExit(closeNow);
   const [url, setUrl] = useState(null);
   const [blob, setBlob] = useState(null);
   const [error, setError] = useState(false);
@@ -104,6 +106,8 @@ export default function ShareDialog({ getSpec, filename, returnFocusTo, onClose 
 
   return createPortal(
     <div
+      className="pop-layer"
+      data-closing={closing || undefined}
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -111,6 +115,7 @@ export default function ShareDialog({ getSpec, filename, returnFocusTo, onClose 
     >
       <div
         ref={panelRef}
+        className="pop-box"
         role="dialog"
         aria-modal="true"
         aria-label="Share this as an image"

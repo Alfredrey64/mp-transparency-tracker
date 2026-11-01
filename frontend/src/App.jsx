@@ -132,6 +132,24 @@ console.log(
 );
 
 // A page drawn from data, handed in as the component to show.
+// Calls `done` once two frames in a row have come quickly (the browser has finished drawing what was just put on the page), or after `limit` ms at most.
+// A steady slower rhythm, such as 30 frames a second in a phone's low-power mode, counts as quick too.
+function afterSettled(done, limit = 220) {
+  const start = performance.now();
+  let last = start;
+  let quick = 0;
+  let gap = 0;
+  const tick = (now) => {
+    const d = now - last;
+    quick = d < 22 || (d < 40 && Math.abs(d - gap) < 5) ? quick + 1 : 0;
+    gap = d;
+    last = now;
+    if (quick >= 2 || now - start > limit) done();
+    else requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
 // The line under the header while a page change is under way.
 function NavProgress({ pending }) {
   const { fetching } = useNavState();
@@ -437,15 +455,15 @@ export default function App() {
     const id = ++navId.current;
     setNavState({ fetching: true });
     root.dataset.leaving = "1";
-    const fadedOut = new Promise((resolve) => setTimeout(resolve, 60));
+    const fadedOut = new Promise((resolve) => setTimeout(resolve, 90));
     const gaveUp = new Promise((resolve) => setTimeout(resolve, 2500));
     Promise.race([Promise.all([preloadPage(loader), fadedOut]), gaveUp]).then(() => {
       // A newer click has taken over: let that one win.
       if (id !== navId.current) return;
       setNavState({ fetching: false });
       flushSync(apply);
-      // The new page is in, and still transparent. One frame later it is allowed to fade in.
-      requestAnimationFrame(() => requestAnimationFrame(() => { if (id === navId.current) delete root.dataset.leaving; }));
+      // The new page is in, and still transparent. It fades in once the browser has caught up with drawing it, so the fade never has to share a frame with that work.
+      afterSettled(() => { if (id === navId.current) delete root.dataset.leaving; });
     });
   }
 

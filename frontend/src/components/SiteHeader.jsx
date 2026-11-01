@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { preloadView } from "../pageLoaders";
 import { useWatchlistChanges } from "../lib/useWatchlistChanges";
 import { useDialog } from "../lib/useDialog";
+import { useExit } from "../lib/useExit";
 import { useT } from "../lib/useLang";
 import LanguageSwitch from "./LanguageSwitch";
 import { solid } from "../theme";
@@ -105,16 +106,17 @@ function MegaPanel({ menu, activeView, onNavigate, onClose }) {
   );
 }
 
-function SearchLayer({ onClose, onNavigate, onSelectPolitician }) {
+function SearchLayer({ onClose: closeNow, onNavigate, onSelectPolitician }) {
   const t = useT();
   const panelRef = useRef(null);
+  const [closing, onClose] = useExit(closeNow);
   useDialog({ open: true, onClose, panelRef });
   useEffect(() => {
     const input = panelRef.current?.querySelector("input");
     input?.focus();
   }, []);
   return (
-    <div className="search-layer" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+    <div className="search-layer" data-closing={closing || undefined} onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div ref={panelRef} className="search-box" role="dialog" aria-modal="true" aria-label={t("Search the site")} tabIndex={-1}>
         <h2>{t("Search")}</h2>
         <GlobalSearch
@@ -127,10 +129,13 @@ function SearchLayer({ onClose, onNavigate, onSelectPolitician }) {
   );
 }
 
-function Drawer({ activeView, onNavigate, onClose, onSearch }) {
+function Drawer({ activeView, onNavigate, onClose: closeNow, onSearch }) {
   const t = useT();
   const panelRef = useRef(null);
-  useDialog({ open: true, onClose, panelRef });
+  // The close button, Escape and a tap outside ease the menu away; choosing a page closes it at once, as the page itself is changing.
+  const [closing, easeAway] = useExit(closeNow);
+  const onClose = closeNow;
+  useDialog({ open: true, onClose: easeAway, panelRef });
   const groups = MENU.flatMap((m) => m.groups);
   const [openKey, setOpenKey] = useState(() => groups.find((g) => g.items.some((i) => i.key === activeView))?.key ?? null);
   const [recent] = useState(() => readRecent().filter((k) => k !== activeView).slice(0, 4));
@@ -173,15 +178,15 @@ function Drawer({ activeView, onNavigate, onClose, onSearch }) {
 
   return (
     <>
-      <div className="site-drawer-backdrop" onClick={onClose} />
-      <div ref={panelRef} className="site-drawer" role="dialog" aria-modal="true" aria-label={t("Site menu")} tabIndex={-1} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}>
+      <div className="site-drawer-backdrop" data-closing={closing || undefined} onClick={easeAway} />
+      <div ref={panelRef} className="site-drawer" data-closing={closing || undefined} role="dialog" aria-modal="true" aria-label={t("Site menu")} tabIndex={-1} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}>
         <div className="drawer-head">
           <div className="drawer-top">
             <PageLink to="home" onNavigate={onNavigate} onAfter={onClose} className="site-brand" aria-label={t("Simple Politics, home")}>
               <LogoMark width={54} color="#FFFFFF" hole="var(--c-navy)" />
               <span>Simple Politics</span>
             </PageLink>
-            <button type="button" className="site-icon-btn drawer-close" aria-label={t("Close menu")} onClick={onClose}>
+            <button type="button" className="site-icon-btn drawer-close" aria-label={t("Close menu")} onClick={easeAway}>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg>
             </button>
           </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { AnimatePresence } from "motion/react";
 import WhatThisMeans from "./WhatThisMeans";
 import { lordsMeaning, womenMeaning } from "../lib/numbersMeaning";
 import ShareButton from "./ShareButton";
@@ -291,7 +292,7 @@ export default function LordsNumbers({ onNavigate }) {
         </div>
       </div>
 
-      {panel && <MembersModal title={panel.title} note={panel.note} members={panel.list} badge={panel.badge} returnFocusTo={panel.opener} onClose={() => setPanel(null)} onSelect={(m) => goPeer(m.id)} noun="peer" />}
+      <AnimatePresence>{panel && <MembersModal title={panel.title} note={panel.note} members={panel.list} badge={panel.badge} returnFocusTo={panel.opener} onClose={() => setPanel(null)} onSelect={(m) => goPeer(m.id)} noun="peer" />}</AnimatePresence>
     </div>
   );
 }

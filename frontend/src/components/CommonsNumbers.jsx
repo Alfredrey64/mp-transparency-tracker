@@ -3,7 +3,7 @@ import WhatThisMeans from "./WhatThisMeans";
 import { seatsMeaning, womenMeaning, tenureMeaning, safetyMeaning } from "../lib/numbersMeaning";
 import ShareButton from "./ShareButton";
 import { chamberShareSpec } from "../lib/shareSpecs";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useReducedMotion, AnimatePresence } from "motion/react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_BODY, numeric } from "../theme";
 import { partyColour, formatDate } from "../lib/format";
@@ -366,7 +366,7 @@ export default function CommonsNumbers({ onNavigate }) {
           </p>
         </div>
       )}
-      {panel && <MembersModal title={panel.title} note={panel.note} members={panel.list} badge={panel.badge} returnFocusTo={panel.opener} onClose={() => setPanel(null)} />}
+      <AnimatePresence>{panel && <MembersModal title={panel.title} note={panel.note} members={panel.list} badge={panel.badge} returnFocusTo={panel.opener} onClose={() => setPanel(null)} />}</AnimatePresence>
     </div>
   );
 }
