@@ -1,3 +1,4 @@
+import { mpCareers, loadMpCareers } from "../lib/mpCareersData";
 import { useState, useMemo, useEffect } from "react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_BODY, PAGE_PADDING, readable } from "../theme";
@@ -47,7 +48,8 @@ export default function PoliticianList({ onSelect, initialCareer = null }) {
   const [sortBy, setSortBy] = useState("name");
   // Career facts for every MP, loaded after the list (a small file), which
   // switch on the career filters, the extra sorts and the line on each card.
-  const [careers, setCareers] = useState(null);
+  const [careers, setCareers] = useState(() => mpCareers);
+  const [careersFailed, setCareersFailed] = useState(false);
   const [careerKeys, setCareerKeys] = useState(() => keysFromParam(initialCareer));
   // A search result can point here with "#/list/career=minister".
   const [seenCareerParam, setSeenCareerParam] = useState(initialCareer);
@@ -67,7 +69,7 @@ export default function PoliticianList({ onSelect, initialCareer = null }) {
       setLoading(false);
     }
     load();
-    import("../data/mpCareers.json").then((m) => setCareers(m.default.mps)).catch(() => setCareers(null));
+    loadMpCareers().then(setCareers).catch(() => { setCareers(null); setCareersFailed(true); });
   }, []);
 
   const parties = useMemo(() => {
@@ -191,6 +193,8 @@ export default function PoliticianList({ onSelect, initialCareer = null }) {
         })}
       </div>
 
+      {/* The career filters arrive a moment after the list: their place is kept, so the list does not move down when they appear. */}
+      {!careers && !careersFailed && <div aria-hidden="true" style={{ minHeight: 117, marginBottom: 20 }} />}
       {careers && (
         <div style={{ marginBottom: 20 }}>
           <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.inkSoft, marginBottom: 8 }}>Filter by career</div>

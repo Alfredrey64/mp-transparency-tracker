@@ -464,12 +464,13 @@ export default function HouseOfLords({ peerId = null }) {
         }
       />
 
-      {!loading && !failed && peers.length > 0 && (
+      {(loading || (!failed && peers.length > 0)) && (
+        // Drawn with dashes while the peers arrive, so the strip is already there and the list below it does not move when the figures land.
         <GlanceStrip items={[
-          { value: String(peers.length), label: "peers sit in the Lords", sub: "none of them is elected", colour: "#C0392B" },
-          { value: String(peers.filter((p) => p.peerage_type === "Bishop").length), label: "Church of England bishops", sub: "they sit automatically", colour: "#7A5AF0" },
-          { value: String(parties.length ? new Set(peers.map((p) => p.party).filter(Boolean)).size : 0), label: "parties and groups", sub: "including crossbenchers and non-affiliated", colour: "#1E4FB8" },
-          { value: `${Math.round((peers.filter((p) => p.gender === "F").length / peers.length) * 100)}%`, label: "are women", colour: "#E0367A" },
+          { value: loading ? "–" : String(peers.length), label: "peers sit in the Lords", sub: "none of them is elected", colour: "#C0392B" },
+          { value: loading ? "–" : String(peers.filter((p) => p.peerage_type === "Bishop").length), label: "Church of England bishops", sub: "they sit automatically", colour: "#7A5AF0" },
+          { value: loading ? "–" : String(parties.length ? new Set(peers.map((p) => p.party).filter(Boolean)).size : 0), label: "parties and groups", sub: "including crossbenchers and non-affiliated", colour: "#1E4FB8" },
+          { value: loading ? "–" : `${Math.round((peers.filter((p) => p.gender === "F").length / peers.length) * 100)}%`, label: "are women", colour: "#E0367A" },
         ]} />
       )}
 

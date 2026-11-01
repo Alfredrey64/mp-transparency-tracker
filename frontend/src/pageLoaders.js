@@ -3,6 +3,8 @@
 // or touched, so by the time it is clicked the page is usually already here.
 
 
+import { loadMpCareers } from "./lib/mpCareersData";
+
 // A page's code together with the data file it asks for first, fetched side by side, so the page opens with its figures instead of fetching them after it appears.
 // A data file that fails to arrive is left for the page to ask for again and to report.
 const withData = (page, ...data) => () => Promise.all([page(), ...data.map((d) => d().catch(() => {}))]).then(([m]) => m);
@@ -56,7 +58,7 @@ export const LOADERS = {
   terms: () => import("./components/TermsConditions"),
   accessibility: () => import("./components/Accessibility"),
   whatsnew: () => import("./components/WhatsNew"),
-  list: () => import("./components/PoliticianList"),
+  list: withData(() => import("./components/PoliticianList"), loadMpCareers),
   economy: () => import("./components/SectorPage"),
   prices: () => import("./components/SectorPage"),
   jobs: () => import("./components/SectorPage"),

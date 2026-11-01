@@ -177,13 +177,18 @@ function PageLoadingFallback() {
 // stopped changing, a moment after its last figures land, and only then, so nothing is ever pushed by them or under them.
 function AfterSettle({ root, children }) {
   const [ready, setReady] = useState(false);
+  // While a page is still settling the footer is left out (html[data-settling]), so it is never seen sliding down the screen as the page fills in.
+  useLayoutEffect(() => {
+    document.documentElement.dataset.settling = "1";
+    return () => { delete document.documentElement.dataset.settling; };
+  }, []);
   useEffect(() => {
     const el = root.current;
     const watching = Boolean(el) && typeof MutationObserver !== "undefined";
     let quiet = 0;
     let cap = 0;
     let mo = null;
-    const finish = () => { mo?.disconnect(); clearTimeout(quiet); clearTimeout(cap); setReady(true); };
+    const finish = () => { mo?.disconnect(); clearTimeout(quiet); clearTimeout(cap); delete document.documentElement.dataset.settling; setReady(true); };
     // Not while the whole page is still a loading placeholder: the figures are on their way and the page will grow.
     const done = () => { if (el?.querySelector(".loading-page")) { quiet = setTimeout(done, 250); return; } finish(); };
     if (watching) {
