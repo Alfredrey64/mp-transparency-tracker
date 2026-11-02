@@ -25,7 +25,12 @@ export default function LogoMark({ width = 76, color = "var(--sb-accent)", hole 
   const leaf = (cls, j, content) => <g key={cls + j} className={cls} style={{ "--i": j }}>{content}</g>;
   return (
     <svg className="lg" data-play={animate || undefined} width={width} viewBox="0 0 120 84" fill="none" role={title ? "img" : undefined} aria-label={title} aria-hidden={title ? undefined : true} style={{ display: "block", flexShrink: 0 }}>
-      <defs><path id={`${id}r`} d={TEXT_RIGHT} /><path id={`${id}l`} d={TEXT_LEFT} /></defs>
+      <defs>
+        <path id={`${id}r`} d={TEXT_RIGHT} /><path id={`${id}l`} d={TEXT_LEFT} />
+        <linearGradient id={`${id}foil`} gradientUnits="userSpaceOnUse" x1="60" y1="20" x2="440" y2="430"><stop offset="0" stopColor="#FFF1C4" /><stop offset=".38" stopColor={ribbon} /><stop offset=".7" stopColor="#E9A62E" /><stop offset="1" stopColor="#B97A16" /></linearGradient>
+        <linearGradient id={`${id}foilbox`} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#FFF1C4" /><stop offset=".4" stopColor={ribbon} /><stop offset="1" stopColor="#B97A16" /></linearGradient>
+        <linearGradient id={`${id}sheen`} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#fff" stopOpacity=".22" /><stop offset=".45" stopColor="#fff" stopOpacity="0" /><stop offset="1" stopColor="#000" stopOpacity=".24" /></linearGradient>
+      </defs>
       <g className="lg-g">
         <path d={COVER_RIGHT} fill={color} />
         <path d={STACK_RIGHT} stroke={hole} strokeOpacity=".45" strokeWidth="1.1" strokeLinecap="round" />
@@ -36,10 +41,16 @@ export default function LogoMark({ width = 76, color = "var(--sb-accent)", hole 
         {leaf("lg-f", 0, (
           <>
             <path d={COVER_RIGHT} fill={color} stroke={hole} strokeWidth=".6" strokeOpacity=".5" />
-            <path d={FRAME} stroke={hole} strokeOpacity=".5" strokeWidth="1" />
+            <path d={COVER_RIGHT} fill={`url(#${id}sheen)`} />
+            <path d={FRAME} stroke={`url(#${id}foilbox)`} strokeWidth="1.1" />
+            {/* The building is foil-stamped into the cloth: a dark edge on the upper left where the die pressed in, a pale edge on the lower right where the cloth rises
+                again, and gold foil in between. */}
             <g transform={PARLIAMENT_AT}>
-              <path d={PARLIAMENT} fill={ribbon} />
-              <circle {...CLOCK} fill={color} stroke={ribbon} strokeWidth="7" />
+              <g transform="translate(4 4.5)" fill="#fff" fillOpacity=".38"><path d={PARLIAMENT} /><circle {...CLOCK} /></g>
+              <g transform="translate(-3.5 -3.5)" fill="#000" fillOpacity=".5"><path d={PARLIAMENT} /><circle {...CLOCK} /></g>
+              <path d={PARLIAMENT} fill={`url(#${id}foil)`} />
+              <circle {...CLOCK} fill={color} stroke={`url(#${id}foil)`} strokeWidth="7" />
+              <circle {...CLOCK} r="14" fill="#000" fillOpacity=".18" />
             </g>
           </>
         ))}
