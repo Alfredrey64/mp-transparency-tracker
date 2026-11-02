@@ -251,6 +251,16 @@ export const PAGE_GUIDES = {
     why: "A site about who funds politics should say who funds it. Knowing there is no party, donor or advertiser behind a page helps you judge how far to trust it.",
     notShown: "Nothing is hidden here. If the site ever takes money, it will appear in the funding log on this page.",
   },
+  about: {
+    what: "What this site is, who runs it, how it is paid for and where the figures come from, in a few short paragraphs.",
+    why: "You should know who is behind a site that talks about politics before you trust it. This page says so plainly.",
+    notShown: "Nothing is hidden here. For the full list of rules and any money received, see the funding page.",
+  },
+  corrections: {
+    what: "The address to write to, how to report a mistake, what happens to a report, and a public log of corrections made.",
+    why: "Anyone can get a fact wrong. A clear way to say so, and a record of what was changed, is how a site earns trust.",
+    notShown: "Reports that were checked and found to be correct are not logged. Reports sent by email are private, and only the correction itself is published.",
+  },
   howtovote: {
     what: "Who can vote in which elections, how to register, the ways to vote, what photo ID you need and what happens on polling day, in four plain steps.",
     why: "You can't vote unless you are registered, and the rules on ID and deadlines trip up people every election. Knowing them in advance makes your vote count.",

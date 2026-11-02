@@ -1,23 +1,14 @@
-import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING } from "../theme";
+import { COLORS, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { IconLedger } from "./icons";
 import { PageLink } from "./SiteHeader";
-import { Reveal } from "./Motion";
+import Section from "./InfoSection";
+import { CONTACT_EMAIL } from "../lib/contact";
 
 // Funding and independence: who pays for the site, and the rules that hold whatever the funding is. A site about who funds politicians should say plainly
 // who funds it. The log at the foot is the one place any money is recorded, so a reader can see it change.
 
-const ISSUES = "https://github.com/Alfredrey64/mp-transparency-tracker/issues";
-export const FUNDING_REVIEWED = "26 October 2026";
-
-function Section({ title, children }) {
-  return (
-    <Reveal as="section" style={{ marginBottom: 16, padding: "18px 22px 20px", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: "4px solid var(--page-accent, #2A9D8F)", borderRadius: 14, boxShadow: "var(--shadow-1)" }}>
-      <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, margin: "0 0 8px" }}>{title}</h2>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 15, color: COLORS.inkSoft, lineHeight: 1.7 }}>{children}</div>
-    </Reveal>
-  );
-}
+export const FUNDING_REVIEWED = "2 November 2026";
 
 const list = { margin: 0, paddingLeft: 20, display: "grid", gap: 8 };
 
@@ -33,7 +24,7 @@ export default function Funding({ onNavigate }) {
       />
       <div style={{ maxWidth: 760 }}>
         <Section title="Who runs it">
-          Domesday Live is an independent project, designed and built by Alfred Reynolds. It is not part of, and is not paid for by, any political party,
+          Domesday Live is an independent project, designed and built by Alfred Reynolds (see <PageLink to="about" onNavigate={onNavigate} style={{ color: COLORS.ink, fontWeight: 700 }}>about the site</PageLink>). It is not part of, and is not paid for by, any political party,
           government body, campaign group or company that lobbies Parliament.
         </Section>
 
@@ -62,8 +53,10 @@ export default function Funding({ onNavigate }) {
         </Section>
 
         <Section title="Spotted a mistake?">
-          Please tell us. Mistakes are fixed on the page itself as soon as they are confirmed. You can report one on{" "}
-          <a href={ISSUES} target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 700 }}>the project's public issue list</a>, which anyone can read.
+          Please tell us. Mistakes are fixed on the page itself as soon as they are confirmed. Write to{" "}
+          <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: COLORS.ink, fontWeight: 700 }}>{CONTACT_EMAIL}</a> or see{" "}
+          <PageLink to="corrections" onNavigate={onNavigate} style={{ color: COLORS.ink, fontWeight: 700 }}>corrections and contact</PageLink>, which also
+          has the public issue list.
         </Section>
 
         <Section title="Funding log">

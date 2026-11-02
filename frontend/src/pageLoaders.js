@@ -95,6 +95,8 @@ export const LOADERS = {
   union: () => import("./components/Union"),
   calculators: () => import("./components/Calculators"),
   funding: () => import("./components/Funding"),
+  about: () => import("./components/About"),
+  corrections: () => import("./components/Corrections"),
   ageing: () => import("./components/Ageing"),
   myArea: withData(() => import("./components/MyArea"), () => import("./data/councilsIndex.json")),
   thisWeek: () => import("./components/ThisWeek"),

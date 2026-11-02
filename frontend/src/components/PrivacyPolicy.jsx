@@ -2,6 +2,7 @@
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { IconShield } from "./icons";
+import { CONTACT_EMAIL } from "../lib/contact";
 
 function Section({ title, children }) {
   return (
@@ -15,7 +16,7 @@ function Section({ title, children }) {
 export default function PrivacyPolicy({ onNavigate }) {
   return (
     <div style={{ padding: PAGE_PADDING }}>
-      <PageHeader icon={IconShield} title="Privacy Policy" subtitle="Last updated 27 October 2026." maxWidth={760} />
+      <PageHeader icon={IconShield} title="Privacy Policy" subtitle="Last updated 2 November 2026." maxWidth={760} />
 
       <div style={{ maxWidth: 760, margin: "0 auto" }}>
         <Section title="The short version">
@@ -96,7 +97,8 @@ export default function PrivacyPolicy({ onNavigate }) {
           >
             Terms & Conditions
           </button>{" "}
-          page for how source data and corrections are handled.
+          page for how source data and corrections are handled. To ask a question about your information, or to ask for something to be corrected, write to{" "}
+          <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: COLORS.accentText, fontWeight: 600 }}>{CONTACT_EMAIL}</a>.
         </Section>
       </div>
     </div>

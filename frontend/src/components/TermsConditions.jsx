@@ -2,6 +2,7 @@
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { IconBook } from "./icons";
+import { CONTACT_EMAIL } from "../lib/contact";
 
 function Section({ title, children }) {
   return (
@@ -15,7 +16,7 @@ function Section({ title, children }) {
 export default function TermsConditions() {
   return (
     <div style={{ padding: PAGE_PADDING }}>
-      <PageHeader icon={IconBook} title="Terms & Conditions" subtitle="Last updated 7 September 2026." maxWidth={760} />
+      <PageHeader icon={IconBook} title="Terms & Conditions" subtitle="Last updated 2 November 2026." maxWidth={760} />
 
       <div style={{ maxWidth: 760, margin: "0 auto" }}>
         <Section title="What this site is">
@@ -64,7 +65,8 @@ export default function TermsConditions() {
         <Section title="Corrections">
           If you identify an inaccuracy, including a misapplied donor sector tag, it can be corrected at the data
           level and republished. This is a best-effort independent project, not a newsroom with a formal complaints
-          process, but errors are taken seriously.
+          process, but errors are taken seriously. To report one, write to{" "}
+          <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: COLORS.accentText, fontWeight: 600 }}>{CONTACT_EMAIL}</a>.
         </Section>
 
         <Section title="Changes to these terms">

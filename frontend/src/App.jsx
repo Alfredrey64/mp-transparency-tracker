@@ -117,6 +117,8 @@ const Union = lazyPage(LOADERS.union);
 const Ageing = lazyPage(LOADERS.ageing);
 const Calculators = lazyPage(LOADERS.calculators);
 const Funding = lazyPage(LOADERS.funding);
+const About = lazyPage(LOADERS.about);
+const Corrections = lazyPage(LOADERS.corrections);
 const MyArea = lazyPage(LOADERS.myArea);
 const ThisWeek = lazyPage(LOADERS.thisWeek);
 const Councillors = lazyPage(LOADERS.councillors);
@@ -213,7 +215,7 @@ const VALID_VIEWS = new Set([
   "committees", "compare", "ministerialMeetings", "writtenQuestions", "standards", "rankings", "myMP",
   "mediaLiteracy", "methodology", "glossary", "settings", "privacy", "terms", "accessibility", "whatsnew", "list",
   "darkMoney", "revolvingDoor", "thinkTanks", "lobbyingRegister", "followTheMoney", "watchlist", "numbers", "topics", "constituency", "start", "rebels", "offices", "councils",
-  "economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates", "immigration", "business", "regions", "answers", "deprivation", "indicators", "marginals", "compareSeats", "compareCouncils", "howtovote", "myBallot", "teacher", "localElections", "generalElection", "taxRates", "inequality", "brexit", "defence", "education", "ageing", "nhs", "energy", "trust", "care", "transport", "union", "calculators", "funding", "myArea", "thisWeek", "councillors", "lordsVotes",
+  "economy", "prices", "jobs", "publicFinances", "population", "health", "housing", "crime", "trade", "environment", "tax", "rates", "immigration", "business", "regions", "answers", "deprivation", "indicators", "marginals", "compareSeats", "compareCouncils", "howtovote", "myBallot", "teacher", "localElections", "generalElection", "taxRates", "inequality", "brexit", "defence", "education", "ageing", "nhs", "energy", "trust", "care", "transport", "union", "calculators", "funding", "about", "corrections", "myArea", "thisWeek", "councillors", "lordsVotes",
 ]);
 
 // The tab title, bookmark name and browser-history entry for every view —
@@ -621,6 +623,8 @@ export default function App() {
             {view === "accessibility" && <Accessibility />}
             {view === "whatsnew" && <WhatsNew onNavigate={handleNavigate} />}
             {view === "funding" && <Funding onNavigate={handleNavigate} />}
+            {view === "about" && <About onNavigate={handleNavigate} />}
+            {view === "corrections" && <Corrections onNavigate={handleNavigate} />}
             {view === "myArea" && <MyArea />}
             {view === "thisWeek" && <ThisWeek />}
             {view === "councillors" && <Councillors param={viewParam} />}

@@ -665,6 +665,25 @@ export function IconLedger({ size = 17 }) {
   );
 }
 
+export function IconAbout({ size = 17 }) {
+  return (
+    <svg width={size} height={size} {...iconProps}>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M12 11v5" />
+      <path d="M12 8h.01" strokeWidth="2.4" />
+    </svg>
+  );
+}
+
+export function IconMail({ size = 17 }) {
+  return (
+    <svg width={size} height={size} {...iconProps}>
+      <rect x="3.5" y="5.5" width="17" height="13" rx="2.2" />
+      <path d="m4 8 8 5.5L20 8" />
+    </svg>
+  );
+}
+
 export function IconPopulation({ size = 17 }) {
   return (
     <svg width={size} height={size} {...iconProps}>
