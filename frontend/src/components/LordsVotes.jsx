@@ -43,31 +43,33 @@ function Scoreboard({ data, view }) {
   const lost = view.defeats.length;
   return (
     <section className="lv-board" aria-label="The Lords votes at a glance">
-      <article className="lv-tile" style={{ "--tc": "#9B8CFF", "--i": 0 }}>
+      <article className="lv-tile lv-wide" style={{ "--tc": "#7A5AF0", "--i": 0 }}>
         <span className="lv-tile-label">Votes in the Lords</span>
         <b><CountUp value={data.divisions} /></b>
-        <div className="lv-months" role="img" aria-label="Votes in each of the last 12 months">
-          {months.map((m) => <span key={m.key} title={`${m.label}: ${m.n}`}><i style={{ "--h": m.n / top }} /><small>{m.label[0]}</small></span>)}
-        </div>
         <span className="lv-tile-sub">since {longDay(data.since)}</span>
+        <div className="lv-months" role="img" aria-label="Votes in each of the last 12 months">
+          {months.map((m, n) => <span key={m.key} title={`${m.label}: ${m.n}`}><i style={{ "--h": m.n / top, "--m": n }} /><small>{m.label[0]}</small></span>)}
+        </div>
       </article>
-      <article className="lv-tile" style={{ "--tc": "#FF7A8A", "--i": 1 }}>
+      <article className="lv-tile lv-side" style={{ "--tc": "#E0367A", "--i": 1 }}>
+        <div className="lv-gauge"><Ring value={view.rows.length ? regs / view.rows.length : 0} colour="#E0367A" /></div>
         <span className="lv-tile-label">Peers who took part</span>
-        <div className="lv-gauge"><Ring value={view.rows.length ? regs / view.rows.length : 0} colour="#FF7A8A" /><div><b><CountUp value={view.rows.length} /></b></div></div>
+        <b className="lv-num"><CountUp value={view.rows.length} /></b>
         <span className="lv-tile-sub"><strong>{fmt(regs)}</strong> voted in at least a quarter of the votes</span>
       </article>
-      <article className="lv-tile" style={{ "--tc": "#6FB1FF", "--i": 2 }}>
+      <article className="lv-tile lv-side" style={{ "--tc": "#2F7BD6", "--i": 2 }}>
+        <div className="lv-gauge"><Ring value={loyal} colour="#2F7BD6" /></div>
         <span className="lv-tile-label">Loyal to their party</span>
-        <div className="lv-gauge"><Ring value={loyal} colour="#6FB1FF" /><div><b><CountUp value={loyal * 100} format={(n) => `${n.toFixed(1)}%`} /></b></div></div>
+        <b className="lv-num"><CountUp value={loyal * 100} format={(n) => `${n.toFixed(1)}%`} /></b>
         <span className="lv-tile-sub">{fmt(view.votes - view.against)} of {fmt(view.votes)} party votes went the party's way</span>
       </article>
-      <article className="lv-tile" style={{ "--tc": "#FFB45E", "--i": 3 }}>
+      <article className="lv-tile lv-dots-tile" style={{ "--tc": "#E8801F", "--i": 3 }}>
         <span className="lv-tile-label">Government defeats</span>
         <b><CountUp value={lost} /><small> of {fmt(data.divisions)}</small></b>
         <div className="lv-dots" role="img" aria-label={`${lost} of ${data.divisions} votes were lost by the government`}>
           {data.list.map((d, n) => <i key={d.id} data-lost={d.govWin === false ? "1" : "0"} style={{ "--n": n }} />)}
         </div>
-        <span className="lv-tile-sub">each dot is a vote; lit dots are defeats</span>
+        <span className="lv-tile-sub">each dot is a vote; coloured dots are defeats</span>
       </article>
     </section>
   );

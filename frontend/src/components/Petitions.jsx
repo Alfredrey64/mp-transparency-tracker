@@ -66,11 +66,7 @@ function PetitionRow({ petition, rank, isOpen, onToggle }) {
   const isOpenState = petition.state === "open";
   const panelId = `pet-${petition.id}`;
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 12 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.35, ease: "easeOut" }}
+    <article
       className="pet-card" data-open={isOpen ? "1" : "0"} style={{ "--pc": st.colour }}
     >
       <button type="button" onClick={onToggle} aria-expanded={isOpen} aria-controls={panelId} className="pet-head">
@@ -119,7 +115,7 @@ function PetitionRow({ petition, rank, isOpen, onToggle }) {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.article>
+    </article>
   );
 }
 

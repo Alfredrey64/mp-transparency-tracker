@@ -64,26 +64,39 @@ function InquiryRow({ inquiry }) {
   );
 }
 
-// One dot for every member, in their party's colour (the chair ringed): the committee's make-up at a glance, and
-// the same colours used everywhere else on the site, so it needs no legend.
-function MemberDots({ members, color }) {
-  const dots = useMemo(() => {
+// The committee as a small chamber: one seat for every member, in their party's colour (the chair ringed), set out in an arc like the benches of the
+// House. The seats pop in one after another, and the colours are the same as everywhere else on the site, so it needs no legend.
+function SeatArc({ members, color }) {
+  const layout = useMemo(() => {
     const counts = new Map();
-    for (const m of members ?? []) {
-      const key = m.party || "Other";
-      counts.set(key, (counts.get(key) ?? 0) + 1);
-    }
-    return [...(members ?? [])]
-      .sort((a, b) => (counts.get(b.party || "Other") ?? 0) - (counts.get(a.party || "Other") ?? 0) || String(a.party).localeCompare(String(b.party)))
+    for (const m of members ?? []) counts.set(m.party || "Other", (counts.get(m.party || "Other") ?? 0) + 1);
+    const people = [...(members ?? [])]
+      .sort((x, y) => (counts.get(y.party || "Other") ?? 0) - (counts.get(x.party || "Other") ?? 0) || String(x.party).localeCompare(String(y.party)))
       .map((m) => ({ color: partyColour(m.party_colour, COLORS.inkSoft), chair: m.is_chair, label: `${m.name}${m.party ? `, ${m.party}` : ""}` }));
+    const n = people.length;
+    if (!n) return null;
+    const radii = n > 16 ? [88, 62] : [76];
+    const share = radii.map((r) => r / radii.reduce((t, x) => t + x, 0));
+    const perRow = radii.map((_, i) => (i === radii.length - 1 ? 0 : Math.round(n * share[i])));
+    perRow[radii.length - 1] = n - perRow.reduce((t, x) => t + x, 0);
+    const spots = [];
+    radii.forEach((R, i) => { for (let k = 0; k < perRow[i]; k++) { const ang = Math.PI * (1 - (k + 0.5) / perRow[i]); spots.push({ ang, x: 100 + R * Math.cos(ang), y: 98 - R * Math.sin(ang) }); } });
+    spots.sort((p, q) => q.ang - p.ang);
+    const dot = Math.min(7.5, ...radii.map((R, i) => (Math.PI * R / perRow[i]) * 0.42));
+    return { seats: people.map((p, i) => ({ ...p, ...spots[i] })), dot, n };
   }, [members]);
-  if (!dots.length) return null;
+  if (!layout) return null;
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 14 }} aria-label={`${dots.length} members by party`}>
-      {dots.map((d, i) => (
-        <span key={i} className="cm-dot" title={d.label} style={{ "--d": i, width: 13, height: 13, borderRadius: "50%", background: d.color, boxShadow: d.chair ? `0 0 0 2px ${COLORS.paperCard}, 0 0 0 3.5px ${color}` : "none", margin: d.chair ? 2 : 0 }} />
+    <svg className="cm-arc" viewBox="0 0 200 108" role="img" aria-label={`${layout.n} members by party`}>
+      <path d="M 14 98 A 86 86 0 0 1 186 98" fill="none" stroke={color} strokeOpacity="0.14" strokeWidth="1.5" strokeDasharray="2 4" />
+      {layout.seats.map((p, i) => (
+        <circle key={i} className="cm-dot cm-seat" style={{ "--d": i }} cx={p.x} cy={p.y} r={layout.dot} fill={p.color} stroke={p.chair ? color : "none"} strokeWidth={p.chair ? 2 : 0}>
+          <title>{p.label}</title>
+        </circle>
       ))}
-    </div>
+      <text x="100" y="86" textAnchor="middle" fontFamily={FONT_DISPLAY} fontSize="26" fontWeight="700" fill={COLORS.ink}>{layout.n}</text>
+      <text x="100" y="101" textAnchor="middle" fontFamily={FONT_BODY} fontSize="9.5" fill={COLORS.inkSoft}>members</text>
+    </svg>
   );
 }
 
@@ -238,47 +251,29 @@ function CommitteeDetails({ committee, open, onGone }) {
 function CommitteeCard({ committee, open, onToggle, index = 0 }) {
   const color = partyColour(committee.chair_party_colour, COLORS.accent);
   const houseColor = HOUSE_COLOR[committee.house] ?? COLORS.inkSoft;
-  const n = committee.members?.length ?? 0;
   const q = committee.inquiries?.length ?? 0;
 
   return (
-    <div
-      className="cm-card"
-      style={{
-        "--i": index, background: `color-mix(in srgb, ${houseColor} 7%, ${COLORS.paperCard})`,
-        border: `1px solid ${open ? houseColor : COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 4px 0 ${houseColor}`, borderRadius: 16, padding: 18, minWidth: 0, display: "flex", flexDirection: "column",
-        transition: "border-color 0.2s",
-      }}
-    >
-      <button onClick={onToggle} aria-expanded={open} aria-controls={`cm-detail-${committee.id}`} style={{ display: "flex", flexDirection: "column", flex: 1, width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left", font: "inherit" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 10 }}>
-          <span style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: readable(houseColor), background: `${houseColor}18`, border: `1px solid ${houseColor}44`, borderRadius: 999, padding: "3px 10px", textTransform: "uppercase", letterSpacing: "0.04em" }}>
-            {committee.house}
-          </span>
-          {q > 0 && (
-            <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.ink, background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: "3px 10px" }}>
-              {q} open {q === 1 ? "inquiry" : "inquiries"}
+    <div className="cm-card" data-open={open ? "1" : "0"} style={{ "--i": index, "--hc": houseColor, "--hs": solid(houseColor) }}>
+      <button onClick={onToggle} aria-expanded={open} aria-controls={`cm-detail-${committee.id}`} className="cm-card-btn">
+        <span className="cm-band">
+          <span className="cm-house">{committee.house}</span>
+          {q > 0 && <span className="cm-inq">{q} open {q === 1 ? "inquiry" : "inquiries"}</span>}
+        </span>
+        <span className="cm-body">
+          <span title={committee.name} className="cm-name">{committee.name}</span>
+          <span className="cm-chair">
+            <span aria-hidden="true" className="cm-avatar" style={{ background: committee.chair_name ? color : COLORS.hairline, color: committee.chair_name ? onFill(color) : COLORS.ink }}>
+              {committee.chair_name ? initials(committee.chair_name) : "?"}
             </span>
-          )}
-        </div>
-        <div title={committee.name} style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 800, color: COLORS.ink, lineHeight: 1.22, marginBottom: 12, letterSpacing: "-0.01em", ...{ minHeight: "3.66em", display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 3, overflow: "hidden" } }}>{committee.name}</div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span aria-hidden="true" style={{ flexShrink: 0, width: 34, height: 34, borderRadius: "50%", background: committee.chair_name ? color : COLORS.hairline, color: committee.chair_name ? onFill(color) : COLORS.ink, display: "grid", placeItems: "center", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 800, textShadow: "0 1px 2px rgba(0,0,0,0.35)" }}>
-            {committee.chair_name ? initials(committee.chair_name) : "?"}
+            <span className="cm-chair-text">
+              {committee.chair_name ? <>Chair<strong>{committee.chair_name}</strong></> : "Chair not currently listed"}
+            </span>
           </span>
-          <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.35, minWidth: 0 }}>
-            {committee.chair_name ? <>Chair<br /><strong style={{ color: COLORS.ink, fontSize: 13.5 }}>{committee.chair_name}</strong></> : "Chair not currently listed"}
-          </span>
-          <span style={{ marginLeft: "auto", textAlign: "right", fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, lineHeight: 1.2, flexShrink: 0 }}>
-            <strong style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink }}>{n}</strong>members
-          </span>
-        </div>
-        <div style={{ marginTop: "auto" }}>
-          <MemberDots members={committee.members} color={houseColor} />
-          <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 600, color: readable(houseColor), marginTop: 12 }}>{open ? "Hide details ▴" : "Show members and inquiries ▾"}</div>
-        </div>
+          <SeatArc members={committee.members} color={houseColor} />
+          <span className="cm-more">{open ? "Hide details ▴" : "Show members and inquiries ▾"}</span>
+        </span>
       </button>
-
     </div>
   );
 }

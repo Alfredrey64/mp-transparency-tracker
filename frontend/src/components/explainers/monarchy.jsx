@@ -1,33 +1,44 @@
 /** @jsxImportSource react */
 import ExplainerPage from "../story/ExplainerPage";
 import { IconCrown } from "../newIcons";
-import { Handoff, Journey, Amounts } from "../story/StateArt";
+import { IconHouse, IconCalculator, IconCoin } from "../icons";
+import { Flow, Handoff, Journey, Amounts } from "../story/StateArt";
+import { Hero } from "../story/Vivid";
 
 const PAGE = {
-  look: "poster",
+  look: "vivid",
   icon: IconCrown,
   kicker: "Understand it",
   title: "The monarchy: role and money",
   subtitle: "The King is head of state but does not decide policy. The public money he receives for official duties is set by a formula in law, linked to the profits of the Crown Estate. This page sets out the formula, the amounts, and a cut that has been proposed.",
-  tiles: [
-    { label: "Sovereign Grant, 2026 to 2027", value: "£137.9m", colour: "#C9A6E8", sub: "to support the King's official duties" },
-    { label: "Proposed from 2027 to 2028", value: "£99.9m", colour: "#6FB1FF", sub: "needs new legislation, so not yet law" },
-    { label: "Crown Estate profit used in the sum, 2025 to 2026", value: "£487m", colour: "#FFB45E", sub: "the Royal Trustees' review figure" },
-  ],
-  why: { colour: "#6E4B6E", text: "The Sovereign Grant is public money, set by a rule that most people have never seen. Seeing the rule explains why the figure moved up sharply and why a cut is now proposed." },
+  lead: <Hero
+    colours={["#34195A", "#8E44AD", "#B8791A"]}
+    why="The Sovereign Grant is public money, set by a rule that most people have never seen. Seeing the rule explains why the figure moved up sharply and why a cut is now proposed."
+    stops={[
+      { icon: IconHouse, title: "The Crown Estate", text: "A property business with a yearly profit", colour: "#FFB347" },
+      { icon: IconCalculator, title: "The formula", text: "Five steps in the Sovereign Grant Act 2011", colour: "#C79BFF" },
+      { icon: IconCoin, title: "The Sovereign Grant", text: "Public money paid to the Royal Household", colour: "#4FD6A0" },
+      { icon: IconCrown, title: "Official duties", text: "What the grant supports", colour: "#5BA8FF" },
+    ]}
+    figures={[
+      { value: "£137.9m", label: "Sovereign Grant, 2026 to 2027", sub: "To support the King's official duties" },
+      { value: "£99.9m", label: "Proposed from 2027 to 2028", sub: "Needs new legislation, so not yet law" },
+      { value: "£487m", label: "Crown Estate profit used in the sum, 2025 to 2026", sub: "The Royal Trustees' review figure" },
+    ]}
+  />,
   chapters: [
     {
       title: "What the King does",
       lede: "The monarch is the head of state, and acts on the advice of ministers.",
-      colour: "#6E4B6E",
+      colour: "#8A4FD6",
       blocks: [
         { node: <Handoff
           left="Who decides"
           right="What the King does"
           rows={[
-            { from: "Parliament passes a law", to: "The King gives Royal Assent", colour: "#6E4B6E" },
-            { from: "The Prime Minister advises", to: "The King appoints ministers", colour: "#3F7D5C" },
-            { from: "Elected politicians decide what the speech says", to: "The King opens each session of Parliament", colour: "#9C6B30" },
+            { from: "Parliament passes a law", to: "The King gives Royal Assent", colour: "#8A4FD6" },
+            { from: "The Prime Minister advises", to: "The King appoints ministers", colour: "#12A07A" },
+            { from: "Elected politicians decide what the speech says", to: "The King opens each session of Parliament", colour: "#E8801F" },
           ]}
         /> },
         { text: [
@@ -39,33 +50,33 @@ const PAGE = {
     {
       title: "How the Sovereign Grant is worked out",
       lede: "A five-step formula in the Sovereign Grant Act 2011 decides the amount each year.",
-      colour: "#3F7D5C",
+      colour: "#12A07A",
       blocks: [
-        { steps: [
-          { title: "Take 12% of the Crown Estate's profit", text: "The figure is the net surplus on the Crown Estate's income account for the financial year two years earlier. The percentage was cut from 25% to 12% after the 2023 review, because the Crown Estate's profit was expected to rise sharply." },
-          { title: "Round it up", text: "To the next £100,000." },
-          { title: "It can never fall", text: "The grant is the larger of that sum and the previous year's grant." },
-          { title: "A reserve can reduce it", text: "If the Household's reserve fund is worth more than 50% of the resources it used that year, the Royal Trustees may reduce the grant." },
-          { title: "The result is the grant", text: "The sum from the steps before, less any reduction, is the Sovereign Grant for the year." },
-        ] },
+        { node: <Flow down numbered items={[
+          { title: "Take 12% of the Crown Estate's profit", text: "The figure is the net surplus on the Crown Estate's income account for the financial year two years earlier. The percentage was cut from 25% to 12% after the 2023 review, because the Crown Estate's profit was expected to rise sharply.", colour: "#E8801F" },
+          { title: "Round it up", text: "To the next £100,000.", colour: "#C0509B" },
+          { title: "It can never fall", text: "The grant is the larger of that sum and the previous year's grant.", colour: "#2F7BD6" },
+          { title: "A reserve can reduce it", text: "If the Household's reserve fund is worth more than 50% of the resources it used that year, the Royal Trustees may reduce the grant.", colour: "#8A4FD6" },
+          { title: "The result is the grant", text: "The sum from the steps before, less any reduction, is the Sovereign Grant for the year.", colour: "#12A07A" },
+        ]} /> },
         { text: [<>The Crown Estate is a property business. The Grant itself is paid to the Royal Household out of money provided by Parliament, which is why it counts as public money. See <a href="#/funding">funding and independence</a> for how other bodies are funded.</>] },
       ],
     },
     {
       title: "Why a cut is proposed",
       lede: "The Royal Trustees' 2026 review explains the change.",
-      colour: "#9C6B30",
+      colour: "#E8801F",
       blocks: [
         { node: <Amounts
           title="The Sovereign Grant, now and as proposed"
-          colour="#9C6B30"
+          colour="#E8801F"
           rows={[
-            { label: "2026 to 2027", value: "£137.9m", pct: 100, colour: "#3F7D5C" },
-            { label: "From 2027 to 2028, proposed", value: "£99.9m", pct: (99.9 / 137.9) * 100, colour: "#9C6B30" },
+            { label: "2026 to 2027", value: "£137.9m", pct: 100, colour: "#12A07A" },
+            { label: "From 2027 to 2028, proposed", value: "£99.9m", pct: (99.9 / 137.9) * 100, colour: "#E8801F" },
           ]}
           note="The £99.9 million figure is a proposal that needs an Act of Parliament. It is not the amount in law today."
         /> },
-        { node: <Journey colour="#9C6B30" items={[
+        { node: <Journey colour="#E8801F" items={[
           { when: "2016", text: "The percentage is raised to pay for a ten-year reservicing programme at Buckingham Palace, with £369 million of funding agreed. The Trustees said the plumbing, wiring and heating had not been updated since shortly after the Second World War." },
           { when: "2026 to 2027", text: "The final tranche of that funding is paid, and the Grant is £137.9 million." },
           { when: "June 2026", text: "The Royal Trustees' review proposes that the reference percentage change to 20.5 per cent and that the Grant fall to £99.9 million from 2027 to 2028, then stay flat to 2031 to 2032." },

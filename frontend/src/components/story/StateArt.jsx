@@ -7,7 +7,8 @@ import { Rows } from "./CivilServiceArt";
 // asked for calmer motion. Every word in them is taken from the page they sit on.
 
 // Steps in order, joined by lines that draw in turn. `vias` are short labels on the lines. Side by side on a wide screen, stacked on a narrow one (or always, with `down`).
-export function Flow({ items, vias, down = false }) {
+// With `numbered`, each step carries its place in the order where its icon would be.
+export function Flow({ items, vias, down = false, numbered = false }) {
   const [ref, go] = useGo(0.25);
   return (
     <figure ref={ref} className="sa-flow" data-go={go} data-down={down ? "1" : "0"}>
@@ -16,7 +17,7 @@ export function Flow({ items, vias, down = false }) {
           const Icon = it.icon;
           return [
             <li key={it.title} className="sa-node" style={{ "--tc": it.colour, "--i": i }}>
-              {Icon && <span className="sa-ico" aria-hidden="true"><Icon size={22} /></span>}
+              {numbered ? <span className="sa-ico sa-num" aria-hidden="true">{i + 1}</span> : Icon && <span className="sa-ico" aria-hidden="true"><Icon size={22} /></span>}
               <b>{it.title}</b>
               <p>{it.text}</p>
             </li>,
@@ -107,28 +108,6 @@ export function Journey({ items, colour }) {
   );
 }
 
-// A few kinds of thing side by side, each with its own colour, picture and one-line job.
-export function Trio({ items }) {
-  const [ref, go] = useGo(0.25);
-  return (
-    <figure ref={ref} className="sa-trio" data-go={go}>
-      <ul>
-        {items.map((it, i) => {
-          const Icon = it.icon;
-          return (
-            <li key={it.title} style={{ "--tc": it.colour, "--i": i }}>
-              <span className="sa-ico" aria-hidden="true"><Icon size={26} /></span>
-              <small>{it.who}</small>
-              <b>{it.title}</b>
-              <p>{it.text}</p>
-            </li>
-          );
-        })}
-      </ul>
-    </figure>
-  );
-}
-
 // Two amounts drawn to the same scale, so the gap between them can be seen.
 export function Amounts({ title, rows, note, colour }) {
   const [ref, go] = useGo(0.25);
@@ -137,6 +116,39 @@ export function Amounts({ title, rows, note, colour }) {
       <h3>{title}</h3>
       <Rows rows={rows} />
       {note && <figcaption>{note}</figcaption>}
+    </figure>
+  );
+}
+
+// One thing that splits into several: a root at the top, a line that forks, and a card on each branch. `list` gives a card bullet points instead of a paragraph.
+export function Diverge({ root, items }) {
+  const [ref, go] = useGo(0.25);
+  const n = items.length;
+  const RootIcon = root.icon;
+  return (
+    <figure ref={ref} className="sa-div" data-go={go} style={{ "--n": n }}>
+      <p className="sa-div-root" style={{ "--tc": root.colour }}>
+        {RootIcon && <span className="sa-ico" aria-hidden="true"><RootIcon size={24} /></span>}
+        <b>{root.title}</b>
+        {root.text && <span>{root.text}</span>}
+      </p>
+      <div className="sa-div-join" aria-hidden="true">
+        <i className="sa-div-down" />
+        <i className="sa-div-bar" />
+        <div className="sa-div-stubs">{items.map((it, i) => <i key={it.title} style={{ "--tc": it.colour, "--i": i }} />)}</div>
+      </div>
+      <ul className="sa-div-items">
+        {items.map((it, i) => {
+          const Icon = it.icon;
+          return (
+            <li key={it.title} className="sa-node" style={{ "--tc": it.colour, "--i": i + 3 }}>
+              {Icon && <span className="sa-ico" aria-hidden="true"><Icon size={22} /></span>}
+              <b>{it.title}</b>
+              {it.list ? <ul>{it.list.map((l) => <li key={l}>{l}</li>)}</ul> : <p>{it.text}</p>}
+            </li>
+          );
+        })}
+      </ul>
     </figure>
   );
 }

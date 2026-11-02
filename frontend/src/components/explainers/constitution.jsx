@@ -1,32 +1,42 @@
 /** @jsxImportSource react */
 import ExplainerPage from "../story/ExplainerPage";
 import { IconCourt } from "../newIcons";
-import { IconBook, IconGavel, IconScales, IconShield, IconManifesto } from "../icons";
+import { IconBook, IconGavel, IconScales, IconShield, IconManifesto, IconParliament } from "../icons";
 import { Converge, Flow, Seats } from "../story/StateArt";
+import { Hero } from "../story/Vivid";
 
 const PAGE = {
-  look: "poster",
+  look: "vivid",
   icon: IconCourt,
   kicker: "Understand it",
   title: "Courts and the constitution",
   subtitle: "The United Kingdom has no single written constitution. What stands in for one is a set of Acts, court decisions and conventions. This page covers what judges can and cannot do to an Act of Parliament, and the rules that protect them from pressure.",
-  tiles: [
-    { label: "Most judges the Supreme Court can have", value: "12", colour: "#6FB1FF", sub: "counted in full-time equivalent terms, set by law" },
-    { label: "Acts of Parliament a court can strike down", value: "0", colour: "#FF7A8A", sub: "it can only declare one incompatible with human rights" },
-    { label: "Ministers must uphold judicial independence", value: "By law", colour: "#3F7D5C", sub: "Constitutional Reform Act 2005, section 3" },
-  ],
-  why: { colour: "#5A7FA6", text: "When the courts rule against the government, it can look like judges are overruling voters. Knowing what the courts can actually do explains why, and why ministers are barred from leaning on them." },
+  lead: <Hero
+    colours={["#45112E", "#C0392B", "#6B3FA0"]}
+    why="When the courts rule against the government, it can look like judges are overruling voters. Knowing what the courts can actually do explains why, and why ministers are barred from leaning on them."
+    stops={[
+      { icon: IconParliament, title: "Parliament passes an Act", text: "Parliament is sovereign", colour: "#FFB347" },
+      { icon: IconGavel, title: "Courts apply it", text: "And judge government decisions", colour: "#5BA8FF" },
+      { icon: IconScales, title: "A clash with human rights?", text: "A court can only make a declaration", colour: "#FF7A8A" },
+      { icon: IconBook, title: "Parliament decides", text: "What happens next is its choice", colour: "#4FD6A0" },
+    ]}
+    figures={[
+      { value: "12", label: "Most judges the Supreme Court can have", sub: "Counted in full-time equivalent terms, set by law" },
+      { value: "0", label: "Acts of Parliament a court can strike down", sub: "It can only declare one incompatible with human rights" },
+      { value: "By law", label: "Ministers must uphold judicial independence", sub: "Constitutional Reform Act 2005, section 3" },
+    ]}
+  />,
   chapters: [
     {
       title: "No single document",
       lede: "The rules about who holds power are spread over many places.",
-      colour: "#5A7FA6",
+      colour: "#2F7BD6",
       blocks: [
         { node: <Converge
           sources={[
-            { title: "Acts of Parliament", text: "Ordinary laws that set up the courts, the Supreme Court, devolved parliaments and how the Civil Service is run.", colour: "#5A7FA6", icon: IconBook },
-            { title: "Court decisions", text: "Judgments by the highest courts explain how those laws apply, and sometimes what the limits of government power are.", colour: "#9C6B30", icon: IconGavel },
-            { title: "Conventions", text: "Habits that are followed but not written as law, such as the King giving Royal Assent to laws Parliament has passed.", colour: "#6E4B6E", icon: IconManifesto },
+            { title: "Acts of Parliament", text: "Ordinary laws that set up the courts, the Supreme Court, devolved parliaments and how the Civil Service is run.", colour: "#2F7BD6", icon: IconBook },
+            { title: "Court decisions", text: "Judgments by the highest courts explain how those laws apply, and sometimes what the limits of government power are.", colour: "#E8801F", icon: IconGavel },
+            { title: "Conventions", text: "Habits that are followed but not written as law, such as the King giving Royal Assent to laws Parliament has passed.", colour: "#8A4FD6", icon: IconManifesto },
           ]}
           result={{ title: "The rules about who holds power", text: "There is no single document", colour: "#2F4A6B" }}
         /> },
@@ -36,20 +46,20 @@ const PAGE = {
     {
       title: "What judges can do about an Act",
       lede: "The Human Rights Act 1998 gives senior courts one tool, and it is deliberately limited.",
-      colour: "#9C3B3B",
+      colour: "#D6455F",
       blocks: [
         { node: <Flow items={[
-          { title: "A court finds a clash", text: "A provision in an Act cannot be read in a way that fits human rights.", colour: "#5A7FA6", icon: IconScales },
-          { title: "It makes a declaration", text: "A declaration of incompatibility. It cannot strike the Act down.", colour: "#9C6B30", icon: IconGavel },
-          { title: "The law carries on", text: "The declaration does not affect the validity, continuing operation or enforcement of the provision.", colour: "#9C3B3B", icon: IconShield },
-          { title: "Parliament decides", text: "The declaration is not binding on the parties. It is for Parliament and ministers to decide what happens next.", colour: "#3F7D5C", icon: IconBook },
+          { title: "A court finds a clash", text: "A provision in an Act cannot be read in a way that fits human rights.", colour: "#2F7BD6", icon: IconScales },
+          { title: "It makes a declaration", text: "A declaration of incompatibility. It cannot strike the Act down.", colour: "#E8801F", icon: IconGavel },
+          { title: "The law carries on", text: "The declaration does not affect the validity, continuing operation or enforcement of the provision.", colour: "#D6455F", icon: IconShield },
+          { title: "Parliament decides", text: "The declaration is not binding on the parties. It is for Parliament and ministers to decide what happens next.", colour: "#12A07A", icon: IconBook },
         ]} /> },
         { compare: [
-          { title: "What a court can do", colour: "#3F7D5C", items: [
+          { title: "What a court can do", colour: "#12A07A", items: [
             "Decide whether a government decision or a minister's regulation is lawful.",
             "Where a provision in an Act cannot be read in a way that fits human rights, make a declaration of incompatibility.",
           ] },
-          { title: "What it cannot do", colour: "#9C3B3B", items: [
+          { title: "What it cannot do", colour: "#D6455F", items: [
             "Strike down an Act of Parliament.",
             "Stop the law being applied: a declaration of incompatibility does not affect the validity, continuing operation or enforcement of the provision.",
             "Bind the parties: the declaration is not binding on them. It is for Parliament and ministers to decide what happens next.",
@@ -61,7 +71,7 @@ const PAGE = {
     {
       title: "Keeping judges independent",
       lede: "The Constitutional Reform Act 2005 put the rule into law, and set up a separate Supreme Court.",
-      colour: "#6E4B6E",
+      colour: "#8A4FD6",
       blocks: [
         { pull: "The Lord Chancellor, other ministers and everyone with responsibility for the courts or the administration of justice must uphold the independence of the judiciary. Ministers must not try to influence particular judicial decisions through any special access to judges." },
         { node: <Seats count={12} label="The most judges the Supreme Court can have, counted in full-time equivalent terms" /> },

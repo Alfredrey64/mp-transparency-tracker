@@ -1,38 +1,42 @@
 /** @jsxImportSource react */
 import ExplainerPage from "../story/ExplainerPage";
 import { IconPoll } from "../newIcons";
+import { Flow } from "../story/StateArt";
+import { Hero, VotesSeats } from "../story/Vivid";
 
 const PAGE = {
-  look: "poster",
+  look: "vivid",
   icon: IconPoll,
   kicker: "Elections",
   title: "How to read an opinion poll",
   subtitle: "Opinion polls shape the news long before an election. This page does not report the latest poll, because they change weekly. It explains what a poll measures, why a poll of votes is not a forecast of seats, and how the polls did at the last election.",
-  tiles: [
-    { label: "Labour's share of the vote, 4 July 2024", value: "33.7%", colour: "#FF7A8A", sub: "9.7 million votes" },
-    { label: "Labour's share of the seats", value: "63.2%", colour: "#FFB45E", sub: "411 of 650 seats" },
-    { label: "Reform UK: share of the vote and of the seats", value: "14.3% and 0.8%", colour: "#6FB1FF", sub: "4.1 million votes, 5 seats" },
-  ],
-  why: { colour: "#5A7FA6", text: "A poll that says one party is on 30% sounds like a fact. It is an estimate from a few thousand people, adjusted by the pollster, about votes rather than seats. Knowing that makes headlines easier to judge." },
+  lead: <Hero
+    colours={["#3A1458", "#D6455F", "#2F7BD6"]}
+    why="A poll that says one party is on 30% sounds like a fact. It is an estimate from a few thousand people, adjusted by the pollster, about votes rather than seats. Knowing that makes headlines easier to judge."
+    extra={<VotesSeats rows={[
+      { name: "Labour, 4 July 2024", colour: "#FF6B7F", votes: 33.7, seats: 63.2, votesText: "33.7%", seatsText: "63.2%", votesSub: "9.7 million votes", seatsSub: "411 of 650 seats" },
+      { name: "Reform UK, 4 July 2024", colour: "#4FD6D6", votes: 14.3, seats: 0.8, votesText: "14.3%", seatsText: "0.8%", votesSub: "4.1 million votes", seatsSub: "5 seats" },
+    ]} />}
+  />,
   chapters: [
     {
       title: "What a poll is",
       lede: "A small group of people is asked how they would vote, and their answers are adjusted to stand in for everyone.",
-      colour: "#5A7FA6",
+      colour: "#2F7BD6",
       blocks: [
-        { steps: [
-          { title: "A sample is chosen", text: "Pollsters recruit a sample, often a thousand or two thousand adults, through online panels or by phone. It is not a perfect random draw." },
-          { title: "The answers are weighted", text: "If the sample has too few young people, or too many graduates, the pollster counts some answers for more or less so the sample matches the population." },
-          { title: "Some are left out", text: "People who say they won't vote, or don't know, are handled in ways that differ between companies. This is a large source of differences between polls." },
-          { title: "The result is an estimate", text: "Even for a perfect random sample of 1,000 people, the standard margin of error is about three percentage points either way. Real polls are less tidy than that, so the true uncertainty is larger." },
-        ] },
+        { node: <Flow down numbered items={[
+          { title: "A sample is chosen", text: "Pollsters recruit a sample, often a thousand or two thousand adults, through online panels or by phone. It is not a perfect random draw.", colour: "#2F7BD6" },
+          { title: "The answers are weighted", text: "If the sample has too few young people, or too many graduates, the pollster counts some answers for more or less so the sample matches the population.", colour: "#8A4FD6" },
+          { title: "Some are left out", text: "People who say they won't vote, or don't know, are handled in ways that differ between companies. This is a large source of differences between polls.", colour: "#E8801F" },
+          { title: "The result is an estimate", text: "Even for a perfect random sample of 1,000 people, the standard margin of error is about three percentage points either way. Real polls are less tidy than that, so the true uncertainty is larger.", colour: "#12A07A" },
+        ]} /> },
         { pull: "The British Polling Council is an association of polling organisations that publish polls and are committed to promoting transparency in polling. Its members commit to disclosure standards so that readers can judge how reliable a poll is." },
       ],
     },
     {
       title: "Votes are not seats",
       lede: "A poll asks about votes. Seats are decided constituency by constituency, so the two can be very different.",
-      colour: "#9C3B3B",
+      colour: "#D6455F",
       blocks: [
         { bars: { items: [
           { label: "Labour: share of votes", value: 33.7, text: "33.7%", colour: "#C13A4E" },
@@ -48,7 +52,7 @@ const PAGE = {
     {
       title: "How the polls did in 2024",
       lede: "The industry's own body says the polls overestimated the size of Labour's lead.",
-      colour: "#9C6B30",
+      colour: "#E8801F",
       blocks: [
         { pull: "The British Polling Council's page on the 2024 general election says that overall the industry polling overestimated the Labour lead." },
         { text: [
@@ -60,7 +64,7 @@ const PAGE = {
     {
       title: "Reading a poll in the news",
       lede: "Five questions to ask before trusting a number.",
-      colour: "#3F7D5C",
+      colour: "#12A07A",
       blocks: [
         { cards: [
           { title: "Who ran it?", text: "Is the company a member of the British Polling Council, and has it published its tables?" },

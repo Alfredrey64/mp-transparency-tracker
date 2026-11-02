@@ -6,9 +6,11 @@ describe("The Civil Service page", () => {
   const html = renderToStaticMarkup(<CivilService />);
   const text = html.replace(/<[^>]+>/g, " ");
 
-  it("keeps its figures and shows the change-of-government diagram and workforce charts", () => {
+  it("keeps its figures and shows the banner, the 100-people dots, the change-of-government diagram and workforce charts", () => {
     for (const s of ["557,825", "67.8%", "£37,820", "42,855", "37,945", "54.7%"]) expect(text).toContain(s);
-    expect(html).toContain("cs-flip");
+    expect(html).toContain("vv-hero");
+    expect(html).toContain("vv-dots");
+    expect(html).toContain("vv-swap");
     expect(html).toContain("cs-work");
     for (const s of ["Ministers", "Special advisers", "Civil servants", "The government changes"]) expect(text).toContain(s);
   });

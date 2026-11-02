@@ -12,13 +12,13 @@ export function TwoLanes() {
   const [ref, go] = useGo(0.25);
   return (
     <figure ref={ref} className="na-lanes" data-go={go}>
-      <div className="na-lane" style={{ "--tc": "#5A7FA6", "--i": 0 }}>
+      <div className="na-lane" style={{ "--tc": "#2F7BD6", "--i": 0 }}>
         <div className="na-art na-radio" aria-hidden="true"><i /><i /><i /><span><IconBroadcast size={26} /></span></div>
         <b>TV and radio news</b>
         <em>Must be impartial</em>
         <p>The BBC, ITV, Sky News, Channel 4 and GB News all follow Ofcom's Broadcasting Code. Public or private, licence fee or adverts, it makes no difference.</p>
       </div>
-      <div className="na-lane" style={{ "--tc": "#B5533C", "--i": 1 }}>
+      <div className="na-lane" style={{ "--tc": "#E2574C", "--i": 1 }}>
         <div className="na-art na-paper" aria-hidden="true"><i /><i /><i /></div>
         <b>Newspapers and news websites</b>
         <em>Free to take a side</em>
@@ -28,23 +28,27 @@ export function TwoLanes() {
   );
 }
 
-// The five rules, numbered, each with the rule's own words folded away.
+// The five rules as bold coloured cards, each with its own picture and the rule's own words folded away.
 export function Rules({ rules }) {
   const [ref, go] = useGo(0.1);
   return (
     <ol ref={ref} className="na-rules" data-go={go}>
-      {rules.map((r, i) => (
-        <li key={r.title} style={{ "--tc": r.color, "--i": i }}>
-          <span className="na-n" aria-hidden="true">{i + 1}</span>
-          <b>{r.title}</b>
-          <p>{r.short}</p>
-          <details>
-            <summary>Read the rule</summary>
-            <small>{r.rule}</small>
-            <p>{r.body}</p>
-          </details>
-        </li>
-      ))}
+      {rules.map((r, i) => {
+        const Icon = r.icon;
+        return (
+          <li key={r.title} style={{ "--tc": r.color, "--i": i }}>
+            <span className="na-n" aria-hidden="true">{i + 1}</span>
+            {Icon && <span className="na-ruleico" aria-hidden="true"><Icon size={26} /></span>}
+            <b>{r.title}</b>
+            <p>{r.short}</p>
+            <details>
+              <summary>Read the rule</summary>
+              <small>{r.rule}</small>
+              <p>{r.body}</p>
+            </details>
+          </li>
+        );
+      })}
     </ol>
   );
 }
@@ -138,38 +142,32 @@ export function Outlets({ outlets }) {
   );
 }
 
-// The five Ofcom cases, with a bar that counts how each one came out.
+// The five Ofcom cases as a plain list, one row each, with how it came out first and the detail one tap away.
 export function Cases({ cases, verdicts }) {
   const [ref, go] = useGo(0.1);
   const counts = Object.keys(verdicts).map((k) => ({ key: k, n: cases.filter((c) => c.verdict === k).length, ...verdicts[k] })).filter((v) => v.n > 0);
   return (
     <div ref={ref} className="na-cases" data-go={go}>
-      <div className="na-tally">
-        <div className="na-tally-bar" role="img" aria-label={counts.map((c) => `${c.n} ${c.label.toLowerCase()}`).join(", ")}>
-          {counts.map((c) => <i key={c.key} style={{ flex: c.n, background: c.color }} />)}
-        </div>
-        <ul>{counts.map((c) => <li key={c.key}><i style={{ background: c.color }} /><b>{c.n}</b> {c.label}</li>)}</ul>
-      </div>
-      <ul className="na-case-list">
+      <ul className="na-tally">{counts.map((c) => <li key={c.key} style={{ "--vc": c.color }}><b>{c.n}</b> {c.label.toLowerCase()}</li>)}</ul>
+      <ol className="na-case-list">
         {cases.map((c, i) => {
           const v = verdicts[c.verdict];
           return (
-            <li key={`${c.outlet}-${c.programme}-${c.date}`} style={{ "--tc": c.color, "--vc": v.color, "--i": i }}>
-              <header>
-                <span className="na-outlet-tag">{c.outlet}</span>
-                <span className="na-case-date">{c.date}</span>
-              </header>
-              <p className="na-case-prog">{c.programme}</p>
-              <h3>{c.headline}</h3>
-              <p className="na-case-verdict"><span className="na-verdict">{v.label}</span><em>{c.rule}</em></p>
-              <details>
-                <summary>What happened</summary>
-                <p>{c.summary}</p>
-              </details>
+            <li key={`${c.outlet}-${c.programme}-${c.date}`} style={{ "--vc": v.color, "--i": i }}>
+              <span className="na-verdict">{v.label}</span>
+              <div className="na-case-main">
+                <p className="na-case-meta"><b>{c.outlet}</b><span>{c.programme}</span><span>{c.date}</span></p>
+                <h3>{c.headline}</h3>
+                <p className="na-case-rule">Rule tested: {c.rule}</p>
+                <details>
+                  <summary>What happened</summary>
+                  <p>{c.summary}</p>
+                </details>
+              </div>
             </li>
           );
         })}
-      </ul>
+      </ol>
     </div>
   );
 }

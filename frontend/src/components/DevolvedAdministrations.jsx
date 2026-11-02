@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY } from "../theme";
 import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconDevolved, IconNorthernIreland } from "./icons";
@@ -137,7 +137,7 @@ export default function DevolvedAdministrations() {
   const [openIndex, setOpenIndex] = useState(null);
 
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1224, margin: "0 auto", padding: "clamp(20px, 5vw, 40px) clamp(16px, 4vw, 32px) 60px" }}>
       <PageHeader
         icon={IconDevolved}
         kicker="Devolved Administrations"

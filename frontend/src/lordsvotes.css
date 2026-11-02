@@ -1,30 +1,35 @@
 /* How peers vote. Loaded only with that page. */
-/* The scoreboard: four dark tiles, each with a picture of its own number. */
-.lv-board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 22px; padding: clamp(14px, 2.4vw, 22px); border-radius: 28px; background: radial-gradient(120% 140% at 0% 0%, #1B2B57, #0B1530 70%); box-shadow: var(--shadow-2); }
-.lv-tile { position: relative; display: grid; align-content: start; gap: 8px; padding: 18px 18px 16px; border-radius: 22px; color: #fff; background: linear-gradient(160deg, color-mix(in srgb, var(--tc) 22%, rgba(255, 255, 255, 0.05)), rgba(255, 255, 255, 0.05) 70%); border: 1px solid color-mix(in srgb, var(--tc) 45%, rgba(255, 255, 255, 0.12)); overflow: hidden; animation: lvIn 0.6s var(--ease-out) calc(var(--i) * 90ms) backwards; }
-.lv-tile::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--tc); }
+/* The scoreboard, light: one wide card for the number of votes with a column for each month, then three compact cards, each with a picture of its own number. */
+.lv-board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 22px; }
+.lv-tile { position: relative; display: grid; align-content: start; gap: 6px 18px; padding: 18px 20px 16px; border-radius: 24px; color: var(--c-ink); overflow: hidden; border: 1px solid color-mix(in srgb, var(--tc) 30%, var(--c-hairline)); box-shadow: var(--shadow-1);
+  background: radial-gradient(90% 120% at 100% 0%, color-mix(in srgb, var(--tc) 16%, transparent), transparent 65%), var(--c-paper-card); animation: lvIn 0.6s var(--ease-out) calc(var(--i) * 90ms) backwards; }
+.lv-tile::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 6px; background: var(--tc); }
 @keyframes lvIn { from { opacity: 0; transform: translateY(14px); } }
-.lv-tile-label { font: 700 13.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--tc); }
-.lv-tile b { font: 700 clamp(40px, 5vw, 54px)/1 "Figures", "Newsreader", Georgia, serif; color: #fff; letter-spacing: -0.02em; }
-.lv-tile b small { font: 600 16px "Figures", "Public Sans", system-ui, sans-serif; color: rgba(255, 255, 255, 0.7); letter-spacing: 0; }
-.lv-tile-sub { margin-top: auto; font: 500 13px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: rgba(255, 255, 255, 0.78); }
-.lv-tile-sub strong { color: #fff; }
-.lv-months { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 4px; align-items: end; height: 70px; }
-.lv-months > span { display: grid; grid-template-rows: 1fr auto; gap: 3px; height: 100%; justify-items: center; }
-.lv-months i { align-self: end; width: 100%; height: max(4px, calc(var(--h) * 100%)); border-radius: 4px 4px 2px 2px; background: var(--tc); transform-origin: bottom; animation: lvUp 0.9s var(--ease-out) 0.4s backwards; }
+.lv-tile-label { font: 800 14px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--tc) 78%, var(--c-ink)); }
+.lv-tile b { font: 700 clamp(36px, 4.4vw, 50px)/1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); letter-spacing: -0.02em; font-variant-numeric: lining-nums tabular-nums; }
+.lv-tile b small { font: 600 16px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); letter-spacing: 0; }
+.lv-tile-sub { font: 500 13.5px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.lv-tile-sub strong { color: var(--c-ink); }
+.lv-wide { grid-column: 1 / -1; grid-template-columns: minmax(180px, 0.7fr) minmax(0, 2fr); grid-template-areas: "label chart" "num chart" "sub chart"; align-items: center; }
+.lv-wide .lv-tile-label { grid-area: label; align-self: end; } .lv-wide > b { grid-area: num; } .lv-wide .lv-tile-sub { grid-area: sub; align-self: start; } .lv-wide .lv-months { grid-area: chart; }
+.lv-months { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 6px; align-items: end; height: 96px; }
+.lv-months > span { display: grid; grid-template-rows: 1fr auto; gap: 4px; height: 100%; justify-items: center; }
+.lv-months i { align-self: end; width: 100%; height: max(4px, calc(var(--h) * 100%)); border-radius: 6px 6px 3px 3px; background: linear-gradient(180deg, color-mix(in srgb, var(--tc) 70%, #fff), var(--tc)); transform-origin: bottom; animation: lvUp 0.9s var(--ease-out) calc(0.3s + var(--m, 0) * 50ms) backwards; }
 @keyframes lvUp { from { transform: scaleY(0); } }
-.lv-months small { font: 600 10.5px "Figures", "Public Sans", system-ui, sans-serif; color: rgba(255, 255, 255, 0.6); }
-.lv-gauge { position: relative; width: 132px; height: 132px; }
+.lv-months small { font: 700 11px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.lv-side { grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "ring label" "ring num" "ring sub"; align-items: center; }
+.lv-side .lv-gauge { grid-area: ring; } .lv-side .lv-tile-label { grid-area: label; align-self: end; } .lv-side > b, .lv-side .lv-num { grid-area: num; } .lv-side .lv-tile-sub { grid-area: sub; align-self: start; }
+.lv-gauge { position: relative; width: 104px; height: 104px; }
 .lv-ring { width: 100%; height: 100%; }
-.lv-ring circle { fill: none; stroke-width: 10; }
-.lv-ring-bg { stroke: rgba(255, 255, 255, 0.14); }
+.lv-ring circle { fill: none; stroke-width: 11; }
+.lv-ring-bg { stroke: color-mix(in srgb, var(--tc) 14%, var(--c-hairline)); }
 .lv-ring-fg { stroke-linecap: round; stroke-dashoffset: var(--to); animation: lvFill 1.6s var(--ease-out) 0.4s backwards; }
 @keyframes lvFill { from { stroke-dashoffset: var(--c); } }
-.lv-gauge > div { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
-.lv-gauge b { font-size: 28px; }
-.lv-dots { display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 4px; padding: 4px 0; }
-.lv-dots i { aspect-ratio: 1; border-radius: 50%; background: rgba(255, 255, 255, 0.16); animation: lvDot 0.5s var(--ease-out) calc(var(--n) * 6ms + 400ms) backwards; }
-.lv-dots i[data-lost="1"] { background: var(--tc); box-shadow: 0 0 8px color-mix(in srgb, var(--tc) 70%, transparent); }
+.lv-gauge-in { position: absolute; inset: 0; display: grid; place-content: center; font: 800 17px "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--tc) 70%, var(--c-ink)); font-variant-numeric: tabular-nums; }
+.lv-dots-tile { grid-template-columns: minmax(0, 1fr); }
+.lv-dots { display: grid; grid-template-columns: repeat(32, minmax(0, 1fr)); gap: 3px; padding: 6px 0 2px; }
+.lv-dots i { aspect-ratio: 1; border-radius: 50%; background: color-mix(in srgb, var(--tc) 14%, var(--c-hairline)); animation: lvDot 0.5s var(--ease-out) calc(var(--n) * 5ms + 400ms) backwards; }
+.lv-dots i[data-lost="1"] { background: var(--tc); box-shadow: 0 0 0 2px color-mix(in srgb, var(--tc) 28%, transparent); }
 @keyframes lvDot { from { opacity: 0; transform: scale(0.2); } }
 .lv-bars { display: grid; gap: 10px; margin-top: 14px; }
 .lv-bar { display: grid; grid-template-columns: minmax(120px, 210px) minmax(0, 1fr) auto; align-items: center; gap: 6px 14px; padding: 10px 14px; border-radius: 14px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-left: 6px solid var(--pc); }
@@ -80,5 +85,5 @@
 @media (max-width: 560px) { .lv-bar { grid-template-columns: minmax(0, 1fr) auto; } .lv-bar .lv-track { grid-column: 1 / -1; order: 3; } }
 @media (max-width: 560px) { .lv-split { grid-template-columns: minmax(0, 1fr) 70px; } .lv-split small { grid-column: 1 / -1; } .lv-div-chev { margin-left: 0; } }
 @media (prefers-reduced-motion: reduce) { .lv-track > i, .lv-tile, .lv-months i, .lv-ring-fg, .lv-dots i { animation: none; } }
-@media (max-width: 1060px) { .lv-board { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 560px) { .lv-board { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 1060px) { .lv-board { grid-template-columns: minmax(0, 1fr); } .lv-dots-tile { grid-column: auto; } }
+@media (max-width: 620px) { .lv-wide { grid-template-columns: minmax(0, 1fr); grid-template-areas: "label" "num" "sub" "chart"; } .lv-months { height: 80px; gap: 4px; } .lv-dots { grid-template-columns: repeat(24, minmax(0, 1fr)); } }
