@@ -14,7 +14,7 @@ import { REGIONS } from "../data/regionMetrics";
 import { navigate } from "../lib/route";
 import { pairFromParam, pairPath, nationOf, regionKeyFor, taxFor, deprivationFor, ordinal, pounds, differenceText, controlText, partyName } from "../lib/compareCouncils";
 import { fullDate } from "../lib/ballots";
-import { dateLocale, isWelsh } from "../lib/i18n";
+import { dateLocale } from "../lib/i18n";
 import { useT } from "../lib/useLang";
 import "../comparecouncils.css";
 
@@ -129,8 +129,6 @@ function Tax({ c, tax, other, t }) {
 
 function Deprivation({ c, info, t }) {
   if (!info) return <div className="cc-sub">{nationOf(c) === "England" ? t("This council is not in the ranking.") : t("Not comparable: each nation ranks only its own areas, on a differently built index.")}</div>;
-  // Welsh ordinals do not follow one simple rule, so in Welsh the rank is a plain number with its meaning spelled out.
-  if (isWelsh()) return <Big name={c.name} sub={t("Rank out of {of} English councils (1 is the most deprived)", { of: info.of })}>{info.rank}</Big>;
   return <Big name={c.name} sub={t("most deprived of {of} English councils (1st is the most)", { of: info.of })}>{ordinal(info.rank)}</Big>;
 }
 

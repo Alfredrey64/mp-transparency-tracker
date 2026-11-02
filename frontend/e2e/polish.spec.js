@@ -58,26 +58,6 @@ for (const path of ["/terms", "/privacy", "/settings"]) {
   });
 }
 
-test("the language choice in Settings is a proper segmented control and works", async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 900 });
-  await page.goto("/settings");
-  const seg = page.getByRole("group", { name: "Language" });
-  await expect(seg.getByRole("button", { name: "English" })).toHaveAttribute("aria-pressed", "true");
-  await seg.getByRole("button", { name: "Cymraeg" }).click();
-  await expect(page.locator("html")).toHaveAttribute("lang", "cy");
-  await expect(seg.getByRole("button", { name: "Cymraeg" })).toHaveAttribute("aria-pressed", "true");
-});
-
-test("the language buttons in the accessibility panel are the same size of type as the text-size buttons", async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 900 });
-  await page.goto("/accessibility");
-  const size = (name) => page.getByRole("button", { name, exact: true }).first().evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
-  const language = await size("English");
-  const textSize = await size("Standard");
-  expect(language).toBeGreaterThanOrEqual(14);
-  expect(Math.abs(language - textSize)).toBeLessThanOrEqual(2);
-});
-
 test("a group with only two pages shows one 'next' link, not the same page as both previous and next", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/myBallot");

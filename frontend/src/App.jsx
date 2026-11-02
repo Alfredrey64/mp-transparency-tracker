@@ -28,10 +28,7 @@ import Loading from "./components/Loading";
 import { currentRoute } from "./lib/route";
 import OfflineBanner from "./components/OfflineBanner";
 import { InstallBanner } from "./components/InstallApp";
-import { useLang, useT } from "./lib/useLang";
-import { hasWelsh } from "./i18n/views";
-import EnglishOnlyNotice from "./components/EnglishOnlyNotice";
-import LangBar from "./components/LangBar";
+import { useT } from "./lib/useLang";
 
 // Framer Motion's animation engine is fetched after the first paint instead of with the page: its components start as plain elements and begin moving once it arrives.
 const loadMotionFeatures = () => import("./motionFeatures.js").then((mod) => mod.default);
@@ -309,10 +306,7 @@ export default function App() {
   const [view, setView] = useState(() => parseHash().view);
   // The page-specific part of the URL after the view name, if any.
   const [viewParam, setViewParam] = useState(() => parseHash().param);
-  const [lang] = useLang();
   const t = useT();
-  // Whether this page has a Welsh version. If not, and Welsh is on, the page says it is English only (see components/EnglishOnlyNotice.jsx).
-  const welsh = hasWelsh(view);
   const [selected, setSelected] = useState(null);
   // True when a link to one MP's profile found nobody: an MP who has left the Commons is taken out of the MPs table (their name stays on the Former MPs page), so an
   // old bookmark or shared link to them lands on the list with a note saying so, rather than on a broken page.
@@ -421,10 +415,9 @@ export default function App() {
   // still only ever sees index.html's static title, but the document
   // title itself, and what search engines that DO render JS index, follow
   // the actual page.
-  // The title is in Welsh only on a page that has a Welsh version, so it always matches the page it names.
   useEffect(() => {
-    document.title = titleForState(view, selected, viewParam, welsh ? t : undefined);
-  }, [view, selected, viewParam, welsh, t]);
+    document.title = titleForState(view, selected, viewParam);
+  }, [view, selected, viewParam]);
 
   // Re-sync app state whenever the URL changes from outside our own
   // pushState calls: "popstate" covers the browser's back/forward buttons,
@@ -551,7 +544,6 @@ export default function App() {
       <OfflineBanner />
       <InstallBanner />
       <NavProgress pending={navPending} />
-      <LangBar />
       <ActiveHeader view={view} onNavigate={handleNavigate} onSelectPolitician={handleViewProfile} />
       <div style={{ flex: 1, minWidth: 0, width: "100%" }}>
         {/* The new page fades in straight away. It used to wait for the old
@@ -561,9 +553,7 @@ export default function App() {
           ref={mainRef}
           tabIndex={-1}
           key={`${view}-${selected?.id ?? ""}`}
-          lang={lang === "cy" && !welsh ? "en" : undefined}
         >
-            {lang === "cy" && !welsh && <EnglishOnlyNotice />}
             {!selected && view !== "home" && <HubTabs view={view} onNavigate={handleNavigate} />}
             <ErrorBoundary onGoHome={() => handleNavigate("home")}>
             <Suspense fallback={<PageLoadingFallback />}>

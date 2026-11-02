@@ -10,7 +10,6 @@ import { registerOffline } from './lib/offline.js'
 import { startBalancingBoxes } from './lib/balanceBoxes.js'
 import { installRouting } from './lib/route.js'
 import { start as startDisplay } from './lib/display.js'
-import { start as startLanguage } from './lib/i18n.js'
 
 // The footer waits until the first page has settled (see AfterSettle in App.jsx); if that never happens it comes back anyway.
 document.documentElement.dataset.settling = '1'
@@ -18,7 +17,6 @@ setTimeout(() => { delete document.documentElement.dataset.settling }, 10000)
 
 installRouting()
 startDisplay()
-startLanguage()
 startAnalytics()
 installChunkReload()
 registerOffline()

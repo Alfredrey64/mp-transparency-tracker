@@ -1,5 +1,5 @@
 // The words and numbers behind the How to vote page that are not sentences in the page itself: the four steps, the three deadlines, the three answers the checker can
-// give and the links at the foot. They live here so the Welsh version can be checked against them (see i18n/keys.js).
+// give and the links at the foot.
 
 // The four steps: each has its own colour all the way through, from the route at the top to the card it opens.
 export const STEPS = [

@@ -45,16 +45,14 @@ export function save(prefs, storage) {
   }
 }
 
-// The header folds its menu into a drawer at 1100 pixels. Zoomed text makes the page narrower than that, and a wider typeface makes the menu longer. So do the
-// longer words of the Welsh menu, so the header needs about 300 pixels more.
-export const compactHeader = (prefs, width, lang = "en") => {
+// The header folds its menu into a drawer at 1100 pixels. Zoomed text makes the page narrower than that, and a wider typeface makes the menu longer.
+export const compactHeader = (prefs, width) => {
   if (!width) return false;
   const p = clean(prefs);
   const wide = p.readable || p.spacing;
-  const welsh = lang === "cy";
   const zoom = zoomFor(p.size, width);
-  if (zoom <= 1 && !wide && !welsh) return false;
-  return width / zoom <= 1100 + (wide ? 400 : 0) + (welsh ? 300 : 0);
+  if (zoom <= 1 && !wide) return false;
+  return width / zoom <= 1100 + (wide ? 400 : 0);
 };
 
 let sheet = null;
@@ -69,7 +67,7 @@ export function apply(prefs, root = document.documentElement, width = typeof win
   if (zoom > 1) root.style.zoom = String(zoom); else root.style.removeProperty("zoom");
   root.setAttribute("data-text-size", String(p.size));
   // Bigger or wider letters need the header's phone layout sooner than the page's own width says, so the menu never runs into the buttons beside it.
-  const compact = compactHeader(p, width, root.lang);
+  const compact = compactHeader(p, width);
   if (compact) root.setAttribute("data-compact", "on"); else root.removeAttribute("data-compact");
   // The style sheet that holds these rules is only fetched once something needs it: a choice made here, or a header that has to fold.
   if ((!isDefault(p) || compact) && !sheet && typeof document !== "undefined") sheet = import("../display.css");

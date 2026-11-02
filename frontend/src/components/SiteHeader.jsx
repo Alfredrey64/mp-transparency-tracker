@@ -6,7 +6,6 @@ import { useWatchlistChanges } from "../lib/useWatchlistChanges";
 import { useDialog } from "../lib/useDialog";
 import { useExit } from "../lib/useExit";
 import { useT } from "../lib/useLang";
-import LanguageSwitch from "./LanguageSwitch";
 import { solid } from "../theme";
 import LogoMark from "./LogoMark";
 import GlobalSearch from "./GlobalSearch";
@@ -190,7 +189,6 @@ function Drawer({ activeView, onNavigate, onClose: closeNow, onSearch }) {
           <div className="drawer-quick">
             <PageLink to="myMP" onNavigate={onNavigate} onAfter={onClose} className="btn btn-on-navy">{t("Find your MP")}</PageLink>
             <PageLink to="start" onNavigate={onNavigate} onAfter={onClose} className="btn btn-outline-on-navy">{t("Take the tour")}</PageLink>
-            <LanguageSwitch className="drawer-lang" />
           </div>
         </div>
         {recent.length > 0 && (

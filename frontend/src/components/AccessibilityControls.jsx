@@ -4,8 +4,7 @@ import { SIZE_LABELS, isDefault } from "../lib/display";
 import { useDisplay, startListening } from "../lib/useDisplay";
 import { supported } from "../lib/readAloud";
 import { useTheme } from "../lib/ThemeContext";
-import { useT, useLang } from "../lib/useLang";
-import { LANG_NAMES, LANGS } from "../lib/i18n";
+import { useT } from "../lib/useLang";
 import "../access.css";
 
 // The controls for how the site looks and sounds. Shown in the panel from the header and on the Accessibility page. Every change applies at once and is kept
@@ -23,7 +22,6 @@ function Switch({ name, on, onChange, label, hint }) {
 
 export default function AccessibilityControls({ onListen }) {
   const t = useT();
-  const [lang, setLang] = useLang();
   const [prefs, change, reset] = useDisplay();
   const { theme, toggleTheme } = useTheme();
   const [narrow, setNarrow] = useState(() => window.innerWidth < 470);
@@ -42,12 +40,6 @@ export default function AccessibilityControls({ onListen }) {
           {SIZE_LABELS.map((l, i) => <button key={l} type="button" aria-pressed={prefs.size === i} onClick={() => change({ size: i })} style={{ fontSize: 14 + i * 2 }}>{t(l)}</button>)}
         </div>
         {narrow && prefs.size > 0 && <p className="ax-note">{t("On a small screen the text grows only as far as the page can fit.")}</p>}
-      </section>
-      <section aria-labelledby="ax-lang-h">
-        <h3 id="ax-lang-h">{t("Language")}</h3>
-        <div className="ax-seg" role="group" aria-label={t("Language")}>
-          {LANGS.map((code) => <button key={code} type="button" lang={code} aria-pressed={lang === code} onClick={() => setLang(code)}>{LANG_NAMES[code]}</button>)}
-        </div>
       </section>
       <section aria-labelledby="ax-look-h">
         <h3 id="ax-look-h">{t("How it looks")}</h3>

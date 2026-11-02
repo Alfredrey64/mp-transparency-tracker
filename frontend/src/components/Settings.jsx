@@ -2,8 +2,6 @@
 import { InstallCard } from "./InstallApp";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { useTheme } from "../lib/ThemeContext";
-import { useLang } from "../lib/useLang";
-import { LANGS, LANG_NAMES } from "../lib/i18n";
 import { PageHeader } from "./shared";
 import { IconSettings } from "./icons";
 
@@ -61,7 +59,6 @@ function ToggleSwitch({ checked, onChange, label, description }) {
 
 export default function Settings({ onNavigate }) {
   const { theme, toggleTheme } = useTheme();
-  const [lang, setLang] = useLang();
 
   return (
     <div style={{ padding: PAGE_PADDING }}>
@@ -78,12 +75,6 @@ export default function Settings({ onNavigate }) {
             label="Dark mode"
             description="Switches the app's backgrounds, text, and borders. Saved on this device."
           />
-          <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${COLORS.hairline}` }}>
-            <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 14.5, color: COLORS.ink, marginBottom: 8 }}>Language</div>
-            <div className="seg" role="group" aria-label="Language" style={{ display: "inline-flex" }}>
-              {LANGS.map((code) => <button key={code} type="button" lang={code} className="seg-btn" aria-pressed={lang === code} onClick={() => setLang(code)}>{LANG_NAMES[code]}</button>)}
-            </div>
-          </div>
           <button type="button" onClick={() => onNavigate("accessibility")} style={{ marginTop: 14, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontWeight: 700, fontSize: 14, color: COLORS.ink, textDecoration: "underline" }}>
             Text size, easy-to-read letters, listening and more
           </button>
