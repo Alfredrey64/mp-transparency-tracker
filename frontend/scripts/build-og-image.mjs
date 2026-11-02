@@ -10,6 +10,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
+import { COVER, PAGE_LEFT, PAGE_RIGHT, STACK, RIBBON, TEXT_LEFT, TEXT_RIGHT, RULES_LEFT, RULES_RIGHT } from "../src/lib/bookMark.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC = path.join(here, "../public");
@@ -17,13 +18,15 @@ const NAME = "Domesday Live";
 
 const font = fs.readFileSync(path.join(PUBLIC, "fonts/public-sans-latin.woff2")).toString("base64");
 
-// The open book from src/components/LogoMark.jsx at rest, with "UK Politics" on its pages. The words are drawn in the colour behind the mark.
+// The open book from src/components/LogoMark.jsx at rest, drawn from the same geometry (src/lib/bookMark.js), with the words following the curve of the pages.
 const HOLE = "#4a3fc9";
-const WORDS = `font-family="Public Sans" font-size="12.5" font-weight="800" text-anchor="middle" fill="${HOLE}"`;
-const LINES = (cx) => [[48, 34], [54, 28], [60, 32]].map(([y, w]) => `<path d="M${cx - w / 2} ${y}h${w}" stroke="${HOLE}" stroke-opacity=".35" stroke-width="1.8" stroke-linecap="round"/>`).join("");
-const MARK = `<path d="M58 19C46 11 26 10 6 14V67C26 63 46 64 58 72Z"/><path d="M62 19C74 11 94 10 114 14V67C94 63 74 64 62 72Z"/>
-  <path d="M3 71C24 66 46 67 60 76C74 67 96 66 117 71" fill="none" stroke-width="2.6" stroke-linecap="round"/>
-  <text x="32" y="39" ${WORDS}>UK</text><text x="88" y="39" ${WORDS}>Politics</text>${LINES(32)}${LINES(88)}`;
+const WORDS = `font-family="Public Sans" font-size="10.2" font-weight="800" letter-spacing=".15" text-anchor="middle" fill="${HOLE}"`;
+const RULES = (list) => list.map((d) => `<path d="${d}" fill="none" stroke="${HOLE}" stroke-opacity=".38" stroke-width="1.7" stroke-linecap="round"/>`).join("");
+const MARK = `<defs><path id="tr" d="${TEXT_RIGHT}"/><path id="tl" d="${TEXT_LEFT}"/></defs>
+  <path d="${COVER}" fill="#fff"/><path d="${STACK}" fill="none" stroke="${HOLE}" stroke-opacity=".45" stroke-width="1.1" stroke-linecap="round"/>
+  <path d="${PAGE_LEFT}" fill="#fff" stroke="${HOLE}" stroke-width="1"/><path d="${PAGE_RIGHT}" fill="#fff" stroke="${HOLE}" stroke-width="1"/>
+  <text ${WORDS}><textPath href="#tl" startOffset="50%">UK</textPath></text><text ${WORDS}><textPath href="#tr" startOffset="50%">Politics</textPath></text>
+  ${RULES(RULES_LEFT)}${RULES(RULES_RIGHT)}<path d="${RIBBON}" fill="#FFB84D"/>`;
 
 const html = `<!doctype html><html><head><meta charset="utf-8"><style>
 @font-face { font-family: "Public Sans"; font-weight: 100 900; src: url(data:font/woff2;base64,${font}) format("woff2"); }
@@ -31,7 +34,7 @@ html, body { margin: 0; }
 .card { position: relative; width: 1200px; height: 630px; overflow: hidden; color: #fff; font-family: "Public Sans", system-ui, sans-serif;
   background: radial-gradient(900px 600px at 0% 0%, #7a78ef 0%, rgba(122,120,239,0) 70%), linear-gradient(135deg, #6a66e8 0%, #4a3fc9 45%, #2c2487 100%); }
 .brand { position: absolute; left: 70px; top: 48px; display: flex; align-items: center; gap: 24px; }
-.brand svg { width: 132px; height: 92px; display: block; }
+.brand svg { width: 144px; height: 101px; display: block; }
 .brand span { font-size: 38px; font-weight: 700; letter-spacing: -0.2px; }
 h1 { position: absolute; left: 80px; top: 226px; margin: 0; font-size: 82px; line-height: 1.12; font-weight: 800; letter-spacing: -1.6px; }
 h1 i { display: inline-block; width: 22px; height: 22px; border-radius: 50%; background: #ffb84d; margin-left: 8px; }
@@ -39,7 +42,7 @@ p { position: absolute; left: 80px; top: 432px; margin: 0; width: 760px; font-si
 .chips { position: absolute; left: 80px; top: 546px; display: flex; gap: 14px; }
 .chips b { background: rgba(255,255,255,0.18); border-radius: 999px; padding: 13px 22px; font-size: 22px; font-weight: 700; }
 </style></head><body><div class="card">
-  <div class="brand"><svg viewBox="0 0 120 84" fill="#fff" stroke="#fff" stroke-width="0">${MARK}</svg><span>${NAME}</span></div>
+  <div class="brand"><svg viewBox="0 0 120 84" fill="none">${MARK}</svg><span>${NAME}</span></div>
   <h1>A simple breakdown<br>of UK politics<i></i></h1>
   <p>Who your MP is, who funds them, how they vote and what the numbers say. In plain English.</p>
   <div class="chips"><b>Your MP</b><b>Follow the money</b><b>The bills</b><b>The numbers</b></div>
