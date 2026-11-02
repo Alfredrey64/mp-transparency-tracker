@@ -139,7 +139,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
       transition={{ duration: 0.3, ease: "easeOut" }}
       style={{ padding: PAGE_PADDING }}
     >
-      <HeroBand crumbs={[<button key="b" type="button" className="crumb-btn" onClick={onBack}>All MPs</button>, <span key="n">{politician.name}</span>]} accent={color} wide maxWidth={1200}>
+      <HeroBand crumbs={[<button key="b" type="button" className="crumb-btn" onClick={onBack}>All MPs</button>, <span key="n" className="mp-crumb" title={politician.name}>{politician.name}</span>]} accent={color} wide maxWidth={1200}>
         <div className="mp-band">
           {politician.thumbnail_url && !avatarErrored ? (
             <div className="mp-band-photo" style={{ boxShadow: `0 0 0 3px ${color}` }}>
@@ -155,6 +155,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
               <h1 className="page-hero-title" style={{ fontSize: "clamp(30px, 5vw, 46px)" }}>{politician.name}</h1>
               <button
                 type="button"
+                className="mp-band-star"
                 onClick={() => setWatched(toggleWatch(politician))}
                 aria-pressed={watched}
                 title={watched ? "Remove from your watchlist" : "Add to your watchlist"}

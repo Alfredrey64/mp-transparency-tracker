@@ -338,6 +338,10 @@ dialog[open]::backdrop { animation: fade-in 0.15s ease both; }
 /* The icon simply grows into place: no sideways or upward movement and no turn, so it does not wobble against the heading rising beside it. */
 @keyframes hero-icon-in { from { opacity: 0; transform: scale(0.78); } }
 .crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 14px; font-size: 14px; line-height: 1.3; color: var(--c-on-navy-soft); }
+/* An MP's trail ends in their name, which can be very long: it stays on one line and is cut with an ellipsis (the full name is the heading below). */
+.crumbs:has(.mp-crumb) { flex-wrap: nowrap; }
+.crumbs:has(.mp-crumb) :not(.mp-crumb) { flex: none; white-space: nowrap; }
+.mp-crumb { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .crumbs a { color: var(--c-on-navy-soft); text-decoration: none; padding-block: 4px; margin-block: -4px; }
 .crumbs a:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
 .page-hero a:focus-visible, .page-hero button:focus-visible { outline-color: #fff; }
@@ -526,14 +530,18 @@ html[data-nav] .page-hero-inner > *, html[data-nav] .page-hero::before { animati
 .mp-band-photo { width: 112px; height: 112px; border-radius: 50%; flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #fff; }
 .mp-band-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
 @media (max-width: 520px) { .mp-band-photo { width: 88px; height: 88px; } }
-/* On a phone the photo sits above the name, so the whole banner is centred: photo, name and star, party and seat, and the buttons. */
+/* On a phone the photo sits above the name, so the whole banner is centred: photo, name, party and seat, and the buttons. The watchlist star would pull the name
+   off-centre if it sat beside it, so it hangs just to the right of the photo instead and the name sits exactly under the picture. */
 @media (max-width: 700px) {
-  .mp-band { flex-direction: column; justify-content: center; text-align: center; }
+  .mp-band { position: relative; flex-direction: column; justify-content: center; text-align: center; }
+  .mp-band .mp-band-name button.mp-band-star { position: absolute !important; top: 34px; left: calc(50% + 68px); }
+  .mp-band .page-hero-title { text-wrap: balance; }
   .mp-band-text { width: 100%; }
   .mp-band-name, .mp-band-meta, .mp-band-actions { justify-content: center; }
   .mp-band-meta { text-align: center; }
 }
 @media (max-width: 520px) {
+  .mp-band .mp-band-name button.mp-band-star { top: 22px; left: calc(50% + 56px); }
   .mp-band-dot { display: none; }
   .mp-band-meta > button { flex-basis: 100%; }
 }
