@@ -57,15 +57,17 @@ export default function BillRoute({ stages, color }) {
       const path = line.current;
       const total = path.getTotalLength();
       // How far along the line each stop is, found by walking the line and taking the point closest to the stop.
+      // The line is walked once, and every stop is looked up in that walk: asking the browser for a point on the line is the slow part.
+      const walk = [];
+      for (let i = 0; i <= 720; i++) { const p = path.getPointAtLength((i / 720) * total); walk.push([p.x, p.y]); }
       at.current = stops.map((s) => {
         const [x, y] = STOPS[s.key];
         let best = 0;
         let bestD = Infinity;
-        for (let i = 0; i <= 720; i++) {
-          const p = path.getPointAtLength((i / 720) * total);
-          const d = (p.x - x) ** 2 + (p.y - y) ** 2;
+        walk.forEach(([px, py], i) => {
+          const d = (px - x) ** 2 + (py - y) ** 2;
           if (d < bestD) { bestD = d; best = i / 720; }
-        }
+        });
         return best;
       });
       ctx = gsap.context(() => {

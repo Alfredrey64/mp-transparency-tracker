@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { preloadView } from "../pageLoaders";
+import { afterSwap } from "../lib/navState";
 import { useWatchlistChanges } from "../lib/useWatchlistChanges";
 import { useDialog } from "../lib/useDialog";
 import { useExit } from "../lib/useExit";
@@ -46,7 +47,7 @@ export function PageLink({ to, onNavigate, onAfter, children, ...rest }) {
         if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
         e.preventDefault();
         onNavigate(to);
-        onAfter?.();
+        if (onAfter) afterSwap(onAfter);
       }}
       onMouseEnter={() => preloadView(to)}
       onFocus={() => preloadView(to)}
@@ -123,7 +124,7 @@ function SearchLayer({ onClose: closeNow, onNavigate, onSelectPolitician }) {
         <h2>{t("Search")}</h2>
         <GlobalSearch
           onSelectPolitician={(p) => { onSelectPolitician?.(p); onClose(); }}
-          onNavigate={(key) => { onNavigate(key); onClose(); }}
+          onNavigate={(key) => { onNavigate(key); afterSwap(onClose); }}
         />
         <p className="search-hint">{t("Find an MP, a constituency, a page, an election or a word you want explained.")}</p>
       </div>

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { AnimatePresence, m as motion } from "motion/react";
 import { IconBroadcast } from "../icons";
 import { useGo } from "./useGo";
+import { monogram, caseSpan } from "../../lib/newsView";
 import "../../story.css";
 
 // The pictures and cards on the news regulation page (components/MediaLiteracy.jsx holds the words). Each plays once, when it scrolls into view.
@@ -114,19 +115,31 @@ export function Quiz({ items }) {
   );
 }
 
-// Each broadcaster as a card: its name and how it is funded and owned on the front, and the detail one tap away.
+// How a broadcaster pays its way, in a few words: each kind of money gets its own colour.
+const FUNDING_KINDS = [[/licence/i, "#2C5F9E"], [/subscription/i, "#1F7A6E"], [/advert/i, "#A9701F"], [/invest/i, "#5E4B8B"]];
+const fundingColour = (text) => FUNDING_KINDS.find(([re]) => re.test(text))?.[1] ?? "#5C6B85";
+
+// Each broadcaster as a row in a list: a badge, its name, and a short chain of who pays for it, who owns it and who regulates it, with the full detail one tap away.
 export function Outlets({ outlets }) {
   const [ref, go] = useGo(0.1);
   return (
     <ul ref={ref} className="na-outlets" data-go={go}>
       {outlets.map((o, i) => {
         const [funding, owner] = o.tag.split(" · ");
+        const pays = funding.split(/ and /i).map((f) => f.trim()).map((f) => f[0].toUpperCase() + f.slice(1));
         return (
           <li key={o.name} style={{ "--tc": o.color, "--i": i }}>
             <details>
               <summary>
+                <span className="na-mono" aria-hidden="true">{monogram(o.name)}</span>
                 <span className="na-outlet-name">{o.name}</span>
-                <span className="na-chips"><i>{funding}</i>{owner && <i>{owner}</i>}</span>
+                <span className="na-flow">
+                  <span className="na-step"><small>Paid for by</small><span className="na-chips">{pays.map((f) => <i key={f} style={{ "--fc": fundingColour(f) }}>{f}</i>)}</span></span>
+                  <i className="na-arrow" aria-hidden="true" />
+                  <span className="na-step"><small>Owned as</small><b>{owner ?? "See detail"}</b></span>
+                  <i className="na-arrow" aria-hidden="true" />
+                  <span className="na-step"><small>Regulated by</small><b>{/Ofcom/.test(o.regulator) ? "Ofcom" : "See detail"}</b></span>
+                </span>
                 <span className="na-chev" aria-hidden="true" />
               </summary>
               <dl>
@@ -142,23 +155,61 @@ export function Outlets({ outlets }) {
   );
 }
 
-// The five Ofcom cases as a plain list, one row each, with how it came out first and the detail one tap away.
+const VERDICT_ICONS = {
+  Breach: <path d="M7 7l10 10M17 7L7 17" />,
+  Overturned: <path d="M9 14L4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3" />,
+  "Fell short": <path d="M5 12h14M12 5v0M12 19v0" />,
+};
+const VerdictIcon = ({ kind }) => <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{VERDICT_ICONS[kind] ?? VERDICT_ICONS["Fell short"]}</svg>;
+
+// The cases on one time axis: a bar for each, from the month the programme went out to the month Ofcom ruled, so how long a ruling takes can be seen at a glance.
+function CaseTimeline({ cases, verdicts }) {
+  const spans = cases.map((c) => caseSpan(c.date));
+  if (spans.some((s) => !s)) return null;
+  const lo = Math.floor(Math.min(...spans.map((s) => s.start)) / 12) * 12;
+  const hi = Math.ceil((Math.max(...spans.map((s) => s.end)) + 1) / 12) * 12;
+  const at = (v) => `${((v - lo) / (hi - lo)) * 100}%`;
+  const years = Array.from({ length: (hi - lo) / 12 }, (_, k) => lo / 12 + k);
+  return (
+    <figure className="na-tl">
+      <figcaption>From the programme to the ruling</figcaption>
+      <div className="na-tl-body">
+        <div className="na-tl-years" aria-hidden="true">{years.map((y) => <span key={y} style={{ left: at((y * 12)) }}>{y}</span>)}</div>
+        <ul>
+          {cases.map((c, i) => (
+            <li key={`${c.outlet}-${c.date}`} style={{ "--vc": verdicts[c.verdict].color, "--i": i, "--from": at(spans[i].start), "--w": `${((spans[i].end - spans[i].start + 1) / (hi - lo)) * 100}%` }}>
+              <span className="na-tl-name"><b>{c.outlet}</b> {c.programme}</span>
+              <span className="na-tl-track"><i style={{ left: at(spans[i].start), width: `${((spans[i].end - spans[i].start + 1) / (hi - lo)) * 100}%` }} /><em style={(spans[i].end + 1 - lo) / (hi - lo) > 0.74 ? { right: `calc(100% - ${at(spans[i].start)})`, marginRight: 8 } : { left: at(spans[i].end + 1) }}>{spans[i].months === 0 ? "same month" : `${spans[i].months} months`}</em></span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </figure>
+  );
+}
+
+// The five Ofcom cases: a count of how they came out, a timeline, then a card for each with its outcome as a coloured panel on the left.
 export function Cases({ cases, verdicts }) {
-  const [ref, go] = useGo(0.1);
+  const [ref, go] = useGo(0.08);
   const counts = Object.keys(verdicts).map((k) => ({ key: k, n: cases.filter((c) => c.verdict === k).length, ...verdicts[k] })).filter((v) => v.n > 0);
   return (
     <div ref={ref} className="na-cases" data-go={go}>
-      <ul className="na-tally">{counts.map((c) => <li key={c.key} style={{ "--vc": c.color }}><b>{c.n}</b> {c.label.toLowerCase()}</li>)}</ul>
+      <div className="na-split" role="img" aria-label={counts.map((c) => `${c.n} ${c.label.toLowerCase()}`).join(", ")}>
+        {counts.map((c) => <span key={c.key} style={{ "--vc": c.color, flexGrow: c.n }}><b>{c.n}</b>{c.label}</span>)}
+      </div>
+      <CaseTimeline cases={cases} verdicts={verdicts} />
       <ol className="na-case-list">
         {cases.map((c, i) => {
           const v = verdicts[c.verdict];
+          const span = caseSpan(c.date);
           return (
-            <li key={`${c.outlet}-${c.programme}-${c.date}`} style={{ "--vc": v.color, "--i": i }}>
-              <span className="na-verdict">{v.label}</span>
+            <li key={`${c.outlet}-${c.programme}-${c.date}`} data-verdict={c.verdict} style={{ "--vc": v.color, "--oc": c.color, "--i": i }}>
+              <div className="na-case-badge"><VerdictIcon kind={c.verdict} /><b>{v.label}</b></div>
               <div className="na-case-main">
-                <p className="na-case-meta"><b>{c.outlet}</b><span>{c.programme}</span><span>{c.date}</span></p>
+                <p className="na-case-meta"><span className="na-pill">{c.outlet}</span><span>{c.programme}</span></p>
                 <h3>{c.headline}</h3>
-                <p className="na-case-rule">Rule tested: {c.rule}</p>
+                <p className="na-case-facts"><span>Rule tested: <b>{c.rule}</b></span><span>{c.date}</span></p>
+                {span && <p className="na-took" aria-label={`Ofcom took ${span.months} months to rule`}><i style={{ "--m": Math.min(1, (span.months + 1) / 24) }} /><span>{span.months === 0 ? "Ruled in the same month" : `Ofcom took ${span.months} months to rule`}</span></p>}
                 <details>
                   <summary>What happened</summary>
                   <p>{c.summary}</p>

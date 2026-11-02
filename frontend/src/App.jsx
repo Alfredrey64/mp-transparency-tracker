@@ -16,9 +16,9 @@ import { installScrollReveal } from "./lib/scrollReveal";
 import { installGlow } from "./lib/glow";
 import Home from "./components/Home";
 import { ErrorBoundary } from "./components/ErrorBoundary";
-import { SECTIONS } from "./data/sidebarSections";
+import { SECTIONS, HUB_BY_PAGE } from "./data/sidebarSections";
 import HubTabs from "./components/HubTabs";
-import { LOADERS } from "./pageLoaders";
+import { LOADERS, preloadView } from "./pageLoaders";
 import { EXPLAINER_KEYS } from "./data/explainerKeys";
 import { startGlossDedupe } from "./glossJsx/dedupe";
 import { trackPage } from "./lib/analytics";
@@ -324,6 +324,16 @@ export default function App() {
   const navId = useRef(0);
   // The destination and the "code on its way" flag live in lib/navState (read by NavProgress and ActiveHeader), so a click does not redraw this page.
 
+  // Once a page has settled and the browser is idle, the other pages of its group (the tabs along its top) are fetched quietly, so moving between them is as quick as
+  // moving to a page already seen.
+  useEffect(() => {
+    const tabs = HUB_BY_PAGE.get(view)?.pages.map(([key]) => key) ?? [];
+    if (!tabs.length || lowData()) return;
+    const run = () => tabs.forEach(preloadView);
+    if (window.requestIdleCallback) { const id = window.requestIdleCallback(run, { timeout: 4000 }); return () => window.cancelIdleCallback(id); }
+    const id = setTimeout(run, 1500);
+    return () => clearTimeout(id);
+  }, [view]);
   useEffect(() => startGlossDedupe(document.getElementById("root")), []);
   useEffect(() => installGlow(), []);
   useEffect(() => installScrollReveal(document.getElementById("main-content")?.parentElement), []);
@@ -468,10 +478,14 @@ export default function App() {
     }
     const id = ++navId.current;
     setNavState({ fetching: true });
-    root.dataset.leaving = "1";
-    const fadedOut = new Promise((resolve) => setTimeout(resolve, 60));
+    // The old page stays on screen while the new page's code and data arrive (the line under the header shows it is on its way), and only fades once they are here,
+    // so a slow page never leaves a blank screen in between. A page that is already here fades at once.
     const gaveUp = new Promise((resolve) => setTimeout(resolve, 2500));
-    Promise.race([Promise.all([preloadPage(loader), fadedOut]), gaveUp]).then(() => {
+    Promise.race([preloadPage(loader), gaveUp]).then(() => {
+      if (id !== navId.current) return;
+      root.dataset.leaving = "1";
+      return new Promise((resolve) => setTimeout(resolve, 60));
+    }).then(() => {
       // A newer click has taken over: let that one win.
       if (id !== navId.current) return;
       setNavState({ fetching: false });

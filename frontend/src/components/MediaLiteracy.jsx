@@ -206,7 +206,7 @@ const PAGE = {
     },
     {
       title: "Who owns and funds each broadcaster",
-      lede: "Ownership and funding model are matters of public record, not opinion, worth knowing before you judge a broadcaster's coverage of anything, including its own owners' interests. Tap a card for the detail.",
+      lede: "Ownership and funding model are matters of public record, not opinion, worth knowing before you judge a broadcaster's coverage of anything, including its own owners' interests. Tap a row for the detail.",
       colour: "#1F7A6E",
       blocks: [{ node: <Outlets outlets={OUTLETS} /> }],
     },

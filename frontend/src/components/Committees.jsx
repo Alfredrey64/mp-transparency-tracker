@@ -104,7 +104,6 @@ const initials = (name) => String(name ?? "").replace(/^(The |Rt Hon |Dame |Sir 
 
 // The four headline figures as one clean band, divided by thin lines, instead of four separate coloured boxes.
 const ledIcon = (d) => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{d}</svg>;
-const IconPeople = () => ledIcon(<><circle cx="9" cy="8" r="3.5" /><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6" /><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.4c2.2.7 3.5 2.6 3.5 5.6" /></>);
 const IconSearch = () => ledIcon(<><circle cx="11" cy="11" r="6.5" /><path d="m16 16 5 5" /></>);
 const IconSplitHouses = () => ledIcon(<><rect x="3" y="5" width="8" height="14" rx="2" /><rect x="13" y="5" width="8" height="14" rx="2" /></>);
 
@@ -319,10 +318,9 @@ export default function Committees() {
   }, []);
 
   const counts = useMemo(() => {
-    const out = { All: committees?.length ?? 0, members: 0, inquiries: 0 };
+    const out = { All: committees?.length ?? 0, inquiries: 0 };
     for (const c of committees ?? []) {
       out[c.house] = (out[c.house] ?? 0) + 1;
-      out.members += c.members?.length ?? 0;
       out.inquiries += c.inquiries?.length ?? 0;
     }
     return out;
@@ -390,7 +388,6 @@ export default function Committees() {
         <>
           <Ledger items={[
             { value: counts.All, label: "committees watching the government", color: COLORS.accent, icon: <IconCommittee size={20} /> },
-            { value: counts.members, label: "places held by MPs and peers", color: HOUSE_COLOR.Commons, icon: <IconPeople /> },
             { value: counts.inquiries, label: "open inquiries right now", color: "#E07A1F", icon: <IconSearch /> },
             { value: `${counts.Commons ?? 0} / ${counts.Lords ?? 0}`, label: "Commons and Lords committees", color: HOUSE_COLOR.Lords, icon: <IconSplitHouses />, splitLabel: `${counts.Commons ?? 0} Commons, ${counts.Lords ?? 0} Lords, ${counts.Joint ?? 0} joint`,
               split: [{ label: "Commons", value: counts.Commons ?? 0, color: HOUSE_COLOR.Commons }, { label: "Lords", value: counts.Lords ?? 0, color: HOUSE_COLOR.Lords }, { label: "Joint", value: counts.Joint ?? 0, color: COLORS.inkSoft }].filter((p) => p.value > 0) },

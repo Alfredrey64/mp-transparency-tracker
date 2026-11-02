@@ -20,3 +20,21 @@ function subscribe(l) {
 export function useNavState() {
   return useSyncExternalStore(subscribe, () => state, () => state);
 }
+
+// Runs `fn` once the page change that has just started has put the new page in and begun to show it (at once if no change is under way). A menu or search panel that
+// sits over the page uses this to close, so the page behind it is never seen between the old page and the new one. It runs after `limit` ms at most.
+export function afterSwap(fn, limit = 3000) {
+  if (!state.fetching) { fn(); return; }
+  const start = performance.now();
+  let done = false;
+  const finish = () => { if (done) return; done = true; listeners.delete(check); fn(); };
+  // Once the pages are swapped, wait for the new one to start fading in.
+  const waitShown = () => {
+    if (done) return;
+    if (!document.documentElement.dataset.leaving || performance.now() - start > limit) finish();
+    else requestAnimationFrame(waitShown);
+  };
+  const check = () => { if (!state.fetching) { listeners.delete(check); waitShown(); } };
+  listeners.add(check);
+  setTimeout(finish, limit);
+}

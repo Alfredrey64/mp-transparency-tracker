@@ -702,6 +702,10 @@ html[data-nav] .page-hero-inner > *, html[data-nav] .page-hero::before { animati
     radial-gradient(1000px 520px at 10% 0, color-mix(in srgb, var(--wash-accent) 22%, transparent), transparent 72%),
     radial-gradient(900px 460px at 94% 160px, color-mix(in srgb, var(--wash-accent) 15%, transparent), transparent 72%);
 }
+/* The wash fades with the page when the page changes, and takes its new colour while it is hidden, so the gap between two pages is plain background and not a patch of the old page's colour sliding to the new one's. */
+.mp-app-shell > div:has(> main)::before { transition: opacity 0.17s var(--ease-out); }
+html[data-leaving] .mp-app-shell > div:has(> main)::before { opacity: 0; transition-duration: 0.06s; transition-timing-function: ease-in; }
+html[data-leaving] .mp-app-shell { transition: none; }
 @media print { .mp-app-shell > div:has(> main)::before { display: none; } }
 
 .stat-tile { transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out); }
