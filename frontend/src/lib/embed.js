@@ -1,7 +1,7 @@
 // Embeddable cards: a question's answer, one Britain in numbers chart, or one tax's rates, that anyone can put on their own page in an iframe.
 // The card lives at /embed.html#/answer/<id>, /embed.html#/chart/<page>/<measure> or /embed.html#/tax/<tax id>, with ?theme=dark for a dark card.
 
-export const SITE_ORIGIN = "https://simple-politics.vercel.app";
+export const SITE_ORIGIN = "https://domesdaylive.co.uk";
 
 export function embedHash(spec, theme = "light") {
   const base = spec.kind === "answer" ? `#/answer/${encodeURIComponent(spec.id)}` : spec.kind === "tax" ? `#/tax/${encodeURIComponent(spec.id)}` : `#/chart/${encodeURIComponent(spec.sector)}/${encodeURIComponent(spec.id)}`;
@@ -34,7 +34,7 @@ export function iframeCode({ origin = SITE_ORIGIN, spec, theme = "light", title 
 export const RESIZE_SNIPPET = `<script>
 window.addEventListener("message", function (e) {
   if (!e.data || e.data.source !== "simple-politics" || e.data.type !== "height") return;
-  document.querySelectorAll('iframe[src*="simple-politics"]').forEach(function (f) {
+  document.querySelectorAll('iframe[src*="domesdaylive"], iframe[src*="simple-politics"]').forEach(function (f) {
     if (f.contentWindow === e.source) f.style.height = e.data.height + "px";
   });
 });

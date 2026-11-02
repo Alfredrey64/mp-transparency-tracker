@@ -15,7 +15,7 @@ import { PAGE_GUIDES, GUIDE_ALIASES } from "../src/data/pageGuides.js";
 import { ANSWERS } from "../src/data/answers.js";
 import { TAXES, GROUPS } from "../src/data/taxCatalogue.js";
 
-export const SITE = "https://simple-politics.vercel.app";
+export const SITE = "https://domesdaylive.co.uk";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(here, "..");
 

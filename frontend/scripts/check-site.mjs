@@ -10,7 +10,7 @@
 
 import { chromium } from "@playwright/test";
 
-const SITE = (process.argv[2] ?? process.env.SITE_URL ?? "https://simple-politics.vercel.app").replace(/\/$/, "");
+const SITE = (process.argv[2] ?? process.env.SITE_URL ?? "https://domesdaylive.co.uk").replace(/\/$/, "");
 const problems = [];
 const fail = (what) => { problems.push(what); console.log(`FAIL  ${what}`); };
 const ok = (what) => console.log(`ok    ${what}`);

@@ -3,7 +3,7 @@ import { qrSvg, chapterLink } from "./qr";
 
 describe("QR codes", () => {
   it("draws a square code out of rectangles only", () => {
-    const svg = qrSvg("https://simple-politics.vercel.app/teacher/why");
+    const svg = qrSvg("https://domesdaylive.co.uk/teacher/why");
     expect(svg.startsWith("<svg")).toBe(true);
     expect(svg).toContain("<path");
     expect(svg).not.toMatch(/<script|<image|href=/);

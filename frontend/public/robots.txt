@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://simple-politics.vercel.app/sitemap.xml
+Sitemap: https://domesdaylive.co.uk/sitemap.xml

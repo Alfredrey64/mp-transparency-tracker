@@ -3,5 +3,5 @@
 Contact: https://github.com/Alfredrey64/mp-transparency-tracker/security/advisories/new
 Expires: 2027-10-29T00:00:00.000Z
 Preferred-Languages: en
-Canonical: https://simple-politics.vercel.app/.well-known/security.txt
-Policy: https://simple-politics.vercel.app/privacy
+Canonical: https://domesdaylive.co.uk/.well-known/security.txt
+Policy: https://domesdaylive.co.uk/privacy

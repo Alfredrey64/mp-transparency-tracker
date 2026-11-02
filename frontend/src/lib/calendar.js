@@ -26,7 +26,7 @@ const nextDay = (iso) => { const d = new Date(`${iso}T00:00:00Z`); d.setUTCDate(
 export function buildIcs(events, { name = "Dates that matter for your votes", now = new Date() } = {}) {
   const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Domesday Live//Your area//EN", "CALSCALE:GREGORIAN", "METHOD:PUBLISH", `X-WR-CALNAME:${icsText(name)}`];
   events.filter((e) => /^\d{4}-\d{2}-\d{2}$/.test(e.date ?? "")).forEach((e, i) => {
-    lines.push("BEGIN:VEVENT", `UID:${compact(e.date)}-${i}@simple-politics.vercel.app`, `DTSTAMP:${stamp(now)}`, `DTSTART;VALUE=DATE:${compact(e.date)}`, `DTEND;VALUE=DATE:${nextDay(e.date)}`, `SUMMARY:${icsText(e.title)}`);
+    lines.push("BEGIN:VEVENT", `UID:${compact(e.date)}-${i}@domesdaylive.co.uk`, `DTSTAMP:${stamp(now)}`, `DTSTART;VALUE=DATE:${compact(e.date)}`, `DTEND;VALUE=DATE:${nextDay(e.date)}`, `SUMMARY:${icsText(e.title)}`);
     if (e.note) lines.push(`DESCRIPTION:${icsText(e.note)}`);
     lines.push("TRANSP:TRANSPARENT");
     const days = e.remindDays ?? 7;
