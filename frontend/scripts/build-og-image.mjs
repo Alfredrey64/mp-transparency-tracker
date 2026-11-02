@@ -20,12 +20,12 @@ const font = fs.readFileSync(path.join(PUBLIC, "fonts/public-sans-latin.woff2"))
 
 // The open book from src/components/LogoMark.jsx at rest, drawn from the same geometry (src/lib/bookMark.js), with the words following the curve of the pages.
 const HOLE = "#4a3fc9";
-const WORDS = `font-family="Public Sans" font-size="10.2" font-weight="800" letter-spacing=".15" text-anchor="middle" fill="${HOLE}"`;
+const WORDS = `font-family="Public Sans" font-size="11" font-weight="800" letter-spacing=".15" fill="${HOLE}"`;
 const RULES = (list) => list.map((d) => `<path d="${d}" fill="none" stroke="${HOLE}" stroke-opacity=".38" stroke-width="1.7" stroke-linecap="round"/>`).join("");
 const MARK = `<defs><path id="tr" d="${TEXT_RIGHT}"/><path id="tl" d="${TEXT_LEFT}"/></defs>
   <path d="${COVER}" fill="#fff"/><path d="${STACK}" fill="none" stroke="${HOLE}" stroke-opacity=".45" stroke-width="1.1" stroke-linecap="round"/>
   <path d="${PAGE_LEFT}" fill="#fff" stroke="${HOLE}" stroke-width="1"/><path d="${PAGE_RIGHT}" fill="#fff" stroke="${HOLE}" stroke-width="1"/>
-  <text ${WORDS}><textPath href="#tl" startOffset="50%">UK</textPath></text><text ${WORDS}><textPath href="#tr" startOffset="50%">Politics</textPath></text>
+  <text ${WORDS} text-anchor="end"><textPath href="#tl" startOffset="96%">UK</textPath></text><text ${WORDS} text-anchor="start"><textPath href="#tr" startOffset="4%">Politics</textPath></text>
   ${RULES(RULES_LEFT)}${RULES(RULES_RIGHT)}<path d="${RIBBON}" fill="#FFB84D"/>`;
 
 const html = `<!doctype html><html><head><meta charset="utf-8"><style>

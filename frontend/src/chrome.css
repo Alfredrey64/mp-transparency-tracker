@@ -236,9 +236,20 @@ dialog[open]::backdrop { animation: fade-in 0.15s ease both; }
   .site-actions { margin-left: auto; }
   .site-burger { display: inline-flex; }
   .site-brand { font-size: 21px; }
+  .site-bar .site-brand .lg { width: 58px; }
+}
+@media (max-width: 430px) {
+  .site-brand { font-size: 19px; gap: 8px; }
+  .site-bar .site-brand .lg { width: clamp(40px, calc(100vw - 327px), 58px); }
 }
 @media (max-width: 380px) {
-  .site-brand { font-size: 19px; gap: 8px; }
+  /* The room left beside the three buttons shrinks with the screen, so the book takes what is left of it (the name is smaller to leave more). */
+  .site-brand { font-size: 17px; gap: 8px; }
+  .site-bar .site-brand .lg { width: clamp(40px, calc(100vw - 316px), 58px); }
+}
+@media (max-width: 340px) {
+  .site-brand span { display: none; }
+  .site-bar .site-brand .lg { width: 64px; }
 }
 
 /* ---- Footer ------------------------------------------------------------------------------------------------------------------------------------- */

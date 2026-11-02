@@ -366,7 +366,7 @@ export default function SiteHeader({ activeView: viewHere, onNavigate, onSelectP
       >
         <div className="site-bar">
           <PageLink to="home" onNavigate={onNavigate} className="site-brand" aria-label={t("Domesday Live, home")}>
-            <LogoMark width={54} color="var(--c-brand)" hole="var(--c-paper-card)" animate />
+            <LogoMark width={74} color="var(--c-brand)" hole="var(--c-paper-card)" animate />
             <span>Domesday Live</span>
           </PageLink>
 

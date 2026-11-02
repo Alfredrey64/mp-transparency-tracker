@@ -11,8 +11,8 @@ const split = (c, t) => {
 const part = (c, from, to) => split(split(c, from)[1], (to - from) / (1 - from))[0];
 const path = ([a, b, c, d]) => `M${r(a[0])} ${r(a[1])}C${r(b[0])} ${r(b[1])} ${r(c[0])} ${r(c[1])} ${r(d[0])} ${r(d[1])}`;
 
-// The baseline the words stand on, from the spine out on the right page.
-const BASE = [[66, 38.5], [79, 32.5], [95, 31.5], [110, 34.5]];
+// The baseline the words stand on, from the spine out on the right page. The words sit either side of the spine at the same height, so UK Politics reads as one line.
+const BASE = [[66, 36.5], [80, 33], [96, 32.2], [110, 35]];
 // Distance below the baseline, and how much of the width (from the spine) each ruled line covers.
 const RULES = [[9, 0.03, 0.97], [16, 0.03, 0.7], [23, 0.03, 0.84]];
 const down = (c, dy) => c.map(([x, y]) => [x, y + dy]);
