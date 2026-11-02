@@ -1,9 +1,11 @@
 /** @jsxImportSource react */
 import ExplainerPage from "../story/ExplainerPage";
 import { IconCourt } from "../newIcons";
+import { IconBook, IconGavel, IconScales, IconShield, IconManifesto } from "../icons";
+import { Converge, Flow, Seats } from "../story/StateArt";
 
 const PAGE = {
-  look: "ledger",
+  look: "poster",
   icon: IconCourt,
   kicker: "Understand it",
   title: "Courts and the constitution",
@@ -20,11 +22,14 @@ const PAGE = {
       lede: "The rules about who holds power are spread over many places.",
       colour: "#5A7FA6",
       blocks: [
-        { cards: [
-          { title: "Acts of Parliament", text: "Ordinary laws that set up the courts, the Supreme Court, devolved parliaments and how the Civil Service is run." },
-          { title: "Court decisions", text: "Judgments by the highest courts explain how those laws apply, and sometimes what the limits of government power are." },
-          { title: "Conventions", text: "Habits that are followed but not written as law, such as the King giving Royal Assent to laws Parliament has passed." },
-        ] },
+        { node: <Converge
+          sources={[
+            { title: "Acts of Parliament", text: "Ordinary laws that set up the courts, the Supreme Court, devolved parliaments and how the Civil Service is run.", colour: "#5A7FA6", icon: IconBook },
+            { title: "Court decisions", text: "Judgments by the highest courts explain how those laws apply, and sometimes what the limits of government power are.", colour: "#9C6B30", icon: IconGavel },
+            { title: "Conventions", text: "Habits that are followed but not written as law, such as the King giving Royal Assent to laws Parliament has passed.", colour: "#6E4B6E", icon: IconManifesto },
+          ]}
+          result={{ title: "The rules about who holds power", text: "There is no single document", colour: "#2F4A6B" }}
+        /> },
         { text: ["Because any ordinary Act can change the rest, Parliament is described as sovereign: it can make or unmake any law. The courts apply the laws Parliament passes."] },
       ],
     },
@@ -33,6 +38,12 @@ const PAGE = {
       lede: "The Human Rights Act 1998 gives senior courts one tool, and it is deliberately limited.",
       colour: "#9C3B3B",
       blocks: [
+        { node: <Flow items={[
+          { title: "A court finds a clash", text: "A provision in an Act cannot be read in a way that fits human rights.", colour: "#5A7FA6", icon: IconScales },
+          { title: "It makes a declaration", text: "A declaration of incompatibility. It cannot strike the Act down.", colour: "#9C6B30", icon: IconGavel },
+          { title: "The law carries on", text: "The declaration does not affect the validity, continuing operation or enforcement of the provision.", colour: "#9C3B3B", icon: IconShield },
+          { title: "Parliament decides", text: "The declaration is not binding on the parties. It is for Parliament and ministers to decide what happens next.", colour: "#3F7D5C", icon: IconBook },
+        ]} /> },
         { compare: [
           { title: "What a court can do", colour: "#3F7D5C", items: [
             "Decide whether a government decision or a minister's regulation is lawful.",
@@ -53,6 +64,7 @@ const PAGE = {
       colour: "#6E4B6E",
       blocks: [
         { pull: "The Lord Chancellor, other ministers and everyone with responsibility for the courts or the administration of justice must uphold the independence of the judiciary. Ministers must not try to influence particular judicial decisions through any special access to judges." },
+        { node: <Seats count={12} label="The most judges the Supreme Court can have, counted in full-time equivalent terms" /> },
         { text: ["The Supreme Court of the United Kingdom is the final court of appeal. Its judges are appointed by the King, and the law caps the court at 12 judges in full-time equivalent terms, though that number can be raised by an Order in Council if both Houses of Parliament approve."] },
       ],
     },

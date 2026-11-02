@@ -1,8 +1,11 @@
 /** @jsxImportSource react */
 import ExplainerPage from "../story/ExplainerPage";
 import { IconCivilService } from "../newIcons";
+import { IconShield, IconBook, IconCompass, IconScales } from "../icons";
+import { ChangeOfGovernment, Workforce } from "../story/CivilServiceArt";
 
 const PAGE = {
+  look: "poster",
   icon: IconCivilService,
   kicker: "Understand it",
   title: "The Civil Service",
@@ -25,6 +28,7 @@ const PAGE = {
           { label: "Median age", value: "43", note: "One year younger than in 2025." },
           { label: "Joined in 2025 to 2026", value: "42,855", note: "Against 37,945 who left." },
         ] },
+        { node: <Workforce /> },
         { text: ["The numbers are published once a year by the Cabinet Office. More than three quarters of civil servants are now at Executive Officer grade or above, against about three in five in 2016."] },
       ],
     },
@@ -33,6 +37,7 @@ const PAGE = {
       lede: "Three kinds of people work in a government department. Their jobs, and how they get them, are different.",
       colour: "#6E4B6E",
       blocks: [
+        { node: <ChangeOfGovernment /> },
         { compare: [
           { title: "Ministers", colour: "#9C3B3B", items: [
             "Chosen by the Prime Minister, and answer to Parliament.",
@@ -58,10 +63,10 @@ const PAGE = {
       colour: "#3F7D5C",
       blocks: [
         { cards: [
-          { title: "Integrity", text: "Putting the obligations of public service above your own personal interests." },
-          { title: "Honesty", text: "Being truthful and open." },
-          { title: "Objectivity", text: "Basing your advice and decisions on rigorous analysis of the evidence." },
-          { title: "Impartiality", text: "Acting solely according to the merits of the case, and serving equally well governments of different political persuasions." },
+          { title: "Integrity", icon: IconShield, colour: "#5A7FA6", text: "Putting the obligations of public service above your own personal interests." },
+          { title: "Honesty", icon: IconBook, colour: "#3F7D5C", text: "Being truthful and open." },
+          { title: "Objectivity", icon: IconCompass, colour: "#9C6B30", text: "Basing your advice and decisions on rigorous analysis of the evidence." },
+          { title: "Impartiality", icon: IconScales, colour: "#6E4B6E", text: "Acting solely according to the merits of the case, and serving equally well governments of different political persuasions." },
         ] },
         { text: ["A civil servant who is asked to act against the Code can raise the matter inside the department. If they do not get a reasonable response, they can report it to the Civil Service Commission."] },
       ],

@@ -1,9 +1,10 @@
 /** @jsxImportSource react */
 import ExplainerPage from "../story/ExplainerPage";
 import { IconCrown } from "../newIcons";
+import { Handoff, Journey, Amounts } from "../story/StateArt";
 
 const PAGE = {
-  look: "ledger",
+  look: "poster",
   icon: IconCrown,
   kicker: "Understand it",
   title: "The monarchy: role and money",
@@ -20,6 +21,15 @@ const PAGE = {
       lede: "The monarch is the head of state, and acts on the advice of ministers.",
       colour: "#6E4B6E",
       blocks: [
+        { node: <Handoff
+          left="Who decides"
+          right="What the King does"
+          rows={[
+            { from: "Parliament passes a law", to: "The King gives Royal Assent", colour: "#6E4B6E" },
+            { from: "The Prime Minister advises", to: "The King appoints ministers", colour: "#3F7D5C" },
+            { from: "Elected politicians decide what the speech says", to: "The King opens each session of Parliament", colour: "#9C6B30" },
+          ]}
+        /> },
         { text: [
           "By convention the King formally approves laws passed by Parliament (Royal Assent), appoints ministers on the Prime Minister's advice, and opens each session of Parliament. The decisions in those speeches and appointments are made by elected politicians.",
           "Because these are conventions, not written rules, the line between the role of the King and of ministers is drawn by practice rather than by a single document. See Courts and the constitution.",
@@ -36,6 +46,7 @@ const PAGE = {
           { title: "Round it up", text: "To the next £100,000." },
           { title: "It can never fall", text: "The grant is the larger of that sum and the previous year's grant." },
           { title: "A reserve can reduce it", text: "If the Household's reserve fund is worth more than 50% of the resources it used that year, the Royal Trustees may reduce the grant." },
+          { title: "The result is the grant", text: "The sum from the steps before, less any reduction, is the Sovereign Grant for the year." },
         ] },
         { text: [<>The Crown Estate is a property business. The Grant itself is paid to the Royal Household out of money provided by Parliament, which is why it counts as public money. See <a href="#/funding">funding and independence</a> for how other bodies are funded.</>] },
       ],
@@ -45,16 +56,24 @@ const PAGE = {
       lede: "The Royal Trustees' 2026 review explains the change.",
       colour: "#9C6B30",
       blocks: [
-        { timeline: [
+        { node: <Amounts
+          title="The Sovereign Grant, now and as proposed"
+          colour="#9C6B30"
+          rows={[
+            { label: "2026 to 2027", value: "£137.9m", pct: 100, colour: "#3F7D5C" },
+            { label: "From 2027 to 2028, proposed", value: "£99.9m", pct: (99.9 / 137.9) * 100, colour: "#9C6B30" },
+          ]}
+          note="The £99.9 million figure is a proposal that needs an Act of Parliament. It is not the amount in law today."
+        /> },
+        { node: <Journey colour="#9C6B30" items={[
           { when: "2016", text: "The percentage is raised to pay for a ten-year reservicing programme at Buckingham Palace, with £369 million of funding agreed. The Trustees said the plumbing, wiring and heating had not been updated since shortly after the Second World War." },
           { when: "2026 to 2027", text: "The final tranche of that funding is paid, and the Grant is £137.9 million." },
           { when: "June 2026", text: "The Royal Trustees' review proposes that the reference percentage change to 20.5 per cent and that the Grant fall to £99.9 million from 2027 to 2028, then stay flat to 2031 to 2032." },
-        ] },
+        ]} /> },
         { text: [
           "The law now stops the Grant being set lower than the year before, so the government has said it will bring forward legislation to allow the cut. The Trustees also expect the Crown Estate's profit to fall from its 2025 to 2026 level, as temporary income from offshore wind leasing option fees ends.",
           "The next review is planned for 2031. The review says this means a further real-terms reduction in the Grant each year.",
         ] },
-        { note: "The £99.9 million figure is a proposal that needs an Act of Parliament. It is not the amount in law today." },
       ],
     },
   ],

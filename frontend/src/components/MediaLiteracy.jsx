@@ -1,87 +1,9 @@
-import { useState, useMemo } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
-import { PageHeader } from "./shared";
-import { IconBroadcast, IconBook } from "./icons";
-import { keyboardActivate } from "../lib/a11y";
-import { GlanceStrip } from "./GlanceStrip";
-import "../media.css";
+import { readable } from "../theme";
+import { IconBook } from "./icons";
+import ExplainerPage from "./story/ExplainerPage";
+import { TwoLanes, Rules, Quiz, Outlets, Cases, LinkList } from "./story/NewsArt";
 
-function InfoCard({ title, color, children, index = 0 }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 14 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.35, delay: index * 0.05, ease: "easeOut" }}
-      style={{
-        background: COLORS.paperCard, borderLeft: `1px solid ${COLORS.hairline}`, borderRight: `1px solid ${COLORS.hairline}`,
-        borderBottom: `1px solid ${COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 4px 0 ${color}`, borderRadius: 16,
-        padding: "22px clamp(16px, 4vw, 26px)", marginBottom: 20,
-      }}
-    >
-      <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, marginTop: 0, marginBottom: 10 }}>{title}</h2>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 14.5, color: COLORS.inkSoft, lineHeight: 1.7 }}>{children}</div>
-    </motion.div>
-  );
-}
-
-// A slow, looping "broadcast vs print" hero animation — concentric rings
-// pulsing outward from a transmitter on one side, a static stack of pages
-// on the other. Purely decorative, but it visualises the page's actual
-// argument (one medium broadcasts under a legal duty, the other prints
-// freely) rather than a generic banner.
-function BroadcastHero() {
-  const rings = [0, 1, 2];
-  return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "clamp(24px, 8vw, 64px)", padding: "8px 0 28px", flexWrap: "wrap" }}>
-      <div style={{ position: "relative", width: 90, height: 90, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        {rings.map((i) => (
-          <motion.div
-            key={i}
-            initial={{ scale: 0.3, opacity: 0 }}
-            // Opacity reaches 0 well before scale finishes growing (60% of
-            // the way through, not 100%) so there's a brief invisible hold
-            // before each loop resets — the reset itself was landing while
-            // still faintly visible, which is what read as an irregular
-            // flicker rather than a clean, continuous pulse.
-            animate={{ scale: [0.3, 1, 1.8], opacity: [0, 0.55, 0] }}
-            transition={{ duration: 2.6, times: [0, 0.35, 1], repeat: Infinity, delay: i * 0.85, ease: "easeOut" }}
-            style={{ position: "absolute", width: 60, height: 60, borderRadius: "50%", border: `2px solid ${COLORS.accent}` }}
-          />
-        ))}
-        <div style={{ width: 44, height: 44, borderRadius: "50%", background: COLORS.accent, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", zIndex: 1 }}>
-          <IconBroadcast size={20} />
-        </div>
-      </div>
-
-      <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "center" }}>
-        Legally impartial
-        <div style={{ height: 1, width: 40, background: COLORS.hairline, margin: "10px auto" }} />
-        Free to editorialise
-      </div>
-
-      <div style={{ position: "relative", width: 90, height: 90, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        {[0, 1, 2].map((i) => (
-          <motion.div
-            key={i}
-            initial={{ rotate: -6 + i * 4, y: 0 }}
-            animate={{ rotate: [-6 + i * 4, 6 - i * 4, -6 + i * 4] }}
-            transition={{ duration: 4 + i, repeat: Infinity, ease: "easeInOut" }}
-            style={{
-              position: "absolute", width: 46, height: 58, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`,
-              borderRadius: 3, top: 16 - i * 3, boxShadow: "0 2px 6px rgba(30,42,68,0.1)",
-            }}
-          >
-            <div style={{ margin: "7px 6px 0", height: 3, background: COLORS.ink, opacity: 0.7, borderRadius: 1 }} />
-            <div style={{ margin: "4px 6px 0", height: 2, background: COLORS.inkSoft, opacity: 0.5, borderRadius: 1 }} />
-            <div style={{ margin: "3px 6px 0", height: 2, background: COLORS.inkSoft, opacity: 0.5, borderRadius: 1, width: "70%" }} />
-          </motion.div>
-        ))}
-      </div>
-    </div>
-  );
-}
+// How the news is regulated: the words are here, the pictures and cards are in story/NewsArt.jsx.
 
 const OUTLETS = [
   {
@@ -126,62 +48,6 @@ const OUTLETS = [
   },
 ];
 
-function OutletCard({ outlet, index, open, onToggle }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.3, delay: (index % 6) * 0.05 }}
-      style={{
-        background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `3px solid ${outlet.color}`,
-        borderRadius: 14, overflow: "hidden", cursor: "pointer",
-      }}
-      onClick={onToggle}
-    >
-      <div {...keyboardActivate(onToggle, { label: `${outlet.name}. ${open ? "Hide" : "Show"} who owns and funds it`, expanded: open })} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: 16, paddingBottom: open ? 10 : 16 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ width: 10, height: 10, borderRadius: "50%", background: outlet.color, flexShrink: 0, boxShadow: `0 0 0 3px ${outlet.color}2a` }} />
-          <span style={{ display: "grid", gap: 2 }}>
-            <span style={{ fontFamily: FONT_DISPLAY, fontSize: 22, fontWeight: 700, color: COLORS.ink }}>{outlet.name}</span>
-            <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, color: COLORS.inkSoft }}>{outlet.tag}</span>
-          </span>
-        </div>
-        <motion.span
-          animate={{ rotate: open ? 90 : 0 }}
-          transition={{ duration: 0.2, ease: "easeOut" }}
-          style={{ display: "flex", color: COLORS.inkSoft, flexShrink: 0 }}
-        >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="9 6 15 12 9 18" />
-          </svg>
-        </motion.span>
-      </div>
-
-      <motion.div
-        aria-hidden={!open}
-        initial={false}
-        animate={{ height: open ? "auto" : 0 }}
-        transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
-        style={{ overflow: "hidden" }}
-      >
-        <div style={{ padding: "0 16px 16px" }}>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: readable(outlet.color), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>Ownership</div>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.55, marginBottom: 10 }}>{outlet.ownership}</div>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: readable(outlet.color), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>Funding</div>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.55, marginBottom: 10 }}>{outlet.funding}</div>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: readable(outlet.color), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 3 }}>Regulation</div>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.55 }}>{outlet.regulator}</div>
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-}
-
-// A short, interactive sorting exercise reinforcing the one fact this whole
-// page rests on: broadcasters have a legal impartiality duty, newspapers
-// don't. Deliberately not a bias quiz — every item has one unambiguous,
-// factual right answer about regulatory status, not an opinion about lean.
 const QUIZ_ITEMS = [
   { name: "BBC News", answer: "broadcast" },
   { name: "The Guardian", answer: "print" },
@@ -192,142 +58,6 @@ const QUIZ_ITEMS = [
   { name: "ITV News", answer: "broadcast" },
   { name: "The Daily Mail", answer: "print" },
 ];
-
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-function ImpartialityQuiz() {
-  const [order] = useState(() => shuffle(QUIZ_ITEMS));
-  const [step, setStep] = useState(0);
-  const [feedback, setFeedback] = useState(null); // "correct" | "wrong" | null
-  const [score, setScore] = useState(0);
-  const current = order[step];
-  const done = step >= order.length;
-
-  function answer(choice) {
-    if (feedback) return;
-    const correct = choice === current.answer;
-    setFeedback(correct ? "correct" : "wrong");
-    if (correct) setScore((s) => s + 1);
-    setTimeout(() => {
-      setFeedback(null);
-      setStep((s) => s + 1);
-    }, 900);
-  }
-
-  function restart() {
-    setStep(0);
-    setScore(0);
-    setFeedback(null);
-  }
-
-  return (
-    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid #A8456B`, borderRadius: 16, padding: "24px clamp(16px, 4vw, 30px)", marginBottom: 32 }}>
-      <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, marginTop: 0, marginBottom: 6 }}>
-        Quick check: broadcast or print?
-      </h2>
-      <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 20, maxWidth: 560 }}>
-        Every one of these has a clear, factual regulatory status: no opinion required. Sort all eight to see if the
-        broadcast/print divide is as intuitive as it sounds.
-      </p>
-
-      <div style={{ minHeight: 190 }}>
-        <AnimatePresence mode="wait">
-          {!done ? (
-            <motion.div
-              key={step}
-              initial={{ opacity: 0, x: 24 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -24 }}
-              transition={{ duration: 0.22 }}
-            >
-              <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginBottom: 8 }}>
-                {step + 1} of {order.length}
-              </div>
-              <div
-                style={{
-                  fontFamily: FONT_DISPLAY, fontSize: 26, color: COLORS.ink, textAlign: "center",
-                  padding: "26px 20px", background: COLORS.paper, borderRadius: 14, marginBottom: 18,
-                  border: feedback ? `2px solid ${feedback === "correct" ? "#3F7D5C" : "#9C3B3B"}` : `1px solid ${COLORS.hairline}`,
-                  transition: "border-color 0.15s",
-                }}
-              >
-                {current.name}
-                {feedback && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, marginTop: 10, color: feedback === "correct" ? readable("#3F7D5C") : readable("#9C3B3B") }}
-                  >
-                    {feedback === "correct" ? "✓ Correct" : `✗ Actually ${current.answer === "broadcast" ? "a broadcaster, legally impartial" : "a newspaper, free to editorialise"}`}
-                  </motion.div>
-                )}
-              </div>
-              <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-                <motion.button
-                  whileHover={{ scale: feedback ? 1 : 1.03 }}
-                  whileTap={{ scale: feedback ? 1 : 0.97 }}
-                  onClick={() => answer("broadcast")}
-                  disabled={Boolean(feedback)}
-                  style={{
-                    fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13.5, color: "#fff", background: COLORS.accent,
-                    border: "none", borderRadius: 999, padding: "11px 22px", cursor: feedback ? "default" : "pointer", opacity: feedback ? 0.7 : 1,
-                  }}
-                >
-                  Broadcaster, must be impartial
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: feedback ? 1 : 1.03 }}
-                  whileTap={{ scale: feedback ? 1 : 0.97 }}
-                  onClick={() => answer("print")}
-                  disabled={Boolean(feedback)}
-                  style={{
-                    fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13.5, color: COLORS.ink, background: "transparent",
-                    border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: "11px 22px", cursor: feedback ? "default" : "pointer", opacity: feedback ? 0.7 : 1,
-                  }}
-                >
-                  Newspaper, free to editorialise
-                </motion.button>
-              </div>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="done"
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
-              style={{ textAlign: "center", padding: "20px 0" }}
-            >
-              <div style={{ fontFamily: FONT_DISPLAY, fontSize: 32, color: COLORS.ink, marginBottom: 6 }}>{score} / {order.length}</div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginBottom: 18, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>
-                {score === order.length
-                  ? "The regulatory line tracks the medium, not the outlet's reputation: every TV and radio news service sits on one side of it, every newspaper on the other, regardless of who owns them or what they're known for."
-                  : "Ownership, funding, and popular reputation don't determine which side of the line an outlet sits on: only the medium does: broadcast, or print."}
-              </div>
-              <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={restart}
-                style={{
-                  fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13.5, color: COLORS.ink, background: "transparent",
-                  border: `1px solid ${COLORS.hairline}`, borderRadius: 999, padding: "10px 22px", cursor: "pointer",
-                }}
-              >
-                Try again
-              </motion.button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </div>
-  );
-}
 
 const CODE_REQUIREMENTS = [
   {
@@ -420,226 +150,81 @@ const REAL_CASES = [
   },
 ];
 
-const VERDICT_STYLES = {
+const VERDICTS = {
   Breach: { label: "Ruled a breach", color: readable("#9C3B3B") },
   Overturned: { label: "Overturned on appeal", color: readable("#4C7A6B") },
   "Fell short": { label: "Fell short, not a breach", color: readable("#9C6B30") },
 };
 
-function CaseCard({ item, index }) {
-  const verdict = VERDICT_STYLES[item.verdict];
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.3, delay: (index % 6) * 0.05 }}
-      style={{
-        background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `4px solid ${item.color}`,
-        borderRadius: 14, padding: "16px 20px",
-      }}
-    >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10, flexWrap: "wrap", marginBottom: 8 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 9, flexWrap: "wrap" }}>
-          <span
-            style={{
-              fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, letterSpacing: "0.04em", textTransform: "uppercase",
-              color: readable(item.color), background: `${item.color}1A`, padding: "3px 9px", borderRadius: 999,
-            }}
-          >
-            {item.outlet}
-          </span>
-          <span style={{ fontFamily: FONT_DISPLAY, fontSize: 16.5, color: COLORS.ink }}>{item.programme}</span>
-        </div>
-        <span style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, flexShrink: 0 }}>{item.date}</span>
-      </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
-        <span
-          style={{
-            fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, letterSpacing: "0.05em", textTransform: "uppercase",
-            color: readable(verdict.color), background: `${verdict.color}1A`, border: `1px solid ${verdict.color}33`, padding: "3px 9px", borderRadius: 999,
-          }}
-        >
-          {verdict.label}
-        </span>
-        <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, fontStyle: "italic" }}>{item.rule}</span>
-      </div>
-      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 600, color: COLORS.ink, lineHeight: 1.35 }}>{item.headline}</div>
-      <details className="ml-fold ml-fold-case" style={{ "--rc": item.color }}>
-        <summary>What happened<span aria-hidden="true">▾</span></summary>
-        <p>{item.summary}</p>
-      </details>
-    </motion.div>
-  );
-}
+const LINKS = [
+  { label: "Ofcom's due impartiality rules, explained", url: "https://www.ofcom.org.uk/tv-radio-and-on-demand/broadcast-standards/section-five-due-impartiality-accuracy" },
+  { label: "Ofcom's published broadcast standards decisions", url: "https://www.ofcom.org.uk/tv-radio-and-on-demand/broadcast-standards/broadcast-and-on-demand-bulletin-decisions" },
+  { label: "Loughborough University's Centre for Research in Communication and Culture", url: "https://www.lboro.ac.uk/research/crcc/", note: "Independent academics who quantitatively track UK election TV and press coverage, rather than assert a verdict." },
+];
+
+const PAGE = {
+  look: "poster",
+  icon: IconBook,
+  kicker: "Understand it",
+  title: "How broadcast impartiality works",
+  subtitle: "This site doesn't rate broadcasters for bias, because that is a judgement call rather than a matter of public record. Instead, this page explains how UK broadcast regulation works, what it requires, who owns what, and cases where it has been tested.",
+  tiles: [
+    { label: "Kinds of news, two sets of rules", value: "2", colour: "#6FB1FF", sub: "broadcast and print" },
+    { label: "Rules in the Broadcasting Code", value: "5", colour: "#FFB45E", sub: "explained below" },
+    { label: "Real Ofcom cases", value: "5", colour: "#FF7A8A", sub: "breaches, near misses and one overturned" },
+    { label: "Outlets to sort in the quiz", value: "8", colour: "#5DD6A2" },
+  ],
+  why: { colour: "#5A7FA6", text: "What you watch shapes what you think is normal, urgent, or true, and most people can't name which outlets are legally required to be impartial and which are free to campaign. Knowing the difference is the first step to reading any story with the right amount of trust." },
+  chapters: [
+    {
+      title: "The big difference",
+      colour: "#5A7FA6",
+      blocks: [{ node: <TwoLanes /> }],
+    },
+    {
+      title: "What the Broadcasting Code actually requires",
+      lede: "\"Due impartiality\" isn't just a slogan. It's a specific set of rules Ofcom enforces, with real cases testing where the line falls. Here's what it breaks down into.",
+      colour: "#9C6B30",
+      blocks: [{ node: <Rules rules={CODE_REQUIREMENTS} /> }],
+    },
+    {
+      title: "Quick check: broadcast or print?",
+      lede: "Every one of these has a clear, factual regulatory status: no opinion required. Sort all eight to see if the broadcast/print divide is as intuitive as it sounds.",
+      colour: "#A8456B",
+      blocks: [{ node: <Quiz items={QUIZ_ITEMS} /> }],
+    },
+    {
+      title: "Who owns and funds each broadcaster",
+      lede: "Ownership and funding model are matters of public record, not opinion, worth knowing before you judge a broadcaster's coverage of anything, including its own owners' interests. Tap a card for the detail.",
+      colour: "#3F7D5C",
+      blocks: [{ node: <Outlets outlets={OUTLETS} /> }],
+    },
+    {
+      title: "When broadcasters have fallen short, and when they haven't",
+      lede: "Five published Ofcom cases, chosen to show what a breach looks like, what falls just short of one, and that Ofcom's own rulings can be successfully challenged.",
+      colour: "#9C3B3B",
+      blocks: [{ node: <Cases cases={REAL_CASES} verdicts={VERDICTS} /> }],
+    },
+    {
+      title: "Where to find the official rulings",
+      lede: "Ofcom publishes every impartiality ruling it upholds, with its reasoning, in a weekly bulletin. Read the ruling itself, not anyone's scorecard.",
+      colour: "#5B6784",
+      blocks: [{ node: <LinkList links={LINKS} /> }],
+    },
+    {
+      title: "Four habits for reading any news",
+      colour: "#B5533C",
+      blocks: [{ cards: [
+        { title: "News or opinion?", text: "Check which one you are reading. The impartiality rules bite far harder on news than on comment.", colour: "#5A7FA6" },
+        { title: "Who is speaking?", text: "A guest's job tells you where they start from: a think tank, a trade body or a party.", colour: "#9C6B30" },
+        { title: "Check a second source", text: "A different outlet is the cheapest way to spot what was left out.", colour: "#3F7D5C" },
+        { title: "Go to the source", text: "Every figure on this site links to the official document. You never need to trust anyone's framing.", colour: "#B5533C" },
+      ] }],
+    },
+  ],
+  sources: [],
+};
 
 export default function MediaLiteracy() {
-  const [openOutlet, setOpenOutlet] = useState(null);
-  const outletOrder = useMemo(() => OUTLETS, []);
-
-  return (
-    <div className="editorial" style={{ padding: PAGE_PADDING }}>
-      <PageHeader
-        icon={IconBook}
-        title="How broadcast impartiality works"
-        subtitle="This site doesn't rate broadcasters for bias, because that is a judgement call rather than a matter of public record. Instead, this page explains how UK broadcast regulation works, what it requires, who owns what, and cases where it has been tested."
-        maxWidth={900}
-      />
-
-      <div className="editorial-body">
-
-      <BroadcastHero />
-
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.35 }}
-        style={{
-          display: "flex", alignItems: "center", gap: 14, maxWidth: "none", marginBottom: 28,
-          background: COLORS.paper, border: `1px solid ${COLORS.hairline}`,
-          borderRadius: 14, padding: "16px 20px",
-        }}
-      >
-        <div style={{ flexShrink: 0, width: 38, height: 38, borderRadius: "50%", background: COLORS.accent, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>
-          <IconBook size={17} />
-        </div>
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.6 }}>
-          <strong>Why this matters:</strong> what you watch shapes what you think is normal, urgent, or true, and
-          most people can't name which outlets are legally required to be impartial and which are free to campaign.
-          Knowing the difference is the first step to reading any story with the right amount of trust.
-        </div>
-      </motion.div>
-
-      <GlanceStrip items={[
-        { value: "2", label: "kinds of news, two sets of rules", sub: "broadcast and print", colour: "#5A7FA6" },
-        { value: "5", label: "rules in the Broadcasting Code", sub: "explained below", colour: "#9C6B30" },
-        { value: "5", label: "real Ofcom cases", sub: "breaches, near misses and one overturned", colour: "#9C3B3B" },
-        { value: "8", label: "outlets to sort in the quiz", colour: "#1FA97C" },
-      ]} />
-
-      <section className="ml-split" aria-labelledby="h-ml-split">
-        <h2 id="h-ml-split">The big difference</h2>
-        <div className="ml-split-grid">
-          <div style={{ "--sc": "#5A7FA6" }}>
-            <span className="ml-split-icon" aria-hidden="true"><IconBroadcast size={26} /></span>
-            <b>TV and radio news</b>
-            <em>Must be impartial</em>
-            <p>The BBC, ITV, Sky News, Channel 4 and GB News all follow Ofcom's Broadcasting Code. Public or private, licence fee or adverts, it makes no difference.</p>
-          </div>
-          <div style={{ "--sc": "#B5533C" }}>
-            <span className="ml-split-icon" aria-hidden="true"><IconBook size={26} /></span>
-            <b>Newspapers and news websites</b>
-            <em>Free to take a side</em>
-            <p>They can back a party at an election and run an openly one-sided front page. That is why a paper's lean is well known, and a broadcaster's legally should not be.</p>
-          </div>
-        </div>
-      </section>
-
-      <div style={{ marginBottom: 32, maxWidth: "none" }}>
-        <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>
-          What the Broadcasting Code actually requires
-        </h2>
-        <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16 }}>
-          "Due impartiality" isn't just a slogan. It's a specific set of rules Ofcom enforces, with real cases
-          testing where the line falls. Here's what it breaks down into.
-        </p>
-        <div className="box-row" style={{ "--n": 3, "--min": "250px" }}>
-          {CODE_REQUIREMENTS.map((req, i) => (
-            <motion.div
-              key={req.title}
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.3, delay: (i % 6) * 0.05 }}
-              className="ml-rule" style={{ "--rc": req.color }}
-            >
-              <span className="ml-rule-n" aria-hidden="true">{i + 1}</span>
-              <div className="ml-rule-title">{req.title}</div>
-              <p className="ml-rule-short">{req.short}</p>
-              <details className="ml-fold">
-                <summary>Read the rule<span aria-hidden="true">▾</span></summary>
-                <div className="ml-fold-ref">{req.rule}</div>
-                <p>{req.body}</p>
-              </details>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
-      <ImpartialityQuiz />
-
-      <div style={{ marginBottom: 32 }}>
-        <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>Who owns and funds each broadcaster</h2>
-        <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16, maxWidth: 760 }}>
-          Ownership and funding model are matters of public record, not opinion, worth knowing before you judge a
-          broadcaster's coverage of anything, including its own owners' interests. Tap a card for the detail.
-        </p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))", gap: 16 }}>
-          {outletOrder.map((o, i) => (
-            <OutletCard
-              key={o.name}
-              outlet={o}
-              index={i}
-              open={openOutlet === o.name}
-              onToggle={() => setOpenOutlet(openOutlet === o.name ? null : o.name)}
-            />
-          ))}
-        </div>
-      </div>
-
-      <div style={{ marginBottom: 32, maxWidth: "none" }}>
-        <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 4 }}>
-          When broadcasters have fallen short, and when they haven't
-        </h2>
-        <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 0, marginBottom: 16 }}>
-          Five published Ofcom cases, chosen to show what a breach looks like, what falls just short of one, and that
-          Ofcom's own rulings can be successfully challenged.
-        </p>
-        <div className="ed-list">
-          {REAL_CASES.map((item, i) => (
-            <CaseCard key={`${item.outlet}-${item.programme}-${item.date}`} item={item} index={i} />
-          ))}
-        </div>
-      </div>
-
-      <InfoCard title="Where to find the official rulings" color="#3F7D5C" index={2}>
-        <p style={{ marginTop: 0 }}>
-          Ofcom publishes every impartiality ruling it upholds, with its reasoning, in a weekly bulletin. Read the ruling itself, not anyone's scorecard.
-        </p>
-        <ul style={{ margin: 0, paddingLeft: 20 }}>
-          <li style={{ marginBottom: 8 }}>
-            <a href="https://www.ofcom.org.uk/tv-radio-and-on-demand/broadcast-standards/section-five-due-impartiality-accuracy" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
-              Ofcom's due impartiality rules, explained ↗
-            </a>
-          </li>
-          <li style={{ marginBottom: 8 }}>
-            <a href="https://www.ofcom.org.uk/tv-radio-and-on-demand/broadcast-standards/broadcast-and-on-demand-bulletin-decisions" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
-              Ofcom's published broadcast standards decisions ↗
-            </a>
-          </li>
-          <li>
-            <a href="https://www.lboro.ac.uk/research/crcc/" target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontWeight: 600 }}>
-              Loughborough University's Centre for Research in Communication and Culture ↗
-            </a>{" "}
-           , independent academics who quantitatively track UK election TV and press coverage, rather than assert a verdict.
-          </li>
-        </ul>
-      </InfoCard>
-
-      <section className="ml-tips" aria-labelledby="h-ml-tips">
-        <h2 id="h-ml-tips">Four habits for reading any news</h2>
-        <ol>
-          {[
-            ["News or opinion?", "Check which one you are reading. The impartiality rules bite far harder on news than on comment.", "#5A7FA6"],
-            ["Who is speaking?", "A guest's job tells you where they start from: a think tank, a trade body or a party.", "#9C6B30"],
-            ["Check a second source", "A different outlet is the cheapest way to spot what was left out.", "#3F7D5C"],
-            ["Go to the source", "Every figure on this site links to the official document. You never need to trust anyone's framing.", "#B5533C"],
-          ].map(([t, x, c], i) => (
-            <li key={t} style={{ "--tc": c }}><span aria-hidden="true">{i + 1}</span><div><b>{t}</b><p>{x}</p></div></li>
-          ))}
-        </ol>
-      </section>
-      </div>
-    </div>
-  );
+  return <ExplainerPage {...PAGE} />;
 }

@@ -24,7 +24,9 @@ const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").
 // The sidebar's pages: key, label and hint, read from the source text (that file imports icon components, so it cannot be loaded here).
 export function readSidebarPages(source) {
   const pages = [];
-  for (const line of source.split("\n")) {
+  // Only the menu sections: the page groups below them (HUBS) have keys of their own that are not pages.
+  const menu = source.includes("export const HUBS") ? source.slice(0, source.indexOf("export const HUBS")) : source;
+  for (const line of menu.split("\n")) {
     const m = /\{ key: "([A-Za-z0-9]+)", label: "([^"]+)"/.exec(line);
     if (!m) continue;
     const hint = /hint: "([^"]*)"/.exec(line)?.[1] ?? "";

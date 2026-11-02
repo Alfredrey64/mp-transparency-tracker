@@ -137,7 +137,7 @@ console.log(
 // A page drawn from data, handed in as the component to show.
 // Calls `done` once two frames in a row have come quickly (the browser has finished drawing what was just put on the page), or after `limit` ms at most.
 // A steady slower rhythm, such as 30 frames a second in a phone's low-power mode, counts as quick too.
-function afterSettled(done, limit = 220) {
+function afterSettled(done, limit = 120) {
   const start = performance.now();
   let last = start;
   let quick = 0;
@@ -466,7 +466,7 @@ export default function App() {
     const id = ++navId.current;
     setNavState({ fetching: true });
     root.dataset.leaving = "1";
-    const fadedOut = new Promise((resolve) => setTimeout(resolve, 90));
+    const fadedOut = new Promise((resolve) => setTimeout(resolve, 60));
     const gaveUp = new Promise((resolve) => setTimeout(resolve, 2500));
     Promise.race([Promise.all([preloadPage(loader), fadedOut]), gaveUp]).then(() => {
       // A newer click has taken over: let that one win.

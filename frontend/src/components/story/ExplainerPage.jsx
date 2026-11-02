@@ -20,6 +20,7 @@ import AnimatedValue from "./AnimatedValue";
 //   chips     { items: [], note }              a wrapped set of short labels, numbered in order
 //   note      a small italic line
 //   node      a piece of the page that is more than text (a postcode check, say): any React element
+// A page can also pass `lead`, an element drawn between the figures and "Why it matters" (a picture that sums the page up).
 
 function Block({ b, colour }) {
   if (b.node) return <div className="st-node">{b.node}</div>;
@@ -138,34 +139,37 @@ function Block({ b, colour }) {
 
 // Everything under the page header: the figures, the reason it matters, the chapters and the list of sources. A page that already has its own header
 // (a tab of another page, for instance) draws just this.
-export function ExplainerBody({ icon, tiles, tileVariant, why, chapters, sources, checked }) {
+export function ExplainerBody({ icon, tiles, tileVariant, lead, why, chapters, sources, checked }) {
   return (
     <>
       {tiles && <Board tiles={tiles} variant={tileVariant} />}
+      {lead}
       {why && <Why icon={icon} colour={why.colour}>{why.text}</Why>}
       {chapters.map((c, i) => (
         <Chapter key={c.title} n={i + 1} title={c.title} lede={c.lede} colour={c.colour}>
           {c.blocks.map((b, j) => <Block key={j} b={b} colour={c.colour} />)}
         </Chapter>
       ))}
-      <Chapter n={chapters.length + 1} title="Where this comes from" colour="#5B6784" lede={checked ? `Every figure was checked against these sources on ${checked}.` : undefined}>
-        <ul className="st-sources">
-          {sources.map((s) => (
-            <li key={s.url}><a href={s.url} target="_blank" rel="noreferrer">{s.label}</a>{s.note && <span>{s.note}</span>}</li>
-          ))}
-        </ul>
-      </Chapter>
+      {sources?.length > 0 && (
+        <Chapter n={chapters.length + 1} title="Where this comes from" colour="#5B6784" lede={checked ? `Every figure was checked against these sources on ${checked}.` : undefined}>
+          <ul className="st-sources">
+            {sources.map((s) => (
+              <li key={s.url}><a href={s.url} target="_blank" rel="noreferrer">{s.label}</a>{s.note && <span>{s.note}</span>}</li>
+            ))}
+          </ul>
+        </Chapter>
+      )}
     </>
   );
 }
 
 // `look` is how the page is dressed: "ledger", "poster" or "field" (see story.css); left out, it keeps the first look.
 // `narrow` matches the width of the older pages that sit in the same menu group (Election results, Your council), so moving between tabs does not shift the page.
-export default function ExplainerPage({ icon, kicker, title, subtitle, tiles, tileVariant, why, chapters, sources, checked, narrow = false, look }) {
+export default function ExplainerPage({ icon, kicker, title, subtitle, tiles, tileVariant, lead, why, chapters, sources, checked, narrow = false, look }) {
   return (
     <div className="st" data-look={look} style={{ paddingTop: "clamp(20px, 5vw, 40px)", ...(narrow ? { maxWidth: 1084 } : null) }}>
       <PageHeader icon={icon} kicker={kicker} title={title} subtitle={subtitle} />
-      <ExplainerBody icon={icon} tiles={tiles} tileVariant={tileVariant} why={why} chapters={chapters} sources={sources} checked={checked} />
+      <ExplainerBody icon={icon} tiles={tiles} tileVariant={tileVariant} lead={lead} why={why} chapters={chapters} sources={sources} checked={checked} />
     </div>
   );
 }

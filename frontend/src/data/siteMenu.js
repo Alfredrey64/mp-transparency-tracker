@@ -3,7 +3,7 @@ import { SECTIONS, collapseItems, hubLead } from "./sidebarSections";
 // The top menu: five headings, each opening a panel that holds one or two of the page groups in sidebarSections.js. The groups are the same
 // ones the page headers, the search and the phone menu use, so a page is always found under the same name.
 export const MENU_GROUPS = [
-  { key: "learn", label: "Learn", sections: ["learn", "history"] },
+  { key: "learn", label: "Learn", sections: ["learn"] },
   { key: "area", label: "Your area", sections: ["involved", "elections"] },
   { key: "parliament", label: "Parliament", sections: ["government", "accountability"] },
   { key: "money", label: "Money", sections: ["money", "gaps"] },

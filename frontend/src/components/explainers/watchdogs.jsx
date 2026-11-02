@@ -1,9 +1,11 @@
 /** @jsxImportSource react */
 import ExplainerPage from "../story/ExplainerPage";
 import { IconAudit } from "../newIcons";
+import { IconTrend, IconSearch, IconManifesto, IconLedger, IconScales } from "../icons";
+import { Trio, Flow } from "../story/StateArt";
 
 const PAGE = {
-  look: "ledger",
+  look: "poster",
   icon: IconAudit,
   kicker: "Understand it",
   title: "Watchdogs and inquiries",
@@ -13,6 +15,11 @@ const PAGE = {
     { label: "Forecasts the Office for Budget Responsibility must make", value: "2 a year", colour: "#FFB45E", sub: "at least, by law" },
     { label: "Refusing to hand over evidence to an inquiry", value: "A crime", colour: "#FF7A8A", sub: "if there is no reasonable excuse" },
   ],
+  lead: <Trio items={[
+    { who: "National Audit Office", title: "Audits the accounts", text: "The public spending watchdog, which reports to Parliament rather than to ministers.", colour: "#5A7FA6", icon: IconAudit },
+    { who: "Office for Budget Responsibility", title: "Checks the sums", text: "An official forecaster, set up by law so that the Budget's sums are checked by someone other than the Treasury.", colour: "#9C6B30", icon: IconTrend },
+    { who: "Public inquiries", title: "Looks into what went wrong", text: "When events cause public concern, a minister can set up an inquiry with legal powers.", colour: "#9C3B3B", icon: IconSearch },
+  ]} />,
   why: { colour: "#5A7FA6", text: "Ministers answer to Parliament, but Parliament cannot check every account or sum. These bodies exist to do that, and each is deliberately kept at a distance from the government of the day." },
   chapters: [
     {
@@ -24,8 +31,12 @@ const PAGE = {
           { label: "Audit opinions each year", value: "about 400", note: "Accounts of all government departments, executive agencies, arm's-length bodies and some companies and charities." },
           { label: "Value-for-money reports", value: "about 60", note: "Each one asks whether government is delivering value for money." },
         ] },
+        { node: <Flow down vias={["oversees", "audits"]} items={[
+          { title: "Parliament", text: "A committee of MPs, the Public Accounts Commission, oversees the NAO's work.", colour: "#6E4B6E", icon: IconManifesto },
+          { title: "National Audit Office", text: "Independent of government and the civil service. It supports the Public Accounts Committee and other select committees in holding government to account.", colour: "#5A7FA6", icon: IconAudit },
+          { title: "The accounts it audits", text: "Government departments, executive agencies, arm's-length bodies and some companies and charities.", colour: "#3F7D5C", icon: IconLedger },
+        ]} /> },
         { text: [
-          "The NAO says it is independent of government and the civil service. A committee of MPs, the Public Accounts Commission, oversees its work. It supports the Public Accounts Committee and other select committees in holding government to account.",
           "It examines how government spends money delivering its policies, but says its role is not to question the objectives of those policies.",
         ] },
         { text: [<>An example of its work is the audit of emergency contracts in 2020, on the <a href="#/govContracts">government contracts</a> page.</>] },
@@ -37,9 +48,9 @@ const PAGE = {
       colour: "#9C6B30",
       blocks: [
         { cards: [
-          { title: "Its duty", text: "To examine and report on the sustainability of the public finances." },
-          { title: "At least twice a year", text: "It must prepare fiscal and economic forecasts on at least two occasions each financial year." },
-          { title: "It checks itself", text: "At least once a year it must assess how accurate its own earlier forecasts were, and analyse the sustainability of the public finances." },
+          { title: "Its duty", icon: IconScales, colour: "#9C6B30", text: "To examine and report on the sustainability of the public finances." },
+          { title: "At least twice a year", icon: IconTrend, colour: "#5A7FA6", text: "It must prepare fiscal and economic forecasts on at least two occasions each financial year." },
+          { title: "It checks itself", icon: IconSearch, colour: "#3F7D5C", text: "At least once a year it must assess how accurate its own earlier forecasts were, and analyse the sustainability of the public finances." },
         ] },
         { text: ["Its reports must say what assumptions it made and what main risks it considered. The Budget Responsibility Act 2024 and the Finance Act 2026 have amended the original law of 2011, so check the legislation for the current duties."] },
       ],

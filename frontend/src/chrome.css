@@ -718,18 +718,18 @@ html[data-nav] .page-hero-inner > *, html[data-nav] .page-hero::before { animati
    Changing page: the page's content fades right out (html gets data-leaving the moment you click), the pages are swapped and drawn while nothing is showing,
    and once the browser has caught up the new one fades in as data-leaving is taken off while its content settles into place from a few pixels below, so
    the change reads as one movement. Nothing is swapped, drawn or measured in view, so a slow phone shows no stutter. Only #main-content fades and only the page's own blocks move, so the header and the buttons fixed to the screen never move or double. */
-#main-content { transition: opacity 0.24s var(--ease-out); }
+#main-content { transition: opacity 0.17s var(--ease-out); }
 /* The page dips rather than going blank, so there is no flash of empty background between two pages. */
-html[data-leaving] #main-content { opacity: 0; transition-duration: 0.09s; transition-timing-function: ease-in; }
+html[data-leaving] #main-content { opacity: 0; transition-duration: 0.06s; transition-timing-function: ease-in; }
 /* While a whole page is still loading, what sits under it (the footer, "More in this section", the page's foot) waits and then fades in, so it is never seen sliding
    down the screen as the figures arrive. */
 .site-footer { animation: foot-in 0.3s var(--ease-out) backwards; }
 html[data-settling] .site-footer, .mp-app-shell:has(#main-content .loading-block) .site-footer, #main-content:has(.loading-block) > .sn, #main-content:has(.loading-block) > .pf { display: none; }
 /* The footer is part of the page: it fades with it, so it never shows jumping as the page above it changes height. */
-.site-footer { transition: opacity 0.24s var(--ease-out); }
-html[data-leaving] .site-footer { opacity: 0; transition-duration: 0.09s; transition-timing-function: ease-in; }
-@keyframes page-rise { from { transform: translateY(10px); } }
-html[data-nav]:not([data-leaving]) #main-content > :not(.page-loading):not(.sn):not(.pf) { animation: page-rise 0.34s var(--ease-out) backwards; }
+.site-footer { transition: opacity 0.17s var(--ease-out); }
+html[data-leaving] .site-footer { opacity: 0; transition-duration: 0.06s; transition-timing-function: ease-in; }
+@keyframes page-rise { from { transform: translateY(6px); } }
+html[data-nav]:not([data-leaving]) #main-content > :not(.page-loading):not(.sn):not(.pf) { animation: page-rise 0.24s var(--ease-out) backwards; }
 @media (prefers-reduced-motion: reduce) { html[data-nav]:not([data-leaving]) #main-content > :not(.page-loading):not(.sn):not(.pf) { animation: none; } }
 /* The section links and page foot arrive after the page has settled (App.jsx, AfterSettle), so they ease in rather than appear. */
 @keyframes foot-in { from { opacity: 0; } }
@@ -737,7 +737,7 @@ html[data-nav]:not([data-leaving]) #main-content > :not(.page-loading):not(.sn):
 @media (prefers-reduced-motion: reduce) { #main-content > .sn, #main-content > .pf { animation: none; } }
 /* The first time the page opens it fades in once, but not the placeholder that stands in for it, so a page that arrives quickly is not shown as a blank frame first. */
 @keyframes page-in { from { opacity: 0; } }
-html:not([data-nav]) #main-content > :not(.page-loading) { animation: page-in 0.26s var(--ease-out) backwards; }
+html:not([data-nav]) #main-content > :not(.page-loading) { animation: page-in 0.2s var(--ease-out) backwards; }
 @media (prefers-reduced-motion: reduce) {
   #main-content, .site-footer, .mp-app-shell { transition: none; }
   html:not([data-nav]) #main-content > :not(.page-loading) { animation: none; }
