@@ -1,10 +1,13 @@
 /* "At a glance" figures and "How to read this page" cards. Loaded only with the pages that use them. */
 .glance { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px; margin: 22px 0 6px; }
-.glance-tile { position: relative; display: grid; gap: 3px; align-content: start; padding: 16px 18px 17px; border-radius: 20px; overflow: hidden; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1), inset 4px 0 0 var(--gc); transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out); animation: glance-in 0.55s var(--ease-out) calc(var(--gi) * 70ms) backwards; }
-.glance-tile:hover { transform: scale(1.016); box-shadow: var(--shadow-3); }
-.glance-tile > b { position: relative; z-index: 1; font: 700 clamp(30px, 3.6vw, 42px)/1.05 "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--gc) 80%, var(--c-ink)); font-variant-numeric: lining-nums tabular-nums; letter-spacing: -0.015em; overflow-wrap: anywhere; }
-.glance-tile > span { position: relative; z-index: 1; font: 700 14px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
-.glance-tile > small { position: relative; z-index: 1; font: 400 12.5px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.glance-tile { position: relative; display: grid; gap: 4px; align-content: start; padding: 18px 18px 24px; border-radius: 22px; overflow: hidden; background: linear-gradient(150deg, color-mix(in srgb, var(--gc) 18%, var(--c-paper-card)) 0%, color-mix(in srgb, var(--gc) 6%, var(--c-paper-card)) 72%); border: 1px solid color-mix(in srgb, var(--gc) 30%, var(--c-hairline)); box-shadow: 0 14px 26px -22px color-mix(in srgb, var(--gc) 70%, transparent); transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out); animation: glance-in 0.55s var(--ease-out) calc(var(--gi) * 70ms) backwards; }
+.glance-tile::before { content: ""; position: absolute; right: -34px; top: -38px; width: 124px; height: 124px; border-radius: 50%; border: 20px solid color-mix(in srgb, var(--gc) 16%, transparent); pointer-events: none; }
+.glance-tile::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: linear-gradient(90deg, var(--gc), color-mix(in srgb, var(--gc) 55%, #fff)); transform-origin: left; animation: glance-bar 0.9s var(--ease-out) calc(var(--gi) * 70ms + 0.3s) backwards; }
+.glance-tile:hover { transform: translateY(-3px); box-shadow: 0 20px 30px -20px color-mix(in srgb, var(--gc) 80%, transparent); }
+.glance-tile > b { position: relative; z-index: 1; font: 700 clamp(34px, 4vw, 48px)/1.05 "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--gc) 82%, var(--c-ink)); font-variant-numeric: lining-nums tabular-nums; letter-spacing: -0.02em; overflow-wrap: anywhere; }
+.glance-tile > span { position: relative; z-index: 1; font: 700 14.5px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.glance-tile > small { position: relative; z-index: 1; font: 500 12.5px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+@keyframes glance-bar { from { transform: scaleX(0); } }
 @keyframes glance-in { from { opacity: 0; transform: translateY(14px); } }
 .howread { margin: 18px 0 8px; }
 .howread h2 { margin: 0 0 10px; font: 700 18px "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
@@ -13,4 +16,4 @@
 .howread li > span { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 11px; background: var(--hc); color: #fff; font: 800 15px "Figures", "Public Sans", system-ui, sans-serif; }
 .howread li b { font: 700 14.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .howread p { margin: 2px 0 0; font: 400 13.5px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-@media (prefers-reduced-motion: reduce) { .glance-tile { animation: none; transition: none; } .glance-tile:hover { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .glance-tile, .glance-tile::after { animation: none; transition: none; } .glance-tile:hover { transform: none; } }

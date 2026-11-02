@@ -3,7 +3,7 @@ import PageGuide from "./PageGuide";
 import { GuideKeyContext } from "../lib/viewContext";
 import ShareButton from "./ShareButton";
 import { pageShareSpec } from "../lib/shareSpecs";
-import { motion } from "motion/react";
+import { m as motion } from "motion/react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, readable } from "../theme";
 import { SECTION_ACCENT_BY_ICON, SECTION_LABEL_BY_KEY, OUTSIDE_ACCENT } from "../data/sidebarSections";
 import { useT } from "../lib/useLang";

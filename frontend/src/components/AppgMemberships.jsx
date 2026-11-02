@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion } from "motion/react";
+import { m as motion } from "motion/react";
 import { COLORS, PAGE_PADDING, readable } from "../theme";
 import { PageHeader } from "./shared";
 import { IconGroup } from "./icons";

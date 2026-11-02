@@ -1,6 +1,6 @@
 /** @jsxImportSource react */
 import { useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m as motion } from "motion/react";
 import { IconBroadcast } from "../icons";
 import { useGo } from "./useGo";
 import "../../story.css";

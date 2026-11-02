@@ -28,9 +28,12 @@ export const STACK_LEFT = "M58 72.6C44 65 26 64 8 68";
 // Where each page dips into the spine, drawn as a soft shadow.
 export const SHADE_RIGHT = "M62 19C65 17.4 68 16.4 71 16V62.600C68 62.600 65 64 62 70Z";
 export const SHADE_LEFT = "M58 19C55 17.4 52 16.4 49 16V62.600C52 62.600 55 64 58 70Z";
-// The front cover when the book is closed: an inset frame and a small diamond.
+// The front cover when the book is closed: an inset frame, and the Houses of Parliament standing inside it. The silhouette is the app icon's drawing (see
+// scripts/build-icons.mjs) in its own units, x 40 to 456 and y 24 to 430; PARLIAMENT_AT moves it to the middle of the frame, with the clock face a circle on top.
 export const FRAME = "M65 21C77 13.500 96 12.500 112 16.500V62.500C96 59 77 60 65 67.500Z";
-export const DIAMOND = "M89 33.500l5.500 7.500-5.500 7.500-5.500-7.500Z";
+export const PARLIAMENT = "M56 324h200v100h-200zM56 306h16v18h-16zM82 306h16v18h-16zM108 306h16v18h-16zM134 306h16v18h-16zM160 306h16v18h-16zM186 306h16v18h-16zM212 306h16v18h-16zM238 306h16v18h-16zM282 126h96v16h-96zM292 142h76v282h-76zM327 24h6v30h-6zM396 348h44v76h-44zM40 424h416v6h-416zM292 126L330 52L368 126zM396 348L418 306L440 348z";
+export const PARLIAMENT_AT = "translate(63.7 16.8) scale(0.1)";
+export const CLOCK = { cx: 330, cy: 190, r: 22 };
 // A ribbon marker hanging from the spine.
 export const RIBBON = "M57.500 74.200V82L60 79.800L62.500 82V74.200Z";
 export const TEXT_RIGHT = path(BASE);

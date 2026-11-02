@@ -1,5 +1,5 @@
 import { useState, useReducer, useRef, useEffect, useMemo } from "react";
-import { motion, useInView, useReducedMotion } from "motion/react";
+import { m as motion, useInView, useReducedMotion } from "motion/react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, readable } from "../theme";
 import { IconParliament, IconCabinet, IconDevolved, IconTransport, IconCouncil, IconHome, IconGroup } from "./icons";
 import { NATIONS, TIERS, VOTE_FOR, CHECKS, WHO_TO_CONTACT, contactAnswer, SCENARIOS, scenarioSteps, YOU, visibleTierKeys, linkBetween } from "../data/governmentTiers";

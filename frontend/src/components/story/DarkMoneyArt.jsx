@@ -1,5 +1,6 @@
 /** @jsxImportSource react */
 import { useReducedMotion } from "motion/react";
+import { useGo } from "./useGo";
 
 // The pictures for the dark money page. Each is drawn in SVG and moves by animation written into the picture, so it needs no script and stands
 // still for anyone who has asked for less motion.
@@ -146,34 +147,31 @@ function MoneyTrailTall() {
   );
 }
 
-// The three amounts that decide what an association must report, as steps climbing from nothing to a duty to tell the Electoral Commission.
+// The three amounts that decide what an association must report, as three stations along a rail that darkens as the sum grows, each with a rising meter, and
+// the registration threshold underneath. It plays once, when it scrolls into view.
 export function Thresholds() {
-  const base = 340;
+  const [ref, go] = useGo(0.25);
   const steps = [
-    { x: 30, w: 250, h: 112, c: "#9AA6B8", t: "Under £500", s: "Not even counted by the association" },
-    { x: 290, w: 280, h: 176, c: "#E8741A", t: "£500 and over", s: "Counted, but not yet reported" },
-    { x: 580, w: 290, h: 240, c: "#9C3B3B", t: "Over £7,500 from one source", s: "Must be reported, but only once total gifts pass £37,270 a year" },
+    { c: "#7B8BA5", state: "Not counted", t: "Under £500", s: "Not even counted by the association" },
+    { c: "#E8801F", state: "Counted", t: "£500 and over", s: "Counted, but not yet reported" },
+    { c: "#C93A55", state: "Reported", t: "Over £7,500 from one source", s: "Must be reported, but only once total gifts pass £37,270 a year" },
   ];
   return (
-    <svg viewBox="0 0 900 360" role="img" aria-label="Three steps: under 500 pounds is not counted, 500 pounds and over is counted, over 7,500 pounds from one source must be reported once yearly donations pass 37,270 pounds">
-      <line x1="20" y1={base} x2="880" y2={base} stroke="#C9D3E6" strokeWidth="3" />
-      {steps.map((s, i) => (
-        <g key={s.t} style={{ animation: `stRise 0.9s var(--ease-out) ${0.15 + i * 0.25}s backwards`, transformOrigin: `${s.x + s.w / 2}px ${base}px`, transformBox: "view-box" }}>
-          <rect x={s.x} y={base - s.h} width={s.w} height={s.h} rx="14" fill={s.c} opacity="0.16" />
-          <rect x={s.x} y={base - s.h} width={s.w} height="8" rx="4" fill={s.c} />
-          <foreignObject x={s.x + 16} y={base - s.h + 20} width={s.w - 32} height={s.h - 28}>
-            <div xmlns="http://www.w3.org/1999/xhtml" style={{ display: "grid", gap: "6px", alignContent: "start" }}>
-              <div style={{ font: "800 21px/1.2 Newsreader, Georgia, serif", color: INK }}>{s.t}</div>
-              <div style={{ font: "600 13.5px/1.4 Public Sans, system-ui, sans-serif", color: SOFT }}>{s.s}</div>
+    <div ref={ref} className="dm-th" data-go={go} role="img" aria-label="Three steps: under 500 pounds is not counted, 500 pounds and over is counted, over 7,500 pounds from one source must be reported once yearly donations pass 37,270 pounds">
+      <ol className="dm-th-row" aria-hidden="true">
+        {steps.map((st, i) => (
+          <li key={st.t} style={{ "--tc": st.c, "--i": i }}>
+            <span className="dm-th-node">{i + 1}</span>
+            <div className="dm-th-card">
+              <span className="dm-th-state"><span className="dm-th-meter">{[0, 1, 2].map((k) => <i key={k} data-on={k <= i ? "1" : "0"} />)}</span>{st.state}</span>
+              <b>{st.t}</b>
+              <p>{st.s}</p>
             </div>
-          </foreignObject>
-        </g>
-      ))}
-      <g transform="translate(540 30)">
-        <rect width="330" height="36" rx="18" fill="#fff" stroke="#9C3B3B" strokeWidth="2.500" />
-        <text x="165" y="23.500" textAnchor="middle" fontSize="13" fontWeight="800" fill="#7A2E2E" fontFamily="Public Sans, system-ui, sans-serif">Below £37,270 a year: no registration at all</text>
-      </g>
-    </svg>
+          </li>
+        ))}
+      </ol>
+      <p className="dm-th-note" aria-hidden="true">Below £37,270 a year: no registration at all</p>
+    </div>
   );
 }
 

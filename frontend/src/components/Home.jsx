@@ -1,6 +1,6 @@
 import { useWatchlistChanges } from "../lib/useWatchlistChanges";
 import { useState, useEffect, useMemo } from "react";
-import { motion, useMotionValue, animate } from "motion/react";
+import { m as motion, useMotionValue, animate } from "motion/react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, readable, solid } from "../theme";
 import { formatDate, partyColour, shortCategory, timeAgo } from "../lib/format";

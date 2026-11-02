@@ -2,7 +2,7 @@ import { useState, useEffect, useLayoutEffect, useRef, useTransition, Suspense, 
 import { useDisplay, LISTEN_EVENT } from "./lib/useDisplay";
 import { flushSync } from "react-dom";
 import { GuideKeyContext, guideKeyFor } from "./lib/viewContext";
-import { MotionConfig } from "motion/react";
+import { LazyMotion, MotionConfig } from "motion/react";
 import { supabase } from "./supabaseClient";
 import { COLORS, FONT_BODY } from "./theme";
 import SiteHeader from "./components/SiteHeader";
@@ -32,6 +32,9 @@ import { useLang, useT } from "./lib/useLang";
 import { hasWelsh } from "./i18n/views";
 import EnglishOnlyNotice from "./components/EnglishOnlyNotice";
 import LangBar from "./components/LangBar";
+
+// Framer Motion's animation engine is fetched after the first paint instead of with the page: its components start as plain elements and begin moving once it arrives.
+const loadMotionFeatures = () => import("./motionFeatures.js").then((mod) => mod.default);
 
 // Everything below is code-split per page: a visitor to the homepage
 // shouldn't have to download the other ~30 pages' code up front. Home and
@@ -526,6 +529,7 @@ export default function App() {
   }
 
   return (
+    <LazyMotion features={loadMotionFeatures} strict>
     <MotionConfig reducedMotion={display.calm ? "always" : "user"}>
     <GuideKeyContext.Provider value={guideKeyFor(view, viewParam)}>
     <div className="mp-app-shell" style={{ display: "flex", flexDirection: "column", background: COLORS.paper, fontFamily: FONT_BODY, "--hemicycle": HEMICYCLE }}>
@@ -663,5 +667,6 @@ export default function App() {
     </div>
     </GuideKeyContext.Provider>
     </MotionConfig>
+    </LazyMotion>
   );
 }

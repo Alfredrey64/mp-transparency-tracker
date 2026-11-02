@@ -3,7 +3,7 @@ import WhatThisMeans from "./WhatThisMeans";
 import { seatsMeaning, womenMeaning, tenureMeaning, safetyMeaning } from "../lib/numbersMeaning";
 import ShareButton from "./ShareButton";
 import { chamberShareSpec } from "../lib/shareSpecs";
-import { motion, useReducedMotion, AnimatePresence } from "motion/react";
+import { m as motion, useReducedMotion, AnimatePresence } from "motion/react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_BODY, numeric } from "../theme";
 import { partyColour, formatDate } from "../lib/format";

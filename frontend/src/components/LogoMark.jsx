@@ -1,6 +1,6 @@
 import { useId } from "react";
 import {
-  COVER_RIGHT, COVER_LEFT, PAGE_LEFT, PAGE_RIGHT, STACK_RIGHT, STACK_LEFT, SHADE_RIGHT, SHADE_LEFT, FRAME, DIAMOND, RIBBON,
+  COVER_RIGHT, COVER_LEFT, PAGE_LEFT, PAGE_RIGHT, STACK_RIGHT, STACK_LEFT, SHADE_RIGHT, SHADE_LEFT, FRAME, PARLIAMENT, PARLIAMENT_AT, CLOCK, RIBBON,
   TEXT_LEFT, TEXT_RIGHT, RULES_LEFT, RULES_RIGHT,
 } from "../lib/bookMark";
 
@@ -37,7 +37,10 @@ export default function LogoMark({ width = 76, color = "var(--sb-accent)", hole 
           <>
             <path d={COVER_RIGHT} fill={color} stroke={hole} strokeWidth=".6" strokeOpacity=".5" />
             <path d={FRAME} stroke={hole} strokeOpacity=".5" strokeWidth="1" />
-            <path d={DIAMOND} fill={ribbon} />
+            <g transform={PARLIAMENT_AT}>
+              <path d={PARLIAMENT} fill={ribbon} />
+              <circle {...CLOCK} fill={color} stroke={ribbon} strokeWidth="7" />
+            </g>
           </>
         ))}
         {leaf("lg-b", 0, (

@@ -3,7 +3,7 @@ import { useDataFile } from "../lib/useDataFile";
 import { lordsVotes } from "../lib/dataFiles";
 import { GlanceStrip } from "./GlanceStrip";
 import PageGuide from "./PageGuide";
-import { motion } from "motion/react";
+import { m as motion } from "motion/react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, chip } from "../theme";
 import { partyColour, initials, formatDate, timeInOffice } from "../lib/format";

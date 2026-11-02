@@ -4,7 +4,7 @@ import { shortMoney } from "../lib/shortMoney";
 import WhatThisMeans from "./WhatThisMeans";
 import { concentrationMeaning } from "../lib/moneyMeaning";
 import { everydayShort } from "../lib/everyday";
-import { motion, AnimatePresence } from "motion/react";
+import { m as motion, AnimatePresence } from "motion/react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING } from "../theme";
 import { getDonorSector, sectorColor, normalizeDonorKey, donorSectorMetadata } from "../lib/donorSectors";

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { m as motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { supabase } from "../supabaseClient";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { LoadFailedNote } from "./MpCards";

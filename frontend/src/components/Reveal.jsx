@@ -1,4 +1,4 @@
-import { motion, useReducedMotion } from "motion/react";
+import { m as motion, useReducedMotion } from "motion/react";
 
 // Fades its content up the first time it scrolls into view. With reduced
 // motion preferred it simply appears.
