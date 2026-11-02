@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-01T11:10:00.558Z",
-  "succeededCount": 31,
+  "generatedAt": "2026-11-02T11:56:18.524Z",
+  "succeededCount": 29,
   "totalCount": 32,
   "sources": [
     {
@@ -77,7 +77,7 @@
     },
     {
       "label": "Written questions",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Standards reports",
@@ -117,7 +117,7 @@
     },
     {
       "label": "Lords votes (how every peer voted)",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Full Fact pledge list",
