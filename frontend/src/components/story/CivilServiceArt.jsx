@@ -22,23 +22,23 @@ export function Workforce() {
   const [ref, go] = useGo(0.2);
   return (
     <figure ref={ref} className="cs-work" data-go={go}>
-      <section className="cs-card cs-age" style={{ "--tc": "#B8741A" }}>
+      <section className="cs-card cs-age" style={{ "--tc": "#A9701F" }}>
         <h3>Median age</h3>
         <b><AnimatedValue text="43" /></b>
         <p>One year younger than in 2025.</p>
       </section>
-      <section className="cs-card" style={{ "--tc": "#12A07A" }}>
+      <section className="cs-card" style={{ "--tc": "#1F7A6E" }}>
         <h3>Joining and leaving, 2025 to 2026</h3>
         <Rows rows={[
-          { label: "Joined", value: <AnimatedValue text="42,855" />, pct: 100, colour: "#12A07A" },
-          { label: "Left", value: <AnimatedValue text="37,945" />, pct: (37945 / 42855) * 100, colour: "#D6455F" },
+          { label: "Joined", value: <AnimatedValue text="42,855" />, pct: 100, colour: "#1F7A6E" },
+          { label: "Left", value: <AnimatedValue text="37,945" />, pct: (37945 / 42855) * 100, colour: "#9A3F55" },
         ]} />
       </section>
-      <section className="cs-card" style={{ "--tc": "#2F7BD6" }}>
+      <section className="cs-card" style={{ "--tc": "#2C5F9E" }}>
         <h3>At Executive Officer grade or above</h3>
         <Rows rows={[
           { label: "In 2016", value: "About 3 in 5", pct: 60, colour: "#8A98B0" },
-          { label: "Now", value: "More than 3 in 4", pct: 75, colour: "#5A7FA6" },
+          { label: "Now", value: "More than 3 in 4", pct: 75, colour: "#4A6E99" },
         ]} />
       </section>
     </figure>

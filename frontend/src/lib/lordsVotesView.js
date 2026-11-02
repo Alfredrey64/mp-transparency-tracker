@@ -69,3 +69,39 @@ export function findBill(title, bills) {
 
 // "Agreed" when more peers voted Content than Not content, "Rejected" otherwise.
 export const outcomeOf = (d) => (d.content > d.notContent ? "Agreed" : "Rejected");
+
+// Votes in each of the last 12 months split by who came out ahead, oldest first: [{ key, label, won, lost, other }]. "other" is a vote with no government side.
+export function monthlyOutcomes(data, months = 12) {
+  return perMonth(data, months).map((m) => {
+    const day = data.list.filter((r) => r.date.startsWith(m.key));
+    const lost = day.filter((r) => r.govWin === false).length;
+    const won = day.filter((r) => r.govWin === true).length;
+    return { key: m.key, label: m.label, won, lost, other: day.length - won - lost, n: day.length };
+  });
+}
+
+// The middle number of peers taking part in a vote.
+export function typicalTurnout(data) {
+  const t = data.list.map((r) => r.content + r.notContent).sort((a, b) => a - b);
+  if (!t.length) return 0;
+  const mid = Math.floor(t.length / 2);
+  return t.length % 2 ? t[mid] : Math.round((t[mid - 1] + t[mid]) / 2);
+}
+
+// How many peers took part in each tenth of the votes: [{ from, to, n }] for 0-10% up to 90-100%, so how often peers vote can be drawn as a histogram.
+export function turnoutBands(rows, bands = 10) {
+  const out = Array.from({ length: bands }, (_, i) => ({ from: Math.round((i * 100) / bands), to: Math.round(((i + 1) * 100) / bands), n: 0 }));
+  for (const p of rows) out[Math.min(bands - 1, Math.floor(Math.min(0.9999, p.share) * bands))].n += 1;
+  return out;
+}
+
+// One vote drawn as two sides: the parties on the Content side and on the Not content side, biggest first, so who stood with whom can be seen.
+export function sidesOf(d, colours) {
+  const mk = (i) => d.splits.filter((s) => s[i] > 0).map((s) => ({ party: s[0], n: s[i], colour: colours[s[0]] ?? "#8A94A6" })).sort((a, b) => b.n - a.n);
+  const named = (i) => d.splits.reduce((t, s) => t + s[i], 0);
+  const sides = [mk(1), mk(2)];
+  // peers outside the named parties (crossbench and the like) make up the difference
+  const other = [Math.max(0, d.content - named(1)), Math.max(0, d.notContent - named(2))];
+  sides.forEach((s, i) => { if (other[i] > 0) s.push({ party: "Other peers", n: other[i], colour: "#8A94A6" }); });
+  return sides;
+}

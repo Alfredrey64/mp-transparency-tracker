@@ -2,34 +2,35 @@
 import ExplainerPage from "../story/ExplainerPage";
 import { IconMayor, IconPlanning } from "../newIcons";
 import { IconCouncil, IconParliament, IconMeeting, IconGroup, IconCoin } from "../icons";
-import { Diverge } from "../story/StateArt";
-import { Hero } from "../story/Vivid";
+import { Diverge, Layers } from "../story/StateArt";
+import { Figures } from "../story/Vivid";
 
 const PAGE = {
-  look: "vivid",
+  look: "ledger",
   icon: IconMayor,
   kicker: "Your area & your say",
   title: "Mayors and regional authorities",
   subtitle: "Between your council and Parliament there is now a third layer in much of England: a regional authority, often led by a directly elected mayor. This page explains what the law says they are for and where to check whether your area has one.",
-  lead: <Hero
-    colours={["#10335E", "#12A07A", "#2F7BD6"]}
-    why="Decisions on buses, housing, skills and soon policing are moving from Whitehall and from individual councils to regional mayors. Many people could not name theirs."
-    stops={[
-      { icon: IconCouncil, title: "Your council", text: "Carries on running local services", colour: "#5BA8FF" },
-      { icon: IconMayor, title: "A regional authority", text: "Often led by a directly elected mayor", colour: "#4FD6A0" },
-      { icon: IconParliament, title: "Parliament", text: "Hands powers and funding to the area", colour: "#FFB347" },
-    ]}
-    figures={[
+  lead: <>
+    <Layers
+      layers={[
+        { title: "Parliament", text: "Passes the law and hands powers and funding to the area.", tag: "National", colour: "#5E4B8B", icon: IconParliament },
+        { title: "The mayor and the regional authority", text: "A combined authority or combined county authority, led by a mayor you vote for.", tag: "Regional", colour: "#1F7A6E", icon: IconMayor, main: true },
+        { title: "Your council", text: "Carries on running local services. Two or more councils set up the authority.", tag: "Local", colour: "#2C5F9E", icon: IconCouncil },
+      ]}
+      links={[{ down: "Powers and funding the government hands to the area" }, { down: "Set up by two or more councils", up: "The councils carry on" }]}
+    />
+    <Figures items={[
       { value: "9", label: "Areas of responsibility named in the 2026 Act", sub: "From transport to public safety and culture" },
       { value: "2026", label: "The law that sets them up", sub: "English Devolution and Community Empowerment Act" },
       { value: "8 days", label: "Time an MP who wins has to choose", sub: "Elected UK legislators can't hold a combined authority mayoralty" },
-    ]}
-  />,
+    ]} />
+  </>,
   chapters: [
     {
       title: "What a strategic authority is",
       lede: "The 2026 Act gives the regional tier one name: strategic authorities.",
-      colour: "#2F7BD6",
+      colour: "#2C5F9E",
       blocks: [
         { text: [
           "A strategic authority is a single foundation strategic authority, a combined foundation strategic authority, or a mayoral strategic authority. Mayoral ones are the combined authorities and combined county authorities led by a mayor, and London's Greater London Authority.",
@@ -52,15 +53,15 @@ const PAGE = {
     {
       title: "What a mayor can do",
       lede: "The mayor is the one person who answers for these areas, and the one you vote for.",
-      colour: "#12A07A",
+      colour: "#1F7A6E",
       blocks: [
         { node: <Diverge
-          root={{ title: "The mayor", text: "The one person who answers for these areas, and the one you vote for", colour: "#12A07A", icon: IconMayor }}
+          root={{ title: "The mayor", text: "The one person who answers for these areas, and the one you vote for", colour: "#1F7A6E", icon: IconMayor }}
           items={[
-            { title: "Convene local partners", text: "A mayor has the power to call meetings of local partners, and a duty to work with other bodies in the area.", colour: "#2F7BD6", icon: IconMeeting },
-            { title: "Appoint commissioners", text: "Mayors can appoint commissioners to lead on particular areas of work, with guidance on allowances for the roles.", colour: "#8A4FD6", icon: IconGroup },
-            { title: "Planning of strategic importance", text: "The Act gives mayors a say on planning applications of potential strategic importance. That part was not in force when it became law, and the government was still consulting on how it should work in August 2026.", colour: "#E8801F", icon: IconPlanning },
-            { title: "Money", text: "The Act includes powers over precepts, which are a charge added to the council tax bill, and over borrowing.", colour: "#D6455F", icon: IconCoin },
+            { title: "Convene local partners", text: "A mayor has the power to call meetings of local partners, and a duty to work with other bodies in the area.", colour: "#2C5F9E", icon: IconMeeting },
+            { title: "Appoint commissioners", text: "Mayors can appoint commissioners to lead on particular areas of work, with guidance on allowances for the roles.", colour: "#5E4B8B", icon: IconGroup },
+            { title: "Planning of strategic importance", text: "The Act gives mayors a say on planning applications of potential strategic importance. That part was not in force when it became law, and the government was still consulting on how it should work in August 2026.", colour: "#A9701F", icon: IconPlanning },
+            { title: "Money", text: "The Act includes powers over precepts, which are a charge added to the council tax bill, and over borrowing.", colour: "#9A3F55", icon: IconCoin },
           ]}
         /> },
         { note: "The Act also bans a member of any UK legislature, such as an MP, from being mayor of a combined authority, with a short period of grace of eight days for someone elected to both." },
@@ -69,7 +70,7 @@ const PAGE = {
     {
       title: "London is the model",
       lede: "The Mayor of London has had these kinds of powers for longer than anyone.",
-      colour: "#E8801F",
+      colour: "#A9701F",
       blocks: [
         { text: ["London's Greater London Authority provides London-wide government, including special responsibility for police, fire, strategic planning and transport. The 32 London boroughs provide nearly all the other services in their areas."] },
         { text: [<>Outside London, the picture changes as new authorities are set up and new mayors are elected, so any list written today can be out of date within months. The government's local government guidance and the Electoral Commission's election pages are the places to check which authority and mayor cover your area. To see who runs your council, use <a href="#/councils">your council</a>.</>] },

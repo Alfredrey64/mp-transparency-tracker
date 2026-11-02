@@ -12,12 +12,12 @@ const PAGE = {
   title: "Watchdogs and inquiries",
   subtitle: "Three kinds of body check what the government says and does with public money. One audits the accounts, one forecasts whether the sums add up, and a public inquiry can be set up after something has gone wrong. This page explains each and what it can and cannot do.",
   lead: <Hero
-    colours={["#0A3F55", "#12967E", "#2A5BD7"]}
+    colours={["#0E2230", "#1F7A6E", "#2C5F9E"]}
     why="Ministers answer to Parliament, but Parliament cannot check every account or sum. These bodies exist to do that, and each is deliberately kept at a distance from the government of the day."
     stops={[
-      { icon: IconTrend, title: "Checks the sums", text: "The Office for Budget Responsibility, an official forecaster set up by law", colour: "#FFB347" },
-      { icon: IconAudit, title: "Audits the accounts", text: "The National Audit Office, the public spending watchdog", colour: "#5BA8FF" },
-      { icon: IconSearch, title: "Looks into what went wrong", text: "Public inquiries, set up by a minister with legal powers", colour: "#FF7A8A" },
+      { icon: IconTrend, title: "Checks the sums", text: "The Office for Budget Responsibility, an official forecaster set up by law", colour: "#E2BE7A" },
+      { icon: IconAudit, title: "Audits the accounts", text: "The National Audit Office, the public spending watchdog", colour: "#8DB7E8" },
+      { icon: IconSearch, title: "Looks into what went wrong", text: "Public inquiries, set up by a minister with legal powers", colour: "#E59AA6" },
     ]}
     figures={[
       { value: "about 400", label: "Accounts the National Audit Office audits each year", sub: "Plus about 60 value-for-money reports" },
@@ -29,16 +29,16 @@ const PAGE = {
     {
       title: "The National Audit Office",
       lede: "The public spending watchdog, which reports to Parliament rather than to ministers.",
-      colour: "#2F7BD6",
+      colour: "#2C5F9E",
       blocks: [
         { facts: [
           { label: "Audit opinions each year", value: "about 400", note: "Accounts of all government departments, executive agencies, arm's-length bodies and some companies and charities." },
           { label: "Value-for-money reports", value: "about 60", note: "Each one asks whether government is delivering value for money." },
         ] },
         { node: <Flow down vias={["oversees", "audits"]} items={[
-          { title: "Parliament", text: "A committee of MPs, the Public Accounts Commission, oversees the NAO's work.", colour: "#8A4FD6", icon: IconManifesto },
-          { title: "National Audit Office", text: "Independent of government and the civil service. It supports the Public Accounts Committee and other select committees in holding government to account.", colour: "#2F7BD6", icon: IconAudit },
-          { title: "The accounts it audits", text: "Government departments, executive agencies, arm's-length bodies and some companies and charities.", colour: "#12A07A", icon: IconLedger },
+          { title: "Parliament", text: "A committee of MPs, the Public Accounts Commission, oversees the NAO's work.", colour: "#5E4B8B", icon: IconManifesto },
+          { title: "National Audit Office", text: "Independent of government and the civil service. It supports the Public Accounts Committee and other select committees in holding government to account.", colour: "#2C5F9E", icon: IconAudit },
+          { title: "The accounts it audits", text: "Government departments, executive agencies, arm's-length bodies and some companies and charities.", colour: "#1F7A6E", icon: IconLedger },
         ]} /> },
         { text: [
           "It examines how government spends money delivering its policies, but says its role is not to question the objectives of those policies.",
@@ -49,12 +49,12 @@ const PAGE = {
     {
       title: "The Office for Budget Responsibility",
       lede: "An official forecaster, set up by law so that the Budget's sums are checked by someone other than the Treasury.",
-      colour: "#E8801F",
+      colour: "#A9701F",
       blocks: [
         { cards: [
-          { title: "Its duty", icon: IconScales, colour: "#E8801F", text: "To examine and report on the sustainability of the public finances." },
-          { title: "At least twice a year", icon: IconTrend, colour: "#2F7BD6", text: "It must prepare fiscal and economic forecasts on at least two occasions each financial year." },
-          { title: "It checks itself", icon: IconSearch, colour: "#12A07A", text: "At least once a year it must assess how accurate its own earlier forecasts were, and analyse the sustainability of the public finances." },
+          { title: "Its duty", icon: IconScales, colour: "#A9701F", text: "To examine and report on the sustainability of the public finances." },
+          { title: "At least twice a year", icon: IconTrend, colour: "#2C5F9E", text: "It must prepare fiscal and economic forecasts on at least two occasions each financial year." },
+          { title: "It checks itself", icon: IconSearch, colour: "#1F7A6E", text: "At least once a year it must assess how accurate its own earlier forecasts were, and analyse the sustainability of the public finances." },
         ] },
         { text: ["Its reports must say what assumptions it made and what main risks it considered. The Budget Responsibility Act 2024 and the Finance Act 2026 have amended the original law of 2011, so check the legislation for the current duties."] },
       ],
@@ -62,13 +62,13 @@ const PAGE = {
     {
       title: "Public inquiries",
       lede: "When events cause public concern, a minister can set up an inquiry with legal powers.",
-      colour: "#D6455F",
+      colour: "#9A3F55",
       blocks: [
         { node: <Flow down numbered items={[
-          { title: "A minister sets it up", text: "Under the Inquiries Act 2005 a UK, Scottish, Welsh or Northern Ireland minister can cause an inquiry to be held when events have caused, or could cause, public concern.", colour: "#D6455F" },
-          { title: "The chair can demand evidence", text: "The chair can require a person to attend to give evidence and to produce documents relating to the inquiry's work.", colour: "#E8801F" },
-          { title: "Refusing is an offence", text: "Failing without reasonable excuse to do what a notice requires is a criminal offence, as is altering or preventing evidence.", colour: "#8A4FD6" },
-          { title: "The report is made public", text: "What the Act requires to be published must be laid before Parliament by the minister, at the time of publication or as soon as is reasonably practicable.", colour: "#12A07A" },
+          { title: "A minister sets it up", text: "Under the Inquiries Act 2005 a UK, Scottish, Welsh or Northern Ireland minister can cause an inquiry to be held when events have caused, or could cause, public concern.", colour: "#9A3F55" },
+          { title: "The chair can demand evidence", text: "The chair can require a person to attend to give evidence and to produce documents relating to the inquiry's work.", colour: "#A9701F" },
+          { title: "Refusing is an offence", text: "Failing without reasonable excuse to do what a notice requires is a criminal offence, as is altering or preventing evidence.", colour: "#5E4B8B" },
+          { title: "The report is made public", text: "What the Act requires to be published must be laid before Parliament by the minister, at the time of publication or as soon as is reasonably practicable.", colour: "#1F7A6E" },
         ]} /> },
         { note: "An inquiry makes findings and recommendations. It does not punish anyone: that is for the courts, regulators and employers." },
       ],

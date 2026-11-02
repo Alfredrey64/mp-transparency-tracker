@@ -40,11 +40,13 @@
 .lg-g { transform-box: view-box; transform-origin: 60px 52px; }
 .lg-f, .lg-b, .lg-sh { transform-box: fill-box; }
 .lg-sh { transform-origin: 50% 50%; }
+.lg-cl { opacity: 0; }
 .lg-f { transform-origin: 0 50%; transform: scaleX(0); }
 .lg-b { transform-origin: 100% 50%; }
 @media (prefers-reduced-motion: no-preference) {
   .lg[data-play] .lg-g { animation: lg-grow 2.6s linear both; }
   .lg[data-play] .lg-sh { animation: lg-sh 2.6s linear both; }
+  .lg[data-play] .lg-cl { animation: lg-cl 2.6s linear both; }
   .lg[data-play] .lg-f { animation: lg-f 0.44s cubic-bezier(0.35, 0, 0.85, 0.6) calc(0.95s + var(--i) * 0.22s) both; }
   .lg[data-play] .lg-b { animation: lg-b 0.44s cubic-bezier(0.15, 0.4, 0.65, 1) calc(1.39s + var(--i) * 0.22s) both; }
 }
@@ -61,6 +63,7 @@
   0%, 36.5% { transform: translateX(29px) scaleX(0.55); animation-timing-function: cubic-bezier(0.45, 0, 0.25, 1); }
   71%, 100% { transform: none; }
 }
+@keyframes lg-cl { 0% { opacity: 0; } 8%, 36% { opacity: 1; } 42%, 100% { opacity: 0; } }
 @keyframes lg-f { from { transform: scaleX(1); opacity: 1; } to { transform: scaleX(0) skewY(-9deg); opacity: 0.7; } }
 @keyframes lg-b { from { transform: scaleX(0) skewY(9deg); opacity: 0.7; } to { transform: scaleX(1); opacity: 1; } }
 .site-nav { position: relative; display: flex; align-items: center; gap: 2px; flex: 1; min-width: 0; }

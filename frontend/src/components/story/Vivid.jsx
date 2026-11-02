@@ -118,3 +118,22 @@ export function VotesSeats({ rows, votesName = "Share of the vote", seatsName = 
     </div>
   );
 }
+
+// A quiet row of key figures for a page that does not open with the banner: big numerals separated by hairlines, counting up as they scroll into view.
+//   items  [{ value, label, sub }]
+export function Figures({ items, label = "Key figures" }) {
+  const [ref, go] = useGo(0.2);
+  return (
+    <section ref={ref} className="vv-plainfigs" data-go={go} aria-label={label}>
+      <ul>
+        {items.map((f, i) => (
+          <li key={f.label} style={{ "--i": i }}>
+            <b><AnimatedValue text={f.value} /></b>
+            <span>{f.label}</span>
+            {f.sub && <em>{f.sub}</em>}
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}

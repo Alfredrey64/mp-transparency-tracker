@@ -75,3 +75,9 @@ export const EDGE_LINES_RIGHT = ["M62 71.100C74 63.100 94 62.100 114 66.100", "M
 export const EDGE_LINES_LEFT = ["M58 71.100C46 63.100 26 62.100 6 66.100", "M58 72.200C46 64.200 26 63.200 6 67.200"];
 export const LIGHT_RIGHT = "M60 15C76 6 98 5 118 11";
 export const LIGHT_LEFT = "M60 15C44 6 22 5 2 11";
+// The closed book seen a little from the right and above: the fore-edge of the paper shows as a pale strip down the right side of the cover, and a groove runs down
+// the cover beside the spine where a hardback hinges. These show only before the cover opens (see .lg-cl in chrome.css).
+export const FOREEDGE = "M118 11L123.500 13.600V71.600L118 69Z";
+export const FOREEDGE_CORNER = "M118 69L123.500 71.600V74.300L118 72.600Z";
+export const FOREEDGE_LINES = ["M119.500 12.300V70.100", "M120.800 12.900V70.700", "M122.100 13.300V71.200"];
+export const GROOVE = "M64 19.500V68.500";

@@ -152,3 +152,37 @@ export function Diverge({ root, items }) {
     </figure>
   );
 }
+
+// Layers of government stacked from the top down, with a lane between each pair showing what passes along it. A lane has `down` text, `up` text, or both; a small
+// light travels along it while the page is open. `main` marks the layer the page is about.
+//   layers  [{ title, text, tag, colour, icon, main }]   links [{ down, up }] one fewer than layers
+export function Layers({ layers, links }) {
+  const [ref, go] = useGo(0.25);
+  return (
+    <figure ref={ref} className="sa-lay" data-go={go}>
+      <ol>
+        {layers.map((l, i) => {
+          const Icon = l.icon;
+          const link = links[i];
+          return [
+            <li key={l.title} className="sa-lay-card" data-main={l.main ? "1" : "0"} style={{ "--tc": l.colour, "--i": i * 2 }}>
+              <span className="sa-lay-ico" aria-hidden="true">{Icon && <Icon size={26} />}</span>
+              <div><b>{l.title}</b><p>{l.text}</p></div>
+              {l.tag && <span className="sa-lay-tag">{l.tag}</span>}
+            </li>,
+            link && (
+              <li key={`${l.title}-link`} className="sa-lay-link" aria-hidden="true" style={{ "--i": i * 2 + 1 }}>
+                {link.down && <span className="sa-lay-lane" data-dir="down"><i /></span>}
+                {link.up && <span className="sa-lay-lane" data-dir="up"><i /></span>}
+                <span className="sa-lay-says">
+                  {link.down && <em>{link.down}</em>}
+                  {link.up && <em>{link.up}</em>}
+                </span>
+              </li>
+            ),
+          ];
+        })}
+      </ol>
+    </figure>
+  );
+}

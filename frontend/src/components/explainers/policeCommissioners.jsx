@@ -13,12 +13,12 @@ const PAGE = {
   subtitle: "Since 2012 voters in England and Wales have elected a commissioner to hold their police force to account. In November 2025 the government announced that the role will end. This page sets out what the announcement says and what has not yet been decided.",
   lead: <Hero
     siren
-    colours={["#0E1F4D", "#2F6FE0", "#C2253F"]}
+    colours={["#0E1B38", "#2C5F9E", "#8C3347"]}
     why="Someone is supposed to answer to the public for how a police force is run. Who that is, and whether you vote for them, is about to change."
     stops={[
-      { icon: IconVote, title: "Voters elect", text: "A commissioner, since 2012", colour: "#5BA8FF" },
-      { icon: IconPolice, title: "The commissioner", text: "Holds the police force to account", colour: "#FF6B7F" },
-      { icon: IconShield, title: "Your police force", text: "Answers to the public through them", colour: "#FFD166" },
+      { icon: IconVote, title: "Voters elect", text: "A commissioner, since 2012", colour: "#8DB7E8" },
+      { icon: IconPolice, title: "The commissioner", text: "Holds the police force to account", colour: "#E59AA6" },
+      { icon: IconShield, title: "Your police force", text: "Answers to the public through them", colour: "#E2BE7A" },
     ]}
     figures={[
       { value: "2012", label: "Commissioners elected since", sub: "To hold their police force to account" },
@@ -30,22 +30,22 @@ const PAGE = {
     {
       title: "What the government has announced",
       lede: "The Home Office announced on 13 November 2025 that police and crime commissioners will be abolished.",
-      colour: "#2F7BD6",
+      colour: "#2C5F9E",
       blocks: [
-        { node: <Journey colour="#2F7BD6" items={[
+        { node: <Journey colour="#2C5F9E" items={[
           { when: "2012", text: "The first commissioners are elected to hold forces to account." },
           { when: "13 November 2025", text: "The Home Office announces that the role will be abolished. It says this will save the taxpayer at least £100 million." },
           { when: "Until 2028", text: "Current commissioners carry on until they have completed their terms." },
           { when: "2028", text: "The move to the new model happens at the end of the next electoral cycle." },
         ]} /> },
         { node: <Diverge
-          root={{ title: "The role ends", text: "Who takes it on depends on where you live", colour: "#2F6FE0", icon: IconPolice }}
+          root={{ title: "The role ends", text: "Who takes it on depends on where you live", colour: "#2C5F9E", icon: IconPolice }}
           items={[
-            { title: "Where there is a mayor", colour: "#12A07A", icon: IconShield, list: [
+            { title: "Where there is a mayor", colour: "#1F7A6E", icon: IconShield, list: [
               "The commissioner's role is absorbed by the regional mayor wherever possible.",
               "Crime is then considered alongside other public services such as education and health.",
             ] },
-            { title: "Where there is no mayor", colour: "#E8801F", icon: IconCouncil, list: [
+            { title: "Where there is no mayor", colour: "#A9701F", icon: IconCouncil, list: [
               "The role is taken on by an elected council leader.",
               "Wales is treated separately: the government says it will take account of devolved arrangements there.",
             ] },
@@ -56,11 +56,11 @@ const PAGE = {
     {
       title: "The reasons given, and what is not settled",
       lede: "The government has given its reasons, and the detail of the change is not yet settled.",
-      colour: "#E8801F",
+      colour: "#A9701F",
       blocks: [
         { node: <Dots
           title="How well known the role is"
-          items={[{ label: "People unaware the role exists", text: "2 in 5", value: 40, colour: "#2F6FE0", note: "The Home Office's own figure." }]}
+          items={[{ label: "People unaware the role exists", text: "2 in 5", value: 40, colour: "#2C5F9E", note: "The Home Office's own figure." }]}
           note="Each dot is 1 in 100 people. Forty of them are lit."
         /> },
         { cards: [
@@ -74,7 +74,7 @@ const PAGE = {
     {
       title: "What to do now",
       lede: "Until the change happens your commissioner is still the person responsible.",
-      colour: "#12A07A",
+      colour: "#1F7A6E",
       blocks: [
         { text: [<>You can find your force's commissioner on the force's own website. To see the other elected bodies for your area, use <a href="#/myArea">your area</a> and <a href="#/mayors">mayors and regional authorities</a>.</>] },
       ],

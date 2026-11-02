@@ -11,24 +11,24 @@ const PAGE = {
   title: "How to read an opinion poll",
   subtitle: "Opinion polls shape the news long before an election. This page does not report the latest poll, because they change weekly. It explains what a poll measures, why a poll of votes is not a forecast of seats, and how the polls did at the last election.",
   lead: <Hero
-    colours={["#3A1458", "#D6455F", "#2F7BD6"]}
+    colours={["#1D1A33", "#9A3F55", "#2C5F9E"]}
     why="A poll that says one party is on 30% sounds like a fact. It is an estimate from a few thousand people, adjusted by the pollster, about votes rather than seats. Knowing that makes headlines easier to judge."
     extra={<VotesSeats rows={[
-      { name: "Labour, 4 July 2024", colour: "#FF6B7F", votes: 33.7, seats: 63.2, votesText: "33.7%", seatsText: "63.2%", votesSub: "9.7 million votes", seatsSub: "411 of 650 seats" },
-      { name: "Reform UK, 4 July 2024", colour: "#4FD6D6", votes: 14.3, seats: 0.8, votesText: "14.3%", seatsText: "0.8%", votesSub: "4.1 million votes", seatsSub: "5 seats" },
+      { name: "Labour, 4 July 2024", colour: "#E59AA6", votes: 33.7, seats: 63.2, votesText: "33.7%", seatsText: "63.2%", votesSub: "9.7 million votes", seatsSub: "411 of 650 seats" },
+      { name: "Reform UK, 4 July 2024", colour: "#7FCFCF", votes: 14.3, seats: 0.8, votesText: "14.3%", seatsText: "0.8%", votesSub: "4.1 million votes", seatsSub: "5 seats" },
     ]} />}
   />,
   chapters: [
     {
       title: "What a poll is",
       lede: "A small group of people is asked how they would vote, and their answers are adjusted to stand in for everyone.",
-      colour: "#2F7BD6",
+      colour: "#2C5F9E",
       blocks: [
         { node: <Flow down numbered items={[
-          { title: "A sample is chosen", text: "Pollsters recruit a sample, often a thousand or two thousand adults, through online panels or by phone. It is not a perfect random draw.", colour: "#2F7BD6" },
-          { title: "The answers are weighted", text: "If the sample has too few young people, or too many graduates, the pollster counts some answers for more or less so the sample matches the population.", colour: "#8A4FD6" },
-          { title: "Some are left out", text: "People who say they won't vote, or don't know, are handled in ways that differ between companies. This is a large source of differences between polls.", colour: "#E8801F" },
-          { title: "The result is an estimate", text: "Even for a perfect random sample of 1,000 people, the standard margin of error is about three percentage points either way. Real polls are less tidy than that, so the true uncertainty is larger.", colour: "#12A07A" },
+          { title: "A sample is chosen", text: "Pollsters recruit a sample, often a thousand or two thousand adults, through online panels or by phone. It is not a perfect random draw.", colour: "#2C5F9E" },
+          { title: "The answers are weighted", text: "If the sample has too few young people, or too many graduates, the pollster counts some answers for more or less so the sample matches the population.", colour: "#5E4B8B" },
+          { title: "Some are left out", text: "People who say they won't vote, or don't know, are handled in ways that differ between companies. This is a large source of differences between polls.", colour: "#A9701F" },
+          { title: "The result is an estimate", text: "Even for a perfect random sample of 1,000 people, the standard margin of error is about three percentage points either way. Real polls are less tidy than that, so the true uncertainty is larger.", colour: "#1F7A6E" },
         ]} /> },
         { pull: "The British Polling Council is an association of polling organisations that publish polls and are committed to promoting transparency in polling. Its members commit to disclosure standards so that readers can judge how reliable a poll is." },
       ],
@@ -36,15 +36,15 @@ const PAGE = {
     {
       title: "Votes are not seats",
       lede: "A poll asks about votes. Seats are decided constituency by constituency, so the two can be very different.",
-      colour: "#D6455F",
+      colour: "#9A3F55",
       blocks: [
         { bars: { items: [
-          { label: "Labour: share of votes", value: 33.7, text: "33.7%", colour: "#C13A4E" },
-          { label: "Labour: share of seats", value: 63.2, text: "63.2%", colour: "#C13A4E" },
-          { label: "Reform UK: share of votes", value: 14.3, text: "14.3%", colour: "#2BA6A6" },
-          { label: "Reform UK: share of seats", value: 0.8, text: "0.8%", colour: "#2BA6A6" },
-          { label: "Liberal Democrat: share of votes", value: 12.2, text: "12.2%", colour: "#E8741A" },
-          { label: "Liberal Democrat: share of seats", value: 11.1, text: "11.1%", colour: "#E8741A" },
+          { label: "Labour: share of votes", value: 33.7, text: "33.7%", colour: "#9A3F55" },
+          { label: "Labour: share of seats", value: 63.2, text: "63.2%", colour: "#9A3F55" },
+          { label: "Reform UK: share of votes", value: 14.3, text: "14.3%", colour: "#1F7A6E" },
+          { label: "Reform UK: share of seats", value: 0.8, text: "0.8%", colour: "#1F7A6E" },
+          { label: "Liberal Democrat: share of votes", value: 12.2, text: "12.2%", colour: "#A9701F" },
+          { label: "Liberal Democrat: share of seats", value: 11.1, text: "11.1%", colour: "#A9701F" },
         ], max: 100, note: "The 4 July 2024 general election result for the UK, from the Parliament results site. Shares of votes are of valid votes cast; shares of seats are of 650." } },
         { text: [<>A national poll cannot say who wins a seat. Some polls are used to build a model of the seats, called MRP: it estimates results for each constituency from a very large sample. Such models are estimates built on assumptions, not counts. See <a href="#/generalElection">general elections</a> for results since 1945.</>] },
       ],
@@ -52,7 +52,7 @@ const PAGE = {
     {
       title: "How the polls did in 2024",
       lede: "The industry's own body says the polls overestimated the size of Labour's lead.",
-      colour: "#E8801F",
+      colour: "#A9701F",
       blocks: [
         { pull: "The British Polling Council's page on the 2024 general election says that overall the industry polling overestimated the Labour lead." },
         { text: [
@@ -64,7 +64,7 @@ const PAGE = {
     {
       title: "Reading a poll in the news",
       lede: "Five questions to ask before trusting a number.",
-      colour: "#12A07A",
+      colour: "#1F7A6E",
       blocks: [
         { cards: [
           { title: "Who ran it?", text: "Is the company a member of the British Polling Council, and has it published its tables?" },

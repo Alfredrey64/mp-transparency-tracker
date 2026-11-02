@@ -1,6 +1,6 @@
 import { useId } from "react";
 import {
-  COVER_RIGHT, COVER_LEFT, PAGE_LEFT, PAGE_RIGHT, SHADE_RIGHT, SHADE_LEFT, FRAME, PARLIAMENT, CLOCK, RIBBON, THICK_RIGHT, THICK_LEFT, EDGE_RIGHT, EDGE_LEFT, EDGE_LINES_RIGHT, EDGE_LINES_LEFT, LIGHT_RIGHT, LIGHT_LEFT,
+  COVER_RIGHT, COVER_LEFT, PAGE_LEFT, PAGE_RIGHT, SHADE_RIGHT, SHADE_LEFT, FRAME, PARLIAMENT, CLOCK, RIBBON, THICK_RIGHT, THICK_LEFT, EDGE_RIGHT, EDGE_LEFT, EDGE_LINES_RIGHT, EDGE_LINES_LEFT, LIGHT_RIGHT, LIGHT_LEFT, FOREEDGE, FOREEDGE_CORNER, FOREEDGE_LINES, GROOVE,
   TEXT_LEFT, TEXT_RIGHT, RULES_LEFT, RULES_RIGHT,
 } from "../lib/bookMark";
 
@@ -45,12 +45,19 @@ export default function LogoMark({ width = 76, color = "var(--sb-accent)", hole 
         <linearGradient id={`${id}foil`} gradientUnits="userSpaceOnUse" x1="68" y1="14" x2="108" y2="62"><stop offset="0" stopColor="#FFF1C4" /><stop offset=".38" stopColor={ribbon} /><stop offset=".7" stopColor="#E9A62E" /><stop offset="1" stopColor="#B97A16" /></linearGradient>
         <linearGradient id={`${id}foilbox`} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#FFF1C4" /><stop offset=".4" stopColor={ribbon} /><stop offset="1" stopColor="#B97A16" /></linearGradient>
         <radialGradient id={`${id}ground`}><stop offset="0" stopColor="#000" stopOpacity=".34" /><stop offset=".6" stopColor="#000" stopOpacity=".12" /><stop offset="1" stopColor="#000" stopOpacity="0" /></radialGradient>
+        <linearGradient id={`${id}fore`} x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#000" stopOpacity=".34" /><stop offset=".35" stopColor="#000" stopOpacity=".04" /><stop offset="1" stopColor="#000" stopOpacity=".14" /></linearGradient>
         <linearGradient id={`${id}edge`} x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#000" stopOpacity=".18" /><stop offset=".3" stopColor="#000" stopOpacity="0" /></linearGradient>
         <linearGradient id={`${id}sheen`} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#fff" stopOpacity=".22" /><stop offset=".45" stopColor="#fff" stopOpacity="0" /><stop offset="1" stopColor="#000" stopOpacity=".24" /></linearGradient>
       </defs>
       <g className="lg-g">
         <ellipse className="lg-sh" cx="60" cy="79.500" rx="54" ry="4.200" fill={`url(#${id}ground)`} />
         {board("r")}
+        <g className="lg-cl" aria-hidden="true">
+          <path d={FOREEDGE} fill="#F6F1E4" />
+          <path d={FOREEDGE} fill={`url(#${id}fore)`} />
+          <path d={FOREEDGE_CORNER} fill={color} /><path d={FOREEDGE_CORNER} fill="#000" fillOpacity=".5" />
+          {FOREEDGE_LINES.map((d, n) => <path key={n} d={d} stroke="#000" strokeOpacity=".2" strokeWidth=".3" />)}
+        </g>
         <path d={COVER_RIGHT} fill={color} />
         {light("r")}
         {block("r")}
@@ -63,6 +70,8 @@ export default function LogoMark({ width = 76, color = "var(--sb-accent)", hole 
             <path d={COVER_RIGHT} fill={color} stroke={hole} strokeWidth=".6" strokeOpacity=".5" />
             <path d={COVER_RIGHT} fill={`url(#${id}sheen)`} />
             {light("r")}
+            <path d={GROOVE} stroke="#000" strokeOpacity=".5" strokeWidth=".9" strokeLinecap="round" />
+            <path d={GROOVE} stroke="#fff" strokeOpacity=".45" strokeWidth=".6" strokeLinecap="round" transform="translate(1 0)" />
             <path d={FRAME} stroke={`url(#${id}foilbox)`} strokeWidth="1.1" />
             {/* The building is foil-stamped into the cloth: a dark edge on the upper left where the die pressed in, a pale edge on the lower right where the cloth rises
                 again, and gold foil in between. */}

@@ -5,90 +5,164 @@ import { lordsVotes } from "../lib/dataFiles";
 import { COLORS, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { IconLordsVote } from "./icons";
-import { HowToRead } from "./GlanceStrip";
+import { useGo } from "./story/useGo";
 import CountUp from "./CountUp";
 import { LoadFailedNote } from "./MpCards";
 import Loading from "./Loading";
 import { supabase } from "../supabaseClient";
 import { getBillDescription } from "../lib/billDescriptions";
 import { plainPoints } from "../lib/billPlain";
-import { peerRows, partyUnity, mostDivided, governmentDefeats, filterPeers, longDay, perMonth, regulars, hexOf, findBill, outcomeOf } from "../lib/lordsVotesView";
+import { peerRows, partyUnity, mostDivided, governmentDefeats, filterPeers, longDay, monthlyOutcomes, turnoutBands, typicalTurnout, sidesOf, regulars, hexOf, findBill, outcomeOf } from "../lib/lordsVotesView";
 import "../lordsvotes.css";
 
 // How peers vote: how united each party is in the Lords, the votes where peers broke ranks, and a searchable list of every peer's record. All of it
 // comes from Parliament's Lords Votes API (the last 12 months), turned into data/lordsVotes.json by fetch-lords-votes.js.
 
 const fmt = (n) => Math.round(n).toLocaleString("en-GB");
+// The first line of what a vote was on, cut short, so votes on the same bill can be told apart.
+const brief = (note) => { const t = note.replace(/\s*The House divided:?\s*$/i, ""); return t.length > 150 ? `${t.slice(0, 147).replace(/\s+\S*$/, "")}...` : t; };
 const pct = (x, d = 1) => `${(x * 100).toFixed(d)}%`;
 const heading = { fontFamily: "'Figures', 'Newsreader', Georgia, serif", fontSize: 24, fontWeight: 700, color: COLORS.ink, margin: 0 };
 const lede = { fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.65, color: COLORS.inkSoft, margin: "6px 0 0", maxWidth: 720 };
 
-// The page's headline figures, each with a picture of itself: votes by month, peers who turn up, loyalty as a dial, and defeats as dots.
-function Ring({ value, colour }) {
-  const R = 46;
-  const C = 2 * Math.PI * R;
+// What a Lords vote is, in three steps, with the latest real vote drawn under them.
+function Explainer({ latest }) {
+  const [ref, go] = useGo(0.25);
+  const total = latest.content + latest.notContent || 1;
   return (
-    <svg className="lv-ring" viewBox="0 0 110 110" aria-hidden="true">
-      <circle cx="55" cy="55" r={R} className="lv-ring-bg" />
-      <circle cx="55" cy="55" r={R} className="lv-ring-fg" stroke={colour} strokeDasharray={C} style={{ "--c": C, "--to": C * (1 - Math.max(0, Math.min(1, value))) }} transform="rotate(-90 55 55)" />
-    </svg>
-  );
-}
-
-function Scoreboard({ data, view }) {
-  const months = useMemo(() => perMonth(data), [data]);
-  const top = Math.max(1, ...months.map((m) => m.n));
-  const loyal = view.votes ? 1 - view.against / view.votes : 1;
-  const regs = regulars(view.rows, data.divisions);
-  const lost = view.defeats.length;
-  return (
-    <section className="lv-board" aria-label="The Lords votes at a glance">
-      <article className="lv-tile lv-wide" style={{ "--tc": "#7A5AF0", "--i": 0 }}>
-        <span className="lv-tile-label">Votes in the Lords</span>
-        <b><CountUp value={data.divisions} /></b>
-        <span className="lv-tile-sub">since {longDay(data.since)}</span>
-        <div className="lv-months" role="img" aria-label="Votes in each of the last 12 months">
-          {months.map((m, n) => <span key={m.key} title={`${m.label}: ${m.n}`}><i style={{ "--h": m.n / top, "--m": n }} /><small>{m.label[0]}</small></span>)}
-        </div>
-      </article>
-      <article className="lv-tile lv-side" style={{ "--tc": "#E0367A", "--i": 1 }}>
-        <div className="lv-gauge"><Ring value={view.rows.length ? regs / view.rows.length : 0} colour="#E0367A" /></div>
-        <span className="lv-tile-label">Peers who took part</span>
-        <b className="lv-num"><CountUp value={view.rows.length} /></b>
-        <span className="lv-tile-sub"><strong>{fmt(regs)}</strong> voted in at least a quarter of the votes</span>
-      </article>
-      <article className="lv-tile lv-side" style={{ "--tc": "#2F7BD6", "--i": 2 }}>
-        <div className="lv-gauge"><Ring value={loyal} colour="#2F7BD6" /></div>
-        <span className="lv-tile-label">Loyal to their party</span>
-        <b className="lv-num"><CountUp value={loyal * 100} format={(n) => `${n.toFixed(1)}%`} /></b>
-        <span className="lv-tile-sub">{fmt(view.votes - view.against)} of {fmt(view.votes)} party votes went the party's way</span>
-      </article>
-      <article className="lv-tile lv-dots-tile" style={{ "--tc": "#E8801F", "--i": 3 }}>
-        <span className="lv-tile-label">Government defeats</span>
-        <b><CountUp value={lost} /><small> of {fmt(data.divisions)}</small></b>
-        <div className="lv-dots" role="img" aria-label={`${lost} of ${data.divisions} votes were lost by the government`}>
-          {data.list.map((d, n) => <i key={d.id} data-lost={d.govWin === false ? "1" : "0"} style={{ "--n": n }} />)}
-        </div>
-        <span className="lv-tile-sub">each dot is a vote; coloured dots are defeats</span>
-      </article>
+    <section ref={ref} className="lv-how" data-go={go} aria-labelledby="h-how">
+      <h2 id="h-how" style={heading}>What is a vote in the Lords?</h2>
+      <p style={lede}>Before a bill becomes law, the House of Lords reads it and can change it. When peers disagree, they vote. This page counts those votes and shows who voted which way.</p>
+      <ol className="lv-steps">
+        <li style={{ "--i": 0 }}><span aria-hidden="true">1</span><b>A peer proposes something</b><p>Usually a change to a bill that the Commons has passed, or a rule the government wants approved.</p></li>
+        <li style={{ "--i": 1 }}><span aria-hidden="true">2</span><b>Peers vote Content or Not content</b><p>Content means yes. Not content means no. Peers walk through one of two lobbies so they can be counted.</p></li>
+        <li style={{ "--i": 2 }}><span aria-hidden="true">3</span><b>The bigger side wins</b><p>If the side the government backed comes second, that is a government defeat. The bill then usually goes back to the Commons.</p></li>
+      </ol>
+      <div className="lv-eg">
+        <p><strong>The latest vote, on {longDay(latest.date)}:</strong> {latest.title}</p>
+        <span className="lv-tally" role="img" aria-label={`${latest.content} content, ${latest.notContent} not content`}>
+          <i className="lv-tally-c" style={{ width: `${(latest.content / total) * 100}%` }}>{fmt(latest.content)} Content</i>
+          <i className="lv-tally-n" style={{ width: `${(latest.notContent / total) * 100}%` }}>{fmt(latest.notContent)} Not content</i>
+        </span>
+      </div>
     </section>
   );
 }
 
-function Unity({ parties }) {
+// The answer to "does the government win?": the votes in each month, split into won and lost.
+function Outcomes({ data, view }) {
+  const [ref, go] = useGo(0.2);
+  const months = useMemo(() => monthlyOutcomes(data), [data]);
+  const top = Math.max(1, ...months.map((m) => m.n));
+  const lost = view.defeats.length;
+  const decided = data.list.filter((d) => d.govWin !== null).length;
   return (
-    <section aria-labelledby="h-unity" style={{ marginTop: 28 }}>
-      <h2 id="h-unity" style={heading}>How united is each party?</h2>
-      <p style={lede}>Of the votes cast by each party's peers in divisions where the party had a whip, how many went the way most of that party voted. The Lords are much more loyal than most people expect.</p>
+    <article ref={ref} className="lv-card lv-card-wide" data-go={go} style={{ "--tc": "#9A3F55" }}>
+      <div className="lv-card-text">
+        <h3>The government lost <b><CountUp value={lost} /></b> of {fmt(data.divisions)} votes</h3>
+        <p>That is {pct(lost / (decided || 1), 0)} of the votes where the government took a side. No party has a majority in the Lords, so the government cannot rely on winning. The Lords can change a bill and send it back, but the Commons has the last word.</p>
+      </div>
+      <div className="lv-chart">
+        <div className="lv-cols" role="img" aria-label={`Votes in each month, and how many the government lost: ${months.map((m) => `${m.label} ${m.lost} lost of ${m.n}`).join(", ")}`}>
+          {months.map((m, n) => (
+            <span key={m.key} title={`${m.label}: ${m.n} votes, government lost ${m.lost}`} style={{ "--m": n }}>
+              <span className="lv-stack" style={{ height: `${(m.n / top) * 100}%` }}>
+                {m.lost > 0 && <i className="lv-lost" style={{ flexGrow: m.lost }} />}
+                {m.won > 0 && <i className="lv-won" style={{ flexGrow: m.won }} />}
+                {m.other > 0 && <i className="lv-other" style={{ flexGrow: m.other }} />}
+              </span>
+              <small>{m.label}</small>
+            </span>
+          ))}
+        </div>
+        <p className="lv-key" aria-hidden="true"><span><i className="lv-lost" />Government lost</span><span><i className="lv-won" />Government won</span><span><i className="lv-other" />No government side</span></p>
+      </div>
+    </article>
+  );
+}
+
+// "Peers nearly always vote with their party", drawn as 1,000 votes of which a couple went the other way.
+function Loyalty({ view }) {
+  const [ref, go] = useGo(0.2);
+  const loyal = view.votes ? 1 - view.against / view.votes : 1;
+  const cells = 1000;
+  const off = Math.max(view.against ? 1 : 0, Math.round((1 - loyal) * cells));
+  return (
+    <article ref={ref} className="lv-card" data-go={go} style={{ "--tc": "#2C5F9E" }}>
+      <div className="lv-card-text">
+        <h3>Peers almost always vote with their party: <b><CountUp value={loyal * 100} format={(n) => `${n.toFixed(1)}%`} /></b></h3>
+        <p>Of {fmt(view.votes)} votes cast by peers whose party gave an instruction, only {fmt(view.against)} went against it. Here are 1,000 of those votes.</p>
+      </div>
+      <div className="lv-grid" role="img" aria-label={`Out of every 1,000 votes, about ${off} went against the party`}>
+        {Array.from({ length: cells }, (_, k) => <i key={k} data-off={k >= cells - off ? "1" : "0"} style={{ "--c": k % 50 }} />)}
+      </div>
+      <p className="lv-key" aria-hidden="true"><span><i className="lv-won" />With the party</span><span><i className="lv-lost" />Against the party</span></p>
+    </article>
+  );
+}
+
+// How often peers turn up: the number of peers in each tenth of the votes, from those who rarely vote to those who vote almost every time.
+function Turnout({ data, view }) {
+  const [ref, go] = useGo(0.2);
+  const bands = useMemo(() => turnoutBands(view.rows), [view.rows]);
+  const top = Math.max(1, ...bands.map((b) => b.n));
+  const half = regulars(view.rows, data.divisions, 0.5);
+  return (
+    <article ref={ref} className="lv-card" data-go={go} style={{ "--tc": "#1F7A6E" }}>
+      <div className="lv-card-text">
+        <h3>About <b><CountUp value={typicalTurnout(data)} /></b> peers take part in a typical vote</h3>
+        <p>{fmt(view.rows.length)} peers voted at least once. {fmt(regulars(view.rows, data.divisions))} voted in at least a quarter of the votes, and {fmt(half)} in at least half.</p>
+      </div>
+      <div className="lv-hist" role="img" aria-label={`Peers by the share of votes they took part in: ${bands.map((b) => `${b.from} to ${b.to} percent, ${b.n} peers`).join("; ")}`}>
+        {bands.map((b, n) => (
+          <span key={b.from} title={`${b.from}% to ${b.to}% of votes: ${b.n} peers`} style={{ "--m": n }}>
+            <i style={{ height: `${Math.max(2, (b.n / top) * 100)}%` }} />
+            <small>{b.from}</small>
+          </span>
+        ))}
+      </div>
+      <p className="lv-axis" aria-hidden="true">Share of the votes a peer took part in (%)</p>
+    </article>
+  );
+}
+
+// One real government defeat, drawn as a tug of war: who stood on each side.
+function Sides({ d, colours }) {
+  const [ref, go] = useGo(0.25);
+  const [yes, no] = sidesOf(d, colours);
+  const seg = (list) => list.map((s) => <i key={s.party} style={{ flexGrow: s.n, background: s.colour }} title={`${s.party}: ${s.n}`} />);
+  const names = [...new Set([...yes, ...no].map((s) => s.party))];
+  const colourOf = (name) => [...yes, ...no].find((s) => s.party === name)?.colour;
+  return (
+    <figure ref={ref} className="lv-sides" data-go={go}>
+      <figcaption><strong>How a defeat adds up.</strong> {longDay(d.date)}: {d.title}. The government lost, {fmt(d.content)} to {fmt(d.notContent)}.</figcaption>
+      <div className="lv-vs" role="img" aria-label={`Content ${d.content}: ${yes.map((s) => `${s.party} ${s.n}`).join(", ")}. Not content ${d.notContent}: ${no.map((s) => `${s.party} ${s.n}`).join(", ")}.`}>
+        <span className="lv-side" style={{ flexGrow: d.content }}><b>Content (yes) {fmt(d.content)}</b><span className="lv-bar-line">{seg(yes)}</span></span>
+        <span className="lv-side" style={{ flexGrow: d.notContent }}><b>Not content (no) {fmt(d.notContent)}</b><span className="lv-bar-line">{seg(no)}</span></span>
+      </div>
+      <p className="lv-key" aria-hidden="true">{names.map((n) => <span key={n}><i style={{ background: colourOf(n) }} />{n}</span>)}</p>
+    </figure>
+  );
+}
+
+function Unity({ parties, quiet }) {
+  const [ref, go] = useGo(0.15);
+  return (
+    <section ref={ref} aria-labelledby="h-unity" data-go={go} style={{ marginTop: 36 }}>
+      <h2 id="h-unity" style={heading}>How loyal is each party?</h2>
+      <p style={lede}>Most parties give their peers an instruction on how to vote, called a whip. This shows how many votes in each party went the way the party told them. Peers who vote against the party are rare.</p>
       <div className="lv-bars">
-        {parties.map((p) => (
-          <div key={p.name} className="lv-bar" style={{ "--pc": p.colour }}>
+        {parties.map((p, i) => (
+          <div key={p.name} className="lv-bar" style={{ "--pc": p.colour, "--i": i }}>
             <b>{p.name}<small>{fmt(p.peers)} {p.peers === 1 ? "peer" : "peers"} voted</small></b>
             <span className="lv-track" role="img" aria-label={`${pct(p.unity)} of votes with the party line`}><i style={{ width: `${p.unity * 100}%` }} /></span>
-            <span>{pct(p.unity)}<small style={{ display: "block", fontWeight: 500, fontSize: 12, color: COLORS.inkSoft }}>{fmt(p.against)} against</small></span>
+            <span>{pct(p.unity)}<small>{fmt(p.against)} {p.against === 1 ? "vote" : "votes"} against</small></span>
           </div>
         ))}
       </div>
+      {quiet.length > 0 && (
+        <p className="lv-quiet"><strong>No party instruction:</strong> {quiet.map((p) => `${p.name} (${fmt(p.peers)} peers)`).join(", ")}. These peers choose how to vote for themselves, so they cannot go against a party line.</p>
+      )}
     </section>
   );
 }
@@ -120,13 +194,14 @@ function Division({ d, colours }) {
           <b>{d.title}</b>
           <span className="lv-div-date">{longDay(d.date)}</span>
         </span>
+        {d.note && <span className="lv-div-note">{brief(d.note)}</span>}
         <span className="lv-tally" role="img" aria-label={`${d.content} content, ${d.notContent} not content`}>
-          <i className="lv-tally-c" style={{ width: `${(d.content / total) * 100}%` }}>{fmt(d.content)}</i>
-          <i className="lv-tally-n" style={{ width: `${(d.notContent / total) * 100}%` }}>{fmt(d.notContent)}</i>
+          <i className="lv-tally-c" style={{ width: `${(d.content / total) * 100}%` }}>{fmt(d.content)} Content</i>
+          <i className="lv-tally-n" style={{ width: `${(d.notContent / total) * 100}%` }}>{fmt(d.notContent)} Not content</i>
         </span>
         <span className="lv-div-meta">
-          <span className="lv-pill" data-tone={agreed ? "ok" : "no"}>{agreed ? "Motion agreed" : "Motion rejected"}</span>
-          {d.govWin === false && <span className="lv-pill" data-tone="warn">Government lost</span>}
+          <span className="lv-pill" data-tone={agreed ? "ok" : "no"}>{agreed ? "Proposal passed" : "Proposal failed"}</span>
+          {d.govWin === false && <span className="lv-pill" data-tone="warn">Government lost</span>}{d.govWin === true && <span className="lv-pill" data-tone="plain">Government won</span>}
           {d.rebels > 0 && <span className="lv-pill" data-tone="plain">{fmt(d.rebels)} against their party</span>}
           <span className="lv-div-chev" aria-hidden="true">{open ? "Hide the detail" : "What was this?"}</span>
         </span>
@@ -210,7 +285,7 @@ export default function LordsVotes() {
     const unity = partyUnity(data);
     const against = unity.reduce((t, p) => t + p.against, 0);
     const votes = unity.reduce((t, p) => t + p.votes, 0);
-    return { colours: Object.fromEntries(data.parties.map((p) => [p.name, hexOf(p.colour)])), rows, unity, against, votes, divided: mostDivided(data, 8), defeats: governmentDefeats(data), parties: data.parties.filter((p) => p.peers >= 1) };
+    return { colours: Object.fromEntries(data.parties.map((p) => [p.name, hexOf(p.colour)])), rows, unity, against, votes, divided: mostDivided(data, 8), defeats: governmentDefeats(data), parties: data.parties.filter((p) => p.peers >= 1), quiet: data.parties.filter((p) => !p.whipped && p.peers >= 1), example: governmentDefeats(data).find((d) => { const [y, n] = sidesOf(d, {}); return y.length > 1 && n.length > 0; }) ?? null };
   }, [data]);
 
   return (
@@ -219,31 +294,33 @@ export default function LordsVotes() {
         icon={IconLordsVote}
         kicker="Who's in charge"
         title="How peers vote"
-        subtitle="Who turns up to vote in the House of Lords, how loyal each party is, and which votes split a party. The last 12 months, straight from Parliament's own records."
+        subtitle="How the House of Lords votes: how often the government loses, how loyal peers are to their party, and who turns up. The last 12 months, from Parliament's own records."
       />
       {failed && <LoadFailedNote item="the Lords voting figures" />}
       {!failed && !data && <Loading />}
       {data && view && (
         <>
-          <Scoreboard data={data} view={view} />
-          <HowToRead steps={[
-            { title: "Content and not content", text: "In the Lords a yes vote is \"Content\" and a no vote is \"Not content\"." },
-            { title: "Against their party", text: "On a whipped vote, the side most of a party's peers took is its line. A peer on the other side has voted against it. Crossbenchers, bishops and non-affiliated peers have no whip." },
-            { title: "Voting is not attending", text: "Peers can be in the House and not vote, and can vote remotely. The figures count recorded votes, not days sat." },
-          ]} />
-          <Unity parties={view.unity} />
-          <section aria-labelledby="h-divided" style={{ marginTop: 32 }}>
-            <h2 id="h-divided" style={heading}>Votes that split a party</h2>
-            <p style={lede}>The divisions where the most peers voted against the way their own party voted.</p>
-            <ul className="lv-list">{view.divided.map((d) => <Division key={d.id} d={d} colours={view.colours} />)}</ul>
+          <Explainer latest={data.list[0]} />
+          <section className="lv-findings" aria-label="What the votes show">
+            <Outcomes data={data} view={view} />
+            <Loyalty view={view} />
+            <Turnout data={data} view={view} />
           </section>
+          <Unity parties={view.unity} quiet={view.quiet} />
+          <p className="lv-notes"><strong>Two things to keep in mind.</strong> A peer is counted as voting against their party when they take the opposite side to most of their party's peers on a whipped vote. And voting is not the same as attending: peers can be in the House without voting, and some vote remotely, so these figures count recorded votes, not days sat.</p>
           {view.defeats.length > 0 && (
-            <section aria-labelledby="h-defeats" style={{ marginTop: 32 }}>
+            <section aria-labelledby="h-defeats" style={{ marginTop: 36 }}>
               <h2 id="h-defeats" style={heading}>When the government lost</h2>
-              <p style={lede}>The Lords often amends bills and sends them back to the Commons, where the government can usually overturn the change.</p>
+              <p style={lede}>A defeat in the Lords does not stop a bill for good. The Lords sends its change back to the Commons, where the government can usually overturn it. Open a vote to see what it was about.</p>
+              {view.example && <Sides d={view.example} colours={view.colours} />}
               <ul className="lv-list">{view.defeats.slice(0, 8).map((d) => <Division key={d.id} d={d} colours={view.colours} />)}</ul>
             </section>
           )}
+          <section aria-labelledby="h-divided" style={{ marginTop: 36 }}>
+            <h2 id="h-divided" style={heading}>Votes where peers went against their party</h2>
+            <p style={lede}>{fmt(data.list.filter((d) => d.rebels > 0).length)} of the {fmt(data.divisions)} votes had at least one peer go against their own party. These are the ones with the most.</p>
+            <ul className="lv-list">{view.divided.map((d) => <Division key={d.id} d={d} colours={view.colours} />)}</ul>
+          </section>
           <Peers rows={view.rows} parties={view.parties} divisions={data.divisions} />
           <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.6, color: COLORS.inkSoft, marginTop: 28, maxWidth: 780 }}>
             Source: <a href="https://lordsvotes-api.parliament.uk" target="_blank" rel="noreferrer" style={{ color: COLORS.accentText, fontWeight: 600 }}>Parliament's Lords Votes API</a>, updated {longDay(data.generatedAt)}. A party needs at least five peers voting in a division to have a line that day, and an even split has none.

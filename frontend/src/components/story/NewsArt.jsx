@@ -12,13 +12,13 @@ export function TwoLanes() {
   const [ref, go] = useGo(0.25);
   return (
     <figure ref={ref} className="na-lanes" data-go={go}>
-      <div className="na-lane" style={{ "--tc": "#2F7BD6", "--i": 0 }}>
+      <div className="na-lane" style={{ "--tc": "#2C5F9E", "--i": 0 }}>
         <div className="na-art na-radio" aria-hidden="true"><i /><i /><i /><span><IconBroadcast size={26} /></span></div>
         <b>TV and radio news</b>
         <em>Must be impartial</em>
         <p>The BBC, ITV, Sky News, Channel 4 and GB News all follow Ofcom's Broadcasting Code. Public or private, licence fee or adverts, it makes no difference.</p>
       </div>
-      <div className="na-lane" style={{ "--tc": "#E2574C", "--i": 1 }}>
+      <div className="na-lane" style={{ "--tc": "#9A3F55", "--i": 1 }}>
         <div className="na-art na-paper" aria-hidden="true"><i /><i /><i /></div>
         <b>Newspapers and news websites</b>
         <em>Free to take a side</em>

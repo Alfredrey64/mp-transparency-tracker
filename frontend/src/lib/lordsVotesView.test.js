@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { peerRows, partyUnity, mostDivided, governmentDefeats, filterPeers, hexOf, perMonth, regulars } from "./lordsVotesView";
+import { peerRows, partyUnity, mostDivided, governmentDefeats, filterPeers, hexOf, perMonth, regulars, monthlyOutcomes, typicalTurnout, turnoutBands, sidesOf } from "./lordsVotesView";
 
 const data = {
   divisions: 10,
@@ -64,5 +64,27 @@ describe("matching a Lords vote to its bill", () => {
   it("says whether a motion was agreed", () => {
     expect(outcomeOf({ content: 10, notContent: 4 })).toBe("Agreed");
     expect(outcomeOf({ content: 4, notContent: 10 })).toBe("Rejected");
+  });
+
+  it("splits each month into won, lost and no government side", () => {
+    const m = monthlyOutcomes(data).find((x) => x.key === "2026-01");
+    expect(m).toMatchObject({ won: 1, lost: 1, other: 1, n: 3 });
+  });
+  it("takes the middle turnout of a vote", () => {
+    expect(typicalTurnout({ list: [{ content: 10, notContent: 0 }, { content: 20, notContent: 10 }, { content: 5, notContent: 5 }] })).toBe(10);
+    expect(typicalTurnout({ list: [] })).toBe(0);
+  });
+  it("counts peers in each tenth of the votes", () => {
+    const b = turnoutBands(peerRows(data));
+    expect(b).toHaveLength(10);
+    expect(b[9].n).toBe(1);
+    expect(b[4].n).toBe(1);
+    expect(b.reduce((t, x) => t + x.n, 0)).toBe(2);
+  });
+  it("lays a vote out as two sides, with the rest as other peers", () => {
+    const [yes, no] = sidesOf({ content: 100, notContent: 60, splits: [["Labour", 0, 50], ["Conservative", 80, 0]] }, { Labour: "#d50000" });
+    expect(yes.map((s) => [s.party, s.n])).toEqual([["Conservative", 80], ["Other peers", 20]]);
+    expect(no.map((s) => [s.party, s.n])).toEqual([["Labour", 50], ["Other peers", 10]]);
+    expect(no[0].colour).toBe("#d50000");
   });
 });
