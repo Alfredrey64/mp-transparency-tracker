@@ -1,30 +1,15 @@
 import { useState, useReducer, useRef, useEffect, useMemo } from "react";
 import { motion, useInView, useReducedMotion } from "motion/react";
-import TierFlow from "./TierFlow";
-import { lowData } from "../lib/lowData";
-import { loadGsapCore } from "../lib/gsapLoader";
 import { COLORS, FONT_DISPLAY, FONT_BODY, readable } from "../theme";
 import { IconParliament, IconCabinet, IconDevolved, IconTransport, IconCouncil, IconHome, IconGroup } from "./icons";
-import { buildLayout, routeBetween } from "../lib/tierTree";
 import { NATIONS, TIERS, VOTE_FOR, CHECKS, WHO_TO_CONTACT, contactAnswer, SCENARIOS, scenarioSteps, YOU, visibleTierKeys, linkBetween } from "../data/governmentTiers";
-import { watchWidth } from "../lib/watchWidth";
 
 const SECTION_COLOR = "#1E3A6E";
 const DWELL_MS = 3800;
 const ICONS = { parliament: IconParliament, government: IconCabinet, devolved: IconDevolved, combined: IconTransport, council: IconCouncil, parish: IconHome, you: IconGroup };
 const YOU_TIER = { key: "you", name: YOU.name, short: YOU.short, color: COLORS.accent, figure: YOU.figure, links: YOU.links };
-
-// How far a tier reaches, from the whole country down to your own front door: drawn as rings inside each box, with the tier's own ring filled in.
-const SCOPE = { parliament: 0, government: 0, devolved: 1, combined: 2, council: 3, parish: 4, you: 5 };
-const SCOPE_NAME = ["the whole UK", "a nation", "a city region", "a council area", "a village or town", "your home"];
-function ScopeRings({ at }) {
-  return (
-    <svg className="tier-rings" viewBox="10 0 100 100" aria-hidden="true">
-      {[46, 38, 30, 22, 14].map((r, i) => <circle key={r} cx="60" cy="50" r={r} className={i === at ? "tier-ring tier-ring-on" : "tier-ring"} />)}
-      <circle cx="60" cy="50" r="5.5" className={at === 5 ? "tier-ring tier-ring-on" : "tier-ring"} />
-    </svg>
-  );
-}
+// The most tiers any nation shows, so the diagram keeps the same height whichever nation is chosen.
+const MOST_TIERS = Math.max(...NATIONS.map((n) => visibleTierKeys(n.key).length));
 
 // Where the marker sits for a step: a tier's place in the stack (0 at the top),
 // or the voter at the bottom for "you" and "vote".
@@ -111,44 +96,37 @@ function Legend() {
   );
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 26px", marginBottom: 16 }}>
-      {item(true, "Laws, rules and money flow down")}
-      {item(false, "Votes and scrutiny flow up")}
-      <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>
-        <svg width="18" height="18" viewBox="10 0 100 100" aria-hidden="true" fill="none" stroke="#6B7A90" strokeWidth="6">{[46, 32, 18].map((r) => <circle key={r} cx="60" cy="50" r={r} />)}</svg>
-        Rings show how far a tier reaches: the whole UK outside, your home in the middle
+      <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, flexBasis: "100%" }}>
+        Each box sits inside the one that covers a wider area: the whole UK on the outside, your home in the middle.
       </span>
+      {item(true, "Laws, rules and money flow in, towards you")}
+      {item(false, "Votes and scrutiny flow out, from you")}
     </div>
   );
 }
 
-// One tier of the diagram, placed by its position in the stack so nothing ever
-// reflows while the walk-through plays.
-function Slab({ box, tier, figure, selected, active, state, index, arriveDelay, tokenLabel, onClick }) {
+// One tier: a box that holds the tier inside it. The tier's own row is a button, so choosing a tier never changes the size of anything.
+function NestLevel({ tier, figure, selected, active, state, depth, fromEdge, tokenLabel, inner, onClick, ring }) {
   const Icon = ICONS[tier.key];
   return (
-    <button
-      onClick={onClick}
-      aria-pressed={selected}
-      aria-current={active ? "step" : undefined}
-      className="tier-slab"
-      data-key={tier.key}
-      data-active={active || selected ? "1" : "0"}
-      data-state={state}
-      style={{ left: box.left, top: box.top, width: box.width, height: box.height, "--c": tier.color, "--ct": readable(tier.color), "--delay": `${arriveDelay}s`, "--i": index }}
-    >
-      <span className="tier-slab-icon"><Icon size={22} /><svg className="tier-tick" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="7" fill="currentColor" /><path d="M3.8 7.2 6 9.3l4.2-4.4" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
-      <span style={{ minWidth: 0, flex: 1 }}>
-        <span className="tier-slab-name">{tier.slabName ?? tier.name}</span>
-        <span className="tier-sub tier-slab-short">{tier.short}</span>
-        {tier.keywords && <span className="tier-keys tier-slab-keys">{tier.keywords}</span>}
-      </span>
-      <span className="tier-slab-scope" role="img" aria-label={`Covers ${SCOPE_NAME[SCOPE[tier.key]]}`} title={`Covers ${SCOPE_NAME[SCOPE[tier.key]]}`}><ScopeRings at={SCOPE[tier.key]} /></span>
-      <span className="tier-slab-fig">
-        <span className="tier-slab-num">{figure.value}</span>
-        <span className="tier-sub tier-slab-label">{figure.label}</span>
-      </span>
-      {tokenLabel && <span className="tier-pill" data-on={active ? "1" : "0"} style={{ "--c": tier.color }}>{tokenLabel}</span>}
-    </button>
+    <div className="nest" data-on={active || selected ? "1" : "0"} data-state={state} style={{ "--c": tier.color, "--ct": readable(tier.color), "--i": depth, "--d": fromEdge }}>
+      <button onClick={onClick} aria-pressed={selected} aria-current={active ? "step" : undefined} className="tier-slab" data-key={tier.key} style={{ "--i": depth }}>
+        <span className="tier-slab-icon">
+          <Icon size={22} />
+          <svg className="tier-tick" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="7" fill="currentColor" /><path d="M3.8 7.2 6 9.3l4.2-4.4" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          {active && ring}
+        </span>
+        <span className="tier-slab-txt">
+          <span className="tier-slab-name">{tier.slabName ?? tier.name}</span>
+          {active && tokenLabel ? <span className="tier-pill">{tokenLabel}</span> : <span className="tier-slab-short">{tier.short}</span>}
+        </span>
+        <span className="tier-slab-fig">
+          <span className="tier-slab-num">{figure.value}</span>
+          <span className="tier-slab-label">{figure.label}</span>
+        </span>
+      </button>
+      {inner && <div className="nest-in">{inner}</div>}
+    </div>
   );
 }
 
@@ -300,21 +278,10 @@ export default function GovernmentTiers() {
   const [scenarioKey, setScenarioKey] = useState(SCENARIOS[0].key);
   const [playing, setPlaying] = useState(false);
   const [{ step, from }, dispatch] = useReducer(reducer, { step: 0, from: null });
-  const stageRef = useRef(null);
   const diaRef = useRef(null);
   const sheetRef = useRef(null);
   const calm = useReducedMotion();
   const seen = useInView(diaRef, { once: true, margin: "0px 0px -12% 0px" });
-  const onScreen = useInView(diaRef, { margin: "120px 0px 120px 0px" });
-  const still = Boolean(calm) || lowData();
-  const [gsapReady, setGsapReady] = useState(false);
-  const [introFlag, setIntroFlag] = useState(false);
-  const introDone = still || introFlag;
-  // A first guess at the diagram's width (refined as soon as it is measured), so a phone never starts from a desktop-sized layout.
-  // A first guess at the page column's width (refined once measured): the screen minus the menu, if the menu is showing.
-  const [wrapWidth, setWrapWidth] = useState(() => (typeof window === "undefined" ? 1000 : window.innerWidth > 880 ? window.innerWidth - 380 : window.innerWidth - 72));
-  const [screenH, setScreenH] = useState(() => (typeof window === "undefined" ? 800 : window.innerHeight));
-  const [width, setWidth] = useState(() => (typeof window === "undefined" ? 560 : Math.max(240, Math.min(560, window.innerWidth - 72))));
 
   const nationLabel = NATIONS.find((n) => n.key === nation).label;
   const scenario = SCENARIOS.find((s) => s.key === scenarioKey);
@@ -327,85 +294,9 @@ export default function GovernmentTiers() {
   const fromPos = from === null ? 0 : positionOf(from, order);
   const voting = cur.tier === "vote";
   const dur = travelSeconds(fromPos, pos, voting);
-  // Size the diagram so the whole thing fits on screen: less room is kept back
-  // on a big screen, more on a phone where the walk-through sheet takes the bottom.
-  const stacked = wrapWidth < 780;
-  // The same room is kept in every mode and for every nation, so choosing one never changes how tall the diagram is, and nothing below it moves.
-  const availH = Math.max(320, screenH - (stacked ? 270 : 190));
-  const layout = useMemo(() => buildLayout(nation, width, availH), [nation, width, availH]);
-  const fullH = useMemo(() => Math.max(...NATIONS.map((n) => buildLayout(n.key, width, availH).height)), [width, availH]);
   const curKey = voting ? "you" : cur.tier;
   const selKey = order.includes(selected) ? selected : order[0];
   const runs = action && playing && !finished;
-
-  // Keep the diagram's drawing the same width as the space it sits in.
-  useEffect(() => {
-    const el = diaRef.current;
-    if (!el) return undefined;
-    const stopDia = watchWidth(el, (width) => setWidth(Math.max(240, Math.round(width))));
-    const stopWrap = watchWidth(stageRef.current, (width) => setWrapWidth(Math.round(width)));
-    // A phone's address bar slides away as you scroll and changes the window height by a few dozen pixels; redrawing the diagram for that makes it jump.
-    let lastW = window.innerWidth;
-    const onResize = () => {
-      const h = window.innerHeight;
-      const w = window.innerWidth;
-      setScreenH((prev) => (w !== lastW || Math.abs(h - prev) > 140 ? h : prev));
-      lastW = w;
-    };
-    window.addEventListener("resize", onResize);
-    return () => {
-      stopDia();
-      stopWrap();
-      window.removeEventListener("resize", onResize);
-    };
-  }, []);
-
-  // GSAP is fetched as soon as the section is on the page, so it is ready by the time the diagram scrolls into view.
-  useEffect(() => {
-    if (still) return undefined;
-    let alive = true;
-    loadGsapCore().then(() => { if (alive) setGsapReady(true); }).catch(() => {});
-    return () => { alive = false; };
-  }, [still]);
-
-  // The entrance: the tiers slide in one after another, their icons pop, and the branches draw themselves between them. Everything is put back
-  // to its normal state when it ends, and the drifting dots only start then.
-  useEffect(() => {
-    const dia = diaRef.current;
-    if (still || !seen || !gsapReady || !dia) return undefined;
-    let ctx;
-    let dead = false;
-    // A safety net: whatever happens to the animation, the boxes and branches are put back to plain and visible after a few seconds.
-    const guard = setTimeout(() => {
-      dia.querySelectorAll(".tier-slab, .tier-slab-icon, .tb-base, .tb-dot").forEach((el) => {
-        el.style.removeProperty("visibility"); el.style.removeProperty("opacity"); el.style.removeProperty("transform");
-      });
-      setIntroFlag(true);
-    }, 4500);
-    loadGsapCore().then(({ gsap }) => {
-      if (dead) return;
-      ctx = gsap.context(() => {
-        const slabs = dia.querySelectorAll(".tier-slab");
-        const icons = dia.querySelectorAll(".tier-slab-icon");
-        const bases = dia.querySelectorAll(".tb-base");
-        const dots = dia.querySelectorAll(".tb-dot");
-        bases.forEach((b) => b.setAttribute("marker-end", "none"));
-        const tl = gsap.timeline({
-          defaults: { ease: "power3.out" },
-          onComplete: () => {
-            bases.forEach((b) => b.setAttribute("marker-end", `url(#tb-arr-${b.dataset.marker})`));
-            setIntroFlag(true);
-            clearTimeout(guard);
-          },
-        });
-        tl.fromTo(slabs, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.09, clearProps: "transform,opacity,visibility" }, 0);
-        tl.fromTo(icons, { scale: 0.7, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.45, ease: "power2.out", stagger: 0.09, clearProps: "transform,opacity,visibility" }, 0.12);
-        tl.fromTo(bases, { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.6, ease: "power2.inOut", stagger: 0.08, clearProps: "strokeDasharray,strokeDashoffset" }, 0.4);
-        tl.fromTo(dots, { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.3, ease: "power2.out", stagger: 0.04, clearProps: "transform" }, 0.8);
-      }, dia);
-    }).catch(() => setIntroFlag(true));
-    return () => { dead = true; clearTimeout(guard); ctx?.revert(); };
-  }, [seen, gsapReady, still]);
 
   // Auto-advance: once the marker has arrived, rest on the step for a moment, then move on. The page itself never scrolls on its own, so nothing moves
   // except the diagram.
@@ -436,19 +327,28 @@ export default function GovernmentTiers() {
 
   const slabs = order.map((k) => (k === "you" ? YOU_TIER : TIERS.find((t) => t.key === k)));
   const tokenColor = voting ? COLORS.commonsGreen : slabs[pos].color;
-  const span = Math.max(1, Math.abs(pos - fromPos));
-  // Tiers the story reached before this step; their branches are already drawn in.
+  // Tiers the story reached before this step.
   const reachedBefore = steps.slice(0, step).map((st) => (st.tier === "vote" ? "you" : st.tier));
   const reachedNow = new Set([...reachedBefore, curKey]);
   const colors = useMemo(() => Object.fromEntries([...TIERS.map((t) => [t.key, t.color]), ["you", YOU_TIER.color]]), []);
-  // Exploring: the tiers from the top down to the one picked, so the diagram can show the line of who answers to whom.
-  const chain = useMemo(() => {
-    const out = [];
-    for (let k = layout.byKey[selKey]; k && k.parent; k = layout.byKey[k.parent]) out.unshift(k.key);
-    return out;
-  }, [layout, selKey]);
-  const toBox = layout.byKey[curKey];
-  const beadPath = voting ? layout.trunk : (from !== null ? routeBetween(layout, from === "vote" ? "you" : from, cur.tier) : null) ?? `M ${toBox.left - 9} ${toBox.midY}`;
+  // The marker is one element that moves from tier to tier, so it glides across the boxes instead of jumping.
+  const ring = (
+    <motion.span
+      layoutId="tier-marker" className="tier-marker" aria-hidden="true" style={{ "--c": tokenColor }}
+      transition={calm ? { duration: 0 } : { duration: Math.max(0.5, dur), ease: [0.45, 0.05, 0.25, 1] }}
+    />
+  );
+  // Built from the middle outwards, so each box holds the one inside it.
+  const nest = slabs.reduceRight((inner, t, i) => {
+    const here = action && i === pos;
+    return (
+      <NestLevel
+        key={t.key} tier={t} figure={t.figureHere?.[nation] ?? t.figure} selected={!action && selKey === t.key} active={here}
+        state={!action ? "idle" : here ? "active" : reachedNow.has(t.key) ? "done" : "todo"} depth={i} fromEdge={slabs.length - 1 - i}
+        tokenLabel={here && cur.token ? cur.token : null} inner={inner} onClick={() => onSlab(t.key)} ring={ring}
+      />
+    );
+  }, null);
 
   return (
     <motion.div
@@ -483,32 +383,10 @@ export default function GovernmentTiers() {
 
       <Legend />
 
-      <div className="tier-wrap" ref={stageRef}>
-        <div className="tier-grid" style={{ "--len": `${fullH}px` }}>
-          <div className="tier-diagram" ref={diaRef} data-density={layout.metrics.density} data-in={seen || calm ? "1" : "0"} data-gsap={gsapReady && !still ? "1" : "0"} data-mode={action ? "action" : "explore"} data-run={!action && !still && onScreen && introDone ? "1" : "0"} style={{ "--dur": `${dur}s`, height: fullH }}>
-            <TierFlow
-              layout={layout} action={action} calm={still} visible={onScreen && introDone} curKey={curKey} voting={voting} route={beadPath} dur={dur} color={tokenColor}
-              stepKey={`${scenarioKey}-${step}-${nation}`} reachedBefore={reachedBefore} colors={colors} chain={chain}
-            />
-            {slabs.map((t, i) => {
-              const here = action && i === pos;
-              const frac = action && i > fromPos && i <= pos ? (i - fromPos) / span : 0;
-              return (
-                <Slab
-                  key={t.key}
-                  box={layout.byKey[t.key]}
-                  tier={t}
-                  figure={t.figureHere?.[nation] ?? t.figure}
-                  selected={!action && selKey === t.key}
-                  active={here}
-                  state={!action ? "idle" : here ? "active" : reachedNow.has(t.key) ? "done" : "todo"}
-                  index={i}
-                  arriveDelay={here ? dur * 0.85 : dur * 0.9 * frac}
-                  tokenLabel={here && cur.token ? cur.token : null}
-                  onClick={() => onSlab(t.key)}
-                />
-              );
-            })}
+      <div className="tier-wrap">
+        <div className="tier-grid">
+          <div className="tier-diagram" ref={diaRef} data-in={seen || calm ? "1" : "0"} data-mode={action ? "action" : "explore"} data-vote={action && voting ? "1" : "0"}>
+            <div className="tier-stack" style={{ "--n": MOST_TIERS }}>{nest}</div>
           </div>
 
           {action && (

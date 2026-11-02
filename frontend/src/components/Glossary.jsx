@@ -347,6 +347,8 @@ export default function Glossary() {
         @media (min-width: 720px) { .gl-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; } }
         .gl-opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
         @media (max-width: 520px) { .gl-opts { grid-template-columns: 1fr; } }
+        /* A full-width row must not shrink while pressed (the chip press effect), or its word slides sideways under the finger. */
+        .gl-row .gl-row-btn:active { transform: none; }
         .gl-row:not(.gl-open):hover { background: ${COLORS.paper} !important; }
       `}</style>
 

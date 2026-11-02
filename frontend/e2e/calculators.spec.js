@@ -68,8 +68,8 @@ test("choosing a tier in the diagram does not move the box or the page", async (
   await page.waitForTimeout(1500);
   const b = await slab.boundingBox();
   expect(b).toEqual(a);
-  // The explaining panel starts level with the top box.
-  const tops = await page.evaluate(() => [document.querySelector(".tier-slab").getBoundingClientRect().top, document.querySelector(".tier-panel").getBoundingClientRect().top].map(Math.round));
+  // The explaining panel starts level with the top of the diagram.
+  const tops = await page.evaluate(() => [document.querySelector(".tier-diagram").getBoundingClientRect().top, document.querySelector(".tier-panel").getBoundingClientRect().top].map(Math.round));
   expect(tops[1]).toBe(tops[0]);
 });
 

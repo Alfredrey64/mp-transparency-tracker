@@ -34,18 +34,26 @@
   display: inline-flex; align-items: center; gap: 12px; text-decoration: none; color: var(--c-ink); flex-shrink: 0; border-radius: var(--radius-s);
   font-family: "Figures", "Newsreader", Georgia, serif; font-weight: 700; font-size: 23px; letter-spacing: -0.02em; line-height: 1;
 }
-/* The book mark: drawn open, so a still mark and reduced motion show it as it rests. With data-play the book grows in and three pages turn once. Each turn is
-   two halves that meet at the spine: the page narrows to an edge (eased in), then widens on the left (eased out), tilting a little so it reads as a turn. */
+/* The book mark: drawn open, so a still mark and reduced motion show it as it rests. With data-play it starts as a closed book, grows in, then re-centres as
+   the cover swings open and three pages turn. Each turn is two halves that meet at the spine: the leaf narrows to an edge (eased in), then widens on the
+   left (eased out), tilting a little so it reads as a turn. --i is the leaf's place in the turn (0 is the cover), which sets when it moves. */
 .lg-g { transform-box: view-box; transform-origin: 60px 52px; }
 .lg-f, .lg-b { transform-box: fill-box; }
 .lg-f { transform-origin: 0 50%; transform: scaleX(0); }
 .lg-b { transform-origin: 100% 50%; }
 @media (prefers-reduced-motion: no-preference) {
-  .lg[data-play] .lg-g { animation: lg-grow 1.6s cubic-bezier(0.2, 0.9, 0.25, 1.06) both; }
-  .lg[data-play] .lg-f { animation: lg-f 0.44s cubic-bezier(0.35, 0, 0.85, 0.6) calc(0.35s + var(--i) * 0.22s) both; }
-  .lg[data-play] .lg-b { animation: lg-b 0.44s cubic-bezier(0.15, 0.4, 0.65, 1) calc(0.79s + var(--i) * 0.22s) both; }
+  .lg[data-play] .lg-g { animation: lg-grow 2.6s linear both; }
+  .lg[data-play] .lg-f { animation: lg-f 0.44s cubic-bezier(0.35, 0, 0.85, 0.6) calc(0.95s + var(--i) * 0.22s) both; }
+  .lg[data-play] .lg-b { animation: lg-b 0.44s cubic-bezier(0.15, 0.4, 0.65, 1) calc(1.39s + var(--i) * 0.22s) both; }
 }
-@keyframes lg-grow { from { transform: scale(0.5) translateY(8px); opacity: 0; } to { transform: none; opacity: 1; } }
+/* Closed, the book is centred (its spine is the left edge, 29 units left of where it ends up); it rises into view, rests a moment, then slides to the
+   middle as it opens. */
+@keyframes lg-grow {
+  0% { transform: translate(-29px, 8px) scale(0.5); opacity: 0; animation-timing-function: cubic-bezier(0.2, 0.9, 0.25, 1.06); }
+  30% { transform: translateX(-29px); opacity: 1; }
+  36.5% { transform: translateX(-29px); animation-timing-function: cubic-bezier(0.45, 0, 0.25, 1); }
+  71%, 100% { transform: none; opacity: 1; }
+}
 @keyframes lg-f { from { transform: scaleX(1); opacity: 1; } to { transform: scaleX(0) skewY(-9deg); opacity: 0.7; } }
 @keyframes lg-b { from { transform: scaleX(0) skewY(9deg); opacity: 0.7; } to { transform: scaleX(1); opacity: 1; } }
 .site-nav { position: relative; display: flex; align-items: center; gap: 2px; flex: 1; min-width: 0; }

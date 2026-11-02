@@ -306,27 +306,39 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
   .mm-side { position: sticky; top: 16px; }
 }
 
-/* Tiers of government, drawn as a branching tree. Each tier is a box hung off
-   the tier it answers to; boxes are placed in pixels by lib/tierTree.js, so
-   nothing reflows while the walk-through plays. Red branches carry laws and
-   money down the left; a green trunk carries votes up the right. */
+/* Tiers of government, drawn as nested boxes: the wider the area a tier covers, the further out its box, so the whole UK is the outside box and your own
+   home is the one in the middle. Each box holds the one inside it, and every box's row is a button. Nothing is placed in pixels by script, and choosing
+   a tier changes colours only, so nothing moves. */
 .tier-wrap { container-type: inline-size; container-name: tierwrap; scroll-margin-top: 84px; }
-.tier-grid {
-  --len: 700px;
-  --ease: cubic-bezier(0.45, 0.05, 0.25, 1);
-  display: grid; gap: 24px; grid-template-columns: minmax(0, 1fr);
+.tier-grid { --ease: cubic-bezier(0.45, 0.05, 0.25, 1); display: grid; gap: 24px; grid-template-columns: minmax(0, 1fr); }
+.tier-diagram { position: relative; container-type: inline-size; container-name: tierdia; }
+.tier-stack {
+  --pad: 8px; --head: 60px; --edge: 3px; --gap: 6px; display: flex; flex-direction: column;
+  min-height: calc(var(--n, 6) * (var(--head) + 2 * var(--pad) + var(--edge) + var(--gap)) - var(--gap));
 }
-.tier-diagram { position: relative; container-type: inline-size; container-name: tierdia; overflow-x: clip; }
-/* A faint drawing-board grid behind the boxes, fading out at the edges. */
-.tier-diagram::before {
-  content: ""; position: absolute; inset: -8px -6px; z-index: 0; pointer-events: none; border-radius: 18px;
-  background-image: radial-gradient(circle, color-mix(in srgb, var(--c-ink) 16%, transparent) 1px, transparent 1.4px); background-size: 18px 18px;
-  -webkit-mask-image: radial-gradient(ellipse at 40% 45%, #000 35%, transparent 78%); mask-image: radial-gradient(ellipse at 40% 45%, #000 35%, transparent 78%);
+.nest { --r: max(14px, calc(28px - var(--i, 0) * 3.5px)); position: relative; display: flex; flex-direction: column; flex: 1; min-height: 0; padding: var(--pad); border-radius: var(--r); }
+.nest::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; border-radius: inherit; pointer-events: none;
+  border: 1.5px solid color-mix(in srgb, var(--c) 42%, var(--c-hairline)); background: color-mix(in srgb, var(--c) 6%, var(--c-paper-card));
+  transition: border-color 0.3s, background 0.3s;
 }
+.nest[data-on="1"]::before { border-color: var(--c); background: color-mix(in srgb, var(--c) 9%, var(--c-paper-card)); }
+.nest > * { position: relative; z-index: 1; }
+.nest-in { display: flex; flex-direction: column; flex: 1; min-height: 0; margin-top: var(--gap); }
+.tier-slab {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; width: 100%; height: var(--head); padding: 0 14px 0 10px; flex: none;
+  text-align: left; font: inherit; color: inherit; cursor: pointer; background: transparent; border: 1px solid transparent; border-radius: calc(var(--r) - var(--pad));
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.25s; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+}
+.tier-slab:hover { background: color-mix(in srgb, var(--c) 11%, var(--c-paper-card)); }
+.tier-slab:focus-visible { outline: 2px solid var(--c); outline-offset: 2px; }
+.nest[data-on="1"] > .tier-slab { background: var(--c-paper-card); border-color: var(--c); box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 20%, transparent), 0 8px 18px -12px var(--c); }
+/* The innermost box, you, takes whatever height the other nations leave spare and keeps its row in the middle of it. */
+.nest:not(:has(> .nest-in)) { justify-content: center; }
 .tier-panelcol { min-width: 0; }
 /* The panel stays in view beside the diagram using plain sticky positioning: it can never leave its column, so it can never sit on top of the
    sections below, and there is no script chasing the scroll. */
-.tier-panel { height: 290px; overflow: hidden; }
+.tier-panel { height: 290px; overflow: hidden; -webkit-font-smoothing: antialiased; }
 /* The walk-through's bar on a phone. Its holder takes no room in the page and rides at the bottom of the screen while the section is in view, so
    switching modes never changes the height of anything. */
 .tier-mini-wrap { display: none; }
@@ -339,7 +351,7 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 @container tierwrap (min-width: 780px) {
   .tier-grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 28px; }
   .tier-panelcol { align-self: stretch; }
-  .tier-panel { position: sticky; top: calc(var(--header-h) + 16px); height: min(480px, calc(100vh - var(--header-h) - 32px), var(--len)); }
+  .tier-panel { position: sticky; top: calc(var(--header-h) + 16px); height: min(480px, calc(100vh - var(--header-h) - 32px)); }
 }
 @container tierwrap (max-width: 779px) {
   .tier-step[data-active="0"] { display: none; }
@@ -349,126 +361,65 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
   .tier-mini-wrap { display: block; grid-row: 1 / -1; grid-column: 1; align-self: end; position: sticky; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); height: 184px; z-index: 30; pointer-events: none; }
   .tier-mini-wrap .tier-mini { position: absolute; left: 0; right: 0; bottom: 0; max-height: 100%; overflow: hidden; pointer-events: auto; }
 }
-/* What fits in a box depends on how wide the diagram is, not the page. */
-@container tierdia (max-width: 599px) {
-  .tier-diagram .tier-keys, .tier-diagram .tier-slab-label { display: none; }
-  .tier-diagram .tier-slab-short { -webkit-line-clamp: 1; font-size: 12.5px; }
-  .tier-diagram .tier-slab { padding: 0 14px 0 20px; gap: 11px; }
-  .tier-diagram .tier-slab-icon { width: 34px; height: 34px; border-radius: 9px; }
-  .tier-diagram .tier-slab-name { font-size: 16px; }
-  .tier-diagram .tier-slab-num { font-size: 17px; }
-  .tier-diagram .tier-slab-scope { width: 40px; height: 40px; }
+/* What fits in a row depends on how wide the diagram is, not the page. Each box takes some width from the one inside it, so the rows get tighter as they go in. */
+@container tierdia (max-width: 479px) {
+  .tier-stack { --pad: 6px; --head: 56px; }
+  .tier-stack .tier-slab { gap: 10px; padding: 0 11px 0 7px; }
+  .tier-stack .tier-slab-short, .tier-stack .tier-slab-label { display: none; }
+  .tier-stack .tier-slab-icon { width: 34px; height: 34px; border-radius: 9px; }
+  .tier-stack .tier-slab-name { font-size: 16px; }
+  .tier-stack .tier-slab-num { font-size: 17px; }
 }
-@container tierdia (max-width: 429px) {
-  .tier-diagram .tier-slab { padding: 0 11px 0 17px; gap: 9px; }
-  .tier-diagram .tier-slab-icon { width: 30px; height: 30px; border-radius: 8px; }
-  .tier-diagram .tier-slab-icon svg:not(.tier-tick) { width: 17px; height: 17px; }
-  .tier-diagram .tier-slab-short { font-size: 12px; line-height: 1.3; }
-  .tier-diagram .tier-slab-name { font-size: 14.5px; line-height: 1.2; overflow-wrap: anywhere; }
-  .tier-diagram .tier-slab-num { font-size: 14.5px; }
-  .tier-diagram .tier-slab-scope { width: 32px; height: 32px; }
+@container tierdia (max-width: 389px) {
+  .tier-stack { --pad: 5px; --head: 52px; }
+  .tier-stack .tier-slab { gap: 8px; padding: 0 9px 0 5px; }
+  .tier-stack .tier-slab-icon { width: 30px; height: 30px; border-radius: 8px; }
+  .tier-stack .tier-slab-icon svg:not(.tier-tick) { width: 17px; height: 17px; }
+  .tier-stack .tier-slab-name { font-size: 14.5px; line-height: 1.15; }
+  .tier-stack .tier-slab-num { font-size: 14px; }
 }
 @container tierdia (max-width: 339px) {
-  .tier-diagram .tier-slab-scope, .tier-diagram .tier-sub { display: none; }
-  .tier-diagram .tier-slab { padding: 0 10px 0 15px; gap: 8px; }
-  .tier-diagram .tier-slab-icon { width: 26px; height: 26px; border-radius: 7px; }
-  .tier-diagram .tier-slab-icon svg:not(.tier-tick) { width: 15px; height: 15px; }
-  .tier-diagram .tier-tick { width: 11px; height: 11px; right: -4px; bottom: -4px; }
+  .tier-stack { --pad: 4px; }
+  .tier-stack .tier-slab-icon { width: 26px; height: 26px; border-radius: 7px; }
+  .tier-stack .tier-slab-icon svg:not(.tier-tick) { width: 15px; height: 15px; }
+  .tier-stack .tier-slab-name { font-size: 13.5px; }
+  .tier-stack .tier-slab-num { font-size: 13px; }
+  .tier-stack .tier-tick { width: 11px; height: 11px; right: -4px; bottom: -4px; }
 }
-/* When the stack is squeezed to fit the screen, boxes show less. */
-.tier-diagram[data-density="mid"] .tier-keys { display: none; }
-.tier-diagram[data-density="mid"] .tier-slab-short { -webkit-line-clamp: 1; }
-.tier-diagram[data-density="tight"] .tier-keys, .tier-diagram[data-density="tight"] .tier-slab-label { display: none; }
-.tier-diagram[data-density="tight"] .tier-slab-icon { width: 30px; height: 30px; }
-.tier-diagram[data-density="tight"] .tier-slab-name { font-size: 15px; }
-
-/* The branches. Lines are drawn once; what moves is drawn with transforms only (see TierFlow.jsx). */
-.tb-svg { position: absolute; left: 0; top: 0; z-index: 0; overflow: visible; pointer-events: none; }
-.tb-down { --ln: #3B4A66; }
-.tier-diagram[data-mode="explore"] .tb-done { transition: stroke-dashoffset 0.7s cubic-bezier(0.45, 0.05, 0.25, 1), opacity 0.3s; }
-.tb-up { --ln: #2E7D5B; }
-.tb-svg path { fill: none; stroke-linejoin: round; }
-.tb-base { stroke: color-mix(in srgb, var(--ln) 40%, var(--c-paper-card)); stroke-width: 7; stroke-linecap: round; }
-.tb-up .tb-base { stroke: color-mix(in srgb, #2E7D5B 38%, var(--c-paper-card)); }
-/* The part of a branch the story has reached. */
-.tb-done { stroke: var(--ln); stroke-width: 4.5; stroke-linecap: butt; stroke-dasharray: 1 1; stroke-dashoffset: 1; opacity: 0; }
-
-/* Junctions: where a branch leaves a tier and where a vote branch meets the trunk. */
-.tb-dot { stroke: var(--c-paper-card); stroke-width: 2; transition: fill 0.35s; }
-.tb-dot-down { fill: color-mix(in srgb, var(--dc, #3B4A66) 45%, var(--c-hairline)); }
-.tb-dot-up { fill: color-mix(in srgb, #2E7D5B 40%, var(--c-hairline)); }
-.tb-dot-down[data-lit="1"] { fill: var(--dc, #3B4A66); }
-.tb-dot-up[data-lit="1"] { fill: #2E7D5B; }
-
-/* Everything that moves lives in one layer, placed with transforms by the animation loop. */
-.tb-layer { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
-.tb-packet, .tb-head, .tb-trail { position: absolute; left: 0; top: 0; border-radius: 50%; will-change: transform; backface-visibility: hidden; }
-.tb-packet { width: 9px; height: 9px; background: #3B4A66; opacity: 0; box-shadow: 0 0 0 2px #fff, 0 0 10px 2px color-mix(in srgb, var(--pc, #3B4A66) 70%, transparent); }
-.tb-packet[data-dir="up"] { background: #2E7D5B; }
-.tb-head { width: 14px; height: 14px; background: var(--tokc); border: 2px solid #fff; box-sizing: border-box; box-shadow: 0 1px 4px rgba(11, 27, 51, 0.35); }
-.tb-trail { background: var(--tokc); opacity: 0; }
-.tier-ripple { position: absolute; inset: -2px; border-radius: 50%; border: 2px solid var(--tokc); opacity: 0; animation: tokRipple 1.3s ease-out var(--dur, 0.6s) 2 both; }
-@keyframes tokRipple { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(3.2); opacity: 0; } }
-.tier-slab {
-  position: absolute; z-index: 1; min-width: 0; overflow: visible;
-  display: flex; align-items: center; gap: 14px; padding: 0 18px 0 16px; text-align: left; font: inherit; cursor: pointer;
-  background: color-mix(in srgb, var(--c) 4%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--c) 22%, var(--c-hairline)); border-radius: 12px;
-  box-shadow: inset 5px 0 0 var(--c), 0 1px 2px rgba(11, 27, 51, 0.05); padding-left: 22px;
-  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
-}
-/* A spine in the tier's own colour down the left edge. */
-.tier-slab:hover { border-color: color-mix(in srgb, var(--c) 55%, var(--c-hairline)); background: color-mix(in srgb, var(--c) 8%, var(--c-paper-card)); box-shadow: inset 5px 0 0 var(--c), 0 0 0 3px color-mix(in srgb, var(--c) 22%, transparent); }
-.tier-slab:focus-visible { outline: 2px solid var(--c); outline-offset: 2px; }
-/* In the walk-through, tiers still to come sit back, tiers already passed show a tick, and the one the story is at lifts forward. */
-.tier-diagram[data-mode="action"] .tier-slab > :not(.tier-pill) { transition: opacity 0.4s; }
-.tier-panel { -webkit-font-smoothing: antialiased; }
-.tier-slab[data-state="todo"] { background: var(--c-paper); }
-.tier-slab[data-state="todo"] { box-shadow: inset 5px 0 0 color-mix(in srgb, var(--c) 40%, var(--c-hairline)); }
-.tier-slab[data-state="todo"] > :not(.tier-pill) { opacity: 0.5; }
-.tier-slab[data-state="done"] { border-color: color-mix(in srgb, var(--c) 35%, var(--c-hairline)); }
-.tier-tick { z-index: 1; position: absolute; right: -6px; bottom: -6px; color: var(--c); background: var(--c-paper-card); border-radius: 50%; opacity: 0; transform: scale(0.4); transition: opacity 0.3s, transform 0.4s var(--ease-spring); }
-.tier-slab-icon { position: relative; }
-/* The rings: how far a tier reaches, from the whole UK in the outer ring to your own home in the middle. The tier's own ring is filled. */
-.tier-slab-scope { flex: none; width: 48px; height: 48px; display: grid; place-items: center; }
-.tier-rings { width: 100%; height: 100%; overflow: visible; }
-.tier-ring { fill: none; stroke: color-mix(in srgb, var(--c) 38%, transparent); stroke-width: 1.6; }
-.tier-ring-on { fill: color-mix(in srgb, var(--c) 34%, transparent); stroke: var(--c); stroke-width: 2.2; }
-.tier-slab > * { position: relative; z-index: 1; }
-.tier-slab > .tier-pill { position: absolute; z-index: 3; }
-/* A slow sheen across a box when you point at it. */
-.tier-slab[data-state="done"] .tier-tick { opacity: 1; transform: none; }
-.tier-slab[data-active="1"] {
-  border-color: var(--c); background: color-mix(in srgb, var(--c) 10%, var(--c-paper-card)); transition-delay: var(--delay, 0s);
-  box-shadow: inset 5px 0 0 var(--c), 0 0 0 1px var(--c), 0 0 0 5px color-mix(in srgb, var(--c) 22%, transparent);
-}
-/* The ring round the icon only pulses while the walk-through is at that tier; a tier you have picked just sits there, slightly larger, and stays still. */
-.tier-diagram[data-mode="action"] .tier-slab[data-active="1"] .tier-slab-icon::after { content: ""; position: absolute; inset: -5px; border-radius: 15px; border: 3px solid var(--c); opacity: 0; animation: tierIconPulse 2.2s ease-out infinite; }
-.tier-slab[data-ping="1"] .tier-slab-icon::before { content: ""; position: absolute; inset: -5px; border-radius: 15px; border: 3px solid var(--c); opacity: 0; animation: tierPing 0.9s ease-out; pointer-events: none; }
-@keyframes tierPing { 0% { opacity: 0.8; } 100% { opacity: 0; } }
-@keyframes tierIconPulse { 0% { opacity: 0.7; } 100% { opacity: 0; } }
-.tier-slab-icon { flex: none; width: 38px; height: 38px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; color: #fff; background: var(--c); box-shadow: 0 6px 12px -6px color-mix(in srgb, var(--c) 80%, transparent); }
+.tier-slab-icon { position: relative; flex: none; width: 38px; height: 38px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; color: #fff; background: var(--c); box-shadow: 0 6px 12px -6px color-mix(in srgb, var(--c) 80%, transparent); }
+.tier-slab-txt { min-width: 0; display: grid; gap: 2px; }
 .tier-slab-name { display: block; font-family: 'Figures', 'Newsreader', Georgia, serif; font-size: 18px; font-weight: 600; line-height: 1.2; color: var(--c-ink); }
-.tier-slab-short, .tier-slab-keys { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; font-family: 'Figures', 'Public Sans', system-ui, sans-serif; color: var(--c-ink-soft); }
-.tier-slab-short { -webkit-line-clamp: 2; font-size: 13.5px; line-height: 1.35; margin-top: 2px; }
-.tier-slab-keys { -webkit-line-clamp: 1; font-size: 12.5px; font-weight: 600; margin-top: 3px; color: var(--ct, var(--c)); }
+.tier-slab-short { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; overflow: hidden; font-family: 'Figures', 'Public Sans', system-ui, sans-serif; font-size: 13px; line-height: 1.35; color: var(--c-ink-soft); }
 .tier-slab-fig { flex: none; text-align: right; }
 .tier-slab-num { display: block; font-family: 'Figures', 'Public Sans', system-ui, sans-serif; font-variant-numeric: lining-nums tabular-nums; font-feature-settings: 'lnum' 1, 'tnum' 1; font-size: 19px; font-weight: 700; line-height: 1.2; color: var(--ct, var(--c-ink)); }
 .tier-slab-label { display: block; font-family: 'Figures', 'Public Sans', system-ui, sans-serif; font-size: 11.5px; color: var(--c-ink-soft); }
-.tier-pill {
-  position: absolute; top: 0; right: 14px; transform: translateY(-50%); opacity: 0; pointer-events: none; white-space: nowrap;
-  font: 600 12px 'Figures', 'Public Sans', system-ui, sans-serif; color: #fff; padding: 3px 11px; border-radius: 999px;
-  background: var(--c-navy); transition: opacity 0.3s;
+/* What the walk-through is carrying, shown in place of the short description while it is at that tier. */
+.tier-pill { justify-self: start; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 600 12px 'Figures', 'Public Sans', system-ui, sans-serif; color: #fff; padding: 2px 10px; border-radius: 999px; background: var(--c-navy); }
+/* In the walk-through, tiers still to come sit back, tiers already passed show a tick, and the one the story is at has the marker. */
+.nest[data-state="todo"] > .tier-slab { opacity: 0.55; }
+.nest[data-state="todo"]::before { background: var(--c-paper); }
+.tier-tick { z-index: 1; position: absolute; right: -6px; bottom: -6px; color: var(--c); background: var(--c-paper-card); border-radius: 50%; opacity: 0; transform: scale(0.4); transition: opacity 0.3s, transform 0.4s var(--ease-spring); }
+.nest[data-state="done"] > .tier-slab .tier-tick { opacity: 1; transform: none; }
+/* The marker: one ring that moves from one tier's icon to the next, then pulses where it rests. */
+.tier-marker { position: absolute; inset: -5px; border-radius: 14px; border: 3px solid var(--c); pointer-events: none; box-shadow: 0 0 0 0 color-mix(in srgb, var(--c) 45%, transparent); animation: tierMarker 2s ease-out infinite; }
+@keyframes tierMarker { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c) 45%, transparent); } 100% { box-shadow: 0 0 0 9px color-mix(in srgb, var(--c) 0%, transparent); } }
+/* Voting: a green wave runs outwards from the middle, one box after another. */
+.tier-diagram[data-vote="1"] .nest::after {
+  content: ""; position: absolute; inset: 0; z-index: 2; border-radius: inherit; pointer-events: none; opacity: 0;
+  border: 2px solid #2E7D5B; animation: voteWave 1.5s ease-out calc(var(--d, 0) * 0.3s) 2 both;
 }
-.tier-pill[data-on="1"] { opacity: 1; transition-delay: var(--delay, 0s); }
+@keyframes voteWave { 0% { opacity: 0.9; box-shadow: 0 0 0 0 rgba(46, 125, 91, 0.45); } 100% { opacity: 0; box-shadow: 0 0 0 10px rgba(46, 125, 91, 0); } }
 
-/* When the diagram first scrolls into view its tiers rise into place one after another, then the branches wipe in behind them. */
-.tier-diagram[data-in="0"] .tier-slab, .tier-diagram[data-in="0"] .tb-svg { opacity: 0; }
-.tier-diagram[data-gsap="1"][data-in="1"] .tier-slab, .tier-diagram[data-gsap="1"][data-in="1"] .tb-svg { animation: none; }
-.tier-diagram[data-in="1"] .tier-slab { animation: slabRise 0.6s var(--ease-out) calc(var(--i, 0) * 110ms) backwards; }
-.tier-diagram[data-in="1"] .tb-svg { animation: branchWipe 1.1s var(--ease-out) 0.45s backwards; }
-@keyframes slabRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-@keyframes branchWipe { from { opacity: 0; clip-path: inset(0 0 100% 0); } to { opacity: 1; clip-path: inset(-20px); } }
-@media (prefers-reduced-motion: reduce) { .tier-diagram .tier-slab, .tier-diagram .tb-svg { animation: none !important; opacity: 1 !important; } .tier-slab-icon::after, .tier-slab-icon::before { animation: none !important; } }
+/* When the diagram first scrolls into view its boxes open one inside another, outside first, and the rows rise into place behind them. */
+.tier-diagram[data-in="0"] .nest::before, .tier-diagram[data-in="0"] .tier-slab { opacity: 0; }
+.tier-diagram[data-in="1"] .nest::before { animation: nestIn 0.7s var(--ease-out) calc(var(--i, 0) * 120ms) backwards; }
+.tier-diagram[data-in="1"] .tier-slab { animation: slabRise 0.6s var(--ease-out) calc(var(--i, 0) * 120ms + 150ms) backwards; }
+@keyframes nestIn { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: none; } }
+@keyframes slabRise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .tier-diagram .nest::before, .tier-diagram .tier-slab, .tier-diagram .nest::after, .tier-marker { animation: none !important; opacity: 1 !important; }
+  .tier-diagram .nest::after { opacity: 0 !important; }
+}
 
 /* A thin bar that fills while the walk-through rests on a step, so you can see when it will move on. */
 .tier-dwell { height: 3px; border-radius: 2px; background: var(--c-hairline); margin-top: 10px; overflow: hidden; flex: none; }

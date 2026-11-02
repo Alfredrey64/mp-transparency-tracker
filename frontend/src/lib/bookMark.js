@@ -11,19 +11,28 @@ const split = (c, t) => {
 const part = (c, from, to) => split(split(c, from)[1], (to - from) / (1 - from))[0];
 const path = ([a, b, c, d]) => `M${r(a[0])} ${r(a[1])}C${r(b[0])} ${r(b[1])} ${r(c[0])} ${r(c[1])} ${r(d[0])} ${r(d[1])}`;
 
-// The baseline the words stand on, from the spine out on the right page. The words sit either side of the spine at the same height, so UK Politics reads as one line.
-const BASE = [[66, 36.5], [80, 33], [96, 32.2], [110, 35]];
-// Distance below the baseline, and how much of the width (from the spine) each ruled line covers.
-const RULES = [[9, 0.03, 0.97], [16, 0.03, 0.7], [23, 0.03, 0.84]];
+// The baseline the words stand on, from the spine out on the right page. Each word is centred on its own page, like the title of a book.
+const BASE = [[66, 37.5], [80, 32.5], [96, 31.5], [110, 35]];
+// Distance below the baseline, and the stretch of the width each ruled line covers, centred, so the lines sit under the word like a subtitle.
+const RULES = [[9.5, 0.2, 0.8], [16, 0.32, 0.68]];
 const down = (c, dy) => c.map(([x, y]) => [x, y + dy]);
 
-export const COVER = "M2 11C22 5 44 6 60 15C76 6 98 5 118 11V69C98 64 76 65 60 75C44 65 22 64 2 69Z";
+// The cover, in halves: the right half stays put and is what the closed book shows, the left half arrives when the cover swings open.
+export const COVER_RIGHT = "M60 15C76 6 98 5 118 11V69C98 64 76 65 60 75Z";
+export const COVER_LEFT = "M60 15C44 6 22 5 2 11V69C22 64 44 65 60 75Z";
 export const PAGE_RIGHT = "M62 19C74 11 94 10 114 14V65C94 61 74 62 62 70Z";
 export const PAGE_LEFT = "M58 19C46 11 26 10 6 14V65C26 61 46 62 58 70Z";
-// A thin line along the bottom of both pages: the stack of paper under the top sheet.
-export const STACK = "M8 68C27 64 46 65 60 73C74 65 93 64 112 68";
+// A thin line along the bottom of each page: the stack of paper under the top sheet.
+export const STACK_RIGHT = "M62 72.6C76 65 94 64 112 68";
+export const STACK_LEFT = "M58 72.6C44 65 26 64 8 68";
+// Where each page dips into the spine, drawn as a soft shadow.
+export const SHADE_RIGHT = "M62 19C65 17.4 68 16.4 71 16V62.600C68 62.600 65 64 62 70Z";
+export const SHADE_LEFT = "M58 19C55 17.4 52 16.4 49 16V62.600C52 62.600 55 64 58 70Z";
+// The front cover when the book is closed: an inset frame and a small diamond.
+export const FRAME = "M65 21C77 13.500 96 12.500 112 16.500V62.500C96 59 77 60 65 67.500Z";
+export const DIAMOND = "M89 33.500l5.500 7.500-5.500 7.500-5.500-7.500Z";
 // A ribbon marker hanging from the spine.
-export const RIBBON = "M57.5 74.2V82L60 79.8L62.5 82V74.2Z";
+export const RIBBON = "M57.500 74.200V82L60 79.800L62.500 82V74.200Z";
 export const TEXT_RIGHT = path(BASE);
 export const TEXT_LEFT = path(mirror(BASE).reverse()); // runs left to right, so the words read the right way up
 export const RULES_RIGHT = RULES.map(([dy, a, b]) => path(part(down(BASE, dy), a, b)));

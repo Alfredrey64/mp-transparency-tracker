@@ -1,35 +1,52 @@
 import { useId } from "react";
-import { COVER, PAGE_LEFT, PAGE_RIGHT, STACK, RIBBON, TEXT_LEFT, TEXT_RIGHT, RULES_LEFT, RULES_RIGHT } from "../lib/bookMark";
+import {
+  COVER_RIGHT, COVER_LEFT, PAGE_LEFT, PAGE_RIGHT, STACK_RIGHT, STACK_LEFT, SHADE_RIGHT, SHADE_LEFT, FRAME, DIAMOND, RIBBON,
+  TEXT_LEFT, TEXT_RIGHT, RULES_LEFT, RULES_RIGHT,
+} from "../lib/bookMark";
 
-// The Domesday Live mark: an open book with "UK Politics" printed on its curved pages, on one line across the spine, in one colour with a ribbon marker. `hole` is the colour behind the mark,
-// which the words, ruled lines and the thin gap round each page are drawn in. The drawing itself is in lib/bookMark.js, shared with the share image. The app
-// icon is a separate drawing (the Parliament silhouette, see scripts/build-icons.mjs). With `animate` the book grows in and three pages turn to show the words,
-// once, when it first draws (see .lg in chrome.css). The pages are drawn already turned, so a still mark and reduced motion both show the open book.
-const WORDS = { fontFamily: "'Public Sans', system-ui, sans-serif", fontSize: 11, fontWeight: 800, letterSpacing: 0.15 };
+// The Domesday Live mark: an open book with "UK" and "Politics" printed in the site's serif on its curved pages, one word centred on each, in one colour with a
+// gold ribbon. `hole` is the colour behind the mark, which the words, ruled lines and the thin gap round each page are drawn in. The drawing itself is in
+// lib/bookMark.js, shared with the share image. The app icon is a separate drawing (the Parliament silhouette, see scripts/build-icons.mjs).
+// With `animate` the book starts closed, grows in, the cover swings open and three pages turn (see .lg in chrome.css), once, when it first draws. Every
+// turning leaf is drawn already turned, so a still mark and reduced motion both show the open book.
+const WORDS = { fontFamily: "'Figures', 'Newsreader', Georgia, serif", fontSize: 11, fontWeight: 700, letterSpacing: 0.1, textAnchor: "middle" };
 
 export default function LogoMark({ width = 76, color = "var(--sb-accent)", hole = "var(--sb-bg)", ribbon = "#FFB84D", title, animate }) {
   const id = useId().replace(/:/g, "");
-  const rules = (list) => list.map((d, n) => <path key={n} d={d} stroke={hole} strokeOpacity=".38" strokeWidth="1.7" strokeLinecap="round" />);
-  // UK ends at the spine and Politics starts there, on the same line.
-  const words = (path, text) => <text fill={hole} textAnchor={path === "l" ? "end" : "start"} {...WORDS}><textPath href={`#${id}${path}`} startOffset={path === "l" ? "96%" : "4%"}>{text}</textPath></text>;
-  const leaf = (cls, d, list, i, text) => (
-    <g key={cls + i} className={cls} style={{ "--i": i }}>
-      <path d={d} fill={color} stroke={hole} strokeWidth="1" />
-      {text}
-      {rules(list)}
-    </g>
+  const rules = (list) => list.map((d, n) => <path key={n} d={d} stroke={hole} strokeOpacity=".4" strokeWidth="1.5" strokeLinecap="round" />);
+  const words = (path, text) => <text fill={hole} {...WORDS}><textPath href={`#${id}${path}`} startOffset="50%">{text}</textPath></text>;
+  const page = (side) => (
+    <>
+      <path d={side === "r" ? PAGE_RIGHT : PAGE_LEFT} fill={color} stroke={hole} strokeWidth="1" />
+      <path d={side === "r" ? SHADE_RIGHT : SHADE_LEFT} fill="#000" fillOpacity=".11" />
+    </>
   );
+  // One leaf that turns: j is its place in the turn (0 is the cover, then the pages), which sets when it moves.
+  const leaf = (cls, j, content) => <g key={cls + j} className={cls} style={{ "--i": j }}>{content}</g>;
   return (
     <svg className="lg" data-play={animate || undefined} width={width} viewBox="0 0 120 84" fill="none" role={title ? "img" : undefined} aria-label={title} aria-hidden={title ? undefined : true} style={{ display: "block", flexShrink: 0 }}>
       <defs><path id={`${id}r`} d={TEXT_RIGHT} /><path id={`${id}l`} d={TEXT_LEFT} /></defs>
       <g className="lg-g">
-        <path d={COVER} fill={color} />
-        <path d={STACK} stroke={hole} strokeOpacity=".45" strokeWidth="1.1" strokeLinecap="round" />
-        <path d={PAGE_RIGHT} fill={color} stroke={hole} strokeWidth="1" />
+        <path d={COVER_RIGHT} fill={color} />
+        <path d={STACK_RIGHT} stroke={hole} strokeOpacity=".45" strokeWidth="1.1" strokeLinecap="round" />
+        {page("r")}
         {words("r", "Politics")}
         {rules(RULES_RIGHT)}
-        {[2, 1, 0].map((i) => leaf("lg-f", PAGE_RIGHT, RULES_RIGHT, i))}
-        {[0, 1, 2].map((i) => leaf("lg-b", PAGE_LEFT, RULES_LEFT, i, i === 2 && words("l", "UK")))}
+        {[3, 2, 1].map((j) => leaf("lg-f", j, <>{page("r")}{rules(RULES_RIGHT)}</>))}
+        {leaf("lg-f", 0, (
+          <>
+            <path d={COVER_RIGHT} fill={color} stroke={hole} strokeWidth=".6" strokeOpacity=".5" />
+            <path d={FRAME} stroke={hole} strokeOpacity=".5" strokeWidth="1" />
+            <path d={DIAMOND} fill={ribbon} />
+          </>
+        ))}
+        {leaf("lg-b", 0, (
+          <>
+            <path d={COVER_LEFT} fill={color} />
+            <path d={STACK_LEFT} stroke={hole} strokeOpacity=".45" strokeWidth="1.1" strokeLinecap="round" />
+          </>
+        ))}
+        {[1, 2, 3].map((j) => leaf("lg-b", j, <>{page("l")}{j === 3 && words("l", "UK")}{rules(RULES_LEFT)}</>))}
         <path d={RIBBON} fill={ribbon} />
       </g>
     </svg>
