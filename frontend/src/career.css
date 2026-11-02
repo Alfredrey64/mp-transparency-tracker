@@ -1,0 +1,38 @@
+/* The Career tab's "at a glance" panel. Loaded with the Career tab. Three groups of tiles, each with its own colour. */
+.cg { display: grid; gap: 18px; color: var(--c-ink); }
+.cg-group { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.cg-group h3 { margin: 0; font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.02em; color: var(--c-ink-soft); }
+.cg-group ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.cg-tile { position: relative; display: grid; gap: 2px; align-content: start; padding: 14px 14px 14px 16px; border-radius: 16px; background: var(--c-paper-card); border: 1px solid color-mix(in srgb, var(--tc) 22%, var(--c-hairline)); box-shadow: var(--shadow-1); overflow: hidden; min-width: 0; opacity: 0; transform: translateY(10px); transition: opacity 0.5s var(--ease-out) calc(var(--i) * 90ms), transform 0.55s var(--ease-out) calc(var(--i) * 90ms); }
+.cg-tile::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--tc); }
+.cg-tile::after { content: ""; position: absolute; right: -28px; top: -28px; width: 90px; height: 90px; border-radius: 50%; background: color-mix(in srgb, var(--tc) 9%, transparent); }
+[data-go="1"].cg .cg-tile { opacity: 1; transform: none; }
+.cg-ico { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 11px; margin-bottom: 6px; background: color-mix(in srgb, var(--tc) 14%, transparent); color: color-mix(in srgb, var(--tc) 80%, var(--c-ink)); position: relative; z-index: 1; }
+.cg-num { position: relative; z-index: 1; font: 700 clamp(30px, 3.2vw, 38px)/1.05 "Figures", "Newsreader", Georgia, serif; letter-spacing: -0.02em; color: var(--c-ink); font-variant-numeric: lining-nums tabular-nums; }
+.cg-num small { margin-left: 5px; font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0; color: color-mix(in srgb, var(--tc) 75%, var(--c-ink)); }
+.cg-label { position: relative; z-index: 1; font: 700 13.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); margin-top: 3px; }
+.cg-note { position: relative; z-index: 1; font: 400 12.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.cg-share { position: relative; z-index: 1; display: grid; gap: 4px; margin-top: 10px; }
+.cg-share i { display: block; height: 7px; border-radius: 4px; background: color-mix(in srgb, var(--tc) 14%, var(--c-hairline)); overflow: hidden; }
+.cg-share i::after { content: ""; display: block; height: 100%; width: var(--w); border-radius: 4px; background: var(--tc); transform-origin: left; transform: scaleX(0); transition: transform 1s var(--ease-out) calc(0.35s + var(--i, 0) * 90ms); }
+[data-go="1"].cg .cg-share i::after { transform: none; }
+.cg-share em { font: 600 11.5px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: var(--c-ink-soft); }
+.cg-tile[data-empty="1"] { background: color-mix(in srgb, var(--c-paper-card) 70%, var(--c-paper)); }
+.cg-tile[data-empty="1"] .cg-num, .cg-tile[data-empty="1"] .cg-label { color: var(--c-ink-soft); }
+.cg-tile[data-empty="1"]::before { background: var(--c-hairline); }
+.cg-tile[data-empty="1"] .cg-ico { background: var(--c-hairline); color: var(--c-ink-soft); }
+@media (max-width: 760px) { .cg-group ul { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 340px) { .cg-group ul { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .cg-tile, .cg-share i::after { transition: none !important; opacity: 1; transform: none; } }
+
+/* The career chart: the bars draw in from the left, lane by lane, once the chart scrolls into view, and a bar that is still going gives off one soft pulse at its end. */
+.cl[data-go="0"] .career-bar { opacity: 0; transform: scaleX(0); }
+.cl[data-go="1"] .career-bar { animation: careerBar 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.cl[data-go="0"] .cl-lane { opacity: 0; }
+.cl[data-go="1"] .cl-lane { animation: clLane 0.5s var(--ease-out) both; }
+@keyframes clLane { from { opacity: 0; transform: translateX(-8px); } }
+@media (prefers-reduced-motion: no-preference) {
+  .cl[data-go="1"] .career-bar[data-on="1"]::after { content: ""; position: absolute; right: 0; top: 0; bottom: 0; width: 28px; border-radius: inherit; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent); transform: translateX(-120%); animation: clGlint 1.4s ease-out 1.6s 1 both; }
+}
+@keyframes clGlint { to { transform: translateX(60%); } }
+@media (prefers-reduced-motion: reduce) { .cl[data-go="0"] .career-bar, .cl[data-go="0"] .cl-lane { opacity: 1; transform: none; } }

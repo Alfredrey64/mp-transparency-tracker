@@ -16,6 +16,8 @@ import LetterToMP from "./games/LetterToMP";
 import ParliamentBingo from "./games/ParliamentBingo";
 import JargonMatcher from "./games/JargonMatcher";
 import SpotTheSpin from "./games/SpotTheSpin";
+import WhereToGo from "./games/WhereToGo";
+import BiggerBudget from "./games/BiggerBudget";
 import { HowTo } from "./games/kit";
 import ClassCode from "./ClassCode";
 import { GAME_KEYS, decode, encode, gamePath } from "../../lib/classCode";
@@ -38,6 +40,8 @@ const ACTIVITIES = [
   { key: "bingo", title: "Parliament bingo", kind: "Game", time: "10 min", colour: "#E8741A", learn: "A clue rolls out of the bingo machine. Find the word on your card and stamp it. Get a line, then a full house.", how: ["Read the clue.", "Tap the word on your card that it describes.", "Make a line for a bingo, then fill the card."], Component: ParliamentBingo },
   { key: "jargon", title: "Jargon matcher", kind: "Game", time: "8 min", colour: "#0E9AA7", learn: "Match hard political words with their plain-English meanings, over three rounds.", how: ["Tap a word on the left.", "Tap the meaning on the right.", "Match all six to finish the round."], Component: JargonMatcher },
   { key: "spin", title: "Spot the spin", kind: "Game", time: "15 min", colour: "#D4577A", learn: "Read nine made-up news claims, name the trick that makes each one misleading, ask the question that gets to the truth, then trace where a number really came from.", how: ["Read the made-up claim and look at its picture.", "Name the trick, then pick the best question to ask.", "Watch the picture flip to the fair version."], Component: SpotTheSpin },
+  { key: "route", title: "Who handles it?", kind: "Game", time: "10 min", colour: "#1F6F5C", learn: "Work out where to go first for everyday problems: the council, an ombudsman, your MP, the police or a freedom of information request.", how: ["Read the problem.", "Tap where you would go first.", "Learn why, then move on to the next problem."], Component: WhereToGo },
+  { key: "bigger", title: "Which budget is bigger?", kind: "Game", time: "8 min", colour: "#2C5F9E", learn: "Guess which of two government departments is planned to spend more, then see the real amounts from the Treasury.", how: ["Read the two departments.", "Tap the one you think is bigger.", "Watch the bars show the real amounts."], Component: BiggerBudget },
   { key: "quiz", title: "Team quiz", kind: "Class activity", time: "15 min", colour: "#7A5AF0", learn: "Run a buzzer quiz for two to four teams, with a countdown and a scoreboard.", how: ["Split the class into teams.", "Tap the team that calls out first.", "Tap the answer they give."], Component: TeamQuiz },
   { key: "election", title: "Run a mock election", kind: "Class activity", time: "20 min", colour: "#E0367A", learn: "Hold a vote by area, then announce the results like a real election night.", how: ["Name the parties and areas.", "Count the class's votes.", "Announce the results area by area."], Component: MockElection },
   { key: "budget", title: "Build the budget", kind: "Class activity", time: "20 min", colour: "#E8741A", learn: "Share out the real public budget, and see what every choice costs.", how: ["Move the sliders to share out the money.", "Watch what is left to place.", "Try the challenges."], Component: BudgetGame },

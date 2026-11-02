@@ -249,7 +249,7 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 
 /* Career tab: bars grow out from their left edge, once, when the tab opens. */
 @keyframes careerBar { from { transform: scaleX(0); opacity: 0.4; } to { transform: scaleX(1); opacity: 1; } }
-.career-bar { transform-origin: left center; animation: careerBar 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.career-bar { transform-origin: left center; }
 @media (prefers-reduced-motion: reduce) { .career-bar { animation: none; } }
 
 /* Touch screens: small text-link buttons (a row of 14px-high "Download" or

@@ -10,7 +10,8 @@ import { IconByElection } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import Loading from "./Loading";
 import { GlanceCard, StackBar } from "./Glance";
-import { Stats } from "./insight";
+import ByElectionBoard from "./ByElectionBoard";
+import { outcomeOf, movesBetweenParties, strip, byYear } from "../lib/byElectionView";
 
 function daysAgo(dateStr) {
   if (!dateStr) return null;
@@ -22,20 +23,12 @@ function daysAgo(dateStr) {
   return `${years} year${years === 1 ? "" : "s"} ago`;
 }
 
-// "RUK Gain" / "Lab Hold" — split the party abbreviation from the plain-
-// English outcome so the outcome word can be styled distinctly (a "Gain"
-// is the headline-worthy result; a "Hold" is a quieter one).
-function resultOutcome(result) {
-  if (!result) return null;
-  const match = /\b(Gain|Hold)\b/i.exec(result);
-  return match ? match[1] : result;
-}
-
 export default function ByElections() {
   const [elections, setElections] = useState(null);
   const [formerMps, setFormerMps] = useState([]);
   const [expanded, setExpanded] = useState(null);
   const [failed, setFailed] = useState(false);
+  const [filter, setFilter] = useState("all");
 
   useEffect(() => {
     async function load() {
@@ -71,12 +64,16 @@ export default function ByElections() {
     let gains = 0;
     let holds = 0;
     for (const e of completed) {
-      const outcome = resultOutcome(e.result);
-      if (outcome === "Gain") gains++;
-      else if (outcome === "Hold") holds++;
+      const outcome = outcomeOf(e.result);
+      if (outcome === "gain") gains++;
+      else if (outcome === "hold") holds++;
     }
     return { gains, holds };
   }, [completed]);
+
+  const moves = useMemo(() => movesBetweenParties(completed, predecessorFor), [completed, predecessorFor]);
+  const stripItems = useMemo(() => strip(completed), [completed]);
+  const groups = useMemo(() => byYear(completed, filter), [completed, filter]);
 
   const winners = useMemo(() => {
     const by = new Map();
@@ -107,21 +104,7 @@ export default function ByElections() {
 
       {elections !== null && (completed.length > 0 || vacantSeats.length > 0) && (
         <GlanceCard id="h-be-glance" title="By-elections at a glance" lead="Since the last general election. A seat counts as a gain when a different party wins it than held it before.">
-          <Stats
-            accent="#1E4FB8"
-            items={[
-              { value: String(completed.length), label: `by-election${completed.length === 1 ? "" : "s"} held` },
-              { value: String(stats.gains), label: `seat${stats.gains === 1 ? "" : "s"} changed hands`, accent: "#E0367A" },
-              { value: String(stats.holds), label: `seat${stats.holds === 1 ? "" : "s"} held by the same party`, accent: "#2F9E6B" },
-              ...(vacantSeats.length ? [{ value: String(vacantSeats.length), label: `seat${vacantSeats.length === 1 ? "" : "s"} vacant now`, accent: "#B0473E" }] : []),
-            ]}
-          />
-          {winners.length > 0 && (
-            <div style={{ marginTop: 22 }}>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink, marginBottom: 10 }}>Who won them</div>
-              <StackBar items={winners} label={`By-election winners: ${winners.map((w) => `${w.label} ${w.value}`).join(", ")}`} />
-            </div>
-          )}
+          <ByElectionBoard total={completed.length} gains={stats.gains} holds={stats.holds} vacant={vacantSeats.length} strip={stripItems} moves={moves} winners={winners} StackBar={StackBar} />
         </GlanceCard>
       )}
 
@@ -192,14 +175,24 @@ export default function ByElections() {
       )}
 
       {completed.length > 0 && (
-        <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, color: COLORS.ink, marginBottom: 14 }}>Recent By-Elections</h2>
+        <>
+          <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, color: COLORS.ink, marginBottom: 12 }}>Every by-election</h2>
+          <div className="be-filter" role="group" aria-label="Which by-elections to show">
+            {[["all", "All", completed.length], ["gain", "Changed hands", stats.gains], ["hold", "Held", stats.holds]].map(([key, label, n]) => (
+              <button key={key} type="button" aria-pressed={filter === key} onClick={() => withScrollPreserved(() => setFilter(key))}>{label}<span>{n}</span></button>
+            ))}
+          </div>
+        </>
       )}
 
+      {groups.map((group) => (
+      <section key={group.year}>
+      <h3 className="be-year"><span>{group.year}</span><small>{group.items.length} by-election{group.items.length === 1 ? "" : "s"}</small></h3>
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-        {completed.map((e, i) => {
+        {group.items.map((e, i) => {
           const color = partyColour(e.winning_party_colour, COLORS.inkSoft);
-          const outcome = resultOutcome(e.result);
-          const isGain = outcome === "Gain";
+          const outcome = outcomeOf(e.result);
+          const isGain = outcome === "gain";
           const isOpen = expanded === e.election_id;
           const predecessor = predecessorFor(e.constituency_name, e.election_date);
           const candidates = [...(e.candidates ?? [])].sort((a, b) => a.rankOrder - b.rankOrder);
@@ -236,14 +229,14 @@ export default function ByElections() {
                         color: readable(color), background: `${color}1e`, padding: "3px 10px", borderRadius: 999,
                       }}
                     >
-                      {e.winning_party} {isGain ? "Gain" : outcome ?? ""}
+                      <span className="be-tag">{outcome && <OutcomeIcon gain={isGain} />}{e.winning_party} {isGain ? "gain" : outcome === "hold" ? "hold" : (e.result ?? "")}</span>
                     </span>
                     <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ color: COLORS.inkSoft, fontSize: 12 }}>▾</motion.span>
                   </div>
                 </div>
 
                 <div style={{ display: "flex", alignItems: "stretch", gap: 0, background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 10, overflow: "hidden" }}>
-                  <div style={{ flex: 1, minWidth: 0, padding: "10px 14px", borderRight: `1px solid ${COLORS.hairline}` }}>
+                  <div style={{ flex: 1, minWidth: 0, padding: "10px 24px 10px 14px", borderRight: `1px solid ${COLORS.hairline}` }}>
                     <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: COLORS.inkSoft, marginBottom: 4 }}>
                       Previously
                     </div>
@@ -258,7 +251,8 @@ export default function ByElections() {
                       <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, fontStyle: "italic" }}>Not on record</div>
                     )}
                   </div>
-                  <div style={{ flex: 1, minWidth: 0, padding: "10px 14px" }}>
+                  <span className="be-swap" aria-hidden="true" />
+                  <div style={{ flex: 1, minWidth: 0, padding: "10px 14px 10px 24px" }}>
                     <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: COLORS.inkSoft, marginBottom: 4 }}>
                       Elected instead
                     </div>
@@ -270,6 +264,21 @@ export default function ByElections() {
                     </div>
                   </div>
                 </div>
+                {candidates.length > 0 && (
+                  <>
+                    <div className="be-share" role="img" aria-label={`Share of the vote: ${candidates.slice(0, 4).map((c) => `${c.party?.name ?? c.name} ${Math.round((c.voteShare ?? 0) * 100)}%`).join(", ")}`}>
+                      {shareSegments(candidates).map((c, ci) => (
+                        <i key={`${c.name}-${ci}`} style={{ "--tc": c.colour, width: `${c.share * 100}%` }} />
+                      ))}
+                    </div>
+                    <div className="be-sharekey" aria-hidden="true">
+                      {candidates.slice(0, 3).map((c, ci) => (
+                        <span key={`${c.name}-${ci}`} style={{ "--tc": partyColour(c.party?.backgroundColour, COLORS.inkSoft) }}>{c.party?.name ?? c.name} <b>{Math.round((c.voteShare ?? 0) * 100)}%</b></span>
+                      ))}
+                      {e.majority != null && <span style={{ "--tc": "transparent" }}>Majority <b>{Number(e.majority).toLocaleString()}</b></span>}
+                    </div>
+                  </>
+                )}
               </button>
 
               <AnimatePresence initial={false}>
@@ -347,7 +356,24 @@ export default function ByElections() {
           );
         })}
       </div>
+      </section>
+      ))}
     </div>
+  );
+}
+
+// The biggest four candidates' shares as bar segments, with everyone else added up as one grey segment, so a long list of small candidates does not become a smear.
+function shareSegments(candidates) {
+  const top = candidates.slice(0, 4).filter((c) => (c.voteShare ?? 0) > 0).map((c) => ({ name: c.name, colour: partyColour(c.party?.backgroundColour, COLORS.inkSoft), share: c.voteShare }));
+  const rest = candidates.slice(4).reduce((sum, c) => sum + (c.voteShare ?? 0), 0);
+  return rest > 0 ? [...top, { name: "Others", colour: "#8A93A6", share: rest }] : top;
+}
+
+function OutcomeIcon({ gain }) {
+  return gain ? (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 5.5h9.5M10 3l2.5 2.5L10 8M13 10.5H3.5M6 8l-2.5 2.5L6 13" /></svg>
+  ) : (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M8 1.8l5 1.8v4c0 3-2.1 5.1-5 6.6-2.9-1.5-5-3.6-5-6.6v-4z" /><path d="M5.6 8l1.8 1.8L10.6 6.4" /></svg>
   );
 }
 

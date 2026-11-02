@@ -98,7 +98,7 @@ for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/teacher/activities");
     const cards = page.locator(".act-card");
-    await expect(cards).toHaveCount(17);
+    await expect(cards).toHaveCount(19);
     const last = cards.nth(12);
     await last.scrollIntoViewIfNeeded();
     expect(await page.evaluate(() => scrollY)).toBeGreaterThan(900);

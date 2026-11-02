@@ -8,7 +8,7 @@ import {
 } from "../components/icons";
 import {
   IconContract, IconPeerage, IconElectionSpend, IconForeignAgent, IconMayor, IconCouncilBudget, IconPolice, IconPlanning, IconCivilService, IconCourt, IconCrown, IconAudit,
-  IconJustice, IconWater, IconPoll, IconAid, IconWheat, IconFlood, IconSignal,
+  IconJustice, IconWater, IconPoll, IconAid, IconWheat, IconFlood, IconSignal, IconBudget, IconSignpost, IconInquiry, IconDepartments,
 } from "../components/newIcons";
 
 // Lives outside both Sidebar.jsx and shared.jsx specifically so neither has
@@ -35,6 +35,9 @@ export const SECTIONS = [
     items: [
       { key: "start", label: "Take the guided tour", icon: IconRoute, hint: "5 minutes, no jargon", essential: true },
       { key: "thisWeek", label: "What changed this week", icon: IconFeed, hint: "New votes, bills, money and petitions", essential: true, aka: ["news", "latest", "this week", "new", "updates", "what happened", "recent"] },
+      { key: "upcoming", label: "Coming up in Parliament", icon: IconCalendar, hint: "Sitting days, bills, committees and questions for the next four weeks", essential: true, aka: ["upcoming", "what is on", "whats on", "recess", "parliament calendar", "when does parliament sit", "this week in parliament", "next week", "debates", "bills due", "committee hearings", "pmqs", "prime ministers questions", "sitting days", "summer recess", "christmas recess"] },
+      { key: "howBudgetWorks", label: "How the Budget works", icon: IconBudget, hint: "What the Chancellor announces, who checks it, and what changed", essential: true, aka: ["budget", "autumn budget", "spring statement", "spending review", "chancellor", "obr", "office for budget responsibility", "finance bill", "tax changes", "budget 2026", "fiscal rules", "headroom", "forecast"] },
+      { key: "getThingsDone", label: "How to get something done", icon: IconSignpost, hint: "Who to contact, how to complain, and how to ask for information", essential: true, aka: ["complain", "complaint", "ombudsman", "foi", "freedom of information", "who do i contact", "how do i complain", "iopc", "police complaint", "council complaint", "nhs complaint", "ico", "request information", "whatdotheyknow"] },
       { key: "answers", label: "Ask a question", icon: IconAsk, hint: "Why is housing so expensive?", essential: true, aka: ["why", "how", "explain", "question", "questions", "answers", "faq", "ask"] },
       { key: "howitworks", label: "How Parliament works", icon: IconFlow, hint: "From idea to law, step by step", essential: true, aka: ["parliament", "laws"] },
       { key: "devolved", label: "Scotland, Wales & N. Ireland", icon: IconDevolved, hint: "Who decides what where you live", aka: ["devolved administrations", "devolution"] },
@@ -48,6 +51,7 @@ export const SECTIONS = [
       { key: "constitution", label: "Courts and the constitution", icon: IconCourt, hint: "Judges, laws and the rules behind them", aka: ["supreme court", "human rights act", "judges"] },
       { key: "monarchy", label: "The monarchy", icon: IconCrown, hint: "The King's role and the money", aka: ["king", "sovereign grant", "royal family", "crown estate"] },
       { key: "watchdogs", label: "Watchdogs and inquiries", icon: IconAudit, hint: "Auditors, forecasters and inquiries", aka: ["nao", "obr", "public inquiry", "national audit office"] },
+      { key: "inquiries", label: "Public inquiries", icon: IconInquiry, hint: "How they are set up, how long they take and what they cost", aka: ["public inquiry", "inquiries act", "covid inquiry", "grenfell", "infected blood", "post office inquiry", "chair", "terms of reference", "recommendations"] },
       { key: "numbers", label: "Parliament in numbers", icon: IconChartBars, hint: "Who sits there, and who they are", essential: true, aka: ["statistics", "stats", "women", "lords", "mp backgrounds", "diversity", "private school", "women mps", "who mps are"] },
       { key: "history", label: "Landmark votes", icon: IconHistory, hint: "Moments that shaped today", aka: ["political history"] },
       { key: "timeline", label: "Timeline", icon: IconTimeline, hint: "Every government since 1721" },
@@ -108,6 +112,7 @@ export const SECTIONS = [
       { key: "lords", label: "The House of Lords", icon: IconLords, hint: "The unelected second chamber", aka: ["peers", "lords"] },
       { key: "lordsVotes", label: "How peers vote", icon: IconLordsVote, hint: "Loyalty, rebels and defeats in the Lords", aka: ["lords votes", "peers voting", "lords divisions", "lords rebels", "content not content"] },
       { key: "committees", label: "Watchdog committees", icon: IconCommittee, hint: "MPs who question ministers", aka: ["select committees"] },
+      { key: "committeeReports", label: "Committee reports and replies", icon: IconCommittee, hint: "Which reports the government has answered, and how long it took", aka: ["select committee reports", "government response", "government replies", "committee recommendations", "overdue replies", "public accounts committee", "pac report", "recommendations"] },
       { key: "tracker", label: "Promises tracker", icon: IconTracker, hint: "Has the government kept its word?", aka: ["manifesto promises"] },
     ],
   },
@@ -194,6 +199,7 @@ export const SECTIONS = [
       { key: "lobbyingRegister", label: "Paid lobbyists", icon: IconRegister, hint: "The official list, and its limits", aka: ["consultant lobbyists", "lobbyists"] },
       { key: "thinkTanks", label: "Who funds think tanks", icon: IconThinkTank, hint: "The money behind the experts", aka: ["think tank funding"] },
       { key: "govContracts", label: "Government contracts", icon: IconContract, hint: "Who wins public money, and how", aka: ["procurement", "ppe", "tenders", "vip lane"] },
+      { key: "departments", label: "Spending by department", icon: IconDepartments, hint: "What each department is planned to spend, 2025-26 to 2028-29", aka: ["department budgets", "spending review", "departmental spending", "resource del", "capital del", "del", "health budget", "defence budget", "education budget", "where the money goes", "public spending by department"] },
       { key: "honours", label: "Peerages and honours", icon: IconPeerage, hint: "Who ends up in the Lords", aka: ["peers", "lords appointments", "cash for honours", "holac"] },
       { key: "electionSpending", label: "Election spending", icon: IconElectionSpend, hint: "What campaigns may spend", aka: ["campaign spending", "spending limits", "election expenses"] },
       { key: "foreignInfluence", label: "Foreign influence", icon: IconForeignAgent, hint: "The register of foreign agents", aka: ["firs", "foreign agents", "foreign influence registration scheme"] },
@@ -271,7 +277,7 @@ export const HUBS = [
   { key: "questions", label: "Questions to ministers", hint: "What MPs ask ministers", pages: [["writtenQuestions", "Questions to ministers"], ["topics", "Who's asking about a topic"]] },
   { key: "funders", label: "Who funds politics", hint: "Donors to MPs and parties", pages: [["donors", "Who funds MPs"], ["partyFinances", "Who funds the parties"], ["followTheMoney", "Trace a donor"]] },
   { key: "hidden", label: "What's hidden", hint: "Where the public records run out", pages: [["darkMoney", "Hidden donations"], ["revolvingDoor", "Ministers' later jobs"], ["lobbyingRegister", "Paid lobbyists"], ["thinkTanks", "Think tank funding"]] },
-  { key: "publicmoney", label: "Contracts, honours and spending", hint: "Public contracts, peerages, campaign spending and foreign influence", pages: [["govContracts", "Government contracts"], ["honours", "Peerages"], ["electionSpending", "Election spending"], ["foreignInfluence", "Foreign influence"]] },
+  { key: "publicmoney", label: "Contracts, honours and spending", hint: "Public contracts, peerages, campaign spending and foreign influence", pages: [["govContracts", "Government contracts"], ["departments", "Spending by department"], ["honours", "Peerages"], ["electionSpending", "Election spending"], ["foreignInfluence", "Foreign influence"]] },
   { key: "results", label: "Election results", hint: "General, by- and local elections", pages: [["generalElection", "General elections"], ["byElections", "By-elections"], ["localElections", "Local elections"], ["polling", "Polls explained"]] },
   { key: "yourvote", label: "Your vote", hint: "How to vote, and who is on your ballot", pages: [["howtovote", "How to vote"], ["myBallot", "Who is on my ballot"]] },
   { key: "seat", label: "Your constituency", hint: "Your seat, and close contests", pages: [["constituency", "Your constituency"], ["marginals", "Marginal seats"], ["compareSeats", "Compare seats"]] },
@@ -279,7 +285,7 @@ export const HUBS = [
   { key: "localpower", label: "Local power", hint: "Mayors, police commissioners and planning", pages: [["mayors", "Mayors"], ["policeCommissioners", "Police commissioners"], ["planning", "Planning"]] },
   { key: "qa", label: "Questions and jargon", hint: "Plain answers, and what the words mean", pages: [["answers", "Ask a question"], ["glossary", "Jargon buster"]] },
   { key: "parliament", label: "How Parliament works", hint: "From idea to law, and who sits there", pages: [["howitworks", "How it works"], ["numbers", "In numbers"]] },
-  { key: "state", label: "How the state works", hint: "The Civil Service, courts, Crown, watchdogs, devolved nations and the news", pages: [["civilService", "Civil Service"], ["constitution", "Courts"], ["monarchy", "Monarchy"], ["watchdogs", "Watchdogs"], ["devolved", "Devolution"], ["mediaLiteracy", "News regulation"]] },
+  { key: "state", label: "How the state works", hint: "The Civil Service, courts, Crown, watchdogs, devolved nations and the news", pages: [["civilService", "Civil Service"], ["constitution", "Courts"], ["monarchy", "Monarchy"], ["watchdogs", "Watchdogs"], ["inquiries", "Public inquiries"], ["devolved", "Devolution"], ["mediaLiteracy", "News regulation"]] },
   { key: "partyhub", label: "Parties", hint: "What they promise, and which one suits you", pages: [["parties", "What parties promise"], ["partymatch", "Which party suits me?"]] },
   { key: "past", label: "History", hint: "Landmark votes and every government", pages: [["history", "Landmark votes"], ["timeline", "Every government"], ["formerMps", "Recent departures"]] },
   { key: "economy", label: "The economy", hint: "Growth, jobs, public money and trade", pages: [["economy", "The economy"], ["jobs", "Jobs and pay"], ["publicFinances", "Public finances"], ["trade", "Trade"], ["business", "Business"]] },

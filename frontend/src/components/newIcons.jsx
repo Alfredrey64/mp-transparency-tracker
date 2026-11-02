@@ -159,3 +159,35 @@ export function IconSignal({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconBudget({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="4" y="7" width="16" height="13" rx="2" /><path d="M9 7V5.5A1.5 1.5 0 0 1 10.500 4h3A1.5 1.5 0 0 1 15 5.500V7" /><path d="M4 12.500h16" /><path d="M12 10.500v4M10.600 12.500c0-.6.600-1 1.400-1s1.400.4 1.400 1c0 1.200-2.800.4-2.800 1.600 0 .6.600 1 1.400 1s1.400-.4 1.400-1" />
+    </svg>
+  );
+}
+
+export function IconSignpost({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3v18M9 21h6" /><path d="M12 5h6l2 2.500-2 2.500h-6z" /><path d="M12 12h-6l-2 2.500L6 17h6z" />
+    </svg>
+  );
+}
+
+export function IconInquiry({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 3h8l4 4v6" /><path d="M14 3v4h4" /><path d="M6 3v18h6" /><path d="M9 9h3M9 12.500h2" /><circle cx="16.500" cy="17" r="3.200" /><path d="m19 19.500 2 2" />
+    </svg>
+  );
+}
+
+export function IconDepartments({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3.500 9.500 12 4l8.500 5.500" /><path d="M5.500 10v8M10 10v8M14 10v8M18.500 10v8" /><path d="M3.500 20.500h17" />
+    </svg>
+  );
+}

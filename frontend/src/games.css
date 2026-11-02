@@ -433,3 +433,16 @@ a.act-back { text-decoration: none; }
 .sp-kit span { font: 400 14.5px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 @media (prefers-reduced-motion: reduce) { .sp-bar { transition: none; } .sp-in, .sp-rest { animation: none; } }
 .act h2:focus { outline: none; }
+
+/* Which budget is bigger? Two big answers side by side, each growing a bar once the answer is in. */
+.gm-bb { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.gm-bb .gm-choice { align-content: start; min-height: 120px; }
+.gm-bb-bar { display: block; height: 10px; margin-top: 8px; border-radius: 5px; background: color-mix(in srgb, var(--gc) 18%, #fff); overflow: hidden; }
+.gm-bb-bar i { display: block; height: 100%; border-radius: 5px; background: var(--gc); transform-origin: left; animation: gmBarGrow 0.8s var(--ease-out) both; }
+@keyframes gmBarGrow { from { transform: scaleX(0); } }
+@media (max-width: 520px) { .gm-bb { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .gm-bb-bar i { animation: none; } }
+.gm-choices[data-n="4"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 520px) { .gm-choices[data-n="4"] { grid-template-columns: minmax(0, 1fr); } }
+.gm-bb .gm-choice[data-state="right"] .gm-bb-bar { background: rgba(255, 255, 255, 0.3); }
+.gm-bb .gm-choice[data-state="right"] .gm-bb-bar i { background: #fff; }

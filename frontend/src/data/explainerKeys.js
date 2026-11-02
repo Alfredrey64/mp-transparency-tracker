@@ -20,4 +20,10 @@ export const EXPLAINER_KEYS = [
   "farming",
   "flooding",
   "digital",
+  "upcoming",
+  "committeeReports",
+  "howBudgetWorks",
+  "getThingsDone",
+  "inquiries",
+  "departments",
 ];

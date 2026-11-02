@@ -124,7 +124,7 @@ export function Steps({ steps }) {
       {steps.map((s, i) => (
         <li key={s.title} style={{ "--tc": s.colour, "--i": i }}>
           <span className="st-step-n" aria-hidden="true">{i + 1}</span>
-          <div><b>{s.title}</b><p>{s.text}</p></div>
+          <div><b>{s.title}</b>{s.text && <p>{s.text}</p>}</div>
         </li>
       ))}
     </ol>

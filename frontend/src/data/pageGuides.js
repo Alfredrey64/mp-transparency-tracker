@@ -511,6 +511,36 @@ export const PAGE_GUIDES = {
     why: "Whether your home floods or your street has clean air depends on where you live, and both depend on public money and rules.",
     notShown: "Live flood warnings outside England, and the air quality at your own address. The check links to the official services for both.",
   },
+  upcoming: {
+    what: "The days the Commons and Lords sit over the next four weeks, which bills are due to be debated, which committees are taking evidence in public, and which ministers will answer questions.",
+    why: "It lets you follow a bill or a committee you care about before it happens, and see when your MP is away from Westminster.",
+    notShown: "Business that has not yet been announced, which fills in as each week gets closer, and how any debate or vote will go.",
+  },
+  committeeReports: {
+    what: "Which select committee reports from the last 12 months have had a government reply, how long replies took, which committees are waiting longest and which reports have had no reply.",
+    why: "A committee can only recommend. The government's reply is the public record of whether it accepts the recommendations.",
+    notShown: "What each reply says, whether the government kept to what it promised, and replies that came as letters or were not linked to the report in Parliament's records.",
+  },
+  howBudgetWorks: {
+    what: "What the Budget is, how it differs from the Spending Review, who checks the numbers, and what Budget 2026 changed for household bills and pay.",
+    why: "The Budget decides how much tax you pay, what help you get with bills and how much each department can spend.",
+    notShown: "Every measure in Budget 2026, and what any change will cost you personally. The Treasury's documents list every decision.",
+  },
+  getThingsDone: {
+    what: "Who to contact for a problem with a council, the NHS, a government department or the police, and how to ask a public body for information and appeal a refusal.",
+    why: "Most complaints are settled by the body involved if you go to the right place in the right order, and almost every route has a time limit.",
+    notShown: "Scotland, Wales and Northern Ireland, which have their own ombudsmen, and complaints about private companies, which go to regulators and other ombudsmen.",
+  },
+  inquiries: {
+    what: "How a public inquiry is set up and what powers it has, how long inquiries take and what they cost, and what happens to what they recommend.",
+    why: "Inquiries are how the state investigates its own failures, so it matters what they achieve.",
+    notShown: "A list of every inquiry with its cost to date and status. Each running inquiry publishes its own on its website.",
+  },
+  departments: {
+    what: "The Spending Review 2025 plans for each government department, day-to-day and investment, for 2025-26 and 2028-29, who is growing and who is squeezed, and what the totals leave out.",
+    why: "A department's budget is the clearest sign of what the government is putting first.",
+    notShown: "Benefits, the State Pension and debt interest, which sit outside departmental limits, and any change since June 2025.",
+  },
   digital: {
     what: "How many homes can get gigabit and full fibre broadband, what Ofcom has done under the Online Safety Act, the government's plan to stop under-16s having social media accounts, and where AI law stands.",
     why: "Being online is part of getting a job, a doctor's appointment or a benefit, and the rules for children online are being rewritten now.",

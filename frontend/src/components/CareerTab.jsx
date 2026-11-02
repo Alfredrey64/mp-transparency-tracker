@@ -6,6 +6,8 @@ import {
   EVENT_KINDS, axisTicks, buildEvents, buildLanes, careerStory, chartRange, duration, monthYear, ms, partyColourByName, summarise,
 } from "../lib/careerTimeline";
 import { scrollRegion } from "../lib/a11y";
+import CareerGlance from "./CareerGlance";
+import { useGo } from "./story/useGo";
 
 // The Career tab on a profile: how an MP's career has progressed. A short
 // story, headline figures, a swimlane chart of every spell (seats, parties,
@@ -24,16 +26,6 @@ function textOn(hex) {
   return 0.299 * r + 0.587 * g + 0.114 * b > 160 ? "#1b1b1b" : "#fff";
 }
 
-function Stat({ value, label, note }) {
-  return (
-    <div style={{ minWidth: 0 }}>
-      <div style={{ ...numeric, fontSize: 30, fontWeight: 600, lineHeight: 1.05, color: COLORS.ink, letterSpacing: "-0.02em" }}>{value}</div>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: COLORS.ink, marginTop: 5 }}>{label}</div>
-      {note && <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 1, lineHeight: 1.4 }}>{note}</div>}
-    </div>
-  );
-}
-
 function Swimlanes({ detail, now }) {
   const lanes = useMemo(() => buildLanes(detail, now), [detail, now]);
   const range = useMemo(() => chartRange(lanes, now), [lanes, now]);
@@ -41,10 +33,11 @@ function Swimlanes({ detail, now }) {
   const span = range.to - range.from;
   const pos = (t) => `${((t - range.from) / span) * 100}%`;
   const lost = detail.l.filter((l) => l[1]);
+  const [ref, go] = useGo(0.15);
 
   if (lanes.length === 0 && lost.length === 0) return null;
   return (
-    <div {...scrollRegion("Career timeline")} style={{ overflowX: "auto", border: `1px solid ${COLORS.hairline}`, borderRadius: 14, background: COLORS.paperCard }}>
+    <div {...scrollRegion("Career timeline")} ref={ref} className="cl" data-go={go} style={{ overflowX: "auto", border: `1px solid ${COLORS.hairline}`, borderRadius: 14, background: COLORS.paperCard }}>
       <div style={{ minWidth: 600, padding: "10px 14px 12px" }}>
         {/* year axis */}
         <div style={{ display: "grid", gridTemplateColumns: `${LABEL_W}px minmax(0, 1fr)`, gap: 10 }}>
@@ -58,7 +51,7 @@ function Swimlanes({ detail, now }) {
 
         {lanes.map((lane, li) => (
           <div key={lane.key} style={{ display: "grid", gridTemplateColumns: `${LABEL_W}px minmax(0, 1fr)`, gap: 10, alignItems: "start", padding: "6px 0", borderTop: `1px solid ${COLORS.hairline}` }}>
-            <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: COLORS.inkSoft, paddingTop: 3, position: "sticky", left: 0, background: COLORS.paperCard, zIndex: 2 }}>{lane.label}</div>
+            <div className="cl-lane" style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: COLORS.inkSoft, paddingTop: 3, position: "sticky", left: 0, background: COLORS.paperCard, zIndex: 2, animationDelay: `${li * 70}ms` }}>{lane.label}</div>
             <div style={{ position: "relative", height: lane.rows * ROW }}>
               {ticks.map((t) => (
                 <span key={t.year} aria-hidden="true" style={{ position: "absolute", left: pos(t.at), top: 0, bottom: 0, borderLeft: `1px solid ${COLORS.hairline}`, opacity: 0.55 }} />
@@ -70,7 +63,7 @@ function Swimlanes({ detail, now }) {
                 return (
                   <div
                     key={`${item.label}-${item.from}-${i}`}
-                    className="career-bar keep-line"
+                    className="career-bar keep-line" data-on={item.ongoing ? "1" : "0"}
                     title={tip}
                     style={{
                       position: "absolute", left: pos(item.from), width: `${Math.max(widthPct, 0.5)}%`, top: item.row * ROW + 2, height: ROW - 6,
@@ -227,7 +220,6 @@ export default function CareerTab({ politician, house = "commons" }) {
   if (loading) return <div style={{ fontFamily: FONT_BODY, color: COLORS.inkSoft, padding: "20px 0" }}>Loading career…</div>;
 
   const hasAnything = events.length > 0;
-  const yrs = (n) => (n >= 1 ? `${Math.round(n)} yrs` : n > 0 ? "<1 yr" : "–");
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
@@ -239,18 +231,7 @@ export default function CareerTab({ politician, house = "commons" }) {
         {!hasAnything && <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Parliament's record holds no dated career entries for this MP.</p>}
       </section>
 
-      {hasAnything && summary && (
-        <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(150px, 100%), 1fr))", gap: "20px 24px", padding: "18px 20px", background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 3px 0 ${COLORS.accent}`, borderRadius: 16 }}>
-          {summary.firstElected && <Stat value={summary.firstElected.slice(0, 4)} label="first elected" note={monthYear(summary.firstElected)} />}
-          {summary.lordsFrom && <Stat value={yrs(summary.yearsInLords)} label="in the Lords" note={`since ${summary.lordsFrom.slice(0, 4)}`} />}
-          {summary.firstElected && <Stat value={yrs(summary.yearsInCommons)} label={summary.lordsFrom ? "as an MP" : "in the Commons"} />}
-          {summary.firstElected && <Stat value={summary.electionsWon} label="elections won" note={summary.electionsLost ? `${summary.electionsLost} lost` : undefined} />}
-          <Stat value={summary.governmentPosts} label="government posts" note={summary.governmentPosts ? `${yrs(summary.governmentYears)} in government` : undefined} />
-          <Stat value={summary.shadowPosts} label="shadow posts" note={summary.shadowPosts ? `${yrs(summary.shadowYears)} on the front bench` : undefined} />
-          <Stat value={summary.committees} label="committees" note={summary.committeesNow ? `${summary.committeesNow} now` : undefined} />
-          <Stat value={summary.partyChanges} label="party changes" note={summary.partyChanges ? "including spells as an independent" : undefined} />
-        </section>
-      )}
+      {hasAnything && summary && <CareerGlance summary={summary} now={now} />}
 
       {hasAnything && house !== "lords" && summary?.firstElected && (
         <div style={{ marginTop: -12 }}>

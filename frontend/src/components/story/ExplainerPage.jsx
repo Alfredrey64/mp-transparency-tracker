@@ -2,6 +2,7 @@
 import { PageHeader } from "../shared";
 import { Board, Why, Chapter, Pull, Cards, Steps, Disclose } from "./Kit";
 import AnimatedValue from "./AnimatedValue";
+import { useDetail, setDetail, shortBlocks } from "../../lib/detailLevel";
 
 // One page of plain explanation, laid out from a description of its content, so the pages added in October 2026 read as one family with the "What's hidden"
 // pages. A page says what it holds as data (the figures at the top, why it matters, its chapters, where each fact comes from); this decides how it looks.
@@ -130,7 +131,7 @@ function Block({ b, colour }) {
   if (b.timeline) {
     return (
       <ol className="st-timeline" style={{ "--tc": colour }}>
-        {b.timeline.map((t, i) => <li key={t.when} style={{ "--i": i }}><b>{t.when}</b><span>{t.text}</span></li>)}
+        {b.timeline.map((t, i) => <li key={i} style={{ "--i": i }}><b>{t.when}</b><span>{t.text}</span></li>)}
       </ol>
     );
   }
@@ -140,6 +141,7 @@ function Block({ b, colour }) {
 // Everything under the page header: the figures, the reason it matters, the chapters and the list of sources. A page that already has its own header
 // (a tab of another page, for instance) draws just this.
 export function ExplainerBody({ icon, tiles, tileVariant, lead, why, chapters, sources, checked }) {
+  const detail = useDetail();
   return (
     <>
       {tiles && <Board tiles={tiles} variant={tileVariant} />}
@@ -147,7 +149,7 @@ export function ExplainerBody({ icon, tiles, tileVariant, lead, why, chapters, s
       {why && <Why icon={icon} colour={why.colour}>{why.text}</Why>}
       {chapters.map((c, i) => (
         <Chapter key={c.title} n={i + 1} title={c.title} lede={c.lede} colour={c.colour}>
-          {c.blocks.map((b, j) => <Block key={j} b={b} colour={c.colour} />)}
+          {(detail === "short" ? shortBlocks(c.blocks) : c.blocks).map((b, j) => <Block key={j} b={b} colour={c.colour} />)}
         </Chapter>
       ))}
       {sources?.length > 0 && (
@@ -163,12 +165,25 @@ export function ExplainerBody({ icon, tiles, tileVariant, lead, why, chapters, s
   );
 }
 
+// Two buttons above the page: the whole page, or a short version without the longer paragraphs, small-print notes and fold-outs. The choice carries across pages.
+function DetailToggle() {
+  const detail = useDetail();
+  return (
+    <div className="st-detail" role="group" aria-label="How much to read">
+      <span>How much to read</span>
+      <button type="button" aria-pressed={detail === "short"} onClick={() => setDetail("short")}>Short version</button>
+      <button type="button" aria-pressed={detail === "full"} onClick={() => setDetail("full")}>Full detail</button>
+    </div>
+  );
+}
+
 // `look` is how the page is dressed: "ledger", "poster" or "field" (see story.css); left out, it keeps the first look.
 // `narrow` matches the width of the older pages that sit in the same menu group (Election results, Your council), so moving between tabs does not shift the page.
 export default function ExplainerPage({ icon, kicker, title, subtitle, tiles, tileVariant, lead, why, chapters, sources, checked, narrow = false, look }) {
   return (
     <div className="st" data-look={look} style={{ paddingTop: "clamp(20px, 5vw, 40px)", ...(narrow ? { maxWidth: 1084 } : null) }}>
       <PageHeader icon={icon} kicker={kicker} title={title} subtitle={subtitle} />
+      <DetailToggle />
       <ExplainerBody icon={icon} tiles={tiles} tileVariant={tileVariant} lead={lead} why={why} chapters={chapters} sources={sources} checked={checked} />
     </div>
   );

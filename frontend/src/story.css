@@ -422,18 +422,8 @@
 [data-go="1"] .sa-node, [data-go="1"] .sa-conv-src li, [data-go="1"] .sa-hand-from, [data-go="1"] .sa-hand-to, [data-go="1"].sa-journey li, [data-go="1"] .sa-conv-result { opacity: 1; transform: none; }
 [data-go="1"] .sa-link i { transform: none; }
 .sa-flow[data-down="1"] ol { flex-direction: column; }
-.sa-flow[data-down="1"] .sa-link { flex: 0 0 38px; align-self: flex-start; width: 3px; height: 38px; margin-left: 34px; }
-.sa-flow[data-down="1"] .sa-link i { background: repeating-linear-gradient(180deg, var(--c-ink-soft) 0 6px, transparent 6px 11px); transform: scaleY(0); transform-origin: top; }
-[data-go="1"].sa-flow[data-down="1"] .sa-link i { transform: none; }
-.sa-flow[data-down="1"] .sa-link i::after { right: auto; top: auto; left: -5px; bottom: -1px; transform: rotate(135deg); }
-.sa-flow[data-down="1"] .sa-link span { left: 18px; bottom: 11px; transform: none; }
 @media (max-width: 860px) {
   .sa-flow ol { flex-direction: column; }
-  .sa-link { flex: 0 0 38px; align-self: flex-start; width: 3px; height: 38px; margin-left: 34px; }
-  .sa-link i { background: repeating-linear-gradient(180deg, var(--c-ink-soft) 0 6px, transparent 6px 11px); transform: scaleY(0); transform-origin: top; }
-  [data-go="1"].sa-flow .sa-link i { transform: none; }
-  .sa-link i::after { right: auto; top: auto; left: -5px; bottom: -1px; transform: rotate(135deg); }
-  .sa-link span { left: 18px; bottom: 11px; transform: none; }
 }
 
 .sa-conv-src { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 14px; }
@@ -441,7 +431,8 @@
 .sa-conv-stubs { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 14px; width: 100%; }
 .sa-conv-stubs i, .sa-conv-down { display: block; width: 3px; height: 26px; margin-inline: auto; border-radius: 2px; background: var(--tc, var(--c-ink-soft)); transform: scaleY(0); transform-origin: top; transition: transform 0.4s ease calc(var(--i, 0) * 0.15s + 1.1s); }
 .sa-conv-bar { display: block; height: 3px; width: calc(100% - 100% / var(--n)); border-radius: 2px; background: var(--c-ink-soft); transform: scaleX(0); transition: transform 0.5s ease 1.6s; }
-.sa-conv-down { --tc: var(--c-ink-soft); transition-delay: 2.05s; }
+.sa-conv-down { --tc: var(--c-ink-soft); transition-delay: 2.05s; position: relative; margin-bottom: 4px; }
+.sa-conv-down::after { content: ""; position: absolute; left: 50%; bottom: -3px; width: 9px; height: 9px; margin-left: -6px; border-top: 3px solid var(--c-ink-soft); border-right: 3px solid var(--c-ink-soft); transform: rotate(135deg); }
 [data-go="1"] .sa-conv-stubs i, [data-go="1"] .sa-conv-bar, [data-go="1"] .sa-conv-down { transform: none; }
 .sa-conv-result { --i: 4.6; display: grid; gap: 4px; justify-items: center; text-align: center; width: min(100%, 520px); margin: 0 auto; padding: 16px 20px; border-radius: 18px; background: var(--tc); color: #fff; }
 .sa-conv-result b { font: 700 18px/1.3 "Figures", "Newsreader", Georgia, serif; }
@@ -474,8 +465,8 @@
 @media (max-width: 700px) {
   .sa-hand-head { display: none; }
   .sa-hand li { grid-template-columns: minmax(0, 1fr); gap: 0; }
-  .sa-hand li > i { width: 3px; height: 26px; margin: 0 0 0 28px; background: repeating-linear-gradient(180deg, var(--c-ink-soft) 0 6px, transparent 6px 11px); transform: scaleY(0); transform-origin: top; }
-  .sa-hand li > i::after { right: auto; top: auto; left: -5px; bottom: -1px; transform: rotate(135deg); }
+  .sa-hand li > i { justify-self: center; width: 3px; height: 30px; margin: 0 0 4px; background: linear-gradient(180deg, color-mix(in srgb, var(--c-ink-soft) 12%, transparent), var(--c-ink-soft)); transform: scaleY(0); transform-origin: top; }
+  .sa-hand li > i::after { right: auto; top: auto; left: 50%; bottom: -4px; margin-left: -6px; transform: rotate(135deg); }
 }
 
 .sa-journey ol { list-style: none; margin: 0; padding: 0 0 0 38px; position: relative; display: grid; gap: 0; }
@@ -596,10 +587,10 @@
   .vv-stop { grid-template-columns: 74px minmax(0, 1fr); justify-items: start; text-align: left; gap: 2px 16px; align-items: center; }
   .vv-badge { grid-row: 1 / span 2; }
   .vv-stop b { align-self: end; } .vv-stop small { align-self: start; max-width: none; }
-  .vv-link { flex: 0 0 34px; width: 4px; height: 34px; margin: 0 0 0 35px; }
+  .vv-link { flex: 0 0 38px; align-self: center; width: 4px; height: 38px; margin: 0; }
   .vv-link i { transform-origin: top; transform: scaleY(0); }
   .vv-link i::before { background: repeating-linear-gradient(180deg, #fff 0 7px, transparent 7px 17px); background-size: 100% 17px; }
-  .vv-link::after { right: auto; top: auto; left: -4px; bottom: -3px; transform: rotate(135deg) scale(0); }
+  .vv-link::after { right: auto; top: auto; left: 50%; bottom: -3px; margin-left: -8px; transform: rotate(135deg) scale(0); }
   [data-go="1"].vv-hero .vv-link::after { transform: rotate(135deg); }
   @media (prefers-reduced-motion: no-preference) { [data-go="1"].vv-hero .vv-link i::before { animation-name: vvMarchDown; } }
   .vv-figs li { flex-basis: 100%; padding: 14px 0 14px; border-left: 0; border-top: 1px solid rgba(255, 255, 255, 0.18); }
@@ -673,8 +664,8 @@
 [data-go="1"].vv-swap .vv-tier[data-stays="0"] .vv-was .vv-crowd i { opacity: 0.28; filter: grayscale(1); }
 @media (max-width: 700px) {
   .vv-tier { grid-template-columns: minmax(0, 1fr); }
-  .vv-mid { width: 4px; height: 24px; margin-left: 12px; transform-origin: top; background: repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.7) 0 6px, transparent 6px 11px); transform: scaleY(0); }
-  .vv-mid::after { right: auto; top: auto; left: -4px; bottom: -1px; transform: rotate(135deg); }
+  .vv-mid { justify-self: center; width: 4px; height: 26px; margin: 0; transform-origin: top; background: repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.7) 0 6px, transparent 6px 11px); transform: scaleY(0); }
+  .vv-mid::after { right: auto; top: auto; left: 50%; bottom: -1px; margin-left: -8px; transform: rotate(135deg); }
   [data-go="1"].vv-swap .vv-mid { transform: none; }
   .vv-swap-axis { grid-template-columns: 1fr; justify-items: start; } .vv-swap-axis span:last-child { text-align: left; } .vv-swap-axis span:not(.vv-moment) { display: none; }
 }
@@ -724,9 +715,6 @@
 .sa-flow[data-down="1"] .sa-node .sa-ico { grid-row: 1 / span 2; }
 .sa-flow[data-down="1"] .sa-node b, .sa-flow[data-down="1"] .sa-node p { grid-column: 2; }
 .sa-num { font: 800 22px "Figures", "Newsreader", Georgia, serif; }
-.st[data-look="vivid"] .sa-flow[data-down="1"] .sa-link { flex-basis: 42px; height: 42px; margin-left: 45px; }
-.st[data-look="vivid"] .sa-flow[data-down="1"] .sa-link span { bottom: 14px; left: 22px; }
-@media (max-width: 860px) { .st[data-look="vivid"] .sa-link { flex-basis: 42px; height: 42px; margin-left: 23px; } .st[data-look="vivid"] .sa-link span { bottom: 14px; left: 22px; } }
 
 /* A root that forks into branches (Diverge in StateArt). */
 .sa-div { margin: 0; display: grid; justify-items: center; }
@@ -1001,3 +989,101 @@
   .na-tl { padding: 16px 14px 10px; }
 }
 @media (prefers-reduced-motion: reduce) { .na-outlets > li, .na-case-list > li, .na-split, .na-arrow, .na-tl-track i, .na-tl-track em, .na-took i::after { transition: none !important; } }
+
+/* Coming up in Parliament: four weeks of sitting days. Green for the Commons, red for the Lords, after the colours of their benches. */
+.up-strip { margin: 0; display: grid; gap: 14px; }
+.up-key { margin: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; font: 600 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.up-key span { display: inline-flex; align-items: center; gap: 7px; }
+.up-key i { width: 14px; height: 14px; border-radius: 4px; display: inline-block; border: 1.5px solid var(--c-ink-soft); }
+.up-key i.on { background: var(--c-ink-soft); } .up-key i.off { border-color: var(--c-hairline); background: var(--c-paper); }
+.up-key i.recess { background: repeating-linear-gradient(135deg, var(--c-ink-soft) 0 2px, transparent 2px 5px); }
+.up-strip ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.up-strip li { padding: 14px 16px 16px; border-radius: 16px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); min-width: 0; opacity: 0; transform: translateY(8px); transition: opacity 0.5s var(--ease-out) calc(var(--w) * 110ms), transform 0.5s var(--ease-out) calc(var(--w) * 110ms); }
+.up-strip[data-go="1"] li { opacity: 1; transform: none; }
+.up-strip h3 { margin: 0 0 10px; font: 700 15px/1.3 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.up-days { display: grid; grid-template-columns: 62px repeat(5, minmax(0, 1fr)); gap: 5px; align-items: center; }
+.up-dow { display: grid; justify-items: center; font: 700 13px/1.2 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); font-variant-numeric: lining-nums tabular-nums; }
+.up-dow b { font-size: 10.5px; font-weight: 700; color: var(--c-ink-soft); letter-spacing: 0.02em; }
+.up-dow[data-out="1"] { opacity: 0.4; }
+.up-house { font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--hc); }
+.up-house[data-house="Commons"], .up-cell[data-house="Commons"] { --hc: #1F7A4D; }
+.up-house[data-house="Lords"], .up-cell[data-house="Lords"] { --hc: #B3262E; }
+.up-cell { height: 30px; border-radius: 7px; border: 1.5px solid var(--hc); transform-origin: bottom; }
+.up-cell[data-s="sitting"] { background: var(--hc); }
+.up-cell[data-s="recess"] { background: repeating-linear-gradient(135deg, var(--hc) 0 2px, transparent 2px 6px); }
+.up-cell[data-s="off"] { border-color: var(--c-hairline); background: color-mix(in srgb, var(--hc) 8%, var(--c-paper)); }
+.up-cell[data-s="weekend"], .up-cell[data-s="out"] { border-color: transparent; background: var(--c-hairline); opacity: 0.35; }
+@media (max-width: 760px) { .up-strip ol { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 380px) { .up-days { grid-template-columns: 54px repeat(5, minmax(0, 1fr)); gap: 4px; } .up-strip li { padding: 12px; } }
+@media (prefers-reduced-motion: reduce) { .up-strip li { transition: none !important; opacity: 1; transform: none; } }
+.up-items { display: grid; gap: 7px; }
+.up-item { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 10px; align-items: baseline; }
+.up-items em { font: 700 11.5px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; text-align: center; padding: 2px 0; border-radius: 6px; color: #fff; background: #1F7A4D; }
+.up-items em[data-house="Lords"] { background: #B3262E; } .up-items em[data-house="Joint"] { background: #5B6784; }
+.up-items small, .up-stage { display: block; margin-top: 1px; font: 400 13px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.st-timeline li a { color: color-mix(in srgb, var(--tc) 55%, var(--c-ink)); font-weight: 600; text-underline-offset: 2px; }
+@media (max-width: 420px) { .up-item { grid-template-columns: 1fr; gap: 3px; } .up-items em { justify-self: start; padding: 2px 8px; } }
+
+/* The short version / full detail switch above every explainer page. */
+.st-detail { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px; margin: 14px 0 -6px; font: 600 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.st-detail span { margin-right: 4px; }
+.st-detail button { min-height: 36px; padding: 0 14px; border-radius: 999px; border: 1.5px solid var(--c-hairline); background: var(--c-paper-card); color: var(--c-ink); font: inherit; cursor: pointer; }
+.st-detail button[aria-pressed="true"] { background: var(--c-ink); border-color: var(--c-ink); color: var(--c-paper-card); }
+.st-detail button:focus-visible { outline: 3px solid var(--sb-accent, #2F80ED); outline-offset: 2px; }
+@media (max-width: 520px) { .st-detail { justify-content: flex-start; } .st-detail span { flex-basis: 100%; } }
+
+/* Down arrows. Wherever one step leads to the one below it, the arrow sits on the middle of the page: a line that fades in from the step above ending in a round badge with a chevron
+   in it. A small dot drops down the line, the badge gives off a soft ring and the chevron nods as the dot lands. Sideways arrows nod the same way. None of it moves for anyone who has asked
+   for calmer motion. */
+.sa-flow[data-down="1"] .sa-link { flex: 0 0 64px; align-self: center; width: 32px; height: 64px; margin: 0; }
+.sa-flow[data-down="1"] .sa-link i { z-index: 1; inset: 0 auto 34px 50%; width: 3px; margin-left: -1.5px; background: linear-gradient(180deg, color-mix(in srgb, var(--c-ink-soft) 10%, transparent), var(--c-ink-soft)); transform: scaleY(0); transform-origin: top; }
+[data-go="1"].sa-flow[data-down="1"] .sa-link i { transform: none; }
+.sa-flow[data-down="1"] .sa-link i::after { right: auto; top: auto; left: 50%; bottom: -25px; margin-left: -6px; border-color: var(--c-ink); transform: rotate(135deg); }
+.sa-flow[data-down="1"] .sa-link::after { content: ""; position: absolute; left: 50%; bottom: 4px; width: 30px; height: 30px; margin-left: -15px; box-sizing: border-box; border-radius: 50%; background: var(--c-paper-card); border: 2px solid color-mix(in srgb, var(--c-ink-soft) 55%, transparent); box-shadow: var(--shadow-1); transform: scale(0); transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--i) * 0.5s + 0.7s); }
+[data-go="1"].sa-flow[data-down="1"] .sa-link::after { transform: none; }
+.sa-flow[data-down="1"] .sa-link span { left: calc(50% + 28px); bottom: 10px; transform: none; }
+@media (max-width: 860px) {
+  .sa-flow .sa-link { flex: 0 0 64px; align-self: center; width: 32px; height: 64px; margin: 0; }
+  .sa-flow .sa-link i { z-index: 1; inset: 0 auto 34px 50%; width: 3px; margin-left: -1.5px; background: linear-gradient(180deg, color-mix(in srgb, var(--c-ink-soft) 10%, transparent), var(--c-ink-soft)); transform: scaleY(0); transform-origin: top; }
+  [data-go="1"].sa-flow .sa-link i { transform: none; }
+  .sa-flow .sa-link i::after { right: auto; top: auto; left: 50%; bottom: -25px; margin-left: -6px; border-color: var(--c-ink); transform: rotate(135deg); }
+  .sa-flow .sa-link::after { content: ""; position: absolute; left: 50%; bottom: 4px; width: 30px; height: 30px; margin-left: -15px; box-sizing: border-box; border-radius: 50%; background: var(--c-paper-card); border: 2px solid color-mix(in srgb, var(--c-ink-soft) 55%, transparent); box-shadow: var(--shadow-1); transform: scale(0); transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--i) * 0.5s + 0.7s); }
+  [data-go="1"].sa-flow .sa-link::after { transform: none; }
+  .sa-flow .sa-link span { left: calc(50% + 28px); bottom: 10px; transform: none; }
+}
+@keyframes saDrop { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 75% { opacity: 1; } 100% { transform: translateY(26px); opacity: 0; } }
+@keyframes saNodDown { 0%, 100% { translate: 0 0; } 50% { translate: 0 2px; } }
+@keyframes saNodRight { 0%, 100% { translate: 0 0; } 50% { translate: 3px 0; } }
+@keyframes saRing { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c-ink-soft) 38%, transparent), var(--shadow-1); } 70%, 100% { box-shadow: 0 0 0 11px transparent, var(--shadow-1); } }
+@media (prefers-reduced-motion: no-preference) {
+  .sa-flow[data-down="1"] .sa-link::before { content: ""; position: absolute; left: 50%; top: 2px; width: 7px; height: 7px; margin-left: -3.5px; border-radius: 50%; background: var(--c-ink-soft); opacity: 0; }
+  [data-go="1"].sa-flow[data-down="1"] .sa-link::before { animation: saDrop 1.8s ease-in infinite; animation-delay: calc(var(--i) * 0.5s + 1.2s); }
+  [data-go="1"].sa-flow[data-down="1"] .sa-link::after { animation: saRing 1.8s ease-out infinite; animation-delay: calc(var(--i) * 0.5s + 1.9s); }
+  [data-go="1"].sa-flow[data-down="1"] .sa-link i::after { animation: saNodDown 1.8s ease-in-out infinite; animation-delay: calc(var(--i) * 0.5s + 1.9s); }
+  @media (min-width: 861px) { [data-go="1"].sa-flow:not([data-down="1"]) .sa-link i::after { animation: saNodRight 1.8s ease-in-out infinite; animation-delay: calc(var(--i) * 0.5s + 1s); } }
+  @media (max-width: 860px) {
+    .sa-flow .sa-link::before { content: ""; position: absolute; left: 50%; top: 2px; width: 7px; height: 7px; margin-left: -3.5px; border-radius: 50%; background: var(--c-ink-soft); opacity: 0; }
+    [data-go="1"].sa-flow .sa-link::before { animation: saDrop 1.8s ease-in infinite; animation-delay: calc(var(--i) * 0.5s + 1.2s); }
+    [data-go="1"].sa-flow .sa-link::after { animation: saRing 1.8s ease-out infinite; animation-delay: calc(var(--i) * 0.5s + 1.9s); }
+    [data-go="1"].sa-flow .sa-link i::after { animation: saNodDown 1.8s ease-in-out infinite; animation-delay: calc(var(--i) * 0.5s + 1.9s); }
+  }
+  [data-go="1"].sa-conv .sa-conv-down::after { animation: saNodDown 1.8s ease-in-out 3s infinite; }
+}
+@media (prefers-reduced-motion: reduce) { .sa-flow .sa-link::after { transition: none; } }
+
+/* The arrows between the stops of the opening banner, when the stops stack: centred, with the head at the bottom of the line. */
+@media (max-width: 760px) {
+  .vv-link { flex: 0 0 46px; align-self: center; width: 2px; height: 46px; margin: 0; }
+  .vv-link i::before { background: repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0 5px, transparent 5px 14px); background-size: 100% 14px; }
+  .vv-link::after { top: auto; bottom: -3px; left: 50%; margin-left: -5.5px; }
+}
+
+/* The arrows in the hand-over and the swap pictures nod the same way as the others once they have drawn. */
+@media (prefers-reduced-motion: no-preference) {
+  @media (min-width: 701px) {
+    [data-go="1"].sa-hand li > i::after, [data-go="1"].vv-swap .vv-mid::after { animation: saNodRight 1.8s ease-in-out infinite; animation-delay: calc(var(--i, 0) * 0.4s + 1.4s); }
+  }
+  @media (max-width: 700px) {
+    [data-go="1"].sa-hand li > i::after, [data-go="1"].vv-swap .vv-mid::after { animation: saNodDown 1.8s ease-in-out infinite; animation-delay: calc(var(--i, 0) * 0.4s + 1.4s); }
+  }
+}

@@ -8,6 +8,12 @@ const pages = [
   ["farming", "Farming and food", "212,000"],
   ["flooding", "Flooding and air quality", "6.3m"],
   ["digital", "Digital and online safety", "89%"],
+  ["committeeReports", "Committee reports and government replies", "Typical wait for a reply"],
+  ["howBudgetWorks", "How the Budget and the Spending Review work", "28 Oct"],
+  ["getThingsDone", "How to get something done", "12 months"],
+  ["inquiries", "Public inquiries", "£1.5bn+"],
+  ["departments", "Spending by department", "£648bn"],
+  ["upcoming", "Coming up in Parliament", "Bills with a stage due"],
 ];
 
 for (const [key, title, figure] of pages) {
@@ -42,4 +48,23 @@ test("the flooding page's postcode check points outside England to the right flo
   await page.getByRole("button", { name: "Check" }).click();
   await expect(page.locator(".st-check-out")).toContainText("SEPA flood maps");
   await expect(page.locator(".st-warns")).toHaveCount(0);
+});
+
+test("the short version button hides the notes on an explainer page and the choice is kept on the next page", async ({ page }) => {
+  await page.goto("/getThingsDone");
+  await expect(page.getByRole("heading", { name: "How to get something done", level: 1 })).toBeVisible({ timeout: 20000 });
+  await expect(page.locator(".st-note").first()).toBeAttached();
+  await page.getByRole("button", { name: "Short version" }).click();
+  await expect(page.locator(".st-note")).toHaveCount(0);
+  await page.goto("/inquiries");
+  await expect(page.getByRole("button", { name: "Short version" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".st-note")).toHaveCount(0);
+});
+
+test("the Who handles it? game accepts the right answer and explains it", async ({ page }) => {
+  await page.goto("/teacher/activities");
+  await page.getByText("Who handles it?").first().click();
+  await page.getByRole("button", { name: "The council service itself" }).click();
+  await expect(page.locator(".gm-feedback")).toContainText("Start with the council service");
+  await expect(page.getByRole("button", { name: "Next problem" })).toBeVisible();
 });

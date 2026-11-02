@@ -126,6 +126,12 @@ const EXPLAINER_LOADERS = {
   farming: () => import("./components/explainers/farming"),
   flooding: () => import("./components/explainers/flooding"),
   digital: () => import("./components/explainers/digital"),
+  howBudgetWorks: () => import("./components/explainers/howBudgetWorks"),
+  getThingsDone: () => import("./components/explainers/getThingsDone"),
+  inquiries: () => import("./components/explainers/inquiries"),
+  departments: () => import("./components/explainers/departments"),
+  committeeReports: withData(() => import("./components/explainers/committeeReports"), () => import("./data/committeeReports.json")),
+  upcoming: withData(() => import("./components/explainers/upcoming"), () => import("./data/parliamentCalendar.json")),
 };
 Object.assign(LOADERS, EXPLAINER_LOADERS);
 
