@@ -29,11 +29,35 @@ export const STACK_LEFT = "M58 72.6C44 65 26 64 8 68";
 export const SHADE_RIGHT = "M62 19C65 17.4 68 16.4 71 16V62.600C68 62.600 65 64 62 70Z";
 export const SHADE_LEFT = "M58 19C55 17.4 52 16.4 49 16V62.600C52 62.600 55 64 58 70Z";
 // The front cover when the book is closed: an inset frame, and the Houses of Parliament standing inside it. The silhouette is the app icon's drawing (see
-// scripts/build-icons.mjs) in its own units, x 40 to 456 and y 24 to 430; PARLIAMENT_AT moves it to the middle of the frame, with the clock face a circle on top.
+// scripts/build-icons.mjs), laid out in that drawing's own units (x 40 to 456, y 24 to 430) and then bent to the cover: every point is moved so the skyline
+// fills the frame with an even margin, and the ground line and the tops of the towers follow the curve of the cover's top and bottom edges instead of
+// staying ruler-straight, which is what makes it look printed on the cover and not stuck on.
 export const FRAME = "M65 21C77 13.500 96 12.500 112 16.500V62.500C96 59 77 60 65 67.500Z";
-export const PARLIAMENT = "M56 324h200v100h-200zM56 306h16v18h-16zM82 306h16v18h-16zM108 306h16v18h-16zM134 306h16v18h-16zM160 306h16v18h-16zM186 306h16v18h-16zM212 306h16v18h-16zM238 306h16v18h-16zM282 126h96v16h-96zM292 142h76v282h-76zM327 24h6v30h-6zM396 348h44v76h-44zM40 424h416v6h-416zM292 126L330 52L368 126zM396 348L418 306L440 348z";
-export const PARLIAMENT_AT = "translate(63.7 16.8) scale(0.1)";
-export const CLOCK = { cx: 330, cy: 190, r: 22 };
+const FRAME_TOP = [[65, 21], [77, 13.5], [96, 12.5], [112, 16.5]];
+const FRAME_BOTTOM = [[65, 67.5], [77, 60], [96, 59], [112, 62.5]];
+const bez = (c, t) => { const u = 1 - t; return [0, 1].map((k) => u * u * u * c[0][k] + 3 * u * u * t * c[1][k] + 3 * u * t * t * c[2][k] + t * t * t * c[3][k]); };
+const edgeY = (c, x) => { let lo = 0, hi = 1; for (let i = 0; i < 30; i++) { const mid = (lo + hi) / 2; if (bez(c, mid)[0] < x) lo = mid; else hi = mid; } return bez(c, (lo + hi) / 2)[1]; };
+const MARGIN_X = 3.4, MARGIN_Y = 3.6;
+const bend = ([x, y]) => {
+  const px = 65 + MARGIN_X + ((x - 40) / 416) * (47 - 2 * MARGIN_X);
+  const top = edgeY(FRAME_TOP, px) + MARGIN_Y, bottom = edgeY(FRAME_BOTTOM, px) - MARGIN_Y;
+  return [px, top + ((y - 24) / 406) * (bottom - top)];
+};
+// Straight edges are cut into short pieces first, so that once bent they curve with the cover.
+const outline = (pts) => {
+  const out = [];
+  pts.forEach((a, i) => { const b = pts[(i + 1) % pts.length]; const n = Math.max(1, Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / 6)); for (let k = 0; k < n; k++) out.push([a[0] + ((b[0] - a[0]) * k) / n, a[1] + ((b[1] - a[1]) * k) / n]); });
+  return "M" + out.map((q) => bend(q).map((v) => Math.round(v * 100) / 100).join(" ")).join("L") + "z";
+};
+const box = (x, y, w, h) => [[x, y], [x + w, y], [x + w, y + h], [x, y + h]];
+const SKYLINE = [
+  box(56, 324, 200, 100), ...[56, 82, 108, 134, 160, 186, 212, 238].map((x) => box(x, 306, 16, 18)),
+  box(282, 126, 96, 16), box(292, 142, 76, 282), box(327, 24, 6, 30), box(396, 348, 44, 76), box(40, 424, 416, 6),
+  [[292, 126], [330, 52], [368, 126]], [[396, 348], [418, 306], [440, 348]],
+];
+export const PARLIAMENT = SKYLINE.map(outline).join("");
+const [CLOCK_X, CLOCK_Y] = bend([330, 190]);
+export const CLOCK = { cx: Math.round(CLOCK_X * 100) / 100, cy: Math.round(CLOCK_Y * 100) / 100, r: 2.2 };
 // A ribbon marker hanging from the spine.
 export const RIBBON = "M57.500 74.200V82L60 79.800L62.500 82V74.200Z";
 export const TEXT_RIGHT = path(BASE);

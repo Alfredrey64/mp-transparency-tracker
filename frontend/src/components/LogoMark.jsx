@@ -1,6 +1,6 @@
 import { useId } from "react";
 import {
-  COVER_RIGHT, COVER_LEFT, PAGE_LEFT, PAGE_RIGHT, STACK_RIGHT, STACK_LEFT, SHADE_RIGHT, SHADE_LEFT, FRAME, PARLIAMENT, PARLIAMENT_AT, CLOCK, RIBBON,
+  COVER_RIGHT, COVER_LEFT, PAGE_LEFT, PAGE_RIGHT, STACK_RIGHT, STACK_LEFT, SHADE_RIGHT, SHADE_LEFT, FRAME, PARLIAMENT, CLOCK, RIBBON,
   TEXT_LEFT, TEXT_RIGHT, RULES_LEFT, RULES_RIGHT,
 } from "../lib/bookMark";
 
@@ -27,7 +27,7 @@ export default function LogoMark({ width = 76, color = "var(--sb-accent)", hole 
     <svg className="lg" data-play={animate || undefined} width={width} viewBox="0 0 120 84" fill="none" role={title ? "img" : undefined} aria-label={title} aria-hidden={title ? undefined : true} style={{ display: "block", flexShrink: 0 }}>
       <defs>
         <path id={`${id}r`} d={TEXT_RIGHT} /><path id={`${id}l`} d={TEXT_LEFT} />
-        <linearGradient id={`${id}foil`} gradientUnits="userSpaceOnUse" x1="60" y1="20" x2="440" y2="430"><stop offset="0" stopColor="#FFF1C4" /><stop offset=".38" stopColor={ribbon} /><stop offset=".7" stopColor="#E9A62E" /><stop offset="1" stopColor="#B97A16" /></linearGradient>
+        <linearGradient id={`${id}foil`} gradientUnits="userSpaceOnUse" x1="68" y1="14" x2="108" y2="62"><stop offset="0" stopColor="#FFF1C4" /><stop offset=".38" stopColor={ribbon} /><stop offset=".7" stopColor="#E9A62E" /><stop offset="1" stopColor="#B97A16" /></linearGradient>
         <linearGradient id={`${id}foilbox`} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#FFF1C4" /><stop offset=".4" stopColor={ribbon} /><stop offset="1" stopColor="#B97A16" /></linearGradient>
         <linearGradient id={`${id}sheen`} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#fff" stopOpacity=".22" /><stop offset=".45" stopColor="#fff" stopOpacity="0" /><stop offset="1" stopColor="#000" stopOpacity=".24" /></linearGradient>
       </defs>
@@ -45,12 +45,12 @@ export default function LogoMark({ width = 76, color = "var(--sb-accent)", hole 
             <path d={FRAME} stroke={`url(#${id}foilbox)`} strokeWidth="1.1" />
             {/* The building is foil-stamped into the cloth: a dark edge on the upper left where the die pressed in, a pale edge on the lower right where the cloth rises
                 again, and gold foil in between. */}
-            <g transform={PARLIAMENT_AT}>
-              <g transform="translate(4 4.5)" fill="#fff" fillOpacity=".38"><path d={PARLIAMENT} /><circle {...CLOCK} /></g>
-              <g transform="translate(-3.5 -3.5)" fill="#000" fillOpacity=".5"><path d={PARLIAMENT} /><circle {...CLOCK} /></g>
+            <g>
+              <g transform="translate(0.4 0.45)" fill="#fff" fillOpacity=".38"><path d={PARLIAMENT} /><circle {...CLOCK} /></g>
+              <g transform="translate(-0.35 -0.35)" fill="#000" fillOpacity=".5"><path d={PARLIAMENT} /><circle {...CLOCK} /></g>
               <path d={PARLIAMENT} fill={`url(#${id}foil)`} />
-              <circle {...CLOCK} fill={color} stroke={`url(#${id}foil)`} strokeWidth="7" />
-              <circle {...CLOCK} r="14" fill="#000" fillOpacity=".18" />
+              <circle {...CLOCK} fill={color} stroke={`url(#${id}foil)`} strokeWidth=".7" />
+              <circle {...CLOCK} r="1.4" fill="#000" fillOpacity=".18" />
             </g>
           </>
         ))}
