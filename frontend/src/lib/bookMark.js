@@ -64,3 +64,14 @@ export const TEXT_RIGHT = path(BASE);
 export const TEXT_LEFT = path(mirror(BASE).reverse()); // runs left to right, so the words read the right way up
 export const RULES_RIGHT = RULES.map(([dy, a, b]) => path(part(down(BASE, dy), a, b)));
 export const RULES_LEFT = RULES.map(([dy, a, b]) => path(part(mirror(down(BASE, dy)), a, b)));
+
+// Depth. The covers have thickness: a board edge hangs under each cover's bottom edge, and above it the block of paper shows as a pale band with fine leaf lines.
+// The top edge of each cover catches the light. The left halves are the right halves mirrored about x = 60.
+export const THICK_RIGHT = "M60 75C76 65 98 64 118 69V72.600C98 67.600 76 68.600 60 78.600Z";
+export const THICK_LEFT = "M60 75C44 65 22 64 2 69V72.600C22 67.600 44 68.600 60 78.600Z";
+export const EDGE_RIGHT = "M62 70C74 62 94 61 114 65V68.200C94 64.200 74 65.200 62 73.200Z";
+export const EDGE_LEFT = "M58 70C46 62 26 61 6 65V68.200C26 64.200 46 65.200 58 73.200Z";
+export const EDGE_LINES_RIGHT = ["M62 71.100C74 63.100 94 62.100 114 66.100", "M62 72.200C74 64.200 94 63.200 114 67.200"];
+export const EDGE_LINES_LEFT = ["M58 71.100C46 63.100 26 62.100 6 66.100", "M58 72.200C46 64.200 26 63.200 6 67.200"];
+export const LIGHT_RIGHT = "M60 15C76 6 98 5 118 11";
+export const LIGHT_LEFT = "M60 15C44 6 22 5 2 11";
