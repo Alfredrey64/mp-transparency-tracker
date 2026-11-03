@@ -8,7 +8,9 @@ import { withScrollPreserved } from "../lib/preserveScroll";
 import { partyColourByName } from "../lib/careerTimeline";
 import { initials } from "../lib/format";
 import LEADER_PORTRAITS from "../data/devolvedLeaders.json";
-import { card } from "../lib/onsStyles";
+import { useGo } from "./story/useGo";
+import AnimatedValue from "./story/AnimatedValue";
+import "../devolved.css";
 
 const ADMINISTRATIONS = [
   {
@@ -97,39 +99,24 @@ function Leader({ holder }) {
   );
 }
 
-// The three legislatures side by side: one dot for each member, so the sizes can be compared at a glance. The numbers are read from each entry's own
-// description, so the picture and the text cannot drift apart.
-function Legislatures() {
-  const rows = ADMINISTRATIONS.map((a) => ({
-    key: a.name,
-    short: a.name.startsWith("Scottish") ? "Scotland" : a.name.startsWith("Senedd") ? "Wales" : "Northern Ireland",
-    accent: a.accent,
-    members: Number(/^\d+/.exec(a.members)?.[0] ?? 0),
-    since: /\b(19\d\d|20\d\d)\b/.exec(a.established)?.[1],
-  }));
+// One dot for each person elected, so the size of each chamber can be read at a glance. The number comes from the entry's own description, so the picture and the
+// text cannot drift apart. The dots pop in one after another the first time the box scrolls into view.
+function SeatsPanel({ admin }) {
+  const [ref, go] = useGo(0.25);
+  const members = Number(/^\d+/.exec(admin.members)?.[0] ?? 0);
+  const since = /\b(19\d\d|20\d\d)\b/.exec(admin.established)?.[1];
+  if (!members) return null;
   return (
-    <section aria-labelledby="h-dv-size" style={{ ...card, marginTop: 24 }}>
-      <h2 id="h-dv-size" style={{ fontFamily: FONT_DISPLAY, fontSize: 21, fontWeight: 700, color: COLORS.ink, margin: 0 }}>The three legislatures, member by member</h2>
-      <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "6px 0 0", maxWidth: 640 }}>
-        One dot for each person elected. For scale, the House of Commons at Westminster has 650 MPs.
-      </p>
-      <div className="box-row" style={{ "--n": 3, "--min": "200px", "--gap": "14px", marginTop: 18 }}>
-        {rows.map((r) => (
-          <figure key={r.key} aria-label={`${r.short}: ${r.members} members`} style={{ margin: 0, padding: "16px 16px 14px", borderRadius: 14, background: `color-mix(in srgb, ${r.accent} 8%, ${COLORS.paperCard})`, border: `1px solid color-mix(in srgb, ${r.accent} 30%, ${COLORS.hairline})` }}>
-            <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
-              <span style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 700, color: COLORS.ink }}>{r.short}</span>
-              <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft }}>since {r.since}</span>
-            </div>
-            <div style={{ fontFamily: FONT_BODY, fontSize: 34, fontWeight: 600, letterSpacing: "-0.02em", color: COLORS.ink, lineHeight: 1.1, margin: "4px 0 10px", fontVariantNumeric: "tabular-nums" }}>{r.members}</div>
-            <div aria-hidden="true" style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
-              {Array.from({ length: r.members }, (_, i) => (
-                <span key={i} className="member-dot" style={{ width: 9, height: 9, borderRadius: "50%", background: r.accent, "--d": `${Math.min(i * 9, 900)}ms` }} />
-              ))}
-            </div>
-          </figure>
-        ))}
+    <div ref={ref} className="dv-seats" data-go={go} style={{ "--ac": admin.accent }}>
+      <div className="dv-seats-n">
+        <b><AnimatedValue text={String(members)} /></b>
+        <span>seats</span>
+        <small>{since ? `since ${since}. ` : ""}The Commons has 650.</small>
       </div>
-    </section>
+      <div className="dv-seats-dots" aria-hidden="true">
+        {Array.from({ length: members }, (_, i) => <i key={i} style={{ "--d": `${Math.min(i * 7, 900)}ms` }} />)}
+      </div>
+    </div>
   );
 }
 
@@ -151,8 +138,6 @@ export default function DevolvedAdministrations() {
           </>
         }
       />
-
-      <Legislatures />
 
       <div style={{ marginTop: 24, display: "flex", flexDirection: "column", gap: 18 }}>
         {ADMINISTRATIONS.map((a, i) => {
@@ -185,6 +170,8 @@ export default function DevolvedAdministrations() {
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "14px 32px", marginTop: 16, padding: "16px 18px", borderRadius: 16, background: `color-mix(in srgb, ${a.accent} 7%, ${COLORS.paper})`, border: `1px solid ${a.accent}33` }}>
                   {a.holders.map((h) => <Leader key={h.role} holder={h} />)}
                 </div>
+
+                <SeatsPanel admin={a} />
 
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(200px, 100%), 1fr))", gap: 14, marginTop: 16, marginBottom: 14 }}>
                   <Field label="Established">{a.established}</Field>

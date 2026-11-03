@@ -427,9 +427,9 @@
 .sa-conv-src { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 14px; }
 .sa-conv-join { display: grid; justify-items: center; }
 .sa-conv-stubs { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 14px; width: 100%; }
-.sa-conv-stubs i, .sa-conv-down { display: block; width: 3px; height: 26px; margin-inline: auto; border-radius: 2px; background: var(--tc, var(--c-ink-soft)); transform: scaleY(0); transform-origin: top; transition: transform 0.4s ease calc(var(--i, 0) * 0.15s + 1.1s); }
-.sa-conv-bar { display: block; height: 3px; width: calc(100% - 100% / var(--n)); border-radius: 2px; background: var(--c-ink-soft); transform: scaleX(0); transition: transform 0.5s ease 1.6s; }
-.sa-conv-down { --tc: var(--c-ink-soft); transition-delay: 2.05s; position: relative; margin-bottom: 4px; }
+.sa-conv-stubs i, .sa-conv-down { display: block; width: 3px; height: 26px; margin-inline: auto; border-radius: 0; background: var(--tc, var(--c-ink-soft)); transform: scaleY(0); transform-origin: top; transition: transform 0.4s ease calc(var(--i, 0) * 0.15s + 1.1s); }
+.sa-conv-bar { display: block; height: 3px; margin-top: -3px; width: calc(100% - (100% - (var(--n) - 1) * 14px) / var(--n) + 3px); border-radius: 0; background: var(--c-ink-soft); transform: scaleX(0); transition: transform 0.5s ease 1.6s; }
+.sa-conv-down { --tc: var(--c-ink-soft); transition-delay: 2.05s; position: relative; margin-top: -3px; margin-bottom: 4px; }
 .sa-conv-down::after { content: ""; position: absolute; left: 50%; bottom: -3px; width: 9px; height: 9px; margin-left: -6px; border-top: 3px solid var(--c-ink-soft); border-right: 3px solid var(--c-ink-soft); transform: rotate(135deg); }
 [data-go="1"] .sa-conv-stubs i, [data-go="1"] .sa-conv-bar, [data-go="1"] .sa-conv-down { transform: none; }
 .sa-conv-result { --i: 4.6; display: grid; gap: 4px; justify-items: center; text-align: center; width: min(100%, 520px); margin: 0 auto; padding: 16px 20px; border-radius: 18px; background: var(--tc); color: #fff; }

@@ -716,8 +716,6 @@ html[data-leaving] .mp-app-shell { transition: none; }
 @keyframes col-rise { from { transform: scaleY(0); } to { transform: scaleY(1); } }
 @media (prefers-reduced-motion: reduce) { .col-grow { animation: none !important; } }
 
-.rv-in .member-dot, .rv-now .member-dot { animation: lm-pop 0.45s var(--ease-spring) var(--d, 0ms) backwards; }
-@media (prefers-reduced-motion: reduce) { .member-dot { animation: none !important; } }
 
 /* ---- The route a bill takes (BillRoute.jsx) ----------------------------------------------------------------------------------------------------- */
 
