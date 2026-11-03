@@ -458,8 +458,8 @@ export default function App() {
     return () => window.removeEventListener("popstate", syncFromUrl);
   }, []);
 
-  // Changes the page. The page you are on fades out quickly while the next page's code is fetched, then the two are swapped (and the new page opened at its top)
-  // while nothing of the old one is showing, and the new page fades in. Only the page's own content fades, so the header and everything fixed to the screen stay
+  // Changes the page. The page you are on stays up while the next page's code is fetched, then its words fade out, the two are swapped (and the new page opened at its top)
+  // while nothing of the new one is showing, and the new page fades in once the old one has gone. Only the page's own content fades, so the header and everything fixed to the screen stay
   // exactly as they are. (This used to ask the browser to cross-fade a picture of the old page into the new one: with the old page scrolled part way down and the
   // new one at its top, the two showed through each other for a moment, and the header and tab strip appeared doubled.) For people who ask for less motion, or on a
   // slow connection, the page is simply swapped, with React keeping the old page up until the new one is ready. Either way the change happens on the click.
@@ -483,17 +483,21 @@ export default function App() {
     Promise.race([preloadPage(loader), gaveUp]).then(async () => {
       // A newer click has taken over: let that one win.
       if (id !== navId.current) return;
-      // The new page dissolves in over a copy of the old one, so there is no gap between them. If a copy cannot be taken, the old page fades out first instead.
+      // The old page's words fade away over a copy of it, and only then does the new page fade in, so the two are never on screen together. If a copy cannot be taken,
+      // the old page fades out first instead. Either way the new page is drawn while nothing of it shows.
       const ghost = takeGhost();
       if (!ghost) {
         root.dataset.leaving = "1";
         await new Promise((resolve) => setTimeout(resolve, 60));
         if (id !== navId.current) return;
+      } else {
+        root.dataset.leaving = "1";
       }
       setNavState({ fetching: false });
       flushSync(apply);
-      // The new page is in. It is shown (under the copy, or still transparent) once the browser has caught up with drawing it, so the fade never has to share a frame with that work.
-      afterSettled(() => { if (ghost) ghost.fade(); else if (id === navId.current) delete root.dataset.leaving; });
+      // The new page is in. It is shown once the browser has caught up with drawing it (and, with a copy of the old page, once that has faded), so the fade never has to share a frame with that work.
+      const show = () => { if (id === navId.current) delete root.dataset.leaving; };
+      afterSettled(() => { if (ghost) ghost.fade(show); else show(); });
     });
   }
 

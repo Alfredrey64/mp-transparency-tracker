@@ -721,10 +721,10 @@ html[data-leaving] .mp-app-shell { transition: none; }
    Changing page: the page's content fades right out (html gets data-leaving the moment you click), the pages are swapped and drawn while nothing is showing,
    and once the browser has caught up the new one fades in as data-leaving is taken off while its content settles into place from a few pixels below, so
    the change reads as one movement. Nothing is swapped, drawn or measured in view, so a slow phone shows no stutter. Only #main-content fades and only the page's own blocks move, so the header and the buttons fixed to the screen never move or double. */
-#main-content { transition: opacity 0.17s var(--ease-out); }
+#main-content { transition: opacity 0.22s var(--ease-out); }
 /* The page dips rather than going blank, so there is no flash of empty background between two pages. */
 html[data-leaving] #main-content { opacity: 0; transition-duration: 0.06s; transition-timing-function: ease-in; }
-/* The copy of the page being left (lib/pageGhost.js): it covers the screen under the header while the new page, already in place, shows through as it fades. */
+/* The copy of the page being left (lib/pageGhost.js): it covers the screen under the header, with its words fading away over its steady background while the new page, already in place and unseen, waits underneath. */
 .page-ghost { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; overflow: hidden; pointer-events: none; background: var(--c-paper); }
 .page-ghost-inner { position: absolute; }
 .page-ghost *, .page-ghost *::before, .page-ghost *::after { animation: none !important; transition: none !important; }

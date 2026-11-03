@@ -1,5 +1,5 @@
-// A picture of the page you are leaving, laid over the new one for a moment while it fades away, so one page dissolves into the next and there is never a blank
-// gap between them. It is a copy of the page's own markup (not a screenshot), placed where the old page was on screen, under the header and everything fixed to
+// A picture of the page you are leaving, laid over the new one while its words fade away, so the old page's words are gone before the new page's words arrive (the two are
+// never both on screen) and the background holds still between them. It is a copy of the page's own markup (not a screenshot), placed where the old page was on screen, under the header and everything fixed to
 // the screen. Very large pages are not copied (the page then fades out and in instead), and nothing in the copy can be clicked, focused or read out.
 const MAX_NODES = 5000;
 const FADE_MS = 320;
@@ -36,11 +36,13 @@ export function takeGhost(doc = document) {
   setTimeout(remove, FADE_MS + 600);
   return {
     remove,
-    // Fades the picture out over the new page, then takes it away.
-    fade() {
-      if (gone) return;
-      if (!ghost.animate) { remove(); return; }
-      ghost.animate([{ opacity: 1 }, { opacity: 0 }], { duration: FADE_MS, easing: "cubic-bezier(0.45, 0, 0.25, 1)", fill: "forwards" }).finished.then(remove, remove);
+    // Fades the words of the picture away over its own steady background (the new page waits, unseen, underneath), then takes it away and calls `done`, which is when the
+    // new page starts to fade in.
+    fade(done) {
+      if (gone) { done?.(); return; }
+      const finish = () => { remove(); done?.(); };
+      if (!inner.animate) { finish(); return; }
+      inner.animate([{ opacity: 1 }, { opacity: 0 }], { duration: FADE_MS, easing: "cubic-bezier(0.4, 0, 1, 1)", fill: "forwards" }).finished.then(finish, finish);
     },
   };
 }
