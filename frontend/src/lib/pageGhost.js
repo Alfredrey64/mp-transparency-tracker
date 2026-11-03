@@ -2,7 +2,7 @@
 // gap between them. It is a copy of the page's own markup (not a screenshot), placed where the old page was on screen, under the header and everything fixed to
 // the screen. Very large pages are not copied (the page then fades out and in instead), and nothing in the copy can be clicked, focused or read out.
 const MAX_NODES = 5000;
-const FADE_MS = 220;
+const FADE_MS = 320;
 
 export function takeGhost(doc = document) {
   removeGhosts(doc);
@@ -40,7 +40,7 @@ export function takeGhost(doc = document) {
     fade() {
       if (gone) return;
       if (!ghost.animate) { remove(); return; }
-      ghost.animate([{ opacity: 1 }, { opacity: 0 }], { duration: FADE_MS, easing: "cubic-bezier(0.2, 0.7, 0.2, 1)", fill: "forwards" }).finished.then(remove, remove);
+      ghost.animate([{ opacity: 1 }, { opacity: 0 }], { duration: FADE_MS, easing: "cubic-bezier(0.45, 0, 0.25, 1)", fill: "forwards" }).finished.then(remove, remove);
     },
   };
 }

@@ -10,9 +10,9 @@ describe("The Civil Service page", () => {
     for (const s of ["557,825", "67.8%", "£37,820", "42,855", "37,945", "54.7%"]) expect(text).toContain(s);
     expect(html).toContain("vv-hero");
     expect(html).toContain("vv-dots");
-    expect(html).toContain("vv-swap");
+    expect(html).toContain('class="ho"');
     expect(html).toContain("cs-work");
-    for (const s of ["Ministers", "Special advisers", "Civil servants", "The government changes"]) expect(text).toContain(s);
+    for (const s of ["Ministers", "Special advisers", "Civil servants", "Before the change", "After the change"]) expect(text).toContain(s);
   });
 
   it("is plain text throughout", () => {

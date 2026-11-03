@@ -1,5 +1,5 @@
 /** @jsxImportSource react */
-import ExplainerPage from "../story/ExplainerPage";
+import { ExplainerBody } from "../story/ExplainerPage";
 import SittingStrip from "../story/SittingStrip";
 import Loading from "../Loading";
 import { LoadFailedNote } from "../MpCards";
@@ -10,16 +10,7 @@ import { parliamentCalendar } from "../../lib/dataFiles";
 import { dayShort, dayLong, dateLong, clock, houseName, billStages, billCommittees, hearings, commonsQuestions, debates, totals, nextRecess, thinWeeks } from "../../lib/upcoming";
 
 // What is coming up in Parliament over the next four weeks, from Parliament's own What's On calendar (data/parliamentCalendar.json, refreshed daily by
-// fetch-parliament-calendar.js). The page is built from the file, so it says only what the calendar lists.
-
-const HEAD = {
-  kicker: "How Parliament works",
-  title: "Coming up in Parliament",
-  subtitle: "What the House of Commons and the House of Lords have listed for the next four weeks: the days they sit, the bills due to be debated, the committees taking evidence and the questions ministers will answer.",
-  icon: IconCalendar,
-  look: "vivid",
-  narrow: true,
-};
+// fetch-parliament-calendar.js). It is the "Coming up" part of the What changed this week page, built from the file, so it says only what the calendar lists.
 
 const plural = (n, one, many = `${one}s`) => `${n.toLocaleString("en-GB")} ${n === 1 ? one : many}`;
 
@@ -152,15 +143,11 @@ function build(data) {
 
 export default function Upcoming() {
   const { data, failed } = useDataFile(parliamentCalendar);
-  if (!data) {
-    return (
-      <ExplainerPage {...HEAD} chapters={[]} lead={failed ? <LoadFailedNote item="Parliament's calendar" /> : <Loading />} />
-    );
-  }
+  if (!data) return failed ? <LoadFailedNote item="Parliament's calendar" /> : <Loading />;
   const { thin, ...view } = build(data);
   return (
-    <ExplainerPage
-      {...HEAD}
+    <ExplainerBody
+      icon={IconCalendar}
       {...view}
       sources={[
         { label: "UK Parliament: What's On calendar", url: "https://whatson.parliament.uk/", note: "Sitting days, recesses and the business listed for each house. Refreshed each day." },

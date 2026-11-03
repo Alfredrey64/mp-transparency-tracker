@@ -20,4 +20,11 @@ describe("manifestoFootprint", () => {
       expect(p.n).toBeLessThanOrEqual(f.questions);
     }
   });
+  it("lists what each party promised and what is missing, so the two add up to the topic", () => {
+    for (const t of f.topics) for (const c of t.cells) {
+      expect(c.items).toHaveLength(c.n);
+      expect(c.items.length + c.missing.length).toBe(t.total);
+      for (const i of c.items) { expect(i.question).toBeTruthy(); expect(i.text).toBeTruthy(); }
+    }
+  });
 });

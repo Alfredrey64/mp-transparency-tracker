@@ -1,0 +1,28 @@
+/* The Today part of What changed this week (components/story/TodayInParliament.jsx). */
+.td { display: grid; gap: 16px; margin-top: 22px; }
+.td-date { display: grid; gap: 2px; }
+.td-date b { font: 700 clamp(24px, 4vw, 32px)/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.td-date span { font: 500 14.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.td-houses { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 14px; }
+.td-house { position: relative; display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 2px 12px; padding: 16px 18px; border-radius: 20px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-left: 7px solid #1F7A4D; box-shadow: var(--shadow-1); }
+.td-house[data-house="Lords"] { border-left-color: #B3262E; }
+.td-house[data-tone="off"] { background: var(--c-paper); }
+.td-house b { font: 700 20px "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.td-house .td-pulse { grid-row: 1 / span 3; width: 14px; height: 14px; border-radius: 50%; background: var(--c-ink-soft); opacity: 0.5; }
+.td-house[data-tone="on"] .td-pulse { background: #1F7A4D; opacity: 1; box-shadow: 0 0 0 0 color-mix(in srgb, #1F7A4D 50%, transparent); }
+.td-house[data-house="Lords"][data-tone="on"] .td-pulse { background: #B3262E; box-shadow: 0 0 0 0 color-mix(in srgb, #B3262E 50%, transparent); }
+.td-state { grid-column: 2; font: 800 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.td-house[data-tone="off"] .td-state { color: var(--c-ink-soft); }
+.td-house small { grid-column: 2; font: 500 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+@media (prefers-reduced-motion: no-preference) {
+  .td-house[data-tone="on"] .td-pulse { animation: tdPulse 1.8s ease-out infinite; }
+  .td[data-go="0"] .td-house, .td[data-go="0"] .td-group { opacity: 0; transform: translateY(12px); }
+  .td[data-go="1"] .td-house, .td[data-go="1"] .td-group { animation: tdIn 0.55s var(--ease-out) calc(var(--i, 0) * 110ms + 80ms) backwards; }
+}
+@keyframes tdPulse { to { box-shadow: 0 0 0 11px rgba(31, 122, 77, 0); } }
+@keyframes tdIn { from { opacity: 0; transform: translateY(12px); } }
+.td-group { padding: 16px 18px 18px; border-radius: 20px; background: color-mix(in srgb, var(--tc) 6%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--tc) 28%, var(--c-hairline)); border-left: 7px solid var(--tc); }
+.td-group h3 { margin: 0 0 10px; font: 700 18px "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.td-empty { margin: 0; padding: 22px; border-radius: 18px; border: 1.5px dashed var(--c-hairline); font: 500 15px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.td-empty button { border: 0; background: none; padding: 0; font: 700 15px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-brand); text-decoration: underline; cursor: pointer; }
+.td-foot { margin: 4px 0 0; font: 400 12.5px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); max-width: 760px; }

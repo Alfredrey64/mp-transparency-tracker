@@ -245,7 +245,7 @@ function titleForState(view, selected, param, tr = (x) => x) {
   if (view === "numbers" && param === "lords") return `Parliament in Numbers: the Lords | ${base}`;
   if (view === "numbers" && param === "who") return `Parliament in Numbers: who they are | ${base}`;
   // For the Lords the parameter is a peer's id, which makes a poor title.
-  if (param && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view) && view !== "regions" && view !== "answers" && view !== "deprivation" && view !== "compareSeats" && view !== "compareCouncils" && view !== "parties" && view !== "generalElection" && view !== "taxRates" && view !== "inequality" && view !== "brexit" && view !== "defence" && view !== "education" && view !== "ageing" && view !== "nhs" && view !== "energy" && view !== "trust" && view !== "care" && view !== "transport" && view !== "union" && view !== "calculators" && view !== "teacher") return `${param} | ${tr(PAGE_TITLES[view] ?? base)} | ${base}`;
+  if (param && view !== "thisWeek" && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view) && view !== "regions" && view !== "answers" && view !== "deprivation" && view !== "compareSeats" && view !== "compareCouncils" && view !== "parties" && view !== "generalElection" && view !== "taxRates" && view !== "inequality" && view !== "brexit" && view !== "defence" && view !== "education" && view !== "ageing" && view !== "nhs" && view !== "energy" && view !== "trust" && view !== "care" && view !== "transport" && view !== "union" && view !== "calculators" && view !== "teacher") return `${param} | ${tr(PAGE_TITLES[view] ?? base)} | ${base}`;
   if (view === "home") return base;
   const label = PAGE_TITLES[view];
   return label ? `${tr(label)} | ${base}` : base;
@@ -268,6 +268,8 @@ function parseHash() {
   if (segments[0] === "tax") segments.splice(0, 1, "taxRates", "overview");
   // Where taxes go is now the Where it goes toggle on the Taxes page.
   if (segments[0] === "budget") segments.splice(0, 1, "taxRates", "where");
+  // Coming up in Parliament became the third part of What changed this week.
+  if (segments[0] === "upcoming") segments.splice(0, 1, "thisWeek", "ahead");
   if (segments[0] === "mp" && /^\d+$/.test(segments[1] ?? "")) {
     return { view: "list", mpId: Number(segments[1]), param: null };
   }
@@ -294,6 +296,9 @@ function pathForState(view, selected, param) {
 const samePath = (a, b) => {
   try { return decodeURI(a) === decodeURI(b); } catch { return a === b; }
 };
+
+// A page always opens at its top: the browser is not left to put back the old scroll position on back and forward, because the page is swapped in by the app.
+if (typeof history !== "undefined" && "scrollRestoration" in history) history.scrollRestoration = "manual";
 
 export default function App() {
   // Reading a page aloud, and calmer motion, both come from the accessibility panel (components/AccessibilityControls.jsx).
@@ -638,7 +643,7 @@ export default function App() {
             {view === "about" && <About onNavigate={handleNavigate} />}
             {view === "corrections" && <Corrections onNavigate={handleNavigate} />}
             {view === "myArea" && <MyArea />}
-            {view === "thisWeek" && <ThisWeek />}
+            {view === "thisWeek" && <ThisWeek param={viewParam} />}
             {view === "councillors" && <Councillors param={viewParam} />}
             {view === "lordsVotes" && <LordsVotes />}
             {view === "list" && !selected && missingMp && (

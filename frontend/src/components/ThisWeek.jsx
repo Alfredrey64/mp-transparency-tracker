@@ -1,5 +1,5 @@
 /** @jsxImportSource react */
-import { useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
@@ -8,11 +8,22 @@ import { GlanceStrip } from "./GlanceStrip";
 import Loading from "./Loading";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { KINDS, sinceDate, billItems, voteItems, moneyItems, petitionItems, standardsItems, electionItems, buildFeed, collapseBills, countByKind, dayLabel, groupByDay } from "../lib/thisWeek";
+import TodayInParliament from "./story/TodayInParliament";
 import "../thisweek.css";
 
+// The Coming up part is the whole of the old Coming up in Parliament page, loaded only when it is asked for.
+const Ahead = lazy(() => import("./explainers/upcoming"));
+
+// Parliament's activity in three tenses: what changed (the past), what the calendar lists for today (the present) and what is coming up over the next four weeks (the future).
 // What changed this week: bills that moved, votes held, interests declared, petitions answered, conduct reports and by-elections, newest first. Every
 // item comes from the same database as the rest of the site, and links to the page (or Parliament's own page) where you can read more.
 
+const TIMES = [
+  { key: "past", title: "What changed", sub: "Votes, bills and money so far", colour: "#E0367A" },
+  { key: "now", title: "Today", sub: "Who is sitting and what is on", colour: "#1F7A4D" },
+  { key: "ahead", title: "Coming up", sub: "The next four weeks", colour: "#5A4FCF" },
+];
+const timeOf = (param) => (TIMES.some((t) => t.key === param) ? param : "past");
 const WINDOWS = [{ days: 7, label: "7 days" }, { days: 14, label: "14 days" }, { days: 30, label: "30 days" }];
 const MAX_DAYS = 30;
 const DAY_COLOURS = ["#E0367A", "#1E4FB8", "#1FA97C", "#E8741A", "#7A5AF0", "#0E9AA7"];
@@ -23,10 +34,17 @@ async function attempt(name, run, failures) {
   try { return await run(); } catch { failures.push(name); return []; }
 }
 
-export default function ThisWeek() {
+export default function ThisWeek({ param = null }) {
   const [state, setState] = useState({ loading: true, raw: null, failed: [] });
   const [days, setDays] = useState(7);
   const [kind, setKind] = useState("all");
+  const [time, setTime] = useState(() => timeOf(param));
+  const [seenParam, setSeenParam] = useState(param);
+  if (param !== seenParam) { setSeenParam(param); setTime(timeOf(param)); }
+  const pick = (key) => {
+    setTime(key);
+    try { window.history.replaceState(null, "", key === "past" ? "/thisWeek" : `/thisWeek/${key}`); } catch { /* the address stays as it was */ }
+  };
 
   useEffect(() => {
     let alive = true;
@@ -66,8 +84,25 @@ export default function ThisWeek() {
         icon={IconFeed}
         kicker="Understand it"
         title="What changed this week"
-        subtitle="New votes, bills that moved, money declared, petitions answered and conduct reports, newest first. Each one links to where you can read more."
+        subtitle="What Parliament has done, what it is doing today and what is coming up: new votes, bills that moved and money declared, then who is sitting today, then the next four weeks of business."
       />
+      <div className="tw-time" role="tablist" aria-label="Past, present or future" style={{ "--k": TIMES.findIndex((t) => t.key === time) }}>
+        {TIMES.map((t, i) => (
+          <button key={t.key} type="button" role="tab" id={`tw-tab-${t.key}`} aria-selected={time === t.key} aria-controls="tw-panel" style={{ "--tc": t.colour, "--i": i }} onClick={() => pick(t.key)}>
+            <i aria-hidden="true" />
+            <b>{t.title}</b>
+            <small>{t.sub}</small>
+          </button>
+        ))}
+      </div>
+      <div id="tw-panel" role="tabpanel" aria-labelledby={`tw-tab-${time}`} className="tw-panel" key={time}>
+      {time === "now" && <TodayInParliament onAhead={() => pick("ahead")} />}
+      {time === "ahead" && (
+        <div className="st" data-look="vivid" style={{ paddingTop: 8 }}>
+          <Suspense fallback={<Loading />}><Ahead /></Suspense>
+        </div>
+      )}
+      {time === "past" && <>
       {state.loading && <Loading />}
       {allFailed && <div className="tw-note">We couldn't load the latest changes just now. Check your connection and try again in a minute.</div>}
       {state.raw && !allFailed && (
@@ -117,6 +152,8 @@ export default function ThisWeek() {
           </p>
         </>
       )}
+      </>}
+      </div>
     </div>
   );
 }

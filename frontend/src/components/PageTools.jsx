@@ -34,10 +34,13 @@ export default function PageTools({ view, selected }) {
   const [current, setCurrent] = useState(null);
   const box = useRef(null);
   const btn = useRef(null);
+  // While the list is open it is left exactly as it is: nothing that happens on the page (a toggle changing the headings, a chart loading) reorders it under the finger.
+  const openNow = useRef(false);
+  useEffect(() => { openNow.current = open; }, [open]);
 
   const refresh = useCallback(() => {
     const main = document.getElementById("main-content");
-    if (!main) return;
+    if (!main || openNow.current) return;
     const next = scan(main);
     setHeads((prev) => (prev.map((h) => h.id).join("|") === next.map((h) => h.id).join("|") ? prev : next));
   }, []);

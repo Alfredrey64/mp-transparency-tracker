@@ -73,40 +73,6 @@ export function Dots({ title, items, note }) {
   );
 }
 
-// What changes when a government changes, and what stays: three rows of people, the ones who go fading out and the new ones arriving, the civil servants standing still.
-//   tiers  [{ name, colour, before, after, stays }]
-export function Swap({ tiers, head = "What happens to each when the government changes", before = "Before the change", after = "After the change", moment = "The government changes" }) {
-  const [ref, go] = useGo(0.25);
-  return (
-    <figure ref={ref} className="vv-swap" data-go={go}>
-      <figcaption>{head}</figcaption>
-      <div className="vv-swap-axis" aria-hidden="true"><span>{before}</span><span className="vv-moment">{moment}</span><span>{after}</span></div>
-      <ul>
-        {tiers.map((t, i) => (
-          <li key={t.name} className="vv-tier" data-stays={t.stays ? "1" : "0"} style={{ "--tc": t.colour, "--i": i }}>
-            <b className="vv-tier-name">{t.name}</b>
-            <div className="vv-side vv-was">
-              <span className="vv-sidehead">
-                <span className="vv-crowd" aria-hidden="true">{[0, 1, 2, 3].map((k) => <i key={k} style={{ "--k": k }} />)}</span>
-                <span className="vv-tag" aria-hidden="true">In post</span>
-              </span>
-              <span className="vv-say">{t.before}</span>
-            </div>
-            <i className="vv-mid" aria-hidden="true" />
-            <div className="vv-side vv-now">
-              <span className="vv-sidehead">
-                <span className="vv-crowd" aria-hidden="true">{[0, 1, 2, 3].map((k) => <i key={k} style={{ "--k": k }} />)}</span>
-                <span className="vv-tag" aria-hidden="true">{t.stays ? "Still in post" : "New arrivals"}</span>
-              </span>
-              <span className="vv-say">{t.after}</span>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </figure>
-  );
-}
-
 // Two shares side by side for each party, so the gap between them can be seen: the share of the votes, and the share of the seats it turned into. It sits on the
 // banner of the opinion poll page.
 //   rows  [{ name, colour, votes, seats, votesText, seatsText }]  votes and seats are percentages

@@ -490,15 +490,22 @@
 .na-lane b { font: 700 clamp(20px, 2.6vw, 24px)/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
 .na-lane em { font: 800 14.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: color-mix(in srgb, var(--tc) 75%, var(--c-ink)); }
 .na-lane p { margin: 4px 0 0; font: 400 15px/1.65 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.na-art { position: relative; display: grid; place-items: center; height: 120px; margin-bottom: 8px; }
+.na-art { position: relative; display: grid; place-items: center; height: 136px; margin-bottom: 8px; }
 .na-radio i { position: absolute; width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--tc); opacity: 0; animation: naPulse 3s ease-out infinite; }
 .na-radio i:nth-child(2) { animation-delay: 1s; } .na-radio i:nth-child(3) { animation-delay: 2s; }
 .na-radio span { position: relative; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: var(--tc); color: #fff; box-shadow: 0 10px 22px -10px var(--tc); }
 @keyframes naPulse { 0% { transform: scale(0.6); opacity: 0; } 25% { opacity: 0.6; } 100% { transform: scale(2.1); opacity: 0; } }
-.na-paper i { position: absolute; width: 62px; height: 80px; border-radius: 5px; background: var(--c-paper-card); border: 1.5px solid color-mix(in srgb, var(--tc) 40%, var(--c-hairline)); box-shadow: 0 6px 14px -8px rgba(30, 42, 68, 0.4); animation: naSway 5s ease-in-out infinite alternate; background-image: linear-gradient(var(--c-ink) 0 0), linear-gradient(var(--c-hairline) 0 0), linear-gradient(var(--c-hairline) 0 0); background-size: 70% 5px, 80% 3px, 55% 3px; background-position: 10px 12px, 10px 26px, 10px 34px; background-repeat: no-repeat; }
-.na-paper i:nth-child(1) { transform: rotate(-9deg) translateX(-18px); animation-delay: -1s; }
-.na-paper i:nth-child(2) { transform: rotate(0); animation-delay: -2.5s; }
-.na-paper i:nth-child(3) { transform: rotate(9deg) translateX(18px); animation-delay: -4s; }
+.na-paper .na-sheet { position: absolute; width: 84px; height: 108px; border-radius: 6px; background: var(--c-paper-card); border: 1.5px solid color-mix(in srgb, var(--tc) 45%, var(--c-hairline)); box-shadow: 0 8px 18px -10px rgba(30, 42, 68, 0.45); animation: naSway 5s ease-in-out infinite alternate; overflow: hidden; }
+.na-paper .na-sheet svg { display: block; width: 100%; height: 100%; }
+.na-paper .na-sheet:nth-child(1) { transform: rotate(-11deg) translateX(-26px); animation-delay: -1s; }
+.na-paper .na-sheet:nth-child(2) { transform: rotate(10deg) translateX(26px); animation-delay: -2.5s; }
+.na-paper .na-sheet:nth-child(3) { z-index: 1; animation-delay: -4s; }
+.na-title { font: 700 17px "Figures", "Newsreader", Georgia, serif; fill: var(--c-ink); letter-spacing: -0.01em; }
+.na-rule { fill: none; stroke: var(--c-ink); stroke-width: 1.5; }
+.na-wave { fill: none; stroke: color-mix(in srgb, var(--tc) 40%, var(--c-ink-soft)); stroke-width: 1.4; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
+[data-go="0"].na-lanes .na-wave { stroke-dashoffset: 1; }
+[data-go="1"].na-lanes .na-wave { animation: naWrite 0.7s var(--ease-out) calc(0.5s + var(--n) * 90ms) backwards; }
+@keyframes naWrite { from { stroke-dashoffset: 1; } }
 @keyframes naSway { from { translate: 0 0; } to { translate: 0 -6px; } }
 
 .na-rules p, .na-case-list p, .na-outlets dd { margin: 0; font: 400 14.5px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
@@ -531,11 +538,10 @@
 .na-quiz-done b { font: 700 40px/1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
 .na-quiz-done p { margin: 0 0 6px; max-width: 520px; font: 400 15px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 
-
 .na-cases { display: grid; gap: 16px; }
 @media (prefers-reduced-motion: reduce) {
   .na-lane, .na-rules li, .na-outlets > li, .na-case-list > li { transition: none !important; }
-  .na-radio i, .na-paper i { animation: none; } .na-radio i:nth-child(1) { opacity: 0.35; transform: scale(1.4); }
+  .na-radio i, .na-paper .na-sheet { animation: none; } .na-wave { animation: none !important; stroke-dashoffset: 0 !important; } .na-radio i:nth-child(1) { opacity: 0.35; transform: scale(1.4); }
   .na-rules details[open] > *:not(summary), .na-case-list details[open] > *:not(summary), .na-outlets details[open] > dl { animation: none; }
 }
 
@@ -631,43 +637,8 @@
 .st[data-look="vivid"] .sa-seats li { background: color-mix(in srgb, var(--tc, #5A7FA6) 14%, var(--c-hairline)); }
 
 /* Who stays and who goes, as people. */
-.vv-swap { margin: 0; padding: clamp(18px, 3vw, 30px); border-radius: 28px; color: #fff; background: radial-gradient(70% 90% at 100% 0%, rgba(111, 177, 255, 0.28), transparent 65%), #17214F; box-shadow: var(--shadow-2); }
-.vv-swap figcaption { margin: 0 0 16px; font: 700 clamp(18px, 2.3vw, 22px)/1.3 "Figures", "Newsreader", Georgia, serif; }
-.vv-swap-axis { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 14px; align-items: center; margin-bottom: 8px; font: 700 13px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: rgba(255, 255, 255, 0.78); }
-.vv-swap-axis span:last-child { text-align: right; }
-.vv-moment { padding: 5px 13px; border-radius: 999px; background: #fff; color: #17214F; font-weight: 800; }
-.vv-swap ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
-.vv-tier { display: grid; grid-template-columns: minmax(0, 1fr) 46px minmax(0, 1fr); gap: 6px 14px; align-items: stretch; padding: 14px 16px; border-radius: 20px; background: rgba(255, 255, 255, 0.07); }
-.vv-tier-name { grid-column: 1 / -1; font: 800 15.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--tc) 40%, #fff); }
-.vv-side { display: grid; gap: 8px; align-content: start; }
-.vv-say { font: 500 14px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: rgba(255, 255, 255, 0.92); }
-.vv-crowd { display: flex; gap: 8px; min-height: 36px; }
-.vv-crowd i { position: relative; flex: none; width: 28px; height: 36px; --av: var(--tc); }
-.vv-crowd i::before, .vv-crowd i::after { content: ""; position: absolute; background: var(--av); }
-.vv-crowd i::before { top: 0; left: 7px; width: 14px; height: 14px; border-radius: 50%; }
-.vv-crowd i::after { bottom: 0; left: 0; width: 28px; height: 19px; border-radius: 14px 14px 4px 4px; }
-.vv-now .vv-crowd i { --av: color-mix(in srgb, var(--tc) 62%, #fff); }
-.vv-tier[data-stays="1"] .vv-now .vv-crowd i { --av: var(--tc); }
-.vv-mid { align-self: center; position: relative; height: 4px; border-radius: 2px; background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.7) 0 6px, transparent 6px 11px); transform-origin: left; }
-.vv-mid::after { content: ""; position: absolute; right: -1px; top: -5px; width: 12px; height: 12px; border-top: 3px solid rgba(255, 255, 255, 0.8); border-right: 3px solid rgba(255, 255, 255, 0.8); transform: rotate(45deg); }
-.vv-crowd i, .vv-say, .vv-mid { opacity: 0; }
-.vv-crowd i { transform: scale(0.3); transform-origin: bottom; }
-.vv-mid { transform: scaleX(0); }
-.vv-was .vv-crowd i { transition: opacity 0.4s ease calc(var(--i) * 0.25s + var(--k) * 0.09s), transform 0.5s var(--ease-out) calc(var(--i) * 0.25s + var(--k) * 0.09s), filter 0.6s ease 1.9s; }
-.vv-was .vv-say { transition: opacity 0.5s ease calc(var(--i) * 0.25s + 0.4s); }
-.vv-mid { transition: transform 0.5s ease calc(var(--i) * 0.25s + 1.2s), opacity 0.3s ease calc(var(--i) * 0.25s + 1.2s); }
-.vv-now .vv-crowd i { transition: opacity 0.4s ease calc(var(--i) * 0.25s + 2s + var(--k) * 0.09s), transform 0.55s var(--ease-out) calc(var(--i) * 0.25s + 2s + var(--k) * 0.09s); }
-.vv-now .vv-say { transition: opacity 0.5s ease calc(var(--i) * 0.25s + 2.3s); }
-[data-go="1"].vv-swap .vv-crowd i, [data-go="1"].vv-swap .vv-say, [data-go="1"].vv-swap .vv-mid { opacity: 1; transform: none; }
-[data-go="1"].vv-swap .vv-tier[data-stays="0"] .vv-was .vv-crowd i { opacity: 0.28; filter: grayscale(1); }
-@media (max-width: 700px) {
-  .vv-tier { grid-template-columns: minmax(0, 1fr); }
-  .vv-mid { justify-self: center; width: 4px; height: 26px; margin: 0; transform-origin: top; background: repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.7) 0 6px, transparent 6px 11px); transform: scaleY(0); }
-  .vv-mid::after { right: auto; top: auto; left: 50%; bottom: -1px; margin-left: -8px; transform: rotate(135deg); }
-  [data-go="1"].vv-swap .vv-mid { transform: none; }
-  .vv-swap-axis { grid-template-columns: 1fr; justify-items: start; } .vv-swap-axis span:last-child { text-align: left; } .vv-swap-axis span:not(.vv-moment) { display: none; }
-}
-@media (prefers-reduced-motion: reduce) { .vv-badge, .vv-stop b, .vv-stop small, .vv-link i, .vv-link::after, .vv-crowd i, .vv-say, .vv-mid, .vv-dotgrid i { transition: none !important; } }
+
+@media (prefers-reduced-motion: reduce) { .vv-badge, .vv-stop b, .vv-stop small, .vv-link i, .vv-link::after, .vv-dotgrid i { transition: none !important; } }
 
 /* "If it were 100 people": each share a card of 100 dots, filling in order. */
 .vv-dots { margin: 0; }
@@ -828,16 +799,7 @@
 .sa-div-items ul li { color: var(--c-ink-soft); }
 .sa-div-items ul li::before { background: var(--tc); }
 /* Who stays and who goes: a light panel. */
-.vv-swap { color: var(--c-ink); background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); border-radius: 22px; }
-.vv-swap-axis { color: var(--c-ink-soft); }
-.vv-moment { background: var(--c-ink); color: var(--c-paper-card); }
-.vv-tier { background: color-mix(in srgb, var(--tc) 6%, var(--c-paper)); border: 1px solid var(--c-hairline); border-radius: 16px; }
-.vv-tier-name { color: color-mix(in srgb, var(--tc) 80%, var(--c-ink)); }
-.vv-say { color: var(--c-ink); }
-.vv-now .vv-crowd i { --av: color-mix(in srgb, var(--tc) 55%, var(--c-paper-card)); }
-.vv-mid { background: repeating-linear-gradient(90deg, var(--c-ink-soft) 0 6px, transparent 6px 11px); }
-.vv-mid::after { border-color: var(--c-ink-soft); }
-@media (max-width: 700px) { .vv-mid { background: repeating-linear-gradient(180deg, var(--c-ink-soft) 0 6px, transparent 6px 11px); } }
+
 /* One hundred dots: paper cards, the lit dots in the part's colour. */
 .vv-dotcard { color: var(--c-ink); background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-top: 3px solid var(--tc); border-radius: 18px; box-shadow: var(--shadow-1); }
 .vv-dotcard h3 { color: var(--c-ink-soft); }
@@ -851,7 +813,7 @@
 .st[data-look="vivid"] .na-lane em { color: color-mix(in srgb, var(--tc) 80%, var(--c-ink)); background: color-mix(in srgb, var(--tc) 12%, var(--c-paper-card)); }
 .st[data-look="vivid"] .na-radio i { border-color: var(--tc); }
 .st[data-look="vivid"] .na-radio span { background: var(--tc); color: #fff; box-shadow: none; }
-.st[data-look="vivid"] .na-paper i { background-color: var(--c-paper-card); border-color: color-mix(in srgb, var(--tc) 50%, var(--c-hairline)); }
+.st[data-look="vivid"] .na-paper .na-sheet { background-color: var(--c-paper-card); border-color: color-mix(in srgb, var(--tc) 50%, var(--c-hairline)); }
 .na-rules li { color: var(--c-ink); background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-top: 3px solid var(--tc); border-radius: 18px; box-shadow: var(--shadow-1); }
 .na-n { color: color-mix(in srgb, var(--tc) 14%, var(--c-paper-card)); }
 .na-ruleico { background: color-mix(in srgb, var(--tc) 13%, var(--c-paper-card)); color: color-mix(in srgb, var(--tc) 78%, var(--c-ink)); box-shadow: none; width: 46px; height: 46px; }
@@ -1035,7 +997,6 @@
 .st-detail button:focus-visible { outline: 3px solid var(--sb-accent, #2F80ED); outline-offset: 2px; }
 @media (max-width: 520px) { .st-detail { justify-content: flex-start; } .st-detail span { flex-basis: 100%; } }
 
-
 /* ARROWS. Every arrow on the site is built the same way: a line, and a head cut from one chevron shape (--chev), so the head is always the same size, always sits at the end of the line
    and never leans. The head is drawn inside the box the connector owns, so it cannot slip behind the next card. An arrow draws itself in by a wipe along its length (the head arrives last),
    and then the head nods gently. For anyone who has asked for calmer motion the arrow is simply there. */
@@ -1089,14 +1050,6 @@
 }
 
 /* The swap picture (then and now) */
-.vv-mid { height: 14px; border-radius: 0; background: repeating-linear-gradient(90deg, var(--c-ink-soft) 0 6px, transparent 6px 11px) 0 50% / calc(100% - 10px) 3px no-repeat; transform: none; clip-path: inset(0 100% 0 0); transition: clip-path 0.5s ease calc(var(--i) * 0.25s + 1.2s), opacity 0.3s ease calc(var(--i) * 0.25s + 1.2s); }
-.vv-mid::after { right: 0; top: 50%; width: 14px; height: 14px; margin: -7px 0 0; border: 0; background: var(--c-ink-soft); -webkit-mask: var(--chev) center / contain no-repeat; mask: var(--chev) center / contain no-repeat; transform: none; }
-[data-go="1"].vv-swap .vv-mid { clip-path: inset(0); }
-@media (max-width: 700px) {
-  .vv-mid { justify-self: center; width: 14px; height: 30px; background: repeating-linear-gradient(180deg, var(--c-ink-soft) 0 6px, transparent 6px 11px) 50% 0 / 3px calc(100% - 9px) no-repeat; clip-path: inset(0 0 100% 0); }
-  .vv-mid::after { right: auto; top: auto; left: 50%; bottom: 0; margin: 0 0 0 -7px; transform: rotate(90deg); }
-  [data-go="1"].vv-swap .vv-mid { clip-path: inset(0); }
-}
 
 /* Converging lines, the news page and the pipeline circles */
 .sa-conv-down::after { bottom: -8px; width: 14px; height: 14px; margin-left: -7px; border: 0; background: var(--c-ink-soft); -webkit-mask: var(--chev) center / contain no-repeat; mask: var(--chev) center / contain no-repeat; transform: rotate(90deg); }
@@ -1114,7 +1067,7 @@
 @keyframes saDrop { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 75% { opacity: 1; } 100% { transform: translateY(26px); opacity: 0; } }
 @keyframes saRing { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c-ink-soft) 38%, transparent), var(--shadow-1); } 70%, 100% { box-shadow: 0 0 0 11px transparent, var(--shadow-1); } }
 @media (prefers-reduced-motion: no-preference) {
-  [data-go="1"].sa-flow .sa-link i::after, [data-go="1"].sa-hand li > i::after, [data-go="1"].vv-swap .vv-mid::after { animation: saNodRight 1.8s ease-in-out infinite; animation-delay: calc(var(--i, 0) * 0.5s + 1.4s); }
+  [data-go="1"].sa-flow .sa-link i::after, [data-go="1"].sa-hand li > i::after { animation: saNodRight 1.8s ease-in-out infinite; animation-delay: calc(var(--i, 0) * 0.5s + 1.4s); }
   .sa-flow[data-down="1"] .sa-link::before { content: ""; position: absolute; left: 50%; top: 2px; width: 7px; height: 7px; margin-left: -3.5px; border-radius: 50%; background: var(--c-ink-soft); opacity: 0; }
   [data-go="1"].sa-flow[data-down="1"] .sa-link::before { animation: saDrop 1.8s ease-in infinite; animation-delay: calc(var(--i) * 0.5s + 1.2s); }
   [data-go="1"].sa-flow[data-down="1"] .sa-link::after { animation: saRing 1.8s ease-out infinite; animation-delay: calc(var(--i) * 0.5s + 1.9s); }
@@ -1127,10 +1080,10 @@
     [data-go="1"].sa-flow .sa-link i::after { animation: saNodDown 1.8s ease-in-out infinite; animation-delay: calc(var(--i) * 0.5s + 1.9s); }
   }
   @media (max-width: 700px) {
-    [data-go="1"].sa-hand li > i::after, [data-go="1"].vv-swap .vv-mid::after { animation-name: saNodDown; }
+    [data-go="1"].sa-hand li > i::after { animation-name: saNodDown; }
   }
 }
-@media (prefers-reduced-motion: reduce) { .sa-link i, .sa-hand li > i, .vv-link i, .vv-link::after, .vv-mid, .na-arrow, .sa-flow .sa-link::after { transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { .sa-link i, .sa-hand li > i, .vv-link i, .vv-link::after, .na-arrow, .sa-flow .sa-link::after { transition: none !important; } }
 
 /* The report browser on Committee reports and replies (components/story/ReportBrowser.jsx). */
 .rb { display: grid; gap: 16px; color: var(--c-ink); }
@@ -1247,34 +1200,4 @@
 @media (max-width: 480px) { .na-facts > div { grid-template-columns: minmax(0, 1fr); } }
 
 /* Who stays and who goes, redrawn: a spine down the middle, a row for each group with its colour down the edge, bigger figures and a tag saying what happens to them. */
-.vv-swap { padding: clamp(18px, 3vw, 32px); border-radius: 24px; }
-.vv-swap figcaption { margin-bottom: 18px; }
-.vv-swap-axis { margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--c-hairline); font: 800 12.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.03em; text-transform: none; }
-.vv-moment { padding: 7px 16px; border-radius: 999px; background: var(--c-ink); color: var(--c-paper-card); font: 800 13px/1.2 "Figures", "Public Sans", system-ui, sans-serif; }
-.vv-swap ul { position: relative; gap: 14px; }
-.vv-swap ul::before { content: ""; position: absolute; left: 50%; top: -14px; bottom: -8px; width: 0; border-left: 2px dashed var(--c-hairline); }
-.vv-tier { position: relative; grid-template-columns: minmax(0, 1fr) 64px minmax(0, 1fr); gap: 10px 14px; padding: 16px 20px 18px; border: 1px solid color-mix(in srgb, var(--tc) 26%, var(--c-hairline)); border-left: 7px solid var(--tc); border-radius: 18px; background: color-mix(in srgb, var(--tc) 5%, var(--c-paper-card)); box-shadow: var(--shadow-1); }
-.vv-tier-name { font: 800 17px/1.2 "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--tc) 72%, var(--c-ink)); }
-.vv-side { display: grid; gap: 10px; align-content: start; }
-.vv-sidehead { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.vv-crowd { gap: 9px; min-height: 48px; }
-.vv-crowd i { width: 34px; height: 46px; }
-.vv-crowd i::before { left: 8px; width: 18px; height: 18px; }
-.vv-crowd i::after { width: 34px; height: 25px; border-radius: 17px 17px 5px 5px; }
-.vv-was .vv-crowd i { --av: color-mix(in srgb, var(--tc) 70%, var(--c-ink)); }
-.vv-now .vv-crowd i { --av: var(--tc); }
-.vv-tier[data-stays="1"] .vv-now .vv-crowd i { --av: color-mix(in srgb, var(--tc) 70%, var(--c-ink)); }
-.vv-tag { flex: none; padding: 4px 12px; border-radius: 999px; font: 800 12px/1.3 "Figures", "Public Sans", system-ui, sans-serif; background: color-mix(in srgb, var(--c-ink-soft) 14%, var(--c-paper-card)); color: var(--c-ink-soft); }
-.vv-now .vv-tag { background: color-mix(in srgb, var(--tc) 18%, var(--c-paper-card)); color: color-mix(in srgb, var(--tc) 70%, var(--c-ink)); box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--tc) 55%, transparent); }
-.vv-tier[data-stays="1"] .vv-now .vv-tag::before { content: ""; display: inline-block; width: 9px; height: 5px; margin: 0 6px 2px 0; border-left: 2.5px solid currentColor; border-bottom: 2.5px solid currentColor; transform: rotate(-45deg); }
-.vv-say { font: 600 14.5px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
-.vv-was .vv-say { color: var(--c-ink-soft); font-weight: 500; }
-.vv-tag { opacity: 0; transition: opacity 0.4s ease calc(var(--i) * 0.25s + 0.5s); }
-.vv-now .vv-tag { transition-delay: calc(var(--i) * 0.25s + 2.4s); }
-[data-go="1"].vv-swap .vv-tag { opacity: 1; }
-[data-go="1"].vv-swap .vv-tier[data-stays="0"] .vv-was .vv-crowd i { opacity: 0.35; filter: grayscale(0.8); }
-@media (max-width: 700px) {
-  .vv-swap ul::before { display: none; }
-  .vv-tier { grid-template-columns: minmax(0, 1fr); }
-}
-@media (prefers-reduced-motion: reduce) { .vv-tag { transition: none; } }
+

@@ -500,7 +500,7 @@ dialog[open]::backdrop { animation: fade-in 0.15s ease both; }
 .to-top:focus-visible { outline: 3px solid var(--c-brand-deep); outline-offset: 3px; }
 .to-top-ring { transition: stroke-dashoffset 0.12s linear; }
 /* The walk-through's bar sits at the bottom of a phone screen, so the button steps aside while it is open. */
-body:has(.tier-mini) .to-top { display: none; }
+body:has(.tier-mini) .to-top, body:has(.mf-pop-wrap) .to-top { display: none; }
 @media print { .to-top { display: none; } }
 
 /* The header band: its parts arrive one after another when a page opens. */
@@ -677,17 +677,9 @@ html[data-nav] .page-hero-inner > *, html[data-nav] .page-hero::before { animati
 /* ---- Party promise cards ------------------------------------------------------------------------------------------------------------------------ */
 .party-card { display: flex; flex-direction: column; overflow: hidden; cursor: pointer; border: 1px solid var(--c-hairline); border-radius: 18px; background: var(--c-paper-card); box-shadow: var(--shadow-1); transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out); }
 .party-card:hover { transform: scale(1.018); box-shadow: var(--shadow-3); }
-.party-band { display: flex; align-items: center; gap: 14px; padding: 18px 20px; }
-.party-band[data-large="1"] { margin: 0 calc(-1 * clamp(18px, 4vw, 30px)) 0; padding: 24px clamp(18px, 4vw, 30px) 22px; padding-right: 64px; }
-.party-ring { position: relative; flex: none; width: 68px; height: 68px; }
-.party-ring-num { position: absolute; inset: 0; display: grid; place-items: center; font: 600 20px/1 "Figures", "Public Sans", system-ui, sans-serif; font-variant-numeric: lining-nums tabular-nums; }
 .party-card-body { display: flex; flex-direction: column; flex: 1; padding: 20px 20px 20px; background: linear-gradient(180deg, color-mix(in srgb, var(--p) 8%, var(--c-paper-card)), var(--c-paper-card) 55%); }
 .party-card-cta { margin-top: 18px; min-height: 46px; border: none; border-radius: 12px; font: 700 15px/1 "Figures", "Public Sans", system-ui, sans-serif; cursor: pointer; transition: filter 0.2s, transform 0.2s var(--ease-out); }
 .party-card-cta:hover { filter: brightness(1.08); transform: translateY(-1px); }
-.ring-draw { transition: none; }
-.rv-in .ring-draw, .rv-now .ring-draw { animation: ring-sweep 1.2s var(--ease-out) 0.2s backwards; }
-@keyframes ring-sweep { from { stroke-dashoffset: 1; } }
-@media (prefers-reduced-motion: reduce) { .ring-draw { animation: none !important; } }
 
 /* ---- Colour that runs down the page ------------------------------------------------------------------------------------------------------------ */
 /* A soft wash of the page's colour just under the band, fading out over the first screen or two, so a page is not a single flat ground. */

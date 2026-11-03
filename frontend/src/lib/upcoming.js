@@ -129,3 +129,30 @@ export function nextRecess(data, today) {
 export function thinWeeks(data) {
   return weeks(data).filter((w) => w.days.filter((d) => d.inside && d.C === "sitting").every((d) => d.n === 0) && w.days.some((d) => d.inside && d.C === "sitting")).length;
 }
+
+// Today's date in London as "2026-11-03", for picking out what is listed for today.
+export const londonToday = (now = new Date()) => now.toLocaleDateString("en-CA", { timeZone: "Europe/London" });
+
+// What is listed for one day: whether each house sits, and the business under each heading, soonest first. `inRange` is false when the calendar does not cover the day
+// (the file is a few days old, say), so the page can say so instead of claiming nothing is on.
+export function dayView(data, date) {
+  const by = (kinds) => data.events.filter((e) => e.d === date && kinds.includes(e.k)).sort((a, b) => (a.time || "99").localeCompare(b.time || "99"));
+  return {
+    date,
+    inRange: date >= data.from && date <= data.to,
+    commons: statusOn(date, "Commons", data.away),
+    lords: statusOn(date, "Lords", data.away),
+    business: by(["debate", "statement"]),
+    questions: by(["questions"]).filter((e) => e.h === "C"),
+    bills: by(["bill"]),
+    hearings: by(["hearing"]),
+  };
+}
+
+// The next weekday after `date` that has anything listed, as { date, n }, or null when the calendar has nothing later.
+export function nextBusyDay(data, date) {
+  const counts = new Map();
+  for (const e of data.events) if (e.d > date) counts.set(e.d, (counts.get(e.d) ?? 0) + 1);
+  const days = [...counts].sort((a, b) => a[0].localeCompare(b[0]));
+  return days.length ? { date: days[0][0], n: days[0][1] } : null;
+}

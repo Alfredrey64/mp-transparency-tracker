@@ -5,6 +5,7 @@ import { ANSWERS, ANSWER_TOPICS } from "../data/answers";
 // A party counted here made a clear commitment we are confident about; a party left out may still have a view, which the page says wherever it is shown.
 export function manifestoFootprint() {
   const topicOf = new Map(ANSWERS.map((a) => [a.id, a.topic]));
+  const questionOf = new Map(ANSWERS.map((a) => [a.id, a.question]));
   const ids = Object.keys(ANSWER_POSITIONS);
   const topics = ANSWER_TOPICS
     .map((topic) => {
@@ -12,7 +13,16 @@ export function manifestoFootprint() {
       return {
         topic,
         total: inTopic.length,
-        cells: POSITION_PARTY_ORDER.map((key) => ({ key, n: inTopic.filter((id) => ANSWER_POSITIONS[id].parties[key]).length })),
+        cells: POSITION_PARTY_ORDER.map((key) => {
+          const said = inTopic.filter((id) => ANSWER_POSITIONS[id].parties[key]);
+          return {
+            key,
+            n: said.length,
+            // What the party promised on each of those questions, and the questions it has no clear promise on in our summary.
+            items: said.map((id) => ({ id, question: questionOf.get(id), about: ANSWER_POSITIONS[id].about, text: ANSWER_POSITIONS[id].parties[key] })),
+            missing: inTopic.filter((id) => !ANSWER_POSITIONS[id].parties[key]).map((id) => ({ id, question: questionOf.get(id) })),
+          };
+        }),
       };
     })
     .filter((t) => t.total > 0);

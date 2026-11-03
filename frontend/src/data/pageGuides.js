@@ -237,9 +237,9 @@ export const PAGE_GUIDES = {
     notShown: "Parish and town councillors, contact details, declared interests or voting records, none of which are published as open data. Party changes are spotted by comparing yearly lists.",
   },
   thisWeek: {
-    what: "A running list of what changed lately: votes held, bills that moved, money declared, petitions answered, conduct reports and by-elections.",
-    why: "Politics is a stream of small decisions. Seeing them in one place, with the date, helps you notice what matters before it is in the headlines.",
-    notShown: "Anything Parliament has not yet published, the reasons behind a decision, or speeches and debates. It follows the daily data refresh, so today's news can lag a day.",
+    what: "What changed lately in Parliament, what is on today, and the next four weeks: sitting days, bills due, committee evidence and ministers' questions.",
+    why: "Seeing what happened, what is on and what is due in one place helps you follow a bill or committee you care about before it is in the headlines.",
+    notShown: "Anything not yet published or announced, the reasons behind decisions, or speeches. The past follows the daily refresh, and the calendar lists planned business, which can change.",
   },
   myArea: {
     what: "Your postcode, turned into your MP, constituency, council, ward councillors, next elections and a comparison of your region with the UK.",
@@ -510,11 +510,6 @@ export const PAGE_GUIDES = {
     what: "How many properties in England are at risk of flooding, what is being spent on flood defences, the 2025 air quality results, and a postcode check for live flood warnings and the official risk and air quality checkers.",
     why: "Whether your home floods or your street has clean air depends on where you live, and both depend on public money and rules.",
     notShown: "Live flood warnings outside England, and the air quality at your own address. The check links to the official services for both.",
-  },
-  upcoming: {
-    what: "The days the Commons and Lords sit over the next four weeks, which bills are due to be debated, which committees are taking evidence in public, and which ministers will answer questions.",
-    why: "It lets you follow a bill or a committee you care about before it happens, and see when your MP is away from Westminster.",
-    notShown: "Business that has not yet been announced, which fills in as each week gets closer, and how any debate or vote will go.",
   },
   committeeReports: {
     what: "Which select committee reports from the last 12 months have had a government reply, how long replies took, which committees are waiting longest and which reports have had no reply.",

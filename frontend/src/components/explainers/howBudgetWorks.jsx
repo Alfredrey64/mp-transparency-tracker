@@ -105,7 +105,7 @@ const PAGE = {
       blocks: [
         { node: <Journey colour="#5A4FCF" items={[
           { when: "28 October 2026", text: "The Chancellor delivers the Budget. The Treasury publishes the Budget document and policy costings, and the Office for Budget Responsibility publishes its forecast." },
-          { when: "November 2026", text: "Parliament debates the Budget. Its calendar lists a Lords debate on the Autumn Budget 2026 and a Lords committee taking evidence on the draft Finance Bill 2026-27 on 12 November. The Coming up in Parliament page shows what is listed." },
+          { when: "November 2026", text: "Parliament debates the Budget. Its calendar lists a Lords debate on the Autumn Budget 2026 and a Lords committee taking evidence on the draft Finance Bill 2026-27 on 12 November. The What changed this week page, under Coming up, shows what is listed." },
           { when: "January 2027", text: "The Household Energy Payment is due to be paid from January 2027, and the higher bank surcharge starts on 1 January 2027." },
           { when: "2027", text: "The next spending review is due, according to the Budget document." },
         ]} /> },

@@ -85,9 +85,9 @@ function Control({ onClick, disabled, primary, children }) {
   );
 }
 
-function Legend() {
+function Legend({ action }) {
   const item = (down, text) => (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>
+    <span className="tier-key" data-dir={down ? "down" : "up"} style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>
       <svg width="12" height="16" viewBox="0 0 12 16" aria-hidden="true" fill="none" stroke={down ? "#3B4A66" : "#2E7D5B"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         {down ? <path d="M6 2v11M2 9l4 4 4-4" /> : <path d="M6 14V3M2 7l4-4 4 4" />}
       </svg>
@@ -97,10 +97,11 @@ function Legend() {
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 26px", marginBottom: 16 }}>
       <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, flexBasis: "100%" }}>
-        Each box sits inside the one that covers a wider area: the whole UK on the outside, your home in the middle.
+        Each box sits inside the one that covers a wider area: the whole UK on the outside, you in the middle.
       </span>
       {item(true, "Laws, rules and money flow in, towards you")}
       {item(false, "Votes and scrutiny flow out, from you")}
+      <span className="tier-hint" aria-hidden="true"><i />{action ? "Choose a walk-through, then follow the marker" : "Select any box to read about it"}</span>
     </div>
   );
 }
@@ -381,11 +382,13 @@ export default function GovernmentTiers() {
         />
       </div>
 
-      <Legend />
+      <Legend action={action} />
 
       <div className="tier-wrap">
         <div className="tier-grid">
           <div className="tier-diagram" ref={diaRef} data-in={seen || calm ? "1" : "0"} data-mode={action ? "action" : "explore"} data-vote={action && voting ? "1" : "0"}>
+            <span className="tier-rail" data-dir="down" aria-hidden="true" />
+            <span className="tier-rail" data-dir="up" aria-hidden="true" />
             <div className="tier-stack" style={{ "--n": MOST_TIERS }}>{nest}</div>
           </div>
 
@@ -407,7 +410,7 @@ export default function GovernmentTiers() {
               />
             ) : (
               <div className="tier-scroll">
-                <TierInfo tierKey={selKey} order={order} nation={nation} nationLabel={nationLabel} />
+                <div key={`${selKey}-${nation}`} className="tier-info-in"><TierInfo tierKey={selKey} order={order} nation={nation} nationLabel={nationLabel} /></div>
               </div>
             )}
           </div>

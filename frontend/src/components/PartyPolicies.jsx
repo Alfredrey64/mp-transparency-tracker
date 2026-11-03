@@ -104,7 +104,7 @@ export default function PartyPolicies({ param }) {
         />
       )}
 
-      <Footprint />
+      <Footprint onOpenParty={(key, el) => { const hit = parties?.find((p) => findManifesto(p.name)?.key === key); if (hit) openParty(hit.name, el); }} />
 
       <PromiseExplorer initialQuestion={param} />
 
@@ -296,30 +296,27 @@ export default function PartyPolicies({ param }) {
   );
 }
 
-// The coloured top of a party's card: its name and manifesto, and a ring showing its share of the 650 seats (the number in the middle counts up).
+// The coloured top of a party's card: the party and the name of its manifesto, with its seat count (it counts up) over a bar that fills to its share of the 650 seats. Faint
+// rows of seats sit behind, like the Commons seen from above.
 const SEATS = 650;
-const RING_R = 27;
 
 function PartyBand({ party, manifesto, dotLayoutId, large }) {
   const { background, color } = chip(party.color);
   const share = Math.min(1, party.seats / SEATS);
   return (
     <div className="party-band" data-large={large ? "1" : "0"} style={{ background, color }}>
-      <div style={{ minWidth: 0, flex: 1 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-          <PartyDot layoutId={dotLayoutId} color={color} size={large ? 12 : 10} />
-          <span style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, letterSpacing: "0.02em", opacity: 0.88 }}>{manifesto ? `${manifesto.manifestoYear} manifesto: "${manifesto.manifestoTitle}"` : "Party"}</span>
-        </div>
-        <div id={large ? "party-dialog-title" : undefined} style={{ fontFamily: FONT_DISPLAY, fontSize: large ? 30 : 25, fontWeight: 600, lineHeight: 1.15, marginTop: 6, letterSpacing: "-0.01em" }}>
-          {manifesto?.shortName ?? party.name}
-        </div>
+      <svg className="pb-rows" viewBox="0 0 120 64" aria-hidden="true" preserveAspectRatio="xMaxYMax slice">
+        {[18, 30, 42, 54].map((r) => <path key={r} d={`M${60 - r} 62 A${r} ${r} 0 0 1 ${60 + r} 62`} fill="none" stroke="currentColor" strokeWidth="5" strokeDasharray="1.4 4.2" strokeLinecap="round" />)}
+      </svg>
+      <div className="pb-text">
+        <span className="pb-kicker"><PartyDot layoutId={dotLayoutId} color={color} size={large ? 12 : 10} />{manifesto ? `${manifesto.manifestoYear} manifesto` : "Party"}</span>
+        <span id={large ? "party-dialog-title" : undefined} className="pb-name">{manifesto?.shortName ?? party.name}</span>
+        {manifesto && <q className="pb-quote">{manifesto.manifestoTitle}</q>}
       </div>
-      <div className="party-ring" role="img" aria-label={`${party.seats} of the 650 seats in the Commons`}>
-        <svg width="68" height="68" viewBox="0 0 68 68" aria-hidden="true">
-          <circle cx="34" cy="34" r={RING_R} fill="none" stroke="currentColor" strokeOpacity="0.25" strokeWidth="6" />
-          <circle className="ring-draw" cx="34" cy="34" r={RING_R} fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" pathLength="1" strokeDasharray="1 1" strokeDashoffset={1 - Math.max(share, 0.012)} transform="rotate(-90 34 34)" />
-        </svg>
-        <span className="party-ring-num"><CountValue>{String(party.seats)}</CountValue></span>
+      <div className="pb-seats" role="img" aria-label={`${party.seats} of the 650 seats in the Commons`}>
+        <span className="pb-num"><CountValue>{String(party.seats)}</CountValue></span>
+        <small>of {SEATS} seats in the Commons</small>
+        <span className="pb-bar" aria-hidden="true"><i style={{ "--w": Math.max(share, 0.012) }} /></span>
       </div>
     </div>
   );

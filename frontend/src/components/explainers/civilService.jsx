@@ -3,7 +3,8 @@ import ExplainerPage from "../story/ExplainerPage";
 import { IconCivilService } from "../newIcons";
 import { IconShield, IconBook, IconCompass, IconScales, IconCabinet, IconGroup } from "../icons";
 import { Workforce } from "../story/CivilServiceArt";
-import { Hero, Dots, Swap } from "../story/Vivid";
+import { Hero, Dots } from "../story/Vivid";
+import Handover from "../story/Handover";
 
 const PAGE = {
   look: "vivid",
@@ -49,7 +50,7 @@ const PAGE = {
       lede: "Three kinds of people work in a government department. Their jobs, and how they get them, are different.",
       colour: "#5E4B8B",
       blocks: [
-        { node: <Swap tiers={[
+        { node: <Handover tiers={[
           { name: "Ministers", colour: "#B04A63", before: "Chosen by the Prime Minister", after: "A new set, chosen by the new Prime Minister" },
           { name: "Special advisers", colour: "#A9701F", before: "Chosen by a minister", after: "A new set, chosen by the new ministers" },
           { name: "Civil servants", colour: "#2C6FB0", before: "Appointed on merit", after: "Still there, serving the new ministers", stays: true },

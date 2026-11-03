@@ -13,7 +13,6 @@ const pages = [
   ["getThingsDone", "How to get something done", "12 months"],
   ["inquiries", "Public inquiries", "£1.5bn+"],
   ["departments", "Spending by department", "£648bn"],
-  ["upcoming", "Coming up in Parliament", "Bills with a stage due"],
 ];
 
 for (const [key, title, figure] of pages) {
@@ -67,4 +66,19 @@ test("the Who handles it? game accepts the right answer and explains it", async 
   await page.getByRole("button", { name: "The council service itself" }).click();
   await expect(page.locator(".gm-feedback")).toContainText("Start with the council service");
   await expect(page.getByRole("button", { name: "Next problem" })).toBeVisible();
+});
+
+test("the old Coming up address opens the Coming up part of What changed this week, and the three parts switch", async ({ page }) => {
+  await page.goto("/upcoming");
+  await expect(page.getByRole("heading", { name: "What changed this week", level: 1 })).toBeVisible({ timeout: 20000 });
+  await expect(page.getByRole("tab", { name: /Coming up/ })).toHaveAttribute("aria-selected", "true");
+  await expect(page.locator("main")).toContainText("Bills with a stage due", { timeout: 20000 });
+  await page.getByRole("tab", { name: /Today/ }).click();
+  await expect(page.locator(".td-houses")).toBeVisible();
+  await expect(page.locator(".td-house")).toHaveCount(2);
+  await page.getByRole("tab", { name: /What changed/ }).click();
+  await expect(page.getByRole("tab", { name: /What changed/ })).toHaveAttribute("aria-selected", "true");
+  await expect(page.locator(".td-houses")).toHaveCount(0);
+  // The data service is refused in these tests, so the past part says it could not load rather than listing changes.
+  await expect(page.locator(".tw-note")).toBeVisible({ timeout: 20000 });
 });

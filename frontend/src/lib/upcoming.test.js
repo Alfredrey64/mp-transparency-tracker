@@ -77,3 +77,18 @@ describe("the lists", () => {
     expect(nextRecess(data, "2026-12-01")).toBeNull();
   });
 });
+
+describe("dayView and nextBusyDay", () => {
+  it("lists what is on for a day and says when a house is in recess", async () => {
+    const { dayView, nextBusyDay, londonToday } = await import("./upcoming");
+    const v = dayView(data, "2026-11-03");
+    expect(v.inRange).toBe(true);
+    expect(v.commons).toBe("sitting");
+    expect(v.bills.length + v.hearings.length + v.business.length + v.questions.length).toBeGreaterThan(0);
+    expect(dayView(data, "2026-11-05").commons).toBe("recess");
+    expect(dayView(data, "2026-12-25").inRange).toBe(false);
+    expect(nextBusyDay(data, "2026-11-02").date >= "2026-11-03").toBe(true);
+    expect(nextBusyDay(data, "2030-01-01")).toBeNull();
+    expect(londonToday(new Date("2026-11-03T23:30:00Z"))).toBe("2026-11-03");
+  });
+});

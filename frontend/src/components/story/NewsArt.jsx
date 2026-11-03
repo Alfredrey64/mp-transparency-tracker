@@ -26,6 +26,22 @@ const LANE_FACTS = {
   ],
 };
 
+// One newspaper: the front page has the title across the top, and every page, front or behind, has the same wavy lines of text down it, each starting and ending at the
+// same place and the same distance apart. The squiggle is eight identical waves, so a line always ends exactly where it should.
+const LINES = 8;
+const WAVE = "q 4 -3 8 0 t 8 0 t 8 0 t 8 0 t 8 0 t 8 0 t 8 0 t 8 0";
+function Sheet({ front }) {
+  return (
+    <span className="na-sheet" data-front={front ? "1" : undefined}>
+      <svg viewBox="0 0 84 108" aria-hidden="true">
+        {front && <text x="42" y="22" textAnchor="middle" className="na-title">News</text>}
+        <path d="M10 28 H74" className="na-rule" />
+        {Array.from({ length: LINES }, (_, n) => <path key={n} d={`M10 ${40 + n * 8} ${WAVE}`} pathLength="1" className="na-wave" style={{ "--n": n }} />)}
+      </svg>
+    </span>
+  );
+}
+
 export function TwoLanes() {
   const [ref, go] = useGo(0.25);
   return (
@@ -38,7 +54,7 @@ export function TwoLanes() {
         <LaneFacts facts={LANE_FACTS.broadcast} />
       </div>
       <div className="na-lane" style={{ "--tc": "#9A3F55", "--i": 1 }}>
-        <div className="na-art na-paper" aria-hidden="true"><i /><i /><i /></div>
+        <div className="na-art na-paper" aria-hidden="true"><Sheet /><Sheet /><Sheet front /></div>
         <b>Newspapers and news websites</b>
         <em>Free to take a side</em>
         <p>They can back a party at an election and run an openly one-sided front page. That is why a paper's lean is well known, and a broadcaster's legally should not be.</p>
