@@ -364,12 +364,12 @@ export default function RegionsPage({ param }) {
                 >
                   {playing ? "Pause" : pos >= last - 0.5 ? "Play again" : "Play"}
                 </button>
-                <button type="button" className="ons-tap" aria-label="Back one year" title="Back one year" onClick={() => jump(idx - 12)} style={stepButton}>−1 yr</button>
+                <button type="button" className="ons-tap" aria-label="−1 yr, back one year" title="Back one year" onClick={() => jump(idx - 12)} style={stepButton}>−1 yr</button>
                 <input
                   type="range" min={from} max={last} step={1} value={idx} aria-label="Date" aria-valuetext={tLabel(timeline[idx])}
                   onChange={(e) => jump(Number(e.target.value))} className="ons-range play-slider" style={{ flex: 1, minWidth: 0, accentColor: accent }}
                 />
-                <button type="button" className="ons-tap" aria-label="Forward one year" title="Forward one year" onClick={() => jump(idx + 12)} style={stepButton}>+1 yr</button>
+                <button type="button" className="ons-tap" aria-label="+1 yr, forward one year" title="Forward one year" onClick={() => jump(idx + 12)} style={stepButton}>+1 yr</button>
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(210px, 100%), 1fr))", gap: "12px 20px", marginTop: 16 }}>

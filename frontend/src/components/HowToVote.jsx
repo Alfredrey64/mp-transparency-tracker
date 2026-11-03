@@ -164,10 +164,10 @@ function StepCard({ step, children }) {
       </header>
       <div className="v-step-body">
         <div className="v-step-main">{children}</div>
-        <aside className="v-step-fact" aria-label={t("Key fact")}>
+        <div className="v-step-fact">
           <b>{t(step.fact)}</b>
           <span>{t(step.unit)}</span>
-        </aside>
+        </div>
       </div>
     </Reveal>
   );

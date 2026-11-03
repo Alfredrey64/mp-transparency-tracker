@@ -527,7 +527,7 @@ export const PAGE_GUIDES = {
     notShown: "Scotland, Wales and Northern Ireland, which have their own ombudsmen, and complaints about private companies, which go to regulators and other ombudsmen.",
   },
   inquiries: {
-    what: "Eight well-known inquiries, why each began, what it found and what followed, then how inquiries are set up, how long they take, what they cost and what happens to what they recommend.",
+    what: "Why eight well-known inquiries began (Southport, Post Office Horizon, Covid-19, Thirlwall, Infected Blood, Grenfell, child sexual abuse, Iraq), what each found and what followed, and how inquiries work.",
     why: "Inquiries are how the state investigates its own failures, so it matters what they achieve.",
     notShown: "Every inquiry. The eight are a selection, and the Institute for Government lists those ongoing. Each running inquiry publishes its cost to date on its own website.",
   },

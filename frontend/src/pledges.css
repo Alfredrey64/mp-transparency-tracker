@@ -1,6 +1,6 @@
 /* Every pledge, one by one. Loaded with the Promises tracker. */
 .pl-all { margin-top: 30px; padding-top: 24px; border-top: 2px solid var(--c-ink); }
-.pl-all h3 { margin: 0; font: 700 24px "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.pl-all h2 { margin: 0; font: 700 24px "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
 .pl-all > p { margin: 6px 0 0; max-width: 760px; font: 400 14.5px/1.65 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .pl-tools { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; margin: 18px 0 12px; }
 .pl-tools input, .pl-tools select { font: 500 15px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); background: var(--c-paper); border: 1.5px solid var(--c-hairline); border-radius: 12px; padding: 0 14px; min-height: 46px; box-sizing: border-box; width: 100%; }

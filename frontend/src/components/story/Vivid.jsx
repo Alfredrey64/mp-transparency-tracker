@@ -82,7 +82,7 @@ export function VotesSeats({ rows, votesName = "Share of the vote", seatsName = 
       <p className="vv-vs-key" aria-hidden="true"><span><i className="v" />{votesName}</span><span><i className="s" />{seatsName}</span></p>
       {rows.map((r, i) => (
         <section key={r.name} className="vv-vs-row" style={{ "--tc": r.colour, "--i": i }}>
-          <h3>{r.name}</h3>
+          <h2>{r.name}</h2>
           <div className="vv-vs-line"><span className="vv-vs-bar v"><i style={{ width: `${Math.max(1.5, r.votes)}%` }} /></span><b><AnimatedValue text={r.votesText} /></b><small>{r.votesSub}</small></div>
           <div className="vv-vs-line"><span className="vv-vs-bar s"><i style={{ width: `${Math.max(1.5, r.seats)}%` }} /></span><b><AnimatedValue text={r.seatsText} /></b><small>{r.seatsSub}</small></div>
         </section>

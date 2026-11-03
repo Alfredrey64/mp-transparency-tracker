@@ -115,7 +115,7 @@ function Block({ b, colour }) {
           <div key={f.label} style={{ "--tc": f.colour ?? colour, "--i": i }}>
             <dt>{f.label}</dt>
             <dd><span className="st-v"><AnimatedValue text={f.value} /></span></dd>
-            {f.note && <p>{f.note}</p>}
+            {f.note && <dd className="st-fnote">{f.note}</dd>}
           </div>
         ))}
       </dl>

@@ -20,16 +20,20 @@ export default function SittingStrip({ data }) {
           <li key={w.start} style={{ "--w": wi }}>
             <h3>Week of {dayShort(w.start).replace(/^\w+ /, "")}</h3>
             <div className="up-days" role="table" aria-label={`Week of ${dayShort(w.start)}`}>
-              <span className="up-corner" aria-hidden="true" />
-              {w.days.map((d, i) => <span key={d.date} className="up-dow" data-out={d.inside ? "0" : "1"} role="columnheader"><b>{DAY[i]}</b>{d.date.slice(8).replace(/^0/, "")}</span>)}
-              {["Commons", "Lords"].map((house) => [
-                <span key={`${house}-name`} className="up-house" data-house={house} role="rowheader">{house}</span>,
-                ...w.days.map((d, i) => {
-                  const state = !d.inside ? "out" : d[house[0]];
-                  const text = `${house} on ${dayShort(d.date)}: ${LABEL[state] ?? "outside the dates shown"}`;
-                  return <span key={`${house}-${d.date}`} className="up-cell" data-house={house} data-s={state} style={{ "--i": i }} role="cell" aria-label={text} title={text} />;
-                }),
-              ])}
+              <div className="up-row" role="row">
+                <span className="up-corner" role="presentation" aria-hidden="true" />
+                {w.days.map((d, i) => <span key={d.date} className="up-dow" data-out={d.inside ? "0" : "1"} role="columnheader"><b>{DAY[i]}</b>{d.date.slice(8).replace(/^0/, "")}</span>)}
+              </div>
+              {["Commons", "Lords"].map((house) => (
+                <div key={house} className="up-row" role="row">
+                  <span className="up-house" data-house={house} role="rowheader">{house}</span>
+                  {w.days.map((d, i) => {
+                    const state = !d.inside ? "out" : d[house[0]];
+                    const text = `${house} on ${dayShort(d.date)}: ${LABEL[state] ?? "outside the dates shown"}`;
+                    return <span key={d.date} className="up-cell" data-house={house} data-s={state} style={{ "--i": i }} role="cell" aria-label={text} title={text} />;
+                  })}
+                </div>
+              ))}
             </div>
           </li>
         ))}

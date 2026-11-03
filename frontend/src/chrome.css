@@ -276,7 +276,7 @@ dialog[open]::backdrop { animation: fade-in 0.15s ease both; }
 .footer-top { display: grid; grid-template-columns: minmax(0, 1.3fr) repeat(3, minmax(0, 1fr)); gap: 40px 56px; }
 .footer-brand { display: inline-flex; align-items: center; gap: 12px; color: #fff; text-decoration: none; font: 700 22px/1 "Figures", "Newsreader", Georgia, serif; letter-spacing: -0.02em; }
 .footer-about { margin: 18px 0 0; max-width: 340px; font-size: 15px; line-height: 1.65; color: var(--c-on-navy-soft); }
-.footer-col h3 { margin: 0 0 14px; padding-bottom: 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.16); font: 700 21px/1.2 "Figures", "Newsreader", Georgia, serif; letter-spacing: -0.01em; color: #fff; }
+.footer-col h2 { margin: 0 0 14px; padding-bottom: 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.16); font: 700 21px/1.2 "Figures", "Newsreader", Georgia, serif; letter-spacing: -0.01em; color: #fff; }
 .footer-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
 .footer-col a { display: inline-flex; align-items: center; min-height: 36px; font-size: 15.5px; line-height: 1.35; color: var(--c-on-navy-soft); text-decoration: none; transition: color 0.15s var(--ease-out); }
 .footer-col a:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
@@ -721,7 +721,7 @@ html[data-leaving] .mp-app-shell { transition: none; }
    Changing page: the page's content fades right out (html gets data-leaving the moment you click), the pages are swapped and drawn while nothing is showing,
    and once the browser has caught up the new one fades in as data-leaving is taken off while its content settles into place from a few pixels below, so
    the change reads as one movement. Nothing is swapped, drawn or measured in view, so a slow phone shows no stutter. Only #main-content fades and only the page's own blocks move, so the header and the buttons fixed to the screen never move or double. */
-#main-content { transition: opacity 0.22s var(--ease-out); }
+#main-content { transition: opacity 0.16s var(--ease-out); }
 /* The page dips rather than going blank, so there is no flash of empty background between two pages. */
 html[data-leaving] #main-content { opacity: 0; transition-duration: 0.06s; transition-timing-function: ease-in; }
 /* The copy of the page being left (lib/pageGhost.js): it covers the screen under the header, with its words fading away over its steady background while the new page, already in place and unseen, waits underneath. */
@@ -736,6 +736,8 @@ html[data-settling] .site-footer, .mp-app-shell:has(#main-content .loading-block
 /* The footer is part of the page: it fades with it, so it never shows jumping as the page above it changes height. */
 .site-footer { transition: opacity 0.17s var(--ease-out); }
 html[data-leaving] .site-footer { opacity: 0; transition-duration: 0.06s; transition-timing-function: ease-in; }
+/* Under the copy of the old page that is being wiped away, the new page just sits there: nothing of it moves or fades in. */
+html[data-wipe] #main-content > *, html[data-wipe] .site-footer { animation: none !important; }
 @keyframes page-rise { from { transform: translateY(6px); } }
 html[data-nav]:not([data-leaving]) #main-content > :not(.page-loading):not(.sn):not(.pf) { animation: page-rise 0.24s var(--ease-out) backwards; }
 @media (prefers-reduced-motion: reduce) { html[data-nav]:not([data-leaving]) #main-content > :not(.page-loading):not(.sn):not(.pf) { animation: none; } }

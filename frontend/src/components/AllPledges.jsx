@@ -25,7 +25,7 @@ export default function AllPledges() {
   const reset = () => setShown(PAGE);
   return (
     <section className="pl-all" aria-labelledby="h-pl-all">
-      <h3 id="h-pl-all">Every pledge, one by one</h3>
+      <h2 id="h-pl-all">Every pledge, one by one</h2>
       <p>All {ROWS.length} pledges on Full Fact's tracker, with their verdict and when it last changed. Press "Read the evidence" to see why Full Fact rated it that way. Checked {dayOf(file.generatedAt)}.</p>
       <div className="pl-tools">
         <input type="search" value={query} onChange={(e) => { setQuery(e.target.value); reset(); }} placeholder="Search the pledges, for example NHS, tax or police" aria-label="Search pledges" />

@@ -34,7 +34,7 @@ function House({ name, state, away, count, inRange }) {
 function Group({ title, colour, children, i }) {
   return (
     <section className="td-group" style={{ "--tc": colour, "--i": i }}>
-      <h3>{title}</h3>
+      <h2>{title}</h2>
       {children}
     </section>
   );

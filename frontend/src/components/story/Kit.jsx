@@ -1,7 +1,6 @@
 /** @jsxImportSource react */
 import { useEffect, useState } from "react";
 import CountUp from "../CountUp";
-import { scrollRegion } from "../../lib/a11y";
 import AnimatedValue from "./AnimatedValue";
 import "../../story.css";
 
@@ -65,11 +64,17 @@ function useNarrow(px = 700) {
 }
 
 // Text beside a picture: the picture first on a phone, side by side on a wide screen.
-export function Split({ visual, children, flip = false }) {
+// A picture. On a phone a detailed one is wider than the screen and scrolls sideways inside its box, so the box gets a tab stop and a name (a figure cannot take the region
+// role, so it keeps its own).
+export function Visual({ wide, children }) {
   const narrow = useNarrow();
+  return <figure className={wide ? "st-visual st-visual-wide" : "st-visual"} {...(narrow ? { tabIndex: 0, "aria-label": "Picture, scrolls sideways" } : null)}>{children}</figure>;
+}
+
+export function Split({ visual, children, flip = false }) {
   return (
     <div className="st-split" data-flip={flip ? "1" : "0"}>
-      <figure className="st-visual" {...(narrow ? scrollRegion("Picture, scrolls sideways") : null)}>{visual}</figure>
+      <Visual>{visual}</Visual>
       <div className="st-prose">{children}</div>
     </div>
   );
@@ -77,10 +82,9 @@ export function Split({ visual, children, flip = false }) {
 
 // A picture given the whole width, with its words underneath: for pictures that carry a lot of writing and would be too small in half a column.
 export function Show({ visual, caption, children }) {
-  const narrow = useNarrow();
   return (
     <div className="st-show">
-      <figure className="st-visual st-visual-wide" {...(narrow ? scrollRegion("Picture, scrolls sideways") : null)}>{visual}{caption && <figcaption>{caption}</figcaption>}</figure>
+      <Visual wide>{visual}{caption && <figcaption>{caption}</figcaption>}</Visual>
       {children && <div className="st-prose st-show-text">{children}</div>}
     </div>
   );

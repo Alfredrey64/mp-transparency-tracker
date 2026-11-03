@@ -19,8 +19,10 @@ export function prepareProps(type, props) {
   const children = props.children;
   if (children == null || typeof children === "function") return props;
 
+  // Nothing inside a part of the page hidden from assistive technology is offered the glossary either: a term there would be a button that can be tabbed to but not heard.
+  const hidden = props["aria-hidden"] === true || props["aria-hidden"] === "true";
   const interactive =
-    (isHost && BLOCK_TAGS.has(type)) || props.role === "button" || (isMotionLike && (props.onClick || props.href));
+    (isHost && BLOCK_TAGS.has(type)) || props.role === "button" || hidden || (isMotionLike && (props.onClick || props.href));
   if (interactive) {
     const wasArray = Array.isArray(children);
     const provider = createElement(GlossBlockedContext.Provider, { value: true }, ...(wasArray ? children : [children]));

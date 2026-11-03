@@ -138,7 +138,7 @@ console.log(
 // A page drawn from data, handed in as the component to show.
 // Calls `done` once two frames in a row have come quickly (the browser has finished drawing what was just put on the page), or after `limit` ms at most.
 // A steady slower rhythm, such as 30 frames a second in a phone's low-power mode, counts as quick too.
-function afterSettled(done, limit = 120) {
+function afterSettled(done, limit = 50) {
   const start = performance.now();
   let last = start;
   let quick = 0;
@@ -458,8 +458,8 @@ export default function App() {
     return () => window.removeEventListener("popstate", syncFromUrl);
   }, []);
 
-  // Changes the page. The page you are on stays up while the next page's code is fetched, then its words fade out, the two are swapped (and the new page opened at its top)
-  // while nothing of the new one is showing, and the new page fades in once the old one has gone. Only the page's own content fades, so the header and everything fixed to the screen stay
+  // Changes the page. The page you are on stays up while the next page's code is fetched, then the new page is drawn under a copy of it (opened at its top) and the copy is
+  // wiped away from the top down. Only the page's own content changes, so the header and everything fixed to the screen stay
   // exactly as they are. (This used to ask the browser to cross-fade a picture of the old page into the new one: with the old page scrolled part way down and the
   // new one at its top, the two showed through each other for a moment, and the header and tab strip appeared doubled.) For people who ask for less motion, or on a
   // slow connection, the page is simply swapped, with React keeping the old page up until the new one is ready. Either way the change happens on the click.
@@ -483,20 +483,19 @@ export default function App() {
     Promise.race([preloadPage(loader), gaveUp]).then(async () => {
       // A newer click has taken over: let that one win.
       if (id !== navId.current) return;
-      // The old page's words fade away over a copy of it, and only then does the new page fade in, so the two are never on screen together. If a copy cannot be taken,
-      // the old page fades out first instead. Either way the new page is drawn while nothing of it shows.
+      // With a copy of the old page, the new page is drawn underneath it and the copy is then wiped away from the top down: there is no dip to a blank or pale screen and
+      // the two pages' words are never mixed. If a copy cannot be taken, the old page fades out first instead, and the new page fades in.
       const ghost = takeGhost();
-      if (!ghost) {
+      if (ghost) root.dataset.wipe = "1";
+      else {
         root.dataset.leaving = "1";
         await new Promise((resolve) => setTimeout(resolve, 60));
         if (id !== navId.current) return;
-      } else {
-        root.dataset.leaving = "1";
       }
       setNavState({ fetching: false });
       flushSync(apply);
-      // The new page is in. It is shown once the browser has caught up with drawing it (and, with a copy of the old page, once that has faded), so the fade never has to share a frame with that work.
-      const show = () => { if (id === navId.current) delete root.dataset.leaving; };
+      // The new page is in. The wipe starts once the browser has caught up with drawing it, so it never has to share a frame with that work.
+      const show = () => { if (id === navId.current) { delete root.dataset.leaving; delete root.dataset.wipe; } };
       afterSettled(() => { if (ghost) ghost.fade(show); else show(); });
     });
   }

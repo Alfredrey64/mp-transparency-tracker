@@ -1,7 +1,7 @@
 import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconThinkTank, IconSearch, IconBroadcast, IconQuestion } from "./icons";
-import { Board, Why, Chapter, Pull, Cards } from "./story/Kit";
+import { Board, Why, Chapter, Pull, Cards, Visual } from "./story/Kit";
 import { Masked, Ladder } from "./story/ThinkArt";
 
 const GRADE_COLOR = {
@@ -93,7 +93,7 @@ export default function ThinkTankFunding() {
       </Why>
 
       <Chapter n={1} title="What a think tank is" colour="#5A7FA6" lede="An organisation that researches policy questions and publishes reports and recommendations aimed at influencing government and public debate.">
-        <figure className="st-visual"><Masked /></figure>
+        <Visual><Masked /></Visual>
         <div className="st-split" data-flip="0">
           <div className="st-prose" style={{ "--tc": "#5A7FA6" }}>
             <p>
@@ -134,7 +134,7 @@ export default function ThinkTankFunding() {
       </Chapter>
 
       <Chapter n={4} title="A sample, across the spectrum" colour="#E8741A" lede="Seven prominent UK think tanks with a published Who Funds You? grade: three free-market organisations rated poorly, one left-leaning and two non-partisan organisations rated highly. A hand-picked sample to illustrate the range, not a comprehensive or systematically balanced survey.">
-        <figure className="st-visual"><Ladder tanks={ladder} /></figure>
+        <Visual><Ladder tanks={ladder} /></Visual>
         <ul className="st-case-grid">
           {THINK_TANKS.map((t) => (
             <li key={t.name} className="st-case" style={{ "--tc": GRADE_COLOR[t.grade] }}>

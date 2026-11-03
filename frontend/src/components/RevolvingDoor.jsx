@@ -1,7 +1,7 @@
 import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconDoor, IconShield, IconGavel, IconCompare } from "./icons";
-import { Board, Why, Chapter, Show, Pull, Cards } from "./story/Kit";
+import { Board, Why, Chapter, Show, Pull, Cards, Visual } from "./story/Kit";
 import { Door, Ticks, Cutoff, Replaced } from "./story/DoorArt";
 
 // The revolving door between government and industry, as a story: the idea, what the rules are for, what replaced the old committee, why the old system
@@ -53,7 +53,7 @@ export default function RevolvingDoor() {
       </Why>
 
       <Chapter n={1} title="Why this is called a 'revolving door'" colour="#5A7FA6" lede="People moving freely back and forth between government and the industries government regulates, funds, or buys from.">
-        <figure className="st-visual"><Door /></figure>
+        <Visual><Door /></Visual>
         <div className="st-split" data-flip="0">
           <div className="st-prose" style={{ "--tc": "#5A7FA6" }}>
             <p>
@@ -80,7 +80,7 @@ export default function RevolvingDoor() {
       </Chapter>
 
       <Chapter n={3} title="ACOBA has gone. Here is what replaced it" colour="#9C6B30" lede="The Advisory Committee on Business Appointments gave this advice for exactly 50 years, and was abolished on 13 October 2025.">
-        <figure className="st-visual"><Replaced /></figure>
+        <Visual><Replaced /></Visual>
         <div className="st-prose" style={{ "--tc": "#9C6B30" }}>
           <p>
             Applications from <strong>former ministers</strong> now go to the Prime Minister's own Independent Adviser on Ministerial Standards, while{" "}

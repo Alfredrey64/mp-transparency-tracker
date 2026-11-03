@@ -1,7 +1,7 @@
 import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconDarkMoney, IconShield, IconSearch, IconGroup, IconPartyFinance } from "./icons";
-import { Board, Why, Chapter, Split, Pull, Steps, Cards } from "./story/Kit";
+import { Board, Why, Chapter, Split, Pull, Steps, Cards, Visual } from "./story/Kit";
 import { MoneyTrail, Thresholds, SpendBar, Secrecy } from "./story/DarkMoneyArt";
 
 // Dark money: how money can reach a party with no donor's name on it. Laid out as a story: the headline figures, the idea of a public register, the one
@@ -54,7 +54,7 @@ export default function DarkMoney() {
             exactly how, because it's the one mechanism that shows up again and again in the real cases below.
           </p>
         </div>
-        <figure className="st-visual"><MoneyTrail /></figure>
+        <Visual><MoneyTrail /></Visual>
         <Pull colour="#9C3B3B">
           The unincorporated association in the middle is the only link in this chain the law doesn't require anyone to name, which is exactly how a real
           £435,000 donation reached the DUP in 2016 with its original source never disclosed.
@@ -67,13 +67,13 @@ export default function DarkMoney() {
           { title: "The association becomes the donor of record", colour: "#9C6B30", text: "When the association then donates to a party, it is the association's name, not any individual behind it. That appears in the Electoral Commission's public register. The money's actual origin is never part of the public record." },
           { title: "Three thresholds decide what gets reported at all", colour: "#8A6D1F", text: "Gifts under £500 don't even have to be counted internally. Once an association receives more than £7,500 from a single source in a year, it must tell the Electoral Commission, but that requirement only applies once the association's total accepted donations pass £37,270 in a year in the first place. Stay under that, and there's no registration duty at all." },
         ]} />
-        <figure className="st-visual"><Thresholds /></figure>
+        <Visual><Thresholds /></Visual>
         <p className="st-note">The independent Committee on Standards in Public Life has separately flagged unincorporated associations as a plausible route for foreign money to reach UK parties, precisely because of step 1.</p>
       </Chapter>
 
       <Chapter n={4} title="A real case: the DUP's £435,000 referendum campaign" colour="#6E4B6E" lede="The largest single political donation in UK history at the time, and its true source is still unknown.">
         <>
-        <figure className="st-visual"><SpendBar /></figure>
+        <Visual><SpendBar /></Visual>
         <div className="st-prose" style={{ "--tc": "#6E4B6E" }}>
           <p>
             In the run-up to the 2016 EU <GlossaryTerm term="Referendum">referendum</GlossaryTerm>, a previously unknown group called the{" "}
@@ -92,7 +92,7 @@ export default function DarkMoney() {
       </Chapter>
 
       <Chapter n={5} title="Why this specific case can never be resolved" colour="#3F7D5C" lede="Unlike every other case on this page, this isn't a gap that better reporting could ever close: the law itself guarantees this particular donor will never be named.">
-        <figure className="st-visual"><Secrecy /></figure>
+        <Visual><Secrecy /></Visual>
         <div className="st-prose" style={{ "--tc": "#3F7D5C" }}>
           <p>
             Northern Ireland parties used to be entirely exempt from donor-disclosure rules, for a genuine historical reason: a security-driven carve-out dating back
