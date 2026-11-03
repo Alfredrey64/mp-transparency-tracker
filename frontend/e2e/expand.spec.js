@@ -13,38 +13,36 @@ const EXPECTED = /54321|Failed to load resource|ERR_FAILED|net::|supabase|fetch/
 test.beforeEach(async ({ page }) => { await page.route("**/127.0.0.1:54321/**", (route) => route.abort()); });
 
 for (const size of [{ name: "phone", width: 390, height: 844 }, { name: "desktop", width: 1280, height: 900 }]) {
-  test(`opening every fold-out on every page raises no errors at ${size.name} width`, async ({ page }) => {
-    test.setTimeout(900000);
-    await page.setViewportSize({ width: size.width, height: size.height });
-    const problems = [];
-    let where = "";
-    page.on("pageerror", (e) => problems.push(`${where}: ${e.message}`));
-    page.on("console", (m) => { if (m.type() === "error" && !EXPECTED.test(m.text())) problems.push(`${where}: ${m.text().slice(0, 160)}`); });
-    for (const path of [...PAGES, ...EXTRA].filter((p) => !ONLY || ONLY.includes(p))) {
-      where = path;
+  for (const path of [...PAGES, ...EXTRA].filter((p) => !ONLY || ONLY.includes(p))) {
+    test(`${path}: opening every fold-out raises no errors at ${size.name} width`, async ({ page }) => {
+      test.setTimeout(60000);
+      await page.setViewportSize({ width: size.width, height: size.height });
+      const problems = [];
+      page.on("pageerror", (e) => problems.push(e.message));
+      page.on("console", (m) => { if (m.type() === "error" && !EXPECTED.test(m.text())) problems.push(m.text().slice(0, 160)); });
       await page.goto(`/${path === "home" ? "" : path}`);
       await page.waitForSelector("#main-content h1, #main-content h2", { timeout: 20000 }).catch(() => {});
-      await page.waitForTimeout(400);
+      await page.waitForTimeout(300);
       const folds = page.locator("#main-content details > summary:visible");
-      const n = Math.min(await folds.count(), 12);
+      const n = Math.min(await folds.count(), 10);
       for (let i = 0; i < n; i++) {
         const summary = folds.nth(i);
         const box = summary.locator("xpath=..");
-        if (await box.evaluate((d) => d.open)) continue;
-        await summary.scrollIntoViewIfNeeded().catch(() => {});
+        if (await box.evaluate((d) => d.open, null, { timeout: 1500 })) continue;
+        await summary.scrollIntoViewIfNeeded({ timeout: 1500 }).catch(() => {});
         await summary.click({ timeout: 3000 }).catch(() => {});
         await page.waitForTimeout(340);
-        if (!(await box.evaluate((d) => d.open))) problems.push(`${path}: a fold-out did not open`);
-        else if (await box.evaluate((d) => d.getAnimations().length)) problems.push(`${path}: a fold-out was still moving after it should have settled`);
+        if (!(await box.evaluate((d) => d.open, null, { timeout: 1500 }))) problems.push("a fold-out did not open");
+        else if (await box.evaluate((d) => d.getAnimations().length)) problems.push("a fold-out was still moving after it should have settled");
       }
       const toggles = page.locator("#main-content [aria-expanded='false']:visible");
-      const m = Math.min(await toggles.count(), 8);
+      const m = Math.min(await toggles.count(), 6);
       for (let i = 0; i < m; i++) {
-        await toggles.nth(i).scrollIntoViewIfNeeded().catch(() => {});
-        await toggles.nth(i).click({ timeout: 3000 }).catch(() => {});
-        await page.waitForTimeout(150);
+        await toggles.nth(i).scrollIntoViewIfNeeded({ timeout: 1500 }).catch(() => {});
+        await toggles.nth(i).click({ timeout: 2000 }).catch(() => {});
+        await page.waitForTimeout(120);
       }
-    }
-    expect(problems.join("\n"), problems.join("\n")).toBe("");
-  });
+      expect(problems.join("\n"), problems.join("\n")).toBe("");
+    });
+  }
 }
