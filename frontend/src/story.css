@@ -970,7 +970,7 @@
 .uc-week small { font: 600 11px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .uc-week b { font: 700 15px/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
 .uc-cell { min-width: 0; }
-.uc-cell button { position: relative; display: grid; align-content: start; gap: 7px; width: 100%; height: 100%; min-height: 128px; box-sizing: border-box; padding: 10px 10px 11px; border-radius: 16px; border: 1px solid var(--c-hairline); background: var(--c-paper-card); box-shadow: var(--shadow-1); text-align: left; color: var(--c-ink); cursor: pointer; font: inherit; transition: box-shadow 0.18s var(--ease-out), transform 0.18s var(--ease-out); }
+.uc-cell button { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: 7px; width: 100%; height: 100%; min-height: 128px; box-sizing: border-box; padding: 10px 10px 11px; border-radius: 16px; border: 1px solid var(--c-hairline); background: var(--c-paper-card); box-shadow: var(--shadow-1); text-align: left; color: var(--c-ink); cursor: pointer; font: inherit; transition: box-shadow 0.18s var(--ease-out), transform 0.18s var(--ease-out); }
 .uc-cell button:hover { box-shadow: var(--shadow-2), 0 0 0 3px color-mix(in srgb, var(--c-brand) 18%, transparent); transform: translateY(-2px); }
 .uc-cell[data-today="1"] button { border-color: var(--c-brand); box-shadow: 0 0 0 2px var(--c-brand), var(--shadow-1); }
 .uc-cell[data-out="1"] { border-radius: 16px; background: color-mix(in srgb, var(--c-hairline) 40%, transparent); min-height: 128px; padding: 10px; box-sizing: border-box; opacity: 0.5; }

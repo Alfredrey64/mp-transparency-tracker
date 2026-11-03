@@ -46,3 +46,16 @@ for (const size of [{ name: "phone", width: 390, height: 844 }, { name: "desktop
     });
   }
 }
+
+test("a fold-out that is closed and opened again shows its words (Ofcom cases, What happened)", async ({ page }) => {
+  await page.goto("/mediaLiteracy");
+  const summary = page.locator(".na-case-list summary").first();
+  await summary.scrollIntoViewIfNeeded({ timeout: 5000 });
+  const words = summary.locator("xpath=..").locator("p");
+  for (const want of [true, false, true, false, true]) {
+    await summary.click({ timeout: 3000 });
+    await page.waitForTimeout(450);
+    if (want) await expect(words).toHaveCSS("opacity", "1", { timeout: 1500 });
+    else await expect(summary.locator("xpath=..")).not.toHaveAttribute("open", "", { timeout: 1500 });
+  }
+});

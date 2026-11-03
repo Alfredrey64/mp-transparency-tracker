@@ -47,16 +47,18 @@
 /* The votes lane. The line runs the whole height, from you at the bottom up to the first tier you vote for; each tier you vote for has a short arm that ends in an arrowhead
    pointing into its band. */
 .tier-vl { position: relative; }
-.tier-vl::before { content: ""; position: absolute; left: calc(50% - 1.5px); width: 3px; top: 0; bottom: 0; border-radius: 2px; background: var(--vote); }
+.tier-vl::before { content: ""; position: absolute; left: calc(50% - 1.5px); width: 3px; top: 0; bottom: -1px; border-radius: 0; background: var(--vote); }
 .tier-row[data-first="1"] .tier-vl::before { top: 50%; }
 .tier-row[data-you] .tier-vl::before { bottom: 50%; }
 .tier-vl i { position: absolute; top: calc(50% - 1.5px); height: 3px; right: 50%; width: calc(50% + var(--s, 0px)); border-radius: 2px; background: var(--vote); }
 .tier-row .tier-vl { --s: calc(var(--i) * var(--inset)); }
 .tier-vl i::after { content: ""; position: absolute; left: -2px; top: 50%; width: 11px; height: 11px; margin-top: -5.5px; background: var(--vote); -webkit-mask: var(--tier-chev) center / contain no-repeat; mask: var(--tier-chev) center / contain no-repeat; transform: rotate(180deg); }
 .tier-row[data-you] .tier-vl i::after { left: auto; right: -5px; width: 13px; height: 13px; margin-top: -6.5px; border-radius: 50%; mask: none; -webkit-mask: none; transform: none; box-shadow: 0 0 0 4px color-mix(in srgb, var(--vote) 25%, transparent); }
-/* On the votes line, a chevron points up at the middle of each gap, so the line reads as "from you, up to the tiers you vote for". Each chevron lifts and brightens in turn from the bottom, and the
-   down arrows do the same from the top, so the two directions read at a glance; nothing moves sideways. */
-.tier-up { position: absolute; left: 50%; top: 50%; width: 15px; height: 15px; margin: -7.5px 0 0 -7.5px; background: var(--vote); -webkit-mask: var(--tier-chev) center / contain no-repeat; mask: var(--tier-chev) center / contain no-repeat; transform: rotate(-90deg); opacity: 0.9; }
+/* The votes line is one line from you up to the first tier you vote for. In the gaps and the bands it is drawn in pieces, so a soft light runs up it piece by piece, timed so it
+   passes from one piece to the next without a break, then rests before it starts again. The down arrows do the same from the top. */
+.tier-vl::after { content: ""; position: absolute; left: calc(50% - 1.5px); width: 3px; top: 0; bottom: 0; border-radius: 0; pointer-events: none; background: linear-gradient(to top, transparent, color-mix(in srgb, #fff 78%, var(--vote)) 50%, transparent) 0 calc(100% + 56px) / 100% 56px no-repeat; }
+.tier-row[data-first="1"] .tier-vl::after { top: 50%; }
+.tier-row[data-you] .tier-vl::after { bottom: 50%; }
 .tier-diagram { --tier-chev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M4.5 2.5 10 7l-5.5 4.5' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
 
 /* In the walk-through, tiers still to come sit back, tiers already passed show a tick, and the one the story is at has the marker. */
@@ -80,8 +82,8 @@
   .tier-diagram[data-in="1"] .tier-vl::before { animation: tierLine 0.9s var(--ease-out) 0.2s backwards; transform-origin: bottom; }
   .tier-diagram[data-in="1"] .tier-vl i { animation: tierArm 0.4s var(--ease-out) 0.9s backwards; transform-origin: right; }
   .tier-gap[data-live="1"] .tier-arrow[data-dir="down"] { animation: tierNudge 1.1s ease-in-out infinite; }
-  .tier-diagram[data-in="1"] .tier-up { animation: tierFlow 3.2s ease-in-out calc(1.4s + (5 - var(--i, 0)) * 0.22s) infinite; }
-  .tier-diagram[data-vote="1"] .tier-up { animation-duration: 1.6s; }
+  .tier-diagram[data-in="1"] .tier-row .tier-vl::after { animation: tierRun 5s linear calc(1.4s + (5 - var(--i, 0)) * 0.7s) infinite; }
+  .tier-diagram[data-in="1"] .tier-gap .tier-vl::after { animation: tierRunGap 5s linear calc(1.4s + (5 - var(--i, 0)) * 0.5s + (4 - var(--i, 0)) * 0.2s) infinite; }
   .tier-diagram:not([data-mode="action"])[data-in="1"] .tier-gap .tier-arrow[data-dir="down"] { animation: tierFlowDown 3.2s ease-in-out calc(1.4s + var(--i, 0) * 0.22s) infinite; }
   .tier-hint i { animation: hintPulse 1.8s ease-out infinite; }
   .tier-info-in { animation: stepIn 0.45s var(--ease-out) both; }
@@ -91,7 +93,8 @@
 @keyframes tierArm { from { transform: scaleX(0); opacity: 0; } }
 @keyframes tierNudge { 50% { transform: translateY(4px); } }
 @keyframes tierFlowDown { 0%, 55%, 100% { opacity: 0.6; transform: translateY(-2px); } 25% { opacity: 1; transform: translateY(2px); } }
-@keyframes tierFlow { 0%, 55%, 100% { opacity: 0.45; transform: translateY(2px) rotate(-90deg); } 25% { opacity: 1; transform: translateY(-2px) rotate(-90deg); } }
+@keyframes tierRun { 0% { background-position: 0 calc(100% + 56px); } 10%, 100% { background-position: 0 -56px; } }
+@keyframes tierRunGap { 0% { background-position: 0 calc(100% + 56px); } 4%, 100% { background-position: 0 -56px; } }
 @keyframes hintPulse { to { box-shadow: 0 0 0 9px color-mix(in srgb, var(--c-brand) 0%, transparent); } }
 
 /* The panel beside (or below) the diagram. */

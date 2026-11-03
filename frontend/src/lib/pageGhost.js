@@ -23,12 +23,20 @@ export function takeGhost(doc = document) {
   inner.className = "page-ghost-inner";
   inner.style.cssText = `top:${rect.top - top}px;left:${rect.left}px;width:${rect.width}px`;
   inner.appendChild(copy);
+  // Two layers that move in opposite directions: the outer one (which clips) slides down while the inner one slides up by the same amount, so the picture stays where it is on
+  // the screen and only its top edge comes down. Moving layers is done by the graphics chip, so a busy moment on the page cannot make it stutter, as animating the clip itself could.
+  const shift = doc.createElement("div");
+  shift.className = "page-ghost-shift";
+  shift.appendChild(inner);
+  const clip = doc.createElement("div");
+  clip.className = "page-ghost-clip";
+  clip.appendChild(shift);
   const ghost = doc.createElement("div");
   ghost.className = "page-ghost";
   ghost.setAttribute("aria-hidden", "true");
   ghost.inert = true;
   ghost.style.top = `${top}px`;
-  ghost.appendChild(inner);
+  ghost.appendChild(clip);
   doc.body.appendChild(ghost);
 
   let gone = false;
@@ -40,8 +48,10 @@ export function takeGhost(doc = document) {
     fade(done) {
       if (gone) { done?.(); return; }
       const finish = () => { remove(); done?.(); };
-      if (!ghost.animate) { finish(); return; }
-      ghost.animate([{ clipPath: "inset(0 0 0 0)" }, { clipPath: "inset(100% 0 0 0)" }], { duration: FADE_MS, easing: "cubic-bezier(0.4, 0, 0.2, 1)", fill: "forwards" }).finished.then(finish, finish);
+      if (!clip.animate) { finish(); return; }
+      const timing = { duration: FADE_MS, easing: "cubic-bezier(0.4, 0, 0.2, 1)", fill: "forwards" };
+      shift.animate([{ transform: "translate3d(0, 0, 0)" }, { transform: "translate3d(0, -100%, 0)" }], timing);
+      clip.animate([{ transform: "translate3d(0, 0, 0)" }, { transform: "translate3d(0, 100%, 0)" }], timing).finished.then(finish, finish);
     },
   };
 }

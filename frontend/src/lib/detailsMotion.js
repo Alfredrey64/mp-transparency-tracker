@@ -14,16 +14,20 @@ function closedHeight(d, summary) {
 function toggle(d, summary) {
   const closing = running.get(d)?.closing ?? d.open;
   const from = d.getBoundingClientRect().height;
-  running.get(d)?.anim.cancel();
+  const prev = running.get(d);
+  prev?.anim.cancel();
+  prev?.fades.forEach((a) => a.cancel());
   const body = [...d.children].filter((c) => c !== summary);
   let to;
   if (closing) to = closedHeight(d, summary);
   else { d.open = true; to = d.getBoundingClientRect().height; }
-  const done = () => { running.delete(d); if (closing) d.open = false; };
+  let fades = [];
+  // A fade that holds its end state would keep the words invisible once the box is opened again, so every one is cleared when its box settles.
+  const done = () => { running.delete(d); if (closing) d.open = false; fades.forEach((a) => a.cancel()); };
   if (Math.abs(to - from) < 1) { done(); return; }
   const anim = d.animate([{ height: `${from}px`, overflow: "hidden" }, { height: `${to}px`, overflow: "hidden" }], { duration: MS, easing: EASE });
-  running.set(d, { anim, closing });
-  body.forEach((c) => c.animate(closing ? [{ opacity: 1 }, { opacity: 0 }] : [{ opacity: 0 }, { opacity: 1 }], { duration: closing ? MS * 0.6 : MS * 0.8, delay: closing ? 0 : MS * 0.15, easing: "ease-out", fill: closing ? "forwards" : "backwards" }));
+  fades = body.map((c) => c.animate(closing ? [{ opacity: 1 }, { opacity: 0 }] : [{ opacity: 0 }, { opacity: 1 }], { duration: closing ? MS * 0.6 : MS * 0.8, delay: closing ? 0 : MS * 0.15, easing: "ease-out", fill: closing ? "forwards" : "backwards" }));
+  running.set(d, { anim, closing, fades });
   anim.finished.then(done, () => {});
 }
 
