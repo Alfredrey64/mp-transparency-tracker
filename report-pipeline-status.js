@@ -40,6 +40,7 @@ const SCRIPTS = [
   { id: "fetch_committees", label: "Select committees" },
   { id: "fetch_written_questions", label: "Written questions" },
   { id: "fetch_standards_reports", label: "Standards reports" },
+  { id: "fetch_standards_details", label: "What happened and the outcome, read from each standards report" },
   { id: "fetch_constituencies", label: "Constituency results & petitions" },
   { id: "fetch_constituency_history", label: "Constituency history (former MPs)" },
   { id: "fetch_mp_careers", label: "MP careers (terms, posts, party changes)" },

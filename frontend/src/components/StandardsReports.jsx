@@ -6,9 +6,13 @@ import { PageHeader } from "./shared";
 import { LoadFailedNote } from "./MpCards";
 import { formatDate, partyColour } from "../lib/format";
 import { IconGavel, IconSearch } from "./icons";
-import STANDARDS_REPORT_DETAILS from "../data/standardsReportDetails.json";
+import MANUAL_DETAILS from "../data/standardsReportDetails.json";
+import AUTO_DETAILS from "../data/standardsReportAuto.json";
 import Loading from "./Loading";
 import { GlanceCard, YearColumns } from "./Glance";
+
+// A hand-written entry wins; otherwise the wording read out of the report itself by fetch-standards-details.js.
+const detailFor = (id) => MANUAL_DETAILS[String(id)] ?? AUTO_DETAILS[String(id)] ?? null;
 
 function classifyOutcome(detail) {
   if (!detail) return null;
@@ -28,7 +32,7 @@ function classifyOutcome(detail) {
   if (s.includes("suspen")) {
     return { label: "Suspended", color: readable("#B5533C") };
   }
-  if (s.includes("no sanction") || s.includes("no further sanction")) {
+  if (s.includes("no sanction") || s.includes("no further sanction") || s.includes("no further action")) {
     return { label: "No Sanction", color: readable("#4C7A6B") };
   }
   if (s.includes("apolog") || s.includes("briefing")) {
@@ -86,7 +90,7 @@ function StatCard({ value, label, color, index }) {
 function ReportCard({ report, politician, onSelectPolitician, index }) {
   const color = politician ? partyColour(politician.party_colour, COLORS.inkSoft) : COLORS.inkSoft;
   const clickable = Boolean(politician);
-  const detail = STANDARDS_REPORT_DETAILS[String(report.id)];
+  const detail = detailFor(report.id);
   const outcome = classifyOutcome(detail);
 
   return (
@@ -174,6 +178,11 @@ function ReportCard({ report, politician, onSelectPolitician, index }) {
               </div>
               <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.55 }}>{detail.sanction}</div>
             </div>
+            {!MANUAL_DETAILS[String(report.id)] && (
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, borderTop: `1px solid ${COLORS.hairline}`, paddingTop: 8 }}>
+                Both boxes use the Committee's own words, taken from its report. Read the report for the full reasoning.
+              </div>
+            )}
           </div>
         ) : (
           <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, fontStyle: "italic", marginBottom: 12 }}>
@@ -227,7 +236,7 @@ export default function StandardsReports({ onSelectPolitician }) {
     let suspended = 0;
     let resigned = 0;
     reports.forEach((r) => {
-      const detail = STANDARDS_REPORT_DETAILS[String(r.id)];
+      const detail = detailFor(r.id);
       const outcome = classifyOutcome(detail);
       if (outcome?.label === "Suspended") suspended += 1;
       if (outcome?.label === "Resigned / Stood Down" || outcome?.label === "Recalled") resigned += 1;
