@@ -3,7 +3,6 @@ import ExplainerPage from "../story/ExplainerPage";
 import { IconInquiry } from "../newIcons";
 import { IconGavel, IconGroup, IconRegister, IconBook } from "../icons";
 import { Hero } from "../story/Vivid";
-import ShareBar from "../story/ShareBar";
 import InquiryList from "../story/InquiryList";
 
 const PAGE = {
@@ -69,10 +68,6 @@ const PAGE = {
           { label: "Spent since 1990", value: "£1.5bn+", note: "At least this much on completed inquiries by the UK and devolved governments between 1990 and 2024, in 2024 prices." },
           { label: "The Bloody Sunday Inquiry", value: "£272.5m", note: "Given as an example of a very expensive inquiry, in 2024 prices." }
         ] },
-        { node: <ShareBar title="How an inquiry's costs split" items={[
-          { label: "Legal staff", value: 36, text: "36%", colour: "#7A4A8C" },
-          { label: "Everything else", value: 64, text: "64%", colour: "#8A93A6" },
-        ]} note="An average over the National Audit Office sample, as a share of total costs." /> },
         { note: "Totals like these only cover inquiries that have finished. Inquiries still running, such as the UK Covid-19 Inquiry, publish their costs to date on their own websites." },
       ],
     },
