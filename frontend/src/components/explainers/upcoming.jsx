@@ -1,6 +1,7 @@
 /** @jsxImportSource react */
 import { ExplainerBody } from "../story/ExplainerPage";
 import SittingStrip from "../story/SittingStrip";
+import { EntryList, DayGroups } from "../story/Entries";
 import Loading from "../Loading";
 import { LoadFailedNote } from "../MpCards";
 import { IconCalendar, IconBills, IconCommittee, IconQuestion } from "../icons";
@@ -13,20 +14,6 @@ import { dayShort, dayLong, dateLong, clock, houseName, billStages, billCommitte
 // fetch-parliament-calendar.js). It is the "Coming up" part of the What changed this week page, built from the file, so it says only what the calendar lists.
 
 const plural = (n, one, many = `${one}s`) => `${n.toLocaleString("en-GB")} ${n === 1 ? one : many}`;
-
-// A day's items as a short list, each tagged with the house it is in.
-function Items({ items }) {
-  return (
-    <div className="up-items">
-      {items.map((it, i) => (
-        <div key={i} className="up-item">
-          <em data-house={houseName(it.h)}>{houseName(it.h)}</em>
-          <div>{it.t}{(it.time || it.where) && <small>{[it.time && clock(it.time), it.where].filter(Boolean).join(", ")}</small>}</div>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 const STAGES = [
   "First reading is the formal start: the bill is introduced and its title read out.",
@@ -53,6 +40,15 @@ function build(data) {
   const business = debates(data).slice(0, 10);
   const examined = billCommittees(data);
   const thin = thinWeeks(data);
+  const billEntries = bills.map((b) => ({
+    id: `bill-${b.bill}`, kind: "bill", title: b.bill, url: b.url, h: b.stages[0].h, date: b.stages[0].d, stage: b.stages[0].stage, stages: b.stages,
+    sub: `${b.stages.slice(0, 2).map((s) => `${houseName(s.h)}${s.stage ? `, ${s.stage}` : ""}, ${dayShort(s.d)}`).join(". ")}${b.stages.length > 2 ? `. ${b.stages.length - 2} more stages listed` : ""}`,
+  }));
+  const hearingEntries = committees.map((c) => ({
+    id: `hearing-${c.committee}-${c.about}`, kind: "hearing", title: c.committee, about: c.about, h: c.house, date: c.dates[0].d, dates: c.dates,
+    sub: `${c.about ? `${c.about}. ` : ""}${c.dates.slice(0, 3).map((d) => `${dayShort(d.d)}${d.time ? `, ${clock(d.time)}` : ""}`).join("; ")}${c.dates.length > 3 ? ` and ${c.dates.length - 3} more` : ""}`,
+  }));
+  const dayEntries = (days, kind) => days.map((d) => ({ d: d.d, items: d.items.map((it, i) => ({ id: `${kind}-${d.d}-${i}`, kind: it.k ?? kind, title: it.t, h: it.h, where: it.where, time: it.time, date: d.d })) }));
 
   const chapters = [
     {
@@ -72,15 +68,7 @@ function build(data) {
       lede: `${plural(bills.length, "bill")} ${bills.length === 1 ? "has" : "have"} a stage listed in the next four weeks. A stage is a point where one house debates a bill or votes on changes to it.`,
       colour: "#7B5BD6",
       blocks: [
-        { timeline: bills.map((b) => ({
-          when: dayShort(b.stages[0].d),
-          text: (
-            <>
-              {b.url ? <a href={b.url} target="_blank" rel="noreferrer">{b.bill}</a> : b.bill}
-              <small className="up-stage">{b.stages.map((s) => `${houseName(s.h)}${s.stage ? `, ${s.stage}` : ""}, ${dayShort(s.d)}`).join(". ")}</small>
-            </>
-          ),
-        })) },
+        { node: <EntryList items={billEntries} label="Bills due to be debated" banded={false} dateColumn /> },
         ...(examined.length ? [{ text: [`Committees of MPs are going through ${examined.length === 1 ? "this bill" : "these bills"} line by line: ${examined.map((e) => e.bill).join("; ")}.`] }] : []),
         { more: { title: "What the stages mean", text: STAGES } },
       ],
@@ -88,16 +76,12 @@ function build(data) {
   }
 
   if (committees.length) {
-    const shown = committees.slice(0, 12);
-    const rest = committees.slice(12);
-    const line = (c) => `${c.about ? `${c.about}. ` : ""}${c.dates.slice(0, 4).map((d) => `${dayShort(d.d)}${d.time ? `, ${clock(d.time)}` : ""}`).join("; ")}${c.dates.length > 4 ? ` and ${c.dates.length - 4} more` : ""}.`;
     chapters.push({
       title: "Committees taking evidence",
       lede: `${plural(t.hearings, "public session")} from ${plural(t.committees, "committee")} are listed. Committees question ministers, officials and experts, and publish what they hear.`,
       colour: "#2C7DA0",
       blocks: [
-        { cards: shown.map((c) => ({ title: c.committee, text: line(c) })) },
-        ...(rest.length ? [{ more: { title: `${rest.length} more committees`, text: rest.map((c) => `${c.committee}. ${line(c)}`) } }] : []),
+        { node: <EntryList items={hearingEntries} label="Committees taking evidence" banded={false} dateColumn limit={12} noun="more committees" /> },
       ],
     });
   }
@@ -107,7 +91,7 @@ function build(data) {
       title: "Questions to ministers",
       lede: "Ministers answer MPs' questions in the Commons on a rota, one department at a time. The times below are the ones Parliament has listed.",
       colour: "#B45A3C",
-      blocks: [{ timeline: rota.map((r) => ({ when: dayShort(r.d), text: <Items items={r.items.map((i) => ({ ...i, h: "C" }))} /> })) }],
+      blocks: [{ node: <DayGroups label="Questions to ministers" days={dayEntries(rota.map((r) => ({ d: r.d, items: r.items.map((i) => ({ t: i.t, time: i.time, h: "C", k: "questions" })) })), "questions")} /> }],
     });
   }
 
@@ -116,7 +100,7 @@ function build(data) {
       title: "Debates and statements",
       lede: "The first days of business the two houses have listed. Westminster Hall debates are shorter debates on a subject an MP has chosen. Later weeks fill in as the business is announced.",
       colour: "#5A4FCF",
-      blocks: [{ timeline: business.map((b) => ({ when: dayShort(b.d), text: <Items items={b.items} /> })) }],
+      blocks: [{ node: <DayGroups label="Debates and statements" days={dayEntries(business, "debate")} /> }],
     });
   }
 

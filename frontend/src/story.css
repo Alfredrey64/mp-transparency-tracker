@@ -956,39 +956,53 @@
 @media (prefers-reduced-motion: reduce) { .na-outlets > li, .na-case-list > li, .na-split, .na-arrow, .na-tl-track i, .na-tl-track em, .na-took i::after { transition: none !important; } }
 
 /* Coming up in Parliament: four weeks of sitting days. Green for the Commons, red for the Lords, after the colours of their benches. */
-.up-strip { margin: 0; display: grid; gap: 14px; }
 .up-key { margin: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; font: 600 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .up-key span { display: inline-flex; align-items: center; gap: 7px; }
 .up-key i { width: 14px; height: 14px; border-radius: 4px; display: inline-block; border: 1.5px solid var(--c-ink-soft); }
 .up-key i.on { background: var(--c-ink-soft); } .up-key i.off { border-color: var(--c-hairline); background: var(--c-paper); }
 .up-key i.recess { background: repeating-linear-gradient(135deg, var(--c-ink-soft) 0 2px, transparent 2px 5px); }
-.up-strip ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-.up-strip li { padding: 14px 16px 16px; border-radius: 16px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); min-width: 0; opacity: 0; transform: translateY(8px); transition: opacity 0.5s var(--ease-out) calc(var(--w) * 110ms), transform 0.5s var(--ease-out) calc(var(--w) * 110ms); }
-.up-strip[data-go="1"] li { opacity: 1; transform: none; }
-.up-strip h3 { margin: 0 0 10px; font: 700 15px/1.3 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
-.up-days { display: grid; grid-template-columns: 62px repeat(5, minmax(0, 1fr)); gap: 5px; align-items: center; }
-.up-row { display: contents; }
-.up-dow { display: grid; justify-items: center; font: 700 13px/1.2 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); font-variant-numeric: lining-nums tabular-nums; }
-.up-dow b { font-size: 10.5px; font-weight: 700; color: var(--c-ink-soft); letter-spacing: 0.02em; }
-.up-dow[data-out="1"] { opacity: 0.4; }
-.up-house { font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--hc); }
-.up-house[data-house="Commons"], .up-cell[data-house="Commons"] { --hc: #1F7A4D; }
-.up-house[data-house="Lords"], .up-cell[data-house="Lords"] { --hc: #B3262E; }
-.up-cell { height: 30px; border-radius: 7px; border: 1.5px solid var(--hc); transform-origin: bottom; }
-.up-cell[data-s="sitting"] { background: var(--hc); }
-.up-cell[data-s="recess"] { background: repeating-linear-gradient(135deg, var(--hc) 0 2px, transparent 2px 6px); }
-.up-cell[data-s="off"] { border-color: var(--c-hairline); background: color-mix(in srgb, var(--hc) 8%, var(--c-paper)); }
-.up-cell[data-s="weekend"], .up-cell[data-s="out"] { border-color: transparent; background: var(--c-hairline); opacity: 0.35; }
-@media (max-width: 760px) { .up-strip ol { grid-template-columns: minmax(0, 1fr); } }
-@media (max-width: 380px) { .up-days { grid-template-columns: 54px repeat(5, minmax(0, 1fr)); gap: 4px; } .up-strip li { padding: 12px; } }
-@media (prefers-reduced-motion: reduce) { .up-strip li { transition: none !important; opacity: 1; transform: none; } }
-.up-items { display: grid; gap: 7px; }
-.up-item { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 10px; align-items: baseline; }
-.up-items em { font: 700 11.5px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; text-align: center; padding: 2px 0; border-radius: 6px; color: #fff; background: #1F7A4D; }
-.up-items em[data-house="Lords"] { background: #B3262E; } .up-items em[data-house="Joint"] { background: #5B6784; }
-.up-items small, .up-stage { display: block; margin-top: 1px; font: 400 13px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.up-cal { margin: 0; display: grid; gap: 14px; }
+.up-key-c i { background: var(--hc) !important; border-color: var(--hc) !important; border-radius: 50% !important; }
+.up-key-c i[data-house="Commons"] { --hc: #1F7A4D; } .up-key-c i[data-house="Lords"] { --hc: #B3262E; }
+.uc { display: grid; gap: 8px; width: 100%; }
+.uc-row { display: grid; grid-template-columns: 74px repeat(5, minmax(0, 1fr)); gap: 8px; align-items: stretch; }
+.uc-row:not(.uc-head) { opacity: 0; transform: translateY(8px); transition: opacity 0.5s var(--ease-out) calc(var(--w) * 110ms), transform 0.5s var(--ease-out) calc(var(--w) * 110ms); }
+.up-cal[data-go="1"] .uc-row { opacity: 1; transform: none; }
+.uc-dow { text-align: center; padding: 6px 0; border-radius: 10px; background: color-mix(in srgb, var(--c-ink) 6%, transparent); font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.02em; color: var(--c-ink); }
+.uc-week { display: grid; align-content: center; justify-items: start; gap: 1px; padding-left: 4px; }
+.uc-week small { font: 600 11px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.uc-week b { font: 700 15px/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.uc-cell { min-width: 0; }
+.uc-cell button { position: relative; display: grid; align-content: start; gap: 7px; width: 100%; height: 100%; min-height: 128px; box-sizing: border-box; padding: 10px 10px 11px; border-radius: 16px; border: 1px solid var(--c-hairline); background: var(--c-paper-card); box-shadow: var(--shadow-1); text-align: left; color: var(--c-ink); cursor: pointer; font: inherit; transition: box-shadow 0.18s var(--ease-out), transform 0.18s var(--ease-out); }
+.uc-cell button:hover { box-shadow: var(--shadow-2), 0 0 0 3px color-mix(in srgb, var(--c-brand) 18%, transparent); transform: translateY(-2px); }
+.uc-cell[data-today="1"] button { border-color: var(--c-brand); box-shadow: 0 0 0 2px var(--c-brand), var(--shadow-1); }
+.uc-cell[data-out="1"] { border-radius: 16px; background: color-mix(in srgb, var(--c-hairline) 40%, transparent); min-height: 128px; padding: 10px; box-sizing: border-box; opacity: 0.5; }
+.uc-date { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 6px; }
+.uc-date b { font: 800 clamp(20px, 2.2vw, 26px)/1 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums; color: var(--c-ink); }
+.uc-date small { font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.uc-date em { margin-left: auto; padding: 1px 8px; border-radius: 999px; background: var(--c-brand); color: #fff; font: 700 10.5px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; }
+.uc-bar { --hc: #1F7A4D; display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 4px 8px; border-radius: 8px; border: 1.5px solid var(--hc); font: 700 12px/1.2 "Figures", "Public Sans", system-ui, sans-serif; }
+.uc-bar[data-house="Lords"] { --hc: #B3262E; }
+.uc-bar[data-s="sitting"] { background: var(--hc); color: #fff; }
+.uc-bar[data-s="recess"] { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--hc) 30%, var(--c-paper-card)) 0 3px, var(--c-paper-card) 3px 7px); color: var(--c-ink); }
+.uc-bar[data-s="off"] { border-color: var(--c-hairline); background: color-mix(in srgb, var(--hc) 7%, var(--c-paper)); color: var(--c-ink-soft); }
+.uc-hn span { display: inline; }
+.uc-st { font-weight: 600; }
+.uc-n { font: 500 12.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.uc-n b { font-size: 15px; color: var(--c-ink); font-variant-numeric: lining-nums; }
+@media (max-width: 760px) {
+  .uc-row { grid-template-columns: 44px repeat(5, minmax(0, 1fr)); gap: 5px; }
+  .uc-week small { display: none; }
+  .uc-week b { font-size: 12.5px; }
+  .uc-cell button, .uc-cell[data-out="1"] { min-height: 104px; padding: 8px 5px 9px; border-radius: 12px; gap: 6px; }
+  .uc-date small, .uc-date em { display: none; }
+  .uc-hn span, .uc-st { display: none; }
+  .uc-bar { justify-content: center; padding: 3px 0; }
+  .uc-n span { display: none; }
+  .uc-n { text-align: center; }
+}
+@media (prefers-reduced-motion: reduce) { .uc-row:not(.uc-head) { transition: none !important; opacity: 1; transform: none; } .uc-cell button { transition: none; } }
 .st-timeline li a { color: color-mix(in srgb, var(--tc) 55%, var(--c-ink)); font-weight: 600; text-underline-offset: 2px; }
-@media (max-width: 420px) { .up-item { grid-template-columns: 1fr; gap: 3px; } .up-items em { justify-self: start; padding: 2px 8px; } }
 
 /* The short version / full detail switch above every explainer page. */
 .st-detail { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px; margin: 14px 0 16px; font: 600 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }

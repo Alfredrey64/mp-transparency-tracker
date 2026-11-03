@@ -4,7 +4,8 @@ import { LoadFailedNote } from "../MpCards";
 import { useGo } from "./useGo";
 import { useDataFile } from "../../lib/useDataFile";
 import { parliamentCalendar } from "../../lib/dataFiles";
-import { dayLong, dayShort, dateLong, clock, houseName, dayView, londonToday, nextBusyDay } from "../../lib/upcoming";
+import { dayLong, dayShort, dateLong, dayView, londonToday, nextBusyDay } from "../../lib/upcoming";
+import { EntryList } from "./Entries";
 import "../../today.css";
 
 // The present tense of the What changed this week page: whether each house is sitting today, and what Parliament's calendar lists for the day. Built from the same file as
@@ -16,6 +17,9 @@ const STATE = {
   off: { text: "Not sitting today", tone: "off" },
   weekend: { text: "Weekend", tone: "off" },
 };
+
+// A calendar event as the rows and the panel read it.
+const entry = (e) => ({ ...e, kind: e.k, title: e.t.replace(/\s*\(including Topical Questions\)\s*/i, " (with topical questions)").trim() });
 
 function House({ name, state, away, count, inRange }) {
   const s = inRange ? STATE[state] : { text: "Not in the calendar", tone: "off" };
@@ -51,7 +55,6 @@ export default function TodayInParliament({ onAhead }) {
   const lordsCount = [...v.business, ...v.bills, ...v.hearings].filter((e) => e.h === "L").length;
   const total = v.business.length + v.questions.length + v.bills.length + v.hearings.length;
   const next = total === 0 ? nextBusyDay(data, date) : null;
-  const where = (e) => [e.time && clock(e.time), e.where].filter(Boolean).join(", ");
 
   return (
     <div ref={ref} className="td" data-go={go}>
@@ -78,38 +81,22 @@ export default function TodayInParliament({ onAhead }) {
 
       {v.business.length > 0 && (
         <Group i={0} title="In the chambers" colour="#5A4FCF">
-          <div className="up-items">
-            {v.business.map((e, i) => (
-              <div key={i} className="up-item"><em data-house={houseName(e.h)}>{houseName(e.h)}</em><div>{e.t}{where(e) && <small>{where(e)}</small>}</div></div>
-            ))}
-          </div>
+          <EntryList items={v.business.map(entry)} label="In the chambers" />
         </Group>
       )}
       {v.questions.length > 0 && (
         <Group i={1} title="Questions to ministers" colour="#B45A3C">
-          <div className="up-items">
-            {v.questions.map((e, i) => (
-              <div key={i} className="up-item"><em data-house="Commons">Commons</em><div>{e.t.replace(/\s*\(including Topical Questions\)\s*/i, " (with topical questions)").trim()}{e.time && <small>{clock(e.time)}</small>}</div></div>
-            ))}
-          </div>
+          <EntryList items={v.questions.map(entry)} label="Questions to ministers" />
         </Group>
       )}
       {v.bills.length > 0 && (
         <Group i={2} title="Bills being debated" colour="#7B5BD6">
-          <div className="up-items">
-            {v.bills.map((e, i) => (
-              <div key={i} className="up-item"><em data-house={houseName(e.h)}>{houseName(e.h)}</em><div>{e.url ? <a href={e.url} target="_blank" rel="noreferrer">{e.t}</a> : e.t}{e.stage && <small>{e.stage}</small>}</div></div>
-            ))}
-          </div>
+          <EntryList items={v.bills.map(entry)} label="Bills being debated" />
         </Group>
       )}
       {v.hearings.length > 0 && (
         <Group i={3} title="Committees taking evidence" colour="#2C7DA0">
-          <div className="up-items">
-            {v.hearings.map((e, i) => (
-              <div key={i} className="up-item"><em data-house={houseName(e.h)}>{houseName(e.h)}</em><div>{e.t}{(e.about || e.time) && <small>{[e.about, e.time && clock(e.time)].filter(Boolean).join(", ")}</small>}</div></div>
-            ))}
-          </div>
+          <EntryList items={v.hearings.map(entry)} label="Committees taking evidence" />
         </Group>
       )}
       <p className="td-foot">From Parliament's What's On calendar, refreshed each day, last on {dateLong(data.generated)}. It lists planned business, so it may not match what actually happens.</p>

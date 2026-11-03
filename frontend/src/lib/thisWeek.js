@@ -25,7 +25,8 @@ export function billItems(rows, since) {
   return (rows ?? []).filter((b) => dayOf(b.last_updated) >= since && b.short_title).map((b) => ({
     id: `bill-${b.bill_id ?? b.short_title}`, kind: "bill", date: dayOf(b.last_updated), title: b.short_title,
     detail: b.is_act ? "Became law as an Act of Parliament." : b.is_defeated ? "Defeated." : `Now at ${b.current_stage ?? "a new stage"}${b.current_house ? ` in the ${b.current_house}` : ""}.`,
-    href: b.source_url ?? "#/voting", external: Boolean(b.source_url),
+    href: b.source_url ?? "#/voting", external: Boolean(b.source_url), stage: b.current_stage ?? null, bill: b,
+    h: /lords/i.test(b.current_house ?? "") ? "L" : /commons/i.test(b.current_house ?? "") ? "C" : undefined,
   }));
 }
 

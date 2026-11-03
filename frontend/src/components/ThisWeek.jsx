@@ -9,6 +9,7 @@ import Loading from "./Loading";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { KINDS, sinceDate, billItems, voteItems, moneyItems, petitionItems, standardsItems, electionItems, buildFeed, collapseBills, countByKind, dayLabel, groupByDay } from "../lib/thisWeek";
 import TodayInParliament from "./story/TodayInParliament";
+import { useEntryDialog } from "./story/useEntryDialog";
 import "../thisweek.css";
 
 // The Coming up part is the whole of the old Coming up in Parliament page, loaded only when it is asked for.
@@ -40,6 +41,7 @@ export default function ThisWeek({ param = null }) {
   const [kind, setKind] = useState("all");
   const [time, setTime] = useState(() => timeOf(param));
   const [seenParam, setSeenParam] = useState(param);
+  const [openEntry, entryDialog] = useEntryDialog();
   if (param !== seenParam) { setSeenParam(param); setTime(timeOf(param)); }
   const pick = (key) => {
     setTime(key);
@@ -136,9 +138,9 @@ export default function ThisWeek({ param = null }) {
                       const body = (<><span className="tw-kind">{k.verb}</span><b>{i.title}</b>{i.detail && <span className="tw-detail">{i.detail}</span>}</>);
                       return (
                         <li key={i.id}>
-                          {i.external
-                            ? <a className="tw-card" href={i.href} target="_blank" rel="noreferrer" style={{ "--kc": i.colour ?? k.colour }}>{body}</a>
-                            : <a className="tw-card" href={i.href} style={{ "--kc": i.colour ?? k.colour }}>{body}</a>}
+                          {i.id.startsWith("bills-more-")
+                            ? <a className="tw-card" href={i.href} style={{ "--kc": i.colour ?? k.colour }}>{body}</a>
+                            : <button type="button" className="tw-card" aria-haspopup="dialog" style={{ "--kc": i.colour ?? k.colour }} onClick={(ev) => openEntry({ ...i, past: true }, ev.currentTarget)}>{body}</button>}
                         </li>
                       );
                     })}
@@ -154,6 +156,7 @@ export default function ThisWeek({ param = null }) {
       )}
       </>}
       </div>
+      {entryDialog}
     </div>
   );
 }

@@ -101,7 +101,7 @@ export function debates(data) {
   for (const e of data.events) {
     if (e.k !== "debate" && e.k !== "statement") continue;
     const list = by.get(e.d) ?? [];
-    list.push({ t: e.t, h: e.h, where: e.where ?? "", time: e.time });
+    list.push({ t: e.t, h: e.h, where: e.where ?? "", time: e.time, k: e.k });
     by.set(e.d, list);
   }
   return [...by].map(([d, items]) => ({ d, items })).sort((a, b) => a.d.localeCompare(b.d));

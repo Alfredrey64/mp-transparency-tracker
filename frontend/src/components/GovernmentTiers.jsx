@@ -1,8 +1,9 @@
-import { useState, useReducer, useRef, useEffect, useMemo } from "react";
+import { Fragment, useState, useReducer, useRef, useEffect, useMemo } from "react";
 import { m as motion, useInView, useReducedMotion } from "motion/react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, readable } from "../theme";
 import { IconParliament, IconCabinet, IconDevolved, IconTransport, IconCouncil, IconHome, IconGroup } from "./icons";
-import { NATIONS, TIERS, VOTE_FOR, CHECKS, WHO_TO_CONTACT, contactAnswer, SCENARIOS, scenarioSteps, YOU, visibleTierKeys, linkBetween } from "../data/governmentTiers";
+import { NATIONS, TIERS, VOTE_FOR, CHECKS, WHO_TO_CONTACT, contactAnswer, SCENARIOS, scenarioSteps, YOU, visibleTierKeys, linkBetween, flowDown, electedAt } from "../data/governmentTiers";
+import "../tiers.css";
 
 const SECTION_COLOR = "#1E3A6E";
 const DWELL_MS = 3800;
@@ -62,6 +63,7 @@ function Segmented({ label, value, onChange, options, small }) {
 }
 
 const PlayGlyph = <svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 1.5v9l8-4.5z" fill="currentColor" /></svg>;
+const StopGlyph = <svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="2" width="8" height="8" rx="1.500" fill="currentColor" /></svg>;
 const PauseGlyph = <svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.5h2v9H3zM7 1.5h2v9H7z" fill="currentColor" /></svg>;
 const ReplayGlyph = (
   <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -85,48 +87,63 @@ function Control({ onClick, disabled, primary, children }) {
   );
 }
 
-function Legend({ action }) {
-  const item = (down, text) => (
-    <span className="tier-key" data-dir={down ? "down" : "up"} style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>
-      <svg width="12" height="16" viewBox="0 0 12 16" aria-hidden="true" fill="none" stroke={down ? "#3B4A66" : "#2E7D5B"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        {down ? <path d="M6 2v11M2 9l4 4 4-4" /> : <path d="M6 14V3M2 7l4-4 4 4" />}
-      </svg>
-      {text}
-    </span>
-  );
+// One arrow, drawn the same everywhere: a line and a head made of two strokes with round ends. `dir` is the way it points.
+function Arrow({ dir }) {
+  const d = { down: "M8 1v22M2.500 17.500 8 23l5.500-5.500", left: "M23 8H1M6.500 2.500 1 8l5.500 5.500", up: "M8 23V1M2.500 6.500 8 1l5.500 5.500" }[dir];
+  const wide = dir === "left";
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 26px", marginBottom: 16 }}>
-      <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, flexBasis: "100%" }}>
-        Each box sits inside the one that covers a wider area: the whole UK on the outside, you in the middle.
-      </span>
-      {item(true, "Laws, rules and money flow in, towards you")}
-      {item(false, "Votes and scrutiny flow out, from you")}
-      <span className="tier-hint" aria-hidden="true"><i />{action ? "Choose a walk-through, then follow the marker" : "Select any box to read about it"}</span>
+    <svg className="tier-arrow" data-dir={dir} width={wide ? 24 : 16} height={wide ? 16 : 24} viewBox={wide ? "0 0 24 16" : "0 0 16 24"} aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.600" strokeLinecap="round" strokeLinejoin="round">
+      <path d={d} />
+    </svg>
+  );
+}
+
+// What the two kinds of arrow mean, drawn with the same arrows as the diagram.
+function Key({ hint }) {
+  return (
+    <div className="tier-keys">
+      <span className="tier-key" data-dir="down"><Arrow dir="down" />Laws, rules and money pass down, tier by tier</span>
+      <span className="tier-key" data-dir="vote"><Arrow dir="left" />Your votes go straight to each tier you elect</span>
+      <span className="tier-hint"><i aria-hidden="true" />{hint}</span>
     </div>
   );
 }
 
-// One tier: a box that holds the tier inside it. The tier's own row is a button, so choosing a tier never changes the size of anything.
-function NestLevel({ tier, figure, selected, active, state, depth, fromEdge, tokenLabel, inner, onClick, ring }) {
+// One tier: a band, narrower than the one above because it covers a smaller area. The band is a button, and the green line beside it joins it to your vote.
+function Row({ tier, figure, elected, voter, firstVote, selected, active, state, depth, tokenLabel, onClick, ring }) {
   const Icon = ICONS[tier.key];
   return (
-    <div className="nest" data-on={active || selected ? "1" : "0"} data-state={state} style={{ "--c": tier.color, "--ct": readable(tier.color), "--i": depth, "--d": fromEdge }}>
-      <button onClick={onClick} aria-pressed={selected} aria-current={active ? "step" : undefined} className="tier-slab" data-key={tier.key} style={{ "--i": depth }}>
+    <div className="tier-row" data-state={state} data-you={voter ? "1" : undefined} data-vote={elected ? "1" : "0"} data-first={firstVote ? "1" : undefined} style={{ "--c": tier.color, "--ct": readable(tier.color), "--i": depth }}>
+      <button onClick={onClick} aria-pressed={selected} aria-current={active ? "step" : undefined} className="tier-slab" data-key={tier.key} data-on={active || selected ? "1" : "0"}>
         <span className="tier-slab-icon">
-          <Icon size={22} />
-          <svg className="tier-tick" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="7" fill="currentColor" /><path d="M3.8 7.2 6 9.3l4.2-4.4" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          <Icon size={24} />
+          <svg className="tier-tick" width="16" height="16" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="7" fill="currentColor" /><path d="M3.800 7.200 6 9.300l4.200-4.400" fill="none" stroke="#fff" strokeWidth="1.800" strokeLinecap="round" strokeLinejoin="round" /></svg>
           {active && ring}
         </span>
         <span className="tier-slab-txt">
           <span className="tier-slab-name">{tier.slabName ?? tier.name}</span>
           {active && tokenLabel ? <span className="tier-pill">{tokenLabel}</span> : <span className="tier-slab-short">{tier.short}</span>}
+          {!voter && <span className="tier-chip" data-yes={elected ? "1" : "0"}>{elected ? <>You vote for: <b>{elected}</b></> : "Not voted for directly"}</span>}
         </span>
         <span className="tier-slab-fig">
           <span className="tier-slab-num">{figure.value}</span>
           <span className="tier-slab-label">{figure.label}</span>
         </span>
       </button>
-      {inner && <div className="nest-in">{inner}</div>}
+      <span className="tier-vl" aria-hidden="true">{(elected || voter) && <i />}</span>
+    </div>
+  );
+}
+
+// The space between two bands: what passes down. It lights up while the walk-through is crossing it.
+function Gap({ text, live, done, token, depth }) {
+  return (
+    <div className="tier-gap" data-live={live ? "1" : "0"} data-done={done ? "1" : "0"} style={{ "--i": depth }}>
+      <div className="tier-gap-mid">
+        <Arrow dir="down" />
+        <span className="tier-gap-txt"><span className="sr-only">Passes down: </span>{text}{live && token && <b className="tier-gap-token">{token}</b>}</span>
+      </div>
+      <span className="tier-vl" aria-hidden="true"><span className="tier-up"><Arrow dir="up" /></span></span>
     </div>
   );
 }
@@ -220,12 +237,11 @@ function TierInfo({ tierKey, order, nation, nationLabel }) {
   );
 }
 
-function ActionPanel({ scenarioKey, onScenario, steps, step, playing, finished, dispatch, onPlayPause, tokenLabel, dur }) {
+function ActionPanel({ scenarioKey, steps, step, playing, finished, dispatch, onPlayPause, tokenLabel, dur }) {
   const scenario = SCENARIOS.find((s) => s.key === scenarioKey);
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <Segmented label="Walk-through" small value={scenarioKey} onChange={onScenario} options={SCENARIOS.map((s) => ({ key: s.key, label: s.label }))} />
-      <p className="tier-sub" style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, margin: "10px 0 12px" }}>{scenario.blurb}. A simplified illustration.</p>
+    <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
+      <p className="tier-sub" style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, margin: "0 0 10px" }}>{scenario.blurb}. A simplified illustration.</p>
       <ol aria-live="polite" style={{ listStyle: "none", margin: 0, padding: 0, flex: 1, minHeight: 0, overflowY: "auto" }}>
         {steps.map((s, i) => {
           const on = i === step;
@@ -275,8 +291,7 @@ function ActionPanel({ scenarioKey, onScenario, steps, step, playing, finished, 
 export default function GovernmentTiers() {
   const [nation, setNation] = useState("england");
   const [selected, setSelected] = useState("parliament");
-  const [mode, setMode] = useState("explore");
-  const [scenarioKey, setScenarioKey] = useState(SCENARIOS[0].key);
+  const [scenarioKey, setScenarioKey] = useState(null);
   const [playing, setPlaying] = useState(false);
   const [{ step, from }, dispatch] = useReducer(reducer, { step: 0, from: null });
   const diaRef = useRef(null);
@@ -285,11 +300,11 @@ export default function GovernmentTiers() {
   const seen = useInView(diaRef, { once: true, margin: "0px 0px -12% 0px" });
 
   const nationLabel = NATIONS.find((n) => n.key === nation).label;
-  const scenario = SCENARIOS.find((s) => s.key === scenarioKey);
+  const scenario = SCENARIOS.find((s) => s.key === scenarioKey) ?? SCENARIOS[0];
   const steps = useMemo(() => scenarioSteps(scenario, nation), [scenario, nation]);
   const cur = steps[Math.min(step, steps.length - 1)];
   const finished = step >= steps.length - 1;
-  const action = mode === "action";
+  const action = scenarioKey !== null;
   const order = useMemo(() => visibleTierKeys(nation), [nation]);
   const pos = positionOf(cur.tier, order);
   const fromPos = from === null ? 0 : positionOf(from, order);
@@ -313,10 +328,12 @@ export default function GovernmentTiers() {
       setPlaying(false);
     }
   };
-  const enterAction = () => { setMode("action"); dispatch({ type: "reset" }); setPlaying(true); };
-  const onMode = (k) => (k === "action" ? enterAction() : (setMode("explore"), setPlaying(false)));
   const onNation = (k) => { setNation(k); dispatch({ type: "reset" }); };
-  const onScenario = (k) => { setScenarioKey(k); dispatch({ type: "reset" }); setPlaying(true); };
+  // Choosing a walk-through starts it; choosing the one that is running stops it and goes back to reading about tiers.
+  const onScenario = (k) => {
+    if (k === scenarioKey) { setScenarioKey(null); setPlaying(false); return; }
+    setScenarioKey(k); dispatch({ type: "reset" }); setPlaying(true);
+  };
   const onPlayPause = () => {
     if (finished) { dispatch({ type: "reset" }); setPlaying(true); } else setPlaying(!playing);
   };
@@ -339,17 +356,23 @@ export default function GovernmentTiers() {
       transition={calm ? { duration: 0 } : { duration: Math.max(0.5, dur), ease: [0.45, 0.05, 0.25, 1] }}
     />
   );
-  // Built from the middle outwards, so each box holds the one inside it.
-  const nest = slabs.reduceRight((inner, t, i) => {
+  // Top to bottom: a band for each tier, with the arrow for what passes down between them. The first elected tier is where the green votes line begins.
+  const firstVote = slabs.findIndex((t) => t.key !== "you" && electedAt(t.key, nation));
+  const rows = slabs.map((t, i) => {
+    const last = i === slabs.length - 1;
     const here = action && i === pos;
+    const next = slabs[i + 1];
     return (
-      <NestLevel
-        key={t.key} tier={t} figure={t.figureHere?.[nation] ?? t.figure} selected={!action && selKey === t.key} active={here}
-        state={!action ? "idle" : here ? "active" : reachedNow.has(t.key) ? "done" : "todo"} depth={i} fromEdge={slabs.length - 1 - i}
-        tokenLabel={here && cur.token ? cur.token : null} inner={inner} onClick={() => onSlab(t.key)} ring={ring}
-      />
+      <Fragment key={t.key}>
+        <Row
+          tier={t} figure={t.figureHere?.[nation] ?? t.figure} elected={last ? null : electedAt(t.key, nation)} voter={last} firstVote={i === firstVote}
+          selected={!action && selKey === t.key} active={here} state={!action ? "idle" : here ? "active" : reachedNow.has(t.key) ? "done" : "todo"} depth={i}
+          tokenLabel={here && cur.token ? cur.token : null} onClick={() => onSlab(t.key)} ring={ring}
+        />
+        {next && <Gap text={flowDown(t.key, next.key)} live={action && pos === i + 1 && !voting} done={action && reachedNow.has(next.key)} token={cur.token} depth={i} />}
+      </Fragment>
     );
-  }, null);
+  });
 
   return (
     <motion.div
@@ -374,22 +397,13 @@ export default function GovernmentTiers() {
           <span style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, fontWeight: 600, marginRight: 4 }}>Where do you live?</span>
           <Segmented label="Where you live" value={nation} onChange={onNation} options={NATIONS} />
         </div>
-        <Segmented
-          label="View"
-          value={mode}
-          onChange={onMode}
-          options={[{ key: "explore", label: "Explore" }, { key: "action", label: "See it in action", icon: PlayGlyph }]}
-        />
       </div>
-
-      <Legend action={action} />
 
       <div className="tier-wrap">
         <div className="tier-grid">
           <div className="tier-diagram" ref={diaRef} data-in={seen || calm ? "1" : "0"} data-mode={action ? "action" : "explore"} data-vote={action && voting ? "1" : "0"}>
-            <span className="tier-rail" data-dir="down" aria-hidden="true" />
-            <span className="tier-rail" data-dir="up" aria-hidden="true" />
-            <div className="tier-stack" style={{ "--n": MOST_TIERS }}>{nest}</div>
+            <Key hint={action ? "Follow the marker down the tiers" : "Select any band to read about it"} />
+            <div className="tier-stack" style={{ "--n": MOST_TIERS }}>{rows}</div>
           </div>
 
           {action && (
@@ -403,9 +417,13 @@ export default function GovernmentTiers() {
 
           <div className="tier-panelcol">
           <div className="tier-panel" data-c="1" style={{ background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderTop: `4px solid ${action ? tokenColor : colors[selKey]}`, borderRadius: 14, padding: "18px 20px", transition: "border-color 0.4s" }}>
+            <div className="tier-walk" role="group" aria-label="Watch it happen">
+              <span>Watch it happen</span>
+              {SCENARIOS.map((sc) => <button key={sc.key} type="button" aria-pressed={scenarioKey === sc.key} onClick={() => onScenario(sc.key)}>{scenarioKey === sc.key ? StopGlyph : PlayGlyph}{sc.label}</button>)}
+            </div>
             {action ? (
               <ActionPanel
-                scenarioKey={scenarioKey} onScenario={onScenario} steps={steps} step={Math.min(step, steps.length - 1)} playing={playing} finished={finished}
+                scenarioKey={scenarioKey} steps={steps} step={Math.min(step, steps.length - 1)} playing={playing} finished={finished}
                 dispatch={wrapped} onPlayPause={onPlayPause} tokenLabel={cur.token} dur={dur}
               />
             ) : (

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { NATIONS, TIERS, CONNECTORS, VOTE_FOR, WHO_TO_CONTACT, contactAnswer, SCENARIOS, scenarioSteps, visibleTierKeys, linkBetween } from "./governmentTiers";
+import { NATIONS, TIERS, CONNECTORS, VOTE_FOR, WHO_TO_CONTACT, contactAnswer, SCENARIOS, scenarioSteps, visibleTierKeys, linkBetween, flowDown, electedAt } from "./governmentTiers";
 
 describe("government tiers", () => {
   it("has a unique key and full content for every tier", () => {
@@ -97,5 +97,21 @@ describe("what shows in each nation", () => {
       const keys = visibleTierKeys(n.key).filter((k) => k !== "you");
       for (let i = 0; i < keys.length - 1; i++) expect(linkBetween(keys[i], keys[i + 1])).toBeTruthy();
     }
+  });
+
+  it("labels the arrow between every neighbouring pair of tiers in every nation", () => {
+    for (const n of NATIONS) {
+      const keys = visibleTierKeys(n.key);
+      for (let i = 0; i < keys.length - 1; i++) expect(flowDown(keys[i], keys[i + 1]), `${n.key}: ${keys[i]} to ${keys[i + 1]}`).toBeTruthy();
+    }
+  });
+
+  it("says who you vote for at each tier, and that nobody votes for the UK Government directly", () => {
+    for (const n of NATIONS) {
+      for (const k of visibleTierKeys(n.key).filter((k) => k !== "you" && k !== "government")) expect(electedAt(k, n.key), `${n.key}: ${k}`).toBeTruthy();
+      expect(electedAt("government", n.key)).toBeNull();
+    }
+    expect(electedAt("devolved", "scotland")).toMatch(/MSPs/);
+    expect(electedAt("devolved", "ni")).toMatch(/MLAs/);
   });
 });

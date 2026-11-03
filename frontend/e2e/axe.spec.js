@@ -11,6 +11,8 @@ const require = createRequire(import.meta.url);
 const AXE = fs.readFileSync(require.resolve("axe-core/axe.min.js"), "utf8");
 const PAGES = ["home", "list", "partymatch", ...Object.keys(LOADERS)].filter((p, i, all) => all.indexOf(p) === i);
 const EXTRA = ["thisWeek/now", "thisWeek/ahead", "upcoming"];
+// AXE_ONLY=howitworks,thisWeek/ahead checks just those pages, for a quick run while working on them.
+const ONLY = process.env.AXE_ONLY?.split(",");
 
 test.beforeEach(async ({ page }) => { await page.route("**/127.0.0.1:54321/**", (route) => route.abort()); });
 
@@ -19,7 +21,7 @@ for (const size of [{ name: "phone", width: 390, height: 844 }, { name: "desktop
     test.setTimeout(900000);
     await page.setViewportSize({ width: size.width, height: size.height });
     const found = {};
-    for (const path of [...PAGES, ...EXTRA]) {
+    for (const path of [...PAGES, ...EXTRA].filter((p) => !ONLY || ONLY.includes(p))) {
       await page.goto(`/${path === "home" ? "" : path}`);
       await page.waitForSelector("#main-content h1, #main-content h2", { timeout: 20000 }).catch(() => {});
       await page.waitForTimeout(600);

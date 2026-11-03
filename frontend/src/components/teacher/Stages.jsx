@@ -3,6 +3,7 @@ import { chip } from "../../theme";
 import { SKIN } from "./palette";
 import { Sky, Ground, Cloud, Person, Bubble, Caption, Parliament, BallotBox, Paper, Bulb, Letter, TownHall, QuestionMark, Confetti, Bus } from "./art";
 import { B } from "./Scenes";
+import { CrownShape } from "../story/CrownArt";
 import { leaderLook } from "./leaderLooks";
 import { LAYERS, VOICES, CHAPTERS } from "../../data/teacherMode";
 
@@ -20,13 +21,10 @@ const Label = ({ x, y, size = 30, fill = "#fff", anchor = "middle", weight = 800
   <text x={x} y={y} textAnchor={anchor} fontSize={size} fontWeight={weight} fontFamily="Figures, Public Sans, system-ui, sans-serif" fill={fill}>{children}</text>
 );
 
-const Crown = ({ x, y, s = 1 }) => (
-  <g transform={`translate(${x} ${y}) scale(${s})`}>
-    <path d="M-44 0 l-6 -52 l26 24 l24 -40 l24 40 l26 -24 l-6 52z" fill="#F2B632" stroke="#C7871A" strokeWidth="4" strokeLinejoin="round" />
-    <rect x="-44" y="0" width="88" height="14" rx="4" fill="#C7871A" />
-    <circle cx="-50" cy="-52" r="6" fill="#E0365B" /><circle cx="0" cy="-70" r="6" fill="#E0365B" /><circle cx="50" cy="-52" r="6" fill="#E0365B" />
-  </g>
-);
+const Crown = ({ x, y, s = 1 }) => {
+  const k = 1.3 * s;
+  return <g transform={`translate(${x - 40 * k} ${y + 14 - 61 * k}) scale(${k})`}><CrownShape /></g>;
+};
 
 function Seats({ x, y, colour, rows = 4 }) {
   const dots = [];

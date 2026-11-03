@@ -336,3 +336,29 @@ const LINKS = {
 export function linkBetween(upper, lower) {
   return LINKS[`${upper}>${lower}`] ?? null;
 }
+
+// What passes down from one tier to the one below it, in a few words, for the labels on the arrows in the diagram. The longer wording is in LINKS above.
+const DOWN = {
+  "parliament>government": "Powers by law, and the spending it approves",
+  "government>devolved": "A yearly grant of money",
+  "government>combined": "Powers and money through devolution deals",
+  "devolved>combined": "Powers and money through devolution deals",
+  "government>council": "Grants, and the rules councils work to",
+  "devolved>council": "Funding, and what councils are responsible for",
+  "combined>council": "Joint planning, with rules and grants from above",
+  "council>parish": "The parish charge, collected with council tax",
+};
+export const flowDown = (upper, lower) => (lower === "you" ? "The services you use, paid for by your taxes" : DOWN[`${upper}>${lower}`] ?? null);
+
+// Who you vote for at each tier, for the green votes line in the diagram. The UK Government is the one tier nobody votes for directly.
+const ELECTED = {
+  parliament: "Your MP",
+  combined: "A regional mayor",
+  council: "Your councillors",
+  parish: "Parish councillors",
+};
+const DEVOLVED_MEMBERS = { scotland: "Your MSPs", wales: "Your Members of the Senedd", ni: "Your MLAs" };
+export function electedAt(tierKey, nation) {
+  if (tierKey === "devolved") return DEVOLVED_MEMBERS[nation] ?? null;
+  return ELECTED[tierKey] ?? null;
+}

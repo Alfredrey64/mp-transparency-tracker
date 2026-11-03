@@ -8,7 +8,7 @@ import { test, expect } from "@playwright/test";
 
 const axeSource = fs.readFileSync(new URL("../node_modules/axe-core/axe.min.js", import.meta.url), "utf8");
 const PAGES = [
-  "/", "/mymp", "/rankings", "/howitworks", "/cabinet", "/lords", "/committees", "/byelections", "/lobbying", "/medialiteracy",
+  "/", "/mymp", "/rankings", "/howitworks", "/thisWeek/now", "/thisWeek/ahead", "/cabinet", "/lords", "/committees", "/byelections", "/lobbying", "/medialiteracy",
   "/inequality", "/inequality/income", "/inequality/wealth", "/inequality/poverty", "/inequality/place", "/inequality/abroad", "/inequality/groups", "/inequality/debate",
   "/brexit", "/brexit/economy", "/brexit/trade", "/brexit/society", "/brexit/politics", "/brexit/arguments",
   "/defence", "/defence/spending", "/defence/people", "/education", "/education/gaps", "/education/send", "/education/university",

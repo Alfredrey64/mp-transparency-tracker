@@ -8,6 +8,7 @@ import CommonsChamber from "./CommonsChamber";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import BillRoute from "./BillRoute";
 import GovernmentTiers from "./GovernmentTiers";
+import CrownArt from "./story/CrownArt";
 
 function CrownGraphic() {
   return (
@@ -17,19 +18,7 @@ function CrownGraphic() {
       transition={{ duration: 0.4, ease: "backOut" }}
       style={{ display: "flex", justifyContent: "center", marginTop: 14 }}
     >
-      <svg width="72" height="60" viewBox="0 0 72 60" fill="none">
-        <path
-          d="M8 46 L4 20 L18 32 L28 12 L36 24 L44 12 L54 32 L68 20 L64 46 Z"
-          fill={COLORS.gold}
-          stroke={COLORS.ink}
-          strokeWidth="1.5"
-          strokeLinejoin="round"
-        />
-        <rect x="6" y="46" width="60" height="8" rx="1.5" fill={COLORS.gold} stroke={COLORS.ink} strokeWidth="1.5" />
-        <circle cx="18" cy="30" r="2.4" fill="#fff" />
-        <circle cx="36" cy="22" r="2.4" fill="#fff" />
-        <circle cx="54" cy="30" r="2.4" fill="#fff" />
-      </svg>
+      <CrownArt width={84} />
     </motion.div>
   );
 }

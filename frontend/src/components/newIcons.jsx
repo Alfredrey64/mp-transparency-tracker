@@ -83,7 +83,7 @@ export function IconCourt({ size = 17 }) {
 export function IconCrown({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M5 18 3.500 8.500 8 12l4-6.500 4 6.500 4.500-3.500L19 18z" /><circle cx="12" cy="4" r="1.200" /><path d="M5.500 21h13" />
+      <path d="M4 19.500 2.800 7.500l5.200 4.300L12 4.500l4 7.300 5.200-4.300L20 19.500z" /><path d="M4.200 16.500h15.600" /><circle cx="2.800" cy="7" r="1.400" fill="currentColor" /><circle cx="12" cy="4" r="1.400" fill="currentColor" /><circle cx="21.200" cy="7" r="1.400" fill="currentColor" />
     </svg>
   );
 }

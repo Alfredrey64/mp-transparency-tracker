@@ -150,7 +150,11 @@ const GLYPHS = {
     </>
   ),
   crown: (
-    <path d="M4 18h16l-1.5-8-4 3.5L12 8l-2.5 5.5-4-3.5L4 18Z" />
+    <>
+      <path d="M4 18h16l-1.5-8-4 3.5L12 7.500l-2.500 6-4-3.500L4 18Z" />
+      <path d="M4.500 15.500h15" />
+      <circle cx="4" cy="9" r="1.200" fill="currentColor" /><circle cx="12" cy="6.500" r="1.200" fill="currentColor" /><circle cx="20" cy="9" r="1.200" fill="currentColor" />
+    </>
   ),
   document: (
     <>

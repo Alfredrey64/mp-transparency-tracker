@@ -37,12 +37,12 @@ test("changing page cross-fades and ends on the new page at its top, with the ad
   await page.goto("/");
   await page.evaluate(() => window.scrollTo(0, 500));
   await page.locator('a[href="/howitworks"]:visible').first().click({ force: true });
-  await expect(page.locator("h1")).toHaveText("How Parliament works");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("How Parliament works");
   expect(new URL(page.url()).pathname).toBe("/howitworks");
   expect(await page.evaluate(() => window.scrollY)).toBe(0);
   await expect.poll(() => page.evaluate(() => document.documentElement.dataset.vt ?? "")).toBe("");
   await page.goBack();
-  await expect(page.locator("h1")).toContainText("A simple breakdown of UK politics");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("A simple breakdown of UK politics");
 });
 
 test("a stage of the bill route can be picked, and the panel and the marker follow", async ({ page }) => {

@@ -1,0 +1,67 @@
+/* Clickable list rows and the plain-English panel they open (components/story/Entries.jsx), used by What changed, Today and Coming up. */
+.en-list, .en-box { --en-chev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M4.5 2.5 10 7l-5.5 4.5' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+.en-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.en-row { --ec: #1F7A4D; display: grid; grid-template-columns: auto minmax(0, 1fr) 20px; align-items: center; gap: 6px 16px; width: 100%; box-sizing: border-box; padding: 15px 16px 15px 18px; border-radius: 16px; border: 1px solid var(--c-hairline); border-left: 6px solid var(--ec); background: var(--c-paper-card); box-shadow: var(--shadow-1); color: var(--c-ink); text-align: left; font: inherit; cursor: pointer; transition: box-shadow 0.18s var(--ease-out), transform 0.18s var(--ease-out), border-color 0.18s; }
+.en-row[data-house="Lords"] { --ec: #B3262E; }
+.en-row[data-house="Joint"] { --ec: #5B6784; }
+.en-list > li:nth-child(even) .en-row { background: color-mix(in srgb, var(--c-ink) 3%, var(--c-paper-card)); }
+.en-row:hover { box-shadow: var(--shadow-2), 0 0 0 3px color-mix(in srgb, var(--ec) 16%, transparent); transform: translateY(-1px); }
+.en-row:active { transform: none; }
+.en-when { min-width: 68px; padding: 7px 8px; border-radius: 10px; background: color-mix(in srgb, var(--ec) 10%, var(--c-paper)); text-align: center; font: 700 13.5px/1.25 "Figures", "Public Sans", system-ui, sans-serif; font-variant-numeric: lining-nums tabular-nums; color: var(--c-ink); }
+.en-when[data-empty="1"] { background: none; font-weight: 500; font-size: 12px; color: var(--c-ink-soft); }
+.en-when b { display: block; font-size: 11px; font-weight: 700; color: var(--c-ink-soft); }
+.en-body { display: grid; gap: 4px; min-width: 0; }
+.en-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 9px; font: 600 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.en-meta em { font: 700 11.5px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; padding: 2px 9px; border-radius: 6px; color: #fff; background: #1F7A4D; }
+.en-meta em[data-house="Lords"] { background: #B3262E; }
+.en-meta em[data-house="Joint"] { background: #5B6784; }
+.en-body b { font: 700 16.5px/1.4 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); overflow-wrap: anywhere; }
+.en-body small { font: 400 13.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.en-go { width: 16px; height: 16px; background: var(--c-ink-soft); -webkit-mask: var(--en-chev) center / contain no-repeat; mask: var(--en-chev) center / contain no-repeat; opacity: 0.7; transition: transform 0.18s var(--ease-out); }
+.en-row:hover .en-go { transform: translateX(3px); opacity: 1; }
+
+.en-bands { display: grid; gap: 22px; }
+.en-band h3, .en-day h3 { display: flex; align-items: center; gap: 10px; margin: 0 0 10px; padding-bottom: 8px; border-bottom: 2px solid var(--c-hairline); font: 700 15px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.en-band h3 span, .en-day h3 span { padding: 1px 9px; border-radius: 999px; background: color-mix(in srgb, var(--c-ink-soft) 14%, transparent); font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.en-days { display: grid; gap: 26px; margin-top: 4px; }
+.en-day h3 { font: 700 18px "Figures", "Newsreader", Georgia, serif; }
+
+.en-layer { position: fixed; inset: 0; z-index: 120; display: flex; justify-content: center; align-items: flex-start; padding: 72px 16px 16px; background: rgba(8, 16, 34, 0.5); animation: enFade 0.15s ease both; }
+.en-box { --ec: #5A4FCF; width: min(640px, 100%); max-height: calc(100dvh - 88px); overflow-y: auto; overscroll-behavior: contain; box-sizing: border-box; padding: 20px 24px 26px; border-radius: 24px; background: var(--c-paper-card); color: var(--c-ink); border: 1px solid var(--c-hairline); border-top: 8px solid var(--ec); box-shadow: var(--shadow-3); outline: none; display: grid; gap: 16px; animation: enRise 0.22s var(--ease-out) both; }
+.en-box[data-house="Commons"] { --ec: #1F7A4D; } .en-box[data-house="Lords"] { --ec: #B3262E; } .en-box[data-house="Joint"] { --ec: #5B6784; }
+.en-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.en-label { margin: 0; padding: 3px 12px; border-radius: 999px; background: color-mix(in srgb, var(--ec) 14%, transparent); font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--ec) 78%, var(--c-ink)); width: fit-content; }
+.en-x, .en-back { min-height: 44px; border-radius: 999px; border: 1px solid var(--c-hairline); background: var(--c-paper); color: var(--c-ink); cursor: pointer; font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; }
+.en-x { width: 44px; font-size: 26px; line-height: 1; }
+.en-back { padding: 0 16px; }
+.en-box h2 { margin: 0; font: 700 clamp(21px, 4vw, 26px)/1.25 "Figures", "Newsreader", Georgia, serif; overflow-wrap: anywhere; outline: none; }
+.en-box h3 { margin: 0 0 4px; font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--ec) 75%, var(--c-ink)); }
+.en-box section p, .en-box > p, .en-points { margin: 0; font: 400 15.5px/1.65 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.en-box .en-sub { margin-top: 8px; font-size: 13.5px; color: var(--c-ink-soft); }
+.en-points { padding-left: 20px; margin-top: 8px; display: grid; gap: 4px; }
+.en-facts { margin: 0; display: grid; gap: 8px 22px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); padding: 12px 14px; border-radius: 14px; background: var(--c-paper); border: 1px solid var(--c-hairline); }
+.en-facts dt { font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.en-facts dd { margin: 1px 0 0; font: 600 14.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); overflow-wrap: anywhere; }
+.en-stages, .en-dates { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.en-stages li { display: grid; gap: 2px; padding-left: 12px; border-left: 3px solid var(--ec); }
+.en-stages b { font: 700 14.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; }
+.en-stages span, .en-dates li { font: 400 14.5px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.en-dates li { padding-left: 12px; border-left: 3px solid var(--ec); color: var(--c-ink); }
+.en-link a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px; background: var(--c-brand); color: #fff; font: 700 14.5px "Figures", "Public Sans", system-ui, sans-serif; text-decoration: none; }
+.en-link a:hover { filter: brightness(1.08); }
+.en-houses { display: grid; gap: 6px; }
+.en-houses p { margin: 0; padding: 8px 12px; border-radius: 10px; border-left: 5px solid #1F7A4D; background: var(--c-paper); font: 500 14.5px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.en-houses p[data-house="Lords"] { border-left-color: #B3262E; }
+.en-box .en-list { gap: 10px; }
+@keyframes enFade { from { opacity: 0; } }
+@keyframes enRise { from { opacity: 0; transform: translateY(14px); } }
+@media (max-width: 560px) {
+  .en-layer { padding-top: 44px; } .en-box { max-height: calc(100dvh - 60px); }
+  .en-box { padding: 16px 16px 22px; border-radius: 20px; }
+  .en-row { grid-template-columns: minmax(0, 1fr) 16px; padding: 13px 12px 13px 14px; }
+  .en-when { grid-column: 1 / -1; justify-self: start; min-width: 0; display: inline-flex; gap: 6px; padding: 3px 10px; }
+  .en-when b { display: inline; }
+}
+@media (prefers-reduced-motion: reduce) { .en-layer, .en-box { animation: none; } .en-row, .en-go { transition: none; } .en-row:hover { transform: none; } }
+.en-more { margin-top: 14px; min-height: 44px; padding: 0 20px; border-radius: 999px; border: 1.5px solid var(--c-hairline); background: var(--c-paper-card); color: var(--c-ink); font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; cursor: pointer; }
+.en-more:hover { border-color: var(--c-brand); background: color-mix(in srgb, var(--c-brand) 8%, var(--c-paper-card)); }
