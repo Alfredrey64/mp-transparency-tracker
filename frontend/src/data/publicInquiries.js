@@ -1,0 +1,125 @@
+// Eight well-known public inquiries: why each began, what it found and what followed. Every line comes from the inquiry's own website or GOV.UK, fetched on 3 November 2026, and each
+// entry names its sources. This is a selection, not a full list: the Institute for Government and the House of Commons Library list the rest. Add to it only from a source read in full.
+//   status   "reporting" if the inquiry still has a report to come, "finished" if it has published its last report
+//   key      the one figure shown at the top of the card
+export const INQUIRIES = [
+  {
+    id: "southport",
+    name: "The Southport Inquiry",
+    status: "reporting",
+    started: "After the attack on 29 July 2024",
+    colour: "#B3262E",
+    key: { value: "67", label: "recommendations in Phase 1" },
+    why: "A knife attack in Southport on 29 July 2024 killed three girls. A full statutory inquiry was set up to examine how the agencies that had dealt with the attacker had acted.",
+    found: "Phase 1 reported on 13 April 2026. It found failures across several public bodies: information was poorly recorded and shared, no agency fully understood the risk, and nobody was clearly in charge.",
+    followed: "The government set out a new Prevent assessment framework with mandatory training, tighter checks on repeat referrals, controls on online knife sales and plans for a new offence of planning an attack without a set ideology. Phase 2 is looking at how violence by people fixated on it can be prevented, with its recommendations due next spring.",
+    sources: [{ label: "GOV.UK: The Southport Inquiry Phase 1 report", url: "https://www.gov.uk/government/speeches/the-southport-inquiry-phase-1-report" }],
+  },
+  {
+    id: "horizon",
+    name: "The Post Office Horizon IT Inquiry",
+    status: "reporting",
+    started: "29 September 2020, statutory from 1 June 2021",
+    colour: "#2C7DA0",
+    key: { value: "19", label: "urgent recommendations on redress" },
+    why: "The Horizon computer system at the Post Office led to subpostmasters being suspended, losing their contracts, and being prosecuted and convicted. The inquiry was set up to give a public account of the failings. It began without legal powers and was made statutory in June 2021.",
+    found: "Volume 1, published on 8 July 2025, looked at the human cost and at redress. It found that people claiming under the Horizon Shortfall Scheme had not received full and fair redress, partly because the Post Office and its advisers took an unnecessarily adversarial approach to first offers.",
+    followed: "The chair made 19 urgent recommendations and asked for a government reply by 10 October 2025. The remaining volumes, on how the scandal happened, are still to come and have been delayed because they are much larger and more complex than expected.",
+    sources: [
+      { label: "Post Office Horizon IT Inquiry: about the inquiry", url: "https://www.postofficehorizoninquiry.org.uk/about-inquiry" },
+      { label: "Post Office Horizon IT Inquiry: Volume 1 announcement", url: "https://www.postofficehorizoninquiry.org.uk/news/chair-calls-swift-action-deliver-full-and-fair-compensation-urgent-report" },
+    ],
+  },
+  {
+    id: "covid",
+    name: "The UK Covid-19 Inquiry",
+    status: "reporting",
+    started: "Reports since July 2024",
+    colour: "#5A4FCF",
+    key: { value: "20 Nov 2025", label: "second report, on decision-making" },
+    why: "An independent public inquiry set up to examine the UK's response to the pandemic and its impact, so that lessons can be learned for the future. It works in modules, each with its own hearings and report.",
+    found: "Its second report, on core decision-making and political governance, was published on 20 November 2025. It covers the UK government and the governments of Scotland, Wales and Northern Ireland. Hearings for the modules ran from June 2023 to March 2026.",
+    followed: "The UK government has published a written response to the second report, and the Northern Ireland Executive has said a group drawn from its departments will help carry out the recommendations.",
+    sources: [
+      { label: "GOV.UK: UK Covid-19 Inquiry, Modules 2, 2A, 2B and 2C report", url: "https://www.gov.uk/government/publications/uk-covid-19-inquiry-core-decision-making-and-political-governance-modules-2-2a-2b-2c-report" },
+      { label: "Northern Ireland Assembly: Executive Office statement on the Module 2 report", url: "https://www.niassembly.gov.uk/assembly-business/official-report/written-ministerial-statements/the-executive-office-publication-of-the-covid-19-module-2-report-by-the-rt-hon-the-baroness-hallett-dbe" },
+    ],
+  },
+  {
+    id: "thirlwall",
+    name: "The Thirlwall Inquiry",
+    status: "finished",
+    started: "Terms of reference published 19 October 2023",
+    colour: "#C2185B",
+    key: { value: "15 Sep 2026", label: "report published" },
+    why: "Former neonatal nurse Lucy Letby was convicted of murdering and attempting to murder babies at the Countess of Chester Hospital. The inquiry was set up to examine events at the hospital from 2015 to 2018 and what they mean for the future.",
+    found: "Public hearings ran from September 2024 to March 2025. The report, published on 15 September 2026, found a profound failure of management, governance and safeguarding by all those responsible for the safety of babies at the hospital.",
+    followed: "The report comes with a summary, three volumes and standalone recommendations documents. We did not find a government reply in the sources checked, so none is listed here.",
+    sources: [
+      { label: "GOV.UK: Thirlwall Inquiry report", url: "https://www.gov.uk/government/publications/thirlwall-inquiry-report" },
+      { label: "Thirlwall Inquiry", url: "https://thirlwall.public-inquiry.uk" },
+    ],
+  },
+  {
+    id: "blood",
+    name: "The Infected Blood Inquiry",
+    status: "finished",
+    started: "Ran for seven years, reported 20 May 2024",
+    colour: "#9C2F3F",
+    key: { value: "12", label: "recommendations in its final report" },
+    why: "To find out how people treated by the NHS across the UK were given infected blood and blood products, mainly between 1970 and 1998, and how the government and others responded.",
+    found: "The final report, on 20 May 2024, described a catalogue of failures at system, collective and individual level, linked to more than 3,000 deaths that it found were largely avoidable.",
+    followed: "The government accepted the great majority of the 12 recommendations in the final report and of 18 earlier ones on compensation, and apologised. The Victims and Prisoners Act 2024 created the Infected Blood Compensation Authority, whose first payments were made in December 2024. The inquiry formally closed on 31 March 2026.",
+    sources: [
+      { label: "GOV.UK: Government response to the Infected Blood Inquiry", url: "https://www.gov.uk/government/publications/government-response-to-the-infected-blood-inquiry/government-response-to-the-infected-blood-inquiry-html" },
+      { label: "Infected Blood Inquiry", url: "https://www.infectedbloodinquiry.org.uk/" },
+    ],
+  },
+  {
+    id: "grenfell",
+    name: "The Grenfell Tower Inquiry",
+    status: "finished",
+    started: "After the fire on 14 June 2017",
+    colour: "#B45A3C",
+    key: { value: "58", label: "recommendations, all accepted" },
+    why: "The fire at Grenfell Tower on 14 June 2017 claimed 72 lives. The inquiry that followed was led by Sir Martin Moore-Bick.",
+    found: "Its second-phase report made 58 recommendations, and the government and the other bodies responsible accepted all of them.",
+    followed: "The government tracks progress in public. In May 2026 it listed 21 recommendations complete and 40 in progress, out of 61 it counts, which include earlier ones. By the end of 2025, work had started or finished on 2,168 of the 4,126 buildings over 11 metres with unsafe cladding that are in its programmes, and was fully done on 1,475.",
+    sources: [
+      { label: "GOV.UK: Grenfell Tower Inquiry Phase 2 annual report, February 2026", url: "https://www.gov.uk/government/publications/grenfell-tower-inquiry-government-annual-report-february-2026/grenfell-tower-inquiry-phase-2-annual-report-february-2026" },
+      { label: "GOV.UK: Grenfell Tower Inquiry progress report, May 2026", url: "https://www.gov.uk/government/publications/grenfell-tower-inquiry-government-progress-report-may-2026/progress-report-may-2026-summary-update" },
+    ],
+  },
+  {
+    id: "iicsa",
+    name: "The Independent Inquiry into Child Sexual Abuse",
+    status: "finished",
+    started: "Set up in 2015, reported October 2022",
+    colour: "#3F7D5C",
+    key: { value: "20", label: "recommendations, all but one accepted" },
+    why: "To examine how far public bodies and other institutions in England and Wales had failed in their duty to protect children from sexual abuse and exploitation.",
+    found: "Its final report, in October 2022, made 20 recommendations.",
+    followed: "The government replied in May 2023, accepting the need to act on all but one. It promised a redress scheme for survivors of past abuse, a duty to report child sexual abuse for some professionals, starting with a call for evidence, and a new ministerial group to oversee delivery. It chose not to create a new child protection authority in England and to strengthen existing bodies instead.",
+    sources: [{ label: "GOV.UK: Government response to the final report of the Independent Inquiry into Child Sexual Abuse", url: "https://www.gov.uk/government/publications/response-to-the-final-report-of-the-independent-inquiry-into-child-sexual-abuse/government-response-to-the-final-report-of-the-independent-inquiry-into-child-sexual-abuse" }],
+  },
+  {
+    id: "iraq",
+    name: "The Iraq Inquiry",
+    status: "finished",
+    started: "Reported 6 July 2016",
+    colour: "#6B5B3E",
+    key: { value: "2.6m words", label: "in 13 volumes" },
+    why: "To examine the UK's part in the war in Iraq and what followed. Calls for an inquiry went back to 2006, and the report came out on 6 July 2016.",
+    found: "It drew on more than 150 witnesses and cost over £10 million. It found that military action was not a last resort, that the intelligence did not support the claim of a weapons threat, that the legal advice process was far from satisfactory and that planning for afterwards was inadequate. It found no deliberate attempt to mislead.",
+    followed: "The Prime Minister of the day told the Commons about changes already made: a National Security Council with a National Security Adviser, the Attorney General as a member of it, a regular defence and security review, and the Armed Forces Covenant written into law.",
+    sources: [{ label: "GOV.UK: statement on the Iraq Inquiry, 6 July 2016", url: "https://www.gov.uk/government/speeches/pm-statement-on-the-iraq-inquiry-6-july-2016" }],
+  },
+];
+
+export const FILTERS = [
+  ["all", "All"],
+  ["reporting", "Still reporting"],
+  ["finished", "Finished"],
+];
+
+export const inquiriesBy = (filter) => (filter === "all" ? INQUIRIES : INQUIRIES.filter((i) => i.status === filter));

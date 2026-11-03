@@ -527,9 +527,9 @@ export const PAGE_GUIDES = {
     notShown: "Scotland, Wales and Northern Ireland, which have their own ombudsmen, and complaints about private companies, which go to regulators and other ombudsmen.",
   },
   inquiries: {
-    what: "How a public inquiry is set up and what powers it has, how long inquiries take and what they cost, and what happens to what they recommend.",
+    what: "Eight well-known inquiries, why each began, what it found and what followed, then how inquiries are set up, how long they take, what they cost and what happens to what they recommend.",
     why: "Inquiries are how the state investigates its own failures, so it matters what they achieve.",
-    notShown: "A list of every inquiry with its cost to date and status. Each running inquiry publishes its own on its website.",
+    notShown: "Every inquiry. The eight are a selection, and the Institute for Government lists those ongoing. Each running inquiry publishes its cost to date on its own website.",
   },
   departments: {
     what: "The Spending Review 2025 plans for each government department, day-to-day and investment, for 2025-26 and 2028-29, who is growing and who is squeezed, and what the totals leave out.",
