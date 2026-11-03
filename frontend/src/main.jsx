@@ -10,6 +10,7 @@ import { registerOffline } from './lib/offline.js'
 import { startBalancingBoxes } from './lib/balanceBoxes.js'
 import { installRouting } from './lib/route.js'
 import { start as startDisplay } from './lib/display.js'
+import { installDetailsMotion } from './lib/detailsMotion.js'
 
 // The footer waits until the first page has settled (see AfterSettle in App.jsx); if that never happens it comes back anyway.
 document.documentElement.dataset.settling = '1'
@@ -28,6 +29,9 @@ createRoot(document.getElementById('root')).render(
     </ThemeProvider>
   </StrictMode>,
 )
+
+// Every fold-out opens and closes with a short height movement (lib/detailsMotion.js).
+installDetailsMotion()
 
 // Rows of boxes are tidied after they are drawn (see lib/balanceBoxes.js).
 startBalancingBoxes()

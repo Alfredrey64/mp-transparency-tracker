@@ -10,6 +10,7 @@ import { partyColourByName } from "../lib/careerTimeline";
 import { normalizeDonorKey } from "../lib/donorSectors";
 import { IconSearch } from "./icons";
 import DonorVotes from "./DonorVotes";
+import Unfold from "./Unfold";
 
 const MIN_QUERY_LENGTH = 3;
 const RESULT_CAP = 25;
@@ -117,7 +118,7 @@ function Recipients({ title, total, accent, rows }) {
           return (
             <li key={r.key}>
               <button type="button" onClick={() => setOpenKey(open ? null : r.key)} aria-expanded={open} className="nclick" style={{ ...rowStyle, cursor: "pointer" }}>{rowBody(r, max, open)}</button>
-              {open && (
+              <Unfold open={open}>
                 <div style={{ margin: "2px 0 8px 3px", padding: "8px 12px", borderLeft: `3px solid ${r.colour}`, background: `${r.colour}0f`, borderRadius: "0 10px 10px 0" }}>
                   <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 6 }}>
                     {[...r.gifts].sort((x, y) => String(y.date ?? "").localeCompare(String(x.date ?? ""))).map((g, i) => (
@@ -134,7 +135,7 @@ function Recipients({ title, total, accent, rows }) {
                     <button type="button" onClick={r.onClick} className="ons-chip" style={{ marginTop: 10, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.accentText }}>Open {r.label}&apos;s profile</button>
                   )}
                 </div>
-              )}
+              </Unfold>
             </li>
           );
         })}

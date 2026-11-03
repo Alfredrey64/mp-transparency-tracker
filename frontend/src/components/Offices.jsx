@@ -13,6 +13,7 @@ import { IconCabinet, IconEconomy, IconGlobe, IconDefence, IconGavel, IconHealth
 import { Segmented } from "./DeprivationControls";
 import "../offices.css";
 import { navigate } from "../lib/route";
+import Unfold from "./Unfold";
 
 // Who has held a government or shadow post, for anyone sitting in Parliament
 // today, from their biography records. It can't see people who have left, so
@@ -90,11 +91,11 @@ function OfficeRow({ office, open, onToggle, now }) {
         <p><strong>What it does</strong>{note.what}</p>
         <p><strong>Why it matters</strong>{note.why}</p>
       </div>
-      {open && (
+      <Unfold open={open}>
         <div className="off-holders">
           {office.holders.map((h) => <Holder key={`${h.house}-${h.memberId}-${h.start}`} h={h} now={now} />)}
         </div>
-      )}
+      </Unfold>
     </div>
   );
 }

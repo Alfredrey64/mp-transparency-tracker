@@ -156,3 +156,52 @@ export function nextBusyDay(data, date) {
   const days = [...counts].sort((a, b) => a[0].localeCompare(b[0]));
   return days.length ? { date: days[0][0], n: days[0][1] } : null;
 }
+
+// The time in London now as "14:05", for placing "now" among the day's entries.
+export const londonClock = (now = new Date()) => now.toLocaleTimeString("en-GB", { timeZone: "Europe/London", hour: "2-digit", minute: "2-digit", hour12: false }).replace(/^24/, "00");
+
+// "14:30" -> 870 minutes into the day, or null when there is no time.
+export function clockMinutes(time) {
+  const m = /^(\d{1,2}):(\d{2})$/.exec(time ?? "");
+  return m ? Number(m[1]) * 60 + Number(m[2]) : null;
+}
+
+// How far a day is from today, in words: "Today", "Tomorrow", "In 3 days", "Yesterday", "2 days ago".
+export function relDay(date, today) {
+  const diff = Math.round((parse(date) - parse(today)) / 86400000);
+  if (diff === 0) return "Today";
+  if (diff === 1) return "Tomorrow";
+  if (diff === -1) return "Yesterday";
+  return diff > 0 ? `In ${diff} days` : `${-diff} days ago`;
+}
+
+// The kinds of thing on the calendar, grouped for the colours used across Today and Coming up. `other` is the committees that go through bills and rules.
+export const KIND_GROUPS = [
+  { key: "bill", label: "Bills", colour: "#7B5BD6" },
+  { key: "hearing", label: "Committee evidence", colour: "#2C7DA0" },
+  { key: "questions", label: "Questions", colour: "#B45A3C" },
+  { key: "debate", label: "Debates and statements", colour: "#5A4FCF" },
+  { key: "other", label: "Bill and rules committees", colour: "#6B7690" },
+];
+const GROUP_OF = { bill: "bill", hearing: "hearing", questions: "questions", debate: "debate", statement: "debate", billcommittee: "other", regs: "other" };
+export const groupOf = (kind) => GROUP_OF[kind] ?? "other";
+
+// For each day, how many entries of each group the calendar lists: Map of date -> { bill, hearing, questions, debate, other, total }.
+export function mixByDay(data) {
+  const out = new Map();
+  for (const e of data.events) {
+    const m = out.get(e.d) ?? { bill: 0, hearing: 0, questions: 0, debate: 0, other: 0, total: 0 };
+    m[groupOf(e.k)] += 1;
+    m.total += 1;
+    out.set(e.d, m);
+  }
+  return out;
+}
+
+// Whole days from one date to another, and the Mondays that fall in a range (for the faint week lines on a four-week strip).
+export const daysBetween = (a, b) => Math.round((parse(b) - parse(a)) / 86400000);
+export function mondaysBetween(from, to) {
+  const out = [];
+  for (let d = from; d <= to; d = addDays(d, 1)) if (weekday(d) === 1) out.push(d);
+  return out;
+}

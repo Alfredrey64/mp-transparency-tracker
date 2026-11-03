@@ -93,3 +93,29 @@ for (const width of [1280, 390]) {
     expect(await violations(page), "tiers").toEqual([]);
   });
 }
+
+// Today is fixed to a day the calendar covers, so the clock, the timeline and the filter have something to show whatever the real date.
+test("Today shows a live clock, a timeline of the day, a house filter and jump buttons that fit a phone", async ({ page }) => {
+  await page.clock.install({ time: new Date("2026-11-04T11:00:00Z") });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/thisWeek/now");
+  await expect(page.getByText("London time now")).toBeVisible({ timeout: 20000 });
+  const timeline = page.getByRole("figure").filter({ hasText: "Today on a clock" });
+  await expect(timeline).toBeVisible();
+  expect(await timeline.getByRole("button").count()).toBeGreaterThan(0);
+  await page.getByRole("group", { name: "Which house to show" }).getByRole("button", { name: "Lords" }).click();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+  await page.addScriptTag({ content: AXE });
+  expect(await violations(page)).toEqual([]);
+});
+
+test("Coming up has jump buttons to each part, and a mix bar and bill timelines", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("/thisWeek/ahead");
+  const jump = page.getByRole("navigation", { name: /Jump to bills, committees/ });
+  await expect(jump).toBeVisible({ timeout: 20000 });
+  await jump.getByRole("button", { name: /Bills due to be debated/ }).click();
+  await expect(page.getByRole("heading", { name: "Bills due to be debated", level: 2 })).toBeInViewport({ timeout: 5000 });
+  expect(await page.locator(".uc-mix").count()).toBeGreaterThan(0);
+  expect(await page.locator(".en-strip").count()).toBeGreaterThan(0);
+});

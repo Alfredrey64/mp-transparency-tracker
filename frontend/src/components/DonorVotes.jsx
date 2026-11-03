@@ -4,6 +4,7 @@ import { COLORS, FONT_BODY, numeric, readable } from "../theme";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { donorPolicyArea, votesInArea } from "../lib/donorVotes";
 import { sectorColor } from "../lib/donorSectors";
+import Unfold from "./Unfold";
 
 // Under a donor's result: how the MPs it gave to personally voted on bills in the matching policy area. Loaded only when opened,
 // and framed as an overlap, not a cause.
@@ -50,7 +51,7 @@ export default function DonorVotes({ donorName, mps }) {
         <span aria-hidden="true" style={{ flexShrink: 0, fontSize: 18, color: readable(colour), transform: open ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>⌄</span>
       </button>
 
-      {open && (
+      <Unfold open={open}>
         <div style={{ marginTop: 12 }}>
           {loading && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Looking up their votes…</div>}
           {failed && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>The votes could not be loaded. Try again in a moment.</div>}
@@ -88,7 +89,7 @@ export default function DonorVotes({ donorName, mps }) {
             This is an overlap, not evidence the money changed any vote. Most MPs vote with their party whoever has funded them, and a shared policy area does not show a link. Votes are matched to bills by title and by the department that sponsored the bill, so it is a rough match.
           </p>
         </div>
-      )}
+      </Unfold>
     </div>
   );
 }

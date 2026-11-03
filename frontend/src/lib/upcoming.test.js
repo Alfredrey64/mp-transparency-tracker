@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { clock, dayShort, statusOn, weeks, billStages, hearings, commonsQuestions, totals, nextRecess, billCommittees } from "./upcoming";
+import { clock, dayShort, statusOn, weeks, billStages, hearings, commonsQuestions, totals, nextRecess, billCommittees, londonClock, clockMinutes, relDay, mixByDay, groupOf } from "./upcoming";
 
 const data = {
   generated: "2026-11-02", from: "2026-11-02", to: "2026-11-15",
@@ -90,5 +90,31 @@ describe("dayView and nextBusyDay", () => {
     expect(nextBusyDay(data, "2026-11-02").date >= "2026-11-03").toBe(true);
     expect(nextBusyDay(data, "2030-01-01")).toBeNull();
     expect(londonToday(new Date("2026-11-03T23:30:00Z"))).toBe("2026-11-03");
+  });
+});
+
+describe("the clock and the days", () => {
+  it("reads London time as hours and minutes", () => {
+    expect(londonClock(new Date("2026-11-03T14:05:00Z"))).toBe("14:05");
+    expect(londonClock(new Date("2026-07-03T14:05:00Z"))).toBe("15:05");
+  });
+  it("turns a time into minutes, or null", () => {
+    expect(clockMinutes("14:30")).toBe(870);
+    expect(clockMinutes("")).toBeNull();
+    expect(clockMinutes(undefined)).toBeNull();
+  });
+  it("says how far a day is from today", () => {
+    expect(relDay("2026-11-03", "2026-11-03")).toBe("Today");
+    expect(relDay("2026-11-04", "2026-11-03")).toBe("Tomorrow");
+    expect(relDay("2026-11-06", "2026-11-03")).toBe("In 3 days");
+    expect(relDay("2026-11-02", "2026-11-03")).toBe("Yesterday");
+    expect(relDay("2026-10-31", "2026-11-03")).toBe("3 days ago");
+  });
+  it("counts what each day lists by group", () => {
+    const m = mixByDay(data);
+    expect(m.get("2026-11-03")).toMatchObject({ bill: 1, other: 1, questions: 1, total: 3 });
+    expect(m.get("2026-11-04")).toMatchObject({ hearing: 1, questions: 1, debate: 1, total: 3 });
+    expect(groupOf("statement")).toBe("debate");
+    expect(groupOf("regs")).toBe("other");
   });
 });

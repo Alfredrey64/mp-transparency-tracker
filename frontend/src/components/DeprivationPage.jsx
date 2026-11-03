@@ -12,6 +12,7 @@ import { IconDeprivation } from "./icons";
 import { REGIONS, inSentence } from "../data/regionMetrics";
 import data from "../data/deprivation.json";
 import { card, cardTitle, pillStyle } from "../lib/onsStyles";
+import Unfold from "./Unfold";
 
 // Deprivation: the English Indices of Deprivation 2025, by region and by local authority, plus Wales, Scotland and Northern
 // Ireland's own indices (DeprivationNations.jsx) and a map of every constituency in the UK (DeprivationUK.jsx). Each nation's
@@ -75,7 +76,7 @@ function AreaRow({ area, kind, total, measure }) {
           <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>{f1(area.value)}{fair.ratio >= 1.12 ? ` · ${fair.text} a fair share` : ""}</span>
         </span>
       </button>
-      {open && (
+      <Unfold open={open}>
         <div style={{ padding: "2px 4px 14px 46px" }}>
           <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.55, color: COLORS.ink, margin: "0 0 8px" }}>
             {area.name} is number <strong>{area.rank}</strong> of {total} {seat ? "constituencies" : "councils"} in England for {measure.toLowerCase()}, where 1 is the most deprived. {seat ? "Of its residents" : "Of its neighbourhoods"}, <strong>{oneIn(area.value)}</strong> ({f1(area.value)}) {seat ? "live in neighbourhoods" : "are"} in the most deprived tenth in England. On overall deprivation it is {oneIn(area.imd)}. Here is how that splits by kind of deprivation:
@@ -91,7 +92,7 @@ function AreaRow({ area, kind, total, measure }) {
           </ul>
           {seat && <a href={`#/constituency/${encodeURIComponent(area.name)}`} className="ons-tap" style={{ display: "inline-block", marginTop: 10, fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 700, color: COLORS.ink }}>See this constituency, its MP and its results</a>}
         </div>
-      )}
+      </Unfold>
     </li>
   );
 }

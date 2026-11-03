@@ -1,6 +1,6 @@
 /** @jsxImportSource react */
 import { useState } from "react";
-import { dayLong } from "../../lib/upcoming";
+import { dayLong, dayShort, relDay, londonToday } from "../../lib/upcoming";
 import EntryRows from "./EntryRows";
 import { useEntryDialog } from "./useEntryDialog";
 import "../../entries.css";
@@ -53,14 +53,22 @@ export function EntryList({ items, label, dateColumn, banded = true, limit = 0, 
   );
 }
 
-// Days of entries under a heading each, with one shared panel.
+// Days of entries under a heading each, with one shared panel. A row of day buttons above them jumps to a day, and each heading says how far off the day is.
 export function DayGroups({ days, label }) {
   const [open, dialog] = useEntryDialog();
+  const today = londonToday();
+  const slug = label.toLowerCase().replace(/[^a-z]+/g, "-");
+  const jump = (d) => document.getElementById(`${slug}-${d}`)?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
   return (
     <div className="en-days">
+      {days.length > 1 && (
+        <nav className="en-daynav" aria-label={`Jump to a day: ${label}`}>
+          {days.map((d) => <button key={d.d} type="button" onClick={() => jump(d.d)}><b>{dayShort(d.d).split(" ")[0]}</b>{Number(d.d.slice(8))}<span>{d.items.length}</span></button>)}
+        </nav>
+      )}
       {days.map((d) => (
-        <section key={d.d} className="en-day">
-          <h3>{dayLong(d.d)}<span>{d.items.length}</span></h3>
+        <section key={d.d} id={`${slug}-${d.d}`} className="en-day" data-today={d.d === today ? "1" : undefined}>
+          <h3>{dayLong(d.d)}<em>{relDay(d.d, today)}</em><span>{d.items.length}</span></h3>
           <EntryRows items={d.items} open={open} label={`${label}, ${dayLong(d.d)}`} />
         </section>
       ))}

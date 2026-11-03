@@ -2,6 +2,7 @@
 import { ExplainerBody } from "../story/ExplainerPage";
 import SittingStrip from "../story/SittingStrip";
 import { EntryList, DayGroups } from "../story/Entries";
+import JumpChips from "../story/JumpChips";
 import Loading from "../Loading";
 import { LoadFailedNote } from "../MpCards";
 import { IconCalendar, IconBills, IconCommittee, IconQuestion } from "../icons";
@@ -40,12 +41,13 @@ function build(data) {
   const business = debates(data).slice(0, 10);
   const examined = billCommittees(data);
   const thin = thinWeeks(data);
+  const strip = (marks) => ({ from: data.from, to: data.to, marks });
   const billEntries = bills.map((b) => ({
-    id: `bill-${b.bill}`, kind: "bill", title: b.bill, url: b.url, h: b.stages[0].h, date: b.stages[0].d, stage: b.stages[0].stage, stages: b.stages,
+    id: `bill-${b.bill}`, kind: "bill", title: b.bill, url: b.url, h: b.stages[0].h, date: b.stages[0].d, stage: b.stages[0].stage, stages: b.stages, strip: strip(b.stages.map((x) => ({ d: x.d, h: x.h }))),
     sub: `${b.stages.slice(0, 2).map((s) => `${houseName(s.h)}${s.stage ? `, ${s.stage}` : ""}, ${dayShort(s.d)}`).join(". ")}${b.stages.length > 2 ? `. ${b.stages.length - 2} more stages listed` : ""}`,
   }));
   const hearingEntries = committees.map((c) => ({
-    id: `hearing-${c.committee}-${c.about}`, kind: "hearing", title: c.committee, about: c.about, h: c.house, date: c.dates[0].d, dates: c.dates,
+    id: `hearing-${c.committee}-${c.about}`, kind: "hearing", title: c.committee, about: c.about, h: c.house, date: c.dates[0].d, dates: c.dates, strip: strip(c.dates.map((x) => ({ d: x.d, h: c.house }))),
     sub: `${c.about ? `${c.about}. ` : ""}${c.dates.slice(0, 3).map((d) => `${dayShort(d.d)}${d.time ? `, ${clock(d.time)}` : ""}`).join("; ")}${c.dates.length > 3 ? ` and ${c.dates.length - 3} more` : ""}`,
   }));
   const dayEntries = (days, kind) => days.map((d) => ({ d: d.d, items: d.items.map((it, i) => ({ id: `${kind}-${d.d}-${i}`, kind: it.k ?? kind, title: it.t, h: it.h, where: it.where, time: it.time, date: d.d })) }));
@@ -103,6 +105,9 @@ function build(data) {
       blocks: [{ node: <DayGroups label="Debates and statements" days={dayEntries(business, "debate")} /> }],
     });
   }
+
+  const parts = chapters.slice(1).map((c, i) => ({ title: c.title, colour: c.colour, count: [bills.length, committees.length, rota.length, business.length].filter((n) => n)[i] }));
+  if (parts.length) chapters[0].blocks.push({ node: <JumpChips items={parts} label="Jump to bills, committees, questions or debates" /> });
 
   return {
     lead: <Hero

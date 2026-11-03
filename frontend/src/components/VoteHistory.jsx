@@ -6,6 +6,7 @@ import { matchBillForVote } from "../lib/bills";
 import { explainDivision } from "../lib/divisionExplainer";
 import { summariseBill, billSearchUrl } from "../lib/billSummary";
 import VoteExplainer from "./VoteExplainer";
+import Unfold from "./Unfold";
 
 // One MP's votes, grouped by bill so a bill with twenty clause votes is one
 // card with a short "what is this bill?" line and twenty quiet rows, rather
@@ -55,7 +56,7 @@ function VoteRow({ vote, explanation, hasPartyMajorityConcept, showPlain, first 
           {open ? "Hide details" : showPlain ? "What Aye and No meant" : "What was this vote?"}
         </button>
       </div>
-      {open && (
+      <Unfold open={open}>
         <div style={{ marginTop: 9 }}>
           <VoteExplainer title={vote.title} />
           <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5 }}>
@@ -68,7 +69,7 @@ function VoteRow({ vote, explanation, hasPartyMajorityConcept, showPlain, first 
             )}
           </div>
         </div>
-      )}
+      </Unfold>
     </div>
   );
 }

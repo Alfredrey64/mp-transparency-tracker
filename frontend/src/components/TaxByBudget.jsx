@@ -4,6 +4,7 @@ import { card, cardTitle, pillStyle } from "../lib/onsStyles";
 import { budgetEvents, PARTY_NAMES, whenText } from "../lib/taxRates";
 import { Reveal } from "./Motion";
 import { ChangeRow } from "./TaxChangeList";
+import Unfold from "./Unfold";
 
 // Budget by Budget: every tax change we can tie to the Budget or statement where it was decided, newest first.
 
@@ -37,11 +38,11 @@ export default function TaxByBudget() {
                   <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>{e.changes.length} change{e.changes.length === 1 ? "" : "s"}: {more} more tax, {less} less tax <span aria-hidden="true" style={{ fontWeight: 700 }}>{isOpen ? "-" : "+"}</span></span>
                 </span>
               </button>
-              {isOpen && (
+              <Unfold open={isOpen}>
                 <ul style={{ listStyle: "none", margin: "8px 0 0", padding: 0 }}>
                   {e.changes.map((c) => <ChangeRow key={`${c.line.key}-${c.date}`} c={c} showTax />)}
                 </ul>
-              )}
+              </Unfold>
             </li>
           );
         })}

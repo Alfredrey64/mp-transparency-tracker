@@ -138,7 +138,7 @@ console.log(
 // A page drawn from data, handed in as the component to show.
 // Calls `done` once two frames in a row have come quickly (the browser has finished drawing what was just put on the page), or after `limit` ms at most.
 // A steady slower rhythm, such as 30 frames a second in a phone's low-power mode, counts as quick too.
-function afterSettled(done, limit = 50) {
+function afterSettled(done, limit = 90) {
   const start = performance.now();
   let last = start;
   let quick = 0;

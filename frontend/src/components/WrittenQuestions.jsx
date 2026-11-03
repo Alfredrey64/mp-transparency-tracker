@@ -58,9 +58,9 @@ function DepartmentDropdown({ value, options, onChange }) {
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: -6, scaleY: 0.96 }}
-            animate={{ opacity: 1, y: 0, scaleY: 1 }}
-            exit={{ opacity: 0, y: -6, scaleY: 0.96 }}
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.16, ease: "easeOut" }}
             style={{
               position: "absolute", top: "calc(100% + 6px)", left: 0, right: 0, zIndex: 20, transformOrigin: "top",

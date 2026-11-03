@@ -143,7 +143,7 @@ function Gap({ text, live, done, token, depth }) {
         <Arrow dir="down" />
         <span className="tier-gap-txt"><span className="sr-only">Passes down: </span>{text}{live && token && <b className="tier-gap-token">{token}</b>}</span>
       </div>
-      <span className="tier-vl" aria-hidden="true"><span className="tier-up"><Arrow dir="up" /></span></span>
+      <span className="tier-vl" aria-hidden="true"><span className="tier-up" /></span>
     </div>
   );
 }

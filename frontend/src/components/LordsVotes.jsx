@@ -14,6 +14,7 @@ import { getBillDescription } from "../lib/billDescriptions";
 import { plainPoints } from "../lib/billPlain";
 import { peerRows, partyUnity, mostDivided, governmentDefeats, filterPeers, longDay, monthlyOutcomes, turnoutBands, typicalTurnout, sidesOf, regulars, hexOf, findBill, outcomeOf } from "../lib/lordsVotesView";
 import "../lordsvotes.css";
+import Unfold from "./Unfold";
 
 // How peers vote: how united each party is in the Lords, the votes where peers broke ranks, and a searchable list of every peer's record. All of it
 // comes from Parliament's Lords Votes API (the last 12 months), turned into data/lordsVotes.json by fetch-lords-votes.js.
@@ -206,7 +207,7 @@ function Division({ d, colours }) {
           <span className="lv-div-chev" aria-hidden="true">{open ? "Hide the detail" : "What was this?"}</span>
         </span>
       </button>
-      {open && (
+      <Unfold open={open}>
         <div className="lv-detail">
           {d.note && <section><h4>What was voted on</h4><p>{d.note.replace(/\s*The House divided:?\s*$/i, "")}</p></section>}
           <section>
@@ -232,7 +233,7 @@ function Division({ d, colours }) {
             </section>
           )}
         </div>
-      )}
+      </Unfold>
     </li>
   );
 }

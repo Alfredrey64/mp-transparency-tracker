@@ -515,8 +515,6 @@
 .na-rules summary, .na-case-list summary { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; font: 700 13.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--tc) 78%, var(--c-ink)); }
 .na-rules summary::after, .na-case-list summary::after { content: ""; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg) translateY(-2px); transition: transform 0.2s ease; }
 .na-rules details[open] summary::after, .na-case-list details[open] summary::after { transform: rotate(225deg) translateY(-2px); }
-.na-rules details[open] > *:not(summary), .na-case-list details[open] > *:not(summary), .na-outlets details[open] > dl { animation: naOpen 0.25s ease; }
-@keyframes naOpen { from { opacity: 0; transform: translateY(-4px); } }
 
 .na-quiz { padding: clamp(16px, 3vw, 26px); border-radius: 24px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-top: 5px solid #A8456B; box-shadow: var(--shadow-1); }
 .na-quiz-dots { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; padding: 0; }
@@ -542,7 +540,6 @@
 @media (prefers-reduced-motion: reduce) {
   .na-lane, .na-rules li, .na-outlets > li, .na-case-list > li { transition: none !important; }
   .na-radio i, .na-paper .na-sheet { animation: none; } .na-wave { animation: none !important; stroke-dashoffset: 0 !important; } .na-radio i:nth-child(1) { opacity: 0.35; transform: scale(1.4); }
-  .na-rules details[open] > *:not(summary), .na-case-list details[open] > *:not(summary), .na-outlets details[open] > dl { animation: none; }
 }
 
 /* ---- The bold pages: Civil Service, Courts, Monarchy, Watchdogs and News regulation (components/story/Vivid.jsx; `look: "vivid"`) ---------------------------------- */
@@ -887,7 +884,7 @@
 .na-outlets li:nth-child(1) .na-arrow { --i: 0; } .na-outlets li:nth-child(2) .na-arrow { --i: 1; } .na-outlets li:nth-child(3) .na-arrow { --i: 2; } .na-outlets li:nth-child(4) .na-arrow { --i: 3; } .na-outlets li:nth-child(5) .na-arrow { --i: 4; }
 .na-chev { justify-self: end; width: 9px; height: 9px; border-right: 2.5px solid var(--c-ink-soft); border-bottom: 2.5px solid var(--c-ink-soft); transform: rotate(45deg) translateY(-2px); transition: transform 0.2s ease; }
 .na-outlets details[open] .na-chev { transform: rotate(225deg); }
-.na-outlets dl { margin: 0; padding: 4px 20px 18px 94px; display: grid; gap: 2px; border-top: 1px dashed var(--c-hairline); animation: naOpen 0.25s ease; }
+.na-outlets dl { margin: 0; padding: 4px 20px 18px 20px; display: grid; gap: 2px; border-top: 1px dashed var(--c-hairline); }
 .na-outlets dt { margin-top: 10px; font: 800 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--tc) 75%, var(--c-ink)); }
 .na-outlets dd { margin: 0; color: var(--c-ink); font: 400 14px/1.6 "Figures", "Public Sans", system-ui, sans-serif; max-width: 760px; }
 
@@ -989,6 +986,13 @@
 .uc-hn span { display: inline; }
 .uc-st { font-weight: 600; }
 .uc-n { font: 500 12.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.uc-mix { display: flex; gap: 2px; height: 7px; margin-top: 3px; border-radius: 4px; overflow: hidden; }
+.uc-mix i { min-width: 5px; transform-origin: left; }
+.up-key-mix { margin-top: -4px; }
+.up-key-mix b { font-weight: 700; color: var(--c-ink); }
+.up-key-mix i { border: 0 !important; border-radius: 50% !important; width: 11px !important; height: 11px !important; }
+@media (prefers-reduced-motion: no-preference) { .up-cal[data-go="1"] .uc-mix i { animation: ucMix 0.6s var(--ease-out) calc(var(--k) * 80ms + 500ms) backwards; } }
+@keyframes ucMix { from { transform: scaleX(0); } }
 .uc-n b { font-size: 15px; color: var(--c-ink); font-variant-numeric: lining-nums; }
 @media (max-width: 760px) {
   .uc-row { grid-template-columns: 44px repeat(5, minmax(0, 1fr)); gap: 5px; }
@@ -1216,3 +1220,9 @@
 
 /* Who stays and who goes, redrawn: a spine down the middle, a row for each group with its colour down the edge, bigger figures and a tag saying what happens to them. */
 
+
+/* Each category in the then-and-now bar charts sits in its own band, so the rows do not run into one another. */
+.st-duo { gap: 10px; }
+.st-duo li { gap: 9px; padding: 14px 18px 15px; border-radius: 14px; background: color-mix(in srgb, var(--tc) 4%, var(--c-paper-card)); border: 1px solid var(--c-hairline); border-left: 4px solid color-mix(in srgb, var(--tc) 55%, var(--c-hairline)); transition: background-color 0.2s ease, border-color 0.2s ease; }
+.st-duo li:hover { background: color-mix(in srgb, var(--tc) 9%, var(--c-paper-card)); border-left-color: var(--tc); }
+@media (max-width: 560px) { .st-duo li { padding: 12px 14px 13px; } }

@@ -6,6 +6,7 @@ import { card, cardTitle, pillStyle } from "../lib/onsStyles";
 import { HowToRead, Row as Field, Segmented, SelectField } from "./DeprivationControls";
 import { KINDS } from "../data/deprivationKinds";
 import { oneIn, oneInShort, againstFair } from "../lib/deprivationPlain";
+import Unfold from "./Unfold";
 
 // Deprivation in Wales and in Scotland: the Welsh Index of Multiple Deprivation 2025 and the Scottish Index of Multiple
 // Deprivation 2020. Each nation ranks only its own neighbourhoods, so every figure here is "compared with the rest of Wales" or
@@ -79,7 +80,7 @@ function Row({ area, kind, total, measure, domains, place, unit }) {
           <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>{f1(area.value)}{againstFair(area.value).ratio >= 1.12 ? ` · ${againstFair(area.value).text} a fair share` : ""}</span>
         </span>
       </button>
-      {open && (
+      <Unfold open={open}>
         <div style={{ padding: "2px 4px 14px 46px" }}>
           <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.55, color: COLORS.ink, margin: "0 0 8px" }}>
             {area.name} is number <strong>{area.rank}</strong> of {total} {seat ? "constituencies" : "council areas"} in {place} for {measure.toLowerCase()}, where 1 is the most deprived. <strong>{oneIn(area.value)}</strong> of its {Math.round(area.n)} {unit} ({f1(area.value)}) are in the most deprived tenth of {place}. Overall, {oneIn(area.worst10)} are in the worst tenth, {oneIn(area.worst20)} in the worst fifth and {oneIn(area.best10)} in the least deprived tenth. Here is how it splits by kind of hardship, as the share in the worst tenth:
@@ -95,7 +96,7 @@ function Row({ area, kind, total, measure, domains, place, unit }) {
           </ul>
           {seat && <a href={`#/constituency/${encodeURIComponent(area.name)}`} className="ons-tap" style={{ display: "inline-block", marginTop: 10, fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 700, color: COLORS.ink }}>See this constituency, its MP and its results</a>}
         </div>
-      )}
+      </Unfold>
     </li>
   );
 }

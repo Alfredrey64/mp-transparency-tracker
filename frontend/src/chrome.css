@@ -725,8 +725,8 @@ html[data-leaving] .mp-app-shell { transition: none; }
 /* The page dips rather than going blank, so there is no flash of empty background between two pages. */
 html[data-leaving] #main-content { opacity: 0; transition-duration: 0.06s; transition-timing-function: ease-in; }
 /* The copy of the page being left (lib/pageGhost.js): it covers the screen under the header, with its words fading away over its steady background while the new page, already in place and unseen, waits underneath. */
-.page-ghost { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; overflow: hidden; pointer-events: none; background: var(--c-paper); }
-.page-ghost-inner { position: absolute; }
+.page-ghost { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; overflow: hidden; pointer-events: none; background: var(--c-paper); will-change: clip-path; contain: layout paint style; }
+.page-ghost-inner { position: absolute; will-change: transform; transform: translateZ(0); }
 .page-ghost *, .page-ghost *::before, .page-ghost *::after { animation: none !important; transition: none !important; }
 .page-ghost :is(.ons-toolbar, .ma-jump, .tl-nav, .cr-sticky, .billroute-caption, .tier-panel, .hub-map, .mm-side, .lm-cap) { visibility: hidden; }
 /* While a whole page is still loading, what sits under it (the footer, "More in this section", the page's foot) waits and then fades in, so it is never seen sliding
@@ -738,9 +738,7 @@ html[data-settling] .site-footer, .mp-app-shell:has(#main-content .loading-block
 html[data-leaving] .site-footer { opacity: 0; transition-duration: 0.06s; transition-timing-function: ease-in; }
 /* Under the copy of the old page that is being wiped away, the new page just sits there: nothing of it moves or fades in. */
 html[data-wipe] #main-content > *, html[data-wipe] .site-footer { animation: none !important; }
-@keyframes page-rise { from { transform: translateY(6px); } }
-html[data-nav]:not([data-leaving]) #main-content > :not(.page-loading):not(.sn):not(.pf) { animation: page-rise 0.24s var(--ease-out) backwards; }
-@media (prefers-reduced-motion: reduce) { html[data-nav]:not([data-leaving]) #main-content > :not(.page-loading):not(.sn):not(.pf) { animation: none; } }
+html[data-wipe] #main-content *, html[data-wipe] #main-content *::before, html[data-wipe] #main-content *::after { animation-play-state: paused !important; }
 /* The section links and page foot arrive after the page has settled (App.jsx, AfterSettle), so they ease in rather than appear. */
 @keyframes foot-in { from { opacity: 0; } }
 #main-content > .sn, #main-content > .pf { animation: foot-in 0.3s var(--ease-out) backwards; }

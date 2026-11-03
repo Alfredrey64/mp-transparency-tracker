@@ -1,0 +1,50 @@
+import { test, expect } from "@playwright/test";
+import { LOADERS } from "../src/pageLoaders.js";
+
+// Every page: open each fold-out (<details>) and each box that says it can expand (aria-expanded), and fail on any script error or console error on the way. Fold-outs
+// are opened by a real click, so the height movement in lib/detailsMotion.js runs too, and each is checked to end up open at the height of its content. The data service is
+// refused, so pages show what ships with the site.
+const PAGES = ["home", "list", "partymatch", ...Object.keys(LOADERS)].filter((p, i, all) => all.indexOf(p) === i);
+const EXTRA = ["thisWeek/now", "thisWeek/ahead"];
+const ONLY = process.env.EXPAND_ONLY?.split(",");
+// Errors the test setup causes itself (the refused data service).
+const EXPECTED = /54321|Failed to load resource|ERR_FAILED|net::|supabase|fetch/i;
+
+test.beforeEach(async ({ page }) => { await page.route("**/127.0.0.1:54321/**", (route) => route.abort()); });
+
+for (const size of [{ name: "phone", width: 390, height: 844 }, { name: "desktop", width: 1280, height: 900 }]) {
+  test(`opening every fold-out on every page raises no errors at ${size.name} width`, async ({ page }) => {
+    test.setTimeout(900000);
+    await page.setViewportSize({ width: size.width, height: size.height });
+    const problems = [];
+    let where = "";
+    page.on("pageerror", (e) => problems.push(`${where}: ${e.message}`));
+    page.on("console", (m) => { if (m.type() === "error" && !EXPECTED.test(m.text())) problems.push(`${where}: ${m.text().slice(0, 160)}`); });
+    for (const path of [...PAGES, ...EXTRA].filter((p) => !ONLY || ONLY.includes(p))) {
+      where = path;
+      await page.goto(`/${path === "home" ? "" : path}`);
+      await page.waitForSelector("#main-content h1, #main-content h2", { timeout: 20000 }).catch(() => {});
+      await page.waitForTimeout(400);
+      const folds = page.locator("#main-content details > summary:visible");
+      const n = Math.min(await folds.count(), 12);
+      for (let i = 0; i < n; i++) {
+        const summary = folds.nth(i);
+        const box = summary.locator("xpath=..");
+        if (await box.evaluate((d) => d.open)) continue;
+        await summary.scrollIntoViewIfNeeded().catch(() => {});
+        await summary.click({ timeout: 3000 }).catch(() => {});
+        await page.waitForTimeout(340);
+        if (!(await box.evaluate((d) => d.open))) problems.push(`${path}: a fold-out did not open`);
+        else if (await box.evaluate((d) => d.getAnimations().length)) problems.push(`${path}: a fold-out was still moving after it should have settled`);
+      }
+      const toggles = page.locator("#main-content [aria-expanded='false']:visible");
+      const m = Math.min(await toggles.count(), 8);
+      for (let i = 0; i < m; i++) {
+        await toggles.nth(i).scrollIntoViewIfNeeded().catch(() => {});
+        await toggles.nth(i).click({ timeout: 3000 }).catch(() => {});
+        await page.waitForTimeout(150);
+      }
+    }
+    expect(problems.join("\n"), problems.join("\n")).toBe("");
+  });
+}
