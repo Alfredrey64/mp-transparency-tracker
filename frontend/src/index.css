@@ -108,7 +108,6 @@ html, body, #root {
    when something is tapped. */
 button, a, [role="button"], input, select, summary { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 
-
 /* Notched phones and home-screen apps: keep content clear of the notch, the
    rounded corners and the home bar. */
 #root { padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
@@ -289,8 +288,6 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 }
 
 /* Menu items are a comfortable size to tap on a phone. */
-@media (pointer: coarse) {
-}
 
 /* Ministers' meetings: the summary and filters sit in a column beside the
    meeting log when the page itself is wide enough (it shares the screen with
@@ -569,7 +566,6 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 }
 
 /* A run of cards inside an editorial page: one column on a phone, two when there is room. */
-.ed-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 520px), 1fr)); gap: 14px; align-items: stretch; }
 .editorial-body { align-items: stretch; }
 @container (min-width: 900px) { .editorial-body { align-items: stretch; } }
 
@@ -614,7 +610,6 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
 .box-row > * { flex: 1 1 max(min(100%, var(--min, 150px)), calc((100% - (var(--n, 4) - 1) * var(--gap)) / var(--n, 4))); min-width: 0; }
 @container (max-width: 760px) { .box-row .tile-num { font-size: 30px !important; } }
 @container (max-width: 380px) { .box-row .tile-num { font-size: 26px !important; } }
-
 
 /* The whole-UK deprivation map: map beside its key on a wide screen, stacked on a phone. */
 .dep-uk-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
@@ -691,7 +686,6 @@ a[target="_blank"]::after { content: "" / " (opens in a new tab)"; }
 .bill-ring::after { content: ""; position: absolute; inset: -9px; border-radius: 50%; border: 1.5px solid var(--ring); opacity: 0; animation: bill-ring-pulse 1.8s ease-out infinite; }
 @keyframes bill-ring-pulse { 0% { transform: scale(0.82); opacity: 0.5; } 100% { transform: scale(1.18); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .bill-ring::after { animation: none; } }
-
 
 /* A row of boxes laid out again by lib/balanceBoxes.js so the last row is never a lone box: twice as many tracks as boxes across, each box two wide,
    so a short last row can be started half a box in and sit in the middle. */

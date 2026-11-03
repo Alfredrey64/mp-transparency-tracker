@@ -250,9 +250,7 @@
 .st[data-look="poster"] .st-tile > b { color: #fff; }
 .st[data-look="poster"] .st-tile-sub { color: rgba(255, 255, 255, 0.85); }
 .st[data-look="poster"] .st-tile > b { font-size: clamp(32px, 4vw, 48px); }
-.st[data-look="poster"] .st-why { padding: 22px 26px; border: 0; border-radius: 20px; background: color-mix(in srgb, var(--tc) 46%, #0B1226); }
-.st[data-look="poster"] .st-why-icon { background: rgba(255, 255, 255, 0.16); }
-.st[data-look="poster"] .st-why p, .st[data-look="poster"] .st-why strong { color: #fff; }
+.st[data-look="poster"] .st-why { padding: 22px 26px; border-radius: 20px; }
 .st[data-look="poster"] .st-chapter > header { flex-direction: column; gap: 10px; }
 .st[data-look="poster"] .st-n { display: block; justify-self: start; white-space: nowrap; width: auto; height: auto; padding: 5px 14px; border-radius: 999px; box-shadow: none; font: 800 13.5px "Figures", "Public Sans", system-ui, sans-serif; }
 .st[data-look="poster"] .st-n::before { content: "Part "; }
@@ -723,9 +721,9 @@
 .sa-div-root > span:not(.sa-ico) { font: 500 14px/1.5 "Figures", "Public Sans", system-ui, sans-serif; opacity: 0.95; }
 .sa-div-root .sa-ico { background: rgba(255, 255, 255, 0.2); color: #fff; width: 46px; height: 46px; border-radius: 50%; }
 .sa-div-join { display: grid; justify-items: center; width: 100%; }
-.sa-div-down, .sa-div-stubs i { display: block; width: 3px; height: 24px; margin-inline: auto; border-radius: 2px; background: var(--c-ink-soft); transform: scaleY(0); transform-origin: top; transition: transform 0.35s ease 0.5s; }
-.sa-div-bar { display: block; height: 3px; width: calc(100% - 100% / var(--n)); border-radius: 2px; background: var(--c-ink-soft); transform: scaleX(0); transition: transform 0.5s ease 0.8s; }
-.sa-div-stubs { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 14px; width: 100%; }
+.sa-div-down, .sa-div-stubs i { display: block; width: 3px; height: 24px; margin-inline: auto; border-radius: 0; background: var(--c-ink-soft); transform: scaleY(0); transform-origin: top; transition: transform 0.35s ease 0.5s; }
+.sa-div-bar { display: block; height: 3px; width: calc(100% - (100% - (var(--n) - 1) * 14px) / var(--n) + 3px); border-radius: 0; background: var(--c-ink-soft); transform: scaleX(0); transition: transform 0.5s ease 0.8s; }
+.sa-div-stubs { margin-top: -3px; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 14px; width: 100%; }
 .sa-div-stubs i { background: var(--tc); transform-origin: top; transition-delay: calc(1.2s + var(--i) * 0.12s); }
 .sa-div-items { list-style: none; margin: 0; padding: 0; width: 100%; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 14px; }
 .sa-div-items > li { transition-delay: calc(1.5s + var(--i) * 0.12s), calc(1.5s + var(--i) * 0.12s); }
@@ -873,21 +871,27 @@
 .sa-lay-card b { font: 700 19px/1.25 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
 .sa-lay-card p { margin: 3px 0 0; font: 400 14.5px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .sa-lay-tag { align-self: start; padding: 3px 11px; border-radius: 999px; background: color-mix(in srgb, var(--tc) 12%, var(--c-paper-card)); color: color-mix(in srgb, var(--tc) 80%, var(--c-ink)); font: 800 12px/1.4 "Figures", "Public Sans", system-ui, sans-serif; }
-.sa-lay-link { display: flex; align-items: center; gap: 12px; min-height: 64px; padding-left: 47px; opacity: 0; transition: opacity 0.4s ease calc(var(--i) * 0.28s); }
-.sa-lay-lane { position: relative; flex: none; width: 2px; align-self: stretch; margin-block: 4px; background: color-mix(in srgb, var(--c-ink-soft) 45%, transparent); overflow: hidden; border-radius: 1px; }
-.sa-lay-lane::before { content: ""; position: absolute; left: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--c-ink); top: 0; opacity: 0; }
-.sa-lay-lane[data-dir="up"]::before { top: auto; bottom: 0; }
+.sa-lay-link { display: flex; align-items: center; gap: 8px; min-height: 64px; padding-left: 47px; opacity: 0; transition: opacity 0.4s ease calc(var(--i) * 0.28s); }
+.sa-lay-lane { position: relative; flex: none; width: 14px; align-self: stretch; margin-block: 4px; }
+.sa-lay-lane::before { content: ""; position: absolute; left: 6px; top: 0; bottom: 0; width: 2px; border-radius: 1px; background: var(--c-ink-soft); transform: scaleY(0); transform-origin: top; transition: transform 0.55s ease calc(var(--i) * 0.28s + 0.2s); }
+.sa-lay-lane[data-dir="up"]::before { transform-origin: bottom; }
+.sa-lay-lane i { position: absolute; left: 0; width: 14px; height: 14px; background: var(--c-ink-soft); -webkit-mask: var(--chev) center / contain no-repeat; mask: var(--chev) center / contain no-repeat; opacity: 0; transition: opacity 0.25s ease calc(var(--i) * 0.28s + 0.65s); }
+.sa-lay-lane[data-dir="down"] i { bottom: -3px; transform: rotate(90deg); }
+.sa-lay-lane[data-dir="up"] i { top: -3px; transform: rotate(-90deg); }
+[data-go="1"].sa-lay .sa-lay-lane::before { transform: none; }
+[data-go="1"].sa-lay .sa-lay-lane i { opacity: 1; }
 .sa-lay-says { display: grid; gap: 2px; }
 .sa-lay-says em { font: 700 13px/1.4 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: var(--c-ink-soft); }
 [data-go="1"].sa-lay .sa-lay-card, [data-go="1"].sa-lay .sa-lay-link { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: no-preference) {
-  [data-go="1"].sa-lay .sa-lay-lane::before { opacity: 1; animation: layDown 1.8s ease-in-out 1.4s infinite; }
-  [data-go="1"].sa-lay .sa-lay-lane[data-dir="up"]::before { animation-name: layUp; animation-delay: 2.3s; }
+  [data-go="1"].sa-lay .sa-lay-lane[data-dir="down"] i { animation: layNodDown 1.8s ease-in-out 1.6s infinite; }
+  [data-go="1"].sa-lay .sa-lay-lane[data-dir="up"] i { animation: layNodUp 1.8s ease-in-out 2.1s infinite; }
 }
-@keyframes layDown { 0% { transform: translateY(-8px); opacity: 0; } 15%, 80% { opacity: 1; } 100% { transform: translateY(60px); opacity: 0; } }
-@keyframes layUp { 0% { transform: translateY(60px); opacity: 0; } 15%, 80% { opacity: 1; } 100% { transform: translateY(-8px); opacity: 0; } }
+@keyframes layNodDown { 0%, 55%, 100% { transform: rotate(90deg) translateX(0); } 25% { transform: rotate(90deg) translateX(3px); } }
+@keyframes layNodUp { 0%, 55%, 100% { transform: rotate(-90deg) translateX(0); } 25% { transform: rotate(-90deg) translateX(3px); } }
+@media (prefers-reduced-motion: reduce) { .sa-lay-lane::before, .sa-lay-lane i { transition: none !important; } }
 @media (max-width: 560px) { .sa-lay-card { grid-template-columns: 44px minmax(0, 1fr); } .sa-lay-tag { grid-column: 2; justify-self: start; } .sa-lay-ico { width: 44px; height: 44px; } .sa-lay-link { padding-left: 39px; } }
-@media (prefers-reduced-motion: reduce) { .sa-lay-card, .sa-lay-link { transition: none !important; } .sa-lay-lane::before { display: none; } }
+@media (prefers-reduced-motion: reduce) { .sa-lay-card, .sa-lay-link { transition: none !important; } }
 
 /* A quiet row of figures. */
 .vv-plainfigs { margin: 22px 0 6px; padding: 6px 0; border-block: 1px solid var(--c-hairline); }
@@ -1025,7 +1029,7 @@
 @media (max-width: 420px) { .up-item { grid-template-columns: 1fr; gap: 3px; } .up-items em { justify-self: start; padding: 2px 8px; } }
 
 /* The short version / full detail switch above every explainer page. */
-.st-detail { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px; margin: 14px 0 -6px; font: 600 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.st-detail { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px; margin: 14px 0 16px; font: 600 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .st-detail span { margin-right: 4px; }
 .st-detail button { min-height: 36px; padding: 0 14px; border-radius: 999px; border: 1.5px solid var(--c-hairline); background: var(--c-paper-card); color: var(--c-ink); font: inherit; cursor: pointer; }
 .st-detail button[aria-pressed="true"] { background: var(--c-ink); border-color: var(--c-ink); color: var(--c-paper-card); }
@@ -1190,3 +1194,43 @@
 @media (prefers-reduced-motion: reduce) { .sb-bar i, .sb-key li { transition: none !important; transform: none; opacity: 1; } }
 
 .rb-ico { display: inline-grid; vertical-align: -6px; margin-right: 8px; place-items: center; width: 26px; height: 26px; border-radius: 8px; background: color-mix(in srgb, var(--sc) 14%, var(--c-paper-card)); color: var(--sc); }
+
+/* ---- The opening banner on a light page: the same content, on paper instead of ink. The three colours the page gives it only tint the wash, the top edge and the small marks. ---- */
+.vv-hero { color: var(--c-ink); background: radial-gradient(70% 120% at 100% 0%, color-mix(in srgb, var(--h2) 10%, transparent), transparent 70%), radial-gradient(60% 100% at 0% 100%, color-mix(in srgb, var(--h3) 7%, transparent), transparent 70%), var(--c-paper-card); border: 1px solid color-mix(in srgb, var(--h2) 22%, var(--c-hairline)); border-top: 4px solid var(--h2); box-shadow: var(--shadow-1); }
+.vv-hero:not([data-siren="1"])::before, .vv-hero::after { opacity: 0.07; }
+.vv-why { color: var(--c-ink); }
+.vv-why strong { color: color-mix(in srgb, var(--h2) 72%, var(--c-ink)); background: color-mix(in srgb, var(--h2) 11%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--h2) 32%, transparent); }
+.vv-badge { background: color-mix(in srgb, var(--tc) 24%, var(--c-paper-card)); color: color-mix(in srgb, var(--tc) 38%, var(--c-ink)); border: 1.5px solid color-mix(in srgb, var(--tc) 62%, var(--c-ink)); box-shadow: 0 0 0 6px color-mix(in srgb, var(--tc) 12%, transparent); }
+.vv-stop b { color: var(--c-ink); }
+.vv-stop small { color: var(--c-ink-soft); }
+.vv-link i { background: color-mix(in srgb, var(--c-ink-soft) 22%, transparent); }
+.vv-link i::before { background: repeating-linear-gradient(90deg, var(--c-ink-soft) 0 5px, transparent 5px 14px); background-size: 14px 100%; }
+.vv-link::after { background: var(--c-ink-soft); }
+.vv-figs { border-top-color: var(--c-hairline); }
+.vv-figs li { border-left-color: var(--c-hairline); }
+.vv-figs b { color: color-mix(in srgb, var(--h2) 62%, var(--c-ink)); }
+.vv-figs li > span { color: var(--c-ink); }
+.vv-figs em { color: var(--c-ink-soft); }
+.vv-vs-key { color: var(--c-ink); }
+.vv-vs-key i { background: color-mix(in srgb, var(--c-ink-soft) 45%, transparent); } .vv-vs-key i.s { background: var(--c-ink); }
+.vv-vs-row { background: color-mix(in srgb, var(--h2) 6%, var(--c-paper)); border: 1px solid var(--c-hairline); }
+.vv-vs-row h3 { color: var(--c-ink); }
+.vv-vs-line small { color: var(--c-ink-soft); }
+.vv-vs-bar { background: color-mix(in srgb, var(--c-ink-soft) 18%, transparent); }
+.vv-vs-bar i { background: color-mix(in srgb, var(--tc) 78%, var(--c-ink)); }
+.vv-vs-bar.s i { background: var(--c-ink); }
+@media (max-width: 760px) {
+  .vv-link i::before { background: repeating-linear-gradient(180deg, var(--c-ink-soft) 0 5px, transparent 5px 14px); background-size: 100% 14px; }
+  .vv-figs li { border-top-color: var(--c-hairline); }
+}
+
+/* The two story boards (lead, rail) and the poster pages' pull quote on a light page: paper with ink text, the figure's colour kept for the edge, the number and the bar. */
+.st-board[data-variant] { background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); }
+.st-board[data-variant] .st-tile { color: var(--c-ink); background: radial-gradient(130px 130px at 100% 0, color-mix(in srgb, var(--tc) 16%, transparent), transparent 70%), linear-gradient(170deg, color-mix(in srgb, var(--tc) 9%, var(--c-paper-card)), var(--c-paper-card) 75%); border: 1px solid color-mix(in srgb, var(--tc) 30%, var(--c-hairline)); }
+.st-board[data-variant] .st-tile-label { color: color-mix(in srgb, var(--tc) 48%, var(--c-ink)); }
+.st-board[data-variant] .st-tile > b { color: color-mix(in srgb, var(--tc) 38%, var(--c-ink)); }
+.st-board[data-variant] .st-tile-sub { color: var(--c-ink-soft); }
+.st-board[data-variant="rail"] .st-tile { background: none; border: 0; }
+.st-board[data-variant="rail"] .st-tile::after { background: linear-gradient(90deg, color-mix(in srgb, var(--tc) 70%, transparent), var(--c-hairline)); }
+.st-redact { box-shadow: var(--shadow-1); border: 1px solid var(--c-hairline); }
+.st[data-look="poster"] .st-pull { color: var(--c-ink); background: color-mix(in srgb, var(--tc) 9%, var(--c-paper-card)); border-left: 8px solid var(--tc); border-radius: 20px; }

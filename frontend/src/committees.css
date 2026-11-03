@@ -18,9 +18,12 @@
 @media (prefers-reduced-motion: reduce) { .cm-detail, .cm-detail[data-open="true"] { transition: none; } }
 
 /* A committee as a card: a band in its House's colour, the name, the chair, and a small chamber with a seat for every member. */
-.cm-card { --hs: var(--c-ink-soft); display: flex; flex-direction: column; min-width: 0; overflow: hidden; border-radius: 20px; border: 1px solid color-mix(in srgb, var(--hc) 30%, var(--c-hairline)); box-shadow: var(--shadow-1); background: radial-gradient(100% 70% at 100% 100%, color-mix(in srgb, var(--hc) 10%, transparent), transparent 70%), var(--c-paper-card); transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out), border-color 0.2s; }
+.cm-card { --hs: var(--c-ink-soft); display: flex; flex-direction: column; min-width: 0; overflow: hidden; border-radius: 20px; border: 1px solid color-mix(in srgb, var(--hc) 30%, var(--c-hairline)); box-shadow: var(--shadow-1); background: radial-gradient(100% 70% at 100% 100%, color-mix(in srgb, var(--hc) 10%, transparent), transparent 70%), var(--cm-bg, var(--c-paper-card)); transition: background-color 0.15s var(--ease-out), box-shadow 0.25s var(--ease-out), border-color 0.2s; }
 .cm-card[data-open="1"] { border-color: var(--hc); box-shadow: var(--shadow-2), 0 0 0 3px color-mix(in srgb, var(--hc) 20%, transparent); }
-@media (hover: hover) { .cm-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-2); } }
+/* Hover and selected shade the card the way a menu row is shaded: a wash of its own colour, the icon filled, the name in the colour. */
+@media (hover: hover) { .cm-card:hover { --cm-bg: color-mix(in srgb, var(--hc) 12%, var(--c-paper-card)); box-shadow: var(--shadow-2); } }
+.cm-card[data-open="1"] { --cm-bg: color-mix(in srgb, var(--hc) 16%, var(--c-paper-card)); }
+.cm-card:hover .cm-name, .cm-card[data-open="1"] .cm-name { color: color-mix(in srgb, var(--hc) 65%, var(--c-ink)); }
 .cm-card-btn { display: flex; flex-direction: column; flex: 1; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; text-align: left; font: inherit; color: inherit; }
 .cm-band { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 16px; color: #fff; background: linear-gradient(105deg, var(--hs), color-mix(in srgb, var(--hs) 70%, #000)); }
 .cm-house { font: 800 12px "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.06em; text-transform: uppercase; }

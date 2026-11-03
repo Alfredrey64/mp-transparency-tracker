@@ -78,9 +78,6 @@
 .gm-party span { font: 600 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .gm-party small { grid-column: 2; font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .gm-party[aria-pressed="true"] { border-color: var(--gc); background: color-mix(in srgb, var(--gc) 12%, var(--c-paper-card)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--gc) 22%, transparent); }
-.gm-verdict { margin: 0; min-height: 3.2em; padding: 12px 16px; border-radius: 14px; background: var(--c-paper); border-left: 6px solid var(--c-hairline); font: 700 16px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
-.gm-verdict[data-state="best"] { background: color-mix(in srgb, #1FA97C 12%, var(--c-paper)); border-left-color: #1FA97C; }
-.gm-verdict[data-state="spare"] { background: color-mix(in srgb, #E8741A 10%, var(--c-paper)); border-left-color: #E8741A; }
 .gm-score { display: flex; justify-content: space-between; align-items: baseline; font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .gm-score b { font: 800 22px "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
 .gm-clues { display: grid; gap: 10px; }
@@ -157,7 +154,7 @@
 .gm-rank li span { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--tc); color: #fff; font: 800 18px "Figures", "Public Sans", system-ui, sans-serif; }
 .gm-rank li b { font: 800 18px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); overflow-wrap: anywhere; }
 .gm-rank li em { font: 700 15px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: var(--c-ink-soft); }
-@media (max-width: 640px) { .gm-feedback, .gm-verdict { min-height: 5.6em; } .gm-board { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .gm-feedback { min-height: 5.6em; } .gm-board { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (prefers-reduced-motion: reduce) { .gm-coin, .gm-bar i, .gm-bar u, .gm-time i, .gm-ring { transition: none; } }
 @media (max-width: 1000px) { .gm-ten-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 640px) { .gm-ten-grid { grid-template-columns: minmax(0, 1fr); } .gm-pound b, .gm-pound small { min-height: 0; } }
