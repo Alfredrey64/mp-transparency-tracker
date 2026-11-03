@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-02T11:56:18.524Z",
-  "succeededCount": 29,
-  "totalCount": 32,
+  "generatedAt": "2026-11-03T11:35:40.302Z",
+  "succeededCount": 33,
+  "totalCount": 34,
   "sources": [
     {
       "label": "Financial interests",
@@ -77,7 +77,7 @@
     },
     {
       "label": "Written questions",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Standards reports",
@@ -117,7 +117,15 @@
     },
     {
       "label": "Lords votes (how every peer voted)",
-      "succeeded": false
+      "succeeded": true
+    },
+    {
+      "label": "Parliament calendar (what is coming up)",
+      "succeeded": true
+    },
+    {
+      "label": "Committee reports and government replies",
+      "succeeded": true
     },
     {
       "label": "Full Fact pledge list",
