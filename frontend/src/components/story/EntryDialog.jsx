@@ -8,6 +8,7 @@ import { summariseBill, billSearchUrl } from "../../lib/billSummary";
 import { plainPoints } from "../../lib/billPlain";
 import { clock, dayLong, houseName } from "../../lib/upcoming";
 import EntryRows from "./EntryRows";
+import notes from "../../data/entryNotes.json";
 import "../../entries.css";
 
 // The panel a row opens: what the entry is and what it is for, in plain English, with its facts and a link to Parliament's page.
@@ -52,6 +53,35 @@ function Facts({ entry }) {
   if (entry.detail && entry.kind !== "bill") rows.push(["Detail", entry.detail]);
   if (!rows.length) return null;
   return <dl className="en-facts">{rows.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl>;
+}
+
+// Background from Parliament's own records (data/entryNotes.json, built by fetch-entry-notes.js): a committee's stated purpose, or the most recent earlier debate with a close title,
+// with the question that was put there in Parliament's own words. An entry with no close match has none, and the page says nothing about its subject in its own words.
+const keyOf = (t) => String(t ?? "").toLowerCase().replace(/&amp;/g, "and").replace(/[^a-z0-9]+/g, " ").trim();
+function RecordNote({ entry }) {
+  if (entry.past) return null;
+  if (entry.kind === "hearing") {
+    const n = notes.committees?.[keyOf(entry.title)];
+    if (!n) return null;
+    return (
+      <section>
+        <h3>About this committee</h3>
+        <p>{n.purpose}</p>
+        <p className="en-sub">In Parliament's own words. <a href={n.url} target="_blank" rel="noreferrer">The committee's page<span className="sr-only"> (opens in a new tab)</span></a></p>
+      </section>
+    );
+  }
+  if (!["debate", "questions", "statement"].includes(entry.kind)) return null;
+  const n = notes.debates?.[keyOf(entry.title)];
+  if (!n) return null;
+  return (
+    <section>
+      <h3>Earlier in Parliament</h3>
+      <p>The same subject came up in the {houseName(n.house[0])} on {new Date(`${n.date}T12:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })}, under the title “{n.title.trim()}”.</p>
+      {n.asked && <p>The question put then was: “{n.asked}”</p>}
+      <p className="en-sub">From Parliament's official record. <a href={n.url} target="_blank" rel="noreferrer">Read that debate in Hansard<span className="sr-only"> (opens in a new tab)</span></a></p>
+    </section>
+  );
 }
 
 function Stages({ stages }) {
@@ -111,6 +141,7 @@ export default function EntryDialog({ entry, depth, onOpen, onBack, onClose, ret
           <>
             <Facts entry={entry} />
             <section><h3>What this is</h3><p>{x.what}</p></section>
+            <RecordNote entry={entry} />
             {entry.kind === "bill" && <section><h3>What the bill proposes</h3><BillPurpose entry={entry} /></section>}
             {entry.stages && <section><h3>When it is due</h3><Stages stages={entry.stages} /></section>}
             {entry.dates && (

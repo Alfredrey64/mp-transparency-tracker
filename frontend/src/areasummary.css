@@ -10,7 +10,7 @@
 .as-donut b { font: 800 34px/1 "Figures", "Newsreader", Georgia, serif; }
 .as-donut span { font: 600 12.5px "Figures", "Public Sans", system-ui, sans-serif; opacity: 0.8; }
 .as-hero-text { flex: 1 1 160px; min-width: 0; }
-.as-hero-text h3 { margin: 0 0 6px; font: 700 24px/1.15 "Figures", "Newsreader", Georgia, serif; }
+.as-hero-text h2 { margin: 0 0 6px; font: 700 24px/1.15 "Figures", "Newsreader", Georgia, serif; }
 .as-hero-text p { margin: 0; font: 500 14.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; opacity: 0.95; }
 .as-hero-text .as-sub { margin-top: 4px; font-size: 13px; opacity: 0.72; }
 .as-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 12px; }

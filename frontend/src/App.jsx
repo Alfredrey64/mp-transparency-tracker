@@ -483,6 +483,16 @@ export default function App() {
     Promise.race([preloadPage(loader), gaveUp]).then(async () => {
       // A newer click has taken over: let that one win.
       if (id !== navId.current) return;
+      // Where the browser can take a picture of the page itself (document.startViewTransition), it does: the old page's picture fades out and the new one fades in, both moved
+      // by the graphics chip, so nothing is copied or redrawn on the page's own thread, and the old picture simply stays up for as long as the new page takes to draw. The
+      // header and the buttons fixed to the screen are kept out of the pictures (chrome.css), so they never move or fade.
+      if (typeof document.startViewTransition === "function") {
+        root.dataset.vt = "1";
+        const t = document.startViewTransition(() => { setNavState({ fetching: false }); flushSync(apply); });
+        const clear = () => { if (id === navId.current) delete root.dataset.vt; };
+        t.finished.then(clear, clear);
+        return;
+      }
       // With a copy of the old page, the new page is drawn underneath it and the copy is then wiped away from the top down: there is no dip to a blank or pale screen and
       // the two pages' words are never mixed. If a copy cannot be taken, the old page fades out first instead, and the new page fades in.
       const ghost = takeGhost();

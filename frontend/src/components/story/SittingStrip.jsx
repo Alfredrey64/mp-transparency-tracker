@@ -7,7 +7,8 @@ import { weeks, dayShort, dayLong, londonToday, mixByDay, KIND_GROUPS } from "..
 // as a solid bar for sitting, a hatched one for recess and an outline for a weekday the house is not sitting, always with the word as well. Press a day to see what is listed for
 // it. Drawn from data/parliamentCalendar.json.
 const DAY = ["Mon", "Tue", "Wed", "Thu", "Fri"];
-const WORD = { sitting: "Sitting", recess: "Recess", off: "Not sitting", weekend: "Weekend" };
+const say = (s) => (s === "off" ? "not sitting" : WORD[s].toLowerCase());
+const WORD = { sitting: "Sitting", recess: "Recess", off: "Off", weekend: "Weekend" };
 const month = (d) => dayLong(d).split(" ")[2];
 const dom = (d) => String(Number(d.slice(8)));
 
@@ -51,7 +52,7 @@ export default function SittingStrip({ data }) {
   return (
     <figure ref={ref} className="up-cal" data-go={go}>
       <p className="up-key" aria-hidden="true">
-        <span><i className="on" />Sitting</span><span><i className="recess" />Recess</span><span><i className="off" />Not sitting</span><span className="up-key-c"><i data-house="Commons" />Commons</span><span className="up-key-c"><i data-house="Lords" />Lords</span>
+        <span><i className="on" />Sitting</span><span><i className="recess" />Recess</span><span><i className="off" />Off (not sitting)</span><span className="up-key-c"><i data-house="Commons" />Commons</span><span className="up-key-c"><i data-house="Lords" />Lords</span>
       </p>
       <p className="up-key up-key-mix" aria-hidden="true">
         <b>What is listed on each day:</b>
@@ -68,7 +69,7 @@ export default function SittingStrip({ data }) {
             {w.days.map((d) => {
               const showMonth = starts.has(d.date);
               if (!d.inside) return <div key={d.date} role="cell" className="uc-cell" data-out="1"><span className="uc-date"><b>{dom(d.date)}</b></span><span className="sr-only">{dayLong(d.date)} is outside the dates shown</span></div>;
-              const label = `${dayLong(d.date)}${d.date === today ? ", today" : ""}. Commons: ${WORD[d.C].toLowerCase()}. Lords: ${WORD[d.L].toLowerCase()}. ${d.n ? `${d.n} ${d.n === 1 ? "item" : "items"} listed${mixText(mix.get(d.date))}.` : "Nothing listed yet."}`;
+              const label = `${dayLong(d.date)}${d.date === today ? ", today" : ""}. Commons: ${say(d.C)}. Lords: ${say(d.L)}. ${d.n ? `${d.n} ${d.n === 1 ? "item" : "items"} listed${mixText(mix.get(d.date))}.` : "Nothing listed yet."}`;
               return (
                 <div key={d.date} role="cell" className="uc-cell" data-today={d.date === today ? "1" : undefined}>
                   <button type="button" aria-haspopup="dialog" onClick={(ev) => open(dayEntry(data, d), ev.currentTarget)}>

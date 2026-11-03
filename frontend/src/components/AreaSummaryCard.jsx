@@ -51,7 +51,7 @@ export default function AreaSummaryCard({ summary, label, hint }) {
           <div><b><CountUp value={summary.seats} /></b><span>seats</span></div>
         </div>
         <div className="as-hero-text">
-          <h3>{label}</h3>
+          <h2>{label}</h2>
           <p>{parties[0] ? <><strong>{parties[0].party}</strong> hold {Math.round((parties[0].count / total) * 100)}% of the seats{parties[0].count >= majority ? ", a majority" : ""}.</> : "No seats to show."}</p>
           <p className="as-sub">{majority} seats are needed for a majority.</p>
         </div>

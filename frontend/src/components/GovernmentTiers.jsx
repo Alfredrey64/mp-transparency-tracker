@@ -1,4 +1,4 @@
-import { Fragment, useState, useReducer, useRef, useEffect, useMemo } from "react";
+import { Fragment, useState, useReducer, useRef, useEffect, useLayoutEffect, useMemo } from "react";
 import { m as motion, useInView, useReducedMotion } from "motion/react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, readable } from "../theme";
 import { IconParliament, IconCabinet, IconDevolved, IconTransport, IconCouncil, IconHome, IconGroup } from "./icons";
@@ -107,6 +107,35 @@ function Key({ hint }) {
       <span className="tier-hint"><i aria-hidden="true" />{hint}</span>
     </div>
   );
+}
+
+// The light that runs up the votes line, from you to the first tier you vote for. The line is drawn in pieces (one beside each band and each gap), so the light is one piece of
+// its own laid over all of them and measured from the bands, and it moves by transform alone, which keeps it smooth and unbroken whatever else the page is doing.
+function VoteRun() {
+  const ref = useRef(null);
+  const [run, setRun] = useState(null);
+  useLayoutEffect(() => {
+    const stack = ref.current?.parentElement;
+    if (!stack) return undefined;
+    const measure = () => {
+      const first = stack.querySelector('.tier-row[data-first="1"]');
+      const you = stack.querySelector(".tier-row[data-you]");
+      const lane = you?.querySelector(".tier-vl");
+      if (!first || !you || !lane) { setRun(null); return; }
+      const base = stack.getBoundingClientRect();
+      const mid = (el) => { const r = el.getBoundingClientRect(); return r.top + r.height / 2 - base.top; };
+      const l = lane.getBoundingClientRect();
+      const top = mid(first) - 1.5;
+      const h = Math.max(0, mid(you) - top);
+      const x = l.left + l.width / 2 - base.left - 1.5;
+      setRun((o) => (o && Math.abs(o.h - h) < 0.5 && Math.abs(o.top - top) < 0.5 && Math.abs(o.x - x) < 0.5 ? o : { x, top, h }));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(stack);
+    return () => ro.disconnect();
+  }, []);
+  return <span ref={ref} className="tier-run" aria-hidden="true" style={run ? { "--rx": `${run.x}px`, "--rt": `${run.top}px`, "--rh": `${run.h}px`, "--rd": `${((run.h + 64 + 330) / 280).toFixed(2)}s` } : { display: "none" }} />;
 }
 
 // One tier: a band, narrower than the one above because it covers a smaller area. The band is a button, and the green line beside it joins it to your vote.
@@ -403,7 +432,7 @@ export default function GovernmentTiers() {
         <div className="tier-grid">
           <div className="tier-diagram" ref={diaRef} data-in={seen || calm ? "1" : "0"} data-mode={action ? "action" : "explore"} data-vote={action && voting ? "1" : "0"}>
             <Key hint={action ? "Follow the marker down the tiers" : "Select any band to read about it"} />
-            <div className="tier-stack" style={{ "--n": MOST_TIERS }}>{rows}</div>
+            <div className="tier-stack" style={{ "--n": MOST_TIERS }}>{rows}<VoteRun /></div>
           </div>
 
           {action && (

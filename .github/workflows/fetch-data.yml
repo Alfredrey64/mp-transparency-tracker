@@ -302,6 +302,14 @@ jobs:
         continue-on-error: true
         run: node fetch-parliament-calendar.js
 
+      # Background for each calendar entry from Parliament's own records: a
+      # committee's stated purpose and the most recent earlier debate with a
+      # close title in Hansard (about 150 requests, a few minutes).
+      - name: Run the entry notes fetch script
+        id: fetch_entry_notes
+        continue-on-error: true
+        run: node fetch-entry-notes.js
+
       # Select committee reports from the last 12 months and the government's
       # replies, for the Committee reports and replies page (~5 requests).
       - name: Run the committee reports fetch script
@@ -316,13 +324,14 @@ jobs:
           echo "STATUS_fetch_lords_careers=${{ steps.fetch_lords_careers.outcome }}" >> status.env
           echo "STATUS_fetch_lords_votes=${{ steps.fetch_lords_votes.outcome }}" >> status.env
           echo "STATUS_fetch_parliament_calendar=${{ steps.fetch_parliament_calendar.outcome }}" >> status.env
+          echo "STATUS_fetch_entry_notes=${{ steps.fetch_entry_notes.outcome }}" >> status.env
           echo "STATUS_fetch_committee_reports=${{ steps.fetch_committee_reports.outcome }}" >> status.env
 
       - name: Save the outcomes and the files this job wrote
         if: always()
         run: |
           existing=""
-          for p in frontend/src/data/lordsCareers.json frontend/src/data/lordsCareerDetail frontend/src/data/lordsVotes.json frontend/src/data/parliamentCalendar.json frontend/src/data/committeeReports.json; do [ -e "$p" ] && existing="$existing $p"; done
+          for p in frontend/src/data/lordsCareers.json frontend/src/data/lordsCareerDetail frontend/src/data/lordsVotes.json frontend/src/data/parliamentCalendar.json frontend/src/data/entryNotes.json frontend/src/data/committeeReports.json; do [ -e "$p" ] && existing="$existing $p"; done
           tar -cf data.tar status.env $existing
 
       - name: Upload them for the last job
@@ -731,7 +740,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add frontend/src/data/constituencies.json frontend/src/data/constituencySummary.json frontend/src/data/constituencyHistory.json frontend/src/data/mpCareers.json frontend/src/data/careerDetail frontend/src/data/lordsCareers.json frontend/src/data/benchmarks.json frontend/src/data/representatives.json frontend/src/data/councilsIndex.json frontend/src/data/councilDetail frontend/src/data/ons frontend/src/data/regionalBreakdowns.json frontend/src/data/lordsCareerDetail frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json frontend/src/data/partyDonorSectors.json frontend/src/data/partyDonorSectorsMeta.json frontend/src/data/pipelineStatus.json frontend/src/data/lordsVotes.json frontend/src/data/parliamentCalendar.json frontend/src/data/committeeReports.json frontend/src/data/fullFactPledges.json frontend/public/data/councillors.json
+          git add frontend/src/data/constituencies.json frontend/src/data/constituencySummary.json frontend/src/data/constituencyHistory.json frontend/src/data/mpCareers.json frontend/src/data/careerDetail frontend/src/data/lordsCareers.json frontend/src/data/benchmarks.json frontend/src/data/representatives.json frontend/src/data/councilsIndex.json frontend/src/data/councilDetail frontend/src/data/ons frontend/src/data/regionalBreakdowns.json frontend/src/data/lordsCareerDetail frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json frontend/src/data/partyDonorSectors.json frontend/src/data/partyDonorSectorsMeta.json frontend/src/data/pipelineStatus.json frontend/src/data/lordsVotes.json frontend/src/data/parliamentCalendar.json frontend/src/data/entryNotes.json frontend/src/data/committeeReports.json frontend/src/data/fullFactPledges.json frontend/public/data/councillors.json
           git diff --staged --quiet || git commit -m "chore: daily data refresh"
           # Someone may have pushed while the crawl ran: sit this commit on top of theirs rather than being refused.
           git pull --rebase --autostash origin "$GITHUB_REF_NAME"
