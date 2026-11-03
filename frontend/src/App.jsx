@@ -7,6 +7,7 @@ import { supabase } from "./supabaseClient";
 import { COLORS, FONT_BODY } from "./theme";
 import SiteHeader from "./components/SiteHeader";
 import { setNavState, useNavState } from "./lib/navState";
+import { takeGhost } from "./lib/pageGhost";
 import { loadPageGuides } from "./lib/pageGuideData";
 import SiteFooter from "./components/SiteFooter";
 import BackToTop from "./components/BackToTop";
@@ -474,17 +475,20 @@ export default function App() {
     // The old page stays on screen while the new page's code and data arrive (the line under the header shows it is on its way), and only fades once they are here,
     // so a slow page never leaves a blank screen in between. A page that is already here fades at once.
     const gaveUp = new Promise((resolve) => setTimeout(resolve, 2500));
-    Promise.race([preloadPage(loader), gaveUp]).then(() => {
-      if (id !== navId.current) return;
-      root.dataset.leaving = "1";
-      return new Promise((resolve) => setTimeout(resolve, 60));
-    }).then(() => {
+    Promise.race([preloadPage(loader), gaveUp]).then(async () => {
       // A newer click has taken over: let that one win.
       if (id !== navId.current) return;
+      // The new page dissolves in over a copy of the old one, so there is no gap between them. If a copy cannot be taken, the old page fades out first instead.
+      const ghost = takeGhost();
+      if (!ghost) {
+        root.dataset.leaving = "1";
+        await new Promise((resolve) => setTimeout(resolve, 60));
+        if (id !== navId.current) return;
+      }
       setNavState({ fetching: false });
       flushSync(apply);
-      // The new page is in, and still transparent. It fades in once the browser has caught up with drawing it, so the fade never has to share a frame with that work.
-      afterSettled(() => { if (id === navId.current) delete root.dataset.leaving; });
+      // The new page is in. It is shown (under the copy, or still transparent) once the browser has caught up with drawing it, so the fade never has to share a frame with that work.
+      afterSettled(() => { if (ghost) ghost.fade(); else if (id === navId.current) delete root.dataset.leaving; });
     });
   }
 

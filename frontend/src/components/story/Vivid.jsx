@@ -86,12 +86,18 @@ export function Swap({ tiers, head = "What happens to each when the government c
           <li key={t.name} className="vv-tier" data-stays={t.stays ? "1" : "0"} style={{ "--tc": t.colour, "--i": i }}>
             <b className="vv-tier-name">{t.name}</b>
             <div className="vv-side vv-was">
-              <span className="vv-crowd" aria-hidden="true">{[0, 1, 2, 3].map((k) => <i key={k} style={{ "--k": k }} />)}</span>
+              <span className="vv-sidehead">
+                <span className="vv-crowd" aria-hidden="true">{[0, 1, 2, 3].map((k) => <i key={k} style={{ "--k": k }} />)}</span>
+                <span className="vv-tag" aria-hidden="true">In post</span>
+              </span>
               <span className="vv-say">{t.before}</span>
             </div>
             <i className="vv-mid" aria-hidden="true" />
             <div className="vv-side vv-now">
-              <span className="vv-crowd" aria-hidden="true">{[0, 1, 2, 3].map((k) => <i key={k} style={{ "--k": k }} />)}</span>
+              <span className="vv-sidehead">
+                <span className="vv-crowd" aria-hidden="true">{[0, 1, 2, 3].map((k) => <i key={k} style={{ "--k": k }} />)}</span>
+                <span className="vv-tag" aria-hidden="true">{t.stays ? "Still in post" : "New arrivals"}</span>
+              </span>
               <span className="vv-say">{t.after}</span>
             </div>
           </li>

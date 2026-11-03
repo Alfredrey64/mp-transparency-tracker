@@ -8,7 +8,24 @@ import "../../story.css";
 
 // The pictures and cards on the news regulation page (components/MediaLiteracy.jsx holds the words). Each plays once, when it scrolls into view.
 
+function LaneFacts({ facts }) {
+  return <dl className="na-facts">{facts.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl>;
+}
+
 // The one fact the page rests on, drawn: broadcasters work under a legal duty and newspapers do not. The rings and the pages move on their own, slowly.
+const LANE_FACTS = {
+  broadcast: [
+    ["The rule", "News must be reported with due accuracy and presented with due impartiality."],
+    ["Politicians", "They should not be used as newsreaders, interviewers or reporters unless there is a good editorial reason. If they are, their party must be made clear."],
+    ["\"Due\"", "It does not mean equal airtime for every view. It depends on the subject, the programme and what the audience expects."],
+  ],
+  print: [
+    ["Not Ofcom", "Ofcom's impartiality rules cover TV, radio and on-demand services, not newspapers."],
+    ["Voluntary regulation", "Most newspapers and magazines have chosen to join a press regulator and agreed to follow its Editors' Code of Practice."],
+    ["Print and online", "The Code applies to a paper's website as well as the printed page."],
+  ],
+};
+
 export function TwoLanes() {
   const [ref, go] = useGo(0.25);
   return (
@@ -18,12 +35,14 @@ export function TwoLanes() {
         <b>TV and radio news</b>
         <em>Must be impartial</em>
         <p>The BBC, ITV, Sky News, Channel 4 and GB News all follow Ofcom's Broadcasting Code. Public or private, licence fee or adverts, it makes no difference.</p>
+        <LaneFacts facts={LANE_FACTS.broadcast} />
       </div>
       <div className="na-lane" style={{ "--tc": "#9A3F55", "--i": 1 }}>
         <div className="na-art na-paper" aria-hidden="true"><i /><i /><i /></div>
         <b>Newspapers and news websites</b>
         <em>Free to take a side</em>
         <p>They can back a party at an election and run an openly one-sided front page. That is why a paper's lean is well known, and a broadcaster's legally should not be.</p>
+        <LaneFacts facts={LANE_FACTS.print} />
       </div>
     </figure>
   );

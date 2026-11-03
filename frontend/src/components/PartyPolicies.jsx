@@ -14,6 +14,8 @@ import Loading from "./Loading";
 import { partyWash, partyOutline } from "../lib/partyShade";
 import { useDialog } from "../lib/useDialog";
 import CountValue from "./CountValue";
+import { Chamber, Footprint, FootprintStrip } from "./story/ManifestoArt";
+import { useGo } from "./story/useGo";
 
 // The party-colour dot is the only element that shares a layoutId between
 // the grid card and the modal — like the CommonsBadge morph elsewhere in
@@ -37,11 +39,13 @@ function PartyDot({ layoutId, color, size = 10 }) {
 function useParties() {
   const [parties, setParties] = useState(null);
   const [failed, setFailed] = useState(false);
+  const [politicians, setPoliticians] = useState([]);
 
   useEffect(() => {
     async function load() {
       const { data, error } = await supabase.from("politicians").select("party, party_colour");
       setFailed(Boolean(error));
+      setPoliticians(data ?? []);
       const map = new Map();
       for (const p of data ?? []) {
         if (!p.party || !isTrackedParty(p.party)) continue;
@@ -60,11 +64,12 @@ function useParties() {
     load();
   }, []);
 
-  return { parties, failed };
+  return { parties, failed, politicians };
 }
 
 export default function PartyPolicies({ param }) {
-  const { parties, failed } = useParties();
+  const { parties, failed, politicians } = useParties();
+  const [gridRef, gridGo] = useGo(0.1);
   const [expandedName, setExpandedName] = useState(null);
 
   // The pop-up with a party's full list behaves as a dialog: focus moves in, Tab stays inside, Escape closes, focus returns to what opened it.
@@ -92,6 +97,15 @@ export default function PartyPolicies({ param }) {
         }
       />
 
+      {parties !== null && !failed && politicians.length > 0 && (
+        <Chamber
+          politicians={politicians}
+          onSelectParty={(name, e) => { const hit = parties.find((p) => findManifesto(p.name)?.key === findManifesto(name)?.key); if (hit) openParty(hit.name, e?.currentTarget); }}
+        />
+      )}
+
+      <Footprint />
+
       <PromiseExplorer initialQuestion={param} />
 
       <section aria-labelledby="h-each-party">
@@ -107,8 +121,8 @@ export default function PartyPolicies({ param }) {
           </div>
         ) : (
           <>
-            <div className="box-row" style={{ "--n": 3, "--min": "290px", "--gap": "20px", marginTop: 22 }}>
-              {parties.map((party) => {
+            <div ref={gridRef} data-go={gridGo} className="box-row party-card-grid" style={{ "--n": 3, "--min": "290px", "--gap": "20px", marginTop: 22 }}>
+              {parties.map((party, pi) => {
                 const manifesto = findManifesto(party.name);
                 const shown = manifesto ? manifesto.highlights.slice(0, 3) : [];
                 const more = manifesto ? manifesto.highlights.length - shown.length : 0;
@@ -117,7 +131,7 @@ export default function PartyPolicies({ param }) {
                     key={party.name}
                     className="party-card glow"
                     onClick={(e) => openParty(party.name, e.currentTarget)}
-                    style={{ "--p": party.color, borderColor: `color-mix(in srgb, ${party.color} 40%, ${COLORS.hairline})` }}
+                    style={{ "--p": party.color, "--i": pi, borderColor: `color-mix(in srgb, ${party.color} 40%, ${COLORS.hairline})` }}
                   >
                     <PartyBand party={party} manifesto={manifesto} dotLayoutId={`party-dot-${party.name}`} />
                     <div className="party-card-body">
@@ -133,6 +147,7 @@ export default function PartyPolicies({ param }) {
                         </div>
                       )}
                       <div style={{ flex: 1 }} />
+                      {manifesto && <FootprintStrip partyKey={manifesto.key} />}
                       {more > 0 && <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: COLORS.inkSoft, margin: "16px 0 0" }}>and {more} more headline {more === 1 ? "promise" : "promises"}</div>}
                       <button
                         type="button"

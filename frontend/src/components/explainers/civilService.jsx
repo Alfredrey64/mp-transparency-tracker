@@ -50,9 +50,9 @@ const PAGE = {
       colour: "#5E4B8B",
       blocks: [
         { node: <Swap tiers={[
-          { name: "Ministers", colour: "#E59AA6", before: "Chosen by the Prime Minister", after: "A new set, chosen by the new Prime Minister" },
+          { name: "Ministers", colour: "#B04A63", before: "Chosen by the Prime Minister", after: "A new set, chosen by the new Prime Minister" },
           { name: "Special advisers", colour: "#A9701F", before: "Chosen by a minister", after: "A new set, chosen by the new ministers" },
-          { name: "Civil servants", colour: "#8DB7E8", before: "Appointed on merit", after: "Still there, serving the new ministers", stays: true },
+          { name: "Civil servants", colour: "#2C6FB0", before: "Appointed on merit", after: "Still there, serving the new ministers", stays: true },
         ]} /> },
         { compare: [
           { title: "Ministers", colour: "#9A3F55", items: [

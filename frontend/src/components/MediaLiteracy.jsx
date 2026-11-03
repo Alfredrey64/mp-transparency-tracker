@@ -233,7 +233,11 @@ const PAGE = {
       ] }],
     },
   ],
-  sources: [],
+  sources: [
+    { label: "Ofcom: Section Five, due impartiality and due accuracy", url: "https://www.ofcom.org.uk/tv-radio-and-on-demand/broadcast-standards/section-five-due-impartiality-accuracy", note: "Rule 5.1 on news, the correction of mistakes, politicians as newsreaders and what \"due\" means. The rules cover TV, radio and on-demand services." },
+    { label: "Alliance of Independent Press Councils of Europe: IPSO", url: "https://www.presscouncils.eu/ethical-codes-database/uk_ipso/", note: "Describes press regulation as voluntary, covering newspapers and magazines that have agreed to follow the Editors' Code of Practice, in print and online." },
+  ],
+  checked: "3 November 2026",
 };
 
 export default function MediaLiteracy() {

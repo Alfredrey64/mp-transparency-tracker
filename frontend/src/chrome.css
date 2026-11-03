@@ -732,6 +732,11 @@ html[data-leaving] .mp-app-shell { transition: none; }
 #main-content { transition: opacity 0.17s var(--ease-out); }
 /* The page dips rather than going blank, so there is no flash of empty background between two pages. */
 html[data-leaving] #main-content { opacity: 0; transition-duration: 0.06s; transition-timing-function: ease-in; }
+/* The copy of the page being left (lib/pageGhost.js): it covers the screen under the header while the new page, already in place, shows through as it fades. */
+.page-ghost { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; overflow: hidden; pointer-events: none; background: var(--c-paper); }
+.page-ghost-inner { position: absolute; }
+.page-ghost *, .page-ghost *::before, .page-ghost *::after { animation: none !important; transition: none !important; }
+.page-ghost :is(.ons-toolbar, .ma-jump, .tl-nav, .cr-sticky, .billroute-caption, .tier-panel, .hub-map, .mm-side, .lm-cap) { visibility: hidden; }
 /* While a whole page is still loading, what sits under it (the footer, "More in this section", the page's foot) waits and then fades in, so it is never seen sliding
    down the screen as the figures arrive. */
 .site-footer { animation: foot-in 0.3s var(--ease-out) backwards; }
