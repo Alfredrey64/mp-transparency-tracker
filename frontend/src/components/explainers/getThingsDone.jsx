@@ -1,19 +1,30 @@
 /** @jsxImportSource react */
 import ExplainerPage from "../story/ExplainerPage";
 import { IconSignpost } from "../newIcons";
+import { IconDoor, IconScales, IconCalendar } from "../icons";
+import { Hero } from "../story/Vivid";
 
 const PAGE = {
-  look: "poster",
+  look: "vivid",
+  narrow: true,
   icon: IconSignpost,
   kicker: "Rules and rights",
   title: "How to get something done",
   subtitle: "A practical guide to who to contact when something is wrong: a council service, the NHS, a government department, the police. It also explains how to ask a public body for information, and what to do when the first answer is no.",
-  tiles: [
-    { label: "To complain to the council ombudsman", value: "12 months", colour: "#6FB1FF", sub: "the usual time limit from when you first knew about the problem" },
-    { label: "A public body should answer an information request in", value: "20 days", colour: "#FFB45E", sub: "working days, usually" },
-    { label: "To complain to the ICO after a refusal", value: "6 weeks", colour: "#7ED6A4", sub: "from the response or your last contact with the body" },
-  ],
-  why: { colour: "#1F6F5C", text: "Most problems with public services are settled by the body that caused them, if you go to the right place in the right order. Almost every route has a time limit, and skipping a step can mean being sent back to the start." },
+  lead: <Hero
+    colours={["#0F3B33", "#1F6F5C", "#2C7DA0"]}
+    why="Most problems with public services are settled by the body that caused them, if you go to the right place in the right order. Almost every route has a time limit, and skipping a step can mean being sent back to the start."
+    stops={[
+      { icon: IconDoor, title: "Go to the body first", text: "The service that runs it gets the first chance", colour: "#8FD1A8" },
+      { icon: IconScales, title: "Then the ombudsman or regulator", text: "Free, and independent of the body", colour: "#8DB7E8" },
+      { icon: IconCalendar, title: "Watch the time limits", text: "Skipping a step can send you back", colour: "#F0C77A" },
+    ]}
+    figures={[
+      { value: "12 months", label: "To complain to the council ombudsman", sub: "the usual time limit from when you first knew about the problem" },
+      { value: "20 days", label: "A public body should answer an information request in", sub: "working days, usually" },
+      { value: "6 weeks", label: "To complain to the ICO after a refusal", sub: "from the response or your last contact with the body" },
+    ]}
+  />,
   chapters: [
     {
       title: "Start with the right person",
@@ -44,7 +55,7 @@ const PAGE = {
       lede: "The Local Government and Social Care Ombudsman looks at complaints about councils in England once the council has had its chance to put things right.",
       colour: "#B45A3C",
       blocks: [
-        { steps: [
+        { route: true, steps: [
           { title: "Complain to the council service", text: "Tell the service that did the thing. Say what happened and what you want." },
           { title: "Then the complaints officer", text: "If you are still unhappy, go to the council's complaints officer." },
           { title: "Then the Ombudsman", text: "You can ask the Local Government and Social Care Ombudsman to look at it. It is free." },
@@ -61,7 +72,7 @@ const PAGE = {
       lede: "The Parliamentary and Health Service Ombudsman looks at complaints about the NHS in England and about UK government departments. It expects you to go to the organisation first.",
       colour: "#2C7DA0",
       blocks: [
-        { steps: [
+        { route: true, steps: [
           { title: "Complain to the organisation", text: "The hospital, GP practice or department should get the chance to look into your concerns first." },
           { title: "For the NHS, go to the Ombudsman or your MP", text: "You can complain to the Ombudsman directly, or ask your MP to pass the complaint on." },
           { title: "For a government department, ask your MP", text: "An MP has to refer the complaint. You can fill in the Ombudsman's form and ask your MP or their office to sign it." },
@@ -87,7 +98,7 @@ const PAGE = {
       lede: "You have the right to ask a public body for recorded information it holds, under the Freedom of Information Act. You do not have to say which law you are using.",
       colour: "#C88A1E",
       blocks: [
-        { steps: [
+        { route: "down", steps: [
           { title: "Check it is not already public", text: "Look at the body's website, its disclosure log and WhatDoTheyKnow first." },
           { title: "Write a clear, simple request", text: "Ask for specific recorded information. Numbered points help. If the body asks you to clarify, the clock does not start until you do." },
           { title: "Wait up to 20 working days", text: "Public bodies usually need to reply within 20 working days. They can extend to weigh the public interest, but must tell you within the first 20 days." },

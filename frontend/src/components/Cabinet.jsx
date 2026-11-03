@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { m as motion, AnimatePresence } from "motion/react";
+import ExpandGrid from "./ExpandGrid";
+import { m as motion } from "motion/react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable, chip } from "../theme";
 import { partyColour, formatDate, stripHtml } from "../lib/format";
@@ -213,25 +214,21 @@ function Avatar({ url, name, color, size = 64 }) {
   );
 }
 
-function CabinetCard({ member, area, index, onViewProfile, boss }) {
-  const [open, setOpen] = useState(false);
+// A minister as a card. Pressing it opens the details as a panel under the row of cards (see CabinetPanel and ExpandGrid), so no card grows beside shorter ones.
+function CabinetCard({ member, index, onToggle, open, panelId, boss }) {
   const color = partyColour(member.party_colour, COLORS.inkSoft);
-  const bio = stripHtml(member.biography);
-  const roleText = roleDescriptionFor(member.cabinet_role, area);
-
   return (
     <motion.div
-      layout="position"
       initial={{ opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       whileHover={{ borderColor: color, transition: { duration: 0.15, delay: 0 } }}
       transition={{ duration: 0.32, delay: Math.min(index ?? 0, 8) * 0.03, ease: "easeOut" }}
       style={{
-        background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 3px 0 ${color}`, borderRadius: 14, padding: 20,
+        background: COLORS.paperCard, border: `1px solid ${open ? color : COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 3px 0 ${color}${open ? `, 0 0 0 3px ${color}33` : ""}`, borderRadius: 14, padding: 20,
       }}
     >
-      <button onClick={() => withScrollPreserved(() => setOpen((v) => !v))} style={{ display: "block", width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" }}>
+      <button onClick={() => withScrollPreserved(onToggle)} aria-expanded={open} aria-controls={panelId} style={{ display: "block", width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" }}>
         <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
           <Avatar url={member.thumbnail_url} name={member.name} color={color} />
           <div style={{ minWidth: 0, flex: 1 }}>
@@ -256,40 +253,43 @@ function CabinetCard({ member, area, index, onViewProfile, boss }) {
           <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ flexShrink: 0, color: COLORS.inkSoft, fontSize: 13, marginTop: 4 }}>▾</motion.span>
         </div>
       </button>
-
-      <AnimatePresence>
-        {open && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.22 }} style={{ overflow: "hidden" }}>
-            <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${COLORS.hairline}` }}>
-              {roleText && (
-                <div style={{ background: `${color}0d`, border: `1px solid ${color}33`, borderRadius: 10, padding: "10px 13px", marginBottom: 14 }}>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: readable(color), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>
-                    What this role does
-                  </div>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.55 }}>{roleText}</div>
-                </div>
-              )}
-              <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
-                Biography
-              </div>
-              {bio ? (
-                <div style={{ fontFamily: FONT_DISPLAY, fontSize: 14, color: COLORS.ink, lineHeight: 1.6, marginBottom: 14 }}>{bio}</div>
-              ) : (
-                <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginBottom: 14 }}>No official biography published for this MP yet.</div>
-              )}
-              {onViewProfile && (
-                <button
-                  onClick={() => onViewProfile(member)}
-                  style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12.5, color: readable(color), background: "none", border: "none", padding: 0, cursor: "pointer" }}
-                >
-                  View full MP profile, donations, votes & more
-                </button>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </motion.div>
+  );
+}
+
+// What opens under the row when a minister is pressed: what their role does, their biography and a link to their profile.
+function CabinetPanel({ member, area, onViewProfile }) {
+  const color = partyColour(member.party_colour, COLORS.inkSoft);
+  const bio = stripHtml(member.biography);
+  const roleText = roleDescriptionFor(member.cabinet_role, area);
+  return (
+    <div style={{ border: `1px solid ${color}`, borderRadius: 14, background: `color-mix(in srgb, ${color} 5%, ${COLORS.paperCard})`, boxShadow: `inset 0 4px 0 ${color}`, padding: "20px 22px 18px" }}>
+      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, fontWeight: 700, color: COLORS.ink, marginBottom: 12, lineHeight: 1.25 }}>{member.name}, {member.cabinet_role}</div>
+      {roleText && (
+        <div style={{ background: `${color}0d`, border: `1px solid ${color}33`, borderRadius: 10, padding: "10px 13px", marginBottom: 14 }}>
+          <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: readable(color), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>
+            What this role does
+          </div>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.55 }}>{roleText}</div>
+        </div>
+      )}
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+        Biography
+      </div>
+      {bio ? (
+        <div style={{ fontFamily: FONT_DISPLAY, fontSize: 14, color: COLORS.ink, lineHeight: 1.6, marginBottom: 14 }}>{bio}</div>
+      ) : (
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginBottom: 14 }}>No official biography published for this MP yet.</div>
+      )}
+      {onViewProfile && (
+        <button
+          onClick={() => onViewProfile(member)}
+          style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12.5, color: readable(color), background: "none", border: "none", padding: 0, cursor: "pointer" }}
+        >
+          View full MP profile, donations, votes & more
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -513,12 +513,17 @@ export default function Cabinet({ onViewProfile }) {
                 {AREA_DESCRIPTIONS[g.area]}
               </div>
             )}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(320px, 100%), 1fr))", gap: 14 }}>
-              {[...g.members].sort((x, y) => rankOf(x.cabinet_role) - rankOf(y.cabinet_role)).map((m, mi) => {
+            <ExpandGrid
+              items={[...g.members].sort((x, y) => rankOf(x.cabinet_role) - rankOf(y.cabinet_role))}
+              itemKey={(m) => m.id}
+              min={320}
+              label={(m) => `${m.name}: role and biography`}
+              card={(m, { open, toggle, index, panelId }) => {
                 const head = chartGroups.find((c) => c.area === g.area)?.head;
-                return <CabinetCard key={m.id} member={m} area={g.area} index={mi} onViewProfile={onViewProfile} boss={head && head !== m && rankOf(m.cabinet_role) > 1 ? head : null} />;
-              })}
-            </div>
+                return <CabinetCard key={m.id} member={m} index={index} open={open} onToggle={toggle} panelId={panelId} boss={head && head !== m && rankOf(m.cabinet_role) > 1 ? head : null} />;
+              }}
+              panel={(m) => <CabinetPanel member={m} area={g.area} onViewProfile={onViewProfile} />}
+            />
           </div>
         );
       })}

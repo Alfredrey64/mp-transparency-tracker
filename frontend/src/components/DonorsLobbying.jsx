@@ -14,6 +14,7 @@ import { GlossaryTerm } from "./GlossaryTerm";
 import { IconInfluence } from "./icons";
 import SectorIcon from "./SectorIcon";
 import "../donors.css";
+import ExpandGrid from "./ExpandGrid";
 import { CompanyDonorsView } from "./CompanyDonorsView";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { fetchAllRows } from "../lib/supabasePagination";
@@ -32,18 +33,8 @@ const NOT_A_REAL_DONOR = /^(agreement( starting.*)?|payment received.*|undisclos
 export default function DonorsLobbying() {
   const [rows, setRows] = useState(null);
   const [failed, setFailed] = useState(false);
-  const [expandedSectors, setExpandedSectors] = useState(() => new Set());
   const [expandedDonor, setExpandedDonor] = useState(null);
   const [view, setView] = useState("byDonor");
-
-  function toggleSector(sector) {
-    setExpandedSectors((prev) => {
-      const next = new Set(prev);
-      if (next.has(sector)) next.delete(sector);
-      else next.add(sector);
-      return next;
-    });
-  }
 
   useEffect(() => {
     async function load() {
@@ -364,12 +355,17 @@ export default function DonorsLobbying() {
         </p>
       </div>
 
-      <div className="dn-grid">
-        {stats.sectorLeaderboards.map((s) => {
-          const isOpen = expandedSectors.has(s.sector);
+      <ExpandGrid
+        className="dn-grid"
+        items={stats.sectorLeaderboards}
+        itemKey={(s) => s.sector}
+        min={370}
+        gap={16}
+        label={(s) => `${s.sector}: every declared donation`}
+        card={(s, { open, toggle, panelId }) => {
           const lead = s.topMps[0]?.total || 1;
           return (
-            <article key={s.sector} className="dn-card" data-open={isOpen ? "1" : "0"} style={{ "--sc": s.color }}>
+            <article key={s.sector} className="dn-card" data-open={open ? "1" : "0"} style={{ "--sc": s.color }}>
               <header className="dn-card-head">
                 <span className="dn-card-ico" aria-hidden="true"><SectorIcon sector={s.sector} size={26} /></span>
                 <div>
@@ -386,25 +382,28 @@ export default function DonorsLobbying() {
                   </li>
                 ))}
               </ol>
-              <button type="button" className="dn-more" aria-expanded={isOpen} onClick={() => toggleSector(s.sector)}>
-                <span aria-hidden="true">{isOpen ? "▾" : "▸"}</span>
-                {isOpen ? "Hide the full list" : `See all ${s.allDonations.length} donations`}
+              <button type="button" className="dn-more" aria-expanded={open} aria-controls={panelId} onClick={toggle}>
+                <span aria-hidden="true">{open ? "▾" : "▸"}</span>
+                {open ? "Hide the full list" : `See all ${s.allDonations.length} donations`}
               </button>
-              {isOpen && (
-                <div className="dn-all">
-                  {s.allDonations.slice(0, 40).map((don, di) => (
-                    <div key={di} className="dn-row" style={{ "--pc": don.partyColor }}>
-                      <span><i />{don.donor} to {don.mpName}</span>
-                      <b>£{Math.round(don.amount).toLocaleString()}</b>
-                    </div>
-                  ))}
-                  {s.allDonations.length > 40 && <div className="dn-row"><span>+{s.allDonations.length - 40} more not shown</span></div>}
-                </div>
-              )}
             </article>
           );
-        })}
-      </div>
+        }}
+        panel={(s) => (
+          <div className="dn-card dn-panel" style={{ "--sc": s.color }}>
+            <h3 className="dn-panel-title">{s.sector}: every declared donation</h3>
+            <div className="dn-all">
+              {s.allDonations.slice(0, 40).map((don, di) => (
+                <div key={di} className="dn-row" style={{ "--pc": don.partyColor }}>
+                  <span><i />{don.donor} to {don.mpName}</span>
+                  <b>£{Math.round(don.amount).toLocaleString()}</b>
+                </div>
+              ))}
+              {s.allDonations.length > 40 && <div className="dn-row"><span>+{s.allDonations.length - 40} more not shown</span></div>}
+            </div>
+          </div>
+        )}
+      />
         </motion.div>
       )}
       </AnimatePresence>

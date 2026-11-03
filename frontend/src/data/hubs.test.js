@@ -22,7 +22,8 @@ describe("page groups in the menus", () => {
   it("opens a group at its first page, and leaves other pages alone", () => {
     expect(hubLead("rebels")).toBe("voting");
     expect(hubLead("voting")).toBe("voting");
-    expect(hubLead("petitions")).toBe("petitions");
+    expect(hubLead("tracker")).toBe("tracker");
+    expect(hubLead("petitions")).toBe("getThingsDone");
     expect(HUB_BY_PAGE.get("councillors").label).toBe("Your council");
   });
   it("shows each group once in the menu, under the group's name", () => {

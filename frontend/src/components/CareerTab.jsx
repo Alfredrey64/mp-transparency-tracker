@@ -44,7 +44,7 @@ function Swimlanes({ detail, now }) {
           <span />
           <div style={{ position: "relative", height: 18 }}>
             {ticks.map((t) => (
-              <span key={t.year} style={{ position: "absolute", left: pos(t.at), transform: "translateX(-50%)", ...numeric, fontSize: 11, color: COLORS.inkSoft }}>{t.year}</span>
+              <span key={t.year} className="cl-tick" style={{ position: "absolute", left: pos(t.at), transform: "translateX(-50%)", ...numeric, fontSize: 11, color: COLORS.inkSoft }}>{t.year}</span>
             ))}
           </div>
         </div>
@@ -54,7 +54,7 @@ function Swimlanes({ detail, now }) {
             <div className="cl-lane" style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: COLORS.inkSoft, paddingTop: 3, position: "sticky", left: 0, background: COLORS.paperCard, zIndex: 2, animationDelay: `${li * 70}ms` }}>{lane.label}</div>
             <div style={{ position: "relative", height: lane.rows * ROW }}>
               {ticks.map((t) => (
-                <span key={t.year} aria-hidden="true" style={{ position: "absolute", left: pos(t.at), top: 0, bottom: 0, borderLeft: `1px solid ${COLORS.hairline}`, opacity: 0.55 }} />
+                <span key={t.year} aria-hidden="true" className="cl-grid" style={{ position: "absolute", left: pos(t.at), top: 0, bottom: 0, borderLeft: `1px solid ${COLORS.hairline}`, opacity: 0.55 }} />
               ))}
               {lane.items.map((item, i) => {
                 const colour = lane.key === "party" ? partyColourByName(item.label) : lane.key === "seat" ? (i % 2 ? "#6D64E8" : "#1E4FB8") : LANE_COLOURS[lane.key];
@@ -86,7 +86,7 @@ function Swimlanes({ detail, now }) {
             <div style={{ position: "relative", height: 18 }}>
               {lost.map(([seat, date]) => (
                 <span
-                  key={`${seat}-${date}`}
+                  key={`${seat}-${date}`} className="cl-lost"
                   title={`Stood for ${seat} and lost, ${monthYear(date)}`}
                   style={{ position: "absolute", left: pos(ms(date)), top: 3, width: 11, height: 11, marginLeft: -5, background: "#C2415D", transform: "rotate(45deg)", borderRadius: 2 }}
                 />
@@ -223,15 +223,19 @@ export default function CareerTab({ politician, house = "commons" }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-      <section>
-        <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, margin: "0 0 8px" }}>Career so far</h2>
-        {story.map((line) => (
-          <p key={line} style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.65, color: COLORS.ink, margin: "0 0 4px", maxWidth: 720 }}>{line}</p>
-        ))}
-        {!hasAnything && <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Parliament's record holds no dated career entries for this MP.</p>}
-      </section>
+      {/* A peer's page goes straight to the chart: the figures and sentences of "Career so far" are shown for MPs only. */}
+      {house !== "lords" && (
+        <section>
+          <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 21, color: COLORS.ink, margin: "0 0 8px" }}>Career so far</h2>
+          {story.map((line) => (
+            <p key={line} style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.65, color: COLORS.ink, margin: "0 0 4px", maxWidth: 720 }}>{line}</p>
+          ))}
+          {!hasAnything && <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Parliament's record holds no dated career entries for this MP.</p>}
+        </section>
+      )}
+      {house === "lords" && !hasAnything && <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, margin: 0 }}>Parliament's record holds no dated career entries for this peer.</p>}
 
-      {hasAnything && summary && <CareerGlance summary={summary} now={now} />}
+      {hasAnything && summary && house !== "lords" && <CareerGlance summary={summary} now={now} />}
 
       {hasAnything && house !== "lords" && summary?.firstElected && (
         <div style={{ marginTop: -12 }}>

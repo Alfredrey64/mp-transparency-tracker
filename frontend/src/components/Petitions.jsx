@@ -1,6 +1,6 @@
 /** @jsxImportSource react */
 import { useState, useEffect, useMemo } from "react";
-import { m as motion, AnimatePresence } from "motion/react";
+import { m as motion } from "motion/react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
@@ -11,6 +11,7 @@ import { Segmented } from "./DeprivationControls";
 import "../petitions.css";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import Loading from "./Loading";
+import ExpandGrid from "./ExpandGrid";
 
 function formatDate(dateStr) {
   if (!dateStr) return null;
@@ -61,10 +62,9 @@ function Ladder({ count }) {
   );
 }
 
-function PetitionRow({ petition, rank, isOpen, onToggle }) {
+function PetitionRow({ petition, rank, isOpen, onToggle, panelId }) {
   const st = statusOf(petition);
   const isOpenState = petition.state === "open";
-  const panelId = `pet-${petition.id}`;
   return (
     <article
       className="pet-card" data-open={isOpen ? "1" : "0"} style={{ "--pc": st.colour }}
@@ -82,39 +82,42 @@ function PetitionRow({ petition, rank, isOpen, onToggle }) {
         <span className="pet-sigs"><b>{petition.signature_count.toLocaleString("en-GB")}</b><span>signatures</span></span>
         <motion.span aria-hidden="true" className="pet-chev" animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>▾</motion.span>
       </button>
+    </article>
+  );
+}
 
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div id={panelId} initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.22 }} style={{ overflow: "hidden" }}>
-            <div className="pet-more">
-              {petition.background && <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.65 }}>{petition.background}</div>}
+// What opens under the row of petitions when one is pressed: the background, the thresholds, any government response or debate, and a link to the petition.
+function PetitionDetails({ petition }) {
+  const st = statusOf(petition);
+  const isOpenState = petition.state === "open";
+  return (
+    <article className="pet-card pet-panel" style={{ "--pc": st.colour }}>
+  <div className="pet-more">
+    {petition.background && <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.65 }}>{petition.background}</div>}
 
-              {isOpenState && (
-                <div>
-                  <SignatureBar count={petition.signature_count} threshold={10000} label="Threshold for a government response" color="#1FA97C" />
-                  <SignatureBar count={petition.signature_count} threshold={100000} label="Threshold for a Commons debate" color="#7A5AF0" />
-                </div>
-              )}
+    {isOpenState && (
+      <div>
+        <SignatureBar count={petition.signature_count} threshold={10000} label="Threshold for a government response" color="#1FA97C" />
+        <SignatureBar count={petition.signature_count} threshold={100000} label="Threshold for a Commons debate" color="#7A5AF0" />
+      </div>
+    )}
 
-              {petition.government_response_summary && (
-                <div className="pet-note" style={{ "--nc": "#1FA97C" }}>
-                  <b>Government response{petition.government_responded_at ? `, ${formatDate(petition.government_responded_at)}` : ""}</b>
-                  <p>{petition.government_response_summary}</p>
-                </div>
-              )}
+    {petition.government_response_summary && (
+      <div className="pet-note" style={{ "--nc": "#1FA97C" }}>
+        <b>Government response{petition.government_responded_at ? `, ${formatDate(petition.government_responded_at)}` : ""}</b>
+        <p>{petition.government_response_summary}</p>
+      </div>
+    )}
 
-              {(petition.debate_outcome_summary || petition.debate_scheduled_on) && (
-                <div className="pet-note" style={{ "--nc": "#7A5AF0" }}>
-                  <b>{petition.debate_outcome_summary ? "Commons debate" : "Debate scheduled"}</b>
-                  <p>{petition.debate_outcome_summary || `Scheduled for ${formatDate(petition.debate_scheduled_on)}`}</p>
-                </div>
-              )}
+    {(petition.debate_outcome_summary || petition.debate_scheduled_on) && (
+      <div className="pet-note" style={{ "--nc": "#7A5AF0" }}>
+        <b>{petition.debate_outcome_summary ? "Commons debate" : "Debate scheduled"}</b>
+        <p>{petition.debate_outcome_summary || `Scheduled for ${formatDate(petition.debate_scheduled_on)}`}</p>
+      </div>
+    )}
 
-              <a className="pet-link" href={petition.url} target="_blank" rel="noreferrer">View the full petition on petitions.parliament.uk ↗</a>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+    <a className="pet-link" href={petition.url} target="_blank" rel="noreferrer">View the full petition on petitions.parliament.uk ↗</a>
+  </div>
     </article>
   );
 }
@@ -125,7 +128,6 @@ export default function Petitions() {
   const [petitions, setPetitions] = useState(null);
   const [failed, setFailed] = useState(false);
   const [filter, setFilter] = useState("open");
-  const [openId, setOpenId] = useState(null);
   const [shown, setShown] = useState(PAGE);
 
   useEffect(() => {
@@ -185,7 +187,7 @@ export default function Petitions() {
       <div style={{ margin: "22px 0 18px" }}>
         <Segmented
           label="Which petitions" value={filter} accent="#E0367A"
-          onChange={(k) => withScrollPreserved(() => { setFilter(k); setShown(PAGE); setOpenId(null); })}
+          onChange={(k) => withScrollPreserved(() => { setFilter(k); setShown(PAGE); })}
           options={FILTERS.map((f) => ({ id: f.key, label: f.label, short: f.short }))}
         />
       </div>
@@ -196,11 +198,14 @@ export default function Petitions() {
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, padding: "20px 0" }}>No petitions match this filter right now.</div>
       )}
 
-      <div className="pet-list">
-        {filtered.slice(0, shown).map((p, i) => (
-          <PetitionRow key={p.id} petition={p} rank={i + 1} isOpen={openId === p.id} onToggle={() => withScrollPreserved(() => setOpenId(openId === p.id ? null : p.id))} />
-        ))}
-      </div>
+      <ExpandGrid
+        items={filtered.slice(0, shown)}
+        itemKey={(p) => p.id}
+        min={460}
+        label={(p) => `${p.action}: details`}
+        card={(p, { open, toggle, index, panelId }) => <PetitionRow key={p.id} petition={p} rank={index + 1} isOpen={open} panelId={panelId} onToggle={() => withScrollPreserved(toggle)} />}
+        panel={(p) => <PetitionDetails petition={p} />}
+      />
       {filtered.length > shown && (
         <div style={{ textAlign: "center", marginTop: 20 }}>
           <button type="button" className="btn btn-secondary btn-lg" onClick={() => withScrollPreserved(() => setShown((n) => n + PAGE))}>

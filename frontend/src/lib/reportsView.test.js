@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { statusOf, summary, byCommittee, overdue, recentReplies } from "./reportsView";
+import { statusOf, summary, byCommittee, overdue, recentReplies, describe as explain, browse } from "./reportsView";
 
 const r = (id, committee, date, due, replies = []) => ({ id, committee, date, due, replies: replies.map((d, i) => ({ id: id * 10 + i, date: d })), title: `T${id}`, number: "", url: "u" });
 const data = {
@@ -44,5 +44,31 @@ describe("the lists", () => {
     const n = recentReplies(data);
     expect(n.map((x) => x.id)).toEqual([2, 1]);
     expect(n[0].took).toBe(92);
+  });
+});
+
+describe("explain (a report in plain words)", () => {
+  it("says an answered report was on time or late, and by how much", () => {
+    expect(explain(data.reports[0], "2026-11-02")).toMatchObject({ status: "ontime", label: "Answered on time" });
+    const late = explain(data.reports[1], "2026-11-02");
+    expect(late).toMatchObject({ status: "late", label: "Answered 31 days late" });
+    expect(late.replyAt).toBe(100);
+    expect(late.todayAt).toBeNull();
+  });
+  it("counts the days left, or the days overdue, for a report with no reply", () => {
+    expect(explain(data.reports[4], "2026-11-02").label).toBe("Reply due in 58 days");
+    const over = explain(data.reports[2], "2026-11-02");
+    expect(over.label).toBe("93 days overdue");
+    expect(over.todayAt).toBe(100);
+    expect(over.dueAt).toBeLessThan(100);
+  });
+});
+
+describe("browse", () => {
+  it("filters by status and by words in the title, committee or inquiry", () => {
+    expect(browse(data, { filter: "overdue" }).map((x) => x.id)).toEqual([3, 4]);
+    expect(browse(data, { filter: "answered" }).map((x) => x.id).sort()).toEqual([1, 2]);
+    expect(browse(data, { query: "b committee" }).map((x) => x.id)).toEqual([3, 4]);
+    expect(browse(data, {})[0].id).toBe(5);
   });
 });

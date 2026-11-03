@@ -38,15 +38,15 @@
 .be[data-go="1"] .be-moves li { opacity: 1; transform: none; }
 .be-party { display: inline-flex; align-items: center; gap: 7px; padding: 4px 11px 4px 9px; border-radius: 999px; background: color-mix(in srgb, var(--tc) 14%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--tc) 40%, transparent); font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .be-party::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--tc); }
-.be-arrow { position: relative; display: block; width: 46px; height: 14px; overflow: hidden; flex-shrink: 0; }
+.be-arrow { position: relative; display: block; width: 46px; height: 14px; overflow: visible; flex-shrink: 0; }
 .be-arrow::before { content: ""; position: absolute; left: 0; right: 7px; top: 6px; height: 2px; border-radius: 2px; background: var(--c-ink-soft); opacity: 0.55; }
-.be-arrow i { position: absolute; right: 0; top: 2px; width: 9px; height: 9px; border-top: 2px solid var(--c-ink-soft); border-right: 2px solid var(--c-ink-soft); transform: rotate(45deg); transform-origin: 70% 30%; opacity: 0.8; }
+.be-arrow i { position: absolute; right: 0; top: 0; width: 14px; height: 14px; background: var(--c-ink-soft); -webkit-mask: var(--chev) center / contain no-repeat; mask: var(--chev) center / contain no-repeat; opacity: 0.85; }
 .be-count { font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .be-moves small { flex-basis: 100%; font: 400 12.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 @media (prefers-reduced-motion: no-preference) {
   .be[data-go="1"] .be-arrow i { animation: beNudge 1.8s ease-in-out 1.2s infinite; }
 }
-@keyframes beNudge { 0%, 55%, 100% { transform: translateX(0) rotate(45deg); } 25% { transform: translateX(-6px) rotate(45deg); } }
+@keyframes beNudge { 0%, 55%, 100% { transform: translateX(0); } 25% { transform: translateX(3px); } }
 
 @media (max-width: 640px) {
   .be-top { grid-template-columns: minmax(0, 1fr); justify-items: center; }
@@ -67,13 +67,15 @@
 .be-tag { display: inline-flex; align-items: center; gap: 6px; }
 .be-tag svg { width: 14px; height: 14px; flex-shrink: 0; }
 .be-swap { display: grid; place-items: center; width: 30px; height: 30px; margin: 0 -15px; z-index: 1; border-radius: 50%; background: var(--c-paper-card); border: 1px solid var(--c-hairline); align-self: center; flex-shrink: 0; position: relative; }
-.be-swap::before { content: ""; width: 8px; height: 8px; border-top: 2px solid var(--c-ink-soft); border-right: 2px solid var(--c-ink-soft); transform: rotate(45deg); margin-left: -3px; }
+.be-swap::before { content: ""; width: 14px; height: 14px; background: var(--c-ink-soft); -webkit-mask: var(--chev) center / contain no-repeat; mask: var(--chev) center / contain no-repeat; }
 .be-share { display: flex; height: 10px; border-radius: 999px; overflow: hidden; gap: 2px; margin-top: 12px; background: var(--c-paper); }
 .be-share i { display: block; height: 100%; background: var(--tc); min-width: 3px; transform-origin: left; animation: beShare 0.9s var(--ease-out) both; }
-.be-sharekey { display: flex; flex-wrap: wrap; gap: 3px 14px; margin-top: 7px; font: 600 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.be-sharekey span { display: inline-flex; align-items: center; gap: 6px; }
-.be-sharekey span::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--tc); }
-.be-sharekey b { color: var(--c-ink); }
+.be-sharekey { display: flex; flex-wrap: wrap; gap: 6px 8px; margin-top: 10px; font: 600 13.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.be-sharekey span { display: inline-flex; align-items: center; gap: 7px; padding: 5px 11px 5px 9px; border-radius: 999px; background: color-mix(in srgb, var(--tc) 11%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--tc) 38%, transparent); }
+.be-sharekey span::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--tc); flex-shrink: 0; }
+.be-sharekey b { font-weight: 800; }
+.be-sharekey .be-maj { background: var(--c-paper); border-color: var(--c-hairline); }
+.be-sharekey .be-maj::before { content: none; }
 @keyframes beShare { from { transform: scaleX(0); } }
 @media (prefers-reduced-motion: reduce) { .be-share i { animation: none; } }
 @media (max-width: 520px) { .be-swap { margin: 0 -15px; } }

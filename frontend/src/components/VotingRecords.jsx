@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from "react";
-import { m as motion, AnimatePresence } from "motion/react";
+import { m as motion } from "motion/react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING, readable } from "../theme";
 import { formatDate, partyColour } from "../lib/format";
@@ -28,6 +28,7 @@ import Loading from "./Loading";
 import { plainPoints, plainSentence } from "../lib/billPlain";
 import { explainStage, whoItAffects } from "../lib/billExplain";
 import { getBillDescription } from "../lib/billDescriptions";
+import ExpandGrid from "./ExpandGrid";
 
 // A division (Commons vote) is stored per-MP with no bill_id — divisions and
 // bills come from two separate parliamentary data sources with no shared
@@ -41,11 +42,68 @@ import { getBillDescription } from "../lib/billDescriptions";
 // the bill card opens (in parallel, one query per division) rather than
 // gated behind a second click — a bill with two or three divisions is a
 // handful of queries, not hundreds.
-function BillEntry({ bill, politicians, initiallyOpen }) {
-  const [open, setOpen] = useState(initiallyOpen ?? false);
+function BillEntry({ bill, open, toggle, panelId }) {
+  const category = categoriseBill(bill);
+  const hand = getBillDescription(bill.short_title, null);
+  const oneLine = hand ?? plainSentence(bill.long_title);
+
+  return (
+    <motion.div
+      whileHover={{ borderColor: category.color }}
+      transition={{ duration: 0.15 }}
+      style={{
+        minWidth: 0,
+        // Cards in a row are the same height, with the text in each centred in it.
+        display: "flex", flexDirection: "column",
+        background: COLORS.paperCard,
+        border: `1px solid ${open ? category.color : COLORS.hairline}`,
+        boxShadow: open ? `0 0 0 3px ${category.color}33` : undefined,
+        borderRadius: 14,
+        overflow: "hidden",
+      }}
+    >
+      <button onClick={toggle} aria-expanded={open} aria-controls={panelId} style={{ display: "flex", alignItems: "center", gap: 14, width: "100%", flex: "1 0 auto", background: "none", border: "none", padding: 16, cursor: "pointer", textAlign: "left" }}>
+        <div
+          style={{
+            width: 40, height: 40, borderRadius: 10, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
+            background: `linear-gradient(145deg, ${category.color}30, ${category.color}14)`, color: readable(category.color),
+            boxShadow: `inset 0 0 0 1px ${category.color}30`,
+          }}
+        >
+          <CategoryIcon label={category.label} size={21} />
+        </div>
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <div style={{ fontFamily: FONT_BODY, fontSize: 15.5, fontWeight: 600, color: COLORS.ink, marginBottom: oneLine ? 3 : 5, lineHeight: 1.35 }}>{bill.short_title}</div>
+          {oneLine && (
+            <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.45, marginBottom: 6, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{oneLine}</div>
+          )}
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+            <CategoryPill label={category.label} color={category.color} />
+            <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>{bill.current_stage ?? "Unknown stage"} · {bill.current_house}</span>
+            {bill.is_act && <StatusPill label="Now law" color="#2F6F4E" />}
+            {bill.is_defeated && <StatusPill label="Defeated" color="#9C3B3B" />}
+            {bill.next_sitting_date && (
+              <>
+                <Dot />
+                <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>Next sitting {formatDate(bill.next_sitting_date)}</span>
+              </>
+            )}
+          </div>
+        </div>
+        <span style={{ flexShrink: 0, fontFamily: FONT_MONO, fontSize: 13, color: COLORS.inkSoft }}>{open ? "▾" : "▸"}</span>
+      </button>
+    </motion.div>
+  );
+}
+
+// What opens under the row of bill cards when one is pressed: what the bill does in plain English, where it has got to, who sponsors it and the Commons votes matched to it.
+function BillDetails({ bill, politicians, scrollIntoView }) {
   const [divisions, setDivisions] = useState(null);
   const category = categoriseBill(bill);
   const ref = useRef(null);
+  const hand = getBillDescription(bill.short_title, null);
+  const stageNote = explainStage(bill.current_stage, { isAct: bill.is_act, isDefeated: bill.is_defeated });
+  const plain = useMemo(() => plainPoints(bill.long_title), [bill.long_title]);
 
   async function loadDivisions() {
     const titleMatch = (bill.short_title ?? "").trim();
@@ -79,176 +137,109 @@ function BillEntry({ bill, politicians, initiallyOpen }) {
     );
   }
 
-  async function toggle() {
-    const next = !open;
-    setOpen(next);
-    if (next && divisions === null) loadDivisions();
-  }
-
-  // Arriving here from a bill clicked elsewhere (the homepage's own
-  // "Bills Going Through Parliament" list, previously just a generic
-  // link to this whole page) — open straight to that bill, already
-  // expanded, scrolled into view, instead of landing back at the top of
-  // a ~100-bill list the visitor has to go find it in again themselves.
   useEffect(() => {
-    if (!initiallyOpen) return;
-    // loadDivisions can set state synchronously on its very first line (the
-    // "no title to match on" guard), before any await — fine from a click
-    // handler, but a direct call from an effect body would set state in
-    // the same synchronous pass as the effect itself. The microtask hop
-    // defers even that branch to after this render has committed.
+    // loadDivisions can set state synchronously on its very first line (the "no title to match on" guard), before any await. The microtask hop defers even that branch
+    // to after this render has committed.
     Promise.resolve().then(loadDivisions);
-    const timer = setTimeout(() => ref.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 100);
+    if (!scrollIntoView) return undefined;
+    // Arriving from a bill clicked elsewhere (the homepage list): open straight to that bill and bring it into view.
+    const timer = setTimeout(() => ref.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 400);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initiallyOpen]);
-
-  const hand = getBillDescription(bill.short_title, null);
-  const stageNote = explainStage(bill.current_stage, { isAct: bill.is_act, isDefeated: bill.is_defeated });
-  const plain = useMemo(() => plainPoints(bill.long_title), [bill.long_title]);
-  const oneLine = hand ?? plainSentence(bill.long_title);
+  }, []);
 
   return (
-    <motion.div
-      ref={ref}
-      whileHover={{ borderColor: category.color }}
-      transition={{ duration: 0.15 }}
-      style={{
-        gridColumn: open ? "1 / -1" : undefined, minWidth: 0,
-        // Cards in a row are the same height, with the text in each centred in it.
-        display: "flex", flexDirection: "column",
-        background: COLORS.paperCard,
-        border: `1px solid ${COLORS.hairline}`,
-        borderRadius: 14,
-        scrollMarginTop: 20,
-        overflow: "hidden",
-      }}
-    >
-      <button onClick={toggle} style={{ display: "flex", alignItems: "center", gap: 14, width: "100%", flex: "1 0 auto", background: "none", border: "none", padding: 16, cursor: "pointer", textAlign: "left" }}>
-        <div
-          style={{
-            width: 40, height: 40, borderRadius: 10, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
-            background: `linear-gradient(145deg, ${category.color}30, ${category.color}14)`, color: readable(category.color),
-            boxShadow: `inset 0 0 0 1px ${category.color}30`,
-          }}
-        >
-          <CategoryIcon label={category.label} size={21} />
-        </div>
-        <div style={{ minWidth: 0, flex: 1 }}>
-          <div style={{ fontFamily: FONT_BODY, fontSize: 15.5, fontWeight: 600, color: COLORS.ink, marginBottom: oneLine ? 3 : 5, lineHeight: 1.35 }}>{bill.short_title}</div>
-          {oneLine && (
-            <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.45, marginBottom: 6, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{oneLine}</div>
-          )}
-          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-            <CategoryPill label={category.label} color={category.color} />
-            <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>{bill.current_stage ?? "Unknown stage"} · {bill.current_house}</span>
-            {bill.is_act && <StatusPill label="Now law" color="#2F6F4E" />}
-            {bill.is_defeated && <StatusPill label="Defeated" color="#9C3B3B" />}
-            {bill.next_sitting_date && (
-              <>
-                <Dot />
-                <span style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft }}>Next sitting {formatDate(bill.next_sitting_date)}</span>
-              </>
+    <div ref={ref} style={{ border: `1px solid ${category.color}`, borderRadius: 14, background: COLORS.paperCard, boxShadow: `inset 0 4px 0 ${category.color}`, scrollMarginTop: 20 }}>
+      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, fontWeight: 700, color: COLORS.ink, padding: "18px 20px 0", lineHeight: 1.3 }}>{bill.short_title}</div>
+    <div style={{ padding: "0 20px 20px 20px", borderTop: `1px solid ${COLORS.hairline}`, marginTop: -1 }}>
+      <div style={{ paddingTop: 16 }}>
+        {(plain || bill.long_title) && (
+          <div style={{ marginBottom: 12, padding: "12px 14px", borderRadius: 12, background: `${category.color}0d`, borderLeft: `4px solid ${category.color}` }}>
+            <FieldLabel>What it does, in plain English</FieldLabel>
+            {hand && <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.6 }}>{hand}</div>}
+            {!hand && plain.length > 0 && (
+              <ul style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 4 }}>
+                {plain.slice(0, 6).map((pt, i) => (
+                  <li key={i} style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.55 }}>{pt}</li>
+                ))}
+                {plain.length > 6 && <li style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, listStyle: "none", marginLeft: -18 }}>and {plain.length - 6} more points. See the official wording below.</li>}
+              </ul>
+            )}
+            {!hand && plain.length === 0 && <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.6 }}>{bill.long_title}</div>}
+            {bill.long_title && (
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5, marginTop: 8 }}>
+                Official wording: {bill.long_title}
+              </div>
             )}
           </div>
-        </div>
-        <span style={{ flexShrink: 0, fontFamily: FONT_MONO, fontSize: 13, color: COLORS.inkSoft }}>{open ? "▾" : "▸"}</span>
-      </button>
-
-      <AnimatePresence>
-        {open && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.2 }} style={{ overflow: "hidden" }}>
-            <div style={{ padding: "0 20px 20px 20px", borderTop: `1px solid ${COLORS.hairline}`, marginTop: -1 }}>
-              <div style={{ paddingTop: 16 }}>
-                {(plain || bill.long_title) && (
-                  <div style={{ marginBottom: 12, padding: "12px 14px", borderRadius: 12, background: `${category.color}0d`, borderLeft: `4px solid ${category.color}` }}>
-                    <FieldLabel>What it does, in plain English</FieldLabel>
-                    {hand && <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.6 }}>{hand}</div>}
-                    {!hand && plain.length > 0 && (
-                      <ul style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 4 }}>
-                        {plain.slice(0, 6).map((pt, i) => (
-                          <li key={i} style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.55 }}>{pt}</li>
-                        ))}
-                        {plain.length > 6 && <li style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, listStyle: "none", marginLeft: -18 }}>and {plain.length - 6} more points. See the official wording below.</li>}
-                      </ul>
-                    )}
-                    {!hand && plain.length === 0 && <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.6 }}>{bill.long_title}</div>}
-                    {bill.long_title && (
-                      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5, marginTop: 8 }}>
-                        Official wording: {bill.long_title}
-                      </div>
-                    )}
-                  </div>
-                )}
-                  <div style={{ marginBottom: 12, padding: "12px 14px", borderRadius: 12, background: COLORS.paper, border: `1px solid ${COLORS.hairline}` }}>
-                    <FieldLabel>Explain this: what happens next, and who it could affect</FieldLabel>
-                    <ul style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 5 }}>
-                      {stageNote && <li style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.55 }}><strong>Where it is:</strong> {stageNote.means}</li>}
-                      {stageNote && <li style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.55 }}><strong>What happens next:</strong> {stageNote.next}</li>}
-                      <li style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.55 }}><strong>Who it could affect:</strong> {whoItAffects(category.label)}</li>
-                      <li style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.55 }}><strong>Have your say:</strong> <a href="#/myMP" style={{ color: COLORS.ink, fontWeight: 700 }}>find your MP</a> and write to them, or see how it moves on <a href="#/thisWeek" style={{ color: COLORS.ink, fontWeight: 700 }}>what changed this week</a>.</li>
-                    </ul>
-                  </div>
-                {bill.summary && (
-                  <div style={{ marginBottom: 12 }}>
-                    <FieldLabel>Summary</FieldLabel>
-                    <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.6 }}>{bill.summary}</div>
-                  </div>
-                )}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(160px, 100%), 1fr))", gap: 12, marginBottom: 18 }}>
-                  {bill.sponsor_name && (
-                    <div>
-                      <FieldLabel>Sponsor</FieldLabel>
-                      <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink }}>
-                        {bill.sponsor_name}{bill.sponsor_party ? ` (${bill.sponsor_party})` : ""}
-                      </div>
-                    </div>
-                  )}
-                  {bill.sponsoring_department && (
-                    <div>
-                      <FieldLabel>Department</FieldLabel>
-                      <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink }}>{bill.sponsoring_department}</div>
-                    </div>
-                  )}
-                  {bill.last_updated && (
-                    <div>
-                      <FieldLabel>Last updated</FieldLabel>
-                      <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink }}>{formatDate(bill.last_updated)}</div>
-                    </div>
-                  )}
-                </div>
-
-                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-                  <IconVote size={13} />
-                  <FieldLabel>Related Commons votes</FieldLabel>
-                </div>
-                <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5, marginBottom: 12 }}>
-                  Matched by title against official Commons divisions. This can miss votes, or occasionally pick up an
-                  unrelated one with a similar name.
-                </div>
-                {divisions === null && <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>Checking for matching votes…</div>}
-                {divisions?.length === 0 && (
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>No Commons division found with a matching title in our tracked votes.</div>
-                )}
-                {divisions && divisions.length > 0 && (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                    {divisions.map((d) => (
-                      <DivisionCard key={d.division_id} division={d} />
-                    ))}
-                  </div>
-                )}
-
-                <div style={{ marginTop: 16 }}>
-                  <a href={bill.source_url} target="_blank" rel="noreferrer" style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: readable(category.color) }}>
-                    View this bill on bills.parliament.uk ↗
-                  </a>
-                </div>
+        )}
+          <div style={{ marginBottom: 12, padding: "12px 14px", borderRadius: 12, background: COLORS.paper, border: `1px solid ${COLORS.hairline}` }}>
+            <FieldLabel>Explain this: what happens next, and who it could affect</FieldLabel>
+            <ul style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 5 }}>
+              {stageNote && <li style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.55 }}><strong>Where it is:</strong> {stageNote.means}</li>}
+              {stageNote && <li style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.55 }}><strong>What happens next:</strong> {stageNote.next}</li>}
+              <li style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.55 }}><strong>Who it could affect:</strong> {whoItAffects(category.label)}</li>
+              <li style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.55 }}><strong>Have your say:</strong> <a href="#/myMP" style={{ color: COLORS.ink, fontWeight: 700 }}>find your MP</a> and write to them, or see how it moves on <a href="#/thisWeek" style={{ color: COLORS.ink, fontWeight: 700 }}>what changed this week</a>.</li>
+            </ul>
+          </div>
+        {bill.summary && (
+          <div style={{ marginBottom: 12 }}>
+            <FieldLabel>Summary</FieldLabel>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.6 }}>{bill.summary}</div>
+          </div>
+        )}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(160px, 100%), 1fr))", gap: 12, marginBottom: 18 }}>
+          {bill.sponsor_name && (
+            <div>
+              <FieldLabel>Sponsor</FieldLabel>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink }}>
+                {bill.sponsor_name}{bill.sponsor_party ? ` (${bill.sponsor_party})` : ""}
               </div>
             </div>
-          </motion.div>
+          )}
+          {bill.sponsoring_department && (
+            <div>
+              <FieldLabel>Department</FieldLabel>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink }}>{bill.sponsoring_department}</div>
+            </div>
+          )}
+          {bill.last_updated && (
+            <div>
+              <FieldLabel>Last updated</FieldLabel>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink }}>{formatDate(bill.last_updated)}</div>
+            </div>
+          )}
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+          <IconVote size={13} />
+          <FieldLabel>Related Commons votes</FieldLabel>
+        </div>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, lineHeight: 1.5, marginBottom: 12 }}>
+          Matched by title against official Commons divisions. This can miss votes, or occasionally pick up an
+          unrelated one with a similar name.
+        </div>
+        {divisions === null && <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>Checking for matching votes…</div>}
+        {divisions?.length === 0 && (
+          <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>No Commons division found with a matching title in our tracked votes.</div>
         )}
-      </AnimatePresence>
-    </motion.div>
+        {divisions && divisions.length > 0 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            {divisions.map((d) => (
+              <DivisionCard key={d.division_id} division={d} />
+            ))}
+          </div>
+        )}
+
+        <div style={{ marginTop: 16 }}>
+          <a href={bill.source_url} target="_blank" rel="noreferrer" style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: readable(category.color) }}>
+            View this bill on bills.parliament.uk ↗
+          </a>
+        </div>
+      </div>
+    </div>
+
+    </div>
   );
 }
 
@@ -654,11 +645,16 @@ export default function VotingRecords({ initialMp = null, initialBill = null, in
         {!loadingBills && !billsFailed && billsShown.length === 0 && (
           <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No bills found in this category right now.</div>
         )}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 520px), 1fr))", gap: 12 }}>
-          {billsShown.map((bill) => (
-            <BillEntry key={bill.bill_id} bill={bill} politicians={politicians} initiallyOpen={bill.bill_id === initialBill} />
-          ))}
-        </div>
+        <ExpandGrid
+          items={billsShown}
+          itemKey={(bill) => bill.bill_id}
+          min={520}
+          gap={12}
+          initialKey={initialBill}
+          label={(bill) => `${bill.short_title}: details`}
+          card={(bill, { open, toggle, panelId }) => <BillEntry key={bill.bill_id} bill={bill} open={open} toggle={toggle} panelId={panelId} />}
+          panel={(bill) => <BillDetails bill={bill} politicians={politicians} scrollIntoView={bill.bill_id === initialBill} />}
+        />
       </div>
     </div>
   );

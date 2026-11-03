@@ -2,6 +2,7 @@
 import { PageHeader } from "../shared";
 import { Board, Why, Chapter, Pull, Cards, Steps, Disclose } from "./Kit";
 import AnimatedValue from "./AnimatedValue";
+import { Flow } from "./StateArt";
 import { useDetail, setDetail, shortBlocks } from "../../lib/detailLevel";
 
 // One page of plain explanation, laid out from a description of its content, so the pages added in October 2026 read as one family with the "What's hidden"
@@ -28,7 +29,11 @@ function Block({ b, colour }) {
   if (b.text) return <div className="st-prose" style={{ "--tc": colour }}>{b.text.map((p, i) => <p key={i}>{p}</p>)}</div>;
   if (b.pull) return <Pull colour={b.colour ?? colour}>{b.pull}</Pull>;
   if (b.cards) return <Cards items={b.cards.map((c) => ({ colour: colour, ...c }))} />;
-  if (b.steps) return <Steps steps={b.steps.map((s) => ({ colour, ...s }))} />;
+  if (b.steps) {
+    // With `route`, the steps are drawn as cards joined by arrows (side by side on a wide screen, `down` to stack them) instead of a numbered list.
+    if (b.route) return <Flow numbered down={b.route === "down"} items={b.steps.map((s) => ({ colour, ...s }))} vias={b.vias} />;
+    return <Steps steps={b.steps.map((s) => ({ colour, ...s }))} />;
+  }
   if (b.pipeline) {
     return (
       <ol className="st-pipe">

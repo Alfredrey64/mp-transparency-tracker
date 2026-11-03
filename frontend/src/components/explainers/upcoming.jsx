@@ -3,7 +3,8 @@ import ExplainerPage from "../story/ExplainerPage";
 import SittingStrip from "../story/SittingStrip";
 import Loading from "../Loading";
 import { LoadFailedNote } from "../MpCards";
-import { IconCalendar } from "../icons";
+import { IconCalendar, IconBills, IconCommittee, IconQuestion } from "../icons";
+import { Hero } from "../story/Vivid";
 import { useDataFile } from "../../lib/useDataFile";
 import { parliamentCalendar } from "../../lib/dataFiles";
 import { dayShort, dayLong, dateLong, clock, houseName, billStages, billCommittees, hearings, commonsQuestions, debates, totals, nextRecess, thinWeeks } from "../../lib/upcoming";
@@ -16,7 +17,8 @@ const HEAD = {
   title: "Coming up in Parliament",
   subtitle: "What the House of Commons and the House of Lords have listed for the next four weeks: the days they sit, the bills due to be debated, the committees taking evidence and the questions ministers will answer.",
   icon: IconCalendar,
-  look: "field",
+  look: "vivid",
+  narrow: true,
 };
 
 const plural = (n, one, many = `${one}s`) => `${n.toLocaleString("en-GB")} ${n === 1 ? one : many}`;
@@ -128,12 +130,21 @@ function build(data) {
   }
 
   return {
-    tiles: [
-      { label: "Bills with a stage due", value: String(t.bills), colour: "#7B5BD6", sub: `${plural(t.stages, "stage")} across both houses` },
-      { label: "Public committee sessions", value: String(t.hearings), colour: "#2C7DA0", sub: `from ${plural(t.committees, "committee")}` },
-      { label: "Days the Commons sits", value: String(t.sittingDays), colour: "#1F7A4D", sub: "weekdays in the next four weeks" },
-    ],
-    why: { colour: "#1F7A4D", text: "Most of what Parliament does is listed in advance. Seeing it early lets you follow a bill you care about, watch a committee question a minister, or find out when your MP is away from Westminster." },
+    lead: <Hero
+      colours={["#0F3B33", "#1F7A4D", "#2C7DA0"]}
+      why="Most of what Parliament does is listed in advance. Seeing it early lets you follow a bill you care about, watch a committee question a minister, or find out when your MP is away from Westminster."
+      stops={[
+        { icon: IconCalendar, title: "The days they sit", text: "Weekdays, apart from recesses", colour: "#8FD1A8" },
+        { icon: IconBills, title: "Bills", text: "Debated one stage at a time", colour: "#B9A5F0" },
+        { icon: IconCommittee, title: "Committees", text: "Taking evidence in public", colour: "#8DB7E8" },
+        { icon: IconQuestion, title: "Questions", text: "Ministers answer MPs on a rota", colour: "#F0C77A" },
+      ]}
+      figures={[
+        { value: String(t.bills), label: "Bills with a stage due", sub: `${plural(t.stages, "stage")} across both houses` },
+        { value: String(t.hearings), label: "Public committee sessions", sub: `from ${plural(t.committees, "committee")}` },
+        { value: String(t.sittingDays), label: "Days the Commons sits", sub: "weekdays in the next four weeks" },
+      ]}
+    />,
     chapters,
     thin,
   };

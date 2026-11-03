@@ -23,13 +23,16 @@ export function tidyReport(p) {
   const committee = clean(p.committee?.name);
   if (!committee || SCRUTINY.test(committee) || p.committee?.category?.name !== "Select") return null;
   const { number, title } = splitTitle(p.description);
-  const replies = (g.publication ?? []).map((r) => ({ id: r.id, date: day(r.publicationStartDate) })).filter((r) => r.date).sort((a, b) => a.date.localeCompare(b.date));
+  const replies = (g.publication ?? []).map((r) => ({ id: r.id, date: day(r.publicationStartDate), url: `https://committees.parliament.uk/publications/${r.id}/` })).filter((r) => r.date).sort((a, b) => a.date.localeCompare(b.date));
+  // What the committee was looking into, in the words Parliament gives the inquiry (for example "Pet Parasite Medication"), when the report came out of one.
+  const inquiry = clean(p.businesses?.[0]?.title);
   return {
     id: p.id,
     committee,
     house: p.committee?.house ?? "Commons",
     number,
     title,
+    inquiry: inquiry && inquiry.toLowerCase() !== title.toLowerCase() ? inquiry : "",
     date: day(p.publicationStartDate),
     due: day(g.responseDeadline),
     replies,

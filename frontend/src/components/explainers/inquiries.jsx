@@ -1,26 +1,38 @@
 /** @jsxImportSource react */
 import ExplainerPage from "../story/ExplainerPage";
 import { IconInquiry } from "../newIcons";
+import { IconGavel, IconGroup, IconRegister, IconBook } from "../icons";
+import { Hero } from "../story/Vivid";
+import ShareBar from "../story/ShareBar";
 
 const PAGE = {
-  look: "field",
+  look: "vivid",
   icon: IconInquiry,
   kicker: "Watchdogs",
   title: "Public inquiries",
   subtitle: "When something goes badly wrong, ministers can set up a public inquiry to find out what happened and why. This page explains how an inquiry is set up, what powers it has, how long and how much they usually take, and what happens to what they recommend.",
-  tiles: [
-    { label: "Inquiries ongoing or announced", value: "27", colour: "#6FB1FF", sub: "in January 2026, according to the Institute for Government" },
-    { label: "Typical time to report", value: "3 years", colour: "#FFB45E", sub: "just over, for completed inquiries since 1990" },
-    { label: "Spent on completed inquiries", value: "£1.5bn+", colour: "#FF7A8A", sub: "at least, between 1990 and 2024, in 2024 prices" },
-  ],
-  why: { colour: "#7A4A8C", text: "Public inquiries are how the state investigates its own failures, from disasters to scandals. They can force witnesses to speak and publish what they find. They also cost a great deal and often take years, so it matters what they achieve." },
+  lead: <Hero
+    colours={["#3A1F4A", "#7A4A8C", "#2C7DA0"]}
+    why="Public inquiries are how the state investigates its own failures, from disasters to scandals. They can force witnesses to speak and publish what they find. They also cost a great deal and often take years, so it matters what happens afterwards."
+    stops={[
+      { icon: IconGavel, title: "A minister announces it", text: "After a disaster, a scandal or public pressure", colour: "#B9A5F0" },
+      { icon: IconGroup, title: "A chair is chosen", text: "Run independently of the government", colour: "#8DB7E8" },
+      { icon: IconRegister, title: "Terms of reference", text: "The questions it must answer", colour: "#F0C77A" },
+      { icon: IconBook, title: "Evidence and a report", text: "Often with recommendations", colour: "#8FD1A8" },
+    ]}
+    figures={[
+      { value: "27", label: "Inquiries ongoing or announced", sub: "in January 2026, according to the Institute for Government" },
+      { value: "3 years", label: "Typical time to report", sub: "just over, for completed inquiries since 1990" },
+      { value: "£1.5bn+", label: "Spent on completed inquiries", sub: "at least, between 1990 and 2024, in 2024 prices" },
+    ]}
+  />,
   chapters: [
     {
       title: "What a public inquiry is",
       lede: "A public inquiry is an official investigation into events of public concern. A government minister sets it up, but it is run independently of the government.",
       colour: "#7A4A8C",
       blocks: [
-        { steps: [
+        { route: true, steps: [
           { title: "A minister announces it", text: "The UK government or a devolved government sets up an inquiry, usually after a disaster, a scandal or public pressure." },
           { title: "A chair is chosen", text: "The minister who sets the inquiry up picks the chair. The inquiry cannot start its real work without one." },
           { title: "Terms of reference set the questions", text: "They say what the inquiry must look at, what information it wants, and often when it should report." },
@@ -38,16 +50,19 @@ const PAGE = {
       lede: "Inquiries vary hugely. Some report in weeks, others take more than a decade.",
       colour: "#2C7DA0",
       blocks: [
-        { facts: [
-          { label: "Average time to report", value: "3 years", note: "Just over three years for completed inquiries since 1990." },
-          { label: "The shortest", value: "45 days", note: "The Hammond Inquiry." },
-          { label: "The longest", value: "13 years", note: "The inquiry into hyponatraemia-related deaths took 13 years and three months." },
-        ] },
+        { bars: { items: [
+          { label: "The shortest: the Hammond Inquiry", value: 45, text: "45 days", colour: "#3F7D5C" },
+          { label: "The average, for completed inquiries since 1990", value: 1095, text: "just over 3 years", colour: "#2C7DA0" },
+          { label: "The longest: hyponatraemia-related deaths", value: 4836, text: "13 years and 3 months", colour: "#7A4A8C" },
+        ], max: 4836, note: "Bars are drawn to the same scale, in days." } },
         { facts: [
           { label: "Spent since 1990", value: "£1.5bn+", note: "At least this much on completed inquiries by the UK and devolved governments between 1990 and 2024, in 2024 prices." },
-          { label: "The Bloody Sunday Inquiry", value: "£272.5m", note: "Given as an example of a very expensive inquiry, in 2024 prices." },
-          { label: "Lawyers' share", value: "36%", note: "Legal staff accounted for an average of 36% of total costs in a National Audit Office sample." },
+          { label: "The Bloody Sunday Inquiry", value: "£272.5m", note: "Given as an example of a very expensive inquiry, in 2024 prices." }
         ] },
+        { node: <ShareBar title="How an inquiry's costs split" items={[
+          { label: "Legal staff", value: 36, text: "36%", colour: "#7A4A8C" },
+          { label: "Everything else", value: 64, text: "64%", colour: "#8A93A6" },
+        ]} note="An average over the National Audit Office sample, as a share of total costs." /> },
         { note: "Totals like these only cover inquiries that have finished. Inquiries still running, such as the UK Covid-19 Inquiry, publish their costs to date on their own websites." },
       ],
     },

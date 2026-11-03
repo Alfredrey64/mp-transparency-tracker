@@ -1,26 +1,39 @@
 /** @jsxImportSource react */
 import ExplainerPage from "../story/ExplainerPage";
 import { IconBudget } from "../newIcons";
+import { IconCoin, IconChartBars, IconParliament, IconTaxes } from "../icons";
+import { Journey } from "../story/StateArt";
+import { Hero } from "../story/Vivid";
 
 const PAGE = {
-  look: "poster",
+  look: "vivid",
+  narrow: true,
   icon: IconBudget,
   kicker: "How Parliament works",
   title: "How the Budget and the Spending Review work",
   subtitle: "Twice a year or so the Chancellor stands up in the Commons and says what the government will tax and spend. This page explains what the Budget is, how it differs from the Spending Review, who checks the numbers, and what the Budget of 28 October 2026 changed for households.",
-  tiles: [
-    { label: "Budget 2026 was announced on", value: "28 Oct", colour: "#6FB1FF", sub: "2026, with the independent forecast published the same day" },
-    { label: "Borrowing forecast for 2026-27", value: "£133bn", colour: "#FFB45E", sub: "4.2% of the economy, from the Office for Budget Responsibility" },
-    { label: "Room against the main rule", value: "£15bn", colour: "#7ED6A4", sub: "by 2029-30, the margin by which the current budget is forecast to be in surplus" },
-  ],
-  why: { colour: "#1F6F5C", text: "The Budget decides how much tax you pay, what help you get with bills and how much each part of government has to spend. Knowing who proposes it, who checks it and when it becomes law shows you where to look." },
+  lead: <Hero
+    colours={["#0F3B33", "#1F6F5C", "#2C7DA0"]}
+    why="The Budget decides how much tax you pay, what help you get with bills and how much each part of government has to spend. Knowing who proposes it, who checks it and when it becomes law shows you where to look."
+    stops={[
+      { icon: IconCoin, title: "The Treasury decides", text: "What to change in tax and spending", colour: "#8FD1A8" },
+      { icon: IconChartBars, title: "The OBR forecasts", text: "Independent of ministers", colour: "#8DB7E8" },
+      { icon: IconTaxes, title: "The Chancellor announces", text: "A statement to the Commons", colour: "#F0C77A" },
+      { icon: IconParliament, title: "Parliament makes it law", text: "Usually in a Finance Bill", colour: "#B9A5F0" },
+    ]}
+    figures={[
+      { value: "28 Oct", label: "Budget 2026 was announced on", sub: "2026, with the independent forecast published the same day" },
+      { value: "£133bn", label: "Borrowing forecast for 2026-27", sub: "4.2% of the economy, from the Office for Budget Responsibility" },
+      { value: "£15bn", label: "Room against the main rule", sub: "by 2029-30, the margin by which the current budget is forecast to be in surplus" },
+    ]}
+  />,
   chapters: [
     {
       title: "What the Budget is",
       lede: "The Budget is the Chancellor of the Exchequer's statement to the House of Commons on what the government will do with tax and public spending. It comes with an independent forecast of the economy and the public finances.",
       colour: "#1F6F5C",
       blocks: [
-        { steps: [
+        { route: true, steps: [
           { title: "The Treasury and the Chancellor decide what to change", text: "Tax rates, allowances and reliefs, support for households and businesses, and money for particular schemes." },
           { title: "The Office for Budget Responsibility makes its forecast", text: "It is independent of ministers. It forecasts growth, borrowing and debt, and says whether the government's own fiscal rules are met." },
           { title: "The Chancellor makes the statement", text: "The Budget is presented to the House of Commons, and the Treasury publishes the documents that go with it, including the cost of each decision." },
@@ -45,6 +58,11 @@ const PAGE = {
             "Budget 2026 says the next cost control framework for energy bills will be set at the 2027 spending review.",
           ] },
         ] },
+        { node: <Journey colour="#7B5BD6" items={[
+          { when: "June 2025", text: "The Spending Review sets departmental plans out to 2028-29." },
+          { when: "28 October 2026", text: "Budget 2026 is delivered, with the independent forecast the same day." },
+          { when: "2027", text: "The next spending review is due, and will set the next cost control framework for energy bills." },
+        ]} /> },
       ],
     },
     {
@@ -73,6 +91,9 @@ const PAGE = {
           { label: "Debt peak", value: "97%", note: "Public sector net debt is forecast to peak at about 97% of GDP in 2028-29 and ease to 96% by 2031-32." },
           { label: "Growth", value: "1.1%", note: "A year on average over 2026 and 2027, down from 1.3% in the March 2026 forecast." },
         ] },
+        { duo: { beforeName: "2025-26", afterName: "2026-27 forecast", items: [{ label: "Borrowing as a share of the economy", before: 4.4, after: 4.2, beforeText: "4.4%", afterText: "4.2%" }] } },
+        { duo: { beforeName: "March 2026 forecast", afterName: "October 2026 forecast", items: [{ label: "Growth, a year on average over 2026 and 2027", before: 1.3, after: 1.1, beforeText: "1.3%", afterText: "1.1%" }] } },
+        { duo: { beforeName: "Peak, 2028-29", afterName: "By 2031-32", items: [{ label: "Public sector net debt, share of GDP", before: 97, after: 96, beforeText: "about 97%", afterText: "96%" }] } },
         { text: ["The government sets itself fiscal rules. The Office for Budget Responsibility says the current budget is forecast to be in surplus in 2029-30 by a margin of £15 billion, which meets the first rule, and that the second rule is met by a margin of £24 billion. The first rule has a 56% probability of being met, because forecasts are uncertain."] },
         { note: "A margin is not a promise. It is how far the forecast is from missing a rule, and forecasts are revised at each Budget." },
       ],
@@ -82,12 +103,12 @@ const PAGE = {
       lede: "The announcement is the start, not the end.",
       colour: "#5A4FCF",
       blocks: [
-        { timeline: [
+        { node: <Journey colour="#5A4FCF" items={[
           { when: "28 October 2026", text: "The Chancellor delivers the Budget. The Treasury publishes the Budget document and policy costings, and the Office for Budget Responsibility publishes its forecast." },
           { when: "November 2026", text: "Parliament debates the Budget. Its calendar lists a Lords debate on the Autumn Budget 2026 and a Lords committee taking evidence on the draft Finance Bill 2026-27 on 12 November. The Coming up in Parliament page shows what is listed." },
           { when: "January 2027", text: "The Household Energy Payment is due to be paid from January 2027, and the higher bank surcharge starts on 1 January 2027." },
           { when: "2027", text: "The next spending review is due, according to the Budget document." },
-        ] },
+        ]} /> },
         { note: "Dates are as stated in the sources below. Parliament's own calendar is the place to check when a debate or committee session is listed." },
       ],
     },

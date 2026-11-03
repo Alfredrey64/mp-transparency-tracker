@@ -214,7 +214,7 @@ export default function ByElections() {
                 onClick={() => withScrollPreserved(() => setExpanded(isOpen ? null : e.election_id))}
                 style={{ display: "block", width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" }}
               >
-                <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", gap: 8, marginBottom: 12 }}>
+                <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 8, marginBottom: 12 }}>
                   <div style={{ flex: "1 1 170px", minWidth: 0 }}>
                     <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 700, color: COLORS.ink }}>{e.constituency_name}</div>
                     <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 2 }}>
@@ -225,11 +225,12 @@ export default function ByElections() {
                   <div style={{ display: "flex", alignItems: "center", gap: 10, maxWidth: "100%" }}>
                     <span
                       style={{
-                        fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em",
-                        color: readable(color), background: `${color}1e`, padding: "3px 10px", borderRadius: 999,
+                        fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11.5, textTransform: "uppercase", letterSpacing: "0.04em",
+                        color: readable(color), background: `${color}1e`, padding: "6px 14px", borderRadius: 999,
+                        display: "inline-flex", alignItems: "center", justifyContent: "center", minWidth: 176, textAlign: "center", boxSizing: "border-box",
                       }}
                     >
-                      <span className="be-tag">{outcome && <OutcomeIcon gain={isGain} />}{e.winning_party} {isGain ? "gain" : outcome === "hold" ? "hold" : (e.result ?? "")}</span>
+                      <span className="be-tag" style={{ justifyContent: "center" }}>{outcome && <OutcomeIcon gain={isGain} />}{e.winning_party} {isGain ? "gain" : outcome === "hold" ? "hold" : (e.result ?? "")}</span>
                     </span>
                     <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ color: COLORS.inkSoft, fontSize: 12 }}>▾</motion.span>
                   </div>
@@ -271,11 +272,11 @@ export default function ByElections() {
                         <i key={`${c.name}-${ci}`} style={{ "--tc": c.colour, width: `${c.share * 100}%` }} />
                       ))}
                     </div>
-                    <div className="be-sharekey" aria-hidden="true">
+                    <div className="be-sharekey">
                       {candidates.slice(0, 3).map((c, ci) => (
-                        <span key={`${c.name}-${ci}`} style={{ "--tc": partyColour(c.party?.backgroundColour, COLORS.inkSoft) }}>{c.party?.name ?? c.name} <b>{Math.round((c.voteShare ?? 0) * 100)}%</b></span>
+                        <span key={`${c.name}-${ci}`} style={{ "--tc": partyColour(c.party?.backgroundColour, COLORS.inkSoft) }}>{c.party?.name ?? c.name}: <b>{Math.round((c.voteShare ?? 0) * 100)}% of the vote</b></span>
                       ))}
-                      {e.majority != null && <span style={{ "--tc": "transparent" }}>Majority <b>{Number(e.majority).toLocaleString()}</b></span>}
+                      {e.majority != null && <span className="be-maj">Majority <b>{Number(e.majority).toLocaleString()}</b></span>}
                     </div>
                   </>
                 )}

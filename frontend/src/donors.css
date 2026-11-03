@@ -16,7 +16,9 @@
 .dn-who i { display: block; height: 6px; border-radius: 3px; background: var(--pc); width: calc(var(--w) * 100%); min-width: 6%; }
 .dn-amt { font: 800 15px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .dn-more { justify-self: start; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px; margin-left: -12px; background: none; border: 0; cursor: pointer; font: 700 13.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--sc) 78%, var(--c-ink)); }
-.dn-all { display: grid; gap: 6px; max-height: 280px; overflow-y: auto; padding-top: 10px; border-top: 1px dashed color-mix(in srgb, var(--sc) 40%, var(--c-hairline)); }
+.dn-panel { gap: 10px; }
+.dn-panel-title { margin: 0; font: 700 17px "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.dn-all { display: grid; gap: 6px; max-height: 340px; overflow-y: auto; padding-top: 10px; border-top: 1px dashed color-mix(in srgb, var(--sc) 40%, var(--c-hairline)); }
 .dn-row { display: flex; justify-content: space-between; gap: 10px; font: 500 12.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .dn-row span { display: inline-flex; align-items: center; gap: 6px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .dn-row i { width: 7px; height: 7px; border-radius: 50%; background: var(--pc); flex: none; }

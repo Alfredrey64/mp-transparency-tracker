@@ -25,9 +25,15 @@ describe("tidyReport", () => {
     expect(tidyReport(pub({ committee: { name: "Secondary Legislation Scrutiny Committee", category: { name: "Select" } } }))).toBeNull();
     expect(tidyReport(pub({ committee: { name: "A bill committee", category: { name: "General" } } }))).toBeNull();
   });
+  it("names the subject of the inquiry when it differs from the title", () => {
+    expect(tidyReport(pub({ businesses: [{ title: "Pet Parasite Medication" }] })).inquiry).toBe("Pet Parasite Medication");
+    expect(tidyReport(pub({ businesses: [{ title: "The obesity moonshot: making obesity a political priority" }], description: "6th Report - The obesity moonshot: making obesity a political priority" })).inquiry).toBe("");
+    expect(tidyReport(pub()).inquiry).toBe("");
+  });
   it("lists the replies in date order", () => {
     const r = tidyReport(pub({ governmentResponses: { responseDeadline: "2026-12-30T00:00:00", publication: [{ id: 9, publicationStartDate: "2027-01-10T00:00:00" }, { id: 8, publicationStartDate: "2026-12-01T00:00:00" }] } }));
     expect(r.replies.map((x) => x.id)).toEqual([8, 9]);
+    expect(r.replies[0].url).toBe("https://committees.parliament.uk/publications/8/");
   });
   it("falls back to the committees site when there is no report link", () => {
     expect(tidyReport(pub({ additionalContentUrl: null })).url).toBe("https://committees.parliament.uk/publications/1/");

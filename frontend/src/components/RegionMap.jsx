@@ -140,11 +140,17 @@ function RegionMap({ regions, view, fill, valueText, compactText, deltaText, a11
                 {...handlers(r.key)}
                 className="rm-in"
                 style={{
-                  "--i": i, fill: fill(r.key), stroke: outline(r.key), strokeWidth: selected === r.key ? 3 : hover === r.key ? 2.2 : 1.6, strokeLinejoin: "round", cursor: "pointer",
+                  "--i": i, fill: fill(r.key), stroke: COLORS.paperCard, strokeWidth: 1.6, strokeLinejoin: "round", cursor: "pointer",
                   transition: smooth ? "fill 0.45s ease, stroke 0.15s" : "stroke 0.15s", transformBox: "fill-box", transformOrigin: "center", outline: "none",
                   filter: hover === r.key || selected === r.key ? "drop-shadow(0 4px 8px rgba(0,0,0,0.35))" : undefined,
                 }}
               />
+            ))}
+            {/* The outline of the place under the pointer or picked is drawn again here, above every region, so neighbours painted later cannot cover part of it. */}
+            {geo.regions.filter((r) => r.key === selected || r.key === hover).sort((a, b) => (a.key === hover) - (b.key === hover)).map((r) => (
+              <g key={`edge-${r.key}`} fill="none" pointerEvents="none" strokeLinejoin="round">
+                {r.key === hover ? <path d={r.d} stroke={COLORS.ink} strokeWidth="2.8" /> : <><path d={r.d} stroke={COLORS.paperCard} strokeWidth="7" /><path d={r.d} stroke={accent} strokeWidth="3.6" /></>}
+              </g>
             ))}
             {/* London is tiny at this scale, so it also gets a marker you can actually hit. */}
             <g className="rm-in" style={{ "--i": 12 }}>

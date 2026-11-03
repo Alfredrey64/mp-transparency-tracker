@@ -7,6 +7,7 @@ import { GlossaryTerm } from "./GlossaryTerm";
 import { partyColour, stripHtml, formatDate } from "../lib/format";
 import { isScrolling } from "../lib/scrollState";
 import { IconCommittee } from "./icons";
+import { CommitteeIcon } from "./committeeIcon";
 import CountUp from "./CountUp";
 import Loading from "./Loading";
 import "../committees.css";
@@ -260,7 +261,10 @@ function CommitteeCard({ committee, open, onToggle, index = 0 }) {
           {q > 0 && <span className="cm-inq">{q} open {q === 1 ? "inquiry" : "inquiries"}</span>}
         </span>
         <span className="cm-body">
-          <span title={committee.name} className="cm-name">{committee.name}</span>
+          <span className="cm-head">
+            <span className="cm-ico" aria-hidden="true"><CommitteeIcon name={committee.name} /></span>
+            <span title={committee.name} className="cm-name">{committee.name}</span>
+          </span>
           <span className="cm-chair">
             <span aria-hidden="true" className="cm-avatar" style={{ background: committee.chair_name ? color : COLORS.hairline, color: committee.chair_name ? onFill(color) : COLORS.ink }}>
               {committee.chair_name ? initials(committee.chair_name) : "?"}
@@ -433,7 +437,7 @@ export default function Committees() {
           </div>
 
           {filtered.length === 0 && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>No committee matches that.</div>}
-          <div ref={gridRef} className="cm-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 340px), 1fr))", gap: 14, alignItems: "stretch" }}>
+          <div ref={gridRef} data-no-balance="" className="cm-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 340px), 1fr))", gap: 14, alignItems: "stretch" }}>
             {filtered.flatMap((c, i) => {
               const out = [<CommitteeCard key={c.id} index={i} committee={c} open={openId === c.id} onToggle={() => toggleCommittee(c.id)} />];
               // A committee's details sit under the last card of the row it is in.

@@ -27,6 +27,10 @@
 .cm-inq { padding: 3px 11px; border-radius: 999px; background: rgba(255, 255, 255, 0.22); font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; }
 .cm-body { display: flex; flex: 1; flex-direction: column; gap: 12px; padding: 16px 18px 16px; }
 .cm-name { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; min-height: 2.5em; font: 800 20px/1.22 "Figures", "Newsreader", Georgia, serif; letter-spacing: -0.01em; color: var(--c-ink); }
+.cm-head { display: flex; align-items: flex-start; gap: 12px; }
+.cm-ico { flex: none; width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: color-mix(in srgb, var(--hc) 13%, var(--c-paper-card)); color: var(--hs); box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--hc) 38%, transparent); transition: transform 0.3s var(--ease-out), background 0.3s ease; }
+.cm-card:hover .cm-ico, .cm-card[data-open="1"] .cm-ico { background: var(--hs); color: #fff; transform: rotate(-4deg) scale(1.06); }
+@media (prefers-reduced-motion: reduce) { .cm-ico { transition: none; } .cm-card:hover .cm-ico, .cm-card[data-open="1"] .cm-ico { transform: none; } }
 .cm-chair { display: flex; align-items: center; gap: 10px; }
 .cm-avatar { flex: none; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; box-shadow: 0 0 0 3px var(--c-paper-card), 0 0 0 5px color-mix(in srgb, var(--hc) 55%, transparent); font: 800 13px "Figures", "Public Sans", system-ui, sans-serif; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); }
 .cm-chair-text { display: grid; font: 500 12.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }

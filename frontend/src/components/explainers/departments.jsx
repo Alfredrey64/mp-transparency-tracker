@@ -1,6 +1,9 @@
 /** @jsxImportSource react */
 import ExplainerPage from "../story/ExplainerPage";
 import { IconDepartments } from "../newIcons";
+import { IconCoin, IconBriefcase, IconChartBars, IconHouse } from "../icons";
+import { Hero } from "../story/Vivid";
+import ShareBar from "../story/ShareBar";
 import { DEPARTMENT_ROWS, DEPARTMENT_TOTAL } from "../../data/departmentSpending";
 
 const ROWS = DEPARTMENT_ROWS;
@@ -12,20 +15,36 @@ const grid = (d) => ((d.later - d.now) / d.now) * 100;
 const changed = [...ROWS].filter((d) => d.now >= 5).sort((a, b) => grid(b) - grid(a));
 const growers = changed.slice(0, 5);
 const shrinkers = changed.filter((d) => grid(d) < 0).slice(-5).reverse();
+const GRAND = TOTAL.r[1] + TOTAL.c[1];
+const SHARE_COLOURS = ["#2C5F9E", "#7B5BD6", "#B45A3C", "#3F7D5C", "#C88A1E", "#2C7DA0"];
+const top6 = byLater.slice(0, 6);
+const shareItems = [
+  ...top6.map((d, i) => ({ label: d.short ?? d.name, value: d.later, text: bn(d.later), colour: SHARE_COLOURS[i] })),
+  { label: "All other departments", value: GRAND - top6.reduce((n, d) => n + d.later, 0), text: bn(GRAND - top6.reduce((n, d) => n + d.later, 0)), colour: "#8A93A6" },
+];
 const pct = (n) => `${n > 0 ? "+" : ""}${n.toFixed(1)}%`;
 
 const PAGE = {
-  look: "ledger",
+  look: "vivid",
   icon: IconDepartments,
   kicker: "Where the money goes",
   title: "Spending by department",
   subtitle: "The Treasury sets a budget for each government department. This page shows the plans set at the Spending Review in June 2025: who gets the most, who is growing and who is being squeezed between 2025-26 and 2028-29, and what these budgets leave out.",
-  tiles: [
-    { label: "Planned departmental spending, 2025-26", value: `£${Math.round(TOTAL.r[0] + TOTAL.c[0])}bn`, colour: "#6FB1FF", sub: `${bn(TOTAL.r[0])} day-to-day and ${bn(TOTAL.c[0])} investment` },
-    { label: "Planned departmental spending, 2028-29", value: `£${Math.round(TOTAL.r[1] + TOTAL.c[1])}bn`, colour: "#FFB45E", sub: `${bn(TOTAL.r[1])} day-to-day and ${bn(TOTAL.c[1])} investment` },
-    { label: "The biggest budget in 2028-29", value: `£${Math.round(byLater[0].later)}bn`, colour: "#7ED6A4", sub: `${byLater[0].name}` },
-  ],
-  why: { colour: "#2C5F9E", text: "A department's budget is the most direct measure of what the government is choosing to put first. Comparing them shows where the money is growing and where it is not, whatever the announcements say." },
+  lead: <Hero
+    colours={["#14305A", "#2C5F9E", "#6B4FBF"]}
+    why="A department's budget is the most direct measure of what the government is choosing to put first. Comparing them shows where the money is growing and where it is not, whatever the announcements say."
+    stops={[
+      { icon: IconBriefcase, title: "The Treasury sets a limit", text: "For each department, for several years", colour: "#8DB7E8" },
+      { icon: IconCoin, title: "Day-to-day spending", text: "Pay, running costs and services", colour: "#8FD1A8" },
+      { icon: IconHouse, title: "Investment", text: "Buildings, equipment and infrastructure", colour: "#F0C77A" },
+      { icon: IconChartBars, title: "Plans to 2028-29", text: "Set at the Spending Review in June 2025", colour: "#B9A5F0" },
+    ]}
+    figures={[
+      { value: `£${Math.round(TOTAL.r[0] + TOTAL.c[0])}bn`, label: "Planned departmental spending, 2025-26", sub: `${bn(TOTAL.r[0])} day-to-day and ${bn(TOTAL.c[0])} investment` },
+      { value: `£${Math.round(GRAND)}bn`, label: "Planned departmental spending, 2028-29", sub: `${bn(TOTAL.r[1])} day-to-day and ${bn(TOTAL.c[1])} investment` },
+      { value: `£${Math.round(byLater[0].later)}bn`, label: "The biggest budget in 2028-29", sub: `${byLater[0].name}` },
+    ]}
+  />,
   chapters: [
     {
       title: "What these budgets are",
@@ -44,6 +63,7 @@ const PAGE = {
       lede: "Health is by far the largest, followed by Education and Defence. These are the ten biggest departments once day-to-day spending and investment are added together.",
       colour: "#7B5BD6",
       blocks: [
+        { node: <ShareBar title="Share of planned departmental spending in 2028-29" items={shareItems} note="Day-to-day spending and investment added together. The percentages are each department's share of the planned total." /> },
         { bars: { items: biggest.map((d, i) => ({ label: d.name, value: d.later, text: bn(d.later), colour: i === 0 ? "#2C5F9E" : "#7B5BD6" })), max: biggest[0].later, note: "Planned day-to-day plus investment spending in 2028-29, £ billion at current prices." } },
       ],
     },

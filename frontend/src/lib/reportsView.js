@@ -48,3 +48,46 @@ export function overdue(data, today = data.generated) {
 export function recentReplies(data, n = 8) {
   return data.reports.filter((r) => r.replies.length).map((r) => ({ ...r, took: daysBetween(r.date, r.replies[0].date), replied: r.replies[0].date })).sort((a, b) => b.replied.localeCompare(a.replied)).slice(0, n);
 }
+
+// One report put into plain words for its card: where it stands, one sentence saying so, and the points for its progress bar (as percentages along the line from the day the
+// report came out to the latest of the deadline, the reply and today).
+export function describe(report, today) {
+  const status = statusOf(report, today);
+  const reply = report.replies[0]?.date ?? null;
+  const end = [report.due, reply ?? today].sort().pop();
+  const span = Math.max(1, daysBetween(report.date, end));
+  const at = (d) => Math.min(100, Math.max(0, (daysBetween(report.date, d) / span) * 100));
+  const days = (n) => `${n} day${n === 1 ? "" : "s"}`;
+  let label;
+  let say;
+  if (status === "ontime") {
+    label = "Answered on time";
+    say = `The government replied ${days(daysBetween(report.date, reply))} after the report, before the deadline.`;
+  } else if (status === "late") {
+    const late = daysBetween(report.due, reply);
+    label = `Answered ${days(late)} late`;
+    say = `The government replied ${days(daysBetween(report.date, reply))} after the report, ${days(late)} after the deadline.`;
+  } else if (status === "waiting") {
+    const left = daysBetween(today, report.due);
+    label = left === 0 ? "Reply due today" : `Reply due in ${days(left)}`;
+    say = "The government has not replied yet. It has until the deadline.";
+  } else {
+    const over = daysBetween(report.due, today);
+    label = `${days(over)} overdue`;
+    say = "The deadline has passed and Parliament lists no reply. A reply may have been sent in another form that is not linked to the report.";
+  }
+  return { status, label, say, dueAt: at(report.due), replyAt: reply ? at(reply) : null, todayAt: reply ? null : at(today), fill: reply ? at(reply) : at(today) };
+}
+
+// The reports a filter keeps ("all", "waiting" for not yet due, "overdue", "answered", "late") and a committee-name search, newest first.
+export function browse(data, { filter = "all", query = "" } = {}, today = data.generated) {
+  const q = query.trim().toLowerCase();
+  return data.reports
+    .filter((r) => {
+      const s = statusOf(r, today);
+      if (filter === "answered" && !(s === "ontime" || s === "late")) return false;
+      if (filter !== "all" && filter !== "answered" && s !== filter) return false;
+      return !q || `${r.title} ${r.committee} ${r.inquiry ?? ""}`.toLowerCase().includes(q);
+    })
+    .sort((a, b) => b.date.localeCompare(a.date) || a.committee.localeCompare(b.committee));
+}
