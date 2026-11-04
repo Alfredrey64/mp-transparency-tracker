@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 
 export function IconHome({ size = 17 }) {
   return (
@@ -369,18 +369,26 @@ export function IconHardHat({ size = 17 }) {
   );
 }
 
-// The "What's hidden" tile: white drapes on a rod, hung closed over the coin that is the money sign. When its menu group opens (or, in the desktop menu, is pointed at) the
-// drapes sweep to either side and are tied back, and the coin turns up between them with a glint; closing draws them together again. The motion is in .cu in chrome.css and
-// follows the book mark's: each drape narrows toward its edge with a tilt, the second a beat behind the first. Drawn closed, so a still image shows the closed curtain.
-const DRAPE = "M4.5 5.5H16.2V26Q14.25 28.2 12.3 26Q10.35 28.2 8.4 26Q6.45 28.2 4.5 26Z";
-function Drape({ mirror }) {
+// The "What's hidden" tile: one white sheet of pleated fabric hung from a rod over the coin that is the money sign. When its menu group opens (or, in the desktop menu, is
+// pointed at) the sheet parts down the middle and folds up concertina-fashion at each side, the pleats nearest the middle moving first and pulling the rest after them; the
+// bunches are tied back, and the coin turns up between them with a glint. Closing unfolds it again. The motion is in .cu in chrome.css and follows the book mark's.
+// The sheet is eight pleats side by side. Each is drawn in the closed position, with the distance it travels (--dx), which side it folds toward (--s) and when it starts.
+const SHEET_X = 4.5, SHEET_W = 23, PLEATS = 8, PLEAT_W = SHEET_W / PLEATS, PILE_STEP = 0.95;
+const PLEAT = Array.from({ length: PLEATS }, (_, j) => {
+  const left = j < PLEATS / 2;
+  const k = left ? j : PLEATS - 1 - j; // 0 at the outer edge, 3 beside the middle
+  return { j, left, x: SHEET_X + j * PLEAT_W, dx: (left ? -1 : 1) * k * (PLEAT_W - PILE_STEP), s: left ? 1 : -1, open: (3 - k) * 45, shut: k * 40 };
+});
+function Pleat({ p, id }) {
+  const { x, j } = p;
+  const w = PLEAT_W + 0.06;
   return (
-    <g transform={mirror ? "matrix(-1 0 0 1 32 0)" : undefined}>
-      <path d={DRAPE} fill="#fff" />
-      <path d="M8.4 8.6C8 14 9 20 8.4 26Q10.35 28.2 12.3 26C11.7 20 12.7 14 12.3 8.6Z" fill="#000" fillOpacity=".1" />
-      <path d="M4.6 8.6C4.4 14 5 20 4.6 25.8M8.4 8.6C8 14 9 20 8.4 26M12.3 8.6C12.7 14 11.7 20 12.3 26M16.1 8.6V26" stroke="#000" strokeOpacity=".22" strokeWidth=".8" strokeLinecap="round" />
-      <path d="M4.5 8.6H16.2" stroke="#FFB84D" strokeWidth="1.1" />
-      <path d="M6.4 6.2v1.4M10.3 6.2v1.4M14.1 6.2v1.4" stroke="#000" strokeOpacity=".2" strokeWidth=".8" strokeLinecap="round" />
+    <g className={`cu-p ${p.left ? "cu-pl" : "cu-pr"}`} style={{ "--dx": `${p.dx}px`, "--s": p.s, "--o": `${p.open}ms`, "--c": `${p.shut}ms` }}>
+      <path d={`M${x} 5.5h${w}V26Q${x + w / 2} 28.4 ${x} 26Z`} fill="#fff" />
+      <path d={`M${x} 5.5h${w}V26Q${x + w / 2} 28.4 ${x} 26Z`} fill={`url(#${id}${j % 2 ? "b" : "a"})`} />
+      <path d={`M${x} 8.6V26`} stroke="#000" strokeOpacity=".2" strokeWidth=".7" strokeLinecap="round" />
+      <path d={`M${x} 8.6h${w}`} stroke="#FFB84D" strokeWidth="1.1" />
+      <path d={`M${x + w / 2} 6.2v1.4`} stroke="#000" strokeOpacity=".2" strokeWidth=".8" strokeLinecap="round" />
     </g>
   );
 }
@@ -397,8 +405,13 @@ export function IconCurtain({ size = 17, open }) {
   const [seen, setSeen] = useState(false);
   if (open && !seen) setSeen(true);
   const state = open ? "open" : seen ? "shut" : undefined;
+  const id = useId().replace(/:/g, "");
   return (
     <svg className="cu" data-state={state} width={size} height={size} viewBox="0 0 32 32" fill="none" strokeLinecap="round" strokeLinejoin="round">
+      <defs>
+        <linearGradient id={`${id}a`} x1="0" x2="1"><stop offset="0" stopColor="#000" stopOpacity=".16" /><stop offset=".7" stopColor="#000" stopOpacity="0" /></linearGradient>
+        <linearGradient id={`${id}b`} x1="0" x2="1"><stop offset=".3" stopColor="#000" stopOpacity="0" /><stop offset="1" stopColor="#000" stopOpacity=".16" /></linearGradient>
+      </defs>
       <circle className="cu-glow" cx="16" cy="16" r="7.9" fill="#fff" fillOpacity=".16" />
       <g className="cu-coin">
         <g transform="translate(16 16) scale(0.64) translate(-12 -12)" stroke="#fff" strokeWidth="2.4">
@@ -406,8 +419,7 @@ export function IconCurtain({ size = 17, open }) {
           <path d="M9.7 15.8V9.9c0-1.6 1.1-2.7 2.5-2.7 1.2 0 2.1.6 2.4 1.7M8.7 12.5h4.6M8.3 15.8h6.6" />
         </g>
       </g>
-      <g className="cu-l"><Drape /></g>
-      <g className="cu-r"><Drape mirror /></g>
+      {PLEAT.map((p) => <Pleat key={p.j} p={p} id={id} />)}
       <Tie x={6.3} cls="cu-tl" /><Tie x={25.7} cls="cu-tr" />
       <Spark x={22} y={8.6} cls="cu-s1" /><Spark x={10.2} y={24} cls="cu-s2" />
       <path d="M3.4 4.3h25.2" stroke="#fff" strokeWidth="2" />
@@ -684,12 +696,13 @@ export function IconParliament({ size = 17 }) {
 
 const iconProps = { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.8", strokeLinecap: "round", strokeLinejoin: "round" };
 
-export function IconTrend({ size = 17 }) {
+// The graph on the "Britain in numbers" tile: when its menu group opens, the line grows from where it starts up to where it ends, and the arrowhead lands last (see .tr in chrome.css).
+export function IconTrend({ size = 17, open }) {
   return (
-    <svg width={size} height={size} {...iconProps}>
+    <svg className="tr" data-state={open ? "open" : undefined} width={size} height={size} {...iconProps}>
       <path d="M4 4v15.5h16.5" />
-      <path d="M7.5 15l3.5-4 3 2.5 5-6.5" />
-      <path d="M16 7h3.5v3.5" />
+      <path className="tr-line" pathLength="1" d="M7.5 15l3.5-4 3 2.5 5-6.5" />
+      <path className="tr-head" d="M16 7h3.5v3.5" />
     </svg>
   );
 }

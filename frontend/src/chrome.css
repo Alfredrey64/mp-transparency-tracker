@@ -67,23 +67,31 @@
 @keyframes lg-f { from { transform: scaleX(1); opacity: 1; } to { transform: scaleX(0) skewY(-9deg); opacity: 0.7; } }
 @keyframes lg-b { from { transform: scaleX(0) skewY(9deg); opacity: 0.7; } to { transform: scaleX(1); opacity: 1; } }
 .site-nav { position: relative; display: flex; align-items: center; gap: 2px; flex: 1; min-width: 0; }
-/* The "What's hidden" tile (IconCurtain). Two white drapes hang closed over a coin. Drawn back (data-state="open") each sweeps to its own side with a tilt and a small
-   overshoot, the right one a beat after the left as the book's pages follow one another, and a gold tie drops in on each bunch with its tassel swinging; the coin then
-   turns up between them with its ring spinning to rest and two glints. data-state="shut" draws them together again, quicker. The rest states are written out first, so
-   reduced motion, which skips the animations below, shows the same pictures. */
-/* Only the parts that move take their origin from their own box; the mirrored drape keeps its own transform attribute. */
-.cu-l, .cu-r, .cu-coin, .cu-ring, .cu-glow, .cu-sp, .cu-tie, .cu-tas { transform-box: fill-box; }
-.cu-l { transform-origin: 0 0; } .cu-r { transform-origin: 100% 0; }
+/* The "Britain in numbers" tile (IconTrend): with its menu group opening, the graph line grows from where it starts to where it ends, then the arrowhead lands. */
+.tr-line { stroke-dasharray: 1 1; }
+.tr-head, .tr-line { transform-box: fill-box; }
+@media (prefers-reduced-motion: no-preference) {
+  .tr[data-state="open"] .tr-line { animation: tr-draw 0.95s cubic-bezier(0.35, 0.1, 0.25, 1) 0.15s both; }
+  .tr[data-state="open"] .tr-head { animation: tr-head 0.35s cubic-bezier(0.3, 1.5, 0.5, 1) 1s both; transform-origin: 100% 0; }
+}
+@keyframes tr-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes tr-head { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: none; } }
+/* The "What's hidden" tile (IconCurtain). One pleated sheet hangs closed over a coin. Drawn back (data-state="open") it parts down the middle and each half folds up
+   concertina-fashion at its own side: the pleats beside the middle move first and pull the rest after them (--o is each pleat's start), hems trailing, each swinging a little
+   past where it ends. A gold tie drops onto each bunch with its tassel swinging, and the coin spins up between them like a flipped coin, its ring turning to rest, with two
+   glints. data-state="shut" unfolds the sheet again, outer pleats first (--c), quicker. The rest states are written out first, so reduced motion, which skips the
+   animations below, shows the same pictures. */
+/* Only the parts that move take their origin from their own box. */
+.cu-p, .cu-coin, .cu-ring, .cu-glow, .cu-sp, .cu-tie, .cu-tas { transform-box: fill-box; }
+.cu-pl { transform-origin: 0 0; } .cu-pr { transform-origin: 100% 0; }
 .cu-coin, .cu-ring, .cu-glow, .cu-sp { transform-origin: 50% 50%; }
-.cu-tie { transform-origin: 50% 0; }
-.cu-tas { transform-origin: 50% 0; }
+.cu-tie, .cu-tas { transform-origin: 50% 0; }
 .cu-coin, .cu-glow, .cu-tie, .cu-sp { opacity: 0; }
 .cu-sp { transform: scale(0); }
-.cu[data-state="open"] .cu-l, .cu[data-state="open"] .cu-r { transform: scaleX(0.3); }
+.cu[data-state="open"] .cu-p { transform: translateX(var(--dx)) scaleX(0.3); }
 .cu[data-state="open"] .cu-coin, .cu[data-state="open"] .cu-glow, .cu[data-state="open"] .cu-tie { opacity: 1; }
 @media (prefers-reduced-motion: no-preference) {
-  .cu[data-state="open"] .cu-l { animation: cu-open-l 1.15s both; }
-  .cu[data-state="open"] .cu-r { animation: cu-open-r 1.15s 0.07s both; }
+  .cu[data-state="open"] .cu-p { animation: cu-fold 1.05s both; animation-delay: var(--o); }
   .cu[data-state="open"] .cu-tl { animation: cu-tie 0.55s cubic-bezier(0.3, 1.4, 0.5, 1) 0.62s both; }
   .cu[data-state="open"] .cu-tr { animation: cu-tie 0.55s cubic-bezier(0.3, 1.4, 0.5, 1) 0.69s both; }
   .cu[data-state="open"] .cu-tas { animation: cu-swing 1.3s ease-out 0.7s both; }
@@ -92,31 +100,25 @@
   .cu[data-state="open"] .cu-glow { animation: cu-glow 1.1s ease-out 0.55s both; }
   .cu[data-state="open"] .cu-s1 { animation: cu-spark 0.7s ease-out 0.95s both; }
   .cu[data-state="open"] .cu-s2 { animation: cu-spark 0.7s ease-out 1.12s both; }
-  .cu[data-state="shut"] .cu-l { animation: cu-shut-l 0.62s both; }
-  .cu[data-state="shut"] .cu-r { animation: cu-shut-r 0.62s 0.05s both; }
+  .cu[data-state="shut"] .cu-p { animation: cu-unfold 0.6s both; animation-delay: var(--c); }
   .cu[data-state="shut"] .cu-coin, .cu[data-state="shut"] .cu-glow { animation: cu-coin-out 0.3s ease-in both; }
   .cu[data-state="shut"] .cu-tie { animation: cu-tie-out 0.22s ease-in both; }
 }
-/* The drapes are pulled from the top, so their hems trail behind: each leans back toward the middle as it sweeps out (skewX), swings a little past where it ends and settles.
-   Before they part they gather for a moment, as cloth does when it is first pulled. Closing is the same the other way, quicker. */
-@keyframes cu-open-l {
-  0% { transform: scaleX(1) skewX(0); animation-timing-function: ease-out; }
-  10% { transform: scaleX(1.04) skewX(-2deg); animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1); }
-  50% { transform: scaleX(0.42) skewX(9deg); animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1); }
-  72% { transform: scaleX(0.27) skewX(-4deg); animation-timing-function: ease-in-out; }
-  87% { transform: scaleX(0.31) skewX(1.6deg); animation-timing-function: ease-in-out; }
-  100% { transform: scaleX(0.3) skewX(0); }
+/* A pleat is pulled from the top, so its hem trails: it leans back toward the middle as it travels (skewX, signed by --s for the side it is on), swings a little past
+   its place and settles. */
+@keyframes cu-fold {
+  0% { transform: none; animation-timing-function: cubic-bezier(0.3, 0.1, 0.3, 1); }
+  52% { transform: translateX(calc(var(--dx) * 1.06)) scaleX(0.46) skewX(calc(var(--s) * 8deg)); animation-timing-function: ease-in-out; }
+  76% { transform: translateX(calc(var(--dx) * 1.01)) scaleX(0.27) skewX(calc(var(--s) * -3.5deg)); animation-timing-function: ease-in-out; }
+  90% { transform: translateX(var(--dx)) scaleX(0.31) skewX(calc(var(--s) * 1.4deg)); animation-timing-function: ease-in-out; }
+  100% { transform: translateX(var(--dx)) scaleX(0.3); }
 }
-@keyframes cu-open-r {
-  0% { transform: scaleX(1) skewX(0); animation-timing-function: ease-out; }
-  10% { transform: scaleX(1.04) skewX(2deg); animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1); }
-  50% { transform: scaleX(0.42) skewX(-9deg); animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1); }
-  72% { transform: scaleX(0.27) skewX(4deg); animation-timing-function: ease-in-out; }
-  87% { transform: scaleX(0.31) skewX(-1.6deg); animation-timing-function: ease-in-out; }
-  100% { transform: scaleX(0.3) skewX(0); }
+@keyframes cu-unfold {
+  0% { transform: translateX(var(--dx)) scaleX(0.3); animation-timing-function: ease-in; }
+  50% { transform: translateX(calc(var(--dx) * 0.4)) scaleX(0.7) skewX(calc(var(--s) * -7deg)); animation-timing-function: ease-out; }
+  82% { transform: scaleX(1.02) skewX(calc(var(--s) * 2.5deg)); animation-timing-function: ease-in-out; }
+  100% { transform: none; }
 }
-@keyframes cu-shut-l { 0% { transform: scaleX(0.3) skewX(0); animation-timing-function: ease-in; } 50% { transform: scaleX(0.72) skewX(-8deg); animation-timing-function: ease-out; } 82% { transform: scaleX(1.03) skewX(2.5deg); } 100% { transform: scaleX(1) skewX(0); } }
-@keyframes cu-shut-r { 0% { transform: scaleX(0.3) skewX(0); animation-timing-function: ease-in; } 50% { transform: scaleX(0.72) skewX(8deg); animation-timing-function: ease-out; } 82% { transform: scaleX(1.03) skewX(-2.5deg); } 100% { transform: scaleX(1) skewX(0); } }
 @keyframes cu-tie { from { opacity: 0; transform: translateY(-4px) scale(0.6); } to { opacity: 1; transform: none; } }
 @keyframes cu-tie-out { to { opacity: 0; } }
 @keyframes cu-swing { 0% { transform: rotate(0); } 18% { transform: rotate(14deg); } 42% { transform: rotate(-9deg); } 64% { transform: rotate(5deg); } 82% { transform: rotate(-2deg); } 100% { transform: rotate(0); } }
