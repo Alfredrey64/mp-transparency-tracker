@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-03T11:35:40.302Z",
-  "succeededCount": 33,
-  "totalCount": 34,
+  "generatedAt": "2026-11-04T11:50:58.596Z",
+  "succeededCount": 36,
+  "totalCount": 37,
   "sources": [
     {
       "label": "Financial interests",
@@ -84,6 +84,14 @@
       "succeeded": true
     },
     {
+      "label": "The stages each bill has been through",
+      "succeeded": true
+    },
+    {
+      "label": "What happened and the outcome, read from each standards report",
+      "succeeded": true
+    },
+    {
       "label": "Constituency results & petitions",
       "succeeded": true
     },
@@ -121,6 +129,10 @@
     },
     {
       "label": "Parliament calendar (what is coming up)",
+      "succeeded": true
+    },
+    {
+      "label": "Background notes for calendar entries (committee purposes, earlier debates)",
       "succeeded": true
     },
     {
