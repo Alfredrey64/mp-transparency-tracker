@@ -74,5 +74,13 @@
   "10634": {
     "offence": "Accepted payment from an undercover journalist posing as a lobbyist to ask parliamentary questions, in what the Committee called one of the most sustained breaches of registration and paid advocacy rules it had encountered.",
     "sanction": "A 6-month suspension was being prepared; resigned as an MP days before it would have been handed down, triggering a by-election."
+  },
+  "55617": {
+    "offence": "Wrote to the Parliamentary Commissioner for Standards while he was investigating another MP, James McMurdock. The letter urged the Commissioner to reject any denial from Mr McMurdock and called his behaviour part of an “established pattern” on the far right. MPs are banned from lobbying the Commissioner to sway an investigation, and the Commissioner said the letter “can only be read as an attempt to influence” his decision.",
+    "sanction": "The Committee found a minor and inadvertent breach and recommended no further action. Mr Bailey had apologised, called his letter a “serious error” and asked for it to be withdrawn. The Committee said so in an interim report in December 2025 and published the full details once the case it was about had ended."
+  },
+  "55624": {
+    "offence": "Accused of starting an “N-Tower” on X on 5 August 2025: a trick where users each post one letter to spell out a racial slur and get past moderation. The letter “N” was posted from his account, and five other accounts added the rest within half an hour. Another MP, Ben Obese-Jecty, complained. Mr McMurdock said it was an accident, perhaps a “pocket post” or one of his children using his phone.",
+    "sanction": "The Commissioner thought he had broken Rule 11, which bans actions that do significant damage to the reputation of the House or its Members generally. The Committee disagreed. It found he probably did post the letter himself, so he started a racial slur online whether he meant to or not, but it could not say he meant to, and it does not count starting one by accident as a breach. It added that even a deliberate post would have harmed his own reputation, not that of MPs in general. It recommended no further action."
   }
 }

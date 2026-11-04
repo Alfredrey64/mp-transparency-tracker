@@ -319,6 +319,7 @@ dialog[open]::backdrop { animation: fade-in 0.15s ease both; }
   .site-search-btn span, .site-search-btn kbd { display: none; }
 }
 @media (max-width: 1260px) {
+  :root { --header-h: 60px; }
   .site-bar { gap: 12px; padding: 0 16px; height: 60px; }
   .site-nav, .site-cta, .site-watch, .site-mega, .site-scrim { display: none !important; }
   .site-actions { margin-left: auto; }

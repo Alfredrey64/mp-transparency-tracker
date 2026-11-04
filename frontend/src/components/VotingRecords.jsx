@@ -153,8 +153,8 @@ function BillDetails({ bill, politicians, scrollIntoView }) {
 
   return (
     <div ref={ref} style={{ border: `1px solid ${category.color}`, borderRadius: 14, background: COLORS.paperCard, boxShadow: `inset 0 4px 0 ${category.color}`, scrollMarginTop: 20 }}>
-      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, fontWeight: 700, color: COLORS.ink, padding: "18px 20px 0", lineHeight: 1.3 }}>{bill.short_title}</div>
-    <div style={{ padding: "0 20px 20px 20px", borderTop: `1px solid ${COLORS.hairline}`, marginTop: -1 }}>
+      <h3 style={{ margin: 0, fontFamily: FONT_DISPLAY, fontSize: "clamp(21px, 2.6vw, 26px)", fontWeight: 700, color: COLORS.ink, padding: "24px 20px 0", lineHeight: 1.2, letterSpacing: "-0.01em", textWrap: "balance" }}>{bill.short_title}</h3>
+    <div style={{ padding: "0 20px 20px 20px" }}>
       <div style={{ paddingTop: 16 }}>
         {(plain || bill.long_title) && (
           <div style={{ marginBottom: 12, padding: "12px 14px", borderRadius: 12, background: `${category.color}0d`, borderLeft: `4px solid ${category.color}` }}>

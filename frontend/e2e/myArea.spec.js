@@ -61,11 +61,13 @@ test("the planning card names the deciding council, lists the designations in pl
   await expect(card).toContainText("No entry here does not prove there is none");
 });
 
-test("the planning card says planning is separate outside England", async ({ page }) => {
+test("the planning card is left out outside England, and when nothing is on record", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await mockServices(page, { over: { country: "Wales" } });
   await page.goto("/myArea");
-  await expect(page.locator(".ma-planning")).toContainText("covers England only", { timeout: 20000 });
+  await expect(page.locator(".ma-section")).toHaveCount(6, { timeout: 20000 });
+  await expect(page.locator(".ma-skel")).toHaveCount(0, { timeout: 20000 });
+  await expect(page.locator(".ma-planning")).toHaveCount(0);
 });
 
 test("the jump links move to their section", async ({ page }) => {

@@ -24,6 +24,7 @@ html[data-links] body a:not(.btn):not([class*="btn"]) { text-decoration: underli
 html[data-calm] *, html[data-calm] *::before, html[data-calm] *::after { animation-duration: 0.001ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; transition-delay: 0ms !important; scroll-behavior: auto !important; }
 
 /* The header's phone layout, switched on early when bigger or wider text would make the menu run into the buttons beside it (see compactHeader in lib/display.js). */
+html[data-compact] { --header-h: 60px; }
 html[data-compact] .site-bar { gap: 12px; padding: 0 16px; height: 60px; }
 html[data-compact] .site-nav, html[data-compact] .site-cta, html[data-compact] .site-watch, html[data-compact] .site-mega, html[data-compact] .site-scrim { display: none !important; }
 html[data-compact] .site-actions { margin-left: auto; }

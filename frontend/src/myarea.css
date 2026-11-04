@@ -120,7 +120,7 @@
 .ma-g > b { font: 700 clamp(28px, 3.2vw, 38px)/1.1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); letter-spacing: -0.02em; font-variant-numeric: lining-nums tabular-nums; }
 .ma-g > small { font: 500 13px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .ma-g-skel { min-height: 110px; box-shadow: var(--shadow-1); }
-.ma-jump { position: sticky; top: calc(var(--header-h) + 8px); z-index: 20; display: flex; gap: 8px; margin: 18px -4px 0; padding: 8px 4px; overflow-x: auto; scrollbar-width: none; background: color-mix(in srgb, var(--c-paper) 94%, transparent); border-radius: 18px; }
+.ma-jump { position: sticky; top: var(--header-h); z-index: 20; display: flex; gap: 8px; margin: 18px -4px 0; padding: 8px 4px; overflow-x: auto; scrollbar-width: none; background: color-mix(in srgb, var(--c-paper) 94%, transparent); border-radius: 0 0 18px 18px; }
 .ma-jump::-webkit-scrollbar { display: none; }
 .ma-jump button { flex: none; min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--c-hairline); background: var(--c-paper-card); font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); cursor: pointer; transition: background-color 0.25s var(--ease-out), border-color 0.25s var(--ease-out), color 0.25s var(--ease-out); }
 .ma-jump button:hover { border-color: var(--c-ink-soft); }
