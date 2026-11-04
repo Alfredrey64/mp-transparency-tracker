@@ -29,6 +29,9 @@ import { plainPoints, plainSentence } from "../lib/billPlain";
 import { explainStage, whoItAffects } from "../lib/billExplain";
 import { getBillDescription } from "../lib/billDescriptions";
 import ExpandGrid from "./ExpandGrid";
+import BillStages from "./BillStages";
+import ShareButton from "./ShareButton";
+import { pageShareSpec } from "../lib/shareSpecs";
 
 // A division (Commons vote) is stored per-MP with no bill_id — divisions and
 // bills come from two separate parliamentary data sources with no shared
@@ -182,6 +185,7 @@ function BillDetails({ bill, politicians, scrollIntoView }) {
               <li style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.55 }}><strong>Have your say:</strong> <a href="#/myMP" style={{ color: COLORS.ink, fontWeight: 700 }}>find your MP</a> and write to them, or see how it moves on <a href="#/thisWeek" style={{ color: COLORS.ink, fontWeight: 700 }}>what changed this week</a>.</li>
             </ul>
           </div>
+        <BillStages bill={bill} />
         {bill.summary && (
           <div style={{ marginBottom: 12 }}>
             <FieldLabel>Summary</FieldLabel>
@@ -231,10 +235,14 @@ function BillDetails({ bill, politicians, scrollIntoView }) {
           </div>
         )}
 
-        <div style={{ marginTop: 16 }}>
+        <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px 18px" }}>
           <a href={bill.source_url} target="_blank" rel="noreferrer" style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: readable(category.color) }}>
             View this bill on bills.parliament.uk ↗
           </a>
+          <ShareButton
+            filename={`bill-${String(bill.short_title ?? "bill").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`}
+            getSpec={() => pageShareSpec({ kicker: "A bill in Parliament", title: bill.short_title, subtitle: bill.is_act ? "It has become law." : bill.is_defeated ? "It was defeated." : `Now at ${bill.current_stage ?? "an early stage"}${bill.current_house ? ` in the ${bill.current_house === "Commons" ? "House of Commons" : "House of Lords"}` : ""}. ${stageNote?.next ?? ""}`.trim(), accent: category.color, link: window.location.href })}
+          />
         </div>
       </div>
     </div>
