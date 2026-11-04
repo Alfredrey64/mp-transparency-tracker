@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useGo } from "./useGo";
 import { browse, describe } from "../../lib/reportsView";
 import { dateLong } from "../../lib/upcoming";
+import DownloadCsvButton from "../DownloadCsvButton";
 
 // Every select committee report on the Committee reports page, one card each, written in plain words: who published it and when, what it looked into, whether the government has
 // replied, and a bar showing the days between the report, the deadline and the reply. It can be filtered by where the report stands and searched by committee or subject. Ten
@@ -64,6 +65,15 @@ export default function ReportBrowser({ data }) {
         })}
       </ul>
       {list.length > shown && <button type="button" className="rb-more" onClick={() => setShown((n) => n + PAGE)}>Show {Math.min(PAGE, list.length - shown)} more of {list.length - shown}</button>}
+      <p className="rb-csv">
+        <DownloadCsvButton
+          label="Download these reports as a spreadsheet" slug="committee-reports" rows={list}
+          columns={[
+            { header: "Committee", key: "committee" }, { header: "Report", key: "title" }, { header: "Published", key: "date" }, { header: "Government reply due", key: "due" },
+            { header: "Government reply", value: (r) => r.replies[0]?.date ?? "" }, { header: "Link", key: "url" },
+          ]}
+        />
+      </p>
     </div>
   );
 }

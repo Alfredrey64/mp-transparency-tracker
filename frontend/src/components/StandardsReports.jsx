@@ -9,6 +9,7 @@ import { IconGavel, IconSearch } from "./icons";
 import MANUAL_DETAILS from "../data/standardsReportDetails.json";
 import AUTO_DETAILS from "../data/standardsReportAuto.json";
 import Loading from "./Loading";
+import DownloadCsvButton from "./DownloadCsvButton";
 import { GlanceCard, YearColumns } from "./Glance";
 
 // A hand-written entry wins; otherwise the wording read out of the report itself by fetch-standards-details.js.
@@ -349,6 +350,19 @@ export default function StandardsReports({ onSelectPolitician }) {
           ))}
         </div>
       </div>
+
+      {filtered.length > 0 && (
+        <p style={{ margin: "-8px 0 20px" }}>
+          <DownloadCsvButton
+            label="Download these reports as a spreadsheet" slug="standards-reports" rows={filtered}
+            columns={[
+              { header: "MP", key: "extracted_name" }, { header: "Report", key: "title" }, { header: "Published", key: "publication_date" },
+              { header: "What happened", value: (r) => detailFor(r.id)?.offence ?? "" }, { header: "The outcome", value: (r) => detailFor(r.id)?.sanction ?? "" },
+              { header: "Current MP", value: (r) => (r.is_current_mp ? "Yes" : "No") }, { header: "Link to the report", key: "report_url" },
+            ]}
+          />
+        </p>
+      )}
 
       {reports === null && <Loading compact />}
       {reports !== null && failed && <LoadFailedNote item="the standards reports list" />}

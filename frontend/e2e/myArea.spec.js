@@ -70,6 +70,23 @@ test("the planning card is left out outside England, and when nothing is on reco
   await expect(page.locator(".ma-planning")).toHaveCount(0);
 });
 
+test("the short print version keeps the main cards and leaves out the rest", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await mockServices(page);
+  await page.goto("/myArea");
+  await expect(page.locator(".ma-skel")).toHaveCount(0, { timeout: 20000 });
+  await expect(page.getByRole("button", { name: "Print a short version" })).toBeVisible();
+  await page.evaluate(() => { document.documentElement.dataset.printShort = "1"; });
+  await page.emulateMedia({ media: "print" });
+  await expect(page.locator(".ma-council")).toBeVisible();
+  await expect(page.locator(".ma-mpcard")).toBeVisible();
+  await expect(page.locator(".ma-census")).toBeHidden();
+  await expect(page.locator("#ma-region")).toBeHidden();
+  await page.emulateMedia({ media: "screen" });
+  await page.evaluate(() => { delete document.documentElement.dataset.printShort; });
+  await expect(page.locator(".ma-census")).toBeVisible();
+});
+
 test("the jump links move to their section", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await mockServices(page);

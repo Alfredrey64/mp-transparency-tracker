@@ -5,6 +5,7 @@ import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../them
 import { PageHeader } from "./shared";
 import { partyColour, formatDate } from "../lib/format";
 import { getWatchlist, getLastChecked, setLastChecked } from "../lib/watchlist";
+import { getWatchedBills, removeWatchedBill, billChange, markBillsSeen } from "../lib/billWatch";
 import { IconStar } from "./icons";
 import { LoadFailedNote } from "./MpCards";
 
@@ -90,7 +91,48 @@ function WatchlistEntryCard({ entry, onSelectPolitician }) {
   );
 }
 
-export default function WatchlistDigest({ onSelectPolitician }) {
+// What has happened to a bill someone follows since they last looked: a new stage, becoming law, or being defeated.
+function BillWatchCard({ row, onSelectBill, onRemove }) {
+  const { entry, current, change } = row;
+  const title = current?.short_title ?? entry.title;
+  return (
+    <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, boxShadow: `var(--shadow-1), inset 0 4px 0 ${change ? COLORS.accent : COLORS.hairline}`, borderRadius: 14, padding: 20 }}>
+      <button onClick={() => onSelectBill?.(current ?? { bill_id: entry.bill_id })} style={{ display: "block", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left", marginBottom: 8 }}>
+        <span style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink }}>{title}</span>
+      </button>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: change ? COLORS.ink : COLORS.inkSoft, lineHeight: 1.5 }}>
+        {!current ? "This bill is no longer listed." : change?.becameLaw ? "It has become law." : change?.defeated ? "It was defeated." : change ? <>Moved from <b>{change.from ?? "an earlier stage"}</b> to <b>{change.to ?? "a new stage"}</b>{change.updated ? <> · {formatDate(change.updated)}</> : null}.</> : <>No change since you last looked. It is at <b>{current.current_stage ?? "an unknown stage"}</b>.</>}
+      </div>
+      <button onClick={() => onRemove(entry.bill_id)} style={{ marginTop: 10, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: readable("#9C3B3B") }}>Stop following</button>
+    </div>
+  );
+}
+
+export default function WatchlistDigest({ onSelectPolitician, onSelectBill }) {
+  const [bills, setBills] = useState(() => getWatchedBills());
+  const [billRows, setBillRows] = useState(() => (getWatchedBills().length === 0 ? [] : null));
+  const [billsFailed, setBillsFailed] = useState(false);
+  useEffect(() => {
+    const watched = getWatchedBills();
+    if (watched.length === 0) return;
+    let cancelled = false;
+    supabase.from("bills").select("bill_id, short_title, current_stage, is_act, is_defeated, last_updated").in("bill_id", watched.map((b) => b.bill_id))
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        // A failed request must not look like "nothing moved", and the baseline must not move, or what was missed would never be shown.
+        if (error) { setBillsFailed(true); return; }
+        const rows = watched.map((entry) => {
+          const current = (data ?? []).find((c) => c.bill_id === entry.bill_id) ?? null;
+          return { entry, current, change: billChange(entry, current) };
+        }).sort((a, b) => Number(!!b.change) - Number(!!a.change));
+        setBillRows(rows);
+        markBillsSeen(data ?? []);
+      })
+      .catch(() => { if (!cancelled) setBillsFailed(true); });
+    return () => { cancelled = true; };
+  }, []);
+  const stopFollowing = (id) => { removeWatchedBill(id); setBills(getWatchedBills()); setBillRows((rows) => rows?.filter((r) => r.entry.bill_id !== id) ?? rows); };
+
   const [watchlist] = useState(() => getWatchlist());
   const [previousCheck] = useState(() => getLastChecked());
   const [entries, setEntries] = useState(() => (watchlist.length === 0 ? [] : null));
@@ -149,21 +191,23 @@ export default function WatchlistDigest({ onSelectPolitician }) {
       <PageHeader
         icon={IconStar}
         kicker="Your Watchlist"
-        title="What's changed for MPs you follow"
+        title="What's changed for MPs and bills you follow"
         subtitle={
-          watchlist.length === 0
-            ? "You're not following any MPs yet. Tap the star on an MP's profile to add them here."
+          watchlist.length === 0 && bills.length === 0
+            ? "You're not following any MPs or bills yet. Tap the star on an MP's profile, or Follow this bill on a bill's card, to add them here."
+            : watchlist.length === 0
+            ? `Where each of the ${bills.length} bill${bills.length === 1 ? "" : "s"} you follow has got to since you last looked.`
             : `New declared interests, votes against their own party, and news mentions since ${
                 previousCheck ? formatDate(new Date(previousCheck).toISOString()) : "you started following them"
               }, for the ${watchlist.length} MP${watchlist.length === 1 ? "" : "s"} you follow.`
         }
       />
 
-      {watchlist.length === 0 && (
+      {watchlist.length === 0 && bills.length === 0 && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 20, lineHeight: 1.6, maxWidth: 560 }}>
-          Nothing to show yet. Visit any MP's profile and tap the star next to their name to start following them.
+          Nothing to show yet. Visit any MP's profile and tap the star next to their name to start following them, or open a bill on the voting page and press Follow this bill.
           Come back to this page any time to see what's changed since your last visit. This list lives only in this
-          browser; there's no account and nothing is sent anywhere.
+          browser; there's no account, nothing is sent anywhere, and we can't email you.
         </div>
       )}
 
@@ -172,6 +216,17 @@ export default function WatchlistDigest({ onSelectPolitician }) {
       {watchlist.length > 0 && entries === null && !failed && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 20 }}>Checking for updates…</div>
       )}
+
+      {billsFailed && <div style={{ marginTop: 20 }}><LoadFailedNote item="the bills you follow" /></div>}
+      {bills.length > 0 && billRows && billRows.length > 0 && (
+        <>
+          <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, margin: "28px 0 0" }}>Bills you follow</h2>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16, marginTop: 14 }}>
+            {billRows.map((r) => <BillWatchCard key={r.entry.bill_id} row={r} onSelectBill={onSelectBill} onRemove={stopFollowing} />)}
+          </div>
+        </>
+      )}
+      {watchlist.length > 0 && entries && entries.length > 0 && bills.length > 0 && <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, margin: "28px 0 0" }}>MPs you follow</h2>}
 
       {entries && entries.length > 0 && (
         <div style={{ display: "flex", flexDirection: "column", gap: 16, marginTop: 20 }}>

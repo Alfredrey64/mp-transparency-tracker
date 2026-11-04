@@ -616,7 +616,7 @@ export default function App() {
             {EXPLAINERS[view] && <ExplainerView page={EXPLAINERS[view]} />}
             {view === "lobbyingRegister" && <LobbyingRegister />}
             {view === "followTheMoney" && <FollowTheMoney key={viewParam ?? ""} initialQuery={viewParam} onSelectPolitician={handleViewProfile} />}
-            {view === "watchlist" && <WatchlistDigest onSelectPolitician={handleViewProfile} />}
+            {view === "watchlist" && <WatchlistDigest onSelectPolitician={handleViewProfile} onSelectBill={(bill) => handleNavigateForBill("voting", bill)} />}
             {view === "numbers" && <ParliamentNumbers house={viewParam} onNavigate={handleNavigate} />}
             {view === "topics" && <AskedAbout initialTopic={viewParam} onSelectPolitician={handleViewProfile} onNavigateForMp={handleNavigateForMp} />}
             {view === "rebels" && <Rebels onNavigate={handleNavigate} />}

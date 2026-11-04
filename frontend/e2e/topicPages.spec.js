@@ -13,6 +13,7 @@ const pages = [
   ["getThingsDone", "How to get something done", "12 months"],
   ["inquiries", "Public inquiries", "£1.5bn+"],
   ["departments", "Spending by department", "£648bn"],
+  ["statutoryInstruments", "Laws made by ministers", "Had to be approved"],
 ];
 
 for (const [key, title, figure] of pages) {

@@ -5,5 +5,6 @@ export const crimePeople = () => import("../data/crimePeople.json");
 export const deprivationNations = () => import("../data/deprivationNations.json");
 export const lordsVotes = () => import("../data/lordsVotes.json");
 export const committeeReports = () => import("../data/committeeReports.json");
+export const statutoryInstruments = () => import("../data/statutoryInstruments.json");
 export const parliamentCalendar = () => import("../data/parliamentCalendar.json");
 export const regionalBreakdowns = () => import("../data/regionalBreakdowns.json");

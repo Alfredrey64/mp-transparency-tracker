@@ -516,6 +516,11 @@ export const PAGE_GUIDES = {
     why: "A committee can only recommend. The government's reply is the public record of whether it accepts the recommendations.",
     notShown: "What each reply says, whether the government kept to what it promised, and replies that came as letters or were not linked to the report in Parliament's records.",
   },
+  statutoryInstruments: {
+    what: "How many statutory instruments (rules ministers make under an Act) were laid in the last 12 months, which kinds need Parliament's approval, and the newest ones.",
+    why: "Much detailed law is made this way, and how Parliament checks it depends on the kind.",
+    notShown: "Whether an instrument was debated or opposed, or what each does in detail. Rules made by the devolved governments are not included.",
+  },
   howBudgetWorks: {
     what: "What the Budget is, how it differs from the Spending Review, who checks the numbers, and what Budget 2026 changed for household bills and pay.",
     why: "The Budget decides how much tax you pay, what help you get with bills and how much each department can spend.",

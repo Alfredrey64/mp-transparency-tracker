@@ -194,6 +194,14 @@ export function AreaTools({ data, x, i }) {
       go(mine, seat);
     } catch { setState({ busy: false, error: "We couldn't find that postcode. Check it is a full, valid UK postcode." }); }
   };
+  // The short version keeps the cards people carry to a meeting; the rest are hidden by the print rules in myarea.css until printing is over.
+  const printShort = () => {
+    const root = document.documentElement;
+    root.dataset.printShort = "1";
+    const done = () => { delete root.dataset.printShort; window.removeEventListener("afterprint", done); };
+    window.addEventListener("afterprint", done);
+    window.print();
+  };
   const spec = () => {
     const next = x?.contests?.[0]?.date ?? council?.next?.[0]?.[0] ?? null;
     const days = next ? daysUntil(next) : null;
@@ -209,10 +217,11 @@ export function AreaTools({ data, x, i }) {
       <div className="ma-tools-grid">
         <div>
           <h4>Take this page with you</h4>
-          <p className="ma-sub">A picture to send to someone, or the whole page on paper or as a PDF. Your postcode is never in either.</p>
+          <p className="ma-sub">A picture to send to someone, or the page on paper or as a PDF: a short version with the main cards, or everything. Your postcode is never in either.</p>
           <div className="ma-tools-row">
             <ShareButton getSpec={spec} filename="my-area" label="Share a summary card" />
-            <button type="button" className="btn btn-secondary" onClick={() => window.print()}>Print or save as PDF</button>
+            <button type="button" className="btn btn-secondary" onClick={printShort}>Print a short version</button>
+            <button type="button" className="btn btn-secondary" onClick={() => window.print()}>Print everything</button>
           </div>
         </div>
         <div>

@@ -327,6 +327,9 @@
   .ma-card *, .ma-section > header::before { transition: none !important; animation: none !important; }
   .ma-card:not([data-in="true"]) *, .ma-section:not([data-in="true"]) > header::before { transform: none !important; opacity: 1 !important; stroke-dashoffset: 0 !important; }
   .ma-jump { display: none; }
+  /* "Print a short version": your MP, seat, everyone who speaks for you, your council and what it does, planning, elections and where to get help. */
+  html[data-print-short] .ma-card:not(.ma-mpcard):not(.ma-seat):not(.ma-reps):not(.ma-council):not(.ma-people-card):not(.ma-tax):not(.ma-who):not(.ma-planning):not(.ma-contests):not(.ma-help-card) { display: none !important; }
+  html[data-print-short] #ma-place, html[data-print-short] #ma-region { display: none !important; }
 }
 
 .ma-where { display: grid; grid-template-columns: minmax(240px, 400px) minmax(0, 1fr); gap: 8px 32px; align-items: center; }

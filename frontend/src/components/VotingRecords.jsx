@@ -31,6 +31,8 @@ import { getBillDescription } from "../lib/billDescriptions";
 import ExpandGrid from "./ExpandGrid";
 import BillStages from "./BillStages";
 import ShareButton from "./ShareButton";
+import FollowBillButton from "./FollowBillButton";
+import DownloadCsvButton from "./DownloadCsvButton";
 import { pageShareSpec } from "../lib/shareSpecs";
 
 // A division (Commons vote) is stored per-MP with no bill_id — divisions and
@@ -239,6 +241,7 @@ function BillDetails({ bill, politicians, scrollIntoView }) {
           <a href={bill.source_url} target="_blank" rel="noreferrer" style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 12.5, color: readable(category.color) }}>
             View this bill on bills.parliament.uk ↗
           </a>
+          <FollowBillButton bill={bill} />
           <ShareButton
             filename={`bill-${String(bill.short_title ?? "bill").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`}
             getSpec={() => pageShareSpec({ kicker: "A bill in Parliament", title: bill.short_title, subtitle: bill.is_act ? "It has become law." : bill.is_defeated ? "It was defeated." : `Now at ${bill.current_stage ?? "an early stage"}${bill.current_house ? ` in the ${bill.current_house === "Commons" ? "House of Commons" : "House of Lords"}` : ""}. ${stageNote?.next ?? ""}`.trim(), accent: category.color, link: window.location.href })}
@@ -663,6 +666,18 @@ export default function VotingRecords({ initialMp = null, initialBill = null, in
           card={(bill, { open, toggle, panelId }) => <BillEntry key={bill.bill_id} bill={bill} open={open} toggle={toggle} panelId={panelId} />}
           panel={(bill) => <BillDetails bill={bill} politicians={politicians} scrollIntoView={bill.bill_id === initialBill} />}
         />
+        {billsShown.length > 0 && (
+          <p style={{ margin: "18px 0 0" }}>
+            <DownloadCsvButton
+              label="Download these bills as a spreadsheet" slug="bills" rows={billsShown}
+              columns={[
+                { header: "Bill", key: "short_title" }, { header: "Stage", key: "current_stage" }, { header: "House", key: "current_house" }, { header: "Department", key: "sponsoring_department" },
+                { header: "Now law", value: (b) => (b.is_act ? "Yes" : "No") }, { header: "Defeated", value: (b) => (b.is_defeated ? "Yes" : "No") },
+                { header: "Last updated", value: (b) => String(b.last_updated ?? "").slice(0, 10) }, { header: "Link", key: "source_url" },
+              ]}
+            />
+          </p>
+        )}
       </div>
     </div>
   );

@@ -21,6 +21,7 @@ export const EXPLAINER_KEYS = [
   "flooding",
   "digital",
   "committeeReports",
+  "statutoryInstruments",
   "howBudgetWorks",
   "getThingsDone",
   "inquiries",

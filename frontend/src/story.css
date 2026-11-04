@@ -1227,3 +1227,7 @@
 .st-duo li { gap: 9px; padding: 14px 18px 15px; border-radius: 14px; background: color-mix(in srgb, var(--tc) 4%, var(--c-paper-card)); border: 1px solid var(--c-hairline); border-left: 4px solid color-mix(in srgb, var(--tc) 55%, var(--c-hairline)); transition: background-color 0.2s ease, border-color 0.2s ease; }
 .st-duo li:hover { background: color-mix(in srgb, var(--tc) 9%, var(--c-paper-card)); border-left-color: var(--tc); }
 @media (max-width: 560px) { .st-duo li { padding: 12px 14px 13px; } }
+
+/* The instrument browser on Laws made by ministers (components/story/InstrumentBrowser.jsx) borrows the report browser's cards. */
+.rb-card[data-st="approve"] { --sc: #3F7D5C; } .rb-card[data-st="object"] { --sc: #5B6784; }
+.rb-csv { margin: 0; justify-self: start; }
