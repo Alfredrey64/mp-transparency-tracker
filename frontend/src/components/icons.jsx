@@ -201,7 +201,7 @@ export function IconPulse({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="9" />
-      <path d="M8 12h2l1.5 3.5L14 7l1.5 5H16" />
+      <path d="M6 12h3.5l1.5 4 2.5-8 1.5 4H18" />
     </svg>
   );
 }
@@ -363,6 +363,17 @@ export function IconHardHat({ size = 17 }) {
       <path d="M4 15.5a8 8 0 0 1 16 0Z" />
       <path d="M3.5 15.5h17v2.5a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1Z" />
       <path d="M12 9V6" />
+    </svg>
+  );
+}
+
+// A theatre curtain drawn back to both sides: the "What's hidden" section, where something is kept out of sight.
+export function IconCurtain({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3.5 4h17" />
+      <path d="M4.5 4h6.5c0 3.2-2 5.6-2 8.6s1.4 4.6 2 7H4.5z" />
+      <path d="M19.5 4H13c0 3.2 2 5.6 2 8.6s-1.4 4.6-2 7h6.5z" />
     </svg>
   );
 }
@@ -701,7 +712,7 @@ export function IconHeartbeat({ size = 17 }) {
   return (
     <svg width={size} height={size} {...iconProps}>
       <path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z" />
-      <path d="M6.5 12.5h3l1.4-2.6 2.2 5 1.4-2.4h3" />
+      <path d="M6.5 13h3l1.4-2.6 2.2 5 1.4-2.4h3" />
     </svg>
   );
 }

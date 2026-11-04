@@ -2,7 +2,7 @@ import {
   IconFlow, IconCoin, IconVote, IconGroup, IconInfluence, IconManifesto, IconTracker,
   IconGlossary, IconHistory, IconDevolved, IconFormerMP, IconCabinet, IconScales, IconEuStars, IconDefence, IconMortarboard, IconClassroom, IconElder, IconPulse, IconBolt, IconHeart, IconTransport, IconTimeline,
   IconPartyFinance, IconByElection, IconLords, IconPetition, IconCompass, IconCommittee, IconCompare, IconMeeting,
-  IconQuestion, IconGavel, IconRankings, IconDarkMoney, IconThinkTank, IconDoor, IconRegister,
+  IconQuestion, IconGavel, IconRankings, IconDarkMoney, IconCurtain, IconThinkTank, IconDoor, IconRegister,
   IconSearch, IconBook, IconChartBars, IconTopic, IconRoute, IconSplit, IconHexMap, IconCouncil,
   IconTaxes, IconCalculator, IconRates, IconMigration, IconMap, IconAsk, IconDeprivation, IconSwing, IconSeatCompare, IconFactory, IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconBallot, IconCalendar, IconHouse, IconGlobe, IconLeaf, IconCompareTime, IconShield, IconLordsVote, IconCouncillor, IconFeed, IconPinHome, IconWhoStands, IconCompareAreas, IconAbout, IconMail
 } from "../components/icons";
@@ -195,6 +195,8 @@ export const SECTIONS = [
     label: "What's hidden",
     blurb: "Where the public records run out",
     accent: "#E63946",
+    // The coloured tile shows a curtain; the first page inside keeps the money sign.
+    icon: IconCurtain,
     items: [
       { key: "darkMoney", label: "Hidden donations", icon: IconDarkMoney, hint: "Money with no named donor", aka: ["dark money"] },
       { key: "revolvingDoor", label: "Ministers' later jobs", icon: IconDoor, hint: "From government into industry", aka: ["revolving door"] },

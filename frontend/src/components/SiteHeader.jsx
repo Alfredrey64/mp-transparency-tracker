@@ -79,7 +79,7 @@ function MegaPanel({ menu, activeView, onNavigate, onClose }) {
       <div className="site-mega-inner">
         {menu.groups.map((group) => {
           const Wide = group.items.length > 9;
-          const GroupIcon = group.items[0]?.icon;
+          const GroupIcon = group.icon ?? group.items[0]?.icon;
           return (
             <section key={group.key} className={Wide ? "mega-wide" : undefined} style={{ "--g": group.accent }}>
               <h2 className="mega-title">
@@ -213,7 +213,7 @@ function Drawer({ activeView, onNavigate, onClose: closeNow, onSearch }) {
         <nav aria-label={t("Pages")} className="drawer-groups">
           {groups.map((group, gi) => {
             const open = openKey === group.key;
-            const GroupIcon = group.items[0]?.icon;
+            const GroupIcon = group.icon ?? group.items[0]?.icon;
             const items = group.items.filter((i) => i.key !== "start");
             return (
               <div key={group.key} className="drawer-group" data-open={open} style={{ "--g": group.accent, "--gi": gi }}>
