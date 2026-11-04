@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 export function IconHome({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -367,9 +369,9 @@ export function IconHardHat({ size = 17 }) {
   );
 }
 
-// The "What's hidden" tile: white drapes on a rod, hung closed over the coin that is the money sign. When the menu group opens (or, in the desktop menu, is pointed at)
-// the drapes gather to either side and the coin grows into place behind them, with the book mark's easing (see .cu in chrome.css). Drawn closed, so a still image and
-// reduced motion show the closed curtain.
+// The "What's hidden" tile: white drapes on a rod, hung closed over the coin that is the money sign. When its menu group opens (or, in the desktop menu, is pointed at) the
+// drapes sweep to either side and are tied back, and the coin turns up between them with a glint; closing draws them together again. The motion is in .cu in chrome.css and
+// follows the book mark's: each drape narrows toward its edge with a tilt, the second a beat behind the first. Drawn closed, so a still image shows the closed curtain.
 const DRAPE = "M4.5 5.5H16.2V26Q14.25 28.2 12.3 26Q10.35 28.2 8.4 26Q6.45 28.2 4.5 26Z";
 function Drape({ mirror }) {
   return (
@@ -382,18 +384,32 @@ function Drape({ mirror }) {
     </g>
   );
 }
-export function IconCurtain({ size = 17 }) {
+// The gold tie that holds a gathered drape, with its tassel. x is the tie's centre.
+const Tie = ({ x, cls }) => (
+  <g className={`cu-tie ${cls}`}>
+    <rect x={x - 2.1} y="15" width="4.2" height="1.7" rx=".85" fill="#FFB84D" />
+    <g className="cu-tas"><path d={`M${x} 16.6v3`} stroke="#FFB84D" strokeWidth="1" /><circle cx={x} cy="20.4" r="1.1" fill="#FFB84D" /></g>
+  </g>
+);
+const Spark = ({ x, y, cls }) => <path className={`cu-sp ${cls}`} d={`M${x} ${y - 1.9}L${x + 0.5} ${y - 0.5}L${x + 1.9} ${y}L${x + 0.5} ${y + 0.5}L${x} ${y + 1.9}L${x - 0.5} ${y + 0.5}L${x - 1.9} ${y}L${x - 0.5} ${y - 0.5}Z`} fill="#fff" />;
+export function IconCurtain({ size = 17, open }) {
+  // "open" is undefined until the curtain has been drawn back once, so the closed curtain on a fresh page does not play the closing motion.
+  const [seen, setSeen] = useState(false);
+  if (open && !seen) setSeen(true);
+  const state = open ? "open" : seen ? "shut" : undefined;
   return (
-    <svg className="cu" width={size} height={size} viewBox="0 0 32 32" fill="none" strokeLinecap="round" strokeLinejoin="round">
-      <g className="cu-coin" stroke="#fff" strokeWidth="1.8">
-        <circle cx="16" cy="17.5" r="12" fill="#fff" fillOpacity=".16" stroke="none" />
-        <g transform="translate(4 5.5)">
-          <circle cx="12" cy="12" r="8.5" strokeDasharray="2.8 2.8" />
+    <svg className="cu" data-state={state} width={size} height={size} viewBox="0 0 32 32" fill="none" strokeLinecap="round" strokeLinejoin="round">
+      <g className="cu-coin">
+        <circle className="cu-glow" cx="16" cy="16" r="8.8" fill="#fff" fillOpacity=".16" />
+        <g transform="translate(16 16) scale(0.72) translate(-12 -12)" stroke="#fff" strokeWidth="2.2">
+          <circle className="cu-ring" cx="12" cy="12" r="8.5" strokeDasharray="2.8 2.8" />
           <path d="M9.7 15.8V9.9c0-1.6 1.1-2.7 2.5-2.7 1.2 0 2.1.6 2.4 1.7M8.7 12.5h4.6M8.3 15.8h6.6" />
         </g>
       </g>
       <g className="cu-l"><Drape /></g>
       <g className="cu-r"><Drape mirror /></g>
+      <Tie x={6.3} cls="cu-tl" /><Tie x={25.7} cls="cu-tr" />
+      <Spark x={22} y={8.6} cls="cu-s1" /><Spark x={10.2} y={24} cls="cu-s2" />
       <path d="M3.4 4.3h25.2" stroke="#fff" strokeWidth="2" />
       <circle cx="3" cy="4.3" r="1.7" fill="#fff" /><circle cx="29" cy="4.3" r="1.7" fill="#fff" />
     </svg>

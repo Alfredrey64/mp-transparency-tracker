@@ -195,9 +195,9 @@ export const SECTIONS = [
     label: "What's hidden",
     blurb: "Where the public records run out",
     accent: "#E63946",
-    // The coloured tile shows a curtain that draws back to the money sign; it is drawn 1.6 times the usual size.
+    // The coloured tile shows a curtain that draws back to the money sign; it is drawn 1.9 times the usual size.
     icon: IconCurtain,
-    iconBoost: 1.6,
+    iconBoost: 1.9,
     items: [
       { key: "darkMoney", label: "Hidden donations", icon: IconDarkMoney, hint: "Money with no named donor", aka: ["dark money"] },
       { key: "revolvingDoor", label: "Ministers' later jobs", icon: IconDoor, hint: "From government into industry", aka: ["revolving door"] },

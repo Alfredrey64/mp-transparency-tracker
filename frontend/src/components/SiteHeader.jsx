@@ -60,6 +60,8 @@ export function PageLink({ to, onNavigate, onAfter, children, ...rest }) {
 
 function MegaPanel({ menu, activeView, onNavigate, onClose }) {
   const t = useT();
+  // The section being pointed at or tabbed into: a group's tile can react to it (the curtain on "What's hidden" draws back).
+  const [hot, setHot] = useState(null);
   const ref = useRef(null);
   // The panel hangs from the header, which may sit below a strip at the top of the page, so its height is what is left under it, not the window's height less the header's.
   useEffect(() => {
@@ -81,9 +83,9 @@ function MegaPanel({ menu, activeView, onNavigate, onClose }) {
           const Wide = group.items.length > 9;
           const GroupIcon = group.icon ?? group.items[0]?.icon;
           return (
-            <section key={group.key} className={Wide ? "mega-wide" : undefined} style={{ "--g": group.accent }}>
+            <section key={group.key} className={Wide ? "mega-wide" : undefined} style={{ "--g": group.accent }} onPointerEnter={() => setHot(group.key)} onPointerLeave={() => setHot(null)} onFocus={() => setHot(group.key)} onBlur={() => setHot(null)}>
               <h2 className="mega-title">
-                {GroupIcon && <i aria-hidden="true" style={{ background: solid(group.accent) }}><GroupIcon size={Math.round(17 * (group.iconBoost ?? 1))} /></i>}
+                {GroupIcon && <i aria-hidden="true" style={{ background: solid(group.accent) }}><GroupIcon size={Math.round(17 * (group.iconBoost ?? 1))} open={hot === group.key} /></i>}
                 {t(group.label)}
               </h2>
               <p className="mega-blurb">{t(group.blurb)}</p>
@@ -232,7 +234,7 @@ function Drawer({ activeView, onNavigate, onClose: closeNow, onSearch }) {
                     }
                   }}
                 >
-                  <span className="dg-tile" style={{ background: solid(group.accent) }} aria-hidden="true">{GroupIcon && <GroupIcon size={Math.round(20 * (group.iconBoost ?? 1))} />}</span>
+                  <span className="dg-tile" style={{ background: solid(group.accent) }} aria-hidden="true">{GroupIcon && <GroupIcon size={Math.round(20 * (group.iconBoost ?? 1))} open={open} />}</span>
                   <span className="dg-text">{t(group.label)}<small>{t(group.blurb)}</small></span>
                   <span className="dg-count" aria-hidden="true">{items.length}</span>
                   <Chevron />
