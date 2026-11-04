@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 // Your area, for a postcode in Bristol, with the three outside services answered by the test: the postcode lookup, the MP record and the elections list.
 const result = {
-  postcode: "BS1 5TR", country: "England", region: "South West", parliamentary_constituency: "Bristol Central", admin_district: "Bristol, City of", admin_ward: "Hotwells and Harbourside",
+  postcode: "BS1 5TR", latitude: 51.4545, longitude: -2.5879, country: "England", region: "South West", parliamentary_constituency: "Bristol Central", admin_district: "Bristol, City of", admin_ward: "Hotwells and Harbourside",
   admin_county: null, parish: "Bristol, City of, unparished area", index_of_multiple_deprivation: 18522, pfa: "Avon and Somerset", icb: "NHS Bristol, North Somerset and South Gloucestershire Integrated Care Board",
   lsoa: "Bristol 061C", msoa: "Bristol 061", ruc21: "Urban: Nearer to a major town or city", national_park: "England (non-National Park)", ttwa: "Bristol",
   codes: { admin_district: "E06000023", admin_county: "E99999999", admin_ward: "E05010905" },
@@ -19,6 +19,12 @@ async function mockServices(page, { elections = { results: [] }, votes = [], ove
     return route.fulfill({ status: 200, contentType: "application/json", headers: cors, body: JSON.stringify(req.url().includes("/politicians") ? mp : req.url().includes("/voting_records") ? votes : []) });
   });
   await page.route("**/api.postcodes.io/**", (route) => route.fulfill({ status: 200, contentType: "application/json", headers: cors, body: JSON.stringify({ status: 200, result: { ...result, ...over } }) }));
+  await page.route("**/www.planning.data.gov.uk/**", (route) => route.fulfill({ status: 200, contentType: "application/json", headers: cors, body: JSON.stringify({ entities: [
+    { dataset: "local-planning-authority", name: "Bristol, City of LPA" },
+    { dataset: "conservation-area", name: "Redcliffe", "designation-date": "1976-11-03" },
+    { dataset: "flood-risk-zone", "flood-risk-level": "2" },
+    { dataset: "flood-risk-zone", "flood-risk-level": "3" },
+  ] }) }));
   await page.route("**/elections.democracyclub.org.uk/**", (route) => route.fulfill({ status: 200, contentType: "application/json", headers: cors, body: JSON.stringify(elections) }));
 }
 
@@ -41,6 +47,26 @@ for (const width of [1440, 390]) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
   });
 }
+
+test("the planning card names the deciding council, lists the designations in plain words and says what no entry means", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await mockServices(page);
+  await page.goto("/myArea");
+  const card = page.locator(".ma-planning");
+  await expect(card).toContainText("decided by Bristol, City of", { timeout: 20000 });
+  await expect(card).toContainText("Conservation area");
+  await expect(card).toContainText("Redcliffe");
+  await expect(card).toContainText("Flood zone 3");
+  await expect(card).not.toContainText("Flood zone 2");
+  await expect(card).toContainText("No entry here does not prove there is none");
+});
+
+test("the planning card says planning is separate outside England", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await mockServices(page, { over: { country: "Wales" } });
+  await page.goto("/myArea");
+  await expect(page.locator(".ma-planning")).toContainText("covers England only", { timeout: 20000 });
+});
 
 test("the jump links move to their section", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });

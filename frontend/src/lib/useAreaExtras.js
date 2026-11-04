@@ -5,6 +5,7 @@ import { loadSector } from "./onsData";
 import { findContests } from "./ballots";
 import { regionKeyOf } from "./areaFigures";
 import { loadCouncilDetail } from "./councilDetail";
+import { planningAt } from "./planningRules";
 import { supabase } from "../supabaseClient";
 import { doingFromRows } from "./mpDoing";
 import { historyRows } from "./councils";
@@ -75,6 +76,9 @@ export function useAreaExtras(data) {
         },
       });
     });
+
+    // Stage 3c: planning designations at the postcode. The service covers England only.
+    soft(r.country === "England" ? planningAt(r.latitude, r.longitude) : { outside: true }).then((planning) => put({ planning }));
 
     // Stage 4: what their MP has been doing, from the tables the MP's own page uses.
     if (mp) {

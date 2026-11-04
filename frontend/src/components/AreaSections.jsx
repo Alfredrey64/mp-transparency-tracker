@@ -569,6 +569,34 @@ export function WhoDoes({ x, i }) {
   );
 }
 
+// What the national planning data holds for the postcode's own point: designations that change what can be built or cut down there.
+export function PlanningCard({ x, i }) {
+  const p = x?.planning;
+  return (
+    <Card i={i} colour="#2F9E6E" icon={<IconCouncil size={20} />} title="Planning rules at your postcode" className="ma-planning">
+      {p === undefined ? <Skel lines={4} /> : p === null ? <Missing>The national planning data could not be reached just now. Your council's planning pages will show the same thing.</Missing>
+        : p.outside ? <Missing>Planning is decided separately in Scotland, Wales and Northern Ireland, and the national planning data covers England only. Your council's planning pages are the place to look.</Missing> : (
+        <>
+          {p.authorities.length > 0 && <p className="ma-sub">Planning applications here are decided by {p.authorities.join(" and ")}.</p>}
+          {p.items.length > 0 ? (
+            <ul className="ma-roles ma-plan">
+              {p.items.map((it) => (
+                <li key={it.key}>
+                  <b>{it.label}</b>
+                  {it.names.length > 0 && <small>{it.names.slice(0, 3).join(", ")}{it.names.length > 3 ? ` and ${it.names.length - 3} more` : ""}</small>}
+                  <p>{it.text}</p>
+                  {it.link && <a className="ma-link" href={it.link} target="_blank" rel="noopener noreferrer">The council's page on this<span className="sr-only"> (opens in a new tab)</span></a>}
+                </li>
+              ))}
+            </ul>
+          ) : <p>No conservation area, green belt, flood zone or other designation is on record for this point.</p>}
+          <p className="ma-callout">These come from the government's planning data, which holds only what each council has sent in, and a designation can cover part of a street. No entry here does not prove there is none. Before you buy, build or cut down a tree, ask the council.</p>
+        </>
+      )}
+    </Card>
+  );
+}
+
 // Ten tenths from the most to the least deprived, with this neighbourhood marked.
 export function Neighbourhood({ x, i }) {
   const nb = x?.nb;

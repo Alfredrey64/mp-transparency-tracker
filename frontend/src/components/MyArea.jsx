@@ -12,7 +12,7 @@ import CountUp from "./CountUp";
 import { loadCouncillorList, councillorPath } from "../lib/councillorsView";
 import { regionKeyOf, wardCouncillors, loadAreaFigures } from "../lib/areaFigures";
 import { REGIONS } from "../data/regionMetrics";
-import { Card, Section, Glance, JumpNav, SeatResult, SeatHistory, SeatCard, MpDoing, Neighbours, CouncilHistory, RegionOutline, LocalPetitions, CouncilTax, WhoDoes, Neighbourhood, PlaceFacts, HomesCrime, RegionRanks, Census, Contests, Help, Deeper } from "./AreaSections";
+import { Card, Section, Glance, JumpNav, SeatResult, SeatHistory, SeatCard, MpDoing, Neighbours, CouncilHistory, RegionOutline, LocalPetitions, CouncilTax, WhoDoes, PlanningCard, Neighbourhood, PlaceFacts, HomesCrime, RegionRanks, Census, Contests, Help, Deeper } from "./AreaSections";
 import { MpMoneyCard, IndependenceCard, RepsCard, AreaTools } from "./AreaMp";
 import { useAreaExtras } from "../lib/useAreaExtras";
 import { yearsSince } from "../lib/areaProfile";
@@ -182,6 +182,7 @@ function Dashboard({ data, onForget }) {
         <CouncilHistory x={x} council={council} i={2} />
         <CouncilTax x={x} i={3} />
         <WhoDoes x={x} i={4} />
+        <PlanningCard x={x} i={5} />
       </Section>
 
       <Section id="ma-place" title="Your neighbourhood" lede="How the place you live compares with the rest of the country, and which bodies cover it." colour="#C0478A">
