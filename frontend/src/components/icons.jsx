@@ -367,13 +367,35 @@ export function IconHardHat({ size = 17 }) {
   );
 }
 
-// A theatre curtain drawn back to both sides: the "What's hidden" section, where something is kept out of sight.
+// The "What's hidden" tile: white drapes on a rod, hung closed over the coin that is the money sign. When the menu group opens (or, in the desktop menu, is pointed at)
+// the drapes gather to either side and the coin grows into place behind them, with the book mark's easing (see .cu in chrome.css). Drawn closed, so a still image and
+// reduced motion show the closed curtain.
+const DRAPE = "M4.5 5.5H16.2V26Q14.25 28.2 12.3 26Q10.35 28.2 8.4 26Q6.45 28.2 4.5 26Z";
+function Drape({ mirror }) {
+  return (
+    <g transform={mirror ? "matrix(-1 0 0 1 32 0)" : undefined}>
+      <path d={DRAPE} fill="#fff" />
+      <path d="M8.4 8.6C8 14 9 20 8.4 26Q10.35 28.2 12.3 26C11.7 20 12.7 14 12.3 8.6Z" fill="#000" fillOpacity=".1" />
+      <path d="M4.6 8.6C4.4 14 5 20 4.6 25.8M8.4 8.6C8 14 9 20 8.4 26M12.3 8.6C12.7 14 11.7 20 12.3 26M16.1 8.6V26" stroke="#000" strokeOpacity=".22" strokeWidth=".8" strokeLinecap="round" />
+      <path d="M4.5 8.6H16.2" stroke="#FFB84D" strokeWidth="1.1" />
+      <path d="M6.4 6.2v1.4M10.3 6.2v1.4M14.1 6.2v1.4" stroke="#000" strokeOpacity=".2" strokeWidth=".8" strokeLinecap="round" />
+    </g>
+  );
+}
 export function IconCurtain({ size = 17 }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3.5 4h17" />
-      <path d="M4.5 4h6.5c0 3.2-2 5.6-2 8.6s1.4 4.6 2 7H4.5z" />
-      <path d="M19.5 4H13c0 3.2 2 5.6 2 8.6s-1.4 4.6-2 7h6.5z" />
+    <svg className="cu" width={size} height={size} viewBox="0 0 32 32" fill="none" strokeLinecap="round" strokeLinejoin="round">
+      <g className="cu-coin" stroke="#fff" strokeWidth="1.8">
+        <circle cx="16" cy="17.5" r="12" fill="#fff" fillOpacity=".16" stroke="none" />
+        <g transform="translate(4 5.5)">
+          <circle cx="12" cy="12" r="8.5" strokeDasharray="2.8 2.8" />
+          <path d="M9.7 15.8V9.9c0-1.6 1.1-2.7 2.5-2.7 1.2 0 2.1.6 2.4 1.7M8.7 12.5h4.6M8.3 15.8h6.6" />
+        </g>
+      </g>
+      <g className="cu-l"><Drape /></g>
+      <g className="cu-r"><Drape mirror /></g>
+      <path d="M3.4 4.3h25.2" stroke="#fff" strokeWidth="2" />
+      <circle cx="3" cy="4.3" r="1.7" fill="#fff" /><circle cx="29" cy="4.3" r="1.7" fill="#fff" />
     </svg>
   );
 }

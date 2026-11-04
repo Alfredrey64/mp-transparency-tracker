@@ -83,7 +83,7 @@ function MegaPanel({ menu, activeView, onNavigate, onClose }) {
           return (
             <section key={group.key} className={Wide ? "mega-wide" : undefined} style={{ "--g": group.accent }}>
               <h2 className="mega-title">
-                {GroupIcon && <i aria-hidden="true" style={{ background: solid(group.accent) }}><GroupIcon size={17} /></i>}
+                {GroupIcon && <i aria-hidden="true" style={{ background: solid(group.accent) }}><GroupIcon size={Math.round(17 * (group.iconBoost ?? 1))} /></i>}
                 {t(group.label)}
               </h2>
               <p className="mega-blurb">{t(group.blurb)}</p>
@@ -232,7 +232,7 @@ function Drawer({ activeView, onNavigate, onClose: closeNow, onSearch }) {
                     }
                   }}
                 >
-                  <span className="dg-tile" style={{ background: solid(group.accent) }} aria-hidden="true">{GroupIcon && <GroupIcon size={20} />}</span>
+                  <span className="dg-tile" style={{ background: solid(group.accent) }} aria-hidden="true">{GroupIcon && <GroupIcon size={Math.round(20 * (group.iconBoost ?? 1))} />}</span>
                   <span className="dg-text">{t(group.label)}<small>{t(group.blurb)}</small></span>
                   <span className="dg-count" aria-hidden="true">{items.length}</span>
                   <Chevron />

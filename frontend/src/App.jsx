@@ -25,6 +25,7 @@ import { startGlossDedupe } from "./glossJsx/dedupe";
 import { trackPage } from "./lib/analytics";
 import { lowData } from "./lib/lowData";
 import { lazyPage, preloadPage } from "./lib/lazyPage";
+import { finishEntrances } from "./lib/finishEntrances";
 import Loading from "./components/Loading";
 import { currentRoute } from "./lib/route";
 import OfflineBanner from "./components/OfflineBanner";
@@ -488,8 +489,12 @@ export default function App() {
       // header and the buttons fixed to the screen are kept out of the pictures (chrome.css), so they never move or fade.
       if (typeof document.startViewTransition === "function") {
         root.dataset.vt = "1";
-        const t = document.startViewTransition(() => { setNavState({ fetching: false }); flushSync(apply); });
-        const clear = () => { if (id === navId.current) delete root.dataset.vt; };
+        const t = document.startViewTransition(() => { setNavState({ fetching: false }); flushSync(apply); finishEntrances(); });
+        // Pieces that draw a moment later (a lazy section) are settled too, frame by frame until the change is over, so nothing opens under the page's own rise.
+        let settling = true;
+        const settle = () => { if (settling) { finishEntrances(); requestAnimationFrame(settle); } };
+        t.ready.then(settle, () => {});
+        const clear = () => { settling = false; if (id === navId.current) delete root.dataset.vt; };
         t.finished.then(clear, clear);
         return;
       }

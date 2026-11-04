@@ -67,6 +67,18 @@
 @keyframes lg-f { from { transform: scaleX(1); opacity: 1; } to { transform: scaleX(0) skewY(-9deg); opacity: 0.7; } }
 @keyframes lg-b { from { transform: scaleX(0) skewY(9deg); opacity: 0.7; } to { transform: scaleX(1); opacity: 1; } }
 .site-nav { position: relative; display: flex; align-items: center; gap: 2px; flex: 1; min-width: 0; }
+/* The "What's hidden" tile (IconCurtain): two drapes hang closed over a coin. Opening the group (or pointing at the section in the desktop menu) gathers each drape to its
+   own side, the right one a beat after the left as the book's pages follow one another, and the coin grows into the space with the same easing. */
+.cu-l, .cu-r, .cu-coin { transform-box: fill-box; }
+.cu-l { transform-origin: 0 50%; } .cu-r { transform-origin: 100% 50%; } .cu-coin { transform-origin: 50% 50%; }
+.cu-l, .cu-r { transition: transform 0.42s cubic-bezier(0.45, 0, 0.55, 1); }
+.cu-r { transition-delay: 0.05s; }
+.cu-coin { opacity: 0; transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.45, 0, 0.55, 1), opacity 0.2s ease-in; }
+.drawer-group[data-open="true"] .cu-l, .drawer-group[data-open="true"] .cu-r,
+.site-mega section:is(:hover, :focus-within) .cu-l, .site-mega section:is(:hover, :focus-within) .cu-r { transform: scaleX(0.32); transition: transform 0.55s cubic-bezier(0.35, 0, 0.2, 1); }
+.drawer-group[data-open="true"] .cu-r, .site-mega section:is(:hover, :focus-within) .cu-r { transition-delay: 0.08s; }
+.drawer-group[data-open="true"] .cu-coin, .site-mega section:is(:hover, :focus-within) .cu-coin { opacity: 1; transform: none; transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.25, 1.06) 0.18s, opacity 0.35s ease-out 0.18s; }
+@media (prefers-reduced-motion: reduce) { .cu-l, .cu-r, .cu-coin { transition: none !important; } }
 .nav-pill { position: absolute; left: 0; top: 50%; height: 44px; width: var(--pw, 0px); border-radius: var(--radius-s); background: var(--sb-active); transform: translate(var(--px, 0px), -50%); opacity: 0.9; pointer-events: none; transition: transform 0.35s var(--ease-out), width 0.35s var(--ease-out); }
 .site-nav-btn {
   position: relative; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border: none; background: none; cursor: pointer;
