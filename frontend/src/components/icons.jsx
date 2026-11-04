@@ -399,9 +399,9 @@ export function IconCurtain({ size = 17, open }) {
   const state = open ? "open" : seen ? "shut" : undefined;
   return (
     <svg className="cu" data-state={state} width={size} height={size} viewBox="0 0 32 32" fill="none" strokeLinecap="round" strokeLinejoin="round">
+      <circle className="cu-glow" cx="16" cy="16" r="7.9" fill="#fff" fillOpacity=".16" />
       <g className="cu-coin">
-        <circle className="cu-glow" cx="16" cy="16" r="8.8" fill="#fff" fillOpacity=".16" />
-        <g transform="translate(16 16) scale(0.72) translate(-12 -12)" stroke="#fff" strokeWidth="2.2">
+        <g transform="translate(16 16) scale(0.64) translate(-12 -12)" stroke="#fff" strokeWidth="2.4">
           <circle className="cu-ring" cx="12" cy="12" r="8.5" strokeDasharray="2.8 2.8" />
           <path d="M9.7 15.8V9.9c0-1.6 1.1-2.7 2.5-2.7 1.2 0 2.1.6 2.4 1.7M8.7 12.5h4.6M8.3 15.8h6.6" />
         </g>
