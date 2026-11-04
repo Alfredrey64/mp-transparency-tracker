@@ -67,14 +67,16 @@
 @keyframes lg-f { from { transform: scaleX(1); opacity: 1; } to { transform: scaleX(0) skewY(-9deg); opacity: 0.7; } }
 @keyframes lg-b { from { transform: scaleX(0) skewY(9deg); opacity: 0.7; } to { transform: scaleX(1); opacity: 1; } }
 .site-nav { position: relative; display: flex; align-items: center; gap: 2px; flex: 1; min-width: 0; }
-/* The "Britain in numbers" tile (IconTrend): with its menu group opening, the graph line grows from where it starts to where it ends, then the arrowhead lands. */
-.tr-line { stroke-dasharray: 1 1; }
-.tr-head, .tr-line { transform-box: fill-box; }
+/* The "Britain in numbers" tile (IconTrend): with its menu group opening, the graph line is blank from the very first frame, then grows from where it starts to where it ends, and
+   the arrowhead lands last. The blank is the style itself, not only the animation's first keyframe, so there is no frame of the whole line before the animation takes hold; the
+   dash pattern is longer than the line and starts well off it, so a round line end never leaves a dot behind. With reduced motion the graph is simply drawn. */
+.tr-line { stroke-dasharray: 1 2; }
+.tr-head { transform-box: fill-box; transform-origin: 100% 0; }
 @media (prefers-reduced-motion: no-preference) {
-  .tr[data-state="open"] .tr-line { animation: tr-draw 0.95s cubic-bezier(0.35, 0.1, 0.25, 1) 0.15s both; }
-  .tr[data-state="open"] .tr-head { animation: tr-head 0.35s cubic-bezier(0.3, 1.5, 0.5, 1) 1s both; transform-origin: 100% 0; }
+  .tr[data-state="open"] .tr-line { stroke-dashoffset: 1.15; animation: tr-draw 1.05s cubic-bezier(0.35, 0.1, 0.25, 1) 0.1s both; }
+  .tr[data-state="open"] .tr-head { opacity: 0; animation: tr-head 0.35s cubic-bezier(0.3, 1.5, 0.5, 1) 1s both; }
 }
-@keyframes tr-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes tr-draw { from { stroke-dashoffset: 1.15; } to { stroke-dashoffset: 0; } }
 @keyframes tr-head { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: none; } }
 /* The "What's hidden" tile (IconCurtain). One pleated sheet hangs closed over a coin. Drawn back (data-state="open") it parts down the middle and each half folds up
    concertina-fashion at its own side: the pleats beside the middle move first and pull the rest after them (--o is each pleat's start), hems trailing, each swinging a little
