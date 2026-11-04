@@ -1228,6 +1228,45 @@
 .st-duo li:hover { background: color-mix(in srgb, var(--tc) 9%, var(--c-paper-card)); border-left-color: var(--tc); }
 @media (max-width: 560px) { .st-duo li { padding: 12px 14px 13px; } }
 
-/* The instrument browser on Laws made by ministers (components/story/InstrumentBrowser.jsx) borrows the report browser's cards. */
-.rb-card[data-st="approve"] { --sc: #3F7D5C; } .rb-card[data-st="object"] { --sc: #5B6784; }
+/* The instrument browser on Laws made by ministers (components/story/InstrumentBrowser.jsx): cards that open to what an instrument does. It borrows the report browser's filter and search. */
 .rb-csv { margin: 0; justify-self: start; }
+.ib-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+.ib-card { --sc: #5B6784; position: relative; display: grid; gap: 6px; padding: 18px 22px 20px 26px; border-radius: 20px; background: var(--c-paper-card); border: 1px solid color-mix(in srgb, var(--sc) 22%, var(--c-hairline)); box-shadow: var(--shadow-1); overflow: hidden; transition: box-shadow 0.25s, border-color 0.25s; }
+.ib-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: linear-gradient(180deg, var(--sc), color-mix(in srgb, var(--sc) 55%, transparent)); }
+.ib-card[data-st="approve"] { --sc: #3F7D5C; } .ib-card[data-st="object"] { --sc: #5B6784; }
+.ib-card[data-open="true"] { box-shadow: var(--shadow-2, var(--shadow-1)); border-color: color-mix(in srgb, var(--sc) 45%, var(--c-hairline)); }
+.ib[data-go="0"] .ib-card { opacity: 0; transform: translateY(10px); }
+.ib[data-go="1"] .ib-card { animation: rbIn 0.45s var(--ease-out) calc(var(--i, 0) * 50ms) both; }
+.ib-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+.ib-top time { margin-left: auto; font: 600 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ib-chip, .ib-kind { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 999px; font: 800 12.5px "Figures", "Public Sans", system-ui, sans-serif; }
+.ib-chip { background: color-mix(in srgb, var(--sc) 13%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--sc) 40%, transparent); color: color-mix(in srgb, var(--sc) 78%, var(--c-ink)); }
+.ib-kind { font-weight: 700; background: var(--c-paper); border: 1px solid var(--c-hairline); color: var(--c-ink-soft); }
+.ib-card h3 { margin: 4px 0 0; font: 700 clamp(18px, 2.1vw, 21px)/1.3 "Figures", "Newsreader", Georgia, serif; text-wrap: balance; }
+.ib-toggle { all: unset; box-sizing: border-box; display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; width: 100%; cursor: pointer; color: var(--c-ink); border-radius: 10px; }
+.ib-card[data-open="false"] .ib-toggle::after { content: ""; position: absolute; inset: 0; border-radius: 20px; cursor: pointer; }
+.ib-card[data-open="false"]:hover { border-color: color-mix(in srgb, var(--sc) 45%, var(--c-hairline)); box-shadow: var(--shadow-2, var(--shadow-1)); }
+.ib-toggle:hover span { text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+.ib-toggle:focus-visible { outline: 3px solid var(--c-brand); outline-offset: 4px; }
+.ib-card[data-open="false"] .ib-toggle:focus-visible { outline: none; }
+.ib-card[data-open="false"]:has(.ib-toggle:focus-visible) { outline: 3px solid var(--c-brand); outline-offset: 2px; }
+.ib-chev { flex: none; position: relative; width: 30px; height: 30px; margin-top: -2px; border-radius: 50%; background: color-mix(in srgb, var(--sc) 12%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--sc) 35%, transparent); transition: transform 0.3s var(--ease-out), background 0.2s; }
+.ib-chev::after { content: ""; position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; margin: -6px 0 0 -4px; border-right: 2px solid color-mix(in srgb, var(--sc) 80%, var(--c-ink)); border-bottom: 2px solid color-mix(in srgb, var(--sc) 80%, var(--c-ink)); transform: rotate(45deg); }
+.ib-card[data-open="true"] .ib-chev { transform: rotate(180deg); background: color-mix(in srgb, var(--sc) 22%, var(--c-paper-card)); }
+.ib-who { margin: 0; font: 500 14px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ib-peek { margin: 4px 0 0; font: 500 15px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.ib-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.35s var(--ease-out); }
+.ib-panel > div { overflow: hidden; min-height: 0; }
+.ib-card[data-open="true"] .ib-panel { grid-template-rows: 1fr; }
+.ib-body { display: grid; gap: 16px; padding-top: 14px; margin-top: 10px; border-top: 1px dashed color-mix(in srgb, var(--sc) 35%, var(--c-hairline)); }
+.ib-body section { display: grid; gap: 6px; }
+.ib-body h4 { margin: 0; font: 800 13px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--sc) 78%, var(--c-ink)); }
+.ib-body p { margin: 0; font: 500 15.5px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); max-width: 68ch; }
+.ib-body .ib-src { font-size: 12.5px; color: var(--c-ink-soft); }
+.ib-dates { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 10px; margin: 0; }
+.ib-dates > div { display: grid; gap: 2px; padding: 10px 14px; border-radius: 12px; background: color-mix(in srgb, var(--sc) 7%, var(--c-paper)); border: 1px solid color-mix(in srgb, var(--sc) 18%, var(--c-hairline)); }
+.ib-dates dt { font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ib-dates dd { margin: 0; font: 700 15px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ib-link { margin: 0; font: 700 14.5px "Figures", "Public Sans", system-ui, sans-serif; }
+.ib-link a { color: color-mix(in srgb, var(--sc) 70%, var(--c-ink)); }
+@media (prefers-reduced-motion: reduce) { .ib-panel, .ib-chev, .ib-card { transition: none; } .ib[data-go="1"] .ib-card { animation: none; } }

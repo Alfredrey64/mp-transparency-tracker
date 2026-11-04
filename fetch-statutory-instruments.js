@@ -2,7 +2,8 @@
 //
 // What this does, in plain terms:
 // 1. Lists every statutory instrument laid before Parliament in the last 12 months from Parliament's Statutory Instruments API, a page of 100 at a time, newest first.
-// 2. Fetches the fuller record of the most recent ones, for the department that laid each and the date it comes into force.
+// 2. Fetches the fuller record of the most recent ones, for the department that laid each and the date it comes into force, and each one's Explanatory Note from
+//    legislation.gov.uk, whose opening sentences become the "what it does" summary.
 // 3. Writes frontend/src/data/statutoryInstruments.json for the Laws made by ministers page (see statutoryInstruments.js).
 //
 // If too few come back (an upstream outage) the existing file is left alone.
@@ -11,7 +12,7 @@
 
 import { writeFileSync } from "fs";
 import { fetchRetry } from "./httpFetch.js";
-import { summariseInstruments } from "./statutoryInstruments.js";
+import { summariseInstruments, summariseNote } from "./statutoryInstruments.js";
 
 const OUTPUT = "frontend/src/data/statutoryInstruments.json";
 const API = "https://statutoryinstruments-api.parliament.uk/api/v2/StatutoryInstrument";
@@ -48,13 +49,26 @@ async function main() {
     }));
   }
 
-  const out = summariseInstruments(items, details, { from, generated, recent: RECENT });
+  // Each one's Explanatory Note, five at a time. One that cannot be fetched just goes without a summary.
+  const notes = {};
+  for (let i = 0; i < first.recent.length; i += 5) {
+    await Promise.all(first.recent.slice(i, i + 5).map(async (r) => {
+      const link = details[r.id]?.value?.link;
+      if (!/^https:\/\/www\.legislation\.gov\.uk\//.test(link ?? "")) return;
+      try {
+        const res = await fetchRetry(`${link.replace(/\/$/, "")}/data.xml`, { headers: { Accept: "application/xml" } });
+        if (res.ok) notes[r.id] = summariseNote(await res.text());
+      } catch (e) { console.warn(`  no note for ${r.id}: ${e.message}`); }
+    }));
+  }
+
+  const out = summariseInstruments(items, details, { from, generated, recent: RECENT, notes });
   if (out.total < MIN_INSTRUMENTS) {
     console.error(`Only ${out.total} instruments came back, so ${OUTPUT} was left as it is.`);
     process.exit(1);
   }
   writeFileSync(OUTPUT, `${JSON.stringify(out)}\n`);
-  console.log(`Wrote ${OUTPUT}: ${out.total} instruments, ${out.recent.filter((r) => r.department).length} of the newest ${out.recent.length} with a department.`);
+  console.log(`Wrote ${OUTPUT}: ${out.total} instruments; of the newest ${out.recent.length}, ${out.recent.filter((r) => r.department).length} with a department and ${out.recent.filter((r) => r.summary).length} with a summary.`);
 }
 
 main().catch((err) => { console.error(err); process.exit(1); });

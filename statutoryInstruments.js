@@ -47,8 +47,63 @@ export function monthsBack(generated, count = 12) {
   });
 }
 
-// `items` are the API's list entries ({ value }); `details` maps an instrument id to the fuller record ({ value }) for the most recent ones.
-export function summariseInstruments(items, details, { from, generated, recent = 60 }) {
+// The Explanatory Note is the Government's own short account of what an instrument does, printed at the end of the instrument (legislation.gov.uk keeps it in the
+// instrument's XML). The summary is its opening sentences, tidied: the note's own heading, citations such as "( S.I. 2012/632 )" and "(c. 38)", and the shorthand it
+// defines in brackets are taken out so a sentence reads on its own. The sentences that only list what each regulation or article does are left behind.
+const ENTITIES = { "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"', "&apos;": "'", "&#8217;": "\u2019", "&#8216;": "\u2018" };
+const ABBREVIATIONS = /\b(No|Nos|St|Mr|Mrs|Ms|Dr|Ltd|plc|c|s|ss|Art|reg|para|Sch|Pt|etc)\./g;
+const LISTING = /^(Part|Parts|Regulation|Regulations|Article|Articles|Rule|Rules|Section|Sections|Schedule|Schedules|Paragraph|Paragraphs|Chapter|Annex)\s+\d|^(A|An) (full |de minimis )?impact assessment|^A copy of|^(This|These) (Regulations|Order|Rules|Instrument)(?: ?\(.*?\))? come[s]? into force/i;
+const MAX_CHARS = 460;
+const MAX_SENTENCES = 3;
+
+export function tidyNote(text) {
+  return String(text ?? "")
+    .replace(/\(\s*This note is not (?:a )?part of [^)]*\)/gi, " ")
+    .replace(/^\s*Explanatory Notes?\s*/i, "")
+    .replace(/\(\s*S\.?S?\.?R?\.?I\.?\s*[\d/]+\s*\)/g, "")
+    .replace(/\(\s*c\.\s*[\d\w]+\s*\)/g, "")
+    .replace(/\(\s*(?:EUR|OJ)\b[^)]*\)/g, "")
+    .replace(/\(\s*\u201C[^\u201D]{1,70}\u201D\s*\)/g, "")
+    .replace(/\u201C\s+/g, "\u201C").replace(/\s+\u201D/g, "\u201D")
+    .replace(/\s+([,.;:])/g, "$1")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// The opening sentences of an Explanatory Note, as an array, or null when the note has nothing usable.
+export function summariseNote(xml) {
+  const m = String(xml ?? "").match(/<ExplanatoryNotes[\s\S]*?<\/ExplanatoryNotes>/i);
+  if (!m) return null;
+  let raw = m[0].replace(/<[^>]+>/g, " ");
+  raw = raw.replace(/&(?:amp|lt|gt|quot|apos|#8217|#8216);/g, (e) => ENTITIES[e]);
+  const text = tidyNote(raw).replace(ABBREVIATIONS, (x) => x.replace(".", "\u0001"));
+  const sentences = text.split(/(?<=[.!?])\s+(?=[A-Z\u201C])/).map((x) => x.replace(/\u0001/g, ".").trim()).filter(Boolean);
+  const out = [];
+  let chars = 0;
+  for (const sentence of sentences) {
+    if (out.length > 0 && LISTING.test(sentence)) break;
+    if (out.length > 0 && (out.length >= MAX_SENTENCES || chars + sentence.length > MAX_CHARS)) break;
+    out.push(sentence);
+    chars += sentence.length;
+  }
+  const result = out.join(" ").length >= 40 ? out : [];
+  return result.length ? result : null;
+}
+
+// A short plain-words label for what kind of change an instrument is, taken from its title, or null when the title does not say.
+export function kindOf(name) {
+  const t = clean(name);
+  if (/Commencement/i.test(t)) return "Brings part of an Act into force";
+  if (/Electoral Changes/i.test(t)) return "Redraws a council\u2019s wards";
+  if (/\bFees?\b/.test(t) && !/Amendment/i.test(t)) return "Sets fees";
+  if (/\(EU Exit\)/i.test(t)) return "Part of the post-Brexit tidy-up of the law";
+  if (/Amendment|Amendments/i.test(t)) return "Changes existing rules";
+  return null;
+}
+
+// `items` are the API's list entries ({ value }); `details` maps an instrument id to the fuller record ({ value }) for the most recent ones; `notes` maps an id to the
+// sentences summariseNote took from its Explanatory Note.
+export function summariseInstruments(items, details, { from, generated, recent = 60, notes = {} }) {
   const seen = new Set();
   const list = [];
   for (const entry of items) {
@@ -71,6 +126,8 @@ export function summariseInstruments(items, details, { from, generated, recent =
     const link = /^https:\/\/www\.legislation\.gov\.uk\//.test(v?.link ?? "") ? v.link : null;
     return {
       ...t,
+      kind: kindOf(t.name),
+      summary: notes?.[t.id] ?? null,
       department: clean(v?.layingBody?.name) || null,
       inForce: day(v?.paperComingIntoForceDate) || null,
       link,
