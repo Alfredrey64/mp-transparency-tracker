@@ -406,8 +406,9 @@ export function IconCurtain({ size = 17, open }) {
   if (open && !seen) setSeen(true);
   const state = open ? "open" : seen ? "shut" : undefined;
   const id = useId().replace(/:/g, "");
+  // The view starts 0.5 above the top so the drawing, which runs from the top of the rod to the bottom of the hem, sits in the middle of the tile.
   return (
-    <svg className="cu" data-state={state} width={size} height={size} viewBox="0 0 32 32" fill="none" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="cu" data-state={state} width={size} height={size} viewBox="0 -0.5 32 32" fill="none" strokeLinecap="round" strokeLinejoin="round">
       <defs>
         <linearGradient id={`${id}a`} x1="0" x2="1"><stop offset="0" stopColor="#000" stopOpacity=".16" /><stop offset=".7" stopColor="#000" stopOpacity="0" /></linearGradient>
         <linearGradient id={`${id}b`} x1="0" x2="1"><stop offset=".3" stopColor="#000" stopOpacity="0" /><stop offset="1" stopColor="#000" stopOpacity=".16" /></linearGradient>
