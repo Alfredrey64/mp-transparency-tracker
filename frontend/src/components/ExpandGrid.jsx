@@ -49,12 +49,14 @@ export default function ExpandGrid({ items, itemKey, card, panel, label, min = 3
   useEffect(() => {
     const grid = gridRef.current;
     if (!grid || typeof ResizeObserver === "undefined") return undefined;
-    const measure = () => setColumns(Math.max(1, getComputedStyle(grid).gridTemplateColumns.split(" ").filter(Boolean).length));
+    // The count of columns auto-fill makes: as many minimum-width cards as fit across, counting the gaps. Worked out from the width, not read back from the grid, because the
+    // grid's own columns change when a short last row is centred (below).
+    const measure = () => { const w = grid.clientWidth; setColumns(Math.max(1, Math.floor((w + gap) / (Math.min(w, min) + gap)))); };
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(grid);
     return () => ro.disconnect();
-  }, [items.length]);
+  }, [items.length, min, gap]);
   const toggle = (key) => {
     if (openKey === key) { setOpenKey(null); return; }
     setPanelKeys((keys) => (keys.includes(key) ? keys : [...keys, key]));
@@ -63,11 +65,17 @@ export default function ExpandGrid({ items, itemKey, card, panel, label, min = 3
   const dropPanel = useCallback((key) => setPanelKeys((keys) => keys.filter((k) => k !== key)), []);
 
   const rowEnd = (at) => Math.min(items.length - 1, (Math.floor(at / columns) + 1) * columns - 1);
+  // A last row with fewer cards than the rows above sits centred under them, not against the left edge. The grid then has two tracks for every card column, each card spans two,
+  // and an empty spacer before the first card of the last row takes up half the missing cards' width.
+  const short = columns > 1 ? items.length % columns : 0;
+  const pad = short ? columns - short : 0;
   return (
-    <div ref={gridRef} data-no-balance="" className={`eg-grid ${className}`} style={{ "--eg-gap": `${gap}px`, gridTemplateColumns: `repeat(auto-fill, minmax(min(100%, ${min}px), 1fr))` }}>
+    <div ref={gridRef} data-no-balance="" data-padded={pad ? "" : undefined} className={`eg-grid ${className}`} style={{ "--eg-gap": `${gap}px`, gridTemplateColumns: pad ? `repeat(${columns * 2}, minmax(0, 1fr))` : `repeat(auto-fill, minmax(min(100%, ${min}px), 1fr))` }}>
       {items.flatMap((item, i) => {
         const key = itemKey(item);
-        const out = [card(item, { open: openKey === key, toggle: () => toggle(key), index: i, panelId: `eg-${key}` })];
+        const out = [];
+        if (pad && i === items.length - short) out.push(<span key="eg-pad" className="eg-pad" aria-hidden="true" style={{ gridColumn: `span ${pad}` }} />);
+        out.push(card(item, { open: openKey === key, toggle: () => toggle(key), index: i, panelId: `eg-${key}` }));
         // An item's panel sits under the last card of the row it is in.
         items.forEach((other, at) => {
           const otherKey = itemKey(other);

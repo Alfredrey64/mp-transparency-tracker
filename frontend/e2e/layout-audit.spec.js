@@ -86,7 +86,8 @@ for (const size of SIZES) {
     for (const view of [...PAGES, ...TABS].filter((v, i, all) => all.indexOf(v) === i)) {
       test(`${view} is laid out properly`, async ({ page }) => {
         const errors = [];
-        page.on("pageerror", (e) => errors.push(e.message));
+        // Safari reports "ResizeObserver loop completed with undelivered notifications" when a chart resizes itself as it draws; it is a notice, not a fault, and nothing on the page reacts to it.
+        page.on("pageerror", (e) => { if (!/^ResizeObserver loop/.test(e.message)) errors.push(e.message); });
         await page.route("**/127.0.0.1:54321/**", (route) => route.abort());
         await page.goto(view === "home" ? "/" : `/${view}`);
         await expect(page.locator("h1").first()).toBeVisible({ timeout: 15000 });

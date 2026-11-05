@@ -14,7 +14,8 @@ for (const width of WIDTHS) {
     for (const view of [...PAGES, ...TABS]) {
       test(`${view} fits the screen`, async ({ page }) => {
         const errors = [];
-        page.on("pageerror", (e) => errors.push(e.message));
+        // Safari reports "ResizeObserver loop completed with undelivered notifications" when a chart resizes itself as it draws; it is a notice, not a fault, and nothing on the page reacts to it.
+        page.on("pageerror", (e) => { if (!/^ResizeObserver loop/.test(e.message)) errors.push(e.message); });
         // Data requests are refused so the test never depends on the live database.
         await page.route("**/127.0.0.1:54321/**", (route) => route.abort());
 
