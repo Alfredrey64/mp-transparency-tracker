@@ -255,7 +255,9 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
    "Glossary →" links) get an invisible, larger area to tap, without moving
    anything on the page. */
 @media (pointer: coarse) {
-  button:not([style*="position"]):not(.gloss-term):not(.tier-slab):not(.mf-pop-x):not(.skip-link) { position: relative; }
+  /* Only a button placed by its own inline style is left alone. Matching on the bare word "position" is not safe: Safari writes `font: inherit` into the style attribute
+     as `font-variant-position: inherit`, so those buttons were skipped, and their ::after then covered the whole page and swallowed taps meant for the buttons beside them. */
+  button:not([style*="position: absolute"]):not([style*="position: fixed"]):not([style*="position: sticky"]):not(.gloss-term):not(.tier-slab):not(.mf-pop-x):not(.skip-link) { position: relative; }
   button:not(.gloss-term):not(.skip-link)::after { content: ""; position: absolute; inset: -8px -6px; }
 }
 

@@ -72,6 +72,30 @@ jobs:
           path: frontend/test-results
           retention-days: 7
 
+  # Safari's engine on an iPad and an iPhone, with real touch taps. A rule that worked in Chrome once left the toggles on several pages dead in Safari, and nothing run in Chrome could show it.
+  safari-touch:
+    name: Safari on iPad and iPhone (taps and tap areas)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps webkit
+      - run: npm run test:safari
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: safari-report
+          path: frontend/test-results
+          retention-days: 7
+
   # The layout audit opens every page at five sizes and took half an hour in one piece; it is cut into four parts that run side by side.
   layout-audit:
     name: Layout audit, part ${{ matrix.shard }} of 4 (phone, tablet, laptop, desktop and ultrawide)
