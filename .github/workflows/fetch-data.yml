@@ -202,7 +202,7 @@ jobs:
 
       - name: Upload them for the last job
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: result-records
           path: data.tar
@@ -255,7 +255,7 @@ jobs:
 
       - name: Upload them for the last job
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: result-lords
           path: data.tar
@@ -358,7 +358,7 @@ jobs:
 
       - name: Upload them for the last job
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: result-lords_files
           path: data.tar
@@ -450,7 +450,7 @@ jobs:
 
       - name: Upload them for the last job
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: result-activity
           path: data.tar
@@ -502,7 +502,7 @@ jobs:
 
       - name: Upload them for the last job
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: result-claims
           path: data.tar
@@ -565,7 +565,7 @@ jobs:
 
       - name: Upload them for the last job
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: result-questions
           path: data.tar
@@ -685,7 +685,7 @@ jobs:
 
       - name: Upload them for the last job
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: result-static
           path: data.tar

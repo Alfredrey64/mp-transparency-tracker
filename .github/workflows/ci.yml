@@ -65,7 +65,7 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run test:phone
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-report
@@ -89,7 +89,7 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps webkit
       - run: npm run test:safari
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: safari-report
@@ -117,7 +117,7 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run test:layout -- --shard=${{ matrix.shard }}/4
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: layout-report-${{ matrix.shard }}
@@ -145,7 +145,7 @@ jobs:
       - run: npm run build
       - run: npx playwright install --with-deps chromium
       - run: npm run shots
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: layout-pictures
           path: frontend/screenshots
@@ -186,7 +186,7 @@ jobs:
             if (!fs.existsSync(f)) { console.log("::error::Lighthouse wrote no results"); process.exit(0); }
             for (const r of JSON.parse(fs.readFileSync(f, "utf8"))) console.log(`::error::${r.url.replace(/^https?:\/\/[^/]+/, "") || "/"} ${r.auditId} ${r.operator}${r.expected} but was ${Number(r.actual).toFixed(2)}`);
           '
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: lighthouse-report
@@ -209,7 +209,7 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run test:site
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: site-report
@@ -236,7 +236,7 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run test:more -- --shard=${{ matrix.shard }}/2
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: browser-report-${{ matrix.shard }}
