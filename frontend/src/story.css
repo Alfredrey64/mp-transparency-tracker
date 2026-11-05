@@ -1246,6 +1246,40 @@
 .ib-dates dd { margin: 0; font: 700 15px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .ib-who em { font-style: normal; font-weight: 700; color: var(--c-ink); }
 .ib-who .rb-ico { margin-right: 8px; }
+/* Reports on the Committee reports page: a subject colour and picture on every card, the reply clock drawn along a line, and one bar for the whole list. */
+.rb { --st-ontime: #3F7D5C; --st-late: #A86B0C; --st-waiting: #5B6784; --st-overdue: #B3262E; }
+.rb-strip { margin: 0 0 4px; display: grid; gap: 10px; }
+.rb-stripbar { display: flex; gap: 3px; height: 16px; border-radius: 999px; overflow: hidden; background: var(--c-hairline); }
+.rb-stripbar i { min-width: 6px; background: var(--st-waiting); transform-origin: left; transform: scaleX(0); transition: transform 0.9s var(--ease-out) 0.15s; }
+[data-go="1"].rb .rb-stripbar i { transform: none; }
+.rb-stripbar i[data-st="ontime"] { background: var(--st-ontime); } .rb-stripbar i[data-st="late"] { background: var(--st-late); } .rb-stripbar i[data-st="overdue"] { background: var(--st-overdue); }
+.rb-legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 20px; font: 600 13.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.rb-legend li { display: inline-flex; align-items: center; gap: 7px; }
+.rb-legend li::before { content: ""; width: 12px; height: 12px; border-radius: 4px; background: var(--st-waiting); }
+.rb-legend li[data-st="ontime"]::before { background: var(--st-ontime); } .rb-legend li[data-st="late"]::before { background: var(--st-late); } .rb-legend li[data-st="overdue"]::before { background: var(--st-overdue); }
+.rb-legend b { color: var(--c-ink); font-size: 15px; font-variant-numeric: tabular-nums; }
+
+.ib-card[data-topic] { background: linear-gradient(125deg, color-mix(in srgb, var(--tc) 11%, var(--c-paper-card)), var(--c-paper-card) 58%); border-color: color-mix(in srgb, var(--tc) 26%, var(--c-hairline)); }
+.ib-card[data-topic]::before { background: linear-gradient(180deg, var(--tc), color-mix(in srgb, var(--tc) 50%, transparent)); }
+.ib-card[data-topic][data-open="true"], .ib-card[data-topic][data-open="false"]:hover { border-color: color-mix(in srgb, var(--tc) 50%, var(--c-hairline)); }
+.rb-head { display: flex; gap: 14px; align-items: flex-start; }
+.rb-headtext { display: grid; gap: 6px; min-width: 0; flex: 1; }
+.rb-tile { flex: none; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 15px; color: #fff; background: linear-gradient(145deg, color-mix(in srgb, var(--tc) 82%, #fff), var(--tc)); box-shadow: 0 8px 16px -9px var(--tc); }
+.ib-card[data-topic] .ib-body h4 { color: color-mix(in srgb, var(--tc) 72%, var(--c-ink)); }
+.ib-card[data-topic] .ib-dates > div { background: color-mix(in srgb, var(--tc) 8%, var(--c-paper)); border-color: color-mix(in srgb, var(--tc) 22%, var(--c-hairline)); }
+.ib-card[data-topic] .ib-body, .ib-card[data-topic] .ib-orig[open] { border-color: color-mix(in srgb, var(--tc) 40%, var(--c-hairline)); }
+
+.rb-clock { display: grid; gap: 6px; margin-top: 12px; padding: 20px 0 0; }
+.rb-track { position: relative; height: 10px; border-radius: 999px; background: color-mix(in srgb, var(--sc) 15%, var(--c-hairline)); }
+.rb-fill { position: absolute; left: 0; top: 0; bottom: 0; width: var(--w); border-radius: 999px; background: var(--sc); transform-origin: left; transform: scaleX(0); transition: transform 1s var(--ease-out) calc(0.3s + var(--i, 0) * 0.08s); }
+[data-go="1"].rb .rb-fill { transform: none; }
+.rb-due { position: absolute; top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; background: var(--c-paper-card); border: 3px solid var(--c-ink); border-radius: 3px; transform: rotate(45deg); }
+.rb-now { position: absolute; top: 50%; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; background: var(--c-paper-card); border: 4px solid var(--sc); box-shadow: 0 0 0 4px color-mix(in srgb, var(--sc) 18%, transparent); }
+.rb-now em { position: absolute; bottom: 24px; left: 9px; white-space: nowrap; font: 800 12px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: color-mix(in srgb, var(--sc) 80%, var(--c-ink)); }
+.rb-ends { position: relative; display: flex; justify-content: space-between; height: 18px; font: 600 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.rb-ends span + span { position: absolute; white-space: nowrap; }
+@media (max-width: 480px) { .rb-tile { width: 40px; height: 40px; border-radius: 12px; } .rb-head { gap: 10px; } }
+@media (prefers-reduced-motion: reduce) { .rb-fill, .rb-stripbar i { transition: none; transform: none; } }
 .ib-bar { position: relative; height: 10px; margin: 8px 0 4px; border-radius: 999px; background: color-mix(in srgb, var(--sc) 14%, var(--c-hairline)); }
 .ib-bar i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 999px; background: var(--sc); }
 .ib-bar b { position: absolute; top: -4px; width: 2px; height: 18px; margin-left: -1px; border-radius: 1px; background: var(--c-ink); }
