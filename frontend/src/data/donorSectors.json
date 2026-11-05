@@ -423,6 +423,13 @@
     "sector": "Media & Publishing",
     "source": "manual-override"
   },
+  "Premier League": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "PREMIER LEAGUE LIMITED",
+    "companyNumber": "SC117540",
+    "sicCode": "96090"
+  },
   "The Lawn Tennis Association": {
     "sector": "Other / Uncategorised",
     "source": "companies-house",
@@ -645,19 +652,5 @@
     "companyName": "GLOBAL MEDIA IP LIMITED",
     "companyNumber": "12002350",
     "sicCode": "82990"
-  },
-  "SME4Labour Ltd": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "SME4LABOUR LTD",
-    "companyNumber": "10685562",
-    "sicCode": "94920"
-  },
-  "The Football Association Ltd": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "THE FOOTBALL ASSOCIATION PREMIER LEAGUE LIMITED",
-    "companyNumber": "02719699",
-    "sicCode": "93199"
   }
 }

@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-04T11:50:58.596Z",
-  "succeededCount": 36,
-  "totalCount": 37,
+  "generatedAt": "2026-11-05T11:49:24.946Z",
+  "succeededCount": 37,
+  "totalCount": 38,
   "sources": [
     {
       "label": "Financial interests",
@@ -137,6 +137,10 @@
     },
     {
       "label": "Committee reports and government replies",
+      "succeeded": true
+    },
+    {
+      "label": "Statutory instruments",
       "succeeded": true
     },
     {
