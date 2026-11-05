@@ -1235,6 +1235,10 @@
 .ib-body h4 { margin: 0; font: 800 13px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--sc) 78%, var(--c-ink)); }
 .ib-body p { margin: 0; font: 500 15.5px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); max-width: 68ch; }
 .ib-body .ib-src { font-size: 12.5px; color: var(--c-ink-soft); }
+.ib-orig { display: grid; gap: 8px; padding: 2px 0; }
+.ib-orig summary { cursor: pointer; width: fit-content; min-height: 28px; display: inline-flex; align-items: center; font: 700 13.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--sc) 78%, var(--c-ink)); text-decoration: underline; text-underline-offset: 3px; }
+.ib-orig[open] { padding: 6px 0 2px 14px; border-left: 3px solid color-mix(in srgb, var(--sc) 35%, var(--c-hairline)); }
+.ib-orig p { font-size: 14.5px; color: var(--c-ink-soft); }
 .ib-dates { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 10px; margin: 0; }
 .ib-dates > div { display: grid; gap: 2px; padding: 10px 14px; border-radius: 12px; background: color-mix(in srgb, var(--sc) 7%, var(--c-paper)); border: 1px solid color-mix(in srgb, var(--sc) 18%, var(--c-hairline)); }
 .ib-dates dt { font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }

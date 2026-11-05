@@ -20,7 +20,7 @@ function Card({ r, today, index }) {
   const uid = useId();
   const d = describe(r, today);
   const reply = r.replies[0];
-  const peek = r.about?.[0] ?? d.say;
+  const peek = r.plain ?? r.about?.[0] ?? d.say;
   return (
     <li className="ib-card" data-st={d.status} data-open={open} style={{ "--i": index }}>
       <div className="ib-top">
@@ -43,7 +43,13 @@ function Card({ r, today, index }) {
           <div className="ib-body">
             <section>
               <h4>What the report is about</h4>
-              {r.about?.length
+              {r.plain
+                ? <>
+                    <p>{r.plain}</p>
+                    <p className="ib-src">Rewritten in plain English by an AI tool from the committee's description of the inquiry. It can make mistakes, so the committee's own words are below.</p>
+                    <details className="ib-orig"><summary>The committee's own words</summary>{r.about.map((p, i) => <p key={i}>{p}</p>)}</details>
+                  </>
+                : r.about?.length
                 ? <>{r.about.map((p, i) => <p key={i}>{p}</p>)}<p className="ib-src">In the committee's own words, from its description of the inquiry.</p></>
                 : <p>Parliament has not published a description of this inquiry. Going by the title, the committee looked at {r.inquiry ? `“${r.inquiry}”` : `“${r.title}”`} and made recommendations to the government. The report itself has the detail.</p>}
             </section>

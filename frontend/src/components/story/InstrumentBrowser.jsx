@@ -18,6 +18,7 @@ function Card({ data, r, index }) {
   const uid = useId();
   const d = describe(data, r, data.generated);
   const [first, ...rest] = r.summary ?? [];
+  const peek = r.plain ?? first;
   return (
     <li className="ib-card" data-st={r.route} data-open={open} style={{ "--i": index }}>
       <div className="ib-top">
@@ -32,16 +33,24 @@ function Card({ data, r, index }) {
         </button>
       </h3>
       <p className="ib-who">{r.department ? `Laid by ${r.department}` : "Department not listed"}{r.ref && <> · {r.ref}</>}</p>
-      {first && !open && <p className="ib-peek">{first}</p>}
+      {peek && !open && <p className="ib-peek">{peek}</p>}
       <div className="ib-panel" id={`${uid}-panel`} role="region" aria-label={`More about ${r.name}`} inert={!open}>
         <div>
           <div className="ib-body">
             {first && (
               <section>
                 <h4>What it does</h4>
-                <p>{first}</p>
-                {rest.map((s, i) => <p key={i}>{s}</p>)}
-                <p className="ib-src">In the Government's own words, from the note that comes with the instrument.</p>
+                {r.plain
+                  ? <>
+                      <p>{r.plain}</p>
+                      <p className="ib-src">Rewritten in plain English by an AI tool from the note that comes with the instrument. It can make mistakes, so the Government's own words are below.</p>
+                      <details className="ib-orig"><summary>The Government's own words</summary>{[first, ...rest].map((s, i) => <p key={i}>{s}</p>)}</details>
+                    </>
+                  : <>
+                      <p>{first}</p>
+                      {rest.map((s, i) => <p key={i}>{s}</p>)}
+                      <p className="ib-src">In the Government's own words, from the note that comes with the instrument.</p>
+                    </>}
               </section>
             )}
             <section>

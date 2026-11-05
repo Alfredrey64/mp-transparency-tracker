@@ -55,6 +55,7 @@ const SCRIPTS = [
   { id: "fetch_entry_notes", label: "Background notes for calendar entries (committee purposes, earlier debates)" },
   { id: "fetch_committee_reports", label: "Committee reports and government replies" },
   { id: "fetch_statutory_instruments", label: "Statutory instruments" },
+  { id: "write_plain_english", label: "Plain-English rewrites of committee reports and statutory instruments (AI, from the official wording)" },
   { id: "fetch_fullfact_tracker", label: "Full Fact pledge list" },
   { id: "fetch_ons", label: "ONS statistics (economy, prices, jobs, health, population)" },
   { id: "fetch_regional_breakdowns", label: "Regional breakdowns (jobs, housing, crime by place)" },
