@@ -325,14 +325,16 @@ jobs:
         run: node fetch-statutory-instruments.js
 
       # Plain-English rewrites of the committee reports' inquiry descriptions and
-      # the newest instruments' Explanatory Notes, written by Claude from that
+      # the newest instruments' Explanatory Notes, written by an AI model from that
       # official wording only and checked before use (plainEnglish.js). Only new
       # or changed wording is sent, so most days make no requests. Needs the
-      # ANTHROPIC_API_KEY secret; without it the pages keep the official wording.
+      # free GEMINI_API_KEY secret (or a paid ANTHROPIC_API_KEY); without one
+      # the pages keep the official wording.
       - name: Run the plain-English rewriting step
         id: write_plain_english
         continue-on-error: true
         env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: node write-plain-english.js
 

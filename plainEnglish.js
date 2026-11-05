@@ -9,6 +9,7 @@
 import { createHash } from "crypto";
 
 export const MODEL = "claude-haiku-5-5";
+export const GEMINI_MODEL = "gemini-2.5-flash-lite";
 export const NOT_ENOUGH = "NOT_ENOUGH";
 
 const clean = (s) => String(s ?? "").replace(/\s+/g, " ").trim();
