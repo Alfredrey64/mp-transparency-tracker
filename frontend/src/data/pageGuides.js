@@ -512,7 +512,7 @@ export const PAGE_GUIDES = {
     notShown: "Live flood warnings outside England, and the air quality at your own address. The check links to the official services for both.",
   },
   committeeReports: {
-    what: "Which select committee reports from the last 12 months have had a government reply, how long replies took, which committees are waiting longest and which reports have had no reply.",
+    what: "How select committees check the government, then every report from the last 12 months in plain English: what it is about, whether the government has replied, and how long that took.",
     why: "A committee can only recommend. The government's reply is the public record of whether it accepts the recommendations.",
     notShown: "What each reply says, whether the government kept to what it promised, and replies that came as letters or were not linked to the report in Parliament's records.",
   },

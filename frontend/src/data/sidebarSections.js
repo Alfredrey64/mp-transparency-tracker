@@ -275,7 +275,7 @@ export const SECTION_LABEL_BY_KEY = new Map([
 export const HUBS = [
   { key: "ministers", label: "Ministers and their jobs", hint: "The Cabinet, and every past post", pages: [["cabinet", "Cabinet now"], ["offices", "Who held which job"]] },
   { key: "lords", label: "The House of Lords", hint: "The peers, and how they vote", pages: [["lords", "The peers"], ["lordsVotes", "How peers vote"]] },
-  { key: "mpvotes", label: "How MPs vote", hint: "Every vote, and who breaks ranks", pages: [["voting", "How MPs voted"], ["rebels", "MPs who defy their party"]] },
+  { key: "mpvotes", label: "How MPs vote", hint: "Every vote, who breaks ranks, and the laws ministers make", pages: [["voting", "How MPs voted"], ["rebels", "MPs who defy their party"], ["statutoryInstruments", "Laws made by ministers"]] },
   { key: "mpcompare", label: "Compare MPs", hint: "Side by side, and in league tables", pages: [["compare", "Compare MPs"], ["rankings", "League tables"]] },
   { key: "questions", label: "Questions to ministers", hint: "What MPs ask ministers", pages: [["writtenQuestions", "Questions to ministers"], ["topics", "Who's asking about a topic"]] },
   { key: "funders", label: "Who funds politics", hint: "Donors to MPs and parties", pages: [["donors", "Who funds MPs"], ["partyFinances", "Who funds the parties"], ["followTheMoney", "Trace a donor"]] },
@@ -288,7 +288,7 @@ export const HUBS = [
   { key: "qa", label: "Questions and jargon", hint: "Plain answers, and what the words mean", pages: [["answers", "Ask a question"], ["glossary", "Jargon buster"]] },
   { key: "parliament", label: "How Parliament works", hint: "From idea to law, the Budget and who sits there", pages: [["howitworks", "How it works"], ["howBudgetWorks", "The Budget"], ["numbers", "In numbers"]] },
   { key: "takeaction", label: "Get things done", hint: "Who to contact, how to complain, and how to start a petition", pages: [["getThingsDone", "How to get something done"], ["petitions", "Petitions"]] },
-  { key: "scrutiny", label: "Watchdog committees", hint: "MPs who question ministers, and the reports the government answers", pages: [["committees", "The committees"], ["committeeReports", "Reports and replies"], ["statutoryInstruments", "Laws made by ministers"]] },
+  { key: "scrutiny", label: "Watchdog committees", hint: "MPs who question ministers, and the reports the government answers", pages: [["committees", "The committees"], ["committeeReports", "Reports and replies"]] },
   { key: "state", label: "How the state works", hint: "The Civil Service, courts, Crown, watchdogs, devolved nations and the news", pages: [["civilService", "Civil Service"], ["constitution", "Courts"], ["monarchy", "Monarchy"], ["watchdogs", "Watchdogs"], ["inquiries", "Public inquiries"], ["devolved", "Devolution"], ["mediaLiteracy", "News regulation"]] },
   { key: "partyhub", label: "Parties", hint: "What they promise, and which one suits you", pages: [["parties", "What parties promise"], ["partymatch", "Which party suits me?"]] },
   { key: "past", label: "History", hint: "Landmark votes and every government", pages: [["history", "Landmark votes"], ["timeline", "Every government"], ["formerMps", "Recent departures"]] },

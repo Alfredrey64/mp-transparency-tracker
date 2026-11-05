@@ -17,7 +17,7 @@ import { dateLong } from "../../lib/upcoming";
 const HEAD = {
   kicker: "How Parliament works",
   title: "Committee reports and government replies",
-  subtitle: "Select committees investigate a subject and publish a report with recommendations. The government has undertaken to reply, usually within two months. This page shows which reports from the last 12 months have had a reply, how long replies take, and which are still waiting.",
+  subtitle: "Groups of MPs and peers, called select committees, check up on the government. They investigate a subject, publish a report and say what should change. The government is meant to reply within about two months. This page explains how that works, and shows every report from the last 12 months and whether it has had a reply.",
   icon: IconCommittee,
   look: "vivid",
 };
@@ -31,21 +31,38 @@ function build(data) {
 
   const chapters = [
     {
-      title: "What happens to a report",
-      lede: "A committee of MPs or peers can ask for evidence, publish what it finds and recommend changes. A report is only the start: it is the government's reply that shows what it will do about it.",
+      title: "Who checks the government?",
+      lede: "A select committee is a small group of MPs, or of peers, who watch one part of government: a department, or a subject such as health or defence. They ask ministers and experts questions, then write a report. The report says what they found and what the government should do about it.",
       colour: "#2C7DA0",
       blocks: [
-        { node: <Flow numbered items={[
-          { title: "A committee investigates", text: "It takes written and spoken evidence from ministers, officials, experts and the public.", colour: "#2C7DA0" },
-          { title: "It publishes a report", text: "The report sets out what it found and recommends what the government should do.", colour: "#7B5BD6" },
-          { title: "The government replies", text: "It has undertaken to respond to most reports within two months, though there are exceptions.", colour: "#C88A1E" },
-          { title: "The committee publishes the reply", text: "The reply says which recommendations are accepted, and the committee can follow up.", colour: "#3F7D5C" },
-        ]} /> },
+        { cards: [
+          { title: "They ask questions", text: "Ministers, officials, experts and members of the public give evidence, in writing and in person.", colour: "#2C7DA0" },
+          { title: "They write a report", text: "It says what the committee found, and lists recommendations for the government.", colour: "#7B5BD6" },
+          { title: "They wait for an answer", text: "The government has agreed to reply in writing, normally within two months.", colour: "#C88A1E" },
+        ] },
+        { note: "Committees cannot make the government do anything. Their power is to ask in public, report in public, and press for an answer." },
       ],
     },
     {
-      title: "The last 12 months of reports",
-      lede: `${plural(s.total, "report")} published since ${dateLong(data.from)} have a government reply due. ${plural(s.due, "deadline")} ${s.due === 1 ? "has" : "have"} passed.`,
+      title: "What happens after a report comes out?",
+      lede: "The report is only the start. The government's reply is what shows whether anything will change.",
+      colour: "#7B5BD6",
+      blocks: [
+        { node: <Flow numbered items={[
+          { title: "The committee publishes its report", text: "It sets out what it found and what it recommends.", colour: "#2C7DA0" },
+          { title: "The government has about two months to reply", text: "The deadline is shown on each report below.", colour: "#C88A1E" },
+          { title: "The reply says yes, no or not yet", text: "For each recommendation, the government says whether it accepts it, turns it down or will think about it.", colour: "#7B5BD6" },
+          { title: "The committee can follow up", text: "It can publish the reply and question ministers again if it is not satisfied.", colour: "#3F7D5C" },
+        ]} /> },
+        { more: { title: "Does the government have to do what a report says?", text: [
+          "No. A report is a set of recommendations, not orders. The government can accept them, turn them down, or accept some and not others.",
+          "What the government has agreed to do is reply. That is why this page tracks replies: a late or missing reply means the public record of the government's answer is late or missing too.",
+        ] } },
+      ],
+    },
+    {
+      title: "Do replies arrive on time?",
+      lede: `${plural(s.total, "report")} published since ${dateLong(data.from)} have a government reply due. The deadline has passed for ${s.due} of them, and ${s.answered} of those have had a reply.`,
       colour: "#7B5BD6",
       blocks: [
         { node: <Dots title="Out of every 100 reports" items={[
@@ -73,19 +90,26 @@ function build(data) {
   }
 
   chapters.push({
-    title: "Every report, and where it stands",
-    lede: "Each card says who published the report, what it looked into, whether the government has replied and how long that took. Use the buttons to see only the ones still waiting, or search for a committee or a subject.",
+    title: "Every report, in plain English",
+    lede: "Each card shows who wrote the report and whether the government has replied. Press a card to see what the report is about, who the committee is and the dates, with links to the report and any reply. Use the buttons to see only the ones still waiting, or search for a committee or a subject.",
     colour: "#2C7DA0",
     blocks: [
       { node: <ReportBrowser data={data} /> },
-      { note: "This page shows when each report came out and when the government replied. It does not summarise what a report or reply says: the full text is on Parliament's website, and each card links straight to it." },
+      { note: "The \u201Cwhat it is about\u201D text is the committee's own description of its inquiry, tidied up. This page does not summarise what a report or reply says or whether the government agreed: the full text is on Parliament's website, and each card links straight to it." },
     ],
+  });
+
+  chapters.push({
+    title: "What you can do",
+    lede: "If a report is about something you care about, you can read it, and the reply, in full. You can also tell your MP what you think, or give evidence to a committee when it asks.",
+    colour: "#3F7D5C",
+    blocks: [{ node: <p className="st-note"><a href="#/committees">See the committees and who sits on them</a> · <a href="#/myMP">Find your MP</a></p> }],
   });
 
   return {
     lead: <Hero
       colours={["#10324A", "#2C7DA0", "#6B4FBF"]}
-      why="Committees can only recommend. Whether anything changes depends on the government accepting the recommendations, and its reply is the public record of that."
+      why="Committees can only recommend. Whether anything changes depends on the government, and its reply is the public record of what it will do."
       stops={[
         { icon: IconCommittee, title: "A committee investigates", text: "Evidence from ministers, experts and the public", colour: "#8DB7E8" },
         { icon: IconBook, title: "It publishes a report", text: "What it found, and what to change", colour: "#B9A5F0" },
