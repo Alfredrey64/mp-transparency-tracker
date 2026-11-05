@@ -23,7 +23,8 @@ for (const size of [{ name: "phone", width: 390, height: 844 }, { name: "desktop
       await page.goto(`/${path === "home" ? "" : path}`);
       await page.waitForSelector("#main-content h1, #main-content h2", { timeout: 20000 }).catch(() => {});
       await page.waitForTimeout(300);
-      const folds = page.locator("#main-content details > summary:visible");
+      // A fold-out inside a closed card (its panel is inert) cannot be reached by anyone, so it is left until the card is opened.
+      const folds = page.locator("#main-content details:not([inert] details) > summary:visible");
       const n = Math.min(await folds.count(), 10);
       for (let i = 0; i < n; i++) {
         const summary = folds.nth(i);

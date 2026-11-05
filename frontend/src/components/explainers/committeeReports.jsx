@@ -95,7 +95,7 @@ function build(data) {
     colour: "#2C7DA0",
     blocks: [
       { node: <ReportBrowser data={data} /> },
-      { note: "The \u201Cwhat it is about\u201D text is the committee's own description of its inquiry, tidied up. This page does not summarise what a report or reply says or whether the government agreed: the full text is on Parliament's website, and each card links straight to it." },
+      { note: "The \u201Cwhat it is about\u201D text is the committee's own description of its inquiry. Where an AI tool has put it into plainer English, the card says so and keeps the committee's own words underneath. This page does not summarise what a report or reply says or whether the government agreed: the full text is on Parliament's website, and each card links straight to it." },
     ],
   });
 

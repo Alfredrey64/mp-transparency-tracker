@@ -64,7 +64,9 @@ export function askedIn(items) {
 
 // A committee's purpose as at most two sentences, without the links to its social media.
 export function purposeOf(html) {
-  const text = stripHtml(String(html ?? "").split(/Follow us/i)[0]);
+  const text = stripHtml(String(html ?? "").split(/Follow (?:us|the Committee)/i)[0]).trim();
   const sentences = text.match(/[^.!?]+[.!?]+/g) ?? [];
+  // A purpose that ends without a full stop (the social media line followed it directly) is one sentence.
+  if (!sentences.length) return text ? `${text}.` : "";
   return sentences.slice(0, 2).map((s) => s.trim()).join(" ");
 }

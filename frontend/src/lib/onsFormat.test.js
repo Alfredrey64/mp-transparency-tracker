@@ -34,6 +34,9 @@ describe("ONS values", () => {
   it("writes short axis labels", () => {
     expect(formatAxis("pct", 2)).toBe("2%");
     expect(formatAxis("gbpbn", 18000)).toBe("£18bn");
+    expect(formatAxis("gbpbn", -25000)).toBe("-£25bn");
+    expect(formatAxis("gbp", -1500)).toBe("-£1,500");
+    expect(formatAxis("gbpbnx", -20)).toBe("-£20bn");
     expect(formatAxis("people", 60000000)).toBe("60m");
   });
 });

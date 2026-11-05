@@ -57,6 +57,12 @@ describe("summariseReports", () => {
 });
 
 describe("plainScope", () => {
+  it("mends slips in the committee's own wording", () => {
+    expect(plainScope("<p>The committee published its i nterim report on the high costs of energy in the UK and the intreim findings.</p>")[0]).toBe("The committee published its interim report on the high costs of energy in the UK and the interim findings.");
+  });
+  it("closes up the space a link leaves before a comma or full stop", () => {
+    expect(plainScope("<p>Failings were found in the <a>Windrush Compensation Scheme</a> , Equitable Life and the <a>British Steel Pension Scheme</a> .</p>")).toEqual(["Failings were found in the Windrush Compensation Scheme, Equitable Life and the British Steel Pension Scheme."]);
+  });
   it("turns an inquiry's description into plain text in the past tense", () => {
     expect(plainScope("<p>The Transport Committee has launched an inquiry into rail investment.&nbsp;The inquiry will look at funding.</p>")).toEqual(["The committee looked into rail investment. The inquiry looked at funding."]);
   });

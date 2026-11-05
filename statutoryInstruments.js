@@ -60,7 +60,7 @@ export function tidyNote(text) {
   return String(text ?? "")
     .replace(/\(\s*This note is not (?:a )?part of [^)]*\)/gi, " ")
     .replace(/^\s*Explanatory Notes?\s*/i, "")
-    .replace(/\(\s*S\.?S?\.?R?\.?I\.?\s*[\d/]+\s*\)/g, "")
+    .replace(/\(\s*S\.?S?\.?R?\.?I\.?\s*[\dX/]+\s*\)/g, "")
     .replace(/\(\s*c\.\s*[\d\w]+\s*\)/g, "")
     .replace(/\(\s*(?:EUR|OJ)\b[^)]*\)/g, "")
     .replace(/\(\s*\u201C[^\u201D]{1,70}\u201D\s*\)/g, "")

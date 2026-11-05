@@ -135,7 +135,7 @@ function build(data) {
     },
     {
       title: "What has been made lately",
-      lede: "The most recent instruments laid before Parliament. Press any one to see what it does, in the Government's own words, and where to read it in full. Use the buttons to see only those Parliament must approve.",
+      lede: "The most recent instruments laid before Parliament. Press any one to see what it does and where to read it in full. Some are put into plainer English by an AI tool, always with the Government's own words kept beside it. Use the buttons to see only those Parliament must approve.",
       colour: "#2C7DA0",
       blocks: [
         { node: <InstrumentBrowser data={data} /> },

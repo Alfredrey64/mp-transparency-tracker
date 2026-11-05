@@ -784,8 +784,8 @@ export function IconCompareTime({ size = 17 }) {
   return (
     <svg width={size} height={size} {...iconProps}>
       <path d="M4 4v16h16.5" />
-      <path d="M7.5 16l3.5-6 3 3 5-6.5" />
-      <path d="M7.5 11.5l3-3.5 3.2 4.5 5.3-1.5" />
+      <path d="M7.5 13.5l3.5-4.5 3.5 2.5 4.5-5" />
+      <path d="M7.5 18l3.5-2.5 3.5 1 4.5-3" opacity="0.55" />
     </svg>
   );
 }

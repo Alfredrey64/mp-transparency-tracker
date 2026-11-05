@@ -386,6 +386,14 @@ export default function Methodology({ onNavigate }) {
               absent, paired, or deliberately abstaining, so neither can we.
             </CaveatItem>
             <CaveatItem>
+              <strong>Plain-English rewrites (Committee reports and Laws made by ministers):</strong> where a card says it
+              was rewritten by an AI tool, the tool was given only the official wording (the committee's description of
+              its inquiry, or the Government's Explanatory Note) and told to add nothing else. A check rejects any
+              rewrite that brings in a figure the source does not contain. It can still misread a sentence, so the
+              official wording is always kept beside it, and it does not say what a report concluded or whether the
+              Government agreed.
+            </CaveatItem>
+            <CaveatItem>
               <strong>"In the News":</strong> a daily headline search for an MP's name, filtered to require their
               surname appear in the headline. It's a skim, not a verified fact-check: a same-named person, or a
               passing mention, can occasionally slip through.

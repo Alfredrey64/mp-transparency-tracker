@@ -18,10 +18,12 @@ export function splitTitle(description) {
 const SCRUTINY = /Statutory Instruments|Secondary Legislation Scrutiny|Delegated Powers|Regulatory Reform|European Scrutiny|Standards|Conduct|Privileges|Selection|Procedure|\bBill\b/i;
 
 const ENTITIES = { "&nbsp;": " ", "&amp;": "&", "&quot;": "\"", "&#39;": "'", "&rsquo;": "\u2019", "&lsquo;": "\u2018", "&ldquo;": "\u201C", "&rdquo;": "\u201D", "&ndash;": "-", "&mdash;": "-", "&pound;": "\u00A3", "&hellip;": "..." };
-const plainText = (html) => String(html ?? "")
+// Slips in the committees' own descriptions that are mended as the text is read.
+const SLIPS = [[/\bi nterim\b/g, "interim"], [/\bintreim\b/g, "interim"], [/\bResponsiblity/g, "Responsibility"], [/\binquiryconsidering\b/g, "inquiry considering"]];
+const plainText = (html) => SLIPS.reduce((t, [re, to]) => t.replace(re, to), String(html ?? ""))
   .replace(/<\/(p|li|h\d|div|br)>|<br\s*\/?>/gi, "\n").replace(/<[^>]*>/g, " ")
   .replace(/&[a-z]+;|&#\d+;/gi, (m) => ENTITIES[m.toLowerCase()] ?? " ")
-  .replace(/[ \t\u00A0]+/g, " ").replace(/ *\n+ */g, "\n").trim();
+  .replace(/[ \t\u00A0]+/g, " ").replace(/ *\n+ */g, "\n").replace(/ ([,.;:])/g, "$1").trim();
 
 // Sentences that ask for evidence, give a deadline or point to a web address say nothing about the subject, so they are left out of the plain-English account.
 const ADMIN = /call for evidence|submit|submission|written evidence|oral evidence|evidence session|deadline|closing date|invites?\b|inviting|welcomes?\b|we are (?:now )?(?:seeking|accepting)|terms of reference|www\.|https?:|@|\bemail|please|contact|follow us|click|\bhere\b|send us|your views|share your|have your say|proposal for a draft/i;

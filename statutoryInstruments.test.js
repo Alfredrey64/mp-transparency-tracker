@@ -3,6 +3,13 @@ import { tidyInstrument, summariseInstruments, monthsBack, procedureOf, summaris
 
 const si = (over = {}) => ({ value: { id: "a1", name: "The Widgets Regulations 2026", paperPrefix: "SI", paperNumber: 12, paperYear: "2026", procedure: { name: "Made negative" }, paperMadeDate: "2026-10-01T00:00:00", commonsLayingDate: "2026-10-05T00:00:00", lordsLayingDate: "2026-10-05T00:00:00", ...over } });
 
+describe("summariseNote", () => {
+  it("drops an unfilled statutory instrument number from the wording", () => {
+    const xml = "<ExplanatoryNotes><p>These Regulations make changes in consequence of the Consumer Subscription Contracts (Cancellation and Information) Regulations 2026 (S.I. 2026/XXXX) coming into force.</p></ExplanatoryNotes>";
+    expect(summariseNote(xml)?.join(" ")).not.toMatch(/XXXX/);
+  });
+});
+
 describe("tidyInstrument", () => {
   it("keeps the name, procedure, route, dates and reference", () => {
     expect(tidyInstrument(si().value)).toEqual({ id: "a1", name: "The Widgets Regulations 2026", procedure: "Made negative", route: "object", laid: "2026-10-05", made: "2026-10-01", ref: "SI 2026/12" });

@@ -50,7 +50,7 @@ const group = (n) => Math.round(n).toLocaleString("en-GB");
 const money = (v, text) => (v < 0 ? `-${text.replace(/^-/, "")}` : text);
 
 // How each kind of number is written. `v` is the raw ONS value.
-export function formatValue(format, v) {
+function formatValueRaw(format, v) {
   if (v === null || v === undefined || Number.isNaN(v)) return "n/a";
   switch (format) {
     case "pct": return `${v.toFixed(1)}%`;
@@ -79,7 +79,7 @@ export function formatValue(format, v) {
 }
 
 // Short form for chart axes.
-export function formatAxis(format, v) {
+function formatAxisRaw(format, v) {
   switch (format) {
     case "pct": return `${Number(v.toFixed(1))}%`;
     case "pct2": return `${Number(v.toFixed(2))}%`;
@@ -103,7 +103,7 @@ export function formatAxis(format, v) {
 }
 
 // The shortest honest way to write a figure, for places with no room: a label on a small map, a tick on a key.
-export function formatCompact(format, v) {
+function formatCompactRaw(format, v) {
   if (v === null || v === undefined || Number.isNaN(v)) return "n/a";
   const trim = (x, d = 1) => String(Number(x.toFixed(d)));
   switch (format) {
@@ -207,3 +207,9 @@ export function changeShort(change) {
   const dir = change.amount > 0 ? "up" : "down";
   return change.type === "points" ? `${dir} ${n} pts` : `${dir} ${n}%`;
 }
+
+// A minus sign goes before the currency symbol ("-£25bn"), never between the symbol and the figure ("£-25bn").
+const signFirst = (text) => (typeof text === "string" ? text.replace(/^([£$€])-/, "-$1") : text);
+export const formatValue = (format, v) => signFirst(formatValueRaw(format, v));
+export const formatAxis = (format, v) => signFirst(formatAxisRaw(format, v));
+export const formatCompact = (format, v) => signFirst(formatCompactRaw(format, v));

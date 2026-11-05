@@ -31,6 +31,8 @@ describe("entryNotes", () => {
   });
 
   it("keeps two sentences of a committee's purpose and drops its social links", () => {
+    expect(purposeOf("<p>The Constitution Committee examines the constitutional implications of public bills. Follow the Committee on LinkedIn or X (formerly Twitter).</p>")).toBe("The Constitution Committee examines the constitutional implications of public bills.");
+    expect(purposeOf("<p>The Communications and Digital Committee considers the media Follow the Committee on LinkedIn .</p>")).toBe("The Communications and Digital Committee considers the media.");
     expect(purposeOf("<p>The Home Affairs Committee scrutinises the Home Office. It examines policy and spending. A third.</p><p>Follow us on <a>X</a></p>")).toBe("The Home Affairs Committee scrutinises the Home Office. It examines policy and spending.");
     expect(keyOf("Hello, World & Co")).toBe("hello world co");
   });
