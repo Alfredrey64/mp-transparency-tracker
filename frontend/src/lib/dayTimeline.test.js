@@ -28,6 +28,11 @@ describe("layoutTimeline", () => {
     expect(dots[2].row).toBe(0);
     expect(l.lanes[0].rows).toBe(2);
   });
+  it("lets a clock that draws smaller points pack them closer in a row", () => {
+    const close = [e("10:00"), e("10:40")];
+    expect(layoutTimeline(close).lanes[0].rows).toBe(2);
+    expect(layoutTimeline(close, null, 5).lanes[0].rows).toBe(1);
+  });
   it("drops lanes with nothing in them and counts the entries with no time", () => {
     const l = layoutTimeline([e("10:00"), e("")]);
     expect(l.lanes.map((x) => x.name)).toEqual(["Commons"]);

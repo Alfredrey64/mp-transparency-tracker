@@ -26,7 +26,7 @@ button.tw-card { width: 100%; text-align: left; font: inherit; cursor: pointer; 
 
 /* The three tenses: a line with a stop for the past, today and what is coming, and the line fills up to the one chosen. */
 .tw-time { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 26px 0 6px; }
-.tw-time::before, .tw-time::after { content: ""; position: absolute; left: 16.667%; top: 15px; height: 4px; border-radius: 2px; }
+.tw-time::before, .tw-time::after { content: ""; position: absolute; left: 16.667%; top: 11px; height: 4px; border-radius: 2px; }
 .tw-time::before { right: 16.667%; background: var(--c-hairline); }
 .tw-time::after { width: calc(var(--k, 0) * 33.333%); background: linear-gradient(90deg, #E0367A, #1F7A4D 50%, #5A4FCF); transition: width 0.7s cubic-bezier(0.6, 0, 0.2, 1); }
 .tw-time button { position: relative; z-index: 1; display: grid; justify-items: center; align-content: start; gap: 3px; padding: 0 4px 6px; border: 0; background: none; cursor: pointer; text-align: center; }

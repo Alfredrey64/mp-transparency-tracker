@@ -5,12 +5,13 @@
 import { clockMinutes } from "./upcoming";
 
 export const LANES = ["Commons", "Lords", "Committees"];
+export const LANE_COLOUR = { Commons: "#1F7A4D", Lords: "#B3262E", Committees: "#2C7DA0" };
 const GAP = 11.5; // the least distance, in percent of the clock's width, between two points in the same row
 
 export const laneOf = (e) => (e.k === "hearing" ? "Committees" : e.h === "L" ? "Lords" : "Commons");
 
-// entries: [{ time, h, k, ... }]. nowMinutes: minutes since midnight in London, or null. Returns null when nothing has a time.
-export function layoutTimeline(entries, nowMinutes = null) {
+// entries: [{ time, h, k, ... }]. nowMinutes: minutes since midnight in London, or null. gap: the least distance between two points in a row, for a clock that draws them smaller. Returns null when nothing has a time.
+export function layoutTimeline(entries, nowMinutes = null, gap = GAP) {
   const timed = entries.filter((e) => clockMinutes(e.time) !== null);
   if (!timed.length) return null;
   const mins = timed.map((e) => clockMinutes(e.time));
@@ -26,7 +27,7 @@ export function layoutTimeline(entries, nowMinutes = null) {
       .sort((a, b) => clockMinutes(a.time) - clockMinutes(b.time))
       .map((entry) => {
         const at = pct(clockMinutes(entry.time));
-        let row = rowEnds.findIndex((last) => at - last >= GAP);
+        let row = rowEnds.findIndex((last) => at - last >= gap);
         if (row === -1) row = rowEnds.length;
         rowEnds[row] = at;
         return { entry, at, row };

@@ -8,6 +8,7 @@ import { summariseBill, billSearchUrl } from "../../lib/billSummary";
 import { plainPoints } from "../../lib/billPlain";
 import { clock, dayLong, houseName } from "../../lib/upcoming";
 import EntryRows from "./EntryRows";
+import DayDiagrams from "./DayDiagrams";
 import notes from "../../data/entryNotes.json";
 import "../../entries.css";
 
@@ -104,9 +105,7 @@ function Stages({ stages }) {
 function DayList({ entry, open }) {
   return (
     <>
-      <div className="en-houses">
-        {entry.houses.map((h) => <p key={h.name} data-house={h.name}><b>{h.name}</b> {h.text}</p>)}
-      </div>
+      <DayDiagrams entry={entry} open={open} />
       {entry.items.length > 0
         ? <EntryRows items={entry.items} open={open} label={`Listed for ${dayLong(entry.date)}`} />
         : <p>Nothing is listed for this day yet. Business is added as each day gets closer.</p>}

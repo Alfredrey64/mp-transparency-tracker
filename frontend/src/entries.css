@@ -49,9 +49,6 @@
 .en-dates li { padding-left: 12px; border-left: 3px solid var(--ec); color: var(--c-ink); }
 .en-link a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px; background: var(--c-brand); color: #fff; font: 700 14.5px "Figures", "Public Sans", system-ui, sans-serif; text-decoration: none; }
 .en-link a:hover { filter: brightness(1.08); }
-.en-houses { display: grid; gap: 6px; }
-.en-houses p { margin: 0; padding: 8px 12px; border-radius: 10px; border-left: 5px solid #1F7A4D; background: var(--c-paper); font: 500 14.5px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
-.en-houses p[data-house="Lords"] { border-left-color: #B3262E; }
 .en-box .en-list { gap: 10px; }
 @keyframes enFade { from { opacity: 0; } }
 @keyframes enRise { from { opacity: 0; transform: translateY(14px); } }
@@ -92,3 +89,70 @@
 .en-daynav button b { font: 700 11px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .en-daynav button span { padding: 0 7px; border-radius: 999px; background: color-mix(in srgb, var(--c-ink-soft) 16%, transparent); font: 700 11.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .en-daynav button:hover { border-color: var(--c-brand); background: color-mix(in srgb, var(--c-brand) 8%, var(--c-paper-card)); }
+
+/* The pictures at the top of a day's panel (components/story/DayDiagrams.jsx). */
+.dd { display: grid; gap: 12px; }
+.dd-houses { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.dd-houses p { --hc: #1F7A4D; display: flex; align-items: center; gap: 12px; margin: 0; padding: 11px 14px; border-radius: 14px; background: var(--c-paper); border: 1px solid var(--c-hairline); font: 500 14.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.dd-houses p[data-house="Lords"] { --hc: #B3262E; }
+.dd-houses p > span:last-child { display: grid; gap: 1px; min-width: 0; }
+.dd-sw { flex: none; width: 30px; height: 30px; border-radius: 9px; border: 2px solid var(--hc); box-sizing: border-box; background: var(--hc); }
+.dd-houses p[data-s="recess"] .dd-sw { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--hc) 30%, var(--c-paper-card)) 0 3px, var(--c-paper-card) 3px 7px); }
+.dd-houses p[data-s="off"] .dd-sw { background: none; border-color: var(--c-hairline); }
+.dd-card { margin: 0; padding: 13px 14px 14px; border-radius: 14px; background: var(--c-paper); border: 1px solid var(--c-hairline); min-width: 0; }
+.dd-card figcaption { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 12px; margin-bottom: 10px; }
+.dd-card figcaption b { font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.dd-card figcaption span { font: 500 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.dd-bar { display: flex; gap: 2px; height: 14px; border-radius: 7px; overflow: hidden; }
+.dd-bar i { min-width: 6px; transform-origin: left; }
+.dd-legend { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 5px 16px; font: 500 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.dd-legend li { display: inline-flex; align-items: center; gap: 6px; }
+.dd-legend li i { width: 10px; height: 10px; border-radius: 50%; }
+.dd-legend b { color: var(--c-ink); font-variant-numeric: lining-nums; }
+.dd-clock { container-type: inline-size; }
+.dd-plot { --row: 46px; --nw: 100px; display: grid; gap: 6px; }
+.dd-axis { position: relative; height: 16px; margin: 0 14px 0 var(--nw); }
+.dd-axis span { position: absolute; transform: translateX(-50%); font: 700 11px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); font-variant-numeric: lining-nums; white-space: nowrap; }
+.dd-lane { display: grid; grid-template-columns: var(--nw) minmax(0, 1fr); align-items: stretch; }
+.dd-name { display: flex; align-items: center; padding-left: 9px; border-left: 4px solid var(--lc); border-radius: 3px 0 0 3px; font: 800 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--lc); }
+.dd-track { position: relative; height: calc(var(--rows) * var(--row) + 4px); margin-right: 14px; border-radius: 10px; background-color: color-mix(in srgb, var(--lc) 7%, var(--c-paper-card)); background-image: repeating-linear-gradient(to right, var(--c-hairline) 0 1px, transparent 1px calc(100% / var(--hrs))); }
+.dd-dot { position: absolute; top: calc(var(--r) * var(--row) + 6px); display: grid; justify-items: center; gap: 1px; width: 44px; margin-left: -22px; padding: 0; border: 0; background: none; color: var(--c-ink); cursor: pointer; font: inherit; }
+.dd-dot i { width: 18px; height: 18px; border-radius: 50%; background: var(--lc); border: 3px solid var(--c-paper-card); box-shadow: 0 0 0 1.5px var(--lc); transition: transform 0.18s var(--ease-out); }
+.dd-dot:hover i, .dd-dot:focus-visible i { transform: scale(1.25); }
+.dd-dot:focus-visible { outline: 2px solid var(--c-brand); outline-offset: 1px; border-radius: 8px; }
+.dd-t { font: 700 10.5px "Figures", "Public Sans", system-ui, sans-serif; font-variant-numeric: lining-nums; white-space: nowrap; }
+.dd-note { margin: 10px 0 0; font: 400 12.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+@container (max-width: 470px) {
+  .dd-plot { --row: 30px; --nw: 82px; }
+  .dd-axis span:nth-child(even) { display: none; }
+  .dd-name { font-size: 11px; padding-left: 6px; }
+  .dd-t { display: none; }
+  .dd-dot { width: 26px; margin-left: -13px; }
+}
+@container (max-width: 330px) {
+  .dd-axis span:nth-child(even) { display: inline; }
+  .dd-axis span:not(:nth-child(3n + 1)) { display: none; }
+}
+@media (max-width: 460px) { .dd-houses p { gap: 9px; padding: 10px 11px; font-size: 14px; } .dd-sw { width: 22px; height: 22px; border-radius: 7px; } }
+@media (prefers-reduced-motion: no-preference) {
+  .dd-bar i { animation: ddGrow 0.6s var(--ease-out) calc(var(--k) * 70ms + 200ms) backwards; }
+  .dd-dot { animation: ddPop 0.4s var(--ease-out) calc(var(--k) * 40ms + 250ms) backwards; }
+}
+@keyframes ddGrow { from { transform: scaleX(0); } }
+@keyframes ddPop { from { opacity: 0; transform: scale(0.4); } }
+
+/* A bill's row on Coming up: the stages due in the next four weeks as a ladder under the title (components/story/EntryRows.jsx). */
+.en-count { padding: 1px 9px; border-radius: 999px; background: color-mix(in srgb, var(--c-ink-soft) 14%, transparent); font: 700 11.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.bl { position: relative; display: grid; gap: 7px; margin: 4px 0 2px; padding-left: 2px; max-width: 560px; }
+.bl::before { content: ""; position: absolute; left: 8px; top: 12px; bottom: 12px; width: 2px; border-radius: 1px; background: var(--c-hairline); }
+.bl-step { --hc: #1F7A4D; position: relative; display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; align-items: baseline; gap: 12px; }
+.bl-step[data-house="Lords"] { --hc: #B3262E; }
+.bl-step i { align-self: center; width: 14px; height: 14px; box-sizing: border-box; border-radius: 50%; background: var(--c-paper-card); border: 3.5px solid var(--hc); }
+.bl-what { font: 600 13.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); overflow-wrap: anywhere; }
+.bl-what em { margin-right: 8px; font: 700 11.5px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: var(--hc); }
+.bl-when { font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; font-variant-numeric: lining-nums; color: var(--c-ink-soft); white-space: nowrap; }
+.bl-more { padding-left: 26px; font: 500 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+@media (max-width: 460px) {
+  .bl-step { grid-template-columns: 14px minmax(0, 1fr); row-gap: 0; }
+  .bl-when { grid-column: 2; }
+}

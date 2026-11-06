@@ -26,7 +26,7 @@ function dayEntry(data, d) {
   const say = (s) => `${s === "sitting" ? "is sitting" : s === "recess" ? "is in recess" : "is not sitting"}.`;
   return {
     id: `day-${d.date}`, kind: "day", title: dayLong(d.date), date: d.date, items,
-    houses: ["Commons", "Lords"].map((name) => ({ name, text: say(d[name[0]]) })),
+    houses: ["Commons", "Lords"].map((name) => ({ name, s: d[name[0]], text: say(d[name[0]]) })),
   };
 }
 

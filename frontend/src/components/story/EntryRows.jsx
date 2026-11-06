@@ -23,6 +23,24 @@ function Strip({ strip }) {
   );
 }
 
+// A bill's stages that fall in the four weeks, as a short ladder: a dot in the colour of the house, what happens, and the day. Three at most; the panel lists them all.
+const SHOWN = 3;
+const sentence = (t) => (t ? t.charAt(0).toUpperCase() + t.slice(1) : "A stage");
+function Ladder({ stages }) {
+  return (
+    <span className="bl">
+      {stages.slice(0, SHOWN).map((s, i) => (
+        <span key={i} className="bl-step" data-house={houseName(s.h)}>
+          <i aria-hidden="true" />
+          <span className="bl-what"><em>{houseName(s.h)}</em>{sentence(s.stage)}</span>
+          <span className="bl-when">{dayShort(s.d)}</span>
+        </span>
+      ))}
+      {stages.length > SHOWN && <span className="bl-more">{stages.length - SHOWN} more {stages.length - SHOWN === 1 ? "stage" : "stages"} listed</span>}
+    </span>
+  );
+}
+
 export default function EntryRows({ items, open, dateColumn = false, label = "Entries" }) {
   const anyTime = items.some((e) => e.time);
   return (
@@ -40,9 +58,9 @@ export default function EntryRows({ items, open, dateColumn = false, label = "En
                 </span>
               )}
               <span className="en-body">
-                <span className="en-meta">{house && <em data-house={house}>{house}</em>}<span>{x.label}</span>{e.when === "next" && <em className="en-next">Next up</em>}{e.when === "past" && <span className="en-past">Earlier today</span>}</span>
+                <span className="en-meta">{house && <em data-house={house}>{house}</em>}<span>{x.label}</span>{e.kind === "bill" && e.stages?.length > 1 && <span className="en-count">{e.stages.length} stages</span>}{e.when === "next" && <em className="en-next">Next up</em>}{e.when === "past" && <span className="en-past">Earlier today</span>}</span>
                 <b>{e.title}</b>
-                {sub && <small>{sub}</small>}
+                {e.kind === "bill" && e.stages ? <Ladder stages={e.stages} /> : sub && <small>{sub}</small>}
                 {e.strip && <Strip strip={e.strip} />}
               </span>
               <span className="en-go" aria-hidden="true" />

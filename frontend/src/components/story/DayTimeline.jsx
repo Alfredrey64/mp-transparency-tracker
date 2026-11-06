@@ -1,12 +1,11 @@
 /** @jsxImportSource react */
 import { useEffect, useRef } from "react";
 import { useGo } from "./useGo";
-import { layoutTimeline } from "../../lib/dayTimeline";
+import { layoutTimeline, LANE_COLOUR } from "../../lib/dayTimeline";
 import { clock, clockMinutes } from "../../lib/upcoming";
 
 // Today on a clock: a lane for the Commons, the Lords and committee evidence, with a point at the start time of everything that has one, and a line for now. Press a point to
 // read about it. The calendar gives start times and not lengths, so these are points and not bars.
-const LANE_COLOUR = { Commons: "#1F7A4D", Lords: "#B3262E", Committees: "#2C7DA0" };
 const ROW = 38;
 
 export default function DayTimeline({ entries, nowMinutes, nextId, open }) {
