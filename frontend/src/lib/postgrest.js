@@ -6,6 +6,9 @@
 //
 // Like the library it replaces, a failed request does not throw: it comes back as { data: null, error }.
 
+// Most replies kept in memory at once; the oldest goes first.
+const MEMO_LIMIT = 80;
+
 const quoted = (v) => (typeof v === "string" && /[,()]/.test(v) ? `"${v}"` : String(v));
 const list = (values) => `(${Array.from(new Set(values)).map(quoted).join(",")})`;
 const operand = (op, value) => (op === "in" && Array.isArray(value) ? list(value) : value === null ? "null" : String(value));
@@ -62,18 +65,37 @@ class Query {
 
   then(resolve, reject) { return this.run().then(resolve, reject); }
 
+  // The same read asked for again soon (a list of MPs wanted by the search box, then by the page, then by the next page) is answered from memory instead of being fetched again.
+  // The data is rebuilt each day, so a few minutes is safe. Only a successful reply is kept, and each caller gets its own copy, so one page sorting its rows in place cannot
+  // change what another sees.
   async run() {
-    const { url, headers: base, fetch: doFetch } = this.client;
+    const { url, headers: base, memo, keep } = this.client;
     const params = new URLSearchParams(this.params);
     if (this.orders.length) params.set("order", this.orders.join(","));
     const headers = { ...base, ...this.headers };
     if (this.mode === "single") headers.Accept = "application/vnd.pgrst.object+json";
+    const target = `${url}/rest/v1/${this.table}?${params}`;
+    const key = `${this.method} ${headers.Accept} ${headers.Prefer ?? ""} ${this.mode} ${target}`;
+    let hit = memo.get(key);
+    if (!hit || Date.now() - hit.at > keep) {
+      hit = { at: Date.now(), reply: this.fetchReply(target, headers) };
+      memo.set(key, hit);
+      if (memo.size > MEMO_LIMIT) memo.delete(memo.keys().next().value);
+      const forget = () => { if (memo.get(key) === hit) memo.delete(key); };
+      hit.reply.then((r) => { if (r.error) forget(); }, forget);
+    }
+    const r = await hit.reply;
+    return r.data == null ? { ...r } : { ...r, data: structuredClone(r.data) };
+  }
+
+  async fetchReply(target, headers) {
+    const { fetch: doFetch } = this.client;
     // On a poor connection a request often fails once and works the second time, so a read that fails to connect, or is answered with a busy-server
     // error, is tried again (twice at most, a short and then a longer wait) before it is reported as failed.
     let res;
     for (let attempt = 0; ; attempt++) {
       try {
-        res = await doFetch(`${url}/rest/v1/${this.table}?${params}`, { method: this.method, headers });
+        res = await doFetch(target, { method: this.method, headers });
         if (![502, 503, 504, 520].includes(res.status) || attempt >= this.client.retries) break;
       } catch (e) {
         if (attempt >= this.client.retries) return { data: null, error: { message: e instanceof Error ? e.message : String(e), details: "", hint: "", code: "" }, count: null, status: 0, statusText: "" };
@@ -102,7 +124,7 @@ class Query {
 
 // With no address or key (a build made without the data service's settings, such as a test run), the reader still exists and every request simply fails
 // and is reported as an error, so a page says it could not load something instead of the whole site failing to start.
-export function createReader({ url, key, fetch: doFetch = (...a) => fetch(...a), retries = 2, wait = 500 }) {
-  const client = { url: String(url ?? "").replace(/\/+$/, ""), fetch: doFetch, retries, wait, headers: { apikey: key ?? "", Authorization: `Bearer ${key ?? ""}`, Accept: "application/json" } };
+export function createReader({ url, key, fetch: doFetch = (...a) => fetch(...a), retries = 2, wait = 500, keep = 5 * 60 * 1000 }) {
+  const client = { memo: new Map(), keep, url: String(url ?? "").replace(/\/+$/, ""), fetch: doFetch, retries, wait, headers: { apikey: key ?? "", Authorization: `Bearer ${key ?? ""}`, Accept: "application/json" } };
   return { from: (table) => new Query(client, table) };
 }

@@ -5,6 +5,7 @@ import { GlanceStrip } from "./GlanceStrip";
 import PageGuide from "./PageGuide";
 import { m as motion } from "motion/react";
 import { supabase } from "../supabaseClient";
+import { PEER_LIST_COLUMNS, fullPeer } from "../lib/mpRows";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, chip } from "../theme";
 import { partyColour, initials, formatDate, timeInOffice } from "../lib/format";
 import { PageHeader } from "./shared";
@@ -380,7 +381,7 @@ export default function HouseOfLords({ peerId = null }) {
   useEffect(() => {
     async function load() {
       const [{ data: peerData, error: peerErr }, { data: formerData }] = await Promise.all([
-        supabase.from("peers").select("*").order("name"),
+        supabase.from("peers").select(PEER_LIST_COLUMNS).order("name"),
         supabase.from("former_mps").select("parliament_member_id, name, constituency, party, membership_end_date, membership_end_reason"),
       ]);
       // Worth telling apart from a genuinely empty result — this feeds
@@ -392,7 +393,7 @@ export default function HouseOfLords({ peerId = null }) {
       // A link to "#/lords/<id>" (from Parliament in Numbers) opens that peer.
       if (peerId != null && /^\d+$/.test(String(peerId))) {
         const wanted = (peerData ?? []).find((p) => String(p.id) === String(peerId));
-        if (wanted) setSelected(wanted);
+        if (wanted) setSelected(await fullPeer(wanted));
       }
       setFormerMps(formerData ?? []);
       setLoading(false);
@@ -560,7 +561,7 @@ export default function HouseOfLords({ peerId = null }) {
                 photo={p.thumbnail_url}
                 color={color}
                 line={`${p.party ?? "Crossbench"} · ${p.peerage_type}`}
-                onClick={() => { setSelected(p); window.scrollTo(0, 0); }}
+                onClick={() => { fullPeer(p).then((whole) => { setSelected(whole); window.scrollTo(0, 0); }); }}
               />
             );
           })}

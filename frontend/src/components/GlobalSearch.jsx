@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { supabase } from "../supabaseClient";
+import { MP_LIST_COLUMNS } from "../lib/mpRows";
 import { FONT_BODY } from "../theme";
 import { partyColour } from "../lib/format";
 import { IconSearch, IconGlossary } from "./icons";
@@ -94,7 +95,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
     setLoading(true);
     const people = (async () => {
       const [{ data: p }, { data: b }, { data: l }] = await Promise.all([
-        supabase.from("politicians").select("*"),
+        supabase.from("politicians").select(MP_LIST_COLUMNS),
         supabase.from("bills").select("short_title, current_stage, sponsoring_department"),
         supabase.from("peers").select("id, name, party, party_colour, peerage_type"),
       ]);

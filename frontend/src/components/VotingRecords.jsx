@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { m as motion } from "motion/react";
 import { supabase } from "../supabaseClient";
+import { MP_LIST_COLUMNS } from "../lib/mpRows";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING, readable } from "../theme";
 import { formatDate, partyColour } from "../lib/format";
 import { categoriseBill } from "../lib/bills";
@@ -532,7 +533,7 @@ export default function VotingRecords({ initialMp = null, initialBill = null, in
     async function load() {
       const [billsRes, politiciansRes] = await Promise.all([
         supabase.from("bills").select("*").order("last_updated", { ascending: false }),
-        supabase.from("politicians").select("*").order("name"),
+        supabase.from("politicians").select(MP_LIST_COLUMNS).order("name"),
       ]);
       setBillsFailed(Boolean(billsRes.error));
       setBills(billsRes.data ?? []);

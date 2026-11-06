@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { m as motion, AnimatePresence } from "motion/react";
 import { supabase } from "../supabaseClient";
+import { MP_LIST_COLUMNS } from "../lib/mpRows";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { PageHeader } from "./shared";
 import { LoadFailedNote } from "./MpCards";
@@ -227,7 +228,7 @@ export default function StandardsReports({ onSelectPolitician }) {
         setFailed(Boolean(error));
         setReports(data ?? []);
       });
-    supabase.from("politicians").select("*").then(({ data }) => setPoliticians(data ?? []));
+    supabase.from("politicians").select(MP_LIST_COLUMNS).then(({ data }) => setPoliticians(data ?? []));
   }, []);
 
   const politicianById = useMemo(() => new Map(politicians.map((p) => [p.id, p])), [politicians]);

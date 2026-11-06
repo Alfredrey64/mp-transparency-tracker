@@ -9,6 +9,8 @@ export default function EmbedButton({ spec, title }) {
   const dialog = useRef(null);
   const [theme, setTheme] = useState("light");
   const [note, setNote] = useState("");
+  // A closed dialog's iframe is still loaded by the browser, and each one starts a whole second copy of the app, so the preview exists only while the box is open.
+  const [shown, setShown] = useState(false);
   const code = iframeCode({ spec, theme, title });
 
   async function copy(text, done) {
@@ -27,10 +29,11 @@ export default function EmbedButton({ spec, title }) {
 
   return (
     <>
-      <button type="button" className="ons-tap" style={{ ...pillStyle(false), textDecoration: "none" }} onClick={() => { setNote(""); dialog.current?.showModal(); }}>Embed</button>
+      <button type="button" className="ons-tap" style={{ ...pillStyle(false), textDecoration: "none" }} onClick={() => { setNote(""); setShown(true); dialog.current?.showModal(); }}>Embed</button>
       <dialog
         ref={dialog}
         aria-labelledby="embed-title"
+        onClose={() => setShown(false)}
         onClick={(e) => { if (e.target === dialog.current) dialog.current.close(); }}
         style={{ width: "min(680px, calc(100vw - 24px))", maxHeight: "calc(100dvh - 24px)", padding: 0, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, background: COLORS.paperCard, color: COLORS.ink }}
       >
@@ -48,12 +51,12 @@ export default function EmbedButton({ spec, title }) {
             {choice("dark", "Dark")}
           </div>
           <div style={{ borderRadius: 14, overflow: "hidden", border: `1px solid ${COLORS.hairline}`, background: theme === "dark" ? "#0F1018" : "#E9E5D8", padding: 10 }}>
-            <iframe
+            {shown && <iframe
               key={theme}
               title={`Preview: ${title}`}
               src={embedUrl(window.location.origin, spec, theme)}
               style={{ display: "block", width: "100%", height: embedHeight(spec.kind), border: 0, maxWidth: 640, margin: "0 auto" }}
-            />
+            />}
           </div>
           <label htmlFor="embed-code" style={{ display: "block", fontSize: 13, fontWeight: 700, marginTop: 16 }}>Paste this where the card should go</label>
           <textarea id="embed-code" readOnly rows={4} value={code} onFocus={(e) => e.target.select()} style={codeBox} />

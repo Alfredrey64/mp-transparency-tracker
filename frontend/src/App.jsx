@@ -4,6 +4,7 @@ import { flushSync } from "react-dom";
 import { GuideKeyContext, guideKeyFor } from "./lib/viewContext";
 import { LazyMotion, MotionConfig } from "motion/react";
 import { supabase } from "./supabaseClient";
+import { fullRow } from "./lib/mpRows";
 import { COLORS, FONT_BODY } from "./theme";
 import SiteHeader from "./components/SiteHeader";
 import { setNavState, useNavState } from "./lib/navState";
@@ -532,12 +533,13 @@ export default function App() {
     });
   }
 
+  // Lists carry a slim row for each MP, so the whole row is fetched first (at once if it is already whole, and from memory if it was fetched lately).
   function handleViewProfile(politician) {
-    goTo("list", () => {
-      setSelected(politician);
+    fullRow(politician).then((mp) => goTo("list", () => {
+      setSelected(mp);
       setViewParam(null);
       setView("list");
-    });
+    }));
   }
 
   function handleNavigateForMp(key, politician) {
@@ -679,7 +681,7 @@ export default function App() {
                   onNavigate={handleNavigateForMp}
                 />
               ) : (
-                <PoliticianList initialCareer={viewParam} onSelect={(p) => swapPage("list", () => setSelected(p), LOAD_DETAIL)} />
+                <PoliticianList initialCareer={viewParam} onSelect={(p) => fullRow(p).then((mp) => swapPage("list", () => setSelected(mp), LOAD_DETAIL))} />
               ))}
             </Suspense>
             </ErrorBoundary>

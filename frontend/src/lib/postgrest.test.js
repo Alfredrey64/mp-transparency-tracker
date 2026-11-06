@@ -89,4 +89,39 @@ describe("createReader with no settings", () => {
     expect(res.data ?? null).toBeNull();
     expect(res.error).toBeTruthy();
   });
+  describe("remembering a reply", () => {
+    it("fetches the same read once and gives each caller its own copy", async () => {
+      const { db, calls } = reader(reply([{ id: 1, name: "A" }, { id: 2, name: "B" }]));
+      const first = await db.from("politicians").select("id, name");
+      first.data.reverse();
+      const second = await db.from("politicians").select("id, name");
+      expect(calls).toHaveLength(1);
+      expect(second.data.map((r) => r.id)).toEqual([1, 2]);
+    });
+
+    it("treats a different read as a different request", async () => {
+      const { db, calls } = reader(reply([]));
+      await db.from("politicians").select("id");
+      await db.from("politicians").select("id").eq("id", 3);
+      await db.from("peers").select("id");
+      expect(calls).toHaveLength(3);
+    });
+
+    it("does not keep a failed reply", async () => {
+      let n = 0;
+      const { db, calls } = reader(() => (++n === 1 ? reply({ message: "no" }, { status: 400, statusText: "Bad" }) : reply([{ id: 1 }])));
+      expect((await db.from("t").select("*")).error).not.toBeNull();
+      expect((await db.from("t").select("*")).data).toEqual([{ id: 1 }]);
+      expect(calls).toHaveLength(2);
+    });
+
+    it("asks again once the kept reply is too old", async () => {
+      const calls = [];
+      const db = createReader({ url: "https://x.test", key: "k", keep: 0, fetch: async (u) => { calls.push(u); return reply([]); } });
+      await db.from("t").select("*");
+      await new Promise((r) => setTimeout(r, 2));
+      await db.from("t").select("*");
+      expect(calls).toHaveLength(2);
+    });
+  });
 });

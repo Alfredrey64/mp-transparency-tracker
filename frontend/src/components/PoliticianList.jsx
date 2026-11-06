@@ -1,6 +1,7 @@
 import { mpCareers, loadMpCareers } from "../lib/mpCareersData";
 import { useState, useMemo, useEffect } from "react";
 import { supabase } from "../supabaseClient";
+import { MP_LIST_COLUMNS } from "../lib/mpRows";
 import { COLORS, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { partyColour } from "../lib/format";
 import { PageHeader } from "./shared";
@@ -66,7 +67,7 @@ export default function PoliticianList({ onSelect, initialCareer = null }) {
     async function load() {
       const { data, error } = await supabase
         .from("politicians")
-        .select("*")
+        .select(MP_LIST_COLUMNS)
         .order("name");
       if (error) setError(error.message);
       else setPoliticians(data);
