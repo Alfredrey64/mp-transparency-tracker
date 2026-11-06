@@ -38,7 +38,7 @@ test("on a short laptop screen, each dropdown panel ends inside the window", asy
 
 test("the English header never lets a menu run under the search box, at any width", async ({ page }) => {
   // 1261 is the narrowest width that keeps the full menus; a Windows or Linux scrollbar takes 15px of it, so the test measures with that much taken away.
-  for (const width of [1261, 1280, 1320, 1366, 1440, 1920]) {
+  for (const width of [1261, 1280, 1320, 1341, 1360, 1381, 1440, 1920]) {
     await page.setViewportSize({ width, height: 800 });
     await page.goto("/");
     await page.addStyleTag({ content: "html { overflow-y: scroll; } ::-webkit-scrollbar { width: 15px; }" });

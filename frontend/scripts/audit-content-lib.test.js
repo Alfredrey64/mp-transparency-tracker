@@ -20,7 +20,7 @@ describe("staleExplainers", () => {
 });
 
 describe("staleData", () => {
-  it("flags a daily file that is more than two days old and a weekly one more than fifteen, and ignores files with no schedule", () => {
+  it("flags a daily file that is more than two days old, and ignores files with no schedule (the weekly statistics files are checked by their own workflow)", () => {
     const out = staleData([
       { name: "ons/prices.json", stamp: "2026-10-25T16:00:00Z" },
       { name: "ons/jobs.json", stamp: "2026-10-29T16:00:00Z" },
@@ -29,7 +29,7 @@ describe("staleData", () => {
       { name: "seatHexes.json", stamp: "2020-01-01T00:00:00Z" },
       { name: "benchmarks.json", stamp: null },
     ], now);
-    expect(out.map((x) => x.name)).toEqual(["ons/prices.json", "careData.json"]);
+    expect(out.map((x) => x.name)).toEqual(["ons/prices.json"]);
   });
 });
 

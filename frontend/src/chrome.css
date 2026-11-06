@@ -312,9 +312,11 @@ dialog[open]::backdrop { animation: fade-in 0.15s ease both; }
 .drawer-foot a:nth-child(odd):last-child { grid-column: 1 / -1; }
 .site-drawer { touch-action: pan-y; }
 
-/* The five menus, the search box and the buttons need about 1330px side by side. Down to 1260px the search shrinks to its icon to make the room; below that
+/* The five menus, the search box and the buttons need about 1330px side by side (more on Linux, which sets the words wider; the full search box left only 4px at 1341px on a Mac and none on Linux, so it is the icon up to 1380px). Down to 1260px the search shrinks to its icon to make the room; below that
    the menus fold into the menu button. 1260 and not 1230 because a Windows or Linux scrollbar takes about 15px of the width, which at 1231px left the last menu under the search box. (Before this, the last menu ran underneath the search box between about 1100 and 1320px.) */
-@media (max-width: 1340px) {
+@media (max-width: 1380px) {
+  /* Tighter menus down here: Linux sets the words about 20px wider than a Mac does, and at 1261px that left the last menu 5px under the search box (CI measures on Linux). */
+  .site-nav-btn { padding: 0 10px; }
   .site-search-btn { width: 44px; padding: 0; justify-content: center; }
   .site-search-btn span, .site-search-btn kbd { display: none; }
 }

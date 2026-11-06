@@ -25,7 +25,8 @@ export function prepareProps(type, props) {
     (isHost && BLOCK_TAGS.has(type)) || props.role === "button" || hidden || (isMotionLike && (props.onClick || props.href));
   if (interactive) {
     const wasArray = Array.isArray(children);
-    const provider = createElement(GlossBlockedContext.Provider, { value: true }, ...(wasArray ? children : [children]));
+    // The key is for the one-item array that stands in for a list of children: without it React warns, in development, that the list has no keys.
+    const provider = createElement(GlossBlockedContext.Provider, { value: true, key: "gloss-blocked" }, ...(wasArray ? children : [children]));
     // Keep the original shape: React is told whether children were a static
     // array, and complains if the two disagree.
     return { ...props, children: wasArray ? [provider] : provider };

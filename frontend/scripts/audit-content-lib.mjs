@@ -23,9 +23,11 @@ export function staleExplainers(pages, now, limit = 60) {
 }
 
 // How often each kind of saved data is rebuilt, in days. A file that has not changed for longer than twice this has stopped refreshing.
+// The files rebuilt weekly from official statistics (education, energy, health, the inequality pages, defence, ageing, Brexit, devolution, transport, care and trust) are not
+// here on purpose. The weekly refresh puts a file back as it was when the source has nothing new (so its "built" date stays put, and a figure published once a year looks
+// "stale" for eleven months), and the refresh workflow itself now opens an issue when a step fails or when new figures wait for a person to read them.
 export const CADENCE = [
   [/^(ons\/|regionalBreakdowns|benchmarks|representatives|pipelineStatus|mpCareers|councilsIndex)/, 1],
-  [/^(educationData|energyData|healthData|inequalityData|inequalityPlace|inequalityAbroad|defenceData|ageingData|brexitData|devolutionData|transportData|careData|trustData)/, 7],
 ];
 
 export function staleData(files, now) {

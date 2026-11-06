@@ -18,6 +18,7 @@ import { withScrollPreserved } from "../lib/preserveScroll";
 const CareerTab = lazy(() => import("./CareerTab"));
 import MpSummary from "./MpSummary";
 import MpMoneyProfile from "./MpMoneyProfile";
+import { topSources } from "../lib/mpMoney";
 import DownloadCsvButton from "./DownloadCsvButton";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { interestColumns, voteColumns } from "../lib/exportColumns";
@@ -190,7 +191,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
                     import("../data/mpCareers.json").then((m) => m.default),
                     fetchAllRows(() => supabase.from("voting_records").select("title, date, voted_with_party_majority").eq("politician_id", politician.id).order("date", { ascending: false })).catch(() => []),
                     supabase.from("written_questions").select("*", { count: "exact", head: true }).eq("politician_id", politician.id).then((r) => r.count ?? 0).catch(() => 0),
-                    import("../lib/mpMoney").then((m) => m.topSources(interests, 4)),
+                    topSources(interests, 4),
                   ]);
                   const counted = rows.filter((r) => r.voted_with_party_majority !== null && r.voted_with_party_majority !== undefined);
                   const votes = counted.length ? { cast: counted.length, withParty: counted.filter((r) => r.voted_with_party_majority).length, against: counted.filter((r) => !r.voted_with_party_majority).map((r) => ({ title: r.title, date: r.date })), hasParty: !/^(independent|speaker)/i.test(politician.party ?? "") } : null;

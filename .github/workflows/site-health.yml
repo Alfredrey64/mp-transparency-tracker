@@ -30,7 +30,11 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - name: Check the live site
         id: check
-        run: node scripts/check-site.mjs | tee ../site-check.txt
+        # Written to a file and not piped to tee: a pipe hands GitHub tee's exit code (always 0), so a failed check would be recorded as a pass.
+        run: |
+          node scripts/check-site.mjs > ../site-check.txt && status=0 || status=$?
+          cat ../site-check.txt
+          exit $status
       - name: Open an issue if it failed
         if: failure() && steps.check.outcome == 'failure'
         env:
@@ -80,4 +84,29 @@ jobs:
         run: |
           for n in $(gh issue list --state open --label data-stale --json number --jq '.[].number'); do
             gh issue close "$n" --comment "The data has been refreshed again, so this is closed."
+          done
+      # The daily refresh is green whatever happens to its steps (see fetch-data.yml), so a source that fails every day looks fine from the outside. One failure is usually a
+      # bad hour at the source; the same source failing on two refreshes in a row needs a person.
+      - name: Find sources that failed on the last two daily refreshes
+        id: failing
+        run: |
+          node failingSources.js > failing.txt
+          cat failing.txt
+          echo "count=$(grep -c . failing.txt || true)" >> "$GITHUB_OUTPUT"
+      - name: Open or update an issue if there are any
+        if: steps.failing.outputs.count != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          { echo "These data sources failed on the last two daily refreshes, so their pages are showing older figures:"; echo; sed 's/^/- /' failing.txt; echo; echo "The run's summary lists every source: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/workflows/fetch-data.yml"; } > issue-body.md
+          gh label create source-failing --color D93F0B --description "A data source has failed on two daily refreshes in a row" 2>/dev/null || true
+          n=$(gh issue list --state open --label source-failing --json number --jq '.[0].number')
+          if [ -z "$n" ]; then gh issue create --label source-failing --title "Data sources are failing" --body-file issue-body.md; else gh issue comment "$n" --body-file issue-body.md; fi
+      - name: Close the issue when none are failing
+        if: steps.failing.outputs.count == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for n in $(gh issue list --state open --label source-failing --json number --jq '.[].number'); do
+            gh issue close "$n" --comment "No source failed on the last two refreshes, so this is closed."
           done

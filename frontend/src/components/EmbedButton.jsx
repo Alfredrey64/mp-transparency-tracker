@@ -1,5 +1,5 @@
 /** @jsxImportSource react */
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { COLORS, FONT_BODY, FONT_DISPLAY } from "../theme";
 import { pillStyle } from "../lib/onsStyles";
 import { embedUrl, embedHeight, iframeCode, RESIZE_SNIPPET } from "../lib/embed";
@@ -7,6 +7,8 @@ import { embedUrl, embedHeight, iframeCode, RESIZE_SNIPPET } from "../lib/embed"
 // "Embed" button and the box it opens: a live preview of the card, a light or dark choice, and the code to paste into another page.
 export default function EmbedButton({ spec, title }) {
   const dialog = useRef(null);
+  // Every chart on a page has its own box, so the ids that tie the heading and the label to it are made one each.
+  const uid = useId();
   const [theme, setTheme] = useState("light");
   const [note, setNote] = useState("");
   // A closed dialog's iframe is still loaded by the browser, and each one starts a whole second copy of the app, so the preview exists only while the box is open.
@@ -32,14 +34,14 @@ export default function EmbedButton({ spec, title }) {
       <button type="button" className="ons-tap" style={{ ...pillStyle(false), textDecoration: "none" }} onClick={() => { setNote(""); setShown(true); dialog.current?.showModal(); }}>Embed</button>
       <dialog
         ref={dialog}
-        aria-labelledby="embed-title"
+        aria-labelledby={`${uid}-title`}
         onClose={() => setShown(false)}
         onClick={(e) => { if (e.target === dialog.current) dialog.current.close(); }}
         style={{ width: "min(680px, calc(100vw - 24px))", maxHeight: "calc(100dvh - 24px)", padding: 0, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, background: COLORS.paperCard, color: COLORS.ink }}
       >
         <div style={{ padding: "20px clamp(16px, 4vw, 24px) 22px", fontFamily: FONT_BODY }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
-            <h2 id="embed-title" style={{ fontFamily: FONT_DISPLAY, fontSize: 22, fontWeight: 700, margin: 0, lineHeight: 1.25 }}>Put this on your own page</h2>
+            <h2 id={`${uid}-title`} style={{ fontFamily: FONT_DISPLAY, fontSize: 22, fontWeight: 700, margin: 0, lineHeight: 1.25 }}>Put this on your own page</h2>
             <button type="button" className="ons-tap" onClick={() => dialog.current?.close()} style={pillStyle(false)}>Close</button>
           </div>
           <p style={{ fontSize: 14, lineHeight: 1.55, color: COLORS.inkSoft, margin: "6px 0 14px" }}>
@@ -58,8 +60,8 @@ export default function EmbedButton({ spec, title }) {
               style={{ display: "block", width: "100%", height: embedHeight(spec.kind), border: 0, maxWidth: 640, margin: "0 auto" }}
             />}
           </div>
-          <label htmlFor="embed-code" style={{ display: "block", fontSize: 13, fontWeight: 700, marginTop: 16 }}>Paste this where the card should go</label>
-          <textarea id="embed-code" readOnly rows={4} value={code} onFocus={(e) => e.target.select()} style={codeBox} />
+          <label htmlFor={`${uid}-code`} style={{ display: "block", fontSize: 13, fontWeight: 700, marginTop: 16 }}>Paste this where the card should go</label>
+          <textarea id={`${uid}-code`} readOnly rows={4} value={code} onFocus={(e) => e.target.select()} style={codeBox} />
           <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 10px", alignItems: "center" }}>
             <button type="button" className="ons-tap" style={pillStyle(true)} onClick={() => copy(code, "Code copied. Paste it into your page.")}>Copy the code</button>
             <span role="status" aria-live="polite" style={{ fontSize: 12.5, color: COLORS.inkSoft }}>{note}</span>

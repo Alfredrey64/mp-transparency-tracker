@@ -99,3 +99,16 @@ test("bigger or wider text folds the header's menu into the drawer so nothing ov
   await expect(page.getByRole("button", { name: "Open menu" })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBe(true);
 });
+
+// Every chart on a page has its own Embed box, so a page with several charts must not repeat the ids that tie each box's heading and label to it.
+test("no id is used twice on a page with several Embed boxes", async ({ page }) => {
+  await page.goto("/population");
+  await expect(page.getByRole("button", { name: "Embed" }).first()).toBeAttached({ timeout: 20000 });
+  expect(await page.getByRole("button", { name: "Embed" }).count()).toBeGreaterThan(1);
+  const repeated = await page.evaluate(() => {
+    const seen = {};
+    document.querySelectorAll("[id]").forEach((e) => { seen[e.id] = (seen[e.id] || 0) + 1; });
+    return Object.keys(seen).filter((id) => seen[id] > 1);
+  });
+  expect(repeated).toEqual([]);
+});

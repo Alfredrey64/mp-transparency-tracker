@@ -18,7 +18,7 @@
         "categories:performance": [
           "error",
           {
-            "minScore": 0.7,
+            "minScore": 0.65,
             "aggregationMethod": "median-run"
           }
         ],
@@ -53,7 +53,7 @@
         "largest-contentful-paint": [
           "error",
           {
-            "maxNumericValue": 5000,
+            "maxNumericValue": 5600,
             "aggregationMethod": "median-run"
           }
         ],

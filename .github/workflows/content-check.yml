@@ -30,7 +30,11 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - name: Run the check
         id: audit
-        run: node scripts/audit-content.mjs | tee ../content-check.md
+        # Written to a file and not piped to tee: a pipe hands GitHub tee's exit code (always 0), so a check that found things would be recorded as a pass.
+        run: |
+          node scripts/audit-content.mjs > ../content-check.md && status=0 || status=$?
+          cat ../content-check.md
+          exit $status
       - name: Open or update an issue if something needs a look
         if: failure() && steps.audit.outcome == 'failure'
         env:

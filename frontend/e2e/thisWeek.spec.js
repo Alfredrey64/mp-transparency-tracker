@@ -94,9 +94,17 @@ for (const width of [1280, 390]) {
   });
 }
 
-// Today is fixed to a day the calendar covers, so the clock, the timeline and the filter have something to show whatever the real date.
+// The busiest day the shipped calendar covers (it holds the next four weeks, so a date written into the test would drop out of it within days), so the clock, the timeline
+// and the filter always have something to show whatever the real date. Its events carry both houses, so the Lords filter has something to pick too.
+const busiestDay = () => {
+  const { events } = JSON.parse(fs.readFileSync(new URL("../src/data/parliamentCalendar.json", import.meta.url), "utf8"));
+  const count = {};
+  for (const e of events) if (e.h === "C" || e.h === "L") count[e.d] = (count[e.d] ?? 0) + 1;
+  return Object.entries(count).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0][0];
+};
+
 test("Today shows a live clock, a timeline of the day, a house filter and jump buttons that fit a phone", async ({ page }) => {
-  await page.clock.install({ time: new Date("2026-11-04T11:00:00Z") });
+  await page.clock.install({ time: new Date(`${busiestDay()}T11:00:00Z`) });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/thisWeek/now");
   await expect(page.getByText("London time now")).toBeVisible({ timeout: 20000 });

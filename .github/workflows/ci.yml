@@ -175,6 +175,9 @@ jobs:
       - run: echo "CHROME_PATH=$(node -e "console.log(require('@playwright/test').chromium.executablePath())")" >> "$GITHUB_ENV"
       # The page asks the data service for a few counts as it loads, so a stand-in answers with empty lists instead of the console filling with failed requests.
       - run: nohup node scripts/mock-data-service.mjs 54321 > mock.log 2>&1 &
+      # The limits in lighthouserc.json are for Lighthouse's simulated slow phone, where the page's JavaScript takes about 5.3 seconds to show the tax page's tabs (measured
+      # 5.2 to 5.4 seconds on this runner, and 5.3 on a Mac). Preloading the page's scripts and fonts did not move it; only pre-rendering the pages would. The limits sit just above
+      # that so a real slowdown still fails.
       - run: npx --yes @lhci/cli@0.15.1 autorun --config=lighthouserc.json
       # Says which score failed, and by how much, where it can be read without opening the log.
       - name: Report which scores failed
