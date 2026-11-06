@@ -3,6 +3,7 @@
 // It writes the raw pages' results to a scratch JSON file, which scripts/build-election-history.mjs then turns into src/data/electionsHistory.json.
 // Usage: node scripts/fetch-election-history.mjs <outFile>
 import { writeFileSync } from "node:fs";
+import { fetchRetry } from "../../httpFetch.js";
 
 const BASE = "https://api.parliament.uk/uk-general-elections";
 const FIRST = 28; // 1945
@@ -15,7 +16,7 @@ const text = (h) => h.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>
 async function get(url, tries = 5) {
   for (let i = 0; i < tries; i++) {
     try {
-      const r = await fetch(url, { headers: { "user-agent": "domesday-live-data-build" } });
+      const r = await fetchRetry(url, { headers: { "user-agent": "domesday-live-data-build" } });
       if (r.ok) return await r.text();
       if (r.status !== 429 && r.status < 500) throw new Error(`${r.status} ${url}`);
     } catch (e) {

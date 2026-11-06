@@ -31,7 +31,6 @@ const SCRIPTS = [
   { id: "fetch_former_mps", label: "Former MPs" },
   { id: "fetch_by_elections", label: "By-elections" },
   { id: "fetch_on_this_day", label: "On this day" },
-  { id: "fetch_todays_business", label: "Today's Commons business" },
   { id: "fetch_peers", label: "House of Lords peers" },
   { id: "fetch_mp_activity", label: "MP activity" },
   { id: "fetch_ipsa_expenses", label: "IPSA business cost claims" },
@@ -59,7 +58,14 @@ const SCRIPTS = [
   { id: "fetch_fullfact_tracker", label: "Full Fact pledge list" },
   { id: "fetch_ons", label: "ONS statistics (economy, prices, jobs, health, population)" },
   { id: "fetch_regional_breakdowns", label: "Regional breakdowns (jobs, housing, crime by place)" },
+  { id: "check_saved_data", label: "Sanity check on rebuilt data (a broken or emptied file is put back)" },
 ];
+
+// Outside the workflow none of the outcomes are set, and writing "every source failed" over the real status (which a local run of this file once did) would be wrong.
+if (!SCRIPTS.some(({ id }) => process.env[`STATUS_${id}`] !== undefined)) {
+  console.log("No step outcomes are set (this runs inside the daily refresh), so the status file is left as it is.");
+  process.exit(0);
+}
 
 // GitHub Actions step `outcome` is "success", "failure", "cancelled", or
 // "skipped" — anything not explicitly "success" counts as failed here,

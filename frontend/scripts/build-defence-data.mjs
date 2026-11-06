@@ -10,6 +10,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { readXlsx } from "../../xlsx-lite.js";
+import { fetchRetry } from "../../httpFetch.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(here, "../src/data/defenceData.json");
@@ -29,10 +30,10 @@ const round = (v, n) => Math.round(v * 10 ** n) / 10 ** n;
 // published figures are rounded to the nearest 10 in the bulletin, so these are too. The Army counts "trade trained" and the others "trained"; the
 // Ministry's own total adds them and so does this.
 async function fullTimeTrained() {
-  const page = await (await fetch(`https://www.gov.uk/api/content/government/statistics/quarterly-service-personnel-statistics-${new Date().getFullYear()}`, { headers: { "User-Agent": "Mozilla/5.0 domesday-live" } })).json();
+  const page = await (await fetchRetry(`https://www.gov.uk/api/content/government/statistics/quarterly-service-personnel-statistics-${new Date().getFullYear()}`, { headers: { "User-Agent": "Mozilla/5.0 domesday-live" } })).json();
   const file = page.details.attachments.find((a) => a.content_type?.includes("spreadsheetml"));
   if (!file) throw new Error("No Excel tables on the Ministry of Defence page");
-  const wb = readXlsx(Buffer.from(await (await fetch(file.url, { headers: { "User-Agent": "Mozilla/5.0 domesday-live" } })).arrayBuffer()));
+  const wb = readXlsx(Buffer.from(await (await fetchRetry(file.url, { headers: { "User-Agent": "Mozilla/5.0 domesday-live" } })).arrayBuffer()));
   const rows = wb["3a"];
   const head = rows.find((r) => r && typeof r[1] === "string" && /\d{4}/.test(r[1]) && String(r[0]).includes("against the Workforce Requirement"));
   const months = { January: 0, April: 0.25, July: 0.5, October: 0.75 };
@@ -54,7 +55,7 @@ function ukEconomy() {
 
 async function main() {
   const i = process.argv.indexOf("--from");
-  const buf = i > 0 ? fs.readFileSync(process.argv[i + 1]) : Buffer.from(await (await fetch(URL_, { headers: { "User-Agent": "Mozilla/5.0 domesday-live" } })).arrayBuffer());
+  const buf = i > 0 ? fs.readFileSync(process.argv[i + 1]) : Buffer.from(await (await fetchRetry(URL_, { headers: { "User-Agent": "Mozilla/5.0 domesday-live" } })).arrayBuffer());
   const wb = readXlsx(buf);
   const series = (sheet, name, from = 1949) => {
     const rows = wb[sheet];

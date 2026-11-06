@@ -17,6 +17,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { unzip } from "../../xlsx-lite.js";
 import { readOds } from "../../ods-lite.js";
+import { fetchRetry } from "../../httpFetch.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(here, "../src/data/transportData.json");
@@ -26,7 +27,7 @@ const num = (v) => (typeof v === "number" && Number.isFinite(v) ? v : null);
 const getBuf = async (url) => {
   let last = null;
   for (let attempt = 0; attempt < 3; attempt += 1) {
-    const r = await fetch(url, { headers: UA, redirect: "follow" });
+    const r = await fetchRetry(url, { headers: UA, redirect: "follow" });
     if (r.ok) return Buffer.from(await r.arrayBuffer());
     last = r.status;
     if (r.status < 500) break;

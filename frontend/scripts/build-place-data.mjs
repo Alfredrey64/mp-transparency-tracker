@@ -18,6 +18,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { readXlsx, unzip } from "../../xlsx-lite.js";
 import { readOds } from "../../ods-lite.js";
+import { fetchRetry } from "../../httpFetch.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(here, "../src/data/inequalityPlace.json");
@@ -46,7 +47,7 @@ const round = (v, n = 1) => (v === null ? null : Math.round(v * 10 ** n) / 10 **
 async function load(key, folder) {
   const { name, url } = FILES[key];
   if (folder && fs.existsSync(path.join(folder, name))) return fs.readFileSync(path.join(folder, name));
-  const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0 domesday-live" } });
+  const res = await fetchRetry(url, { headers: { "User-Agent": "Mozilla/5.0 domesday-live" } });
   if (!res.ok) throw new Error(`${url}: ${res.status}`);
   return Buffer.from(await res.arrayBuffer());
 }

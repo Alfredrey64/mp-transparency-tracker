@@ -12,6 +12,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { fetchRetry, patienceFor } from "../../httpFetch.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(here, "../src/data/inequalityAbroad.json");
@@ -36,7 +37,7 @@ function parseCsv(text) {
 
 async function pull(measure) {
   const url = `${BASE}/.A.${measure}....METH2012.D_CUR.?startPeriod=${FROM}`;
-  const res = await fetch(url, { headers: { Accept: "application/vnd.sdmx.data+csv;version=1.0.0", "User-Agent": "Mozilla/5.0 domesday-live" } });
+  const res = await fetchRetry(url, { headers: { Accept: "application/vnd.sdmx.data+csv;version=1.0.0", "User-Agent": "Mozilla/5.0 domesday-live" } }, patienceFor(url));
   if (!res.ok) throw new Error(`${measure}: ${res.status}`);
   return parseCsv(await res.text());
 }
@@ -57,7 +58,10 @@ function seriesBy(rows, test, scale, digits) {
 }
 
 async function main() {
-  const [gini, market, gross, palma, s80, poverty] = await Promise.all(["INC_DISP_GINI", "INC_MRKT_GINI", "INC_GROSS_GINI", "PAL_INC_DISP", "QR_INC_DISP", "PR_INC_DISP"].map(pull));
+  // One after another: six at once is more than the OECD allows from one address.
+  const pulled = [];
+  for (const measure of ["INC_DISP_GINI", "INC_MRKT_GINI", "INC_GROSS_GINI", "PAL_INC_DISP", "QR_INC_DISP", "PR_INC_DISP"]) pulled.push(await pull(measure));
+  const [gini, market, gross, palma, s80, poverty] = pulled;
   const total = (r) => r.AGE === "_T";
   const g = seriesBy(gini, total, 100, 1);
   const m = seriesBy(market, total, 100, 1);

@@ -10,6 +10,7 @@ import fs from "node:fs";
 import path from "node:path";
 import zlib from "node:zlib";
 import { fileURLToPath } from "node:url";
+import { fetchRetry } from "../../httpFetch.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(here, "../src/data/educationData.json");
@@ -24,13 +25,13 @@ const PUB = {
 };
 
 const headers = { "User-Agent": "Mozilla/5.0 domesday-live" };
-const getJson = async (url) => (await fetch(url, { headers })).json();
+const getJson = async (url) => (await fetchRetry(url, { headers })).json();
 
 async function dataSet(pub, titleStart) {
   const list = await getJson(`${API}/publications/${PUB[pub]}/data-sets?pageSize=20`);
   const hit = list.results.find((r) => r.title.startsWith(titleStart));
   if (!hit) throw new Error(`No data set starting "${titleStart}" in ${pub}`);
-  const buf = Buffer.from(await (await fetch(`${API}/data-sets/${hit.id}/csv`, { headers })).arrayBuffer());
+  const buf = Buffer.from(await (await fetchRetry(`${API}/data-sets/${hit.id}/csv`, { headers })).arrayBuffer());
   const text = (buf[0] === 0x1f && buf[1] === 0x8b ? zlib.gunzipSync(buf) : buf).toString("utf8");
   return parseCsv(text);
 }

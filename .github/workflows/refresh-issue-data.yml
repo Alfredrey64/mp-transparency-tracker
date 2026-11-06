@@ -14,6 +14,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  issues: write
 
 jobs:
   refresh:
@@ -43,9 +44,25 @@ jobs:
       - name: Open a pull request if anything changed
         env:
           GH_TOKEN: ${{ github.token }}
+          REFRESH: ${{ steps.refresh.outcome }}
+          TESTS: ${{ steps.tests.outcome }}
         run: |
+          # Tells the owner something needs a look, as an issue that is updated rather than repeated.
+          tell() {
+            label="$1"; title="$2"; body_file="$3"
+            gh label create "$label" --color 5319E7 --description "The weekly issue-page data refresh needs a look" 2>/dev/null || true
+            n=$(gh issue list --state open --label "$label" --json number --jq '.[0].number')
+            if [ -z "$n" ]; then gh issue create --label "$label" --title "$title" --body-file "$body_file"; else gh issue comment "$n" --body-file "$body_file"; fi
+          }
           if [ -z "$(git status --porcelain frontend/src/data)" ]; then
             echo "No new figures this week."
+            # Nothing changed, but a step that failed is a source nobody is reading any more: say so, in an issue, as it would otherwise only show in a green run.
+            if [ "$REFRESH" != "success" ]; then
+              { echo "The weekly refresh could not rebuild some pages' data, so they are showing figures from an earlier week."; echo; cat refresh-summary.md; echo; echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"; } > issue-body.md
+              tell data-refresh-failed "The weekly data refresh has a failing step" issue-body.md
+            else
+              for n in $(gh issue list --state open --label data-refresh-failed --json number --jq '.[].number'); do gh issue close "$n" --comment "Every step ran this week, so this is closed."; done
+            fi
             exit 0
           fi
           branch="data-refresh/$(date +%F)"
@@ -56,7 +73,7 @@ jobs:
           {
             cat refresh-summary.md
             echo
-            if [ "${{ steps.tests.outcome }}" = "success" ]; then echo "Tests: passed."; else echo "Tests: **failed**. A check that ties a sentence to its figure may be pointing at something to update."; fi
+            if [ "$TESTS" = "success" ]; then echo "Tests: passed."; else echo "Tests: **failed**. A check that ties a sentence to its figure may be pointing at something to update."; fi
           } > pr-body.md
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -64,4 +81,10 @@ jobs:
           git add frontend/src/data
           git commit -m "Refresh issue-page data ($(date +%F))"
           git push origin "$branch"
-          gh pr create --base main --head "$branch" --title "Refresh issue-page data ($(date +%F))" --body-file pr-body.md
+          # GitHub only lets this job open a pull request if the repository's setting "Allow GitHub Actions to create and approve pull requests" is on (Settings, Actions, General).
+          # On 19 and 26 October it was off: the branch was pushed, the pull request was refused, and the new figures sat on the branch unseen. So if it is refused, say so in an issue
+          # with the link that opens the pull request in one click.
+          if ! gh pr create --base main --head "$branch" --title "Refresh issue-page data ($(date +%F))" --body-file pr-body.md; then
+            { echo "New figures for the issue pages are on the branch \`$branch\`, ready to read and merge."; echo; echo "**[Open the pull request]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/compare/main...$branch?expand=1)**"; echo; echo "(The job could not open it itself because the repository setting \"Allow GitHub Actions to create and approve pull requests\" is off. Turn it on under Settings, Actions, General and it will.)"; echo; cat pr-body.md; } > issue-body.md
+            tell data-refresh-ready "New issue-page figures are ready to review ($(date +%F))" issue-body.md
+          fi

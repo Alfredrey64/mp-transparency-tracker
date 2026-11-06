@@ -16,12 +16,13 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { readXlsx } from "../../xlsx-lite.js";
+import { fetchRetry } from "../../httpFetch.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(here, "../src/data/healthData.json");
 const UA = { "User-Agent": "Mozilla/5.0 domesday-live" };
 const round = (v, d = 1) => Math.round(v * 10 ** d) / 10 ** d;
-const getBuf = async (url) => { const r = await fetch(url, { headers: UA }); if (!r.ok) throw new Error(`${url}: ${r.status}`); return Buffer.from(await r.arrayBuffer()); };
+const getBuf = async (url) => { const r = await fetchRetry(url, { headers: UA }); if (!r.ok) throw new Error(`${url}: ${r.status}`); return Buffer.from(await r.arrayBuffer()); };
 
 // ---- NHS England: waiting times by region -------------------------------------------------------------------------------------------------
 const NHS_REGIONS = { Y56: { key: "london", name: "London", itl: ["london"] }, Y58: { key: "sw", name: "South West", itl: ["sw"] }, Y59: { key: "se", name: "South East", itl: ["se"] }, Y60: { key: "midlands", name: "Midlands", itl: ["em", "wm"] }, Y61: { key: "east", name: "East of England", itl: ["east"] }, Y62: { key: "nw", name: "North West", itl: ["nw"] }, Y63: { key: "neyh", name: "North East and Yorkshire", itl: ["ne", "yh"] } };
@@ -31,7 +32,7 @@ async function monthFile(month, year) {
   const monthIndex = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"].indexOf(month);
   const fy = monthIndex >= 3 ? year : year - 1;
   const page = `https://www.england.nhs.uk/statistics/statistical-work-areas/rtt-waiting-times/rtt-data-${fy}-${String(fy + 1).slice(2)}/`;
-  const html = await (await fetch(page, { headers: UA })).text();
+  const html = await (await fetchRetry(page, { headers: UA })).text();
   const code = `${month}${String(year).slice(2)}`;
   const link = [...html.matchAll(/href="([^"]+)"/g)].map((m) => m[1]).find((h) => new RegExp(`Incomplete-Commissioner-${code}[^"]*\\.xlsx$`, "i").test(h));
   if (!link) throw new Error(`No Incomplete Commissioner file for ${code} on ${page}`);
@@ -115,7 +116,7 @@ async function compare() {
   const out = Object.fromEntries(Object.entries(COUNTRIES).map(([c, name]) => [c, { name }]));
   for (const [key, ind] of Object.entries(INDICATORS)) {
     const url = `https://api.worldbank.org/v2/country/${Object.keys(COUNTRIES).join(";")}/indicator/${ind}?format=json&date=2015:2026&per_page=2000`;
-    const json = await (await fetch(url, { headers: UA })).json();
+    const json = await (await fetchRetry(url, { headers: UA })).json();
     const latest = {};
     for (const r of json[1] ?? []) {
       if (r.value === null) continue;

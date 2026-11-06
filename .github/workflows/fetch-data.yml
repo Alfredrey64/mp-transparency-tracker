@@ -169,14 +169,6 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node fetch-on-this-day.js
 
-      - name: Run today's Commons business fetch script
-        id: fetch_todays_business
-        continue-on-error: true
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node fetch-todays-business.js
-
       - name: Note how each step went
         if: always()
         run: |
@@ -191,7 +183,6 @@ jobs:
           echo "STATUS_fetch_former_mps=${{ steps.fetch_former_mps.outcome }}" >> status.env
           echo "STATUS_fetch_by_elections=${{ steps.fetch_by_elections.outcome }}" >> status.env
           echo "STATUS_fetch_on_this_day=${{ steps.fetch_on_this_day.outcome }}" >> status.env
-          echo "STATUS_fetch_todays_business=${{ steps.fetch_todays_business.outcome }}" >> status.env
 
       - name: Save the outcomes and the files this job wrote
         if: always()
@@ -747,6 +738,14 @@ jobs:
         working-directory: frontend
         run: node scripts/audit-content.mjs --no-links
 
+      # Puts back any rebuilt data file that is not valid or has shrunk to a fraction of what is committed (see check-saved-data.js), so a source that answered with an
+      # empty or broken list cannot replace good figures with nothing. The site then goes on showing yesterday's; the status below says it happened.
+      - name: Check the rebuilt data files before committing them
+        id: check_saved_data
+        if: always()
+        continue-on-error: true
+        run: node check-saved-data.js
+
       # continue-on-error above means the workflow run itself can show green
       # even when several scripts above silently failed — nothing surfaced
       # that anywhere except by opening this run and reading every step by
@@ -758,6 +757,7 @@ jobs:
         if: always()
         env:
           STATUS_build_benchmarks: ${{ steps.build_benchmarks.outcome }}
+          STATUS_check_saved_data: ${{ steps.check_saved_data.outcome }}
         run: node report-pipeline-status.js
 
       # The scripts above write straight to Supabase, so the live site picks

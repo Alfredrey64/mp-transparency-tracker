@@ -54,6 +54,17 @@ export async function fetchRetry(url, options = {}, { retries = 3, timeoutMs = 6
   throw new Error(`${lastError?.message ?? "Request failed"} (${url}, after ${retries + 1} tries)`);
 }
 
+// The OECD's data service allows only a few requests a minute from one address and answers the rest with 429 ("Retry-After: 0", which tells a caller nothing), and a run
+// on GitHub shares an address with other people's jobs. So for it the pause starts at 10 seconds and doubles over five tries (10, 20, 40, 80, 160 seconds). Every other
+// source keeps the defaults. Pass the result as the third argument of fetchRetry.
+export function patienceFor(url) {
+  try {
+    return new URL(String(url)).hostname === "sdmx.oecd.org" ? { retries: 5, baseDelayMs: 10_000 } : {};
+  } catch {
+    return {};
+  }
+}
+
 // Runs `fn(item, index)` over the items with at most `limit` running at once, and answers with the results in the order of the items. The data scripts used to
 // handle one MP or peer at a time, and with the Parliament APIs taking several seconds to answer, the Lords alone took over two hours. A few at a time is
 // several times quicker and still polite: each worker waits `pauseMs` between its own requests, and fetchRetry already backs off when a server says "busy".

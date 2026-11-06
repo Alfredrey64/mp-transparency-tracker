@@ -95,3 +95,12 @@ describe("tooManyFailed", () => {
     expect(tooManyFailed(0, 0)).toBe(false);
   });
 });
+
+describe("patienceFor", () => {
+  it("gives the OECD a long, patient back-off and everything else the defaults", async () => {
+    const { patienceFor } = await import("./httpFetch.js");
+    expect(patienceFor("https://sdmx.oecd.org/public/rest/data/X/all")).toEqual({ retries: 5, baseDelayMs: 10_000 });
+    expect(patienceFor("https://www.ons.gov.uk/x")).toEqual({});
+    expect(patienceFor("https://example.com/?next=https://sdmx.oecd.org/")).toEqual({});
+  });
+});

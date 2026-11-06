@@ -21,6 +21,7 @@
 
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";
+import { replaceTable } from "./replaceTable.js";
 import { fetchRetry } from "./httpFetch.js";
 
 const supabase = createClient(
@@ -171,20 +172,8 @@ async function main() {
   console.log(`Matched ${matched} of ${withPoliticianId.length} entries to a tracked MP by name.`);
 
   console.log("\nReplacing ministerial_gifts table with this month's snapshot...");
-  const { error: deleteError } = await supabase.from("ministerial_gifts").delete().neq("id", 0);
-  if (deleteError) throw deleteError;
-
-  const BATCH_SIZE = 100;
-  let saved = 0;
-  for (let i = 0; i < withPoliticianId.length; i += BATCH_SIZE) {
-    const batch = withPoliticianId.slice(i, i + BATCH_SIZE);
-    const { error: insertError } = await supabase.from("ministerial_gifts").insert(batch);
-    if (insertError) {
-      console.error(`  ⚠ Batch ${i / BATCH_SIZE + 1} failed: ${insertError.message}`);
-      continue;
-    }
-    saved += batch.length;
-  }
+  // Refuses an empty or far smaller list and puts the saved rows back if any batch fails (see replaceTable.js), so a bad day at the source cannot empty the page.
+  const saved = await replaceTable(supabase, "ministerial_gifts", withPoliticianId, { batchSize: 100 });
 
   console.log(`\nDone. Saved ${saved} of ${withPoliticianId.length} entries.`);
 }

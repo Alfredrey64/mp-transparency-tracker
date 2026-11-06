@@ -18,6 +18,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { readXlsx } from "../../xlsx-lite.js";
 import { readOds } from "../../ods-lite.js";
+import { fetchRetry, patienceFor } from "../../httpFetch.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(here, "../src/data/brexitData.json");
@@ -27,7 +28,7 @@ const round = (v, d = 1) => Math.round(v * 10 ** d) / 10 ** d;
 const fetchBuf = async (url, headers = {}) => {
   let last = null;
   for (let attempt = 0; attempt < 4; attempt += 1) {
-    const r = await fetch(url, { headers: { ...UA, ...headers } });
+    const r = await fetchRetry(url, { headers: { ...UA, ...headers } }, patienceFor(url));
     if (r.ok) return Buffer.from(await r.arrayBuffer());
     last = r.status;
     if (r.status < 500) break;
@@ -85,7 +86,7 @@ function tradeAndMigration() {
 // ---- HMRC: each nation's goods trade, quarterly --------------------------------------------------------------------------------------------
 const NATIONS = [["england", "England", /^England.s trade in goods/], ["wales", "Wales", /^Wales.? trade in goods/], ["scotland", "Scotland", /^Scotland.s trade in goods/], ["ni", "Northern Ireland", /^Northern Ireland.s trade in goods/]];
 async function nationTrade(slug) {
-  const page = await (await fetch(`https://www.gov.uk/api/content/government/statistics/${slug}`, { headers: UA })).json();
+  const page = await (await fetchRetry(`https://www.gov.uk/api/content/government/statistics/${slug}`, { headers: UA })).json();
   const files = page.details.attachments.filter((a) => a.url?.endsWith(".ods"));
   const out = {};
   let quarters = null;

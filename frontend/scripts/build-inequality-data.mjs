@@ -18,6 +18,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { readXlsx } from "../../xlsx-lite.js";
 import { readOds } from "../../ods-lite.js";
+import { fetchRetry } from "../../httpFetch.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(here, "../src/data/inequalityData.json");
@@ -32,7 +33,7 @@ const FILES = {
 async function load(key, folder) {
   const { name, url } = FILES[key];
   if (folder && fs.existsSync(path.join(folder, name))) return fs.readFileSync(path.join(folder, name));
-  const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0 domesday-live" } });
+  const res = await fetchRetry(url, { headers: { "User-Agent": "Mozilla/5.0 domesday-live" } });
   if (!res.ok) throw new Error(`${url}: ${res.status}`);
   return Buffer.from(await res.arrayBuffer());
 }

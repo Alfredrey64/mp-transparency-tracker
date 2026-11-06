@@ -26,6 +26,7 @@
 
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";
+import { replaceTable } from "./replaceTable.js";
 import { extractPersonName } from "./standardsReports.js";
 
 const supabase = createClient(
@@ -115,20 +116,8 @@ async function main() {
   console.log(`Kept ${rows.length} individually-named conduct reports (${rows.filter((r) => r.is_current_mp).length} matched to a current MP).`);
 
   console.log(`\nReplacing standards_reports table with ${rows.length} reports...`);
-  const { error: deleteError } = await supabase.from("standards_reports").delete().neq("id", 0);
-  if (deleteError) throw deleteError;
-
-  const BATCH_SIZE = 50;
-  let saved = 0;
-  for (let i = 0; i < rows.length; i += BATCH_SIZE) {
-    const batch = rows.slice(i, i + BATCH_SIZE);
-    const { error: insertError } = await supabase.from("standards_reports").insert(batch);
-    if (insertError) {
-      console.error(`  ⚠ Batch ${i / BATCH_SIZE + 1} failed: ${insertError.message}`);
-      continue;
-    }
-    saved += batch.length;
-  }
+  // Refuses an empty or far smaller list and puts the saved rows back if any batch fails (see replaceTable.js), so a bad day at the source cannot empty the page.
+  const saved = await replaceTable(supabase, "standards_reports", rows, { batchSize: 50 });
 
   console.log(`\nDone. Saved ${saved} of ${rows.length} standards reports.`);
 }

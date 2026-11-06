@@ -17,6 +17,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { readXlsx } from "../../xlsx-lite.js";
+import { fetchRetry } from "../../httpFetch.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(here, "../src/data/energyData.json");
@@ -26,7 +27,7 @@ const num = (v) => (typeof v === "number" && Number.isFinite(v) ? v : null);
 const getBuf = async (url) => {
   let last = null;
   for (let attempt = 0; attempt < 3; attempt += 1) {
-    const r = await fetch(url, { headers: UA, redirect: "follow" });
+    const r = await fetchRetry(url, { headers: UA, redirect: "follow" });
     if (r.ok) return Buffer.from(await r.arrayBuffer());
     last = r.status;
     if (r.status < 500) break;
@@ -35,14 +36,14 @@ const getBuf = async (url) => {
   throw new Error(`${url}: ${last}`);
 };
 const content = async (slug) => {
-  const r = await fetch(`https://www.gov.uk/api/content${slug}`, { headers: UA });
+  const r = await fetchRetry(`https://www.gov.uk/api/content${slug}`, { headers: UA });
   if (!r.ok) throw new Error(`GOV.UK ${slug}: ${r.status}`);
   return r.json();
 };
 // The newest release in a family: GOV.UK search, filtered to DESNZ statistics, sorted by the year in the slug.
 async function latestRelease(query, slugTest) {
   const url = `https://www.gov.uk/api/search.json?q=${encodeURIComponent(query)}&count=40&fields=link&fields=public_timestamp&filter_organisations=department-for-energy-security-and-net-zero`;
-  const results = (await (await fetch(url, { headers: UA })).json()).results.filter((r) => slugTest.test(r.link));
+  const results = (await (await fetchRetry(url, { headers: UA })).json()).results.filter((r) => slugTest.test(r.link));
   if (!results.length) throw new Error(`No release found for ${query}`);
   results.sort((a, b) => b.public_timestamp.localeCompare(a.public_timestamp));
   return results[0].link;
@@ -251,7 +252,7 @@ async function cpiAnnual() {
 
 // ---- Ofgem: what the default tariff cap is made of -------------------------------------------------------------------------------------------
 async function priceCap() {
-  const html = await (await fetch("https://www.ofgem.gov.uk/energy-regulation/domestic-and-non-domestic/energy-pricing-rules/energy-price-cap/energy-price-cap-default-tariff-levels", { headers: UA })).text();
+  const html = await (await fetchRetry("https://www.ofgem.gov.uk/energy-regulation/domestic-and-non-domestic/energy-pricing-rules/energy-price-cap/energy-price-cap-default-tariff-levels", { headers: UA })).text();
   const links = [...html.matchAll(/href="([^"]+\.xlsx)"/g)].map((m) => new URL(m[1], "https://www.ofgem.gov.uk").toString()).filter((u) => /default[-_]tariff[-_]cap[-_]level|price[-_]cap[-_]levels/i.test(u));
   if (!links.length) throw new Error("No price cap model found");
   const wb = await book(links[0]); // the newest period is listed first

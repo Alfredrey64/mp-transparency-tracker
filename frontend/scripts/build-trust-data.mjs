@@ -11,6 +11,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { fetchRetry, patienceFor } from "../../httpFetch.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(here, "../src/data/trustData.json");
@@ -21,7 +22,7 @@ const round = (v, d = 1) => Math.round(v * 10 ** d) / 10 ** d;
 const get = async (url, headers = {}) => {
   let last = null;
   for (let attempt = 0; attempt < 4; attempt += 1) {
-    const r = await fetch(url, { headers: { ...UA, ...headers } });
+    const r = await fetchRetry(url, { headers: { ...UA, ...headers } }, patienceFor(url));
     if (r.ok) return r.text();
     last = r.status;
     if (r.status < 500) break;

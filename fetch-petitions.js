@@ -13,6 +13,7 @@
 
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";
+import { replaceTable } from "./replaceTable.js";
 import { fetchRetry } from "./httpFetch.js";
 
 const supabase = createClient(
@@ -74,20 +75,8 @@ async function main() {
   const rows = all.map(toRow);
 
   console.log(`Replacing petitions table with ${rows.length} petitions...`);
-  const { error: deleteError } = await supabase.from("petitions").delete().neq("id", 0);
-  if (deleteError) throw deleteError;
-
-  const BATCH_SIZE = 100;
-  let saved = 0;
-  for (let i = 0; i < rows.length; i += BATCH_SIZE) {
-    const batch = rows.slice(i, i + BATCH_SIZE);
-    const { error: insertError } = await supabase.from("petitions").insert(batch);
-    if (insertError) {
-      console.error(`  ⚠ Batch ${i / BATCH_SIZE + 1} failed: ${insertError.message}`);
-      continue;
-    }
-    saved += batch.length;
-  }
+  // Refuses an empty or far smaller list and puts the saved rows back if any batch fails (see replaceTable.js), so a bad day at the source cannot empty the page.
+  const saved = await replaceTable(supabase, "petitions", rows, { batchSize: 100 });
 
   console.log(`\nDone. Saved ${saved} of ${rows.length} petitions.`);
 }

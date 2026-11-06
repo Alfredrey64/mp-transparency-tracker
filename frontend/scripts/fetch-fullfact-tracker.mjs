@@ -4,6 +4,7 @@
 //
 // Run it with: node scripts/fetch-fullfact-tracker.mjs
 import { writeFileSync } from "node:fs";
+import { fetchRetry } from "../../httpFetch.js";
 
 const TRACKER = "https://fullfact.org/government-tracker/";
 const OUT = new URL("../src/data/fullFactPledges.json", import.meta.url);
@@ -13,7 +14,7 @@ const decode = (s) => s
   .replace(/&quot;/g, '"').replace(/&#x27;|&#39;/g, "'").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
   .replace(/&hellip;/g, "…").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
 
-const res = await fetch(TRACKER, { headers: { "User-Agent": "DomesdayLiveBot/1.0 (+https://domesdaylive.co.uk)" } });
+const res = await fetchRetry(TRACKER, { headers: { "User-Agent": "DomesdayLiveBot/1.0 (+https://domesdaylive.co.uk)" } });
 if (!res.ok) throw new Error(`Full Fact answered ${res.status}`);
 const html = await res.text();
 
