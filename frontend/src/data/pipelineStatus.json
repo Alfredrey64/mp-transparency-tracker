@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-05T11:49:24.946Z",
-  "succeededCount": 37,
-  "totalCount": 38,
+  "generatedAt": "2026-11-06T11:48:20.734Z",
+  "succeededCount": 38,
+  "totalCount": 39,
   "sources": [
     {
       "label": "Financial interests",
@@ -141,6 +141,10 @@
     },
     {
       "label": "Statutory instruments",
+      "succeeded": true
+    },
+    {
+      "label": "Plain-English rewrites of committee reports and statutory instruments (AI, from the official wording)",
       "succeeded": true
     },
     {

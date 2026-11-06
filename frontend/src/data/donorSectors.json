@@ -140,13 +140,6 @@
     "companyNumber": "16507092",
     "sicCode": "96090"
   },
-  "Silverstone Circuits Ltd": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "SILVERSTONE CIRCUITS LIMITED",
-    "companyNumber": "00882843",
-    "sicCode": "93110"
-  },
   "Flowidea Limited": {
     "sector": "Finance & Banking",
     "source": "companies-house",
@@ -202,6 +195,13 @@
     "companyName": "BPI (BRITISH RECORDED MUSIC INDUSTRY) LIMITED",
     "companyNumber": "01132389",
     "sicCode": "94990"
+  },
+  "Silverstone Circuits Ltd": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "SILVERSTONE CIRCUITS LIMITED",
+    "companyNumber": "00882843",
+    "sicCode": "93110"
   },
   "The Police Federation": {
     "sector": "Trade Unions",
