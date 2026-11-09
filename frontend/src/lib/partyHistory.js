@@ -10,3 +10,15 @@ export function partyAge(founded, now = new Date()) {
 export function initials(name) {
   return String(name ?? "").replace(/\b(ap|de|of|the)\b/gi, "").split(/\s+/).filter(Boolean).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
 }
+
+// The scale of the "how long each party has been around" chart: it starts in 1750 and ends at the next round decade after this year, with a gridline every fifty years and a
+// marker for today. Worked out from the clock, so the chart stays right as years pass. `now` is a parameter for tests.
+export function chartScale(now = new Date()) {
+  const from = 1750;
+  const today = now.getFullYear();
+  const to = Math.ceil((today + 1) / 10) * 10;
+  const ticks = [];
+  for (let y = from; y <= today; y += 50) ticks.push(y);
+  const pct = (year) => ((Math.min(Math.max(year, from), to) - from) / (to - from)) * 100;
+  return { from, to, today, ticks, pct };
+}

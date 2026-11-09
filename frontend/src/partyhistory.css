@@ -2,43 +2,43 @@
 .ph { display: grid; gap: 28px; }
 .ph h2, .ph h3, .ph h4 { margin: 0; }
 
-/* Who holds the seats today: one bar, a stretch for every party in proportion to its MPs */
-.ph-seats { display: grid; gap: 14px; padding: clamp(18px, 3vw, 26px); border-radius: 24px; background: linear-gradient(160deg, color-mix(in srgb, var(--c-brand, #1E4FB8) 8%, var(--c-paper-card)), var(--c-paper-card) 60%); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); }
-.ph-seats-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; }
-.ph-seats-head h2 { font: 700 clamp(22px, 3vw, 28px)/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
-.ph-seats-head p { margin: 0; font: 500 14.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.ph-seats-head b { font: 700 18px "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); font-variant-numeric: lining-nums tabular-nums; }
-.ph-bar { display: flex; gap: 2px; height: 44px; border-radius: 14px; overflow: hidden; }
-.ph-bar i { display: block; min-width: 3px; transform-origin: left; animation: phGrow 0.9s var(--ease-out, ease-out) calc(var(--i) * 70ms) backwards; }
-.ph-key { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 18px; }
-.ph-key li { display: inline-flex; align-items: center; gap: 7px; font: 600 13.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.ph-key li i { width: 12px; height: 12px; border-radius: 4px; background: var(--c); flex: none; }
-.ph-key li b { color: var(--c-ink); font-variant-numeric: tabular-nums; }
-
-/* The chart of how long each party has existed */
-.ph-tree { display: grid; gap: 12px; padding: clamp(18px, 3vw, 26px); border-radius: 24px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); }
-.ph-tree-head h2 { font: 700 clamp(22px, 3vw, 28px)/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
-.ph-tree-head p { margin: 6px 0 0; max-width: 680px; font: 400 14.5px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.ph-axis, .ph-track { position: relative; }
-.ph-axis { height: 18px; margin-left: 200px; font: 700 12px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); font-variant-numeric: tabular-nums; }
-.ph-axis span { position: absolute; top: 0; transform: translateX(-50%); }
-.ph-axis span:first-child { transform: none; }
-.ph-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-.ph-row { display: grid; grid-template-columns: 200px minmax(0, 1fr); align-items: center; gap: 0; }
-.ph-who { display: grid; gap: 0; padding-right: 12px; min-width: 0; }
-.ph-who b { font: 700 13.5px/1.25 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
-.ph-who span { font: 600 12px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--c) 80%, var(--c-ink)); font-variant-numeric: tabular-nums; }
-.ph-track { height: 30px; border-radius: 10px; background: color-mix(in srgb, var(--c) 7%, var(--c-paper)); overflow: hidden; }
-.ph-track u { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--c-hairline); opacity: 0.7; }
-.ph-seg { position: absolute; top: 4px; bottom: 4px; display: flex; align-items: center; min-width: 4px; padding: 0 9px; border-radius: 7px; box-sizing: border-box; overflow: hidden; background: color-mix(in srgb, var(--c) calc(48% + var(--k) * 14%), #fff); color: #fff; transform-origin: left; box-shadow: inset 2px 0 0 rgba(255, 255, 255, 0.7); animation: phGrow 0.8s var(--ease-out, ease-out) calc(var(--r, 0) * 60ms + var(--k) * 140ms + 120ms) backwards; }
-.ph-seg[data-last="1"] { background: var(--c); }
-.ph-seg em { font: 700 12px/1 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); }
-.ph-seg em { display: none; }
+/* The chart of how long each party has existed: graph-paper bands every fifty years, a bar for each party that runs to today, a dot at every step in its story */
+.ph-tree { display: grid; gap: 18px; padding: clamp(18px, 3vw, 28px); border-radius: 24px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); }
+.ph-tree-head h2 { font: 700 clamp(24px, 3vw, 30px)/1.15 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.ph-tree-head p { margin: 6px 0 0; max-width: 680px; font: 400 15px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ph-chart { position: relative; padding: 30px 0 34px; }
+.ph-grid { position: absolute; top: 0; bottom: 0; left: 232px; right: 0; pointer-events: none; }
+.ph-grid i { position: absolute; top: 24px; bottom: 0; background: color-mix(in srgb, var(--c-ink) 4.5%, transparent); }
+.ph-grid u { position: absolute; top: 18px; bottom: 0; width: 1px; background: color-mix(in srgb, var(--c-ink) 14%, transparent); text-decoration: none; }
+.ph-grid u span { position: absolute; top: -18px; left: 0; transform: translateX(-50%); font: 700 12.5px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); font-variant-numeric: tabular-nums; }
+.ph-grid u:first-of-type span { transform: none; }
+.ph-today { position: absolute; top: 18px; bottom: 4px; width: 0; border-left: 2px dashed var(--c-ink); opacity: 0.75; }
+.ph-today span { position: absolute; bottom: -30px; right: -22px; padding: 3px 9px; border-radius: 999px; background: var(--c-ink); color: var(--c-paper-card); font: 800 11.5px/1.2 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.03em; }
+.ph-rows { position: relative; list-style: none; margin: 0; padding: 0; display: grid; }
+.ph-row { display: grid; grid-template-columns: 232px minmax(0, 1fr); align-items: center; min-height: 52px; border-top: 1px solid color-mix(in srgb, var(--c-ink) 7%, transparent); transition: background 0.2s; }
+.ph-row:first-child { border-top: 0; }
+@media (hover: hover) { .ph-row:hover { background: color-mix(in srgb, var(--c) 7%, transparent); } }
+.ph-who { display: grid; gap: 1px; padding: 6px 14px 6px 14px; min-width: 0; border-left: 5px solid var(--c); }
+.ph-who b { font: 700 14.5px/1.25 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ph-who span { font: 600 12.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); font-variant-numeric: tabular-nums; }
+.ph-track { position: relative; height: 52px; }
+.ph-seg { position: absolute; top: 13px; bottom: 13px; display: flex; align-items: center; min-width: 6px; padding: 0 12px 0 14px; box-sizing: border-box; overflow: hidden; color: #fff; transform-origin: left; background: linear-gradient(90deg, color-mix(in srgb, var(--c) calc(42% + var(--k) * 16%), #fff), color-mix(in srgb, var(--c) calc(62% + var(--k) * 14%), #fff)); border-radius: 0; animation: phGrow 0.9s var(--ease-out, ease-out) calc(var(--r, 0) * 70ms + var(--k) * 150ms + 150ms) backwards; }
+.ph-seg[data-first="1"] { border-radius: 999px 0 0 999px; }
+.ph-seg[data-last="1"] { background: linear-gradient(90deg, color-mix(in srgb, var(--c) 82%, #fff), var(--c)); border-radius: 0 999px 999px 0; box-shadow: 0 6px 14px -8px var(--c); }
+.ph-seg[data-first="1"][data-last="1"] { border-radius: 999px; }
+.ph-seg + .ph-seg { margin-left: 2px; }
+.ph-seg em { display: none; font: 700 12.5px/1 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4); }
 .ph-seg[data-m="1"] em { display: block; }
 @media (min-width: 701px) { .ph-seg[data-m="1"] em { display: none; } .ph-seg[data-d="1"] em { display: block; } }
-.ph-row { --r: 0; }
+.ph-dot { position: absolute; top: 50%; width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px; box-sizing: border-box; border-radius: 50%; background: #fff; border: 3px solid var(--c); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25); animation: phPop 0.5s cubic-bezier(0.2, 1.4, 0.4, 1) calc(var(--r, 0) * 70ms + var(--k) * 150ms + 350ms) backwards; }
+.ph-end { background: var(--c); border-color: #fff; width: 15px; height: 15px; margin: -7.5px 0 0 -7.5px; }
+.ph-end::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid var(--c); opacity: 0; animation: phPulse 2.6s ease-out 1.6s infinite; }
 .ph-tree:not([data-go="1"]) .ph-seg { animation: none; transform: scaleX(0); }
+.ph-tree:not([data-go="1"]) .ph-dot { animation: none; opacity: 0; }
+.ph-tree:not([data-go="1"]) .ph-end::after { animation: none; }
 @keyframes phGrow { from { transform: scaleX(0); } }
+@keyframes phPop { from { transform: scale(0); opacity: 0; } }
+@keyframes phPulse { 0% { transform: scale(0.6); opacity: 0.7; } 80%, 100% { transform: scale(1.5); opacity: 0; } }
 
 /* One card for each party */
 .ph-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr)); gap: 18px; align-items: start; }
@@ -50,10 +50,10 @@
 .ph-banner::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 5px; background: linear-gradient(90deg, color-mix(in srgb, var(--c) 40%, #fff), color-mix(in srgb, var(--c) 85%, #fff) 45%, transparent); }
 .ph-art { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .ph-pattern { position: absolute; inset: 0; background: radial-gradient(70% 120% at 88% 100%, rgba(255, 255, 255, 0.26), transparent 62%), linear-gradient(180deg, rgba(255, 255, 255, 0.1), transparent 45%); transition: transform 1.4s var(--ease-out, ease-out), opacity 1s ease-out; }
+.ph-flag { position: absolute; right: -6%; top: -24%; height: 150%; width: auto; max-width: none; opacity: 0.12; transition: transform 1.8s var(--ease-out, ease-out), opacity 1.4s ease-out; }
+.ph-card:not([data-go="1"]) .ph-flag { opacity: 0; transform: translateX(46px) scale(1.06); }
 .ph-card:not([data-go="1"]) .ph-pattern { transform: translate(-28px, 0); opacity: 0; }
-.ph-year { position: absolute; left: 20px; bottom: -26px; font: 800 clamp(110px, 14vw, 156px)/1 "Figures", "Newsreader", Georgia, serif; letter-spacing: -0.04em; color: transparent; -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.15); font-variant-numeric: lining-nums; transition: transform 1s var(--ease-out, ease-out), opacity 1s ease-out; }
-.ph-card:not([data-go="1"]) .ph-year { transform: translateY(26px); opacity: 0; }
-.ph-title { position: relative; align-self: stretch; min-width: 0; display: grid; align-content: end; gap: 6px; padding-bottom: 26px; }
+.ph-card:not([data-go="1"]) .ph-title { position: relative; align-self: stretch; min-width: 0; display: grid; align-content: end; gap: 6px; padding-bottom: 26px; }
 .ph-title > * { transition: transform 0.7s var(--ease-out, ease-out), opacity 0.7s ease-out; transition-delay: calc(var(--s, 0) * 110ms + 150ms); }
 .ph-card:not([data-go="1"]) .ph-title > * { transform: translateY(14px); opacity: 0; }
 .ph-title h3 { --s: 0; font: 700 clamp(30px, 3.4vw, 38px)/1.08 "Figures", "Newsreader", Georgia, serif; color: #fff; text-wrap: balance; letter-spacing: -0.01em; }
@@ -147,14 +147,16 @@
 
 /* On a phone each row's name sits above its bar, and the card's number and name stack */
 @media (max-width: 700px) {
-  .ph-axis { margin-left: 0; }
-  .ph-row { grid-template-columns: minmax(0, 1fr); gap: 4px; padding-bottom: 6px; }
-  .ph-who { grid-auto-flow: column; justify-content: space-between; align-items: baseline; padding: 0 2px; }
+  .ph-grid { left: 0; }
+  .ph-row { grid-template-columns: minmax(0, 1fr); align-items: start; min-height: 0; gap: 0; padding: 8px 0 2px; }
+  .ph-who { position: relative; z-index: 1; width: fit-content; max-width: 100%; padding: 2px 12px 2px 10px; background: var(--c-paper-card); border-left-width: 4px; }
+  .ph-track { height: 40px; }
+  .ph-seg { top: 8px; bottom: 8px; }
   .ph-body { padding: 16px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ph-bar i, .ph-seg, .ph-flow .ph-node::after { animation: none !important; transform: none !important; }
-  .ph-pattern, .ph-year, .ph-title > *, .ph-arch, .ph-flow li, .ph-flow li::before, .ph-flow li::after { transition: none !important; }
+  .ph-seg, .ph-dot, .ph-end::after, .ph-flow .ph-node::after { animation: none !important; transform: none !important; }
+  .ph-pattern, .ph-flag, .ph-title > *, .ph-arch, .ph-flow li, .ph-flow li::before, .ph-flow li::after { transition: none !important; }
   .ph-card, .ph-panel, .ph-more i { transition: none !important; }
   .ph-card:hover { transform: none; }
 }
