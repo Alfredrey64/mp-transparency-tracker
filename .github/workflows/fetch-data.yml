@@ -654,6 +654,16 @@ jobs:
         continue-on-error: true
         run: node fetch-representatives.js
 
+      # Each party's current leader and portrait, for the Party History page (12 parties,
+      # about 40 requests). A new name is only accepted once seen on two different days, a
+      # party that cannot be read keeps its last good entry, and many changes at once are
+      # refused (see partyLeaders.js). Fails the step, so it is reported, if any party could
+      # not be read; two failures in a row open an issue.
+      - name: Fetch the party leaders and their portraits
+        id: fetch_party_leaders
+        continue-on-error: true
+        run: node fetch-party-leaders.js
+
       - name: Note how each step went
         if: always()
         run: |
@@ -666,12 +676,13 @@ jobs:
           echo "STATUS_fetch_ons=${{ steps.fetch_ons.outcome }}" >> status.env
           echo "STATUS_fetch_regional_breakdowns=${{ steps.fetch_regional_breakdowns.outcome }}" >> status.env
           echo "STATUS_fetch_representatives=${{ steps.fetch_representatives.outcome }}" >> status.env
+          echo "STATUS_fetch_party_leaders=${{ steps.fetch_party_leaders.outcome }}" >> status.env
 
       - name: Save the outcomes and the files this job wrote
         if: always()
         run: |
           existing=""
-          for p in frontend/src/data/constituencies.json frontend/src/data/constituencySummary.json frontend/src/data/constituencyHistory.json frontend/src/data/mpCareers.json frontend/src/data/careerDetail frontend/src/data/councilsIndex.json frontend/src/data/councilDetail frontend/src/data/ons frontend/src/data/regionalBreakdowns.json frontend/src/data/fullFactPledges.json frontend/src/data/representatives.json frontend/public/data/councillors.json; do [ -e "$p" ] && existing="$existing $p"; done
+          for p in frontend/src/data/constituencies.json frontend/src/data/constituencySummary.json frontend/src/data/constituencyHistory.json frontend/src/data/mpCareers.json frontend/src/data/careerDetail frontend/src/data/councilsIndex.json frontend/src/data/councilDetail frontend/src/data/ons frontend/src/data/regionalBreakdowns.json frontend/src/data/fullFactPledges.json frontend/src/data/representatives.json frontend/src/data/partyLeaders.json frontend/public/data/councillors.json; do [ -e "$p" ] && existing="$existing $p"; done
           tar -cf data.tar status.env $existing
 
       - name: Upload them for the last job
@@ -776,7 +787,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add frontend/src/data/constituencies.json frontend/src/data/constituencySummary.json frontend/src/data/constituencyHistory.json frontend/src/data/mpCareers.json frontend/src/data/careerDetail frontend/src/data/lordsCareers.json frontend/src/data/benchmarks.json frontend/src/data/representatives.json frontend/src/data/councilsIndex.json frontend/src/data/councilDetail frontend/src/data/ons frontend/src/data/regionalBreakdowns.json frontend/src/data/lordsCareerDetail frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json frontend/src/data/partyDonorSectors.json frontend/src/data/partyDonorSectorsMeta.json frontend/src/data/pipelineStatus.json frontend/src/data/lordsVotes.json frontend/src/data/parliamentCalendar.json frontend/src/data/entryNotes.json frontend/src/data/committeeReports.json frontend/src/data/statutoryInstruments.json frontend/src/data/plainEnglish.json frontend/src/data/standardsReportAuto.json frontend/src/data/billStages.json frontend/src/data/fullFactPledges.json frontend/public/data/councillors.json
+          git add frontend/src/data/constituencies.json frontend/src/data/constituencySummary.json frontend/src/data/constituencyHistory.json frontend/src/data/mpCareers.json frontend/src/data/careerDetail frontend/src/data/lordsCareers.json frontend/src/data/benchmarks.json frontend/src/data/representatives.json frontend/src/data/councilsIndex.json frontend/src/data/councilDetail frontend/src/data/ons frontend/src/data/regionalBreakdowns.json frontend/src/data/lordsCareerDetail frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json frontend/src/data/partyDonorSectors.json frontend/src/data/partyDonorSectorsMeta.json frontend/src/data/pipelineStatus.json frontend/src/data/lordsVotes.json frontend/src/data/parliamentCalendar.json frontend/src/data/entryNotes.json frontend/src/data/committeeReports.json frontend/src/data/statutoryInstruments.json frontend/src/data/plainEnglish.json frontend/src/data/standardsReportAuto.json frontend/src/data/billStages.json frontend/src/data/fullFactPledges.json frontend/src/data/partyLeaders.json frontend/public/data/councillors.json
           git diff --staged --quiet || git commit -m "chore: daily data refresh"
           # Someone may have pushed while the crawl ran: sit this commit on top of theirs rather than being refused.
           git pull --rebase --autostash origin "$GITHUB_REF_NAME"

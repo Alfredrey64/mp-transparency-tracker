@@ -4,6 +4,7 @@ import { useReducedMotion } from "motion/react";
 import { useGo } from "./story/useGo";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import LEADERS from "../data/partyLeaders.json";
+import { partyAge, initials } from "../lib/partyHistory";
 import "../partyhistory.css";
 
 // The "Party History & Lineage" tab: who holds the seats now, a chart of how long each party has existed and what it grew out of, then a card for each party with its
@@ -83,7 +84,6 @@ function Tree({ parties, counts, seatCountFor }) {
   );
 }
 
-const initials = (name) => name.replace(/\b(ap|de|of|the)\b/gi, "").split(/\s+/).filter(Boolean).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
 
 // A count that runs up to its number once, when the card scrolls into view. Anyone who has asked for calmer motion sees the number straight away.
 function CountUp({ to, go }) {
@@ -140,7 +140,7 @@ function Card({ party, seatCount, leader }) {
   const [ref, go] = useGo(0.25);
   const id = useId();
   const runs = party.lineage ?? [];
-  const age = new Date().getFullYear() - party.founded;
+  const age = partyAge(party.founded);
   return (
     <article ref={ref} data-go={go} className="ph-card" style={{ "--c": party.color }} data-open={open ? "1" : "0"}>
       <header className="ph-banner">
