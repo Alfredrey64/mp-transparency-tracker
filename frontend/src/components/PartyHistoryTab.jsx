@@ -83,22 +83,6 @@ function Tree({ parties, counts, seatCountFor }) {
   );
 }
 
-// Each party's banner carries its own pattern, so the cards can be told apart at a glance even where two parties share a colour family.
-const PATTERN = {
-  "Labour Party": "rise",
-  "Conservative Party": "rings",
-  "Liberal Democrats": "sun",
-  "Scottish National Party": "saltire",
-  "Green Party": "dots",
-  "Reform UK": "chevrons",
-  "Plaid Cymru": "discs",
-  "Democratic Unionist Party": "bars",
-  "Sinn Féin": "lattice",
-  "Social Democratic & Labour Party": "scales",
-  "Alliance": "venn",
-  "Ulster Unionist Party": "posts",
-};
-
 const initials = (name) => name.replace(/\b(ap|de|of|the)\b/gi, "").split(/\s+/).filter(Boolean).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
 
 // A count that runs up to its number once, when the card scrolls into view. Anyone who has asked for calmer motion sees the number straight away.
@@ -125,7 +109,7 @@ function Portrait({ leader }) {
   return (
     <div className="ph-arch" aria-hidden="true">
       <span className="ph-mono">{initials(leader.name)}</span>
-      {leader.photo && !broken && <img src={leader.photo} alt="" width="104" height="130" loading="lazy" decoding="async" onError={() => setBroken(true)} />}
+      {leader.photo && !broken && <img src={leader.photo} alt="" width="136" height="172" loading="lazy" decoding="async" onError={() => setBroken(true)} />}
     </div>
   );
 }
@@ -158,7 +142,7 @@ function Card({ party, seatCount, leader }) {
   const runs = party.lineage ?? [];
   const age = new Date().getFullYear() - party.founded;
   return (
-    <article ref={ref} data-go={go} className="ph-card" data-pat={PATTERN[party.party] ?? "bars"} style={{ "--c": party.color }} data-open={open ? "1" : "0"}>
+    <article ref={ref} data-go={go} className="ph-card" style={{ "--c": party.color }} data-open={open ? "1" : "0"}>
       <header className="ph-banner">
         <div className="ph-art" aria-hidden="true">
           <span className="ph-pattern" />
