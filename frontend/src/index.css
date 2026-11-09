@@ -1,4 +1,7 @@
 :root {
+  /* The colours of the two houses, after their benches: green for the Commons, red for the Lords. Used wherever a house is shown. */
+  --house-commons: #1F7A4D;
+  --house-lords: #B3262E;
   margin: 0;
   padding: 0;
 

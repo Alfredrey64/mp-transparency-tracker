@@ -961,7 +961,7 @@
 .up-key i.recess { background: repeating-linear-gradient(135deg, var(--c-ink-soft) 0 2px, transparent 2px 5px); }
 .up-cal { margin: 0; display: grid; gap: 14px; }
 .up-key-c i { background: var(--hc) !important; border-color: var(--hc) !important; border-radius: 50% !important; }
-.up-key-c i[data-house="Commons"] { --hc: #1F7A4D; } .up-key-c i[data-house="Lords"] { --hc: #B3262E; }
+.up-key-c i[data-house="Commons"] { --hc: var(--house-commons); } .up-key-c i[data-house="Lords"] { --hc: var(--house-lords); }
 .uc { display: grid; gap: 8px; width: 100%; }
 .uc-row { display: grid; grid-template-columns: 74px repeat(5, minmax(0, 1fr)); gap: 8px; align-items: stretch; }
 .uc-row:not(.uc-head) { opacity: 0; transform: translateY(8px); transition: opacity 0.5s var(--ease-out) calc(var(--w) * 110ms), transform 0.5s var(--ease-out) calc(var(--w) * 110ms); }
@@ -979,8 +979,8 @@
 .uc-date b { font: 800 clamp(20px, 2.2vw, 26px)/1 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums; color: var(--c-ink); }
 .uc-date small { font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .uc-date em { margin-left: auto; padding: 1px 8px; border-radius: 999px; background: var(--c-brand); color: #fff; font: 700 10.5px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; }
-.uc-bar { --hc: #1F7A4D; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 12px; min-height: 28px; box-sizing: border-box; padding: 0 9px; border-radius: 8px; border: 1.5px solid var(--hc); font: 700 12px/1 "Figures", "Public Sans", system-ui, sans-serif; white-space: nowrap; }
-.uc-bar[data-house="Lords"] { --hc: #B3262E; }
+.uc-bar { --hc: var(--house-commons); display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 12px; min-height: 28px; box-sizing: border-box; padding: 0 9px; border-radius: 8px; border: 1.5px solid var(--hc); font: 700 12px/1 "Figures", "Public Sans", system-ui, sans-serif; white-space: nowrap; }
+.uc-bar[data-house="Lords"] { --hc: var(--house-lords); }
 .uc-bar[data-s="sitting"] { background: var(--hc); color: #fff; }
 .uc-bar[data-s="recess"] { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--hc) 17%, var(--c-paper-card)) 0 3px, var(--c-paper-card) 3px 7px); color: var(--c-ink); }
 .uc-bar[data-s="off"] { border-color: var(--c-hairline); background: color-mix(in srgb, var(--hc) 7%, var(--c-paper)); color: var(--c-ink-soft); }

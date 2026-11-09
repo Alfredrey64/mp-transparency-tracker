@@ -5,7 +5,7 @@
 import { clockMinutes } from "./upcoming";
 
 export const LANES = ["Commons", "Lords", "Committees"];
-export const LANE_COLOUR = { Commons: "#1F7A4D", Lords: "#B3262E", Committees: "#2C7DA0" };
+export const LANE_COLOUR = { Commons: "var(--house-commons)", Lords: "var(--house-lords)", Committees: "#2C7DA0" };
 const GAP = 11.5; // the least distance, in percent of the clock's width, between two points in the same row
 
 export const laneOf = (e) => (e.k === "hearing" ? "Committees" : e.h === "L" ? "Lords" : "Commons");

@@ -1,8 +1,8 @@
 /* Clickable list rows and the plain-English panel they open (components/story/Entries.jsx), used by What changed, Today and Coming up. */
 .en-list, .en-box { --en-chev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M4.5 2.5 10 7l-5.5 4.5' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
 .en-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
-.en-row { --ec: #1F7A4D; display: grid; grid-template-columns: auto minmax(0, 1fr) 20px; align-items: center; gap: 6px 16px; width: 100%; box-sizing: border-box; padding: 15px 16px 15px 18px; border-radius: 16px; border: 1px solid var(--c-hairline); border-left: 6px solid var(--ec); background: var(--c-paper-card); box-shadow: var(--shadow-1); color: var(--c-ink); text-align: left; font: inherit; cursor: pointer; transition: box-shadow 0.18s var(--ease-out), transform 0.18s var(--ease-out), border-color 0.18s; }
-.en-row[data-house="Lords"] { --ec: #B3262E; }
+.en-row { --ec: var(--house-commons); display: grid; grid-template-columns: auto minmax(0, 1fr) 20px; align-items: center; gap: 6px 16px; width: 100%; box-sizing: border-box; padding: 15px 16px 15px 18px; border-radius: 16px; border: 1px solid var(--c-hairline); border-left: 6px solid var(--ec); background: var(--c-paper-card); box-shadow: var(--shadow-1); color: var(--c-ink); text-align: left; font: inherit; cursor: pointer; transition: box-shadow 0.18s var(--ease-out), transform 0.18s var(--ease-out), border-color 0.18s; }
+.en-row[data-house="Lords"] { --ec: var(--house-lords); }
 .en-row[data-house="Joint"] { --ec: #5B6784; }
 .en-list > li:nth-child(even) .en-row { background: color-mix(in srgb, var(--c-ink) 3%, var(--c-paper-card)); }
 .en-row:hover { box-shadow: var(--shadow-2), 0 0 0 3px color-mix(in srgb, var(--ec) 16%, transparent); transform: translateY(-1px); }
@@ -12,8 +12,8 @@
 .en-when b { display: block; font-size: 11px; font-weight: 700; color: var(--c-ink-soft); }
 .en-body { display: grid; gap: 4px; min-width: 0; }
 .en-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 9px; font: 600 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.en-meta em { font: 700 11.5px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; padding: 2px 9px; border-radius: 6px; color: #fff; background: #1F7A4D; }
-.en-meta em[data-house="Lords"] { background: #B3262E; }
+.en-meta em { font: 700 11.5px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; padding: 2px 9px; border-radius: 6px; color: #fff; background: var(--house-commons); }
+.en-meta em[data-house="Lords"] { background: var(--house-lords); }
 .en-meta em[data-house="Joint"] { background: #5B6784; }
 .en-body b { font: 700 16.5px/1.4 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); overflow-wrap: anywhere; }
 .en-body small { font: 400 13.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
@@ -28,7 +28,7 @@
 
 .en-layer { position: fixed; inset: 0; z-index: 120; display: flex; justify-content: center; align-items: flex-start; padding: 72px 16px 16px; background: rgba(8, 16, 34, 0.5); animation: enFade 0.15s ease both; }
 .en-box { --ec: #5A4FCF; width: min(640px, 100%); max-height: calc(100dvh - 88px); overflow-y: auto; overscroll-behavior: contain; box-sizing: border-box; padding: 20px 24px 26px; border-radius: 24px; background: var(--c-paper-card); color: var(--c-ink); border: 1px solid var(--c-hairline); border-top: 8px solid var(--ec); box-shadow: var(--shadow-3); outline: none; display: grid; gap: 16px; animation: enRise 0.22s var(--ease-out) both; }
-.en-box[data-house="Commons"] { --ec: #1F7A4D; } .en-box[data-house="Lords"] { --ec: #B3262E; } .en-box[data-house="Joint"] { --ec: #5B6784; }
+.en-box[data-house="Commons"] { --ec: var(--house-commons); } .en-box[data-house="Lords"] { --ec: var(--house-lords); } .en-box[data-house="Joint"] { --ec: #5B6784; }
 .en-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .en-label { margin: 0; padding: 3px 12px; border-radius: 999px; background: color-mix(in srgb, var(--ec) 14%, transparent); font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--ec) 78%, var(--c-ink)); width: fit-content; }
 .en-x, .en-back { min-height: 44px; border-radius: 999px; border: 1px solid var(--c-hairline); background: var(--c-paper); color: var(--c-ink); cursor: pointer; font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; }
@@ -72,8 +72,8 @@
 .en-strip { display: grid; gap: 2px; margin-top: 6px; max-width: 420px; }
 .en-strip-line { position: relative; display: block; height: 14px; border-radius: 7px; background: color-mix(in srgb, var(--c-ink) 7%, transparent); }
 .en-strip-line i { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--c-hairline); }
-.en-strip-line b { position: absolute; top: 50%; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: #1F7A4D; border: 2px solid var(--c-paper-card); box-shadow: 0 0 0 1px #1F7A4D; }
-.en-strip-line b[data-house="Lords"] { background: #B3262E; box-shadow: 0 0 0 1px #B3262E; }
+.en-strip-line b { position: absolute; top: 50%; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: var(--house-commons); border: 2px solid var(--c-paper-card); box-shadow: 0 0 0 1px var(--house-commons); }
+.en-strip-line b[data-house="Lords"] { background: var(--house-lords); box-shadow: 0 0 0 1px var(--house-lords); }
 .en-strip-days { position: relative; display: block; height: 12px; }
 .en-strip-days small { position: absolute; transform: translateX(-50%); font: 600 10px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); font-variant-numeric: lining-nums; }
 @media (prefers-reduced-motion: no-preference) {
@@ -93,8 +93,8 @@
 /* The pictures at the top of a day's panel (components/story/DayDiagrams.jsx). */
 .dd { display: grid; gap: 12px; }
 .dd-houses { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.dd-houses p { --hc: #1F7A4D; display: flex; align-items: center; gap: 12px; margin: 0; padding: 11px 14px; border-radius: 14px; background: var(--c-paper); border: 1px solid var(--c-hairline); font: 500 14.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
-.dd-houses p[data-house="Lords"] { --hc: #B3262E; }
+.dd-houses p { --hc: var(--house-commons); display: flex; align-items: center; gap: 12px; margin: 0; padding: 11px 14px; border-radius: 14px; background: var(--c-paper); border: 1px solid var(--c-hairline); font: 500 14.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.dd-houses p[data-house="Lords"] { --hc: var(--house-lords); }
 .dd-houses p > span:last-child { display: grid; gap: 1px; min-width: 0; }
 .dd-sw { flex: none; width: 30px; height: 30px; border-radius: 9px; border: 2px solid var(--hc); box-sizing: border-box; background: var(--hc); }
 .dd-houses p[data-s="recess"] .dd-sw { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--hc) 30%, var(--c-paper-card)) 0 3px, var(--c-paper-card) 3px 7px); }
@@ -145,8 +145,8 @@
 .en-count { padding: 1px 9px; border-radius: 999px; background: color-mix(in srgb, var(--c-ink-soft) 14%, transparent); font: 700 11.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .bl { position: relative; display: grid; gap: 7px; margin: 4px 0 2px; padding-left: 2px; max-width: 560px; }
 .bl::before { content: ""; position: absolute; left: 8px; top: 12px; bottom: 12px; width: 2px; border-radius: 1px; background: var(--c-hairline); }
-.bl-step { --hc: #1F7A4D; position: relative; display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; align-items: baseline; gap: 12px; }
-.bl-step[data-house="Lords"] { --hc: #B3262E; }
+.bl-step { --hc: var(--house-commons); position: relative; display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; align-items: baseline; gap: 12px; }
+.bl-step[data-house="Lords"] { --hc: var(--house-lords); }
 .bl-step i { align-self: center; width: 14px; height: 14px; box-sizing: border-box; border-radius: 50%; background: var(--c-paper-card); border: 3.5px solid var(--hc); }
 .bl-what { font: 600 13.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); overflow-wrap: anywhere; }
 .bl-what em { margin-right: 8px; font: 700 11.5px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: var(--hc); }

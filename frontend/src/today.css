@@ -4,13 +4,13 @@
 .td-date b { font: 700 clamp(24px, 4vw, 32px)/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
 .td-date span { font: 500 14.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .td-houses { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 14px; }
-.td-house { position: relative; display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 2px 12px; padding: 16px 18px; border-radius: 20px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-left: 7px solid #1F7A4D; box-shadow: var(--shadow-1); }
-.td-house[data-house="Lords"] { border-left-color: #B3262E; }
+.td-house { position: relative; display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 2px 12px; padding: 16px 18px; border-radius: 20px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-left: 7px solid var(--house-commons); box-shadow: var(--shadow-1); }
+.td-house[data-house="Lords"] { border-left-color: var(--house-lords); }
 .td-house[data-tone="off"] { background: var(--c-paper); }
 .td-house b { font: 700 20px "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
 .td-house .td-pulse { grid-row: 1 / span 3; width: 14px; height: 14px; border-radius: 50%; background: var(--c-ink-soft); opacity: 0.5; }
-.td-house[data-tone="on"] .td-pulse { background: #1F7A4D; opacity: 1; box-shadow: 0 0 0 0 color-mix(in srgb, #1F7A4D 50%, transparent); }
-.td-house[data-house="Lords"][data-tone="on"] .td-pulse { background: #B3262E; box-shadow: 0 0 0 0 color-mix(in srgb, #B3262E 50%, transparent); }
+.td-house[data-tone="on"] .td-pulse { background: var(--house-commons); opacity: 1; box-shadow: 0 0 0 0 color-mix(in srgb, var(--house-commons) 50%, transparent); }
+.td-house[data-house="Lords"][data-tone="on"] .td-pulse { background: var(--house-lords); box-shadow: 0 0 0 0 color-mix(in srgb, var(--house-lords) 50%, transparent); }
 .td-state { grid-column: 2; font: 800 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .td-house[data-tone="off"] .td-state { color: var(--c-ink-soft); }
 .td-house small { grid-column: 2; font: 500 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
@@ -50,8 +50,8 @@
 .td-filter { display: inline-flex; padding: 3px; border-radius: 999px; background: color-mix(in srgb, var(--c-ink) 7%, transparent); }
 .td-filter button { min-height: 40px; padding: 0 16px; border: 0; border-radius: 999px; background: none; color: var(--c-ink); font: 700 13.5px "Figures", "Public Sans", system-ui, sans-serif; cursor: pointer; }
 .td-filter button[aria-pressed="true"] { background: var(--c-ink); color: var(--c-paper); }
-.td-filter button[data-house="C"][aria-pressed="true"] { background: #1F7A4D; color: #fff; }
-.td-filter button[data-house="L"][aria-pressed="true"] { background: #B3262E; color: #fff; }
+.td-filter button[data-house="C"][aria-pressed="true"] { background: var(--house-commons); color: #fff; }
+.td-filter button[data-house="L"][aria-pressed="true"] { background: var(--house-lords); color: #fff; }
 .td-jump { display: flex; flex-wrap: wrap; gap: 8px; }
 .td-jump button { display: inline-flex; align-items: center; gap: 7px; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1.5px solid color-mix(in srgb, var(--tc, var(--c-ink-soft)) 45%, var(--c-hairline)); background: var(--c-paper-card); color: var(--c-ink); font: 600 13px "Figures", "Public Sans", system-ui, sans-serif; cursor: pointer; }
 .td-jump button:hover { background: color-mix(in srgb, var(--tc, var(--c-ink-soft)) 10%, var(--c-paper-card)); }
