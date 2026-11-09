@@ -25,7 +25,9 @@ async function open(page, path) {
 const oversizedTapAreas = (page) => page.evaluate(() => [...document.querySelectorAll("button")].flatMap((b) => {
   const as = getComputedStyle(b, "::after");
   if (as.content === "none" || as.position !== "absolute") return [];
-  const r = b.getBoundingClientRect();
+  // The button's own layout size: getBoundingClientRect shrinks with a tile that is still scaling in (the tax tiles pop in), while the tap area's computed size does not, so a slow
+  // machine caught a tile part way through and reported a button 80% of its size.
+  const r = { width: b.offsetWidth, height: b.offsetHeight };
   if (r.width === 0 || r.height === 0) return [];
   const w = parseFloat(as.width), h = parseFloat(as.height);
   return w > r.width + 24 || h > r.height + 24 ? [`${(b.innerText || b.getAttribute("aria-label") || b.className).trim().slice(0, 40)}: tap area ${Math.round(w)}x${Math.round(h)} on a ${Math.round(r.width)}x${Math.round(r.height)} button`] : [];
