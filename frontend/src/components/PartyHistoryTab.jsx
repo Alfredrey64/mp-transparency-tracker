@@ -1,7 +1,9 @@
 /** @jsxImportSource react */
-import { useState, useId, useMemo } from "react";
+import { useState, useId, useMemo, useEffect } from "react";
+import { useReducedMotion } from "motion/react";
 import { useGo } from "./story/useGo";
 import { withScrollPreserved } from "../lib/preserveScroll";
+import LEADERS from "../data/partyLeaders.json";
 import "../partyhistory.css";
 
 // The "Party History & Lineage" tab: who holds the seats now, a chart of how long each party has existed and what it grew out of, then a card for each party with its
@@ -81,19 +83,97 @@ function Tree({ parties, counts, seatCountFor }) {
   );
 }
 
-function Card({ party, seatCount }) {
+// Each party's banner carries its own pattern, so the cards can be told apart at a glance even where two parties share a colour family.
+const PATTERN = {
+  "Labour Party": "rise",
+  "Conservative Party": "rings",
+  "Liberal Democrats": "sun",
+  "Scottish National Party": "saltire",
+  "Green Party": "dots",
+  "Reform UK": "chevrons",
+  "Plaid Cymru": "discs",
+  "Democratic Unionist Party": "bars",
+  "Sinn Féin": "lattice",
+  "Social Democratic & Labour Party": "scales",
+  "Alliance": "venn",
+  "Ulster Unionist Party": "posts",
+};
+
+const initials = (name) => name.replace(/\b(ap|de|of|the)\b/gi, "").split(/\s+/).filter(Boolean).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+
+// A count that runs up to its number once, when the card scrolls into view. Anyone who has asked for calmer motion sees the number straight away.
+function CountUp({ to, go }) {
+  const still = useReducedMotion();
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    if (still || go !== "1") return undefined;
+    let frame;
+    const t0 = performance.now();
+    const step = (now) => {
+      const k = Math.min(1, (now - t0) / 1100);
+      setN(Math.round(to * (1 - (1 - k) ** 3)));
+      if (k < 1) frame = requestAnimationFrame(step);
+    };
+    frame = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frame);
+  }, [go, to, still]);
+  return <>{still ? to : n}</>;
+}
+
+function Portrait({ leader }) {
+  const [broken, setBroken] = useState(false);
+  return (
+    <div className="ph-arch" aria-hidden="true">
+      <span className="ph-mono">{initials(leader.name)}</span>
+      {leader.photo && !broken && <img src={leader.photo} alt="" width="104" height="130" loading="lazy" decoding="async" onError={() => setBroken(true)} />}
+    </div>
+  );
+}
+
+// The "How it got here" flow: one box for each name the party has had, joined by a line that draws itself, ending in the party as it is today. A step that begins "+" is
+// another party joining it, and is drawn as a smaller dashed box.
+function Flow({ runs }) {
+  return (
+    <ol className="ph-flow">
+      {runs.map((n, i) => {
+        const merge = n.label.startsWith("+ ");
+        const kind = merge ? "merge" : i === runs.length - 1 ? "now" : "step";
+        return (
+          <li key={`${n.label}-${n.year}`} data-kind={kind} style={{ "--k": i, "--t": runs.length > 1 ? i / (runs.length - 1) : 1 }}>
+            <span className="ph-node">
+              <time>{n.year}</time>
+              <b>{merge ? <><i aria-hidden="true">+</i><span className="ph-sr">joined by </span>{n.label.slice(2)}</> : n.label}</b>
+            </span>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+function Card({ party, seatCount, leader }) {
   const [open, setOpen] = useState(false);
+  const [ref, go] = useGo(0.25);
   const id = useId();
   const runs = party.lineage ?? [];
+  const age = new Date().getFullYear() - party.founded;
   return (
-    <article className="ph-card" style={{ "--c": party.color }} data-open={open ? "1" : "0"}>
+    <article ref={ref} data-go={go} className="ph-card" data-pat={PATTERN[party.party] ?? "bars"} style={{ "--c": party.color }} data-open={open ? "1" : "0"}>
       <header className="ph-banner">
-        <span className="ph-year" aria-hidden="true">{party.founded}</span>
+        <div className="ph-art" aria-hidden="true">
+          <span className="ph-pattern" />
+          <span className="ph-year">{party.founded}</span>
+        </div>
         <div className="ph-title">
           <h3>{party.party}</h3>
-          <p>{party.ideology}</p>
+          <p className="ph-ideology">{party.ideology}</p>
+          {leader && <p className="ph-led">{leader.role === "President" ? "President" : "Leader"} <b>{leader.name}</b></p>}
+          <ul className="ph-chips">
+            {seatCount > 0 && <li><b><CountUp to={seatCount} go={go} /></b> MPs now</li>}
+            <li><b>{age}</b> years old</li>
+          </ul>
         </div>
-        {seatCount > 0 && <div className="ph-mps"><b>{seatCount}</b><span>MPs now</span></div>}
+        {leader && <Portrait leader={leader} />}
       </header>
       <div className="ph-body">
         <p className="ph-founded">Founded {party.founded}</p>
@@ -101,9 +181,7 @@ function Card({ party, seatCount }) {
         {runs.length > 1 && (
           <div className="ph-lineage">
             <h4>How it got here</h4>
-            <ol>
-              {runs.map((n, i) => <li key={`${n.label}-${n.year}`} data-last={i === runs.length - 1 ? "1" : "0"}><b>{n.label}</b><span>{n.year}</span></li>)}
-            </ol>
+            <Flow runs={runs} />
           </div>
         )}
         <button type="button" className="ph-more" aria-expanded={open} aria-controls={id} onClick={() => withScrollPreserved(() => setOpen((v) => !v))}>
@@ -131,8 +209,9 @@ export default function PartyHistoryTab({ parties, counts, seatCountFor }) {
       <SeatsNow parties={parties} counts={counts} seatCountFor={seatCountFor} />
       <Tree parties={parties} counts={counts} seatCountFor={seatCountFor} />
       <div className="ph-cards">
-        {parties.map((p) => <Card key={p.party} party={p} seatCount={seatCountFor(counts, p)} />)}
+        {parties.map((p) => <Card key={p.party} party={p} seatCount={seatCountFor(counts, p)} leader={LEADERS.leaders[p.party]} />)}
       </div>
+      <p className="ph-credit">Current leaders from each party’s Wikipedia page, portraits from Wikimedia Commons, checked {new Date(LEADERS.retrieved).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}.</p>
     </div>
   );
 }

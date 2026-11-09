@@ -44,28 +44,96 @@
 .ph-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr)); gap: 18px; align-items: start; }
 .ph-card { display: grid; overflow: hidden; border-radius: 24px; background: var(--c-paper-card); border: 1px solid color-mix(in srgb, var(--c) 28%, var(--c-hairline)); box-shadow: var(--shadow-1); transition: box-shadow 0.25s var(--ease-out, ease-out), transform 0.25s var(--ease-out, ease-out); }
 @media (hover: hover) { .ph-card:hover { box-shadow: var(--shadow-2, 0 14px 28px -16px rgba(10, 20, 36, 0.35)); transform: translateY(-2px); } }
-.ph-banner { position: relative; display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; min-height: 112px; padding: 18px 20px; overflow: hidden; color: #fff; background: linear-gradient(135deg, color-mix(in srgb, var(--c) 78%, #0b1020), color-mix(in srgb, var(--c) 42%, #0b1020)); }
-.ph-year { position: absolute; right: -4px; top: -14px; font: 800 clamp(70px, 9vw, 96px)/1 "Figures", "Newsreader", Georgia, serif; letter-spacing: -0.04em; color: rgba(255, 255, 255, 0.13); font-variant-numeric: lining-nums; pointer-events: none; }
-.ph-title { position: relative; min-width: 0; display: grid; gap: 4px; }
-.ph-title h3 { font: 700 clamp(21px, 2.4vw, 25px)/1.15 "Figures", "Newsreader", Georgia, serif; color: #fff; text-wrap: balance; }
-.ph-title p { margin: 0; font: 600 13px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: rgba(255, 255, 255, 0.88); }
-.ph-mps { position: relative; flex: none; display: grid; justify-items: end; padding: 8px 12px; border-radius: 14px; background: rgba(255, 255, 255, 0.16); border: 1px solid rgba(255, 255, 255, 0.28); }
-.ph-mps b { font: 800 26px/1 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; }
-.ph-mps span { font: 700 11.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; opacity: 0.92; }
+/* The banner: the party's colour with its own pattern, its name and leader on the left, the leader's portrait rising from the bottom edge on the right */
+.ph-card { container-type: inline-size; }
+.ph-banner { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 12px; min-height: 196px; padding: 22px 0 0 20px; overflow: hidden; color: #fff; background: linear-gradient(135deg, color-mix(in srgb, var(--c) 82%, #0b1020), color-mix(in srgb, var(--c) 40%, #0b1020)); }
+.ph-art { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.ph-pattern { position: absolute; inset: 0; background-repeat: repeat; transition: transform 1.4s var(--ease-out, ease-out), opacity 1s ease-out; }
+.ph-card:not([data-go="1"]) .ph-pattern { transform: translate(-28px, 0); opacity: 0; }
+.ph-year { position: absolute; left: 14px; bottom: -22px; font: 800 clamp(84px, 11vw, 120px)/1 "Figures", "Newsreader", Georgia, serif; letter-spacing: -0.04em; color: rgba(255, 255, 255, 0.07); font-variant-numeric: lining-nums; transition: transform 1s var(--ease-out, ease-out), opacity 1s ease-out; }
+.ph-card:not([data-go="1"]) .ph-year { transform: translateY(26px); opacity: 0; }
+.ph-title { position: relative; align-self: stretch; min-width: 0; display: grid; align-content: end; gap: 5px; padding-bottom: 20px; }
+.ph-title > * { transition: transform 0.7s var(--ease-out, ease-out), opacity 0.7s ease-out; transition-delay: calc(var(--s, 0) * 110ms + 150ms); }
+.ph-card:not([data-go="1"]) .ph-title > * { transform: translateY(14px); opacity: 0; }
+.ph-title h3 { --s: 0; font: 700 clamp(23px, 2.6vw, 28px)/1.12 "Figures", "Newsreader", Georgia, serif; color: #fff; text-wrap: balance; }
+.ph-ideology { --s: 1; margin: 0; font: 600 13px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: rgba(255, 255, 255, 0.9); }
+.ph-led { --s: 2; margin: 4px 0 0; font: 600 13px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: rgba(255, 255, 255, 0.85); }
+.ph-led b { display: block; font: 700 17px/1.25 "Figures", "Newsreader", Georgia, serif; color: #fff; }
+.ph-chips { --s: 3; list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.ph-chips li { padding: 5px 11px; border-radius: 999px; background: rgba(255, 255, 255, 0.16); border: 1px solid rgba(255, 255, 255, 0.3); font: 600 12px/1.2 "Figures", "Public Sans", system-ui, sans-serif; color: #fff; white-space: nowrap; }
+.ph-chips b { font: 800 15px/1 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; margin-right: 2px; }
+
+/* the leader: an arched frame, so the portrait reads as a figure standing in a doorway of the party's colour */
+.ph-arch { position: relative; align-self: end; width: 112px; height: 138px; margin-right: 18px; border-radius: 56px 56px 0 0; overflow: hidden; background: color-mix(in srgb, var(--c) 40%, #fff); box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.92), 0 12px 24px -10px rgba(0, 0, 0, 0.55); transition: transform 0.9s cubic-bezier(0.2, 1.25, 0.4, 1) 0.25s, opacity 0.6s ease-out 0.25s; }
+.ph-card:not([data-go="1"]) .ph-arch { transform: translateY(60px); opacity: 0; }
+.ph-arch img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 14%; }
+.ph-mono { position: absolute; inset: 0; display: grid; place-items: center; font: 800 38px/1 "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--c) 70%, #0b1020); letter-spacing: 0.02em; }
+
+/* a pattern for each party */
+.ph-card[data-pat="rise"] .ph-pattern { background-image: repeating-linear-gradient(115deg, rgba(255,255,255,0.09) 0 14px, transparent 14px 30px); }
+.ph-card[data-pat="rings"] .ph-pattern { background-image: repeating-radial-gradient(circle at 88% 110%, rgba(255,255,255,0.12) 0 2px, transparent 2px 22px); }
+.ph-card[data-pat="sun"] .ph-pattern { background-image: repeating-conic-gradient(from 0deg at 82% 112%, rgba(255,255,255,0.13) 0 5deg, transparent 5deg 12deg); }
+.ph-card[data-pat="saltire"] .ph-pattern { background: linear-gradient(to top right, transparent 47%, rgba(255,255,255,0.13) 47% 53%, transparent 53%) 0 0 / 56px 56px, linear-gradient(to bottom right, transparent 47%, rgba(255,255,255,0.13) 47% 53%, transparent 53%) 0 0 / 56px 56px; }
+.ph-card[data-pat="dots"] .ph-pattern { background-image: radial-gradient(circle, rgba(255,255,255,0.22) 2.2px, transparent 2.8px); background-size: 22px 22px; }
+.ph-card[data-pat="chevrons"] .ph-pattern { background: linear-gradient(135deg, rgba(255,255,255,0.1) 25%, transparent 25%) -20px 0 / 40px 40px, linear-gradient(225deg, rgba(255,255,255,0.1) 25%, transparent 25%) -20px 0 / 40px 40px; }
+.ph-card[data-pat="discs"] .ph-pattern { background: radial-gradient(circle at 78% 30%, rgba(255,255,255,0.1) 0 46px, transparent 47px), radial-gradient(circle at 92% 72%, rgba(255,255,255,0.08) 0 56px, transparent 57px), radial-gradient(circle at 58% 90%, rgba(255,255,255,0.07) 0 40px, transparent 41px); }
+.ph-card[data-pat="bars"] .ph-pattern { background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.1) 0 6px, transparent 6px 16px); }
+.ph-card[data-pat="lattice"] .ph-pattern { background: repeating-linear-gradient(45deg, rgba(255,255,255,0.1) 0 2px, transparent 2px 18px), repeating-linear-gradient(-45deg, rgba(255,255,255,0.1) 0 2px, transparent 2px 18px); }
+.ph-card[data-pat="scales"] .ph-pattern { background-image: radial-gradient(circle at 50% 100%, transparent 0 13px, rgba(255,255,255,0.14) 14px 16px, transparent 17px); background-size: 34px 17px; }
+.ph-card[data-pat="venn"] .ph-pattern { background: radial-gradient(circle at 70% 55%, rgba(255,255,255,0.11) 0 70px, transparent 71px), radial-gradient(circle at 90% 55%, rgba(255,255,255,0.09) 0 70px, transparent 71px); }
+.ph-card[data-pat="posts"] .ph-pattern { background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.12) 0 8px, transparent 8px 14px, rgba(255,255,255,0.06) 14px 16px, transparent 16px 30px); }
+
 .ph-body { display: grid; gap: 14px; padding: 18px 20px 20px; }
 .ph-founded { margin: 0; font: 800 12.5px/1 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.05em; text-transform: uppercase; color: color-mix(in srgb, var(--c) 82%, var(--c-ink)); }
 .ph-text { margin: 0; font: 400 15px/1.65 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .ph h4 { font: 800 12px/1.2 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.06em; text-transform: uppercase; color: var(--c-ink-soft); }
-.ph-lineage { display: grid; gap: 10px; padding-top: 14px; border-top: 1px dashed color-mix(in srgb, var(--c) 40%, var(--c-hairline)); }
-.ph-lineage ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 4px; }
-.ph-lineage li { position: relative; display: grid; gap: 1px; padding: 8px 16px 8px 18px; border-radius: 10px; background: color-mix(in srgb, var(--c) 9%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--c) 28%, var(--c-hairline)); clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%, 10px 50%); }
-.ph-lineage li:first-child { clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%); padding-left: 14px; }
-.ph-lineage li:last-child { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 10px 50%); }
-.ph-lineage li:only-child { clip-path: none; }
-.ph-lineage li b { font: 700 13px/1.25 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
-.ph-lineage li span { font: 600 12px/1.2 "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--c) 78%, var(--c-ink)); font-variant-numeric: tabular-nums; }
-.ph-lineage li[data-last="1"] { background: var(--c); border-color: var(--c); }
-.ph-lineage li[data-last="1"] b, .ph-lineage li[data-last="1"] span { color: #fff; }
+
+/* How it got here: a box for each name, joined by a line that draws itself on, the last box the party as it stands */
+.ph-lineage { display: grid; gap: 12px; padding-top: 16px; border-top: 1px dashed color-mix(in srgb, var(--c) 40%, var(--c-hairline)); }
+.ph-flow { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 20px; }
+.ph-flow li { position: relative; display: flex; }
+.ph-node { position: relative; display: grid; gap: 2px; padding: 10px 14px 11px; border-radius: 14px; box-sizing: border-box; min-width: 0; background: color-mix(in srgb, var(--c) calc(8% + var(--t) * 22%), var(--c-paper-card)); border: 1.5px solid color-mix(in srgb, var(--c) calc(26% + var(--t) * 40%), var(--c-hairline)); transition: transform 0.2s var(--ease-out, ease-out), box-shadow 0.2s; }
+.ph-node time { font: 800 12px/1 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.04em; font-variant-numeric: lining-nums tabular-nums; color: color-mix(in srgb, var(--c) 80%, var(--c-ink)); }
+.ph-node b { font: 700 14px/1.25 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); text-wrap: balance; overflow-wrap: anywhere; }
+.ph-node b i { display: inline-grid; place-items: center; width: 17px; height: 17px; margin-right: 6px; border-radius: 50%; background: var(--c); color: #fff; font: 800 13px/1 "Figures", system-ui, sans-serif; font-style: normal; vertical-align: 1px; }
+.ph-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.ph-flow li[data-kind="merge"] .ph-node { background: var(--c-paper-card); border-style: dashed; padding-block: 8px 9px; }
+.ph-flow li[data-kind="now"] .ph-node { background: linear-gradient(135deg, var(--c), color-mix(in srgb, var(--c) 60%, #0b1020)); border-color: var(--c); box-shadow: 0 10px 20px -12px var(--c); overflow: hidden; }
+.ph-flow li[data-kind="now"] .ph-node time { color: rgba(255, 255, 255, 0.88); }
+.ph-flow li[data-kind="now"] .ph-node b { color: #fff; font-size: 15.5px; }
+.ph-flow li[data-kind="now"] .ph-node::after { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.35) 50%, transparent 65%); transform: translateX(-120%); }
+@media (hover: hover) { .ph-node:hover { transform: translateY(-2px); box-shadow: 0 8px 16px -10px var(--c); } }
+
+/* the line into each box, with an arrowhead; vertical when the card is narrow */
+.ph-flow li + li::before { content: ""; position: absolute; left: 24px; top: -20px; width: 3px; height: 20px; background: linear-gradient(180deg, color-mix(in srgb, var(--c) 40%, transparent), var(--c)); transform-origin: top; border-radius: 2px; }
+.ph-flow li + li::after { content: ""; position: absolute; left: 19.5px; top: -7px; border: 6px solid transparent; border-top: 8px solid var(--c); border-bottom: 0; }
+
+/* the reveal: lines draw, boxes rise one after another, then a glint crosses today's box */
+.ph-flow li { transition: opacity 0.5s ease-out calc(var(--k) * 260ms + 200ms), transform 0.6s cubic-bezier(0.2, 1.2, 0.4, 1) calc(var(--k) * 260ms + 200ms); }
+.ph-flow li + li::before { transition: transform 0.45s ease-out calc(var(--k) * 260ms); }
+.ph-flow li + li::after { transition: opacity 0.2s ease-out calc(var(--k) * 260ms + 380ms); }
+.ph-card:not([data-go="1"]) .ph-flow li { opacity: 0; transform: translateY(14px) scale(0.96); }
+.ph-card:not([data-go="1"]) .ph-flow li + li::before { transform: scaleY(0); }
+.ph-card:not([data-go="1"]) .ph-flow li + li::after { opacity: 0; }
+.ph-card[data-go="1"] .ph-flow li[data-kind="now"] .ph-node::after { animation: phGlint 1.3s ease-out calc(var(--k) * 260ms + 800ms) 1 forwards; }
+@keyframes phGlint { to { transform: translateX(120%); } }
+
+@container (min-width: 430px) {
+  .ph-flow { flex-direction: row; align-items: stretch; gap: 26px; }
+  .ph-flow li { flex: 1 1 0; min-width: 0; }
+  .ph-flow li[data-kind="merge"] { flex: 0.8 1 0; align-self: center; }
+  .ph-node { flex: 1; align-content: center; }
+  .ph-flow li + li::before { left: -26px; top: 50%; width: 26px; height: 3px; margin-top: -1.5px; background: linear-gradient(90deg, color-mix(in srgb, var(--c) 40%, transparent), var(--c)); transform-origin: left; }
+  .ph-flow li + li::after { left: -9px; top: 50%; margin-top: -6px; border: 6px solid transparent; border-left: 8px solid var(--c); border-right: 0; }
+  .ph-card:not([data-go="1"]) .ph-flow li + li::before { transform: scaleX(0); }
+}
+@container (max-width: 380px) {
+  .ph-banner { grid-template-columns: minmax(0, 1fr) auto; padding-left: 16px; }
+  .ph-arch { width: 92px; height: 116px; margin-right: 12px; border-radius: 46px 46px 0 0; }
+  .ph-mono { font-size: 30px; }
+}
+.ph-credit { margin: 0; font: 400 12.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+
 .ph-more { justify-self: start; display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1.5px solid color-mix(in srgb, var(--c) 50%, var(--c-hairline)); background: color-mix(in srgb, var(--c) 7%, var(--c-paper-card)); color: color-mix(in srgb, var(--c) 78%, var(--c-ink)); font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; cursor: pointer; }
 .ph-more:hover { background: color-mix(in srgb, var(--c) 14%, var(--c-paper-card)); }
 .ph-more:focus-visible { outline: 3px solid var(--c-brand, #1E4FB8); outline-offset: 3px; }
@@ -91,11 +159,11 @@
   .ph-axis { margin-left: 0; }
   .ph-row { grid-template-columns: minmax(0, 1fr); gap: 4px; padding-bottom: 6px; }
   .ph-who { grid-auto-flow: column; justify-content: space-between; align-items: baseline; padding: 0 2px; }
-  .ph-banner { min-height: 104px; padding: 16px; }
   .ph-body { padding: 16px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ph-bar i, .ph-seg { animation: none !important; transform: none !important; }
+  .ph-bar i, .ph-seg, .ph-flow .ph-node::after { animation: none !important; transform: none !important; }
+  .ph-pattern, .ph-year, .ph-title > *, .ph-arch, .ph-flow li, .ph-flow li::before, .ph-flow li::after { transition: none !important; }
   .ph-card, .ph-panel, .ph-more i { transition: none !important; }
   .ph-card:hover { transform: none; }
 }

@@ -1,4 +1,8 @@
 import { test, expect } from "@playwright/test";
+import fs from "node:fs";
+import { createRequire } from "node:module";
+
+const AXE = fs.readFileSync(createRequire(import.meta.url).resolve("axe-core/axe.min.js"), "utf8");
 
 // Things that were wrong on a phone and are checked here so they stay right. Each runs on a 390px-wide touch screen; the data requests are refused so none of it
 // depends on the live database.
@@ -64,3 +68,24 @@ test("the Cabinet chart on a phone is a two-column grid of departments", async (
   expect(boxes[0].width, "two to a row").toBeLessThan(200);
   expect(await page.locator(".cab-chart").evaluate((c) => c.scrollWidth <= c.clientWidth + 1), "nothing wider than the chart").toBe(true);
 });
+
+for (const [name, size] of [["a phone", { width: 390, height: 844 }], ["a desktop", { width: 1280, height: 900 }]]) {
+  test(`Party History on ${name}: every party shows its leader, the lineage flow is drawn, and axe (with contrast) finds nothing`, async ({ page }) => {
+    await page.setViewportSize(size);
+    await page.goto("/history");
+    await page.locator("main").getByText("Party History & Lineage", { exact: true }).click();
+    const cards = page.locator(".ph-card");
+    await expect(cards).toHaveCount(12, { timeout: 15000 });
+    await expect(page.locator(".ph-led")).toHaveCount(12);
+    // scroll through so each card plays its reveal, then check the flows ended up visible
+    await page.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 400) { scrollTo(0, y); await new Promise((r) => setTimeout(r, 60)); } });
+    await page.waitForTimeout(2500);
+    expect(await page.locator(".ph-card:not([data-go='1'])").count(), "every card has revealed").toBe(0);
+    const hidden = await page.locator(".ph-flow li").evaluateAll((els) => els.filter((e) => Number(getComputedStyle(e).opacity) < 0.99).length);
+    expect(hidden, "every box in every flow is fully shown").toBe(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), "no sideways scroll").toBe(true);
+    await page.evaluate(AXE);
+    const res = await page.evaluate(() => window.axe.run(document.querySelector(".ph"), { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "best-practice"] } }));
+    expect(res.violations.map((v) => `${v.id}: ${v.nodes.slice(0, 2).map((n) => n.target.join(" ")).join(" | ")}`)).toEqual([]);
+  });
+}
