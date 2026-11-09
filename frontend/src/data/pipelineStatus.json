@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-08T10:58:28.635Z",
-  "succeededCount": 39,
+  "generatedAt": "2026-11-09T12:16:33.485Z",
+  "succeededCount": 38,
   "totalCount": 39,
   "sources": [
     {
@@ -121,7 +121,7 @@
     },
     {
       "label": "Lords votes (how every peer voted)",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Parliament calendar (what is coming up)",
