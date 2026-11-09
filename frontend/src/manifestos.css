@@ -70,9 +70,23 @@
 }
 
 /* The top of each party's card. */
-.party-band { position: relative; display: grid; gap: 16px; padding: 18px 20px 18px; overflow: hidden; }
+.party-band { position: relative; display: grid; gap: 16px; padding: 18px 20px 18px; overflow: hidden; container-type: inline-size; }
+/* With a leader, the text and seat bar stack on the left and the portrait stands on the bottom edge on the right, as on the Party History cards. */
+.party-band[data-leader="1"] { grid-template-columns: minmax(0, 1fr) auto; align-items: start; column-gap: 14px; }
+.party-band[data-leader="1"] > .pb-text, .party-band[data-leader="1"] > .pb-seats { grid-column: 1; }
+.party-band[data-leader="1"] > .ph-arch { grid-column: 2; grid-row: 1 / span 2; align-self: end; margin: 0 0 -18px; width: 112px; height: 144px; border-radius: 56px 56px 0 0; }
+.party-band[data-leader="1"] .ph-mono { font-size: 38px; }
+.party-card-grid[data-go="0"] .party-band .ph-arch { transform: translateY(60px); opacity: 0; }
+.party-card-grid[data-go="1"] .party-band .ph-arch { transition-delay: calc(var(--i, 0) * 90ms + 250ms); }
+.party-band[data-large="1"][data-leader="1"] > .ph-arch { animation: pbArchIn 0.9s cubic-bezier(0.2, 1.25, 0.4, 1) 0.2s backwards; margin-bottom: -24px; width: 128px; height: 162px; border-radius: 64px 64px 0 0; }
+@keyframes pbArchIn { from { transform: translateY(60px); opacity: 0; } }
+@container (max-width: 440px) {
+  .party-band[data-leader="1"] .pb-name { font-size: 27px; }
+  .party-band[data-leader="1"] > .ph-arch { width: 84px; height: 108px; border-radius: 42px 42px 0 0; }
+  .party-band[data-leader="1"] .ph-mono { font-size: 28px; }
+  .party-band[data-leader="1"] { column-gap: 10px; }
+}
 .party-band[data-large="1"] { margin: 0 calc(-1 * clamp(18px, 4vw, 30px)); padding: 26px clamp(18px, 4vw, 30px) 24px; padding-right: 64px; }
-.pb-rows { position: absolute; right: -6px; top: -6px; width: 68%; height: 62%; opacity: 0.17; pointer-events: none; }
 .pb-text { position: relative; display: grid; align-content: start; gap: 4px; min-width: 0; }
 .pb-kicker { display: inline-flex; align-items: center; gap: 8px; font: 700 12px/1.3 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.02em; opacity: 0.92; }
 .pb-name { font: 700 clamp(27px, 3vw, 32px)/1.1 "Figures", "Newsreader", Georgia, serif; letter-spacing: -0.015em; overflow-wrap: anywhere; }
@@ -86,7 +100,7 @@
 .party-card-grid[data-go="1"] .pb-bar i { animation: pbFill 1.3s var(--ease-out) calc(var(--i, 0) * 90ms + 400ms) backwards; }
 .party-band[data-large="1"] .pb-bar i { animation: pbFill 1.3s var(--ease-out) 0.3s backwards; }
 @keyframes pbFill { from { transform: scaleX(0); } }
-@media (prefers-reduced-motion: reduce) { .pb-bar i { animation: none !important; transform: none !important; } }
+@media (prefers-reduced-motion: reduce) { .pb-bar i { animation: none !important; transform: none !important; } .party-band .ph-arch { animation: none !important; transition: none !important; transform: none !important; opacity: 1 !important; } }
 
 /* The pop-up with what a party promised on one topic. */
 .mf-backdrop { position: fixed; inset: 0; z-index: 80; background: rgba(10, 16, 18, 0.55); }

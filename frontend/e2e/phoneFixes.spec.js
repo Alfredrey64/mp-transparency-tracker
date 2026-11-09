@@ -89,3 +89,30 @@ for (const [name, size] of [["a phone", { width: 390, height: 844 }], ["a deskto
     expect(res.violations.map((v) => `${v.id}: ${v.nodes.slice(0, 2).map((n) => n.target.join(" ")).join(" | ")}`)).toEqual([]);
   });
 }
+
+for (const [name, size] of [["a phone", { width: 390, height: 844 }], ["a desktop", { width: 1280, height: 900 }]]) {
+  test(`What parties promise on ${name}: each card shows its leader, names stay whole, and axe finds nothing in the cards or the pop-up`, async ({ page }) => {
+    await page.setViewportSize(size);
+    const mps = [["Labour", "C8102E", 404], ["Conservative", "0087DC", 118], ["Liberal Democrat", "FAA61A", 72], ["Reform UK", "12B6CF", 8], ["Green Party", "6AB023", 5], ["Scottish National Party", "FDF38E", 9], ["Plaid Cymru", "005B54", 4], ["Democratic Unionist Party", "D46A4C", 5], ["Sinn Féin", "326760", 7], ["Social Democratic & Labour Party", "2AA82C", 2], ["Alliance", "F6CB2F", 1]]
+      .flatMap(([party, party_colour, n]) => Array.from({ length: n }, () => ({ party, party_colour })));
+    await page.route("**/127.0.0.1:54321/**", (r) => (r.request().url().includes("politicians")
+      ? r.fulfill({ status: 200, contentType: "application/json", headers: { "access-control-allow-origin": "*" }, body: JSON.stringify(mps) })
+      : r.abort()));
+    await page.goto("/parties");
+    const bands = page.locator(".party-card .party-band");
+    await expect(bands.first()).toBeVisible({ timeout: 15000 });
+    expect(await page.locator(".party-card .party-band .ph-arch").count(), "a portrait on every card").toBe(await bands.count());
+    await page.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 400) { scrollTo(0, y); await new Promise((r) => setTimeout(r, 60)); } });
+    await page.waitForTimeout(2000);
+    const broken = await page.locator(".pb-name").evaluateAll((els) => els.filter((e) => e.scrollWidth > e.clientWidth + 1 || e.getClientRects().length > 3).map((e) => e.textContent));
+    expect(broken, "names that do not fit").toEqual([]);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), "no sideways scroll").toBe(true);
+    await page.evaluate(AXE);
+    const run = () => page.evaluate(() => window.axe.run(document.body, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa"] } }));
+    expect((await run()).violations.map((v) => `${v.id}: ${v.nodes.slice(0, 2).map((n) => n.target.join(" ")).join(" | ")}`)).toEqual([]);
+    await page.locator(".party-card").nth(1).click();
+    await expect(page.locator("#party-dialog-title")).toBeVisible();
+    await page.waitForTimeout(1200);
+    expect((await run()).violations.map((v) => `${v.id}: ${v.nodes.slice(0, 2).map((n) => n.target.join(" ")).join(" | ")}`)).toEqual([]);
+  });
+}

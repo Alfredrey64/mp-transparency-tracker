@@ -4,9 +4,10 @@ import { useReducedMotion } from "motion/react";
 import { useGo } from "./story/useGo";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import LEADERS from "../data/partyLeaders.json";
-import { partyAge, initials, chartScale } from "../lib/partyHistory";
+import { partyAge, chartScale } from "../lib/partyHistory";
 import { bannerColours } from "../lib/partyBrand";
 import PartyFlag from "./PartyFlag";
+import LeaderPortrait from "./LeaderPortrait";
 import { FLAG_OF } from "../lib/partyFlags";
 import "../partyhistory.css";
 
@@ -88,16 +89,6 @@ function CountUp({ to, go }) {
   return <>{still ? to : n}</>;
 }
 
-function Portrait({ leader }) {
-  const [broken, setBroken] = useState(false);
-  return (
-    <div className="ph-arch" aria-hidden="true">
-      <span className="ph-mono">{initials(leader.name)}</span>
-      {leader.photo && !broken && <img src={leader.photo} alt="" width="136" height="172" loading="lazy" decoding="async" onError={() => setBroken(true)} />}
-    </div>
-  );
-}
-
 // The "How it got here" flow: one box for each name the party has had, joined by a line that draws itself, ending in the party as it is today. A step that begins "+" is
 // another party joining it, and is drawn as a smaller dashed box.
 function Flow({ runs }) {
@@ -142,7 +133,7 @@ function Card({ party, seatCount, leader }) {
             <li><b>{age}</b> years old</li>
           </ul>
         </div>
-        {leader && <Portrait leader={leader} />}
+        {leader && <LeaderPortrait leader={leader} />}
       </header>
       <div className="ph-body">
         <p className="ph-founded">Founded {party.founded}</p>

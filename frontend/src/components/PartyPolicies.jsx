@@ -16,6 +16,8 @@ import { useDialog } from "../lib/useDialog";
 import CountValue from "./CountValue";
 import { Chamber, Footprint, FootprintStrip } from "./story/ManifestoArt";
 import { useGo } from "./story/useGo";
+import LeaderPortrait from "./LeaderPortrait";
+import LEADERS from "../data/partyLeaders.json";
 
 // The party-colour dot is the only element that shares a layoutId between
 // the grid card and the modal — like the CommonsBadge morph elsewhere in
@@ -296,18 +298,18 @@ export default function PartyPolicies({ param }) {
   );
 }
 
-// The coloured top of a party's card: the party and the name of its manifesto, with its seat count (it counts up) over a bar that fills to its share of the 650 seats. Faint
-// rows of seats sit behind, like the Commons seen from above.
+// The coloured top of a party's card: the party and the name of its manifesto, with its seat count (it counts up) over a bar that fills to its share of the 650 seats, and the
+// party's leader in an arch on the right, rising into place as the cards come into view.
 const SEATS = 650;
+// Which entry in the leaders data (the key is the party's name on the Party History page) belongs to each manifesto.
+const LEADER_OF = { labour: "Labour Party", conservative: "Conservative Party", "liberal-democrat": "Liberal Democrats", "reform-uk": "Reform UK", green: "Green Party", snp: "Scottish National Party", "plaid-cymru": "Plaid Cymru", dup: "Democratic Unionist Party", "sinn-fein": "Sinn Féin", sdlp: "Social Democratic & Labour Party", alliance: "Alliance" };
 
 function PartyBand({ party, manifesto, dotLayoutId, large }) {
   const { background, color } = chip(party.color);
   const share = Math.min(1, party.seats / SEATS);
+  const leader = LEADERS.leaders[LEADER_OF[manifesto?.key]];
   return (
-    <div className="party-band" data-large={large ? "1" : "0"} style={{ background, color }}>
-      <svg className="pb-rows" viewBox="0 0 120 64" aria-hidden="true" preserveAspectRatio="xMaxYMax slice">
-        {[18, 30, 42, 54].map((r) => <path key={r} d={`M${60 - r} 62 A${r} ${r} 0 0 1 ${60 + r} 62`} fill="none" stroke="currentColor" strokeWidth="5" strokeDasharray="1.4 4.2" strokeLinecap="round" />)}
-      </svg>
+    <div className="party-band" data-large={large ? "1" : "0"} data-leader={leader ? "1" : "0"} style={{ background, color, "--c": party.color }}>
       <div className="pb-text">
         <span className="pb-kicker"><PartyDot layoutId={dotLayoutId} color={color} size={large ? 12 : 10} />{manifesto ? `${manifesto.manifestoYear} manifesto` : "Party"}</span>
         <span id={large ? "party-dialog-title" : undefined} className="pb-name">{manifesto?.shortName ?? party.name}</span>
@@ -318,6 +320,7 @@ function PartyBand({ party, manifesto, dotLayoutId, large }) {
         <small>of {SEATS} seats in the Commons</small>
         <span className="pb-bar" aria-hidden="true"><i style={{ "--w": Math.max(share, 0.012) }} /></span>
       </div>
+      {leader && <LeaderPortrait leader={leader} />}
     </div>
   );
 }

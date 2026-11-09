@@ -50,9 +50,9 @@
 .ph-banner::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 5px; background: linear-gradient(90deg, color-mix(in srgb, var(--on) 55%, transparent), transparent 70%); }
 .ph-art { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .ph-pattern { position: absolute; inset: 0; background: radial-gradient(70% 120% at 88% 100%, rgba(255, 255, 255, 0.26), transparent 62%), linear-gradient(180deg, rgba(255, 255, 255, 0.1), transparent 45%); transition: transform 1.4s var(--ease-out, ease-out), opacity 1s ease-out; }
-.ph-card[data-dark="1"] .ph-flag { opacity: 0.7; }
 .ph-card[data-dark="1"] .ph-pattern { background: radial-gradient(70% 120% at 88% 100%, rgba(255, 255, 255, 0.34), transparent 62%); }
-.ph-flag { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; color: var(--on); transition: transform 1.8s var(--ease-out, ease-out), opacity 1.4s ease-out; }
+.ph-art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(98deg, color-mix(in srgb, var(--b1) 96%, transparent) 0%, color-mix(in srgb, var(--b1) 93%, transparent) 46%, color-mix(in srgb, var(--b1) 45%, transparent) 70%, color-mix(in srgb, var(--b2) 6%, transparent) 100%); }
+.ph-flag { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; transition: transform 1.8s var(--ease-out, ease-out), opacity 1.4s ease-out; }
 .ph-card:not([data-go="1"]) .ph-flag { opacity: 0; transform: scale(1.05); }
 .ph-card:not([data-go="1"]) .ph-pattern { transform: translate(-28px, 0); opacity: 0; }
 .ph-title { position: relative; align-self: center; min-width: 0; display: grid; align-content: center; gap: 6px; padding: 30px 0 34px; }
@@ -67,10 +67,7 @@
 .ph-chips b { font: 800 18px/1 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; margin-right: 3px; }
 
 /* the leader: an arched frame, so the portrait reads as a figure standing in a doorway of the party's colour */
-.ph-arch { position: relative; align-self: end; width: 136px; height: 172px; margin-right: 24px; border-radius: 68px 68px 0 0; overflow: hidden; background: color-mix(in srgb, var(--c) 40%, #fff); box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.92), 0 12px 24px -10px rgba(0, 0, 0, 0.55); transition: transform 0.9s cubic-bezier(0.2, 1.25, 0.4, 1) 0.25s, opacity 0.6s ease-out 0.25s; }
 .ph-card:not([data-go="1"]) .ph-arch { transform: translateY(60px); opacity: 0; }
-.ph-arch img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 14%; }
-.ph-mono { position: absolute; inset: 0; display: grid; place-items: center; font: 800 46px/1 "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--c) 70%, #0b1020); letter-spacing: 0.02em; }
 
 .ph-body { display: grid; gap: 14px; padding: 18px 20px 20px; }
 .ph-founded { margin: 0; font: 800 12.5px/1 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.05em; text-transform: uppercase; color: color-mix(in srgb, var(--c) 82%, var(--c-ink)); }
