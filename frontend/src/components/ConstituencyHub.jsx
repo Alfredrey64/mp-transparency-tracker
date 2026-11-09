@@ -19,6 +19,7 @@ import { SeatDetail, SeatSearch, Panel } from "./Constituency";
 import HexMap from "./HexMap";
 import ShareButton from "./ShareButton";
 import { navigate } from "../lib/route";
+import { glide } from "../lib/scrollBehavior";
 
 // Your Constituency and the seat map, as one page. The map is the way in:
 // every one of the 650 seats is a hexagon, coloured by whichever view is
@@ -200,8 +201,8 @@ export default function ConstituencyHub({ seat, onSelectPolitician }) {
   const [focusParty, setFocusParty] = useState(null);
   const [focusRegion, setFocusRegion] = useState(null);
   const [hover, setHover] = useState(null);
-  // On a phone the map starts zoomed in a little, so the hexagons are big enough to tap.
-  const [initialScale] = useState(() => (typeof window !== "undefined" && window.innerWidth < 640 ? 2.4 : 1));
+  // The map always opens on the whole of the UK, on a phone as anywhere else; the zoom buttons and a pinch bring a part of it closer.
+  const initialScale = 1;
   const detailRef = useRef(null);
   const firstSeat = useRef(true);
 
@@ -253,7 +254,7 @@ export default function ConstituencyHub({ seat, onSelectPolitician }) {
       firstSeat.current = false;
       return;
     }
-    if (seat && window.innerWidth < 1100) detailRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (seat && window.innerWidth < 1100) detailRef.current?.scrollIntoView({ behavior: glide(), block: "start" });
   }, [seat]);
 
   const chooseCode = (code) => {

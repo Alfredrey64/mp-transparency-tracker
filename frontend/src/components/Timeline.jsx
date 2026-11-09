@@ -9,6 +9,7 @@ import { withScrollPreserved } from "../lib/preserveScroll";
 import pmPortraits from "../data/pmPortraits.json";
 import { keyboardActivate } from "../lib/a11y";
 import "../timeline.css";
+import { glide } from "../lib/scrollBehavior";
 
 function PmAvatar({ name, color, size = 40 }) {
   const [loaded, setLoaded] = useState(false);
@@ -351,7 +352,7 @@ export default function Timeline() {
   const progress = useSpring(scrollYProgress, { stiffness: 200, damping: 40, restDelta: 0.001 });
 
   function jumpTo(key) {
-    document.getElementById(key)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.getElementById(key)?.scrollIntoView({ behavior: glide(), block: "start" });
   }
 
   return (

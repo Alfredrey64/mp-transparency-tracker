@@ -5,6 +5,7 @@ import { loadSeatBook } from "../lib/electionData";
 import { searchSeats } from "../lib/seatNames";
 import SeatTimeline from "./SeatTimeline";
 import { Reveal } from "./Motion";
+import { glide } from "../lib/scrollBehavior";
 
 // "Your seat": type a postcode or a seat name and see who has won it at every general election since 1950.
 
@@ -27,7 +28,7 @@ export default function SeatLookup({ picked, initial = null }) {
   // Arriving from a link or from search, bring the seat into view once the page has settled.
   useEffect(() => {
     if (!initial) return undefined;
-    const t = setTimeout(() => document.getElementById("h-eh-seat")?.scrollIntoView({ behavior: "smooth", block: "start" }), 600);
+    const t = setTimeout(() => document.getElementById("h-eh-seat")?.scrollIntoView({ behavior: glide(), block: "start" }), 600);
     return () => clearTimeout(t);
   }, [initial]);
 

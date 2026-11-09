@@ -7,6 +7,7 @@ import { STEPS, DEADLINES, RESULT_LABEL, AFTER_LINKS } from "../data/voteSteps";
 import { Reveal } from "./Motion";
 import { useT } from "../lib/useLang";
 import "../howtovote.css";
+import { glide } from "../lib/scrollBehavior";
 
 // How to vote: who can vote in what, then the four practical steps (register, choose how, get your ID, polling day), then what happens next.
 // Plain steps with links to the official sites. Deadlines are given as "working days before polling day" so they never go out of date;
@@ -118,7 +119,7 @@ function Route() {
     <ol className="v-route" aria-label={t("The four steps, in order")}>
       {STEPS.map((s) => (
         <li key={s.id} style={{ "--sc": s.colour, "--i": s.n - 1 }}>
-          <a href={`#v-${s.id}`} onClick={(e) => { e.preventDefault(); document.getElementById(`v-${s.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}>
+          <a href={`#v-${s.id}`} onClick={(e) => { e.preventDefault(); document.getElementById(`v-${s.id}`)?.scrollIntoView({ behavior: glide(), block: "start" }); }}>
             <span className="v-route-icon">{ICONS[s.id]}<b>{s.n}</b></span>
             <span className="v-route-title">{t(s.short)}</span>
             <span className="v-route-line">{t(s.line)}</span>

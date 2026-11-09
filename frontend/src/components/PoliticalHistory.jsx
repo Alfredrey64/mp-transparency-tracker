@@ -6,6 +6,7 @@ import { IconHistory } from "./icons";
 import { LANDMARK_VOTES, OUTCOME_COLOR } from "../lib/politicalHistoryData";
 import { spanEras, landmarkId } from "../lib/landmarkLayout";
 import LandmarkMap from "./LandmarkMap";
+import PartyHistoryTab from "./PartyHistoryTab";
 import { splitActNames } from "../lib/actNames";
 import { explainerFor } from "../data/landmarkExplainers";
 import { BillIcon } from "./billIcons";
@@ -358,162 +359,6 @@ function VoteRow({ vote, index, pulse }) {
   );
 }
 
-function LineageDiagram({ nodes, color }) {
-  return (
-    <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6, rowGap: 10 }}>
-      {nodes.map((n, i) => (
-        <div key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          {i > 0 && (
-            <motion.span
-              initial={{ opacity: 0, x: -4 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.06, duration: 0.2 }}
-              style={{ color, fontSize: 16, fontWeight: 700 }}
-            >
-              ›
-            </motion.span>
-          )}
-          <motion.div
-            initial={{ opacity: 0, y: 8, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ delay: i * 0.06, duration: 0.25, ease: "easeOut" }}
-            style={{
-              background: i === nodes.length - 1 ? color : `${color}14`,
-              border: `1px solid ${color}45`, borderRadius: 10, padding: "8px 13px", textAlign: "center", minWidth: 90,
-            }}
-          >
-            <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12.5, color: i === nodes.length - 1 ? "#fff" : COLORS.ink, lineHeight: 1.3 }}>
-              {n.label}
-            </div>
-            <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: i === nodes.length - 1 ? "rgba(255,255,255,0.85)" : color, marginTop: 2 }}>
-              {n.year}
-            </div>
-          </motion.div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// A real vertical timeline — a spine with a dot at each milestone — rather
-// than the year and event just sitting side by side as two columns of
-// text. The dot for the most recent entry is filled solid; earlier ones
-// are hollow, so the line reads left-to-right, oldest to newest, the same
-// direction the eye already reads the years in.
-function PartyTimeline({ events, color }) {
-  return (
-    <div style={{ position: "relative", paddingLeft: 22 }}>
-      <div style={{ position: "absolute", left: 5, top: 5, bottom: 5, width: 2, background: `${color}30` }} />
-      {events.map((t, i) => {
-        const isLast = i === events.length - 1;
-        return (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, x: -8 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ delay: i * 0.06, duration: 0.25 }}
-            style={{ position: "relative", paddingBottom: isLast ? 0 : 16 }}
-          >
-            <span
-              style={{
-                position: "absolute", left: -22, top: 3, width: 10, height: 10, borderRadius: "50%",
-                background: isLast ? color : COLORS.paper, border: `2px solid ${color}`, boxSizing: "border-box",
-              }}
-            />
-            <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 12.5, color: readable(color) }}>{t.year}</span>
-            <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.ink, lineHeight: 1.5, marginTop: 2 }}>{t.event}</div>
-          </motion.div>
-        );
-      })}
-    </div>
-  );
-}
-
-function PartyCard({ party, index, seatCount }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <motion.div
-      layout="position"
-      initial={{ opacity: 0, y: 14 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      whileHover={{ borderColor: party.color, transition: { duration: 0.15, delay: 0 } }}
-      transition={{ duration: 0.35, delay: Math.min(index ?? 0, 8) * 0.04, ease: "easeOut" }}
-      style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderLeft: `4px solid ${party.color}`, borderRadius: 14, padding: 20  }}
-    >
-      <button onClick={() => withScrollPreserved(() => setOpen((v) => !v))} style={{ display: "block", width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
-          <div style={{ minWidth: 0 }}>
-            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 18, color: COLORS.ink, marginBottom: 5 }}>{party.party}</div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-              <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: readable(party.color), textTransform: "uppercase", letterSpacing: "0.04em" }}>
-                Founded {party.founded}
-              </span>
-              <span style={{ width: 3, height: 3, borderRadius: "50%", background: COLORS.inkSoft, opacity: 0.5 }} />
-              <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft }}>{party.ideology}</span>
-            </div>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
-            {seatCount != null && seatCount > 0 && (
-              <div style={{ textAlign: "right" }}>
-                <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: readable(party.color), lineHeight: 1 }}>{seatCount}</div>
-                <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft }}>MPs now</div>
-              </div>
-            )}
-            <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ color: COLORS.inkSoft, fontSize: 13 }}>▾</motion.span>
-          </div>
-        </div>
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, lineHeight: 1.65, marginTop: 10 }}>{party.text}</div>
-      </button>
-
-      <AnimatePresence>
-        {open && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.25 }} style={{ overflow: "hidden" }}>
-            <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${COLORS.hairline}`, display: "flex", flexDirection: "column", gap: 18 }}>
-              {party.lineage && party.lineage.length > 1 && (
-                <div>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>
-                    How it got here
-                  </div>
-                  <LineageDiagram nodes={party.lineage} color={party.color} />
-                </div>
-              )}
-              <div>
-                <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>
-                  Timeline
-                </div>
-                <PartyTimeline events={party.timeline} color={party.color} />
-              </div>
-              <div>
-                <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
-                  Notable leaders
-                </div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                  {party.leaders.map((l, i) => (
-                    <motion.span
-                      key={l}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: i * 0.05, duration: 0.2 }}
-                      style={{
-                        fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 600, color: readable(party.color),
-                        background: `${party.color}16`, padding: "4px 10px", borderRadius: 999,
-                      }}
-                    >
-                      {l}
-                    </motion.span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
-  );
-}
-
 function useSeatCounts() {
   const [counts, setCounts] = useState(null);
 
@@ -677,9 +522,7 @@ export default function PoliticalHistory() {
 
         {tab === "parties" && (
           <motion.div key="parties" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.22 }} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            {PARTY_HISTORY.map((p, i) => (
-              <PartyCard key={p.party} party={p} index={i} seatCount={seatCountFor(seatCounts, p)} />
-            ))}
+            <PartyHistoryTab parties={PARTY_HISTORY} counts={seatCounts} seatCountFor={seatCountFor} />
           </motion.div>
         )}
       </AnimatePresence>

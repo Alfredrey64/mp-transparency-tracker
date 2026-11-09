@@ -1,6 +1,7 @@
 // Small helpers and shared styles for the Your Council page (links, number formatting, party colours for the history chart).
 import { COLORS, FONT_BODY } from "../theme";
 import { navigate } from "../lib/route";
+import { glide } from "../lib/scrollBehavior";
 
 export const goHash = (hash) => {
   navigate(hash);
@@ -17,7 +18,7 @@ export const fmt = (n) => Math.round(n).toLocaleString("en-GB");
 
 export const signed = (n) => `${n > 0 ? "+" : n < 0 ? "−" : ""}${fmt(Math.abs(n))}`;
 
-export const scrollToId = (id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+export const scrollToId = (id) => document.getElementById(id)?.scrollIntoView({ behavior: glide(), block: "start" });
 
 export const HISTORY_COLOURS = { con: "#0063ba", lab: "#d50000", ld: "#fc7d0b", green: "#78b82a", ukip: "#70147a", ref: "#12b6cf", pc: "#348837", snp: "#d9b900", other: "#909090" };
 

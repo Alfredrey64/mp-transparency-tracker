@@ -35,6 +35,7 @@ import ShareButton from "./ShareButton";
 import FollowBillButton from "./FollowBillButton";
 import DownloadCsvButton from "./DownloadCsvButton";
 import { pageShareSpec } from "../lib/shareSpecs";
+import { glide } from "../lib/scrollBehavior";
 
 // A division (Commons vote) is stored per-MP with no bill_id — divisions and
 // bills come from two separate parliamentary data sources with no shared
@@ -149,7 +150,7 @@ function BillDetails({ bill, politicians, scrollIntoView }) {
     Promise.resolve().then(loadDivisions);
     if (!scrollIntoView) return undefined;
     // Arriving from a bill clicked elsewhere (the homepage list): open straight to that bill and bring it into view.
-    const timer = setTimeout(() => ref.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 400);
+    const timer = setTimeout(() => ref.current?.scrollIntoView({ behavior: glide(), block: "center" }), 400);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

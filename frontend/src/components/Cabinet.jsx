@@ -1,3 +1,4 @@
+import { usePhone } from "../lib/usePhone";
 import { useState, useEffect, useRef } from "react";
 import ExpandGrid from "./ExpandGrid";
 import { m as motion } from "motion/react";
@@ -15,6 +16,7 @@ import { withScrollPreserved } from "../lib/preserveScroll";
 import Loading from "./Loading";
 import "../cabinet.css";
 import { watchWidth } from "../lib/watchWidth";
+import { glide } from "../lib/scrollBehavior";
 
 // Cabinet roles don't carry a clean "department" field of their own — we
 // infer one from the role title itself (most already name their department
@@ -311,7 +313,7 @@ const RANK_LABEL = ["Prime Minister", "Heads a department", "Minister of State",
 const shortRole = (role) => String(role ?? "").replace(/\s*\(.*$/, "").replace(/^Secretary of State for /i, "Secretary of State, ");
 
 function jumpToArea(area) {
-  document.getElementById(`cabinet-${area}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  document.getElementById(`cabinet-${area}`)?.scrollIntoView({ behavior: glide(), block: "start" });
 }
 
 // Tracks how many department nodes fit per row, so the chart can chunk
@@ -346,7 +348,7 @@ function useResponsiveColumns(containerRef) {
 }
 
 // One department in the chart: its name and colour, the person who leads it, and the small team that works for them.
-function DeptNode({ group, delay }) {
+function DeptNode({ group, delay, compact = false }) {
   const Icon = AREA_ICONS[group.area] ?? IconQuestion;
   const accent = group.accent;
   const head = group.head;
@@ -361,14 +363,14 @@ function DeptNode({ group, delay }) {
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.35, delay: delay + 0.1, ease: "easeOut" }}
       whileHover={{ y: -4 }}
-      className="cab-node" style={{ "--ca": accent, width: NODE_WIDTH }}
+      className="cab-node" data-compact={compact ? "1" : "0"} style={{ "--ca": accent, width: compact ? "100%" : NODE_WIDTH }}
       aria-label={`${group.area}: led by ${head?.name ?? "no one listed"}, with ${team.length} ${team.length === 1 ? "minister" : "ministers"} working for them. Jump to the list.`}
     >
-      <motion.span aria-hidden="true" className="cab-stem" initial={{ height: 0 }} whileInView={{ height: 20 }} viewport={{ once: true, margin: "-40px" }} transition={{ duration: 0.2, delay }} />
+      {!compact && <motion.span aria-hidden="true" className="cab-stem" initial={{ height: 0 }} whileInView={{ height: 20 }} viewport={{ once: true, margin: "-40px" }} transition={{ duration: 0.2, delay }} />}
       <span className="cab-node-head"><span className="cab-node-icon"><Icon size={17} /></span><b>{group.area}</b></span>
       {head && (
         <span className="cab-node-lead">
-          <Avatar url={head.thumbnail_url} name={head.name} color={partyColour(head.party_colour, COLORS.inkSoft)} size={44} />
+          <Avatar url={head.thumbnail_url} name={head.name} color={partyColour(head.party_colour, COLORS.inkSoft)} size={compact ? 36 : 44} />
           <span>
             <strong>{head.name}</strong>
             <em className="cab-clamp">{shortRole(head.cabinet_role)}</em>
@@ -412,6 +414,8 @@ function OrgChartRow({ row, baseDelay }) {
 function CabinetOrgChart({ groups, pm }) {
   const containerRef = useRef(null);
   const columns = useResponsiveColumns(containerRef);
+  // On a phone the tree is too narrow to branch, so the departments sit in a two-column grid under the Prime Minister instead of one long column.
+  const phone = usePhone();
   if (groups.length === 0) return null;
   const rows = [];
   for (let i = 0; i < groups.length; i += columns) rows.push(groups.slice(i, i + columns));
@@ -433,7 +437,12 @@ function CabinetOrgChart({ groups, pm }) {
           </span>
         </motion.div>
         <motion.div initial={{ height: 0 }} whileInView={{ height: 26 }} viewport={{ once: true, margin: "-40px" }} transition={{ duration: 0.25, delay: 0.3, ease: "easeOut" }} style={{ width: 3, borderRadius: 2, background: "color-mix(in srgb, var(--c-ink-soft) 40%, var(--c-hairline))" }} />
-        {rows.map((row, ri) => {
+        {phone && (
+          <div className="cab-grid">
+            {groups.map((group, i) => <DeptNode key={group.area} group={group} delay={Math.min(i, 5) * 0.04} compact />)}
+          </div>
+        )}
+        {!phone && rows.map((row, ri) => {
           const rowDelay = 0.55 + ri * 0.35;
           return (
             <div key={ri} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>

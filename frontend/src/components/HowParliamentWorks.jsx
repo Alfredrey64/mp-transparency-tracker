@@ -7,6 +7,7 @@ import { GlossaryTerm } from "./GlossaryTerm";
 import CommonsChamber from "./CommonsChamber";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import BillRoute from "./BillRoute";
+import { usePhone } from "../lib/usePhone";
 import GovernmentTiers from "./GovernmentTiers";
 import CrownArt from "./story/CrownArt";
 
@@ -441,6 +442,8 @@ function StepTimeline({ stages, color, showProgress = false }) {
 }
 
 function DiagramSection({ title, intro, stages, color, index = 0, showProgress = false, route = false }) {
+  // The line that draws itself down the page needs room for its panel beside it, so a phone gets just the list of stages, each opening when pressed.
+  const phone = usePhone();
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -465,7 +468,7 @@ function DiagramSection({ title, intro, stages, color, index = 0, showProgress =
           {intro}
         </p>
       )}
-      {route && <BillRoute stages={stages} color={color} />}
+      {route && !phone && <BillRoute stages={stages} color={color} />}
       <StepTimeline stages={stages} color={color} showProgress={showProgress} />
     </motion.div>
   );

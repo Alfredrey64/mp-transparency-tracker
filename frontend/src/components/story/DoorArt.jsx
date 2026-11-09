@@ -46,12 +46,74 @@ const Walker = ({ delay, fromColour, toColour, flip }) => {
   );
 };
 
-export function Door() {
-  const still = useReducedMotion();
-  const GOV = "#6E4B6E", IND = "#9C6B30";
+const GOV = "#6E4B6E", IND = "#9C6B30";
+
+// The turning door itself (wings, housing, and the people walking through), drawn around (0, 0). Shared by the wide picture and the tall one for a phone.
+function Machine({ still }) {
   const arcs = { top: `M -95 -59.300 A ${HOUSING} ${HOUSING} 0 0 1 95 -59.300`, bottom: `M 95 59.300 A ${HOUSING} ${HOUSING} 0 0 1 -95 59.300` };
   return (
-    <svg viewBox="0 0 900 330" role="img" aria-label="A revolving door between government and industry: a minister goes in on one side and comes out a paid adviser on the other, and someone from industry can go the other way">
+    <>
+      <circle r="124" fill="#F4F6FB" />
+      <circle r={HOUSING - 6} fill="#fff" stroke="#E3E8F2" strokeWidth="2" />
+      <circle r={GAP_R} fill="none" stroke="#E3E8F2" strokeWidth="26" opacity="0.6" />
+      <g transform={`rotate(${WINGS_AT})`}>
+        {!still && <animateTransform attributeName="transform" type="rotate" from={WINGS_AT} to={WINGS_AT + 360} dur={`${TURN}s`} repeatCount="indefinite" />}
+        <rect x="-102" y="-4" width="204" height="8" rx="4" fill={GOV} /><rect x="-4" y="-102" width="8" height="204" rx="4" fill={GOV} />
+        {[0, 90, 180, 270].map((a) => <rect key={a} transform={`rotate(${a})`} x="-18" y="-109" width="36" height="7" rx="3.500" fill={IND} />)}
+      </g>
+      <path d={arcs.top} fill="none" stroke="#1B2438" strokeWidth="7" strokeLinecap="round" />
+      <path d={arcs.bottom} fill="none" stroke="#1B2438" strokeWidth="7" strokeLinecap="round" />
+      <circle r="13" fill="#1B2438" />
+      {!still ? (
+        <>
+          {/* Each gap carries one person at a time: the two sides step in on alternate gaps, so nobody shares a gap with someone stepping out. */}
+          {[0, 6].map((d) => <Walker key={`g${d}`} delay={-d} fromColour={GOV} toColour={IND} />)}
+          {[3, 9].map((d) => <Walker key={`i${d}`} delay={-d} fromColour={IND} toColour={GOV} flip />)}
+        </>
+      ) : (
+        <g>
+          <circle cx="-158" r="13" fill={GOV} stroke="#fff" strokeWidth="2.500" /><circle cx="158" r="13" fill={IND} stroke="#fff" strokeWidth="2.500" />
+          <circle cx="-158" cy="-3.500" r="3.500" fill="#fff" /><path d="M -164 7 q 6 -10 12 0z" fill="#fff" /><circle cx="158" cy="-3.500" r="3.500" fill="#fff" /><path d="M 152 7 q 6 -10 12 0z" fill="#fff" />
+        </g>
+      )}
+    </>
+  );
+}
+
+export function Door() {
+  const still = useReducedMotion();
+  return (
+    <>
+      <DoorWide still={still} />
+      <DoorTall still={still} />
+    </>
+  );
+}
+
+const SIDES = [{ c: GOV, lines: ["Decides who", "gets contracts"], name: "Government", f: "#EFE7F2" }, { c: IND, lines: ["Pays for", "advice"], name: "Industry", f: "#F7EBDC" }];
+
+function DoorTall({ still }) {
+  return (
+    <svg className="st-trail-tall" viewBox="0 0 360 540" aria-hidden="true">
+      {SIDES.map((side, k) => ({ ...side, x: k ? 184 : 8 })).map((b) => (
+        <g key={b.name}>
+          <rect x={b.x} y="10" width="168" height="196" rx="24" fill={b.f} stroke={b.c} strokeWidth="3" />
+          <text x={b.x + 84} y="42" textAnchor="middle" fontSize="18" fontWeight="800" fill={b.c} fontFamily={F}>{b.name}</text>
+          <circle cx={b.x + 84} cy="98" r="34" fill="#fff" stroke={b.c} strokeWidth="3" />
+          <circle cx={b.x + 84} cy="89" r="10" fill={b.c} /><path d={`M ${b.x + 65} 120 q 19 -27 38 0z`} fill={b.c} />
+          {b.lines.map((l, n) => <text key={l} x={b.x + 84} y={168 + n * 19} textAnchor="middle" fontSize="13.500" fontWeight="700" fill={INK} fontFamily={F}>{l}</text>)}
+        </g>
+      ))}
+      <g transform="translate(180 350)"><Machine still={still} /></g>
+      <text x="180" y="506" textAnchor="middle" fontSize="14" fontWeight="700" fill={SOFT} fontFamily={F}>Nothing stops the same person</text>
+      <text x="180" y="526" textAnchor="middle" fontSize="14" fontWeight="700" fill={SOFT} fontFamily={F}>passing through, in either direction</text>
+    </svg>
+  );
+}
+
+function DoorWide({ still }) {
+  return (
+    <svg className="st-trail-wide" viewBox="0 0 900 330" role="img" aria-label="A revolving door between government and industry: a minister goes in on one side and comes out a paid adviser on the other, and someone from industry can go the other way">
       <rect x="20" y="30" width="270" height="250" rx="26" fill="#EFE7F2" stroke={GOV} strokeWidth="3" />
       <text x="155" y="64" textAnchor="middle" fontSize="18" fontWeight="800" fill={GOV} fontFamily={F}>Government</text>
       <rect x="610" y="30" width="270" height="250" rx="26" fill="#F7EBDC" stroke={IND} strokeWidth="3" />
@@ -63,47 +125,30 @@ export function Door() {
           <text x={b.x} y="226" textAnchor="middle" fontSize="14" fontWeight="700" fill={INK} fontFamily={F}>{b.t}</text>
         </g>
       ))}
-      <g transform="translate(450 160)">
-        <circle r="124" fill="#F4F6FB" />
-        <circle r={HOUSING - 6} fill="#fff" stroke="#E3E8F2" strokeWidth="2" />
-        <circle r={GAP_R} fill="none" stroke="#E3E8F2" strokeWidth="26" opacity="0.6" />
-        <g transform={`rotate(${WINGS_AT})`}>
-          {!still && <animateTransform attributeName="transform" type="rotate" from={WINGS_AT} to={WINGS_AT + 360} dur={`${TURN}s`} repeatCount="indefinite" />}
-          <rect x="-102" y="-4" width="204" height="8" rx="4" fill={GOV} /><rect x="-4" y="-102" width="8" height="204" rx="4" fill={GOV} />
-          {[0, 90, 180, 270].map((a) => <rect key={a} transform={`rotate(${a})`} x="-18" y="-109" width="36" height="7" rx="3.500" fill={IND} />)}
-        </g>
-        <path d={arcs.top} fill="none" stroke="#1B2438" strokeWidth="7" strokeLinecap="round" />
-        <path d={arcs.bottom} fill="none" stroke="#1B2438" strokeWidth="7" strokeLinecap="round" />
-        <circle r="13" fill="#1B2438" />
-        {!still ? (
-          <>
-            {/* Each gap carries one person at a time: the two sides step in on alternate gaps, so nobody shares a gap with someone stepping out. */}
-            {[0, 6].map((d) => <Walker key={`g${d}`} delay={-d} fromColour={GOV} toColour={IND} />)}
-            {[3, 9].map((d) => <Walker key={`i${d}`} delay={-d} fromColour={IND} toColour={GOV} flip />)}
-          </>
-        ) : (
-          <g>
-            <circle cx="-158" r="13" fill={GOV} stroke="#fff" strokeWidth="2.500" /><circle cx="158" r="13" fill={IND} stroke="#fff" strokeWidth="2.500" />
-            <circle cx="-158" cy="-3.500" r="3.500" fill="#fff" /><path d="M -164 7 q 6 -10 12 0z" fill="#fff" /><circle cx="158" cy="-3.500" r="3.500" fill="#fff" /><path d="M 152 7 q 6 -10 12 0z" fill="#fff" />
-          </g>
-        )}
-      </g>
+      <g transform="translate(450 160)"><Machine still={still} /></g>
       <text x="450" y="318" textAnchor="middle" fontSize="14" fontWeight="700" fill={SOFT} fontFamily={F}>Nothing stops the same person passing through, in either direction</text>
     </svg>
   );
 }
 
 // 817 applications in ACOBA's last four years, every one of them a tick: not one refused. The two figures are written out above the dots, where they can be read.
+function Dots({ cols, step, r, className, ...rest }) {
+  const rows = Math.ceil(817 / cols);
+  return (
+    <svg className={className} viewBox={`0 0 ${cols * step} ${rows * step}`} {...rest}>
+      {Array.from({ length: 817 }, (_, n) => (
+        <circle key={n} cx={step / 2 + (n % cols) * step} cy={step / 2 + Math.floor(n / cols) * step} r={r} fill="#3F7D5C" opacity="0.85" style={{ animation: `stDot 0.4s ease-out ${(n % cols) * 14 + Math.floor(n / cols) * 9}ms backwards` }} />
+      ))}
+    </svg>
+  );
+}
+
 export function Ticks() {
-  const COLS = 41;
   return (
     <>
       <div className="st-ticks-head"><span><b>817</b>approved or cleared</span><span><b>0</b>refused</span></div>
-      <svg viewBox="0 0 820 400" role="img" aria-label="817 dots, one for each application, all green: none was refused">
-        {Array.from({ length: 817 }, (_, n) => (
-          <circle key={n} cx={10 + (n % COLS) * 20} cy={10 + Math.floor(n / COLS) * 20} r="7" fill="#3F7D5C" opacity="0.85" style={{ animation: `stDot 0.4s ease-out ${(n % COLS) * 14 + Math.floor(n / COLS) * 9}ms backwards` }} />
-        ))}
-      </svg>
+      <Dots className="st-trail-wide" cols={41} step={20} r={7} role="img" aria-label="817 dots, one for each application, all green: none was refused" />
+      <Dots className="st-trail-tall" cols={26} step={13.5} r={4.6} aria-hidden="true" />
     </>
   );
 }
@@ -151,7 +196,31 @@ export function Cutoff() {
 // One body split in two: who now handles which kind of application.
 export function Replaced() {
   return (
-    <svg viewBox="0 0 900 300" role="img" aria-label="ACOBA was abolished on 13 October 2025; ministers' applications go to the Independent Adviser on Ministerial Standards, civil servants and special advisers to the Civil Service Commission">
+    <>
+      <ReplacedWide />
+      <ReplacedTall />
+    </>
+  );
+}
+
+function ReplacedTall() {
+  return (
+    <svg className="st-trail-tall" viewBox="0 0 360 440" aria-hidden="true">
+      <g transform="translate(40 8)"><rect width="280" height="76" rx="20" fill="#F3E4E4" stroke="#9C3B3B" strokeWidth="3" strokeDasharray="10 6" /><text x="140" y="34" textAnchor="middle" fontSize="20" fontWeight="800" fill="#9C3B3B" fontFamily={S}>ACOBA</text><text x="140" y="58" textAnchor="middle" fontSize="13" fontWeight="700" fill="#7A2E2E" fontFamily={F}>Abolished 13 October 2025</text></g>
+      <path d="M 180 84 V 120 C 180 150, 90 140, 90 176" fill="none" stroke="#6E4B6E" strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" /><path d="M 180 84 V 120 C 180 150, 270 140, 270 176" fill="none" stroke="#9C6B30" strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" />
+      <g transform="translate(8 176)"><rect width="168" height="256" rx="22" fill="#fff" stroke="#6E4B6E" strokeWidth="3.500" /><text x="84" y="40" textAnchor="middle" fontSize="15" fontWeight="800" fill="#6E4B6E" fontFamily={F}>Former ministers</text>
+        {["Independent", "Adviser on", "Ministerial", "Standards"].map((l, n) => <text key={l} x="84" y={76 + n * 24} textAnchor="middle" fontSize="17" fontWeight="800" fill={INK} fontFamily={S}>{l}</text>)}
+        {["61 applications", "in its first", "reporting year,", "2025 to 26"].map((l, n) => <text key={l} x="84" y={182 + n * 20} textAnchor="middle" fontSize="13" fontWeight="600" fill={SOFT} fontFamily={F}>{l}</text>)}</g>
+      <g transform="translate(184 176)"><rect width="168" height="256" rx="22" fill="#fff" stroke="#9C6B30" strokeWidth="3.500" />
+        {["Former civil", "servants and", "special advisers"].map((l, n) => <text key={l} x="84" y={40 + n * 20} textAnchor="middle" fontSize="15" fontWeight="800" fill="#9C6B30" fontFamily={F}>{l}</text>)}
+        {["The Civil", "Service", "Commission"].map((l, n) => <text key={l} x="84" y={130 + n * 24} textAnchor="middle" fontSize="17" fontWeight="800" fill={INK} fontFamily={S}>{l}</text>)}</g>
+    </svg>
+  );
+}
+
+function ReplacedWide() {
+  return (
+    <svg className="st-trail-wide" viewBox="0 0 900 300" role="img" aria-label="ACOBA was abolished on 13 October 2025; ministers' applications go to the Independent Adviser on Ministerial Standards, civil servants and special advisers to the Civil Service Commission">
       <g transform="translate(40 110)"><rect width="230" height="80" rx="20" fill="#F3E4E4" stroke="#9C3B3B" strokeWidth="3" strokeDasharray="10 6" /><text x="115" y="34" textAnchor="middle" fontSize="20" fontWeight="800" fill="#9C3B3B" fontFamily={S}>ACOBA</text><text x="115" y="58" textAnchor="middle" fontSize="13" fontWeight="700" fill="#7A2E2E" fontFamily={F}>Abolished 13 October 2025</text></g>
       <path d="M 270 150 C 360 150, 380 70, 470 70" fill="none" stroke="#6E4B6E" strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" /><path d="M 270 150 C 360 150, 380 230, 470 230" fill="none" stroke="#9C6B30" strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" />
       <g transform="translate(470 24)"><rect width="390" height="92" rx="22" fill="#fff" stroke="#6E4B6E" strokeWidth="3.500" /><text x="195" y="28" textAnchor="middle" fontSize="15" fontWeight="800" fill="#6E4B6E" fontFamily={F}>Former ministers</text><text x="195" y="52" textAnchor="middle" fontSize="17" fontWeight="800" fill={INK} fontFamily={S}>Independent Adviser on Ministerial Standards</text><text x="195" y="72" textAnchor="middle" fontSize="12.500" fontWeight="600" fill={SOFT} fontFamily={F}>61 applications in its first reporting year, 2025 to 26</text></g>

@@ -438,7 +438,7 @@
 @media (max-width: 700px) {
   .sa-conv-src { grid-template-columns: minmax(0, 1fr); }
   .sa-conv-stubs, .sa-conv-bar { display: none; }
-  .sa-conv-down { margin-block: 0; }
+  .sa-conv-down { margin-block: 0 14px; }
   .sa-conv-down { transition-delay: 1.2s; }
 }
 
@@ -1284,6 +1284,15 @@
 .rb-ends { position: relative; display: flex; justify-content: space-between; height: 18px; font: 600 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .rb-ends span + span { position: absolute; white-space: nowrap; }
 @media (max-width: 480px) { .rb-tile { width: 40px; height: 40px; border-radius: 12px; } .rb-head { gap: 10px; } }
+/* On a phone the title and the committee's name start at the left edge of the box, under the tile and the tags, instead of being squeezed into a column beside the tile. */
+@media (max-width: 560px) {
+  .rb-head { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px 12px; align-items: center; }
+  .rb-headtext { display: contents; }
+  .rb-head .ib-top { grid-column: 2; grid-row: 1; min-width: 0; }
+  .rb-head .ib-top time { margin-left: 0; flex-basis: 100%; }
+  .rb-head h3, .rb-head .ib-who { grid-column: 1 / -1; text-align: left; justify-self: stretch; margin: 0; }
+  .rb-head .ib-toggle { text-align: left; }
+}
 @media (prefers-reduced-motion: reduce) { .rb-fill, .rb-stripbar i { transition: none; transform: none; } }
 .ib-bar { position: relative; height: 10px; margin: 8px 0 4px; border-radius: 999px; background: color-mix(in srgb, var(--sc) 14%, var(--c-hairline)); }
 .ib-bar i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 999px; background: var(--sc); }
@@ -1291,3 +1300,41 @@
 .ib-link { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 0; font: 700 14.5px "Figures", "Public Sans", system-ui, sans-serif; }
 .ib-link a { color: color-mix(in srgb, var(--sc) 70%, var(--c-ink)); }
 @media (prefers-reduced-motion: reduce) { .ib-panel, .ib-chev, .ib-card { transition: none; } .ib[data-go="1"] .ib-card { animation: none; } }
+
+/* Phone-sized versions of the pictures that used to scroll sideways (shown instead of the wide drawing at 560px and under; see .st-trail-tall above). */
+.dm-spend { display: grid; gap: 12px; }
+.dm-spend-t { font: 700 19px/1.25 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.dm-spend-bar { display: flex; gap: 2px; height: 46px; }
+.dm-spend-bar i { display: block; min-width: 6px; border-radius: 10px; transform-origin: left; animation: stGrow 1s var(--ease-out) backwards; }
+.dm-spend-key { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.dm-spend-key li { display: grid; grid-template-columns: 14px auto 1fr; align-items: baseline; gap: 4px 8px; font: 600 14px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.dm-spend-key li i { width: 14px; height: 14px; border-radius: 5px; background: var(--c); align-self: center; }
+.dm-spend-key li b { font: 800 17px/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.dm-spend p { margin: 0; font: 600 14px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.dm-spend p.dm-spend-lead { padding-top: 12px; border-top: 3px solid #6E4B6E; font-weight: 800; font-size: 15.5px; color: #6E4B6E; }
+
+.dm-sec { list-style: none; margin: 0; padding: 4px 0 0 56px; position: relative; display: grid; gap: 26px; }
+/* the rail: hatched red from each date down to the next, green from the date secrecy ended */
+.dm-sec li::before { content: ""; position: absolute; left: -50px; top: 14px; width: 20px; height: calc(100% + 26px - 14px); border-radius: 10px; background: repeating-linear-gradient(45deg, #F3E4E4 0 3px, #E3B5B5 3px 6px); border: 2.5px solid #9C3B3B; box-sizing: border-box; }
+.dm-sec li[data-end="1"]::before { height: calc(100% - 14px); background: #E1F1E8; border-color: #3F7D5C; }
+.dm-sec li { position: relative; display: grid; gap: 4px; animation: stFade 0.55s var(--ease-out) backwards; animation-delay: calc(var(--i, 0) * 160ms + 150ms); }
+.dm-sec-dot { z-index: 1; position: absolute; left: -53px; top: 3px; width: 26px; height: 26px; border-radius: 50%; background: var(--c); border: 4px solid #fff; box-shadow: 0 0 0 1px var(--c); box-sizing: border-box; }
+.dm-sec li b { font: 800 17px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c); }
+.dm-sec li p { margin: 0; font: 600 14.5px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.dm-sec-band { justify-self: start; margin-top: 6px; padding: 3px 12px; border-radius: 999px; font: 800 12.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; }
+.dm-sec-band[data-k="secret"] { background: #F3E4E4; color: #7A2E2E; border: 2px solid #9C3B3B; }
+.dm-sec-band[data-k="named"] { background: #E1F1E8; color: #2B5E43; border: 2px solid #3F7D5C; }
+@media (prefers-reduced-motion: reduce) { .dm-spend-bar i, .dm-sec li { animation: none !important; } }
+
+/* The A to E scale: five rungs, each holding the think tanks that were given that grade. Wraps at any width. */
+.tt-ladder { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.tt-rung { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: stretch; border-radius: 20px; overflow: hidden; background: linear-gradient(90deg, color-mix(in srgb, var(--tc) 16%, var(--c-paper-card)), color-mix(in srgb, var(--tc) 5%, var(--c-paper-card))); border: 1px solid color-mix(in srgb, var(--tc) 32%, var(--c-hairline)); animation: stFade 0.55s var(--ease-out) backwards; animation-delay: calc(var(--i, 0) * 90ms + 100ms); }
+.tt-grade { display: grid; place-items: center; min-width: clamp(54px, 11vw, 76px); background: var(--tc); color: #fff; font: 800 clamp(28px, 5vw, 38px)/1 "Figures", "Newsreader", Georgia, serif; }
+.tt-rung-body { display: grid; gap: 8px; align-content: center; padding: 12px 14px; min-height: 64px; }
+.tt-rung-label { font: 800 12px/1.2 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--tc) 80%, var(--c-ink)); }
+.tt-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 8px; }
+.tt-chips li { padding: 6px 13px; border-radius: 999px; background: var(--c-paper-card); border: 2px solid var(--tc); font: 700 14px/1.25 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.tt-none { font: 500 13.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); opacity: 0.8; }
+@media (prefers-reduced-motion: reduce) { .tt-rung { animation: none !important; } }
+/* The phone versions that are plain boxes, not drawings, lay themselves out in a grid (the rule that swaps them in sets display to block). */
+@media (max-width: 560px) { .dm-spend.st-trail-tall, .dm-sec.st-trail-tall { display: grid !important; } }

@@ -10,6 +10,7 @@ import { longDate, searchCouncils, councilsForCodes, controlColourOf } from "../
 import { upcomingDates, biggestDate, atStake, nationOf } from "../lib/localElections";
 import CountUp from "./CountUp";
 import "../localelections.css";
+import { glide } from "../lib/scrollBehavior";
 
 // Local elections: when your council next votes, what is up for grabs, and which councils vote on each date. Everything comes from
 // councilsIndex.json (the same file as the Your council page), so it updates when that does.
@@ -155,7 +156,7 @@ function DateCard({ group, first, big, index, mostSeats }) {
 function Skyline({ dates }) {
   const shown = dates.slice(0, 8);
   const most = Math.max(...shown.map((g) => g.seats), 1);
-  const go = (date) => document.getElementById(`le-d-${date}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+  const go = (date) => document.getElementById(`le-d-${date}`)?.scrollIntoView({ behavior: glide(), block: "center" });
   return (
     <section aria-labelledby="h-sky" className="le-sky">
       <h2 id="h-sky" style={{ ...cardTitle, fontSize: 22 }}>Seats up for election, date by date</h2>

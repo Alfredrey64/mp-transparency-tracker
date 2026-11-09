@@ -1,6 +1,7 @@
 import { COLORS, FONT_BODY, FONT_DISPLAY } from "../theme";
 import { card, cardTitle } from "../lib/onsStyles";
 import { scrollToCard } from "../lib/scrollToCard";
+import { glide } from "../lib/scrollBehavior";
 
 // "What is on this page": every chart and explorer on a Britain in numbers page as one grid of buttons, so nothing hides off the edge
 // of a scrolling row. A switch turns it into a menu: pick one and only that chart is shown, or leave it off and the buttons jump down
@@ -30,7 +31,7 @@ export default function SectorContents({ groups, focusId, onFocus, accent }) {
   const pick = (id) => {
     if (focusMode) {
       onFocus(id);
-      requestAnimationFrame(() => document.getElementById("ons-contents")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+      requestAnimationFrame(() => document.getElementById("ons-contents")?.scrollIntoView({ behavior: glide(), block: "start" }));
     } else scrollToCard(id);
   };
   // Each group's first number, so the badges run on from one group to the next.

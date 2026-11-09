@@ -31,3 +31,17 @@
 .cab-rank[data-rank="0"], .cab-rank[data-rank="1"] { color: color-mix(in srgb, var(--page-accent, #2F80ED) 75%, var(--c-ink)); background: color-mix(in srgb, var(--page-accent, #2F80ED) 12%, transparent); border-color: color-mix(in srgb, var(--page-accent, #2F80ED) 35%, transparent); }
 .cab-boss { font: 500 11.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); align-self: center; }
 .cab-clamp { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* On a phone the chart is a two-column grid of compact department boxes under the Prime Minister (no branching lines: the page is too narrow for them). */
+.cab-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 100%; }
+.cab-node[data-compact="1"] { width: 100%; min-width: 0; gap: 8px; padding-bottom: 10px; }
+.cab-node[data-compact="1"] .cab-node-head { align-items: flex-start; padding: 9px 10px; gap: 7px; min-height: 52px; }
+.cab-node[data-compact="1"] .cab-node-head b { font-size: 12.5px; overflow-wrap: anywhere; }
+.cab-node[data-compact="1"] .cab-node-icon { width: 24px; height: 24px; border-radius: 8px; }
+.cab-node[data-compact="1"] .cab-node-lead { padding: 0 10px; gap: 8px; align-items: flex-start; }
+.cab-node[data-compact="1"] .cab-node-lead strong { font-size: 13px; }
+.cab-node[data-compact="1"] .cab-node-lead em { font-size: 11.5px; -webkit-line-clamp: 2; }
+.cab-node[data-compact="1"] .cab-node-team { margin: 0 10px; padding-top: 8px; }
+.cab-node[data-compact="1"] .cab-faces > div { width: 22px !important; height: 22px !important; }
+.cab-node[data-compact="1"] .cab-node-count { font-size: 11.5px; }
+@media (max-width: 360px) { .cab-grid { grid-template-columns: minmax(0, 1fr); } }

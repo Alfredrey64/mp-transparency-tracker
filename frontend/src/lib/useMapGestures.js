@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { watchSize } from "./watchWidth";
+import { glide } from "./scrollBehavior";
 
 // Phone gestures for the hexagon maps: pinch with two fingers to zoom (and a trackpad pinch or Ctrl and the wheel on a laptop), and press and hold a
 // seat for about half a second to pin its card without selecting it. Scrolling a zoomed map is the browser's own.
@@ -127,7 +128,7 @@ export function useMapGestures({ aspect, vh = 0.7, initialScale = 1, maxScale = 
   // Bring a point (as a fraction of the map's width and height) to the middle of the box.
   const centreOn = useCallback((fx, fy) => {
     if (!scroller) return;
-    scroller.scrollTo({ left: fx * scroller.scrollWidth - scroller.clientWidth / 2, top: fy * scroller.scrollHeight - scroller.clientHeight / 2, behavior: "smooth" });
+    scroller.scrollTo({ left: fx * scroller.scrollWidth - scroller.clientWidth / 2, top: fy * scroller.scrollHeight - scroller.clientHeight / 2, behavior: glide() });
   }, [scroller]);
 
   const baseW = Math.min(boxW || 320, typeof window === "undefined" ? 800 : window.innerHeight * vh * aspect);

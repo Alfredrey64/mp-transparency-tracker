@@ -177,23 +177,50 @@ export function Thresholds() {
 
 // How the £435,000 given to the DUP in 2016 was spent, from the Electoral Commission's findings as the page describes them.
 export function SpendBar() {
-  const parts = [
-    { w: 282, c: "#6E4B6E", t: "£282,000", s: "four-page Metro advert" },
-    { w: 100, c: "#9C6B30", t: "about £100,000", s: "campaign merchandise" },
-    { w: 43, c: "#5A7FA6", t: "", s: "" },
-    { w: 10, c: "#9AA6B8", t: "", s: "" },
-  ];
-  const total = parts.reduce((t, p) => t + p.w, 0);
-  let x = 0;
   return (
-    <svg viewBox="0 0 900 240" role="img" aria-label="The 435,000 pound donation: about 425,000 pounds was spent on Vote Leave campaigning in England, including 282,000 pounds on a Metro advert and about 100,000 pounds on merchandise">
+    <>
+      <SpendBarWide />
+      <SpendBarTall />
+    </>
+  );
+}
+
+const SPEND = [
+  { w: 282, c: "#6E4B6E", t: "£282,000", s: "four-page Metro advert" },
+  { w: 100, c: "#9C6B30", t: "about £100,000", s: "campaign merchandise" },
+  { w: 43, c: "#5A7FA6", t: "", s: "" },
+  { w: 10, c: "#9AA6B8", t: "", s: "" },
+];
+
+// On a phone the bar runs across the box with its two named parts listed beneath it, and the three findings below that, as ordinary wrapping text.
+function SpendBarTall() {
+  return (
+    <div className="st-trail-tall dm-spend" role="img" aria-label="The 435,000 pound donation: about 425,000 pounds was spent on Vote Leave campaigning in England, including 282,000 pounds on a Metro advert and about 100,000 pounds on merchandise">
+      <b className="dm-spend-t">£435,000 donated to the DUP in 2016</b>
+      <div className="dm-spend-bar">{SPEND.map((p, i) => <i key={i} style={{ flexGrow: p.w, background: p.c, animationDelay: `${0.2 + i * 0.2}s` }} />)}</div>
+      <ul className="dm-spend-key">
+        {SPEND.filter((p) => p.t).map((p) => <li key={p.t} style={{ "--c": p.c }}><i /><b>{p.t}</b><span>{p.s}</span></li>)}
+      </ul>
+      <p className="dm-spend-lead">Around £425,000 went on Vote Leave campaigning in England</p>
+      <p>None of it was spent in Northern Ireland, where the DUP actually stands for election.</p>
+      <p>The Electoral Commission fined the donor group £6,000 for failing to cooperate. It could not make it name its source.</p>
+    </div>
+  );
+}
+
+function SpendBarWide() {
+  const parts = SPEND;
+  const total = parts.reduce((t, p) => t + p.w, 0);
+  const starts = parts.map((_, i) => parts.slice(0, i).reduce((t, p) => t + (p.w / total) * 900, 0));
+  return (
+    <svg className="st-trail-wide" viewBox="0 0 900 240" role="img" aria-label="The 435,000 pound donation: about 425,000 pounds was spent on Vote Leave campaigning in England, including 282,000 pounds on a Metro advert and about 100,000 pounds on merchandise">
       <text x="0" y="26" fontSize="20" fontWeight="800" fill={INK} fontFamily="Newsreader, Georgia, serif">£435,000 donated to the DUP in 2016</text>
-      {parts.map((p, i) => { const w = (p.w / total) * 900; const el = (
+      {parts.map((p, i) => { const w = (p.w / total) * 900; const x = starts[i]; return (
         <g key={i} style={{ animation: `stGrow 1s var(--ease-out) ${0.2 + i * 0.2}s backwards`, transformOrigin: `${x}px 90px`, transformBox: "view-box" }}>
           <rect x={x + 1} y="50" width={Math.max(w - 3, 2)} height="70" rx="12" fill={p.c} />
           {p.t && <text x={x + 14} y="82" fontSize={w > 150 ? 22 : 15} fontWeight="800" fill="#fff" fontFamily="Newsreader, Georgia, serif">{p.t}</text>}
           {p.s && <text x={x + 14} y="104" fontSize="13" fontWeight="600" fill="#fff" fontFamily="Public Sans, system-ui, sans-serif">{p.s}</text>}
-        </g>); x += w; return el; })}
+        </g>); })}
       <path d="M 0 140 H 868" stroke="#6E4B6E" strokeWidth="3" strokeLinecap="round" /><path d="M 0 132 V 148 M 868 132 V 148" stroke="#6E4B6E" strokeWidth="3" />
       <text x="0" y="168" fontSize="16" fontWeight="800" fill="#6E4B6E" fontFamily="Public Sans, system-ui, sans-serif">Around £425,000 went on Vote Leave campaigning in England</text>
       <text x="0" y="196" fontSize="14" fontWeight="600" fill={SOFT} fontFamily="Public Sans, system-ui, sans-serif">None of it was spent in Northern Ireland, where the DUP actually stands for election.</text>
@@ -205,7 +232,39 @@ export function SpendBar() {
 // Northern Ireland's donor secrecy on a line of dates: lifted in 2017, never backdated, so the 2016 gift stays inside the secret window.
 export function Secrecy() {
   return (
-    <svg viewBox="0 0 900 250" role="img" aria-label="A timeline: January 2014 when backdating was considered and rejected, early 2016 when the DUP donation was made, and 1 July 2017 when secrecy ended">
+    <>
+      <SecrecyWide />
+      <SecrecyTall />
+    </>
+  );
+}
+
+const SECRECY = [
+  { t: "January 2014", s: "Backdating the change was considered, and not done", c: "#9C6B30" },
+  { t: "Early 2016", s: "The DUP's £435,000 donation is made", c: "#9C3B3B" },
+  { t: "1 July 2017", s: "Secrecy lifted, from this date on only", c: "#3F7D5C" },
+];
+
+// Down the page on a phone: the dates in order on a rail that is hatched red while donors could stay secret and green once they had to be named.
+function SecrecyTall() {
+  return (
+    <ol className="st-trail-tall dm-sec" aria-label="A timeline: January 2014 when backdating was considered and rejected, early 2016 when the DUP donation was made, and 1 July 2017 when secrecy ended">
+      {SECRECY.map((m, i) => (
+        <li key={m.t} style={{ "--c": m.c, "--i": i }} data-end={i === 2 ? "1" : "0"}>
+          <span className="dm-sec-dot" />
+          <b>{m.t}</b>
+          <p>{m.s}</p>
+          {i === 0 && <em className="dm-sec-band" data-k="secret">Donors secret by law</em>}
+          {i === 2 && <em className="dm-sec-band" data-k="named">Donors named</em>}
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+function SecrecyWide() {
+  return (
+    <svg className="st-trail-wide" viewBox="0 0 900 250" role="img" aria-label="A timeline: January 2014 when backdating was considered and rejected, early 2016 when the DUP donation was made, and 1 July 2017 when secrecy ended">
       <defs><pattern id="sec-h" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#F3E4E4" /><rect width="3" height="10" fill="#E3B5B5" /></pattern></defs>
       <rect x="20" y="104" width="620" height="38" rx="19" fill="url(#sec-h)" stroke="#9C3B3B" strokeWidth="2.500" />
       <text x="180" y="128" fontSize="14" fontWeight="800" fill="#7A2E2E" fontFamily="Public Sans, system-ui, sans-serif">Donors secret by law</text>

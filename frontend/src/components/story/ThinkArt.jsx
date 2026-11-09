@@ -70,28 +70,25 @@ function MaskedTall() {
 
 const GRADES = [["A", "#3F7D5C", "Open"], ["B", "#4C7A6B", ""], ["C", "#9C6B30", ""], ["D", "#B5533C", ""], ["E", "#9C3B3B", "Undisclosed"]];
 
-// The A to E scale as a ladder, with each think tank placed on its rung.
+// The A to E scale as a ladder, with each think tank placed on its rung. Plain boxes that wrap rather than a drawing, so it fits any width.
 export function Ladder({ tanks }) {
   return (
-    <svg viewBox="0 0 900 420" role="img" aria-label="Think tanks placed on the A to E transparency scale">
+    <ol className="tt-ladder" aria-label="Think tanks placed on the A to E transparency scale">
       {GRADES.map(([g, c, label], i) => {
-        const y = 20 + i * 76;
         const here = tanks.filter((t) => t.grade === g);
         return (
-          <g key={g} style={{ animation: `stGrow 0.8s var(--ease-out) ${0.1 + i * 0.12}s backwards`, transformOrigin: "0 0", transformBox: "view-box" }}>
-            <rect x="0" y={y} width="880" height="64" rx="18" fill={c} opacity="0.1" />
-            <rect x="0" y={y} width="64" height="64" rx="18" fill={c} />
-            <text x="32" y={y + 42} textAnchor="middle" fontSize="30" fontWeight="800" fill="#fff" fontFamily={S}>{g}</text>
-            {label && <text x="80" y={y + 24} fontSize="12" fontWeight="800" fill={c} fontFamily={F}>{label.toUpperCase()}</text>}
-            {here.map((t, n) => (
-              <g key={t.name} transform={`translate(${80 + n * 205} ${y + (label ? 30 : 16)})`}>
-                <rect width="196" height="28" rx="14" fill="#fff" stroke={c} strokeWidth="2.500" />
-                <foreignObject x="8" y="0" width="182" height="28"><div xmlns="http://www.w3.org/1999/xhtml" style={{ font: "700 11.5px/28px Public Sans, system-ui, sans-serif", color: INK, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "center" }}>{t.short ?? t.name}</div></foreignObject>
-              </g>
-            ))}
-          </g>
+          <li key={g} className="tt-rung" style={{ "--tc": c, "--i": i }}>
+            <span className="tt-grade" aria-hidden="true">{g}</span>
+            <div className="tt-rung-body">
+              <span className="sr-only">Grade {g}{label ? `, ${label}` : ""}</span>
+              {label && <span className="tt-rung-label" aria-hidden="true">{label}</span>}
+              {here.length > 0 ? (
+                <ul className="tt-chips">{here.map((t) => <li key={t.name}>{t.short ?? t.name}</li>)}</ul>
+              ) : <span className="tt-none">None in this sample</span>}
+            </div>
+          </li>
         );
       })}
-    </svg>
+    </ol>
   );
 }

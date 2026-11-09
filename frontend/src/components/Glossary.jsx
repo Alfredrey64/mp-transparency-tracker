@@ -4,9 +4,10 @@ import { m as motion, AnimatePresence } from "motion/react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable, solid } from "../theme";
 import { PageHeader } from "./shared";
 import { IconGlossary, IconSearch } from "./icons";
-import { withScrollPreserved } from "../lib/preserveScroll";
+import { holdPlace } from "../lib/preserveScroll";
 import { PROCEDURE_TERMS, POLITICS_TERMS, STATISTICS_TERMS } from "../data/glossaryTerms";
 import { wordOfTheDay, makeQuestion } from "../lib/glossaryGame";
+import { glide } from "../lib/scrollBehavior";
 
 const TABS = [
   { key: "procedure", label: "Parliamentary terms", blurb: "How Parliament works: bills, votes, committees and who does what.", accent: "#1E4FB8" },
@@ -261,8 +262,8 @@ export default function Glossary() {
   const groups = useMemo(() => groupByLetter(filtered), [filtered]);
   const present = useMemo(() => new Set(groups.map((g) => g.letter)), [groups]);
 
-  function selectTab(key) {
-    withScrollPreserved(() => {
+  function selectTab(key, control) {
+    holdPlace(control, () => {
       setTab(key);
       setOpenTerm(null);
     });
@@ -273,10 +274,10 @@ export default function Glossary() {
     setQuery("");
     setTab(word.tab.key);
     setOpenTerm(word.term);
-    setTimeout(() => document.getElementById(`term-${word.term.replace(/\W+/g, "-")}`)?.scrollIntoView({ behavior: "smooth", block: "center" }), 80);
+    setTimeout(() => document.getElementById(`term-${word.term.replace(/\W+/g, "-")}`)?.scrollIntoView({ behavior: glide(), block: "center" }), 80);
   }, []);
 
-  const jump = (letter) => document.getElementById(`letter-${letter}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const jump = (letter) => document.getElementById(`letter-${letter}`)?.scrollIntoView({ behavior: glide(), block: "start" });
 
   return (
     <div style={{ maxWidth: 1000, margin: "0 auto", padding: PAGE_PADDING }}>
@@ -297,7 +298,7 @@ export default function Glossary() {
           const on = tab === t.key;
           return (
             <button
-              key={t.key} role="tab" aria-selected={on} className="ons-chip" onClick={() => selectTab(t.key)}
+              key={t.key} role="tab" aria-selected={on} className="ons-chip" onClick={(e) => selectTab(t.key, e.currentTarget)}
               style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", height: "100%", boxSizing: "border-box", width: "100%", textAlign: "left", cursor: "pointer", padding: "16px 18px", borderRadius: 18, border: `2px solid ${on ? t.accent : COLORS.hairline}`, background: on ? solid(t.accent) : `color-mix(in srgb, ${t.accent} 7%, ${COLORS.paperCard})`, color: on ? "#fff" : COLORS.ink, transition: "background 0.2s, border-color 0.2s", boxShadow: on ? `0 18px 36px -24px ${t.accent}` : "none" }}
             >
               <span style={{ display: "block", fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 700, lineHeight: 1.2 }}>{t.label}</span>
@@ -372,7 +373,7 @@ export default function Glossary() {
                       t={t}
                       accent={activeTab.accent}
                       isOpen={openTerm === t.term}
-                      onToggle={() => withScrollPreserved(() => setOpenTerm(openTerm === t.term ? null : t.term))}
+                      onToggle={(e) => holdPlace(e.currentTarget, () => setOpenTerm(openTerm === t.term ? null : t.term))}
                     />
                   </div>
                 ))}

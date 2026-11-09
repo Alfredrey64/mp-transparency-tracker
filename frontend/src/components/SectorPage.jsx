@@ -34,6 +34,7 @@ import { DEEP_DIVES } from "../data/onsDeepDives";
 import { card, cardTitle, smallTitle, pillStyle, dateText } from "../lib/onsStyles";
 import { IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconHouse, IconGlobe, IconLeaf, IconShield, IconTaxes, IconRates, IconMigration, IconFactory } from "./icons";
 import Loading from "./Loading";
+import { glide } from "../lib/scrollBehavior";
 
 // One page per sector, all built from the same pieces: a short story with a
 // spotlight figure, the headline numbers, then a card for every measure with its
@@ -104,7 +105,7 @@ const Tile = memo(function Tile({ def, item, accent }) {
     <a
       className="ons-tile"
       href={`#s-${def.id}`}
-      onClick={(e) => { e.preventDefault(); document.getElementById(`s-${def.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
+      onClick={(e) => { e.preventDefault(); document.getElementById(`s-${def.id}`)?.scrollIntoView({ behavior: glide(), block: "start" }); }}
       style={{
         ...card, padding: "20px 22px 0", position: "relative", overflow: "hidden", textDecoration: "none", display: "flex", flexDirection: "column", color: "inherit",
         background: `color-mix(in srgb, ${accent} 7%, ${COLORS.paperCard})`, borderColor: `${accent}40`,
@@ -430,7 +431,7 @@ function KeyPoints({ sector, series, accent, skip }) {
     })
     .filter(Boolean);
   if (!points.length) return null;
-  const jump = (id) => document.getElementById(`s-${id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const jump = (id) => document.getElementById(`s-${id}`)?.scrollIntoView({ behavior: glide(), block: "start" });
   return (
     <section aria-labelledby="h-key-points" style={{ ...card, marginTop: 18, position: "relative", overflow: "hidden" }}>
       <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `${accent}` }} />
@@ -528,7 +529,7 @@ export default function SectorPage({ sector, param = null, embedded = false }) {
       const el = document.getElementById(`s-${target}`);
       if (!el) return;
       focused.current = true;
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      el.scrollIntoView({ behavior: glide(), block: "start" });
       el.classList.add("ons-flash");
       setTimeout(() => el.classList.remove("ons-flash"), 2600);
     }, 700);

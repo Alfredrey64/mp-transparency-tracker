@@ -490,6 +490,12 @@ function Checks() {
   );
 }
 
+// Who to contact, in bold: "Your council", "your MP", "Your regional mayor" and so on stand out from the rest of the sentence.
+const WHO_NAMED = /\b([Yy]our (?:MSP, MS or MLA|(?:[a-z]+ (?:or )?)*?(?:council|mayor|MP|devolved government)))/g;
+function boldWho(text) {
+  return text.split(WHO_NAMED).map((part, i) => (i % 2 ? <strong key={i} style={{ fontWeight: 700, color: COLORS.ink }}>{part}</strong> : part));
+}
+
 function WhoToContact({ nation, nationLabel }) {
   const byKey = Object.fromEntries(TIERS.map((t) => [t.key, t]));
   const devolvedNation = nation !== "england";
@@ -509,7 +515,7 @@ function WhoToContact({ nation, nationLabel }) {
               style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))", gap: "2px 24px", padding: "10px 0 10px 12px", borderTop: `1px solid ${COLORS.hairline}`, borderLeft: `3px solid ${tier.color}` }}
             >
               <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.5 }}>{r.issue}</div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.5 }}>{answer}</div>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.5 }}>{boldWho(answer)}</div>
             </div>
           );
         })}

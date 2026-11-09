@@ -6,4 +6,12 @@
 .hubtabs-tab { display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1.5px solid var(--c-hairline); background: var(--c-paper); color: var(--c-ink); font: 600 14px "Figures", "Public Sans", system-ui, sans-serif; text-decoration: none; }
 .hubtabs-tab:hover { border-color: var(--hc); background: color-mix(in srgb, var(--hc) 8%, var(--c-paper)); }
 .hubtabs-tab[aria-current="page"] { background: var(--hc); border-color: var(--hc); color: #fff; }
-@media (max-width: 640px) { .hubtabs { flex-direction: column; align-items: stretch; } .hubtabs ul { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 2px; } .hubtabs-tab { white-space: nowrap; } }
+/* On a phone the tabs sit in one row that scrolls sideways under the group's name. The strip must not wrap (a wrapping column sizes its one line to the widest thing in it, so the row grew to its full
+   width and there was nothing to scroll), and the row is held to the width of the screen. */
+@media (max-width: 640px) {
+  .hubtabs { flex-direction: column; flex-wrap: nowrap; align-items: stretch; min-width: 0; }
+  .hubtabs ul { position: relative; flex-wrap: nowrap; min-width: 0; overflow-x: auto; overscroll-behavior-x: contain; touch-action: pan-x pan-y; -webkit-overflow-scrolling: touch; scrollbar-width: none; scroll-snap-type: x proximity; padding: 0 16px 2px; margin: 0 -16px; scroll-padding-inline: 16px; }
+  .hubtabs ul::-webkit-scrollbar { display: none; }
+  .hubtabs li { flex: none; scroll-snap-align: start; }
+  .hubtabs-tab { white-space: nowrap; }
+}
