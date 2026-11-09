@@ -18,9 +18,10 @@ describe("bannerColours", () => {
     }
   });
   it("puts white text on a deep colour, darkening it only if it must", () => {
-    expect(bannerColours("#005B54")).toMatchObject({ from: "#005b54", dark: false });
+    expect(bannerColours("#005B54")).toMatchObject({ fill: "#005b54", dark: false });
     const red = bannerColours("#C8102E");
     expect(red.dark).toBe(false);
     expect(contrast(red.from, "#FFFFFF")).toBeGreaterThanOrEqual(4.6);
+    expect(contrast(red.fill, "#FFFFFF")).toBeGreaterThanOrEqual(4.6);
   });
 });

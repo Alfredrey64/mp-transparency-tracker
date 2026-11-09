@@ -2,9 +2,11 @@
 import { useId } from "react";
 import { DRAGON_MASK } from "../lib/welshDragon";
 
-// A flag drawn as a soft, see-through ghost of itself, for the corner of a party's banner: the field a little lighter than the banner, the cross, saltire or dragon lighter still,
+// A flag drawn as a soft, see-through ghost of itself, filling the background of a party's banner: the field a little lighter than the banner, the cross, saltire or dragon lighter still,
 // all in the banner's text colour (white on a dark banner, dark on a light one). Which flag goes with which party is decided in lib/partyFlags.js. Each is drawn in the real
 // proportions of the flag so it reads as a flag, not as a pattern.
+// England's and Scotland's flags are plain geometry, so they are stretched to fill the whole banner; the others keep their proportions and are cropped to fill it.
+const FILL = { england: "none", scotland: "none", union: "xMidYMid slice", ireland: "xMaxYMid slice", wales: "xMaxYMid slice" };
 const SIZE = { england: [50, 30], scotland: [50, 30], union: [60, 30], ireland: [60, 40], wales: [800, 480] };
 
 export default function PartyFlag({ kind }) {
@@ -14,7 +16,7 @@ export default function PartyFlag({ kind }) {
   if (!size) return null;
   const [w, h] = size;
   return (
-    <svg className="ph-flag" viewBox={`0 0 ${w} ${h}`} style={{ aspectRatio: `${w} / ${h}` }} fill="currentColor" aria-hidden="true" focusable="false">
+    <svg className="ph-flag" viewBox={`0 0 ${w} ${h}`} preserveAspectRatio={FILL[kind]} fill="currentColor" aria-hidden="true" focusable="false">
       {kind === "england" && (
         <>
           <rect width="50" height="30" opacity="0.1" />
@@ -55,7 +57,7 @@ export default function PartyFlag({ kind }) {
           <rect width="800" height="480" opacity="0.3" mask={`url(#${id})`} />
         </>
       )}
-      <rect x="0.3" y="0.3" width={w - 0.6} height={h - 0.6} fill="none" stroke="currentColor" strokeWidth={Math.max(w, h) / 300} opacity="0.24" />
+      <rect x="0.3" y="0.3" width={w - 0.6} height={h - 0.6} fill="none" stroke="currentColor" strokeWidth={Math.max(w, h) / 300} opacity="0.24" vectorEffect="non-scaling-stroke" />
     </svg>
   );
 }

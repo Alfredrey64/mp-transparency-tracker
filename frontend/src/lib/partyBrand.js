@@ -24,11 +24,15 @@ export function contrast(a, b) {
 const MAX_DARKEN = 0.3;
 const TARGET = 4.6;
 
-// { from, to, on, dark }: the banner's gradient from the corner where the words sit to the far corner, the text colour on it, and whether that text is dark.
+const NAVY = "#0B1020";
+
+// { from, to, fill, on, dark }: the banner's gradient from the corner where the words sit to the far corner, `fill` (the party's colour as a solid, for the chart bars and the
+// lineage steps), the text colour on the banner, and whether that text is dark. A deep colour gets a rich, deep banner (its colour a shade darker towards navy, deeper still at
+// the far corner) with white text; a bright one keeps its colour with dark text.
 export function bannerColours(brand) {
   for (let t = 0; t <= MAX_DARKEN + 1e-9; t += 0.02) {
-    const from = mix(brand, "#000000", t);
-    if (contrast(from, WHITE) >= TARGET) return { from, to: mix(from, "#000000", 0.38), on: WHITE, dark: false };
+    const fill = mix(brand, "#000000", t);
+    if (contrast(fill, WHITE) >= TARGET) return { from: mix(fill, NAVY, 0.18), to: mix(brand, NAVY, 0.55), fill, on: WHITE, dark: false };
   }
-  return { from: brand, to: mix(brand, "#000000", 0.14), on: INK, dark: true };
+  return { from: brand, to: mix(brand, "#000000", 0.14), fill: brand, on: INK, dark: true };
 }

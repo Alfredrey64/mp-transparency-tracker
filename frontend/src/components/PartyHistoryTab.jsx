@@ -42,7 +42,7 @@ function Tree({ parties, counts, seatCountFor }) {
           {rows.map(({ p, runs }, r) => {
             const n = seatCountFor(counts, p);
             return (
-              <li key={p.party} className="ph-row" style={{ "--c": p.color, "--b1": bannerColours(p.brand ?? p.color).from, "--on": bannerColours(p.brand ?? p.color).on, "--r": r }}>
+              <li key={p.party} className="ph-row" style={{ "--c": p.color, "--fill": bannerColours(p.brand ?? p.color).fill, "--on": bannerColours(p.brand ?? p.color).on, "--r": r }}>
                 <div className="ph-who">
                   <b>{p.party}</b>
                   <span>Since {p.founded}{n > 0 ? ` · ${n} MPs` : ""}</span>
@@ -127,7 +127,7 @@ function Card({ party, seatCount, leader }) {
   const age = partyAge(party.founded);
   const b = bannerColours(party.brand ?? party.color);
   return (
-    <article ref={ref} data-go={go} className="ph-card" data-dark={b.dark ? "1" : "0"} style={{ "--c": party.color, "--b1": b.from, "--b2": b.to, "--on": b.on }} data-open={open ? "1" : "0"}>
+    <article ref={ref} data-go={go} className="ph-card" data-dark={b.dark ? "1" : "0"} style={{ "--c": party.color, "--b1": b.from, "--b2": b.to, "--fill": b.fill, "--on": b.on }} data-open={open ? "1" : "0"}>
       <header className="ph-banner">
         <div className="ph-art" aria-hidden="true">
           <span className="ph-pattern" />
