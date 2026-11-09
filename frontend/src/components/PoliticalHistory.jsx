@@ -36,6 +36,7 @@ const PARTY_HISTORY = [
   {
     party: "Labour Party",
     color: readable("#C8102E"),
+    brand: "#C8102E",
     founded: 1900,
     ideology: "Centre-left · Social democracy",
     dbMatch: ["labour"],
@@ -57,6 +58,7 @@ const PARTY_HISTORY = [
   {
     party: "Conservative Party",
     color: readable("#0087DC"),
+    brand: "#0087DC",
     founded: 1834,
     ideology: "Centre-right · Conservatism",
     dbMatch: ["conservative"],
@@ -76,6 +78,7 @@ const PARTY_HISTORY = [
   {
     party: "Liberal Democrats",
     color: readable("#FAA61A"),
+    brand: "#FAA61A",
     founded: 1988,
     ideology: "Centre · Liberalism",
     dbMatch: ["liberal democrat"],
@@ -97,6 +100,7 @@ const PARTY_HISTORY = [
   {
     party: "Scottish National Party",
     color: readable("#B8960C"),
+    brand: "#F9D71C",
     founded: 1934,
     ideology: "Centre-left · Scottish independence",
     dbMatch: ["scottish national"],
@@ -118,6 +122,7 @@ const PARTY_HISTORY = [
   {
     party: "Green Party",
     color: readable("#6AB023"),
+    brand: "#6AB023",
     founded: 1973,
     ideology: "Left-wing · Green politics",
     dbMatch: ["green"],
@@ -139,6 +144,7 @@ const PARTY_HISTORY = [
   {
     party: "Reform UK",
     color: readable("#12B6CF"),
+    brand: "#12B6CF",
     founded: 2019,
     ideology: "Right-wing · National conservatism",
     dbMatch: ["reform uk"],
@@ -160,6 +166,7 @@ const PARTY_HISTORY = [
   {
     party: "Plaid Cymru",
     color: readable("#005B54"),
+    brand: "#005B54",
     founded: 1925,
     ideology: "Centre-left · Welsh independence",
     dbMatch: ["plaid cymru"],
@@ -175,6 +182,7 @@ const PARTY_HISTORY = [
   {
     party: "Democratic Unionist Party",
     color: readable("#D46A4C"),
+    brand: "#D46A4C",
     founded: 1971,
     ideology: "Right-wing · Unionism",
     dbMatch: ["democratic unionist"],
@@ -190,6 +198,7 @@ const PARTY_HISTORY = [
   {
     party: "Sinn Féin",
     color: readable("#326760"),
+    brand: "#326760",
     founded: 1905,
     ideology: "Left-wing · Irish republicanism",
     dbMatch: ["sinn"],
@@ -205,6 +214,7 @@ const PARTY_HISTORY = [
   {
     party: "Social Democratic & Labour Party",
     color: readable("#4E9A2A"),
+    brand: "#2AA82C",
     founded: 1970,
     ideology: "Centre-left · Irish nationalism",
     dbMatch: ["social democratic", "sdlp"],
@@ -219,6 +229,7 @@ const PARTY_HISTORY = [
   {
     party: "Alliance",
     color: readable("#F6CB2F"),
+    brand: "#F6CB2F",
     founded: 1970,
     ideology: "Centre · Cross-community",
     dbMatch: ["alliance"],
@@ -230,6 +241,7 @@ const PARTY_HISTORY = [
   {
     party: "Ulster Unionist Party",
     color: readable("#48A5EE"),
+    brand: "#48A5EE",
     founded: 1905,
     ideology: "Centre-right · Unionism",
     dbMatch: ["ulster unionist"],

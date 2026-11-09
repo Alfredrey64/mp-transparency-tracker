@@ -5,6 +5,7 @@ import { useGo } from "./story/useGo";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import LEADERS from "../data/partyLeaders.json";
 import { partyAge, initials, chartScale } from "../lib/partyHistory";
+import { bannerColours } from "../lib/partyBrand";
 import PartyFlag from "./PartyFlag";
 import { FLAG_OF } from "../lib/partyFlags";
 import "../partyhistory.css";
@@ -41,7 +42,7 @@ function Tree({ parties, counts, seatCountFor }) {
           {rows.map(({ p, runs }, r) => {
             const n = seatCountFor(counts, p);
             return (
-              <li key={p.party} className="ph-row" style={{ "--c": p.color, "--r": r }}>
+              <li key={p.party} className="ph-row" style={{ "--c": p.color, "--b1": bannerColours(p.brand ?? p.color).from, "--on": bannerColours(p.brand ?? p.color).on, "--r": r }}>
                 <div className="ph-who">
                   <b>{p.party}</b>
                   <span>Since {p.founded}{n > 0 ? ` · ${n} MPs` : ""}</span>
@@ -124,8 +125,9 @@ function Card({ party, seatCount, leader }) {
   const id = useId();
   const runs = party.lineage ?? [];
   const age = partyAge(party.founded);
+  const b = bannerColours(party.brand ?? party.color);
   return (
-    <article ref={ref} data-go={go} className="ph-card" style={{ "--c": party.color }} data-open={open ? "1" : "0"}>
+    <article ref={ref} data-go={go} className="ph-card" data-dark={b.dark ? "1" : "0"} style={{ "--c": party.color, "--b1": b.from, "--b2": b.to, "--on": b.on }} data-open={open ? "1" : "0"}>
       <header className="ph-banner">
         <div className="ph-art" aria-hidden="true">
           <span className="ph-pattern" />
