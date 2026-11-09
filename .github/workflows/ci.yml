@@ -175,9 +175,11 @@ jobs:
       - run: echo "CHROME_PATH=$(node -e "console.log(require('@playwright/test').chromium.executablePath())")" >> "$GITHUB_ENV"
       # The page asks the data service for a few counts as it loads, so a stand-in answers with empty lists instead of the console filling with failed requests.
       - run: nohup node scripts/mock-data-service.mjs 54321 > mock.log 2>&1 &
-      # The limits in lighthouserc.json are for Lighthouse's simulated slow phone, where the page's JavaScript takes about 5.3 seconds to show the tax page's tabs (measured
-      # 5.2 to 5.4 seconds on this runner, and 5.3 on a Mac). Preloading the page's scripts and fonts did not move it; only pre-rendering the pages would. The limits sit just above
-      # that so a real slowdown still fails.
+      # The limits in lighthouserc.json are for Lighthouse's simulated slow phone (a 4x slower processor on a 1.6 Mbit/s line), where the app's JavaScript takes about 5.3 seconds to show the
+      # tax page's tabs and 4.2 seconds to show the home page's introduction (measured 5.2 to 5.4 seconds on this runner, and 5.3 on a Mac). On an ordinary connection the same
+      # paint comes at 0.3 to 0.8 seconds. Every page is already sent with its own title, heading and introduction (scripts/prerender.mjs), and the check serves them as Vercel does
+      # (scripts/serve-dist.mjs, since `vite preview` answers every address with the home page); the large paint that counts is the app's own content, which arrives once the scripts
+      # have run, so pre-rendering cannot bring this number down. The limits sit just above it so a real slowdown still fails.
       - run: npx --yes @lhci/cli@0.15.1 autorun --config=lighthouserc.json
       # Says which score failed, and by how much, where it can be read without opening the log.
       - name: Report which scores failed

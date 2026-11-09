@@ -10,8 +10,8 @@
       "settings": {
         "chromeFlags": "--no-sandbox --headless=new"
       },
-      "startServerCommand": "npx vite preview --port 4176 --strictPort",
-      "startServerReadyPattern": "Local"
+      "startServerCommand": "node scripts/serve-dist.mjs 4176",
+      "startServerReadyPattern": "Serving"
     },
     "assert": {
       "assertions": {
