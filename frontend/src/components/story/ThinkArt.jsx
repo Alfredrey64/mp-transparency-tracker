@@ -9,8 +9,9 @@ const F = "Public Sans, system-ui, sans-serif";
 const S = "Newsreader, Georgia, serif";
 
 // Money from a funder nobody names, through a think tank with no duty to say, to an "independent expert" on air. Only the last of the three is ever seen. It plays once, when it
-// scrolls into view: the three boxes arrive in turn, the money runs to the think tank and disappears into it, a redaction bar keeps sliding over the funder's name, and the
-// expert's words carry on to the audience past a padlock that stands for "hidden by law". Drawn along the page on a wide screen and stacked on a phone.
+// scrolls into view: the three boxes arrive in turn, the money runs to the think tank and disappears into it, a redaction bar keeps sliding over the funder's name, and an
+// arrow labelled "Its staff, its views" carries the think tank across to the "independent expert" (who is its own spokesperson, with a small think tank badge to say so).
+// The small padlock beside "Hidden by law" says why the left side is out of sight. Drawn along the page on a wide screen and stacked on a phone.
 export function Masked() {
   return <><MaskedWide /><MaskedTall /></>;
 }
@@ -37,25 +38,32 @@ function Coins({ path, dur = 5.2, count = 3 }) {
   });
 }
 
-function Padlock({ x, y }) {
+// A small padlock for the heading of the hidden side: the law lets the funder stay unnamed.
+function MiniLock({ x, y }) {
   return (
-    <g transform={`translate(${x} ${y})`}>
-      <circle className="ttm-ring" r="19" fill="none" stroke="#9C3B3B" strokeWidth="2" />
-      <circle r="19" fill="#fff" stroke="#9C3B3B" strokeWidth="3" />
-      <path d="M -6 -3 V -7 a 6 6 0 0 1 12 0 V -3" fill="none" stroke="#9C3B3B" strokeWidth="3" strokeLinecap="round" />
-      <rect x="-9" y="-3" width="18" height="14" rx="3.5" fill="#9C3B3B" />
-      <circle cy="4" r="2" fill="#fff" />
+    <g transform={`translate(${x} ${y})`} className="ttm-minilock">
+      <path d="M -5 -1 V -5 a 5 5 0 0 1 10 0 V -1" fill="none" stroke="#7A2E2E" strokeWidth="2.6" strokeLinecap="round" />
+      <rect x="-8" y="-1" width="16" height="12" rx="3" fill="#7A2E2E" />
+      <circle cy="4.5" r="1.8" fill="#fff" />
     </g>
   );
 }
 
-// A voice carried outwards: three arcs that travel along `dir`, one after the other.
-function Voice({ x, y, rot = 0 }) {
+// The think tank speaking through the "independent expert": a broad arrow with chevrons running along it from one to the other, a label that says what it carries, and a line
+// under it saying how it comes across. `rot` 0 runs along the page, 90 runs down it; the label is drawn upright either way, at the place given.
+function Influence({ x, y, len, rot = 0, d, label, sub }) {
   return (
-    <g transform={`translate(${x} ${y}) rotate(${rot})`}>
-      {[0, 1, 2].map((i) => (
-        <path key={i} className="ttm-wave" style={{ "--w": i }} d="M 0 -15 Q 11 0 0 15" fill="none" stroke="#5A7FA6" strokeWidth="4" strokeLinecap="round" />
-      ))}
+    <g className="ttm-infl" style={{ "--d": d }}>
+      <g transform={`translate(${x} ${y}) rotate(${rot})`}>
+        <rect className="ttm-shaft" x="0" y="-8" width={len - 14} height="16" rx="8" fill="#9C6B30" />
+        <path className="ttm-head" d={`M ${len - 18} -17 L ${len} 0 L ${len - 18} 17 Z`} fill="#9C6B30" strokeLinejoin="round" stroke="#9C6B30" strokeWidth="4" />
+        {[0, 1, 2].map((i) => <path key={i} className="ttm-chev" style={{ "--c": i, "--run": len - 56 }} d="M 0 -5.5 L 6 0 L 0 5.5" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />)}
+      </g>
+      <g className="ttm-label" style={{ "--d": d }}>
+        <rect x={label.x - label.w / 2} y={label.y - 17} width={label.w} height="34" rx="17" fill="#fff" stroke="#9C6B30" strokeWidth="3" />
+        <text x={label.x} y={label.y + 5} textAnchor="middle" fontSize="14" fontWeight="800" fill={INK} fontFamily={F}>{label.text}</text>
+        <text x={sub.x} y={sub.y} textAnchor="middle" fontSize="13" fontWeight="700" fill="#7A5420" fontFamily={F}>{sub.text}</text>
+      </g>
     </g>
   );
 }
@@ -103,6 +111,14 @@ function Expert({ x, y, d, id }) {
         <path d="M 70 84 q 30 -40 60 0z" fill="#5A7FA6" />
         <rect x="18" y="92" width="164" height="26" rx="8" fill="#1B2438" />
         <text x="100" y="110" textAnchor="middle" fontSize="14" fontWeight="800" fill="#fff" fontFamily={F}>Independent expert</text>
+        <g transform="translate(172 29)">
+          <g className="ttm-badge" style={{ "--d": 4 }}>
+            <circle r="17" fill="#fff" stroke="#9C6B30" strokeWidth="3" />
+            <path d="M -9 -2 L 0 -9 L 9 -2 Z" fill="#9C6B30" />
+            {[-5, 0, 5].map((cx) => <rect key={cx} x={cx - 1.6} y="-1" width="3.2" height="7" fill="#9C6B30" />)}
+            <rect x="-9" y="7" width="18" height="2.6" rx="1.2" fill="#9C6B30" />
+          </g>
+        </g>
       </g>
     </g>
   );
@@ -122,27 +138,26 @@ function MaskedWide() {
   const still = useReducedMotion();
   const playing = go === "1" && !still;
   return (
-    <svg ref={ref} data-go={go} className="st-trail-wide ttm" viewBox="0 0 900 340" role="img" aria-label="An undisclosed funder pays a think tank, whose staff appear on air as independent experts; the audience sees only the expert">
+    <svg ref={ref} data-go={go} className="st-trail-wide ttm" viewBox="0 0 1000 340" role="img" aria-label="An undisclosed funder pays a think tank. The think tank's own staff and views then appear on air as an independent expert, and the audience sees only the expert, not who is behind them">
       <Defs id="" />
       <g className="ttm-zone" style={{ "--d": 0 }}>
         <g>
           <rect x="10" y="12" width="590" height="262" rx="26" fill="#F4F6FA" stroke="#C9D3E6" strokeWidth="2" strokeDasharray="8 6" />
-          <text x="305" y="48" textAnchor="middle" fontSize="16" fontWeight="800" fill="#7A2E2E" fontFamily={F}>Hidden by law</text>
+          <text x="320" y="48" textAnchor="middle" fontSize="16" fontWeight="800" fill="#7A2E2E" fontFamily={F}>Hidden by law</text>
+          <MiniLock x={247} y={36} />
         </g>
         <g>
-          <rect x="650" y="12" width="240" height="262" rx="26" fill="#EEF4FB" stroke="#C9DAEE" strokeWidth="2" />
-          <text x="770" y="48" textAnchor="middle" fontSize="16" fontWeight="800" fill="#3F5F85" fontFamily={F}>What you see</text>
+          <rect x="750" y="12" width="240" height="262" rx="26" fill="#EEF4FB" stroke="#C9DAEE" strokeWidth="2" />
+          <text x="870" y="48" textAnchor="middle" fontSize="16" fontWeight="800" fill="#3F5F85" fontFamily={F}>What you see</text>
         </g>
       </g>
       <path className="ttm-pipe" d="M 236 168 H 372" stroke="#9C3B3B" strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" fill="none" />
-      <path className="ttm-pipe ttm-pipe-b" d="M 582 168 H 660" stroke="#5A7FA6" strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" fill="none" />
       <Funder id="" x={36} y={103} d={1} />
       <Tank x={382} y={103} d={2} />
-      <Expert id="" x={670} y={103} d={3} />
+      <Expert id="" x={770} y={103} d={3} />
       {playing && <Coins path="M 236 168 H 398" />}
-      {go === "1" && <Voice x={592} y={168} />}
-      <g className="ttm-lock" style={{ "--d": 3 }}><Padlock x={625} y={168} /></g>
-      <text className="ttm-note" x="450" y="316" textAnchor="middle" fontSize="15" fontWeight="700" fill={SOFT} fontFamily={F}>The audience only ever sees the circle on the right.</text>
+      <Influence x={592} y={168} len={172} d={3.4} label={{ x: 676, y: 128, w: 164, text: "Its staff, its views" }} sub={{ x: 676, y: 205, text: "sounds independent" }} />
+      <text className="ttm-note" x="500" y="316" textAnchor="middle" fontSize="15" fontWeight="700" fill={SOFT} fontFamily={F}>The audience only ever sees the expert on the right, not who is behind them.</text>
     </svg>
   );
 }
@@ -158,22 +173,21 @@ function MaskedTall() {
       <g className="ttm-zone" style={{ "--d": 0 }}>
         <g>
           <rect x="8" y="2" width="344" height="396" rx="24" fill="#F4F6FA" stroke="#C9D3E6" strokeWidth="2" strokeDasharray="8 6" />
-          <text x="180" y="34" textAnchor="middle" fontSize="16" fontWeight="800" fill="#7A2E2E" fontFamily={F}>Hidden by law</text>
+          <text x="196" y="34" textAnchor="middle" fontSize="16" fontWeight="800" fill="#7A2E2E" fontFamily={F}>Hidden by law</text>
+          <MiniLock x={123} y={22} />
         </g>
         <g>
           <rect x="8" y="462" width="344" height="196" rx="24" fill="#EEF4FB" stroke="#C9DAEE" strokeWidth="2" />
-          <text x="180" y="494" textAnchor="middle" fontSize="16" fontWeight="800" fill="#3F5F85" fontFamily={F}>What you see</text>
+          <text x="30" y="494" textAnchor="start" fontSize="16" fontWeight="800" fill="#3F5F85" fontFamily={F}>What you see</text>
         </g>
       </g>
       <path className="ttm-pipe" d="M 180 196 V 232" stroke="#9C3B3B" strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" fill="none" />
-      <path className="ttm-pipe ttm-pipe-b" d="M 180 366 V 518" stroke="#5A7FA6" strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" fill="none" />
       <Funder id="t" x={80} y={56} d={1} />
       <Tank x={80} y={236} d={2} />
       <Expert id="t" x={80} y={516} d={3} />
       {playing && <Coins path="M 180 196 V 262" count={2} />}
-      {go === "1" && <Voice x={180} y={372} rot={90} />}
-      <g className="ttm-lock" style={{ "--d": 3 }}><Padlock x={180} y={430} /></g>
-      <text className="ttm-note" x="180" y="684" textAnchor="middle" fontSize="14.500" fontWeight="700" fill={SOFT} fontFamily={F}>The audience only ever sees the box at the bottom.</text>
+      <Influence x={180} y={376} len={132} rot={90} d={3.4} label={{ x: 272, y: 430, w: 156, text: "Its staff, its views" }} sub={{ x: 272, y: 462, text: "sounds independent" }} />
+      <text className="ttm-note" x="180" y="684" textAnchor="middle" fontSize="14.500" fontWeight="700" fill={SOFT} fontFamily={F}>The audience only ever sees the expert.</text>
     </svg>
   );
 }

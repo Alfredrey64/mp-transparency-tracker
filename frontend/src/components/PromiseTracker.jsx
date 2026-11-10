@@ -10,6 +10,7 @@ import { windowFor } from "../lib/pledgeWindow";
 import AllPledges from "./AllPledges";
 import { countsByStatus, prepare } from "../lib/pledgeList";
 import fullFact from "../data/fullFactPledges.json";
+import { FOLD } from "../lib/foldMotion";
 
 // Sourced from Full Fact's independent, non-partisan Government Tracker
 // (fullfact.org/government-tracker), which assesses Labour's 2024 manifesto
@@ -102,7 +103,7 @@ function PledgeLine({ pledge }) {
       </button>
       <AnimatePresence>
         {open && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.2 }} style={{ overflow: "hidden" }}>
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={FOLD} style={{ overflow: "hidden" }}>
             <div style={{ padding: "0 2px 14px 26px", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, lineHeight: 1.6 }}>
               {pledge.reality}
               {pledge.rates && <PledgeRates keys={pledge.rates} from={windowFor("2024").from} to={null} />}

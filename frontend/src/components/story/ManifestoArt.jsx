@@ -23,7 +23,7 @@ export function Chamber({ politicians, onSelectParty }) {
   return (
     <figure className="mf mf-chamber">
       <figcaption>
-        <b>The 2024 Commons, seat by seat</b>
+        <b>The Commons today, seat by seat</b>
         <span>Every seat is one MP, coloured by party. Pick a party to read its headline promises.</span>
       </figcaption>
       <PartyHemicycle
@@ -61,7 +61,7 @@ function PromisePopup({ pick, onPick, onClose, onOpenParty, openerRef }) {
             <button ref={closeRef} type="button" className="mf-pop-x" aria-label="Close" onClick={onClose}><CloseX size={16} /></button>
             <small>{party.name}{ONE_NATION_PARTIES[pick.key] ? `, ${ONE_NATION_PARTIES[pick.key]} only` : ""}</small>
             <h3 id="mf-pop-title">{pick.topic}</h3>
-            <p>A clear promise on <b>{cell.n}</b> of {total} {total === 1 ? "question" : "questions"}</p>
+            <p>A clear promise on <b>{cell.n}</b> of {total} {total === 1 ? "issue" : "issues"}</p>
             <span className="mf-pop-meter" aria-hidden="true">{Array.from({ length: total }, (_, k) => <i key={k} data-on={k < cell.n ? "1" : "0"} style={{ "--k": k }} />)}</span>
           </div>
           <div className="mf-pop-topics" role="group" aria-label="Topic">
@@ -116,7 +116,7 @@ export function Footprint({ onOpenParty }) {
     <figure ref={ref} className="mf mf-grid" data-go={go}>
       <figcaption>
         <b>Where each party made a clear promise</b>
-        <span>Each circle grows with the share of a topic's questions that the party gave a clear answer to in its 2024 manifesto. Press a circle to see what it promised.</span>
+        <span>Each circle grows with the share of a topic's issues that the party gave a clear answer to in its 2024 manifesto. Press a circle to see what it promised.</span>
       </figcaption>
       <div className="mf-scroll">
         <table>
@@ -142,7 +142,7 @@ export function Footprint({ onOpenParty }) {
                       className="mf-cell"
                       data-n={c.n === 0 ? "0" : "1"}
                       style={{ "--c": PARTY[c.key].color, "--t": readable(PARTY[c.key].color), "--r": c.n / t.total, "--d": `${row * 70 + col * 45}ms` }}
-                      aria-label={`${PARTY[c.key].name}, ${t.topic}: a clear promise on ${c.n} of ${t.total} questions. Press to read.`}
+                      aria-label={`${PARTY[c.key].name}, ${t.topic}: a clear promise on ${c.n} of ${t.total} issues. Press to read.`}
                       aria-haspopup="dialog"
                       onMouseEnter={() => setHot(c.key)}
                       onMouseLeave={() => setHot(null)}
@@ -187,7 +187,7 @@ export function FootprintStrip({ partyKey }) {
       <span className="mf-strip-bars" aria-hidden="true">
         {f.topics.map((t, i) => <i key={t.topic} title={t.topic} style={{ "--r": t.cells[idx].n / t.total, "--i": i }} />)}
       </span>
-      <span className="mf-strip-say">A clear promise on <b>{total}</b> of {f.questions} questions</span>
+      <span className="mf-strip-say">A clear promise on <b>{total}</b> of {f.questions} issues</span>
     </div>
   );
 }

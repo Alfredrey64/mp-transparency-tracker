@@ -8,6 +8,7 @@ import { holdPlace } from "../lib/preserveScroll";
 import { PROCEDURE_TERMS, POLITICS_TERMS, STATISTICS_TERMS } from "../data/glossaryTerms";
 import { wordOfTheDay, makeQuestion } from "../lib/glossaryGame";
 import { glide } from "../lib/scrollBehavior";
+import { FOLD } from "../lib/foldMotion";
 
 const TABS = [
   { key: "procedure", label: "Parliamentary terms", blurb: "How Parliament works: bills, votes, committees and who does what.", accent: "#1E4FB8" },
@@ -131,7 +132,7 @@ function TermRow({ t, isOpen, onToggle, accent }) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.22, ease: "easeInOut" }}
+            transition={FOLD}
             style={{ overflow: "hidden" }}
           >
             <div style={{ padding: "0 18px 20px", display: "flex", flexDirection: "column", gap: 14, maxWidth: 700 }}>

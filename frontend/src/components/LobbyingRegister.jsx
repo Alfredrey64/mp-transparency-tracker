@@ -146,8 +146,8 @@ function RegisterLead() {
   return (
     <section className="lr-lead" aria-label="The register in brief">
       <p className="lr-lead-text">
-        Since <b className="lr-hl">2014</b>, a firm paid to lobby a minister for someone else has had to sign a public register. Today <b className="lr-hl"><CountUp value={LOBBYISTS.length} /></b> firms
-        are on it, and the Registrar's <b className="lr-hl">{CASES.length}</b> recent investigations into whether other lobbying should have been registered all ended with no breach found.
+        Lobbying means being paid to persuade a minister on someone else's behalf. Since <b className="lr-hl">2014</b>, firms that do this have had to sign a public register, and <b className="lr-hl"><CountUp value={LOBBYISTS.length} /></b> are
+        on it today. The Registrar has also looked into <b className="lr-hl">{CASES.length}</b> cases where other lobbying might have gone unregistered, and found no breach in any of them.
       </p>
       <div className="lr-ticker" aria-hidden="true">
         {names.map((row, r) => (

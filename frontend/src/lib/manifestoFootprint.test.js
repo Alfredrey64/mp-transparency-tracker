@@ -4,8 +4,9 @@ import { ANSWER_POSITIONS, POSITION_PARTY_ORDER } from "../data/answerPartyPosit
 
 describe("manifestoFootprint", () => {
   const f = manifestoFootprint();
-  it("counts every question once, under its topic", () => {
-    expect(f.questions).toBe(Object.keys(ANSWER_POSITIONS).length);
+  it("counts every distinct set of promises once, under its topic, however many questions share it", () => {
+    expect(f.questions).toBeGreaterThanOrEqual(new Set(Object.values(ANSWER_POSITIONS)).size);
+    expect(f.questions).toBeLessThan(Object.keys(ANSWER_POSITIONS).length);
     expect(f.topics.every((t) => t.total > 0)).toBe(true);
   });
   it("gives each party a cell in each topic that never exceeds the topic's questions", () => {
@@ -26,5 +27,16 @@ describe("manifestoFootprint", () => {
       expect(c.items.length + c.missing.length).toBe(t.total);
       for (const i of c.items) { expect(i.question).toBeTruthy(); expect(i.text).toBeTruthy(); }
     }
+  });
+  it("never shows the same promise twice for a party in one topic", () => {
+    for (const t of f.topics) for (const c of t.cells) {
+      const texts = c.items.map((i) => i.text);
+      expect(new Set(texts).size).toBe(texts.length);
+    }
+  });
+  it("names every question that shares a set of promises on one row", () => {
+    const tax = f.topics.flatMap((t) => t.cells.flatMap((c) => c.items)).find((i) => i.ids.includes("where-does-tax-go"));
+    expect(tax.ids).toContain("what-is-national-insurance");
+    expect(tax.question).toMatch(/National Insurance/);
   });
 });

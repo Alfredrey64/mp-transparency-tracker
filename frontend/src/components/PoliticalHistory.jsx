@@ -12,6 +12,7 @@ import { explainerFor } from "../data/landmarkExplainers";
 import { BillIcon } from "./billIcons";
 import { supabase } from "../supabaseClient";
 import { withScrollPreserved } from "../lib/preserveScroll";
+import { FOLD } from "../lib/foldMotion";
 
 const VOTE_THEMES = ["General", ...new Set(LANDMARK_VOTES.map((v) => v.theme))];
 
@@ -349,7 +350,7 @@ function VoteRow({ vote, index, pulse }) {
           <AnimatePresence initial={false}>
             {more && open && (
               <motion.div
-                key="more" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25, ease: "easeOut" }}
+                key="more" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={FOLD}
                 style={{ overflow: "hidden", cursor: "default" }} onClick={(e) => e.stopPropagation()}
               >
                 <div style={{ marginTop: 14, padding: "4px 0 2px", display: "grid", gap: 14, borderTop: `1px solid ${COLORS.hairline}` }}>

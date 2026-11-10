@@ -4,6 +4,8 @@ import { IconThinkTank, IconSearch, IconBroadcast, IconQuestion } from "./icons"
 import { Board, Why, Chapter, Pull, Cards, Visual } from "./story/Kit";
 import { Masked, Ladder } from "./story/ThinkArt";
 import { caseId } from "../lib/caseId";
+import { useGo } from "./story/useGo";
+import "../thinktankcards.css";
 
 const GRADE_COLOR = {
   A: "#3F7D5C",
@@ -63,6 +65,30 @@ const THINK_TANKS = [
 ];
 
 const SHORT = {"Institute of Economic Affairs": "IEA", "Adam Smith Institute": "Adam Smith Institute", "TaxPayers' Alliance": "TaxPayers' Alliance", "Centre for Policy Studies": "Centre for Policy Studies", "Institute for Public Policy Research (IPPR)": "IPPR", "Resolution Foundation": "Resolution Foundation", "Institute for Fiscal Studies (IFS)": "IFS"};
+
+const GRADE_AT = { A: 10, B: 30, C: 50, D: 70, E: 90 };
+const GRADE_WORD = { A: "open about its funders", B: "mostly open", C: "partly open", D: "mostly closed", E: "undisclosed" };
+
+// One think tank's evaluation. It arrives when it scrolls into view: the grade badge turns in, a gauge on the same open-to-undisclosed scale as the picture above slides its
+// marker to the grade, and the finding follows. The words are exactly as they were; this only changes how they arrive.
+function TankCard({ t, i }) {
+  const [ref, go] = useGo(0.2);
+  return (
+    <li ref={ref} id={caseId(t.name)} className="st-case tt-card" data-go={go} data-grade={t.grade} style={{ "--tc": GRADE_COLOR[t.grade], "--i": i % 3, "--pos": `${GRADE_AT[t.grade]}%` }}>
+      <div className="tt-card-in">
+        <header>
+          <span className="tt-badge" aria-hidden="true"><b>{t.grade}</b></span>
+          <div><h3>{t.name}</h3><p>{t.lean}</p></div>
+        </header>
+        <div className="tt-gauge" role="img" aria-label={`Transparency grade ${t.grade}, ${GRADE_WORD[t.grade]}, on a scale from A, open, to E, undisclosed`}>
+          <div className="tt-gauge-track"><i className="tt-gauge-fill" /><i className="tt-gauge-mark" /></div>
+          <div className="tt-gauge-ends" aria-hidden="true"><span>Open</span><span>Undisclosed</span></div>
+        </div>
+        <section><h4><IconSearch size={15} />What was found</h4><p>{t.detail}</p></section>
+      </div>
+    </li>
+  );
+}
 
 export default function ThinkTankFunding() {
   const ladder = THINK_TANKS.map((t) => ({ ...t, short: SHORT[t.name] ?? t.name }));
@@ -137,12 +163,7 @@ export default function ThinkTankFunding() {
       <Chapter n={4} title="A sample, across the spectrum" colour="#E8741A" lede="Seven prominent UK think tanks with a published Who Funds You? grade: three free-market organisations rated poorly, one left-leaning and two non-partisan organisations rated highly. A hand-picked sample to illustrate the range, not a comprehensive or systematically balanced survey.">
         <Visual><Ladder tanks={ladder} /></Visual>
         <ul className="st-case-grid">
-          {THINK_TANKS.map((t) => (
-            <li key={t.name} id={caseId(t.name)} className="st-case" style={{ "--tc": GRADE_COLOR[t.grade] }}>
-              <header><span className="st-avatar" aria-hidden="true">{t.grade}</span><div><h3>{t.name}</h3><p>{t.lean}</p></div></header>
-              <section><h4>What was found</h4><p>{t.detail}</p></section>
-            </li>
-          ))}
+          {THINK_TANKS.map((t, i) => <TankCard key={t.name} t={t} i={i} />)}
         </ul>
       </Chapter>
 

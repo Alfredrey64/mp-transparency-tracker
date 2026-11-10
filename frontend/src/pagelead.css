@@ -10,9 +10,9 @@
 .pl-sub { font: 500 14.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .pl-facts { list-style: none; margin: 0; padding: 4px clamp(20px, 3vw, 34px); display: grid; grid-auto-rows: 1fr; align-content: stretch; }
 /* One shared value column, so every label starts at the same left edge and the rows are the same height whatever they hold. */
-.pl-facts li { display: grid; grid-template-columns: clamp(92px, 9.5vw, 120px) minmax(0, 1fr); align-items: center; gap: 4px 18px; padding: 14px 0; border-top: 1px solid var(--c-hairline); animation: plIn 0.55s var(--ease-out) calc(var(--i) * 110ms + 250ms) backwards; }
+.pl-facts li { display: grid; grid-template-columns: clamp(92px, 9.5vw, 120px) minmax(0, 1fr); align-items: center; gap: 4px 14px; padding: 14px 0; border-top: 1px solid var(--c-hairline); animation: plIn 0.55s var(--ease-out) calc(var(--i) * 110ms + 250ms) backwards; }
 .pl-facts li:first-child { border-top: 0; }
-.pl-facts li > b { white-space: nowrap; font: 700 clamp(26px, 3.2vw, 34px)/1.05 "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--pc) 72%, var(--c-ink)); font-variant-numeric: lining-nums tabular-nums; }
+.pl-facts li > b { white-space: nowrap; text-align: right; font: 700 clamp(26px, 3.2vw, 34px)/1.05 "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--pc) 72%, var(--c-ink)); font-variant-numeric: lining-nums tabular-nums; }
 .pl-facts li > div { display: grid; gap: 2px; min-width: 0; align-content: center; }
 .pl-facts li > div > span { font: 700 15px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .pl-facts small { font: 500 13px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); overflow-wrap: anywhere; }

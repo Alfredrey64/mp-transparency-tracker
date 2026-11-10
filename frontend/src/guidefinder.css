@@ -41,6 +41,8 @@
 .gf-step:last-child::before { display: none; }
 .gf-step[data-state="done"]::before { background: var(--gc); }
 .gf-node { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; font: 800 18px/1 var(--font-display, "Newsreader", Georgia, serif); background: var(--c-paper-card); color: color-mix(in srgb, var(--gc) 75%, var(--c-ink)); border: 3px solid color-mix(in srgb, var(--gc) 45%, var(--c-hairline)); z-index: 1; }
+.gf-node svg { display: block; overflow: visible; }
+.gf-node text { font: 800 19px "Figures", "Public Sans", system-ui, sans-serif; font-variant-numeric: lining-nums; }
 .gf-step[data-state="done"] .gf-node { background: var(--gc); border-color: var(--gc); color: #fff; }
 .gf-step[data-state="now"] .gf-node { background: var(--gc); border-color: var(--gc); color: #fff; animation: gfBeat 1.8s ease-out infinite; }
 .gf-step-body { min-width: 0; padding: 4px 0 0; }
@@ -97,3 +99,8 @@
 @keyframes gfSweep { to { background-position: -200% 0; } }
 @keyframes gfRing { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--gc) 45%, transparent); } 70%, 100% { box-shadow: 0 0 0 12px transparent; } }
 @media (prefers-reduced-motion: reduce) { .gf::before, .gf-badge::after { animation: none; } .gf-options button::before { transition: none; } }
+
+/* Hover without a flicker: every option is already on its own layer, so the lift does not make the browser build a new one (and repaint the cards around it) at the moment the pointer arrives; the lifted card sits above its neighbours; and the moving light on the top bar and the pulse ring on the badge pause while the options are in use. */
+.gf-options button { will-change: transform; backface-visibility: hidden; }
+.gf-options button:hover, .gf-options button:focus-visible { z-index: 1; }
+.gf:has(.gf-options button:hover)::before, .gf:has(.gf-options button:hover) .gf-badge::after { animation-play-state: paused; }

@@ -12,6 +12,7 @@ import Loading from "./Loading";
 import { GlanceCard, StackBar } from "./Glance";
 import ByElectionBoard from "./ByElectionBoard";
 import { outcomeOf, movesBetweenParties, strip, byYear } from "../lib/byElectionView";
+import { FOLD } from "../lib/foldMotion";
 
 function daysAgo(dateStr) {
   if (!dateStr) return null;
@@ -288,7 +289,7 @@ export default function ByElections() {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.25, ease: "easeInOut" }}
+                    transition={FOLD}
                     style={{ overflow: "hidden" }}
                   >
                     <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${COLORS.hairline}` }}>

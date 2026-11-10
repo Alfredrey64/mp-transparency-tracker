@@ -10,6 +10,7 @@ import { sectorToCommittee } from "../lib/sectorCommitteeMapping";
 import { categoriseBill, matchBillForVote } from "../lib/bills";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { CardShell } from "./MpCards";
+import { FOLD } from "../lib/foldMotion";
 
 function groupInterestsBySector(interests) {
   const bySector = new Map();
@@ -62,7 +63,7 @@ export function FundingBySectorBox({ interests }) {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.2 }}
+                    transition={FOLD}
                     style={{ overflow: "hidden" }}
                   >
                     <div style={{ padding: "8px 0 6px 4px", display: "flex", flexDirection: "column", gap: 6 }}>

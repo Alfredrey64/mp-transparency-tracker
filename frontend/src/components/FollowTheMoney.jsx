@@ -11,6 +11,7 @@ import { normalizeDonorKey } from "../lib/donorSectors";
 import { IconSearch } from "./icons";
 import DonorVotes from "./DonorVotes";
 import Unfold from "./Unfold";
+import { FOLD } from "../lib/foldMotion";
 
 const MIN_QUERY_LENGTH = 3;
 const RESULT_CAP = 25;
@@ -209,7 +210,7 @@ function DonorResultCard({ result, index, onSelectPolitician }) {
       {open && (
       <motion.div
         key="body" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-        transition={{ duration: 0.2, ease: "easeOut" }} style={{ overflow: "hidden" }}
+        transition={FOLD} style={{ overflow: "hidden" }}
       >
       <div style={{ marginTop: 20 }}>
         <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 700, color: COLORS.ink }}>How these gifts were declared</div>

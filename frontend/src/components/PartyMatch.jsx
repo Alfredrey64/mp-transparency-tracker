@@ -12,6 +12,7 @@ import {
 import { QUESTIONS, ISSUES, ANSWER_SCALE, QUIZ_PARTIES, NATIONS, QUESTION_ANSWER, scoreQuiz } from "../data/partyMatchQuiz";
 import { EVIDENCE, MANIFESTO_SOURCES, CHECKED_ON } from "../data/partyMatchEvidence";
 import { explainMatch, STANCE, YOU } from "../lib/quizInsights";
+import { FOLD } from "../lib/foldMotion";
 
 const MAX_PRIORITIES = 5;
 
@@ -336,7 +337,7 @@ function ExplainerToggle({ text }) {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2, ease: "easeInOut" }}
+            transition={FOLD}
             style={{ overflow: "hidden" }}
           >
             <p

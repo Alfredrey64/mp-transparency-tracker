@@ -8,6 +8,7 @@ import { fetchAllRows } from "../lib/supabasePagination";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import Loading from "./Loading";
 import { LoadFailedNote } from "./MpCards";
+import { FOLD } from "../lib/foldMotion";
 
 // This is a company-first view of the same underlying data shown elsewhere
 // on this page donor-first (grouped by MP and by industry sector). Here we
@@ -205,7 +206,7 @@ function CompanyRow({ company, isOpen, onToggle }) {
 
       <AnimatePresence>
         {isOpen && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.2 }} style={{ overflow: "hidden" }}>
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={FOLD} style={{ overflow: "hidden" }}>
             <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${COLORS.hairline}` }}>
               <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
                 Donations to MPs from this company

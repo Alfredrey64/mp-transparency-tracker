@@ -10,6 +10,7 @@ import pmPortraits from "../data/pmPortraits.json";
 import { keyboardActivate } from "../lib/a11y";
 import "../timeline.css";
 import { glide } from "../lib/scrollBehavior";
+import { FOLD } from "../lib/foldMotion";
 
 function PmAvatar({ name, color, size = 40 }) {
   const [loaded, setLoaded] = useState(false);
@@ -175,7 +176,7 @@ function GovernmentEntry({ entry, showTerm }) {
 
       <AnimatePresence initial={false}>
         {open && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.25, ease: "easeInOut" }} style={{ overflow: "hidden" }}>
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={FOLD} style={{ overflow: "hidden" }}>
             <div className="tl-more">
               {entry.events && entry.events.length > 0 && (
                 <div style={{ marginBottom: 16 }}>
@@ -246,7 +247,7 @@ function BillEntry({ entry }) {
 
       <AnimatePresence initial={false}>
         {open && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.25, ease: "easeInOut" }} style={{ overflow: "hidden" }}>
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={FOLD} style={{ overflow: "hidden" }}>
             <div className="tl-more">
               <Label color={COLORS.inkSoft}>Passed under</Label>
               {!gov ? (

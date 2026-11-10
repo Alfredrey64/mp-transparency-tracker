@@ -1,5 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { installSmoothDetails } from './lib/smoothDetails'
 import './fonts.css'
 import './index.css'
 import App from './App.jsx'
@@ -22,6 +23,7 @@ startAnalytics()
 installChunkReload()
 registerOffline()
 
+installSmoothDetails()
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider>

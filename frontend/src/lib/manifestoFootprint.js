@@ -1,6 +1,10 @@
 import { ANSWER_POSITIONS, POSITION_PARTY_ORDER } from "../data/answerPartyPositions";
 import { ANSWERS, ANSWER_TOPICS } from "../data/answers";
 
+// Several questions can share one set of promises (for example "Where does my tax go?" and "What is National Insurance?" are answered by the same commitments), and the same
+// words must not appear twice. So questions that point at the very same entry are one item here: counted once, shown once, with all their questions named.
+const listOf = (items) => new Intl.ListFormat("en-GB", { style: "long", type: "conjunction" }).format(items);
+
 // For each topic, how many of the site's questions each party made a clear promise on, read straight from the party positions behind "Who promises what".
 // A party counted here made a clear commitment we are confident about; a party left out may still have a view, which the page says wherever it is shown.
 export function manifestoFootprint() {
@@ -9,18 +13,25 @@ export function manifestoFootprint() {
   const ids = Object.keys(ANSWER_POSITIONS);
   const topics = ANSWER_TOPICS
     .map((topic) => {
-      const inTopic = ids.filter((id) => topicOf.get(id) === topic);
+      // One slot per distinct entry in this topic, holding every question that uses it.
+      const slots = [];
+      for (const id of ids.filter((x) => topicOf.get(x) === topic)) {
+        const entry = ANSWER_POSITIONS[id];
+        const slot = slots.find((x) => x.entry === entry);
+        if (slot) slot.ids.push(id); else slots.push({ entry, ids: [id] });
+      }
+      const label = (slot) => listOf(slot.ids.map((id) => questionOf.get(id)));
       return {
         topic,
-        total: inTopic.length,
+        total: slots.length,
         cells: POSITION_PARTY_ORDER.map((key) => {
-          const said = inTopic.filter((id) => ANSWER_POSITIONS[id].parties[key]);
+          const said = slots.filter((x) => x.entry.parties[key]);
           return {
             key,
             n: said.length,
             // What the party promised on each of those questions, and the questions it has no clear promise on in our summary.
-            items: said.map((id) => ({ id, question: questionOf.get(id), about: ANSWER_POSITIONS[id].about, text: ANSWER_POSITIONS[id].parties[key] })),
-            missing: inTopic.filter((id) => !ANSWER_POSITIONS[id].parties[key]).map((id) => ({ id, question: questionOf.get(id) })),
+            items: said.map((x) => ({ id: x.ids[0], ids: x.ids, question: label(x), about: x.entry.about, text: x.entry.parties[key] })),
+            missing: slots.filter((x) => !x.entry.parties[key]).map((x) => ({ id: x.ids[0], question: label(x) })),
           };
         }),
       };

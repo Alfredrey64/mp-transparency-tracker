@@ -8,6 +8,7 @@ import BillMore from "./BillMore";
 import { getBillDescription } from "../lib/billDescriptions";
 import "../billcap.css";
 import { watchSize } from "../lib/watchWidth";
+import { FOLD } from "../lib/foldMotion";
 
 // A real institutional fact, not a decorative choice: Commons benches are
 // green, Lords benches are red, and that colour-coding is how the two
@@ -289,7 +290,7 @@ export function BillJourney({ bills }) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={FOLD}
             style={{ overflow: "hidden" }}
           >
             <div

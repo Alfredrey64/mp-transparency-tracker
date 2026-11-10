@@ -18,7 +18,7 @@ function Route({ steps, here, colour }) {
         const state = here == null ? "todo" : i < here ? "done" : i === here ? "now" : "todo";
         return (
           <li key={s.title} className="gf-step" data-state={state} style={{ "--i": i }}>
-            <span className="gf-node" aria-hidden="true">{state === "done" ? "✓" : i + 1}</span>
+            <span className="gf-node" aria-hidden="true">{state === "done" ? <svg viewBox="0 0 20 20" width="20" height="20"><path d="M4.5 10.5l3.6 3.6 7.4-8" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" /></svg> : <svg viewBox="0 0 20 20" width="20" height="20"><text x="10" y="10.2" textAnchor="middle" dominantBaseline="central" fill="currentColor">{i + 1}</text></svg>}</span>
             <div className="gf-step-body">
               {state === "now" && <span className="gf-here">You are here. Do this next</span>}
               {state === "done" && <span className="sr-only">Done. </span>}
