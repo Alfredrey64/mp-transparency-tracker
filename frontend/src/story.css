@@ -1386,17 +1386,16 @@
 /* The arrow from the think tank to the expert: the broad bar draws out of the think tank, its head and label pop in, chevrons then run along it for good, and the think tank badge lands on the expert last. */
 .ttm[data-go="1"] .ttm-infl { animation: ttmFade 0.3s ease calc(0.35s + var(--d, 0) * 0.45s) backwards; }
 .ttm-shaft { transform-box: fill-box; transform-origin: left center; }
-.ttm[data-go="1"] .ttm-shaft { animation: ttmDraw 0.7s var(--ease-out) calc(0.35s + var(--d, 0) * 0.45s) backwards; }
+.ttm-head { transform-box: fill-box; transform-origin: center; }
+.ttm[data-go="1"] .ttm-shaft { animation: ttmDraw 0.7s var(--ease-out) calc(0.35s + var(--d, 0) * 0.45s) backwards, ttmMarch 0.9s linear calc(1.1s + var(--d, 0) * 0.45s) infinite; }
 .ttm[data-go="1"] .ttm-head { animation: ttmPop 0.4s cubic-bezier(0.25, 1.6, 0.45, 1) calc(0.35s + var(--d, 0) * 0.45s + 0.55s) backwards; }
 .ttm[data-go="1"] .ttm-label { animation: ttmPop 0.55s cubic-bezier(0.25, 1.5, 0.45, 1) calc(0.35s + var(--d, 0) * 0.45s + 0.35s) backwards; }
 .ttm[data-go="1"] .ttm-badge { animation: ttmPop 0.6s cubic-bezier(0.25, 1.6, 0.45, 1) calc(0.35s + var(--d, 0) * 0.45s) backwards; }
-.ttm-chev { opacity: 0; }
-.ttm[data-go="1"] .ttm-chev { animation: ttmChev 1.9s ease-in-out infinite; animation-delay: calc(0.35s + var(--d, 0) * 0.45s + 1s + var(--c, 0) * 0.6s); }
 .ttm-minilock { transform-box: fill-box; }
 .ttm[data-go="1"] .ttm-pipe { animation: ttmFade 0.5s ease 1.2s backwards, ttmMarch 1.1s linear 1.2s infinite; }
 .ttm[data-go="1"] .ttm-note { animation: ttmFade 0.8s ease 2.4s backwards; }
 .ttm-redact { transform-box: fill-box; transform-origin: left center; animation: ttmRedact 5s ease-in-out infinite; animation-delay: calc(1.6s + var(--r, 0) * 0.5s); }
-.ttm[data-go="0"] .ttm-redact, .ttm[data-go="0"] .ttm-chev, .ttm[data-go="0"] .ttm-tank-glow, .ttm[data-go="0"] .ttm-spot, .ttm[data-go="0"] .ttm-live { animation: none; }
+.ttm[data-go="0"] .ttm-redact, .ttm[data-go="0"] .ttm-tank-glow, .ttm[data-go="0"] .ttm-spot, .ttm[data-go="0"] .ttm-live { animation: none; }
 .ttm-tank-glow { opacity: 0; animation: ttmGlow 1.73s ease-in-out infinite 2.2s; }
 .ttm-spot { transform-box: fill-box; transform-origin: center; animation: ttmSpot 4s ease-in-out infinite alternate; }
 .ttm-live { animation: ttmLive 1.2s ease-in-out infinite; }
@@ -1408,8 +1407,7 @@
 @keyframes ttmSpot { from { opacity: 0.45; transform: scale(0.95); } to { opacity: 1; transform: scale(1.05); } }
 @keyframes ttmLive { 50% { opacity: 0.25; } }
 @keyframes ttmDraw { from { transform: scaleX(0); } }
-@keyframes ttmChev { 0% { opacity: 0; transform: translateX(12px); } 18% { opacity: 1; } 78% { opacity: 1; } 100% { opacity: 0; transform: translateX(calc(var(--run, 100) * 1px)); } }
-@media (prefers-reduced-motion: reduce) { .ttm * { animation: none !important; } .ttm .ttm-redact { transform: none; } .ttm .ttm-chev { opacity: 0.95; transform: translateX(calc(var(--c, 0) * 44px + 18px)); } .ttm .ttm-tank-glow { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .ttm * { animation: none !important; } .ttm .ttm-redact { transform: none; } .ttm .ttm-tank-glow { opacity: 0; } }
 /* The phone versions that are plain boxes, not drawings, lay themselves out in a grid (the rule that swaps them in sets display to block). */
 @media (max-width: 560px) { .dm-spend.st-trail-tall, .dm-sec.st-trail-tall { display: grid !important; } }
 

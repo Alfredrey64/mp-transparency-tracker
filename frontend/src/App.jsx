@@ -498,6 +498,10 @@ export default function App() {
         t.ready.then(settle, () => {});
         const clear = () => { settling = false; if (id === navId.current) delete root.dataset.vt; };
         t.finished.then(clear, clear);
+        // Safety net: a change takes about half a second. If the browser has not finished its pictures after a second and a half (a stuck frame, a hidden tab), they are thrown
+        // away, so an old page's picture can never stay painted over the new page.
+        const net = setTimeout(() => { try { t.skipTransition(); } catch { /* already over */ } }, 1500);
+        t.finished.then(() => clearTimeout(net), () => clearTimeout(net));
         return;
       }
       // With a copy of the old page, the new page is drawn underneath it and the copy is then wiped away from the top down: there is no dip to a blank or pale screen and

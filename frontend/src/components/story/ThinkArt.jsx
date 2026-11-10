@@ -49,16 +49,46 @@ function MiniLock({ x, y }) {
   );
 }
 
-// The think tank speaking through the "independent expert": a broad arrow with chevrons running along it from one to the other, a label that says what it carries, and a line
-// under it saying how it comes across. `rot` 0 runs along the page, 90 runs down it; the label is drawn upright either way, at the place given.
-function Influence({ x, y, len, rot = 0, d, label, sub }) {
+// The think tank speaking through the "independent" expert: a dashed line that marches from one to the other with an arrowhead, little speech bubbles carrying its words along it
+// (they shrink as they reach the expert, who repeats them), a label that says what it carries and a line under it saying how it comes across. `rot` 0 runs along the page, 90
+// runs down it; the label and the bubbles are drawn upright either way. The bubbles are SMIL, so they only exist when motion is allowed; the still version keeps one in the middle.
+const BUBBLE = (
+  <>
+    <path d="M -7 8 L -11 18 L 3 9 Z" fill="#9C6B30" stroke="#fff" strokeWidth="2" strokeLinejoin="round" />
+    <rect x="-17" y="-12" width="34" height="23" rx="9" fill="#9C6B30" stroke="#fff" strokeWidth="2.5" />
+    <path d="M -7 8.5 L -10 15 L 1 9.5 Z" fill="#9C6B30" />
+    <text x="0" y="8.5" textAnchor="middle" fontSize="26" fontWeight="700" fill="#fff" fontFamily="Newsreader, Georgia, serif">&ldquo;</text>
+  </>
+);
+
+function Bubbles({ path, dur = 3.4, count = 2 }) {
+  return Array.from({ length: count }, (_, i) => {
+    const begin = `${(-dur / count) * i}s`;
+    return (
+      <g key={i} opacity="0">
+        {BUBBLE}
+        <animateMotion dur={`${dur}s`} begin={begin} repeatCount="indefinite" path={path} keyPoints="0;1" keyTimes="0;1" calcMode="linear" />
+        <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.14;0.8;1" dur={`${dur}s`} begin={begin} repeatCount="indefinite" />
+        <animateTransform attributeName="transform" additive="sum" type="scale" values="0.55;1;1;0.6" keyTimes="0;0.2;0.75;1" dur={`${dur}s`} begin={begin} repeatCount="indefinite" />
+      </g>
+    );
+  });
+}
+
+function Influence({ x, y, len, rot = 0, d, label, sub, playing }) {
+  const dx = rot === 90 ? 0 : 1;
+  const dy = rot === 90 ? 1 : 0;
+  const path = `M ${x + dx * 14} ${y + dy * 14} L ${x + dx * (len - 26)} ${y + dy * (len - 26)}`;
+  const mid = len / 2;
   return (
     <g className="ttm-infl" style={{ "--d": d }}>
       <g transform={`translate(${x} ${y}) rotate(${rot})`}>
-        <rect className="ttm-shaft" x="0" y="-8" width={len - 14} height="16" rx="8" fill="#9C6B30" />
-        <path className="ttm-head" d={`M ${len - 18} -17 L ${len} 0 L ${len - 18} 17 Z`} fill="#9C6B30" strokeLinejoin="round" stroke="#9C6B30" strokeWidth="4" />
-        {[0, 1, 2].map((i) => <path key={i} className="ttm-chev" style={{ "--c": i, "--run": len - 56 }} d="M 0 -5.5 L 6 0 L 0 5.5" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />)}
+        <path className="ttm-shaft" d={`M 0 0 H ${len - 12}`} stroke="#9C6B30" strokeWidth="5" strokeDasharray="3 10" strokeLinecap="round" fill="none" />
+        <g transform={`translate(${len - 2} 0)`}>
+          <path className="ttm-head" d="M -15 -13 L 0 0 L -15 13" fill="none" stroke="#9C6B30" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
       </g>
+      {playing ? <Bubbles path={path} /> : <g transform={`translate(${x + dx * mid} ${y + dy * mid})`}>{BUBBLE}</g>}
       <g className="ttm-label" style={{ "--d": d }}>
         <rect x={label.x - label.w / 2} y={label.y - 17} width={label.w} height="34" rx="17" fill="#fff" stroke="#9C6B30" strokeWidth="3" />
         <text x={label.x} y={label.y + 5} textAnchor="middle" fontSize="14" fontWeight="800" fill={INK} fontFamily={F}>{label.text}</text>
@@ -110,7 +140,7 @@ function Expert({ x, y, d, id }) {
         <circle cx="100" cy="38" r="17" fill="#5A7FA6" />
         <path d="M 70 84 q 30 -40 60 0z" fill="#5A7FA6" />
         <rect x="18" y="92" width="164" height="26" rx="8" fill="#1B2438" />
-        <text x="100" y="110" textAnchor="middle" fontSize="14" fontWeight="800" fill="#fff" fontFamily={F}>Independent expert</text>
+        <text x="100" y="110" textAnchor="middle" fontSize="14" fontWeight="800" fill="#fff" fontFamily={F}>&ldquo;Independent&rdquo; expert</text>
         <g transform="translate(172 29)">
           <g className="ttm-badge" style={{ "--d": 4 }}>
             <circle r="17" fill="#fff" stroke="#9C6B30" strokeWidth="3" />
@@ -138,7 +168,7 @@ function MaskedWide() {
   const still = useReducedMotion();
   const playing = go === "1" && !still;
   return (
-    <svg ref={ref} data-go={go} className="st-trail-wide ttm" viewBox="0 0 1000 340" role="img" aria-label="An undisclosed funder pays a think tank. The think tank's own staff and views then appear on air as an independent expert, and the audience sees only the expert, not who is behind them">
+    <svg ref={ref} data-go={go} className="st-trail-wide ttm" viewBox="0 0 1000 340" role="img" aria-label="An undisclosed funder pays a think tank. The think tank's own staff and views then appear on air as an expert presented as independent, and the audience sees only the expert, not who is behind them">
       <Defs id="" />
       <g className="ttm-zone" style={{ "--d": 0 }}>
         <g>
@@ -156,8 +186,8 @@ function MaskedWide() {
       <Tank x={382} y={103} d={2} />
       <Expert id="" x={770} y={103} d={3} />
       {playing && <Coins path="M 236 168 H 398" />}
-      <Influence x={592} y={168} len={172} d={3.4} label={{ x: 676, y: 128, w: 164, text: "Its staff, its views" }} sub={{ x: 676, y: 205, text: "sounds independent" }} />
-      <text className="ttm-note" x="500" y="316" textAnchor="middle" fontSize="15" fontWeight="700" fill={SOFT} fontFamily={F}>The audience only ever sees the expert on the right, not who is behind them.</text>
+      <Influence playing={playing} x={592} y={168} len={172} d={3.4} label={{ x: 676, y: 128, w: 164, text: "Its staff, its views" }} sub={{ x: 676, y: 205, text: "sounds \u201Cindependent\u201D" }} />
+      <text className="ttm-note" x="500" y="316" textAnchor="middle" fontSize="15" fontWeight="700" fill={SOFT} fontFamily={F}>The audience only ever sees the “expert” on the right, not who is behind them.</text>
     </svg>
   );
 }
@@ -186,8 +216,8 @@ function MaskedTall() {
       <Tank x={80} y={236} d={2} />
       <Expert id="t" x={80} y={516} d={3} />
       {playing && <Coins path="M 180 196 V 262" count={2} />}
-      <Influence x={180} y={376} len={132} rot={90} d={3.4} label={{ x: 272, y: 430, w: 156, text: "Its staff, its views" }} sub={{ x: 272, y: 462, text: "sounds independent" }} />
-      <text className="ttm-note" x="180" y="684" textAnchor="middle" fontSize="14.500" fontWeight="700" fill={SOFT} fontFamily={F}>The audience only ever sees the expert.</text>
+      <Influence playing={playing} x={180} y={376} len={132} rot={90} d={3.4} label={{ x: 272, y: 430, w: 156, text: "Its staff, its views" }} sub={{ x: 272, y: 462, text: "sounds \u201Cindependent\u201D" }} />
+      <text className="ttm-note" x="180" y="684" textAnchor="middle" fontSize="14.500" fontWeight="700" fill={SOFT} fontFamily={F}>The audience only ever sees the “expert”.</text>
     </svg>
   );
 }

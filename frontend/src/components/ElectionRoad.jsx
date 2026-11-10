@@ -43,7 +43,7 @@ export default function ElectionRoad({ dates, today = new Date() }) {
 
       <ol className="er-road" aria-label="Every election date, and the seats up on each">
         {dates.map((d, i) => {
-          const size = 74 + 92 * Math.sqrt(d.seats / max);
+          const size = 62 + 52 * Math.sqrt(d.seats / max);
           return (
             <li key={d.date} className="er-stop" data-first={i === 0 ? "1" : "0"} style={{ "--i": i, "--size": `${size.toFixed(0)}px`, "--frac": (d.seats / max).toFixed(3) }}>
               <span className="er-bubble">
