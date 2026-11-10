@@ -9,6 +9,7 @@ import { manifestoSectionToBillCategory } from "../lib/manifestoBillMapping";
 import { getBillDescription } from "../lib/billDescriptions";
 import { plainSentence } from "../lib/billPlain";
 import { GlossaryTerm } from "./GlossaryTerm";
+import BillMore from "./BillMore";
 import { LoadFailedNote } from "./MpCards";
 import { explainDivision } from "../lib/divisionExplainer";
 
@@ -53,6 +54,7 @@ function ManifestoSectionCard({ section }) {
                     {bill.description}
                   </div>
                 )}
+                <BillMore bill={bill} />
                 <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
                   {bill.votes.map((v, i) => {
                     const stageLabel = explainDivision(v.title)?.label ?? v.title;
@@ -134,7 +136,7 @@ export function ManifestoTabContent({ politician }) {
       for (const v of relatedVotes) {
         const key = v.bill.short_title;
         if (!billIndex.has(key)) {
-          const entry = { short_title: v.bill.short_title, description: getBillDescription(v.bill.short_title, plainSentence(v.bill.long_title) ?? v.bill.long_title), votes: [] };
+          const entry = { short_title: v.bill.short_title, long_title: v.bill.long_title, description: getBillDescription(v.bill.short_title, plainSentence(v.bill.long_title) ?? v.bill.long_title), votes: [] };
           billIndex.set(key, entry);
           relatedBills.push(entry);
         }

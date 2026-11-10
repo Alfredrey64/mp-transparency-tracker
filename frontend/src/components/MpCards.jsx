@@ -11,6 +11,7 @@ import { getBillDescription } from "../lib/billDescriptions";
 import { plainSentence } from "../lib/billPlain";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import Loading from "./Loading";
+import BillMore from "./BillMore";
 
 // Lazy: this file is part of the bundle every page load pays for, and the
 // explainer (a table of division-title patterns) is only needed once an MP's
@@ -263,7 +264,7 @@ export function VotingSummaryBox({ politician, onNavigate }) {
     for (const v of votes ?? []) {
       if (map.has(v.title)) continue;
       const bill = matchBillForVote(v.title, bills);
-      if (bill) map.set(v.title, getBillDescription(bill.short_title, plainSentence(bill.long_title) ?? bill.long_title));
+      if (bill) map.set(v.title, { description: getBillDescription(bill.short_title, plainSentence(bill.long_title) ?? bill.long_title), bill });
     }
     return map;
   }, [votes, bills]);
@@ -303,18 +304,21 @@ export function VotingSummaryBox({ politician, onNavigate }) {
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {votes.map((v, i) => {
           const againstParty = hasPartyMajorityConcept && v.voted_with_party_majority === false;
-          const description = billByVote?.get(v.title);
+          const found = billByVote?.get(v.title);
+          const description = found?.description;
           return (
-            <button
+            <div
               key={i}
-              onClick={() => withScrollPreserved(() => onNavigate?.("voting", politician))}
               style={{
-                display: "block", width: "100%", textAlign: "left", background: "none", border: "none", cursor: onNavigate ? "pointer" : "default", padding: 0,
                 borderLeft: `3px solid ${againstParty ? "#9C3B3B" : COLORS.hairline}`,
                 paddingLeft: 10,
                 paddingBottom: i < votes.length - 1 ? 8 : 0,
                 borderBottom: i < votes.length - 1 ? `1px solid ${COLORS.hairline}` : "none",
               }}
+            >
+            <button
+              onClick={() => withScrollPreserved(() => onNavigate?.("voting", politician))}
+              style={{ display: "block", width: "100%", textAlign: "left", background: "none", border: "none", cursor: onNavigate ? "pointer" : "default", padding: 0 }}
             >
               <div style={{ fontFamily: FONT_BODY, fontSize: 14.5, fontWeight: 600, color: COLORS.ink, lineHeight: 1.4 }}>
                 <Suspense fallback={v.title}>
@@ -354,6 +358,8 @@ export function VotingSummaryBox({ politician, onNavigate }) {
                 )}
               </div>
             </button>
+            {found && <BillMore bill={found.bill} />}
+            </div>
           );
         })}
       </div>

@@ -7,6 +7,7 @@ import { explainDivision } from "../lib/divisionExplainer";
 import { summariseBill, billSearchUrl } from "../lib/billSummary";
 import VoteExplainer from "./VoteExplainer";
 import Unfold from "./Unfold";
+import BillMore from "./BillMore";
 
 // One MP's votes, grouped by bill so a bill with twenty clause votes is one
 // card with a short "what is this bill?" line and twenty quiet rows, rather
@@ -88,6 +89,7 @@ function BillCard({ group, bill, hasPartyMajorityConcept, index }) {
         <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.6, marginTop: 5 }}>{info.summary}</div>
       )}
       {info?.context && <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 4 }}>{info.context}</div>}
+      {bill && <BillMore bill={bill} />}
       <a
         href={info?.url ?? billSearchUrl(group.billName)}
         target="_blank"

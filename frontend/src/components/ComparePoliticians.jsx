@@ -11,6 +11,7 @@ import VoteExplainer from "./VoteExplainer";
 import { matchBillForVote } from "../lib/bills";
 import { getBillDescription } from "../lib/billDescriptions";
 import { plainSentence } from "../lib/billPlain";
+import BillMore from "./BillMore";
 import "../compare.css";
 
 const MAX_COMPARE = 3;
@@ -375,6 +376,7 @@ function VoteCompareRow({ vote, selected, bills }) {
             <div style={{ padding: "0 16px 16px", borderTop: `1px solid ${COLORS.hairline}`, marginTop: -1 }}>
               <div style={{ paddingTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
                 <VoteExplainer title={vote.title} />
+                {bill && <BillMore bill={bill} bare />}
                 {selected.map((p, i) => {
                   const v = vote.perMp[i];
                   const hasPartyConcept = !NO_PARTY_MAJORITY_CONCEPT.includes((p.party ?? "").toLowerCase());

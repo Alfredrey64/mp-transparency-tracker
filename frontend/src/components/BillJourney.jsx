@@ -3,6 +3,8 @@ import { m as motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, readable, solid } from "../theme";
 import { STAGE_DEFS, buildRoute } from "../lib/billRoute";
 import { plainSentence } from "../lib/billPlain";
+import { purposeFromLongTitle } from "../lib/billSummary";
+import BillMore from "./BillMore";
 import { getBillDescription } from "../lib/billDescriptions";
 import "../billcap.css";
 import { watchSize } from "../lib/watchWidth";
@@ -303,13 +305,14 @@ export function BillJourney({ bills }) {
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {selected.list.slice(0, 12).map((b) => {
-                  const line = getBillDescription(b.short_title, null) ?? plainSentence(b.long_title);
+                  const line = getBillDescription(b.short_title, null) ?? plainSentence(b.long_title) ?? purposeFromLongTitle(b.long_title);
                   return (
                     <div key={b.bill_id} style={{ display: "flex", gap: 10 }}>
                       <span aria-hidden="true" style={{ flex: "none", width: 8, height: 8, borderRadius: "50%", background: HOUSE_COLOR[selected.house], marginTop: 7 }} />
                       <div style={{ minWidth: 0 }}>
                         <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 14.5, color: COLORS.ink, lineHeight: 1.35 }}>{b.short_title}</div>
                         {line && <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.45, marginTop: 1 }}>{line}</div>}
+                        <BillMore bill={b} />
                       </div>
                     </div>
                   );
