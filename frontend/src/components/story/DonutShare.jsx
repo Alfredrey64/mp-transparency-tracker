@@ -1,5 +1,5 @@
 /** @jsxImportSource react */
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
 import CountUp from "../CountUp";
 import Unfold from "../Unfold";
@@ -16,12 +16,27 @@ import "../../spendpie.css";
 //   aria    the description of the whole ring for a screen reader
 const R = 112;
 const LEAD = 0.45;
+// Hovering only changes the middle of the ring once the pointer has rested on a slice or row for a moment, and lets go a moment after it leaves. Without that the number flickers
+// as the pointer crosses the ring or the gaps between rows. Keyboard focus acts at once.
+const DWELL = 260;
+const LINGER = 520;
+function useHoverIntent() {
+  const [hover, setHover] = useState(null);
+  const timer = useRef(0);
+  useEffect(() => () => clearTimeout(timer.current), []);
+  const set = (key, wait) => {
+    clearTimeout(timer.current);
+    if (wait <= 0) { setHover(key); return; }
+    timer.current = setTimeout(() => setHover(key), wait);
+  };
+  return { hover, enter: (key) => set(key, DWELL), leave: () => set(null, LINGER), focus: (key) => set(key, 0), blur: () => set(null, 0) };
+}
 
 export default function DonutShare({ items, total: totalProp, format, centre, aria, title, note, hint = "Press a slice to open it" }) {
   const [ref, go] = useGo(0.3);
   const still = useReducedMotion();
   const [open, setOpen] = useState(null);
-  const [hover, setHover] = useState(null);
+  const { hover, enter, leave, focus, blur } = useHoverIntent();
   const total = totalProp ?? items.reduce((n, s) => n + s.value, 0);
   const arcs = useMemo(() => items.map((s, i) => {
     const before = items.slice(0, i).reduce((n, x) => n + x.value, 0);
@@ -31,8 +46,7 @@ export default function DonutShare({ items, total: totalProp, format, centre, ar
   }), [items, total]);
   const pct = (n) => `${Math.round((n / total) * 100)}%`;
   const shown = items.find((s) => s.key === (hover ?? open)) ?? null;
-  const biggest = Math.max(...items.map((s) => s.value));
-  const aim = (key) => ({ onMouseEnter: () => setHover(key), onMouseLeave: () => setHover(null), onFocus: () => setHover(key), onBlur: () => setHover(null) });
+  const aim = (key) => ({ onMouseEnter: () => enter(key), onMouseLeave: leave, onFocus: () => focus(key), onBlur: blur });
 
   return (
     <figure className="sp" data-go={go} data-still={still ? "1" : "0"}>
@@ -52,7 +66,7 @@ export default function DonutShare({ items, total: totalProp, format, centre, ar
                   strokeDasharray={`${Math.max(0.4, a.len - LEAD)} ${100 - Math.max(0.4, a.len - LEAD)}`} strokeDashoffset={-a.start}
                   style={{ "--len": Math.max(0.4, a.len - LEAD), "--i": i, transform: on ? `translate(${(9 * Math.cos(a.mid)).toFixed(2)}px, ${(9 * Math.sin(a.mid)).toFixed(2)}px)` : undefined, opacity: dim ? 0.35 : 1 }}
                   onClick={() => setOpen(open === a.key ? null : a.key)}
-                  onMouseEnter={() => setHover(a.key)} onMouseLeave={() => setHover(null)}
+                  onMouseEnter={() => enter(a.key)} onMouseLeave={leave}
                 />
               );
             })}
@@ -79,7 +93,7 @@ export default function DonutShare({ items, total: totalProp, format, centre, ar
         {items.map((s, i) => {
           const isOpen = open === s.key;
           return (
-            <li key={s.key} className="sp-row" data-open={isOpen ? "1" : "0"} style={{ "--c": s.colour, "--i": i, "--w": `${(s.value / biggest) * 100}%` }}>
+            <li key={s.key} className="sp-row" data-open={isOpen ? "1" : "0"} style={{ "--c": s.colour, "--i": i, "--w": `${Math.max(2, (s.value / total) * 100)}%` }}>
               <button type="button" aria-expanded={isOpen} onClick={() => setOpen(isOpen ? null : s.key)} {...aim(s.key)}>
                 <span className="sp-dot" aria-hidden="true" />
                 <span className="sp-name">{s.label}</span>

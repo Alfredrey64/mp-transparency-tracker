@@ -284,8 +284,12 @@ dialog[open]::backdrop { animation: fade-in 0.15s ease both; }
 .dg-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.35s var(--ease-out); }
 .drawer-group[data-open="true"] .dg-body { grid-template-rows: 1fr; }
 .dg-body > .drawer-list { min-height: 0; overflow: hidden; }
-.drawer-list { list-style: none; margin: 0; padding: 4px 10px 0; display: grid; gap: 6px; align-content: start; }
-.drawer-group[data-open="true"] .drawer-list { padding-bottom: 14px; }
+/* One measure all round: the same 8px between the rows, above the first, below the last and at both sides, so a highlighted row sits the same distance from the group's edge wherever it is.
+   The space is margin on the rows, not padding on the clipped list, so it cannot be clipped while the group opens and closes. */
+.drawer-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; align-content: start; }
+.drawer-list li { margin-inline: 8px; }
+.drawer-list li:first-child { margin-top: 8px; }
+.drawer-list li:last-child { margin-bottom: 8px; }
 .drawer-list li { opacity: 0; transform: translateX(-10px); transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out); }
 .drawer-group[data-open="true"] .drawer-list li { opacity: 1; transform: none; transition-delay: calc(var(--n, 0) * 28ms + 90ms); }
 .drawer-list a { position: relative; display: flex; align-items: center; gap: 14px; min-height: 60px; padding: 10px 14px; border-radius: var(--radius-s); text-decoration: none; color: var(--c-ink); transition: background-color 0.15s var(--ease-out); }

@@ -1,6 +1,5 @@
 /** @jsxImportSource react */
 import { useState, useEffect, useMemo } from "react";
-import { m as motion } from "motion/react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
@@ -80,7 +79,7 @@ function PetitionRow({ petition, rank, isOpen, onToggle, panelId }) {
           <Ladder count={petition.signature_count} />
         </span>
         <span className="pet-sigs"><b>{petition.signature_count.toLocaleString("en-GB")}</b><span>signatures</span></span>
-        <motion.span aria-hidden="true" className="pet-chev" animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>▾</motion.span>
+        <svg className="pet-chev" aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path d="M3.5 6l4.5 4.5L12.5 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
       </button>
     </article>
   );

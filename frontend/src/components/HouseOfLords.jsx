@@ -475,7 +475,11 @@ export default function HouseOfLords({ peerId = null }) {
           subtitle="Every current peer, coloured by party. Hover a party below to pick it out, or tap one to filter the list."
           noPartyLabel="Crossbench"
           legendCount={10}
-          maxWidth={480}
+          // Nearly 850 peers: more, finer rows than the Commons so each seat is its own dot, and the whole width of the page rather than a narrow arc.
+          rows={14}
+          inner={70}
+          step={20}
+          seatRadius={4.6}
         />
       )}
 

@@ -57,15 +57,48 @@ const GROUPS = [
   { id: "td-g-committees", title: "Committees taking evidence", colour: "#2C7DA0", of: (v) => v.hearings },
 ];
 
-// What comes next, as one calm line under the date and the two Houses.
-function NextUp({ next, open }) {
-  if (!next) return <p className="td-next td-next-none"><small>Next up</small><b>Nothing else with a time is listed for today</b></p>;
+// "in 25 min", "in 1 h 20 min": how long until something starts.
+function until(mins) {
+  if (mins <= 0) return "starting now";
+  if (mins < 60) return `in ${mins} min`;
+  const h = Math.floor(mins / 60);
+  return `in ${h} h${mins % 60 ? ` ${mins % 60} min` : ""}`;
+}
+
+// What comes next, with how long until it starts.
+function NextUp({ next, now, open }) {
+  if (!next) return <p className="td-next td-next-none"><span className="td-next-tag">Next up</span><b>Nothing else with a time is listed for today</b></p>;
   return (
     <button type="button" className="td-next" aria-haspopup="dialog" onClick={(ev) => open(next, ev.currentTarget)}>
-      <small>Next up at {clock(next.time)}</small>
-      <b>{next.title}</b>
-      <span>Press to read what it is</span>
+      <span className="td-next-tag">Next up</span>
+      <span className="td-next-body"><b>{next.title}</b><span>{clock(next.time)} · Press to read what it is</span></span>
+      <span className="td-next-in">{until(clockMinutes(next.time) - now)}</span>
     </button>
+  );
+}
+
+// The day as one line: every timed item as a dot (Commons, Lords or both), and a marker for the time now, so it is plain at a glance how much of the day has gone.
+function DayStrip({ items, now }) {
+  const mins = items.map((e) => clockMinutes(e.time));
+  const lo = Math.floor(Math.min(...mins, now) / 60) * 60;
+  let hi = Math.ceil((Math.max(...mins) + 30) / 60) * 60;
+  if (hi - lo < 240) hi = lo + 240;
+  const at = (m) => Math.max(0, Math.min(100, ((m - lo) / (hi - lo)) * 100));
+  const started = mins.filter((m) => m <= now).length;
+  const label = (m) => clock(`${Math.floor(m / 60)}:00`);
+  return (
+    <div className="td-strip">
+      <div className="td-strip-track" aria-hidden="true">
+        <span className="td-strip-gone" style={{ "--to": `${at(now)}%` }} />
+        {items.map((e, i) => <i key={e.id} data-h={e.h} style={{ left: `${at(clockMinutes(e.time))}%`, "--i": i }} />)}
+        <em style={{ left: `${at(now)}%` }}><u>Now</u></em>
+      </div>
+      <p className="td-strip-ends" aria-hidden="true"><span>{label(lo)}</span><span>{label(lo + (hi - lo) / 2 - (((hi - lo) / 2) % 60))}</span><span>{label(hi)}</span></p>
+      <p className="td-strip-cap">
+        <span><b>{started} of {items.length}</b> timed {items.length === 1 ? "item has" : "items have"} started</span>
+        <span className="td-strip-key" aria-hidden="true"><i data-h="C" />Commons<i data-h="L" />Lords</span>
+      </p>
+    </div>
   );
 }
 
@@ -93,20 +126,26 @@ export default function TodayInParliament({ onAhead }) {
   const tag = (e) => (clockMinutes(e.time) === null ? e : { ...e, when: e.id === nextUp?.id ? "next" : clockMinutes(e.time) < now.minutes ? "past" : "later" });
   const shown = groups.map((g) => ({ ...g, items: g.items.map(tag) })).filter((g) => g.items.length);
   const timelineItems = shown.flatMap((g) => g.items);
+  // The day strip in the top card ignores the house filter: it is the whole day.
+  const allTimed = GROUPS.flatMap((g) => g.of(v)).map(entry).filter((e) => clockMinutes(e.time) !== null);
 
   return (
-    <div ref={ref} className="td" data-go={go}>
-      <section className="td-top" aria-label="Today in Parliament">
-        <div className="td-date">
-          <b>{dayLong(date)}</b>
-          <span>What Parliament's calendar lists for today</span>
-          <span className="td-clock" aria-label={`The time in London is ${clock(now.clock)}`}><i aria-hidden="true" />{clock(now.clock)}<small>London time</small></span>
+    <div className="td" data-go={go}>
+      {/* The card at the top is what is watched, not the whole tall page, so the page plays as soon as the card is on screen. */}
+      <section ref={ref} className="td-top" aria-label="Today in Parliament">
+        <div className="td-top-main">
+          <div className="td-date">
+            <b>{dayLong(date)}</b>
+            <span>What Parliament's calendar lists for today</span>
+            <span className="td-clock" aria-label={`The time in London is ${clock(now.clock)}`}><i aria-hidden="true" />{clock(now.clock)}<small>London time</small></span>
+          </div>
+          <div className="td-houses">
+            <House name="Commons" state={v.commons} away={data.away} count={commonsCount} inRange={v.inRange} />
+            <House name="Lords" state={v.lords} away={data.away} count={lordsCount} inRange={v.inRange} />
+          </div>
         </div>
-        <div className="td-houses">
-          <House name="Commons" state={v.commons} away={data.away} count={commonsCount} inRange={v.inRange} />
-          <House name="Lords" state={v.lords} away={data.away} count={lordsCount} inRange={v.inRange} />
-        </div>
-        {total > 0 && <NextUp next={nextUp} open={open} />}
+        {allTimed.length > 0 && <DayStrip items={allTimed} now={now.minutes} />}
+        {total > 0 && <NextUp next={nextUp} now={now.minutes} open={open} />}
       </section>
 
       {!v.inRange && (

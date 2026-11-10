@@ -45,7 +45,7 @@ test("the MP's photo and name come straight after the banner", async ({ page }) 
   if (process.env.WEEK_SHOT) { await strip.scrollIntoViewIfNeeded(); await page.waitForTimeout(2500); await strip.screenshot({ path: process.env.WEEK_SHOT.replace(".png", "-top.png") }); }
 });
 
-test("each vote, register entry and bill in Your week opens to a plain explanation", async ({ page }) => {
+test("each vote and register entry in Your week opens to a plain explanation", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await mock(page);
   await page.goto("/myArea");
@@ -64,10 +64,6 @@ test("each vote, register entry and bill in Your week opens to a plain explanati
   await expect(interest.getByText("Register of Members' Financial Interests")).toBeVisible();
   await expect(interest.getByRole("link", { name: /full register/ })).toHaveAttribute("href", /members\.parliament\.uk\/member\/4321/);
 
-  const bill = page.locator("#ma-week .ma-wk-bills .ma-wk-item").first();
-  await bill.getByRole("button").click();
-  await expect(bill.getByText("Where it stands.")).toBeVisible();
-  await expect(bill.getByRole("link", { name: /Parliament's site/ })).toBeVisible();
   await page.waitForTimeout(900);
   await page.locator("#ma-week").scrollIntoViewIfNeeded();
   await page.screenshot({ path: process.env.WEEK_SHOT ?? "/private/tmp/claude-501/-Users-alfredreynolds-mp-transparency-tracker/aee2670b-c426-461f-a42c-4a5aeb7079e8/scratchpad/week.png", fullPage: false });

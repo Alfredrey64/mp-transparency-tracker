@@ -11,6 +11,7 @@ import ShareButton from "./ShareButton";
 import { swingShareSpec } from "../lib/shareSpecs";
 import { card, cardTitle, pillStyle } from "../lib/onsStyles";
 import { Segmented } from "./DeprivationControls";
+import "../marginals.css";
 
 // Marginal seats: how close each seat was at the last election, how many voters would have to change their minds to change who
 // wins it, and a tool to try "what if" shifts. Everything comes from each seat's latest result; lib/swing.js has the arithmetic.
@@ -434,18 +435,21 @@ export default function Marginals() {
         <>
           <section aria-labelledby="h-spectrum" className="regions-wrap" style={{ ...card, marginTop: 4, padding: "clamp(18px, 3.5vw, 30px)", background: `${COLORS.paperCard}` }}>
             <h2 id="h-spectrum" style={{ ...cardTitle, fontSize: "clamp(20px, 3vw, 26px)" }}>{rows.length} seats, from the closest to the safest</h2>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "14px 34px", margin: "16px 0 22px" }}>
+            <ul className="mg-stats">
               {[
-                [tiny, "seats won by fewer than 1,000 votes", SAFETY[0].hue],
-                [marginal, "marginal seats, with a lead under 5 points", SAFETY[1].hue],
-                [safe, "very safe seats, with a lead of 20 points or more", SAFETY[3].hue],
-              ].map(([n, label, hue]) => (
-                <div key={label} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <span style={{ ...numeric, fontSize: "clamp(36px, 7vw, 54px)", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1, color: hue }}>{n}</span>
-                  <span style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.35, color: COLORS.ink, maxWidth: 170 }}>{label}</span>
-                </div>
+                [tiny, "seats won by fewer than 1,000 votes", SAFETY[0].hue, "Could flip on a few hundred votes"],
+                [marginal, "marginal seats", SAFETY[1].hue, "A lead of under 5 points"],
+                [safe, "very safe seats", SAFETY[3].hue, "A lead of 20 points or more"],
+              ].map(([n, label, hue, sub], i) => (
+                <li key={label} className="mg-stat" style={{ "--tc": hue, "--i": i }}>
+                  <b>{n}</b>
+                  <span className="mg-stat-label">{label}</span>
+                  <small>{sub}</small>
+                  <i className="mg-stat-bar" aria-hidden="true"><u style={{ "--w": Math.max(0.02, n / rows.length) }} /></i>
+                  <em>{((n / rows.length) * 100).toFixed(0)}% of all {rows.length} seats</em>
+                </li>
               ))}
-            </div>
+            </ul>
             <Spectrum rows={rows} />
           </section>
 

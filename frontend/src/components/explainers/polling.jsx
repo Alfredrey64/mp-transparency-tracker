@@ -3,6 +3,7 @@ import ExplainerPage from "../story/ExplainerPage";
 import { IconPoll } from "../newIcons";
 import { Flow } from "../story/StateArt";
 import { Hero, VotesSeats } from "../story/Vivid";
+import VoteSeatGap from "../story/VoteSeatGap";
 
 const PAGE = {
   look: "vivid",
@@ -38,14 +39,14 @@ const PAGE = {
       lede: "A poll asks about votes. Seats are decided constituency by constituency, so the two can be very different.",
       colour: "#9A3F55",
       blocks: [
-        { bars: { items: [
-          { label: "Labour: share of votes", value: 33.7, text: "33.7%", colour: "#9A3F55" },
-          { label: "Labour: share of seats", value: 63.2, text: "63.2%", colour: "#9A3F55" },
-          { label: "Reform UK: share of votes", value: 14.3, text: "14.3%", colour: "#1F7A6E" },
-          { label: "Reform UK: share of seats", value: 0.8, text: "0.8%", colour: "#1F7A6E" },
-          { label: "Liberal Democrat: share of votes", value: 12.2, text: "12.2%", colour: "#A9701F" },
-          { label: "Liberal Democrat: share of seats", value: 11.1, text: "11.1%", colour: "#A9701F" },
-        ], max: 100, note: "The 4 July 2024 general election result for the UK, from the Parliament results site. Shares of votes are of valid votes cast; shares of seats are of 650." } },
+        { node: <VoteSeatGap
+          rows={[
+            { name: "Labour", colour: "#D6224A", votes: 33.7, seats: 63.2 },
+            { name: "Reform UK", colour: "#0E97B0", votes: 14.3, seats: 0.8 },
+            { name: "Liberal Democrat", colour: "#E58A00", votes: 12.2, seats: 11.1 },
+          ]}
+          note="The 4 July 2024 general election result for the UK, from the Parliament results site. Shares of votes are of valid votes cast; shares of seats are of 650."
+        /> },
         { text: [<>A national poll cannot say who wins a seat. Some polls are used to build a model of the seats, called MRP: it estimates results for each constituency from a very large sample. Such models are estimates built on assumptions, not counts. See <a href="#/generalElection">general elections</a> for results since 1945.</>] },
       ],
     },

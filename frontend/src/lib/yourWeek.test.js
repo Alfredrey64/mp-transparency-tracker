@@ -17,27 +17,29 @@ describe("summariseWeek", () => {
         { title: "C", date: "2026-11-05", voted_with_party_majority: null },
         { title: "D", date: "2026-11-03", voted_with_party_majority: true },
       ],
-      interests: [], news: [], bills: [],
+      interests: [], news: [],
     });
     expect(s.votes.count).toBe(4);
     expect(s.votes.against).toBe(1);
-    expect(s.votes.latest.map((v) => v.title)).toEqual(["B", "C", "A"]);
+    expect(s.votes.latest.map((v) => v.title)).toEqual(["B", "C", "A", "D"]);
+    // oldest first: D, A, C, then B, the one vote against the party
+    expect(s.votes.dots.map((d) => d.rebel)).toEqual([false, false, false, true]);
   });
   it("keeps a failed list as null, never as an empty one", () => {
-    const s = summariseWeek({ votes: null, interests: null, news: null, bills: null });
-    expect(s).toEqual({ votes: null, interests: null, news: null, bills: null });
+    const s = summariseWeek({ votes: null, interests: null, news: null });
+    expect(s).toEqual({ votes: null, interests: null, news: null });
   });
-  it("shows the five most recently moved bills and counts them all", () => {
-    const bills = Array.from({ length: 8 }, (_, i) => ({ bill_id: i, short_title: `Bill ${i}`, last_updated: `2026-11-0${i + 1}T10:00:00Z` }));
-    const s = summariseWeek({ votes: [], interests: [], news: [], bills });
-    expect(s.bills.count).toBe(8);
-    expect(s.bills.latest.map((b) => b.short_title)).toEqual(["Bill 7", "Bill 6", "Bill 5", "Bill 4", "Bill 3"]);
+  it("counts the news mentions and shows the newest four", () => {
+    const news = Array.from({ length: 6 }, (_, i) => ({ headline: `N${i}`, published_date: `2026-11-0${i + 1}` }));
+    const s = summariseWeek({ votes: [], interests: [], news });
+    expect(s.news.count).toBe(6);
+    expect(s.news.latest.map((n) => n.headline)).toEqual(["N5", "N4", "N3", "N2"]);
   });
 });
 
 function fakeDb({ failTable } = {}) {
   const calls = [];
-  const rows = { voting_records: [{ title: "V", date: "2026-11-05", voted_with_party_majority: true }], financial_interests: [{ donor_name: "X", value_amount: 100, date_registered: "2026-11-01" }], mp_news: [], bills: [{ bill_id: 1, short_title: "B", last_updated: "2026-11-05T00:00:00Z" }] };
+  const rows = { voting_records: [{ title: "V", date: "2026-11-05", voted_with_party_majority: true }], financial_interests: [{ donor_name: "X", value_amount: 100, date_registered: "2026-11-01" }], mp_news: [] };
   return {
     calls,
     from(table) {
@@ -67,12 +69,12 @@ describe("loadWeek", () => {
     const { summary, failed } = await loadWeek(fakeDb({ failTable: "voting_records" }), 42, "2026-11-10");
     expect(failed).toEqual(["votes"]);
     expect(summary.votes).toBeNull();
-    expect(summary.bills.count).toBe(1);
+    expect(summary.interests).toHaveLength(1);
   });
-  it("looks up only the bills when the seat has no current MP", async () => {
+  it("looks nothing up when the seat has no current MP", async () => {
     const db = fakeDb();
     const { summary } = await loadWeek(db, null, "2026-11-10");
-    expect(db.calls.map((c) => c.table)).toEqual(["bills"]);
+    expect(db.calls).toEqual([]);
     expect(summary.votes.count).toBe(0);
   });
 });

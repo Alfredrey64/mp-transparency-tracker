@@ -122,7 +122,8 @@ export function SeatResult({ x, name, i }) {
     <Card i={i} colour="#3F6FD8" icon={<IconHexMap size={20} />} title={`How ${name} voted ${s?.when?.in ?? "in 2024"}`} className="ma-result">
       {x?.seat === undefined ? <Skel lines={5} /> : !s ? <Missing>No saved result for this seat.</Missing> : (
         <div className="ma-result-grid">
-          <div className="ma-result-main">
+          <div className="ma-rg ma-rg-l1">
+            <h4>Who won</h4>
             <ul className="ma-cands">
               {s.candidates.slice(0, 6).map((c, n) => (
                 <li key={`${c.name}-${c.party}`} style={{ "--pc": hex(c.colour), "--w": c.share, "--n": n }}>
@@ -134,30 +135,41 @@ export function SeatResult({ x, name, i }) {
             </ul>
             {s.others && <p className="ma-sub">All other candidates together won {(s.others.share * 100).toFixed(1)}% of the vote ({s.others.votes.toLocaleString("en-GB")} votes). Only the leading candidates are shown above.</p>}
             {s.when.byElection && <p className="ma-sub">This seat voted again at a by-election, so these are the by-election figures. Its 2024 general election result is no longer the current one.</p>}
+          </div>
+          <div className="ma-rg ma-rg-l2">
+            <h4>The numbers behind it</h4>
             <dl className="ma-trio">
               <div><dt>Won by</dt><dd>{s.result.majority.toLocaleString("en-GB")}</dd><small>votes ({s.result.majorityPct.toFixed(1)} points)</small></div>
               <div><dt>Turnout</dt><dd>{s.turnout ? `${s.turnout.pct.toFixed(1)}%` : "Not saved"}</dd><small>{s.turnout ? `${ordinal(s.turnout.rank)} highest of ${s.turnout.of} seats` : ""}</small></div>
               <div><dt>Voters on the register</dt><dd>{s.result.electorate ? s.result.electorate.toLocaleString("en-GB") : "Not saved"}</dd><small>{s.result.turnout ? `${s.result.turnout.toLocaleString("en-GB")} voted` : ""}</small></div>
             </dl>
-            {s.safety && <p className="ma-callout"><strong>{s.safety.label}.</strong> {s.safety.blurb} This site calls a lead of under 5 points marginal and over 20 safe. These are our bands, not an official rule.</p>}
           </div>
-          <div className="ma-result-side">
+          {s.safety && (
+            <div className="ma-rg ma-rg-l3">
+              <p className="ma-callout"><strong>{s.safety.label}.</strong> {s.safety.blurb} This site calls a lead of under 5 points marginal and over 20 safe. These are our bands, not an official rule.</p>
+            </div>
+          )}
+          <div className="ma-rg ma-rg-r1">
             <h4>How close it was, against every seat</h4>
             <LeadChart bins={s.bins} majorityPct={s.result.majorityPct} />
             {s.national?.changedHands && (
               <p className="ma-sub">At the 2024 general election {s.national.changedHands} of {s.national.total} seats changed party{s.national.underHalf ? `, and ${s.national.underHalf} were won with less than half the vote` : ""}.</p>
             )}
-            {second && (
-              <>
+          </div>
+          {second && (
+            <>
+              <div className="ma-rg ma-rg-r2">
                 <h4>What it would take to change the winner</h4>
                 <dl className="ma-trio ma-trio-2">
                   <div><dt>Swing</dt><dd>{(s.result.majorityPct / 2).toFixed(1)} points</dd><small>moving from {shortParty(s.candidates[0].party)} to {shortParty(second.party)}</small></div>
                   <div><dt>Voters changing sides</dt><dd>{(Math.floor(s.result.majority / 2) + 1).toLocaleString("en-GB")}</dd><small>{s.result.turnout ? `about ${Math.max(1, Math.round(((Math.floor(s.result.majority / 2) + 1) / s.result.turnout) * 100))}% of those who voted` : ""}</small></div>
                 </dl>
+              </div>
+              <div className="ma-rg ma-rg-r3">
                 <p className="ma-sub">A voter who switches takes one vote from the winner and gives it to the runner-up, so the gap closes by two. This counts only those two parties.</p>
-              </>
-            )}
-          </div>
+              </div>
+            </>
+          )}
         </div>
       )}
     </Card>

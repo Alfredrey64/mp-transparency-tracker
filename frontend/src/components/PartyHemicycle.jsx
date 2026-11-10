@@ -160,6 +160,7 @@ export function PartyHemicycleSection({
   noPartyLabel = "Independent",
   legendCount = 8,
   maxWidth = null,
+  ...shape
 }) {
   return (
     <div style={{ marginBottom: 40 }}>
@@ -169,7 +170,7 @@ export function PartyHemicycleSection({
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, textAlign: "center", marginBottom: 8 }}>
         {subtitle}
       </div>
-      <PartyHemicycle politicians={politicians} onSelectParty={onSelectParty} noPartyLabel={noPartyLabel} legendCount={legendCount} maxWidth={maxWidth} />
+      <PartyHemicycle politicians={politicians} onSelectParty={onSelectParty} noPartyLabel={noPartyLabel} legendCount={legendCount} maxWidth={maxWidth} {...shape} />
     </div>
   );
 }

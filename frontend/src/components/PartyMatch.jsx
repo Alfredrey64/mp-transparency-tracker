@@ -247,7 +247,6 @@ function NationScreen({ selected, onSelect, onContinue, onSkip }) {
                 key={n.key}
                 onClick={() => onSelect(n.key)}
                 whileHover={{ y: -3 }}
-                whileTap={{ scale: 0.96 }}
                 style={{
                   position: "relative", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14,
                   aspectRatio: "1 / 1", borderRadius: 14, cursor: "pointer",
@@ -260,11 +259,16 @@ function NationScreen({ selected, onSelect, onContinue, onSkip }) {
                   {active && (
                     <motion.span
                       key="pin"
-                      initial={{ y: -18, opacity: 0, scale: 0.5 }}
-                      animate={{ y: [-18, 1, -1, 0], opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.5 }}
-                      transition={{ duration: 0.5, ease: "easeOut" }}
-                      style={{ position: "absolute", top: -24, color: COLORS.accentText, display: "flex" }}
+                      initial={{ y: -14, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ opacity: 0, transition: { duration: 0.12 } }}
+                      transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
+                      /* One fall, no bounce. The pin keeps its own compositing layer (willChange) so it is
+                         drawn the same way before, during and after the fall; without it the browser
+                         re-draws it on the pixel grid the moment the animation ends, which showed as a
+                         small jump. left/right 0 + justify centre puts it at the card's centre without
+                         relying on the flex static position. */
+                      style={{ position: "absolute", top: -24, left: 0, right: 0, justifyContent: "center", color: COLORS.accentText, display: "flex", willChange: "transform, opacity", pointerEvents: "none" }}
                     >
                       <IconPin size={20} />
                     </motion.span>

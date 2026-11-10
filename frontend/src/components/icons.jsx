@@ -512,15 +512,15 @@ export function IconBook({ size = 17 }) {
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z" />
       <path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z" />
-      <g strokeWidth="1.15" opacity="0.7">
-        <path d="M4.6 9c1.4-1 2.8 1 4.2 0" />
-        <path d="M4.6 12.3c1.4-1 2.8 1 4.2 0" />
-        <path d="M4.6 15.6c1.4-1 2.8 1 4.2 0" />
-        <path d="M15.2 9c1.4-1 2.8 1 4.2 0" />
-        <path d="M15.2 12.3c1.4-1 2.8 1 4.2 0" />
-        <path d="M15.2 15.6c1.4-1 2.8 1 4.2 0" />
+      {/* Three lines of text on each page, centred on the page itself: the pages run from y 4 to about y 17 at their outer edge, so the lines sit around y 10.5. */}
+      <g strokeWidth="1.3" opacity="0.75">
+        <path d="M5 7.6h4" />
+        <path d="M5 10.6h4" />
+        <path d="M5 13.6h2.6" />
+        <path d="M15 7.6h4" />
+        <path d="M15 10.6h4" />
+        <path d="M15 13.6h2.6" />
       </g>
-      
     </svg>
   );
 }

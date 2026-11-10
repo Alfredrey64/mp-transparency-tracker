@@ -13,8 +13,10 @@ import "../expandGrid.css";
 //   min       the narrowest a card may be, in px, which with the width decides how many fit in a row
 function Panel({ id, label, open, onGone, children }) {
   const [mounted, setMounted] = useState(false);
+  const ref = useRef(null);
+  // Drawn closed first, then opened on the next frame (one frame, not two), so the opening transition starts almost at once.
   useEffect(() => {
-    const frame = requestAnimationFrame(() => requestAnimationFrame(() => setMounted(true)));
+    const frame = requestAnimationFrame(() => setMounted(true));
     return () => cancelAnimationFrame(frame);
   }, []);
   useEffect(() => {
@@ -23,7 +25,6 @@ function Panel({ id, label, open, onGone, children }) {
     return () => clearTimeout(timer);
   }, [open, onGone]);
   const shown = open && mounted;
-  const ref = useRef(null);
   // Once the panel has opened, bring it into view if it is off screen, so pressing a card at the top of a tall row shows what it opened.
   useEffect(() => {
     if (!shown) return undefined;

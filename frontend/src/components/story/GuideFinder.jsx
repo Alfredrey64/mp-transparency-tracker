@@ -101,6 +101,7 @@ export default function GuideFinder() {
           >
             {question ? (
               <>
+                <p className="gf-step-tag"><i aria-hidden="true">{picks.length + 1}</i>Question {picks.length + 1}</p>
                 <h3 ref={heading} tabIndex={-1} className="gf-q">{question.q}</h3>
                 {question.hint && <p className="gf-hint">{question.hint}</p>}
                 <ul className="gf-options" data-n={question.options.length}>

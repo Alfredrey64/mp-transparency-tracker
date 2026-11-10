@@ -8,21 +8,22 @@
 .sp-mid small { font: 700 12px/1.25 var(--font-body, "Public Sans", system-ui, sans-serif); color: var(--c-ink-soft); max-width: 17ch; }
 .sp-mid b { font: 700 clamp(26px, 5vw, 36px)/1 var(--font-display, "Newsreader", Georgia, serif); color: var(--c, var(--c-ink)); letter-spacing: -0.02em; }
 .sp-mid em { font: 600 12px/1.2 var(--font-body, "Public Sans", system-ui, sans-serif); font-style: normal; color: var(--c-ink-soft); }
-.sp-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-.sp-row { border-radius: 16px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-left: 6px solid var(--c); overflow: hidden; transition: box-shadow 0.2s, background-color 0.2s; }
-.sp-row:hover, .sp-row[data-open="1"] { box-shadow: 0 8px 22px color-mix(in srgb, var(--c) 22%, transparent); background: color-mix(in srgb, var(--c) 5%, var(--c-paper-card)); }
-.sp-row button { appearance: none; border: none; background: none; width: 100%; display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 4px 12px; padding: 13px 14px 11px; text-align: left; cursor: pointer; color: var(--c-ink); font: inherit; min-height: 52px; }
+.sp-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.sp-row { border-radius: 16px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); overflow: hidden; transition: box-shadow 0.25s, background-color 0.25s, border-color 0.25s; }
+.sp-row:hover, .sp-row[data-open="1"] { border-color: color-mix(in srgb, var(--c) 55%, var(--c-hairline)); box-shadow: 0 10px 24px -14px color-mix(in srgb, var(--c) 60%, transparent); background: color-mix(in srgb, var(--c) 4%, var(--c-paper-card)); }
+.sp-row button { appearance: none; border: none; background: none; width: 100%; display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto auto; align-items: center; gap: 9px 12px; padding: 14px 16px 14px; text-align: left; cursor: pointer; color: var(--c-ink); font: inherit; min-height: 56px; }
 .sp-row button:focus-visible { outline: 3px solid var(--c-ink); outline-offset: -3px; border-radius: 12px; }
-.sp-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--c); }
+.sp-dot { width: 16px; height: 16px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 18%, transparent); }
 .sp-name { font: 700 16px/1.25 var(--font-body, "Public Sans", system-ui, sans-serif); }
-.sp-val { display: grid; justify-items: end; line-height: 1.15; }
-.sp-val b { font: 700 18px/1.1 var(--font-display, "Newsreader", Georgia, serif); }
-.sp-val small { font: 600 12px/1.2 var(--font-body, "Public Sans", system-ui, sans-serif); color: var(--c-ink-soft); }
+.sp-val { display: contents; }
+.sp-val b { justify-self: end; font: 700 18px/1.1 var(--font-display, "Newsreader", Georgia, serif); font-variant-numeric: lining-nums tabular-nums; }
+.sp-val small { min-width: 46px; text-align: center; padding: 3px 9px; border-radius: 999px; background: color-mix(in srgb, var(--c) 13%, transparent); color: color-mix(in srgb, var(--c) 70%, var(--c-ink)); font: 800 12.5px/1.2 var(--font-body, "Public Sans", system-ui, sans-serif); font-variant-numeric: tabular-nums; }
 .sp-chev { width: 9px; height: 9px; border-right: 2.5px solid var(--c-ink-soft); border-bottom: 2.5px solid var(--c-ink-soft); transform: rotate(45deg); transition: transform 0.25s var(--ease-out, ease-out); margin: 0 4px 3px 2px; }
 .sp-row[data-open="1"] .sp-chev { transform: rotate(-135deg) translate(-2px, -2px); }
-.sp-track { grid-column: 2 / -1; height: 6px; border-radius: 3px; background: color-mix(in srgb, var(--c) 14%, transparent); overflow: hidden; }
-.sp-track i { display: block; height: 100%; width: var(--w); border-radius: 3px; background: var(--c); transform-origin: left; }
-.sp-about { margin: 0; padding: 2px 16px 15px 40px; font: 500 15px/1.6 var(--font-body, "Public Sans", system-ui, sans-serif); color: var(--c-ink-soft); max-width: 62ch; }
+/* The track is the whole; the bar is this slice's share of it, the same share the ring shows. */
+.sp-track { grid-column: 2 / -1; height: 8px; border-radius: 4px; background: color-mix(in srgb, var(--c) 11%, var(--c-hairline)); overflow: hidden; }
+.sp-track i { display: block; height: 100%; width: var(--w); border-radius: 4px; background: linear-gradient(90deg, color-mix(in srgb, var(--c) 70%, #fff), var(--c)); transform-origin: left; }
+.sp-about { margin: 0; padding: 0 18px 16px 44px; font: 500 15px/1.6 var(--font-body, "Public Sans", system-ui, sans-serif); color: var(--c-ink-soft); max-width: 62ch; }
 @keyframes spSweep { from { stroke-dasharray: 0 100; } }
 @keyframes spRise { from { opacity: 0; transform: translateX(18px); } }
 @keyframes spFill { from { transform: scaleX(0); } }

@@ -68,3 +68,32 @@
 @keyframes gfBeat { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--gc) 55%, transparent); } 70%, 100% { box-shadow: 0 0 0 14px transparent; } }
 @media (min-width: 760px) { .gf-options[data-n="6"], .gf-options[data-n="4"] { grid-template-columns: repeat(2, minmax(0, 1fr)); } .gf-options[data-n="6"] { grid-template-columns: repeat(3, minmax(0, 1fr)); } .gf-options[data-n="6"] button { grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto; align-items: start; } .gf-options[data-n="6"] .gf-arrow { display: none; } .gf-options[data-n="6"] button { min-height: 124px; grid-template-columns: 1fr; gap: 10px; } }
 @media (prefers-reduced-motion: reduce) { .gf *, .gf { animation: none !important; transition: none !important; } }
+
+/* ---- Option cards: every card in a question the same size, with the icon and a small arrow on one line and the words under them. ---- */
+.gf-options { grid-auto-rows: 1fr; }
+.gf-options li { display: flex; }
+.gf-options button { height: 100%; }
+@media (min-width: 760px) {
+  .gf-options[data-n="6"] button, .gf-options[data-n="5"] button { position: relative; display: grid; grid-template-columns: auto 1fr; grid-template-areas: "ico arrow" "opt opt"; align-content: start; align-items: center; gap: 14px 10px; min-height: 148px; padding: 18px 18px 16px; }
+  .gf-options[data-n="6"] .gf-ico, .gf-options[data-n="5"] .gf-ico { grid-area: ico; width: 52px; height: 52px; border-radius: 16px; }
+  .gf-options[data-n="6"] .gf-opt, .gf-options[data-n="5"] .gf-opt { grid-area: opt; align-content: start; gap: 4px; }
+  .gf-options[data-n="6"] .gf-arrow, .gf-options[data-n="5"] .gf-arrow { grid-area: arrow; display: block; justify-self: end; align-self: start; margin: 0; width: 30px; height: 30px; border: 0; border-radius: 50%; background: color-mix(in srgb, var(--gc) 10%, var(--c-paper-card)); transform: none; position: relative; }
+  .gf-options[data-n="6"] .gf-arrow::after, .gf-options[data-n="5"] .gf-arrow::after { content: ""; position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; margin: -5px 0 0 -8px; border-top: 2.5px solid var(--c-ink-soft); border-right: 2.5px solid var(--c-ink-soft); transform: rotate(45deg); transition: border-color 0.2s, transform 0.2s var(--ease-out, ease-out); }
+  .gf-options[data-n="6"] button:hover .gf-arrow, .gf-options[data-n="5"] button:hover .gf-arrow { transform: none; background: var(--gc); border-color: transparent; }
+  .gf-options[data-n="6"] button:hover .gf-arrow::after, .gf-options[data-n="5"] button:hover .gf-arrow::after { border-color: #fff; transform: translateX(2px) rotate(45deg); }
+  .gf-options[data-n="5"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.gf-options button { overflow: hidden; }
+.gf-options button::before { content: ""; position: absolute; inset: auto 0 0 0; height: 4px; background: var(--gc); transform: scaleX(0); transform-origin: left; transition: transform 0.35s var(--ease-out, ease-out); }
+.gf-options button { position: relative; }
+.gf-options button:hover::before, .gf-options button:focus-visible::before { transform: scaleX(1); }
+
+/* ---- Moving parts: a light sweeping across the top bar, a ring that pulses round the badge, and a "Question n" tag that changes with each step. ---- */
+.gf::before { background-size: 200% 100%; background-image: linear-gradient(90deg, var(--gc), color-mix(in srgb, var(--gc) 35%, #fff), var(--gc)); animation: gfSweep 6s linear infinite; }
+.gf-badge { position: relative; }
+.gf-badge::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: 0 0 0 0 color-mix(in srgb, var(--gc) 45%, transparent); animation: gfRing 2.8s ease-out infinite; }
+.gf-step-tag { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 8px; padding: 4px 12px 4px 8px; border-radius: 999px; background: color-mix(in srgb, var(--gc) 12%, var(--c-paper-card)); font: 800 12.5px/1.3 var(--font-body, "Public Sans", system-ui, sans-serif); color: color-mix(in srgb, var(--gc) 75%, var(--c-ink)); }
+.gf-step-tag i { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--gc); color: #fff; font: 800 12px/1 var(--font-body, "Public Sans", system-ui, sans-serif); font-style: normal; }
+@keyframes gfSweep { to { background-position: -200% 0; } }
+@keyframes gfRing { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--gc) 45%, transparent); } 70%, 100% { box-shadow: 0 0 0 12px transparent; } }
+@media (prefers-reduced-motion: reduce) { .gf::before, .gf-badge::after { animation: none; } .gf-options button::before { transition: none; } }

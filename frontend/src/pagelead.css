@@ -8,21 +8,24 @@
 .pl-fig { font: 700 clamp(56px, 8vw, 92px)/0.98 "Figures", "Newsreader", Georgia, serif; letter-spacing: -0.03em; font-variant-numeric: lining-nums tabular-nums; color: color-mix(in srgb, var(--pc) 78%, var(--c-ink)); overflow-wrap: anywhere; }
 .pl-label { font: 800 clamp(18px, 2vw, 22px)/1.25 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .pl-sub { font: 500 14.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.pl-facts { list-style: none; margin: 0; padding: 6px clamp(18px, 3vw, 30px); display: grid; align-content: center; }
-.pl-facts li { display: grid; grid-template-columns: minmax(76px, auto) minmax(0, 1fr); align-items: center; gap: 4px 16px; padding: 15px 0; border-top: 1px solid var(--c-hairline); animation: plIn 0.55s var(--ease-out) calc(var(--i) * 110ms + 250ms) backwards; }
+.pl-facts { list-style: none; margin: 0; padding: 4px clamp(20px, 3vw, 34px); display: grid; grid-auto-rows: 1fr; align-content: stretch; }
+/* One shared value column, so every label starts at the same left edge and the rows are the same height whatever they hold. */
+.pl-facts li { display: grid; grid-template-columns: clamp(92px, 9.5vw, 120px) minmax(0, 1fr); align-items: center; gap: 4px 18px; padding: 14px 0; border-top: 1px solid var(--c-hairline); animation: plIn 0.55s var(--ease-out) calc(var(--i) * 110ms + 250ms) backwards; }
 .pl-facts li:first-child { border-top: 0; }
-.pl-facts li > b { font: 700 clamp(26px, 3.2vw, 34px)/1.05 "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--pc) 72%, var(--c-ink)); font-variant-numeric: lining-nums tabular-nums; }
-.pl-facts li > div { display: grid; gap: 1px; min-width: 0; }
-.pl-facts li > div > span { font: 700 14.5px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.pl-facts li > b { white-space: nowrap; font: 700 clamp(26px, 3.2vw, 34px)/1.05 "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--pc) 72%, var(--c-ink)); font-variant-numeric: lining-nums tabular-nums; }
+.pl-facts li > div { display: grid; gap: 2px; min-width: 0; align-content: center; }
+.pl-facts li > div > span { font: 700 15px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .pl-facts small { font: 500 13px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); overflow-wrap: anywhere; }
 .pl-bar { display: block; height: 7px; margin-top: 7px; border-radius: 4px; background: color-mix(in srgb, var(--pc) 14%, var(--c-hairline)); overflow: hidden; }
 .pl-bar u { display: block; height: 100%; width: calc(var(--w) * 100%); border-radius: 4px; background: linear-gradient(90deg, var(--pc), color-mix(in srgb, var(--pc) 60%, #fff)); transform-origin: left; animation: plBar 1.1s var(--ease-out) 0.7s backwards; }
 .pl-read { margin: 22px 0 6px; }
 .pl-read h2 { margin: 0 0 12px; font: 700 18px "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
 .pl-read ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 8px 26px; position: relative; }
-.pl-read li { position: relative; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 4px 12px; align-items: start; animation: plIn 0.55s var(--ease-out) calc(var(--i) * 120ms + 450ms) backwards; }
+/* Each step: the number and the dotted line to the next one on a row of their own, the title and words underneath, so the line never runs through any text. */
+.pl-read li { position: relative; display: block; animation: plIn 0.55s var(--ease-out) calc(var(--i) * 120ms + 450ms) backwards; }
 .pl-read li > span { position: relative; z-index: 1; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--pc); color: #fff; font: 800 15px "Figures", "Public Sans", system-ui, sans-serif; box-shadow: 0 0 0 5px var(--c-paper, #fff); }
-.pl-read li:not(:last-child)::after { content: ""; position: absolute; left: 44px; right: -22px; top: 16px; height: 3px; border-radius: 2px; background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--pc) 45%, transparent) 0 6px, transparent 6px 12px); transform-origin: left; animation: plBar 0.8s var(--ease-out) calc(var(--i) * 120ms + 800ms) backwards; }
+.pl-read li > div { margin-top: 10px; }
+.pl-read li:not(:last-child)::after { content: ""; position: absolute; left: 48px; right: 4px; top: 15px; height: 4px; background: radial-gradient(circle, color-mix(in srgb, var(--pc) 55%, transparent) 1.6px, transparent 2px) 0 0 / 11px 4px repeat-x; transform-origin: left; animation: plBar 0.8s var(--ease-out) calc(var(--i) * 120ms + 800ms) backwards; }
 .pl-read li b { font: 700 15px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .pl-read p { margin: 2px 0 0; font: 400 13.5px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 @keyframes plIn { from { opacity: 0; transform: translateY(14px); } }
@@ -30,6 +33,8 @@
 @keyframes plRing { 0% { opacity: 0.9; } 100% { opacity: 0; transform: scale(calc(var(--s, 1) * 1.45)); } }
 @media (max-width: 760px) {
   .pl-card { grid-template-columns: minmax(0, 1fr); }
+  .pl-read li { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 4px 12px; align-items: start; }
+  .pl-read li > div { margin-top: 0; }
   .pl-read li::after { display: none; }
   .pl-read ol { gap: 14px; }
 }
