@@ -22,7 +22,7 @@ const VOTE_THEMES = ["General", ...new Set(LANDMARK_VOTES.map((v) => v.theme))];
 const HISTORY_ERAS = [
   { key: "georgian", short: "Georgian", label: "Georgian Britain", to: 1831, accent: "#8A6D3B" },
   { key: "victorian", short: "Victorian", label: "Victorian Era", to: 1900, accent: "#4C7A6B" },
-  { key: "wartime", short: "Edwardian & wars", label: "Edwardian Britain & the World Wars", to: 1945, accent: "#7A4B4B" },
+  { key: "wartime", short: "Two wars", label: "Edwardian Britain & the World Wars", to: 1945, accent: "#7A4B4B" },
   { key: "postwar", short: "Post-war", label: "The Post-War Consensus", to: 1978, accent: "#3F7D5C" },
   { key: "thatcher", short: "Thatcher to Blair", label: "Thatcher to New Labour", to: 2009, accent: "#5A7FA6" },
   { key: "modern", short: "Coalition to now", label: "Coalition, Brexit & Beyond", to: Infinity, accent: "#6E4B6E" },

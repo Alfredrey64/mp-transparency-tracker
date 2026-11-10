@@ -159,9 +159,15 @@ export default function LineChart({
         ))}
         {zeroInside && <line x1={M.l} x2={W - M.r} y1={sy(0)} y2={sy(0)} stroke={COLORS.inkSoft} strokeWidth="1.2" strokeDasharray="4 3" opacity="0.7" />}
 
-        {xTicks.map((t) => (
-          <text key={t.x} x={sx(t.x)} y={H - 7} textAnchor="middle" fontSize="11.5" fontFamily={FONT_BODY} fill={COLORS.inkSoft}>{t.label}</text>
-        ))}
+        {xTicks.map((t) => {
+          // A label centred on a tick at either end of the chart would run past the edge of the picture and be cut off, so it is lined up by its end instead.
+          const half = (String(t.label).length * 6.4) / 2;
+          const anchor = sx(t.x) + half > W - 1 ? "end" : sx(t.x) - half < 1 ? "start" : "middle";
+          const x = anchor === "end" ? Math.min(sx(t.x), W - 1) : anchor === "start" ? Math.max(sx(t.x), 1) : sx(t.x);
+          return (
+          <text key={t.x} x={x} y={H - 7} textAnchor={anchor} fontSize="11.5" fontFamily={FONT_BODY} fill={COLORS.inkSoft}>{t.label}</text>
+          );
+        })}
 
         {(refLines ?? []).map((r) => (
           <g key={`${r.value}-${r.label}`} pointerEvents="none">

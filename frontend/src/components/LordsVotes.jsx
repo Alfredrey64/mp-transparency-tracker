@@ -42,8 +42,8 @@ function Explainer({ latest }) {
       <div className="lv-eg">
         <p><strong>The latest vote, on {longDay(latest.date)}:</strong> {latest.title}</p>
         <span className="lv-tally" role="img" aria-label={`${latest.content} content, ${latest.notContent} not content`}>
-          <i className="lv-tally-c" style={{ width: `${(latest.content / total) * 100}%` }}>{fmt(latest.content)} Content</i>
-          <i className="lv-tally-n" style={{ width: `${(latest.notContent / total) * 100}%` }}>{fmt(latest.notContent)} Not content</i>
+          <i className="lv-tally-c" style={{ width: `${(latest.content / total) * 100}%` }}><span className="lv-lab"><b>{fmt(latest.content)}</b> <small>Content</small></span></i>
+          <i className="lv-tally-n" style={{ width: `${(latest.notContent / total) * 100}%` }}><span className="lv-lab"><b>{fmt(latest.notContent)}</b> <small>Not content</small></span></i>
         </span>
       </div>
     </section>
@@ -197,8 +197,8 @@ function Division({ d, colours }) {
         </span>
         {d.note && <span className="lv-div-note">{brief(d.note)}</span>}
         <span className="lv-tally" role="img" aria-label={`${d.content} content, ${d.notContent} not content`}>
-          <i className="lv-tally-c" style={{ width: `${(d.content / total) * 100}%` }}>{fmt(d.content)} Content</i>
-          <i className="lv-tally-n" style={{ width: `${(d.notContent / total) * 100}%` }}>{fmt(d.notContent)} Not content</i>
+          <i className="lv-tally-c" style={{ width: `${(d.content / total) * 100}%` }}><span className="lv-lab"><b>{fmt(d.content)}</b> <small>Content</small></span></i>
+          <i className="lv-tally-n" style={{ width: `${(d.notContent / total) * 100}%` }}><span className="lv-lab"><b>{fmt(d.notContent)}</b> <small>Not content</small></span></i>
         </span>
         <span className="lv-div-meta">
           <span className="lv-pill" data-tone={agreed ? "ok" : "no"}>{agreed ? "Proposal passed" : "Proposal failed"}</span>

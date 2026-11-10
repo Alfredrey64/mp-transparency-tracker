@@ -1,0 +1,61 @@
+name: Office holders
+
+# Every morning, checks that the Prime Minister, the Chancellor and the First Ministers of Scotland, Wales and Northern Ireland named on the site are still the people holding
+# those offices (see check-office-holders.js). Those names are written by hand, because each comes with a story, so after a reshuffle, a resignation or an election the site would
+# otherwise go on naming the old holder. If one has changed it opens an issue that says which office and who now holds it, and closes the issue once the site agrees. It changes nothing
+# on the site. If a source cannot be read the run goes red, and GitHub emails the owner.
+
+on:
+  schedule:
+    - cron: "41 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    name: Office holders on the site match the official sources
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Compare the site with the official sources
+        id: check
+        # Written to a file and not piped to tee: a pipe hands GitHub tee's exit code (always 0), so a failed check would be recorded as a pass.
+        run: |
+          node check-office-holders.js > holders.txt && status=0 || status=$?
+          cat holders.txt
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          [ "$status" = "2" ] && exit 2
+          exit 0
+      - name: Open or update an issue if an office has a new holder
+        if: steps.check.outputs.status == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo "The site names someone who no longer holds one of these offices, or the official source and the site disagree:"
+            echo
+            sed 's/^/- /' holders.txt
+            echo
+            echo "To bring the site up to date: the Prime Minister is in frontend/src/data/governments.js (close the old government with a \`to\` date and add the new one), the Chancellor in frontend/src/data/chancellors.js, and the First Ministers in frontend/src/components/DevolvedAdministrations.jsx (then run \`node fetch-devolved-leaders.js\` for the portrait). Cabinet posts come from Parliament's own list every day, and party leaders are refreshed daily by fetch-party-leaders.js."
+            echo
+            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          } > issue-body.md
+          gh label create office-holder-changed --color D93F0B --description "The site names an office holder who may have changed" 2>/dev/null || true
+          n=$(gh issue list --state open --label office-holder-changed --json number --jq '.[0].number')
+          if [ -z "$n" ]; then gh issue create --label office-holder-changed --title "An office holder named on the site may have changed" --body-file issue-body.md; else gh issue comment "$n" --body-file issue-body.md; fi
+      - name: Close the issue when the site agrees again
+        if: steps.check.outputs.status == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for n in $(gh issue list --state open --label office-holder-changed --json number --jq '.[].number'); do
+            gh issue close "$n" --comment "The site and the official sources agree again, so this is closed."
+          done

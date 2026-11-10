@@ -1,4 +1,5 @@
 import { usePhone } from "../lib/usePhone";
+import { rankOf, headOf, bySeniority } from "../lib/cabinetRank";
 import { useState, useEffect, useRef } from "react";
 import ExpandGrid from "./ExpandGrid";
 import { m as motion } from "motion/react";
@@ -299,16 +300,6 @@ const SECTION_ACCENTS = [
   "#1E4FB8", "#0E9AA7", "#7A5AF0", "#E0367A", "#E8741A", "#1FA97C", "#C7871A", "#D6455D", "#2E86C1", "#8E5BB5", "#3F9B3F", "#C0561F", "#2A9D8F", "#B5651D", "#5B6B84", "#6E4B6E", "#4C6FA6",
 ];
 
-// How senior a role is, so each department can show who leads it and who works for them. 0 is the Prime Minister, 1 a head of a department (a
-// Secretary of State or an equivalent), 2 a Minister of State, 3 a junior minister, 4 anything else.
-function rankOf(role) {
-  const r = String(role ?? "");
-  if (/^prime minister/i.test(r)) return 0;
-  if (/deputy prime minister|^secretary of state|chancellor of the exchequer|^home secretary|^foreign secretary|lord chancellor|chancellor of the duchy|leader of the house|chief whip|attorney general|chief secretary to the treasury/i.test(r)) return 1;
-  if (/minister of state/i.test(r)) return 2;
-  if (/parliamentary under|parliamentary secretary|assistant whip|lord[s]? in waiting|lord commissioner|vice-chamberlain|solicitor general|treasurer of hm household|comptroller/i.test(r)) return 3;
-  return 4;
-}
 const RANK_LABEL = ["Prime Minister", "Heads a department", "Minister of State", "Junior minister", "Other role"];
 const shortRole = (role) => String(role ?? "").replace(/\s*\(.*$/, "").replace(/^Secretary of State for /i, "Secretary of State, ");
 
@@ -469,7 +460,7 @@ export default function Cabinet({ onViewProfile }) {
   const chartGroups = groups
     .map((g, gi) => {
       const people = g.members.filter((m) => m !== pm);
-      const head = [...people].sort((x, y) => rankOf(x.cabinet_role) - rankOf(y.cabinet_role))[0] ?? null;
+      const head = headOf(people);
       return { ...g, members: people, head, accent: SECTION_ACCENTS[gi % SECTION_ACCENTS.length] };
     })
     .filter((g) => g.members.length > 0);
@@ -523,7 +514,7 @@ export default function Cabinet({ onViewProfile }) {
               </div>
             )}
             <ExpandGrid
-              items={[...g.members].sort((x, y) => rankOf(x.cabinet_role) - rankOf(y.cabinet_role))}
+              items={bySeniority(g.members)}
               itemKey={(m) => m.id}
               min={320}
               label={(m) => `${m.name}: role and biography`}

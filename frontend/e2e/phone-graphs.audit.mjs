@@ -1,7 +1,7 @@
 // Opens every page at phone widths in mobile WebKit and checks each graph: not wider than the screen, not clipped by its box, labels big enough to read and
 // not cut off. Prints what it finds. Usage: node e2e/phone-graphs.audit.mjs [width] [baseUrl]
 import { webkit } from "@playwright/test";
-import { LOADERS } from "../src/pageLoaders.js";
+import { PAGE_NAMES } from "./pageList.mjs";
 import fs from "node:fs";
 
 const width = Number(process.argv[2] ?? 360);
@@ -9,7 +9,7 @@ const base = process.argv[3] ?? "http://localhost:4178";
 const specText = fs.readFileSync(new URL("./phone-layout.spec.js", import.meta.url), "utf8");
 const TABS = JSON.parse(specText.match(/const TABS = (\[.*?\]);/s)[1]);
 const ONLY = process.env.ONLY?.split(",");
-const PAGES = ["home", "list", "partymatch", ...Object.keys(LOADERS)].filter((p, i, a) => a.indexOf(p) === i && (!ONLY || ONLY.includes(p)));
+const PAGES = ["home", "list", "partymatch", ...PAGE_NAMES].filter((p, i, a) => a.indexOf(p) === i && (!ONLY || ONLY.includes(p)));
 const MIN_FONT = 8.5;
 
 function audit({ minFont }) {

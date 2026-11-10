@@ -24,7 +24,7 @@
 .iq-title p { margin: 0; font: 600 13px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 
 .iq-leaf { flex: none; width: 104px; display: grid; justify-items: center; text-align: center; padding: 0 0 10px; border-radius: 14px; overflow: hidden; background: var(--c-paper-card); border: 1px solid color-mix(in srgb, var(--c) 40%, var(--c-hairline)); box-shadow: 0 6px 16px color-mix(in srgb, var(--c) 18%, transparent); transform-origin: 50% 0; }
-.iq-leaf small { align-self: stretch; padding: 4px 6px; background: var(--c); color: #fff; font: 800 10.5px/1.2 "Figures", "Public Sans", system-ui, sans-serif; }
+.iq-leaf small { align-self: stretch; padding: 4px 6px; background: var(--c); color: #fff; font: 800 11.5px/1.2 "Figures", "Public Sans", system-ui, sans-serif; }
 .iq-leaf b { margin-top: 8px; font: 800 13px/1 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.06em; color: color-mix(in srgb, var(--c) 70%, var(--c-ink)); text-transform: uppercase; }
 .iq-leaf strong { font: 700 30px/1.05 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; color: var(--c-ink); }
 .iq-leaf em { margin-top: 3px; padding: 0 6px; font: 600 11.5px/1.25 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: var(--c-ink-soft); }

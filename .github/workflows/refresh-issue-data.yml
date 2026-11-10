@@ -1,8 +1,10 @@
 name: Refresh issue-page data
 
 # Every Monday, re-reads the official sources behind the Inequality, Defence, Education, Ageing and pensions, Brexit and NHS pages (see
-# frontend/scripts/refresh-issue-data.mjs), runs the tests, and opens a pull request with whatever changed for a person to read. It never changes the live
-# site by itself. The ONS series these use are refreshed daily by fetch-data.yml.
+# frontend/scripts/refresh-issue-data.mjs) and runs the tests, which tie each sentence on those pages to its figure. When every step ran, no rebuilt file shrank or came out
+# empty (see check-saved-data.js) and the tests pass, the new figures are published at once, so the pages follow their sources within a week with nobody having to merge anything.
+# Anything doubtful (a step failed, a file looks broken, a test fails) is left as a pull request for a person to read instead. The ONS series these use are refreshed daily by
+# fetch-data.yml.
 #
 # A pull request opened with the built-in token does not start the CI workflow by itself, so the tests are run here and their result is in the pull request.
 
@@ -36,6 +38,11 @@ jobs:
         id: refresh
         continue-on-error: true
         run: node frontend/scripts/refresh-issue-data.mjs --summary refresh-summary.md
+      # Puts back any rebuilt file that is invalid, empty or has shrunk to a fraction of what is committed, the same guard the daily refresh uses.
+      - name: Check the rebuilt files
+        id: guard
+        continue-on-error: true
+        run: node check-saved-data.js
       - name: Run the tests
         id: tests
         continue-on-error: true
@@ -46,6 +53,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REFRESH: ${{ steps.refresh.outcome }}
           TESTS: ${{ steps.tests.outcome }}
+          GUARD: ${{ steps.guard.outcome }}
         run: |
           # Tells the owner something needs a look, as an issue that is updated rather than repeated.
           tell() {
@@ -65,6 +73,23 @@ jobs:
             fi
             exit 0
           fi
+          # Every step ran, nothing looked broken and the tests pass: publish the new figures now. Pushing to main is what makes Vercel rebuild the site with them. If the push is
+          # refused (a protected branch, say) it falls through to the pull request below.
+          if [ "$REFRESH" = "success" ] && [ "$TESTS" = "success" ] && [ "$GUARD" = "success" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add frontend/src/data
+            git commit -m "chore: weekly issue-page data refresh ($(date +%F))" -m "$(head -c 3000 refresh-summary.md)"
+            if git pull --rebase origin main && git push origin HEAD:main; then
+              echo "Published straight to main: every step ran, nothing looked broken and the tests pass."
+              for n in $(gh issue list --state open --label data-refresh-ready --json number --jq '.[].number'); do gh issue close "$n" --comment "The figures were published automatically."; done
+              for n in $(gh issue list --state open --label data-refresh-failed --json number --jq '.[].number'); do gh issue close "$n" --comment "Every step ran this week, so this is closed."; done
+              exit 0
+            fi
+            echo "The push to main was refused, so the figures go in a pull request instead."
+            git rebase --abort 2>/dev/null || true
+            git reset --mixed HEAD~1
+          fi
           branch="data-refresh/$(date +%F)"
           if [ -n "$(gh pr list --state open --search 'head:data-refresh/' --json number --jq '.[0].number')" ]; then
             echo "A refresh pull request is already open."
@@ -74,6 +99,8 @@ jobs:
             cat refresh-summary.md
             echo
             if [ "$TESTS" = "success" ]; then echo "Tests: passed."; else echo "Tests: **failed**. A check that ties a sentence to its figure may be pointing at something to update."; fi
+            if [ "$GUARD" != "success" ]; then echo "File check: **a rebuilt file looked broken** and was put back (see the run's log)."; fi
+            if [ "$REFRESH" != "success" ]; then echo "Rebuild: **a step failed**, so some pages kept an earlier week's figures."; fi
           } > pr-body.md
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

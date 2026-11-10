@@ -58,7 +58,7 @@
   .mf-grid col, .mf-grid th:first-child, .mf-grid thead td:first-child { width: 96px; }
   .mf-grid tbody th, .mf-grid tfoot th { position: sticky; left: 0; z-index: 1; background: var(--c-paper-card); font-size: 12px; padding-right: 6px; }
   .mf-grid thead td:first-child { position: sticky; left: 0; z-index: 1; background: var(--c-paper-card); }
-  .mf-grid thead th { font-size: 10.5px; letter-spacing: -0.01em; }
+  .mf-grid thead th { font-size: 11.5px; letter-spacing: -0.01em; }
   .mf-grid thead th small { display: none; }
   .mf-cell { height: 46px; }
   .mf-hint { display: block; }
