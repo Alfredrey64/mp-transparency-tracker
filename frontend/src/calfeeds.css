@@ -1,0 +1,15 @@
+/* "Put this in your calendar" on the Coming up page (components/story/CalendarFeeds.jsx). */
+.cf-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.cf-item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 20px; align-items: center; padding: 16px 18px; border-radius: 16px; border: 1px solid var(--c-hairline); border-left: 6px solid #2C7DA0; background: var(--c-paper-card); box-shadow: var(--shadow-1); }
+.cf-text { min-width: 0; }
+.cf-text h3 { margin: 0 0 4px; font: 700 17px/1.3 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.cf-text p { margin: 0 0 6px; font: 400 14px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.cf-text small { font: 600 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.cf-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px; }
+.cf-btn { min-height: 40px; padding: 8px 14px; font-size: 14px; white-space: nowrap; }
+.cf-dl { font: 600 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); text-decoration: underline; text-underline-offset: 3px; padding: 8px 4px; min-height: 24px; }
+.cf-note { margin: 14px 0 0; font: 400 13px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); max-width: 760px; }
+@media (max-width: 720px) {
+  .cf-item { grid-template-columns: minmax(0, 1fr); }
+  .cf-actions { justify-content: flex-start; }
+}

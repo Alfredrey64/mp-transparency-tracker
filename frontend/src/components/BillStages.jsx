@@ -1,6 +1,7 @@
 import { COLORS, FONT_BODY, readable } from "../theme";
 import { formatDate } from "../lib/format";
-import { stagesFor, currentIndex } from "../lib/billStagesView";
+import { stagesFor, currentIndex, stageTerm, paceOf } from "../lib/billStagesView";
+import { GlossaryTerm } from "./GlossaryTerm";
 
 // A bill's real journey so far: each stage it has been through in each House with the days it was sat on, from Parliament's Bills API (data/billStages.json, kept up to date by the
 // daily workflow). The stage it is at now is marked, and the ones after it are shown as still to come. Pictures of the route a bill takes in general are in "How a bill becomes
@@ -17,9 +18,17 @@ export default function BillStages({ bill }) {
   const stages = stagesFor(bill);
   if (!stages || !stages.length) return null;
   const now = currentIndex(stages, bill);
+  const pace = paceOf(stages, bill, new Date().toISOString().slice(0, 10));
   return (
     <div style={{ marginBottom: 12, padding: "12px 14px", borderRadius: 12, background: COLORS.paper, border: `1px solid ${COLORS.hairline}` }}>
-      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>Its journey so far</div>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: pace ? 4 : 8 }}>Its journey so far</div>
+      {pace && (
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, lineHeight: 1.5, marginBottom: 10 }}>
+          {pace.finished
+            ? <>From {formatDate(pace.start)} to {formatDate(pace.last.date)}: <b style={{ color: COLORS.ink }}>{pace.days} {pace.days === 1 ? "day" : "days"}</b>.</>
+            : <>First recorded {formatDate(pace.start)}, <b style={{ color: COLORS.ink }}>{pace.days} {pace.days === 1 ? "day" : "days"} ago</b>. Latest recorded day: {pace.last.stage}, {formatDate(pace.last.date)}.</>}
+        </div>
+      )}
       <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 0 }}>
         {stages.map((s, i) => {
           const state = now < 0 ? "done" : i < now ? "done" : i === now ? "now" : "next";
@@ -32,7 +41,7 @@ export default function BillStages({ bill }) {
                 {i < stages.length - 1 && <u style={{ position: "absolute", top: 17, bottom: -13, width: 2, background: state === "done" ? `${colour}66` : COLORS.hairline, textDecoration: "none" }} />}
               </span>
               <span style={{ fontFamily: FONT_BODY, fontSize: 13.5, lineHeight: 1.45, color: state === "next" ? COLORS.inkSoft : COLORS.ink }}>
-                <b style={{ fontWeight: 700 }}>{s.stage}</b>
+                <b style={{ fontWeight: 700 }}><GlossaryTerm term={stageTerm(s.stage)}>{s.stage}</GlossaryTerm></b>
                 <span style={{ color: readable(colour), fontWeight: 600, marginLeft: 8, fontSize: 12 }}>{s.house}</span>
                 {state === "now" && <span style={{ marginLeft: 8, fontSize: 11, fontWeight: 800, color: readable(colour), background: `${colour}1a`, padding: "1px 8px", borderRadius: 999 }}>Now</span>}
                 <span style={{ display: "block", fontSize: 12.5, color: COLORS.inkSoft }}>

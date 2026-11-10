@@ -4,16 +4,19 @@
 // 1. Asks Parliament's What's On calendar for everything in the Commons and Lords over the next four weeks (a week at a time, because the calendar fails on long ranges).
 // 2. Asks the same service for the days and weeks MPs and peers are not sitting.
 // 3. Boils that down (see parliamentCalendar.js) and writes frontend/src/data/parliamentCalendar.json for the Coming up in Parliament page.
+// 4. Writes the same data as subscribable calendar files (see calendarFeed.js) into frontend/public/calendar.
 //
 // If the calendar returns almost nothing (an outage, or a gap in the calendar) the existing file is left alone.
 //
 // Run it with: node fetch-parliament-calendar.js
 
-import { writeFileSync } from "fs";
+import { mkdirSync, writeFileSync } from "fs";
 import { fetchRetry } from "./httpFetch.js";
 import { summariseCalendar } from "./parliamentCalendar.js";
+import { buildAllFeeds } from "./calendarFeed.js";
 
 const OUTPUT = "frontend/src/data/parliamentCalendar.json";
+const FEED_DIR = "frontend/public/calendar";
 const API = "https://whatson-api.parliament.uk/calendar/events";
 const WEEKS = 4;
 const MIN_EVENTS = 20;
@@ -49,6 +52,9 @@ async function main() {
     process.exit(1);
   }
   writeFileSync(OUTPUT, `${JSON.stringify(out)}\n`);
+  // The same data as calendar files people can subscribe to (see calendarFeed.js), served at /calendar/<name>.ics.
+  mkdirSync(FEED_DIR, { recursive: true });
+  for (const f of buildAllFeeds(out)) writeFileSync(`${FEED_DIR}/${f.file}`, f.text);
   console.log(`Wrote ${OUTPUT}: ${out.events.length} events and ${out.away.length} non-sitting periods from ${from} to ${to}.`);
 }
 

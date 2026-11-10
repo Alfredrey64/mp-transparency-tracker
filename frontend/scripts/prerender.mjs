@@ -12,7 +12,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { routeEntries, SITE } from "./build-seo-pages.mjs";
+import { routeEntries, ogImageUrl, SITE } from "./build-seo-pages.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(here, "..");
@@ -43,6 +43,10 @@ export function render(template, entry) {
     .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${esc(url)}$2`)
     .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${title}$2`)
     .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${description}$2`);
+  // The page's own picture for a shared link, when one has been drawn (see scripts/build-page-og.mjs); otherwise the site's, which the template already names.
+  if (entry.image) {
+    html = html.replace(/(<meta property="og:image" content=")[^"]*(")/, `$1${esc(entry.image)}$2`).replace(/(<meta name="twitter:image" content=")[^"]*(")/, `$1${esc(entry.image)}$2`);
+  }
   const block = `<div class="pre" data-path="${esc(entry.path)}"><p class="k">Domesday Live</p><h1>${esc(entry.heading)}</h1><p>${esc(entry.lead ?? entry.description)}</p>${entry.bodyHtml ?? ""}</div>`;
   html = html.replace('<div id="root"></div>', `<div id="root">${block}</div><script src="/pre.js"></script>`).replace("</head>", `<style id="pre-css">${CSS.replace(/\n/g, "")}</style></head>`);
   return html;
@@ -53,6 +57,7 @@ export function prerender(distDir, sidebarSource) {
   if (!template.includes('<div id="root"></div>')) throw new Error("dist/index.html has no empty root to fill.");
   let written = 0;
   for (const entry of routeEntries(sidebarSource)) {
+    entry.image = ogImageUrl(entry, path.join(root, "public"));
     const file = entry.path === "/" ? path.join(distDir, "index.html") : path.join(distDir, entry.path.replace(/^\//, ""), "index.html");
     fs.mkdirSync(path.dirname(file), { recursive: true });
     fs.writeFileSync(file, render(template, entry));

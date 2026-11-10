@@ -655,3 +655,21 @@
 .ma-ranks .ma-rank-label small { font-size: 12px; opacity: 0.85; }
 .ma-homes .ma-rankrows li { gap: 8px 12px; padding: 14px 0; }
 .ma-homes .ma-rank-value { min-width: 7.2em; text-align: right; justify-items: end; }
+
+/* Your week (components/YourWeek.jsx): the first section of the dashboard. */
+.ma-wk-mp { grid-column: span 7; } .ma-wk-bills { grid-column: span 5; }
+.ma-wk-figs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.ma-wk-figs > div { display: grid; gap: 2px; align-content: start; padding: 12px 14px; border-radius: 14px; background: color-mix(in srgb, var(--mc) 8%, var(--c-paper)); }
+.ma-wk-figs span { font: 700 12.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-wk-figs b { font: 700 clamp(26px, 3.2vw, 34px)/1.1 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; color: var(--c-ink); }
+.ma-wk-figs small { font: 500 12.5px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-wk-figs.ma-wk-one { grid-template-columns: minmax(0, 1fr); }
+.ma-wk-list { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 0; }
+.ma-wk-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: baseline; padding: 9px 0; border-top: 1px solid var(--c-hairline); }
+.ma-wk-list li:first-child { border-top: 0; }
+.ma-wk-list li > span, .ma-wk-list li > a { font: 600 14px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); overflow-wrap: anywhere; }
+.ma-wk-list li > a { text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.ma-wk-list li > small { grid-column: 1; font: 500 12.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-wk-list li > b { grid-column: 2; grid-row: 1; font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; padding: 2px 9px; border-radius: 999px; background: color-mix(in srgb, #9C3B3B 14%, transparent); color: color-mix(in srgb, #9C3B3B 80%, var(--c-ink)); }
+.ma-wk-list li > b[data-aye="1"] { background: color-mix(in srgb, #2F6F4E 16%, transparent); color: color-mix(in srgb, #2F6F4E 80%, var(--c-ink)); }
+@media (max-width: 440px) { .ma-wk-figs { grid-template-columns: minmax(0, 1fr); } }

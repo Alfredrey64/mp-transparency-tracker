@@ -88,7 +88,7 @@ export function Glance({ data, x }) {
   );
 }
 
-const JUMPS = [["ma-mp", "MP and seat"], ["ma-council", "Council"], ["ma-place", "Neighbourhood"], ["ma-region", "Region"], ["ma-vote", "Elections"], ["ma-act", "Get help"]];
+const JUMPS = [["ma-week", "Your week"], ["ma-mp", "MP and seat"], ["ma-council", "Council"], ["ma-place", "Neighbourhood"], ["ma-region", "Region"], ["ma-vote", "Elections"], ["ma-act", "Get help"]];
 
 // Stays under the header while the page scrolls, and marks the section being read.
 export function JumpNav() {

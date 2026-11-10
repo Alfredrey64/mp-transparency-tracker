@@ -23,3 +23,11 @@ describe("the Embed feature under the site's security headers", () => {
     expect(csp("/embed(.html)?")["frame-src"]).toBe("'none'");
   });
 });
+
+describe("the calendar files people subscribe to", () => {
+  it("are served as calendars, and re-checked so a new day's file is picked up", () => {
+    const rule = headers.find((h) => h.source === "/calendar/(.*).ics");
+    expect(rule.headers.find((h) => h.key === "Content-Type").value).toMatch(/^text\/calendar/);
+    expect(rule.headers.find((h) => h.key === "Cache-Control").value).toContain("must-revalidate");
+  });
+});

@@ -71,6 +71,19 @@
       ]
     },
     {
+      "source": "/calendar/(.*).ics",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/calendar; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, s-maxage=3600, must-revalidate"
+        }
+      ]
+    },
+    {
       "source": "/(assets|fonts)/(.*)",
       "headers": [
         {

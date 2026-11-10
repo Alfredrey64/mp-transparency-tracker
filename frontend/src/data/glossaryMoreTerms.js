@@ -6,6 +6,8 @@
 export const MORE_PROCEDURE_TERMS = [
   { term: "Aye", def: "How an MP votes for a motion in the Commons. A vote against is 'No' (or 'Noes'). In the House of Lords the equivalents are 'Content' and 'Not Content'.", aliases: ["ayes", "noes"] },
   { term: "Not Content", def: "A vote against a motion in the House of Lords. A vote in favour is 'Content'. The Commons says 'Aye' and 'No' instead.", aliases: ["not-content"] },
+  { term: "Public Bill", def: "A bill that would change the law for everyone, as opposed to a private bill, which affects only one person, place or organisation. Every government bill is a public bill.", aliases: ["public bills"] },
+  { term: "Rebel", def: "An MP who votes against the way their own party's whips told them to vote. On this site a vote counts as a rebellion when an MP votes against the majority of their own party.", aliases: ["rebels", "rebelled", "rebelling", "rebellion", "rebellions"] },
   { term: "Abstention", def: "Choosing not to vote either for or against. In the Commons an MP who wants to be seen to abstain can walk through both lobbies, but most simply don't vote.", aliases: ["abstain", "abstains", "abstained", "abstaining"] },
   { term: "Payroll Vote", def: "The MPs who hold a government job, from Cabinet ministers down to unpaid parliamentary private secretaries. They're expected to back the government in votes, so the payroll vote is a built-in block of support.", aliases: ["payroll"] },
   { term: "Government Bill", def: "A bill brought forward by the government, usually to carry out its manifesto. Most bills that become law are government bills; the others are private members' bills." },
@@ -74,6 +76,11 @@ export const MORE_POLITICS_TERMS = [
 ];
 
 export const MORE_TERM_OVERRIDES = {
+  // Parliament's own stage names write the number as a numeral ("2nd reading"), where the glossary spells it out.
+  "First Reading": { aliases: ["1st reading"] },
+  "Second Reading": { aliases: ["2nd reading"] },
+  "Third Reading": { aliases: ["3rd reading"] },
+  "Ten Minute Rule Bill": { aliases: ["ten minute rule", "ten minute rule motion", "ten minute rule bills"] },
   "Registrable Interest": { aliases: ["registrable interests", "declared interest", "declared interests", "registered interest", "registered interests"] },
   "Civil Service": { aliases: ["civil servant", "civil servants"] },
   "Short Money": {

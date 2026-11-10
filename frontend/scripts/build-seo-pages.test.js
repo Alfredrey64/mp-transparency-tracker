@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { buildSeoPages, readSidebarPages, pageList, routeEntries, clip, SITE } from "./build-seo-pages.mjs";
+import { buildSeoPages, readSidebarPages, pageList, routeEntries, clip, ogFileName, ogImageUrl, SITE } from "./build-seo-pages.mjs";
 import { prerender, render } from "./prerender.mjs";
 import { SECTIONS } from "../src/data/sidebarSections";
 import { ANSWERS } from "../src/data/answers";
@@ -68,5 +68,41 @@ describe("prerendered pages", () => {
     expect(fs.readFileSync(path.join(dist, "taxRates", "vat", "index.html"), "utf8")).toContain("<h1>VAT: how the rate has changed</h1>");
     expect(fs.readFileSync(path.join(dist, "answers", "what-is-gdp", "index.html"), "utf8")).toContain("What is GDP?");
     expect(fs.readFileSync(path.join(dist, "index.html"), "utf8")).toContain("A simple breakdown of UK politics");
+  });
+});
+
+describe("each page's own link-preview image", () => {
+  const entry = { path: "/taxRates/vat", heading: "VAT", description: "How VAT works" };
+  it("is named from the page's address and the words printed on it, so changed words get a new name", () => {
+    const name = ogFileName(entry);
+    expect(name).toMatch(/^taxRates-vat-[0-9a-f]{8}\.jpg$/);
+    expect(ogFileName({ ...entry })).toBe(name);
+    expect(ogFileName({ ...entry, heading: "Value added tax" })).not.toBe(name);
+    expect(ogFileName({ ...entry, description: "Something else" })).not.toBe(name);
+  });
+  it("goes into a page's share tags when it has been drawn, and the site's image is kept when it has not", () => {
+    const template = '<!doctype html><html><head><title>x</title><meta name="description" content="old" /><link rel="canonical" href="https://x/" /><meta property="og:title" content="old" /><meta property="og:description" content="old" /><meta property="og:url" content="https://x/" /><meta property="og:image" content="https://domesdaylive.co.uk/og-image.png?v=16" /><meta name="twitter:title" content="old" /><meta name="twitter:description" content="old" /><meta name="twitter:image" content="https://domesdaylive.co.uk/og-image.png?v=16" /></head><body><div id="root"></div></body></html>';
+    const withImage = render(template, { ...entry, title: "VAT", image: `${SITE}/og/${ogFileName(entry)}` });
+    expect(withImage).toContain(`<meta property="og:image" content="${SITE}/og/${ogFileName(entry)}" />`);
+    expect(withImage).toContain(`<meta name="twitter:image" content="${SITE}/og/${ogFileName(entry)}" />`);
+    const without = render(template, { ...entry, title: "VAT" });
+    expect(without).toContain("og-image.png?v=16");
+  });
+  it("is looked for in public/og, and never for the home page", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "og-"));
+    expect(ogImageUrl(entry, dir)).toBeNull();
+    fs.mkdirSync(path.join(dir, "og"));
+    fs.writeFileSync(path.join(dir, "og", ogFileName(entry)), "x");
+    expect(ogImageUrl(entry, dir)).toBe(`${SITE}/og/${ogFileName(entry)}`);
+    expect(ogImageUrl({ path: "/", heading: "h", description: "d" }, dir)).toBeNull();
+  });
+  it("has been drawn for every page, so a new page or new wording needs `node scripts/build-page-og.mjs` before it is committed", () => {
+    const missing = routeEntries(source).filter((e) => e.path !== "/" && !fs.existsSync(path.join(here, "../public/og", ogFileName(e)))).map((e) => e.path);
+    expect(missing).toEqual([]);
+  });
+  it("leaves no image behind for a page that no longer exists", () => {
+    const wantedNames = new Set(routeEntries(source).filter((e) => e.path !== "/").map(ogFileName));
+    const stale = fs.readdirSync(path.join(here, "../public/og")).filter((f) => f.endsWith(".jpg") && !wantedNames.has(f));
+    expect(stale).toEqual([]);
   });
 });

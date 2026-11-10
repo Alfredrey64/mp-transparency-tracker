@@ -33,7 +33,7 @@ for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 900 });
     await mockServices(page);
     await page.goto("/myArea");
-    await expect(page.locator(".ma-section")).toHaveCount(6, { timeout: 20000 });
+    await expect(page.locator(".ma-section")).toHaveCount(7, { timeout: 20000 });
     await expect(page.locator(".ma-g:not(.ma-g-skel)")).toHaveCount(6, { timeout: 20000 });
     await expect(page.locator(".ma-skel")).toHaveCount(0, { timeout: 20000 });
     const text = await page.locator("main").innerText();
@@ -43,7 +43,7 @@ for (const width of [1440, 390]) {
     await expect(page.locator(".ma-spark-dot")).toBeAttached();
     await expect(page.locator(".ma-agebar")).toHaveCount(2);
     await expect(page.locator(".ma-track-dot").first()).toBeAttached();
-    for (const want of ["How Bristol Central voted in 2024", "Where Bristol Central sits among the 650", "What Test Member has been doing", "How your council has changed", "Elections coming up where you live", "Your council tax", "Who does what here", "Your neighbourhood", "Where South West ranks", "Who lives in South West", "Useful links for where you live", "Before polling day", "has declared and claimed", "How often they vote against their party", "Everyone else who speaks for you", "Homes and crime in South West", "Share it, print it or compare it"]) expect(text).toContain(want);
+    for (const want of ["Your week", "Bills on the move", "How Bristol Central voted in 2024", "Where Bristol Central sits among the 650", "What Test Member has been doing", "How your council has changed", "Elections coming up where you live", "Your council tax", "Who does what here", "Your neighbourhood", "Where South West ranks", "Who lives in South West", "Useful links for where you live", "Before polling day", "has declared and claimed", "How often they vote against their party", "Everyone else who speaks for you", "Homes and crime in South West", "Share it, print it or compare it"]) expect(text).toContain(want);
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
   });
 }
@@ -65,7 +65,7 @@ test("the planning card is left out outside England, and when nothing is on reco
   await page.setViewportSize({ width: 1440, height: 900 });
   await mockServices(page, { over: { country: "Wales" } });
   await page.goto("/myArea");
-  await expect(page.locator(".ma-section")).toHaveCount(6, { timeout: 20000 });
+  await expect(page.locator(".ma-section")).toHaveCount(7, { timeout: 20000 });
   await expect(page.locator(".ma-skel")).toHaveCount(0, { timeout: 20000 });
   await expect(page.locator(".ma-planning")).toHaveCount(0);
 });
@@ -91,7 +91,7 @@ test("the jump links move to their section", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await mockServices(page);
   await page.goto("/myArea");
-  await expect(page.locator(".ma-section")).toHaveCount(6, { timeout: 20000 });
+  await expect(page.locator(".ma-section")).toHaveCount(7, { timeout: 20000 });
   await expect(page.locator(".ma-skel")).toHaveCount(0, { timeout: 20000 });
   await page.getByRole("button", { name: "Council", exact: true }).click();
   await expect.poll(() => page.evaluate(() => Math.round(document.getElementById("ma-council").getBoundingClientRect().top)), { timeout: 5000 }).toBeLessThan(200);
@@ -172,4 +172,67 @@ test("comparing with a postcode in the same seat says so instead of opening a co
   await form.getByLabel("A postcode to compare with").fill("BS1 5TR");
   await form.getByRole("button", { name: "Compare" }).click();
   await expect(page.locator(".ma-tools .ma-err")).toContainText("too");
+});
+
+// "Your week": the first section, counting the last seven days of the MP's votes, new register entries and news, and the bills that moved.
+test("Your week counts what was recorded for the MP and which bills moved, and says when a part cannot be loaded", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await mockServices(page);
+  const day = (n) => new Date(Date.now() - n * 864e5).toISOString().slice(0, 10);
+  const tables = {
+    voting_records: [
+      { title: "Housing Bill: Third Reading", date: day(2), voted_aye: true, voted_with_party_majority: true },
+      { title: "Rail Bill: Second Reading", date: day(3), voted_aye: false, voted_with_party_majority: false },
+    ],
+    financial_interests: [{ donor_name: "Example Ltd", value_amount: 2500, date_registered: day(5) }],
+    mp_news: [{ headline: "Test Member visits a school", url: "https://example.org/news", published_date: day(1) }],
+    bills: [
+      { bill_id: 1, short_title: "Housing Bill", current_stage: "Report stage", current_house: "Commons", last_updated: `${day(1)}T10:00:00Z`, is_act: false, is_defeated: false },
+      { bill_id: 2, short_title: "Rail Bill", current_stage: "Royal Assent", current_house: "Lords", last_updated: `${day(2)}T10:00:00Z`, is_act: true, is_defeated: false },
+    ],
+  };
+  await page.route("**/127.0.0.1:54321/**", (route) => {
+    const req = route.request();
+    if (req.method() !== "GET") return route.fallback();
+    const table = Object.keys(tables).find((t) => req.url().includes(`/${t}`));
+    if (!table || (table === "voting_records" && !req.url().includes("politician_id"))) return route.fallback();
+    return route.fulfill({ status: 200, contentType: "application/json", headers: { "access-control-allow-origin": "*", "access-control-expose-headers": "content-range" }, body: JSON.stringify(tables[table]) });
+  });
+  await page.goto("/myArea");
+  const week = page.locator("#ma-week");
+  await expect(week).toContainText("Test Member this week", { timeout: 20000 });
+  await expect(week).toContainText("Votes in the last 7 days");
+  await expect(week.locator(".ma-wk-figs").first()).toContainText("2");
+  await expect(week).toContainText("1 was against the majority of their own party");
+  await expect(week).toContainText("Housing Bill: Final Commons vote on the bill");
+  await expect(week).toContainText("Example Ltd, £2,500");
+  await expect(week).toContainText("Test Member visits a school");
+  await expect(week).toContainText("Bills that moved in the last 7 days");
+  await expect(week).toContainText("Housing Bill");
+  await expect(week).toContainText("Became law");
+  await expect(week.getByRole("link", { name: "Everything that changed this week" })).toBeVisible();
+  // It is the first section and has its own button in the jump bar.
+  expect(await page.locator(".ma-section").first().getAttribute("id")).toBe("ma-week");
+  await expect(page.locator(".ma-jump button").first()).toHaveText("Your week");
+  await page.evaluate(() => document.getElementById("ma-week").scrollIntoView({ block: "start" }));
+  await page.waitForTimeout(1500);
+  await page.screenshot({ path: "test-results/your-week-desktop.png" });
+});
+
+test("Your week fits a phone and says so when the records cannot be reached", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await mockServices(page);
+  await page.route("**/127.0.0.1:54321/**", (route) => {
+    const req = route.request();
+    if (req.method() !== "GET" || !req.url().includes("/bills")) return route.fallback();
+    return route.fulfill({ status: 500, contentType: "application/json", headers: { "access-control-allow-origin": "*" }, body: "{}" });
+  });
+  await page.goto("/myArea");
+  const week = page.locator("#ma-week");
+  await expect(week).toContainText("We could not load the bills just now", { timeout: 20000 });
+  await expect(week).toContainText("Votes in the last 7 days");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
+  await page.evaluate(() => document.getElementById("ma-week").scrollIntoView({ block: "start" }));
+  await page.waitForTimeout(1500);
+  await page.screenshot({ path: "test-results/your-week-phone.png" });
 });

@@ -9,6 +9,7 @@
 // kept in git.
 
 import fs from "node:fs";
+import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { PAGE_GUIDES, GUIDE_ALIASES } from "../src/data/pageGuides.js";
@@ -16,6 +17,22 @@ import { ANSWERS } from "../src/data/answers.js";
 import { TAXES, GROUPS } from "../src/data/taxCatalogue.js";
 
 export const SITE = "https://domesdaylive.co.uk";
+
+// Each page's own link-preview image (public/og/<name>.jpg, drawn by scripts/build-page-og.mjs). The name carries a short code made from what is printed on the image, so when a
+// page's heading or description changes it gets a new name: a shared link then shows the new picture instead of a copy a chat app or social site kept. `OG_DESIGN` is bumped
+// when the drawing itself changes, to redraw every one.
+export const OG_DESIGN = 1;
+export function ogFileName(entry) {
+  const slug = entry.path.replace(/^\/|\/$/g, "").replace(/\//g, "-") || "home";
+  const code = createHash("sha1").update(`${OG_DESIGN}\n${entry.heading}\n${entry.description}`).digest("hex").slice(0, 8);
+  return `${slug}-${code}.jpg`;
+}
+// The image's address if it has been drawn, or null (the page then keeps the site's own image).
+export function ogImageUrl(entry, publicDir) {
+  if (entry.path === "/") return null;
+  const file = ogFileName(entry);
+  return fs.existsSync(path.join(publicDir, "og", file)) ? `${SITE}/og/${file}` : null;
+}
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(here, "..");
 
@@ -83,7 +100,7 @@ export function routeEntries(sidebarSource) {
   return out;
 }
 
-function pageHtml({ url, title, description, heading, bodyHtml, go }) {
+function pageHtml({ url, title, description, heading, bodyHtml, go, image }) {
   return `<!doctype html>
 <html lang="en" data-go="${esc(go)}">
 <head>
@@ -100,11 +117,11 @@ function pageHtml({ url, title, description, heading, bodyHtml, go }) {
 <meta property="og:title" content="${esc(title)}" />
 <meta property="og:description" content="${esc(description)}" />
 <meta property="og:url" content="${esc(url)}" />
-<meta property="og:image" content="${SITE}/og-image.png" />
+<meta property="og:image" content="${image ?? `${SITE}/og-image.png`}" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="${esc(title)}" />
 <meta name="twitter:description" content="${esc(description)}" />
-<meta name="twitter:image" content="${SITE}/og-image.png" />
+<meta name="twitter:image" content="${image ?? `${SITE}/og-image.png`}" />
 <style>body{margin:0;background:#F3F5F9;color:#0A1424;font-family:system-ui,sans-serif;line-height:1.6}main{max-width:720px;margin:0 auto;padding:40px 20px}h1{font-size:30px;line-height:1.2;margin:0 0 12px}a{color:#1E4FB8;font-weight:700}p,li{font-size:16px}.k{font-weight:700;color:#5E5C68;font-size:14px;margin:0 0 6px}</style>
 </head>
 <body>
@@ -131,8 +148,8 @@ export function buildSeoPages(outDir, sidebarSource) {
     const url = `${SITE}${e.path === "/" ? "/" : e.path}`;
     urls.push({ loc: url, priority: e.priority, freq: e.freq });
     // The older /p/ pages, kept so links already shared keep working. Their canonical address is the real page.
-    if (e.key && e.key !== "home") fs.writeFileSync(path.join(pDir, `${e.key}.html`), pageHtml({ url, title: e.title, description: e.description, heading: e.heading, bodyHtml: `<p>${esc(e.lead ?? e.description)}</p>${e.bodyHtml}`, go: e.path }));
-    if (e.answer) fs.writeFileSync(path.join(pDir, "answers", `${e.answer}.html`), pageHtml({ url, title: e.title, description: e.description, heading: e.heading, bodyHtml: `<p>${esc(e.lead ?? e.description)}</p>${e.bodyHtml}`, go: e.path }));
+    if (e.key && e.key !== "home") fs.writeFileSync(path.join(pDir, `${e.key}.html`), pageHtml({ url, title: e.title, description: e.description, heading: e.heading, bodyHtml: `<p>${esc(e.lead ?? e.description)}</p>${e.bodyHtml}`, go: e.path, image: ogImageUrl(e, outDir) }));
+    if (e.answer) fs.writeFileSync(path.join(pDir, "answers", `${e.answer}.html`), pageHtml({ url, title: e.title, description: e.description, heading: e.heading, bodyHtml: `<p>${esc(e.lead ?? e.description)}</p>${e.bodyHtml}`, go: e.path, image: ogImageUrl(e, outDir) }));
   }
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

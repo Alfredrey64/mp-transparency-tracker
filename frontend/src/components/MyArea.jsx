@@ -16,6 +16,7 @@ import { Card, Section, Glance, JumpNav, SeatResult, SeatHistory, SeatCard, MpDo
 import { MpMoneyCard, IndependenceCard, RepsCard, AreaTools } from "./AreaMp";
 import { useAreaExtras } from "../lib/useAreaExtras";
 import { yearsSince } from "../lib/areaProfile";
+import { WeekSection } from "./YourWeek";
 import "../myarea.css";
 
 // My area: type a postcode once and see your MP, constituency, council, councillors, next elections and how your region compares, on one page. The
@@ -110,6 +111,8 @@ function Dashboard({ data, onForget }) {
 
       <Glance data={data} x={x} />
       <JumpNav />
+
+      <WeekSection mp={mp} colour={mpColour} />
 
       <Section id="ma-mp" title="Your MP and your seat" lede={`${r.parliamentary_constituency} is one of 650 seats. Here is who represents it, how it voted and how it has changed hands.`} colour={mpColour}>
         <Card i={0} colour={mpColour} icon={<IconVote size={20} />} title="Your MP" className="ma-mpcard">

@@ -3,6 +3,7 @@ import { ExplainerBody } from "../story/ExplainerPage";
 import SittingStrip from "../story/SittingStrip";
 import { EntryList, DayGroups } from "../story/Entries";
 import JumpChips from "../story/JumpChips";
+import CalendarFeeds from "../story/CalendarFeeds";
 import Loading from "../Loading";
 import { LoadFailedNote } from "../MpCards";
 import { IconCalendar, IconBills, IconCommittee, IconQuestion } from "../icons";
@@ -108,6 +109,14 @@ function build(data) {
 
   const parts = chapters.slice(1).map((c, i) => ({ title: c.title, colour: c.colour, count: [bills.length, committees.length, rota.length, business.length].filter((n) => n)[i] }));
   if (parts.length) chapters[0].blocks.push({ node: <JumpChips items={parts} label="Jump to bills, committees, questions or debates" /> });
+
+  // Added after the jump chips are worked out, so they still list only the four kinds of business.
+  chapters.push({
+    title: "Put this in your calendar",
+    lede: "Subscribe in Apple Calendar, Google Calendar or Outlook and the next four weeks of Parliament's business appears alongside your own, updated every day. Pick how much you want.",
+    colour: "#2C7DA0",
+    blocks: [{ node: <CalendarFeeds data={data} /> }],
+  });
 
   return {
     lead: <Hero
