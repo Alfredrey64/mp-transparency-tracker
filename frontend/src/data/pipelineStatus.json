@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-09T12:16:33.485Z",
+  "generatedAt": "2026-11-10T12:11:20.256Z",
   "succeededCount": 38,
-  "totalCount": 39,
+  "totalCount": 40,
   "sources": [
     {
       "label": "Financial interests",
@@ -112,6 +112,10 @@
       "succeeded": true
     },
     {
+      "label": "Party leaders and portraits (Party History page)",
+      "succeeded": true
+    },
+    {
       "label": "Councils (councillors, make-up, election dates)",
       "succeeded": true
     },
@@ -137,7 +141,7 @@
     },
     {
       "label": "Statutory instruments",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Plain-English rewrites of committee reports and statutory instruments (AI, from the official wording)",

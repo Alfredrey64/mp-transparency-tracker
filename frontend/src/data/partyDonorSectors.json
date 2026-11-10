@@ -170,6 +170,13 @@
     "companyNumber": "00357963",
     "sicCode": "94920"
   },
+  "United Kingdom Sotheby's International Realty Limited": {
+    "sector": "Construction & Property",
+    "source": "companies-house-crn",
+    "companyName": "UNITED KINGDOM SOTHEBY'S INTERNATIONAL REALTY LIMITED",
+    "companyNumber": "01266162",
+    "sicCode": "68310"
+  },
   "Nova Venture Holdings Ltd": {
     "sector": "Other / Uncategorised",
     "source": "companies-house-crn",
@@ -183,12 +190,5 @@
     "companyName": "CPG CHESTER LIMITED",
     "companyNumber": "10932289",
     "sicCode": "68209"
-  },
-  "SLM Management Ltd": {
-    "sector": "Legal & Professional Services",
-    "source": "companies-house-crn",
-    "companyName": "SLM MANAGEMENT LIMITED",
-    "companyNumber": "04741413",
-    "sicCode": "70229"
   }
 }
