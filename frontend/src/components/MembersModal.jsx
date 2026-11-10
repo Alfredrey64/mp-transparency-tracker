@@ -5,6 +5,7 @@ import { m as motion, useReducedMotion } from "motion/react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, numeric } from "../theme";
 import { partyColour } from "../lib/format";
 import { navigate } from "../lib/route";
+import CloseX from "./CloseX";
 
 // A pop-up list of the MPs behind a figure: tap a bar or number on the
 // Parliament in Numbers page and see who it counts. Each row opens that MP's
@@ -122,9 +123,9 @@ export default function MembersModal({ title, note, members, badge, returnFocusT
             type="button"
             onClick={onClose}
             aria-label="Close"
-            style={{ flexShrink: 0, width: 36, height: 36, borderRadius: "50%", border: `1px solid ${COLORS.hairline}`, background: COLORS.paperCard, color: COLORS.ink, cursor: "pointer", fontSize: 18, lineHeight: 1 }}
+            style={{ flexShrink: 0, width: 36, height: 36, borderRadius: "50%", border: `1px solid ${COLORS.hairline}`, background: COLORS.paperCard, color: COLORS.ink, cursor: "pointer", display: "grid", placeItems: "center", padding: 0 }}
           >
-            ×
+            <CloseX />
           </button>
         </div>
 

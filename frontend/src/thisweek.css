@@ -1,5 +1,5 @@
 /* What changed this week. Loaded only with that page. */
-.tw-window { display: inline-flex; gap: 6px; padding: 5px; border-radius: 999px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); margin: 22px 0 4px; }
+.tw-window { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); vertical-align: middle; margin: 0 8px; }
 .tw-window button { min-height: 40px; padding: 0 18px; border-radius: 999px; border: 0; background: transparent; font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); cursor: pointer; transition: background-color 0.2s, color 0.2s; }
 .tw-window button[aria-pressed="true"] { background: var(--tw-accent, #E0367A); color: #fff; }
 .tw-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 6px; }
@@ -40,3 +40,29 @@ button.tw-card { width: 100%; text-align: left; font: inherit; cursor: pointer; 
 @keyframes twPanel { from { opacity: 0; transform: translateY(8px); } }
 @media (max-width: 520px) { .tw-time button small { display: none; } }
 @media (prefers-reduced-motion: reduce) { .tw-time::after, .tw-time button i, .tw-panel { transition: none; animation: none; } }
+
+/* The headline figures: one sentence with the window in it, then four cards that count, explain and filter. */
+.ct { margin-top: 22px; display: grid; gap: 14px; }
+.ct-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+.ct-sentence { margin: 0; font: 500 clamp(18px, 2.4vw, 22px)/2.1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.ct-sentence b { font: 800 1.15em "Figures", "Newsreader", Georgia, serif; color: var(--tw-accent); font-variant-numeric: lining-nums tabular-nums; }
+.ct-all { min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1.5px solid var(--c-hairline); background: var(--c-paper-card); font: 700 13.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); cursor: pointer; }
+.ct-tiles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 14px; }
+.ct-tiles button { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 2px 12px; width: 100%; height: 100%; box-sizing: border-box; padding: 16px 18px 16px; text-align: left; border-radius: 20px; border: 1px solid var(--c-hairline); border-top: 5px solid var(--kc); background: var(--c-paper-card); box-shadow: var(--shadow-1); font: inherit; color: inherit; cursor: pointer; transition: box-shadow 0.2s var(--ease-out), transform 0.2s var(--ease-out), background-color 0.2s ease; }
+.ct-tiles button:hover { transform: translateY(-2px); box-shadow: var(--shadow-2); }
+.ct-tiles button[aria-pressed="true"] { background: color-mix(in srgb, var(--kc) 9%, var(--c-paper-card)); border-color: var(--kc); box-shadow: var(--shadow-2), 0 0 0 3px color-mix(in srgb, var(--kc) 20%, transparent); }
+.ct-tiles button:focus-visible { outline: 3px solid var(--c-brand); outline-offset: 2px; }
+.ct-ico { grid-row: 1 / span 2; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: color-mix(in srgb, var(--kc) 14%, var(--c-paper-card)); color: color-mix(in srgb, var(--kc) 80%, var(--c-ink)); }
+.ct-n { font: 700 clamp(34px, 4vw, 42px)/1 "Figures", "Newsreader", Georgia, serif; letter-spacing: -0.02em; font-variant-numeric: lining-nums tabular-nums; color: var(--c-ink); }
+.ct-label { font: 800 14.5px/1.25 "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--kc) 78%, var(--c-ink)); }
+.ct-plain { grid-column: 1 / -1; margin-top: 8px; font: 400 13.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ct-bar { grid-column: 1 / -1; display: block; height: 6px; margin-top: 10px; border-radius: 3px; background: color-mix(in srgb, var(--kc) 14%, transparent); overflow: hidden; }
+.ct-bar u { display: block; height: 100%; width: calc(var(--w) * 100%); border-radius: 3px; background: var(--kc); transform-origin: left; animation: ctGrow 0.9s var(--ease-out) calc(var(--i, 0) * 120ms + 150ms) backwards; }
+@keyframes ctGrow { from { transform: scaleX(0); } }
+@media (prefers-reduced-motion: reduce) { .ct-bar u { animation: none; } .ct-tiles button { transition: none; } .ct-tiles button:hover { transform: none; } }
+
+/* The plain-English line under a bill, and the hint that a card opens. */
+.tw-card span.tw-plain { display: grid; gap: 1px; margin-top: 4px; padding: 8px 11px; border-radius: 10px; background: color-mix(in srgb, var(--kc) 8%, transparent); font: 400 13.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.tw-plain em { font: 700 11.5px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: color-mix(in srgb, var(--kc) 80%, var(--c-ink)); }
+.tw-card .tw-go { align-self: end; margin-top: 6px; font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--kc) 80%, var(--c-ink)); }
+button.tw-card:hover .tw-go { text-decoration: underline; }

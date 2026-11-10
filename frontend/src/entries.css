@@ -32,7 +32,7 @@
 .en-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .en-label { margin: 0; padding: 3px 12px; border-radius: 999px; background: color-mix(in srgb, var(--ec) 14%, transparent); font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--ec) 78%, var(--c-ink)); width: fit-content; }
 .en-x, .en-back { min-height: 44px; border-radius: 999px; border: 1px solid var(--c-hairline); background: var(--c-paper); color: var(--c-ink); cursor: pointer; font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; }
-.en-x { width: 44px; font-size: 26px; line-height: 1; }
+.en-x { display: grid; place-items: center; width: 44px; padding: 0; }
 .en-back { padding: 0 16px; }
 .en-box h2 { margin: 0; font: 700 clamp(21px, 4vw, 26px)/1.25 "Figures", "Newsreader", Georgia, serif; overflow-wrap: anywhere; outline: none; }
 .en-box h3 { margin: 0 0 4px; font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--ec) 75%, var(--c-ink)); }

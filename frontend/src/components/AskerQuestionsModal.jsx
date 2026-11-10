@@ -4,6 +4,7 @@ import { createPortal } from "react-dom";
 import { m as motion, useReducedMotion } from "motion/react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, numeric, readable } from "../theme";
 import { formatDate, partyColour } from "../lib/format";
+import CloseX from "./CloseX";
 
 // The questions one MP or peer has put on a topic, in a pop-up over the page.
 // Opts out of the glossary's automatic underlining (the pragma above): this
@@ -98,9 +99,9 @@ export default function AskerQuestionsModal({ person, questions, topic, returnFo
             type="button"
             onClick={onClose}
             aria-label="Close"
-            style={{ flexShrink: 0, width: 36, height: 36, borderRadius: "50%", border: `1px solid ${COLORS.hairline}`, background: COLORS.paperCard, color: COLORS.ink, cursor: "pointer", fontSize: 18, lineHeight: 1 }}
+            style={{ flexShrink: 0, width: 36, height: 36, borderRadius: "50%", border: `1px solid ${COLORS.hairline}`, background: COLORS.paperCard, color: COLORS.ink, cursor: "pointer", display: "grid", placeItems: "center", padding: 0 }}
           >
-            ×
+            <CloseX />
           </button>
         </div>
 

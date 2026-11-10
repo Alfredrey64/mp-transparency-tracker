@@ -9,6 +9,7 @@ import { ONE_NATION_PARTIES } from "../../data/answerPartyPositions";
 import { manifestoFootprint } from "../../lib/manifestoFootprint";
 import { chip, readable } from "../../theme";
 import "../../manifestos.css";
+import CloseX from "../CloseX";
 
 // The pictures that open the "What the parties promise" page: the chamber seat by seat, and a grid showing where each party made a clear promise. Both play once as they
 // scroll into view. The words are on the page (components/PartyPolicies.jsx); the numbers come from the site's own party data.
@@ -57,7 +58,7 @@ function PromisePopup({ pick, onPick, onClose, onOpenParty, openerRef }) {
           transition={{ type: "spring", stiffness: 380, damping: 30 }}
         >
           <div className="mf-pop-head" style={{ background, color }}>
-            <button ref={closeRef} type="button" className="mf-pop-x" aria-label="Close" onClick={onClose}>&#10005;</button>
+            <button ref={closeRef} type="button" className="mf-pop-x" aria-label="Close" onClick={onClose}><CloseX size={16} /></button>
             <small>{party.name}{ONE_NATION_PARTIES[pick.key] ? `, ${ONE_NATION_PARTIES[pick.key]} only` : ""}</small>
             <h3 id="mf-pop-title">{pick.topic}</h3>
             <p>A clear promise on <b>{cell.n}</b> of {total} {total === 1 ? "question" : "questions"}</p>

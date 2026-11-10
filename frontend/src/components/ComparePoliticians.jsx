@@ -13,6 +13,7 @@ import { getBillDescription } from "../lib/billDescriptions";
 import { plainSentence } from "../lib/billPlain";
 import BillMore from "./BillMore";
 import "../compare.css";
+import CloseX from "./CloseX";
 
 const MAX_COMPARE = 3;
 const NO_PARTY_MAJORITY_CONCEPT = ["independent", "speaker"];
@@ -225,10 +226,10 @@ function MpHeaderCard({ politician, color, onRemove }) {
           style={{
             flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
             width: 32, height: 32, margin: -4, background: "none", border: "none",
-            color: COLORS.inkSoft, cursor: "pointer", fontSize: 15, opacity: 0.6,
+            color: COLORS.inkSoft, cursor: "pointer", opacity: 0.6, padding: 0,
           }}
         >
-          ×
+          <CloseX size={13} />
         </button>
       </div>
       <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${COLORS.hairline}`, display: "flex", flexDirection: "column", gap: 8 }}>

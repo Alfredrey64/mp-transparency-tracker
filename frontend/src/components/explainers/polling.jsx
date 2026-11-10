@@ -14,8 +14,8 @@ const PAGE = {
     colours={["#1D1A33", "#9A3F55", "#2C5F9E"]}
     why="A poll that says one party is on 30% sounds like a fact. It is an estimate from a few thousand people, adjusted by the pollster, about votes rather than seats. Knowing that makes headlines easier to judge."
     extra={<VotesSeats rows={[
-      { name: "Labour, 4 July 2024", colour: "#E59AA6", votes: 33.7, seats: 63.2, votesText: "33.7%", seatsText: "63.2%", votesSub: "9.7 million votes", seatsSub: "411 of 650 seats" },
-      { name: "Reform UK, 4 July 2024", colour: "#7FCFCF", votes: 14.3, seats: 0.8, votesText: "14.3%", seatsText: "0.8%", votesSub: "4.1 million votes", seatsSub: "5 seats" },
+      { name: "Labour, 4 July 2024", colour: "#D6224A", votes: 33.7, seats: 63.2, votesText: "33.7%", seatsText: "63.2%", votesSub: "9.7 million votes", seatsSub: "411 of 650 seats" },
+      { name: "Reform UK, 4 July 2024", colour: "#0E97B0", votes: 14.3, seats: 0.8, votesText: "14.3%", seatsText: "0.8%", votesSub: "4.1 million votes", seatsSub: "5 seats" },
     ]} />}
   />,
   chapters: [

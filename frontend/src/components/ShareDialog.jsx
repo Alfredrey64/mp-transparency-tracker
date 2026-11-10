@@ -4,6 +4,7 @@ import { createPortal } from "react-dom";
 import { COLORS, FONT_BODY, FONT_DISPLAY } from "../theme";
 import { renderShareCard } from "../lib/shareCard";
 import { useExit } from "../lib/useExit";
+import CloseX from "./CloseX";
 
 // The pop-up behind a Share button: draws the card, shows it, and offers to
 // share it with the device's own share sheet (phones), download it as a PNG,
@@ -123,8 +124,8 @@ export default function ShareDialog({ getSpec, filename, returnFocusTo, onClose:
       >
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
           <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, color: COLORS.ink, flex: 1 }}>Share this as an image</div>
-          <button ref={closeRef} type="button" onClick={onClose} aria-label="Close" style={{ width: 36, height: 36, borderRadius: "50%", border: `1px solid ${COLORS.hairline}`, background: COLORS.paperCard, color: COLORS.ink, cursor: "pointer", fontSize: 18, lineHeight: 1 }}>
-            ×
+          <button ref={closeRef} type="button" onClick={onClose} aria-label="Close" style={{ width: 36, height: 36, borderRadius: "50%", border: `1px solid ${COLORS.hairline}`, background: COLORS.paperCard, color: COLORS.ink, cursor: "pointer", display: "grid", placeItems: "center", padding: 0 }}>
+            <CloseX />
           </button>
         </div>
 

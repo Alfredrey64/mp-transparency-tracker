@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
-import { Board, Why, Chapter, Show, Pull, Cards } from "./story/Kit";
+import { Why, Chapter, Show, Pull, Cards } from "./story/Kit";
+import CountUp from "./CountUp";
 import { TwoRoutes, Iceberg } from "./story/LobbyArt";
 import { COLORS, FONT_BODY, readable } from "../theme";
 import { PageHeader } from "./shared";
@@ -115,19 +116,47 @@ function RegisterSearch() {
         {filtered.length === 0 ? "No matches." : filtered.length === LOBBYISTS.length ? `All ${LOBBYISTS.length} registered firms` : `${filtered.length} of ${LOBBYISTS.length} firms match`}
       </div>
       <ul className="st-firms">
-        {filtered.slice(0, shown).map((firm) => {
+        {filtered.slice(0, shown).map((firm, i) => {
           const focus = LOBBYIST_FOCUS[firm.name];
           return (
-            <li key={firm.name} className="st-firm">
-              <b>{firm.name}</b>
-              <span>{focus ?? "Practice area not stated here"}</span>
-              <small>On the register since {formatDate(firm.registeredSince)}</small>
+            <li key={firm.name} className="st-firm" data-known={focus ? "1" : "0"} style={{ "--k": i % 12 }}>
+              <span className="st-firm-mono" aria-hidden="true">{firm.name.replace(/[^A-Za-z ]/g, "").split(" ").filter(Boolean).map((w) => w[0]).slice(0, 2).join("").toUpperCase()}</span>
+              <div>
+                <b>{firm.name}</b>
+                <span>{focus ?? "Practice area not stated here"}</span>
+                <small>On the register since {formatDate(firm.registeredSince)}</small>
+              </div>
             </li>
           );
         })}
       </ul>
       {filtered.length > shown && <div style={{ display: "flex", justifyContent: "center", marginTop: 16 }}><button type="button" className="btn btn-secondary btn-lg" onClick={() => setShown((n) => n + 24)}>Show {Math.min(24, filtered.length - shown)} more of {filtered.length - shown} left</button></div>}
     </div>
+  );
+}
+
+// The opening of the page: the register's numbers told in a sentence, not a row of boxes, and the registered firms' own names drifting past in two lines, so you can see
+// how many there are before reading about what they are not required to say.
+function RegisterLead() {
+  const names = useMemo(() => {
+    const step = Math.max(1, Math.floor(LOBBYISTS.length / 36));
+    const picked = LOBBYISTS.filter((_, i) => i % step === 0).slice(0, 36).map((f) => f.name);
+    return [picked.filter((_, i) => i % 2 === 0), picked.filter((_, i) => i % 2 === 1)];
+  }, []);
+  return (
+    <section className="lr-lead" aria-label="The register in brief">
+      <p className="lr-lead-text">
+        Since <b className="lr-hl">2014</b>, a firm paid to lobby a minister for someone else has had to sign a public register. Today <b className="lr-hl"><CountUp value={LOBBYISTS.length} /></b> firms
+        are on it, and the Registrar's <b className="lr-hl">{CASES.length}</b> recent investigations into whether other lobbying should have been registered all ended with no breach found.
+      </p>
+      <div className="lr-ticker" aria-hidden="true">
+        {names.map((row, r) => (
+          <div key={r} className="lr-ticker-row" data-dir={r}>
+            <div className="lr-ticker-track">{[...row, ...row].map((n, i) => <span key={`${n}-${i}`}>{n}</span>)}</div>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -142,11 +171,7 @@ export default function LobbyingRegister() {
         maxWidth={900}
       />
 
-      <Board tiles={[
-        { label: "Firms on the register", value: LOBBYISTS.length, colour: "#6FB1FF", sub: "paid to lobby ministers for someone else" },
-        { label: "The year the register was created", value: "2014", colour: "#FF7A8A", sub: "by the Transparency of Lobbying Act" },
-        { label: "Investigations explained below", value: CASES.length, colour: "#FFB45E", sub: "all of them cleared" },
-      ]} />
+      <RegisterLead />
 
       <Why icon={IconRegister} colour="#5A7FA6">
         This register makes one narrow slice of professional persuasion visible, but most real-world lobbying, done in-house by a company's own staff, leaves no
@@ -164,14 +189,14 @@ export default function LobbyingRegister() {
         </Show>
       </Chapter>
 
-      <Chapter n={2} title="What has to be registered" colour="#3F7D5C" lede="One specific, narrow activity.">
+      <Chapter n={2} title="What has to be registered" colour="#3F7D5C" lede="One specific, narrow activity, and a legal duty only since 2014.">
         <Pull colour="#3F7D5C">
           A <strong>consultant lobbyist</strong>: a firm or individual paid by a client to lobby on their behalf, as opposed to lobbying for their own organisation, communicating <strong>directly and personally with a government minister or a department's permanent secretary</strong>. Every firm on the register files a quarterly return naming every client they lobbied for in that way, or confirms they had none.
         </Pull>
         <p className="st-note">The Transparency of Lobbying, Non-Party Campaigning and Trade Union Administration Act 2014 created this duty. A permanent secretary is the most senior civil servant in a department, who runs it day to day.</p>
       </Chapter>
 
-      <Chapter n={3} title="Search the register yourself" colour="#5A7FA6" lede="Every firm currently registered as a consultant lobbyist.">
+      <Chapter n={3} title="Search the register yourself" colour="#5A7FA6" lede={<>Every one of the {LOBBYISTS.length} firms currently registered as a consultant lobbyist.</>}>
         <RegisterSearch />
       </Chapter>
 
@@ -193,7 +218,7 @@ export default function LobbyingRegister() {
         <ul className="st-case-grid">
           {CASES.map((c) => (
             <li key={c.name} className="st-case" style={{ "--tc": c.color }}>
-              <header><span className="st-avatar" aria-hidden="true">{c.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span><div><h3>{c.name}</h3><p>{c.period}</p></div></header>
+              <header><span className="st-avatar" aria-hidden="true">{c.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span><div><h3>{c.name}</h3><p>{c.period}</p></div><span className="st-case-flag">Cleared</span></header>
               <section><h4>What the Registrar looked at</h4><p>{c.detail}</p></section>
             </li>
           ))}

@@ -13,8 +13,9 @@
 .ma-hero-art i:nth-child(2) { animation-delay: 1.2s; }
 .ma-hero-art i:nth-child(3) { animation-delay: 2.4s; }
 @keyframes maRing { from { transform: scale(0.6); opacity: 0.9; } to { transform: scale(4.2); opacity: 0; } }
-.ma-pin { flex: none; display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: #fff; color: color-mix(in srgb, var(--mc) 70%, #0B1B33); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); animation: maDrop 0.9s var(--ease-spring) backwards; }
-@keyframes maDrop { 0% { transform: translateY(-40px) scale(0.6); opacity: 0; } 60% { transform: translateY(6px) scale(1.04); opacity: 1; } 100% { transform: none; } }
+.ma-pin { flex: none; display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: #fff; color: color-mix(in srgb, var(--mc) 70%, #0B1B33); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); animation: maDrop 0.8s cubic-bezier(0.22, 1, 0.36, 1) both; will-change: transform, opacity; }
+/* One smooth fall that settles exactly where the pin sits: no overshoot to bounce back from, and the last frame is the resting state, so nothing shifts when it ends. */
+@keyframes maDrop { 0% { transform: translateY(-36px) scale(0.7); opacity: 0; } 100% { transform: translateY(0) scale(1); opacity: 1; } }
 .ma-hero-text { min-width: 0; flex: 1 1 260px; }
 .ma-hero-text p { margin: 0; font: 600 14px "Figures", "Public Sans", system-ui, sans-serif; opacity: 0.8; }
 .ma-hero-text h2 { margin: 2px 0 10px; font: 700 clamp(26px, 4.4vw, 42px)/1.1 "Figures", "Newsreader", Georgia, serif; overflow-wrap: break-word; }
@@ -545,7 +546,7 @@
 .ma-id-photo img, .ma-id-fallback { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; object-position: top; border: 4px solid var(--c-paper-card); box-sizing: border-box; background: var(--c-paper); box-shadow: 0 14px 28px -12px color-mix(in srgb, var(--pc) 70%, #0B1B33); transition: transform 0.9s var(--ease-spring) 0.2s, opacity 0.5s var(--ease-out) 0.2s; }
 .ma-id-fallback { display: grid; place-items: center; font: 700 44px "Figures", "Newsreader", Georgia, serif; color: #fff; background: var(--pc); }
 .ma-card:not([data-in="true"]) .ma-id-photo img, .ma-card:not([data-in="true"]) .ma-id-fallback { transform: scale(0.7); opacity: 0; }
-.ma-id-name { margin: 4px 0 0; font: 700 clamp(24px, 2.6vw, 30px)/1.15 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); text-wrap: balance; }
+.ma-id .ma-id-name { margin: 4px 0 0; font: 700 clamp(26px, 3vw, 36px)/1.15 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); text-wrap: balance; }
 .ma-id-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 0 !important; }
 .ma-id-chips span { display: inline-flex; align-items: center; gap: 7px; padding: 5px 12px; border-radius: 999px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .ma-id-party i { width: 10px; height: 10px; border-radius: 50%; background: var(--pc); }
@@ -560,6 +561,21 @@
   .ma-mpcard .ma-id-photo { grid-row: 1 / span 4; margin: 0; }
   .ma-mpcard .ma-id-chips { justify-content: flex-start; }
 }
+/* The MP's strip sits straight under the banner: portrait on the left, who they are in the middle, the two buttons on the right. */
+.ma-mpstrip { grid-column: auto; margin-top: 16px; padding: 0; overflow: hidden; }
+.ma-mpstrip > header { display: none; }
+.ma-mpstrip { display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; }
+.ma-mpstrip { background: radial-gradient(480px 240px at 0 50%, color-mix(in srgb, var(--mc) 20%, transparent), transparent 75%), linear-gradient(180deg, color-mix(in srgb, var(--mc) 6%, var(--c-paper-card, var(--c-paper))), var(--c-paper-card, var(--c-paper))); }
+.ma-mpstrip .ma-id { border: 0; border-radius: 0; background: none; }
+.ma-mpstrip .ma-actions { padding: 4px 16px 20px; margin: 0; }
+@media (min-width: 760px) {
+  .ma-mpstrip { grid-template-columns: minmax(0, 1fr) auto; }
+  .ma-mpstrip .ma-id { grid-template-columns: auto minmax(0, 1fr); justify-items: start; text-align: left; column-gap: 28px; padding: 22px 28px; }
+  .ma-mpstrip .ma-id-photo { grid-row: 1 / span 4; margin: 0; }
+  .ma-mpstrip .ma-id-chips { justify-content: flex-start; }
+  .ma-mpstrip .ma-actions { flex-direction: column; align-items: stretch; padding: 22px 28px 22px 8px; min-width: 190px; }
+}
+#ma-mp .ma-doing { grid-column: 1 / -1; }
 @media (prefers-reduced-motion: reduce) { .ma-id-ring, .ma-id-photo img, .ma-id-fallback, .ma-id-name, .ma-id-chips, .ma-id-seat, .ma-id-years { transition: none; } }
 
 /* Who has won here: a headline for the seat, and three tinted figures. */
@@ -658,18 +674,38 @@
 
 /* Your week (components/YourWeek.jsx): the first section of the dashboard. */
 .ma-wk-mp { grid-column: span 7; } .ma-wk-bills { grid-column: span 5; }
-.ma-wk-figs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.ma-wk-figs > div { display: grid; gap: 2px; align-content: start; padding: 12px 14px; border-radius: 14px; background: color-mix(in srgb, var(--mc) 8%, var(--c-paper)); }
-.ma-wk-figs span { font: 700 12.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.ma-wk-figs b { font: 700 clamp(26px, 3.2vw, 34px)/1.1 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; color: var(--c-ink); }
+.ma-wk-figs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 4px; }
+.ma-wk-figs > div { position: relative; overflow: hidden; display: grid; gap: 2px; align-content: start; padding: 14px 16px; border-radius: 18px; background: linear-gradient(145deg, color-mix(in srgb, var(--mc) 14%, var(--c-paper)), color-mix(in srgb, var(--mc) 5%, var(--c-paper))); border: 1px solid color-mix(in srgb, var(--mc) 22%, var(--c-hairline)); }
+.ma-wk-figs > div::after { content: ""; position: absolute; right: -26px; top: -26px; width: 84px; height: 84px; border-radius: 50%; border: 10px solid color-mix(in srgb, var(--mc) 12%, transparent); pointer-events: none; }
+.ma-wk-figs > div > span { font: 700 12.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-wk-figs b, .ma-wk-figs b span { font: 700 clamp(30px, 3.6vw, 40px)/1.05 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; color: var(--c-ink); }
 .ma-wk-figs small { font: 500 12.5px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .ma-wk-figs.ma-wk-one { grid-template-columns: minmax(0, 1fr); }
-.ma-wk-list { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 0; }
-.ma-wk-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: baseline; padding: 9px 0; border-top: 1px solid var(--c-hairline); }
-.ma-wk-list li:first-child { border-top: 0; }
-.ma-wk-list li > span, .ma-wk-list li > a { font: 600 14px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); overflow-wrap: anywhere; }
-.ma-wk-list li > a { text-decoration-thickness: 1px; text-underline-offset: 3px; }
-.ma-wk-list li > small { grid-column: 1; font: 500 12.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.ma-wk-list li > b { grid-column: 2; grid-row: 1; font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; padding: 2px 9px; border-radius: 999px; background: color-mix(in srgb, #9C3B3B 14%, transparent); color: color-mix(in srgb, #9C3B3B 80%, var(--c-ink)); }
-.ma-wk-list li > b[data-aye="1"] { background: color-mix(in srgb, #2F6F4E 16%, transparent); color: color-mix(in srgb, #2F6F4E 80%, var(--c-ink)); }
+.ma-wk-mp h4, .ma-wk-bills h4 { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 10px; margin: 16px 0 8px; font: 800 14px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--mc); }
+.ma-wk-bills h4 { color: #5B3FB0; }
+.ma-wk-mp h4 small, .ma-wk-bills h4 small { font: 500 12px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-wk-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.ma-wk-item { border-radius: 16px; background: var(--c-paper-card, var(--c-paper)); border: 1px solid var(--c-hairline); border-left: 5px solid color-mix(in srgb, var(--mc) 55%, var(--c-hairline)); overflow: hidden; transition: box-shadow 0.2s, background-color 0.2s, border-color 0.2s; animation: maWkIn 0.45s var(--ease-out) calc(var(--k, 0) * 70ms + 80ms) backwards; }
+.ma-wk-bills .ma-wk-item { border-left-color: #7B5BD6; }
+.ma-wk-item:hover, .ma-wk-item[data-open="1"] { box-shadow: 0 8px 20px color-mix(in srgb, var(--mc) 16%, transparent); background: color-mix(in srgb, var(--mc) 4%, var(--c-paper-card, var(--c-paper))); }
+.ma-wk-item > button { appearance: none; border: 0; background: none; width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 10px; padding: 11px 14px; min-height: 52px; text-align: left; cursor: pointer; color: var(--c-ink); font: inherit; }
+.ma-wk-item > button:focus-visible { outline: 3px solid var(--c-ink); outline-offset: -3px; border-radius: 12px; }
+.ma-wk-main { display: grid; gap: 2px; min-width: 0; }
+.ma-wk-main b { font: 700 14.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; overflow-wrap: anywhere; }
+.ma-wk-main small { font: 500 12.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-wk-pill { padding: 3px 10px; border-radius: 999px; background: color-mix(in srgb, #9C3B3B 14%, transparent); color: color-mix(in srgb, #9C3B3B 80%, var(--c-ink)); font: 800 12px/1.2 "Figures", "Public Sans", system-ui, sans-serif; white-space: nowrap; max-width: 14ch; overflow: hidden; text-overflow: ellipsis; }
+.ma-wk-pill[data-on="1"] { background: color-mix(in srgb, #2F6F4E 16%, transparent); color: color-mix(in srgb, #2F6F4E 80%, var(--c-ink)); }
+.ma-wk-chev { width: 9px; height: 9px; border-right: 2.5px solid var(--c-ink-soft); border-bottom: 2.5px solid var(--c-ink-soft); transform: rotate(45deg); transition: transform 0.25s var(--ease-out); margin: 0 4px 3px 2px; }
+.ma-wk-item[data-open="1"] .ma-wk-chev { transform: rotate(-135deg) translate(-2px, -2px); }
+.ma-wk-more { display: grid; gap: 8px; padding: 0 14px 14px; }
+.ma-wk-more p { margin: 0; font: 500 14px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ma-wk-more p b { color: var(--c-ink); }
+.ma-wk-flag { padding: 8px 12px; border-radius: 10px; background: color-mix(in srgb, #9C3B3B 10%, transparent); }
+.ma-wk-src { justify-self: start; font: 700 13px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-accent-text, var(--mc)); text-underline-offset: 3px; }
+.ma-wk-news li { display: grid; gap: 2px; padding: 9px 0; border-top: 1px solid var(--c-hairline); }
+.ma-wk-news li:first-child { border-top: 0; }
+.ma-wk-news a { font: 600 14px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.ma-wk-news small { font: 500 12.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+@keyframes maWkIn { from { opacity: 0; transform: translateY(10px); } }
+@media (prefers-reduced-motion: reduce) { .ma-wk-item { animation: none; } }
 @media (max-width: 440px) { .ma-wk-figs { grid-template-columns: minmax(0, 1fr); } }

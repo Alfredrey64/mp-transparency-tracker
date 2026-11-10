@@ -6,6 +6,7 @@ import { dateLocale } from "../lib/i18n";
 import { fullDate } from "../lib/ballots";
 import { citations, citeAddress, pageName, problemLink } from "../lib/cite";
 import "../pagefoot.css";
+import CloseX from "./CloseX";
 
 // The foot of every page, as on the best reference sites: refer to this page, print it, or tell us what is wrong with it. Nothing here collects anything. The
 // report link opens a new issue on GitHub in a new tab, with the page's address filled in.
@@ -30,7 +31,7 @@ function CiteDialog({ onClose, returnFocusRef }) {
   return (
     <div className="pf-layer" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div ref={panelRef} className="pf-box" role="dialog" aria-modal="true" aria-labelledby="pf-cite-h" tabIndex={-1}>
-        <div className="pf-head"><h2 id="pf-cite-h">{t("Refer to this page")}</h2><button ref={closeRef} type="button" className="pf-x" aria-label={t("Close")} onClick={onClose}>×</button></div>
+        <div className="pf-head"><h2 id="pf-cite-h">{t("Refer to this page")}</h2><button ref={closeRef} type="button" className="pf-x" aria-label={t("Close")} onClick={onClose}><CloseX size={16} /></button></div>
         <p>{t("Copy a reference to use in an essay, a report or a story. The date is today, because pages here are updated as new figures come out.")}</p>
         <div className="pf-tabs" role="group" aria-label={t("Style")}>
           {list.map((c, i) => <button key={c.key} type="button" aria-pressed={style === i} onClick={() => { setStyle(i); setCopied(false); }}>{c.label}</button>)}

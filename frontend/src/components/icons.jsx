@@ -246,14 +246,17 @@ export function IconSearch({ size = 17 }) {
   );
 }
 
+// The Victoria Tower, the Lords' end of the Palace of Westminster: a square tower with a pointed roof, a flag and tall windows.
 export function IconLords({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M5.2 17.5 4 9l4.6 3.5L12 6.5l3.4 6L20 9l-1.2 8.5z" />
-      <path d="M5.2 20.5h13.6" />
-      <circle cx="4" cy="7.2" r="1" />
-      <circle cx="12" cy="4.3" r="1" />
-      <circle cx="20" cy="7.2" r="1" />
+      <path d="M12 1.8v3" />
+      <path d="M12 2.2h2.8l-.9 1 .9 1H12" />
+      <path d="M8.6 9.2 12 4.8l3.4 4.4" />
+      <path d="M8 9.2h8v12H8Z" />
+      <path d="M5.5 21.2h13" />
+      <path d="M10.4 18v-3.6a1.6 1.6 0 0 1 3.2 0V18" />
+      <path d="M10.4 12.2V11M13.6 12.2V11" />
     </svg>
   );
 }
@@ -476,9 +479,9 @@ export function IconMeeting({ size = 17 }) {
 export function IconQuestion({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v10A1.5 1.5 0 0 1 18.5 17H9l-4 4v-4H5.5A1.5 1.5 0 0 1 4 15.5Z" />
-      <path d="M9.3 8.3a2.5 2.5 0 0 1 4.9.7c0 1.5-2.2 1.8-2.2 3.3" />
-      <circle cx="12" cy="15.6" r="1" fill="currentColor" stroke="none" />
+      <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v11a1.5 1.5 0 0 1-1.5 1.5H9l-4 4v-4H5.5A1.5 1.5 0 0 1 4 16.5Z" />
+      <path d="M9.4 8.7a2.6 2.6 0 0 1 5.2 0c0 1.7-2.6 1.9-2.6 3.4" />
+      <circle cx="12" cy="14.7" r="1" fill="currentColor" stroke="none" />
     </svg>
   );
 }
@@ -510,13 +513,14 @@ export function IconBook({ size = 17 }) {
       <path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z" />
       <path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z" />
       <g strokeWidth="1.15" opacity="0.7">
-        <path d="M4.3 9c1-0.9 2 0.9 3 0" />
-        <path d="M4.3 12.3c1-0.9 2 0.9 3 0" />
-        <path d="M4.3 15.6c1-0.9 2 0.9 3 0" />
-        <path d="M15.7 9c1-0.9 2 0.9 3 0" />
-        <path d="M15.7 12.3c1-0.9 2 0.9 3 0" />
-        <path d="M15.7 15.6c1-0.9 2 0.9 3 0" />
+        <path d="M4.6 9c1.4-1 2.8 1 4.2 0" />
+        <path d="M4.6 12.3c1.4-1 2.8 1 4.2 0" />
+        <path d="M4.6 15.6c1.4-1 2.8 1 4.2 0" />
+        <path d="M15.2 9c1.4-1 2.8 1 4.2 0" />
+        <path d="M15.2 12.3c1.4-1 2.8 1 4.2 0" />
+        <path d="M15.2 15.6c1.4-1 2.8 1 4.2 0" />
       </g>
+      
     </svg>
   );
 }
@@ -991,14 +995,14 @@ export function IconCouncillor({ size = 17 }) {
   );
 }
 
-// Two benches facing each other with a tick: how the Lords divide.
+// Two benches facing each other, a tick centred over one and a cross centred over the other: how the Lords divide.
 export function IconLordsVote({ size = 17 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 18.5h7.5M13.5 18.5H21" />
-      <path d="M4.5 18.5v-4h4v4M15.5 18.5v-4h4v4" />
-      <path d="m7 9 2.2 2.2L13 6.5" />
-      <path d="M16 6.5l3 3M19 6.5l-3 3" />
+      <path d="M3 19h7.5M13.5 19H21" />
+      <path d="M4.5 19v-4h4.5v4M15 19v-4h4.5v4" />
+      <path d="m4.4 8.2 2.3 2.4 3.9-4.6" />
+      <path d="m15.2 6.4 4.2 4.2M19.4 6.4l-4.2 4.2" />
     </svg>
   );
 }

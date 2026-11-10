@@ -608,25 +608,36 @@ html[data-nav] .page-hero-inner > *, html[data-nav] .page-hero::before { animati
 .page-hero-inner.wide { max-width: none; }
 .crumb-btn { background: none; border: none; padding: 4px 0; margin-block: -4px; font: inherit; color: var(--c-on-navy-soft); cursor: pointer; }
 .crumb-btn:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
-.mp-band { display: flex; align-items: center; gap: clamp(16px, 3vw, 28px); flex-wrap: wrap; }
-.mp-band-photo { width: 112px; height: 112px; border-radius: 50%; flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #fff; }
+/* The top of an MP's page: the photo on the left, and on the right a name, then one line saying which party and seat, then one line of actions, all starting on the same left edge. */
+.mp-band { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: clamp(18px, 3.4vw, 36px); }
+.mp-band-photo { width: clamp(108px, 14vw, 140px); aspect-ratio: 1; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #fff; font-size: 38px; }
 .mp-band-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
-@media (max-width: 520px) { .mp-band-photo { width: 88px; height: 88px; } }
-/* On a phone the photo sits above the name, so the whole banner is centred: photo, name, party and seat, and the buttons. The watchlist star would pull the name
-   off-centre if it sat beside it, so it hangs just to the right of the photo instead and the name sits exactly under the picture. */
+.mp-band-text { min-width: 0; display: grid; gap: 14px; justify-items: start; }
+.mp-band-title { margin: 0; font-size: clamp(30px, 5vw, 48px) !important; line-height: 1.08; text-wrap: balance; }
+.mp-band-meta { list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin: 0; padding: 0; }
+.mp-pill { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; box-sizing: border-box; padding: 0 14px; border-radius: 999px; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.28); color: #fff; font: 600 15px/1 "Figures", "Public Sans", system-ui, sans-serif; }
+.mp-pill i { flex: none; width: 12px; height: 12px; border-radius: 50%; box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8); }
+.mp-pill svg { flex: none; opacity: 0.9; }
+button.mp-pill-link { cursor: pointer; transition: background-color 0.15s ease, border-color 0.15s ease; }
+button.mp-pill-link:hover { background: rgba(255, 255, 255, 0.22); border-color: rgba(255, 255, 255, 0.55); }
+button.mp-pill-link:focus-visible, .mp-band-star:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.mp-tenure { font: 500 15px/1.2 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-on-navy-soft); }
+.mp-band-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; }
+.mp-band-star { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; box-sizing: border-box; padding: 0 20px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.45); background: rgba(255, 255, 255, 0.1); color: #fff; font: 700 14px/1 "Figures", "Public Sans", system-ui, sans-serif; cursor: pointer; transition: background-color 0.15s ease, color 0.15s ease; }
+.mp-band-star:hover { background: rgba(255, 255, 255, 0.2); }
+.mp-band-star[aria-pressed="true"] { background: #fff; color: #0B1B33; border-color: #fff; }
+.mp-stat { display: grid; gap: 2px; padding: 0 0 0 16px; margin-left: 4px; border-left: 2px solid rgba(255, 255, 255, 0.35); color: #fff; }
+.mp-stat b { font: 700 22px/1 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; }
+.mp-stat span { font: 600 12.5px/1.2 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-on-navy-soft); }
+/* On a phone the photo sits above everything and the whole banner is centred. */
 @media (max-width: 700px) {
-  .mp-band { position: relative; flex-direction: column; justify-content: center; text-align: center; }
-  .mp-band .mp-band-name button.mp-band-star { position: absolute !important; top: 34px; left: calc(50% + 68px); }
-  .mp-band .page-hero-title { text-wrap: balance; }
-  .mp-band-text { width: 100%; }
-  .mp-band-name, .mp-band-meta, .mp-band-actions { justify-content: center; }
-  .mp-band-meta { text-align: center; }
+  .mp-band { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; }
+  .mp-band-photo { width: 104px; }
+  .mp-band-text { justify-items: center; width: 100%; }
+  .mp-band-meta, .mp-band-actions { justify-content: center; }
+  .mp-stat { border-left: 0; padding: 10px 0 0; margin: 0; border-top: 2px solid rgba(255, 255, 255, 0.35); width: min(240px, 100%); justify-items: center; }
 }
-@media (max-width: 520px) {
-  .mp-band .mp-band-name button.mp-band-star { top: 22px; left: calc(50% + 56px); }
-  .mp-band-dot { display: none; }
-  .mp-band-meta > button { flex-basis: 100%; }
-}
+@media (max-width: 420px) { .mp-pill { font-size: 14px; padding: 0 12px; } }
 
 /* ---- Contribution cards on an MP's page --------------------------------------------------------------------------------------------------- */
 .contrib {

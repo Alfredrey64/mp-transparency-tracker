@@ -3,7 +3,8 @@ import ExplainerPage from "../story/ExplainerPage";
 import { IconDepartments } from "../newIcons";
 import { IconCoin, IconBriefcase, IconChartBars, IconHouse } from "../icons";
 import { Hero } from "../story/Vivid";
-import ShareBar from "../story/ShareBar";
+import DonutShare from "../story/DonutShare";
+import ChangeBars from "../story/ChangeBars";
 import { DEPARTMENT_ROWS, DEPARTMENT_TOTAL } from "../../data/departmentSpending";
 
 const ROWS = DEPARTMENT_ROWS;
@@ -18,11 +19,16 @@ const shrinkers = changed.filter((d) => grid(d) < 0).slice(-5).reverse();
 const GRAND = TOTAL.r[1] + TOTAL.c[1];
 const SHARE_COLOURS = ["#2C5F9E", "#7B5BD6", "#B45A3C", "#3F7D5C", "#C88A1E", "#2C7DA0"];
 const top6 = byLater.slice(0, 6);
+const shift = (d) => {
+  const g = grid(d);
+  return `${bn(d.now)} in 2025-26, ${bn(d.later)} in 2028-29: ${g >= 0 ? "up" : "down"} ${Math.abs(g).toFixed(1)}%. Day-to-day ${bn(d.r[1])} and investment ${bn(d.c[1])} in 2028-29.`;
+};
+const otherRows = byLater.slice(6);
+const otherLater = GRAND - top6.reduce((n, d) => n + d.later, 0);
 const shareItems = [
-  ...top6.map((d, i) => ({ label: d.short ?? d.name, value: d.later, text: bn(d.later), colour: SHARE_COLOURS[i] })),
-  { label: "All other departments", value: GRAND - top6.reduce((n, d) => n + d.later, 0), text: bn(GRAND - top6.reduce((n, d) => n + d.later, 0)), colour: "#8A93A6" },
+  ...top6.map((d, i) => ({ key: d.short ?? d.name, label: d.short ?? d.name, value: d.later, colour: SHARE_COLOURS[i], about: shift(d) })),
+  { key: "other", label: "All other departments", value: otherLater, colour: "#8A93A6", about: `The other ${otherRows.length} departments listed here together: ${otherRows.map((d) => d.short ?? d.name).join(", ")}.` },
 ];
-const pct = (n) => `${n > 0 ? "+" : ""}${n.toFixed(1)}%`;
 
 const PAGE = {
   look: "vivid",
@@ -63,7 +69,7 @@ const PAGE = {
       lede: "Health is by far the largest, followed by Education and Defence. These are the ten biggest departments once day-to-day spending and investment are added together.",
       colour: "#7B5BD6",
       blocks: [
-        { node: <ShareBar title="Share of planned departmental spending in 2028-29" items={shareItems} note="Day-to-day spending and investment added together. The percentages are each department's share of the planned total." /> },
+        { node: <DonutShare title="Share of planned departmental spending in 2028-29" items={shareItems} format={bn} centre="Planned departmental spending, 2028-29" aria={`Share of planned departmental spending in 2028-29, ${bn(GRAND)} in all: ${shareItems.map((s) => `${s.label} ${bn(s.value)}`).join(", ")}`} note="Day-to-day spending and investment added together. The percentages are each department's share of the planned total." /> },
         { bars: { items: biggest.map((d, i) => ({ label: d.name, value: d.later, text: bn(d.later), colour: i === 0 ? "#2C5F9E" : "#7B5BD6" })), max: biggest[0].later, note: "Planned day-to-day plus investment spending in 2028-29, £ billion at current prices." } },
       ],
     },
@@ -72,7 +78,7 @@ const PAGE = {
       lede: "Between 2025-26 and 2028-29 the plans add £68.5 billion to the totals. The change is very uneven.",
       colour: "#B45A3C",
       blocks: [
-        { duo: { beforeName: "2025-26", afterName: "2028-29", items: [...growers, ...shrinkers].map((d) => ({ label: `${d.name} (${pct(grid(d))})`, before: d.now, after: d.later, beforeText: bn(d.now), afterText: bn(d.later) })), note: "The five departments with the largest percentage rise, and the one that falls, among those planning to spend more than £5 billion. Current prices, so some of every rise is inflation." } },
+        { node: <ChangeBars beforeName="2025-26" afterName="2028-29" items={[...growers, ...shrinkers].map((d) => ({ label: d.name, pct: grid(d), beforeText: bn(d.now), afterText: bn(d.later) }))} note="The five departments with the largest percentage rise, and the one that falls, among those planning to spend more than £5 billion. Current prices, so some of every rise is inflation." /> },
         { text: ["Defence has the largest percentage rise, mostly in investment, which goes from £23.2 billion to £31.5 billion. Foreign, Commonwealth and Development Office budgets fall, which fits the planned cut in overseas aid."] },
       ],
     },

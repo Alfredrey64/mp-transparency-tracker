@@ -103,11 +103,11 @@ const busiestDay = () => {
   return Object.entries(count).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0][0];
 };
 
-test("Today shows a live clock, a timeline of the day, a house filter and jump buttons that fit a phone", async ({ page }) => {
+test("Today shows a live clock, a timeline of the day and a house filter that fit a phone", async ({ page }) => {
   await page.clock.install({ time: new Date(`${busiestDay()}T11:00:00Z`) });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/thisWeek/now");
-  await expect(page.getByText("London time now")).toBeVisible({ timeout: 20000 });
+  await expect(page.getByText("London time", { exact: true })).toBeVisible({ timeout: 20000 });
   const timeline = page.getByRole("figure").filter({ hasText: "Today on a clock" });
   await expect(timeline).toBeVisible();
   expect(await timeline.getByRole("button").count()).toBeGreaterThan(0);

@@ -38,13 +38,6 @@ function issueLabel(key) {
   return ISSUES.find((i) => i.key === key)?.label ?? key;
 }
 
-// Short display initials for a party's avatar chip — special-cased so
-// already-short acronyms like "SNP" aren't chopped down to one letter.
-function partyInitials(name) {
-  if (name.length <= 4) return name.toUpperCase();
-  return name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 3);
-}
-
 function useCountUp(target, active, duration = 900) {
   const [value, setValue] = useState(0);
   useEffect(() => {
@@ -441,13 +434,15 @@ export function Breakdown({ party, answers }) {
   const { agree, differ, answered } = useMemo(() => explainMatch(answers, party.key, QUESTIONS), [answers, party.key]);
   if (!answered) return null;
   const Row = ({ r }) => (
-    <li style={{ padding: "10px 0", borderTop: `1px solid ${COLORS.hairline}` }}>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.ink, lineHeight: 1.45 }}>{r.statement}</div>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 3 }}>
+    <li style={{ padding: "16px 0 18px", borderTop: `1px solid ${COLORS.hairline}` }}>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 14.5, color: COLORS.ink, lineHeight: 1.5, fontWeight: 600 }}>{r.statement}</div>
+      <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 8, lineHeight: 1.55 }}>
         You {YOU[r.user]}. {party.name} {STANCE[r.party]}.
-        {EVIDENCE[r.id]?.[party.key] && <span style={{ display: "block", marginTop: 3 }}>What its manifesto says: {EVIDENCE[r.id][party.key]}</span>}
-        {QUESTION_ANSWER[r.id] && <> <a href={`#/answers/${QUESTION_ANSWER[r.id]}`} target="_blank" rel="noreferrer" style={{ color: readable(COLORS.accent), fontWeight: 700 }}>What the parties said</a></>}
+        {EVIDENCE[r.id]?.[party.key] && <span style={{ display: "block", marginTop: 8 }}>What its manifesto says: {EVIDENCE[r.id][party.key]}</span>}
       </div>
+      {QUESTION_ANSWER[r.id] && (
+        <a href={`#/answers/${QUESTION_ANSWER[r.id]}`} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", minHeight: 36, marginTop: 12, padding: "0 14px", borderRadius: 999, background: `${COLORS.accent}12`, border: `1px solid ${COLORS.accent}40`, fontFamily: FONT_BODY, fontSize: 13, color: readable(COLORS.accent), fontWeight: 700, textDecoration: "none" }}>What the parties said<span className="sr-only"> (opens in a new tab)</span></a>
+      )}
     </li>
   );
   return (
@@ -530,15 +525,7 @@ function ResultsScreen({ results, answers, nation, onRetake }) {
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5, gap: 10 }}>
                 <span style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-                  <span
-                    style={{
-                      display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-                      width: 24, height: 24, borderRadius: "50%", background: `${r.color}22`, color: readable(r.color),
-                      border: `1.5px solid ${r.color}55`, fontFamily: FONT_BODY, fontWeight: 800, fontSize: 11,
-                    }}
-                  >
-                    {partyInitials(r.name)}
-                  </span>
+                  <span aria-hidden="true" style={{ flexShrink: 0, width: 16, height: 16, borderRadius: "50%", background: r.color }} />
                   <span style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13.5, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {i + 1}. {r.name}
                   </span>

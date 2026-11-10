@@ -69,7 +69,7 @@ test("a group with only two pages shows one 'next' link, not the same page as bo
 test("the first two What's hidden pages open with differently laid out figure bars, and the two diagrams on the dark money page keep their words inside their boxes", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   const variant = async (path) => { await page.goto(path); await page.waitForSelector(".st-board"); return page.locator(".st-board").getAttribute("data-variant"); };
-  const seen = [await variant("/darkMoney"), await variant("/revolvingDoor"), await variant("/lobbyingRegister"), await variant("/thinkTanks")];
+  const seen = [await variant("/darkMoney"), await variant("/revolvingDoor"), await variant("/thinkTanks")];
   expect(new Set(seen.slice(0, 2)).size, `the first two bars: ${seen}`).toBe(2);
   expect(seen[0] && seen[1]).toBeTruthy();
 

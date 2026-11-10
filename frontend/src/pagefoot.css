@@ -11,7 +11,7 @@
 .pf-box { width: min(620px, 100%); padding: 22px 24px; border-radius: 24px; background: var(--c-paper-card); color: var(--c-ink); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-3); outline: none; display: grid; gap: 12px; }
 .pf-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .pf-head h2 { margin: 0; font: 700 22px "Figures", "Newsreader", Georgia, serif; }
-.pf-x { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--c-hairline); background: var(--c-paper); color: var(--c-ink); font-size: 26px; line-height: 1; cursor: pointer; }
+.pf-x { display: grid; place-items: center; padding: 0; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--c-hairline); background: var(--c-paper); color: var(--c-ink); cursor: pointer; }
 .pf-box p { margin: 0; font: 400 14.5px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .pf-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
 .pf-tabs button { min-height: 44px; padding: 0 16px; border-radius: 999px; border: 2px solid var(--c-hairline); background: var(--c-paper); color: var(--c-ink); font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; cursor: pointer; }

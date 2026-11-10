@@ -22,7 +22,7 @@ import { topSources } from "../lib/mpMoney";
 import DownloadCsvButton from "./DownloadCsvButton";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { interestColumns, voteColumns } from "../lib/exportColumns";
-import { IconStar, IconCoin, IconMeeting, IconGlobe, IconHome, IconEconomy, IconBriefcase, IconQuestion, IconGroup } from "./icons";
+import { IconStar, IconPinHome, IconCoin, IconMeeting, IconGlobe, IconHome, IconEconomy, IconBriefcase, IconQuestion, IconGroup } from "./icons";
 import { SectionDivider } from "./shared";
 import ProfileGrid from "./ProfileGrid";
 import { BiographyBox, ContactBox, CabinetRoleBox, VotingSummaryBox, RebellionRateBox, RecentActivityBox, StandardsBox, NewsBox, LoadFailedNote } from "./MpCards";
@@ -152,38 +152,27 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
               {initials(politician.name)}
             </div>
           )}
-          <div className="mp-band-text" style={{ minWidth: 0 }}>
-            <div className="mp-band-name" style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-              <h1 className="page-hero-title" style={{ fontSize: "clamp(30px, 5vw, 46px)" }}>{politician.name}</h1>
-              <button
-                type="button"
-                className="mp-band-star"
-                onClick={() => setWatched(toggleWatch(politician))}
-                aria-pressed={watched}
-                title={watched ? "Remove from your watchlist" : "Add to your watchlist"}
-                aria-label={watched ? "Remove from your watchlist" : "Add to your watchlist"}
-                style={{ display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, width: 44, height: 44, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.4)", background: watched ? "#fff" : "rgba(255,255,255,0.1)", color: watched ? "#0B1B33" : "#fff", cursor: "pointer", transition: "background 0.15s, color 0.15s" }}
-              >
-                <IconStar size={18} filled={watched} />
-              </button>
-            </div>
-            <div className="mp-band-meta" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "2px 10px", fontFamily: FONT_BODY, fontSize: 17, color: "var(--c-on-navy-soft)", marginTop: 8, lineHeight: 1.4 }}>
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 8, whiteSpace: "nowrap", color: "#fff", fontWeight: 600 }}>
-                <span style={{ width: 11, height: 11, borderRadius: "50%", background: color, boxShadow: "0 0 0 2px rgba(255,255,255,0.75)", flexShrink: 0 }} />
+          <div className="mp-band-text">
+            <h1 className="page-hero-title mp-band-title">{politician.name}</h1>
+            <ul className="mp-band-meta">
+              <li className="mp-pill">
+                <i aria-hidden="true" style={{ background: color }} />
                 {politician.party}
-              </span>
-              <span className="mp-band-dot" aria-hidden="true">·</span>
-              <button
-                type="button"
-                onClick={() => { navigate(`#/constituency/${encodeURIComponent(politician.constituency)}`); }}
-                title="See how this constituency voted and what people there are petitioning for"
-                style={{ background: "none", border: "none", padding: 0, font: "inherit", color: "#fff", cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 4 }}
-              >
-                {politician.constituency}
-              </button>
-              {office && <span style={{ flexBasis: "100%", fontSize: 15 }}>MP for {office}</span>}
-            </div>
-            <div className="mp-band-actions" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12, marginTop: 18 }}>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  className="mp-pill mp-pill-link"
+                  onClick={() => { navigate(`#/constituency/${encodeURIComponent(politician.constituency)}`); }}
+                  title="See how this constituency voted and what people there are petitioning for"
+                >
+                  <IconPinHome size={15} />
+                  {politician.constituency}
+                </button>
+              </li>
+              {office && <li className="mp-tenure">MP for {office}</li>}
+            </ul>
+            <div className="mp-band-actions">
               <ShareButton
                 filename={`${politician.name}-report-card`}
                 label="Share report card"
@@ -198,12 +187,24 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
                   const votes = counted.length ? { cast: counted.length, withParty: counted.filter((r) => r.voted_with_party_majority).length, against: counted.filter((r) => !r.voted_with_party_majority).map((r) => ({ title: r.title, date: r.date })), hasParty: !/^(independent|speaker)/i.test(politician.party ?? "") } : null;
                   return mpReportSpec({ politician, career: careers.mps[politician.parliament_member_id], votes, interests, expenses: politician.ipsa_expenses ?? null, committees: myCommittees.map((c) => c.name), questions, topSources: money, link: window.location.href });
                 }}
-                style={{ color: "#fff", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.4)", borderRadius: 8, minHeight: 40, padding: "0 16px" }}
+                style={{ color: "#fff", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.45)", borderRadius: 999, minHeight: 44, padding: "0 20px", fontSize: 14 }}
               />
+              <button
+                type="button"
+                className="mp-band-star"
+                onClick={() => setWatched(toggleWatch(politician))}
+                aria-pressed={watched}
+                title={watched ? "Remove from your watchlist" : "Add to your watchlist"}
+                aria-label={watched ? "Remove from your watchlist" : "Add to your watchlist"}
+              >
+                <IconStar size={17} filled={watched} />
+                {watched ? "Watching" : "Watch this MP"}
+              </button>
               {totalDeclaredValue > 0 && (
-                <span style={{ display: "inline-flex", alignItems: "center", minHeight: 40, padding: "0 16px", borderRadius: 8, background: "#fff", fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: "#0B1B33" }}>
-                  £{Math.round(totalDeclaredValue).toLocaleString()} total declared value
-                </span>
+                <div className="mp-stat">
+                  <b>£{Math.round(totalDeclaredValue).toLocaleString()}</b>
+                  <span>total declared value</span>
+                </div>
               )}
             </div>
           </div>

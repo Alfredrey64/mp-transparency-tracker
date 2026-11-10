@@ -73,20 +73,40 @@ export function Dots({ title, items, note }) {
   );
 }
 
-// Two shares side by side for each party, so the gap between them can be seen: the share of the votes, and the share of the seats it turned into. It sits on the
+// Two shares for each party, side by side, so the gap between them can be seen: the share of the votes, and the share of the seats it turned into. Under the two figures a
+// single scale from none to all shows both as marks, with the gap drawn between them (the seats mark slides out from the votes mark as it scrolls into view). It sits on the
 // banner of the opinion poll page.
-//   rows  [{ name, colour, votes, seats, votesText, seatsText }]  votes and seats are percentages
+//   rows  [{ name, colour, votes, seats, votesText, seatsText, votesSub, seatsSub }]  votes and seats are percentages
 export function VotesSeats({ rows, votesName = "Share of the vote", seatsName = "Share of the seats" }) {
   return (
     <div className="vv-vs">
       <p className="vv-vs-key" aria-hidden="true"><span><i className="v" />{votesName}</span><span><i className="s" />{seatsName}</span></p>
-      {rows.map((r, i) => (
-        <section key={r.name} className="vv-vs-row" style={{ "--tc": r.colour, "--i": i }}>
-          <h2>{r.name}</h2>
-          <div className="vv-vs-line"><span className="vv-vs-bar v"><i style={{ width: `${Math.max(1.5, r.votes)}%` }} /></span><b><AnimatedValue text={r.votesText} /></b><small>{r.votesSub}</small></div>
-          <div className="vv-vs-line"><span className="vv-vs-bar s"><i style={{ width: `${Math.max(1.5, r.seats)}%` }} /></span><b><AnimatedValue text={r.seatsText} /></b><small>{r.seatsSub}</small></div>
-        </section>
-      ))}
+      <div className="vv-vs-grid">
+        {rows.map((r, i) => {
+          const diff = Math.round((r.seats - r.votes) * 10) / 10;
+          const up = diff >= 0;
+          const lo = Math.min(r.votes, r.seats);
+          return (
+            <section key={r.name} className="vv-vs-card" style={{ "--tc": r.colour, "--i": i, "--pv": r.votes, "--ps": r.seats, "--lo": lo, "--gap": Math.abs(diff) }} data-dir={up ? "up" : "down"}>
+              <h2><i aria-hidden="true" />{r.name}</h2>
+              <div className="vv-vs-figs">
+                <div className="vv-vs-fig v"><small>{votesName}</small><b><AnimatedValue text={r.votesText} /></b><span>{r.votesSub}</span></div>
+                <span className="vv-vs-arrow" aria-hidden="true"><svg viewBox="0 0 28 14" width="28" height="14"><path d="M1 7h24M19 1.5 25.5 7 19 12.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
+                <div className="vv-vs-fig s"><small>{seatsName}</small><b><AnimatedValue text={r.seatsText} /></b><span>{r.seatsSub}</span></div>
+              </div>
+              <div className="vv-vs-scale" role="img" aria-label={`${votesName} ${r.votesText}, ${seatsName.toLowerCase()} ${r.seatsText}`}>
+                <div className="vv-vs-track">
+                  <span className="vv-vs-span" />
+                  <span className="vv-vs-pt v" />
+                  <span className="vv-vs-pt s" />
+                </div>
+                <p aria-hidden="true"><span>0</span><span>half</span><span>all</span></p>
+              </div>
+              <p className="vv-vs-verdict" data-dir={up ? "up" : "down"}>{up ? "Seats ahead of votes by" : "Seats behind votes by"} <b>{Math.abs(diff).toFixed(1)}</b> percentage points</p>
+            </section>
+          );
+        })}
+      </div>
     </div>
   );
 }

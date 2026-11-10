@@ -11,6 +11,7 @@ import EntryRows from "./EntryRows";
 import DayDiagrams from "./DayDiagrams";
 import notes from "../../data/entryNotes.json";
 import "../../entries.css";
+import CloseX from "../CloseX";
 
 // The panel a row opens: what the entry is and what it is for, in plain English, with its facts and a link to Parliament's page.
 // What a bill is for, from its official long title, looked up when the panel opens.
@@ -131,7 +132,7 @@ export default function EntryDialog({ entry, depth, onOpen, onBack, onClose, ret
       <div ref={panelRef} className="en-box" role="dialog" aria-modal="true" aria-labelledby="en-h" tabIndex={-1} data-house={entry.h ? houseName(entry.h) : undefined}>
         <div className="en-top">
           {depth > 1 ? <button type="button" className="en-back" onClick={onBack}>Back to the day</button> : <span className="en-label">{x.label}</span>}
-          <button ref={closeRef} type="button" className="en-x" aria-label="Close" onClick={onClose}>×</button>
+          <button ref={closeRef} type="button" className="en-x" aria-label="Close" onClick={onClose}><CloseX size={16} /></button>
         </div>
         <h2 id="en-h" ref={headRef} tabIndex={-1}>{entry.title}</h2>
         {depth > 1 && <p className="en-label">{x.label}</p>}

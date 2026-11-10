@@ -109,38 +109,39 @@ function Dashboard({ data, onForget }) {
         <button type="button" className="ma-forget" onClick={onForget}>Use a different postcode</button>
       </div>
 
+    <Card i={0} colour={mpColour} icon={<IconVote size={20} />} title="Your MP" className="ma-mpcard ma-mpstrip">
+      {mp ? (
+        <>
+          <div className="ma-id" style={{ "--pc": mpColour }}>
+            <div className="ma-id-photo">
+              <svg viewBox="0 0 120 120" aria-hidden="true"><circle className="ma-id-track" cx="60" cy="60" r="55" /><circle className="ma-id-ring" cx="60" cy="60" r="55" pathLength="1" transform="rotate(-90 60 60)" /></svg>
+              {mp.thumbnail_url ? <img src={mp.thumbnail_url} alt="" loading="lazy" decoding="async" /> : <span className="ma-id-fallback" aria-hidden="true">{initials(mp.name)}</span>}
+            </div>
+            <h4 className="ma-id-name">{mp.name}</h4>
+            <p className="ma-id-chips">
+              <span className="ma-id-party"><i aria-hidden="true" />{mp.party}</span>
+              {mp.cabinet_role && <span>{mp.cabinet_role}</span>}
+            </p>
+            <p className="ma-id-seat">MP for <b>{r.parliamentary_constituency}</b>{mp.membership_start_date ? <>, since {longDate(String(mp.membership_start_date).slice(0, 10))}</> : null}</p>
+            {mp.membership_start_date && <p className="ma-id-years"><b><CountUp value={yearsSince(mp.membership_start_date)} /></b> years as an MP</p>}
+          </div>
+          <div className="ma-actions">
+            <a className="btn btn-primary" href={`#/mp/${mp.id}`}>Their record</a>
+            <a className="btn btn-secondary" href="https://www.writetothem.com/" target="_blank" rel="noreferrer">Write to them</a>
+          </div>
+        </>
+      ) : <p>We found the constituency ({r.parliamentary_constituency}) but couldn't match it to a current MP.</p>}
+    </Card>
+
       <Glance data={data} x={x} />
       <JumpNav />
 
       <WeekSection mp={mp} colour={mpColour} />
 
       <Section id="ma-mp" title="Your MP and your seat" lede={`${r.parliamentary_constituency} is one of 650 seats. Here is who represents it, how it voted and how it has changed hands.`} colour={mpColour}>
-        <Card i={0} colour={mpColour} icon={<IconVote size={20} />} title="Your MP" className="ma-mpcard">
-          {mp ? (
-            <>
-              <div className="ma-id" style={{ "--pc": mpColour }}>
-                <div className="ma-id-photo">
-                  <svg viewBox="0 0 120 120" aria-hidden="true"><circle className="ma-id-track" cx="60" cy="60" r="55" /><circle className="ma-id-ring" cx="60" cy="60" r="55" pathLength="1" transform="rotate(-90 60 60)" /></svg>
-                  {mp.thumbnail_url ? <img src={mp.thumbnail_url} alt="" loading="lazy" decoding="async" /> : <span className="ma-id-fallback" aria-hidden="true">{initials(mp.name)}</span>}
-                </div>
-                <h4 className="ma-id-name">{mp.name}</h4>
-                <p className="ma-id-chips">
-                  <span className="ma-id-party"><i aria-hidden="true" />{mp.party}</span>
-                  {mp.cabinet_role && <span>{mp.cabinet_role}</span>}
-                </p>
-                <p className="ma-id-seat">MP for <b>{r.parliamentary_constituency}</b>{mp.membership_start_date ? <>, since {longDate(String(mp.membership_start_date).slice(0, 10))}</> : null}</p>
-                {mp.membership_start_date && <p className="ma-id-years"><b><CountUp value={yearsSince(mp.membership_start_date)} /></b> years as an MP</p>}
-              </div>
-              <div className="ma-actions">
-                <a className="btn btn-primary" href={`#/mp/${mp.id}`}>Their record</a>
-                <a className="btn btn-secondary" href="https://www.writetothem.com/" target="_blank" rel="noreferrer">Write to them</a>
-              </div>
-            </>
-          ) : <p>We found the constituency ({r.parliamentary_constituency}) but couldn't match it to a current MP.</p>}
-        </Card>
-        <MpDoing x={x} mp={mp} i={1} />
-        <MpMoneyCard x={x} mp={mp} i={2} />
-        <IndependenceCard mp={mp} i={3} />
+        <MpDoing x={x} mp={mp} i={0} />
+        <MpMoneyCard x={x} mp={mp} i={1} />
+        <IndependenceCard mp={mp} i={2} />
         <SeatResult x={x} name={r.parliamentary_constituency} i={2} />
 
         <SeatCard x={x} name={r.parliamentary_constituency} mp={mp} mpColour={mpColour} i={2} />

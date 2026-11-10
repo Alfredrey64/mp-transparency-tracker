@@ -17,30 +17,36 @@
 .cm-detail-in { min-height: 0; overflow: hidden; }
 @media (prefers-reduced-motion: reduce) { .cm-detail, .cm-detail[data-open="true"] { transition: none; } }
 
-/* A committee as a card: a band in its House's colour, the name, the chair, and a small chamber with a seat for every member. */
-.cm-card { --hs: var(--c-ink-soft); display: flex; flex-direction: column; min-width: 0; overflow: hidden; border-radius: 20px; border: 1px solid color-mix(in srgb, var(--hc) 30%, var(--c-hairline)); box-shadow: var(--shadow-1); background: radial-gradient(100% 70% at 100% 100%, color-mix(in srgb, var(--hc) 10%, transparent), transparent 70%), var(--cm-bg, var(--c-paper-card)); transition: background-color 0.15s var(--ease-out), box-shadow 0.25s var(--ease-out), border-color 0.2s; }
-.cm-card[data-open="1"] { border-color: var(--hc); box-shadow: var(--shadow-2), 0 0 0 3px color-mix(in srgb, var(--hc) 20%, transparent); }
-/* Hover and selected shade the card the way a menu row is shaded: a wash of its own colour, the icon filled, the name in the colour. */
-@media (hover: hover) { .cm-card:hover { --cm-bg: color-mix(in srgb, var(--hc) 12%, var(--c-paper-card)); box-shadow: var(--shadow-2); } }
-.cm-card[data-open="1"] { --cm-bg: color-mix(in srgb, var(--hc) 16%, var(--c-paper-card)); }
+/* A committee as a card: the House and open inquiries on one quiet line under a rule in the House's colour, the name, the chair, then who sits on it as a row of party-coloured dots. */
+.cm-card { --hs: var(--c-ink-soft); display: flex; flex-direction: column; min-width: 0; overflow: hidden; border-radius: 18px; border: 1px solid var(--c-hairline); border-top: 5px solid var(--hs); box-shadow: var(--shadow-1); background: var(--cm-bg, var(--c-paper-card)); transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
+.cm-card[data-open="1"] { border-color: var(--hs); box-shadow: var(--shadow-2), 0 0 0 3px color-mix(in srgb, var(--hc) 20%, transparent); --cm-bg: color-mix(in srgb, var(--hc) 7%, var(--c-paper-card)); }
+@media (hover: hover) { .cm-card:hover { --cm-bg: color-mix(in srgb, var(--hc) 6%, var(--c-paper-card)); box-shadow: var(--shadow-2); } }
 .cm-card:hover .cm-name, .cm-card[data-open="1"] .cm-name { color: color-mix(in srgb, var(--hc) 65%, var(--c-ink)); }
-.cm-card-btn { display: flex; flex-direction: column; flex: 1; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; text-align: left; font: inherit; color: inherit; }
-.cm-band { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 16px; color: #fff; background: linear-gradient(105deg, var(--hs), color-mix(in srgb, var(--hs) 70%, #000)); }
-.cm-house { font: 800 12px "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.06em; text-transform: uppercase; }
-.cm-inq { padding: 3px 11px; border-radius: 999px; background: rgba(255, 255, 255, 0.22); font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; }
-.cm-body { display: flex; flex: 1; flex-direction: column; gap: 12px; padding: 16px 18px 16px; }
-.cm-name { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; min-height: 2.5em; font: 800 20px/1.22 "Figures", "Newsreader", Georgia, serif; letter-spacing: -0.01em; color: var(--c-ink); }
+.cm-card-btn { display: flex; flex-direction: column; flex: 1; gap: 14px; width: 100%; box-sizing: border-box; padding: 16px 18px 18px; border: 0; background: none; cursor: pointer; text-align: left; font: inherit; color: inherit; }
+.cm-band { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.cm-house { display: inline-flex; align-items: center; gap: 7px; font: 800 12.5px "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.03em; color: color-mix(in srgb, var(--hs) 82%, var(--c-ink)); }
+.cm-house i { width: 9px; height: 9px; border-radius: 50%; background: var(--hs); }
+.cm-inq { padding: 3px 11px; border-radius: 999px; background: color-mix(in srgb, var(--hc) 11%, transparent); font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--hs) 78%, var(--c-ink)); }
+.cm-name { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; min-height: 2.44em; font: 800 20px/1.22 "Figures", "Newsreader", Georgia, serif; letter-spacing: -0.01em; color: var(--c-ink); }
 .cm-head { display: flex; align-items: flex-start; gap: 12px; }
-.cm-ico { flex: none; width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: color-mix(in srgb, var(--hc) 13%, var(--c-paper-card)); color: var(--hs); box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--hc) 38%, transparent); transition: transform 0.3s var(--ease-out), background 0.3s ease; }
-.cm-card:hover .cm-ico, .cm-card[data-open="1"] .cm-ico { background: var(--hs); color: #fff; transform: rotate(-4deg) scale(1.06); }
-@media (prefers-reduced-motion: reduce) { .cm-ico { transition: none; } .cm-card:hover .cm-ico, .cm-card[data-open="1"] .cm-ico { transform: none; } }
-.cm-chair { display: flex; align-items: center; gap: 10px; }
-.cm-avatar { flex: none; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; box-shadow: 0 0 0 3px var(--c-paper-card), 0 0 0 5px color-mix(in srgb, var(--hc) 55%, transparent); font: 800 13px "Figures", "Public Sans", system-ui, sans-serif; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); }
-.cm-chair-text { display: grid; font: 500 12.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.cm-ico { flex: none; width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: color-mix(in srgb, var(--hc) 11%, var(--c-paper-card)); color: var(--hs); transition: background 0.25s ease, color 0.25s ease; }
+.cm-card:hover .cm-ico, .cm-card[data-open="1"] .cm-ico { background: var(--hs); color: #fff; }
+.cm-chair { display: flex; align-items: center; gap: 9px; padding-top: 12px; border-top: 1px solid var(--c-hairline); }
+.cm-chair-dot { flex: none; width: 10px; height: 10px; border-radius: 50%; }
+.cm-chair-text { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 7px; font: 500 13px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .cm-chair-text strong { font-size: 14px; color: var(--c-ink); }
-.cm-arc { width: 100%; height: auto; margin-top: auto; overflow: visible; }
-.cm-seat { transform-box: fill-box; transform-origin: center; }
+.cm-mem { display: grid; gap: 9px; margin-top: auto; }
+.cm-mem-n { font: 500 13px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.cm-mem-n b { margin-right: 2px; font: 700 22px/1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); font-variant-numeric: lining-nums tabular-nums; }
+.cm-seats { display: flex; flex-wrap: wrap; gap: 6px; }
+.cm-seat { display: block; box-sizing: border-box; width: 15px; height: 15px; border-radius: 50%; }
+.cm-seat[data-chair="1"] { box-shadow: 0 0 0 2px var(--c-paper-card), 0 0 0 4px var(--c-ink); margin: 2px; }
+.cm-parties { display: flex; flex-wrap: wrap; gap: 3px 12px; font: 500 12.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.cm-parties > span { display: inline-flex; align-items: center; gap: 6px; }
+.cm-parties i { width: 8px; height: 8px; border-radius: 50%; }
+.cm-parties b { font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); font-variant-numeric: tabular-nums; }
 .cm-more { align-self: flex-start; padding: 6px 14px; border-radius: 999px; background: color-mix(in srgb, var(--hc) 12%, transparent); font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--hc) 78%, var(--c-ink)); transition: background-color 0.2s ease; }
 .cm-card-btn:hover .cm-more { background: color-mix(in srgb, var(--hc) 22%, transparent); }
-.cm-card-btn:focus-visible { outline: 3px solid var(--hc); outline-offset: -3px; border-radius: 20px; }
+.cm-card-btn:focus-visible { outline: 3px solid var(--hc); outline-offset: -3px; border-radius: 18px; }
+@media (prefers-reduced-motion: reduce) { .cm-ico { transition: none; } }
 @media (prefers-reduced-motion: reduce) { .cm-card { transition: none; } }

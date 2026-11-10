@@ -62,7 +62,7 @@ function audit({ touch, maxLine }) {
   }
   // A row of three to eight equal boxes must not leave a lone or lopsided last row: the last row is either as full as the rows above or centred under them.
   for (const el of document.body.querySelectorAll("*")) {
-    if (!(el instanceof HTMLElement) || el.children.length < 3 || el.children.length > 8 || el.closest("svg")) continue;
+    if (!(el instanceof HTMLElement) || el.children.length < 3 || el.children.length > 8 || el.closest("svg") || el.hasAttribute("data-staircase")) continue; // a staircase of columns that grow with their count has uneven tops on purpose
     const kids = [...el.children];
     const rects = kids.map((k) => k.getBoundingClientRect());
     if (!kids.every((k, i) => rects[i].width >= 80 && rects[i].height >= 40 && !/^(none)$/.test(getComputedStyle(k).display) && !/(absolute|fixed)/.test(getComputedStyle(k).position))) continue;

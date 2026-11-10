@@ -35,3 +35,5 @@
 .sp[data-go="1"] .sp-mid { animation: spMid 0.6s var(--ease-out, ease-out) 0.2s backwards; }
 @media (min-width: 820px) { .sp { grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); } }
 @media (prefers-reduced-motion: reduce) { .sp *, .sp { animation: none !important; transition: none !important; } .sp[data-go="0"] .sp-row, .sp[data-go="0"] .sp-mid { opacity: 1; } .sp[data-go="0"] .sp-slice { stroke-dasharray: var(--len) 100; } }
+.sp-title { grid-column: 1 / -1; font: 700 clamp(17px, 2vw, 20px) var(--font-display, "Newsreader", Georgia, serif); color: var(--c-ink); }
+.sp-note { grid-column: 1 / -1; margin: 0; font: 500 13.5px/1.55 var(--font-body, "Public Sans", system-ui, sans-serif); color: var(--c-ink-soft); max-width: 70ch; }

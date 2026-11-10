@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { GlanceStrip, HowToRead } from "./GlanceStrip";
+import PageLead from "./PageLead";
 import { shortMoney } from "../lib/shortMoney";
 import WhatThisMeans from "./WhatThisMeans";
 import { concentrationMeaning } from "../lib/moneyMeaning";
@@ -158,17 +158,20 @@ export default function DonorsLobbying() {
 
       <div className="editorial-body">
 
-      <GlanceStrip items={[
-        { value: shortMoney(stats.totalValue), label: "declared by MPs", sub: "gifts, donations and sponsorship in the register", colour: "#E8741A" },
-        { value: String(stats.topDonors.length ? rows.length.toLocaleString("en-GB") : 0), label: "declarations counted", colour: "#7A5AF0" },
-        { value: shortMoney(stats.topDonors[0]?.total), label: "from the biggest donor", sub: stats.topDonors[0]?.name, colour: "#E0367A" },
-        { value: `${Math.round((stats.taggedValue / Math.max(1, stats.totalValue)) * 100)}%`, label: "matched to an industry", sub: "the rest is individuals or could not be matched", colour: "#1FA97C" },
-      ]} />
-      <HowToRead steps={[
-        { title: "Money in, by industry", text: "The first panel groups what MPs declared by the kind of business behind it, so you can see which industries give most." },
-        { title: "Who gave the most", text: "The donors list ranks single givers. Open one to see which MPs it gave to and when." },
-        { title: "Know the limits", text: "A donation is not proof of influence. The panel at the foot explains how the matching works and what it cannot tell you." },
-      ]} />
+      <PageLead
+        colour="#E8741A"
+        figure={{ value: shortMoney(stats.totalValue), label: "declared by MPs", sub: "gifts, donations and sponsorship in the register" }}
+        facts={[
+          { value: rows.length.toLocaleString("en-GB"), label: "declarations counted" },
+          { value: shortMoney(stats.topDonors[0]?.total), label: "from the biggest donor", sub: stats.topDonors[0]?.name, share: (stats.topDonors[0]?.total ?? 0) / Math.max(1, stats.totalValue) },
+          { value: `${taggedPct}%`, label: "matched to an industry", sub: "the rest is individuals or could not be matched", share: taggedPct / 100 },
+        ]}
+        steps={[
+          { title: "Money in, by industry", text: "The first panel groups what MPs declared by the kind of business behind it, so you can see which industries give most." },
+          { title: "Who gave the most", text: "The donors list ranks single givers. Open one to see which MPs it gave to and when." },
+          { title: "Know the limits", text: "A donation is not proof of influence. The panel at the foot explains how the matching works and what it cannot tell you." },
+        ]}
+      />
 
       <EducationSection />
 

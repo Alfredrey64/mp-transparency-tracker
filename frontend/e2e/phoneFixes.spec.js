@@ -21,7 +21,7 @@ for (const view of ["darkMoney", "revolvingDoor", "lobbyingRegister", "thinkTank
 }
 
 test("the strip of tabs across the top of a group of pages scrolls sideways, and opens on this page's own tab", async ({ page }) => {
-  await page.goto("/honours");
+  await page.goto("/mediaLiteracy");
   const strip = page.locator(".hubtabs ul");
   await expect(strip).toBeVisible({ timeout: 15000 });
   const m = await strip.evaluate((ul) => ({ scrolls: ul.scrollWidth > ul.clientWidth + 20, boxWidth: Math.round(ul.getBoundingClientRect().width), start: ul.scrollLeft }));

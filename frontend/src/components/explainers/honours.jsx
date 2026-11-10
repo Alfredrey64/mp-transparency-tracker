@@ -5,7 +5,7 @@ import { IconPeerage } from "../newIcons";
 const PAGE = {
   look: "ledger",
   icon: IconPeerage,
-  kicker: "Money & influence",
+  kicker: "The House of Lords",
   title: "Peerages and honours",
   subtitle: "Nobody is elected to the House of Lords. This page shows who sits there, how a person gets in, what the law says about buying a title, and where to look if you want to follow the money.",
   tiles: [

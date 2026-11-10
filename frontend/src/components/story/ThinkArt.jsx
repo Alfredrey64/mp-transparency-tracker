@@ -98,7 +98,7 @@ function Expert({ x, y, d, id }) {
       <g className="ttm-card" style={{ "--d": d }}>
         <rect className="ttm-spot" x="-12" y="-12" width="224" height="154" rx="34" fill={`url(#tt-glow${id})`} />
         <rect width="200" height="130" rx="24" fill="#fff" stroke="#5A7FA6" strokeWidth="3.5" />
-        <g transform="translate(14 13)"><rect width="46" height="19" rx="9.5" fill="#C23B3B" /><circle className="ttm-live" cx="12" cy="9.5" r="3.5" fill="#fff" /><text x="31" y="13.5" textAnchor="middle" fontSize="10.5" fontWeight="800" fill="#fff" fontFamily={F}>LIVE</text></g>
+        <g transform="translate(14 13)"><rect width="55" height="19" rx="9.5" fill="#C23B3B" /><circle className="ttm-live" cx="11.5" cy="9.5" r="3.5" fill="#fff" /><text x="20" y="13.3" textAnchor="start" textLength="27" lengthAdjust="spacingAndGlyphs" fontSize="10.5" fontWeight="800" fill="#fff" fontFamily={F}>LIVE</text></g>
         <circle cx="100" cy="38" r="17" fill="#5A7FA6" />
         <path d="M 70 84 q 30 -40 60 0z" fill="#5A7FA6" />
         <rect x="18" y="92" width="164" height="26" rx="8" fill="#1B2438" />
@@ -125,10 +125,14 @@ function MaskedWide() {
     <svg ref={ref} data-go={go} className="st-trail-wide ttm" viewBox="0 0 900 340" role="img" aria-label="An undisclosed funder pays a think tank, whose staff appear on air as independent experts; the audience sees only the expert">
       <Defs id="" />
       <g className="ttm-zone" style={{ "--d": 0 }}>
-        <rect x="10" y="12" width="590" height="262" rx="26" fill="#F4F6FA" stroke="#C9D3E6" strokeWidth="2" strokeDasharray="8 6" />
-        <rect x="650" y="12" width="240" height="262" rx="26" fill="#EEF4FB" stroke="#C9DAEE" strokeWidth="2" />
-        <text x="305" y="48" textAnchor="middle" fontSize="16" fontWeight="800" fill="#7A2E2E" fontFamily={F}>Hidden by law</text>
-        <text x="770" y="48" textAnchor="middle" fontSize="16" fontWeight="800" fill="#3F5F85" fontFamily={F}>What you see</text>
+        <g>
+          <rect x="10" y="12" width="590" height="262" rx="26" fill="#F4F6FA" stroke="#C9D3E6" strokeWidth="2" strokeDasharray="8 6" />
+          <text x="305" y="48" textAnchor="middle" fontSize="16" fontWeight="800" fill="#7A2E2E" fontFamily={F}>Hidden by law</text>
+        </g>
+        <g>
+          <rect x="650" y="12" width="240" height="262" rx="26" fill="#EEF4FB" stroke="#C9DAEE" strokeWidth="2" />
+          <text x="770" y="48" textAnchor="middle" fontSize="16" fontWeight="800" fill="#3F5F85" fontFamily={F}>What you see</text>
+        </g>
       </g>
       <path className="ttm-pipe" d="M 236 168 H 372" stroke="#9C3B3B" strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" fill="none" />
       <path className="ttm-pipe ttm-pipe-b" d="M 582 168 H 660" stroke="#5A7FA6" strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" fill="none" />
@@ -152,10 +156,14 @@ function MaskedTall() {
     <svg ref={ref} data-go={go} className="st-trail-tall ttm" viewBox="0 0 360 700" aria-hidden="true">
       <Defs id="t" />
       <g className="ttm-zone" style={{ "--d": 0 }}>
-        <rect x="8" y="2" width="344" height="396" rx="24" fill="#F4F6FA" stroke="#C9D3E6" strokeWidth="2" strokeDasharray="8 6" />
-        <rect x="8" y="462" width="344" height="196" rx="24" fill="#EEF4FB" stroke="#C9DAEE" strokeWidth="2" />
-        <text x="180" y="34" textAnchor="middle" fontSize="16" fontWeight="800" fill="#7A2E2E" fontFamily={F}>Hidden by law</text>
-        <text x="180" y="494" textAnchor="middle" fontSize="16" fontWeight="800" fill="#3F5F85" fontFamily={F}>What you see</text>
+        <g>
+          <rect x="8" y="2" width="344" height="396" rx="24" fill="#F4F6FA" stroke="#C9D3E6" strokeWidth="2" strokeDasharray="8 6" />
+          <text x="180" y="34" textAnchor="middle" fontSize="16" fontWeight="800" fill="#7A2E2E" fontFamily={F}>Hidden by law</text>
+        </g>
+        <g>
+          <rect x="8" y="462" width="344" height="196" rx="24" fill="#EEF4FB" stroke="#C9DAEE" strokeWidth="2" />
+          <text x="180" y="494" textAnchor="middle" fontSize="16" fontWeight="800" fill="#3F5F85" fontFamily={F}>What you see</text>
+        </g>
       </g>
       <path className="ttm-pipe" d="M 180 196 V 232" stroke="#9C3B3B" strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" fill="none" />
       <path className="ttm-pipe ttm-pipe-b" d="M 180 366 V 518" stroke="#5A7FA6" strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" fill="none" />
@@ -191,7 +199,7 @@ export function Ladder({ tanks }) {
   return (
     <div className="tt-wrap" data-go={go}>
       <div className="tt-meter" aria-hidden="true"><i /></div>
-      <ol ref={ref} className="tt-scale" data-go={go} aria-label="Think tanks placed on the A to E transparency scale">
+      <ol ref={ref} className="tt-scale" data-staircase="" data-go={go} aria-label="Think tanks placed on the A to E transparency scale">
         {GRADES.map(([g, c, label], i) => {
           const here = tanks.filter((t) => t.grade === g);
           return (

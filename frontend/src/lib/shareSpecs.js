@@ -89,6 +89,8 @@ export function mpReportSpec({ politician, career, votes, interests = [], expens
 
   return {
     kicker: "MP report card",
+    photo: politician.thumbnail_url ?? null,
+    initials: String(politician.name ?? "").replace(/^(The |Rt Hon |Dame |Sir |Lord |Baroness |Lady |Dr |Mr |Mrs |Ms )+/i, "").split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase(),
     title: politician.name,
     subtitle: [politician.party, politician.constituency].filter(Boolean).join(" · "),
     accent: colour(politician.party_colour),

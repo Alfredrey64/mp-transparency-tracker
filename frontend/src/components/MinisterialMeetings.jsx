@@ -1,4 +1,4 @@
-import { GlanceStrip, HowToRead } from "./GlanceStrip";
+import PageLead from "./PageLead";
 import { useState, useMemo } from "react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, numeric, readable } from "../theme";
 import { PageHeader } from "./shared";
@@ -53,7 +53,7 @@ function Meeting({ meeting, color }) {
   const { shown, rest, total } = splitAttendees(meeting.organisation);
   const { day, weekday } = dayParts(meeting.date);
   return (
-    <article style={{ display: "grid", gridTemplateColumns: "56px minmax(0, 1fr)", gap: 14, padding: "18px 0", borderTop: `1px solid ${COLORS.hairline}` }}>
+    <article className="mm-item" style={{ display: "grid", gridTemplateColumns: "56px minmax(0, 1fr)", gap: 14, padding: "18px 0", borderTop: `1px solid ${COLORS.hairline}` }}>
       <time dateTime={meeting.date} style={{ textAlign: "left" }}>
         <span style={{ display: "block", ...numeric, fontSize: 30, lineHeight: 1, color: COLORS.ink }}>{day}</span>
         <span style={{ display: "block", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 3 }}>{weekday}</span>
@@ -126,24 +126,26 @@ export default function MinisterialMeetings() {
         maxWidth={720}
       />
 
-      <GlanceStrip items={[
-        { value: String(MINISTERIAL_MEETINGS.length), label: "declared meetings", sub: MINISTERIAL_MEETINGS_PERIOD, colour: "#E0367A" },
-        { value: String(byMinister.length), label: "ministers in the sample", colour: "#1E4FB8" },
-        { value: String(byDepartment.length), label: "departments", colour: "#1FA97C" },
-        { value: String(new Set(MINISTERIAL_MEETINGS.map((m) => m.organisation)).size), label: "different groups met", sub: "companies, charities, unions and bodies", colour: "#E8741A" },
-      ]} />
-      <HowToRead steps={[
-        { title: "Search or filter", text: "Type a name or topic, or tap a minister or department in the side list." },
-        { title: "Read each meeting", text: "Each entry gives the date, who the minister met and why, with a link to the department's own return." },
-        { title: "Remember it is a sample", text: "Departments publish late and in their own formats, so this is not every meeting a minister held." },
-      ]} />
+      <PageLead
+        colour="#E0367A"
+        figure={{ value: String(MINISTERIAL_MEETINGS.length), label: "declared meetings", sub: MINISTERIAL_MEETINGS_PERIOD }}
+        facts={[
+          { value: String(byMinister.length), label: "ministers in the sample" },
+          { value: String(byDepartment.length), label: "departments" },
+          { value: String(new Set(MINISTERIAL_MEETINGS.map((m) => m.organisation)).size), label: "different groups met", sub: "companies, charities, unions and bodies" },
+        ]}
+        steps={[
+          { title: "Search or filter", text: "Type a name or topic, or tap a minister or department in the side list." },
+          { title: "Read each meeting", text: "Each entry gives the date, who the minister met and why, with a link to the department's own return." },
+          { title: "Remember it is a sample", text: "Departments publish late and in their own formats, so this is not every meeting a minister held." },
+        ]}
+      />
 
       <div className="mm-wrap">
       <div className="mm-layout">
         <aside className="mm-side">
-          <div style={{ ...numeric, fontSize: 56, lineHeight: 1, color: COLORS.ink }}>{MINISTERIAL_MEETINGS.length}</div>
-          <p style={{ ...text, margin: "6px 0 0" }}>
-            declared meetings, {MINISTERIAL_MEETINGS_PERIOD}. That is the latest period any department has published.
+          <p style={{ ...text, margin: 0 }}>
+            The meetings cover {MINISTERIAL_MEETINGS_PERIOD}. That is the latest period any department has published.
           </p>
 
           <div style={{ position: "relative", marginTop: 22 }}>

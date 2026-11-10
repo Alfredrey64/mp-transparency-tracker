@@ -40,10 +40,10 @@ export async function loadWeek(db, mpId, today) {
     }
   };
   const [votes, interests, news, bills] = await Promise.all([
-    mpId ? run("votes", db.from("voting_records").select("title, date, voted_aye, voted_with_party_majority").eq("politician_id", mpId).gte("date", week)) : [],
-    mpId ? run("interests", db.from("financial_interests").select("donor_name, value_amount, date_registered").eq("politician_id", mpId).gte("date_registered", fortnight)) : [],
+    mpId ? run("votes", db.from("voting_records").select("title, date, voted_aye, voted_with_party_majority, source_url").eq("politician_id", mpId).gte("date", week)) : [],
+    mpId ? run("interests", db.from("financial_interests").select("donor_name, value_amount, date_registered, category, summary, source_url").eq("politician_id", mpId).gte("date_registered", fortnight)) : [],
     mpId ? run("news", db.from("mp_news").select("headline, url, published_date").eq("politician_id", mpId).gte("published_date", week)) : [],
-    run("bills", db.from("bills").select("bill_id, short_title, current_stage, current_house, last_updated, is_act, is_defeated").gte("last_updated", week).order("last_updated", { ascending: false }).limit(60)),
+    run("bills", db.from("bills").select("bill_id, short_title, long_title, current_stage, current_house, last_updated, is_act, is_defeated, source_url").gte("last_updated", week).order("last_updated", { ascending: false }).limit(60)),
   ]);
   return { summary: summariseWeek({ votes, interests, news, bills }), failed };
 }

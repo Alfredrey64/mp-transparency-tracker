@@ -18,6 +18,7 @@ import { Chamber, Footprint, FootprintStrip } from "./story/ManifestoArt";
 import { useGo } from "./story/useGo";
 import LeaderPortrait from "./LeaderPortrait";
 import LEADERS from "../data/partyLeaders.json";
+import CloseX from "./CloseX";
 
 // The party-colour dot is the only element that shares a layoutId between
 // the grid card and the modal — like the CommonsBadge morph elsewhere in
@@ -225,10 +226,10 @@ export default function PartyPolicies({ param }) {
                   style={{
                     position: "absolute", top: 14, right: 14, zIndex: 2, width: 34, height: 34, borderRadius: "50%",
                     border: `1px solid ${COLORS.hairline}`, background: COLORS.paperCard, color: COLORS.inkSoft,
-                    cursor: "pointer", fontSize: 15, lineHeight: "28px", textAlign: "center", padding: 0,
+                    cursor: "pointer", display: "grid", placeItems: "center", padding: 0,
                   }}
                 >
-                  ✕
+                  <CloseX />
                 </button>
                 <PartyBand party={expanded} manifesto={expandedManifesto} dotLayoutId={`party-dot-${expanded.name}`} large />
                 {expandedManifesto ? (

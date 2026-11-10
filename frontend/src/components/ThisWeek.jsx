@@ -4,7 +4,9 @@ import { supabase } from "../supabaseClient";
 import { COLORS, FONT_BODY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
 import { IconFeed } from "./icons";
-import { GlanceStrip } from "./GlanceStrip";
+import ChangeTiles from "./ChangeTiles";
+import { explainStage } from "../lib/billExplain";
+import { IconVote, IconBills, IconDarkMoney, IconPetition } from "./icons";
 import Loading from "./Loading";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { KINDS, sinceDate, billItems, voteItems, moneyItems, petitionItems, standardsItems, electionItems, buildFeed, collapseBills, countByKind, dayLabel, groupByDay } from "../lib/thisWeek";
@@ -27,6 +29,7 @@ const TIMES = [
 const timeOf = (param) => (TIMES.some((t) => t.key === param) ? param : "past");
 const WINDOWS = [{ days: 7, label: "7 days" }, { days: 14, label: "14 days" }, { days: 30, label: "30 days" }];
 const MAX_DAYS = 30;
+const OTHER = ["petition", "standards", "election"];
 const DAY_COLOURS = ["#E0367A", "#1E4FB8", "#1FA97C", "#E8741A", "#7A5AF0", "#0E9AA7"];
 const fmt = (n) => Math.round(n).toLocaleString("en-GB");
 
@@ -76,8 +79,9 @@ export default function ThisWeek({ param = null }) {
     return buildFeed([billItems(r.bills, since), voteItems(r.votes, since), moneyItems(r.interests, r.politicians, since), petitionItems(r.petitions, since), standardsItems(r.standards, since), electionItems(r.elections, since, ahead)]);
   }, [state.raw, since]);
   const counts = useMemo(() => countByKind(feed), [feed]);
-  const shown = kind === "all" ? collapseBills(feed) : feed.filter((i) => i.kind === kind);
+  const shown = kind === "all" ? collapseBills(feed) : feed.filter((i) => (kind === "other" ? OTHER.includes(i.kind) : i.kind === kind));
   const groups = useMemo(() => groupByDay(shown), [shown]);
+  const otherCount = counts.petition + counts.standards + counts.election;
   const allFailed = state.raw && state.failed.length >= 7;
 
   return (
@@ -109,21 +113,20 @@ export default function ThisWeek({ param = null }) {
       {allFailed && <div className="tw-note">We couldn't load the latest changes just now. Check your connection and try again in a minute.</div>}
       {state.raw && !allFailed && (
         <>
-          <GlanceStrip items={[
-            { value: fmt(counts.vote), label: "votes held", sub: `in the last ${days} days`, colour: KINDS.vote.colour },
-            { value: fmt(counts.bill), label: "bills moved", sub: "a new stage or a change", colour: KINDS.bill.colour },
-            { value: fmt(counts.money), label: "new declared interests", sub: "the biggest, with a value", colour: KINDS.money.colour },
-            { value: fmt(counts.petition + counts.standards + counts.election), label: "other changes", sub: "petitions, conduct reports and by-elections", colour: KINDS.petition.colour },
-          ]} />
-          <div className="tw-window" role="group" aria-label="How far back" style={{ "--tw-accent": "#E0367A" }}>
-            {WINDOWS.map((w) => <button key={w.days} type="button" aria-pressed={days === w.days} onClick={() => setDays(w.days)}>{w.label}</button>)}
-          </div>
-          <div className="tw-chips" role="group" aria-label="What to show">
-            <button type="button" className="tw-chip" style={{ "--kc": COLORS.ink }} aria-pressed={kind === "all"} onClick={() => setKind("all")}>Everything <b>{fmt(feed.length)}</b></button>
-            {Object.entries(KINDS).map(([k, v]) => (
-              <button key={k} type="button" className="tw-chip" style={{ "--kc": v.colour }} aria-pressed={kind === k} onClick={() => setKind(kind === k ? "all" : k)}><i />{v.label} <b>{fmt(counts[k])}</b></button>
-            ))}
-          </div>
+          <ChangeTiles
+            total={feed.length} windows={WINDOWS} days={days} onDays={setDays} active={kind} onPick={setKind}
+            tiles={[
+              { key: "vote", value: fmt(counts.vote), label: counts.vote === 1 ? "vote held" : "votes held", plain: "Moments when MPs lined up to say aye or no to a proposal.", colour: KINDS.vote.colour, icon: IconVote, share: counts.vote / Math.max(1, feed.length) },
+              { key: "bill", value: fmt(counts.bill), label: counts.bill === 1 ? "bill moved" : "bills moved", plain: "Proposed new laws that reached a new stage or were changed.", colour: KINDS.bill.colour, icon: IconBills, share: counts.bill / Math.max(1, feed.length) },
+              { key: "money", value: fmt(counts.money), label: counts.money === 1 ? "new declared interest" : "new declared interests", plain: "Gifts, donations and earnings MPs have added to the public register. The biggest are shown.", colour: KINDS.money.colour, icon: IconDarkMoney, share: counts.money / Math.max(1, feed.length) },
+              { key: "other", value: fmt(otherCount), label: otherCount === 1 ? "other change" : "other changes", plain: "Petitions answered, conduct reports and by-elections.", colour: KINDS.petition.colour, icon: IconPetition, share: otherCount / Math.max(1, feed.length) },
+            ]}
+          />
+          {kind === "other" && (
+            <div className="tw-chips" role="group" aria-label="Which other changes">
+              {OTHER.map((k) => <span key={k} className="tw-chip" style={{ "--kc": KINDS[k].colour }}><i />{KINDS[k].label} <b>{fmt(counts[k])}</b></span>)}
+            </div>
+          )}
           {state.failed.length > 0 && <div className="tw-note">Some changes are missing because we couldn't load: {state.failed.join(", ")}.</div>}
           {groups.length === 0 ? (
             <div className="tw-empty">Nothing new in this window. Parliament may be in recess, or try a longer window.</div>
@@ -135,12 +138,13 @@ export default function ThisWeek({ param = null }) {
                   <ul className="tw-items">
                     {g.items.map((i) => {
                       const k = KINDS[i.kind];
-                      const body = (<><span className="tw-kind">{k.verb}</span><b>{i.title}</b>{i.detail && <span className="tw-detail">{i.detail}</span>}</>);
+                      const stageMeans = i.kind === "bill" && i.bill ? explainStage(i.stage, { isAct: i.bill.is_act, isDefeated: i.bill.is_defeated })?.means : null;
+                      const body = (<><span className="tw-kind">{k.verb}</span><b>{i.title}</b>{i.detail && <span className="tw-detail">{i.detail}</span>}{stageMeans && <span className="tw-plain"><em>In plain English</em>{stageMeans}</span>}</>);
                       return (
                         <li key={i.id}>
                           {i.id.startsWith("bills-more-")
                             ? <a className="tw-card" href={i.href} style={{ "--kc": i.colour ?? k.colour }}>{body}</a>
-                            : <button type="button" className="tw-card" aria-haspopup="dialog" style={{ "--kc": i.colour ?? k.colour }} onClick={(ev) => openEntry({ ...i, past: true }, ev.currentTarget)}>{body}</button>}
+                            : <button type="button" className="tw-card" aria-haspopup="dialog" style={{ "--kc": i.colour ?? k.colour }} onClick={(ev) => openEntry({ ...i, past: true }, ev.currentTarget)}>{body}<span className="tw-go" aria-hidden="true">What this means ›</span></button>}
                         </li>
                       );
                     })}

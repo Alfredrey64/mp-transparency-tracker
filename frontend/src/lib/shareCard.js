@@ -232,8 +232,65 @@ function drawHexes(ctx, hexes, x, y, w, h) {
   }
 }
 
-export async function renderShareCard(spec) {
+// The MP's portrait, loaded so it can be drawn on the card. Parliament's picture server allows images to be used this way, but a copy the page already showed without
+// asking is kept by the browser without that permission and would spoil the image, so a harmless extra word on the address asks for a fresh one. Resolves to null if the
+// picture cannot be had in a few seconds; the card is then drawn with the person's initials instead.
+function loadPortrait(url) {
+  return new Promise((resolve) => {
+    if (!url || typeof Image === "undefined") { resolve(null); return; }
+    const img = new Image();
+    const timer = setTimeout(() => resolve(null), 6000);
+    img.crossOrigin = "anonymous";
+    img.onload = () => { clearTimeout(timer); resolve(img.naturalWidth > 0 ? img : null); };
+    img.onerror = () => { clearTimeout(timer); resolve(null); };
+    img.src = `${url}${url.includes("?") ? "&" : "?"}card=1`;
+  });
+}
+
+// A round portrait with a ring in the party colour: the top square of the picture (faces are at the top), or the person's initials on the party colour.
+function drawPortrait(ctx, photo, initials, cx, cy, r, accent) {
+  ctx.save();
+  ctx.shadowColor = "rgba(0,0,0,0.45)";
+  ctx.shadowBlur = 22;
+  ctx.shadowOffsetY = 8;
+  ctx.fillStyle = BG;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r + 8, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.clip();
+  if (photo) {
+    const side = Math.min(photo.naturalWidth, photo.naturalHeight);
+    const sx = (photo.naturalWidth - side) / 2;
+    ctx.fillStyle = "#e8ebf2";
+    ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
+    ctx.drawImage(photo, sx, 0, side, side, cx - r, cy - r, r * 2, r * 2);
+  } else {
+    ctx.fillStyle = accent;
+    ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
+    ctx.fillStyle = "#ffffff";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = `700 ${Math.round(r * 0.78)}px ${FONT_DISPLAY}`;
+    ctx.fillText(initials, cx, cy + 2);
+  }
+  ctx.restore();
+  ctx.lineWidth = 6;
+  ctx.strokeStyle = accent;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r + 3, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+}
+
+export async function renderShareCard(spec, { withPhoto = true } = {}) {
   await loadFonts();
+  const wantsPortrait = Boolean(spec.photo || spec.initials);
+  const photo = withPhoto && spec.photo ? await loadPortrait(spec.photo) : null;
   const canvas = document.createElement("canvas");
   canvas.width = W * SCALE;
   canvas.height = H * SCALE;
@@ -256,13 +313,18 @@ export async function renderShareCard(spec) {
   const leftW = hasPanel ? 540 : W - PAD * 2;
   const panelX = 700;
   const panelW = W - PAD - panelX;
+  // With a portrait, the kicker, name and party sit to the right of it.
+  const PORTRAIT_R = 66;
+  const textX = wantsPortrait ? PAD + PORTRAIT_R * 2 + 30 : PAD;
+  const textW = leftW - (textX - PAD);
+  if (wantsPortrait) drawPortrait(ctx, photo, spec.initials ?? "", PAD + PORTRAIT_R, 140, PORTRAIT_R, accent);
 
   // Kicker, title, subtitle.
   ctx.textBaseline = "alphabetic";
   ctx.textAlign = "left";
   ctx.fillStyle = lighten(accent, 0.4);
   ctx.font = `700 20px ${FONT_BODY}`;
-  ctx.fillText(String(spec.kicker ?? "").toUpperCase(), PAD, 92);
+  ctx.fillText(String(spec.kicker ?? "").toUpperCase(), textX, 92);
   ctx.fillStyle = INK;
   // A long title is set a little smaller, in whole words on two lines, before it is ever cut short.
   let titleSize = 54;
@@ -270,16 +332,16 @@ export async function renderShareCard(spec) {
   for (const size of [54, 46, 40]) {
     titleSize = size;
     ctx.font = `700 ${size}px ${FONT_DISPLAY}`;
-    titleLines = wrapLines(spec.title, (t) => ctx.measureText(t).width, leftW, 2);
+    titleLines = wrapLines(spec.title, (t) => ctx.measureText(t).width, textW, 2);
     if (!titleLines.at(-1)?.endsWith("…") || String(spec.title).endsWith("…")) break;
   }
   const titlePitch = titleSize + 8;
-  titleLines.forEach((line, i) => ctx.fillText(line, PAD, 160 + i * titlePitch));
+  titleLines.forEach((line, i) => ctx.fillText(line, textX, 160 + i * titlePitch));
   let y = 160 + titleLines.length * titlePitch - 10;
   ctx.fillStyle = SOFT;
   ctx.font = `400 26px ${FONT_BODY}`;
-  const subLines = wrapLines(spec.subtitle, (t) => ctx.measureText(t).width, leftW, 2);
-  subLines.forEach((line, i) => ctx.fillText(line, PAD, y + 24 + i * 34));
+  const subLines = wrapLines(spec.subtitle, (t) => ctx.measureText(t).width, textW, 2);
+  subLines.forEach((line, i) => ctx.fillText(line, textX, y + 24 + i * 34));
   y += 24 + subLines.length * 34;
 
   // Big figures. A label that is too long for its column wraps onto a second line instead of being cut off.
@@ -354,5 +416,11 @@ export async function renderShareCard(spec) {
   ctx.textAlign = "right";
   ctx.fillText(typeof location !== "undefined" ? location.host : "", W - PAD, H - 40);
 
-  return new Promise((resolve, reject) => canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("Couldn't make the image"))), "image/png"));
+  // A portrait the browser would not let be exported spoils the whole image; if so, draw the card again with initials in its place.
+  try {
+    return await new Promise((resolve, reject) => canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("Couldn't make the image"))), "image/png"));
+  } catch (error) {
+    if (photo) return renderShareCard(spec, { withPhoto: false });
+    throw error;
+  }
 }

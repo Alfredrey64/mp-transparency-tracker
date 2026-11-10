@@ -16,6 +16,7 @@ import { IconCompareTime } from "./icons";
 import { card as baseCard } from "../lib/onsStyles";
 import { COMPARE_STORIES } from "../data/compareStories";
 import { scrollRegion } from "../lib/a11y";
+import CloseX from "./CloseX";
 
 // Pick a few measures and watch how they moved over time, side by side, with
 // who was in government shaded behind them. Press play to watch the story
@@ -292,7 +293,7 @@ export default function IndicatorTimeline({ param }) {
                   style={{ ...pill(true), background: solid(LINE_COLOURS[i % 4]), borderColor: solid(LINE_COLOURS[i % 4]), color: "#fff", display: "inline-flex", alignItems: "center", gap: 8 }}
                 >
                   {c.def.label}
-                  <span aria-hidden="true" style={{ fontSize: 15, lineHeight: 1 }}>×</span>
+                  <CloseX size={11} />
                 </button>
               ))}
               {chosen.length === 0 && <span style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, alignSelf: "center" }}>Nothing chosen yet. Start with a topic below.</span>}

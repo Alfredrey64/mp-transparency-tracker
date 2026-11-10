@@ -13,6 +13,7 @@ import { PartyHemicycle } from "./PartyHemicycle";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import Loading from "./Loading";
 import { keyboardActivate } from "../lib/a11y";
+import CloseX from "./CloseX";
 
 // One orchestrated reveal for the masthead (headline + ticker rail together,
 // staggered as a single moment) rather than every section fading in
@@ -531,7 +532,7 @@ export default function Home({ onBrowse, onNavigate, onViewProfile, mpCount }) {
                       <span style={{ width: 8, height: 8, borderRadius: "50%", background: partyColour(p.party_colour, "#5a6478"), flexShrink: 0 }} />
                       <span style={{ fontFamily: FONT_BODY, fontSize: 14, color: "#0A1424", whiteSpace: "nowrap" }}>{p.name}</span>
                     </button>
-                    <button type="button" onClick={() => handleRemoveWatched(p.id)} aria-label={`Stop watching ${p.name}`} title="Remove from watchlist" style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, background: "none", border: "none", color: "#3A465A", cursor: "pointer", fontSize: 18 }}>×</button>
+                    <button type="button" onClick={() => handleRemoveWatched(p.id)} aria-label={`Stop watching ${p.name}`} title="Remove from watchlist" style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, background: "none", border: "none", color: "#3A465A", cursor: "pointer" }}><CloseX size={14} /></button>
                   </div>
                 ))}
               </div>

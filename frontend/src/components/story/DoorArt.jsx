@@ -1,5 +1,7 @@
 /** @jsxImportSource react */
 import { useReducedMotion } from "motion/react";
+import { useGo } from "./useGo";
+import { Shadow, ArrowDef, Ribbon, Badge, Letter } from "./dmx";
 
 const INK = "#1B2438";
 const SOFT = "#5B6784";
@@ -203,28 +205,68 @@ export function Replaced() {
   );
 }
 
+// A little building with a pediment and three columns: what ACOBA was.
+const Hall = ({ x, y, c }) => (
+  <g transform={`translate(${x} ${y})`} fill={c} opacity="0.9">
+    <path d="M 0 12 L 26 -4 L 52 12 Z" /><rect x="4" y="14" width="44" height="4" rx="1.500" />
+    {[9, 24, 39].map((cx) => <rect key={cx} x={cx} y="20" width="6" height="22" rx="1.500" />)}
+    <rect x="1" y="44" width="50" height="5" rx="1.500" />
+  </g>
+);
+// The abolished body: faded, hatched, dashed, with a cross on its corner.
+const Gone = ({ w, h, sh, children }) => (
+  <g className="dmx-in" style={{ "--d": 0.1 }} filter={`url(#${sh})`}>
+    <rect width={w} height={h} rx="20" fill="#F7EAEA" stroke="#9C3B3B" strokeWidth="3" strokeDasharray="10 6" />
+    {children}
+    <g transform={`translate(${w - 6} 6)`}><circle r="13" fill="#9C3B3B" stroke="#fff" strokeWidth="3" /><path d="M -4.500 -4.500 L 4.500 4.500 M 4.500 -4.500 L -4.500 4.500" stroke="#fff" strokeWidth="2.500" strokeLinecap="round" /></g>
+  </g>
+);
+
 function ReplacedTall() {
+  const [ref, go] = useGo(0.15);
+  const still = useReducedMotion();
+  const left = "M 180 90 V 118 C 180 148, 92 140, 92 182";
+  const right = "M 180 90 V 118 C 180 148, 268 140, 268 182";
   return (
-    <svg className="st-trail-tall" viewBox="0 0 360 440" aria-hidden="true">
-      <g transform="translate(40 8)"><rect width="280" height="76" rx="20" fill="#F3E4E4" stroke="#9C3B3B" strokeWidth="3" strokeDasharray="10 6" /><text x="140" y="34" textAnchor="middle" fontSize="20" fontWeight="800" fill="#9C3B3B" fontFamily={S}>ACOBA</text><text x="140" y="58" textAnchor="middle" fontSize="13" fontWeight="700" fill="#7A2E2E" fontFamily={F}>Abolished 13 October 2025</text></g>
-      <path d="M 180 84 V 120 C 180 150, 90 140, 90 176" fill="none" stroke="#6E4B6E" strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" /><path d="M 180 84 V 120 C 180 150, 270 140, 270 176" fill="none" stroke="#9C6B30" strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" />
-      <g transform="translate(8 176)"><rect width="168" height="256" rx="22" fill="#fff" stroke="#6E4B6E" strokeWidth="3.500" /><text x="84" y="40" textAnchor="middle" fontSize="15" fontWeight="800" fill="#6E4B6E" fontFamily={F}>Former ministers</text>
-        {["Independent", "Adviser on", "Ministerial", "Standards"].map((l, n) => <text key={l} x="84" y={76 + n * 24} textAnchor="middle" fontSize="17" fontWeight="800" fill={INK} fontFamily={S}>{l}</text>)}
-        {["61 applications", "in its first", "reporting year,", "2025 to 26"].map((l, n) => <text key={l} x="84" y={182 + n * 20} textAnchor="middle" fontSize="13" fontWeight="600" fill={SOFT} fontFamily={F}>{l}</text>)}</g>
-      <g transform="translate(184 176)"><rect width="168" height="256" rx="22" fill="#fff" stroke="#9C6B30" strokeWidth="3.500" />
-        {["Former civil", "servants and", "special advisers"].map((l, n) => <text key={l} x="84" y={40 + n * 20} textAnchor="middle" fontSize="15" fontWeight="800" fill="#9C6B30" fontFamily={F}>{l}</text>)}
-        {["The Civil", "Service", "Commission"].map((l, n) => <text key={l} x="84" y={130 + n * 24} textAnchor="middle" fontSize="17" fontWeight="800" fill={INK} fontFamily={S}>{l}</text>)}</g>
+    <svg ref={ref} data-go={go} className="st-trail-tall dmx" viewBox="0 0 360 474" aria-hidden="true">
+      <defs><Shadow id="rp-sh-t" /><ArrowDef id="rp-ar-t" /></defs>
+      <Ribbon d={left} c="#6E4B6E" delay={0.5} arrow="url(#rp-ar-t)" /><Ribbon d={right} c="#9C6B30" delay={0.6} arrow="url(#rp-ar-t)" />
+      <g transform="translate(40 8)"><Gone w={280} h={80} sh="rp-sh-t">
+        <Hall x={20} y={14} c="#9C3B3B" />
+        <text x="178" y="38" textAnchor="middle" fontSize="20" fontWeight="800" fill="#9C3B3B" fontFamily={S}>ACOBA</text><text x="178" y="60" textAnchor="middle" fontSize="13" fontWeight="700" fill="#7A2E2E" fontFamily={F}>Abolished 13 October 2025</text>
+      </Gone></g>
+      <g transform="translate(8 184)"><g className="dmx-in" style={{ "--d": 0.4 }} filter="url(#rp-sh-t)"><rect width="168" height="280" rx="22" fill="#fff" stroke="#6E4B6E" strokeWidth="3.500" />
+        <text x="84" y="58" textAnchor="middle" fontSize="15" fontWeight="800" fill="#6E4B6E" fontFamily={F}>Former ministers</text>
+        {["Independent", "Adviser on", "Ministerial", "Standards"].map((l, n) => <text key={l} x="84" y={92 + n * 24} textAnchor="middle" fontSize="17" fontWeight="800" fill={INK} fontFamily={S}>{l}</text>)}
+        {["61 applications", "in its first", "reporting year,", "2025 to 26"].map((l, n) => <text key={l} x="84" y={198 + n * 20} textAnchor="middle" fontSize="13" fontWeight="600" fill={SOFT} fontFamily={F}>{l}</text>)}
+        <Badge x={84} y={0} c="#6E4B6E" /></g></g>
+      <g transform="translate(184 184)"><g className="dmx-in" style={{ "--d": 0.5 }} filter="url(#rp-sh-t)"><rect width="168" height="280" rx="22" fill="#fff" stroke="#9C6B30" strokeWidth="3.500" />
+        {["Former civil", "servants and", "special advisers"].map((l, n) => <text key={l} x="84" y={58 + n * 20} textAnchor="middle" fontSize="15" fontWeight="800" fill="#9C6B30" fontFamily={F}>{l}</text>)}
+        {["The Civil", "Service", "Commission"].map((l, n) => <text key={l} x="84" y={146 + n * 24} textAnchor="middle" fontSize="17" fontWeight="800" fill={INK} fontFamily={S}>{l}</text>)}
+        <Badge x={84} y={0} c="#9C6B30" glyph="people" /></g></g>
+      {!still && <><Letter path={left} begin="0s" colour="#6E4B6E" /><Letter path={left} begin="1.6s" colour="#6E4B6E" /><Letter path={right} begin="0.8s" colour="#9C6B30" /><Letter path={right} begin="2.4s" colour="#9C6B30" /></>}
     </svg>
   );
 }
 
 function ReplacedWide() {
+  const [ref, go] = useGo(0.2);
+  const still = useReducedMotion();
+  const up = "M 290 150 C 380 150, 388 74, 446 74";
+  const down = "M 290 150 C 380 150, 388 230, 446 230";
   return (
-    <svg className="st-trail-wide" viewBox="0 0 900 300" role="img" aria-label="ACOBA was abolished on 13 October 2025; ministers' applications go to the Independent Adviser on Ministerial Standards, civil servants and special advisers to the Civil Service Commission">
-      <g transform="translate(40 110)"><rect width="230" height="80" rx="20" fill="#F3E4E4" stroke="#9C3B3B" strokeWidth="3" strokeDasharray="10 6" /><text x="115" y="34" textAnchor="middle" fontSize="20" fontWeight="800" fill="#9C3B3B" fontFamily={S}>ACOBA</text><text x="115" y="58" textAnchor="middle" fontSize="13" fontWeight="700" fill="#7A2E2E" fontFamily={F}>Abolished 13 October 2025</text></g>
-      <path d="M 270 150 C 360 150, 380 70, 470 70" fill="none" stroke="#6E4B6E" strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" /><path d="M 270 150 C 360 150, 380 230, 470 230" fill="none" stroke="#9C6B30" strokeWidth="4" strokeDasharray="2 9" strokeLinecap="round" />
-      <g transform="translate(470 24)"><rect width="390" height="92" rx="22" fill="#fff" stroke="#6E4B6E" strokeWidth="3.500" /><text x="195" y="28" textAnchor="middle" fontSize="15" fontWeight="800" fill="#6E4B6E" fontFamily={F}>Former ministers</text><text x="195" y="52" textAnchor="middle" fontSize="17" fontWeight="800" fill={INK} fontFamily={S}>Independent Adviser on Ministerial Standards</text><text x="195" y="72" textAnchor="middle" fontSize="12.500" fontWeight="600" fill={SOFT} fontFamily={F}>61 applications in its first reporting year, 2025 to 26</text></g>
-      <g transform="translate(470 184)"><rect width="390" height="92" rx="22" fill="#fff" stroke="#9C6B30" strokeWidth="3.500" /><text x="195" y="38" textAnchor="middle" fontSize="15" fontWeight="800" fill="#9C6B30" fontFamily={F}>Former civil servants and special advisers</text><text x="195" y="63" textAnchor="middle" fontSize="17" fontWeight="800" fill={INK} fontFamily={S}>The Civil Service Commission</text></g>
+    <svg ref={ref} data-go={go} className="st-trail-wide dmx" viewBox="0 0 900 300" role="img" aria-label="ACOBA was abolished on 13 October 2025; ministers' applications go to the Independent Adviser on Ministerial Standards, civil servants and special advisers to the Civil Service Commission">
+      <defs><Shadow id="rp-sh" /><ArrowDef id="rp-ar" /></defs>
+      <Ribbon d={up} c="#6E4B6E" delay={0.5} arrow="url(#rp-ar)" /><Ribbon d={down} c="#9C6B30" delay={0.6} arrow="url(#rp-ar)" />
+      <g transform="translate(30 100)"><Gone w={260} h={100} sh="rp-sh">
+        <Hall x={18} y={24} c="#9C3B3B" />
+        <text x="164" y="46" textAnchor="middle" fontSize="22" fontWeight="800" fill="#9C3B3B" fontFamily={S}>ACOBA</text><text x="164" y="70" textAnchor="middle" fontSize="13" fontWeight="700" fill="#7A2E2E" fontFamily={F}>Abolished 13 October 2025</text>
+      </Gone></g>
+      <g transform="translate(470 24)"><g className="dmx-in" style={{ "--d": 0.4 }} filter="url(#rp-sh)"><rect width="410" height="100" rx="22" fill="#fff" stroke="#6E4B6E" strokeWidth="3.500" /><text x="214" y="32" textAnchor="middle" fontSize="15" fontWeight="800" fill="#6E4B6E" fontFamily={F}>Former ministers</text><text x="214" y="58" textAnchor="middle" fontSize="17" fontWeight="800" fill={INK} fontFamily={S}>Independent Adviser on Ministerial Standards</text><text x="214" y="80" textAnchor="middle" fontSize="12.500" fontWeight="600" fill={SOFT} fontFamily={F}>61 applications in its first reporting year, 2025 to 26</text>
+        <Badge x={0} y={50} c="#6E4B6E" k={0.84} /></g></g>
+      <g transform="translate(470 180)"><g className="dmx-in" style={{ "--d": 0.5 }} filter="url(#rp-sh)"><rect width="410" height="100" rx="22" fill="#fff" stroke="#9C6B30" strokeWidth="3.500" /><text x="214" y="42" textAnchor="middle" fontSize="15" fontWeight="800" fill="#9C6B30" fontFamily={F}>Former civil servants and special advisers</text><text x="214" y="70" textAnchor="middle" fontSize="17" fontWeight="800" fill={INK} fontFamily={S}>The Civil Service Commission</text>
+        <Badge x={0} y={50} c="#9C6B30" glyph="people" k={0.84} /></g></g>
+      {!still && <><Letter path={up} begin="0s" colour="#6E4B6E" /><Letter path={up} begin="1.6s" colour="#6E4B6E" /><Letter path={down} begin="0.8s" colour="#9C6B30" /><Letter path={down} begin="2.4s" colour="#9C6B30" /></>}
     </svg>
   );
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, onFill, readable, solid } from "../theme";
+import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable, solid } from "../theme";
 import { PageHeader } from "./shared";
 import { LoadFailedNote } from "./MpCards";
 import { GlossaryTerm } from "./GlossaryTerm";
@@ -65,43 +65,41 @@ function InquiryRow({ inquiry }) {
   );
 }
 
-// The committee as a small chamber: one seat for every member, in their party's colour (the chair ringed), set out in an arc like the benches of the
-// House. The seats pop in one after another, and the colours are the same as everywhere else on the site, so it needs no legend.
-function SeatArc({ members, color }) {
-  const layout = useMemo(() => {
-    const counts = new Map();
-    for (const m of members ?? []) counts.set(m.party || "Other", (counts.get(m.party || "Other") ?? 0) + 1);
+// The committee as a row of seats: one dot for every member, in their party's colour (the chair ringed), grouped by party, with the biggest parties named underneath so
+// the colours need no legend. The dots pop in one after another; the colours are the same as everywhere else on the site.
+function Membership({ members }) {
+  const info = useMemo(() => {
+    const groups = new Map();
+    for (const m of members ?? []) {
+      const key = m.party || "Other";
+      if (!groups.has(key)) groups.set(key, { name: key, count: 0, color: partyColour(m.party_colour, COLORS.inkSoft) });
+      groups.get(key).count += 1;
+    }
+    const parties = [...groups.values()].sort((x, y) => y.count - x.count || x.name.localeCompare(y.name));
+    const order = new Map(parties.map((p, i) => [p.name, i]));
     const people = [...(members ?? [])]
-      .sort((x, y) => (counts.get(y.party || "Other") ?? 0) - (counts.get(x.party || "Other") ?? 0) || String(x.party).localeCompare(String(y.party)))
-      .map((m) => ({ color: partyColour(m.party_colour, COLORS.inkSoft), chair: m.is_chair, label: `${m.name}${m.party ? `, ${m.party}` : ""}` }));
-    const n = people.length;
-    if (!n) return null;
-    const radii = n > 16 ? [88, 62] : [76];
-    const share = radii.map((r) => r / radii.reduce((t, x) => t + x, 0));
-    const perRow = radii.map((_, i) => (i === radii.length - 1 ? 0 : Math.round(n * share[i])));
-    perRow[radii.length - 1] = n - perRow.reduce((t, x) => t + x, 0);
-    const spots = [];
-    radii.forEach((R, i) => { for (let k = 0; k < perRow[i]; k++) { const ang = Math.PI * (1 - (k + 0.5) / perRow[i]); spots.push({ ang, x: 100 + R * Math.cos(ang), y: 98 - R * Math.sin(ang) }); } });
-    spots.sort((p, q) => q.ang - p.ang);
-    const dot = Math.min(7.5, ...radii.map((R, i) => (Math.PI * R / perRow[i]) * 0.42));
-    return { seats: people.map((p, i) => ({ ...p, ...spots[i] })), dot, n };
+      .sort((x, y) => (order.get(x.party || "Other") ?? 0) - (order.get(y.party || "Other") ?? 0))
+      .map((m) => ({ color: partyColour(m.party_colour, COLORS.inkSoft), chair: m.is_chair, label: `${m.name}${m.party ? `, ${m.party}` : ""}${m.is_chair ? " (Chair)" : ""}` }));
+    return { parties, people };
   }, [members]);
-  if (!layout) return null;
+  const n = info.people.length;
+  if (!n) return null;
+  const shown = info.parties.slice(0, 3);
+  const others = info.parties.slice(3).reduce((t, p) => t + p.count, 0);
   return (
-    <svg className="cm-arc" viewBox="0 0 200 108" role="img" aria-label={`${layout.n} members by party`}>
-      <path d="M 14 98 A 86 86 0 0 1 186 98" fill="none" stroke={color} strokeOpacity="0.14" strokeWidth="1.5" strokeDasharray="2 4" />
-      {layout.seats.map((p, i) => (
-        <circle key={i} className="cm-dot cm-seat" style={{ "--d": i }} cx={p.x} cy={p.y} r={layout.dot} fill={p.color} stroke={p.chair ? color : "none"} strokeWidth={p.chair ? 2 : 0}>
-          <title>{p.label}</title>
-        </circle>
-      ))}
-      <text x="100" y="86" textAnchor="middle" fontFamily={FONT_DISPLAY} fontSize="26" fontWeight="700" fill={COLORS.ink}>{layout.n}</text>
-      <text x="100" y="101" textAnchor="middle" fontFamily={FONT_BODY} fontSize="9.5" fill={COLORS.inkSoft}>members</text>
-    </svg>
+    <span className="cm-mem">
+      <span className="cm-mem-n"><b>{n}</b> {n === 1 ? "member" : "members"}</span>
+      <span className="cm-seats" role="img" aria-label={`${n} members by party: ${info.parties.map((p) => `${p.name} ${p.count}`).join(", ")}`}>
+        {info.people.map((p, i) => <i key={i} className="cm-dot cm-seat" data-chair={p.chair ? "1" : "0"} style={{ "--d": i, background: p.color }} title={p.label} />)}
+      </span>
+      <span className="cm-parties" aria-hidden="true">
+        {shown.map((p) => <span key={p.name}><i style={{ background: p.color }} />{p.name} <b>{p.count}</b></span>)}
+        {others > 0 && <span className="cm-parties-more">+{others} more</span>}
+      </span>
+    </span>
   );
 }
 
-const initials = (name) => String(name ?? "").replace(/^(The |Rt Hon |Dame |Sir |Lord |Baroness |Lady |Dr |Mr |Mrs |Ms )+/i, "").split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
 
 // The four headline figures as one clean band, divided by thin lines, instead of four separate coloured boxes.
 const ledIcon = (d) => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{d}</svg>;
@@ -257,25 +255,21 @@ function CommitteeCard({ committee, open, onToggle, index = 0 }) {
     <div className="cm-card" data-open={open ? "1" : "0"} style={{ "--i": index, "--hc": houseColor, "--hs": solid(houseColor) }}>
       <button onClick={onToggle} aria-expanded={open} aria-controls={`cm-detail-${committee.id}`} className="cm-card-btn">
         <span className="cm-band">
-          <span className="cm-house">{committee.house}</span>
+          <span className="cm-house"><i aria-hidden="true" />{committee.house}</span>
           {q > 0 && <span className="cm-inq">{q} open {q === 1 ? "inquiry" : "inquiries"}</span>}
         </span>
-        <span className="cm-body">
-          <span className="cm-head">
-            <span className="cm-ico" aria-hidden="true"><CommitteeIcon name={committee.name} /></span>
-            <span title={committee.name} className="cm-name">{committee.name}</span>
-          </span>
-          <span className="cm-chair">
-            <span aria-hidden="true" className="cm-avatar" style={{ background: committee.chair_name ? color : COLORS.hairline, color: committee.chair_name ? onFill(color) : COLORS.ink }}>
-              {committee.chair_name ? initials(committee.chair_name) : "?"}
-            </span>
-            <span className="cm-chair-text">
-              {committee.chair_name ? <>Chair<strong>{committee.chair_name}</strong></> : "Chair not currently listed"}
-            </span>
-          </span>
-          <SeatArc members={committee.members} color={houseColor} />
-          <span className="cm-more">{open ? "Hide details ▴" : "Show members and inquiries ▾"}</span>
+        <span className="cm-head">
+          <span className="cm-ico" aria-hidden="true"><CommitteeIcon name={committee.name} /></span>
+          <span title={committee.name} className="cm-name">{committee.name}</span>
         </span>
+        <span className="cm-chair">
+          {committee.chair_name && <i aria-hidden="true" className="cm-chair-dot" style={{ background: color }} />}
+          <span className="cm-chair-text">
+            {committee.chair_name ? <>Chair<strong>{committee.chair_name}</strong></> : "Chair not currently listed"}
+          </span>
+        </span>
+        <Membership members={committee.members} />
+        <span className="cm-more">{open ? "Hide details ▴" : "Show members and inquiries ▾"}</span>
       </button>
     </div>
   );

@@ -50,10 +50,6 @@ function Group({ id, title, colour, count, children, i }) {
 
 const HOUSE_FILTER = [["all", "Both houses"], ["C", "Commons"], ["L", "Lords"]];
 const showsHouse = (filter, h) => filter === "all" || h === filter || h === "J";
-const jump = (id) => {
-  const el = document.getElementById(id);
-  if (el) el.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
-};
 const GROUPS = [
   { id: "td-g-chambers", title: "In the chambers", colour: "#5A4FCF", of: (v) => v.business },
   { id: "td-g-questions", title: "Questions to ministers", colour: "#B45A3C", of: (v) => v.questions },
@@ -61,35 +57,17 @@ const GROUPS = [
   { id: "td-g-committees", title: "Committees taking evidence", colour: "#2C7DA0", of: (v) => v.hearings },
 ];
 
-// The summary at the top: the time now, what comes next, and how the day divides into earlier and still to come.
-function NowBanner({ clockNow, next, earlier, later, untimed, open }) {
+// What comes next, as one calm line under the date and the two Houses.
+function NextUp({ next, open }) {
+  if (!next) return <p className="td-next td-next-none"><small>Next up</small><b>Nothing else with a time is listed for today</b></p>;
   return (
-    <div className="td-now">
-      <div className="td-clock" aria-label={`The time in London is ${clock(clockNow)}`}>
-        <span className="td-clock-dot" aria-hidden="true" />
-        <b>{clock(clockNow)}</b>
-        <small>London time now</small>
-      </div>
-      <div className="td-next">
-        {next ? (
-          <button type="button" aria-haspopup="dialog" onClick={(ev) => open(next, ev.currentTarget)}>
-            <small>Next up, {clock(next.time)}</small>
-            <b>{next.title}</b>
-            <span>Press to read what it is</span>
-          </button>
-        ) : (
-          <p><small>Next up</small><b>Nothing else with a time is listed for today</b></p>
-        )}
-      </div>
-      <ul className="td-split" aria-label="How the day divides">
-        <li data-k="earlier"><b>{earlier}</b>earlier today</li>
-        <li data-k="later"><b>{later}</b>still to come</li>
-        <li data-k="untimed"><b>{untimed}</b>no time listed</li>
-      </ul>
-    </div>
+    <button type="button" className="td-next" aria-haspopup="dialog" onClick={(ev) => open(next, ev.currentTarget)}>
+      <small>Next up at {clock(next.time)}</small>
+      <b>{next.title}</b>
+      <span>Press to read what it is</span>
+    </button>
   );
 }
-
 
 export default function TodayInParliament({ onAhead }) {
   const { data, failed } = useDataFile(parliamentCalendar);
@@ -118,14 +96,18 @@ export default function TodayInParliament({ onAhead }) {
 
   return (
     <div ref={ref} className="td" data-go={go}>
-      <div className="td-date">
-        <b>{dayLong(date)}</b>
-        <span>What the calendar lists for today</span>
-      </div>
-      <div className="td-houses">
-        <House name="Commons" state={v.commons} away={data.away} count={commonsCount} inRange={v.inRange} />
-        <House name="Lords" state={v.lords} away={data.away} count={lordsCount} inRange={v.inRange} />
-      </div>
+      <section className="td-top" aria-label="Today in Parliament">
+        <div className="td-date">
+          <b>{dayLong(date)}</b>
+          <span>What Parliament's calendar lists for today</span>
+          <span className="td-clock" aria-label={`The time in London is ${clock(now.clock)}`}><i aria-hidden="true" />{clock(now.clock)}<small>London time</small></span>
+        </div>
+        <div className="td-houses">
+          <House name="Commons" state={v.commons} away={data.away} count={commonsCount} inRange={v.inRange} />
+          <House name="Lords" state={v.lords} away={data.away} count={lordsCount} inRange={v.inRange} />
+        </div>
+        {total > 0 && <NextUp next={nextUp} open={open} />}
+      </section>
 
       {!v.inRange && (
         <p className="td-empty">The calendar this page reads was last updated on {dateLong(data.generated)} and does not reach today. It is refreshed every day, so check back soon.</p>
@@ -141,18 +123,11 @@ export default function TodayInParliament({ onAhead }) {
 
       {total > 0 && (
         <>
-          <NowBanner
-            clockNow={now.clock} next={nextUp} open={open}
-            earlier={timed.length - upcoming.length} later={upcoming.length} untimed={everything.length - timed.length}
-          />
           <div className="td-bar">
+            <h2 className="td-bar-title">What is on</h2>
             <div className="td-filter" role="group" aria-label="Which house to show">
               {HOUSE_FILTER.map(([k, label]) => <button key={k} type="button" data-house={k} aria-pressed={filter === k} onClick={() => setFilter(k)}>{label}</button>)}
             </div>
-            <nav className="td-jump" aria-label="Jump to a part of today">
-              {timed.length > 0 && <button type="button" onClick={() => jump("td-clock-view")}>On a clock</button>}
-              {shown.map((g) => <button key={g.id} type="button" style={{ "--tc": g.colour }} onClick={() => jump(g.id)}><i aria-hidden="true" />{g.title}<span>{g.items.length}</span></button>)}
-            </nav>
           </div>
           {timelineItems.length > 0 && <div id="td-clock-view"><DayTimeline entries={timelineItems} nowMinutes={now.minutes} nextId={nextUp?.id} open={open} /></div>}
           {shown.length === 0 && <p className="td-empty">Nothing is listed for that house today.</p>}
