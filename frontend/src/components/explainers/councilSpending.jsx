@@ -1,6 +1,7 @@
 /** @jsxImportSource react */
 import ExplainerPage from "../story/ExplainerPage";
 import { IconCouncilBudget } from "../newIcons";
+import SpendPie from "../story/SpendPie";
 
 const PAGE = {
   look: "field",
@@ -8,11 +9,6 @@ const PAGE = {
   kicker: "Your area & your say",
   title: "Where council money goes",
   subtitle: "English councils plan to spend about £149 billion on services in 2026 to 2027. This page shows the largest items, why social care dominates, and what happens when a council cannot balance its books.",
-  tiles: [
-    { label: "Planned spending on services, 2026 to 2027", value: "£148.8bn", colour: "#6FB1FF", sub: "net, across councils in England" },
-    { label: "Adult and children's social care together", value: "£45.7bn", colour: "#FF7A8A", sub: "about 31% of that. Adults £28.7bn, children £17.0bn" },
-    { label: "Councils that gave their figures", value: "406 of 415", colour: "#FFB45E", sub: "so the national totals are estimates" },
-  ],
   why: { colour: "#5A7FA6", text: "Council tax is only part of the money, and two services take much of it. Knowing the split explains why councils talk about cutting libraries while their total budget grows." },
   chapters: [
     {
@@ -20,13 +16,8 @@ const PAGE = {
       lede: "Budgeted net spending on services by English councils in 2026 to 2027, as reported to the Ministry of Housing, Communities and Local Government.",
       colour: "#5A7FA6",
       blocks: [
-        { bars: { items: [
-          { label: "Education", value: 49.1, text: "£49.1bn", colour: "#5A7FA6" },
-          { label: "Adult social care", value: 28.7, text: "£28.7bn", colour: "#9C3B3B" },
-          { label: "Children's social care", value: 17.0, text: "£17.0bn", colour: "#E8741A" },
-          { label: "Housing services", value: 3.7, text: "£3.7bn", colour: "#3F7D5C" },
-          { label: "Cultural services", value: 2.6, text: "£2.6bn", colour: "#6E4B6E" },
-        ], note: "Net current expenditure. Not every service is shown: roads, planning, waste and others make up the rest of the £148.8 billion." } },
+        { node: <SpendPie /> },
+        { note: "Net current expenditure. Not every service is shown separately: roads, planning, waste and others make up the rest of the £148.8 billion. The figures cover 406 of 415 councils, so the national totals are estimates." },
         { text: [
           "Much of the education figure is money passed on to schools and to early years and special needs places. Social care is different: councils themselves are responsible for arranging it.",
           "The department says education spending is £2.4 billion higher in real terms than the year before, mostly early years and special schools. Children's social care is £1.2 billion higher (7.4%), and spending on homelessness rose by £302 million.",

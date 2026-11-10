@@ -24,6 +24,7 @@ import { fetchAllRows } from "../lib/supabasePagination";
 import { interestColumns, voteColumns } from "../lib/exportColumns";
 import { IconStar, IconCoin, IconMeeting, IconGlobe, IconHome, IconEconomy, IconBriefcase, IconQuestion, IconGroup } from "./icons";
 import { SectionDivider } from "./shared";
+import ProfileGrid from "./ProfileGrid";
 import { BiographyBox, ContactBox, CabinetRoleBox, VotingSummaryBox, RebellionRateBox, RecentActivityBox, StandardsBox, NewsBox, LoadFailedNote } from "./MpCards";
 import { FundingBySectorBox, MoneyAndVotesBox, CommitteeConflictsBox, CrossRegisterBox, CurrentRolesBox } from "./MpFundingBoxes";
 import { ClaimsTabContent, GiftsTabContent } from "./MpRegisterTabs";
@@ -244,9 +245,10 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
 
         <PageGuide viewKey="mp" style={{ maxWidth: 760, marginLeft: "auto", marginRight: "auto", marginTop: 20 }} />
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 24, paddingTop: 24, alignItems: "start" }}>
-          {/* ---- Left column: financial interests ---- */}
-          <div style={activeTab === "career" ? { gridColumn: "1 / -1" } : undefined}>
+        <ProfileGrid
+          leftFull={activeTab === "career"}
+          left={(
+            <>
             <div
               className="mp-bill-track"
               style={{ position: "relative", display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 4, paddingBottom: 12, overflowX: "auto" }}
@@ -361,26 +363,25 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
                 </>
               )}
             </div>
-          </div>
-
-          {/* ---- Right column: everything else ---- */}
-          <div style={{ display: activeTab === "career" ? "none" : "flex", flexDirection: "column", gap: 16 }}>
-            <MpMoneyProfile interests={interests} loading={loading} />
-            <BiographyBox politician={politician} />
-            <CurrentRolesBox interests={interests} />
-            <FundingBySectorBox interests={interests} />
-            <MoneyAndVotesBox politician={politician} interests={interests} />
-            <CommitteeConflictsBox interests={interests} myCommittees={myCommittees} />
-            <CrossRegisterBox interests={interests} gifts={gifts} />
-            <CabinetRoleBox politician={politician} />
-            <VotingSummaryBox politician={politician} onNavigate={onNavigate} />
-            <RebellionRateBox politician={politician} />
-            <RecentActivityBox politician={politician} onNavigate={onNavigate} />
-            <StandardsBox politician={politician} />
-            <NewsBox politician={politician} />
-            <ContactBox politician={politician} />
-          </div>
-        </div>
+            </>
+          )}
+          cards={[
+            <MpMoneyProfile key="MpMoneyProfile" interests={interests} loading={loading} />,
+            <BiographyBox key="BiographyBox" politician={politician} />,
+            <CurrentRolesBox key="CurrentRolesBox" interests={interests} />,
+            <FundingBySectorBox key="FundingBySectorBox" interests={interests} />,
+            <MoneyAndVotesBox key="MoneyAndVotesBox" politician={politician} interests={interests} />,
+            <CommitteeConflictsBox key="CommitteeConflictsBox" interests={interests} myCommittees={myCommittees} />,
+            <CrossRegisterBox key="CrossRegisterBox" interests={interests} gifts={gifts} />,
+            <CabinetRoleBox key="CabinetRoleBox" politician={politician} />,
+            <VotingSummaryBox key="VotingSummaryBox" politician={politician} onNavigate={onNavigate} />,
+            <RebellionRateBox key="RebellionRateBox" politician={politician} />,
+            <RecentActivityBox key="RecentActivityBox" politician={politician} onNavigate={onNavigate} />,
+            <StandardsBox key="StandardsBox" politician={politician} />,
+            <NewsBox key="NewsBox" politician={politician} />,
+            <ContactBox key="ContactBox" politician={politician} />,
+          ]}
+        />
       </div>
     </motion.div>
   );

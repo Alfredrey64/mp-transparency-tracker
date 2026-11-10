@@ -3,6 +3,7 @@ import { GlossaryTerm } from "./GlossaryTerm";
 import { IconThinkTank, IconSearch, IconBroadcast, IconQuestion } from "./icons";
 import { Board, Why, Chapter, Pull, Cards, Visual } from "./story/Kit";
 import { Masked, Ladder } from "./story/ThinkArt";
+import { caseId } from "../lib/caseId";
 
 const GRADE_COLOR = {
   A: "#3F7D5C",
@@ -137,7 +138,7 @@ export default function ThinkTankFunding() {
         <Visual><Ladder tanks={ladder} /></Visual>
         <ul className="st-case-grid">
           {THINK_TANKS.map((t) => (
-            <li key={t.name} className="st-case" style={{ "--tc": GRADE_COLOR[t.grade] }}>
+            <li key={t.name} id={caseId(t.name)} className="st-case" style={{ "--tc": GRADE_COLOR[t.grade] }}>
               <header><span className="st-avatar" aria-hidden="true">{t.grade}</span><div><h3>{t.name}</h3><p>{t.lean}</p></div></header>
               <section><h4>What was found</h4><p>{t.detail}</p></section>
             </li>

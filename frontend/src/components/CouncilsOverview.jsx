@@ -1,6 +1,6 @@
 // The Your Council overview: the finder, the whole-country summary and who changed hands.
 import { useState, useMemo } from "react";
-import { COLORS, FONT_BODY, FONT_DISPLAY, numeric, readable } from "../theme";
+import { COLORS, FONT_BODY, numeric, readable } from "../theme";
 import { longDate, searchCouncils, councilsForCodes, nationalSummary, normCouncil, CONTROL_ORDER, controlLabelOf, controlColourOf, controlTrend, changesSummary, defectionSummary, seatChanges } from "../lib/councils";
 import { changesMeaning, defectionMeaning, controlTrendMeaning } from "../lib/councilMeaning";
 import { IconGroup, IconSplit, IconCompare, IconChartBars, IconVote } from "./icons";
@@ -9,6 +9,7 @@ import Reveal from "./Reveal";
 import { HeroBand } from "./shared";
 import WhatThisMeans from "./WhatThisMeans";
 import { goCouncil, fmt, signed, scrollToId, input, linkButton } from "./councilsUi";
+import ElectionRoad from "./ElectionRoad";
 import { Card, SectionHead, StatCard, Chip, Arrow, Bar, MoveRow } from "./CouncilsParts";
 
 // ---- Finding a council ------------------------------------------------------
@@ -305,17 +306,7 @@ export function Overview({ data }) {
       <Reveal>
         <Card id="elections" accent="#1FA97C">
           <SectionHead kicker="Elections" accent="#1FA97C" title="When councils next vote" blurb="The date each council's next election falls on. Some councils elect everyone at once; others elect a third or a half at a time." />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(230px, 100%), 1fr))", gap: 12 }}>
-            {s.nextDates.map((d, i) => (
-              <div key={d.date} style={{ background: COLORS.paper, border: `1px solid ${i === 0 ? "#1FA97C" : COLORS.hairline}`, borderRadius: 16, padding: "14px 16px" }}>
-                <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: i === 0 ? readable("#1FA97C") : COLORS.inkSoft }}>{i === 0 ? "Next up" : "Later"}</div>
-                <div style={{ fontFamily: FONT_DISPLAY, fontSize: 19, color: COLORS.ink, margin: "3px 0 8px" }}>{longDate(d.date)}</div>
-                <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft }}>
-                  <strong style={{ ...numeric, fontSize: 18, color: COLORS.ink }}>{fmt(d.seats)}</strong> seats · {d.councils} {d.councils === 1 ? "council" : "councils"}
-                </div>
-              </div>
-            ))}
-          </div>
+          <ElectionRoad dates={s.nextDates} />
         </Card>
       </Reveal>
 

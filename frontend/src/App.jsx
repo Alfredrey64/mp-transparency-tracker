@@ -369,13 +369,14 @@ export default function App() {
 
   // A new page opens at its top, in the same frame it appears, so you never see the new page at the old scroll position or the old
   // page jumping to the top first. (Changes inside a page, such as a chart's range, do not come through here.)
-  const shownPage = useRef(`${view}|${selected?.id ?? ""}`);
+  // Opening something within a page (a council from the list of councils, a bill from the bills page) is a new page too, so the address after the page name counts as well.
+  const shownPage = useRef(`${view}|${selected?.id ?? ""}|${viewParam ?? ""}`);
   useLayoutEffect(() => {
-    const now = `${view}|${selected?.id ?? ""}`;
+    const now = `${view}|${selected?.id ?? ""}|${viewParam ?? ""}`;
     if (shownPage.current === now) return;
     shownPage.current = now;
     window.scrollTo(0, 0);
-  }, [view, selected?.id]);
+  }, [view, selected?.id, viewParam]);
 
   useEffect(() => {
     async function loadCount() {

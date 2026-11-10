@@ -3,6 +3,7 @@ import ExplainerPage from "../story/ExplainerPage";
 import { IconSignpost } from "../newIcons";
 import { IconDoor, IconScales, IconCalendar } from "../icons";
 import { Hero } from "../story/Vivid";
+import GuideFinder from "../story/GuideFinder";
 
 const PAGE = {
   look: "vivid",
@@ -11,7 +12,7 @@ const PAGE = {
   kicker: "Rules and rights",
   title: "How to get something done",
   subtitle: "A practical guide to who to contact when something is wrong: a council service, the NHS, a government department, the police. It also explains how to ask a public body for information, and what to do when the first answer is no.",
-  lead: <Hero
+  lead: <><GuideFinder /><Hero
     colours={["#0F3B33", "#1F6F5C", "#2C7DA0"]}
     why="Most problems with public services are settled by the body that caused them, if you go to the right place in the right order. Almost every route has a time limit, and skipping a step can mean being sent back to the start."
     stops={[
@@ -24,7 +25,7 @@ const PAGE = {
       { value: "20 days", label: "A public body should answer an information request in", sub: "working days, usually" },
       { value: "6 weeks", label: "To complain to the ICO after a refusal", sub: "from the response or your last contact with the body" },
     ]}
-  />,
+  /></>,
   chapters: [
     {
       title: "Start with the right person",

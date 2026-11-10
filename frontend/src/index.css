@@ -596,3 +596,18 @@ input::placeholder, textarea::placeholder { color: var(--c-ink-soft); opacity: 0
 @media (max-width: 470px) { .bj-hold { min-height: 672px; } }
 @media (max-width: 420px) { .bj-hold { min-height: 775px; } }
 @media (max-width: 340px) { .bj-hold { min-height: 798px; } }
+
+/* The MP page's columns (see ProfileGrid.jsx): one column on a phone, two from 760px, where the cards pack into whichever column has room. */
+.pg-grid { display: flex; flex-direction: column; gap: 24px; padding-top: 24px; }
+.pg-left, .pg-cell { min-width: 0; }
+.pg-slot { display: block; }
+@media (min-width: 760px) {
+  .pg-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1px; column-gap: 24px; row-gap: 0; align-items: start; }
+  .pg-left { grid-column: 1; grid-row-start: 1; }
+  .pg-grid[data-full="1"] .pg-left { grid-column: 1 / -1; }
+  .pg-cell[data-wide="1"] { grid-column: 1 / -1; }
+}
+@media (max-width: 759px) {
+  .pg-grid { gap: 16px; }
+  .pg-left { margin-bottom: 8px; }
+}

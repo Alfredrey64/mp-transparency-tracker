@@ -1,0 +1,37 @@
+/* The council spending ring (components/story/SpendPie.jsx). */
+.sp { margin: 0; display: grid; gap: clamp(18px, 3vw, 34px); align-items: center; }
+.sp-ring { position: relative; width: min(100%, 360px); margin-inline: auto; aspect-ratio: 1; }
+.sp-ring svg { width: 100%; height: 100%; overflow: visible; display: block; }
+.sp-slice { cursor: pointer; transition: stroke-width 0.25s var(--ease-out, ease-out), transform 0.3s var(--ease-out, ease-out), opacity 0.2s; }
+.sp-mid { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; padding: 20%; text-align: center; }
+.sp-mid-in { display: grid; gap: 4px; justify-items: center; animation: spMid 0.3s var(--ease-out, ease-out); }
+.sp-mid small { font: 700 12px/1.25 var(--font-body, "Public Sans", system-ui, sans-serif); color: var(--c-ink-soft); max-width: 17ch; }
+.sp-mid b { font: 700 clamp(26px, 5vw, 36px)/1 var(--font-display, "Newsreader", Georgia, serif); color: var(--c, var(--c-ink)); letter-spacing: -0.02em; }
+.sp-mid em { font: 600 12px/1.2 var(--font-body, "Public Sans", system-ui, sans-serif); font-style: normal; color: var(--c-ink-soft); }
+.sp-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.sp-row { border-radius: 16px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-left: 6px solid var(--c); overflow: hidden; transition: box-shadow 0.2s, background-color 0.2s; }
+.sp-row:hover, .sp-row[data-open="1"] { box-shadow: 0 8px 22px color-mix(in srgb, var(--c) 22%, transparent); background: color-mix(in srgb, var(--c) 5%, var(--c-paper-card)); }
+.sp-row button { appearance: none; border: none; background: none; width: 100%; display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 4px 12px; padding: 13px 14px 11px; text-align: left; cursor: pointer; color: var(--c-ink); font: inherit; min-height: 52px; }
+.sp-row button:focus-visible { outline: 3px solid var(--c-ink); outline-offset: -3px; border-radius: 12px; }
+.sp-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--c); }
+.sp-name { font: 700 16px/1.25 var(--font-body, "Public Sans", system-ui, sans-serif); }
+.sp-val { display: grid; justify-items: end; line-height: 1.15; }
+.sp-val b { font: 700 18px/1.1 var(--font-display, "Newsreader", Georgia, serif); }
+.sp-val small { font: 600 12px/1.2 var(--font-body, "Public Sans", system-ui, sans-serif); color: var(--c-ink-soft); }
+.sp-chev { width: 9px; height: 9px; border-right: 2.5px solid var(--c-ink-soft); border-bottom: 2.5px solid var(--c-ink-soft); transform: rotate(45deg); transition: transform 0.25s var(--ease-out, ease-out); margin: 0 4px 3px 2px; }
+.sp-row[data-open="1"] .sp-chev { transform: rotate(-135deg) translate(-2px, -2px); }
+.sp-track { grid-column: 2 / -1; height: 6px; border-radius: 3px; background: color-mix(in srgb, var(--c) 14%, transparent); overflow: hidden; }
+.sp-track i { display: block; height: 100%; width: var(--w); border-radius: 3px; background: var(--c); transform-origin: left; }
+.sp-about { margin: 0; padding: 2px 16px 15px 40px; font: 500 15px/1.6 var(--font-body, "Public Sans", system-ui, sans-serif); color: var(--c-ink-soft); max-width: 62ch; }
+@keyframes spSweep { from { stroke-dasharray: 0 100; } }
+@keyframes spRise { from { opacity: 0; transform: translateX(18px); } }
+@keyframes spFill { from { transform: scaleX(0); } }
+@keyframes spMid { from { opacity: 0; transform: translateY(5px) scale(0.96); } }
+.sp[data-go="0"] .sp-slice { stroke-dasharray: 0 100; }
+.sp[data-go="0"] .sp-row, .sp[data-go="0"] .sp-mid { opacity: 0; }
+.sp[data-go="1"] .sp-slice { animation: spSweep 0.75s cubic-bezier(0.3, 0.7, 0.3, 1) calc(var(--i) * 0.28s + 0.1s) backwards; }
+.sp[data-go="1"] .sp-row { animation: spRise 0.55s var(--ease-out, ease-out) calc(var(--i) * 0.1s + 0.25s) backwards; }
+.sp[data-go="1"] .sp-track i { animation: spFill 0.9s var(--ease-out, ease-out) calc(var(--i) * 0.1s + 0.5s) backwards; }
+.sp[data-go="1"] .sp-mid { animation: spMid 0.6s var(--ease-out, ease-out) 0.2s backwards; }
+@media (min-width: 820px) { .sp { grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .sp *, .sp { animation: none !important; transition: none !important; } .sp[data-go="0"] .sp-row, .sp[data-go="0"] .sp-mid { opacity: 1; } .sp[data-go="0"] .sp-slice { stroke-dasharray: var(--len) 100; } }
