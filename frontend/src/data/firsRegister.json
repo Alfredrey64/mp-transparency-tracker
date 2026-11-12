@@ -1,0 +1,36 @@
+{
+  "checked": "2026-11-12",
+  "source": "https://foreign-influence-registration-scheme.service.gov.uk/public-register",
+  "total": 21,
+  "nameNotDisplayed": 2,
+  "countries": [
+    { "name": "Bosnia and Herzegovina", "n": 3 },
+    { "name": "Qatar", "n": 3 },
+    { "name": "Congo (Democratic Republic)", "n": 2 },
+    { "name": "Libya", "n": 2 },
+    { "name": "Taiwan", "n": 2 },
+    { "name": "Bahrain", "n": 1 },
+    { "name": "Congo", "n": 1 },
+    { "name": "Guinea", "n": 1 },
+    { "name": "Maldives", "n": 1 },
+    { "name": "Somaliland", "n": 1 },
+    { "name": "St Lucia", "n": 1 },
+    { "name": "Turkey", "n": 1 },
+    { "name": "Ukraine", "n": 1 },
+    { "name": "United Arab Emirates", "n": 1 }
+  ],
+  "months": [
+    { "ym": "2025-08", "n": 2 },
+    { "ym": "2025-09", "n": 1 },
+    { "ym": "2025-10", "n": 3 },
+    { "ym": "2025-12", "n": 2 },
+    { "ym": "2026-01", "n": 1 },
+    { "ym": "2026-03", "n": 2 },
+    { "ym": "2026-04", "n": 3 },
+    { "ym": "2026-05", "n": 1 },
+    { "ym": "2026-06", "n": 2 },
+    { "ym": "2026-09", "n": 1 },
+    { "ym": "2026-10", "n": 2 },
+    { "ym": "2026-11", "n": 1 }
+  ]
+}

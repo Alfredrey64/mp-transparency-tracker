@@ -437,9 +437,9 @@ export const PAGE_GUIDES = {
     notShown: "Spending that falls outside the rules' definition of campaign spending, and any breach. The 2024 totals come from press reports of Electoral Commission data.",
   },
   foreignInfluence: {
-    what: "The register of people acting in the UK for a foreign government: who must register, the two tiers and the penalties.",
+    what: "The register of people acting in the UK for a foreign government: who must register, what the public can see, what can be held back, and how many entries it holds.",
     why: "It makes foreign state influence visible without banning it.",
-    notShown: "Who has registered. Some entries are not published and the register is new.",
+    notShown: "Who has registered: no registrant is named. The entry count is a dated hand count, and some entries are never published.",
   },
   mayors: {
     what: "What regional authorities and directly elected mayors in England are for, what the 2026 Act says about them, and how London compares.",
