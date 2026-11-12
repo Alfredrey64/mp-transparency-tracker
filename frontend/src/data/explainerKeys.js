@@ -26,4 +26,9 @@ export const EXPLAINER_KEYS = [
   "getThingsDone",
   "inquiries",
   "departments",
+  "speakerWhipsClerks",
+  "howElectionsWork",
+  "howLawMade",
+  "howPartyFundingWorks",
+  "spotMisleadingStats",
 ];

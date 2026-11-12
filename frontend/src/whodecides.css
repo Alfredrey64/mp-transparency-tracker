@@ -1,0 +1,26 @@
+/* "Who decides what" grid (components/WhoDecidesGrid.jsx): one row per policy area, one cell per nation. */
+.wd { margin: 6px 0 18px; display: grid; gap: 10px; }
+.wd-key { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; font: 600 12.5px/1.3 var(--font-body, "Public Sans", system-ui, sans-serif); color: var(--c-ink-soft, #5B6784); }
+.wd-key span { display: inline-flex; align-items: center; gap: 7px; }
+.wd-key i, .wd-cell::before { content: ""; width: 10px; height: 10px; border-radius: 3px; flex: none; }
+.wd-key i.d, .wd-cell.d::before { background: #1F7A6E; }
+.wd-key i.p, .wd-cell.p::before { background: #A9701F; }
+.wd-key i.w, .wd-cell.w::before { background: #2C5F9E; }
+.wd-rows, .wd-cells { list-style: none; margin: 0; padding: 0; }
+.wd-rows { display: grid; gap: 8px; }
+.wd-row { display: grid; grid-template-columns: minmax(170px, 0.9fr) minmax(0, 2.4fr); gap: 8px 14px; align-items: center; padding: 10px 12px; border: 1px solid var(--c-hairline, #D5DAE6); border-radius: 14px; background: var(--c-paper-card, #fff); }
+.wd-row h4 { margin: 0; font: 700 14.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink, #1B2438); }
+.wd-cells { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.wd-cell { position: relative; display: grid; align-content: start; gap: 2px; padding: 8px 10px 8px 24px; border-radius: 10px; font: 500 12.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; }
+.wd-cell::before { position: absolute; left: 9px; top: 12px; }
+.wd-cell.d { background: color-mix(in srgb, #1F7A6E 11%, var(--c-paper-card, #fff)); }
+.wd-cell.p { background: color-mix(in srgb, #A9701F 12%, var(--c-paper-card, #fff)); }
+.wd-cell.w { background: color-mix(in srgb, #2C5F9E 10%, var(--c-paper-card, #fff)); }
+.wd-place { font-size: 11.5px; font-weight: 700; color: var(--c-ink-soft, #5B6784); }
+.wd-cell b { font-size: 13.5px; font-weight: 800; color: var(--c-ink, #1B2438); }
+.wd-cell small { font-size: 12px; color: var(--c-ink-soft, #5B6784); }
+.wd figcaption { font: 500 12.5px/1.45 var(--font-body, "Public Sans", system-ui, sans-serif); color: var(--c-ink-soft, #5B6784); }
+@media (max-width: 720px) {
+  .wd-row { grid-template-columns: minmax(0, 1fr); }
+  .wd-cells { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

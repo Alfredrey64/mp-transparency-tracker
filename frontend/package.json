@@ -9,6 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:quick": "node e2e/quick.mjs",
+    "test:full": "playwright test",
     "test:phone": "playwright test e2e/phone-layout.spec.js",
     "test:safari": "playwright test e2e/safari-touch.spec.js",
     "test:layout": "playwright test e2e/layout-audit.spec.js",

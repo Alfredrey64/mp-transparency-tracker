@@ -1,0 +1,148 @@
+{
+ "built": "2026-11-12",
+ "bill": {
+  "billId": 3887,
+  "shortTitle": "Non-Domestic Rating (Multipliers and Private Schools) Act",
+  "longTitle": "A Bill to make provision for, and in connection with, the introduction of higher non-domestic rating multipliers as regards large business hereditaments, and lower non-domestic rating multipliers as regards retail, hospitality and leisure hereditaments, in England and for the removal of charitable relief from non-domestic rates for private schools in England.",
+  "originatingHouse": "Commons",
+  "url": "https://bills.parliament.uk/bills/3887"
+ },
+ "stages": [
+  {
+   "house": "Commons",
+   "stage": "1st reading",
+   "dates": [
+    "2024-11-13"
+   ]
+  },
+  {
+   "house": "Commons",
+   "stage": "2nd reading",
+   "dates": [
+    "2024-11-25"
+   ]
+  },
+  {
+   "house": "Commons",
+   "stage": "Programme motion",
+   "dates": [
+    "2024-11-25"
+   ]
+  },
+  {
+   "house": "Commons",
+   "stage": "Money resolution",
+   "dates": [
+    "2024-11-25"
+   ]
+  },
+  {
+   "house": "Commons",
+   "stage": "Ways and Means resolution",
+   "dates": [
+    "2024-11-25"
+   ]
+  },
+  {
+   "house": "Commons",
+   "stage": "Committee stage",
+   "dates": [
+    "2024-12-11",
+    "2024-12-12"
+   ]
+  },
+  {
+   "house": "Commons",
+   "stage": "Report stage",
+   "dates": [
+    "2025-01-15"
+   ]
+  },
+  {
+   "house": "Commons",
+   "stage": "3rd reading",
+   "dates": [
+    "2025-01-15"
+   ]
+  },
+  {
+   "house": "Lords",
+   "stage": "1st reading",
+   "dates": [
+    "2025-01-16"
+   ]
+  },
+  {
+   "house": "Lords",
+   "stage": "2nd reading",
+   "dates": [
+    "2025-01-29"
+   ]
+  },
+  {
+   "house": "Lords",
+   "stage": "Committee stage",
+   "dates": [
+    "2025-02-24",
+    "2025-02-27"
+   ]
+  },
+  {
+   "house": "Lords",
+   "stage": "Report stage",
+   "dates": [
+    "2025-03-18"
+   ]
+  },
+  {
+   "house": "Lords",
+   "stage": "3rd reading",
+   "dates": [
+    "2025-03-24"
+   ]
+  },
+  {
+   "house": "Commons",
+   "stage": "Programme motion",
+   "dates": [
+    "2025-03-25"
+   ]
+  },
+  {
+   "house": "Commons",
+   "stage": "Consideration of Lords amendments",
+   "dates": [
+    "2025-03-25"
+   ]
+  },
+  {
+   "house": "Lords",
+   "stage": "Consideration of Commons amendments and / or reasons",
+   "dates": [
+    "2025-03-26"
+   ]
+  },
+  {
+   "house": "Commons",
+   "stage": "Consideration of Lords message",
+   "dates": [
+    "2025-03-31"
+   ]
+  },
+  {
+   "house": "Lords",
+   "stage": "Consideration of Commons amendments and / or reasons",
+   "dates": [
+    "2025-04-01"
+   ]
+  },
+  {
+   "house": "Unassigned",
+   "stage": "Royal Assent",
+   "dates": [
+    "2025-04-03"
+   ]
+  }
+ ],
+ "royalAssent": "2025-04-03"
+}

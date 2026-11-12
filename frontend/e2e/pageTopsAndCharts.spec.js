@@ -8,7 +8,7 @@ test("the lobbyists page opens with a sentence carrying its numbers, not a row o
   await expect(page.getByRole("region", { name: "At a glance" })).toHaveCount(0);
   const lead = page.getByRole("region", { name: "The register in brief" });
   await expect(lead).toContainText("Since 2014");
-  await expect(lead).toContainText("firms are on it");
+  await expect(lead).toContainText("are on it today");
   await expect(page.locator(".st-case-flag")).toHaveCount(3);
 });
 

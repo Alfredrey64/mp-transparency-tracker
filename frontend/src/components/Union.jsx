@@ -6,6 +6,7 @@ import { Caution, PageToggles, Panel, Stats, Takeaways, TrendExplorer } from "./
 import DevolutionMoney from "./DevolutionMoney";
 import DevolutionEconomy from "./DevolutionEconomy";
 import DevolutionPlace from "./DevolutionPlace";
+import WhoDecidesGrid from "./WhoDecidesGrid";
 import { ENGLAND_ACT, REFERENDUM_2014, RULING, CHECKED, SOURCES } from "../data/devolution";
 import { NATIONS } from "../data/devolvedElections";
 import { D, F_LAST, G_LAST, NAMES, S_LAST, fiscalTotal, gbp, gdpPerHead, indexOf, perHead, surplusPlaces, yearText } from "../lib/devolution";
@@ -76,6 +77,7 @@ function Powers() {
   return (
     <div>
       <Panel id="h-up-powers" accent={ACCENT} title="Who decides what" lead="Scotland, Wales and Northern Ireland each have an elected parliament or assembly, set up in 1999 (Wales's Senedd began as the National Assembly for Wales). Each decides some matters for its own nation, and Westminster decides the rest. The details differ in each nation." sources={[SOURCES.scotlandAct, SOURCES.walesAct, SOURCES.niAct, SOURCES.taxExplainer]}>
+        <WhoDecidesGrid />
         <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 15, fontWeight: 700, color: COLORS.ink, margin: "6px 0 4px" }}>Mostly decided by the devolved governments</h3>
         <ul style={{ ...para, margin: 0, paddingLeft: 20 }}>
           <li style={li}>Health and social care, and education and schools.</li>

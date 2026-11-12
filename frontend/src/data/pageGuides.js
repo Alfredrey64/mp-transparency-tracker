@@ -476,6 +476,31 @@ export const PAGE_GUIDES = {
     why: "The Grant is public money set by a formula few people have seen.",
     notShown: "The King's private wealth and income, and the cost of security, which are not part of the Grant.",
   },
+  howElectionsWork: {
+    what: "How a general election seat is won, why votes and seats differ, the other voting systems in the UK, what happens at the count, which ballots are rejected, and how recounts, ties and deposits work.",
+    why: "A general election is 650 local contests, and knowing the rules explains results that can otherwise look unfair or surprising.",
+    notShown: "The rules for elections in the devolved nations in detail, and the Electoral Commission's own 2024 report, which could not be read.",
+  },
+  spotMisleadingStats: {
+    what: "Four ways true numbers can mislead, shown with figures already on this site: share of what, mean against median, percent against points, and where a chart starts. Then a checklist of questions to ask.",
+    why: "Most misleading figures are accurate but chosen or drawn to point one way, and a few habits make them easy to spot.",
+    notShown: "Any claim by a named person or party, how to check a source, and the maths behind statistical tests.",
+  },
+  howPartyFundingWorks: {
+    what: "What counts as a donation, who may give to a party, the checks a party must make, what happens to gifts that are not allowed, what must be reported and when, and the rules before a general election.",
+    why: "The figures on who funds the parties only make sense once you know who is allowed to give and what has to be published.",
+    notShown: "Northern Ireland's separate rules, donations to individual MPs and candidates, and how the register is used.",
+  },
+  howLawMade: {
+    what: "Every stage a bill goes through in the Commons and the Lords, in Parliament's own words, then one real Act followed from its first reading to Royal Assent, with the dates of each stage.",
+    why: "Seeing the whole route shows why laws take months, where changes can be made, and why both Houses must agree.",
+    notShown: "What the Act followed here does in detail, how bills are timetabled, private members' bills, and laws made by ministers, which are on their own page.",
+  },
+  speakerWhipsClerks: {
+    what: "What the Speaker does in the Chamber and in law, how a Speaker is chosen, what party whips do, and what the Clerk of the House does.",
+    why: "Votes, rebellions and rulings make more sense when you know who is meant to stay neutral and who works the votes.",
+    notShown: "What a one-, two- or three-line whip means, and what withdrawing the whip does.",
+  },
   watchdogs: {
     what: "What the National Audit Office, the Office for Budget Responsibility and public inquiries do, and their powers in law.",
     why: "Ministers answer to Parliament, but these bodies check the sums and investigate failures.",

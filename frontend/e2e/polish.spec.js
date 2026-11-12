@@ -88,7 +88,7 @@ for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/thinkTanks");
     await page.waitForSelector(".st-chapter figure svg", { state: "attached" });
-    const fit = await page.locator("svg:visible text").filter({ hasText: /^Independent expert$/ }).evaluate((t) => ({ text: t.getBBox().width, bar: Number(t.previousElementSibling.getAttribute("width")) }));
+    const fit = await page.locator("svg:visible text").filter({ hasText: /^“Independent” expert$/ }).evaluate((t) => ({ text: t.getBBox().width, bar: Number(t.previousElementSibling.getAttribute("width")) }));
     expect(fit.text, "the label").toBeLessThanOrEqual(fit.bar - 12);
   });
 }
