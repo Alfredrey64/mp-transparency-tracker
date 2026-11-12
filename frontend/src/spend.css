@@ -1,0 +1,52 @@
+/* Campaign spending page: the limit calculators (components/story/SpendCalc.jsx) and the spending windows (components/story/SpendWindow.jsx). */
+.sp-calc, .sp-win { margin: 6px 0 18px; display: grid; gap: 12px; }
+.sp-calc figcaption, .sp-win figcaption { font: 500 12.5px/1.5 var(--font-body, "Public Sans", system-ui, sans-serif); color: var(--c-ink-soft, #5B6784); }
+.sp-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.sp-card { padding: 16px 16px 14px; border: 1px solid var(--c-hairline, #D5DAE6); border-top: 4px solid var(--tc); border-radius: 14px; background: var(--c-paper-card, #fff); display: grid; align-content: start; gap: 10px; opacity: 0; transform: translateY(8px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.sp-card:nth-child(2) { transition-delay: 0.12s; }
+[data-go="1"].sp-calc .sp-card { opacity: 1; transform: none; }
+.sp-card h3 { margin: 0; font: 800 17px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink, #1B2438); }
+.sp-lead { margin: 0; font: 500 13.5px/1.45 var(--font-body, "Public Sans", system-ui, sans-serif); color: var(--c-ink-soft, #5B6784); }
+.sp-kind { margin: 0; padding: 0; border: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; min-width: 0; }
+.sp-kind legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.sp-kind label { position: relative; display: grid; gap: 1px; padding: 9px 12px; border: 1.5px solid var(--c-hairline, #BCC4D6); border-radius: 10px; cursor: pointer; background: var(--c-paper, #fff); }
+.sp-kind label input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.sp-kind label b { font: 700 13.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink, #1B2438); }
+.sp-kind label span { font: 500 12px/1.3 var(--font-body, "Public Sans", system-ui, sans-serif); color: var(--c-ink-soft, #5B6784); }
+.sp-kind label.on { border-color: var(--tc); background: color-mix(in srgb, var(--tc) 10%, var(--c-paper, #fff)); }
+.sp-kind label:focus-within { outline: 3px solid color-mix(in srgb, var(--tc) 55%, transparent); outline-offset: 2px; }
+.sp-range { display: grid; gap: 6px; }
+.sp-range > span { display: flex; justify-content: space-between; gap: 12px; font: 600 13px/1.3 var(--font-body, "Public Sans", system-ui, sans-serif); color: var(--c-ink, #1B2438); }
+.sp-range > span b { font: 800 14px "Figures", "Public Sans", system-ui, sans-serif; }
+.sp-range input { width: 100%; accent-color: var(--tc); height: 28px; margin: 0; cursor: pointer; }
+.sp-out { display: grid; gap: 2px; padding: 4px 0; }
+.sp-out-big { font: 800 clamp(34px, 6vw, 46px)/1.05 "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--tc) 75%, var(--c-ink, #1B2438)); letter-spacing: -0.015em; font-variant-numeric: tabular-nums; }
+.sp-out-sub { font: 600 13px/1.35 var(--font-body, "Public Sans", system-ui, sans-serif); color: var(--c-ink-soft, #5B6784); }
+.sp-stack { display: flex; height: 14px; border-radius: 4px; overflow: hidden; background: color-mix(in srgb, var(--tc) 9%, transparent); }
+.sp-stack i { display: block; height: 100%; transition: width 0.25s ease; }
+.sp-sum { margin: 0; font: 500 13.5px/1.45 var(--font-body, "Public Sans", system-ui, sans-serif); color: var(--c-ink, #1B2438); font-variant-numeric: tabular-nums; }
+.sp-fine { margin: 0; font: 500 12.5px/1.5 var(--font-body, "Public Sans", system-ui, sans-serif); color: var(--c-ink-soft, #5B6784); }
+
+.sp-win { padding: 16px 16px 12px; border: 1px solid var(--c-hairline, #D5DAE6); border-radius: 14px; background: var(--c-paper-card, #fff); position: relative; }
+.sp-win-row { display: grid; grid-template-columns: minmax(0, 15em) minmax(0, 1fr); align-items: center; gap: 14px; }
+.sp-win-name { margin: 0; display: grid; gap: 1px; }
+.sp-win-name b { font: 800 15px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--tc) 70%, var(--c-ink, #1B2438)); }
+.sp-win-name span { font: 500 12.5px/1.35 var(--font-body, "Public Sans", system-ui, sans-serif); color: var(--c-ink-soft, #5B6784); }
+.sp-win-track { position: relative; height: 38px; border-radius: 8px; background: color-mix(in srgb, var(--tc) 8%, transparent); overflow: hidden; }
+.sp-win-bar { position: absolute; top: 0; bottom: 0; background: var(--tc); border-radius: 8px; transform: scaleX(0); transform-origin: right; transition: transform 1s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.sp-win-row:nth-child(2) .sp-win-bar { transition-delay: 0.35s; }
+.sp-win-bar.fade { background: linear-gradient(90deg, color-mix(in srgb, var(--tc) 12%, transparent), var(--tc) 55%); }
+[data-go="1"].sp-win .sp-win-bar { transform: none; }
+.sp-win-track em { position: absolute; top: 50%; right: 12px; transform: translateY(-50%); font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: #fff; white-space: nowrap; }
+.sp-win-axis { display: flex; justify-content: space-between; padding-left: calc(15em + 14px); font: 600 11px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft, #5B6784); }
+.sp-win-pole { display: none; }
+
+@media (max-width: 820px) {
+  .sp-grid { grid-template-columns: minmax(0, 1fr); }
+  .sp-win-row { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .sp-win-axis { padding-left: 0; }
+  .sp-win-axis span:nth-child(2), .sp-win-axis span:nth-child(4) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sp-card, .sp-win-bar, .sp-stack i { transition: none; }
+}

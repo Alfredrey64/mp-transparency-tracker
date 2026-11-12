@@ -534,7 +534,7 @@ html { scrollbar-gutter: stable; }
 a[target="_blank"]::after { content: "" / " (opens in a new tab)"; }
 
 /* A person in the MPs and Lords lists: waits low and transparent until it is near the screen (see PersonCard.jsx), and its edge takes the party colour on hover. */
-.pc { border: 1px solid var(--c-hairline); opacity: 1; transition: opacity 0.25s ease-out var(--pc-d, 0s), transform 0.25s ease-out var(--pc-d, 0s), border-color 0.2s ease; }
+.pc { content-visibility: auto; contain-intrinsic-size: auto 66px; border: 1px solid var(--c-hairline); opacity: 1; transition: opacity 0.25s ease-out var(--pc-d, 0s), transform 0.25s ease-out var(--pc-d, 0s), border-color 0.2s ease; }
 .pc[data-pc] { opacity: 0; transform: translateY(8px); }
 .pc:hover { border-color: var(--pc-c); }
 

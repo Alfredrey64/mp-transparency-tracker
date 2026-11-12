@@ -432,9 +432,9 @@ export const PAGE_GUIDES = {
     notShown: "Which peers gave money to parties. A gift and a peerage in the same year do not prove a link.",
   },
   electionSpending: {
-    what: "The legal limits on what parties and candidates may spend on an election campaign, and the totals reported for 2024.",
+    what: "The legal limits on what parties and candidates may spend on a campaign, with calculators, and the £94.5m the Electoral Commission says was spent at the 2024 election.",
     why: "Limits only work if spending is declared and checked, so they are the other half of the donations story.",
-    notShown: "Spending that falls outside the rules' definition of campaign spending, and any breach. The 2024 totals come from press reports of Electoral Commission data.",
+    notShown: "Spending outside the legal definition of campaign spending, and any breach. Figures are as the Electoral Commission and Commons Library published them; the limits may change after a Commission review due by July 2027.",
   },
   foreignInfluence: {
     what: "The register of people acting in the UK for a foreign government: who must register, what the public can see, what can be held back, and how many entries it holds.",

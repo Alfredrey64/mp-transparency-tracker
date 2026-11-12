@@ -467,6 +467,8 @@ export default function HouseOfLords({ peerId = null }) {
         </div>
       )}
 
+      {/* While the peers load, hold the chart's space (about its height at each width) so the search box and list below do not jump down when it arrives. */}
+      {loading && <div aria-hidden="true" style={{ minHeight: "clamp(480px, 25vw + 380px, 760px)", marginBottom: 0 }} />}
       {!loading && !failed && peers.length > 0 && (
         <PartyHemicycleSection
           politicians={peers}
