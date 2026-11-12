@@ -17,12 +17,14 @@ describe("page groups in the menus", () => {
         sections.add(sectionOf(key).key);
       }
       expect(sections.size, `${h.key} spans sections`).toBe(1);
+      expect(h.pages.length, `${h.key} has too many tabs for one row`).toBeLessThanOrEqual(6);
     }
   });
   it("opens a group at its first page, and leaves other pages alone", () => {
     expect(hubLead("rebels")).toBe("voting");
     expect(hubLead("voting")).toBe("voting");
-    expect(hubLead("tracker")).toBe("tracker");
+    expect(hubLead("tracker")).toBe("cabinet");
+    expect(hubLead("thisWeek")).toBe("thisWeek");
     expect(hubLead("petitions")).toBe("getThingsDone");
     expect(HUB_BY_PAGE.get("councillors").label).toBe("Your council");
   });
@@ -41,5 +43,7 @@ describe("page groups in the menus", () => {
     expect(shown).toBeLessThan(all * 0.6);
     const country = SECTIONS.find((s) => s.key === "country");
     expect(collapseItems(country.items).length).toBeLessThanOrEqual(8);
+    // No menu section is a long list: a section shows at most eight entries.
+    for (const s of SECTIONS) expect(collapseItems(s.items.filter((i) => i.key !== "start" && !i.standalone)).length, s.key).toBeLessThanOrEqual(8);
   });
 });

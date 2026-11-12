@@ -26,6 +26,7 @@ const journey = stages.filter((s) => s.dates.length).map((s) => ({ when: when(s)
 
 const PAGE = {
   look: "vivid",
+  narrow: true,
   icon: IconBook,
   kicker: "How laws are made",
   title: "How a law is made, step by step",

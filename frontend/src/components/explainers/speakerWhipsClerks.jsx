@@ -10,6 +10,7 @@ import { Hero } from "../story/Vivid";
 
 const PAGE = {
   look: "vivid",
+  narrow: true,
   icon: IconGavel,
   kicker: "Understand it",
   title: "The Speaker, whips and clerks",
