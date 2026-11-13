@@ -1,8 +1,7 @@
 /** @jsxImportSource react */
 import ExplainerPage from "../story/ExplainerPage";
 import { IconDepartments } from "../newIcons";
-import { IconCoin, IconBriefcase, IconChartBars, IconHouse } from "../icons";
-import { Hero } from "../story/Vivid";
+import BudgetMap from "../story/BudgetMap";
 import DonutShare from "../story/DonutShare";
 import ChangeBars from "../story/ChangeBars";
 import { DEPARTMENT_ROWS, DEPARTMENT_TOTAL } from "../../data/departmentSpending";
@@ -25,6 +24,10 @@ const shift = (d) => {
 };
 const otherRows = byLater.slice(6);
 const otherLater = GRAND - top6.reduce((n, d) => n + d.later, 0);
+// Where the extra money goes: each department's rise between the two years, biggest first (the departments whose budgets fall are left out of the bars).
+const risers = [...ROWS].map((d) => ({ d, add: d.later - d.now })).filter((x) => x.add > 0).sort((a, b) => b.add - a.add);
+const topRisers = risers.slice(0, 6);
+const NET_ADD = GRAND - (TOTAL.r[0] + TOTAL.c[0]);
 const shareItems = [
   ...top6.map((d, i) => ({ key: d.short ?? d.name, label: d.short ?? d.name, value: d.later, colour: SHARE_COLOURS[i], about: shift(d) })),
   { key: "other", label: "All other departments", value: otherLater, colour: "#8A93A6", about: `The other ${otherRows.length} departments listed here together: ${otherRows.map((d) => d.short ?? d.name).join(", ")}.` },
@@ -36,15 +39,10 @@ const PAGE = {
   kicker: "Where the money goes",
   title: "Spending by department",
   subtitle: "The Treasury sets a budget for each government department. This page shows the plans set at the Spending Review in June 2025: who gets the most, who is growing and who is being squeezed between 2025-26 and 2028-29, and what these budgets leave out.",
-  lead: <Hero
-    colours={["#14305A", "#2C5F9E", "#6B4FBF"]}
+  lead: <BudgetMap
+    rows={ROWS}
+    total={TOTAL}
     why="A department's budget is the most direct measure of what the government is choosing to put first. Comparing them shows where the money is growing and where it is not, whatever the announcements say."
-    stops={[
-      { icon: IconBriefcase, title: "The Treasury sets a limit", text: "For each department, for several years", colour: "#8DB7E8" },
-      { icon: IconCoin, title: "Day-to-day spending", text: "Pay, running costs and services", colour: "#8FD1A8" },
-      { icon: IconHouse, title: "Investment", text: "Buildings, equipment and infrastructure", colour: "#F0C77A" },
-      { icon: IconChartBars, title: "Plans to 2028-29", text: "Set at the Spending Review in June 2025", colour: "#B9A5F0" },
-    ]}
     figures={[
       { value: `£${Math.round(TOTAL.r[0] + TOTAL.c[0])}bn`, label: "Planned departmental spending, 2025-26", sub: `${bn(TOTAL.r[0])} day-to-day and ${bn(TOTAL.c[0])} investment` },
       { value: `£${Math.round(GRAND)}bn`, label: "Planned departmental spending, 2028-29", sub: `${bn(TOTAL.r[1])} day-to-day and ${bn(TOTAL.c[1])} investment` },
@@ -78,6 +76,7 @@ const PAGE = {
       lede: "Between 2025-26 and 2028-29 the plans add £68.5 billion to the totals. The change is very uneven.",
       colour: "#B45A3C",
       blocks: [
+        { bars: { items: topRisers.map((x, i) => ({ label: x.d.name, value: x.add, text: `+${bn(x.add)}`, colour: i === 0 ? "#19806E" : "#2C5F9E" })), max: topRisers[0].add, note: `The six biggest rises between 2025-26 and 2028-29, current prices, against a net rise of ${bn(NET_ADD)} once the cuts are taken off. Health's rise alone is ${Math.round((topRisers[0].add / NET_ADD) * 100)}% of that net figure.` } },
         { node: <ChangeBars beforeName="2025-26" afterName="2028-29" items={[...growers, ...shrinkers].map((d) => ({ label: d.name, pct: grid(d), beforeText: bn(d.now), afterText: bn(d.later) }))} note="The five departments with the largest percentage rise, and the one that falls, among those planning to spend more than £5 billion. Current prices, so some of every rise is inflation." /> },
         { text: ["Defence has the largest percentage rise, mostly in investment, which goes from £23.2 billion to £31.5 billion. Foreign, Commonwealth and Development Office budgets fall, which fits the planned cut in overseas aid."] },
       ],

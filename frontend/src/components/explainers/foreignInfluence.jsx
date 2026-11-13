@@ -1,6 +1,6 @@
 /** @jsxImportSource react */
 import ExplainerPage from "../story/ExplainerPage";
-import { Hero } from "../story/Vivid";
+import InfluenceDesk from "../story/InfluenceDesk";
 import { Diverge } from "../story/StateArt";
 import RegisterSnapshot from "../story/RegisterSnapshot";
 import RegisterEntry from "../story/RegisterEntry";
@@ -20,8 +20,7 @@ const PAGE = {
   kicker: "Money & influence",
   title: "The register of foreign influence",
   subtitle: "Since 1 July 2025, anyone acting in the UK on the instructions of a foreign government has to tell the Home Office. This page explains what has to be registered, what the public can see on the register, what can be held back, and what it means for MPs.",
-  lead: <Hero
-    colours={["#1B2A4A", "#3E6E9E", "#2F7D6B"]}
+  lead: <InfluenceDesk
     why="Lobbying by another country's government is legal, but until this scheme the public had no general way to know it was happening. Registration is meant to make it visible, not to ban it."
     stops={[
       { icon: IconGlobe, title: "A foreign power gives a direction", text: "To lobby, to publish, or to hand over money, goods or services", colour: "#8DB7E8" },

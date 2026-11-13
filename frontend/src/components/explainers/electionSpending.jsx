@@ -1,11 +1,11 @@
 /** @jsxImportSource react */
 import ExplainerPage from "../story/ExplainerPage";
-import { Hero } from "../story/Vivid";
+import SpendReceipt from "../story/SpendReceipt";
 import { Diverge, Journey } from "../story/StateArt";
 import DonutShare from "../story/DonutShare";
 import SpendCalc from "../story/SpendCalc";
 import SpendWindow from "../story/SpendWindow";
-import { IconCalendar, IconLedger, IconBallot, IconSearch, IconShield, IconGroup } from "../icons";
+import { IconLedger, IconBallot, IconShield, IconGroup } from "../icons";
 import { IconElectionSpend } from "../newIcons";
 import {
   LARGE_PARTIES, LARGE_CAMPAIGNERS, SMALL_PARTIES, SMALL_CAMPAIGNERS, CANDIDATES, campaignersTotal, largePartiesTotal, partiesTotal,
@@ -39,15 +39,8 @@ const PAGE = {
   kicker: "Money & influence",
   title: "What election campaigns can spend",
   subtitle: "Donations are only half of campaign money. The other half is what parties and candidates are allowed to spend, and what they say they did spend. Set the limits yourself below, then see what was spent at the 2024 general election, what it bought, and why the rules may change.",
-  lead: <Hero
-    colours={["#4A1F2B", "#9C3B3B", "#C9792B"]}
+  lead: <SpendReceipt
     why="Limits are meant to stop elections going to whoever has the most money. They only work if the spending is declared and checked, so who counts what matters as much as the limit."
-    stops={[
-      { icon: IconCalendar, title: "A year-long window", text: "A party's limit covers the 365 days before polling day", colour: "#E2BE7A" },
-      { icon: IconBallot, title: "Two budgets", text: "One national campaign, and a local one for every candidate", colour: "#8DB7E8" },
-      { icon: IconLedger, title: "Everything is declared", text: "Parties, campaigners and candidates all send in a return", colour: "#9ED4B6" },
-      { icon: IconSearch, title: "Published later", text: "The 2024 picture was complete a year after the vote", colour: "#F2A5B0" },
-    ]}
     figures={[
       { value: m(allSpent), label: "Spent at the 2024 election", sub: "A record, by parties, candidates and campaigners together" },
       { value: "£34.1m", label: "Most a party could spend", sub: "£54,010 for each of the 632 seats in Great Britain" },
