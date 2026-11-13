@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-12",
+ "generatedAt": "2026-11-13",
  "source": "https://fullfact.org/government-tracker/",
  "pledges": [
   {
@@ -395,13 +395,6 @@
    "updated": "2026-10-26"
   },
   {
-   "slug": "energy-independence-act",
-   "area": "Energy",
-   "pledge": "A new Energy Independence Act will establish the framework for Labour’s energy and climate policies",
-   "status": "wait-and-see",
-   "updated": "2026-08-24"
-  },
-  {
    "slug": "gb-energy-8-3-billion",
    "area": "Energy",
    "pledge": "Labour will capitalise Great British Energy with £8.3 billion, over the next parliament",
@@ -414,20 +407,6 @@
    "pledge": "Labour will create a new publicly-owned company, Great British Energy",
    "status": "achieved",
    "updated": "2026-05-28"
-  },
-  {
-   "slug": "new-coal-licences",
-   "area": "Energy",
-   "pledge": "We will not grant new coal licences",
-   "status": "appears-on-track",
-   "updated": "2026-08-06"
-  },
-  {
-   "slug": "new-oil-gas-field-licences",
-   "area": "Energy",
-   "pledge": "We will not issue new licences to explore new [oil and gas] fields",
-   "status": "appears-on-track",
-   "updated": "2026-10-21"
   },
   {
    "slug": "national-forests-woodlands-england",

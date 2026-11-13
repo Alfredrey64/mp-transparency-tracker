@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-12T12:11:17.387Z",
-  "succeededCount": 39,
+  "generatedAt": "2026-11-13T11:55:46.873Z",
+  "succeededCount": 37,
   "totalCount": 40,
   "sources": [
     {
@@ -73,11 +73,11 @@
     },
     {
       "label": "Written questions",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Standards reports",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "The stages each bill has been through",
