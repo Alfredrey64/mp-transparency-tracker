@@ -14,6 +14,10 @@ permissions:
   contents: read
   issues: write
 
+env:
+  # Turns the last error of any failing script into an annotation on the run (see ci-notes.js).
+  NODE_OPTIONS: --import ${{ github.workspace }}/ci-notes.js
+
 jobs:
   check:
     name: Office holders on the site match the official sources

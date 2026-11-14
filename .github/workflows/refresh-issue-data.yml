@@ -18,6 +18,10 @@ permissions:
   pull-requests: write
   issues: write
 
+env:
+  # Turns the last error of any failing script into an annotation on the run (see ci-notes.js).
+  NODE_OPTIONS: --import ${{ github.workspace }}/ci-notes.js
+
 jobs:
   refresh:
     name: Rebuild the data and open a pull request

@@ -54,4 +54,6 @@ console.log(`Checked ${PAGES.length} pages. ${bad.length} over the limits (layou
 for (const r of bad) console.log(r.error ? `${r.pg}: ${r.error}` : `${r.pg}: shift ${r.cls.toFixed(3)} longest task ${r.longest} ms, total over 50 ms ${r.blocked} ms${r.shifts.length ? `\n    first shifts (ms, score, element): ${r.shifts.map((s) => s.join(" ")).join(" | ")}` : ""}`);
 const med = (a) => a.sort((x, y) => x - y)[Math.floor(a.length / 2)];
 console.log(`\nMedian shift ${med(results.filter((r) => !r.error).map((r) => r.cls)).toFixed(3)}, median longest task ${med(results.filter((r) => !r.error).map((r) => r.longest))} ms.`);
+// On GitHub, each page over the limit becomes an annotation, so the reason is readable without opening the log.
+if (process.env.GITHUB_ACTIONS) for (const r of bad) console.log(`::error title=Smoothness::${r.pg}: ${r.error ?? `shift ${r.cls.toFixed(3)}, longest task ${r.longest} ms${r.shifts.length ? `, first shifts ${r.shifts.map((x) => x.join(" ")).join(" | ")}` : ""}`}`);
 process.exit(bad.length ? 1 : 0);

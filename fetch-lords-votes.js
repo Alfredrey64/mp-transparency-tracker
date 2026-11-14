@@ -17,6 +17,7 @@ import { summariseLordsVotes } from "./lordsVotes.js";
 const OUTPUT = "frontend/src/data/lordsVotes.json";
 const API = "https://lordsvotes-api.parliament.uk/data/Divisions";
 const MIN_DIVISIONS = 40;
+const MAX_MISSING = 0.03;
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function getJson(url) {
@@ -39,20 +40,41 @@ async function main() {
   console.log(`Found ${ids.length} Lords divisions since ${since}.`);
 
   const divisions = [];
+  let missing = [];
   for (const [i, id] of ids.entries()) {
     try {
       divisions.push(await getJson(`${API}/${id}`));
     } catch (err) {
       console.error(`  Division ${id} failed: ${err.message}`);
+      missing.push(id);
     }
     if ((i + 1) % 50 === 0) console.log(`  ...${i + 1}/${ids.length}`);
     await sleep(80);
   }
 
-  if (divisions.length < MIN_DIVISIONS) {
-    console.error(`Only ${divisions.length} divisions came back, so ${OUTPUT} was left as it is.`);
+  // One more go at any that failed, after a pause: a short wobble upstream should not leave holes in the counts.
+  if (missing.length) {
+    console.log(`  Trying ${missing.length} failed divisions again after a pause.`);
+    await sleep(30_000);
+    const again = [];
+    for (const id of missing) {
+      try {
+        divisions.push(await getJson(`${API}/${id}`));
+      } catch (err) {
+        console.error(`  Division ${id} failed again: ${err.message}`);
+        again.push(id);
+      }
+      await sleep(400);
+    }
+    missing = again;
+  }
+
+  // Each peer's turnout and rebellion rate are worked out over the divisions, so a file with many missing would quietly give wrong figures. Better to keep the last good one.
+  if (divisions.length < MIN_DIVISIONS || missing.length > Math.max(2, ids.length * MAX_MISSING)) {
+    console.error(`Only ${divisions.length} of ${ids.length} divisions came back (${missing.length} missing), so ${OUTPUT} was left as it is.`);
     process.exit(1);
   }
+  if (missing.length) console.warn(`  ${missing.length} divisions could not be fetched and are left out: ${missing.join(", ")}`);
   const out = summariseLordsVotes(divisions, { since });
   writeFileSync(OUTPUT, `${JSON.stringify(out)}\n`);
   console.log(`Wrote ${OUTPUT}: ${out.divisions} divisions, ${Object.keys(out.peers).length} peers.`);

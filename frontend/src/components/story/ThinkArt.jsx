@@ -140,7 +140,7 @@ function Expert({ x, y, d, id }) {
         <circle cx="100" cy="38" r="17" fill="#5A7FA6" />
         <path d="M 70 84 q 30 -40 60 0z" fill="#5A7FA6" />
         <rect x="18" y="92" width="164" height="26" rx="8" fill="#1B2438" />
-        <text x="100" y="110" textAnchor="middle" fontSize="14" fontWeight="800" fill="#fff" fontFamily={F}>&ldquo;Independent&rdquo; expert</text>
+        <text x="100" y="110" textAnchor="middle" textLength="136" lengthAdjust="spacingAndGlyphs" fontSize="14" fontWeight="800" fill="#fff" fontFamily={F}>&ldquo;Independent&rdquo; expert</text>
         <g transform="translate(172 29)">
           <g className="ttm-badge" style={{ "--d": 4 }}>
             <circle r="17" fill="#fff" stroke="#9C6B30" strokeWidth="3" />

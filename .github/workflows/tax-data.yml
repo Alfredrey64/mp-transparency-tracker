@@ -11,6 +11,10 @@ on:
 permissions:
   contents: read
 
+env:
+  # Turns the last error of any failing script into an annotation on the run (see ci-notes.js).
+  NODE_OPTIONS: --import ${{ github.workspace }}/ci-notes.js
+
 jobs:
   check:
     name: Tax rates match the official tables
