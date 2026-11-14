@@ -1,7 +1,7 @@
 // Opens every page on an emulated phone (4x slower CPU), scrolls it from top to bottom and back, and reports the two things that make a page feel rough:
 //   - layout shift: content that jumps while the visitor reads (the sum of the browser's layout-shift scores; under 0.1 is good, over 0.25 is poor),
 //   - long tasks: stretches over 50 ms when the page cannot answer a touch (the longest, and the total over 50 ms).
-// Prints pages over the limits. Usage: node e2e/smoothness.audit.mjs [baseUrl]      (ONLY=page,page limits it; WORKERS=4 sets how many run at once)
+// Prints pages over the limits. Usage: node e2e/smoothness.audit.mjs [baseUrl]      (ONLY=page,page limits it; WORKERS=4 sets how many run at once; SETTLE=1 scrolls only once the page height has stopped changing)
 // Needs `npx vite preview --port 4178 --strictPort`.
 import { chromium } from "@playwright/test";
 import { PAGE_NAMES } from "./pageList.mjs";
@@ -36,6 +36,12 @@ async function worker() {
       await page.goto(`${base}/${pg === "home" ? "" : pg}`, { waitUntil: "load", timeout: 45000 });
       await page.waitForSelector("h1", { timeout: 25000 });
       await page.waitForTimeout(1500);
+      // SETTLE=1 waits until the page has stopped changing height before scrolling. On a slow machine the data service's refusal (these runs abort it) can arrive after the scroll has
+      // started, and a skeleton collapsing into an error note then moves the footer: a real effect, but one that depends on the machine, so CI settles first and local runs need not.
+      if (process.env.SETTLE) {
+        let last = -1; let still = 0;
+        for (let i = 0; i < 40 && still < 4; i++) { const now = await page.evaluate(() => document.documentElement.scrollHeight); still = now === last ? still + 1 : 0; last = now; await page.waitForTimeout(400); }
+      }
       const h = await page.evaluate(() => document.documentElement.scrollHeight);
       for (let y = 0; y < Math.min(h, 14000); y += 600) { await page.evaluate((v) => window.scrollTo(0, v), y); await page.waitForTimeout(120); }
       await page.waitForTimeout(800);

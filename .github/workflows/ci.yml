@@ -227,6 +227,7 @@ jobs:
         env:
           ONLY: home,list,tracker,donors,constituency,budget,formerMps,byElections,offices,taxRates,lords,ageing,care
           WORKERS: "1"
+          SETTLE: "1"
           TASK: "700"
           CLS: "0.25"
 
