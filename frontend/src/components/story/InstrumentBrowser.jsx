@@ -4,6 +4,8 @@ import { useGo } from "./useGo";
 import { FILTERS, browse, describe } from "../../lib/instrumentsView";
 import { dateLong } from "../../lib/upcoming";
 import DownloadCsvButton from "../DownloadCsvButton";
+import { shortDate } from "../../lib/instrumentsCase";
+import "../../siart.css";
 
 // The newest statutory instruments on the Laws made by ministers page, one card each. A card shows the title, who laid it, the day it was laid and the first line of what it does;
 // pressing it opens what the Government says it does in full, how it goes through Parliament and its dates, with a link to the text on legislation.gov.uk. The list can be
@@ -12,6 +14,17 @@ const PAGE = 10;
 const COLUMNS = [
   ["name", "Title"], ["ref", "Reference"], ["department", "Laid by"], ["laid", "Laid before Parliament"], ["made", "Made"], ["inForce", "Comes into force"], ["procedure", "How it goes through Parliament"],
 ];
+
+// Made, laid and in force as three dots in a row: filled once the day has come.
+function Strip({ r, today }) {
+  const steps = [r.made && { k: "made", label: "Made", date: r.made }, r.laid && { k: "laid", label: "Laid", date: r.laid }, r.inForce && { k: "force", label: r.inForce > today ? "Comes into force" : "In force", date: r.inForce }].filter(Boolean);
+  if (steps.length < 2) return null;
+  return (
+    <ol className="ib-strip" aria-label="Where it has got to">
+      {steps.map((s) => <li key={s.k} data-done={s.date <= today ? "1" : "0"}><i aria-hidden="true" />{s.label} {shortDate(s.date)}</li>)}
+    </ol>
+  );
+}
 
 function Card({ data, r, index }) {
   const [open, setOpen] = useState(false);
@@ -33,6 +46,7 @@ function Card({ data, r, index }) {
         </button>
       </h3>
       <p className="ib-who">{r.department ? `Laid by ${r.department}` : "Department not listed"}{r.ref && <> · {r.ref}</>}</p>
+      <Strip r={r} today={data.generated} />
       {peek && !open && <p className="ib-peek">{peek}</p>}
       <div className="ib-panel" id={`${uid}-panel`} role="region" aria-label={`More about ${r.name}`} inert={!open}>
         <div>

@@ -1,0 +1,267 @@
+/* The pictures on the Laws made by ministers page (components/story/SiArt.jsx) and the small progress strip on each instrument card (InstrumentBrowser.jsx).
+   Everything here is finished by default, and each animation starts from the first frame (animation-fill-mode: both), so anyone who has asked for calmer motion sees the finished picture. */
+.sif, .sir, .sin, .sih, .sic, .sim, .sig, .sics { --yes: #2F6B4C; --no: #B3262E; margin: 0; padding: clamp(18px, 3vw, 30px); border-radius: 24px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); color: var(--c-ink); font: 500 15px/1.5 "Figures", "Public Sans", system-ui, sans-serif; }
+.sif figcaption, .sir figcaption, .sin figcaption, .sih figcaption, .sic figcaption, .sim figcaption, .sig figcaption, .sics figcaption { margin: 0 0 16px; font: 700 clamp(19px, 2.4vw, 23px)/1.3 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.sif-ctl, .sih-ctl, .sin-ctl, .sir-seg { display: flex; flex-wrap: wrap; gap: 8px; }
+.sif-ctl, .sih-ctl, .sin-ctl { margin-bottom: 18px; }
+.sif-ctl button, .sih-ctl button, .sin-ctl button, .sir-seg button, .sir-again { min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid var(--c-hairline); background: var(--c-paper); color: var(--c-ink); font: 700 14px/1.2 "Figures", "Public Sans", system-ui, sans-serif; cursor: pointer; transition: background 0.25s, color 0.25s, border-color 0.25s; }
+.sif-ctl button[aria-pressed="true"], .sih-ctl button[aria-pressed="true"], .sin-ctl button[aria-pressed="true"], .sir-seg button[aria-pressed="true"] { background: var(--c-ink); color: var(--c-paper-card); border-color: var(--c-ink); }
+.sin-ctl button[data-k="yes"][aria-pressed="true"], .sir-seg button[data-k="yes"][aria-pressed="true"] { background: var(--yes); border-color: var(--yes); color: #fff; }
+.sin-ctl button[data-k="no"][aria-pressed="true"], .sir-seg button[data-k="no"][aria-pressed="true"] { background: var(--no); border-color: var(--no); color: #fff; }
+.sif-ctl button:focus-visible, .sih-ctl button:focus-visible, .sin-ctl button:focus-visible, .sir-seg button:focus-visible, .sir-again:focus-visible, .sim-cols button:focus-visible { outline: 3px solid var(--c-brand); outline-offset: 2px; }
+.sir-again { margin-top: 14px; }
+.sif-say, .sir-say, .sin-say, .sih-say, .sics-say { margin: 16px 0 0; font: 600 16px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); min-height: 3em; }
+.sif-eg, .sih-eg { margin: 8px 0 0; font: italic 500 13px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+
+/* An Act with a gap, and the instrument that fills it. */
+.sif-stage { display: grid; grid-template-columns: minmax(0, 1fr) 112px minmax(0, 1fr); align-items: stretch; transition: opacity 0.6s ease, transform 0.6s var(--ease-out); }
+.sif[data-go="0"] .sif-stage { opacity: 0; transform: translateY(10px); }
+.sif-sheet { --tc: #C88A1E; display: grid; gap: 9px; align-content: start; min-height: 196px; padding: 18px 20px 20px; border-radius: 14px; background: color-mix(in srgb, var(--tc) 7%, var(--c-paper-card)); border: 1.5px solid color-mix(in srgb, var(--tc) 45%, var(--c-hairline)); transition: opacity 0.7s ease, transform 0.7s var(--ease-out), border-color 0.5s; }
+.sif-si { --tc: #2C7DA0; }
+.sif-h { font: 700 18px/1.25 "Figures", "Newsreader", Georgia, serif; }
+.sif-sub { font: 600 13px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.sif-lines, .sih-lines, .sin-lines { display: grid; gap: 8px; }
+.sif-lines i, .sih-lines i, .sin-lines i { display: block; height: 8px; border-radius: 4px; background: color-mix(in srgb, var(--c-ink) 15%, transparent); }
+.sif-lines i:nth-child(1), .sih-lines i:nth-child(1) { width: 92%; } .sif-lines i:nth-child(2), .sih-lines i:nth-child(2) { width: 74%; } .sif-lines i:nth-child(3) { width: 84%; }
+.sif-key { margin: 2px 0; font: 600 16px/1.7 "Figures", "Public Sans", system-ui, sans-serif; }
+.sif-gap { display: inline-grid; vertical-align: baseline; }
+.sif-gap > span { grid-area: 1 / 1; padding: 0 7px; border-radius: 7px; transition: opacity 0.5s ease; }
+.sif-empty { border: 2px dashed color-mix(in srgb, var(--tc) 80%, var(--c-ink)); background: color-mix(in srgb, var(--tc) 12%, transparent); font-style: italic; font-weight: 600; }
+.sif-full { background: color-mix(in srgb, var(--tc) 40%, var(--c-paper-card)); font-weight: 800; text-align: center; display: grid; place-items: center; }
+.sif[data-on="0"] .sif-full, .sif[data-on="1"] .sif-empty { opacity: 0; }
+.sif[data-on="0"] .sif-si { opacity: 0.4; transform: translateX(14px); border-style: dashed; }
+.sif-arrow { display: grid; align-content: center; justify-items: center; gap: 2px; font: 700 12px/1.2 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); transition: opacity 0.6s ease; }
+.sif[data-on="0"] .sif-arrow { opacity: 0.25; }
+.sif-arrow svg { width: 90px; height: 24px; overflow: visible; }
+.sif-arrow .line, .sif-arrow .head { fill: none; stroke: var(--c-brand); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.sif-arrow .line { stroke-dasharray: 5 7; }
+.sif[data-go="1"][data-on="1"] .sif-arrow .line { animation: sifDash 1s linear infinite; }
+@keyframes sifDash { to { stroke-dashoffset: -24; } }
+.sif-act .sif-gap { animation: none; }
+.sif[data-on="1"] .sif-act .sif-full { animation: sifLand 0.7s var(--ease-out) 0.5s backwards; }
+@keyframes sifLand { from { transform: scale(0.6); box-shadow: 0 0 0 0 color-mix(in srgb, var(--tc) 60%, transparent); } 60% { transform: scale(1.12); box-shadow: 0 0 0 8px color-mix(in srgb, var(--tc) 0%, transparent); } to { transform: scale(1); } }
+
+/* The two routes. The paper travels in the lanes between the cards and slides under a card when it arrives. */
+.sir-ctl { display: grid; gap: 10px; margin-bottom: 20px; }
+.sir-stage { --g: 64px; --a: calc((100% - var(--g) * 2) / 3); --c1: calc(var(--a) / 2); --l1: calc(var(--a) + var(--g) / 2); --c2: calc(var(--a) * 1.5 + var(--g)); --l2: calc(var(--a) * 2 + var(--g) * 1.5); --c3: calc(var(--a) * 2.5 + var(--g) * 2); position: relative; display: grid; grid-template-columns: minmax(0, 1fr) var(--g) minmax(0, 1fr) var(--g) minmax(0, 1fr); align-items: stretch; }
+.sir-rail { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.sir-doc { position: absolute; top: 50%; left: var(--c3); width: 30px; height: 38px; margin: -19px 0 0 -15px; filter: drop-shadow(0 3px 4px rgb(0 0 0 / 0.18)); }
+.sir[data-out="no"] .sir-doc { left: var(--c2); }
+.sir[data-go="0"] .sir-doc { left: var(--c1); }
+.sir-doc svg { display: block; width: 100%; height: 100%; fill: var(--c-paper-card); stroke: var(--c-brand); stroke-width: 2; stroke-linejoin: round; }
+.sir-doc .rule { fill: none; stroke-linecap: round; opacity: 0.6; } .sir-doc .fold { fill: none; }
+.sir-card { --tc: #2C7DA0; position: relative; z-index: 1; display: grid; align-content: center; justify-items: start; gap: 8px; min-height: 148px; padding: 16px; border-radius: 16px; background: color-mix(in srgb, var(--tc) 8%, var(--c-paper-card)); border: 2px solid color-mix(in srgb, var(--tc) 45%, var(--c-hairline)); }
+.sir-card > b { font: 700 18px/1.25 "Figures", "Newsreader", Georgia, serif; }
+.sir-card > span { font: 500 14px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.sir-check { --tc: #C88A1E; }
+.sir[data-route="object"] .sir-check { --tc: #5B6784; }
+.sir-res { --tc: var(--yes); }
+.sir[data-out="no"] .sir-res { --tc: var(--no); }
+.sir-lane { align-self: center; height: 0; border-top: 3px dashed color-mix(in srgb, var(--c-ink) 22%, transparent); }
+.sir-votes { display: grid; gap: 8px; width: 100%; }
+.sir-votes i { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-style: normal; }
+.sir-votes em { font: 600 14px/1.3 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; }
+.sir-votes u, .sir-mark { display: grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--yes); color: #fff; text-decoration: none; font: 800 14px/1 "Figures", "Public Sans", system-ui, sans-serif; }
+.sir-votes u::after { content: "\2713"; }
+.sir[data-out="no"] .sir-votes .b u { background: var(--no); }
+.sir[data-out="no"] .sir-votes .b u::after { content: "\2715"; }
+.sir-mark { width: 34px; height: 34px; font-size: 18px; }
+.sir-mark::after { content: "\2713"; }
+.sir[data-out="no"] .sir-mark { background: var(--no); }
+.sir[data-out="no"] .sir-mark::after { content: "\2715"; }
+.sir-clock { position: relative; align-self: end; width: 100%; height: 36px; }
+.sir-clock::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 10px; border-radius: 5px; background: var(--c-hairline); }
+.sir-clock i { position: absolute; left: 0; top: 0; width: 100%; height: 10px; border-radius: 5px; background: #5B6784; transform-origin: left; }
+.sir[data-out="no"] .sir-clock i { transform: scaleX(0.45); }
+.sir-clock em { position: absolute; bottom: 0; font: 600 12px/1.2 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: var(--c-ink-soft); }
+.sir-clock em:first-of-type { left: 0; } .sir-clock em:last-of-type { right: 0; }
+.sir-flag { display: none; padding: 3px 10px; border-radius: 999px; background: var(--no); color: #fff; font: 700 13px/1.4 "Figures", "Public Sans", system-ui, sans-serif; }
+.sir[data-out="no"] .sir-flag { display: inline-block; }
+.sir[data-go="0"] .sir-res { opacity: 0.35; }
+
+.sir[data-go="1"][data-out="yes"] .sir-doc { animation: sirYesH 6s cubic-bezier(0.45, 0, 0.55, 1) both; }
+.sir[data-go="1"][data-out="no"] .sir-doc { animation: sirNoH 6s cubic-bezier(0.45, 0, 0.55, 1) both; }
+@keyframes sirYesH { 0%, 8% { left: var(--c1); } 22% { left: var(--l1); } 30%, 70% { left: var(--c2); } 82% { left: var(--l2); } 92%, 100% { left: var(--c3); } }
+@keyframes sirNoH { 0%, 8% { left: var(--c1); } 22% { left: var(--l1); } 30%, 100% { left: var(--c2); } }
+.sir[data-go="1"] .sir-laid { animation: sirRing 1.2s ease 0.1s both; }
+.sir[data-go="1"] .sir-check { animation: sirRing 2.8s ease 1.7s both; }
+@keyframes sirRing { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--tc) 0%, transparent); } 15%, 85% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--tc) 28%, transparent); } 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--tc) 0%, transparent); } }
+.sir[data-go="1"] .sir-votes .a u { animation: sirPop 0.5s var(--ease-out) 2.4s both; }
+.sir[data-go="1"] .sir-votes .b u { animation: sirPop 0.5s var(--ease-out) 3.3s both; }
+.sir[data-go="1"][data-out="yes"] .sir-clock i { animation: sirFill 2.3s linear 1.9s both; }
+.sir[data-go="1"][data-out="no"] .sir-clock i { animation: sirFillNo 1.1s linear 1.9s both; }
+.sir[data-go="1"] .sir-flag { animation: sirPop 0.5s var(--ease-out) 3.1s both; }
+.sir[data-go="1"][data-out="yes"] .sir-res { animation: sirRes 0.8s var(--ease-out) 5.3s both; }
+.sir[data-go="1"][data-out="no"] .sir-res { animation: sirRes 0.8s var(--ease-out) 4.2s both; }
+@keyframes sirPop { from { transform: scale(0); opacity: 0; } 70% { transform: scale(1.18); } to { transform: scale(1); opacity: 1; } }
+@keyframes sirFill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes sirFillNo { from { transform: scaleX(0); } to { transform: scaleX(0.45); } }
+@keyframes sirRes { from { opacity: 0.35; transform: scale(0.96); } 60% { transform: scale(1.03); } to { opacity: 1; transform: none; } }
+
+/* Can Parliament change a word? */
+.sin-stage { display: grid; justify-items: center; padding: 10px 0 4px; }
+.sin-sheet { position: relative; width: min(100%, 360px); padding: 24px 26px; border-radius: 12px; background: var(--c-paper); border: 1.5px solid var(--c-hairline); box-shadow: var(--shadow-1); transition: box-shadow 0.4s, opacity 0.4s; }
+.sin-lines { gap: 12px; }
+.sin-lines i { height: 9px; }
+.sin-lines i:nth-child(1) { width: 94%; } .sin-lines i:nth-child(2) { width: 78%; } .sin-lines i:nth-child(4) { width: 70%; } .sin-lines i:nth-child(5) { width: 52%; }
+.sin-lines i.pick { width: 86%; background: color-mix(in srgb, #C88A1E 50%, transparent); outline: 2px solid color-mix(in srgb, #C88A1E 75%, transparent); outline-offset: 3px; }
+.sin-pen { position: absolute; left: 56%; top: calc(50% - 56px); width: 9px; height: 56px; border-radius: 3px 3px 0 0; background: linear-gradient(90deg, #2A3347, #5B6784); transform-origin: bottom center; transform: rotate(32deg); opacity: 0; pointer-events: none; }
+.sin-pen::after { content: ""; position: absolute; left: 0; bottom: -7px; border: 4.5px solid transparent; border-top: 8px solid #2A3347; border-bottom: 0; }
+.sin-stamp { position: absolute; left: 50%; top: 50%; padding: 4px 16px; border: 4px solid currentColor; border-radius: 8px; transform: translate(-50%, -50%) rotate(-9deg); font: 800 22px/1.2 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0; background: color-mix(in srgb, var(--c-paper) 86%, transparent); pointer-events: none; }
+.sin[data-k="tried"] .sin-stamp, .sin[data-k="no"] .sin-stamp { color: var(--no); }
+.sin[data-k="yes"] .sin-stamp { color: var(--yes); }
+.sin[data-k="tried"] .sin-stamp, .sin[data-k="yes"] .sin-stamp, .sin[data-k="no"] .sin-stamp { opacity: 0.94; }
+.sin[data-k="yes"] .sin-sheet { box-shadow: 0 0 0 4px color-mix(in srgb, var(--yes) 30%, transparent), var(--shadow-1); }
+.sin[data-k="no"] .sin-sheet { opacity: 0.6; transform: rotate(-3deg); }
+.sin[data-k="tried"] .sin-pen { animation: sinPen 1.5s ease both; }
+.sin[data-k="tried"] .sin-sheet { animation: sinShake 0.5s ease 0.9s both; }
+.sin[data-k="tried"] .sin-stamp { animation: sinStamp 0.5s var(--ease-out) 0.9s both; }
+.sin[data-k="yes"] .sin-stamp, .sin[data-k="no"] .sin-stamp { animation: sinStamp 0.5s var(--ease-out) 0.1s both; }
+.sin[data-k="no"] .sin-sheet { animation: sinTilt 0.6s var(--ease-out) 0.3s both; }
+@keyframes sinPen { 0% { opacity: 0; transform: translate(70px, -50px) rotate(32deg); } 30% { opacity: 1; transform: translate(0, 0) rotate(32deg); } 40% { transform: translate(-7px, 0) rotate(32deg); } 52% { transform: translate(6px, 0) rotate(32deg); } 64% { transform: translate(0, 0) rotate(32deg); } 100% { opacity: 0; transform: translate(70px, -50px) rotate(32deg); } }
+@keyframes sinShake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-8px); } 45% { transform: translateX(7px); } 70% { transform: translateX(-4px); } }
+@keyframes sinStamp { from { opacity: 0; transform: translate(-50%, -50%) rotate(-9deg) scale(2); } to { opacity: 0.94; transform: translate(-50%, -50%) rotate(-9deg) scale(1); } }
+@keyframes sinTilt { from { opacity: 1; transform: none; } to { opacity: 0.6; transform: rotate(-3deg); } }
+
+/* A Henry VIII power. */
+.sih-sheet { position: relative; display: grid; gap: 10px; max-width: 520px; margin: 0 auto; padding: 20px 22px 22px; border-radius: 14px; background: color-mix(in srgb, #7B5BD6 6%, var(--c-paper-card)); border: 1.5px solid color-mix(in srgb, #7B5BD6 40%, var(--c-hairline)); }
+.sih-h { font: 700 18px/1.25 "Figures", "Newsreader", Georgia, serif; }
+.sih-line { display: grid; gap: 4px; margin: 2px 0; font: 600 16px/1.5 "Figures", "Public Sans", system-ui, sans-serif; }
+.sih-line .old { justify-self: start; background: linear-gradient(var(--no), var(--no)) 0 55% / 0% 2.5px no-repeat; transition: background-size 0.6s ease 0.2s, opacity 0.5s ease 0.2s; }
+.sih-line .new { justify-self: start; padding: 0 7px; margin-left: -7px; border-radius: 7px; background: color-mix(in srgb, #7B5BD6 22%, var(--c-paper-card)); transition: opacity 0.5s ease 0.7s, transform 0.6s var(--ease-out) 0.7s; }
+.sih[data-on="0"] .sih-line .new { opacity: 0; transform: translateY(-10px); }
+.sih[data-on="1"] .sih-line .old { background-size: 100% 2.5px; opacity: 0.55; }
+.sih-tag { justify-self: start; padding: 3px 12px; border-radius: 999px; background: #5B3FB5; color: #fff; font: 700 13px/1.4 "Figures", "Public Sans", system-ui, sans-serif; transition: opacity 0.5s ease 1.1s, transform 0.5s var(--ease-out) 1.1s; }
+.sih[data-on="0"] .sih-tag { opacity: 0; transform: translateY(6px); }
+
+/* Who reads them. */
+.sic-lanes { list-style: none; display: grid; gap: 18px; margin: 0; padding: 0; }
+.sic-lanes > li { --tc: #C88A1E; padding: 16px 18px 18px; border-radius: 18px; background: color-mix(in srgb, var(--tc) 7%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--tc) 30%, var(--c-hairline)); border-left: 7px solid var(--tc); }
+.sic-head { display: grid; gap: 2px; }
+.sic-head b { font: 700 18px/1.3 "Figures", "Newsreader", Georgia, serif; }
+.sic-head span { color: var(--c-ink-soft); font-size: 14.5px; }
+.sic-track { position: relative; height: 4px; margin: 20px 0 0; border-radius: 2px; background: color-mix(in srgb, var(--tc) 28%, var(--c-hairline)); transform-origin: left; }
+.sic-track i { position: absolute; left: 0; top: 50%; width: 14px; height: 14px; margin-top: -7px; border-radius: 50%; background: var(--tc); }
+.sic-lanes ul { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 0; padding: 0; }
+.sic-lanes ul li { position: relative; display: grid; gap: 2px; margin-top: 16px; padding: 12px 14px; border-radius: 12px; background: var(--c-paper-card); border: 1.5px solid color-mix(in srgb, var(--tc) 50%, var(--c-hairline)); }
+.sic-lanes ul li::before { content: ""; position: absolute; left: 24px; top: -17px; width: 2px; height: 16px; background: color-mix(in srgb, var(--tc) 60%, var(--c-hairline)); }
+.sic-lanes ul b { font: 700 15px/1.3 "Figures", "Public Sans", system-ui, sans-serif; }
+.sic-lanes ul span { font-size: 13.5px; color: var(--c-ink-soft); }
+.sic[data-go="0"] .sic-track { transform: scaleX(0); }
+.sic[data-go="0"] .sic-lanes ul li { opacity: 0; transform: translateY(10px); }
+.sic[data-go="1"] .sic-track { transition: transform 0.9s var(--ease-out) calc(var(--i) * 0.5s); }
+.sic[data-go="1"] .sic-track i { animation: sicRun 3.6s ease-in-out calc(1.2s + var(--i) * 0.5s) 2 both; }
+.sic[data-go="1"] .sic-lanes ul li { transition: opacity 0.5s ease calc(0.5s + var(--k) * 0.25s), transform 0.6s var(--ease-out) calc(0.5s + var(--k) * 0.25s); }
+@keyframes sicRun { 0% { left: 0; opacity: 1; } 80% { left: calc(100% - 14px); opacity: 1; } 100% { left: calc(100% - 14px); opacity: 0; } }
+
+/* Month by month. */
+.sim-key { display: flex; flex-wrap: wrap; gap: 6px 20px; margin: 0; font: 600 13.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.sim-key i { display: inline-block; width: 12px; height: 12px; margin-right: 7px; border-radius: 3px; vertical-align: -1px; }
+.sim-read { display: grid; gap: 2px; min-height: 3.6em; margin: 14px 0 8px; }
+.sim-read b { font: 700 20px/1.3 "Figures", "Newsreader", Georgia, serif; }
+.sim-read span { font: 500 15px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.sim-cols { list-style: none; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 4px; margin: 0; padding: 0; }
+.sim-cols button { display: grid; grid-template-rows: 170px auto; justify-items: center; width: 100%; min-height: 44px; padding: 6px 0 4px; border: 0; border-radius: 12px; background: transparent; color: inherit; cursor: pointer; transition: background 0.25s; }
+.sim-cols button:hover { background: color-mix(in srgb, var(--c-brand) 7%, transparent); }
+.sim-cols button[aria-pressed="true"] { background: color-mix(in srgb, var(--c-brand) 12%, transparent); box-shadow: inset 0 0 0 2px var(--c-brand); }
+.sim-bar { align-self: end; display: flex; flex-direction: column; gap: 2px; width: min(100%, 34px); border-radius: 8px 8px 3px 3px; overflow: hidden; transform-origin: bottom; }
+.sim-bar i { display: block; flex: 1 1 0; min-height: 0; }
+.sim-bar .a { background: #3F7D5C; } .sim-bar .o { background: #5B6784; }
+.sim-cols button[data-part="1"] .sim-bar { opacity: 0.6; outline: 2px dashed var(--c-ink-soft); outline-offset: -2px; }
+.sim-cols em { display: grid; justify-items: center; margin-top: 6px; font: 600 12px/1.2 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: var(--c-ink-soft); }
+.sim-cols em small { min-height: 1.2em; font-size: 11px; }
+.sim-note { margin: 12px 0 0; font: italic 500 13px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.sim[data-go="0"] .sim-bar { transform: scaleY(0); }
+.sim[data-go="1"] .sim-bar { transition: transform 0.8s var(--ease-out) calc(var(--i) * 60ms); }
+.sim-cols li { --i: 0; }
+
+/* The four names. */
+.sig-grid { display: grid; grid-template-columns: 150px repeat(2, minmax(0, 1fr)); gap: 14px; align-items: stretch; }
+.sig-col { align-self: end; padding: 0 0 6px; border-bottom: 4px solid var(--tc); font: 700 15px/1.3 "Figures", "Public Sans", system-ui, sans-serif; }
+.sig-row { align-self: center; display: grid; gap: 4px; font: 700 20px/1.2 "Figures", "Newsreader", Georgia, serif; }
+.sig-row small { font: 500 13.5px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.sig-cell { position: relative; display: grid; gap: 6px; align-content: start; padding: 16px 18px 18px; border-radius: 16px; background: color-mix(in srgb, var(--tc) 8%, var(--c-paper-card)); border: 1.5px solid color-mix(in srgb, var(--tc) 40%, var(--c-hairline)); }
+.sig-cell[data-row="draft"] { border-style: dashed; }
+.sig-cell h3 { margin: 0; padding-right: 36px; font: 700 17px/1.3 "Figures", "Newsreader", Georgia, serif; }
+.sig-where { display: none; margin: 0; font: 600 13px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.sig-paper { position: absolute; right: 14px; top: 14px; }
+.sig-paper svg { display: block; width: 24px; height: 30px; fill: var(--c-paper-card); stroke: var(--tc); stroke-width: 2; stroke-linejoin: round; }
+.sig-paper .fold { fill: none; } .sig-paper .rule { fill: none; stroke-linecap: round; }
+.sig-cell[data-row="draft"] .sig-paper svg { stroke-dasharray: 4 3; }
+.sig-n { display: flex; align-items: baseline; gap: 10px; margin: 2px 0 0; }
+.sig-n b { font: 800 clamp(38px, 5vw, 48px)/1 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; }
+.sig-n span { font: 600 13.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.sig-bar { display: block; height: 8px; border-radius: 4px; background: color-mix(in srgb, var(--c-ink) 10%, transparent); overflow: hidden; }
+.sig-bar i { display: block; height: 100%; border-radius: 4px; background: var(--tc); transform-origin: left; }
+.sig-say { margin: 4px 0 0; font: 500 14.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.sig[data-go="0"] .sig-cell { opacity: 0; transform: translateY(12px); }
+.sig[data-go="0"] .sig-bar i { transform: scaleX(0); }
+.sig[data-go="1"] .sig-cell { transition: opacity 0.5s ease calc(var(--i) * 0.14s), transform 0.6s var(--ease-out) calc(var(--i) * 0.14s); }
+.sig[data-go="1"] .sig-bar i { transition: transform 0.9s var(--ease-out) calc(0.4s + var(--i) * 0.14s); }
+
+/* One real instrument. */
+.sics-name { display: grid; gap: 2px; margin: 0 0 8px; }
+.sics-name a { font: 700 17px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-brand); text-underline-offset: 3px; }
+.sics-name span { font-size: 14px; color: var(--c-ink-soft); }
+.sics-axis { position: relative; height: 164px; margin: 4px 0 2px; }
+.sics-line { position: absolute; left: 2%; right: 2%; top: 50%; height: 4px; margin-top: -2px; border-radius: 2px; background: color-mix(in srgb, var(--c-ink) 22%, transparent); transform-origin: left; }
+.sics-window { position: absolute; top: calc(50% + 50px); height: 10px; border-radius: 5px; background: linear-gradient(90deg, color-mix(in srgb, #5B6784 80%, transparent), color-mix(in srgb, #5B6784 14%, transparent)); transform-origin: left; }
+.sics-window em { position: absolute; left: 0; top: 16px; width: 100%; min-width: 150px; font: 600 12.5px/1.35 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: var(--c-ink-soft); }
+.sics-dot { position: absolute; top: 50%; z-index: 1; width: 28px; height: 28px; margin: -14px 0 0 -14px; border-radius: 50%; background: var(--tc); color: #fff; font: 800 14px/28px "Figures", "Public Sans", system-ui, sans-serif; text-align: center; box-shadow: 0 0 0 4px var(--c-paper-card); }
+.sics-dot[data-side="up"] { margin-top: -44px; } .sics-dot[data-side="down"] { margin-top: 16px; }
+.sics-dot::after { content: ""; position: absolute; left: 50%; width: 2px; margin-left: -1px; background: var(--tc); }
+.sics-dot[data-side="up"]::after { top: 28px; height: 16px; } .sics-dot[data-side="down"]::after { bottom: 28px; height: 16px; }
+.sics-list { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 10px 0 0; padding: 0; }
+.sics-list li { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; align-items: center; padding: 12px 14px; border-radius: 14px; background: color-mix(in srgb, var(--tc) 8%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--tc) 30%, var(--c-hairline)); border-left: 5px solid var(--tc); }
+.sics-list b { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--tc); color: #fff; font: 800 13px/1 "Figures", "Public Sans", system-ui, sans-serif; }
+.sics-list span { font: 500 15px/1.35 "Figures", "Public Sans", system-ui, sans-serif; }
+.sics-list small { grid-column: 2; font: 500 13px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.sics[data-go="0"] .sics-line, .sics[data-go="0"] .sics-window { transform: scaleX(0); }
+.sics[data-go="0"] .sics-dot { transform: scale(0); }
+.sics[data-go="1"] .sics-line { transition: transform 0.9s var(--ease-out); }
+.sics[data-go="1"] .sics-dot { transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) calc(0.5s + var(--k) * 0.3s); }
+.sics[data-go="1"] .sics-window { transition: transform 1.2s var(--ease-out) 1.5s; }
+.sics[data-go="0"] .sics-list li { opacity: 0; }
+.sics[data-go="1"] .sics-list li { transition: opacity 0.5s ease calc(0.6s + var(--k) * 0.3s); }
+
+/* The small strip on each card: made, laid, in force. */
+.ib-strip { --tc: #5B6784; list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 0; margin: 2px 0 0; padding: 0; font: 600 12.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ib-card[data-st="approve"] .ib-strip { --tc: #3F7D5C; }
+.ib-strip li { display: inline-flex; align-items: center; gap: 6px; }
+.ib-strip li + li::before { content: ""; width: 22px; height: 2px; margin: 0 8px 0 2px; background: color-mix(in srgb, var(--c-ink) 25%, transparent); }
+.ib-strip i { flex: none; box-sizing: border-box; width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--tc); background: transparent; }
+.ib-strip li[data-done="1"] i { background: var(--tc); }
+
+@media (max-width: 760px) {
+  .sif-stage { grid-template-columns: minmax(0, 1fr); }
+  .sif-arrow { display: flex; align-items: center; justify-content: center; gap: 4px; height: 96px; }
+  .sif-arrow svg { transform: rotate(90deg); margin: 0 -33px; }
+  .sif[data-on="0"] .sif-si { transform: translateY(12px); }
+  .sir-stage { --g: 44px; grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr var(--g) 1fr var(--g) 1fr; }
+  .sir-lane { height: 100%; justify-self: center; border-top: 0; border-left: 3px dashed color-mix(in srgb, var(--c-ink) 22%, transparent); }
+  .sir-doc { left: 50%; top: var(--c3); margin: -19px 0 0 -15px; }
+  .sir[data-out="no"] .sir-doc { left: 50%; top: var(--c2); }
+  .sir[data-go="0"] .sir-doc { left: 50%; top: var(--c1); }
+  .sir[data-go="1"][data-out="yes"] .sir-doc { animation-name: sirYesV; }
+  .sir[data-go="1"][data-out="no"] .sir-doc { animation-name: sirNoV; }
+  .sir-card { min-height: 0; }
+  .sir-seg button { flex: 1 1 100%; }
+  .sir-seg:last-child button { flex: 1 1 0; padding: 0 10px; }
+  .sic-lanes ul { grid-template-columns: minmax(0, 1fr); }
+  .sig-grid { grid-template-columns: minmax(0, 1fr); }
+  .sig-corner, .sig-col { display: none; }
+  .sig-row { margin-top: 6px; } .sig-where { display: block; }
+  .sim-cols { gap: 2px; }
+  .sim-cols button { grid-template-rows: 150px auto; }
+  .sics-list { grid-template-columns: minmax(0, 1fr); }
+  .sics-axis { height: 176px; }
+}
+@keyframes sirYesV { 0%, 8% { top: var(--c1); } 22% { top: var(--l1); } 30%, 70% { top: var(--c2); } 82% { top: var(--l2); } 92%, 100% { top: var(--c3); } }
+@keyframes sirNoV { 0%, 8% { top: var(--c1); } 22% { top: var(--l1); } 30%, 100% { top: var(--c2); } }
+@media (max-width: 520px) {
+  .sim-cols em { font-size: 10.5px; } .sim-cols em small { font-size: 9.5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sif *, .sir *, .sin *, .sih *, .sic *, .sim *, .sig *, .sics * { animation: none !important; transition: none !important; }
+  .sir .sir-doc { animation: none !important; }
+}

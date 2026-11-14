@@ -3,12 +3,13 @@ import ExplainerPage from "../story/ExplainerPage";
 import Loading from "../Loading";
 import { LoadFailedNote } from "../MpCards";
 import { IconGavel, IconBook, IconRegister, IconVote } from "../icons";
-import { Flow } from "../story/StateArt";
 import { Hero, Dots } from "../story/Vivid";
 import InstrumentBrowser from "../story/InstrumentBrowser";
+import { SiFill, SiRoutes, SiNoAmend, SiHenry, SiCheckers, SiMonths, SiGrid, SiCase } from "../story/SiArt";
 import { useDataFile } from "../../lib/useDataFile";
 import { statutoryInstruments } from "../../lib/dataFiles";
 import { summary, monthName } from "../../lib/instrumentsView";
+import { caseStudy } from "../../lib/instrumentsCase";
 import { dateLong } from "../../lib/upcoming";
 
 // What a statutory instrument is, why ministers are allowed to make them, how Parliament still checks them, how many there are and the newest ones. Built from
@@ -28,7 +29,6 @@ const n = (x) => x.toLocaleString("en-GB");
 function build(data) {
   const s = summary(data);
   const pct = Math.round(s.shareApprove * 100);
-  const p = data.procedures;
   const first = monthName(data.months[0].month);
   const lastLabel = monthName(data.months.at(-1).month);
 
@@ -38,11 +38,7 @@ function build(data) {
       lede: "Because Parliament said they could. When MPs and peers pass an Act, the Act can include a power: the minister may make rules about this. The rules a minister writes with that power are called a statutory instrument, or SI for short. It is real law, and you have to follow it.",
       colour: "#2C7DA0",
       blocks: [
-        { node: <Flow numbered items={[
-          { title: "Parliament passes an Act", text: "MPs and peers debate and vote on it. It sets the main rules, and can give a minister a power to fill in the detail.", colour: "#2C7DA0" },
-          { title: "The minister uses the power", text: "They write the detail as an SI: a fee, a date, a list, how a process works.", colour: "#7B5BD6" },
-          { title: "Parliament checks it", text: "How depends on what the Act says. Parliament either has to approve it, or it can object.", colour: "#3F7D5C" },
-        ]} /> },
+        { node: <SiFill /> },
         { text: ["Here is a real example. The Misuse of Drugs Act 1971 sets up the classes of illegal drugs. When a new drug needs to be controlled, a statutory instrument adds it to the right class. It does not take a whole new Act."] },
       ],
     },
@@ -65,6 +61,7 @@ function build(data) {
       lede: "The Act that gives the power also says how Parliament gets its say. There are two routes, and the Act picks one.",
       colour: "#3F7D5C",
       blocks: [
+        { node: <SiRoutes /> },
         { compare: [
           { title: "Parliament has to say yes", colour: "#3F7D5C", items: [
             "This is called the affirmative route. Both Houses usually have to approve it, normally after a debate and a vote.",
@@ -78,11 +75,13 @@ function build(data) {
           ] },
         ] },
         { text: ["Either way, Parliament cannot change the wording. With very few exceptions it can only accept an instrument or reject it."] },
+        { node: <SiNoAmend /> },
         { facts: [
           { label: "Rejected since 1950", value: "16", note: "As of June 2022: 11 by the Commons and 5 by the Lords." },
           { label: "Last rejected by the Commons", value: "1979", note: "No instrument has been rejected by the Commons since then, as of June 2022." },
         ] },
-        { more: { title: "Who reads them before MPs vote?", text: [
+        { node: <SiCheckers /> },
+        { more: { title: "More on who reads them", text: [
           "Committees of MPs and peers read instruments and report on them. The Joint Committee on Statutory Instruments looks at the technical and legal points, and the Lords Secondary Legislation Scrutiny Committee looks at the policy behind them.",
           "Other committees look at the powers in a Bill before it becomes an Act: the Lords Delegated Powers and Regulatory Reform Committee and the Lords Constitution Committee.",
         ] } },
@@ -106,6 +105,7 @@ function build(data) {
             "Some powers, called Henry VIII powers, let a minister change an Act of Parliament itself. Critics say that challenges Parliament's place as the only law-maker. Some uses are purely technical.",
           ] },
         ] },
+        { node: <SiHenry /> },
         { note: "Whether the checks are enough is a political argument, and people differ. This page sets out how the system works and what has been made." },
       ],
     },
@@ -122,7 +122,7 @@ function build(data) {
           { label: "A typical month", value: n(s.median), note: "instruments laid in the middle month of the twelve." },
           { label: "The busiest month", value: n(s.busiest.count), note: `laid in ${monthName(s.busiest.month)}.` },
         ] },
-        { bars: { items: data.months.map((m) => ({ label: monthName(m.month).replace(/ 20(\d\d)$/, " \u2019$1"), value: m.approve + m.object, text: n(m.approve + m.object), colour: "#7B5BD6" })), max: Math.max(...data.months.map((m) => m.approve + m.object)), note: `Instruments laid each month. ${lastLabel} is not over yet, and few are laid while Parliament is in recess.` } },
+        { node: <SiMonths months={data.months} generated={data.generated} /> },
       ],
     },
     {
@@ -130,9 +130,18 @@ function build(data) {
       lede: "Every instrument has one of four labels. \u201CDraft\u201D means Parliament sees it before it is law, and \u201Cmade\u201D means it is already law when Parliament sees it. \u201CAffirmative\u201D means Parliament must approve it, and \u201Cnegative\u201D means it can only object.",
       colour: "#C88A1E",
       blocks: [
-        { facts: Object.entries(data.kinds).map(([name, k]) => ({ label: name, value: n(p[name] ?? 0), note: k.say })) },
+        { node: <SiGrid data={data} /> },
       ],
     },
+    ...(caseStudy(data) ? [{
+      title: "Follow one real instrument",
+      lede: "Numbers and diagrams only go so far, so here is one instrument from the list below, from the day it was made to the day it came into force. It is one of the many that are already law when Parliament sees them.",
+      colour: "#7B5BD6",
+      blocks: [
+        { node: <SiCase data={data} /> },
+        { note: "It is picked from the newest instruments and can change when the list is refreshed each day." },
+      ],
+    }] : []),
     {
       title: "What has been made lately",
       lede: "The most recent instruments laid before Parliament. Press any one to see what it does and where to read it in full. Some are put into plainer English by an AI tool, always with the Government's own words kept beside it. Use the buttons to see only those Parliament must approve.",
