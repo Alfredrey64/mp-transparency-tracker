@@ -3,6 +3,8 @@ import { animate, useInView } from "motion/react";
 
 // A headline figure that counts up to its value the first time it scrolls into view. The text it settles on is exactly the text it was given
 // ("£39,200", "5.6 times", "32.7%"); a value that is not a plain figure, or a visitor who asks for less motion, just gets the text.
+// The final text is laid out invisibly underneath the counting one, so the space it needs is reserved from the start. Without that, "68.3 million" in a narrow tile wrapped
+// onto a second line on some frames of the count and not others, and the tile (and everything below it) changed height on every frame.
 const PLAIN = /^(\D*?)(\d[\d,]*(?:\.\d+)?)(\D*)$/;
 
 function parse(text) {
@@ -32,5 +34,12 @@ export default function CountValue({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, inView, children]);
 
-  return <span ref={ref}>{active && !inView ? show(parts, 0) : text}</span>;
+  if (!active) return <span ref={ref}>{text}</span>;
+  return (
+    <span ref={ref} style={{ display: "inline-grid" }}>
+      <span aria-hidden="true" style={{ gridArea: "1 / 1", visibility: "hidden" }}>{children}</span>
+      <span aria-hidden="true" style={{ gridArea: "1 / 1" }}>{!inView ? show(parts, 0) : text}</span>
+      <span className="sr-only">{children}</span>
+    </span>
+  );
 }

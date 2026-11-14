@@ -579,7 +579,9 @@ export default function App() {
       <InstallBanner />
       <NavProgress pending={navPending} />
       <ActiveHeader view={view} onNavigate={handleNavigate} onSelectPolitician={handleViewProfile} />
-      <div style={{ flex: 1, minWidth: 0, width: "100%" }}>
+      {/* The content area is always at least a screen tall, so the footer starts below the first screen. On a slow connection a short, still-loading page would otherwise
+            show the footer, which then jumped down the moment the list or table arrived. */}
+      <div style={{ flex: 1, minWidth: 0, width: "100%", minHeight: "100dvh" }}>
         {/* The new page fades in straight away. It used to wait for the old
             one to fade out first, which added a visible pause to every click. */}
         <main
