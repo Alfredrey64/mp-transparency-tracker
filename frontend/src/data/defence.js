@@ -1,7 +1,7 @@
 // What the Defence page says that is not in defenceData.json (SIPRI's long run, built by scripts/build-defence-data.mjs): spending as NATO and the
 // Ministry of Defence count it, the government's promises, and the armed forces' numbers.
 
-export const CHECKED = "14 October 2026";
+export const CHECKED = "14 November 2026";
 
 export const SOURCES = {
   sipri: { label: "SIPRI Military Expenditure Database, 1949 to 2025", url: "https://www.sipri.org/databases/milex" },
@@ -25,7 +25,7 @@ export const NATO_COUNT = [
 export const PROMISES = [
   { when: "2006", text: "NATO members agreed a guideline of spending at least 2% of the economy on defence. The UK has met it every year since." },
   { when: "By 2027", text: "The government committed in February 2025 to spending 2.5% of GDP on defence by 2027, on the NATO count. With extra spending on security and intelligence it counts this as 2.6%." },
-  { when: "Next Parliament", text: "The government has also committed to 3% of GDP on defence in the next Parliament." },
+  { when: "2030", text: "The government has also committed to 3% of GDP on defence in the next Parliament. The Autumn Budget 2026 gave 2030 as the target date for 3% and said next year's spending review will set out how the 3.5% by 2035 will be met." },
   { when: "By 2035", text: "At their 2025 summit NATO allies agreed to spend at least 3.5% of GDP on core defence by 2035, plus up to 1.5% on wider security and resilience such as infrastructure and cyber defence." },
 ];
 
@@ -64,7 +64,7 @@ export const MOMENTS = [
 export const TARGETS = [
   { share: 2.3, label: "Now, NATO's count" },
   { share: 2.5, label: "Promised by 2027" },
-  { share: 3, label: "Promised next Parliament" },
+  { share: 3, label: "Target for 2030" },
   { share: 3.5, label: "NATO's 2035 core target" },
   { share: 5, label: "Core plus wider security" },
 ];

@@ -156,7 +156,7 @@ export function GlossaryTerm({ term, children }) {
               style={{
                 position: "fixed", zIndex: 2000, top: pos.top, left: pos.left, pointerEvents: "none",
                 display: "block", width: "max-content", maxWidth: "min(300px, calc(100vw - 24px))",
-                maxHeight: "calc(100vh - 24px)", overflowY: "auto",
+                maxHeight: "calc(100dvh - 24px)", overflowY: "auto",
                 background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 10,
                 padding: "10px 13px", boxShadow: "0 10px 28px rgba(0,0,0,0.3)", textAlign: "left",
               }}

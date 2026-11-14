@@ -16,7 +16,7 @@ export default function InequalityAbout() {
       <Panel id="h-ab-sources" title="Where the figures come from" lead={`Every chart reads straight from the official tables, saved on ${D.built}, the regional figures on ${P.built} and the OECD's on ${A.built}. When a new release comes out the page is rebuilt from it.`}>
         <ul style={{ ...para, margin: 0, paddingLeft: 20 }}>
           {[...entries, ...extra].map((s) => (
-            <li key={s.url} style={li}><a href={s.url} target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontFamily: FONT_BODY, fontWeight: 600 }}>{s.label}<span className="sr-only"> (opens in a new tab)</span></a></li>
+            <li key={`${s.url}|${s.label}`} style={li}><a href={s.url} target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontFamily: FONT_BODY, fontWeight: 600 }}>{s.label}<span className="sr-only"> (opens in a new tab)</span></a></li>
           ))}
         </ul>
       </Panel>

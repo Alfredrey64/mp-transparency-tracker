@@ -1,9 +1,10 @@
 // What the Social care and childcare page says that is not in careData.json (built by scripts/build-care-data.mjs): where each figure comes from, and the
 // facts the department publishes as text. Each is as the named body published it, with its date.
 
-export const CHECKED = "15 October 2026";
+export const CHECKED = "13 November 2026";
 
 export const SOURCES = {
+  budget2026: { label: "HM Treasury, Budget 2026 (28 October 2026)", url: "https://www.gov.uk/government/publications/budget-2026-document/budget-2026-html" },
   finance: { label: "DHSC and NHS England, Adult social care finance report, England: 2024 to 2025", url: "https://www.gov.uk/government/statistics/adult-social-care-finance-report-england-2024-to-2025" },
   activity: { label: "NHS England, Adult social care activity report, England: 2024 to 2025", url: "https://www.gov.uk/government/statistics/adult-social-care-activity-report-england-2024-to-2025" },
   carers: { label: "NHS England, Survey of adult carers in England: 2025 to 2026 (24 September 2026)", url: "https://www.gov.uk/government/statistics/survey-of-adult-carers-in-england-2025-to-2026-report" },

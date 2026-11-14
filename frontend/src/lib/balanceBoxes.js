@@ -45,7 +45,7 @@ function candidates(root) {
   const out = [];
   for (const el of root.querySelectorAll("*")) {
     const n = el.children.length;
-    if (n < MIN_KIDS || n > MAX_KIDS || !(el instanceof HTMLElement) || el.closest("[data-no-balance], svg, .cr, .ma-bento, .lv-board, .hubtabs")) continue;
+    if (n < MIN_KIDS || n > MAX_KIDS || !(el instanceof HTMLElement) || el.closest("[data-no-balance], svg, .cr, .ma-bento, .lv-board, .hubtabs, .pc")) continue;
     out.push(el);
   }
   return out;
@@ -57,7 +57,9 @@ function process(el) {
   const sig = `${Math.round(rect.width)}|${n}`;
   if (seen.get(el) === sig) return;
   seen.set(el, sig);
-  clear(el);
+  // Only undo what this set before: writing to a box and then measuring the next one makes the browser lay the page out again for every box, which on a
+  // page with hundreds of boxes (the MPs list) froze a phone for seconds.
+  if (el.classList.contains("bal-grid")) clear(el);
   const style = getComputedStyle(el);
   if (style.display === "none" || style.display === "inline" || rect.width < 200) return;
   const kids = [...el.children];

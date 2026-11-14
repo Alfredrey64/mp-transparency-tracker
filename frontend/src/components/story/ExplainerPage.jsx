@@ -161,7 +161,7 @@ export function ExplainerBody({ icon, tiles, tileVariant, lead, why, chapters, s
         <Chapter n={chapters.length + 1} title="Where this comes from" colour="#5B6784" lede={checked ? `Every figure was checked against these sources on ${checked}.` : undefined}>
           <ul className="st-sources">
             {sources.map((s) => (
-              <li key={s.url}><a href={s.url} target="_blank" rel="noreferrer">{s.label}</a>{s.note && <span>{s.note}</span>}</li>
+              <li key={`${s.url}|${s.label}`}><a href={s.url} target="_blank" rel="noreferrer">{s.label}</a>{s.note && <span>{s.note}</span>}</li>
             ))}
           </ul>
         </Chapter>

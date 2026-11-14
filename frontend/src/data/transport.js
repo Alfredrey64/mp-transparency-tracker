@@ -1,9 +1,10 @@
 // What the Transport page says that is not in transportData.json (built by scripts/build-transport-data.mjs): where each figure comes from, and the facts about
 // who runs trains and buses that are in statements and Acts of Parliament. Each is as the named body published it, with its date.
 
-export const CHECKED = "15 October 2026";
+export const CHECKED = "14 November 2026";
 
 export const SOURCES = {
+  budget2026: { label: "HM Treasury, Budget 2026 (28 October 2026)", url: "https://www.gov.uk/government/publications/budget-2026-document/budget-2026-html" },
   traffic: { label: "Department for Transport, Road traffic estimates in Great Britain: 2025", url: "https://www.gov.uk/government/statistics/road-traffic-estimates-in-great-britain-2025" },
   vehicles: { label: "Department for Transport, Vehicle licensing statistics data tables", url: "https://www.gov.uk/government/statistical-data-sets/vehicle-licensing-statistics-data-tables" },
   roads: { label: "Department for Transport, Road conditions in England to March 2026 (14 October 2026)", url: "https://www.gov.uk/government/statistics/road-conditions-in-england-to-march-2026" },

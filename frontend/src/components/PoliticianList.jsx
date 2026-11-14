@@ -13,6 +13,9 @@ import { interestColumns, mpColumns } from "../lib/exportColumns";
 import DownloadCsvButton from "./DownloadCsvButton";
 import { CAREER_FILTERS, SORTS, applyCareerFilters, sortMps, careerLine } from "../lib/careerFilters";
 
+const FIRST_CARDS = 48;
+const CARD_STEP = 80;
+
 function SkeletonCard() {
   return (
     <div
@@ -105,6 +108,15 @@ export default function PoliticianList({ onSelect, initialCareer = null }) {
     list = sortMps(list, careers, sortBy);
     return list;
   }, [politicians, query, activeParty, sortBy, careers, careerKeys]);
+
+  // 650 cards mounted in one go froze a phone for over a second, so the first screenful appears at once and the rest follow in small slices.
+  const [grow, setGrow] = useState({ list: null, n: FIRST_CARDS });
+  const shown = grow.list === filtered ? grow.n : FIRST_CARDS;
+  useEffect(() => {
+    if (loading || shown >= filtered.length) return undefined;
+    const t = setTimeout(() => setGrow({ list: filtered, n: shown + CARD_STEP }), 40);
+    return () => clearTimeout(t);
+  }, [filtered, shown, loading]);
 
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
@@ -266,7 +278,7 @@ export default function PoliticianList({ onSelect, initialCareer = null }) {
           Array.from({ length: 12 }).map((_, i) => <SkeletonCard key={i} />)}
 
         {!loading &&
-          filtered.map((p, i) => {
+          filtered.slice(0, shown).map((p, i) => {
             const color = partyColour(p.party_colour, COLORS.inkSoft);
             return (
               <PersonCard

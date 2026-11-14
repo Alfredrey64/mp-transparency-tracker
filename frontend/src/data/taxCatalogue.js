@@ -145,7 +145,7 @@ export const TAXES = [
     notes: [
       "The 15% rate in December 2008 was a temporary cut during the financial crisis, and the 17.5% rate came back in January 2010.",
       "VAT on home fuel started at 8% in April 1994 and was cut to 5% in September 1997. A plan to raise it to 17.5% in 1995 was dropped after the government lost a vote in the Commons in December 1994.",
-      "From 1 October 2026 VAT on household electricity in Great Britain is 0%. The measure is set to run to 31 March 2027. Gas stays at 5%.",
+      "From 1 October 2026 VAT on household electricity in Great Britain is 0%. It was first due to end on 31 March 2027; the Autumn Budget 2026 extended it to 1 July 2027 and said the same help would reach Northern Ireland from April 2027. Gas stays at 5%.",
       "Hospitality and holiday accommodation had a temporary cut to 5% from July 2020, then 12.5% from October 2021, before the standard rate returned in April 2022.",
       "Private school fees became subject to VAT on 1 January 2025.",
     ],
@@ -153,6 +153,7 @@ export const TAXES = [
       ["Wikipedia: Value-added tax in the United Kingdom", "https://en.wikipedia.org/wiki/Value-added_tax_in_the_United_Kingdom"],
       ["GOV.UK: VAT rates on different goods and services", "https://www.gov.uk/guidance/vat-rates-on-different-goods-and-services"],
       ["ICAEW: VAT cut on domestic electricity bills confirmed, September 2026", "https://www.icaew.com/insights/tax-news/2026/sep-2026/vat-cut-on-domestic-electricity-bills-confirmed"],
+      ["GOV.UK: Budget 2026", "https://www.gov.uk/government/publications/budget-2026-document/budget-2026-html"],
     ],
   },
   {
@@ -264,13 +265,14 @@ export const TAXES = [
     ] }],
     notes: [
       "A fuel price escalator raised the duty above inflation every year from 1993 until it was dropped after the fuel protests of September 2000.",
-      "The 5p cut in March 2022 has been extended every year since. At the Autumn Budget 2025 it was extended to the end of August 2026, then reversed in steps: 1p on 1 September 2026, 2p on 1 December 2026 and 2p on 1 March 2027. The planned rise in line with inflation was also cancelled.",
+      "The 5p cut in March 2022 has been extended five times since. In May 2026 it was extended to the end of 2026. At the Autumn Budget 2026 the government cancelled the planned 5p rise from January 2027, extended the cut by six months to 1 July 2027 and put off the rise in line with inflation to the same date. The rate in the table for 1 July 2027 is the one in the Budget's rates annex; a later Budget could change it.",
+      "From April 2028 a mileage-based charge for electric and plug-in hybrid cars (Electric Vehicle Excise Duty) is due to start. It was announced at Budget 2025, and the Autumn Budget 2026 added a mileage estimation tool and an opt-in way to report mileage through the car's own connection.",
       "For diesel the chart uses ultra low sulphur diesel from August 1997 and for petrol the lowest of the unleaded grades, which are the fuels sold at most pumps.",
       "HMRC's table starts in 1989, so earlier years are not shown.",
     ],
     sources: [
       ["HMRC: Historical hydrocarbon oils duty rates", `${HMRC}/hydrocarbon-oils-bulletin/historical-hydrocarbon-oils-duty-rates--2`],
-      ["GOV.UK: Fuel duty rates 2026 to 2027", "https://www.gov.uk/government/publications/fuel-duty-rates-for-2026-to-2027/fuel-duty-rates-2026-to-2027"],
+      ["GOV.UK: Budget 2026, Annex A: rates and allowances", "https://www.gov.uk/government/publications/budget-2026-overview-of-tax-legislation-and-rates-ootlar/annex-a-rates-and-allowances"],
     ],
   },
   {

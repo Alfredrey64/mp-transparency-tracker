@@ -16,7 +16,7 @@ export const TAX_STORIES = [
   },
   {
     id: "fuel-escalator", date: "2000-09-01", taxes: ["fuel"], title: "The fuel price escalator and the 2000 protests",
-    text: "From 1993 the government raised fuel duty above inflation every year, taking the duty on unleaded petrol from 17.72p a litre in March 1989 to 48.82p in March 2000. After the fuel protests of September 2000 the escalator was dropped. Duty settled at 57.95p in March 2011 and stayed there for eleven years until the 5p cut of March 2022, which is being reversed in steps from September 2026.",
+    text: "From 1993 the government raised fuel duty above inflation every year, taking the duty on unleaded petrol from 17.72p a litre in March 1989 to 48.82p in March 2000. After the fuel protests of September 2000 the escalator was dropped. Duty settled at 57.95p in March 2011 and stayed there for eleven years until the 5p cut of March 2022, which has been extended again and again and now runs to 1 July 2027.",
   },
   {
     id: "vat-crisis", date: "2008-12-01", taxes: ["vat"], title: "The VAT cut in the financial crisis",

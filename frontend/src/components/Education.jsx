@@ -365,7 +365,7 @@ function About() {
       <Panel id="h-edux-src" title="Where the figures come from" lead={`Checked on ${CHECKED}. The charts read straight from the Department for Education's open statistics (saved on ${E.built}).`}>
         <ul style={{ ...para, margin: 0, paddingLeft: 20 }}>
           {Object.values(SOURCES).map((s) => (
-            <li key={s.url} style={li}><a href={s.url} target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontFamily: FONT_BODY, fontWeight: 600 }}>{s.label}<span className="sr-only"> (opens in a new tab)</span></a></li>
+            <li key={`${s.url}|${s.label}`} style={li}><a href={s.url} target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontFamily: FONT_BODY, fontWeight: 600 }}>{s.label}<span className="sr-only"> (opens in a new tab)</span></a></li>
           ))}
         </ul>
       </Panel>

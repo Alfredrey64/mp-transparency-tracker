@@ -1,6 +1,6 @@
 // What the Ageing and pensions page says, with where each figure comes from. Checked on the date below.
 
-export const CHECKED = "14 October 2026";
+export const CHECKED = "13 November 2026";
 
 export const SOURCES = {
   rates: { label: "GOV.UK, Benefit and pension rates 2025 to 2026 (and earlier years)", url: "https://www.gov.uk/government/publications/benefit-and-pension-rates-2025-to-2026/benefit-and-pension-rates-2025-to-2026" },
@@ -12,6 +12,7 @@ export const SOURCES = {
   obrFrs2025: { label: "Office for Budget Responsibility, Fiscal risks and sustainability (July 2025)", url: "https://obr.uk/frs/" },
   onsProjections: { label: "ONS, National population projections: 2022-based", url: "https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationprojections/bulletins/nationalpopulationprojections/2022based" },
   hbai: { label: "DWP, Households Below Average Income, 2024/25", url: "https://www.gov.uk/government/statistics/households-below-average-income-for-financial-years-ending-1995-to-2025" },
+  budget2026: { label: "HM Treasury, Budget 2026 (28 October 2026)", url: "https://www.gov.uk/government/publications/budget-2026-document/budget-2026-html" },
   taxes: { label: "HMRC, Rates and allowances: Income Tax", url: "https://www.gov.uk/government/publications/rates-and-allowances-income-tax/income-tax-rates-and-allowances-current-and-past" },
 };
 

@@ -11,7 +11,7 @@ function Avatar({ url, name, color }) {
   if (url && !errored) {
     return (
       <div style={{ width: 40, height: 40, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: COLORS.paperCard, border: `2px solid ${COLORS.paperCard}`, boxShadow: `0 0 0 2px ${color}55` }}>
-        <img loading="lazy" decoding="async" src={url} alt="" onError={() => setErrored(true)} onLoad={() => setLoaded(true)} style={{ width: 29, height: 29, borderRadius: "50%", objectFit: "cover", objectPosition: "center", opacity: loaded ? 1 : 0, transition: "opacity 0.25s ease" }} />
+        <img loading="lazy" decoding="async" fetchPriority="low" src={url} alt="" onError={() => setErrored(true)} onLoad={() => setLoaded(true)} style={{ width: 29, height: 29, borderRadius: "50%", objectFit: "cover", objectPosition: "center", opacity: loaded ? 1 : 0, transition: "opacity 0.25s ease" }} />
       </div>
     );
   }

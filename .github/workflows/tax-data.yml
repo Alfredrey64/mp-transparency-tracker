@@ -1,11 +1,11 @@
 name: Tax data check
 
-# Reads HMRC's and GOV.UK's published tax tables every Monday and fails if a rate on the Tax rates through time page no longer matches.
+# Reads HMRC's and GOV.UK's published tax tables every day and fails if a rate on the Tax rates through time page no longer matches.
 # It changes nothing: a failure means a Budget, an uprating or a correction needs adding to frontend/src/data/taxSeries.json.
 
 on:
   schedule:
-    - cron: "17 6 * * 1"
+    - cron: "17 6 * * *"
   workflow_dispatch:
 
 permissions:

@@ -70,7 +70,7 @@ function Meeting({ meeting, color }) {
         <p style={{ ...text, margin: "8px 0 0", color: COLORS.ink, opacity: 0.85 }}>{meeting.purpose}</p>
         {rest.length > 0 && (
           <details style={{ marginTop: 8 }}>
-            <summary style={{ ...text, fontSize: 13.5, cursor: "pointer", color: COLORS.ink }}>All {total} attendees</summary>
+            <summary style={{ ...text, fontSize: 13.5, cursor: "pointer", color: COLORS.ink, padding: "13px 0" }}>All {total} attendees</summary>
             <p style={{ ...text, fontSize: 13.5, margin: "6px 0 0" }}>{[...shown, ...rest].join(", ")}</p>
           </details>
         )}

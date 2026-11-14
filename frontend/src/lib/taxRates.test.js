@@ -154,7 +154,7 @@ describe("changes and who set them", () => {
   it("separates what is in force from what is still to come", () => {
     const fuel = getTax("fuel");
     const coming = comingUp(fuel, NOW);
-    expect(coming.map((c) => c.date)).toEqual(["2026-12-01", "2026-12-01", "2027-03-01", "2027-03-01"]);
+    expect(coming.map((c) => c.date)).toEqual(["2027-07-01", "2027-07-01"]);
     expect(pastChanges(fuel, NOW).every((c) => c.date <= "2026-10-13")).toBe(true);
     expect(pastChanges(fuel, NOW).length + coming.length).toBe(allChanges(fuel).length);
   });

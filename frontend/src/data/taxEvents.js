@@ -3,12 +3,7 @@
 // `NEXT_BUDGET` is shown with a countdown on the Tax rates through time page until the day arrives. After the Budget, add what it changed to
 // taxSeries.json (see the README) and set this to the next one, or to null.
 
-export const NEXT_BUDGET = {
-  date: "2026-10-28",
-  name: "Autumn Budget 2026",
-  note: "Delivered by Chancellor John Healey, with the Office for Budget Responsibility's forecast published the same day. Nothing has been announced on tax rates yet.",
-  source: ["Money to the Masses: Healey refuses to rule out tax rises", "https://moneytothemasses.com/news/autumn-budget-2026-chancellor-john-healey-refuses-to-rule-out-tax-rises"],
-};
+export const NEXT_BUDGET = null;
 
 // Dates on which tax changes were decided, with the name of the statement. Other dates are shown as "Budget, <date>".
 export const EVENT_NAMES = {
@@ -41,6 +36,7 @@ export const EVENT_NAMES = {
   "2024-10-30": "Autumn Budget 2024",
   "2025-11-26": "Autumn Budget 2025",
   "2026-07-21": "First announcements of the Burnham government",
+  "2026-10-28": "Autumn Budget 2026",
 };
 
 // Dates we only know to the month (shown as the month alone).

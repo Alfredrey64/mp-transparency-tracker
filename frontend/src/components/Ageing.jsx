@@ -297,9 +297,14 @@ function Arguments() {
   return (
     <div>
       <Panel id="h-agea-intro" accent={ACCENT} title="The arguments" lead="Figures can show what the pension costs and who relies on it. They cannot say what is fair between older and younger people, which depends on what people value. These are the arguments people make, not our view." />
+      <Panel id="h-agea-budget" title="What the Autumn Budget 2026 decided" sources={[SOURCES.budget2026]}
+        lead="The Budget on 28 October 2026 kept the triple lock for the rest of this Parliament: the State Pension keeps rising each April by the highest of earnings growth, inflation or 2.5%, through to April 2029. From April 2030 it changes. The pension will then rise by the highest of 2.5%, inflation, or the amount needed to keep its value against earnings at the level reached in April 2029, which removes the effect that lets it climb ever higher relative to pay. The Treasury estimates this will cut State Pension spending by about £15 billion a year by the late 2030s and about £50 billion a year by the late 2040s, and says the savings will help pay for a National Care Service in England, with personal care free at the point of use. A Pension Tax Allowance starts in April 2027, so pensioners with incomes at or under the full new State Pension are not brought into paying small amounts of tax because the pension has risen."
+      >
+        <p style={para}>These are government plans, not yet law. The Independent Commission on Adult Social Care is now due to report in 2027, and the Pensions Commission's final report is due in February 2027.</p>
+      </Panel>
       <Arg
         id="h-agea-lock" title="Should the triple lock stay?"
-        shows={`The pension rises each year by the highest of earnings, prices or ${STATE_PENSION.upratingFloor}%. Since 2016 it has risen ${growth(A.pension)}%, against ${growth(A.earningsWeekly)}% for earnings and ${growth(A.pricesIndex)}% for prices on our calculation, about ${gbp(w.actual - w.earnings)} a week more than earnings alone. The OBR's July 2026 baseline, with the triple lock, is about ${OBR_LONG_RUN.withTripleLock}% of the economy in the long run, against about ${OBR_LONG_RUN.withEarnings}% if it rose with earnings.`}
+        shows={`The pension rises each year by the highest of earnings, prices or ${STATE_PENSION.upratingFloor}% (the Budget keeps this to April 2029 and adjusts it from April 2030, as set out above). Since 2016 it has risen ${growth(A.pension)}%, against ${growth(A.earningsWeekly)}% for earnings and ${growth(A.pricesIndex)}% for prices on our calculation, about ${gbp(w.actual - w.earnings)} a week more than earnings alone. The OBR's July 2026 baseline, with the triple lock, is about ${OBR_LONG_RUN.withTripleLock}% of the economy in the long run, against about ${OBR_LONG_RUN.withEarnings}% if it rose with earnings.`}
         sLabel="People who want it kept say" cLabel="People who want it changed say"
         supporters={["Older people have little way to earn more, and many rely on the State Pension for most of their income. The lock stops it falling behind prices or wages, and gives people a guarantee they can plan around."]}
         critics={["A rule that always picks the highest figure means the pension can grow faster than the wages that pay for it, and the extra cost falls on younger workers. Some would link it to earnings alone, or replace it with a different guarantee."]}
@@ -331,7 +336,7 @@ function About() {
       <Panel id="h-agex-src" title="Where the figures come from" lead={`Checked on ${CHECKED}. The comparison with prices and earnings reads from ONS data saved on ${A.built}.`}>
         <ul style={{ ...para, margin: 0, paddingLeft: 20 }}>
           {Object.values(SOURCES).map((s) => (
-            <li key={s.url} style={li}><a href={s.url} target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontFamily: FONT_BODY, fontWeight: 600 }}>{s.label}<span className="sr-only"> (opens in a new tab)</span></a></li>
+            <li key={`${s.url}|${s.label}`} style={li}><a href={s.url} target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontFamily: FONT_BODY, fontWeight: 600 }}>{s.label}<span className="sr-only"> (opens in a new tab)</span></a></li>
           ))}
         </ul>
       </Panel>

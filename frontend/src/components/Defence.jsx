@@ -48,7 +48,7 @@ function Overview({ onPick }) {
         accent={ACCENT}
         items={[
           `The UK spent ${now.toFixed(1)}% of its economy on defence in ${last(s.years)} on SIPRI's count, and about ${nato.value}% on NATO's. It was ${at({ years: s.years, values: s.uk }, 1990).toFixed(1)}% in 1990 and has been under 3% since ${under3}.`,
-          `The government has promised 2.5% by 2027 and 3% in the next Parliament. NATO allies have agreed 3.5% of the economy on core defence by 2035. On today's economy, 3.5% would be about £${billions(3.5)} billion a year, against about £${billions(nato.value)} billion now.`,
+          `The government has promised 2.5% by 2027 and set 2030 as the target date for 3%. NATO allies have agreed 3.5% of the economy on core defence by 2035. On today's economy, 3.5% would be about £${billions(3.5)} billion a year, against about £${billions(nato.value)} billion now.`,
           `${n(FORCES.trained)} people are fully trained and serving full-time, ${Math.round((1 - FORCES.trained / first) * 100)}% fewer than in April 2012. The low point was ${n(lowest)} in ${timeLabel(lowestAt)}, and the number has risen since.`,
           `More people joined the regular forces than left in the last 12 months, ${n(FORCES.intake)} against ${n(FORCES.outflow)}.`,
           `In real terms, after inflation, UK military spending was $${last(D.ukRealBillions.values)} billion in ${last(D.ukRealBillions.years)}, near its highest since 1950.`,
@@ -367,7 +367,7 @@ function About() {
       <Panel id="h-defx-src" title="Where the figures come from" lead={`Checked on ${CHECKED}.`}>
         <ul style={{ ...para, margin: 0, paddingLeft: 20 }}>
           {Object.values(SOURCES).map((s) => (
-            <li key={s.url} style={li}><a href={s.url} target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontFamily: FONT_BODY, fontWeight: 600 }}>{s.label}<span className="sr-only"> (opens in a new tab)</span></a></li>
+            <li key={`${s.url}|${s.label}`} style={li}><a href={s.url} target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontFamily: FONT_BODY, fontWeight: 600 }}>{s.label}<span className="sr-only"> (opens in a new tab)</span></a></li>
           ))}
         </ul>
         <p style={para}>The long-run charts read straight from the SIPRI database (saved on {D.built}).</p>

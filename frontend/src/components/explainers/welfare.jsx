@@ -72,7 +72,7 @@ const PAGE = {
       blocks: [
         { cards: [
           { title: "Most benefits follow prices", text: "Most working-age benefits rise each April by the inflation rate (the consumer prices index) of the previous September. That was 3.8%, and it is the rise in PIP, Carer's Allowance and Jobseeker's Allowance this year." },
-          { title: "The State Pension has a floor", text: "Under the triple lock, the State Pension rises by the highest of average earnings growth, prices or 2.5%. This year earnings were the highest, at 4.8%." },
+          { title: "The State Pension has a floor", text: "Under the triple lock, the State Pension rises by the highest of average earnings growth, prices or 2.5%. This year earnings were the highest, at 4.8%. The Autumn Budget 2026 keeps this to April 2029 and adjusts it from April 2030, so the pension then tracks earnings over time." },
           { title: "Universal Credit rose faster", text: "The Universal Credit standard allowance rose by 6.2% this year, faster than prices. Other parts of Universal Credit, such as the child element, rose by 3.8%." },
         ] },
         { note: "Whether the triple lock and the other rules are the right ones is a political argument, not a matter of fact. See the page on ageing and pensions for the pension side." },
@@ -80,12 +80,13 @@ const PAGE = {
     },
     {
       title: "What changed recently",
-      lede: "Two things people ask about: the two-child limit and fraud and error.",
+      lede: "Things people ask about: the two-child limit, fraud and error, and what the latest Budget changed.",
       colour: "#7B5BD6",
       blocks: [
         { timeline: [
           { when: "April 2017", text: "The two-child limit begins: Universal Credit and child tax credit stop adding an amount for a third and later child born from this date." },
           { when: "6 April 2026", text: "The limit ends. The government expected fewer children to be in relative low income as a result." },
+          { when: "28 October 2026", text: "The Autumn Budget says a carer who earns over the Carer's Allowance weekly limit will lose the benefit gradually, through a taper, instead of all at once. The taper is planned for 2030-31 in England and Wales. It also extends the £2,500 Universal Credit surplus earnings threshold for one more year from 1 April 2027." },
           { when: "23 June 2026", text: "The OBR's welfare report finds that fraud and error had fallen back to close to pre-pandemic levels by 2025-26, and expects it to keep falling, though it says this is uncertain." },
         ] },
         { facts: [

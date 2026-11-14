@@ -41,6 +41,11 @@ export default function TransportBuses() {
         />
       </Panel>
 
+      <Panel id="h-tb-budget" title="What the Autumn Budget 2026 said about bus fares" sources={[SOURCES.budget2026]}
+        lead="The Budget on 28 October 2026 said the government will cap single bus fares at £2 in England outside London for one year from 1 January 2027. The Treasury says it will be paid for by moving money within the Department for Energy Security and Net Zero's budget. Fares in the charts above are for years before the cap.">
+        <></>
+      </Panel>
+
       <Panel id="h-tb-law" title="Who decides how buses run" lead={`Outside London, private companies run most local buses, mainly on routes and at fares they choose, with councils able to agree partnerships. London's buses are run for Transport for London on contracts, so it sets routes and fares. The ${BUS_ACT.name}, which received Royal Assent on ${BUS_ACT.assent}, makes it easier for councils in England to take control in the same way (franchising). The main franchising powers came into force on ${BUS_ACT.franchising}.`} sources={[SOURCES.busAct]}>
         <p style={{ ...para, marginTop: 0 }}>The Act also lets councils set up their own bus companies and changes how schemes are assessed. It applies to England only.</p>
         <Caution title="What the figures cannot say">England's bus journeys fell for most of the decade before the pandemic, from a peak in the year to March {peak.year}, while London's peaked in the year to March {busPeak("london").year}. The figures do not show why, and people disagree about whether the cause is who runs the buses, the cost of running them, traffic, home working or the rise of car ownership.</Caution>

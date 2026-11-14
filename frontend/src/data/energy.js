@@ -1,7 +1,7 @@
 // What the Net zero and energy bills page says that is not in energyData.json (built by scripts/build-energy-data.mjs): where each figure comes from,
 // the legal limits and targets, the latest price cap, and the facts the arguments rest on. Each is as the named body published it.
 
-export const CHECKED = "15 October 2026";
+export const CHECKED = "14 November 2026";
 
 export const SOURCES = {
   ghg: { label: "DESNZ, Final UK greenhouse gas emissions statistics: 1990 to 2024", url: "https://www.gov.uk/government/statistics/final-uk-greenhouse-gas-emissions-statistics-1990-to-2024" },
@@ -48,5 +48,5 @@ export const FACTS = {
   ccc7NetCost: "The Climate Change Committee estimates that the net cost of reaching net zero is around £4 billion a year on average between 2025 and 2050, about 0.2% of GDP, with the cost front-loaded and net savings during the Seventh Carbon Budget period, 2038 to 2042.",
   cleanPower: "The government's Clean Power 2030 plan aims for clean sources to produce at least 95% of Great Britain's electricity in a typical weather year by 2030, with unabated gas no more than 5% of generation.",
   billCuts: "At the November 2025 Budget the government said it would scrap the Energy Company Obligation and move 75% of the domestic cost of the Renewables Obligation from bills to taxpayers, from April 2026, to take about £150 a year off the average bill.",
-  vatRelief: "The government has removed VAT from domestic electricity bills from October 2026 to March 2027, which Ofgem says holds electricity bills broadly steady in its October announcement.",
+  vatRelief: "The government has removed VAT from domestic electricity bills from October 2026. The Autumn Budget 2026 extended that to 1 July 2027, which the Treasury expects to take around £50 off the annual price cap in April 2027. Ofgem says the first cut held electricity bills broadly steady in its October announcement.",
 };

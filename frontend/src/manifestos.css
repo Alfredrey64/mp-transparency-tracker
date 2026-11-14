@@ -137,3 +137,8 @@
 .mf-pop-foot span { font: 400 12px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 @media (max-width: 520px) { .mf-pop-head { padding: 16px 58px 14px 18px; } .mf-pop-head h3 { font-size: 24px; } .mf-pop-wrap { padding: 10px; align-items: flex-end; } .mf-pop { max-height: 90vh; } .mf-pop-body { padding: 14px 14px 6px; } .mf-pop-body li { grid-template-columns: 20px minmax(0, 1fr); gap: 10px; padding: 12px; } }
 @media (prefers-reduced-motion: reduce) { .mf-pop-meter i { animation: none; } }
+
+/* Holds the place of the seat chamber while the party figures load, so the grid below it does not jump down when it arrives (its height at phone, tablet and laptop widths). */
+.mf-hold { min-height: 505px; margin: 0 0 28px; }
+@media (min-width: 700px) { .mf-hold { min-height: 563px; } }
+@media (min-width: 1100px) { .mf-hold { min-height: 616px; } }

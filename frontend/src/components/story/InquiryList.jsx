@@ -70,7 +70,7 @@ function Card({ q, i }) {
         </div>
       )}
 
-      <p className="iq-src"><span>Read it in full:</span>{q.sources.map((s) => <a key={s.url} href={s.url} target="_blank" rel="noreferrer">{s.label}</a>)}</p>
+      <p className="iq-src"><span>Read it in full:</span>{q.sources.map((s) => <a key={`${s.url}|${s.label}`} href={s.url} target="_blank" rel="noreferrer">{s.label}</a>)}</p>
     </li>
   );
 }

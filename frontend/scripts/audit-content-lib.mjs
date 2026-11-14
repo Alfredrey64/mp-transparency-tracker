@@ -61,3 +61,40 @@ export function report(sections) {
   lines.push(total ? `**${total} thing${total === 1 ? "" : "s"} to look at.**` : "**All clear.**");
   return { text: lines.join("\n"), total };
 }
+
+// The "Britain in numbers" pages keep the date they were last checked in their data file (`export const CHECKED = "13 November 2026"`). Their figures are rebuilt
+// by the weekly refresh, but the wording and the policy facts beside them are written by hand, so the date is what says a person has looked lately.
+export function staleCheckedConstants(items, now, limit = 45) {
+  return items.flatMap(({ name, checked }) => {
+    const d = parseLongDate(checked);
+    if (!d) return [{ name, problem: "has no readable CHECKED date" }];
+    const age = days(d, now);
+    return age > limit ? [{ name, problem: `its wording was last checked ${age} days ago (${checked}), so look again at the policy facts beside the figures` }] : [];
+  });
+}
+
+// Facts that are true only until a known day: a price cap that runs to 31 December, a tax cut due to end on 1 July, a Budget that was still "coming up".
+// Each row is { date: "YYYY-MM-DD", lead: days before the date to start asking, what, where }. From `lead` days before the date, until `after` days past it, the row is
+// listed, so that someone looks before the fact goes out of date and confirms (or corrects) it after. Past `after` days it is dropped, as it will have been dealt with.
+export function dueDates(rows, now, after = 21) {
+  return rows.flatMap((r) => {
+    const d = new Date(`${r.date}T12:00:00Z`);
+    if (Number.isNaN(d.getTime())) return [{ name: r.what, problem: `has an unreadable date (${r.date})` }];
+    const until = days(now, d);
+    if (until > (r.lead ?? 14) || until < -after) return [];
+    const when = until > 0 ? `falls due in ${until} day${until === 1 ? "" : "s"} (${r.date})` : until === 0 ? `falls due today (${r.date})` : `fell due ${-until} day${until === -1 ? "" : "s"} ago (${r.date})`;
+    return [{ name: r.what, problem: `${when}. Check ${r.where}` }];
+  });
+}
+
+// Ofgem's price cap model, rebuilt weekly into energyData.json, lists every cap period. The page also states the announced figure for the current period by hand (CAP_NOW in
+// src/data/energy.js). When the model has a period that starts after the one on the page, a new cap has been announced and the hand-written figure is out of date.
+export function capBehind(modelLabels, capFrom) {
+  const MON = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+  const last = String(modelLabels.at(-1) ?? "");
+  const m = /^(\w{3})\w* (\d{4})/.exec(last);
+  const from = parseLongDate(capFrom);
+  if (!m || !from || !(m[1].toLowerCase() in MON)) return null;
+  const modelStart = Date.UTC(Number(m[2]), MON[m[1].toLowerCase()], 1);
+  return modelStart > from.getTime() ? last : null;
+}

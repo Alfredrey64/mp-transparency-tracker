@@ -192,7 +192,7 @@ const BASE_POLITICS_TERMS = [
   { term: "Tactical Voting", def: "Voting for a candidate who isn't a voter's first choice, in order to help defeat a candidate they like even less." },
   { term: "Think Tank", def: "An organisation that researches and promotes policy ideas, often, though not always openly, associated with a particular political outlook." },
   { term: "Third Way", def: "A political positioning, associated with New Labour in the 1990s, aiming to blend traditional left-wing social goals with more market-friendly economic policy.", example: "Associated with Tony Blair's New Labour government from 1997." },
-  { term: "Triple Lock", def: "The guarantee that the State Pension rises each year by whichever is highest of inflation, average earnings growth, or 2.5%: a frequent subject of political debate over its cost." },
+  { term: "Triple Lock", def: "The guarantee that the State Pension rises each year by whichever is highest of inflation, average earnings growth, or 2.5%: a frequent subject of political debate over its cost. The Autumn Budget 2026 kept it to April 2029 and said it will be adjusted from April 2030, so the pension then tracks earnings over time." },
   { term: "U-Turn", def: "A government reversing a policy it had previously announced, usually in response to political pressure or a backlash." },
   { term: "Vote Share vs. Seat Share", def: "The percentage of the national vote a party wins, versus the percentage of Commons seats it ends up with, under First-Past-the-Post these two numbers can differ dramatically." },
   { term: "Vox Pop", def: "Brief, informal interviews with members of the public, used by broadcasters and newspapers to gauge a snapshot of popular reaction to a political event." },

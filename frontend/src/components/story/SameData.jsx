@@ -60,7 +60,7 @@ export default function SameData({ panels, note }) {
       <ul className="sd-grid" style={{ "--n": panels.length }}>
         {panels.map((p) => (
           <li key={p.title} className="sd-panel" style={{ "--tc": p.colour }}>
-            <h4>{p.title}</h4>
+            <h3>{p.title}</h3>
             {p.kind === "bars" ? <Bars {...p} /> : <Line {...p} />}
             <p>{p.caption}</p>
           </li>

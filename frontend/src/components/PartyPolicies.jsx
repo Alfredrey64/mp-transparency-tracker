@@ -100,6 +100,7 @@ export default function PartyPolicies({ param }) {
         }
       />
 
+      {parties === null && !failed && <div className="mf-hold" aria-hidden="true" />}
       {parties !== null && !failed && politicians.length > 0 && (
         <Chamber
           politicians={politicians}

@@ -84,7 +84,8 @@
 .st-avatar { display: grid; place-items: center; flex: none; width: 52px; height: 52px; border-radius: 50%; background: var(--tc); color: #fff; font: 800 18px "Figures", "Newsreader", Georgia, serif; box-shadow: 0 0 0 5px color-mix(in srgb, var(--tc) 22%, transparent); }
 .st-case-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 16px; }
 .st-case { display: grid; gap: 14px; align-content: start; padding: 20px; border-radius: 24px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1), inset 4px 0 0 var(--tc); }
-.st-case > header { display: flex; align-items: center; gap: 14px; }
+.st-case > header { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+.st-case > header > div { flex: 1 1 130px; min-width: 0; }
 .st-case h3 { margin: 0; font: 700 20px/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
 .st-case header p { margin: 2px 0 0; font: 600 13px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--tc) 75%, var(--c-ink)); }
 .st-case section { padding: 12px 14px; border-radius: 16px; background: var(--c-paper); border-left: 5px solid var(--tc); }

@@ -198,6 +198,38 @@ jobs:
           path: frontend/.lighthouseci
           retention-days: 7
 
+  # A page that freezes for a second or jumps while it loads feels broken on a phone. This opens the pages that hold the most boxes or load the most, on an emulated phone with a
+  # processor four times slower, scrolls each, and fails if a freeze or a jump is over the limit. Before the box-balancing fix the MPs list froze for 2.4 seconds and several other
+  # pages for over a second on a laptop; they now take under 0.2. The limits are loose (a task over 700 ms, a layout shift over 0.25) because the runner is slower than a laptop.
+  smoothness:
+    name: Smoothness (freezes and jumps on the busiest pages)
+    runs-on: ubuntu-latest
+    env:
+      VITE_SUPABASE_URL: http://127.0.0.1:54321
+      VITE_SUPABASE_ANON_KEY: test-key-not-real
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: nohup node scripts/mock-data-service.mjs 54321 > mock.log 2>&1 &
+      - run: nohup npx vite preview --port 4178 --strictPort > preview.log 2>&1 &
+      - run: npx --yes wait-on@8 http://localhost:4178 --timeout 60000
+      - run: node e2e/smoothness.audit.mjs
+        env:
+          ONLY: home,list,tracker,donors,constituency,budget,formerMps,byElections,offices,taxRates,lords,ageing,care
+          WORKERS: "1"
+          TASK: "700"
+          CLS: "0.25"
+
   routing-offline:
     name: Page addresses, back button and working offline
     runs-on: ubuntu-latest

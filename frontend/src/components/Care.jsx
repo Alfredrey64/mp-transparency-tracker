@@ -109,6 +109,10 @@ function Arguments() {
   return (
     <div>
       <Panel id="h-ac-intro" accent={ACCENT} title="The arguments" lead="Figures show what is spent, who is helped and what people say. They cannot settle how much should be spent or who should pay, which depends on values as well as evidence. These are the arguments people make, not our view." />
+      <Panel id="h-ac-budget" title="What the Autumn Budget 2026 said about the future of care" sources={[SOURCES.budget2026]}
+        lead="The Budget on 28 October 2026 said the government is building a National Care Service for England that will give older people personal care free at the point of use. It will be paid for in part by the savings from adjusting the triple lock on the State Pension from April 2030. The Independent Commission on Adult Social Care, led by Baroness Casey, is now due to report in 2027. These are plans, not yet law, and the Budget does not give the full design or cost of the service.">
+        <></>
+      </Panel>
       <Arg
         id="h-ac-pay" title="Who should pay for adult social care, and how much?"
         shows={`Councils spent ${bnText(last(F.gross.cash))} in ${yearText(LAST_YEAR)}, ${bnText(last(F.net.cash))} after people's contributions of ${bnText(F.flows.clients)}. After inflation that is ${realChangeSince(F.gross.years[0])}% above ${yearText(F.gross.years[0])}. ${group(requestsTotal())} requests for support were received from new clients, and ${group(A.duringTotal)} people received long-term support. The number of people aged 65 and over is projected to rise by ${Math.round(((last(W.over65.values) - W.over65.values[0]) / W.over65.values[0]) * 100)}% between ${W.over65.years[0]} and ${last(W.over65.years)}. ${last(cl.noSupport)}% of carers known to councils said they got no support.`}
@@ -143,7 +147,7 @@ function About() {
       <Panel id="h-cs-src" title="Where the figures come from" lead={`Checked on ${CHECKED}. The charts read from government and Skills for Care data saved on ${C.built}.`}>
         <ul style={{ ...para, margin: 0, paddingLeft: 20 }}>
           {Object.values(SOURCES).map((s) => (
-            <li key={s.url} style={li}><a href={s.url} target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontFamily: FONT_BODY, fontWeight: 600 }}>{s.label}<span className="sr-only"> (opens in a new tab)</span></a></li>
+            <li key={`${s.url}|${s.label}`} style={li}><a href={s.url} target="_blank" rel="noreferrer" style={{ color: COLORS.ink, fontFamily: FONT_BODY, fontWeight: 600 }}>{s.label}<span className="sr-only"> (opens in a new tab)</span></a></li>
           ))}
         </ul>
       </Panel>

@@ -109,6 +109,8 @@ html, body, #root {
 
 /* Phones: no 300ms tap delay or double-tap zoom on controls, and no grey flash
    when something is tapped. */
+/* A slider is a thumb-sized target: the browser draws it only 16px tall, which is hard to hit with a thumb. */
+input[type="range"] { min-height: 28px; }
 button, a, [role="button"], input, select, summary { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 
 /* Notched phones and home-screen apps: keep content clear of the notch, the

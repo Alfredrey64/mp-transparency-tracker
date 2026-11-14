@@ -169,17 +169,30 @@ export default function LineChart({
           );
         })}
 
-        {(refLines ?? []).map((r) => (
-          <g key={`${r.value}-${r.label}`} pointerEvents="none">
-            <line x1={M.l} x2={W - M.r} y1={sy(r.value)} y2={sy(r.value)} stroke={COLORS.ink} strokeWidth="1.4" strokeDasharray="6 4" opacity="0.6" />
-            <text
-              x={M.l + 6} y={sy(r.value) - 6} fontSize="11.5" fontWeight="700" fontFamily={FONT_BODY} fill={COLORS.ink}
-              stroke={COLORS.paperCard} strokeWidth="3.5" paintOrder="stroke" strokeLinejoin="round"
-            >
-              {r.label}
-            </text>
-          </g>
-        ))}
+        {(refLines ?? []).map((r) => {
+          // A long label is broken into lines that fit between the edges of the chart (about 6.3px a character at this size) rather than running off the right-hand side on a phone.
+          const room = Math.max(8, Math.floor((W - M.l - M.r - 12) / 6.3));
+          const rows = [];
+          for (const word of String(r.label).split(" ")) {
+            const last = rows[rows.length - 1];
+            if (last !== undefined && (last + " " + word).length <= room) rows[rows.length - 1] = `${last} ${word}`;
+            else rows.push(word);
+          }
+          const y0 = sy(r.value);
+          // Above the line when there is room for every row, else just under it.
+          const first = y0 - 6 - (rows.length - 1) * 14 >= 12 ? y0 - 6 - (rows.length - 1) * 14 : y0 + 14;
+          return (
+            <g key={`${r.value}-${r.label}`} pointerEvents="none">
+              <line x1={M.l} x2={W - M.r} y1={y0} y2={y0} stroke={COLORS.ink} strokeWidth="1.4" strokeDasharray="6 4" opacity="0.6" />
+              <text
+                x={M.l + 6} y={first} fontSize="11.5" fontWeight="700" fontFamily={FONT_BODY} fill={COLORS.ink}
+                stroke={COLORS.paperCard} strokeWidth="3.5" paintOrder="stroke" strokeLinejoin="round"
+              >
+                {rows.map((t, i) => <tspan key={i} x={M.l + 6} dy={i === 0 ? 0 : 14}>{t}</tspan>)}
+              </text>
+            </g>
+          );
+        })}
 
         <g clipPath={`url(#clip-${gid})`}>
           {area && (

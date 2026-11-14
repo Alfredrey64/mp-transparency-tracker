@@ -16,10 +16,11 @@ describe("add-tax-change", () => {
     expect(JSON.stringify(series["vat.standard"])).toBe(before);
   });
   it("sorts a change that lands before later steps", () => {
-    const out = insertChange(series, { key: "fuel.petrol", date: "2026-11-01", value: 54.5, ann: "2026-10-28" });
+    const out = insertChange(series, { key: "fuel.petrol", date: "2027-02-01", value: 54.5, ann: "2026-10-28" });
     const dates = out.series["fuel.petrol"].map((r) => r[0]);
     expect(dates).toEqual([...dates].sort());
-    expect(dates.indexOf("2026-11-01")).toBeGreaterThan(dates.indexOf("2026-09-01"));
+    expect(dates.indexOf("2027-02-01")).toBeGreaterThan(-1);
+    expect(dates.indexOf("2027-02-01")).toBeLessThan(dates.indexOf("2027-07-01"));
   });
   it("refuses unknown series, bad dates, announcements after the change and duplicate dates", () => {
     expect(insertChange(series, { key: "nope.x", date: "2027-04-01", value: 1 }).problems[0]).toMatch(/no series/);
@@ -30,7 +31,7 @@ describe("add-tax-change", () => {
     expect(insertChange(series, { key: "vat.standard", date: "2027-04-01", value: Number.NaN }).problems[0]).toMatch(/number/);
   });
   it("accepts none for a tax that stops, and warns when the value does not change", () => {
-    expect(insertChange(series, { key: "vat.electricity", date: "2027-04-01", value: "none", ann: "2026-10-28" }).series["vat.electricity"].at(-1)[1]).toBeNull();
+    expect(insertChange(series, { key: "vat.electricity", date: "2027-10-01", value: "none", ann: "2026-10-28" }).series["vat.electricity"].at(-1)[1]).toBeNull();
     expect(insertChange(series, { key: "vat.standard", date: "2027-04-01", value: 20, ann: "2026-10-28" }).notes.join(" ")).toMatch(/not a change/);
   });
   it("adds an event name in date order and replaces an existing one", () => {

@@ -227,21 +227,21 @@ export default function FormerMps() {
               <button
                 onClick={() => withScrollPreserved(() => setExpanded(isOpen ? null : m.parliament_member_id))}
                 style={{
-                  display: "flex", alignItems: "center", gap: 14, padding: "12px 0", width: "100%",
+                  display: "flex", flexWrap: "wrap", alignItems: "center", gap: "6px 14px", padding: "12px 0", width: "100%",
                   background: "none", border: "none", cursor: "pointer", textAlign: "left",
                 }}
               >
                 <Avatar url={m.thumbnail_url} name={m.name} color={color} />
-                <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{ minWidth: 0, flex: "1 1 150px" }}>
                   <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 14.5, color: COLORS.ink }}>{m.name}</div>
                   <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 2 }}>
                     <span style={{ width: 6, height: 6, borderRadius: "50%", background: color, flexShrink: 0 }} />
-                    <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <span style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>
                       {m.party} · {m.constituency}
                     </span>
                   </div>
                 </div>
-                <div style={{ textAlign: "right", flexShrink: 0 }}>
+                <div style={{ textAlign: "right", flex: "0 1 auto", marginLeft: "auto" }}>
                   <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink }}>{formatDate(m.membership_end_date)}</div>
                   <div style={{ fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, color: readable(reasonColor), marginTop: 2 }}>{m.membership_end_reason}</div>
                 </div>

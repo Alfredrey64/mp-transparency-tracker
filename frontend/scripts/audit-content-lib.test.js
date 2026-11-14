@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseLongDate, staleExplainers, staleData, brokenLinks, report } from "./audit-content-lib.mjs";
+import { parseLongDate, staleExplainers, staleData, staleCheckedConstants, dueDates, capBehind, brokenLinks, report } from "./audit-content-lib.mjs";
 
 const now = new Date("2026-10-30T12:00:00Z");
 
@@ -49,5 +49,37 @@ describe("report", () => {
     expect(r.total).toBe(2);
     expect(r.text).toContain("- a: p");
     expect(r.text).toContain("2 things to look at");
+  });
+});
+
+describe("staleCheckedConstants", () => {
+  it("flags a data file whose hand-checked date is older than the limit, or unreadable", () => {
+    const out = staleCheckedConstants([{ name: "a", checked: "30 October 2026" }, { name: "b", checked: "1 August 2026" }, { name: "c", checked: "soon" }], now);
+    expect(out.map((x) => x.name)).toEqual(["b", "c"]);
+    expect(out[0].problem).toContain("90 days");
+  });
+});
+
+describe("dueDates", () => {
+  const rows = [
+    { date: "2026-11-05", lead: 14, what: "soon", where: "x" },
+    { date: "2026-10-20", lead: 14, what: "just passed", where: "y" },
+    { date: "2026-09-01", lead: 14, what: "long gone", where: "z" },
+    { date: "2027-06-30", lead: 30, what: "far off", where: "w" },
+  ];
+  it("lists a row from `lead` days before its date until three weeks after, and no other time", () => {
+    const out = dueDates(rows, now);
+    expect(out.map((x) => x.name)).toEqual(["soon", "just passed"]);
+    expect(out[0].problem).toContain("falls due in 6 days");
+    expect(out[1].problem).toContain("fell due 10 days ago");
+  });
+  it("reports a date it cannot read", () => { expect(dueDates([{ date: "nope", what: "bad", where: "x" }], now)[0].problem).toContain("unreadable"); });
+});
+
+describe("capBehind", () => {
+  it("is null while the page states the newest cap period and names the newer period once Ofgem's model has one", () => {
+    expect(capBehind(["Jul 2026 - Sep 2026", "Oct 2026 - Dec 2026"], "1 October 2026")).toBeNull();
+    expect(capBehind(["Oct 2026 - Dec 2026", "Jan 2027 - Mar 2027"], "1 October 2026")).toBe("Jan 2027 - Mar 2027");
+    expect(capBehind([], "1 October 2026")).toBeNull();
   });
 });

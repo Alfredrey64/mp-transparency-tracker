@@ -11,6 +11,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { readOds } from "../../ods-lite.js";
+import { budgetApplied, latestAnnouncement } from "./tax-budget-lib.mjs";
 
 const SERIES = JSON.parse(readFileSync(fileURLToPath(new URL("../src/data/taxSeries.json", import.meta.url)), "utf8"));
 const API = "https://www.gov.uk/api/content";
@@ -69,6 +70,22 @@ const checks = [];
 const check = (name, run) => checks.push({ name, run });
 
 // Each run returns [[what, official, ours]].
+// The Budget itself: the tables below only compare rates the page already holds, so a Budget nobody has added yet would pass them. This finds the newest
+// "Overview of tax legislation and rates" on GOV.UK (one is published with every Budget and tax statement) and checks that some step on the page was announced on its day.
+check("Newest Budget has been applied", async () => {
+  const q = encodeURIComponent('"overview of tax legislation and rates"');
+  const res = await fetch(`https://www.gov.uk/api/search.json?q=${q}&count=40&fields=title&fields=link&fields=public_timestamp`, { headers: HEADERS });
+  if (!res.ok) throw new Error(`search: ${res.status}`);
+  const hits = (await res.json()).results.filter((r) => /overview of tax legislation and rates/i.test(r.title));
+  if (!hits.length) throw new Error("no overview pages found");
+  const pages = await Promise.all(hits.map(async (h) => ({ title: h.title, date: (await getJson(h.link)).first_published_at?.slice(0, 10) })));
+  const newest = pages.filter((p) => p.date && p.date <= today).sort((a, b) => (a.date < b.date ? 1 : -1))[0];
+  if (!newest) throw new Error("no dated overview page");
+  const done = budgetApplied(SERIES, newest.date);
+  const num8 = (d) => Number(String(d).replaceAll("-", ""));
+  return [[`${newest.title} (${newest.date}), as yyyymmdd; ours is the newest announcement on the page${done ? "" : `, ${latestAnnouncement(SERIES)}`}`, num8(newest.date), done ? num8(newest.date) : num8(latestAnnouncement(SERIES) ?? "0")]];
+});
+
 check("Tobacco duty (latest row)", async () => {
   const t = (await tables("/government/statistics/tobacco-bulletin/historical-tobacco-duty-rates")).flat();
   const rows = t.filter((r) => iso(r[0]));

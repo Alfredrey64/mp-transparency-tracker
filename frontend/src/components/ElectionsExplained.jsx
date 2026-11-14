@@ -168,7 +168,7 @@ export default function ElectionsExplained({ onOpen }) {
         <div style={{ marginTop: 10 }}>
           {FAQ.map(([q, a]) => (
             <details key={q} style={{ borderTop: `1px solid ${COLORS.hairline}`, padding: "12px 0" }}>
-              <summary style={{ cursor: "pointer", fontFamily: FONT_BODY, fontSize: 15.5, fontWeight: 700, color: COLORS.ink }}>{q}</summary>
+              <summary style={{ cursor: "pointer", padding: "13px 0", fontFamily: FONT_BODY, fontSize: 15.5, fontWeight: 700, color: COLORS.ink }}>{q}</summary>
               <p style={{ ...para, marginTop: 8 }}>{a}</p>
             </details>
           ))}

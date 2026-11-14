@@ -74,7 +74,7 @@ export function SourceLine({ sources }) {
     <p style={{ fontFamily: FONT_BODY, fontSize: 12.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "14px 0 0" }}>
       Source:{" "}
       {sources.map((s, i) => (
-        <span key={s.url}>
+        <span key={`${s.url}|${s.label}`}>
           {i > 0 && "; "}
           <a href={s.url} target="_blank" rel="noreferrer" style={{ color: COLORS.inkSoft }}>{s.label}<span className="sr-only"> (opens in a new tab)</span></a>
         </span>
