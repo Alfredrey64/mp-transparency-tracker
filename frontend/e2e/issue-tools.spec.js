@@ -203,7 +203,8 @@ test("the Brexit map shows the vote and migration, and a region on all three mea
 test("the NHS map changes with the measure and shows a region on every measure", async ({ page }) => {
   await page.goto("/nhs/waiting");
   const map = card(page, "h-hw-map");
-  await expect(map).toContainText("North East is highest");
+  // Which region is highest changes with each month's figures, so the test checks the sentence's shape, not one region's name.
+  await expect(map).toContainText(/\w[\w ]+ is highest \(\d[\d.,]*%\) and [\w ]+ lowest/);
   await map.getByRole("button", { name: "Waiting list per 1,000 people" }).click();
   await expect(map).toContainText("is highest");
   await map.getByRole("list", { name: /by region, highest first/ }).getByRole("button", { name: /London/ }).click();
