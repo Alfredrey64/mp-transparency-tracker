@@ -230,6 +230,19 @@ jobs:
           SETTLE: "1"
           TASK: "700"
           CLS: "0.25"
+      # Moving from page to page inside the site, which is what a visitor does: fails on a blank screen between two pages, a page that jumps, or a scroll that moves by itself. The
+      # pages named are the ones that have each broken it before (the sector pages' first visit, Standards, Rebels, the pages that fetch before they show).
+      - run: node e2e/navigation.audit.mjs
+        env:
+          ONLY: prices,publicFinances,standards,rebels,list,tracker,budget,lords,ageing,care,statutoryInstruments,offices,marginals,compareSeats,indicators
+          PHONE: "1"
+          CLS: "0.25"
+          BLANK: "6"
+      # Diagrams that show their finished state and then snap back to the start to play look like a flash. Opens the pages with the most animated diagrams and watches every frame.
+      - run: node e2e/flash.audit.mjs
+        env:
+          ONLY: home,statutoryInstruments,thinkTanks,devolved,budget,ageing,care
+          WORKERS: "1"
 
   routing-offline:
     name: Page addresses, back button and working offline
