@@ -18,21 +18,32 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const STEPS = [
   { name: "inequality", script: "build-inequality-data.mjs", out: "inequalityData.json", what: "Inequality: income, poverty and wealth (ONS, DWP)" },
   { name: "place", script: "build-place-data.mjs", out: "inequalityPlace.json", what: "Inequality: regions and local areas (DWP, ONS)" },
-  { name: "abroad", script: "build-international-inequality-data.mjs", out: "inequalityAbroad.json", what: "Inequality: other countries (OECD)" },
+  { name: "abroad", script: "build-international-inequality-data.mjs", out: "inequalityAbroad.json", what: "Inequality: other countries (OECD)", oecd: { everyDays: 30, tolerateDays: 90 } },
   { name: "defence", script: "build-defence-data.mjs", out: "defenceData.json", what: "Defence: spending and the armed forces (SIPRI, Ministry of Defence)" },
   { name: "education", script: "build-education-data.mjs", out: "educationData.json", what: "Education (Department for Education)" },
   { name: "ageing", script: "build-ageing-data.mjs", out: "ageingData.json", what: "Ageing and pensions: pension against prices and earnings (ONS)" },
-  { name: "brexit", script: "build-brexit-data.mjs", out: "brexitData.json", what: "Brexit: GDP against other economies, trade, migration (OECD, ONS, HMRC)" },
+  { name: "brexit", script: "build-brexit-data.mjs", out: "brexitData.json", what: "Brexit: GDP against other economies, trade, migration (OECD, ONS, HMRC)", oecd: { everyDays: 21, tolerateDays: 60 } },
   { name: "energy", script: "build-energy-data.mjs", out: "energyData.json", what: "Net zero and energy bills: emissions, electricity, bills, price cap (DESNZ, Ofgem, ONS, World Bank)" },
   { name: "union", script: "build-devolution-data.mjs", out: "devolutionData.json", what: "Devolution and the union: spending, public finances and output by nation and region (HM Treasury, ONS)" },
   { name: "transport", script: "build-transport-data.mjs", out: "transportData.json", what: "Transport: roads, cars, road deaths, buses and rail (DfT, ORR)" },
   { name: "care", script: "build-care-data.mjs", out: "careData.json", what: "Social care and childcare: spending, activity, carers, workforce, funded childcare (DHSC, NHS England, Skills for Care, DfE)" },
-  { name: "trust", script: "build-trust-data.mjs", out: "trustData.json", what: "Trust in politics: trust in government and institutions (OECD Trust Survey)" },
+  { name: "trust", script: "build-trust-data.mjs", out: "trustData.json", what: "Trust in politics: trust in government and institutions (OECD Trust Survey)", oecd: { everyDays: 60, tolerateDays: 150 } },
   { name: "nhs", script: "build-health-data.mjs", out: "healthData.json", what: "The NHS: waiting times by region, series, comparisons (NHS England, ONS, World Bank)" },
 ];
 
+// The OECD's data service lets one address make only a few requests a minute and answers the rest with a 429 or a Cloudflare "Just a moment" page (a 500 in some cases), and a
+// GitHub run shares its address with other people's jobs. Its figures change once a year to once a quarter, so an OECD step runs only when its file is older than `everyDays`
+// (--force overrides), and if the OECD refuses anyway the step is reported as "kept" rather than failed for as long as the saved file is younger than `tolerateDays`. After that
+// it fails as before, so a source that has really gone is still noticed. The daily content check also flags a file that has stopped refreshing.
+const DAY = 24 * 60 * 60 * 1000;
+const builtAge = (text) => {
+  const m = /"built":\s*"(\d{4}-\d{2}-\d{2})/.exec(text ?? "");
+  return m ? (Date.now() - Date.parse(m[1])) / DAY : Infinity;
+};
+
 const arg = (name) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : null; };
 const only = arg("--only");
+const force = process.argv.includes("--force");
 const summaryPath = arg("--summary");
 const results = [];
 
@@ -40,6 +51,11 @@ for (const step of STEPS) {
   if (only && step.name !== only) continue;
   const file = path.join(here, "../src/data", step.out);
   const before = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : null;
+  if (step.oecd && !force && !only && builtAge(before) < step.oecd.everyDays) {
+    results.push({ ...step, ok: true, changed: false, skipped: true, seconds: 0, error: null });
+    console.log(`skipped ${step.name}: built ${Math.round(builtAge(before))} days ago, next due after ${step.oecd.everyDays}`);
+    continue;
+  }
   const started = Date.now();
   const run = spawnSync(process.execPath, [path.join(here, step.script)], { encoding: "utf8", timeout: 15 * 60 * 1000, cwd: path.join(here, "..") });
   const ok = run.status === 0;
@@ -51,8 +67,9 @@ for (const step of STEPS) {
   // If only the built date moved, put the old file back so the pull request holds real changes only.
   if (ok && !changed && before !== null) fs.writeFileSync(file, before);
   const tail = ((run.stderr || run.stdout) ?? "").trim().split("\n").slice(-3).join(" ").slice(0, 300);
-  results.push({ ...step, ok, changed, seconds: Math.round((Date.now() - started) / 1000), error: ok ? null : tail || `exit ${run.status}` });
-  console.log(`${ok ? (changed ? "CHANGED" : "same   ") : "FAILED "} ${step.name} (${results.at(-1).seconds}s)${ok ? "" : `: ${results.at(-1).error}`}`);
+  const kept = !ok && step.oecd && builtAge(before) < step.oecd.tolerateDays;
+  results.push({ ...step, ok: ok || kept, changed, kept, seconds: Math.round((Date.now() - started) / 1000), error: ok ? null : tail || `exit ${run.status}` });
+  console.log(`${ok ? (changed ? "CHANGED" : "same   ") : kept ? "KEPT   " : "FAILED "} ${step.name} (${results.at(-1).seconds}s)${ok ? "" : `: ${results.at(-1).error}`}`);
 }
 
 const lines = [
@@ -62,7 +79,7 @@ const lines = [
   "",
   "| Page data | Result |",
   "| --- | --- |",
-  ...results.map((r) => `| ${r.what} | ${r.ok ? (r.changed ? "New figures" : "No change") : `Failed: ${r.error.replace(/\|/g, "/")}`} |`),
+  ...results.map((r) => `| ${r.what} | ${r.skipped ? `Not due yet (rebuilt every ${r.oecd.everyDays} days)` : r.kept ? `The OECD would not answer, so the figures from ${Math.round(builtAge(fs.readFileSync(path.join(here, "../src/data", r.out), "utf8")))} days ago stay` : r.ok ? (r.changed ? "New figures" : "No change") : `Failed: ${r.error.replace(/\|/g, "/")}`} |`),
   "",
   results.some((r) => !r.ok) ? "**A step failed.** Its file was left as it was. The usual cause is a publisher moving a file: check the address at the top of that script." : "Every step ran.",
   results.some((r) => r.changed) ? "Read the changes before merging: new figures can make a sentence on the page out of date, and the tests that tie the text to the data may fail on purpose." : "",

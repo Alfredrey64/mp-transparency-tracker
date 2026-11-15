@@ -17,6 +17,16 @@ describe("weekly data refresh", () => {
   it("names data files that exist", () => {
     for (const m of refresh.matchAll(/out: "([^"]+\.json)"/g)) expect(fs.existsSync(path.join(process.cwd(), "src", "data", m[1])), m[1]).toBe(true);
   });
+  it("asks the OECD only now and then, and does not fail a run over a short OECD outage", () => {
+    // The OECD throttles one address after a few requests; three OECD steps every week got the whole run refused (see the comment in refresh-issue-data.mjs).
+    const steps = [...refresh.matchAll(/\{ name: "(\w+)"[^\n]*?oecd: \{ everyDays: (\d+), tolerateDays: (\d+) \}/g)];
+    expect(steps.map((s) => s[1]).sort()).toEqual(["abroad", "brexit", "trust"]);
+    for (const [, name, every, tolerate] of steps) {
+      expect(Number(every), name).toBeGreaterThanOrEqual(14);
+      expect(Number(tolerate), name).toBeGreaterThan(Number(every) * 2);
+    }
+    expect(refresh).toContain("--force");
+  });
   it("is run by a weekly workflow that opens a pull request instead of changing the site", () => {
     expect(workflow).toContain("cron:");
     expect(workflow).toContain("gh pr create");
