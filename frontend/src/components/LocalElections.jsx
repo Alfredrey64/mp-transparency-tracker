@@ -12,6 +12,7 @@ import CountUp from "./CountUp";
 import "../localelections.css";
 import { glide } from "../lib/scrollBehavior";
 
+import Loading from "./Loading";
 // Local elections: when your council next votes, what is up for grabs, and which councils vote on each date. Everything comes from
 // councilsIndex.json (the same file as the Your council page), so it updates when that does.
 
@@ -186,7 +187,7 @@ export default function LocalElections() {
     <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader icon={IconCalendar} kicker="Your say" title="Local elections" subtitle="When your council next votes, what is up for grabs, and how many councils vote on each date." />
       {failed && <LoadFailedNote item="the council data" />}
-      {!failed && !data && <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft }}>Loading the dates…</p>}
+      {!failed && !data && <Loading compact />}
       {data && (
         <>
           {big && (

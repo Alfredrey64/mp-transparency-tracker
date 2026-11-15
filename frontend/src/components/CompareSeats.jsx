@@ -15,6 +15,7 @@ import { card, cardTitle, pillStyle } from "../lib/onsStyles";
 import { navigate } from "../lib/route";
 import "../compareseats.css";
 
+import Loading from "./Loading";
 // Two constituencies side by side: who holds them, how close the result was, past elections, turnout and deprivation. The
 // pair is in the address (#/compareSeats/Hackney North and Stoke Newington~Gainsborough) so a comparison can be linked to.
 
@@ -209,7 +210,7 @@ export default function CompareSeats({ param }) {
     <div className="regions-wrap" style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader icon={IconSeatCompare} title="Compare constituencies" subtitle="Pick any two seats to see who holds them, how close the results were, how they have voted before and how deprived each area is." share={false} />
       {failed && <LoadFailedNote item="the constituency data" />}
-      {!failed && !data && <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft }}>Loading the constituencies…</p>}
+      {!failed && !data && <Loading />}
       {data && (
         <>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))", gap: "14px 20px", alignItems: "end" }}>

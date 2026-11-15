@@ -5,7 +5,7 @@ import { loadAllCareerDetail } from "../lib/careerDetail";
 import { buildOffices, searchOffices, OFFICE_KINDS } from "../lib/offices";
 import { explainOffice } from "../lib/officeExplainers";
 import { duration, monthYear } from "../lib/careerTimeline";
-import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_DISPLAY, PAGE_PADDING } from "../theme";
 import { partyColour } from "../lib/format";
 import { PageHeader } from "./shared";
 import { LoadFailedNote } from "./MpCards";
@@ -15,6 +15,7 @@ import "../offices.css";
 import { navigate } from "../lib/route";
 import Unfold from "./Unfold";
 
+import Loading from "./Loading";
 // Who has held a government or shadow post, for anyone sitting in Parliament
 // today, from their biography records. It can't see people who have left, so
 // the page says it is a partial history and not the full list of office holders.
@@ -161,7 +162,7 @@ export default function Offices({ initialQuery = "" }) {
       />
 
       {failed && <div style={{ marginTop: 24 }}><LoadFailedNote item="the office records" /></div>}
-      {!data && !failed && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>Loading every career record…</div>}
+      {!data && !failed && <Loading />}
 
       {data && (
         <>

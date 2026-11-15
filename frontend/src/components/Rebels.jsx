@@ -18,6 +18,7 @@ import { Tile, Figure } from "./NumbersKit";
 import BarRow from "./BarRow";
 import MembersModal from "./MembersModal";
 
+import Loading from "./Loading";
 // Who votes against their own party, and on what. It reuses the layout and the
 // tap-to-see-who pop-up from Parliament in Numbers. The numbers come from the
 // same voting records as the Rankings page; "against" means against the
@@ -76,7 +77,7 @@ export default function Rebels({ onNavigate }) {
         subtitle="Most MPs vote with the majority of their party almost every time. This page shows the exceptions: who breaks ranks, which parties split most, and which votes caused the biggest rebellions." share={false}
       />
 
-      {!r && !failed && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>Loading votes…</div>}
+      {!r && !failed && <Loading />}
       {failed && <div style={{ marginTop: 24 }}><LoadFailedNote item="the voting records" /></div>}
 
       {r && r.countedVotes === 0 && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>No recorded votes to work from yet.</div>}

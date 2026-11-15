@@ -212,6 +212,10 @@ function YearHeading({ year, count }) {
   );
 }
 
+// Stand-ins used only while the list is loading, drawn invisibly so the page keeps its shape (see the note above the stat cards).
+const NO_STATS = { total: 0, suspended: 0, resigned: 0 };
+const PLACEHOLDER_YEARS = Array.from({ length: 8 }, (_, i) => ({ year: String(2018 + i), parts: [{ label: "Reports", value: 1, colour: "#B5533C" }] }));
+
 export default function StandardsReports({ onSelectPolitician }) {
   const [reports, setReports] = useState(null);
   const [failed, setFailed] = useState(false);
@@ -275,6 +279,8 @@ export default function StandardsReports({ onSelectPolitician }) {
     return Array.from(map.entries()).sort((a, b) => (b[0] === "Undated" ? -1 : a[0] === "Undated" ? 1 : b[0] - a[0]));
   }, [filtered]);
 
+  const pending = reports === null;
+
   return (
     <div style={{ maxWidth: 1100, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader
@@ -284,17 +290,19 @@ export default function StandardsReports({ onSelectPolitician }) {
         subtitle="Every report the Commons Committee on Standards has published about a named MP's conduct. The committee's separate work reviewing the rules is not included."
       />
 
-      {stats && (
-        <div className="box-row" style={{ "--n": 3, "--min": "100px", "--gap": "12px", marginTop: 24, marginBottom: 20 }}>
-          <StatCard value={stats.total} label="Reports on record" color={COLORS.accent} index={0} />
-          <StatCard value={stats.suspended} label="Ended in suspension" color="#B5533C" index={1} />
-          <StatCard value={stats.resigned} label="Resigned or recalled" color="#9C3B3B" index={2} />
+      {/* While the reports are on their way these two blocks are drawn invisibly at their full size, so the note and the filters below them stay put when the figures arrive
+          (they used to be pushed down the screen by the stat cards and the chart appearing above them). */}
+      {(stats || pending) && (
+        <div className="box-row" style={{ "--n": 3, "--min": "100px", "--gap": "12px", marginTop: 24, marginBottom: 20, visibility: pending ? "hidden" : undefined }}>
+          <StatCard value={(stats ?? NO_STATS).total} label="Reports on record" color={COLORS.accent} index={0} />
+          <StatCard value={(stats ?? NO_STATS).suspended} label="Ended in suspension" color="#B5533C" index={1} />
+          <StatCard value={(stats ?? NO_STATS).resigned} label="Resigned or recalled" color="#9C3B3B" index={2} />
         </div>
       )}
 
-      {byYear.length > 1 && (
-        <GlanceCard id="h-sr-glance" title="Reports by year" lead="How many reports the committee published about a named MP in each year." style={{ marginTop: 0, marginBottom: 20 }}>
-          <YearColumns years={byYear} label="Number of standards reports published each year" />
+      {(byYear.length > 1 || pending) && (
+        <GlanceCard id="h-sr-glance" title="Reports by year" lead="How many reports the committee published about a named MP in each year." style={{ marginTop: 0, marginBottom: 20, visibility: pending ? "hidden" : undefined }}>
+          <YearColumns years={pending ? PLACEHOLDER_YEARS : byYear} label="Number of standards reports published each year" />
         </GlanceCard>
       )}
 

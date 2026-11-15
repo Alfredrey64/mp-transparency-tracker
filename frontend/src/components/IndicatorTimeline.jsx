@@ -18,6 +18,7 @@ import { COMPARE_STORIES } from "../data/compareStories";
 import { scrollRegion } from "../lib/a11y";
 import CloseX from "./CloseX";
 
+import Loading from "./Loading";
 // Pick a few measures and watch how they moved over time, side by side, with
 // who was in government shaded behind them. Press play to watch the story
 // unfold, or drag the slider to a moment and compare it with today.
@@ -244,7 +245,7 @@ export default function IndicatorTimeline({ param }) {
       />
 
       {failed && <div style={{ marginTop: 24 }}><LoadFailedNote item="these figures" /></div>}
-      {!everything && !failed && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>Loading the figures…</div>}
+      {!everything && !failed && <Loading />}
 
       {everything && (
         <>

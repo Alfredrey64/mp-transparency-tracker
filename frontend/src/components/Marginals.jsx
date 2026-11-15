@@ -13,6 +13,7 @@ import { card, cardTitle, pillStyle } from "../lib/onsStyles";
 import { Segmented } from "./DeprivationControls";
 import "../marginals.css";
 
+import Loading from "./Loading";
 // Marginal seats: how close each seat was at the last election, how many voters would have to change their minds to change who
 // wins it, and a tool to try "what if" shifts. Everything comes from each seat's latest result; lib/swing.js has the arithmetic.
 // The page talks about votes and "out of every 100 voters" rather than swing, which is explained once and then left alone.
@@ -430,7 +431,7 @@ export default function Marginals() {
     <div className="regions-wrap" style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
       <PageHeader icon={IconSwing} title="Marginal seats" subtitle="Some seats are won by thousands of votes, others by a handful. See how close your seat was, which ones could change hands next time, and try your own what-if." />
       {failed && <LoadFailedNote item="the election results" />}
-      {!failed && !data && <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft }}>Loading the results…</p>}
+      {!failed && !data && <Loading />}
       {data && rows.length > 0 && (
         <>
           <section aria-labelledby="h-spectrum" className="regions-wrap" style={{ ...card, marginTop: 4, padding: "clamp(18px, 3.5vw, 30px)", background: `${COLORS.paperCard}` }}>

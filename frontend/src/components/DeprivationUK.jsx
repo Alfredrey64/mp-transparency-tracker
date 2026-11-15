@@ -8,6 +8,7 @@ import { hexPosition, hexPoints, boundsOf, normSeat } from "../lib/seatMap";
 import { classColour, classOf } from "../lib/regionData";
 import hexData from "../data/seatHexes.json";
 
+import Loading from "./Loading";
 // Deprivation across the whole UK on one map: every Westminster constituency as a hexagon, coloured by the share of its
 // area that is in the most deprived tenth of its OWN nation. England, Wales, Scotland and Northern Ireland each rank only
 // themselves, so a nation as a whole is 10% by definition: the map shows where inside each nation the deprivation is, and
@@ -102,7 +103,7 @@ export default function DeprivationUK({ kind = "imd" }) {
   }, [cells, query]);
 
   if (failed) return <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, marginTop: 24 }}>The map could not be loaded. Refresh the page to try again.</p>;
-  if (!data) return <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, marginTop: 24 }}>Loading the map…</p>;
+  if (!data) return <Loading compact />;
 
   const kindLabel = KINDS.uk.find((k) => k.id === kind)?.label ?? "Overall deprivation";
   const card2 = shown?.seat;

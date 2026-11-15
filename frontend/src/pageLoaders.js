@@ -9,6 +9,10 @@ import { loadMpCareers } from "./lib/mpCareersData";
 // A data file that fails to arrive is left for the page to ask for again and to report.
 const withData = (page, ...data) => () => Promise.all([page(), ...data.map((d) => d().catch(() => {}))]).then(([m]) => m);
 
+// The fourteen sector pages are one component. They share one loader function, because the code that fetches a page ahead of showing it looks the page up by its loader: with a loader
+// each, preloading Prices did nothing for the Economy entry the page actually renders, so the first sector page anyone opened showed an empty screen for a moment after the old page went.
+const sectorPage = () => import("./components/SectorPage");
+
 export const LOADERS = {
   appg: () => import("./components/AppgMemberships"),
   howitworks: () => import("./components/HowParliamentWorks"),
@@ -59,23 +63,23 @@ export const LOADERS = {
   accessibility: () => import("./components/Accessibility"),
   whatsnew: () => import("./components/WhatsNew"),
   list: withData(() => import("./components/PoliticianList"), loadMpCareers),
-  economy: () => import("./components/SectorPage"),
-  prices: () => import("./components/SectorPage"),
-  jobs: () => import("./components/SectorPage"),
-  publicFinances: () => import("./components/SectorPage"),
-  population: () => import("./components/SectorPage"),
-  health: () => import("./components/SectorPage"),
-  housing: () => import("./components/SectorPage"),
-  crime: () => import("./components/SectorPage"),
-  trade: () => import("./components/SectorPage"),
-  environment: () => import("./components/SectorPage"),
-  immigration: () => import("./components/SectorPage"),
-  business: () => import("./components/SectorPage"),
+  economy: sectorPage,
+  prices: sectorPage,
+  jobs: sectorPage,
+  publicFinances: sectorPage,
+  population: sectorPage,
+  health: sectorPage,
+  housing: sectorPage,
+  crime: sectorPage,
+  trade: sectorPage,
+  environment: sectorPage,
+  immigration: sectorPage,
+  business: sectorPage,
   regions: () => import("./components/RegionsPage"),
   answers: () => import("./components/AnswersPage"),
   deprivation: () => import("./components/DeprivationPage"),
-  tax: () => import("./components/SectorPage"),
-  rates: () => import("./components/SectorPage"),
+  tax: sectorPage,
+  rates: sectorPage,
   indicators: () => import("./components/IndicatorTimeline"),
   howtovote: () => import("./components/HowToVote"),
   myBallot: () => import("./components/MyBallot"),

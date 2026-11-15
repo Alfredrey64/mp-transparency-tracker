@@ -14,6 +14,7 @@ import data from "../data/deprivation.json";
 import { card, cardTitle, pillStyle } from "../lib/onsStyles";
 import Unfold from "./Unfold";
 
+import Loading from "./Loading";
 // Deprivation: the English Indices of Deprivation 2025, by region and by local authority, plus Wales, Scotland and Northern
 // Ireland's own indices (DeprivationNations.jsx) and a map of every constituency in the UK (DeprivationUK.jsx). Each nation's
 // index is built differently and cannot be compared with the others.
@@ -143,7 +144,7 @@ function AreaList({ domain, domainLabel }) {
         </div>
         <SelectField id="dep-region" label="Region" value={region} onChange={setRegion} options={[{ id: "all", label: "All of England" }, ...Object.keys(data.regions).map((k) => ({ id: k, label: nameOf(k) }))]} />
       </div>
-      {loading && <p style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading the constituencies…</p>}
+      {loading && <Loading compact />}
       {!loading && front && (
         <div className="dep-two">
           <div>

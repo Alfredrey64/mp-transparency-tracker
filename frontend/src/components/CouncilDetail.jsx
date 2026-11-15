@@ -12,6 +12,7 @@ import ShareButton from "./ShareButton";
 import { goHash, goCouncil, HISTORY_COLOURS, HISTORY_LABELS, HKEYS, input, linkButton } from "./councilsUi";
 import { Card, SectionHead, StatCard, Chip, Arrow, Bar } from "./CouncilsParts";
 
+import Loading from "./Loading";
 // ---- One council --------------------------------------------------------------
 export function HistoryChart({ rows }) {
   if (rows.length < 2) return null;
@@ -169,7 +170,7 @@ export function CouncilView({ council, data, wardName, countyId, detail, failed 
           </div>
         )}
         {failed && <LoadFailedNote item="this council's councillors" />}
-        {!failed && !detail && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft }}>Loading the councillors…</div>}
+        {!failed && !detail && <Loading compact />}
         {detail && (
           <>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", marginBottom: 14 }}>

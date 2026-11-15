@@ -21,6 +21,7 @@ import ShareButton from "./ShareButton";
 import { navigate } from "../lib/route";
 import { glide } from "../lib/scrollBehavior";
 
+import Loading from "./Loading";
 // Your Constituency and the seat map, as one page. The map is the way in:
 // every one of the 650 seats is a hexagon, coloured by whichever view is
 // chosen. Tap a seat and everything about it opens beside the map (result,
@@ -272,7 +273,7 @@ export default function ConstituencyHub({ seat, onSelectPolitician }) {
       />
 
       {failed && <div style={{ marginTop: 24 }}><LoadFailedNote item="the constituency data" /></div>}
-      {!failed && cells.length === 0 && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, marginTop: 24 }}>Loading the map…</div>}
+      {!failed && cells.length === 0 && <Loading compact />}
 
       {cells.length > 0 && (
         <>
