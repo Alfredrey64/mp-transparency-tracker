@@ -25,10 +25,6 @@ concurrency:
 #
 # continue-on-error is set on every fetch step deliberately: each one writes to its own, independent table or file, so one script having a bad day
 # (a flaky upstream API, a transient network error) shouldn't stop the others, and the final job still publishes whatever succeeded.
-env:
-  # Turns the last error of any failing script into an annotation on the run (see ci-notes.js).
-  NODE_OPTIONS: --import ${{ github.workspace }}/ci-notes.js
-
 jobs:
   gate:
     name: "Is a refresh due?"
@@ -40,6 +36,9 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 100
+      - name: Report failing scripts as annotations
+        # Set after checkout, not at the top of the file: the checkout action runs on Node too and would fail loading a file that is not there yet.
+        run: echo "NODE_OPTIONS=--import $GITHUB_WORKSPACE/ci-notes.js" >> "$GITHUB_ENV"
       - name: Decide
         id: due
         env:
@@ -64,6 +63,9 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v7
+      - name: Report failing scripts as annotations
+        # Set after checkout, not at the top of the file: the checkout action runs on Node too and would fail loading a file that is not there yet.
+        run: echo "NODE_OPTIONS=--import $GITHUB_WORKSPACE/ci-notes.js" >> "$GITHUB_ENV"
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -213,6 +215,9 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v7
+      - name: Report failing scripts as annotations
+        # Set after checkout, not at the top of the file: the checkout action runs on Node too and would fail loading a file that is not there yet.
+        run: echo "NODE_OPTIONS=--import $GITHUB_WORKSPACE/ci-notes.js" >> "$GITHUB_ENV"
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -266,6 +271,9 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v7
+      - name: Report failing scripts as annotations
+        # Set after checkout, not at the top of the file: the checkout action runs on Node too and would fail loading a file that is not there yet.
+        run: echo "NODE_OPTIONS=--import $GITHUB_WORKSPACE/ci-notes.js" >> "$GITHUB_ENV"
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -369,6 +377,9 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v7
+      - name: Report failing scripts as annotations
+        # Set after checkout, not at the top of the file: the checkout action runs on Node too and would fail loading a file that is not there yet.
+        run: echo "NODE_OPTIONS=--import $GITHUB_WORKSPACE/ci-notes.js" >> "$GITHUB_ENV"
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -461,6 +472,9 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v7
+      - name: Report failing scripts as annotations
+        # Set after checkout, not at the top of the file: the checkout action runs on Node too and would fail loading a file that is not there yet.
+        run: echo "NODE_OPTIONS=--import $GITHUB_WORKSPACE/ci-notes.js" >> "$GITHUB_ENV"
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -513,6 +527,9 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v7
+      - name: Report failing scripts as annotations
+        # Set after checkout, not at the top of the file: the checkout action runs on Node too and would fail loading a file that is not there yet.
+        run: echo "NODE_OPTIONS=--import $GITHUB_WORKSPACE/ci-notes.js" >> "$GITHUB_ENV"
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -576,6 +593,9 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v7
+      - name: Report failing scripts as annotations
+        # Set after checkout, not at the top of the file: the checkout action runs on Node too and would fail loading a file that is not there yet.
+        run: echo "NODE_OPTIONS=--import $GITHUB_WORKSPACE/ci-notes.js" >> "$GITHUB_ENV"
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -707,6 +727,9 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v7
+      - name: Report failing scripts as annotations
+        # Set after checkout, not at the top of the file: the checkout action runs on Node too and would fail loading a file that is not there yet.
+        run: echo "NODE_OPTIONS=--import $GITHUB_WORKSPACE/ci-notes.js" >> "$GITHUB_ENV"
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
