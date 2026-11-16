@@ -10,8 +10,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseLongDate, staleExplainers, staleData, staleCheckedConstants, dueDates, capBehind, tradeHeadlineBehind, brokenLinks, report } from "./audit-content-lib.mjs";
+import { parseLongDate, staleExplainers, staleData, staleCheckedConstants, handKeptDue, dueDates, capBehind, tradeHeadlineBehind, brokenLinks, report } from "./audit-content-lib.mjs";
 import { DUE } from "./content-ledger.mjs";
+import { HAND_KEPT } from "./hand-kept.mjs";
 import { yearlyOnsEditions, pinnedOnsFiles, newestOnsEdition, hbaiEndYear, pinnedHbaiSlug, newestHbaiSlug, pinnedSipriYear, newestSipriYear, editionFinding } from "./source-editions-lib.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -156,6 +157,7 @@ const { text, total } = report([
   ["Pages whose figures are due a re-check", staleExplainers(pages, now)],
   ["Saved data that has stopped refreshing", staleData(files, now)],
   ["Pages whose hand-written wording is due a re-check", staleCheckedConstants(checkedConstants, now)],
+  ["Hand-typed data that is due another look", handKeptDue(HAND_KEPT, now, (r) => { try { return r.stamp ? JSON.parse(read(r.stamp.file))[r.stamp.key] : null; } catch { return null; } })],
   ["Facts with a built-in end date", [...moving, ...dueDates(DUE, now)]],
   ["Newer editions the site is not reading yet", editions],
   ["Source links that have gone", brokenLinks(links)],

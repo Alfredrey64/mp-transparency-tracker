@@ -42,6 +42,18 @@ export function staleData(files, now) {
   });
 }
 
+// Things a person types in (scripts/hand-kept.mjs), each with a cadence. `dateOf(row)` gives the day it was last read against its source (a stamp in its own file, else
+// `checked`). Overdue rows are listed, with what to read, so a quiet month cannot go by without anyone looking at them.
+export function handKeptDue(rows, now, dateOf) {
+  return rows.flatMap((r) => {
+    const raw = dateOf(r) ?? r.checked;
+    const d = raw ? new Date(/^\d{4}-\d{2}-\d{2}$/.test(raw) ? `${raw}T12:00:00Z` : raw) : null;
+    if (!d || Number.isNaN(d.getTime())) return [{ name: r.what, problem: `has no readable date for when it was last checked (${r.files.join(", ")})` }];
+    const age = days(d, now);
+    return age > r.every ? [{ name: r.what, problem: `last checked ${age} days ago and looked at every ${r.every}. Read ${r.source}, then correct ${r.files.map((f) => `src/data/${f}`).join(", ")} and update its date` }] : [];
+  });
+}
+
 // A link is a problem if it is gone or the site is failing. A site that refuses automatic visitors (403, 429) says nothing about whether the page exists.
 export function brokenLinks(results) {
   return results.flatMap((r) => {

@@ -21,6 +21,7 @@ Sources that publish a new edition under a new address (GOV.UK, NHS England, ONS
 - explainer pages and `CHECKED` dates in `frontend/src/data/*.js` that are due a re-read;
 - saved data files that have stopped refreshing;
 - dated facts in `frontend/scripts/content-ledger.mjs` (`DUE` rows: a fact that stops being true on a known date);
+- **hand-typed data on a cadence** (`frontend/scripts/hand-kept.mjs`): each file a person types (inequality gaps, the foreign influence register, inquiries, spending plans, ministerial meetings, party positions, tax wording, pledges and so on) has a row with how often it is re-read (30 to 180 days), the source to read and the files to change; an overdue row appears in the weekly issue. A new file in `src/data` has to be a row, or marked as rewritten by a scheduled job or as fixed, or `hand-kept.test.js` fails;
 - **newer editions** of sources the site reads from a fixed address: ONS dataset files, DWP Households Below Average Income, SIPRI, and every yearly ONS page the site quotes (`.../bulletins/<name>/2026`, `1997to2024`, `financialyearending2025`, `mid2025`, `2024based`). For the yearly pages it asks whether the next year's address exists;
 - the hand-typed Brexit headline (`TRADE_LATEST`) when the held series moves a quarter ahead;
 - source links that have gone.
@@ -36,7 +37,7 @@ When the weekly issue lists an item:
 1. Read the new release (ONS: use the browser; the bulletin `/data` address was withdrawn in February 2026, but dataset and time-series `/data` still work).
 2. Change the figures and the wording that quotes them. Search for the old number and the old year. Prefer computing text from the data object (see `frontend/src/data/inequality.js` and `InequalityDebate.jsx`) so that next time only the data changes.
 3. If a test names the old number, rewrite the test to a believable range or a multiple of the data, not a new fixed number.
-4. Only then bump the file's `CHECKED` date. Bumping it without re-reading defeats the alarm.
+4. Only then bump the file's `CHECKED` date (or, for a `hand-kept.mjs` row, its `checked` date; the foreign influence and crime files carry their own date inside the file). Bumping it without re-reading defeats the alarm.
 5. If a page heading or description changed, redraw its share image: `node scripts/build-page-og.mjs` in `frontend`, and commit `public/og`. CI fails (`build-page-og.mjs --check`) if one is out of date.
 
 ## 4. Budget or fiscal event day
