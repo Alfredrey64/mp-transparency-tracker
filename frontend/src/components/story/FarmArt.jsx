@@ -80,10 +80,6 @@ export function LandPatchwork({ farmed = 69, holdings, hectares, source }) {
   const plots = landPlots(farmed);
   return (
     <figure ref={ref} className="fm-land" data-go={go}>
-      <div className="fm-land-head">
-        <b><AnimatedValue text={`${farmed}%`} /></b>
-        <span>of the UK's land is used for farming</span>
-      </div>
       <svg viewBox="0 0 220 220" role="img" aria-label={`The UK's land as a hundred squares: ${farmed} are farmed and ${100 - farmed} are not.`}>
         {plots.map((p) => (
           <g key={p.i} className={p.farmed ? "fm-plot fm-on" : "fm-plot"} style={{ "--k": rippleOrder(p.x, p.y) }} transform={`translate(${p.x * 22} ${p.y * 22})`}>
@@ -93,16 +89,21 @@ export function LandPatchwork({ farmed = 69, holdings, hectares, source }) {
         ))}
       </svg>
       <figcaption>
+        <div className="fm-land-head">
+          <b><AnimatedValue text={`${farmed}%`} /></b>
+          <span>of the UK's land is used for farming</span>
+        </div>
         <ul className="fm-land-legend">
           <li><i className="fm-key fm-key-on" aria-hidden="true" /><b>{farmed}</b><span>of every 100 squares are farmed</span></li>
           <li><i className="fm-key" aria-hidden="true" /><b>{100 - farmed}</b><span>are not</span></li>
         </ul>
-        {(source || holdings || hectares) && (
-          <div className="fm-land-notes">
-            {source && <small>{source}</small>}
-            {(holdings || hectares) && <small>{[holdings && `${holdings} farm holdings`, hectares && `using ${hectares} hectares`].filter(Boolean).join(", ")}.</small>}
-          </div>
+        {(holdings || hectares) && (
+          <dl className="fm-land-facts">
+            {holdings && <div><dt>farm holdings</dt><dd>{holdings}</dd></div>}
+            {hectares && <div><dt>hectares used</dt><dd>{hectares}</dd></div>}
+          </dl>
         )}
+        {source && <p className="fm-land-source">{source}</p>}
       </figcaption>
     </figure>
   );
