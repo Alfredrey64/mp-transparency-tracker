@@ -1,5 +1,10 @@
 import { test, expect } from "@playwright/test";
 
+// Which region comes top changes whenever a source publishes new figures (the weekly refresh publishes them on its own), so these check the sentence's shape, not one region's name.
+const HIGHEST = /\w[\w ]+ is highest/;
+const HIGHEST_WITH_FIGURE = /\w[\w ]+ is highest \(\d[\d.,]*%\)/;
+
+
 // The interactive parts of the issue pages: the sliders, pickers and date box do what they say, and the charts change with the buttons above them.
 
 // A card is a section labelled by its heading, whose id the tests use.
@@ -87,7 +92,7 @@ test("countries can be added to and removed from the comparison, up to six", asy
 test("the regional map changes with the measure and a region can be picked from the list", async ({ page }) => {
   await page.goto("/inequality/place");
   const map = card(page, "h-place-map");
-  await expect(map).toContainText("London is highest (26.7%)");
+  await expect(map).toContainText(HIGHEST_WITH_FIGURE);
   await map.getByRole("button", { name: "Children in poverty" }).click();
   await expect(map.getByRole("button", { name: "Children in poverty" })).toHaveAttribute("aria-pressed", "true");
   await map.getByRole("button", { name: "Typical wealth" }).click();
@@ -194,7 +199,7 @@ test("the Brexit map shows the vote and migration, and a region on all three mea
   const map = card(page, "h-bxs-vote");
   await expect(map).toContainText("West Midlands is highest (59.3%) and Scotland lowest (38.0%)");
   await map.getByRole("button", { name: "Net migration" }).click();
-  await expect(map).toContainText("London is highest");
+  await expect(map).toContainText(HIGHEST);
   await map.getByRole("list", { name: /by region, highest first/ }).getByRole("button", { name: /Wales/ }).click();
   await expect(map.getByRole("heading", { name: "Wales" })).toBeVisible();
   await expect(map).toContainText("Voted Leave in 2016");
@@ -237,7 +242,7 @@ test("the NHS comparison changes measure and keeps the UK highlighted", async ({
 test("the energy regional map changes with the measure and shows a region on every measure", async ({ page }) => {
   await page.goto("/energy/emissions");
   const map = card(page, "h-ne-map");
-  await expect(map).toContainText("Northern Ireland is highest");
+  await expect(map).toContainText(HIGHEST);
   await map.getByRole("button", { name: "Transport" }).click();
   await expect(map).toContainText("is highest");
   await map.getByRole("list", { name: /by region, highest first/ }).getByRole("button", { name: /London/ }).click();
@@ -281,7 +286,7 @@ test("the trust comparison changes institution and keeps the UK highlighted, and
 test("the care map changes with the measure and shows a region on every measure", async ({ page }) => {
   await page.goto("/care/adult");
   const map = card(page, "h-ca-map");
-  await expect(map).toContainText("North West is highest");
+  await expect(map).toContainText(HIGHEST);
   await map.getByRole("button", { name: "A week in a nursing home" }).click();
   await expect(map).toContainText("is highest");
   await map.getByRole("list", { name: /by region, highest first/ }).getByRole("button", { name: /London/ }).click();
@@ -307,9 +312,9 @@ test("the care charts switch view, and the childcare map and chart work", async 
 test("the transport map changes with the measure, and the rail and bus charts switch view", async ({ page }) => {
   await page.goto("/transport/place");
   const map = card(page, "h-tp-map");
-  await expect(map).toContainText("South East is highest");
+  await expect(map).toContainText(HIGHEST);
   await map.getByRole("button", { name: "Bus journeys per person" }).click();
-  await expect(map).toContainText("London is highest");
+  await expect(map).toContainText(HIGHEST);
   await map.getByRole("list", { name: /by region, highest first/ }).getByRole("button", { name: /Wales/ }).click();
   await expect(map.getByRole("heading", { name: "Wales" })).toBeVisible();
   await expect(map).toContainText("Cars per 1,000 people");
@@ -326,9 +331,9 @@ test("the transport map changes with the measure, and the rail and bus charts sw
 test("the devolution map changes with the measure and the spending chart picks a place", async ({ page }) => {
   await page.goto("/union/place");
   const map = card(page, "h-dp-map");
-  await expect(map).toContainText("Northern Ireland is highest");
+  await expect(map).toContainText(HIGHEST);
   await map.getByRole("button", { name: "Economic output per person" }).click();
-  await expect(map).toContainText("London is highest");
+  await expect(map).toContainText(HIGHEST);
   await map.getByRole("list", { name: /by region, highest first/ }).getByRole("button", { name: /Wales/ }).click();
   await expect(map.getByRole("heading", { name: "Wales" })).toBeVisible();
   await expect(map).toContainText("Spending on services per person");
