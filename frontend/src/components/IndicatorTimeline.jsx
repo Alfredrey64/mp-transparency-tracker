@@ -8,7 +8,7 @@ import { ALL_SERIES, SECTORS, refOf } from "../data/onsSectors";
 import { loadEverything } from "../lib/onsData";
 import { taxRateChoices, taxRateEntries } from "../lib/taxRateSeries";
 import { loadTaxTake, takeChoices } from "../lib/taxTake";
-import { formatValue, formatAxis, periodToT, changeShort, periodLabel } from "../lib/onsFormat";
+import { formatValue, formatAxis, stepDigits, periodToT, changeShort, periodLabel } from "../lib/onsFormat";
 import { changeBetween, valueAtOrBefore } from "../lib/onsStats";
 import { toLineData, yearTicks } from "../lib/onsChart";
 import { bandsBetween, governmentAt, PARTY_COLOURS } from "../lib/governments";
@@ -447,7 +447,7 @@ export default function IndicatorTimeline({ param }) {
                     })}
                     domainX={[from, to]}
                     xTicks={ticks}
-                    yFormat={(v) => (indexed ? String(Math.round(v)) : formatAxis(chosen[0].def.format, v))}
+                    yFormat={(v, step) => (indexed ? String(Number(v.toFixed(stepDigits(step)))) : formatAxis(chosen[0].def.format, v, step))}
                     ariaLabel={`${chosen.map((c) => c.def.label).join(", ")} over time`}
                     accent={LINE_COLOURS[0]}
                     bands={bands}
@@ -482,7 +482,7 @@ export default function IndicatorTimeline({ param }) {
                           lines={[{ name: c.def.label, points: data }]}
                           domainX={[from, to]}
                           xTicks={ticks}
-                          yFormat={(v) => formatAxis(c.def.format, v)}
+                          yFormat={(v, step) => formatAxis(c.def.format, v, step)}
                           ariaLabel={`${c.def.label} over time`}
                           accent={c.accent}
                           bands={bands.map((b) => (i === 0 ? b : { ...b, short: "" }))}

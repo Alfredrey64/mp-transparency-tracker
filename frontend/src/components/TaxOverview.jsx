@@ -2,6 +2,7 @@ import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import { COLORS, FONT_BODY, FONT_DISPLAY } from "../theme";
 import { LOADERS } from "../pageLoaders";
 import TaxToday from "./TaxToday";
+import TaxInAction from "./TaxInAction";
 import TaxComingUp from "./TaxComingUp";
 import Loading from "./Loading";
 
@@ -26,6 +27,7 @@ export default function TaxOverview({ param, onPick }) {
   return (
     <div>
       <TaxToday now={now} onPick={onPick} />
+      <TaxInAction now={now} onPick={onPick} />
       <TaxComingUp now={now} />
       <section aria-labelledby="h-tax-money" style={{ marginTop: 34 }}>
         <h2 id="h-tax-money" style={{ fontFamily: FONT_DISPLAY, fontSize: 19, fontWeight: 700, color: COLORS.ink, margin: 0 }}>How much is collected and spent</h2>

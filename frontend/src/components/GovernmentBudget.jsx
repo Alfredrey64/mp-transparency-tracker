@@ -161,7 +161,7 @@ export default function GovernmentBudget({ embedded = false }) {
               >
                 <span style={{ width: 11, height: 11, borderRadius: 3, background: c.color, flexShrink: 0 }} />
                 <span style={{ minWidth: 0, flex: 1 }}>
-                  <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13, color: COLORS.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13, color: COLORS.ink, lineHeight: 1.25, overflowWrap: "anywhere" }}>
                     {c.label}
                   </div>
                   <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 1 }}>

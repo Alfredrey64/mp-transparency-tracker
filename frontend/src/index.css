@@ -490,8 +490,9 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
    never a lone box beside empty space. On a phone that works out as two to a row, with an odd last box running full width. */
 .box-row { --gap: 14px; display: flex; flex-wrap: wrap; gap: var(--gap); }
 .box-row > * { flex: 1 1 max(min(100%, var(--min, 150px)), calc((100% - (var(--n, 4) - 1) * var(--gap)) / var(--n, 4))); min-width: 0; }
-@container (max-width: 760px) { .box-row .tile-num { font-size: 30px !important; } }
-@container (max-width: 380px) { .box-row .tile-num { font-size: 26px !important; } }
+/* A headline tile sets its figure to fit: --chars is how many characters the figure has, and a figure takes at most 0.6 em a character of the room the tile has. */
+.ons-tile { container-type: inline-size; }
+.tile-num { font-size: clamp(16px, calc(100cqi / (var(--chars, 8) * 0.62)), 42px); }
 
 /* The whole-UK deprivation map: map beside its key on a wide screen, stacked on a phone. */
 .dep-uk-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }

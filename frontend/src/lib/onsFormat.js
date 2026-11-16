@@ -78,27 +78,32 @@ function formatValueRaw(format, v) {
   }
 }
 
-// Short form for chart axes.
-function formatAxisRaw(format, v) {
+// How many decimal places a gap between two axis labels needs for them to read differently: a gap of 1 needs none, 0.5 needs one, 0.25 two. Without it, labels at 24, 24.5 and 25
+// all came out as "£24bn, £25bn, £25bn".
+export const stepDigits = (step) => (step > 0 && Number.isFinite(step) ? Math.max(0, Math.ceil(-Math.log10(step) - 1e-9)) : 0);
+
+// Short form for chart axes. `step` is the gap between the labels on the axis, when it is known.
+function formatAxisRaw(format, v, step) {
+  const d = stepDigits(step);
   switch (format) {
-    case "pct": return `${Number(v.toFixed(1))}%`;
-    case "pct2": return `${Number(v.toFixed(2))}%`;
-    case "gbp2": return `£${Number(v.toFixed(1))}`;
-    case "per1000": return String(Number(v.toFixed(1)));
-    case "multiple": return String(Number(v.toFixed(1)));
+    case "pct": return `${Number(v.toFixed(Math.max(1, d)))}%`;
+    case "pct2": return `${Number(v.toFixed(Math.max(2, d)))}%`;
+    case "gbp2": return `£${Number(v.toFixed(Math.max(1, d)))}`;
+    case "per1000": return String(Number(v.toFixed(Math.max(1, d))));
+    case "multiple": return String(Number(v.toFixed(Math.max(1, d))));
     case "gbp": return `£${group(v)}`;
-    case "gbpbn": return `£${Math.round(v / 1000)}bn`;
+    case "gbpbn": return `£${(v / 1000).toFixed(stepDigits(step / 1000))}bn`;
     case "gbpbn0": return `£${group(v / 1000)}bn`;
-    case "thousands": return v >= 1000 ? `${Number((v / 1000).toFixed(1))}m` : `${group(v)}k`;
-    case "people": return v >= 1e6 ? `${Number((v / 1e6).toFixed(0))}m` : group(v);
+    case "thousands": return v >= 1000 ? `${Number((v / 1000).toFixed(Math.max(1, stepDigits(step / 1000))))}m` : `${group(v)}k`;
+    case "people": return v >= 1e6 ? `${Number((v / 1e6).toFixed(stepDigits(step / 1e6)))}m` : group(v);
     case "count": return Math.abs(v) >= 1e6 ? `${Number((v / 1e6).toFixed(1))}m` : Math.abs(v) >= 10000 ? `${Math.round(v / 1000)}k` : group(v);
     case "gbpbnx": return `£${group(v)}bn`;
     case "ktonnes": return `${group(v / 1000)}m`;
-    case "mtoe": return `${v.toFixed(0)}`;
-    case "hours": return `${Number(v.toFixed(1))}`;
+    case "mtoe": return `${v.toFixed(d)}`;
+    case "hours": return `${Number(v.toFixed(Math.max(1, d)))}`;
     case "usd": return `$${v.toFixed(2)}`;
     case "eur": return `€${v.toFixed(2)}`;
-    default: return String(Number(v.toFixed(1)));
+    default: return String(Number(v.toFixed(Math.max(1, d))));
   }
 }
 
@@ -211,5 +216,5 @@ export function changeShort(change) {
 // A minus sign goes before the currency symbol ("-£25bn"), never between the symbol and the figure ("£-25bn").
 const signFirst = (text) => (typeof text === "string" ? text.replace(/^([£$€])-/, "-$1") : text);
 export const formatValue = (format, v) => signFirst(formatValueRaw(format, v));
-export const formatAxis = (format, v) => signFirst(formatAxisRaw(format, v));
+export const formatAxis = (format, v, step) => signFirst(formatAxisRaw(format, v, step));
 export const formatCompact = (format, v) => signFirst(formatCompactRaw(format, v));

@@ -58,7 +58,7 @@
 .st-cards li { position: relative; display: grid; gap: 8px; align-content: start; padding: 22px 22px 22px 26px; border-radius: 16px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1), inset 5px 0 0 var(--tc); overflow: hidden; }
 .st-card-icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: color-mix(in srgb, var(--tc) 16%, transparent); color: color-mix(in srgb, var(--tc) 80%, var(--c-ink)); }
 .st-cards b { font: 700 17px/1.3 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
-.st-cards p { margin: 0; font: 400 14.5px/1.65 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.st-cards p { margin: 0; overflow-wrap: anywhere; font: 400 14.5px/1.65 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .st-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; position: relative; }
 .st-steps li { position: relative; display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 16px; padding-bottom: 22px; }
 .st-steps li:not(:last-child)::before { content: ""; position: absolute; left: 21px; top: 44px; bottom: 0; width: 3px; border-radius: 2px; background: repeating-linear-gradient(var(--tc) 0 6px, transparent 6px 11px); opacity: 0.6; }

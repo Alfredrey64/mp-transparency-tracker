@@ -25,7 +25,7 @@ function Bars({ rows, accent, mark = null, unit = "", digits = 1, note = null })
       <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 8 }}>
         {rows.map((r) => (
           <li key={r.label} style={{ display: "grid", gridTemplateColumns: "minmax(86px, 190px) minmax(0, 1fr) minmax(70px, auto)", gap: 10, alignItems: "center", fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink }}>
-            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: r.wrap ? "normal" : "nowrap", fontWeight: r.strong ? 700 : 500, paddingLeft: r.indent ? 14 : 0 }}>{r.label}</span>
+            <span style={{ overflowWrap: "anywhere", lineHeight: 1.3, fontWeight: r.strong ? 700 : 500, paddingLeft: r.indent ? 14 : 0 }}>{r.label}</span>
             <span aria-hidden="true" style={{ position: "relative", height: 14, borderRadius: 7, background: `${accent}18` }}>
               <span style={{ display: "block", height: "100%", width: `${(r.value / max) * 100}%`, minWidth: r.value > 0 ? 3 : 0, borderRadius: 7, background: r.muted ? `${accent}88` : accent }} />
               {mark !== null && <span style={{ position: "absolute", top: -4, bottom: -4, left: `${(mark / max) * 100}%`, borderLeft: `2px dashed ${COLORS.inkSoft}`, opacity: 0.8 }} />}

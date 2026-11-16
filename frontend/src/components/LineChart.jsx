@@ -72,17 +72,18 @@ export default function LineChart({
     const dLo = Math.min(lo, tTicks[0] ?? lo);
     const dHi = Math.max(hi, tTicks.at(-1) ?? hi);
     // The left margin grows to fit the longest axis label, so values like £600,000 are never cut off.
-    const longest = Math.max(...ticks.map((t) => String(yFormat(t)).length));
+    const step = ticks.length > 1 ? Math.abs(ticks[1] - ticks[0]) : undefined;
+    const longest = Math.max(...ticks.map((t) => String(yFormat(t, step)).length));
     const M = { ...base, l: Math.max(base.l, leftPad, Math.ceil(14 + longest * (compact ? 6 : 6.6))) };
     const sx = (x) => M.l + ((x - xMin) / (xMax - xMin || 1)) * (W - M.l - M.r);
     const sy = (y) => M.t + (1 - (T(y) - dLo) / (dHi - dLo || 1)) * (H - M.t - M.b);
-    return { xMin, xMax, ticks, sx, sy, dLo, dHi, M };
+    return { xMin, xMax, ticks, step, sx, sy, dLo, dHi, M };
     // yFormat is a new function on every render and only its output length matters here.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lines, refLines, H, domainX, compact, W, base.l, base.r, base.t, base.b, yScale, leftPad]);
 
   if (!geo) return null;
-  const { sx, sy, ticks, M } = geo;
+  const { sx, sy, ticks, step, M } = geo;
 
   const shown = lines.map((l) => ({ ...l, points: clipX === undefined ? l.points : l.points.filter((p) => p.x <= clipX) })).filter((l) => l.points.length);
   const main = shown[0]?.points ?? [];
@@ -154,7 +155,7 @@ export default function LineChart({
         {ticks.map((t) => (
           <g key={t}>
             <line x1={M.l} x2={W - M.r} y1={sy(t)} y2={sy(t)} stroke={COLORS.hairline} strokeWidth="1" />
-            <text x={M.l - 8} y={sy(t) + 4} textAnchor="end" fontSize="11.5" fontFamily={FONT_BODY} fill={COLORS.inkSoft}>{yFormat(t)}</text>
+            <text x={M.l - 8} y={sy(t) + 4} textAnchor="end" fontSize="11.5" fontFamily={FONT_BODY} fill={COLORS.inkSoft}>{yFormat(t, step)}</text>
           </g>
         ))}
         {zeroInside && <line x1={M.l} x2={W - M.r} y1={sy(0)} y2={sy(0)} stroke={COLORS.inkSoft} strokeWidth="1.2" strokeDasharray="4 3" opacity="0.7" />}
@@ -240,7 +241,7 @@ export default function LineChart({
           {hits.map(({ l, p }) => (
             <div key={l.name} style={{ fontWeight: 700 }}>
               {shown.length > 1 && <span style={{ color: l.color ?? accent }}>{l.name}: </span>}
-              {l.format ? l.format(p.y) : yFormat(p.y)}
+              {l.format ? l.format(p.y) : yFormat(p.y, step ? step / 10 : undefined)}
             </div>
           ))}
         </div>

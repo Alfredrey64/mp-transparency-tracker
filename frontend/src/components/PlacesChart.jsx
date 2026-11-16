@@ -3,7 +3,7 @@ import { m as motion } from "motion/react";
 import { COLORS, FONT_BODY, numeric } from "../theme";
 import LineChart from "./LineChart";
 import ChartActions from "./ChartActions";
-import { formatValue, formatAxis, sliceRange, periodLabel, periodToT } from "../lib/onsFormat";
+import { formatValue, formatAxis, stepDigits, sliceRange, periodLabel, periodToT } from "../lib/onsFormat";
 import { toLineData, yearTicks } from "../lib/onsChart";
 import { hasExtremes } from "../lib/squashScale";
 import { toReal, canAdjust } from "../lib/onsReal";
@@ -181,7 +181,7 @@ function PlacesChart({ group, sector, series, range, real, deflator, showGovernm
           height={squash ? 300 : 230}
           lines={lines}
           xTicks={yearTicks(xFrom, xTo)}
-          yFormat={indexed ? (v) => String(Math.round(v)) : (v) => formatAxis(group.format, v)}
+          yFormat={indexed ? (v, step) => String(Number(v.toFixed(stepDigits(step)))) : (v, step) => formatAxis(group.format, v, step)}
           ariaLabel={`${group.title}. ${lines.map((l) => l.name).join(", ")}. ${sentence}`}
           accent={accent}
           bands={bands}
@@ -207,7 +207,7 @@ function PlacesChart({ group, sector, series, range, real, deflator, showGovernm
               className="ons-chip"
               style={{ display: "grid", gridTemplateColumns: "minmax(96px, 150px) 1fr auto", alignItems: "center", gap: 10, background: "none", border: "none", padding: "5px 0", cursor: "pointer", textAlign: "left", font: "inherit", minWidth: 0 }}
             >
-              <span style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</span>
+              <span style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, color: COLORS.ink, lineHeight: 1.25, overflowWrap: "anywhere", minWidth: 0 }}>{p.name}</span>
               <span aria-hidden="true" style={{ height: 10, borderRadius: 5, background: COLORS.hairline, position: "relative", overflow: "hidden" }}>
                 <span style={{ position: "absolute", inset: "0 auto 0 0", width, borderRadius: 5, background: on ? SLOTS[at] : `${accent}77` }} />
               </span>

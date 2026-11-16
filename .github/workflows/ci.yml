@@ -250,6 +250,11 @@ jobs:
       - run: node e2e/motion-a11y.audit.mjs
         env:
           WORKERS: "2"
+      # Every page at 320, 390, 768 and 1280 px: fails on text cut off by the box around it (a headline figure losing its last letters) and on a chart axis that repeats a label
+      # ("£25bn" twice), which makes the scale look wrong.
+      - run: node e2e/numbers-fit.audit.mjs
+        env:
+          WORKERS: "2"
 
   routing-offline:
     name: Page addresses, back button and working offline

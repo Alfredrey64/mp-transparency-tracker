@@ -58,3 +58,13 @@ When the weekly issue lists an item:
 ## 6. When a source is down
 
 A publisher being down is not a bug here. The scripts keep the last good file (they never overwrite it with a short or empty answer), the page shows the date of the data it has, and the next daily run tries again. Two failed runs in a row open an issue. The OECD answers `500` or `429` when asked too fast; `httpFetch.js` now leaves 12 seconds between OECD requests. If an OECD file is more than 60 days old the weekly run fails on purpose.
+
+## 7. Checks that run on every push (look-and-feel guards)
+
+These open every page in a browser and fail the build, so a wrong picture cannot ship quietly:
+
+- `frontend/e2e/numbers-fit.audit.mjs`: every page at 320, 390, 768 and 1280 px. Fails on text cut off by the box around it (a headline figure losing its last letters) and on a chart axis that repeats a label ("£25bn" twice). Axis labels take their decimals from the gap between gridlines (`stepDigits` in `src/lib/onsFormat.js`); a new chart formatter should accept `(value, step)` rather than rounding to a fixed number of digits.
+- `frontend/e2e/motion-a11y.audit.mjs`: reduced-motion behaviour and screen-reader names for diagrams.
+- `frontend/e2e/phone-layout.spec.js`, `flash.audit`, and the WebKit touch checks.
+
+Run any of them locally with `npx vite preview --port 4178 --strictPort` and `node scripts/mock-data-service.mjs 54321` running (see the head of each file).

@@ -104,7 +104,7 @@ function Chart({ sector, id }) {
       {data.length > 1 && (
         <LineChart
           lines={[{ name: item.def.label, points: data }]}
-          xTicks={yearTicks(data[0].x, data.at(-1).x)} yFormat={(v) => formatAxis(item.def.format, v)}
+          xTicks={yearTicks(data[0].x, data.at(-1).x)} yFormat={(v, step) => formatAxis(item.def.format, v, step)}
           ariaLabel={`${item.def.label}, the last ten years. ${sentence}`} accent={accent} height={190} compact
         />
       )}

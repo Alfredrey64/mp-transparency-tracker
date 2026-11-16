@@ -348,7 +348,7 @@ const ELECTION_STAGES = [
 // structure, rather than reading as a wall of plain paragraph text.
 function StageProgressDots({ index, total, color }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 14 }}>
+    <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "5px 5px", marginTop: 14 }}>
       {Array.from({ length: total }).map((_, i) => (
         <span
           key={i}

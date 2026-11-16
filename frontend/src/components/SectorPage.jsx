@@ -61,9 +61,11 @@ const FIRST_CARDS = 4;
 const MORE_CARDS = 4;
 
 // A small line with a soft fill under it. Drawn once and left alone: it does not animate while the page scrolls.
-function Spark({ points, color, height = 44 }) {
+function Spark({ points, color, height = 44, all = false }) {
   const id = useId().replace(/:/g, "");
-  const pts = points.slice(-48);
+  // By default the last four years or so; with `all` the points given (thinned to about 240 so a long history stays light).
+  const stride = Math.ceil(points.length / 240);
+  const pts = all ? points.filter((_, i) => i % stride === 0 || i === points.length - 1) : points.slice(-48);
   if (pts.length < 2) return null;
   const ys = pts.map((p) => p[1]);
   const lo = Math.min(...ys);
@@ -98,24 +100,34 @@ function ChangeChip({ change, accent }) {
 }
 
 // A headline figure. A plain link: it does not fade, count up or move, so nothing shifts as the page scrolls.
-const Tile = memo(function Tile({ def, item, accent }) {
+// The tile's line follows the "Show" bar; a span with fewer than four readings (two years of yearly figures) is padded with the readings before it so there is still a line.
+const sparkPoints = (points, range) => { const p = sliceRange(points, range); return p.length >= 4 ? p : points.slice(-4); };
+
+const Tile = memo(function Tile({ def, item, accent, range }) {
   const info = latestInfo(def, item.points);
   if (!info) return null;
+  const text = formatValue(def.format, info.value);
+  // A figure with its unit written out ("165 million tonnes of oil equivalent") puts the number big and the unit under it, so the number can still be large.
+  const split = text.length > 12 ? /^(\S*\d\S*)\s+(.+)$/.exec(text) : null;
+  const big = split ? split[1] : text;
+  const unit = split ? split[2] : null;
   return (
     <a
       className="ons-tile"
       href={`#s-${def.id}`}
       onClick={(e) => { e.preventDefault(); document.getElementById(`s-${def.id}`)?.scrollIntoView({ behavior: glide(), block: "start" }); }}
       style={{
-        ...card, padding: "20px 22px 0", position: "relative", overflow: "hidden", textDecoration: "none", display: "flex", flexDirection: "column", color: "inherit",
+        ...card, padding: "20px 22px 0", position: "relative", overflow: "hidden", textDecoration: "none", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", color: "inherit",
         background: `color-mix(in srgb, ${accent} 7%, ${COLORS.paperCard})`, borderColor: `${accent}40`,
       }}
     >
-      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, fontWeight: 700, color: COLORS.ink, lineHeight: 1.3, minHeight: "2.6em" }}>{def.label}</div>
-      <div className="tile-num" style={{ ...numeric, fontSize: 42, fontWeight: 600, lineHeight: 1.1, color: COLORS.ink, marginTop: 10, letterSpacing: "-0.02em" }}>{formatValue(def.format, info.value)}</div>
+      <div style={{ fontFamily: FONT_DISPLAY, fontSize: 15, fontWeight: 700, color: COLORS.ink, lineHeight: 1.3, minHeight: "2.6em", display: "flex", alignItems: "center", justifyContent: "center" }}>{def.label}</div>
+      {/* The figure is sized to its own box (see .tile-num in index.css): the longer the figure, the smaller it is set, so "£1,394.8bn" is never cut off. */}
+      <div className="tile-num" style={{ ...numeric, "--chars": big.length, fontWeight: 600, lineHeight: 1.1, color: COLORS.ink, marginTop: 10, letterSpacing: "-0.02em", whiteSpace: "nowrap" }}>{big}</div>
+      {unit && <div style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, lineHeight: 1.3, color: COLORS.ink, marginTop: 2, overflowWrap: "anywhere" }}>{unit}</div>}
       <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, margin: "2px 0 10px" }}>{info.label}</div>
       <div><ChangeChip change={info.change} accent={accent} /></div>
-      <div style={{ margin: "14px -22px 0" }}><Spark points={item.points} color={accent} /></div>
+      <div style={{ margin: "14px -22px 0", alignSelf: "stretch" }}><Spark points={sparkPoints(item.points, range)} color={accent} all /></div>
     </a>
   );
 });
@@ -295,9 +307,9 @@ const SeriesCard = memo(function SeriesCard({ def, item, range, accent, showGove
       {data.length > 1 ? (
         <LineChart
           key={`${range}-${showGovernments}`}
-          lines={[{ name: def.label, points: data }]}
+          lines={[{ name: def.label, points: data, format: (v) => formatValue(def.format, v) }]}
           xTicks={yearTicks(data[0].x, data.at(-1).x)}
-          yFormat={(v) => formatAxis(def.format, v)}
+          yFormat={(v, step) => formatAxis(def.format, v, step)}
           ariaLabel={`${def.label}: line chart. ${sentence}`}
           accent={accent}
           bands={bands}
@@ -614,13 +626,13 @@ export default function SectorPage({ sector, param = null, embedded = false }) {
           <SectorContents groups={contents} focusId={focusId} onFocus={setFocusId} accent={def.accent} />
 
           <div className="ons-noprint box-row" style={{ "--n": tileColumns(tiles.length - 1), "--min": "150px", "--gap": "16px", marginTop: 18 }}>
-            {tiles.slice(1).map((s) => <Tile key={s.id} def={s} item={loaded.series[s.id]} accent={def.accent} />)}
+            {tiles.slice(1).map((s) => <Tile key={s.id} def={s} item={loaded.series[s.id]} accent={def.accent} range={range} />)}
           </div>
 
           <div className="ons-toolbar" style={{ margin: "32px 0 14px", padding: "12px 0" }}>
             <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "10px 24px" }}>
               <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10 }}>
-                <span style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink }}>Show</span>
+                <span style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, color: COLORS.ink }}>Years of history to show<span style={{ fontWeight: 500, color: COLORS.inkSoft }}> (changes every chart and trend line below)</span></span>
                 <div role="radiogroup" aria-label="How far back to show" style={{ display: "inline-flex", flexWrap: "wrap", gap: 6 }}>
                   {RANGES.map((r) => (
                     <button key={r.years} className="ons-tap" role="radio" aria-checked={range === r.years} onClick={() => setRange(r.years)} style={pillStyle(range === r.years)}>{r.label}</button>
