@@ -268,7 +268,7 @@ dialog[open]::backdrop { animation: fade-in 0.15s ease both; }
 @keyframes group-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 .drawer-group[data-open="true"] { border-color: color-mix(in srgb, var(--g) 55%, var(--c-hairline)); background: color-mix(in srgb, var(--g) 6%, var(--c-paper-card)); box-shadow: var(--shadow-1); }
 .drawer-group > button {
-  display: flex; align-items: center; gap: 14px; width: 100%; min-height: 68px; padding: 10px 14px; border: none; background: none; cursor: pointer; text-align: left; color: var(--c-ink);
+  display: flex; align-items: center; gap: 14px; width: 100%; min-height: 84px; padding: 10px 14px; border: none; background: none; cursor: pointer; text-align: left; color: var(--c-ink);
 }
 .dg-tile { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 12px; color: #fff; flex-shrink: 0; transition: transform 0.3s var(--ease-spring); }
 .dg-tile { position: relative; transition: transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease-out); }
@@ -288,11 +288,11 @@ dialog[open]::backdrop { animation: fade-in 0.15s ease both; }
    The space is margin on the rows, not padding on the clipped list, so it cannot be clipped while the group opens and closes. */
 .drawer-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; align-content: start; }
 .drawer-list li { margin-inline: 8px; }
-.drawer-list li:first-child { margin-top: 8px; }
-.drawer-list li:last-child { margin-bottom: 8px; }
+.drawer-list li:first-child { margin-top: 10px; }
+.drawer-list li:last-child { margin-bottom: 14px; }
 .drawer-list li { opacity: 0; transform: translateX(-10px); transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out); }
 .drawer-group[data-open="true"] .drawer-list li { opacity: 1; transform: none; transition-delay: calc(var(--n, 0) * 28ms + 90ms); }
-.drawer-list a { position: relative; display: flex; align-items: center; gap: 14px; min-height: 60px; padding: 10px 14px; border-radius: var(--radius-s); text-decoration: none; color: var(--c-ink); transition: background-color 0.15s var(--ease-out); }
+.drawer-list a { position: relative; display: flex; align-items: center; gap: 14px; min-height: 76px; padding: 10px 14px; border-radius: var(--radius-s); text-decoration: none; color: var(--c-ink); transition: background-color 0.15s var(--ease-out); }
 .drawer-list a:hover, .drawer-list a:active { background: color-mix(in srgb, var(--g) 12%, transparent); }
 .drawer-list a[aria-current="page"] { background: color-mix(in srgb, var(--g) 16%, transparent); }
 .drawer-list a[aria-current="page"]::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 4px; border-radius: 2px; background: var(--g); }

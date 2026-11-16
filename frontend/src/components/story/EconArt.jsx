@@ -19,29 +19,58 @@ const windows = (x, y, cols, rows, gx = 11, gy = 13, seed = 0) => Array.from({ l
   return <rect key={`${x}-${y}-${i}`} className="hs-win" x={x + c * gx} y={y + r * gy} width="5" height="7" rx="1" style={{ "--d": `${0.6 + rnd(i + seed) * 3.4}s` }} />;
 });
 
-// ---------- Economy: a skyline, a crane and a line that climbs through it ----------
+// ---------- Economy: a layered skyline with a crane building a block, and a growth line that climbs through it over a faint chart grid ----------
 const BACK = Array.from({ length: 46 }, (_, i) => ({ x: i * 32 - 8 + rnd(i + 7) * 10, w: 22 + rnd(i) * 26, h: 30 + rnd(i + 3) * 66 }));
+const MID = Array.from({ length: 30 }, (_, i) => ({ x: i * 50 - 14 + rnd(i + 21) * 14, w: 30 + rnd(i + 5) * 24, h: 44 + rnd(i + 11) * 62 }));
+const GROWTH = "M30 170C170 164 250 130 380 128S560 100 700 86 1000 74 1120 56 1300 46 1410 24";
 export function EconomyScene() {
   return (
     <Scene kind="economy">
-      {BACK.map((b, i) => <rect key={i} className="hs-1" x={b.x} y={200 - b.h} width={b.w} height={b.h} />)}
-      {/* a slab with a mast, a shard, a rounded tower, a stepped tower and a pyramid-topped one */}
-      <g className="hs-2">
-        <rect x="300" y="72" width="48" height="128" /><path d="M324 72V44" className="hs-line" />
-        <path d="M548 200 580 52 612 200z" />
-        <path d="M694 200V96c0-30 12-54 26-70 14 16 26 40 26 70v104z" />
-        <rect x="856" y="102" width="40" height="98" />
-        <rect x="982" y="86" width="56" height="114" /><path d="M982 86 1010 54 1038 86z" />
-        <path d="M1170 200V92h14V78h18V62h18v16h18v14h14v108z" />
+      <Defs id="ec" />
+      <rect width="1440" height="200" fill="url(#ec-glow)" />
+      <g className="hs-dash">{[48, 92, 136].map((y) => <path key={y} d={`M0 ${y}H1440`} />)}</g>
+      <g className="hs-1">{BACK.map((b, i) => <rect key={i} x={b.x} y={200 - b.h} width={b.w} height={b.h} />)}</g>
+      <g fill="url(#ec-bld)" opacity=".55">{MID.map((b, i) => <rect key={i} x={b.x} y={200 - b.h} width={b.w} height={b.h} />)}</g>
+      {/* the landmark towers: a slab with a mast, a shard, a rounded tower, a stepped tower and a pyramid-topped one, each with a lit edge */}
+      <g fill="url(#ec-bld)">
+        <path d="M600 200 632 52 664 200z" />
+        <path d="M744 200V96c0-30 12-54 26-70 14 16 26 40 26 70v104z" />
+        <rect x="906" y="102" width="40" height="98" />
+        <rect x="1032" y="86" width="56" height="114" /><path d="M1032 86 1060 54 1088 86z" />
+        <path d="M1220 200V92h14V78h18V62h18v16h18v14h14v108z" />
       </g>
-      <g className="hs-lamp">{windows(306, 82, 4, 8, 11, 14, 1)}{windows(988, 96, 4, 7, 12, 14, 9)}{windows(1176, 100, 4, 7, 12, 14, 17)}{windows(862, 112, 3, 6, 11, 14, 23)}</g>
-      <path className="ec-growth" pathLength="1" d="M30 170C170 164 250 130 380 128S560 100 700 86 1000 74 1120 56 1300 46 1410 24" />
-      {[[380, 128], [700, 86], [1120, 56], [1410, 24]].map(([x, y], i) => <circle key={i} className="ec-dot" cx={x} cy={y} r={i === 3 ? 7 : 5} style={{ "--i": i }} />)}
+      <g stroke="var(--lamp)" strokeWidth="1.4" opacity=".35" fill="none"><path d="M600 200 632 52M744 96V200M1032 86V200M1220 92V200" /></g>
+      <g className="hs-lamp">{windows(1038, 96, 4, 7, 12, 14, 9)}{windows(1226, 100, 4, 7, 12, 14, 17)}{windows(912, 112, 3, 6, 11, 14, 23)}{windows(750, 110, 4, 6, 11, 14, 31)}</g>
+      <g className="hs-warm"><circle cx="1060" cy="52" r="3" /><circle cx="1252" cy="60" r="3" /></g>
+      {/* the chart: a soft area under the line, then the line itself drawing through the skyline and a ripple at each marked point */}
+      <path className="ec-area" d={`${GROWTH}V200H30Z`} fill="url(#ec-area)" />
+      <path className="ec-growth" pathLength="1" d={GROWTH} />
+      {[[380, 128], [700, 86], [1120, 56], [1410, 24]].map(([x, y], i) => (
+        <g key={i}>
+          <circle className="ec-halo" cx={x} cy={y} r="6" style={{ "--i": i }} />
+          <circle className="ec-dot" cx={x} cy={y} r={i === 3 ? 7 : 5} style={{ "--i": i }} />
+        </g>
+      ))}
+      {/* a tower crane lifting a girder over a block going up floor by floor */}
+      <g transform="translate(250 0)">
       <g className="hs-3">
-        <rect x="150" y="38" width="6" height="162" />
-        <g className="ec-jib"><path d="M50 40h250M150 40 40 40M150 40 300 40" stroke="var(--s3)" strokeWidth="5" /><rect x="132" y="28" width="40" height="12" /><path d="M262 40v62" className="hs-line" /><rect x="254" y="100" width="16" height="9" /></g>
-        <rect x="0" y="188" width="1440" height="12" />
+        <path d="M147 40V200M159 40V200" className="hs-line" />
+        {Array.from({ length: 10 }, (_, i) => <path key={i} d={`M${i % 2 ? 159 : 147} ${44 + i * 16}L${i % 2 ? 147 : 159} ${60 + i * 16}`} className="hs-line" />)}
+        <rect x="140" y="196" width="26" height="4" />
+        <g className="ec-jib">
+          <rect x="30" y="38" width="280" height="6" />
+          <path d="M44 38 62 22 80 38 98 22 116 38 134 22 152 38 170 22 188 38 206 22 224 38 242 22 260 38 278 22 296 38" className="hs-line" />
+          <rect x="132" y="16" width="40" height="22" rx="3" /><rect x="138" y="21" width="14" height="10" rx="1" fill="var(--lamp)" opacity=".7" />
+          <rect x="34" y="44" width="28" height="18" rx="2" />
+          <path d="M262 44v54" className="hs-line" /><path d="M254 98h16" className="hs-line" />
+          <rect className="hs-acc" x="238" y="102" width="48" height="8" rx="1" />
+        </g>
       </g>
+      <g className="hs-3">
+        {[0, 1, 2].map((i) => <g key={i} className="ec-floor" style={{ "--i": i }}><rect x="232" y={180 - i * 18} width="76" height="5" />{[232, 268, 303].map((x) => <rect key={x} x={x} y={162 - i * 18} width="5" height="18" />)}</g>)}
+      </g>
+      </g>
+      <g className="hs-3"><rect x="0" y="188" width="1440" height="12" /></g>
     </Scene>
   );
 }
@@ -52,6 +81,7 @@ const Defs = ({ id }) => (
     <radialGradient id={`${id}-glow`} cx="50%" cy="100%" r="62%"><stop offset="0" style={{ stopColor: "var(--lamp)", stopOpacity: 0.42 }} /><stop offset="0.55" style={{ stopColor: "var(--a)", stopOpacity: 0.14 }} /><stop offset="1" style={{ stopColor: "var(--a)", stopOpacity: 0 }} /></radialGradient>
     <linearGradient id={`${id}-bld`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" style={{ stopColor: "var(--s3)" }} /><stop offset="1" style={{ stopColor: "var(--s2)" }} /></linearGradient>
     <radialGradient id={`${id}-sun`}><stop offset="0" stopColor="#FFD98A" stopOpacity="0.9" /><stop offset="1" stopColor="#FFB45A" stopOpacity="0" /></radialGradient>
+    <linearGradient id={`${id}-area`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" style={{ stopColor: "var(--lamp)", stopOpacity: 0.3 }} /><stop offset="1" style={{ stopColor: "var(--a)", stopOpacity: 0 }} /></linearGradient>
     <linearGradient id={`${id}-gold`} x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#C99A33" /><stop offset="0.5" stopColor="#F7D675" /><stop offset="1" stopColor="#C99A33" /></linearGradient>
   </defs>
 );
@@ -131,53 +161,45 @@ export function JobsScene() {
 }
 
 // ---------- Public finances: the Treasury under a flag, the Budget box taking in coins, scales that settle, and stacks that climb ----------
-const STACKS = [2, 3, 4, 5, 6, 8, 9, 11];
+// ---------- Public finances: the Treasury at the centre with the books balanced either side: matching rows of coin stacks, the tallest at the edges, joined by a dotted line ----------
+const FIN_L = [{ x: 96, n: 13 }, { x: 176, n: 11 }, { x: 256, n: 9 }, { x: 336, n: 7 }, { x: 416, n: 5 }];
+const FIN_R = FIN_L.map((s) => ({ x: 1440 - s.x, n: s.n })).reverse();
+const COIN = 7;
+function Stack({ x, n, s }) {
+  return (
+    <g transform={`translate(${x} 190)`}>
+      {Array.from({ length: n }, (_, k) => (
+        <g key={k} className="ec-coinstack" style={{ "--d": `${0.5 + s * 0.22 + k * 0.06}s` }}>
+          <ellipse cx="0" cy={-k * COIN - 3} rx="22" ry="6" fill="#B88A2C" /><ellipse cx="0" cy={-k * COIN - 5} rx="22" ry="6" fill="url(#fn-gold)" />
+        </g>
+      ))}
+      <circle className="ec-glint" cx="-7" cy={-n * COIN - 4} r="2.2" fill="#fff" style={{ "--d": `${2.4 + s * 0.25}s` }} />
+    </g>
+  );
+}
 export function FinanceScene() {
+  const tops = [...FIN_L, ...FIN_R].map((s) => `${s.x},${186 - s.n * COIN}`);
   return (
     <Scene kind="finance">
       <Defs id="fn" />
       <rect width="1440" height="200" fill="url(#fn-glow)" />
-      <g className="hs-1">{BACK.map((b, i) => <rect key={i} x={b.x} y={200 - b.h * 0.7} width={b.w} height={b.h * 0.7} />)}</g>
-      {/* the Treasury: three steps, ten columns, an entablature and a pediment with a rising sun */}
+      <g className="hs-1">{BACK.map((b, i) => <rect key={i} x={b.x} y={200 - b.h * 0.6} width={b.w} height={b.h * 0.6} />)}</g>
+      {/* the Treasury: three steps, ten columns, an entablature and a pediment with a rising sun, a flag on top */}
       <g fill="url(#fn-bld)">
-        <rect x="276" y="184" width="488" height="8" /><rect x="292" y="176" width="456" height="8" /><rect x="306" y="168" width="428" height="8" />
-        <rect x="316" y="104" width="408" height="64" />
-        <rect x="304" y="94" width="432" height="12" /><path d="M296 94 520 34 744 94z" />
+        <rect x="476" y="184" width="488" height="8" /><rect x="492" y="176" width="456" height="8" /><rect x="506" y="168" width="428" height="8" />
+        <rect x="516" y="104" width="408" height="64" />
+        <rect x="504" y="94" width="432" height="12" /><path d="M496 94 720 34 944 94z" />
       </g>
-      <path d="M338 90 520 42 702 90z" fill="var(--s2)" />
-      <g stroke="#FFD98A" strokeWidth="1.8" opacity=".6" strokeLinecap="round">{Array.from({ length: 9 }, (_, i) => { const a = Math.PI * (0.12 + i * 0.095); return <path key={i} d={`M520 86L${520 - Math.cos(a) * 92} ${86 - Math.sin(a) * 40}`} />; })}</g>
-      <circle cx="520" cy="86" r="9" fill="#FFD98A" />
-      <g fill="#FFD98A" opacity=".5">{Array.from({ length: 9 }, (_, i) => <rect key={i} x={347 + i * 40.5} y="112" width="20" height="50" rx="2" />)}</g>
-      <g className="hs-pillar">{Array.from({ length: 10 }, (_, i) => <g key={i}><rect x={330 + i * 40.5 - 9} y="106" width="18" height="62" rx="2" /><path d={`M${330 + i * 40.5} 110v54`} stroke="var(--s2)" strokeWidth="1.2" opacity=".7" /></g>)}</g>
-      <path d="M520 34V6" stroke="#C9D3E6" strokeWidth="2" /><g className="ec-flag"><path d="M520 6h28l-6 6 6 6h-28z" fill="var(--a)" /></g>
-      {/* the Budget box, its lid open, and coins dropping in */}
-      <g transform="translate(850 190) scale(1.5) translate(0 -190)">
-        <rect x="-50" y="190" width="100" height="6" rx="2" fill="var(--s3)" />
-        <rect x="-44" y="146" width="88" height="44" rx="5" fill="#B8322C" /><rect x="-44" y="146" width="88" height="6" fill="#8F2621" /><rect x="-44" y="166" width="88" height="5" fill="url(#fn-gold)" />
-        <rect x="-7" y="160" width="14" height="14" rx="3" fill="url(#fn-gold)" /><circle cx="0" cy="167" r="2" fill="#8F2621" />
-        <g className="ec-lid"><rect x="-44" y="130" width="88" height="16" rx="4" fill="#C93C35" /><rect x="-44" y="142" width="88" height="4" fill="url(#fn-gold)" /><path d="M-14 130q14-14 28 0" stroke="#E6B84A" strokeWidth="3" fill="none" strokeLinecap="round" /></g>
-        {[-26, -10, 8, 24].map((x, i) => <g key={i} className="ec-rain" style={{ "--d": `${2.2 + i * 0.42}s` }}><ellipse cx={x} cy="40" rx="11" ry="3.6" fill="#B88A2C" /><ellipse cx={x} cy="38" rx="11" ry="3.6" fill="#F7D675" /></g>)}
-      </g>
-      {/* the scales */}
-      <g transform="translate(168 0)">
-        <rect x="136" y="64" width="5" height="124" fill="#C9A24A" /><rect x="104" y="184" width="70" height="8" rx="3" fill="#C9A24A" /><circle cx="138.5" cy="62" r="6" fill="#E8C766" />
-        <g className="ec-beam"><rect x="62" y="60" width="153" height="5" rx="2" fill="#E8C766" />
-          <g className="ec-pan ec-pan-l"><path d="M70 64 52 108h36z" fill="none" stroke="#C9A24A" strokeWidth="1.6" /><path d="M48 108h44a22 14 0 0 1-44 0z" fill="#E8C766" /><ellipse cx="70" cy="105" rx="9" ry="3" fill="#F7D675" /></g>
-          <g className="ec-pan ec-pan-r"><path d="M207 64 189 108h36z" fill="none" stroke="#C9A24A" strokeWidth="1.6" /><path d="M185 108h44a22 14 0 0 1-44 0z" fill="#E8C766" /><ellipse cx="207" cy="105" rx="9" ry="3" fill="#F7D675" /></g>
-        </g>
-      </g>
-      {/* coin stacks that climb */}
-      {STACKS.map((n, s) => (
-        <g key={s} transform={`translate(${1000 + s * 52} 190)`}>
-          {Array.from({ length: n }, (_, k) => (
-            <g key={k} className="ec-coinstack" style={{ "--d": `${0.5 + s * 0.28 + k * 0.07}s` }}>
-              <ellipse cx="0" cy={-k * 6 - 3} rx="19" ry="5.2" fill="#B88A2C" /><ellipse cx="0" cy={-k * 6 - 5} rx="19" ry="5.2" fill="url(#fn-gold)" />
-            </g>
-          ))}
-          <circle className="ec-glint" cx={-6} cy={-n * 6 - 4} r="2" fill="#fff" style={{ "--d": `${2.4 + s * 0.2}s` }} />
-        </g>
-      ))}
-      <path d="M990 118H1430" className="hs-dash" />
+      <path d="M538 90 720 42 902 90z" fill="var(--s2)" />
+      <g stroke="#FFD98A" strokeWidth="1.8" opacity=".6" strokeLinecap="round">{Array.from({ length: 9 }, (_, i) => { const a = Math.PI * (0.12 + i * 0.095); return <path key={i} d={`M720 86L${720 - Math.cos(a) * 92} ${86 - Math.sin(a) * 40}`} />; })}</g>
+      <circle cx="720" cy="86" r="9" fill="#FFD98A" />
+      <g fill="#FFD98A" opacity=".5">{Array.from({ length: 9 }, (_, i) => <rect key={i} x={547 + i * 40.5} y="112" width="20" height="50" rx="2" />)}</g>
+      <g className="hs-pillar">{Array.from({ length: 10 }, (_, i) => <g key={i}><rect x={530 + i * 40.5 - 9} y="106" width="18" height="62" rx="2" /><path d={`M${530 + i * 40.5} 110v54`} stroke="var(--s2)" strokeWidth="1.2" opacity=".7" /></g>)}</g>
+      <path d="M720 34V6" stroke="#C9D3E6" strokeWidth="2" /><g className="ec-flag"><path d="M720 6h28l-6 6 6 6h-28z" fill="var(--a)" /></g>
+      {/* the same stacks on both sides, rising towards the edges, with a dotted line over their tops */}
+      {FIN_L.map((s, i) => <Stack key={`l${i}`} x={s.x} n={s.n} s={i} />)}
+      {FIN_R.map((s, i) => <Stack key={`r${i}`} x={s.x} n={s.n} s={FIN_L.length + i} />)}
+      <polyline className="hs-dash" points={tops.slice(0, 5).join(" ")} /><polyline className="hs-dash" points={tops.slice(5).join(" ")} />
       <g className="hs-3"><rect x="0" y="190" width="1440" height="10" /></g>
     </Scene>
   );
@@ -229,9 +251,9 @@ export function TaxScene() {
         <circle r="60" className="hs-2" /><circle r="60" className="ec-node-ring" /><circle r="48" className="hs-3" />
         {Array.from({ length: 14 }, (_, i) => { const a = (i / 14) * Math.PI * 2; return <circle key={i} cx={Math.cos(a) * 54} cy={Math.sin(a) * 54} r="2.4" fill="#FFE6A8" />; })}
         <g className="ec-vwheel" style={{ transformOrigin: "0px 0px" }}>
-          {Array.from({ length: 6 }, (_, i) => { const a = (i / 6) * Math.PI * 2; return <path key={i} d={`M0 0L${Math.cos(a) * 40} ${Math.sin(a) * 40}`} stroke="url(#tx-gold)" strokeWidth="5" strokeLinecap="round" />; })}
+          {Array.from({ length: 6 }, (_, i) => { const a = (i / 6) * Math.PI * 2; return <path key={i} d={`M0 0L${Math.cos(a) * 40} ${Math.sin(a) * 40}`} stroke="#E8C766" strokeWidth="5" strokeLinecap="round" />; })}
           {Array.from({ length: 6 }, (_, i) => { const a = (i / 6) * Math.PI * 2; return <circle key={i} cx={Math.cos(a) * 40} cy={Math.sin(a) * 40} r="5" fill="#F7D675" />; })}
-          <circle r="26" fill="none" stroke="url(#tx-gold)" strokeWidth="3.4" />
+          <circle r="26" fill="none" stroke="#E8C766" strokeWidth="3.4" />
         </g>
         <circle r="14" fill="url(#tx-gold)" /><path d={POUND} transform="scale(1.5)" fill="none" stroke="#7A5A10" strokeWidth="1.5" strokeLinecap="round" />
       </g>

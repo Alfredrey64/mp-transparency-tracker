@@ -25,6 +25,11 @@
 .ec-jib { transform-box: view-box; transform-origin: 150px 40px; animation: ec-swing 5s ease-in-out 0.4s backwards; }
 @keyframes ec-swing { from { transform: rotate(-3.5deg); } 55% { transform: rotate(2deg); } }
 
+.ec-area { animation: ec-fadein 1.8s ease-out 2.4s backwards; }
+@keyframes ec-fadein { from { opacity: 0; } }
+.ec-halo { fill: none; stroke: var(--lamp); stroke-width: 2; opacity: 0; transform-box: fill-box; transform-origin: center; animation: ec-ripple 1.8s ease-out calc(1.3s + var(--i) * 0.7s) backwards; }
+@keyframes ec-ripple { from { opacity: 0.9; transform: scale(1); } to { opacity: 0; transform: scale(4.2); } }
+
 /* ---- Jobs and pay ---- */
 .ec-walk { animation: ec-walk-in 5.2s cubic-bezier(0.25, 0.7, 0.2, 1) calc(var(--i) * 0.28s) backwards; }
 @keyframes ec-walk-in { from { transform: translateX(-760px); } }
@@ -36,11 +41,6 @@
 /* ---- Public finances ---- */
 .ec-coinstack { animation: ec-drop 0.45s cubic-bezier(0.3, 1.3, 0.5, 1) var(--d) backwards; }
 @keyframes ec-drop { from { transform: translateY(-46px); opacity: 0; } }
-.ec-beam { transform-box: view-box; transform-origin: 138.5px 62px; animation: ec-tip 3.4s ease-in-out 0.5s backwards; }
-@keyframes ec-tip { from { transform: rotate(-9deg); } 35% { transform: rotate(6deg); } 65% { transform: rotate(-2.5deg); } 85% { transform: rotate(1deg); } }
-.ec-pan { transform-box: view-box; animation: ec-tip-back 3.4s ease-in-out 0.5s backwards; }
-.ec-pan-l { transform-origin: 70px 64px; } .ec-pan-r { transform-origin: 207px 64px; }
-@keyframes ec-tip-back { from { transform: rotate(9deg); } 35% { transform: rotate(-6deg); } 65% { transform: rotate(2.5deg); } 85% { transform: rotate(-1deg); } }
 
 /* ---- Taxes ---- */
 .ec-pipe { fill: none; stroke: var(--lamp); stroke-width: 1.6; stroke-dasharray: 2 7; stroke-linecap: round; opacity: 0.45; }
@@ -65,10 +65,10 @@
 /* Calmer motion: every picture is simply finished, and what only exists while it moves (coins, smoke) stays away. */
 @media (prefers-reduced-motion: reduce) {
   .hs-scene *, .hs-scene *::before { animation: none !important; transition: none !important; }
-  .ec-flow, .ec-puff, .ec-coin, .ec-rain, .ec-glint { opacity: 0 !important; }
+  .ec-flow, .ec-puff, .ec-coin, .ec-glint { opacity: 0 !important; }
 }
 html[data-calm] .hs-scene * { animation: none !important; }
-html[data-calm] .ec-flow, html[data-calm] .ec-puff, html[data-calm] .ec-coin, html[data-calm] .ec-rain, html[data-calm] .ec-glint { opacity: 0 !important; }
+html[data-calm] .ec-flow, html[data-calm] .ec-puff, html[data-calm] .ec-coin, html[data-calm] .ec-glint { opacity: 0 !important; }
 
 /* ---- the richer scenes ---- */
 .ec-sun { animation: ec-sunrise 6s cubic-bezier(0.2, 0.7, 0.2, 1) 0.2s backwards; }
@@ -81,10 +81,6 @@ html[data-calm] .ec-flow, html[data-calm] .ec-puff, html[data-calm] .ec-coin, ht
 .ec-jib2 { transform-box: view-box; transform-origin: 1332px 28px; animation: ec-swing 6s ease-in-out 0.4s backwards; }
 .ec-flag { transform-box: view-box; transform-origin: 520px 12px; animation: ec-wave 1.2s ease-in-out 0.4s 6 alternate; }
 @keyframes ec-wave { from { transform: skewY(-6deg) scaleX(0.92); } to { transform: skewY(6deg) scaleX(1); } }
-.ec-lid { transform-box: view-box; transform-origin: -44px 146px; transform: rotate(-26deg); animation: ec-lid 1.2s ease-out 1.2s backwards; }
-@keyframes ec-lid { from { transform: rotate(0); } }
-.ec-rain { opacity: 0; animation: ec-fall 1.2s ease-in var(--d) 4; }
-@keyframes ec-fall { from { opacity: 1; transform: translateY(0); } 80% { opacity: 1; } to { opacity: 0; transform: translateY(108px); } }
 .ec-glint { opacity: 0; animation: ec-twinkle 1.4s ease-in-out var(--d) 3; }
 @keyframes ec-twinkle { 0%, 100% { opacity: 0; transform: scale(0.4); } 50% { opacity: 0.95; transform: scale(1.4); } }
 .ec-vwheel { animation: ec-vturn 3.4s cubic-bezier(0.3, 0.1, 0.2, 1) 0.4s backwards; }
