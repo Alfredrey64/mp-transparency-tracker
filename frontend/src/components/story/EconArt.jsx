@@ -81,6 +81,7 @@ const Defs = ({ id }) => (
     <radialGradient id={`${id}-glow`} cx="50%" cy="100%" r="62%"><stop offset="0" style={{ stopColor: "var(--lamp)", stopOpacity: 0.42 }} /><stop offset="0.55" style={{ stopColor: "var(--a)", stopOpacity: 0.14 }} /><stop offset="1" style={{ stopColor: "var(--a)", stopOpacity: 0 }} /></radialGradient>
     <linearGradient id={`${id}-bld`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" style={{ stopColor: "var(--s3)" }} /><stop offset="1" style={{ stopColor: "var(--s2)" }} /></linearGradient>
     <radialGradient id={`${id}-sun`}><stop offset="0" stopColor="#FFD98A" stopOpacity="0.9" /><stop offset="1" stopColor="#FFB45A" stopOpacity="0" /></radialGradient>
+    <linearGradient id={`${id}-lt`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" style={{ stopColor: "color-mix(in srgb, var(--a) 18%, #F4F8FF)" }} /><stop offset="1" style={{ stopColor: "color-mix(in srgb, var(--a) 40%, #E3EEFF)" }} /></linearGradient>
     <linearGradient id={`${id}-area`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" style={{ stopColor: "var(--lamp)", stopOpacity: 0.3 }} /><stop offset="1" style={{ stopColor: "var(--a)", stopOpacity: 0 }} /></linearGradient>
     <linearGradient id={`${id}-gold`} x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#C99A33" /><stop offset="0.5" stopColor="#F7D675" /><stop offset="1" stopColor="#C99A33" /></linearGradient>
   </defs>
@@ -173,7 +174,6 @@ function Stack({ x, n, s }) {
           <ellipse cx="0" cy={-k * COIN - 3} rx="22" ry="6" fill="#B88A2C" /><ellipse cx="0" cy={-k * COIN - 5} rx="22" ry="6" fill="url(#fn-gold)" />
         </g>
       ))}
-      <circle className="ec-glint" cx="-7" cy={-n * COIN - 4} r="2.2" fill="#fff" style={{ "--d": `${2.4 + s * 0.25}s` }} />
     </g>
   );
 }
@@ -211,24 +211,49 @@ const SRC = [250, 366, 482, 598];
 const SNK = [842, 958, 1074, 1190];
 const inRibbon = (x) => `M${x} 124C${x} 58 540 52 652 108`;
 const outRibbon = (x) => `M788 108C900 52 ${x} 58 ${x} 124`;
+// The places money comes from and goes to are drawn in light tones so they stand out from the dark band: a pay packet, a shop, a home and a petrol pump going in; a hospital, a school,
+// a bridge and a gatehouse coming out.
+const GLASS = { fill: "var(--a)", opacity: 0.55 };
 function Source({ x, kind }) {
   return (
     <g transform={`translate(${x} 190) scale(1.28)`}>
-      {kind === 0 && <g><rect x="-26" y="-34" width="52" height="34" rx="4" fill="var(--s4)" /><path d="M-26 -34 0 -14 26 -34" fill="none" stroke="var(--s2)" strokeWidth="2" /><circle cx="0" cy="-12" r="8" fill="#F3C65A" stroke="#B88A2C" /><path transform="translate(0 -12)" d={POUND} fill="none" stroke="#7A5A10" strokeWidth="1.3" strokeLinecap="round" /></g>}
-      {kind === 1 && <g><rect x="-28" y="-44" width="56" height="44" rx="2" fill="url(#tx-bld)" /><path d="M-32 -44h64l-6 14h-52z" className="hs-awn-a" /><path d="M-16 -44h6l-2 14h-6zM2 -44h6l-2 14h-6zM20 -44h6l-2 14h-6z" className="hs-awn-b" /><rect x="-22" y="-26" width="26" height="20" rx="2" fill="#FFD98A" opacity=".8" /><rect x="10" y="-26" width="12" height="26" rx="2" fill="var(--s2)" /></g>}
-      {kind === 2 && <g><rect x="-24" y="-30" width="48" height="30" fill="url(#tx-bld)" /><path d="M-30 -30 0 -54 30 -30z" fill="var(--s3)" /><rect x="12" y="-54" width="7" height="14" fill="var(--s3)" /><rect x="-16" y="-22" width="14" height="14" rx="2" fill="#FFD98A" opacity=".85" /><rect x="6" y="-22" width="12" height="22" rx="2" fill="var(--s2)" /></g>}
-      {kind === 3 && <g><rect x="-13" y="-46" width="26" height="46" rx="4" fill="url(#tx-bld)" /><rect x="-9" y="-40" width="18" height="12" rx="2" fill="#FFD98A" opacity=".85" /><rect x="-16" y="-4" width="32" height="4" rx="2" fill="var(--s3)" /><path d="M13 -34h5q6 0 6 6v18" fill="none" stroke="var(--s4)" strokeWidth="2.6" strokeLinecap="round" /></g>}
+      {kind === 0 && <g><rect x="-27" y="-36" width="54" height="36" rx="4" fill="url(#tx-lt)" stroke="var(--a)" strokeWidth="1.4" /><path d="M-27 -36 0 -15 27 -36" fill="none" stroke="var(--a)" strokeWidth="2" /><circle cx="0" cy="-13" r="9" fill="#F3C65A" stroke="#B88A2C" /><path transform="translate(0 -13)" d={POUND} fill="none" stroke="#7A5A10" strokeWidth="1.3" strokeLinecap="round" /></g>}
+      {kind === 1 && <g><rect x="-28" y="-44" width="56" height="44" rx="2" fill="url(#tx-lt)" /><path d="M-32 -44h64l-6 14h-52z" className="hs-awn-a" /><path d="M-16 -44h6l-2 14h-6zM2 -44h6l-2 14h-6zM20 -44h6l-2 14h-6z" fill="#fff" opacity=".85" /><rect x="-22" y="-26" width="26" height="20" rx="2" {...GLASS} /><rect x="10" y="-26" width="12" height="26" rx="2" fill="var(--s2)" /></g>}
+      {kind === 2 && <g><rect x="-24" y="-30" width="48" height="30" fill="url(#tx-lt)" /><path d="M-30 -30 0 -54 30 -30z" fill="var(--a)" /><rect x="12" y="-54" width="7" height="14" fill="var(--s2)" /><rect x="-16" y="-22" width="14" height="14" rx="2" {...GLASS} /><rect x="6" y="-22" width="12" height="22" rx="2" fill="var(--s2)" /></g>}
+      {kind === 3 && <g><rect x="-13" y="-46" width="26" height="46" rx="4" fill="url(#tx-lt)" /><rect x="-9" y="-40" width="18" height="12" rx="2" fill="var(--s2)" /><rect x="-6" y="-37" width="12" height="6" rx="1" fill="#FFD98A" /><rect x="-16" y="-4" width="32" height="4" rx="2" fill="var(--a)" /><path d="M13 -34h5q6 0 6 6v18" fill="none" stroke="var(--a)" strokeWidth="2.6" strokeLinecap="round" /></g>}
     </g>
   );
 }
+const crenels = (x0, y, n, step, w = 4) => Array.from({ length: n }, (_, i) => <rect key={i} x={x0 + i * step} y={y} width={w} height="6" fill="url(#tx-lt)" />);
 function Sink({ x, kind, i }) {
   return (
     <g transform={`translate(${x} 190) scale(1.28)`}>
       <ellipse className="ec-arrive" cx="0" cy="-22" rx="52" ry="40" fill="#F3C65A" style={{ "--d": `${3.4 + i * 0.5}s` }} />
-      {kind === 0 && <g><rect x="-32" y="-46" width="64" height="46" rx="2" fill="url(#tx-bld)" /><rect x="-10" y="-60" width="20" height="16" rx="2" fill="url(#tx-bld)" /><path d="M-3 -58h6v5h5v6h-5v5h-6v-5h-5v-6h5z" fill="#FFE6A8" /><rect x="-26" y="-36" width="10" height="10" rx="1" fill="#FFD98A" opacity=".8" /><rect x="16" y="-36" width="10" height="10" rx="1" fill="#FFD98A" opacity=".8" /><rect x="-6" y="-16" width="12" height="16" rx="1" fill="var(--s2)" /></g>}
-      {kind === 1 && <g><path d="M-34 0v-34l34-20 34 20v34z" fill="url(#tx-bld)" /><circle cx="0" cy="-34" r="8" fill="#FFE6A8" /><path d="M0 -39v5h4" stroke="#3A2A20" strokeWidth="1.5" fill="none" strokeLinecap="round" /><rect x="-24" y="-20" width="10" height="12" rx="1" fill="#FFD98A" opacity=".8" /><rect x="14" y="-20" width="10" height="12" rx="1" fill="#FFD98A" opacity=".8" /><path d="M0 -54V-68h12v7H0" stroke="var(--s3)" strokeWidth="2" fill="var(--a)" /></g>}
-      {kind === 2 && <g><path d="M-40 -18h80v6h-80z" fill="var(--s4)" /><path d="M-40 -12v12h20a10 10 0 0 1 20 0 10 10 0 0 1 20 0h20v-12z" fill="url(#tx-bld)" /><path d="M-34 -18v-12M-14 -18v-12M6 -18v-12M26 -18v-12" stroke="var(--s3)" strokeWidth="2" /><path d="M-30 -30h60" stroke="var(--s3)" strokeWidth="2" /><path d="M-34 -15h68" stroke="#FFD98A" strokeWidth="1.4" strokeDasharray="5 6" opacity=".8" /></g>}
-      {kind === 3 && <g><path d="M0 0V-50" stroke="var(--s3)" strokeWidth="3" /><path d="M-24 -48h48v18c0 12-10 20-24 26-14-6-24-14-24-26z" fill="url(#tx-bld)" stroke="#E8C766" strokeWidth="2" /><path d="M0 -42l3 7h7l-5.6 4.4 2.2 7-6.6-4.2-6.6 4.2 2.2-7-5.6-4.4h7z" fill="#FFE6A8" /></g>}
+      {/* a hospital: a wide ward block with a taller centre, a red cross and a door */}
+      {kind === 0 && <g><rect x="-34" y="-40" width="68" height="40" rx="2" fill="url(#tx-lt)" /><rect x="-12" y="-56" width="24" height="18" rx="2" fill="url(#tx-lt)" /><path d="M-3 -53h6v5h5v6h-5v5h-6v-5h-5v-6h5z" fill="#E0524A" /><rect x="-28" y="-32" width="10" height="9" rx="1" {...GLASS} /><rect x="18" y="-32" width="10" height="9" rx="1" {...GLASS} /><rect x="-28" y="-18" width="10" height="9" rx="1" {...GLASS} /><rect x="18" y="-18" width="10" height="9" rx="1" {...GLASS} /><rect x="-6" y="-16" width="12" height="16" rx="1" fill="var(--s2)" /></g>}
+      {/* a school: a hall with a pitched roof, a clock, a flag and a door */}
+      {kind === 1 && <g><path d="M-34 0v-30h68v30z" fill="url(#tx-lt)" /><path d="M-38 -30 0 -52 38 -30z" fill="var(--a)" /><circle cx="0" cy="-36" r="7.5" fill="#fff" stroke="var(--s2)" strokeWidth="1.4" /><path d="M0 -41v5h4" stroke="var(--s2)" strokeWidth="1.5" fill="none" strokeLinecap="round" /><rect x="-27" y="-22" width="10" height="12" rx="1" {...GLASS} /><rect x="17" y="-22" width="10" height="12" rx="1" {...GLASS} /><rect x="-5" y="-16" width="10" height="16" rx="1" fill="var(--s2)" /><path d="M0 -52V-66" stroke="var(--s2)" strokeWidth="1.6" /><path d="M0 -66h13l-3.5 4 3.5 4H0z" fill="var(--a)" /></g>}
+      {/* a suspension bridge: two towers, a sagging cable, hangers and a deck carried on arches */}
+      {kind === 2 && <g>
+        <rect x="-42" y="-17" width="84" height="17" fill="url(#tx-lt)" />
+        {[-26, 0, 26].map((cx) => <path key={cx} d={`M${cx - 9} 0V-6a9 9 0 0 1 18 0V0z`} fill="var(--s2)" opacity=".6" />)}
+        <rect x="-44" y="-24" width="88" height="7" rx="1.5" fill="var(--a)" />
+        <path d="M-44 -24Q-34 -30 -23.5 -58M23.5 -58Q34 -30 44 -24M-23.5 -58Q0 -14 23.5 -58" fill="none" stroke="#DCE9FA" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M-12 -24V-42M-4 -24V-37M4 -24V-37M12 -24V-42" stroke="#DCE9FA" strokeWidth="1.2" />
+        <rect x="-26" y="-60" width="5" height="38" rx="1" fill="#C6D9F2" /><rect x="21" y="-60" width="5" height="38" rx="1" fill="#C6D9F2" />
+        <path d="M-44 -24H44" stroke="#FFD98A" strokeWidth="1.2" strokeDasharray="5 6" opacity=".9" transform="translate(0 3.5)" />
+      </g>}
+      {/* a gatehouse for defence: a keep and two towers with battlements, a shield over the arched door, a flag */}
+      {kind === 3 && <g>
+        <rect x="-38" y="-40" width="18" height="40" fill="url(#tx-lt)" /><rect x="20" y="-40" width="18" height="40" fill="url(#tx-lt)" />
+        {crenels(-38, -46, 3, 7)}{crenels(20, -46, 3, 7)}
+        <rect x="-19" y="-54" width="38" height="54" fill="url(#tx-lt)" />
+        {crenels(-19, -60, 5, 9)}
+        <path d="M-8 0V-12a8 8 0 0 1 16 0V0z" fill="var(--s2)" />
+        <path d="M-8 -50h16v10c0 6-5 9-8 11-3-2-8-5-8-11z" fill="var(--a)" /><path d="M0 -46l1.8 4h4.2l-3.4 2.6 1.3 4-3.9-2.5-3.9 2.5 1.3-4L-6 -42h4.2z" fill="#FFE6A8" />
+        <rect x="-33" y="-30" width="3.4" height="9" rx="1" fill="var(--s2)" opacity=".6" /><rect x="29.6" y="-30" width="3.4" height="9" rx="1" fill="var(--s2)" opacity=".6" />
+        <path d="M0 -60V-78" stroke="var(--s2)" strokeWidth="1.6" /><path d="M0 -78h15l-4 4.5 4 4.5H0z" fill="var(--a)" />
+      </g>}
     </g>
   );
 }
@@ -237,7 +262,7 @@ export function TaxScene() {
     <Scene kind="taxes">
       <Defs id="tx" />
       <rect width="1440" height="200" fill="url(#tx-glow)" />
-      <g className="hs-1">{BACK.map((b, i) => <rect key={i} x={b.x} y={200 - b.h * 0.55} width={b.w} height={b.h * 0.55} />)}</g>
+      <g className="hs-2">{BACK.map((b, i) => <rect key={i} x={b.x} y={200 - b.h * 0.55} width={b.w} height={b.h * 0.55} />)}</g>
       {SRC.map((x) => <path key={`i${x}`} d={inRibbon(x)} className="ec-ribbon" />)}
       {SNK.map((x) => <path key={`o${x}`} d={outRibbon(x)} className="ec-ribbon" />)}
       {SRC.map((x) => <path key={`ip${x}`} d={inRibbon(x)} className="ec-pipe" />)}

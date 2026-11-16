@@ -66,10 +66,10 @@
 /* Calmer motion: every picture is simply finished, and what only exists while it moves (coins, smoke) stays away. */
 @media (prefers-reduced-motion: reduce) {
   .hs-scene *, .hs-scene *::before { animation: none !important; transition: none !important; }
-  .ec-flow, .ec-puff, .ec-coin, .ec-glint { opacity: 0 !important; }
+  .ec-flow, .ec-puff, .ec-coin { opacity: 0 !important; }
 }
 html[data-calm] .hs-scene * { animation: none !important; }
-html[data-calm] .ec-flow, html[data-calm] .ec-puff, html[data-calm] .ec-coin, html[data-calm] .ec-glint { opacity: 0 !important; }
+html[data-calm] .ec-flow, html[data-calm] .ec-puff, html[data-calm] .ec-coin { opacity: 0 !important; }
 
 /* ---- the richer scenes ---- */
 .ec-sun { animation: ec-sunrise 6s cubic-bezier(0.2, 0.7, 0.2, 1) 0.2s backwards; }
@@ -83,8 +83,6 @@ html[data-calm] .ec-flow, html[data-calm] .ec-puff, html[data-calm] .ec-coin, ht
 /* The flag is run up the mast once and then flies. */
 .ec-flag { animation: ec-raise 2.6s cubic-bezier(0.35, 0.1, 0.25, 1) 0.8s backwards; }
 @keyframes ec-raise { from { transform: translateY(20px); } }
-.ec-glint { opacity: 0; animation: ec-twinkle 1.4s ease-in-out var(--d) 3; }
-@keyframes ec-twinkle { 0%, 100% { opacity: 0; transform: scale(0.4); } 50% { opacity: 0.95; transform: scale(1.4); } }
 .ec-vwheel { animation: ec-vturn 3.4s cubic-bezier(0.3, 0.1, 0.2, 1) 0.4s backwards; }
 @keyframes ec-vturn { from { transform: rotate(-540deg); } }
 .ec-arrive { opacity: 0; animation: ec-arrive 2.6s ease-out var(--d) backwards; }
