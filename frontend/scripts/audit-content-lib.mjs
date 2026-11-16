@@ -123,3 +123,18 @@ export function tradeHeadlineBehind(period, lastQuarter) {
   const held = Number(q[1]) * 4 + Number(q[2]);
   return Math.max(0, held - typed);
 }
+
+// Individuals who have given a party at least `threshold` pounds in all (their gifts grouped the way the donors page groups them) and have no profile in
+// src/data/donorProfiles.json. `group` turns a raw register name into the name the page shows, so the keys match the file.
+export function donorsWithoutProfile(rows, profiles, group, threshold = 100000) {
+  const totals = new Map();
+  for (const r of rows) {
+    if (r.donor_status !== "Individual" || !r.donor_name || !Number.isFinite(r.value)) continue;
+    const name = group(r.donor_name);
+    totals.set(name, (totals.get(name) ?? 0) + r.value);
+  }
+  return [...totals]
+    .filter(([name, total]) => total >= threshold && !profiles[name])
+    .sort((a, b) => b[1] - a[1])
+    .map(([name, total]) => ({ name, problem: `has given £${Math.round(total).toLocaleString("en-GB")} and has no profile in src/data/donorProfiles.json. Search for who they are, and add a line only if a page you read names them (leave it out otherwise), with that page as sourceUrl.` }));
+}

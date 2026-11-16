@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseLongDate, staleExplainers, staleData, staleCheckedConstants, dueDates, capBehind, tradeHeadlineBehind, brokenLinks, report } from "./audit-content-lib.mjs";
+import { parseLongDate, staleExplainers, staleData, staleCheckedConstants, dueDates, capBehind, tradeHeadlineBehind, brokenLinks, donorsWithoutProfile, report } from "./audit-content-lib.mjs";
 
 const now = new Date("2026-10-30T12:00:00Z");
 
@@ -93,5 +93,22 @@ describe("tradeHeadlineBehind", () => {
   it("says nothing when it cannot read either side", () => {
     expect(tradeHeadlineBehind("last quarter", "2026-Q2")).toBe(0);
     expect(tradeHeadlineBehind("April to June 2026", undefined)).toBe(0);
+  });
+});
+
+describe("donorsWithoutProfile", () => {
+  const id = (n) => n.replace(/^Mr /, "");
+  it("lists individuals at or over the threshold with no profile, largest first, adding up their gifts", () => {
+    const rows = [
+      { donor_name: "Mr Ann Big", donor_status: "Individual", value: 60000 },
+      { donor_name: "Ann Big", donor_status: "Individual", value: 70000 },
+      { donor_name: "Bo Biggest", donor_status: "Individual", value: 500000 },
+      { donor_name: "Cy Known", donor_status: "Individual", value: 900000 },
+      { donor_name: "Di Small", donor_status: "Individual", value: 99999 },
+      { donor_name: "Big Co Ltd", donor_status: "Company", value: 5000000 },
+    ];
+    const out = donorsWithoutProfile(rows, { "Cy Known": { description: "x" } }, id);
+    expect(out.map((o) => o.name)).toEqual(["Bo Biggest", "Ann Big"]);
+    expect(out[1].problem).toContain("£130,000");
   });
 });

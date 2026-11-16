@@ -10,8 +10,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseLongDate, staleExplainers, staleData, staleCheckedConstants, handKeptDue, dueDates, capBehind, tradeHeadlineBehind, brokenLinks, report } from "./audit-content-lib.mjs";
+import { parseLongDate, staleExplainers, staleData, staleCheckedConstants, handKeptDue, dueDates, capBehind, tradeHeadlineBehind, brokenLinks, donorsWithoutProfile, report } from "./audit-content-lib.mjs";
 import { DUE } from "./content-ledger.mjs";
+import { normaliseIndividualDonorName } from "../src/lib/donorNames.js";
 import { HAND_KEPT } from "./hand-kept.mjs";
 import { yearlyOnsEditions, pinnedOnsFiles, newestOnsEdition, hbaiEndYear, pinnedHbaiSlug, newestHbaiSlug, pinnedSipriYear, newestSipriYear, editionFinding } from "./source-editions-lib.mjs";
 
@@ -151,6 +152,24 @@ async function newEditions() {
   }
   return out;
 }
+// Individuals who have given £100,000 or more but have no profile yet. Needs the data service's address and a read key in the environment (the weekly workflow
+// supplies them); without them the section says so instead of quietly passing.
+async function donorGaps() {
+  const url = process.env.SUPABASE_URL, key = process.env.SUPABASE_KEY;
+  if (!url || !key) return [{ name: "Donor profiles", problem: "could not be checked because SUPABASE_URL and SUPABASE_KEY are not set here." }];
+  try {
+    const rows = [];
+    for (let from = 0; ; from += 1000) {
+      const res = await fetch(`${url}/rest/v1/party_donations?select=donor_name,donor_status,value&donor_status=eq.Individual&order=id.asc`, { headers: { apikey: key, Authorization: `Bearer ${key}`, Range: `${from}-${from + 999}`, "Range-Unit": "items" } });
+      if (!res.ok) throw new Error(`answered ${res.status}`);
+      const page = await res.json();
+      rows.push(...page);
+      if (page.length < 1000) break;
+    }
+    return donorsWithoutProfile(rows, JSON.parse(read("donorProfiles.json")), normaliseIndividualDonorName);
+  } catch (e) { return [{ name: "Donor profiles", problem: `could not be checked (${e.message}).` }]; }
+}
+const donorGapList = process.argv.includes("--no-links") ? [] : await donorGaps();
 const editions = process.argv.includes("--no-links") ? [] : await newEditions();
 
 const { text, total } = report([
@@ -160,6 +179,7 @@ const { text, total } = report([
   ["Hand-typed data that is due another look", handKeptDue(HAND_KEPT, now, (r) => { try { return r.stamp ? JSON.parse(read(r.stamp.file))[r.stamp.key] : null; } catch { return null; } })],
   ["Facts with a built-in end date", [...moving, ...dueDates(DUE, now)]],
   ["Newer editions the site is not reading yet", editions],
+  ["Big individual donors with no profile yet", donorGapList],
   ["Source links that have gone", brokenLinks(links)],
 ]);
 console.log(text);

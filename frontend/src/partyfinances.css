@@ -24,7 +24,12 @@
 .pf-led { margin-top: 4px; font: 600 13.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--on) 84%, transparent); }
 .pf-led b { font: 700 16px/1.3 "Figures", "Newsreader", Georgia, serif; color: var(--on); margin-left: 2px; }
 .pf-total { display: inline-flex; align-items: center; gap: 12px; }
-.pf-total b { font: 700 clamp(22px, 3vw, 30px)/1 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; white-space: nowrap; }
+/* the total sits on a solid plate in a darker (or, on a bright banner, lighter) shade of the party colour, so it reads cleanly whatever the flag is doing behind it */
+.pf-sum { display: grid; justify-items: start; gap: 2px; min-width: 150px; padding: 10px 16px 11px; border-radius: 16px; background: color-mix(in srgb, var(--b1) 72%, #000); border: 1px solid color-mix(in srgb, var(--on) 28%, transparent); box-shadow: 0 8px 18px -10px rgba(0, 0, 0, 0.55); }
+.pf-card[data-dark="1"] .pf-sum { background: color-mix(in srgb, var(--b1) 38%, #fff); }
+.pf-sum small { font: 700 11px/1.2 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.06em; text-transform: uppercase; color: color-mix(in srgb, var(--on) 82%, transparent); }
+.pf-sum b { font: 700 clamp(28px, 3.6vw, 38px)/1.02 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; white-space: nowrap; color: var(--on); }
+.pf-sum em { font: 600 13px/1.2 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; font-variant-numeric: tabular-nums; color: color-mix(in srgb, var(--on) 84%, transparent); }
 .pf-chev { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: color-mix(in srgb, var(--on) 16%, transparent); border: 1px solid color-mix(in srgb, var(--on) 36%, transparent); flex-shrink: 0; transition: transform 0.3s var(--ease-out, ease-out), background-color 0.2s; }
 .pf-chev::before { content: ""; width: 8px; height: 8px; border: solid var(--on); border-width: 0 2px 2px 0; transform: translateY(-2px) rotate(45deg); }
 .pf-card[data-open="1"] .pf-chev { transform: rotate(180deg); }
@@ -39,6 +44,7 @@
   .pf-banner .ph-mono { font-size: 22px; }
   .pf-hit { grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 18px 4px 20px 0; }
   .pf-total { justify-content: space-between; }
+  .pf-sum { flex: 1; }
 }
 
 /* the donors: a plain list, nothing tinted or selected-looking */
@@ -56,6 +62,16 @@
 .pf-d-bar u { display: block; height: 100%; border-radius: 3px; background: var(--c); text-decoration: none; }
 .pf-d-desc { margin: 2px 0 0; max-width: 78ch; font: 400 14.5px/1.65 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .pf-d-desc a { color: var(--c-brand-deep, var(--c-brand)); font-weight: 700; text-underline-offset: 2px; }
+/* what the register records for each donor */
+.pf-d-more { display: grid; gap: 8px; margin-top: 2px; }
+.pf-d-facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; }
+.pf-d-facts > div { display: grid; gap: 1px; padding: 7px 12px 8px; border-radius: 12px; background: var(--c-paper-sunk, color-mix(in srgb, var(--c) 6%, var(--c-paper-card))); border: 1px solid var(--c-hairline); }
+.pf-d-facts dt { font: 700 10.5px/1.2 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.06em; text-transform: uppercase; color: var(--c-ink-soft); }
+.pf-d-facts dd { margin: 0; font: 700 14.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; font-variant-numeric: lining-nums tabular-nums; color: var(--c-ink); }
+.pf-d-also { margin: 0; max-width: 78ch; font: 400 14px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.pf-d-also b { font-weight: 700; color: var(--c-ink); }
+.pf-d-links { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; font: 700 13.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; }
+.pf-d-links a { color: var(--c-brand-deep, var(--c-brand)); text-underline-offset: 2px; }
 @media (max-width: 560px) {
   .pf-donors { padding: 2px 16px 6px; }
   .pf-d-top { flex-direction: column; gap: 6px; }

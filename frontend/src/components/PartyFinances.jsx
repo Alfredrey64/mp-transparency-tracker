@@ -3,7 +3,6 @@ import PageLead from "./PageLead";
 import { shortMoney } from "../lib/shortMoney";
 import WhatThisMeans from "./WhatThisMeans";
 import { partyConcentrationMeaning } from "../lib/moneyMeaning";
-import { everydayShort } from "../lib/everyday";
 import { m as motion, AnimatePresence } from "motion/react";
 import { supabase } from "../supabaseClient";
 import { COLORS, FONT_DISPLAY, FONT_BODY, PAGE_PADDING, readable } from "../theme";
@@ -22,6 +21,7 @@ import LeaderPortrait from "./LeaderPortrait";
 import { FLAG_OF } from "../lib/partyFlags";
 import { bannerColours } from "../lib/partyBrand";
 import { canonicalParty } from "../lib/donorParty";
+import { addFact, dateSpan, typeSummary, ecRecordUrl, companiesHouseUrl } from "../lib/donorFacts";
 import LEADERS from "../data/partyLeaders.json";
 import "../partyfinances.css";
 
@@ -54,6 +54,39 @@ const NOT_A_REAL_DONOR = /^(agreement( starting.*)?|payment received.*|undisclos
 // background below.
 const NEUTRAL_TAG_COLOR = "#8A94A3";
 
+// What the register itself records for one donor in one party's box: the gifts, their dates, the largest, how they were made, who else the donor gave to, and links to check the
+// record. All of it is worked out from the donation rows, so it is there for every donor and follows the data.
+function DonorFacts({ d }) {
+  const f = d.facts;
+  if (!f) return null;
+  const span = dateSpan(f);
+  const record = ecRecordUrl(f.ref);
+  const company = d.status === "Individual" ? null : companiesHouseUrl(f.company);
+  const also = d.others.slice(0, 4);
+  return (
+    <div className="pf-d-more">
+      <dl className="pf-d-facts">
+        <div><dt>Donations</dt><dd>{f.count}</dd></div>
+        {span && <div><dt>Accepted</dt><dd>{span}</dd></div>}
+        {f.count > 1 && f.biggest > 0 && <div><dt>Largest</dt><dd>£{Math.round(f.biggest).toLocaleString()}</dd></div>}
+        <div><dt>Made as</dt><dd>{typeSummary(f.types)}</dd></div>
+      </dl>
+      {also.length > 0 && (
+        <p className="pf-d-also">
+          Also gave to {also.map(([party, total], i) => <span key={party}>{i > 0 ? (i === also.length - 1 ? " and " : ", ") : ""}<b>{party}</b> (£{Math.round(total).toLocaleString()})</span>)}
+          {d.others.length > also.length ? ` and ${d.others.length - also.length} more` : ""}.
+        </p>
+      )}
+      {(record || company) && (
+        <p className="pf-d-links">
+          {record && <a href={record} target="_blank" rel="noreferrer">{f.count > 1 ? "Largest donation in the Electoral Commission register" : "Donation in the Electoral Commission register"} ↗</a>}
+          {company && <a href={company} target="_blank" rel="noreferrer">Company {f.company} at Companies House ↗</a>}
+        </p>
+      )}
+    </div>
+  );
+}
+
 // One box for each party: a banner in the party's colour with its flag behind and its leader's portrait on the right (the same look as the Party History cards), the money it
 // received, and, when opened, its largest donors as a plain list. The banner is the button; the portrait and flag are decoration.
 function PartyCard({ p, i, isOpen, onToggle }) {
@@ -63,7 +96,6 @@ function PartyCard({ p, i, isOpen, onToggle }) {
   const brand = /^#[0-9a-f]{6}$/i.test(p.color) ? p.color : "#5B6577";
   const b = bannerColours(brand);
   const panelId = `pf-${i}`;
-  const everyday = everydayShort(p.total);
   return (
     <motion.article
       layout="position"
@@ -82,10 +114,10 @@ function PartyCard({ p, i, isOpen, onToggle }) {
           <button type="button" className="pf-hit" aria-expanded={isOpen} aria-controls={panelId} onClick={onToggle}>
             <span className="pf-title">
               <span className="pf-name">{p.name}</span>
-              <span className="pf-meta">{p.donors.length} donor{p.donors.length === 1 ? "" : "s"}{everyday ? ` · ${everyday}` : ""}</span>
+              <span className="pf-meta">{p.donors.length} donor{p.donors.length === 1 ? "" : "s"}</span>
               {leader && <span className="pf-led">{leader.role === "President" ? "President" : "Leader"} <b>{leader.name}</b></span>}
             </span>
-            <span className="pf-total"><b>£{Math.round(p.total).toLocaleString()}</b><i className="pf-chev" aria-hidden="true" /></span>
+            <span className="pf-total"><span className="pf-sum"><small>Received</small><b>{shortMoney(p.total)}</b><em>£{Math.round(p.total).toLocaleString()}</em></span><i className="pf-chev" aria-hidden="true" /></span>
           </button>
         </h3>
         {leader && <LeaderPortrait leader={leader} />}
@@ -116,6 +148,7 @@ function PartyCard({ p, i, isOpen, onToggle }) {
                         {profile?.sourceUrl && <> · <a href={profile.sourceUrl} target="_blank" rel="noreferrer">source ↗</a></>}
                       </p>
                     )}
+                    <DonorFacts d={d} />
                   </li>
                 );
               })}
@@ -137,7 +170,7 @@ export default function PartyFinances() {
       const data = await fetchAllRows(() =>
         supabase
           .from("party_donations")
-          .select("party_name, donor_name, donor_status, value")
+          .select("party_name, donor_name, donor_status, value, donation_type, accepted_date, received_date, ec_ref, company_registration_number")
           .not("value", "is", null)
           .not("donor_name", "is", null)
           .order("id", { ascending: true })
@@ -155,6 +188,7 @@ export default function PartyFinances() {
     const partyTotals = new Map();
     const partyDonors = new Map(); // party -> Map(donorKey -> {name, total})
     const sectorTotals = new Map();
+    const givingBy = new Map(); // donorKey -> Map(party -> total)
 
     for (const row of rows) {
       const value = row.value ?? 0;
@@ -177,10 +211,16 @@ export default function PartyFinances() {
       const donorMap = partyDonors.get(row.party_name);
       const existing = donorMap.get(donorGroupKey);
       donorMap.set(donorGroupKey, {
+        key: donorGroupKey,
         name: preferDisplayName(existing?.name, displayName),
         total: (existing?.total ?? 0) + value,
         status: row.donor_status,
+        facts: addFact(existing?.facts, row),
       });
+      // the same donor's giving across every party, so a donor's box can say who else they gave to
+      const given = givingBy.get(donorGroupKey) ?? new Map();
+      given.set(row.party_name, (given.get(row.party_name) ?? 0) + value);
+      givingBy.set(donorGroupKey, given);
 
       const tag = getPartyDonorSector(displayName);
       if (tag) {
@@ -194,7 +234,9 @@ export default function PartyFinances() {
         name,
         total,
         color: ecPartyColor(name),
-        donors: [...partyDonors.get(name).values()].sort((a, b) => b.total - a.total),
+        donors: [...partyDonors.get(name).values()]
+          .map((d) => ({ ...d, others: [...(givingBy.get(d.key) ?? [])].filter(([party]) => party !== name).sort((a, b) => b[1] - a[1]) }))
+          .sort((a, b) => b.total - a.total),
       }))
       .sort((a, b) => b.total - a.total);
 
