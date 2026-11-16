@@ -211,6 +211,9 @@ select:focus-visible { outline: 3px solid var(--focus-ring) !important; outline-
   border-radius: 2px;
   transition: background-color 0.12s;
 }
+/* A glossary term takes the look of the words around it. Without this, a rule written for a card's date line (".card header span") also caught the term's two wrapper spans, so
+   "Civil Service" in a heading came out small and light beside a bold "Pensions". */
+[data-gloss-term], [data-gloss-term] > .gloss-term { font: inherit !important; color: inherit !important; letter-spacing: inherit !important; text-transform: inherit !important; }
 .gloss-term:hover, .gloss-term:focus-visible { text-decoration-style: solid; background-color: rgba(127, 127, 160, 0.14); outline: none; }
 [data-gloss-dup] > .gloss-term { text-decoration: none; cursor: inherit !important; background: none; }
 
