@@ -3,7 +3,7 @@
 .pf-card { overflow: hidden; border-radius: 22px; background: var(--c-paper-card); border: 1px solid color-mix(in srgb, var(--c) 28%, var(--c-hairline)); box-shadow: var(--shadow-1); transition: box-shadow 0.25s var(--ease-out, ease-out); }
 @media (hover: hover) { .pf-card:hover { box-shadow: var(--shadow-2, 0 14px 28px -16px rgba(10, 20, 36, 0.35)); } }
 
-.pf-banner { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; min-height: 152px; padding: 0 0 0 24px; overflow: hidden; color: var(--on, #fff); background: linear-gradient(160deg, var(--b1), var(--b2)); }
+.pf-banner { container-type: inline-size; position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; min-height: 152px; padding: 0 0 0 24px; overflow: hidden; color: var(--on, #fff); background: linear-gradient(160deg, var(--b1), var(--b2)); }
 .pf-banner::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: linear-gradient(90deg, color-mix(in srgb, var(--on) 55%, transparent), transparent 70%); pointer-events: none; }
 .pf-art { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .pf-art svg { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
@@ -15,23 +15,23 @@
 .pf-head { margin: 0; min-width: 0; align-self: stretch; display: grid; }
 .pf-hit { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px; width: 100%; padding: 0 8px 0 0; border: 0; background: none; color: inherit; text-align: left; cursor: pointer; font: inherit; }
 .pf-hit::after { content: ""; position: absolute; inset: 0; z-index: 1; }
-.pf-total { position: relative; z-index: 2; }
+.pf-total { display: inline-flex; align-items: center; }
 .pf-hit:focus-visible { outline: none; }
 .pf-hit:focus-visible::after { outline: 3px solid var(--on); outline-offset: -8px; border-radius: 18px; }
 /* Three rows: the name above the middle of the banner, the donor count exactly on the middle (where the red bar of the St George's cross runs, and at the same height on every banner so they all line up), the leader below. */
-.pf-title { align-self: stretch; display: grid; grid-template-rows: 1fr 22px 1fr; min-width: 0; }
+.pf-title { max-width: calc(50cqw - 54px); align-self: stretch; display: grid; grid-template-rows: 1fr 22px 1fr; min-width: 0; }
 .pf-name { align-self: end; padding: 14px 0 7px; font: 700 clamp(24px, 3vw, 31px)/1.1 "Figures", "Newsreader", Georgia, serif; letter-spacing: -0.01em; text-wrap: balance; position: relative; z-index: 2; }
 .pf-meta { position: absolute; z-index: 2; left: 24px; top: 50%; transform: translateY(-50%); font: 600 14.5px/22px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--on) 92%, transparent); }
 .pf-led { grid-row: 3; align-self: start; padding: 7px 0 14px; position: relative; z-index: 2; font: 600 13.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--on) 84%, transparent); }
 .pf-led b { font: 700 16px/1.3 "Figures", "Newsreader", Georgia, serif; color: var(--on); margin-left: 2px; }
-.pf-total { display: inline-flex; align-items: center; gap: 12px; }
 /* the total sits on a solid plate in a darker (or, on a bright banner, lighter) shade of the party colour, so it reads cleanly whatever the flag is doing behind it */
-.pf-sum { display: grid; justify-items: start; gap: 2px; min-width: 150px; padding: 10px 16px 11px; border-radius: 16px; background: color-mix(in srgb, var(--b1) 72%, #000); border: 1px solid color-mix(in srgb, var(--on) 28%, transparent); box-shadow: 0 8px 18px -10px rgba(0, 0, 0, 0.55); }
+.pf-sum { position: relative; z-index: 2; display: grid; justify-items: start; gap: 2px; min-width: 150px; padding: 10px 16px 11px; border-radius: 16px; background: color-mix(in srgb, var(--b1) 72%, #000); border: 1px solid color-mix(in srgb, var(--on) 28%, transparent); box-shadow: 0 8px 18px -10px rgba(0, 0, 0, 0.55); }
 .pf-card[data-dark="1"] .pf-sum { background: color-mix(in srgb, var(--b1) 38%, #fff); }
 .pf-sum small { font: 700 11px/1.2 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.06em; text-transform: uppercase; color: color-mix(in srgb, var(--on) 82%, transparent); }
 .pf-sum b { font: 700 clamp(28px, 3.6vw, 38px)/1.02 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; white-space: nowrap; color: var(--on); }
 .pf-sum em { font: 600 13px/1.2 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; font-variant-numeric: tabular-nums; color: color-mix(in srgb, var(--on) 84%, transparent); }
-.pf-chev { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: color-mix(in srgb, var(--on) 16%, transparent); border: 1px solid color-mix(in srgb, var(--on) 36%, transparent); flex-shrink: 0; transition: transform 0.3s var(--ease-out, ease-out), background-color 0.2s; }
+/* the arrow sits at the exact middle of the banner: where the bars of the St George's cross meet, and at the same spot on every banner, flag or not */
+.pf-chev { position: absolute; z-index: 2; left: 50%; top: 50%; margin: -15px 0 0 -15px; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: color-mix(in srgb, var(--on) 16%, transparent); border: 1px solid color-mix(in srgb, var(--on) 36%, transparent); flex-shrink: 0; transition: transform 0.3s var(--ease-out, ease-out), background-color 0.2s; }
 .pf-chev::before { content: ""; width: 8px; height: 8px; border: solid var(--on); border-width: 0 2px 2px 0; transform: translateY(-2px) rotate(45deg); }
 .pf-card[data-open="1"] .pf-chev { transform: rotate(180deg); }
 .pf-hit:hover .pf-chev { background: color-mix(in srgb, var(--on) 28%, transparent); }
@@ -45,11 +45,12 @@
   .pf-banner .ph-mono { font-size: 22px; }
   .pf-hit { grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 18px 4px 20px 0; }
   /* on a phone the banner is stacked and tall, so the three lines simply follow each other (the donor count is not pinned to the middle) */
-  .pf-title { display: flex; flex-direction: column; gap: 4px; }
+  .pf-title { display: flex; flex-direction: column; gap: 4px; max-width: none; }
   .pf-name { padding: 0; align-self: stretch; }
   .pf-meta { position: static; transform: none; font-size: 14.5px; line-height: 1.35; }
   .pf-led { padding: 0; margin-top: 2px; align-self: stretch; }
-  .pf-total { justify-content: space-between; }
+  .pf-total { justify-content: space-between; gap: 12px; }
+  .pf-chev { position: static; margin: 0; }
   .pf-sum { flex: 1; }
 }
 

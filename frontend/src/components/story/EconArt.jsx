@@ -243,6 +243,8 @@ export function TaxScene() {
         <linearGradient id="tx-out" gradientUnits="userSpaceOnUse" x1="740" y1="0" x2="1200" y2="0"><stop offset="0" stopColor="#FFE6A8" stopOpacity=".6" /><stop offset="1" stopColor="#FFE6A8" stopOpacity=".12" /></linearGradient>
       </defs>
       <rect width="1440" height="200" fill="url(#tx-glow)" />
+      {/* the whole diagram sits 16 units higher than its natural place, so it is not crowded against the foot of the band */}
+      <g transform="translate(0 -16)">
       <g fill="none" stroke="var(--lamp)" strokeWidth="1" opacity=".09">{[96, 150, 206].map((r) => <circle key={r} cx={HUB.x} cy={HUB.y} r={r} />)}</g>
       {/* the streams: a soft wide band under a finer line, drawing in once, then coins travelling along them */}
       {SRC.map((x, i) => <g key={`i${x}`} fill="none" strokeLinecap="round"><path d={inStream(x, i)} stroke="url(#tx-in)" strokeWidth="14" opacity=".22" /><path className="ec-stream" pathLength="1" d={inStream(x, i)} stroke="url(#tx-in)" strokeWidth="3.2" style={{ "--i": i }} /></g>)}
@@ -261,6 +263,7 @@ export function TaxScene() {
         <circle r="36" fill="var(--s3)" stroke="#E8C766" strokeWidth="2.6" />
         <circle r="30" fill="none" stroke="#E8C766" strokeWidth="1" opacity=".55" />
         <path d={POUND} transform="scale(3.4)" fill="none" stroke="#F7D675" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+      </g>
       </g>
       <g className="hs-3"><rect x="0" y="190" width="1440" height="10" /></g>
     </Scene>
