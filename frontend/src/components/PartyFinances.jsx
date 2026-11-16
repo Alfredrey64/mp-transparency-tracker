@@ -116,7 +116,7 @@ function PartyCard({ p, i, isOpen, onToggle }) {
       data-dark={b.dark ? "1" : "0"}
       style={{ "--c": brand, "--b1": b.from, "--b2": b.to, "--on": b.on }}
     >
-      <header className="pf-banner">
+      <header className={leader ? "pf-banner" : "pf-banner pf-solo"}>
         <div className="pf-art" aria-hidden="true"><span className="pf-pattern" />{flag && <PartyFlag kind={flag} />}</div>
         <h3 className="pf-head">
           <button type="button" className="pf-hit" aria-expanded={isOpen} aria-controls={panelId} onClick={onToggle}>

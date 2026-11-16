@@ -13,9 +13,11 @@
 
 /* the heading holds the one button; its ::after stretches over the whole banner so the banner is the click target */
 .pf-head { margin: 0; min-width: 0; align-self: stretch; display: grid; }
-.pf-hit { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px; width: 100%; padding: 0 8px 0 0; border: 0; background: none; color: inherit; text-align: left; cursor: pointer; font: inherit; }
+.pf-hit { display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; width: 100%; padding: 0 220px 0 0; border: 0; background: none; color: inherit; text-align: left; cursor: pointer; font: inherit; }
 .pf-hit::after { content: ""; position: absolute; inset: 0; z-index: 1; }
-.pf-total { display: inline-flex; align-items: center; gap: 12px; }
+/* the amount and the arrow are pinned beside the leader's portrait (92px arch + 22px margin + 8px), centred on the banner's middle line, whatever a browser does with the grid columns */
+.pf-total { position: absolute; z-index: 2; right: 122px; top: 0; bottom: 0; display: inline-flex; align-items: center; gap: 12px; }
+.pf-solo .pf-total { right: 8px; }
 .pf-hit:focus-visible { outline: none; }
 .pf-hit:focus-visible::after { outline: 3px solid var(--on); outline-offset: -8px; border-radius: 18px; }
 /* Three rows: the name above the middle of the banner, the donor count exactly on the middle (where the red bar of the St George's cross runs, and at the same height on every banner so they all line up), the leader below. */
@@ -43,13 +45,13 @@
   .pf-banner { padding-left: 16px; min-height: 124px; }
   .pf-banner .ph-arch { width: 64px; height: 84px; margin-right: 14px; border-radius: 32px 32px 0 0; }
   .pf-banner .ph-mono { font-size: 22px; }
-  .pf-hit { grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 18px 4px 20px 0; }
+  .pf-hit { gap: 10px; padding: 18px 4px 20px 0; }
   /* on a phone the banner is stacked and tall, so the three lines simply follow each other (the donor count is not pinned to the middle) */
   .pf-title { display: flex; flex-direction: column; gap: 4px; }
   .pf-name { padding: 0; align-self: stretch; }
   .pf-meta { position: static; transform: none; font-size: 14.5px; line-height: 1.35; }
   .pf-led { padding: 0; margin-top: 2px; align-self: stretch; }
-  .pf-total { justify-content: space-between; gap: 12px; }
+  .pf-total, .pf-solo .pf-total { position: static; justify-content: space-between; gap: 12px; }
   .pf-sum { flex: 1; }
 }
 
