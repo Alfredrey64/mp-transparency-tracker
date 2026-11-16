@@ -1,7 +1,8 @@
-// A weekly check on whether what the site says is still sound. It looks for three things a person would otherwise have to notice by chance:
+// A weekly check on whether what the site says is still sound. It looks for four things a person would otherwise have to notice by chance:
 //   - pages of facts (components/explainers) whose figures were last checked against their sources more than 60 days ago,
 //   - saved data (src/data) that has stopped being rebuilt,
-//   - source links on those pages that have disappeared.
+//   - source links on those pages that have disappeared,
+//   - newer editions of the few sources a build script reads from a fixed address (a script that names one year's file would otherwise report "no change" forever).
 // It prints a report and exits with 1 if there is anything to look at. The weekly workflow (.github/workflows/content-check.yml) opens an issue from it.
 //
 //   node scripts/audit-content.mjs [--no-links]
@@ -9,8 +10,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseLongDate, staleExplainers, staleData, staleCheckedConstants, dueDates, capBehind, brokenLinks, report } from "./audit-content-lib.mjs";
+import { parseLongDate, staleExplainers, staleData, staleCheckedConstants, dueDates, capBehind, tradeHeadlineBehind, brokenLinks, report } from "./audit-content-lib.mjs";
 import { DUE } from "./content-ledger.mjs";
+import { pinnedOnsFiles, newestOnsEdition, hbaiEndYear, pinnedHbaiSlug, newestHbaiSlug, pinnedSipriYear, newestSipriYear, editionFinding } from "./source-editions-lib.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const data = path.join(here, "../src/data");
@@ -40,6 +42,11 @@ try {
   const labels = JSON.parse(read("energyData.json")).cap.periods.map((p) => p.label);
   const newer = capBehind(labels, capFrom);
   if (newer) moving.push({ name: "Energy page", problem: `Ofgem's model now lists a cap period (${newer}) that starts after the one the page states. Update CAP_NOW in src/data/energy.js with the announced figure and the capNews source` });
+} catch { /* the data file is checked elsewhere */ }
+try {
+  const period = /TRADE_LATEST = \{[^}]*period: "([^"]+)"/.exec(read("brexit.js"))?.[1];
+  const behind = tradeHeadlineBehind(period, JSON.parse(read("brexitData.json")).trade.quarters.at(-1));
+  if (behind > 0) moving.push({ name: "Brexit page", problem: `its headline goods trade (TRADE_LATEST in src/data/brexit.js) is for ${period}, ${behind} quarter${behind === 1 ? "" : "s"} behind the ONS series the site holds. Read the figures excluding precious metals from the latest ONS UK trade release, then update the constant and the tests in src/data/brexit.test.js` });
 } catch { /* the data file is checked elsewhere */ }
 const cap = /CAP_NOW = \{ from: "[^"]+", to: "(\d{1,2} [A-Za-z]+ \d{4})"/.exec(read("energy.js"));
 if (cap) {
@@ -82,11 +89,64 @@ if (!process.argv.includes("--no-links")) {
   await Promise.all(Array.from({ length: 4 }, async () => { while (i < urls.length) { const u = urls[i++]; links.push(await check(u)); } }));
 }
 
+
+// Sources a build script reads from one named file. The rest (GOV.UK releases, ONS time series, OECD, NHS England) are looked up afresh on every run, so a new release reaches the
+// site by itself; these would not, so each is compared with what the publisher now offers. A publisher that cannot be reached is skipped here and the weekly refresh reports it.
+const UA = { "User-Agent": "domesday-live-content-check/1.0 (+https://domesdaylive.co.uk)" };
+// Asks politely: a pause before each request, and a longer wait and another try when the publisher says it is busy (ONS answers 429 to a quick run of requests).
+// Returns { body } or { failed: "why" }, so a source that could not be asked shows up in the report instead of looking like "nothing newer".
+async function ask(url, as = "json") {
+  let why = "no answer";
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    await new Promise((r) => setTimeout(r, attempt === 0 ? 1500 : 12000 * attempt));
+    try {
+      const c = new AbortController();
+      const t = setTimeout(() => c.abort(), 25000);
+      const res = await fetch(url, { headers: UA, signal: c.signal });
+      clearTimeout(t);
+      if (res.ok) return { body: await res[as === "json" ? "json" : "text"]() };
+      why = `answered ${res.status}`;
+      if (res.status !== 429 && res.status < 500) break;
+    } catch (e) { why = `could not be reached (${e.cause?.code ?? e.name})`; }
+  }
+  return { failed: why };
+}
+async function newEditions() {
+  const out = [];
+  const script = (f) => fs.readFileSync(path.join(here, f), "utf8");
+  const how = (f) => `Check the new tables still have the same layout, put the new address in scripts/${f}, rebuild it (node scripts/${f}), and read the page's wording against the new figures.`;
+  const seen = new Set();
+  for (const f of ["build-inequality-data.mjs", "build-place-data.mjs", "build-brexit-data.mjs"]) {
+    for (const { dataset, edition } of pinnedOnsFiles(script(f))) {
+      if (seen.has(`${dataset}/${edition}`)) continue;
+      seen.add(`${dataset}/${edition}`);
+      const got = await ask(`https://www.ons.gov.uk${dataset}/data`);
+      if (got.failed) { out.push({ name: `ONS ${dataset.split("/").at(-1)}`, problem: `could not be asked whether there is a newer edition than ${edition} (${got.failed}), so it was not checked this week.` }); continue; }
+      const newest = newestOnsEdition(got.body);
+      if (!newest) out.push({ name: `ONS ${dataset.split("/").at(-1)}`, problem: `answered, but its page no longer lists editions in the form this check reads, so it was not checked this week.` });
+      else if (newest !== edition) out.push(editionFinding({ source: `ONS ${dataset.split("/").at(-1)}`, script: f, pinned: edition, newest, how: how(f) }));
+    }
+  }
+  const slug = pinnedHbaiSlug(script("build-inequality-data.mjs"));
+  const hb = await ask("https://www.gov.uk/api/content/government/collections/households-below-average-income-hbai--2");
+  const newestHbai = hb.failed ? null : newestHbaiSlug(hb.body);
+  if (hb.failed || !newestHbai) out.push({ name: "DWP Households Below Average Income", problem: `could not be checked for a newer release (${hb.failed ?? "the collection page lists no release in the form this check reads"}).` });
+  else if (slug && hbaiEndYear(newestHbai) > hbaiEndYear(slug)) out.push(editionFinding({ source: "DWP Households Below Average Income", script: "build-inequality-data.mjs and build-place-data.mjs", pinned: slug.replace(/.*ending-/, ""), newest: newestHbai.replace(/.*ending-/, ""), how: how("build-inequality-data.mjs") }));
+  const sipri = pinnedSipriYear(script("build-defence-data.mjs"));
+  const sp = await ask("https://www.sipri.org/databases/milex", "text");
+  const sipriNewest = sp.failed ? null : newestSipriYear(sp.body);
+  if (sp.failed || !sipriNewest) out.push({ name: "SIPRI military expenditure database", problem: `could not be checked for a newer file (${sp.failed ?? "its page lists no file in the form this check reads"}).` });
+  else if (sipri && sipriNewest > sipri) out.push(editionFinding({ source: "SIPRI military expenditure database", script: "build-defence-data.mjs", pinned: String(sipri), newest: String(sipriNewest), how: how("build-defence-data.mjs") }));
+  return out;
+}
+const editions = process.argv.includes("--no-links") ? [] : await newEditions();
+
 const { text, total } = report([
   ["Pages whose figures are due a re-check", staleExplainers(pages, now)],
   ["Saved data that has stopped refreshing", staleData(files, now)],
   ["Pages whose hand-written wording is due a re-check", staleCheckedConstants(checkedConstants, now)],
   ["Facts with a built-in end date", [...moving, ...dueDates(DUE, now)]],
+  ["Newer editions the site is not reading yet", editions],
   ["Source links that have gone", brokenLinks(links)],
 ]);
 console.log(text);

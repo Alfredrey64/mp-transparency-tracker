@@ -1,6 +1,6 @@
 import { COLORS, FONT_BODY, FONT_DISPLAY } from "../theme";
 import { Caution, Panel, Stats, Takeaways, TrendExplorer } from "./insight";
-import { CHECKED, MIGRATION, OPINION, REFERENDUM, SOURCES, TIMELINE, TRADE_Q4_2025 } from "../data/brexit";
+import { CHECKED, MIGRATION, OPINION, REFERENDUM, SOURCES, TIMELINE, TRADE_LATEST } from "../data/brexit";
 import { para, strong } from "../lib/insightStyle";
 import { B, EVENT_LINES, EVENT_NOTE, euShare, last, monthLabel, quarterLabel, tradeBn, yearAverage } from "../lib/brexit";
 import { VOTE_BY_REGION } from "../data/brexit";
@@ -21,7 +21,8 @@ export default function BrexitOverview({ onPick }) {
   const regionLeave = REGIONS.map((r) => ({ name: r.name, v: (VOTE_BY_REGION[r.key].leave / (VOTE_BY_REGION[r.key].leave + VOTE_BY_REGION[r.key].remain)) * 100 }));
   const leaveHigh = regionLeave.reduce((a, r) => (r.v > a.v ? r : a));
   const leaveLow = regionLeave.reduce((a, r) => (r.v < a.v ? r : a));
-  const euShareExports = Math.round((TRADE_Q4_2025.exportsEu / (TRADE_Q4_2025.exportsEu + TRADE_Q4_2025.exportsNonEu)) * 100);
+  const euShareExports = Math.round((TRADE_LATEST.exportsEu / (TRADE_LATEST.exportsEu + TRADE_LATEST.exportsNonEu)) * 100);
+  const euShareImports = Math.round((TRADE_LATEST.importsEu / (TRADE_LATEST.importsEu + TRADE_LATEST.importsNonEu)) * 100);
   return (
     <div>
       <Takeaways
@@ -46,7 +47,7 @@ export default function BrexitOverview({ onPick }) {
             { value: `${REFERENDUM.leavePct}%`, label: "Voted Leave in 2016", note: `${REFERENDUM.remainPct}% voted Remain. Turnout ${REFERENDUM.turnoutPct}%` },
             { value: `${OPINION.wrong}%`, label: "Now say it was wrong to leave", note: `${OPINION.right}% say it was right. YouGov, ${OPINION.fieldwork}` },
             { value: "2% to 6%", label: "How much smaller researchers say the economy is", note: "Compared with how it would have been. Estimates differ, and some go higher" },
-            { value: `${euShareExports}%`, label: "Of UK goods exports still go to the EU", note: `${TRADE_Q4_2025.period}. Imports from the EU are 53%`, spark: share.slice(-40) },
+            { value: `${euShareExports}%`, label: "Of UK goods exports still go to the EU", note: `${TRADE_LATEST.period}. Imports from the EU are ${euShareImports}%`, spark: share.slice(-40) },
             { value: MIGRATION.net.toLocaleString("en-GB"), label: "Net migration to the UK", note: `${MIGRATION.period}, down from ${MIGRATION.netPeak.toLocaleString("en-GB")} at the peak`, spark: B.migration.net },
             { value: "2038", label: "Fishing access agreed to", note: "EU and UK boats keep access to each other's waters until 30 June 2038" },
           ]}

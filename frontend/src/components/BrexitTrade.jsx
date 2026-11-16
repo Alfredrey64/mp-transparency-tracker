@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { pillStyle } from "../lib/onsStyles";
 import { BarRows, Caution, Panel, Stats, TrendExplorer } from "./insight";
-import { EU_SHARES, SOURCES, TRADE_DEALS, TRADE_Q4_2025 } from "../data/brexit";
+import { EU_SHARES, SOURCES, TRADE_DEALS, TRADE_LATEST } from "../data/brexit";
 import { para, strong } from "../lib/insightStyle";
 import { B, EVENT_LINES, EVENT_NOTE, NATIONS, euShare, nationYear, quarterLabel, tradeBn } from "../lib/brexit";
 
@@ -83,7 +83,7 @@ function ByNation() {
 }
 
 export default function BrexitTrade() {
-  const t = TRADE_Q4_2025;
+  const t = TRADE_LATEST;
   const expTotal = t.exportsEu + t.exportsNonEu;
   const impTotal = t.importsEu + t.importsNonEu;
   const sh = (a, b) => Math.round((a / b) * 100);
@@ -97,7 +97,7 @@ export default function BrexitTrade() {
         sources={[SOURCES.onsTrade]}
       >
         <BarRows
-          label="UK goods exports and imports by partner" accent={ACCENT} max={85}
+          label="UK goods exports and imports by partner" accent={ACCENT} max={95}
           rows={[
             { label: "Exports to the EU", value: t.exportsEu, text: bn(t.exportsEu), note: `${sh(t.exportsEu, expTotal)}% of goods exports` },
             { label: "Exports to the rest of the world", value: t.exportsNonEu, text: bn(t.exportsNonEu), note: `${sh(t.exportsNonEu, expTotal)}% of goods exports`, tone: "#0E9AA7" },

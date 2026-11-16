@@ -1,6 +1,6 @@
 import { COLORS, FONT_BODY, FONT_DISPLAY } from "../theme";
 import { Caution, Panel } from "./insight";
-import { MIGRATION, OPINION, SOURCES } from "../data/brexit";
+import { MIGRATION, OPINION, SOURCES, TRADE_LATEST } from "../data/brexit";
 import { para } from "../lib/insightStyle";
 
 const ACCENT = "#1D4ED8";
@@ -59,7 +59,7 @@ export default function BrexitArguments() {
 
       <Argument
         id="h-bxa-trade" title="Trade with the EU and the rest of the world" tag="contested"
-        shows="Goods exports to the EU were 48% of the UK's goods exports in late 2025, and the UK is a smaller share of the EU's goods trade than in 2015 (13.1% of its exports against 16.9%). UK in a Changing Europe says the figures do not show a simple collapse, but that fewer firms are likely to be exporting to the EU."
+        shows={`Goods exports to the EU were ${Math.round((TRADE_LATEST.exportsEu / (TRADE_LATEST.exportsEu + TRADE_LATEST.exportsNonEu)) * 100)}% of the UK's goods exports in ${TRADE_LATEST.period}, and the UK is a smaller share of the EU's goods trade than in 2015 (13.1% of its exports against 16.9%). UK in a Changing Europe says the figures do not show a simple collapse, but that fewer firms are likely to be exporting to the EU.`}
         supporters={[
           "Tariffs on goods were avoided, trade with the EU is still large, and the UK is free to make deals with the rest of the world, where most of the world's growth is.",
           "The cost of paperwork is real but has been exaggerated, and firms have found ways to deal with it.",

@@ -42,10 +42,12 @@ describe("Brexit chart data", () => {
     const nt = B.nationTrade;
     expect(nt.quarters[0]).toBe("2021 Q1");
     for (const n of NATIONS) { const t = nt.nations[n.key]; for (const k of Object.keys(t)) expect(t[k]).toHaveLength(nt.quarters.length); }
-    expect(nationYear("england").euExports).toBeCloseTo(123, 0);
-    expect(nationYear("wales").euExports).toBeCloseTo(10.7, 0);
-    expect(nationYear("scotland").euExports).toBeCloseTo(16.0, 0);
-    expect(nationYear("ni").euExports).toBeCloseTo(7.1, 0);
+    // Each quarterly release moves the latest year on, so these check a believable size (in £ billion) and not one year's exact figure.
+    const between = (v, lo, hi) => { expect(v).toBeGreaterThan(lo); expect(v).toBeLessThan(hi); };
+    between(nationYear("england").euExports, 100, 150);
+    between(nationYear("wales").euExports, 8, 14);
+    between(nationYear("scotland").euExports, 12, 20);
+    between(nationYear("ni").euExports, 5, 10);
     expect(nationYear("ni").euShareExports).toBeGreaterThan(60);
   });
   it("has migration for every region and nation, summing near the UK's", () => {

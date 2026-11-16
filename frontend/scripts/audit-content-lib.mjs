@@ -98,3 +98,16 @@ export function capBehind(modelLabels, capFrom) {
   const modelStart = Date.UTC(Number(m[2]), MON[m[1].toLowerCase()], 1);
   return modelStart > from.getTime() ? last : null;
 }
+
+// The Brexit page's headline goods trade (TRADE_LATEST in src/data/brexit.js) is typed in from the ONS bulletin, which excludes precious metals; the series the site holds
+// (brexitData.json, rebuilt weekly) includes them, so the two cannot be swapped. When the held series has moved on a whole quarter or more, the typed figure is out of date.
+// `period` is "October to December 2025"; `lastQuarter` is "2026-Q2". Returns how many quarters behind it is, or 0.
+export function tradeHeadlineBehind(period, lastQuarter) {
+  const MON = { january: 1, february: 2, march: 3, april: 4, may: 5, june: 6, july: 7, august: 8, september: 9, october: 10, november: 11, december: 12 };
+  const m = /(\w+) (\d{4})$/.exec(String(period ?? "").trim());
+  const q = /^(\d{4})-Q([1-4])$/.exec(String(lastQuarter ?? ""));
+  if (!m || !q || !(m[1].toLowerCase() in MON)) return 0;
+  const typed = Number(m[2]) * 4 + Math.ceil(MON[m[1].toLowerCase()] / 3);
+  const held = Number(q[1]) * 4 + Number(q[2]);
+  return Math.max(0, held - typed);
+}

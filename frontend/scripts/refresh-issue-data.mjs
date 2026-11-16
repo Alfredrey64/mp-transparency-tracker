@@ -22,7 +22,7 @@ const STEPS = [
   { name: "defence", script: "build-defence-data.mjs", out: "defenceData.json", what: "Defence: spending and the armed forces (SIPRI, Ministry of Defence)" },
   { name: "education", script: "build-education-data.mjs", out: "educationData.json", what: "Education (Department for Education)" },
   { name: "ageing", script: "build-ageing-data.mjs", out: "ageingData.json", what: "Ageing and pensions: pension against prices and earnings (ONS)" },
-  { name: "brexit", script: "build-brexit-data.mjs", out: "brexitData.json", what: "Brexit: GDP against other economies, trade, migration (OECD, ONS, HMRC)", oecd: { everyDays: 21, tolerateDays: 60 } },
+  { name: "brexit", script: "build-brexit-data.mjs", out: "brexitData.json", what: "Brexit: GDP against other economies, trade, migration (OECD, ONS, HMRC)", oecd: { everyDays: 21, tolerateDays: 60 }, otherPartsFlag: "--keep-oecd" },
   { name: "energy", script: "build-energy-data.mjs", out: "energyData.json", what: "Net zero and energy bills: emissions, electricity, bills, price cap (DESNZ, Ofgem, ONS, World Bank)" },
   { name: "union", script: "build-devolution-data.mjs", out: "devolutionData.json", what: "Devolution and the union: spending, public finances and output by nation and region (HM Treasury, ONS)" },
   { name: "transport", script: "build-transport-data.mjs", out: "transportData.json", what: "Transport: roads, cars, road deaths, buses and rail (DfT, ORR)" },
@@ -36,8 +36,9 @@ const STEPS = [
 // (--force overrides), and if the OECD refuses anyway the step is reported as "kept" rather than failed for as long as the saved file is younger than `tolerateDays`. After that
 // it fails as before, so a source that has really gone is still noticed. The daily content check also flags a file that has stopped refreshing.
 const DAY = 24 * 60 * 60 * 1000;
+// A file that mixes OECD figures with other sources (Brexit) records when its OECD part was built (`gdpBuilt`); that, not `built`, says how old the OECD figures are.
 const builtAge = (text) => {
-  const m = /"built":\s*"(\d{4}-\d{2}-\d{2})/.exec(text ?? "");
+  const m = /"gdpBuilt":\s*"(\d{4}-\d{2}-\d{2})/.exec(text ?? "") ?? /"built":\s*"(\d{4}-\d{2}-\d{2})/.exec(text ?? "");
   return m ? (Date.now() - Date.parse(m[1])) / DAY : Infinity;
 };
 
@@ -51,13 +52,16 @@ for (const step of STEPS) {
   if (only && step.name !== only) continue;
   const file = path.join(here, "../src/data", step.out);
   const before = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : null;
-  if (step.oecd && !force && !only && builtAge(before) < step.oecd.everyDays) {
+  // A step whose file also holds quarterly figures from other sources still runs when its OECD part is not due, with the OECD figures left as they are.
+  const oecdNotDue = step.oecd && !force && !only && builtAge(before) < step.oecd.everyDays;
+  const args = oecdNotDue && step.otherPartsFlag ? [step.otherPartsFlag] : [];
+  if (oecdNotDue && !step.otherPartsFlag) {
     results.push({ ...step, ok: true, changed: false, skipped: true, seconds: 0, error: null });
     console.log(`skipped ${step.name}: built ${Math.round(builtAge(before))} days ago, next due after ${step.oecd.everyDays}`);
     continue;
   }
   const started = Date.now();
-  const run = spawnSync(process.execPath, [path.join(here, step.script)], { encoding: "utf8", timeout: 15 * 60 * 1000, cwd: path.join(here, "..") });
+  const run = spawnSync(process.execPath, [path.join(here, step.script), ...args], { encoding: "utf8", timeout: 15 * 60 * 1000, cwd: path.join(here, "..") });
   const ok = run.status === 0;
   if (!ok && before !== null) fs.writeFileSync(file, before); // never leave a half-written file behind
   const after = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : null;

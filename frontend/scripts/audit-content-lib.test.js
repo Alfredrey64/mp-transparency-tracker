@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseLongDate, staleExplainers, staleData, staleCheckedConstants, dueDates, capBehind, brokenLinks, report } from "./audit-content-lib.mjs";
+import { parseLongDate, staleExplainers, staleData, staleCheckedConstants, dueDates, capBehind, tradeHeadlineBehind, brokenLinks, report } from "./audit-content-lib.mjs";
 
 const now = new Date("2026-10-30T12:00:00Z");
 
@@ -81,5 +81,17 @@ describe("capBehind", () => {
     expect(capBehind(["Jul 2026 - Sep 2026", "Oct 2026 - Dec 2026"], "1 October 2026")).toBeNull();
     expect(capBehind(["Oct 2026 - Dec 2026", "Jan 2027 - Mar 2027"], "1 October 2026")).toBe("Jan 2027 - Mar 2027");
     expect(capBehind([], "1 October 2026")).toBeNull();
+  });
+});
+
+describe("tradeHeadlineBehind", () => {
+  it("counts the quarters between the typed headline and the series the site holds", () => {
+    expect(tradeHeadlineBehind("October to December 2025", "2026-Q2")).toBe(2);
+    expect(tradeHeadlineBehind("October to December 2025", "2026-Q1")).toBe(1);
+    expect(tradeHeadlineBehind("October to December 2025", "2025-Q4")).toBe(0);
+  });
+  it("says nothing when it cannot read either side", () => {
+    expect(tradeHeadlineBehind("last quarter", "2026-Q2")).toBe(0);
+    expect(tradeHeadlineBehind("April to June 2026", undefined)).toBe(0);
   });
 });

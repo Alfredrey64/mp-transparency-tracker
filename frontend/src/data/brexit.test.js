@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { EU_SHARES, FOOD_PRICES, GDP_ESTIMATES, MIGRATION, NBER_EFFECTS, OBR, OPINION, OPTIONS, REFERENDUM, SOURCES, TIMELINE, TRADE_DEALS, TRADE_Q4_2025 } from "./brexit";
+import { EU_SHARES, FOOD_PRICES, GDP_ESTIMATES, MIGRATION, NBER_EFFECTS, OBR, OPINION, OPTIONS, REFERENDUM, SOURCES, TIMELINE, TRADE_DEALS, TRADE_LATEST } from "./brexit";
 
 describe("Brexit page data", () => {
   it("names a real source for every estimate and deal", () => {
@@ -23,10 +23,13 @@ describe("Brexit page data", () => {
     for (const e of NBER_EFFECTS) expect(e.low).toBeLessThanOrEqual(e.high);
   });
   it("has trade figures that agree with the ONS shares", () => {
-    const t = TRADE_Q4_2025;
-    expect(Math.round((t.exportsEu / (t.exportsEu + t.exportsNonEu)) * 100)).toBe(48);
-    expect(Math.round((t.importsEu / (t.importsEu + t.importsNonEu)) * 100)).toBe(53);
-    expect(t.exportsEu + t.exportsNonEu).toBeCloseTo(91.5, 0);
+    const t = TRADE_LATEST;
+    // The ONS bulletin's own totals for the quarter (exports 106.7, imports 168.2, rounded), so a mistyped part shows up here.
+    expect(t.exportsEu + t.exportsNonEu).toBeCloseTo(106.7, 0);
+    expect(t.importsEu + t.importsNonEu).toBeCloseTo(168.2, 0);
+    expect(t.exportsEu / (t.exportsEu + t.exportsNonEu)).toBeGreaterThan(0.4);
+    expect(t.exportsEu / (t.exportsEu + t.exportsNonEu)).toBeLessThan(0.55);
+    expect(t.period).toMatch(/\d{4}$/);
     expect(EU_SHARES.uk.exports.to).toBeLessThan(EU_SHARES.uk.exports.from);
     expect(EU_SHARES.uk.imports.to).toBeLessThan(EU_SHARES.uk.imports.from);
   });

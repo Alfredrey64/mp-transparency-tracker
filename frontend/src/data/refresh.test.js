@@ -27,6 +27,14 @@ describe("weekly data refresh", () => {
     }
     expect(refresh).toContain("--force");
   });
+  it("keeps the Brexit page's quarterly trade figures coming while its OECD part waits", () => {
+    // HMRC publishes regional trade every quarter; that must not wait for the OECD's slower, throttled schedule.
+    expect(refresh).toMatch(/name: "brexit"[^\n]*otherPartsFlag: "--keep-oecd"/);
+    const brexit = fs.readFileSync(path.join(scripts, "build-brexit-data.mjs"), "utf8");
+    expect(brexit).toContain("--keep-oecd");
+    expect(brexit).toContain("latestRegionalTrade");
+    expect(brexit).toContain("gdpBuilt");
+  });
   it("is run by a weekly workflow that opens a pull request instead of changing the site", () => {
     expect(workflow).toContain("cron:");
     expect(workflow).toContain("gh pr create");

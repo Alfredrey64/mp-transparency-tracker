@@ -85,8 +85,9 @@ export const NBER_EFFECTS = [
   { label: "Productivity", low: 3, high: 4 },
 ];
 
-// UK goods trade with the EU, the last quarter of 2025, £ billion, excluding precious metals (ONS).
-export const TRADE_Q4_2025 = { exportsEu: 44.1, exportsNonEu: 47.4, importsEu: 79.8, importsNonEu: 69.7, period: "October to December 2025" };
+// UK goods trade with the EU and the rest of the world in the latest quarter, £ billion, excluding precious metals (ONS, UK trade: September 2026, released 12 November 2026,
+// Table 2). Typed in by hand because the series the site holds include precious metals; the weekly content check flags it when that series has moved a quarter ahead.
+export const TRADE_LATEST = { exportsEu: 49.5, exportsNonEu: 57.1, importsEu: 86.8, importsNonEu: 81.4, period: "July to September 2026" };
 
 // The UK's share of the EU's trade in goods (Eurostat).
 export const EU_SHARES = {

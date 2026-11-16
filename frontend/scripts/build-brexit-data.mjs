@@ -124,12 +124,43 @@ async function migrationByRegion() {
   return { year: "year to mid-2025", regions: out, uk: { population: uk[col("Estimated Population mid-2024")], arrivals: uk[col("International Migration Inflow")], departures: uk[col("International Migration Outflow")], net: uk[col("International Migration Net")] } };
 }
 
+// HMRC publishes a new regional trade release every quarter (March, June, September, December), so the newest is looked up each time and not named here. The last one known to
+// work is the fallback if GOV.UK's search cannot be reached.
+const RTS_FALLBACK = "uk-regional-trade-in-goods-statistics-second-quarter-april-to-june-2026";
+const RTS_SLUG = /^\/government\/statistics\/(uk-regional-trade-in-goods-statistics-(?:first|second|third|fourth)-quarter-[a-z-]+-\d{4})$/;
+async function latestRegionalTrade() {
+  try {
+    const res = await fetchRetry("https://www.gov.uk/api/search.json?q=uk+regional+trade+in+goods+statistics&count=40&order=-public_timestamp&fields=link&fields=public_timestamp", { headers: UA });
+    const found = (await res.json()).results.map((r) => ({ slug: RTS_SLUG.exec(r.link)?.[1], at: r.public_timestamp })).filter((r) => r.slug).sort((a, b) => b.at.localeCompare(a.at));
+    if (found.length) return found[0].slug;
+  } catch { /* fall through to the fallback */ }
+  return RTS_FALLBACK;
+}
+
+// The OECD throttles by address and can stay unavailable for days, which should not hold back the HMRC and ONS parts of this file (new quarters of regional trade arrive on a
+// schedule of their own). If the OECD will not answer, or --keep-oecd is given, the OECD figures already in the file stay, with the date they were built, as long as they are under 60 days old (the same limit the weekly refresh allows, so a source that has really gone is still noticed).
+let oecdBuilt = new Date().toISOString().slice(0, 10);
+async function oecdGdp() {
+  let before = null;
+  try { before = JSON.parse(fs.readFileSync(OUT, "utf8")); } catch { /* no file yet */ }
+  const age = before ? (Date.now() - Date.parse(before.gdpBuilt ?? before.built)) / 864e5 : Infinity;
+  const keepable = before?.gdp && age < 60;
+  if (process.argv.includes("--keep-oecd") && keepable) { oecdBuilt = before.gdpBuilt ?? before.built; return before.gdp; }
+  try { return await gdpPerHead(); } catch (e) {
+    if (!keepable) throw e;
+    console.warn(`The OECD would not answer (${String(e.message).slice(0, 80)}), so its figures from ${before.gdpBuilt ?? before.built} stay.`);
+    oecdBuilt = before.gdpBuilt ?? before.built;
+    return before.gdp;
+  }
+}
+
 async function main() {
   const i = process.argv.indexOf("--rts");
-  const slug = i > 0 ? process.argv[i + 1] : "uk-regional-trade-in-goods-statistics-fourth-quarter-october-to-december-2025";
+  const slug = i > 0 ? process.argv[i + 1] : await latestRegionalTrade();
   const data = {
     built: new Date().toISOString().slice(0, 10),
-    gdp: await gdpPerHead(),
+    gdp: await oecdGdp(),
+    gdpBuilt: oecdBuilt,
     ...tradeAndMigration(),
     nationTrade: await nationTrade(slug),
     migrationByRegion: await migrationByRegion(),
