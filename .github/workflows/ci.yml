@@ -255,6 +255,12 @@ jobs:
       - run: node e2e/numbers-fit.audit.mjs
         env:
           WORKERS: "2"
+      # Presses up to six controls on every page (tabs, filters, toggles) and watches every frame for a second: fails when the pressed control jumps across the screen, the page
+      # becomes too short for where the visitor stood, or the heading goes missing. Scrolls that glide, and the browser holding the control still, are fine.
+      - run: node e2e/interaction.audit.mjs
+        env:
+          PER: "6"
+          WORKERS: "2"
 
   routing-offline:
     name: Page addresses, back button and working offline

@@ -1,0 +1,72 @@
+/* The scenes along the foot of the Economy and tax pages' heading bands (components/story/EconArt.jsx). Colours come from the page's own accent, so each page keeps its colour. */
+.hs-scene {
+  --a: var(--hero-accent, #2F80ED);
+  --s1: color-mix(in srgb, var(--a) 18%, #0A1428);
+  --s2: color-mix(in srgb, var(--a) 32%, #0A1428);
+  --s3: color-mix(in srgb, var(--a) 46%, #0C1830);
+  --s4: color-mix(in srgb, var(--a) 62%, #F2F6FF 14%);
+  --lamp: color-mix(in srgb, var(--a) 38%, #FFFFFF);
+}
+.hs-1 { fill: var(--s1); } .hs-2 { fill: var(--s2); } .hs-3 { fill: var(--s3); } .hs-4 { fill: var(--s4); }
+.hs-acc { fill: var(--a); } .hs-lamp { fill: var(--lamp); }
+.hs-pillar { fill: color-mix(in srgb, var(--a) 40%, #0C1830); }
+.hs-awn-a { fill: var(--a); } .hs-awn-b { fill: color-mix(in srgb, var(--a) 45%, #fff); }
+.hs-line { fill: none; stroke: var(--s3); stroke-width: 2; }
+.hs-dash { fill: none; stroke: var(--lamp); stroke-width: 1.4; stroke-dasharray: 3 7; opacity: 0.4; }
+.hs-win { opacity: 0.78; animation: ec-light 0.5s ease-out var(--d, 1s) backwards; }
+@keyframes ec-light { from { opacity: 0; } }
+
+/* ---- Economy ---- */
+.ec-growth { fill: none; stroke: var(--lamp); stroke-width: 3.2; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; filter: drop-shadow(0 0 5px var(--a)); animation: ec-draw 2.8s cubic-bezier(0.4, 0.1, 0.2, 1) 0.6s backwards; }
+@keyframes ec-draw { from { stroke-dashoffset: 1; } }
+.ec-dot { fill: var(--lamp); stroke: var(--a); stroke-width: 3; animation: ec-pop 0.5s cubic-bezier(0.3, 1.5, 0.5, 1) calc(0.9s + var(--i) * 0.7s) backwards; transform-box: fill-box; transform-origin: center; }
+@keyframes ec-pop { from { transform: scale(0); opacity: 0; } }
+.ec-jib { transform-box: view-box; transform-origin: 150px 40px; animation: ec-swing 5s ease-in-out 0.4s backwards; }
+@keyframes ec-swing { from { transform: rotate(-3.5deg); } 55% { transform: rotate(2deg); } }
+
+/* ---- Jobs and pay ---- */
+.ec-walk { animation: ec-walk-in 5.2s cubic-bezier(0.25, 0.7, 0.2, 1) calc(var(--i) * 0.28s) backwards; }
+@keyframes ec-walk-in { from { transform: translateX(-760px); } }
+.ec-bob { animation: ec-bob 0.46s ease-in-out calc(var(--i) * 0.28s) 11 alternate; }
+@keyframes ec-bob { from { transform: translateY(0); } to { transform: translateY(-2.4px); } }
+.ec-coin { animation: ec-coin 2.4s ease-out calc(6.4s + var(--i) * 0.2s) backwards; opacity: 0; }
+@keyframes ec-coin { 0% { opacity: 0; transform: translateY(8px); } 22% { opacity: 1; } 78% { opacity: 1; } 100% { opacity: 0; transform: translateY(-26px); } }
+
+/* ---- Public finances ---- */
+.ec-coinstack { animation: ec-drop 0.45s cubic-bezier(0.3, 1.3, 0.5, 1) var(--d) backwards; }
+@keyframes ec-drop { from { transform: translateY(-46px); opacity: 0; } }
+.ec-beam { transform-box: view-box; transform-origin: 138.5px 62px; animation: ec-tip 3.4s ease-in-out 0.5s backwards; }
+@keyframes ec-tip { from { transform: rotate(-9deg); } 35% { transform: rotate(6deg); } 65% { transform: rotate(-2.5deg); } 85% { transform: rotate(1deg); } }
+.ec-pan { transform-box: view-box; animation: ec-tip-back 3.4s ease-in-out 0.5s backwards; }
+.ec-pan-l { transform-origin: 70px 64px; } .ec-pan-r { transform-origin: 207px 64px; }
+@keyframes ec-tip-back { from { transform: rotate(9deg); } 35% { transform: rotate(-6deg); } 65% { transform: rotate(2.5deg); } 85% { transform: rotate(-1deg); } }
+
+/* ---- Taxes ---- */
+.ec-pipe { fill: none; stroke: var(--lamp); stroke-width: 1.6; stroke-dasharray: 2 7; stroke-linecap: round; opacity: 0.45; }
+.ec-flow { fill: #F3C65A; offset-distance: 0%; opacity: 0; animation: ec-travel 2.9s linear var(--d) 3 backwards; filter: drop-shadow(0 0 4px rgba(243, 198, 90, 0.8)); }
+@keyframes ec-travel { 0% { offset-distance: 0%; opacity: 0; } 12% { opacity: 1; } 88% { opacity: 1; } 100% { offset-distance: 100%; opacity: 0; } }
+.ec-node-ring { fill: none; stroke: var(--a); stroke-width: 2.4; }
+.ec-glyph { fill: none; stroke: var(--lamp); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.ec-glyph path[d^="M-3 -11"], .ec-glyph path[d^="M0 -12"] { fill: color-mix(in srgb, var(--a) 55%, transparent); }
+.ec-coffer { animation: ec-glow 2.6s ease-in-out 0.4s 3 alternate; transform-box: view-box; }
+@keyframes ec-glow { from { filter: none; } to { filter: drop-shadow(0 0 10px var(--a)); } }
+
+/* ---- Business ---- */
+.ec-lorry { transform: translateX(380px); animation: ec-drive 7.5s cubic-bezier(0.3, 0.1, 0.25, 1) 0.4s backwards; }
+@keyframes ec-drive { from { transform: translateX(-260px); } }
+.ec-wheel { animation: ec-wheel 7.5s cubic-bezier(0.3, 0.1, 0.25, 1) 0.4s backwards; transform-box: view-box; }
+@keyframes ec-wheel { from { transform: rotate(-1300deg); } }
+.ec-open { fill: var(--lamp); animation: ec-blink 1.1s ease-in-out calc(1s + var(--i) * 0.4s) 4 alternate; }
+@keyframes ec-blink { from { opacity: 0.25; } to { opacity: 1; } }
+.ec-floor { animation: ec-rise 0.6s ease-out calc(0.6s + var(--i) * 0.9s) backwards; transform-box: fill-box; transform-origin: left; }
+@keyframes ec-rise { from { transform: scaleX(0); opacity: 0; } }
+.ec-puff { fill: color-mix(in srgb, var(--a) 20%, #CFD8E8); opacity: 0; transform-box: fill-box; transform-origin: center; animation: ec-smoke 3.6s ease-out calc(var(--i) * 1.1s) 4; }
+@keyframes ec-smoke { from { opacity: 0.5; transform: translate(0, 0) scale(0.5); } to { opacity: 0; transform: translate(26px, -70px) scale(2.1); } }
+
+/* Calmer motion: every picture is simply finished, and what only exists while it moves (coins, smoke) stays away. */
+@media (prefers-reduced-motion: reduce) {
+  .hs-scene *, .hs-scene *::before { animation: none !important; transition: none !important; }
+  .ec-flow, .ec-puff, .ec-coin { opacity: 0 !important; }
+}
+html[data-calm] .hs-scene * { animation: none !important; }
+html[data-calm] .ec-flow, html[data-calm] .ec-puff, html[data-calm] .ec-coin { opacity: 0 !important; }

@@ -1,0 +1,6 @@
+/* The picture along the foot of a page's heading band (Farming and food, and the Economy and tax pages). The band keeps room for it, and it never takes a click. */
+.page-hero[data-scene] { padding-bottom: calc(clamp(120px, 15vw, 210px) + 18px); }
+.page-hero[data-scene]::before { display: none; }
+.fm-scene, .hs-scene { position: absolute; z-index: 0; left: 50%; bottom: 0; width: 100vw; height: clamp(120px, 15vw, 210px); transform: translateX(-50%); overflow: hidden; pointer-events: none; }
+.fm-scene svg, .hs-scene svg { display: block; width: 100%; height: 100%; }
+.page-hero[data-scene] .page-hero-inner { position: static; }

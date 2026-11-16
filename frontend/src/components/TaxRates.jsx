@@ -1,6 +1,7 @@
 import { Suspense, lazy, useRef, useState } from "react";
 import { COLORS, FONT_BODY, PAGE_PADDING, solid } from "../theme";
 import { PageHeader } from "./shared";
+import { TaxScene } from "./story/EconArt";
 import { IconBudget, IconCabinet, IconCoin, IconCompareTime, IconQuestion, IconTaxes, IconTrend } from "./icons";
 import { TAXES } from "../data/taxCatalogue";
 import { GOVERNMENTS } from "../data/governments";
@@ -98,6 +99,7 @@ export default function TaxRates({ param }) {
         title="Taxes"
         subtitle="What the government collects and spends, how each tax rate has changed since 1945, and which government decided each change."
         share={() => taxShareSpec(nav, window.location.href)}
+        scene={<TaxScene />}
       />
       <div ref={tabsRef} style={{ scrollMarginTop: 12 }}>
         <div role="tablist" aria-label="What to look at" className="tab-pills">

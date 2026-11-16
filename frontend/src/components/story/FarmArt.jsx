@@ -2,6 +2,7 @@
 import { useGo } from "./useGo";
 import AnimatedValue from "./AnimatedValue";
 import { crateFills, landPlots, rippleOrder, arcLength, IHT, ihtRate, rulerPos } from "../../lib/farmArt";
+import "../../heroscene.css";
 import "../../farmart.css";
 
 // Pictures for the Farming and food page. Each plays once, when it scrolls into view (and is already finished for anyone who has asked for calmer motion), and every figure in
@@ -90,8 +91,8 @@ export function LandPatchwork({ farmed = 69, holdings, hectares, source }) {
         ))}
       </svg>
       <figcaption>
-        <span><i className="fm-key fm-key-on" aria-hidden="true" />{farmed} of every 100 squares are farmed</span>
-        <span><i className="fm-key" aria-hidden="true" />{100 - farmed} are not</span>
+        <span className="fm-land-key"><i className="fm-key fm-key-on" aria-hidden="true" /><b>{farmed}</b> of every 100 squares are farmed</span>
+        <span className="fm-land-key"><i className="fm-key" aria-hidden="true" /><b>{100 - farmed}</b> are not</span>
         {source && <small>{source}</small>}
         {(holdings || hectares) && <small>{[holdings && `${holdings} farm holdings`, hectares && `using ${hectares} hectares`].filter(Boolean).join(", ")}.</small>}
       </figcaption>
@@ -103,7 +104,7 @@ export function LandPatchwork({ farmed = 69, holdings, hectares, source }) {
 export function FoodCrates({ items, note }) {
   const [ref, go] = useGo(0.25);
   return (
-    <figure ref={ref} className="fm-crates" data-go={go} role="img" aria-label={`Share of food produced against supplied: ${items.map((i) => `${i.label} ${i.text}`).join(", ")}.`}>
+    <div ref={ref} className="fm-crates" data-go={go} role="img" aria-label={`Share of food produced against supplied: ${items.map((i) => `${i.label} ${i.text}`).join(", ")}.`}>
       <ul>
         {items.map((it, r) => (
           <li key={it.label} style={{ "--tc": it.colour, "--r": r }}>
@@ -116,9 +117,9 @@ export function FoodCrates({ items, note }) {
           </li>
         ))}
       </ul>
-      <figcaption><i className="fm-over-key" aria-hidden="true" />The dashed crate stands for more than 100%: more is made than we eat, and the rest is sold abroad.</figcaption>
+      <p className="fm-cap"><i className="fm-over-key" aria-hidden="true" />The dashed crate stands for more than 100%: more is made than we eat, and the rest is sold abroad.</p>
       {note && <p className="fm-note">{note}</p>}
-    </figure>
+    </div>
   );
 }
 
@@ -127,7 +128,7 @@ export function FarmBars({ items, max, note, label }) {
   const [ref, go] = useGo(0.25);
   const top = max ?? Math.max(...items.map((i) => i.value));
   return (
-    <figure ref={ref} className="fm-bars" data-go={go} role="img" aria-label={`${label}: ${items.map((i) => `${i.label} ${i.text}`).join(", ")}.`}>
+    <div ref={ref} className="fm-bars" data-go={go} role="img" aria-label={`${label}: ${items.map((i) => `${i.label} ${i.text}`).join(", ")}.`}>
       <ul>
         {items.map((it, i) => (
           <li key={it.label} style={{ "--tc": it.colour, "--w": it.value / top, "--i": i }}>
@@ -137,8 +138,8 @@ export function FarmBars({ items, max, note, label }) {
           </li>
         ))}
       </ul>
-      {note && <figcaption>{note}</figcaption>}
-    </figure>
+      {note && <p className="fm-cap">{note}</p>}
+    </div>
   );
 }
 
@@ -147,7 +148,7 @@ export function FarmColumns({ items, max, note, label }) {
   const [ref, go] = useGo(0.25);
   const top = max ?? Math.max(...items.map((i) => i.value));
   return (
-    <figure ref={ref} className="fm-cols" data-go={go} role="img" aria-label={`${label}: ${items.map((i) => `${i.label} ${i.text}`).join(", ")}.`}>
+    <div ref={ref} className="fm-cols" data-go={go} role="img" aria-label={`${label}: ${items.map((i) => `${i.label} ${i.text}`).join(", ")}.`}>
       <ul style={{ "--n": items.length }}>
         {items.map((it, i) => (
           <li key={it.label} style={{ "--tc": it.colour, "--h": it.value / top, "--i": i }}>
@@ -157,17 +158,17 @@ export function FarmColumns({ items, max, note, label }) {
           </li>
         ))}
       </ul>
-      {note && <figcaption>{note}</figcaption>}
-    </figure>
+      {note && <p className="fm-cap">{note}</p>}
+    </div>
   );
 }
 
 // ----- how much of a farm's income comes from direct payments: two rings -----
 export function PaymentRings({ rings, note }) {
   const [ref, go] = useGo(0.3);
-  const R = 42;
+  const R = 46;
   return (
-    <figure ref={ref} className="fm-rings" data-go={go} role="img" aria-label={`Share of farm income from direct payments: ${rings.map((r) => `${r.label} ${r.share}%`).join(", ")}.`}>
+    <div ref={ref} className="fm-rings" data-go={go} role="img" aria-label={`Share of farm income from direct payments: ${rings.map((r) => `${r.label} ${r.share}%`).join(", ")}.`}>
       <div>
         {rings.map((r, i) => {
           const a = arcLength(r.share, R);
@@ -176,9 +177,11 @@ export function PaymentRings({ rings, note }) {
               <svg viewBox="0 0 120 120" aria-hidden="true" focusable="false">
                 <circle cx="60" cy="60" r={R} className="fm-ring-bg" />
                 <circle cx="60" cy="60" r={R} className="fm-ring-fg" strokeDasharray={`${a.on} ${a.all}`} style={{ "--len": a.on }} transform="rotate(-90 60 60)" />
-                <g transform="translate(48 22)"><Glyph name={r.icon} colour="var(--tc)" size={24} /></g>
-                <text x="60" y="72" textAnchor="middle" className="fm-ring-num">{r.share}%</text>
-                <text x="60" y="88" textAnchor="middle" className="fm-ring-sub">direct payments</text>
+                {/* Everything inside stays within the inner edge of the ring (radius 40): the figure, then the words on two short lines. */}
+                <text x="60" y="63" textAnchor="middle" className="fm-ring-num">{r.share}%</text>
+                <text x="60" y="76" textAnchor="middle" className="fm-ring-sub">direct</text>
+                <text x="60" y="87" textAnchor="middle" className="fm-ring-sub">payments</text>
+                <g className="fm-ring-chip"><circle cx="60" cy="14" r="11" fill="var(--tc)" /><g transform="translate(50 4)"><Glyph name={r.icon} colour="#fff" size={20} /></g></g>
               </svg>
               <figcaption>{r.label}</figcaption>
             </figure>
@@ -186,7 +189,7 @@ export function PaymentRings({ rings, note }) {
         })}
       </div>
       {note && <p className="fm-note">{note}</p>}
-    </figure>
+    </div>
   );
 }
 
@@ -194,10 +197,10 @@ export function PaymentRings({ rings, note }) {
 export function FundBar({ whole, part, wholeText, partText, partLabel, wholeLabel, colour = "#5A7FA6" }) {
   const [ref, go] = useGo(0.3);
   return (
-    <figure ref={ref} className="fm-fund" data-go={go} style={{ "--tc": colour, "--p": part / whole }} role="img" aria-label={`${partLabel}: ${partText} of ${wholeText} in all.`}>
+    <div ref={ref} className="fm-fund" data-go={go} style={{ "--tc": colour, "--p": part / whole }} role="img" aria-label={`${partLabel}: ${partText} of ${wholeText} in all.`}>
       <div className="fm-fund-bar"><span><Glyph name="sprout" colour="#fff" size={20} /><b>{partText}</b></span></div>
       <div className="fm-fund-keys"><span><i style={{ background: colour }} aria-hidden="true" />{partLabel}</span><span><i aria-hidden="true" />{wholeLabel} <b>{wholeText}</b></span></div>
-    </figure>
+    </div>
   );
 }
 
@@ -225,8 +228,8 @@ export function ReliefGate({ colour = "#7B5BD6" }) {
           <text y={T - 6} textAnchor="middle" className="fm-flag">£2.5m limit per estate</text>
         </g>
         <g className="fm-couple" transform={`translate(${x(IHT.couple)} 0)`}><line y1={T + 12} y2={H - B} /><text y={T + 4} textAnchor="middle" className="fm-tick">A couple: £5m</text></g>
-        <text x={x(1.25)} y={y(0) - 10} textAnchor="middle" className="fm-lab fm-lab-a">No tax on the farm</text>
-        <text x={x(4.6)} y={y(IHT.rateAbove) - 10} textAnchor="middle" className="fm-lab fm-lab-b">20% above</text>
+        <text x={x(1.05)} y={y(0) - 12} textAnchor="middle" className="fm-lab fm-lab-a">No tax on the farm</text>
+        <text x={x(6.15)} y={y(IHT.rateAbove) - 12} textAnchor="middle" className="fm-lab fm-lab-b">20% above</text>
       </svg>
       <figcaption>
         <span><i className="fm-key-before" aria-hidden="true" />Before 6 April 2026: full relief at any value</span>
@@ -240,20 +243,27 @@ export function ReliefGate({ colour = "#7B5BD6" }) {
 // ----- stakes in a field marking where each price rise sits on a ruler -----
 export function PriceRuler({ marks, max = 20, note }) {
   const [ref, go] = useGo(0.3);
+  // Tags are wider than the gap between neighbouring rises, so a mark that sits close to the one on its right is lifted a step above it (its stake then runs down clear of the lower tag).
+  const sorted = [...marks].sort((a, b) => a.rate - b.rate);
+  const lanes = new Map();
+  for (let i = sorted.length - 1; i >= 0; i -= 1) {
+    const next = sorted[i + 1];
+    lanes.set(sorted[i].label, next && rulerPos(next.rate, max) - rulerPos(sorted[i].rate, max) < 0.3 && lanes.get(next.label) === 0 ? 1 : 0);
+  }
   return (
-    <figure ref={ref} className="fm-ruler" data-go={go} role="img" aria-label={`Annual price rises on a scale from 0 to ${max}%: ${marks.map((m) => `${m.label} ${m.text}`).join(", ")}.`}>
+    <div ref={ref} className="fm-ruler" data-go={go} role="img" aria-label={`Annual price rises on a scale from 0 to ${max}%: ${marks.map((m) => `${m.label} ${m.text}`).join(", ")}.`}>
       <div className="fm-ruler-field">
         <div className="fm-ruler-line">
           {Array.from({ length: max / 5 + 1 }, (_, i) => <span key={i} style={{ left: `${(i * 5 / max) * 100}%` }}>{i * 5}%</span>)}
         </div>
         {marks.map((m, i) => (
-          <div key={m.label} className="fm-stake" data-edge={rulerPos(m.rate, max) < 0.14 ? "l" : rulerPos(m.rate, max) > 0.86 ? "r" : undefined} style={{ "--pos": rulerPos(m.rate, max), "--tc": m.colour, "--i": i, "--up": m.up ?? 0 }}>
+          <div key={m.label} className="fm-stake" data-edge={rulerPos(m.rate, max) < 0.14 ? "l" : rulerPos(m.rate, max) > 0.86 ? "r" : undefined} style={{ "--pos": rulerPos(m.rate, max), "--tc": m.colour, "--i": i, "--lane": lanes.get(m.label) }}>
             <span className="fm-stake-tag"><b>{m.text}</b><em>{m.label}</em></span>
             <i aria-hidden="true" />
           </div>
         ))}
       </div>
-      {note && <figcaption>{note}</figcaption>}
-    </figure>
+      {note && <p className="fm-cap">{note}</p>}
+    </div>
   );
 }

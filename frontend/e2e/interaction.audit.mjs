@@ -83,16 +83,22 @@ async function worker() {
         pressed += 1;
         const moved = page.url() !== startUrl;
         const problems = [];
-        // Judged on the screen, as the visitor sees it: a scroll the browser makes to keep the pressed control still (when content below it shrinks) is not a jump, and a control that
-        // slides gradually over many frames is a glide. What is rough is the control (or the heading) changing place by 60 px or more within a few frames.
-        let prevTop = rec.top0; let moving = 0; let biggest = 0;
-        for (const f of rec.frames) { if (f.top === null) continue; const d = Math.abs(f.top - prevTop); if (d > 0.5) { moving += 1; biggest = Math.max(biggest, d); } prevTop = f.top; }
+        // Judged on the screen, as the visitor sees it. Two things are rough: the pressed control being shoved 60 px or more within a few frames while the page did not scroll (the layout
+        // moved under the finger), and a short scroll (under 3000 px) that happens in one or two frames instead of gliding, which leaves the control somewhere else. A scroll the browser
+        // makes to keep the control still when content below it shrinks is not a jump, and a long scroll down to a chart is allowed to be quick.
+        let prevTop = rec.top0; let prevY = rec.y0; let moving = 0; let biggest = 0; let scrolling = 0;
+        for (const f of rec.frames) {
+          if (f.top !== null) { const d = Math.abs(f.top - prevTop); if (d > 0.5) { moving += 1; biggest = Math.max(biggest, d); } prevTop = f.top; }
+          if (Math.abs(f.y - prevY) > 0.5) scrolling += 1; prevY = f.y;
+        }
+        const scrolled = Math.abs((rec.frames.at(-1)?.y ?? rec.y0) - rec.y0);
         // "Show 36 more" adds rows above its own button, "Print" re-lays the page out for paper and the text-size buttons rescale everything: the button moving is the point of these.
         const expected = /^(show|load|see)( \d+)? more|^print|^(larger|largest|smaller|smallest|reset)/i.test(what.replace(/^[a-z]+\[/, ""));
-        if (!moved && !expected && moving <= 3 && biggest >= 60) problems.push(`the pressed control jumped ${Math.round(biggest)} px on screen in ${moving} frame${moving === 1 ? "" : "s"}`);
+        if (!moved && !expected && moving <= 3 && biggest >= 60 && scrolled < 40) problems.push(`the pressed control was shoved ${Math.round(biggest)} px by the layout in ${moving} frame${moving === 1 ? "" : "s"}`);
+        if (!moved && !expected && scrolling >= 1 && scrolling <= 2 && scrolled >= 40 && scrolled <= 3000 && biggest >= 40) problems.push(`the page jumped ${Math.round(scrolled)} px in ${scrolling} frame${scrolling === 1 ? "" : "s"}`);
         // A page that becomes too short to hold where the visitor was standing is thrown back up the screen (the footer flashes past); a tall list swapped for a short one below is fine.
         const vh = PHONE ? 844 : 800;
-        if (!moved && rec.frames.some((f) => f.h < rec.y0 + vh)) problems.push("page became too short for where the visitor was standing");
+        if (!moved && rec.frames.some((f) => f.h < rec.h0 - 200 && f.h < rec.y0 + vh)) problems.push("page became too short for where the visitor was standing");
         if (!moved && rec.frames.some((f) => !f.head)) problems.push("page heading missing for a frame");
         if (problems.length) results.push({ pg, what, problems });
       }

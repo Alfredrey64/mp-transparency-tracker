@@ -103,7 +103,7 @@ const PAGE = {
         ] },
         { node: <PriceRuler max={20} marks={[
           { label: "Food, year to September 2026", rate: 1.3, text: "1.3%", colour: "#3F7D5C" },
-          { label: "All goods and services", rate: 3.5, text: "3.5%", colour: "#5A7FA6", up: 34 },
+          { label: "All goods and services", rate: 3.5, text: "3.5%", colour: "#5A7FA6" },
           { label: "Food peak, March 2023", rate: 19.1, text: "19.1%", colour: "#B45A3C" },
         ]} /> },
         { note: "Food prices and farm incomes are different things. What a farmer is paid for milk or wheat is only part of what a shopper pays for the finished product, and the shares between farmers, processors and shops vary by product." },

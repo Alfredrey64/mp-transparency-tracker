@@ -105,10 +105,10 @@ for (const width of [1440, 390]) {
     await last.click();
     const heading = page.locator(".act h2");
     await expect(heading).toBeFocused();
-    await expect.poll(() => heading.evaluate((h) => Math.round(h.getBoundingClientRect().top))).toBeLessThan(260);
-    expect(await heading.evaluate((h) => h.getBoundingClientRect().top)).toBeGreaterThan(0);
+    // The page now glides there rather than jumping, so wait for it to arrive: the heading ends up on screen, below the top edge and above 260 px.
+    await expect.poll(() => heading.evaluate((h) => { const t = Math.round(h.getBoundingClientRect().top); return t > 0 && t < 260; })).toBe(true);
     await page.locator(".act-back").click();
-    await expect.poll(() => page.locator(".act h2").evaluate((h) => Math.round(h.getBoundingClientRect().top))).toBeLessThan(260);
+    await expect.poll(() => page.locator(".act h2").evaluate((h) => { const t = Math.round(h.getBoundingClientRect().top); return t > 0 && t < 260; })).toBe(true);
   });
 }
 

@@ -3,6 +3,7 @@ import { flushSync } from "react-dom";
 import { m as motion, useReducedMotion } from "motion/react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric, readable, solid } from "../theme";
 import { PageHeader } from "./shared";
+import { EconomyScene, JobsScene, FinanceScene, BusinessScene } from "./story/EconArt";
 import { LoadFailedNote } from "./MpCards";
 import LineChart from "./LineChart";
 import PlacesChart from "./PlacesChart";
@@ -502,9 +503,13 @@ function InParliament({ sector, accent }) {
   );
 }
 
+// The pages in the Economy and tax group have a picture along the foot of their heading band.
+const SCENES = { economy: EconomyScene, jobs: JobsScene, publicFinances: FinanceScene, business: BusinessScene };
+
 // `embedded` is for a page that already has its own heading and width (the Taxes page): the header is left out and the padding is not doubled.
 export default function SectorPage({ sector, param = null, embedded = false }) {
   const def = sectorByKey(sector);
+  const Scene = SCENES[sector];
   const reduce = useReducedMotion();
   const [loaded, setLoaded] = useState(null);
   const [failed, setFailed] = useState(false);
@@ -591,7 +596,7 @@ export default function SectorPage({ sector, param = null, embedded = false }) {
 
   return (
     <div className="regions-wrap" style={embedded ? { marginTop: 8 } : { maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
-      {!embedded && <PageHeader icon={Icon} accent={def.accent} title={def.title} subtitle={def.subtitle} share={loaded ? shareCard : undefined} />}
+      {!embedded && <PageHeader icon={Icon} accent={def.accent} title={def.title} subtitle={def.subtitle} share={loaded ? shareCard : undefined} scene={Scene ? <Scene /> : undefined} />}
 
       {failed && <div style={{ marginTop: 24 }}><LoadFailedNote item="these figures" /></div>}
       {!loaded && !failed && <Loading />}
