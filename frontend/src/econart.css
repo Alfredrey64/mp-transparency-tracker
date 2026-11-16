@@ -9,6 +9,7 @@
 }
 .hs-1 { fill: var(--s1); } .hs-2 { fill: var(--s2); } .hs-3 { fill: var(--s3); } .hs-4 { fill: var(--s4); }
 .hs-acc { fill: var(--a); } .hs-lamp { fill: var(--lamp); }
+.hs-warm { fill: #FFD98A; }
 .hs-pillar { fill: color-mix(in srgb, var(--a) 40%, #0C1830); }
 .hs-awn-a { fill: var(--a); } .hs-awn-b { fill: color-mix(in srgb, var(--a) 45%, #fff); }
 .hs-line { fill: none; stroke: var(--s3); stroke-width: 2; }
@@ -43,13 +44,11 @@
 
 /* ---- Taxes ---- */
 .ec-pipe { fill: none; stroke: var(--lamp); stroke-width: 1.6; stroke-dasharray: 2 7; stroke-linecap: round; opacity: 0.45; }
-.ec-flow { fill: #F3C65A; offset-distance: 0%; opacity: 0; animation: ec-travel 2.9s linear var(--d) 3 backwards; filter: drop-shadow(0 0 4px rgba(243, 198, 90, 0.8)); }
+.ec-flow { fill: #F7D675; stroke: #B88A2C; stroke-width: 1; offset-distance: 0%; opacity: 0; animation: ec-travel 2.9s linear var(--d) 1 backwards; }
+.ec-ribbon { fill: none; stroke: var(--lamp); stroke-width: 10; stroke-linecap: round; opacity: 0.1; }
+/* three coins per stream, each starting a beat after the last, so the streams run for a few seconds and then rest */
 @keyframes ec-travel { 0% { offset-distance: 0%; opacity: 0; } 12% { opacity: 1; } 88% { opacity: 1; } 100% { offset-distance: 100%; opacity: 0; } }
 .ec-node-ring { fill: none; stroke: var(--a); stroke-width: 2.4; }
-.ec-glyph { fill: none; stroke: var(--lamp); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-.ec-glyph path[d^="M-3 -11"], .ec-glyph path[d^="M0 -12"] { fill: color-mix(in srgb, var(--a) 55%, transparent); }
-.ec-coffer { animation: ec-glow 2.6s ease-in-out 0.4s 3 alternate; transform-box: view-box; }
-@keyframes ec-glow { from { filter: none; } to { filter: drop-shadow(0 0 10px var(--a)); } }
 
 /* ---- Business ---- */
 .ec-lorry { transform: translateX(380px); animation: ec-drive 7.5s cubic-bezier(0.3, 0.1, 0.25, 1) 0.4s backwards; }
@@ -66,7 +65,29 @@
 /* Calmer motion: every picture is simply finished, and what only exists while it moves (coins, smoke) stays away. */
 @media (prefers-reduced-motion: reduce) {
   .hs-scene *, .hs-scene *::before { animation: none !important; transition: none !important; }
-  .ec-flow, .ec-puff, .ec-coin { opacity: 0 !important; }
+  .ec-flow, .ec-puff, .ec-coin, .ec-rain, .ec-glint { opacity: 0 !important; }
 }
 html[data-calm] .hs-scene * { animation: none !important; }
-html[data-calm] .ec-flow, html[data-calm] .ec-puff, html[data-calm] .ec-coin { opacity: 0 !important; }
+html[data-calm] .ec-flow, html[data-calm] .ec-puff, html[data-calm] .ec-coin, html[data-calm] .ec-rain, html[data-calm] .ec-glint { opacity: 0 !important; }
+
+/* ---- the richer scenes ---- */
+.ec-sun { animation: ec-sunrise 6s cubic-bezier(0.2, 0.7, 0.2, 1) 0.2s backwards; }
+@keyframes ec-sunrise { from { transform: translateY(78px); } }
+.ec-lampglow { opacity: 0.2; animation: ec-lampon 1.2s ease-out var(--d) backwards; }
+@keyframes ec-lampon { from { opacity: 0; } }
+.ec-leg { animation: ec-stride 0.46s ease-in-out calc(var(--i) * 0.28s) 11 alternate; }
+.ec-leg-b { animation-direction: alternate-reverse; }
+@keyframes ec-stride { from { transform: rotate(-24deg); } to { transform: rotate(24deg); } }
+.ec-jib2 { transform-box: view-box; transform-origin: 1332px 28px; animation: ec-swing 6s ease-in-out 0.4s backwards; }
+.ec-flag { transform-box: view-box; transform-origin: 520px 12px; animation: ec-wave 1.2s ease-in-out 0.4s 6 alternate; }
+@keyframes ec-wave { from { transform: skewY(-6deg) scaleX(0.92); } to { transform: skewY(6deg) scaleX(1); } }
+.ec-lid { transform-box: view-box; transform-origin: -44px 146px; transform: rotate(-26deg); animation: ec-lid 1.2s ease-out 1.2s backwards; }
+@keyframes ec-lid { from { transform: rotate(0); } }
+.ec-rain { opacity: 0; animation: ec-fall 1.2s ease-in var(--d) 4; }
+@keyframes ec-fall { from { opacity: 1; transform: translateY(0); } 80% { opacity: 1; } to { opacity: 0; transform: translateY(108px); } }
+.ec-glint { opacity: 0; animation: ec-twinkle 1.4s ease-in-out var(--d) 3; }
+@keyframes ec-twinkle { 0%, 100% { opacity: 0; transform: scale(0.4); } 50% { opacity: 0.95; transform: scale(1.4); } }
+.ec-vwheel { animation: ec-vturn 3.4s cubic-bezier(0.3, 0.1, 0.2, 1) 0.4s backwards; }
+@keyframes ec-vturn { from { transform: rotate(-540deg); } }
+.ec-arrive { opacity: 0; animation: ec-arrive 2.6s ease-out var(--d) backwards; }
+@keyframes ec-arrive { 0% { opacity: 0; } 35% { opacity: 0.32; } 100% { opacity: 0; } }
