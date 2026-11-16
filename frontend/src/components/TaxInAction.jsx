@@ -52,7 +52,7 @@ export default function TaxInAction({ now, onPick }) {
       <p style={{ fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.55, color: COLORS.inkSoft, margin: "8px 0 0", maxWidth: 780 }}>
         A rate is easier to feel against an amount. Each block below is £100 (or a fill-up, or a year), and the coloured squares are what goes in tax.
       </p>
-      <div className="txa-cards" key={run}>
+      <div className="txa-cards" key={Math.max(run, 1)}>{/* not re-keyed when the section first scrolls into view (the fill starts from data-run), only on "Play again", so a button is never swapped out from under a tap */}
         {cards.map((c) => <Card key={c.id} card={c} onPick={onPick} />)}
       </div>
     </section>
