@@ -1,0 +1,64 @@
+/* The party boxes on the Party finances page (components/PartyFinances.jsx): a banner in the party's colour with its flag and leader, then, when opened, its largest donors. */
+.pf-list { display: grid; gap: 16px; margin-bottom: 20px; }
+.pf-card { overflow: hidden; border-radius: 22px; background: var(--c-paper-card); border: 1px solid color-mix(in srgb, var(--c) 28%, var(--c-hairline)); box-shadow: var(--shadow-1); transition: box-shadow 0.25s var(--ease-out, ease-out); }
+@media (hover: hover) { .pf-card:hover { box-shadow: var(--shadow-2, 0 14px 28px -16px rgba(10, 20, 36, 0.35)); } }
+
+.pf-banner { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; min-height: 138px; padding: 0 0 0 24px; overflow: hidden; color: var(--on, #fff); background: linear-gradient(160deg, var(--b1), var(--b2)); }
+.pf-banner::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: linear-gradient(90deg, color-mix(in srgb, var(--on) 55%, transparent), transparent 70%); pointer-events: none; }
+.pf-art { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.pf-art svg { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
+.pf-pattern { position: absolute; inset: 0; background: radial-gradient(70% 140% at 90% 100%, rgba(255, 255, 255, 0.26), transparent 62%), linear-gradient(180deg, rgba(255, 255, 255, 0.1), transparent 45%); }
+.pf-card[data-dark="1"] .pf-pattern { background: radial-gradient(70% 140% at 90% 100%, rgba(255, 255, 255, 0.34), transparent 62%); }
+.pf-art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(98deg, color-mix(in srgb, var(--b1) 97%, transparent) 0%, color-mix(in srgb, var(--b1) 95%, transparent) 64%, color-mix(in srgb, var(--b1) 62%, transparent) 86%, color-mix(in srgb, var(--b2) 8%, transparent) 100%); }
+
+/* the heading holds the one button; its ::after stretches over the whole banner so the banner is the click target */
+.pf-head { margin: 0; min-width: 0; align-self: stretch; display: grid; }
+.pf-hit { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px; width: 100%; padding: 22px 8px 24px 0; border: 0; background: none; color: inherit; text-align: left; cursor: pointer; font: inherit; }
+.pf-hit::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+.pf-title, .pf-total { position: relative; z-index: 2; }
+.pf-hit:focus-visible { outline: none; }
+.pf-hit:focus-visible::after { outline: 3px solid var(--on); outline-offset: -8px; border-radius: 18px; }
+.pf-title { display: grid; gap: 4px; min-width: 0; }
+.pf-name { font: 700 clamp(24px, 3vw, 31px)/1.1 "Figures", "Newsreader", Georgia, serif; letter-spacing: -0.01em; text-wrap: balance; }
+.pf-meta { font: 600 14.5px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--on) 88%, transparent); }
+.pf-led { margin-top: 4px; font: 600 13.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--on) 84%, transparent); }
+.pf-led b { font: 700 16px/1.3 "Figures", "Newsreader", Georgia, serif; color: var(--on); margin-left: 2px; }
+.pf-total { display: inline-flex; align-items: center; gap: 12px; }
+.pf-total b { font: 700 clamp(22px, 3vw, 30px)/1 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; white-space: nowrap; }
+.pf-chev { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: color-mix(in srgb, var(--on) 16%, transparent); border: 1px solid color-mix(in srgb, var(--on) 36%, transparent); flex-shrink: 0; transition: transform 0.3s var(--ease-out, ease-out), background-color 0.2s; }
+.pf-chev::before { content: ""; width: 8px; height: 8px; border: solid var(--on); border-width: 0 2px 2px 0; transform: translateY(-2px) rotate(45deg); }
+.pf-card[data-open="1"] .pf-chev { transform: rotate(180deg); }
+.pf-hit:hover .pf-chev { background: color-mix(in srgb, var(--on) 28%, transparent); }
+
+/* the leader, in the same arch as on the Party History cards but smaller */
+.pf-banner .ph-arch { position: relative; pointer-events: none; width: 92px; height: 116px; margin-right: 22px; border-radius: 46px 46px 0 0; }
+.pf-banner .ph-mono { font-size: 32px; }
+@media (max-width: 560px) {
+  .pf-banner { padding-left: 16px; min-height: 124px; }
+  .pf-banner .ph-arch { width: 64px; height: 84px; margin-right: 14px; border-radius: 32px 32px 0 0; }
+  .pf-banner .ph-mono { font-size: 22px; }
+  .pf-hit { grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 18px 4px 20px 0; }
+  .pf-total { justify-content: space-between; }
+}
+
+/* the donors: a plain list, nothing tinted or selected-looking */
+.pf-donors { list-style: none; margin: 0; padding: 4px 22px 8px; max-height: min(70vh, 560px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.pf-donor { display: grid; gap: 8px; padding: 16px 0; }
+.pf-donor + .pf-donor { border-top: 1px solid var(--c-hairline); }
+.pf-d-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.pf-d-who { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; min-width: 0; }
+.pf-d-name { font: 700 17px/1.3 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); overflow-wrap: anywhere; }
+.pf-d-tag { flex-shrink: 0; padding: 3px 10px; border-radius: 999px; font: 800 11px/1.3 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.05em; text-transform: uppercase; }
+.pf-d-amt { display: grid; justify-items: end; gap: 1px; flex-shrink: 0; text-align: right; }
+.pf-d-amt b { font: 700 18px/1.2 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; color: var(--c-ink); white-space: nowrap; }
+.pf-d-amt small { font: 600 12px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.pf-d-bar { display: block; height: 5px; border-radius: 3px; background: color-mix(in srgb, var(--c) 14%, var(--c-paper-sunk, #eef1f6)); overflow: hidden; }
+.pf-d-bar u { display: block; height: 100%; border-radius: 3px; background: var(--c); text-decoration: none; }
+.pf-d-desc { margin: 2px 0 0; max-width: 78ch; font: 400 14.5px/1.65 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.pf-d-desc a { color: var(--c-brand-deep, var(--c-brand)); font-weight: 700; text-underline-offset: 2px; }
+@media (max-width: 560px) {
+  .pf-donors { padding: 2px 16px 6px; }
+  .pf-d-top { flex-direction: column; gap: 6px; }
+  .pf-d-amt { justify-items: start; text-align: left; grid-auto-flow: column; align-items: baseline; gap: 8px; }
+}
+@media (prefers-reduced-motion: reduce) { .pf-card, .pf-chev { transition: none; } }

@@ -17,6 +17,13 @@ import { withScrollPreserved } from "../lib/preserveScroll";
 import { IconPartyFinance } from "./icons";
 import Loading from "./Loading";
 import { FOLD } from "../lib/foldMotion";
+import PartyFlag from "./PartyFlag";
+import LeaderPortrait from "./LeaderPortrait";
+import { FLAG_OF } from "../lib/partyFlags";
+import { bannerColours } from "../lib/partyBrand";
+import { canonicalParty } from "../lib/donorParty";
+import LEADERS from "../data/partyLeaders.json";
+import "../partyfinances.css";
 
 // The Electoral Commission's own party names don't always match the short
 // forms used elsewhere on this site (party_colour on politicians comes from
@@ -46,6 +53,79 @@ const NOT_A_REAL_DONOR = /^(agreement( starting.*)?|payment received.*|undisclos
 // breaks the `${color}1a` alpha-suffix trick used for the status pill's
 // background below.
 const NEUTRAL_TAG_COLOR = "#8A94A3";
+
+// One box for each party: a banner in the party's colour with its flag behind and its leader's portrait on the right (the same look as the Party History cards), the money it
+// received, and, when opened, its largest donors as a plain list. The banner is the button; the portrait and flag are decoration.
+function PartyCard({ p, i, isOpen, onToggle }) {
+  const canon = canonicalParty(p.name);
+  const leader = canon ? LEADERS.leaders[canon] : null;
+  const flag = canon ? FLAG_OF[canon] : null;
+  const brand = /^#[0-9a-f]{6}$/i.test(p.color) ? p.color : "#5B6577";
+  const b = bannerColours(brand);
+  const panelId = `pf-${i}`;
+  const everyday = everydayShort(p.total);
+  return (
+    <motion.article
+      layout="position"
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.3, delay: (i % 8) * 0.04 }}
+      className="pf-card"
+      data-open={isOpen ? "1" : "0"}
+      data-dark={b.dark ? "1" : "0"}
+      style={{ "--c": brand, "--b1": b.from, "--b2": b.to, "--on": b.on }}
+    >
+      <header className="pf-banner">
+        <div className="pf-art" aria-hidden="true"><span className="pf-pattern" />{flag && <PartyFlag kind={flag} />}</div>
+        <h3 className="pf-head">
+          <button type="button" className="pf-hit" aria-expanded={isOpen} aria-controls={panelId} onClick={onToggle}>
+            <span className="pf-title">
+              <span className="pf-name">{p.name}</span>
+              <span className="pf-meta">{p.donors.length} donor{p.donors.length === 1 ? "" : "s"}{everyday ? ` · ${everyday}` : ""}</span>
+              {leader && <span className="pf-led">{leader.role === "President" ? "President" : "Leader"} <b>{leader.name}</b></span>}
+            </span>
+            <span className="pf-total"><b>£{Math.round(p.total).toLocaleString()}</b><i className="pf-chev" aria-hidden="true" /></span>
+          </button>
+        </h3>
+        {leader && <LeaderPortrait leader={leader} />}
+      </header>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div id={panelId} initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={FOLD} style={{ overflow: "hidden" }}>
+            <ol className="pf-donors">
+              {p.donors.map((d) => {
+                const tag = getPartyDonorSector(d.name);
+                const profile = getDonorProfile(d.name);
+                const description = profile?.description ?? (d.status === "Public Fund" ? publicFundDescription(d.name) : null);
+                const badgeColor = d.status === "Public Fund" ? COLORS.accent : tag ? sectorColor(tag.sector) : NEUTRAL_TAG_COLOR;
+                const share = p.total > 0 ? (d.total / p.total) * 100 : 0;
+                return (
+                  <li key={d.name} className="pf-donor">
+                    <div className="pf-d-top">
+                      <span className="pf-d-who">
+                        <span className="pf-d-name">{d.name}</span>
+                        <span className="pf-d-tag" style={{ color: readable(badgeColor), background: `${badgeColor}1a` }}>{d.status}</span>
+                      </span>
+                      <span className="pf-d-amt"><b>£{Math.round(d.total).toLocaleString()}</b><small>{share < 1 ? "under 1%" : `${Math.round(share)}%`} of its total</small></span>
+                    </div>
+                    <i className="pf-d-bar" aria-hidden="true"><u style={{ width: `${Math.max(1.5, Math.min(100, share))}%` }} /></i>
+                    {description && (
+                      <p className="pf-d-desc">
+                        {description}
+                        {profile?.sourceUrl && <> · <a href={profile.sourceUrl} target="_blank" rel="noreferrer">source ↗</a></>}
+                      </p>
+                    )}
+                  </li>
+                );
+              })}
+            </ol>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.article>
+  );
+}
 
 export default function PartyFinances() {
   const [rows, setRows] = useState(null);
@@ -265,108 +345,8 @@ export default function PartyFinances() {
         </p>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 20 }}>
-        {stats.parties.map((p, i) => {
-          const isOpen = expandedParty === p.name;
-          return (
-            <motion.div
-              key={p.name}
-              layout="position"
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.3, delay: (i % 8) * 0.04 }}
-              style={{
-                background: isOpen ? `${p.color}0a` : COLORS.paperCard,
-                border: `1px solid ${COLORS.hairline}`,
-                borderLeft: `5px solid ${p.color}`,
-                borderRadius: 12,
-                padding: 18,
-              }}
-            >
-              <button
-                onClick={() => withScrollPreserved(() => setExpandedParty(isOpen ? null : p.name))}
-                style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left", gap: 12 }}
-              >
-                <div>
-                  <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: COLORS.ink }}>{p.name}</div>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, marginTop: 2 }}>
-                    {p.donors.length} donor{p.donors.length === 1 ? "" : "s"}
-                    {everydayShort(p.total) ? ` · ${everydayShort(p.total)}` : ""}
-                  </div>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
-                  <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 15, color: COLORS.ink }}>£{Math.round(p.total).toLocaleString()}</span>
-                  <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ color: COLORS.inkSoft, fontSize: 13 }}>▾</motion.span>
-                </div>
-              </button>
-
-              <AnimatePresence initial={false}>
-                {isOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={FOLD}
-                    style={{ overflow: "hidden" }}
-                  >
-                    <div style={{ marginTop: 16, paddingTop: 4, borderTop: `1px solid ${COLORS.hairline}`, maxHeight: 420, overflowY: "auto" }}>
-                      {p.donors.map((d, di) => {
-                        const tag = getPartyDonorSector(d.name);
-                        const profile = getDonorProfile(d.name);
-                        const description = profile?.description ?? (d.status === "Public Fund" ? publicFundDescription(d.name) : null);
-                        const badgeColor = d.status === "Public Fund" ? COLORS.accent : tag ? sectorColor(tag.sector) : NEUTRAL_TAG_COLOR;
-                        const isLast = di === p.donors.length - 1;
-                        return (
-                          <div key={d.name} style={{ padding: "12px 0", borderBottom: isLast ? "none" : `1px solid ${COLORS.hairline}` }}>
-                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-                              <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0, flex: 1 }}>
-                                <span style={{ width: 7, height: 7, borderRadius: "50%", background: badgeColor, flexShrink: 0 }} />
-                                <span style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 13.5, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                                  {d.name}
-                                </span>
-                                <span
-                                  style={{
-                                    flexShrink: 0, fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em",
-                                    color: readable(badgeColor), background: `${badgeColor}1a`, padding: "2px 8px", borderRadius: 999,
-                                  }}
-                                >
-                                  {d.status}
-                                </span>
-                              </div>
-                              <span style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 14, color: COLORS.ink, flexShrink: 0 }}>
-                                £{Math.round(d.total).toLocaleString()}
-                              </span>
-                            </div>
-                            {description && (
-                              <div
-                                style={{
-                                  marginTop: 8, marginLeft: 15, paddingLeft: 12, borderLeft: `2px solid ${badgeColor}55`,
-                                  fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, lineHeight: 1.6,
-                                }}
-                              >
-                                {description}
-                                {profile?.sourceUrl && (
-                                  <>
-                                    {" "}
-                                    ·{" "}
-                                    <a href={profile.sourceUrl} target="_blank" rel="noreferrer" style={{ color: "inherit", fontWeight: 600 }}>
-                                      source ↗
-                                    </a>
-                                  </>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          );
-        })}
+      <div className="pf-list">
+        {stats.parties.map((p, i) => <PartyCard key={p.name} p={p} i={i} isOpen={expandedParty === p.name} onToggle={() => withScrollPreserved(() => setExpandedParty(expandedParty === p.name ? null : p.name))} />)}
       </div>
 
       {partyDonorSectorMetadata.generatedAt && (
