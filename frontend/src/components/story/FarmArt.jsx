@@ -1,7 +1,7 @@
 /** @jsxImportSource react */
 import { useGo } from "./useGo";
 import AnimatedValue from "./AnimatedValue";
-import { crateFills, landPlots, rippleOrder, arcLength, IHT, ihtRate, rulerPos } from "../../lib/farmArt";
+import { crateFills, landPlots, rippleOrder, arcLength, IHT, rulerPos } from "../../lib/farmArt";
 import "../../heroscene.css";
 import "../../farmart.css";
 
@@ -24,6 +24,8 @@ const G = {
   sprout: (c) => (<><path d="M12 21v-9" stroke={c} strokeWidth="1.8" strokeLinecap="round" /><path d="M12 12C12 8 9 6 5 6c0 4 2.4 6 7 6zM12 14c0-3 2.4-5 6-5 0 3.2-2 5-6 5z" fill={c} /></>),
   barn: (c) => (<><path d="M3 11 12 4l9 7v9H3z" fill={c} /><path d="M9 20v-6h6v6M9 14l6 6M15 14l-6 6" style={KOS} strokeWidth="1.3" fill="none" /></>),
 };
+// Where the middle of each drawing sits inside its 24 by 24 box, so an icon can be centred on what it shows rather than on its box.
+const GLYPH_CENTRE = { tractor: [11.9, 12.95], hill: [12, 13.5], cow: [12, 12.5], milk: [12, 12], wheat: [12, 13], carrot: [12, 12], hen: [12, 12.6], sheep: [12, 13], barn: [12, 12], sprout: [12, 13], apple: [12, 12.5] };
 export function Glyph({ name, colour = "currentColor", size = 22 }) {
   return <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" focusable="false">{G[name](colour)}</svg>;
 }
@@ -91,10 +93,16 @@ export function LandPatchwork({ farmed = 69, holdings, hectares, source }) {
         ))}
       </svg>
       <figcaption>
-        <span className="fm-land-key"><i className="fm-key fm-key-on" aria-hidden="true" /><b>{farmed}</b> of every 100 squares are farmed</span>
-        <span className="fm-land-key"><i className="fm-key" aria-hidden="true" /><b>{100 - farmed}</b> are not</span>
-        {source && <small>{source}</small>}
-        {(holdings || hectares) && <small>{[holdings && `${holdings} farm holdings`, hectares && `using ${hectares} hectares`].filter(Boolean).join(", ")}.</small>}
+        <ul className="fm-land-legend">
+          <li><i className="fm-key fm-key-on" aria-hidden="true" /><b>{farmed}</b><span>of every 100 squares are farmed</span></li>
+          <li><i className="fm-key" aria-hidden="true" /><b>{100 - farmed}</b><span>are not</span></li>
+        </ul>
+        {(source || holdings || hectares) && (
+          <div className="fm-land-notes">
+            {source && <small>{source}</small>}
+            {(holdings || hectares) && <small>{[holdings && `${holdings} farm holdings`, hectares && `using ${hectares} hectares`].filter(Boolean).join(", ")}.</small>}
+          </div>
+        )}
       </figcaption>
     </figure>
   );
@@ -181,7 +189,7 @@ export function PaymentRings({ rings, note }) {
                 <text x="60" y="63" textAnchor="middle" className="fm-ring-num">{r.share}%</text>
                 <text x="60" y="76" textAnchor="middle" className="fm-ring-sub">direct</text>
                 <text x="60" y="87" textAnchor="middle" className="fm-ring-sub">payments</text>
-                <g className="fm-ring-chip"><circle cx="60" cy="14" r="11" fill="var(--tc)" /><g transform="translate(50 4)"><Glyph name={r.icon} colour="#fff" size={20} /></g></g>
+                <g className="fm-ring-chip"><circle cx="60" cy="14" r="14.5" fill="var(--tc)" /><g transform={`translate(${51 - ((GLYPH_CENTRE[r.icon]?.[0] ?? 12) - 12) * 0.75} ${5 - ((GLYPH_CENTRE[r.icon]?.[1] ?? 12) - 12) * 0.75})`}><Glyph name={r.icon} colour="#fff" size={18} /></g></g>
               </svg>
               <figcaption>{r.label}</figcaption>
             </figure>
@@ -204,38 +212,40 @@ export function FundBar({ whole, part, wholeText, partText, partLabel, wholeLabe
   );
 }
 
-// ----- the inheritance tax limit as a fence across a line -----
-export function ReliefGate({ colour = "#7B5BD6" }) {
+// ----- the inheritance tax limit: the same bar of estate value, before and after, with a fence where the limit is, and the sum behind the 20% -----
+export function ReliefGate({ colour = "#6A4AC4" }) {
   const [ref, go] = useGo(0.3);
-  const W = 560; const H = 250; const L = 58; const B = 40; const T = 22; const maxV = 7; const maxR = 45;
-  const x = (v) => L + (v / maxV) * (W - L - 16);
-  const y = (r) => H - B - (r / maxR) * (H - B - T);
-  const after = `M${x(0)} ${y(ihtRate(0))} H${x(IHT.limit)} V${y(IHT.rateAbove)} H${x(maxV)}`;
+  const SPAN = 7; // the bars run from £0 to "£7m and beyond"
+  const pct = (v) => `${(v / SPAN) * 100}%`;
   return (
-    <figure ref={ref} className="fm-gate" data-go={go} style={{ "--tc": colour }}>
-      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`The effective inheritance tax rate on farm assets. Before 6 April 2026 it was 0% at any value. From 6 April 2026 it is 0% up to ${IHT.limit} million pounds per estate and ${IHT.rateAbove}% above that, against the normal ${IHT.full}%. A couple can pass on up to ${IHT.couple} million pounds.`}>
-        {[0, 20, 40].map((r) => (<g key={r}><line x1={L} x2={W - 16} y1={y(r)} y2={y(r)} className="fm-grid" /><text x={L - 8} y={y(r) + 4} textAnchor="end" className="fm-tick">{r}%</text></g>))}
-        {[0, 2.5, 5].map((v) => <text key={v} x={x(v)} y={H - B + 18} textAnchor="middle" className="fm-tick">{v === 0 ? "£0" : `£${v}m`}</text>)}
-        <line x1={L} x2={W - 16} y1={y(IHT.full)} y2={y(IHT.full)} className="fm-full" />
-        <text x={L + 6} y={y(IHT.full) - 7} className="fm-tick">Normal rate, 40%</text>
-        <path d={`M${x(0)} ${y(0)} H${x(maxV)}`} className="fm-before" />
-        <path d={after} className="fm-after" pathLength="1" />
-        <g className="fm-fence" transform={`translate(${x(IHT.limit)} 0)`}>
-          <line y1={y(IHT.rateAbove) - 6} y2={H - B} className="fm-post" />
-          <rect x="-17" y={y(0) - 27} width="34" height="3.4" rx="1.5" className="fm-slat" />
-          <rect x="-17" y={y(0) - 14} width="34" height="3.4" rx="1.5" className="fm-slat" />
-          {[-14, -5, 4, 12].map((dx) => <path key={dx} d={`M${dx} ${y(0)} V${y(0) - 28} l2.2 -4 l2.2 4 V${y(0)}z`} className="fm-slat" />)}
-          <text y={T - 6} textAnchor="middle" className="fm-flag">£2.5m limit per estate</text>
-        </g>
-        <g className="fm-couple" transform={`translate(${x(IHT.couple)} 0)`}><line y1={T + 12} y2={H - B} /><text y={T + 4} textAnchor="middle" className="fm-tick">A couple: £5m</text></g>
-        <text x={x(1.05)} y={y(0) - 12} textAnchor="middle" className="fm-lab fm-lab-a">No tax on the farm</text>
-        <text x={x(6.15)} y={y(IHT.rateAbove) - 12} textAnchor="middle" className="fm-lab fm-lab-b">20% above</text>
-      </svg>
-      <figcaption>
-        <span><i className="fm-key-before" aria-hidden="true" />Before 6 April 2026: full relief at any value</span>
-        <span><i className="fm-key-after" aria-hidden="true" />From 6 April 2026: full relief to the limit, half above it</span>
-        <small>Effective rates are our arithmetic from the figures above: 40% on half the value is 20%.</small>
-      </figcaption>
+    <figure ref={ref} className="fm-gate" data-go={go} style={{ "--tc": colour, "--lim": IHT.limit / SPAN }}>
+      <div className="fm-lanes" role="img" aria-label={`Inheritance tax on farm assets by the value of the estate. Before 6 April 2026: no tax at any value. From 6 April 2026: no tax up to ${IHT.limit} million pounds per estate, and ${IHT.rateAbove}% on the value above it, against the normal ${IHT.full}%. A couple can pass on up to ${IHT.couple} million pounds tax-free. The ${IHT.rateAbove}% is ${IHT.full}% on half the value.`}>
+        <div className="fm-lane-area">
+          <span className="fm-limit-flag">£{IHT.limit}m limit per estate</span>
+          <i className="fm-limit-line" aria-hidden="true" />
+          <div className="fm-lane" style={{ "--i": 0 }}>
+            <p className="fm-lane-head"><b>Before 6 April 2026</b><span>Full relief at any value</span></p>
+            <div className="fm-lane-bar"><span className="fm-seg fm-seg-free" style={{ flexBasis: "100%" }}><em>0% tax at any value</em></span></div>
+          </div>
+          <div className="fm-lane fm-lane-after" style={{ "--i": 1 }}>
+            <svg className="fm-fence" viewBox="0 0 40 30" aria-hidden="true" focusable="false"><path d="M3 27V9l3-5 3 5v18M16 27V9l3-5 3 5v18M29 27V9l3-5 3 5v18" /><path d="M1 13h38M1 21h38" /></svg>
+            <p className="fm-lane-head"><b>From 6 April 2026</b><span>Full relief up to the limit, half above it</span></p>
+            <div className="fm-lane-bar">
+              <span className="fm-seg fm-seg-free" style={{ flexBasis: pct(IHT.limit) }}><em>0% tax</em></span>
+              <span className="fm-seg fm-seg-tax" style={{ flexBasis: `calc(100% - ${pct(IHT.limit)})` }}><em>{IHT.rateAbove}% tax on the value above it</em></span>
+            </div>
+          </div>
+          <div className="fm-axis" aria-hidden="true">
+            {[0, IHT.limit, IHT.couple].map((v, i) => <span key={v} data-end={i === 0 ? "l" : undefined} style={{ left: pct(v) }}>{v === 0 ? "£0" : `£${v}m`}</span>)}
+            <b>value of the estate</b>
+          </div>
+          <div className="fm-couple-bracket" aria-hidden="true" style={{ width: pct(IHT.couple) }}><span>A couple: up to £{IHT.couple}m tax-free</span></div>
+        </div>
+        <div className="fm-sum" aria-hidden="true">
+          <span><b>{IHT.full}%</b>normal rate</span><i>×</i><span><b>½</b>of the value taxed, because relief is 50%</span><i>=</i><span className="fm-sum-res"><b>{IHT.rateAbove}%</b>above the limit</span>
+        </div>
+      </div>
+      <figcaption><small>Effective rates are our arithmetic from the figures above: 40% on half the value is 20%.</small></figcaption>
     </figure>
   );
 }
