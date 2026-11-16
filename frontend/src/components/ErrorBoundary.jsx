@@ -1,6 +1,7 @@
 import { Component } from "react";
 import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING } from "../theme";
 import { t } from "../lib/i18n";
+import { isStaleFileError, reloadForUpdate, clearSavedFiles } from "../lib/chunkReload";
 
 const REPO_ISSUES_URL = "https://github.com/Alfredrey64/mp-transparency-tracker/issues";
 
@@ -30,10 +31,44 @@ export class ErrorBoundary extends Component {
     // quietly break that promise. This is exactly what the browser console is
     // for; a visitor who wants to report it has the GitHub link below.
     console.error("Caught by ErrorBoundary:", error, info.componentStack);
+    // A page whose code was replaced by a newer publish is not a bug: fetch the new version once, by itself.
+    if (isStaleFileError(error)) reloadForUpdate();
   }
+
+  // `quiet`: for an optional extra (a footer, a dialog) whose own failure should not take anything else with it: it simply is not drawn.
 
   render() {
     if (!this.state.error) return this.props.children;
+    if (this.props.quiet) return null;
+
+    if (isStaleFileError(this.state.error)) {
+      return (
+        <div style={{ maxWidth: 640, margin: "0 auto", padding: PAGE_PADDING }}>
+          <div style={{ background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 14, padding: "28px 26px" }} role="status">
+            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 8 }}>{t("The site has been updated")}</div>
+            <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.6, marginBottom: 16 }}>
+              {t("A newer version was published while this page was open, so this page could not finish loading. Refreshing fetches the new version.")}
+            </div>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              <button
+                onClick={() => clearSavedFiles().then(() => window.location.reload())}
+                style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, padding: "9px 18px", borderRadius: 999, border: "none", background: "#1E4FB8", color: "#fff", cursor: "pointer" }}
+              >
+                {t("Refresh the page")}
+              </button>
+              {this.props.onGoHome && (
+                <button
+                  onClick={this.props.onGoHome}
+                  style={{ fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, padding: "9px 18px", borderRadius: 999, border: `1px solid ${COLORS.hairline}`, background: "transparent", color: COLORS.ink, cursor: "pointer" }}
+                >
+                  {t("Back to Overview")}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div style={{ maxWidth: 640, margin: "0 auto", padding: PAGE_PADDING }}>

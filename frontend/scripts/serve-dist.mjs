@@ -25,7 +25,10 @@ export function resolveFile(dist, urlPath) {
 
 export function serve(port, dist) {
   const server = http.createServer((req, res) => {
-    const file = resolveFile(dist, req.url) ?? path.join(dist, "index.html");
+    const found = resolveFile(dist, req.url);
+    // Like the live site: a built script or font that no longer exists is "not found", not the home page's HTML (which a browser rejects as a script, and a cache can keep).
+    if (!found && /^\/(assets|fonts)\//.test(req.url)) { res.writeHead(404, { "Content-Type": "text/plain" }); res.end("Not found"); return; }
+    const file = found ?? path.join(dist, "index.html");
     const type = TYPES[path.extname(file)] ?? "application/octet-stream";
     const hashed = /\/assets\//.test(file);
     const headers = { "Content-Type": type, "Cache-Control": hashed ? "public, max-age=31536000, immutable" : "no-cache" };

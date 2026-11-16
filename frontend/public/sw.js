@@ -6,9 +6,10 @@
 //   Figures         Supabase reads are network first, with a short wait; if the connection is slow or gone, the last copy is used
 //
 // Nothing here uses cookies or sends anything anywhere new. Uploads, posts and other requests are left alone.
-// Bump VERSION to throw away everything saved so far.
+// Bump VERSION to throw away everything saved so far (v2 did: v1 could keep the home page's HTML under the address of a script that had been replaced by a newer
+// publish, because the host answers a missing file with the home page, and that copy then failed every later load of the page that needed the script).
 
-const VERSION = "sp-v1";
+const VERSION = "sp-v2";
 const PAGES = `${VERSION}-pages`;
 const FILES = `${VERSION}-files`;
 const DATA = `${VERSION}-data`;
@@ -71,8 +72,12 @@ async function trim(cache, max) {
   for (const key of keys.slice(0, Math.max(0, keys.length - max))) await cache.delete(key);
 }
 
+// A script, style or data file that comes back as a web page is the host's answer for "no such file". It is never kept and never passed on as the file.
+const isPage = (response) => /text\/html/i.test(response?.headers?.get("Content-Type") ?? "");
+const gone = () => new Response("", { status: 404, statusText: "Not Found" });
+
 async function save(name, request, response, max) {
-  if (!response || response.status !== 200) return;
+  if (!response || response.status !== 200 || (name !== PAGES && isPage(response))) return;
   const cache = await caches.open(name);
   await cache.put(request, response);
   await trim(cache, max);
@@ -102,15 +107,18 @@ async function page(request, url) {
 
 async function cacheFirst(request, name, max) {
   const hit = await caches.match(request, { ignoreVary: true });
-  if (hit) return hit;
+  if (hit && !isPage(hit)) return hit;
   const response = await fetch(request);
+  if (isPage(response)) return gone();
   save(name, request, response.clone(), max);
   return response;
 }
 
 async function staleWhileRevalidate(request, name, max) {
-  const hit = await caches.match(request, { ignoreVary: true });
+  const found = await caches.match(request, { ignoreVary: true });
+  const hit = found && !isPage(found) ? found : null;
   const refresh = fetch(request).then((response) => {
+    if (isPage(response)) return gone();
     save(name, request, response.clone(), max);
     return response;
   });

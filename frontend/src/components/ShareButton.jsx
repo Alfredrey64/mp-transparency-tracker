@@ -1,6 +1,7 @@
 import { useState, lazy, Suspense } from "react";
 import { COLORS, FONT_BODY, readable } from "../theme";
 import { useT } from "../lib/useLang";
+import { ErrorBoundary } from "./ErrorBoundary";
 
 // The dialog and the canvas drawing code load only when someone clicks.
 const ShareDialog = lazy(() => import("./ShareDialog"));
@@ -32,9 +33,11 @@ export default function ShareButton({ getSpec, filename = "domesday-live", label
         {t(label)}
       </button>
       {open && (
-        <Suspense fallback={null}>
-          <ShareDialog getSpec={getSpec} filename={filename} returnFocusTo={open.opener} onClose={() => setOpen(null)} />
-        </Suspense>
+        <ErrorBoundary quiet>
+          <Suspense fallback={null}>
+            <ShareDialog getSpec={getSpec} filename={filename} returnFocusTo={open.opener} onClose={() => setOpen(null)} />
+          </Suspense>
+        </ErrorBoundary>
       )}
     </>
   );

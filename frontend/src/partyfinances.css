@@ -47,34 +47,41 @@
   .pf-sum { flex: 1; }
 }
 
-/* the donors: a plain list, nothing tinted or selected-looking */
-.pf-donors { list-style: none; margin: 0; padding: 4px 22px 8px; max-height: min(70vh, 560px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
-.pf-donor { display: grid; gap: 8px; padding: 16px 0; }
-.pf-donor + .pf-donor { border-top: 1px solid var(--c-hairline); }
-.pf-d-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
-.pf-d-who { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; min-width: 0; }
-.pf-d-name { font: 700 17px/1.3 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); overflow-wrap: anywhere; }
+/* the donors: one card each, with a round badge of initials and its rank, the amount and share at the right, then the bar, what is known about them, and the register facts in one strip */
+.pf-donors { list-style: none; margin: 0; padding: 16px 20px 20px; display: grid; gap: 12px; max-height: min(72vh, 620px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.pf-donor { display: grid; grid-template-columns: 48px minmax(0, 1fr); grid-template-areas: "av top" ". body"; gap: 4px 16px; align-items: center; padding: 16px 18px 18px; border: 1px solid var(--c-hairline); border-radius: 16px; background: var(--c-paper-card); }
+.pf-d-av { grid-area: av; position: relative; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: color-mix(in srgb, var(--c) 16%, var(--c-paper-card)); border: 1.5px solid color-mix(in srgb, var(--c) 45%, transparent); font: 700 16px/1 "Figures", "Newsreader", Georgia, serif; letter-spacing: 0.02em; color: var(--c-ink); }
+.pf-d-av i { position: absolute; right: -5px; bottom: -4px; min-width: 20px; height: 20px; padding: 0 5px; box-sizing: border-box; display: grid; place-items: center; border-radius: 999px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); font: 700 11px/1 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; font-variant-numeric: lining-nums tabular-nums; color: var(--c-ink-soft); }
+.pf-d-top { grid-area: top; display: flex; align-items: center; justify-content: space-between; gap: 6px 18px; min-width: 0; }
+.pf-d-who { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; min-width: 0; }
+.pf-d-name { font: 700 19px/1.25 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); overflow-wrap: anywhere; }
 .pf-d-tag { flex-shrink: 0; padding: 3px 10px; border-radius: 999px; font: 800 11px/1.3 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.05em; text-transform: uppercase; }
 .pf-d-amt { display: grid; justify-items: end; gap: 1px; flex-shrink: 0; text-align: right; }
-.pf-d-amt b { font: 700 18px/1.2 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; color: var(--c-ink); white-space: nowrap; }
+.pf-d-amt b { font: 700 20px/1.2 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; color: var(--c-ink); white-space: nowrap; }
 .pf-d-amt small { font: 600 12px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.pf-d-bar { display: block; height: 5px; border-radius: 3px; background: color-mix(in srgb, var(--c) 14%, var(--c-paper-sunk, #eef1f6)); overflow: hidden; }
+.pf-d-body { grid-area: body; display: grid; gap: 12px; min-width: 0; margin-top: 6px; }
+.pf-d-bar { display: block; height: 6px; border-radius: 3px; background: color-mix(in srgb, var(--c) 14%, var(--c-paper-sunk, #eef1f6)); overflow: hidden; }
 .pf-d-bar u { display: block; height: 100%; border-radius: 3px; background: var(--c); text-decoration: none; }
-.pf-d-desc { margin: 2px 0 0; max-width: 78ch; font: 400 14.5px/1.65 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.pf-d-desc a { color: var(--c-brand-deep, var(--c-brand)); font-weight: 700; text-underline-offset: 2px; }
-/* what the register records for each donor */
-.pf-d-more { display: grid; gap: 8px; margin-top: 2px; }
-.pf-d-facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; }
-.pf-d-facts > div { display: grid; gap: 1px; padding: 7px 12px 8px; border-radius: 12px; background: var(--c-paper-sunk, color-mix(in srgb, var(--c) 6%, var(--c-paper-card))); border: 1px solid var(--c-hairline); }
+.pf-d-desc { margin: 0; max-width: 78ch; padding: 11px 14px 12px; border-left: 3px solid var(--c); border-radius: 4px 12px 12px 4px; background: color-mix(in srgb, var(--c) 6%, var(--c-paper-card)); font: 400 14.5px/1.65 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.pf-d-src { display: inline-block; margin-left: 8px; padding: 1px 9px; border: 1px solid var(--c-hairline); border-radius: 999px; background: var(--c-paper-card); font: 700 12px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-brand-deep, var(--c-brand)); text-decoration: none; white-space: nowrap; }
+.pf-d-src:hover { border-color: var(--c-brand-deep, var(--c-brand)); }
+.pf-d-more { display: grid; gap: 10px; }
+.pf-d-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 1px; margin: 0; border: 1px solid var(--c-hairline); border-radius: 12px; overflow: hidden; background: var(--c-hairline); }
+.pf-d-facts > div { display: grid; gap: 2px; padding: 9px 14px 10px; background: var(--c-paper-card); }
 .pf-d-facts dt { font: 700 10.5px/1.2 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.06em; text-transform: uppercase; color: var(--c-ink-soft); }
-.pf-d-facts dd { margin: 0; font: 700 14.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; font-variant-numeric: lining-nums tabular-nums; color: var(--c-ink); }
+.pf-d-facts dd { margin: 0; font: 700 15px/1.3 "Figures", "Public Sans", system-ui, sans-serif; font-variant-numeric: lining-nums tabular-nums; color: var(--c-ink); }
 .pf-d-also { margin: 0; max-width: 78ch; font: 400 14px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .pf-d-also b { font-weight: 700; color: var(--c-ink); }
-.pf-d-links { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; font: 700 13.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; }
-.pf-d-links a { color: var(--c-brand-deep, var(--c-brand)); text-underline-offset: 2px; }
+.pf-d-links { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; }
+.pf-d-links a { display: inline-flex; align-items: center; padding: 7px 14px; border: 1px solid var(--c-hairline); border-radius: 999px; font: 700 13px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-brand-deep, var(--c-brand)); text-decoration: none; }
+.pf-d-links a:hover { border-color: var(--c-brand-deep, var(--c-brand)); background: color-mix(in srgb, var(--c-brand) 6%, transparent); }
 @media (max-width: 560px) {
-  .pf-donors { padding: 2px 16px 6px; }
-  .pf-d-top { flex-direction: column; gap: 6px; }
+  .pf-donors { padding: 12px 12px 14px; }
+  .pf-donor { grid-template-areas: "av top" "body body"; grid-template-columns: 42px minmax(0, 1fr); padding: 14px 14px 16px; gap: 4px 12px; }
+  .pf-d-av { width: 42px; height: 42px; font-size: 14px; }
+  .pf-d-top { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .pf-d-name { font-size: 17.5px; }
   .pf-d-amt { justify-items: start; text-align: left; grid-auto-flow: column; align-items: baseline; gap: 8px; }
+  .pf-d-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (prefers-reduced-motion: reduce) { .pf-card, .pf-chev { transition: none; } }

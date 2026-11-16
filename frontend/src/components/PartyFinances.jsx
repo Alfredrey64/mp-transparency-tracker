@@ -56,6 +56,14 @@ const NEUTRAL_TAG_COLOR = "#8A94A3";
 
 // What the register itself records for one donor in one party's box: the gifts, their dates, the largest, how they were made, who else the donor gave to, and links to check the
 // record. All of it is worked out from the donation rows, so it is there for every donor and follows the data.
+// Two letters for the round badge beside a donor: first and last name for a person, the first two words for anything else (a company, a state fund).
+function initials(name, status) {
+  const words = name.replace(/[^\p{L}\s'-]/gu, " ").split(/\s+/).filter((w) => w && !/^(the|of|and|ltd|limited|plc|llp)$/i.test(w));
+  if (!words.length) return "?";
+  const pick = status === "Individual" && words.length > 1 ? [words[0], words[words.length - 1]] : words.slice(0, 2);
+  return pick.map((w) => w[0].toUpperCase()).join("");
+}
+
 function DonorFacts({ d }) {
   const f = d.facts;
   if (!f) return null;
@@ -126,7 +134,7 @@ function PartyCard({ p, i, isOpen, onToggle }) {
         {isOpen && (
           <motion.div id={panelId} initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={FOLD} style={{ overflow: "hidden" }}>
             <ol className="pf-donors">
-              {p.donors.map((d) => {
+              {p.donors.map((d, idx) => {
                 const tag = getPartyDonorSector(d.name);
                 const profile = getDonorProfile(d.name);
                 const description = profile?.description ?? (d.status === "Public Fund" ? publicFundDescription(d.name) : null);
@@ -134,21 +142,24 @@ function PartyCard({ p, i, isOpen, onToggle }) {
                 const share = p.total > 0 ? (d.total / p.total) * 100 : 0;
                 return (
                   <li key={d.name} className="pf-donor">
+                    <span className="pf-d-av" aria-hidden="true">{initials(d.name, d.status)}<i>{idx + 1}</i></span>
                     <div className="pf-d-top">
                       <span className="pf-d-who">
                         <span className="pf-d-name">{d.name}</span>
                         <span className="pf-d-tag" style={{ color: readable(badgeColor), background: `${badgeColor}1a` }}>{d.status}</span>
                       </span>
-                      <span className="pf-d-amt"><b>£{Math.round(d.total).toLocaleString()}</b><small>{share < 1 ? "under 1%" : `${Math.round(share)}%`} of its total</small></span>
+                      <span className="pf-d-amt"><b>£{Math.round(d.total).toLocaleString()}</b><small>{share < 1 ? "under 1%" : `${Math.round(share)}%`} of the party's total</small></span>
                     </div>
-                    <i className="pf-d-bar" aria-hidden="true"><u style={{ width: `${Math.max(1.5, Math.min(100, share))}%` }} /></i>
-                    {description && (
-                      <p className="pf-d-desc">
-                        {description}
-                        {profile?.sourceUrl && <> · <a href={profile.sourceUrl} target="_blank" rel="noreferrer">source ↗</a></>}
-                      </p>
-                    )}
-                    <DonorFacts d={d} />
+                    <div className="pf-d-body">
+                      <i className="pf-d-bar" aria-hidden="true"><u style={{ width: `${Math.max(1.5, Math.min(100, share))}%` }} /></i>
+                      {description && (
+                        <p className="pf-d-desc">
+                          {description}
+                          {profile?.sourceUrl && <a className="pf-d-src" href={profile.sourceUrl} target="_blank" rel="noreferrer">Source ↗</a>}
+                        </p>
+                      )}
+                      <DonorFacts d={d} />
+                    </div>
                   </li>
                 );
               })}

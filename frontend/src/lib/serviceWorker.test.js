@@ -136,4 +136,16 @@ describe("service worker", () => {
     await done;
     expect(await sw.caches.keys()).not.toContain("old-version-files");
   });
+
+  it("never keeps or passes on a web page given in place of a built file (the host's answer for a script that was replaced)", async () => {
+    const html = () => Promise.resolve(new Response("<!doctype html>home", { status: 200, headers: { "Content-Type": "text/html; charset=utf-8" } }));
+    const fetchSpy = vi.fn(html);
+    const sw = boot(fetchSpy);
+    const first = await sw.fire(sw.request("/assets/gone-1.js"));
+    expect(first.response.status).toBe(404);
+    await tick();
+    // and so it asks again next time, instead of being handed the page it kept
+    await sw.fire(sw.request("/assets/gone-1.js"));
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+  });
 });

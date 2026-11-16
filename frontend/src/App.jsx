@@ -695,16 +695,16 @@ export default function App() {
             </ErrorBoundary>
             <AfterSettle root={mainRef} key={`${view}-${selected?.id ?? ""}`}>
               {!selected && view !== "home" && view !== "teacher" && (
-                <Suspense fallback={null}><SectionNav view={view} onNavigate={handleNavigate} /></Suspense>
+                <ErrorBoundary quiet><Suspense fallback={null}><SectionNav view={view} onNavigate={handleNavigate} /></Suspense></ErrorBoundary>
               )}
-              {view !== "teacher" && <Suspense fallback={null}><PageFoot view={view} name={selected?.name} /></Suspense>}
+              {view !== "teacher" && <ErrorBoundary quiet><Suspense fallback={null}><PageFoot view={view} name={selected?.name} /></Suspense></ErrorBoundary>}
             </AfterSettle>
         </main>
       </div>
       <SiteFooter onNavigate={handleNavigate} />
-      {listening && <Suspense fallback={null}><ReadAloud key={`${view}-${selected?.id ?? ""}`} onClose={() => setListening(false)} /></Suspense>}
+      {listening && <ErrorBoundary quiet><Suspense fallback={null}><ReadAloud key={`${view}-${selected?.id ?? ""}`} onClose={() => setListening(false)} /></Suspense></ErrorBoundary>}
       <BackToTop />
-      <Suspense fallback={null}><PageTools key={`${view}-${selected?.id ?? ""}`} view={view} selected={Boolean(selected)} /></Suspense>
+      <ErrorBoundary quiet><Suspense fallback={null}><PageTools key={`${view}-${selected?.id ?? ""}`} view={view} selected={Boolean(selected)} /></Suspense></ErrorBoundary>
     </div>
     </GuideKeyContext.Provider>
     </MotionConfig>

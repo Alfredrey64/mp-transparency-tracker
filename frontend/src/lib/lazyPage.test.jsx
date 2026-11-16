@@ -20,6 +20,16 @@ describe("lazyPage", () => {
     await preloadPage(loader);
     expect(calls).toBe(2);
   });
+  it("keeps showing a failed page as failed for a moment instead of asking again at once", async () => {
+    let calls = 0;
+    const loader = () => { calls++; return Promise.reject(new Error("gone")); };
+    const Page = lazyPage(loader);
+    const entry = Page; // the same function renders from the shared entry
+    expect(entry).toBe(lazyPage(loader));
+    await preloadPage(loader); // first ask
+    await new Promise((r) => setTimeout(r, 0));
+    expect(calls).toBe(1);
+  });
   it("preloading something that is not a page is harmless", async () => {
     await expect(preloadPage(undefined)).resolves.toBeUndefined();
   });

@@ -33,4 +33,9 @@ describe("serve-dist", () => {
     expect(res.headers.get("cache-control")).toMatch(/immutable/);
     expect(res.headers.get("content-type")).toBe("text/javascript");
   });
+  it("answers a built file that no longer exists with 404, never the home page's HTML", async () => {
+    const res = await fetch(`${base}/assets/gone-123.js`);
+    expect(res.status).toBe(404);
+    expect(await res.text()).not.toContain("home");
+  });
 });

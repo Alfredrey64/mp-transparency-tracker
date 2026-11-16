@@ -12,6 +12,7 @@ import GlobalSearch from "./GlobalSearch";
 import { IconSearch, IconStar, IconMethodology, IconSettings, IconShield, IconBook, IconHistory, IconClassroom, IconAccess } from "./icons";
 import { MENU, DRAWER_FOOT, menuKeyFor, pathFor } from "../data/siteMenu";
 import { hubLead } from "../data/sidebarSections";
+import { ErrorBoundary } from "./ErrorBoundary";
 
 const loadAccessibility = () => import("./AccessibilityDialog");
 const AccessibilityDialog = lazy(loadAccessibility);
@@ -427,7 +428,7 @@ export default function SiteHeader({ activeView: viewHere, onNavigate, onSelectP
           onSelectPolitician={onSelectPolitician}
         />
       )}
-      {access && <Suspense fallback={null}><AccessibilityDialog onClose={() => { setAccess(false); accessButton.current?.focus(); }} returnFocusRef={accessButton} onNavigate={onNavigate} /></Suspense>}
+      {access && <ErrorBoundary quiet><Suspense fallback={null}><AccessibilityDialog onClose={() => { setAccess(false); accessButton.current?.focus(); }} returnFocusRef={accessButton} onNavigate={onNavigate} /></Suspense></ErrorBoundary>}
       {drawer && <Drawer activeView={activeView} onNavigate={onNavigate} onClose={() => { setDrawer(false); menuButton.current?.focus(); }} onSearch={() => { setDrawer(false); setSearching(true); }} />}
     </>
   );
