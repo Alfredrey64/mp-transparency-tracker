@@ -235,8 +235,8 @@ export default function GeneralElection2024() {
             <p style={para}>Seats won by each party at the two elections. The 2019 figures use the seat boundaries of the time. The boundaries were redrawn for 2024, so a few seats are not exactly like for like.</p>
             <ul style={{ listStyle: "none", margin: "14px 0 0", padding: 0 }}>
               {view.changes.map((r) => (
-                <li key={r.party} style={{ display: "grid", gridTemplateColumns: "1fr auto auto auto", alignItems: "baseline", gap: "4px 16px", padding: "10px 0", borderTop: `1px solid ${COLORS.hairline}`, fontFamily: FONT_BODY, fontSize: 14 }}>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 8, color: COLORS.ink, fontWeight: 600 }}>
+                <li key={r.party} className="ge-change" style={{ padding: "10px 0", borderTop: `1px solid ${COLORS.hairline}`, fontFamily: FONT_BODY, fontSize: 14 }}>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 8, color: COLORS.ink, fontWeight: 600, minWidth: 0 }}>
                     <span aria-hidden="true" style={{ width: 10, height: 10, borderRadius: "50%", background: partyColourByName(r.party), flexShrink: 0 }} />
                     {shortName(r.party)}
                   </span>

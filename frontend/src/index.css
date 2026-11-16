@@ -548,6 +548,9 @@ a[target="_blank"]::after { content: "" / " (opens in a new tab)"; }
 @keyframes dotIn { from { opacity: 0; transform: scale(0.2); } to { opacity: 1; transform: none; } }
 .hemi-dot { transform-box: fill-box; transform-origin: center; animation: dotIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) backwards; transition: opacity 0.25s ease; }
 @keyframes geFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+/* One row per party on the "compared with 2019" list: name, then the two seat counts and the change. On a narrow screen the name takes a line of its own so no figure is pushed past the edge. */
+.ge-change { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; align-items: baseline; gap: 4px 16px; }
+@media (max-width: 520px) { .ge-change { grid-template-columns: auto 1fr auto; gap: 4px 14px; } .ge-change > :first-child { grid-column: 1 / -1; } .ge-change > :nth-child(3) { justify-self: start; } }
 .ge-fade { animation: geFade 0.45s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
 @keyframes geFadeIn { from { opacity: 0; } to { opacity: 1; } }
 .ge-fadein { animation: geFadeIn 0.5s ease-out backwards; }

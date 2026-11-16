@@ -59,9 +59,10 @@ test("the date of birth box gives the State Pension age", async ({ page }) => {
 test("the population chart can show shares", async ({ page }) => {
   await page.goto("/ageing/people");
   const panel = card(page, "h-agepo-stages");
-  await expect(panel).toContainText("67.6 million people");
+  // The projection is rebuilt when the ONS publishes a new edition, so the test checks the shape of the wording, not the figures.
+  await expect(panel).toContainText(/\d\d\.\d million people/);
   await panel.getByRole("button", { name: "Share of the population" }).click();
-  await expect(panel).toContainText("Under 16 18.3%");
+  await expect(panel).toContainText(/Under 16 \d\d\.\d%/);
 });
 
 test("the cost tool follows the slider and the target buttons", async ({ page }) => {
