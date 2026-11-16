@@ -44,12 +44,12 @@
 @keyframes ec-drop { from { transform: translateY(-46px); opacity: 0; } }
 
 /* ---- Taxes ---- */
-.ec-pipe { fill: none; stroke: var(--lamp); stroke-width: 1.6; stroke-dasharray: 2 7; stroke-linecap: round; opacity: 0.45; }
+.ec-stream { stroke-dasharray: 1; stroke-dashoffset: 0; animation: ec-draw 1.5s cubic-bezier(0.4, 0.1, 0.2, 1) calc(0.3s + var(--i) * 0.18s) backwards; }
+.ec-pulse { fill: none; stroke: #F3C65A; stroke-width: 2; opacity: 0; transform-box: fill-box; transform-origin: center; animation: ec-pulse 1.6s ease-out var(--d) backwards; }
+@keyframes ec-pulse { from { opacity: 0.85; transform: scale(1); } to { opacity: 0; transform: scale(2); } }
 .ec-flow { fill: #F7D675; stroke: #B88A2C; stroke-width: 1; offset-distance: 0%; opacity: 0; animation: ec-travel 2.9s linear var(--d) 1 backwards; }
-.ec-ribbon { fill: none; stroke: var(--lamp); stroke-width: 10; stroke-linecap: round; opacity: 0.1; }
 /* three coins per stream, each starting a beat after the last, so the streams run for a few seconds and then rest */
 @keyframes ec-travel { 0% { offset-distance: 0%; opacity: 0; } 12% { opacity: 1; } 88% { opacity: 1; } 100% { offset-distance: 100%; opacity: 0; } }
-.ec-node-ring { fill: none; stroke: var(--a); stroke-width: 2.4; }
 
 /* ---- Business ---- */
 .ec-lorry { transform: translateX(380px); animation: ec-drive 7.5s cubic-bezier(0.3, 0.1, 0.25, 1) 0.4s backwards; }
@@ -85,5 +85,3 @@ html[data-calm] .ec-flow, html[data-calm] .ec-puff, html[data-calm] .ec-coin { o
 @keyframes ec-raise { from { transform: translateY(20px); } }
 .ec-vwheel { animation: ec-vturn 3.4s cubic-bezier(0.3, 0.1, 0.2, 1) 0.4s backwards; }
 @keyframes ec-vturn { from { transform: rotate(-540deg); } }
-.ec-arrive { opacity: 0; animation: ec-arrive 2.6s ease-out var(--d) backwards; }
-@keyframes ec-arrive { 0% { opacity: 0; } 35% { opacity: 0.32; } 100% { opacity: 0; } }

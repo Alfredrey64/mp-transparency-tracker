@@ -205,83 +205,62 @@ export function FinanceScene() {
   );
 }
 
-// ---------- Taxes: the Treasury's vault door at the centre, coins streaming in from pay, shops, homes and fuel and out to hospitals, schools, roads and defence ----------
-// Kept well inside the picture (the band crops its ends on narrower screens) and evenly spaced either side of the vault.
-const SRC = [250, 366, 482, 598];
-const SNK = [842, 958, 1074, 1190];
-const inRibbon = (x) => `M${x} 124C${x} 58 540 52 652 108`;
-const outRibbon = (x) => `M788 108C900 52 ${x} 58 ${x} 124`;
-// The places money comes from and goes to are drawn in light tones so they stand out from the dark band: a pay packet, a shop, a home and a petrol pump going in; a hospital, a school,
-// a bridge and a gatehouse coming out.
-const GLASS = { fill: "var(--a)", opacity: 0.55 };
-function Source({ x, kind }) {
+// ---------- Taxes: money is collected from four everyday sources on the left, passes through the Treasury's coin at the centre and is spent on four public services on the right ----------
+// One style throughout: round badges with a single-line icon, and soft streams that join them to the centre. Nothing here is drawn to scale or stands for a figure.
+const SRC = [262, 372, 482, 592];
+const SNK = SRC.map((x) => 1440 - x).reverse();
+const ENTRY = [80, 93, 107, 120];
+const HUB = { x: 720, y: 100 };
+const inStream = (x, i) => `M${x} 142C${x} 92 ${x + (HUB.x - x) * 0.55} ${ENTRY[i]} ${HUB.x - 20} ${ENTRY[i]}`;
+const outStream = (x, i) => `M${HUB.x + 20} ${ENTRY[3 - i]}C${x - (x - HUB.x) * 0.55} ${ENTRY[3 - i]} ${x} 92 ${x} 142`;
+const ICONS = {
+  pay: <><rect x="-9" y="-5.5" width="18" height="11" rx="1.8" /><circle r="2.6" /><path d="M-5.6 -2v4M5.6 -2v4" /></>,
+  shop: <><path d="M-7 -3h14l-1 11h-12z" /><path d="M-3.5 -3v-2.2a3.5 3.5 0 0 1 7 0V-3" /></>,
+  home: <><path d="M-9 1 0 -8 9 1" /><path d="M-6 -1.5V8h12V-1.5" /><path d="M-2 8V3h4v5" /></>,
+  fuel: <path d="M0 -9C5 -2 7 1 7 3.5a7 7 0 0 1-14 0C-7 1 -5 -2 0 -9z" />,
+  health: <path d="M-3 -9h6v6h6v6h-6v6h-6v-6h-6v-6h6z" />,
+  school: <><path d="M-10 -2 0 -7 10 -2 0 3z" /><path d="M-5 .5v5c0 2.2 10 2.2 10 0v-5" /><path d="M10 -2v7" /></>,
+  bus: <><rect x="-8" y="-8" width="16" height="13" rx="2.4" /><path d="M-8 -2h16M-5 5v3M5 5v3" /></>,
+  shield: <path d="M0 -9 8 -6v6c0 5-4 8-8 10-4-2-8-5-8-10v-6z" />,
+};
+function Badge({ x, icon, out, i }) {
   return (
-    <g transform={`translate(${x} 190) scale(1.28)`}>
-      {kind === 0 && <g><rect x="-27" y="-36" width="54" height="36" rx="4" fill="url(#tx-lt)" stroke="var(--a)" strokeWidth="1.4" /><path d="M-27 -36 0 -15 27 -36" fill="none" stroke="var(--a)" strokeWidth="2" /><circle cx="0" cy="-13" r="9" fill="#F3C65A" stroke="#B88A2C" /><path transform="translate(0 -13)" d={POUND} fill="none" stroke="#7A5A10" strokeWidth="1.3" strokeLinecap="round" /></g>}
-      {kind === 1 && <g><rect x="-28" y="-44" width="56" height="44" rx="2" fill="url(#tx-lt)" /><path d="M-32 -44h64l-6 14h-52z" className="hs-awn-a" /><path d="M-16 -44h6l-2 14h-6zM2 -44h6l-2 14h-6zM20 -44h6l-2 14h-6z" fill="#fff" opacity=".85" /><rect x="-22" y="-26" width="26" height="20" rx="2" {...GLASS} /><rect x="10" y="-26" width="12" height="26" rx="2" fill="var(--s2)" /></g>}
-      {kind === 2 && <g><rect x="-24" y="-30" width="48" height="30" fill="url(#tx-lt)" /><path d="M-30 -30 0 -54 30 -30z" fill="var(--a)" /><rect x="12" y="-54" width="7" height="14" fill="var(--s2)" /><rect x="-16" y="-22" width="14" height="14" rx="2" {...GLASS} /><rect x="6" y="-22" width="12" height="22" rx="2" fill="var(--s2)" /></g>}
-      {kind === 3 && <g><rect x="-13" y="-46" width="26" height="46" rx="4" fill="url(#tx-lt)" /><rect x="-9" y="-40" width="18" height="12" rx="2" fill="var(--s2)" /><rect x="-6" y="-37" width="12" height="6" rx="1" fill="#FFD98A" /><rect x="-16" y="-4" width="32" height="4" rx="2" fill="var(--a)" /><path d="M13 -34h5q6 0 6 6v18" fill="none" stroke="var(--a)" strokeWidth="2.6" strokeLinecap="round" /></g>}
+    <g transform={`translate(${x} 160)`}>
+      {out && <circle className="ec-pulse" r="19" style={{ "--d": `${3.1 + i * 0.45}s` }} />}
+      <circle r="19" fill="var(--s2)" stroke={out ? "#F3C65A" : "var(--lamp)"} strokeWidth="1.5" opacity=".98" />
+      <g fill="none" stroke={out ? "#FFE6A8" : "var(--lamp)"} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">{ICONS[icon]}</g>
     </g>
   );
 }
-const crenels = (x0, y, n, step, w = 4) => Array.from({ length: n }, (_, i) => <rect key={i} x={x0 + i * step} y={y} width={w} height="6" fill="url(#tx-lt)" />);
-function Sink({ x, kind, i }) {
-  return (
-    <g transform={`translate(${x} 190) scale(1.28)`}>
-      <ellipse className="ec-arrive" cx="0" cy="-22" rx="52" ry="40" fill="#F3C65A" style={{ "--d": `${3.4 + i * 0.5}s` }} />
-      {/* a hospital: a wide ward block with a taller centre, a red cross and a door */}
-      {kind === 0 && <g><rect x="-34" y="-40" width="68" height="40" rx="2" fill="url(#tx-lt)" /><rect x="-12" y="-56" width="24" height="18" rx="2" fill="url(#tx-lt)" /><path d="M-3 -53h6v5h5v6h-5v5h-6v-5h-5v-6h5z" fill="#E0524A" /><rect x="-28" y="-32" width="10" height="9" rx="1" {...GLASS} /><rect x="18" y="-32" width="10" height="9" rx="1" {...GLASS} /><rect x="-28" y="-18" width="10" height="9" rx="1" {...GLASS} /><rect x="18" y="-18" width="10" height="9" rx="1" {...GLASS} /><rect x="-6" y="-16" width="12" height="16" rx="1" fill="var(--s2)" /></g>}
-      {/* a school: a hall with a pitched roof, a clock, a flag and a door */}
-      {kind === 1 && <g><path d="M-34 0v-30h68v30z" fill="url(#tx-lt)" /><path d="M-38 -30 0 -52 38 -30z" fill="var(--a)" /><circle cx="0" cy="-36" r="7.5" fill="#fff" stroke="var(--s2)" strokeWidth="1.4" /><path d="M0 -41v5h4" stroke="var(--s2)" strokeWidth="1.5" fill="none" strokeLinecap="round" /><rect x="-27" y="-22" width="10" height="12" rx="1" {...GLASS} /><rect x="17" y="-22" width="10" height="12" rx="1" {...GLASS} /><rect x="-5" y="-16" width="10" height="16" rx="1" fill="var(--s2)" /><path d="M0 -52V-66" stroke="var(--s2)" strokeWidth="1.6" /><path d="M0 -66h13l-3.5 4 3.5 4H0z" fill="var(--a)" /></g>}
-      {/* a suspension bridge: two towers, a sagging cable, hangers and a deck carried on arches */}
-      {kind === 2 && <g>
-        <rect x="-42" y="-17" width="84" height="17" fill="url(#tx-lt)" />
-        {[-26, 0, 26].map((cx) => <path key={cx} d={`M${cx - 9} 0V-6a9 9 0 0 1 18 0V0z`} fill="var(--s2)" opacity=".6" />)}
-        <rect x="-44" y="-24" width="88" height="7" rx="1.5" fill="var(--a)" />
-        <path d="M-44 -24Q-34 -30 -23.5 -58M23.5 -58Q34 -30 44 -24M-23.5 -58Q0 -14 23.5 -58" fill="none" stroke="#DCE9FA" strokeWidth="1.8" strokeLinecap="round" />
-        <path d="M-12 -24V-42M-4 -24V-37M4 -24V-37M12 -24V-42" stroke="#DCE9FA" strokeWidth="1.2" />
-        <rect x="-26" y="-60" width="5" height="38" rx="1" fill="#C6D9F2" /><rect x="21" y="-60" width="5" height="38" rx="1" fill="#C6D9F2" />
-        <path d="M-44 -24H44" stroke="#FFD98A" strokeWidth="1.2" strokeDasharray="5 6" opacity=".9" transform="translate(0 3.5)" />
-      </g>}
-      {/* a gatehouse for defence: a keep and two towers with battlements, a shield over the arched door, a flag */}
-      {kind === 3 && <g>
-        <rect x="-38" y="-40" width="18" height="40" fill="url(#tx-lt)" /><rect x="20" y="-40" width="18" height="40" fill="url(#tx-lt)" />
-        {crenels(-38, -46, 3, 7)}{crenels(20, -46, 3, 7)}
-        <rect x="-19" y="-54" width="38" height="54" fill="url(#tx-lt)" />
-        {crenels(-19, -60, 5, 9)}
-        <path d="M-8 0V-12a8 8 0 0 1 16 0V0z" fill="var(--s2)" />
-        <path d="M-8 -50h16v10c0 6-5 9-8 11-3-2-8-5-8-11z" fill="var(--a)" /><path d="M0 -46l1.8 4h4.2l-3.4 2.6 1.3 4-3.9-2.5-3.9 2.5 1.3-4L-6 -42h4.2z" fill="#FFE6A8" />
-        <rect x="-33" y="-30" width="3.4" height="9" rx="1" fill="var(--s2)" opacity=".6" /><rect x="29.6" y="-30" width="3.4" height="9" rx="1" fill="var(--s2)" opacity=".6" />
-        <path d="M0 -60V-78" stroke="var(--s2)" strokeWidth="1.6" /><path d="M0 -78h15l-4 4.5 4 4.5H0z" fill="var(--a)" />
-      </g>}
-    </g>
-  );
-}
+const IN_ICONS = ["pay", "shop", "home", "fuel"];
+const OUT_ICONS = ["bus", "school", "health", "shield"];
 export function TaxScene() {
   return (
     <Scene kind="taxes">
       <Defs id="tx" />
+      <defs>
+        <linearGradient id="tx-in" gradientUnits="userSpaceOnUse" x1="240" y1="0" x2="700" y2="0"><stop offset="0" stopColor="#F2F6FF" stopOpacity=".12" /><stop offset="1" stopColor="#F2F6FF" stopOpacity=".6" /></linearGradient>
+        <linearGradient id="tx-out" gradientUnits="userSpaceOnUse" x1="740" y1="0" x2="1200" y2="0"><stop offset="0" stopColor="#FFE6A8" stopOpacity=".6" /><stop offset="1" stopColor="#FFE6A8" stopOpacity=".12" /></linearGradient>
+      </defs>
       <rect width="1440" height="200" fill="url(#tx-glow)" />
-      <g className="hs-2">{BACK.map((b, i) => <rect key={i} x={b.x} y={200 - b.h * 0.55} width={b.w} height={b.h * 0.55} />)}</g>
-      {SRC.map((x) => <path key={`i${x}`} d={inRibbon(x)} className="ec-ribbon" />)}
-      {SNK.map((x) => <path key={`o${x}`} d={outRibbon(x)} className="ec-ribbon" />)}
-      {SRC.map((x) => <path key={`ip${x}`} d={inRibbon(x)} className="ec-pipe" />)}
-      {SNK.map((x) => <path key={`op${x}`} d={outRibbon(x)} className="ec-pipe" />)}
-      {SRC.map((x, i) => [0, 1, 2].map((k) => <circle key={`ci${i}${k}`} r="5.6" className="ec-flow" style={{ offsetPath: `path("${inRibbon(x)}")`, "--d": `${0.4 + i * 0.45 + k * 1.5}s` }} />))}
-      {SNK.map((x, i) => [0, 1, 2].map((k) => <circle key={`co${i}${k}`} r="5.6" className="ec-flow" style={{ offsetPath: `path("${outRibbon(x)}")`, "--d": `${1.5 + i * 0.45 + k * 1.5}s` }} />))}
-      {SRC.map((x, i) => <Source key={x} x={x} kind={i} />)}
-      {SNK.map((x, i) => <Sink key={x} x={x} kind={i} i={i} />)}
-      {/* the vault door: bolts, a spoked wheel that turns once, and a gold boss */}
-      <g transform="translate(720 112) scale(1.12)">
-        <circle r="84" fill="url(#tx-sun)" opacity=".5" />
-        <circle r="60" className="hs-2" /><circle r="60" className="ec-node-ring" /><circle r="48" className="hs-3" />
-        {Array.from({ length: 14 }, (_, i) => { const a = (i / 14) * Math.PI * 2; return <circle key={i} cx={Math.cos(a) * 54} cy={Math.sin(a) * 54} r="2.4" fill="#FFE6A8" />; })}
-        <g className="ec-vwheel" style={{ transformOrigin: "0px 0px" }}>
-          {Array.from({ length: 6 }, (_, i) => { const a = (i / 6) * Math.PI * 2; return <path key={i} d={`M0 0L${Math.cos(a) * 40} ${Math.sin(a) * 40}`} stroke="#E8C766" strokeWidth="5" strokeLinecap="round" />; })}
-          {Array.from({ length: 6 }, (_, i) => { const a = (i / 6) * Math.PI * 2; return <circle key={i} cx={Math.cos(a) * 40} cy={Math.sin(a) * 40} r="5" fill="#F7D675" />; })}
-          <circle r="26" fill="none" stroke="#E8C766" strokeWidth="3.4" />
+      <g fill="none" stroke="var(--lamp)" strokeWidth="1" opacity=".09">{[96, 150, 206].map((r) => <circle key={r} cx={HUB.x} cy={HUB.y} r={r} />)}</g>
+      {/* the streams: a soft wide band under a finer line, drawing in once, then coins travelling along them */}
+      {SRC.map((x, i) => <g key={`i${x}`} fill="none" strokeLinecap="round"><path d={inStream(x, i)} stroke="url(#tx-in)" strokeWidth="14" opacity=".22" /><path className="ec-stream" pathLength="1" d={inStream(x, i)} stroke="url(#tx-in)" strokeWidth="3.2" style={{ "--i": i }} /></g>)}
+      {SNK.map((x, i) => <g key={`o${x}`} fill="none" strokeLinecap="round"><path d={outStream(x, i)} stroke="url(#tx-out)" strokeWidth="14" opacity=".22" /><path className="ec-stream" pathLength="1" d={outStream(x, i)} stroke="url(#tx-out)" strokeWidth="3.2" style={{ "--i": i + 4 }} /></g>)}
+      {SRC.map((x, i) => [0, 1].map((k) => <circle key={`ci${i}${k}`} r="3.6" className="ec-flow" style={{ offsetPath: `path("${inStream(x, i)}")`, "--d": `${1.4 + i * 0.4 + k * 1.7}s` }} />))}
+      {SNK.map((x, i) => [0, 1].map((k) => <circle key={`co${i}${k}`} r="3.6" className="ec-flow" style={{ offsetPath: `path("${outStream(x, i)}")`, "--d": `${2.4 + i * 0.4 + k * 1.7}s` }} />))}
+      {SRC.map((x, i) => <Badge key={`bi${x}`} x={x} icon={IN_ICONS[i]} i={i} />)}
+      {SNK.map((x, i) => <Badge key={`bo${x}`} x={x} icon={OUT_ICONS[i]} i={i} out />)}
+      {/* the Treasury's coin: a ticked rim that turns once, a gold ring and the pound sign */}
+      <g transform={`translate(${HUB.x} ${HUB.y})`}>
+        <circle r="92" fill="url(#tx-sun)" opacity=".4" />
+        <circle r="52" fill="var(--s2)" stroke="var(--a)" strokeWidth="2" />
+        <g className="ec-vwheel" style={{ transformOrigin: "0px 0px" }} stroke="var(--lamp)" strokeWidth="1.6" strokeLinecap="round" opacity=".7">
+          {Array.from({ length: 48 }, (_, i) => { const a = (i / 48) * Math.PI * 2; return <path key={i} d={`M${Math.cos(a) * 43} ${Math.sin(a) * 43}L${Math.cos(a) * 47.5} ${Math.sin(a) * 47.5}`} />; })}
         </g>
-        <circle r="14" fill="url(#tx-gold)" /><path d={POUND} transform="scale(1.5)" fill="none" stroke="#7A5A10" strokeWidth="1.5" strokeLinecap="round" />
+        <circle r="36" fill="var(--s3)" stroke="#E8C766" strokeWidth="2.6" />
+        <circle r="30" fill="none" stroke="#E8C766" strokeWidth="1" opacity=".55" />
+        <path d={POUND} transform="scale(3.4)" fill="none" stroke="#F7D675" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
       </g>
       <g className="hs-3"><rect x="0" y="190" width="1440" height="10" /></g>
     </Scene>
