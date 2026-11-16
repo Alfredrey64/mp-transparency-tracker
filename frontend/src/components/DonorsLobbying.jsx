@@ -13,6 +13,7 @@ import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import { IconInfluence } from "./icons";
 import SectorIcon from "./SectorIcon";
+import { shortParty } from "../lib/seatElections";
 import "../donors.css";
 import ExpandGrid from "./ExpandGrid";
 import { CompanyDonorsView } from "./CompanyDonorsView";
@@ -134,6 +135,18 @@ export default function DonorsLobbying() {
 
     return { totalValue, taggedValue, untaggedValue, sectorBars, topDonors, sectorLeaderboards };
   }, [rows]);
+
+  // The photo, seat and party of the MPs named in the sector cards: one small lookup for the few shown, not a column on every row of the register.
+  const [mpInfo, setMpInfo] = useState(() => new Map());
+  useEffect(() => {
+    const names = [...new Set((stats?.sectorLeaderboards ?? []).flatMap((s) => s.topMps.map((m) => m.name)))].filter((n) => n && n !== "Unknown MP");
+    if (!names.length) return undefined;
+    let alive = true;
+    supabase.from("politicians").select("name, thumbnail_url, constituency, party").in("name", names)
+      .then(({ data }) => { if (alive && data) setMpInfo(new Map(data.map((r) => [r.name, r]))); })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, [stats]);
 
   if (!stats) {
     return (
@@ -378,13 +391,21 @@ export default function DonorsLobbying() {
                 <span className="dn-card-sum"><small>Total</small><b>{shortMoney(s.total)}</b><em>£{Math.round(s.total).toLocaleString()}</em></span>
               </header>
               <ol className="dn-rank">
-                {s.topMps.map((mp, n) => (
-                  <li key={mp.name} style={{ "--pc": mp.partyColor }}>
-                    <span className="dn-medal" data-n={n + 1}>{n + 1}</span>
-                    <span className="dn-who"><b>{mp.name}</b><i style={{ "--w": mp.total / lead }} /></span>
-                    <span className="dn-amt">£{Math.round(mp.total).toLocaleString()}</span>
-                  </li>
-                ))}
+                {s.topMps.map((mp, n) => {
+                  const info = mpInfo.get(mp.name);
+                  const share = s.total > 0 ? (mp.total / s.total) * 100 : 0;
+                  return (
+                    <li key={mp.name} style={{ "--pc": mp.partyColor }}>
+                      <MpFace url={info?.thumbnail_url} name={mp.name} rank={n + 1} />
+                      <span className="dn-who">
+                        <b>{mp.name}</b>
+                        <small>{[info?.constituency, info?.party && shortParty(info.party)].filter(Boolean).join(" · ") || "\u00a0"}</small>
+                        <i style={{ "--w": mp.total / lead }} />
+                      </span>
+                      <span className="dn-amt"><b>£{Math.round(mp.total).toLocaleString()}</b><small>{share < 1 ? "under 1%" : `${Math.round(share)}%`} of the sector</small></span>
+                    </li>
+                  );
+                })}
               </ol>
               <button type="button" className="dn-more" aria-expanded={open} aria-controls={panelId} onClick={toggle}>
                 <span>{open ? "Hide the full list" : `See all ${s.allDonations.length} donations`}</span>
@@ -465,6 +486,18 @@ export default function DonorsLobbying() {
       </div>
       </div>
     </div>
+  );
+}
+
+// A round portrait for an MP with a party-coloured ring and their rank in the corner; two letters stand in while the photo loads or if there is none.
+function MpFace({ url, name, rank }) {
+  const [bad, setBad] = useState(false);
+  const letters = name.split(/\s+/).filter(Boolean).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+  return (
+    <span className="dn-face" aria-hidden="true">
+      {url && !bad ? <img src={url} alt="" loading="lazy" decoding="async" onError={() => setBad(true)} /> : <em>{letters}</em>}
+      <i>{rank}</i>
+    </span>
   );
 }
 
