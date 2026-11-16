@@ -1,0 +1,140 @@
+/* Pictures for the Farming and food page (components/story/FarmArt.jsx). Each plays once when it scrolls into view (data-go="1"); with calmer motion asked for, they are simply finished. */
+
+/* ---- the scene along the foot of the heading band ---- */
+.page-hero[data-scene] { padding-bottom: calc(clamp(120px, 15vw, 210px) + 18px); }
+.page-hero[data-scene]::before { display: none; }
+.fm-scene { position: absolute; z-index: 0; left: 50%; bottom: 0; width: 100vw; height: clamp(120px, 15vw, 210px); transform: translateX(-50%); overflow: hidden; pointer-events: none; }
+.fm-scene svg { display: block; width: 100%; height: 100%; }
+.page-hero[data-scene] .page-hero-inner { position: static; }
+.fm-tractor { animation: fm-drive 9s cubic-bezier(0.3, 0.1, 0.25, 1) 0.5s both; }
+.fm-tractor-body { transform-box: fill-box; }
+.fm-wheel { animation: fm-spin 9s cubic-bezier(0.3, 0.1, 0.25, 1) 0.5s both; }
+.fm-stalk { animation: fm-sway 3.2s ease-in-out var(--d, 0s) 3; transform-box: view-box; }
+.fm-sun { animation: fm-glow 5s ease-in-out 2 alternate; }
+@keyframes fm-drive { from { transform: translateX(-160px); } to { transform: translateX(840px); } }
+@keyframes fm-spin { from { transform: rotate(-1500deg); } to { transform: rotate(0); } }
+@keyframes fm-sway { 0%, 100% { transform: rotate(-2.4deg); } 50% { transform: rotate(2.4deg); } }
+@keyframes fm-glow { from { opacity: 0.75; } to { opacity: 1; } }
+/* Parked where it ends, so a page that does not move is still a finished picture. */
+@media (prefers-reduced-motion: reduce) { .fm-tractor { animation: none; transform: translateX(840px); } .fm-wheel, .fm-stalk, .fm-sun { animation: none; } }
+
+/* ---- shared ---- */
+.fm-land, .fm-crates, .fm-bars, .fm-cols, .fm-rings, .fm-fund, .fm-gate, .fm-ruler { margin: 0; padding: 20px 22px 18px; border-radius: 22px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); font-family: "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.fm-note { margin: 12px 0 0; font-size: 13.5px; line-height: 1.5; color: var(--c-ink-soft); }
+figure.fm-land figcaption, figure.fm-bars figcaption, figure.fm-cols figcaption, figure.fm-ruler figcaption, figure.fm-crates figcaption, figure.fm-gate figcaption { font-size: 13.5px; line-height: 1.5; color: var(--c-ink-soft); }
+
+/* ---- the UK's land as a hundred plots ---- */
+.fm-land { display: grid; grid-template-columns: minmax(0, 260px) minmax(0, 1fr); gap: 14px 34px; align-items: center; background: linear-gradient(160deg, color-mix(in srgb, #4C7A3A 9%, var(--c-paper-card)), var(--c-paper-card) 60%); }
+.fm-land-head { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+.fm-land-head b { font: 600 clamp(40px, 8vw, 58px) / 1 "Newsreader", Georgia, serif; letter-spacing: -0.02em; color: color-mix(in srgb, #4C7A3A 80%, var(--c-ink)); }
+.fm-land-head b * { font: inherit; letter-spacing: inherit; color: inherit; }
+.fm-land-head span { font-size: 15px; font-weight: 600; }
+.fm-land svg { display: block; width: 100%; max-width: 260px; height: auto; }
+.fm-plot rect { fill: color-mix(in srgb, var(--c-ink) 10%, var(--c-paper-card)); transition: fill 0.45s ease; }
+.fm-plot.fm-on rect { fill: color-mix(in srgb, #8A6A3A 70%, var(--c-paper-card)); }
+.fm-plot path { opacity: 0; transition: opacity 0.4s ease; }
+.fm-land[data-go="1"] .fm-plot.fm-on rect { fill: #4C7A3A; transition-delay: calc(var(--k) * 55ms + 250ms); }
+.fm-land[data-go="1"] .fm-plot.fm-on:nth-child(3n) rect { fill: #5C8A3C; }
+.fm-land[data-go="1"] .fm-plot.fm-on:nth-child(7n) rect { fill: #3F6B30; }
+.fm-land[data-go="1"] .fm-plot.fm-on path { opacity: 1; transition-delay: calc(var(--k) * 55ms + 450ms); }
+.fm-land figcaption { display: grid; gap: 8px; align-content: center; font-weight: 600; color: var(--c-ink) !important; }
+.fm-land figcaption small { font-weight: 400; color: var(--c-ink-soft); }
+.fm-key { display: inline-block; width: 13px; height: 13px; margin-right: 9px; border-radius: 3px; vertical-align: -1px; background: color-mix(in srgb, var(--c-ink) 14%, var(--c-paper-card)); }
+.fm-key-on { background: #4C7A3A; }
+@media (max-width: 560px) { .fm-land { grid-template-columns: 1fr; justify-items: start; } }
+
+/* ---- crates ---- */
+.fm-crates ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+.fm-crates li { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; }
+.fm-crate-ico { --ko: var(--tc); display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; background: var(--tc); }
+.fm-crate-label { font-weight: 600; font-size: 14.5px; line-height: 1.3; }
+.fm-crate-val { font: 600 22px / 1 "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--tc) 78%, var(--c-ink)); }
+.fm-crate-row { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)) minmax(0, 1fr); gap: 4px; }
+.fm-crate-row i { position: relative; display: block; aspect-ratio: 1.85; border-radius: 5px; overflow: hidden; background: color-mix(in srgb, var(--c-ink) 9%, var(--c-paper-card)); }
+.fm-crate-row i u { position: absolute; inset: 0; background: var(--tc); transform-origin: left; transform: scaleX(0); transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); transition-delay: calc((var(--r) * 6 + var(--c)) * 38ms + 200ms); text-decoration: none; }
+.fm-crate-row i::after { content: ""; position: absolute; left: 0; right: 0; top: 36%; height: 2px; background: rgba(255, 255, 255, 0.35); }
+.fm-crate-row i.fm-over { background: none; border: 1.5px dashed color-mix(in srgb, var(--tc) 50%, var(--c-hairline)); }
+.fm-crate-row i.fm-over::after { display: none; }
+.fm-crate-row i.fm-over u { background: repeating-linear-gradient(135deg, var(--tc) 0 5px, color-mix(in srgb, var(--tc) 55%, #fff) 5px 10px); }
+.fm-crates[data-go="1"] .fm-crate-row i u { transform: scaleX(var(--f)); }
+.fm-crates figcaption { display: flex; align-items: center; gap: 9px; margin-top: 16px; }
+.fm-over-key { flex: none; width: 17px; height: 13px; border: 1.5px dashed var(--c-ink-soft); border-radius: 3px; }
+
+/* ---- bars with a farm picture at the head ---- */
+.fm-bars ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.fm-bars li { display: grid; grid-template-columns: minmax(90px, 150px) minmax(0, 1fr) 64px; gap: 4px 12px; align-items: center; }
+.fm-bar-label { font-weight: 600; font-size: 14px; line-height: 1.3; }
+.fm-bar-track { position: relative; height: 30px; margin-right: 2px; border-radius: 999px; background: repeating-linear-gradient(90deg, color-mix(in srgb, #8A6A3A 14%, var(--c-paper-card)) 0 9px, color-mix(in srgb, #8A6A3A 7%, var(--c-paper-card)) 9px 18px); }
+.fm-bar-fill { position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--w) * 100%); min-width: 30px; border-radius: 999px; background: linear-gradient(90deg, color-mix(in srgb, var(--tc) 70%, #fff), var(--tc)); transform-origin: left; transform: scaleX(0); transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); transition-delay: calc(var(--i) * 110ms + 150ms); }
+.fm-bars[data-go="1"] .fm-bar-fill { transform: scaleX(1); }
+.fm-bar-cap { --ko: var(--tc); position: absolute; right: -2px; top: -2px; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--tc); box-shadow: 0 0 0 3px var(--c-paper-card); }
+.fm-bars li b { font: 600 20px / 1 "Newsreader", Georgia, serif; text-align: right; color: color-mix(in srgb, var(--tc) 78%, var(--c-ink)); }
+.fm-bars figcaption, .fm-cols figcaption, .fm-ruler figcaption { margin-top: 16px; }
+@media (max-width: 520px) { .fm-bars li { grid-template-columns: minmax(0, 1fr) auto; } .fm-bar-track { grid-column: 1 / -1; grid-row: 2; } .fm-bars li b { grid-row: 1; grid-column: 2; } }
+
+/* ---- columns ---- */
+.fm-cols ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 10px; align-items: end; }
+.fm-cols li { display: grid; justify-items: center; gap: 8px; }
+.fm-cols li b { font: 600 clamp(14px, 3.4vw, 20px) / 1 "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--tc) 78%, var(--c-ink)); }
+.fm-col { position: relative; display: block; width: min(64px, 100%); height: 190px; border-radius: 14px 14px 6px 6px; background: repeating-linear-gradient(0deg, color-mix(in srgb, #8A6A3A 13%, var(--c-paper-card)) 0 9px, color-mix(in srgb, #8A6A3A 6%, var(--c-paper-card)) 9px 18px); overflow: hidden; }
+.fm-col-fill { position: absolute; left: 0; right: 0; bottom: 0; height: calc(var(--h) * 100%); min-height: 40px; background: linear-gradient(0deg, var(--tc), color-mix(in srgb, var(--tc) 72%, #fff)); transform-origin: bottom; transform: scaleY(0); transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1); transition-delay: calc(var(--i) * 120ms + 150ms); }
+.fm-cols[data-go="1"] .fm-col-fill { transform: scaleY(1); }
+.fm-col-ico { --ko: var(--tc); position: absolute; left: 50%; bottom: 10px; translate: -50% 0; opacity: 0; transition: opacity 0.4s ease 0.9s; display: grid; }
+.fm-cols[data-go="1"] .fm-col-ico { opacity: 1; }
+.fm-cols li em { font-style: normal; font-size: clamp(11.5px, 2.6vw, 13.5px); font-weight: 600; line-height: 1.25; text-align: center; overflow-wrap: anywhere; }
+
+/* ---- rings ---- */
+.fm-rings > div { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px 34px; }
+.fm-rings figure { margin: 0; display: grid; justify-items: center; gap: 4px; width: 170px; }
+.fm-rings svg { --ko: var(--c-paper-card); width: 160px; height: 160px; overflow: visible; }
+.fm-ring-bg { fill: none; stroke: color-mix(in srgb, var(--c-ink) 10%, var(--c-paper-card)); stroke-width: 13; }
+.fm-ring-fg { fill: none; stroke: var(--tc); stroke-width: 13; stroke-linecap: round; stroke-dashoffset: var(--len); transition: stroke-dashoffset 1.1s cubic-bezier(0.2, 0.8, 0.2, 1); transition-delay: calc(var(--i) * 200ms + 200ms); }
+.fm-rings[data-go="1"] .fm-ring-fg { stroke-dashoffset: 0; }
+.fm-ring-num { font: 600 26px "Newsreader", Georgia, serif; fill: var(--c-ink); }
+.fm-ring-sub { font: 600 9px "Public Sans", system-ui, sans-serif; fill: var(--c-ink-soft); }
+.fm-rings figcaption { font-size: 13.5px; font-weight: 600; text-align: center; line-height: 1.3; color: var(--c-ink); }
+
+/* ---- the fund ---- */
+.fm-fund-bar { position: relative; height: 46px; border-radius: 14px; overflow: hidden; background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--tc) 12%, var(--c-paper-card)) 0 8px, color-mix(in srgb, var(--tc) 6%, var(--c-paper-card)) 8px 16px); }
+.fm-fund-bar span { position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--p) * 100%); min-width: 96px; display: flex; align-items: center; gap: 8px; padding: 0 14px; background: linear-gradient(90deg, var(--tc), color-mix(in srgb, var(--tc) 70%, #fff)); color: #fff; transform-origin: left; transform: scaleX(0); transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s; }
+.fm-fund[data-go="1"] .fm-fund-bar span { transform: scaleX(1); }
+.fm-fund-bar b { font: 600 20px "Newsreader", Georgia, serif; white-space: nowrap; }
+.fm-fund-keys { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 12px; font-size: 13.5px; }
+.fm-fund-keys i { display: inline-block; width: 13px; height: 13px; margin-right: 8px; border-radius: 3px; vertical-align: -1px; background: color-mix(in srgb, var(--tc) 22%, var(--c-paper-card)); }
+
+/* ---- the relief gate ---- */
+.fm-gate svg { display: block; width: 100%; height: auto; overflow: visible; }
+.fm-grid { stroke: var(--c-hairline); stroke-width: 1; stroke-dasharray: 2 4; }
+.fm-tick { font: 600 11.5px "Public Sans", system-ui, sans-serif; fill: var(--c-ink-soft); }
+.fm-full { stroke: color-mix(in srgb, #B45A3C 70%, var(--c-ink-soft)); stroke-width: 1.4; stroke-dasharray: 6 5; opacity: 0.8; }
+.fm-before { fill: none; stroke: color-mix(in srgb, var(--c-ink) 32%, var(--c-paper-card)); stroke-width: 5; stroke-linecap: round; }
+.fm-after { fill: none; stroke: var(--tc); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.6s cubic-bezier(0.4, 0.1, 0.2, 1) 0.3s; }
+.fm-gate[data-go="1"] .fm-after { stroke-dashoffset: 0; }
+.fm-post { stroke: color-mix(in srgb, var(--tc) 60%, var(--c-ink)); stroke-width: 2.4; stroke-dasharray: 4 3; }
+.fm-slat { fill: #B07A2A; opacity: 0; transform: translateY(8px); transform-box: fill-box; transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.fm-gate[data-go="1"] .fm-slat { opacity: 1; transform: none; }
+.fm-gate[data-go="1"] .fm-slat { transition-delay: 1s; }
+.fm-flag { font: 700 12px "Public Sans", system-ui, sans-serif; fill: color-mix(in srgb, var(--tc) 75%, var(--c-ink)); }
+.fm-couple line { stroke: var(--c-ink-soft); stroke-width: 1.2; stroke-dasharray: 1 4; stroke-linecap: round; }
+.fm-lab { font: 600 12.5px "Public Sans", system-ui, sans-serif; opacity: 0; transition: opacity 0.5s ease; }
+.fm-lab-a { fill: var(--c-ink-soft); } .fm-lab-b { fill: color-mix(in srgb, var(--tc) 75%, var(--c-ink)); }
+.fm-gate[data-go="1"] .fm-lab { opacity: 1; transition-delay: 1.5s; }
+.fm-gate figcaption { display: grid; gap: 6px; margin-top: 10px; }
+.fm-gate figcaption i { display: inline-block; width: 22px; height: 5px; margin-right: 9px; border-radius: 3px; vertical-align: 2px; }
+.fm-key-before { background: color-mix(in srgb, var(--c-ink) 32%, var(--c-paper-card)); } .fm-key-after { background: var(--tc); }
+
+/* ---- the price ruler ---- */
+.fm-ruler-field { position: relative; height: 178px; margin: 6px 6px 0; }
+.fm-ruler-line { position: absolute; left: 0; right: 0; bottom: 26px; height: 10px; border-radius: 6px; background: repeating-linear-gradient(90deg, #8A6A3A 0 2px, color-mix(in srgb, #8A6A3A 35%, var(--c-paper-card)) 2px 14px); }
+.fm-ruler-line span { position: absolute; top: 16px; translate: -50% 0; font: 600 11.5px "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.fm-stake { position: absolute; bottom: 30px; left: calc(var(--pos) * 100%); width: 0; height: calc(52px + var(--up) * 1px); transform-origin: bottom; transform: scaleY(0); transition: transform 0.6s cubic-bezier(0.3, 1.4, 0.5, 1); transition-delay: calc(var(--i) * 260ms + 250ms); }
+.fm-stake > i { position: absolute; left: -1.5px; bottom: 0; width: 3px; height: 100%; border-radius: 2px; background: var(--tc); }
+.fm-ruler[data-go="1"] .fm-stake { transform: none; }
+.fm-stake[data-edge="l"] .fm-stake-tag { translate: -18% 0; } .fm-stake[data-edge="r"] .fm-stake-tag { translate: -82% 0; }
+.fm-stake-tag { position: absolute; bottom: 100%; left: 0; translate: -50% 0; margin-bottom: 4px; display: grid; justify-items: center; padding: 6px 10px 6px; border-radius: 10px; background: var(--tc); color: #fff; white-space: nowrap; text-align: center; }
+.fm-stake-tag b { font: 600 19px / 1 "Newsreader", Georgia, serif; }
+.fm-stake-tag em { font: 600 11.5px / 1.25 "Public Sans", system-ui, sans-serif; font-style: normal; }
+@media (max-width: 560px) { .fm-stake-tag { padding: 5px 7px; } .fm-stake-tag em { font-size: 10.5px; white-space: normal; max-width: 84px; } .fm-ruler-field { height: 200px; } }
+@media (prefers-reduced-motion: reduce) {
+  .fm-plot rect, .fm-plot path, .fm-crate-row i u, .fm-bar-fill, .fm-col-fill, .fm-col-ico, .fm-ring-fg, .fm-fund-bar span, .fm-after, .fm-slat, .fm-lab, .fm-stake { transition: none; }
+}

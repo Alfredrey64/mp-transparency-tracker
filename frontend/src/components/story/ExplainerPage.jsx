@@ -22,7 +22,7 @@ import { useDetail, setDetail, shortBlocks } from "../../lib/detailLevel";
 //   chips     { items: [], note }              a wrapped set of short labels, numbered in order
 //   note      a small italic line
 //   node      a piece of the page that is more than text (a postcode check, say): any React element
-// A page can also pass `lead`, an element drawn between the figures and "Why it matters" (a picture that sums the page up).
+// A page can also pass `scene`, an element drawn along the foot of its heading band (a picture of the subject), and `lead`, an element drawn between the figures and "Why it matters" (a picture that sums the page up).
 
 function Block({ b, colour }) {
   if (b.node) return <div className="st-node">{b.node}</div>;
@@ -185,10 +185,10 @@ function DetailToggle() {
 
 // `look` is how the page is dressed: "ledger", "poster" or "field" (see story.css); left out, it keeps the first look.
 // `narrow` matches the width of the older pages that sit in the same menu group (Election results, Your council), so moving between tabs does not shift the page.
-export default function ExplainerPage({ icon, kicker, title, subtitle, tiles, tileVariant, lead, why, chapters, sources, checked, notice, narrow = false, look }) {
+export default function ExplainerPage({ icon, kicker, title, subtitle, tiles, tileVariant, lead, why, chapters, sources, checked, notice, narrow = false, look, scene }) {
   return (
     <div className="st" data-look={look} style={{ paddingTop: "clamp(20px, 5vw, 40px)", ...(narrow ? { maxWidth: 1084 } : null) }}>
-      <PageHeader icon={icon} kicker={kicker} title={title} subtitle={subtitle} />
+      <PageHeader icon={icon} kicker={kicker} title={title} subtitle={subtitle} scene={scene} />
       <DetailToggle />
       <ExplainerBody icon={icon} tiles={tiles} tileVariant={tileVariant} lead={lead} why={why} chapters={chapters} sources={sources} checked={checked} notice={notice} />
     </div>
