@@ -104,3 +104,20 @@ describe("patienceFor", () => {
     expect(patienceFor("https://example.com/?next=https://sdmx.oecd.org/")).toEqual({});
   });
 });
+
+describe("waitForTurn", () => {
+  it("makes each OECD request wait a gap after the one before, and leaves other addresses alone", async () => {
+    const { waitForTurn } = await import("./httpFetch.js");
+    let clock = 1_000_000;
+    const waits = [];
+    const pause = async (ms) => { waits.push(ms); clock += ms; };
+    const now = () => clock;
+    const oecd = "https://sdmx.oecd.org/public/rest/data/X/all";
+    await waitForTurn(oecd, 12_000, now, pause); // the first goes straight away
+    await waitForTurn(oecd, 12_000, now, pause); // the second waits the whole gap
+    clock += 5_000;
+    await waitForTurn(oecd, 12_000, now, pause); // 5 seconds have passed on their own, so 7 more
+    await waitForTurn("https://www.ons.gov.uk/x", 12_000, now, pause);
+    expect(waits).toEqual([12_000, 7_000]);
+  });
+});

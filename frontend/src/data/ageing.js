@@ -1,6 +1,6 @@
 // What the Ageing and pensions page says, with where each figure comes from. Checked on the date below.
 
-export const CHECKED = "13 November 2026";
+export const CHECKED = "16 November 2026";
 
 export const SOURCES = {
   rates: { label: "GOV.UK, Benefit and pension rates 2025 to 2026 (and earlier years)", url: "https://www.gov.uk/government/publications/benefit-and-pension-rates-2025-to-2026/benefit-and-pension-rates-2025-to-2026" },
@@ -10,7 +10,7 @@ export const SOURCES = {
   spaCalculator: { label: "GOV.UK, Check your State Pension age", url: "https://www.gov.uk/state-pension-age" },
   obrFrs2026: { label: "Office for Budget Responsibility, Fiscal risks and sustainability (July 2026)", url: "https://obr.uk/frs/" },
   obrFrs2025: { label: "Office for Budget Responsibility, Fiscal risks and sustainability (July 2025)", url: "https://obr.uk/frs/" },
-  onsProjections: { label: "ONS, National population projections: 2022-based", url: "https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationprojections/bulletins/nationalpopulationprojections/2022based" },
+  onsProjections: { label: "ONS, National population projections: 2024-based", url: "https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationprojections/bulletins/nationalpopulationprojections/2024based" },
   hbai: { label: "DWP, Households Below Average Income, 2024/25", url: "https://www.gov.uk/government/statistics/households-below-average-income-for-financial-years-ending-1995-to-2025" },
   budget2026: { label: "HM Treasury, Budget 2026 (28 October 2026)", url: "https://www.gov.uk/government/publications/budget-2026-document/budget-2026-html" },
   taxes: { label: "HMRC, Rates and allowances: Income Tax", url: "https://www.gov.uk/government/publications/rates-and-allowances-income-tax/income-tax-rates-and-allowances-current-and-past" },
@@ -50,19 +50,23 @@ export const STATE_PENSION = {
 // and about 7% if the pension rose with average earnings instead. The year ranges are the OBR's own.
 export const OBR_LONG_RUN = { now: 5, withTripleLock: 9, withEarnings: 7, reportDate: "July 2026" };
 
-// ONS 2022-based national population projections (UK, principal projection), millions of people: children are under 16, working age is 16 up to
-// State Pension age, and pensionable age is State Pension age and over, which takes the planned rises in the age into account. The ONS bulletin gives
-// the totals for 2022 (67.6) and 2047 (76.6) and says the number of children stays near its 2032 level, so 2047's children are the total less the others.
+// ONS 2024-based national population projections (UK, principal projection, published 28 April 2026), millions of people: children are under 16, working age is 16 up to
+// State Pension age, and pensionable age is State Pension age and over, which takes the planned rises in the age into account. The bulletin gives 2024 and 2034 directly and
+// gives 2049 as changes since 2024 (children down 2.1 million, working age up 2.2 million, pensionable age 15.3 million), so the 2049 figures are rounded to 0.1 million.
 export const LIFE_STAGES = {
-  2022: { children: 12.4, working: 43.2, pensionable: 12.0 },
-  2032: { children: 11.6, working: 47.3, pensionable: 13.7 },
-  2047: { children: 11.6, working: 49.9, pensionable: 15.1 },
+  2024: { children: 12.6, working: 44.3, pensionable: 12.4 },
+  2034: { children: 11.0, working: 45.8, pensionable: 14.2 },
+  2049: { children: 10.5, working: 46.5, pensionable: 15.3 },
 };
 export const POPULATION = {
-  total2047: 76.6,
-  dependency: { y2022: 278, y2032: 289, y2047: 302 },
-  over85: { y2022: 1.7, y2047: 3.3, share2022: 2.5, share2047: 4.3 },
-  children: { y2022: 12.4, y2032: 11.6 },
+  base: 2024,
+  mid: 2034,
+  end: 2049,
+  totalBase: 69.3,
+  totalEnd: 72.3,
+  dependency: { base: 280, mid: 310, end: 329 },
+  over85: { base: 1.75, end: 3.6, shareBase: 2.5, shareEnd: 4.9 },
+  children: { base: 12.6, mid: 11.0 },
 };
 
 export const PENSION_AGE = [

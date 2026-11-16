@@ -66,7 +66,7 @@ function MatchOrbitDiagram({ highlightKey, size = 160 }) {
   const center = size / 2;
   const radius = size * 0.36;
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: "block" }}>
+    <svg aria-hidden="true" focusable="false" width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: "block" }}>
       <circle cx={center} cy={center} r={radius + 20} fill="none" stroke={COLORS.hairline} strokeWidth="1" />
       <circle cx={center} cy={center} r={radius - 12} fill="none" stroke={COLORS.hairline} strokeWidth="1" strokeDasharray="1.5 5" />
       <motion.g

@@ -9,7 +9,7 @@ export const SOURCES = {
   wealthBulletin: { label: "ONS, Household total wealth in Great Britain: April 2020 to March 2022", url: "https://www.ons.gov.uk/peoplepopulationandcommunity/personalandhouseholdfinances/incomeandwealth/bulletins/totalwealthingreatbritain/april2020tomarch2022" },
   wealthTables: { label: "ONS, Total wealth: Wealth in Great Britain (tables)", url: "https://www.ons.gov.uk/peoplepopulationandcommunity/personalandhouseholdfinances/incomeandwealth/datasets/totalwealthwealthingreatbritain" },
   gdhi: { label: "ONS, Regional gross disposable household income, UK: 1997 to 2024", url: "https://www.ons.gov.uk/economy/regionalaccounts/grossdisposablehouseholdincome/bulletins/regionalgrossdisposablehouseholdincomegdhi/1997to2024" },
-  genderPay: { label: "ONS, Gender pay gap in the UK: 2025", url: "https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/bulletins/genderpaygapintheuk/2025" },
+  genderPay: { label: "ONS, Gender pay gap in the UK: 2026", url: "https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/bulletins/genderpaygapintheuk/2026" },
   disabilityPay: { label: "ONS, Disability pay gaps in the UK: 2014 to 2023", url: "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/disability/articles/disabilitypaygapsintheuk/2014to2023" },
   ethnicityLowIncome: { label: "GOV.UK, Ethnicity facts and figures: persistent low income (DWP, Income Dynamics 2010 to 2023)", url: "https://www.ethnicity-facts-figures.service.gov.uk/work-pay-and-benefits/pay-and-income/low-income/latest" },
   twoChild: { label: "GOV.UK, Removing the two-child limit on Universal Credit: impact on low income poverty levels", url: "https://www.gov.uk/government/publications/poverty-impacts-of-social-security-changes-at-budget-2025/removing-the-two-child-limit-on-universal-credit-impact-on-low-income-poverty-levels-in-the-united-kingdom" },
@@ -47,25 +47,25 @@ export const LOCAL_AREAS = {
   lowest: { name: "Leicester", value: 16786 },
 };
 
-// ONS, Gender pay gap in the UK: 2025 (April 2025, provisional). Median hourly pay without overtime.
+// ONS, Gender pay gap in the UK: 2026 (April 2026, provisional, published 22 October 2026). Median hourly pay without overtime. `last` is the April 2025 figure as revised in the 2026 release.
 export const GENDER_PAY_GAP = {
-  year: 2025,
-  fullTime: { gap: 6.9, last: 7.1, men: 20.27, women: 18.87 },
-  allEmployees: { gap: 12.8, last: 13.1 },
-  partTime: { gap: -2.9 },
+  year: 2026,
+  fullTime: { gap: 6.8, last: 7.2, men: 21.51, women: 20.05 },
+  allEmployees: { gap: 12.3, last: 13.0 },
+  partTime: { gap: -2.1 },
   byAge: [
-    { band: "Aged 22 to 29", gap: 0.9 },
-    { band: "Aged 30 to 39", gap: 3.9 },
-    { band: "Aged 40 to 49", gap: 9.1 },
-    { band: "Aged 50 to 59", gap: 12.5 },
-    { band: "Aged 60 and over", gap: 12.6 },
+    { band: "Aged 22 to 29", gap: 1.6 },
+    { band: "Aged 30 to 39", gap: 4.1 },
+    { band: "Aged 40 to 49", gap: 8.2 },
+    { band: "Aged 50 to 59", gap: 11.0 },
+    { band: "Aged 60 and over", gap: 11.2 },
   ],
   byNation: [
-    { name: "Northern Ireland", gap: 1.1 },
-    { name: "Wales", gap: 1.9 },
-    { name: "Scotland", gap: 3.5 },
+    { name: "Northern Ireland", gap: -1.6 },
+    { name: "Scotland", gap: 0.9 },
+    { name: "Wales", gap: 3.2 },
   ],
-  changeSince1997: 10.5,
+  changeSince1997: 10.6,
 };
 
 // ONS, Disability pay gaps in the UK: 2014 to 2023 (published 17 October 2024): median hourly pay.

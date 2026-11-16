@@ -1,7 +1,7 @@
 import { COLORS, FONT_BODY, FONT_DISPLAY } from "../theme";
 import { Caution, Panel } from "./insight";
 import { incomeFacts, povertyFacts, regionTable, wealthFacts } from "../lib/inequality";
-import { SOURCES } from "../data/inequality";
+import { GENDER_PAY_GAP, SOURCES } from "../data/inequality";
 import { para } from "../lib/insightStyle";
 
 const ACCENT = "#C7871A";
@@ -86,7 +86,7 @@ export default function InequalityDebate() {
 
       <Argument
         id="h-debate-pay" title="Pay, minimum wages and pay gaps"
-        shows="The gender pay gap for full-time employees is 6.9% and is much larger for people over 40. The gap between disabled and non-disabled employees is 12.7%."
+        shows={`The gender pay gap for full-time employees is ${GENDER_PAY_GAP.fullTime.gap}% and is much larger for people over 40. The gap between disabled and non-disabled employees is 12.7%.`}
         supporters={[
           "A higher minimum wage, and stronger rules on pay reporting and flexible work, raise the pay of the lowest paid and narrow gaps between groups.",
           "Pay gaps show that opportunities are still not equal, and publishing them has pushed employers to look at their own pay.",

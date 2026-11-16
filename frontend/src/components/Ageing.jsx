@@ -49,7 +49,7 @@ function Overview({ onPick }) {
           `Over the same years prices rose ${growth(A.pricesIndex)}% and average weekly earnings ${growth(A.earningsWeekly)}%, on our calculation, so the pension has kept ahead of both.`,
           `It cost £${STATE_PENSION.spending2425Bn} billion in 2024-25, about ${STATE_PENSION.spending2425PctGdp}% of the economy. The Office for Budget Responsibility's July 2026 baseline has that rising to about ${OBR_LONG_RUN.withTripleLock}% over the long run with the triple lock, or about ${OBR_LONG_RUN.withEarnings}% if it rose with earnings.`,
           "Under current law the State Pension age rises to 67 between 2026 and 2028 and to 68 between 2044 and 2046.",
-          `For every 1,000 people of working age there were ${POPULATION.dependency.y2022} of pension age in 2022. The ONS projects ${POPULATION.dependency.y2047} by 2047.`,
+          `For every 1,000 people of working age there were ${POPULATION.dependency.base} of pension age in ${POPULATION.base}. The ONS projects ${POPULATION.dependency.end} by ${POPULATION.end}.`,
         ]}
       />
 
@@ -64,7 +64,7 @@ function Overview({ onPick }) {
             { value: gbp(STATE_PENSION.fullNewWeekly), label: "A week, the full new State Pension", note: `About £${n(yearly)} a year. Not everyone gets the full amount`, spark: A.pension },
             { value: `£${STATE_PENSION.spending2425Bn}bn`, label: "Spent on the State Pension in 2024-25", note: `About ${STATE_PENSION.spending2425PctGdp}% of the economy` },
             { value: `${Math.round(pov.pensioners.ahc)}%`, label: "Of pensioners in relative poverty after housing costs", note: `${pov.pensioners.millions.ahc} million people, in ${financial(pov.latest)}`, spark: povSeries },
-            { value: `${POPULATION.dependency.y2047}`, label: "People over pension age for every 1,000 of working age", note: `Projected for 2047, against ${POPULATION.dependency.y2022} in 2022` },
+            { value: `${POPULATION.dependency.end}`, label: "People over pension age for every 1,000 of working age", note: `Projected for ${POPULATION.end}, against ${POPULATION.dependency.base} in ${POPULATION.base}` },
           ]}
         />
       </Panel>
@@ -251,7 +251,7 @@ function People() {
           rows={rows} label="UK population by life stage, projected" format={(v) => (mode === "numbers" ? `${v}m` : `${v}%`)}
           legend={Object.keys(colours).map((k) => ({ name: names[k], colour: colours[k] }))}
         />
-        <p style={para}>Pensionable age is State Pension age and over, and it takes the planned rises to 67 and 68 into account. The number of children in 2047 is the total of {p.total2047} million less the other two groups, as the ONS says it stays close to its 2032 level.</p>
+        <p style={para}>Pensionable age is State Pension age and over, and it takes the planned rises to 67 and 68 into account. The ONS gives the {p.end} figures as changes since {p.base}, so they are rounded to the nearest 0.1 million.</p>
       </Panel>
 
       <Panel
@@ -262,12 +262,12 @@ function People() {
         <BarRows
           label="People over State Pension age per 1,000 people of working age" accent="#7A5AF0" max={320}
           rows={[
-            { label: "2022", value: p.dependency.y2022, text: `${p.dependency.y2022}` },
-            { label: "2032", value: p.dependency.y2032, text: `${p.dependency.y2032}` },
-            { label: "2047", value: p.dependency.y2047, text: `${p.dependency.y2047}` },
+            { label: `${p.base}`, value: p.dependency.base, text: `${p.dependency.base}` },
+            { label: `${p.mid}`, value: p.dependency.mid, text: `${p.dependency.mid}` },
+            { label: `${p.end}`, value: p.dependency.end, text: `${p.dependency.end}` },
           ]}
         />
-        <p style={para}>The number of people aged 85 and over is projected to rise from {p.over85.y2022} million in 2022 ({p.over85.share2022}% of the population) to {p.over85.y2047} million by 2047 ({p.over85.share2047}%), while the number of children falls from {p.children.y2022} million to {p.children.y2032} million by 2032.</p>
+        <p style={para}>The number of people aged 85 and over is projected to rise from {p.over85.base} million in {p.base} ({p.over85.shareBase}% of the population) to {p.over85.end} million by {p.end} ({p.over85.shareEnd}%), while the number of children falls from {p.children.base} million to {p.children.mid} million by {p.mid}.</p>
       </Panel>
 
       <Panel id="h-agepo-pov" title="Older people and poverty" lead={`${Math.round(pov.pensioners.ahc)}% of pensioners were in relative poverty after housing costs in ${financial(pov.latest)}, against ${Math.round(pov.pensioners.ahcFirst)}% in the first year of the series.`} sources={[SOURCES.hbai]}>
@@ -320,7 +320,7 @@ function Arguments() {
       />
       <Arg
         id="h-agea-fair" title="Who should pay?"
-        shows={`The old-age dependency ratio is projected to rise from ${POPULATION.dependency.y2022} to ${POPULATION.dependency.y2047} per 1,000 working-age people by 2047.`}
+        shows={`The old-age dependency ratio is projected to rise from ${POPULATION.dependency.base} to ${POPULATION.dependency.end} per 1,000 working-age people by ${POPULATION.end}.`}
         sLabel="People who stress fairness to younger people say" cLabel="People who stress older people's claim say"
         supporters={["Younger workers face high housing costs and student debt, and they also pay for today's pensions. Some point to the wealth held by older households and say pensions should be taxed more, or that the better off should receive less."]}
         critics={["People who retire now paid National Insurance for decades on the understanding that it would fund their pension, and the State Pension itself is not large. Means-testing would penalise people who saved."]}

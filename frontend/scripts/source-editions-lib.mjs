@@ -37,6 +37,34 @@ export function newestSipriYear(pageHtml) {
   return years.length ? Math.max(...years) : null;
 }
 
+// Pages the site links to that are one year's edition of a yearly ONS publication ("/bulletins/annualsurveyofhoursandearnings/2026", ".../1997to2024",
+// ".../financialyearending2025", ".../mid2025", ".../2022based", ".../april2020tomarch2022"). Each gives { url, shown, next, nextUrl }: the address the next edition would
+// have. A publication that has a newer edition shows as an address that answers; one that does not, as a 404. The wording of the edition is the part that moves, so this
+// is how a yearly figure typed into the site (an ASHE salary, a pay gap, a wealth survey) is noticed the week after the ONS publishes the next one.
+const NEXT = [
+  [/^(.*\/)(20\d{2})$/, (m) => [m[2], `${Number(m[2]) + 1}`, `${m[1]}${Number(m[2]) + 1}`]],
+  [/^(.*\/\d{4}to)(20\d{2})$/, (m) => [m[2], `${Number(m[2]) + 1}`, `${m[1]}${Number(m[2]) + 1}`]],
+  [/^(.*\/financialyearending)(20\d{2})$/, (m) => [m[2], `${Number(m[2]) + 1}`, `${m[1]}${Number(m[2]) + 1}`]],
+  [/^(.*\/mid)(20\d{2})$/, (m) => [m[2], `${Number(m[2]) + 1}`, `${m[1]}${Number(m[2]) + 1}`]],
+  [/^(.*\/)(20\d{2})(based)$/, (m) => [m[2], `${Number(m[2]) + 2}`, `${m[1]}${Number(m[2]) + 2}${m[3]}`]],
+  [/^(.*\/april)(20\d{2})(tomarch)(20\d{2})$/, (m) => [`${m[2]} to ${m[4]}`, `${Number(m[2]) + 2} to ${Number(m[4]) + 2}`, `${m[1]}${Number(m[2]) + 2}${m[3]}${Number(m[4]) + 2}`]],
+];
+export function yearlyOnsEditions(text) {
+  const urls = new Set(String(text).match(/https:\/\/www\.ons\.gov\.uk\/[a-z0-9/]+\/(?:bulletins|articles)\/[a-z0-9]+\/[a-z0-9]+/g) ?? []);
+  const out = [];
+  for (const url of urls) {
+    for (const [re, make] of NEXT) {
+      const m = re.exec(url);
+      if (m) { const [shown, next, nextUrl] = make(m); out.push({ url, shown, next, nextUrl }); break; }
+    }
+  }
+  // A page cited at several years (a link to the old edition kept beside the new) is only behind if even the newest one cited has a successor.
+  const base = (u) => u.replace(/[^/]+$/, "");
+  const newest = new Map();
+  for (const e of out) if (!newest.has(base(e.url)) || e.nextUrl > newest.get(base(e.url)).nextUrl) newest.set(base(e.url), e);
+  return [...newest.values()];
+}
+
 // The findings, in the { name, problem } form audit-content.mjs prints.
 export function editionFinding({ source, script, pinned, newest, how }) {
   return { name: source, problem: `has a newer edition (${newest}) than the one scripts/${script} reads (${pinned}). ${how}` };

@@ -197,7 +197,7 @@ function glyphFor(title) {
 export function BillIcon({ title, size = 20, color = "currentColor" }) {
   const key = glyphFor(title);
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+    <svg aria-hidden="true" focusable="false" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
       {GLYPHS[key]}
     </svg>
   );

@@ -52,10 +52,11 @@ async function main() {
     await sleep(80);
   }
 
-  // One more go at any that failed, after a pause: a short wobble upstream should not leave holes in the counts.
-  if (missing.length) {
-    console.log(`  Trying ${missing.length} failed divisions again after a pause.`);
-    await sleep(30_000);
+  // More goes at any that failed, after longer and longer pauses: a wobble upstream that lasts a few minutes should not leave holes in the counts, or cost the whole run.
+  for (const pause of [30_000, 120_000, 300_000]) {
+    if (!missing.length) break;
+    console.log(`  Trying ${missing.length} failed divisions again after a ${pause / 1000} second pause.`);
+    await sleep(pause);
     const again = [];
     for (const id of missing) {
       try {

@@ -40,10 +40,10 @@ describe("ageing data", () => {
   });
   it("has life stages that add up to the ONS totals", () => {
     const total = (y) => Object.values(LIFE_STAGES[y]).reduce((a, b) => a + b, 0);
-    expect(total(2022)).toBeCloseTo(67.6, 1);
-    expect(total(2047)).toBeCloseTo(POPULATION.total2047, 1);
-    expect(LIFE_STAGES[2032].pensionable).toBeGreaterThan(LIFE_STAGES[2022].pensionable);
-    expect(POPULATION.dependency.y2047).toBeGreaterThan(POPULATION.dependency.y2022);
+    expect(total(POPULATION.base)).toBeCloseTo(POPULATION.totalBase, 1);
+    expect(total(POPULATION.end)).toBeCloseTo(POPULATION.totalEnd, 1);
+    expect(LIFE_STAGES[POPULATION.mid].pensionable).toBeGreaterThan(LIFE_STAGES[POPULATION.base].pensionable);
+    expect(POPULATION.dependency.end).toBeGreaterThan(POPULATION.dependency.base);
   });
   it("keeps the sources as secure addresses", () => {
     for (const s of Object.values(SOURCES)) expect(s.url).toMatch(/^https:\/\//);

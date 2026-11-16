@@ -1,4 +1,5 @@
 /** @jsxImportSource react */
+import { useState } from "react";
 import ExplainerPage from "../story/ExplainerPage";
 import Loading from "../Loading";
 import { LoadFailedNote } from "../MpCards";
@@ -11,6 +12,7 @@ import { statutoryInstruments } from "../../lib/dataFiles";
 import { summary, monthName } from "../../lib/instrumentsView";
 import { caseStudy } from "../../lib/instrumentsCase";
 import { dateLong } from "../../lib/upcoming";
+import { staleNotice } from "../../lib/staleNotice";
 
 // What a statutory instrument is, why ministers are allowed to make them, how Parliament still checks them, how many there are and the newest ones. Built from
 // data/statutoryInstruments.json (fetch-statutory-instruments.js, refreshed daily from Parliament's Statutory Instruments API and legislation.gov.uk). The reasons, the four
@@ -181,6 +183,7 @@ function build(data) {
 
 export default function StatutoryInstruments() {
   const { data, failed } = useDataFile(statutoryInstruments);
+  const [now] = useState(() => Date.now());
   if (!data) return <ExplainerPage {...HEAD} chapters={[]} lead={failed ? <LoadFailedNote item="the statutory instruments" /> : <Loading />} />;
   return (
     <ExplainerPage
@@ -193,6 +196,7 @@ export default function StatutoryInstruments() {
         { label: "legislation.gov.uk: statutory instruments", url: "https://www.legislation.gov.uk/uksi", note: "The text of each instrument, and the explanatory note that comes with it." },
       ]}
       checked={dateLong(data.generated)}
+      notice={staleNotice(data.generated, now, { source: "Parliament's Statutory Instruments service" })}
     />
   );
 }

@@ -12,7 +12,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseLongDate, staleExplainers, staleData, staleCheckedConstants, dueDates, capBehind, tradeHeadlineBehind, brokenLinks, report } from "./audit-content-lib.mjs";
 import { DUE } from "./content-ledger.mjs";
-import { pinnedOnsFiles, newestOnsEdition, hbaiEndYear, pinnedHbaiSlug, newestHbaiSlug, pinnedSipriYear, newestSipriYear, editionFinding } from "./source-editions-lib.mjs";
+import { yearlyOnsEditions, pinnedOnsFiles, newestOnsEdition, hbaiEndYear, pinnedHbaiSlug, newestHbaiSlug, pinnedSipriYear, newestSipriYear, editionFinding } from "./source-editions-lib.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const data = path.join(here, "../src/data");
@@ -105,6 +105,7 @@ async function ask(url, as = "json") {
       const res = await fetch(url, { headers: UA, signal: c.signal });
       clearTimeout(t);
       if (res.ok) return { body: await res[as === "json" ? "json" : "text"]() };
+      if (as === "exists" && res.status === 404) return { body: null, missing: true };
       why = `answered ${res.status}`;
       if (res.status !== 429 && res.status < 500) break;
     } catch (e) { why = `could not be reached (${e.cause?.code ?? e.name})`; }
@@ -137,6 +138,16 @@ async function newEditions() {
   const sipriNewest = sp.failed ? null : newestSipriYear(sp.body);
   if (sp.failed || !sipriNewest) out.push({ name: "SIPRI military expenditure database", problem: `could not be checked for a newer file (${sp.failed ?? "its page lists no file in the form this check reads"}).` });
   else if (sipri && sipriNewest > sipri) out.push(editionFinding({ source: "SIPRI military expenditure database", script: "build-defence-data.mjs", pinned: String(sipri), newest: String(sipriNewest), how: how("build-defence-data.mjs") }));
+  // Yearly ONS pages the site quotes (a salary, a pay gap, a wealth survey): is there already a page for the next year's edition?
+  const sources = [];
+  const walk = (dir) => { for (const f of fs.readdirSync(dir, { withFileTypes: true })) { const full = path.join(dir, f.name); if (f.isDirectory()) walk(full); else if (/\.(jsx?|mjs)$/.test(f.name) && !/\.test\./.test(f.name)) sources.push(full); } };
+  walk(path.join(here, "../src"));
+  for (const e of yearlyOnsEditions(sources.map((f) => fs.readFileSync(f, "utf8")).join("\n"))) {
+    const got = await ask(e.nextUrl, "exists");
+    const name = `ONS ${e.url.split("/").at(-2)}`;
+    if (got.failed) out.push({ name, problem: `could not be asked whether the ${e.next} edition is out (${got.failed}), so it was not checked this week.` });
+    else if (!got.missing) out.push({ name, problem: `the site quotes the ${e.shown} edition (${e.url}) but the ${e.next} edition is out (${e.nextUrl}). Update the figures and wording that quote it, and the address.` });
+  }
   return out;
 }
 const editions = process.argv.includes("--no-links") ? [] : await newEditions();

@@ -38,10 +38,24 @@ async function attemptOnce(url, options, timeoutMs) {
   }
 }
 
-export async function fetchRetry(url, options = {}, { retries = 3, timeoutMs = 60_000, baseDelayMs = 1000 } = {}) {
+// The OECD refuses (with a plain "500") any request that follows a few others within seconds, then keeps refusing for a while, so a script that asked for six tables one
+// straight after another failed on the fifth every time. For its address, each request waits until `gapMs` has passed since the last one this process made. Other
+// addresses are not held back.
+const lastRequestAt = new Map();
+export async function waitForTurn(url, gapMs, now = () => Date.now(), pause = sleep) {
+  let host;
+  try { host = new URL(String(url)).hostname; } catch { return; }
+  if (host !== "sdmx.oecd.org" || !gapMs) return;
+  const wait = (lastRequestAt.get(host) ?? 0) + gapMs - now();
+  lastRequestAt.set(host, Math.max(now(), (lastRequestAt.get(host) ?? 0) + gapMs));
+  if (wait > 0) await pause(wait);
+}
+
+export async function fetchRetry(url, options = {}, { retries = 3, timeoutMs = 60_000, baseDelayMs = 1000, gapMs = 12_000 } = {}) {
   let lastError;
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
+      await waitForTurn(url, gapMs);
       const res = await attemptOnce(url, options, timeoutMs);
       if (!RETRY_STATUS.has(res.status) || attempt === retries) return res;
       await sleep(waitBeforeRetry(attempt, res.headers.get("retry-after"), baseDelayMs));

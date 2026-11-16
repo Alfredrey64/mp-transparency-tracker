@@ -30,8 +30,8 @@ export default function InequalityGroups() {
         <p style={para}>The full-time gap has narrowed by {g.changeSince1997} percentage points since 1997. The gap for all employees is wider than for full-time because women are more likely to work part-time, and part-time jobs tend to pay less per hour than full-time ones.</p>
         <h3 style={{ margin: "20px 0 8px", fontSize: 16 }}>By age, full-time employees</h3>
         <BarRows label="Gender pay gap by age" accent={ACCENT} max={15} rows={g.byAge.map((r) => ({ label: r.band, value: r.gap, text: `${r.gap}%` }))} />
-        <p style={para}>The gap is small for people under 40 and much wider from 40 on. It also differs by place: {g.byNation.map((n) => `${n.name} ${n.gap}%`).join(", ")}. Every English region has a bigger gap than these three nations, and London and the South East have the biggest.</p>
-        <Caution>The gap is not the same as unequal pay for equal work, which is against the law. It reflects differences in the jobs, hours and careers of men and women. All 2025 figures are provisional.</Caution>
+        <p style={para}>The gap is small for people under 40 and much wider from 40 on. It also differs by place: {g.byNation.map((n) => `${n.name} ${n.gap}%`).join(", ")}. A figure below zero means women earn more than men there, on average. Every English region has a bigger gap than these three nations, and London, the South West and the South East have the biggest.</p>
+        <Caution>The gap is not the same as unequal pay for equal work, which is against the law. It reflects differences in the jobs, hours and careers of men and women. All {g.year} figures are provisional.</Caution>
       </Panel>
 
       <Panel

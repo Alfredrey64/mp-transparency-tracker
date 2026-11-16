@@ -16,6 +16,7 @@ function OverTime() {
   const line = (name, color, values) => ({ name, color, years: tb.times, values });
   const share = euShare("exports");
   const shareIn = euShare("imports");
+  const upTo = `The lines run to ${quarterLabel(tb.times.at(-1))}. The latest-quarter figures elsewhere on this page leave out precious metals and can be one quarter further on.`;
   const base = { offset: 0, labelFn: quarterLabel, breaks: EVENT_LINES, from: 2010, to: 2027 };
   return (
     <Panel
@@ -26,8 +27,8 @@ function OverTime() {
       <TrendExplorer
         accent={ACCENT}
         options={[
-          { key: "exports", label: "Exports", lines: [line("To the EU", ACCENT, tb.euExports), line("To the rest of the world", OTHER, tb.nonEuExports)], yFormat: (v) => `£${Math.round(v)}bn`, captionFormat: (v) => bn(v), change: "percent", ...base, note: `UK goods exports. They include precious metals, which can swing the figures from quarter to quarter. ${EVENT_NOTE}` },
-          { key: "imports", label: "Imports", lines: [line("From the EU", ACCENT, tb.euImports), line("From the rest of the world", OTHER, tb.nonEuImports)], yFormat: (v) => `£${Math.round(v)}bn`, captionFormat: (v) => bn(v), change: "percent", ...base, note: `UK goods imports. ${EVENT_NOTE}` },
+          { key: "exports", label: "Exports", lines: [line("To the EU", ACCENT, tb.euExports), line("To the rest of the world", OTHER, tb.nonEuExports)], yFormat: (v) => `£${Math.round(v)}bn`, captionFormat: (v) => bn(v), change: "percent", ...base, note: `UK goods exports. They include precious metals, which can swing the figures from quarter to quarter. ${upTo} ${EVENT_NOTE}` },
+          { key: "imports", label: "Imports", lines: [line("From the EU", ACCENT, tb.euImports), line("From the rest of the world", OTHER, tb.nonEuImports)], yFormat: (v) => `£${Math.round(v)}bn`, captionFormat: (v) => bn(v), change: "percent", ...base, note: `UK goods imports. ${upTo} ${EVENT_NOTE}` },
           { key: "share", label: "The EU's share", lines: [line("Share of exports going to the EU", ACCENT, share), line("Share of imports from the EU", "#C0561F", shareIn)], yFormat: (v) => `${Math.round(v)}%`, captionFormat: (v) => `${v.toFixed(1)}%`, change: "pp", ...base, note: `The EU's share of what the UK sells and buys in goods. ${EVENT_NOTE}` },
         ]}
       />

@@ -1498,3 +1498,4 @@
   .vg-axis { grid-template-columns: minmax(0, 1fr); } .vg-axis > i { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .vg-span, .vg-pt { transition: none !important; } .vg[data-go="0"] .vg-span { transform: none; } .vg[data-go="0"] .vg-pt.v { opacity: 1; } .vg-pt.s { left: calc(var(--ps) * 1%); } }
+.st-stale { margin: 0 0 18px; padding: 12px 16px; border-radius: 16px; border: 1px solid color-mix(in srgb, #C7871A 45%, var(--c-hairline)); background: color-mix(in srgb, #C7871A 9%, var(--c-paper-card)); font: 400 14.5px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }

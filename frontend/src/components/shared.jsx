@@ -158,7 +158,7 @@ export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = 
             <span>{kickerText}</span>
           </nav>
           <h1 className="page-hero-title">
-            {Icon && <span className="page-hero-icon"><Icon size={isHero ? 34 : 28} /></span>}
+            {Icon && <span className="page-hero-icon" aria-hidden="true"><Icon size={isHero ? 34 : 28} /></span>}
             <span>{title}</span>
           </h1>
           {subtitle && <p className="page-hero-sub">{subtitle}</p>}

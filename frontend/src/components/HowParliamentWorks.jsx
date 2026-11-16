@@ -10,6 +10,7 @@ import BillRoute from "./BillRoute";
 import { usePhone } from "../lib/usePhone";
 import GovernmentTiers from "./GovernmentTiers";
 import CrownArt from "./story/CrownArt";
+import { MEDIAN_SALARY } from "../data/referenceFigures";
 
 function CrownGraphic() {
   return (
@@ -250,7 +251,7 @@ function SalaryDiagram() {
       <SalaryBar label="MP's basic salary" amount={98599} max={190000} color="#4C6FA6" note="From April 2026. Set independently by IPSA, not by MPs themselves, reviewed each year." />
       <SalaryBar label="Cabinet minister (total)" amount={173769} max={190000} color="#4C6FA6" note="Basic salary plus £75,170 for the ministerial role. In practice most take about £8,000 less, because the ministerial pay has been voluntarily waived in part since 2008." />
       <SalaryBar label="Prime Minister (total)" amount={182436} max={190000} color="#4C6FA6" note="Basic salary plus £83,837 for the role, before the same voluntary reduction." />
-      <SalaryBar label="UK median full-time salary" amount={39039} max={190000} color={COLORS.inkSoft} note="ONS figure for April 2025, for comparison: all amounts rounded and reviewed annually, so treat as approximate." />
+      <SalaryBar label="UK median full-time salary" amount={MEDIAN_SALARY.value} max={190000} color={COLORS.inkSoft} note="ONS figure for April 2026, for comparison: all amounts rounded and reviewed annually, so treat as approximate." />
     </div>
   );
 }

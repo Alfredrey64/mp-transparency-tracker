@@ -44,3 +44,19 @@ describe("SIPRI", () => {
     expect(newestSipriYear("<p>nothing</p>")).toBeNull();
   });
 });
+
+describe("yearlyOnsEditions", () => {
+  const base = "https://www.ons.gov.uk/x/bulletins";
+  it("names the next year's address for each kind of yearly page", async () => {
+    const { yearlyOnsEditions } = await import("./source-editions-lib.mjs");
+    const text = [`${base}/genderpay/2026`, `${base}/gdhi/1997to2024`, `${base}/income/financialyearending2025`, `${base}/pop/mid2025`, `${base}/proj/2022based`, `${base}/wealth/april2020tomarch2022`, `${base}/uktrade/latest`].join(" ");
+    const got = Object.fromEntries(yearlyOnsEditions(text).map((e) => [e.url.split("/").at(-2), e.nextUrl.split("/").at(-1)]));
+    expect(got).toEqual({ genderpay: "2027", gdhi: "1997to2025", income: "financialyearending2026", pop: "mid2026", proj: "2024based", wealth: "april2022tomarch2024" });
+  });
+  it("counts a page once, by its newest edition cited", async () => {
+    const { yearlyOnsEditions } = await import("./source-editions-lib.mjs");
+    const got = yearlyOnsEditions(`${base}/pay/2025 and ${base}/pay/2026`);
+    expect(got).toHaveLength(1);
+    expect(got[0].next).toBe("2027");
+  });
+});

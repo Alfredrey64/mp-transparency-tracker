@@ -48,6 +48,8 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run check:size
+      # Every page's share image is named from its heading and description, so one whose wording changed has no image until it is redrawn (node scripts/build-page-og.mjs).
+      - run: node scripts/build-page-og.mjs --check
 
   phone-layout:
     name: Phone layout (every page at 320 and 375 px)
@@ -243,6 +245,11 @@ jobs:
         env:
           ONLY: home,statutoryInstruments,thinkTanks,devolved,budget,ageing,care
           WORKERS: "1"
+      # Every page opened with "reduce motion" on: fails on anything still travelling, spinning or looping (a short fade is allowed), and on a diagram that is neither named nor hidden
+      # from screen readers. Icons are decorative, so the shared icon sets mark themselves aria-hidden; a new diagram needs a role="img" and an aria-label, or aria-hidden.
+      - run: node e2e/motion-a11y.audit.mjs
+        env:
+          WORKERS: "2"
 
   routing-offline:
     name: Page addresses, back button and working offline

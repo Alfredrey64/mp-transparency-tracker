@@ -4,10 +4,10 @@
 // of scale, not for precise arithmetic.
 
 export const MEDIAN_SALARY = {
-  value: 39039,
+  value: 40911,
   label: "typical full-time salary",
-  source: "ONS, Annual Survey of Hours and Earnings, April 2025: median gross annual pay for full-time employees",
-  url: "https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/bulletins/annualsurveyofhoursandearnings/2025",
+  source: "ONS, Annual Survey of Hours and Earnings, April 2026 (provisional): median gross annual pay for full-time employees",
+  url: "https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/bulletins/annualsurveyofhoursandearnings/2026",
 };
 
 export const MP_SALARY = {

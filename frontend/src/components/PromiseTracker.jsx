@@ -27,7 +27,7 @@ const LABOUR_RED = "#C8102E";
 // logo artwork, which we deliberately avoid using anywhere in this app.
 function RoseEmblem({ size = 30 }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
+    <svg aria-hidden="true" focusable="false" width={size} height={size} viewBox="0 0 32 32" fill="none">
       <path d="M16 21.5c-1 3-0.6 6.2 1.4 8.7" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" opacity="0.85" />
       <path d="M17 25.5c2-1.1 4-0.3 4.3 1.6c-2.2 0.9-4.2 0-4.3-1.6Z" fill="#fff" opacity="0.7" />
       <circle cx="12.8" cy="13.8" r="5.6" fill="#fff" opacity="0.55" />

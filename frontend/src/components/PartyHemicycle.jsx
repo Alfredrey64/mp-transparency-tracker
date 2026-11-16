@@ -93,6 +93,7 @@ export function PartyHemicycle({ politicians, onSelectParty, noPartyLabel = "Ind
     <div style={maxWidth ? { maxWidth, margin: "0 auto" } : undefined}>
       <div ref={wrapRef} style={{ position: "relative" }}>
       <svg
+        role="img" aria-label={`Seat plan with one dot for each of ${total} seats. ${parties.slice(0, legendCount).map((p) => `${p.name} ${p.count}`).join(", ")}.`}
         viewBox={`${-viewW / 2} ${-viewH + 10} ${viewW} ${viewH}`}
         style={{ width: "100%", height: "auto", overflow: "visible", display: "block" }}
       >

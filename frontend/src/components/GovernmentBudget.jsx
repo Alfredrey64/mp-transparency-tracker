@@ -67,7 +67,7 @@ export default function GovernmentBudget({ embedded = false }) {
 
       <div style={{ display: "flex", gap: 36, flexWrap: "wrap", alignItems: "center", marginBottom: 28 }}>
         <div style={{ position: "relative", width: CENTER * 2, height: CENTER * 2, flexShrink: 0, margin: "0 auto" }}>
-          <svg width={CENTER * 2} height={CENTER * 2} viewBox={`0 0 ${CENTER * 2} ${CENTER * 2}`}>
+          <svg aria-hidden="true" focusable="false" width={CENTER * 2} height={CENTER * 2} viewBox={`0 0 ${CENTER * 2} ${CENTER * 2}`}>
             <circle cx={CENTER} cy={CENTER} r={R} fill="none" stroke={COLORS.hairline} strokeWidth={STROKE} opacity={0.4} />
             <g transform={`rotate(-90 ${CENTER} ${CENTER})`}>
               {segments.map((s, i) => {
