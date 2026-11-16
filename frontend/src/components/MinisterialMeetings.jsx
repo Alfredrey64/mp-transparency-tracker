@@ -145,7 +145,7 @@ export default function MinisterialMeetings() {
       <div className="mm-layout">
         <aside className="mm-side">
           <p style={{ ...text, margin: 0 }}>
-            The meetings cover {MINISTERIAL_MEETINGS_PERIOD}. That is the latest period any department has published.
+            The meetings cover {MINISTERIAL_MEETINGS_PERIOD}: the Department for Work and Pensions\u2019 January to March return and the Department for Business and Trade\u2019s April to June return. Each is the latest that department has published.
           </p>
 
           <div style={{ position: "relative", marginTop: 22 }}>

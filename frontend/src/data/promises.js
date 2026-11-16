@@ -7,7 +7,7 @@
 // Shared by the Promises tracker page and the Britain in numbers pages, which show the
 // pledges that go with each set of figures.
 
-export const LAST_CHECKED = "October 2026";
+export const LAST_CHECKED = "November 2026";
 export const SOURCE_URL = "https://fullfact.org/government-tracker/";
 
 export const STATUS = {
@@ -73,13 +73,13 @@ export const CATEGORIES = [
       },
       {
         promise: "A National Care Service for England",
-        status: "wait_see",
-        reality: "This is a long-term structural reform; an independent commission is still working through recommendations.",
+        status: "in_progress",
+        reality: "Full Fact rates this in progress. An independent commission under Baroness Casey is due to report in summer 2027, and the government says the service will be introduced in phases in the next Parliament.",
       },
       {
         promise: "Recruit 8,500 additional mental health staff",
-        status: "on_track",
-        reality: "Recruitment is progressing against this target.",
+        status: "achieved",
+        reality: "Full Fact rates this achieved: the full-time mental health workforce in England grew by 8,550 between June 2024 and August 2026, above the 8,500 target. It will review the rating if the rise falls below 8,500.",
       },
     ],
   },
@@ -129,7 +129,7 @@ export const CATEGORIES = [
       {
         promise: "No new North Sea oil and gas exploration licences",
         status: "on_track",
-        reality: "The policy has been maintained since taking office.",
+        reality: "No new exploration licences have been issued since May 2024, and the government confirmed in November 2025 that it will not issue any. It plans new certificates for drilling beside existing sites, which Full Fact notes does not count as a new exploration licence.",
       },
       {
         promise: "Halve sewage pollution from water companies",
