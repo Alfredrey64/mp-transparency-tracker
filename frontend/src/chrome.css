@@ -670,7 +670,7 @@ button.mp-pill-link:focus-visible, .mp-band-star:focus-visible { outline: 3px so
 .glow { position: relative; }
 .glow::after {
   content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit; opacity: 0; transition: opacity 0.25s var(--ease-out);
-  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--k, var(--c-brand)) 16%, transparent), transparent 70%);
+  background: radial-gradient(150px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--k, var(--c-brand)) 16%, transparent), transparent 70%);
 }
 .glow:hover::after { opacity: 1; }
 @media (hover: none) { .glow::after { display: none; } }
