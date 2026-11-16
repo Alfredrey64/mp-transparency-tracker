@@ -4,12 +4,13 @@
 .fm-tractor { animation: fm-drive 9s cubic-bezier(0.3, 0.1, 0.25, 1) 0.5s both; }
 .fm-tractor-body { transform-box: fill-box; }
 .fm-wheel { animation: fm-spin 9s cubic-bezier(0.3, 0.1, 0.25, 1) 0.5s both; }
-.fm-stalk { animation: fm-sway 3.2s ease-in-out var(--d, 0s) 3; transform-box: view-box; }
-.fm-sun { animation: fm-glow 5s ease-in-out 2 alternate; }
+.fm-stalk { animation: fm-sway 3.6s ease-in-out var(--d, 0s) 3; transform-box: view-box; }
+.fm-sun { animation: fm-glow 5s ease-in-out 2; }
 @keyframes fm-drive { from { transform: translateX(-160px); } to { transform: translateX(840px); } }
 @keyframes fm-spin { from { transform: rotate(-1500deg); } to { transform: rotate(0); } }
-@keyframes fm-sway { 0%, 100% { transform: rotate(-2.4deg); } 50% { transform: rotate(2.4deg); } }
-@keyframes fm-glow { from { opacity: 0.75; } to { opacity: 1; } }
+/* Each sway starts and ends upright, so the stalk never jumps when it begins or when the last one finishes. */
+@keyframes fm-sway { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-2.6deg); } 75% { transform: rotate(2.6deg); } }
+@keyframes fm-glow { 0%, 100% { opacity: 1; } 50% { opacity: 0.75; } }
 /* Parked where it ends, so a page that does not move is still a finished picture. */
 @media (prefers-reduced-motion: reduce) { .fm-tractor { animation: none; transform: translateX(840px); } .fm-wheel, .fm-stalk, .fm-sun { animation: none; } }
 

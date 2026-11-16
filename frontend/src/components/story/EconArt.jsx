@@ -162,7 +162,7 @@ export function JobsScene() {
 
 // ---------- Public finances: the Treasury under a flag, the Budget box taking in coins, scales that settle, and stacks that climb ----------
 // ---------- Public finances: the Treasury at the centre with the books balanced either side: matching rows of coin stacks, the tallest at the edges, joined by a dotted line ----------
-const FIN_L = [{ x: 96, n: 13 }, { x: 176, n: 11 }, { x: 256, n: 9 }, { x: 336, n: 7 }, { x: 416, n: 5 }];
+const FIN_L = [{ x: 170, n: 13 }, { x: 234, n: 11 }, { x: 298, n: 9 }, { x: 362, n: 7 }, { x: 426, n: 5 }];
 const FIN_R = FIN_L.map((s) => ({ x: 1440 - s.x, n: s.n })).reverse();
 const COIN = 7;
 function Stack({ x, n, s }) {
@@ -195,7 +195,7 @@ export function FinanceScene() {
       <circle cx="720" cy="86" r="9" fill="#FFD98A" />
       <g fill="#FFD98A" opacity=".5">{Array.from({ length: 9 }, (_, i) => <rect key={i} x={547 + i * 40.5} y="112" width="20" height="50" rx="2" />)}</g>
       <g className="hs-pillar">{Array.from({ length: 10 }, (_, i) => <g key={i}><rect x={530 + i * 40.5 - 9} y="106" width="18" height="62" rx="2" /><path d={`M${530 + i * 40.5} 110v54`} stroke="var(--s2)" strokeWidth="1.2" opacity=".7" /></g>)}</g>
-      <path d="M720 34V6" stroke="#C9D3E6" strokeWidth="2" /><g className="ec-flag"><path d="M720 6h28l-6 6 6 6h-28z" fill="var(--a)" /></g>
+      <path d="M720 34V6" stroke="#C9D3E6" strokeWidth="2" /><circle cx="720" cy="4.5" r="2.6" fill="#E8C766" /><g className="ec-flag"><path d="M720 6h28l-6 6 6 6h-28z" fill="var(--a)" /></g>
       {/* the same stacks on both sides, rising towards the edges, with a dotted line over their tops */}
       {FIN_L.map((s, i) => <Stack key={`l${i}`} x={s.x} n={s.n} s={i} />)}
       {FIN_R.map((s, i) => <Stack key={`r${i}`} x={s.x} n={s.n} s={FIN_L.length + i} />)}
@@ -206,13 +206,14 @@ export function FinanceScene() {
 }
 
 // ---------- Taxes: the Treasury's vault door at the centre, coins streaming in from pay, shops, homes and fuel and out to hospitals, schools, roads and defence ----------
-const SRC = [120, 250, 380, 510];
-const SNK = [960, 1090, 1220, 1350];
+// Kept well inside the picture (the band crops its ends on narrower screens) and evenly spaced either side of the vault.
+const SRC = [250, 366, 482, 598];
+const SNK = [842, 958, 1074, 1190];
 const inRibbon = (x) => `M${x} 124C${x} 58 540 52 652 108`;
 const outRibbon = (x) => `M788 108C900 52 ${x} 58 ${x} 124`;
 function Source({ x, kind }) {
   return (
-    <g transform={`translate(${x} 190) scale(1.4)`}>
+    <g transform={`translate(${x} 190) scale(1.28)`}>
       {kind === 0 && <g><rect x="-26" y="-34" width="52" height="34" rx="4" fill="var(--s4)" /><path d="M-26 -34 0 -14 26 -34" fill="none" stroke="var(--s2)" strokeWidth="2" /><circle cx="0" cy="-12" r="8" fill="#F3C65A" stroke="#B88A2C" /><path transform="translate(0 -12)" d={POUND} fill="none" stroke="#7A5A10" strokeWidth="1.3" strokeLinecap="round" /></g>}
       {kind === 1 && <g><rect x="-28" y="-44" width="56" height="44" rx="2" fill="url(#tx-bld)" /><path d="M-32 -44h64l-6 14h-52z" className="hs-awn-a" /><path d="M-16 -44h6l-2 14h-6zM2 -44h6l-2 14h-6zM20 -44h6l-2 14h-6z" className="hs-awn-b" /><rect x="-22" y="-26" width="26" height="20" rx="2" fill="#FFD98A" opacity=".8" /><rect x="10" y="-26" width="12" height="26" rx="2" fill="var(--s2)" /></g>}
       {kind === 2 && <g><rect x="-24" y="-30" width="48" height="30" fill="url(#tx-bld)" /><path d="M-30 -30 0 -54 30 -30z" fill="var(--s3)" /><rect x="12" y="-54" width="7" height="14" fill="var(--s3)" /><rect x="-16" y="-22" width="14" height="14" rx="2" fill="#FFD98A" opacity=".85" /><rect x="6" y="-22" width="12" height="22" rx="2" fill="var(--s2)" /></g>}
@@ -222,7 +223,7 @@ function Source({ x, kind }) {
 }
 function Sink({ x, kind, i }) {
   return (
-    <g transform={`translate(${x} 190) scale(1.4)`}>
+    <g transform={`translate(${x} 190) scale(1.28)`}>
       <ellipse className="ec-arrive" cx="0" cy="-22" rx="52" ry="40" fill="#F3C65A" style={{ "--d": `${3.4 + i * 0.5}s` }} />
       {kind === 0 && <g><rect x="-32" y="-46" width="64" height="46" rx="2" fill="url(#tx-bld)" /><rect x="-10" y="-60" width="20" height="16" rx="2" fill="url(#tx-bld)" /><path d="M-3 -58h6v5h5v6h-5v5h-6v-5h-5v-6h5z" fill="#FFE6A8" /><rect x="-26" y="-36" width="10" height="10" rx="1" fill="#FFD98A" opacity=".8" /><rect x="16" y="-36" width="10" height="10" rx="1" fill="#FFD98A" opacity=".8" /><rect x="-6" y="-16" width="12" height="16" rx="1" fill="var(--s2)" /></g>}
       {kind === 1 && <g><path d="M-34 0v-34l34-20 34 20v34z" fill="url(#tx-bld)" /><circle cx="0" cy="-34" r="8" fill="#FFE6A8" /><path d="M0 -39v5h4" stroke="#3A2A20" strokeWidth="1.5" fill="none" strokeLinecap="round" /><rect x="-24" y="-20" width="10" height="12" rx="1" fill="#FFD98A" opacity=".8" /><rect x="14" y="-20" width="10" height="12" rx="1" fill="#FFD98A" opacity=".8" /><path d="M0 -54V-68h12v7H0" stroke="var(--s3)" strokeWidth="2" fill="var(--a)" /></g>}

@@ -4,7 +4,7 @@
   --s1: color-mix(in srgb, var(--a) 18%, #0A1428);
   --s2: color-mix(in srgb, var(--a) 32%, #0A1428);
   --s3: color-mix(in srgb, var(--a) 46%, #0C1830);
-  --s4: color-mix(in srgb, var(--a) 62%, #F2F6FF 14%);
+  --s4: color-mix(in srgb, var(--a) 62%, #F2F6FF);
   --lamp: color-mix(in srgb, var(--a) 38%, #FFFFFF);
 }
 .hs-1 { fill: var(--s1); } .hs-2 { fill: var(--s2); } .hs-3 { fill: var(--s3); } .hs-4 { fill: var(--s4); }
@@ -33,8 +33,9 @@
 /* ---- Jobs and pay ---- */
 .ec-walk { animation: ec-walk-in 5.2s cubic-bezier(0.25, 0.7, 0.2, 1) calc(var(--i) * 0.28s) backwards; }
 @keyframes ec-walk-in { from { transform: translateX(-760px); } }
-.ec-bob { animation: ec-bob 0.46s ease-in-out calc(var(--i) * 0.28s) 11 alternate; }
-@keyframes ec-bob { from { transform: translateY(0); } to { transform: translateY(-2.4px); } }
+/* The steps start and end at rest (0 -> out -> 0), over the same 5.2 s as the walk, so nobody snaps into place when they stop. */
+.ec-bob { animation: ec-bob 0.37s ease-in-out calc(var(--i) * 0.28s) 14; }
+@keyframes ec-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2.4px); } }
 .ec-coin { animation: ec-coin 2.4s ease-out calc(6.4s + var(--i) * 0.2s) backwards; opacity: 0; }
 @keyframes ec-coin { 0% { opacity: 0; transform: translateY(8px); } 22% { opacity: 1; } 78% { opacity: 1; } 100% { opacity: 0; transform: translateY(-26px); } }
 
@@ -75,12 +76,13 @@ html[data-calm] .ec-flow, html[data-calm] .ec-puff, html[data-calm] .ec-coin, ht
 @keyframes ec-sunrise { from { transform: translateY(78px); } }
 .ec-lampglow { opacity: 0.2; animation: ec-lampon 1.2s ease-out var(--d) backwards; }
 @keyframes ec-lampon { from { opacity: 0; } }
-.ec-leg { animation: ec-stride 0.46s ease-in-out calc(var(--i) * 0.28s) 11 alternate; }
-.ec-leg-b { animation-direction: alternate-reverse; }
-@keyframes ec-stride { from { transform: rotate(-24deg); } to { transform: rotate(24deg); } }
+.ec-leg { animation: ec-stride 0.74s ease-in-out calc(var(--i) * 0.28s) 7; }
+.ec-leg-b { animation-direction: reverse; }
+@keyframes ec-stride { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-24deg); } 75% { transform: rotate(24deg); } }
 .ec-jib2 { transform-box: view-box; transform-origin: 1332px 28px; animation: ec-swing 6s ease-in-out 0.4s backwards; }
-.ec-flag { transform-box: view-box; transform-origin: 520px 12px; animation: ec-wave 1.2s ease-in-out 0.4s 6 alternate; }
-@keyframes ec-wave { from { transform: skewY(-6deg) scaleX(0.92); } to { transform: skewY(6deg) scaleX(1); } }
+/* The flag is run up the mast once and then flies. */
+.ec-flag { animation: ec-raise 2.6s cubic-bezier(0.35, 0.1, 0.25, 1) 0.8s backwards; }
+@keyframes ec-raise { from { transform: translateY(20px); } }
 .ec-glint { opacity: 0; animation: ec-twinkle 1.4s ease-in-out var(--d) 3; }
 @keyframes ec-twinkle { 0%, 100% { opacity: 0; transform: scale(0.4); } 50% { opacity: 0.95; transform: scale(1.4); } }
 .ec-vwheel { animation: ec-vturn 3.4s cubic-bezier(0.3, 0.1, 0.2, 1) 0.4s backwards; }
