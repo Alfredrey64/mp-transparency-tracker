@@ -9,6 +9,7 @@ import { A, countSetBy, indexed, rises, shareOfEarnings, whatIf } from "../lib/a
 import { D as INEQ, financial, povertyFacts } from "../lib/inequality";
 import { ageText, formatDate, statePensionAge } from "../lib/pensionAge";
 import { financialYear, para, strong } from "../lib/insightStyle";
+import { glide } from "../lib/scrollBehavior";
 
 // Ageing and pensions: the State Pension and who gets it, what it costs, how the population is ageing, and the arguments.
 // One page with a row of toggles; the address carries the toggle (/ageing/cost).
@@ -360,7 +361,7 @@ export default function Ageing({ param }) {
     const moved = next !== tab;
     setTab(next);
     window.history.replaceState(null, "", next === "overview" ? "#/ageing" : `#/ageing/${next}`);
-    if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ block: "start" });
+    if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ behavior: glide(), block: "start" });
   }
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>

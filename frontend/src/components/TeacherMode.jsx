@@ -22,6 +22,7 @@ import { loadGsap } from "../lib/gsapLoader";
 import { lowData } from "../lib/lowData";
 import { buildSlides } from "./teacher/slides";
 import "../teacher.css";
+import { glide } from "../lib/scrollBehavior";
 
 // Teacher mode: a separate way to use the site. This page explains it and starts it; the lesson itself is the full-screen presenter.
 const FIRST = Object.fromEntries(CHAPTERS.map((c) => [c.key, buildSlides().findIndex((s) => s.chapter === c.key)]));
@@ -102,7 +103,7 @@ export default function TeacherMode({ param = null }) {
     const moved = next !== tab;
     setTab(next);
     window.history.replaceState(null, "", next === "lessons" ? "#/teacher" : `#/teacher/${next}`);
-    if (moved && toggles.current && toggles.current.getBoundingClientRect().top < 0) toggles.current.scrollIntoView({ block: "start" });
+    if (moved && toggles.current && toggles.current.getBoundingClientRect().top < 0) toggles.current.scrollIntoView({ behavior: glide(), block: "start" });
   }
   // An address such as /teacher/activities/BINGO-12 is a class code. It opens that game with the teacher's tabs out of the way, for a pupil sent the link or QR code.
   const code = tab === "activities" && String(param ?? "").startsWith("activities/") ? String(param).slice("activities/".length).split("/")[0] || null : null;

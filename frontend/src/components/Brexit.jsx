@@ -10,6 +10,7 @@ import BrexitSociety from "./BrexitSociety";
 import BrexitPolitics from "./BrexitPolitics";
 import BrexitArguments from "./BrexitArguments";
 import BrexitAbout from "./BrexitAbout";
+import { glide } from "../lib/scrollBehavior";
 
 // Brexit ten years on: the economy, trade, people and politics, what experts say and where they disagree, and the case for and against.
 // One page with a row of toggles; the address carries the toggle (/brexit/economy).
@@ -36,7 +37,7 @@ export default function Brexit({ param }) {
     const moved = next !== tab;
     setTab(next);
     window.history.replaceState(null, "", next === "overview" ? "#/brexit" : `#/brexit/${next}`);
-    if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ block: "start" });
+    if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ behavior: glide(), block: "start" });
   }
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>

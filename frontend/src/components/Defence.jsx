@@ -7,6 +7,7 @@ import { BarRows, Caution, PageToggles, Panel, RangeField, Stats, Takeaways, Tim
 import { CHECKED, FORCES, MOMENTS, NATO_COUNT, PROMISES, RANKING, SOURCES, TARGETS } from "../data/defence";
 import { D, at, last, lastNonNull, stayedUnder } from "../lib/defence";
 import { para, strong, toPoints, yearLabel } from "../lib/insightStyle";
+import { glide } from "../lib/scrollBehavior";
 
 // Defence: how much the UK spends compared with the past and with others, what it has promised, the armed forces' numbers, and the arguments.
 // One page with a row of toggles; the address carries the toggle (/defence/spending).
@@ -392,7 +393,7 @@ export default function Defence({ param }) {
     const moved = next !== tab;
     setTab(next);
     window.history.replaceState(null, "", next === "overview" ? "#/defence" : `#/defence/${next}`);
-    if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ block: "start" });
+    if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ behavior: glide(), block: "start" });
   }
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>

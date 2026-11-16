@@ -7,6 +7,7 @@ import { BarRows, Caution, PageToggles, Panel, RangeField, Stats, Takeaways, Tre
 import { ATTAINMENT, CHECKED, SCHOOLS, SEND, SOURCES, UNIVERSITY } from "../data/education";
 import { AUTUMN, E, academicYear, at, cpiMonth, feeHistory, gap, last, repayments } from "../lib/education";
 import { para, strong } from "../lib/insightStyle";
+import { glide } from "../lib/scrollBehavior";
 
 // Education: schools in England, the gap between richer and poorer pupils, special educational needs, and university fees and loans.
 // One page with a row of toggles; the address carries the toggle (/education/send).
@@ -391,7 +392,7 @@ export default function Education({ param }) {
     const moved = next !== tab;
     setTab(next);
     window.history.replaceState(null, "", next === "overview" ? "#/education" : `#/education/${next}`);
-    if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ block: "start" });
+    if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ behavior: glide(), block: "start" });
   }
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>

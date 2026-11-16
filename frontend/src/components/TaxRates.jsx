@@ -17,6 +17,7 @@ import TaxCompare from "./TaxCompare";
 import TaxAbout from "./TaxAbout";
 import Loading from "./Loading";
 import { LOADERS } from "../pageLoaders";
+import { glide } from "../lib/scrollBehavior";
 
 // Taxes: one page with a row of toggles. Overview (rates today, what is coming up, what is collected and spent), where the spending goes, each tax's rate through time, who
 // changed them, comparisons, what a salary pays and the sources. The address carries the toggle and what is picked inside it (#/taxRates/vat,
@@ -85,7 +86,7 @@ export default function TaxRates({ param }) {
     setNav(next);
     window.history.replaceState(null, "", hashFor(next));
     // Switching view from further down the page (for example from a tile on the overview) puts the toggles back at the top.
-    if (moved && tabsRef.current && tabsRef.current.getBoundingClientRect().top < 0) tabsRef.current.scrollIntoView({ block: "start" });
+    if (moved && tabsRef.current && tabsRef.current.getBoundingClientRect().top < 0) tabsRef.current.scrollIntoView({ behavior: glide(), block: "start" });
   }
 
   const current = TABS.find((t) => t.key === nav.tab);

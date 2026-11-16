@@ -10,6 +10,7 @@ import { CATEGORIES, TOTAL_BN } from "../data/publicSpending";
 import { COMPARE_MEASURES, H, MAP_METRICS, NATIONAL, NHS_KEYS, NOW, SNAPSHOTS, YEAR_AGO, compareRanking, last, latest, low, nationalNow, nhsRegionName, peak, peakSince, periodText, regionStats, timeText } from "../lib/health";
 import { para, strong } from "../lib/insightStyle";
 import { ordinal } from "../lib/regionData";
+import { glide } from "../lib/scrollBehavior";
 
 // The NHS: how long people wait for hospital treatment and emergency care, where, what the NHS is staffed and paid for, how the UK
 // compares, and the arguments. One page with a row of toggles; the address carries the toggle (/nhs/waiting).
@@ -335,7 +336,7 @@ export default function Nhs({ param }) {
     const moved = next !== tab;
     setTab(next);
     window.history.replaceState(null, "", next === "overview" ? "#/nhs" : `#/nhs/${next}`);
-    if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ block: "start" });
+    if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ behavior: glide(), block: "start" });
   }
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>

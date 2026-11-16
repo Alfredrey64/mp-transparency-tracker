@@ -8,6 +8,7 @@ import GovernmentsTab from "./GovernmentsTab";
 import DevolvedElections from "./DevolvedElections";
 import ElectionsExplained from "./ElectionsExplained";
 import { specForView } from "../lib/electionSpecs";
+import { glide } from "../lib/scrollBehavior";
 
 // General elections: the 2024 result, every election since 1945, and the governments that followed them. The address carries the tab and the
 // item picked (#/generalElection/history/1997, #/generalElection/governments/thatcher) so any view can be shared.
@@ -86,8 +87,8 @@ export default function GeneralElection({ param }) {
         {nav.tab === "2024" && <GeneralElection2024 />}
         {nav.tab === "history" && <ElectionHistory electionId={nav.item?.startsWith("seat/") ? null : nav.item} seat={nav.item?.startsWith("seat/") ? nav.item.slice(5) : null} onPick={(id) => go("history", id)} />}
         {nav.tab === "devolved" && <DevolvedElections item={nav.item} onPick={(item) => go("devolved", item)} />}
-        {nav.tab === "explained" && <ElectionsExplained onOpen={(tab, item) => { go(tab, item ?? null); window.scrollTo({ top: 0 }); }} />}
-        {nav.tab === "governments" && <GovernmentsTab id={nav.item} onSelect={(id) => go("governments", id)} onOpenElection={(id) => { go("history", id); window.scrollTo({ top: 0 }); }} />}
+        {nav.tab === "explained" && <ElectionsExplained onOpen={(tab, item) => { go(tab, item ?? null); window.scrollTo({ top: 0, behavior: glide() }); }} />}
+        {nav.tab === "governments" && <GovernmentsTab id={nav.item} onSelect={(id) => go("governments", id)} onOpenElection={(id) => { go("history", id); window.scrollTo({ top: 0, behavior: glide() }); }} />}
       </div>
     </div>
   );

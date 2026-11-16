@@ -12,6 +12,7 @@ import { NATIONS } from "../data/devolvedElections";
 import { D, F_LAST, G_LAST, NAMES, S_LAST, fiscalTotal, gbp, gdpPerHead, indexOf, perHead, surplusPlaces, yearText } from "../lib/devolution";
 import { ACCENT, jump, li } from "../lib/devolutionStyle";
 import { para, strong } from "../lib/insightStyle";
+import { glide } from "../lib/scrollBehavior";
 
 // Devolution and the union: what Scotland, Wales and Northern Ireland and the regions of England spend, raise and produce, who decides what, and the
 // arguments about funding, the union and English devolution. One page with a row of toggles; the address carries the toggle (/union/money).
@@ -196,7 +197,7 @@ export default function Union({ param }) {
     const moved = next !== tab;
     setTab(next);
     window.history.replaceState(null, "", next === "overview" ? "#/union" : `#/union/${next}`);
-    if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ block: "start" });
+    if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ behavior: glide(), block: "start" });
   }
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>

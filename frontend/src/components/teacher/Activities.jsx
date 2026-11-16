@@ -23,6 +23,7 @@ import ClassCode from "./ClassCode";
 import { GAME_KEYS, decode, encode, gamePath } from "../../lib/classCode";
 import "../../classroom.css";
 import "../../games.css";
+import { glide } from "../../lib/scrollBehavior";
 
 // Every classroom activity and game, as a grid of cards. Pick one to play it in place, with a way back to the grid. All of them run in the browser, on a big
 // screen or a pupil's own device, and nothing a pupil does is saved or sent anywhere.
@@ -66,7 +67,7 @@ export default function Activities({ code = null, pupil = false }) {
   const first = useRef(true);
   useEffect(() => {
     if (first.current) { first.current = false; return; }
-    top.current?.scrollIntoView({ block: "start" });
+    top.current?.scrollIntoView({ behavior: glide(), block: "start" });
     top.current?.querySelector("h2")?.focus({ preventScroll: true });
   }, [picked]);
 

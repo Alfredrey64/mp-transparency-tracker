@@ -12,6 +12,7 @@ import InequalityAbroad from "./InequalityAbroad";
 import InequalityGroups from "./InequalityGroups";
 import InequalityDebate from "./InequalityDebate";
 import InequalityAbout from "./InequalityAbout";
+import { glide } from "../lib/scrollBehavior";
 
 // Economic inequality in the UK: how unevenly income and wealth are shared, who is in poverty, and how it differs by place and by group, with the
 // main arguments about what to do. One page with a row of toggles; the address carries the toggle (/inequality/wealth).
@@ -40,7 +41,7 @@ export default function Inequality({ param }) {
     const moved = next !== tab;
     setTab(next);
     window.history.replaceState(null, "", next === "overview" ? "#/inequality" : `#/inequality/${next}`);
-    if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ block: "start" });
+    if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ behavior: glide(), block: "start" });
   }
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>

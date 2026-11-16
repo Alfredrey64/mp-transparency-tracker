@@ -11,6 +11,7 @@ import { BASE, BILL_LAST, BILL_YEARS, BL, CAP_LAST, E, EM, EU_LAST, FP, LAST_YEA
 import { ACCENT, group, jump, li } from "../lib/energyStyle";
 import { para, strong } from "../lib/insightStyle";
 import { ordinal } from "../lib/regionData";
+import { glide } from "../lib/scrollBehavior";
 
 // Net zero and energy bills: how much the UK releases, where from and whether it is on course; where its electricity comes from; what households pay for
 // energy and why; and the arguments. One page with a row of toggles; the address carries the toggle (/energy/bills).
@@ -191,7 +192,7 @@ export default function Energy({ param }) {
     const moved = next !== tab;
     setTab(next);
     window.history.replaceState(null, "", next === "overview" ? "#/energy" : `#/energy/${next}`);
-    if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ block: "start" });
+    if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ behavior: glide(), block: "start" });
   }
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>

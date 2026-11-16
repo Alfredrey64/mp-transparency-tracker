@@ -9,6 +9,7 @@ import LineChart from "./LineChart";
 import { para, strong } from "../lib/insightStyle";
 import CountValue from "./CountValue";
 import "../tabfoot.css";
+import { glide } from "../lib/scrollBehavior";
 
 // Building blocks shared by the issue pages (Inequality, Brexit, and the others): the row of toggles at the top, a card with a title and its source,
 // headline figures, bars for comparing a handful of things, a note about a limit of the figures, and a time chart with who was in government behind it.
@@ -48,8 +49,8 @@ export function PageToggles({ tabs, current, onPick, label, idPrefix }) {
       </div>
       {panel && (next || prev) && createPortal(
         <nav className="tabfoot" data-solo={prev && next ? undefined : "1"} aria-label="Move to another view">
-          {prev && <button type="button" className="tabfoot-prev" style={{ "--c": prev.colour }} onClick={() => { onPick(prev.key); document.getElementById(`${idPrefix}-tab-${prev.key}`)?.scrollIntoView({ block: "center" }); }}><small>Back</small><b>{prev.label}</b>{prev.blurb && <span>{prev.blurb}</span>}</button>}
-          {next && <button type="button" className="tabfoot-next" style={{ "--c": next.colour }} onClick={() => { onPick(next.key); document.getElementById(`${idPrefix}-tab-${next.key}`)?.scrollIntoView({ block: "center" }); }}><small>Next view</small><b>{next.label}</b><span>{next.blurb}</span></button>}
+          {prev && <button type="button" className="tabfoot-prev" style={{ "--c": prev.colour }} onClick={() => { onPick(prev.key); document.getElementById(`${idPrefix}-tab-${prev.key}`)?.scrollIntoView({ behavior: glide(), block: "center" }); }}><small>Back</small><b>{prev.label}</b>{prev.blurb && <span>{prev.blurb}</span>}</button>}
+          {next && <button type="button" className="tabfoot-next" style={{ "--c": next.colour }} onClick={() => { onPick(next.key); document.getElementById(`${idPrefix}-tab-${next.key}`)?.scrollIntoView({ behavior: glide(), block: "center" }); }}><small>Next view</small><b>{next.label}</b><span>{next.blurb}</span></button>}
         </nav>,
         panel,
       )}

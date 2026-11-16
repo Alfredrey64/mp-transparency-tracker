@@ -10,6 +10,7 @@ import { CHECKED, PARENTS, SOURCES, UNPAID } from "../data/care";
 import { A, C, F, K, KYEAR, LAST_YEAR, W, WYEAR, bnText, cl, grossRealBn, kAt, kLast, last, peakAt, premium, realChangeSince, realChangeYear, requestsTotal, yearText } from "../lib/care";
 import { ACCENT, group, jump, li } from "../lib/careStyle";
 import { para, strong } from "../lib/insightStyle";
+import { glide } from "../lib/scrollBehavior";
 
 // Social care and childcare: what councils spend on adult social care and who gets it, the people who provide it and the carers who do the rest, and the
 // funded childcare and early education for young children, with the arguments. One page with a row of toggles; the address carries the toggle (/care/workers).
@@ -175,7 +176,7 @@ export default function Care({ param }) {
     const moved = next !== tab;
     setTab(next);
     window.history.replaceState(null, "", next === "overview" ? "#/care" : `#/care/${next}`);
-    if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ block: "start" });
+    if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ behavior: glide(), block: "start" });
   }
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>

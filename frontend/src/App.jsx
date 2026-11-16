@@ -32,6 +32,7 @@ import { currentRoute } from "./lib/route";
 import OfflineBanner from "./components/OfflineBanner";
 import { InstallBanner } from "./components/InstallApp";
 import { useT } from "./lib/useLang";
+import { glide } from "./lib/scrollBehavior";
 
 // Framer Motion's animation engine is fetched after the first paint instead of with the page: its components start as plain elements and begin moving once it arrives.
 const loadMotionFeatures = () => import("./motionFeatures.js").then((mod) => mod.default);
@@ -524,7 +525,7 @@ export default function App() {
   // Every page change goes through here: the sidebar highlights the destination straight away, and the page swaps once it is ready.
   function goTo(key, apply, preload) {
     // Choosing the page you are already on just takes you back to its top.
-    if (key === view && !selected) window.scrollTo(0, 0);
+    if (key === view && !selected) window.scrollTo({ top: 0, behavior: glide() });
     swapPage(key, apply, preload);
   }
 

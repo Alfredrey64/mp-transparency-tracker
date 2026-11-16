@@ -11,6 +11,7 @@ import { BUS_ACT, CHECKED, RAIL_OWNERSHIP, SOURCES } from "../data/transport";
 import { B, B_LAST, D, DE, DE_LAST, NC, NC_LAST, R, RJ_LAST, SUP_LAST, TR, TR_LAST, TRANSPORT_EMISSIONS, busAt, busChange, busPeak, carShare, carsLicensed, deathRate, deathsAt, deathsPeakSince, fuelShares, last, newCarSeries, ordinalYear, railPeakBefore, round, supportAt, trafficPre, trafficSince } from "../lib/transport";
 import { ACCENT, group, jump, li } from "../lib/transportStyle";
 import { para, strong } from "../lib/insightStyle";
+import { glide } from "../lib/scrollBehavior";
 
 // Transport: how much we drive and in what, how many people die on the roads, how rail and buses are used and paid for, and where it differs, with the
 // arguments. One page with a row of toggles; the address carries the toggle (/transport/rail).
@@ -184,7 +185,7 @@ export default function Transport({ param }) {
     const moved = next !== tab;
     setTab(next);
     window.history.replaceState(null, "", next === "overview" ? "#/transport" : `#/transport/${next}`);
-    if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ block: "start" });
+    if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ behavior: glide(), block: "start" });
   }
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>

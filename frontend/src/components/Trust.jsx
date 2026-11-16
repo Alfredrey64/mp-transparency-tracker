@@ -8,6 +8,7 @@ import { BSA, BSA_TRUST, CHECKED, SOURCES } from "../data/trust";
 import { AVG, ELECTIONS, GE2024, INSTITUTIONS, INSTITUTION_KEYS, T, UK, dateText, electionLabel, electorate, labourOfElectorate, lowerTurnouts, mainRows, notVoted, ranking, spreadOf, trustOf, turnoutLow, turnoutNow, turnoutPeak, ukRank } from "../lib/trust";
 import { para, strong } from "../lib/insightStyle";
 import { ordinal } from "../lib/regionData";
+import { glide } from "../lib/scrollBehavior";
 
 // Trust in politics: how much people trust government, parliament and other institutions here and in other countries, how many vote and what their votes
 // turn into, and the arguments about it. One page with a row of toggles; the address carries the toggle (/trust/voting).
@@ -346,7 +347,7 @@ export default function Trust({ param }) {
     const moved = next !== tab;
     setTab(next);
     window.history.replaceState(null, "", next === "overview" ? "#/trust" : `#/trust/${next}`);
-    if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ block: "start" });
+    if (moved && ref.current && ref.current.getBoundingClientRect().top < 0) ref.current.scrollIntoView({ behavior: glide(), block: "start" });
   }
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
