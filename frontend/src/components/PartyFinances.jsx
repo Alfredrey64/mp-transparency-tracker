@@ -142,13 +142,15 @@ function PartyCard({ p, i, isOpen, onToggle }) {
                 const share = p.total > 0 ? (d.total / p.total) * 100 : 0;
                 return (
                   <li key={d.name} className="pf-donor">
-                    <span className="pf-d-av" aria-hidden="true">{initials(d.name, d.status)}<i>{idx + 1}</i></span>
-                    <div className="pf-d-top">
-                      <span className="pf-d-who">
-                        <span className="pf-d-name">{d.name}</span>
-                        <span className="pf-d-tag" style={{ color: readable(badgeColor), background: `${badgeColor}1a` }}>{d.status}</span>
-                      </span>
-                      <span className="pf-d-amt"><b>£{Math.round(d.total).toLocaleString()}</b><small>{share < 1 ? "under 1%" : `${Math.round(share)}%`} of the party's total</small></span>
+                    <div className="pf-d-head">
+                      <span className="pf-d-av" aria-hidden="true">{initials(d.name, d.status)}<i>{idx + 1}</i></span>
+                      <div className="pf-d-top">
+                        <span className="pf-d-who">
+                          <span className="pf-d-name">{d.name}</span>
+                          <span className="pf-d-tag" style={{ color: readable(badgeColor), background: `${badgeColor}1a` }}>{d.status}</span>
+                        </span>
+                        <span className="pf-d-amt"><b>£{Math.round(d.total).toLocaleString()}</b><small>{share < 1 ? "under 1%" : `${Math.round(share)}%`} of the party's total</small></span>
+                      </div>
                     </div>
                     <div className="pf-d-body">
                       <i className="pf-d-bar" aria-hidden="true"><u style={{ width: `${Math.max(1.5, Math.min(100, share))}%` }} /></i>

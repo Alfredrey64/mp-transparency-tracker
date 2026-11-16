@@ -1,24 +1,38 @@
 /* Who funds MPs: sector pictograms and the "who receives the most" cards. Loaded only with that page. */
 .dn-ico { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 8px; flex: none; background: color-mix(in srgb, var(--sc) 16%, transparent); color: color-mix(in srgb, var(--sc) 80%, var(--c-ink)); }
 .dn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 370px), 1fr)); gap: 16px; margin-bottom: 32px; align-items: start; }
-.dn-card { position: relative; display: grid; gap: 14px; padding: 18px 18px 14px; border-radius: 22px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1), inset 4px 0 0 var(--sc); overflow: hidden; }
-.dn-card-head { display: flex; align-items: center; gap: 14px; }
-.dn-card-ico { display: grid; place-items: center; flex: none; width: 52px; height: 52px; border-radius: 16px; background: var(--sc); color: #fff; box-shadow: 0 8px 16px -8px color-mix(in srgb, var(--sc) 80%, transparent); }
-.dn-card h3 { margin: 0; font: 700 18px/1.25 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
-.dn-card-head p { margin: 2px 0 0; font: 500 13px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.dn-card-head p b { font-weight: 800; color: var(--c-ink); }
-.dn-rank { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-.dn-rank li { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 10px; align-items: center; }
-.dn-medal { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; font: 800 14px "Figures", "Public Sans", system-ui, sans-serif; color: #fff; background: #9AA6B8; }
-.dn-medal[data-n="1"] { background: #D9A62A; } .dn-medal[data-n="2"] { background: #8E9AAE; } .dn-medal[data-n="3"] { background: #B5774B; }
-.dn-who { display: grid; gap: 4px; min-width: 0; }
-.dn-who b { font: 700 14px/1.25 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.dn-who i { display: block; height: 6px; border-radius: 3px; background: var(--pc); width: calc(var(--w) * 100%); min-width: 6%; }
-.dn-amt { font: 800 15px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
-.dn-more { justify-self: start; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px; margin-left: -12px; background: none; border: 0; cursor: pointer; font: 700 13.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--sc) 78%, var(--c-ink)); }
-.dn-panel { gap: 10px; }
-.dn-panel-title { margin: 0; font: 700 17px "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
-.dn-all { display: grid; gap: 6px; max-height: 340px; overflow-y: auto; padding-top: 10px; border-top: 1px dashed color-mix(in srgb, var(--sc) 40%, var(--c-hairline)); }
+/* a sector card: a banner in a deep tone of the sector's colour (the same idea as the party boxes), then the three biggest recipients on hairline rows, then a footer to open the full list */
+.dn-card { position: relative; display: grid; gap: 0; padding: 0; border-radius: 20px; background: var(--c-paper-card); border: 1px solid color-mix(in srgb, var(--sc) 26%, var(--c-hairline)); box-shadow: var(--shadow-1); overflow: hidden; }
+.dn-card-head { position: relative; min-height: 92px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 18px 18px 18px 16px; color: #fff; background: radial-gradient(70% 160% at 100% 100%, rgba(255, 255, 255, 0.16), transparent 62%), linear-gradient(150deg, color-mix(in srgb, var(--sc) 62%, #0b1424), color-mix(in srgb, var(--sc) 42%, #0b1424)); }
+.dn-card-ico { display: grid; place-items: center; flex: none; width: 46px; height: 46px; border-radius: 14px; background: rgba(255, 255, 255, 0.14); border: 1px solid rgba(255, 255, 255, 0.3); color: #fff; }
+.dn-card-t { min-width: 0; }
+.dn-card h3 { margin: 0; font: 700 19px/1.2 "Figures", "Newsreader", Georgia, serif; color: #fff; text-wrap: balance; }
+.dn-card-head p { margin: 3px 0 0; font: 500 13px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: rgba(255, 255, 255, 0.82); }
+.dn-card-sum { display: grid; justify-items: end; gap: 1px; text-align: right; }
+.dn-card-sum small { font: 700 10.5px/1.2 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(255, 255, 255, 0.78); }
+.dn-card-sum b { font: 700 26px/1.05 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; color: #fff; }
+.dn-card-sum em { font: 600 12px/1.3 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; font-variant-numeric: tabular-nums; color: rgba(255, 255, 255, 0.8); }
+.dn-rank { list-style: none; margin: 0; padding: 4px 18px 6px; display: grid; }
+.dn-rank li { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 13px 0; }
+.dn-rank li + li { border-top: 1px solid var(--c-hairline); }
+.dn-medal { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; font: 800 13px/1 "Figures", "Public Sans", system-ui, sans-serif; font-variant-numeric: lining-nums; color: color-mix(in srgb, var(--sc) 70%, var(--c-ink)); background: color-mix(in srgb, var(--sc) 9%, var(--c-paper-card)); border: 1.5px solid color-mix(in srgb, var(--sc) 30%, var(--c-hairline)); }
+.dn-medal[data-n="1"] { color: #fff; background: color-mix(in srgb, var(--sc) 78%, #0b1424); border-color: transparent; }
+.dn-who { display: grid; gap: 7px; min-width: 0; }
+.dn-who b { font: 700 14.5px/1.25 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dn-who i { position: relative; display: block; height: 5px; border-radius: 3px; background: color-mix(in srgb, var(--pc) 13%, var(--c-paper-sunk, #eef1f6)); overflow: hidden; }
+.dn-who i::after { content: ""; position: absolute; inset: 0 auto 0 0; width: calc(var(--w) * 100%); min-width: 5%; border-radius: 3px; background: var(--pc); }
+.dn-amt { font: 700 15.5px/1.2 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; color: var(--c-ink); white-space: nowrap; }
+.dn-more { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; min-height: 48px; padding: 0 18px; border: 0; border-top: 1px solid var(--c-hairline); background: color-mix(in srgb, var(--sc) 6%, var(--c-paper-card)); cursor: pointer; font: 700 13.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--sc) 78%, var(--c-ink)); text-align: left; transition: background-color 0.2s; }
+.dn-more:hover { background: color-mix(in srgb, var(--sc) 12%, var(--c-paper-card)); }
+.dn-chev { width: 8px; height: 8px; border: solid currentColor; border-width: 0 2px 2px 0; transform: translateY(-2px) rotate(45deg); transition: transform 0.3s var(--ease-out, ease-out); }
+.dn-card[data-open="1"] .dn-chev { transform: translateY(2px) rotate(225deg); }
+.dn-panel { gap: 0; }
+.dn-panel-title { display: flex; align-items: center; gap: 12px; margin: 0; padding: 14px 18px; font: 700 17px/1.25 "Figures", "Newsreader", Georgia, serif; color: #fff; background: linear-gradient(150deg, color-mix(in srgb, var(--sc) 62%, #0b1424), color-mix(in srgb, var(--sc) 42%, #0b1424)); }
+.dn-panel-title .dn-card-ico { width: 34px; height: 34px; border-radius: 11px; }
+.dn-all { display: grid; gap: 0; max-height: 360px; overflow-y: auto; padding: 4px 18px 8px; }
+.dn-all .dn-row { padding: 8px 0; }
+.dn-all .dn-row + .dn-row { border-top: 1px solid var(--c-hairline); }
+@media (max-width: 420px) { .dn-card-head { grid-template-columns: auto minmax(0, 1fr); min-height: 0; } .dn-card-sum { grid-column: 1 / -1; grid-template-columns: auto auto; justify-content: space-between; align-items: baseline; justify-items: start; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.2); } .dn-card-sum small { display: none; } .dn-card-sum em { justify-self: end; } }
 .dn-row { display: flex; justify-content: space-between; gap: 10px; font: 500 12.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .dn-row span { display: inline-flex; align-items: center; gap: 6px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .dn-row i { width: 7px; height: 7px; border-radius: 50%; background: var(--pc); flex: none; }

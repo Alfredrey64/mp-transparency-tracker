@@ -11,6 +11,9 @@ import "../expandGrid.css";
 //   label     (item) => the name read out for the panel
 //   initialKey  the key of an item to start open, for a link that points at one
 //   min       the narrowest a card may be, in px, which with the width decides how many fit in a row
+// A key can be a title ("Other / Uncategorised"); an id may not hold spaces or slashes, or aria-controls points at nothing.
+const idFor = (key) => `eg-${String(key).replace(/[^A-Za-z0-9_-]+/g, "-")}`;
+
 function Panel({ id, label, open, onGone, children }) {
   const [mounted, setMounted] = useState(false);
   const ref = useRef(null);
@@ -76,12 +79,12 @@ export default function ExpandGrid({ items, itemKey, card, panel, label, min = 3
         const key = itemKey(item);
         const out = [];
         if (pad && i === items.length - short) out.push(<span key="eg-pad" className="eg-pad" aria-hidden="true" style={{ gridColumn: `span ${pad}` }} />);
-        out.push(card(item, { open: openKey === key, toggle: () => toggle(key), index: i, panelId: `eg-${key}` }));
+        out.push(card(item, { open: openKey === key, toggle: () => toggle(key), index: i, panelId: idFor(key) }));
         // An item's panel sits under the last card of the row it is in.
         items.forEach((other, at) => {
           const otherKey = itemKey(other);
           if (rowEnd(at) === i && at <= i && panelKeys.includes(otherKey)) {
-            out.push(<Panel key={`panel-${otherKey}`} id={`eg-${otherKey}`} label={label(other)} open={openKey === otherKey} onGone={() => dropPanel(otherKey)}>{panel(other)}</Panel>);
+            out.push(<Panel key={`panel-${otherKey}`} id={idFor(otherKey)} label={label(other)} open={openKey === otherKey} onGone={() => dropPanel(otherKey)}>{panel(other)}</Panel>);
           }
         });
         return out;

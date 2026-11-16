@@ -371,10 +371,11 @@ export default function DonorsLobbying() {
             <article key={s.sector} className="dn-card" data-open={open ? "1" : "0"} style={{ "--sc": s.color }}>
               <header className="dn-card-head">
                 <span className="dn-card-ico" aria-hidden="true"><SectorIcon sector={s.sector} size={26} /></span>
-                <div>
+                <div className="dn-card-t">
                   <h3>{s.sector}</h3>
-                  <p><b>£{Math.round(s.total).toLocaleString()}</b> declared across {s.allDonations.length} {s.allDonations.length === 1 ? "donation" : "donations"}</p>
+                  <p>{s.allDonations.length} {s.allDonations.length === 1 ? "donation" : "donations"} declared</p>
                 </div>
+                <span className="dn-card-sum"><small>Total</small><b>{shortMoney(s.total)}</b><em>£{Math.round(s.total).toLocaleString()}</em></span>
               </header>
               <ol className="dn-rank">
                 {s.topMps.map((mp, n) => (
@@ -386,15 +387,15 @@ export default function DonorsLobbying() {
                 ))}
               </ol>
               <button type="button" className="dn-more" aria-expanded={open} aria-controls={panelId} onClick={toggle}>
-                <span aria-hidden="true">{open ? "▾" : "▸"}</span>
-                {open ? "Hide the full list" : `See all ${s.allDonations.length} donations`}
+                <span>{open ? "Hide the full list" : `See all ${s.allDonations.length} donations`}</span>
+                <i className="dn-chev" aria-hidden="true" />
               </button>
             </article>
           );
         }}
         panel={(s) => (
           <div className="dn-card dn-panel" style={{ "--sc": s.color }}>
-            <h3 className="dn-panel-title">{s.sector}: every declared donation</h3>
+            <h3 className="dn-panel-title"><span className="dn-card-ico" aria-hidden="true"><SectorIcon sector={s.sector} size={20} /></span>{s.sector}: every declared donation</h3>
             <div className="dn-all">
               {s.allDonations.slice(0, 40).map((don, di) => (
                 <div key={di} className="dn-row" style={{ "--pc": don.partyColor }}>
