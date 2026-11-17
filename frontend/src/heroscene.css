@@ -7,8 +7,8 @@
 .fm-scene svg, .hs-scene svg { display: block; width: 100%; height: 100%; }
 .page-hero[data-scene] .page-hero-inner { position: static; }
 
-/* A page whose picture is in daylight (Education, Transport, Courts and prisons, Digital and online safety) has a sky-blue heading band all the way across, from the very top to the horizon where the picture
+/* A page whose picture is in daylight (the Public services pages but Crime, every Economy and tax page, and Farming and food) has a sky-blue heading band all the way across, from the very top to the horizon where the picture
    begins: darker at the top so the white title and text stay easy to read, lighter near the picture. (Browsers without :has() keep the plain dark band.) */
-.page-hero[data-scene]:has(.hs-scene:is([data-kind="education"], [data-kind="transport"], [data-kind="justice"], [data-kind="digital"])) { --hero-bg: #2A74C4; }
-.page-hero[data-scene]:has(.hs-scene:is([data-kind="education"], [data-kind="transport"], [data-kind="justice"], [data-kind="digital"]))::before { display: block; content: ""; position: absolute; z-index: -1; inset: 0 -100vmax; width: auto; aspect-ratio: auto; opacity: 1; translate: none; animation: none; background: linear-gradient(180deg, #174F96 0%, #2A74C4 62%, #86C0F0 100%); }
-.page-hero[data-scene]:has(.hs-scene:is([data-kind="education"], [data-kind="transport"], [data-kind="justice"], [data-kind="digital"])) :is(.page-hero-sub, .crumbs, .crumbs a) { color: #fff; }
+.page-hero[data-scene]:has(:is(.hs-scene[data-day], .fm-scene)) { --hero-bg: #2A74C4; }
+.page-hero[data-scene]:has(:is(.hs-scene[data-day], .fm-scene))::before { display: block; content: ""; position: absolute; z-index: -1; inset: 0 -100vmax; width: auto; aspect-ratio: auto; opacity: 1; translate: none; animation: none; background: linear-gradient(180deg, #174F96 0%, #2A74C4 62%, #86C0F0 100%); }
+.page-hero[data-scene]:has(:is(.hs-scene[data-day], .fm-scene)) :is(.page-hero-sub, .crumbs, .crumbs a) { color: #fff; }

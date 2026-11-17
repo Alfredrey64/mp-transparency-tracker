@@ -1,0 +1,37 @@
+/* Daytime for the heading-band pictures (components/story/EconArt.jsx and ServiceArt.jsx). The sky itself is the colour of the whole heading band (heroscene.css), so a picture only has a haze at the horizon, a sun,
+   a few drifting clouds and a pale far skyline of its own. Each Economy and tax picture has its own palette, chosen to stand out against blue sky and the pale haze under it: steel and glass for the Economy,
+   warm brick for Jobs and pay, sandstone for the Treasury, deep blue and gold for Taxes, brick and slate for Business. Windows are pale glass. Every animation is finite and ends at rest. */
+.sv-far { fill: #A3BFDC; opacity: 0.8; }
+.sv-clouds { animation: sv-drift 40s ease-in-out 0.4s backwards; }
+@keyframes sv-drift { from { transform: translateX(-90px); } }
+.hs-glass { fill: #D3E9F9; }
+.hs-scene[data-day] .sv-ground { fill: var(--ground, #6BAA5C); }
+
+.hs-scene[data-kind="economy"] { --a: #F08A24; --s1: #9DB5D6; --s2: #2F4F82; --s3: #6A90C6; --s4: #fff; --lamp: #1D3050; --ground: #5FA05A; --area: #F2891D; }
+.hs-scene[data-kind="jobs"] { --a: #E8742A; --s1: #A3BFDC; --s2: #A4543E; --s3: #E0A47C; --s4: #fff; --lamp: #1D3050; --ground: #6BAA5C; }
+.hs-scene[data-kind="finance"] { --a: #2F6FB5; --s1: #A3BFDC; --s2: #A98F63; --s3: #EADFC4; --s4: #fff; --lamp: #1D3050; --ground: #6BAA5C; }
+.hs-scene[data-kind="taxes"] { --a: #F2B233; --s2: #1E4A86; --s3: #2C62A8; --s4: #fff; --lamp: #fff; --ground: #6BAA5C; --stream-in: #1E4A86; --stream-out: #D98A12; }
+.hs-scene[data-kind="business"] { --a: #E8742A; --s1: #A3BFDC; --s2: #8E4F3C; --s3: #55627C; --s4: #fff; --lamp: #1D3050; --ground: #6BAA5C; }
+
+.hs-scene:is([data-kind="economy"], [data-kind="jobs"], [data-kind="finance"], [data-kind="business"]) .hs-lamp { fill: #D3E9F9; }
+.hs-scene:is([data-kind="economy"], [data-kind="jobs"], [data-kind="finance"], [data-kind="taxes"], [data-kind="business"]) .hs-line { stroke: #55627C; }
+
+/* Economy: a gold growth line over steel towers, a yellow crane */
+.hs-scene[data-kind="economy"] .ec-growth { stroke: #F2891D; filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.7)); }
+.hs-scene[data-kind="economy"] .ec-dot { fill: #fff; stroke: #F2891D; }
+.hs-scene[data-kind="economy"] .ec-halo { stroke: #F2891D; }
+.hs-scene[data-kind="economy"] .hs-dash { stroke: #fff; opacity: 0.4; }
+.hs-scene[data-kind="economy"] .hs-warm { fill: #F2891D; }
+.ec-crane { fill: #F2B233; }
+.ec-crane .hs-line { stroke: #B9790C; }
+.ec-crane .ec-floor { fill: #55627C; }
+.ec-crane-block { fill: #55627C; }
+.ec-crane-block .ec-floor { fill: #55627C; }
+
+/* Finance: the Treasury's columns are pale stone, the recesses between them shadowed */
+.hs-scene[data-kind="finance"] .hs-pillar { fill: #F7F0DE; }
+.fn-recess { fill: #8A7550; opacity: 0.75; }
+.hs-scene[data-kind="finance"] .hs-dash { stroke: #1D3050; opacity: 0.5; }
+
+/* Business: the depot is slate, the factory brick */
+.bz-depot { fill: var(--s3); }

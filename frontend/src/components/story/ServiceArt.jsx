@@ -1,6 +1,6 @@
 /** @jsxImportSource react */
 import "../../servicesart.css";
-import { Scene, Defs } from "./EconArt";
+import { Scene, Backdrop } from "./EconArt";
 import { rnd, windows } from "./sceneKit";
 
 // The pictures along the foot of the heading band on the five Public services pages: a school and the steps up to a degree (Education), a train over a viaduct with a bus and a car below (Transport),
@@ -9,29 +9,6 @@ import { rnd, windows } from "./sceneKit";
 // little while and then rests. With calmer motion asked for they are simply finished (see servicesart.css).
 
 const Ground = () => <g className="hs-3 sv-ground"><rect x="0" y="188" width="1440" height="12" /></g>;
-const SKY = Array.from({ length: 40 }, (_, i) => ({ x: i * 38 - 10 + rnd(i + 4) * 12, w: 20 + rnd(i) * 22, h: 22 + rnd(i + 9) * 52 }));
-const CLOUDS = [[470, 46, 1], [1010, 30, 1.2], [700, 22, 0.7]];
-// `day`: every picture but Crime is in daylight. The sky itself is the colour of the whole heading band (see heroscene.css), so here there is only a haze at the horizon, a sun and a few drifting clouds.
-const Backdrop = ({ id, day }) => (
-  <>
-    <Defs id={id} />
-    {day ? (
-      <>
-        <defs><linearGradient id={`${id}-haze`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#E3F2FC" stopOpacity="0" /><stop offset="1" stopColor="#E3F2FC" stopOpacity=".9" /></linearGradient></defs>
-        <rect width="1440" height="200" fill={`url(#${id}-haze)`} />
-        <circle cx="150" cy="58" r="48" fill={`url(#${id}-sun)`} /><circle cx="150" cy="58" r="15" fill="#FFEBA6" />
-        <g className="sv-clouds" fill="#fff" opacity=".92">{CLOUDS.map(([x, y, k]) => <g key={x} transform={`translate(${x} ${y}) scale(${k})`}><ellipse rx="34" ry="10" /><ellipse cx="20" cy="-8" rx="21" ry="12" /><ellipse cx="-19" cy="-5" rx="17" ry="9" /></g>)}</g>
-        <g className="sv-far">{SKY.map((b, i) => <rect key={i} x={b.x} y={200 - b.h} width={b.w} height={b.h} />)}</g>
-      </>
-    ) : (
-      <>
-        <rect width="1440" height="200" fill={`url(#${id}-glow)`} />
-        <g className="hs-1" opacity=".8">{SKY.map((b, i) => <rect key={i} x={b.x} y={200 - b.h} width={b.w} height={b.h} />)}</g>
-      </>
-    )}
-  </>
-);
-
 // ---------- Education: a school with a clock tower and a flag, pupils walking in, a stack of books, and steps up to a mortarboard ----------
 const PUPILS = [["#F2A33A", 300], ["#E4574F", 352], ["#3F9E8F", 410], ["#6C7BE0", 466], ["#E27AB0", 520], ["#F2C94C", 962], ["#3F9E8F", 1012]];
 function Pupil({ x, c, i }) {
@@ -175,9 +152,10 @@ export function JusticeScene() {
       {/* police station */}
       <g className="sv-police-wall"><rect x="130" y="124" width="196" height="64" /></g>
       <rect className="sv-police-roof" x="124" y="118" width="208" height="9" /><rect className="hs-acc" x="196" y="136" width="64" height="15" rx="2" />
-      <g className="hs-lamp">{windows(144, 160, 4, 1, 22, 13, 3)}{windows(272, 160, 2, 1, 22, 13, 8)}</g>
-      <rect className="hs-1" x="216" y="158" width="26" height="30" rx="2" />
-      <circle className="sv-glow" cx="229" cy="104" r="22" fill="#3B7BFF" /><rect className="hs-2" x="221" y="108" width="16" height="10" rx="2" /><circle className="sv-blue" cx="229" cy="104" r="8" fill="#5C9BFF" />
+      {/* two floors of windows in matching columns either side of the sign and door, the building's middle line being x = 228 */}
+      {[138, 166, 268, 296].flatMap((x, c) => [136, 160].map((y, r) => <rect key={`${c}${r}`} className="hs-win hs-glass" x={x} y={y} width="22" height="16" rx="2" style={{ "--d": `${0.8 + ((c * 2 + r) % 5) * 0.55}s` }} />))}
+      <rect className="hs-1" x="215" y="158" width="26" height="30" rx="2" />
+      <circle className="sv-glow" cx="228" cy="104" r="22" fill="#3B7BFF" /><rect className="hs-2" x="220" y="108" width="16" height="10" rx="2" /><circle className="sv-blue" cx="228" cy="104" r="8" fill="#5C9BFF" />
       {/* court */}
       <rect className="hs-2" x="548" y="176" width="344" height="12" /><rect className="hs-3" x="560" y="165" width="320" height="12" />
       <path className="hs-2" d="M684 54a36 36 0 0 1 72 0Z" /><rect className="hs-3" x="714" y="26" width="12" height="10" />
@@ -207,6 +185,7 @@ export function JusticeScene() {
 // ---------- Crime: a street at night with a police car that pulls up and stops, an officer's door opening, a robber who bursts out of an upstairs window, and two officers who chase him off the page ----------
 const HOUSES = Array.from({ length: 8 }, (_, i) => 380 + i * 74);
 const LAMPS = [330, 560, 790, 1020, 1270];
+const DOORS = [{ x: 1122 }, { x: 1096 }]; // the police car's front and rear doors; an officer steps out of each
 const WINDOW_HOUSE = 3; // the house whose upstairs window the robber comes out of
 const WX = HOUSES[WINDOW_HOUSE] + 8; // left edge of that window's frame
 // Someone seen side-on, facing left, feet on the line y = 0. Legs swing while they run (`ec-stride` in econart.css), starting after `go` seconds.
@@ -247,10 +226,21 @@ export function CrimeScene() {
       <rect x={wx + 3} y="125" width="24" height="28" fill="#0E1424" />
       <path className="sv-jag" d={`M${wx + 3} 125 ${wx + 9} 125 ${wx + 5} 133ZM${wx + 27} 125 ${wx + 21} 125 ${wx + 25} 134ZM${wx + 3} 153 ${wx + 10} 153 ${wx + 5} 146ZM${wx + 27} 153 ${wx + 20} 153 ${wx + 25} 145Z`} fill="#9FB4D6" opacity=".55" />
       <g className="sv-lit"><rect className="hs-warm" x={wx + 3} y="125" width="24" height="28" /><path d={`M${wx + 15} 125v28M${wx + 3} 139h24`} stroke="#6A5A38" strokeWidth="1.2" /></g>
+      <defs>
+        <linearGradient id="cr-cone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#FFE9B0" stopOpacity=".62" /><stop offset=".55" stopColor="#FFDC96" stopOpacity=".2" /><stop offset="1" stopColor="#FFD58A" stopOpacity=".06" /></linearGradient>
+        <radialGradient id="cr-bulb"><stop offset="0" stopColor="#FFF3CF" stopOpacity=".95" /><stop offset=".35" stopColor="#FFE29A" stopOpacity=".42" /><stop offset="1" stopColor="#FFD98A" stopOpacity="0" /></radialGradient>
+        <radialGradient id="cr-pool"><stop offset="0" stopColor="#FFE6A8" stopOpacity=".5" /><stop offset="1" stopColor="#FFE6A8" stopOpacity="0" /></radialGradient>
+        <filter id="cr-soft" x="-30%" y="-10%" width="160%" height="120%"><feGaussianBlur stdDeviation="3.2" /></filter>
+      </defs>
+      {/* each lamp throws a soft cone of light down from its head, with a bright bulb at the top and a pool where it lands on the pavement */}
       {LAMPS.map((x, i) => (
         <g key={x} transform={`translate(${x} 188)`}>
-          <circle className="ec-lampglow" cy="-70" r="26" fill="#FFD98A" style={{ "--d": `${0.6 + i * 0.4}s` }} />
-          <path d="M0 0V-68q0-8 9-8" stroke="var(--s3)" strokeWidth="3" fill="none" strokeLinecap="round" /><rect x="6" y="-80" width="11" height="5" rx="2.5" fill="#FFE6A8" />
+          <g className="sv-light" style={{ "--d": `${0.6 + i * 0.4}s` }}>
+            <path d="M7 -75h9l40 75h-89z" fill="url(#cr-cone)" filter="url(#cr-soft)" />
+            <ellipse cx="11.5" cy="-1" rx="46" ry="5.5" fill="url(#cr-pool)" />
+            <circle cx="11.5" cy="-77" r="17" fill="url(#cr-bulb)" />
+          </g>
+          <path d="M0 0V-68q0-8 9-8" stroke="var(--s3)" strokeWidth="3" fill="none" strokeLinecap="round" /><rect x="6" y="-80" width="11" height="5" rx="2.5" fill="#FFF0C4" />
         </g>
       ))}
       {/* the police car drives in and stops; its lights keep going */}
@@ -258,6 +248,13 @@ export function CrimeScene() {
         <path className="hs-4" d="M1062 180v-12l16-5 14-15h46l14 15 16 3v14Z" /><path className="hs-1" d="M1096 150h40l9 13h-58Z" opacity=".65" /><rect className="hs-acc" x="1062" y="168" width="106" height="5" />
         <rect className="hs-2" x="1106" y="138" width="26" height="6" rx="2" /><circle className="sv-blue" cx="1112" cy="136" r="6" fill="#5C9BFF" /><circle className="sv-red" cx="1126" cy="136" r="6" fill="#FF5C5C" />
         <circle className="hs-1" cx="1086" cy="182" r="8" /><circle className="hs-1" cx="1148" cy="182" r="8" />
+        {/* two doors that swing open as the car stops, let an officer out each, and shut again; the dark doorway shows while they are open */}
+        {DOORS.map((d, k) => (
+          <g key={d.x}>
+            <rect className="sv-doorway" x={d.x} y="151" width="22" height="26" rx="2" style={{ "--k": `${k * 0.25}s` }} />
+            <rect className="sv-door" x={d.x} y="151" width="22" height="26" rx="2" style={{ "--k": `${k * 0.25}s`, transformOrigin: `${d.x + 22}px 164px` }} />
+          </g>
+        ))}
       </g>
       {/* the robber leaps from the window as the glass breaks, lands and runs left; shards fly */}
       {[[-38, 34, 140], [-14, 52, -120], [6, 28, 200], [24, 46, -160], [-26, 20, 90], [40, 56, 260]].map(([dx, dy, r], k) => (
@@ -266,8 +263,8 @@ export function CrimeScene() {
       {[-14, 0, 14].map((dx, k) => <circle key={k} className="sv-dust" cx={586 + dx} cy="184" r="5" style={{ "--dx": `${dx * 1.4}px` }} />)}
       <g transform="translate(-90 188)"><g className="sv-robber"><Runner go={7} /></g></g>
       {/* two officers get out of the car and give chase */}
-      {[0, 1].map((k) => (
-        <g key={k} transform={`translate(${-90 - k * 26} 188)`}><g className="sv-cop" style={{ "--k": `${k * 0.3}s`, "--off": `${1190 + k * 26}px` }}><Runner cop go={7.4 + k * 0.3} /></g></g>
+      {DOORS.map((d, k) => (
+        <g key={k} transform={`translate(${-90 - k * 26} 188)`}><g className="sv-cop" style={{ "--k": `${k * 0.3}s`, "--off": `${d.x + 11 + 90 + k * 26}px` }}><g className="sv-exit" style={{ "--k": `${k * 0.25}s` }}><Runner cop go={6.5 + k * 0.3} /></g></g></g>
       ))}
       <Ground />
     </Scene>

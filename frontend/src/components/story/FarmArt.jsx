@@ -4,6 +4,8 @@ import AnimatedValue from "./AnimatedValue";
 import { crateFills, landPlots, rippleOrder, arcLength, IHT, rulerPos } from "../../lib/farmArt";
 import "../../heroscene.css";
 import "../../farmart.css";
+import "../../dayscene.css";
+import Clouds from "./Clouds";
 
 // Pictures for the Farming and food page. Each plays once, when it scrolls into view (and is already finished for anyone who has asked for calmer motion), and every figure in
 // them is one the page already states. A picture that carries figures is a role="img" with the figures in its label; the drawings that only decorate are hidden from screen readers.
@@ -39,17 +41,21 @@ export function FarmScene() {
       <svg viewBox="0 0 1440 200" preserveAspectRatio="xMidYMax slice" focusable="false">
         <defs>
           <radialGradient id="fm-sun" cx="50%" cy="50%" r="50%"><stop offset="0" stopColor="#FFE9A8" stopOpacity="0.95" /><stop offset="1" stopColor="#FFE9A8" stopOpacity="0" /></radialGradient>
-          <linearGradient id="fm-near" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#6E9A3F" /><stop offset="1" stopColor="#47702F" /></linearGradient>
+          <linearGradient id="fm-near" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#86B94B" /><stop offset="1" stopColor="#5A9238" /></linearGradient>
+          <linearGradient id="fm-haze" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#E3F2FC" stopOpacity="0" /><stop offset="1" stopColor="#E3F2FC" stopOpacity=".9" /></linearGradient>
         </defs>
-        <circle className="fm-sun" cx="1130" cy="82" r="92" fill="url(#fm-sun)" />
-        <circle cx="1130" cy="82" r="24" fill="#FFE29A" />
-        <path d="M0 118C190 74 380 100 600 84S1000 58 1440 104V200H0z" fill="#1F4B47" />
-        <path d="M0 144C240 104 520 140 760 114S1190 100 1440 132V200H0z" fill="#2E6B47" />
+        {/* daylight: the sky is the heading band's own blue, so only a haze at the horizon, the sun (drawn whole, well inside the picture) and a few drifting clouds */}
+        <rect width="1440" height="200" fill="url(#fm-haze)" />
+        <circle className="fm-sun" cx="1130" cy="52" r="50" fill="url(#fm-sun)" />
+        <circle cx="1130" cy="52" r="20" fill="#FFEBA6" />
+        <Clouds list={[[360, 40, 1], [700, 26, 0.8], [1330, 48, 0.9]]} />
+        <path d="M0 118C190 74 380 100 600 84S1000 58 1440 104V200H0z" fill="#7DB07A" />
+        <path d="M0 144C240 104 520 140 760 114S1190 100 1440 132V200H0z" fill="#4F9A55" />
         <path d="M520 124c120-22 240-6 330-10l-20 34c-110-2-230 8-340 6z" fill="#C79A3B" opacity=".9" />
         {Array.from({ length: 9 }, (_, i) => <path key={i} d={`M${540 + i * 36} ${126 - (i % 2) * 2}l${-26 + i * 2} 28`} stroke="#8F6A22" strokeWidth="1.4" opacity=".55" />)}
         <g transform="translate(236 104)"><path d="M0 22V6l14-9 14 9v16z" fill="#8E3B30" /><path d="M-3 7 14-5l17 12" stroke="#5E2A22" strokeWidth="3" fill="none" strokeLinejoin="round" /><path d="M9 22v-9h10v9" fill="#5E2A22" /><rect x="34" y="0" width="9" height="22" rx="3" fill="#C9C2B0" /><path d="M34 0a4.5 4.5 0 0 1 9 0z" fill="#9F9886" /></g>
-        <g fill="#1B4636"><circle cx="352" cy="120" r="11" /><circle cx="364" cy="124" r="9" /><rect x="357" y="124" width="3" height="14" fill="#4A3425" /></g>
-        <g fill="#1B4636"><circle cx="1230" cy="116" r="10" /><circle cx="1220" cy="121" r="8" /><rect x="1226" y="121" width="3" height="13" fill="#4A3425" /></g>
+        <g fill="#2A6B43"><circle cx="352" cy="120" r="11" /><circle cx="364" cy="124" r="9" /><rect x="357" y="124" width="3" height="14" fill="#4A3425" /></g>
+        <g fill="#2A6B43"><circle cx="1230" cy="116" r="10" /><circle cx="1220" cy="121" r="8" /><rect x="1226" y="121" width="3" height="13" fill="#4A3425" /></g>
         <path d="M0 168C300 142 640 170 940 152S1310 142 1440 160V200H0z" fill="url(#fm-near)" />
         {ROWS.map((r) => <path key={r} d={`M${720 + r * 150} 200L${720 + r * 38} 152`} stroke="#fff" strokeWidth="1.5" opacity=".16" />)}
         <g className="fm-tractor">

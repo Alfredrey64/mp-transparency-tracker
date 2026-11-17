@@ -4,7 +4,6 @@
 .hs-scene[data-kind="transport"] { --a: color-mix(in srgb, var(--hero-accent, #2F80ED) 78%, #3FA37C); }
 .hs-scene[data-kind="justice"] { --a: color-mix(in srgb, var(--hero-accent, #2F80ED) 66%, #5A7FA6); }
 .hs-scene[data-kind="crime"] { --a: color-mix(in srgb, var(--hero-accent, #2F80ED) 60%, #3B5BA6); }
-.hs-scene[data-kind="crime"] .ec-lampglow { opacity: 0.11; }
 .hs-scene[data-kind="digital"] { --a: color-mix(in srgb, var(--hero-accent, #2F80ED) 70%, #2FB5A8); }
 
 /* Daytime: every picture here but Crime is in daylight, over a sky that is the colour of the whole heading band (heroscene.css). Each picture has its own palette, chosen to stand out against blue sky:
@@ -15,14 +14,11 @@
 .hs-scene[data-kind="digital"] { --a: #1E9C8F; --s1: #B5654A; --s2: #E6D3B0; --s3: #F6EEDC; --s4: #FFFFFF; --lamp: #1D3050; --ground: #6BAA5C; }
 .hs-scene:is([data-kind="education"], [data-kind="transport"], [data-kind="justice"], [data-kind="digital"]) .sv-ground { fill: var(--ground); }
 .hs-scene:is([data-kind="education"], [data-kind="transport"], [data-kind="justice"], [data-kind="digital"]) .hs-line { stroke: #55627C; }
-.hs-glass, .hs-scene:is([data-kind="education"], [data-kind="justice"], [data-kind="digital"]) .hs-lamp { fill: #D3E9F9; }
-.sv-far { fill: #A3BFDC; opacity: 0.8; }
+.hs-scene:is([data-kind="education"], [data-kind="justice"], [data-kind="digital"]) .hs-lamp { fill: #D3E9F9; }
 .sv-wing { fill: #CBD6E4; }
 .sv-board { fill: #1F2A44; }
 .sv-police-wall { fill: #8FB1D6; } .sv-police-roof { fill: #4F6F9A; }
 .sv-brick { fill: #B86A4E; } .sv-brick2 { fill: #8E4F3C; }
-.sv-clouds { animation: sv-drift 40s ease-in-out 0.4s backwards; }
-@keyframes sv-drift { from { transform: translateX(-90px); } }
 
 /* ---- Education ---- */
 .sv-pop { transform-box: fill-box; transform-origin: 50% 100%; animation: sv-pop 0.7s cubic-bezier(0.3, 1.4, 0.5, 1) 0.9s backwards; }
@@ -92,8 +88,18 @@
   20% { transform: translate(676px, 0) scale(1); animation-timing-function: linear; }
   100% { transform: translate(0, 0) scale(1); }
 }
-.sv-cop { animation: sv-cop 7.5s linear calc(6.4s + var(--k)) backwards; }
-@keyframes sv-cop { 0% { transform: translate(var(--off), 0); opacity: 0; } 4% { opacity: 1; } 14% { transform: translate(var(--off), 0); } 100% { transform: translate(0, 0); opacity: 1; } }
+.sv-cop { animation: sv-cop 6.8s linear calc(6.5s + var(--k)) backwards; }
+@keyframes sv-cop { from { transform: translate(var(--off), 0); } to { transform: translate(0, 0); } }
+/* Getting out: each officer is hidden inside the car until the door swings open at 5.3 s (the car has all but stopped), then steps out onto the road (a little smaller and higher, as if rising out of the seat),
+   waits a beat, and only then gives chase. The doors swing open on the front edge, seen side-on, and close again behind them. */
+.sv-exit { animation: sv-exit 0.7s cubic-bezier(0.3, 1.3, 0.5, 1) calc(5.55s + var(--k)) backwards; }
+@keyframes sv-exit { 0% { opacity: 0; transform: translate(-3px, -9px) scale(0.62); } 35% { opacity: 1; } 100% { opacity: 1; transform: translate(0, 0) scale(1); } }
+.sv-door { fill: var(--s4); stroke: var(--s2); stroke-width: 1.2; animation: sv-door 1.9s ease-in-out calc(5.3s + var(--k)) backwards; }
+@keyframes sv-door { 0%, 4% { transform: scaleX(1); } 16%, 66% { transform: scaleX(0.28); } 84%, 100% { transform: scaleX(1); } }
+.sv-doorway { fill: #0E1424; opacity: 0; animation: sv-doorway 1.9s steps(1) calc(5.3s + var(--k)) backwards; }
+@keyframes sv-doorway { 0%, 4% { opacity: 0; } 5%, 83% { opacity: 1; } 84%, 100% { opacity: 0; } }
+/* A lamp comes on and its light stays: the cone, the bulb glow and the pool on the pavement fade in together. */
+.sv-light { animation: ec-lampon 1.2s ease-out var(--d) backwards; }
 .sv-leg { animation: sv-stride 0.38s ease-in-out var(--go, 0s) 22; }
 @keyframes sv-stride { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-44deg); } 75% { transform: rotate(44deg); } }
 /* Bouncy: each stride squashes the runner on landing and stretches them in the air, leaning forward (to the left). */
