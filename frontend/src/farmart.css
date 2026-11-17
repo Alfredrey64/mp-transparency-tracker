@@ -59,7 +59,7 @@ figure.fm-land figcaption, .fm-cap, figure.fm-gate figcaption { font-size: 13.5p
 .fm-crates li { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; }
 .fm-crate-ico { --ko: var(--tc); display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; background: var(--tc); }
 .fm-crate-label { font-weight: 600; font-size: 14.5px; line-height: 1.3; }
-.fm-crate-val { font: 600 22px / 1 "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--tc) 78%, var(--c-ink)); }
+.fm-crate-val { font: 600 22px / 1 "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--tc) 78%, var(--c-ink)); }
 .fm-crate-row { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)) minmax(0, 1fr); gap: 4px; }
 .fm-crate-row i { position: relative; display: block; aspect-ratio: 1.85; border-radius: 5px; overflow: hidden; background: color-mix(in srgb, var(--c-ink) 9%, var(--c-paper-card)); }
 .fm-crate-row i u { position: absolute; inset: 0; background: var(--tc); transform-origin: left; transform: scaleX(0); transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); transition-delay: calc((var(--r) * 6 + var(--c)) * 38ms + 200ms); text-decoration: none; }
@@ -79,14 +79,14 @@ figure.fm-land figcaption, .fm-cap, figure.fm-gate figcaption { font-size: 13.5p
 .fm-bar-fill { position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--w) * 100%); min-width: 30px; border-radius: 999px; background: linear-gradient(90deg, color-mix(in srgb, var(--tc) 70%, #fff), var(--tc)); transform-origin: left; transform: scaleX(0); transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); transition-delay: calc(var(--i) * 110ms + 150ms); }
 .fm-bars[data-go="1"] .fm-bar-fill { transform: scaleX(1); }
 .fm-bar-cap { --ko: var(--tc); position: absolute; right: -2px; top: -2px; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--tc); box-shadow: 0 0 0 3px var(--c-paper-card); }
-.fm-bars li b { font: 600 20px / 1 "Newsreader", Georgia, serif; text-align: right; color: color-mix(in srgb, var(--tc) 78%, var(--c-ink)); }
+.fm-bars li b { font: 600 20px / 1 "Figures", "Newsreader", Georgia, serif; text-align: right; color: color-mix(in srgb, var(--tc) 78%, var(--c-ink)); }
 .fm-bars .fm-cap, .fm-cols .fm-cap, .fm-ruler .fm-cap { margin-top: 16px; }
 @media (max-width: 520px) { .fm-bars li { grid-template-columns: minmax(0, 1fr) auto; } .fm-bar-track { grid-column: 1 / -1; grid-row: 2; } .fm-bars li b { grid-row: 1; grid-column: 2; } }
 
 /* ---- columns ---- */
 .fm-cols ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 10px; align-items: end; }
 .fm-cols li { display: grid; justify-items: center; gap: 8px; }
-.fm-cols li b { font: 600 clamp(14px, 3.4vw, 20px) / 1 "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--tc) 78%, var(--c-ink)); }
+.fm-cols li b { font: 600 clamp(14px, 3.4vw, 20px) / 1 "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--tc) 78%, var(--c-ink)); }
 .fm-col { position: relative; display: block; width: min(64px, 100%); height: 190px; border-radius: 14px 14px 6px 6px; background: repeating-linear-gradient(0deg, color-mix(in srgb, #8A6A3A 13%, var(--c-paper-card)) 0 9px, color-mix(in srgb, #8A6A3A 6%, var(--c-paper-card)) 9px 18px); overflow: hidden; }
 .fm-col-fill { position: absolute; left: 0; right: 0; bottom: 0; height: calc(var(--h) * 100%); min-height: 40px; background: linear-gradient(0deg, var(--tc), color-mix(in srgb, var(--tc) 72%, #fff)); transform-origin: bottom; transform: scaleY(0); transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1); transition-delay: calc(var(--i) * 120ms + 150ms); }
 .fm-cols[data-go="1"] .fm-col-fill { transform: scaleY(1); }
@@ -101,7 +101,7 @@ figure.fm-land figcaption, .fm-cap, figure.fm-gate figcaption { font-size: 13.5p
 .fm-ring-bg { fill: none; stroke: color-mix(in srgb, var(--c-ink) 10%, var(--c-paper-card)); stroke-width: 11; }
 .fm-ring-fg { fill: none; stroke: var(--tc); stroke-width: 11; stroke-linecap: round; stroke-dashoffset: var(--len); transition: stroke-dashoffset 1.1s cubic-bezier(0.2, 0.8, 0.2, 1); transition-delay: calc(var(--i) * 200ms + 200ms); }
 .fm-rings[data-go="1"] .fm-ring-fg { stroke-dashoffset: 0; }
-.fm-ring-num { font: 600 28px "Newsreader", Georgia, serif; fill: var(--c-ink); }
+.fm-ring-num { font: 600 28px "Figures", "Newsreader", Georgia, serif; fill: var(--c-ink); }
 .fm-ring-sub { font: 600 10px "Public Sans", system-ui, sans-serif; fill: var(--c-ink-soft); }
 .fm-ring-chip { opacity: 0; transition: opacity 0.4s ease 0.3s; }
 .fm-rings[data-go="1"] .fm-ring-chip { opacity: 1; }
@@ -111,7 +111,7 @@ figure.fm-land figcaption, .fm-cap, figure.fm-gate figcaption { font-size: 13.5p
 .fm-fund-bar { position: relative; height: 46px; border-radius: 14px; overflow: hidden; background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--tc) 12%, var(--c-paper-card)) 0 8px, color-mix(in srgb, var(--tc) 6%, var(--c-paper-card)) 8px 16px); }
 .fm-fund-bar span { position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--p) * 100%); min-width: 96px; display: flex; align-items: center; gap: 8px; padding: 0 14px; background: linear-gradient(90deg, var(--tc), color-mix(in srgb, var(--tc) 70%, #fff)); color: #fff; transform-origin: left; transform: scaleX(0); transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s; }
 .fm-fund[data-go="1"] .fm-fund-bar span { transform: scaleX(1); }
-.fm-fund-bar b { font: 600 20px "Newsreader", Georgia, serif; white-space: nowrap; }
+.fm-fund-bar b { font: 600 20px "Figures", "Newsreader", Georgia, serif; white-space: nowrap; }
 .fm-fund-keys { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 12px; font-size: 13.5px; }
 .fm-fund-keys i { display: inline-block; width: 13px; height: 13px; margin-right: 8px; border-radius: 3px; vertical-align: -1px; background: color-mix(in srgb, var(--tc) 22%, var(--c-paper-card)); }
 
@@ -192,7 +192,7 @@ figure.fm-land figcaption, .fm-cap, figure.fm-gate figcaption { font-size: 13.5p
 .fm-ruler[data-go="1"] .fm-stake { transform: none; }
 .fm-stake[data-edge="l"] .fm-stake-tag { translate: -18% 0; } .fm-stake[data-edge="r"] .fm-stake-tag { translate: -82% 0; }
 .fm-stake-tag { position: absolute; bottom: 100%; left: 0; translate: -50% 0; margin-bottom: 4px; display: grid; justify-items: center; padding: 6px 10px 6px; border-radius: 10px; background: var(--tc); color: #fff; white-space: nowrap; text-align: center; }
-.fm-stake-tag b { font: 600 19px / 1 "Newsreader", Georgia, serif; }
+.fm-stake-tag b { font: 600 19px / 1 "Figures", "Newsreader", Georgia, serif; }
 .fm-stake-tag em { font: 600 11.5px / 1.25 "Public Sans", system-ui, sans-serif; font-style: normal; }
 @media (max-width: 560px) { .fm-stake-tag { padding: 5px 7px; } .fm-stake-tag em { font-size: 10.5px; white-space: normal; max-width: 84px; } .fm-ruler-field { height: 290px; } .fm-stake { height: calc(52px + var(--lane) * 92px); } }
 @media (prefers-reduced-motion: reduce) {

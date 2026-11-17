@@ -6,7 +6,7 @@ import { caseId } from "../../lib/caseId";
 const INK = "#1B2438";
 const SOFT = "#5B6784";
 const F = "Public Sans, system-ui, sans-serif";
-const S = "Newsreader, Georgia, serif";
+const S = "Figures, Newsreader, Georgia, serif";
 
 // Money from a funder nobody names, through a think tank with no duty to say, to an "independent expert" on air. Only the last of the three is ever seen. It plays once, when it
 // scrolls into view: the three boxes arrive in turn, the money runs to the think tank and disappears into it, a redaction bar keeps sliding over the funder's name, and an
@@ -57,7 +57,7 @@ const BUBBLE = (
     <path d="M -7 8 L -11 18 L 3 9 Z" fill="#9C6B30" stroke="#fff" strokeWidth="2" strokeLinejoin="round" />
     <rect x="-17" y="-12" width="34" height="23" rx="9" fill="#9C6B30" stroke="#fff" strokeWidth="2.5" />
     <path d="M -7 8.5 L -10 15 L 1 9.5 Z" fill="#9C6B30" />
-    <text x="0" y="8.5" textAnchor="middle" fontSize="26" fontWeight="700" fill="#fff" fontFamily="Newsreader, Georgia, serif">&ldquo;</text>
+    <text x="0" y="8.5" textAnchor="middle" fontSize="26" fontWeight="700" fill="#fff" fontFamily="Figures, Newsreader, Georgia, serif">&ldquo;</text>
   </>
 );
 

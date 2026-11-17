@@ -59,7 +59,7 @@ export default function MakeALaw() {
           <path d="M-8 -9 h16 M-8 0 h16 M-8 9 h10" stroke="#1B2438" strokeWidth="2.5" strokeLinecap="round" />
           {(stage === "end" || (finished && stage === "order")) && <path d="M-6 6 l6 7 l12 -16" stroke="#1FA97C" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" />}
         </g>
-        {stage === "end" && <text x="450" y="262" textAnchor="middle" fontSize="20" fontWeight="800" fill="#1FA97C" fontFamily="Newsreader, Georgia, serif">It is now an Act of Parliament: a law</text>}
+        {stage === "end" && <text x="450" y="262" textAnchor="middle" fontSize="20" fontWeight="800" fill="#1FA97C" fontFamily="Figures, Newsreader, Georgia, serif">It is now an Act of Parliament: a law</text>}
       </svg>
       {stage === "order" && <p className="gm-help" aria-live="polite">{placed.length === 0 ? "No steps in place yet." : `${placed.length} of ${BILL_STEPS.length} steps in place. Latest: ${SHORT[placed[placed.length - 1]]}.`}</p>}
       {stage === "order" && !finished && (

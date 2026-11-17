@@ -58,7 +58,7 @@ export default function BuildMajority() {
             const on = chosen.includes(name);
             return <circle key={i} cx={p.x} cy={p.y} r="3.6" fill={on ? colourOf(name) : "#C9D3E6"} opacity={on ? 1 : 0.55} className="gm-seat" />;
           })}
-          <text x={R} y={R - 6} textAnchor="middle" fontSize="40" fontWeight="800" fill="#1B2438" fontFamily="Newsreader, Georgia, serif">{v.seats}</text>
+          <text x={R} y={R - 6} textAnchor="middle" fontSize="40" fontWeight="800" fill="#1B2438" fontFamily="Figures, Newsreader, Georgia, serif">{v.seats}</text>
           <text x={R} y={R + 14} textAnchor="middle" fontSize="11.5" fontWeight="700" fill="#5B6784" fontFamily="Public Sans, system-ui, sans-serif">of {SEATS} seats</text>
         </svg>
       </div>

@@ -1322,7 +1322,7 @@
 .dm-spend-key li { display: grid; grid-template-columns: 14px auto 1fr; align-items: baseline; gap: 4px 8px; font: 600 14px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .dm-spend-key li i { width: 14px; height: 14px; border-radius: 5px; background: var(--c); align-self: center; }
 .dm-spend-key li b { font: 800 17px/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
-.dm-spend p { margin: 0; font: 600 14px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.dm-spend p { margin: 0; font: 600 14px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .dm-spend p.dm-spend-lead { padding-top: 12px; border-top: 3px solid #6E4B6E; font-weight: 800; font-size: 15.5px; color: #6E4B6E; }
 
 .dm-sec { list-style: none; margin: 0; padding: 4px 0 0 56px; position: relative; display: grid; gap: 26px; }

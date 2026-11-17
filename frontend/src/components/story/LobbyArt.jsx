@@ -5,7 +5,7 @@ import { Shadow, ArrowDef, Ribbon, Badge, Letter } from "./dmx";
 const INK = "#1B2438";
 const SOFT = "#5B6784";
 const F = "Public Sans, system-ui, sans-serif";
-const S = "Newsreader, Georgia, serif";
+const S = "Figures, Newsreader, Georgia, serif";
 
 // Who is counted: a company paying a consultant to lobby a minister has to be declared; a company's own staff lobbying the same minister does not.
 // Drawn along the page on a wide screen, and upright on a phone with the two routes side by side running down to one minister.

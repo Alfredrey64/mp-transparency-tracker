@@ -121,7 +121,7 @@ const ART = {
     <>
       <path d="M92 112 V60 H148 V112" fill={T2} /><path d="M36 112 V80 H92 V112" fill={T2} /><path d="M148 112 V92 H204 V112" fill={T2} />
       <polygon points={star(120, 38, 14)} fill={A} stroke="none" />
-      {[["1", 120, 92], ["2", 64, 104], ["3", 176, 106]].map(([n, x, y]) => <text key={n} x={x} y={y} textAnchor="middle" fontSize="20" fontWeight="800" fill={W} stroke="none" fontFamily="Newsreader, Georgia, serif">{n}</text>)}
+      {[["1", 120, 92], ["2", 64, 104], ["3", 176, 106]].map(([n, x, y]) => <text key={n} x={x} y={y} textAnchor="middle" fontSize="20" fontWeight="800" fill={W} stroke="none" fontFamily="Figures, Newsreader, Georgia, serif">{n}</text>)}
     </>
   ),
   election: (

@@ -5,7 +5,7 @@ import { Shadow, ArrowDef, Ribbon, Badge, Letter } from "./dmx";
 const INK = "#1B2438";
 const SOFT = "#5B6784";
 const F = "Public Sans, system-ui, sans-serif";
-const S = "Newsreader, Georgia, serif";
+const S = "Figures, Newsreader, Georgia, serif";
 
 // A revolving door seen from above. Its wings turn at a steady pace; each person steps into the gap between two wings on one side, is carried half way round,
 // and steps out on the other side changed: a minister in, a paid adviser out, and the other way too. The people are drawn on paths timed to the turn, so each

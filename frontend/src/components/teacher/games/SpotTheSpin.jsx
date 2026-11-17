@@ -111,7 +111,7 @@ function Picture({ c, fair }) {
         <circle cx="70" cy="62" r="24" fill="#B8C3D9" /><path d="M24 128 a46 50 0 0 1 92 0z" fill="#B8C3D9" />
         <text x="70" y="70" textAnchor="middle" fontSize="26" fontWeight="800" fill="#fff" fontFamily="Public Sans, system-ui, sans-serif">?</text>
         <path d="M130 26 h170 a10 10 0 0 1 10 10 v40 a10 10 0 0 1 -10 10 h-150 l-22 16 l4 -16 h-2 a10 10 0 0 1 -10 -10 v-40 a10 10 0 0 1 10 -10z" fill="#fff" stroke="#B8C3D9" strokeWidth="2.5" />
-        <text x="215" y="62" textAnchor="middle" fontSize="19" fontWeight="800" fill={INK} fontFamily="Newsreader, Georgia, serif">{seen.says}&hellip;</text>
+        <text x="215" y="62" textAnchor="middle" fontSize="19" fontWeight="800" fill={INK} fontFamily="Figures, Newsreader, Georgia, serif">{seen.says}&hellip;</text>
       </svg>
     );
   }

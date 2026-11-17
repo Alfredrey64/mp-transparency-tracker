@@ -9,7 +9,7 @@ const INK = "#1B2438";
 const SOFT = "#5B6784";
 
 const FONT = "Public Sans, system-ui, sans-serif";
-const SERIF = "Newsreader, Georgia, serif";
+const SERIF = "Figures, Newsreader, Georgia, serif";
 const DONORS = [{ c: "#2A6FDB", l: "A" }, { c: "#1FA97C", l: "B" }, { c: "#E8741A", l: "C" }];
 const COLS = [
   { n: "1", title: "Named people give", c: "#2A6FDB", fill: "#F1F6FD", edge: "#D5E2F6" },
@@ -253,17 +253,17 @@ function SpendBarWide() {
   const starts = parts.map((_, i) => parts.slice(0, i).reduce((t, p) => t + (p.w / total) * 900, 0));
   return (
     <svg className="st-trail-wide" viewBox="0 0 900 240" role="img" aria-label="The 435,000 pound donation: about 425,000 pounds was spent on Vote Leave campaigning in England, including 282,000 pounds on a Metro advert and about 100,000 pounds on merchandise">
-      <text x="0" y="26" fontSize="20" fontWeight="800" fill={INK} fontFamily="Newsreader, Georgia, serif">£435,000 donated to the DUP in 2016</text>
+      <text x="0" y="26" fontSize="20" fontWeight="800" fill={INK} fontFamily="Figures, Newsreader, Georgia, serif">£435,000 donated to the DUP in 2016</text>
       {parts.map((p, i) => { const w = (p.w / total) * 900; const x = starts[i]; return (
         <g key={i} style={{ animation: `stGrow 1s var(--ease-out) ${0.2 + i * 0.2}s backwards`, transformOrigin: `${x}px 90px`, transformBox: "view-box" }}>
           <rect x={x + 1} y="50" width={Math.max(w - 3, 2)} height="70" rx="12" fill={p.c} />
-          {p.t && <text x={x + 14} y="82" fontSize={w > 150 ? 22 : 15} fontWeight="800" fill="#fff" fontFamily="Newsreader, Georgia, serif">{p.t}</text>}
+          {p.t && <text x={x + 14} y="82" fontSize={w > 150 ? 22 : 15} fontWeight="800" fill="#fff" fontFamily="Figures, Newsreader, Georgia, serif">{p.t}</text>}
           {p.s && <text x={x + 14} y="104" fontSize="13" fontWeight="600" fill="#fff" fontFamily="Public Sans, system-ui, sans-serif">{p.s}</text>}
         </g>); })}
       <path d="M 0 140 H 868" stroke="#6E4B6E" strokeWidth="3" strokeLinecap="round" /><path d="M 0 132 V 148 M 868 132 V 148" stroke="#6E4B6E" strokeWidth="3" />
       <text x="0" y="168" fontSize="16" fontWeight="800" fill="#6E4B6E" fontFamily="Public Sans, system-ui, sans-serif">Around £425,000 went on Vote Leave campaigning in England</text>
-      <text x="0" y="196" fontSize="14" fontWeight="600" fill={SOFT} fontFamily="Public Sans, system-ui, sans-serif">None of it was spent in Northern Ireland, where the DUP actually stands for election.</text>
-      <text x="0" y="222" fontSize="14" fontWeight="600" fill={SOFT} fontFamily="Public Sans, system-ui, sans-serif">The Electoral Commission fined the donor group £6,000 for failing to cooperate. It could not make it name its source.</text>
+      <text x="0" y="196" fontSize="15" fontWeight="600" fill={INK} fontFamily="Public Sans, system-ui, sans-serif">None of it was spent in Northern Ireland, where the DUP actually stands for election.</text>
+      <text x="0" y="222" fontSize="15" fontWeight="600" fill={INK} fontFamily="Public Sans, system-ui, sans-serif">The Electoral Commission fined the donor group £6,000 for failing to cooperate. It could not make it name its source.</text>
     </svg>
   );
 }

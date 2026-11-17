@@ -6,7 +6,7 @@ import { useGoMotion } from "./useGo";
 const INK = "#1B2438";
 const SOFT = "#5B6784";
 const F = "Public Sans, system-ui, sans-serif";
-const S = "Newsreader, Georgia, serif";
+const S = "Figures, Newsreader, Georgia, serif";
 const BLUE = "#5A7FA6";
 const GREEN = "#3F7D5C";
 const GOLD = "#9C6B30";
