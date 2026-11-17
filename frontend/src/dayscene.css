@@ -34,4 +34,22 @@
 .hs-scene[data-kind="finance"] .hs-dash { stroke: #1D3050; opacity: 0.5; }
 
 /* Business: the depot is slate, the factory brick */
-.bz-depot { fill: var(--s3); }
+.hs-scene .bz-depot { fill: var(--s3); }
+
+/* ---- Environment and energy: the same pictures, in daylight. Greens for hills and trees, pale stone for buildings, cream houses with brick roofs, dark-blue solar panels. ---- */
+.hs-scene[data-kind="energy"] { --a: #F2B233; --s1: #9CC79A; --s2: #5E9F5A; --s3: #EDF1F6; --s4: #fff; --lamp: #1D3050; --ground: #4F8F4A; }
+.hs-scene[data-kind="nature"] { --a: #F2B233; --s1: #2F6B45; --s2: #6FAE62; --s3: #4F8F4A; --s4: #fff; --lamp: #1D3050; --ground: #4F8F4A; }
+.hs-scene[data-kind="water"] { --a: #2E8AD6; --s1: #2F6B45; --s2: #6E7F96; --s3: #B8C4D4; --s4: #fff; --lamp: #1D3050; --ground: #4F8F4A; }
+.hs-scene[data-kind="flood"] { --a: #3F86D0; --s1: #4A5568; --s2: #8A7A66; --s3: #A8B6C8; --s4: #fff; --lamp: #1D3050; --ground: #4F8F4A; }
+.hs-scene:is([data-kind="energy"], [data-kind="nature"], [data-kind="water"], [data-kind="flood"]) .hs-lamp { fill: #D3E9F9; }
+.hs-scene:is([data-kind="energy"], [data-kind="nature"], [data-kind="water"], [data-kind="flood"]) .hs-warm { fill: #BFDDF2; }
+.hs-scene:is([data-kind="energy"], [data-kind="nature"], [data-kind="water"], [data-kind="flood"]) .hs-line { stroke: #55627C; }
+.hs-scene .env-wall { fill: #F1E4CC; } .hs-scene .env-roof { fill: #B4583F; }
+.hs-scene .env-far { fill: #8DBF86; }
+.hs-scene .env-slope { fill: #5FA05A; }
+.hs-scene .env-soil { fill: #8E6E52; }
+.hs-scene .env-mtn { fill: #8CA8C6; }
+.hs-scene .env-bird { fill: #35465F; }
+.hs-scene .env-panel { fill: #3A6BB8; stroke: #1D3A6B; }
+.hs-scene .env-panel2 { fill: #27364F; stroke: #9FB4D6; }
+.hs-scene[data-kind="flood"] text { fill: #F4F8FF; }

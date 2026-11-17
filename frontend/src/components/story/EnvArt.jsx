@@ -1,6 +1,6 @@
 /** @jsxImportSource react */
 import "../../envart.css";
-import { Scene, Defs } from "./EconArt";
+import { Scene, Backdrop } from "./EconArt";
 import { rnd, windows } from "./sceneKit";
 
 // The pictures along the foot of the heading band on the four Environment and energy pages: wind, sun and a power line lighting a village (Net zero and energy bills), a valley at
@@ -29,9 +29,9 @@ const Oak = ({ x, y, s = 1, i = 0, cls = "hs-1" }) => (
 );
 const House = ({ x, y, w = 30, h = 22, roof = 14, lit = [], d = 5 }) => (
   <g transform={`translate(${x} ${y})`}>
-    <rect className="hs-3" x="0" y={-h} width={w} height={h} />
-    <path className="hs-2" d={`M-3 ${-h} L${w / 2} ${-h - roof} L${w + 3} ${-h}Z`} />
-    <rect className="hs-2" x={w * 0.72} y={-h - roof * 0.9} width="4" height="9" />
+    <rect className="hs-3 env-wall" x="0" y={-h} width={w} height={h} />
+    <path className="hs-2 env-roof" d={`M-3 ${-h} L${w / 2} ${-h - roof} L${w + 3} ${-h}Z`} />
+    <rect className="hs-2 env-roof" x={w * 0.72} y={-h - roof * 0.9} width="4" height="9" />
     {lit.map((k, i) => <rect key={i} className="hs-win hs-warm" x={w * 0.14 + i * (w * 0.46)} y={-h * 0.72} width={w * 0.24} height={h * 0.42} rx="1.2" style={{ "--d": `${d + k * 0.5}s` }} />)}
   </g>
 );
@@ -58,9 +58,8 @@ const GRID = "M900 136Q930 124 960 106Q1025 132 1090 106Q1155 128 1220 120Q1255 
 export function EnergyScene() {
   return (
     <Scene kind="energy">
-      <Defs id="en" />
-      <rect width="1440" height="200" fill="url(#en-glow)" />
-      <g className="ec-sun"><circle cx="352" cy="96" r="96" fill="url(#en-sun)" opacity=".7" /><circle cx="352" cy="96" r="25" fill="#FFE2A0" opacity=".95" /></g>
+      <Backdrop id="en" day sun={null} far={false} clouds={[[150, 36, 1, 50], [560, 28, 0.8, 61], [790, 50, 0.6, 72], [1170, 30, 1, 83]]} />
+      <g className="ec-sun"><circle cx="352" cy="70" r="62" fill="url(#en-sun)" opacity=".7" /><circle cx="352" cy="70" r="25" fill="#FFEBA6" opacity=".95" /></g>
       <path className="hs-1" d="M0 146C110 128 220 134 330 142S560 124 700 138 940 150 1100 140 1330 126 1440 138V200H0Z" />
       {TURBINES.map(([x, y, s, r, t]) => <Turbine key={x} x={x} y={y} s={s} r={r} t={t} />)}
       <path className="hs-2" d="M0 170C150 152 300 160 450 168S720 156 900 166 1200 156 1440 168V200H0Z" />
@@ -71,7 +70,7 @@ export function EnergyScene() {
           const d = `M${x} ${y}L${x + 22} ${y}L${x + 25} ${y + 7}L${x - 3} ${y + 7}Z`;
           return (
             <g key={`${row}-${c}`}>
-              <path d={d} fill="var(--s4)" stroke="var(--s3)" strokeWidth=".8" opacity=".92" />
+              <path className="env-panel" d={d} fill="var(--s4)" stroke="var(--s3)" strokeWidth=".8" opacity=".92" />
               <path d={`M${x + 11} ${y}L${x + 12.5} ${y + 7}`} stroke="var(--s3)" strokeWidth=".6" />
               <path className="env-glint" d={d} fill="#fff" style={{ "--k": c + row * 2 }} />
             </g>
@@ -96,7 +95,7 @@ export function EnergyScene() {
       <House x={1304} y={188} w={28} h={24} roof={13} lit={[0, 1]} d={5.4} />
       <House x={1346} y={188} lit={[0, 1]} d={6.2} />
       <House x={1388} y={188} w={30} h={20} lit={[0, 1]} d={7} />
-      <g className="hs-3"><rect x="0" y="188" width="1440" height="12" /></g>
+      <g className="hs-3 sv-ground"><rect x="0" y="188" width="1440" height="12" /></g>
     </Scene>
   );
 }
@@ -108,7 +107,7 @@ const FRONT = Array.from({ length: 22 }, (_, i) => ({ x: 20 + i * 66 + rnd(i + 1
 // Three birds in a V: [x, y, scale, wing phase]. Each is a body, a tail and two wings that beat from the shoulder.
 const BIRDS = [[0, 0, 1, 0], [-27, -10, 0.88, 1.3], [-27, 11, 0.84, 2.4]];
 const Bird = ({ x, y, k, p }) => (
-  <g transform={`translate(${x} ${y}) scale(${k})`} fill="#EAF3F0" opacity=".94">
+  <g className="env-bird" transform={`translate(${x} ${y}) scale(${k})`} fill="#EAF3F0" opacity=".94">
     <path d="M-3.4 0L-8 -1.3L-7 0.2L-8 1.6Z" />
     <ellipse rx="3.7" ry="1.65" /><circle cx="3.4" cy="-.3" r="1.35" /><path d="M4.4 -.4L6.6 .2L4.4 .7Z" />
     <g className="env-wl" style={{ "--p": p }}><path d="M0 -.2C-4 -4.8-10 -6.6-17.5 -3.4C-10.5 -3.6-5 -1.6 0 1.1Z" /></g>
@@ -118,19 +117,13 @@ const Bird = ({ x, y, k, p }) => (
 export function EnvironmentScene() {
   return (
     <Scene kind="nature">
-      <Defs id="nt" />
-      <rect width="1440" height="200" fill="url(#nt-glow)" />
+      <Backdrop id="nt" day sun={null} far={false} clouds={[[240, 44, 1, 101], [640, 30, 0.75, 112], [1180, 56, 1.1, 123], [440, 66, 0.5, 134]]} />
       <g className="ec-sun">
-        <circle cx="1010" cy="114" r="104" fill="url(#nt-sun)" opacity=".75" />
-        <g stroke="#FFE2A0" strokeWidth="1.4" opacity=".3" strokeLinecap="round">{Array.from({ length: 14 }, (_, i) => { const a = (i / 14) * Math.PI * 2; return <path key={i} d={`M${1010 + Math.cos(a) * 40} ${114 + Math.sin(a) * 40}L${1010 + Math.cos(a) * 66} ${114 + Math.sin(a) * 66}`} />; })}</g>
-        <circle cx="1010" cy="114" r="30" fill="#FFE2A0" opacity=".96" />
+        <circle cx="1010" cy="84" r="74" fill="url(#nt-sun)" opacity=".75" />
+        <g stroke="#FFE2A0" strokeWidth="1.4" opacity=".5" strokeLinecap="round">{Array.from({ length: 14 }, (_, i) => { const a = (i / 14) * Math.PI * 2; return <path key={i} d={`M${1010 + Math.cos(a) * 36} ${84 + Math.sin(a) * 36}L${1010 + Math.cos(a) * 56} ${84 + Math.sin(a) * 56}`} />; })}</g>
+        <circle cx="1010" cy="84" r="26" fill="#FFEBA6" opacity=".96" />
       </g>
-      <path d={MOUNTAINS} style={{ fill: "color-mix(in srgb, var(--s1) 55%, var(--s2))" }} />
-      <g className="hs-4" opacity=".22">
-        {[[250, 50, 1], [690, 38, 0.8], [1180, 58, 1.1]].map(([x, y, s], i) => (
-          <g key={i} className="env-cloud" transform={`translate(${x} ${y}) scale(${s})`}><g style={{ "--i": i }}><ellipse cx="0" cy="0" rx="46" ry="9" /><ellipse cx="-14" cy="-8" rx="22" ry="10" /><ellipse cx="14" cy="-10" rx="26" ry="12" /></g></g>
-        ))}
-      </g>
+      <path className="env-mtn" d={MOUNTAINS} />
       <path className="hs-2" d="M0 150C130 126 260 138 400 146S640 128 800 142 1100 124 1250 140 1400 134 1440 138V200H0Z" />
       {FOREST.map((t) => (t.oak ? <Oak key={t.i} x={t.x} y={t.y} s={t.s * 0.8} i={t.i % 7} cls="hs-1" /> : <Pine key={t.i} x={t.x} y={t.y} s={t.s} i={t.i % 7} cls="hs-1" />))}
       {/* the river runs from the sun's horizon towards the viewer, with the light sparkling on it */}
@@ -140,7 +133,7 @@ export function EnvironmentScene() {
       {FRONT.map((t) => (t.oak ? <Oak key={t.i} x={t.x} y={188} s={t.s} i={t.i % 7} cls="hs-1" /> : <Pine key={t.i} x={t.x} y={188} s={t.s} i={t.i % 7} cls="hs-1" />))}
       {/* a flock crosses the whole sky once */}
       <g transform="translate(0 54)"><g className="env-flock">{BIRDS.map(([x, y, k, p]) => <Bird key={p} x={x} y={y} k={k} p={p} />)}</g></g>
-      <g className="hs-3"><rect x="0" y="194" width="1440" height="6" /></g>
+      <g className="hs-3 sv-ground"><rect x="0" y="194" width="1440" height="6" /></g>
     </Scene>
   );
 }
@@ -159,17 +152,16 @@ const RAIN = rainFor(1010, 50, 84, 14, 14, 2);
 export function WaterScene() {
   return (
     <Scene kind="water">
-      <Defs id="wt" />
+      <Backdrop id="wt" day sun={null} far={false} clouds={[[300, 42, 1, 141], [560, 26, 0.7, 152], [1250, 40, 0.9, 163]]} />
       <defs><linearGradient id="wt-w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style={{ stopColor: "color-mix(in srgb, var(--a) 55%, #A9DBFF)" }} /><stop offset="1" style={{ stopColor: "color-mix(in srgb, var(--a) 80%, #1B4F8A)" }} /></linearGradient></defs>
-      <rect width="1440" height="200" fill="url(#wt-glow)" />
-      <path className="hs-1" d="M0 138C140 118 300 124 460 136S760 146 940 136 1260 122 1440 132V200H0Z" />
-      <path className="hs-2" d="M0 166C80 132 200 122 306 140S410 170 520 170H1440V184H0Z" />
+      <path className="hs-1 env-far" d="M0 138C140 118 300 124 460 136S760 146 940 136 1260 122 1440 132V200H0Z" />
+      <path className="hs-2 env-slope" d="M0 166C80 132 200 122 306 140S410 170 520 170H1440V184H0Z" />
       {/* the reservoir on the hill, with its dam */}
       <path d="M74 148C104 136 226 134 268 146C246 156 108 158 74 148Z" fill="url(#wt-w)" />
       <path className="env-streamflow" d="M100 146Q170 141 246 146" fill="none" stroke="#DDF1FF" strokeWidth="1.2" opacity=".75" />
       <path className="hs-3" d="M262 142H284L288 154H258Z" />
       {/* the ground, with the supply pipe running through it, and the drops travelling along it */}
-      <rect className="hs-3" x="320" y="170" width="1120" height="14" />
+      <rect className="hs-3 env-soil" x="320" y="170" width="1120" height="14" />
       <path d={SUPPLY} fill="none" stroke="var(--s4)" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" opacity=".6" />
       {[0, 1, 2, 3].map((k) => <circle key={k} r="3.2" className="env-drop" style={{ offsetPath: `path("${SUPPLY}")`, "--d": `${1.2 + k * 1.7}s` }} />)}
       {/* the treatment works: three round tanks with a walkway over them, a control building and the filter beds */}
@@ -193,8 +185,8 @@ export function WaterScene() {
       <House x={1072} y={170} w={30} h={20} lit={[0, 1]} d={7.6} />
       {/* rain over the town, and the storm overflow that opens into the river while it rains */}
       <g className="env-cloud" style={{ "--i": 0 }}><g>
-        <Rain drops={RAIN} colour="#CFE9FF" />
-        <g fill="color-mix(in srgb, var(--a) 22%, #AEBDCF)"><ellipse cx="1010" cy="50" rx="84" ry="14" /><ellipse cx="976" cy="40" rx="36" ry="16" /><ellipse cx="1030" cy="35" rx="44" ry="19" /><ellipse cx="1066" cy="46" rx="32" ry="13" /></g>
+        <Rain drops={RAIN} colour="#E8F4FF" />
+        <g fill="color-mix(in srgb, var(--a) 14%, #D3DDEA)"><ellipse cx="1010" cy="50" rx="84" ry="14" /><ellipse cx="976" cy="40" rx="36" ry="16" /><ellipse cx="1030" cy="35" rx="44" ry="19" /><ellipse cx="1066" cy="46" rx="32" ry="13" /></g>
       </g></g>
       <g className="hs-3"><rect x="1128" y="166" width="26" height="18" rx="2" /></g><rect x="1136" y="172" width="10" height="7" rx="3.5" fill="var(--s1)" />
       {/* the river along the foot, with the pale plume from the overflow drifting downstream and then thinning */}
@@ -217,24 +209,23 @@ const SKYLINE = [[900, 58, 28], [932, 84, 26], [964, 44, 32], [1000, 70, 24], [1
 export function FloodScene() {
   return (
     <Scene kind="flood">
-      <Defs id="fl" />
+      <Backdrop id="fl" day sun={null} far={false} clouds={[[620, 34, 0.9, 171], [1320, 36, 0.8, 182]]} />
       <defs>
         <clipPath id="fl-river"><rect x="-120" y="150" width="840" height="50" /></clipPath>
         <linearGradient id="fl-w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style={{ stopColor: "color-mix(in srgb, var(--a) 55%, #9CC4EE)" }} /><stop offset="1" style={{ stopColor: "color-mix(in srgb, var(--a) 80%, #1F3F70)" }} /></linearGradient>
         <linearGradient id="fl-road" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="var(--s1)" stopOpacity="0" /><stop offset=".12" stopColor="var(--s1)" /></linearGradient>
         <radialGradient id="fl-haze" cx="50%" cy="60%" r="60%"><stop offset="0" stopColor="#B9AA92" stopOpacity=".62" /><stop offset="1" stopColor="#B9AA92" stopOpacity="0" /></radialGradient>
       </defs>
-      <rect width="1440" height="200" fill="url(#fl-glow)" />
-      <path className="hs-1" d="M0 138C160 120 320 132 480 138S720 128 900 134 1200 122 1440 130V200H0Z" />
+      <path className="hs-1 env-far" d="M0 138C160 120 320 132 480 138S720 128 900 134 1200 122 1440 130V200H0Z" />
       {/* the left: a storm cloud, homes behind a flood wall, and the river rising up the wall */}
       <g transform="translate(96 0)">
       <g className="env-cloud" style={{ "--i": 0 }}><g>
-        <Rain drops={STORM_A} colour="#CFE2F8" />
-        <g fill="color-mix(in srgb, var(--a) 18%, #4B586F)"><ellipse cx="170" cy="46" rx="84" ry="15" /><ellipse cx="136" cy="34" rx="38" ry="17" /><ellipse cx="194" cy="30" rx="46" ry="21" /><ellipse cx="238" cy="42" rx="34" ry="14" /></g>
+        <Rain drops={STORM_A} colour="#E6F0FC" />
+        <g fill="color-mix(in srgb, var(--a) 16%, #7F8DA6)"><ellipse cx="170" cy="46" rx="84" ry="15" /><ellipse cx="136" cy="34" rx="38" ry="17" /><ellipse cx="194" cy="30" rx="46" ry="21" /><ellipse cx="238" cy="42" rx="34" ry="14" /></g>
       </g></g>
       <g className="env-cloud" style={{ "--i": 1 }}><g>
-        <Rain drops={STORM_B} colour="#CFE2F8" />
-        <g fill="color-mix(in srgb, var(--a) 14%, #3C475C)"><ellipse cx="380" cy="40" rx="70" ry="13" /><ellipse cx="356" cy="30" rx="32" ry="14" /><ellipse cx="400" cy="26" rx="38" ry="17" /></g>
+        <Rain drops={STORM_B} colour="#E6F0FC" />
+        <g fill="color-mix(in srgb, var(--a) 12%, #6F7D96)"><ellipse cx="380" cy="40" rx="70" ry="13" /><ellipse cx="356" cy="30" rx="32" ry="14" /><ellipse cx="400" cy="26" rx="38" ry="17" /></g>
       </g></g>
       <rect className="hs-2" x="-120" y="160" width="780" height="40" />
       <House x={92} y={170} w={34} h={26} roof={15} lit={[0, 1]} d={9} />
@@ -293,7 +284,7 @@ export function FloodScene() {
       <g className="hs-3"><rect x="1183" y="134" width="5" height="36" /></g>
       <g transform="translate(1186 92)">
         <rect className="hs-3" x="-58" y="-44" width="116" height="92" rx="12" />
-        <rect x="-53" y="-39" width="106" height="82" rx="9" fill="var(--s2)" stroke="var(--lamp)" strokeWidth="1" opacity=".95" />
+        <rect className="env-panel2" x="-53" y="-39" width="106" height="82" rx="9" fill="var(--s2)" stroke="var(--lamp)" strokeWidth="1" opacity=".95" />
         <text x="0" y="-16" textAnchor="middle" fontSize="11.500" fontWeight="800" letterSpacing="1" fill="var(--lamp)" fontFamily="Public Sans, system-ui, sans-serif">AIR QUALITY</text>
         <g transform="translate(0 28)">
           {GAUGE.map(([c, a0, a1]) => <path key={c} d={arc(30, a0, a1)} fill="none" stroke={c} strokeWidth="9" />)}

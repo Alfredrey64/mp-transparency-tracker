@@ -48,7 +48,7 @@ export function FarmScene() {
         <rect width="1440" height="200" fill="url(#fm-haze)" />
         <circle className="fm-sun" cx="1130" cy="52" r="50" fill="url(#fm-sun)" />
         <circle cx="1130" cy="52" r="20" fill="#FFEBA6" />
-        <Clouds list={[[360, 40, 1], [700, 26, 0.8], [1330, 48, 0.9]]} />
+        <Clouds list={[[360, 40, 1, 24], [700, 26, 0.8, 39], [1330, 48, 0.9, 45]]} />
         <path d="M0 118C190 74 380 100 600 84S1000 58 1440 104V200H0z" fill="#7DB07A" />
         <path d="M0 144C240 104 520 140 760 114S1190 100 1440 132V200H0z" fill="#4F9A55" />
         <path d="M520 124c120-22 240-6 330-10l-20 34c-110-2-230 8-340 6z" fill="#C79A3B" opacity=".9" />

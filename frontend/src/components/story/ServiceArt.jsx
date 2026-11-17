@@ -30,11 +30,11 @@ const STEPS = [26, 46, 66, 86, 106];
 export function EducationScene() {
   return (
     <Scene kind="education">
-      <Backdrop id="sv-ed" day />
+      <Backdrop id="sv-ed" day sun={null} clouds={[[200, 46, 1.05, 3], [430, 28, 0.75, 14], [1010, 34, 0.9, 8], [1190, 60, 0.5, 21]]} />
       {/* the school: two wings, a centre block with a pediment, a clock tower whose minute hand turns once, and a flag run up its pole */}
       <g className="hs-3"><rect x="566" y="128" width="94" height="60" /><rect x="780" y="128" width="94" height="60" /><rect x="660" y="100" width="120" height="88" /></g>
+      <rect className="hs-3" x="702" y="32" width="36" height="72" />
       <path className="hs-2" d="M650 100 720 68 790 100Z" />
-      <rect className="hs-3" x="702" y="32" width="36" height="38" />
       <path className="hs-2" d="M697 32 720 8 743 32Z" />
       <circle className="hs-warm" cx="720" cy="50" r="11" />
       <g className="sv-clock" stroke="#3A2A12" strokeWidth="1.6" strokeLinecap="round"><path d="M720 50V43" /></g>
@@ -59,8 +59,8 @@ export function EducationScene() {
           <rect className="hs-4" x={1040 + i * 58} y={188 - h} width="56" height="3" opacity=".7" />
         </g>
       ))}
-      {/* the mortarboard drops onto the top step, then tips over the edge to 45 degrees; its tassle swings as a pendulum would and settles hanging straight down */}
-      <g transform="translate(1320 66)"><g className="sv-hat"><g className="sv-tip">
+      {/* the mortarboard drops onto the top step, then settles with a small tilt over the corner of the top step; its tassle swings as a pendulum would and settles hanging straight down */}
+      <g transform="translate(1314 64)"><g className="sv-hat"><g className="sv-tip">
         <path className="sv-board" d="M0 -12 30 0 0 12 -30 0Z" /><path className="hs-2" d="M-14 6v10q14 8 28 0V6l-14 7Z" />
         <g className="sv-tassle"><path d="M30 0v18" stroke="#F2C94C" strokeWidth="2" /><circle cx="30" cy="20" r="2.6" fill="#F2C94C" /></g>
       </g></g></g>
@@ -116,7 +116,7 @@ function Airliner() {
 export function TransportScene() {
   return (
     <Scene kind="transport">
-      <Backdrop id="sv-tr" day />
+      <Backdrop id="sv-tr" day clouds={[[300, 40, 1.1, 4], [640, 24, 0.8, 19], [1150, 44, 1, 7]]} />
       <g transform="translate(1180 44)"><g className="sv-plane"><Contrails /><Airliner /></g></g>
       {/* the viaduct: a deck on a row of arches */}
       <rect className="hs-2" x="0" y="126" width="1440" height="62" />
@@ -148,7 +148,7 @@ const BARS = Array.from({ length: 16 }, (_, i) => ({ x: 1132 + (i % 8) * 25, y: 
 export function JusticeScene() {
   return (
     <Scene kind="justice">
-      <Backdrop id="sv-ju" day />
+      <Backdrop id="sv-ju" day sun={null} clouds={[[250, 34, 1, 6], [470, 58, 0.6, 13], [1030, 36, 1.1, 9], [1200, 22, 0.6, 2]]} />
       {/* police station */}
       <g className="sv-police-wall"><rect x="130" y="124" width="196" height="64" /></g>
       <rect className="sv-police-roof" x="124" y="118" width="208" height="9" /><rect className="hs-acc" x="196" y="136" width="64" height="15" rx="2" />
@@ -158,15 +158,16 @@ export function JusticeScene() {
       <circle className="sv-glow" cx="228" cy="104" r="22" fill="#3B7BFF" /><rect className="hs-2" x="220" y="108" width="16" height="10" rx="2" /><circle className="sv-blue" cx="228" cy="104" r="8" fill="#5C9BFF" />
       {/* court */}
       <rect className="hs-2" x="548" y="176" width="344" height="12" /><rect className="hs-3" x="560" y="165" width="320" height="12" />
-      <path className="hs-2" d="M684 54a36 36 0 0 1 72 0Z" /><rect className="hs-3" x="714" y="26" width="12" height="10" />
+      <path className="hs-2" d="M684 72V62a36 36 0 0 1 72 0V72Z" /><rect className="hs-3" x="714" y="34" width="12" height="10" />
       <path className="hs-3" d="M556 96 720 54 884 96Z" /><rect className="hs-2" x="564" y="94" width="312" height="12" />
       {Array.from({ length: 8 }, (_, i) => <rect key={i} className="hs-4" x={584 + i * 36} y="106" width="14" height="59" rx="2" />)}
       {Array.from({ length: 7 }, (_, i) => <rect key={i} className="hs-win hs-glass" x={602 + i * 36} y="122" width="14" height="30" rx="2" style={{ "--d": `${1.4 + i * 0.3}s` }} />)}
-      <g className="sv-scales" transform="translate(720 22)">
-        <path d="M0 0V-14" stroke="#F7D675" strokeWidth="2" />
-        <g className="sv-beam"><path d="M-12 -12H12" stroke="#F7D675" strokeWidth="2" strokeLinecap="round" /><path d="M-12 -12 -17 -2M-12 -12 -7 -2M12 -12 7 -2M12 -12 17 -2" stroke="#F7D675" strokeWidth="1" /><path d="M-18 -2h12q-2 5-6 5t-6-5ZM6 -2h12q-2 5-6 5t-6-5Z" fill="#F7D675" /></g>
+      <g className="sv-scales" transform="translate(720 28)">
+        <path d="M0 2V-20" stroke="#F7D675" strokeWidth="2" />
+        <g className="sv-beam"><path d="M-12 -18H12" stroke="#F7D675" strokeWidth="2" strokeLinecap="round" /><path d="M-12 -18 -17 -8M-12 -18 -7 -8M12 -18 7 -8M12 -18 17 -8" stroke="#F7D675" strokeWidth="1" /><path d="M-18 -8h12q-2 5-6 5t-6-5ZM6 -8h12q-2 5-6 5t-6-5Z" fill="#F7D675" /></g>
       </g>
-      {/* prison: a cell block behind a wall with two towers */}
+      {/* prison: a cell block behind a wall with two towers; drawn 40 to the left of where it started so the whole of it stays inside the picture on a narrow screen */}
+      <g transform="translate(-40 0)">
       <rect className="sv-brick" x="1116" y="98" width="226" height="52" />
       {BARS.map((b, i) => <g key={i}><rect className="hs-win hs-glass" x={b.x} y={b.y} width="12" height="14" rx="1.5" style={{ "--d": `${1.2 + rnd(i) * 3}s` }} /><path d={`M${b.x + 4} ${b.y}v14M${b.x + 8} ${b.y}v14`} stroke="var(--s1)" strokeWidth="1.4" /></g>)}
       <rect className="sv-brick2" x="1080" y="146" width="302" height="42" /><path className="hs-line" d="M1080 142 1096 136 1112 142 1128 136 1144 142 1160 136 1176 142 1192 136 1208 142 1224 136 1240 142 1256 136 1272 142 1288 136 1304 142 1320 136 1336 142 1352 136 1368 142 1382 138" stroke="var(--s4)" strokeWidth="1.2" />
@@ -174,9 +175,10 @@ export function JusticeScene() {
       {[[1084, "a"], [1356, "b"]].map(([x, k]) => (
         <g key={k}><rect className="sv-brick" x={x} y="106" width="24" height="42" /><rect className="sv-brick2" x={x - 5} y="90" width="34" height="18" rx="2" /><path className="hs-1" d={`M${x - 7} 90 ${x + 12} 76 ${x + 31} 90Z`} /><rect className="hs-glass" x={x + 4} y="95" width="16" height="8" rx="1.5" /></g>
       ))}
+      </g>
             {/* the case file travels from the station, to the court, and on to the prison */}
-      <path className="hs-dash" d="M346 194H1068" />
-      <g className="sv-token"><rect className="hs-warm" x="1222" y="184" width="18" height="12" rx="2" /><path d="M1226 188h10M1226 191h7" stroke="#3A2A12" strokeWidth="1.2" /></g>
+      <path className="hs-dash" d="M346 194H1028" />
+      <g className="sv-token"><rect className="hs-warm" x="1182" y="184" width="18" height="12" rx="2" /><path d="M1186 188h10M1186 191h7" stroke="#3A2A12" strokeWidth="1.2" /></g>
       <Ground />
     </Scene>
   );
@@ -280,7 +282,7 @@ const CABLE_Y = 176;
 export function DigitalScene() {
   return (
     <Scene kind="digital">
-      <Backdrop id="sv-dg" day />
+      <Backdrop id="sv-dg" day clouds={[[520, 38, 1, 10], [1130, 26, 0.9, 17], [300, 60, 0.6, 5]]} />
       {/* the cabinet and mast at the start of the line, with signal spreading from the mast */}
       <rect className="hs-3" x="70" y="124" width="104" height="64" /><rect className="hs-2" x="64" y="118" width="116" height="8" />
       <g className="hs-lamp">{windows(82, 136, 7, 3, 13, 14, 7)}</g>

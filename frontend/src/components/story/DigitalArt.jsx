@@ -17,13 +17,14 @@ function AgeGate() {
   return (
     <svg className="dp-gate" viewBox="0 0 200 110" aria-hidden="true" focusable="false">
       <path d="M0 98H200" stroke="#7FA2E0" strokeWidth="2" opacity=".5" />
+      {/* the adult walks into the doorway: drawn behind the posts and the light, he fades out as he goes in, as if he had entered the room */}
+      <g transform="translate(0 98)"><g className="dp-adult"><rect x="-3" y="-12" width="6" height="12" rx="2" fill="#2A3350" /><rect x="-6" y="-30" width="12" height="20" rx="4" fill="#5DD28E" /><circle cy="-36" r="6" fill="#EBB98F" /></g></g>
       <rect x="86" y="30" width="6" height="68" rx="2" fill="#8FB0EA" /><rect x="128" y="30" width="6" height="68" rx="2" fill="#8FB0EA" />
       <rect x="80" y="24" width="60" height="9" rx="3" fill="#B7CCF3" />
       <rect className="dp-beam" x="92" y="34" width="36" height="64" fill="#9BDCFF" />
       <circle cx="110" cy="10" r="12" fill="#FFD98A" /><circle cx="110" cy="10" r="12" fill="none" stroke="#B3402E" strokeWidth="2.4" />
-      <text x="110" y="15" textAnchor="middle" fontSize="12.5" fontWeight="800" fill="#3A1D12" fontFamily="Figures, 'Public Sans', system-ui, sans-serif">16+</text>
+      <text x="110" y="13.4" textAnchor="middle" fontSize="9.4" fontWeight="800" fill="#3A1D12" fontFamily="Figures, 'Public Sans', system-ui, sans-serif">16+</text>
       {/* an adult walks through; a child comes up to the gate and is turned back with a cross */}
-      <g transform="translate(0 98)"><g className="dp-adult"><rect x="-3" y="-12" width="6" height="12" rx="2" fill="#2A3350" /><rect x="-6" y="-30" width="12" height="20" rx="4" fill="#5DD28E" /><circle cy="-36" r="6" fill="#EBB98F" /></g></g>
       <g transform="translate(0 98)"><g className="dp-child"><rect x="-2.6" y="-8" width="5.2" height="8" rx="2" fill="#2A3350" /><rect x="-5" y="-21" width="10" height="14" rx="3.6" fill="#FF8A5C" /><circle cy="-25.5" r="5" fill="#EBB98F" /></g></g>
       <g transform="translate(110 70)"><g className="dp-cross"><circle r="10" fill="#B3402E" /><path d="M-4 -4 4 4M4 -4-4 4" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" /></g></g>
     </svg>

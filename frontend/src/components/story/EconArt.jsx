@@ -9,8 +9,8 @@ import Clouds from "./Clouds";
 // flowing to public services for Taxes, and a high street, factory and lorry for Business. They are all decoration (hidden from screen readers) and take their colours from the
 // page's own accent (--hero-accent), so each page keeps its colour. Each plays once or a few times and then rests; with calmer motion asked for, they are simply finished.
 
-// Every picture but Crime and the Environment ones is in daylight (data-day): the sky is then the colour of the whole heading band (heroscene.css), and each picture has its own daytime palette (dayscene.css, servicesart.css).
-const DAY = new Set(["education", "transport", "justice", "digital", "economy", "jobs", "finance", "taxes", "business"]);
+// Every picture but Crime is in daylight (data-day): the sky is then the colour of the whole heading band (heroscene.css), and each picture has its own daytime palette (dayscene.css, servicesart.css).
+const DAY = new Set(["education", "transport", "justice", "digital", "economy", "jobs", "finance", "taxes", "business", "energy", "nature", "water", "flood"]);
 export const Scene = ({ kind, children }) => (
   <div className="hs-scene" data-kind={kind} data-day={DAY.has(kind) ? "1" : undefined} aria-hidden="true">
     <svg viewBox="0 0 1440 200" preserveAspectRatio="xMidYMax slice" focusable="false">{children}</svg>
@@ -47,7 +47,7 @@ const GROWTH = "M30 170C170 164 250 130 380 128S560 100 700 86 1000 74 1120 56 1
 export function EconomyScene() {
   return (
     <Scene kind="economy">
-      <Backdrop id="ec" day far={false} clouds={[[570, 24, 0.9], [880, 22, 1], [1340, 40, 0.8]]} />
+      <Backdrop id="ec" day far={false} clouds={[[570, 24, 0.9, 15], [880, 22, 1, 23], [1340, 40, 0.8, 31]]} />
       <g className="hs-dash">{[48, 92, 136].map((y) => <path key={y} d={`M0 ${y}H1440`} />)}</g>
       <g className="hs-1">{BACK.map((b, i) => <rect key={i} x={b.x} y={200 - b.h} width={b.w} height={b.h} />)}</g>
       <g fill="url(#ec-bld)" opacity=".55">{MID.map((b, i) => <rect key={i} x={b.x} y={200 - b.h} width={b.w} height={b.h} />)}</g>
@@ -146,7 +146,7 @@ function Worker({ w, i }) {
 export function JobsScene() {
   return (
     <Scene kind="jobs">
-      <Backdrop id="jb" day sun={null} far={false} clouds={[[420, 40, 1], [760, 26, 0.8], [1250, 44, 1.1]]} />
+      <Backdrop id="jb" day sun={null} far={false} clouds={[[420, 40, 1, 18], [740, 24, 0.75, 27], [900, 46, 0.9, 4]]} />
       {/* the sun rises from behind the town and stops whole, well inside the picture */}
       <g className="ec-sun"><circle cx="1120" cy="62" r="54" fill="url(#jb-sun)" /><circle cx="1120" cy="62" r="22" fill="#FFEBA6" /></g>
       <g className="hs-1">{BACK.map((b, i) => <rect key={i} x={b.x} y={200 - b.h * 0.8} width={b.w} height={b.h * 0.8} />)}</g>
@@ -199,7 +199,7 @@ export function FinanceScene() {
   const tops = [...FIN_L, ...FIN_R].map((s) => `${s.x},${186 - s.n * COIN}`);
   return (
     <Scene kind="finance">
-      <Backdrop id="fn" day far={false} clouds={[[400, 40, 1], [1010, 34, 1.2], [1270, 62, 0.7]]} />
+      <Backdrop id="fn" day far={false} clouds={[[400, 40, 1, 16], [1010, 34, 1.2, 25], [1270, 62, 0.7, 33]]} />
       <g className="hs-1">{BACK.map((b, i) => <rect key={i} x={b.x} y={200 - b.h * 0.6} width={b.w} height={b.h * 0.6} />)}</g>
       {/* the Treasury: three steps, ten columns, an entablature and a pediment with a rising sun, a flag on top */}
       <g fill="url(#fn-bld)">
@@ -254,7 +254,7 @@ const OUT_ICONS = ["bus", "school", "health", "shield"];
 export function TaxScene() {
   return (
     <Scene kind="taxes">
-      <Backdrop id="tx" day far={false} clouds={[[400, 30, 1], [1050, 22, 0.7], [1300, 36, 1.1]]} />
+      <Backdrop id="tx" day far={false} clouds={[[400, 30, 1, 29], [1050, 22, 0.7, 35], [1300, 36, 1.1, 41]]} />
       <defs>
         <linearGradient id="tx-in" gradientUnits="userSpaceOnUse" x1="240" y1="0" x2="700" y2="0"><stop offset="0" style={{ stopColor: "var(--stream-in)" }} stopOpacity=".2" /><stop offset="1" style={{ stopColor: "var(--stream-in)" }} stopOpacity=".85" /></linearGradient>
         <linearGradient id="tx-out" gradientUnits="userSpaceOnUse" x1="740" y1="0" x2="1200" y2="0"><stop offset="0" style={{ stopColor: "var(--stream-out)" }} stopOpacity=".9" /><stop offset="1" style={{ stopColor: "var(--stream-out)" }} stopOpacity=".25" /></linearGradient>
@@ -290,7 +290,7 @@ export function TaxScene() {
 export function BusinessScene() {
   return (
     <Scene kind="business">
-      <Backdrop id="bz" day sun={[1010, 52]} far={false} clouds={[[420, 36, 1], [760, 24, 0.8], [110, 24, 0.8]]} />
+      <Backdrop id="bz" day sun={[1010, 52]} far={false} clouds={[[420, 36, 1, 22], [760, 24, 0.8, 37], [110, 24, 0.8, 12]]} />
       <g className="hs-1">{BACK.map((b, i) => <rect key={i} x={b.x} y={200 - b.h * 0.75} width={b.w} height={b.h * 0.75} />)}</g>
       <g className="hs-2">
         {/* the factory */}

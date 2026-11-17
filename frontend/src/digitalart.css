@@ -24,7 +24,7 @@
 /* stop 2: the age gate */
 .dp-gate { display: block; width: min(100%, 230px); height: auto; margin: 2px 0; overflow: visible; }
 .dp-beam { opacity: 0.12; }
-.dp-adult { transform: translateX(184px); }
+.dp-adult { transform: translateX(112px) scale(0.7); opacity: 0; }
 .dp-child { transform: translateX(14px); }
 .dp-cross { opacity: 0; }
 
@@ -47,7 +47,7 @@
 .dp[data-go="1"] .dp-beam { animation: dpBeam 1s ease-in-out 2.2s 12; }
 @keyframes dpBeam { 50% { opacity: 0.32; } }
 .dp[data-go="1"] .dp-adult { animation: dpAdult 4s linear 2.2s 3 backwards; }
-@keyframes dpAdult { from { transform: translateX(14px); } }
+@keyframes dpAdult { 0% { transform: translateX(14px) scale(1); opacity: 1; } 52% { transform: translateX(88px) scale(1); opacity: 1; } 68% { transform: translateX(112px) scale(0.7); opacity: 0; } 100% { transform: translateX(112px) scale(0.7); opacity: 0; } }
 .dp[data-go="1"] .dp-child { animation: dpChild 4s ease-in-out 2.2s 3 backwards; }
 @keyframes dpChild { 0%, 100% { transform: translateX(14px); } 40%, 58% { transform: translateX(74px); } }
 .dp[data-go="1"] .dp-cross { animation: dpCross 4s ease-out 2.2s 3; }
