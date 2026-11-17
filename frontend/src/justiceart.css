@@ -4,40 +4,58 @@
 .jc > figcaption b, .jp > figcaption b, .co > figcaption b { font: 700 clamp(21px, 3vw, 27px)/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); letter-spacing: -0.01em; }
 .jc > figcaption span, .jp > figcaption span, .co > figcaption span { max-width: 68ch; font: 400 15px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 
-/* ---- the chain ---- */
-.jc-row { display: grid; grid-template-columns: 1fr; gap: 0; }
-.jc-cell { display: grid; grid-template-rows: auto 1fr; }
-.jc-link { position: relative; height: 46px; display: grid; place-items: center; overflow: hidden; }
-.jc-link i { position: absolute; left: 50%; top: 4px; bottom: 4px; width: 0; border-left: 3px dashed color-mix(in srgb, var(--c-ink-soft) 45%, transparent); }
-.jc-link b { position: absolute; left: 50%; top: 0; width: 12px; height: 12px; margin-left: -6px; border-radius: 3px; background: var(--c-ink); opacity: 0; }
-.jc-card { display: grid; gap: 6px; padding: 18px 20px 20px; border-radius: 20px; color: var(--c); background: color-mix(in srgb, var(--c) 9%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--c) 32%, transparent); }
-.jc-art { width: 118px; }
+/* ---- the chain: three cards of one size with a link between each ---- */
+.jc-row { display: grid; grid-template-columns: minmax(0, 1fr); align-items: stretch; }
+.jc-link { position: relative; height: 54px; display: grid; place-items: center; overflow: hidden; }
+.jc-link i { position: absolute; left: 50%; top: 4px; bottom: 10px; width: 0; border-left: 3px dashed color-mix(in srgb, var(--c-ink-soft) 45%, transparent); }
+.jc-link::after { content: ""; position: absolute; left: 50%; bottom: 2px; width: 10px; height: 10px; margin-left: -6px; border-right: 3px solid color-mix(in srgb, var(--c-ink-soft) 70%, transparent); border-bottom: 3px solid color-mix(in srgb, var(--c-ink-soft) 70%, transparent); transform: rotate(45deg); }
+.jc-link b { position: absolute; left: 50%; top: 0; width: 13px; height: 16px; margin-left: -6px; border-radius: 2px 5px 2px 2px; background: var(--c-ink); opacity: 0; }
+.jc-card { display: grid; grid-template-rows: auto auto auto 1fr; align-content: start; gap: 6px; height: 100%; box-sizing: border-box; padding: 16px 20px 20px; border-radius: 20px; color: var(--c); background: color-mix(in srgb, var(--c) 9%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--c) 32%, transparent); }
+.jc-art { width: 100%; padding: 0 0 6px; border-bottom: 1px solid color-mix(in srgb, var(--c) 22%, transparent); }
 .jc-art svg { display: block; width: 100%; height: auto; }
-.jc-lamp { animation: jcLamp 0.8s steps(1) 1.2s 8; }
+.jc-lamp { animation: jcLamp 0.8s steps(1) 1.2s 10; }
+.jc-lamp-b { animation-delay: 1.6s; }
 @keyframes jcLamp { 50% { opacity: 0.5; } }
-.jc-card h3 { margin: 4px 0 0; font: 700 21px/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.jc-card h3 { margin: 8px 0 0; font: 700 21px/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
 .jc-card h3 small { display: block; font: 600 13.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .jc-fig { margin: 2px 0 0; color: var(--c-ink); }
 .jc-fig b { font: 700 clamp(30px, 5vw, 40px)/1.05 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; color: var(--c); }
 .jc-fig span { font: 700 15px "Figures", "Public Sans", system-ui, sans-serif; }
 .jc-note { margin: 0; font: 400 13.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 @media (min-width: 880px) {
-  .jc-row { grid-template-columns: repeat(3, 1fr); }
-  .jc-cell { grid-template-rows: none; grid-template-columns: auto 1fr; }
-  .jc-cell:first-child { grid-template-columns: 1fr; }
-  .jc-link { height: auto; width: 56px; }
-  .jc-link i { left: 4px; right: 4px; top: 50%; bottom: auto; width: auto; height: 0; border-left: 0; border-top: 3px dashed color-mix(in srgb, var(--c-ink-soft) 45%, transparent); }
-  .jc-link b { left: 0; top: 50%; margin: -6px 0 0; }
+  .jc-row { grid-template-columns: minmax(0, 1fr) 62px minmax(0, 1fr) 62px minmax(0, 1fr); }
+  .jc-link { height: 30px; width: 62px; align-self: center; }
+  .jc-link i { left: 4px; right: 10px; top: 50%; bottom: auto; width: auto; height: 0; border-left: 0; border-top: 3px dashed color-mix(in srgb, var(--c-ink-soft) 45%, transparent); }
+  .jc-link::after { left: auto; right: 2px; top: 50%; bottom: auto; margin: -5px 0 0; transform: rotate(-45deg); }
+  .jc-link b { left: 0; top: 50%; margin: -8px 0 0; }
 }
 .jc[data-go="0"] .jc-card, .jc[data-go="0"] .jc-link { opacity: 0; transform: translateY(12px); }
 .jc[data-go="1"] .jc-card { animation: jcIn 0.65s var(--ease-out) var(--d) backwards; }
 .jc[data-go="1"] .jc-link { animation: jcIn 0.5s var(--ease-out) var(--d) backwards; }
-.jc[data-go="1"] .jc-link b { animation: jcRun 1.5s linear calc(var(--d) + 1.6s) 3; }
-.jc[data-go="1"] .jc-link b:nth-of-type(2) { animation-delay: calc(var(--d) + 2.1s); }
-.jc[data-go="1"] .jc-link b:nth-of-type(3) { animation-delay: calc(var(--d) + 2.6s); }
+.jc[data-go="1"] .jc-link b { animation: jcRun 1.4s linear calc(var(--d) + 1.6s) 5; }
+.jc[data-go="1"] .jc-link b:nth-of-type(2) { animation-delay: calc(var(--d) + 2.05s); }
+.jc[data-go="1"] .jc-link b:nth-of-type(3) { animation-delay: calc(var(--d) + 2.5s); }
 @keyframes jcIn { from { opacity: 0; transform: translateY(12px); } }
 @keyframes jcRun { 0% { opacity: 0; transform: translateY(-6px); } 15%, 85% { opacity: 1; } 100% { opacity: 0; transform: translateY(46px); } }
-@media (min-width: 880px) { @keyframes jcRun { 0% { opacity: 0; transform: translateX(-8px); } 15%, 85% { opacity: 1; } 100% { opacity: 0; transform: translateX(58px); } } }
+@media (min-width: 880px) { @keyframes jcRun { 0% { opacity: 0; transform: translateX(-8px); } 15%, 85% { opacity: 1; } 100% { opacity: 0; transform: translateX(52px); } } }
+/* what moves in each card, once the card has arrived (its delay is --d, plus 0.7 s for the card to settle) */
+.jc[data-go="1"] .jc-car { animation: jcCar 2.4s cubic-bezier(0.12, 0.7, 0.25, 1) calc(var(--d, 0s) + 0.5s) backwards; }
+@keyframes jcCar { from { transform: translateX(-250px); } }
+.jc-gavel { transform-origin: 0 0; }
+.jc[data-go="1"] .jc-gavel { animation: jcGavel 1.1s ease-in-out 1.4s 5; }
+@keyframes jcGavel { 0% { transform: rotate(0); } 30% { transform: rotate(28deg); } 52%, 100% { transform: rotate(0); } }
+.jc[data-go="1"] .jc-tap { animation: jcTap 1.1s ease-out 1.4s 5; transform-box: fill-box; transform-origin: center; }
+.jc-tap { opacity: 0; }
+@keyframes jcTap { 0%, 50% { opacity: 0; transform: scale(0.3); } 52% { opacity: 0.55; transform: scale(0.4); } 100% { opacity: 0; transform: scale(1.7); } }
+.jc[data-go="1"] .jc-beam { animation: jcBeam 5s ease-in-out 1.6s backwards; transform-origin: 0 -10px; }
+@keyframes jcBeam { 0% { transform: rotate(-10deg); } 30% { transform: rotate(8deg); } 60% { transform: rotate(-5deg); } 100% { transform: rotate(0); } }
+.jc[data-go="1"] .jc-doc { animation: jcDoc 0.5s cubic-bezier(0.3, 1.4, 0.5, 1) calc(1.6s + var(--k) * 1.1s) backwards; transform-box: fill-box; transform-origin: 50% 100%; }
+@keyframes jcDoc { from { transform: translateY(-26px) scaleY(0.4); opacity: 0; } }
+.jc[data-go="1"] .jc-cellwin { animation: jcWin 0.5s ease-out calc(2.2s + var(--k) * 0.35s) backwards; }
+@keyframes jcWin { from { opacity: 0; } }
+.jc-sweep { transform-origin: 0 0; }
+.jc[data-go="1"] .jc-sweep { animation: jcSweep 9s ease-in-out 1.6s backwards; }
+@keyframes jcSweep { 0% { transform: rotate(-16deg); } 25% { transform: rotate(6deg); } 50% { transform: rotate(-12deg); } 75% { transform: rotate(4deg); } 100% { transform: rotate(0); } }
 
 /* ---- the queue ---- */
 .jq { display: grid; grid-template-columns: minmax(0, 270px) minmax(0, 1fr); gap: 22px 32px; align-items: center; margin: 4px 0 24px; padding: clamp(16px, 3vw, 26px); border-radius: 22px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); }

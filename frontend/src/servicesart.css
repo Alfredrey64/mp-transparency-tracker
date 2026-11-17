@@ -28,8 +28,8 @@
 .sv-trail { fill: none; stroke: var(--lamp); stroke-width: 1.4; opacity: 0.3; stroke-linecap: round; }
 
 /* ---- Courts and prisons ---- */
-.sv-blue { animation: sv-flash 0.7s steps(1) 0.2s 16; }
-.sv-red { animation: sv-flash 0.7s steps(1) 0.55s 16; }
+.sv-blue { animation: sv-flash 0.7s steps(1) 0.2s 24; }
+.sv-red { animation: sv-flash 0.7s steps(1) 0.55s 24; }
 @keyframes sv-flash { 0% { opacity: 1; } 50% { opacity: 0.5; } }
 .sv-glow { opacity: 0.22; animation: sv-glow 0.7s steps(1) 0.2s 16; }
 @keyframes sv-glow { 0% { opacity: 0.34; } 50% { opacity: 0.14; } }
@@ -46,16 +46,47 @@
 .sv-scan { transform-origin: 0 0; animation: sv-scan 10s ease-in-out 0.8s backwards; }
 @keyframes sv-scan { 0% { transform: rotate(-8deg); } 28% { transform: rotate(10deg); } 56% { transform: rotate(-6deg); } 100% { transform: rotate(0); } }
 .sv-led { animation: sv-flash 0.9s steps(1) 0s 12; }
-.sv-shield { opacity: 0.3; animation: ec-fadein 2.2s ease-out 0.4s backwards; }
+/* The chase: the car stops at about 5 s, the lit window goes dark with a crash at 6 s, the robber leaps and runs left, and the two officers step out of the car and follow. Everything the chase moves is drawn at its
+   finished place (off the page to the left) and animated from where it starts, so a picture that is not animated is simply the street after the chase. */
+.sv-lit { opacity: 0; animation: sv-lit 0.2s steps(1) 5.8s backwards; }
+@keyframes sv-lit { from { opacity: 1; } }
+.sv-jag { animation: ec-fadein 0.2s ease-out 6s backwards; }
+.sv-shard { opacity: 0; animation: sv-shard 1s ease-in 6s; }
+@keyframes sv-shard { 0% { opacity: 1; transform: translate(0, 0) rotate(0); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--r)); } }
+.sv-robber { animation: sv-robber 5.6s linear 5.8s backwards; }
+@keyframes sv-robber {
+  0%, 6% { transform: translate(715px, -36px) scale(0.78); animation-timing-function: ease-out; }
+  12% { transform: translate(702px, -68px) scale(1); animation-timing-function: ease-in; }
+  20% { transform: translate(676px, 0) scale(1); animation-timing-function: linear; }
+  100% { transform: translate(0, 0) scale(1); }
+}
+.sv-cop { animation: sv-cop 7.5s linear calc(6.4s + var(--k)) backwards; }
+@keyframes sv-cop { 0% { transform: translate(var(--off), 0); opacity: 0; } 4% { opacity: 1; } 14% { transform: translate(var(--off), 0); } 100% { transform: translate(0, 0); opacity: 1; } }
+.sv-leg { animation: ec-stride 0.38s ease-in-out var(--go, 0s) 18; }
+.sv-leg-b { animation-direction: reverse; }
 
 /* ---- Digital and online safety ---- */
-.sv-net path { animation: sv-dash 0.9s linear 0.4s 10; }
+.sv-cable { stroke-width: 3; opacity: 0.35; }
+.sv-flowline { stroke-width: 2.4; opacity: 0.6; animation: sv-dash 0.9s linear 0.4s 14; }
 @keyframes sv-dash { to { stroke-dashoffset: -20; } }
+.sv-pkt { animation: sv-pkt var(--dur) cubic-bezier(0.35, 0.1, 0.25, 1) var(--delay) backwards; }
+@keyframes sv-pkt { from { transform: translateX(var(--from)); } }
+.sv-bad { opacity: 0; animation: sv-bad var(--dur) linear var(--delay); }
+@keyframes sv-bad { 0% { opacity: 0; transform: translateX(var(--from)); } 6% { opacity: 1; } 78% { opacity: 1; transform: translateX(0) scale(1); } 90% { opacity: 1; transform: translateX(-6px) scale(1.3); } 100% { opacity: 0; transform: translateX(-10px) scale(0.2); } }
+.sv-x { opacity: 0; animation: sv-x 0.9s ease-out var(--delay); }
+@keyframes sv-x { 0% { opacity: 0; transform: scale(0.3); } 25% { opacity: 1; transform: scale(1.15); } 70% { opacity: 1; transform: scale(1); } 100% { opacity: 0; } }
+.sv-gate-beam { opacity: 0.1; animation: sv-gate 1s ease-in-out 0.8s 10; }
+@keyframes sv-gate { 50% { opacity: 0.24; } }
+.sv-screen { animation: sv-screen 1.4s ease-in-out 1s 4 backwards; }
+@keyframes sv-screen { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+.sv-wifi { opacity: 0.8; animation: sv-wifi 1.6s ease-in-out calc(2.5s + var(--i) * 0.25s) 6 backwards; }
+@keyframes sv-wifi { 0% { opacity: 0.12; } 40% { opacity: 1; } 100% { opacity: 0.8; } }
 .sv-ring { fill: none; stroke: var(--lamp); stroke-width: 2; opacity: 0; transform-box: fill-box; transform-origin: center; animation: sv-ring 2.4s ease-out calc(0.8s + var(--i) * 0.8s) 4; }
 @keyframes sv-ring { from { opacity: 0.8; transform: scale(1); } to { opacity: 0; transform: scale(7); } }
-.sv-tick { fill: none; stroke: #8BE6A9; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 0; animation: sv-draw 0.9s ease-out 3s backwards; }
-@keyframes sv-draw { from { stroke-dashoffset: 1; } }
 
 /* Calmer motion: the shared rules in econart.css stop every animation, so each picture is simply finished; what only exists while it moves (the signal rings) stays away. */
 @media (prefers-reduced-motion: reduce) { .sv-ring { opacity: 0 !important; } }
 html[data-calm] .sv-ring { opacity: 0 !important; }
+
+/* The little labels in the Digital picture are unreadable at phone size, so they are left out there. */
+@media (max-width: 560px) { .sv-lbls { display: none; } }

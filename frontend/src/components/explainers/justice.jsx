@@ -15,11 +15,6 @@ const PAGE = {
   kicker: "Britain in numbers",
   title: "Courts, police and prisons",
   subtitle: "The justice system in England and Wales has three parts that each depend on the others: police catch and charge, courts decide, and prisons hold. This page shows where the latest official figures say the pressure is.",
-  tiles: [
-    { label: `Open cases in the Crown Court, ${C.asAt}`, value: fmtN(C.crown), colour: "#FF7A8A", sub: "the highest in the series, up 3% on a year earlier" },
-    { label: `Prisoners in England and Wales, ${P.asAt}`, value: fmtN(P.population), colour: "#6FB1FF", sub: P.change },
-    { label: `Police officers, ${PO.asAt}`, value: fmtN(PO.officers), colour: "#FFB45E", sub: "full-time equivalent, England and Wales" },
-  ],
   lead: <JusticeChain />,
   why: { colour: "#5A7FA6", text: "A crime only has a consequence if someone is charged, a court hears the case in a reasonable time and there is a place for the person if they are sentenced. A queue at one stage is felt at the others." },
   chapters: [

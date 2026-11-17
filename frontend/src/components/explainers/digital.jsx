@@ -1,6 +1,7 @@
 /** @jsxImportSource react */
 import ExplainerPage from "../story/ExplainerPage";
 import { DigitalScene } from "../story/ServiceArt";
+import OnlinePath from "../story/DigitalArt";
 import { IconSignal } from "../newIcons";
 
 const PAGE = {
@@ -9,11 +10,7 @@ const PAGE = {
   kicker: "Rules and rights",
   title: "Digital and online safety",
   subtitle: "Most homes can now get gigabit broadband, and the rules for what children see online are changing. This page sets out how well connected the UK is, what the Online Safety Act has done so far, what the government plans for children and social media, and where the law on artificial intelligence stands.",
-  tiles: [
-    { label: "UK homes that can get gigabit broadband", value: "89%", colour: "#6FB1FF", sub: "in January 2026, up from 87% six months earlier" },
-    { label: "Homes that can get full fibre", value: "82%", colour: "#FFB45E", sub: "24.9 million of the UK's 30.5 million" },
-    { label: "Planned under-16 social media ban", value: "Spring 2027", colour: "#FF7A8A", sub: "when the government expects it to take effect, if Parliament agrees" },
-  ],
+  lead: <OnlinePath />,
   why: { colour: "#5A4FCF", text: "Being online is part of getting a job, a doctor's appointment or a benefit, and children spend much of their lives on screens. The rules about connection, content and age are being written now, by Parliament and by Ofcom." },
   chapters: [
     {

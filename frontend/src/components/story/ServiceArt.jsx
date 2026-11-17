@@ -4,8 +4,8 @@ import { Scene, Defs } from "./EconArt";
 import { rnd, windows } from "./sceneKit";
 
 // The pictures along the foot of the heading band on the five Public services pages: a school and the steps up to a degree (Education), a train over a viaduct with a bus and a car below (Transport),
-// the police station, the court and the prison with a case file travelling between them (Courts and prisons), a street at night with a police car arriving and a camera watching (Crime), and a
-// data centre, a network and a shield (Digital and online safety). They are decoration only (hidden from screen readers), take their colours from the page's accent, and each plays once or for a
+// the police station, the court and the prison with a case file travelling between them (Courts and prisons), a street at night where a robber breaks out of a window and the police chase him off (Crime), and a
+// broadband line to a row of homes with an age-check gate across it (Digital and online safety). They are decoration only (hidden from screen readers), take their colours from the page's accent, and each plays once or for a
 // little while and then rests. With calmer motion asked for they are simply finished (see servicesart.css).
 
 const Ground = () => <g className="hs-3"><rect x="0" y="188" width="1440" height="12" /></g>;
@@ -88,11 +88,28 @@ function Carriage({ x, lead }) {
     </g>
   );
 }
+// A side-on airliner flying to the right: a long body with a rounded nose, swept tail fin and tail plane, a swept wing with an engine slung under it, a row of cabin windows and a livery stripe.
+function Airliner() {
+  return (
+    <g transform="scale(1.35)">
+      <path className="hs-3" d="M-47 -9 -33 -9 -43 -34 -53 -34Z" />
+      <path className="hs-acc" d="M-47 -9 -33 -9 -36 -17 -49 -17Z" />
+      <path className="hs-3" d="M-36 0 -20 0 -46 11 -54 9Z" />
+      <path className="hs-4" d="M-52 -3C-52 -9 -45 -10 -37 -10H34C48 -10 58 -5 62 1C58 6 48 9 34 9H-36C-46 9 -52 6 -52 -3Z" />
+      <path className="hs-acc" d="M-47 4H48C52 4 56 3 59 2C56 6 48 9 34 9H-36C-42 9 -46 7 -47 4Z" />
+      <path className="hs-3" d="M-4 5 18 5-18 28-30 28Z" />
+      <rect className="hs-2" x="-8" y="13" width="20" height="8" rx="4" />
+      <rect className="hs-1" x="10" y="14" width="3" height="6" rx="1.5" />
+      <path className="hs-1" d="M42 -7 52 -7C55 -6 57 -3 58 -1L42 -1Z" />
+      {Array.from({ length: 12 }, (_, k) => <rect key={k} className="hs-1" x={-36 + k * 6.6} y="-6" width="3.6" height="4.4" rx="1.4" />)}
+    </g>
+  );
+}
 export function TransportScene() {
   return (
     <Scene kind="transport">
       <Backdrop id="sv-tr" />
-      <g transform="translate(1180 30)"><g className="sv-plane"><path d="M0 0 22 -3 32 -14 36 -14 31 -2 52 4 54 8 30 6 24 12 20 12 22 5 4 6Z" className="hs-4" /><path className="sv-trail" d="M-320 5 0 5" /></g></g>
+      <g transform="translate(1180 40)"><g className="sv-plane"><Airliner /><path className="sv-trail" d="M-330 0 -52 0" /></g></g>
       {/* the viaduct: a deck on a row of arches */}
       <rect className="hs-2" x="0" y="126" width="1440" height="62" />
       {ARCHES.map((x) => <path key={x} className="hs-1" d={`M${x + 10} 188V160a30 30 0 0 1 60 0V188Z`} />)}
@@ -158,23 +175,49 @@ export function JusticeScene() {
   );
 }
 
-// ---------- Crime: a street at night, its windows lit, a police car arriving with its lights going, an officer, and a camera watching the corner ----------
+// ---------- Crime: a street at night with a police car that pulls up and stops, an officer's door opening, a robber who bursts out of an upstairs window, and two officers who chase him off the page ----------
 const HOUSES = Array.from({ length: 8 }, (_, i) => 380 + i * 74);
 const LAMPS = [330, 560, 790, 1020, 1270];
+const WINDOW_HOUSE = 3; // the house whose upstairs window the robber comes out of
+const WX = HOUSES[WINDOW_HOUSE] + 8; // left edge of that window's frame
+// Someone seen side-on, facing left, feet on the line y = 0. Legs swing while they run (`ec-stride` in econart.css), starting after `go` seconds.
+function Runner({ cop, go = 0 }) {
+  const coat = cop ? "#2B3A66" : "#1E2433";
+  return (
+    <g>
+      <g className="sv-leg" style={{ "--go": `${go}s`, transformOrigin: "-1.6px -12px" }}><rect x="-3.2" y="-12" width="3" height="12.4" rx="1.3" fill="#171C2C" /></g>
+      <g className="sv-leg sv-leg-b" style={{ "--go": `${go}s`, transformOrigin: "1.6px -12px" }}><rect x="0.2" y="-12" width="3" height="12.4" rx="1.3" fill="#171C2C" /></g>
+      {!cop && <rect x="3.5" y="-22" width="8" height="10" rx="2" fill="#C98A1B" />}
+      <rect x="-5.5" y="-25" width="11" height="14" rx="3.4" fill={coat} />
+      {cop ? <path d="M-5.5 -20h11M-5.5 -15.5h11" stroke="#F2E04A" strokeWidth="1.8" /> : <path d="M-5.5 -21h11M-5.5 -16h11" stroke="#D9DEE8" strokeWidth="2" />}
+      <circle cx="-0.5" cy="-29.5" r="4.6" fill="#EBB98F" />
+      {cop ? <path d="M-6 -31.5h12l-1.4-5h-9.2Z" fill="#171C2C" /> : <><path d="M-5.4 -33.5c0-4 2.6-5.6 4.9-5.6s4.9 1.6 4.9 5.6Z" fill="#111522" /><rect x="-5.2" y="-31.4" width="9.4" height="3.4" rx="1.4" fill="#111522" /></>}
+    </g>
+  );
+}
 export function CrimeScene() {
+  const wx = WX;
   return (
     <Scene kind="crime">
       <Backdrop id="sv-cr" />
-      <g className="sv-shield"><path className="hs-line" d="M150 44 90 64v38c0 34 28 54 60 66 32-12 60-32 60-66V64Z" style={{ stroke: "var(--lamp)" }} /><path className="hs-line" d="M122 104l20 20 38-40" style={{ stroke: "var(--lamp)", strokeWidth: 5 }} /></g>
       {HOUSES.map((x, i) => (
         <g key={x}>
           <rect className={i % 2 ? "hs-2" : "hs-3"} x={x} y="116" width="72" height="72" />
           <path className="hs-1" d={`M${x - 4} 116 ${x + 36} 90 ${x + 76} 116Z`} />
           <rect className="hs-1" x={x + 52} y="80" width="9" height="18" />
-          <g className="hs-lamp">{windows(x + 10, 128, 2, 1, 32, 13, i * 5)}{windows(x + 10, 150, 1, 1, 20, 13, i * 3 + 1)}</g>
+          {i === WINDOW_HOUSE ? (
+            <g className="hs-lamp">{windows(x + 44, 128, 1, 1, 20, 13, 3)}{windows(x + 10, 162, 1, 1, 20, 13, 8)}</g>
+          ) : (
+            <g className="hs-lamp">{windows(x + 10, 128, 2, 1, 32, 13, i * 5)}{windows(x + 10, 150, 1, 1, 20, 13, i * 3 + 1)}</g>
+          )}
           <rect className="hs-1" x={x + 46} y="158" width="18" height="30" rx="2" />
         </g>
       ))}
+      {/* the robber's window: lit with a figure behind it, then the glass goes and it stays dark and open */}
+      <rect className="hs-1" x={wx} y="122" width="30" height="34" rx="2" />
+      <rect x={wx + 3} y="125" width="24" height="28" fill="#0E1424" />
+      <path className="sv-jag" d={`M${wx + 3} 125 ${wx + 9} 125 ${wx + 5} 133ZM${wx + 27} 125 ${wx + 21} 125 ${wx + 25} 134ZM${wx + 3} 153 ${wx + 10} 153 ${wx + 5} 146ZM${wx + 27} 153 ${wx + 20} 153 ${wx + 25} 145Z`} fill="#9FB4D6" opacity=".55" />
+      <g className="sv-lit"><rect className="hs-warm" x={wx + 3} y="125" width="24" height="28" /><path d={`M${wx + 15} 125v28M${wx + 3} 139h24`} stroke="#6A5A38" strokeWidth="1.2" /></g>
       {LAMPS.map((x, i) => (
         <g key={x} transform={`translate(${x} 188)`}>
           <circle className="ec-lampglow" cy="-70" r="26" fill="#FFD98A" style={{ "--d": `${0.6 + i * 0.4}s` }} />
@@ -186,43 +229,81 @@ export function CrimeScene() {
         <path className="hs-line" d="M0 0V-96" strokeWidth="4" />
         <g transform="translate(0 -96)"><g className="sv-scan"><path d="M0 0 -150 70 -150 -4Z" fill="var(--lamp)" opacity=".16" /><rect className="hs-4" x="-16" y="-6" width="26" height="12" rx="3" /><circle className="sv-led" cx="6" cy="0" r="2.4" fill="#FF5C5C" /></g></g>
       </g>
-      {/* the officer and the police car */}
-      <g transform="translate(1010 188)"><rect x="-4" y="-34" width="8" height="34" rx="2" fill="#232B40" /><rect x="-6" y="-36" width="12" height="17" rx="3" fill="#2B3A66" /><path d="M-6 -30h12M-6 -25h12" stroke="#F2E04A" strokeWidth="2" /><circle cy="-41" r="4.4" fill="#EBB98F" /><path d="M-5.5 -43h11l-1-4h-9Z" fill="#232B40" /></g>
+      {/* the police car drives in and stops; its lights keep going */}
       <g className="sv-police">
         <path className="hs-4" d="M1062 180v-12l16-5 14-15h46l14 15 16 3v14Z" /><path className="hs-1" d="M1096 150h40l9 13h-58Z" opacity=".65" /><rect className="hs-acc" x="1062" y="168" width="106" height="5" />
         <rect className="hs-2" x="1106" y="138" width="26" height="6" rx="2" /><circle className="sv-blue" cx="1112" cy="136" r="6" fill="#5C9BFF" /><circle className="sv-red" cx="1126" cy="136" r="6" fill="#FF5C5C" />
         <circle className="hs-1" cx="1086" cy="182" r="8" /><circle className="hs-1" cx="1148" cy="182" r="8" />
       </g>
+      {/* the robber leaps from the window as the glass breaks, lands and runs left; shards fly */}
+      {[[-38, 34, 140], [-14, 52, -120], [6, 28, 200], [24, 46, -160], [-26, 20, 90], [40, 56, 260]].map(([dx, dy, r], k) => (
+        <g key={k} transform={`translate(${wx + 15 + (k - 2.5) * 3} 136)`}><polygon className="sv-shard" points="0,-4 4,3 -3,2" fill="#BFD2F0" style={{ "--dx": `${dx}px`, "--dy": `${dy}px`, "--r": `${r}deg` }} /></g>
+      ))}
+      <g transform="translate(-90 188)"><g className="sv-robber"><Runner go={7} /></g></g>
+      {/* two officers get out of the car and give chase */}
+      {[0, 1].map((k) => (
+        <g key={k} transform={`translate(${-90 - k * 26} 188)`}><g className="sv-cop" style={{ "--k": `${k * 0.3}s`, "--off": `${1190 + k * 26}px` }}><Runner cop go={7.4 + k * 0.3} /></g></g>
+      ))}
       <Ground />
     </Scene>
   );
 }
 
-// ---------- Digital and online safety: a mast sending out signals, a data centre whose lights blink, a network of connected points, and a shield with a padlock ----------
-const NODES = [[120, 58], [280, 96], [450, 46], [640, 86], [820, 38], [1000, 80], [1180, 44], [1340, 92]];
+// ---------- Digital and online safety: a broadband cabinet and mast, a fibre line running along the street to a row of homes, an age-check gate across the line that lets good traffic through and stops the harmful, and a child at a lit window with a tablet ----------
+const DG_HOMES = [1010, 1100, 1190, 1280];
+const GOOD = DG_HOMES.map((x, i) => ({ to: x + 38, delay: 0.8 + i * 1, dur: 5.2 }));
+const BAD = [{ delay: 1.5, dur: 4.2 }, { delay: 3.7, dur: 4.2 }];
+const GATE_X = 815;
+const CABLE_Y = 176;
 export function DigitalScene() {
   return (
     <Scene kind="digital">
       <Backdrop id="sv-dg" />
-      <g className="hs-dash sv-net">{NODES.slice(1).map(([x, y], i) => <path key={i} d={`M${NODES[i][0]} ${NODES[i][1]}L${x} ${y}`} />)}<path d="M120 58 450 46M450 46 820 38M820 38 1180 44M280 96 640 86M640 86 1000 80" /></g>
-      {NODES.map(([x, y], i) => (
-        <g key={i}><circle className="ec-halo" cx={x} cy={y} r="5" style={{ "--i": i * 0.5 }} /><circle className="ec-dot" cx={x} cy={y} r="4" style={{ "--i": i * 0.5 }} /></g>
-      ))}
-      {/* the mast, with signal rings spreading from its top */}
-      <g transform="translate(200 188)">
+      {/* the cabinet and mast at the start of the line, with signal spreading from the mast */}
+      <rect className="hs-3" x="70" y="124" width="104" height="64" /><rect className="hs-2" x="64" y="118" width="116" height="8" />
+      <g className="hs-lamp">{windows(82, 136, 7, 3, 13, 14, 7)}</g>
+      <g transform="translate(236 188)">
         <path className="hs-line" d="M-18 0 0 -110 18 0M-12 -30H12M-8 -56H8M-5 -82H5M-18 0 12 -30 -8 -56 8 -56 -12 -30 18 0" strokeWidth="2" />
         {[0, 1, 2].map((i) => <circle key={i} className="sv-ring" cx="0" cy="-116" r="10" style={{ "--i": i }} />)}<circle className="hs-warm" cx="0" cy="-116" r="4" />
       </g>
-      {/* the data centre */}
-      <rect className="hs-3" x="556" y="112" width="328" height="76" /><rect className="hs-2" x="548" y="106" width="344" height="8" />
-      {[0, 1, 2, 3].map((i) => <rect key={i} className="hs-2" x={584 + i * 74} y="92" width="46" height="14" rx="2" />)}
-      <g className="hs-lamp">{windows(570, 124, 14, 4, 22, 15, 7)}</g>
-      <rect className="hs-1" x="700" y="166" width="40" height="22" rx="2" />
-      {/* a laptop, and a shield with a padlock whose tick draws itself */}
-      <g transform="translate(1290 188)"><rect className="hs-3" x="-40" y="-8" width="80" height="8" rx="3" /><rect className="hs-2" x="-30" y="-52" width="60" height="44" rx="3" /><rect className="hs-win hs-lamp" x="-26" y="-48" width="52" height="36" rx="2" /><path className="sv-tick" pathLength="1" d="M-12 -30 -4 -22 12 -40" /></g>
-      <g transform="translate(1110 0)">
-        <path className="hs-2" d="M0 56 -36 70v34c0 28 18 46 36 56 18-10 36-28 36-56V70Z" style={{ stroke: "var(--lamp)", strokeWidth: 2 }} />
-        <rect className="hs-4" x="-13" y="102" width="26" height="22" rx="3" /><path d="M-8 102V94a8 8 0 0 1 16 0v8" fill="none" stroke="var(--s4)" strokeWidth="3.4" /><circle cx="0" cy="112" r="2.6" className="hs-2" />
+      {/* the line along the street, its pulses moving */}
+      <path className="hs-line sv-cable" d={`M174 ${CABLE_Y}H1346`} style={{ stroke: "var(--lamp)" }} />
+      <path className="hs-dash sv-flowline" d={`M174 ${CABLE_Y}H1346`} />
+      {/* the age-check gate across the line: two posts, a bar with a 16+ sign, and a beam that scans whatever passes */}
+      <rect className="hs-3" x={GATE_X - 36} y="116" width="7" height={188 - 116} /><rect className="hs-3" x={GATE_X + 29} y="116" width="7" height={188 - 116} />
+      <rect className="hs-2" x={GATE_X - 42} y="110" width="84" height="10" rx="3" />
+      <rect className="sv-gate-beam" x={GATE_X - 29} y="122" width="58" height={CABLE_Y + 8 - 122} fill="var(--lamp)" />
+      <circle className="hs-warm" cx={GATE_X} cy="88" r="19" /><circle cx={GATE_X} cy="88" r="19" fill="none" stroke="#B3402E" strokeWidth="3" />
+      <text x={GATE_X} y="94" textAnchor="middle" fontSize="17" fontWeight="800" fill="#3A1D12" fontFamily="Figures, 'Public Sans', system-ui, sans-serif">16+</text>
+      <rect className="hs-3" x={GATE_X - 2.5} y="106" width="5" height="6" />
+      {/* the homes along the line; the last has a child at a lit window with a tablet, and wifi above the roof */}
+      {DG_HOMES.map((x, i) => (
+        <g key={x}>
+          <rect className={i % 2 ? "hs-2" : "hs-3"} x={x} y="122" width="76" height="66" />
+          <path className="hs-1" d={`M${x - 5} 122 ${x + 38} 94 ${x + 81} 122Z`} />
+          {i < 3 ? <g className="hs-lamp">{windows(x + 10, 134, 2, 1, 32, 13, i * 5 + 2)}{windows(x + 10, 156, 1, 1, 20, 13, i * 3 + 1)}</g> : null}
+          <rect className="hs-1" x={x + 50} y="158" width="16" height="30" rx="2" />
+        </g>
+      ))}
+      <rect className="hs-1" x="1282" y="132" width="34" height="32" rx="2" /><rect className="hs-warm" x="1285" y="135" width="28" height="26" />
+      <circle cx="1299" cy="147" r="5.4" fill="#C4905F" /><path d="M1288 161v-6q0-5 11-5t11 5v6Z" fill="#4C6FB5" />
+      <rect className="sv-screen" x="1293" y="153" width="14" height="8" rx="1.5" fill="#9BDCFF" />
+      {[0, 1, 2].map((i) => <path key={i} className="sv-wifi" style={{ "--i": i }} d={`M${1318 - 9 - i * 7} ${96 - 4 - i * 3}a${12 + i * 9} ${12 + i * 9} 0 0 1 ${18 + i * 14} 0`} fill="none" stroke="var(--lamp)" strokeWidth="2.4" strokeLinecap="round" />)}
+      <circle className="hs-warm" cx="1318" cy="102" r="2.8" />
+      {/* the traffic: green packets travel to the homes; red ones are stopped at the gate with a cross */}
+      {GOOD.map((g, i) => (
+        <g key={i} transform={`translate(${g.to} ${CABLE_Y})`}>
+          <g className="sv-pkt" style={{ "--from": `${-(g.to - 196)}px`, "--delay": `${g.delay}s`, "--dur": `${g.dur}s` }}><rect x="-6" y="-5" width="12" height="10" rx="2.4" fill="#5DD28E" /><path d="M-3 0l2 2 4-4" stroke="#0B3A22" strokeWidth="1.5" fill="none" strokeLinecap="round" /></g>
+        </g>
+      ))}
+      {BAD.map((b, i) => (
+        <g key={i}>
+          <g transform={`translate(${GATE_X - 44} ${CABLE_Y})`}><g className="sv-bad" style={{ "--from": `${-(GATE_X - 44 - 196)}px`, "--delay": `${b.delay}s`, "--dur": `${b.dur}s` }}><rect x="-6" y="-5" width="12" height="10" rx="2.4" fill="#FF6B5C" /><path d="M0 -3v3M0 2v.6" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" /></g></g>
+          <g transform={`translate(${GATE_X - 44} ${CABLE_Y - 18})`}><g className="sv-x" style={{ "--delay": `${b.delay + b.dur * 0.8}s` }}><circle r="9" fill="#B3402E" /><path d="M-4 -4 4 4M4 -4-4 4" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" /></g></g>
+        </g>
+      ))}
+      <g className="sv-lbls" fontFamily="Figures, 'Public Sans', system-ui, sans-serif" fontSize="12" fontWeight="700" fill="#CFE0FF" opacity=".78" textAnchor="middle">
+        <text x="122" y="108">Broadband</text><text x={GATE_X} y="52">Age checks</text><text x="1190" y="86">Safe at home</text>
       </g>
       <Ground />
     </Scene>

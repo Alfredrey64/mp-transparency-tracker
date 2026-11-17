@@ -1,0 +1,78 @@
+/* The signal path at the top of the Digital and online safety page (components/story/DigitalArt.jsx). It plays once when scrolled to (data-go="1") and ends at rest. */
+.dp { margin: 0 0 28px; padding: clamp(18px, 3vw, 32px); border-radius: 24px; color: #EAF1FF; background: radial-gradient(120% 90% at 50% 0%, #1B3566 0%, #0F1E3D 55%, #0B162E 100%); border: 1px solid rgba(155, 190, 255, 0.2); box-shadow: var(--shadow-1); overflow: hidden; }
+.dp > figcaption { display: grid; gap: 4px; margin-bottom: 26px; text-align: center; justify-items: center; }
+.dp > figcaption b { font: 700 clamp(22px, 3.2vw, 30px)/1.2 "Figures", "Newsreader", Georgia, serif; letter-spacing: -0.01em; }
+.dp > figcaption span { max-width: 62ch; font: 400 15px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: #B9C8E6; }
+
+.dp-path { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 28px; }
+.dp-path::before { content: ""; position: absolute; left: 16.67%; right: 16.67%; top: 16px; height: 0; border-top: 3px dashed rgba(155, 190, 255, 0.4); }
+.dp-pulse { position: absolute; top: 8px; left: 83.33%; width: 18px; height: 18px; margin-left: -9px; border-radius: 50%; background: #9BDCFF; box-shadow: 0 0 14px 4px rgba(155, 220, 255, 0.65); z-index: 1; opacity: 0; }
+.dp-stop { display: grid; justify-items: center; align-content: start; gap: 10px; text-align: center; min-width: 0; }
+.dp-node { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: #0F1E3D; border: 2px solid #9BDCFF; font: 700 16px "Figures", "Newsreader", Georgia, serif; color: #9BDCFF; z-index: 2; }
+.dp-stop h3 { margin: 0; font: 700 19px/1.25 "Figures", "Newsreader", Georgia, serif; }
+.dp-fig { margin: 0; font: 600 15px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: #EAF1FF; }
+.dp-fig b { display: block; font: 700 clamp(30px, 4.4vw, 40px)/1.05 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; color: #9BDCFF; }
+.dp-txt { margin: 0; max-width: 34ch; font: 400 14px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: #B9C8E6; }
+.dp-txt strong { color: #EAF1FF; font-variant-numeric: lining-nums tabular-nums; }
+
+/* stop 1: a hundred homes */
+.dp-homes { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; width: min(100%, 210px); margin: 6px 0 4px; }
+.dp-homes i { aspect-ratio: 1; clip-path: polygon(50% 4%, 100% 44%, 90% 44%, 90% 100%, 10% 100%, 10% 44%, 0 44%); background: #2A3A5E; }
+.dp-homes i[data-t="fibre"] { background: #7FD6FF; }
+.dp-homes i[data-t="gig"] { background: #4C7BD6; }
+
+/* stop 2: the age gate */
+.dp-gate { display: block; width: min(100%, 230px); height: auto; margin: 2px 0; overflow: visible; }
+.dp-beam { opacity: 0.12; }
+.dp-adult { transform: translateX(184px); }
+.dp-child { transform: translateX(14px); }
+.dp-cross { opacity: 0; }
+
+/* stop 3: the calendar page */
+.dp-cal { position: relative; width: 150px; margin: 6px 0 4px; border-radius: 12px; overflow: visible; background: #F4F7FF; color: #14264A; box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35); transform-origin: 50% 0; }
+.dp-cal-top { position: relative; display: flex; justify-content: center; align-items: center; height: 34px; border-radius: 12px 12px 0 0; background: #7B5BD6; color: #fff; font: 700 17px "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums; }
+.dp-cal-top i { position: absolute; top: -6px; width: 8px; height: 16px; border-radius: 4px; background: #D6DEF5; border: 2px solid #14264A; }
+.dp-cal-top i:nth-child(1) { left: 26px; } .dp-cal-top i:nth-child(2) { right: 26px; }
+.dp-cal-body { padding: 14px 8px 16px; text-align: center; font: 700 30px/1 "Figures", "Newsreader", Georgia, serif; }
+.dp-badge { position: absolute; right: -16px; bottom: -14px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; background: #E2573F; color: #fff; border: 3px solid #fff; font: 800 19px "Figures", "Public Sans", system-ui, sans-serif; font-variant-numeric: lining-nums; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35); }
+
+/* the animation */
+.dp[data-go="0"] .dp-stop { opacity: 0; transform: translateY(14px); }
+.dp[data-go="1"] .dp-stop { animation: dpIn 0.7s var(--ease-out) calc(0.4s + var(--k) * 1.3s) backwards; }
+@keyframes dpIn { from { opacity: 0; transform: translateY(14px); } }
+.dp[data-go="1"] .dp-pulse { animation: dpPulse 3.9s linear 0.4s backwards; }
+@keyframes dpPulse { 0% { left: 16.67%; opacity: 1; } 96% { left: 83.33%; opacity: 1; } 100% { left: 83.33%; opacity: 0; } }
+.dp[data-go="1"] .dp-homes i { animation: dpPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) calc(0.7s + var(--i) * 14ms) backwards; }
+@keyframes dpPop { from { transform: scale(0); opacity: 0; } }
+.dp[data-go="1"] .dp-beam { animation: dpBeam 1s ease-in-out 2.2s 12; }
+@keyframes dpBeam { 50% { opacity: 0.32; } }
+.dp[data-go="1"] .dp-adult { animation: dpAdult 4s linear 2.2s 3 backwards; }
+@keyframes dpAdult { from { transform: translateX(14px); } }
+.dp[data-go="1"] .dp-child { animation: dpChild 4s ease-in-out 2.2s 3 backwards; }
+@keyframes dpChild { 0%, 100% { transform: translateX(14px); } 40%, 58% { transform: translateX(74px); } }
+.dp[data-go="1"] .dp-cross { animation: dpCross 4s ease-out 2.2s 3; }
+@keyframes dpCross { 0%, 38% { opacity: 0; transform: scale(0.3); } 44% { opacity: 1; transform: scale(1.15); } 56% { opacity: 1; transform: scale(1); } 64%, 100% { opacity: 0; } }
+.dp[data-go="1"] .dp-cal { animation: dpFlip 0.9s cubic-bezier(0.3, 1.2, 0.4, 1) 3.4s backwards; }
+@keyframes dpFlip { from { transform: perspective(500px) rotateX(-80deg); opacity: 0; } }
+.dp[data-go="1"] .dp-badge { animation: dpBadge 0.7s cubic-bezier(0.3, 1.6, 0.5, 1) 4.3s backwards; }
+@keyframes dpBadge { from { transform: scale(0) rotate(-40deg); opacity: 0; } }
+
+@media (max-width: 780px) {
+  .dp-path { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .dp-path::before { left: 17px; right: auto; top: 20px; bottom: 20px; width: 0; height: auto; border-top: 0; border-left: 3px dashed rgba(155, 190, 255, 0.4); }
+  .dp-pulse { left: 18px; top: 8px; }
+  @keyframes dpPulse { 0% { top: 8px; opacity: 1; } 96% { top: calc(100% - 26px); opacity: 1; } 100% { top: calc(100% - 26px); opacity: 0; } }
+  .dp[data-go="1"] .dp-pulse { animation-duration: 4.4s; }
+  .dp-stop { position: relative; justify-items: start; text-align: left; padding-left: 54px; }
+  .dp-node { position: absolute; left: 0; top: 0; }
+  .dp-stop h3 { min-height: 34px; display: flex; align-items: center; }
+  .dp-txt { max-width: none; }
+}
+
+/* Calmer motion: the picture is simply finished, and the travelling light stays away. */
+@media (prefers-reduced-motion: reduce) {
+  .dp *, .dp { animation: none !important; transition: none !important; }
+  .dp-pulse { display: none; }
+}
+html[data-calm] .dp *, html[data-calm] .dp { animation: none !important; }
+html[data-calm] .dp-pulse { display: none; }
