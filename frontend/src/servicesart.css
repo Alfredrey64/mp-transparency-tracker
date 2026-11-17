@@ -4,8 +4,20 @@
 .hs-scene[data-kind="transport"] { --a: color-mix(in srgb, var(--hero-accent, #2F80ED) 78%, #3FA37C); }
 .hs-scene[data-kind="justice"] { --a: color-mix(in srgb, var(--hero-accent, #2F80ED) 66%, #5A7FA6); }
 .hs-scene[data-kind="crime"] { --a: color-mix(in srgb, var(--hero-accent, #2F80ED) 60%, #3B5BA6); }
-.hs-scene[data-kind="crime"] .ec-lampglow { opacity: 0.11; }
 .hs-scene[data-kind="digital"] { --a: color-mix(in srgb, var(--hero-accent, #2F80ED) 70%, #2FB5A8); }
+
+/* Daytime: these five pictures sit in daylight, so the shared night colours (dark buildings, glowing windows) are swapped for light stone and dark glass, with a pale sky, a sun and a few clouds drawn behind. */
+.hs-scene:is([data-kind="education"], [data-kind="transport"], [data-kind="justice"], [data-kind="crime"], [data-kind="digital"]) {
+  --s1: color-mix(in srgb, var(--a) 26%, #46566E);
+  --s2: color-mix(in srgb, var(--a) 32%, #7B8DA8);
+  --s3: color-mix(in srgb, var(--a) 28%, #A6B7CE);
+  --s4: #F6F9FD;
+  --lamp: color-mix(in srgb, var(--a) 40%, #1D3050);
+}
+.hs-glass, .hs-scene:is([data-kind="education"], [data-kind="transport"], [data-kind="justice"], [data-kind="crime"], [data-kind="digital"]) .hs-lamp { fill: #D3E9F9; }
+.sv-far { fill: color-mix(in srgb, var(--a) 18%, #B5CAE0); opacity: 0.85; }
+.sv-clouds { animation: sv-drift 40s ease-in-out 0.4s backwards; }
+@keyframes sv-drift { from { transform: translateX(-90px); } }
 
 /* ---- Education ---- */
 .sv-pop { transform-box: fill-box; transform-origin: 50% 100%; animation: sv-pop 0.7s cubic-bezier(0.3, 1.4, 0.5, 1) 0.9s backwards; }
@@ -34,8 +46,6 @@
 @keyframes sv-glow { 0% { opacity: 0.34; } 50% { opacity: 0.14; } }
 .sv-beam { transform-origin: 0px -12px; animation: sv-beam 6s ease-in-out 1.2s backwards; }
 @keyframes sv-beam { 0% { transform: rotate(-9deg); } 30% { transform: rotate(7deg); } 60% { transform: rotate(-4deg); } 100% { transform: rotate(0); } }
-.sv-sweep { transform-origin: 0 0; animation: sv-sweep 12s ease-in-out 0.8s backwards; }
-@keyframes sv-sweep { 0% { transform: rotate(-12deg); } 25% { transform: rotate(8deg); } 50% { transform: rotate(-10deg); } 75% { transform: rotate(6deg); } 100% { transform: rotate(0); } }
 .sv-token { animation: sv-token 9s ease-in-out 1.2s backwards; }
 @keyframes sv-token { 0% { transform: translateX(-876px); } 36% { transform: translateX(-522px); } 58% { transform: translateX(-522px); } 100% { transform: translateX(0); } }
 
