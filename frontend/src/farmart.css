@@ -23,24 +23,25 @@ figure.fm-land figcaption, .fm-cap, figure.fm-gate figcaption { font-size: 13.5p
 /* ---- the UK's land as a hundred plots ---- */
 .fm-land { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 520px); justify-content: center; gap: 22px clamp(28px, 5vw, 64px); align-items: center; padding: 26px clamp(20px, 4vw, 40px); background: linear-gradient(160deg, color-mix(in srgb, #4C7A3A 9%, var(--c-paper-card)), var(--c-paper-card) 60%); }
 .fm-land svg { display: block; width: 100%; max-width: 380px; height: auto; }
-.fm-land figcaption { display: grid; gap: 20px; align-content: center; color: var(--c-ink) !important; }
+.fm-land figcaption { display: grid; gap: 20px; align-content: center; justify-items: stretch; text-align: center; color: var(--c-ink) !important; }
 /* the headline figure: the big number with its sentence under it, in the text column beside the squares */
-.fm-land-head { display: grid; gap: 6px; }
-.fm-land-head b { font: 600 clamp(60px, 9vw, 88px) / 0.95 "Newsreader", Georgia, serif; letter-spacing: -0.025em; color: color-mix(in srgb, #4C7A3A 82%, var(--c-ink)); }
+.fm-land-head { display: grid; justify-items: center; gap: 8px; }
+.fm-land-head b { font: 700 clamp(60px, 8vw, 84px) / 1 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; letter-spacing: -0.02em; color: #3F6B30; }
 .fm-land-head b * { font: inherit; letter-spacing: inherit; color: inherit; }
-.fm-land-head > span { font: 600 clamp(19px, 2.3vw, 24px) / 1.25 "Newsreader", Georgia, serif; color: var(--c-ink); }
+.fm-land-head > span { max-width: 22ch; font: 600 clamp(19px, 2.2vw, 23px) / 1.3 "Figures", "Newsreader", Georgia, serif; text-wrap: balance; color: var(--c-ink); }
 /* the key: two tinted rows, each a swatch, a number and what it counts */
-.fm-land-legend { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-.fm-land-legend li { display: grid; grid-template-columns: 18px minmax(44px, auto) minmax(0, 1fr); align-items: center; gap: 4px 12px; padding: 10px 16px; border-radius: 14px; background: color-mix(in srgb, #4C7A3A 10%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, #4C7A3A 22%, var(--c-hairline)); }
+.fm-land-legend { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.fm-land-legend li { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; align-content: center; gap: 6px 10px; padding: 16px 14px; border-radius: 16px; background: color-mix(in srgb, #4C7A3A 10%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, #4C7A3A 24%, var(--c-hairline)); }
 .fm-land-legend li:last-child { background: color-mix(in srgb, var(--c-ink) 5%, var(--c-paper-card)); border-color: var(--c-hairline); }
-.fm-land-legend b { font: 600 clamp(28px, 3.6vw, 36px) / 1 "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; text-align: right; }
-.fm-land-legend span { font-size: clamp(15px, 1.7vw, 17px); font-weight: 600; line-height: 1.3; }
+.fm-land-legend b { font: 700 clamp(32px, 4vw, 40px) / 1 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; text-align: left; }
+.fm-land-legend li > span { flex: 0 0 100%; font-size: 14px; font-weight: 600; line-height: 1.35; color: var(--c-ink); }
 /* two supporting figures side by side, then the source in small type */
-.fm-land-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0; padding-top: 16px; border-top: 1px solid var(--c-hairline); }
-.fm-land-facts div { display: flex; flex-direction: column-reverse; gap: 2px; }
-.fm-land-facts dd { margin: 0; font: 600 clamp(22px, 2.6vw, 28px) / 1.1 "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; }
+.fm-land-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; padding-top: 18px; border-top: 1px solid var(--c-hairline); }
+.fm-land-facts div { display: flex; flex-direction: column-reverse; align-items: center; gap: 4px; padding: 0 8px; }
+.fm-land-facts div + div { border-left: 1px solid var(--c-hairline); }
+.fm-land-facts dd { margin: 0; font: 700 clamp(24px, 2.8vw, 30px) / 1.1 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; }
 .fm-land-facts dt { font-size: 13.5px; font-weight: 500; color: var(--c-ink-soft); }
-.fm-land-source { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--c-ink-soft); }
+.fm-land-source { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--c-ink-soft); text-wrap: balance; }
 .fm-plot rect { fill: color-mix(in srgb, var(--c-ink) 10%, var(--c-paper-card)); transition: fill 0.45s ease; }
 .fm-plot.fm-on rect { fill: color-mix(in srgb, #8A6A3A 70%, var(--c-paper-card)); }
 .fm-plot path { opacity: 0; transition: opacity 0.4s ease; }
@@ -115,19 +116,18 @@ figure.fm-land figcaption, .fm-cap, figure.fm-gate figcaption { font-size: 13.5p
 .fm-fund-keys i { display: inline-block; width: 13px; height: 13px; margin-right: 8px; border-radius: 3px; vertical-align: -1px; background: color-mix(in srgb, var(--tc) 22%, var(--c-paper-card)); }
 
 /* ---- the inheritance tax limit: two bars of estate value and the sum behind the 20% ---- */
-.fm-gate { padding-bottom: 14px; }
-.fm-lane-area { position: relative; padding-top: 30px; }
+.fm-gate { display: grid; gap: 26px; padding: 26px clamp(18px, 3vw, 34px) 18px; }
+.fm-lane-area { position: relative; padding-top: 32px; }
 .fm-limit-line { position: absolute; z-index: 2; left: calc(var(--lim) * 100%); top: 26px; bottom: 56px; width: 0; border-left: 2px dashed color-mix(in srgb, var(--tc) 70%, var(--c-ink)); }
 .fm-limit-flag { position: absolute; left: calc(var(--lim) * 100%); top: 0; translate: -50% 0; padding: 3px 10px; border-radius: 999px; background: var(--tc); color: #fff; font: 700 13px / 1.3 "Public Sans", system-ui, sans-serif; white-space: nowrap; }
 .fm-lane-after { position: relative; }
-.fm-fence { position: absolute; z-index: 3; left: calc(var(--lim) * 100%); bottom: 6px; translate: -50% 0; width: 36px; height: auto; fill: rgba(255, 255, 255, 0.22); stroke: #fff; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; filter: drop-shadow(0 1px 2px rgba(20, 10, 50, 0.45)); opacity: 0; transition: opacity 0.4s ease 1.3s; pointer-events: none; }
-.fm-gate[data-go="1"] .fm-fence { opacity: 1; }
+.fm-gate[data-go="1"] .fm-lane { margin-bottom: 16px; }
 .fm-lane { margin-bottom: 16px; }
 .fm-lane-after { margin-bottom: 0; }
 .fm-lane-head { position: relative; z-index: 3; width: fit-content; max-width: 100%; margin: 0 0 6px; padding-right: 8px; background: var(--c-paper-card); display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; }
 .fm-lane-head b { font-size: 15px; font-weight: 700; }
 .fm-lane-head span { font-size: 13.5px; color: var(--c-ink-soft); }
-.fm-lane-bar { display: flex; height: 46px; border-radius: 12px; overflow: hidden; background: color-mix(in srgb, var(--c-ink) 8%, var(--c-paper-card)); }
+.fm-lane-bar { display: flex; height: 50px; border-radius: 14px; overflow: hidden; background: color-mix(in srgb, var(--c-ink) 8%, var(--c-paper-card)); }
 .fm-seg { position: relative; flex: none; display: flex; align-items: center; justify-content: center; padding: 0 8px; min-width: 0; color: #fff; text-align: center; transform-origin: left; transform: scaleX(0); transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); transition-delay: calc(var(--i, 0) * 0.35s + 0.15s); }
 .fm-lane:nth-of-type(1) .fm-seg { --i: 0; } .fm-lane:nth-of-type(2) .fm-seg { --i: 1; }
 .fm-lane:nth-of-type(2) .fm-seg-tax { transition-delay: 1.05s; }
@@ -142,20 +142,48 @@ figure.fm-land figcaption, .fm-cap, figure.fm-gate figcaption { font-size: 13.5p
 .fm-axis b { position: absolute; right: 0; top: 6px; font: 500 12.5px "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .fm-couple-bracket { position: relative; height: 22px; margin-bottom: 18px; border: 2px solid var(--c-ink-soft); border-top: 0; border-radius: 0 0 8px 8px; }
 .fm-couple-bracket span { position: absolute; left: 50%; top: 100%; translate: -50% 4px; width: max-content; max-width: 100%; font: 600 13px / 1.3 "Public Sans", system-ui, sans-serif; color: var(--c-ink); text-align: center; }
-.fm-sum { margin-top: 26px; display: flex; flex-wrap: wrap; align-items: stretch; justify-content: center; gap: 8px 10px; opacity: 0; transform: translateY(8px); transition: opacity 0.5s ease 1.9s, transform 0.5s ease 1.9s; }
-.fm-gate[data-go="1"] .fm-sum { opacity: 1; transform: none; }
-.fm-sum > span { display: grid; align-content: center; justify-items: center; gap: 2px; min-width: 112px; max-width: 200px; padding: 10px 14px; border-radius: 14px; background: color-mix(in srgb, var(--c-ink) 6%, var(--c-paper-card)); font: 500 13px / 1.3 "Public Sans", system-ui, sans-serif; text-align: center; color: var(--c-ink-soft); }
-.fm-sum > span b { font: 600 28px / 1 "Newsreader", Georgia, serif; color: var(--c-ink); }
-.fm-sum .fm-sum-res { background: var(--tc); color: #fff; } .fm-sum .fm-sum-res b { color: #fff; }
-.fm-sum > i { align-self: center; font: 600 24px "Newsreader", Georgia, serif; font-style: normal; color: var(--c-ink-soft); }
-/* on a phone: "value of the estate" drops to its own line under the figures, and the sum stays on one row */
+.fm-gate[data-go="1"] /* on a phone: "value of the estate" drops to its own line under the figures, and the sum stays on one row */
 @media (max-width: 560px) {
   .fm-axis { height: 56px; }
   .fm-axis b { top: 30px; }
-  .fm-sum { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.5fr) auto minmax(0, 1fr); gap: 6px; }
-  .fm-sum > span { min-width: 0; max-width: none; padding: 10px 6px; font-size: 12px; }
-  .fm-sum > span b { font-size: 24px; }
-  .fm-sum > i { font-size: 20px; }
+        }
+.fm-gate-sec + .fm-gate-sec { padding-top: 24px; border-top: 1px solid var(--c-hairline); }
+.fm-gate-h { margin: 0 0 6px; font: 700 clamp(18px, 2.2vw, 21px) / 1.25 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.fm-gate-lead { margin: 0 0 16px; max-width: 72ch; font-size: 14.5px; line-height: 1.6; color: var(--c-ink-soft); }
+.fm-gate-lead b { color: var(--c-ink); }
+/* what relief means: three tiles, each a share of the value that is taxed */
+.fm-relief, .fm-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.fm-relief li, .fm-steps li { position: relative; display: grid; justify-items: center; align-content: start; gap: 8px; padding: 18px 16px 16px; text-align: center; border-radius: 16px; background: color-mix(in srgb, var(--k, var(--c-ink)) 7%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--k, var(--c-ink)) 22%, var(--c-hairline)); }
+.fm-relief li:nth-child(1) { --k: #3F7A3A; } .fm-relief li:nth-child(2) { --k: var(--tc); } .fm-relief li:nth-child(3) { --k: #5B6676; }
+.fm-relief-name { font: 700 14.5px / 1.2 "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--k) 78%, var(--c-ink)); }
+.fm-relief-rate { font: 700 clamp(30px, 3.4vw, 38px) / 1 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; color: var(--c-ink); }
+.fm-relief-track { width: 100%; max-width: 190px; height: 10px; border-radius: 999px; overflow: hidden; background: color-mix(in srgb, var(--c-ink) 11%, var(--c-paper-card)); }
+.fm-relief-track i { display: block; width: calc(var(--f) * 100%); height: 100%; border-radius: 999px; background: var(--k); transform: scaleX(0); transform-origin: left; transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) calc(var(--i, 0) * 0.15s + 0.2s); }
+.fm-gate[data-go="1"] .fm-relief-track i { transform: none; }
+.fm-relief-say { font-size: 14px; font-weight: 600; line-height: 1.35; color: var(--c-ink); }
+.fm-relief small, .fm-steps li > span:not(.fm-step-n) { font-size: 13.5px; line-height: 1.45; color: var(--c-ink-soft); }
+.fm-relief small { font-size: 12.5px; }
+/* the limit marker on the bar: a round badge with the fence in it */
+.fm-limit-badge { position: absolute; z-index: 3; left: calc(var(--lim) * 100%); bottom: 9px; translate: -50% 0; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: #fff; border: 2px solid var(--tc); box-shadow: 0 2px 8px rgba(30, 20, 70, 0.35); opacity: 0; transition: opacity 0.4s ease 1.3s; pointer-events: none; }
+.fm-limit-badge svg { width: 19px; height: auto; fill: none; stroke: var(--tc); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+.fm-gate[data-go="1"] .fm-limit-badge { opacity: 1; }
+/* the worked example: three steps ending in the tax */
+.fm-steps { --k: #5B6676; }
+.fm-steps li:not(:last-child)::after { content: ""; position: absolute; z-index: 2; right: -11px; top: 50%; width: 9px; height: 9px; border: solid var(--c-ink-soft); border-width: 2px 2px 0 0; rotate: 45deg; translate: 0 -50%; }
+.fm-step-n { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: color-mix(in srgb, var(--c-ink) 10%, var(--c-paper-card)); font: 700 12.5px / 1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.fm-steps li > b { font: 700 clamp(26px, 3vw, 32px) / 1 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; color: var(--c-ink); }
+.fm-steps li > em { margin-top: 2px; padding: 4px 14px; border-radius: 999px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); font: 700 13.5px / 1.3 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: var(--c-ink); }
+.fm-steps li.fm-step-res { --k: var(--tc); background: var(--tc); border-color: var(--tc); }
+.fm-step-res .fm-step-n { background: rgba(255, 255, 255, 0.22); color: #fff; }
+.fm-step-res > b, .fm-step-res > span:not(.fm-step-n) { color: #fff !important; }
+.fm-step-res > em { background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.5); color: #fff; }
+@media (max-width: 700px) {
+  .fm-relief, .fm-steps { grid-template-columns: 1fr; }
+  .fm-steps li:not(:last-child)::after { right: auto; left: 50%; top: auto; bottom: -11px; rotate: 135deg; translate: -50% 0; }
+}
+@media (max-width: 560px) {
+  .fm-axis { height: 56px; }
+  .fm-axis b { top: 30px; }
 }
 .fm-gate figcaption { margin-top: 12px; }
 .fm-key-before, .fm-key-after { display: none; }
@@ -173,5 +201,5 @@ figure.fm-land figcaption, .fm-cap, figure.fm-gate figcaption { font-size: 13.5p
 .fm-stake-tag em { font: 600 11.5px / 1.25 "Public Sans", system-ui, sans-serif; font-style: normal; }
 @media (max-width: 560px) { .fm-stake-tag { padding: 5px 7px; } .fm-stake-tag em { font-size: 10.5px; white-space: normal; max-width: 84px; } .fm-ruler-field { height: 290px; } .fm-stake { height: calc(52px + var(--lane) * 92px); } }
 @media (prefers-reduced-motion: reduce) {
-  .fm-plot rect, .fm-plot path, .fm-crate-row i u, .fm-bar-fill, .fm-col-fill, .fm-col-ico, .fm-ring-fg, .fm-fund-bar span, .fm-seg, .fm-fence, .fm-sum, .fm-stake, .fm-ring-chip { transition: none; }
+  .fm-plot rect, .fm-plot path, .fm-crate-row i u, .fm-bar-fill, .fm-col-fill, .fm-col-ico, .fm-ring-fg, .fm-fund-bar span, .fm-seg, .fm-relief-track i, .fm-limit-badge, .fm-stake, .fm-ring-chip { transition: none; }
 }

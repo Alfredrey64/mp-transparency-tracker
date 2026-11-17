@@ -213,40 +213,78 @@ export function FundBar({ whole, part, wholeText, partText, partLabel, wholeLabe
   );
 }
 
-// ----- the inheritance tax limit: the same bar of estate value, before and after, with a fence where the limit is, and the sum behind the 20% -----
-export function ReliefGate({ colour = "#6A4AC4" }) {
+// ----- the inheritance tax limit, in three steps: what "relief" means, where the limit sits on the same bar of estate value before and after, and a worked example -----
+const money = (m) => (m >= 1 || m === 0 ? `£${m}m` : `£${Math.round(m * 1e6).toLocaleString("en-GB")}`);
+export function ReliefGate({ colour = "#6A4AC4", example = 4 }) {
   const [ref, go] = useGo(0.3);
   const SPAN = 7; // the bars run from £0 to "£7m and beyond"
   const pct = (v) => `${(v / SPAN) * 100}%`;
+  const shareTaxed = IHT.rateAbove / IHT.full; // 0.5: with 50% relief, half of the value is taxed
+  const reliefAbove = Math.round((1 - shareTaxed) * 100);
+  const scale = [
+    { name: "100% relief", taxed: 0, say: "None of the value is taxed", rate: 0, where: "Farms, up to the limit" },
+    { name: `${reliefAbove}% relief`, taxed: shareTaxed, say: "Half of the value is taxed", rate: IHT.rateAbove, where: "Farms, above the limit" },
+    { name: "No relief", taxed: 1, say: "All of the value is taxed", rate: IHT.full, where: "The normal rate" },
+  ];
+  const below = Math.min(example, IHT.limit);
+  const above = Math.max(0, example - IHT.limit);
+  const taxedPart = above * shareTaxed;
+  const tax = taxedPart * (IHT.full / 100);
   return (
     <figure ref={ref} className="fm-gate" data-go={go} style={{ "--tc": colour, "--lim": IHT.limit / SPAN }}>
-      <div className="fm-lanes" role="img" aria-label={`Inheritance tax on farm assets by the value of the estate. Before 6 April 2026: no tax at any value. From 6 April 2026: no tax up to ${IHT.limit} million pounds per estate, and ${IHT.rateAbove}% on the value above it, against the normal ${IHT.full}%. A couple can pass on up to ${IHT.couple} million pounds tax-free. The ${IHT.rateAbove}% is ${IHT.full}% on half the value.`}>
-        <div className="fm-lane-area">
-          <span className="fm-limit-flag">£{IHT.limit}m limit per estate</span>
-          <i className="fm-limit-line" aria-hidden="true" />
-          <div className="fm-lane" style={{ "--i": 0 }}>
-            <p className="fm-lane-head"><b>Before 6 April 2026</b><span>Full relief at any value</span></p>
-            <div className="fm-lane-bar"><span className="fm-seg fm-seg-free" style={{ flexBasis: "100%" }}><em>0% tax at any value</em></span></div>
-          </div>
-          <div className="fm-lane fm-lane-after" style={{ "--i": 1 }}>
-            <svg className="fm-fence" viewBox="0 0 40 30" aria-hidden="true" focusable="false"><path d="M3 27V9l3-5 3 5v18M16 27V9l3-5 3 5v18M29 27V9l3-5 3 5v18" /><path d="M1 13h38M1 21h38" /></svg>
-            <p className="fm-lane-head"><b>From 6 April 2026</b><span>Full relief up to the limit, half above it</span></p>
-            <div className="fm-lane-bar">
-              <span className="fm-seg fm-seg-free" style={{ flexBasis: pct(IHT.limit) }}><em>0% tax</em></span>
-              <span className="fm-seg fm-seg-tax" style={{ flexBasis: `calc(100% - ${pct(IHT.limit)})` }}><em>{IHT.rateAbove}% tax on the value above it</em></span>
+      <section className="fm-gate-sec" aria-label="What relief means">
+        <p className="fm-gate-h">What "relief" means</p>
+        <p className="fm-gate-lead">Inheritance tax is normally charged at {IHT.full}% of the value. <b>Relief</b> is a discount: it leaves part of the value out of the sum, so less tax is due. The more relief, the less of the value is taxed.</p>
+        <ul className="fm-relief">
+          {scale.map((t, i) => (
+            <li key={t.name} style={{ "--i": i }}>
+              <b className="fm-relief-name">{t.name}</b>
+              <span className="fm-relief-rate">{t.rate}% tax</span>
+              <span className="fm-relief-track" aria-hidden="true"><i style={{ "--f": t.taxed }} /></span>
+              <span className="fm-relief-say">{t.say}</span>
+              <small>{t.where}</small>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="fm-gate-sec" aria-label="Where the limit sits">
+        <p className="fm-gate-h">Where the limit sits</p>
+        <p className="fm-gate-lead">The same bar of farm assets, from £0 up, before the change and after it.</p>
+        <div className="fm-lanes" role="img" aria-label={`Inheritance tax on farm assets by the value of the estate. Before 6 April 2026: no tax at any value. From 6 April 2026: no tax up to ${IHT.limit} million pounds per estate, and ${IHT.rateAbove}% on the value above it, against the normal ${IHT.full}%. A couple can pass on up to ${IHT.couple} million pounds tax-free. The ${IHT.rateAbove}% is ${IHT.full}% on half the value.`}>
+          <div className="fm-lane-area">
+            <span className="fm-limit-flag">£{IHT.limit}m limit per estate</span>
+            <i className="fm-limit-line" aria-hidden="true" />
+            <div className="fm-lane" style={{ "--i": 0 }}>
+              <p className="fm-lane-head"><b>Before 6 April 2026</b><span>Full relief at any value</span></p>
+              <div className="fm-lane-bar"><span className="fm-seg fm-seg-free" style={{ flexBasis: "100%" }}><em>0% tax at any value</em></span></div>
             </div>
+            <div className="fm-lane fm-lane-after" style={{ "--i": 1 }}>
+              <p className="fm-lane-head"><b>From 6 April 2026</b><span>Full relief up to the limit, half above it</span></p>
+              <div className="fm-lane-bar">
+                <span className="fm-seg fm-seg-free" style={{ flexBasis: pct(IHT.limit) }}><em>0% tax</em></span>
+                <span className="fm-seg fm-seg-tax" style={{ flexBasis: `calc(100% - ${pct(IHT.limit)})` }}><em>{IHT.rateAbove}% tax on the value above it</em></span>
+              </div>
+              <span className="fm-limit-badge" aria-hidden="true"><svg viewBox="0 0 40 30" focusable="false"><path d="M3 27V9l3-5 3 5v18M16 27V9l3-5 3 5v18M29 27V9l3-5 3 5v18" /><path d="M1 13h38M1 21h38" /></svg></span>
+            </div>
+            <div className="fm-axis" aria-hidden="true">
+              {[0, IHT.limit, IHT.couple].map((v, i) => <span key={v} data-end={i === 0 ? "l" : undefined} style={{ left: pct(v) }}>{v === 0 ? "£0" : `£${v}m`}</span>)}
+              <b>value of the estate</b>
+            </div>
+            <div className="fm-couple-bracket" aria-hidden="true" style={{ width: pct(IHT.couple) }}><span>A couple: up to £{IHT.couple}m tax-free</span></div>
           </div>
-          <div className="fm-axis" aria-hidden="true">
-            {[0, IHT.limit, IHT.couple].map((v, i) => <span key={v} data-end={i === 0 ? "l" : undefined} style={{ left: pct(v) }}>{v === 0 ? "£0" : `£${v}m`}</span>)}
-            <b>value of the estate</b>
-          </div>
-          <div className="fm-couple-bracket" aria-hidden="true" style={{ width: pct(IHT.couple) }}><span>A couple: up to £{IHT.couple}m tax-free</span></div>
         </div>
-        <div className="fm-sum" aria-hidden="true">
-          <span><b>{IHT.full}%</b>normal rate</span><i>×</i><span><b>½</b>of the value taxed, because relief is 50%</span><i>=</i><span className="fm-sum-res"><b>{IHT.rateAbove}%</b>above the limit</span>
-        </div>
-      </div>
-      <figcaption><small>Effective rates are our arithmetic from the figures above: 40% on half the value is 20%.</small></figcaption>
+      </section>
+
+      <section className="fm-gate-sec" aria-label="A worked example">
+        <p className="fm-gate-h">A worked example: a farm worth {money(example)}</p>
+        <ol className="fm-steps">
+          <li><span className="fm-step-n">1</span><b>{money(below)}</b><span>The first {money(below)} has full relief, so none of it is taxed.</span><em>£0 tax</em></li>
+          <li><span className="fm-step-n">2</span><b>{money(above)}</b><span>The other {money(above)} has {reliefAbove}% relief, so {money(taxedPart)} of it is taxed.</span><em>{money(taxedPart)} taxed</em></li>
+          <li className="fm-step-res"><span className="fm-step-n">3</span><b>{money(tax)}</b><span>{IHT.full}% of {money(taxedPart)}. The same as {IHT.rateAbove}% of the {money(above)}.</span><em>{money(tax)} tax</em></li>
+        </ol>
+      </section>
+      <figcaption><small>Effective rates and the example are our arithmetic from the figures above ({IHT.full}% on half the value is {IHT.rateAbove}%). They leave out other allowances and reliefs, so they are an illustration, not a tax bill.</small></figcaption>
     </figure>
   );
 }
