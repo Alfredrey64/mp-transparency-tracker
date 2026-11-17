@@ -7,16 +7,20 @@
 .hs-scene[data-kind="crime"] .ec-lampglow { opacity: 0.11; }
 .hs-scene[data-kind="digital"] { --a: color-mix(in srgb, var(--hero-accent, #2F80ED) 70%, #2FB5A8); }
 
-/* Transport is in daylight (the other four pictures stay at dusk): light stone, pale window glass, a sun and a few drifting clouds over a sky that is the colour of the whole heading band. */
-.hs-scene[data-kind="transport"] {
-  --s1: color-mix(in srgb, var(--a) 26%, #46566E);
-  --s2: color-mix(in srgb, var(--a) 32%, #7B8DA8);
-  --s3: color-mix(in srgb, var(--a) 28%, #A6B7CE);
-  --s4: #F6F9FD;
-  --lamp: color-mix(in srgb, var(--a) 40%, #1D3050);
-}
-.hs-glass { fill: #D3E9F9; }
-.sv-far { fill: color-mix(in srgb, var(--a) 18%, #B5CAE0); opacity: 0.85; }
+/* Daytime: every picture here but Crime is in daylight, over a sky that is the colour of the whole heading band (heroscene.css). Each picture has its own palette, chosen to stand out against blue sky:
+   warm brick for the school, sandy stone and a red bus for the viaduct, cream stone and blue for the courts, brick for the prison, cream houses with terracotta roofs for Digital. Windows are pale glass. */
+.hs-scene[data-kind="education"] { --a: #F2B233; --s1: #6E3E2A; --s2: #A9583B; --s3: #D58C5E; --s4: #FFF1DC; --lamp: #D3E9F9; --ground: #6BAA5C; }
+.hs-scene[data-kind="transport"] { --a: #D8453A; --s1: #48546A; --s2: #A89A80; --s3: #CABDA2; --s4: #FFFFFF; --lamp: #1D3050; --ground: #6BAA5C; }
+.hs-scene[data-kind="justice"] { --a: #2F6FB5; --s1: #4F5B73; --s2: #B3A07E; --s3: #E8DAC0; --s4: #FFFFFF; --lamp: #1D3050; --ground: #6BAA5C; }
+.hs-scene[data-kind="digital"] { --a: #1E9C8F; --s1: #B5654A; --s2: #E6D3B0; --s3: #F6EEDC; --s4: #FFFFFF; --lamp: #1D3050; --ground: #6BAA5C; }
+.hs-scene:is([data-kind="education"], [data-kind="transport"], [data-kind="justice"], [data-kind="digital"]) .sv-ground { fill: var(--ground); }
+.hs-scene:is([data-kind="education"], [data-kind="transport"], [data-kind="justice"], [data-kind="digital"]) .hs-line { stroke: #55627C; }
+.hs-glass, .hs-scene:is([data-kind="education"], [data-kind="justice"], [data-kind="digital"]) .hs-lamp { fill: #D3E9F9; }
+.sv-far { fill: #A3BFDC; opacity: 0.8; }
+.sv-wing { fill: #CBD6E4; }
+.sv-board { fill: #1F2A44; }
+.sv-police-wall { fill: #8FB1D6; } .sv-police-roof { fill: #4F6F9A; }
+.sv-brick { fill: #B86A4E; } .sv-brick2 { fill: #8E4F3C; }
 .sv-clouds { animation: sv-drift 40s ease-in-out 0.4s backwards; }
 @keyframes sv-drift { from { transform: translateX(-90px); } }
 
@@ -27,6 +31,25 @@
 @keyframes sv-grow { from { transform: scaleY(0); } }
 .sv-hat { animation: sv-hat 1.4s cubic-bezier(0.3, 1.3, 0.5, 1) 3.4s backwards; }
 @keyframes sv-hat { from { transform: translateY(-80px) rotate(-40deg); opacity: 0; } }
+/* The cap rests tipped at 45 degrees over the corner of the top step (that is its finished state). It lands flat, hangs for a moment, then tips over the edge, speeding up as it goes and bouncing once on the corner.
+   Its tassle is a pendulum: while the cap turns it trails behind, then swings through hanging straight down and settles. The tassle's angle is relative to the cap, so the keyframes subtract the cap's angle
+   (a tassle hanging straight down is -45 degrees to a cap tipped by 45). */
+.sv-tip { transform: rotate(45deg); transform-origin: 8px 16px; animation: sv-tip 1.5s linear 5.1s backwards; }
+@keyframes sv-tip {
+  0%, 10% { transform: rotate(0); animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.6); }
+  56% { transform: rotate(47deg); animation-timing-function: ease-out; }
+  68% { transform: rotate(43.5deg); animation-timing-function: ease-in-out; }
+  80%, 100% { transform: rotate(45deg); }
+}
+.sv-tassle { transform: rotate(-45deg); transform-origin: 30px 0; animation: sv-tassle 1.5s linear 5.1s backwards; }
+@keyframes sv-tassle {
+  0%, 10% { transform: rotate(0); animation-timing-function: ease-in-out; }
+  56% { transform: rotate(-57deg); animation-timing-function: ease-in-out; }
+  68% { transform: rotate(-36deg); animation-timing-function: ease-in-out; }
+  80% { transform: rotate(-49deg); animation-timing-function: ease-in-out; }
+  90% { transform: rotate(-43deg); animation-timing-function: ease-in-out; }
+  100% { transform: rotate(-45deg); }
+}
 .sv-clock { transform-origin: 720px 50px; animation: sv-clock 3.6s cubic-bezier(0.2, 0.6, 0.2, 1) 0.5s backwards; }
 @keyframes sv-clock { from { transform: rotate(-1080deg); } }
 
