@@ -1,5 +1,6 @@
 /** @jsxImportSource react */
 import ExplainerPage from "../story/ExplainerPage";
+import { DigitalScene } from "../story/ServiceArt";
 import { IconSignal } from "../newIcons";
 
 const PAGE = {
@@ -95,5 +96,5 @@ const PAGE = {
 };
 
 export default function Digital() {
-  return <ExplainerPage {...PAGE} />;
+  return <ExplainerPage {...PAGE} scene={<DigitalScene />} />;
 }

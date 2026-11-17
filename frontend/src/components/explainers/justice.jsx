@@ -1,5 +1,7 @@
 /** @jsxImportSource react */
 import ExplainerPage from "../story/ExplainerPage";
+import { JusticeScene } from "../story/ServiceArt";
+import { JusticeChain, QueueDots, PrisonProjection } from "../story/JusticeArt";
 import { IconJustice } from "../newIcons";
 
 const PAGE = {
@@ -12,20 +14,9 @@ const PAGE = {
     { label: "Prisoners in England and Wales, 30 June 2026", value: "85,858", colour: "#6FB1FF", sub: "2% fewer than a year earlier" },
     { label: "Police officers, 31 March 2026", value: "145,886", colour: "#FFB45E", sub: "full-time equivalent, England and Wales" },
   ],
+  lead: <JusticeChain />,
   why: { colour: "#5A7FA6", text: "A crime only has a consequence if someone is charged, a court hears the case in a reasonable time and there is a place for the person if they are sentenced. A queue at one stage is felt at the others." },
   chapters: [
-    {
-      title: "One chain, three links",
-      lede: "A crime only has a consequence if the police act, a court hears the case in time, and there is somewhere to hold the person if they are sentenced.",
-      colour: "#5A7FA6",
-      blocks: [
-        { pipeline: [
-          { label: "Police", value: "145,886", note: "full-time officers in England and Wales at 31 March 2026. They investigate and charge.", colour: "#3F7D5C" },
-          { label: "Courts", value: "80,829", note: "cases waiting in the Crown Court at the end of June 2026. Judges and juries decide.", colour: "#9C3B3B" },
-          { label: "Prisons", value: "85,858", note: "people held on 30 June 2026. This is where a custodial sentence is served.", colour: "#6E4B6E" },
-        ] },
-      ],
-    },
     {
       title: "Courts: a record queue",
       lede: "More cases are coming in than the courts are finishing, so the number waiting keeps rising.",
@@ -39,6 +30,7 @@ const PAGE = {
           { label: "Crown Court cases open for a year or more", value: "23,706", note: "A series peak, 22% higher than a year earlier." },
           { label: "Rise in the Crown Court queue over the year", value: "+3%", note: "From 78,226 to 80,829 open cases." },
         ] },
+        { node: <QueueDots /> },
         { text: [
           "The Ministry of Justice says receipts into the criminal courts remained above the number of cases the courts finished, which made open caseloads rise. The Crown Court has had a continued rise in receipts for sexual offence and rape cases, with rape receipts at a series peak.",
           "A long wait is a delay for victims, witnesses and defendants alike.",
@@ -54,6 +46,7 @@ const PAGE = {
           { label: "Prisoners on 30 June 2026", value: "85,858", note: "In England and Wales. Down 2% on the same date in 2025." },
           { label: "First prison receptions, January to March 2026", value: "17,945", note: "A 5% fall on the same period in 2025." },
         ] },
+        { node: <PrisonProjection /> },
         { text: [<>The Ministry of Justice also publishes weekly prison population figures, and five-year projections. The <a href="#/crime">crime</a> page covers recorded crime.</>] },
       ],
     },
@@ -83,5 +76,5 @@ const PAGE = {
 };
 
 export default function Justice() {
-  return <ExplainerPage {...PAGE} />;
+  return <ExplainerPage {...PAGE} scene={<JusticeScene />} />;
 }

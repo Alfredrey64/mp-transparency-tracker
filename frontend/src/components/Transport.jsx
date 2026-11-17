@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
+import { TransportScene } from "./story/ServiceArt";
 import { IconTransport } from "./icons";
 import { PageToggles, Panel, Stats, Takeaways, TrendExplorer } from "./insight";
 import TransportRoads from "./TransportRoads";
@@ -189,7 +190,7 @@ export default function Transport({ param }) {
   }
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
-      <PageHeader icon={IconTransport} kicker="Britain in numbers" title="Transport" subtitle="How much we drive and what in, how many people die on the roads, how rail and buses are used and paid for, where it differs across the country, and the arguments." />
+      <PageHeader icon={IconTransport} kicker="Britain in numbers" title="Transport" scene={<TransportScene />} subtitle="How much we drive and what in, how many people die on the roads, how rail and buses are used and paid for, where it differs across the country, and the arguments." />
       <div ref={ref} style={{ scrollMarginTop: 12 }}>
         <PageToggles tabs={TABS} current={tab} onPick={go} label="What to look at" idPrefix="to" />
       </div>

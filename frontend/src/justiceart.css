@@ -1,0 +1,118 @@
+/* The pictures on the Courts, police and prisons page and the Crime page (components/story/JusticeArt.jsx and CrimeArt.jsx). They play once when scrolled to (data-go="1") and end at rest. */
+.jc, .jp, .co { margin: 0 0 28px; padding: clamp(18px, 3vw, 30px); border-radius: 24px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-top: 4px solid var(--c-brand); box-shadow: var(--shadow-1); }
+.jc > figcaption, .jp > figcaption, .co > figcaption { display: grid; gap: 4px; margin-bottom: 20px; }
+.jc > figcaption b, .jp > figcaption b, .co > figcaption b { font: 700 clamp(21px, 3vw, 27px)/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); letter-spacing: -0.01em; }
+.jc > figcaption span, .jp > figcaption span, .co > figcaption span { max-width: 68ch; font: 400 15px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+
+/* ---- the chain ---- */
+.jc-row { display: grid; grid-template-columns: 1fr; gap: 0; }
+.jc-cell { display: grid; grid-template-rows: auto 1fr; }
+.jc-link { position: relative; height: 46px; display: grid; place-items: center; overflow: hidden; }
+.jc-link i { position: absolute; left: 50%; top: 4px; bottom: 4px; width: 0; border-left: 3px dashed color-mix(in srgb, var(--c-ink-soft) 45%, transparent); }
+.jc-link b { position: absolute; left: 50%; top: 0; width: 12px; height: 12px; margin-left: -6px; border-radius: 3px; background: var(--c-ink); opacity: 0; }
+.jc-card { display: grid; gap: 6px; padding: 18px 20px 20px; border-radius: 20px; color: var(--c); background: color-mix(in srgb, var(--c) 9%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--c) 32%, transparent); }
+.jc-art { width: 118px; }
+.jc-art svg { display: block; width: 100%; height: auto; }
+.jc-lamp { animation: jcLamp 0.8s steps(1) 1.2s 8; }
+@keyframes jcLamp { 50% { opacity: 0.5; } }
+.jc-card h3 { margin: 4px 0 0; font: 700 21px/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.jc-card h3 small { display: block; font: 600 13.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.jc-fig { margin: 2px 0 0; color: var(--c-ink); }
+.jc-fig b { font: 700 clamp(30px, 5vw, 40px)/1.05 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; color: var(--c); }
+.jc-fig span { font: 700 15px "Figures", "Public Sans", system-ui, sans-serif; }
+.jc-note { margin: 0; font: 400 13.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+@media (min-width: 880px) {
+  .jc-row { grid-template-columns: repeat(3, 1fr); }
+  .jc-cell { grid-template-rows: none; grid-template-columns: auto 1fr; }
+  .jc-cell:first-child { grid-template-columns: 1fr; }
+  .jc-link { height: auto; width: 56px; }
+  .jc-link i { left: 4px; right: 4px; top: 50%; bottom: auto; width: auto; height: 0; border-left: 0; border-top: 3px dashed color-mix(in srgb, var(--c-ink-soft) 45%, transparent); }
+  .jc-link b { left: 0; top: 50%; margin: -6px 0 0; }
+}
+.jc[data-go="0"] .jc-card, .jc[data-go="0"] .jc-link { opacity: 0; transform: translateY(12px); }
+.jc[data-go="1"] .jc-card { animation: jcIn 0.65s var(--ease-out) var(--d) backwards; }
+.jc[data-go="1"] .jc-link { animation: jcIn 0.5s var(--ease-out) var(--d) backwards; }
+.jc[data-go="1"] .jc-link b { animation: jcRun 1.5s linear calc(var(--d) + 1.6s) 3; }
+.jc[data-go="1"] .jc-link b:nth-of-type(2) { animation-delay: calc(var(--d) + 2.1s); }
+.jc[data-go="1"] .jc-link b:nth-of-type(3) { animation-delay: calc(var(--d) + 2.6s); }
+@keyframes jcIn { from { opacity: 0; transform: translateY(12px); } }
+@keyframes jcRun { 0% { opacity: 0; transform: translateY(-6px); } 15%, 85% { opacity: 1; } 100% { opacity: 0; transform: translateY(46px); } }
+@media (min-width: 880px) { @keyframes jcRun { 0% { opacity: 0; transform: translateX(-8px); } 15%, 85% { opacity: 1; } 100% { opacity: 0; transform: translateX(58px); } } }
+
+/* ---- the queue ---- */
+.jq { display: grid; grid-template-columns: minmax(0, 270px) minmax(0, 1fr); gap: 22px 32px; align-items: center; margin: 4px 0 24px; padding: clamp(16px, 3vw, 26px); border-radius: 22px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); }
+.jq-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; }
+.jq-grid i { aspect-ratio: 1; border-radius: 50%; background: color-mix(in srgb, #9C3B3B 18%, var(--c-paper-card)); }
+.jq-grid i[data-long="1"] { background: #9C3B3B; }
+.jq[data-go="0"] .jq-grid i { transform: scale(0); }
+.jq[data-go="1"] .jq-grid i { animation: jqPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) calc(0.2s + var(--i) * 16ms) backwards; }
+@keyframes jqPop { from { transform: scale(0); opacity: 0; } }
+.jq figcaption { display: grid; gap: 6px; font: 400 15px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.jq figcaption p { margin: 0; }
+.jq-big { font: 700 clamp(26px, 4vw, 34px)/1.1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.jq-big b { color: #9C3B3B; font-size: 1.5em; }
+.jq-key { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 4px 0 0; padding: 0; list-style: none; font: 600 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.jq-key li::before { content: ""; display: inline-block; width: 11px; height: 11px; margin-right: 7px; border-radius: 50%; vertical-align: -1px; background: color-mix(in srgb, #9C3B3B 18%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, #9C3B3B 40%, transparent); }
+.jq-key li[data-long="1"]::before { background: #9C3B3B; border-color: #9C3B3B; }
+.jq small { font: 600 12px "Figures", "Public Sans", system-ui, sans-serif; }
+@media (max-width: 620px) { .jq { grid-template-columns: 1fr; } .jq-grid { max-width: 300px; } }
+
+/* ---- the prison projection ---- */
+.jp-chart { display: grid; grid-template-columns: 58px minmax(0, 1fr); grid-template-rows: 250px auto; column-gap: 8px; }
+.jp-axis { position: relative; }
+.jp-axis span { position: absolute; right: 0; transform: translateY(50%); font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; font-variant-numeric: lining-nums tabular-nums; color: var(--c-ink); }
+.jp-plot { position: relative; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; border-bottom: 2px solid var(--c-ink); }
+.jp-cap { position: absolute; left: -4px; right: 0; bottom: calc(var(--cap) * 100%); border-top: 2.5px dashed var(--c-ink); z-index: 2; }
+.jp-col { display: flex; flex-direction: column; justify-content: flex-end; align-items: center; }
+.jp-bar { position: relative; width: min(84%, 74px); height: calc(var(--v) * 100%); border-radius: 8px 8px 0 0; background: #6E4B6E; transform-origin: bottom; color: #fff; }
+.jp-bar[data-actual="0"] { background: repeating-linear-gradient(135deg, #8A678A 0 7px, #A583A5 7px 14px); }
+.jp-bar b { position: absolute; bottom: 12px; left: 0; right: 0; text-align: center; font: 700 clamp(11px, 1.7vw, 14px) "Figures", "Public Sans", system-ui, sans-serif; font-variant-numeric: lining-nums tabular-nums; }
+.jp-labels { grid-column: 2; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 8px; text-align: center; font: 700 clamp(11.5px, 1.8vw, 13.5px) "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.jp-labels small { display: block; font-weight: 600; color: var(--c-ink-soft); }
+.jp-key { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 16px 0 0; padding: 0; list-style: none; font: 600 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.jp-key li::before { content: ""; display: inline-block; width: 16px; height: 11px; margin-right: 7px; border-radius: 3px; vertical-align: -1px; background: #6E4B6E; }
+.jp-key li[data-k="proj"]::before { background: repeating-linear-gradient(135deg, #8A678A 0 4px, #A583A5 4px 8px); }
+.jp-key li[data-k="cap"]::before { height: 0; border-top: 2.5px dashed var(--c-ink); border-radius: 0; background: none; vertical-align: 3px; }
+.jp-note { margin: 12px 0 0; max-width: 74ch; font: 400 14px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.jp[data-go="0"] .jp-bar { transform: scaleY(0); }
+.jp[data-go="1"] .jp-bar { animation: jpGrow 0.9s cubic-bezier(0.3, 0.9, 0.3, 1) calc(0.2s + var(--i) * 0.28s) backwards; }
+@keyframes jpGrow { from { transform: scaleY(0); } }
+
+@media (max-width: 560px) {
+  .jp-chart { grid-template-columns: 44px minmax(0, 1fr); column-gap: 4px; }
+  .jp-plot, .jp-labels { gap: 5px; }
+  .jp-bar { width: 100%; border-radius: 6px 6px 0 0; }
+  .jp-bar b { font-size: 10px; letter-spacing: -0.02em; }
+  .jp-axis span { font-size: 11px; }
+}
+
+/* ---- the crime outcomes ---- */
+.co-body { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 22px 36px; align-items: center; }
+.co-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; }
+.co-grid i { aspect-ratio: 1; border-radius: 50%; background: var(--c); }
+.co[data-go="0"] .co-grid i { transform: scale(0); }
+.co[data-go="1"] .co-grid i { animation: jqPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) calc(0.2s + var(--i) * 18ms) backwards; }
+.co-key { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.co-key li { display: grid; grid-template-columns: 78px 1fr; gap: 12px; align-items: center; padding-left: 12px; border-left: 6px solid var(--c); }
+.co[data-go="0"] .co-key li { opacity: 0; transform: translateX(10px); }
+.co[data-go="1"] .co-key li { animation: coIn 0.5s var(--ease-out) calc(0.5s + var(--k) * 0.22s) backwards; }
+@keyframes coIn { from { opacity: 0; transform: translateX(10px); } }
+.co-pct b { font: 700 24px/1 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; color: var(--c-ink); }
+.co-txt { display: grid; gap: 1px; font: 400 14px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.co-txt strong { font-weight: 700; font-size: 15px; color: var(--c-ink); }
+.co-txt small { font: 400 13.5px/1.45 "Figures", "Public Sans", system-ui, sans-serif; }
+.co-chips { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 22px 0 0; padding: 0; list-style: none; }
+.co-chips li { display: grid; gap: 2px; align-content: start; padding: 12px 14px; border-radius: 14px; background: color-mix(in srgb, var(--c-ink) 5%, var(--c-paper-card)); border: 1px solid var(--c-hairline); }
+.co-chips small { font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.co-chips b { font: 700 25px/1.1 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; color: var(--c-ink); }
+.co-chips span { font: 400 12.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.co-src { margin: 16px 0 0; max-width: 80ch; font: 400 12.5px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+@media (max-width: 700px) { .co-body { grid-template-columns: 1fr; } .co-grid { max-width: 320px; } }
+
+/* Calmer motion: the pictures are simply finished, and the travelling squares between the links stay away. */
+@media (prefers-reduced-motion: reduce) {
+  .jc *, .jq *, .jp *, .co * { animation: none !important; transition: none !important; }
+  .jc-link b { display: none; }
+}
+html[data-calm] .jc *, html[data-calm] .jq *, html[data-calm] .jp *, html[data-calm] .co * { animation: none !important; }
+html[data-calm] .jc-link b { display: none; }

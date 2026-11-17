@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING } from "../theme";
 import { pillStyle } from "../lib/onsStyles";
 import { PageHeader } from "./shared";
+import { EducationScene } from "./story/ServiceArt";
 import { IconMortarboard } from "./icons";
 import { BarRows, Caution, PageToggles, Panel, RangeField, Stats, Takeaways, TrendExplorer } from "./insight";
 import { ATTAINMENT, CHECKED, SCHOOLS, SEND, SOURCES, UNIVERSITY } from "../data/education";
@@ -396,7 +397,7 @@ export default function Education({ param }) {
   }
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
-      <PageHeader icon={IconMortarboard} kicker="Britain in numbers" title="Education" subtitle="How schools in England are doing, the gap between richer and poorer pupils, special needs support, university fees and loans, and the arguments about each." />
+      <PageHeader icon={IconMortarboard} kicker="Britain in numbers" title="Education" scene={<EducationScene />} subtitle="How schools in England are doing, the gap between richer and poorer pupils, special needs support, university fees and loans, and the arguments about each." />
       <div ref={ref} style={{ scrollMarginTop: 12 }}>
         <PageToggles tabs={TABS} current={tab} onPick={go} label="What to look at" idPrefix="edu" />
       </div>

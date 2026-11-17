@@ -1,0 +1,61 @@
+/* The scenes along the foot of the Public services pages' heading bands (components/story/ServiceArt.jsx). They build on the shared scene colours in econart.css and the walking figures there
+   (ec-walk, ec-leg), and take the page's accent. Every animation is finite and ends at rest. */
+.hs-scene[data-kind="education"] { --a: color-mix(in srgb, var(--hero-accent, #2F80ED) 70%, #E8A23A); }
+.hs-scene[data-kind="transport"] { --a: color-mix(in srgb, var(--hero-accent, #2F80ED) 78%, #3FA37C); }
+.hs-scene[data-kind="justice"] { --a: color-mix(in srgb, var(--hero-accent, #2F80ED) 66%, #5A7FA6); }
+.hs-scene[data-kind="crime"] { --a: color-mix(in srgb, var(--hero-accent, #2F80ED) 60%, #3B5BA6); }
+.hs-scene[data-kind="crime"] .ec-lampglow { opacity: 0.11; }
+.hs-scene[data-kind="digital"] { --a: color-mix(in srgb, var(--hero-accent, #2F80ED) 70%, #2FB5A8); }
+
+/* ---- Education ---- */
+.sv-pop { transform-box: fill-box; transform-origin: 50% 100%; animation: sv-pop 0.7s cubic-bezier(0.3, 1.4, 0.5, 1) 0.9s backwards; }
+@keyframes sv-pop { from { transform: scale(0); opacity: 0; } }
+.sv-grow { transform-box: fill-box; transform-origin: 50% 100%; animation: sv-grow 0.7s cubic-bezier(0.3, 1.1, 0.4, 1) calc(1s + var(--i) * 0.4s) backwards; }
+@keyframes sv-grow { from { transform: scaleY(0); } }
+.sv-hat { animation: sv-hat 1.4s cubic-bezier(0.3, 1.3, 0.5, 1) 3.4s backwards; }
+@keyframes sv-hat { from { transform: translateY(-80px) rotate(-40deg); opacity: 0; } }
+.sv-clock { transform-origin: 720px 50px; animation: sv-clock 3.6s cubic-bezier(0.2, 0.6, 0.2, 1) 0.5s backwards; }
+@keyframes sv-clock { from { transform: rotate(-1080deg); } }
+
+/* ---- Transport ---- */
+.sv-train { animation: sv-train 7s cubic-bezier(0.15, 0.6, 0.2, 1) 0.4s backwards; }
+@keyframes sv-train { from { transform: translateX(-1250px); } }
+.sv-bus { animation: sv-bus 6s cubic-bezier(0.15, 0.6, 0.2, 1) 0.9s backwards; }
+@keyframes sv-bus { from { transform: translateX(-1300px); } }
+.sv-car { animation: sv-bus 5.6s cubic-bezier(0.15, 0.6, 0.2, 1) 1.5s backwards; }
+.sv-plane { animation: sv-plane 38s linear 0.6s backwards; }
+@keyframes sv-plane { from { transform: translateX(-1380px); } }
+.sv-trail { fill: none; stroke: var(--lamp); stroke-width: 1.4; opacity: 0.3; stroke-linecap: round; }
+
+/* ---- Courts and prisons ---- */
+.sv-blue { animation: sv-flash 0.7s steps(1) 0.2s 16; }
+.sv-red { animation: sv-flash 0.7s steps(1) 0.55s 16; }
+@keyframes sv-flash { 0% { opacity: 1; } 50% { opacity: 0.5; } }
+.sv-glow { opacity: 0.22; animation: sv-glow 0.7s steps(1) 0.2s 16; }
+@keyframes sv-glow { 0% { opacity: 0.34; } 50% { opacity: 0.14; } }
+.sv-beam { transform-origin: 0px -12px; animation: sv-beam 6s ease-in-out 1.2s backwards; }
+@keyframes sv-beam { 0% { transform: rotate(-9deg); } 30% { transform: rotate(7deg); } 60% { transform: rotate(-4deg); } 100% { transform: rotate(0); } }
+.sv-sweep { transform-origin: 0 0; animation: sv-sweep 12s ease-in-out 0.8s backwards; }
+@keyframes sv-sweep { 0% { transform: rotate(-12deg); } 25% { transform: rotate(8deg); } 50% { transform: rotate(-10deg); } 75% { transform: rotate(6deg); } 100% { transform: rotate(0); } }
+.sv-token { animation: sv-token 9s ease-in-out 1.2s backwards; }
+@keyframes sv-token { 0% { transform: translateX(-876px); } 36% { transform: translateX(-522px); } 58% { transform: translateX(-522px); } 100% { transform: translateX(0); } }
+
+/* ---- Crime ---- */
+.sv-police { animation: sv-police 4.6s cubic-bezier(0.1, 0.6, 0.2, 1) 0.6s backwards; }
+@keyframes sv-police { from { transform: translateX(-1300px); } }
+.sv-scan { transform-origin: 0 0; animation: sv-scan 10s ease-in-out 0.8s backwards; }
+@keyframes sv-scan { 0% { transform: rotate(-8deg); } 28% { transform: rotate(10deg); } 56% { transform: rotate(-6deg); } 100% { transform: rotate(0); } }
+.sv-led { animation: sv-flash 0.9s steps(1) 0s 12; }
+.sv-shield { opacity: 0.3; animation: ec-fadein 2.2s ease-out 0.4s backwards; }
+
+/* ---- Digital and online safety ---- */
+.sv-net path { animation: sv-dash 0.9s linear 0.4s 10; }
+@keyframes sv-dash { to { stroke-dashoffset: -20; } }
+.sv-ring { fill: none; stroke: var(--lamp); stroke-width: 2; opacity: 0; transform-box: fill-box; transform-origin: center; animation: sv-ring 2.4s ease-out calc(0.8s + var(--i) * 0.8s) 4; }
+@keyframes sv-ring { from { opacity: 0.8; transform: scale(1); } to { opacity: 0; transform: scale(7); } }
+.sv-tick { fill: none; stroke: #8BE6A9; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 0; animation: sv-draw 0.9s ease-out 3s backwards; }
+@keyframes sv-draw { from { stroke-dashoffset: 1; } }
+
+/* Calmer motion: the shared rules in econart.css stop every animation, so each picture is simply finished; what only exists while it moves (the signal rings) stays away. */
+@media (prefers-reduced-motion: reduce) { .sv-ring { opacity: 0 !important; } }
+html[data-calm] .sv-ring { opacity: 0 !important; }
