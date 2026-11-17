@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-16",
+ "generatedAt": "2026-11-17",
  "source": "https://fullfact.org/government-tracker/",
  "pledges": [
   {
@@ -111,8 +111,8 @@
    "slug": "raise-confidence-police",
    "area": "Crime, police and justice",
    "pledge": "Raising confidence in the police … to its highest levels",
-   "status": "wait-and-see",
-   "updated": "2026-08-05"
+   "status": "in-progress",
+   "updated": "2026-11-17"
   },
   {
    "slug": "halving-violent-crime",
@@ -224,7 +224,7 @@
    "area": "Democracy",
    "pledge": "The next Labour government will therefore bring about an immediate modernisation, by introducing legislation to remove the right of hereditary peers to sit and vote in the House of Lords",
    "status": "achieved",
-   "updated": "2026-05-12"
+   "updated": "2026-11-17"
   },
   {
    "slug": "votes-16-17-year-olds",
