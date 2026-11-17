@@ -5,6 +5,7 @@ import { FILTERS, browse, describe } from "../../lib/instrumentsView";
 import { dateLong } from "../../lib/upcoming";
 import DownloadCsvButton from "../DownloadCsvButton";
 import { shortDate } from "../../lib/instrumentsCase";
+import { instrumentPlain } from "../../lib/plainFallback";
 import "../../siart.css";
 
 // The newest statutory instruments on the Laws made by ministers page, one card each. A card shows the title, who laid it, the day it was laid and the first line of what it does;
@@ -31,7 +32,8 @@ function Card({ data, r, index }) {
   const uid = useId();
   const d = describe(data, r, data.generated);
   const [first, ...rest] = r.summary ?? [];
-  const peek = r.plain ?? first;
+  const shown = instrumentPlain(r, data.generated);
+  const peek = shown.text;
   return (
     <li className="ib-card" data-st={r.route} data-open={open} style={{ "--i": index }}>
       <div className="ib-top">
@@ -51,22 +53,15 @@ function Card({ data, r, index }) {
       <div className="ib-panel" id={`${uid}-panel`} role="region" aria-label={`More about ${r.name}`} inert={!open}>
         <div>
           <div className="ib-body">
-            {first && (
-              <section>
-                <h4>What it does</h4>
-                {r.plain
-                  ? <>
-                      <p>{r.plain}</p>
-                      <p className="ib-src">Rewritten in plain English by an AI tool from the note that comes with the instrument. It can make mistakes, so the Government's own words are below.</p>
-                      <details className="ib-orig"><summary>The Government's own words</summary>{[first, ...rest].map((s, i) => <p key={i}>{s}</p>)}</details>
-                    </>
-                  : <>
-                      <p>{first}</p>
-                      {rest.map((s, i) => <p key={i}>{s}</p>)}
-                      <p className="ib-src">In the Government's own words, from the note that comes with the instrument.</p>
-                    </>}
-              </section>
-            )}
+            <section>
+              <h4>What it does</h4>
+              <p>{shown.text}</p>
+              {shown.source === "ai" && <p className="ib-src">Rewritten in plain English by an AI tool from the note that comes with the instrument. It can make mistakes, so the Government's own words are below.</p>}
+              {shown.source === "title" && <p className="ib-src">A short summary written from the title, the department and the dates, because the Government's note is in legal language. Its own words are below.</p>}
+              {shown.source === "official" && <p className="ib-src">In the Government's own words, from the note that comes with the instrument.</p>}
+              {shown.source !== "official" && first && <details className="ib-orig"><summary>The Government's own words</summary>{[first, ...rest].map((x, i) => <p key={i}>{x}</p>)}</details>}
+              {shown.source === "official" && rest.map((x, i) => <p key={i}>{x}</p>)}
+            </section>
             <section>
               <h4>How it goes through Parliament</h4>
               <p>{d.say}</p>

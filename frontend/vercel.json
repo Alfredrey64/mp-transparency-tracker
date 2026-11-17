@@ -84,6 +84,15 @@
       ]
     },
     {
+      "source": "/portraits/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000, stale-while-revalidate=604800"
+        }
+      ]
+    },
+    {
       "source": "/(assets|fonts)/(.*)",
       "headers": [
         {
@@ -98,6 +107,10 @@
     {
       "source": "/:view(about|accessibility|ageing|answers|appg|brexit|budget|business|byElections|cabinet|calculators|care|civilService|committeeReports|committees|compare|compareCouncils|compareSeats|constituency|constitution|corrections|councilSpending|councillors|councils|crime|darkMoney|defence|departments|deprivation|devolved|digital|donors|economy|education|electionSpending|energy|environment|farming|flooding|followTheMoney|foreignInfluence|foreignPolicy|formerMps|funding|generalElection|getThingsDone|glossary|govContracts|health|history|honours|housing|howBudgetWorks|howElectionsWork|howLawMade|howPartyFundingWorks|howitworks|howtovote|immigration|indicators|inequality|inquiries|jobs|justice|list|lobbyingRegister|localElections|lords|lordsVotes|marginals|mayors|mediaLiteracy|methodology|ministerialMeetings|monarchy|mp|mpProfile|myArea|myBallot|myMP|nhs|numbers|offices|parties|partyFinances|partymatch|petitions|planning|policeCommissioners|polling|population|prices|privacy|publicFinances|rankings|rates|rebels|regions|revolvingDoor|seatmap|settings|speakerWhipsClerks|spotMisleadingStats|standards|start|statutoryInstruments|tax|taxRates|teacher|terms|thinkTanks|thisWeek|timeline|topics|tracker|trade|transport|trust|union|upcoming|voting|watchdogs|watchlist|water|welfare|whatsnew|writtenQuestions)/:rest*",
       "destination": "/"
+    },
+    {
+      "source": "/portraits/:id(\\d+).webp",
+      "destination": "https://members-api.parliament.uk/api/Members/:id/Thumbnail"
     }
   ],
   "redirects": [

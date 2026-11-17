@@ -7,6 +7,7 @@
 // told to use nothing else. A rewrite that adds a figure the source does not contain, includes a link, or is the wrong length is thrown away and the page keeps the official wording.
 
 import { createHash } from "crypto";
+import { isLay } from "./frontend/src/lib/lay.js";
 
 export const MODEL = "claude-haiku-5-5";
 export const GEMINI_MODEL = "gemini-2.5-flash-lite";
@@ -72,6 +73,8 @@ export function checkRewrite(output, source) {
   const known = new Set(numbersIn(`${source.title} ${source.by} ${source.text}`));
   if (numbersIn(text).some((n) => !known.has(n))) return null;
   if (/\b(as an ai|i cannot|i can't|i'm unable|here is|here's)\b/i.test(text)) return null;
+  // A rewrite that is still in legal language ("section 44", "makes provision") is no use to a lay reader; the page then builds its own summary from the title.
+  if (!isLay(text, { maxSentence: 60 })) return null;
   return text;
 }
 

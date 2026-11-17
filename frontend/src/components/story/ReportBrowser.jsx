@@ -6,6 +6,7 @@ import { useGo } from "./useGo";
 import { browse, describe, summary } from "../../lib/reportsView";
 import { dateLong } from "../../lib/upcoming";
 import DownloadCsvButton from "../DownloadCsvButton";
+import { reportPlain } from "../../lib/plainFallback";
 
 // Every select committee report on the Committee reports page, one card each. A card shows who published the report, when, what it looked into and where the government's reply stands;
 // pressing it opens a plain-English account of what the report is about (the committee's own description of the inquiry, tidied), who the committee is, whether the government has
@@ -59,7 +60,8 @@ function Card({ r, today, index }) {
   const uid = useId();
   const d = describe(r, today);
   const reply = r.replies[0];
-  const peek = r.plain ?? r.about?.[0] ?? d.say;
+  const shown = reportPlain(r, today);
+  const peek = shown.text;
   return (
     <li className="ib-card" data-st={d.status} data-open={open} data-topic="1" style={{ "--i": index, "--tc": committeeColour(r.committee) }}>
       <div className="rb-head">
@@ -86,15 +88,11 @@ function Card({ r, today, index }) {
           <div className="ib-body">
             <section>
               <h4>What the report is about</h4>
-              {r.plain
-                ? <>
-                    <p>{r.plain}</p>
-                    <p className="ib-src">Rewritten in plain English by an AI tool from the committee's description of the inquiry. It can make mistakes, so the committee's own words are below.</p>
-                    <details className="ib-orig"><summary>The committee's own words</summary>{r.about.map((p, i) => <p key={i}>{p}</p>)}</details>
-                  </>
-                : r.about?.length
-                ? <>{r.about.map((p, i) => <p key={i}>{p}</p>)}<p className="ib-src">In the committee's own words, from its description of the inquiry.</p></>
-                : <p>Parliament has not published a description of this inquiry. Going by the title, the committee looked at {r.inquiry ? `“${r.inquiry}”` : `“${r.title}”`} and made recommendations to the government. The report itself has the detail.</p>}
+              <p>{shown.text}</p>
+              {shown.source === "ai" && <p className="ib-src">Rewritten in plain English by an AI tool from the committee's description of the inquiry. It can make mistakes, so the committee's own words are below.</p>}
+              {shown.source === "title" && <p className="ib-src">A short summary written from the title and the committee's purpose{r.about?.length ? ", because the committee's description is in specialist language. Its own words are below" : ", because Parliament has not published a description of this inquiry. The report itself has the detail"}.</p>}
+              {shown.source === "official" && <>{r.about.slice(1).map((p, i) => <p key={i}>{p}</p>)}<p className="ib-src">In the committee's own words, from its description of the inquiry.</p></>}
+              {shown.source !== "official" && r.about?.length > 0 && <details className="ib-orig"><summary>The committee's own words</summary>{r.about.map((p, i) => <p key={i}>{p}</p>)}</details>}
             </section>
             {r.role && (
               <section>

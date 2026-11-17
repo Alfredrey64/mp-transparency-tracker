@@ -1,5 +1,7 @@
 import { getBillDescription } from "./billDescriptions";
 import { plainSentence } from "./billPlain";
+import { isLay } from "./lay";
+import { billInShort } from "./plainFallback";
 
 // A short "what is this bill for?" line. Where a hand-written plain-English
 // description exists it's used; otherwise the bill's own official long title
@@ -31,7 +33,9 @@ export function purposeFromLongTitle(longTitle) {
 export function summariseBill(bill) {
   if (!bill) return null;
   const hand = getBillDescription(bill.short_title, null);
-  const summary = hand ?? plainSentence(bill.long_title) ?? purposeFromLongTitle(bill.long_title);
+  // A hand-written line is trusted. Otherwise the rule-based wording is used only if it reads as everyday English; if not, a plain statement of what the bill is and where the full text is.
+  const auto = plainSentence(bill.long_title) ?? purposeFromLongTitle(bill.long_title);
+  const summary = hand ?? (auto && isLay(auto, { maxSentence: 60 }) ? auto : billInShort(bill));
 
   const context = [];
   if (bill.is_act) context.push("Became law");

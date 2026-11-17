@@ -88,10 +88,24 @@ function Carriage({ x, lead }) {
     </g>
   );
 }
+// The streaks the plane leaves in the air: a broad soft contrail from each engine and a thin line from each wing tip, all fading out behind it, so it reads as moving fast.
+function Contrails() {
+  return (
+    <g aria-hidden="true">
+      <defs>
+        <linearGradient id="sv-contrail" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stopColor="#CFE0FF" stopOpacity="0" /><stop offset="0.7" stopColor="#CFE0FF" stopOpacity="0.28" /><stop offset="1" stopColor="#CFE0FF" stopOpacity="0.55" /></linearGradient>
+      </defs>
+      <rect x="-430" y="9" width="395" height="3.2" rx="1.6" fill="url(#sv-contrail)" />
+      <rect x="-300" y="14.5" width="262" height="2" rx="1" fill="url(#sv-contrail)" />
+      <rect x="-210" y="-1" width="172" height="1.6" rx="0.8" fill="url(#sv-contrail)" />
+      <rect x="-250" y="-9" width="215" height="1.4" rx="0.7" fill="url(#sv-contrail)" opacity="0.8" />
+    </g>
+  );
+}
 // A side-on airliner flying to the right: a long body with a rounded nose, swept tail fin and tail plane, a swept wing with an engine slung under it, a row of cabin windows and a livery stripe.
 function Airliner() {
   return (
-    <g transform="scale(1.35)">
+    <g transform="scale(0.8)">
       <path className="hs-3" d="M-47 -9 -33 -9 -43 -34 -53 -34Z" />
       <path className="hs-acc" d="M-47 -9 -33 -9 -36 -17 -49 -17Z" />
       <path className="hs-3" d="M-36 0 -20 0 -46 11 -54 9Z" />
@@ -109,7 +123,7 @@ export function TransportScene() {
   return (
     <Scene kind="transport">
       <Backdrop id="sv-tr" />
-      <g transform="translate(1180 40)"><g className="sv-plane"><Airliner /><path className="sv-trail" d="M-330 0 -52 0" /></g></g>
+      <g transform="translate(1180 44)"><g className="sv-plane"><Contrails /><Airliner /></g></g>
       {/* the viaduct: a deck on a row of arches */}
       <rect className="hs-2" x="0" y="126" width="1440" height="62" />
       {ARCHES.map((x) => <path key={x} className="hs-1" d={`M${x + 10} 188V160a30 30 0 0 1 60 0V188Z`} />)}
@@ -184,7 +198,7 @@ const WX = HOUSES[WINDOW_HOUSE] + 8; // left edge of that window's frame
 function Runner({ cop, go = 0 }) {
   const coat = cop ? "#2B3A66" : "#1E2433";
   return (
-    <g>
+    <g className="sv-bounce" style={{ "--go": `${go}s`, "--bd": cop ? "0.46s" : "0.38s" }}>
       <g className="sv-leg" style={{ "--go": `${go}s`, transformOrigin: "-1.6px -12px" }}><rect x="-3.2" y="-12" width="3" height="12.4" rx="1.3" fill="#171C2C" /></g>
       <g className="sv-leg sv-leg-b" style={{ "--go": `${go}s`, transformOrigin: "1.6px -12px" }}><rect x="0.2" y="-12" width="3" height="12.4" rx="1.3" fill="#171C2C" /></g>
       {!cop && <rect x="3.5" y="-22" width="8" height="10" rx="2" fill="#C98A1B" />}
@@ -224,11 +238,6 @@ export function CrimeScene() {
           <path d="M0 0V-68q0-8 9-8" stroke="var(--s3)" strokeWidth="3" fill="none" strokeLinecap="round" /><rect x="6" y="-80" width="11" height="5" rx="2.5" fill="#FFE6A8" />
         </g>
       ))}
-      {/* the camera on its pole sweeps the corner */}
-      <g transform="translate(1380 188)">
-        <path className="hs-line" d="M0 0V-96" strokeWidth="4" />
-        <g transform="translate(0 -96)"><g className="sv-scan"><path d="M0 0 -150 70 -150 -4Z" fill="var(--lamp)" opacity=".16" /><rect className="hs-4" x="-16" y="-6" width="26" height="12" rx="3" /><circle className="sv-led" cx="6" cy="0" r="2.4" fill="#FF5C5C" /></g></g>
-      </g>
       {/* the police car drives in and stops; its lights keep going */}
       <g className="sv-police">
         <path className="hs-4" d="M1062 180v-12l16-5 14-15h46l14 15 16 3v14Z" /><path className="hs-1" d="M1096 150h40l9 13h-58Z" opacity=".65" /><rect className="hs-acc" x="1062" y="168" width="106" height="5" />
@@ -239,6 +248,7 @@ export function CrimeScene() {
       {[[-38, 34, 140], [-14, 52, -120], [6, 28, 200], [24, 46, -160], [-26, 20, 90], [40, 56, 260]].map(([dx, dy, r], k) => (
         <g key={k} transform={`translate(${wx + 15 + (k - 2.5) * 3} 136)`}><polygon className="sv-shard" points="0,-4 4,3 -3,2" fill="#BFD2F0" style={{ "--dx": `${dx}px`, "--dy": `${dy}px`, "--r": `${r}deg` }} /></g>
       ))}
+      {[-14, 0, 14].map((dx, k) => <circle key={k} className="sv-dust" cx={586 + dx} cy="184" r="5" style={{ "--dx": `${dx * 1.4}px` }} />)}
       <g transform="translate(-90 188)"><g className="sv-robber"><Runner go={7} /></g></g>
       {/* two officers get out of the car and give chase */}
       {[0, 1].map((k) => (

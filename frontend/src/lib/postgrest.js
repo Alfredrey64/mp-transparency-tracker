@@ -6,6 +6,8 @@
 //
 // Like the library it replaces, a failed request does not throw: it comes back as { data: null, error }.
 
+import { smallPortraitsIn } from "./portrait";
+
 // Most replies kept in memory at once; the oldest goes first.
 const MEMO_LIMIT = 80;
 
@@ -118,7 +120,7 @@ class Query {
       if (Array.isArray(data) && data.length > 1) return { ...out, data: null, error: { message: "More than one row was returned", details: "", hint: "", code: "PGRST116" } };
       data = Array.isArray(data) ? data[0] ?? null : data;
     }
-    return { ...out, data, error: null };
+    return { ...out, data: smallPortraitsIn(data), error: null };
   }
 }
 

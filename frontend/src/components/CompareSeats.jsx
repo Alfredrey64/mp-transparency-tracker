@@ -25,7 +25,7 @@ const pct1 = (n) => (n == null ? "–" : `${(Math.round(n * 10) / 10).toFixed(1)
 // A lead under 1% keeps two decimals, so a 15-vote majority does not read as 0.0%.
 const lead1 = (n) => (n == null ? "–" : n > 0 && n < 1 ? `${n.toFixed(2)}%` : pct1(n));
 const colour = (hex) => partyColour(hex, COLORS.inkSoft);
-const thumb = (id) => `https://members-api.parliament.uk/api/Members/${id}/Thumbnail`;
+const thumb = (id) => `/portraits/${id}.webp`;
 const goPair = (a, b) => {
   navigate(a || b ? `#/compareSeats/${encodeURIComponent(`${a ?? ""}${SEP}${b ?? ""}`)}` : "#/compareSeats");
 };

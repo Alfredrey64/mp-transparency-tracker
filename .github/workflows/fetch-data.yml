@@ -809,6 +809,18 @@ jobs:
       # `if: always()` so the status report above still gets committed and
       # deployed even on a run where an earlier fetch step failed — that's
       # exactly the run a visitor most needs to see an honest status for.
+      # Small copies of every member's face (see fetch-portraits.js): Parliament's own thumbnails are 230 KB each and the site shows them at 30 to 60 pixels. Only
+      # members with no copy yet (new arrivals) are fetched, so on most days this does nothing. If it fails, the host falls back to Parliament's picture.
+      - name: Save small copies of any new member portraits
+        continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          sudo apt-get install -y --no-install-recommends webp
+          node fetch-portraits.js
+          git add frontend/public/portraits
+
       - name: Commit updated data files, if they changed
         if: always()
         run: |

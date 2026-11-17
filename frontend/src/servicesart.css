@@ -25,7 +25,6 @@
 .sv-car { animation: sv-bus 5.6s cubic-bezier(0.15, 0.6, 0.2, 1) 1.5s backwards; }
 .sv-plane { animation: sv-plane 38s linear 0.6s backwards; }
 @keyframes sv-plane { from { transform: translateX(-1380px); } }
-.sv-trail { fill: none; stroke: var(--lamp); stroke-width: 1.4; opacity: 0.3; stroke-linecap: round; }
 
 /* ---- Courts and prisons ---- */
 .sv-blue { animation: sv-flash 0.7s steps(1) 0.2s 24; }
@@ -43,9 +42,6 @@
 /* ---- Crime ---- */
 .sv-police { animation: sv-police 4.6s cubic-bezier(0.1, 0.6, 0.2, 1) 0.6s backwards; }
 @keyframes sv-police { from { transform: translateX(-1300px); } }
-.sv-scan { transform-origin: 0 0; animation: sv-scan 10s ease-in-out 0.8s backwards; }
-@keyframes sv-scan { 0% { transform: rotate(-8deg); } 28% { transform: rotate(10deg); } 56% { transform: rotate(-6deg); } 100% { transform: rotate(0); } }
-.sv-led { animation: sv-flash 0.9s steps(1) 0s 12; }
 /* The chase: the car stops at about 5 s, the lit window goes dark with a crash at 6 s, the robber leaps and runs left, and the two officers step out of the car and follow. Everything the chase moves is drawn at its
    finished place (off the page to the left) and animated from where it starts, so a picture that is not animated is simply the street after the chase. */
 .sv-lit { opacity: 0; animation: sv-lit 0.2s steps(1) 5.8s backwards; }
@@ -62,7 +58,13 @@
 }
 .sv-cop { animation: sv-cop 7.5s linear calc(6.4s + var(--k)) backwards; }
 @keyframes sv-cop { 0% { transform: translate(var(--off), 0); opacity: 0; } 4% { opacity: 1; } 14% { transform: translate(var(--off), 0); } 100% { transform: translate(0, 0); opacity: 1; } }
-.sv-leg { animation: ec-stride 0.38s ease-in-out var(--go, 0s) 18; }
+.sv-leg { animation: sv-stride 0.38s ease-in-out var(--go, 0s) 22; }
+@keyframes sv-stride { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-44deg); } 75% { transform: rotate(44deg); } }
+/* Bouncy: each stride squashes the runner on landing and stretches them in the air, leaning forward (to the left). */
+.sv-bounce { animation: sv-bounce var(--bd, 0.4s) cubic-bezier(0.3, 0, 0.4, 1) var(--go, 0s) 22; transform-origin: 0 0; }
+@keyframes sv-bounce { 0%, 100% { transform: translateY(0) rotate(-7deg) scale(1.1, 0.9); } 45% { transform: translateY(-10px) rotate(-9deg) scale(0.92, 1.1); } }
+.sv-dust { fill: #C9CED6; opacity: 0; animation: sv-dust 0.8s ease-out 6.95s; transform-box: fill-box; transform-origin: center; }
+@keyframes sv-dust { 0% { opacity: 0.55; transform: translate(0, 0) scale(0.4); } 100% { opacity: 0; transform: translate(var(--dx), -10px) scale(1.8); } }
 .sv-leg-b { animation-direction: reverse; }
 
 /* ---- Digital and online safety ---- */

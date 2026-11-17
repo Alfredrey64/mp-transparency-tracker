@@ -154,8 +154,14 @@ const FEED = {
 };
 
 // { label, what, does } for an entry. Falls back to a plain line, so every entry opens with something true.
-export function explainEntry(e) {
-  const make = e.past ? FEED[e.kind] : (ENTRY[e.kind] ?? FEED[e.kind]);
-  if (make) return { doesTitle: "What it is for", ...make(e) };
-  return { label: "Entry", doesTitle: "What it is for", what: "An item in Parliament's calendar.", does: "Parliament's own page has more detail." };
+export function explainEntry(entry) {
+  const e = entry && typeof entry === "object" ? entry : {};
+  const plain = { label: "Entry", doesTitle: "What it is for", what: "An item in Parliament's calendar.", does: "Parliament's own page has more detail." };
+  try {
+    const make = e.past ? FEED[e.kind] : (ENTRY[e.kind] ?? FEED[e.kind]);
+    // A title that is missing or not text must not stop the explanation: the generic wording for the kind is still true.
+    return make ? { doesTitle: "What it is for", ...make({ ...e, title: String(e.title ?? "") }) } : plain;
+  } catch {
+    return plain;
+  }
 }

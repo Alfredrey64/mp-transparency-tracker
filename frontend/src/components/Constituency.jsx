@@ -22,7 +22,7 @@ const SeatLocalNumbers = lazy(() => import("./SeatLocalNumbers"));
 
 const fmt = (n) => n.toLocaleString("en-GB");
 const pct1 = (n) => `${(Math.round(n * 10) / 10).toFixed(1)}%`;
-const thumb = (memberId) => `https://members-api.parliament.uk/api/Members/${memberId}/Thumbnail`;
+const thumb = (memberId) => `/portraits/${memberId}.webp`;
 
 const goSeat = (name) => {
   navigate(`#/constituency/${encodeURIComponent(name)}`);

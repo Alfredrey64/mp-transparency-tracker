@@ -3,6 +3,7 @@
 // share dialog, not with the page.
 import { FONT_DISPLAY, FONT_BODY, FONT_NUMERIC } from "../theme";
 import { wrapLines } from "./shareSpecs";
+import { fullPortraitUrl } from "./portrait";
 
 const W = 1200;
 const H = 630;
@@ -243,7 +244,8 @@ function loadPortrait(url) {
     img.crossOrigin = "anonymous";
     img.onload = () => { clearTimeout(timer); resolve(img.naturalWidth > 0 ? img : null); };
     img.onerror = () => { clearTimeout(timer); resolve(null); };
-    img.src = `${url}${url.includes("?") ? "&" : "?"}card=1`;
+    const full = fullPortraitUrl(url);
+    img.src = `${full}${full.includes("?") ? "&" : "?"}card=1`;
   });
 }
 

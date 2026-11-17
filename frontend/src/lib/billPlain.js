@@ -4,12 +4,21 @@
 // odd title never ends up saying something the bill does not.
 
 const WORDS = [
+  // "section 215 of the Town and Country Planning Act 1990" and "Part 1 of the Civil Aviation Act 2012" become just the Act, which is what a reader can look up.
+  [/\b(?:sections?|ss?\.)\s*\d+[A-Za-z]*(?:\(\w+\))*(?:\s*(?:,|and|to|or)\s*\d+[A-Za-z]*(?:\(\w+\))*)*\s*of\s+(?:the\s+)?/gi, "the "],
+  [/\b(?:parts?|chapters?|schedules?)\s+\d+[A-Za-z]*(?:\s*(?:,|and|to)\s*\d+[A-Za-z]*)*\s+of\s+(?:the\s+)?/gi, "the "],
+  [/\bmake(s)? provision for the provision of\b/gi, "set$1 rules for providing"],
+  [/\bthe provision of\b/gi, "providing"],
+  [/\bimpos(?:e|ing) (?:enforceable )?dut(?:y|ies) upon\b/gi, "put legal duties on"],
+  [/\bupon\b/gi, "on"],
+  [/\bprescribed\b/gi, "specified"],
+  [/\bthe Secretary of State\b/gi, "the government minister in charge"],
+  [/\bin respect of\b/gi, "for"],
   [/\bpersons\b/gi, "people"],
   [/\bperson\b/gi, "person"],
   [/\blocal authorities\b/gi, "councils"],
   [/\blocal authority\b/gi, "council"],
   [/\benactments\b/gi, "laws"],
-  [/\bin respect of\b/gi, "for"],
   [/\bin relation to\b/gi, "about"],
   [/\bin connection with\b/gi, "connected with"],
   [/\bpursuant to\b/gi, "under"],
@@ -29,6 +38,9 @@ const OPENERS = [
   [/^confer(?:s)? (?:a )?powers? on (.+?) to /i, (m) => `Gives ${m[1]} the power to `],
   [/^confer(?:s)? (?:a )?powers? /i, "Gives the power "],
   [/^impose(?:s)? (?:a )?dut(?:y|ies) on /i, "Puts a legal duty on "],
+  [/^put legal duties on /i, "Puts legal duties on "],
+  [/^encourage(?:s)? /i, "Encourages "],
+  [/^lower(?:s)? /i, "Lowers "],
   [/^place(?:s)? (?:a )?dut(?:y|ies) on /i, "Puts a legal duty on "],
   [/^require(?:s)? /i, "Requires "],
   [/^amend(?:s)? /i, "Changes "],
@@ -111,13 +123,17 @@ function clauseToPoint(raw) {
     else if (/^\w+ing\b/i.test(c)) { out = `Includes ${c.charAt(0).toLowerCase()}${c.slice(1)}`; known = false; }
     else { out = `Aims to ${c.charAt(0).toLowerCase()}${c.slice(1)}`; known = false; }
   }
+  // "make provision for" in the middle of a clause (the opening ones were handled above).
+  out = out.replace(/\bmake provisions? (?:for|about|on|regarding)\b/gi, "set rules for").replace(/\bmakes provisions? (?:for|about|on|regarding)\b/gi, "sets rules for");
   out = out.replace(/\s+/g, " ").trim();
+  let cutShort = false;
   if (out.length > MAX_CLAUSE) {
+    cutShort = true;
     const cut = out.slice(0, MAX_CLAUSE);
     const at = Math.max(cut.lastIndexOf(", "), cut.lastIndexOf(" and "), cut.lastIndexOf(" or "));
     out = `${(at > 70 ? cut.slice(0, at) : cut.slice(0, cut.lastIndexOf(" "))).replace(/[,;:\s]+$/, "")}…`;
   }
-  return { text: out.charAt(0).toUpperCase() + out.slice(1), known };
+  return { text: out.charAt(0).toUpperCase() + out.slice(1), known, cutShort };
 }
 
 function pointsInfo(longTitle) {
@@ -141,11 +157,13 @@ export function plainPoints(longTitle) {
 export function plainSentence(longTitle) {
   const info = pointsInfo(longTitle);
   if (info.length === 0 || !info[0].known) return null;
-  const pts = info.map((p) => p.text.replace(/[.…]+$/, ""));
+  // A point that was cut short keeps its ellipsis, so it does not read as a finished sentence that stops in the wrong place.
+  const pts = info.map((p) => (p.cutShort ? p.text : p.text.replace(/[.…]+$/, "")));
   // Two points that open the same way read better as one: "Sets rules on A and B".
   const open = pts[1] && /^(Sets rules on |Sets rules for |Requires |Bans |Gives )/.exec(pts[0]);
   const merged = Boolean(open) && pts[1].startsWith(open[0]);
   const shown = merged ? [`${pts[0]} and ${pts[1].slice(open[0].length)}`] : pts.slice(0, 2);
   const more = pts.length > (merged ? 2 : shown.length) ? " and more" : "";
-  return `${shown.join(". ")}${more}.`;
+  const joined = shown.map((t, i) => (i < shown.length - 1 && !t.endsWith("…") ? `${t}.` : t)).join(" ");
+  return `${joined}${more}${joined.endsWith("…") && !more ? "" : "."}`.replace(/…\./, "…");
 }

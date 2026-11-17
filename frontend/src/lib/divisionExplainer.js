@@ -270,9 +270,13 @@ function labelFor(e, title) {
 }
 
 export function explainDivision(rawTitle) {
-  const e = classify(rawTitle);
-  if (!e) return null;
-  const title = clean(rawTitle);
-  const label = labelFor(e, title);
-  return { ...e, title, label, headline: e.billName ? `${e.billName}: ${label}` : label };
+  try {
+    const e = classify(rawTitle);
+    if (!e) return null;
+    const title = clean(rawTitle);
+    const label = labelFor(e, title);
+    return { ...e, title, label, headline: e.billName ? `${e.billName}: ${label}` : label };
+  } catch {
+    return null; // the callers all have an everyday line for a vote they cannot classify
+  }
 }

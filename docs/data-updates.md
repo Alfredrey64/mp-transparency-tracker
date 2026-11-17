@@ -10,6 +10,7 @@ What updates itself, what is watched, and what a person has to do, with the step
 | Issue-page data: inequality, defence, education, ageing, Brexit, energy, devolution, transport, care, trust, NHS | weekly, Monday | `.github/workflows/refresh-issue-data.yml` -> `frontend/scripts/refresh-issue-data.mjs` |
 | Tax rates against the newest Budget | daily | `.github/workflows/tax-data.yml` |
 | Who is Prime Minister, Chancellor, and the First Ministers | daily | `.github/workflows/office-holders.yml` |
+| Small copies of member portraits (128 px WebP, `frontend/public/portraits/<member id>.webp`; Parliament's own thumbnails are 230 KB each). Only new members are added; until a copy exists the host passes the request to Parliament (`frontend/vercel.json`) | daily, in the refresh | `fetch-portraits.js` (needs the `cwebp` tool: `brew install webp` / `apt-get install webp`) |
 | Whether the site, its data and its sources are healthy | daily | `.github/workflows/site-health.yml` |
 
 Sources that publish a new edition under a new address (GOV.UK, NHS England, ONS time series, the OECD) are looked up each run, so a new release is picked up without anyone changing a file.

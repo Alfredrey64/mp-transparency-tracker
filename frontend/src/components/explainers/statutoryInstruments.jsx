@@ -191,7 +191,7 @@ export default function StatutoryInstruments() {
       {...build(data)}
       sources={[
         { label: "Hansard Society: delegated legislation, frequently asked questions", url: "https://hansardsociety.org.uk/publications/guides/delegated-legislation-frequently-asked-questions", note: "Why Parliament delegates, the four procedures, that instruments cannot be amended and how rarely they are rejected (figures as of June 2022)." },
-        { label: "UK Parliament: Statutory Instruments API", url: "https://statutoryinstruments-api.parliament.uk/index.html", note: "Every instrument laid, how it goes through Parliament and the department that laid it. Refreshed each day." },
+        { label: "legislation.gov.uk: statutory instruments", url: "https://www.legislation.gov.uk/uksi", note: "The full text of every instrument. The daily list of what is laid, how it goes through Parliament and which department laid it comes from Parliament's Statutory Instruments API." },
         { label: "legislation.gov.uk: Statutory Instruments Act 1946", url: "https://www.legislation.gov.uk/ukpga/Geo6/9-10/36/contents", note: "The rules for laying instruments and for the 40 days in which a House may object." },
         { label: "legislation.gov.uk: statutory instruments", url: "https://www.legislation.gov.uk/uksi", note: "The text of each instrument, and the explanatory note that comes with it." },
       ]}
