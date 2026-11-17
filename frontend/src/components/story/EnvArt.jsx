@@ -219,8 +219,9 @@ export function FloodScene() {
     <Scene kind="flood">
       <Defs id="fl" />
       <defs>
-        <clipPath id="fl-river"><rect x="-120" y="150" width="760" height="50" /></clipPath>
+        <clipPath id="fl-river"><rect x="-120" y="150" width="840" height="50" /></clipPath>
         <linearGradient id="fl-w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style={{ stopColor: "color-mix(in srgb, var(--a) 55%, #9CC4EE)" }} /><stop offset="1" style={{ stopColor: "color-mix(in srgb, var(--a) 80%, #1F3F70)" }} /></linearGradient>
+        <linearGradient id="fl-road" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="var(--s1)" stopOpacity="0" /><stop offset=".12" stopColor="var(--s1)" /></linearGradient>
         <radialGradient id="fl-haze" cx="50%" cy="60%" r="60%"><stop offset="0" stopColor="#B9AA92" stopOpacity=".62" /><stop offset="1" stopColor="#B9AA92" stopOpacity="0" /></radialGradient>
       </defs>
       <rect width="1440" height="200" fill="url(#fl-glow)" />
@@ -246,7 +247,7 @@ export function FloodScene() {
       <path d="M409 164V200M419 164V200M429 164V200M439 164V200" stroke="var(--s3)" strokeWidth="1.6" />
       <g clipPath="url(#fl-river)">
         <g className="env-rise" style={{ "--dy": "26px" }}>
-          <rect x="-120" y="174" width="760" height="60" fill="url(#fl-w)" opacity=".92" />
+          <rect x="-120" y="174" width="840" height="60" fill="url(#fl-w)" opacity=".92" />
           <g transform="translate(-70 0)"><path d={crest(174, 2.6, 60, 14)} fill="none" stroke="#DCEBFB" strokeWidth="1.3" opacity=".9" className="env-wave" /></g>
           <g transform="translate(-70 0)"><path d={crest(184, 3, 80, 10)} fill="none" stroke="#DCEBFB" strokeWidth="1" opacity=".4" className="env-wave env-wave-slow" /></g>
         </g>
@@ -258,10 +259,12 @@ export function FloodScene() {
         <circle className="ec-halo" cy="-40" r="8" style={{ "--i": 0 }} /><circle className="ec-halo" cy="-40" r="8" style={{ "--i": 1 }} />
         <path d="M0 -54L13 -32H-13Z" fill="#F3C65A" stroke="#B88A2C" strokeWidth="1.4" strokeLinejoin="round" /><path d="M0 -48V-39M0 -36V-34" stroke="#5A3F0A" strokeWidth="2.2" strokeLinecap="round" />
       </g>
-      <path className="hs-2" d="M620 200V176C650 170 690 164 740 160V200Z" />
+      {/* the bank: the river runs in under rising ground, the flood wall ties into it, and it settles back to the level of the town, so the two halves are one landscape */}
+      <path className="hs-2" d="M590 200V188C628 186 648 160 700 155C752 150 790 156 830 170V200Z" />
+      <path className="hs-1" d="M606 187C632 184 650 162 700 157C748 153 786 158 822 169" fill="none" strokeWidth="2" style={{ stroke: "var(--s3)" }} opacity=".7" />
       </g>
       {/* the right is the air: a factory and traffic putting smoke into the air over a city, a haze that thins, and the air-quality monitor (AIR, with a dial that swings from red to green) */}
-      <rect className="hs-2" x="690" y="170" width="750" height="30" />
+      <rect className="hs-2" x="800" y="170" width="640" height="30" />
       {SKYLINE.map(([x, h, w], i) => <g key={x}><rect className="hs-3" x={x} y={170 - h} width={w} height={h} /><g className="hs-lamp">{windows(x + 4, 170 - h + 8, Math.floor((w - 6) / 9), Math.floor((h - 14) / 14), 9, 14, i * 5)}</g></g>)}
       <g transform="translate(0 0)">
         <rect className="hs-3" x="760" y="140" width="96" height="30" />
@@ -275,8 +278,8 @@ export function FloodScene() {
           </g>
         ))}
       </g>
-      <rect x="690" y="180" width="750" height="9" fill="var(--s1)" />
-      <path d="M700 184.500H1300" stroke="var(--lamp)" strokeWidth="1.2" strokeDasharray="10 9" opacity=".55" />
+      <rect x="800" y="180" width="640" height="9" fill="url(#fl-road)" />
+      <path d="M820 184.500H1300" stroke="var(--lamp)" strokeWidth="1.2" strokeDasharray="10 9" opacity=".55" />
       {[[1046, 0], [1118, 1]].map(([x, k]) => (
         <g key={x} transform={`translate(${x} 182)`}>
           <rect className="hs-4" x="-14" y="-9" width="28" height="8" rx="2.5" />
