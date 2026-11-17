@@ -1,6 +1,5 @@
 /** @jsxImportSource react */
-import { useReducedMotion } from "motion/react";
-import { useGo } from "./useGo";
+import { useGoMotion } from "./useGo";
 import { Shadow, ArrowDef, Ribbon, Badge, Letter } from "./dmx";
 
 const INK = "#1B2438";
@@ -20,7 +19,7 @@ const WINGS_AT = 180 - 45 - (360 / TURN) * WALK; // the angle the wings start at
 const HOUSING = 112;
 const IND_GOLD = "#9C6B30";
 
-const Walker = ({ delay, fromColour, toColour, flip }) => {
+const Walker = ({ delay, start, fromColour, toColour, flip }) => {
   const reach = 158; // how far outside the door the walk starts, measured from its centre
   const into = flip ? reach : -reach;
   const side = flip ? GAP_R : -GAP_R;
@@ -28,7 +27,7 @@ const Walker = ({ delay, fromColour, toColour, flip }) => {
   const walk = reach - GAP_R, arc = Math.PI * GAP_R, total = walk * 2 + arc;
   const t1 = WALK / CYCLE, t2 = (WALK + RIDE) / CYCLE, t3 = (WALK + RIDE + WALK) / CYCLE;
   const k1 = walk / total, k2 = (walk + arc) / total;
-  const begin = `${delay}s`;
+  const begin = `${start + delay}s`;
   const mid = (t1 + t2) / 2;
   const swap = [0, mid - 0.02, mid + 0.02, 1].join(";");
   return (
@@ -51,7 +50,8 @@ const Walker = ({ delay, fromColour, toColour, flip }) => {
 const GOV = "#6E4B6E", IND = "#9C6B30";
 
 // The turning door itself (wings, housing, and the people walking through), drawn around (0, 0). Shared by the wide picture and the tall one for a phone.
-function Machine({ still }) {
+function Machine({ start }) {
+  const still = start === null;
   const arcs = { top: `M -95 -59.300 A ${HOUSING} ${HOUSING} 0 0 1 95 -59.300`, bottom: `M 95 59.300 A ${HOUSING} ${HOUSING} 0 0 1 -95 59.300` };
   return (
     <>
@@ -59,7 +59,7 @@ function Machine({ still }) {
       <circle r={HOUSING - 6} fill="#fff" stroke="#E3E8F2" strokeWidth="2" />
       <circle r={GAP_R} fill="none" stroke="#E3E8F2" strokeWidth="26" opacity="0.6" />
       <g transform={`rotate(${WINGS_AT})`}>
-        {!still && <animateTransform attributeName="transform" type="rotate" from={WINGS_AT} to={WINGS_AT + 360} dur={`${TURN}s`} repeatCount="indefinite" />}
+        {!still && <animateTransform attributeName="transform" type="rotate" from={WINGS_AT} to={WINGS_AT + 360} dur={`${TURN}s`} begin={`${start}s`} repeatCount="indefinite" />}
         <rect x="-102" y="-4" width="204" height="8" rx="4" fill={GOV} /><rect x="-4" y="-102" width="8" height="204" rx="4" fill={GOV} />
         {[0, 90, 180, 270].map((a) => <rect key={a} transform={`rotate(${a})`} x="-18" y="-109" width="36" height="7" rx="3.500" fill={IND} />)}
       </g>
@@ -69,8 +69,8 @@ function Machine({ still }) {
       {!still ? (
         <>
           {/* Each gap carries one person at a time: the two sides step in on alternate gaps, so nobody shares a gap with someone stepping out. */}
-          {[0, 6].map((d) => <Walker key={`g${d}`} delay={-d} fromColour={GOV} toColour={IND} />)}
-          {[3, 9].map((d) => <Walker key={`i${d}`} delay={-d} fromColour={IND} toColour={GOV} flip />)}
+          {[0, 6].map((d) => <Walker key={`g${d}`} start={start} delay={-d} fromColour={GOV} toColour={IND} />)}
+          {[3, 9].map((d) => <Walker key={`i${d}`} start={start} delay={-d} fromColour={IND} toColour={GOV} flip />)}
         </>
       ) : (
         <g>
@@ -83,20 +83,20 @@ function Machine({ still }) {
 }
 
 export function Door() {
-  const still = useReducedMotion();
   return (
     <>
-      <DoorWide still={still} />
-      <DoorTall still={still} />
+      <DoorWide />
+      <DoorTall />
     </>
   );
 }
 
 const SIDES = [{ c: GOV, lines: ["Decides who", "gets contracts"], name: "Government", f: "#EFE7F2" }, { c: IND, lines: ["Pays for", "advice"], name: "Industry", f: "#F7EBDC" }];
 
-function DoorTall({ still }) {
+function DoorTall() {
+  const [ref, , t0] = useGoMotion(0.25, 0.4);
   return (
-    <svg className="st-trail-tall" viewBox="0 0 360 540" aria-hidden="true">
+    <svg ref={ref} className="st-trail-tall" viewBox="0 0 360 540" aria-hidden="true">
       {SIDES.map((side, k) => ({ ...side, x: k ? 184 : 8 })).map((b) => (
         <g key={b.name}>
           <rect x={b.x} y="10" width="168" height="196" rx="24" fill={b.f} stroke={b.c} strokeWidth="3" />
@@ -106,16 +106,17 @@ function DoorTall({ still }) {
           {b.lines.map((l, n) => <text key={l} x={b.x + 84} y={168 + n * 19} textAnchor="middle" fontSize="13.500" fontWeight="700" fill={INK} fontFamily={F}>{l}</text>)}
         </g>
       ))}
-      <g transform="translate(180 350)"><Machine still={still} /></g>
+      <g transform="translate(180 350)"><Machine start={t0} /></g>
       <text x="180" y="506" textAnchor="middle" fontSize="14" fontWeight="700" fill={SOFT} fontFamily={F}>Nothing stops the same person</text>
       <text x="180" y="526" textAnchor="middle" fontSize="14" fontWeight="700" fill={SOFT} fontFamily={F}>passing through, in either direction</text>
     </svg>
   );
 }
 
-function DoorWide({ still }) {
+function DoorWide() {
+  const [ref, , t0] = useGoMotion(0.3, 0.4);
   return (
-    <svg className="st-trail-wide" viewBox="0 0 900 330" role="img" aria-label="A revolving door between government and industry: a minister goes in on one side and comes out a paid adviser on the other, and someone from industry can go the other way">
+    <svg ref={ref} className="st-trail-wide" viewBox="0 0 900 330" role="img" aria-label="A revolving door between government and industry: a minister goes in on one side and comes out a paid adviser on the other, and someone from industry can go the other way">
       <rect x="20" y="30" width="270" height="250" rx="26" fill="#EFE7F2" stroke={GOV} strokeWidth="3" />
       <text x="155" y="64" textAnchor="middle" fontSize="18" fontWeight="800" fill={GOV} fontFamily={F}>Government</text>
       <rect x="610" y="30" width="270" height="250" rx="26" fill="#F7EBDC" stroke={IND} strokeWidth="3" />
@@ -127,7 +128,7 @@ function DoorWide({ still }) {
           <text x={b.x} y="226" textAnchor="middle" fontSize="14" fontWeight="700" fill={INK} fontFamily={F}>{b.t}</text>
         </g>
       ))}
-      <g transform="translate(450 160)"><Machine still={still} /></g>
+      <g transform="translate(450 160)"><Machine start={t0} /></g>
       <text x="450" y="318" textAnchor="middle" fontSize="14" fontWeight="700" fill={SOFT} fontFamily={F}>Nothing stops the same person passing through, in either direction</text>
     </svg>
   );
@@ -223,8 +224,7 @@ const Gone = ({ w, h, sh, children }) => (
 );
 
 function ReplacedTall() {
-  const [ref, go] = useGo(0.15);
-  const still = useReducedMotion();
+  const [ref, go, t0] = useGoMotion(0.15, 1.6);
   const left = "M 180 90 V 118 C 180 148, 92 140, 92 182";
   const right = "M 180 90 V 118 C 180 148, 268 140, 268 182";
   return (
@@ -244,14 +244,13 @@ function ReplacedTall() {
         {["Former civil", "servants and", "special advisers"].map((l, n) => <text key={l} x="84" y={58 + n * 20} textAnchor="middle" fontSize="15" fontWeight="800" fill="#9C6B30" fontFamily={F}>{l}</text>)}
         {["The Civil", "Service", "Commission"].map((l, n) => <text key={l} x="84" y={146 + n * 24} textAnchor="middle" fontSize="17" fontWeight="800" fill={INK} fontFamily={S}>{l}</text>)}
         <Badge x={84} y={0} c="#9C6B30" glyph="people" /></g></g>
-      {!still && <><Letter path={left} begin="0s" colour="#6E4B6E" /><Letter path={left} begin="1.6s" colour="#6E4B6E" /><Letter path={right} begin="0.8s" colour="#9C6B30" /><Letter path={right} begin="2.4s" colour="#9C6B30" /></>}
+      {t0 !== null && <><Letter path={left} start={t0} begin="0s" colour="#6E4B6E" /><Letter path={left} start={t0} begin="1.6s" colour="#6E4B6E" /><Letter path={right} start={t0} begin="0.8s" colour="#9C6B30" /><Letter path={right} start={t0} begin="2.4s" colour="#9C6B30" /></>}
     </svg>
   );
 }
 
 function ReplacedWide() {
-  const [ref, go] = useGo(0.2);
-  const still = useReducedMotion();
+  const [ref, go, t0] = useGoMotion(0.2, 1.6);
   const up = "M 290 150 C 380 150, 388 74, 446 74";
   const down = "M 290 150 C 380 150, 388 230, 446 230";
   return (
@@ -266,7 +265,7 @@ function ReplacedWide() {
         <Badge x={0} y={50} c="#6E4B6E" k={0.84} /></g></g>
       <g transform="translate(470 180)"><g className="dmx-in" style={{ "--d": 0.5 }} filter="url(#rp-sh)"><rect width="410" height="100" rx="22" fill="#fff" stroke="#9C6B30" strokeWidth="3.500" /><text x="214" y="42" textAnchor="middle" fontSize="15" fontWeight="800" fill="#9C6B30" fontFamily={F}>Former civil servants and special advisers</text><text x="214" y="70" textAnchor="middle" fontSize="17" fontWeight="800" fill={INK} fontFamily={S}>The Civil Service Commission</text>
         <Badge x={0} y={50} c="#9C6B30" glyph="people" k={0.84} /></g></g>
-      {!still && <><Letter path={up} begin="0s" colour="#6E4B6E" /><Letter path={up} begin="1.6s" colour="#6E4B6E" /><Letter path={down} begin="0.8s" colour="#9C6B30" /><Letter path={down} begin="2.4s" colour="#9C6B30" /></>}
+      {t0 !== null && <><Letter path={up} start={t0} begin="0s" colour="#6E4B6E" /><Letter path={up} start={t0} begin="1.6s" colour="#6E4B6E" /><Letter path={down} start={t0} begin="0.8s" colour="#9C6B30" /><Letter path={down} start={t0} begin="2.4s" colour="#9C6B30" /></>}
     </svg>
   );
 }

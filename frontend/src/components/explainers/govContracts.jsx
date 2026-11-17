@@ -1,17 +1,21 @@
 /** @jsxImportSource react */
 import ExplainerPage from "../story/ExplainerPage";
 import { IconContract } from "../newIcons";
+import { Board } from "../story/Kit";
+import { ContractRoute, LaneOdds } from "../story/ContractArt";
+
+const TILES = [
+  { label: "Pandemic contracts, March to July 2020", value: "£18.0bn", colour: "#6FB1FF", sub: "more than 8,600 contracts, according to the National Audit Office" },
+  { label: "Awarded with no competition", value: "£10.5bn", colour: "#FF7A8A", sub: "direct awards, with no tender" },
+  { label: "Suppliers that won through the high-priority lane", value: "1 in 10", colour: "#FFB45E", sub: "47 of 493. In the ordinary lane it was 104 of 14,892" },
+];
 
 const PAGE = {
   icon: IconContract,
   kicker: "Money & influence",
   title: "Who wins government contracts?",
-  subtitle: "Departments, councils and the NHS buy goods and services from private companies. This page explains the rules for doing it fairly and openly, and what the official audit found when the pandemic made speed matter more than process.",
-  tiles: [
-    { label: "Pandemic contracts, March to July 2020", value: "£18.0bn", colour: "#6FB1FF", sub: "more than 8,600 contracts, according to the National Audit Office" },
-    { label: "Awarded with no competition", value: "£10.5bn", colour: "#FF7A8A", sub: "direct awards, with no tender" },
-    { label: "Suppliers that won through the high-priority lane", value: "1 in 10", colour: "#FFB45E", sub: "47 of 493. In the ordinary lane it was 104 of 14,892" },
-  ],
+  subtitle: "Departments, councils and the NHS buy goods and services from private companies. This page shows how a contract is meant to be won, fairly and in the open, and what the official audit found when the pandemic made speed matter more than process.",
+  lead: <div style={{ marginTop: 22 }}><ContractRoute /></div>,
   why: { colour: "#5A7FA6", text: "Contracts are where public money becomes private income. The rules on notices, conflicts of interest and exclusion exist so that anyone can check who got a contract, and why." },
   chapters: [
     {
@@ -34,6 +38,7 @@ const PAGE = {
       lede: "In an emergency the rules allow a buyer to award a contract directly, with no competition. In 2020 that happened on a very large scale.",
       colour: "#9C3B3B",
       blocks: [
+        { node: <Board tiles={TILES} /> },
         { bars: { items: [
           { label: "Direct award, no competition", value: 10.5, text: "£10.5bn", colour: "#9C3B3B" },
           { label: "Direct from an existing framework", value: 6.7, text: "£6.7bn", colour: "#9C6B30" },
@@ -56,6 +61,7 @@ const PAGE = {
       lede: "Offers of PPE could come in through two routes. One of them was faster, and who you knew decided which one you were in.",
       colour: "#E8741A",
       blocks: [
+        { node: <LaneOdds /> },
         { compare: [
           { title: "High-priority lane", colour: "#E8741A", items: [
             "Offers referred by government officials, ministers' offices, MPs and Lords, senior NHS staff and other health professionals.",

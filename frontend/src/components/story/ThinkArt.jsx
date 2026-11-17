@@ -1,6 +1,6 @@
 /** @jsxImportSource react */
 import { useReducedMotion } from "motion/react";
-import { useGo } from "./useGo";
+import { useGo, useGoMotion } from "./useGo";
 import { caseId } from "../../lib/caseId";
 
 const INK = "#1B2438";
@@ -24,9 +24,9 @@ const COIN = (
   </>
 );
 
-function Coins({ path, dur = 5.2, count = 3 }) {
+function Coins({ path, start, dur = 5.2, count = 3 }) {
   return Array.from({ length: count }, (_, i) => {
-    const begin = `${(-dur / count) * i}s`;
+    const begin = `${start + (dur / count) * i}s`;
     return (
       <g key={i} opacity="0">
         {COIN}
@@ -61,9 +61,9 @@ const BUBBLE = (
   </>
 );
 
-function Bubbles({ path, dur = 3.4, count = 2 }) {
+function Bubbles({ path, start, dur = 3.4, count = 2 }) {
   return Array.from({ length: count }, (_, i) => {
-    const begin = `${(-dur / count) * i}s`;
+    const begin = `${start + (dur / count) * i}s`;
     return (
       <g key={i} opacity="0">
         {BUBBLE}
@@ -75,7 +75,7 @@ function Bubbles({ path, dur = 3.4, count = 2 }) {
   });
 }
 
-function Influence({ x, y, len, rot = 0, d, label, sub, playing }) {
+function Influence({ x, y, len, rot = 0, d, label, sub, start, still }) {
   const dx = rot === 90 ? 0 : 1;
   const dy = rot === 90 ? 1 : 0;
   const path = `M ${x + dx * 14} ${y + dy * 14} L ${x + dx * (len - 26)} ${y + dy * (len - 26)}`;
@@ -88,7 +88,7 @@ function Influence({ x, y, len, rot = 0, d, label, sub, playing }) {
           <path className="ttm-head" d="M -15 -13 L 0 0 L -15 13" fill="none" stroke="#9C6B30" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
         </g>
       </g>
-      {playing ? <Bubbles path={path} /> : <g transform={`translate(${x + dx * mid} ${y + dy * mid})`}>{BUBBLE}</g>}
+      {start !== null ? <Bubbles path={path} start={start + 0.8} /> : still && <g transform={`translate(${x + dx * mid} ${y + dy * mid})`}>{BUBBLE}</g>}
       <g className="ttm-label" style={{ "--d": d }}>
         <rect x={label.x - label.w / 2} y={label.y - 17} width={label.w} height="34" rx="17" fill="#fff" stroke="#9C6B30" strokeWidth="3" />
         <text x={label.x} y={label.y + 5} textAnchor="middle" fontSize="14" fontWeight="800" fill={INK} fontFamily={F}>{label.text}</text>
@@ -164,9 +164,8 @@ function Defs({ id }) {
 }
 
 function MaskedWide() {
-  const [ref, go] = useGo(0.3);
+  const [ref, go, t0] = useGoMotion(0.3, 2.6);
   const still = useReducedMotion();
-  const playing = go === "1" && !still;
   return (
     <svg ref={ref} data-go={go} className="st-trail-wide ttm" viewBox="0 0 1000 340" role="img" aria-label="An undisclosed funder pays a think tank. The think tank's own staff and views then appear on air as an expert presented as independent, and the audience sees only the expert, not who is behind them">
       <Defs id="" />
@@ -185,8 +184,8 @@ function MaskedWide() {
       <Funder id="" x={36} y={103} d={1} />
       <Tank x={382} y={103} d={2} />
       <Expert id="" x={770} y={103} d={3} />
-      {playing && <Coins path="M 236 168 H 398" />}
-      <Influence playing={playing} x={592} y={168} len={172} d={3.4} label={{ x: 676, y: 128, w: 164, text: "Its staff, its views" }} sub={{ x: 676, y: 205, text: "sounds \u201Cindependent\u201D" }} />
+      {t0 !== null && <Coins path="M 236 168 H 398" start={t0} />}
+      <Influence start={t0} still={still} x={592} y={168} len={172} d={3.4} label={{ x: 676, y: 128, w: 164, text: "Its staff, its views" }} sub={{ x: 676, y: 205, text: "sounds \u201Cindependent\u201D" }} />
       <text className="ttm-note" x="500" y="316" textAnchor="middle" fontSize="15" fontWeight="700" fill={SOFT} fontFamily={F}>The audience only ever sees the “expert” on the right, not who is behind them.</text>
     </svg>
   );
@@ -194,9 +193,8 @@ function MaskedWide() {
 
 // The same three steps stacked, for a narrow screen.
 function MaskedTall() {
-  const [ref, go] = useGo(0.2);
+  const [ref, go, t0] = useGoMotion(0.2, 2.6);
   const still = useReducedMotion();
-  const playing = go === "1" && !still;
   return (
     <svg ref={ref} data-go={go} className="st-trail-tall ttm" viewBox="0 0 360 700" aria-hidden="true">
       <Defs id="t" />
@@ -215,8 +213,8 @@ function MaskedTall() {
       <Funder id="t" x={80} y={56} d={1} />
       <Tank x={80} y={236} d={2} />
       <Expert id="t" x={80} y={516} d={3} />
-      {playing && <Coins path="M 180 196 V 262" count={2} />}
-      <Influence playing={playing} x={180} y={376} len={132} rot={90} d={3.4} label={{ x: 272, y: 430, w: 156, text: "Its staff, its views" }} sub={{ x: 272, y: 462, text: "sounds \u201Cindependent\u201D" }} />
+      {t0 !== null && <Coins path="M 180 196 V 262" count={2} start={t0} />}
+      <Influence start={t0} still={still} x={180} y={376} len={132} rot={90} d={3.4} label={{ x: 272, y: 430, w: 156, text: "Its staff, its views" }} sub={{ x: 272, y: 462, text: "sounds \u201Cindependent\u201D" }} />
       <text className="ttm-note" x="180" y="684" textAnchor="middle" fontSize="14.500" fontWeight="700" fill={SOFT} fontFamily={F}>The audience only ever sees the “expert”.</text>
     </svg>
   );

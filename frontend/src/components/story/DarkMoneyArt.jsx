@@ -1,6 +1,6 @@
 /** @jsxImportSource react */
 import { useReducedMotion } from "motion/react";
-import { useGo } from "./useGo";
+import { useGo, useGoMotion } from "./useGo";
 
 // The pictures for the dark money page. Each is drawn in SVG and moves by animation written into the picture, so it needs no script and stands
 // still for anyone who has asked for less motion.
@@ -70,7 +70,7 @@ function Association({ x, y, w, h, s, r = 26, d = 0.4 }) {
 }
 
 // The party's register as a page: a green heading, two grey lines of other entries, and the one line the public gets to read, which lights up as the money arrives.
-function Register({ x, y, w, h, s, still, pulseDur = "7s", d = 0.6 }) {
+function Register({ x, y, w, h, s, start, pulseDur = "7s", d = 0.6 }) {
   const id = `dm-reg${s}`;
   const top = -h / 2;
   return (
@@ -83,7 +83,7 @@ function Register({ x, y, w, h, s, still, pulseDur = "7s", d = 0.6 }) {
         <rect x={-w / 2 + 20} y={top + 50} width={w - 70} height="8" rx="4" fill="#E3EAF0" />
         <rect x={-w / 2 + 20} y={top + 64} width={w - 104} height="8" rx="4" fill="#E3EAF0" />
         <rect x={-w / 2 + 14} y={top + 80} width={w - 28} height="52" rx="12" fill="#E7F3EC" />
-        {!still && <rect x={-w / 2 + 14} y={top + 80} width={w - 28} height="52" rx="12" fill="none" stroke="#3F7D5C" strokeWidth="3" opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.84;0.9;0.96;1;1" dur={pulseDur} repeatCount="indefinite" /></rect>}
+        {start !== null && <rect x={-w / 2 + 14} y={top + 80} width={w - 28} height="52" rx="12" fill="none" stroke="#3F7D5C" strokeWidth="3" opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.84;0.9;0.96;1;1" dur={pulseDur} begin={`${start}s`} repeatCount="indefinite" /></rect>}
         <text y={top + 99} textAnchor="middle" fontSize="14" fontWeight="700" fill="#2B5E43" fontFamily={FONT}>Donor:</text>
         <text y={top + 121} textAnchor="middle" fontSize="16" fontWeight="800" fill="#2B5E43" fontFamily={FONT}>the association</text>
       </g>
@@ -91,13 +91,16 @@ function Register({ x, y, w, h, s, still, pulseDur = "7s", d = 0.6 }) {
   );
 }
 
-const Coin = ({ colour, r = 13, path, begin = "0s", dur, times, opacity, fontSize = 13 }) => (
+const Coin = ({ colour, r = 13, path, begin = "0s", start = 0, dur, times, opacity, fontSize = 13 }) => {
+  const at = `${start + parseFloat(begin)}s`;
+  return (
   <g opacity="0">
     <circle r={r} fill={colour} stroke="#fff" strokeWidth="3" /><text y={fontSize / 2.800} textAnchor="middle" fontSize={fontSize} fontWeight="800" fill="#fff" fontFamily={FONT}>£</text>
-    <animateMotion dur={dur} begin={begin} repeatCount="indefinite" path={path} keyPoints={times.points} keyTimes={times.at} calcMode="linear" />
-    <animate attributeName="opacity" values={opacity.values} keyTimes={opacity.at} dur={dur} begin={begin} repeatCount="indefinite" />
+    <animateMotion dur={dur} begin={at} repeatCount="indefinite" path={path} keyPoints={times.points} keyTimes={times.at} calcMode="linear" />
+    <animate attributeName="opacity" values={opacity.values} keyTimes={opacity.at} dur={dur} begin={at} repeatCount="indefinite" />
   </g>
-);
+  );
+};
 const IN_TIMES = { points: "0;1;1", at: "0;0.38;1" };
 const IN_FADE = { values: "0;1;1;0;0", at: "0;0.04;0.34;0.42;1" };
 const OUT_TIMES = { points: "0;0;1;1", at: "0;0.5;0.86;1" };
@@ -111,7 +114,7 @@ export function MoneyTrail() {
 
 function MoneyTrailWide() {
   const still = useReducedMotion();
-  const [ref, go] = useGo(0.2);
+  const [ref, go, t0] = useGoMotion(0.2, 1.8);
   const ys = [126, 194, 262];
   const mid = 194;
   const into = (y) => `M 224 ${y} C 292 ${y}, 300 ${mid}, 352 ${mid}`;
@@ -134,9 +137,9 @@ function MoneyTrailWide() {
       <Flow d={out} colour="#8A94A6" s="" delay={0.9} />
       {ys.map((y, n) => <Person key={y} x={135} y={y} colour={DONORS[n].c} letter={DONORS[n].l} s="" d={0.2 + n * 0.12} />)}
       <Association x={450} y={mid} w={172} h={152} s="" />
-      <Register x={765} y={mid} w={180} h={152} s="" still={still} pulseDur={dur} />
-      {!still && ys.map((y, n) => <Coin key={`c${y}`} colour={DONORS[n].c} path={into(y)} begin={`${n * 0.35}s`} dur={dur} times={IN_TIMES} opacity={IN_FADE} />)}
-      {!still && <Coin colour="#8A94A6" r={16} fontSize={15} path={out} dur={dur} times={OUT_TIMES} opacity={OUT_FADE} />}
+      <Register x={765} y={mid} w={180} h={152} s="" start={t0} pulseDur={dur} />
+      {t0 !== null && ys.map((y, n) => <Coin key={`c${y}`} start={t0} colour={DONORS[n].c} path={into(y)} begin={`${n * 0.35}s`} dur={dur} times={IN_TIMES} opacity={IN_FADE} />)}
+      {t0 !== null && <Coin colour="#8A94A6" r={16} fontSize={15} start={t0} path={out} dur={dur} times={OUT_TIMES} opacity={OUT_FADE} />}
       {still && <g><circle cx="305" cy="159" r="13" fill="#2A6FDB" /><circle cx="292" cy="194" r="13" fill="#1FA97C" /><circle cx="305" cy="229" r="13" fill="#E8741A" /><circle cx="604" cy="194" r="16" fill="#8A94A6" /></g>}
       <g className="dmx-in" style={{ "--d": 1.1 }}>
         <path d="M 10 336 V 350 H 575 V 336" fill="none" stroke="#2A6FDB" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /><text x="292" y="378" textAnchor="middle" fontSize="15" fill="#2A6FDB" fontWeight="700">The association may know who they are</text>
@@ -149,7 +152,7 @@ function MoneyTrailWide() {
 // The same story stacked top to bottom for a narrow screen, where the three columns would shrink the words too small to read.
 function MoneyTrailTall() {
   const still = useReducedMotion();
-  const [ref, go] = useGo(0.15);
+  const [ref, go, t0] = useGoMotion(0.15, 1.8);
   const dur = "7s";
   const steps = [
     { y: 0, h: 292 }, { y: 338, h: 252 }, { y: 636, h: 264 },
@@ -174,10 +177,10 @@ function MoneyTrailTall() {
       {ys.map((y, n) => <Person key={y} x={180} y={y} colour={DONORS[n].c} letter={DONORS[n].l} s="-t" d={0.2 + n * 0.12} />)}
       <Association x={180} y={480} w={172} h={120} s="-t" />
       <text x="180" y="574" textAnchor="middle" fontSize="14.500" fill="#2A6FDB" fontWeight="700">The association may know who they are</text>
-      <Register x={180} y={792} w={180} h={146} s="-t" still={still} pulseDur={dur} />
+      <Register x={180} y={792} w={180} h={146} s="-t" start={t0} pulseDur={dur} />
       <text x="180" y="880" textAnchor="middle" fontSize="14.500" fill="#3F7D5C" fontWeight="700">The public sees only the association</text>
-      {!still && DONORS.map((d, n) => <Coin key={d.l} colour={d.c} path={down1} begin={`${n * 0.35}s`} dur={dur} times={IN_TIMES} opacity={IN_FADE} />)}
-      {!still && <Coin colour="#8A94A6" r={16} fontSize={15} path={down2} dur={dur} times={OUT_TIMES} opacity={OUT_FADE} />}
+      {t0 !== null && DONORS.map((d, n) => <Coin key={d.l} start={t0} colour={d.c} path={down1} begin={`${n * 0.35}s`} dur={dur} times={IN_TIMES} opacity={IN_FADE} />)}
+      {t0 !== null && <Coin colour="#8A94A6" r={16} fontSize={15} start={t0} path={down2} dur={dur} times={OUT_TIMES} opacity={OUT_FADE} />}
       {still && <g><circle cx="150" cy="318" r="13" fill="#2A6FDB" /><circle cx="180" cy="318" r="13" fill="#1FA97C" /><circle cx="210" cy="318" r="13" fill="#E8741A" /><circle cx="180" cy="617" r="16" fill="#8A94A6" /></g>}
     </svg>
   );

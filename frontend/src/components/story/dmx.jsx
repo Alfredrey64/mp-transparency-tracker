@@ -26,6 +26,8 @@ export function Badge({ x, y, c, glyph = "person", k = 1 }) {
         {glyph === "people" && <><circle cx="-6" cy="-6" r="4.500" /><path d="M -15 11 q 9 -16 18 0z" /><circle cx="7" cy="-3" r="3.800" opacity="0.8" /><path d="M -1 11 q 8 -13 16 0z" opacity="0.8" /></>}
         {glyph === "building" && <><rect x="-11" y="-3" width="9" height="15" rx="1.500" /><rect x="-1" y="-12" width="12" height="24" rx="1.500" /><g fill={c}><rect x="2" y="-8" width="2.500" height="3" /><rect x="6.500" y="-8" width="2.500" height="3" /><rect x="2" y="-2" width="2.500" height="3" /><rect x="6.500" y="-2" width="2.500" height="3" /></g></>}
         {glyph === "briefcase" && <><rect x="-11" y="-5" width="22" height="16" rx="3" /><path d="M -4 -5 V -8 H 4 V -5" fill="none" stroke="#fff" strokeWidth="2.500" /><rect x="-11" y="1" width="22" height="2.500" fill={c} opacity="0.5" /></>}
+        {glyph === "doc" && <><path d="M -8 -12 H 3 L 9 -6 V 12 H -8 Z" /><path d="M 3 -12 V -6 H 9" fill="none" stroke={c} strokeWidth="1.800" /><g fill={c}><rect x="-4.500" y="0" width="9" height="2" /><rect x="-4.500" y="5" width="9" height="2" /></g></>}
+        {glyph === "search" && <><circle cx="-2" cy="-2" r="8" fill="none" stroke="#fff" strokeWidth="3.500" /><path d="M 4 4 L 11 11" stroke="#fff" strokeWidth="4" strokeLinecap="round" /></>}
         {glyph === "tick" && <path d="M -9 1 L -3 7 L 9 -7" fill="none" stroke="#fff" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />}
         {glyph === "hidden" && <><path d="M -12 0 Q 0 -11 12 0 Q 0 11 -12 0 Z" /><circle r="4" fill={c} /><path d="M -11 11 L 11 -11" stroke={c} strokeWidth="5" /><path d="M -11 11 L 11 -11" stroke="#fff" strokeWidth="2.500" strokeLinecap="round" /></>}
       </g>
@@ -33,11 +35,14 @@ export function Badge({ x, y, c, glyph = "person", k = 1 }) {
   );
 }
 
-// A small envelope that travels along a path and then disappears: an application, a request, a letter. `fade` is how clear it still is when it arrives (1 is fully, lower is dimmer).
-export const Letter = ({ path, begin = "0s", colour, dur = "4.8s", fade = 1 }) => (
+// A small envelope that travels along a path and then disappears: an application, a request, a letter. `start` is the picture clock time to count `begin` from (see useGoMotion). `fade` is how clear it still is when it arrives (1 is fully, lower is dimmer).
+export const Letter = ({ path, begin = "0s", start = 0, colour, dur = "4.8s", fade = 1 }) => {
+  const at = `${start + parseFloat(begin)}s`;
+  return (
   <g opacity="0">
     <rect x="-10" y="-7" width="20" height="14" rx="3" fill="#fff" stroke={colour} strokeWidth="2" /><path d="M -10 -6 L 0 2 L 10 -6" fill="none" stroke={colour} strokeWidth="2" strokeLinejoin="round" />
-    <animateMotion dur={dur} begin={begin} repeatCount="indefinite" path={path} keyPoints="0;1;1" keyTimes="0;0.8;1" calcMode="linear" />
-    <animate attributeName="opacity" values={`0;1;${fade};0;0`} keyTimes="0;0.08;0.74;0.82;1" dur={dur} begin={begin} repeatCount="indefinite" />
+    <animateMotion dur={dur} begin={at} repeatCount="indefinite" path={path} keyPoints="0;1;1" keyTimes="0;0.8;1" calcMode="linear" />
+    <animate attributeName="opacity" values={`0;1;${fade};0;0`} keyTimes="0;0.08;0.74;0.82;1" dur={dur} begin={at} repeatCount="indefinite" />
   </g>
-);
+  );
+};

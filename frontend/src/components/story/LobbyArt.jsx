@@ -1,6 +1,5 @@
 /** @jsxImportSource react */
-import { useReducedMotion } from "motion/react";
-import { useGo } from "./useGo";
+import { useGoMotion } from "./useGo";
 import { Shadow, ArrowDef, Ribbon, Badge, Letter } from "./dmx";
 
 const INK = "#1B2438";
@@ -24,8 +23,7 @@ const Tag = ({ w, h, fill, stroke, dash, c, glyph, children, tf, size = 13 }) =>
 );
 
 function TwoRoutesTall({ firms }) {
-  const still = useReducedMotion();
-  const [ref, go] = useGo(0.15);
+  const [ref, go, t0] = useGoMotion(0.15, 1.9);
   const left = "M 95 100 L 95 278 C 95 308, 150 304, 150 332";
   const right = "M 265 100 L 265 278 C 265 308, 210 304, 210 332";
   return (
@@ -33,10 +31,10 @@ function TwoRoutesTall({ firms }) {
       <defs><Shadow id="lr-sh-t" /><ArrowDef id="lr-ar-t" /></defs>
       <Ribbon d={left} c="#5A7FA6" delay={0.5} arrow="url(#lr-ar-t)" />
       <Ribbon d={right} c="#9C3B3B" delay={0.6} opacity={0.75} arrow="url(#lr-ar-t)" />
-      {!still && (
+      {t0 !== null && (
         <>
-          <Letter path={left} colour="#5A7FA6" dur="5s" /><Letter path={left} begin="2.500s" colour="#5A7FA6" dur="5s" />
-          <Letter path={right} begin="1.200s" colour="#9C3B3B" dur="5s" fade={0.25} /><Letter path={right} begin="3.700s" colour="#9C3B3B" dur="5s" fade={0.25} />
+          <Letter path={left} start={t0} colour="#5A7FA6" dur="5s" /><Letter path={left} begin="2.500s" start={t0} colour="#5A7FA6" dur="5s" />
+          <Letter path={right} begin="1.200s" start={t0} colour="#9C3B3B" dur="5s" fade={0.25} /><Letter path={right} begin="3.700s" start={t0} colour="#9C3B3B" dur="5s" fade={0.25} />
         </>
       )}
       <g transform="translate(12 10)"><g className="dmx-in" style={{ "--d": 0.1 }} filter="url(#lr-sh-t)">
@@ -73,8 +71,7 @@ function TwoRoutesTall({ firms }) {
 }
 
 function TwoRoutesWide({ firms }) {
-  const still = useReducedMotion();
-  const [ref, go] = useGo(0.2);
+  const [ref, go, t0] = useGoMotion(0.2, 1.9);
   const topA = "M 232 95 H 330";
   const top = "M 232 95 L 550 95 C 620 95, 650 150, 684 150";
   const bottom = "M 232 265 H 560 C 625 265, 640 210, 684 210";
@@ -84,10 +81,10 @@ function TwoRoutesWide({ firms }) {
       <Ribbon d={topA} c="#5A7FA6" delay={0.5} arrow="url(#lr-ar)" />
       <Ribbon d="M 552 95 C 620 95, 650 150, 680 150" c="#5A7FA6" delay={0.7} arrow="url(#lr-ar)" />
       <Ribbon d={bottom} c="#9C3B3B" delay={0.7} opacity={0.75} arrow="url(#lr-ar)" />
-      {!still && (
+      {t0 !== null && (
         <>
-          <Letter path={top} colour="#5A7FA6" dur="5s" /><Letter path={top} begin="2.500s" colour="#5A7FA6" dur="5s" />
-          <Letter path={bottom} begin="1.200s" colour="#9C3B3B" dur="5s" fade={0.25} /><Letter path={bottom} begin="3.700s" colour="#9C3B3B" dur="5s" fade={0.25} />
+          <Letter path={top} start={t0} colour="#5A7FA6" dur="5s" /><Letter path={top} begin="2.500s" start={t0} colour="#5A7FA6" dur="5s" />
+          <Letter path={bottom} begin="1.200s" start={t0} colour="#9C3B3B" dur="5s" fade={0.25} /><Letter path={bottom} begin="3.700s" start={t0} colour="#9C3B3B" dur="5s" fade={0.25} />
         </>
       )}
       <g transform="translate(30 45)"><g className="dmx-in" style={{ "--d": 0.1 }} filter="url(#lr-sh)">

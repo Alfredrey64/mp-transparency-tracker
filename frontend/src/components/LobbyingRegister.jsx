@@ -5,30 +5,66 @@ import { TwoRoutes, Iceberg } from "./story/LobbyArt";
 import { COLORS, FONT_BODY, readable } from "../theme";
 import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
+import { useGo } from "./story/useGo";
 import { formatDate } from "../lib/format";
 import { IconRegister, IconShield, IconGavel, IconSearch } from "./icons";
 import LOBBYISTS from "../data/consultantLobbyists.json";
 
+// Months are counted from July 2025 (0) so the three investigations can be drawn on one shared timeline: `from` is the first month of each, `to` the month after its last.
+const CASE_MONTHS = ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb"];
 const CASES = [
   {
     name: "Tony Blair Institute",
     color: readable("#5A7FA6"),
     period: "Investigated October–December 2025",
-    detail: "Investigated over whether it had carried out unregistered consultant lobbying. The Registrar concluded it had not, in relation to the matter under investigation.",
+    from: 3, to: 6,
+    looked: "Whether it had carried out unregistered consultant lobbying.",
+    found: "The Registrar concluded it had not, in relation to the matter under investigation.",
   },
   {
     name: "Chamber Group",
     color: readable("#9C6B30"),
     period: "Investigated December 2025–February 2026",
-    detail: "Also investigated for possible unregistered consultant lobbying, and also cleared: the Registrar found no breach in relation to the matter examined.",
+    from: 5, to: 8,
+    looked: "Also investigated for possible unregistered consultant lobbying.",
+    found: "Also cleared: the Registrar found no breach in relation to the matter examined.",
   },
   {
     name: "George Freeman MP",
     color: readable("#3F7D5C"),
     period: "Investigated July–October 2025",
-    detail: "Investigated after leaked emails reported by The Times appeared to show him discussing parliamentary questions with the director of GHGSat, a firm paying him as an adviser after he'd been explicitly advised by ACOBA not to lobby on its behalf. Cleared on the narrow lobbying-registration question. See the Revolving Door page for the fuller story.",
+    from: 0, to: 4,
+    looked: "Investigated after leaked emails reported by The Times appeared to show him discussing parliamentary questions with the director of GHGSat, a firm paying him as an adviser after he'd been explicitly advised by ACOBA not to lobby on its behalf.",
+    found: "Cleared on the narrow lobbying-registration question. See the Revolving Door page for the fuller story.",
   },
 ];
+
+// One investigation as a case file: who, when it ran (a bar on a timeline shared by all three, so you can see they overlapped), what it was about, and the finding pinned to the foot of the card.
+function CaseFile({ c, i }) {
+  const [ref, go] = useGo(0.3);
+  const n = CASE_MONTHS.length;
+  return (
+    <li ref={ref} data-go={go} className="lrc" style={{ "--tc": c.color, "--i": i, "--a": c.from / n, "--b": c.to / n }}>
+      <header>
+        <span className="st-avatar" aria-hidden="true">{c.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span>
+        <h3>{c.name}</h3>
+      </header>
+      <div className="lrc-time">
+        <div className="lrc-track" aria-hidden="true">
+          {CASE_MONTHS.map((m, k) => <i key={m} style={{ "--k": k }} />)}
+          <b />
+        </div>
+        <div className="lrc-months" aria-hidden="true">{CASE_MONTHS.map((m, k) => <span key={m} data-on={k >= c.from && k < c.to ? "1" : undefined}>{m}</span>)}</div>
+        <p>{c.period}</p>
+      </div>
+      <section className="lrc-q"><h4>What the Registrar looked at</h4><p>{c.looked}</p></section>
+      <section className="lrc-found">
+        <span className="lrc-stamp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.500" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>Cleared</span>
+        <p>{c.found}</p>
+      </section>
+    </li>
+  );
+}
 
 
 // This register itself doesn't say what a firm lobbies about or for whom
@@ -215,13 +251,8 @@ export default function LobbyingRegister() {
       </Chapter>
 
       <Chapter n={5} title="The register in action: real recent investigations" colour="#E8741A" lede="The Registrar can and does open investigations into whether lobbying should have been registered and wasn't. Three recent examples: all ultimately cleared, which is itself informative about how narrow the legal definition is.">
-        <ul className="st-case-grid">
-          {CASES.map((c) => (
-            <li key={c.name} className="st-case" style={{ "--tc": c.color }}>
-              <header><span className="st-avatar" aria-hidden="true">{c.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span><div><h3>{c.name}</h3><p>{c.period}</p></div><span className="st-case-flag">Cleared</span></header>
-              <section><h4>What the Registrar looked at</h4><p>{c.detail}</p></section>
-            </li>
-          ))}
+        <ul className="lrc-grid">
+          {CASES.map((c, i) => <CaseFile key={c.name} c={c} i={i} />)}
         </ul>
       </Chapter>
 
