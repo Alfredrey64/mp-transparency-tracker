@@ -116,8 +116,8 @@ function Airliner() {
 export function TransportScene() {
   return (
     <Scene kind="transport">
-      <Backdrop id="sv-tr" day clouds={[[300, 40, 1.1, 4], [640, 24, 0.8, 19], [1150, 44, 1, 7]]} />
-      <g transform="translate(1180 44)"><g className="sv-plane"><Contrails /><Airliner /></g></g>
+      <Backdrop id="sv-tr" day clouds={[[300, 74, 1.1, 4], [640, 66, 0.8, 19], [1150, 50, 1, 7]]} />
+      <g transform="translate(1180 22)"><g className="sv-plane"><Contrails /><Airliner /></g></g>
       {/* the viaduct: a deck on a row of arches */}
       <rect className="hs-2" x="0" y="126" width="1440" height="62" />
       {ARCHES.map((x) => <path key={x} className="hs-1" d={`M${x + 10} 188V160a30 30 0 0 1 60 0V188Z`} />)}

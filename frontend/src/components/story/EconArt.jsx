@@ -181,7 +181,7 @@ export function JobsScene() {
       </g>
       {[200, 480, 700, 940, 1180, 1400].map((x) => <Lamp key={x} x={x} />)}
       <g className="hs-3 sv-ground"><rect x="0" y="188" width="1440" height="12" /></g>
-      {WORKERS.map((w, i) => <g key={i} transform={`translate(${w.x} 190) scale(1.9)`}><Worker w={w} i={i} /></g>)}
+      {WORKERS.map((w, i) => <g key={i} className="jb-person" transform={`translate(${w.x} 190) scale(1.9)`}><Worker w={w} i={i} /></g>)}
       {[[187, 48], [210, 64]].map(([x, y], i) => <circle key={i} className="ec-puff" cx={x} cy={y} r="9" style={{ "--i": i }} />)}
     </Scene>
   );

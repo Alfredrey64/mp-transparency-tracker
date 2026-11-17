@@ -54,3 +54,6 @@
 .hs-scene .env-panel2 { fill: #27364F; stroke: #9FB4D6; }
 .hs-scene[data-kind="flood"] text { fill: #F4F8FF; }
 .hs-scene .env-tree { fill: #3C8450; }
+
+/* The people on Jobs and pay: a thin light edge with a darker one outside it, so each one stands out from a building of any colour behind them. */
+.hs-scene[data-kind="jobs"] .jb-person { filter: drop-shadow(0 0 0.35px #fff) drop-shadow(0 0 0.35px #fff) drop-shadow(0 0 0.45px #1D3050) drop-shadow(0 0 0.45px #1D3050); }
