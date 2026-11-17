@@ -106,7 +106,8 @@ export const Defs = ({ id }) => (
     <linearGradient id={`${id}-gold`} x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#C99A33" /><stop offset="0.5" stopColor="#F7D675" /><stop offset="1" stopColor="#C99A33" /></linearGradient>
   </defs>
 );
-const POUND = "M2.6 -3.6a2.6 2.6 0 0 0-5 1.1V3M-2.5 3h5.2M-3.7 -.4h4.2";
+// the pound sign, drawn so the middle of its box is the origin (so it sits dead centre in a coin)
+const POUND = "M3.1 -2.5a2.6 2.6 0 0 0-5 1.1V4.1M-2 4.1h5.2M-3.2 .7h4.2";
 const Lamp = ({ x }) => (
   <g transform={`translate(${x} 190)`}>
     <path d="M0 0V-44q0-6 8-6" stroke="#55627C" strokeWidth="2.6" fill="none" strokeLinecap="round" /><rect x="5" y="-50" width="8" height="4" rx="2" fill="#8C97AA" />
