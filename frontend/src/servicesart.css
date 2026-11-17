@@ -137,6 +137,9 @@ html[data-calm] .sv-ring { opacity: 0 !important; }
 /* On a tablet or phone the five pictures are no longer shrunk to a strip: the band keeps a taller picture, cut off at the sides around the part that matters (--focus is how far along the picture, from 0 to 1,
    to centre on: the school, the train and sun, the court, the houses and the police car, the gate and the first homes). Browsers that cannot do :has() keep the old whole-picture strip. */
 .hs-scene[data-kind="transport"] { --focus: 0.45; }
+/* The plane flies in the open sky above the picture: this one scene may draw up to 56px above its own box (the sides and foot stay clipped). */
+.hs-scene[data-kind="transport"] { overflow: visible; clip-path: inset(-56px 0 0 0); }
+.hs-scene[data-kind="transport"] svg { overflow: visible; }
 .hs-scene[data-kind="crime"] { --focus: 0.6; }
 .hs-scene[data-kind="digital"] { --focus: 0.62; }
 @media (max-width: 800px) {
