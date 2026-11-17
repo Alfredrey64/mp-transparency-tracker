@@ -87,6 +87,7 @@
 .jp-bar b { position: absolute; bottom: 12px; left: 0; right: 0; text-align: center; font: 700 clamp(11px, 1.7vw, 14px) "Figures", "Public Sans", system-ui, sans-serif; font-variant-numeric: lining-nums tabular-nums; }
 .jp-labels { grid-column: 2; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 8px; text-align: center; font: 700 clamp(11.5px, 1.8vw, 13.5px) "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .jp-labels small { display: block; font-weight: 600; color: var(--c-ink-soft); }
+.jp-n { display: none; }
 .jp-key { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 16px 0 0; padding: 0; list-style: none; font: 600 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .jp-key li::before { content: ""; display: inline-block; width: 16px; height: 11px; margin-right: 7px; border-radius: 3px; vertical-align: -1px; background: #6E4B6E; }
 .jp-key li[data-k="proj"]::before { background: repeating-linear-gradient(135deg, #8A678A 0 4px, #A583A5 4px 8px); }
@@ -99,6 +100,10 @@
 @media (max-width: 560px) {
   .jp-chart { grid-template-columns: 44px minmax(0, 1fr); column-gap: 4px; }
   .jp-plot, .jp-labels { gap: 5px; }
+  .jp-labels { grid-template-columns: repeat(5, minmax(0, 1fr)); font-size: 11px; }
+  .jp-labels small { font-size: 10px; }
+  .jp-w { display: none; }
+  .jp-n { display: inline; }
   .jp-bar { width: 100%; border-radius: 6px 6px 0 0; }
   .jp-bar b { font-size: 10px; letter-spacing: -0.02em; }
   .jp-axis span { font-size: 11px; }

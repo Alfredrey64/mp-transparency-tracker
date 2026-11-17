@@ -127,7 +127,7 @@ export function PrisonProjection() {
           ))}
         </div>
         <div className="jp-axis" aria-hidden="true" />
-        <div className="jp-labels">{SERIES.map((s) => <span key={s.label}>{s.label}<small>{s.sub}</small></span>)}</div>
+        <div className="jp-labels">{SERIES.map((s) => <span key={s.label}>{s.label}<small>{s.sub === "projected" ? <><span className="jp-w">projected</span><span className="jp-n">proj.</span></> : s.sub}</small></span>)}</div>
       </div>
       <ul className="jp-key">
         <li data-k="cap">Useable operational capacity: {fmt(CAP)} places ({PP.capacityDate})</li>
