@@ -73,7 +73,7 @@ function ContractWide() {
   const railPath = `M 10 ${rail} H 990`;
   const DUR = 10;
   return (
-    <svg ref={ref} data-go={go} className="st-trail-wide dmx" viewBox="0 0 1000 524" role="img" aria-label="How a government contract is meant to be won, in five stages: a public body needs something, a notice goes out so any company can bid, bids are judged fairly with conflicts of interest managed, the contract is awarded and announced within 30 days, and contracts over 5 million pounds get further checks. Below it, an emergency shortcut skips the notice and the bidding: a direct award with no competition, which is how 10.5 billion pounds of the 18.0 billion pounds of pandemic contracts were awarded.">
+    <svg ref={ref} data-go={go} className="st-trail-wide dmx" viewBox="0 0 1000 540" role="img" aria-label="How a government contract is meant to be won, in five stages: a public body needs something, a notice goes out so any company can bid, bids are judged fairly with conflicts of interest managed, the contract is awarded and announced within 30 days, and contracts over 5 million pounds get further checks. Below it, an emergency shortcut skips the notice and the bidding: a direct award with no competition, which is how 10.5 billion pounds of the 18.0 billion pounds of pandemic contracts were awarded.">
       <defs><Shadow id="cr-sh" /><ArrowDef id="cr-ar" /></defs>
       <Ribbon d={railPath} c={BLUE} delay={0.9} />
       <Ribbon d={lane} c={RED} delay={1.5} arrow="url(#cr-ar)" />
@@ -93,8 +93,8 @@ function ContractWide() {
       </g>
       <g className="dmx-in" style={{ "--d": 1.7 }}>
         <g transform="translate(192 414)" filter="url(#cr-sh)"><rect width="420" height="36" rx="18" fill="#fff" stroke={RED} strokeWidth="3" strokeDasharray="6 4" /><text x="210" y="24" textAnchor="middle" fontSize="15" fontWeight="800" fill="#7A2E2E" fontFamily={F}>Emergency shortcut: a direct award, no competition</text></g>
-        <text x="402" y="486" textAnchor="middle" fontSize="15" fontWeight="700" fill={SOFT} fontFamily={F}>It skips the notice and the bidding. In 2020, £10.5bn of the £18.0bn</text>
-        <text x="402" y="508" textAnchor="middle" fontSize="15" fontWeight="700" fill={SOFT} fontFamily={F}>of pandemic contracts was awarded this way.</text>
+        <text x="402" y="490" textAnchor="middle" fontSize="18" fontWeight="800" fill={INK} fontFamily={S}>It skips the notice and the bidding.</text>
+        <text x="402" y="524" textAnchor="middle" fontSize="16" fontWeight="600" fill={SOFT} fontFamily={F}>In 2020, <tspan fontSize="26" fontWeight="800" fill={RED} fontFamily={S}>£10.5bn</tspan> of the <tspan fontWeight="800" fill={INK}>£18.0bn</tspan> of pandemic contracts was awarded this way.</text>
       </g>
       {t0 !== null && (
         <>
@@ -118,7 +118,7 @@ function ContractTall() {
   const railPath = `M ${rail} ${cy(0)} V ${cy(4)}`;
   const DUR = 10;
   return (
-    <svg ref={ref} data-go={go} className="st-trail-tall dmx" viewBox="-34 0 394 868" aria-hidden="true">
+    <svg ref={ref} data-go={go} className="st-trail-tall dmx" viewBox="-34 0 394 880" aria-hidden="true">
       <defs><Shadow id="cr-sh-t" /><ArrowDef id="cr-ar-t" /></defs>
       <Ribbon d={railPath} c={BLUE} delay={0.9} />
       <Ribbon d={lane} c={RED} delay={1.5} arrow="url(#cr-ar-t)" />
@@ -147,8 +147,8 @@ function ContractTall() {
       )}
       <g className="dmx-in" style={{ "--d": 1.7 }}>
         <g transform={`translate(-14 ${(cy(0) + cy(3)) / 2}) rotate(-90)`} filter="url(#cr-sh-t)"><rect x="-120" y="-16" width="240" height="32" rx="16" fill="#fff" stroke={RED} strokeWidth="3" strokeDasharray="6 4" /><text y="5" textAnchor="middle" fontSize="13" fontWeight="800" fill="#7A2E2E" fontFamily={F}>Emergency shortcut: no competition</text></g>
-        <text x="180" y="832" textAnchor="middle" fontSize="14" fontWeight="700" fill={SOFT} fontFamily={F}>The shortcut skips the notice and the bidding.</text>
-        <text x="180" y="854" textAnchor="middle" fontSize="14" fontWeight="700" fill={SOFT} fontFamily={F}>In 2020, £10.5bn of £18.0bn went this way.</text>
+        <text x="180" y="826" textAnchor="middle" fontSize="16" fontWeight="800" fill={INK} fontFamily={S}>The shortcut skips the notice and the bidding.</text>
+        <text x="180" y="858" textAnchor="middle" fontSize="14" fontWeight="600" fill={SOFT} fontFamily={F}>In 2020, <tspan fontSize="22" fontWeight="800" fill={RED} fontFamily={S}>£10.5bn</tspan> of <tspan fontWeight="800" fill={INK}>£18.0bn</tspan> went this way.</text>
       </g>
     </svg>
   );
@@ -157,8 +157,8 @@ function ContractTall() {
 // If 100 suppliers had come in through each lane, how many would have got a contract: 47 of 493 is about ten in a hundred, and 104 of 14,892 is under one. Each lane is a block of
 // a hundred dots; the dots that stand for contracts fill in last. A dot is partly filled where the share is not a whole number (9.5 dots, and 0.7 of a dot).
 const LANES = [
-  { name: "High-priority lane", c: "#E8741A", detail: "47 of 493 suppliers got a contract", big: "about 1 in 10", fill: 9.5 },
-  { name: "Ordinary lane", c: "#5A7FA6", detail: "104 of 14,892 suppliers got a contract", big: "fewer than 1 in 100", fill: 0.7 },
+  { name: "High-priority lane", c: "#E8741A", figure: "47 of 493", words: "suppliers got a contract", big: "about 1 in 10", fill: 9.5 },
+  { name: "Ordinary lane", c: "#5A7FA6", figure: "104 of 14,892", words: "suppliers got a contract", big: "fewer than 1 in 100", fill: 0.7 },
 ];
 
 function Block({ x, y, cols, step, r, c, fill, id, delay }) {
@@ -189,13 +189,13 @@ export function LaneOdds() {
 function LaneWide() {
   const [ref, go] = useGoMotion(0.3, 0);
   return (
-    <svg ref={ref} data-go={go} className="st-trail-wide lo" viewBox="0 0 1000 250" role="img" aria-label="Out of every 100 suppliers, about ten got a contract through the high-priority lane, against fewer than one through the ordinary lane: 47 of 493 suppliers, and 104 of 14,892.">
+    <svg ref={ref} data-go={go} className="st-trail-wide lo" viewBox="0 0 1000 258" role="img" aria-label="Out of every 100 suppliers, about ten got a contract through the high-priority lane, against fewer than one through the ordinary lane: 47 of 493 suppliers, and 104 of 14,892.">
       {LANES.map((l, k) => (
         <g key={l.name}>
           <text x="10" y={36 + k * 120} fontSize="22" fontWeight="800" fill={l.c} fontFamily={S}>{l.name}</text>
-          <text x="10" y={60 + k * 120} fontSize="15" fontWeight="600" fill={SOFT} fontFamily={F}>{l.detail}</text>
+          <text x="10" y={64 + k * 120} fontSize="17" fontWeight="600" fill={SOFT} fontFamily={F}><tspan fontSize="22" fontWeight="800" fill={INK} fontFamily={S}>{l.figure}</tspan> {l.words}</text>
           <text x="990" y={50 + k * 120} textAnchor="end" fontSize="30" fontWeight="800" fill={INK} fontFamily={S}>{l.big}</text>
-          <Block id={`lw${k}`} x={10} y={76 + k * 120} cols={50} step={19.6} r={7.5} c={l.c} fill={l.fill} delay={k * 0.5} />
+          <Block id={`lw${k}`} x={10} y={84 + k * 120} cols={50} step={19.6} r={7.5} c={l.c} fill={l.fill} delay={k * 0.5} />
         </g>
       ))}
     </svg>
@@ -209,7 +209,7 @@ function LaneTall() {
       {LANES.map((l, k) => (
         <g key={l.name}>
           <text x="8" y={30 + k * 200} fontSize="21" fontWeight="800" fill={l.c} fontFamily={S}>{l.name}</text>
-          <text x="8" y={54 + k * 200} fontSize="13.500" fontWeight="600" fill={SOFT} fontFamily={F}>{l.detail}</text>
+          <text x="8" y={56 + k * 200} fontSize="15" fontWeight="600" fill={SOFT} fontFamily={F}><tspan fontSize="19" fontWeight="800" fill={INK} fontFamily={S}>{l.figure}</tspan> {l.words}</text>
           <text x="8" y={90 + k * 200} fontSize="28" fontWeight="800" fill={INK} fontFamily={S}>{l.big}</text>
           <Block id={`lt${k}`} x={8} y={106 + k * 200} cols={20} step={17.6} r={7} c={l.c} fill={l.fill} delay={k * 0.5} />
         </g>
