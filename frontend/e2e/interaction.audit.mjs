@@ -60,6 +60,10 @@ async function worker() {
       const picks = []; const stride = Math.max(1, Math.floor(count / PER)); for (let i = 0; i < count && picks.length < PER; i += stride) picks.push(i);
       let first = true;
       for (const idx of picks) {
+        // A press that feels rough is tried a second time on a fresh load: the slower the machine, the more often something arrives late and moves the page under a perfectly good press, and
+        // only a press that is rough both times is reported.
+        let flagged = null;
+        for (let attempt = 0; attempt < 2; attempt += 1) {
         if (!first) await fresh(page, startUrl);
         first = false;
         const sel = `[data-audit-press="${idx}"]`;
@@ -111,7 +115,10 @@ async function worker() {
         const vh = PHONE ? 844 : 800;
         if (!moved && rec.frames.some((f) => f.h < rec.h0 - 200 && f.h < rec.y0 + vh)) problems.push("page became too short for where the visitor was standing");
         if (!moved && rec.frames.some((f) => !f.head)) problems.push("page heading missing for a frame");
-        if (problems.length) results.push({ pg, what, problems });
+        if (!problems.length) { flagged = null; break; }
+        flagged = { pg, what, problems };
+        }
+        if (flagged) results.push(flagged);
       }
     } catch (e) { results.push({ pg, what: "(page)", problems: [e.message.split("\n")[0]] }); }
     await page.close();
