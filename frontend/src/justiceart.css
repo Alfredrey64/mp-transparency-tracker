@@ -6,10 +6,11 @@
 
 /* ---- the chain: three cards of one size with a link between each ---- */
 .jc-row { display: grid; grid-template-columns: minmax(0, 1fr); align-items: stretch; }
-.jc-link { position: relative; height: 54px; display: grid; place-items: center; overflow: hidden; }
-.jc-link i { position: absolute; left: 50%; top: 4px; bottom: 10px; width: 0; border-left: 3px dashed color-mix(in srgb, var(--c-ink-soft) 45%, transparent); }
-.jc-link::after { content: ""; position: absolute; left: 50%; bottom: 2px; width: 10px; height: 10px; margin-left: -6px; border-right: 3px solid color-mix(in srgb, var(--c-ink-soft) 70%, transparent); border-bottom: 3px solid color-mix(in srgb, var(--c-ink-soft) 70%, transparent); transform: rotate(45deg); }
-.jc-link b { position: absolute; left: 50%; top: 0; width: 13px; height: 16px; margin-left: -6px; border-radius: 2px 5px 2px 2px; background: var(--c-ink); opacity: 0; }
+.jc-link { position: relative; height: 54px; --run: 22px; }
+/* the track between two cards: a solid line shading from one card's colour to the next, a chevron at its end, and one small dot at a time travelling along it at a steady pace */
+.jc-link i { position: absolute; left: 50%; top: 6px; bottom: 16px; width: 3px; margin-left: -1.5px; border-radius: 2px; background: linear-gradient(180deg, var(--from), var(--to)); opacity: 0.5; }
+.jc-link::after { content: ""; position: absolute; left: 50%; bottom: 5px; width: 9px; height: 9px; margin-left: -6px; border-right: 3px solid var(--to); border-bottom: 3px solid var(--to); border-radius: 0 0 2px 0; transform: rotate(45deg); opacity: 0.8; }
+.jc-link b { position: absolute; left: 50%; top: 6px; width: 9px; height: 9px; margin-left: -4.5px; border-radius: 50%; background: var(--to); box-shadow: 0 0 0 3px color-mix(in srgb, var(--to) 24%, transparent); opacity: 0; }
 .jc-card { display: grid; grid-template-rows: auto auto auto 1fr; align-content: start; gap: 6px; height: 100%; box-sizing: border-box; padding: 16px 20px 20px; border-radius: 20px; color: var(--c); background: color-mix(in srgb, var(--c) 9%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--c) 32%, transparent); }
 .jc-art { width: 100%; padding: 0 0 6px; border-bottom: 1px solid color-mix(in srgb, var(--c) 22%, transparent); }
 .jc-art svg { display: block; width: 100%; height: auto; }
@@ -19,25 +20,27 @@
 .jc-card h3 { margin: 8px 0 0; font: 700 21px/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
 .jc-card h3 small { display: block; font: 600 13.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .jc-fig { margin: 2px 0 0; color: var(--c-ink); }
+.jc-fig { display: grid; gap: 2px; }
 .jc-fig b { font: 700 clamp(30px, 5vw, 40px)/1.05 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; color: var(--c); }
-.jc-fig span { font: 700 15px "Figures", "Public Sans", system-ui, sans-serif; }
+.jc-num { position: relative; display: inline-block; }
+.jc-num[data-v] { color: transparent; }
+.jc-num[data-v]::after { content: attr(data-v); position: absolute; left: 0; top: 0; color: var(--c); white-space: nowrap; }
+.jc-fig > span { font: 700 15px "Figures", "Public Sans", system-ui, sans-serif; }
 .jc-note { margin: 0; font: 400 13.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 @media (min-width: 880px) {
-  .jc-row { grid-template-columns: minmax(0, 1fr) 62px minmax(0, 1fr) 62px minmax(0, 1fr); }
-  .jc-link { height: 30px; width: 62px; align-self: center; }
-  .jc-link i { left: 4px; right: 10px; top: 50%; bottom: auto; width: auto; height: 0; border-left: 0; border-top: 3px dashed color-mix(in srgb, var(--c-ink-soft) 45%, transparent); }
-  .jc-link::after { left: auto; right: 2px; top: 50%; bottom: auto; margin: -5px 0 0; transform: rotate(-45deg); }
-  .jc-link b { left: 0; top: 50%; margin: -8px 0 0; }
+  .jc-row { grid-template-columns: minmax(0, 1fr) 78px minmax(0, 1fr) 78px minmax(0, 1fr); }
+  .jc-link { height: 30px; width: 78px; align-self: center; --run: 41px; }
+  .jc-link i { left: 10px; right: 18px; top: 50%; bottom: auto; width: auto; height: 3px; margin: -1.5px 0 0; background: linear-gradient(90deg, var(--from), var(--to)); }
+  .jc-link::after { left: auto; right: 8px; top: 50%; bottom: auto; margin: -5px 0 0; transform: rotate(-45deg); }
+  .jc-link b { left: 10px; top: 50%; margin: -4.5px 0 0; }
 }
 .jc[data-go="0"] .jc-card, .jc[data-go="0"] .jc-link { opacity: 0; transform: translateY(12px); }
 .jc[data-go="1"] .jc-card { animation: jcIn 0.65s var(--ease-out) var(--d) backwards; }
 .jc[data-go="1"] .jc-link { animation: jcIn 0.5s var(--ease-out) var(--d) backwards; }
-.jc[data-go="1"] .jc-link b { animation: jcRun 1.4s linear calc(var(--d) + 1.6s) 5; }
-.jc[data-go="1"] .jc-link b:nth-of-type(2) { animation-delay: calc(var(--d) + 2.05s); }
-.jc[data-go="1"] .jc-link b:nth-of-type(3) { animation-delay: calc(var(--d) + 2.5s); }
+.jc[data-go="1"] .jc-link b { animation: jcRun 1.8s linear calc(var(--d) + 1.6s) 5; }
 @keyframes jcIn { from { opacity: 0; transform: translateY(12px); } }
-@keyframes jcRun { 0% { opacity: 0; transform: translateY(-6px); } 15%, 85% { opacity: 1; } 100% { opacity: 0; transform: translateY(46px); } }
-@media (min-width: 880px) { @keyframes jcRun { 0% { opacity: 0; transform: translateX(-8px); } 15%, 85% { opacity: 1; } 100% { opacity: 0; transform: translateX(52px); } } }
+@keyframes jcRun { 0% { opacity: 0; transform: translateY(0) scale(0.5); } 14% { opacity: 1; transform: translateY(calc(var(--run) * 0.14)) scale(1); } 86% { opacity: 1; transform: translateY(calc(var(--run) * 0.86)); } 100% { opacity: 0; transform: translateY(var(--run)) scale(0.5); } }
+@media (min-width: 880px) { @keyframes jcRun { 0% { opacity: 0; transform: translateX(0) scale(0.5); } 14% { opacity: 1; transform: translateX(calc(var(--run) * 0.14)) scale(1); } 86% { opacity: 1; transform: translateX(calc(var(--run) * 0.86)); } 100% { opacity: 0; transform: translateX(var(--run)) scale(0.5); } } }
 /* what moves in each card, once the card has arrived (its delay is --d, plus 0.7 s for the card to settle) */
 .jc[data-go="1"] .jc-car { animation: jcCar 2.4s cubic-bezier(0.12, 0.7, 0.25, 1) calc(var(--d, 0s) + 0.5s) backwards; }
 @keyframes jcCar { from { transform: translateX(-250px); } }
@@ -53,9 +56,9 @@
 @keyframes jcDoc { from { transform: translateY(-26px) scaleY(0.4); opacity: 0; } }
 .jc[data-go="1"] .jc-cellwin { animation: jcWin 0.5s ease-out calc(2.2s + var(--k) * 0.35s) backwards; }
 @keyframes jcWin { from { opacity: 0; } }
-.jc-sweep { transform-origin: 0 0; }
-.jc[data-go="1"] .jc-sweep { animation: jcSweep 9s ease-in-out 1.6s backwards; }
-@keyframes jcSweep { 0% { transform: rotate(-16deg); } 25% { transform: rotate(6deg); } 50% { transform: rotate(-12deg); } 75% { transform: rotate(4deg); } 100% { transform: rotate(0); } }
+.jc-flag { transform-box: fill-box; transform-origin: 0 100%; }
+.jc[data-go="1"] .jc-flag { animation: jcFlag 1.2s cubic-bezier(0.3, 1.2, 0.4, 1) 3.2s backwards; }
+@keyframes jcFlag { from { transform: translateY(8px) scaleY(0); opacity: 0; } }
 
 /* ---- the queue ---- */
 .jq { display: grid; grid-template-columns: minmax(0, 270px) minmax(0, 1fr); gap: 22px 32px; align-items: center; margin: 4px 0 24px; padding: clamp(16px, 3vw, 26px); border-radius: 22px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); }
