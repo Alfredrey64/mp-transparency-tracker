@@ -11,8 +11,5 @@ export function fill(text, vars) {
 }
 
 export const t = (text, vars) => fill(text, vars);
-export const getLang = () => "en";
-export const isWelsh = () => false;
 export const dateLocale = () => "en-GB";
 export const subscribe = () => () => {};
-export const getVersion = () => 0;

@@ -16,6 +16,7 @@ jobs:
   check:
     name: Site is up and working
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: frontend
@@ -56,6 +57,7 @@ jobs:
   fresh:
     name: The data has been refreshed lately
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
         with:

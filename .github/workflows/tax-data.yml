@@ -15,6 +15,7 @@ jobs:
   check:
     name: Tax rates match the official tables
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
       - name: Report failing scripts as annotations

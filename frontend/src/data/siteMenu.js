@@ -23,15 +23,6 @@ export const menuKeyFor = (view) => MENU.find((m) => m.groups.some((s) => s.item
 
 export const pathFor = (key) => (key === "home" ? "/" : `/${key}`);
 
-export const FOOTER_LINKS = [
-  { key: "methodology", label: "Where our data comes from" },
-  { key: "settings", label: "Settings" },
-  { key: "privacy", label: "Privacy" },
-  { key: "terms", label: "Terms" },
-  { key: "accessibility", label: "Accessibility" },
-  { key: "whatsnew", label: "What's new" },
-];
-
 // The three columns of links in the page footer.
 export const FOOTER_COLUMNS = [
   { title: "Start here", links: [["start", "Take the guided tour"], ["answers", "Ask a question"], ["howitworks", "How Parliament works"], ["glossary", "Jargon buster"], ["numbers", "Parliament in numbers"]] },

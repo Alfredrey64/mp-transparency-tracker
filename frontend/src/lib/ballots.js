@@ -196,12 +196,3 @@ export const BALLOT_ERRORS = {
   notfound: "We couldn't find that postcode. Check it is a full, valid UK postcode.",
   down: "The lookup isn't working right now. Please try again in a minute.",
 };
-
-// Every plain-English phrase this file builds from an API field and that a page then shows, so the Welsh dictionary can be checked against it.
-export const BALLOT_PHRASES = [
-  ...Object.values(ROLES), "Mayor",
-  ...Object.keys(REASONS).map((k) => byElectionText(k)), byElectionText("OTHER"),
-  ...DEADLINES.map(([, label]) => label),
-  ...Object.values(BALLOT_ERRORS),
-  ...["FPTP", "STV", "SV"].flatMap((system) => [1, 2].map((n) => howToMarkParts(system, n)?.text)),
-].filter(Boolean);

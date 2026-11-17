@@ -67,7 +67,6 @@ export function pickVoice(voices, lang = "en") {
   if (lang === "cy") return list.find((v) => /^cy/i.test(v.lang)) ?? null;
   return list.find((v) => /^en[-_]GB$/i.test(v.lang)) ?? list.find((v) => /^en/i.test(v.lang)) ?? null;
 }
-export const hasVoice = (lang, synth) => Boolean(pickVoice((synth ?? window.speechSynthesis)?.getVoices?.(), lang));
 
 export function createReader({ synth, Utterance, lang = "en", onBlock = () => {}, onState = () => {} } = {}) {
   const S = synth ?? window.speechSynthesis;

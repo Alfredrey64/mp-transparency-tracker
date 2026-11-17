@@ -10,6 +10,7 @@ export default function BackToTop() {
   const t = useT();
   const ref = useRef(null);
   const [on, setOn] = useState(false);
+  const shown = useRef(false);
 
   useEffect(() => {
     let frame = 0;
@@ -18,7 +19,10 @@ export default function BackToTop() {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const y = window.scrollY;
       ref.current?.style.setProperty("--p", (max > 0 ? Math.min(1, y / max) : 0).toFixed(4));
-      setOn(y > 700 && max > 1600);
+      // Once it is showing it stays until the visitor is clearly back near the top or the page has clearly become short, so a page that
+      // changes height while it loads (or a scroll that hovers around the line) never makes the button blink.
+      shown.current = shown.current ? y > 480 && max > 1000 : y > 700 && max > 1600;
+      setOn(shown.current);
     };
     const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
     update();

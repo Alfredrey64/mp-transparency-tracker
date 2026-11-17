@@ -30,6 +30,17 @@ async function fresh(page, url) {
   await page.goto(url, { waitUntil: "load", timeout: 30000 });
   await page.waitForSelector("h1", { timeout: 20000 });
   await page.waitForTimeout(1400);
+  // Late-arriving data swaps a placeholder for the real thing a moment after the page shows. That is judged by navigation.audit.mjs; here it would be mistaken for the effect of a
+  // press, so wait until the page height has held still for a second (or six seconds have passed) before choosing and pressing anything.
+  await page.evaluate(() => new Promise((done) => {
+    let last = document.documentElement.scrollHeight; let since = performance.now(); const t0 = since;
+    const tick = () => {
+      const h = document.documentElement.scrollHeight; const now = performance.now();
+      if (h !== last) { last = h; since = now; }
+      if (now - since > 1000 || now - t0 > 6000) done(); else setTimeout(tick, 100);
+    };
+    tick();
+  }));
   return page.evaluate(TAG);
 }
 

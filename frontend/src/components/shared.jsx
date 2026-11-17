@@ -4,39 +4,9 @@ import { GuideKeyContext } from "../lib/viewContext";
 import ShareButton from "./ShareButton";
 import { pageShareSpec } from "../lib/shareSpecs";
 import { m as motion } from "motion/react";
-import { COLORS, FONT_DISPLAY, FONT_BODY, readable } from "../theme";
+import { COLORS, FONT_BODY, readable } from "../theme";
 import { SECTION_ACCENT_BY_ICON, SECTION_LABEL_BY_KEY, OUTSIDE_ACCENT } from "../data/sidebarSections";
 import { useT } from "../lib/useLang";
-// An annotated passage, not a dashboard tile: a left margin rule in the
-// page's own accent colour and a soft tint of that same colour, open on
-// every other edge — no bounding box, no radius, no drop shadow, nothing
-// to make several of these in a row read as identical stacked cards.
-// Closer to how a printed report marks up a marginal note than to a SaaS
-// card kit. The icon is optional and sits inline with the heading rather
-// than in its own circular badge.
-export function InfoCard({ title, color, children, maxWidth = "none", icon: Icon, wide = false }) {
-  // Sits in the page's two-column layout on a wide screen (see .editorial-body); `wide` spans both columns.
-  // A plain box: nothing fades or slides in as the page scrolls.
-  return (
-    <div
-      className={wide ? undefined : "ed-half"}
-      style={{
-        borderLeft: `3px solid ${color}`, background: `${color}0a`, maxWidth,
-        padding: "18px 22px 20px", marginBottom: 22,
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 9 }}>
-        {Icon && (
-          <span style={{ flexShrink: 0, color: readable(color), display: "inline-flex", position: "relative", top: 2 }}>
-            <Icon size={18} />
-          </span>
-        )}
-        <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, margin: 0 }}>{title}</h2>
-      </div>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 14.5, color: COLORS.inkSoft, lineHeight: 1.7 }}>{children}</div>
-    </div>
-  );
-}
 
 // One stop in a "how the money/influence actually moves" diagram — an icon
 // in a circle with a label underneath. Pass `broken` for the one link in

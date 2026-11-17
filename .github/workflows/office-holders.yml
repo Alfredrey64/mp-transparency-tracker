@@ -18,6 +18,7 @@ jobs:
   check:
     name: Office holders on the site match the official sources
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
       - name: Report failing scripts as annotations
