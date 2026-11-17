@@ -1,6 +1,7 @@
 /** @jsxImportSource react */
 import "../../justiceart.css";
 import { useGo } from "./useGo";
+import { JUSTICE, PRISON_PROJECTION as PP, fmtN } from "../../data/justiceFigures";
 
 // The pictures on the Courts, police and prisons page: the three links of the chain as illustrated cards with the case moving between them, the Crown Court queue as a hundred dots, and the
 // projected prison population against the places there are. Every figure is one the page already gives or the official sources it names; each picture plays once when it scrolls into view.
@@ -31,10 +32,11 @@ const Prison = () => (
 );
 
 // ---------- the chain: three cards, the case moving from one to the next ----------
+const { courts: C, prisons: P, police: PO } = JUSTICE;
 const LINKS = [
-  { key: "police", Art: Station, colour: "#3F7D5C", name: "Police", figure: "145,886", unit: "officers", verb: "catch and charge", note: "Full-time equivalent officers in England and Wales on 31 March 2026." },
-  { key: "courts", Art: Court, colour: "#9C3B3B", name: "Courts", figure: "80,829", unit: "cases waiting", verb: "hear and decide", note: "Open in the Crown Court at the end of June 2026, the highest on record." },
-  { key: "prisons", Art: Prison, colour: "#6E4B6E", name: "Prisons", figure: "85,858", unit: "people held", verb: "hold", note: "Prisoners in England and Wales on 30 June 2026, 2% fewer than a year earlier." },
+  { key: "police", Art: Station, colour: "#3F7D5C", name: "Police", figure: fmtN(PO.officers), unit: "officers", verb: "catch and charge", note: `Full-time equivalent officers in England and Wales on ${PO.asAt}.` },
+  { key: "courts", Art: Court, colour: "#9C3B3B", name: "Courts", figure: fmtN(C.crown), unit: "cases waiting", verb: "hear and decide", note: `Open in the Crown Court at the ${C.asAt}, the highest on record.` },
+  { key: "prisons", Art: Prison, colour: "#6E4B6E", name: "Prisons", figure: fmtN(P.population), unit: "people held", verb: "hold", note: `Prisoners in England and Wales on ${P.asAt}, ${P.change}.` },
 ];
 export function JusticeChain() {
   const [ref, go] = useGo(0.2);
@@ -64,15 +66,15 @@ export function JusticeChain() {
 // ---------- the queue: of every hundred Crown Court cases waiting, about 29 have been waiting a year or more (23,706 of 80,829) ----------
 export function QueueDots() {
   const [ref, go] = useGo(0.25);
-  const long = Math.round((23706 / 80829) * 100);
+  const long = Math.round((C.crownLong / C.crown) * 100);
   return (
     <figure ref={ref} className="jq" data-go={go}>
-      <div className="jq-grid" role="img" aria-label={`Of every 100 Crown Court cases waiting at the end of June 2026, about ${long} had been open for a year or more.`}>
+      <div className="jq-grid" role="img" aria-label={`Of every 100 Crown Court cases waiting at the ${C.asAt}, about ${long} had been open for a year or more.`}>
         {Array.from({ length: 100 }, (_, i) => <i key={i} data-long={i < long ? "1" : "0"} style={{ "--i": i }} />)}
       </div>
       <figcaption>
         <p className="jq-big"><b>{long}</b> in every 100</p>
-        <p>cases waiting in the Crown Court had been open for <strong>a year or more</strong> at the end of June 2026: 23,706 of the 80,829 open cases.</p>
+        <p>cases waiting in the Crown Court had been open for <strong>a year or more</strong> at the {C.asAt}: {fmtN(C.crownLong)} of the {fmtN(C.crown)} open cases.</p>
         <ul className="jq-key"><li data-long="1">Open a year or more</li><li data-long="0">Open for less than a year</li></ul>
         <small>Each dot is about one case in a hundred.</small>
       </figcaption>
@@ -81,23 +83,17 @@ export function QueueDots() {
 }
 
 // ---------- the prison population against the places: the count in September 2025 and the Ministry of Justice's central projection for the next four Septembers ----------
-const SERIES = [
-  { label: "Sep 2025", sub: "counted", v: 87465, actual: true },
-  { label: "Sep 2026", sub: "projected", v: 91400 },
-  { label: "Sep 2027", sub: "projected", v: 94700 },
-  { label: "Sep 2028", sub: "projected", v: 97400 },
-  { label: "Sep 2029", sub: "projected", v: 99600 },
-];
-const TOP = 105000;
-const CAP = 89334;
-const fmt = (n) => n.toLocaleString("en-GB");
+const SERIES = PP.series;
+const TOP = PP.top;
+const CAP = PP.capacity;
+const fmt = fmtN;
 export function PrisonProjection() {
   const [ref, go] = useGo(0.25);
   return (
     <figure ref={ref} className="jp" data-go={go}>
       <figcaption>
         <b>Prison places and the population the Ministry of Justice expects</b>
-        <span>The projection was published on 4 December 2025, before the 30 June 2026 count of 85,858 above. The Ministry's next projection is provisionally due in December 2026.</span>
+        <span>The projection was published on {PP.published}, before the {P.asAt} count of {fmt(P.population)} above. The Ministry's next projection is provisionally due in {PP.next}.</span>
       </figcaption>
       <div className="jp-chart" style={{ "--cap": CAP / TOP }}>
         <div className="jp-axis"><span style={{ bottom: `calc(${CAP / TOP} * 100%)` }}>{fmt(CAP)}</span></div>
@@ -113,11 +109,11 @@ export function PrisonProjection() {
         <div className="jp-labels">{SERIES.map((s) => <span key={s.label}>{s.label}<small>{s.sub}</small></span>)}</div>
       </div>
       <ul className="jp-key">
-        <li data-k="cap">Useable operational capacity: {fmt(CAP)} places (24 November 2025)</li>
+        <li data-k="cap">Useable operational capacity: {fmt(CAP)} places ({PP.capacityDate})</li>
         <li data-k="actual">Counted</li>
         <li data-k="proj">Central projection</li>
       </ul>
-      <p className="jp-note">By March 2030 the Ministry's central estimate is 100,600, within a range of 98,000 to 103,600. The population was 87,332 on 24 November 2025.</p>
+      <p className="jp-note">By March 2030 the Ministry's central estimate is {fmt(PP.march2030.central)}, within a range of {fmt(PP.march2030.low)} to {fmt(PP.march2030.high)}. The population was {fmt(PP.populationThen.value)} on {PP.populationThen.date}.</p>
     </figure>
   );
 }
