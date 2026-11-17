@@ -53,3 +53,4 @@
 .hs-scene .env-panel { fill: #3A6BB8; stroke: #1D3A6B; }
 .hs-scene .env-panel2 { fill: #27364F; stroke: #9FB4D6; }
 .hs-scene[data-kind="flood"] text { fill: #F4F8FF; }
+.hs-scene .env-tree { fill: #3C8450; }

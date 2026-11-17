@@ -94,7 +94,9 @@
    waits a beat, and only then gives chase. The doors swing open on the front edge, seen side-on, and close again behind them. */
 .sv-exit { animation: sv-exit 0.7s cubic-bezier(0.3, 1.3, 0.5, 1) calc(5.55s + var(--k)) backwards; }
 @keyframes sv-exit { 0% { opacity: 0; transform: translate(-3px, -9px) scale(0.62); } 35% { opacity: 1; } 100% { opacity: 1; transform: translate(0, 0) scale(1); } }
-.sv-door { fill: var(--s4); stroke: var(--s2); stroke-width: 1.2; animation: sv-door 1.9s ease-in-out calc(5.3s + var(--k)) backwards; }
+.sv-door { animation: sv-door 1.9s ease-in-out calc(5.3s + var(--k)) backwards; }
+.sv-seam { stroke: var(--s2); stroke-width: 0.9; stroke-linejoin: round; }
+.sv-handle { fill: var(--s2); }
 @keyframes sv-door { 0%, 4% { transform: scaleX(1); } 16%, 66% { transform: scaleX(0.28); } 84%, 100% { transform: scaleX(1); } }
 .sv-doorway { fill: #0E1424; opacity: 0; animation: sv-doorway 1.9s steps(1) calc(5.3s + var(--k)) backwards; }
 @keyframes sv-doorway { 0%, 4% { opacity: 0; } 5%, 83% { opacity: 1; } 84%, 100% { opacity: 0; } }

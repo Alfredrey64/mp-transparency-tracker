@@ -191,7 +191,19 @@ export function WaterScene() {
       <g className="hs-3"><rect x="1128" y="166" width="26" height="18" rx="2" /></g><rect x="1136" y="172" width="10" height="7" rx="3.5" fill="var(--s1)" />
       {/* the river along the foot, with the pale plume from the overflow drifting downstream and then thinning */}
       <rect x="0" y="184" width="1440" height="16" fill="url(#wt-w)" />
-      <path className="env-plume" d="M1142 185C1182 183 1222 189 1310 186V196C1222 198 1182 193 1142 191Z" fill="#D7C48E" />
+      {/* the storm overflow: a pipe runs from the overflow chamber over the bank, and what comes out of it pours into the river as a murky brown stream and spreads downstream as a plume */}
+      <defs><linearGradient id="wt-sew" gradientUnits="userSpaceOnUse" x1="1200" y1="0" x2="1440" y2="0"><stop offset="0" stopColor="#6A5A36" stopOpacity=".96" /><stop offset=".3" stopColor="#85744A" stopOpacity=".78" /><stop offset=".7" stopColor="#A09266" stopOpacity=".42" /><stop offset="1" stopColor="#B5A87C" stopOpacity=".08" /></linearGradient></defs>
+      <path d="M1154 177H1192" stroke="#5F6B7A" strokeWidth="7" strokeLinecap="butt" /><rect x="1190" y="172" width="5" height="15" rx="1" fill="#48525F" />
+      <path className="env-effluent" d="M1156 177H1188" stroke="#85744A" strokeWidth="3" fill="none" />
+      <path className="env-pour" d="M1196 180Q1206 180 1207 190" stroke="#76673F" strokeWidth="6" fill="none" strokeLinecap="round" />
+      <path d="M1196 180Q1206 180 1207 190" stroke="#A8975F" strokeWidth="2" fill="none" strokeLinecap="round" opacity=".7" />
+      <ellipse className="env-splash" cx="1208" cy="189.500" rx="9" ry="2.400" fill="#D9CFAE" opacity=".75" />
+      <g className="env-spread">
+        <ellipse cx="1214" cy="191.500" rx="16" ry="5.500" fill="#6A5A36" opacity=".85" />
+        <path d="M1200 187C1240 184 1280 189 1340 188C1390 187 1420 191 1440 191V199.500C1400 200 1360 198 1320 199C1270 200 1230 199 1200 197Z" fill="url(#wt-sew)" />
+        <path d="M1218 190C1262 189 1300 193 1370 191" stroke="#C9BC8E" strokeWidth="1.300" opacity=".5" fill="none" />
+        {[[1202, 188.500, 1.6], [1210, 187.800, 1.2], [1219, 189, 1.8], [1228, 188, 1.2], [1238, 189.400, 1.4]].map(([x, y, r]) => <circle key={x} cx={x} cy={y} r={r} fill="#E4DCC3" opacity=".8" />)}
+      </g>
       <path d={crest(188, 2, 60, 26)} fill="none" stroke="#DDF1FF" strokeWidth="1.1" opacity=".75" className="env-wave" />
       <path d={crest(195, 2.2, 80, 20)} fill="none" stroke="#DDF1FF" strokeWidth="1" opacity=".4" className="env-wave env-wave-slow" />
       <Oak x={1262} y={170} s={0.95} i={1} cls="hs-1" /><Oak x={1306} y={170} s={0.8} i={3} cls="hs-1" /><Pine x={1352} y={170} s={1} i={5} cls="hs-1" /><Pine x={1398} y={170} s={0.85} i={2} cls="hs-1" />
@@ -271,11 +283,11 @@ export function FloodScene() {
       </g>
       <rect x="800" y="180" width="640" height="9" fill="url(#fl-road)" />
       <path d="M820 184.500H1300" stroke="var(--lamp)" strokeWidth="1.2" strokeDasharray="10 9" opacity=".55" />
-      {[[1046, 0], [1118, 1]].map(([x, k]) => (
+      {[[1046, 0, "#D8453A"], [1118, 1, "#2F6FB5"]].map(([x, k, colour]) => (
         <g key={x} transform={`translate(${x} 182)`}>
-          <rect className="hs-4" x="-14" y="-9" width="28" height="8" rx="2.5" />
-          <path className="hs-4" d="M-8 -9L-4 -15H6L10 -9Z" />
-          <circle cx="-8" cy="-1" r="3" fill="var(--s4)" /><circle cx="8" cy="-1" r="3" fill="var(--s4)" />
+          <rect fill={colour} x="-14" y="-9" width="28" height="8" rx="2.5" />
+          <path fill={colour} d="M-8 -9L-4 -15H6L10 -9Z" /><path fill="#CFE6F7" d="M-6.200 -9.500L-3.400 -14H-.5V-9.500ZM.7 -9.500V-14H5.300L8.200 -9.500Z" />
+          <circle cx="-8" cy="-1" r="3" fill="#2A2F3A" /><circle cx="8" cy="-1" r="3" fill="#2A2F3A" /><circle cx="-8" cy="-1" r="1.100" fill="#9AA6B8" /><circle cx="8" cy="-1" r="1.100" fill="#9AA6B8" />
           <rect className="hs-win hs-warm" x="11" y="-7" width="3" height="2.4" rx="1" style={{ "--d": "2s" }} />
           <circle className="ec-puff" cx="-17" cy="-4" r="3.500" style={{ "--i": k * 0.7 }} /><circle className="ec-puff" cx="-17" cy="-4" r="3.500" style={{ "--i": k * 0.7 + 1.1 }} />
         </g>
@@ -293,7 +305,10 @@ export function FloodScene() {
         </g>
         <circle className="env-led" cx="43" cy="-31" r="3.200" fill="#4FB36B" />
       </g>
-      <Oak x={1290} y={170} s={1} i={2} cls="hs-1" /><Pine x={1336} y={170} s={1.05} i={4} cls="hs-1" /><Oak x={1384} y={170} s={0.85} i={5} cls="hs-1" /><Pine x={1428} y={170} s={0.95} i={1} cls="hs-1" />
+      <defs><radialGradient id="fl-smog" cx="50%" cy="55%" r="50%"><stop offset="0" stopColor="#CDBFA6" stopOpacity=".38" /><stop offset=".6" stopColor="#CDBFA6" stopOpacity=".19" /><stop offset="1" stopColor="#CDBFA6" stopOpacity="0" /></radialGradient></defs>
+      <Oak x={1290} y={170} s={1} i={2} cls="hs-1 env-tree" /><Pine x={1336} y={170} s={1.05} i={4} cls="hs-1 env-tree" /><Oak x={1384} y={170} s={0.85} i={5} cls="hs-1 env-tree" /><Pine x={1428} y={170} s={0.95} i={1} cls="hs-1 env-tree" />
+      {/* a very light smog lies over the right-hand side, the air the monitor is measuring */}
+      <ellipse className="env-smog" cx="1130" cy="124" rx="420" ry="96" fill="url(#fl-smog)" />
     </Scene>
   );
 }

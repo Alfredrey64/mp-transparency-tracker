@@ -150,31 +150,39 @@ export function JobsScene() {
       {/* the sun rises from behind the town and stops whole, well inside the picture */}
       <g className="ec-sun"><circle cx="1120" cy="62" r="54" fill="url(#jb-sun)" /><circle cx="1120" cy="62" r="22" fill="#FFEBA6" /></g>
       <g className="hs-1">{BACK.map((b, i) => <rect key={i} x={b.x} y={200 - b.h * 0.8} width={b.w} height={b.h * 0.8} />)}</g>
-      <g fill="url(#jb-bld)">
-        <path d="M30 190V112l36-26v26l36-26v26l36-26v26l36-26v26h26v78z" /><rect x="204" y="52" width="15" height="74" /><rect x="230" y="74" width="12" height="52" />
-        <rect x="262" y="58" width="92" height="132" rx="2" />
-        <rect x="392" y="96" width="134" height="94" rx="2" /><rect x="438" y="70" width="42" height="28" rx="2" />
-        <path d="M556 190V112l50-34 50 34v78z" /><rect x="660" y="124" width="48" height="66" />
-        <rect x="738" y="112" width="124" height="78" rx="2" /><rect x="868" y="130" width="70" height="60" rx="2" />
-        <rect x="960" y="70" width="70" height="120" rx="2" />
-        <path d="M1050 190v-48l28-22 28 22v48zM1118 190v-48l28-22 28 22v48zM1186 190v-48l28-22 28 22v48z" /><rect x="1060" y="108" width="6" height="14" /><rect x="1130" y="106" width="6" height="14" />
-      </g>
-      {/* the factory's roof glazing and the windows of every building, warm where someone is in */}
-      <g stroke="#fff" strokeWidth="2" opacity=".7"><path d="M44 112h14M80 112h14M116 112h14M152 112h14" /></g>
-      <g className="hs-glass">{windows(270, 70, 6, 9, 14, 14, 2)}{windows(970, 82, 5, 8, 12, 14, 8)}{windows(401, 112, 9, 5, 14, 15, 20)}{windows(566, 128, 8, 4, 12, 14, 26)}{windows(748, 118, 8, 3, 14, 17, 31)}</g>
-      <g fill="#fff"><path d="M451 74h8v8h8v8h-8v8h-8v-8h-8v-8h8z" /><circle cx="606" cy="100" r="9" /></g>
+      {/* the factory: two chimneys that stand on its roof (drawn first so the building covers their feet), a sawtooth roof, a row of windows and a roller door, all centred on the building */}
+      <rect fill="#8E4F3C" x="180" y="52" width="14" height="72" /><rect fill="#8E4F3C" x="204" y="68" width="12" height="56" />
+      <path fill="#E8E1D6" d="M180 52h14v5h-14zM204 68h12v5h-12z" /><path fill="#C94A3F" d="M180 57h14v4h-14zM204 73h12v4h-12z" />
+      <path fill="#B5654A" d="M30 190V112l36-26v26l36-26v26l36-26v26l36-26v26h52v78z" />
+      <g stroke="#fff" strokeWidth="2" opacity=".7"><path d="M66 90v18M102 90v18M138 90v18M174 90v18" /></g>
+      <g className="hs-glass">{Array.from({ length: 8 }, (_, i) => <rect key={i} className="hs-win" x={45 + i * 22} y="128" width="12" height="11" rx="1" style={{ "--d": `${0.8 + rnd(i + 40) * 3}s` }} />)}</g>
+      <rect fill="#7A4030" x="108" y="152" width="40" height="38" rx="1.5" /><path d="M108 162h40M108 172h40M108 182h40" stroke="#5E3022" strokeWidth="1.4" />
+      {/* the offices, hospital, town hall, bakery, market, flats and houses, each in its own colour */}
+      <rect fill="#7F93B5" x="262" y="58" width="92" height="132" rx="2" /><rect fill="#5A4636" x="298" y="168" width="20" height="22" rx="1.5" />
+      <rect fill="#F0E2C2" x="392" y="96" width="134" height="94" rx="2" /><rect fill="#fff" x="438" y="70" width="42" height="28" rx="2" /><rect fill="#5A4636" x="448" y="166" width="22" height="24" rx="1.5" />
+      <path fill="#E7C98C" d="M556 190V112l50-34 50 34v78z" /><rect fill="#5A4636" x="598" y="160" width="16" height="30" rx="1.5" />
+      <rect fill="#D98B63" x="660" y="124" width="48" height="66" /><rect fill="#5A4636" x="677" y="162" width="14" height="28" rx="1.5" />
+      <rect fill="#A9C4A0" x="738" y="112" width="124" height="78" rx="2" /><rect fill="#5A4636" x="790" y="164" width="20" height="26" rx="1.5" />
+      <rect fill="#C86F52" x="868" y="130" width="70" height="60" rx="2" /><rect fill="#5A4636" x="893" y="166" width="20" height="24" rx="1.5" />
+      <rect fill="#B3A6C4" x="960" y="70" width="70" height="120" rx="2" /><rect fill="#5A4636" x="985" y="170" width="20" height="20" rx="1.5" />
+      <rect fill="#B2503A" x="1060" y="112" width="6" height="26" /><rect fill="#B2503A" x="1130" y="110" width="6" height="26" />
+      {[[1050, "#E0B85C"], [1118, "#9FC0D6"], [1186, "#D98B63"]].map(([x, c]) => <path key={x} fill={c} d={`M${x} 190v-48l28-22 28 22v48z`} />)}
+      {[1078, 1146, 1214].map((c) => <g key={c}><rect className="hs-glass hs-win" x={c - 15} y="150" width="9" height="11" rx="1" style={{ "--d": "2s" }} /><rect className="hs-glass hs-win" x={c + 6} y="150" width="9" height="11" rx="1" style={{ "--d": "2.6s" }} /><rect fill="#5A4636" x={c - 5} y="166" width="10" height="24" rx="1.5" /></g>)}
+      {/* the windows of every building, in rows centred on each one */}
+      <g className="hs-glass">{windows(270, 70, 6, 7, 14, 14, 2)}{windows(968.5, 82, 5, 7, 12, 14, 8)}{windows(401, 112, 9, 4, 14, 15, 20)}{windows(573.5, 122, 6, 2, 12, 18, 26)}{windows(748, 136, 8, 2, 14, 22, 31)}{windows(669.5, 134, 3, 2, 12, 16, 7)}{windows(876.5, 142, 5, 2, 12, 18, 13)}</g>
+      <g fill="#D9453A"><path d="M455.500 74h7v7h7v7h-7v7h-7v-7h-7v-7h7z" /></g><circle fill="#fff" cx="606" cy="100" r="9" />
       <path d="M606 94v6h4" stroke="#3A2A20" strokeWidth="1.6" fill="none" strokeLinecap="round" />
       <path d="M738 112h124l-8 16H746z" className="hs-awn-a" /><path d="M772 112h8l-3 16h-8zM804 112h8l-3 16h-8zM836 112h8l-3 16h-8z" className="hs-awn-b" />
       <path d="M606 78V58M606 58h14v8h-14" stroke="var(--s3)" strokeWidth="2" fill="var(--a)" />
       {/* a site with a crane */}
       <g className="ec-crane">
         <rect x="1330" y="26" width="5" height="164" /><g className="ec-jib2"><rect x="1250" y="26" width="170" height="4" /><rect x="1322" y="18" width="22" height="9" /><path d="M1262 30v38" stroke="var(--s3)" strokeWidth="1.4" /><rect x="1255" y="66" width="14" height="8" /></g>
-        {[0, 1, 2].map((i) => <rect key={i} x="1290" y={176 - i * 32} width="104" height="4" />)}{[0, 1, 2, 3].map((i) => <rect key={i} x={1292 + i * 34} y="82" width="4" height="98" />)}
+        {[0, 1, 2].map((i) => <rect key={i} x="1290" y={184 - i * 32} width="104" height="4" />)}{[0, 1, 2, 3].map((i) => <rect key={i} x={1292 + i * 34} y="82" width="4" height="106" />)}
       </g>
       {[200, 480, 700, 940, 1180, 1400].map((x) => <Lamp key={x} x={x} />)}
       <g className="hs-3 sv-ground"><rect x="0" y="188" width="1440" height="12" /></g>
       {WORKERS.map((w, i) => <g key={i} transform={`translate(${w.x} 190) scale(1.9)`}><Worker w={w} i={i} /></g>)}
-      {[[211, 50], [236, 72]].map(([x, y], i) => <circle key={i} className="ec-puff" cx={x} cy={y} r="9" style={{ "--i": i }} />)}
+      {[[187, 48], [210, 64]].map(([x, y], i) => <circle key={i} className="ec-puff" cx={x} cy={y} r="9" style={{ "--i": i }} />)}
     </Scene>
   );
 }
@@ -199,7 +207,7 @@ export function FinanceScene() {
   const tops = [...FIN_L, ...FIN_R].map((s) => `${s.x},${186 - s.n * COIN}`);
   return (
     <Scene kind="finance">
-      <Backdrop id="fn" day far={false} clouds={[[400, 40, 1, 16], [1010, 34, 1.2, 25], [1270, 62, 0.7, 33]]} />
+      <Backdrop id="fn" day sun={null} far={false} clouds={[[400, 40, 1, 16], [1010, 34, 1.2, 25], [1270, 62, 0.7, 33]]} />
       <g className="hs-1">{BACK.map((b, i) => <rect key={i} x={b.x} y={200 - b.h * 0.6} width={b.w} height={b.h * 0.6} />)}</g>
       {/* the Treasury: three steps, ten columns, an entablature and a pediment with a rising sun, a flag on top */}
       <g fill="url(#fn-bld)">
@@ -254,7 +262,7 @@ const OUT_ICONS = ["bus", "school", "health", "shield"];
 export function TaxScene() {
   return (
     <Scene kind="taxes">
-      <Backdrop id="tx" day far={false} clouds={[[400, 30, 1, 29], [1050, 22, 0.7, 35], [1300, 36, 1.1, 41]]} />
+      <Backdrop id="tx" day sun={null} far={false} clouds={[[400, 30, 1, 29], [1050, 22, 0.7, 35], [1300, 36, 1.1, 41]]} />
       <defs>
         <linearGradient id="tx-in" gradientUnits="userSpaceOnUse" x1="240" y1="0" x2="700" y2="0"><stop offset="0" style={{ stopColor: "var(--stream-in)" }} stopOpacity=".2" /><stop offset="1" style={{ stopColor: "var(--stream-in)" }} stopOpacity=".85" /></linearGradient>
         <linearGradient id="tx-out" gradientUnits="userSpaceOnUse" x1="740" y1="0" x2="1200" y2="0"><stop offset="0" style={{ stopColor: "var(--stream-out)" }} stopOpacity=".9" /><stop offset="1" style={{ stopColor: "var(--stream-out)" }} stopOpacity=".25" /></linearGradient>
@@ -292,14 +300,22 @@ export function BusinessScene() {
     <Scene kind="business">
       <Backdrop id="bz" day sun={[1010, 52]} far={false} clouds={[[420, 36, 1, 22], [760, 24, 0.8, 37], [110, 24, 0.8, 12]]} />
       <g className="hs-1">{BACK.map((b, i) => <rect key={i} x={b.x} y={200 - b.h * 0.75} width={b.w} height={b.h * 0.75} />)}</g>
+      {/* the factory's chimneys stand on its roof (drawn first so the building covers their feet) */}
+      <g className="hs-2"><rect x="190" y="50" width="16" height="76" /><rect x="214" y="66" width="13" height="60" /></g>
+      <path fill="#E8E1D6" d="M190 50h16v5h-16zM214 66h13v5h-13z" /><path fill="#C94A3F" d="M190 55h16v4h-16zM214 71h13v4h-13z" />
       <g className="hs-2">
-        {/* the factory */}
-        <path d="M24 200V120l40-30v30l40-30v30l40-30v30l40-30v30h24v80z" /><rect x="206" y="52" width="16" height="72" /><rect x="236" y="66" width="13" height="58" />
+        {/* the factory: a sawtooth roof that runs on to a flat part under the chimneys */}
+        <path d="M24 200V120l40-30v30l40-30v30l40-30v30l40-30v30h48v80z" />
         {/* the depot */}
         <rect className="bz-depot" x="290" y="108" width="250" height="92" /><path className="bz-depot" d="M284 108h262l-8-14H292z" />
         {/* the high street */}
         <rect x="590" y="102" width="98" height="98" /><rect x="692" y="90" width="98" height="110" /><rect x="794" y="108" width="98" height="92" /><rect x="896" y="96" width="98" height="104" />
       </g>
+      {/* the factory's roof glazing, a row of windows, a roller door and a sign, all centred on the building */}
+      <g stroke="#fff" strokeWidth="2" opacity=".7"><path d="M64 94v22M104 94v22M144 94v22M184 94v22" /></g>
+      <g className="hs-lamp">{Array.from({ length: 8 }, (_, i) => <rect key={i} className="hs-win" x={45 + i * 22} y="134" width="12" height="12" rx="1" style={{ "--d": `${0.8 + rnd(i + 50) * 3}s` }} />)}</g>
+      <rect className="hs-acc" x="100" y="150" width="56" height="12" rx="2" opacity=".9" /><path d="M120 156h16" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" />
+      <rect fill="#5E3022" x="108" y="166" width="40" height="34" rx="1.5" /><path d="M108 175h40M108 184h40M108 193h40" stroke="#472418" strokeWidth="1.4" />
       <g className="hs-acc">{[0, 1, 2].map((i) => <rect key={i} x={308 + i * 78} y="144" width="56" height="48" rx="2" opacity=".28" />)}</g>
       <g className="hs-lamp">{windows(600, 110, 6, 2, 15, 16, 3)}{windows(702, 98, 6, 2, 15, 16, 11)}{windows(804, 116, 6, 2, 15, 16, 19)}{windows(906, 104, 6, 2, 15, 16, 27)}</g>
       {/* awnings and shop windows */}
@@ -312,9 +328,9 @@ export function BusinessScene() {
       ))}
       {/* a building going up beside a crane */}
       <g className="ec-crane">
-        <rect x="1250" y="30" width="6" height="170" /><rect x="1130" y="34" width="250" height="5" /><rect x="1240" y="22" width="26" height="12" /><path d="M1150 39 1250 22 1356 39" className="hs-line" /><path d="M1336 39v58" className="hs-line" /><rect x="1328" y="94" width="16" height="9" />
-        {[0, 1, 2, 3].map((i) => <rect key={i} className="ec-floor" x="1060" y={170 - i * 30} width="150" height="6" style={{ "--i": i }} />)}
-        {[0, 1, 2, 3, 4].map((i) => <rect key={i} className="ec-floor" x={1060 + i * 36} y="80" width="5" height="96" style={{ "--i": 0 }} />)}
+        <rect x="1250" y="30" width="6" height="170" /><rect x="1130" y="34" width="250" height="5" /><rect x="1240" y="22" width="26" height="12" /><path d="M1150 39 1250 22 1356 39" className="hs-line" /><path d="M1160 39v38" className="hs-line" /><rect x="1146" y="77" width="28" height="7" />
+        {[0, 1, 2, 3].map((i) => <rect key={i} className="ec-floor" x="1060" y={184 - i * 30} width="150" height="6" style={{ "--i": i }} />)}
+        {[0, 1, 2, 3, 4].map((i) => <rect key={i} className="ec-floor" x={1060 + i * 36} y="94" width="5" height="96" style={{ "--i": 0 }} />)}
       </g>
       <g className="hs-3 sv-ground"><rect x="0" y="190" width="1440" height="10" /></g>
       {/* the lorry, which drives in once and parks at the depot */}
@@ -325,7 +341,7 @@ export function BusinessScene() {
         </g>
       </g></g>
       {/* smoke from the chimneys: a few puffs, then the air clears */}
-      {[[214, 48], [214, 48], [242, 62]].map(([x, y], i) => <circle key={i} className="ec-puff" cx={x} cy={y} r="9" style={{ "--i": i }} />)}
+      {[[198, 46], [198, 46], [220, 62]].map(([x, y], i) => <circle key={i} className="ec-puff" cx={x} cy={y} r="9" style={{ "--i": i }} />)}
     </Scene>
   );
 }

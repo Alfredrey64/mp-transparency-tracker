@@ -43,6 +43,16 @@
 @keyframes env-rise { from { transform: translateY(var(--dy, 20px)); } }
 .env-drop { fill: #BFE6FF; stroke: var(--a); stroke-width: 1; offset-distance: 0%; opacity: 0; animation: ec-travel 3.4s linear var(--d) 1 backwards; }
 .env-plume { opacity: 0.55; animation: env-plume 9s ease-out 2.4s backwards; }
+/* The overflow opens when the rain starts: murky water runs along the pipe, pours into the river, and the plume spreads downstream from the outfall and then stays. */
+.env-effluent { stroke-dasharray: 4 5; animation: env-effl 0.6s linear 2.2s 14; }
+@keyframes env-effl { to { stroke-dashoffset: -9; } }
+.env-pour { stroke-dasharray: 4 3; animation: env-pourdash 0.45s linear 2.4s 18; }
+@keyframes env-pourdash { to { stroke-dashoffset: -7; } }
+.env-splash { transform-box: fill-box; transform-origin: center; animation: env-splash 0.45s ease-out 2.4s 18; }
+@keyframes env-splash { 50% { transform: scale(1.5, 1.8); opacity: 0.35; } }
+.env-spread { transform-origin: 1200px 191px; animation: env-spread 8s cubic-bezier(0.3, 0.1, 0.25, 1) 2.6s backwards; }
+@keyframes env-spread { from { transform: scaleX(0.04); opacity: 0; } 12% { opacity: 1; } }
+.env-smog { animation: ec-fadein 4s ease-out 1.5s backwards; }
 @keyframes env-plume { from { opacity: 0; } 18% { opacity: 0.7; } }
 
 /* ---- the flood and the air: the river rising, the warning sign pulsing, the haze thinning, the dial swinging to green ---- */

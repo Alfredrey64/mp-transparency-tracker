@@ -187,7 +187,11 @@ export function JusticeScene() {
 // ---------- Crime: a street at night with a police car that pulls up and stops, an officer's door opening, a robber who bursts out of an upstairs window, and two officers who chase him off the page ----------
 const HOUSES = Array.from({ length: 8 }, (_, i) => 380 + i * 74);
 const LAMPS = [330, 560, 790, 1020, 1270];
-const DOORS = [{ x: 1122 }, { x: 1096 }]; // the police car's front and rear doors; an officer steps out of each
+// The police car's front and rear doors: the outline of each panel, its window, where its stripe and handle go, its hinge (the front edge) and where an officer stands as they step out.
+const DOORS = [
+  { hinge: 1146, cx: 1131, panel: "M1117 149H1135L1146 164V178H1117Z", glass: "M1119.500 152H1134L1141 163H1119.500Z", stripe: [1117, 29], handle: 1120.500 },
+  { hinge: 1116, cx: 1101, panel: "M1116 149H1097L1086 164V178H1116Z", glass: "M1113.500 152H1099L1092 163H1113.500Z", stripe: [1086, 30], handle: 1089.500 },
+]; // an officer steps out of each
 const WINDOW_HOUSE = 3; // the house whose upstairs window the robber comes out of
 const WX = HOUSES[WINDOW_HOUSE] + 8; // left edge of that window's frame
 // Someone seen side-on, facing left, feet on the line y = 0. Legs swing while they run (`ec-stride` in econart.css), starting after `go` seconds.
@@ -249,14 +253,20 @@ export function CrimeScene() {
       <g className="sv-police">
         <path className="hs-4" d="M1062 180v-12l16-5 14-15h46l14 15 16 3v14Z" /><path className="hs-1" d="M1096 150h40l9 13h-58Z" opacity=".65" /><rect className="hs-acc" x="1062" y="168" width="106" height="5" />
         <rect className="hs-2" x="1106" y="138" width="26" height="6" rx="2" /><circle className="sv-blue" cx="1112" cy="136" r="6" fill="#5C9BFF" /><circle className="sv-red" cx="1126" cy="136" r="6" fill="#FF5C5C" />
-        <circle className="hs-1" cx="1086" cy="182" r="8" /><circle className="hs-1" cx="1148" cy="182" r="8" />
-        {/* two doors that swing open as the car stops, let an officer out each, and shut again; the dark doorway shows while they are open */}
+        {/* two doors, cut into the side of the body like a real car's: each has its own window, a handle and the stripe running through it, and a thin seam round it. They swing open on their front edge as the car stops,
+            let an officer out each, and shut again; the dark doorway shows while they are open. */}
         {DOORS.map((d, k) => (
-          <g key={d.x}>
-            <rect className="sv-doorway" x={d.x} y="151" width="22" height="26" rx="2" style={{ "--k": `${k * 0.25}s` }} />
-            <rect className="sv-door" x={d.x} y="151" width="22" height="26" rx="2" style={{ "--k": `${k * 0.25}s`, transformOrigin: `${d.x + 22}px 164px` }} />
+          <g key={d.hinge} style={{ "--k": `${k * 0.25}s` }}>
+            <path className="sv-doorway" d={d.panel} />
+            <g className="sv-door" style={{ transformOrigin: `${d.hinge}px 164px` }}>
+              <path className="hs-4 sv-seam" d={d.panel} />
+              <path className="hs-1" d={d.glass} opacity=".65" />
+              <rect className="hs-acc" x={d.stripe[0]} y="168" width={d.stripe[1]} height="5" />
+              <rect className="sv-handle" x={d.handle} y="164.500" width="6" height="1.800" rx=".9" />
+            </g>
           </g>
         ))}
+        <circle className="hs-1" cx="1086" cy="182" r="8" /><circle className="hs-1" cx="1148" cy="182" r="8" /><circle className="hs-3" cx="1086" cy="182" r="3" /><circle className="hs-3" cx="1148" cy="182" r="3" />
       </g>
       {/* the robber leaps from the window as the glass breaks, lands and runs left; shards fly */}
       {[[-38, 34, 140], [-14, 52, -120], [6, 28, 200], [24, 46, -160], [-26, 20, 90], [40, 56, 260]].map(([dx, dy, r], k) => (
@@ -266,7 +276,7 @@ export function CrimeScene() {
       <g transform="translate(-90 188)"><g className="sv-robber"><Runner go={7} /></g></g>
       {/* two officers get out of the car and give chase */}
       {DOORS.map((d, k) => (
-        <g key={k} transform={`translate(${-90 - k * 26} 188)`}><g className="sv-cop" style={{ "--k": `${k * 0.3}s`, "--off": `${d.x + 11 + 90 + k * 26}px` }}><g className="sv-exit" style={{ "--k": `${k * 0.25}s` }}><Runner cop go={6.5 + k * 0.3} /></g></g></g>
+        <g key={k} transform={`translate(${-90 - k * 26} 188)`}><g className="sv-cop" style={{ "--k": `${k * 0.3}s`, "--off": `${d.cx + 90 + k * 26}px` }}><g className="sv-exit" style={{ "--k": `${k * 0.25}s` }}><Runner cop go={6.5 + k * 0.3} /></g></g></g>
       ))}
       <Ground />
     </Scene>
