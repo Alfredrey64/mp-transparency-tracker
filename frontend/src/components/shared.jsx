@@ -108,7 +108,7 @@ function usePageAccent(accent) {
   }, [accent]);
 }
 
-export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = "center", size = "lg", icon: Icon, share, accent: accentProp, scene }) {
+export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = "center", size = "lg", icon: Icon, share, accent: accentProp, scene, sky }) {
   const isHero = size === "xl";
   // The page's "What you're looking at" box sits under every header.
   const guideKey = useContext(GuideKeyContext);
@@ -120,7 +120,7 @@ export function PageHeader({ kicker = "UK Parliament", title, subtitle, align = 
   usePageAccent(accent);
   return (
     <>
-      <div className="page-hero" data-align={align} data-scene={scene ? "1" : undefined} style={{ "--hero-accent": accent }}>
+      <div className="page-hero" data-align={align} data-scene={scene ? "1" : undefined} data-sky={sky ? "1" : undefined} style={{ "--hero-accent": accent }}>
         <div className="page-hero-inner">
           <nav aria-label={t("Breadcrumb")} className="crumbs">
             <a href="#/">{t("Home")}</a>
