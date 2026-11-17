@@ -1,23 +1,17 @@
 /** @jsxImportSource react */
 import "../../heroscene.css";
 import "../../econart.css";
+import { rnd, windows } from "./sceneKit";
 
 // The pictures along the foot of the heading band on the Economy and tax pages: the skyline for the Economy, workplaces for Jobs and pay, the Treasury for Public finances, money
 // flowing to public services for Taxes, and a high street, factory and lorry for Business. They are all decoration (hidden from screen readers) and take their colours from the
 // page's own accent (--hero-accent), so each page keeps its colour. Each plays once or a few times and then rests; with calmer motion asked for, they are simply finished.
 
-const rnd = (i) => ((i * 9301 + 49297) % 233280) / 233280;
-const Scene = ({ kind, children }) => (
+export const Scene = ({ kind, children }) => (
   <div className="hs-scene" data-kind={kind} aria-hidden="true">
     <svg viewBox="0 0 1440 200" preserveAspectRatio="xMidYMax slice" focusable="false">{children}</svg>
   </div>
 );
-
-// Rows of lit windows on a block: [x, y, columns, rows, gap].
-const windows = (x, y, cols, rows, gx = 11, gy = 13, seed = 0) => Array.from({ length: cols * rows }, (_, i) => {
-  const c = i % cols; const r = Math.floor(i / cols);
-  return <rect key={`${x}-${y}-${i}`} className="hs-win" x={x + c * gx} y={y + r * gy} width="5" height="7" rx="1" style={{ "--d": `${0.6 + rnd(i + seed) * 3.4}s` }} />;
-});
 
 // ---------- Economy: a layered skyline with a crane building a block, and a growth line that climbs through it over a faint chart grid ----------
 const BACK = Array.from({ length: 46 }, (_, i) => ({ x: i * 32 - 8 + rnd(i + 7) * 10, w: 22 + rnd(i) * 26, h: 30 + rnd(i + 3) * 66 }));
@@ -76,7 +70,7 @@ export function EconomyScene() {
 }
 
 // Shared by the three richer scenes: a warm glow rising from the horizon and a soft gradient for buildings, both drawn from the page's accent.
-const Defs = ({ id }) => (
+export const Defs = ({ id }) => (
   <defs>
     <radialGradient id={`${id}-glow`} cx="50%" cy="100%" r="62%"><stop offset="0" style={{ stopColor: "var(--lamp)", stopOpacity: 0.42 }} /><stop offset="0.55" style={{ stopColor: "var(--a)", stopOpacity: 0.14 }} /><stop offset="1" style={{ stopColor: "var(--a)", stopOpacity: 0 }} /></radialGradient>
     <linearGradient id={`${id}-bld`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" style={{ stopColor: "var(--s3)" }} /><stop offset="1" style={{ stopColor: "var(--s2)" }} /></linearGradient>

@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING } from "../theme";
 import { PageHeader } from "./shared";
+import { EnergyScene } from "./story/EnvArt";
 import { IconBolt } from "./icons";
 import EnergyEmissions from "./EnergyEmissions";
 import EnergyPower from "./EnergyPower";
@@ -196,7 +197,7 @@ export default function Energy({ param }) {
   }
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto", padding: PAGE_PADDING }}>
-      <PageHeader icon={IconBolt} kicker="Britain in numbers" title="Net zero and energy bills" subtitle="How much the UK releases and whether it is on course, where its electricity comes from, what households pay for energy and why, where it is dearest, and the arguments." />
+      <PageHeader icon={IconBolt} kicker="Britain in numbers" title="Net zero and energy bills" subtitle="How much the UK releases and whether it is on course, where its electricity comes from, what households pay for energy and why, where it is dearest, and the arguments." scene={<EnergyScene />} />
       <div ref={ref} style={{ scrollMarginTop: 12 }}>
         <PageToggles tabs={TABS} current={tab} onPick={go} label="What to look at" idPrefix="ne" />
       </div>

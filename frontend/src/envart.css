@@ -1,0 +1,68 @@
+/* The scenes along the foot of the heading band on the Environment and energy pages (components/story/EnvArt.jsx). They build on the shared scene colours in econart.css; a few pages
+   shift the page's accent so the picture reads as what it shows (blue for water and flood, gold-green for energy). Every animation is finite and ends at rest. */
+.hs-scene[data-kind="energy"] { --a: color-mix(in srgb, var(--hero-accent, #2F80ED) 72%, #E6B84A); }
+.hs-scene[data-kind="water"] { --a: color-mix(in srgb, var(--hero-accent, #2F80ED) 30%, #2E8AD6); }
+.hs-scene[data-kind="water"] .ec-puff { fill: #DDF1FF; }
+.hs-scene[data-kind="flood"] { --a: color-mix(in srgb, var(--hero-accent, #2F80ED) 28%, #5C80B4); }
+
+/* ---- wind: the blades spool up quickly and slow to rest ---- */
+.env-blades { animation: env-spin var(--t, 30s) cubic-bezier(0.18, 0.5, 0.3, 1) 0.3s backwards; }
+@keyframes env-spin { from { transform: rotate(calc(var(--r, 900) * -1deg)); } }
+
+/* ---- trees move a little in the wind, and the clouds drift ---- */
+.env-sway { transform-box: fill-box; transform-origin: 50% 100%; animation: env-sway 5s ease-in-out calc(var(--i, 0) * 0.45s) 7; }
+@keyframes env-sway { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(1.9deg); } 70% { transform: rotate(-1.7deg); } }
+.env-cloud > * { animation: env-drift 46s linear backwards; }
+@keyframes env-drift { from { transform: translateX(-80px); } }
+
+/* ---- the flock crosses once, wings beating; the flowers come up ---- */
+.env-flock { transform: translateX(1700px); animation: env-fly 24s linear 1.6s backwards; }
+@keyframes env-fly { from { transform: translateX(-200px); } }
+.env-wing { transform-box: fill-box; transform-origin: 50% 100%; animation: env-flap 0.52s ease-in-out calc(var(--i, 0) * 0.06s) 46; }
+@keyframes env-flap { 50% { transform: scaleY(0.2); } }
+.env-pop { transform-box: fill-box; transform-origin: center; animation: ec-pop 0.5s cubic-bezier(0.3, 1.5, 0.5, 1) calc(1.2s + var(--i) * 0.11s) backwards; }
+
+/* ---- the sun glints across the solar panels ---- */
+.env-glint { opacity: 0; animation: env-glint 1.4s ease-out calc(1.2s + var(--k, 0) * 0.1s) 2; }
+@keyframes env-glint { 0% { opacity: 0; } 35% { opacity: 0.6; } 100% { opacity: 0; } }
+
+/* ---- water: rain, the stream and spillway running, waves sliding, levels rising, a boat rocking, drops over the homes, a plume that clears ---- */
+.env-rain { opacity: 0; animation: env-rain 0.95s linear calc(var(--i, 0) * 0.11s) 11; }
+@keyframes env-rain { 0% { opacity: 0; transform: translate(5px, -16px); } 15% { opacity: 0.85; } 100% { opacity: 0; transform: translate(-9px, 64px); } }
+.env-streamflow { stroke-dasharray: 5 9; animation: env-dash 1.4s linear 9; }
+@keyframes env-dash { to { stroke-dashoffset: -28; } }
+.env-spill { stroke-dasharray: 5 7; animation: env-dash 0.7s linear calc(var(--i, 0) * 0.1s) 18; }
+.env-wave { animation: env-wave 3.4s linear 9; }
+@keyframes env-wave { to { transform: translateX(-60px); } }
+.env-wave-slow { animation-name: env-wave-slow; animation-duration: 4.8s; }
+@keyframes env-wave-slow { to { transform: translateX(-80px); } }
+.env-rise { animation: env-rise 5s cubic-bezier(0.3, 0.1, 0.2, 1) 0.6s backwards; }
+@keyframes env-rise { from { transform: translateY(var(--dy, 20px)); } }
+.env-bob { transform-box: fill-box; transform-origin: 50% 100%; animation: env-rock 3.4s ease-in-out 8; }
+@keyframes env-rock { 0%, 100% { transform: rotate(0) translateY(0); } 50% { transform: rotate(-3.2deg) translateY(-1.6px); } }
+.env-drop { fill: #BFE6FF; stroke: var(--a); stroke-width: 1; offset-distance: 0%; opacity: 0; animation: ec-travel 3.4s linear var(--d) 1 backwards; }
+.env-dropicon { transform-box: fill-box; transform-origin: 50% 100%; animation: ec-pop 0.6s cubic-bezier(0.3, 1.5, 0.5, 1) var(--d) backwards; }
+.env-plume { opacity: 0.38; animation: env-plume 9s ease-out 2.4s backwards; }
+@keyframes env-plume { from { opacity: 0; } 18% { opacity: 0.7; } }
+
+/* ---- the storm: one flash, the warning sign pulsing, the haze thinning, wind passing, the dial swinging to green ---- */
+.env-bolt { opacity: 0; animation: env-bolt 6s ease-in-out 1.6s 1; }
+.env-flash { opacity: 0; animation: env-flash 6s ease-in-out 1.6s 1; }
+@keyframes env-bolt { 0%, 10% { opacity: 0; } 17% { opacity: 0.9; } 42%, 100% { opacity: 0; } }
+@keyframes env-flash { 0%, 10% { opacity: 0; } 17% { opacity: 0.08; } 42%, 100% { opacity: 0; } }
+.env-haze { opacity: 0.16; animation: env-clear 9s ease-in-out 1.2s backwards; }
+@keyframes env-clear { from { opacity: 0.95; } }
+.env-wind { opacity: 0; stroke-dasharray: 70 460; stroke-dashoffset: 140; animation: env-gust 3.4s ease-in-out calc(1.4s + var(--i, 0) * 0.7s) 2; }
+@keyframes env-gust { 0% { stroke-dashoffset: 140; opacity: 0; } 20% { opacity: 0.8; } 100% { stroke-dashoffset: -420; opacity: 0; } }
+.env-needle { transform: rotate(-56deg); animation: env-needle 3.6s cubic-bezier(0.3, 1.3, 0.4, 1) 1.4s backwards; }
+@keyframes env-needle { from { transform: rotate(72deg); } }
+.env-led { animation: env-led 0.9s ease-in-out 5s 4 backwards; }
+@keyframes env-led { 50% { opacity: 0.25; } }
+
+/* Calmer motion: every picture is simply finished, and what only exists while it moves (rain, the flock, glints, gusts) stays away. */
+@media (prefers-reduced-motion: reduce) {
+  .hs-scene * { animation: none !important; transition: none !important; }
+  .env-rain, .env-glint, .env-wind, .env-bolt, .env-flash, .env-drop, .env-flock { opacity: 0 !important; }
+}
+html[data-calm] .hs-scene * { animation: none !important; }
+html[data-calm] .env-rain, html[data-calm] .env-glint, html[data-calm] .env-wind, html[data-calm] .env-bolt, html[data-calm] .env-flash, html[data-calm] .env-drop, html[data-calm] .env-flock { opacity: 0 !important; }

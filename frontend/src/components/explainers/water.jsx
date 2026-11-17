@@ -1,6 +1,7 @@
 /** @jsxImportSource react */
 import ExplainerPage from "../story/ExplainerPage";
 import { IconWater } from "../newIcons";
+import { WaterScene } from "../story/EnvArt";
 
 // The small pictures inside the three figures at the top. Each is drawn from numbers stated on this page.
 const Bars = ({ a, b, max }) => (
@@ -117,5 +118,5 @@ const PAGE = {
 };
 
 export default function Water() {
-  return <ExplainerPage {...PAGE} />;
+  return <ExplainerPage {...PAGE} scene={<WaterScene />} />;
 }

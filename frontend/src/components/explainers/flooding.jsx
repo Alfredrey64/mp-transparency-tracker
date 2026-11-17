@@ -2,6 +2,7 @@
 import ExplainerPage from "../story/ExplainerPage";
 import FloodAirCheck from "../FloodAirCheck";
 import { IconFlood } from "../newIcons";
+import { FloodScene } from "../story/EnvArt";
 
 const PAGE = {
   look: "water",
@@ -95,5 +96,5 @@ const PAGE = {
 };
 
 export default function Flooding() {
-  return <ExplainerPage {...PAGE} />;
+  return <ExplainerPage {...PAGE} scene={<FloodScene />} />;
 }

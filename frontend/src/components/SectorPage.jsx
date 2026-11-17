@@ -4,6 +4,7 @@ import { m as motion, useReducedMotion } from "motion/react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric, readable, solid } from "../theme";
 import { PageHeader } from "./shared";
 import { EconomyScene, JobsScene, FinanceScene, BusinessScene } from "./story/EconArt";
+import { EnvironmentScene } from "./story/EnvArt";
 import { LoadFailedNote } from "./MpCards";
 import LineChart from "./LineChart";
 import PlacesChart from "./PlacesChart";
@@ -503,8 +504,8 @@ function InParliament({ sector, accent }) {
   );
 }
 
-// The pages in the Economy and tax group have a picture along the foot of their heading band.
-const SCENES = { economy: EconomyScene, jobs: JobsScene, publicFinances: FinanceScene, business: BusinessScene };
+// The pages in the Economy and tax group, and the Environment page, have a picture along the foot of their heading band.
+const SCENES = { economy: EconomyScene, jobs: JobsScene, publicFinances: FinanceScene, business: BusinessScene, environment: EnvironmentScene };
 
 // `embedded` is for a page that already has its own heading and width (the Taxes page): the header is left out and the padding is not doubled.
 export default function SectorPage({ sector, param = null, embedded = false }) {
