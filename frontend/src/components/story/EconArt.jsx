@@ -116,13 +116,24 @@ const Lamp = ({ x }) => (
 
 // ---------- Jobs and pay: a town at sunrise, its workplaces lit, and people in many jobs walking in to work with a pay coin over each ----------
 const TONES = ["#EBB98F", "#C48B5F", "#8C5C3E", "#F2CDA8"];
-const KIT = { builder: { top: "#F58A2E", legs: "#2A3350" }, office: { top: "#56617D", legs: "#232B40" }, nurse: { top: "#2FB5A8", legs: "#EEF2F6" }, teacher: { top: "#3D4C80", legs: "#232B40" }, chef: { top: "#F4F3EE", legs: "#3A4259" } };
+// Nine different jobs, no two alike: each has its own colours and its own hat or tool, and they stand in front of buildings that contrast with them.
+const KIT = {
+  builder: { top: "#F58A2E", legs: "#2F3A55" },
+  office: { top: "#22305A", legs: "#1B2440" },
+  nurse: { top: "#16A096", legs: "#0F7F77" },
+  teacher: { top: "#8E2F4B", legs: "#2B2F3E" },
+  chef: { top: "#FFFFFF", legs: "#4B5566" },
+  delivery: { top: "#7A4A2B", legs: "#2F3441" },
+  firefighter: { top: "#D63B2F", legs: "#262B38" },
+  police: { top: "#243A6E", legs: "#182141" },
+  farmer: { top: "#4E8F4A", legs: "#34528A" },
+};
 const WORKERS = [
   { x: 112, kind: "builder", tone: 0 }, { x: 236, kind: "office", tone: 1 }, { x: 396, kind: "nurse", tone: 2 }, { x: 534, kind: "teacher", tone: 3 }, { x: 690, kind: "chef", tone: 1 },
-  { x: 832, kind: "office", tone: 0 }, { x: 962, kind: "builder", tone: 2 }, { x: 1100, kind: "nurse", tone: 3 }, { x: 1236, kind: "teacher", tone: 1 }, { x: 1342, kind: "chef", tone: 0 },
+  { x: 832, kind: "delivery", tone: 0 }, { x: 962, kind: "firefighter", tone: 2 }, { x: 1100, kind: "police", tone: 3 }, { x: 1236, kind: "farmer", tone: 1 },
 ];
 function Worker({ w, i }) {
-  const k = KIT[w.kind]; const skin = TONES[w.tone];
+  const k = KIT[w.kind]; const skin = TONES[w.tone]; const hair = w.tone === 3 ? "#8A6A3A" : "#2B2118";
   return (
     <g className="ec-walk" style={{ "--i": i }}>
       <g className="ec-bob" style={{ "--i": i }}>
@@ -131,14 +142,22 @@ function Worker({ w, i }) {
         <rect x="-6.2" y="-25" width="12.4" height="16" rx="4" fill={k.top} />
         {w.kind === "builder" && <path d="M-6 -17h12M-6 -13.5h12" stroke="#E8ECF2" strokeWidth="1.1" />}
         {w.kind === "nurse" && <path d="M-1 -23h2v5h-2zM-3.5 -21.5h7v2h-7z" fill="#fff" />}
-        {w.kind === "office" && <path d="M0 -25l1.6 4-1.6 5-1.6-5z" fill="#C94A3F" />}
-        {w.kind === "teacher" && <rect x="5" y="-19" width="8" height="10" rx="1" fill="#F3C65A" transform="rotate(10 8 -14)" />}
-        {w.kind === "office" && <rect x="5" y="-12" width="9" height="7" rx="1.4" fill="#7A5230" />}
+        {w.kind === "office" && <><path d="M-2.4 -25l2.4 4 2.4-4z" fill="#fff" /><path d="M0 -24l1.5 3.4-1.5 5-1.5-5z" fill="#E0493D" /><rect x="5" y="-12" width="9" height="7" rx="1.4" fill="#8A5A32" /></>}
+        {w.kind === "teacher" && <rect x="5" y="-20" width="8" height="10" rx="1" fill="#3D78C8" transform="rotate(10 8 -14)" />}
+        {w.kind === "chef" && <path d="M-6 -25h12v3h-12z" fill="#2F6DB5" />}
+        {w.kind === "delivery" && <><rect x="3" y="-21" width="12" height="10" rx="1" fill="#D9A35E" /><path d="M9 -21v10M3 -16h12" stroke="#B07C3E" strokeWidth="1" /></>}
+        {w.kind === "firefighter" && <path d="M-6 -15h12M-6 -12h12" stroke="#FFD23F" strokeWidth="1.5" />}
+        {w.kind === "police" && <><rect x="-4.4" y="-23" width="3.6" height="3.6" rx="0.8" fill="#FFD23F" /><path d="M-6 -12h12" stroke="#0E1530" strokeWidth="1.2" /></>}
+        {w.kind === "farmer" && <path d="M-6 -25l6 7 6-7" stroke="#2F6A32" strokeWidth="1.4" fill="none" />}
         <circle cx="0" cy="-30" r="4.8" fill={skin} />
         {w.kind === "builder" && <path d="M-6 -31a6 5.6 0 0 1 12 0zM-7.6 -31h15.2" fill="#FFD23F" stroke="#FFD23F" strokeWidth="1.6" />}
         {w.kind === "chef" && <path d="M-4 -33h8v-4.5a4.2 4.2 0 0 0-3.4-3.8 4 4 0 0 0-5 .8 4 4 0 0 0 .4 7z" fill="#fff" />}
         {w.kind === "nurse" && <path d="M-5 -31a5 5 0 0 1 10 0c0-1-4-2.4-5-2.4s-5 1.4-5 2.4z" fill="#3A2A20" />}
-        {(w.kind === "office" || w.kind === "teacher") && <path d="M-5 -31.4a5 4.6 0 0 1 10 0c-2-1.6-8-1.6-10 0z" fill={w.tone === 3 ? "#8A6A3A" : "#2B2118"} />}
+        {(w.kind === "office" || w.kind === "teacher") && <path d="M-5 -31.4a5 4.6 0 0 1 10 0c-2-1.6-8-1.6-10 0z" fill={hair} />}
+        {w.kind === "delivery" && <path d="M-5.2 -31.4a5.2 4.6 0 0 1 10.4 0zM-1 -31.4h8.6" fill="#7A4A2B" stroke="#7A4A2B" strokeWidth="1.5" strokeLinecap="round" />}
+        {w.kind === "firefighter" && <path d="M-6 -30.6a6 6 0 0 1 12 0zM-7.8 -30.6h15.6" fill="#D63B2F" stroke="#D63B2F" strokeWidth="1.6" strokeLinecap="round" />}
+        {w.kind === "police" && <><path d="M-5.4 -32a5.4 4.4 0 0 1 10.8 0zM-6.2 -32h12.4" fill="#243A6E" stroke="#243A6E" strokeWidth="1.5" strokeLinecap="round" /><path d="M-5.4 -33.2h10.8" stroke="#fff" strokeWidth="1.2" strokeDasharray="1.6 1.6" /></>}
+        {w.kind === "farmer" && <path d="M-4.6 -32.4a4.6 4 0 0 1 9.200 0zM-10 -32.4h20" fill="#E7C66B" stroke="#E7C66B" strokeWidth="1.8" strokeLinecap="round" />}
       </g>
       <g className="ec-coin" style={{ "--i": i }}><circle cx="0" cy="-47" r="7.4" fill="#F3C65A" stroke="#B88A2C" strokeWidth="1" /><path transform="translate(0 -47)" d={POUND} fill="none" stroke="#7A5A10" strokeWidth="1.3" strokeLinecap="round" /></g>
     </g>
@@ -182,7 +201,21 @@ export function JobsScene() {
       </g>
       {[200, 480, 700, 940, 1180, 1400].map((x) => <Lamp key={x} x={x} />)}
       <g className="hs-3 sv-ground"><rect x="0" y="188" width="1440" height="12" /></g>
-      {WORKERS.map((w, i) => <g key={i} className="jb-person" transform={`translate(${w.x} 190) scale(1.9)`}><Worker w={w} i={i} /></g>)}
+      <defs>
+        {/* a white edge round each person, like a sticker, so they stand out from whatever is behind them */}
+        <filter id="jb-sticker" x="-40%" y="-30%" width="180%" height="150%" colorInterpolationFilters="sRGB">
+          <feMorphology in="SourceAlpha" operator="dilate" radius="1.1" result="grow" />
+          <feFlood floodColor="#FFFFFF" result="white" />
+          <feComposite in="white" in2="grow" operator="in" result="edge" />
+          <feMerge><feMergeNode in="edge" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+      </defs>
+      {WORKERS.map((w, i) => (
+        <g key={i} className="jb-person" transform={`translate(${w.x} 190) scale(1.9)`}>
+          <ellipse cx="0" cy="0.6" rx="8" ry="1.9" fill="#1D3050" opacity=".28" />
+          <g filter="url(#jb-sticker)"><Worker w={w} i={i} /></g>
+        </g>
+      ))}
       {[[187, 48], [210, 64]].map(([x, y], i) => <circle key={i} className="ec-puff" cx={x} cy={y} r="9" style={{ "--i": i }} />)}
     </Scene>
   );
