@@ -1,9 +1,10 @@
 /* The picture along the foot of a page's heading band (Farming and food, and the Economy and tax pages). The band keeps room for it, and it never takes a click. */
-.page-hero[data-scene] { --scene-h: clamp(120px, 15vw, 210px); padding-bottom: calc(var(--scene-h) + 18px); }
+/* The picture is drawn 1440 wide by 200 tall, so on a wide screen its box grows with the width (13.9vw) instead of stopping at 210px: a box that stopped there would crop the top of the picture (sun, clouds, cranes). */
+.page-hero[data-scene] { --scene-h: clamp(120px, 15vw, max(210px, min(13.9vw, 380px))); padding-bottom: calc(var(--scene-h) + 18px); }
 /* On a tablet or phone the picture is shown whole and simply scaled down (it is 1440 x 200, so its box is 100vw x 13.9vw) instead of being cropped to its middle. */
 @media (max-width: 800px) { .page-hero[data-scene] { --scene-h: 13.9vw; } }
 .page-hero[data-scene]::before { display: none; }
-.fm-scene, .hs-scene { position: absolute; z-index: 0; left: 50%; bottom: 0; width: 100vw; height: var(--scene-h, clamp(120px, 15vw, 210px)); transform: translateX(-50%); overflow: hidden; pointer-events: none; }
+.fm-scene, .hs-scene { position: absolute; z-index: 0; left: 50%; bottom: 0; width: 100vw; height: var(--scene-h, clamp(120px, 15vw, max(210px, min(13.9vw, 380px)))); transform: translateX(-50%); overflow: hidden; pointer-events: none; }
 .fm-scene svg, .hs-scene svg { display: block; width: 100%; height: 100%; }
 .page-hero[data-scene] .page-hero-inner { position: static; }
 

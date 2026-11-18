@@ -72,38 +72,34 @@ export function EducationScene() {
 
 // ---------- Transport: a train crosses a viaduct under overhead wires, a bus and a car run along the road below, and a plane crosses the sky ----------
 const ARCHES = Array.from({ length: 19 }, (_, i) => i * 80 - 20);
-// A wheel with a tyre, a rim, five spokes and a hub. The spokes turn while the vehicle is arriving and stop when it does (sv-spin in servicesart.css).
+// A wheel with a tyre, a rim, four spokes and a hub. The spokes turn while the vehicle is arriving and stop when it does (sv-spin in servicesart.css).
 function Wheel({ cx, cy, r, spin }) {
   return (
     <g transform={`translate(${cx} ${cy})`}>
-      <circle r={r} fill="#232936" /><circle r={r * 0.74} fill="#3B4355" /><circle r={r * 0.6} fill="#D9E0EA" />
+      <circle r={r} fill="#232936" /><circle r={r * 0.62} fill="#D9E0EA" />
       <g className={`sv-spin ${spin}`}>
-        <circle r={r * 0.6} fill="none" stroke="#AEB9C9" strokeWidth={Math.max(0.5, r * 0.07)} />
-        {[0, 1, 2, 3, 4].map((k) => <path key={k} d={`M0 0V${-r * 0.52}`} stroke="#8E9AAE" strokeWidth={r * 0.2} strokeLinecap="round" transform={`rotate(${k * 72})`} />)}
-        {[0, 1, 2, 3, 4].map((k) => <circle key={`b${k}`} cx="0" cy={-r * 0.36} r={r * 0.045} fill="#5E6A80" transform={`rotate(${k * 72 + 36})`} />)}
+        {[0, 1, 2, 3].map((k) => <path key={k} d={`M0 0V${-r * 0.52}`} stroke="#8E9AAE" strokeWidth={r * 0.22} strokeLinecap="round" transform={`rotate(${k * 90})`} />)}
       </g>
-      <circle r={r * 0.18} fill="#6B778C" /><circle r={r * 0.07} fill="#D9E0EA" />
+      <circle r={r * 0.2} fill="#6B778C" />
     </g>
   );
 }
 // A wheel arch: a dark half-moon cut into the body above the wheel.
 const Arch = ({ cx, y, r }) => <path d={`M${cx - r} ${y}A${r} ${r} 0 0 1 ${cx + r} ${y}Z`} fill="#1B2130" />;
-// One railway carriage: a long body with a roof line, windows in frames, a pair of doors, a livery stripe, and a bogie with wheels at each end. The leading one has a sloped nose with a windscreen and a headlight; the last has a red tail light.
+// One railway carriage: a long body with windows, a pair of doors, a livery stripe and a pair of wheels at each end. The leading one has a sloped nose with a windscreen and a headlight; the last has a red tail light.
 function Carriage({ x, lead, tail, pantograph }) {
   const wins = lead ? [8, 24, 40, 84] : [8, 24, 40, 84, 100, 116];
   return (
     <g transform={`translate(${x} 0)`}>
       <path className="hs-4" d={lead ? "M0 118V93a5 5 0 0 1 5-5H104C122 88 136 96 136 110V118Z" : "M0 118V93a5 5 0 0 1 5-5H131a5 5 0 0 1 5 5V118Z"} />
-      <rect x="6" y="88" width={lead ? 100 : 124} height="4" rx="2" fill="#D3DAE5" />
-      <rect x="22" y="85" width="26" height="3.4" rx="1.2" fill="#B7C0CE" /><rect x="88" y="85" width="22" height="3.4" rx="1.2" fill="#B7C0CE" />
-      {wins.map((wx, k) => <g key={k}><rect x={wx - 1.2} y="94" width="13.4" height="12" rx="2" fill="#8E9AAE" /><rect className="hs-win hs-glass" x={wx} y="95.2" width="11" height="9.6" rx="1.4" style={{ "--d": `${1 + k * 0.15}s` }} /></g>)}
-      {[60, 72].map((dx) => <g key={dx}><rect x={dx} y="93" width="11" height="25" rx="1.6" fill="#E6EBF2" stroke="#9AA6B8" strokeWidth="0.8" /><rect x={dx + 1.8} y="95" width="7.4" height="11" rx="1.2" fill="#D3E9F9" /><path d={`M${dx + 5.5} 93v25`} stroke="#9AA6B8" strokeWidth="0.7" /></g>)}
-      <rect className="hs-acc" x="0" y="108" width={lead ? 128 : 136} height="5" /><rect x="0" y="113.4" width={lead ? 126 : 136} height="1.4" fill="#2F3B5A" />
-      {lead && <><path d="M110 91C122 91 130 98 132 106H110Z" fill="#2B3A55" /><path d="M112 93C120 93 126 98 128 103" stroke="#fff" strokeWidth="1" opacity=".45" fill="none" strokeLinecap="round" /><circle cx="133.600" cy="111" r="2.3" fill="#FFF2A8" /><circle cx="133.600" cy="111" r="5" fill="#FFF2A8" opacity=".3" /></>}
+      {wins.map((wx, k) => <rect key={k} className="hs-win hs-glass" x={wx} y="95" width="11" height="10" rx="1.600" style={{ "--d": `${1 + k * 0.15}s` }} />)}
+      {[60, 72].map((dx) => <g key={dx}><rect x={dx} y="93" width="11" height="25" rx="1.6" fill="#E6EBF2" stroke="#9AA6B8" strokeWidth="0.8" /><rect x={dx + 1.8} y="95" width="7.4" height="11" rx="1.2" fill="#D3E9F9" /></g>)}
+      <rect className="hs-acc" x="0" y="108" width={lead ? 128 : 136} height="5" />
+      {lead && <><path d="M110 91C122 91 130 98 132 106H110Z" fill="#2B3A55" /><circle cx="133.600" cy="111" r="2.3" fill="#FFF2A8" /></>}
       {tail && <circle cx="2.200" cy="111" r="1.9" fill="#E0493D" />}
       {pantograph && <g stroke="#55627C" strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M60 85 68 79.600 76 85" /><path d="M63.500 82.400h9" /><path d="M66 85v3M70 85v3" /></g>}
       <rect x="2" y="118" width="132" height="4.400" rx="1.500" fill="#39425A" />
-      {[24, 112].map((bx) => <g key={bx}><rect x={bx - 15} y="119" width="30" height="4.200" rx="1.500" fill="#2A3144" /><Wheel cx={bx - 8} cy="121.800" r="3.900" spin="sv-spin-train" /><Wheel cx={bx + 8} cy="121.800" r="3.900" spin="sv-spin-train" /></g>)}
+      {[24, 112].map((bx) => <g key={bx}><Wheel cx={bx - 8} cy="121.800" r="3.900" spin="sv-spin-train" /><Wheel cx={bx + 8} cy="121.800" r="3.900" spin="sv-spin-train" /></g>)}
     </g>
   );
 }
@@ -159,25 +155,20 @@ export function TransportScene() {
       {/* a bus and a car on the road */}
       <g className="sv-bus">
         <rect className="hs-acc" x="1000" y="148" width="96" height="33" rx="6" />
-        <rect x="1000" y="148" width="96" height="5" rx="2.500" fill="#fff" opacity=".28" />
-        {[0, 1, 2, 3].map((k) => <g key={k}><rect x={1008 + k * 15.500} y="154" width="14" height="13" rx="2" fill="#8E9AAE" /><rect className="hs-4" x={1009 + k * 15.500} y="155" width="12" height="11" rx="1.400" style={{ fill: "#D3E9F9" }} /></g>)}
-        <rect x="1070" y="154" width="11" height="26" rx="1.800" fill="#E6EBF2" stroke="#9AA6B8" strokeWidth="0.8" /><rect x="1072" y="156" width="7" height="14" rx="1.200" fill="#D3E9F9" /><path d="M1075.500 154v26" stroke="#9AA6B8" strokeWidth="0.7" />
-        <path d="M1083 152h8a5 5 0 0 1 5 5v10h-13z" fill="#2B3A55" /><path d="M1085 154h5a3 3 0 0 1 3 3" stroke="#fff" strokeWidth="1" opacity=".4" fill="none" strokeLinecap="round" />
+        {[0, 1, 2, 3].map((k) => <rect key={k} x={1009 + k * 15.500} y="155" width="12" height="11" rx="1.600" fill="#D3E9F9" />)}
+        <rect x="1070" y="154" width="11" height="26" rx="1.800" fill="#E6EBF2" stroke="#9AA6B8" strokeWidth="0.8" /><rect x="1072" y="156" width="7" height="14" rx="1.200" fill="#D3E9F9" />
+        <path d="M1083 152h8a5 5 0 0 1 5 5v10h-13z" fill="#2B3A55" />
         <rect x="1084" y="149" width="11" height="3.600" rx="1" fill="#FFC857" />
-        <rect className="hs-4" x="1000" y="169" width="70" height="3" opacity=".9" />
         <rect x="1000" y="177" width="96" height="4" rx="1.500" fill="#2A3144" />
-        <circle cx="1094.500" cy="172" r="2.400" fill="#FFF2A8" /><circle cx="1001.600" cy="172" r="1.800" fill="#E0493D" />
-        <rect x="1095" y="158" width="3" height="7" rx="1" fill="#2A3144" />
+        <circle cx="1094.500" cy="172" r="2.400" fill="#FFF2A8" />
         <Arch cx={1022} y={181} r={10} /><Arch cx={1076} y={181} r={10} />
         <Wheel cx={1022} cy={181.500} r={8} spin="sv-spin-bus" /><Wheel cx={1076} cy={181.500} r={8} spin="sv-spin-bus" />
       </g>
       <g className="sv-car">
         <path className="hs-4" d="M1170 181v-11l12-4 10-12h34l12 12 12 2v13Z" />
         <path d="M1196 157h14v9h-23zM1213 157h9l8 9h-17z" fill="#8FB7D6" /><path d="M1210 157v9" stroke="#9AA6B8" strokeWidth="1.600" />
-        <path d="M1199 159h9" stroke="#fff" strokeWidth="1" opacity=".5" strokeLinecap="round" />
-        <path d="M1209 167v14M1233 167v14" stroke="#9AA6B8" strokeWidth="0.9" /><rect x="1212" y="170" width="6" height="1.600" rx="0.800" fill="#7C8799" /><rect x="1236" y="170" width="6" height="1.600" rx="0.800" fill="#7C8799" />
         <rect x="1170" y="177" width="92" height="4.200" rx="1.500" fill="#2A3144" />
-        <rect x="1172" y="171" width="4" height="4" rx="1" fill="#E0493D" /><path d="M1256 170h6v4h-6z" fill="#FFF2A8" /><rect x="1249" y="161" width="3" height="4.400" rx="1" fill="#2A3144" />
+        <rect x="1172" y="171" width="4" height="4" rx="1" fill="#E0493D" /><path d="M1256 170h6v4h-6z" fill="#FFF2A8" />
         <Arch cx={1190} y={181} r={9.500} /><Arch cx={1238} y={181} r={9.500} />
         <Wheel cx={1190} cy={181.500} r={7.500} spin="sv-spin-car" /><Wheel cx={1238} cy={181.500} r={7.500} spin="sv-spin-car" />
       </g>

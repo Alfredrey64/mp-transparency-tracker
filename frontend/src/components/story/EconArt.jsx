@@ -443,9 +443,8 @@ export function TaxScene() {
         {TX_E_LBL.map(([t, y], i) => <TxSign key={t} x={TX_E[i]} y={y} text={t} />)}
         {TX_R_LBL.map(([t, y], j) => <TxSign key={t} x={TX_R[j]} y={y} text={t} />)}
         <g fontFamily="Figures, 'Public Sans', system-ui, sans-serif" fontSize="14" fontWeight="800" fill="#fff" textAnchor="middle" stroke="#123766" strokeWidth="3.200" paintOrder="stroke" strokeLinejoin="round">
-          <text x="370" y="26">Step 1: People and firms earn money</text><text x="1070" y="26">Step 3: Tax pays for public services</text>
+          <text x="370" y="26">Earned by people and firms</text><text x="1070" y="26">Tax pays for public services</text>
         </g>
-        <TxSign x={TX_HUB.x} y={TX_HUB.y + TX_R_HUB * 1.35} text="Step 2: Tax is paid" />
       </g>
       {/* the Government: a coin showing the Palace of Westminster, with a ribbon across it; it pulses as each tax coin arrives */}
       <g transform={`translate(${TX_HUB.x} ${TX_HUB.y}) scale(${TX_R_HUB / 54})`}>
