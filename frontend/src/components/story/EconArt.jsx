@@ -268,7 +268,8 @@ export function FinanceScene() {
 // Nothing here is drawn to scale or stands for a figure: it shows the route a tax coin takes. Each earner pays two coins; every public service receives two.
 const TX_E = [130, 290, 450, 610];
 const TX_R = [830, 990, 1150, 1310];
-const TX_HUB = { x: 720, y: 66 };
+const TX_HUB = { x: 720, y: 74 };
+const TX_R_HUB = 54; // radius of the Government coin
 const TX_PITCH = 5.5;
 const txY = (k) => 186.5 - k * TX_PITCH;
 const TX_N = [7, 6, 9, 11]; // coins in each earner's stack to begin with
@@ -284,8 +285,20 @@ const txRx = (j) => TX_R[j] - TX_OFF_R[j];
 // every coin's journey: from the top of an earner's stack, up to the Treasury, down to the top of a public service's stack
 const TX_TRIPS = [0, 1, 2, 3].flatMap((i) => [0, 1].map((c) => ({ i, c, j: txTo(i, c), start: txStart(i, c), arrive: txArrive(i, c) })));
 TX_TRIPS.forEach((t) => { t.landK = TX_BASE[t.j] + TX_TRIPS.filter((o) => o.j === t.j && o.arrive < t.arrive).length; });
-const txFrom = (t) => `M${txEx(t.i)} ${txY(TX_N[t.i] - 1 - t.c)}Q${(txEx(t.i) + TX_HUB.x) / 2} -14 ${TX_HUB.x} ${TX_HUB.y}`;
-const txOnward = (t) => `M${TX_HUB.x} ${TX_HUB.y}Q${(TX_HUB.x + txRx(t.j)) / 2} -14 ${txRx(t.j)} ${txY(t.landK)}`;
+const txFrom = (t) => `M${txEx(t.i)} ${txY(TX_N[t.i] - 1 - t.c)}Q${(txEx(t.i) + TX_HUB.x) / 2} -14 ${TX_HUB.x - TX_R_HUB + 4} ${TX_HUB.y + 4}`;
+const txOnward = (t) => `M${TX_HUB.x + TX_R_HUB - 4} ${TX_HUB.y + 4}Q${(TX_HUB.x + txRx(t.j)) / 2} -14 ${txRx(t.j)} ${txY(t.landK)}`;
+// signs above each earner and each public service (the y is just above the top of each picture)
+const TX_E_LBL = [["Workers", 100], ["Shops", 116], ["Factories", 109], ["Big firms", 78]];
+const TX_R_LBL = [["Hospitals", 98], ["Schools", 80], ["Defence", 134], ["Transport", 126]];
+function TxSign({ x, y, text }) {
+  const w = text.length * 7.4 + 16;
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <rect x={-w / 2} y="-10" width={w} height="17" rx="8.5" fill="#FFFFFF" opacity=".9" />
+      <text y="2.600" textAnchor="middle" fontSize="12.200" fontWeight="800" fill="#1D3050" fontFamily="Figures, 'Public Sans', system-ui, sans-serif">{text}</text>
+    </g>
+  );
+}
 const TxCoin = ({ k }) => <><ellipse cx="0" cy={txY(k) + 2} rx="15" ry="4.6" fill="#A97A1E" /><ellipse cx="0" cy={txY(k)} rx="15" ry="4.6" fill="url(#tx-gold)" /><ellipse cx="-3" cy={txY(k) - 0.6} rx="7" ry="1.5" fill="#FFF3C2" opacity=".6" /></>;
 function TxStack({ x, n, who, earner }) {
   const trips = TX_TRIPS.filter((t) => (earner ? t.i : t.j) === who);
@@ -392,17 +405,26 @@ function TxBus() {
 const TX_EARNERS = [TxEmployee, TxShop, TxFactory, TxOffice];
 const TX_SPENDERS = [TxHospital, TxSchool, TxTank, TxBus];
 export function TaxScene() {
+  const inRoutes = TX_TRIPS.filter((t) => t.c === 0);
+  const outRoutes = [0, 1, 2, 3].map((j) => TX_TRIPS.find((t) => t.j === j));
   return (
     <Scene kind="taxes">
-      <Backdrop id="tx" day sun={null} far={false} clouds={[[330, 52, 1, 29], [1050, 40, 0.8, 35], [1380, 60, 1, 41]]} />
+      <Backdrop id="tx" day sun={null} far={false} clouds={[[535, 62, 0.9, 29], [915, 58, 0.8, 35], [40, 76, 0.9, 41], [1400, 70, 1, 17]]} />
       <defs>
         <linearGradient id="tx-gold" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#D9A93A" /><stop offset=".5" stopColor="#FBE08A" /><stop offset="1" stopColor="#D9A93A" /></linearGradient>
+        <linearGradient id="tx-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#2A5FA8" /><stop offset="1" stopColor="#9CC3EA" /></linearGradient>
+        <clipPath id="tx-disc"><circle r="47" /></clipPath>
         <filter id="tx-sticker" x="-40%" y="-30%" width="180%" height="150%" colorInterpolationFilters="sRGB">
           <feMorphology in="SourceAlpha" operator="dilate" radius="1.1" result="grow" /><feFlood floodColor="#FFFFFF" result="white" /><feComposite in="white" in2="grow" operator="in" result="edge" /><feMerge><feMergeNode in="edge" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
       </defs>
       <g className="hs-1">{BACK.map((b, i) => <rect key={i} x={b.x} y={200 - b.h * 0.55} width={b.w} height={b.h * 0.55} />)}</g>
       <g className="hs-3 sv-ground"><rect x="0" y="188" width="1440" height="12" /></g>
+      {/* the routes the tax coins take, faint, so it is clear where money goes: from the earners, to the Government, and on to the services */}
+      <g fill="none" stroke="#fff" strokeWidth="1.8" strokeDasharray="2 7" strokeLinecap="round" opacity=".65">
+        {inRoutes.map((t) => <path key={`ri${t.i}`} d={txFrom(t)} />)}
+        {outRoutes.map((t) => <path key={`ro${t.j}`} d={txOnward(t)} />)}
+      </g>
       {/* the earners, each with the coins they have made beside them */}
       {TX_EARNERS.map((Earner, i) => (
         <g key={`e${i}`}>
@@ -417,18 +439,43 @@ export function TaxScene() {
           <TxStack x={txRx(j)} n={TX_BASE[j]} who={j} />
         </g>
       ))}
-      {/* the Treasury's coin: a ticked rim that turns once, a gold ring and the pound sign; it pulses as each tax coin arrives */}
-      <g transform={`translate(${TX_HUB.x} ${TX_HUB.y})`}>
-        {TX_TRIPS.map((t) => <circle key={`p${t.i}${t.c}`} className="ec-pulse" r="34" style={{ "--d": `${t.start + TX_IN - 0.1}s` }} />)}
-        <circle r="46" fill="#FFE9A6" opacity=".28" />
-        <circle r="35" fill="var(--s2)" stroke="var(--a)" strokeWidth="2" />
-        <g className="ec-vwheel" style={{ transformOrigin: "0px 0px" }} stroke="#fff" strokeWidth="1.3" strokeLinecap="round" opacity=".7">
-          {Array.from({ length: 40 }, (_, i) => { const a = (i / 40) * Math.PI * 2; return <path key={i} d={`M${Math.cos(a) * 29} ${Math.sin(a) * 29}L${Math.cos(a) * 32.5} ${Math.sin(a) * 32.5}`} />; })}
+      <g className="tx-lbls">
+        {TX_E_LBL.map(([t, y], i) => <TxSign key={t} x={TX_E[i]} y={y} text={t} />)}
+        {TX_R_LBL.map(([t, y], j) => <TxSign key={t} x={TX_R[j]} y={y} text={t} />)}
+        <g fontFamily="Figures, 'Public Sans', system-ui, sans-serif" fontSize="14" fontWeight="800" fill="#fff" textAnchor="middle" stroke="#123766" strokeWidth="3.200" paintOrder="stroke" strokeLinejoin="round">
+          <text x="370" y="26">Earned by people and firms</text><text x="1070" y="26">Tax pays for public services</text>
         </g>
-        <circle r="24" fill="var(--s3)" stroke="#E8C766" strokeWidth="2" />
-        <path d={POUND} transform="scale(2.4)" fill="none" stroke="#F7D675" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
       </g>
-      {/* the journey of each tax coin: out of an earner's stack, up to the Treasury, then down onto a public service's stack */}
+      {/* the Government: a coin showing the Palace of Westminster, with a ribbon across it; it pulses as each tax coin arrives */}
+      <g transform={`translate(${TX_HUB.x} ${TX_HUB.y})`}>
+        {TX_TRIPS.map((t) => <circle key={`p${t.i}${t.c}`} className="ec-pulse" r={TX_R_HUB} style={{ "--d": `${t.start + TX_IN - 0.1}s` }} />)}
+        <circle r="68" fill="#FFE9A6" opacity=".26" />
+        <circle r={TX_R_HUB} fill="#1E4A86" stroke="#F2B233" strokeWidth="3" />
+        <circle r="50" fill="none" stroke="#F7D675" strokeWidth="1" opacity=".7" />
+        <g clipPath="url(#tx-disc)">
+          <rect x="-50" y="-50" width="100" height="100" fill="url(#tx-sky)" />
+          {/* the Thames and the embankment */}
+          <rect x="-50" y="22" width="100" height="30" fill="#4C86C8" /><path d="M-44 31q6-3 12 0t12 0 12 0 12 0 12 0 12 0 12 0M-44 39q6-3 12 0t12 0 12 0 12 0 12 0 12 0 12 0" stroke="#A9CDF0" strokeWidth="1.4" fill="none" strokeLinecap="round" />
+          <rect x="-50" y="18" width="100" height="6" fill="#B8A56E" />
+          {/* the Palace: a long low front, with the Elizabeth Tower, the middle tower and the Victoria Tower */}
+          <rect x="-42" y="2" width="84" height="17" fill="#E6D39B" />
+          {Array.from({ length: 14 }, (_, i) => <path key={i} d={`M${-39 + i * 6} 2l1.6-5 1.6 5z`} fill="#D9C27F" />)}
+          {Array.from({ length: 13 }, (_, i) => <rect key={i} x={-38 + i * 6} y="8" width="3" height="7" rx="1.5" fill="#A88C48" />)}
+          <rect x="-37" y="-27" width="15" height="31" fill="#EBDAA6" /><rect x="-39" y="-34" width="19" height="8" fill="#E0CB8E" />
+          <path d="M-39 -34 -29.500 -50 -20 -34z" fill="#C9B070" /><path d="M-29.500 -50v-6" stroke="#C9B070" strokeWidth="1.2" />
+          <circle cx="-29.500" cy="-17" r="5.200" fill="#fff" stroke="#A88C48" strokeWidth="1" /><path d="M-29.500 -20.500v3.500h2.600" stroke="#1D3050" strokeWidth="1.1" fill="none" strokeLinecap="round" />
+          <path d="M-35 -27v-6M-24 -27v-6" stroke="#A88C48" strokeWidth="1" />
+          <rect x="-7" y="-14" width="14" height="17" fill="#EBDAA6" /><path d="M-8 -14 0 -28 8 -14z" fill="#C9B070" />
+          <rect x="21" y="-22" width="19" height="26" fill="#EBDAA6" /><rect x="19" y="-25" width="23" height="4" fill="#D9C27F" />
+          {[19, 40].map((x) => <path key={x} d={`M${x} -25l1.400-5 1.400 5z`} fill="#C9B070" />)}
+          <path d="M30.500 -25v-13" stroke="#6B5A33" strokeWidth="1.200" /><path d="M30.500 -38h9v5.500h-9z" fill="#D9453A" />
+        </g>
+        {/* the ribbon with the name on it */}
+        <path d="M-60 24H60V45H-60l9-10.500z" fill="#F2B233" stroke="#B88A2C" strokeWidth="1.200" strokeLinejoin="round" />
+        <path d="M-60 45l-5 5h14zM60 45l5 5h-14z" fill="#D9A02B" />
+        <text y="39.500" textAnchor="middle" fontSize="15.500" fontWeight="800" fill="#16315E" letterSpacing=".6" fontFamily="Newsreader, 'Figures', Georgia, serif">Government</text>
+      </g>
+      {/* the journey of each tax coin: out of an earner's stack, up to the Government, then down onto a public service's stack */}
       {TX_TRIPS.map((t) => (
         <g key={`f${t.i}${t.c}`}>
           <circle className="tx-fly-in" r="5" style={{ offsetPath: `path("${txFrom(t)}")`, "--d": `${t.start}s`, "--t": `${TX_IN}s` }} />

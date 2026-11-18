@@ -43,6 +43,8 @@
 @keyframes ec-drop { from { transform: translateY(-46px); opacity: 0; } }
 
 /* ---- Taxes ---- */
+/* the signs over the earners and services are too small to read on a phone, so they are left out there */
+@media (max-width: 560px) { .tx-lbls { display: none; } }
 /* The coin taken from an earner's stack vanishes at the moment its twin sets off, and the coin that lands on a public service's stack drops in when the twin arrives: the picture ends with two fewer coins in each earner's stack and two more in each service's. */
 .tx-take { opacity: 0; animation: tx-vanish 0.25s ease-in var(--d) backwards; }
 @keyframes tx-vanish { from { opacity: 1; } }

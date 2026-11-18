@@ -17,12 +17,13 @@ function AgeGate() {
   return (
     <svg className="dp-gate" viewBox="0 0 200 110" aria-hidden="true" focusable="false">
       <path d="M0 98H200" stroke="#7FA2E0" strokeWidth="2" opacity=".5" />
-      {/* the adult walks through the doorway and behind the right-hand post: drawn behind the posts and the light, and clipped at the post's far edge so he is hidden as he passes it, at full size */}
+      {/* the left-hand post, then the adult, who walks past it and on through the doorway, then the beam and the right-hand post, so he goes behind that one: it clips him at its far edge, so he is hidden as he passes it, at full size */}
+      <rect x="86" y="30" width="6" height="68" rx="2" fill="#8FB0EA" />
       <defs><clipPath id="dp-clip"><rect x="-60" y="-60" width="194" height="66" /></clipPath></defs>
       <g transform="translate(0 98)" clipPath="url(#dp-clip)"><g className="dp-adult"><rect x="-3" y="-12" width="6" height="12" rx="2" fill="#2A3350" /><rect x="-6" y="-30" width="12" height="20" rx="4" fill="#5DD28E" /><circle cy="-36" r="6" fill="#EBB98F" /></g></g>
-      <rect x="86" y="30" width="6" height="68" rx="2" fill="#8FB0EA" /><rect x="128" y="30" width="6" height="68" rx="2" fill="#8FB0EA" />
-      <rect x="80" y="24" width="60" height="9" rx="3" fill="#B7CCF3" />
       <rect className="dp-beam" x="92" y="34" width="36" height="64" fill="#9BDCFF" />
+      <rect x="128" y="30" width="6" height="68" rx="2" fill="#8FB0EA" />
+      <rect x="80" y="24" width="60" height="9" rx="3" fill="#B7CCF3" />
       <circle cx="110" cy="10" r="12" fill="#FFD98A" /><circle cx="110" cy="10" r="12" fill="none" stroke="#B3402E" strokeWidth="2.4" />
       <text x="110" y="13.4" textAnchor="middle" fontSize="9.4" fontWeight="800" fill="#3A1D12" fontFamily="Figures, 'Public Sans', system-ui, sans-serif">16+</text>
       {/* an adult walks through; a child comes up to the gate and is turned back with a cross */}
