@@ -54,6 +54,12 @@
 @keyframes sv-train { from { transform: translateX(-1250px); } }
 .sv-bus { animation: sv-bus 6s cubic-bezier(0.15, 0.6, 0.2, 1) 0.9s backwards; }
 @keyframes sv-bus { from { transform: translateX(-1300px); } }
+/* the wheels turn while their vehicle arrives and stop with it, on the same timing */
+.sv-spin { transform-box: fill-box; transform-origin: center; }
+.sv-spin-train { animation: sv-spin 7s cubic-bezier(0.15, 0.6, 0.2, 1) 0.4s backwards; }
+.sv-spin-bus { animation: sv-spin 6s cubic-bezier(0.15, 0.6, 0.2, 1) 0.9s backwards; }
+.sv-spin-car { animation: sv-spin 5.6s cubic-bezier(0.15, 0.6, 0.2, 1) 1.5s backwards; }
+@keyframes sv-spin { from { transform: rotate(-2520deg); } }
 .sv-car { animation: sv-bus 5.6s cubic-bezier(0.15, 0.6, 0.2, 1) 1.5s backwards; }
 .sv-plane { animation: sv-plane 38s linear 0.6s backwards; }
 @keyframes sv-plane { from { transform: translateX(-1380px); } }
