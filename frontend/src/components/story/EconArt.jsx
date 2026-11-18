@@ -266,10 +266,10 @@ export function FinanceScene() {
 
 // ---------- Taxes: people and companies stand in a row with their income stacked beside them as coins, a few coins from each are taken to the Treasury's coin in the middle, and are then spent on a hospital, a school, defence and transport on the far side ----------
 // Nothing here is drawn to scale or stands for a figure: it shows the route a tax coin takes. Each earner pays two coins; every public service receives two.
-const TX_E = [130, 290, 450, 610];
-const TX_R = [830, 990, 1150, 1310];
-const TX_HUB = { x: 720, y: 74 };
-const TX_R_HUB = 54; // radius of the Government coin
+const TX_E = [130, 290, 450, 590];
+const TX_R = [850, 990, 1150, 1310];
+const TX_HUB = { x: 720, y: 68 };
+const TX_R_HUB = 50; // radius of the Government coin
 const TX_PITCH = 5.5;
 const txY = (k) => 186.5 - k * TX_PITCH;
 const TX_N = [7, 6, 9, 11]; // coins in each earner's stack to begin with
@@ -447,17 +447,18 @@ export function TaxScene() {
         </g>
       </g>
       {/* the Government: a coin showing the Palace of Westminster, with a ribbon across it; it pulses as each tax coin arrives */}
-      <g transform={`translate(${TX_HUB.x} ${TX_HUB.y})`}>
-        {TX_TRIPS.map((t) => <circle key={`p${t.i}${t.c}`} className="ec-pulse" r={TX_R_HUB} style={{ "--d": `${t.start + TX_IN - 0.1}s` }} />)}
-        <circle r="68" fill="#FFE9A6" opacity=".26" />
-        <circle r={TX_R_HUB} fill="#1E4A86" stroke="#F2B233" strokeWidth="3" />
+      <g transform={`translate(${TX_HUB.x} ${TX_HUB.y}) scale(${TX_R_HUB / 54})`}>
+        {TX_TRIPS.map((t) => <circle key={`p${t.i}${t.c}`} className="tx-ring" r="54" style={{ "--d": `${t.start + TX_IN - 0.1}s` }} />)}
+        <circle r="62" fill="#FFE9A6" opacity=".26" />
+        <circle r="54" fill="#1E4A86" stroke="#F2B233" strokeWidth="3" />
         <circle r="50" fill="none" stroke="#F7D675" strokeWidth="1" opacity=".7" />
         <g clipPath="url(#tx-disc)">
           <rect x="-50" y="-50" width="100" height="100" fill="url(#tx-sky)" />
           {/* the Thames and the embankment */}
           <rect x="-50" y="22" width="100" height="30" fill="#4C86C8" /><path d="M-44 31q6-3 12 0t12 0 12 0 12 0 12 0 12 0 12 0M-44 39q6-3 12 0t12 0 12 0 12 0 12 0 12 0 12 0" stroke="#A9CDF0" strokeWidth="1.4" fill="none" strokeLinecap="round" />
           <rect x="-50" y="18" width="100" height="6" fill="#B8A56E" />
-          {/* the Palace: a long low front, with the Elizabeth Tower, the middle tower and the Victoria Tower */}
+          {/* the Palace: a long low front, with the Elizabeth Tower, the middle tower and the Victoria Tower; drawn smaller than the coin so every tower, spire and flag sits inside it */}
+          <g transform="translate(0 4) scale(0.72)">
           <rect x="-42" y="2" width="84" height="17" fill="#E6D39B" />
           {Array.from({ length: 14 }, (_, i) => <path key={i} d={`M${-39 + i * 6} 2l1.6-5 1.6 5z`} fill="#D9C27F" />)}
           {Array.from({ length: 13 }, (_, i) => <rect key={i} x={-38 + i * 6} y="8" width="3" height="7" rx="1.5" fill="#A88C48" />)}
@@ -469,6 +470,7 @@ export function TaxScene() {
           <rect x="21" y="-22" width="19" height="26" fill="#EBDAA6" /><rect x="19" y="-25" width="23" height="4" fill="#D9C27F" />
           {[19, 40].map((x) => <path key={x} d={`M${x} -25l1.400-5 1.400 5z`} fill="#C9B070" />)}
           <path d="M30.500 -25v-13" stroke="#6B5A33" strokeWidth="1.200" /><path d="M30.500 -38h9v5.500h-9z" fill="#D9453A" />
+          </g>
         </g>
         {/* the ribbon with the name on it */}
         <path d="M-60 24H60V45H-60l9-10.500z" fill="#F2B233" stroke="#B88A2C" strokeWidth="1.200" strokeLinejoin="round" />

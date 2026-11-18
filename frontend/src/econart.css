@@ -43,6 +43,11 @@
 @keyframes ec-drop { from { transform: translateY(-46px); opacity: 0; } }
 
 /* ---- Taxes ---- */
+/* The Government coin sits partly above the picture, in the open sky of the heading band, so the picture below is not crowded: this one scene may draw up to 40px above its own box (the sides and foot stay clipped). */
+.hs-scene[data-kind="taxes"] { overflow: visible; clip-path: inset(-40px 0 0 0); }
+.hs-scene[data-kind="taxes"] svg { overflow: visible; }
+.tx-ring { fill: none; stroke: #F3C65A; stroke-width: 2; opacity: 0; transform-box: fill-box; transform-origin: center; animation: tx-ring 1.4s ease-out var(--d) backwards; }
+@keyframes tx-ring { from { opacity: 0.85; transform: scale(1); } to { opacity: 0; transform: scale(1.3); } }
 /* the signs over the earners and services are too small to read on a phone, so they are left out there */
 @media (max-width: 560px) { .tx-lbls { display: none; } }
 /* The coin taken from an earner's stack vanishes at the moment its twin sets off, and the coin that lands on a public service's stack drops in when the twin arrives: the picture ends with two fewer coins in each earner's stack and two more in each service's. */
