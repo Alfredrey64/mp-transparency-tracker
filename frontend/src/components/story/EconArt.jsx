@@ -409,7 +409,7 @@ export function TaxScene() {
   const outRoutes = [0, 1, 2, 3].map((j) => TX_TRIPS.find((t) => t.j === j));
   return (
     <Scene kind="taxes">
-      <Backdrop id="tx" day sun={null} far={false} clouds={[[535, 62, 0.9, 29], [915, 58, 0.8, 35], [40, 76, 0.9, 41], [1400, 70, 1, 17]]} />
+      <Backdrop id="tx" day sun={null} far={false} clouds={[]} />
       <defs>
         <linearGradient id="tx-gold" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#D9A93A" /><stop offset=".5" stopColor="#FBE08A" /><stop offset="1" stopColor="#D9A93A" /></linearGradient>
         <linearGradient id="tx-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#2A5FA8" /><stop offset="1" stopColor="#9CC3EA" /></linearGradient>
@@ -443,8 +443,9 @@ export function TaxScene() {
         {TX_E_LBL.map(([t, y], i) => <TxSign key={t} x={TX_E[i]} y={y} text={t} />)}
         {TX_R_LBL.map(([t, y], j) => <TxSign key={t} x={TX_R[j]} y={y} text={t} />)}
         <g fontFamily="Figures, 'Public Sans', system-ui, sans-serif" fontSize="14" fontWeight="800" fill="#fff" textAnchor="middle" stroke="#123766" strokeWidth="3.200" paintOrder="stroke" strokeLinejoin="round">
-          <text x="370" y="26">Earned by people and firms</text><text x="1070" y="26">Tax pays for public services</text>
+          <text x="370" y="26">Step 1: People and firms earn money</text><text x="1070" y="26">Step 3: Tax pays for public services</text>
         </g>
+        <TxSign x={TX_HUB.x} y={TX_HUB.y + TX_R_HUB * 1.35} text="Step 2: Tax is paid" />
       </g>
       {/* the Government: a coin showing the Palace of Westminster, with a ribbon across it; it pulses as each tax coin arrives */}
       <g transform={`translate(${TX_HUB.x} ${TX_HUB.y}) scale(${TX_R_HUB / 54})`}>
