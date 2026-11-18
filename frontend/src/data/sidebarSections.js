@@ -293,7 +293,7 @@ export const HUBS = [
   { key: "seat", label: "Your constituency", hint: "Your seat, and close contests", pages: [["constituency", "Your constituency"], ["marginals", "Marginal seats"], ["compareSeats", "Compare seats"]] },
   { key: "council", label: "Your council", hint: "Who runs it, your councillors, and how it compares", pages: [["councils", "Your council"], ["councillors", "Your councillors"], ["compareCouncils", "Compare councils"], ["councilSpending", "Budgets"]] },
   { key: "localpower", label: "Local power", hint: "Mayors, police commissioners and planning", pages: [["mayors", "Mayors"], ["policeCommissioners", "Police commissioners"], ["planning", "Planning"]] },
-  { key: "takeaction", label: "Get things done", hint: "Who to contact, how to complain, and how to start a petition", pages: [["getThingsDone", "How to get something done"], ["petitions", "Petitions"]] },
+  { key: "takeaction", label: "Get things done", hint: "Who to contact, how to complain, how councils handle complaints, and how to start a petition", pages: [["getThingsDone", "How to get something done"], ["petitions", "Petitions"], ["councilComplaints", "Council complaints"]] },
   // Elections
   { key: "results", label: "Election results", hint: "General, by- and local elections, and the polls", pages: [["generalElection", "General elections"], ["byElections", "By-elections"], ["localElections", "Local elections"], ["polling", "Polls explained"]] },
   { key: "electionsexplained", label: "Elections explained", hint: "How a seat is won, and how far people trust the system", pages: [["howElectionsWork", "How elections work"], ["trust", "Trust and turnout"]] },

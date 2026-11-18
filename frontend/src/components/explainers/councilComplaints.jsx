@@ -19,6 +19,7 @@ const HEAD = {
   subtitle: "When a council cannot settle a complaint, you can take it to the Ombudsman. Every year it publishes what happened for each council in England. This page shows those figures, and how to read them fairly.",
   icon: IconBroadcast,
   look: "vivid",
+  narrow: true, // the same width as the other pages in the Get things done group
 };
 
 const n = (v) => Number(v ?? 0).toLocaleString("en-GB");

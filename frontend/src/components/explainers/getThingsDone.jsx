@@ -66,6 +66,7 @@ const PAGE = {
           { label: "If the council is slow", value: "16 weeks", note: "The Ombudsman also takes a complaint if the council has not replied in a reasonable time, which in most cases it thinks should be up to 16 weeks. Some complaints, such as in children's services, take longer." },
         ] },
         { note: "Council housing complaints go to the Housing Ombudsman instead. If you live in Scotland, Wales or Northern Ireland, a different ombudsman applies." },
+        { text: [<>To see how often the Ombudsman has found fault with your own council, and how it compares with similar ones, see <a href="#/councilComplaints">How councils handle complaints</a>.</>] },
       ],
     },
     {
