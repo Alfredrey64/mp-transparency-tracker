@@ -1,7 +1,7 @@
 /** @jsxImportSource react */
 import { useEffect, useState } from "react";
 import { lookUpPostcode, savedPostcode, savePostcode } from "../../lib/postcodeLookup";
-import { tilesAround, schoolsWithin, inspectionLines, nearestTrusts, PHASE_NAME, CONCERN_NAME } from "../../lib/nearYou";
+import { tilesAround, schoolsWithin, inspectionRows, nearestTrusts, PHASE_NAME, CONCERN_NAME, CARD_GRADES, SAFEGUARDING_TEXT } from "../../lib/nearYou";
 import { useDataFile } from "../../lib/useDataFile";
 import { aeNearYou } from "../../lib/dataFiles";
 import "../../accountability.css";
@@ -12,26 +12,91 @@ import "../../accountability.css";
 const RADIUS = 3;
 const PAGE = 8;
 const PHASES = [["all", "All"], ["P", "Primary"], ["S", "Secondary"], ["X", "Special"]];
-const KIND_COLOUR = { card: "#2C7DA0", grade: "#7B5BD6", short: "#8DA2C0", none: "#C4CDDA" };
 
 async function loadSchools(point) {
   const tiles = await Promise.all(tilesAround(point, RADIUS).map((k) => fetch(`/data/schools/${k}.json`).then((r) => (r.ok ? r.json() : [])).catch(() => [])));
   return tiles.flat();
 }
 
-function School({ s }) {
-  const lines = inspectionLines(s);
+// One school. Every school has the same parts in the same order: its name and distance, what kind of school it is, one row for each inspection result it has, and (when it
+// has a report card) a drop-down with the six areas the card grades.
+function Pill({ tone, children }) {
+  return <span className="sc-pill" style={{ "--tone": tone }}>{children}</span>;
+}
+
+function SixAreas({ row }) {
   return (
-    <li className="ac-item" style={{ "--ac": s.x ? "#B3262E" : s.c ? "#2C7DA0" : "#8DA2C0" }}>
-      <h3><a href={`https://reports.ofsted.gov.uk/provider/21/${s.u}`} target="_blank" rel="noreferrer">{s.n}</a></h3>
-      <div className="ac-meta">
-        <span>{PHASE_NAME[s.p]}</span>
-        <span><b>{s.miles.toFixed(1)}</b> miles away</span>
-        {s.k > 0 && <span>{s.k.toLocaleString("en-GB")} pupils</span>}
-        {s.x && <span className="ac-chip" style={{ "--ac": "#B3262E" }}>Ofsted category: {CONCERN_NAME[s.x] ?? s.x}</span>}
+    <details className="sc-areas">
+      <summary>See the six areas Ofsted graded</summary>
+      <ol>
+        {row.areas.map((a) => (
+          <li key={a.name}>
+            <div className="sc-area-head"><b>{a.name}</b><Pill tone={a.grade.tone}>{a.grade.name}</Pill></div>
+            <p>{a.text}</p>
+          </li>
+        ))}
+        {row.safeguarding && (
+          <li>
+            <div className="sc-area-head"><b>Safeguarding</b><Pill tone={row.safeguarding === "met" ? "#2F8F6B" : "#B3262E"}>{row.safeguarding === "met" ? "Met" : "Not met"}</Pill></div>
+            <p>{SAFEGUARDING_TEXT}</p>
+          </li>
+        )}
+      </ol>
+      <p className="sc-areas-note">Wording follows Ofsted's school inspection toolkit and its guide for parents. Grades from the report card cannot be compared with the old overall grades.</p>
+    </details>
+  );
+}
+
+function Result({ row }) {
+  return (
+    <div className="sc-row">
+      <dt>{row.label}{row.date && <small>{row.date}</small>}</dt>
+      <dd>
+        {row.kind === "card" && (
+          <>
+            <span className="sc-strip" role="img" aria-label={row.areas.map((a) => `${a.name}: ${a.grade.name}`).join(". ")}>
+              {row.areas.map((a) => <i key={a.name} style={{ "--tone": a.grade.tone }} />)}
+            </span>
+            <span className="sc-sum">{row.summary}{row.safeguarding ? `. Safeguarding ${row.safeguarding}.` : "."}</span>
+          </>
+        )}
+        {row.kind === "grade" && <Pill tone={row.tone}>{row.value}</Pill>}
+        {row.kind === "short" && <span className="sc-sum">{row.value}</span>}
+        {row.kind === "none" && <span className="sc-sum sc-none">{row.value}</span>}
+      </dd>
+    </div>
+  );
+}
+
+function School({ s }) {
+  const rows = inspectionRows(s);
+  const card = rows.find((r) => r.kind === "card");
+  return (
+    <li className="sc-card" style={{ "--ac": s.x ? "#B3262E" : card ? (card.weak ? "#C88A1E" : "#2F8F6B") : "#8DA2C0" }}>
+      <div className="sc-head">
+        <h3><a href={`https://reports.ofsted.gov.uk/provider/21/${s.u}`} target="_blank" rel="noreferrer">{s.n}<span className="sr-only"> (opens in a new tab)</span></a></h3>
+        <span className="sc-dist"><b>{s.miles.toFixed(1)}</b> miles away</span>
       </div>
-      {lines.map((l) => <p key={l.kind} style={{ borderLeft: `3px solid ${KIND_COLOUR[l.kind]}`, paddingLeft: 10 }}>{l.text}</p>)}
+      <div className="sc-tags">
+        <span className="sc-tag">{PHASE_NAME[s.p]}</span>
+        {s.k > 0 && <span className="sc-tag">{s.k.toLocaleString("en-GB")} pupils</span>}
+        {s.x && <span className="sc-tag sc-alert">Ofsted category: {CONCERN_NAME[s.x] ?? s.x}</span>}
+      </div>
+      <dl className="sc-rows">{rows.map((r) => <Result key={r.kind} row={r} />)}</dl>
+      {card && <SixAreas row={card} />}
     </li>
+  );
+}
+
+function GradeKey() {
+  return (
+    <details className="sc-key">
+      <summary>What the five grades mean</summary>
+      <ul>
+        {Object.values(CARD_GRADES).map((g) => <li key={g.name}><Pill tone={g.tone}>{g.name}</Pill><span>{g.text}</span></li>)}
+      </ul>
+      <p className="sc-areas-note">From Ofsted's guide for parents, Understanding Ofsted report cards and grades. A school can have a mix of grades across its report card.</p>
+    </details>
   );
 }
 
@@ -54,7 +119,7 @@ function Schools({ point }) {
       <div className="ac-tools" role="group" aria-label="Kind of school">
         {PHASES.map(([k, label]) => <button key={k} type="button" aria-pressed={phase === k} onClick={() => { setPhase(k); setShown(PAGE); }}>{label} ({k === "all" ? all.length : all.filter((s) => s.p === k).length})</button>)}
       </div>
-      {list.length === 0 ? <p className="ac-empty">No schools of that kind are listed within {RADIUS} miles.</p> : <ul className="ac-list">{list.slice(0, shown).map((s) => <School key={s.u} s={s} />)}</ul>}
+      {list.length === 0 ? <p className="ac-empty">No schools of that kind are listed within {RADIUS} miles.</p> : <><GradeKey /><ul className="ac-list">{list.slice(0, shown).map((s) => <School key={s.u} s={s} />)}</ul></>}
       {list.length > shown && <button type="button" className="ac-more" onClick={() => setShown(shown + PAGE)}>Show {Math.min(PAGE, list.length - shown)} more ({list.length - shown} left)</button>}
     </div>
   );

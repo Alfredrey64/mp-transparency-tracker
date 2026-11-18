@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { tileOf, miles, tilesAround, schoolsWithin, inspectionLines, monthYear, nearestTrusts } from "./nearYou";
+import { tileOf, miles, tilesAround, schoolsWithin, inspectionRows, CARD_AREAS, monthYear, nearestTrusts } from "./nearYou";
 
 describe("tiles", () => {
   it("names the tile a point is in, including west of Greenwich", () => {
@@ -34,14 +34,27 @@ describe("schoolsWithin", () => {
   });
 });
 
-describe("inspectionLines", () => {
-  it("describes a report card and an old grade in plain words", () => {
-    const lines = inspectionLines(school({ c: "SXXNEX", cs: 1, cd: "2026-04", g: 2, gd: "2022-11" }));
-    expect(lines[0].text).toBe("Report card, April 2026: 2 of 6 areas strong or better, 1 needs attention or urgent improvement, safeguarding met.");
-    expect(lines[1].text).toBe("Last overall grade, November 2022: Good.");
+describe("inspectionRows", () => {
+  it("gives a report card its six areas, each with its grade, and counts the strong and weak ones", () => {
+    const [card, grade] = inspectionRows(school({ c: "SXXNEX", cs: 1, cd: "2026-04", g: 2, gd: "2022-11" }));
+    expect(card).toMatchObject({ kind: "card", label: "Report card", date: "April 2026", strong: 2, weak: 1, safeguarding: "met" });
+    expect(card.areas.map((x) => [x.name, x.grade.name])).toEqual([
+      ["Inclusion", "Strong standard"], ["Curriculum and teaching", "Expected standard"], ["Achievement", "Expected standard"],
+      ["Attendance and behaviour", "Needs attention"], ["Personal development and wellbeing", "Exceptional"], ["Leadership and governance", "Expected standard"],
+    ]);
+    expect(card.summary).toBe("2 of 6 areas strong or better, 1 needs attention or urgent improvement");
+    expect(grade).toMatchObject({ kind: "grade", date: "November 2022", value: "Good" });
   });
-  it("says so when there is nothing listed", () => {
-    expect(inspectionLines(school({}))[0].kind).toBe("none");
+  it("says so when a report card has safeguarding not met, or nothing needs attention", () => {
+    expect(inspectionRows(school({ c: "XXXXXX", cs: 0, cd: "2026-04" }))[0]).toMatchObject({ safeguarding: "not met", summary: "0 of 6 areas strong or better, none needs attention" });
+  });
+  it("has a description for each of the six areas", () => {
+    expect(CARD_AREAS).toHaveLength(6);
+    expect(CARD_AREAS.every((a) => a.name && a.text.length > 40)).toBe(true);
+  });
+  it("shows a short inspection, and says so when there is nothing listed", () => {
+    expect(inspectionRows(school({ o: "School remains Good", od: "2023-03" }))[0]).toMatchObject({ kind: "short", value: "School remains Good" });
+    expect(inspectionRows(school({}))[0].kind).toBe("none");
   });
 });
 
