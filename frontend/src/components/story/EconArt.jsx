@@ -268,8 +268,8 @@ export function FinanceScene() {
 // Nothing here is drawn to scale or stands for a figure: it shows the route a tax coin takes. Each earner pays two coins; every public service receives two.
 const TX_E = [130, 290, 450, 590];
 const TX_R = [850, 990, 1150, 1310];
-const TX_HUB = { x: 720, y: 68 };
-const TX_R_HUB = 50; // radius of the Government coin
+const TX_HUB = { x: 720, y: 58 };
+const TX_R_HUB = 40; // radius of the Government coin
 const TX_PITCH = 5.5;
 const txY = (k) => 186.5 - k * TX_PITCH;
 const TX_N = [7, 6, 9, 11]; // coins in each earner's stack to begin with
