@@ -1,0 +1,54 @@
+/* The lists and lookups on the accountability and near-you pages (backbench bills and motions, the spending watchdog, council complaints, schools and A&E near you). They sit inside
+   ExplainerPage chapters, so they take their colours from the page's own tokens and need no accent of their own. */
+.ac-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.ac-item { --ac: #5B6784; position: relative; display: grid; gap: 4px; padding: 14px 18px 14px 22px; border-radius: 16px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); overflow: hidden; }
+.ac-item::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--ac); }
+.ac-item h3 { margin: 0; font: 700 clamp(16px, 1.9vw, 18.5px)/1.3 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); text-wrap: balance; }
+.ac-item h3 a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.ac-item p { margin: 0; font: 400 14.5px/1.55 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ac-meta { display: flex; flex-wrap: wrap; gap: 4px 12px; font: 600 13px/1.4 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ac-meta b { color: var(--c-ink); font-weight: 700; }
+.ac-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; background: var(--dot, #888); vertical-align: baseline; }
+.ac-chip { display: inline-block; padding: 2px 10px; border-radius: 999px; font: 700 12.5px/1.6 "Public Sans", system-ui, sans-serif; background: color-mix(in srgb, var(--ac) 14%, var(--c-paper-card)); color: var(--c-ink); border: 1px solid color-mix(in srgb, var(--ac) 35%, var(--c-hairline)); }
+
+.ac-tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 0 0 14px; }
+.ac-tools input[type="search"], .ac-tools input[type="text"], .ac-tools select { min-height: 44px; padding: 8px 14px; border-radius: 12px; border: 1.5px solid var(--c-hairline); background: var(--c-paper); color: var(--c-ink); font: 500 16px "Public Sans", system-ui, sans-serif; flex: 1 1 240px; min-width: 0; box-sizing: border-box; }
+.ac-tools button, .ac-more { min-height: 44px; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--c-hairline); background: var(--c-paper-card); color: var(--c-ink); font: 700 14px "Public Sans", system-ui, sans-serif; cursor: pointer; }
+.ac-tools button[aria-pressed="true"] { background: var(--c-ink); border-color: var(--c-ink); color: var(--c-paper-card); }
+.ac-more { display: block; margin: 14px auto 0; }
+.ac-empty { padding: 18px; border-radius: 14px; background: var(--c-paper); border: 1px dashed var(--c-hairline); color: var(--c-ink-soft); font: 500 15px/1.5 "Public Sans", system-ui, sans-serif; }
+
+/* A row of bars that share one scale, each broken into the parts of a whole (how far bills got, how complaints were decided). */
+.ac-stack { display: grid; gap: 14px; }
+.ac-stack-row { display: grid; grid-template-columns: minmax(120px, 190px) 1fr; gap: 6px 14px; align-items: center; }
+.ac-stack-row > span { font: 700 14.5px/1.3 "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ac-stack-row > span small { display: block; font-weight: 500; color: var(--c-ink-soft); font-size: 12.5px; }
+.ac-bar { display: flex; gap: 2px; height: 26px; border-radius: 8px; overflow: hidden; background: var(--c-paper); }
+.ac-bar i { display: block; min-width: 3px; background: var(--seg); }
+.ac-key { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; font: 600 13px/1.4 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ac-key li::before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 7px; background: var(--seg); vertical-align: -1px; }
+@media (max-width: 620px) { .ac-stack-row { grid-template-columns: 1fr; } }
+
+/* A search and its answer: a grid of figures for one place. */
+.ac-figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin-top: 12px; }
+.ac-fig { padding: 14px 16px; border-radius: 14px; background: var(--c-paper); border: 1px solid var(--c-hairline); }
+.ac-fig b { display: block; font: 700 clamp(24px, 3.4vw, 30px)/1.1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); font-variant-numeric: tabular-nums; }
+.ac-fig span { display: block; margin-top: 4px; font: 600 13.5px/1.35 "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ac-fig small { display: block; margin-top: 3px; font: 500 12.5px/1.4 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ac-fig[data-tone="good"] { border-color: color-mix(in srgb, #3F7D5C 55%, var(--c-hairline)); }
+.ac-fig[data-tone="warn"] { border-color: color-mix(in srgb, #B3262E 55%, var(--c-hairline)); }
+
+/* A postcode box on the near-you page. */
+.ac-pc { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; margin-bottom: 8px; }
+.ac-pc label { display: grid; gap: 4px; font: 700 14px "Public Sans", system-ui, sans-serif; color: var(--c-ink); flex: 1 1 220px; }
+.ac-pc input { min-height: 46px; padding: 8px 14px; border-radius: 12px; border: 1.5px solid var(--c-hairline); background: var(--c-paper); color: var(--c-ink); font: 600 17px "Public Sans", system-ui, sans-serif; text-transform: uppercase; letter-spacing: 0.04em; box-sizing: border-box; width: 100%; }
+.ac-pc button { min-height: 46px; padding: 8px 20px; border-radius: 12px; border: 0; background: var(--c-ink); color: var(--c-paper-card); font: 700 15px "Public Sans", system-ui, sans-serif; cursor: pointer; }
+.ac-error { color: #B3262E; font: 600 14px/1.5 "Public Sans", system-ui, sans-serif; margin: 6px 0; }
+.ac-note { margin: 10px 0 0; font: italic 400 13.5px/1.55 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+
+/* A school's or A&E department's four-hour bar. */
+.ac-meter { position: relative; height: 12px; border-radius: 6px; background: var(--c-paper); border: 1px solid var(--c-hairline); margin: 8px 0 2px; overflow: visible; }
+.ac-meter i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 6px; background: var(--ac, #2C7DA0); }
+.ac-meter b { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--c-ink); }
+
+@media print { .ac-tools, .ac-more, .ac-pc button { display: none; } }

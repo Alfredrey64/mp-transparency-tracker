@@ -8,3 +8,7 @@ export const committeeReports = () => import("../data/committeeReports.json");
 export const statutoryInstruments = () => import("../data/statutoryInstruments.json");
 export const parliamentCalendar = () => import("../data/parliamentCalendar.json");
 export const regionalBreakdowns = () => import("../data/regionalBreakdowns.json");
+export const backbench = () => import("../data/backbench.json");
+export const auditReports = () => import("../data/auditReports.json");
+export const councilComplaints = () => import("../data/councilComplaints.json");
+export const aeNearYou = () => import("../data/aeNearYou.json");

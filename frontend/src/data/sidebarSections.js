@@ -4,7 +4,8 @@ import {
   IconPartyFinance, IconByElection, IconLords, IconPetition, IconCompass, IconCommittee, IconCompare, IconMeeting,
   IconQuestion, IconGavel, IconRankings, IconDarkMoney, IconCurtain, IconThinkTank, IconDoor, IconRegister,
   IconSearch, IconBook, IconChartBars, IconTopic, IconRoute, IconSplit, IconHexMap, IconCouncil,
-  IconTaxes, IconCalculator, IconRates, IconMigration, IconMap, IconAsk, IconDeprivation, IconSwing, IconSeatCompare, IconFactory, IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconBallot, IconCalendar, IconHouse, IconGlobe, IconLeaf, IconCompareTime, IconShield, IconLordsVote, IconCouncillor, IconFeed, IconPinHome, IconWhoStands, IconCompareAreas, IconAbout, IconMail
+  IconTaxes, IconCalculator, IconRates, IconMigration, IconMap, IconAsk, IconDeprivation, IconSwing, IconSeatCompare, IconFactory, IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconBallot, IconCalendar, IconHouse, IconGlobe, IconLeaf, IconCompareTime, IconShield, IconLordsVote, IconCouncillor, IconFeed, IconPinHome, IconWhoStands, IconCompareAreas, IconAbout, IconMail,
+  IconBills, IconMethodology, IconBroadcast, IconPin,
 } from "../components/icons";
 import {
   IconContract, IconPeerage, IconElectionSpend, IconForeignAgent, IconMayor, IconCouncilBudget, IconPolice, IconPlanning, IconCivilService, IconCourt, IconCrown, IconAudit,
@@ -80,6 +81,8 @@ export const SECTIONS = [
       { key: "petitions", label: "Petitions", icon: IconPetition, hint: "Ask Parliament to act", essential: true },
       { key: "getThingsDone", label: "How to get something done", icon: IconSignpost, hint: "Who to contact, how to complain, and how to ask for information", essential: true, aka: ["complain", "complaint", "ombudsman", "foi", "freedom of information", "who do i contact", "how do i complain", "iopc", "police complaint", "council complaint", "nhs complaint", "ico", "request information", "whatdotheyknow"] },
       { key: "mayors", label: "Mayors and regional authorities", icon: IconMayor, hint: "England's elected regional leaders", aka: ["combined authorities", "metro mayors", "devolution"] },
+      { key: "councilComplaints", label: "How councils handle complaints", icon: IconBroadcast, hint: "How often the Ombudsman found a council at fault", aka: ["ombudsman", "lgo", "complaints about councils", "upheld complaints", "council complaints", "social care complaints"] },
+      { key: "nearYou", label: "Schools and A&E near you", icon: IconPin, hint: "Ofsted results and four-hour A&E figures for your postcode", aka: ["schools near me", "ofsted", "a and e", "accident and emergency", "hospital near me", "nhs trust", "school ratings", "report card", "postcode"] },
       { key: "councilSpending", label: "Council budgets", icon: IconCouncilBudget, hint: "Where your council spends", aka: ["council spending", "section 114", "social care spending"] },
       { key: "policeCommissioners", label: "Police and crime commissioners", icon: IconPolice, hint: "Who answers for your police force", aka: ["pcc", "police commissioner"] },
       { key: "planning", label: "Planning and building", icon: IconPlanning, hint: "Who decides what gets built", aka: ["planning permission", "nimby", "planning committee"] },
@@ -224,6 +227,8 @@ export const SECTIONS = [
       { key: "topics", label: "Who's asking about a topic", icon: IconTopic, hint: "Search any subject", aka: ["who's asking about"] },
       { key: "committees", label: "Watchdog committees", icon: IconCommittee, hint: "MPs who question ministers", aka: ["select committees"] },
       { key: "committeeReports", label: "Committee reports and replies", icon: IconCommittee, hint: "Which reports the government has answered, and how long it took", aka: ["select committee reports", "government response", "government replies", "committee recommendations", "overdue replies", "public accounts committee", "pac report", "recommendations"] },
+      { key: "backbench", label: "Backbench bills and motions", icon: IconBills, hint: "Private members' bills and early day motions: how far they get", aka: ["private members bills", "ballot bills", "ten minute rule", "early day motions", "edm", "backbenchers", "presentation bills"] },
+      { key: "auditWatch", label: "The spending watchdog", icon: IconMethodology, hint: "National Audit Office reports and what happens next", aka: ["nao", "national audit office", "public accounts committee", "pac", "value for money", "waste", "overruns", "audit"] },
       { key: "statutoryInstruments", label: "Laws made by ministers", icon: IconGavel, hint: "Statutory instruments: how many, which need approval, the newest", aka: ["statutory instruments", "secondary legislation", "delegated legislation", "si", "sis", "negative procedure", "affirmative procedure", "regulations", "orders", "henry viii powers", "laws without a vote", "laid before parliament"] },
       { key: "standards", label: "Conduct & standards", icon: IconGavel, hint: "When MPs break the rules", aka: ["standards & sanctions", "sanctions"] },
       { key: "appg", label: "Cross-party groups", icon: IconGroup, hint: "APPGs, and who funds them", aka: ["appg memberships", "appg"] },
@@ -286,7 +291,7 @@ export const HUBS = [
   { key: "past", label: "History", hint: "Landmark votes and every government", pages: [["history", "Landmark votes"], ["timeline", "Every government"], ["formerMps", "Recent departures"]] },
   // Your area & your say
   { key: "seat", label: "Your constituency", hint: "Your seat, and close contests", pages: [["constituency", "Your constituency"], ["marginals", "Marginal seats"], ["compareSeats", "Compare seats"]] },
-  { key: "council", label: "Your council", hint: "Who runs it, your councillors, and how it compares", pages: [["councils", "Your council"], ["councillors", "Your councillors"], ["compareCouncils", "Compare councils"], ["councilSpending", "Budgets"]] },
+  { key: "council", label: "Your council", hint: "Who runs it, your councillors, and how it compares", pages: [["councils", "Your council"], ["councillors", "Your councillors"], ["compareCouncils", "Compare councils"], ["councilSpending", "Budgets"], ["councilComplaints", "Complaints"]] },
   { key: "localpower", label: "Local power", hint: "Mayors, police commissioners and planning", pages: [["mayors", "Mayors"], ["policeCommissioners", "Police commissioners"], ["planning", "Planning"]] },
   { key: "takeaction", label: "Get things done", hint: "Who to contact, how to complain, and how to start a petition", pages: [["getThingsDone", "How to get something done"], ["petitions", "Petitions"]] },
   // Elections
@@ -298,10 +303,10 @@ export const HUBS = [
   { key: "ministers", label: "Ministers and promises", hint: "The Cabinet, every past post, and whether promises were kept", pages: [["cabinet", "Cabinet now"], ["offices", "Who held which job"], ["tracker", "Promises tracker"]] },
   { key: "lords", label: "The House of Lords", hint: "The peers, how they vote, and how people become peers", pages: [["lords", "The peers"], ["lordsVotes", "How peers vote"], ["honours", "Peerages"]] },
   // How MPs behave
-  { key: "mpvotes", label: "How MPs vote", hint: "Every vote, who breaks ranks, and the laws ministers make", pages: [["voting", "How MPs voted"], ["rebels", "MPs who defy their party"], ["statutoryInstruments", "Laws made by ministers"]] },
+  { key: "mpvotes", label: "How MPs vote", hint: "Every vote, who breaks ranks, and the laws ministers make", pages: [["voting", "How MPs voted"], ["rebels", "MPs who defy their party"], ["statutoryInstruments", "Laws made by ministers"], ["backbench", "Backbench bills"]] },
   { key: "mpcompare", label: "Compare MPs", hint: "Side by side, and in league tables", pages: [["compare", "Compare MPs"], ["rankings", "League tables"]] },
   { key: "questions", label: "Questions to ministers", hint: "What MPs ask ministers", pages: [["writtenQuestions", "Questions to ministers"], ["topics", "Who's asking about a topic"]] },
-  { key: "scrutiny", label: "Watchdog committees", hint: "MPs who question ministers, and the reports the government answers", pages: [["committees", "The committees"], ["committeeReports", "Reports and replies"]] },
+  { key: "scrutiny", label: "Watchdog committees", hint: "MPs who question ministers, and the reports the government answers", pages: [["committees", "The committees"], ["committeeReports", "Reports and replies"], ["auditWatch", "Spending watchdog"]] },
   // Money & influence
   { key: "funders", label: "Who funds politics", hint: "Donors to MPs and parties, the rules, and a donor's trail", pages: [["donors", "Who funds MPs"], ["partyFinances", "Who funds the parties"], ["followTheMoney", "Trace a donor"], ["howPartyFundingWorks", "How the rules work"]] },
   { key: "publicmoney", label: "Contracts and spending", hint: "Public contracts, department budgets, campaign spending and foreign influence", pages: [["govContracts", "Government contracts"], ["departments", "Spending by department"], ["electionSpending", "Election spending"], ["foreignInfluence", "Foreign influence"]] },

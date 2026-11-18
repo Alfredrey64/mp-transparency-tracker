@@ -327,6 +327,28 @@ jobs:
         continue-on-error: true
         run: node fetch-statutory-instruments.js
 
+      # Private members' bills, this session's ballot bills and early day motions,
+      # for the Backbench bills and motions page. Early day motions are added to
+      # the saved file from where the last run stopped, so most days are quick.
+      - name: Run the backbench bills and motions fetch script
+        id: fetch_backbench
+        continue-on-error: true
+        run: node fetch-backbench.js
+
+      # National Audit Office reports from the last 12 months, for The spending
+      # watchdog page (a few requests to the GOV.UK search API).
+      - name: Run the audit reports fetch script
+        id: fetch_audit_reports
+        continue-on-error: true
+        run: node fetch-audit-reports.js
+
+      # NHS England's monthly A&E figures by trust, for Schools and A&E near you
+      # (one spreadsheet, plus the trust postcodes through postcodes.io).
+      - name: Run the A&E performance fetch script
+        id: fetch_ae_performance
+        continue-on-error: true
+        run: node fetch-ae-performance.js
+
       # Plain-English rewrites of the committee reports' inquiry descriptions and
       # the newest instruments' Explanatory Notes, written by an AI model from that
       # official wording only and checked before use (plainEnglish.js). Only new
@@ -350,13 +372,16 @@ jobs:
           echo "STATUS_fetch_entry_notes=${{ steps.fetch_entry_notes.outcome }}" >> status.env
           echo "STATUS_fetch_committee_reports=${{ steps.fetch_committee_reports.outcome }}" >> status.env
           echo "STATUS_fetch_statutory_instruments=${{ steps.fetch_statutory_instruments.outcome }}" >> status.env
+          echo "STATUS_fetch_backbench=${{ steps.fetch_backbench.outcome }}" >> status.env
+          echo "STATUS_fetch_audit_reports=${{ steps.fetch_audit_reports.outcome }}" >> status.env
+          echo "STATUS_fetch_ae_performance=${{ steps.fetch_ae_performance.outcome }}" >> status.env
           echo "STATUS_write_plain_english=${{ steps.write_plain_english.outcome }}" >> status.env
 
       - name: Save the outcomes and the files this job wrote
         if: always()
         run: |
           existing=""
-          for p in frontend/src/data/lordsCareers.json frontend/src/data/lordsCareerDetail frontend/src/data/lordsVotes.json frontend/src/data/parliamentCalendar.json frontend/public/calendar frontend/src/data/entryNotes.json frontend/src/data/committeeReports.json frontend/src/data/statutoryInstruments.json frontend/src/data/plainEnglish.json; do [ -e "$p" ] && existing="$existing $p"; done
+          for p in frontend/src/data/lordsCareers.json frontend/src/data/lordsCareerDetail frontend/src/data/lordsVotes.json frontend/src/data/parliamentCalendar.json frontend/public/calendar frontend/src/data/entryNotes.json frontend/src/data/committeeReports.json frontend/src/data/backbench.json frontend/src/data/auditReports.json frontend/src/data/aeNearYou.json frontend/src/data/statutoryInstruments.json frontend/src/data/backbench.json frontend/src/data/auditReports.json frontend/src/data/aeNearYou.json frontend/src/data/plainEnglish.json; do [ -e "$p" ] && existing="$existing $p"; done
           tar -cf data.tar status.env $existing
 
       - name: Upload them for the last job

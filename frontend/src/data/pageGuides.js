@@ -596,6 +596,26 @@ export const PAGE_GUIDES = {
     why: "Councils decide bin collections, planning, housing, roads and care, the services you meet most often, and you can vote for them.",
     notShown: "Parish and town councils, ward-by-ward results, or contact details. Defections come from comparing yearly lists, so a switch and a switch back is missed.",
   },
+  backbench: {
+    what: "How far private members' bills get, this session's ballot bills and which early day motions MPs sign most, from Parliament's own lists.",
+    why: "Backbench bills and motions are how an issue the government has not chosen can still reach Parliament, and few succeed.",
+    notShown: "Whether a bill was debated, how any MP voted on it, and the text of each motion beyond its title.",
+  },
+  auditWatch: {
+    what: "The National Audit Office's reports from the last year, by department and topic, and the Public Accounts Committee's reports with the government's replies.",
+    why: "Public money is only as well spent as it is checked, and these reports are the evidence MPs use to question ministers about it.",
+    notShown: "What each report found in detail, the sums involved, or any judgement of a department.",
+  },
+  councilComplaints: {
+    what: "How complaints about each council in England were decided by the Local Government and Social Care Ombudsman last year, with the average for similar councils.",
+    why: "When a council cannot settle a complaint, these figures are the public record of how often it was found at fault and how it responded.",
+    notShown: "Scottish, Welsh and Northern Irish councils, complaints that never reached the Ombudsman, or whether a council is good overall.",
+  },
+  nearYou: {
+    what: "Schools within three miles of a postcode with their latest Ofsted result, and the three nearest NHS trusts with their latest four-hour A&E figures.",
+    why: "A school and an emergency department are two of the services people use most, and their results are hard to find for your own street.",
+    notShown: "Exam results, private schools, schools outside England, or waiting times other than A&E.",
+  },
   appg: {
     what: "The cross-party groups MPs and peers join around a topic, and who belongs to which.",
     why: "These groups are an early, low-profile way outside organisations get access to Parliament. Often an industry or charity pays for their running.",

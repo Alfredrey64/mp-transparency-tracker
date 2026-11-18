@@ -28,12 +28,14 @@ export const HAND_KEPT = [
   { id: "prison-projection", files: ["justiceFigures.js"], every: 380, checked: "2026-11-17", what: "Prison population projection and the places available (PRISON_PROJECTION)", source: "GOV.UK: Prison population projections, published each December; capacity from the weekly prison population figures" },
   { id: "crime-outcomes", files: ["justiceFigures.js"], every: 380, checked: "2026-11-17", what: "What happens to 100 recorded crimes (CRIME_OUTCOMES): charged, evidence, no suspect, open", source: "Home Office, Crime outcomes in England and Wales, published each July" },
   { id: "deprivation", files: ["deprivation.json", "deprivationNations.json", "deprivationConstituencies.json", "deprivationKinds.js"], every: 180, checked: "2026-10-09", what: "Indices of deprivation for England, Wales, Scotland and Northern Ireland; rebuilt with node fetch-deprivation.js and fetch-deprivation-nations.js", source: "MHCLG, Welsh Government, Scottish Government and NISRA release pages" },
+  { id: "council-complaints", files: ["councilComplaints.json"], every: 380, stamp: { file: "councilComplaints.json", key: "fetchedAt" }, what: "Ombudsman complaint figures for every council in England; rebuilt each autumn by running node frontend/scripts/build-council-complaints.mjs", source: "Local Government and Social Care Ombudsman: annual review of local government complaints" },
+  { id: "schools-near-you", files: ["schoolsMeta.json"], every: 100, stamp: { file: "schoolsMeta.json", key: "builtAt" }, what: "Ofsted results for state-funded schools in England, split into map tiles under public/data/schools; rebuilt by running node frontend/scripts/build-schools-near-you.mjs after each monthly Ofsted release", source: "GOV.UK: Management information, state-funded schools latest inspections" },
 ];
 
 // Files a scheduled job rewrites (daily or weekly), so nobody types them.
 export const AUTOMATIC = [
   /^(ageing|care|defence|education|health|inequality|transport|trust|brexit|devolution|energy)Data\.json$/, /^(inequalityAbroad|inequalityPlace)\.json$/, /^ons\//,
-  /^(benchmarks|billStages|committeeReports|constituencies|constituencyHistory|constituencySummary|councilsIndex|donorSectors|donorSectorsMeta|entryNotes|fullFactPledges|lawExample|lordsCareers|lordsVotes|mpCareers|parliamentCalendar|partyDonorSectors|partyDonorSectorsMeta|partyLeaders|pipelineStatus|plainEnglish|regionalBreakdowns|representatives|standardsReportAuto|standardsReportDetails|statutoryInstruments|taxBands|taxSeries)\.json$/,
+  /^(aeNearYou|auditReports|backbench|benchmarks|billStages|committeeReports|constituencies|constituencyHistory|constituencySummary|councilsIndex|donorSectors|donorSectorsMeta|entryNotes|fullFactPledges|lawExample|lordsCareers|lordsVotes|mpCareers|parliamentCalendar|partyDonorSectors|partyDonorSectorsMeta|partyLeaders|pipelineStatus|plainEnglish|regionalBreakdowns|representatives|standardsReportAuto|standardsReportDetails|statutoryInstruments|taxBands|taxSeries)\.json$/,
   /^(careerDetail|councilDetail|lordsCareerDetail)\//, /^(councilTaxByCouncil|devolvedLeaders|pmPortraits)\.json$/,
 ];
 

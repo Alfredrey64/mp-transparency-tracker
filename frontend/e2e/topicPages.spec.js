@@ -14,6 +14,10 @@ const pages = [
   ["inquiries", "Public inquiries", "£1.5bn+"],
   ["departments", "Spending by department", "£648bn"],
   ["statutoryInstruments", "Laws made by ministers", "Had to be approved"],
+  ["backbench", "Backbench bills and motions", "Early day motions"],
+  ["auditWatch", "The spending watchdog", "value for money"],
+  ["councilComplaints", "How councils handle complaints", "Upheld"],
+  ["nearYou", "Schools and A&E near you", "postcode"],
 ];
 
 for (const [key, title, figure] of pages) {

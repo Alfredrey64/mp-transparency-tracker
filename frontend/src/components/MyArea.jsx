@@ -14,6 +14,7 @@ import { regionKeyOf, wardCouncillors, loadAreaFigures } from "../lib/areaFigure
 import { REGIONS } from "../data/regionMetrics";
 import { Card, Section, Glance, JumpNav, SeatResult, SeatHistory, SeatCard, MpDoing, Neighbours, CouncilHistory, RegionOutline, LocalPetitions, CouncilTax, WhoDoes, PlanningCard, Neighbourhood, PlaceFacts, HomesCrime, RegionRanks, Census, Contests, Help, Deeper } from "./AreaSections";
 import { MpMoneyCard, IndependenceCard, RepsCard, AreaTools } from "./AreaMp";
+import { ComplaintsCard, NearYouCard } from "./AreaAccountability";
 import { useAreaExtras } from "../lib/useAreaExtras";
 import { yearsSince } from "../lib/areaProfile";
 import { WeekSection } from "./YourWeek";
@@ -187,12 +188,14 @@ function Dashboard({ data, onForget }) {
         <CouncilTax x={x} i={3} />
         <WhoDoes x={x} i={4} />
         <PlanningCard x={x} i={5} />
+        <ComplaintsCard council={council} county={county} i={6} />
       </Section>
 
       <Section id="ma-place" title="Your neighbourhood" lede="How the place you live compares with the rest of the country, and which bodies cover it." colour="#C0478A">
         <Neighbourhood x={x} i={0} />
         <PlaceFacts x={x} i={1} />
         <HomesCrime x={x} regionName={regionName} i={2} />
+        <NearYouCard r={r} i={3} />
       </Section>
 
       <Section id="ma-region" title={`Your region: ${regionName ?? "the UK"}`} lede="Figures published for the whole region, set against the rest of the UK. They describe the region, not your street." colour="#2F9E6E">

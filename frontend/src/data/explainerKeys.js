@@ -31,4 +31,8 @@ export const EXPLAINER_KEYS = [
   "howLawMade",
   "howPartyFundingWorks",
   "spotMisleadingStats",
+  "backbench",
+  "auditWatch",
+  "councilComplaints",
+  "nearYou",
 ];
