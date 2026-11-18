@@ -17,8 +17,9 @@ function AgeGate() {
   return (
     <svg className="dp-gate" viewBox="0 0 200 110" aria-hidden="true" focusable="false">
       <path d="M0 98H200" stroke="#7FA2E0" strokeWidth="2" opacity=".5" />
-      {/* the adult walks into the doorway: drawn behind the posts and the light, he fades out as he goes in, as if he had entered the room */}
-      <g transform="translate(0 98)"><g className="dp-adult"><rect x="-3" y="-12" width="6" height="12" rx="2" fill="#2A3350" /><rect x="-6" y="-30" width="12" height="20" rx="4" fill="#5DD28E" /><circle cy="-36" r="6" fill="#EBB98F" /></g></g>
+      {/* the adult walks through the doorway and behind the right-hand post: drawn behind the posts and the light, and clipped at the post's far edge so he is hidden as he passes it, at full size */}
+      <defs><clipPath id="dp-clip"><rect x="-60" y="-60" width="194" height="66" /></clipPath></defs>
+      <g transform="translate(0 98)" clipPath="url(#dp-clip)"><g className="dp-adult"><rect x="-3" y="-12" width="6" height="12" rx="2" fill="#2A3350" /><rect x="-6" y="-30" width="12" height="20" rx="4" fill="#5DD28E" /><circle cy="-36" r="6" fill="#EBB98F" /></g></g>
       <rect x="86" y="30" width="6" height="68" rx="2" fill="#8FB0EA" /><rect x="128" y="30" width="6" height="68" rx="2" fill="#8FB0EA" />
       <rect x="80" y="24" width="60" height="9" rx="3" fill="#B7CCF3" />
       <rect className="dp-beam" x="92" y="34" width="36" height="64" fill="#9BDCFF" />

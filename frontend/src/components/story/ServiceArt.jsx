@@ -346,13 +346,6 @@ export function DigitalScene() {
       {/* the line along the street, its pulses moving */}
       <path className="hs-line sv-cable" d={`M174 ${CABLE_Y}H1346`} style={{ stroke: "var(--lamp)" }} />
       <path className="hs-dash sv-flowline" d={`M174 ${CABLE_Y}H1346`} />
-      {/* the age-check gate across the line: two posts, a bar with a 16+ sign, and a beam that scans whatever passes */}
-      <rect className="hs-3" x={GATE_X - 36} y="116" width="7" height={188 - 116} /><rect className="hs-3" x={GATE_X + 29} y="116" width="7" height={188 - 116} />
-      <rect className="hs-2" x={GATE_X - 42} y="110" width="84" height="10" rx="3" />
-      <rect className="sv-gate-beam" x={GATE_X - 29} y="122" width="58" height={CABLE_Y + 8 - 122} fill="var(--lamp)" />
-      <circle className="hs-warm" cx={GATE_X} cy="88" r="19" /><circle cx={GATE_X} cy="88" r="19" fill="none" stroke="#B3402E" strokeWidth="3" />
-      <text x={GATE_X} y="94" textAnchor="middle" fontSize="17" fontWeight="800" fill="#3A1D12" fontFamily="Figures, 'Public Sans', system-ui, sans-serif">16+</text>
-      <rect className="hs-3" x={GATE_X - 2.5} y="106" width="5" height="6" />
       {/* the homes along the line; the last has a child at a lit window with a tablet, and wifi above the roof */}
       {DG_HOMES.map((x, i) => (
         <g key={x}>
@@ -373,6 +366,13 @@ export function DigitalScene() {
           <g className="sv-pkt" style={{ "--from": `${-(g.to - 196)}px`, "--delay": `${g.delay}s`, "--dur": `${g.dur}s` }}><rect x="-6" y="-5" width="12" height="10" rx="2.4" fill="#5DD28E" /><path d="M-3 0l2 2 4-4" stroke="#0B3A22" strokeWidth="1.5" fill="none" strokeLinecap="round" /></g>
         </g>
       ))}
+      {/* the age-check gate across the line: two posts, a bar with a 16+ sign, and a beam that scans whatever passes. It is drawn after the green packets, so they go through it, behind the posts */}
+      <rect className="hs-3" x={GATE_X - 36} y="116" width="7" height={188 - 116} /><rect className="hs-3" x={GATE_X + 29} y="116" width="7" height={188 - 116} />
+      <rect className="hs-2" x={GATE_X - 42} y="110" width="84" height="10" rx="3" />
+      <rect className="sv-gate-beam" x={GATE_X - 29} y="122" width="58" height={CABLE_Y + 8 - 122} fill="var(--lamp)" />
+      <circle className="hs-warm" cx={GATE_X} cy="88" r="19" /><circle cx={GATE_X} cy="88" r="19" fill="none" stroke="#B3402E" strokeWidth="3" />
+      <text x={GATE_X} y="94" textAnchor="middle" fontSize="17" fontWeight="800" fill="#3A1D12" fontFamily="Figures, 'Public Sans', system-ui, sans-serif">16+</text>
+      <rect className="hs-3" x={GATE_X - 2.5} y="106" width="5" height="6" />
       {BAD.map((b, i) => (
         <g key={i}>
           <g transform={`translate(${GATE_X - 44} ${CABLE_Y})`}><g className="sv-bad" style={{ "--from": `${-(GATE_X - 44 - 196)}px`, "--delay": `${b.delay}s`, "--dur": `${b.dur}s` }}><rect x="-6" y="-5" width="12" height="10" rx="2.4" fill="#FF6B5C" /><path d="M0 -3v3M0 2v.6" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" /></g></g>
