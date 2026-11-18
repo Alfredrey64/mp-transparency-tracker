@@ -1,8 +1,8 @@
 /* The foot of each page (refer, print, report) and its dialog. Loaded after the page, never with the first paint. */
-.pf { display: grid; gap: 10px; max-width: 1100px; margin: 36px auto 0; padding: 0 clamp(16px, 5vw, 40px); box-sizing: border-box; }
-.pf::before { content: ""; height: 1px; background: var(--c-hairline); margin-bottom: 6px; }
+.pf { display: grid; justify-items: center; text-align: center; gap: 12px; max-width: 1100px; margin: 36px auto 0; padding: 0 clamp(16px, 5vw, 40px); box-sizing: border-box; }
+.pf::before { content: ""; justify-self: stretch; height: 1px; background: var(--c-hairline); margin-bottom: 6px; }
 .pf > b { font: 800 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
-.pf-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.pf-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
 .pf-row button, .pf-row a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid var(--c-hairline); background: var(--c-paper-card); color: var(--c-ink); font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; text-decoration: none; cursor: pointer; }
 .pf-row button:hover, .pf-row a:hover { border-color: var(--c-brand); background: color-mix(in srgb, var(--c-brand) 8%, var(--c-paper-card)); }
 .pf small { font: 400 13px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
