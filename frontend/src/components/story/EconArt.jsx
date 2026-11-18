@@ -264,66 +264,177 @@ export function FinanceScene() {
   );
 }
 
-// ---------- Taxes: money is collected from four everyday sources on the left, passes through the Treasury's coin at the centre and is spent on four public services on the right ----------
-// One style throughout: round badges with a single-line icon, and soft streams that join them to the centre. Nothing here is drawn to scale or stands for a figure.
-const SRC = [262, 372, 482, 592];
-const SNK = SRC.map((x) => 1440 - x).reverse();
-const ENTRY = [80, 93, 107, 120];
-const HUB = { x: 720, y: 100 };
-const inStream = (x, i) => `M${x} 142C${x} 92 ${x + (HUB.x - x) * 0.55} ${ENTRY[i]} ${HUB.x - 20} ${ENTRY[i]}`;
-const outStream = (x, i) => `M${HUB.x + 20} ${ENTRY[3 - i]}C${x - (x - HUB.x) * 0.55} ${ENTRY[3 - i]} ${x} 92 ${x} 142`;
-const ICONS = {
-  pay: <><rect x="-9" y="-5.5" width="18" height="11" rx="1.8" /><circle r="2.6" /><path d="M-5.6 -2v4M5.6 -2v4" /></>,
-  shop: <><path d="M-7 -3h14l-1 11h-12z" /><path d="M-3.5 -3v-2.2a3.5 3.5 0 0 1 7 0V-3" /></>,
-  home: <><path d="M-9 1 0 -8 9 1" /><path d="M-6 -1.5V8h12V-1.5" /><path d="M-2 8V3h4v5" /></>,
-  fuel: <path d="M0 -9C5 -2 7 1 7 3.5a7 7 0 0 1-14 0C-7 1 -5 -2 0 -9z" />,
-  health: <path d="M-3 -9h6v6h6v6h-6v6h-6v-6h-6v-6h6z" />,
-  school: <><path d="M-10 -2 0 -7 10 -2 0 3z" /><path d="M-5 .5v5c0 2.2 10 2.2 10 0v-5" /><path d="M10 -2v7" /></>,
-  bus: <><rect x="-8" y="-8" width="16" height="13" rx="2.4" /><path d="M-8 -2h16M-5 5v3M5 5v3" /></>,
-  shield: <path d="M0 -9 8 -6v6c0 5-4 8-8 10-4-2-8-5-8-10v-6z" />,
-};
-function Badge({ x, icon, out, i }) {
+// ---------- Taxes: people and companies stand in a row with their income stacked beside them as coins, a few coins from each are taken to the Treasury's coin in the middle, and are then spent on a hospital, a school, defence and transport on the far side ----------
+// Nothing here is drawn to scale or stands for a figure: it shows the route a tax coin takes. Each earner pays two coins; every public service receives two.
+const TX_E = [130, 290, 450, 610];
+const TX_R = [830, 990, 1150, 1310];
+const TX_HUB = { x: 720, y: 66 };
+const TX_PITCH = 5.5;
+const txY = (k) => 186.5 - k * TX_PITCH;
+const TX_N = [7, 6, 9, 11]; // coins in each earner's stack to begin with
+const TX_BASE = [3, 2, 3, 2]; // coins each public service already has
+const TX_OFF_E = [42, 46, 50, 40];
+const TX_OFF_R = [46, 46, 40, 50];
+const TX_IN = 1.5; const TX_OUT = 1.5;
+const txStart = (i, c) => 2.4 + i * 0.5 + c * 1.7;
+const txTo = (i, c) => (i + c * 2) % 4;
+const txArrive = (i, c) => txStart(i, c) + TX_IN + 0.1 + TX_OUT;
+const txEx = (i) => TX_E[i] + TX_OFF_E[i];
+const txRx = (j) => TX_R[j] - TX_OFF_R[j];
+// every coin's journey: from the top of an earner's stack, up to the Treasury, down to the top of a public service's stack
+const TX_TRIPS = [0, 1, 2, 3].flatMap((i) => [0, 1].map((c) => ({ i, c, j: txTo(i, c), start: txStart(i, c), arrive: txArrive(i, c) })));
+TX_TRIPS.forEach((t) => { t.landK = TX_BASE[t.j] + TX_TRIPS.filter((o) => o.j === t.j && o.arrive < t.arrive).length; });
+const txFrom = (t) => `M${txEx(t.i)} ${txY(TX_N[t.i] - 1 - t.c)}Q${(txEx(t.i) + TX_HUB.x) / 2} -14 ${TX_HUB.x} ${TX_HUB.y}`;
+const txOnward = (t) => `M${TX_HUB.x} ${TX_HUB.y}Q${(TX_HUB.x + txRx(t.j)) / 2} -14 ${txRx(t.j)} ${txY(t.landK)}`;
+const TxCoin = ({ k }) => <><ellipse cx="0" cy={txY(k) + 2} rx="15" ry="4.6" fill="#A97A1E" /><ellipse cx="0" cy={txY(k)} rx="15" ry="4.6" fill="url(#tx-gold)" /><ellipse cx="-3" cy={txY(k) - 0.6} rx="7" ry="1.5" fill="#FFF3C2" opacity=".6" /></>;
+function TxStack({ x, n, who, earner }) {
+  const trips = TX_TRIPS.filter((t) => (earner ? t.i : t.j) === who);
   return (
-    <g transform={`translate(${x} 160)`}>
-      {out && <circle className="ec-pulse" r="19" style={{ "--d": `${3.1 + i * 0.45}s` }} />}
-      <circle r="19" fill="var(--s2)" stroke={out ? "#F3C65A" : "var(--lamp)"} strokeWidth="1.5" opacity=".98" />
-      <g fill="none" stroke={out ? "#FFE6A8" : "var(--lamp)"} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">{ICONS[icon]}</g>
+    <g transform={`translate(${x} 0)`}>
+      {Array.from({ length: n }, (_, k) => {
+        const trip = earner ? trips.find((t) => TX_N[who] - 1 - t.c === k) : null;
+        return (
+          <g key={k} className="ec-coinstack" style={{ "--d": `${0.5 + k * 0.07}s` }}>
+            {trip ? <g className="tx-take" style={{ "--d": `${trip.start}s` }}><TxCoin k={k} /></g> : <TxCoin k={k} />}
+          </g>
+        );
+      })}
+      {!earner && trips.map((t) => <g key={`${t.i}${t.c}`} className="tx-land" style={{ "--d": `${t.arrive - 0.1}s` }}><TxCoin k={t.landK} /></g>)}
     </g>
   );
 }
-const IN_ICONS = ["pay", "shop", "home", "fuel"];
-const OUT_ICONS = ["bus", "school", "health", "shield"];
+// the people and companies that earn
+function TxEmployee() {
+  return (
+    <g transform="scale(1.9)">
+      <rect x="-4.7" y="-10" width="3.8" height="10.4" rx="1.7" fill="#2A3350" /><rect x="0.9" y="-10" width="3.8" height="10.4" rx="1.7" fill="#2A3350" />
+      <rect x="-6.2" y="-25" width="12.4" height="16" rx="4" fill="#3D6BC4" /><path d="M-2.4 -25l2.4 4 2.4-4z" fill="#fff" /><path d="M0 -24l1.5 3.4-1.5 5-1.5-5z" fill="#E0493D" />
+      <rect x="5" y="-12" width="9" height="7" rx="1.4" fill="#8A5A32" />
+      <circle cx="0" cy="-30" r="4.8" fill="#C48B5F" /><path d="M-5 -31.4a5 4.6 0 0 1 10 0c-2-1.6-8-1.6-10 0z" fill="#2B2118" />
+    </g>
+  );
+}
+function TxShop() {
+  return (
+    <g>
+      <rect x="-32" y="-50" width="64" height="50" rx="2" fill="#F2D9A6" />
+      <path d="M-37 -50h74l-6 15h-62z" fill="#D9453A" /><path d="M-25 -50h9l-2 15h-9zM-7 -50h9l-1 15h-9zM11 -50h9l0 15h-9z" fill="#fff" />
+      <rect x="-25" y="-30" width="24" height="20" rx="1.5" fill="#D3E9F9" /><rect x="6" y="-30" width="17" height="30" rx="1.5" fill="#5A4636" />
+      <rect x="-14" y="-62" width="28" height="11" rx="2" fill="#fff" /><path d="M-8 -57h16" stroke="#D9453A" strokeWidth="2.4" strokeLinecap="round" />
+    </g>
+  );
+}
+function TxFactory() {
+  return (
+    <g>
+      <rect x="20" y="-66" width="10" height="34" fill="#8E4F3C" /><rect x="19" y="-69" width="12" height="4" fill="#E8E1D6" />
+      <path d="M-34 0V-26l17-14v14l17-14v14l17-14v14l17-14V0z" fill="#B5654A" />
+      {Array.from({ length: 4 }, (_, i) => <rect key={i} x={-27 + i * 16} y="-24" width="9" height="9" rx="1" fill="#D3E9F9" />)}
+      <rect x="-12" y="-14" width="26" height="14" rx="1" fill="#7A4030" /><path d="M-12 -9h26M-12 -4h26" stroke="#5E3022" strokeWidth="1.1" />
+    </g>
+  );
+}
+function TxOffice() {
+  return (
+    <g>
+      <rect x="-23" y="-96" width="46" height="96" rx="2" fill="#7F93B5" /><rect x="-23" y="-100" width="46" height="5" rx="1" fill="#5E7396" />
+      {Array.from({ length: 6 }, (_, r) => Array.from({ length: 3 }, (_, c) => <rect key={`${r}${c}`} x={-16 + c * 12.5} y={-88 + r * 13} width="8" height="8" rx="1" fill="#D3E9F9" />))}
+      <rect x="-6" y="-14" width="12" height="14" rx="1" fill="#4A3A2C" />
+    </g>
+  );
+}
+// the public services that are paid for
+function TxHospital() {
+  return (
+    <g>
+      <rect x="-38" y="-58" width="76" height="58" rx="2" fill="#F0E2C2" />
+      <rect x="-13" y="-80" width="26" height="24" rx="2" fill="#fff" /><path d="M-3 -75h6v5h5v6h-5v5h-6v-5h-5v-6h5z" fill="#D9453A" />
+      {Array.from({ length: 4 }, (_, i) => <rect key={i} x={-30 + i * 17} y="-44" width="9" height="11" rx="1" fill="#D3E9F9" />)}
+      <rect x="-8" y="-20" width="16" height="20" rx="1.5" fill="#5A4636" /><rect x="-30" y="-24" width="9" height="11" rx="1" fill="#D3E9F9" /><rect x="21" y="-24" width="9" height="11" rx="1" fill="#D3E9F9" />
+    </g>
+  );
+}
+function TxSchool() {
+  return (
+    <g>
+      <rect x="-40" y="-44" width="80" height="44" rx="2" fill="#C86F52" />
+      <rect x="-10" y="-70" width="20" height="28" fill="#D98B63" /><path d="M-13 -70 0 -84 13 -70z" fill="#8E4F3C" /><circle cx="0" cy="-58" r="6" fill="#fff" /><path d="M0 -62v4h3" stroke="#3A2A20" strokeWidth="1.4" fill="none" strokeLinecap="round" />
+      {Array.from({ length: 2 }, (_, i) => Array.from({ length: 2 }, (_, c) => <rect key={`${i}${c}`} x={i ? 16 + c * 12 : -36 + c * 12} y="-34" width="8" height="10" rx="1" fill="#F6E7B8" />))}
+      <rect x="-7" y="-18" width="14" height="18" rx="1.5" fill="#5A4636" />
+      <path d="M0 -84V-98" stroke="#55627C" strokeWidth="1.6" /><path d="M0 -98h13v7h-13z" fill="#F2B233" />
+    </g>
+  );
+}
+function TxTank() {
+  return (
+    <g>
+      <rect x="-32" y="-14" width="64" height="14" rx="7" fill="#3E4A38" />
+      {[-22, -7, 8, 23].map((x) => <circle key={x} cx={x} cy="-7" r="4.4" fill="#59684F" />)}
+      <path d="M-27 -14 -22 -26H20l8 12z" fill="#5F7A48" /><path d="M-12 -26 -8 -37H12l5 11z" fill="#6E8B55" />
+      <rect x="12" y="-34" width="30" height="4.4" rx="2" fill="#4B5F39" />
+      <path d="M-18 -21h30" stroke="#4B5F39" strokeWidth="1.4" />
+      <path d="M-50 0V-44" stroke="#55627C" strokeWidth="1.8" /><path d="M-50 -44h15v8h-15z" fill="#D9453A" /><path d="M-50 -40h15" stroke="#fff" strokeWidth="1.6" />
+    </g>
+  );
+}
+function TxBus() {
+  return (
+    <g>
+      <rect x="-38" y="-34" width="76" height="30" rx="7" fill="#D9453A" />
+      <rect x="-38" y="-14" width="76" height="4" fill="#fff" opacity=".85" />
+      {Array.from({ length: 5 }, (_, i) => <rect key={i} x={-32 + i * 13} y="-29" width="9" height="11" rx="1.5" fill="#D3E9F9" />)}
+      <rect x="29" y="-29" width="7" height="14" rx="1.5" fill="#D3E9F9" />
+      {[-24, 22].map((x) => <g key={x}><circle cx={x} cy="-4" r="7" fill="#262B38" /><circle cx={x} cy="-4" r="3" fill="#9AA6B8" /></g>)}
+      <path d="M-56 0V-40" stroke="#55627C" strokeWidth="1.8" /><rect x="-64" y="-52" width="16" height="12" rx="2" fill="#2F6DB5" /><path d="M-60 -46h8M-60 -43h8" stroke="#fff" strokeWidth="1.4" />
+    </g>
+  );
+}
+const TX_EARNERS = [TxEmployee, TxShop, TxFactory, TxOffice];
+const TX_SPENDERS = [TxHospital, TxSchool, TxTank, TxBus];
 export function TaxScene() {
   return (
     <Scene kind="taxes">
-      <Backdrop id="tx" day sun={null} far={false} clouds={[[400, 30, 1, 29], [1050, 22, 0.7, 35], [1300, 36, 1.1, 41]]} />
+      <Backdrop id="tx" day sun={null} far={false} clouds={[[330, 52, 1, 29], [1050, 40, 0.8, 35], [1380, 60, 1, 41]]} />
       <defs>
-        <linearGradient id="tx-in" gradientUnits="userSpaceOnUse" x1="240" y1="0" x2="700" y2="0"><stop offset="0" style={{ stopColor: "var(--stream-in)" }} stopOpacity=".2" /><stop offset="1" style={{ stopColor: "var(--stream-in)" }} stopOpacity=".85" /></linearGradient>
-        <linearGradient id="tx-out" gradientUnits="userSpaceOnUse" x1="740" y1="0" x2="1200" y2="0"><stop offset="0" style={{ stopColor: "var(--stream-out)" }} stopOpacity=".9" /><stop offset="1" style={{ stopColor: "var(--stream-out)" }} stopOpacity=".25" /></linearGradient>
+        <linearGradient id="tx-gold" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#D9A93A" /><stop offset=".5" stopColor="#FBE08A" /><stop offset="1" stopColor="#D9A93A" /></linearGradient>
+        <filter id="tx-sticker" x="-40%" y="-30%" width="180%" height="150%" colorInterpolationFilters="sRGB">
+          <feMorphology in="SourceAlpha" operator="dilate" radius="1.1" result="grow" /><feFlood floodColor="#FFFFFF" result="white" /><feComposite in="white" in2="grow" operator="in" result="edge" /><feMerge><feMergeNode in="edge" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
       </defs>
-      {/* the whole diagram sits 16 units higher than its natural place, so it is not crowded against the foot of the band */}
-      <g transform="translate(0 -16)">
-      <g fill="none" stroke="var(--lamp)" strokeWidth="1" opacity=".09">{[96, 150, 206].map((r) => <circle key={r} cx={HUB.x} cy={HUB.y} r={r} />)}</g>
-      {/* the streams: a soft wide band under a finer line, drawing in once, then coins travelling along them */}
-      {SRC.map((x, i) => <g key={`i${x}`} fill="none" strokeLinecap="round"><path d={inStream(x, i)} stroke="url(#tx-in)" strokeWidth="14" opacity=".22" /><path className="ec-stream" pathLength="1" d={inStream(x, i)} stroke="url(#tx-in)" strokeWidth="3.2" style={{ "--i": i }} /></g>)}
-      {SNK.map((x, i) => <g key={`o${x}`} fill="none" strokeLinecap="round"><path d={outStream(x, i)} stroke="url(#tx-out)" strokeWidth="14" opacity=".22" /><path className="ec-stream" pathLength="1" d={outStream(x, i)} stroke="url(#tx-out)" strokeWidth="3.2" style={{ "--i": i + 4 }} /></g>)}
-      {SRC.map((x, i) => [0, 1].map((k) => <circle key={`ci${i}${k}`} r="3.6" className="ec-flow" style={{ offsetPath: `path("${inStream(x, i)}")`, "--d": `${1.4 + i * 0.4 + k * 1.7}s` }} />))}
-      {SNK.map((x, i) => [0, 1].map((k) => <circle key={`co${i}${k}`} r="3.6" className="ec-flow" style={{ offsetPath: `path("${outStream(x, i)}")`, "--d": `${2.4 + i * 0.4 + k * 1.7}s` }} />))}
-      {SRC.map((x, i) => <Badge key={`bi${x}`} x={x} icon={IN_ICONS[i]} i={i} />)}
-      {SNK.map((x, i) => <Badge key={`bo${x}`} x={x} icon={OUT_ICONS[i]} i={i} out />)}
-      {/* the Treasury's coin: a ticked rim that turns once, a gold ring and the pound sign */}
-      <g transform={`translate(${HUB.x} ${HUB.y})`}>
-        <circle r="92" fill="url(#tx-sun)" opacity=".4" />
-        <circle r="52" fill="var(--s2)" stroke="var(--a)" strokeWidth="2" />
-        <g className="ec-vwheel" style={{ transformOrigin: "0px 0px" }} stroke="var(--lamp)" strokeWidth="1.6" strokeLinecap="round" opacity=".7">
-          {Array.from({ length: 48 }, (_, i) => { const a = (i / 48) * Math.PI * 2; return <path key={i} d={`M${Math.cos(a) * 43} ${Math.sin(a) * 43}L${Math.cos(a) * 47.5} ${Math.sin(a) * 47.5}`} />; })}
+      <g className="hs-1">{BACK.map((b, i) => <rect key={i} x={b.x} y={200 - b.h * 0.55} width={b.w} height={b.h * 0.55} />)}</g>
+      <g className="hs-3 sv-ground"><rect x="0" y="188" width="1440" height="12" /></g>
+      {/* the earners, each with the coins they have made beside them */}
+      {TX_EARNERS.map((Earner, i) => (
+        <g key={`e${i}`}>
+          <g transform={`translate(${TX_E[i]} 190)`}>{i === 0 ? <g filter="url(#tx-sticker)"><Earner /></g> : <Earner />}</g>
+          <TxStack x={txEx(i)} n={TX_N[i]} who={i} earner />
         </g>
-        <circle r="36" fill="var(--s3)" stroke="#E8C766" strokeWidth="2.6" />
-        <circle r="30" fill="none" stroke="#E8C766" strokeWidth="1" opacity=".55" />
-        <path d={POUND} transform="scale(3.4)" fill="none" stroke="#F7D675" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+      ))}
+      {/* the public services, each with the coins it has been given beside it */}
+      {TX_SPENDERS.map((Spender, j) => (
+        <g key={`s${j}`}>
+          <g transform={`translate(${TX_R[j]} 190)`}><Spender /></g>
+          <TxStack x={txRx(j)} n={TX_BASE[j]} who={j} />
+        </g>
+      ))}
+      {/* the Treasury's coin: a ticked rim that turns once, a gold ring and the pound sign; it pulses as each tax coin arrives */}
+      <g transform={`translate(${TX_HUB.x} ${TX_HUB.y})`}>
+        {TX_TRIPS.map((t) => <circle key={`p${t.i}${t.c}`} className="ec-pulse" r="34" style={{ "--d": `${t.start + TX_IN - 0.1}s` }} />)}
+        <circle r="46" fill="#FFE9A6" opacity=".28" />
+        <circle r="35" fill="var(--s2)" stroke="var(--a)" strokeWidth="2" />
+        <g className="ec-vwheel" style={{ transformOrigin: "0px 0px" }} stroke="#fff" strokeWidth="1.3" strokeLinecap="round" opacity=".7">
+          {Array.from({ length: 40 }, (_, i) => { const a = (i / 40) * Math.PI * 2; return <path key={i} d={`M${Math.cos(a) * 29} ${Math.sin(a) * 29}L${Math.cos(a) * 32.5} ${Math.sin(a) * 32.5}`} />; })}
+        </g>
+        <circle r="24" fill="var(--s3)" stroke="#E8C766" strokeWidth="2" />
+        <path d={POUND} transform="scale(2.4)" fill="none" stroke="#F7D675" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
       </g>
-      </g>
-      <g className="hs-3 sv-ground"><rect x="0" y="190" width="1440" height="10" /></g>
+      {/* the journey of each tax coin: out of an earner's stack, up to the Treasury, then down onto a public service's stack */}
+      {TX_TRIPS.map((t) => (
+        <g key={`f${t.i}${t.c}`}>
+          <circle className="tx-fly-in" r="5" style={{ offsetPath: `path("${txFrom(t)}")`, "--d": `${t.start}s`, "--t": `${TX_IN}s` }} />
+          <circle className="tx-fly-out" r="5" style={{ offsetPath: `path("${txOnward(t)}")`, "--d": `${t.start + TX_IN + 0.1}s`, "--t": `${TX_OUT}s` }} />
+        </g>
+      ))}
     </Scene>
   );
 }
