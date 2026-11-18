@@ -457,18 +457,14 @@ export function TaxScene() {
           {/* the Thames and the embankment */}
           <rect x="-50" y="22" width="100" height="30" fill="#4C86C8" /><path d="M-44 31q6-3 12 0t12 0 12 0 12 0 12 0 12 0 12 0M-44 39q6-3 12 0t12 0 12 0 12 0 12 0 12 0 12 0" stroke="#A9CDF0" strokeWidth="1.4" fill="none" strokeLinecap="round" />
           <rect x="-50" y="18" width="100" height="6" fill="#B8A56E" />
-          {/* the Palace: a long low front, with the Elizabeth Tower, the middle tower and the Victoria Tower; drawn smaller than the coin so every tower, spire and flag sits inside it */}
+          {/* the Palace: a long low front, with the Elizabeth Tower, a middle roof and the Victoria Tower, kept simple; drawn smaller than the coin so every tower, spire and flag sits inside it */}
           <g transform="translate(0 4) scale(0.72)">
           <rect x="-42" y="2" width="84" height="17" fill="#E6D39B" />
-          {Array.from({ length: 14 }, (_, i) => <path key={i} d={`M${-39 + i * 6} 2l1.6-5 1.6 5z`} fill="#D9C27F" />)}
-          {Array.from({ length: 13 }, (_, i) => <rect key={i} x={-38 + i * 6} y="8" width="3" height="7" rx="1.5" fill="#A88C48" />)}
-          <rect x="-37" y="-27" width="15" height="31" fill="#EBDAA6" /><rect x="-39" y="-34" width="19" height="8" fill="#E0CB8E" />
-          <path d="M-39 -34 -29.500 -50 -20 -34z" fill="#C9B070" /><path d="M-29.500 -50v-6" stroke="#C9B070" strokeWidth="1.2" />
-          <circle cx="-29.500" cy="-17" r="5.200" fill="#fff" stroke="#A88C48" strokeWidth="1" /><path d="M-29.500 -20.500v3.500h2.600" stroke="#1D3050" strokeWidth="1.1" fill="none" strokeLinecap="round" />
-          <path d="M-35 -27v-6M-24 -27v-6" stroke="#A88C48" strokeWidth="1" />
+          <rect x="-37" y="-27" width="15" height="31" fill="#EBDAA6" />
+          <path d="M-39 -27 -29.500 -50 -20 -27z" fill="#C9B070" />
+          <circle cx="-29.500" cy="-14" r="5" fill="#fff" stroke="#A88C48" strokeWidth="1" />
           <rect x="-7" y="-14" width="14" height="17" fill="#EBDAA6" /><path d="M-8 -14 0 -28 8 -14z" fill="#C9B070" />
           <rect x="21" y="-22" width="19" height="26" fill="#EBDAA6" /><rect x="19" y="-25" width="23" height="4" fill="#D9C27F" />
-          {[19, 40].map((x) => <path key={x} d={`M${x} -25l1.400-5 1.400 5z`} fill="#C9B070" />)}
           <path d="M30.500 -25v-13" stroke="#6B5A33" strokeWidth="1.200" /><path d="M30.500 -38h9v5.500h-9z" fill="#D9453A" />
           </g>
         </g>
