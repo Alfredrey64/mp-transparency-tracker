@@ -19,6 +19,7 @@ function audit({ minFont }) {
   for (const svg of document.querySelectorAll("main svg, #main-content svg")) {
     const r = svg.getBoundingClientRect();
     if (svg.closest(".tm-preview")) continue; // a thumbnail of a lesson slide, not meant to be read
+    if (svg.closest(".hs-scene, .fm-scene")) continue; // the picture along the foot of a heading band: decorative, and deliberately cropped to its middle on a phone
     if (r.width < 40 || r.height < 20 || getComputedStyle(svg).display === "none" || svg.closest("[aria-hidden='true']") && r.width < 120) continue;
     const name = tag(svg);
     // A picture inside a box that scrolls sideways is meant to be wider than the screen.
@@ -44,6 +45,7 @@ function audit({ minFont }) {
   for (const el of document.querySelectorAll("main canvas")) { const r = el.getBoundingClientRect(); if (r.width > 40 && r.right > vw + 1) out.push(`${tag(el)}: canvas sticks out of the screen`); }
   // Boxes that hide overflow while their content is wider than they are, where the content is a chart or table.
   for (const el of document.querySelectorAll("main *")) {
+    if (el.matches(".hs-scene, .fm-scene")) continue;
     const cs = getComputedStyle(el);
     if (/(hidden|clip)/.test(cs.overflowX) && el.scrollWidth > el.clientWidth + 3 && el.clientWidth > 40 && el.querySelector("svg, table, canvas")) out.push(`${tag(el)}: hides ${el.scrollWidth - el.clientWidth}px of its chart or table`);
   }
