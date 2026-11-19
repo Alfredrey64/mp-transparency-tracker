@@ -5,16 +5,17 @@ import { supabase } from "../supabaseClient";
 import { COLORS, FONT_BODY, PAGE_PADDING } from "../theme";
 import { partyColour } from "../lib/format";
 import { PageHeader } from "./shared";
-import { IconPinHome, IconSearch, IconCouncil, IconVote, IconTrend, IconCalendar, IconPetition } from "./icons";
+import { IconPinHome, IconSearch, IconCouncil, IconVote, IconCalendar, IconPetition } from "./icons";
 import { councilsForCodes, nextElectionText, longDate, controlColourOf, seatsByParty } from "../lib/councils";
 import { daysUntil } from "../lib/localElections";
 import CountUp from "./CountUp";
 import { loadCouncillorList, councillorPath } from "../lib/councillorsView";
 import { regionKeyOf, wardCouncillors, loadAreaFigures } from "../lib/areaFigures";
 import { REGIONS } from "../data/regionMetrics";
-import { Card, Section, Glance, JumpNav, SeatResult, SeatHistory, SeatCard, MpDoing, Neighbours, CouncilHistory, RegionOutline, LocalPetitions, CouncilTax, WhoDoes, PlanningCard, Neighbourhood, PlaceFacts, HomesCrime, RegionRanks, Census, Contests, Help, Deeper } from "./AreaSections";
+import { Card, Section, Glance, JumpNav, SeatResult, SeatHistory, SeatCard, MpDoing, Neighbours, CouncilHistory, LocalPetitions, WhoDoes, Contests, Help, Deeper } from "./AreaSections";
+import AreaNumbers from "./AreaNumbers";
+import { VIEWS, POLITICS_JUMPS, NUMBERS_JUMPS, viewOf, pathOf } from "../lib/areaViews";
 import { MpMoneyCard, IndependenceCard, RepsCard, AreaTools } from "./AreaMp";
-import { ComplaintsCard, NearYouCard } from "./AreaAccountability";
 import { useAreaExtras } from "../lib/useAreaExtras";
 import { yearsSince } from "../lib/areaProfile";
 import { WeekSection } from "./YourWeek";
@@ -64,29 +65,22 @@ function Countdown({ days }) {
   );
 }
 
-function Bars({ figures }) {
+// The switch between the two views, drawn as two large tabs under the postcode banner.
+function ViewSwitch({ view, onPick }) {
   return (
-    <div className="ma-bars">
-      {figures.map((f, n) => {
-        const max = Math.max(f.raw, f.ukRaw) || 1;
-        return (
-          <a key={f.id} className="ma-bar" href={f.link.href} style={{ "--fc": f.accent, "--n": n }}>
-            <span className="ma-bar-label">{f.label}<small>{f.same ? "same as the UK" : f.higher ? "above the UK" : "below the UK"}</small></span>
-            <span className="ma-bar-rows">
-              <span className="ma-bar-row"><i style={{ "--w": f.raw / max }} /><b>{f.value}</b></span>
-              <span className="ma-bar-row ma-bar-uk"><i style={{ "--w": f.ukRaw / max }} /><b>{f.uk}</b></span>
-            </span>
-          </a>
-        );
-      })}
-      <p className="ma-legend"><span><i style={{ background: "#2F9E6E" }} />Your region</span><span><i style={{ background: "#9AA6B8" }} />The UK</span></p>
+    <div className="ma-views" role="tablist" aria-label="Which view of your area">
+      {VIEWS.map((v) => (
+        <button key={v.key} type="button" role="tab" id={`ma-view-${v.key}`} aria-selected={view === v.key} aria-controls="ma-view-panel" onClick={() => onPick(v.key)}>
+          <b>{v.title}</b><small>{v.sub}</small>
+        </button>
+      ))}
     </div>
   );
 }
 
-function Dashboard({ data, onForget }) {
+function Dashboard({ data, onForget, view, onView }) {
   const x = useAreaExtras(data);
-  const { result: r, mp, council, county, people, councillorParties, figures, regionName, parties } = data;
+  const { result: r, mp, council, county, people, councillorParties, regionName, parties } = data;
   const next = council?.next?.[0];
   const days = next ? daysUntil(next[0]) : null;
   const mpColour = partyColour(mp?.party_colour, "#1E4FB8");
@@ -110,6 +104,10 @@ function Dashboard({ data, onForget }) {
         <button type="button" className="ma-forget" onClick={onForget}>Use a different postcode</button>
       </div>
 
+      <ViewSwitch view={view} onPick={onView} />
+
+      <div id="ma-view-panel" role="tabpanel" aria-labelledby={`ma-view-${view}`} key={view}>
+      {view === "politics" && (
     <Card i={0} colour={mpColour} icon={<IconVote size={20} />} title="Your MP" className="ma-mpcard ma-mpstrip">
       {mp ? (
         <>
@@ -133,10 +131,13 @@ function Dashboard({ data, onForget }) {
         </>
       ) : <p>We found the constituency ({r.parliamentary_constituency}) but couldn't match it to a current MP.</p>}
     </Card>
+      )}
 
       <Glance data={data} x={x} />
-      <JumpNav />
+      <JumpNav jumps={view === "numbers" ? NUMBERS_JUMPS : POLITICS_JUMPS} />
 
+      {view === "numbers" ? <AreaNumbers data={data} x={x} /> : (
+      <>
       <WeekSection mp={mp} colour={mpColour} />
 
       <Section id="ma-mp" title="Your MP and your seat" lede={`${r.parliamentary_constituency} is one of 650 seats. Here is who represents it, how it voted and how it has changed hands.`} colour={mpColour}>
@@ -185,26 +186,7 @@ function Dashboard({ data, onForget }) {
           <a className="ma-link" href="#/councillors">Search every councillor</a>
         </Card>
         <CouncilHistory x={x} council={council} i={2} />
-        <CouncilTax x={x} i={3} />
-        <WhoDoes x={x} i={4} />
-        <PlanningCard x={x} i={5} />
-        <ComplaintsCard council={council} county={county} i={6} />
-      </Section>
-
-      <Section id="ma-place" title="Your neighbourhood" lede="How the place you live compares with the rest of the country, and which bodies cover it." colour="#C0478A">
-        <Neighbourhood x={x} i={0} />
-        <PlaceFacts x={x} i={1} />
-        <HomesCrime x={x} regionName={regionName} i={2} />
-        <NearYouCard r={r} i={3} />
-      </Section>
-
-      <Section id="ma-region" title={`Your region: ${regionName ?? "the UK"}`} lede="Figures published for the whole region, set against the rest of the UK. They describe the region, not your street." colour="#2F9E6E">
-        <Card i={0} colour="#2F9E6E" icon={<IconTrend size={20} />} title={`How ${regionName ?? "your region"} compares`} className="ma-region">
-          {figures.length > 0 ? <div className="ma-region-grid"><RegionOutline regionKey={x?.regionKey} regionName={regionName} /><Bars figures={figures} /></div> : <p>Regional figures aren't available for this area.</p>}
-          <a className="ma-link" href="#/regions">Compare every region</a>
-        </Card>
-        <RegionRanks x={x} regionName={regionName} i={1} />
-        <Census x={x} regionName={regionName} i={2} />
+        <WhoDoes x={x} i={3} />
       </Section>
 
       <Section id="ma-vote" title="Elections and your vote" lede="What you can vote in, when, and what to do before polling day." colour="#7A5AF0">
@@ -234,11 +216,21 @@ function Dashboard({ data, onForget }) {
         <Help i={2} />
         <Deeper i={3} />
       </Section>
+      </>
+      )}
+      </div>
     </>
   );
 }
 
-export default function MyArea() {
+export default function MyArea({ param = null }) {
+  const [view, setView] = useState(() => viewOf(param));
+  const [seenParam, setSeenParam] = useState(param);
+  if (param !== seenParam) { setSeenParam(param); setView(viewOf(param)); }
+  const pickView = (key) => {
+    setView(key);
+    try { window.history.replaceState(null, "", pathOf(key)); } catch { /* the address stays as it was */ }
+  };
   const [postcode, setPostcode] = useState(read);
   const [state, setState] = useState({ status: "idle", data: null, error: null });
 
@@ -275,7 +267,7 @@ export default function MyArea() {
           <p className="ma-help">Your postcode is looked up once with postcodes.io and saved only in this browser, so you can skip this step next time. We never see it. See the <a href="#/privacy">privacy policy</a>.</p>
         </>
       )}
-      {state.status === "ready" && <Dashboard data={state.data} onForget={forget} />}
+      {state.status === "ready" && <Dashboard data={state.data} onForget={forget} view={view} onView={pickView} />}
       <p style={{ fontFamily: FONT_BODY, fontSize: 12, lineHeight: 1.6, color: COLORS.inkSoft, marginTop: 26, maxWidth: 760 }}>
         Constituency and ward names come from postcodes.io (Ordnance Survey and ONS open data). Councils and councillors come from Open Council Data UK, and regional figures from the Office for National Statistics.
       </p>

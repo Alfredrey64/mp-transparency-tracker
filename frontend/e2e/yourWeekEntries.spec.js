@@ -28,7 +28,7 @@ async function mock(page) {
   await page.route("**/elections.democracyclub.org.uk/**", (route) => route.fulfill({ status: 200, contentType: "application/json", headers: cors, body: JSON.stringify({ results: [] }) }));
 }
 
-test("the MP's photo and name come straight after the banner", async ({ page }) => {
+test("the MP's photo and name come straight after the banner and the view switch", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await mock(page);
   await page.goto("/myArea");
@@ -37,8 +37,9 @@ test("the MP's photo and name come straight after the banner", async ({ page }) 
   await expect(strip.getByText("Test Member")).toBeVisible();
   const order = await page.evaluate(() => {
     const hero = document.querySelector(".ma-hero");
-    const next = hero.nextElementSibling;
-    return next?.classList.contains("ma-mpstrip");
+    // The banner, then the switch between the two views, then the MP.
+    const views = hero.nextElementSibling;
+    return views?.classList.contains("ma-views") && views.nextElementSibling?.firstElementChild?.classList.contains("ma-mpstrip");
   });
   expect(order).toBe(true);
   await expect(page.locator("#ma-mp .ma-mpcard")).toHaveCount(0);

@@ -9,7 +9,7 @@ import {
 } from "../components/icons";
 import {
   IconContract, IconPeerage, IconElectionSpend, IconForeignAgent, IconMayor, IconCouncilBudget, IconPolice, IconPlanning, IconCivilService, IconCourt, IconCrown, IconAudit,
-  IconJustice, IconWater, IconPoll, IconAid, IconWheat, IconFlood, IconSignal, IconBudget, IconSignpost, IconInquiry, IconDepartments,
+  IconJustice, IconWater, IconPoll, IconAid, IconWheat, IconFlood, IconSignal, IconBudget, IconSignpost, IconInquiry, IconDepartments, IconConsultation,
 } from "../components/newIcons";
 
 // Lives outside both Sidebar.jsx and shared.jsx specifically so neither has
@@ -82,6 +82,7 @@ export const SECTIONS = [
       { key: "getThingsDone", label: "How to get something done", icon: IconSignpost, hint: "Who to contact, how to complain, and how to ask for information", essential: true, aka: ["complain", "complaint", "ombudsman", "foi", "freedom of information", "who do i contact", "how do i complain", "iopc", "police complaint", "council complaint", "nhs complaint", "ico", "request information", "whatdotheyknow"] },
       { key: "mayors", label: "Mayors and regional authorities", icon: IconMayor, hint: "England's elected regional leaders", aka: ["combined authorities", "metro mayors", "devolution"] },
       { key: "councilComplaints", label: "How councils handle complaints", icon: IconBroadcast, hint: "How often the Ombudsman found a council at fault", aka: ["ombudsman", "lgo", "complaints about councils", "upheld complaints", "council complaints", "social care complaints"] },
+      { key: "consultations", label: "Have your say on new rules", icon: IconConsultation, hint: "Open government consultations and when they close", aka: ["consultation", "consultations", "have your say", "respond", "reply to government", "call for evidence", "open consultation", "gov.uk consultation", "proposed rules"] },
       { key: "nearYou", label: "Schools and A&E near you", icon: IconPin, hint: "Ofsted results and four-hour A&E figures for your postcode", aka: ["schools near me", "ofsted", "a and e", "accident and emergency", "hospital near me", "nhs trust", "school ratings", "report card", "postcode"] },
       { key: "councilSpending", label: "Council budgets", icon: IconCouncilBudget, hint: "Where your council spends", aka: ["council spending", "section 114", "social care spending"] },
       { key: "policeCommissioners", label: "Police and crime commissioners", icon: IconPolice, hint: "Who answers for your police force", aka: ["pcc", "police commissioner"] },
@@ -293,7 +294,7 @@ export const HUBS = [
   { key: "seat", label: "Your constituency", hint: "Your seat, and close contests", pages: [["constituency", "Your constituency"], ["marginals", "Marginal seats"], ["compareSeats", "Compare seats"]] },
   { key: "council", label: "Your council", hint: "Who runs it, your councillors, and how it compares", pages: [["councils", "Your council"], ["councillors", "Your councillors"], ["compareCouncils", "Compare councils"], ["councilSpending", "Budgets"]] },
   { key: "localpower", label: "Local power", hint: "Mayors, police commissioners and planning", pages: [["mayors", "Mayors"], ["policeCommissioners", "Police commissioners"], ["planning", "Planning"]] },
-  { key: "takeaction", label: "Get things done", hint: "Who to contact, how to complain, how councils handle complaints, and how to start a petition", pages: [["getThingsDone", "How to get something done"], ["petitions", "Petitions"], ["councilComplaints", "Council complaints"]] },
+  { key: "takeaction", label: "Get things done", hint: "Who to contact, how to complain, how councils handle complaints, how to start a petition, and open consultations", pages: [["getThingsDone", "How to get something done"], ["petitions", "Petitions"], ["councilComplaints", "Council complaints"], ["consultations", "Have your say"]] },
   // Elections
   { key: "results", label: "Election results", hint: "General, by- and local elections, and the polls", pages: [["generalElection", "General elections"], ["byElections", "By-elections"], ["localElections", "Local elections"], ["polling", "Polls explained"]] },
   { key: "electionsexplained", label: "Elections explained", hint: "How a seat is won, and how far people trust the system", pages: [["howElectionsWork", "How elections work"], ["trust", "Trust and turnout"]] },

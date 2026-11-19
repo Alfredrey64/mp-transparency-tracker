@@ -21,6 +21,7 @@ import { longDate } from "../lib/councils";
 import { daysUntil } from "../lib/localElections";
 import { buildIcs, electionEvents, downloadIcs } from "../lib/calendar";
 import { taxYear, tenthWords, seatStory, seatHeadline } from "../lib/areaProfile";
+import { POLITICS_JUMPS } from "../lib/areaViews";
 
 // The sections of the Your area page that come from the files saved with the site rather than from the postcode lookup. They load after the page is
 // drawn, each on its own, so a slow or missing file leaves one card saying so and nothing else.
@@ -88,10 +89,9 @@ export function Glance({ data, x }) {
   );
 }
 
-const JUMPS = [["ma-week", "Your week"], ["ma-mp", "MP and seat"], ["ma-council", "Council"], ["ma-place", "Neighbourhood"], ["ma-region", "Region"], ["ma-vote", "Elections"], ["ma-act", "Get help"]];
-
 // Stays under the header while the page scrolls, and marks the section being read.
-export function JumpNav() {
+export function JumpNav({ jumps = POLITICS_JUMPS }) {
+  const JUMPS = jumps;
   const [active, setActive] = useState(null);
   useEffect(() => {
     if (typeof IntersectionObserver !== "function") return undefined;
@@ -102,7 +102,7 @@ export function JumpNav() {
     }, { rootMargin: "-30% 0px -60% 0px" });
     for (const [id] of JUMPS) { const el = document.getElementById(id); if (el) io.observe(el); }
     return () => io.disconnect();
-  }, []);
+  }, [jumps]); // eslint-disable-line react-hooks/exhaustive-deps -- JUMPS is the prop
   const go = (id) => {
     const reduce = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
     document.getElementById(id)?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });

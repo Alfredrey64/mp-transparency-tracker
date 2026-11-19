@@ -15,10 +15,13 @@ import { fetchRetry } from "../../httpFetch.js";
 import { parseCsv } from "./build-council-complaints.mjs";
 import { gridToLatLon } from "./osgb.mjs";
 import { schoolRecord, tileOf } from "./schools-lib.mjs";
+import { withResults } from "./school-results-lib.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = path.join(here, "../public/data/schools");
 const META = path.join(here, "../src/data/schoolsMeta.json");
+// GCSE and Year 6 test results by school, kept by build-school-results.mjs so that a rebuild of the tiles does not lose them.
+const RESULTS = path.join(here, "data/school-results.json");
 const SET = "https://www.gov.uk/api/content/government/statistical-data-sets/monthly-management-information-ofsteds-school-inspections-outcomes";
 const GIAS = (stamp) => `https://ea-edubase-api-prod.azurewebsites.net/edubase/downloads/public/edubasealldata${stamp}.csv`;
 const headers = { "User-Agent": "Mozilla/5.0 domesday-live" };
@@ -59,11 +62,13 @@ async function main() {
     if (e > 0 && n > 0) places.set(r["URN"], gridToLatLon(e, n));
   }
 
+  const results = fs.existsSync(RESULTS) ? JSON.parse(fs.readFileSync(RESULTS, "utf8")) : { ks4: {}, ks2: {} };
   const tiles = new Map();
   let schools = 0;
   for (const row of inspections) {
-    const rec = schoolRecord(row, places.get(String(row["URN"]).trim()));
-    if (!rec) continue;
+    const base = schoolRecord(row, places.get(String(row["URN"]).trim()));
+    if (!base) continue;
+    const rec = withResults(base, results.ks4, results.ks2);
     const k = tileOf(rec.la, rec.lo);
     if (!tiles.has(k)) tiles.set(k, []);
     tiles.get(k).push(rec);

@@ -35,4 +35,5 @@ export const EXPLAINER_KEYS = [
   "auditWatch",
   "councilComplaints",
   "nearYou",
+  "consultations",
 ];

@@ -248,7 +248,7 @@ function titleForState(view, selected, param, tr = (x) => x) {
   if (view === "numbers" && param === "lords") return `Parliament in Numbers: the Lords | ${base}`;
   if (view === "numbers" && param === "who") return `Parliament in Numbers: who they are | ${base}`;
   // For the Lords the parameter is a peer's id, which makes a poor title.
-  if (param && view !== "thisWeek" && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view) && view !== "regions" && view !== "answers" && view !== "deprivation" && view !== "compareSeats" && view !== "compareCouncils" && view !== "parties" && view !== "generalElection" && view !== "taxRates" && view !== "inequality" && view !== "brexit" && view !== "defence" && view !== "education" && view !== "ageing" && view !== "nhs" && view !== "energy" && view !== "trust" && view !== "care" && view !== "transport" && view !== "union" && view !== "calculators" && view !== "teacher") return `${param} | ${tr(PAGE_TITLES[view] ?? base)} | ${base}`;
+  if (param && view !== "myArea" && view !== "thisWeek" && view !== "lords" && view !== "numbers" && view !== "councils" && view !== "indicators" && !SECTOR_VIEWS.has(view) && view !== "regions" && view !== "answers" && view !== "deprivation" && view !== "compareSeats" && view !== "compareCouncils" && view !== "parties" && view !== "generalElection" && view !== "taxRates" && view !== "inequality" && view !== "brexit" && view !== "defence" && view !== "education" && view !== "ageing" && view !== "nhs" && view !== "energy" && view !== "trust" && view !== "care" && view !== "transport" && view !== "union" && view !== "calculators" && view !== "teacher") return `${param} | ${tr(PAGE_TITLES[view] ?? base)} | ${base}`;
   if (view === "home") return base;
   const label = PAGE_TITLES[view];
   return label ? `${tr(label)} | ${base}` : base;
@@ -670,7 +670,7 @@ export default function App() {
             {view === "funding" && <Funding onNavigate={handleNavigate} />}
             {view === "about" && <About onNavigate={handleNavigate} />}
             {view === "corrections" && <Corrections onNavigate={handleNavigate} />}
-            {view === "myArea" && <MyArea />}
+            {view === "myArea" && <MyArea param={viewParam} />}
             {view === "thisWeek" && <ThisWeek param={viewParam} />}
             {view === "councillors" && <Councillors param={viewParam} />}
             {view === "lordsVotes" && <LordsVotes />}

@@ -242,9 +242,9 @@ export const PAGE_GUIDES = {
     notShown: "Anything not yet published or announced, the reasons behind decisions, or speeches. The past follows the daily refresh, and the calendar lists planned business, which can change.",
   },
   myArea: {
-    what: "Your postcode, turned into your MP, constituency, council, ward councillors, next elections and a comparison of your region with the UK.",
+    what: "Your postcode, turned into your MP, council and next elections, with a second view in numbers: crime, health, schools, sewage, jobs and pay, and how your region compares.",
     why: "Politics is easier to care about when it is about your street. Everything that decides local life, from the bin collection to the law, is a few taps away.",
-    notShown: "Anything below ward level, parish councils, or street-level figures. Regional figures are for your whole region, not your town. Your postcode is kept only in your browser.",
+    notShown: "Anything below ward level. Crime, health, school and water figures cover England only. Regional figures are for your whole region, not your town. Your postcode stays in your browser.",
   },
   funding: {
     what: "Who pays for this site, who does not, and the rules it keeps whatever the funding is, including a public log of any money received.",
@@ -610,6 +610,11 @@ export const PAGE_GUIDES = {
     what: "How complaints about each council in England were decided by the Local Government and Social Care Ombudsman last year, with the average for similar councils.",
     why: "When a council cannot settle a complaint, these figures are the public record of how often it was found at fault and how it responded.",
     notShown: "Scottish, Welsh and Northern Irish councils, complaints that never reached the Ombudsman, or whether a council is good overall.",
+  },
+  consultations: {
+    what: "Every consultation open now on GOV.UK, soonest to close first, with its closing day and the department running it.",
+    why: "A consultation is one of the few times the public is asked, in writing, before a rule changes, and it only counts if people see it before the closing day.",
+    notShown: "What each proposal would do in detail, how many people have replied, or whether the department will change its plan.",
   },
   nearYou: {
     what: "Schools within three miles of a postcode with their latest Ofsted result, and the three nearest NHS trusts with their latest four-hour A&E figures.",

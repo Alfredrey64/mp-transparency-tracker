@@ -10,5 +10,11 @@ export const parliamentCalendar = () => import("../data/parliamentCalendar.json"
 export const regionalBreakdowns = () => import("../data/regionalBreakdowns.json");
 export const backbench = () => import("../data/backbench.json");
 export const auditReports = () => import("../data/auditReports.json");
+export const consultations = () => import("../data/consultations.json");
 export const councilComplaints = () => import("../data/councilComplaints.json");
 export const aeNearYou = () => import("../data/aeNearYou.json");
+export const bathingWater = () => import("../data/bathingWater.json");
+export const localEconomy = () => import("../data/localEconomy.json");
+export const councilServices = () => import("../data/councilServices.json");
+export const rttWaits = () => import("../data/rttWaits.json");
+export const healthMeta = () => import("../data/healthMeta.json");

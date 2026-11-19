@@ -1,5 +1,7 @@
 /** @jsxImportSource react */
 import { inspectionRows, PHASE_NAME, CONCERN_NAME, CARD_GRADES, SAFEGUARDING_TEXT } from "../../lib/nearYou";
+import { resultRow } from "../../lib/schoolResults";
+import resultsMeta from "../../data/schoolResultsMeta.json";
 import "../../accountability.css";
 
 // The cards used by both the Schools and A&E near you page and the Your area page, so a school or an A&E department looks the same wherever it is shown.
@@ -57,6 +59,7 @@ function Result({ row }) {
 export function School({ s }) {
   const rows = inspectionRows(s);
   const card = rows.find((r) => r.kind === "card");
+  const results = resultRow(s, resultsMeta);
   return (
     <li className="sc-card" style={{ "--ac": s.x ? "#B3262E" : card ? (card.weak ? "#C88A1E" : "#2F8F6B") : "#8DA2C0" }}>
       <div className="sc-head">
@@ -68,7 +71,22 @@ export function School({ s }) {
         {s.k > 0 && <span className="sc-tag">{s.k.toLocaleString("en-GB")} pupils</span>}
         {s.x && <span className="sc-tag sc-alert">Ofsted category: {CONCERN_NAME[s.x] ?? s.x}</span>}
       </div>
-      <dl className="sc-rows">{rows.map((r) => <Result key={r.kind} row={r} />)}</dl>
+      <dl className="sc-rows">
+        {rows.map((r) => <Result key={r.kind} row={r} />)}
+        {results && (
+          <div className="sc-row">
+            <dt>{results.label}<small>{results.small}</small></dt>
+            <dd><span className="sc-big">{results.big}</span><span className="sc-sum">{results.text}</span></dd>
+          </div>
+        )}
+      </dl>
+      {results?.extra.length > 0 && (
+        <details className="sc-areas">
+          <summary>More about these results</summary>
+          <ol>{results.extra.map((e) => <li key={e.label}><div className="sc-area-head"><b>{e.label}</b></div><p>{e.text}</p></li>)}</ol>
+          <p className="sc-areas-note">From the Department for Education's school performance tables. Results describe past pupils, not how a school will do for yours, and they follow a school's intake as much as its teaching.</p>
+        </details>
+      )}
       {card && <SixAreas row={card} />}
     </li>
   );
@@ -87,7 +105,7 @@ export function GradeKey() {
 }
 
 // One NHS trust's four-hour A&E figures, laid out like a school: name and distance, region, then one row for each measure.
-export function TrustCard({ t, nat, month }) {
+export function TrustCard({ t, nat, month, wait = null, waitMonth = "", waitNat = null }) {
   const tone = t.allWithin4 >= 85 ? "#3F7D5C" : t.allWithin4 >= nat.allWithin4 ? "#2C7DA0" : "#B3262E";
   return (
     <li className="sc-card" style={{ "--ac": tone }}>
@@ -113,7 +131,46 @@ export function TrustCard({ t, nat, month }) {
           <dt>Long waits<small>12 hours or more</small></dt>
           <dd><span className="sc-big">{t.waited12.toLocaleString("en-GB")}</span><span className="sc-sum">waited from the decision to admit. {t.attendances.toLocaleString("en-GB")} major A&amp;E attendances in the month.</span></dd>
         </div>
+        {wait && (
+          <div className="sc-row">
+            <dt>Waiting list<small>{waitMonth}</small></dt>
+            <dd>
+              <span className="sc-big">{wait.pct18}%</span>
+              <span className="sc-sum">of the {wait.waiting.toLocaleString("en-GB")} people waiting for planned treatment have waited under 18 weeks. The standard is 92%{waitNat != null ? `; the trusts that reported average ${waitNat}%` : ""}. The typical wait so far is {wait.median} weeks, and {wait.w52.toLocaleString("en-GB")} have waited over a year.</span>
+              <span className="ac-meter sc-meter" role="img" aria-label={`${wait.pct18} percent have waited under 18 weeks. The 92 percent standard is marked.`}><i style={{ width: `${wait.pct18}%`, "--ac": wait.tone }} /><b style={{ left: "92%" }} /></span>
+            </dd>
+          </div>
+        )}
       </dl>
+    </li>
+  );
+}
+
+// A place with figures, laid out like a school: its name (linked if there is a page for it) and distance, tags, then one row for each measure. Used for the In numbers
+// view's health services, bathing waters and sewage overflows so every nearby place on Your area looks alike. A row is { label, small, pill: {tone, label}, big, text, note }.
+export function PlaceCard({ name, href, miles, tags = [], tone = "#8DA2C0", rows = [], children }) {
+  return (
+    <li className="sc-card" style={{ "--ac": tone }}>
+      <div className="sc-head">
+        <h3>{href ? <a href={href} target="_blank" rel="noreferrer">{name}<span className="sr-only"> (opens in a new tab)</span></a> : name}</h3>
+        {miles != null && <span className="sc-dist"><b>{miles.toFixed(1)}</b> miles away</span>}
+      </div>
+      {tags.length > 0 && <div className="sc-tags">{tags.map((t) => <span key={t.text ?? t} className={`sc-tag${t.alert ? " sc-alert" : ""}`}>{t.text ?? t}</span>)}</div>}
+      {rows.length > 0 && (
+        <dl className="sc-rows">
+          {rows.map((r) => (
+            <div className="sc-row" key={r.label}>
+              <dt>{r.label}{r.small && <small>{r.small}</small>}</dt>
+              <dd>
+                {r.pill && <Pill tone={r.pill.tone}>{r.pill.label}</Pill>}
+                {r.big != null && <span className="sc-big">{r.big}</span>}
+                {r.text && <span className="sc-sum">{r.text}</span>}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      )}
+      {children}
     </li>
   );
 }

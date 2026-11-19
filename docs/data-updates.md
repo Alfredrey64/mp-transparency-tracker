@@ -11,7 +11,10 @@ What updates itself, what is watched, and what a person has to do, with the step
 | Tax rates against the newest Budget | daily | `.github/workflows/tax-data.yml` |
 | Who is Prime Minister, Chancellor, and the First Ministers | daily | `.github/workflows/office-holders.yml` |
 | Small copies of member portraits (128 px WebP, `frontend/public/portraits/<member id>.webp`; Parliament's own thumbnails are 230 KB each). Only new members are added; until a copy exists the host passes the request to Parliament (`frontend/vercel.json`) | daily, in the refresh | `fetch-portraits.js` (needs the `cwebp` tool: `brew install webp` / `apt-get install webp`) |
+| Open GOV.UK consultations, NHS waiting lists by trust, bathing water ratings, and constituency jobs and pay (the Have your say page and Your area in numbers) | daily, in the refresh | `fetch-consultations.js`, `fetch-rtt-waits.js`, `fetch-bathing-water.js`, `fetch-local-economy.js` |
 | Whether the site, its data and its sources are healthy | daily | `.github/workflows/site-health.yml` |
+
+The heavier numbers for Your area in numbers are rebuilt by hand, each listed in `frontend/scripts/hand-kept.mjs` with its cadence: care ratings (`node scripts/build-health-services.mjs`, about a minute, streams a 27 MB workbook), school exam results (`node scripts/build-school-results.mjs`) and council road condition and fly-tipping (`node scripts/build-council-services.mjs`).
 
 Sources that publish a new edition under a new address (GOV.UK, NHS England, ONS time series, the OECD) are looked up each run, so a new release is picked up without anyone changing a file.
 

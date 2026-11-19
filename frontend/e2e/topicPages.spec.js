@@ -16,6 +16,7 @@ const pages = [
   ["statutoryInstruments", "Laws made by ministers", "Had to be approved"],
   ["backbench", "Backbench bills and motions", "Early day motions"],
   ["auditWatch", "The spending watchdog", "value for money"],
+  ["consultations", "Have your say on new rules", "consultation"],
   ["councilComplaints", "How councils handle complaints", "Upheld"],
   ["nearYou", "Schools and A&E near you", "postcode"],
 ];

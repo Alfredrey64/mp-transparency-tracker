@@ -191,3 +191,11 @@ export function IconDepartments({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconConsultation({ size = 17 }) {
+  return (
+    <svg aria-hidden="true" focusable="false" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 5.500h16v10.500H12l-4.500 3.500V16H4z" /><path d="M8 9.500h8M8 12.500h5" />
+    </svg>
+  );
+}

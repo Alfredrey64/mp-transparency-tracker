@@ -144,6 +144,7 @@ const EXPLAINER_LOADERS = {
   backbench: withData(() => import("./components/explainers/backbench"), () => import("./data/backbench.json")),
   auditWatch: withData(() => import("./components/explainers/auditWatch"), () => import("./data/auditReports.json"), () => import("./data/committeeReports.json")),
   councilComplaints: withData(() => import("./components/explainers/councilComplaints"), () => import("./data/councilComplaints.json")),
+  consultations: withData(() => import("./components/explainers/consultations"), () => import("./data/consultations.json")),
   nearYou: withData(() => import("./components/explainers/nearYou"), () => import("./data/aeNearYou.json")),
 };
 Object.assign(LOADERS, EXPLAINER_LOADERS);

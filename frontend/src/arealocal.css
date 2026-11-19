@@ -1,0 +1,9 @@
+/* Cards of the In numbers view that look themselves up from the postcode's position. */
+.ma-months { list-style: none; margin: 0 0 6px; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 8px; align-items: end; }
+.ma-months li { display: grid; justify-items: center; align-content: end; gap: 4px; min-height: 120px; }
+.ma-months i { display: block; width: 100%; max-width: 44px; height: calc(var(--h, 0) * 64px + 4px); border-radius: 6px 6px 0 0; background: var(--mc, #D9453B); }
+.ma-months b { font: 700 13px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ma-months small { font: 600 12px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+
+/* Nearby places drawn as school-style cards inside a Your area card: no extra outer list spacing. */
+.sc-list-flat { list-style: none; margin: 12px 0 8px; padding: 0; display: grid; gap: 12px; }

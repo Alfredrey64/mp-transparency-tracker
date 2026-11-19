@@ -342,6 +342,29 @@ jobs:
         continue-on-error: true
         run: node fetch-audit-reports.js
 
+      # Open consultations on GOV.UK, for the Have your say page (one search request).
+      - name: Run the consultations fetch script
+        id: fetch_consultations
+        continue-on-error: true
+        run: node fetch-consultations.js
+
+      # Numbers for the "Your area in numbers" view: NHS England waiting lists by trust,
+      # Environment Agency bathing water ratings, and constituency jobs and pay from Nomis.
+      - name: Run the NHS waiting list fetch script
+        id: fetch_rtt_waits
+        continue-on-error: true
+        run: node fetch-rtt-waits.js
+
+      - name: Run the bathing water fetch script
+        id: fetch_bathing_water
+        continue-on-error: true
+        run: node fetch-bathing-water.js
+
+      - name: Run the local economy fetch script
+        id: fetch_local_economy
+        continue-on-error: true
+        run: node fetch-local-economy.js
+
       # NHS England's monthly A&E figures by trust, for Schools and A&E near you
       # (one spreadsheet, plus the trust postcodes through postcodes.io).
       - name: Run the A&E performance fetch script
@@ -375,13 +398,17 @@ jobs:
           echo "STATUS_fetch_backbench=${{ steps.fetch_backbench.outcome }}" >> status.env
           echo "STATUS_fetch_audit_reports=${{ steps.fetch_audit_reports.outcome }}" >> status.env
           echo "STATUS_fetch_ae_performance=${{ steps.fetch_ae_performance.outcome }}" >> status.env
+          echo "STATUS_fetch_consultations=${{ steps.fetch_consultations.outcome }}" >> status.env
+          echo "STATUS_fetch_rtt_waits=${{ steps.fetch_rtt_waits.outcome }}" >> status.env
+          echo "STATUS_fetch_bathing_water=${{ steps.fetch_bathing_water.outcome }}" >> status.env
+          echo "STATUS_fetch_local_economy=${{ steps.fetch_local_economy.outcome }}" >> status.env
           echo "STATUS_write_plain_english=${{ steps.write_plain_english.outcome }}" >> status.env
 
       - name: Save the outcomes and the files this job wrote
         if: always()
         run: |
           existing=""
-          for p in frontend/src/data/lordsCareers.json frontend/src/data/lordsCareerDetail frontend/src/data/lordsVotes.json frontend/src/data/parliamentCalendar.json frontend/public/calendar frontend/src/data/entryNotes.json frontend/src/data/committeeReports.json frontend/src/data/backbench.json frontend/src/data/auditReports.json frontend/src/data/aeNearYou.json frontend/src/data/statutoryInstruments.json frontend/src/data/backbench.json frontend/src/data/auditReports.json frontend/src/data/aeNearYou.json frontend/src/data/plainEnglish.json; do [ -e "$p" ] && existing="$existing $p"; done
+          for p in frontend/src/data/lordsCareers.json frontend/src/data/lordsCareerDetail frontend/src/data/lordsVotes.json frontend/src/data/parliamentCalendar.json frontend/public/calendar frontend/src/data/entryNotes.json frontend/src/data/committeeReports.json frontend/src/data/backbench.json frontend/src/data/auditReports.json frontend/src/data/aeNearYou.json frontend/src/data/consultations.json frontend/src/data/rttWaits.json frontend/src/data/bathingWater.json frontend/src/data/localEconomy.json frontend/src/data/statutoryInstruments.json frontend/src/data/plainEnglish.json; do [ -e "$p" ] && existing="$existing $p"; done
           tar -cf data.tar status.env $existing
 
       - name: Upload them for the last job
@@ -851,7 +878,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add frontend/src/data/constituencies.json frontend/src/data/constituencySummary.json frontend/src/data/constituencyHistory.json frontend/src/data/mpCareers.json frontend/src/data/careerDetail frontend/src/data/lordsCareers.json frontend/src/data/benchmarks.json frontend/src/data/representatives.json frontend/src/data/councilsIndex.json frontend/src/data/councilDetail frontend/src/data/ons frontend/src/data/regionalBreakdowns.json frontend/src/data/lordsCareerDetail frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json frontend/src/data/partyDonorSectors.json frontend/src/data/partyDonorSectorsMeta.json frontend/src/data/pipelineStatus.json frontend/src/data/lordsVotes.json frontend/src/data/parliamentCalendar.json frontend/public/calendar frontend/src/data/entryNotes.json frontend/src/data/committeeReports.json frontend/src/data/statutoryInstruments.json frontend/src/data/plainEnglish.json frontend/src/data/standardsReportAuto.json frontend/src/data/billStages.json frontend/src/data/lawExample.json frontend/src/data/fullFactPledges.json frontend/src/data/partyLeaders.json frontend/public/data/councillors.json
+          git add frontend/src/data/constituencies.json frontend/src/data/constituencySummary.json frontend/src/data/constituencyHistory.json frontend/src/data/mpCareers.json frontend/src/data/careerDetail frontend/src/data/lordsCareers.json frontend/src/data/benchmarks.json frontend/src/data/representatives.json frontend/src/data/councilsIndex.json frontend/src/data/councilDetail frontend/src/data/ons frontend/src/data/regionalBreakdowns.json frontend/src/data/lordsCareerDetail frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json frontend/src/data/partyDonorSectors.json frontend/src/data/partyDonorSectorsMeta.json frontend/src/data/pipelineStatus.json frontend/src/data/lordsVotes.json frontend/src/data/parliamentCalendar.json frontend/public/calendar frontend/src/data/entryNotes.json frontend/src/data/committeeReports.json frontend/src/data/backbench.json frontend/src/data/auditReports.json frontend/src/data/aeNearYou.json frontend/src/data/consultations.json frontend/src/data/rttWaits.json frontend/src/data/bathingWater.json frontend/src/data/localEconomy.json frontend/src/data/statutoryInstruments.json frontend/src/data/plainEnglish.json frontend/src/data/standardsReportAuto.json frontend/src/data/billStages.json frontend/src/data/lawExample.json frontend/src/data/fullFactPledges.json frontend/src/data/partyLeaders.json frontend/public/data/councillors.json
           git diff --staged --quiet || git commit -m "chore: daily data refresh"
           # Someone may have pushed while the crawl ran (or while the pull below was running): sit this commit on top of theirs rather than being refused, and try again a few
           # times if another push gets in first. If a file was edited on both sides, today's rebuilt copy wins (`-X theirs` means the commit being replayed in a rebase).

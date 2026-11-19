@@ -1,0 +1,16 @@
+{
+ "builtAt": "2026-11-19",
+ "asAt": "2 November 2026",
+ "source": "https://www.cqc.org.uk/about-us/transparency/using-cqc-data",
+ "places": 21522,
+ "counts": {
+  "CH": 13604,
+  "GP": 6005,
+  "CO": 133,
+  "HO": 1240,
+  "MH": 233,
+  "UC": 135,
+  "HS": 172
+ },
+ "tiles": 488
+}

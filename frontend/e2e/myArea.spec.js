@@ -25,33 +25,70 @@ async function mockServices(page, { elections = { results: [] }, votes = [], ove
     { dataset: "flood-risk-zone", "flood-risk-level": "2" },
     { dataset: "flood-risk-zone", "flood-risk-level": "3" },
   ] }) }));
+  await page.route("**/data.police.uk/**", (route) => route.fulfill({ status: 200, contentType: "application/json", headers: cors, body: JSON.stringify([
+    { category: "burglary", month: "2026-09", location: { street: { name: "On or near Park Street" } } },
+    { category: "burglary", month: "2026-09", location: { street: { name: "On or near Park Street" } } },
+    { category: "shoplifting", month: "2026-09", location: { street: { name: "On or near Broadmead" } } },
+  ]) }));
+  await page.route("**/services1.arcgis.com/**", (route) => route.fulfill({ status: 200, contentType: "application/json", headers: cors, body: JSON.stringify({ features: [] }) }));
   await page.route("**/elections.democracyclub.org.uk/**", (route) => route.fulfill({ status: 200, contentType: "application/json", headers: cors, body: JSON.stringify(elections) }));
 }
 
 for (const width of [1440, 390]) {
-  test(`Your area fills in every section from one postcode, with no sideways scroll, at ${width}px`, async ({ page }) => {
+  test(`Your area's politics view fills in every section from one postcode, with no sideways scroll, at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await mockServices(page);
     await page.goto("/myArea");
-    await expect(page.locator(".ma-section")).toHaveCount(7, { timeout: 20000 });
-    await expect(page.locator(".ma-g:not(.ma-g-skel)")).toHaveCount(6, { timeout: 20000 });
+    await expect(page.locator(".ma-section")).toHaveCount(5, { timeout: 20000 });
     await expect(page.locator(".ma-skel")).toHaveCount(0, { timeout: 20000 });
-    const text = await page.locator("main").innerText();
-    await expect(page.locator(".ma-map polygon")).toHaveCount(652);
     await expect(page.locator(".ma-hist-stack")).not.toHaveCount(0);
     await expect(page.locator(".ma-elect-col").first()).toBeAttached();
-    await expect(page.locator(".ma-spark-dot")).toBeAttached();
-    await expect(page.locator(".ma-agebar")).toHaveCount(2);
     await expect(page.locator(".ma-track-dot").first()).toBeAttached();
-    for (const want of ["Your week", "How Bristol Central voted in 2024", "Where Bristol Central sits among the 650", "What Test Member has been doing", "How your council has changed", "Elections coming up where you live", "Your council tax", "Who does what here", "Your neighbourhood", "Where South West ranks", "Who lives in South West", "Useful links for where you live", "Before polling day", "has declared and claimed", "How often they vote against their party", "Everyone else who speaks for you", "Homes and crime in South West", "Share it, print it or compare it"]) expect(text).toContain(want);
+    const text = await page.locator("main").innerText();
+    for (const want of ["Your week", "Where Bristol Central sits among the 650", "What Test Member has been doing", "How your council has changed", "Elections coming up where you live", "Who does what here", "Useful links for where you live", "Before polling day", "has declared and claimed", "How often they vote against their party", "Everyone else who speaks for you", "Share it, print it or compare it"]) expect(text).toContain(want);
+    // The statistics are on the other view.
+    for (const gone of ["Your council tax", "Where South West ranks", "Who lives in South West"]) expect(text).not.toContain(gone);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
+  });
+
+  test(`Your area in numbers fills in every section from one postcode, with no sideways scroll, at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await mockServices(page);
+    await page.goto("/myArea/numbers");
+    await expect(page.locator(".ma-section")).toHaveCount(8, { timeout: 20000 });
+    await expect(page.locator(".ma-g:not(.ma-g-skel)")).toHaveCount(6, { timeout: 20000 });
+    await expect(page.locator(".ma-skel")).toHaveCount(0, { timeout: 20000 });
+    await expect(page.locator(".ma-agebar")).toHaveCount(2);
+    await expect(page.locator(".ma-spark-dot")).toBeAttached();
+    const text = await page.locator("main").innerText();
+    for (const want of ["Your neighbourhood", "Jobs and pay in Bristol Central", "Your council tax", "Health services near your postcode", "Schools near your postcode", "Crime near your postcode", "Sewage overflows near your postcode", "Where South West ranks", "Who lives in South West", "Homes and crime in South West"]) expect(text).toContain(want);
+    // The politics sections are on the other view.
+    for (const gone of ["Your week", "Elections coming up where you live", "Who does what here"]) expect(text).not.toContain(gone);
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
   });
 }
 
+test("the two views switch without losing the postcode, and the address follows the view", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await mockServices(page);
+  await page.goto("/myArea");
+  const views = page.getByRole("tablist", { name: /view/i });
+  await expect(views).toBeVisible({ timeout: 20000 });
+  await expect(views.getByRole("tab", { name: /^Politics/ })).toHaveAttribute("aria-selected", "true");
+  await views.getByRole("tab", { name: /^In numbers/ }).click();
+  await expect(views.getByRole("tab", { name: /^In numbers/ })).toHaveAttribute("aria-selected", "true");
+  await expect(page.locator("#ma-n-health")).toBeAttached({ timeout: 20000 });
+  await expect(page.locator("#ma-week")).toHaveCount(0);
+  expect(new URL(page.url()).pathname).toBe("/myArea/numbers");
+  await views.getByRole("tab", { name: /^Politics/ }).click();
+  await expect(page.locator("#ma-week")).toBeAttached();
+  expect(new URL(page.url()).pathname).toBe("/myArea");
+});
+
 test("the planning card names the deciding council, lists the designations in plain words and says what no entry means", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await mockServices(page);
-  await page.goto("/myArea");
+  await page.goto("/myArea/numbers");
   const card = page.locator(".ma-planning");
   await expect(card).toContainText("decided by Bristol, City of", { timeout: 20000 });
   await expect(card).toContainText("Conservation area");
@@ -64,8 +101,8 @@ test("the planning card names the deciding council, lists the designations in pl
 test("the planning card is left out outside England, and when nothing is on record", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await mockServices(page, { over: { country: "Wales" } });
-  await page.goto("/myArea");
-  await expect(page.locator(".ma-section")).toHaveCount(7, { timeout: 20000 });
+  await page.goto("/myArea/numbers");
+  await expect(page.locator(".ma-section")).toHaveCount(8, { timeout: 20000 });
   await expect(page.locator(".ma-skel")).toHaveCount(0, { timeout: 20000 });
   await expect(page.locator(".ma-planning")).toHaveCount(0);
 });
@@ -80,6 +117,13 @@ test("the short print version keeps the main cards and leaves out the rest", asy
   await page.emulateMedia({ media: "print" });
   await expect(page.locator(".ma-council")).toBeVisible();
   await expect(page.locator(".ma-mpcard")).toBeVisible();
+  await page.emulateMedia({ media: "screen" });
+  await page.evaluate(() => { delete document.documentElement.dataset.printShort; });
+  // The statistics view: the census and the region comparison are the parts the short version drops.
+  await page.goto("/myArea/numbers");
+  await expect(page.locator(".ma-skel")).toHaveCount(0, { timeout: 20000 });
+  await page.evaluate(() => { document.documentElement.dataset.printShort = "1"; });
+  await page.emulateMedia({ media: "print" });
   await expect(page.locator(".ma-census")).toBeHidden();
   await expect(page.locator("#ma-region")).toBeHidden();
   await page.emulateMedia({ media: "screen" });
@@ -91,7 +135,7 @@ test("the jump links move to their section", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await mockServices(page);
   await page.goto("/myArea");
-  await expect(page.locator(".ma-section")).toHaveCount(7, { timeout: 20000 });
+  await expect(page.locator(".ma-section")).toHaveCount(5, { timeout: 20000 });
   await expect(page.locator(".ma-skel")).toHaveCount(0, { timeout: 20000 });
   await page.getByRole("button", { name: "Council", exact: true }).click();
   await expect.poll(() => page.evaluate(() => Math.round(document.getElementById("ma-council").getBoundingClientRect().top)), { timeout: 5000 }).toBeLessThan(200);
@@ -114,7 +158,7 @@ test("the MP's activity opens on a tab with something in it and the tabs work fr
   await tabs.getByRole("tab", { name: /^Debates/ }).focus();
   await page.keyboard.press("ArrowRight");
   await expect(tabs.getByRole("tab", { name: /^Questions/ })).toHaveAttribute("aria-selected", "true");
-  await expect(page.getByRole("tabpanel")).toBeVisible();
+  await expect(page.locator("#ma-doing-panel")).toBeVisible();
 });
 
 test("a vote opens to explain itself in plain English, one at a time, and closes again", async ({ page }) => {
