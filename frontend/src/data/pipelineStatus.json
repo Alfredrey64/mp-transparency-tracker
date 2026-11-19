@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-18T12:37:40.513Z",
-  "succeededCount": 39,
-  "totalCount": 40,
+  "generatedAt": "2026-11-19T12:47:57.151Z",
+  "succeededCount": 41,
+  "totalCount": 43,
   "sources": [
     {
       "label": "Financial interests",
@@ -141,6 +141,18 @@
     },
     {
       "label": "Statutory instruments",
+      "succeeded": false
+    },
+    {
+      "label": "Backbench bills and early day motions",
+      "succeeded": true
+    },
+    {
+      "label": "National Audit Office reports",
+      "succeeded": true
+    },
+    {
+      "label": "A&E performance by NHS trust",
       "succeeded": false
     },
     {
