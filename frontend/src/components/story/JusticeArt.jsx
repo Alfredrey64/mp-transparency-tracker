@@ -85,7 +85,7 @@ export function JusticeChain() {
             {i > 0 && <div className="jc-link" style={{ "--d": `${0.5 + i * 0.7}s`, "--from": LINKS[i - 1].colour, "--to": l.colour }} aria-hidden="true"><i /><b /></div>}
             <div className="jc-card" style={{ "--c": l.colour, "--d": `${i * 0.7}s` }}>
               <div className="jc-art"><l.Art /></div>
-              <h3>{l.name} <small>{l.verb}</small></h3>
+              <h2>{l.name} <small>{l.verb}</small></h2>
               <p className="jc-fig"><b><Count n={l.figure} go={go} delay={i * 700 + 350} /></b> <span>{l.unit}</span></p>
               <p className="jc-note">{l.note}</p>
             </div>

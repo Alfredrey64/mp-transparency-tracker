@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import "../pagetools.css";
 
 // A helper for every page, added from the outside so no page has to ask for it. "On this page": once a long page has been scrolled, a small button lists the page's own headings and jumps to any of them, lighting the one in view.
-const SKIP = ".page-hero, .sn, [role='dialog'], .site-footer, .t-root, .tm-sheet";
+const SKIP = ".page-hero, .sn, [role='dialog'], .site-footer, .t-root, .tm-sheet, .jc-card, .dp-stop";
 
 function slug(text, used) {
   const base = text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "section";

@@ -9,7 +9,7 @@
 .dp-pulse { position: absolute; top: 8px; left: 83.33%; width: 18px; height: 18px; margin-left: -9px; border-radius: 50%; background: #9BDCFF; box-shadow: 0 0 14px 4px rgba(155, 220, 255, 0.65); z-index: 1; opacity: 0; }
 .dp-stop { display: grid; justify-items: center; align-content: start; gap: 10px; text-align: center; min-width: 0; }
 .dp-node { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: #0F1E3D; border: 2px solid #9BDCFF; font: 700 16px "Figures", "Newsreader", Georgia, serif; color: #9BDCFF; z-index: 2; }
-.dp-stop h3 { margin: 0; font: 700 19px/1.25 "Figures", "Newsreader", Georgia, serif; }
+.dp-stop h2 { margin: 0; font: 700 19px/1.25 "Figures", "Newsreader", Georgia, serif; }
 .dp-fig { margin: 0; font: 600 15px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: #EAF1FF; }
 .dp-fig b { display: block; font: 700 clamp(30px, 4.4vw, 40px)/1.05 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; color: #9BDCFF; }
 .dp-txt { margin: 0; max-width: 34ch; font: 400 14px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: #B9C8E6; }
@@ -66,7 +66,7 @@
   .dp[data-go="1"] .dp-pulse { animation-duration: 4.4s; }
   .dp-stop { position: relative; justify-items: start; text-align: left; padding-left: 54px; }
   .dp-node { position: absolute; left: 0; top: 0; }
-  .dp-stop h3 { min-height: 34px; display: flex; align-items: center; }
+  .dp-stop h2 { min-height: 34px; display: flex; align-items: center; }
   .dp-txt { max-width: none; }
 }
 

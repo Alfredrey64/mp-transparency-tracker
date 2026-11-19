@@ -55,7 +55,7 @@ export default function OnlinePath() {
         <div className="dp-pulse" aria-hidden="true" />
         <section className="dp-stop" style={{ "--k": 0 }}>
           <span className="dp-node" aria-hidden="true">1</span>
-          <h3>Reaching the home</h3>
+          <h2>Reaching the home</h2>
           <div className="dp-homes" role="img" aria-label="Of every 100 UK homes, 82 can get full fibre, 7 more can get gigabit broadband by another route, and 11 cannot get gigabit.">
             {HOMES.map((t, i) => <i key={i} data-t={t} style={{ "--i": i }} />)}
           </div>
@@ -64,14 +64,14 @@ export default function OnlinePath() {
         </section>
         <section className="dp-stop" style={{ "--k": 1 }}>
           <span className="dp-node" aria-hidden="true">2</span>
-          <h3>What services must do</h3>
+          <h2>What services must do</h2>
           <AgeGate />
           <p className="dp-fig"><b>Age checks</b> for porn sites</p>
           <p className="dp-txt">The Online Safety Act 2023 makes Ofcom the regulator. It has fined providers with no age checks and opened investigations into others, including TikTok, Aylo and Meta.</p>
         </section>
         <section className="dp-stop" style={{ "--k": 2 }}>
           <span className="dp-node" aria-hidden="true">3</span>
-          <h3>Who is allowed on</h3>
+          <h2>Who is allowed on</h2>
           <Calendar />
           <p className="dp-fig"><b>Spring 2027</b> planned under-16 social media ban</p>
           <p className="dp-txt">When the government expects it to take effect, if Parliament agrees. It was announced on 15 June 2026.</p>

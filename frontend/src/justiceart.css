@@ -17,8 +17,8 @@
 .jc-lamp { animation: jcLamp 0.8s steps(1) 1.2s 10; }
 .jc-lamp-b { animation-delay: 1.6s; }
 @keyframes jcLamp { 50% { opacity: 0.5; } }
-.jc-card h3 { margin: 8px 0 0; font: 700 21px/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
-.jc-card h3 small { display: block; font: 600 13.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.jc-card h2 { margin: 8px 0 0; font: 700 21px/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.jc-card h2 small { display: block; font: 600 13.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .jc-fig { margin: 2px 0 0; color: var(--c-ink); }
 .jc-fig { display: grid; gap: 2px; }
 .jc-fig b { font: 700 clamp(30px, 5vw, 40px)/1.05 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; color: var(--c); }

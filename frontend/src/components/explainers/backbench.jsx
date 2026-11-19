@@ -86,7 +86,7 @@ function build(d) {
           { label: "Signed by nobody else", value: n(m.oneSignature), note: "Motions with only the signature of the MP who tabled them." },
         ] },
         { bars: { items: m.buckets.map((b) => ({ label: `${b.label} signatures`, value: b.count, text: n(b.count), colour: "#C88A1E" })), max: Math.max(...m.buckets.map((b) => b.count)), note: "How many motions fall in each range of signatures. Most draw very few." } },
-        { node: <h4 className="st-subhead" style={{ margin: "18px 0 10px" }}>The most signed this session</h4> },
+        { node: <h3 className="st-subhead" style={{ margin: "18px 0 10px" }}>The most signed this session</h3> },
         { node: <MotionBoard motions={m} /> },
         { note: "Signature counts are the number of MPs who had signed when the data was last fetched, and can still change. A motion shows what some MPs say, not what Parliament has decided." },
       ],
