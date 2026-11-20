@@ -137,7 +137,7 @@ export default function Backbench() {
       {...build(data)}
       sources={[
         { label: "UK Parliament: Bills API", url: "https://bills-api.parliament.uk/index.html", note: "Every private member's bill, where it stands and who brought it. Refreshed each day." },
-        { label: "UK Parliament: Early Day Motions API", url: "https://oralquestionsandmotions-api.parliament.uk/index.html", note: "Every early day motion and the number of signatures." },
+        { label: "UK Parliament: Early Day Motions API", url: "https://oralquestionsandmotions-api.parliament.uk/swagger/ui/index", note: "Every early day motion and the number of signatures." },
         { label: "UK Parliament: Private members' bills", url: "https://bills.parliament.uk/", note: "The full text and history of each bill." },
       ]}
       checked={dateLong(data.generated)}

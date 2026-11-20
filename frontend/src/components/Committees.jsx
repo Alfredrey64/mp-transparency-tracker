@@ -178,7 +178,7 @@ function BarList({ items, color, unit, onPick }) {
         <li key={it.id}>
           <button type="button" onClick={() => onPick(it.name)} style={{ display: "block", width: "100%", textAlign: "left", background: "none", border: "none", padding: 0, cursor: "pointer", font: "inherit" }}>
             <span style={{ display: "flex", justifyContent: "space-between", gap: 8, fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.ink, marginBottom: 3 }}>
-              <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontWeight: 800 }}>{it.name}</span>
+              <span style={{ minWidth: 0, overflowWrap: "anywhere", fontWeight: 800 }}>{it.name}</span>
               <strong style={{ flexShrink: 0, fontVariantNumeric: "tabular-nums" }}>{it.value} <span style={{ fontWeight: 400, color: COLORS.inkSoft }}>{unit}</span></strong>
             </span>
             <span aria-hidden="true" style={{ display: "block", height: 9, borderRadius: 5, background: `${color}1c`, overflow: "hidden" }}>

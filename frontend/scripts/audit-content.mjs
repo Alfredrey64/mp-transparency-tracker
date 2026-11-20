@@ -21,8 +21,8 @@ const data = path.join(here, "../src/data");
 const explainers = path.join(here, "../src/components/explainers");
 const now = new Date();
 
-// These are built from data the daily refresh rewrites (the committee reports, the statutory instruments, the calendar), not from hand-checked facts, so they have no "checked" date.
-const FROM_DAILY_DATA = new Set(["committeeReports", "statutoryInstruments", "upcoming"]);
+// These are built from data the daily refresh rewrites (the committee reports, the statutory instruments, the calendar), not from hand-checked facts, so they have no "checked" date. (auditWatch, backbench and consultations are rebuilt daily, councilComplaints and nearYou weekly; each shows the date of its data on the page.)
+const FROM_DAILY_DATA = new Set(["committeeReports", "statutoryInstruments", "upcoming", "auditWatch", "backbench", "consultations", "councilComplaints", "nearYou"]);
 const pages = fs.readdirSync(explainers).filter((f) => f.endsWith(".jsx") && !f.includes(".test.") && !FROM_DAILY_DATA.has(f.replace(/\.jsx$/, ""))).map((f) => {
   const text = fs.readFileSync(path.join(explainers, f), "utf8");
   return { name: f.replace(/\.jsx$/, ""), checked: /checked: "([^"]+)"/.exec(text)?.[1], urls: [...text.matchAll(/url: "(https:\/\/[^"]+)"/g)].map((m) => m[1]) };

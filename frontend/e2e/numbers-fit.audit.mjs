@@ -60,11 +60,13 @@ async function worker() {
           if (charts) {
             for (const svg of document.querySelectorAll("svg")) {
               const texts = [...svg.querySelectorAll("text")].filter((t) => t.textContent.trim());
+              // Only a run of plain number labels is an axis; a column of names, signs and values (a ranking drawn in SVG) can legitimately repeat a value.
+              const tickLike = (l) => /^[-+−]?[£$€]?[\d.,]+\s?(%|bn|m|k|p|trn|tn)?$/i.test(l);
               const sameAxis = (sel) => { const by = new Map(); for (const t of texts.filter(sel)) { const k = Math.round(Number(t.getAttribute(sel.axis === "x" ? "y" : "x"))); (by.get(k) ?? by.set(k, []).get(k)).push(t.textContent.trim()); } return by; };
               const yAxis = Object.assign((t) => t.getAttribute("text-anchor") === "end", { axis: "y" });
               const xAxis = Object.assign((t) => t.getAttribute("text-anchor") !== "end", { axis: "x" });
-              for (const [, labels] of sameAxis(yAxis)) { const d = labels.filter((l, i) => labels.indexOf(l) !== i); if (labels.length > 2 && d.length) repeats.push(`y axis repeats ${[...new Set(d)].join(", ")} (${labels.join(" | ")})`); }
-              for (const [, labels] of sameAxis(xAxis)) { const d = labels.filter((l, i) => labels.indexOf(l) !== i); if (labels.length > 2 && d.length) repeats.push(`x axis repeats ${[...new Set(d)].join(", ")} (${labels.join(" | ")})`); }
+              for (const [, labels] of sameAxis(yAxis)) { const d = labels.filter((l, i) => labels.indexOf(l) !== i); if (labels.length > 2 && d.length && labels.every(tickLike)) repeats.push(`y axis repeats ${[...new Set(d)].join(", ")} (${labels.join(" | ")})`); }
+              for (const [, labels] of sameAxis(xAxis)) { const d = labels.filter((l, i) => labels.indexOf(l) !== i); if (labels.length > 2 && d.length && labels.every(tickLike)) repeats.push(`x axis repeats ${[...new Set(d)].join(", ")} (${labels.join(" | ")})`); }
             }
           }
           return { clipped: clipped.slice(0, 8), repeats: [...new Set(repeats)].slice(0, 5) };

@@ -54,9 +54,9 @@ export default function PersonCard({ name, photo, color, line, extra, onClick, i
     >
       <Avatar url={photo} name={name} color={color} />
       <span style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 16.5, color: COLORS.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{name}</div>
-        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{line}</div>
-        {extra && <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: 1 }}>{extra}</div>}
+        <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 16.5, color: COLORS.ink, overflowWrap: "anywhere" }}>{name}</div>
+        <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.inkSoft, overflowWrap: "anywhere" }}>{line}</div>
+        {extra && <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: COLORS.inkSoft, overflowWrap: "anywhere", marginTop: 1 }}>{extra}</div>}
       </span>
     </button>
   );
