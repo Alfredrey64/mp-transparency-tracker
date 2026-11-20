@@ -51,6 +51,11 @@ jobs:
         continue-on-error: true
         working-directory: frontend
         run: node scripts/refresh-area-data.mjs --summary "$GITHUB_WORKSPACE/area-summary.md" ${{ inputs.force && '--force' || '' }}
+      # Puts back any rebuilt data file that is invalid, empty or has shrunk to a fraction of what is committed (the same guard the daily refresh uses).
+      - name: Check the rebuilt files
+        id: guard
+        continue-on-error: true
+        run: node check-saved-data.js
       - name: Run the tests
         id: tests
         continue-on-error: true
@@ -61,6 +66,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REFRESH: ${{ steps.refresh.outcome }}
           TESTS: ${{ steps.tests.outcome }}
+          GUARD: ${{ steps.guard.outcome }}
         run: |
           tell() {
             label="$1"; title="$2"; body_file="$3"
@@ -92,6 +98,11 @@ jobs:
             fi
           else
             echo "Nothing new this week."
+          fi
+          if [ "$GUARD" != "success" ]; then
+            { echo "A rebuilt data file looked broken or much smaller than the one on the site, so it was put back and the site keeps the earlier edition."; echo; cat area-summary.md; echo; echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"; } > issue-body.md
+            tell area-data-refresh-failed "Your area data: a rebuilt file was rejected ($(date +%F))" issue-body.md
+            exit 1
           fi
           if [ "$REFRESH" != "success" ]; then
             { echo "A source behind Your area could not be checked or rebuilt, so that dataset is showing an earlier edition."; echo; cat area-summary.md; echo; echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"; } > issue-body.md

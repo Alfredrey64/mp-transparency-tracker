@@ -18,3 +18,12 @@
   .ma-food .ma-domains li { grid-template-columns: minmax(0, 1fr) 42px; }
   .ma-domains.ma-price-kinds li { grid-template-columns: minmax(0, 1fr) 86px; }
 }
+
+/* Health, asylum support, homelessness and child poverty cards. The shared .ma-domains rule in myarea.css has the same weight as a single class, so these name the list too. */
+.ma-domains.ma-health-rows li, .ma-domains.ma-poverty-rows li { grid-template-columns: minmax(150px, 250px) minmax(0, 1fr) 56px; }
+.ma-domains.ma-asylum-rows li { grid-template-columns: minmax(150px, 250px) minmax(0, 1fr) 56px; }
+.ma-health-rows small { font: 500 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ma-wellbeing h4, .ma-asylum h4, .ma-homeless h4, .ma-poverty h4 { margin: 14px 0 6px; font: 700 14px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+@media (max-width: 760px) {
+  .ma-domains.ma-health-rows li, .ma-domains.ma-poverty-rows li, .ma-domains.ma-asylum-rows li { grid-template-columns: minmax(0, 1fr) 56px; }
+}

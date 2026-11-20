@@ -1,6 +1,7 @@
 /** @jsxImportSource react */
 import { Card, Section, RegionOutline, CouncilTax, PlanningCard, Neighbourhood, PlaceFacts, HomesCrime, RegionRanks, Census } from "./AreaSections";
 import { ComplaintsCard } from "./AreaAccountability";
+import { LocalHealthCard, AsylumCard, HomelessnessCard, ChildPovertyCard } from "./AreaMore";
 import { StreetCrimeCard, SewageCard, BathingCard, FloodWarningsCard, FoodHygieneCard, RoadCasualtiesCard, HousePricesCard, HealthServicesCard, HospitalCard, SchoolsCard, CouncilServicesCard, LocalEconomyCard } from "./AreaLocal";
 import { IconTrend, IconPinHome, IconCoin, IconHeart, IconShield } from "./icons";
 import { NUMBER_GROUPS } from "../lib/areaViews";
@@ -74,6 +75,9 @@ export default function AreaNumbers({ data, x }) {
           <RegionRanks x={x} regionName={regionName} i={1} />
           <Census x={x} regionName={regionName} i={2} />
         </Section>
+        <Section as="h3" id="ma-n-asylum" title="Asylum support" lede="How many people the Home Office is housing and supporting in your council area while their asylum claims are decided." colour={place.colour}>
+          <AsylumCard r={data.result} i={0} />
+        </Section>
       </Part>
 
       <Part group={money}>
@@ -84,12 +88,21 @@ export default function AreaNumbers({ data, x }) {
         <Section as="h3" id="ma-n-homes" title="House prices" lede="What homes in your council area sell for, how that has changed, and how it compares with the rest of the nation." colour={money.colour}>
           <HousePricesCard r={data.result} i={0} />
         </Section>
+        <Section as="h3" id="ma-n-housing" title="Homelessness" lede="How many households in your council area were owed help because they were homeless or about to be, and how many are in temporary accommodation." colour={money.colour}>
+          <HomelessnessCard r={data.result} i={0} />
+        </Section>
+        <Section as="h3" id="ma-n-lowincome" title="Children and low incomes" lede="How many children in your council area and constituency live in families on a low income, after housing costs." colour={money.colour}>
+          <ChildPovertyCard r={data.result} i={0} />
+        </Section>
       </Part>
 
       <Part group={services}>
         <Section as="h3" id="ma-n-health" title="Health" lede="How the nearest doctors, hospitals and care homes are rated, and how long people wait." colour={services.colour}>
           <HealthServicesCard r={data.result} i={0} />
           <HospitalCard r={data.result} i={1} />
+        </Section>
+        <Section as="h3" id="ma-n-wellbeing" title="How healthy people are" lede="How long people live in your council area, how many years in good health, and some habits that affect health, against England." colour={services.colour}>
+          <LocalHealthCard r={data.result} i={0} />
         </Section>
         <Section as="h3" id="ma-n-school" title="Schools" lede="Ofsted's latest result for each school nearby, and how its pupils did in their exams." colour={services.colour}>
           <SchoolsCard r={data.result} i={0} />

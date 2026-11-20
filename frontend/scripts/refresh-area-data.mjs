@@ -18,6 +18,10 @@ import { dataSetVersions } from "./build-school-results.mjs";
 import { roadFile, flyTippingFile } from "./build-council-services.mjs";
 import { latestFiles } from "./build-council-complaints.mjs";
 import { newestRelease } from "./build-council-tax.mjs";
+import { newestFile as newestAsylum } from "./build-asylum-support.mjs";
+import { newestFile as newestHomelessness } from "./build-homelessness.mjs";
+import { newestRelease as newestChildPoverty } from "./build-child-poverty.mjs";
+import { editionOf as healthEdition } from "./build-local-health.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const read = (f) => JSON.parse(fs.readFileSync(path.join(here, "../src/data", f), "utf8"));
@@ -63,6 +67,26 @@ export const DATASETS = [
     if (now.year > last) return `the Ministry has published the ${now.year} to ${now.year + 1} figures`;
     // Same year: the Ministry revises its tables in April, so a different file address means revised figures.
     return meta.source && now.url !== meta.source ? "the Ministry has published revised figures for the current year" : null;
+  } },
+  { id: "asylum-support", script: "build-asylum-support.mjs", async due() {
+    const meta = read("asylumSupport.json");
+    const now = await newestAsylum();
+    return now.url !== meta.source ? `the Home Office has published a new quarter (${now.title.replace(/^.*year ending /i, "year ending ")})` : null;
+  } },
+  { id: "homelessness", script: "build-homelessness.mjs", async due() {
+    const meta = read("homelessness.json");
+    const now = await newestHomelessness();
+    return now.url !== meta.source ? `the Ministry has published ${now.title.replace(/^.*tables: /i, "")}` : null;
+  } },
+  { id: "child-poverty", script: "build-child-poverty.mjs", async due() {
+    const meta = read("childPoverty.json");
+    const now = await newestChildPoverty();
+    return now.url !== meta.source ? `the Department for Work and Pensions has published ${now.title}` : null;
+  } },
+  { id: "local-health", script: "build-local-health.mjs", async due() {
+    const meta = read("localHealth.json");
+    const now = await healthEdition();
+    return now !== meta.edition ? "Fingertips has a new period for at least one health measure" : null;
   } },
 ];
 
