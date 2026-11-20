@@ -895,6 +895,13 @@ jobs:
           node fetch-rep-portraits.js
           git add frontend/public/portraits/reps frontend/src/data/repPortraits.json
 
+      # Where each commissioner's and regional mayor's name links on Your area: the office's own website as Wikidata records it, checked to still answer. See fetch-rep-links.js.
+      - name: Refresh links to commissioners' and mayors' official sites
+        continue-on-error: true
+        run: |
+          node fetch-rep-links.js
+          git add frontend/src/data/repLinks.json
+
       - name: Commit updated data files, if they changed
         if: always()
         run: |

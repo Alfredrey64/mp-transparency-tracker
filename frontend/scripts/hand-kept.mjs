@@ -45,7 +45,7 @@ export const HAND_KEPT = [
 export const AUTOMATIC = [
   /^(ageing|care|defence|education|health|inequality|transport|trust|brexit|devolution|energy)Data\.json$/, /^(inequalityAbroad|inequalityPlace)\.json$/, /^ons\//,
   /^(aeNearYou|auditReports|backbench|bathingWater|consultations|localEconomy|housePrices|roadCasualties|rttWaits|benchmarks|billStages|committeeReports|constituencies|constituencyHistory|constituencySummary|councilsIndex|donorSectors|donorSectorsMeta|entryNotes|fullFactPledges|lawExample|lordsCareers|lordsVotes|mpCareers|parliamentCalendar|partyDonorSectors|partyDonorSectorsMeta|partyLeaders|pipelineStatus|plainEnglish|regionalBreakdowns|representatives|standardsReportAuto|standardsReportDetails|statutoryInstruments|taxSeries)\.json$/,
-  /^(careerDetail|councilDetail|lordsCareerDetail)\//, /^(devolvedLeaders|pmPortraits|repPortraits)\.json$/,
+  /^(careerDetail|councilDetail|lordsCareerDetail)\//, /^(devolvedLeaders|pmPortraits|repPortraits|repLinks)\.json$/,
 ];
 
 // Files that are history, structure or wording that cannot go stale, or that carry their own date in CHECKED / `checked:` (the weekly check reads those separately).

@@ -10,3 +10,9 @@ export function repPhoto(list, kind, name) {
   if (!p) return null;
   return { src: `/portraits/reps/${p.file}`, credit: p.credit, licence: p.licence ?? null, source: p.source, page: p.page ?? null };
 }
+
+// The office website for a commissioner or regional mayor, from data/repLinks.json (`links` is its `links` object): { url, office } or null. Only https addresses are ever returned.
+export function repSite(links, kind, name) {
+  const l = links?.[repKey(kind, name)];
+  return l && /^https:\/\//.test(l.url ?? "") ? { url: l.url, office: l.office ?? null } : null;
+}

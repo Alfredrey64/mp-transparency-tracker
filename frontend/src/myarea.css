@@ -673,6 +673,8 @@
 .ma-rep { display: grid; grid-template-columns: 46px minmax(0, 1fr); grid-template-areas: "av name" "av party"; column-gap: 11px; align-items: center; padding: 8px 10px; border-radius: 12px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); animation: maIn 0.5s var(--ease-out) calc(var(--n) * 50ms + 150ms) backwards; }
 .ma-rep-av { grid-area: av; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; background: color-mix(in srgb, var(--pc) 16%, var(--c-paper)); color: color-mix(in srgb, var(--pc) 80%, var(--c-ink)); font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; box-shadow: 0 0 0 2px var(--pc); }
 .ma-rep b { grid-area: name; font: 700 14px/1.25 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); overflow-wrap: anywhere; }
+.ma-rep-link { color: inherit; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--pc) 55%, transparent); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.ma-rep-link:hover, .ma-rep-link:focus-visible { text-decoration-color: var(--pc); }
 .ma-rep small { grid-area: party; font: 600 12px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 @media (prefers-reduced-motion: reduce) { .ma-rep { animation: none; } }
 .ma-rep-sub { margin: 4px 0 0; font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
