@@ -109,21 +109,60 @@ async function main() {
     for (const p of r.query.pages ?? []) meta.set(String(p.title).replace(/^File:/, "").replace(/ /g, "_"), p.imageinfo?.[0]?.extmetadata);
   }
 
+  // When an article's lead image is missing or not freely licensed, the photo Wikidata lists for the same person (property P18, "image") is tried instead: it is often a different, freely
+  // licensed picture of the same article's subject. It is held to exactly the same licence test, and only the article already matched to the person is used.
+  const alt = new Map();
+  const needAlt = wikiWanted.filter(([key]) => {
+    const p = pages.get(titles.get(key));
+    if (!p || p.missing || p.pageprops?.disambiguation !== undefined || !p.pageprops?.wikibase_item) return false;
+    return !(p.thumbnail?.source && freeLicence(meta.get(String(p.pageimage).replace(/ /g, "_"))));
+  });
+  const items = [...new Set(needAlt.map(([key]) => pages.get(titles.get(key)).pageprops.wikibase_item))];
+  const claimFiles = new Map();
+  for (let i = 0; i < items.length; i += 40) {
+    const chunk = items.slice(i, i + 40);
+    try {
+      const r = await json(`https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${chunk.join("|")}&props=claims&format=json`);
+      for (const q of chunk) claimFiles.set(q, (r.entities?.[q]?.claims?.P18 ?? []).map((c) => c.mainsnak?.datavalue?.value).filter(Boolean));
+    } catch (e) { console.warn(`  Wikidata images not read for ${chunk.length} people: ${e.message}`); }
+  }
+  const altFiles = [...new Set([...claimFiles.values()].flat())];
+  const altInfo = new Map();
+  for (let i = 0; i < altFiles.length; i += 20) {
+    const chunk = altFiles.slice(i, i + 20);
+    try {
+      const r = await json(`https://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&iiprop=extmetadata|url&iiurlwidth=320&format=json&formatversion=2&titles=${encodeURIComponent(chunk.map((f) => `File:${f}`).join("|"))}`);
+      for (const p of r.query.pages ?? []) altInfo.set(String(p.title).replace(/^File:/, "").replace(/ /g, "_"), p.imageinfo?.[0]);
+    } catch (e) { console.warn(`  Commons licences not read for ${chunk.length} files: ${e.message}`); }
+  }
+  for (const [key] of needAlt) {
+    for (const f of claimFiles.get(pages.get(titles.get(key)).pageprops.wikibase_item) ?? []) {
+      const info = altInfo.get(String(f).replace(/ /g, "_"));
+      const lic = freeLicence(info?.extmetadata);
+      if (lic && info?.thumburl) { alt.set(key, { url: info.thumburl, lic, credit: creditFrom(info.extmetadata) }); break; }
+    }
+  }
+
+  // Checked by eye: the free image Wikipedia lists for these people is not a picture of the person (for example an election sign), so they stay on initials.
+  const NOT_A_PORTRAIT = new Set(["pcc:dafydd-llywelyn"]);
   let skipped = 0;
   const failures = [];
   await mapLimit(todo, 4, async ([key, o]) => {
     const file = `${key.replace(/[^a-z0-9]+/g, "-")}.webp`;
+    if (NOT_A_PORTRAIT.has(key)) { skipped++; return; }
     try {
       let url; let credit; let licence; let source; let page;
       if (o.kind === "msp") { url = mspPhoto.get(key); credit = "Scottish Parliament"; source = "Scottish Parliament"; }
       else if (o.kind === "mla") { url = niPhoto.get(key); credit = "Northern Ireland Assembly"; source = "Northern Ireland Assembly"; }
       else {
         const p = pages.get(titles.get(key));
-        if (!p || p.missing || p.pageprops?.disambiguation !== undefined || !p.thumbnail?.source) { skipped++; return; }
-        const m = meta.get(String(p.pageimage).replace(/ /g, "_"));
+        if (!p || p.missing || p.pageprops?.disambiguation !== undefined) { skipped++; return; }
+        const m = p.thumbnail?.source ? meta.get(String(p.pageimage).replace(/ /g, "_")) : null;
         const lic = freeLicence(m);
-        if (!lic) { skipped++; return; }
-        url = p.thumbnail.source; licence = lic; credit = creditFrom(m); source = "Wikimedia Commons";
+        if (lic) { url = p.thumbnail.source; licence = lic; credit = creditFrom(m); }
+        else if (alt.has(key)) { ({ url, lic: licence, credit } = alt.get(key)); }
+        else { skipped++; return; }
+        source = "Wikimedia Commons";
         page = `https://en.wikipedia.org/wiki/${encodeURIComponent(p.title.replace(/ /g, "_"))}`;
       }
       if (!url) { skipped++; return; }
