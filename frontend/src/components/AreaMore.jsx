@@ -1,5 +1,6 @@
 /** @jsxImportSource react */
 import { Card } from "./AreaSections";
+import { Dumbbell, PeopleGrid, PeopleKey, StatTile, TrendArea } from "./AreaViz";
 import { IconHeartbeat, IconPin, IconHouse, IconCoin } from "./icons";
 import { useDataFile } from "../lib/useDataFile";
 import { localHealth, asylumSupport, homelessness, childPoverty } from "../lib/dataFiles";
@@ -29,29 +30,41 @@ export function LocalHealthCard({ r, i }) {
     const h = v?.[key];
     if (!h) return null;
     const [value, lo, hi] = h.value;
-    return { key, label, value, lo, hi, eng, scale: Math.max(value, eng ?? 0) };
+    return { key, label, value, lo, hi, eng };
   };
   const habits = v ? [habit("smoke", "Adults who smoke", e.smoke?.[0]), habit("over", "Adults overweight or obese", e.over?.[0]), habit("inactive", "Adults who are physically inactive", e.inactive?.[0])].filter(Boolean) : [];
-  const top = Math.max(...habits.map((h) => Math.max(h.value, h.eng ?? 0)), 1);
   return (
     <Card i={i} colour="#2F8F6B" icon={<IconHeartbeat size={20} />} title={`How healthy people are in ${council}`} className="ma-wellbeing">
       {failed ? SAYS_FAILED("health figures") : !data ? SAYS_LOADING("health figures") : !v ? <p className="ma-sub">Health figures are not held for this council area, usually because its boundaries have changed. The full set is at <a href="https://fingertips.phe.org.uk/" target="_blank" rel="noreferrer">fingertips.phe.org.uk</a>.</p> : (
         <>
           {v.life && (
-            <p>Life expectancy at birth in {v.life.area} is <strong>{v.life.value[0].toFixed(1)} years for men</strong> and <strong>{v.life.value[1].toFixed(1)} for women</strong> ({v.periods.le}). Across England it is {e.le?.[0].toFixed(1)} and {e.le?.[1].toFixed(1)}.
-              {v.lifeBefore && v.lifeBefore[0] != null && <> Ten years earlier ({v.periods.leBefore}) it was {v.lifeBefore[0].toFixed(1)} and {v.lifeBefore[1].toFixed(1)}.</>}</p>
+            <>
+              <h4>Life expectancy at birth ({v.periods.le})</h4>
+              <Dumbbell colour="#2F8F6B" unit="years" aria={`Life expectancy at birth in ${v.life.area} against England`} rows={[
+                { label: "Men", value: v.life.value[0], vs: e.le?.[0], refLabel: "England" },
+                { label: "Women", value: v.life.value[1], vs: e.le?.[1], refLabel: "England" },
+              ]} />
+              {v.lifeBefore && v.lifeBefore[0] != null && <p className="ma-sub">Ten years earlier ({v.periods.leBefore}) it was {v.lifeBefore[0].toFixed(1)} years for men and {v.lifeBefore[1].toFixed(1)} for women.</p>}
+            </>
           )}
           {v.healthy && (
-            <p>Years lived in good health (healthy life expectancy) are <strong>{v.healthy.value[0].toFixed(1)} for men</strong> and <strong>{v.healthy.value[1].toFixed(1)} for women</strong> ({v.periods.hle}), against {e.hle?.[0].toFixed(1)} and {e.hle?.[1].toFixed(1)} in England.
-              {v.healthy.fromCounty && <> This is the figure for {v.healthy.area}, because it is published for counties and unitary authorities, not districts.</>}</p>
+            <>
+              <h4>Years lived in good health ({v.periods.hle})</h4>
+              <Dumbbell colour="#2F8F6B" unit="years" aria={`Healthy life expectancy in ${v.healthy.area} against England`} rows={[
+                { label: "Men", value: v.healthy.value[0], vs: e.hle?.[0], refLabel: "England" },
+                { label: "Women", value: v.healthy.value[1], vs: e.hle?.[1], refLabel: "England" },
+              ]} />
+              {v.healthy.fromCounty && <p className="ma-sub">This is the figure for {v.healthy.area}, because it is published for counties and unitary authorities, not districts.</p>}
+            </>
           )}
           {habits.length > 0 && (
             <>
-              <h4>Habits that affect health</h4>
-              <ul className="ma-domains ma-health-rows" aria-label={`Share of adults in ${council} by habit`}>
-                {habits.map((h) => <li key={h.key}><span>{h.label}<small> England {pct(h.eng)}</small></span><i aria-hidden="true"><b style={{ "--w": Math.max(0.02, h.value / top) }} /></i><em>{pct(h.value)}</em></li>)}
-              </ul>
-              <p className="ma-sub">These three come from surveys, so a small area's figure carries a wide margin of error: {habits.map((h) => `${h.label.toLowerCase()} ${pct(h.lo)} to ${pct(h.hi)}`).join("; ")} (95% range). Small differences between places are not meaningful. Smoking is for {v.periods.smoke} and adults aged 18 and over; overweight and inactivity are for {v.periods.over} (overweight is adults aged 18 and over, with height and weight self-reported and adjusted; inactive is adults aged 19 and over).</p>
+              <h4>Habits that affect health: out of every 100 adults</h4>
+              <div className="av-peoplerow" role="group" aria-label={`Share of adults in ${council} by habit`}>
+                {habits.map((h) => <PeopleGrid key={h.key} colour="#2F8F6B" value={h.value} compare={h.eng} label={h.label} caption={`England ${pct(h.eng)}. 95% range ${pct(h.lo)} to ${pct(h.hi)}`} />)}
+              </div>
+              <PeopleKey above="More than England" below="Fewer than England" same="Up to the England figure" />
+              <p className="ma-sub">These three come from surveys, so a small area's figure carries a wide margin of error and small differences between places are not meaningful. Smoking is for {v.periods.smoke} and adults aged 18 and over; overweight and inactivity are for {v.periods.over} (overweight is adults aged 18 and over, with height and weight self-reported and adjusted; inactive is adults aged 19 and over). The people are rounded to whole numbers; the exact share is under each.</p>
             </>
           )}
           <p className="ma-sub">Life expectancy is how long a baby born now would live if today's death rates stayed the same all their life, so it describes the area, not any one person. Source: Office for Health Improvement and Disparities (Fingertips), from Office for National Statistics, Sport England and survey data.</p>
@@ -70,7 +83,6 @@ export function AsylumCard({ r, i }) {
   if (r.latitude == null) return null;
   const council = councilName(r.admin_district);
   const v = data && code ? asylumView(data, code) : null;
-  const peak = v ? Math.max(...v.t, 1) : 1;
   const top = v ? Math.max(...v.kinds.map((k) => k.count), 1) : 1;
   return (
     <Card i={i} colour="#C0478A" icon={<IconPin size={20} />} title={`Asylum support in ${council}`} className="ma-asylum">
@@ -85,9 +97,7 @@ export function AsylumCard({ r, i }) {
             </ul>
           )}
           <h4>People in accommodation, quarter by quarter</h4>
-          <ol className="ma-months" aria-label={`People in asylum accommodation in ${council}, by quarter`}>
-            {v.t.map((c, k) => <li key={v.quarters[k]}><i aria-hidden="true" style={{ "--h": c / peak }} /><b>{n(c)}</b><small>{quarterLabel(v.quarters[k])}</small></li>)}
-          </ol>
+          <TrendArea colour="#C0478A" points={v.t.map((c, k) => ({ label: quarterLabel(v.quarters[k]), value: c }))} format={n} aria={`People in asylum accommodation in ${council}, by quarter: ${v.t.map((c, k) => `${quarterLabel(v.quarters[k])} ${n(c)}`).join(", ")}`} />
           <p className="ma-sub">These are people (applicants and their dependants) in receipt of support on the last day of each quarter, not everyone supported during it. Unaccompanied asylum-seeking children, who are looked after by councils, are not included. The chart counts people in Home Office accommodation only, because the Home Office has no council-level figures for cash-only support from December 2023 to December 2024. Before March 2023, everyone on one kind of support (section 4) is counted under dispersal housing, even where some were in hotels. Councils differ greatly in size, so compare with care. Source: Home Office, Immigration System Statistics (table Asy_D11), quarterly.</p>
           <a className="ma-link" href="https://www.gov.uk/government/statistical-data-sets/immigration-system-statistics-data-tables" target="_blank" rel="noreferrer">Immigration statistics on GOV.UK</a>
         </>
@@ -118,11 +128,11 @@ export function HomelessnessCard({ r, i }) {
         <p className="ma-sub">{council} did not send the Government its homelessness return for {v.quarter}, so there are no figures to show for it. In England as a whole, {n(eng.owed)} households were owed help in that quarter and {n(eng.ta)} were in temporary accommodation on {v.asAt}.</p>
       ) : (
         <>
-          {v.owed != null && <p>In {v.quarter}, <strong>{n(v.owed)}</strong> households in {council} were assessed as owed help because they were homeless or about to be{v.owedK != null && <>: <strong>{v.owedK.toFixed(1)}</strong> for every 1,000 households, against {eng.owedK.toFixed(1)} across England</>}.</p>}
-          {v.ta != null && (
-            <p>On {v.asAt}, <strong>{n(v.ta)}</strong> households were in temporary accommodation arranged by the council{v.perK != null && <> ({v.perK.toFixed(1)} per 1,000 households, against {eng.perK.toFixed(1)} across England)</>}.
-              {v.kids != null && <> {n(v.kids)} of them had children, {n(v.children)} children in all.</>}{v.bnb != null && v.bnb > 0 && <> {n(v.bnb)} were in bed and breakfast hotels.</>}</p>
-          )}
+          <div className="av-stats" role="group" aria-label={`Homelessness in ${council}, ${v.quarter}`}>
+            {v.owed != null && <StatTile colour="#E8741A" value={v.owed} label="households owed help" hint={`In ${v.quarter}: homeless or about to be, so the council had to act.`} {...(v.owedK != null ? { chip: `${v.owedK.toFixed(1)} per 1,000 (England ${eng.owedK.toFixed(1)})`, tone: v.owedK > eng.owedK ? "warn" : "good" } : {})} />}
+            {v.ta != null && <StatTile colour="#E8741A" value={v.ta} label="in temporary accommodation" hint={`On ${v.asAt}, arranged by the council.`} {...(v.perK != null ? { chip: `${v.perK.toFixed(1)} per 1,000 (England ${eng.perK.toFixed(1)})`, tone: v.perK > eng.perK ? "warn" : "good" } : {})} />}
+            {v.kids != null && v.ta != null && <StatTile colour="#E8741A" value={v.children} label="children in them" hint={`${n(v.kids)} households with children${v.bnb > 0 ? `; ${n(v.bnb)} in bed and breakfast hotels` : ""}.`} />}
+          </div>
           <p className="ma-sub">"Owed help" means the council accepted a duty to try to prevent or relieve a household's homelessness during the quarter; it counts households, not people, and a household that comes back later is counted again. Temporary accommodation is a snapshot on the last day of the quarter. Councils that place households in other areas are counted for the households they are responsible for, wherever those are housed. {v.reported && (v.owed == null || v.ta == null) && "Part of this council's return is missing, so only some figures are shown. "}Source: Ministry of Housing, Communities and Local Government, Statutory homelessness detailed local authority tables, quarterly.</p>
           <a className="ma-link" href="https://www.gov.uk/government/statistical-data-sets/live-tables-on-homelessness" target="_blank" rel="noreferrer">Homelessness tables on GOV.UK</a>
         </>
@@ -143,7 +153,6 @@ export function ChildPovertyCard({ r, i }) {
   const con = data && seat ? povertyView(data, seat, "con") : null;
   const rows = [la && { key: "la", label: la.name.replace(/ \[note \d+\]/g, ""), v: la }, con && { key: "con", label: con.name, v: con }].filter(Boolean);
   const year = (rows[0]?.v ?? la ?? con)?.year;
-  const top = rows.length ? Math.max(...rows.map((x) => x.v.percent), rows[0].v.uk, 1) : 1;
   const words = (x) => (x.difference === 0 ? "the same as" : x.difference > 0 ? `${Math.abs(x.difference).toFixed(1)} points above` : `${Math.abs(x.difference).toFixed(1)} points below`);
   return (
     <Card i={i} colour="#7A5AF0" icon={<IconCoin size={20} />} title={`Children in low-income families near ${council}`} className="ma-poverty">
@@ -151,10 +160,12 @@ export function ChildPovertyCard({ r, i }) {
         <>
           {la && <p>In {council}, <strong>{pct(la.percent)}</strong> of children under 16 ({n(la.children)} children) were living in families on a low income after housing costs in the year ending March {la.year}, {words(la)} the UK figure of {pct(la.uk)}. A year earlier it was {pct(la.before)}.</p>}
           {con && <p>In {con.name}, your parliamentary constituency, it was <strong>{pct(con.percent)}</strong> ({n(con.children)} children), {words(con)} the UK figure.{con.before != null && <> A year earlier it was {pct(con.before)}.</>}</p>}
-          <ul className="ma-domains ma-poverty-rows" aria-label={`Share of children in low-income families, year ending March ${year}`}>
-            {rows.map((x) => <li key={x.key}><span>{x.label}</span><i aria-hidden="true"><b style={{ "--w": Math.max(0.02, x.v.percent / top) }} /></i><em>{pct(x.v.percent)}</em></li>)}
-            <li><span>United Kingdom</span><i aria-hidden="true"><b style={{ "--w": Math.max(0.02, rows[0].v.uk / top) }} /></i><em>{pct(rows[0].v.uk)}</em></li>
-          </ul>
+          <h4>Out of every 100 children under 16</h4>
+          <div className="av-peoplerow" role="group" aria-label={`Share of children in low-income families, year ending March ${year}`}>
+            {rows.map((x) => <PeopleGrid key={x.key} colour="#7A5AF0" value={x.v.percent} compare={x.v.uk} label={x.label} caption={`${n(x.v.children)} children. UK ${pct(x.v.uk)}`} />)}
+            <PeopleGrid colour="#7A5AF0" value={rows[0].v.uk} label="United Kingdom" caption="The comparison" />
+          </div>
+          <PeopleKey above="More than the UK" below="Fewer than the UK" same="Up to the UK figure" />
           <p className="ma-sub">A family is counted as low income if its income is below 60% of the middle household income of that year, after rent or mortgage and similar housing costs. The year ending March {year} means April {year - 1} to March {year}. The Department for Work and Pensions marks these figures as provisional, so they may be revised, and shares are worked out from the latest population estimates, which may not reflect recent changes in a small area. Source: DWP, Children in low income families: local area statistics, published each March.</p>
           <a className="ma-link" href="https://www.gov.uk/government/collections/children-in-low-income-families-local-area-statistics" target="_blank" rel="noreferrer">Child poverty statistics on GOV.UK</a>
         </>

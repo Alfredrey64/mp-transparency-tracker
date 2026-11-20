@@ -1,6 +1,7 @@
 /** @jsxImportSource react */
 import { useEffect, useState } from "react";
 import { Card } from "./AreaSections";
+import { TrendArea, StackBar, RatingColumns, Ring } from "./AreaViz";
 import { IconShield } from "./icons";
 import { IconFlood } from "./newIcons";
 import { PlaceCard, Pill, TrustCard, School, GradeKey } from "./story/NearYouParts";
@@ -45,6 +46,7 @@ function useLookup(point, run, again = 0) {
   return value;
 }
 
+const CRIME_COLOURS = ["#D9453B", "#E8741A", "#C9A227", "#2F8F6B", "#2C7DA0", "#7A5AF0", "#C0478A", "#5B6784"];
 export function StreetCrimeCard({ r, i }) {
   const point = pointOf(r);
   const scotland = r.country === "Scotland";
@@ -78,6 +80,7 @@ export function StreetCrimeCard({ r, i }) {
       {crime === undefined ? <p className="ma-sub">Loading recorded crime near you...</p> : crime === null ? <p className="ma-sub">The police.uk figures did not load. Their service is sometimes slow. <button type="button" className="ma-retry" onClick={() => setAttempt((a) => a + 1)}>Try again</button> or see <a href="https://www.police.uk/" target="_blank" rel="noreferrer">police.uk</a>.</p> : (
         <>
           <p><strong>{n(crime.total)}</strong> crimes were recorded within about a mile of your postcode in {monthName(crime.latest)}.{crime.behind && " The newest month police.uk has published was slow to arrive, so this is the latest one that did."}</p>
+          <StackBar aria={`Share of crimes recorded near you in ${monthName(crime.latest)}, by kind`} parts={(() => { const head = crime.categories.slice(0, 7); const rest = crime.categories.slice(7).reduce((t, c) => t + c.count, 0); return [...head.map((c, k) => ({ label: c.name, value: c.count, colour: CRIME_COLOURS[k] })), ...(rest ? [{ label: "All other kinds", value: rest, colour: CRIME_COLOURS[7] }] : [])]; })()} />
           <ul className="ma-domains" aria-label={`Kinds of crime recorded near you in ${monthName(crime.latest)}`}>
             {crime.categories.map((c) => (
               <li key={c.slug}><span>{c.name}</span><i aria-hidden="true"><b style={{ "--w": Math.max(0.02, c.count / top) }} /></i><em>{n(c.count)}</em></li>
@@ -363,15 +366,16 @@ export function FoodHygieneCard({ r, i }) {
   const rows = !food ? [] : fhis
     ? [{ key: "pass", label: "Pass", count: food.pass, tone: HYGIENE_TONE[5] }, { key: "improve", label: "Improvement required", count: food.improve, tone: HYGIENE_TONE[1] }]
     : [5, 4, 3, 2, 1, 0].map((v) => ({ key: v, label: `${v}: ${FHRS_WORDS[v]}`, count: food.counts[v], tone: HYGIENE_TONE[v] }));
-  const top = Math.max(...rows.map((x) => x.count), 1);
   return (
     <Card i={i} colour="#2F8F6B" icon={<IconBasket size={20} />} title="Food hygiene near your postcode" className="ma-food">
       {food === undefined ? <p className="ma-sub">Finding food hygiene ratings near you...</p> : food === null ? <p className="ma-sub">The Food Standards Agency's ratings did not load. <button type="button" className="ma-retry" onClick={() => setAttempt((a) => a + 1)}>Try again</button> or search at <a href="https://ratings.food.gov.uk/" target="_blank" rel="noreferrer">ratings.food.gov.uk</a>.</p> : food.judged === 0 ? <p className="ma-sub">No inspected food businesses are listed within {food.radius} mile of your postcode.</p> : (
         <>
           <p>Within about a mile there {food.judged === 1 ? "is" : "are"} <strong>{n(food.judged)}</strong> food business{food.judged === 1 ? "" : "es"} with a published rating{food.authority ? ` from ${food.authority}'s inspectors and others` : ""}. <strong>{Math.round(food.goodShare * 100)}%</strong> {fhis ? "have a Pass" : "are rated Good or Very good (4 or 5)"}.</p>
-          <ul className="ma-domains" aria-label={fhis ? "Food hygiene results near you" : "Food hygiene ratings near you"}>
-            {rows.map((x) => <li key={x.key} style={{ "--mc": x.tone }}><span>{x.label}</span><i aria-hidden="true"><b style={{ "--w": Math.max(x.count ? 0.02 : 0, x.count / top) }} /></i><em>{n(x.count)}</em></li>)}
-          </ul>
+          <h4>{fhis ? "Results near you" : "How many businesses at each rating (5 is best)"}</h4>
+          <div className="av-split">
+            <Ring colour="#2F8F6B" value={Math.round(food.goodShare * 100)} label={fhis ? "have a Pass" : "rated Good or Very good"} caption={`of ${n(food.judged)} businesses`} />
+            <RatingColumns aria={fhis ? "Food hygiene results near you" : "Food hygiene ratings near you"} cols={[...rows].reverse().map((x) => ({ key: x.key, label: fhis ? x.label : String(x.key), sub: fhis ? undefined : FHRS_WORDS[x.key], value: x.count, colour: x.tone }))} />
+          </div>
           {(food.waiting > 0 || food.exempt > 0) && <p className="ma-sub">Not counted above: {[food.waiting > 0 && `${n(food.waiting)} awaiting inspection`, food.exempt > 0 && `${n(food.exempt)} exempt (low-risk businesses such as some childminders and small shops are not rated)`].filter(Boolean).join(", ")}.</p>}
           {food.weak.length > 0 && (
             <>
@@ -499,7 +503,6 @@ export function HousePricesCard({ r, i }) {
   const v = data && code ? priceView(data, code, r.country) : null;
   const last = v?.history[v.history.length - 1]?.year;
   const points = v ? v.history.filter((p) => (last - p.year) % 2 === 0) : [];
-  const peak = points.length ? Math.max(...points.map((p) => p.price)) : 1;
   const topKind = v ? Math.max(...v.kinds.map((k) => k.price), 1) : 1;
   const move = (c) => (c == null ? null : c === 0 ? "unchanged" : `${c > 0 ? "up" : "down"} ${Math.abs(c).toFixed(1)}%`);
   return (
@@ -510,9 +513,7 @@ export function HousePricesCard({ r, i }) {
           {points.length > 1 && (
             <>
               <h4>Average price each {monthOnly(v.month)}</h4>
-              <ol className="ma-months ma-price-years" aria-label={`Average house price in ${council} each ${monthOnly(v.month)}`}>
-                {points.map((p) => <li key={p.year}><i aria-hidden="true" style={{ "--h": p.price / peak }} /><b>£{Math.round(p.price / 1000)}k</b><small>{p.year}</small></li>)}
-              </ol>
+              <TrendArea colour="#E8741A" labelEvery={1} points={points.map((p) => ({ label: String(p.year), value: p.price }))} format={(x) => `£${Math.round(x / 1000)}k`} aria={`Average house price in ${council} each ${monthOnly(v.month)}: ${points.map((p) => `${p.year} ${pounds(p.price)}`).join(", ")}`} />
               {v.sinceFirst != null && <p className="ma-sub">That is {move(v.sinceFirst)} since {monthOnly(v.month)} {v.sinceYear}, before any allowance for inflation.</p>}
             </>
           )}

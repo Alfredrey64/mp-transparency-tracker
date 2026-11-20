@@ -301,7 +301,7 @@ for (const width of [1280, 390]) {
     await expect(page.locator(".ma-food .sc-card").first()).toBeVisible({ timeout: 20000 });
     await expect(page.locator(".ma-flood .sc-card").first()).toBeVisible({ timeout: 20000 });
     await expect(page.locator(".ma-roads .ma-months")).toBeVisible({ timeout: 20000 });
-    await expect(page.locator(".ma-prices .ma-months")).toBeVisible({ timeout: 20000 });
+    await expect(page.locator(".ma-prices .av-trend")).toBeVisible({ timeout: 20000 });
     await expect(page.locator(".ma-skel")).toHaveCount(0, { timeout: 20000 });
     // Reveal everything the way a reader would, so nothing is checked while still faded out.
     await page.evaluate(async () => { for (let y = 0; y < document.documentElement.scrollHeight; y += 600) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 60)); } window.scrollTo(0, 0); });
