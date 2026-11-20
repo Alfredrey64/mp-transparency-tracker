@@ -191,6 +191,7 @@ export function StackBar({ parts, aria }) {
 export function RatingColumns({ cols, aria }) {
   const top = Math.max(...cols.map((c) => c.value), 1);
   return (
+    <>
     <ol className="av-cols" aria-label={aria}>
       {cols.map((c, k) => (
         <li key={c.key} style={{ "--h": c.value / top, "--c": c.colour, "--k": k }}>
@@ -200,5 +201,7 @@ export function RatingColumns({ cols, aria }) {
         </li>
       ))}
     </ol>
+    {cols.some((c) => c.sub) && <p className="av-cols-key" aria-hidden="true">{[...cols].reverse().map((c) => `${c.label} ${c.sub ?? ""}`.trim()).join(" · ")}</p>}
+    </>
   );
 }

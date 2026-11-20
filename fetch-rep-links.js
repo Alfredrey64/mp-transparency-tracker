@@ -43,6 +43,23 @@ async function alive(url) {
   } catch { return { ok: false, gone: false }; }
 }
 
+
+// ---- Members of the Scottish Parliament, the Assembly and the Senedd: each parliament's own page for the member. The address is built from the parliament's own pattern and is only kept when
+// the page that comes back is the member's (their name is on it). Entries already saved are kept without being fetched again, so a run only checks newcomers (add --refresh to check all).
+const slug = (n) => String(n).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/['’]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+const slugAlt = (n) => String(n).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+const flat = (n) => String(n).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+async function pageNamed(url, name, where) {
+  try {
+    const res = await fetch(url, { headers: { ...HEADERS, Accept: "text/html" }, redirect: "follow", signal: AbortSignal.timeout(30_000) });
+    if (res.status !== 200 || !sameSite(url, res.url)) return false;
+    const html = await res.text();
+    const raw = where === "title" ? (/<title>([^<]*)/i.exec(html)?.[1] ?? "") : html.replace(/<[^>]*>/g, " ");
+    const text = raw.replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16))).replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d))).replace(/&amp;/g, "&").replace(/&(rsquo|apos);/g, "'");
+    return ` ${flat(text)} `.includes(` ${flat(name)} `);
+  } catch { return false; }
+}
+
 async function main() {
   const reps = JSON.parse(fs.readFileSync(REPS, "utf8"));
   const old = fs.existsSync(OUT_JSON) ? JSON.parse(fs.readFileSync(OUT_JSON, "utf8")).links ?? {} : {};
@@ -125,9 +142,40 @@ async function main() {
     if (!a.gone && old[key]) links[key] = old[key]; else dead.push(`${o.name} (${raw})`);
   });
 
+  // ---- the devolved members
+  const refresh = process.argv.includes("--refresh");
+  const devolved = new Map(); // key -> { name, url, office, where }
+  const mspList = await json("https://data.parliament.scot/api/members");
+  const mspName = (m) => `${m.PreferredName ?? ""} ${String(m.ParliamentaryName ?? "").split(",")[0]}`.trim();
+  const mspNames = new Set([...Object.values(reps.scotland.constituencies).map((c) => c.msp?.name), ...Object.values(reps.scotland.regions).flat().map((m) => m.name)].filter(Boolean));
+  for (const m of mspList.filter((x) => x.IsCurrent)) {
+    const name = mspName(m);
+    if (mspNames.has(name)) devolved.set(repKey("msp", name), { name, url: `https://www.parliament.scot/msps/current-and-previous-msps/${slug(name)}`, office: "Scottish Parliament", where: "title" });
+  }
+  const niRes = await fetchRetry("http://data.niassembly.gov.uk/members_json.asmx/GetAllCurrentMembers_JSON", { headers: HEADERS }, { gapMs: 0 });
+  const niText = await niRes.text();
+  const tidyNi = (x) => String(x).replace(/^(Dr|Mr|Mrs|Ms|Miss|Rt Hon|Sir|Lord|Lady)\s+/i, "").replace(/\s+(OBE|MBE|CBE|KBE|MP|MLA|KC|QC|DL)\b/gi, "").trim();
+  const niNames = new Set(Object.values(reps.ni).flat().map((m) => m.name));
+  for (const m of JSON.parse(niText.slice(niText.indexOf("{"), niText.lastIndexOf("}") + 1)).AllMembersList.Member ?? []) {
+    const name = tidyNi(m.MemberFullDisplayName);
+    if (niNames.has(name) && m.PersonId) devolved.set(repKey("mla", name), { name: `${m.MemberFirstName} ${m.MemberLastName}`, url: `https://aims.niassembly.gov.uk/mlas/details.aspx?&per=${m.PersonId}&sel=1&ind=0&prv=0`, office: "Northern Ireland Assembly", where: "body" });
+  }
+  for (const m of Object.values(reps.senedd).flat()) if (m?.name) devolved.set(repKey("senedd", m.name), { name: m.name, url: `https://senedd.wales/people/${slug(m.name)}-ms/`, office: "Senedd", where: "title" });
+  const unmatched = [];
+  await mapLimit([...devolved], 4, async ([key, d]) => {
+    if (!refresh && old[key]) { links[key] = old[key]; return; }
+    // An apostrophe in a name is dropped in some parliaments' addresses and a hyphen in others, so both are tried.
+    const tries = [d.url, ...(d.name.includes("'") || d.name.includes("’") ? [d.url.replace(slug(d.name), slugAlt(d.name))] : [])];
+    let hit = null;
+    for (const u of tries) if (!hit && await pageNamed(u, d.name, d.where)) hit = u;
+    if (hit) links[key] = { url: hit, office: d.office };
+    else unmatched.push(d.name);
+  });
+  console.log(`Devolved members linked: ${[...devolved.keys()].filter((k) => links[k]).length} of ${devolved.size}.${unmatched.length ? ` No page found for: ${unmatched.join(", ")}` : ""}`);
+
   const sorted = Object.fromEntries(Object.entries(links).sort(([a], [b]) => a.localeCompare(b)));
   fs.writeFileSync(OUT_JSON, JSON.stringify({ checked: new Date().toISOString().slice(0, 10), links: sorted }) + "\n");
-  console.log(`Linked ${Object.keys(sorted).length} of ${wanted.size}. No office website found for ${noMatch.length}: ${noMatch.join(", ")}`);
+  console.log(`Linked ${Object.keys(sorted).filter((k) => /^(pcc|mayor):/.test(k)).length} of ${wanted.size} commissioners and mayors. No office website found for ${noMatch.length}: ${noMatch.join(", ")}`);
   if (dead.length) console.log(`Not linked because the address did not answer: ${dead.join("; ")}`);
 }
 

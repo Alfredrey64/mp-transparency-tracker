@@ -98,7 +98,7 @@
 .av-stack-key b { font-weight: 800; color: var(--c-ink-soft); }
 
 /* ---- Columns ---- */
-.av-cols { list-style: none; margin: 14px 0 8px; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 10px; align-items: end; }
+.av-cols { list-style: none; margin: 14px 0 8px; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 10px; align-items: start; }
 .av-cols li { display: grid; justify-items: center; align-content: start; gap: 5px; }
 .av-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px; width: 100%; height: 150px; }
 .av-col > b { font: 800 15px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); font-variant-numeric: tabular-nums; }
@@ -149,3 +149,10 @@
 /* On phones the picture is drawn smaller than its 640-unit canvas, so its printed figures are made larger in canvas units to stay about 12px on screen. */
 @media (max-width: 760px) { .av-trend text { font-size: 24px; } .av-trend { margin-top: 18px; } }
 @media (max-width: 420px) { .av-trend text { font-size: 30px; } .av-trend-x li { font-size: 11px; } .av-trend-x li:nth-child(even):not(:last-child) { visibility: hidden; } }
+
+/* Under phone width the column captions would overlap, so each rating's words move to one key line under the chart (the captions stay in the page for screen readers). */
+.av-cols-key { display: none; margin: 6px 0 0; font: 500 12px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+@media (max-width: 520px) {
+  .av-cols li > small { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .av-cols-key { display: block; }
+}

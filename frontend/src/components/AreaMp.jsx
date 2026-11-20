@@ -144,6 +144,7 @@ export function RepsCard({ x, country, i }) {
   const list = reps?.portraits;
   const anyLink = (police?.person && repSite(reps?.links, police.kind === "mayor" ? "mayor" : "pcc", police.person.name)) || (mayor?.person && repSite(reps?.links, "mayor", mayor.person.name));
   const dk = devolved ? DEVOLVED_KIND[devolved.body] : null;
+  const devLink = devolved && [devolved.constituencyMember, ...(devolved.regional ?? []), ...(devolved.members ?? [])].some((m) => m && repSite(reps?.links, dk, m.name));
   const credits = reps ? photoCredits([police?.person && [police.kind === "mayor" ? "mayor" : "pcc", police.person], mayor?.person && ["mayor", mayor.person], ...(devolved?.members ?? []).map((m) => [dk, m])].filter(Boolean), list) : null;
   return (
     <Card i={i} colour="#2A7FA8" icon={<IconPinHome size={20} />} title="Everyone else who speaks for you" className="ma-reps">
@@ -195,6 +196,7 @@ export function RepsCard({ x, country, i }) {
           {reps.scotlandLookupFailed && <p className="ma-sub">We could not find your Scottish Parliament constituency just now. <a href="https://www.parliament.scot/msps/find-your-msp" target="_blank" rel="noreferrer">Find your MSPs on the Parliament's site</a>.</p>}
           {!devolved && !reps.scotlandLookupFailed && country === "England" && <p className="ma-sub">England has no parliament of its own. Laws for England are made at Westminster.</p>}
           {anyLink && <p className="ma-sub ma-rep-credits">A commissioner's or mayor's name links to the website of their office, as recorded on Wikidata and checked on {longDate(reps.linksChecked ?? reps.checked)} to still answer. Some offices have no website recorded, so not every name is a link.</p>}
+          {devLink && <p className="ma-sub ma-rep-credits">Each member's name links to their own page on the {devolved.body === "Senedd" ? "Senedd's" : devolved.body === "Scottish Parliament" ? "Scottish Parliament's" : "Assembly's"} website. A name is only a link when that page was found and shows the member's name.</p>}
           {credits && <p className="ma-sub ma-rep-credits">{credits}</p>}
           <p className="ma-sub">Checked on {longDate(reps.checked)}. After an election or a resignation the lists can lag by a few days.</p>
         </>
