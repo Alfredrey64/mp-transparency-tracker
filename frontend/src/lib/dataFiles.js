@@ -18,3 +18,5 @@ export const localEconomy = () => import("../data/localEconomy.json");
 export const councilServices = () => import("../data/councilServices.json");
 export const rttWaits = () => import("../data/rttWaits.json");
 export const healthMeta = () => import("../data/healthMeta.json");
+export const roadCasualties = () => import("../data/roadCasualties.json");
+export const housePrices = () => import("../data/housePrices.json");

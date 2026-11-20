@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { byCategory, busiestStreets, monthName, monthsBack, crimeName, loadStreetCrime } from "./streetCrime";
+import { byCategory, busiestStreets, monthName, monthsBack, crimeName, loadStreetCrime, loadCrimeTrend } from "./streetCrime";
 
 const crimes = [
   { category: "burglary", location: { street: { name: "On or near High Street" } } },
@@ -24,19 +24,37 @@ describe("street crime", () => {
     expect(monthsBack("2026-01-01", 2)).toBe("2025-11");
     expect(monthsBack("2025-09", 0)).toBe("2025-09");
   });
-  it("loads the latest month and the ones before it, leaving a failed month out of the totals", async () => {
-    const fetcher = async (url) => {
-      if (url.includes("last-updated")) return { ok: true, json: async () => ({ date: "2025-09-01" }) };
-      if (url.includes("date=2025-07")) return { ok: false };
+  const stamp = { ok: true, json: async () => ({ date: "2025-09-01" }) };
+  it("loads the newest month's kinds and streets", async () => {
+    const fetcher = async (url) => (url.includes("last-updated") ? stamp : { ok: true, json: async () => crimes });
+    const r = await loadStreetCrime({ lat: 51, lon: -2 }, fetcher);
+    expect(r).toMatchObject({ published: "2025-09", latest: "2025-09", behind: false, total: 6 });
+    expect(r.categories[0].name).toBe("Violence and sexual offences");
+  });
+  it("uses the month before when the newest is refused, and says so", async () => {
+    const fetcher = async (url) => (url.includes("last-updated") ? stamp : url.includes("date=2025-09") ? { ok: false } : { ok: true, json: async () => crimes });
+    const r = await loadStreetCrime({ lat: 51, lon: -2 }, fetcher);
+    expect(r).toMatchObject({ latest: "2025-08", behind: true, total: 6 });
+  });
+  it("does not wait for ever on a slow newest month", async () => {
+    const fetcher = async (url, opts) => {
+      if (url.includes("last-updated")) return stamp;
+      if (url.includes("date=2025-09")) return new Promise((_, reject) => opts?.signal?.addEventListener("abort", () => reject(new Error("timeout"))));
       return { ok: true, json: async () => crimes };
     };
-    const r = await loadStreetCrime({ lat: 51, lon: -2 }, 4, fetcher);
-    expect(r.latest).toBe("2025-09");
-    expect(r.total).toBe(6);
-    expect(r.months.map((m) => m.ym)).toEqual(["2025-06", "2025-08", "2025-09"]);
+    const r = await loadStreetCrime({ lat: 51, lon: -2 }, fetcher, { slowAfter: 10, patience: 60 });
+    expect(r).toMatchObject({ latest: "2025-08", behind: true });
   });
-  it("throws when the latest month cannot be had", async () => {
-    const fetcher = async (url) => (url.includes("last-updated") ? { ok: true, json: async () => ({ date: "2025-09-01" }) } : { ok: false });
-    await expect(loadStreetCrime({ lat: 51, lon: -2 }, 2, fetcher)).rejects.toThrow();
+  it("throws when no recent month can be had, or the API cannot say what is latest", async () => {
+    const dead = async (url) => (url.includes("last-updated") ? stamp : { ok: false });
+    await expect(loadStreetCrime({ lat: 51, lon: -2 }, dead, { slowAfter: 5 })).rejects.toThrow();
+    await expect(loadStreetCrime({ lat: 51, lon: -2 }, async () => ({ ok: false }))).rejects.toThrow();
+  });
+  it("totals the earlier months, leaving a failed one out and not asking again for the one already loaded", async () => {
+    const asked = [];
+    const fetcher = async (url) => { asked.push(url); return url.includes("date=2025-07") ? { ok: false } : { ok: true, json: async () => crimes.slice(0, 4) }; };
+    const t = await loadCrimeTrend({ lat: 51, lon: -2 }, "2025-09", 4, fetcher, { ym: "2025-09", total: 6 });
+    expect(t).toEqual([{ ym: "2025-06", total: 4 }, { ym: "2025-08", total: 4 }, { ym: "2025-09", total: 6 }]);
+    expect(asked.some((u) => u.includes("date=2025-09"))).toBe(false);
   });
 });

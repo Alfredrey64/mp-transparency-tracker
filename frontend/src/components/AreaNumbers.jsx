@@ -1,7 +1,7 @@
 /** @jsxImportSource react */
 import { Card, Section, RegionOutline, CouncilTax, PlanningCard, Neighbourhood, PlaceFacts, HomesCrime, RegionRanks, Census } from "./AreaSections";
 import { ComplaintsCard } from "./AreaAccountability";
-import { StreetCrimeCard, SewageCard, BathingCard, HealthServicesCard, HospitalCard, SchoolsCard, CouncilServicesCard, LocalEconomyCard } from "./AreaLocal";
+import { StreetCrimeCard, SewageCard, BathingCard, FloodWarningsCard, FoodHygieneCard, RoadCasualtiesCard, HousePricesCard, HealthServicesCard, HospitalCard, SchoolsCard, CouncilServicesCard, LocalEconomyCard } from "./AreaLocal";
 import { IconTrend, IconPinHome, IconCoin, IconHeart, IconShield } from "./icons";
 import { NUMBER_GROUPS } from "../lib/areaViews";
 import { useSeen } from "../lib/useSeen";
@@ -81,6 +81,9 @@ export default function AreaNumbers({ data, x }) {
           <LocalEconomyCard r={data.result} i={0} />
           <CouncilTax x={x} i={1} />
         </Section>
+        <Section as="h3" id="ma-n-homes" title="House prices" lede="What homes in your council area sell for, how that has changed, and how it compares with the rest of the nation." colour={money.colour}>
+          <HousePricesCard r={data.result} i={0} />
+        </Section>
       </Part>
 
       <Part group={services}>
@@ -103,9 +106,16 @@ export default function AreaNumbers({ data, x }) {
           <StreetCrimeCard r={data.result} i={0} />
           <HomesCrime x={x} regionName={regionName} i={1} />
         </Section>
-        <Section as="h3" id="ma-n-water" title="Water" lede="Sewage overflows and bathing water quality near you." colour={safety.colour}>
-          <SewageCard r={data.result} i={0} />
-          <BathingCard r={data.result} i={1} />
+        <Section as="h3" id="ma-n-roads" title="Roads" lede="How many people were killed or seriously injured on the roads of your council area, and who they were." colour={safety.colour}>
+          <RoadCasualtiesCard r={data.result} i={0} />
+        </Section>
+        <Section as="h3" id="ma-n-food" title="Food hygiene" lede="The inspection ratings of the cafes, takeaways, shops and pubs within a mile of your postcode." colour={safety.colour}>
+          <FoodHygieneCard r={data.result} i={0} />
+        </Section>
+        <Section as="h3" id="ma-n-water" title="Water and flooding" lede="Flood warnings, sewage overflows and bathing water quality near you." colour={safety.colour}>
+          <FloodWarningsCard r={data.result} i={0} />
+          <SewageCard r={data.result} i={1} />
+          <BathingCard r={data.result} i={2} />
         </Section>
       </Part>
     </>

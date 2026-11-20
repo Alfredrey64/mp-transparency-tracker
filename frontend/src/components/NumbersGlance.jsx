@@ -72,10 +72,9 @@ export default function NumbersGlance({ data, x }) {
         {tiles.map((t, n) => {
           const Icon = ICONS[t.icon] ?? IconPinHome;
           const v = t.verdict;
-          const spoken = `${t.label}: ${t.valueText ?? FORMATS[t.format](t.value)}.${v ? ` ${v.text}${t.ref != null ? `, which is ${FORMATS[t.format](t.ref)}` : ""}.` : ""} Press to see the detail.`;
           return (
             <li key={t.id}>
-              <button type="button" className="mg-tile" style={{ "--tc": t.colour, "--n": n }} onClick={() => scrollToId(t.section)} aria-label={spoken}>
+              <button type="button" className="mg-tile" style={{ "--tc": t.colour, "--n": n }} onClick={() => scrollToId(t.section)}>
                 <span className="mg-tile-top"><i className="mg-tile-icon" aria-hidden="true"><Icon size={18} /></i><span>{t.label}</span></span>
                 <b className="mg-tile-value">{t.kind === "tenth" ? t.valueText : <CountUp value={t.value} format={FORMATS[t.format]} />}</b>
                 {v && <span className="mg-chip" data-tone={v.tone}><Arrow kind={v.arrow} />{v.text}</span>}

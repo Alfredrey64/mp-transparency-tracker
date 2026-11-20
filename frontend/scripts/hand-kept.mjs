@@ -38,8 +38,8 @@ export const HAND_KEPT = [
 // Files a scheduled job rewrites (daily or weekly), so nobody types them.
 export const AUTOMATIC = [
   /^(ageing|care|defence|education|health|inequality|transport|trust|brexit|devolution|energy)Data\.json$/, /^(inequalityAbroad|inequalityPlace)\.json$/, /^ons\//,
-  /^(aeNearYou|auditReports|backbench|bathingWater|consultations|localEconomy|rttWaits|benchmarks|billStages|committeeReports|constituencies|constituencyHistory|constituencySummary|councilsIndex|donorSectors|donorSectorsMeta|entryNotes|fullFactPledges|lawExample|lordsCareers|lordsVotes|mpCareers|parliamentCalendar|partyDonorSectors|partyDonorSectorsMeta|partyLeaders|pipelineStatus|plainEnglish|regionalBreakdowns|representatives|standardsReportAuto|standardsReportDetails|statutoryInstruments|taxBands|taxSeries)\.json$/,
-  /^(careerDetail|councilDetail|lordsCareerDetail)\//, /^(councilTaxByCouncil|devolvedLeaders|pmPortraits)\.json$/,
+  /^(aeNearYou|auditReports|backbench|bathingWater|consultations|localEconomy|housePrices|roadCasualties|rttWaits|benchmarks|billStages|committeeReports|constituencies|constituencyHistory|constituencySummary|councilsIndex|donorSectors|donorSectorsMeta|entryNotes|fullFactPledges|lawExample|lordsCareers|lordsVotes|mpCareers|parliamentCalendar|partyDonorSectors|partyDonorSectorsMeta|partyLeaders|pipelineStatus|plainEnglish|regionalBreakdowns|representatives|standardsReportAuto|standardsReportDetails|statutoryInstruments|taxBands|taxSeries)\.json$/,
+  /^(careerDetail|councilDetail|lordsCareerDetail)\//, /^(councilTaxByCouncil|devolvedLeaders|pmPortraits|repPortraits)\.json$/,
 ];
 
 // Files that are history, structure or wording that cannot go stale, or that carry their own date in CHECKED / `checked:` (the weekly check reads those separately).

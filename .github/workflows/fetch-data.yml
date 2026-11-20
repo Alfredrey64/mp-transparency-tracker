@@ -365,6 +365,18 @@ jobs:
         continue-on-error: true
         run: node fetch-local-economy.js
 
+      # House prices by council (UK House Price Index, one 35 MB file a month, skipped when this month's is already saved) and road casualties by council
+      # (the Department for Transport's five-year files, about 150 MB, skipped while their size is unchanged and the table is under 35 days old).
+      - name: Run the house price fetch script
+        id: fetch_house_prices
+        continue-on-error: true
+        run: node fetch-house-prices.js
+
+      - name: Run the road casualties fetch script
+        id: fetch_road_casualties
+        continue-on-error: true
+        run: node fetch-road-casualties.js
+
       # NHS England's monthly A&E figures by trust, for Schools and A&E near you
       # (one spreadsheet, plus the trust postcodes through postcodes.io).
       - name: Run the A&E performance fetch script
@@ -402,13 +414,15 @@ jobs:
           echo "STATUS_fetch_rtt_waits=${{ steps.fetch_rtt_waits.outcome }}" >> status.env
           echo "STATUS_fetch_bathing_water=${{ steps.fetch_bathing_water.outcome }}" >> status.env
           echo "STATUS_fetch_local_economy=${{ steps.fetch_local_economy.outcome }}" >> status.env
+          echo "STATUS_fetch_house_prices=${{ steps.fetch_house_prices.outcome }}" >> status.env
+          echo "STATUS_fetch_road_casualties=${{ steps.fetch_road_casualties.outcome }}" >> status.env
           echo "STATUS_write_plain_english=${{ steps.write_plain_english.outcome }}" >> status.env
 
       - name: Save the outcomes and the files this job wrote
         if: always()
         run: |
           existing=""
-          for p in frontend/src/data/lordsCareers.json frontend/src/data/lordsCareerDetail frontend/src/data/lordsVotes.json frontend/src/data/parliamentCalendar.json frontend/public/calendar frontend/src/data/entryNotes.json frontend/src/data/committeeReports.json frontend/src/data/backbench.json frontend/src/data/auditReports.json frontend/src/data/aeNearYou.json frontend/src/data/consultations.json frontend/src/data/rttWaits.json frontend/src/data/bathingWater.json frontend/src/data/localEconomy.json frontend/src/data/statutoryInstruments.json frontend/src/data/plainEnglish.json; do [ -e "$p" ] && existing="$existing $p"; done
+          for p in frontend/src/data/lordsCareers.json frontend/src/data/lordsCareerDetail frontend/src/data/lordsVotes.json frontend/src/data/parliamentCalendar.json frontend/public/calendar frontend/src/data/entryNotes.json frontend/src/data/committeeReports.json frontend/src/data/backbench.json frontend/src/data/auditReports.json frontend/src/data/aeNearYou.json frontend/src/data/consultations.json frontend/src/data/rttWaits.json frontend/src/data/bathingWater.json frontend/src/data/localEconomy.json frontend/src/data/housePrices.json frontend/src/data/roadCasualties.json frontend/src/data/statutoryInstruments.json frontend/src/data/plainEnglish.json; do [ -e "$p" ] && existing="$existing $p"; done
           tar -cf data.tar status.env $existing
 
       - name: Upload them for the last job
@@ -873,12 +887,20 @@ jobs:
           node fetch-portraits.js
           git add frontend/public/portraits
 
+      # Small photos of the regional office-holders on Your area (commissioners, mayors, Senedd members, MSPs, MLAs), see fetch-rep-portraits.js: official photos where the
+      # Scottish Parliament and the Assembly publish them, otherwise only photos Wikimedia Commons says are freely licensed, with the credit saved. Only newcomers are fetched.
+      - name: Save small photos of any new regional office-holders
+        continue-on-error: true
+        run: |
+          node fetch-rep-portraits.js
+          git add frontend/public/portraits/reps frontend/src/data/repPortraits.json
+
       - name: Commit updated data files, if they changed
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add frontend/src/data/constituencies.json frontend/src/data/constituencySummary.json frontend/src/data/constituencyHistory.json frontend/src/data/mpCareers.json frontend/src/data/careerDetail frontend/src/data/lordsCareers.json frontend/src/data/benchmarks.json frontend/src/data/representatives.json frontend/src/data/councilsIndex.json frontend/src/data/councilDetail frontend/src/data/ons frontend/src/data/regionalBreakdowns.json frontend/src/data/lordsCareerDetail frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json frontend/src/data/partyDonorSectors.json frontend/src/data/partyDonorSectorsMeta.json frontend/src/data/pipelineStatus.json frontend/src/data/lordsVotes.json frontend/src/data/parliamentCalendar.json frontend/public/calendar frontend/src/data/entryNotes.json frontend/src/data/committeeReports.json frontend/src/data/backbench.json frontend/src/data/auditReports.json frontend/src/data/aeNearYou.json frontend/src/data/consultations.json frontend/src/data/rttWaits.json frontend/src/data/bathingWater.json frontend/src/data/localEconomy.json frontend/src/data/statutoryInstruments.json frontend/src/data/plainEnglish.json frontend/src/data/standardsReportAuto.json frontend/src/data/billStages.json frontend/src/data/lawExample.json frontend/src/data/fullFactPledges.json frontend/src/data/partyLeaders.json frontend/public/data/councillors.json
+          git add frontend/src/data/constituencies.json frontend/src/data/constituencySummary.json frontend/src/data/constituencyHistory.json frontend/src/data/mpCareers.json frontend/src/data/careerDetail frontend/src/data/lordsCareers.json frontend/src/data/benchmarks.json frontend/src/data/representatives.json frontend/src/data/councilsIndex.json frontend/src/data/councilDetail frontend/src/data/ons frontend/src/data/regionalBreakdowns.json frontend/src/data/lordsCareerDetail frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json frontend/src/data/partyDonorSectors.json frontend/src/data/partyDonorSectorsMeta.json frontend/src/data/pipelineStatus.json frontend/src/data/lordsVotes.json frontend/src/data/parliamentCalendar.json frontend/public/calendar frontend/src/data/entryNotes.json frontend/src/data/committeeReports.json frontend/src/data/backbench.json frontend/src/data/auditReports.json frontend/src/data/aeNearYou.json frontend/src/data/consultations.json frontend/src/data/rttWaits.json frontend/src/data/bathingWater.json frontend/src/data/localEconomy.json frontend/src/data/housePrices.json frontend/src/data/roadCasualties.json frontend/src/data/statutoryInstruments.json frontend/src/data/plainEnglish.json frontend/src/data/standardsReportAuto.json frontend/src/data/billStages.json frontend/src/data/lawExample.json frontend/src/data/fullFactPledges.json frontend/src/data/partyLeaders.json frontend/public/data/councillors.json
           git diff --staged --quiet || git commit -m "chore: daily data refresh"
           # Someone may have pushed while the crawl ran (or while the pull below was running): sit this commit on top of theirs rather than being refused, and try again a few
           # times if another push gets in first. If a file was edited on both sides, today's rebuilt copy wins (`-X theirs` means the commit being replayed in a rebase).

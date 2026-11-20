@@ -5,6 +5,7 @@ import { useBenchmarks } from "../lib/useBenchmarks";
 import { mpMoney, independence, dotAt, yearLabel, spread } from "../lib/areaMp";
 import { IconTrend, IconVote, IconPinHome } from "./icons";
 import { partyHue, partyShort } from "../lib/areaReps";
+import { repPhoto } from "../lib/repPortrait";
 import { longDate } from "../lib/councils";
 import { Card } from "./AreaSections";
 import ShareButton from "./ShareButton";
@@ -95,14 +96,36 @@ export function IndependenceCard({ mp, i }) {
 
 const initials = (name) => String(name ?? "").split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
 
-function Person({ p, n }) {
+// A photo from the saved set (public/portraits/reps) when there is one, otherwise the initials. A photo that fails to load falls back to the initials too.
+function Person({ p, n, kind, list }) {
+  const photo = repPhoto(list, kind, p.name);
+  const [broken, setBroken] = useState(false);
   return (
     <li className="ma-rep" style={{ "--pc": partyHue(p.party), "--n": n }}>
-      <span className="ma-rep-av" aria-hidden="true">{initials(p.name)}</span>
+      {photo && !broken
+        ? <img className="ma-rep-av ma-rep-img" src={photo.src} alt="" width="46" height="46" loading="lazy" decoding="async" onError={() => setBroken(true)} />
+        : <span className="ma-rep-av" aria-hidden="true">{initials(p.name)}</span>}
       <b>{p.name}</b>
       {p.party && <small>{partyShort(p.party)}</small>}
     </li>
   );
+}
+
+const DEVOLVED_KIND = { Senedd: "senedd", "Scottish Parliament": "msp", "Northern Ireland Assembly": "mla" };
+
+// The credit line for the photos shown: the official ones in a phrase, the Wikimedia Commons ones by name with photographer and licence.
+function photoCredits(people, list) {
+  const official = new Set();
+  const named = [];
+  for (const [kind, p] of people) {
+    const ph = repPhoto(list, kind, p.name);
+    if (!ph) continue;
+    if (ph.page) named.push(`${p.name} (${ph.credit}, ${ph.licence})`); else official.add(ph.credit);
+  }
+  const parts = [];
+  if (official.size) parts.push(`${[...official].join(" and ")} official photos`);
+  if (named.length) parts.push(`From Wikimedia Commons: ${named.join(", ")}`);
+  return parts.length ? `Photos: ${parts.join(". ")}.` : null;
 }
 
 const SOON = "https://www.gov.uk/government/news/police-and-crime-commissioners-to-be-scrapped";
@@ -117,6 +140,9 @@ export function RepsCard({ x, country, i }) {
   const reps = x?.reps;
   const { police, mayor, devolved } = reps ?? {};
   const link = devolved ? LOOKUPS[devolved.body] : null;
+  const list = reps?.portraits;
+  const dk = devolved ? DEVOLVED_KIND[devolved.body] : null;
+  const credits = reps ? photoCredits([police?.person && [police.kind === "mayor" ? "mayor" : "pcc", police.person], mayor?.person && ["mayor", mayor.person], ...(devolved?.members ?? []).map((m) => [dk, m])].filter(Boolean), list) : null;
   return (
     <Card i={i} colour="#2A7FA8" icon={<IconPinHome size={20} />} title="Everyone else who speaks for you" className="ma-reps">
       {reps === undefined ? <Skel /> : reps === null ? <p className="ma-sub">We could not load the list of representatives just now.</p> : (
@@ -127,9 +153,9 @@ export function RepsCard({ x, country, i }) {
               <section>
                 <h4>Police</h4>
                 <p><b>{police.force}</b></p>
-                {police.kind === "commissioner" && (police.person ? <ul className="ma-rep-list"><Person p={police.person} n={0} /></ul> : <p className="ma-sub">We could not match this force to its commissioner.</p>)}
+                {police.kind === "commissioner" && (police.person ? <ul className="ma-rep-list"><Person p={police.person} n={0} kind={police.kind === "mayor" ? "mayor" : "pcc"} list={list} /></ul> : <p className="ma-sub">We could not match this force to its commissioner.</p>)}
                 {police.kind === "commissioner" && police.person && <p className="ma-sub">Police and crime commissioner. The government has said the role will end in 2028. <a href={SOON} target="_blank" rel="noreferrer">What it announced</a></p>}
-                {police.kind === "mayor" && (police.person && mayor?.person?.name === police.person.name ? <p className="ma-sub">Here the regional mayor does the job a police and crime commissioner does elsewhere. That is {police.person.name}, below.</p> : police.person ? <><ul className="ma-rep-list"><Person p={police.person} n={0} /></ul><p className="ma-sub">{police.post}. The mayor does the job a police and crime commissioner does elsewhere.</p></> : <p className="ma-sub">The regional mayor does the job of a police and crime commissioner here.</p>)}
+                {police.kind === "mayor" && (police.person && mayor?.person?.name === police.person.name ? <p className="ma-sub">Here the regional mayor does the job a police and crime commissioner does elsewhere. That is {police.person.name}, below.</p> : police.person ? <><ul className="ma-rep-list"><Person p={police.person} n={0} kind={police.kind === "mayor" ? "mayor" : "pcc"} list={list} /></ul><p className="ma-sub">{police.post}. The mayor does the job a police and crime commissioner does elsewhere.</p></> : <p className="ma-sub">The regional mayor does the job of a police and crime commissioner here.</p>)}
                 {police.kind === "city" && <p className="ma-sub">Overseen by the City of London Corporation's police authority, not by a commissioner.</p>}
                 {police.kind === "scotland" && <p className="ma-sub">Policing in Scotland is overseen by the Scottish Police Authority and answers to the Scottish Parliament. There are no police commissioners.</p>}
                 {police.kind === "ni" && <p className="ma-sub">Policing in Northern Ireland is overseen by the Northern Ireland Policing Board. There are no police commissioners.</p>}
@@ -139,7 +165,7 @@ export function RepsCard({ x, country, i }) {
               <section>
                 <h4>Regional mayor</h4>
                 <p><b>{mayor.authority}</b></p>
-                {mayor.person ? <><ul className="ma-rep-list"><Person p={mayor.person} n={1} /></ul><p className="ma-sub">{mayor.post}.</p></> : <p className="ma-sub">This regional authority has no elected mayor yet.</p>}
+                {mayor.person ? <><ul className="ma-rep-list"><Person p={mayor.person} n={1} kind="mayor" list={list} /></ul><p className="ma-sub">{mayor.post}.</p></> : <p className="ma-sub">This regional authority has no elected mayor yet.</p>}
               </section>
             )}
             {!mayor && country === "England" && (
@@ -155,17 +181,18 @@ export function RepsCard({ x, country, i }) {
               {devolved.constituencyMember ? (
                 <>
                   <p className="ma-rep-sub">Your constituency MSP</p>
-                  <ul className="ma-rep-list ma-rep-grid"><Person p={devolved.constituencyMember} n={0} /></ul>
+                  <ul className="ma-rep-list ma-rep-grid"><Person p={devolved.constituencyMember} n={0} kind={dk} list={list} /></ul>
                   <p className="ma-rep-sub">Your seven regional MSPs, for {devolved.region}</p>
-                  <ul className="ma-rep-list ma-rep-grid">{devolved.regional.map((m, n) => <Person key={m.name} p={m} n={n + 1} />)}</ul>
+                  <ul className="ma-rep-list ma-rep-grid">{devolved.regional.map((m, n) => <Person key={m.name} p={m} n={n + 1} kind={dk} list={list} />)}</ul>
                 </>
-              ) : <ul className="ma-rep-list ma-rep-grid">{devolved.members.map((m, n) => <Person key={m.name} p={m} n={n} />)}</ul>}
+              ) : <ul className="ma-rep-list ma-rep-grid">{devolved.members.map((m, n) => <Person key={m.name} p={m} n={n} kind={dk} list={list} />)}</ul>}
               <p className="ma-sub">{devolved.note}</p>
               {link && <a className="ma-link" href={link[0]} target="_blank" rel="noreferrer">{link[1]}</a>}
             </section>
           )}
           {reps.scotlandLookupFailed && <p className="ma-sub">We could not find your Scottish Parliament constituency just now. <a href="https://www.parliament.scot/msps/find-your-msp" target="_blank" rel="noreferrer">Find your MSPs on the Parliament's site</a>.</p>}
           {!devolved && !reps.scotlandLookupFailed && country === "England" && <p className="ma-sub">England has no parliament of its own. Laws for England are made at Westminster.</p>}
+          {credits && <p className="ma-sub ma-rep-credits">{credits}</p>}
           <p className="ma-sub">Checked on {longDate(reps.checked)}. After an election or a resignation the lists can lag by a few days.</p>
         </>
       )}

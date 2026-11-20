@@ -61,6 +61,8 @@ const SCRIPTS = [
   { id: "fetch_rtt_waits", label: "NHS waiting lists by trust" },
   { id: "fetch_bathing_water", label: "Bathing water ratings" },
   { id: "fetch_local_economy", label: "Constituency jobs and pay (Nomis)" },
+  { id: "fetch_house_prices", label: "House prices by council (UK House Price Index)" },
+  { id: "fetch_road_casualties", label: "Road casualties by council (Department for Transport)" },
   { id: "fetch_ae_performance", label: "A&E performance by NHS trust" },
   { id: "write_plain_english", label: "Plain-English rewrites of committee reports and statutory instruments (AI, from the official wording)" },
   { id: "fetch_fullfact_tracker", label: "Full Fact pledge list" },

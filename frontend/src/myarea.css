@@ -670,8 +670,8 @@
 .ma-rep-groups section, .ma-rep-dev { display: grid; align-content: start; gap: 7px; padding: 14px 16px; border-radius: 14px; background: color-mix(in srgb, var(--mc) 6%, var(--c-paper)); }
 .ma-rep-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .ma-rep-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); }
-.ma-rep { display: grid; grid-template-columns: 38px minmax(0, 1fr); grid-template-areas: "av name" "av party"; column-gap: 11px; align-items: center; padding: 8px 10px; border-radius: 12px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); animation: maIn 0.5s var(--ease-out) calc(var(--n) * 50ms + 150ms) backwards; }
-.ma-rep-av { grid-area: av; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: color-mix(in srgb, var(--pc) 16%, var(--c-paper)); color: color-mix(in srgb, var(--pc) 80%, var(--c-ink)); font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; box-shadow: 0 0 0 2px var(--pc); }
+.ma-rep { display: grid; grid-template-columns: 46px minmax(0, 1fr); grid-template-areas: "av name" "av party"; column-gap: 11px; align-items: center; padding: 8px 10px; border-radius: 12px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); animation: maIn 0.5s var(--ease-out) calc(var(--n) * 50ms + 150ms) backwards; }
+.ma-rep-av { grid-area: av; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; background: color-mix(in srgb, var(--pc) 16%, var(--c-paper)); color: color-mix(in srgb, var(--pc) 80%, var(--c-ink)); font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; box-shadow: 0 0 0 2px var(--pc); }
 .ma-rep b { grid-area: name; font: 700 14px/1.25 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); overflow-wrap: anywhere; }
 .ma-rep small { grid-area: party; font: 600 12px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 @media (prefers-reduced-motion: reduce) { .ma-rep { animation: none; } }
@@ -752,3 +752,7 @@
 @keyframes maWkIn { from { opacity: 0; transform: translateY(10px); } }
 @media (prefers-reduced-motion: reduce) { .ma-wk-item, .ma-wk-fig, .ma-wk-dots i { animation: none; } }
 @media (max-width: 760px) { .ma-wk-figs { grid-template-columns: minmax(0, 1fr); } }
+
+.ma-retry { display: inline-flex; align-items: center; min-height: 44px; padding: 0 6px; border: 0; background: none; cursor: pointer; font: 700 inherit/1.4 inherit; color: var(--c-link, inherit); text-decoration: underline; }
+.ma-rep-img { display: block; object-fit: cover; object-position: 50% 18%; background: var(--c-paper); }
+.ma-rep-credits { font-size: 11.5px; line-height: 1.45; }

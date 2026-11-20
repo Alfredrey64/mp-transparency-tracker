@@ -52,26 +52,53 @@ export function monthsBack(latest, n) {
 }
 
 const API = "https://data.police.uk/api";
+const pause = (ms) => new Promise((r) => setTimeout(r, ms));
 
-// The latest month and the five before it: each month's total, and the kinds and streets for the latest. A month that fails is left out of the totals; if the latest fails, it throws.
-export async function loadStreetCrime(point, months = 6, fetcher = fetch) {
-  const stamp = await (await fetcher(`${API}/crime-last-updated`)).json();
-  const latest = String(stamp.date).slice(0, 7);
-  const asked = Array.from({ length: months }, (_, n) => monthsBack(latest, n));
+// One JSON answer from the API, or null if it is refused, fails, or takes longer than `ms`. A month is a big answer (about a thousand crimes within a mile in a town) and the newest month
+// is sometimes very slow to build, so nothing here may wait for ever.
+async function getJson(url, fetcher, ms) {
+  try {
+    const signal = typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function" ? AbortSignal.timeout(ms) : undefined;
+    const res = await fetcher(url, signal ? { signal } : undefined);
+    return res.ok ? await res.json() : null;
+  } catch { return null; }
+}
+
+const crimesUrl = (point, ym) => `${API}/crimes-street/all-crime?lat=${point.lat}&lng=${point.lon}&date=${ym}`;
+
+// The newest month the API has published, as "2026-09", or null if it cannot say.
+async function publishedMonth(fetcher) {
+  const stamp = await getJson(`${API}/crime-last-updated`, fetcher, 10000);
+  return stamp?.date ? String(stamp.date).slice(0, 7) : null;
+}
+
+// What was recorded within about a mile of a point in the newest month, by kind and street. The newest month is asked for first; if it has not come in after `slowAfter` ms the month
+// before is asked for too, and used if the newest then fails or runs out of patience. `behind` says the month used is not the newest published. Throws only if no recent month can be had.
+export async function loadStreetCrime(point, fetcher = fetch, { slowAfter = 3500, patience = 15000 } = {}) {
+  const published = await publishedMonth(fetcher);
+  if (!published) throw new Error("crime");
+  const newest = monthsBack(published, 0);
+  const first = getJson(crimesUrl(point, newest), fetcher, patience);
+  const early = await Promise.race([first, pause(slowAfter).then(() => "slow")]);
+  let ym = newest;
+  let crimes = early === "slow" ? null : early;
+  if (!crimes) {
+    const before = monthsBack(published, 1);
+    const backup = getJson(crimesUrl(point, before), fetcher, 30000);
+    crimes = early === "slow" ? await first : null;
+    if (!crimes) { crimes = await backup; ym = before; }
+  }
+  if (!crimes) { ym = monthsBack(published, 2); crimes = await getJson(crimesUrl(point, ym), fetcher, 30000); }
+  if (!crimes) throw new Error("crime");
+  return { published, latest: ym, behind: ym !== newest, categories: byCategory(crimes), streets: busiestStreets(crimes), total: crimes.length };
+}
+
+// Each month's total for the `months` months up to `latest`, oldest first. `known` is the month already loaded, so it is not asked for again. A month that fails is left out.
+export async function loadCrimeTrend(point, latest, months = 6, fetcher = fetch, known = null) {
+  const asked = Array.from({ length: months }, (_, n) => monthsBack(latest, n)).filter((ym) => !known || ym !== known.ym);
   const got = await Promise.all(asked.map(async (ym) => {
-    try {
-      const res = await fetcher(`${API}/crimes-street/all-crime?lat=${point.lat}&lng=${point.lon}&date=${ym}`);
-      if (!res.ok) return { ym, crimes: null };
-      return { ym, crimes: await res.json() };
-    } catch { return { ym, crimes: null }; }
+    const crimes = await getJson(crimesUrl(point, ym), fetcher, 30000);
+    return crimes ? { ym, total: crimes.length } : null;
   }));
-  const first = got[0];
-  if (!first.crimes) throw new Error("crime");
-  return {
-    latest,
-    months: got.filter((g) => g.crimes).map((g) => ({ ym: g.ym, total: g.crimes.length })).reverse(),
-    categories: byCategory(first.crimes),
-    streets: busiestStreets(first.crimes),
-    total: first.crimes.length,
-  };
+  return [...got.filter(Boolean), ...(known ? [{ ym: known.ym, total: known.total }] : [])].sort((a, b) => (a.ym < b.ym ? -1 : 1));
 }

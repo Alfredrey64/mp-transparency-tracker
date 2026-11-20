@@ -36,9 +36,8 @@ export function Glyph({ name, colour = "currentColor", size = 22 }) {
 const STALKS = Array.from({ length: 46 }, (_, i) => ({ x: 14 + i * 31 + ((i * 53) % 17), h: 20 + ((i * 37) % 17), d: (i * 0.17) % 1.8 }));
 const ROWS = Array.from({ length: 19 }, (_, i) => i - 9);
 export function FarmScene() {
-  return (
-    <div className="fm-scene" aria-hidden="true">
-      <svg viewBox="0 0 1440 200" preserveAspectRatio="xMidYMax slice" focusable="false">
+  const picture = (
+    <>
         <defs>
           <radialGradient id="fm-sun" cx="50%" cy="50%" r="50%"><stop offset="0" stopColor="#FFE9A8" stopOpacity="0.95" /><stop offset="1" stopColor="#FFE9A8" stopOpacity="0" /></radialGradient>
           <linearGradient id="fm-near" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#86B94B" /><stop offset="1" stopColor="#5A9238" /></linearGradient>
@@ -75,7 +74,12 @@ export function FarmScene() {
             </g>
           ))}
         </g>
-      </svg>
+    </>
+  );
+  return (
+    <div className="fm-scene" aria-hidden="true">
+      <svg className="scene-row" viewBox="0 0 1440 200" preserveAspectRatio="xMidYMax slice" focusable="false">{picture}</svg>
+      <svg className="scene-row scene-row2" viewBox="0 0 1440 200" preserveAspectRatio="xMidYMax slice" focusable="false">{picture}</svg>
     </div>
   );
 }

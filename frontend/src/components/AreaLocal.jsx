@@ -5,9 +5,9 @@ import { IconShield } from "./icons";
 import { IconFlood } from "./newIcons";
 import { PlaceCard, Pill, TrustCard, School, GradeKey } from "./story/NearYouParts";
 import { useDataFile } from "../lib/useDataFile";
-import { bathingWater, rttWaits, aeNearYou, healthMeta, councilServices, localEconomy } from "../lib/dataFiles";
+import { bathingWater, rttWaits, aeNearYou, healthMeta, councilServices, localEconomy, roadCasualties, housePrices } from "../lib/dataFiles";
 import { seatRecord, claimantRow, payRow, monthShort } from "../lib/localEconomyView";
-import { IconEconomy } from "./icons";
+import { IconEconomy, IconBasket, IconTransport, IconHouse } from "./icons";
 import { roadRows, flyTippingRow, roadYear } from "../lib/councilServices";
 import { IconCouncil } from "./icons";
 import { loadTiles } from "../lib/localTiles";
@@ -15,7 +15,11 @@ import { nearestTrusts, schoolsWithin } from "../lib/nearYou";
 import { GROUPS, placesWithin, placeView, waitView } from "../lib/healthNear";
 import { IconHeartbeat, IconPin } from "./icons";
 import { loadOverflows, nearestBathing, RATING_TEXT, RATING_TONE } from "../lib/waterNear";
-import { loadStreetCrime, monthName } from "../lib/streetCrime";
+import { loadStreetCrime, loadCrimeTrend, monthName } from "../lib/streetCrime";
+import { loadFoodHygiene, FHRS_WORDS } from "../lib/foodHygiene";
+import { loadFloods, SEVERITY } from "../lib/floodLive";
+import { roadView } from "../lib/roadSafety";
+import { priceView, monthLabel, monthOnly, pounds } from "../lib/housePriceView";
 import "../arealocal.css";
 
 // The cards of the In numbers view that look themselves up from the postcode's position: street-level crime (police.uk, live). Each takes the postcode result `r` and
@@ -23,9 +27,11 @@ import "../arealocal.css";
 
 const pointOf = (r) => (r.latitude != null && r.longitude != null ? { lat: r.latitude, lon: r.longitude } : null);
 const n = (v) => Number(v ?? 0).toLocaleString("en-GB");
+// postcodes.io writes "Bristol, City of" and "Herefordshire, County of"; people say "the City of Bristol".
+const councilName = (name) => { const m = /^(.+), (City|County) of$/.exec(name ?? ""); return m ? `the ${m[2]} of ${m[1]}` : name ?? "your council area"; };
 
 // Runs a lookup for a point and keeps its answer: undefined while it loads, null if it failed.
-function useLookup(point, run) {
+function useLookup(point, run, again = 0) {
   const [value, setValue] = useState(undefined);
   const lat = point?.lat;
   const lon = point?.lon;
@@ -35,14 +41,28 @@ function useLookup(point, run) {
     setValue(undefined); // eslint-disable-line react-hooks/set-state-in-effect -- a new postcode starts a new lookup
     run({ lat, lon }).then((v) => alive && setValue(v)).catch(() => alive && setValue(null));
     return () => { alive = false; };
-  }, [lat, lon]); // eslint-disable-line react-hooks/exhaustive-deps -- `run` is a fixed function of the point
+  }, [lat, lon, again]); // eslint-disable-line react-hooks/exhaustive-deps -- `run` is a fixed function of the point
   return value;
 }
 
 export function StreetCrimeCard({ r, i }) {
   const point = pointOf(r);
   const scotland = r.country === "Scotland";
-  const crime = useLookup(scotland ? null : point, (p) => loadStreetCrime(p, 6));
+  const [attempt, setAttempt] = useState(0);
+  const crime = useLookup(scotland ? null : point, (p) => loadStreetCrime(p), attempt);
+  const [trend, setTrend] = useState(null);
+  const lat = point?.lat;
+  const lon = point?.lon;
+  const month = crime?.latest;
+  const total = crime?.total;
+  // The earlier months are a nice extra: they are asked for after the main figures are showing, and quietly left out if they do not come.
+  useEffect(() => {
+    if (!month || lat == null) return undefined;
+    let alive = true;
+    setTrend(null); // eslint-disable-line react-hooks/set-state-in-effect -- a new month starts a new trend
+    loadCrimeTrend({ lat, lon }, month, 6, fetch, { ym: month, total }).then((t) => alive && setTrend(t)).catch(() => {});
+    return () => { alive = false; };
+  }, [month, total, lat, lon]);
   if (!point) return null;
   if (scotland) {
     return (
@@ -52,22 +72,22 @@ export function StreetCrimeCard({ r, i }) {
     );
   }
   const top = crime ? Math.max(...crime.categories.map((c) => c.count), 1) : 1;
-  const peak = crime ? Math.max(...crime.months.map((m) => m.total), 1) : 1;
+  const peak = trend ? Math.max(...trend.map((m) => m.total), 1) : 1;
   return (
     <Card i={i} colour="#D9453B" icon={<IconShield size={20} />} title="Crime near your postcode" className="ma-streetcrime">
-      {crime === undefined ? <p className="ma-sub">Loading recorded crime near you...</p> : crime === null ? <p className="ma-sub">The police.uk figures did not load. Try again in a moment, or see <a href="https://www.police.uk/" target="_blank" rel="noreferrer">police.uk</a>.</p> : (
+      {crime === undefined ? <p className="ma-sub">Loading recorded crime near you...</p> : crime === null ? <p className="ma-sub">The police.uk figures did not load. Their service is sometimes slow. <button type="button" className="ma-retry" onClick={() => setAttempt((a) => a + 1)}>Try again</button> or see <a href="https://www.police.uk/" target="_blank" rel="noreferrer">police.uk</a>.</p> : (
         <>
-          <p><strong>{n(crime.total)}</strong> crimes were recorded within about a mile of your postcode in {monthName(crime.latest)}.</p>
+          <p><strong>{n(crime.total)}</strong> crimes were recorded within about a mile of your postcode in {monthName(crime.latest)}.{crime.behind && " The newest month police.uk has published was slow to arrive, so this is the latest one that did."}</p>
           <ul className="ma-domains" aria-label={`Kinds of crime recorded near you in ${monthName(crime.latest)}`}>
             {crime.categories.map((c) => (
               <li key={c.slug}><span>{c.name}</span><i aria-hidden="true"><b style={{ "--w": Math.max(0.02, c.count / top) }} /></i><em>{n(c.count)}</em></li>
             ))}
           </ul>
-          {crime.months.length > 1 && (
+          {trend && trend.length > 1 && (
             <>
               <h4>Month by month</h4>
               <ol className="ma-months" aria-label="Crimes recorded near you, month by month">
-                {crime.months.map((m) => <li key={m.ym}><i aria-hidden="true" style={{ "--h": m.total / peak }} /><b>{n(m.total)}</b><small>{monthName(m.ym).slice(0, 3)}</small></li>)}
+                {trend.map((m) => <li key={m.ym}><i aria-hidden="true" style={{ "--h": m.total / peak }} /><b>{n(m.total)}</b><small>{monthName(m.ym).slice(0, 3)}</small></li>)}
               </ol>
             </>
           )}
@@ -323,6 +343,190 @@ export function LocalEconomyCard({ r, i }) {
           </ul>
           <p className="ma-sub">The claimant count is the number of people claiming Universal Credit who are required to look for work, or Jobseeker's Allowance; it is lower than the survey measure of unemployment. Pay is for jobs located in the constituency, not for the people who live there, so a seat with a big employer or a city centre can look high or low for reasons that have little to do with its residents. Pay figures are survey estimates and can move from year to year. Neither measure ranks MPs or constituencies.</p>
           <a className="ma-link" href="#/constituency">More about your constituency</a>
+        </>
+      )}
+    </Card>
+  );
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// Food hygiene ratings of the places within about a mile that sell or serve food, from the Food Standards Agency's ratings service (live).
+const HYGIENE_TONE = { 5: "#2F8F6B", 4: "#6FA84A", 3: "#C9A20B", 2: "#E08A1E", 1: "#D9453B", 0: "#B0201A" };
+const shortDate = (d) => (d ? new Date(`${d}T12:00:00`).toLocaleDateString("en-GB", { month: "long", year: "numeric" }) : null);
+
+export function FoodHygieneCard({ r, i }) {
+  const point = pointOf(r);
+  const [attempt, setAttempt] = useState(0);
+  const food = useLookup(point, (p) => loadFoodHygiene(p, 1), attempt);
+  if (!point) return null;
+  const fhis = food?.scheme === "FHIS";
+  const rows = !food ? [] : fhis
+    ? [{ key: "pass", label: "Pass", count: food.pass, tone: HYGIENE_TONE[5] }, { key: "improve", label: "Improvement required", count: food.improve, tone: HYGIENE_TONE[1] }]
+    : [5, 4, 3, 2, 1, 0].map((v) => ({ key: v, label: `${v}: ${FHRS_WORDS[v]}`, count: food.counts[v], tone: HYGIENE_TONE[v] }));
+  const top = Math.max(...rows.map((x) => x.count), 1);
+  return (
+    <Card i={i} colour="#2F8F6B" icon={<IconBasket size={20} />} title="Food hygiene near your postcode" className="ma-food">
+      {food === undefined ? <p className="ma-sub">Finding food hygiene ratings near you...</p> : food === null ? <p className="ma-sub">The Food Standards Agency's ratings did not load. <button type="button" className="ma-retry" onClick={() => setAttempt((a) => a + 1)}>Try again</button> or search at <a href="https://ratings.food.gov.uk/" target="_blank" rel="noreferrer">ratings.food.gov.uk</a>.</p> : food.judged === 0 ? <p className="ma-sub">No inspected food businesses are listed within {food.radius} mile of your postcode.</p> : (
+        <>
+          <p>Within about a mile there {food.judged === 1 ? "is" : "are"} <strong>{n(food.judged)}</strong> food business{food.judged === 1 ? "" : "es"} with a published rating{food.authority ? ` from ${food.authority}'s inspectors and others` : ""}. <strong>{Math.round(food.goodShare * 100)}%</strong> {fhis ? "have a Pass" : "are rated Good or Very good (4 or 5)"}.</p>
+          <ul className="ma-domains" aria-label={fhis ? "Food hygiene results near you" : "Food hygiene ratings near you"}>
+            {rows.map((x) => <li key={x.key} style={{ "--mc": x.tone }}><span>{x.label}</span><i aria-hidden="true"><b style={{ "--w": Math.max(x.count ? 0.02 : 0, x.count / top) }} /></i><em>{n(x.count)}</em></li>)}
+          </ul>
+          {(food.waiting > 0 || food.exempt > 0) && <p className="ma-sub">Not counted above: {[food.waiting > 0 && `${n(food.waiting)} awaiting inspection`, food.exempt > 0 && `${n(food.exempt)} exempt (low-risk businesses such as some childminders and small shops are not rated)`].filter(Boolean).join(", ")}.</p>}
+          {food.weak.length > 0 && (
+            <>
+              <h4>{fhis ? "Places asked to improve" : "Lowest rated nearby"}</h4>
+              <ul className="sc-list-flat">
+                {food.weak.slice(0, 3).map((w) => (
+                  <PlaceCard key={w.id} name={w.name} href={`https://ratings.food.gov.uk/business/${w.id}`} miles={w.miles} tone={w.rating == null ? HYGIENE_TONE[1] : HYGIENE_TONE[w.rating]}
+                    tags={[w.type, w.postcode].filter(Boolean)}
+                    rows={[{ label: "Rating", small: w.date ? `Inspected ${shortDate(w.date)}` : "Food Standards Agency", pill: { tone: w.rating == null ? HYGIENE_TONE[1] : HYGIENE_TONE[w.rating], label: w.rating == null ? "Improvement required" : `${w.rating}: ${FHRS_WORDS[w.rating]}` } }]} />
+                ))}
+              </ul>
+              {food.weakCount > 3 && <p className="ma-sub">{n(food.weakCount - 3)} more nearby {fhis ? "were asked to improve" : "are rated 2 or below"}; the link below lists them.</p>}
+            </>
+          )}
+          <p className="ma-sub">A rating shows what inspectors found on the day of the last visit: how hygienically food is handled, the condition of the building, and how the business manages food safety. It is not about taste, and a place rated below 5 may have improved since; a re-inspection can be requested. Ratings are published by councils and collected by the Food Standards Agency{fhis ? "; Scotland uses a Pass or Improvement Required result instead of numbers" : ""}. Distances are in a straight line.{food.truncated ? " Only the first part of a very long list was returned." : ""}</p>
+          <a className="ma-link" href="https://ratings.food.gov.uk/" target="_blank" rel="noreferrer">Search every rating on the Food Standards Agency's site</a>
+        </>
+      )}
+    </Card>
+  );
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// People killed or injured on the roads of the council area, five years of the Department for Transport's road casualty statistics (Great Britain), rebuilt by the daily data job.
+export function RoadCasualtiesCard({ r, i }) {
+  const point = pointOf(r);
+  const northernIreland = r.country === "Northern Ireland";
+  const { data, failed } = useDataFile(roadCasualties);
+  const code = r.codes?.admin_district;
+  if (!point) return null;
+  const council = councilName(r.admin_district);
+  if (northernIreland) {
+    return (
+      <Card i={i} colour="#E8741A" icon={<IconTransport size={20} />} title="Road casualties in your area" className="ma-roads">
+        <p className="ma-sub">The Department for Transport's road casualty statistics cover Great Britain. Northern Ireland's are published by the Police Service of Northern Ireland at <a href="https://www.psni.police.uk/about-us/our-publications-and-reports/official-statistics/road-traffic-collision-statistics" target="_blank" rel="noreferrer">psni.police.uk</a>.</p>
+      </Card>
+    );
+  }
+  const v = data && code ? roadView(data, code) : null;
+  const peak = v ? Math.max(...v.years.map((y) => y.ksi), 1) : 1;
+  const topUser = v ? Math.max(...v.users.map((u) => u.count), 1) : 1;
+  return (
+    <Card i={i} colour="#E8741A" icon={<IconTransport size={20} />} title={`Road casualties in ${council}`} className="ma-roads">
+      {failed ? <p className="ma-sub">The road casualty figures did not load. Try again in a moment.</p> : !data ? <p className="ma-sub">Loading road casualty figures...</p> : !v ? <p className="ma-sub">Road casualty figures are not held for this council area, usually because its boundaries have changed. The full statistics are at <a href="https://www.gov.uk/government/collections/road-accidents-and-safety-statistics" target="_blank" rel="noreferrer">gov.uk</a>.</p> : (
+        <>
+          <p>In {v.latest.year}, <strong>{n(v.latest.ksi)}</strong> {v.latest.ksi === 1 ? "person was" : "people were"} killed or seriously injured on the roads of {council}: <strong>{n(v.latest.killed)}</strong> killed and <strong>{n(v.latest.serious)}</strong> seriously injured. A further <strong>{n(v.latest.slight)}</strong> {v.latest.slight === 1 ? "was" : "were"} slightly injured.</p>
+          <h4>Killed or seriously injured, year by year</h4>
+          <ol className="ma-months" aria-label={`People killed or seriously injured on the roads of ${council}, by year`}>
+            {v.years.map((y) => <li key={y.year}><i aria-hidden="true" style={{ "--h": y.ksi / peak }} /><b>{n(y.ksi)}</b><small>{y.year}</small></li>)}
+          </ol>
+          <p className="ma-sub">Killed each year: {v.years.map((y) => `${y.year}: ${n(y.killed)}`).join(", ")}.</p>
+          {v.usersTotal > 0 && (
+            <>
+              <h4>Who was killed or seriously injured in {v.latest.year}</h4>
+              <ul className="ma-domains" aria-label={`Road users killed or seriously injured in ${v.latest.year}`}>
+                {v.users.map((u) => <li key={u.key}><span>{u.label}</span><i aria-hidden="true"><b style={{ "--w": Math.max(0.02, u.count / topUser) }} /></i><em>{n(u.count)}</em></li>)}
+              </ul>
+            </>
+          )}
+          <p className="ma-sub">These are people hurt in collisions on public roads that the police recorded, counted in the council area where the collision happened, so busy through-roads and motorways count against the area they pass through. They are not rates: a larger or busier area will have more. Police forces have been changing how they judge whether an injury is serious, which would make the years incomparable, so the Department adjusts the "serious" count to one standard; the adjusted figures are shown here and are estimates, rounded to whole people. The latest year can be revised when the Department publishes its final figures. Across Great Britain {v.gbKsi != null ? `${n(v.gbKsi)} people were killed or seriously injured in ${data.latest}` : "many people were killed or seriously injured"}. Source: Department for Transport road casualty statistics (STATS19), open government licence.</p>
+          <a className="ma-link" href="https://www.gov.uk/government/collections/road-accidents-and-safety-statistics" target="_blank" rel="noreferrer">Road casualty statistics on GOV.UK</a>
+        </>
+      )}
+    </Card>
+  );
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// Flood warnings and alerts in force near the postcode, and the flood warning areas around it: the Environment Agency's real-time service (England only, live).
+export function FloodWarningsCard({ r, i }) {
+  const point = pointOf(r);
+  const england = !r.country || r.country === "England";
+  const [attempt, setAttempt] = useState(0);
+  const floods = useLookup(england ? point : null, (p) => loadFloods(p), attempt);
+  if (!point) return null;
+  if (!england) {
+    const who = r.country === "Wales" ? ["Natural Resources Wales", "https://naturalresources.wales/flooding/"] : r.country === "Scotland" ? ["SEPA", "https://www.sepa.org.uk/environment/water/flooding/"] : ["the Department for Infrastructure", "https://www.infrastructure-ni.gov.uk/topics/rivers-and-flooding"];
+    return (
+      <Card i={i} colour="#2C7DA0" icon={<IconFlood size={20} />} title="Flood warnings near your postcode" className="ma-flood">
+        <p className="ma-sub">These are the Environment Agency's warnings for England. In {r.country ?? "your nation"}, flood warnings come from <a href={who[1]} target="_blank" rel="noreferrer">{who[0]}</a>.</p>
+      </Card>
+    );
+  }
+  const shown = floods?.warnings?.slice(0, 5) ?? [];
+  return (
+    <Card i={i} colour="#2C7DA0" icon={<IconFlood size={20} />} title="Flood warnings near your postcode" className="ma-flood">
+      {floods === undefined ? <p className="ma-sub">Checking for flood warnings near you...</p> : floods === null ? <p className="ma-sub">The Environment Agency's flood service did not answer. <button type="button" className="ma-retry" onClick={() => setAttempt((a) => a + 1)}>Try again</button> or check <a href="https://check-for-flooding.service.gov.uk/" target="_blank" rel="noreferrer">check-for-flooding.service.gov.uk</a>.</p> : (
+        <>
+          {floods.warnings.length === 0 ? (
+            <p><strong>No flood warnings or alerts</strong> are in force within {floods.warnKm} km of your postcode right now.</p>
+          ) : (
+            <>
+              <p><strong>{n(floods.warnings.length)}</strong> flood warning{floods.warnings.length === 1 ? " or alert is" : "s or alerts are"} in force within {floods.warnKm} km of your postcode right now.</p>
+              <ul className="sc-list-flat">
+                {shown.map((w) => (
+                  <PlaceCard key={w.id} name={w.name} tone={SEVERITY[w.level].tone} tags={[w.river, w.county].filter(Boolean)}
+                    rows={[{ label: "Status", small: "Environment Agency", pill: { tone: SEVERITY[w.level].tone, label: SEVERITY[w.level].name }, text: SEVERITY[w.level].meaning }]} />
+                ))}
+              </ul>
+              {floods.warnings.length > shown.length && <p className="ma-sub">And {n(floods.warnings.length - shown.length)} more; the live map below lists them all.</p>}
+            </>
+          )}
+          {floods.areaCount != null && floods.areaCount > 0 && <p className="ma-sub">{n(floods.areaCount)} flood warning area{floods.areaCount === 1 ? "" : "s"} lie within {floods.areaKm} km{floods.rivers.length ? `, along ${floods.rivers.join(", ")}` : ""}. People in these areas can sign up for free warnings by phone, text or email.</p>}
+          {floods.areaCount === 0 && <p className="ma-sub">No flood warning areas lie within {floods.areaKm} km, which usually means the nearest rivers and coast are further away.</p>}
+          <p className="ma-sub">A flood alert means flooding is possible, a flood warning that it is expected, and a severe flood warning that there is danger to life. This is the position at the moment you opened the page, updated by the Environment Agency every 15 minutes; it says nothing about how likely your home is to flood in future. Source: Environment Agency real-time flood-monitoring API, open government licence.</p>
+          <p className="ma-links2">
+            <a className="ma-link" href="https://www.gov.uk/sign-up-for-flood-warnings" target="_blank" rel="noreferrer">Sign up for free flood warnings</a>
+            <a className="ma-link" href="https://www.gov.uk/check-long-term-flood-risk" target="_blank" rel="noreferrer">Check your long-term flood risk</a>
+            <a className="ma-link" href="https://check-for-flooding.service.gov.uk/" target="_blank" rel="noreferrer">Live flood map</a>
+          </p>
+        </>
+      )}
+    </Card>
+  );
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// What homes in the council area sell for: the UK House Price Index, rebuilt monthly by the daily data job.
+export function HousePricesCard({ r, i }) {
+  const point = pointOf(r);
+  const { data, failed } = useDataFile(housePrices);
+  const code = r.codes?.admin_district;
+  if (!point) return null;
+  const council = councilName(r.admin_district);
+  const v = data && code ? priceView(data, code, r.country) : null;
+  const last = v?.history[v.history.length - 1]?.year;
+  const points = v ? v.history.filter((p) => (last - p.year) % 2 === 0) : [];
+  const peak = points.length ? Math.max(...points.map((p) => p.price)) : 1;
+  const topKind = v ? Math.max(...v.kinds.map((k) => k.price), 1) : 1;
+  const move = (c) => (c == null ? null : c === 0 ? "unchanged" : `${c > 0 ? "up" : "down"} ${Math.abs(c).toFixed(1)}%`);
+  return (
+    <Card i={i} colour="#E8741A" icon={<IconHouse size={20} />} title={`House prices in ${council}`} className="ma-prices">
+      {failed ? <p className="ma-sub">The house price figures did not load. Try again in a moment.</p> : !data ? <p className="ma-sub">Loading house price figures...</p> : !v ? <p className="ma-sub">House price figures are not held for this council area, usually because its boundaries have changed. The full index is at <a href="https://landregistry.data.gov.uk/app/ukhpi" target="_blank" rel="noreferrer">landregistry.data.gov.uk</a>.</p> : (
+        <>
+          <p>The average home in {council} sold for <strong>{pounds(v.price)}</strong> in {monthLabel(v.month)}{v.change != null && <>, <strong>{move(v.change)}</strong> on a year earlier</>}.{v.nation && v.nation.change != null ? ` Across ${v.nation.name} the average was ${pounds(v.nation.price)}, ${move(v.nation.change)} on the year.` : v.uk ? ` Across the UK it was ${pounds(v.uk.price)}.` : ""}</p>
+          {points.length > 1 && (
+            <>
+              <h4>Average price each {monthOnly(v.month)}</h4>
+              <ol className="ma-months ma-price-years" aria-label={`Average house price in ${council} each ${monthOnly(v.month)}`}>
+                {points.map((p) => <li key={p.year}><i aria-hidden="true" style={{ "--h": p.price / peak }} /><b>£{Math.round(p.price / 1000)}k</b><small>{p.year}</small></li>)}
+              </ol>
+              {v.sinceFirst != null && <p className="ma-sub">That is {move(v.sinceFirst)} since {monthOnly(v.month)} {v.sinceYear}, before any allowance for inflation.</p>}
+            </>
+          )}
+          {v.kinds.length > 0 && (
+            <>
+              <h4>By kind of home</h4>
+              <ul className="ma-domains ma-price-kinds" aria-label={`Average price by kind of home in ${council}`}>
+                {v.kinds.map((k) => <li key={k.key}><span>{k.label}</span><i aria-hidden="true"><b style={{ "--w": Math.max(0.02, k.price / topKind) }} /></i><em>{pounds(k.price)}</em></li>)}
+              </ul>
+            </>
+          )}
+          {v.sales != null && <p className="ma-sub">About {n(v.sales)} sales were recorded for {monthLabel(v.salesMonth)}; the count for the latest months rises as late registrations arrive.</p>}
+          <p className="ma-sub">This is the average price of every home sold in the council area, so a few very expensive or cheap sales, or a change in which kinds of home sell, can move it. The latest month is a first estimate and is usually revised. It describes the council area, not your street, and it is not a valuation of your home. Source: UK House Price Index, published by HM Land Registry with the Office for National Statistics, Registers of Scotland and Land &amp; Property Services Northern Ireland, open government licence.</p>
+          <a className="ma-link" href="#/housing">House prices and rents in detail</a>
         </>
       )}
     </Card>

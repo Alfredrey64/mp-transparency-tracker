@@ -555,9 +555,9 @@ dialog[open]::backdrop { animation: fade-in 0.15s ease both; }
 .find-card button:focus-visible { outline-color: #fff; }
 
 /* ---- Motion ------------------------------------------------------------------------------------------------------------------------------------- */
-/* Cards below the fold rise in as they come into view (lib/scrollReveal.js adds these classes). */
-.rv { opacity: 0; transform: translateY(22px); }
-.rv-in { opacity: 1; transform: none; transition: opacity 0.65s var(--ease-out) var(--rv-d, 0ms), transform 0.65s var(--ease-out) var(--rv-d, 0ms); }
+/* Cards below the fold fade in as they come into view (lib/scrollReveal.js adds these classes). They only fade: sliding them up would move words the reader is already looking at. */
+.rv { opacity: 0; }
+.rv-in { opacity: 1; transition: opacity 0.65s var(--ease-out) var(--rv-d, 0ms); }
 /* Bars grow and lines draw as their card arrives. */
 .rv-in .bar-grow, .rv-now .bar-grow { transform-origin: left center; animation: bar-grow 0.9s var(--ease-out) both; animation-delay: var(--rv-d, 0ms); }
 .rv-in .bar-grow-r, .rv-now .bar-grow-r { transform-origin: right center; animation: bar-grow 0.9s var(--ease-out) both; animation-delay: calc(var(--rv-d, 0ms) + 200ms); }

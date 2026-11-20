@@ -1,4 +1,5 @@
 import { flushSync } from "react-dom";
+import { pauseScrollAnchor } from "./scrollAnchor";
 
 // Switching an in-page tab, filter or accordion can change the content's height enough that the browser clamps the current scroll
 // position, which reads as an unwanted jump. This applies the change and puts the page back where it was in the same frame, before
@@ -7,6 +8,7 @@ import { flushSync } from "react-dom";
 //
 // Call it from an event handler.
 export function withScrollPreserved(fn) {
+  pauseScrollAnchor(700);
   const y = window.scrollY;
   flushSync(fn);
   if (window.scrollY !== y) window.scrollTo(0, y);
@@ -21,6 +23,7 @@ export function withScrollPreserved(fn) {
 const HOLD_MS = 450;
 export function holdPlace(control, fn) {
   if (!control || !control.isConnected) { flushSync(fn); return; }
+  pauseScrollAnchor(HOLD_MS + 250);
   const top = control.getBoundingClientRect().top;
   const settle = () => {
     if (!control.isConnected) return;

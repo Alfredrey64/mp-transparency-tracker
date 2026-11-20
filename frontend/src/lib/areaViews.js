@@ -6,9 +6,9 @@ export const POLITICS_JUMPS = [["ma-week", "Your week"], ["ma-mp", "MP and seat"
 // environment. `sections` are [id, label] pairs for the links inside each part; `icon` names an icon the page draws.
 export const NUMBER_GROUPS = [
   { id: "ma-g-place", n: 1, title: "The place", short: "The place", icon: "place", colour: "#C0478A", lede: "Where you live, and how it and your region compare with the rest of the country.", sections: [["ma-n-hood", "Your neighbourhood"], ["ma-n-region", "Your region"]] },
-  { id: "ma-g-money", n: 2, title: "Money", short: "Money", icon: "money", colour: "#E8741A", lede: "What people earn and claim here, and what you pay your council.", sections: [["ma-n-money", "Jobs, pay and council tax"]] },
+  { id: "ma-g-money", n: 2, title: "Money", short: "Money", icon: "money", colour: "#E8741A", lede: "What people earn and claim here, what you pay your council, and what homes sell for.", sections: [["ma-n-money", "Jobs, pay and council tax"], ["ma-n-homes", "House prices"]] },
   { id: "ma-g-services", n: 3, title: "Services", short: "Services", icon: "services", colour: "#2F8F6B", lede: "The doctors, hospitals and schools nearby, and what your council does with its roads and its rules.", sections: [["ma-n-health", "Health"], ["ma-n-school", "Schools"], ["ma-n-council", "Your council"]] },
-  { id: "ma-g-safety", n: 4, title: "Safety and the environment", short: "Safety and water", icon: "safety", colour: "#2C7DA0", lede: "Crime recorded near you, and the sewage and bathing water in your area.", sections: [["ma-n-crime", "Crime"], ["ma-n-water", "Water"]] },
+  { id: "ma-g-safety", n: 4, title: "Safety and the environment", short: "Safety and water", icon: "safety", colour: "#2C7DA0", lede: "Crime, road casualties and food hygiene near you, and the sewage, bathing water and flood warnings in your area.", sections: [["ma-n-crime", "Crime"], ["ma-n-roads", "Roads"], ["ma-n-food", "Food hygiene"], ["ma-n-water", "Water and flooding"]] },
 ];
 export const NUMBERS_JUMPS = NUMBER_GROUPS.map((g) => [g.id, `${g.n}. ${g.short}`]);
 

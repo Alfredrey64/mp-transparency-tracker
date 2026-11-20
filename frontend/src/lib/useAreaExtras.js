@@ -63,12 +63,13 @@ export function useAreaExtras(data) {
     soft(findContests(r.postcode)).then((contests) => put({ contests: contests ? nextContests(contests) : null }));
 
     // Stage 3b: the other elected people for this postcode: police, regional mayor, and the devolved parliament if there is one.
-    load(import("../data/representatives.json")).then(async (reps) => {
+    Promise.all([load(import("../data/representatives.json")), soft(import("../data/repPortraits.json").then((m) => m.default.people))]).then(async ([reps, portraits]) => {
       if (!reps) return put({ reps: null });
       const seat = r.country === "Scotland" ? await holyroodSeatAt(r.longitude, r.latitude) : null;
       put({
         reps: {
           checked: reps.checked,
+          portraits: portraits ?? null,
           police: policeFor({ pfa: r.pfa, country: r.country }, reps),
           mayor: mayorFor({ country: r.country, districtCode: r.codes?.admin_district }, reps),
           devolved: devolvedFor({ country: r.country, senedd: r.senedd_constituency, westminster: r.parliamentary_constituency, holyroodSeat: seat }, reps),

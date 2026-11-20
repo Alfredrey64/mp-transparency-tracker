@@ -3,9 +3,9 @@
 //   - the control sliding away: the button that was pressed ending more than 80 px from where it was, so the finger is left on something that has moved,
 //   - a blank: the page's heading disappearing for a frame, or the page height dropping to under half (the footer flashing up the screen).
 // A press that goes to another page (the address changes) is left to navigation.audit.mjs, and the audit goes back to try the next control.
-// Usage: node e2e/interaction.audit.mjs [baseUrl]   (ONLY=a,b limits the pages; PHONE=1 emulates a phone; PER=10 presses per page; WORKERS=3; STEP=n takes every nth page)
+// Usage: node e2e/interaction.audit.mjs [baseUrl]   (BROWSER=webkit for Safari's engine; ONLY=a,b limits the pages; PHONE=1 emulates a phone; PER=10 presses per page; WORKERS=3; STEP=n takes every nth page)
 // Needs `npx vite preview --port 4178 --strictPort` and `node scripts/mock-data-service.mjs 54321`.
-import { chromium } from "@playwright/test";
+import { chromium, webkit } from "@playwright/test";
 import { PAGE_NAMES } from "./pageList.mjs";
 
 const base = process.argv[2] ?? "http://localhost:4178";
@@ -44,13 +44,16 @@ async function fresh(page, url) {
   return page.evaluate(TAG);
 }
 
-const browser = await chromium.launch();
+// BROWSER=webkit runs it in Safari's engine (which has no scroll anchoring of its own; lib/scrollAnchor.js supplies it).
+const browser = await (process.env.BROWSER === "webkit" ? webkit : chromium).launch();
 const results = [];
 let pressed = 0;
 let next = 0;
 
 async function worker() {
   const ctx = await browser.newContext(PHONE ? { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true } : { viewport: { width: 1280, height: 800 } });
+  // NOANCHOR=1 makes the page think it is Chrome, so the Safari scroll-anchoring helper stays off (to see what it changes).
+  if (process.env.NOANCHOR) await ctx.addInitScript(() => Object.defineProperty(navigator, "userAgent", { get: () => "Mozilla/5.0 AppleWebKit/537.36 Chrome/130.0 Safari/537.36" }));
   while (next < PAGES.length) {
     const pg = PAGES[next++];
     const page = await ctx.newPage();

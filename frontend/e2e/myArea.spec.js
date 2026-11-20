@@ -1,4 +1,8 @@
 import { test, expect } from "@playwright/test";
+import fs from "node:fs";
+import { createRequire } from "node:module";
+
+const AXE = fs.readFileSync(createRequire(import.meta.url).resolve("axe-core/axe.min.js"), "utf8");
 
 // Your area, for a postcode in Bristol, with the three outside services answered by the test: the postcode lookup, the MP record and the elections list.
 const result = {
@@ -30,6 +34,14 @@ async function mockServices(page, { elections = { results: [] }, votes = [], ove
     { category: "burglary", month: "2026-09", location: { street: { name: "On or near Park Street" } } },
     { category: "shoplifting", month: "2026-09", location: { street: { name: "On or near Broadmead" } } },
   ]) }));
+  // Food Standards Agency ratings, Environment Agency flood warnings and the areas around the postcode.
+  await page.route("**/api.ratings.food.gov.uk/**", (route) => route.fulfill({ status: 200, contentType: "application/json", headers: cors, body: JSON.stringify({ meta: { totalCount: 4 }, establishments: [
+    { FHRSID: 1, BusinessName: "Test Cafe", BusinessType: "Restaurant/Cafe/Canteen", RatingValue: "5", SchemeType: "FHRS", Distance: 0.1, PostCode: "BS1 5TR", RatingDate: "2026-05-01T00:00:00", LocalAuthorityName: "Bristol" },
+    { FHRSID: 2, BusinessName: "Test Takeaway", BusinessType: "Takeaway/sandwich shop", RatingValue: "1", SchemeType: "FHRS", Distance: 0.3, PostCode: "BS1 5AA", RatingDate: "2026-04-01T00:00:00", LocalAuthorityName: "Bristol" },
+    { FHRSID: 3, BusinessName: "Test Bakery", BusinessType: "Retailers - other", RatingValue: "4", SchemeType: "FHRS", Distance: 0.5, PostCode: "BS1 5AB", RatingDate: "2026-03-01T00:00:00", LocalAuthorityName: "Bristol" },
+    { FHRSID: 4, BusinessName: "New Place", BusinessType: "Pub/bar/nightclub", RatingValue: "AwaitingInspection", SchemeType: "FHRS", Distance: 0.6, PostCode: "BS1 5AC", RatingDate: null, LocalAuthorityName: "Bristol" },
+  ] }) }));
+  await page.route("**/environment.data.gov.uk/flood-monitoring/**", (route) => route.fulfill({ status: 200, contentType: "application/json", headers: cors, body: JSON.stringify({ items: route.request().url().includes("/floodAreas") ? [{ riverOrSea: "Bristol Frome" }, { riverOrSea: "River Avon" }] : [{ "@id": "w1", severityLevel: 3, description: "Test flood alert area", floodArea: { riverOrSea: "River Avon", county: "Bristol" }, message: "Flooding is possible." }] }) }));
   await page.route("**/services1.arcgis.com/**", (route) => route.fulfill({ status: 200, contentType: "application/json", headers: cors, body: JSON.stringify({ features: [] }) }));
   await page.route("**/elections.democracyclub.org.uk/**", (route) => route.fulfill({ status: 200, contentType: "application/json", headers: cors, body: JSON.stringify(elections) }));
 }
@@ -55,14 +67,14 @@ for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 900 });
     await mockServices(page);
     await page.goto("/myArea/numbers");
-    await expect(page.locator(".ma-section")).toHaveCount(8, { timeout: 20000 });
+    await expect(page.locator(".ma-section")).toHaveCount(11, { timeout: 20000 });
     await expect(page.locator(".mg-tile:not(.mg-tile-skel)").first()).toBeVisible({ timeout: 20000 });
     await expect(page.locator(".mg")).toHaveCount(4);
     await expect(page.locator(".ma-skel")).toHaveCount(0, { timeout: 20000 });
     await expect(page.locator(".ma-agebar")).toHaveCount(2);
     await expect(page.locator(".ma-spark-dot")).toBeAttached();
     const text = await page.locator("main").innerText();
-    for (const want of ["Your area at a glance", "Part 1 of 4", "Your neighbourhood", "Jobs and pay in Bristol Central", "Your council tax", "Health services near your postcode", "Schools near your postcode", "Crime near your postcode", "Sewage overflows near your postcode", "Where South West ranks", "Who lives in South West", "Homes and crime in South West"]) expect(text).toContain(want);
+    for (const want of ["Your area at a glance", "Part 1 of 4", "Your neighbourhood", "Jobs and pay in Bristol Central", "Your council tax", "Health services near your postcode", "Schools near your postcode", "Crime near your postcode", "Sewage overflows near your postcode", "House prices in the City of Bristol", "Road casualties in the City of Bristol", "Food hygiene near your postcode", "Flood warnings near your postcode", "Where South West ranks", "Who lives in South West", "Homes and crime in South West"]) expect(text).toContain(want);
     // The politics sections are on the other view.
     for (const gone of ["Your week", "Elections coming up where you live", "Who does what here"]) expect(text).not.toContain(gone);
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
@@ -103,7 +115,7 @@ test("the planning card is left out outside England, and when nothing is on reco
   await page.setViewportSize({ width: 1440, height: 900 });
   await mockServices(page, { over: { country: "Wales" } });
   await page.goto("/myArea/numbers");
-  await expect(page.locator(".ma-section")).toHaveCount(8, { timeout: 20000 });
+  await expect(page.locator(".ma-section")).toHaveCount(11, { timeout: 20000 });
   await expect(page.locator(".ma-skel")).toHaveCount(0, { timeout: 20000 });
   await expect(page.locator(".ma-planning")).toHaveCount(0);
 });
@@ -277,4 +289,44 @@ test("Your week fits a phone and says so when the records cannot be reached", as
   await page.evaluate(() => document.getElementById("ma-week").scrollIntoView({ block: "start" }));
   await page.waitForTimeout(1500);
   await page.screenshot({ path: "test-results/your-week-phone.png" });
+});
+
+// The numbers view with every card filled in (including food hygiene, road casualties, flood warnings and house prices) has no accessibility violations, colour contrast included.
+for (const width of [1280, 390]) {
+  test(`Your area in numbers passes the axe checks with every card filled in, at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await mockServices(page);
+    await page.goto("/myArea/numbers");
+    await expect(page.locator(".ma-section")).toHaveCount(11, { timeout: 20000 });
+    await expect(page.locator(".ma-food .sc-card").first()).toBeVisible({ timeout: 20000 });
+    await expect(page.locator(".ma-flood .sc-card").first()).toBeVisible({ timeout: 20000 });
+    await expect(page.locator(".ma-roads .ma-months")).toBeVisible({ timeout: 20000 });
+    await expect(page.locator(".ma-prices .ma-months")).toBeVisible({ timeout: 20000 });
+    await expect(page.locator(".ma-skel")).toHaveCount(0, { timeout: 20000 });
+    // Reveal everything the way a reader would, so nothing is checked while still faded out.
+    await page.evaluate(async () => { for (let y = 0; y < document.documentElement.scrollHeight; y += 600) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 60)); } window.scrollTo(0, 0); });
+    await page.waitForTimeout(1500);
+    await page.evaluate(AXE);
+    const res = await page.evaluate(() => window.axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "best-practice"] } }));
+    const report = res.violations.map((v) => `${v.id} (${v.impact}): ${v.help}\n   ${v.nodes.slice(0, 3).map((n) => n.target.join(" ")).join(" | ")}`).join("\n");
+    expect(report, report).toBe("");
+  });
+}
+
+test("outside England the flood, food and road cards say whose figures apply instead of showing the wrong ones", async ({ page }) => {
+  await mockServices(page, { over: { country: "Wales", admin_district: "Cardiff", codes: { admin_district: "W06000015", admin_ward: "W05000001" }, region: null } });
+  await page.goto("/myArea/numbers");
+  await expect(page.locator(".ma-flood")).toContainText("Natural Resources Wales", { timeout: 20000 });
+  await expect(page.locator(".ma-roads")).toContainText("Road casualties in Cardiff", { timeout: 20000 });
+  await expect(page.locator(".ma-roads .ma-months")).toBeVisible();
+  await expect(page.locator(".ma-prices")).toContainText("House prices in Cardiff");
+  await expect(page.locator(".ma-prices")).toContainText("Across Wales");
+});
+
+test("a Northern Ireland postcode is pointed to the Police Service of Northern Ireland for road casualties", async ({ page }) => {
+  await mockServices(page, { over: { country: "Northern Ireland", admin_district: "Belfast", codes: { admin_district: "N09000003", admin_ward: "N08000001" }, region: null } });
+  await page.goto("/myArea/numbers");
+  await expect(page.locator(".ma-roads")).toContainText("Police Service of Northern Ireland", { timeout: 20000 });
+  await expect(page.locator(".ma-flood")).toContainText("Department for Infrastructure");
+  await expect(page.locator(".ma-prices")).toContainText("House prices in Belfast");
 });

@@ -7,3 +7,14 @@
 
 /* Nearby places drawn as school-style cards inside a Your area card: no extra outer list spacing. */
 .sc-list-flat { list-style: none; margin: 12px 0 8px; padding: 0; display: grid; gap: 12px; }
+
+/* Food hygiene, road casualties, flood warnings and house prices. */
+.ma-food h4, .ma-roads h4, .ma-prices h4 { margin: 14px 0 6px; font: 700 14px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ma-food .ma-domains li { grid-template-columns: minmax(150px, 250px) minmax(0, 1fr) 42px; }
+.ma-price-kinds li { grid-template-columns: minmax(130px, 230px) minmax(0, 1fr) 86px; }
+.ma-price-years b { font-size: 12.5px; }
+.ma-links2 { display: flex; flex-wrap: wrap; gap: 0 18px; margin: 0; }
+@media (max-width: 760px) {
+  .ma-food .ma-domains li { grid-template-columns: minmax(0, 1fr) 42px; }
+  .ma-price-kinds li { grid-template-columns: minmax(0, 1fr) 86px; }
+}

@@ -13,7 +13,9 @@ import Clouds from "./Clouds";
 const DAY = new Set(["education", "transport", "justice", "digital", "economy", "jobs", "finance", "taxes", "business", "energy", "nature", "water", "flood"]);
 export const Scene = ({ kind, children }) => (
   <div className="hs-scene" data-kind={kind} data-day={DAY.has(kind) ? "1" : undefined} aria-hidden="true">
-    <svg viewBox="0 0 1440 200" preserveAspectRatio="xMidYMax slice" focusable="false">{children}</svg>
+    <svg className="scene-row" viewBox="0 0 1440 200" preserveAspectRatio="xMidYMax slice" focusable="false">{children}</svg>
+    {/* On a small phone the picture is shown whole, in two rows of its own landscape (the left part, then the right part), so it can be big enough to read (heroscene.css). Hidden everywhere else. */}
+    <svg className="scene-row scene-row2" viewBox="0 0 1440 200" preserveAspectRatio="xMidYMax slice" focusable="false">{children}</svg>
   </div>
 );
 
