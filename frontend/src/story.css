@@ -27,7 +27,7 @@
 .st-n { flex: none; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 16px; background: var(--tc); color: #fff; font: 800 22px "Figures", "Newsreader", Georgia, serif; box-shadow: 0 10px 20px -10px color-mix(in srgb, var(--tc) 80%, transparent); }
 .st-chapter h2 { margin: 0; font: 700 clamp(24px, 3.2vw, 32px)/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
 .st-lede { margin: 6px 0 0; max-width: 720px; font: 400 16.5px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.st-body { display: grid; gap: 18px; }
+.st-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
 .st-split { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 22px 32px; align-items: center; }
 .st-split[data-flip="1"] { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }
 .st-split[data-flip="1"] > .st-visual { order: 2; }

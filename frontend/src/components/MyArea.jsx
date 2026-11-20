@@ -14,6 +14,7 @@ import { regionKeyOf, wardCouncillors, loadAreaFigures } from "../lib/areaFigure
 import { REGIONS } from "../data/regionMetrics";
 import { Card, Section, Glance, JumpNav, SeatResult, SeatHistory, SeatCard, MpDoing, Neighbours, CouncilHistory, LocalPetitions, WhoDoes, Contests, Help, Deeper } from "./AreaSections";
 import AreaNumbers from "./AreaNumbers";
+import NumbersGlance from "./NumbersGlance";
 import { VIEWS, POLITICS_JUMPS, NUMBERS_JUMPS, viewOf, pathOf } from "../lib/areaViews";
 import { MpMoneyCard, IndependenceCard, RepsCard, AreaTools } from "./AreaMp";
 import { useAreaExtras } from "../lib/useAreaExtras";
@@ -133,7 +134,7 @@ function Dashboard({ data, onForget, view, onView }) {
     </Card>
       )}
 
-      <Glance data={data} x={x} />
+      {view === "numbers" ? <NumbersGlance data={data} x={x} /> : <Glance data={data} x={x} />}
       <JumpNav jumps={view === "numbers" ? NUMBERS_JUMPS : POLITICS_JUMPS} />
 
       {view === "numbers" ? <AreaNumbers data={data} x={x} /> : (

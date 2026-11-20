@@ -1,7 +1,6 @@
 /** @jsxImportSource react */
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../supabaseClient";
-import { useInView } from "motion/react";
 import CountUp from "./CountUp";
 import { firstTab } from "../lib/mpDoing";
 import { debateKind, contributionWords, departmentInfo, questionStatus, connections, NO_WHY } from "../lib/mpContext";
@@ -22,6 +21,7 @@ import { daysUntil } from "../lib/localElections";
 import { buildIcs, electionEvents, downloadIcs } from "../lib/calendar";
 import { taxYear, tenthWords, seatStory, seatHeadline } from "../lib/areaProfile";
 import { POLITICS_JUMPS } from "../lib/areaViews";
+import { useSeen } from "../lib/useSeen";
 
 // The sections of the Your area page that come from the files saved with the site rather than from the postcode lookup. They load after the page is
 // drawn, each on its own, so a slow or missing file leaves one card saying so and nothing else.
@@ -29,13 +29,6 @@ import { POLITICS_JUMPS } from "../lib/areaViews";
 const money = (n) => `£${Math.round(n).toLocaleString("en-GB")}`;
 const hex = (c, fallback = "#8A94A6") => (c ? `#${String(c).replace(/^#/, "")}` : fallback);
 const plural = (n, one, many) => `${n.toLocaleString("en-GB")} ${n === 1 ? one : many}`;
-
-// Each card and section notes when it has first scrolled into view, so its bars, lines and numbers can draw themselves once, at the moment they can be seen.
-function useSeen(margin = "0px 0px -12% 0px") {
-  const ref = useRef(null);
-  const seen = useInView(ref, { once: true, margin });
-  return [ref, seen];
-}
 
 export function Card({ i, colour, icon, title, className = "", children }) {
   const [ref, seen] = useSeen();
@@ -47,11 +40,11 @@ export function Card({ i, colour, icon, title, className = "", children }) {
   );
 }
 
-export function Section({ id, title, lede, colour, children }) {
+export function Section({ id, title, lede, colour, as: Heading = "h2", children }) {
   const [ref, seen] = useSeen("0px 0px -8% 0px");
   return (
     <section ref={ref} className="ma-section" id={id} data-in={seen} aria-labelledby={`${id}-h`} style={{ "--mc": colour }}>
-      <header><h2 id={`${id}-h`}>{title}</h2>{lede && <p>{lede}</p>}</header>
+      <header><Heading id={`${id}-h`}>{title}</Heading>{lede && <p>{lede}</p>}</header>
       <div className="ma-bento">{children}</div>
     </section>
   );
@@ -615,7 +608,7 @@ export function Neighbourhood({ x, i }) {
   const dom = x?.seatDomains;
   const DOMAINS = [["income", "Income"], ["employment", "Employment"], ["education", "Education, skills and training"], ["health", "Health and disability"], ["crime", "Crime"], ["barriers", "Barriers to housing and services"], ["living", "Living environment"]];
   return (
-    <Card i={i} colour="#C0478A" icon={<IconSearch size={20} />} title="Your neighbourhood" className="ma-hood">
+    <Card i={i} colour="#C0478A" icon={<IconSearch size={20} />} title="How deprived your neighbourhood is" className="ma-hood">
       {x?.seatDep === undefined ? <Skel lines={5} /> : (
         <>
           {nb ? (

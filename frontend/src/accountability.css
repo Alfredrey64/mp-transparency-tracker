@@ -81,7 +81,8 @@
 .sc-areas > summary::-webkit-details-marker, .sc-key > summary::-webkit-details-marker { display: none; }
 .sc-areas > summary::after, .sc-key > summary::after { content: ""; flex: none; width: 8px; height: 8px; margin-right: 4px; border-right: 2px solid var(--c-ink-soft); border-bottom: 2px solid var(--c-ink-soft); transform: rotate(45deg); transition: transform 0.2s; }
 .sc-areas[open] > summary::after, .sc-key[open] > summary::after { transform: rotate(-135deg); margin-top: 4px; }
-.sc-areas[open] { padding-bottom: 2px; }
+.sc-areas[open] { padding-bottom: 16px; }
+.sc-key[open] { padding-bottom: 14px; }
 @media (prefers-reduced-motion: reduce) { .sc-areas > summary::after, .sc-key > summary::after { transition: none; } }
 .sc-areas ol { list-style: none; margin: 2px 0 0; padding: 0; display: grid; gap: 12px; }
 .sc-area-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 12px; }

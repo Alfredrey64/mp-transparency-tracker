@@ -56,12 +56,13 @@ for (const width of [1440, 390]) {
     await mockServices(page);
     await page.goto("/myArea/numbers");
     await expect(page.locator(".ma-section")).toHaveCount(8, { timeout: 20000 });
-    await expect(page.locator(".ma-g:not(.ma-g-skel)")).toHaveCount(6, { timeout: 20000 });
+    await expect(page.locator(".mg-tile:not(.mg-tile-skel)").first()).toBeVisible({ timeout: 20000 });
+    await expect(page.locator(".mg")).toHaveCount(4);
     await expect(page.locator(".ma-skel")).toHaveCount(0, { timeout: 20000 });
     await expect(page.locator(".ma-agebar")).toHaveCount(2);
     await expect(page.locator(".ma-spark-dot")).toBeAttached();
     const text = await page.locator("main").innerText();
-    for (const want of ["Your neighbourhood", "Jobs and pay in Bristol Central", "Your council tax", "Health services near your postcode", "Schools near your postcode", "Crime near your postcode", "Sewage overflows near your postcode", "Where South West ranks", "Who lives in South West", "Homes and crime in South West"]) expect(text).toContain(want);
+    for (const want of ["Your area at a glance", "Part 1 of 4", "Your neighbourhood", "Jobs and pay in Bristol Central", "Your council tax", "Health services near your postcode", "Schools near your postcode", "Crime near your postcode", "Sewage overflows near your postcode", "Where South West ranks", "Who lives in South West", "Homes and crime in South West"]) expect(text).toContain(want);
     // The politics sections are on the other view.
     for (const gone of ["Your week", "Elections coming up where you live", "Who does what here"]) expect(text).not.toContain(gone);
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);

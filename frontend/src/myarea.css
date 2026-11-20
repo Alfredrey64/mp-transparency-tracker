@@ -87,6 +87,14 @@
 .ma-todo li > span { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 11px; background: var(--mc); color: #fff; font: 800 15px "Figures", "Public Sans", system-ui, sans-serif; }
 .ma-todo a { font-weight: 700; color: color-mix(in srgb, var(--mc) 78%, var(--c-ink)); }
 @media (max-width: 640px) { .ma-bar { grid-template-columns: minmax(0, 1fr); } .ma-hero-art { display: none; } }
+/* On a phone the banner reads top to bottom, all on the left: pin, "You live in", the place, its labels, then the button across the full width. */
+@media (max-width: 560px) {
+  .ma-hero { flex-direction: column; align-items: stretch; gap: 14px; }
+  .ma-pin { width: 52px; height: 52px; }
+  .ma-hero-text { flex: none; width: 100%; }
+  .ma-hero-text h2 { font-size: clamp(26px, 8vw, 34px); }
+  .ma-forget { align-self: stretch; width: 100%; }
+}
 @media (prefers-reduced-motion: reduce) { .ma-card, .ma-pin, .ma-tile, .ma-bar-row > i, .ma-ring-fg, .ma-hero-art i { animation: none; } }
 
 /* Dates and facts that fill out the cards. */
@@ -348,7 +356,7 @@
 .ma-where-list .ma-near { grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); }
 @media (max-width: 760px) { .ma-where { grid-template-columns: minmax(0, 1fr); } }
 
-@media (max-width: 700px) { .ma-jump { position: static; background: none; } }
+@media (max-width: 700px) { .ma-jump { position: static; background: none; flex-wrap: wrap; overflow: visible; margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0; } }
 
 /* A card still waiting for its figures holds roughly the room it will need, so the cards below it do not jump when the figures arrive. */
 .ma-card:has(.ma-skel) { min-height: 340px; }
@@ -419,6 +427,8 @@
 .ma-tabs button { flex: 1 0 auto; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 0 14px; border: 0; border-radius: 10px; background: none; cursor: pointer; font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); transition: background-color 0.25s var(--ease-out), color 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out); }
 .ma-tabs button small { min-width: 22px; padding: 1px 7px; border-radius: 999px; background: var(--c-hairline); font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .ma-tabs button:hover { color: var(--c-ink); }
+/* On a phone the tabs sit two by two, so none is hidden off the edge. */
+@media (max-width: 620px) { .ma-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); overflow: visible; } .ma-tabs button { flex: none; padding: 0 8px; } }
 .ma-tabs button[aria-selected="true"] { background: var(--c-paper-card); color: var(--c-ink); box-shadow: var(--shadow-1); }
 .ma-tabs button[aria-selected="true"] small { background: var(--mc); color: #fff; }
 .ma-feed { display: grid; gap: 12px; animation: maFeedIn 0.45s var(--ease-out); }
@@ -447,6 +457,9 @@
 /* A card that has the whole row to itself lays its contents out across it instead of stacking them. */
 @container ma (max-width: 980px) {
   .ma-mpcard .ma-actions { margin-top: 0; }
+}
+/* Four columns of at least 350px between them need a card about 600px wide; narrower than that the rows stay stacked, as the phone rule above has them. */
+@container ma (min-width: 640px) and (max-width: 980px) {
   .ma-ranks .ma-rankrows li { grid-template-columns: minmax(130px, 1.1fr) minmax(110px, 0.8fr) minmax(0, 1.4fr) minmax(110px, auto); }
 }
 

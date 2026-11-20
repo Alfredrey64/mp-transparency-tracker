@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { LOADERS } from "../src/pageLoaders.js";
+import { findClipped } from "./clipCheck.js";
 
 // Every page the site can show, plus the home page and the two that are not lazy-loaded.
 const PAGES = ["home", "list", "partymatch", ...Object.keys(LOADERS)].filter((p, i, all) => all.indexOf(p) === i);
@@ -33,6 +34,11 @@ for (const width of WIDTHS) {
         }));
 
         expect(m.scrollWidth, "page scrolls sideways").toBeLessThanOrEqual(m.clientWidth);
+        // Nothing may be cut off inside a card or pushed past the edge of the screen (the page-level check above cannot see a box that simply hides what spills out of it).
+        // Draw everything that appears on scrolling first. A visually hidden label parked far off to the side (over 5000px) is not on screen.
+        await page.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 700) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 40)); } window.scrollTo(0, 0); });
+        const clipped = (await page.evaluate(findClipped)).filter((c) => c.over < 5000).map((c) => `${c.kind} by ${c.by}: ${c.el} "${c.text}" (${c.over}px)`);
+        expect(clipped, "content cut off or off screen").toEqual([]);
         expect(m.scrollY, "page should open at the top").toBe(0);
         expect(m.h1s, "each page has one main heading").toBe(1);
         expect(errors, "no uncaught errors").toEqual([]);

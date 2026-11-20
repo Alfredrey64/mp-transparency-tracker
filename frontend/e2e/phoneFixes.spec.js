@@ -20,16 +20,18 @@ for (const view of ["darkMoney", "revolvingDoor", "lobbyingRegister", "thinkTank
   });
 }
 
-test("the strip of tabs across the top of a group of pages scrolls sideways, and opens on this page's own tab", async ({ page }) => {
+test("the strip of tabs across the top of a group of pages wraps on a phone, so every tab is on screen and none has to be scrolled to", async ({ page }) => {
   await page.goto("/inquiries");
   const strip = page.locator(".hubtabs ul");
   await expect(strip).toBeVisible({ timeout: 15000 });
-  const m = await strip.evaluate((ul) => ({ scrolls: ul.scrollWidth > ul.clientWidth + 20, boxWidth: Math.round(ul.getBoundingClientRect().width), start: ul.scrollLeft }));
-  expect(m.scrolls, "more tabs than fit").toBe(true);
+  const m = await strip.evaluate((ul) => ({
+    scrolls: ul.scrollWidth > ul.clientWidth + 1, boxWidth: Math.round(ul.getBoundingClientRect().width),
+    farthest: Math.round(Math.max(...[...ul.querySelectorAll("a")].map((a) => a.getBoundingClientRect().right))), tabs: ul.querySelectorAll("a").length,
+  }));
+  expect(m.tabs, "the group has several tabs").toBeGreaterThan(3);
+  expect(m.scrolls, "nothing to scroll along").toBe(false);
   expect(m.boxWidth, "the strip is held to the screen's width").toBeLessThanOrEqual(390);
-  expect(m.start, "scrolled along to the current tab").toBeGreaterThan(0);
-  await strip.evaluate((ul) => { ul.scrollLeft = 0; });
-  expect(await strip.evaluate((ul) => ul.scrollLeft)).toBe(0);
+  expect(m.farthest, "every tab ends inside the screen").toBeLessThanOrEqual(390);
 });
 
 test("How Parliament works gives a phone the list of stages and no scrolling line, and names who to contact in bold", async ({ page }) => {
