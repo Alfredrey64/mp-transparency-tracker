@@ -1,5 +1,6 @@
 {
- "builtAt": "2026-11-19",
+ "builtAt": "2026-11-20",
+ "versions": "ks4=2.0.2;ks4National=2.0.1;ks2=1.0.1;ks2National=1.2",
  "ks4": {
   "p": "202526",
   "a": 46.2,

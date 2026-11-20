@@ -32,7 +32,7 @@ const table = (text) => {
   return rows.slice(1).filter((r) => r.length > 5).map((r) => Object.fromEntries(head.map((h, i) => [h, r[i] ?? ""])));
 };
 
-async function newestOfsted() {
+export async function newestOfsted() {
   const set = await (await fetchRetry(SET, { headers })).json();
   const files = (set.details?.attachments ?? []).filter((a) => /latest inspections as at/i.test(a.title ?? "") && /\.csv$/i.test(a.url ?? ""));
   if (!files.length) throw new Error("Ofsted's latest-inspections file was not found");
@@ -89,4 +89,4 @@ async function main() {
   console.log(`Wrote ${tiles.size} tile files, ${schools} schools, the biggest file ${(biggest / 1024).toFixed(0)} KB.`);
 }
 
-main().catch((e) => { console.error(e); process.exit(1); });
+if (process.argv[1] === fileURLToPath(import.meta.url)) main().catch((e) => { console.error(e); process.exit(1); });

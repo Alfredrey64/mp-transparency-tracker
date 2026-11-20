@@ -28,14 +28,14 @@ async function sheets(url) {
   return (name) => Array.from(book[name] ?? [], (r) => r ?? []);
 }
 
-async function roadFile(code) {
+export async function roadFile(code) {
   const page = await (await fetchRetry(ROADS_PAGE, { headers })).json();
   const hit = (page.details?.attachments ?? []).find((a) => new RegExp("/" + code + "\\.ods$", "i").test(a.url ?? ""));
   if (!hit) throw new Error("The road condition table " + code + " was not found");
   return hit.url;
 }
 
-async function flyTippingFile() {
+export async function flyTippingFile() {
   const page = await (await fetchRetry(FLY_PAGE, { headers })).json();
   const html = JSON.stringify(page.details);
   const m = /https:\/\/assets\.publishing\.service\.gov\.uk\/media\/[^"\\]+reported_by_LAs[^"\\]+\.ods/i.exec(html);
@@ -60,4 +60,4 @@ async function main() {
   console.log("Wrote " + Object.keys(roads.councils).length + " councils' road condition (to " + roads.years[roads.years.length - 1] + ") and " + Object.keys(fly.councils).length + " councils' fly-tipping (" + fly.year + ") to " + OUT);
 }
 
-main().catch((e) => { console.error(e); process.exit(1); });
+if (process.argv[1] === fileURLToPath(import.meta.url)) main().catch((e) => { console.error(e); process.exit(1); });

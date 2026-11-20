@@ -31,6 +31,20 @@ const SETS = {
   ks2National: "c62e9901-7b35-7272-9fd1-30ab9a527e10", // Attainment by region and local authority
 };
 
+// The version number the Department publishes for each of the four data sets, as one string. A new edition (provisional figures in the autumn, revised ones in the new year) changes it,
+// which is how refresh-area-data.mjs knows to rebuild without anyone having to look.
+export async function dataSetVersions() {
+  const out = [];
+  for (const [name, id] of Object.entries(SETS)) {
+    const res = await fetchRetry(API + "/data-sets/" + id, { headers });
+    if (!res.ok) throw new Error("The Department's data set " + name + " answered " + res.status);
+    const v = (await res.json()).latestVersion?.version;
+    if (!v) throw new Error("The Department gave no version for the data set " + name);
+    out.push(name + "=" + v);
+  }
+  return out.join(";");
+}
+
 const csvUrl = (id) => API + "/data-sets/" + id + "/csv";
 const rowsOf = (text) => {
   const grid = parseCsv(text.replace(/^﻿/, ""));
@@ -55,6 +69,7 @@ async function filteredRows(url, must) {
 }
 
 async function main() {
+  const versions = await dataSetVersions();
   const ks4Text = await (await fetchRetry(csvUrl(SETS.ks4), { headers })).text();
   const ks4 = ks4From(rowsOf(ks4Text));
   console.log("Key stage 4: " + Object.keys(ks4).length + " schools");
@@ -83,9 +98,9 @@ async function main() {
     patched += list.filter((s) => s.s4 || s.s2).length;
     fs.writeFileSync(file, JSON.stringify(list));
   }
-  const meta = { builtAt: new Date().toISOString().slice(0, 10), ks4: { ...national4, y: yearLabel(national4.p) }, ks2: { ...national2, y: yearLabel(national2.p) }, source: "https://explore-education-statistics.service.gov.uk/" };
+  const meta = { builtAt: new Date().toISOString().slice(0, 10), versions, ks4: { ...national4, y: yearLabel(national4.p) }, ks2: { ...national2, y: yearLabel(national2.p) }, source: "https://explore-education-statistics.service.gov.uk/" };
   fs.writeFileSync(META, JSON.stringify(meta, null, 1) + "\n");
   console.log("Added results to " + patched + " schools in the map files.");
 }
 
-main().catch((e) => { console.error(e); process.exit(1); });
+if (process.argv[1] === fileURLToPath(import.meta.url)) main().catch((e) => { console.error(e); process.exit(1); });

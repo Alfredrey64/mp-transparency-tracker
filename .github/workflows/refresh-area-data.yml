@@ -1,0 +1,101 @@
+name: Refresh Your area data
+
+# Every Wednesday, asks each official source behind Your area whether a newer edition is out (Ofsted's monthly school inspections, the CQC's monthly care ratings, the Department for
+# Education's results tables, the Ministry's council tax, the Department for Transport's road condition, Defra's fly-tipping and the Ombudsman's complaints) and rebuilds only the
+# datasets that have a new one (see frontend/scripts/refresh-area-data.mjs). The datasets a daily job already rewrites (house prices, road casualties, A&E and hospital waits,
+# local jobs, consultations) are in fetch-data.yml.
+#
+# When a rebuild succeeded and the tests pass, the new figures are pushed to main at once, which is what makes Vercel rebuild the site with them. If a source could not be reached,
+# a rebuild failed or the tests fail, nothing is pushed for that reason and an issue (label area-data-refresh-failed) says which dataset and why, so it is seen within a week.
+# A dataset that stops refreshing is also listed by the Monday content check (hand-kept.mjs), as a second alarm.
+
+on:
+  schedule:
+    - cron: "30 5 * * 3"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Rebuild every dataset even if its source has nothing new"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: refresh-area-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: Check for new editions and rebuild
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+      - name: Report failing scripts as annotations
+        run: echo "NODE_OPTIONS=--import $GITHUB_WORKSPACE/ci-notes.js" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            frontend/package-lock.json
+      - run: npm ci
+      - run: npm ci
+        working-directory: frontend
+      - name: Rebuild what has a new edition
+        id: refresh
+        continue-on-error: true
+        working-directory: frontend
+        run: node scripts/refresh-area-data.mjs --summary "$GITHUB_WORKSPACE/area-summary.md" ${{ inputs.force && '--force' || '' }}
+      - name: Run the tests
+        id: tests
+        continue-on-error: true
+        working-directory: frontend
+        run: npm test
+      - name: Publish, or say what needs a look
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REFRESH: ${{ steps.refresh.outcome }}
+          TESTS: ${{ steps.tests.outcome }}
+        run: |
+          tell() {
+            label="$1"; title="$2"; body_file="$3"
+            gh label create "$label" --color 5319E7 --description "The weekly Your area data refresh needs a look" 2>/dev/null || true
+            n=$(gh issue list --state open --label "$label" --json number --jq '.[0].number')
+            if [ -z "$n" ]; then gh issue create --label "$label" --title "$title" --body-file "$body_file"; else gh issue comment "$n" --body-file "$body_file"; fi
+          }
+          changed=$(git status --porcelain frontend/src/data frontend/public/data frontend/scripts/data)
+          if [ -n "$changed" ] && [ "$TESTS" != "success" ]; then
+            # New figures that break a test are not published: a sentence on a page that names a figure may need rewording first.
+            git checkout -- frontend/src/data frontend/public/data frontend/scripts/data
+            { echo "New figures were built but the tests fail with them, so nothing was published."; echo; cat area-summary.md; echo; echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"; } > issue-body.md
+            tell area-data-refresh-failed "Your area data: new figures break a test ($(date +%F))" issue-body.md
+            exit 1
+          fi
+          if [ -n "$changed" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add frontend/src/data frontend/public/data frontend/scripts/data
+            git commit -m "chore: Your area data refresh ($(date +%F))" -m "$(head -c 3000 area-summary.md)"
+            for i in 1 2 3 4; do
+              if git pull --rebase origin main && git push origin HEAD:main; then pushed=1; break; fi
+              sleep 15
+            done
+            if [ -z "$pushed" ]; then
+              { echo "New figures were built and the tests pass, but the push to main was refused."; echo; cat area-summary.md; } > issue-body.md
+              tell area-data-refresh-failed "Your area data: could not publish ($(date +%F))" issue-body.md
+              exit 1
+            fi
+          else
+            echo "Nothing new this week."
+          fi
+          if [ "$REFRESH" != "success" ]; then
+            { echo "A source behind Your area could not be checked or rebuilt, so that dataset is showing an earlier edition."; echo; cat area-summary.md; echo; echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"; } > issue-body.md
+            tell area-data-refresh-failed "Your area data: a source could not be refreshed ($(date +%F))" issue-body.md
+            exit 1
+          fi
+          for n in $(gh issue list --state open --label area-data-refresh-failed --json number --jq '.[].number'); do gh issue close "$n" --comment "Every dataset was checked this week, so this is closed."; done

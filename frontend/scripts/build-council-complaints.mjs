@@ -66,7 +66,7 @@ export function readRemedy(rows) {
   return out;
 }
 
-async function latestFiles() {
+export async function latestFiles() {
   const html = await (await fetchRetry(PAGE, { headers })).text();
   const links = [...html.matchAll(/href="([^"]+\.csv)"/g)].map((m) => m[1]);
   const pick = (re) => links.find((l) => re.test(l));

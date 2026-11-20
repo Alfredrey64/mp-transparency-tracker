@@ -23,7 +23,7 @@ const PAGE = "https://www.cqc.org.uk/about-us/transparency/using-cqc-data";
 const headers = { "User-Agent": "Mozilla/5.0 domesday-live" };
 const MIN_PLACES = 15000;
 
-async function newestRatings() {
+export async function newestRatings() {
   const html = await (await fetchRetry(PAGE, { headers })).text();
   const m = /href="([^"]*Latest_ratings\.ods)"/i.exec(html);
   if (!m) throw new Error("The CQC's latest ratings file was not found");
@@ -93,4 +93,4 @@ async function main() {
   console.log(`Wrote ${placed.toLocaleString()} places in ${tiles.size} tiles`, counts);
 }
 
-main().catch((e) => { console.error(e); process.exit(1); });
+if (process.argv[1] === fileURLToPath(import.meta.url)) main().catch((e) => { console.error(e); process.exit(1); });

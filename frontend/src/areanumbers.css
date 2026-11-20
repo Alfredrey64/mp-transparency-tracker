@@ -54,7 +54,7 @@
 .mg-body { position: relative; margin: 8px 0 0 31px; padding: 4px 0 0 30px; }
 .mg-body::before, .mg-body::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 3px; }
 .mg-body::before { background: color-mix(in srgb, var(--gc) 16%, transparent); }
-.mg-body::after { background: linear-gradient(180deg, var(--gc), color-mix(in srgb, var(--gc) 35%, transparent)); transform-origin: top; transition: transform 1.8s var(--ease-out) 0.3s; }
+.mg-body::after { background: linear-gradient(180deg, var(--gc), color-mix(in srgb, var(--gc) 35%, transparent)); transform-origin: top; transition: transform 1.6s cubic-bezier(0.45, 0, 0.2, 1) 0.2s; will-change: transform; }
 .mg:not([data-in="true"]) .mg-body::after { transform: scaleY(0); }
 .mg:not([data-in="true"]) .mg-badge { transform: scale(0.4); opacity: 0; }
 .mg:not([data-in="true"]) .mg-art { transform: scale(0.6) rotate(-12deg); opacity: 0; }
@@ -63,8 +63,8 @@
 .mg .ma-section { margin-top: 34px; scroll-margin-top: 130px; }
 .mg .ma-section:first-child { margin-top: 18px; }
 .mg .ma-section > header { padding-top: 0; border-top: 0; }
-.mg .ma-section > header::before { content: ""; position: absolute; left: -38px; top: 9px; right: auto; width: 20px; height: 20px; border-radius: 50%; background: var(--c-paper-card); border: 4px solid var(--gc); box-sizing: border-box; transform-origin: center; transition: transform 0.6s var(--ease-spring); }
-.mg .ma-section:not([data-in="true"]) > header::before { transform: scale(0); }
+.mg .ma-section > header::before { content: ""; position: absolute; left: -38px; top: 9px; right: auto; width: 20px; height: 20px; border-radius: 50%; background: var(--gc); border: 0; box-shadow: 0 0 0 4px color-mix(in srgb, var(--gc) 20%, transparent); box-sizing: border-box; transform-origin: center; transition: transform 0.7s var(--ease-out), opacity 0.5s var(--ease-out); will-change: transform; }
+.mg .ma-section:not([data-in="true"]) > header::before { transform: scale(0.5); opacity: 0; }
 .mg .ma-section > header h3 { margin: 0; font: 700 clamp(22px, 2.6vw, 28px)/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
 .mg .ma-section > header p { max-width: 640px; }
 .mg .ma-section .ma-bento { margin-top: 16px; }
