@@ -250,6 +250,13 @@ async function orrFile(section, table) {
 }
 async function orrTable(section, table) {
   const html = (await getBuf(`${ORR}/statistics/${section}/${table}/`)).toString("utf8");
+  // From 2026 the data portal draws these tables in the browser from its own report service, so the page has no table rows. Its page names the report (const contentId = 1681) and the
+  // same service gives every row as JSON; the old table markup is kept as the fallback in case the portal goes back to it.
+  const id = /const contentId = (\d+)/.exec(html)?.[1];
+  if (id) {
+    const items = JSON.parse((await getBuf(`${ORR}/umbraco/api/databricksreport/getallreportdata?contentId=${id}`)).toString("utf8")).items;
+    if (Array.isArray(items) && items.length > 1) { const head = Object.keys(items[0]); return [head, ...items.map((r) => head.map((h) => String(r[h] ?? "")))]; }
+  }
   const rows = [...html.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/g)].map((m) => [...m[1].matchAll(/<t[hd][^>]*>([\s\S]*?)<\/t[hd]>/g)].map((c) => c[1].replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim()));
   return rows.filter((r) => r.length > 1);
 }

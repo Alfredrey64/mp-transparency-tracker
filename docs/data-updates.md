@@ -20,6 +20,8 @@ The heavier numbers for Your area in numbers are rebuilt by `.github/workflows/r
 
 Still typed by a person, because no source publishes them in a form that can be read automatically: the deprivation indices (rebuilt with `fetch-deprivation.js`, a new edition comes every few years), crime by background, and the courts, police and prison headline figures; each has a row with a cadence and is listed in the weekly issue when due.
 
+The Your pay calculator's income tax and National Insurance rules (`frontend/src/data/taxBands.json`) have no builder: a new tax year needs a row added by hand each April (the 1 April 2027 row in `content-ledger.mjs` says so). `frontend/src/lib/taxBandsConsistency.test.js` fails the build if any year from 2008 disagrees with `taxSeries.json`, which the daily tax check keeps against HMRC, so a Budget that changes a rate cannot reach one file and miss the other.
+
 Sources that publish a new edition under a new address (GOV.UK, NHS England, ONS time series, the OECD) are looked up each run, so a new release is picked up without anyone changing a file.
 
 ## 2. What is watched (a weekly issue says when it needs a person)
@@ -67,6 +69,8 @@ When the weekly issue lists an item:
 ## 6. When a source is down
 
 A publisher being down is not a bug here. The scripts keep the last good file (they never overwrite it with a short or empty answer), the page shows the date of the data it has, and the next daily run tries again. Two failed runs in a row open an issue. The OECD answers `500` or `429` when asked too fast; `httpFetch.js` now leaves 12 seconds between OECD requests. If an OECD file is more than 60 days old the weekly run fails on purpose.
+
+The Office of Rail and Road's data portal (the rail punctuality and cancellations tables on the Transport page) now draws its tables in the browser from its own report service, so `orrTable` in `build-transport-data.mjs` reads the page's `contentId` and fetches the rows as JSON from `/umbraco/api/databricksreport/getallreportdata`; the old table markup is the fallback. If that page changes again, the weekly issue shows the Transport step failing.
 
 ## 7. Checks that run on every push (look-and-feel guards)
 
