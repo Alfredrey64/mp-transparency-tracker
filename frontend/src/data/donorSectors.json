@@ -370,6 +370,13 @@
     "companyNumber": "05669451",
     "sicCode": "85590"
   },
+  "Ascot Racecourse Limited": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "ASCOT RACECOURSE LIMITED",
+    "companyNumber": "04320977",
+    "sicCode": "93110"
+  },
   "National Liberal Club Ltd": {
     "sector": "Other / Uncategorised",
     "source": "companies-house",
@@ -390,13 +397,6 @@
     "companyName": "HIGH STREET DEAL LIMITED",
     "companyNumber": "12167840",
     "sicCode": "68100"
-  },
-  "Ascot Racecourse Limited": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "ASCOT RACECOURSE LIMITED",
-    "companyNumber": "04320977",
-    "sicCode": "93110"
   },
   "The National Liberal Club": {
     "sector": "Other / Uncategorised",
@@ -422,13 +422,6 @@
   "The Financial Times": {
     "sector": "Media & Publishing",
     "source": "manual-override"
-  },
-  "Premier League": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "PREMIER LEAGUE LIMITED",
-    "companyNumber": "SC117540",
-    "sicCode": "96090"
   },
   "The Lawn Tennis Association": {
     "sector": "Other / Uncategorised",

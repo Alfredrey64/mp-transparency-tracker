@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-19T12:47:57.151Z",
-  "succeededCount": 41,
-  "totalCount": 43,
+  "generatedAt": "2026-11-20T12:38:14.409Z",
+  "succeededCount": 42,
+  "totalCount": 47,
   "sources": [
     {
       "label": "Financial interests",
@@ -125,7 +125,7 @@
     },
     {
       "label": "Lords votes (how every peer voted)",
-      "succeeded": true
+      "succeeded": false
     },
     {
       "label": "Parliament calendar (what is coming up)",
@@ -149,6 +149,22 @@
     },
     {
       "label": "National Audit Office reports",
+      "succeeded": true
+    },
+    {
+      "label": "Open government consultations",
+      "succeeded": true
+    },
+    {
+      "label": "NHS waiting lists by trust",
+      "succeeded": false
+    },
+    {
+      "label": "Bathing water ratings",
+      "succeeded": false
+    },
+    {
+      "label": "Constituency jobs and pay (Nomis)",
       "succeeded": true
     },
     {
