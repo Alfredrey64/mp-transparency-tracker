@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-20T12:38:14.409Z",
-  "succeededCount": 42,
-  "totalCount": 47,
+  "generatedAt": "2026-11-21T11:50:50.915Z",
+  "succeededCount": 45,
+  "totalCount": 49,
   "sources": [
     {
       "label": "Financial interests",
@@ -125,7 +125,7 @@
     },
     {
       "label": "Lords votes (how every peer voted)",
-      "succeeded": false
+      "succeeded": true
     },
     {
       "label": "Parliament calendar (what is coming up)",
@@ -165,6 +165,14 @@
     },
     {
       "label": "Constituency jobs and pay (Nomis)",
+      "succeeded": true
+    },
+    {
+      "label": "House prices by council (UK House Price Index)",
+      "succeeded": true
+    },
+    {
+      "label": "Road casualties by council (Department for Transport)",
       "succeeded": true
     },
     {

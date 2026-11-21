@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-20",
+ "generatedAt": "2026-11-21",
  "source": "https://fullfact.org/government-tracker/",
  "pledges": [
   {
@@ -407,6 +407,20 @@
    "pledge": "Labour will create a new publicly-owned company, Great British Energy",
    "status": "achieved",
    "updated": "2026-05-28"
+  },
+  {
+   "slug": "new-coal-licences",
+   "area": "Energy",
+   "pledge": "We will not grant new coal licences",
+   "status": "appears-on-track",
+   "updated": "2026-11-20"
+  },
+  {
+   "slug": "new-oil-gas-field-licences",
+   "area": "Energy",
+   "pledge": "We will not issue new licences to explore new [oil and gas] fields",
+   "status": "appears-on-track",
+   "updated": "2026-11-20"
   },
   {
    "slug": "national-forests-woodlands-england",
