@@ -47,14 +47,14 @@
 @keyframes maPop { from { transform: scale(0.5); opacity: 0; } }
 .ma-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: auto; padding-top: 6px; }
 /* The countdown ring. */
-.ma-ring { position: relative; width: 200px; height: 200px; margin: 4px auto 0; }
+.ma-ring { position: relative; left: -2px; width: 200px; max-width: 100%; aspect-ratio: 1; height: auto; margin: 4px auto 0; } /* left: -2px cancels the card's wider left padding (accent stripe), so the ring sits on the card's own centre */
 .ma-ring svg { width: 100%; height: 100%; }
 .ma-ring circle { fill: none; stroke-width: 10; }
 .ma-ring-bg { stroke: color-mix(in srgb, var(--mc) 16%, var(--c-hairline)); }
 .ma-ring-fg { stroke: var(--mc); stroke-linecap: round; stroke-dashoffset: var(--to); animation: maFill 1.6s var(--ease-out) 0.5s backwards; }
 @keyframes maFill { from { stroke-dashoffset: var(--c); } }
 .ma-ring > div { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
-.ma-ring b { font: 800 56px/1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.ma-ring b { font: 800 clamp(40px, 12vw, 50px)/1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
 .ma-ring b span { font: inherit; color: inherit; }
 .ma-ring > div > span { font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 /* The council's seats. */
