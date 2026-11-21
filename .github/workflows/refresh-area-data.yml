@@ -34,8 +34,6 @@ jobs:
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v7
-      - name: Report failing scripts as annotations
-        run: echo "NODE_OPTIONS=--import $GITHUB_WORKSPACE/ci-notes.js" >> "$GITHUB_ENV"
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -50,12 +48,12 @@ jobs:
         id: refresh
         continue-on-error: true
         working-directory: frontend
-        run: node scripts/refresh-area-data.mjs --summary "$GITHUB_WORKSPACE/area-summary.md" ${{ inputs.force && '--force' || '' }}
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" scripts/refresh-area-data.mjs --summary "$GITHUB_WORKSPACE/area-summary.md" ${{ inputs.force && '--force' || '' }}
       # Puts back any rebuilt data file that is invalid, empty or has shrunk to a fraction of what is committed (the same guard the daily refresh uses).
       - name: Check the rebuilt files
         id: guard
         continue-on-error: true
-        run: node check-saved-data.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" check-saved-data.js
       - name: Run the tests
         id: tests
         continue-on-error: true

@@ -19,4 +19,5 @@ export const DUE = [
   { date: "2027-04-01", lead: 35, what: "Council tax for 2027 to 2028 takes effect (MHCLG publishes each council's Band D figure in March), so the council tax lookup and comparison would still show 2026 to 2027", where: "src/data/councilTaxByCouncil.json (the newest year is the last number in each row), src/components/CouncilTaxLookup.jsx, src/components/CompareCouncils.jsx and the year wording on them" },
   { date: "2027-05-31", lead: 45, what: "The under-16 social media protections were expected 'in spring 2027'", where: "src/components/explainers/digital.jsx" },
   { date: "2027-07-31", lead: 45, what: "The review of election spending limits is due to report by July 2027", where: "src/components/explainers/electionSpending.jsx, src/data/spendLimits.js and the election spending page" },
+  { date: "2027-10-29", lead: 45, what: "The site's security contact file (security.txt, RFC 9116) expires, and browsers and scanners then treat it as out of date", where: "public/.well-known/security.txt (move the Expires line a year on, after checking the Contact link still works)" },
 ];

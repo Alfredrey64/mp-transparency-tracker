@@ -36,9 +36,6 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 100
-      - name: Report failing scripts as annotations
-        # Set after checkout, not at the top of the file: the checkout action runs on Node too and would fail loading a file that is not there yet.
-        run: echo "NODE_OPTIONS=--import $GITHUB_WORKSPACE/ci-notes.js" >> "$GITHUB_ENV"
       - name: Decide
         id: due
         env:
@@ -63,9 +60,6 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v7
-      - name: Report failing scripts as annotations
-        # Set after checkout, not at the top of the file: the checkout action runs on Node too and would fail loading a file that is not there yet.
-        run: echo "NODE_OPTIONS=--import $GITHUB_WORKSPACE/ci-notes.js" >> "$GITHUB_ENV"
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -83,7 +77,7 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node fetch-interests.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-interests.js
 
       # Takes MPs who have left the Commons out of the MPs table (keeping their name on the Former MPs page), so the site counts 650 MPs for 650 seats. It is a
       # step of its own, not part of the interests fetch, so a failure there cannot stop it. It does nothing if the list of current MPs looks wrong.
@@ -93,7 +87,7 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node remove-departed-mps.js --apply
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" remove-departed-mps.js --apply
 
       - name: Run the voting records fetch script
         id: fetch_votes
@@ -101,7 +95,7 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node fetch-votes.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-votes.js
 
       - name: Run the bills fetch script
         id: fetch_bills
@@ -109,7 +103,7 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node fetch-bills.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-bills.js
 
       # Google News RSS is a public feed with no API key, but it's a slow
       # per-MP crawl (~650 requests, politely rate-limited) — expect this
@@ -120,7 +114,7 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node fetch-mp-news.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-mp-news.js
 
       - name: Run the donor sector tagging script
         id: fetch_donor_sectors
@@ -129,7 +123,7 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           COMPANIES_HOUSE_API_KEY: ${{ secrets.COMPANIES_HOUSE_API_KEY }}
-        run: node fetch-donor-sectors.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-donor-sectors.js
 
       - name: Run the party donations fetch script
         id: fetch_party_donations
@@ -137,7 +131,7 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node fetch-party-donations.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-party-donations.js
 
       - name: Run the party donor sector tagging script
         id: fetch_party_donor_sectors
@@ -146,7 +140,7 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           COMPANIES_HOUSE_API_KEY: ${{ secrets.COMPANIES_HOUSE_API_KEY }}
-        run: node fetch-party-donor-sectors.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-party-donor-sectors.js
 
       - name: Run the former MPs fetch script
         id: fetch_former_mps
@@ -154,7 +148,7 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node fetch-former-mps.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-former-mps.js
 
       # Checks every current MP's latest election result, so this is another
       # ~650-request crawl like the MP news step above — expect it to take a
@@ -165,7 +159,7 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node fetch-by-elections.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-by-elections.js
 
       - name: Run the on-this-day fetch script
         id: fetch_on_this_day
@@ -173,7 +167,7 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node fetch-on-this-day.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-on-this-day.js
 
       - name: Note how each step went
         if: always()
@@ -199,7 +193,7 @@ jobs:
 
       - name: Upload them for the last job
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: result-records
           path: data.tar
@@ -215,9 +209,6 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v7
-      - name: Report failing scripts as annotations
-        # Set after checkout, not at the top of the file: the checkout action runs on Node too and would fail loading a file that is not there yet.
-        run: echo "NODE_OPTIONS=--import $GITHUB_WORKSPACE/ci-notes.js" >> "$GITHUB_ENV"
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -238,7 +229,7 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node fetch-peers.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-peers.js
 
 
       - name: Note how each step went
@@ -255,7 +246,7 @@ jobs:
 
       - name: Upload them for the last job
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: result-lords
           path: data.tar
@@ -271,9 +262,6 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v7
-      - name: Report failing scripts as annotations
-        # Set after checkout, not at the top of the file: the checkout action runs on Node too and would fail loading a file that is not there yet.
-        run: echo "NODE_OPTIONS=--import $GITHUB_WORKSPACE/ci-notes.js" >> "$GITHUB_ENV"
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -289,21 +277,21 @@ jobs:
       - name: Run the Lords careers fetch script
         id: fetch_lords_careers
         continue-on-error: true
-        run: node fetch-lords-careers.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-lords-careers.js
 
       # How every peer voted in the last 12 months, from Parliament's Lords
       # Votes API, for the How peers vote page (~250 requests).
       - name: Run the Lords votes fetch script
         id: fetch_lords_votes
         continue-on-error: true
-        run: node fetch-lords-votes.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-lords-votes.js
 
       # The next four weeks of Parliament's What's On calendar, for the Coming
       # up in Parliament page (5 requests).
       - name: Run the Parliament calendar fetch script
         id: fetch_parliament_calendar
         continue-on-error: true
-        run: node fetch-parliament-calendar.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-parliament-calendar.js
 
       # Background for each calendar entry from Parliament's own records: a
       # committee's stated purpose and the most recent earlier debate with a
@@ -311,21 +299,21 @@ jobs:
       - name: Run the entry notes fetch script
         id: fetch_entry_notes
         continue-on-error: true
-        run: node fetch-entry-notes.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-entry-notes.js
 
       # Select committee reports from the last 12 months and the government's
       # replies, for the Committee reports and replies page (~5 requests).
       - name: Run the committee reports fetch script
         id: fetch_committee_reports
         continue-on-error: true
-        run: node fetch-committee-reports.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-committee-reports.js
 
       # Statutory instruments laid in the last 12 months, for the Laws made by
       # ministers page (~10 requests, plus one for each of the newest 60).
       - name: Run the statutory instruments fetch script
         id: fetch_statutory_instruments
         continue-on-error: true
-        run: node fetch-statutory-instruments.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-statutory-instruments.js
 
       # Private members' bills, this session's ballot bills and early day motions,
       # for the Backbench bills and motions page. Early day motions are added to
@@ -333,56 +321,56 @@ jobs:
       - name: Run the backbench bills and motions fetch script
         id: fetch_backbench
         continue-on-error: true
-        run: node fetch-backbench.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-backbench.js
 
       # National Audit Office reports from the last 12 months, for The spending
       # watchdog page (a few requests to the GOV.UK search API).
       - name: Run the audit reports fetch script
         id: fetch_audit_reports
         continue-on-error: true
-        run: node fetch-audit-reports.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-audit-reports.js
 
       # Open consultations on GOV.UK, for the Have your say page (one search request).
       - name: Run the consultations fetch script
         id: fetch_consultations
         continue-on-error: true
-        run: node fetch-consultations.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-consultations.js
 
       # Numbers for the "Your area in numbers" view: NHS England waiting lists by trust,
       # Environment Agency bathing water ratings, and constituency jobs and pay from Nomis.
       - name: Run the NHS waiting list fetch script
         id: fetch_rtt_waits
         continue-on-error: true
-        run: node fetch-rtt-waits.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-rtt-waits.js
 
       - name: Run the bathing water fetch script
         id: fetch_bathing_water
         continue-on-error: true
-        run: node fetch-bathing-water.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-bathing-water.js
 
       - name: Run the local economy fetch script
         id: fetch_local_economy
         continue-on-error: true
-        run: node fetch-local-economy.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-local-economy.js
 
       # House prices by council (UK House Price Index, one 35 MB file a month, skipped when this month's is already saved) and road casualties by council
       # (the Department for Transport's five-year files, about 150 MB, skipped while their size is unchanged and the table is under 35 days old).
       - name: Run the house price fetch script
         id: fetch_house_prices
         continue-on-error: true
-        run: node fetch-house-prices.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-house-prices.js
 
       - name: Run the road casualties fetch script
         id: fetch_road_casualties
         continue-on-error: true
-        run: node fetch-road-casualties.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-road-casualties.js
 
       # NHS England's monthly A&E figures by trust, for Schools and A&E near you
       # (one spreadsheet, plus the trust postcodes through postcodes.io).
       - name: Run the A&E performance fetch script
         id: fetch_ae_performance
         continue-on-error: true
-        run: node fetch-ae-performance.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-ae-performance.js
 
       # Plain-English rewrites of the committee reports' inquiry descriptions and
       # the newest instruments' Explanatory Notes, written by an AI model from that
@@ -396,7 +384,7 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: node write-plain-english.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" write-plain-english.js
 
       - name: Note how each step went
         if: always()
@@ -427,7 +415,7 @@ jobs:
 
       - name: Upload them for the last job
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: result-lords_files
           path: data.tar
@@ -443,9 +431,6 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v7
-      - name: Report failing scripts as annotations
-        # Set after checkout, not at the top of the file: the checkout action runs on Node too and would fail loading a file that is not there yet.
-        run: echo "NODE_OPTIONS=--import $GITHUB_WORKSPACE/ci-notes.js" >> "$GITHUB_ENV"
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -465,7 +450,7 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node fetch-mp-activity.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-mp-activity.js
 
       - name: Run the petitions fetch script
         id: fetch_petitions
@@ -473,7 +458,7 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node fetch-petitions.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-petitions.js
 
       - name: Run the ministerial gifts & hospitality fetch script
         id: fetch_ministerial_gifts
@@ -481,7 +466,7 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node fetch-ministerial-gifts.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-ministerial-gifts.js
 
       - name: Run the standards reports fetch script
         id: fetch_standards_reports
@@ -489,19 +474,19 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node fetch-standards-reports.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-standards-reports.js
 
       # Reads the "what happened" and "the outcome" wording out of each new report's own PDF, so a new entry looks like the older, hand-written ones.
       - name: Run the standards report details fetch script
         id: fetch_standards_details
         continue-on-error: true
-        run: node fetch-standards-details.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-standards-details.js
 
       # Each bill's real journey (the stages it has been through and the days), for the bill cards.
       - name: Run the bill stages fetch script
         id: fetch_bill_stages
         continue-on-error: true
-        run: node fetch-bill-stages.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-bill-stages.js
 
       - name: Note how each step went
         if: always()
@@ -522,7 +507,7 @@ jobs:
 
       - name: Upload them for the last job
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: result-activity
           path: data.tar
@@ -538,9 +523,6 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v7
-      - name: Report failing scripts as annotations
-        # Set after checkout, not at the top of the file: the checkout action runs on Node too and would fail loading a file that is not there yet.
-        run: echo "NODE_OPTIONS=--import $GITHUB_WORKSPACE/ci-notes.js" >> "$GITHUB_ENV"
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -560,7 +542,7 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node fetch-ipsa-expenses.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-ipsa-expenses.js
 
 
       - name: Note how each step went
@@ -577,7 +559,7 @@ jobs:
 
       - name: Upload them for the last job
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: result-claims
           path: data.tar
@@ -593,9 +575,6 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v7
-      - name: Report failing scripts as annotations
-        # Set after checkout, not at the top of the file: the checkout action runs on Node too and would fail loading a file that is not there yet.
-        run: echo "NODE_OPTIONS=--import $GITHUB_WORKSPACE/ci-notes.js" >> "$GITHUB_ENV"
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -615,7 +594,7 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node fetch-committees.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-committees.js
 
       # A 30-day rolling window, but that's still several thousand written
       # questions most days — expect this step to take a few minutes.
@@ -625,7 +604,7 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node fetch-written-questions.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-written-questions.js
 
 
       - name: Note how each step went
@@ -643,7 +622,7 @@ jobs:
 
       - name: Upload them for the last job
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: result-questions
           path: data.tar
@@ -659,9 +638,6 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v7
-      - name: Report failing scripts as annotations
-        # Set after checkout, not at the top of the file: the checkout action runs on Node too and would fail loading a file that is not there yet.
-        run: echo "NODE_OPTIONS=--import $GITHUB_WORKSPACE/ci-notes.js" >> "$GITHUB_ENV"
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -680,7 +656,7 @@ jobs:
       - name: Run the constituencies fetch script
         id: fetch_constituencies
         continue-on-error: true
-        run: node fetch-constituencies.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-constituencies.js
 
       # Former MPs grouped by the last seat they held, for the Constituency
       # page's History tab (~90 requests). Reads constituencies.json, so it
@@ -688,7 +664,7 @@ jobs:
       - name: Run the constituency history fetch script
         id: fetch_constituency_history
         continue-on-error: true
-        run: node fetch-constituency-history.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-constituency-history.js
 
       # Each current MP's career facts (first elected, terms served, posts
       # held, party changes) from their Members API biography, for the
@@ -697,14 +673,14 @@ jobs:
       - name: Run the MP careers fetch script
         id: fetch_mp_careers
         continue-on-error: true
-        run: node fetch-mp-careers.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-mp-careers.js
 
       # Every UK councillor, council make-up and election dates, from Open
       # Council Data UK (CC BY-SA 4.0), for the Your Council page.
       - name: Run the councils fetch script
         id: fetch_councils
         continue-on-error: true
-        run: node fetch-councils.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-councils.js
 
       # One searchable file of every councillor, built from the council
       # files the step above just wrote, for the Councillors page. Has to
@@ -712,21 +688,21 @@ jobs:
       - name: Build the councillor list
         id: build_councillors
         continue-on-error: true
-        run: node frontend/scripts/build-councillors.mjs
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" frontend/scripts/build-councillors.mjs
 
       # The list of pledges and verdicts on Full Fact's Government Tracker,
       # for the full pledge list on the Promises tracker page.
       - name: Run the Full Fact tracker fetch script
         id: fetch_fullfact_tracker
         continue-on-error: true
-        run: node frontend/scripts/fetch-fullfact-tracker.mjs
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" frontend/scripts/fetch-fullfact-tracker.mjs
 
       # Official statistics from the Office for National Statistics (Open
       # Government Licence v3.0) for the Britain in numbers pages.
       - name: Run the ONS statistics fetch script
         id: fetch_ons
         continue-on-error: true
-        run: node fetch-ons.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-ons.js
 
       # Regional breakdowns for the "by place" maps on the Jobs, Housing and
       # Crime pages (Annual Population Survey, pay, house prices, police
@@ -734,7 +710,7 @@ jobs:
       - name: Run the regional breakdowns fetch script
         id: fetch_regional_breakdowns
         continue-on-error: true
-        run: node fetch-regional-breakdowns.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-regional-breakdowns.js
 
       # Who holds the other elected offices a postcode is covered by (police
       # commissioners, regional mayors, Senedd members, MSPs and MLAs), for the
@@ -742,7 +718,7 @@ jobs:
       - name: Fetch the other elected representatives
         id: fetch_representatives
         continue-on-error: true
-        run: node fetch-representatives.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-representatives.js
 
       # Each party's current leader and portrait, for the Party History page (12 parties,
       # about 40 requests). A new name is only accepted once seen on two different days, a
@@ -752,7 +728,7 @@ jobs:
       - name: Fetch the party leaders and their portraits
         id: fetch_party_leaders
         continue-on-error: true
-        run: node fetch-party-leaders.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-party-leaders.js
 
       - name: Note how each step went
         if: always()
@@ -777,7 +753,7 @@ jobs:
 
       - name: Upload them for the last job
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: result-static
           path: data.tar
@@ -793,9 +769,6 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v7
-      - name: Report failing scripts as annotations
-        # Set after checkout, not at the top of the file: the checkout action runs on Node too and would fail loading a file that is not there yet.
-        run: echo "NODE_OPTIONS=--import $GITHUB_WORKSPACE/ci-notes.js" >> "$GITHUB_ENV"
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -807,7 +780,7 @@ jobs:
         run: npm ci
 
       - name: Collect what the other jobs saved
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: result-*
           path: results
@@ -834,13 +807,13 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node build-benchmarks.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" build-benchmarks.js
 
       # Lists any saved data file that did not get rebuilt today (a source that failed), in the run's log, so it shows up before anyone visits the site. It cannot fail the run.
       - name: Check the saved data is fresh
         continue-on-error: true
         working-directory: frontend
-        run: node scripts/audit-content.mjs --no-links
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" scripts/audit-content.mjs --no-links
 
       # Puts back any rebuilt data file that is not valid or has shrunk to a fraction of what is committed (see check-saved-data.js), so a source that answered with an
       # empty or broken list cannot replace good figures with nothing. The site then goes on showing yesterday's; the status below says it happened.
@@ -848,7 +821,7 @@ jobs:
         id: check_saved_data
         if: always()
         continue-on-error: true
-        run: node check-saved-data.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" check-saved-data.js
 
       # continue-on-error above means the workflow run itself can show green
       # even when several scripts above silently failed — nothing surfaced
@@ -862,7 +835,7 @@ jobs:
         env:
           STATUS_build_benchmarks: ${{ steps.build_benchmarks.outcome }}
           STATUS_check_saved_data: ${{ steps.check_saved_data.outcome }}
-        run: node report-pipeline-status.js
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" report-pipeline-status.js
 
       # The scripts above write straight to Supabase, so the live site picks
       # them up on its next request — no deploy needed. The donor sector
@@ -884,7 +857,7 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: |
           sudo apt-get install -y --no-install-recommends webp
-          node fetch-portraits.js
+          node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-portraits.js
           git add frontend/public/portraits
 
       # Small photos of the regional office-holders on Your area (commissioners, mayors, Senedd members, MSPs, MLAs), see fetch-rep-portraits.js: official photos where the
@@ -892,14 +865,14 @@ jobs:
       - name: Save small photos of any new regional office-holders
         continue-on-error: true
         run: |
-          node fetch-rep-portraits.js
+          node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-rep-portraits.js
           git add frontend/public/portraits/reps frontend/src/data/repPortraits.json
 
       # Where each commissioner's and regional mayor's name links on Your area: the office's own website as Wikidata records it, checked to still answer. See fetch-rep-links.js.
       - name: Refresh links to commissioners' and mayors' official sites
         continue-on-error: true
         run: |
-          node fetch-rep-links.js
+          node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-rep-links.js
           git add frontend/src/data/repLinks.json
 
       - name: Commit updated data files, if they changed

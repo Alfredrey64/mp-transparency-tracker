@@ -1,6 +1,6 @@
 // ci-notes.js
 //
-// Loaded into every data script on GitHub with NODE_OPTIONS="--import <this file>" (see the workflows). The daily and weekly steps are all set to carry on when one fails, so
+// Loaded into every data script on GitHub with `node --import "$GITHUB_WORKSPACE/ci-notes.js" script.js` (see the workflows; GitHub no longer lets NODE_OPTIONS be set from a step, so each command names it). The daily and weekly steps are all set to carry on when one fails, so
 // a failure is easy to miss and its reason is only in a log that needs a sign-in to read. When a script ends with an error, this turns the last thing it said on stderr into a
 // GitHub annotation ("::error ..."), which shows on the run's page and through the public API, so the reason can be seen without opening the log.
 // It changes nothing about how a script runs or what it exits with, and does nothing outside GitHub.

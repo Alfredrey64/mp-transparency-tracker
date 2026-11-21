@@ -84,3 +84,13 @@ These open every page in a browser and fail the build, so a wrong picture cannot
 Run any of them locally with `npx vite preview --port 4178 --strictPort` and `node scripts/mock-data-service.mjs 54321` running (see the head of each file).
 
 Four cards on Your area in numbers ask their source live (crime near you from data.police.uk, food hygiene, flood warnings and sewage overflows), which means every host they call must be named in `connect-src` in `frontend/vercel.json`: the browser blocks anything else without a word, and the test server has no such header. `frontend/src/lib/csp.test.js` fails if a library fetches a host that is not listed. Asking live means nothing needs rebuilding for them: food hygiene ratings (the Food Standards Agency's ratings service, `frontend/src/lib/foodHygiene.js`) and flood warnings (the Environment Agency's real-time flood-monitoring service, `frontend/src/lib/floodLive.js`; England only). Both are open to any website and need no key. If either service changes its address or answer, the card says it did not load and offers the official site. Road casualties use council codes from the Department's files; the councils reorganised in April 2023 are mapped to their new codes in `CODE_NOW` in `roadCasualties.js`, and the next reorganisation needs a line added there.
+
+## Failure messages in the workflow runs
+
+GitHub no longer lets a workflow set `NODE_OPTIONS` through `$GITHUB_ENV`, so `ci-notes.js` (which turns a failing script's last error lines into a `::error title=<script> failed::` annotation) is loaded per command: `node --import "$GITHUB_WORKSPACE/ci-notes.js" script.js`. Any new node step in a workflow should be written that way, or its failure will show only as "exit code 1".
+
+## Smooth page changes
+
+- `Unfold` (components/Unfold.jsx) grows and shrinks content under a button; `Batches` uses it for "Show ten more" lists so a new page of rows grows under the old ones instead of popping in. Use `settle` where cards have shadows at the edges.
+- `swapView(fn)` (lib/preserveScroll.js) swaps a whole view (for example the Lords list and a peer's page) and returns to the top in the same frame.
+- Hero scenes (`Scene` in story/EconArt.jsx) start their animation only once the page is idle (`data-run`), so they do not compete with first paint.

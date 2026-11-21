@@ -18,10 +18,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
-      - name: Report failing scripts as annotations
-        # Set after checkout, not at the top of the file: the checkout action runs on Node too and would fail loading a file that is not there yet.
-        run: echo "NODE_OPTIONS=--import $GITHUB_WORKSPACE/ci-notes.js" >> "$GITHUB_ENV"
       - uses: actions/setup-node@v7
         with:
           node-version: 22
-      - run: node frontend/scripts/check-tax-data.mjs
+      - run: node --import "$GITHUB_WORKSPACE/ci-notes.js" frontend/scripts/check-tax-data.mjs
