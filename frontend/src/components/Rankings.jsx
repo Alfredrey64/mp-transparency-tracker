@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { m as motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { supabase } from "../supabaseClient";
 import { fetchAllRows } from "../lib/supabasePagination";
@@ -508,6 +508,15 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
 
   const active = CATEGORIES.find((c) => c.key === category);
   const loading = active.data === null && !failed;
+  // A tab whose figures are still arriving would swap a tall list for a short "Loading" box and the page would collapse under the reader, so the box keeps the height of the list it replaced.
+  const bodyRef = useRef(null);
+  const heldHeight = useRef(0);
+  useLayoutEffect(() => {
+    const box = bodyRef.current;
+    if (!box) return;
+    box.style.minHeight = loading ? `${heldHeight.current}px` : "";
+    if (!loading) heldHeight.current = box.offsetHeight;
+  });
 
   const filtered = useMemo(() => {
     if (!active.data) return [];
@@ -631,6 +640,7 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
         </div>
       )}
 
+      <div ref={bodyRef}>
       {loading && <Loading compact />}
       {failed && active.data === null && <LoadFailedNote item="the rankings" />}
       {!loading && !failed && filtered.length === 0 && (
@@ -655,6 +665,7 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
           ))}
         </motion.div>
       </AnimatePresence>
+      </div>
 
       {!loading && filtered.length > TOP_N && (
         <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, textAlign: "center", marginTop: 16 }}>

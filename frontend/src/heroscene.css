@@ -35,3 +35,6 @@
   .page-hero.page-hero.page-hero[data-scene] :is(.hs-scene, .fm-scene) svg.scene-row { display: block; flex: none; width: calc(100vw * 1440 / var(--seam-w)); max-width: none; height: var(--row-h); aspect-ratio: 1440 / 200; margin-left: 0; }
   .page-hero.page-hero.page-hero[data-scene] :is(.hs-scene, .fm-scene) svg.scene-row2 { margin-left: calc(-100vw * (1440 - var(--seam-w)) / var(--seam-w)); overflow: hidden; }
 }
+
+/* The scene's animations are held at their first frame until the page has loaded and gone quiet (Scene in EconArt.jsx sets data-run="1"), so they do not compete with the page being built. */
+.hs-scene[data-run="0"] *, .hs-scene[data-run="0"] *::before, .hs-scene[data-run="0"] *::after { animation-play-state: paused !important; }

@@ -46,3 +46,12 @@ export function holdPlace(control, fn) {
   };
   requestAnimationFrame(tick);
 }
+
+// For a press that swaps the whole view for a different one (a list for one person's page, and back) and should land at the top of the new view. Done in one frame: the new view is drawn and
+// the page is put at the top before anything is painted, so there is no moment when the browser, finding the new view shorter than where the reader was standing, throws the page to its
+// bottom and then glides back up. Call it from an event handler or a promise that follows one.
+export function swapView(fn) {
+  pauseScrollAnchor(700);
+  flushSync(fn);
+  window.scrollTo(0, 0);
+}

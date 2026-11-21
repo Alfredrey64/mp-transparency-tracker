@@ -1,4 +1,5 @@
 /** @jsxImportSource react */
+import { useEffect, useState } from "react";
 import "../../heroscene.css";
 import "../../econart.css";
 import "../../dayscene.css";
@@ -11,13 +12,30 @@ import Clouds from "./Clouds";
 
 // Every picture but Crime is in daylight (data-day): the sky is then the colour of the whole heading band (heroscene.css), and each picture has its own daytime palette (dayscene.css, servicesart.css).
 const DAY = new Set(["education", "transport", "justice", "digital", "economy", "jobs", "finance", "taxes", "business", "energy", "nature", "water", "flood"]);
-export const Scene = ({ kind, children }) => (
-  <div className="hs-scene" data-kind={kind} data-day={DAY.has(kind) ? "1" : undefined} aria-hidden="true">
-    <svg className="scene-row" viewBox="0 0 1440 200" preserveAspectRatio="xMidYMax slice" focusable="false">{children}</svg>
-    {/* On a small phone the picture is shown whole, in two rows of its own landscape (the left part, then the right part), so it can be big enough to read (heroscene.css). Hidden everywhere else. */}
-    <svg className="scene-row scene-row2" viewBox="0 0 1440 200" preserveAspectRatio="xMidYMax slice" focusable="false">{children}</svg>
-  </div>
-);
+// A scene has dozens of moving parts (coins, lorries, smoke), and starting them all while the page is still being built competes with the page's own work, which shows up as stutter
+// and as blocking time on a slow phone. So they wait, held at their first frame (which is what the delayed ones look like anyway), until the page has finished loading and the browser has
+// a quiet moment, then play (heroscene.css, data-run). The pause is well under a second on an ordinary connection.
+function useScenePlay() {
+  const [run, setRun] = useState(false);
+  useEffect(() => {
+    let idle = null;
+    let late = null;
+    const go = () => { late = window.setTimeout(() => { idle = window.requestIdleCallback ? window.requestIdleCallback(() => setRun(true), { timeout: 1200 }) : window.setTimeout(() => setRun(true), 200); }, 150); };
+    if (document.readyState === "complete") go(); else window.addEventListener("load", go, { once: true });
+    return () => { window.removeEventListener("load", go); window.clearTimeout(late); if (idle !== null) { if (window.cancelIdleCallback) window.cancelIdleCallback(idle); window.clearTimeout(idle); } };
+  }, []);
+  return run;
+}
+export const Scene = ({ kind, children }) => {
+  const run = useScenePlay();
+  return (
+    <div className="hs-scene" data-kind={kind} data-day={DAY.has(kind) ? "1" : undefined} data-run={run ? "1" : "0"} aria-hidden="true">
+      <svg className="scene-row" viewBox="0 0 1440 200" preserveAspectRatio="xMidYMax slice" focusable="false">{children}</svg>
+      {/* On a small phone the picture is shown whole, in two rows of its own landscape (the left part, then the right part), so it can be big enough to read (heroscene.css). Hidden everywhere else. */}
+      <svg className="scene-row scene-row2" viewBox="0 0 1440 200" preserveAspectRatio="xMidYMax slice" focusable="false">{children}</svg>
+    </div>
+  );
+};
 
 // The daytime backdrop: a haze at the horizon, a sun that is always drawn whole inside the picture (nothing may be cut off by its top edge), a few drifting clouds and a pale far skyline.
 // `sun` is where the sun sits (null for a scene that draws its own), `far` is false where the scene has a skyline of its own.

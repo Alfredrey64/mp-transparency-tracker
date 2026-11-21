@@ -12,8 +12,7 @@ import PersonCard from "./PersonCard";
 import { CardShell, LoadFailedNote } from "./MpCards";
 import { PartyHemicycleSection } from "./PartyHemicycle";
 import { IconLords } from "./icons";
-import { withScrollPreserved } from "../lib/preserveScroll";
-import { glide } from "../lib/scrollBehavior";
+import { withScrollPreserved, swapView } from "../lib/preserveScroll";
 
 // The Career tab loads its chart and career data only when opened.
 const CareerTab = lazy(() => import("./CareerTab"));
@@ -436,10 +435,9 @@ export default function HouseOfLords({ peerId = null }) {
         peer={selected}
         formerMp={formerMpById.get(selected.id)}
         onBack={() => {
-          setSelected(null);
           // Opened from a "/lords/<id>" link? Drop the id from the address.
           if (/^\/lords\/\d+/.test(window.location.pathname)) window.history.replaceState(null, "", "#/lords");
-          window.scrollTo({ top: 0, behavior: glide() });
+          swapView(() => setSelected(null));
         }}
       />
     );
@@ -557,7 +555,7 @@ export default function HouseOfLords({ peerId = null }) {
                 photo={p.thumbnail_url}
                 color={color}
                 line={`${p.party ?? "Crossbench"} · ${p.peerage_type}`}
-                onClick={() => { fullPeer(p).then((whole) => { setSelected(whole); window.scrollTo({ top: 0, behavior: glide() }); }); }}
+                onClick={() => { fullPeer(p).then((whole) => swapView(() => setSelected(whole))); }}
               />
             );
           })}

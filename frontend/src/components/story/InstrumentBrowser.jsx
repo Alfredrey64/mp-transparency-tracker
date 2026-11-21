@@ -4,6 +4,7 @@ import { useGo } from "./useGo";
 import { FILTERS, browse, describe } from "../../lib/instrumentsView";
 import { dateLong } from "../../lib/upcoming";
 import DownloadCsvButton from "../DownloadCsvButton";
+import { Batches } from "../Unfold";
 import { shortDate } from "../../lib/instrumentsCase";
 import { instrumentPlain } from "../../lib/plainFallback";
 import "../../siart.css";
@@ -103,9 +104,7 @@ export default function InstrumentBrowser({ data }) {
       </div>
 
       {list.length === 0 && <p className="rb-none">No instruments match. Try a different word or filter.</p>}
-      <ul className="ib-list">
-        {list.slice(0, shown).map((r, i) => <Card key={r.id} data={data} r={r} index={i % PAGE} />)}
-      </ul>
+      <Batches items={list} shown={shown} page={PAGE} className="ib-list" gap={16} render={(r, i) => <Card key={r.id} data={data} r={r} index={i % PAGE} />} />
       {list.length > shown && <button type="button" className="rb-more" onClick={() => setShown((n) => n + PAGE)}>Show {Math.min(PAGE, list.length - shown)} more of {list.length - shown}</button>}
       <p className="rb-csv"><DownloadCsvButton label="Download these as a spreadsheet" slug="statutory-instruments" columns={COLUMNS.map(([key, header]) => ({ key, header }))} rows={list} /></p>
     </div>

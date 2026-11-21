@@ -1,3 +1,4 @@
+import Unfold from "./Unfold";
 import { useState } from "react";
 import { COLORS, FONT_BODY, numeric } from "../theme";
 import { PARTY_NAMES, changeText, fmt, whenText } from "../lib/taxRates";
@@ -47,13 +48,19 @@ export function ChangeRow({ c, showTax, future = false }) {
 export default function ChangeList({ changes, showTax = false, initial = 10, newestFirst = true, empty = "No changes recorded." }) {
   const [all, setAll] = useState(false);
   const rows = newestFirst ? [...changes].reverse() : changes;
-  const shown = all ? rows : rows.slice(0, initial);
   if (!rows.length) return <p style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft }}>{empty}</p>;
   return (
     <div>
       <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-        {shown.map((c) => <ChangeRow key={`${c.line.key}-${c.date}`} c={c} showTax={showTax} />)}
+        {rows.slice(0, initial).map((c) => <ChangeRow key={`${c.line.key}-${c.date}`} c={c} showTax={showTax} />)}
       </ul>
+      {rows.length > initial && (
+        <Unfold open={all} settle>
+          <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+            {rows.slice(initial).map((c) => <ChangeRow key={`${c.line.key}-${c.date}`} c={c} showTax={showTax} />)}
+          </ul>
+        </Unfold>
+      )}
       {rows.length > initial && (
         <button type="button" onClick={() => setAll((v) => !v)} aria-expanded={all} style={{ marginTop: 8, fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 700, padding: "7px 14px", borderRadius: 999, cursor: "pointer", border: `1px solid ${COLORS.hairline}`, background: "transparent", color: COLORS.ink }}>
           {all ? "Show fewer" : `Show all ${rows.length} changes`}

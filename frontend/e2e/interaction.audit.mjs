@@ -116,7 +116,9 @@ async function worker() {
         if (!moved && !expected && scrolling >= 1 && scrolling <= 2 && scrolled >= 40 && scrolled <= 3000 && biggest >= 40) problems.push(`the page jumped ${Math.round(scrolled)} px in ${scrolling} frame${scrolling === 1 ? "" : "s"}`);
         // A page that becomes too short to hold where the visitor was standing is thrown back up the screen (the footer flashes past); a tall list swapped for a short one below is fine.
         const vh = PHONE ? 844 : 800;
-        if (!moved && rec.frames.some((f) => f.h < rec.h0 - 200 && f.h < rec.y0 + vh)) problems.push("page became too short for where the visitor was standing");
+        // A press that swaps the whole view for another and puts the reader back at the top (a list for one person's page) is a change of page, not a collapse: it is judged by where the page ends.
+        const endsAtTop = (rec.frames.at(-1)?.y ?? rec.y0) < 5 && rec.y0 >= 5;
+        if (!moved && !endsAtTop && rec.frames.some((f) => f.h < rec.h0 - 200 && f.h < rec.y0 + vh)) problems.push("page became too short for where the visitor was standing");
         if (!moved && rec.frames.some((f) => !f.head)) problems.push("page heading missing for a frame");
         if (!problems.length) { flagged = null; break; }
         flagged = { pg, what, problems };

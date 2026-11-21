@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
+import Unfold from "./Unfold";
 import { useDataFile } from "../lib/useDataFile";
 import { constituencies } from "../lib/dataFiles";
 import { COLORS, FONT_BODY, FONT_DISPLAY, PAGE_PADDING, numeric, solid } from "../theme";
@@ -338,16 +339,22 @@ function SwingTool({ rows, parties }) {
           {flips.length > 0 && (
             <>
               <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 16, fontWeight: 700, color: COLORS.ink, margin: "6px 0 4px" }}>The seats that would change, easiest first</h3>
-              <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(290px, 100%), 1fr))", gap: "0 24px" }}>
-                {flips.slice(0, showAll ? 400 : 12).map((r) => (
-                  <li key={r.key} style={{ borderTop: `1px solid ${COLORS.hairline}` }}>
-                    <a href={seatHref(r.name)} className="ons-tap" style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "baseline", padding: "9px 2px", textDecoration: "none", color: COLORS.ink, fontFamily: FONT_BODY, fontSize: 14 }}>
-                      <span style={{ fontWeight: 700 }}>{r.name}</span>
-                      <span style={{ ...numeric, fontSize: 13, color: COLORS.inkSoft, whiteSpace: "nowrap" }}>{voters(votesToFlip(r))}</span>
-                    </a>
-                  </li>
-                ))}
-              </ol>
+              {[flips.slice(0, 12), flips.slice(12, 400)].map((rows, part) => {
+                const list = (
+                  <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(290px, 100%), 1fr))", gap: "0 24px" }}>
+                    {rows.map((r) => (
+                      <li key={r.key} style={{ borderTop: `1px solid ${COLORS.hairline}` }}>
+                        <a href={seatHref(r.name)} className="ons-tap" style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "baseline", padding: "9px 2px", textDecoration: "none", color: COLORS.ink, fontFamily: FONT_BODY, fontSize: 14 }}>
+                          <span style={{ fontWeight: 700 }}>{r.name}</span>
+                          <span style={{ ...numeric, fontSize: 13, color: COLORS.inkSoft, whiteSpace: "nowrap" }}>{voters(votesToFlip(r))}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
+                );
+                // The seats past the first twelve open out under them, so the button and the page below glide down rather than being shoved.
+                return part === 0 ? <Fragment key="first">{list}</Fragment> : rows.length > 0 && <Unfold key="rest" open={showAll} settle>{list}</Unfold>;
+              })}
               {flips.length > 12 && <button type="button" className="ons-tap" onClick={() => setShowAll((v) => !v)} style={{ ...pillStyle(false), marginTop: 12 }}>{showAll ? "Show fewer" : `Show all ${flips.length}`}</button>}
             </>
           )}

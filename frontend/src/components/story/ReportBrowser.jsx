@@ -6,6 +6,7 @@ import { useGo } from "./useGo";
 import { browse, describe, summary } from "../../lib/reportsView";
 import { dateLong } from "../../lib/upcoming";
 import DownloadCsvButton from "../DownloadCsvButton";
+import { Batches } from "../Unfold";
 import { reportPlain } from "../../lib/plainFallback";
 
 // Every select committee report on the Committee reports page, one card each. A card shows who published the report, when, what it looked into and where the government's reply stands;
@@ -147,9 +148,7 @@ export default function ReportBrowser({ data }) {
       </div>
 
       {list.length === 0 && <p className="rb-none">No reports match. Try a different word or filter.</p>}
-      <ul className="ib-list">
-        {list.slice(0, shown).map((r, i) => <Card key={r.id} r={r} today={today} index={i % PAGE} />)}
-      </ul>
+      <Batches items={list} shown={shown} page={PAGE} className="ib-list" gap={16} render={(r, i) => <Card key={r.id} r={r} today={today} index={i % PAGE} />} />
       {list.length > shown && <button type="button" className="rb-more" onClick={() => setShown((n) => n + PAGE)}>Show {Math.min(PAGE, list.length - shown)} more of {list.length - shown}</button>}
       <p className="rb-csv">
         <DownloadCsvButton

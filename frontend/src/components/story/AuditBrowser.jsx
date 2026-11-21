@@ -1,6 +1,7 @@
 /** @jsxImportSource react */
 import { useMemo, useState } from "react";
 import { dateLong } from "../../lib/upcoming";
+import { Batches } from "../Unfold";
 import "../../accountability.css";
 
 // Every National Audit Office report from the last year on the Spending watchdog page: a card each with the Office's own one-sentence summary, filtered by the department
@@ -26,19 +27,17 @@ export default function AuditBrowser({ reports, departments }) {
         </select>
       </div>
       {list.length === 0 ? <p className="ac-empty">No reports match. Try a shorter word or all departments.</p> : (
-        <ul className="ac-list">
-          {list.slice(0, shown).map((r) => (
-            <li key={r.id} className="ac-item" style={{ "--ac": KIND_COLOUR[r.type] ?? "#5B6784" }}>
-              <h3><a href={r.url} target="_blank" rel="noreferrer">{r.title}</a></h3>
-              {r.summary && <p>{r.summary}</p>}
-              <div className="ac-meta">
-                <span className="ac-chip">{r.type || "Report"}</span>
-                <span>{dateLong(r.date)}</span>
-                {r.departments.length > 0 && <span><b>{r.departments.join(", ")}</b></span>}
-              </div>
-            </li>
-          ))}
-        </ul>
+        <Batches items={list} shown={shown} page={PAGE} className="ac-list" render={(r) => (
+          <li key={r.id} className="ac-item" style={{ "--ac": KIND_COLOUR[r.type] ?? "#5B6784" }}>
+            <h3><a href={r.url} target="_blank" rel="noreferrer">{r.title}</a></h3>
+            {r.summary && <p>{r.summary}</p>}
+            <div className="ac-meta">
+              <span className="ac-chip">{r.type || "Report"}</span>
+              <span>{dateLong(r.date)}</span>
+              {r.departments.length > 0 && <span><b>{r.departments.join(", ")}</b></span>}
+            </div>
+          </li>
+        )} />
       )}
       {list.length > shown && <button type="button" className="ac-more" onClick={() => setShown(shown + PAGE)}>Show ten more ({list.length - shown} left)</button>}
     </div>

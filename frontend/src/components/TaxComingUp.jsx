@@ -1,3 +1,4 @@
+import Unfold from "./Unfold";
 import { useState } from "react";
 import { COLORS, FONT_BODY, FONT_DISPLAY, numeric } from "../theme";
 import { card, pillStyle } from "../lib/onsStyles";
@@ -32,8 +33,15 @@ export default function TaxComingUp({ now }) {
         <>
           <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 16, fontWeight: 700, color: COLORS.ink, margin: "18px 0 0" }}>Already decided, not yet in force</h3>
           <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-            {(all ? upcoming : upcoming.slice(0, 3)).map((c) => <ChangeRow key={`${c.line.key}-${c.date}`} c={c} showTax future />)}
+            {upcoming.slice(0, 3).map((c) => <ChangeRow key={`${c.line.key}-${c.date}`} c={c} showTax future />)}
           </ul>
+          {upcoming.length > 3 && (
+            <Unfold open={all} settle>
+              <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+                {upcoming.slice(3).map((c) => <ChangeRow key={`${c.line.key}-${c.date}`} c={c} showTax future />)}
+              </ul>
+            </Unfold>
+          )}
           {upcoming.length > 3 && <button type="button" onClick={() => setAll((v) => !v)} aria-expanded={all} style={{ ...pillStyle(false), marginTop: 10 }}>{all ? "Show fewer" : `Show all ${upcoming.length}`}</button>}
         </>
       )}
