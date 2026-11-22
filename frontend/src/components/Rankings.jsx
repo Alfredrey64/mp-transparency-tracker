@@ -508,15 +508,34 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
 
   const active = CATEGORIES.find((c) => c.key === category);
   const loading = active.data === null && !failed;
-  // A tab whose figures are still arriving would swap a tall list for a short "Loading" box and the page would collapse under the reader, so the box keeps the height of the list it replaced.
+  // Changing tab fades the old list out before the new one fades in, and a tab whose figures are still arriving shows a short "Loading" box. Either way the box would be nearly empty
+  // for a moment and the page would collapse under the reader, so it keeps the height of the list it replaced until the new one is in place.
   const bodyRef = useRef(null);
   const heldHeight = useRef(0);
+  const lastCategory = useRef(category);
+  const holding = useRef(false);
+  const holdTimer = useRef(0);
+  const loadingNow = useRef(loading);
   useLayoutEffect(() => {
     const box = bodyRef.current;
     if (!box) return;
-    box.style.minHeight = loading ? `${heldHeight.current}px` : "";
-    if (!loading) heldHeight.current = box.offsetHeight;
+    loadingNow.current = loading;
+    if (lastCategory.current !== category) {
+      lastCategory.current = category;
+      holding.current = true;
+      clearTimeout(holdTimer.current);
+      holdTimer.current = setTimeout(() => {
+        holding.current = false;
+        const el = bodyRef.current;
+        if (!el || loadingNow.current) return;
+        el.style.minHeight = "";
+        heldHeight.current = el.offsetHeight;
+      }, 500);
+    }
+    box.style.minHeight = loading || holding.current ? `${heldHeight.current}px` : "";
+    if (!loading && !holding.current) heldHeight.current = box.offsetHeight;
   });
+  useEffect(() => () => clearTimeout(holdTimer.current), []);
 
   const filtered = useMemo(() => {
     if (!active.data) return [];
