@@ -12,7 +12,9 @@ roots.forEach(walk);
 const urls = new Map();
 for (const file of files) {
   for (const m of readFileSync(file, "utf8").matchAll(/https?:\/\/[A-Za-z0-9._~:/?#@!$&'()*+,;=%-]+/g)) {
-    const url = m[0].replace(/[.,;:)]+$/, "");
+    let url = m[0].replace(/[.,;:]+$/, "");
+    // A closing bracket ends the address only when nothing in it opened one: Wikipedia's "Name_(politician)" keeps its own.
+    while (url.endsWith(")") && (url.match(/\(/g) ?? []).length < (url.match(/\)/g) ?? []).length) url = url.slice(0, -1);
     // Pieces of a template (an address that ends in $ or = and has the rest filled in by the code) and the made-up example host in route.js are not links.
     if (/[$=]$/.test(url) || url.startsWith("https://site/")) continue;
     if (/x\.test|localhost|127\.0\.0\.1|example\.|\$\{|\.supabase\.co|w3\.org|schema\.org/.test(url)) continue;

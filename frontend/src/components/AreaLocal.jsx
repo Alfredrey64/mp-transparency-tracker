@@ -69,7 +69,7 @@ export function StreetCrimeCard({ r, i }) {
   if (scotland) {
     return (
       <Card i={i} colour="#D9453B" icon={<IconShield size={20} />} title="Crime near your postcode" className="ma-streetcrime">
-        <p className="ma-sub">The police.uk street-level figures cover England, Wales and Northern Ireland. Police Scotland publishes its own figures, by area, at <a href="https://www.scotland.police.uk/about-us/how-we-do-it/performance-and-accountability/" target="_blank" rel="noreferrer">scotland.police.uk</a>.</p>
+        <p className="ma-sub">The police.uk street-level figures cover England, Wales and Northern Ireland. Police Scotland publishes its own figures, by area, at <a href="https://www.scotland.police.uk/about-us/how-we-do-it/crime-data/" target="_blank" rel="noreferrer">scotland.police.uk</a>.</p>
       </Card>
     );
   }
@@ -158,7 +158,7 @@ export function BathingCard({ r, i }) {
             ))}
           </ul>
           <p className="ma-sub">Each designated bathing water is sampled through the season, May to September, and rated Excellent, Good, Sufficient or Poor from four seasons of results. Distances are in a straight line. Source: Environment Agency bathing water data, classifications for {data.year}.</p>
-          <a className="ma-link" href="https://environment.data.gov.uk/bathing-waters" target="_blank" rel="noreferrer">Daily pollution risk forecasts for every beach</a>
+          <a className="ma-link" href="https://environment.data.gov.uk/bwq/profiles/" target="_blank" rel="noreferrer">Daily pollution risk forecasts for every beach</a>
         </>
       )}
     </Card>
@@ -452,7 +452,7 @@ export function FloodWarningsCard({ r, i }) {
   const floods = useLookup(england ? point : null, (p) => loadFloods(p), attempt);
   if (!point) return null;
   if (!england) {
-    const who = r.country === "Wales" ? ["Natural Resources Wales", "https://naturalresources.wales/flooding/"] : r.country === "Scotland" ? ["SEPA", "https://www.sepa.org.uk/environment/water/flooding/"] : ["the Department for Infrastructure", "https://www.infrastructure-ni.gov.uk/topics/rivers-and-flooding"];
+    const who = r.country === "Wales" ? ["Natural Resources Wales", "https://naturalresources.wales/flooding/"] : r.country === "Scotland" ? ["SEPA", "https://www.sepa.org.uk/flooding/"] : ["the Department for Infrastructure", "https://www.infrastructure-ni.gov.uk/topics/rivers-and-flooding"];
     return (
       <Card i={i} colour="#2C7DA0" icon={<IconFlood size={20} />} title="Flood warnings near your postcode" className="ma-flood">
         <p className="ma-sub">These are the Environment Agency's warnings for England. In {r.country ?? "your nation"}, flood warnings come from <a href={who[1]} target="_blank" rel="noreferrer">{who[0]}</a>.</p>

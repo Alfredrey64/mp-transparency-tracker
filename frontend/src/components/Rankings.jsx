@@ -416,7 +416,9 @@ export default function Rankings({ onSelectPolitician, onNavigate }) {
   }, [politicians, votingRows, politicianById]);
 
   const attendanceRanking = useMemo(() => {
-    if (!politicians || !votingRows || totalDivisions === 0) return null;
+    if (!politicians || !votingRows) return null;
+    // Votes have arrived but there are no recorded divisions: an empty table, not a table still on its way.
+    if (totalDivisions === 0) return [];
     const counts = new Map();
     for (const row of votingRows) {
       counts.set(row.politician_id, (counts.get(row.politician_id) ?? 0) + 1);
