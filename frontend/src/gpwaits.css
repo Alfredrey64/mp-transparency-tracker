@@ -1,0 +1,81 @@
+/* "Seeing a GP" on the NHS page (components/GpWaits.jsx). Held at the starting position until data-go="1"; reduced motion shows the finished picture (useGo returns "1"). */
+.gpw-hold { min-height: 640px; }
+.gpw { min-height: 640px; }
+.gpw-pick { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 22px; }
+.gpw-pick label { font: 800 13px/1 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.03em; text-transform: uppercase; color: var(--c-ink-soft); }
+.gpw-pick select { min-height: 44px; max-width: 100%; padding: 0 38px 0 14px; border-radius: 12px; border: 1.5px solid var(--c-hairline); background: var(--c-paper-card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%233A465A' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 14px center; appearance: none; font: 700 15px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); cursor: pointer; }
+.gpw-pick select:focus-visible { outline: 3px solid var(--c-ink); outline-offset: 2px; }
+.gpw-pick span { font: 600 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.gpw-h { margin: 0 0 12px; font: 800 13px/1.35 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.03em; text-transform: uppercase; color: var(--c-ink-soft); }
+.gpw-top { display: grid; grid-template-columns: minmax(260px, 0.95fr) minmax(0, 1.05fr); gap: 28px 40px; align-items: center; margin-bottom: 34px; }
+
+/* a hundred dots */
+.gpw-dots { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: clamp(5px, 1.2vw, 9px); max-width: 380px; }
+.gpw-dots i { aspect-ratio: 1; border-radius: 50%; background: var(--c); transform: scale(1); transition: transform 0.45s cubic-bezier(0.3, 1.5, 0.5, 1), background-color 0.5s; transition-delay: calc(var(--k) * 6ms); }
+.gpw:not([data-go="1"]) .gpw-dots i { transform: scale(0); transition: none; }
+.gpw-legend { list-style: none; margin: 0 0 18px; padding: 0; display: grid; gap: 7px; }
+.gpw-legend li { display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; align-items: center; gap: 10px; font: 600 14.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.gpw-legend i { width: 14px; height: 14px; border-radius: 50%; }
+.gpw-legend b { font-variant-numeric: tabular-nums; font-weight: 800; }
+.gpw-stats { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.gpw-stats li { display: grid; grid-template-columns: 76px minmax(0, 1fr); align-items: baseline; gap: 12px; padding: 10px 14px; border-radius: 12px; background: var(--c-paper-sunk); }
+.gpw-stats b { font: 800 26px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); font-variant-numeric: tabular-nums; }
+.gpw-stats span { font: 500 13.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+
+/* every NHS area on one strip */
+.gpw-strip { margin: 0 12px 34px; }
+.gpw-track { position: relative; height: 150px; border-bottom: 2px solid var(--c-hairline); }
+.gpw-pt { position: absolute; bottom: calc(10px + var(--row) * 17px); width: 15px; height: 15px; margin-left: -7.5px; border-radius: 50%; background: color-mix(in srgb, #0F766E 55%, var(--c-paper-card)); border: 2px solid var(--c-paper-card); box-sizing: border-box; transform: translateY(0); opacity: 1; transition: transform 0.6s cubic-bezier(0.3, 1.4, 0.5, 1), opacity 0.4s, background-color 0.3s; transition-delay: calc(var(--k) * 22ms); }
+.gpw-pt[data-sel="1"] { background: #C0561F; width: 21px; height: 21px; margin-left: -10.5px; z-index: 2; box-shadow: 0 0 0 4px color-mix(in srgb, #C0561F 25%, transparent); transition-delay: 0s; }
+.gpw:not([data-go="1"]) .gpw-pt { transform: translateY(-90px); opacity: 0; transition: none; }
+.gpw-eng { position: absolute; top: 0; bottom: 0; width: 0; border-left: 2px dashed var(--c-ink-soft); }
+.gpw-eng span { position: absolute; top: -2px; left: 8px; white-space: nowrap; font: 700 12.5px/1.2 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.gpw-you { position: absolute; top: 28px; transform: translateX(-50%); padding: 2px 9px; border-radius: 8px; background: #C0561F; color: #fff; font: 800 13px/1.4 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; }
+.gpw-ticks { position: relative; height: 22px; margin-top: 8px; }
+.gpw-ticks span { position: absolute; transform: translateX(-50%); font: 700 12px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+
+/* the last months */
+.gpw-trend { margin: 0 8px 34px 40px; }
+.gpw-trend .gpw-note { margin-left: -40px; }
+.gpw-plot { position: relative; height: 170px; }
+.gpw-plot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.gpw-grid { stroke: var(--c-hairline); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.gpw-line { fill: none; vector-effect: non-scaling-stroke; stroke-linejoin: round; stroke-linecap: round; clip-path: inset(-20px -20px -20px -20px); transition: clip-path 1.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s; }
+.gpw-line-eng { stroke: var(--c-ink-soft); stroke-width: 2.5; stroke-dasharray: 2 5; opacity: 0.85; }
+.gpw-line-me { stroke: #C0561F; stroke-width: 3.5; animation: gpw-in 1.2s cubic-bezier(0.4, 0, 0.2, 1) both; }
+@keyframes gpw-in { from { clip-path: inset(-20px 100% -20px -20px); } to { clip-path: inset(-20px -20px -20px -20px); } }
+.gpw:not([data-go="1"]) .gpw-line { clip-path: inset(-20px 100% -20px -20px); transition: none; animation: none; }
+.gpw-yt { position: absolute; left: -40px; width: 34px; text-align: right; transform: translateY(-50%); font: 700 11.5px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.gpw-xt { position: relative; height: 20px; margin-top: 8px; }
+.gpw-xt span { position: absolute; transform: translateX(-50%); font: 700 12px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); white-space: nowrap; }
+.gpw-xt span[data-edge="l"] { transform: none; }
+.gpw-xt span[data-edge="r"] { transform: translateX(-100%); }
+.gpw-note { margin: 12px 0 0; padding: 10px 14px; border-radius: 12px; background: var(--c-paper-sunk); font: 500 13.5px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.gpw-key { margin: 6px 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font: 600 13px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.gpw-key i { display: inline-block; flex: none; width: 26px; }
+.gpw-k1 { border-top: 2.5px dotted var(--c-ink-soft); }
+.gpw-k2 { border-top: 3.5px solid #C0561F; margin-left: 10px; border-radius: 2px; }
+
+/* how appointments happen and who with */
+.gpw-mixes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 32px; }
+.gpw-mix h4 { margin: 0 0 10px; font: 800 13px/1.35 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.03em; text-transform: uppercase; color: var(--c-ink-soft); }
+.gpw-mixbar { display: flex; gap: 2px; height: 40px; border-radius: 10px; overflow: hidden; background: var(--c-paper-sunk); }
+.gpw-mixbar i { flex-basis: 0; display: grid; place-items: center; transform-origin: left center; transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); transition-delay: calc(var(--i) * 80ms); font-style: normal; }
+.gpw-mixbar span { font: 800 12.5px/1 "Figures", "Public Sans", system-ui, sans-serif; color: #fff; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); }
+.gpw:not([data-go="1"]) .gpw-mixbar i { transform: scaleX(0); transition: none; }
+.gpw-mix ul { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 5px; }
+.gpw-mix li { display: flex; align-items: center; gap: 8px; font: 600 13.5px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.gpw-mix li i { width: 12px; height: 12px; border-radius: 4px; flex: none; }
+.gpw-mix li b { margin-left: auto; padding-left: 10px; font-variant-numeric: tabular-nums; }
+.gpw-foot { margin: 26px 0 0; font: 500 13.5px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+
+@media (max-width: 760px) {
+  .gpw, .gpw-hold { min-height: 900px; }
+  .gpw-top { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .gpw-dots { max-width: none; }
+  .gpw-mixes { grid-template-columns: minmax(0, 1fr); }
+  .gpw-trend { margin-left: 38px; }
+  .gpw-strip { margin: 0 8px 30px; }
+  .gpw-eng span { left: auto; right: 8px; }
+}
+@media (prefers-reduced-motion: reduce) { .gpw-dots i, .gpw-pt, .gpw-line, .gpw-mixbar i { transition: none !important; animation: none !important; } }

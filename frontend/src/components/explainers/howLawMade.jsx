@@ -4,6 +4,8 @@ import { IconBook, IconGavel, IconScales, IconVote, IconSearch, IconRegister } f
 import { Flow } from "../story/StateArt";
 import { Hero } from "../story/Vivid";
 import LAW from "../../data/lawExample.json";
+import ACTS from "../../data/acts.json";
+import ActsPassed from "../story/ActsPassed";
 
 // The explanations of each stage are Parliament's own, from the "How does a bill become a law?" guide on parliament.uk, read on 12 November 2026. The journey is a real Act:
 // frontend/src/data/lawExample.json is rebuilt every day by fetch-bill-stages.js, which picks a recent Act with a full journey from Parliament's Bills API, so the dates and the
@@ -127,8 +129,17 @@ const PAGE = {
         { text: ["Being an Act does not always mean the law applies at once. It may come into effect immediately, after a set period, or only when a minister makes a commencement order. If there is no commencement order, an Act comes into force from midnight at the start of the day it received Royal Assent."] },
       ],
     },
+    {
+      title: `The Acts that have become law in ${ACTS.year}`,
+      lede: "Every Act of Parliament has to pass the same stages. This is how many have made it through, and when.",
+      colour: "#8A5A1F",
+      blocks: [
+        { node: <ActsPassed data={ACTS} /> },
+      ],
+    },
   ],
   sources: [
+    { label: "legislation.gov.uk: Public General Acts", url: "https://www.legislation.gov.uk/ukpga", note: `The Acts made law each year, with the date of Royal Assent. Last read ${ACTS.fetchedAt}.` },
     { label: "UK Parliament: How does a bill become a law?", url: "https://www.parliament.uk/about/how/laws/passage-bill/", note: "Every stage in the Commons and the Lords, ping pong and Royal Assent." },
     { label: `UK Parliament Bills: ${LAW.bill.shortTitle}`, url: LAW.bill.url, note: "The dates of each stage for the Act followed here, from Parliament's Bills API." },
   ],

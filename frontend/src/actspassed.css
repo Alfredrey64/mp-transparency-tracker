@@ -1,0 +1,68 @@
+/* "The Acts that have become law" (components/story/ActsPassed.jsx). Held at the starting position until data-go="1", then drawn; reduced motion shows it finished (useGo returns "1"). */
+.acp-stats { list-style: none; margin: 4px 0 26px; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.acp-stats li { display: grid; gap: 4px; padding: 14px 16px; border-radius: 14px; background: var(--c-paper-sunk); border-left: 5px solid #8A5A1F; }
+.acp-stats li:nth-child(2) { border-left-color: var(--c-ink-soft); }
+.acp-stats li:nth-child(3) { border-left-color: var(--c-hairline); }
+.acp-stats b { font: 800 clamp(28px, 5vw, 40px)/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); font-variant-numeric: tabular-nums; }
+.acp-stats span { font: 600 13.5px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.acp-h { margin: 28px 0 12px; font: 800 13px/1.2 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.03em; text-transform: uppercase; color: var(--c-ink-soft); }
+.acp-stats + .acp-h { margin-top: 0; }
+
+/* the race through the year */
+.acp-race, .acp-years { margin: 0; }
+.acp-plot { position: relative; height: 220px; margin: 22px 8px 0 34px; }
+.acp-plot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.acp-grid { stroke: var(--c-hairline); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.acp-this, .acp-last { fill: none; vector-effect: non-scaling-stroke; stroke-linejoin: round; stroke-linecap: round; }
+.acp-last { stroke: var(--c-ink-soft); stroke-width: 2; stroke-dasharray: 2 5; opacity: 0.7; }
+.acp-this { stroke: #8A5A1F; stroke-width: 3.5; clip-path: inset(-20px -20px -20px -20px); transition: clip-path 2.2s cubic-bezier(0.4, 0, 0.2, 1) 0.15s; }
+.ap:not([data-go="1"]) .acp-this { clip-path: inset(-20px 100% -20px -20px); transition: none; }
+.acp-yt { position: absolute; left: -34px; width: 28px; text-align: right; transform: translateY(-50%); font: 700 11.5px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.acp-dot { position: absolute; width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px; border-radius: 50%; background: #8A5A1F; border: 2px solid var(--c-paper-card); box-sizing: border-box; transform: scale(1); transition: transform 0.4s cubic-bezier(0.3, 1.6, 0.5, 1); transition-delay: calc(0.3s + var(--k) * 70ms); }
+.acp-dot::after { content: ""; position: absolute; inset: -9px; }
+.ap:not([data-go="1"]) .acp-dot { transform: scale(0); transition: none; }
+.acp-dot:hover { transform: scale(1.7); transition-delay: 0s; }
+.acp-tag { position: absolute; transform: translate(-50%, -165%); padding: 2px 8px; border-radius: 8px; background: #8A5A1F; color: #fff; font: 800 13px/1.35 "Figures", "Public Sans", system-ui, sans-serif; transition: opacity 0.4s 2.2s; }
+.ap:not([data-go="1"]) .acp-tag { opacity: 0; transition: none; }
+.acp-xt { position: relative; height: 20px; margin: 8px 8px 0 34px; }
+.acp-xt span { position: absolute; transform: translateX(-50%); font: 700 12px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.acp-key { margin: 8px 0 0 34px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font: 600 13px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.acp-key i { display: inline-block; flex: none; }
+.acp-k1 { width: 26px; border-top: 3.5px solid #8A5A1F; border-radius: 2px; }
+.acp-k2 { width: 26px; border-top: 2px dotted var(--c-ink-soft); margin-left: 8px; }
+
+/* the bars, a year each */
+.acp-bars { display: flex; align-items: flex-end; gap: 3px; height: 150px; padding: 0 2px; border-bottom: 2px solid var(--c-hairline); }
+.acp-col { position: relative; flex: 1 1 0; min-width: 0; height: 100%; display: flex; align-items: flex-end; }
+.acp-col i { display: block; width: 100%; height: calc(var(--h) * 100%); min-height: 2px; border-radius: 3px 3px 0 0; background: color-mix(in srgb, #8A5A1F 62%, var(--c-paper-card)); transform-origin: bottom; transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); transition-delay: calc(var(--k) * 18ms); }
+.acp-col[data-now="1"] i { background: repeating-linear-gradient(135deg, #8A5A1F 0 4px, color-mix(in srgb, #8A5A1F 45%, var(--c-paper-card)) 4px 8px); }
+.acp-col[data-elec="1"]::after { content: ""; position: absolute; left: 50%; bottom: -11px; width: 7px; height: 7px; margin-left: -3.5px; border-radius: 50%; background: var(--c-ink); }
+.ap:not([data-go="1"]) .acp-col i { transform: scaleY(0); transition: none; }
+.acp-col:hover i { background: #8A5A1F; }
+.acp-ax { display: flex; justify-content: space-between; margin: 16px 2px 0; font: 700 12px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.acp-years .acp-key { margin-left: 0; margin-top: 12px; }
+.acp-k3 { width: 7px; height: 7px; border-radius: 50%; background: var(--c-ink); }
+.acp-k4 { width: 14px; height: 10px; border-radius: 2px; margin-left: 8px; background: repeating-linear-gradient(135deg, #8A5A1F 0 3px, color-mix(in srgb, #8A5A1F 45%, var(--c-paper-card)) 3px 6px); }
+
+/* the newest Acts */
+.acp-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.acp-list li { display: grid; gap: 3px; padding: 12px 16px; border-radius: 14px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-left: 5px solid #8A5A1F; }
+.acp-list time { font: 700 12.5px/1.2 "Figures", "Public Sans", system-ui, sans-serif; color: #8A5A1F; }
+.acp-list a { font: 700 16px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); text-decoration: none; }
+.acp-list a:hover { text-decoration: underline; }
+.acp-list li span { font: 400 14px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.acp-more { padding-top: 10px; }
+.acp-btn { margin-top: 12px; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1.5px solid var(--c-hairline); background: var(--c-paper-card); font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); cursor: pointer; }
+.acp-btn:hover { border-color: #8A5A1F; }
+.acp-foot { margin: 22px 0 0; font: 500 13.5px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+
+@media (max-width: 640px) {
+  .acp-stats { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .acp-stats li { grid-template-columns: auto minmax(0, 1fr); align-items: baseline; gap: 12px; }
+  .acp-plot { height: 190px; margin-left: 30px; }
+  .acp-yt { left: -30px; width: 24px; }
+  .acp-xt span:nth-child(even) { display: none; }
+  .acp-xt, .acp-key { margin-left: 30px; }
+  .acp-bars { height: 120px; gap: 2px; }
+}
+@media (prefers-reduced-motion: reduce) { .acp-this, .acp-dot, .acp-tag, .acp-col i { transition: none !important; } }

@@ -4,6 +4,7 @@
 export const CHECKED = "15 October 2026";
 
 export const SOURCES = {
+  gp: { label: "NHS England, Appointments in General Practice (regional CSV files)", url: "https://digital.nhs.uk/data-and-information/publications/statistical/appointments-in-general-practice" },
   rtt: { label: "NHS England, Consultant-led Referral to Treatment waiting times", url: "https://www.england.nhs.uk/statistics/statistical-work-areas/rtt-waiting-times/" },
   ae: { label: "NHS England, A&E waiting times and activity", url: "https://www.england.nhs.uk/statistics/statistical-work-areas/ae-waiting-times-and-activity/" },
   ambulance: { label: "NHS England, Ambulance quality indicators", url: "https://www.england.nhs.uk/statistics/statistical-work-areas/ambulance-quality-indicators/" },

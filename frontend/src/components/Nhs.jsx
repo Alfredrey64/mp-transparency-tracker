@@ -5,6 +5,7 @@ import { PageHeader } from "./shared";
 import { IconPulse } from "./icons";
 import { BarRows, Caution, PageToggles, PairBars, Panel, Stats, Takeaways, TrendExplorer } from "./insight";
 import RegionMetricMap from "./RegionMetricMap";
+import GpWaits from "./GpWaits";
 import { CHECKED, SOURCES, STANDARDS } from "../data/health";
 import { CATEGORIES, TOTAL_BN } from "../data/publicSpending";
 import { COMPARE_MEASURES, H, MAP_METRICS, NATIONAL, NHS_KEYS, NOW, SNAPSHOTS, YEAR_AGO, compareRanking, last, latest, low, nationalNow, nhsRegionName, peak, peakSince, periodText, regionStats, timeText } from "../lib/health";
@@ -23,6 +24,7 @@ const millions = (v) => `${(v / 1e6).toFixed(2)} million`;
 const TABS = [
   { key: "overview", label: "Overview", blurb: "The main figures, how they have changed, and how they compare with what the NHS aims for.", colour: "#0F766E" },
   { key: "waiting", label: "Waiting for treatment", blurb: "How many people wait for hospital treatment, how long, and how that differs across England.", colour: "#C0561F" },
+  { key: "gp", label: "Seeing a GP", blurb: "How long after booking GP appointments happen, in your NHS area and across England.", colour: "#0E7490" },
   { key: "emergency", label: "Emergency and cancer care", blurb: "A&E, ambulances and cancer waits, against the standards the NHS sets itself.", colour: "#D6455D" },
   { key: "money", label: "People and money", blurb: "How many people work in the NHS, what is spent on health, and how the UK compares with other countries.", colour: "#1D4ED8" },
   { key: "arguments", label: "The arguments", blurb: "Funding, reform, the independent sector and prevention, set out fairly.", colour: "#C7871A" },
@@ -152,6 +154,14 @@ function Waiting() {
         />
       </Panel>
     </div>
+  );
+}
+
+function GpTab() {
+  return (
+    <Panel id="h-hg-gp" title="Seeing a GP" lead="Appointments in general practice in England, by how long after booking they took place. Pick an NHS area to see its own picture against the rest." sources={[SOURCES.gp]}>
+      <GpWaits />
+    </Panel>
   );
 }
 
@@ -347,6 +357,7 @@ export default function Nhs({ param }) {
       <div key={tab} className="ge-fade" role="tabpanel" id="hl-panel" aria-labelledby={`hl-tab-${tab}`}>
         {tab === "overview" && <Overview onPick={go} />}
         {tab === "waiting" && <Waiting />}
+        {tab === "gp" && <GpTab />}
         {tab === "emergency" && <Emergency />}
         {tab === "money" && <Money />}
         {tab === "arguments" && <Arguments />}
