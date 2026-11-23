@@ -473,18 +473,18 @@ function DebateCard({ c, colour }) {
     c.interventionCount > 0 && `${c.interventionCount} intervention${c.interventionCount === 1 ? "" : "s"}`,
   ].filter(Boolean);
   return (
-    <article className="act-card" style={{ "--ac": colour }}>
+    <article className="mpact-card" style={{ "--ac": colour }}>
       <header>
         <b>{c.title}</b>
         <span>{formatDate(c.date)} · {c.section}{counts.length ? ` · ${counts.join(", ")}` : ""}</span>
       </header>
       {c.said?.length > 0 && (
-        <div className="act-said">
+        <div className="mpact-said">
           <small>What they said</small>
           {c.said.map((t, i) => <blockquote key={i}>{t}</blockquote>)}
         </div>
       )}
-      {c.hansardUrl && <a className="act-link" href={c.hansardUrl} target="_blank" rel="noreferrer">Read the whole debate on Hansard <span aria-hidden="true">↗</span><span className="sr-only"> (opens in a new tab)</span></a>}
+      {c.hansardUrl && <a className="mpact-link" href={c.hansardUrl} target="_blank" rel="noreferrer">Read the whole debate on Hansard <span aria-hidden="true">↗</span><span className="sr-only"> (opens in a new tab)</span></a>}
     </article>
   );
 }
@@ -493,14 +493,14 @@ function DebateCard({ c, colour }) {
 function QuestionCard({ q, colour }) {
   const url = QUESTION_URL(q);
   return (
-    <article className="act-card" style={{ "--ac": colour }}>
+    <article className="mpact-card" style={{ "--ac": colour }}>
       <header>
         <b>{q.heading}</b>
         <span>To {q.department ?? "a department"} · tabled {formatDate(q.dateTabled)}{q.dateAnswered ? ` · answered ${formatDate(q.dateAnswered)}` : " · awaiting an answer"}</span>
       </header>
-      {q.questionText && <div className="act-said"><small>The question</small><blockquote>{stripHtml(q.questionText)}</blockquote></div>}
-      {q.answerText && <div className="act-said"><small>The answer, from the start</small><blockquote>{q.answerText}</blockquote></div>}
-      {url && <a className="act-link" href={url} target="_blank" rel="noreferrer">Read the full question and answer on Parliament's site <span aria-hidden="true">↗</span><span className="sr-only"> (opens in a new tab)</span></a>}
+      {q.questionText && <div className="mpact-said"><small>The question</small><blockquote>{stripHtml(q.questionText)}</blockquote></div>}
+      {q.answerText && <div className="mpact-said"><small>The answer, from the start</small><blockquote>{q.answerText}</blockquote></div>}
+      {url && <a className="mpact-link" href={url} target="_blank" rel="noreferrer">Read the full question and answer on Parliament's site <span aria-hidden="true">↗</span><span className="sr-only"> (opens in a new tab)</span></a>}
     </article>
   );
 }
@@ -520,15 +520,15 @@ export function RecentActivityBox({ politician, onNavigate }) {
 
       {contributions.length > 0 && (
         <section aria-labelledby="act-debates" style={{ marginBottom: writtenQuestions.length > 0 ? 20 : 0 }}>
-          <h3 id="act-debates" className="act-h">Debates they spoke in</h3>
-          <div className="act-list">{contributions.map((c, i) => <DebateCard key={i} c={c} colour={colour} />)}</div>
+          <h3 id="act-debates" className="mpact-h">Debates they spoke in</h3>
+          <div className="mpact-list">{contributions.map((c, i) => <DebateCard key={i} c={c} colour={colour} />)}</div>
         </section>
       )}
 
       {writtenQuestions.length > 0 && (
         <section aria-labelledby="act-questions">
-          <h3 id="act-questions" className="act-h">Questions they asked ministers</h3>
-          <div className="act-list">{writtenQuestions.map((q, i) => <QuestionCard key={i} q={q} colour={colour} />)}</div>
+          <h3 id="act-questions" className="mpact-h">Questions they asked ministers</h3>
+          <div className="mpact-list">{writtenQuestions.map((q, i) => <QuestionCard key={i} q={q} colour={colour} />)}</div>
           {onNavigate && (
             <button
               onClick={() => withScrollPreserved(() => onNavigate("writtenQuestions", politician))}

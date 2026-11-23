@@ -12,7 +12,7 @@
 .pf-art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(98deg, color-mix(in srgb, var(--b1) 97%, transparent) 0%, color-mix(in srgb, var(--b1) 95%, transparent) 64%, color-mix(in srgb, var(--b1) 62%, transparent) 86%, color-mix(in srgb, var(--b2) 8%, transparent) 100%); }
 
 /* the heading holds the one button; its ::after stretches over the whole banner so the banner is the click target */
-.pf-head { margin: 0; min-width: 0; align-self: stretch; display: grid; }
+.pfin-head { margin: 0; min-width: 0; align-self: stretch; display: grid; }
 .pf-hit { display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; width: 100%; padding: 0 220px 0 0; border: 0; background: none; color: inherit; text-align: left; cursor: pointer; font: inherit; }
 .pf-hit::after { content: ""; position: absolute; inset: 0; z-index: 1; }
 /* the amount and the arrow are pinned beside the leader's portrait (92px arch + 22px margin + 8px), centred on the banner's middle line, whatever a browser does with the grid columns */

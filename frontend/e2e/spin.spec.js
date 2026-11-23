@@ -78,7 +78,7 @@ test("nothing is given away before the pupil has answered", async ({ page }) => 
   for (const [, claim] of SPIN_ROUNDS[0].claims.entries()) {
     await expect(page.locator(".sp-fair")).toHaveAttribute("data-on", "0");
     // The words of the fair version are not on the page, hidden or not, until they are earned.
-    const before = await page.locator(".sp-card").innerText();
+    const before = await page.locator(".spin-card").innerText();
     expect(before).not.toContain("What was hidden");
     await expect(page.locator(".sp-fair")).toHaveAttribute("aria-hidden", "true");
     await page.getByRole("button", { name: TRICKS[claim.trick] }).click();
@@ -100,7 +100,7 @@ test("the card never changes height when the picture flips, on a laptop or a pho
     await open(page);
     for (const round of SPIN_ROUNDS) {
       for (const [ci, claim] of round.claims.entries()) {
-        const card = page.locator(".sp-card");
+        const card = page.locator(".spin-card");
         await expect(card).toBeVisible();
         const before = (await card.boundingBox()).height;
         await page.getByRole("button", { name: TRICKS[claim.trick] }).click();

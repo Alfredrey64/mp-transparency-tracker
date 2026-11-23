@@ -51,7 +51,7 @@ export default function AllPledges() {
           const s = STATUS[r.key];
           return (
             <li key={r.slug}>
-              <article className="pl-card" style={{ "--sc": s.color }}>
+              <article className="plg-card" style={{ "--sc": s.color }}>
                 <div className="pl-card-top"><span className="pl-status">{s.label}</span><span className="pl-area">{r.area}</span></div>
                 <p>{r.pledge}</p>
                 <div className="pl-card-foot"><span>Verdict changed {dayOf(r.updated)}</span><a href={r.url} target="_blank" rel="noreferrer">Read the evidence on Full Fact</a></div>

@@ -134,7 +134,7 @@ const hidden = (c) => HIDDEN[c.kind](c);
 
 function Claim({ c, fair }) {
   return (
-    <figure className="sp-card" data-kind={c.kind} data-fair={fair ? "1" : "0"}>
+    <figure className="spin-card" data-kind={c.kind} data-fair={fair ? "1" : "0"}>
       <div className="sp-top"><span className="sp-ribbon">Made-up example</span><span className="sp-paper">{PAPER}</span></div>
       <Headline c={c} />
       <div className="sp-pic">

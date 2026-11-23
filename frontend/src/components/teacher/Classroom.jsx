@@ -239,7 +239,7 @@ export function PetitionGame() {
   return (
     <div className="cr-panel">
       <label className="cr-field"><span>What does the petition ask Parliament to do?</span><input type="text" value={ask} maxLength={80} onChange={(e) => setAsk(e.target.value)} /></label>
-      <div className="cp-card">
+      <div className="clr-card">
         <p className="cp-label">Petition</p>
         <h3>{ask.trim() || "Our petition"}</h3>
         <b className="cp-count">{pnum(count)}</b><span className="cp-of">signatures{supporters < 5 ? `, ${5 - supporters} more ${5 - supporters === 1 ? "supporter" : "supporters"} to be checked` : ""}</span>

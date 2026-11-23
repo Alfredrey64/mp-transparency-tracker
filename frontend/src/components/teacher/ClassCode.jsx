@@ -17,7 +17,7 @@ export default function ClassCode({ code }) {
     <aside className="cc" aria-label="Class code">
       <div className="cc-top">
         <div>
-          <span className="cc-label">Class code</span>
+          <span className="cls-code-label">Class code</span>
           <code className="cc-code" aria-live="polite">{code}</code>
         </div>
         <div className="cc-btns">
@@ -26,7 +26,7 @@ export default function ClassCode({ code }) {
           <span className="cc-said" role="status">{said === "code" ? "Code copied" : said === "link" ? "Link copied" : ""}</span>
         </div>
       </div>
-      <p className="cc-note">Write the code on the board. Pupils type it into the box on the Activities and games page, or open the link or scan the QR code, and get this same game with the same setup. It records nothing about the class.</p>
+      <p className="cls-code-note">Write the code on the board. Pupils type it into the box on the Activities and games page, or open the link or scan the QR code, and get this same game with the same setup. It records nothing about the class.</p>
       <details className="cc-qr">
         <summary className="ons-tap">Show the QR code</summary>
         <div role="img" aria-label={`QR code that opens the game with the code ${code}`} dangerouslySetInnerHTML={{ __html: svg }} />

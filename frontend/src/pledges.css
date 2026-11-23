@@ -11,11 +11,11 @@
 .pl-chip[aria-pressed="true"] { background: color-mix(in srgb, var(--sc) 14%, var(--c-paper-card)); border-color: var(--sc); }
 .pl-count { font: 600 13.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); margin: 4px 2px 12px; }
 .pl-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: 12px; }
-.pl-card { display: grid; gap: 10px; align-content: start; height: 100%; box-sizing: border-box; padding: 14px 16px 14px; border-radius: 16px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-left: 6px solid var(--sc); box-shadow: var(--shadow-1); }
+.plg-card { display: grid; gap: 10px; align-content: start; height: 100%; box-sizing: border-box; padding: 14px 16px 14px; border-radius: 16px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-left: 6px solid var(--sc); box-shadow: var(--shadow-1); }
 .pl-card-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .pl-status { display: inline-flex; align-items: center; gap: 7px; padding: 3px 11px 3px 9px; border-radius: 999px; background: color-mix(in srgb, var(--sc) 14%, transparent); font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--sc) 80%, var(--c-ink)); }
 .pl-area { padding: 3px 10px; border-radius: 999px; border: 1px solid var(--c-hairline); font: 600 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.pl-card p { margin: 0; font: 600 15px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.plg-card p { margin: 0; font: 600 15px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .pl-card-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; align-self: end; font: 500 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .pl-card-foot a { font-weight: 700; color: var(--c-ink); }
 .pl-more { display: flex; justify-content: center; margin-top: 16px; }

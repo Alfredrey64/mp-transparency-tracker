@@ -118,9 +118,9 @@
 .cn-banner[data-on="1"] { background: color-mix(in srgb, #1FA97C 12%, var(--c-paper)); border-left-color: #1FA97C; }
 @media (max-width: 560px) { .cn-row { grid-template-columns: minmax(0, 1fr) 40px; } .cn-row .cn-track { grid-column: 1 / -1; order: 3; } }
 /* A class petition. */
-.cp-card { padding: 20px 22px 26px; border-radius: 22px; background: linear-gradient(165deg, color-mix(in srgb, #E0367A 9%, var(--c-paper-card)), var(--c-paper-card) 60%); border: 1px solid color-mix(in srgb, #E0367A 30%, var(--c-hairline)); margin-bottom: 16px; }
+.clr-card { padding: 20px 22px 26px; border-radius: 22px; background: linear-gradient(165deg, color-mix(in srgb, #E0367A 9%, var(--c-paper-card)), var(--c-paper-card) 60%); border: 1px solid color-mix(in srgb, #E0367A 30%, var(--c-hairline)); margin-bottom: 16px; }
 .cp-label { margin: 0; font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; color: #B02A60; }
-.cp-card h3 { margin: 4px 0 10px; font: 700 clamp(22px, 3vw, 30px)/1.25 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); overflow-wrap: anywhere; }
+.clr-card h3 { margin: 4px 0 10px; font: 700 clamp(22px, 3vw, 30px)/1.25 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); overflow-wrap: anywhere; }
 .cp-count { font: 800 clamp(40px, 6vw, 60px)/1 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
 .cp-of { margin-left: 10px; font: 600 15px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .cp-ladder { position: relative; margin-top: 22px; padding-bottom: 28px; }

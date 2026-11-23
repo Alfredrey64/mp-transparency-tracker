@@ -386,11 +386,11 @@ a.act-back { text-decoration: none; }
 
 .cc { margin: 0 0 16px; padding: 14px 16px; border-radius: 16px; border: 1px solid color-mix(in srgb, var(--ac, #2f9e6b) 35%, var(--c-hairline)); background: color-mix(in srgb, var(--ac, #2f9e6b) 6%, var(--c-paper-card)); }
 .cc-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 18px; }
-.cc-label { display: block; font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.cls-code-label { display: block; font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .cc-code { display: block; margin-top: 2px; font: 700 clamp(22px, 5vw, 30px) "IBM Plex Mono", ui-monospace, monospace; letter-spacing: 0.04em; color: var(--c-ink); overflow-wrap: anywhere; }
 .cc-btns { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .cc-said { min-width: 88px; font: 700 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.cc-note { margin: 10px 0 0; font: 400 13.5px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); max-width: 640px; }
+.cls-code-note { margin: 10px 0 0; font: 400 13.5px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); max-width: 640px; }
 .cc-qr { margin-top: 8px; }
 .cc-qr summary { cursor: pointer; font: 700 13.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .cc-qr > div { width: 180px; margin-top: 8px; background: #fff; border-radius: 12px; padding: 4px; }
@@ -398,7 +398,7 @@ a.act-back { text-decoration: none; }
 
 /* Spot the spin: a made-up news card whose picture flips to the fair version. Space is kept for what is revealed, so nothing shifts when it appears. */
 .gm-spin { --ac: #d4577a; }
-.sp-card { margin: 0; display: grid; gap: 10px; padding: 14px clamp(14px, 3vw, 22px); border-radius: 20px; background: var(--c-paper); border: 1px solid var(--c-hairline); }
+.spin-card { margin: 0; display: grid; gap: 10px; padding: 14px clamp(14px, 3vw, 22px); border-radius: 20px; background: var(--c-paper); border: 1px solid var(--c-hairline); }
 .sp-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; }
 .sp-ribbon { padding: 3px 11px; border-radius: 999px; background: color-mix(in srgb, #e8741a 16%, transparent); font: 800 11.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .sp-paper { font: italic 600 14px "Newsreader", Georgia, serif; color: var(--c-ink-soft); }
@@ -411,7 +411,7 @@ a.act-back { text-decoration: none; }
 .sp-big { font: 800 clamp(64px, 14vw, 112px)/1 "Figures", "Newsreader", Georgia, serif; color: #c13a4e; }
 .sp-quote { margin: 0; display: grid; align-content: center; min-height: 130px; font: italic 600 clamp(20px, 3.2vw, 28px)/1.45 "Newsreader", Georgia, serif; color: var(--c-ink); }
 .sp-quote p { margin: 0; }
-.sp-card[data-kind="loaded"] .sp-pic { min-height: 0; }
+.spin-card[data-kind="loaded"] .sp-pic { min-height: 0; }
 .sp-rest { color: #1fa97c; animation: gmIn 0.6s var(--ease-out); }
 .sp-old { display: grid; justify-items: center; gap: 12px; }
 .sp-old > div:first-child { display: grid; justify-items: center; }
