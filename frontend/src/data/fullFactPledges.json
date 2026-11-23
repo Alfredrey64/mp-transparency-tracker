@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-22",
+ "generatedAt": "2026-11-23",
  "source": "https://fullfact.org/government-tracker/",
  "pledges": [
   {
@@ -596,13 +596,6 @@
    "pledge": "Labour will set up a new returns and enforcement unit, with an additional 1,000 staff, to fast-track removals to safe countries for people who do not have the right to stay here",
    "status": "not-kept",
    "updated": "2026-07-01"
-  },
-  {
-   "slug": "asylum-hotels",
-   "area": "Migration",
-   "pledge": "We will … end asylum hotels, saving the taxpayer billions of pounds",
-   "status": "in-progress",
-   "updated": "2026-10-07"
   },
   {
    "slug": "safe-third-countries",
