@@ -27,8 +27,15 @@ const TAG = () => {
   return i;
 };
 async function fresh(page, url) {
-  await page.goto(url, { waitUntil: "load", timeout: 30000 });
-  await page.waitForSelector("h1", { timeout: 20000 });
+  // On a busy CI machine a page now and then takes longer than 20 seconds to show its heading (a different page each time, and none on a quiet machine). A page that has not shown
+  // one is opened afresh once before it counts as a failure, so only a page that never shows its heading fails the audit.
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      await page.goto(url, { waitUntil: "load", timeout: 45000 });
+      await page.waitForSelector("h1", { timeout: 25000 });
+      break;
+    } catch (e) { if (attempt >= 1) throw e; }
+  }
   await page.waitForTimeout(1400);
   // Late-arriving data swaps a placeholder for the real thing a moment after the page shows. That is judged by navigation.audit.mjs; here it would be mistaken for the effect of a
   // press, so wait until the page height has held still for a second (or six seconds have passed) before choosing and pressing anything.

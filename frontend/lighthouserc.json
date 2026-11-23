@@ -6,7 +6,7 @@
         "http://localhost:4176/taxRates",
         "http://localhost:4176/answers/why-housing-expensive"
       ],
-      "numberOfRuns": 3,
+      "numberOfRuns": 5,
       "settings": {
         "chromeFlags": "--no-sandbox --headless=new"
       },

@@ -33,8 +33,14 @@ async function worker() {
       new PerformanceObserver((l) => { for (const e of l.getEntries()) window.__tasks.push(Math.round(e.duration)); }).observe({ type: "longtask", buffered: true });
     });
     try {
-      await page.goto(`${base}/${pg === "home" ? "" : pg}`, { waitUntil: "load", timeout: 45000 });
-      await page.waitForSelector("h1", { timeout: 25000 });
+      // A busy CI machine now and then leaves a page without its heading for 25 seconds (a different page each time); it is opened afresh once before that counts as a failure.
+      for (let attempt = 0; ; attempt += 1) {
+        try {
+          await page.goto(`${base}/${pg === "home" ? "" : pg}`, { waitUntil: "load", timeout: 45000 });
+          await page.waitForSelector("h1", { timeout: 25000 });
+          break;
+        } catch (e) { if (attempt >= 1) throw e; }
+      }
       await page.waitForTimeout(1500);
       // SETTLE=1 waits until the page has stopped changing height before scrolling. On a slow machine the data service's refusal (these runs abort it) can arrive after the scroll has
       // started, and a skeleton collapsing into an error note then moves the footer: a real effect, but one that depends on the machine, so CI settles first and local runs need not.
