@@ -79,7 +79,7 @@ function Trend({ data, board }) {
       </div>
       <div className="gpw-xt" aria-hidden="true">{ticks.map((i) => <span key={i} style={{ left: `${x(i)}%` }} data-edge={i === 0 ? "l" : i === months.length - 1 ? "r" : ""}>{label(i)}</span>)}</div>
       <p className="gpw-key"><i className="gpw-k1" /> England {board && <><i className="gpw-k2" /> {board.name}</>}</p>
-      {dips.length > 0 && <p className="gpw-note">England&apos;s share drops sharply in {dips.map(label).join(" and ")}, several points below every other month. The statistics do not say why (appointments booked weeks ahead, such as seasonal vaccination clinics, are one possible reason), so compare a month with the same month a year earlier rather than with the month before.</p>}
+      {dips.length > 0 && <p className="gpw-note">England&apos;s share drops sharply in {dips.map(label).join(" and ")}, more than three points below the average of the months shown. The statistics do not say why, so compare a month with the same month a year earlier rather than with the month before.</p>}
     </div>
   );
 }
@@ -143,10 +143,10 @@ export default function GpWaits() {
 
       <div className="gpw-mixes">
         <Mix title={`How England's appointments happen, ${monthLabel(data.latest)}`} items={data.england.mode} names={MODE_NAMES} colours={MODE_COLOURS} />
-        <Mix title="Who the appointment is with" items={{ GP: staff.GP, "Other Practice staff": staff["Other Practice staff"] }} names={{ GP: "A GP", "Other Practice staff": "Other practice staff (nurses, pharmacists and others)" }} colours={{ GP: "#0F766E", "Other Practice staff": "#C7871A" }} />
+        <Mix title="Who the appointment is with" items={{ GP: staff.GP, "Other Practice staff": staff["Other Practice staff"] }} names={{ GP: "A GP", "Other Practice staff": "Other practice staff (not a GP)" }} colours={{ GP: "#0F766E", "Other Practice staff": "#C7871A" }} />
       </div>
 
-      <p className="gpw-foot">{fmtN(data.england.n)} appointments took place in England in {monthLabel(data.latest)}, from NHS England&apos;s &quot;Appointments in General Practice&quot; statistics. These count appointments recorded in GP practices&apos; systems, not people and not every contact with a practice, and the NHS areas shown are the 2026 integrated care board areas. The gap between booking and the appointment is not a patient&apos;s wait for care: a same-day appointment may be urgent care offered on the day, and a later one may have been chosen. Shares are of appointments that took place and have a recorded gap; missed appointments are counted separately. Read {data.fetchedAt}.</p>
+      <p className="gpw-foot">{fmtN(data.england.n)} appointments took place in England in {monthLabel(data.latest)}, from NHS England&apos;s &quot;Appointments in General Practice&quot; statistics. These count appointments recorded in GP practices&apos; systems, not people and not every contact with a practice, and the NHS areas shown are the integrated care boards named in NHS England's file. The gap between booking and the appointment is not a patient&apos;s wait for care: a same-day appointment may be urgent care offered on the day, and a later one may have been chosen. Shares are of appointments that took place and have a recorded gap; missed appointments are counted separately. The mix bars are shares of all appointments, so they add to less than 100% where NHS England's file records the type as unknown. Read {data.fetchedAt}.</p>
     </div>
   );
 }
