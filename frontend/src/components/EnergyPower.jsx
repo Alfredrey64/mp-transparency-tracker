@@ -2,6 +2,7 @@ import { BarRows, Caution, Panel, StackBars, Stats, TrendExplorer } from "./insi
 import { FACTS, SOURCES } from "../data/energy";
 import { COMPARE_MEASURES, POWER_GROUPS, POWER_LAST, PW, compareRanking, firstYearBelow, groupShare, lowCarbonShare, mixYears, powerAt, round, shareAt, totalAt } from "../lib/energy";
 import { ACCENT, group } from "../lib/energyStyle";
+import GridLive from "./GridLive";
 import { para } from "../lib/insightStyle";
 import { ordinal } from "../lib/regionData";
 
@@ -92,6 +93,9 @@ export default function EnergyPower() {
   const gone = firstYearBelow("coal", 0.5);
   return (
     <div>
+      <Panel id="h-np-live" accent={ACCENT} title="The grid right now" lead="Live from the National Energy System Operator: how much carbon each unit of Great Britain's electricity is carrying this half hour, what is generating it, and how the day is going against the forecast." sources={[SOURCES.carbonLive]}>
+        <GridLive />
+      </Panel>
       <Mix />
       <Then />
       <Goal />

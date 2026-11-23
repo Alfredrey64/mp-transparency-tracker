@@ -1,0 +1,76 @@
+/* "The grid right now" on the electricity page (components/GridLive.jsx): a live dial, the generation mix and the day's curve. Everything is held at its starting position until the panel
+   scrolls into view (data-go="1"), then moves to its place; reduced motion shows the finished picture straight away (useGo returns "1" at once). */
+.gl { min-height: 460px; }
+.gl-skel { min-height: 460px; border-radius: 16px; background: linear-gradient(100deg, var(--c-paper-sunk) 30%, color-mix(in srgb, var(--c-paper-sunk) 55%, var(--c-paper-card)) 50%, var(--c-paper-sunk) 70%) 0 0 / 220% 100%; animation: gl-shimmer 1.6s linear infinite; }
+@keyframes gl-shimmer { to { background-position: -120% 0; } }
+.gl-note { margin: 0; padding: 14px 16px; border-radius: 12px; background: var(--c-paper-sunk); color: var(--c-ink-soft); font: 500 14.5px/1.55 "Figures", "Public Sans", system-ui, sans-serif; }
+.gl-h { margin: 0 0 12px; font: 800 13px/1.2 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.03em; text-transform: uppercase; color: var(--c-ink-soft); }
+.gl-top { display: grid; grid-template-columns: minmax(230px, 0.8fr) minmax(0, 1.4fr); gap: 28px 36px; align-items: center; }
+
+/* ---- the dial ---- */
+.gl-dial { margin: 0; position: relative; display: grid; justify-items: center; }
+.gl-dial svg { width: 100%; height: auto; display: block; overflow: visible; }
+.gl-arc { transition: opacity 0.5s; transition-delay: calc(var(--i) * 90ms); }
+.gl-needle { transform-box: view-box; transform-origin: 110px 110px; transform: rotate(var(--needle)); transition: transform 1.5s cubic-bezier(0.22, 1.25, 0.36, 1); }
+.gl-needle line { stroke: var(--c-ink); stroke-width: 4; stroke-linecap: round; }
+.gl-needle circle { fill: var(--c-ink); }
+.gl:not([data-go="1"]) .gl-needle { transform: rotate(-90deg); transition: none; }
+.gl:not([data-go="1"]) .gl-arc { opacity: 0; }
+.gl-dial figcaption { display: grid; justify-items: center; gap: 4px; margin-top: 2px; text-align: center; }
+.gl-dial figcaption b { font: 800 clamp(40px, 7vw, 54px)/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); font-variant-numeric: tabular-nums; }
+.gl-dial figcaption span { font: 600 14px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); max-width: 22ch; }
+.gl-dial figcaption em { margin-top: 4px; padding: 3px 14px; border-radius: 999px; color: #fff; font: 800 13.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; text-transform: capitalize; }
+.gl-face { position: relative; width: 100%; max-width: 330px; }
+.gl-ends { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; pointer-events: none; }
+.gl-ends span { font: 700 12px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+
+/* ---- the mix ---- */
+.gl-bar { display: flex; gap: 2px; height: 52px; border-radius: 12px; overflow: hidden; background: var(--c-paper-sunk); }
+.gl-seg { flex-basis: 0; min-width: 3px; display: grid; place-items: center; transform-origin: left center; transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1), flex-grow 0.8s; transition-delay: calc(var(--i) * 70ms); }
+.gl-seg span { font: 800 13px/1 "Figures", "Public Sans", system-ui, sans-serif; color: #fff; font-style: normal; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); }
+.gl-seg[data-fuel="solar"] span, .gl-seg[data-fuel="other"] span { color: #1B2438; text-shadow: none; }
+.gl:not([data-go="1"]) .gl-seg { transform: scaleX(0); transition: none; }
+.gl-legend { list-style: none; margin: 14px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px 18px; }
+.gl-legend li { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto; align-items: center; gap: 8px; font: 600 14px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.gl-legend i { width: 12px; height: 12px; border-radius: 4px; }
+.gl-legend b { font-variant-numeric: tabular-nums; font-weight: 800; }
+.gl-sum { margin: 14px 0 0; font: 500 15px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.gl-sum strong { font-weight: 800; }
+
+/* ---- the day ---- */
+.gl-day { margin-top: 30px; }
+.gl-plot { position: relative; height: 170px; margin: 34px 0 0 34px; }
+.gl-plot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.gl-grid { stroke: var(--c-hairline); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.gl-forecast, .gl-actual { fill: none; vector-effect: non-scaling-stroke; stroke-linejoin: round; stroke-linecap: round; }
+.gl-forecast { stroke: var(--c-ink-soft); stroke-width: 2; stroke-dasharray: 2 5; opacity: 0.75; }
+.gl-actual { stroke: #0E7490; stroke-width: 3.5; clip-path: inset(-20px -20px -20px -20px); transition: clip-path 1.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s; }
+.gl:not([data-go="1"]) .gl-actual { clip-path: inset(-20px 100% -20px -20px); transition: none; }
+.gl-yt { position: absolute; left: -34px; width: 28px; text-align: right; transform: translateY(-50%); font: 700 11.5px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.gl-now { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: #0E7490; box-shadow: 0 0 0 4px color-mix(in srgb, #0E7490 25%, transparent); opacity: 1; transition: opacity 0.3s 1.9s; }
+.gl-now::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid #0E7490; animation: gl-pulse 2.2s ease-out infinite; }
+@keyframes gl-pulse { from { transform: scale(0.6); opacity: 0.9; } to { transform: scale(2.1); opacity: 0; } }
+.gl:not([data-go="1"]) .gl-now, .gl:not([data-go="1"]) .gl-mark { opacity: 0; transition: none; }
+.gl-mark { position: absolute; transform: translate(-50%, -150%); padding: 2px 7px; border-radius: 8px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); font: 800 12px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); transition: opacity 0.4s 2s; }
+.gl-mark[data-edge="l"] { transform: translate(0, -150%); }
+.gl-mark[data-edge="r"] { transform: translate(-100%, -150%); }
+.gl-xt { position: relative; height: 22px; margin: 8px 0 0 34px; }
+.gl-xt span { position: absolute; transform: translateX(-50%); font: 700 12px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.gl-xt span:first-child { transform: none; }
+.gl-key { margin: 6px 0 0 34px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font: 600 13px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.gl-key i { display: inline-block; width: 26px; height: 0; border-top: 3.5px solid #0E7490; border-radius: 2px; }
+.gl-key .gl-k2 { border-top: 2px dotted var(--c-ink-soft); margin-left: 8px; }
+.gl-foot { margin: 22px 0 0; font: 500 13.5px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+
+@media (max-width: 760px) {
+  .gl, .gl-skel { min-height: 640px; }
+  .gl-top { grid-template-columns: minmax(0, 1fr); gap: 26px; }
+  .gl-bar { height: 46px; }
+  .gl-plot { height: 150px; }
+  .gl-foot { font-size: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gl-needle, .gl-seg, .gl-actual, .gl-arc, .gl-mark { transition: none !important; }
+  .gl-now::after { animation: none; display: none; }
+  .gl-skel { animation: none; }
+}

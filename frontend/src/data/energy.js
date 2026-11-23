@@ -7,6 +7,7 @@ export const SOURCES = {
   ghg: { label: "DESNZ, Final UK greenhouse gas emissions statistics: 1990 to 2024", url: "https://www.gov.uk/government/statistics/final-uk-greenhouse-gas-emissions-statistics-1990-to-2024" },
   ghgProv: { label: "DESNZ, Provisional UK greenhouse gas emissions statistics 2025", url: "https://www.gov.uk/government/statistics/provisional-uk-greenhouse-gas-emissions-statistics-2025" },
   ghgLocal: { label: "DESNZ, UK local authority and regional greenhouse gas emissions statistics, 2005 to 2024", url: "https://www.gov.uk/government/statistics/uk-local-authority-and-regional-greenhouse-gas-emissions-statistics-2005-to-2024" },
+  carbonLive: { label: "National Energy System Operator, Carbon Intensity API (live, Great Britain)", url: "https://carbonintensity.org.uk/" },
   electricity: { label: "DESNZ, Energy Trends: UK electricity (table 5.1)", url: "https://www.gov.uk/government/statistics/electricity-section-5-energy-trends" },
   bills: { label: "DESNZ, Annual domestic energy bills (Quarterly Energy Prices tables 2.2 and 2.3)", url: "https://www.gov.uk/government/statistical-data-sets/annual-domestic-energy-price-statistics" },
   euPrices: { label: "DESNZ, International domestic energy prices (Eurostat, table 5.6.1)", url: "https://www.gov.uk/government/statistical-data-sets/international-domestic-energy-prices" },
