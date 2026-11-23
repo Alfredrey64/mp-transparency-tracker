@@ -1,0 +1,59 @@
+/* The two pictures on the "New homes" card of Your area (components/HomesViz.jsx). Class names start hv- so they cannot clash with any other stylesheet. They sit in a .ma-card, which sets
+   data-in="true" the first time it scrolls into view; until then every house and pile is flat on the ground. */
+
+.hv-sky, .hv-spread { margin: 14px 0 6px; --hc: #B4532A; }
+
+/* The street */
+.hv-houses { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 5px; align-items: end; height: 176px; border-bottom: 2px solid color-mix(in srgb, var(--c-ink, #1b2430) 38%, transparent); }
+.hv-houses li { position: relative; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; }
+.hv-rise { display: block; width: 100%; max-width: 40px; height: calc(var(--h) * 128px + 3px); clip-path: inset(0 0 0 0); transition: clip-path 0.8s var(--ease-spring, cubic-bezier(0.2, 0.8, 0.2, 1)); transition-delay: calc(var(--k) * 55ms + 120ms); }
+.hv-rise > i { display: block; width: 100%; height: 100%; clip-path: polygon(0 9px, 50% 0, 100% 9px, 100% 100%, 0 100%); background-color: color-mix(in srgb, var(--hc) 58%, #fff); background-image: radial-gradient(rgba(255, 255, 255, 0.6) 1.5px, transparent 2px); background-size: 9px 11px; background-position: 2px 14px; }
+.hv-houses li[data-state="new"] .hv-rise > i { background-color: var(--hc); background-image: radial-gradient(rgba(255, 255, 255, 0.7) 1.5px, transparent 2px), repeating-linear-gradient(135deg, transparent 0 5px, rgba(255, 255, 255, 0.16) 5px 8px); }
+.hv-houses li[data-state="loss"] .hv-rise > i { background-color: #B3262E; }
+.hv-houses li[data-state="none"] .hv-rise { height: 14px; }
+.hv-houses li[data-state="none"] .hv-rise > i { clip-path: none; background: none; border: 1.5px dashed color-mix(in srgb, var(--c-ink, #1b2430) 38%, transparent); border-bottom: 0; }
+.hv-val { position: absolute; bottom: calc(var(--h) * 128px + 8px); left: 50%; transform: translateX(-50%); font: 800 12.5px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink, #1b2430); font-variant-numeric: tabular-nums; white-space: nowrap; transition: opacity 0.4s ease; transition-delay: calc(var(--k) * 55ms + 700ms); }
+.hv-houses li[data-state="loss"] .hv-val { bottom: 8px; color: #B3262E; }
+.hv-houses li:last-child .hv-val { transform: translateX(-70%); }
+.hv-years { list-style: none; margin: 5px 0 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 5px; }
+.hv-years li { font: 500 10.5px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft, #566174); text-align: center; white-space: nowrap; visibility: hidden; }
+.hv-years li[data-wide] { visibility: visible; }
+.ma-card:not([data-in="true"]) .hv-rise { clip-path: inset(100% 0 0 0); }
+.ma-card:not([data-in="true"]) .hv-val { opacity: 0; }
+
+/* The pile of councils */
+.hv-pile { position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 2px; align-items: end; height: 110px; margin-top: 30px; border-bottom: 2px solid color-mix(in srgb, var(--c-ink, #1b2430) 38%, transparent); }
+.hv-pile > i { display: block; height: calc(var(--h) * 100% + 1px); border-radius: 3px 3px 0 0; background: color-mix(in srgb, var(--hc) 34%, transparent); transform-origin: bottom; transition: transform 0.7s var(--ease-spring, cubic-bezier(0.2, 0.8, 0.2, 1)); transition-delay: calc(var(--k) * 30ms + 150ms); }
+.hv-pile > i.hv-mine { background: var(--hc); }
+.ma-card:not([data-in="true"]) .hv-pile > i { transform: scaleY(0); }
+.hv-eng { position: absolute; top: -6px; bottom: 0; width: 0; border-left: 2px dashed color-mix(in srgb, var(--c-ink, #1b2430) 70%, transparent); pointer-events: none; }
+.hv-eng em { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font: 600 11px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft, #566174); white-space: nowrap; font-style: normal; }
+.hv-pin { position: absolute; top: -6px; bottom: 0; width: 0; pointer-events: none; transition: opacity 0.5s ease 1s; }
+.hv-pin::after { content: ""; position: absolute; left: -5px; top: -2px; width: 10px; height: 10px; border-radius: 50%; background: var(--hc); box-shadow: 0 0 0 3px var(--c-paper-card, #fff); }
+.hv-pin::before { content: ""; position: absolute; left: -1px; top: 6px; bottom: 0; width: 2px; background: var(--hc); }
+.hv-pin b { position: absolute; bottom: calc(100% + 12px); left: 50%; transform: translateX(-50%); padding: 3px 8px; border-radius: 999px; background: var(--hc); color: #fff; font: 700 12px/1.1 "Figures", "Public Sans", system-ui, sans-serif; white-space: nowrap; }
+.hv-pin[data-edge="l"] b { left: -4px; transform: none; }
+.hv-pin[data-edge="r"] b { left: auto; right: -4px; transform: none; }
+.ma-card:not([data-in="true"]) .hv-pin { opacity: 0; }
+.hv-axis { list-style: none; position: relative; height: 16px; margin: 5px 0 0; padding: 0; }
+.hv-axis li { position: absolute; transform: translateX(-50%); font: 500 11px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft, #566174); }
+.hv-axis li:first-child { transform: none; }
+.hv-axis li:last-child { transform: translateX(-100%); }
+.hv-axis-note { margin: 2px 0 0; font: 500 11.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft, #566174); text-align: right; }
+
+@media (max-width: 560px) {
+  .hv-houses { height: 156px; gap: 3px; }
+  .hv-rise { height: calc(var(--h) * 108px + 3px); }
+  .hv-val { bottom: calc(var(--h) * 108px + 8px); font-size: 11.5px; }
+  .hv-years { gap: 3px; }
+  .hv-years li { font-size: 10px; }
+  .hv-years li[data-wide] { visibility: hidden; }
+  .hv-years li[data-narrow] { visibility: visible; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hv-rise, .hv-val, .hv-pile > i, .hv-pin { transition: none; }
+}
+
+.hv-sub { margin: 18px 0 0; font: 700 14px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink, #0A1424); }
+.hv-years li:last-child { justify-self: end; width: max-content; }

@@ -1,7 +1,7 @@
 /** @jsxImportSource react */
 import { Card, Section, RegionOutline, CouncilTax, PlanningCard, Neighbourhood, PlaceFacts, HomesCrime, RegionRanks, Census } from "./AreaSections";
 import { ComplaintsCard } from "./AreaAccountability";
-import { LocalHealthCard, AsylumCard, HomelessnessCard, ChildPovertyCard } from "./AreaMore";
+import { LocalHealthCard, AsylumCard, HomelessnessCard, NewHomesCard, ChildPovertyCard } from "./AreaMore";
 import { StreetCrimeCard, SewageCard, BathingCard, FloodWarningsCard, FoodHygieneCard, RoadCasualtiesCard, HousePricesCard, HealthServicesCard, HospitalCard, SchoolsCard, CouncilServicesCard, LocalEconomyCard } from "./AreaLocal";
 import { IconTrend, IconPinHome, IconCoin, IconHeart, IconShield } from "./icons";
 import { NUMBER_GROUPS } from "../lib/areaViews";
@@ -87,6 +87,9 @@ export default function AreaNumbers({ data, x }) {
         </Section>
         <Section as="h3" id="ma-n-homes" title="House prices" lede="What homes in your council area sell for, how that has changed, and how it compares with the rest of the nation." colour={money.colour}>
           <HousePricesCard r={data.result} i={0} />
+        </Section>
+        <Section as="h3" id="ma-n-newhomes" title="New homes" lede="How many homes were added in your council area each year, after any were lost, and how that compares with the rest of England." colour={money.colour}>
+          <NewHomesCard r={data.result} i={0} />
         </Section>
         <Section as="h3" id="ma-n-housing" title="Homelessness" lede="How many households in your council area were owed help because they were homeless or about to be, and how many are in temporary accommodation." colour={money.colour}>
           <HomelessnessCard r={data.result} i={0} />

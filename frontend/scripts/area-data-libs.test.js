@@ -4,6 +4,7 @@ import { readTA1, readA1, buildHomelessness } from "./homelessness-lib.mjs";
 import { readChildPoverty, buildChildPoverty } from "./child-poverty-lib.mjs";
 import { csvRows, pick, buildLocalHealth, SPECS } from "./local-health-lib.mjs";
 import { endOf } from "./build-homelessness.mjs";
+import { readSupply, readStock, buildSupply, yearOf } from "./housing-supply-lib.mjs";
 
 describe("asylum support table", () => {
   const head = ["Date (as at…)", "Support Type", "UK Region / Nation", "Local Authority", "LAD Code", "Accommodation Type", "People"];
@@ -97,5 +98,43 @@ describe("Fingertips health data", () => {
     expect(d.england.le[0]).toBe(79.7);
     expect(d.areas.E92000001).toBeUndefined();
     expect(d.periods.le).toBe("2023 - 25");
+  });
+});
+
+describe("housing supply and dwelling stock tables", () => {
+  const years = Array.from({ length: 16 }, (_, i) => `${2009 + i}-${String(10 + i).padStart(2, "0")}`);
+  const head = ["DCLG code", "Former ONS code", "Current ONS code", "Authority data", ...years.map((y, i) => (i === 15 ? `${y} [p]` : i === 14 ? `${y} [r] [note 17]` : y))];
+  const supply = [["Table"], head, [null, null, "E92000001", "England", ...years.map((_, i) => 1000 + i)], [null, null, null, "Unitary Authorities", ...years.map(() => 5)],
+    ...Array.from({ length: 260 }, (_, i) => ["x", "y", `E06${String(i).padStart(6, "0")}`, `Council ${i}`, ...years.map((_, k) => (i === 3 && k < 5 ? "[x]" : i === 4 && k === 15 ? "[x]" : 10 + k)) ])];
+  const stockRows = [["Table 100"], ["Old ONS code", "New ONS code", "Area", "Local authority", "x", "y", "z", "Total"], [null, "E92000001", "England", 1, 1, 1, 1, 100000],
+    ...Array.from({ length: 259 }, (_, i) => [null, `E06${String(i).padStart(6, "0")}`, `Council ${i}`, 0, 0, 0, 0, 1000 + i])];
+  it("strips the notes from year headings", () => {
+    expect(yearOf("2023-24 [r] [note 17]")).toBe("2023-24");
+    expect(yearOf("Authority data")).toBeNull();
+  });
+  it("keeps the last fifteen years, leaves unavailable years as null and skips unlabelled group rows", () => {
+    const s = readSupply(supply);
+    expect(s.years).toHaveLength(15);
+    expect(s.years.at(-1)).toBe("2024-25");
+    expect(s.rows.get("E06000003").y.slice(0, 5)).toEqual([null, null, null, null, 15]); // [x] stays null, never zero
+    expect(s.rows.get("E06000004").y.at(-1)).toBeNull();
+    expect(s.rows.size).toBe(261);
+  });
+  it("reads dwelling stock by the new ONS code, not the old one", () => {
+    const k = readStock(stockRows);
+    expect(k.get("E92000001")).toBe(100000);
+    expect(k.get("E06000010")).toBe(1010);
+  });
+  it("joins them, drops councils with no stock (abolished) and works out England's rate", () => {
+    const d = buildSupply(readSupply(supply), readStock(stockRows), { stockYear: 2025 });
+    expect(Object.keys(d.areas)).toHaveLength(259);
+    expect(d.areas.E06000000).toMatchObject({ n: "Council 0", d: 1000 });
+    expect(d.england.rate).toBeCloseTo(10.1, 1); // 1015 / 100000 * 1000, to one place
+    expect(d.withLatest).toBe(258);
+  });
+  it("refuses tables that are too small or have no England row", () => {
+    expect(buildSupply(readSupply(supply.slice(0, 20)), readStock(stockRows), { stockYear: 2025 })).toBeNull();
+    expect(readSupply([["nothing"]])).toBeNull();
+    expect(readStock([["nothing"]])).toBeNull();
   });
 });

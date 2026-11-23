@@ -20,6 +20,7 @@ import { latestFiles } from "./build-council-complaints.mjs";
 import { newestRelease } from "./build-council-tax.mjs";
 import { newestFile as newestAsylum } from "./build-asylum-support.mjs";
 import { newestFile as newestHomelessness } from "./build-homelessness.mjs";
+import { newestFiles as newestHousing } from "./build-housing-supply.mjs";
 import { newestRelease as newestChildPoverty } from "./build-child-poverty.mjs";
 import { editionOf as healthEdition } from "./build-local-health.mjs";
 
@@ -77,6 +78,12 @@ export const DATASETS = [
     const meta = read("homelessness.json");
     const now = await newestHomelessness();
     return now.url !== meta.source ? `the Ministry has published ${now.title.replace(/^.*tables: /i, "")}` : null;
+  } },
+  { id: "housing-supply", script: "build-housing-supply.mjs", async due() {
+    const meta = read("housingSupply.json");
+    const now = await newestHousing();
+    if (now.supply.url !== meta.source) return "the Ministry has published new net additional dwellings figures (Table 122)";
+    return now.stock.url !== meta.stockSource ? "the Ministry has published new dwelling stock figures (Table 100)" : null;
   } },
   { id: "child-poverty", script: "build-child-poverty.mjs", async due() {
     const meta = read("childPoverty.json");

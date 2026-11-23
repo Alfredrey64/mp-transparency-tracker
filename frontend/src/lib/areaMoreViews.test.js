@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { asylumView, asylumHeld, homelessView, povertyView, healthView, quarterLabel } from "./areaMoreViews";
+import { asylumView, asylumHeld, homelessView, housingView, povertyView, healthView, quarterLabel } from "./areaMoreViews";
 
 describe("asylum view", () => {
   const data = { asAt: "30 Jun 2026", quarters: ["31 Mar 2026", "30 Jun 2026"], uk: { t: [100, 90] }, areas: { E1: { n: "Bristol", t: [10, 6], now: { hotel: 4, dispersal: 2, subsistence: 3 } } } };
@@ -42,4 +42,27 @@ describe("health view", () => {
     expect(v.smoke.value[0]).toBe(12);
   });
   it("returns null when neither area is held", () => expect(healthView(data, "X", "Y")).toBeNull());
+});
+
+describe("housing view", () => {
+  const years = ["2020-21", "2021-22", "2022-23", "2023-24", "2024-25"];
+  const data = { years, stockYear: 2025, england: { y: [100, 100, 100, 100, 100], d: 10000, rate: 10 }, areas: {
+    A: { n: "A", y: [10, 20, 30, 40, 50], d: 1000 }, B: { n: "B", y: [5, null, 5, 5, 5], d: 1000 }, C: { n: "C", y: [1, 1, 1, 1, -10], d: 500 }, D: { n: "D", y: [1, 1, 1, 1, null], d: 500 } } };
+  it("works out per-1,000 rates and ranks councils by them, with the most first", () => {
+    const v = housingView(data, "A");
+    expect(v).toMatchObject({ latest: 50, rate: 50, rank: 1, of: 3, five: 150, fiveRate: 150, englandRate: 10, englandFiveRate: 50 });
+    expect(housingView(data, "B").rank).toBe(2);
+  });
+  it("keeps a net loss as a negative and says a gap year leaves no five-year total", () => {
+    expect(housingView(data, "C")).toMatchObject({ rate: -20, rank: 3, five: -6 });
+    expect(housingView(data, "B").five).toBeNull();
+  });
+  it("has no rate or rank where the latest year was not sent, and nothing for an unknown council", () => {
+    expect(housingView(data, "D")).toMatchObject({ rate: null, rank: null });
+    expect(housingView(data, "Z")).toBeNull();
+  });
+  it("names the five years and the peak", () => {
+    expect(housingView(data, "A").fiveYears).toBe("2020-21 to 2024-25");
+    expect(housingView(data, "A").peak).toEqual({ year: "2024-25", n: 50, latest: true });
+  });
 });

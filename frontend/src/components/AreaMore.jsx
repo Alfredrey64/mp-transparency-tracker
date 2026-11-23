@@ -3,8 +3,9 @@ import { Card } from "./AreaSections";
 import { Dumbbell, PeopleGrid, PeopleKey, StatTile, TrendArea } from "./AreaViz";
 import { IconHeartbeat, IconPin, IconHouse, IconCoin } from "./icons";
 import { useDataFile } from "../lib/useDataFile";
-import { localHealth, asylumSupport, homelessness, childPoverty } from "../lib/dataFiles";
-import { healthView, asylumView, asylumHeld, homelessView, povertyView, quarterLabel } from "../lib/areaMoreViews";
+import { localHealth, asylumSupport, homelessness, housingSupply, childPoverty } from "../lib/dataFiles";
+import { healthView, asylumView, asylumHeld, homelessView, housingView, povertyView, quarterLabel } from "../lib/areaMoreViews";
+import { Skyline, Spread } from "./HomesViz";
 import "../arealocal.css";
 
 // The newer cards of the In numbers view, each read from a file the weekly data job rebuilds when the publisher issues a new edition (see scripts/refresh-area-data.mjs):
@@ -135,6 +136,49 @@ export function HomelessnessCard({ r, i }) {
           </div>
           <p className="ma-sub">"Owed help" means the council accepted a duty to try to prevent or relieve a household's homelessness during the quarter; it counts households, not people, and a household that comes back later is counted again. Temporary accommodation is a snapshot on the last day of the quarter. Councils that place households in other areas are counted for the households they are responsible for, wherever those are housed. {v.reported && (v.owed == null || v.ta == null) && "Part of this council's return is missing, so only some figures are shown. "}Source: Ministry of Housing, Communities and Local Government, Statutory homelessness detailed local authority tables, quarterly.</p>
           <a className="ma-link" href="https://www.gov.uk/government/statistical-data-sets/live-tables-on-homelessness" target="_blank" rel="noreferrer">Homelessness tables on GOV.UK</a>
+        </>
+      )}
+    </Card>
+  );
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// Net new homes by year for the council area, and where it stands among England's councils (England only).
+export function NewHomesCard({ r, i }) {
+  const { data, failed } = useDataFile(housingSupply);
+  const code = r.codes?.admin_district;
+  if (r.latitude == null) return null;
+  const council = councilName(r.admin_district);
+  if (r.country && r.country !== "England") {
+    return (
+      <Card i={i} colour="#B4532A" icon={<IconHouse size={20} />} title="New homes in your area" className="ma-newhomes">
+        <p className="ma-sub">These statistics cover England. Scotland, Wales and Northern Ireland count new homes in their own ways, so they are not shown here.</p>
+      </Card>
+    );
+  }
+  const v = data && code ? housingView(data, code) : null;
+  const eng = data?.england;
+  return (
+    <Card i={i} colour="#B4532A" icon={<IconHouse size={20} />} title={`New homes in ${council}`} className="ma-newhomes">
+      {failed ? SAYS_FAILED("housing figures") : !data ? SAYS_LOADING("housing figures") : !v ? <p className="ma-sub">No housing supply figures are held for this council area. They are published for each district, county councils are not counted, and a few councils have merged or changed their boundaries recently.</p> : v.latest == null ? (
+        <p className="ma-sub">{council} did not send the Government its figure for {v.latestYear}, so there is nothing to show for the latest year. Across England, {n(eng.y.at(-1))} net new homes were added that year.</p>
+      ) : (
+        <>
+          <div className="av-stats" role="group" aria-label={`New homes in ${council}, ${v.latestYear}`}>
+            <StatTile colour="#B4532A" value={Math.abs(v.latest)} prefix={v.latest < 0 ? "\u2212" : ""} label={`net new homes in ${v.latestYear}`} hint={`Homes built or created, minus homes lost. Provisional. England: ${v.englandRate.toFixed(1)} per 1,000 homes.`} chip={v.rate != null ? `${v.rate.toFixed(1)} per 1,000 homes` : undefined} />
+            {v.five != null && <StatTile colour="#B4532A" value={Math.abs(v.five)} prefix={v.five < 0 ? "\u2212" : ""} label={`in the five years ${v.fiveYears}`} hint={`${v.fiveRate.toFixed(1)} for every 1,000 homes, against ${v.englandFiveRate.toFixed(1)} across England.`} />}
+            {v.rank != null && <StatTile colour="#B4532A" value={v.rank} prefix="#" label={`of ${v.of} councils for homes added per 1,000`} hint={v.rank <= v.of / 4 ? "Among the quickest-growing." : v.rank > (v.of * 3) / 4 ? "Among the slowest-growing." : "Somewhere in the middle."} />}
+          </div>
+          <h4 className="hv-sub">Net new homes each year</h4>
+          <Skyline years={v.years} values={v.y} colour="#B4532A" aria={`Net new homes in ${council} by year: ${v.years.map((y, k) => `${y} ${v.y[k] == null ? "no figure" : v.y[k]}`).join(", ")}`} />
+          {v.rate != null && (
+            <>
+              <h4 className="hv-sub">Where {council} sits among England's councils, {v.latestYear}</h4>
+              <Spread rates={v.rates} rate={v.rate} england={v.englandRate} name={council.replace(/^the /, "")} colour="#B4532A" />
+            </>
+          )}
+          <p className="ma-sub">"Net additional dwellings" is homes built, converted or created by a change of use, minus homes demolished or merged: a council can have a negative year. The figure counts homes of any kind, houses and flats alike, and says nothing about how affordable they are or who they are for. "Per 1,000 homes" divides by the {n(v.dwellings)} homes there were on 31 March {v.stockYear}, so councils of different sizes can be compared. Years run April to March, so "{v.latestYear}" is the twelve months to March 20{v.latestYear.slice(5)}; the latest year is provisional and is revised the next November. A blank year means the council did not supply a figure. Sources: Ministry of Housing, Communities and Local Government, Live Table 122 (net additional dwellings) and Live Table 100 (dwelling stock).</p>
+          <a className="ma-link" href="https://www.gov.uk/government/statistical-data-sets/live-tables-on-net-supply-of-housing" target="_blank" rel="noreferrer">Housing supply tables on GOV.UK</a>
         </>
       )}
     </Card>
