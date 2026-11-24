@@ -79,10 +79,10 @@ export class ErrorBoundary extends Component {
           }}
         >
           <div style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: COLORS.ink, marginBottom: 8 }}>
-            {t("Something broke on this page")}
+            {this.props.site ? t("The site hit a problem") : t("Something broke on this page")}
           </div>
           <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.6, marginBottom: 16 }}>
-            {t("Not the rest of the site: just this one page hit a bug. Pick anything else from the menu, or reload to try this page again.")}
+            {this.props.site ? t("Reloading usually fixes it. If it keeps happening, the report link below reaches the person who built the site.") : t("Not the rest of the site: just this one page hit a bug. Pick anything else from the menu, or reload to try this page again.")}
           </div>
           <div
             style={{
@@ -95,7 +95,7 @@ export class ErrorBoundary extends Component {
           </div>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             <button
-              onClick={() => window.location.reload()}
+              onClick={() => (this.props.site ? clearSavedFiles().then(() => window.location.reload()) : window.location.reload())}
               style={{
                 fontFamily: FONT_BODY, fontSize: 13.5, fontWeight: 600, padding: "9px 18px", borderRadius: 999,
                 border: "none", background: "#9C3B3B", color: "#fff", cursor: "pointer",

@@ -1,6 +1,6 @@
 // Domesday Live service worker: lets the site open and keep working without a connection, using what was loaded before.
 //
-//   Pages           network first; if offline, the copy saved last time (the app shell for the main address)
+//   Pages           network first; if offline, slow (4 s) or erroring, the copy saved last time (the app shell for the main address)
 //   Built files     (/assets, /fonts) cache first. Their names change whenever their contents do, so a saved copy is never stale
 //   Other files     (icons, manifest) saved copy at once, refreshed in the background
 //   Figures         Supabase reads are network first, with a short wait; if the connection is slow or gone, the last copy is used
@@ -16,6 +16,7 @@ const DATA = `${VERSION}-data`;
 const MAX_FILES = 500;
 const MAX_DATA = 150;
 const DATA_WAIT_MS = 5000;
+const NAV_WAIT_MS = 4000;
 
 const OFFLINE_PAGE = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Offline | Domesday Live</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#EDE5D3;color:#1c1b22;font-family:system-ui,sans-serif;padding:24px;text-align:center}main{max-width:420px}h1{font-size:24px;margin:0 0 8px}p{line-height:1.55;margin:0 0 16px}a{color:#3730a3;font-weight:600}</style></head><body><main><h1>You are offline</h1><p>This page was not saved the last time you were connected. Pages you have already opened will still work, and everything loads again once you are back online.</p><p><a href="/">Try the home page</a></p></main></body></html>`;
 
@@ -54,7 +55,7 @@ self.addEventListener("fetch", (event) => {
 
   if (url.origin === self.location.origin) {
     if (url.pathname.startsWith("/_vercel/")) return;
-    if (request.mode === "navigate") return event.respondWith(page(request, url));
+    if (request.mode === "navigate") return event.respondWith(page(request, url, event));
     if (isBuiltFile(url)) return event.respondWith(cacheFirst(request, FILES, MAX_FILES));
     return event.respondWith(staleWhileRevalidate(request, FILES, MAX_FILES));
   }
@@ -83,26 +84,29 @@ async function save(name, request, response, max) {
   await trim(cache, max);
 }
 
-async function page(request, url) {
-  try {
-    const response = await fetch(request);
-    if (response.ok) {
-      const copy = response.clone();
-      const key = url.pathname === "/index.html" ? "/" : request;
-      save(PAGES, key, copy, 60);
-    }
+// The saved copy a page request can fall back on: the page itself if it was saved, otherwise (for any app address) the saved home page, which starts the app.
+async function savedPage(request, url) {
+  const own = await caches.match(request, { ignoreSearch: true, ignoreVary: true });
+  if (own) return own;
+  if (!url.pathname.startsWith("/p/") && !/\.[a-z0-9]+$/i.test(url.pathname)) return (await caches.match("/", { ignoreVary: true })) ?? null;
+  return null;
+}
+
+// Network first, but never at the cost of a blank screen: with a saved copy to fall back on, a connection that is slow (or has stalled without failing, which on a
+// phone is more common than being plainly offline) hands over the saved copy after NAV_WAIT_MS, and a server error does so at once. The network request carries on in
+// the background and refreshes the saved copy for next time.
+async function page(request, url, event) {
+  const network = fetch(request).then((response) => {
+    if (response.ok) save(PAGES, url.pathname === "/index.html" ? "/" : request, response.clone(), 60);
     return response;
-  } catch {
-    const own = await caches.match(request, { ignoreSearch: true, ignoreVary: true });
-    if (own) return own;
-    // Every page address (/taxRates/vat) is the same app, so a page that was not saved is opened from the saved home page, which starts the app and
-    // shows whichever page the address names.
-    if (!url.pathname.startsWith("/p/") && !/\.[a-z0-9]+$/i.test(url.pathname)) {
-      const shell = await caches.match("/", { ignoreVary: true });
-      if (shell) return shell;
-    }
-    return new Response(OFFLINE_PAGE, { status: 503, headers: { "Content-Type": "text/html; charset=utf-8" } });
+  });
+  event.waitUntil(network.catch(() => {}));
+  const saved = await savedPage(request, url);
+  if (!saved) {
+    try { return await network; } catch { return new Response(OFFLINE_PAGE, { status: 503, headers: { "Content-Type": "text/html; charset=utf-8" } }); }
   }
+  const slow = new Promise((resolve) => setTimeout(() => resolve(saved), NAV_WAIT_MS));
+  return Promise.race([network.then((response) => (response.status >= 500 ? saved : response), () => saved), slow]);
 }
 
 async function cacheFirst(request, name, max) {

@@ -69,6 +69,36 @@ describe("service worker", () => {
     expect(await offline.response.text()).toBe("<html>shell</html>");
   });
 
+  it("opens the saved page instead of waiting on a connection that has stalled", async () => {
+    let stalled = false;
+    const sw = boot(() => (stalled ? new Promise(() => {}) : ok("<html>shell</html>")()));
+    await sw.fire(sw.request("/", { mode: "navigate" }));
+    await tick();
+    stalled = true;
+    vi.useFakeTimers();
+    const pending = sw.fire(sw.request("/myArea", { mode: "navigate" }));
+    await vi.advanceTimersByTimeAsync(4100);
+    expect(await (await pending).response.text()).toBe("<html>shell</html>");
+  });
+
+  it("opens the saved page when the server answers with an error", async () => {
+    let broken = false;
+    const sw = boot(() => (broken ? Promise.resolve(new Response("bad gateway", { status: 502 })) : ok("<html>shell</html>")()));
+    await sw.fire(sw.request("/", { mode: "navigate" }));
+    await tick();
+    broken = true;
+    const { response } = await sw.fire(sw.request("/", { mode: "navigate" }));
+    expect(await response.text()).toBe("<html>shell</html>");
+  });
+
+  it("waits for the network when there is nothing saved to fall back on", async () => {
+    vi.useFakeTimers();
+    const sw = boot(() => new Promise((resolve) => setTimeout(() => resolve(new Response("late", { status: 200 })), 6000)));
+    const pending = sw.fire(sw.request("/", { mode: "navigate" }));
+    await vi.advanceTimersByTimeAsync(6100);
+    expect(await (await pending).response.text()).toBe("late");
+  });
+
   it("shows a plain offline page for an address it never saved", async () => {
     const sw = boot(down);
     const { response } = await sw.fire(sw.request("/p/never-seen", { mode: "navigate" }));

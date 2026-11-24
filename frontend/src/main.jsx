@@ -13,6 +13,7 @@ import { installRouting } from './lib/route.js'
 import { start as startDisplay } from './lib/display.js'
 import { installDetailsMotion } from './lib/detailsMotion.js'
 import { installScrollAnchor } from './lib/scrollAnchor.js'
+import { ErrorBoundary } from './components/ErrorBoundary'
 
 // The footer waits until the first page has settled (see AfterSettle in App.jsx); if that never happens it comes back anyway.
 document.documentElement.dataset.settling = '1'
@@ -27,9 +28,11 @@ registerOffline()
 installSmoothDetails()
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ThemeProvider>
-      <App />
-    </ThemeProvider>
+    <ErrorBoundary site>
+      <ThemeProvider>
+        <App />
+      </ThemeProvider>
+    </ErrorBoundary>
   </StrictMode>,
 )
 

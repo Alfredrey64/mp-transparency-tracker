@@ -20,6 +20,24 @@
     <link rel="preload" href="/fonts/fraunces-figures.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preconnect" href="https://xwrxaarxhlddbhbdbjmm.supabase.co" crossorigin />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <!-- What is on screen while the app's code is still arriving (and, if it never does, the way out: see public/early.js). It needs no script and no stylesheet of its own,
+         so a slow or dropped connection shows a message and a button, not an empty page. React replaces it the moment the app draws. -->
+    <style>
+      html{background:#ECEFF6}
+      html[data-theme="dark"]{background:#0A1220}
+      .dl-boot{position:fixed;inset:0;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;box-sizing:border-box;text-align:center;background:#ECEFF6;color:#0A1424;font-family:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+      html[data-theme="dark"] .dl-boot{background:#0A1220;color:#F2F5FB}
+      .dl-boot-name{margin:0;font:600 28px/1.1 "Newsreader",Georgia,serif;letter-spacing:-0.01em}
+      .dl-boot-bar{width:min(220px,60vw);height:3px;border-radius:3px;background:rgba(30,79,184,0.18);overflow:hidden}
+      .dl-boot-bar::after{content:"";display:block;height:100%;width:40%;border-radius:3px;background:#1E4FB8;animation:dl-boot-slide 1.3s ease-in-out infinite}
+      html[data-theme="dark"] .dl-boot-bar::after{background:#8DB0FF}
+      @keyframes dl-boot-slide{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
+      .dl-boot-msg{margin:0;max-width:34ch;font-size:15px;line-height:1.5;opacity:0.82}
+      .dl-boot-help{display:flex;flex-direction:column;align-items:center;gap:12px}
+      .dl-boot-help[hidden]{display:none}
+      .dl-boot-btn{font-family:inherit;font-weight:600;font-size:15px;line-height:1;cursor:pointer;padding:13px 22px;min-height:44px;border:0;border-radius:999px;background:#1E4FB8;color:#fff}
+      @media (prefers-reduced-motion:reduce){.dl-boot-bar::after{animation:none;width:100%}}
+    </style>
     <title>Domesday Live</title>
     <meta name="description" content="A simple breakdown of UK politics. See who your MP is, who funds them, how they vote and what the numbers say about the country, all explained in plain English from official sources." />
     <link rel="canonical" href="https://domesdaylive.co.uk/" />
@@ -46,7 +64,17 @@
     <meta name="twitter:image" content="https://domesdaylive.co.uk/og-image.png?v=16" />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="dl-boot" role="status" aria-live="polite">
+        <p class="dl-boot-name">Domesday Live</p>
+        <div class="dl-boot-bar" aria-hidden="true"></div>
+        <p class="dl-boot-msg" id="dl-boot-msg">Loading&hellip;</p>
+        <div class="dl-boot-help" id="dl-boot-help" hidden>
+          <button type="button" class="dl-boot-btn" id="dl-boot-retry">Try again</button>
+        </div>
+      </div>
+    </div>
+    <noscript><p style="position:fixed;inset:auto 0 0 0;margin:0;padding:14px 18px;background:#fff;color:#0A1424;font:15px/1.5 system-ui,sans-serif;text-align:center;z-index:2">Domesday Live needs JavaScript to show its pages. Please turn it on and reload.</p></noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
