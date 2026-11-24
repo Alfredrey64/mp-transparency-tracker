@@ -1,21 +1,26 @@
 /* The search, sort and filter row above the lists of places near a postcode (components/story/PlaceTools.jsx). Class names start plt- . */
-.plt-tools { margin: 14px 0 6px; padding: 14px 16px 12px; border-radius: 14px; background: var(--c-paper-sunk); display: grid; gap: 12px; }
-.plt-row { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 12px 14px; }
-.plt-field { display: grid; gap: 5px; min-width: 0; }
-.plt-field label { font: 800 12px/1.2 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.02em; color: var(--c-ink-soft); }
-.plt-field input, .plt-field select { width: 100%; min-height: 44px; box-sizing: border-box; padding: 8px 14px; border-radius: 12px; border: 1.5px solid var(--c-hairline); background: var(--c-paper-card); color: var(--c-ink); font: 600 16px "Figures", "Public Sans", system-ui, sans-serif; }
-.plt-field select { appearance: none; padding-right: 38px; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%233A465A' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
+.plt-tools { margin: 14px 0 8px; padding: 16px 18px 14px; border-radius: 16px; background: var(--c-paper-sunk); border: 1px solid var(--c-hairline); display: grid; gap: 14px; }
+.plt-row { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 12px 14px; }
+.plt-field { display: grid; gap: 6px; min-width: 0; }
+.plt-field label { font: 700 12.5px/1.2 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.plt-field input, .plt-field select { width: 100%; min-height: 46px; box-sizing: border-box; padding: 8px 14px; border-radius: 999px; border: 1.5px solid var(--c-hairline); background-color: var(--c-paper-card); color: var(--c-ink); font: 600 16px "Figures", "Public Sans", system-ui, sans-serif; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+.plt-field input:hover, .plt-field select:hover { border-color: color-mix(in srgb, var(--c-ink) 40%, var(--c-hairline)); }
+.plt-field input { padding-left: 44px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%233A465A' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5L21 21'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: 15px center; }
+.plt-field select { appearance: none; padding-left: 18px; padding-right: 42px; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%233A465A' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 18px center; }
 .plt-field input::placeholder { color: var(--c-ink-soft); font-weight: 500; }
 .plt-field input:focus-visible, .plt-field select:focus-visible { outline: 3px solid var(--c-ink); outline-offset: 2px; }
-.plt-chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.plt-chips > span { font: 800 12px/1.2 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.02em; color: var(--c-ink-soft); margin-right: 2px; }
-.plt-chips button { min-height: 38px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--c-hairline); background: var(--c-paper-card); color: var(--c-ink); font: 700 13.5px "Figures", "Public Sans", system-ui, sans-serif; cursor: pointer; }
+.plt-chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-start; padding-top: 14px; border-top: 1px solid var(--c-hairline); }
+.plt-chips button { min-height: 38px; padding: 6px 15px; border-radius: 999px; border: 1px solid var(--c-hairline); background: var(--c-paper-card); color: var(--c-ink); font: 700 13.5px "Figures", "Public Sans", system-ui, sans-serif; cursor: pointer; transition: background-color 0.15s ease, border-color 0.15s ease; }
+.plt-chips button:hover { border-color: var(--c-ink); }
 .plt-chips button[aria-pressed="true"] { background: var(--c-ink); border-color: var(--c-ink); color: var(--c-paper-card); }
-.plt-line { margin: 0; font: 600 13.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.plt-line { margin: 0; padding-top: 12px; border-top: 1px solid var(--c-hairline); font: 600 13.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .plt-none { margin: 10px 0 6px; padding: 18px; border-radius: 14px; border: 1px dashed var(--c-hairline); text-align: center; }
 .plt-none p { margin: 0 0 10px; font: 500 15px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .plt-none button { min-height: 44px; padding: 8px 18px; border-radius: 999px; border: 1px solid var(--c-hairline); background: var(--c-paper-card); color: var(--c-ink); font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; cursor: pointer; }
 .plt-more { display: block; min-height: 44px; margin: 14px auto 0; padding: 8px 18px; border-radius: 999px; border: 1px solid var(--c-hairline); background: var(--c-paper-card); color: var(--c-ink); font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; cursor: pointer; }
 .plt-more:hover { border-color: var(--c-ink); }
-@media (max-width: 560px) { .plt-row { grid-template-columns: minmax(0, 1fr); } .plt-tools { padding: 12px; } }
+@media (max-width: 560px) { .plt-row { grid-template-columns: minmax(0, 1fr); } .plt-tools { padding: 14px 12px 12px; } }
 .plt-type { max-width: 420px; }
+.plt-type select { border-radius: 14px; }
+[data-theme="dark"] .plt-field input { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23C7D0E0' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5L21 21'/%3E%3C/svg%3E"); }
+[data-theme="dark"] .plt-field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23C7D0E0' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"); }

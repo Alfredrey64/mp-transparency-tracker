@@ -421,11 +421,11 @@ const FOOD_SORTS = {
   recent: { label: "Most recently inspected", words: "most recently inspected first", compare: (a, b) => String(b.date ?? "").localeCompare(String(a.date ?? "")) || byMiles(a, b) },
   name: { label: "Name, A to Z", words: "by name", compare: byName },
 };
-const FHRS_FILTERS = [["weak", "Rated 0 to 2", (p) => p.status === "rated" && p.rating <= 2], ["mid", "Rated 3", (p) => p.status === "rated" && p.rating === 3], ["good", "Rated 4 or 5", (p) => p.status === "rated" && p.rating >= 4], ["all", "All ratings", () => true]];
-const FHIS_FILTERS = [["improve", "Improvement required", (p) => p.status === "improve"], ["pass", "Pass", (p) => p.status === "pass"], ["all", "All results", () => true]];
+const FHRS_FILTERS = [["all", "All ratings", () => true], ["weak", "Rated 0 to 2", (p) => p.status === "rated" && p.rating <= 2], ["mid", "Rated 3", (p) => p.status === "rated" && p.rating === 3], ["good", "Rated 4 or 5", (p) => p.status === "rated" && p.rating >= 4]];
+const FHIS_FILTERS = [["all", "All results", () => true], ["improve", "Improvement required", (p) => p.status === "improve"], ["pass", "Pass", (p) => p.status === "pass"]];
 
 // Every business near the postcode with a published result, nearest first. The visitor can search by name (street or postcode too), sort by rating, date or name, and narrow by rating or
-// kind of business. It opens on the lowest-rated places, which is what the card is for; typing in the search looks through every rating.
+// kind of business. It opens on every rating, nearest first.
 function FoodList({ food, fhis }) {
   const filters = fhis ? FHIS_FILTERS : FHRS_FILTERS;
   const sorts = (fhis ? ["near", "recent", "name"] : ["near", "low", "high", "recent", "name"]).map((key) => ({ key, label: FOOD_SORTS[key].label }));
@@ -450,10 +450,9 @@ function FoodList({ food, fhis }) {
     <>
       <h4>{fhis ? "Businesses near you" : "Food businesses near you"}</h4>
       <PlaceTools label="Search and sort the food businesses" query={query} sort={sort} sorts={sorts}
-        onQuery={(v) => { setQuery(v); setShown(FOOD_PAGE); if (v.trim() && rating !== "all") setRating("all"); }} onSort={(v) => { setSort(v); setShown(FOOD_PAGE); }}
+        onQuery={(v) => { setQuery(v); setShown(FOOD_PAGE); }} onSort={(v) => { setSort(v); setShown(FOOD_PAGE); }}
         line={countLine({ shown: Math.min(shown, list.length), total: list.length, noun: { one: "business", many: "businesses" }, query, order: FOOD_SORTS[sort].words })}>
         <div className="plt-chips" role="group" aria-label="Rating">
-          <span>Show</span>
           {filters.map(([k, label]) => <button key={k} type="button" aria-pressed={rating === k} onClick={() => { setRating(k); setShown(FOOD_PAGE); }}>{label} ({counts[k]})</button>)}
         </div>
         {types.length > 1 && (

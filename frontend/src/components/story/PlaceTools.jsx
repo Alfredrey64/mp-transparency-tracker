@@ -11,7 +11,7 @@ export default function PlaceTools({ label, query, onQuery, sort, onSort, sorts,
       <div className="plt-row">
         <div className="plt-field plt-search">
           <label htmlFor={`${id}-q`}>Search by name</label>
-          <input id={`${id}-q`} type="search" value={query} onChange={(e) => onQuery(e.target.value)} placeholder="A name, street or postcode" autoComplete="off" spellCheck="false" />
+          <input id={`${id}-q`} type="search" value={query} onChange={(e) => onQuery(e.target.value)} placeholder="Name or street" autoComplete="off" spellCheck="false" />
         </div>
         <div className="plt-field plt-sort">
           <label htmlFor={`${id}-s`}>Sort by</label>
