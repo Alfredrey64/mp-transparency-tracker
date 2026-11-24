@@ -38,26 +38,12 @@
     "companyNumber": "13054048",
     "sicCode": "94920"
   },
-  "International Centre of Justice for Palestinians (ICJP)": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "INTERNATIONAL CENTRE OF JUSTICE FOR PALESTINIANS",
-    "companyNumber": "13054048",
-    "sicCode": "94920"
-  },
   "National Liberal Club": {
     "sector": "Other / Uncategorised",
     "source": "companies-house",
     "companyName": "NATIONAL LIBERAL CLUB LIMITED(THE)",
     "companyNumber": "01355034",
     "sicCode": "56302"
-  },
-  "Best for Britain Limited": {
-    "sector": "Tech & Telecoms",
-    "source": "companies-house",
-    "companyName": "BEST FOR BRITAIN LIMITED",
-    "companyNumber": "10436078",
-    "sicCode": "63990"
   },
   "Palace Yard Events Ltd": {
     "sector": "Other / Uncategorised",
@@ -126,19 +112,19 @@
     "companyNumber": "00882843",
     "sicCode": "93110"
   },
-  "Compass - Together for a Good Society Ltd": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "COMPASS - TOGETHER FOR A GOOD SOCIETY LTD",
-    "companyNumber": "05391145",
-    "sicCode": "94920"
-  },
   "Aid Alliance": {
     "sector": "Other / Uncategorised",
     "source": "companies-house",
     "companyName": "AID ALLIANCE",
     "companyNumber": "16507092",
     "sicCode": "96090"
+  },
+  "Thalexena Capital Ltd": {
+    "sector": "Finance & Banking",
+    "source": "companies-house",
+    "companyName": "THALEXENA CAPITAL LTD",
+    "companyNumber": "13106746",
+    "sicCode": "64991"
   },
   "Flowidea Limited": {
     "sector": "Finance & Banking",
@@ -203,11 +189,11 @@
     "companyNumber": "00882843",
     "sicCode": "93110"
   },
-  "The Police Federation": {
+  "NAPO - the Probation and Family Courts Union": {
     "sector": "Trade Unions",
     "source": "known-union-list"
   },
-  "NAPO - the Probation and Family Courts Union": {
+  "The Police Federation": {
     "sector": "Trade Unions",
     "source": "known-union-list"
   },
@@ -218,6 +204,13 @@
   "University and College Union (UCU)": {
     "sector": "Trade Unions",
     "source": "known-union-list"
+  },
+  "Zero Hour Ltd": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "ZERO HOUR LTD",
+    "companyNumber": "12846343",
+    "sicCode": "85520"
   },
   "SME4LABOUR LTD": {
     "sector": "Other / Uncategorised",
@@ -247,6 +240,13 @@
     "companyNumber": "13453522",
     "sicCode": "70229"
   },
+  "SME4Labour Ltd": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "SME4LABOUR LTD",
+    "companyNumber": "10685562",
+    "sicCode": "94920"
+  },
   "UNISON": {
     "sector": "Trade Unions",
     "source": "known-union-list"
@@ -264,13 +264,6 @@
     "companyName": "KNOX DIGITAL LIMITED",
     "companyNumber": "15767214",
     "sicCode": "70210"
-  },
-  "Lawn Tennis Association": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "LAWN TENNIS ASSOCIATION LIMITED",
-    "companyNumber": "07459469",
-    "sicCode": "93199"
   },
   "KBR (Aspire Construction) Limited": {
     "sector": "Other / Uncategorised",
@@ -334,6 +327,13 @@
     "companyName": "PRS FOR MUSIC LIMITED",
     "companyNumber": "03444246",
     "sicCode": "82990"
+  },
+  "Lawn Tennis Association": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "LAWN TENNIS ASSOCIATION LIMITED",
+    "companyNumber": "07459469",
+    "sicCode": "93199"
   },
   "Homes for Britain Ltd": {
     "sector": "Legal & Professional Services",
@@ -430,26 +430,12 @@
     "sector": "Media & Publishing",
     "source": "manual-override"
   },
-  "Premier League": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "PREMIER LEAGUE LIMITED",
-    "companyNumber": "SC117540",
-    "sicCode": "96090"
-  },
   "The Lawn Tennis Association": {
     "sector": "Other / Uncategorised",
     "source": "companies-house",
     "companyName": "LAWN TENNIS ASSOCIATION LIMITED",
     "companyNumber": "07459469",
     "sicCode": "93199"
-  },
-  "Carlton Club": {
-    "sector": "Alcohol & Gambling",
-    "source": "companies-house",
-    "companyName": "CARLTON CLUBS LIMITED",
-    "companyNumber": "SC123870",
-    "sicCode": "92000"
   },
   "Global Foods (Birmingham) Limited": {
     "sector": "Retail & Consumer",
@@ -458,12 +444,47 @@
     "companyNumber": "04096414",
     "sicCode": "46900"
   },
+  "Springfield Park Properties Ltd": {
+    "sector": "Construction & Property",
+    "source": "companies-house",
+    "companyName": "SPRINGFIELD PARK PROPERTIES LIMITED",
+    "companyNumber": "02880390",
+    "sicCode": "68209"
+  },
+  "Hindmarch Properties Ltd": {
+    "sector": "Construction & Property",
+    "source": "companies-house",
+    "companyName": "HINDMARCH PROPERTIES LIMITED",
+    "companyNumber": "00072290",
+    "sicCode": "68100"
+  },
+  "Sleaford Property Developments Ltd": {
+    "sector": "Construction & Property",
+    "source": "companies-house",
+    "companyName": "SLEAFORD PROPERTY DEVELOPMENTS LIMITED",
+    "companyNumber": "06410885",
+    "sicCode": "41100"
+  },
   "Strathgrove Ltd": {
     "sector": "Construction & Property",
     "source": "companies-house",
     "companyName": "STRATHGROVE LIMITED",
     "companyNumber": "00972224",
     "sicCode": "41100"
+  },
+  "Stamford Property Company Ltd": {
+    "sector": "Construction & Property",
+    "source": "companies-house",
+    "companyName": "STAMFORD PROPERTY COMPANY LIMITED",
+    "companyNumber": "03016148",
+    "sicCode": "41100"
+  },
+  "Grantham Investments Ltd": {
+    "sector": "Construction & Property",
+    "source": "companies-house",
+    "companyName": "GRANTHAM INVESTMENTS LIMITED",
+    "companyNumber": "00804559",
+    "sicCode": "68100"
   },
   "STRATHGROVE LIMITED": {
     "sector": "Construction & Property",
@@ -472,12 +493,12 @@
     "companyNumber": "00972224",
     "sicCode": "41100"
   },
-  "Millennium Care (U.K.) Limited": {
-    "sector": "Pharma & Healthcare",
+  "Clerewell Ltd": {
+    "sector": "Construction & Property",
     "source": "companies-house",
-    "companyName": "MILLENNIUM CARE (U.K.) LIMITED",
-    "companyNumber": "03462318",
-    "sicCode": "86900"
+    "companyName": "CLEREWELL LIMITED",
+    "companyNumber": "01798514",
+    "sicCode": "68209"
   },
   "SRE Hotels (Cliveden) Ltd": {
     "sector": "Other / Uncategorised",
@@ -553,6 +574,13 @@
     "sector": "Trade Unions",
     "source": "known-union-list"
   },
+  "Butterfield Sign Service Ltd": {
+    "sector": "Chemicals & Manufacturing",
+    "source": "companies-house",
+    "companyName": "BUTTERFIELD SIGN SERVICE LIMITED",
+    "companyNumber": "01283914",
+    "sicCode": "22290"
+  },
   "GMB London region": {
     "sector": "Trade Unions",
     "source": "known-union-list"
@@ -618,6 +646,13 @@
     "companyNumber": "02719699",
     "sicCode": "93199"
   },
+  "Carlton Club": {
+    "sector": "Alcohol & Gambling",
+    "source": "companies-house",
+    "companyName": "CARLTON CLUBS LIMITED",
+    "companyNumber": "SC123870",
+    "sicCode": "92000"
+  },
   "Tottenham Hotspur Limited": {
     "sector": "Other / Uncategorised",
     "source": "companies-house",
@@ -645,19 +680,5 @@
     "companyName": "EUROPEAN INNOVATION LIMITED",
     "companyNumber": "04334036",
     "sicCode": "62011"
-  },
-  "Manchester United Football Club Limited": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "MANCHESTER UNITED FOOTBALL CLUB LIMITED",
-    "companyNumber": "00095489",
-    "sicCode": "93120"
-  },
-  "Global Media IP Limited": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "GLOBAL MEDIA IP LIMITED",
-    "companyNumber": "12002350",
-    "sicCode": "82990"
   }
 }

@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-23",
+ "generatedAt": "2026-11-24",
  "source": "https://fullfact.org/government-tracker/",
  "pledges": [
   {
@@ -393,6 +393,13 @@
    "pledge": "We will support families with children by introducing free breakfast clubs in every primary school",
    "status": "in-progress",
    "updated": "2026-10-26"
+  },
+  {
+   "slug": "energy-independence-act",
+   "area": "Energy",
+   "pledge": "A new Energy Independence Act will establish the framework for Labour’s energy and climate policies",
+   "status": "appears-on-track",
+   "updated": "2026-11-24"
   },
   {
    "slug": "gb-energy-8-3-billion",
