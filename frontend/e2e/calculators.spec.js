@@ -51,7 +51,7 @@ test("a stage of the bill route can be picked, and the panel and the marker foll
   await page.getByRole("button", { name: "Stage 4: Committee Stage" }).click();
   await expect(page.locator(".billroute-caption")).toContainText("Committee Stage");
   await expect(page.locator(".billroute-caption")).toContainText("Who decides");
-  await page.getByRole("button", { name: "Next stage" }).click();
+  await page.locator(".billroute").getByRole("button", { name: "Next stage" }).click();
   await expect(page.locator(".billroute-caption")).toContainText("Report Stage");
 });
 

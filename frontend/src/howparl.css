@@ -1,0 +1,113 @@
+/* How Parliament works: the stepper, the layers of who is in charge, the two Houses and the job-of-an-MP cards (components/HowParlParts.jsx). */
+
+/* ---- The stepper ------------------------------------------------------------------------------------------------------------------------------------------------- */
+.hwk-deck { display: grid; gap: 16px; }
+.hwk-track { position: relative; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); padding-top: 2px; }
+.hwk-rail { position: absolute; left: calc(50% / var(--n)); right: calc(50% / var(--n)); top: 19px; height: 4px; border-radius: 2px; background: color-mix(in srgb, var(--c) 18%, var(--c-hairline)); overflow: hidden; }
+.hwk-rail i { position: absolute; inset: 0; background: linear-gradient(90deg, var(--c), color-mix(in srgb, var(--c) 70%, #fff)); transform-origin: left; transition: transform 0.55s cubic-bezier(0.22, 0.8, 0.24, 1); }
+.hwk-track > button { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 0 2px 4px; background: none; border: 0; cursor: pointer; color: var(--c-ink-soft); font: 600 12px/1.25 "Figures", "Public Sans", system-ui, sans-serif; text-align: center; min-width: 0; }
+.hwk-node { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--c-paper-card); border: 2px solid color-mix(in srgb, var(--c) 45%, var(--c-hairline)); color: var(--cr); font: 700 13px "Figures", "IBM Plex Mono", monospace; transition: background 0.3s, color 0.3s, border-color 0.3s, transform 0.3s cubic-bezier(0.22, 0.8, 0.24, 1), box-shadow 0.3s; }
+.hwk-node svg { width: 15px; height: 15px; }
+.hwk-track > button:hover .hwk-node { border-color: var(--c); transform: scale(1.08); }
+.hwk-track > button[data-state="done"] .hwk-node { background: color-mix(in srgb, var(--c) 16%, var(--c-paper-card)); border-color: var(--c); }
+.hwk-track > button[data-state="now"] .hwk-node { background: var(--c); border-color: var(--c); color: #fff; transform: scale(1.18); box-shadow: 0 0 0 6px color-mix(in srgb, var(--c) 20%, transparent); }
+.hwk-track > button[data-state="now"] { color: var(--c-ink); }
+.hwk-track > button:focus-visible { outline: none; }
+.hwk-track > button:focus-visible .hwk-node { outline: 3px solid var(--c-ink); outline-offset: 3px; }
+.hwk-node-label { display: block; max-width: 100%; overflow-wrap: anywhere; hyphens: auto; }
+
+/* The panel for the stage that is showing: a huge pale numeral behind its words, and it slides in from the side the visitor is heading to. */
+.hwk-panel { position: relative; overflow: hidden; padding: 20px clamp(16px, 3.4vw, 30px) 24px; border-radius: 18px; background: linear-gradient(160deg, color-mix(in srgb, var(--c) 9%, var(--c-paper-card)), var(--c-paper-card) 72%); border: 1px solid color-mix(in srgb, var(--c) 24%, var(--c-hairline)); animation: hwk-in-r 0.42s var(--ease-out) both; }
+.hwk-panel[data-dir="-1"] { animation-name: hwk-in-l; }
+@keyframes hwk-in-r { from { opacity: 0; transform: translateX(22px); } }
+@keyframes hwk-in-l { from { opacity: 0; transform: translateX(-22px); } }
+.hwk-ghost { position: absolute; right: clamp(12px, 3vw, 30px); top: 4px; font: 800 clamp(84px, 13vw, 136px)/1 "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--c) 11%, transparent); pointer-events: none; user-select: none; }
+.hwk-count { position: relative; margin: 0 0 2px; font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--cr); }
+.hwk-title { position: relative; margin: 0 0 10px; font: 700 clamp(24px, 3.4vw, 32px)/1.15 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.hwk-desc { position: relative; margin: 0; max-width: 720px; font: 400 15px/1.65 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.hwk-visual { position: relative; }
+@media (min-width: 900px) {
+  .hwk-panel[data-vis="1"] { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 36px; align-content: start; }
+  .hwk-panel[data-vis="1"] > :not(.hwk-visual):not(.hwk-ghost) { grid-column: 1; }
+  .hwk-panel[data-vis="1"] > .hwk-visual { grid-column: 2; grid-row: 1 / span 3; align-self: center; }
+  .hwk-panel[data-vis="1"] > .hwk-visual > * { margin-top: 0 !important; max-width: none !important; }
+}
+
+.hwk-controls { display: flex; flex-wrap: wrap; gap: 8px; }
+.hwk-btn { min-height: 44px; padding: 0 18px; border-radius: 999px; cursor: pointer; font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); background: transparent; border: 1px solid var(--c-hairline); transition: background 0.2s, border-color 0.2s, color 0.2s; }
+.hwk-btn:hover:not(:disabled) { border-color: var(--c); background: color-mix(in srgb, var(--c) 9%, transparent); }
+.hwk-btn:disabled { opacity: 0.4; cursor: default; }
+.hwk-btn.hwk-primary { background: var(--c); border-color: var(--c); color: #fff; }
+.hwk-btn.hwk-primary:hover:not(:disabled) { background: color-mix(in srgb, var(--c) 86%, #000); }
+.hwk-btn.hwk-play { margin-left: auto; }
+.hwk-btn.hwk-play[aria-pressed="true"] { border-color: var(--c); background: color-mix(in srgb, var(--c) 12%, transparent); }
+
+@media (max-width: 700px) {
+  .hwk-node-label { display: none; }
+  .hwk-track > button { padding-bottom: 0; }
+  .hwk-node { width: 28px; height: 28px; font-size: 12px; }
+  .hwk-rail { top: 16px; }
+  .hwk-btn.hwk-play { margin-left: 0; flex-basis: 100%; }
+}
+
+/* ---- Who is in charge: four layers, all in view -------------------------------------------------------------------------------------------------------------------- */
+.hwk-layers { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; counter-reset: none; }
+.hwk-layer { position: relative; display: grid; gap: 14px; padding: 20px clamp(16px, 3vw, 26px); border-radius: 18px; background: linear-gradient(135deg, color-mix(in srgb, var(--c) 10%, var(--c-paper-card)), var(--c-paper-card) 58%); border: 1px solid color-mix(in srgb, var(--c) 22%, var(--c-hairline)); border-left: 6px solid var(--c); }
+.hwk-layer-head { display: flex; align-items: center; gap: 14px; }
+.hwk-layer-n { display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; border-radius: 50%; background: var(--c); color: #fff; font: 800 19px "Figures", "Newsreader", Georgia, serif; box-shadow: 0 0 0 6px color-mix(in srgb, var(--c) 18%, transparent); }
+.hwk-layer-title { margin: 0; font: 700 clamp(21px, 2.6vw, 26px)/1.15 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.hwk-layer-tag { margin: 3px 0 0; font: 600 13px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: var(--cr); }
+.hwk-layer-body > .hwk-desc { max-width: 760px; }
+.hwk-layer-body > :not(.hwk-desc) { margin-top: 18px !important; }
+
+/* ---- The two Houses, a dot for every member --------------------------------------------------------------------------------------------------------------------------- */
+.hwk-houses { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 14px; margin-top: 16px; }
+.hwk-house { padding: 16px 16px 14px; border-radius: 16px; background: var(--c-paper); border: 1px solid color-mix(in srgb, var(--hc) 26%, var(--c-hairline)); border-top: 4px solid var(--hc); }
+.hwk-house-top { display: flex; align-items: center; gap: 11px; margin-bottom: 12px; }
+.hwk-house-top h4 { margin: 0; font: 700 15px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.hwk-house-top p { margin: 1px 0 0; font: 400 12.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.hwk-lords { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; background: var(--hc); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18); position: relative; }
+.hwk-lords::after { content: ""; position: absolute; inset: 9px 8px; border-radius: 3px 3px 1px 1px; background: #fff; opacity: 0.92; }
+.hwk-dots { display: block; width: 100%; height: auto; }
+.hwk-houses[data-go="0"] .hwk-dot { opacity: 0; }
+.hwk-houses[data-go="1"] .hwk-dot { animation: hwk-dot 0.5s var(--ease-out) both; animation-delay: calc(var(--i) * 1.3ms); }
+@keyframes hwk-dot { from { opacity: 0; } }
+.hwk-house-n { margin: 10px 0 0; font: 400 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.hwk-house-n b { font: 700 24px "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); margin-right: 5px; }
+.hwk-houses-note { grid-column: 1 / -1; margin: 0; font: 400 11.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+
+/* ---- The job of an MP -------------------------------------------------------------------------------------------------------------------------------------------- */
+.hwk-job { display: grid; gap: 16px; min-width: 0; }
+.hwk-tabs { gap: 4px; padding: 4px; border-radius: 999px; background: color-mix(in srgb, var(--c) 9%, var(--c-paper)); border: 1px solid color-mix(in srgb, var(--c) 18%, var(--c-hairline)); display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); width: 100%; max-width: 460px; }
+.hwk-tabs button { min-height: 44px; padding: 0 8px; border: 0; border-radius: 999px; cursor: pointer; background: transparent; color: var(--c-ink-soft); font: 700 14.5px "Figures", "Public Sans", system-ui, sans-serif; transition: background 0.25s, color 0.25s, box-shadow 0.25s; }
+.hwk-tabs button:hover { color: var(--c-ink); }
+.hwk-tabs button[aria-selected="true"] { background: var(--c); color: #fff; box-shadow: 0 2px 10px color-mix(in srgb, var(--c) 40%, transparent); }
+.hwk-tabs button:focus-visible { outline: 3px solid var(--c-ink); outline-offset: 2px; }
+.hwk-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr)); gap: 14px; }
+.hwk-card { position: relative; display: flex; flex-direction: column; gap: 8px; padding: 20px 20px 22px; border-radius: 18px; background: var(--c-paper-card); border: 1px solid color-mix(in srgb, var(--c) 20%, var(--c-hairline)); box-shadow: var(--shadow-1, none); animation: hwk-card-in 0.45s var(--ease-out) both; animation-delay: calc(var(--k) * 70ms); }
+@keyframes hwk-card-in { from { opacity: 0; transform: translateY(12px); } }
+.hwk-card[data-wide="1"] { grid-column: 1 / -1; background: linear-gradient(150deg, color-mix(in srgb, var(--c) 8%, var(--c-paper-card)), var(--c-paper-card) 60%); }
+.hwk-card[data-fig="1"] { background: linear-gradient(160deg, color-mix(in srgb, var(--c) 10%, var(--c-paper-card)), var(--c-paper-card) 70%); }
+.hwk-card-title { margin: 0; font: 700 clamp(19px, 2.2vw, 22px)/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.hwk-fig { display: flex; flex-direction: column; gap: 1px; margin: 0 0 2px; }
+.hwk-fig b { font: 800 clamp(30px, 4.4vw, 42px)/1.05 "Figures", "Newsreader", Georgia, serif; color: var(--cr); letter-spacing: -0.01em; }
+.hwk-fig span { font: 600 12.5px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.hwk-card .hwk-desc { font-size: 14.5px; }
+@media (min-width: 900px) {
+  .hwk-card[data-wide="1"] { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 32px; align-items: start; }
+  .hwk-card[data-wide="1"] > .hwk-card-title { grid-column: 1 / -1; }
+  .hwk-card[data-wide="1"] > .hwk-desc { grid-column: 1; }
+  .hwk-card[data-wide="1"] > :not(.hwk-card-title):not(.hwk-desc):not(.hwk-fig) { grid-column: 2; grid-row: 2 / span 3; margin-top: 0 !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hwk-panel, .hwk-card, .hwk-houses[data-go="1"] .hwk-dot { animation: none; }
+  .hwk-rail i, .hwk-node { transition: none; }
+}
+html[data-calm] .hwk-panel, html[data-calm] .hwk-card, html[data-calm] .hwk-houses[data-go="1"] .hwk-dot { animation: none; }
+@media print { .hwk-controls { display: none; } .hwk-card, .hwk-panel, .hwk-layer { break-inside: avoid; } }
+
+@media (max-width: 520px) {
+  .hwk-layer { padding: 16px 14px 18px; border-left-width: 4px; }
+  .hwk-layer-n { width: 38px; height: 38px; font-size: 17px; }
+}

@@ -6,11 +6,18 @@ import { partyColour } from "../lib/format";
 import { CommonsBadge } from "./shared";
 import { LoadFailedNote } from "./MpCards";
 import { withScrollPreserved } from "../lib/preserveScroll";
+import { useGo } from "./story/useGo";
+import { usePhone } from "../lib/usePhone";
+import "../chamber.css";
 
 const PER_ROW = 22;
 const SPACING = 15;
 const ROW_SPACING = 13;
 const DOT_R = 4.5;
+// Before the MPs take their seats they stand together in one block, 30 to a row, in the middle of the floor. Each then moves to its own seat.
+const BLOCK_COLS = 30;
+const BLOCK_X = 400;
+const BLOCK_Y = 62;
 
 function packSeats(n, originX, originY, growLeft) {
   const seats = [];
@@ -28,6 +35,10 @@ export default function CommonsChamber() {
   const [politicians, setPoliticians] = useState(null);
   const [selected, setSelected] = useState(null);
   const [failed, setFailed] = useState(false);
+  const [hover, setHover] = useState(null);
+  const [pinned, setPinned] = useState(null);
+  const [goRef, go] = useGo(0.3);
+  const phone = usePhone();
 
   useEffect(() => {
     let cancelled = false;
@@ -67,21 +78,33 @@ export default function CommonsChamber() {
     const oppositionLeader = rest.find((p) => (p.cabinet_role ?? "").toLowerCase().includes("leader of the opposition"));
 
     const govSeats = government
-      ? packSeats(government.members.length, 400, 60, false).map((seat, i) => ({ ...seat, mp: government.members[i], color: government.color }))
+      ? packSeats(government.members.length, 400, 60, false).map((seat, i) => ({ ...seat, mp: government.members[i], color: government.color, g: 0 }))
       : [];
 
     let oppSeats = [];
     let cursor = 0;
-    for (const group of opposition) {
+    opposition.forEach((group, gi) => {
       const seats = group.members.map((mp, i) => {
         const idx = cursor + i;
         const row = Math.floor(idx / PER_ROW);
         const col = idx % PER_ROW;
-        return { x: 380 - col * SPACING, y: 60 + row * ROW_SPACING, mp, color: group.color };
+        return { x: 380 - col * SPACING, y: 60 + row * ROW_SPACING, mp, color: group.color, g: gi + 1 };
       });
       oppSeats = oppSeats.concat(seats);
       cursor += group.members.length;
-    }
+    });
+
+    // Where each seat's MP starts from: the block's places are paired with the seats left to right, so nobody crosses anybody on the way, and the seats nearest the aisle fill first.
+    const everySeat = [...govSeats, ...oppSeats];
+    const slots = everySeat.map((_, k) => ({ x: BLOCK_X + (k % BLOCK_COLS - (BLOCK_COLS - 1) / 2) * SPACING, y: BLOCK_Y + Math.floor(k / BLOCK_COLS) * ROW_SPACING }));
+    const byPlace = (a, b) => a.x - b.x || a.y - b.y;
+    const sortedSeats = [...everySeat].sort(byPlace);
+    const sortedSlots = [...slots].sort(byPlace);
+    sortedSeats.forEach((seat, k) => {
+      seat.dx = Math.round(sortedSlots[k].x - seat.x);
+      seat.dy = Math.round(sortedSlots[k].y - seat.y);
+      seat.delay = +((Math.abs(seat.x - 400) / 400) * 0.85 + ((seat.y - 60) % 97) / 1400).toFixed(2);
+    });
 
     const maxRow = Math.max(
       govSeats.length ? Math.ceil(govSeats.length / PER_ROW) : 0,
@@ -127,6 +150,7 @@ export default function CommonsChamber() {
     );
   }
 
+  const active = hover ?? pinned;
   const chamberHeight = 90 + layout.maxRow * ROW_SPACING;
   const viewBoxHeight = chamberHeight + 40;
   const govTint = `${layout.government?.color ?? COLORS.inkSoft}0f`;
@@ -154,7 +178,7 @@ export default function CommonsChamber() {
         Live seat count from the current data, grouped by party
       </div>
 
-      <div>
+      <div ref={goRef} className="chm-plan" data-go={go} data-lite={phone ? "1" : undefined}>
         <svg
           role="img"
           aria-label="Seating plan of the House of Commons, one dot per MP. To read about a member, press a dot, or choose them from the list below the plan."
@@ -162,19 +186,7 @@ export default function CommonsChamber() {
           viewBox={`0 0 800 ${viewBoxHeight}`}
           style={{ maxWidth: 780, display: "block", margin: "0 auto" }}
         >
-          <defs>
-            <clipPath id="chamber-reveal">
-              <motion.rect
-                x={0}
-                y={0}
-                height={viewBoxHeight}
-                initial={{ width: 0 }}
-                animate={{ width: 800 }}
-                transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
-              />
-            </clipPath>
-          </defs>
-          <g clipPath="url(#chamber-reveal)">
+          <g>
           {/* Chamber floor */}
           <rect x={4} y={4} width={792} height={viewBoxHeight - 8} rx={18} fill={COLORS.paper} stroke={COLORS.hairline} strokeWidth={1} />
           <rect x={404} y={4} width={392} height={viewBoxHeight - 8} rx={18} fill={govTint} />
@@ -200,42 +212,25 @@ export default function CommonsChamber() {
             Opposition benches
           </text>
 
-          {/* Government seats */}
-          {layout.govSeats.map((seat) => {
-            const isPM = layout.pm && seat.mp.id === layout.pm.id;
+          {/* Seats: each MP starts in the block in the middle of the floor and moves to a seat on their party's benches. */}
+          {[...layout.govSeats, ...layout.oppSeats].map((seat) => {
+            const leader = seat.g === 0 ? layout.pm : layout.oppositionLeader;
+            const marked = leader && seat.mp.id === leader.id;
+            const chosen = selected && seat.mp.id === selected.id;
             return (
               <circle
                 key={seat.mp.id}
+                className="chm-seat"
                 cx={seat.x}
                 cy={seat.y + 20}
-                r={isPM ? DOT_R + 1.5 : DOT_R}
+                r={marked || chosen ? DOT_R + 1.5 : DOT_R}
                 fill={seat.color}
-                stroke={isPM ? COLORS.ink : "#fff"}
-                strokeWidth={isPM ? 1.5 : 0.75}
-                style={{ cursor: "pointer" }}
+                stroke={marked || chosen ? COLORS.ink : "#fff"}
+                strokeWidth={marked || chosen ? 1.5 : 0.75}
+                style={{ cursor: "pointer", "--dx": `${seat.dx}px`, "--dy": `${seat.dy}px`, "--d": `${seat.delay}s`, "--sc": seat.color, opacity: active == null || active === seat.g ? 1 : 0.14 }}
                 onClick={() => withScrollPreserved(() => setSelected(seat.mp))}
               >
-                <title>{seat.mp.name}, {seat.mp.party}{isPM ? " (Prime Minister)" : ""}</title>
-              </circle>
-            );
-          })}
-
-          {/* Opposition seats */}
-          {layout.oppSeats.map((seat) => {
-            const isLeader = layout.oppositionLeader && seat.mp.id === layout.oppositionLeader.id;
-            return (
-              <circle
-                key={seat.mp.id}
-                cx={seat.x}
-                cy={seat.y + 20}
-                r={isLeader ? DOT_R + 1.5 : DOT_R}
-                fill={seat.color}
-                stroke={isLeader ? COLORS.ink : "#fff"}
-                strokeWidth={isLeader ? 1.5 : 0.75}
-                style={{ cursor: "pointer" }}
-                onClick={() => withScrollPreserved(() => setSelected(seat.mp))}
-              >
-                <title>{seat.mp.name}, {seat.mp.party}{isLeader ? " (Leader of the Opposition)" : ""}</title>
+                <title>{seat.mp.name}, {seat.mp.party}{marked ? (seat.g === 0 ? " (Prime Minister)" : " (Leader of the Opposition)") : ""}</title>
               </circle>
             );
           })}
@@ -302,26 +297,26 @@ export default function CommonsChamber() {
         </select>
       </div>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }}>
-        {layout.partyGroups.map((g) => (
-          <div
+      <div className="chm-chips" onMouseLeave={() => setHover(null)}>
+        {layout.partyGroups.map((g, gi) => (
+          <button
             key={g.name}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              padding: "5px 11px",
-              borderRadius: 999,
-              background: `${g.color}12`,
-              border: `1px solid ${g.color}30`,
-            }}
+            type="button"
+            className="chm-chip"
+            aria-pressed={pinned === gi}
+            style={{ "--pc": g.color }}
+            onMouseEnter={() => setHover(gi)}
+            onFocus={() => setHover(gi)}
+            onBlur={() => setHover(null)}
+            onClick={() => setPinned((p) => (p === gi ? null : gi))}
           >
-            <span style={{ width: 7, height: 7, borderRadius: "50%", background: g.color, flexShrink: 0 }} />
-            <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 600, color: COLORS.ink }}>{g.name}</span>
-            <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: COLORS.inkSoft }}>{g.members.length}</span>
-          </div>
+            <span className="chm-chip-dot" />
+            <span className="chm-chip-name">{g.name}</span>
+            <span className="chm-chip-n">{g.members.length}</span>
+          </button>
         ))}
       </div>
+      <div className="chm-hint">Hover or press a party to find its seats.</div>
 
       <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 12, lineHeight: 1.5 }}>
         Seats are grouped by party, not individual real assignments. Parliament doesn't publish exactly who sits

@@ -193,15 +193,12 @@ export function ParliamentSilhouette({ width = 200, opacity = 1, color = COLORS.
   );
 }
 
-// Shared across the "Parliament" and "Government" stage panels on How
-// Parliament Works — same layoutId, same fixed size in both places, so the
-// FLIP transition is a clean translate/scale, not a stretch of mismatched content.
+// The round Commons badge shown beside the House of Commons on How Parliament Works. (It used to share a layout id between the two places it appears, so it flew from
+// one to the other whenever a stage opened or closed. Both are on the page together now, and the move that matters is the MPs taking their seats.)
 export function CommonsBadge({ size = 36 }) {
   return (
-    <motion.div
-      layout
-      layoutId="commons-badge"
-      transition={{ type: "spring", stiffness: 300, damping: 28 }}
+    <div
+      aria-hidden="true"
       style={{
         width: size,
         height: size,
@@ -211,11 +208,11 @@ export function CommonsBadge({ size = 36 }) {
         alignItems: "center",
         justifyContent: "center",
         flexShrink: 0,
-        boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.18), inset 0 0 0 1px rgba(255,255,255,0.22)",
       }}
     >
       <ParliamentSilhouette width={size * 0.55} color="#fff" />
-    </motion.div>
+    </div>
   );
 }
 

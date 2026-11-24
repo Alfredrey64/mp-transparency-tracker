@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { m as motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { m as motion, useReducedMotion } from "motion/react";
 import { supabase } from "../supabaseClient";
-import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING, readable, solid } from "../theme";
-import { PageHeader, CommonsBadge } from "./shared";
+import { COLORS, FONT_DISPLAY, FONT_BODY, FONT_MONO, PAGE_PADDING, readable } from "../theme";
+import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
 import CommonsChamber from "./CommonsChamber";
-import { withScrollPreserved } from "../lib/preserveScroll";
+import { lowData } from "../lib/lowData";
+import { StageDeck, Layers, Houses, MpJob } from "./HowParlParts";
 import BillRoute from "./BillRoute";
 import { usePhone } from "../lib/usePhone";
 import GovernmentTiers from "./GovernmentTiers";
@@ -21,36 +22,6 @@ function CrownGraphic() {
       style={{ display: "flex", justifyContent: "center", marginTop: 14 }}
     >
       <CrownArt width={84} />
-    </motion.div>
-  );
-}
-
-function CommonsLordsDiagram() {
-  const chamber = (label, count, note, dotCount, color, showBadge) => (
-    <div style={{ flex: "1 1 220px", background: COLORS.paper, border: `1px solid ${COLORS.hairline}`, borderRadius: 12, padding: 14 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 2 }}>
-        {showBadge && <CommonsBadge size={30} />}
-        <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 13, color: COLORS.ink }}>{label}</div>
-      </div>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginBottom: 8 }}>{note}</div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 3, maxWidth: 200 }}>
-        {Array.from({ length: dotCount }).map((_, i) => (
-          <span key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: color }} />
-        ))}
-      </div>
-      <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: COLORS.inkSoft, marginTop: 6 }}>{count}</div>
-    </div>
-  );
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35 }}
-      style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 14 }}
-    >
-      {chamber("House of Commons", "650 elected MPs", "Directly elected by voters in each constituency", 65, COLORS.accent, true)}
-      {chamber("House of Lords", "~800 members", "Appointed peers and bishops", 65, "#7A4B63", false)}
     </motion.div>
   );
 }
@@ -193,7 +164,7 @@ const STRUCTURE_ROWS = [
     label: "Parliament",
     tagline: "The legislature, makes the laws",
     desc: "Parliament is made up of two chambers: the elected House of Commons (650 MPs) and the House of Lords (appointed members, plus bishops). Together they debate, amend, and vote on new laws.",
-    visual: <CommonsLordsDiagram />,
+    visual: <Houses />,
   },
   {
     key: "government",
@@ -343,108 +314,16 @@ const ELECTION_STAGES = [
   { key: "pm-appointed", label: "PM Appointed", desc: "The Monarch formally invites the leader of the party that can command a Commons majority to become Prime Minister and form a Government." },
 ];
 
-// A quiet "you are here" marker for the stages that don't have a bespoke
-// diagram of their own — every expand panel gets at least this much visual
-// structure, rather than reading as a wall of plain paragraph text.
-function StageProgressDots({ index, total, color }) {
-  return (
-    <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "5px 5px", marginTop: 14 }}>
-      {Array.from({ length: total }).map((_, i) => (
-        <span
-          key={i}
-          style={{
-            width: i === index ? 20 : 7, height: 7, borderRadius: 999, flexShrink: 0,
-            background: i === index ? color : `${color}30`, transition: "width 0.2s",
-          }}
-        />
-      ))}
-      <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: COLORS.inkSoft, marginLeft: 6, whiteSpace: "nowrap" }}>
-        Stage {index + 1} of {total}
-      </span>
-    </div>
-  );
-}
-
-// Used to be a row of pills where only one stage's explanation could be
-// open at a time — reading through a ten-stage process meant clicking,
-// reading, clicking again, and losing the previous stage's text every
-// time. A vertical timeline with independent expand/collapse per stage
-// lets several stay open at once (or all of them), so working through
-// the whole sequence doesn't mean re-clicking your way through it one
-// panel at a time. The connecting spine also just reads as more of an
-// actual diagram than a pill row sitting above an unrelated box did.
-function StepTimeline({ stages, color, showProgress = false }) {
-  const [openKeys, setOpenKeys] = useState(() => new Set([stages[0].key]));
-
-  function toggle(key) {
-    setOpenKeys((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-  }
-
-  return (
-    <div style={{ position: "relative" }}>
-      <div style={{ position: "absolute", left: 14, top: 16, bottom: 16, width: 3, borderRadius: 2, background: `linear-gradient(180deg, ${color}, ${color}33)` }} />
-      {stages.map((stage, i) => {
-        const isOpen = openKeys.has(stage.key);
-        return (
-          <div key={stage.key} style={{ marginBottom: i < stages.length - 1 ? 4 : 0 }}>
-            <motion.button
-              onClick={() => withScrollPreserved(() => toggle(stage.key))}
-              whileHover={{ x: 2 }}
-              style={{
-                display: "flex", alignItems: "center", gap: 12, width: "100%",
-                background: "none", border: "none", padding: "8px 0", cursor: "pointer", textAlign: "left",
-              }}
-            >
-              <span
-                style={{
-                  position: "relative", zIndex: 1,
-                  flexShrink: 0, width: 30, height: 30, borderRadius: "50%",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  background: isOpen ? solid(color) : COLORS.paperCard, border: `2px solid ${color}`,
-                  color: isOpen ? "#fff" : readable(color), fontFamily: FONT_MONO, fontSize: 12, fontWeight: 700,
-                  boxShadow: isOpen ? `0 0 0 5px ${color}26` : `0 0 0 0 ${color}00`,
-                  transition: "background 0.25s, color 0.25s, box-shadow 0.35s",
-                }}
-              >
-                {i + 1}
-              </span>
-              <span style={{ flex: 1, fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 16, color: COLORS.ink }}>{stage.label}</span>
-              <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ flexShrink: 0, color: readable(color), fontSize: 13 }}>▾</motion.span>
-            </motion.button>
-            <AnimatePresence initial={false}>
-              {isOpen && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.25, ease: "easeInOut" }}
-                  style={{ overflow: "hidden" }}
-                >
-                  <div style={{ margin: "2px 0 14px 42px", padding: "12px 16px 14px", borderRadius: 12, borderLeft: `3px solid ${color}`, background: `color-mix(in srgb, ${color} 7%, ${COLORS.paperCard})` }}>
-                    <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft, lineHeight: 1.6, maxWidth: 720 }}>
-                      {stage.desc}
-                    </div>
-                    {showProgress && !stage.visual && <StageProgressDots index={i} total={stages.length} color={color} />}
-                    {stage.visual}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function DiagramSection({ title, intro, stages, color, index = 0, showProgress = false, route = false }) {
-  // The line that draws itself down the page needs room for its panel beside it, so a phone gets just the list of stages, each opening when pressed.
+// Each section shows its stages the way that suits them: the four layers of who is in charge are all laid out; a bill's journey is the scrolling route on a wide screen (and
+// the stepper where there is no room or no motion); the election and the job of an MP are a stepper and a set of cards under three tabs.
+function DiagramSection({ title, intro, stages, color, index = 0, kind = "deck", route = false }) {
   const phone = usePhone();
+  const calm = useReducedMotion() || lowData();
+  let body;
+  if (kind === "layers") body = <Layers stages={stages} />;
+  else if (kind === "job") body = <MpJob stages={stages} color={color} />;
+  else if (route && !phone && !calm) body = <BillRoute stages={stages} color={color} />;
+  else body = <StageDeck stages={stages} color={color} name={title} />;
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -469,8 +348,7 @@ function DiagramSection({ title, intro, stages, color, index = 0, showProgress =
           {intro}
         </p>
       )}
-      {route && !phone && <BillRoute stages={stages} color={color} />}
-      <StepTimeline stages={stages} color={color} showProgress={showProgress} />
+      {body}
     </motion.div>
   );
 }
@@ -602,8 +480,8 @@ export default function HowParliamentWorks() {
         subtitle={
           <>
             From who is in charge, to who does what where you live, to how a{" "}
-            <GlossaryTerm term="Bill">bill</GlossaryTerm> becomes law and how your own MP gets elected. Open any
-            stage for a plain explanation.
+            <GlossaryTerm term="Bill">bill</GlossaryTerm> becomes law and how your own MP gets elected. Step through
+            each stage for a plain explanation.
           </>
         }
         maxWidth={900}
@@ -617,7 +495,7 @@ export default function HowParliamentWorks() {
           intro="The UK's system separates ceremonial authority, law-making, and day-to-day running of the country into distinct roles."
           stages={STRUCTURE_ROWS}
           color={COLORS.accent}
-          showProgress
+          kind="layers"
         />
 
         <GovernmentTiers />
@@ -629,7 +507,6 @@ export default function HowParliamentWorks() {
           intro="Every law goes through the same basic journey, though it can take anywhere from weeks to years."
           stages={BILL_PROCESS_STAGES}
           color="#7A4B63"
-          showProgress
           route
         />
 
@@ -640,7 +517,6 @@ export default function HowParliamentWorks() {
           intro="Every MP in this app got their seat through the same process."
           stages={ELECTION_STAGES}
           color="#2F6F4E"
-          showProgress
         />
 
         <DiagramSection
@@ -650,7 +526,7 @@ export default function HowParliamentWorks() {
           intro="Once elected, what does the role actually involve day to day, and what does it pay?"
           stages={MP_JOB_STAGES}
           color="#4C6FA6"
-          showProgress
+          kind="job"
         />
 
         <ConstituencyLookup />
