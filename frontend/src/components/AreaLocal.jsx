@@ -5,6 +5,7 @@ import { TrendArea, StackBar, RatingColumns, Ring } from "./AreaViz";
 import { IconShield } from "./icons";
 import { IconFlood } from "./newIcons";
 import { PlaceCard, Pill, TrustCard, School, GradeKey } from "./story/NearYouParts";
+import { Batches } from "./Unfold";
 import { useDataFile } from "../lib/useDataFile";
 import { bathingWater, rttWaits, aeNearYou, healthMeta, councilServices, localEconomy, roadCasualties, housePrices } from "../lib/dataFiles";
 import { seatRecord, claimantRow, payRow, monthShort } from "../lib/localEconomyView";
@@ -357,9 +358,12 @@ export function LocalEconomyCard({ r, i }) {
 const HYGIENE_TONE = { 5: "#2F8F6B", 4: "#6FA84A", 3: "#C9A20B", 2: "#E08A1E", 1: "#D9453B", 0: "#B0201A" };
 const shortDate = (d) => (d ? new Date(`${d}T12:00:00`).toLocaleDateString("en-GB", { month: "long", year: "numeric" }) : null);
 
+const FOOD_PAGE = 5;
+
 export function FoodHygieneCard({ r, i }) {
   const point = pointOf(r);
   const [attempt, setAttempt] = useState(0);
+  const [foodShown, setFoodShown] = useState(FOOD_PAGE);
   const food = useLookup(point, (p) => loadFoodHygiene(p, 1), attempt);
   if (!point) return null;
   const fhis = food?.scheme === "FHIS";
@@ -380,14 +384,13 @@ export function FoodHygieneCard({ r, i }) {
           {food.weak.length > 0 && (
             <>
               <h4>{fhis ? "Places asked to improve" : "Lowest rated nearby"}</h4>
-              <ul className="sc-list-flat">
-                {food.weak.slice(0, 3).map((w) => (
-                  <PlaceCard key={w.id} name={w.name} href={`https://ratings.food.gov.uk/business/${w.id}`} miles={w.miles} tone={w.rating == null ? HYGIENE_TONE[1] : HYGIENE_TONE[w.rating]}
-                    tags={[w.type, w.postcode].filter(Boolean)}
-                    rows={[{ label: "Rating", small: w.date ? `Inspected ${shortDate(w.date)}` : "Food Standards Agency", pill: { tone: w.rating == null ? HYGIENE_TONE[1] : HYGIENE_TONE[w.rating], label: w.rating == null ? "Improvement required" : `${w.rating}: ${FHRS_WORDS[w.rating]}` } }]} />
-                ))}
-              </ul>
-              {food.weakCount > 3 && <p className="ma-sub">{n(food.weakCount - 3)} more nearby {fhis ? "were asked to improve" : "are rated 2 or below"}; the link below lists them.</p>}
+              <Batches items={food.weak} shown={foodShown} page={FOOD_PAGE} className="sc-list-flat" render={(w) => (
+                <PlaceCard key={w.id} name={w.name} href={`https://ratings.food.gov.uk/business/${w.id}`} miles={w.miles} tone={w.rating == null ? HYGIENE_TONE[1] : HYGIENE_TONE[w.rating]}
+                  tags={[w.type, w.postcode].filter(Boolean)}
+                  rows={[{ label: "Rating", small: w.date ? `Inspected ${shortDate(w.date)}` : "Food Standards Agency", pill: { tone: w.rating == null ? HYGIENE_TONE[1] : HYGIENE_TONE[w.rating], label: w.rating == null ? "Improvement required" : `${w.rating}: ${FHRS_WORDS[w.rating]}` } }]} />
+              )} />
+              {food.weak.length > foodShown && <button type="button" className="ac-more" onClick={() => setFoodShown(foodShown + FOOD_PAGE)}>Show {Math.min(FOOD_PAGE, food.weak.length - foodShown)} more ({food.weak.length - foodShown} left)</button>}
+              {food.weakCount > food.weak.length && <p className="ma-sub">{n(food.weakCount - food.weak.length)} more {fhis ? "were asked to improve" : "are rated 2 or below"}; the link below lists them.</p>}
             </>
           )}
           <p className="ma-sub">A rating shows what inspectors found on the day of the last visit: how hygienically food is handled, the condition of the building, and how the business manages food safety. It is not about taste, and a place rated below 5 may have improved since; a re-inspection can be requested. Ratings are published by councils and collected by the Food Standards Agency{fhis ? "; Scotland uses a Pass or Improvement Required result instead of numbers" : ""}. Distances are in a straight line.{food.truncated ? " Only the first part of a very long list was returned." : ""}</p>

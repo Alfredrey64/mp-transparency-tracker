@@ -5,7 +5,7 @@ import {
   IconQuestion, IconGavel, IconRankings, IconDarkMoney, IconCurtain, IconThinkTank, IconDoor, IconRegister,
   IconSearch, IconBook, IconChartBars, IconTopic, IconRoute, IconSplit, IconHexMap, IconCouncil,
   IconTaxes, IconCalculator, IconRates, IconMigration, IconMap, IconAsk, IconDeprivation, IconSwing, IconSeatCompare, IconFactory, IconTrend, IconBasket, IconBriefcase, IconLedger, IconPopulation, IconHeartbeat, IconBallot, IconCalendar, IconHouse, IconGlobe, IconLeaf, IconCompareTime, IconShield, IconLordsVote, IconCouncillor, IconFeed, IconPinHome, IconWhoStands, IconCompareAreas, IconAbout, IconMail,
-  IconBills, IconMethodology, IconBroadcast, IconPin,
+  IconBills, IconMethodology, IconComplaint, IconPin,
 } from "../components/icons";
 import {
   IconContract, IconPeerage, IconElectionSpend, IconForeignAgent, IconMayor, IconCouncilBudget, IconPolice, IconPlanning, IconCivilService, IconCourt, IconCrown, IconAudit,
@@ -81,7 +81,7 @@ export const SECTIONS = [
       { key: "petitions", label: "Petitions", icon: IconPetition, hint: "Ask Parliament to act", essential: true },
       { key: "getThingsDone", label: "How to get something done", icon: IconSignpost, hint: "Who to contact, how to complain, and how to ask for information", essential: true, aka: ["complain", "complaint", "ombudsman", "foi", "freedom of information", "who do i contact", "how do i complain", "iopc", "police complaint", "council complaint", "nhs complaint", "ico", "request information", "whatdotheyknow"] },
       { key: "mayors", label: "Mayors and regional authorities", icon: IconMayor, hint: "England's elected regional leaders", aka: ["combined authorities", "metro mayors", "devolution"] },
-      { key: "councilComplaints", label: "How councils handle complaints", icon: IconBroadcast, hint: "How often the Ombudsman found a council at fault", aka: ["ombudsman", "lgo", "complaints about councils", "upheld complaints", "council complaints", "social care complaints"] },
+      { key: "councilComplaints", label: "How councils handle complaints", icon: IconComplaint, hint: "How often the Ombudsman found a council at fault", aka: ["ombudsman", "lgo", "complaints about councils", "upheld complaints", "council complaints", "social care complaints"] },
       { key: "consultations", label: "Have your say on new rules", icon: IconConsultation, hint: "Open government consultations and when they close", aka: ["consultation", "consultations", "have your say", "respond", "reply to government", "call for evidence", "open consultation", "gov.uk consultation", "proposed rules"] },
       { key: "nearYou", label: "Schools and A&E near you", icon: IconPin, hint: "Ofsted results and four-hour A&E figures for your postcode", aka: ["schools near me", "ofsted", "a and e", "accident and emergency", "hospital near me", "nhs trust", "school ratings", "report card", "postcode"] },
       { key: "councilSpending", label: "Council budgets", icon: IconCouncilBudget, hint: "Where your council spends", aka: ["council spending", "section 114", "social care spending"] },

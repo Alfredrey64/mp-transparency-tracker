@@ -1,6 +1,6 @@
 /** @jsxImportSource react */
 import { Card } from "./AreaSections";
-import { IconBroadcast } from "./icons";
+import { IconComplaint } from "./icons";
 import { useDataFile } from "../lib/useDataFile";
 import { councilComplaints } from "../lib/dataFiles";
 import { investigated, against } from "../lib/complaintsView";
@@ -25,7 +25,7 @@ export function ComplaintsCard({ council, county, i }) {
   const ids = [council?.id, county?.id].filter(Boolean);
   if (failed || !council || (data && !ids.some((id) => data.councils[id]))) return null; // outside England, or no figures for this council: the card is left out
   return (
-    <Card i={i} colour="#2C7DA0" icon={<IconBroadcast size={20} />} title="Complaints about your council" className="ma-complaints">
+    <Card i={i} colour="#2C7DA0" icon={<IconComplaint size={20} />} title="Complaints about your council" className="ma-complaints">
       {!data ? <p className="ma-sub">Loading the Ombudsman's figures...</p> : (
         <>
           {ids.filter((id) => data.councils[id]).map((id) => <Line key={id} c={data.councils[id]} year={data.year} />)}

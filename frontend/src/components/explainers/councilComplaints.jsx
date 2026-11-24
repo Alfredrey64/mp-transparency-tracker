@@ -2,7 +2,7 @@
 import ExplainerPage from "../story/ExplainerPage";
 import Loading from "../Loading";
 import { LoadFailedNote } from "../MpCards";
-import { IconBroadcast, IconCouncil, IconDoor, IconSearch, IconCalendar } from "../icons";
+import { IconComplaint, IconCouncil, IconDoor, IconSearch, IconCalendar } from "../icons";
 import { Hero } from "../story/Vivid";
 import ComplaintsLookup, { NationalSplit } from "../story/ComplaintsLookup";
 import { useDataFile } from "../../lib/useDataFile";
@@ -17,7 +17,7 @@ const HEAD = {
   kicker: "Get things done",
   title: "How councils handle complaints",
   subtitle: "When a council cannot settle a complaint, you can take it to the Ombudsman. Every year it publishes what happened for each council in England. This page shows those figures, and how to read them fairly.",
-  icon: IconBroadcast,
+  icon: IconComplaint,
   look: "vivid",
   narrow: true, // the same width as the other pages in the Get things done group
 };

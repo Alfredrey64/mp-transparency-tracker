@@ -27,6 +27,11 @@ describe("summariseHygiene", () => {
     expect(s.weakCount).toBe(3);
     expect(s.weak.map((w) => w.rating)).toEqual([0, 1, 2]);
   });
+  it("keeps every weak place, so the list on the page can be opened out in full", () => {
+    const many = Array.from({ length: 40 }, (_, k) => ({ RatingValue: String(k % 3), SchemeType: "FHRS", BusinessName: `Place ${k}`, Distance: k / 10 }));
+    expect(summariseHygiene(many).weak).toHaveLength(40);
+    expect(summariseHygiene(many, { show: 5 }).weak).toHaveLength(5);
+  });
   it("handles the Scottish scheme", () => {
     const sc = summariseHygiene([{ RatingValue: "Pass", SchemeType: "FHIS" }, { RatingValue: "Pass", SchemeType: "FHIS" }, { RatingValue: "Improvement Required", SchemeType: "FHIS", BusinessName: "X" }, { RatingValue: "Awaiting Inspection", SchemeType: "FHIS" }]);
     expect(sc).toMatchObject({ scheme: "FHIS", judged: 3, pass: 2, improve: 1, waiting: 1, weakCount: 1 });

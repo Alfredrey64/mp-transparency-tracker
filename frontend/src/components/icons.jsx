@@ -507,6 +507,26 @@ export function IconBroadcast({ size = 17 }) {
   );
 }
 
+// A complaint: a letter with a warning badge pinned to its corner. The envelope is cut away around the badge (a mask, so it works on any background); the mask id is the same on every
+// copy, which is harmless because every copy is identical.
+export function IconComplaint({ size = 17 }) {
+  return (
+    <svg aria-hidden="true" focusable="false" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <mask id="icon-complaint-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+        <rect width="24" height="24" fill="#fff" />
+        <circle cx="18" cy="6.2" r="5.6" fill="#000" />
+      </mask>
+      <g mask="url(#icon-complaint-cut)">
+        <rect x="2.5" y="5.5" width="17" height="14" rx="2.2" />
+        <path d="M3.4 7.4 11 13.2l4.2-3.2" />
+      </g>
+      <circle cx="18" cy="6.2" r="3.9" />
+      <path d="M18 4.4v2.2" strokeWidth="1.7" />
+      <circle cx="18" cy="8.1" r="0.55" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 export function IconBook({ size = 17 }) {
   return (
     <svg aria-hidden="true" focusable="false" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">

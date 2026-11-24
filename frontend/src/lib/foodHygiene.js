@@ -28,8 +28,8 @@ const placeOf = (e) => ({
   postcode: e.PostCode ?? "",
 });
 
-// The summary for a list of establishments: how many fall in each rating, and the ones needing most improvement (nearest first within a rating).
-export function summariseHygiene(list, { show = 5 } = {}) {
+// The summary for a list of establishments: how many fall in each rating, and the ones needing most improvement (worst first, nearest first within a rating; all of them unless `show` limits it).
+export function summariseHygiene(list, { show = Infinity } = {}) {
   const items = Array.isArray(list) ? list : [];
   const counts = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
   let rated = 0; let pass = 0; let improve = 0; let waiting = 0; let exempt = 0; let fhis = 0; let fhrs = 0;

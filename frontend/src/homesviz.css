@@ -1,14 +1,31 @@
 /* The two pictures on the "New homes" card of Your area (components/HomesViz.jsx). Class names start hv- so they cannot clash with any other stylesheet. They sit in a .ma-card, which sets
    data-in="true" the first time it scrolls into view; until then every house and pile is flat on the ground. */
 
-.hv-sky, .hv-spread { margin: 14px 0 6px; --hc: #B4532A; }
+.hv-sky, .hv-spread { margin: 14px 0 6px; --hc: #B4532A; --hv-pane: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='9'%3E%3Crect x='1.4' y='1.4' width='4.2' height='6.2' rx='0.7'/%3E%3C/svg%3E"); }
 
 /* The street */
 .hv-houses { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 5px; align-items: end; height: 176px; border-bottom: 2px solid color-mix(in srgb, var(--c-ink, #1b2430) 38%, transparent); }
 .hv-houses li { position: relative; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; }
 .hv-rise { display: block; width: 100%; max-width: 40px; height: calc(var(--h) * 128px + 3px); clip-path: inset(0 0 0 0); transition: clip-path 0.8s var(--ease-spring, cubic-bezier(0.2, 0.8, 0.2, 1)); transition-delay: calc(var(--k) * 55ms + 120ms); }
-.hv-rise > i { display: block; width: 100%; height: 100%; clip-path: polygon(0 9px, 50% 0, 100% 9px, 100% 100%, 0 100%); background-color: color-mix(in srgb, var(--hc) 58%, #fff); background-image: radial-gradient(rgba(255, 255, 255, 0.6) 1.5px, transparent 2px); background-size: 9px 11px; background-position: 2px 14px; }
-.hv-houses li[data-state="new"] .hv-rise > i { background-color: var(--hc); background-image: radial-gradient(rgba(255, 255, 255, 0.7) 1.5px, transparent 2px), repeating-linear-gradient(135deg, transparent 0 5px, rgba(255, 255, 255, 0.16) 5px 8px); }
+/* One building. The body is the coloured block; its roof line is cut with clip-path (a pitched roof and chimney, a flat roof with a lift housing, or a stepped tower top); ::before is the
+   rows of windows (one strip of light cut into window shapes by a mask, spaced evenly whatever the width) and ::after is the front door. data-kind says which, from the height alone. */
+.hv-rise > i { position: relative; display: block; width: 100%; height: 100%; background-color: color-mix(in srgb, var(--hc) 62%, #fff); --win: rgba(255, 255, 255, 0.86); --door: color-mix(in srgb, var(--hc) 45%, #2a1208); }
+.hv-rise > i::before, .hv-rise > i::after { content: ""; position: absolute; display: none; }
+.hv-houses li[data-kind="house"] .hv-rise > i { clip-path: polygon(0 10px, 16% 6.8px, 16% 0, 28% 0, 28% 4.4px, 50% 0, 100% 10px, 100% 100%, 0 100%); }
+.hv-houses li[data-kind="block"] .hv-rise > i { clip-path: polygon(0 4px, 34% 4px, 34% 0, 66% 0, 66% 4px, 100% 4px, 100% 100%, 0 100%); }
+.hv-houses li[data-kind="tower"] .hv-rise > i { clip-path: polygon(0 8px, 18% 8px, 18% 4px, 36% 4px, 36% 0, 64% 0, 64% 4px, 82% 4px, 82% 8px, 100% 8px, 100% 100%, 0 100%); }
+.hv-houses li[data-kind="house"] .hv-rise > i::before, .hv-houses li[data-kind="block"] .hv-rise > i::before, .hv-houses li[data-kind="tower"] .hv-rise > i::before {
+  display: block; left: 17%; right: 17%; bottom: 14px; background: var(--win);
+  -webkit-mask: var(--hv-pane) 0 0 / 7px 9px space; mask: var(--hv-pane) 0 0 / 7px 9px space;
+}
+.hv-houses li[data-kind="house"] .hv-rise > i::before { top: 15px; }
+.hv-houses li[data-kind="block"] .hv-rise > i::before { top: 9px; }
+.hv-houses li[data-kind="tower"] .hv-rise > i::before { top: 13px; }
+.hv-houses li[data-kind="house"] .hv-rise > i::after, .hv-houses li[data-kind="block"] .hv-rise > i::after, .hv-houses li[data-kind="tower"] .hv-rise > i::after {
+  display: block; left: 50%; bottom: 0; width: 24%; min-width: 5px; max-width: 9px; height: 9px; transform: translateX(-50%); border-radius: 3px 3px 0 0; background: var(--door);
+}
+.hv-houses li[data-state="new"] .hv-rise > i { background-color: var(--hc); background-image: repeating-linear-gradient(135deg, transparent 0 5px, rgba(255, 255, 255, 0.2) 5px 8px); }
+.hv-houses li[data-state="new"] .hv-rise > i::before { background: rgba(255, 255, 255, 0.92); }
 .hv-houses li[data-state="loss"] .hv-rise > i { background-color: #B3262E; }
 .hv-houses li[data-state="none"] .hv-rise { height: 14px; }
 .hv-houses li[data-state="none"] .hv-rise > i { clip-path: none; background: none; border: 1.5px dashed color-mix(in srgb, var(--c-ink, #1b2430) 38%, transparent); border-bottom: 0; }

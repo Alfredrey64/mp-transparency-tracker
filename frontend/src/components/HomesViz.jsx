@@ -9,7 +9,11 @@ const signed = (v) => (v < 0 ? `−${n(-v)}` : n(v));
 const short = (year) => `${year.slice(2, 4)}–${year.slice(5)}`; // 2023-24 -> 23-24
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// A street of houses, one per year, each as tall as the net homes added that year. A year with no figure is a dashed plot, never a zero. The newest year (provisional) is hatched.
+// A street of buildings, one per year, each as tall as the net homes added that year. The kind of building follows the height and nothing else: a terrace house with a chimney for the
+// low years, a block of flats for the middle ones and a tower with a stepped top for the highest, so the picture never says more than the bar would. A year with no figure is a dashed
+// plot, never a zero. The newest year (provisional) is hatched like a building under scaffolding.
+const kind = (v, top) => (v == null ? "none" : v <= 0 || v / top < 0.12 ? "stub" : v / top < 0.45 ? "house" : v / top < 0.8 ? "block" : "tower");
+
 export function Skyline({ years, values, colour, aria }) {
   const top = Math.max(...values.map((v) => v ?? 0), 1);
   const peak = values.reduce((b, v, k) => (v != null && (b < 0 || v > values[b]) ? k : b), -1);
@@ -18,7 +22,7 @@ export function Skyline({ years, values, colour, aria }) {
     <figure className="hv-sky" style={{ "--hc": colour }}>
       <ol className="hv-houses" aria-label={aria}>
         {values.map((v, k) => (
-          <li key={years[k]} style={{ "--h": Math.max(v ?? 0, 0) / top, "--k": k }} data-state={v == null ? "none" : v < 0 ? "loss" : k === last ? "new" : "ok"} title={v == null ? `${years[k]}: no figure` : `${years[k]}: ${signed(v)} net new homes`}>
+          <li key={years[k]} style={{ "--h": Math.max(v ?? 0, 0) / top, "--k": k }} data-kind={kind(v, top)} data-state={v == null ? "none" : v < 0 ? "loss" : k === last ? "new" : "ok"} title={v == null ? `${years[k]}: no figure` : `${years[k]}: ${signed(v)} net new homes`}>
             <span className="hv-val">{v == null ? "" : k === last || k === peak || v < 0 ? signed(v) : ""}</span>
             <span className="hv-rise"><i /></span>
           </li>
