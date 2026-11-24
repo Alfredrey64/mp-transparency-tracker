@@ -18,6 +18,13 @@ export const fullPortraitUrl = (url) => {
   return id ? `https://members-api.parliament.uk/api/Members/${id}/Thumbnail` : url;
 };
 
+// The sharper 240-pixel copy of a face (made for current MPs by fetch-portraits.js) for the one place that draws a face at 130 to 160 pixels, the MP card on Your area. A face with no
+// sharp copy has no address here and is drawn from the ordinary one, so this only ever adds to what is shown.
+export const hdPortraitUrl = (url) => {
+  const id = typeof url === "string" ? /^\/portraits\/(\d+)\.webp$/.exec(url)?.[1] : null;
+  return id ? `/portraits/hd/${id}.webp` : null;
+};
+
 // Every field called thumbnail_url (or ending _thumbnail_url) in a database reply, however deep, is pointed at the small copy. Done in place on the reply the reader has just parsed.
 export function smallPortraitsIn(data) {
   if (Array.isArray(data)) { for (const row of data) smallPortraitsIn(row); return data; }

@@ -1,11 +1,13 @@
 /** @jsxImportSource react */
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card } from "./AreaSections";
 import { TrendArea, StackBar, RatingColumns, Ring } from "./AreaViz";
 import { IconShield } from "./icons";
 import { IconFlood } from "./newIcons";
 import { PlaceCard, Pill, TrustCard, School, GradeKey } from "./story/NearYouParts";
 import { Batches } from "./Unfold";
+import PlaceTools, { NoMatch } from "./story/PlaceTools";
+import { browse, byMiles, byName, countLine } from "../lib/placeBrowser";
 import { useDataFile } from "../lib/useDataFile";
 import { bathingWater, rttWaits, aeNearYou, healthMeta, councilServices, localEconomy, roadCasualties, housePrices } from "../lib/dataFiles";
 import { seatRecord, claimantRow, payRow, monthShort } from "../lib/localEconomyView";
@@ -104,6 +106,38 @@ export function StreetCrimeCard({ r, i }) {
   );
 }
 
+const OVERFLOW_PAGE = 5;
+const OVERFLOW_SORTS = {
+  near: { label: "Nearest first", words: "nearest first", compare: byMiles },
+  spills: { label: "Most discharges first", words: "most discharges first", compare: (a, b) => b.spills - a.spills || byMiles(a, b) },
+  hours: { label: "Longest discharging first", words: "longest discharging first", compare: (a, b) => (b.hours ?? 0) - (a.hours ?? 0) || byMiles(a, b) },
+  name: { label: "Name, A to Z", words: "by name", compare: byName },
+};
+
+// The overflows that discharged in the year, nearest first, which can be searched by name, river or water company and sorted by discharges or hours.
+function OverflowList({ water }) {
+  const [query, setQuery] = useState("");
+  const [sort, setSort] = useState("near");
+  const [shown, setShown] = useState(OVERFLOW_PAGE);
+  const spilled = useMemo(() => water.list.filter((o) => o.spills > 0), [water.list]);
+  const list = useMemo(() => browse(spilled, { query, textOf: (o) => [o.name, o.water, o.company], compare: OVERFLOW_SORTS[sort].compare }), [spilled, query, sort]);
+  const sorts = Object.entries(OVERFLOW_SORTS).map(([key, v]) => ({ key, label: v.label }));
+  return (
+    <>
+      <h4>Overflows that discharged in {water.year}</h4>
+      <PlaceTools label="Search and sort the sewage overflows" query={query} sort={sort} sorts={sorts} onQuery={(v) => { setQuery(v); setShown(OVERFLOW_PAGE); }} onSort={(v) => { setSort(v); setShown(OVERFLOW_PAGE); }}
+        line={countLine({ shown: Math.min(shown, list.length), total: list.length, noun: { one: "overflow", many: "overflows" }, query, order: OVERFLOW_SORTS[sort].words })} />
+      {list.length === 0 ? <NoMatch what="overflows" onClear={() => { setQuery(""); setShown(OVERFLOW_PAGE); }} /> : (
+        <Batches items={list} shown={shown} page={OVERFLOW_PAGE} className="sc-list-flat" render={(o) => (
+          <PlaceCard key={o.id} name={o.name} miles={o.miles} tone="#2C7DA0" tags={[o.company, o.water, o.bathing && `Affects ${o.bathing}`].filter(Boolean)}
+            rows={[{ label: `Spills in ${water.year}`, big: n(o.spills), text: `discharges, lasting ${n(o.hours ?? 0)} hours in all.` }]} />
+        )} />
+      )}
+      {list.length > shown && <button type="button" className="plt-more" onClick={() => setShown(shown + OVERFLOW_PAGE)}>Show {Math.min(OVERFLOW_PAGE, list.length - shown)} more ({list.length - shown} left)</button>}
+    </>
+  );
+}
+
 // Sewage overflows within three miles: how many there are, how many spilled in the year, and the busiest. Asked live from the Environment Agency's public map service.
 export function SewageCard({ r, i }) {
   const point = pointOf(r);
@@ -123,16 +157,8 @@ export function SewageCard({ r, i }) {
       {water === undefined ? <p className="ma-sub">Finding sewage overflows near you...</p> : water === null ? <p className="ma-sub">The Environment Agency's figures did not load. Try again in a moment.</p> : s.count === 0 ? <p className="ma-sub">No storm overflows are recorded within {water.radius} miles of your postcode.</p> : (
         <>
           <p>Within {water.radius} miles there {s.count === 1 ? "is" : "are"} <strong>{n(s.count)}</strong> storm overflow{s.count === 1 ? "" : "s"}. In {water.year}, <strong>{n(s.spilled)}</strong> of the {n(s.withData)} with usable monitoring discharged at least once, <strong>{n(s.spills)}</strong> times in all, for <strong>{n(s.hours)}</strong> hours.</p>
-          {s.busiest.length > 0 && (
-            <ul className="sc-list-flat">
-              {s.busiest.filter((o) => o.spills > 0).map((o) => (
-                <PlaceCard key={o.id} name={o.name} miles={o.miles} tone="#2C7DA0"
-                  tags={[o.company, o.water, o.bathing && `Affects ${o.bathing}`].filter(Boolean)}
-                  rows={[{ label: `Spills in ${water.year}`, big: n(o.spills), text: `discharges, lasting ${n(o.hours ?? 0)} hours in all.` }]} />
-              ))}
-            </ul>
-          )}
-          <p className="ma-sub">Shown: the busiest overflows within {water.radius} miles. A storm overflow is meant to release diluted sewage in heavy rain to stop it backing up into homes; the number of times it does so is the figure the Environment Agency collects.{s.poorlyMonitored > 0 ? ` ${s.poorlyMonitored} of these monitors worked for less than 90% of the year, so their counts may be too low.` : ""}{water.truncated ? " Only the first 1,000 overflows were returned." : ""} Source: Environment Agency, event duration monitoring annual returns for {water.year}, as reported by the water companies.</p>
+          {water.list.some((o) => o.spills > 0) && <OverflowList key={`${point.lat},${point.lon}`} water={water} />}
+          <p className="ma-sub">Shown: the overflows within {water.radius} miles that discharged at least once in {water.year}, nearest first unless you sort them another way. A storm overflow is meant to release diluted sewage in heavy rain to stop it backing up into homes; the number of times it does so is the figure the Environment Agency collects.{s.poorlyMonitored > 0 ? ` ${s.poorlyMonitored} of these monitors worked for less than 90% of the year, so their counts may be too low.` : ""}{water.truncated ? " Only the first 1,000 overflows were returned." : ""} Source: Environment Agency, event duration monitoring annual returns for {water.year}, as reported by the water companies.</p>
           <a className="ma-link" href="https://www.gov.uk/government/publications/storm-overflows-policy-and-guidance" target="_blank" rel="noreferrer">What storm overflows are, and the rules on them</a>
         </>
       )}
@@ -169,6 +195,13 @@ export function BathingCard({ r, i }) {
 // How far to look for each kind of service.
 const HEALTH_RADIUS = { GP: 3, HO: 10, CH: 3, other: 6 };
 const HEALTH_PAGE = 3;
+const CQC_RANK = { O: 4, G: 3, R: 2, I: 1 };
+const HEALTH_SORTS = {
+  near: { label: "Nearest first", words: "nearest first", compare: byMiles },
+  best: { label: "Best rated first", words: "best rated first", compare: (a, b) => (CQC_RANK[b.o] ?? 0) - (CQC_RANK[a.o] ?? 0) || byMiles(a, b) },
+  worst: { label: "Lowest rated first", words: "lowest rated first", compare: (a, b) => (CQC_RANK[a.o] ?? 9) - (CQC_RANK[b.o] ?? 9) || byMiles(a, b) },
+  name: { label: "Name, A to Z", words: "by name", compare: byName },
+};
 
 // The Care Quality Commission's rating for the GP surgeries, hospitals, care homes and other services near the postcode, with the five key questions in a drop-down.
 export function HealthServicesCard({ r, i }) {
@@ -178,6 +211,8 @@ export function HealthServicesCard({ r, i }) {
   const { data: meta } = useDataFile(healthMeta);
   const [kind, setKind] = useState("GP");
   const [shown, setShown] = useState(HEALTH_PAGE);
+  const [query, setQuery] = useState("");
+  const [sort, setSort] = useState("near");
   if (!point) return null;
   if (!england) {
     return (
@@ -189,16 +224,22 @@ export function HealthServicesCard({ r, i }) {
   const group = GROUPS.find((g) => g.key === kind);
   const lists = records ? GROUPS.map((g) => ({ ...g, list: placesWithin(records, point, HEALTH_RADIUS[g.key], g.types) })) : [];
   const current = lists.find((g) => g.key === kind);
+  const view = current ? browse(current.list.map((p) => ({ ...p, name: p.n })), { query, textOf: (p) => [p.n, placeView(p).type], compare: HEALTH_SORTS[sort].compare }) : [];
   return (
     <Card i={i} colour="#2F8F6B" icon={<IconHeartbeat size={20} />} title="Health services near your postcode" className="ma-health">
       {records === undefined ? <p className="ma-sub">Finding health services near you...</p> : records === null ? <p className="ma-sub">The Care Quality Commission's ratings did not load. Try again in a moment.</p> : (
         <>
           <div className="ac-tools" role="group" aria-label="Kind of health service">
-            {lists.map((g) => <button key={g.key} type="button" aria-pressed={kind === g.key} onClick={() => { setKind(g.key); setShown(HEALTH_PAGE); }}>{g.label} ({g.list.length})</button>)}
+            {lists.map((g) => <button key={g.key} type="button" aria-pressed={kind === g.key} onClick={() => { setKind(g.key); setShown(HEALTH_PAGE); setQuery(""); }}>{g.label} ({g.list.length})</button>)}
           </div>
-          {current.list.length === 0 ? <p className="ma-sub">No rated {group.label.toLowerCase()} are listed within {HEALTH_RADIUS[kind]} miles of your postcode.</p> : (
+          {current.list.length > 0 && (
+            <PlaceTools label={`Search and sort the ${group.label.toLowerCase()}`} query={query} sort={sort} sorts={Object.entries(HEALTH_SORTS).map(([key, v]) => ({ key, label: v.label }))}
+              onQuery={(v) => { setQuery(v); setShown(HEALTH_PAGE); }} onSort={(v) => { setSort(v); setShown(HEALTH_PAGE); }}
+              line={countLine({ shown: Math.min(shown, view.length), total: view.length, noun: { one: "place", many: "places" }, query, order: HEALTH_SORTS[sort].words })} />
+          )}
+          {current.list.length === 0 ? <p className="ma-sub">No rated {group.label.toLowerCase()} are listed within {HEALTH_RADIUS[kind]} miles of your postcode.</p> : view.length === 0 ? <NoMatch what={group.label.toLowerCase()} onClear={() => { setQuery(""); setShown(HEALTH_PAGE); }} /> : (
             <ul className="sc-list-flat">
-              {current.list.slice(0, shown).map((place) => {
+              {view.slice(0, shown).map((place) => {
                 const v = placeView(place);
                 return (
                   <PlaceCard key={place.i} name={place.n} href={v.url} miles={place.miles} tone={v.overall.tone}
@@ -215,7 +256,7 @@ export function HealthServicesCard({ r, i }) {
               })}
             </ul>
           )}
-          {current.list.length > shown && <button type="button" className="ac-more" onClick={() => setShown(shown + HEALTH_PAGE)}>Show {Math.min(HEALTH_PAGE, current.list.length - shown)} more ({current.list.length - shown} left)</button>}
+          {view.length > shown && <button type="button" className="plt-more" onClick={() => setShown(shown + HEALTH_PAGE)}>Show {Math.min(HEALTH_PAGE, view.length - shown)} more ({view.length - shown} left)</button>}
           <p className="ma-sub">Ratings are the CQC's latest published for each place{meta ? `, from its list of ${meta.asAt}` : ""}. A rating describes the day the CQC inspected, which can be years ago. Not every service is rated: dentists, for example, are not. Distances are in a straight line. Contains CQC information under the Open Government Licence.</p>
           <a className="ma-link" href="https://www.cqc.org.uk/" target="_blank" rel="noreferrer">Search every service on the CQC's own site</a>
         </>
@@ -250,6 +291,11 @@ export function HospitalCard({ r, i }) {
 // The schools within three miles, with Ofsted's latest result and the school's GCSE or Year 6 results. The filter is by kind of school.
 const SCHOOL_RADIUS = 3;
 const SCHOOL_PAGE = 3;
+const SCHOOL_SORTS = {
+  near: { label: "Nearest first", words: "nearest first", compare: byMiles },
+  pupils: { label: "Most pupils first", words: "most pupils first", compare: (a, b) => (b.k ?? 0) - (a.k ?? 0) || byMiles(a, b) },
+  name: { label: "Name, A to Z", words: "by name", compare: byName },
+};
 const PHASES = [["all", "All"], ["P", "Primary"], ["S", "Secondary"], ["X", "Special"]];
 
 export function SchoolsCard({ r, i }) {
@@ -258,6 +304,8 @@ export function SchoolsCard({ r, i }) {
   const records = useLookup(england ? point : null, (p) => loadTiles("schools", p, SCHOOL_RADIUS));
   const [phase, setPhase] = useState("all");
   const [shown, setShown] = useState(SCHOOL_PAGE);
+  const [query, setQuery] = useState("");
+  const [sort, setSort] = useState("near");
   if (!point) return null;
   if (!england) {
     return (
@@ -267,7 +315,8 @@ export function SchoolsCard({ r, i }) {
     );
   }
   const all = records ? schoolsWithin(records, point, SCHOOL_RADIUS) : [];
-  const list = phase === "all" ? all : all.filter((s) => s.p === phase);
+  const byPhase = phase === "all" ? all : all.filter((s) => s.p === phase);
+  const list = browse(byPhase.map((s) => ({ ...s, name: s.n })), { query, textOf: (s) => [s.n], compare: SCHOOL_SORTS[sort].compare });
   return (
     <Card i={i} colour="#7B5BD6" icon={<IconPin size={20} />} title="Schools near your postcode" className="ma-schools">
       {records === undefined ? <p className="ma-sub">Finding schools near you...</p> : records === null ? <p className="ma-sub">The school figures did not load. Try again in a moment.</p> : (
@@ -275,8 +324,13 @@ export function SchoolsCard({ r, i }) {
           <div className="ac-tools" role="group" aria-label="Kind of school">
             {PHASES.map(([k, label]) => <button key={k} type="button" aria-pressed={phase === k} onClick={() => { setPhase(k); setShown(SCHOOL_PAGE); }}>{label} ({k === "all" ? all.length : all.filter((s) => s.p === k).length})</button>)}
           </div>
-          {list.length === 0 ? <p className="ma-sub">No schools of that kind are listed within {SCHOOL_RADIUS} miles.</p> : <><GradeKey /><ul className="sc-list-flat">{list.slice(0, shown).map((s) => <School key={s.u} s={s} />)}</ul></>}
-          {list.length > shown && <button type="button" className="ac-more" onClick={() => setShown(shown + SCHOOL_PAGE)}>Show {Math.min(SCHOOL_PAGE, list.length - shown)} more ({list.length - shown} left)</button>}
+          {byPhase.length > 0 && (
+            <PlaceTools label="Search and sort the schools" query={query} sort={sort} sorts={Object.entries(SCHOOL_SORTS).map(([key, v]) => ({ key, label: v.label }))}
+              onQuery={(v) => { setQuery(v); setShown(SCHOOL_PAGE); }} onSort={(v) => { setSort(v); setShown(SCHOOL_PAGE); }}
+              line={countLine({ shown: Math.min(shown, list.length), total: list.length, noun: { one: "school", many: "schools" }, query, order: SCHOOL_SORTS[sort].words })} />
+          )}
+          {byPhase.length === 0 ? <p className="ma-sub">No schools of that kind are listed within {SCHOOL_RADIUS} miles.</p> : list.length === 0 ? <NoMatch what="schools" onClear={() => { setQuery(""); setShown(SCHOOL_PAGE); }} /> : <><GradeKey /><ul className="sc-list-flat">{list.slice(0, shown).map((s) => <School key={s.u} s={s} />)}</ul></>}
+          {list.length > shown && <button type="button" className="plt-more" onClick={() => setShown(shown + SCHOOL_PAGE)}>Show {Math.min(SCHOOL_PAGE, list.length - shown)} more ({list.length - shown} left)</button>}
           <a className="ma-link" href="#/nearYou">The full list, with the three nearest A&amp;E trusts</a>
         </>
       )}
@@ -359,11 +413,77 @@ const HYGIENE_TONE = { 5: "#2F8F6B", 4: "#6FA84A", 3: "#C9A20B", 2: "#E08A1E", 1
 const shortDate = (d) => (d ? new Date(`${d}T12:00:00`).toLocaleDateString("en-GB", { month: "long", year: "numeric" }) : null);
 
 const FOOD_PAGE = 5;
+const RATING_ORDER = (a, b) => (a.rating ?? -1) - (b.rating ?? -1);
+const FOOD_SORTS = {
+  near: { label: "Nearest first", words: "nearest first", compare: byMiles },
+  low: { label: "Lowest rating first", words: "lowest rated first", compare: (a, b) => RATING_ORDER(a, b) || byMiles(a, b) },
+  high: { label: "Highest rating first", words: "highest rated first", compare: (a, b) => RATING_ORDER(b, a) || byMiles(a, b) },
+  recent: { label: "Most recently inspected", words: "most recently inspected first", compare: (a, b) => String(b.date ?? "").localeCompare(String(a.date ?? "")) || byMiles(a, b) },
+  name: { label: "Name, A to Z", words: "by name", compare: byName },
+};
+const FHRS_FILTERS = [["weak", "Rated 0 to 2", (p) => p.status === "rated" && p.rating <= 2], ["mid", "Rated 3", (p) => p.status === "rated" && p.rating === 3], ["good", "Rated 4 or 5", (p) => p.status === "rated" && p.rating >= 4], ["all", "All ratings", () => true]];
+const FHIS_FILTERS = [["improve", "Improvement required", (p) => p.status === "improve"], ["pass", "Pass", (p) => p.status === "pass"], ["all", "All results", () => true]];
+
+// Every business near the postcode with a published result, nearest first. The visitor can search by name (street or postcode too), sort by rating, date or name, and narrow by rating or
+// kind of business. It opens on the lowest-rated places, which is what the card is for; typing in the search looks through every rating.
+function FoodList({ food, fhis }) {
+  const filters = fhis ? FHIS_FILTERS : FHRS_FILTERS;
+  const sorts = (fhis ? ["near", "recent", "name"] : ["near", "low", "high", "recent", "name"]).map((key) => ({ key, label: FOOD_SORTS[key].label }));
+  const [query, setQuery] = useState("");
+  const [sort, setSort] = useState("near");
+  const [rating, setRating] = useState(filters[0][0]);
+  const [type, setType] = useState("all");
+  const [shown, setShown] = useState(FOOD_PAGE);
+  const types = useMemo(() => {
+    const m = new Map();
+    for (const p of food.places) if (p.type) m.set(p.type, (m.get(p.type) ?? 0) + 1);
+    return [...m].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "en-GB"));
+  }, [food.places]);
+  const counts = useMemo(() => Object.fromEntries(filters.map(([k, , test]) => [k, food.places.filter((p) => (type === "all" || p.type === type) && test(p)).length])), [food.places, filters, type]);
+  const test = filters.find(([k]) => k === rating)?.[2] ?? (() => true);
+  const list = useMemo(
+    () => browse(food.places.filter((p) => (type === "all" || p.type === type) && test(p)), { query, textOf: (p) => [p.name, p.type, p.postcode], compare: FOOD_SORTS[sort].compare }),
+    [food.places, type, rating, query, sort], // eslint-disable-line react-hooks/exhaustive-deps -- `test` follows `rating`
+  );
+  const clear = () => { setQuery(""); setRating("all"); setType("all"); setShown(FOOD_PAGE); };
+  return (
+    <>
+      <h4>{fhis ? "Businesses near you" : "Food businesses near you"}</h4>
+      <PlaceTools label="Search and sort the food businesses" query={query} sort={sort} sorts={sorts}
+        onQuery={(v) => { setQuery(v); setShown(FOOD_PAGE); if (v.trim() && rating !== "all") setRating("all"); }} onSort={(v) => { setSort(v); setShown(FOOD_PAGE); }}
+        line={countLine({ shown: Math.min(shown, list.length), total: list.length, noun: { one: "business", many: "businesses" }, query, order: FOOD_SORTS[sort].words })}>
+        <div className="plt-chips" role="group" aria-label="Rating">
+          <span>Show</span>
+          {filters.map(([k, label]) => <button key={k} type="button" aria-pressed={rating === k} onClick={() => { setRating(k); setShown(FOOD_PAGE); }}>{label} ({counts[k]})</button>)}
+        </div>
+        {types.length > 1 && (
+          <div className="plt-field plt-type">
+            <label htmlFor="food-type">Kind of business</label>
+            <select id="food-type" value={type} onChange={(e) => { setType(e.target.value); setShown(FOOD_PAGE); }}>
+              <option value="all">All kinds ({food.places.length})</option>
+              {types.map(([t, c]) => <option key={t} value={t}>{t} ({c})</option>)}
+            </select>
+          </div>
+        )}
+      </PlaceTools>
+      {list.length === 0 ? <NoMatch what="food businesses" onClear={clear} /> : (
+        <Batches items={list} shown={shown} page={FOOD_PAGE} className="sc-list-flat" render={(w) => {
+          const tone = w.status === "pass" ? HYGIENE_TONE[5] : w.rating == null ? HYGIENE_TONE[1] : HYGIENE_TONE[w.rating];
+          const label = w.status === "pass" ? "Pass" : w.rating == null ? "Improvement required" : `${w.rating}: ${FHRS_WORDS[w.rating]}`;
+          return (
+            <PlaceCard key={w.id} name={w.name} href={`https://ratings.food.gov.uk/business/${w.id}`} miles={w.miles} tone={tone} tags={[w.type, w.postcode].filter(Boolean)}
+              rows={[{ label: "Rating", small: w.date ? `Inspected ${shortDate(w.date)}` : "Food Standards Agency", pill: { tone, label } }]} />
+          );
+        }} />
+      )}
+      {list.length > shown && <button type="button" className="plt-more" onClick={() => setShown(shown + FOOD_PAGE)}>Show {Math.min(FOOD_PAGE, list.length - shown)} more ({list.length - shown} left)</button>}
+    </>
+  );
+}
 
 export function FoodHygieneCard({ r, i }) {
   const point = pointOf(r);
   const [attempt, setAttempt] = useState(0);
-  const [foodShown, setFoodShown] = useState(FOOD_PAGE);
   const food = useLookup(point, (p) => loadFoodHygiene(p, 1), attempt);
   if (!point) return null;
   const fhis = food?.scheme === "FHIS";
@@ -381,18 +501,7 @@ export function FoodHygieneCard({ r, i }) {
             <RatingColumns aria={fhis ? "Food hygiene results near you" : "Food hygiene ratings near you"} cols={[...rows].reverse().map((x) => ({ key: x.key, label: fhis ? x.label : String(x.key), sub: fhis ? undefined : FHRS_WORDS[x.key], value: x.count, colour: x.tone }))} />
           </div>
           {(food.waiting > 0 || food.exempt > 0) && <p className="ma-sub">Not counted above: {[food.waiting > 0 && `${n(food.waiting)} awaiting inspection`, food.exempt > 0 && `${n(food.exempt)} exempt (low-risk businesses such as some childminders and small shops are not rated)`].filter(Boolean).join(", ")}.</p>}
-          {food.weak.length > 0 && (
-            <>
-              <h4>{fhis ? "Places asked to improve" : "Lowest rated nearby"}</h4>
-              <Batches items={food.weak} shown={foodShown} page={FOOD_PAGE} className="sc-list-flat" render={(w) => (
-                <PlaceCard key={w.id} name={w.name} href={`https://ratings.food.gov.uk/business/${w.id}`} miles={w.miles} tone={w.rating == null ? HYGIENE_TONE[1] : HYGIENE_TONE[w.rating]}
-                  tags={[w.type, w.postcode].filter(Boolean)}
-                  rows={[{ label: "Rating", small: w.date ? `Inspected ${shortDate(w.date)}` : "Food Standards Agency", pill: { tone: w.rating == null ? HYGIENE_TONE[1] : HYGIENE_TONE[w.rating], label: w.rating == null ? "Improvement required" : `${w.rating}: ${FHRS_WORDS[w.rating]}` } }]} />
-              )} />
-              {food.weak.length > foodShown && <button type="button" className="ac-more" onClick={() => setFoodShown(foodShown + FOOD_PAGE)}>Show {Math.min(FOOD_PAGE, food.weak.length - foodShown)} more ({food.weak.length - foodShown} left)</button>}
-              {food.weakCount > food.weak.length && <p className="ma-sub">{n(food.weakCount - food.weak.length)} more {fhis ? "were asked to improve" : "are rated 2 or below"}; the link below lists them.</p>}
-            </>
-          )}
+          {food.places.length > 0 && <FoodList key={`${point.lat},${point.lon}`} food={food} fhis={fhis} />}
           <p className="ma-sub">A rating shows what inspectors found on the day of the last visit: how hygienically food is handled, the condition of the building, and how the business manages food safety. It is not about taste, and a place rated below 5 may have improved since; a re-inspection can be requested. Ratings are published by councils and collected by the Food Standards Agency{fhis ? "; Scotland uses a Pass or Improvement Required result instead of numbers" : ""}. Distances are in a straight line.{food.truncated ? " Only the first part of a very long list was returned." : ""}</p>
           <a className="ma-link" href="https://ratings.food.gov.uk/" target="_blank" rel="noreferrer">Search every rating on the Food Standards Agency's site</a>
         </>

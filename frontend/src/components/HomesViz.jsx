@@ -57,7 +57,7 @@ export function Spread({ rates, rate, england, name, colour, max = 20, bins = 20
       <ol className="hv-axis" aria-hidden="true">
         {[0, 5, 10, 15, 20].map((t) => <li key={t} style={{ left: pos(t) }}>{t === max ? `${t}+` : t}</li>)}
       </ol>
-      <p className="hv-axis-note">More new homes for their size &rarr;</p>
+      <p className="hv-axis-note"><span>&larr; Fewer</span><b>New homes added per 1,000 existing homes</b><span>More &rarr;</span></p>
     </figure>
   );
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { portraitUrl, memberIdFromPortrait, smallPortraitsIn } from "./portrait";
+import { hdPortraitUrl, portraitUrl, memberIdFromPortrait, smallPortraitsIn } from "./portrait";
 import { createReader } from "./postgrest";
 
 describe("member portraits", () => {
@@ -21,5 +21,13 @@ describe("member portraits", () => {
     const db = createReader({ url: "http://x", key: "k", fetch: async () => new Response(JSON.stringify(rows), { status: 200 }) });
     const { data } = await db.from("politicians").select("id, thumbnail_url");
     expect(data[0].thumbnail_url).toBe("/portraits/9.webp");
+  });
+});
+
+describe("sharp portraits", () => {
+  it("points a saved small copy at its sharp one, and leaves other pictures alone", () => {
+    expect(hdPortraitUrl("/portraits/4212.webp")).toBe("/portraits/hd/4212.webp");
+    expect(hdPortraitUrl("https://example.org/face.jpg")).toBeNull();
+    expect(hdPortraitUrl(null)).toBeNull();
   });
 });

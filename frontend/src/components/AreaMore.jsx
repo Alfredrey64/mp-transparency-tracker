@@ -174,6 +174,7 @@ export function NewHomesCard({ r, i }) {
           {v.rate != null && (
             <>
               <h4 className="hv-sub">Where {council} sits among England's councils, {v.latestYear}</h4>
+              <p className="hv-explain">Councils are very different sizes, so they are compared on homes added for every 1,000 homes they already had. Each bar below is a group of councils with a similar figure: the further right, the more new homes a council added compared with the number of homes already there.</p>
               <Spread rates={v.rates} rate={v.rate} england={v.englandRate} name={council.replace(/^the /, "")} colour="#B4532A" />
             </>
           )}

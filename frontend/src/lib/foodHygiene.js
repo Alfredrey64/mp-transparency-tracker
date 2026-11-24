@@ -34,12 +34,13 @@ export function summariseHygiene(list, { show = Infinity } = {}) {
   const counts = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
   let rated = 0; let pass = 0; let improve = 0; let waiting = 0; let exempt = 0; let fhis = 0; let fhrs = 0;
   const weak = [];
+  const places = []; // every business with a published result, for the list the visitor can search and sort
   for (const e of items) {
     const s = standing(e);
     if (normal(e.SchemeType) === "fhis") fhis++; else if (s.kind !== "other") fhrs++;
-    if (s.kind === "rated") { counts[s.value]++; rated++; if (s.value <= 2) weak.push({ ...placeOf(e), rating: s.value }); }
-    else if (s.kind === "pass") pass++;
-    else if (s.kind === "improve") { improve++; weak.push({ ...placeOf(e), rating: null }); }
+    if (s.kind === "rated") { counts[s.value]++; rated++; places.push({ ...placeOf(e), rating: s.value, status: "rated" }); if (s.value <= 2) weak.push({ ...placeOf(e), rating: s.value }); }
+    else if (s.kind === "pass") { pass++; places.push({ ...placeOf(e), rating: null, status: "pass" }); }
+    else if (s.kind === "improve") { improve++; weak.push({ ...placeOf(e), rating: null }); places.push({ ...placeOf(e), rating: null, status: "improve" }); }
     else if (s.kind === "waiting") waiting++;
     else if (s.kind === "exempt") exempt++;
   }
@@ -48,7 +49,7 @@ export function summariseHygiene(list, { show = Infinity } = {}) {
   const judged = scheme === "FHIS" ? pass + improve : rated;
   const top = scheme === "FHIS" ? pass : counts[5] + counts[4];
   const authority = items.find((e) => e.LocalAuthorityName)?.LocalAuthorityName ?? null;
-  return { scheme, total: items.length, judged, rated, counts, pass, improve, waiting, exempt, goodShare: judged ? top / judged : null, weakCount: scheme === "FHIS" ? improve : counts[0] + counts[1] + counts[2], weak: weak.slice(0, show), authority };
+  return { scheme, total: items.length, judged, rated, counts, pass, improve, waiting, exempt, goodShare: judged ? top / judged : null, weakCount: scheme === "FHIS" ? improve : counts[0] + counts[1] + counts[2], weak: weak.slice(0, show), places: places.sort((a, b) => a.miles - b.miles || a.name.localeCompare(b.name, "en-GB")), authority };
 }
 
 // Asks for everything within `miles` of the point (one page: 5,000 is more than any square mile of the UK holds).

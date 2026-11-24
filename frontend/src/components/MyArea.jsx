@@ -19,6 +19,7 @@ import { VIEWS, POLITICS_JUMPS, NUMBERS_JUMPS, viewOf, pathOf } from "../lib/are
 import { MpMoneyCard, IndependenceCard, RepsCard, AreaTools } from "./AreaMp";
 import { useAreaExtras } from "../lib/useAreaExtras";
 import { yearsSince } from "../lib/areaProfile";
+import { hdPortraitUrl } from "../lib/portrait";
 import { WeekSection } from "./YourWeek";
 import "../myarea.css";
 
@@ -54,6 +55,13 @@ async function lookUp(postcode) {
 }
 
 // The time between this council election and the one before it, as a ring that fills, with the days still to go counted in the middle.
+// The MP's face on this page is drawn at 130 to 160 pixels, so it uses the sharper 240-pixel copy when there is one and quietly falls back to the ordinary picture if that fails to load.
+function MpPhoto({ url }) {
+  const hd = hdPortraitUrl(url);
+  const [src, setSrc] = useState(hd ?? url);
+  return <img src={src} alt="" loading="lazy" decoding="async" onError={() => { if (src !== url) setSrc(url); }} />;
+}
+
 function Countdown({ days }) {
   const R = 52;
   const C = 2 * Math.PI * R;
@@ -115,7 +123,7 @@ function Dashboard({ data, onForget, view, onView }) {
           <div className="ma-id" style={{ "--pc": mpColour }}>
             <div className="ma-id-photo">
               <svg viewBox="0 0 120 120" aria-hidden="true"><circle className="ma-id-track" cx="60" cy="60" r="55" /><circle className="ma-id-ring" cx="60" cy="60" r="55" pathLength="1" transform="rotate(-90 60 60)" /></svg>
-              {mp.thumbnail_url ? <img src={mp.thumbnail_url} alt="" loading="lazy" decoding="async" /> : <span className="ma-id-fallback" aria-hidden="true">{initials(mp.name)}</span>}
+              {mp.thumbnail_url ? <MpPhoto key={mp.thumbnail_url} url={mp.thumbnail_url} /> : <span className="ma-id-fallback" aria-hidden="true">{initials(mp.name)}</span>}
             </div>
             <h4 className="ma-id-name">{mp.name}</h4>
             <p className="ma-id-chips">

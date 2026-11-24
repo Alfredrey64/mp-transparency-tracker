@@ -32,6 +32,11 @@ describe("summariseHygiene", () => {
     expect(summariseHygiene(many).weak).toHaveLength(40);
     expect(summariseHygiene(many, { show: 5 }).weak).toHaveLength(5);
   });
+  it("keeps every business with a result, nearest first, with its status", () => {
+    expect(s.places).toHaveLength(s.judged);
+    expect(s.places.map((p) => p.miles)).toEqual([...s.places.map((p) => p.miles)].sort((a, b) => a - b));
+    expect(new Set(s.places.map((p) => p.status))).toEqual(new Set(["rated"]));
+  });
   it("handles the Scottish scheme", () => {
     const sc = summariseHygiene([{ RatingValue: "Pass", SchemeType: "FHIS" }, { RatingValue: "Pass", SchemeType: "FHIS" }, { RatingValue: "Improvement Required", SchemeType: "FHIS", BusinessName: "X" }, { RatingValue: "Awaiting Inspection", SchemeType: "FHIS" }]);
     expect(sc).toMatchObject({ scheme: "FHIS", judged: 3, pass: 2, improve: 1, waiting: 1, weakCount: 1 });
