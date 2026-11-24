@@ -20,23 +20,30 @@
     <link rel="preload" href="/fonts/fraunces-figures.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preconnect" href="https://xwrxaarxhlddbhbdbjmm.supabase.co" crossorigin />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <!-- What is on screen while the app's code is still arriving (and, if it never does, the way out: see public/early.js). It needs no script and no stylesheet of its own,
-         so a slow or dropped connection shows a message and a button, not an empty page. React replaces it the moment the app draws. -->
+    <!-- What shows while the app's code is still arriving (and, if it never does, the way out: see public/early.js). It is plain HTML and CSS, so a slow or dropped connection shows a
+         moving bar at once, a message after a few seconds and, if the app cannot start, a button to try again, never an empty page. It sits beside #root, not in it, so the pages'
+         own opening text (scripts/prerender.mjs) still fills #root and shows straight away; early.js takes this away as soon as the app has drawn. -->
     <style>
       html{background:#ECEFF6}
       html[data-theme="dark"]{background:#0A1220}
-      .dl-boot{position:fixed;inset:0;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;box-sizing:border-box;text-align:center;background:#ECEFF6;color:#0A1424;font-family:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
-      html[data-theme="dark"] .dl-boot{background:#0A1220;color:#F2F5FB}
-      .dl-boot-name{margin:0;font:600 28px/1.1 "Newsreader",Georgia,serif;letter-spacing:-0.01em}
-      .dl-boot-bar{width:min(220px,60vw);height:3px;border-radius:3px;background:rgba(30,79,184,0.18);overflow:hidden}
-      .dl-boot-bar::after{content:"";display:block;height:100%;width:40%;border-radius:3px;background:#1E4FB8;animation:dl-boot-slide 1.3s ease-in-out infinite}
+      .dl-boot{font-family:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;color:#0A1424}
+      html[data-theme="dark"] .dl-boot{color:#F2F5FB}
+      .dl-boot-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:2147483000;overflow:hidden;background:rgba(30,79,184,0.16);pointer-events:none}
+      .dl-boot-bar::after{content:"";display:block;height:100%;width:35%;background:#1E4FB8;animation:dl-boot-slide 1.3s ease-in-out infinite}
       html[data-theme="dark"] .dl-boot-bar::after{background:#8DB0FF}
-      @keyframes dl-boot-slide{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
-      .dl-boot-msg{margin:0;max-width:34ch;font-size:15px;line-height:1.5;opacity:0.82}
-      .dl-boot-help{display:flex;flex-direction:column;align-items:center;gap:12px}
+      .dl-boot-hero{display:none;position:fixed;inset:0;z-index:1;align-items:center;justify-content:center;background:#ECEFF6;pointer-events:none}
+      html[data-theme="dark"] .dl-boot-hero{background:#0A1220}
+      html[data-blank] .dl-boot-hero{display:flex}
+      .dl-boot-name{margin:0;font:600 28px/1.1 "Newsreader",Georgia,serif;letter-spacing:-0.01em}
+      .dl-boot-card{position:fixed;left:50%;bottom:24px;z-index:2147483000;transform:translateX(-50%);box-sizing:border-box;width:min(92vw,420px);padding:14px 18px;border-radius:16px;text-align:center;background:#fff;border:1px solid #C9D2E3;box-shadow:0 6px 24px rgba(10,20,36,0.16);opacity:0;visibility:hidden;animation:dl-boot-in 0.3s ease 4s forwards}
+      html[data-theme="dark"] .dl-boot-card{background:#111B2E;border-color:#2A3956}
+      .dl-boot-msg{margin:0;font-size:15px;line-height:1.5}
+      .dl-boot-help{display:flex;justify-content:center;margin-top:12px}
       .dl-boot-help[hidden]{display:none}
       .dl-boot-btn{font-family:inherit;font-weight:600;font-size:15px;line-height:1;cursor:pointer;padding:13px 22px;min-height:44px;border:0;border-radius:999px;background:#1E4FB8;color:#fff}
-      @media (prefers-reduced-motion:reduce){.dl-boot-bar::after{animation:none;width:100%}}
+      @keyframes dl-boot-slide{0%{transform:translateX(-100%)}100%{transform:translateX(300%)}}
+      @keyframes dl-boot-in{to{opacity:1;visibility:visible}}
+      @media (prefers-reduced-motion:reduce){.dl-boot-bar::after{animation:none;width:100%}.dl-boot-card{animation-duration:0.01s}}
     </style>
     <title>Domesday Live</title>
     <meta name="description" content="A simple breakdown of UK politics. See who your MP is, who funds them, how they vote and what the numbers say about the country, all explained in plain English from official sources." />
@@ -64,11 +71,12 @@
     <meta name="twitter:image" content="https://domesdaylive.co.uk/og-image.png?v=16" />
   </head>
   <body>
-    <div id="root">
-      <div class="dl-boot" role="status" aria-live="polite">
-        <p class="dl-boot-name">Domesday Live</p>
-        <div class="dl-boot-bar" aria-hidden="true"></div>
-        <p class="dl-boot-msg" id="dl-boot-msg">Loading&hellip;</p>
+    <div id="root"></div>
+    <div class="dl-boot" id="dl-boot">
+      <div class="dl-boot-bar" aria-hidden="true"></div>
+      <div class="dl-boot-hero" aria-hidden="true"><p class="dl-boot-name">Domesday Live</p></div>
+      <div class="dl-boot-card" role="status" aria-live="polite">
+        <p class="dl-boot-msg" id="dl-boot-msg">Still loading&hellip;</p>
         <div class="dl-boot-help" id="dl-boot-help" hidden>
           <button type="button" class="dl-boot-btn" id="dl-boot-retry">Try again</button>
         </div>

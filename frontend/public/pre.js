@@ -4,5 +4,9 @@
   var pre = document.querySelector(".pre");
   if (!pre) return;
   var here = location.pathname.replace(/\/+$/, "") || "/";
-  if (pre.getAttribute("data-path") !== here) pre.style.display = "none";
+  if (pre.getAttribute("data-path") !== here) {
+    pre.style.display = "none";
+    // Nothing is left to read while the app starts, so the loading screen in index.html shows the site's name instead of an empty page.
+    document.documentElement.setAttribute("data-blank", "1");
+  }
 })();

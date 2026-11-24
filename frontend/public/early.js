@@ -16,11 +16,22 @@
   } catch { /* storage is blocked: the page opens in the standard look */ }
 })();
 
-// If the app never draws (a connection that dropped part-way, a script that could not be fetched or run, a browser too old for it) the page would stay empty.
-// This watches for that and turns the loading screen in index.html into a plain message with a button that throws away every saved copy and tries again.
-// It does nothing once the app has drawn. (Kept here, not inline in the page: the site's security policy allows only scripts from its own files.)
+// If the app never draws (a connection that dropped part-way, a script that could not be fetched or run, a browser too old for it) the page would stay empty or stay as
+// its plain opening text. The loading bar and message in index.html (#dl-boot) show while the app starts; this takes them away as soon as it has drawn, and if it has not
+// after a while turns the message into a plain explanation with a button that throws away every saved copy and tries again. (Kept here, not inline in the page: the site's
+// security policy allows only scripts from its own files.)
 (function () {
-  function drawn() { return !document.querySelector(".dl-boot"); }
+  // This script runs in the head, before the page below it exists, so everything is looked up when it is needed.
+  // The app has drawn once the pages' opening text (.pre, see scripts/prerender.mjs) has been replaced by what React put into #root.
+  function drawn() {
+    var root = document.getElementById("root");
+    return !!root && root.children.length > 0 && !root.querySelector(":scope > .pre");
+  }
+  var timer = setInterval(function () {
+    var boot = document.getElementById("dl-boot");
+    if (boot && drawn()) { clearInterval(timer); boot.remove(); document.documentElement.removeAttribute("data-blank"); }
+  }, 200);
+  setTimeout(function () { clearInterval(timer); }, 10 * 60 * 1000);
   function help(text) {
     if (drawn()) return;
     var msg = document.getElementById("dl-boot-msg");
@@ -44,7 +55,7 @@
     var el = e.target;
     if (!el || el.id !== "dl-boot-retry") return;
     el.disabled = true;
-    el.textContent = "Trying again…";
+    el.textContent = "Trying again\u2026";
     var done = false;
     function go() { if (done) return; done = true; location.reload(); }
     setTimeout(go, 1500);
