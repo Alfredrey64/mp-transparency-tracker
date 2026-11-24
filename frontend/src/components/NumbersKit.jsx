@@ -176,30 +176,37 @@ export function CohortChart({ cohorts, onOpen, note = "Coloured by the party eac
   const top = [...totals.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([p]) => p);
   const colourOf = new Map();
   cohorts.forEach((c) => c.parties.forEach((p) => colourOf.set(p.party, p.colour)));
-  const max = Math.max(1, ...cohorts.map((c) => c.count));
-  const HEIGHT = 190;
+  // One intake far bigger than the rest (everyone appointed before a given year) would squash every other bar to a sliver, so a bar more than about two and a half times the next is
+  // cut short, marked with a break, and the note says so. Its figure is still printed in full.
+  const sorted = cohorts.map((c) => c.count).sort((x, y) => y - x);
+  const cut = sorted.length > 1 && sorted[0] > sorted[1] * 2.4;
+  const cap = cut ? sorted[1] * 1.35 : Math.max(1, sorted[0] ?? 1);
+  const HEIGHT = 200;
+  const clipped = cut ? cohorts.filter((c) => c.count > cap) : [];
   return (
     <div>
-      <div style={{ display: "grid", gridTemplateColumns: `repeat(${cohorts.length}, minmax(0, 1fr))`, gap: "0 10px", alignItems: "end" }}>
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(${cohorts.length}, minmax(0, 1fr))`, gap: "0 clamp(3px, 1vw, 9px)", alignItems: "stretch" }}>
         {cohorts.map((c, ci) => {
           const segments = [...top.map((p) => ({ party: p, count: c.parties.find((x) => x.party === p)?.count ?? 0, colour: partyColour(colourOf.get(p), COLORS.inkSoft) })), { party: "Others", count: c.parties.filter((x) => !top.includes(x.party)).reduce((n, x) => n + x.count, 0), colour: COLORS.inkSoft }].filter((s) => s.count > 0);
+          const over = c.count > cap;
           return (
-            <button type="button" key={c.key} className="nclick" onClick={(e) => onOpen(c, e)} aria-label={`${c.label}: ${c.count} MPs. See the MPs`} style={{ display: "flex", flexDirection: "column", alignItems: "center", minWidth: 0, background: "none", border: "none", padding: "4px 0 6px", color: "inherit" }}>
-              <div style={{ ...numeric, fontSize: 16, fontWeight: 700, color: COLORS.ink, marginBottom: 4 }}>{c.count}</div>
-              <div style={{ height: HEIGHT, width: "100%", display: "flex", alignItems: "flex-end" }}>
+            <button type="button" key={c.key} className="nclick" onClick={(e) => onOpen(c, e)} aria-label={`${c.label}: ${c.count} MPs. See the MPs`} style={{ display: "grid", gridTemplateRows: "26px auto auto", justifyItems: "center", minWidth: 0, background: "none", border: "none", padding: "4px 0 6px", color: "inherit" }}>
+              <div style={{ ...numeric, fontSize: 15, fontWeight: 700, color: COLORS.ink, lineHeight: "26px", whiteSpace: "nowrap" }}>{c.count}</div>
+              <div style={{ position: "relative", height: HEIGHT, width: "100%", display: "flex", alignItems: "flex-end", borderRadius: 10, background: "color-mix(in srgb, var(--c-hairline) 38%, transparent)", overflow: "hidden" }}>
                 <motion.div
                   initial={reduce ? false : { height: 0 }}
-                  whileInView={{ height: `${(c.count / max) * 100}%` }}
+                  whileInView={{ height: `${Math.min(1, c.count / cap) * 100}%` }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: ci * 0.07, ease: [0.22, 1, 0.36, 1] }}
-                  style={{ width: "100%", display: "flex", flexDirection: "column-reverse", gap: 1.5, borderRadius: "6px 6px 0 0", overflow: "hidden" }}
+                  transition={{ duration: 0.85, delay: ci * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                  style={{ position: "relative", width: "100%", display: "flex", flexDirection: "column-reverse", gap: 1.5, borderRadius: "8px 8px 0 0", overflow: "hidden" }}
                 >
                   {segments.map((s) => (
                     <div key={s.party} title={`${s.party}: ${s.count}`} style={{ flexGrow: s.count, flexBasis: 0, background: s.colour, minHeight: 2 }} />
                   ))}
                 </motion.div>
+                {over && <i aria-hidden="true" style={{ position: "absolute", left: 0, right: 0, top: "16%", height: 9, background: `repeating-linear-gradient(135deg, ${COLORS.paperCard} 0 3px, transparent 3px 6px)`, borderTop: `2px solid ${COLORS.paperCard}`, borderBottom: `2px solid ${COLORS.paperCard}` }} />}
               </div>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.ink, marginTop: 8, textAlign: "center", lineHeight: 1.25 }}>{c.label}</div>
+              <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.ink, marginTop: 8, textAlign: "center", lineHeight: 1.25, minHeight: "2.5em", alignSelf: "start" }}>{c.label}</div>
             </button>
           );
         })}
@@ -213,6 +220,7 @@ export function CohortChart({ cohorts, onOpen, note = "Coloured by the party eac
         ))}
       </div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 8 }}>{note}</div>
+      {clipped.length > 0 && <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 4 }}>{clipped.map((c) => `${c.label} (${c.count})`).join(", ")}: the bar is cut short, where marked, so the others can be read.</div>}
     </div>
   );
 }

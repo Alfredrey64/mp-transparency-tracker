@@ -3,10 +3,18 @@ import ExplainerPage from "../story/ExplainerPage";
 import { IconGavel, IconGroup, IconRegister, IconBook, IconParliament, IconScales, IconVote, IconManifesto } from "../icons";
 import { Diverge } from "../story/StateArt";
 import { Hero } from "../story/Vivid";
+import ChamberRoles from "../story/ChamberRoles";
 
 // Facts here come only from sources read on 12 November 2026: the UK Parliament website (the Speaker's pages, the whips glossary entry, the urgent questions page), Erskine May
 // (the Clerk and the duties of whips), Acts of Parliament on legislation.gov.uk and the GOV.UK page for the Chief Whip. No office-holder is named, so the page cannot go out of
 // date when one changes. What is not here: what "one-, two- and three-line whip" mean and what withdrawing the whip does, as no page read in the session says.
+
+// The three groups on the Chamber plan at the top of the page, in the words the page already used for them.
+const ROLES = [
+  { key: "speaker", icon: IconGavel, title: "The Speaker", text: "A neutral referee in the Chamber, with jobs in many Acts of Parliament", badge: "A sitting MP who stays out of party politics", colour: "#A9701F" },
+  { key: "whips", icon: IconGroup, title: "The whips", text: "Appointed by each party to organise its MPs and their votes", badge: "MPs or peers, one team for each party", colour: "#2C5F9E" },
+  { key: "clerks", icon: IconRegister, title: "The Clerk", text: "The House's chief permanent officer and its adviser on the rules", badge: "A permanent official, not an MP", colour: "#1F7A6E" },
+];
 
 const PAGE = {
   look: "vivid",
@@ -18,11 +26,7 @@ const PAGE = {
   lead: <Hero
     colours={["#1B2438", "#5E4B8B", "#A9701F"]}
     why="The front bench gets the headlines, but the Commons also depends on people who are meant to stay out of the argument, or who work the votes behind the scenes. Knowing who does what makes a news story about a vote, a rebellion or a ruling much easier to follow."
-    stops={[
-      { icon: IconGavel, title: "The Speaker", text: "A neutral referee in the Chamber, with jobs in many Acts of Parliament", colour: "#E2BE7A" },
-      { icon: IconGroup, title: "The whips", text: "Appointed by each party to organise its MPs and their votes", colour: "#8DB7E8" },
-      { icon: IconRegister, title: "The Clerk", text: "The House's chief permanent officer and its adviser on the rules", colour: "#8FD1A8" },
-    ]}
+    extra={<ChamberRoles roles={ROLES} />}
     figures={[
       { value: "Over 50%", label: "Of MPs' votes a new Speaker needs", sub: "In a secret ballot, repeated until someone gets there" },
       { value: "4", label: "Boundary Commissions the Speaker chairs", sub: "England, Scotland, Wales and Northern Ireland" },

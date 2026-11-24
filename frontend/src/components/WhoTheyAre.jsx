@@ -1,14 +1,17 @@
 /** @jsxImportSource react */
 import { ExplainerBody } from "./story/ExplainerPage";
 import { IconWhoMps } from "./newIcons";
+import { WhoHeadlines, GenderRings, SchoolRibbon } from "./story/WhoArt";
 
-const PAGE = {
-  icon: IconWhoMps,
-  tiles: [
+const HEADLINES = [
     { label: "Women among the 650 MPs today", value: "41%", colour: "#FFB45E", sub: "267 women, 383 men, from the Parliament members list" },
     { label: "MPs educated at private school", value: "23%", colour: "#6FB1FF", sub: "a record low, according to the Sutton Trust's July 2024 study" },
     { label: "MPs elected in 2024 from an ethnic minority", value: "90", colour: "#FF7A8A", sub: "a record, in British Future's analysis of the 2024 result" },
-  ],
+  ];
+
+const PAGE = {
+  icon: IconWhoMps,
+  lead: <WhoHeadlines items={HEADLINES} />,
   why: { colour: "#5A7FA6", text: "MPs decide on schools, benefits and the NHS. When their own backgrounds are very different from voters', some experiences may be easier for Parliament to miss." },
   chapters: [
     {
@@ -16,12 +19,12 @@ const PAGE = {
       lede: "Women make up 41% of the House of Commons and 35% of the House of Lords.",
       colour: "#E8741A",
       blocks: [
-        { bars: { items: [
+        { node: <GenderRings items={[
           { label: "Labour (with Co-op)", value: 46.8, text: "189 of 404", colour: "#C13A4E" },
           { label: "Liberal Democrat", value: 45.1, text: "32 of 71", colour: "#E8741A" },
           { label: "Conservative", value: 23.7, text: "28 of 118", colour: "#1E4FB8" },
           { label: "House of Lords", value: 35.4, text: "289 of 816", colour: "#6E4B6E" },
-        ], max: 100, note: "Women as a share of each group, in per cent, on 28 October 2026, from the Parliament members list. Bars show the percentage." } },
+        ]} note={"Women as a share of each group, in per cent, on 28 October 2026, from the Parliament members list. Bars show the percentage."} /> },
         { text: [<>The party counts here are for the three largest groups of MPs. The full party split for each House is on the House of Commons and House of Lords tabs, and every MP is listed on <a href="#/list">the MPs page</a>.</>] },
       ],
     },
@@ -30,11 +33,11 @@ const PAGE = {
       lede: "From the Sutton Trust's analysis of the 650 MPs elected on 4 July 2024.",
       colour: "#5A7FA6",
       blocks: [
-        { bars: { items: [
+        { node: <SchoolRibbon items={[
           { label: "State comprehensive", value: 63, text: "63%", colour: "#3F7D5C" },
           { label: "Independent (private)", value: 23, text: "23%", colour: "#9C3B3B" },
           { label: "Selective (grammar)", value: 12, text: "12%", colour: "#E8741A" },
-        ], max: 100, note: "School type of MPs elected in 2024." } },
+        ]} note={"School type of MPs elected in 2024."} /> },
         { compare: [
           { title: "By party", colour: "#5A7FA6", items: [
             "15% of Labour MPs went to private school.",

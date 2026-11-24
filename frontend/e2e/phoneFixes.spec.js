@@ -38,7 +38,7 @@ test("How Parliament works gives a phone the list of stages and no scrolling lin
   await page.goto("/howitworks");
   await expect(page.getByRole("heading", { name: "How a bill becomes law" })).toBeVisible({ timeout: 15000 });
   expect(await page.locator(".billroute").count(), "no route on a phone").toBe(0);
-  await expect(page.getByRole("button", { name: /1st Reading/ })).toBeVisible();
+  await expect(page.getByRole("tab", { name: /1st Reading/ })).toBeVisible();
   const bold = await page.locator("h3", { hasText: "Who do I contact?" }).locator("xpath=..").locator("strong").allTextContents();
   expect(bold).toContain("Your council");
   expect(bold).toContain("Your MP");

@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { m as motion, useReducedMotion } from "motion/react";
-import { COLORS, FONT_BODY, PAGE_PADDING } from "../theme";
+import { COLORS, FONT_BODY, PAGE_PADDING, readable } from "../theme";
 import { PageHeader } from "./shared";
-import { IconAsk, IconSearch } from "./icons";
+import { IconAsk, IconSearch, IconCoin, IconHouse, IconHealth, IconBriefcase, IconBudget, IconMigration, IconLeaf, IconMortarboard, IconDefence } from "./icons";
 import { ANSWERS, ANSWER_TOPICS, answerById } from "../data/answers";
 import { findAnswers } from "../lib/answerSearch";
 import { positionsFor, POSITIONS_AS_OF, ONE_NATION_PARTIES } from "../data/answerPartyPositions";
@@ -22,7 +22,28 @@ import { glide } from "../lib/scrollBehavior";
 const ACCENT = "#1E4FB8";
 const SUGGESTED = ["why-housing-expensive", "why-nhs-waiting-list", "why-prices-rising", "why-small-boats", "where-does-tax-go", "why-economy-slow", "why-mortgage-rates-high", "is-crime-rising"];
 
+// Each group of questions has its own colour and picture, so the page is not one shade: the group's panel, its popular questions and the answer page itself all pick it up.
+const TOPIC_STYLE = {
+  "Prices and money": { colour: "#A9701F", Icon: IconCoin },
+  Housing: { colour: "#2C5F9E", Icon: IconHouse },
+  Health: { colour: "#C13A4E", Icon: IconHealth },
+  "Work and pay": { colour: "#1F7A6E", Icon: IconBriefcase },
+  "Government money": { colour: "#2F4A6B", Icon: IconBudget },
+  "People and borders": { colour: "#B5533C", Icon: IconMigration },
+  "Place and environment": { colour: "#3F7D5C", Icon: IconLeaf },
+  "Schools and universities": { colour: "#8E5BA6", Icon: IconMortarboard },
+  "Defence and security": { colour: "#5A6678", Icon: IconDefence },
+};
+const topicOf = (topic) => TOPIC_STYLE[topic] ?? { colour: ACCENT, Icon: IconAsk };
+
 const sectorCache = new Map();
+// Load the figures an answer shows before its page opens, so the page does not grow when they arrive. It waits at most a moment for a slow connection.
+function warm(answer) {
+  const keys = [...new Set((answer?.facts ?? []).map((f) => f.sector))].filter((k) => !sectorCache.has(k));
+  if (keys.length === 0) return Promise.resolve();
+  const loads = keys.map((k) => loadSector(k).then((r) => { sectorCache.set(k, r); }).catch(() => {}));
+  return Promise.race([Promise.all(loads), new Promise((r) => setTimeout(r, 700))]);
+}
 function useSector(key) {
   const [data, setData] = useState(sectorCache.get(key) ?? null);
   useEffect(() => {
@@ -39,7 +60,7 @@ function Fact({ fact }) {
   const loaded = useSector(fact.sector);
   const item = loaded?.series[fact.series];
   const parts = item ? fillKeyPoint(fact.text, item.def, item.points) : null;
-  if (!loaded) return <li style={{ fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft }}>Loading the latest figure…</li>;
+  if (!loaded) return <li style={{ listStyle: "none", minHeight: 96, padding: "12px 0", borderTop: `1px solid ${COLORS.hairline}`, fontFamily: FONT_BODY, fontSize: 14, color: COLORS.inkSoft }}>Loading the latest figure…</li>;
   if (!parts) return null;
   return (
     <li style={{ listStyle: "none", padding: "12px 0", borderTop: `1px solid ${COLORS.hairline}` }}>
@@ -83,15 +104,16 @@ function PartyPositions({ answerId }) {
 
 function AnswerCard({ answer }) {
   const reduce = useReducedMotion();
+  const { colour: ACCENT, Icon: TopicIcon } = topicOf(answer.topic);
   return (
     <motion.article
       key={answer.id} aria-labelledby="h-answer"
       initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.25 }}
       style={{ display: "grid", gap: 18 }}
     >
-      <section style={{ ...card, position: "relative", overflow: "hidden", background: `${COLORS.paperCard}` }}>
+      <section style={{ ...card, position: "relative", overflow: "hidden", background: `linear-gradient(120deg, ${ACCENT}14 0%, ${COLORS.paperCard} 55%)` }}>
         <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: `${ACCENT}` }} />
-        <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: ACCENT }}>{answer.topic}</div>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: readable(ACCENT) }}><span aria-hidden="true" style={{ display: "grid", placeItems: "center", width: 24, height: 24, borderRadius: 8, background: `${ACCENT}1f` }}><TopicIcon size={14} /></span>{answer.topic}</div>
         <h2 id="h-answer" style={{ ...cardTitle, fontSize: "clamp(22px, 4vw, 30px)", margin: "4px 0 14px" }}>{answer.question}</h2>
         <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 700, color: COLORS.inkSoft, marginBottom: 4 }}>In short</div>
         <p style={{ fontFamily: FONT_BODY, fontSize: 16.5, lineHeight: 1.6, color: COLORS.ink, margin: 0, maxWidth: 760 }}>{answer.short}</p>
@@ -158,10 +180,27 @@ export default function AnswersPage({ param }) {
   const answer = answerById(param);
   const results = useMemo(() => findAnswers(query, ANSWERS, 6), [query]);
   const searching = query.trim().length > 0;
-  const open = (id) => { setQuery(""); navigate(`#/answers/${id}`); window.scrollTo({ top: 0, behavior: glide() }); };
+  const [pending, setPending] = useState(null);
+  // Opening a question: wait a moment for its figures, then swap the page and put it at the top in one step (no slide while the content changes), and the answer fades in.
+  const open = async (id) => {
+    if (pending) return;
+    setPending(id);
+    await warm(answerById(id));
+    setPending(null);
+    setQuery("");
+    navigate(`#/answers/${id}`);
+    // The answer is already in place and fading in; once it is drawn, glide down to it (the title and search box above are not needed again).
+    let tries = 0;
+    const toAnswer = () => {
+      const h = document.getElementById("h-answer");
+      if (h) window.scrollTo({ top: Math.max(0, h.getBoundingClientRect().top + window.scrollY - 150), behavior: glide() });
+      else if (tries++ < 20) requestAnimationFrame(toAnswer);
+    };
+    requestAnimationFrame(toAnswer);
+  };
 
   return (
-    <div style={{ maxWidth: 1000, margin: "0 auto", padding: PAGE_PADDING }}>
+    <div style={{ maxWidth: 1000, margin: "0 auto", padding: PAGE_PADDING, opacity: pending ? 0.72 : 1, transition: "opacity 0.2s" }} aria-busy={pending ? "true" : undefined}>
       <PageHeader icon={IconAsk} title="Ask a question" subtitle="Type a question, such as why housing is so expensive, or pick one below. You get a plain answer, the latest official figures, and the main arguments from different sides." maxWidth={720} />
 
       <form role="search" onSubmit={(e) => { e.preventDefault(); if (results[0]) open(results[0].id); }} style={{ position: "relative", margin: "22px 0 16px" }}>
@@ -214,25 +253,35 @@ export default function AnswersPage({ param }) {
           <h2 id="h-all" style={{ ...cardTitle, fontSize: 20 }}>{answer ? "More questions" : "Popular questions"}</h2>
           {!answer && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, margin: "12px 0 24px" }}>
-              {SUGGESTED.map((id) => (
-                <button key={id} type="button" className="ons-chip" onClick={() => open(id)} style={{ fontFamily: FONT_BODY, fontSize: 14, fontWeight: 600, color: COLORS.ink, padding: "9px 16px", borderRadius: 999, border: `1px solid ${ACCENT}77`, background: `${ACCENT}12`, cursor: "pointer" }}>
-                  {answerById(id).question}
-                </button>
-              ))}
+              {SUGGESTED.map((id) => {
+                const a = answerById(id);
+                const { colour, Icon } = topicOf(a.topic);
+                return (
+                  <button key={id} type="button" className="ons-chip" onClick={() => open(id)} onPointerEnter={() => warm(a)} onFocus={() => warm(a)} style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: FONT_BODY, fontSize: 14, fontWeight: 600, color: COLORS.ink, padding: "9px 16px 9px 12px", borderRadius: 999, border: `1px solid ${colour}66`, background: `${colour}18`, cursor: "pointer" }}>
+                    <span aria-hidden="true" style={{ display: "grid", placeItems: "center", flex: "none", width: 24, height: 24, borderRadius: 999, background: colour, color: "#fff" }}><Icon size={13} /></span>
+                    {a.question}
+                  </button>
+                );
+              })}
             </div>
           )}
           <div style={{ display: "grid", gap: 26, marginTop: answer ? 12 : 0 }}>
-            {ANSWER_TOPICS.map((topic) => (
-              <div key={topic}>
-                <h3 style={{ ...smallTitle, fontSize: 14, color: ACCENT, margin: "0 0 10px" }}>{topic}</h3>
+            {ANSWER_TOPICS.map((topic) => {
+              const { colour: TC, Icon: TopicIcon } = topicOf(topic);
+              return (
+              <div key={topic} style={{ padding: "16px clamp(12px, 2.4vw, 20px) 18px", borderRadius: 22, background: `linear-gradient(160deg, ${TC}1c 0%, ${TC}0a 60%)`, border: `1px solid ${TC}30` }}>
+                <h3 style={{ ...smallTitle, display: "flex", alignItems: "center", gap: 10, fontSize: 15, color: readable(TC), margin: "0 0 12px" }}>
+                  <span aria-hidden="true" style={{ display: "grid", placeItems: "center", width: 32, height: 32, borderRadius: 11, background: TC, color: "#fff" }}><TopicIcon size={17} /></span>
+                  {topic}
+                </h3>
                 <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(270px, 100%), 1fr))", gap: 10 }}>
                   {ANSWERS.filter((a) => a.topic === topic).map((a) => {
                     const here = answer?.id === a.id;
                     return (
                       <li key={a.id} style={{ display: "flex" }}>
                         <a
-                          className="ons-tap answer-box" href={`#/answers/${a.id}`} aria-current={here ? "page" : undefined}
-                          style={{ display: "flex", alignItems: "center", width: "100%", boxSizing: "border-box", fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.4, fontWeight: here ? 700 : 600, color: COLORS.ink, textDecoration: "none", padding: "13px 16px", minHeight: 56, borderRadius: 14, background: here ? `${ACCENT}1c` : COLORS.paperCard, borderTop: `1px solid ${here ? ACCENT : COLORS.hairline}`, borderRight: `1px solid ${here ? ACCENT : COLORS.hairline}`, borderBottom: `1px solid ${here ? ACCENT : COLORS.hairline}`, borderLeft: `4px solid ${ACCENT}`, transition: "background 0.15s, transform 0.15s, box-shadow 0.15s" }}
+                          className="ons-tap answer-box" href={`#/answers/${a.id}`} aria-current={here ? "page" : undefined} onPointerEnter={() => warm(a)} onFocus={() => warm(a)}
+                          style={{ display: "flex", alignItems: "center", width: "100%", boxSizing: "border-box", fontFamily: FONT_BODY, fontSize: 14.5, lineHeight: 1.4, fontWeight: here ? 700 : 600, color: COLORS.ink, textDecoration: "none", padding: "13px 16px", minHeight: 56, borderRadius: 14, background: here ? `${TC}1c` : COLORS.paperCard, borderTop: `1px solid ${here ? TC : COLORS.hairline}`, borderRight: `1px solid ${here ? TC : COLORS.hairline}`, borderBottom: `1px solid ${here ? TC : COLORS.hairline}`, borderLeft: `4px solid ${TC}`, "--tcb": `${TC}1f`, transition: "background 0.15s, transform 0.15s, box-shadow 0.15s" }}
                         >
                           {a.question}
                         </a>
@@ -241,9 +290,10 @@ export default function AnswersPage({ param }) {
                   })}
                 </ul>
               </div>
-            ))}
+              );
+            })}
           </div>
-          <style>{`.answer-box:hover { background: ${ACCENT}14 !important; transform: translateY(-2px); box-shadow: 0 14px 26px -20px rgba(0, 0, 0, 0.6); } @media (prefers-reduced-motion: reduce) { .answer-box:hover { transform: none; } }`}</style>
+          <style>{`.answer-box:hover { background: var(--tcb) !important; transform: translateY(-2px); box-shadow: 0 14px 26px -20px rgba(0, 0, 0, 0.6); } @media (prefers-reduced-motion: reduce) { .answer-box:hover { transform: none; } }`}</style>
         </section>
       )}
     </div>

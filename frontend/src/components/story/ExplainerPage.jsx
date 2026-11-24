@@ -14,7 +14,7 @@ import { useDetail, setDetail, shortBlocks } from "../../lib/detailLevel";
 //   bars      { items: [{ label, value, text, colour }], max, note }   bars drawn to the same scale, from 0 to `max` (the biggest value if left out)
 //   facts     [{ label, value, note }]         big figures, each with a line under it
 //   compare   [{ title, colour, items: [] }]   two or more columns side by side
-//   timeline  [{ when, text }]                 dated events down a line
+//   timeline  [{ when, text, colour? }]                 dated events down a line
 //   more      { title, text: [] }              a fold-out for the longer version of a point
 //   pipeline  [{ label, value, note, colour }]         stations in a row joined by arrows, each with its figure
 //   duo       { items: [{ label, before, after, beforeText, afterText }], beforeName, afterName, note }   two bars per row, then and now
@@ -136,7 +136,7 @@ function Block({ b, colour }) {
   if (b.timeline) {
     return (
       <ol className="st-timeline" style={{ "--tc": colour }}>
-        {b.timeline.map((t, i) => <li key={i} style={{ "--i": i }}><b>{t.when}</b><span>{t.text}</span></li>)}
+        {b.timeline.map((t, i) => <li key={i} style={t.colour ? { "--i": i, "--tc": t.colour } : { "--i": i }}><b>{t.when}</b><span>{t.text}</span></li>)}
       </ol>
     );
   }
@@ -185,9 +185,9 @@ function DetailToggle() {
 
 // `look` is how the page is dressed: "ledger", "poster" or "field" (see story.css); left out, it keeps the first look.
 // `narrow` matches the width of the older pages that sit in the same menu group (Election results, Your council), so moving between tabs does not shift the page.
-export default function ExplainerPage({ icon, kicker, title, subtitle, tiles, tileVariant, lead, why, chapters, sources, checked, notice, narrow = false, look, scene }) {
+export default function ExplainerPage({ icon, kicker, title, subtitle, tiles, tileVariant, lead, why, chapters, sources, checked, notice, narrow = false, look, scene, lively = false }) {
   return (
-    <div className="st" data-look={look} style={{ paddingTop: "clamp(20px, 5vw, 40px)", ...(narrow ? { maxWidth: 1084 } : null) }}>
+    <div className="st" data-look={look} data-lively={lively ? "1" : undefined} style={{ paddingTop: "clamp(20px, 5vw, 40px)", ...(narrow ? { maxWidth: 1084 } : null) }}>
       <PageHeader icon={icon} kicker={kicker} title={title} subtitle={subtitle} scene={scene} />
       <DetailToggle />
       <ExplainerBody icon={icon} tiles={tiles} tileVariant={tileVariant} lead={lead} why={why} chapters={chapters} sources={sources} checked={checked} notice={notice} />

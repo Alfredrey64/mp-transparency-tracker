@@ -1543,3 +1543,24 @@
   .lrc-q { grid-column: 2; grid-row: 1 / span 2; }
   .lrc-found { grid-column: 3; grid-row: 1 / span 2; margin-top: 0; align-self: stretch; align-content: start; }
 }
+
+/* A page that asks for more colour (lively on ExplainerPage): each chapter heading is washed with the chapter's own colour and carries a solid numeral, the paragraphs sit on a tinted card, and the
+   highlighted statements are filled. Everything stays readable: ink on pale tints, white on the deep chapter colours. */
+.st[data-lively="1"] .st-chapter > header { position: relative; overflow: hidden; background: linear-gradient(112deg, color-mix(in srgb, var(--tc) 26%, var(--c-paper-card)) 0%, color-mix(in srgb, var(--tc) 8%, var(--c-paper-card)) 46%, var(--c-paper-card) 100%); border-color: color-mix(in srgb, var(--tc) 28%, var(--c-hairline)); border-left-width: 6px; }
+.st[data-lively="1"] .st-chapter > header::after { content: ""; position: absolute; right: -30px; top: -40px; width: 150px; height: 150px; border-radius: 50%; border: 22px solid color-mix(in srgb, var(--tc) 10%, transparent); pointer-events: none; }
+.st[data-lively="1"] .st-n { width: 54px; height: 54px; border-radius: 50%; background: var(--tc); color: #fff; font-size: 26px; font-weight: 800; box-shadow: 0 0 0 5px color-mix(in srgb, var(--tc) 18%, transparent), 0 10px 18px -8px color-mix(in srgb, var(--tc) 70%, transparent); }
+.st[data-lively="1"] .st-prose { padding: 16px clamp(16px, 2.4vw, 24px); border-radius: 16px; background: color-mix(in srgb, var(--tc) 6%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--tc) 16%, var(--c-hairline)); }
+.st[data-lively="1"] .st-pull { color: #fff; background: linear-gradient(120deg, color-mix(in srgb, var(--tc) 92%, #000) 0%, color-mix(in srgb, var(--tc) 62%, #14213D) 100%); border: 0; box-shadow: 0 18px 30px -22px color-mix(in srgb, var(--tc) 80%, transparent); }
+.st[data-lively="1"] .st-cards li { background: linear-gradient(180deg, color-mix(in srgb, var(--tc) 9%, var(--c-paper-card)) 0%, var(--c-paper-card) 58%); }
+.st[data-lively="1"] .st-steps li { background: linear-gradient(100deg, color-mix(in srgb, var(--tc) 12%, var(--c-paper-card)) 0%, var(--c-paper-card) 70%); }
+.st[data-lively="1"] .st-step-n { background: var(--tc); color: #fff; }
+.st[data-lively="1"] .st-facts > div { background: linear-gradient(135deg, color-mix(in srgb, var(--tc) 16%, var(--c-paper-card)), color-mix(in srgb, var(--tc) 4%, var(--c-paper-card))); border: 1px solid color-mix(in srgb, var(--tc) 24%, var(--c-hairline)); }
+.st[data-lively="1"] .st-timeline { padding: 18px 18px 0 30px; border-radius: 18px; border-left-width: 0; background: var(--c-paper-card); border: 1px solid var(--c-hairline); }
+.st[data-lively="1"] .st-timeline li::before { left: -9px; width: 14px; height: 14px; border-color: var(--c-paper-card); box-shadow: 0 0 0 2px color-mix(in srgb, var(--tc) 40%, transparent); }
+.st[data-lively="1"] .st-timeline li::after { content: ""; position: absolute; left: -3px; top: 21px; bottom: -4px; width: 2px; background: color-mix(in srgb, var(--tc) 30%, var(--c-hairline)); }
+.st[data-lively="1"] .st-timeline li:last-child::after { display: none; }
+.st[data-lively="1"] .st-timeline li { padding-left: 24px; }
+/* the colour key above the timeline of the real Act */
+.lwk { list-style: none; margin: 0 0 -6px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 18px; font: 700 13px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.lwk li { display: inline-flex; align-items: center; gap: 7px; }
+.lwk li::before { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--tc); }

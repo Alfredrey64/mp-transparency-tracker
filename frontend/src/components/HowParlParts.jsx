@@ -79,6 +79,7 @@ export function StageDeck({ stages, color, name }) {
             data-state={k < i ? "done" : k === i ? "now" : "todo"}
             onClick={() => go(k)}
             title={plain(s.label)}
+            aria-label={`Stage ${k + 1}: ${plain(s.label)}`}
           >
             <span className="hwk-node">{k < i ? <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg> : k + 1}</span>
             <span className="hwk-node-label">{plain(s.label)}</span>

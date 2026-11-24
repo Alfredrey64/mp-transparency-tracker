@@ -66,3 +66,9 @@
   .acp-bars { height: 120px; gap: 2px; }
 }
 @media (prefers-reduced-motion: reduce) { .acp-this, .acp-dot, .acp-tag, .acp-col i { transition: none !important; } }
+
+/* on the Bills page (components/ActsSection.jsx) */
+.acs { margin-top: 36px; padding: 22px clamp(14px, 3vw, 26px) 26px; border-radius: 18px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: inset 4px 0 0 #8A5A1F; }
+.acs-head { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 20px; }
+.acs-ico { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: color-mix(in srgb, #8A5A1F 14%, var(--c-paper-card)); color: #8A5A1F; }
+.acs-head a { color: var(--c-accent-ink, inherit); text-decoration: underline; text-underline-offset: 2px; }

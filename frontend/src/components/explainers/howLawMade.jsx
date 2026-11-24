@@ -3,9 +3,8 @@ import ExplainerPage from "../story/ExplainerPage";
 import { IconBook, IconGavel, IconScales, IconVote, IconSearch, IconRegister } from "../icons";
 import { Flow } from "../story/StateArt";
 import { Hero } from "../story/Vivid";
+import LawArt from "../story/LawArt";
 import LAW from "../../data/lawExample.json";
-import ACTS from "../../data/acts.json";
-import ActsPassed from "../story/ActsPassed";
 
 // The explanations of each stage are Parliament's own, from the "How does a bill become a law?" guide on parliament.uk, read on 12 November 2026. The journey is a real Act:
 // frontend/src/data/lawExample.json is rebuilt every day by fetch-bill-stages.js, which picks a recent Act with a full journey from Parliament's Bills API, so the dates and the
@@ -24,10 +23,23 @@ const longTitle = LAW.bill.longTitle ? LAW.bill.longTitle.replace(/^A Bill to /,
 const when = (s) => (s.dates.length > 1 ? `${fmt(s.dates[0])} to ${fmt(s.dates[s.dates.length - 1])}` : s.dates[0] ? fmt(s.dates[0]) : "");
 const house = (s) => (s.house === "Unassigned" ? "Both Houses" : s.house);
 const title = (s) => (/^Consideration of .*amendments/i.test(s.stage) ? `${house(s)}: ${s.stage.replace(/ and \/ or reasons/, " or reasons")}` : s.stage === "Royal Assent" ? "Royal Assent" : `${house(s)}: ${s.stage}`);
-const journey = stages.filter((s) => s.dates.length).map((s) => ({ when: when(s), text: title(s) }));
+const HOUSE_COLOURS = { Commons: "#2F7D52", Lords: "#A8323E" };
+const journey = stages.filter((s) => s.dates.length).map((s) => ({ when: when(s), text: title(s), colour: s.stage === "Royal Assent" ? "#B8862B" : HOUSE_COLOURS[s.house] }));
+
+// A key for the coloured dots on the timeline of the real Act.
+function HouseKey() {
+  return (
+    <ul className="lwk" aria-label="Colour key for the timeline">
+      <li style={{ "--tc": HOUSE_COLOURS.Commons }}>Commons</li>
+      <li style={{ "--tc": HOUSE_COLOURS.Lords }}>Lords</li>
+      <li style={{ "--tc": "#B8862B" }}>Royal Assent</li>
+    </ul>
+  );
+}
 
 const PAGE = {
   look: "vivid",
+  lively: true,
   narrow: true,
   icon: IconBook,
   kicker: "How laws are made",
@@ -41,6 +53,7 @@ const PAGE = {
       { icon: IconScales, title: "Examined twice over", text: "Debated, studied line by line and amended in both Houses", colour: "#8DB7E8" },
       { icon: IconGavel, title: "Agreed and signed", text: "Both Houses agree the exact wording, then the King gives Royal Assent", colour: "#9ED4B6" },
     ]}
+    extra={<LawArt />}
     figures={[
       { value: "2", label: "Houses that must agree", sub: "The Commons and the Lords, in the same form" },
       { value: String(journey.length), label: "Stages in the Act followed here", sub: LAW.bill.shortTitle },
@@ -71,6 +84,7 @@ const PAGE = {
       colour: "#8A5A1F",
       blocks: [
         ...(longTitle ? [{ text: [`In its own words, it is ${longTitle.charAt(0).toLowerCase()}${longTitle.slice(1)}`.replace(/\.?$/, ".")] }] : []),
+        { node: <HouseKey /> },
         { timeline: journey },
         { text: [<>The full record, with the text of every version of the bill, is on <a href={LAW.bill.url} target="_blank" rel="noopener noreferrer">Parliament's page for this bill</a>.</>] },
       ],
@@ -126,20 +140,12 @@ const PAGE = {
         { facts: [
           { label: "Royal Assent given", value: fmt(LAW.royalAssent), note: LAW.bill.shortTitle },
         ] },
+        { text: [<>To see how many Acts have become law this year, and how that compares with other years, see the <a href="#/voting">Bills page</a>.</>] },
         { text: ["Being an Act does not always mean the law applies at once. It may come into effect immediately, after a set period, or only when a minister makes a commencement order. If there is no commencement order, an Act comes into force from midnight at the start of the day it received Royal Assent."] },
-      ],
-    },
-    {
-      title: `The Acts that have become law in ${ACTS.year}`,
-      lede: "Every Act of Parliament has to pass the same stages. This is how many have made it through, and when.",
-      colour: "#8A5A1F",
-      blocks: [
-        { node: <ActsPassed data={ACTS} /> },
       ],
     },
   ],
   sources: [
-    { label: "legislation.gov.uk: Public General Acts", url: "https://www.legislation.gov.uk/ukpga", note: `The Acts made law each year, with the date of Royal Assent. Last read ${ACTS.fetchedAt}.` },
     { label: "UK Parliament: How does a bill become a law?", url: "https://www.parliament.uk/about/how/laws/passage-bill/", note: "Every stage in the Commons and the Lords, ping pong and Royal Assent." },
     { label: `UK Parliament Bills: ${LAW.bill.shortTitle}`, url: LAW.bill.url, note: "The dates of each stage for the Act followed here, from Parliament's Bills API." },
   ],

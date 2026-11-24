@@ -135,7 +135,7 @@ function TermRow({ t, isOpen, onToggle, accent }) {
             transition={FOLD}
             style={{ overflow: "hidden" }}
           >
-            <div style={{ padding: "0 18px 20px", display: "flex", flexDirection: "column", gap: 14, maxWidth: 700 }}>
+            <div style={{ padding: "0 18px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
               <div style={{ fontFamily: FONT_BODY, fontSize: 15, color: COLORS.ink, lineHeight: 1.7 }}>{t.def}</div>
               {t.example && (
                 <div style={{ background: `${accent}14`, borderLeft: `3px solid ${accent}`, borderRadius: 10, padding: "11px 15px" }}>
