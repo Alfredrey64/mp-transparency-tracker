@@ -41,3 +41,15 @@ test("the peerages page sits in the House of Lords group", async ({ page }) => {
   await page.goto("/lords");
   await expect(page.getByRole("link", { name: "Peerages" }).first()).toBeVisible();
 });
+
+test("a page whose figures never arrive says so after a while and offers to try again", async ({ page }) => {
+  await page.clock.install();
+  await page.route("**/127.0.0.1:54321/**", () => new Promise(() => {})); // the data service never answers
+  await page.goto("/donors");
+  await expect(page.locator(".loading-page")).toBeVisible();
+  await expect(page.locator(".loading-slow[data-on]")).toHaveCount(0);
+  await page.clock.fastForward(9500);
+  await expect(page.locator(".loading-slow[data-on]")).toContainText("taking longer than usual");
+  await page.clock.fastForward(11000);
+  await expect(page.getByRole("button", { name: "Try again" })).toBeVisible();
+});
