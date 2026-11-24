@@ -9,7 +9,7 @@ test("the lobbyists page opens with a sentence carrying its numbers, not a row o
   const lead = page.getByRole("region", { name: "The register in brief" });
   await expect(lead).toContainText("Since 2014");
   await expect(lead).toContainText("are on it today");
-  await expect(page.locator(".st-case-flag")).toHaveCount(3);
+  await expect(page.locator(".lrc-grid > .lrc")).toHaveCount(3);
 });
 
 test("the ministers' meetings page leads with one figure and its facts", async ({ page }) => {

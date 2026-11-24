@@ -22,7 +22,7 @@ async function main() {
   const sites = sitesFrom(json.result?.items);
   if (sites.length < MIN_SITES) { console.error(`Only ${sites.length} bathing waters came back, so ${OUTPUT} was left as it is.`); process.exit(1); }
   sites.sort((a, b) => a.name.localeCompare(b.name));
-  const data = { fetchedAt: new Date().toISOString().slice(0, 10), year: latestYear(sites), source: "https://environment.data.gov.uk/bathing-waters", sites };
+  const data = { fetchedAt: new Date().toISOString().slice(0, 10), year: latestYear(sites), source: "https://environment.data.gov.uk/bwq/profiles/", sites };
   writeFileSync(OUTPUT, `${JSON.stringify(data)}\n`);
   console.log(`Wrote ${sites.length} bathing waters (classified in ${data.year}) to ${OUTPUT}`);
 }
