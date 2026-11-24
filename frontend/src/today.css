@@ -83,18 +83,18 @@ button.td-next:hover { box-shadow: 0 0 0 4px rgba(92, 224, 160, 0.35); transform
 .dt figcaption span { font: 400 13.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); max-width: 70ch; }
 .dt-scroll { overflow-x: auto; padding: 4px 0 10px; scrollbar-width: thin; }
 .dt-plot { position: relative; min-width: 780px; padding-right: 54px; box-sizing: border-box; }
-.dt-axis { position: relative; height: 22px; margin-left: 104px; }
+.dt-axis { position: relative; height: 22px; margin-left: 118px; margin-right: 14px; }
 .dt-axis span { position: absolute; transform: translateX(-50%); font: 700 11.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); font-variant-numeric: lining-nums; }
 .dt-lane { display: grid; grid-template-columns: 104px minmax(0, 1fr); align-items: stretch; margin-top: 6px; }
 .dt-name { position: sticky; left: 0; z-index: 3; display: flex; align-items: center; padding-right: 10px; background: var(--c-paper-card); font: 800 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--lc); border-left: 5px solid var(--lc); padding-left: 9px; border-radius: 4px 0 0 4px; }
-.dt-track { position: relative; height: calc(var(--rows) * 38px + 12px); border-radius: 12px; background-color: color-mix(in srgb, var(--lc) 6%, var(--c-paper)); background-image: repeating-linear-gradient(to right, var(--c-hairline) 0 1px, transparent 1px calc(100% / var(--hrs))); }
-.dt-dot { position: absolute; display: inline-flex; align-items: center; gap: 6px; margin-left: -9px; height: 26px; padding: 0; border: 0; background: none; color: var(--c-ink); cursor: pointer; font: inherit; }
+.dt-track { position: relative; height: calc(var(--rows) * 38px + 12px); border-radius: 12px; background-color: color-mix(in srgb, var(--lc) 6%, var(--c-paper)); background-image: repeating-linear-gradient(to right, var(--c-hairline) 0 1px, transparent 1px calc(100% / var(--hrs))); background-size: calc(100% - 28px) 100%; background-position: 14px 0; background-repeat: no-repeat; }
+.dt-dot { position: absolute; left: calc(14px + (100% - 28px) * var(--at) / 100); display: inline-flex; align-items: center; gap: 6px; margin-left: -9px; height: 26px; padding: 0; border: 0; background: none; color: var(--c-ink); cursor: pointer; font: inherit; }
 .dt-dot i { flex: none; width: 18px; height: 18px; border-radius: 50%; background: var(--lc); border: 3px solid var(--c-paper-card); box-shadow: 0 0 0 1.5px var(--lc); transition: transform 0.18s var(--ease-out); }
 .dt-dot:hover i, .dt-dot:focus-visible i { transform: scale(1.3); }
 .dt-t { font: 700 11.5px "Figures", "Public Sans", system-ui, sans-serif; font-variant-numeric: lining-nums; white-space: nowrap; }
 .dt-dot[data-past="1"] { opacity: 0.5; }
 .dt-dot[data-next="1"] i { box-shadow: 0 0 0 2px var(--lc), 0 0 0 6px color-mix(in srgb, var(--lc) 25%, transparent); }
-.dt-now { position: absolute; top: 22px; bottom: 0; left: 104px; right: 54px; pointer-events: none; z-index: 2; }
+.dt-now { position: absolute; top: 22px; bottom: 0; left: 118px; right: 68px; pointer-events: none; z-index: 2; }
 .dt-now i { position: absolute; top: 0; bottom: 0; width: 0; border-left: 2.5px solid var(--c-navy); }
 .dt-now i span { position: absolute; top: -3px; left: 50%; transform: translate(-50%, -100%); padding: 1px 8px; border-radius: 999px; background: var(--c-navy); color: #fff; font: 700 11px "Figures", "Public Sans", system-ui, sans-serif; }
 .dt-note { margin: 4px 18px 0 0; font: 400 12.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }

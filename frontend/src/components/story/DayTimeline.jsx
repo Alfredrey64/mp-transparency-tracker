@@ -44,7 +44,7 @@ export default function DayTimeline({ entries, nowMinutes, nextId, open }) {
                   return (
                     <button
                       key={entry.id} type="button" className="dt-dot" data-past={past ? "1" : undefined} data-next={entry.id === nextId ? "1" : undefined}
-                      style={{ left: `${at}%`, top: row * ROW + 6, "--k": k++ }} aria-haspopup="dialog" title={entry.title} onClick={(ev) => open(entry, ev.currentTarget)}
+                      style={{ "--at": at, top: row * ROW + 6, "--k": k++ }} aria-haspopup="dialog" title={entry.title} onClick={(ev) => open(entry, ev.currentTarget)}
                     >
                       <i aria-hidden="true" />
                       <span className="dt-t">{clock(entry.time)}</span>

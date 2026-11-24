@@ -78,7 +78,7 @@ test("the old Coming up address opens the Coming up part of What changed this we
   await page.goto("/upcoming");
   await expect(page.getByRole("heading", { name: "What changed this week", level: 1 })).toBeVisible({ timeout: 20000 });
   await expect(page.getByRole("tab", { name: /Coming up/ })).toHaveAttribute("aria-selected", "true");
-  await expect(page.locator("main")).toContainText("Bills with a stage due", { timeout: 20000 });
+  await expect(page.locator("main")).toContainText("Put this in your calendar", { timeout: 20000 });
   await page.getByRole("tab", { name: /Today/ }).click();
   await expect(page.locator(".td-houses")).toBeVisible();
   await expect(page.locator(".td-house")).toHaveCount(2);

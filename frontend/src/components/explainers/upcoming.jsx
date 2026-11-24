@@ -6,8 +6,7 @@ import JumpChips from "../story/JumpChips";
 import CalendarFeeds from "../story/CalendarFeeds";
 import Loading from "../Loading";
 import { LoadFailedNote } from "../MpCards";
-import { IconCalendar, IconBills, IconCommittee, IconQuestion } from "../icons";
-import { Hero } from "../story/Vivid";
+import { IconCalendar } from "../icons";
 import { useDataFile } from "../../lib/useDataFile";
 import { parliamentCalendar } from "../../lib/dataFiles";
 import { dayShort, dayLong, dateLong, clock, houseName, billStages, billCommittees, hearings, commonsQuestions, debates, totals, nextRecess, thinWeeks } from "../../lib/upcoming";
@@ -119,21 +118,6 @@ function build(data) {
   });
 
   return {
-    lead: <Hero
-      colours={["#0F3B33", "#1F7A4D", "#2C7DA0"]}
-      why="Most of what Parliament does is listed in advance. Seeing it early lets you follow a bill you care about, watch a committee question a minister, or find out when your MP is away from Westminster."
-      stops={[
-        { icon: IconCalendar, title: "The days they sit", text: "Weekdays, apart from recesses", colour: "#8FD1A8" },
-        { icon: IconBills, title: "Bills", text: "Debated one stage at a time", colour: "#B9A5F0" },
-        { icon: IconCommittee, title: "Committees", text: "Taking evidence in public", colour: "#8DB7E8" },
-        { icon: IconQuestion, title: "Questions", text: "Ministers answer MPs on a rota", colour: "#F0C77A" },
-      ]}
-      figures={[
-        { value: String(t.bills), label: "Bills with a stage due", sub: `${plural(t.stages, "stage")} across both houses` },
-        { value: String(t.hearings), label: "Public committee sessions", sub: `from ${plural(t.committees, "committee")}` },
-        { value: String(t.sittingDays), label: "Days the Commons sits", sub: "weekdays in the next four weeks" },
-      ]}
-    />,
     chapters,
     thin,
   };
