@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { asylumView, asylumHeld, homelessView, housingView, povertyView, healthView, quarterLabel } from "./areaMoreViews";
+import { asylumView, asylumHeld, homelessView, housingView, povertyView, healthView, quarterLabel, rentView, wasteView } from "./areaMoreViews";
 
 describe("asylum view", () => {
   const data = { asAt: "30 Jun 2026", quarters: ["31 Mar 2026", "30 Jun 2026"], uk: { t: [100, 90] }, areas: { E1: { n: "Bristol", t: [10, 6], now: { hotel: 4, dispersal: 2, subsistence: 3 } } } };
@@ -65,4 +65,57 @@ describe("housing view", () => {
     expect(housingView(data, "A").fiveYears).toBe("2020-21 to 2024-25");
     expect(housingView(data, "A").peak).toEqual({ year: "2024-25", n: 50, latest: true });
   });
+});
+
+describe("private rents view", () => {
+  const mk = (n, g, r, a, s) => ({ n, g, r, a, b: [r - 200, r - 100, r, r + 200], t: [r + 300, r + 100, r, r - 100], s });
+  const data = {
+    month: "2026-10", years: [2024, 2025, 2026],
+    areas: { E1: mk("Cheap", "South West", 700, 1.5, [600, 650, 700]), E2: mk("Dear", "South West", 1500, 6, [1000, 1200, 1500]), E3: mk("Middle", "North West", 900, 3, [800, null, 900]), W06000001: mk("Welsh", "Wales", 640, 3, [500, 600, 640]) },
+    regions: { "South West": { n: "South West", g: "[z]", r: 1254, a: 3.3, b: [], t: [], s: [] } },
+    england: { n: "England", r: 1472, a: 4, b: [1205, 1347, 1504, 2180], t: [1655, 1464, 1448, 1456], s: [900, 1000, 1100] },
+    wales: { n: "Wales", r: 849, a: 3.9, b: [637, 782, 893, 1252], t: [1088, 880, 836, 708], s: [500, 600, 700] },
+  };
+  it("compares a council with its region and England, and ranks it from dearest", () => {
+    const v = rentView(data, "E1");
+    expect(v).toMatchObject({ name: "Cheap", rent: 700, annual: 1.5, rank: 3, of: 4, riseRank: 4 });
+    expect(v.region).toMatchObject({ name: "South West", rent: 1254 });
+    expect(v.nation).toMatchObject({ name: "England", rent: 1472 });
+    expect(rentView(data, "E2").rank).toBe(1);
+  });
+  it("works out the change since the first year, against the nation's over the same years", () => {
+    expect(rentView(data, "E1").since).toEqual({ year: 2024, change: 16.7, nation: 63.6 });
+  });
+  it("skips a year with no figure and gives the size and kind-of-home rents", () => {
+    const v = rentView(data, "E3");
+    expect(v.series.map((p) => p.year)).toEqual([2024, 2026]);
+    expect(v.beds).toHaveLength(4);
+    expect(v.types[3]).toMatchObject({ label: "Flat or maisonette", rent: 800, nation: 1456 });
+  });
+  it("compares a Welsh council with Wales and has no English region", () => {
+    const v = rentView(data, "W06000001");
+    expect(v.nation.name).toBe("Wales");
+    expect(v.region).toBeNull();
+  });
+  it("gives nothing for a council it does not hold", () => expect(rentView(data, "nope")).toBeNull());
+});
+
+describe("waste view", () => {
+  const data = {
+    years: ["2023-24", "2024-25"],
+    areas: { E1: { n: "A", t: "Collection", p: [50, 52], k: [400, 380], c: [350, 340] }, E2: { n: "B", t: "Unitary", p: [30, 31], k: [600, 590], c: [420, 410] }, E3: { n: "C", t: "Collection", p: [55, 60], k: [300, null], c: [320, 310] } },
+    england: { p: [42.3, 42], k: [511, 513], c: [391, 387] },
+  };
+  it("gives the latest rate, the year before, England's figures and the rank from the best recycler", () => {
+    const v = wasteView(data, "E1");
+    expect(v).toMatchObject({ rate: 52, before: 50, year: "2024-25", beforeYear: "2023-24", residual: 380, perPerson: 340, rank: 2, of: 3 });
+    expect(v.england).toMatchObject({ rate: 42, residual: 513, perPerson: 387 });
+    expect(wasteView(data, "E3").rank).toBe(1);
+  });
+  it("ranks the waste left over from the least, and leaves a missing figure out of that ranking", () => {
+    expect(wasteView(data, "E1").residualRank).toBe(1);
+    expect(wasteView(data, "E1").residualOf).toBe(2);
+    expect(wasteView(data, "E3").residualRank).toBeNull();
+  });
+  it("gives nothing for a council it does not hold", () => expect(wasteView(data, "nope")).toBeNull());
 });

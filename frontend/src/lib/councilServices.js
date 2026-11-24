@@ -34,3 +34,18 @@ export function flyTippingRow(data, code) {
 }
 
 export const roadYear = (y) => `${y - 1}/${String(y).slice(2)}`;
+
+// Road repair work for one road authority in the financial year: the share of its A roads, and of its other roads (B, C and unclassified), that were strengthened, resurfaced or
+// preserved (surface dressing and similar), with England's average. Measured by the length of carriageway treated, not by how many potholes were filled: the Department for
+// Transport does not publish pothole counts for councils. Null when the authority has no figures.
+export function repairRows(data, code) {
+  const c = data?.repairs?.councils?.[code];
+  if (!c) return null;
+  const kind = (key, label, text) => {
+    const r = c[key];
+    if (!r) return null;
+    return { key, label, text, km: r[0], strengthening: r[1], resurfacing: r[2], preservation: r[3], total: r[4], nat: data.repairs.england?.[key] ?? null };
+  };
+  const rows = [kind("a", "A roads", "the main roads a council looks after"), kind("o", "Other roads", "B, C and unclassified roads, most residential streets")].filter(Boolean);
+  return rows.length ? { year: data.repairs.year, rows } : null;
+}

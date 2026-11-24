@@ -218,6 +218,18 @@ export default function Methodology({ onNavigate }) {
               use="Net additional dwellings and new homes started and completed in England, from the department's live tables, for the Housing page and the 1.5 million homes pledge."
             />
             <SourceRow
+              name="ONS Price Index of Private Rents"
+              url="https://www.ons.gov.uk/economy/inflationandpriceindices/datasets/priceindexofprivaterentsukmonthlypricestatistics"
+              auth="No key required, Open Government Licence v3.0"
+              use="The average monthly rent paid on privately rented homes in each council in England and Wales, by size and kind of home, for the Private rents card on Your area. A new month is published each month, and the latest month is a first estimate that can be revised."
+            />
+            <SourceRow
+              name="Defra: Local authority collected waste management"
+              url="https://www.gov.uk/government/statistics/local-authority-collected-waste-management-annual-results"
+              auth="No key required, Open Government Licence v3.0"
+              use="The share of household waste each council in England sends for reuse, recycling or composting, and the household waste left over per household, for the Waste and recycling card on Your area. Published each March for the year to the previous March."
+            />
+            <SourceRow
               name="Full Fact Government Tracker"
               url="https://fullfact.org/government-tracker/"
               auth="Verdicts are Full Fact's, cited with credit"

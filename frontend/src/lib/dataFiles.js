@@ -25,4 +25,6 @@ export const asylumSupport = () => import("../data/asylumSupport.json");
 export const homelessness = () => import("../data/homelessness.json");
 export const housingSupply = () => import("../data/housingSupply.json");
 export const childPoverty = () => import("../data/childPoverty.json");
+export const privateRents = () => import("../data/privateRents.json");
+export const wasteRecycling = () => import("../data/wasteRecycling.json");
 export const gpAppointments = () => import("../data/gpAppointments.json");

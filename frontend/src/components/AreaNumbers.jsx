@@ -1,7 +1,7 @@
 /** @jsxImportSource react */
 import { Card, Section, RegionOutline, CouncilTax, PlanningCard, Neighbourhood, PlaceFacts, HomesCrime, RegionRanks, Census } from "./AreaSections";
 import { ComplaintsCard } from "./AreaAccountability";
-import { LocalHealthCard, AsylumCard, HomelessnessCard, NewHomesCard, ChildPovertyCard } from "./AreaMore";
+import { LocalHealthCard, AsylumCard, HomelessnessCard, NewHomesCard, ChildPovertyCard, PrivateRentsCard, WasteCard } from "./AreaMore";
 import { StreetCrimeCard, SewageCard, BathingCard, FloodWarningsCard, FoodHygieneCard, RoadCasualtiesCard, HousePricesCard, HealthServicesCard, HospitalCard, SchoolsCard, CouncilServicesCard, LocalEconomyCard } from "./AreaLocal";
 import { IconTrend, IconPinHome, IconCoin, IconHeart, IconShield } from "./icons";
 import { NUMBER_GROUPS } from "../lib/areaViews";
@@ -88,6 +88,9 @@ export default function AreaNumbers({ data, x }) {
         <Section as="h3" id="ma-n-homes" title="House prices" lede="What homes in your council area sell for, how that has changed, and how it compares with the rest of the nation." colour={money.colour}>
           <HousePricesCard r={data.result} i={0} />
         </Section>
+        <Section as="h3" id="ma-n-rents" title="Private rents" lede="What renters in your council area pay each month, how that has changed, and how it compares with the region and the nation." colour={money.colour}>
+          <PrivateRentsCard r={data.result} i={0} />
+        </Section>
         <Section as="h3" id="ma-n-newhomes" title="New homes" lede="How many homes were added in your council area each year, after any were lost, and how that compares with the rest of England." colour={money.colour}>
           <NewHomesCard r={data.result} i={0} />
         </Section>
@@ -110,10 +113,13 @@ export default function AreaNumbers({ data, x }) {
         <Section as="h3" id="ma-n-school" title="Schools" lede="Ofsted's latest result for each school nearby, and how its pupils did in their exams." colour={services.colour}>
           <SchoolsCard r={data.result} i={0} />
         </Section>
-        <Section as="h3" id="ma-n-council" title="Your council" lede="How your council handles planning, complaints, roads and fly-tipping." colour={services.colour}>
+        <Section as="h3" id="ma-n-council" title="Your council" lede="How your council handles planning, complaints, roads, road repairs and fly-tipping." colour={services.colour}>
           <PlanningCard x={x} i={0} />
           <ComplaintsCard council={council} county={county} i={1} />
           <CouncilServicesCard council={council} county={county} i={2} />
+        </Section>
+        <Section as="h3" id="ma-n-waste" title="Waste and recycling" lede="How much of the household waste your council collects is recycled, and how much is left over." colour={services.colour}>
+          <WasteCard r={data.result} i={0} />
         </Section>
       </Part>
 

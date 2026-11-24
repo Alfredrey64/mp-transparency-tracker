@@ -12,7 +12,7 @@ import { useDataFile } from "../lib/useDataFile";
 import { bathingWater, rttWaits, aeNearYou, healthMeta, councilServices, localEconomy, roadCasualties, housePrices } from "../lib/dataFiles";
 import { seatRecord, claimantRow, payRow, monthShort } from "../lib/localEconomyView";
 import { IconEconomy, IconBasket, IconTransport, IconHouse } from "./icons";
-import { roadRows, flyTippingRow, roadYear } from "../lib/councilServices";
+import { roadRows, flyTippingRow, roadYear, repairRows } from "../lib/councilServices";
 import { IconCouncil } from "./icons";
 import { loadTiles } from "../lib/localTiles";
 import { nearestTrusts, schoolsWithin } from "../lib/nearYou";
@@ -346,7 +346,8 @@ export function CouncilServicesCard({ council, county, i }) {
   const roadAuthority = county ?? council;
   const roads = data ? roadRows(data, roadAuthority.id) : [];
   const fly = data ? flyTippingRow(data, council.id) : null;
-  if (data && roads.length === 0 && !fly) return null; // outside England, or no figures for this council
+  const repairs = data ? repairRows(data, roadAuthority.id) : null;
+  if (data && roads.length === 0 && !fly && !repairs) return null; // outside England, or no figures for this council
   return (
     <Card i={i} colour="#E8741A" icon={<IconCouncil size={20} />} title="Roads and fly-tipping" className="ma-services">
       {!data ? <p className="ma-sub">Loading council figures...</p> : (
@@ -359,13 +360,21 @@ export function CouncilServicesCard({ council, county, i }) {
                 text: `of the road length was in poor condition, where maintenance should have been considered. England: ${r.nat}%.${r.since ? ` It was ${r.since.value}% in ${roadYear(r.since.year)}.` : ""}`,
               }))} />
           )}
+          {repairs && (
+            <PlaceCard name={`Road repairs: ${roadAuthority.name}`} tone="#2D7DD2" tags={[`Financial year ${roadYear(repairs.year)}`, "Department for Transport, from councils' returns"]}
+              rows={repairs.rows.map((r) => ({
+                label: r.label, small: r.text,
+                big: `${r.total}%`,
+                text: `of the road length was repaired in the year: ${[["resurfaced", r.resurfacing], ["surface-treated to preserve it", r.preservation], ["rebuilt or strengthened", r.strengthening]].filter(([, x]) => x > 0).map(([w, x]) => `${x}% ${w}`).join(", ") || "none recorded"}. England: ${r.nat}%.`,
+              }))} />
+          )}
           {fly && (
             <PlaceCard name={`Fly-tipping: ${council.name}`} tone="#B3262E" tags={[`${fly.year}`, "Defra, from councils' returns"]}
               rows={[{ label: "Incidents", small: "dumped waste cleared or reported", big: fly.total.toLocaleString("en-GB"), text: fly.change == null ? "incidents were reported by the council to Defra." : `incidents were reported to Defra, ${fly.change === 0 ? "the same as" : `${Math.abs(fly.change)}% ${fly.change > 0 ? "more than" : "fewer than"}`} the year before (${fly.previous.toLocaleString("en-GB")}).` }]} />
           )}
         </ul>
       )}
-      {data && <p className="ma-sub">Poor-condition roads are those where surveys found the surface in the worst category, the share of the council's road length. Surveying methods differ, especially for unclassified roads, and fly-tipping counts depend on how a council records and clears waste, so a bigger council will report more. Neither is a ranking of councils.</p>}
+      {data && <p className="ma-sub">Poor-condition roads are those where surveys found the surface in the worst category, the share of the council's road length. Surveying methods differ, especially for unclassified roads. Road repairs are the length of road that was treated, not the number of potholes filled: the Department for Transport does not publish pothole counts for councils, and a cheap surface treatment over a long stretch counts for more length than a costly rebuild. Fly-tipping counts depend on how a council records and clears waste, so a bigger council will report more. Neither is a ranking of councils.</p>}
       <a className="ma-link" href="#/compareCouncils">Compare councils</a>
     </Card>
   );

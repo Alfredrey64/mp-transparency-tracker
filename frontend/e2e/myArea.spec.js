@@ -67,7 +67,7 @@ for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 900 });
     await mockServices(page);
     await page.goto("/myArea/numbers");
-    await expect(page.locator(".ma-section")).toHaveCount(16, { timeout: 20000 });
+    await expect(page.locator(".ma-section")).toHaveCount(18, { timeout: 20000 });
     await expect(page.locator(".mg-tile:not(.mg-tile-skel)").first()).toBeVisible({ timeout: 20000 });
     await expect(page.locator(".mg")).toHaveCount(4);
     await expect(page.locator(".ma-skel")).toHaveCount(0, { timeout: 20000 });
@@ -115,7 +115,7 @@ test("the planning card is left out outside England, and when nothing is on reco
   await page.setViewportSize({ width: 1440, height: 900 });
   await mockServices(page, { over: { country: "Wales" } });
   await page.goto("/myArea/numbers");
-  await expect(page.locator(".ma-section")).toHaveCount(16, { timeout: 20000 });
+  await expect(page.locator(".ma-section")).toHaveCount(18, { timeout: 20000 });
   await expect(page.locator(".ma-skel")).toHaveCount(0, { timeout: 20000 });
   await expect(page.locator(".ma-planning")).toHaveCount(0);
 });
@@ -297,7 +297,7 @@ for (const width of [1280, 390]) {
     await page.setViewportSize({ width, height: 900 });
     await mockServices(page);
     await page.goto("/myArea/numbers");
-    await expect(page.locator(".ma-section")).toHaveCount(16, { timeout: 20000 });
+    await expect(page.locator(".ma-section")).toHaveCount(18, { timeout: 20000 });
     await expect(page.locator(".ma-food .sc-card").first()).toBeVisible({ timeout: 20000 });
     await expect(page.locator(".ma-flood .sc-card").first()).toBeVisible({ timeout: 20000 });
     await expect(page.locator(".ma-roads .ma-months")).toBeVisible({ timeout: 20000 });

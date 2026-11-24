@@ -61,3 +61,38 @@ export function flyTippingFrom(rows) {
   for (const [code, total] of Object.entries(byYear.get(latest))) councils[code] = { t: total, p: before ? byYear.get(before)[code] ?? null : null };
   return { year: latest, before: before ?? null, councils, englandTotal: Object.values(byYear.get(latest)).reduce((s, v) => s + v, 0) };
 }
+
+// The road maintenance sheet (RDC0321, A roads, or B, C and unclassified roads together): for each highway authority the length of its network (km) and the share of that length
+// that was strengthened, resurfaced or preserved (surface dressing and similar) in the year, then the total. A cell that holds a note marker is not a number and is left as null.
+// Returns the year the sheet is for (the financial year ending), each authority as [km, strengthening %, resurfacing %, preservation %, total %], and England's average total,
+// weighted by network length so a long network counts for more.
+export function repairSheet(rows) {
+  const at = rows.findIndex((r) => (r ?? [])[0] === "ONS Area Code");
+  if (at < 0) return null;
+  const head = (rows[at] ?? []).map((h) => String(h ?? "").replace(/\s*\[.*$/, "").trim());
+  const col = { km: head.findIndex((h) => /^Network Length/i.test(h)), s: head.indexOf("Strengthening"), r: head.indexOf("Resurfacing"), p: head.indexOf("Preservation"), t: head.indexOf("Total") };
+  if (Object.values(col).some((i) => i < 0)) return null;
+  const year = Number(/Financial Year Ending (\d{4})/i.exec(String(rows[0]?.[0] ?? ""))?.[1]) || null;
+  const councils = {};
+  let km = 0, weighted = 0;
+  for (const r of rows.slice(at + 1)) {
+    const code = String(r?.[0] ?? "").trim();
+    if (!/^E\d{8}$/.test(code)) continue;
+    const row = [num(r[col.km]), num(r[col.s]), num(r[col.r]), num(r[col.p]), num(r[col.t])];
+    if (row[0] == null || row[4] == null) continue;
+    councils[code] = row;
+    km += row[0];
+    weighted += row[0] * row[4];
+  }
+  if (!Object.keys(councils).length) return null;
+  return { year, councils, england: km ? Math.round((weighted / km) * 10) / 10 : null };
+}
+
+// Joins the two sheets: for each authority { a: [...] for A roads, o: [...] for B, C and unclassified roads }.
+export function repairsFrom(a, other) {
+  if (!a || !other) return null;
+  const codes = new Set([...Object.keys(a.councils), ...Object.keys(other.councils)]);
+  const councils = {};
+  for (const c of codes) councils[c] = { a: a.councils[c] ?? null, o: other.councils[c] ?? null };
+  return { year: a.year ?? other.year, england: { a: a.england, o: other.england }, councils };
+}

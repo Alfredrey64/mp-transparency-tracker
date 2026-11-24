@@ -199,3 +199,19 @@ export function IconConsultation({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconBin({ size = 17 }) {
+  return (
+    <svg aria-hidden="true" focusable="false" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4.5 6.5h15" /><path d="M9 6.5V4.5h6v2" /><path d="M6.2 6.5 7.3 20h9.4l1.1-13.5" /><path d="M10 10.5v6M14 10.5v6" />
+    </svg>
+  );
+}
+
+export function IconKeyHome({ size = 17 }) {
+  return (
+    <svg aria-hidden="true" focusable="false" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="8.5" cy="14.5" r="3.5" /><path d="M11 12 20 4" /><path d="M16.5 7.500 18.800 9.800" /><path d="M14 10l2 2" />
+    </svg>
+  );
+}

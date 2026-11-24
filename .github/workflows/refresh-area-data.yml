@@ -1,7 +1,7 @@
 name: Refresh Your area data
 
-# Every Wednesday, asks each official source behind Your area whether a newer edition is out (Ofsted's monthly school inspections, the CQC's monthly care ratings, the Department for
-# Education's results tables, the Ministry's council tax, the Department for Transport's road condition, Defra's fly-tipping and the Ombudsman's complaints) and rebuilds only the
+# Every Wednesday (and Thursday, for the ONS's private rents), asks each official source behind Your area whether a newer edition is out (Ofsted's monthly school inspections, the CQC's monthly care ratings, the Department for
+# Education's results tables, the Ministry's council tax, the Department for Transport's road condition, Defra's fly-tipping, recycling and waste, the ONS's private rents and the Ombudsman's complaints) and rebuilds only the
 # datasets that have a new one (see frontend/scripts/refresh-area-data.mjs). The datasets a daily job already rewrites (house prices, road casualties, A&E and hospital waits,
 # local jobs, consultations) are in fetch-data.yml.
 #
@@ -12,6 +12,8 @@ name: Refresh Your area data
 on:
   schedule:
     - cron: "30 5 * * 3"
+    # The ONS publishes private rents on a Wednesday morning, after the run above, so one more run on Thursday picks the new month up a day later instead of a week later. It does nothing when nothing is new.
+    - cron: "30 5 * * 4"
   workflow_dispatch:
     inputs:
       force:

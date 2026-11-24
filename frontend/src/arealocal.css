@@ -27,3 +27,7 @@
 @media (max-width: 760px) {
   .ma-domains.ma-health-rows li, .ma-domains.ma-poverty-rows li, .ma-domains.ma-asylum-rows li { grid-template-columns: minmax(0, 1fr) 56px; }
 }
+
+/* Private rents by size of home: the nation's average sits under each label. */
+.ma-rent-beds li > span { display: grid; gap: 1px; }
+.ma-rent-vs { font: 500 12px/1.2 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }

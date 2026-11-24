@@ -70,3 +70,54 @@ export function housingView(data, code) {
     peak: peak < 0 ? null : { year: data.years[peak], n: a.y[peak], latest: peak === a.y.length - 1 },
   };
 }
+
+// Private rents: one council's average monthly rent now and in the same month of each earlier year, how it compares with its region and with England (Wales for a Welsh council),
+// and where it ranks among the councils the Office for National Statistics publishes. Rank 1 is the most expensive council. These are rents paid on privately rented homes, not asking prices.
+export const RENT_BEDS = ["1 bedroom", "2 bedrooms", "3 bedrooms", "4 or more bedrooms"];
+export const RENT_TYPES = ["Detached", "Semi-detached", "Terraced", "Flat or maisonette"];
+const pctChange = (from, to) => (from == null || to == null || !from ? null : Math.round(((to - from) / from) * 1000) / 10);
+export function rentView(data, code) {
+  const a = data?.areas?.[code];
+  if (!a) return null;
+  const welsh = /^W06/.test(code);
+  const nation = welsh ? data.wales : data.england;
+  const nationName = welsh ? "Wales" : "England";
+  const regionKey = welsh ? null : Object.keys(data.regions ?? {}).find((name) => name.toLowerCase() === String(a.g).toLowerCase());
+  const region = regionKey ? { name: regionKey, ...data.regions[regionKey] } : null;
+  const all = Object.values(data.areas);
+  const rank = 1 + all.filter((x) => x.r > a.r).length;
+  const rises = all.map((x) => x.a).filter((v) => v != null);
+  const riseRank = a.a == null ? null : 1 + rises.filter((v) => v > a.a).length;
+  const series = data.years.map((year, k) => ({ year, rent: a.s[k] })).filter((p) => p.rent != null);
+  const firstIdx = series.length ? series[0] : null;
+  const nationSeries = nation?.s ?? [];
+  const nationFirst = nationSeries[data.years.indexOf(firstIdx?.year)] ?? null;
+  return {
+    name: a.n, month: data.month, rent: a.r, annual: a.a,
+    nation: nation ? { name: nationName, rent: nation.r, annual: nation.a } : null,
+    region: region ? { name: region.name, rent: region.r, annual: region.a } : null,
+    beds: RENT_BEDS.map((label, k) => ({ label, rent: a.b[k], nation: nation?.b?.[k] ?? null })).filter((b) => b.rent != null),
+    types: RENT_TYPES.map((label, k) => ({ label, rent: a.t[k], nation: nation?.t?.[k] ?? null })).filter((b) => b.rent != null),
+    series, since: series.length > 1 ? { year: firstIdx.year, change: pctChange(firstIdx.rent, a.r), nation: pctChange(nationFirst, nation?.r) } : null,
+    rank, of: all.length, riseRank, riseOf: rises.length,
+  };
+}
+
+// Waste and recycling: one council's recycling rate and the household waste that is not recycled, year by year, against England and against every other council that collects
+// household waste. Rank 1 is the council that recycles the largest share.
+export function wasteView(data, code) {
+  const a = data?.areas?.[code];
+  if (!a || a.p.at(-1) == null) return null;
+  const all = Object.values(data.areas).filter((x) => x.p.at(-1) != null);
+  const last = a.p.length - 1;
+  const series = data.years.map((year, k) => ({ year, rate: a.p[k] })).filter((p) => p.rate != null);
+  const residuals = all.map((x) => x.k.at(-1)).filter((v) => v != null).sort((x, y) => x - y);
+  const middle = residuals.length ? residuals[Math.floor(residuals.length / 2)] : null;
+  return {
+    name: a.n, type: a.t, year: data.years[last], rate: a.p[last], before: a.p[last - 1] ?? null, beforeYear: data.years[last - 1] ?? null,
+    residual: a.k[last], perPerson: a.c[last],
+    england: { rate: data.england?.p?.[last] ?? null, residual: data.england?.k?.[last] ?? null, perPerson: data.england?.c?.[last] ?? null, middleResidual: middle },
+    series, rank: 1 + all.filter((x) => x.p.at(-1) > a.p[last]).length, of: all.length,
+    residualRank: a.k[last] == null ? null : 1 + residuals.filter((v) => v < a.k[last]).length, residualOf: residuals.length,
+  };
+}

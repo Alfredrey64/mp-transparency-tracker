@@ -21,6 +21,8 @@ import { newestRelease } from "./build-council-tax.mjs";
 import { newestFile as newestAsylum } from "./build-asylum-support.mjs";
 import { newestFile as newestHomelessness } from "./build-homelessness.mjs";
 import { newestFiles as newestHousing } from "./build-housing-supply.mjs";
+import { newestFile as newestRents } from "./build-private-rents.mjs";
+import { newestFile as newestWasteFile } from "./build-waste.mjs";
 import { newestRelease as newestChildPoverty } from "./build-child-poverty.mjs";
 import { editionOf as healthEdition } from "./build-local-health.mjs";
 
@@ -51,7 +53,7 @@ export const DATASETS = [
   } },
   { id: "council-services", script: "build-council-services.mjs", async due() {
     const meta = read("councilServices.json");
-    const now = { roads: await roadFile("rdc0120"), unclassified: await roadFile("rdc0130"), flyTipping: await flyTippingFile() };
+    const now = { roads: await roadFile("rdc0120"), unclassified: await roadFile("rdc0130"), repairs: await roadFile("rdc0321"), flyTipping: await flyTippingFile() };
     const changed = Object.keys(now).filter((k) => now[k] !== meta.sources?.[k]);
     return changed.length ? `new file for ${changed.join(", ")}` : null;
   } },
@@ -84,6 +86,16 @@ export const DATASETS = [
     const now = await newestHousing();
     if (now.supply.url !== meta.source) return "the Ministry has published new net additional dwellings figures (Table 122)";
     return now.stock.url !== meta.stockSource ? "the Ministry has published new dwelling stock figures (Table 100)" : null;
+  } },
+  { id: "private-rents", script: "build-private-rents.mjs", async due() {
+    const meta = read("privateRents.json");
+    const now = await newestRents();
+    return now.url !== meta.source ? `the ONS has published private rents for a new month (released ${now.released})` : null;
+  } },
+  { id: "waste-recycling", script: "build-waste.mjs", async due() {
+    const meta = read("wasteRecycling.json");
+    const now = await newestWasteFile();
+    return now.url !== meta.source ? `Defra has published ${now.title}` : null;
   } },
   { id: "child-poverty", script: "build-child-poverty.mjs", async due() {
     const meta = read("childPoverty.json");

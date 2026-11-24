@@ -13,7 +13,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { fetchRetry } from "../../httpFetch.js";
 import { readOds } from "../../ods-lite.js";
-import { roadSheet, roadsFrom, flyTippingFrom } from "./council-services-lib.mjs";
+import { roadSheet, roadsFrom, flyTippingFrom, repairSheet, repairsFrom } from "./council-services-lib.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(here, "../src/data/councilServices.json");
@@ -44,18 +44,20 @@ export async function flyTippingFile() {
 }
 
 async function main() {
-  const [urlA, urlU, urlFly] = [await roadFile("rdc0120"), await roadFile("rdc0130"), await flyTippingFile()];
-  console.log("Roads: " + urlA + "\nUnclassified: " + urlU + "\nFly-tipping: " + urlFly);
+  const [urlA, urlU, urlRepairs, urlFly] = [await roadFile("rdc0120"), await roadFile("rdc0130"), await roadFile("rdc0321"), await flyTippingFile()];
+  console.log("Roads: " + urlA + "\nUnclassified: " + urlU + "\nRepairs: " + urlRepairs + "\nFly-tipping: " + urlFly);
   const classified = await sheets(urlA);
   const unclassified = await sheets(urlU);
+  const repairBook = await sheets(urlRepairs);
   const flyBook = await sheets(urlFly);
   const roads = roadsFrom(roadSheet(classified("RDC0120_A_Road_and_Motorway")), roadSheet(classified("RDC0120_B_and_C_Road")), roadSheet(unclassified("RDC0130")));
   const fly = flyTippingFrom(flyBook("LA_incidents"));
-  if (!roads || Object.keys(roads.councils).length < 100 || !fly || Object.keys(fly.councils).length < 250) {
+  const repairs = repairsFrom(repairSheet(repairBook("RDC0321_A_Road")), repairSheet(repairBook("RDC0321_B,_C_and_U_Road")));
+  if (!roads || Object.keys(roads.councils).length < 100 || !fly || Object.keys(fly.councils).length < 250 || !repairs || !repairs.year || Object.keys(repairs.councils).length < 100) {
     console.error("The files were not as expected, so " + OUT + " was left as it is.");
     process.exit(1);
   }
-  const data = { builtAt: new Date().toISOString().slice(0, 10), sources: { roads: urlA, unclassified: urlU, flyTipping: urlFly }, roads, flyTipping: fly };
+  const data = { builtAt: new Date().toISOString().slice(0, 10), sources: { roads: urlA, unclassified: urlU, repairs: urlRepairs, flyTipping: urlFly }, roads, repairs, flyTipping: fly };
   fs.writeFileSync(OUT, JSON.stringify(data) + "\n");
   console.log("Wrote " + Object.keys(roads.councils).length + " councils' road condition (to " + roads.years[roads.years.length - 1] + ") and " + Object.keys(fly.councils).length + " councils' fly-tipping (" + fly.year + ") to " + OUT);
 }

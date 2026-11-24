@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { roadRows, flyTippingRow, roadYear } from "./councilServices";
+import { roadRows, flyTippingRow, roadYear, repairRows } from "./councilServices";
 
 const data = {
   roads: { years: [2022, 2023, 2024, 2025, 2026], england: { a: [3, 4, 4, 4, 4], bc: [6, 6, 6, 7, 6], u: [16, 16, 17, 17, 16] }, councils: { X: { a: [4, 3, 3, 3, 3], bc: [null, null, null, null, null], u: [null, 23, 17, 11, 8] } } },
@@ -20,4 +20,13 @@ describe("council services", () => {
     expect(flyTippingRow(data, "none")).toBeNull();
   });
   it("labels a financial year ending", () => { expect(roadYear(2026)).toBe("2025/26"); });
+  it("gives the repair work for an authority, with England's average, and leaves out a kind it has no figure for", () => {
+    const d = { repairs: { year: 2026, england: { a: 6.9, o: 3 }, councils: { X: { a: [957, 0, 6.5, 4.7, 11.2], o: null } } } };
+    const r = repairRows(d, "X");
+    expect(r.year).toBe(2026);
+    expect(r.rows).toHaveLength(1);
+    expect(r.rows[0]).toMatchObject({ key: "a", total: 11.2, resurfacing: 6.5, preservation: 4.7, nat: 6.9 });
+    expect(repairRows(d, "none")).toBeNull();
+    expect(repairRows({}, "X")).toBeNull();
+  });
 });
