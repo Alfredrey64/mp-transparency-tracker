@@ -47,3 +47,15 @@ export function monthLabel(key) {
 
 // A link-friendly short label for a board in tight places: the first place name before the first comma or " and ".
 export const shortBoard = (name) => name.split(/,| and /)[0];
+
+// The areas from the highest share seen within two weeks to the lowest, each with its rank (areas with the same figure share a rank, so 1, 2, 2, 4), how far it is from England in
+// percentage points, and its position. Ties keep the order the file gives them, so the table does not shuffle between loads.
+export function rankBoards(boards, englandWithin2w) {
+  const order = boards.map((b, i) => ({ b, i })).sort((a, c) => (c.b.within2w ?? -1) - (a.b.within2w ?? -1) || a.i - c.i);
+  const out = [];
+  order.forEach(({ b }, k) => {
+    const rank = k > 0 && out[k - 1].within2w === b.within2w ? out[k - 1].rank : k + 1;
+    out.push({ ...b, rank, diff: b.within2w == null || englandWithin2w == null ? null : Math.round((b.within2w - englandWithin2w) * 10) / 10 });
+  });
+  return out;
+}

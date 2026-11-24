@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { allocate, dotBands, strip, pointsChange, monthLabel, shortBoard } from "./gpWaits";
+import { rankBoards, allocate, dotBands, strip, pointsChange, monthLabel, shortBoard } from "./gpWaits";
 
 describe("allocate", () => {
   it("always hands out exactly the number of dots", () => {
@@ -38,5 +38,17 @@ describe("words", () => {
     expect(monthLabel("2026-09")).toBe("September 2026");
     expect(shortBoard("Bath and North East Somerset, Swindon and Wiltshire")).toBe("Bath");
     expect(shortBoard("Devon")).toBe("Devon");
+  });
+});
+
+describe("rankBoards", () => {
+  const boards = [{ code: "a", within2w: 80 }, { code: "b", within2w: 85 }, { code: "c", within2w: 80 }, { code: "d", within2w: 70.5 }];
+  const r = rankBoards(boards, 82.4);
+  it("puts the highest first, equal figures share a rank and keep file order", () => {
+    expect(r.map((x) => x.code)).toEqual(["b", "a", "c", "d"]);
+    expect(r.map((x) => x.rank)).toEqual([1, 2, 2, 4]);
+  });
+  it("says how far each is from England in points", () => {
+    expect(r.map((x) => x.diff)).toEqual([2.6, -2.4, -2.4, -11.9]);
   });
 });
