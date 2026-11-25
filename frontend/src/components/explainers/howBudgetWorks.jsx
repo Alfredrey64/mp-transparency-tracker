@@ -3,7 +3,6 @@ import ExplainerPage from "../story/ExplainerPage";
 import { IconBudget } from "../newIcons";
 import { IconCoin, IconChartBars, IconParliament, IconTaxes } from "../icons";
 import { Journey } from "../story/StateArt";
-import { Hero } from "../story/Vivid";
 import { BudgetFlow } from "../story/FlowArt";
 
 const PAGE = {
@@ -21,16 +20,6 @@ const PAGE = {
         { icon: IconChartBars, who: "Independent of ministers", title: "The Office for Budget Responsibility makes its forecast", text: "It forecasts growth, borrowing and debt, and says whether the government's own fiscal rules are met.", colour: "#2C7DA0" },
         { icon: IconTaxes, who: "House of Commons", title: "The Chancellor makes the statement", text: "The Budget is presented to the House of Commons, and the Treasury publishes the documents that go with it, including the cost of each decision.", colour: "#B45A3C" },
         { icon: IconParliament, who: "Parliament", title: "Parliament turns the tax changes into law", text: "Tax changes need legislation, which for a Budget usually comes in a Finance Bill that MPs and peers debate.", colour: "#7B5BD6" },
-      ]}
-    />
-    <Hero
-      colours={["#0F3B33", "#1F6F5C", "#2C7DA0"]}
-      why="The Budget decides how much tax you pay, what help you get with bills and how much each part of government has to spend. Knowing who proposes it, who checks it and when it becomes law shows you where to look."
-      stops={[
-        { icon: IconCoin, title: "The Treasury decides", text: "What to change in tax and spending", colour: "#8FD1A8" },
-        { icon: IconChartBars, title: "The OBR forecasts", text: "Independent of ministers", colour: "#8DB7E8" },
-        { icon: IconTaxes, title: "The Chancellor announces", text: "A statement to the Commons", colour: "#F0C77A" },
-        { icon: IconParliament, title: "Parliament makes it law", text: "Usually in a Finance Bill", colour: "#B9A5F0" },
       ]}
     />
   </>,

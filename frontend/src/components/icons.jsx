@@ -672,8 +672,8 @@ export function IconTopic({ size = 17 }) {
   return (
     <svg aria-hidden="true" focusable="false" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M4 5h16v10H10l-4 4v-4H4V5Z" />
-      <circle cx="11.5" cy="10" r="2.3" />
-      <path d="m13.3 11.8 2 2" />
+      <circle cx="11.2" cy="9.4" r="2.3" />
+      <path d="m12.9 11.1 2 2" />
     </svg>
   );
 }

@@ -62,7 +62,11 @@ describe("the pictures at the tops of pages", () => {
     const nodes = [{ icon: Icon, title: "Share of what?", text: "A share depends on the whole", colour: "#111111" }, { icon: Icon, title: "Which average?", text: "Mean or middle", colour: "#222222" }, { icon: Icon, title: "Starting where?", text: "The axis", colour: "#333333" }];
     const funnel = renderToStaticMarkup(<StoryFunnel nodes={nodes} label="How a story travels" />);
     expect(funnel).toContain("Which average?");
-    expect((funnel.match(/nfn-ev/g) ?? []).length).toBe(20);
+    // one story is followed through the funnel (one moving dot), and the others stay where they are
+    expect((funnel.match(/class="nfn-dot"/g) ?? []).length).toBe(1);
+    const resting = (funnel.match(/class="nfn-rest"/g) ?? []).length;
+    expect(resting).toBeGreaterThanOrEqual(15);
+    expect(funnel).toContain(`>${resting + 1}</text>`);
     const lenses = renderToStaticMarkup(<StatsLenses nodes={nodes} label="Three choices" />);
     expect(lenses).toContain("Starting where?");
     expect(lenses).toContain("a large share");

@@ -51,13 +51,11 @@ export default function SittingStrip({ data }) {
   const mix = mixByDay(data);
   return (
     <figure ref={ref} className="up-cal" data-go={go}>
-      <p className="up-key" aria-hidden="true">
-        <span><i className="on" />Sitting</span><span><i className="recess" />Recess</span><span><i className="off" />Off (not sitting)</span><span className="up-key-c"><i data-house="Commons" />Commons</span><span className="up-key-c"><i data-house="Lords" />Lords</span>
-      </p>
-      <p className="up-key up-key-mix" aria-hidden="true">
-        <b>What is listed on each day:</b>
-        {KIND_GROUPS.map((g) => <span key={g.key}><i style={{ background: g.colour }} />{g.label}</span>)}
-      </p>
+      <div className="upk" aria-hidden="true">
+        <div className="upk-row"><b>House</b><ul><li><i className="upk-house" data-house="Commons" />Commons</li><li><i className="upk-house" data-house="Lords" />Lords</li></ul></div>
+        <div className="upk-row"><b>Each House, each day</b><ul><li><i className="upk-st on" />Sitting</li><li><i className="upk-st recess" />Recess</li><li><i className="upk-st off" />Off (not sitting)</li></ul></div>
+        <div className="upk-row"><b>What is listed on each day</b><ul>{KIND_GROUPS.map((g) => <li key={g.key}><i className="upk-kind" style={{ background: g.colour }} />{g.label}</li>)}</ul></div>
+      </div>
       <div className="uc" role="table" aria-label={`Sitting days from ${dayLong(data.from)} to ${dayLong(data.to)}. Press a day to see what is listed.`}>
         <div className="uc-row uc-head" role="row">
           <span className="uc-corner" role="columnheader"><span className="sr-only">Week</span></span>

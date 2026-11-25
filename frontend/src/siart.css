@@ -51,7 +51,7 @@
 .sir[data-go="0"] .sir-doc { left: var(--c1); }
 .sir-doc svg { display: block; width: 100%; height: 100%; fill: var(--c-paper-card); stroke: var(--c-brand); stroke-width: 2; stroke-linejoin: round; }
 .sir-doc .rule { fill: none; stroke-linecap: round; opacity: 0.6; } .sir-doc .fold { fill: none; }
-.sir-card { --tc: #2C7DA0; position: relative; z-index: 1; display: grid; align-content: center; justify-items: start; gap: 8px; min-height: 148px; padding: 16px; border-radius: 16px; background: color-mix(in srgb, var(--tc) 8%, var(--c-paper-card)); border: 2px solid color-mix(in srgb, var(--tc) 45%, var(--c-hairline)); }
+.sir-card { --tc: #2C7DA0; position: relative; z-index: 1; display: grid; align-content: center; justify-items: center; text-align: center; gap: 8px; min-height: 148px; padding: 16px; border-radius: 16px; background: color-mix(in srgb, var(--tc) 8%, var(--c-paper-card)); border: 2px solid color-mix(in srgb, var(--tc) 45%, var(--c-hairline)); }
 .sir-card > b { font: 700 18px/1.25 "Figures", "Newsreader", Georgia, serif; }
 .sir-card > span { font: 500 14px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .sir-check { --tc: #C88A1E; }
@@ -59,8 +59,8 @@
 .sir-res { --tc: var(--yes); }
 .sir[data-out="no"] .sir-res { --tc: var(--no); }
 .sir-lane { align-self: center; height: 0; border-top: 3px dashed color-mix(in srgb, var(--c-ink) 22%, transparent); }
-.sir-votes { display: grid; gap: 8px; width: 100%; }
-.sir-votes i { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-style: normal; }
+.sir-votes { display: grid; justify-items: center; gap: 8px; width: 100%; }
+.sir-votes i { display: flex; align-items: center; justify-content: center; gap: 10px; font-style: normal; }
 .sir-votes em { font: 600 14px/1.3 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; }
 .sir-votes u, .sir-mark { display: grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--yes); color: #fff; text-decoration: none; font: 800 14px/1 "Figures", "Public Sans", system-ui, sans-serif; }
 .sir-votes u::after { content: "\2713"; }

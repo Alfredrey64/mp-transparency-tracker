@@ -4,6 +4,9 @@ import { partyColourByName } from "../../lib/careerTimeline";
 import { dateLong } from "../../lib/upcoming";
 import "../../accountability.css";
 import Open from "./OpenCard";
+import Portrait from "../Portrait";
+import { useMpFaces } from "../../lib/memberLookup";
+import { navigate } from "../../lib/route";
 
 // The pieces of the Backbench power page that are more than text: how far each kind of private member's bill got, the ballot bills of the session, and the early day motions
 // that drew most signatures. Every figure is passed in from data/backbench.json.
@@ -48,11 +51,35 @@ export function BillOutcomes({ counts, label }) {
   );
 }
 
+
+// The MP's face where they can be found in the MPs table (by name, ignoring titles); a button to their profile when it is one. Not found: the party dot, as before, and no link.
+function Face({ name, colour, size = 24, found }) {
+  const f = found[name];
+  if (!f) return <i className="ac-dot" style={{ "--dot": colour }} />;
+  const face = <Portrait name={name} photo={f.photo} colour={colour} size={size} className="bbx-face" />;
+  return <span className="bbx-face-wrap" aria-hidden="true">{face}</span>;
+}
+
+// A fact whose answer is a person: their face, and a button to their profile when they have been found.
+function WhoFact({ label, name, text, colour, found }) {
+  const f = found[name];
+  const inner = <><Portrait name={name} photo={f?.photo} colour={colour} size={40} className="bbx-face" /><span>{text}</span></>;
+  return (
+    <div>
+      <dt>{label}</dt>
+      <dd className="bbx-who">
+        {f ? <button type="button" className="bbx-who-btn" onClick={() => navigate(`#/mp/${f.id}`)} aria-label={`${text}. Open their profile.`}>{inner}</button> : inner}
+      </dd>
+    </div>
+  );
+}
+
 const dayMonth = (d) => new Date(`${d}T00:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
 
 export function BallotList({ ballot }) {
   const [open, setOpen] = useState(null);
   const base = useId();
+  const found = useMpFaces((ballot ?? []).map((b) => b.sponsor).filter(Boolean));
   if (!ballot?.length) return <p className="ac-empty">No ballot bills are listed for this session yet.</p>;
   return (
     <ul className="bbx-list">
@@ -68,7 +95,7 @@ export function BallotList({ ballot }) {
             title={b.title}
             lead={<span className="bbx-lead bbx-when"><small>{b.next ? "Next sitting" : "No date yet"}</small>{b.next && <b>{dayMonth(b.next)}</b>}</span>}
             meta={<>
-              {b.sponsor && <span><i className="ac-dot" style={{ "--dot": colour }} /><b>{b.sponsor}</b>{b.party ? `, ${b.party}` : ""}{b.seat ? `, ${b.seat}` : ""}</span>}
+              {b.sponsor && <span><Face name={b.sponsor} colour={colour} found={found} /><b>{b.sponsor}</b>{b.party ? `, ${b.party}` : ""}{b.seat ? `, ${b.seat}` : ""}</span>}
               <span className="bbx-pill">{b.stage || "Stage not listed"}</span>
             </>}
           >
@@ -80,7 +107,9 @@ export function BallotList({ ballot }) {
               </div>
             )}
             <dl className="bbx-facts">
-              <div><dt>Brought by</dt><dd>{b.sponsor || "Not listed"}{b.party ? `, ${b.party}` : ""}{b.seat ? ` (${b.seat})` : ""}</dd></div>
+              {b.sponsor
+                ? <WhoFact label="Brought by" name={b.sponsor} colour={colour} found={found} text={`${b.sponsor}${b.party ? `, ${b.party}` : ""}${b.seat ? ` (${b.seat})` : ""}`} />
+                : <div><dt>Brought by</dt><dd>Not listed</dd></div>}
               <div><dt>Stage</dt><dd>{b.stage || "Not listed"}{b.house ? `, ${b.house}` : ""}</dd></div>
               <div><dt>Next sitting</dt><dd>{b.next ? dateLong(b.next) : "No sitting date set yet"}</dd></div>
             </dl>
@@ -99,6 +128,7 @@ export function MotionBoard({ motions }) {
   const [open, setOpen] = useState(null);
   const base = useId();
   const widest = Math.max(...motions.top.map((m) => m.signatures), 1);
+  const found = useMpFaces(motions.top.map((m) => m.sponsor).filter(Boolean));
   return (
     <ol className="bbx-list">
       {motions.top.map((m) => {
@@ -113,7 +143,7 @@ export function MotionBoard({ motions }) {
             title={m.title}
             lead={<span className="bbx-lead bbx-sig"><b>{m.signatures}</b><small>MPs signed</small><span className="bbx-bar" aria-hidden="true"><i style={{ width: `${Math.max(6, (m.signatures / widest) * 100)}%` }} /></span></span>}
             meta={<>
-              <span><i className="ac-dot" style={{ "--dot": colour }} />Tabled by <b>{m.sponsor}</b>{m.party ? `, ${m.party}` : ""}</span>
+              <span><Face name={m.sponsor} colour={colour} found={found} />Tabled by <b>{m.sponsor}</b>{m.party ? `, ${m.party}` : ""}</span>
               <span>{dateLong(m.date)}</span>
             </>}
           >
@@ -124,6 +154,11 @@ export function MotionBoard({ motions }) {
                 <small>These are the motion&apos;s own words. Signing it puts an MP&apos;s support on the record; Parliament does not vote on it.</small>
               </div>
             ) : <p className="bbx-quote">The wording is on the motion&apos;s page.</p>}
+            <dl className="bbx-facts">
+              <WhoFact label="Tabled by" name={m.sponsor} colour={colour} found={found} text={`${m.sponsor}${m.party ? `, ${m.party}` : ""}`} />
+              <div><dt>Date tabled</dt><dd>{dateLong(m.date)}</dd></div>
+              <div><dt>MPs who signed</dt><dd>{m.signatures}</dd></div>
+            </dl>
             <a className="bbx-link" href={`https://edm.parliament.uk/early-day-motion/${m.id}`} target="_blank" rel="noreferrer">Read it and see who signed on edm.parliament.uk <span className="sr-only">(opens in a new tab)</span></a>
           </Open>
         );

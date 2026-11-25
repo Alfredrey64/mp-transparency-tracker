@@ -8,37 +8,31 @@
 .nfn-person circle, .nfn-person path { fill: #5E4B8B; opacity: 0.22; }
 .nfn-box rect { fill: #5E4B8B; opacity: 0.85; }
 .nfn-box .nfn-slot { fill: #fff; opacity: 0.9; }
-.nfn-ev { fill: #8A93A6; opacity: 0; }
-.nfn[data-go="1"][data-still="0"] .nfn-ev { animation: nfnPass 8.2s linear var(--d) infinite; }
-.nfn[data-go="1"][data-still="0"] .nfn-drop { animation-name: nfnDrop; }
-@keyframes nfnPass {
-  0% { transform: translate(-16px, var(--y0)); opacity: 0; fill: #8A93A6; }
-  4% { opacity: 1; }
-  28% { transform: translate(272px, var(--yg)); fill: #8A93A6; }
-  36% { transform: translate(330px, 85px); }
-  50% { transform: translate(470px, 85px); fill: #8A93A6; }
-  58% { fill: var(--c); }
-  74% { transform: translate(690px, var(--y2)); fill: var(--c); }
-  91% { transform: translate(882px, var(--y2)); opacity: 1; fill: var(--c); }
-  96% { transform: translate(900px, 96px); opacity: 0; }
-  100% { transform: translate(900px, 96px); opacity: 0; }
-}
-@keyframes nfnDrop {
-  0% { transform: translate(-16px, var(--y0)) scale(1); opacity: 0; }
-  4% { opacity: 1; }
-  26% { transform: translate(262px, var(--yg)) scale(1); opacity: 1; }
-  34% { transform: translate(280px, var(--yg)) scale(0.2); opacity: 0; }
-  100% { transform: translate(280px, var(--yg)) scale(0.2); opacity: 0; }
-}
+.nfn-rest { fill: #8A93A6; opacity: 0.5; }
+/* the one story that is followed: it glides from stage to stage, and takes the colour of the stage it is at */
+.nfn-tok { transition: transform 0.9s cubic-bezier(0.45, 0, 0.2, 1); }
+.nfn-tok[data-back="1"] { transition: none; animation: nfnIn 0.5s ease; }
+@keyframes nfnIn { from { opacity: 0; } }
+.nfn-dot { stroke: #fff; stroke-width: 3; transition: fill 0.6s ease; filter: drop-shadow(0 2px 2px rgba(10, 20, 50, 0.35)); }
 .nfn-nodes { list-style: none; margin: 10px 0 0; padding: 0; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 8px; }
-.nfn-nodes li { display: grid; justify-items: center; align-content: start; gap: 5px; text-align: center; padding: 0 4px; }
+.nfn-nodes li { display: block; min-width: 0; }
+.nfn-stb { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; padding: 10px 6px 12px; margin: 0; border-radius: 16px; border: 1.5px solid transparent; background: none; color: inherit; font: inherit; text-align: center; cursor: pointer; transition: transform 0.45s cubic-bezier(0.45, 0, 0.2, 1), background-color 0.45s ease, border-color 0.45s ease, opacity 0.45s ease; }
+.nfn-stb:focus-visible { outline: 3px solid var(--c-brand); outline-offset: 2px; }
+.nfn-tx { display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 0; }
+.nfn[data-still="0"] .nfn-nodes li[data-on="0"] .nfn-stb { opacity: 0.68; }
+.nfn[data-still="0"] .nfn-nodes li[data-on="1"] .nfn-stb { background: color-mix(in srgb, var(--tc) 10%, var(--c-paper-card)); border-color: var(--tc); transform: translateY(-4px); }
 .nfn-badge { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: color-mix(in srgb, var(--tc) 22%, var(--c-paper-card)); border: 2px solid var(--tc); color: color-mix(in srgb, var(--tc) 55%, var(--c-ink)); }
 .nfn-nodes b { font: 800 clamp(13px, 1.5vw, 15.5px)/1.25 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .nfn-nodes small { font: 400 12.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.nfn-ctl { display: flex; justify-content: center; margin-top: 8px; }
+.nfn-ctl button { min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1.5px solid var(--c-hairline); background: var(--c-paper-card); color: var(--c-ink); font: 700 13.5px/1.2 "Figures", "Public Sans", system-ui, sans-serif; cursor: pointer; }
+.nfn-ctl button:hover { border-color: var(--c-brand); }
+.nfn-ctl button:focus-visible { outline: 3px solid var(--c-brand); outline-offset: 2px; }
 @media (max-width: 700px) {
-  .nfn-nodes { grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 14px; }
-  .nfn-nodes li { grid-template-columns: 44px minmax(0, 1fr); justify-items: start; text-align: left; gap: 0 12px; padding: 0; }
-  .nfn-badge { grid-row: 1 / span 2; }
+  .nfn-nodes { grid-template-columns: minmax(0, 1fr); gap: 6px; margin-top: 14px; }
+  .nfn-stb { flex-direction: row; align-items: flex-start; gap: 12px; text-align: left; padding: 8px 10px; }
+  .nfn-tx { align-items: flex-start; }
+  .nfn-badge { flex: none; }
 }
 .nfn-st line { stroke: color-mix(in srgb, var(--c-ink-soft) 50%, transparent); stroke-width: 2; stroke-dasharray: 3 4; }
 .nfn-st circle { fill: color-mix(in srgb, var(--tc) 30%, var(--c-paper-card)); stroke: var(--tc); stroke-width: 3; }
@@ -46,12 +40,9 @@
 .nfn-cn { font: 800 30px "Figures", "Newsreader", Georgia, serif; fill: var(--c-ink); font-variant-numeric: lining-nums; }
 .nfn-cl { font: 600 13px "Figures", "Public Sans", system-ui, sans-serif; fill: var(--c-ink-soft); }
 .nfn-note { max-width: 70ch; margin: 12px auto 4px; text-align: center; font: 400 12.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-/* the numbers and the words below light up one stage after another while the picture plays */
-.nfn[data-go="1"][data-still="0"] .nfn-st circle { animation: nfnStage 8.2s linear calc(var(--j) * 1.64s) infinite backwards; }
-.nfn[data-go="1"][data-still="0"] .nfn-nodes li { animation: nfnNode 8.2s linear calc(var(--i) * 1.64s) infinite backwards; }
-@keyframes nfnStage { 0% { fill: color-mix(in srgb, var(--tc) 30%, var(--c-paper-card)); } 2%, 19% { fill: var(--tc); } 21%, 100% { fill: color-mix(in srgb, var(--tc) 30%, var(--c-paper-card)); } }
-@keyframes nfnNode { 0% { transform: none; } 2%, 19% { transform: translateY(-4px); } 21%, 100% { transform: none; } }
-.nfn-nodes li { transition: transform 0.3s ease; }
+/* the number for the stage the story is at lights up, the words below it lift (both from the same step) */
+.nfn-st circle { transition: fill 0.4s ease, stroke-width 0.4s ease; }
+.nfn-st[data-on="1"] circle { fill: var(--tc); stroke-width: 4.5; }
 
 /* ---- the statistics lenses ---- */
 .slx { margin: 6px 0 4px; padding: 14px 0 4px; border-top: 1px solid var(--c-hairline); }
@@ -71,7 +62,7 @@
 
 /* what a share is of: the same count against a small whole, then a large one (the whole is a real box whose width changes, so its corners and dotted edge stay true) */
 .slx-share { position: relative; width: 100%; max-width: 300px; height: 70px; --w: 100%; }
-.slx-whole { position: absolute; left: 0; top: 0; width: var(--w); height: 40px; box-sizing: border-box; border-radius: 10px; background: color-mix(in srgb, var(--tc) 14%, var(--c-paper-card)); border: 2px dashed color-mix(in srgb, var(--tc) 65%, transparent); transition: width 1.2s cubic-bezier(0.6, 0, 0.3, 1); }
+.slx-whole { position: absolute; left: 0; top: 0; width: var(--w); height: 40px; box-sizing: border-box; border-radius: 10px; background: color-mix(in srgb, var(--tc) 14%, var(--c-paper-card)); border: 2px solid color-mix(in srgb, var(--tc) 55%, transparent); transition: width 1.2s cubic-bezier(0.6, 0, 0.3, 1); will-change: width; }
 .slx-part { position: absolute; left: 0; top: 0; width: 26%; height: 40px; box-sizing: border-box; border-radius: 10px; background: var(--tc); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--tc) 100%, transparent); }
 .slx-share .slx-lab { position: absolute; left: 0; top: 50px; }
 .slx[data-phase="b"] .slx-share { --w: 34%; }
@@ -83,6 +74,19 @@
 .slx-mid text { fill: var(--c-ink); } .slx-mean text { fill: color-mix(in srgb, var(--tc) 70%, var(--c-ink)); }
 .slx-mid, .slx-mean { transition: opacity 0.7s ease; }
 .slx[data-phase="a"] .slx-mean, .slx[data-phase="b"] .slx-mid { opacity: 0.22; }
+/* one marker slides from the middle to the mean; the dotted gap between them shows how far apart they are, and the far dots swell as it reaches them */
+.slx-mk { transition: transform 1.2s cubic-bezier(0.6, 0, 0.3, 1); }
+.slx-mk path { fill: var(--c-ink); transition: fill 1.2s ease; }
+.slx-mk text { font: 800 11.5px "Figures", "Public Sans", system-ui, sans-serif; fill: var(--c-ink); transition: opacity 0.7s ease, fill 1.2s ease; }
+.slx-mk-b { opacity: 0; }
+.slx-gap { stroke: color-mix(in srgb, var(--tc) 70%, transparent); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 0.1 7; opacity: 0; transition: opacity 0.9s ease; }
+.slx[data-phase="b"] .slx-mk { transform: translateX(var(--dx)); }
+.slx[data-phase="b"] .slx-mk path { fill: var(--tc); }
+.slx[data-phase="b"] .slx-mk-a { opacity: 0; }
+.slx[data-phase="b"] .slx-mk-b { opacity: 1; fill: color-mix(in srgb, var(--tc) 70%, var(--c-ink)); }
+.slx[data-phase="b"] .slx-gap { opacity: 1; }
+.slx-out { transform-box: fill-box; transform-origin: center; transition: transform 0.9s ease; }
+.slx[data-phase="b"] .slx-out { transform: scale(1.35); }
 /* where a chart starts: the same line, squashed from a zero axis, then stretched from the low point */
 .slx-poly { stroke: var(--tc); stroke-width: 4; transform-box: view-box; transform: scaleY(var(--flat)); transition: transform 1.2s cubic-bezier(0.6, 0, 0.3, 1); }
 .slx-end { fill: var(--tc); }
@@ -103,7 +107,6 @@
   .slx * { transition: none !important; }
 }
 html[data-calm] .slx * { transition: none !important; }
-.nfn[data-still="1"] .nfn-ev { display: none; }
 @media (max-width: 760px) {
   .slx-grid { grid-template-columns: minmax(0, 1fr); }
   .slx-frame { height: 140px; }

@@ -5,7 +5,11 @@ import { supabase } from "../supabaseClient";
 import { partyColour } from "../lib/format";
 import { navigate } from "../lib/route";
 import { PageHeader } from "./shared";
-import { IconGroup, IconTopic, IconCoin, IconBook, IconGavel, IconRegister } from "./icons";
+import { useReducedMotion } from "motion/react";
+import { IconGroup, IconTopic, IconCoin, IconBook, IconGavel, IconRegister, IconCalendar } from "./icons";
+import { lowData } from "../lib/lowData";
+import { findMps } from "../lib/memberLookup";
+import { useStepper } from "./story/useStepper";
 import Portrait from "./Portrait";
 import { useGo } from "./story/useGo";
 import "../appg.css";
@@ -40,14 +44,19 @@ function useMembers(all) {
     (async () => {
       try {
         const [a, b] = await Promise.all([
-          mps.length ? supabase.from("politicians").select("id, name, party_colour, thumbnail_url").in("name", mps) : { data: [] },
+          mps.length ? findMps(mps) : {},
           peers.length ? supabase.from("peers").select("id, name, party_colour, thumbnail_url").or(peers.map((n) => `name.ilike.${orSafe(n)}*`).join(",")) : { data: [] },
         ]);
         if (off) return;
         const out = {};
         for (const n of names) {
-          const row = isPeer(n) ? (b.data ?? []).filter((r) => r.name === n || r.name.startsWith(`${n} of `) || r.name.startsWith(`${n} `))[0] : (a.data ?? []).find((r) => r.name === mpName(n));
-          if (row) out[n] = { id: row.id, peer: isPeer(n), colour: row.party_colour, photo: row.thumbnail_url };
+          if (isPeer(n)) {
+            const row = (b.data ?? []).filter((r) => r.name === n || r.name.startsWith(`${n} of `) || r.name.startsWith(`${n} `))[0];
+            if (row) out[n] = { id: row.id, peer: true, colour: row.party_colour, photo: row.thumbnail_url };
+          } else {
+            const hit = a[mpName(n)];
+            if (hit) out[n] = { id: hit.id, peer: false, colour: hit.colour, photo: hit.photo };
+          }
         }
         setFound(out);
       } catch { /* the page works without the lookup */ }
@@ -60,7 +69,7 @@ function useMembers(all) {
 const roleLabel = (r) => r.replace(/^./, (c) => c.toUpperCase());
 const isChair = (r) => /chair/.test(r) && !/vice/.test(r);
 
-// The people who run a group. The chair comes first and larger; each person is a button to their profile when they have been found.
+// The people who run a group, as rows of the same size: face, name and party, and the role on the right. Each row is a button to the person's profile when they have been found.
 function MemberList({ members, found }) {
   const ordered = [...members].sort((a, b) => Number(isChair(b.role)) - Number(isChair(a.role)));
   return (
@@ -71,16 +80,16 @@ function MemberList({ members, found }) {
         const chair = isChair(m.role);
         const body = (
           <>
-            <Portrait name={m.name} photo={f?.photo} colour={colour} size={chair ? 72 : 56} className="ap-face" />
+            <Portrait name={m.name} photo={f?.photo} colour={colour} size={52} className="ap-face" />
             <span className="ap-who">
               <b>{m.name}</b>
               <small><i style={{ background: colour }} aria-hidden="true" />{m.party}</small>
-              <em>{roleLabel(m.role)}</em>
             </span>
+            <em className="ap-role" data-chair={chair ? "1" : "0"}>{roleLabel(m.role)}</em>
           </>
         );
         return (
-          <li key={m.name} data-chair={chair ? "1" : "0"} style={{ "--pc": colour }}>
+          <li key={m.name} style={{ "--pc": colour }}>
             {f ? (
               <button type="button" className="ap-person" onClick={() => navigate(f.peer ? `#/lords/${f.id}` : `#/mp/${f.id}`)} aria-label={`${m.name}, ${m.role}, ${m.party}. Open their profile.`}>{body}</button>
             ) : <div className="ap-person">{body}</div>}
@@ -91,32 +100,88 @@ function MemberList({ members, found }) {
   );
 }
 
-// How a group comes about and what it can do, in four steps with a pulse that travels along the line when the picture scrolls into view. The words are the page's own.
+// How a group comes about and what it can do, in four steps. One step is lit at a time, in order, and shows a small picture of what happens there; press a step to look at it, or pause. The words are the page's own.
 const FLOW = [
   { icon: IconTopic, title: "A shared interest", text: "MPs and peers join up around one topic: a country, a health condition, an industry or a social issue.", colour: "#1E4FB8" },
   { icon: IconGroup, title: "Members from several parties", text: "Cross-party by rule: officers must come from more than one political party.", colour: "#1FA97C" },
   { icon: IconCoin, title: "Help from outside", text: "Running a group takes staff, called a secretariat. That help often comes from a charity, a trade body or a public affairs firm.", colour: "#E8741A" },
   { icon: IconBook, title: "Events, inquiries and reports", text: "They host speakers, run inquiries and publish reports that shape how MPs and ministers think.", colour: "#7A5AF0" },
 ];
+const PARTIES = ["#DC2626", "#0087DC", "#FAA61A", "#6AB023"];
+
+// The small picture for each step, drawn in a box 160 wide and 84 high.
+function Scene({ i }) {
+  if (i === 0) {
+    // people drawn in from all sides to one topic: they rest in a ring round it, and start from the corners
+    const ring = [[80, 14], [108, 32], [98, 66], [62, 66], [52, 32]];
+    const far = [[10, 8], [150, 10], [152, 76], [8, 76], [80, 0]];
+    return (
+      <svg viewBox="0 0 160 84" aria-hidden="true">
+        <circle className="sc-core" cx="80" cy="42" r="15" />
+        <path className="sc-core-i" d="M73 38h14M73 43h14M73 48h8" />
+        {ring.map(([x, y], k) => <circle key={k} className="sc-dot" cx={x} cy={y} r="6" style={{ "--sx": `${far[k][0] - x}px`, "--sy": `${far[k][1] - y}px`, "--k": k }} />)}
+      </svg>
+    );
+  }
+  if (i === 1) {
+    // four parties joined into one group
+    const pts = [[34, 22], [126, 22], [34, 62], [126, 62]];
+    return (
+      <svg viewBox="0 0 160 84" aria-hidden="true">
+        {[[0, 1], [1, 3], [3, 2], [2, 0], [0, 3], [1, 2]].map(([a, b], k) => <line key={k} className="sc-link" x1={pts[a][0]} y1={pts[a][1]} x2={pts[b][0]} y2={pts[b][1]} style={{ "--k": k }} />)}
+        {pts.map(([x, y], k) => <circle key={k} className="sc-party" cx={x} cy={y} r="10" style={{ fill: PARTIES[k], "--k": k }} />)}
+      </svg>
+    );
+  }
+  if (i === 2) {
+    // a coin goes from an outside body to the group's secretariat
+    return (
+      <svg viewBox="0 0 160 84" aria-hidden="true">
+        <rect className="sc-desk" x="92" y="22" width="56" height="42" rx="8" />
+        <path className="sc-desk-i" d="M102 36h36M102 44h36M102 52h22" />
+        <rect className="sc-body" x="12" y="30" width="30" height="26" rx="5" />
+        <path className="sc-body-i" d="M17 38h20M17 44h14" />
+        <g className="sc-coin"><circle cx="0" cy="0" r="9" /><text x="0" y="4.5" textAnchor="middle">£</text></g>
+      </svg>
+    );
+  }
+  // pages of a report stack up
+  return (
+    <svg viewBox="0 0 160 84" aria-hidden="true">
+      {[0, 1, 2].map((k) => (
+        <g key={k} className="sc-page" style={{ "--k": k, "--tx": `${34 + k * 32}px`, "--ty": `${14 + k * 4}px` }}>
+          <rect width="38" height="52" rx="5" />
+          <path d="M7 14h24M7 22h24M7 30h16" />
+        </g>
+      ))}
+    </svg>
+  );
+}
 
 function GroupFlow() {
   const [ref, go] = useGo(0.3);
+  const still = useReducedMotion() || lowData();
+  const st = useStepper(FLOW.length, go, still, 3800);
   return (
-    <section ref={ref} className="ap-flow" data-go={go} aria-labelledby="h-ap-what">
+    <section ref={ref} className="ap-flow" data-go={go} data-still={still ? "1" : "0"} aria-labelledby="h-ap-what">
       <h2 id="h-ap-what">What is an APPG?</h2>
       <p className="ap-lead">All-party parliamentary groups are informal groups that MPs and peers join to focus on one topic. They are one of the earliest and least visible ways outside organisations get access to Parliament.</p>
       <ol className="ap-steps">
         {FLOW.map((f, i) => {
           const Icon = f.icon;
+          const on = !still && i === st.step;
           return (
-            <li key={f.title} style={{ "--tc": f.colour, "--i": i }}>
-              <span className="ap-bd" aria-hidden="true"><Icon size={26} /><i>{i + 1}</i></span>
-              <b>{f.title}</b>
-              <p>{f.text}</p>
+            <li key={f.title} data-on={on ? "1" : "0"} data-done={!still && i < st.step ? "1" : "0"} style={{ "--tc": f.colour, "--i": i }}>
+              <button type="button" className="ap-st" onClick={() => st.pick(i)} aria-label={`Show step ${i + 1}: ${f.title}`} aria-current={on ? "step" : undefined}>
+                <span className="ap-scene"><Scene i={i} /><span className="ap-bd" aria-hidden="true"><Icon size={22} /><i>{i + 1}</i></span></span>
+                <b>{f.title}</b>
+                <span className="ap-st-p">{f.text}</span>
+              </button>
             </li>
           );
         })}
       </ol>
+      {!still && <div className="ap-ctl"><button type="button" onClick={st.toggle} aria-pressed={!st.running}>{st.running ? "Pause" : "Play the steps"}</button></div>}
       <div className="ap-limit">
         <span className="ap-limit-ico" aria-hidden="true"><IconGavel size={22} /></span>
         <div><b>No official power</b><span>A group cannot pass laws or make decisions for Parliament. Its influence is in who it brings together and what it gets in front of MPs and ministers.</span></div>
@@ -248,10 +313,10 @@ const APPG_EXAMPLES = [
 const TAGS = ["All", ...new Set(APPG_EXAMPLES.map((g) => g.tag))];
 
 const RULES = [
-  { big: "20+", text: "members, with officers from more than one political party", color: "#1E4FB8" },
-  { big: "2", text: "meetings a year, one of them an annual general meeting", color: "#1FA97C" },
-  { big: "£", text: "income or benefits above a set amount must be declared, including secretariat support", color: "#E8741A" },
-  { big: "6 wks", text: "roughly how often a group must re-register, or it is dissolved", color: "#7A5AF0" },
+  { icon: IconGroup, head: "20+ members", text: "with officers from more than one political party", color: "#1E4FB8" },
+  { icon: IconCalendar, head: "2 meetings a year", text: "one of them an annual general meeting", color: "#1FA97C" },
+  { icon: IconCoin, head: "£ above a set amount", text: "income or benefits must be declared, including secretariat support", color: "#E8741A" },
+  { icon: IconRegister, head: "Every 6 weeks", text: "roughly how often a new edition of the official register is published", color: "#7A5AF0" },
 ];
 
 export default function AppgMemberships() {
@@ -328,7 +393,7 @@ export default function AppgMemberships() {
       <section className="ap-sec" aria-labelledby="h-ap-rules">
         <h2 id="h-ap-rules">The rules a group must follow</h2>
         <ol className="ap-rules">
-          {RULES.map((r) => <li key={r.big} style={{ "--rc": r.color }}><b>{r.big}</b><span>{r.text}</span></li>)}
+          {RULES.map((r) => { const Icon = r.icon; return <li key={r.head} style={{ "--rc": r.color }}><span className="ap-rule-ico" aria-hidden="true"><Icon size={24} /></span><b>{r.head}</b><span>{r.text}</span></li>; })}
         </ol>
       </section>
 

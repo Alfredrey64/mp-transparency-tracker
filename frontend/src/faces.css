@@ -1,0 +1,4 @@
+/* A face: a round photo with the person's party colour as a ring, or their initials on that colour. */
+.portrait { position: relative; display: grid; place-items: center; flex: none; overflow: hidden; border-radius: 50%; background: var(--pc, #5B6784); color: #fff; font-family: "Figures", "Public Sans", system-ui, sans-serif; font-weight: 800; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); box-shadow: 0 0 0 2px var(--c-paper-card), 0 0 0 4px var(--pc, #5B6784); }
+.portrait img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 18%; background: color-mix(in srgb, var(--pc, #5B6784) 18%, var(--c-paper-card)); }
+

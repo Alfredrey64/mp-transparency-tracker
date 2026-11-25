@@ -4,7 +4,7 @@
 .ap-tags button { min-height: 38px; padding: 0 16px; border-radius: 999px; cursor: pointer; font: 700 13.5px "Public Sans", system-ui, sans-serif; color: var(--c-ink); background: var(--c-paper-card); border: 1px solid var(--c-hairline); transition: background 0.2s, border-color 0.2s; }
 .ap-tags button:hover { border-color: var(--c-ink-soft); }
 .ap-tags button[aria-pressed="true"] { background: var(--c-ink); color: var(--c-paper); border-color: var(--c-ink); }
-.ap-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 14px; align-items: start; }
+.ap-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 14px; align-items: stretch; }
 .ap-grid-wide { grid-template-columns: repeat(auto-fill, minmax(min(380px, 100%), 1fr)); }
 .ap-card { display: grid; gap: 8px; padding: 18px 20px 20px; border-radius: 20px; background: linear-gradient(165deg, color-mix(in srgb, var(--gc) 9%, var(--c-paper-card)), var(--c-paper-card) 120px); border: 1px solid color-mix(in srgb, var(--gc) 28%, var(--c-hairline)); border-left: 6px solid var(--gc); box-shadow: var(--shadow-1); }
 .ap-tag { justify-self: start; padding: 3px 11px; border-radius: 999px; font: 700 11.5px "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--gc) 78%, var(--c-ink)); background: color-mix(in srgb, var(--gc) 14%, transparent); border: 1px solid color-mix(in srgb, var(--gc) 32%, transparent); }
@@ -16,47 +16,71 @@
 .ap-sub { margin-top: 4px; font: 700 12px "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .ap-note { margin: 0; font: italic 400 13px "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .ap-src { padding-block: 5px; justify-self: start; font: 700 13px "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--gc) 78%, var(--c-ink)); }
-.ap-why { margin: 34px 0 0; padding: 20px 24px; border-radius: 22px; max-width: none; background: linear-gradient(135deg, color-mix(in srgb, #C7871A 12%, var(--c-paper-card)), var(--c-paper-card) 80%); border: 1px solid color-mix(in srgb, #C7871A 30%, var(--c-hairline)); border-left: 6px solid #C7871A; }
+.ap-why { margin: 34px 0 0; padding: 22px 26px 24px; border-radius: 22px; max-width: none; background: linear-gradient(135deg, color-mix(in srgb, #C7871A 12%, var(--c-paper-card)), var(--c-paper-card) 80%); border: 1px solid color-mix(in srgb, #C7871A 30%, var(--c-hairline)); border-left: 6px solid #C7871A; }
+.ap-why h2 { margin: 0 0 8px; font: 700 20px/1.25 "Newsreader", Georgia, serif; color: var(--c-ink); }
 .ap-why p { margin: 0; max-width: 780px; font: 400 15px/1.7 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .ap-rules { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px; }
-.ap-rules li { display: grid; gap: 4px; padding: 16px 18px; border-radius: 18px; background: color-mix(in srgb, var(--rc) 8%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--rc) 28%, var(--c-hairline)); }
-.ap-rules b { font: 700 36px/1 "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--rc) 80%, var(--c-ink)); }
-.ap-rules span { font: 500 14px/1.5 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ap-rules li { position: relative; display: grid; align-content: start; gap: 6px; padding: 18px 18px 18px; border-radius: 18px; background: var(--c-paper-card); border: 1px solid color-mix(in srgb, var(--rc) 26%, var(--c-hairline)); box-shadow: var(--shadow-1); overflow: hidden; transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease; }
+.ap-rules li::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--rc); }
+@media (hover: hover) { .ap-rules li:hover { transform: translateY(-3px); box-shadow: var(--shadow-2); } }
+.ap-rule-ico { display: grid; place-items: center; width: 46px; height: 46px; margin-bottom: 4px; border-radius: 50%; background: var(--rc); color: #fff; box-shadow: 0 0 0 5px color-mix(in srgb, var(--rc) 16%, transparent); }
+.ap-rules b { font: 700 20px/1.2 "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--rc) 70%, var(--c-ink)); }
+.ap-rules li > span:not(.ap-rule-ico) { font: 400 14px/1.55 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .ap-look { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; margin: 34px 0 0; padding: 22px 26px; border-radius: 22px; max-width: none; background: linear-gradient(135deg, #1E3A6E, #16264A); color: #fff; }
 .ap-look h2 { margin: 0; font: 700 22px "Newsreader", Georgia, serif; color: #fff; }
 .ap-look p { margin: 4px 0 0; max-width: 560px; font: 400 14.5px/1.55 "Public Sans", system-ui, sans-serif; color: rgba(255, 255, 255, 0.85); }
 .ap-look a { padding: 12px 22px; border-radius: 999px; background: #fff; color: #16264A; font: 700 14.5px "Public Sans", system-ui, sans-serif; text-decoration: none; }
 
-/* A face: a round photo with the person's party colour as a ring, or their initials on that colour. */
-.portrait { position: relative; display: grid; place-items: center; flex: none; overflow: hidden; border-radius: 50%; background: var(--pc, #5B6784); color: #fff; font-family: "Figures", "Public Sans", system-ui, sans-serif; font-weight: 800; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); box-shadow: 0 0 0 2px var(--c-paper-card), 0 0 0 4px var(--pc, #5B6784); }
-.portrait img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 18%; background: color-mix(in srgb, var(--pc, #5B6784) 18%, var(--c-paper-card)); }
-
 /* How a group comes about: four steps joined by a line along which a pulse travels once the picture is in view. */
 .ap-flow { margin: 26px 0 0; max-width: none; padding: clamp(18px, 3vw, 28px); border-radius: 24px; background: linear-gradient(160deg, color-mix(in srgb, #1E4FB8 7%, var(--c-paper-card)), var(--c-paper-card) 55%); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); }
-.ap-steps { list-style: none; margin: 22px 0 0; padding: 0; position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
-.ap-steps::before { content: ""; position: absolute; left: 12.5%; right: 12.5%; top: 32px; height: 0; border-top: 3px dashed color-mix(in srgb, var(--c-ink) 20%, transparent); }
-.ap-steps::after { content: ""; position: absolute; left: 12.5%; top: 26px; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; background: var(--c-brand, #1E4FB8); box-shadow: 0 0 0 5px color-mix(in srgb, var(--c-brand, #1E4FB8) 25%, transparent); opacity: 0; }
-.ap-flow[data-go="1"] .ap-steps::after { animation: apPulse 4.2s cubic-bezier(0.45, 0, 0.3, 1) 0.4s both; }
-@keyframes apPulse { 0% { left: 12.5%; opacity: 1; } 92% { opacity: 1; } 100% { left: 87.5%; opacity: 0; } }
-.ap-steps li { position: relative; display: grid; justify-items: center; align-content: start; gap: 8px; text-align: center; padding: 0 6px; }
-.ap-bd { position: relative; display: grid; place-items: center; width: 66px; height: 66px; border-radius: 50%; background: var(--c-paper-card); color: var(--tc); border: 3px solid var(--tc); box-shadow: 0 0 0 6px var(--c-paper-card); z-index: 1; transition: background 0.4s ease, color 0.4s ease, transform 0.4s var(--ease-out); }
-.ap-bd i { position: absolute; right: -6px; top: -6px; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--tc); color: #fff; font: 800 12.5px/1 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; }
-.ap-flow[data-go="0"] .ap-bd { transform: scale(0.8); opacity: 0.4; }
-.ap-flow[data-go="1"] .ap-bd { animation: apLight 0.9s var(--ease-out) calc(0.4s + var(--i) * 1.1s) both; }
-@keyframes apLight { 0% { background: var(--c-paper-card); color: var(--tc); transform: scale(0.85); } 55% { transform: scale(1.12); } 100% { background: var(--tc); color: #fff; transform: scale(1); } }
-.ap-steps b { font: 700 18px/1.25 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); text-wrap: balance; }
-.ap-steps p { margin: 0; font: 400 14px/1.55 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ap-steps { list-style: none; margin: 22px 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.ap-steps li { position: relative; min-width: 0; display: flex; }
+/* a small arrow between the cards, so the four read as a sequence */
+.ap-steps li:not(:last-child)::after { content: ""; position: absolute; z-index: 2; right: -12px; top: 52px; width: 10px; height: 10px; border-top: 3px solid color-mix(in srgb, var(--c-ink-soft) 65%, transparent); border-right: 3px solid color-mix(in srgb, var(--c-ink-soft) 65%, transparent); transform: rotate(45deg); }
+.ap-st { flex: 1; display: flex; flex-direction: column; align-items: stretch; gap: 8px; width: 100%; margin: 0; padding: 0 0 16px; border-radius: 20px; border: 1.5px solid color-mix(in srgb, var(--tc) 28%, var(--c-hairline)); background: var(--c-paper-card); color: inherit; font: inherit; text-align: left; cursor: pointer; overflow: hidden; transition: transform 0.5s var(--ease-out), box-shadow 0.5s ease, border-color 0.5s ease, opacity 0.5s ease; }
+.ap-st:focus-visible { outline: 3px solid var(--c-brand); outline-offset: 2px; }
+.ap-flow[data-still="0"] .ap-steps li[data-on="0"] .ap-st { opacity: 0.7; }
+.ap-flow[data-still="0"] .ap-steps li[data-on="1"] .ap-st { border-color: var(--tc); transform: translateY(-5px); box-shadow: 0 16px 26px -16px color-mix(in srgb, var(--tc) 70%, #000); }
+.ap-scene { position: relative; display: block; height: 104px; background: color-mix(in srgb, var(--tc) 11%, var(--c-paper-card)); border-bottom: 1px solid color-mix(in srgb, var(--tc) 24%, var(--c-hairline)); }
+.ap-scene svg { position: absolute; inset: 8px 12px; width: calc(100% - 24px); height: calc(100% - 16px); overflow: visible; }
+.ap-bd { position: absolute; left: 12px; top: 10px; z-index: 1; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--tc); color: #fff; box-shadow: 0 6px 12px -6px color-mix(in srgb, var(--tc) 80%, #000); }
+.ap-bd i { position: absolute; right: -6px; top: -6px; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--c-paper-card); color: var(--c-ink); border: 2px solid var(--tc); font: 800 11px/1 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; }
+.ap-st b { padding: 0 16px; font: 700 18px/1.25 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); text-wrap: balance; }
+.ap-st-p { padding: 0 16px; font: 400 14px/1.55 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ap-ctl { display: flex; justify-content: center; margin-top: 12px; }
+.ap-ctl button { min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1.5px solid var(--c-hairline); background: var(--c-paper-card); color: var(--c-ink); font: 700 13.5px/1.2 "Public Sans", system-ui, sans-serif; cursor: pointer; }
+.ap-ctl button:hover { border-color: var(--c-brand); }
+.ap-ctl button:focus-visible { outline: 3px solid var(--c-brand); outline-offset: 2px; }
+/* the small pictures: each rests finished, and plays when its step is the lit one */
+.sc-core { fill: var(--tc); } .sc-core-i { stroke: #fff; stroke-width: 2.5; stroke-linecap: round; fill: none; }
+.sc-dot { fill: color-mix(in srgb, var(--tc) 70%, #1B2A44); stroke: var(--c-paper-card); stroke-width: 2; }
+.sc-link { stroke: color-mix(in srgb, var(--tc) 55%, transparent); stroke-width: 3; stroke-linecap: round; }
+.sc-party { stroke: var(--c-paper-card); stroke-width: 3; }
+.sc-desk { fill: var(--c-paper-card); stroke: var(--tc); stroke-width: 2.5; } .sc-desk-i, .sc-body-i { stroke: color-mix(in srgb, var(--tc) 60%, var(--c-ink-soft)); stroke-width: 3; stroke-linecap: round; fill: none; }
+.sc-body { fill: color-mix(in srgb, var(--c-ink-soft) 22%, var(--c-paper-card)); stroke: var(--c-ink-soft); stroke-width: 2; }
+.sc-coin { transform: translate(100px, 43px); } .sc-coin circle { fill: #F2C14E; stroke: #A9741A; stroke-width: 2; } .sc-coin text { font: 800 12px "Figures", "Newsreader", Georgia, serif; fill: #6B4A0E; }
+.sc-page rect { fill: var(--c-paper-card); stroke: var(--tc); stroke-width: 2.5; } .sc-page path { stroke: color-mix(in srgb, var(--tc) 60%, var(--c-ink-soft)); stroke-width: 3; stroke-linecap: round; fill: none; }
+@keyframes scIn { from { transform: translate(var(--sx), var(--sy)); opacity: 0.2; } }
+@keyframes scPop { from { transform: scale(0); opacity: 0; } 70% { transform: scale(1.2); } }
+@keyframes scDraw { from { stroke-dasharray: 130; stroke-dashoffset: 130; } to { stroke-dasharray: 130; stroke-dashoffset: 0; } }
+@keyframes scCoin { 0% { transform: translate(44px, 43px); } 70%, 100% { transform: translate(100px, 43px); } }
+@keyframes scPage { from { transform: translate(var(--tx), calc(var(--ty) + 30px)); opacity: 0; } }
+.ap-steps li[data-on="1"] .sc-dot { animation: scIn 1.3s var(--ease-out) calc(var(--k) * 0.12s) backwards; }
+.ap-steps li[data-on="1"] .sc-party { transform-box: fill-box; transform-origin: center; animation: scPop 0.6s cubic-bezier(0.3, 1.5, 0.5, 1) calc(var(--k) * 0.22s) backwards; }
+.ap-steps li[data-on="1"] .sc-link { animation: scDraw 0.9s ease calc(var(--k) * 0.18s + 0.4s) backwards; }
+.ap-steps li[data-on="1"] .sc-coin { animation: scCoin 1.8s var(--ease-out) 0.2s backwards; }
+.ap-steps li[data-on="1"] .sc-page { animation: scPage 0.7s var(--ease-out) calc(var(--k) * 0.3s) backwards; }
+.sc-page { transform: translate(var(--tx), var(--ty)); }
 .ap-limit { display: flex; align-items: center; gap: 14px; margin-top: 22px; padding: 14px 18px; border-radius: 16px; background: color-mix(in srgb, #E0367A 8%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, #E0367A 28%, var(--c-hairline)); }
 .ap-limit-ico { display: grid; place-items: center; flex: none; width: 42px; height: 42px; border-radius: 12px; background: color-mix(in srgb, #E0367A 16%, var(--c-paper-card)); color: #B42A63; }
 .ap-limit b { display: block; font: 700 16px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .ap-limit span:not(.ap-limit-ico) { font: 400 14px/1.55 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-@media (max-width: 860px) {
-  .ap-steps { grid-template-columns: minmax(0, 1fr); gap: 4px; }
-  .ap-steps::before { left: 33px; right: auto; top: 33px; bottom: 33px; height: auto; border-top: 0; border-left: 3px dashed color-mix(in srgb, var(--c-ink) 20%, transparent); }
-  .ap-steps::after { display: none; }
-  .ap-steps li { grid-template-columns: 66px minmax(0, 1fr); justify-items: start; text-align: left; column-gap: 16px; row-gap: 2px; padding: 8px 0; }
-  .ap-steps li .ap-bd { grid-row: span 2; }
-  .ap-steps li p { grid-column: 2; }
+@media (max-width: 1000px) {
+  .ap-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .ap-steps li:not(:last-child)::after { display: none; }
+}
+@media (max-width: 560px) {
+  .ap-steps { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* A group's card: kind of group, name, what it does, who runs it, then its officers with their faces. */
@@ -65,25 +89,31 @@
 .ap-run { grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: 10px; padding: 12px 14px; border-radius: 14px; }
 .ap-run-ico { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: color-mix(in srgb, var(--gc) 16%, var(--c-paper-card)); color: color-mix(in srgb, var(--gc) 80%, var(--c-ink)); }
 .ap-run > div { display: grid; gap: 1px; min-width: 0; }
-.ap-people { list-style: none; margin: 4px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.ap-people { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 8px; }
 .ap-people li { display: block; }
-.ap-person { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 12px; border: 1px solid color-mix(in srgb, var(--pc) 26%, var(--c-hairline)); border-radius: 16px; background: color-mix(in srgb, var(--pc) 6%, var(--c-paper-card)); text-align: left; font: inherit; color: inherit; cursor: default; }
+.ap-person { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 76px; padding: 10px 12px; border: 1px solid color-mix(in srgb, var(--pc) 26%, var(--c-hairline)); border-radius: 16px; background: color-mix(in srgb, var(--pc) 6%, var(--c-paper-card)); text-align: left; font: inherit; color: inherit; cursor: default; }
 button.ap-person { cursor: pointer; transition: transform 0.25s var(--ease-out), box-shadow 0.25s ease, border-color 0.25s ease; }
 button.ap-person:hover { transform: translateY(-2px); border-color: var(--pc); box-shadow: var(--shadow-2); }
 button.ap-person:focus-visible { outline: 3px solid var(--c-brand); outline-offset: 2px; }
-.ap-people li[data-chair="1"] { grid-column: 1 / -1; }
-.ap-people li[data-chair="1"] .ap-person { background: color-mix(in srgb, var(--pc) 11%, var(--c-paper-card)); border-color: color-mix(in srgb, var(--pc) 45%, var(--c-hairline)); }
-.ap-who { display: grid; gap: 1px; min-width: 0; }
+.ap-who { flex: 1 1 auto; display: grid; gap: 2px; min-width: 0; }
 .ap-who b { font: 700 14.5px/1.25 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
-.ap-people li[data-chair="1"] .ap-who b { font-size: 16.5px; }
 .ap-who small { display: flex; align-items: center; gap: 6px; font: 500 12px/1.3 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .ap-who small i { width: 8px; height: 8px; border-radius: 50%; flex: none; }
-.ap-who em { font: 800 11px/1.4 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: color-mix(in srgb, var(--pc) 70%, var(--c-ink)); }
-@media (prefers-reduced-motion: reduce) { .ap-bd, button.ap-person { transition: none; } .ap-flow[data-go="1"] .ap-bd, .ap-flow[data-go="1"] .ap-steps::after { animation: none; } .ap-flow[data-go="1"] .ap-steps::after { display: none; } .ap-flow[data-go="1"] .ap-bd { background: var(--tc); color: #fff; } }
-html[data-calm] .ap-flow[data-go="1"] .ap-bd, html[data-calm] .ap-flow[data-go="1"] .ap-steps::after { animation: none; }
-html[data-calm] .ap-flow[data-go="1"] .ap-steps::after { display: none; }
-html[data-calm] .ap-flow[data-go="1"] .ap-bd { background: var(--tc); color: #fff; }
+.ap-role { flex: none; margin-left: auto; padding: 2px 10px; border-radius: 999px; background: color-mix(in srgb, var(--pc) 14%, var(--c-paper-card)); font: 800 11px/1.5 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: color-mix(in srgb, var(--pc) 70%, var(--c-ink)); white-space: nowrap; }
+.ap-role[data-chair="1"] { background: color-mix(in srgb, var(--pc) 85%, #1B2A44); color: #fff; }
+@media (prefers-reduced-motion: reduce) { .ap-st, .ap-rules li, button.ap-person { transition: none; } .ap-steps li .ap-scene * { animation: none !important; } }
+
+html[data-calm] .ap-st, html[data-calm] .ap-rules li { transition: none; }
+html[data-calm] .ap-steps li .ap-scene * { animation: none !important; }
 
 /* cards in a row are as tall as the tallest, so the officers sit at the foot of each */
 .ap-card { display: flex; flex-direction: column; }
 .ap-card .ap-sub { margin-top: auto; padding-top: 6px; }
+
+/* the group cards share their rows, so every card's title, description, "Who runs it" box and officer list start at the same height as its neighbours */
+@supports (grid-template-rows: subgrid) {
+  .ap-grid:not(.ap-grid-wide) { row-gap: 0; }
+  .ap-grid:not(.ap-grid-wide) > .ap-card { display: grid; grid-row: span 6; grid-template-rows: subgrid; gap: 0; margin-bottom: 14px; }
+  .ap-grid:not(.ap-grid-wide) > .ap-card > :not(:last-child) { margin-bottom: 10px; }
+  .ap-grid:not(.ap-grid-wide) > .ap-card .ap-sub { margin-top: 0; padding-top: 0; align-self: end; }
+}

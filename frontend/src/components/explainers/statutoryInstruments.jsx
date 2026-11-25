@@ -45,6 +45,21 @@ function build(data) {
       ],
     },
     {
+      title: "Words you will meet on this page",
+      lede: "A few terms come up again and again. Each one is explained again where it matters.",
+      colour: "#5E4B8B",
+      blocks: [
+        { cards: [
+          { title: "Act", text: "A law passed by MPs and peers. It can include a power for a minister to fill in detail.", colour: "#2C7DA0" },
+          { title: "Statutory instrument (SI)", text: "The rules a minister writes using a power an Act gave them. It is real law.", colour: "#7B5BD6" },
+          { title: "Laid before Parliament", text: "Formally put in front of MPs and peers, so that Parliament can check it.", colour: "#C88A1E" },
+          { title: "Draft and made", text: "A draft is laid before it is law. A made instrument is already law when Parliament sees it.", colour: "#3F7D5C" },
+          { title: "Affirmative and negative", text: "Affirmative: Parliament has to approve it. Negative: it goes ahead unless a House objects.", colour: "#5B6784" },
+          { title: "Henry VIII power", text: "A power that lets a minister change an Act of Parliament itself.", colour: "#B3262E" },
+        ] },
+      ],
+    },
+    {
       title: "Why not put it all in the Act?",
       lede: "Parliament does not have the time to write every technical detail into law, and Acts would become longer and harder to follow if it tried. So it sets the framework in the Act and leaves the detail to ministers.",
       colour: "#C88A1E",
@@ -63,7 +78,6 @@ function build(data) {
       lede: "The Act that gives the power also says how Parliament gets its say. There are two routes, and the Act picks one.",
       colour: "#3F7D5C",
       blocks: [
-        { node: <SiRoutes /> },
         { compare: [
           { title: "Parliament has to say yes", colour: "#3F7D5C", items: [
             "This is called the affirmative route. Both Houses usually have to approve it, normally after a debate and a vote.",
@@ -71,11 +85,12 @@ function build(data) {
             `${pct}% of the instruments laid in the last 12 months were of this kind.`,
           ] },
           { title: "It goes ahead unless someone objects", colour: "#5B6784", items: [
-            "This is called the negative route. No vote is needed. If neither House objects within 40 days (not counting recesses), it stands.",
+            "This is called the negative route. No vote is needed. If neither House objects within 40 days (not counting recesses, the breaks when Parliament is not sitting), it stands.",
             "Most are already law when Parliament sees them. They are normally laid at least 21 days before they take effect. There is no guarantee of a debate in the Commons.",
             `${100 - pct}% of the instruments laid in the last 12 months were of this kind.`,
           ] },
         ] },
+        { node: <SiRoutes /> },
         { text: ["Either way, Parliament cannot change the wording. With very few exceptions it can only accept an instrument or reject it."] },
         { node: <SiNoAmend /> },
         { facts: [

@@ -5,7 +5,7 @@ import { IconShield, IconBook, IconCompass, IconScales, IconCabinet, IconGroup }
 import { Workforce } from "../story/CivilServiceArt";
 import { Hero, Dots } from "../story/Vivid";
 import Handover from "../story/Handover";
-import { CivilSwap } from "../story/FlowArt";
+import { CivilRelay } from "../story/FlowArt";
 
 const PAGE = {
   look: "vivid",
@@ -16,10 +16,15 @@ const PAGE = {
   lead: <Hero
     colours={["#101C34", "#2C5F9E", "#1F4A6E"]}
     why="When a minister announces a policy, civil servants are the ones who make it work, and who tell the minister what will and will not. The rules about their impartiality are what stop a change of government becoming a change of everyone doing the job."
-    extra={<CivilSwap label="How ministers, civil servants and public services connect" nodes={[
-      { icon: IconCabinet, title: "Ministers", text: "Set the direction", colour: "#C8546B" },
-      { icon: IconCivilService, title: "Civil servants", text: "Run the departments and write the advice", colour: "#2C5F9E" },
-      { icon: IconGroup, title: "Public services", text: "Delivered every day, whoever governs", colour: "#1F7A6E" },
+    extra={<CivilRelay label="What the civil service does, from a minister's decision to a service people use" nodes={[
+      { icon: IconCabinet, who: "Ministers", title: "Set the direction", text: "They decide what the department does.", colour: "#B04A63" },
+      { icon: IconBook, who: "Civil servants", title: "Give honest advice", text: "They write the advice and tell the minister what will and will not work.", colour: "#2C5F9E" },
+      { icon: IconCivilService, who: "Civil servants", title: "Carry it out", text: "They run the departments and carry out the minister's decisions.", colour: "#1F7A6E" },
+      { icon: IconGroup, who: "Public services", title: "Reach people", text: "Delivered every day, whoever governs.", colour: "#A9701F" },
+    ]} protects={[
+      { icon: IconBook, title: "Honest advice", text: "Honesty and objectivity: advice based on the evidence, even when it is not welcome." },
+      { icon: IconScales, title: "Appointed on merit", text: "Chosen after a fair and open competition, not by a party." },
+      { icon: IconShield, title: "Any government served equally", text: "Impartiality is why they stay when governments change." },
     ]} />}
     figures={[
       { value: "557,825", label: "Civil servants, 31 March 2026", sub: "523,795 in full-time equivalent terms" },

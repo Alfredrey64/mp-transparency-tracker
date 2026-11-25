@@ -990,14 +990,22 @@
 @media (prefers-reduced-motion: reduce) { .na-outlets > li, .na-case-list > li, .na-split, .na-arrow, .na-tl-track i, .na-tl-track em, .na-took i::after { transition: none !important; } }
 
 /* Coming up in Parliament: four weeks of sitting days. Green for the Commons, red for the Lords, after the colours of their benches. */
-.up-key { margin: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; font: 600 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.up-key span { display: inline-flex; align-items: center; gap: 7px; }
-.up-key i { width: 14px; height: 14px; border-radius: 4px; display: inline-block; border: 1.5px solid var(--c-ink-soft); }
-.up-key i.on { background: var(--c-ink-soft); } .up-key i.off { border-color: var(--c-hairline); background: var(--c-paper); }
-.up-key i.recess { background: repeating-linear-gradient(135deg, var(--c-ink-soft) 0 2px, transparent 2px 5px); }
+/* The key: three short rows, each with its own label, so the colours, the sitting words and the bars along the foot of each day are told apart. */
+.upk { display: grid; gap: 0; border: 1px solid var(--c-hairline); border-radius: 16px; background: var(--c-paper-card); overflow: hidden; font: 600 13px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.upk-row { display: grid; grid-template-columns: minmax(150px, 210px) minmax(0, 1fr); align-items: center; gap: 6px 16px; padding: 10px 16px; }
+.upk-row + .upk-row { border-top: 1px solid var(--c-hairline); }
+.upk-row > b { font: 700 12.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.upk ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 8px; }
+.upk li { display: inline-flex; align-items: center; gap: 8px; min-height: 30px; padding: 0 12px 0 9px; border-radius: 999px; background: color-mix(in srgb, var(--c-ink-soft) 9%, var(--c-paper-card)); }
+.upk i { flex: none; display: inline-block; width: 14px; height: 14px; }
+.upk-house { border-radius: 50%; background: var(--hc); }
+.upk-house[data-house="Commons"] { --hc: var(--house-commons); } .upk-house[data-house="Lords"] { --hc: var(--house-lords); }
+.upk-st { width: 20px !important; height: 12px !important; border-radius: 4px; border: 1.5px solid var(--c-ink-soft); box-sizing: border-box; }
+.upk-st.on { background: var(--c-ink-soft); } .upk-st.off { border-color: var(--c-hairline); background: var(--c-paper); }
+.upk-st.recess { background: repeating-linear-gradient(135deg, var(--c-ink-soft) 0 2px, transparent 2px 5px); }
+.upk-kind { width: 12px !important; height: 12px !important; border-radius: 4px; }
+@media (max-width: 640px) { .upk-row { grid-template-columns: minmax(0, 1fr); padding: 10px 14px; } }
 .up-cal { margin: 0; display: grid; gap: 14px; }
-.up-key-c i { background: var(--hc) !important; border-color: var(--hc) !important; border-radius: 50% !important; }
-.up-key-c i[data-house="Commons"] { --hc: var(--house-commons); } .up-key-c i[data-house="Lords"] { --hc: var(--house-lords); }
 .uc { display: grid; gap: 8px; width: 100%; }
 .uc-row { display: grid; grid-template-columns: 74px repeat(5, minmax(0, 1fr)); gap: 8px; align-items: stretch; }
 .uc-row:not(.uc-head) { opacity: 0; transform: translateY(8px); transition: opacity 0.5s var(--ease-out) calc(var(--w) * 110ms), transform 0.5s var(--ease-out) calc(var(--w) * 110ms); }
@@ -1026,9 +1034,6 @@
 .uc-n { font: 500 12.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .uc-mix { display: flex; gap: 2px; height: 7px; margin-top: 3px; border-radius: 4px; overflow: hidden; }
 .uc-mix i { min-width: 5px; transform-origin: left; }
-.up-key-mix { margin-top: -4px; }
-.up-key-mix b { font-weight: 700; color: var(--c-ink); }
-.up-key-mix i { border: 0 !important; border-radius: 50% !important; width: 11px !important; height: 11px !important; }
 @media (prefers-reduced-motion: no-preference) { .up-cal[data-go="1"] .uc-mix i { animation: ucMix 0.6s var(--ease-out) calc(var(--k) * 80ms + 500ms) backwards; } }
 @keyframes ucMix { from { transform: scaleX(0); } }
 .uc-n b { font-size: 15px; color: var(--c-ink); font-variant-numeric: lining-nums; }
@@ -1565,15 +1570,14 @@
 .lwk li { display: inline-flex; align-items: center; gap: 7px; }
 .lwk li::before { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--tc); }
 
-/* Cards with more to look at: a washed colour, a solid icon medallion, a large faint copy of the icon behind the words, and a lift when pointed at. Used where a row of plain white boxes is not enough. */
-.st-rich li { background: linear-gradient(155deg, color-mix(in srgb, var(--tc) 16%, var(--c-paper-card)) 0%, color-mix(in srgb, var(--tc) 4%, var(--c-paper-card)) 70%); border-color: color-mix(in srgb, var(--tc) 28%, var(--c-hairline)); box-shadow: var(--shadow-1), inset 0 4px 0 var(--tc); padding: 24px 22px 22px; transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s; }
-.st-rich li:hover { transform: translateY(-4px); box-shadow: var(--shadow-2, 0 14px 28px -12px rgba(15, 30, 60, 0.3)), inset 0 4px 0 var(--tc); }
-.st-rich .st-card-icon { width: 50px; height: 50px; border-radius: 50%; background: var(--tc); color: #fff; box-shadow: 0 0 0 6px color-mix(in srgb, var(--tc) 18%, transparent); transition: transform 0.45s cubic-bezier(0.3, 1.6, 0.5, 1), box-shadow 0.35s; }
-.st-rich li:hover .st-card-icon { transform: rotate(-8deg) scale(1.08); box-shadow: 0 0 0 9px color-mix(in srgb, var(--tc) 20%, transparent); }
-.st-rich b { color: color-mix(in srgb, var(--tc) 72%, var(--c-ink)); font-size: 18px; }
-.st-rich p { position: relative; }
-.st-rich-mark { position: absolute; right: -14px; bottom: -22px; color: var(--tc); opacity: 0.09; transform: rotate(-9deg); pointer-events: none; }
-.st-rich b, .st-rich .st-card-icon { position: relative; }
+/* Cards with more to look at: a tinted header band holds the icon medallion beside the title, and the words sit on plain paper beneath, so nothing is drawn behind the text. */
+.st-rich li, .st[data-look] .st-rich li { grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto 1fr; gap: 0; padding: 0; background: var(--c-paper-card); border-color: color-mix(in srgb, var(--tc) 28%, var(--c-hairline)); box-shadow: var(--shadow-1); transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s; }
+.st-rich li:hover, .st[data-look] .st-rich li:hover { transform: translateY(-4px); box-shadow: var(--shadow-2, 0 14px 28px -12px rgba(15, 30, 60, 0.3)); }
+.st-rich li::before, .st[data-look] .st-rich li::before { content: ""; grid-area: 1 / 1 / 2 / 3; background: linear-gradient(100deg, color-mix(in srgb, var(--tc) 20%, var(--c-paper-card)), color-mix(in srgb, var(--tc) 6%, var(--c-paper-card))); border-bottom: 1px solid color-mix(in srgb, var(--tc) 26%, var(--c-hairline)); }
+.st-rich .st-card-icon, .st[data-look] .st-rich .st-card-icon { position: relative; grid-area: 1 / 1; align-self: center; width: 48px; height: 48px; margin: 16px 0 16px 18px; border-radius: 50%; background: var(--tc); color: #fff; box-shadow: 0 0 0 5px color-mix(in srgb, var(--tc) 18%, transparent); transition: transform 0.45s cubic-bezier(0.3, 1.6, 0.5, 1), box-shadow 0.35s; }
+.st-rich li:hover .st-card-icon, .st[data-look] .st-rich li:hover .st-card-icon { transform: rotate(-8deg) scale(1.08); box-shadow: 0 0 0 8px color-mix(in srgb, var(--tc) 20%, transparent); }
+.st-rich b, .st[data-look] .st-rich b { position: relative; grid-area: 1 / 2; align-self: center; padding: 12px 18px 12px 16px; color: color-mix(in srgb, var(--tc) 72%, var(--c-ink)); font-size: 18px; }
+.st-rich p, .st[data-look] .st-rich p { grid-area: 2 / 1 / 3 / 3; padding: 16px 20px 20px; }
 @media (prefers-reduced-motion: reduce) { .st-rich li, .st-rich .st-card-icon { transition: none; } .st-rich li:hover, .st-rich li:hover .st-card-icon { transform: none; } }
 html[data-calm] .st-rich li, html[data-calm] .st-rich .st-card-icon { transition: none; }
 

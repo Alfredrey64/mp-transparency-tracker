@@ -82,7 +82,7 @@ const SCENE = {
   },
   object: {
     name: "It goes ahead unless a House objects",
-    yes: { button: "No House objects", title: "It stands", say: "If neither House objects within 40 days (recesses do not count) it stands. There is no vote and no guaranteed debate." },
+    yes: { button: "No House objects", title: "It stands", say: "If neither House objects within 40 days (recesses, the breaks when Parliament is not sitting, do not count) it stands. There is no vote and no guaranteed debate." },
     no: { button: "A House objects", title: "It falls away", say: "If either House passes a motion against it, it is rejected. A draft does not become law and one already made stops being law." },
   },
 };

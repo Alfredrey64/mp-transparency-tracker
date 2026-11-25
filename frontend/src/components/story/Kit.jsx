@@ -111,7 +111,6 @@ export function Cards({ items, min = 260, rich = false }) {
         const Icon = c.icon;
         return (
           <li key={c.title} style={{ "--tc": c.colour, "--i": i }}>
-            {rich && Icon && <span className="st-rich-mark" aria-hidden="true"><Icon size={120} /></span>}
             {Icon && <span className="st-card-icon" aria-hidden="true"><Icon size={22} /></span>}
             <b>{c.title}</b>
             <p>{c.text}</p>

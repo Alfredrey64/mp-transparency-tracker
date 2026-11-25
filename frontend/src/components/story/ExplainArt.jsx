@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useReducedMotion } from "motion/react";
 import { useGo } from "./useGo";
+import { useStepper } from "./useStepper";
 import { lowData } from "../../lib/lowData";
 import "../../explainart.css";
 
@@ -13,14 +14,29 @@ import "../../explainart.css";
 
 // ---- the funnel ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
-// Where each of the 20 events enters (a height in the 170-high picture), and which of them make it through the gate. Fixed, so the picture is the same every time.
-const ENTRY = [22, 48, 76, 104, 130, 152, 34, 62, 90, 118, 144, 28, 56, 84, 112, 138, 40, 70, 98, 126];
-const THROUGH = new Set([2, 9, 14]);
-const STORY = ["#D9A441", "#4F86C6", "#C8546B"];
+// One story travels through the funnel, stage by stage, and the stage it is at is the one that is lit: both come from the same step number, so the dot and the stages move together.
+// The grey dots left of the gate are the other things that happen; they stay where they are, because they are not covered.
+const STAGE_X = [100, 300, 500, 700, 900];
+const STAGE_Y = [85, 85, 85, 40, 60];
+const GREY = "#8A93A6";
+// 19 resting dots scattered inside the wide end of the funnel (worked out from a fixed pattern, so the picture is the same every time), kept clear of the one that moves
+const REST = Array.from({ length: 40 }, (_, i) => {
+  const x = 22 + ((i * 53) % 215);
+  const t = x / 300;
+  const top = 6 + 56 * t + 10;
+  const bottom = 164 - 56 * t - 10;
+  const y = top + (((i * 37) % 100) / 100) * (bottom - top);
+  return { x, y };
+}).filter((d) => Math.hypot(d.x - STAGE_X[0], d.y - STAGE_Y[0]) > 22).slice(0, 19);
 
 export function StoryFunnel({ nodes, label }) {
   const [ref, go] = useGo(0.25);
   const still = useReducedMotion() || lowData();
+  const st = useStepper(nodes.length, go, still, 2700);
+  const { step } = st;
+  // when the story goes back to the start it reappears there instead of flying back across the picture
+  const back = st.wrap;
+  const shown = still ? 0 : step;
   return (
     <section ref={ref} className="nfn" data-go={go} data-still={still ? "1" : "0"} style={{ "--n": nodes.length }} aria-label={label}>
       <svg className="nfn-svg" viewBox="0 -38 1000 232" aria-hidden="true">
@@ -42,45 +58,45 @@ export function StoryFunnel({ nodes, label }) {
         {/* the audience: a person, and the ballot box at the end */}
         <g className="nfn-person"><circle cx="700" cy="70" r="14" /><path d="M672 124c0-18 12-30 28-30s28 12 28 30z" /></g>
         <g className="nfn-box"><rect x="866" y="82" width="68" height="52" rx="6" /><rect x="886" y="82" width="28" height="7" rx="3" className="nfn-slot" /></g>
-        {/* the five stages, numbered above the funnel: a number lights up for each in turn, and so does its words below */}
+        {/* the five stages, numbered above the funnel: the number for the stage the story is at lights up, and so do its words below */}
         {nodes.map((s, j) => (
-          <g key={s.title} className="nfn-st" style={{ "--j": j, "--tc": s.colour }}>
-            <line x1={100 + j * 200} y1={-12} x2={100 + j * 200} y2={6} />
-            <circle cx={100 + j * 200} cy={-22} r={15} />
-            <text x={100 + j * 200} y={-16.5} textAnchor="middle">{j + 1}</text>
+          <g key={s.title} className="nfn-st" data-on={!still && j === step ? "1" : "0"} style={{ "--tc": s.colour }}>
+            <line x1={STAGE_X[j]} y1={-12} x2={STAGE_X[j]} y2={6} />
+            <circle cx={STAGE_X[j]} cy={-22} r={15} />
+            <text x={STAGE_X[j]} y={-16.5} textAnchor="middle">{j + 1}</text>
           </g>
         ))}
-        {/* what goes in and what comes through, counted from the events drawn */}
+        {/* what goes in, counted from the dots drawn: these are not covered */}
         <g className="nfn-count" aria-hidden="true">
-          <text x={22} y={190} className="nfn-cn">{ENTRY.length}</text>
-          <text x={22 + String(ENTRY.length).length * 17} y={190} className="nfn-cl">things happen</text>
-          <text x={332} y={190} className="nfn-cn">{THROUGH.size}</text>
-          <text x={332 + String(THROUGH.size).length * 17} y={190} className="nfn-cl">are covered</text>
+          <text x={22} y={190} className="nfn-cn">{REST.length + 1}</text>
+          <text x={22 + String(REST.length + 1).length * 21 + 8} y={190} className="nfn-cl">things happen</text>
+          <text x={332} y={190} className="nfn-cl">only a few are covered</text>
         </g>
-        {/* the events */}
-        {ENTRY.map((y, i) => {
-          const through = THROUGH.has(i);
-          const k = [...THROUGH].indexOf(i);
-          return (
-            <circle
-              key={i} className={through ? "nfn-ev nfn-pass" : "nfn-ev nfn-drop"} r={through ? 8 : 6} cx="0" cy="0"
-              style={{ "--y0": `${y}px`, "--yg": `${85 + (y - 85) * 0.26}px`, "--y2": `${86 + (k - 1) * 12}px`, "--d": `${(i * 0.41).toFixed(2)}s`, "--c": through ? STORY[k] : "#8A93A6" }}
-            />
-          );
-        })}
+        {REST.map((d, i) => <circle key={i} className="nfn-rest" cx={d.x} cy={d.y} r="5.5" />)}
+        {/* the one story that is followed */}
+        <g className="nfn-tok" data-back={back ? "1" : "0"} style={{ transform: `translate(${STAGE_X[shown]}px, ${STAGE_Y[shown]}px)` }}>
+          <circle className="nfn-dot" r="9" style={{ fill: shown >= 2 ? nodes[shown].colour : GREY }} />
+        </g>
       </svg>
       <ol className="nfn-nodes">
         {nodes.map((s, i) => {
           const Icon = s.icon;
           return (
-            <li key={s.title} style={{ "--tc": s.colour, "--i": i }}>
-              <span className="nfn-badge" aria-hidden="true">{Icon && <Icon size={24} />}</span>
-              <b>{s.title}</b>
-              {s.text && <small>{s.text}</small>}
+            <li key={s.title} data-on={!still && i === step ? "1" : "0"} style={{ "--tc": s.colour, "--i": i }}>
+              <button type="button" className="nfn-stb" onClick={() => st.pick(i)} aria-current={!still && i === step ? "step" : undefined}>
+                <span className="nfn-badge" aria-hidden="true">{Icon && <Icon size={24} />}</span>
+                <span className="nfn-tx">
+                  <b>{s.title}</b>
+                  {s.text && <small>{s.text}</small>}
+                </span>
+              </button>
             </li>
           );
         })}
       </ol>
+      {!still && (
+        <div className="nfn-ctl"><button type="button" onClick={st.toggle} aria-pressed={!st.running}>{st.running ? "Pause" : "Play the story"}</button></div>
+      )}
       <p className="nfn-note">An illustration of the idea: the number of events is only there to show how few are chosen, and the colours show that the same event can be told in different ways.</p>
     </section>
   );
@@ -126,9 +142,23 @@ export function StatsLenses({ nodes, label }) {
                   <svg className="slx-pic" viewBox="0 0 260 120">
                     <line x1="10" y1="62" x2="250" y2="62" className="slx-axis" />
                     {DOTS.map((x, k) => <circle key={k} cx={x} cy="62" r="5.5" className={k >= DOTS.length - 3 ? "slx-dot slx-out" : "slx-dot"} />)}
-                    {/* the mean is marked above the line and the middle below it, so their labels never meet */}
-                    <g className="slx-mean"><path d={`M${MEAN} 52l-7-12h14z`} /><text x={MEAN} y="30" textAnchor="middle">mean</text></g>
-                    <g className="slx-mid"><path d={`M${MID} 72l-7 12h14z`} /><text x={MID} y="100" textAnchor="middle">middle</text></g>
+                    {still ? (
+                      /* calmer motion: both markers are shown, the mean above the line and the middle below it, so their labels never meet */
+                      <>
+                        <g className="slx-mean"><path d={`M${MEAN} 52l-7-12h14z`} /><text x={MEAN} y="30" textAnchor="middle">mean</text></g>
+                        <g className="slx-mid"><path d={`M${MID} 72l-7 12h14z`} /><text x={MID} y="100" textAnchor="middle">middle</text></g>
+                      </>
+                    ) : (
+                      /* one marker slides from the middle to the mean, so the picture moves like the other two and shows how far the far dots pull the mean away */
+                      <>
+                        <line className="slx-gap" x1={MID} x2={MEAN} y1="62" y2="62" />
+                        <g className="slx-mk" style={{ "--dx": `${MEAN - MID}px` }}>
+                          <path d={`M${MID} 72l-7 12h14z`} />
+                          <text className="slx-mk-a" x={MID} y="100" textAnchor="middle">middle</text>
+                          <text className="slx-mk-b" x={MID} y="100" textAnchor="middle">mean</text>
+                        </g>
+                      </>
+                    )}
                   </svg>
                 )}
                 {i === 2 && (
