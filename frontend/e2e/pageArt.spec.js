@@ -41,7 +41,7 @@ test("How a law is made: pressing a stop on the route map shows its stage, and t
   await page.goto("/howLawMade");
   const map = page.locator(".lwr");
   await map.getByRole("button", { name: /Stage 8 of 12/ }).click();
-  await expect(map.locator('.lwr-panel[data-on="1"] h3')).toContainText("Lords: Committee stage");
+  await expect(map.locator('.lwr-panel[data-on="1"] h2')).toContainText("Lords: Committee stage");
   await expect(page.locator(".lwp svg")).toBeVisible();
 });
 

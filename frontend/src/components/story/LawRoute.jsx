@@ -64,7 +64,8 @@ export default function LawRoute({ stops, caption }) {
           <ol className="lwr-stops" aria-label="The stages of a bill, in order">
             {stops.map((s, i) => (
               <li key={s.key}>
-                <button type="button" className="lwr-st" data-state={i < sel ? "done" : i === sel ? "now" : "todo"} style={{ "--c": s.colour }} aria-current={i === sel ? "step" : undefined} aria-label={`Stage ${i + 1} of ${n}: ${s.title}`} onClick={() => pick(i)}>
+                <button type="button" className="lwr-st" data-state={i < sel ? "done" : i === sel ? "now" : "todo"} style={{ "--c": s.colour }} aria-current={i === sel ? "step" : undefined} onClick={() => pick(i)}>
+                  <span className="sr-only">Stage {i + 1} of {n}: {s.title}. </span>
                   <i className="lwr-dot" aria-hidden="true">{i < sel ? <svg viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg> : null}</i>
                   <span className="lwr-lab"><b>{s.top}</b><span>{s.bottom}</span></span>
                   <span className="lwr-lab-flat"><em style={{ "--c": s.colour }}>{BANDS[s.band] ? s.band : s.band === "Both" ? "Both Houses" : "The King"}</em>{s.top} {s.bottom}</span>
@@ -80,7 +81,7 @@ export default function LawRoute({ stops, caption }) {
         {stops.map((s, i) => (
           <div key={s.key} className="lwr-panel" data-on={i === sel ? "1" : "0"} aria-hidden={i === sel ? undefined : "true"} style={{ "--c": s.colour }}>
             <p className="lwr-k"><em>{BANDS[s.band] ?? (s.band === "Both" ? "Both Houses" : "The King")}</em><span>Stop {i + 1} of {n}</span></p>
-            <h3>{s.title}</h3>
+            <h2>{s.title}</h2>
             <p className="lwr-tx">{s.text}</p>
             {s.real && <p className="lwr-real"><b>In the real Act below</b>{s.real}</p>}
           </div>

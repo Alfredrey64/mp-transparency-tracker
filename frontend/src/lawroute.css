@@ -33,7 +33,7 @@
 .lwr-k { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin: 0; }
 .lwr-k em { padding: 2px 11px; border-radius: 999px; background: var(--c); color: #fff; font: 800 12px/1.5 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; }
 .lwr-k span { font: 600 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.lwr-panel h3 { margin: 2px 0 0; font: 700 clamp(19px, 3.4vw, 24px)/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.lwr-panel h2 { margin: 2px 0 0; font: 700 clamp(19px, 3.4vw, 24px)/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
 .lwr-tx { margin: 0; font: 400 15px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .lwr-real { display: grid; gap: 1px; margin: 4px 0 0; padding: 8px 12px; border-radius: 10px; background: color-mix(in srgb, var(--c) 12%, transparent); font: 600 13.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .lwr-real b { font: 800 11.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--c) 75%, var(--c-ink)); }
