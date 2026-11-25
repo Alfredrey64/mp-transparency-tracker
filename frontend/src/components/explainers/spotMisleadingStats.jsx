@@ -3,7 +3,7 @@ import ExplainerPage from "../story/ExplainerPage";
 import { IconChartBars, IconScales, IconSearch, IconVote, IconGroup, IconRegister } from "../icons";
 import { IconPoll } from "../newIcons";
 import { Hero } from "../story/Vivid";
-import ChainArt from "../story/ChainArt";
+import { StatsLenses } from "../story/ExplainArt";
 import VoteSeatGap from "../story/VoteSeatGap";
 import SameData from "../story/SameData";
 import { GE2024 } from "../../data/generalElection2024";
@@ -55,7 +55,7 @@ const PAGE = {
   lead: <Hero
     colours={["#1B2A3A", "#8A5A1F", "#9A3F55"]}
     why="A number on its own never says how it was chosen. The same figures can be turned into very different headlines by changing what you compare, which average you use, or where a chart begins. Knowing the few common choices makes most of them easy to spot."
-    extra={<ChainArt kind="stats" label="The same data, shaped by three choices" nodes={[
+    extra={<StatsLenses label="The same data, shaped by three choices" nodes={[
       { icon: IconSearch, title: "Share of what?", text: "A percentage depends on what it is a percentage of", colour: "#E2BE7A" },
       { icon: IconScales, title: "Which average?", text: "The mean and the middle can be a long way apart", colour: "#8DB7E8" },
       { icon: IconChartBars, title: "Starting where?", text: "Change the start date or the axis and the story changes", colour: "#E59AA6" },

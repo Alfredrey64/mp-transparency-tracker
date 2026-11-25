@@ -18,10 +18,30 @@
 .acp-this { stroke: #8A5A1F; stroke-width: 3.5; clip-path: inset(-20px -20px -20px -20px); transition: clip-path 2.2s cubic-bezier(0.4, 0, 0.2, 1) 0.15s; }
 .ap:not([data-go="1"]) .acp-this { clip-path: inset(-20px 100% -20px -20px); transition: none; }
 .acp-yt { position: absolute; left: -34px; width: 28px; text-align: right; transform: translateY(-50%); font: 700 11.5px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.acp-dot { position: absolute; width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px; border-radius: 50%; background: #8A5A1F; border: 2px solid var(--c-paper-card); box-sizing: border-box; transform: scale(1); transition: transform 0.4s cubic-bezier(0.3, 1.6, 0.5, 1); transition-delay: calc(0.3s + var(--k) * 70ms); }
-.acp-dot::after { content: ""; position: absolute; inset: -9px; }
+.acp-dot { position: absolute; width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px; padding: 0; border-radius: 50%; background: #8A5A1F; border: 2px solid var(--c-paper-card); box-sizing: border-box; cursor: pointer; transform: scale(1); transition: transform 0.4s cubic-bezier(0.3, 1.6, 0.5, 1), box-shadow 0.2s; transition-delay: calc(0.3s + var(--k) * 70ms), 0s; }
+.acp-dot::after { content: ""; position: absolute; left: 50%; top: 50%; width: 30px; height: 30px; transform: translate(-50%, -50%); }
 .ap:not([data-go="1"]) .acp-dot { transform: scale(0); transition: none; }
-.acp-dot:hover { transform: scale(1.7); transition-delay: 0s; }
+.acp-dot[data-hot="1"] { transform: scale(1.7); transition-delay: 0s; }
+.acp-dot[data-on="1"] { transform: scale(1.9); transition-delay: 0s; background: var(--c-ink); box-shadow: 0 0 0 3px color-mix(in srgb, #8A5A1F 35%, transparent); z-index: 3; }
+.acp-dot:focus-visible { outline: 3px solid var(--c-brand); outline-offset: 3px; }
+.acp-plot[data-open="1"] .acp-dot:not([data-on="1"]) { opacity: 0.55; }
+/* the card a dot opens, placed so it always stays inside the picture: its left edge follows the dot's place from left to right */
+.acp-card { position: absolute; z-index: 5; box-sizing: border-box; width: min(320px, 100%); left: calc(var(--px) * 100%); transform: translateX(calc(var(--px) * -100%)); display: grid; gap: 6px; padding: 13px 15px 12px; border-radius: 14px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); border-top: 4px solid #8A5A1F; box-shadow: var(--shadow-3, 0 14px 30px -12px rgba(10, 20, 50, 0.45)); animation: acpCard 0.2s var(--ease-out, ease-out) both; }
+.acp-card[data-y="below"] { top: calc(var(--py) * 100% + 16px); }
+.acp-card[data-y="above"] { bottom: calc((1 - var(--py)) * 100% + 16px); }
+.acp-card-n { margin: 0 28px 0 0; font: 700 12px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: #8A5A1F; }
+.acp-card h4 { margin: 0; font: 700 16px/1.3 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.acp-card h4 a { color: inherit; text-decoration: none; }
+.acp-card h4 a:hover { text-decoration: underline; }
+.acp-card p b { display: block; margin-bottom: 1px; font: 800 11.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.acp-card-does, .acp-card-own { margin: 0; font: 400 13.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.acp-card-own { font-size: 12.5px; color: var(--c-ink-soft); max-height: 6.2em; overflow-y: auto; }
+.acp-card-x { position: absolute; right: 6px; top: 6px; width: 32px; height: 32px; border-radius: 50%; border: 0; background: var(--c-paper); color: var(--c-ink); font: 400 20px/1 system-ui, sans-serif; cursor: pointer; }
+.acp-card-step { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 2px; padding-top: 8px; border-top: 1px solid var(--c-hairline); }
+.acp-card-step span { font: 700 12px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); font-variant-numeric: tabular-nums; }
+.acp-card-step button { min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1.5px solid var(--c-hairline); background: var(--c-paper); color: var(--c-ink); font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; cursor: pointer; }
+.acp-card-step button:disabled { opacity: 0.4; cursor: default; }
+@keyframes acpCard { from { opacity: 0; transform: translateX(calc(var(--px) * -100%)) scale(0.96); } }
 .acp-tag { position: absolute; transform: translate(-50%, -165%); padding: 2px 8px; border-radius: 8px; background: #8A5A1F; color: #fff; font: 800 13px/1.35 "Figures", "Public Sans", system-ui, sans-serif; transition: opacity 0.4s 2.2s; }
 .ap:not([data-go="1"]) .acp-tag { opacity: 0; transition: none; }
 .acp-xt { position: relative; height: 20px; margin: 8px 8px 0 34px; }
@@ -65,7 +85,7 @@
   .acp-xt, .acp-key { margin-left: 30px; }
   .acp-bars { height: 120px; gap: 2px; }
 }
-@media (prefers-reduced-motion: reduce) { .acp-this, .acp-dot, .acp-tag, .acp-col i { transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { .acp-this, .acp-dot, .acp-tag, .acp-col i { transition: none !important; } .acp-card { animation: none; } }
 
 /* on the Bills page (components/ActsSection.jsx) */
 .acs { margin-top: 36px; padding: 22px clamp(14px, 3vw, 26px) 26px; border-radius: 18px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: inset 4px 0 0 #8A5A1F; }

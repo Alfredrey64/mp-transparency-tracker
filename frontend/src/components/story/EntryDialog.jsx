@@ -11,6 +11,7 @@ import EntryRows from "./EntryRows";
 import DayDiagrams from "./DayDiagrams";
 import notes from "../../data/entryNotes.json";
 import "../../entries.css";
+import { SectorChip } from "./SectorKey";
 import CloseX from "../CloseX";
 
 // The panel a row opens: what the entry is and what it is for, in plain English, with its facts and a link to Parliament's page.
@@ -135,6 +136,7 @@ export default function EntryDialog({ entry, depth, onOpen, onBack, onClose, ret
           <button ref={closeRef} type="button" className="en-x" aria-label="Close" onClick={onClose}><CloseX size={16} /></button>
         </div>
         <h2 id="en-h" ref={headRef} tabIndex={-1}>{entry.title}</h2>
+        {!isDay && <SectorChip entry={entry} />}
         {depth > 1 && <p className="en-label">{x.label}</p>}
 
         {isDay ? <DayList entry={entry} open={onOpen} /> : (

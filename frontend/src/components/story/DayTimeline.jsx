@@ -3,10 +3,13 @@ import { useEffect, useRef } from "react";
 import { useGo } from "./useGo";
 import { layoutTimeline, LANE_COLOUR } from "../../lib/dayTimeline";
 import { clock, clockMinutes } from "../../lib/upcoming";
+import { sectorOf } from "../../lib/sectors";
+import SectorKey from "./SectorKey";
 
 // Today on a clock: a lane for the Commons, the Lords and committee evidence, with a point at the start time of everything that has one, and a line for now. Press a point to
 // read about it. The calendar gives start times and not lengths, so these are points and not bars.
 const ROW = 38;
+const DOT = 26; // the height of a point, so it sits in the middle of its row
 
 export default function DayTimeline({ entries, nowMinutes, nextId, open }) {
   const [ref, go] = useGo(0.1);
@@ -30,6 +33,7 @@ export default function DayTimeline({ entries, nowMinutes, nextId, open }) {
         <b>Today on a clock</b>
         <span>Each dot is the time something starts. The calendar does not say how long anything lasts. Press a dot to read about it; the same entries are listed below.</span>
       </figcaption>
+      <SectorKey entries={lay.lanes.flatMap((l) => l.dots.map((d) => d.entry))} />
       <div ref={scroller} className="dt-scroll">
         <div className="dt-plot" style={{ "--hrs": lay.hours.length - 1 }}>
           <div className="dt-axis" aria-hidden="true">
@@ -39,16 +43,18 @@ export default function DayTimeline({ entries, nowMinutes, nextId, open }) {
             <div key={lane.name} className="dt-lane" style={{ "--lc": LANE_COLOUR[lane.name], "--rows": lane.rows }}>
               <span className="dt-name">{lane.name}</span>
               <div className="dt-track">
+                {lay.hours.map((h) => <u key={h.m} className="dt-grid" aria-hidden="true" style={{ "--at": h.at }} />)}
                 {lane.dots.map(({ entry, at, row }) => {
                   const past = nowMinutes !== null && clockMinutes(entry.time) < nowMinutes;
+                  const sec = sectorOf(entry);
                   return (
                     <button
                       key={entry.id} type="button" className="dt-dot" data-past={past ? "1" : undefined} data-next={entry.id === nextId ? "1" : undefined}
-                      style={{ "--at": at, top: row * ROW + 6, "--k": k++ }} aria-haspopup="dialog" title={entry.title} onClick={(ev) => open(entry, ev.currentTarget)}
+                      style={{ "--at": at, "--sc": sec.colour, top: row * ROW + (ROW - DOT) / 2, "--k": k++ }} aria-haspopup="dialog" title={`${entry.title} (${sec.label})`} onClick={(ev) => open(entry, ev.currentTarget)}
                     >
                       <i aria-hidden="true" />
                       <span className="dt-t">{clock(entry.time)}</span>
-                      <span className="sr-only">: {entry.title}</span>
+                      <span className="sr-only">: {entry.title}. Subject: {sec.label}</span>
                     </button>
                   );
                 })}

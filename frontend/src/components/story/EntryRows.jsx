@@ -1,6 +1,8 @@
 /** @jsxImportSource react */
 import { explainEntry } from "../../lib/entryExplain";
 import { clock, dayShort, houseName, daysBetween, mondaysBetween } from "../../lib/upcoming";
+import { SectorChip } from "./SectorKey";
+import { sectorOf } from "../../lib/sectors";
 import "../../entries.css";
 
 // One clickable row for each entry. `open(entry, button)` is called when it is pressed (see useEntryDialog).
@@ -49,16 +51,17 @@ export default function EntryRows({ items, open, dateColumn = false, label = "En
         const x = explainEntry(e);
         const sub = rowSub(e, x.label);
         const house = e.h ? houseName(e.h) : null;
+        const sec = sectorOf(e);
         return (
           <li key={e.id ?? `${e.kind}-${i}`}>
-            <button type="button" className="en-row" data-house={house ?? undefined} data-kind={e.kind} data-when={e.when} aria-haspopup="dialog" style={e.colour ? { "--ec": e.colour } : undefined} onClick={(ev) => open(e, ev.currentTarget)}>
+            <button type="button" className="en-row" data-house={house ?? undefined} data-kind={e.kind} data-when={e.when} aria-haspopup="dialog" style={{ ...(e.colour ? { "--ec": e.colour } : null), ...(sec.key !== "other" ? { "--sc": sec.colour } : null) }} onClick={(ev) => open(e, ev.currentTarget)}>
               {(anyTime || dateColumn) && (
                 <span className="en-when" data-empty={e.time || dateColumn ? undefined : "1"}>
                   {dateColumn && e.date ? <><b>{dayShort(e.date).split(" ")[0]}</b>{dayShort(e.date).split(" ").slice(1).join(" ")}</> : e.time ? clock(e.time) : "No time listed"}
                 </span>
               )}
               <span className="en-body">
-                <span className="en-meta">{house && <em data-house={house}>{house}</em>}<span>{x.label}</span>{e.kind === "bill" && e.stages?.length > 1 && <span className="en-count">{e.stages.length} stages</span>}{e.when === "next" && <em className="en-next">Next up</em>}{e.when === "past" && <span className="en-past">Earlier today</span>}</span>
+                <span className="en-meta">{house && <em data-house={house}>{house}</em>}<span>{x.label}</span><SectorChip entry={e} />{e.kind === "bill" && e.stages?.length > 1 && <span className="en-count">{e.stages.length} stages</span>}{e.when === "next" && <em className="en-next">Next up</em>}{e.when === "past" && <span className="en-past">Earlier today</span>}</span>
                 <b>{e.title}</b>
                 {e.kind === "bill" && e.stages ? <Ladder stages={e.stages} /> : sub && <small>{sub}</small>}
                 {e.strip && <Strip strip={e.strip} />}

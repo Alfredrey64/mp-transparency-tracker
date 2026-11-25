@@ -64,28 +64,20 @@ export function WhoHeadlines({ items }) {
   return (
     <section ref={ref} className="wta-top" data-go={go} aria-label="Three headline figures">
       <article className="wta-card wta-a" style={{ "--c": WOMEN }}>
-        <div className="wta-hemi-wrap">
-          <Hemicycle total={650} lit={267} colour={WOMEN} />
-          <b className="wta-num"><AnimatedValue text={a.value} /></b>
-        </div>
-        <h3>{a.label}</h3>
-        <p>{a.sub}</p>
+        <div className="wta-pic"><Hemicycle total={650} lit={267} colour={WOMEN} /></div>
+        <div className="wta-tx"><b className="wta-num"><AnimatedValue text={a.value} /></b><h3>{a.label}</h3><p>{a.sub}</p></div>
       </article>
       <article className="wta-card wta-b" style={{ "--c": PRIVATE }}>
-        <div className="wta-b-row">
-          <b className="wta-num"><AnimatedValue text={b.value} /></b>
-          <Grid100 lit={23} colour={PRIVATE} />
-        </div>
-        <h3>{b.label}</h3>
-        <p>{b.sub}</p>
+        <div className="wta-pic"><Grid100 lit={23} colour={PRIVATE} /></div>
+        <div className="wta-tx"><b className="wta-num"><AnimatedValue text={b.value} /></b><h3>{b.label}</h3><p>{b.sub}</p></div>
       </article>
       <article className="wta-card wta-c" style={{ "--c": ETHNIC }}>
-        <b className="wta-num"><AnimatedValue text={c.value} /></b>
-        <div className="wta-seven" aria-hidden="true">
-          {Array.from({ length: 7 }, (_, i) => <Person key={i} on={i === 0} colour={ETHNIC} i={i} />)}
+        <div className="wta-pic">
+          <div className="wta-seven" aria-hidden="true">
+            {Array.from({ length: 7 }, (_, i) => <Person key={i} on={i === 0} colour={ETHNIC} i={i} />)}
+          </div>
         </div>
-        <h3>{c.label}</h3>
-        <p>{c.sub}</p>
+        <div className="wta-tx"><b className="wta-num"><AnimatedValue text={c.value} /></b><h3>{c.label}</h3><p>{c.sub}</p></div>
       </article>
     </section>
   );

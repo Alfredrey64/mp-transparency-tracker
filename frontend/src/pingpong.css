@@ -1,0 +1,30 @@
+/* "Ping pong" as a rally between the two Houses (components/story/PingPong.jsx). Held at the start until data-go="1", then played once; calmer motion shows it finished. */
+.lwp { margin: 18px 0 6px; padding: 14px clamp(8px, 2vw, 20px) 6px; border-radius: 20px; background: color-mix(in srgb, #1F7A6E 5%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, #1F7A6E 24%, var(--c-hairline)); }
+.lwp svg { display: block; width: 100%; max-width: 760px; height: auto; margin: 0 auto; overflow: visible; }
+.lwp[data-tall="1"] svg { max-width: 340px; }
+.lwp figcaption { max-width: 620px; margin: 10px auto 4px; text-align: center; font: 500 13.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.lwp-hd { font: 800 13px "Figures", "Public Sans", system-ui, sans-serif; fill: #fff; }
+.lwp-line { stroke-width: 3; stroke-linecap: round; opacity: 0.28; }
+.lwp-trail { stroke: var(--c-ink-soft); stroke-width: 1.6; stroke-dasharray: 2 6; stroke-linecap: round; opacity: 0.7; }
+.lwp-n { font: 800 12px "Figures", "Public Sans", system-ui, sans-serif; fill: #fff; font-variant-numeric: lining-nums; }
+.lwp-d { font: 800 13px "Figures", "Public Sans", system-ui, sans-serif; fill: var(--c-ink); }
+.lwp-w { font: 500 11.5px "Figures", "Public Sans", system-ui, sans-serif; fill: var(--c-ink-soft); }
+.lwp-s1 { font: 700 17px "Figures", "Newsreader", Georgia, serif; fill: #FFF6DC; }
+.lwp-node, .lwp-seal, .lwp-ring, .lwp-halo { transform-box: fill-box; transform-origin: center; }
+.lwp-ring { opacity: 0; }
+.lwp-ball { filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.3)); opacity: 0; }
+.lwp[data-go="0"][data-still="0"] .lwp-node, .lwp[data-go="0"][data-still="0"] .lwp-seal { opacity: 0.28; }
+.lwp[data-go="1"][data-still="0"] .lwp-node { animation: lwpLand 0.9s ease var(--at) both; }
+.lwp[data-go="1"][data-still="0"] .lwp-node .lwp-ring { animation: lwpRing 0.9s ease-out var(--at) both; }
+.lwp[data-go="1"][data-still="0"] .lwp-seal { animation: lwpStamp 0.9s ease var(--at) both; }
+.lwp[data-go="1"][data-still="0"] .lwp-halo { animation: lwpSpin 26s linear var(--at) infinite; }
+.lwp[data-go="1"][data-still="0"] .lwp-ball { opacity: 1; }
+@keyframes lwpLand { 0% { opacity: 0.28; transform: scale(0.9); } 45% { opacity: 1; transform: scale(1.12); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes lwpRing { 0% { opacity: 0.9; transform: scale(0.7); } 100% { opacity: 0; transform: scale(1.5); } }
+@keyframes lwpStamp { 0% { opacity: 0.28; transform: scale(0.85); } 55% { opacity: 1; transform: scale(1.12); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes lwpSpin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .lwp * { animation: none !important; } .lwp-ball { display: none; } .lwp-node, .lwp-seal { opacity: 1 !important; } }
+html[data-calm] .lwp * { animation: none !important; }
+html[data-calm] .lwp-ball { display: none; }
+html[data-calm] .lwp-node, html[data-calm] .lwp-seal { opacity: 1 !important; }
+.lwp[data-still="1"] .lwp-ball { display: none; }

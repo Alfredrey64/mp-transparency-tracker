@@ -1,7 +1,7 @@
 import { readable } from "../theme";
 import { IconBook, IconScales, IconSearch, IconBroadcast, IconShield, IconBallot, IconBolt, IconFeed, IconCompass, IconVote } from "./icons";
 import { Hero } from "./story/Vivid";
-import ChainArt from "./story/ChainArt";
+import { StoryFunnel } from "./story/ExplainArt";
 import ExplainerPage from "./story/ExplainerPage";
 import { TwoLanes, Rules, Quiz, Outlets, Cases, LinkList } from "./story/NewsArt";
 
@@ -179,7 +179,7 @@ const PAGE = {
     label="Why the news matters"
     colours={["#221A30", "#9A3F55", "#2C5F9E"]}
     why="Most of us never sit in a vote, a hearing or a Budget speech. We see the news report of it. Editors and producers decide which stories get covered and how they are told, so the news helps set what the public talks about, what seems normal or urgent, and who gets trusted. That is why the law holds broadcast news to a standard of impartiality, and why it matters which outlets are held to it. Knowing the difference is the first step to reading any story with the right amount of trust."
-    extra={<ChainArt kind="news" label="How a story gets from an event to what we believe" nodes={[
+    extra={<StoryFunnel label="How a story gets from an event to what we believe" nodes={[
       { icon: IconBolt, title: "Something happens", text: "A vote, a report, a speech", colour: "#E2BE7A" },
       { icon: IconFeed, title: "Newsrooms choose", text: "What to cover, and how much space it gets", colour: "#8DB7E8" },
       { icon: IconBroadcast, title: "They tell the story", text: "The words, the pictures, who is asked", colour: "#E59AA6" },

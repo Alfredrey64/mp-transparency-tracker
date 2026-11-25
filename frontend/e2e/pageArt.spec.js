@@ -9,7 +9,7 @@ test("the Acts that have become law are on the Bills page, not at the end of How
   await page.goto("/howLawMade");
   await expect(page.getByRole("heading", { name: /The Acts that have become law/ })).toHaveCount(0);
   await expect(page.locator('a[href="#/voting"]').first()).toBeVisible();
-  await expect(page.locator(".lwa svg")).toBeVisible();
+  await expect(page.locator(".lwr-st")).toHaveCount(12);
 });
 
 test("the Speaker, whips and clerks plan moves its spotlight when a card is pressed", async ({ page }) => {
@@ -35,4 +35,24 @@ test("Who they are shows seats for every MP and a ring for each group", async ({
   await page.goto("/numbers/who");
   await expect(page.locator(".wta-seat")).toHaveCount(650);
   await expect(page.locator(".wta-rings li")).toHaveCount(4);
+});
+
+test("How a law is made: pressing a stop on the route map shows its stage, and the ping pong rally is drawn", async ({ page }) => {
+  await page.goto("/howLawMade");
+  const map = page.locator(".lwr");
+  await map.getByRole("button", { name: /Stage 8 of 12/ }).click();
+  await expect(map.locator('.lwr-panel[data-on="1"] h3')).toContainText("Lords: Committee stage");
+  await expect(page.locator(".lwp svg")).toBeVisible();
+});
+
+test("an Act's dot on the Bills page opens a card with what it did", async ({ page }) => {
+  await page.goto("/voting");
+  const dot = page.locator(".acp-dot").first();
+  await dot.scrollIntoViewIfNeeded();
+  await dot.focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator(".acp-card")).toBeVisible();
+  await expect(page.locator(".acp-card .acp-card-own")).toContainText("An Act");
+  await page.keyboard.press("Escape");
+  await expect(page.locator(".acp-card")).toHaveCount(0);
 });

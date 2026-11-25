@@ -21,14 +21,13 @@
 .hwk-panel[data-dir="-1"] { animation-name: hwk-in-l; }
 @keyframes hwk-in-r { from { opacity: 0; transform: translateX(22px); } }
 @keyframes hwk-in-l { from { opacity: 0; transform: translateX(-22px); } }
-.hwk-ghost { position: absolute; right: clamp(12px, 3vw, 30px); top: 4px; font: 800 clamp(84px, 13vw, 136px)/1 "Figures", "Newsreader", Georgia, serif; color: color-mix(in srgb, var(--c) 11%, transparent); pointer-events: none; user-select: none; }
 .hwk-count { position: relative; margin: 0 0 2px; font: 700 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--cr); }
 .hwk-title { position: relative; margin: 0 0 10px; font: 700 clamp(24px, 3.4vw, 32px)/1.15 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
 .hwk-desc { position: relative; margin: 0; max-width: 720px; font: 400 15px/1.65 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .hwk-visual { position: relative; }
 @media (min-width: 900px) {
   .hwk-panel[data-vis="1"] { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 36px; align-content: start; }
-  .hwk-panel[data-vis="1"] > :not(.hwk-visual):not(.hwk-ghost) { grid-column: 1; }
+  .hwk-panel[data-vis="1"] > :not(.hwk-visual) { grid-column: 1; }
   .hwk-panel[data-vis="1"] > .hwk-visual { grid-column: 2; grid-row: 1 / span 3; align-self: center; }
   .hwk-panel[data-vis="1"] > .hwk-visual > * { margin-top: 0 !important; max-width: none !important; }
 }
@@ -66,8 +65,7 @@
 .hwk-house-top { display: flex; align-items: center; gap: 11px; margin-bottom: 12px; }
 .hwk-house-top h4 { margin: 0; font: 700 15px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .hwk-house-top p { margin: 1px 0 0; font: 400 12.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.hwk-lords { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; background: var(--hc); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18); position: relative; }
-.hwk-lords::after { content: ""; position: absolute; inset: 9px 8px; border-radius: 3px 3px 1px 1px; background: #fff; opacity: 0.92; }
+.hwk-lords { flex-shrink: 0; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--hc); color: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.22); }
 .hwk-dots { display: block; width: 100%; height: auto; }
 .hwk-houses[data-go="0"] .hwk-dot { opacity: 0; }
 .hwk-houses[data-go="1"] .hwk-dot { animation: hwk-dot 0.5s var(--ease-out) both; animation-delay: calc(var(--i) * 1.3ms); }

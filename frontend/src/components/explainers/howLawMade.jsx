@@ -3,7 +3,8 @@ import ExplainerPage from "../story/ExplainerPage";
 import { IconBook, IconGavel, IconScales, IconVote, IconSearch, IconRegister } from "../icons";
 import { Flow } from "../story/StateArt";
 import { Hero } from "../story/Vivid";
-import LawArt from "../story/LawArt";
+import LawRoute from "../story/LawRoute";
+import PingPong from "../story/PingPong";
 import LAW from "../../data/lawExample.json";
 
 // The explanations of each stage are Parliament's own, from the "How does a bill become a law?" guide on parliament.uk, read on 12 November 2026. The journey is a real Act:
@@ -37,6 +38,59 @@ function HouseKey() {
   );
 }
 
+
+// What happens at each stage in each House, in Parliament's own words. The cards further down the page and the route map at the top both read these, so the two can never disagree.
+const COMMONS_STAGES = [
+          { title: "First reading", icon: IconRegister, colour: "#2C5F9E", text: "A formality, with no debate. The short title of the bill is read out, and the bill is ordered to be printed. It can take place at any time in a parliamentary session." },
+          { title: "Second reading", icon: IconVote, colour: "#5E4B8B", text: "The first chance for MPs to debate the main principles of the bill. A minister or the MP responsible opens, and the official Opposition responds. At the end the Commons votes on whether the bill goes on." },
+          { title: "Committee stage", icon: IconSearch, colour: "#A9701F", text: "Detailed examination, line by line. Most bills go to a Public Bill Committee, which can take evidence from experts and outside groups if the bill started in the Commons. Only committee members vote on amendments. A minority of bills are dealt with by the whole House." },
+          { title: "Report stage", icon: IconScales, colour: "#9A3F55", text: "A chance for the whole House to consider further amendments to a bill that has been examined in committee. All MPs may speak, vote and suggest amendments or new clauses." },
+          { title: "Third reading", icon: IconGavel, colour: "#1F7A6E", text: "The final chance for the Commons to debate the bill. It usually follows report stage on the same day, the debate is usually short, and the Commons cannot make amendments at this stage." },
+        ];
+const LORDS_STAGES = [
+          { title: "First reading", icon: IconRegister, colour: "#2C5F9E", text: "Another formality with no debate. The long title, which says what the bill is for, is read out by the member in charge of it." },
+          { title: "Second reading", icon: IconVote, colour: "#5E4B8B", text: "The first chance for members of the Lords to debate its key principles and main purpose. Any member can speak, and the debate usually lasts a few hours, but can stretch over a couple of days." },
+          { title: "Committee stage", icon: IconSearch, colour: "#A9701F", text: "Line-by-line examination of every part of the bill. Every member of the Lords can take part. The government cannot restrict the subjects discussed or impose a time limit, which is a key difference from the Commons." },
+          { title: "Report stage", icon: IconScales, colour: "#9A3F55", text: "A further chance for all members to examine and amend the bill, usually starting 14 days after committee stage ends." },
+          { title: "Third reading", icon: IconGavel, colour: "#1F7A6E", text: "A chance to tidy up the bill so that the law works and has no loopholes. Unlike in the Commons, amendments can be made here, as long as the issue was not fully considered and voted on earlier." },
+        ];
+
+const fmtShort = (iso) => new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
+const GOLD = "#B8862B";
+const TEAL = "#1F7A6E";
+
+// The route map at the top: a stop for each stage in each House, then ping pong, then Royal Assent. The day each stage happened in the real Act (below) is added where the data has it.
+const NAMES = [["1st reading", "1st", "reading"], ["2nd reading", "2nd", "reading"], ["Committee stage", "Committee", "stage"], ["Report stage", "Report", "stage"], ["3rd reading", "3rd", "reading"]];
+const houseStops = (house, cards) => cards.map((c, k) => {
+  const real = stages.find((s) => s.house === house && s.stage === NAMES[k][0] && s.dates.length);
+  return { key: `${house}-${k}`, band: house, colour: HOUSE_COLOURS[house], top: NAMES[k][1], bottom: NAMES[k][2], title: `${house}: ${c.title}`, text: c.text, real: real ? when(real) : null };
+});
+const considerations = stages.filter((s) => /^Consideration of/i.test(s.stage) && s.dates.length);
+const ROUTE = [
+  ...houseStops("Commons", COMMONS_STAGES),
+  ...houseStops("Lords", LORDS_STAGES),
+  {
+    key: "pingpong", band: "Both", colour: TEAL, top: "Ping", bottom: "pong", title: "Ping pong: the Houses trade changes",
+    text: "If the second House changes the bill, the first House has to consider those changes. A bill may go back and forth between the Houses until both agree the exact wording.",
+    real: considerations.length ? `${considerations.length} rounds, from ${fmt(considerations[0].dates[0])} to ${fmt(considerations[considerations.length - 1].dates[0])}` : "This Act needed none: the second House made no changes the first had to consider.",
+  },
+  { key: "assent", band: "Assent", colour: GOLD, top: "Royal", bottom: "Assent", title: "Royal Assent", text: "When a bill has completed every stage in both Houses, the King formally agrees to make it an Act of Parliament.", real: fmt(LAW.royalAssent) },
+];
+
+// The rally for the ping pong chapter, from the real Act: where it began, each House's turn, and the day it received Royal Assent.
+const rally = (() => {
+  if (!considerations.length) return null;
+  const at = stages.indexOf(considerations[0]);
+  const before = [...stages.slice(0, at)].reverse().find((s) => s.dates.length && !/motion|resolution/i.test(s.stage));
+  if (!before) return null;
+  const last = before.dates[before.dates.length - 1];
+  return {
+    start: { house: before.house === "Lords" ? "Lords" : "Commons", label: `${before.stage.charAt(0).toUpperCase()}${before.stage.slice(1)}`, short: fmtShort(last), long: fmt(last) },
+    rounds: considerations.map((s) => ({ house: s.house, label: s.house === "Commons" ? "Considers Lords’ changes" : "Considers Commons’ changes", short: fmtShort(s.dates[0]), long: fmt(s.dates[0]) })),
+    end: { short: fmtShort(LAW.royalAssent), long: fmt(LAW.royalAssent) },
+  };
+})();
+
 const PAGE = {
   look: "vivid",
   lively: true,
@@ -48,12 +102,7 @@ const PAGE = {
   lead: <Hero
     colours={["#1C2A44", "#8A5A1F", "#2F6B52"]}
     why="Nobody can make a law alone. A bill has to be debated and voted on in the Commons and in the Lords, in the same form, and then receive Royal Assent. Following a real one shows how many separate steps that is."
-    stops={[
-      { icon: IconRegister, title: "Introduced", text: "The bill is read out and printed", colour: "#E2BE7A" },
-      { icon: IconScales, title: "Examined twice over", text: "Debated, studied line by line and amended in both Houses", colour: "#8DB7E8" },
-      { icon: IconGavel, title: "Agreed and signed", text: "Both Houses agree the exact wording, then the King gives Royal Assent", colour: "#9ED4B6" },
-    ]}
-    extra={<LawArt />}
+    extra={<LawRoute stops={ROUTE} caption="Press any stop to see what happens there, in Parliament's own words, and the day it happened in the real Act this page follows." />}
     figures={[
       { value: "2", label: "Houses that must agree", sub: "The Commons and the Lords, in the same form" },
       { value: String(journey.length), label: "Stages in the Act followed here", sub: LAW.bill.shortTitle },
@@ -94,13 +143,7 @@ const PAGE = {
       lede: "Most bills go through these five stages in the Commons. Here is what Parliament says happens at each one. Bills that are fast-tracked get less consideration, and a Consolidated Fund Bill has no committee stage at all.",
       colour: "#2C5F9E",
       blocks: [
-        { cards: [
-          { title: "First reading", icon: IconRegister, colour: "#2C5F9E", text: "A formality, with no debate. The short title of the bill is read out, and the bill is ordered to be printed. It can take place at any time in a parliamentary session." },
-          { title: "Second reading", icon: IconVote, colour: "#5E4B8B", text: "The first chance for MPs to debate the main principles of the bill. A minister or the MP responsible opens, and the official Opposition responds. At the end the Commons votes on whether the bill goes on." },
-          { title: "Committee stage", icon: IconSearch, colour: "#A9701F", text: "Detailed examination, line by line. Most bills go to a Public Bill Committee, which can take evidence from experts and outside groups if the bill started in the Commons. Only committee members vote on amendments. A minority of bills are dealt with by the whole House." },
-          { title: "Report stage", icon: IconScales, colour: "#9A3F55", text: "A chance for the whole House to consider further amendments to a bill that has been examined in committee. All MPs may speak, vote and suggest amendments or new clauses." },
-          { title: "Third reading", icon: IconGavel, colour: "#1F7A6E", text: "The final chance for the Commons to debate the bill. It usually follows report stage on the same day, the debate is usually short, and the Commons cannot make amendments at this stage." },
-        ] },
+        { cards: COMMONS_STAGES },
       ],
     },
     {
@@ -108,13 +151,7 @@ const PAGE = {
       lede: "The Lords go through the bill again in the same order, but some of the rules are different.",
       colour: "#9A3F55",
       blocks: [
-        { cards: [
-          { title: "First reading", icon: IconRegister, colour: "#2C5F9E", text: "Another formality with no debate. The long title, which says what the bill is for, is read out by the member in charge of it." },
-          { title: "Second reading", icon: IconVote, colour: "#5E4B8B", text: "The first chance for members of the Lords to debate its key principles and main purpose. Any member can speak, and the debate usually lasts a few hours, but can stretch over a couple of days." },
-          { title: "Committee stage", icon: IconSearch, colour: "#A9701F", text: "Line-by-line examination of every part of the bill. Every member of the Lords can take part. The government cannot restrict the subjects discussed or impose a time limit, which is a key difference from the Commons." },
-          { title: "Report stage", icon: IconScales, colour: "#9A3F55", text: "A further chance for all members to examine and amend the bill, usually starting 14 days after committee stage ends." },
-          { title: "Third reading", icon: IconGavel, colour: "#1F7A6E", text: "A chance to tidy up the bill so that the law works and has no loopholes. Unlike in the Commons, amendments can be made here, as long as the issue was not fully considered and voted on earlier." },
-        ] },
+        { cards: LORDS_STAGES },
       ],
     },
     {
@@ -123,6 +160,7 @@ const PAGE = {
       colour: "#1F7A6E",
       blocks: [
         { text: ["The Commons and the Lords may disagree with each other's amendments or suggest alternatives. A bill may go back and forth between the Houses until both agree the exact wording. This is known as ping pong."] },
+        ...(rally ? [{ node: <PingPong start={rally.start} rounds={rally.rounds} end={rally.end} /> }] : []),
         { pull: pingPong
           ? `In this Act the two Houses considered each other's changes ${pingPong} times, starting on ${fmt(stages.find((s) => /^Consideration of/i.test(s.stage)).dates[0])}, before Royal Assent on ${fmt(LAW.royalAssent)}.`
           : "This Act needed no ping pong: the second House made no changes the first had to consider.",

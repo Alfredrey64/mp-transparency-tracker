@@ -1,0 +1,68 @@
+/* The route of a bill drawn as a railway line (components/story/LawRoute.jsx), the picture at the top of "How a law is made". On a wide screen the stops run left to right under bars for each House;
+   on a phone they run down the screen. One bill rides the line and the card below says what happens at the stop it is at. */
+.lwr { --ease: cubic-bezier(0.45, 0, 0.2, 1); margin: 6px 0 0; padding: 22px clamp(4px, 1.5vw, 14px) 4px; border-top: 1px solid var(--c-hairline); color: var(--c-ink); }
+.lwr-map { max-width: 900px; margin: 0 auto; }
+.lwr-bands { list-style: none; margin: 0 0 12px; padding: 0; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 0; }
+.lwr-bands li { margin: 0 3px; display: grid; place-items: center; height: 30px; border-radius: 15px; background: var(--c); color: #fff; font: 800 12.5px/1 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.01em; white-space: nowrap; }
+.lwr-bands li[data-solo="1"] { height: 8px; align-self: center; border-radius: 4px; opacity: 0.85; }
+.lwr-row { position: relative; }
+.lwr-rail, .lwr-prog { position: absolute; top: 13px; left: calc(50% / var(--n)); height: 6px; border-radius: 3px; }
+.lwr-rail { right: calc(50% / var(--n)); background: color-mix(in srgb, var(--c-ink-soft) 22%, var(--c-paper)); }
+.lwr-prog { width: calc(var(--i) * 100% / var(--n)); background: var(--cc); transition: width 1s var(--ease), background-color 0.5s; }
+.lwr-stops { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); position: relative; z-index: 1; }
+.lwr-st { display: grid; justify-items: center; align-content: start; gap: 8px; width: 100%; padding: 0 1px 4px; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; text-align: center; }
+.lwr-dot { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; box-sizing: border-box; background: var(--c-paper-card); border: 5px solid var(--c); color: #fff; transition: background-color 0.5s var(--ease), transform 0.5s var(--ease), box-shadow 0.5s var(--ease); }
+.lwr-dot svg { width: 16px; height: 16px; }
+.lwr-st[data-state="done"] .lwr-dot { background: var(--c); }
+.lwr-st[data-state="now"] .lwr-dot { transform: scale(1.22); box-shadow: 0 0 0 7px color-mix(in srgb, var(--c) 20%, transparent); }
+.lwr-st:hover .lwr-dot { transform: scale(1.12); }
+.lwr-st[data-state="now"]:hover .lwr-dot { transform: scale(1.22); }
+.lwr-st:focus-visible { outline: 3px solid var(--c-brand); outline-offset: 2px; border-radius: 10px; }
+.lwr-lab { display: grid; gap: 1px; font: 600 clamp(10.5px, 1.5vw, 12.5px)/1.25 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); transition: color 0.4s; }
+.lwr-lab b { font-weight: 800; color: var(--c-ink); }
+.lwr-st[data-state="todo"] .lwr-lab b { color: var(--c-ink-soft); }
+.lwr-lab-flat { display: none; }
+.lwr-token { position: absolute; z-index: 2; top: -1px; left: calc((var(--i) + 0.5) * 100% / var(--n)); width: 0; transition: left 1s var(--ease); pointer-events: none; }
+.lwr-hop { position: absolute; left: -17px; top: 0; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: #fff; border: 3px solid var(--cc); box-sizing: border-box; box-shadow: 0 8px 14px -6px rgba(10, 20, 50, 0.55); animation: lwrHop 1s var(--ease) both; transition: border-color 0.5s; }
+.lwr[data-go="0"] .lwr-token { opacity: 0; }
+
+/* the card under the line: every stop's words sit in one cell, so the card is as tall as the longest and never jumps */
+.lwr-card { display: grid; max-width: 760px; margin: 22px auto 0; }
+.lwr-panel { grid-area: 1 / 1; display: grid; align-content: start; gap: 6px; padding: 16px 20px 18px; border-radius: 18px; background: color-mix(in srgb, var(--c) 8%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--c) 30%, var(--c-hairline)); border-left: 7px solid var(--c); opacity: 0; visibility: hidden; transform: translateY(6px); transition: opacity 0.45s var(--ease), transform 0.45s var(--ease), visibility 0s 0.45s; }
+.lwr-panel[data-on="1"] { opacity: 1; visibility: visible; transform: none; transition: opacity 0.5s var(--ease) 0.25s, transform 0.5s var(--ease) 0.25s, visibility 0s; }
+.lwr-k { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin: 0; }
+.lwr-k em { padding: 2px 11px; border-radius: 999px; background: var(--c); color: #fff; font: 800 12px/1.5 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; }
+.lwr-k span { font: 600 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.lwr-panel h3 { margin: 2px 0 0; font: 700 clamp(19px, 3.4vw, 24px)/1.2 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.lwr-tx { margin: 0; font: 400 15px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.lwr-real { display: grid; gap: 1px; margin: 4px 0 0; padding: 8px 12px; border-radius: 10px; background: color-mix(in srgb, var(--c) 12%, transparent); font: 600 13.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.lwr-real b { font: 800 11.5px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--c) 75%, var(--c-ink)); }
+.lwr-ctl { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 14px 0 0; }
+.lwr-ctl button { min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1.5px solid var(--c-hairline); background: var(--c-paper-card); color: var(--c-ink); font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; cursor: pointer; transition: background-color 0.2s, border-color 0.2s, opacity 0.2s; }
+.lwr-ctl button:hover:not(:disabled) { border-color: var(--cc); }
+.lwr-ctl button:disabled { opacity: 0.4; cursor: default; }
+.lwr-ctl .lwr-pri { background: var(--cc); border-color: var(--cc); color: #fff; }
+.lwr figcaption { max-width: 640px; margin: 12px auto 6px; text-align: center; font: 500 13.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+@keyframes lwrHop { 0% { transform: translateY(0); } 40% { transform: translateY(-12px) scale(1.08); } 100% { transform: translateY(0); } }
+
+/* On a phone the line runs down the screen: one row for each stop, the bill moving along beside them. */
+@media (max-width: 700px) {
+  .lwr-bands { display: none; }
+  .lwr-rail, .lwr-prog { top: 21px; left: 13px; width: 6px; right: auto; }
+  .lwr-rail { height: calc((var(--n) - 1) * 48px); }
+  .lwr-prog { height: calc(var(--i) * 48px); transition: height 1s var(--ease), background-color 0.5s; }
+  .lwr-stops { grid-template-columns: minmax(0, 1fr); }
+  .lwr-st { grid-template-columns: 32px minmax(0, 1fr); justify-items: start; align-items: center; gap: 14px; height: 48px; padding: 0; text-align: left; }
+  .lwr-lab { display: none; }
+  .lwr-lab-flat { display: block; font: 700 14.5px/1.25 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+  .lwr-lab-flat em { display: block; font: 800 11px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: color-mix(in srgb, var(--c) 78%, var(--c-ink)); }
+  .lwr-st[data-state="todo"] .lwr-lab-flat { color: var(--c-ink-soft); }
+  .lwr-token { left: 16px; top: calc(var(--i) * 48px + 7px); transition: top 1s var(--ease); }
+  .lwr-map { max-width: 360px; padding: 0 4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lwr-prog, .lwr-token, .lwr-dot, .lwr-panel, .lwr-panel[data-on="1"] { transition: none; }
+  .lwr-hop { animation: none; }
+}
+html[data-calm] .lwr-prog, html[data-calm] .lwr-token, html[data-calm] .lwr-dot, html[data-calm] .lwr-panel { transition: none; }
+html[data-calm] .lwr-hop { animation: none; }

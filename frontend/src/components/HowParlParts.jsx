@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { m as motion, useReducedMotion } from "motion/react";
 import { COLORS, readable } from "../theme";
 import { CommonsBadge } from "./shared";
+import { IconLords } from "./icons";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { lowData } from "../lib/lowData";
 import { useGo } from "./story/useGo";
@@ -88,7 +89,6 @@ export function StageDeck({ stages, color, name }) {
       </div>
 
       <div className="hwk-panel" id={`${id}-p`} role="tabpanel" aria-labelledby={`${id}-t${i}`} key={stage.key} data-dir={dir} data-vis={stage.visual ? "1" : undefined} onTouchStart={swipeStart} onTouchEnd={swipeEnd}>
-        <span className="hwk-ghost" aria-hidden="true">{i + 1}</span>
         <p className="hwk-count">Stage {i + 1} of {n}</p>
         <h3 className="hwk-title">{plain(stage.label)}</h3>
         <p className="hwk-desc">{stage.desc}</p>
@@ -178,7 +178,7 @@ export function Houses() {
       </div>
       <div className="hwk-house" style={{ "--hc": PLUM }}>
         <div className="hwk-house-top">
-          <span className="hwk-lords" aria-hidden="true" />
+          <span className="hwk-lords" aria-hidden="true"><IconLords size={20} /></span>
           <div>
             <h4>House of Lords</h4>
             <p>Appointed peers and bishops</p>

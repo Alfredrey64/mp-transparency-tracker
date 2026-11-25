@@ -11,6 +11,8 @@ import Loading from "./Loading";
 import { fetchAllRows } from "../lib/supabasePagination";
 import { KINDS, sinceDate, billItems, voteItems, moneyItems, petitionItems, standardsItems, electionItems, buildFeed, collapseBills, countByKind, dayLabel, groupByDay } from "../lib/thisWeek";
 import TodayInParliament from "./story/TodayInParliament";
+import SectorKey, { SectorChip } from "./story/SectorKey";
+import { sectorOf } from "../lib/sectors";
 import { useEntryDialog } from "./story/useEntryDialog";
 import "../thisweek.css";
 
@@ -128,6 +130,7 @@ export default function ThisWeek({ param = null }) {
             </div>
           )}
           {state.failed.length > 0 && <div className="tw-note">Some changes are missing because we couldn't load: {state.failed.join(", ")}.</div>}
+          {groups.length > 0 && <SectorKey entries={shown.filter((i) => i.kind === "bill" || i.kind === "vote")} label="Bills and votes are coloured by subject" />}
           {groups.length === 0 ? (
             <div className="tw-empty">Nothing new in this window. Parliament may be in recess, or try a longer window.</div>
           ) : (
@@ -138,13 +141,16 @@ export default function ThisWeek({ param = null }) {
                   <ul className="tw-items">
                     {g.items.map((i) => {
                       const k = KINDS[i.kind];
+                      // Bills and votes take the colour of their subject, and say it in words; the other kinds keep the colour of their kind.
+                      const sec = i.kind === "bill" || i.kind === "vote" ? sectorOf(i) : null;
+                      const kc = sec && sec.key !== "other" ? sec.colour : (i.colour ?? k.colour);
                       const stageMeans = i.kind === "bill" && i.bill ? explainStage(i.stage, { isAct: i.bill.is_act, isDefeated: i.bill.is_defeated })?.means : null;
-                      const body = (<><span className="tw-kind">{k.verb}</span><b>{i.title}</b>{i.detail && <span className="tw-detail">{i.detail}</span>}{stageMeans && <span className="tw-plain"><em>In plain English</em>{stageMeans}</span>}</>);
+                      const body = (<><span className="tw-kind">{k.verb}{sec && sec.key !== "other" && <SectorChip entry={i} />}</span><b>{i.title}</b>{i.detail && <span className="tw-detail">{i.detail}</span>}{stageMeans && <span className="tw-plain"><em>In plain English</em>{stageMeans}</span>}</>);
                       return (
                         <li key={i.id}>
                           {i.id.startsWith("bills-more-")
-                            ? <a className="tw-card" href={i.href} style={{ "--kc": i.colour ?? k.colour }}>{body}</a>
-                            : <button type="button" className="tw-card" aria-haspopup="dialog" style={{ "--kc": i.colour ?? k.colour }} onClick={(ev) => openEntry({ ...i, past: true }, ev.currentTarget)}>{body}<span className="tw-go" aria-hidden="true">What this means ›</span></button>}
+                            ? <a className="tw-card" href={i.href} style={{ "--kc": kc }}>{body}</a>
+                            : <button type="button" className="tw-card" aria-haspopup="dialog" style={{ "--kc": kc }} onClick={(ev) => openEntry({ ...i, past: true }, ev.currentTarget)}>{body}<span className="tw-go" aria-hidden="true">What this means ›</span></button>}
                         </li>
                       );
                     })}

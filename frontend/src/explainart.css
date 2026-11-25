@@ -1,0 +1,108 @@
+/* The story funnel and the statistics lenses at the tops of the news-regulation and misleading-statistics pages (components/story/ExplainArt.jsx). Prefixes: nfn- and slx- */
+
+/* ---- the story funnel ---- */
+.nfn { margin: 6px 0 4px; padding: 14px clamp(4px, 1.5vw, 12px) 4px; border-top: 1px solid var(--c-hairline); }
+.nfn-svg { display: block; width: 100%; max-width: 980px; height: auto; margin: 0 auto; overflow: visible; }
+.nfn-gate rect { fill: #5E4B8B; opacity: 0.85; }
+.nfn-frame rect, .nfn-frame path { stroke: #C8546B; }
+.nfn-person circle, .nfn-person path { fill: #5E4B8B; opacity: 0.22; }
+.nfn-box rect { fill: #5E4B8B; opacity: 0.85; }
+.nfn-box .nfn-slot { fill: #fff; opacity: 0.9; }
+.nfn-ev { fill: #8A93A6; opacity: 0; }
+.nfn[data-go="1"][data-still="0"] .nfn-ev { animation: nfnPass 8.2s linear var(--d) infinite; }
+.nfn[data-go="1"][data-still="0"] .nfn-drop { animation-name: nfnDrop; }
+@keyframes nfnPass {
+  0% { transform: translate(-16px, var(--y0)); opacity: 0; fill: #8A93A6; }
+  4% { opacity: 1; }
+  28% { transform: translate(272px, var(--yg)); fill: #8A93A6; }
+  36% { transform: translate(330px, 85px); }
+  50% { transform: translate(470px, 85px); fill: #8A93A6; }
+  58% { fill: var(--c); }
+  74% { transform: translate(690px, var(--y2)); fill: var(--c); }
+  91% { transform: translate(882px, var(--y2)); opacity: 1; fill: var(--c); }
+  96% { transform: translate(900px, 96px); opacity: 0; }
+  100% { transform: translate(900px, 96px); opacity: 0; }
+}
+@keyframes nfnDrop {
+  0% { transform: translate(-16px, var(--y0)) scale(1); opacity: 0; }
+  4% { opacity: 1; }
+  26% { transform: translate(262px, var(--yg)) scale(1); opacity: 1; }
+  34% { transform: translate(280px, var(--yg)) scale(0.2); opacity: 0; }
+  100% { transform: translate(280px, var(--yg)) scale(0.2); opacity: 0; }
+}
+.nfn-nodes { list-style: none; margin: 10px 0 0; padding: 0; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 8px; }
+.nfn-nodes li { display: grid; justify-items: center; align-content: start; gap: 5px; text-align: center; padding: 0 4px; }
+.nfn-badge { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: color-mix(in srgb, var(--tc) 22%, var(--c-paper-card)); border: 2px solid var(--tc); color: color-mix(in srgb, var(--tc) 55%, var(--c-ink)); }
+.nfn-nodes b { font: 800 clamp(13px, 1.5vw, 15.5px)/1.25 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.nfn-nodes small { font: 400 12.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+@media (max-width: 700px) {
+  .nfn-nodes { grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 14px; }
+  .nfn-nodes li { grid-template-columns: 44px minmax(0, 1fr); justify-items: start; text-align: left; gap: 0 12px; padding: 0; }
+  .nfn-badge { grid-row: 1 / span 2; }
+}
+
+/* ---- the statistics lenses ---- */
+.slx { margin: 6px 0 4px; padding: 14px 0 4px; border-top: 1px solid var(--c-hairline); }
+.slx-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(10px, 1.8vw, 18px); }
+.slx-card { display: grid; grid-template-rows: auto 1fr; border-radius: 20px; background: color-mix(in srgb, var(--tc) 9%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--tc) 35%, var(--c-hairline)); overflow: hidden; }
+.slx-pic { display: block; width: 100%; height: auto; background: color-mix(in srgb, var(--tc) 12%, var(--c-paper-card)); border-bottom: 1px solid color-mix(in srgb, var(--tc) 25%, var(--c-hairline)); }
+.slx-txt { display: grid; align-content: start; gap: 4px; padding: 14px 16px 16px; }
+.slx-badge { display: none; }
+.slx-txt b { font: 800 17px/1.25 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); }
+.slx-txt small { font: 400 13.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.slx-read { position: relative; display: grid; margin-top: 6px; }
+.slx-read em { grid-area: 1 / 1; justify-self: start; padding: 2px 11px; border-radius: 999px; background: color-mix(in srgb, var(--tc) 22%, transparent); font: 800 12.5px/1.6 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: color-mix(in srgb, var(--tc) 55%, var(--c-ink)); }
+.slx-b { opacity: 0; }
+.slx-lab { font: 600 11.5px "Figures", "Public Sans", system-ui, sans-serif; fill: var(--c-ink-soft); }
+.slx-axis { stroke: color-mix(in srgb, var(--c-ink-soft) 55%, transparent); stroke-width: 2; stroke-linecap: round; }
+
+/* what a share is of: the same count against a small whole, then a large one */
+.slx-whole { fill: color-mix(in srgb, var(--tc) 16%, var(--c-paper-card)); stroke: color-mix(in srgb, var(--tc) 60%, transparent); stroke-width: 2; stroke-dasharray: 5 5; transform-origin: 10px 60px; }
+.slx-part { fill: var(--tc); }
+/* which average: the middle dot and the mean, a way apart */
+.slx-dot { fill: color-mix(in srgb, var(--c-ink-soft) 55%, var(--c-paper-card)); }
+.slx-out { fill: var(--tc); }
+.slx-mid path, .slx-mean path { fill: var(--c-ink); }
+.slx-mid text, .slx-mean text { font: 800 11.5px "Figures", "Public Sans", system-ui, sans-serif; fill: var(--c-ink); }
+.slx-mean path { fill: var(--tc); } .slx-mean text { fill: color-mix(in srgb, var(--tc) 70%, var(--c-ink)); }
+/* where a chart starts: the same line from zero, then from its low point */
+.slx-line path { stroke: var(--tc); stroke-width: 4; }
+.slx-line circle { fill: var(--tc); }
+.slx-line { transform-origin: 0 20px; transform: scaleY(0.3); }
+
+/* the swap, every few seconds, while the picture is on screen */
+.slx[data-go="1"][data-still="0"] .slx-card { --t: 6.4s; }
+.slx[data-go="1"][data-still="0"] .slx-whole { animation: slxWhole var(--t) ease-in-out calc(var(--i) * 0.5s) infinite; }
+.slx[data-go="1"][data-still="0"] .slx-mid { animation: slxMid var(--t) ease-in-out calc(var(--i) * 0.5s) infinite; }
+.slx[data-go="1"][data-still="0"] .slx-mean { animation: slxMean var(--t) ease-in-out calc(var(--i) * 0.5s) infinite; }
+.slx[data-go="1"][data-still="0"] .slx-line { animation: slxLine var(--t) cubic-bezier(0.6, 0, 0.3, 1) calc(var(--i) * 0.5s) infinite; }
+.slx[data-go="1"][data-still="0"] .slx-a { animation: slxA var(--t) ease-in-out calc(var(--i) * 0.5s) infinite; }
+.slx[data-go="1"][data-still="0"] .slx-b { animation: slxB var(--t) ease-in-out calc(var(--i) * 0.5s) infinite; }
+@keyframes slxWhole { 0%, 38% { transform: scaleX(1); } 52%, 88% { transform: scaleX(0.34); } 100% { transform: scaleX(1); } }
+@keyframes slxMid { 0%, 38% { opacity: 1; } 52%, 88% { opacity: 0.25; } 100% { opacity: 1; } }
+@keyframes slxMean { 0%, 38% { opacity: 0.25; } 52%, 88% { opacity: 1; } 100% { opacity: 0.25; } }
+@keyframes slxLine { 0%, 38% { transform: scaleY(0.3); } 52%, 88% { transform: scaleY(1); } 100% { transform: scaleY(0.3); } }
+@keyframes slxA { 0%, 38% { opacity: 1; } 46%, 90% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes slxB { 0%, 38% { opacity: 0; } 46%, 88% { opacity: 1; } 98%, 100% { opacity: 0; } }
+/* calmer motion: the first reading drawn, and both readings written out */
+.slx[data-still="1"] .slx-read { grid-auto-flow: column; justify-content: start; gap: 8px; }
+.slx[data-still="1"] .slx-read em { grid-area: auto; }
+.slx[data-still="1"] .slx-b { opacity: 1; }
+.slx[data-still="1"] .slx-mid { opacity: 1; } .slx[data-still="1"] .slx-mean { opacity: 1; }
+.slx[data-still="1"] .slx-line { transform: scaleY(1); }
+@media (prefers-reduced-motion: reduce) {
+  .nfn-ev { display: none; }
+  .slx * { animation: none !important; }
+  .slx-b { opacity: 1; } .slx-read { grid-auto-flow: column; justify-content: start; gap: 8px; } .slx-read em { grid-area: auto; }
+  .slx-mid, .slx-mean { opacity: 1; } .slx-line { transform: scaleY(1); }
+}
+html[data-calm] .nfn-ev { display: none; }
+html[data-calm] .slx * { animation: none !important; }
+html[data-calm] .slx-b { opacity: 1; } html[data-calm] .slx-read { grid-auto-flow: column; justify-content: start; gap: 8px; } html[data-calm] .slx-read em { grid-area: auto; }
+html[data-calm] .slx-mid, html[data-calm] .slx-mean { opacity: 1; } html[data-calm] .slx-line { transform: scaleY(1); }
+.nfn[data-still="1"] .nfn-ev { display: none; }
+@media (max-width: 760px) {
+  .slx-grid { grid-template-columns: minmax(0, 1fr); }
+  .slx-card { grid-template-columns: minmax(0, 1fr); }
+  .slx-pic { max-height: 150px; }
+}

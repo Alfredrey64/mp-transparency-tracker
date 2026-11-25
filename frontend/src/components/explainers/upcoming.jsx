@@ -3,6 +3,7 @@ import { ExplainerBody } from "../story/ExplainerPage";
 import SittingStrip from "../story/SittingStrip";
 import { EntryList, DayGroups } from "../story/Entries";
 import JumpChips from "../story/JumpChips";
+import SectorKey from "../story/SectorKey";
 import CalendarFeeds from "../story/CalendarFeeds";
 import Loading from "../Loading";
 import { LoadFailedNote } from "../MpCards";
@@ -108,6 +109,9 @@ function build(data) {
 
   const parts = chapters.slice(1).map((c, i) => ({ title: c.title, colour: c.colour, count: [bills.length, committees.length, rota.length, business.length].filter((n) => n)[i] }));
   if (parts.length) chapters[0].blocks.push({ node: <JumpChips items={parts} label="Jump to bills, committees, questions or debates" /> });
+  // Every row below is labelled with its subject; the key says which colour is which, for the subjects that appear.
+  const subjects = [...billEntries, ...hearingEntries, ...rota.flatMap((r) => r.items.map((i) => ({ title: i.t, kind: "questions" }))), ...business.flatMap((d) => d.items.map((i) => ({ title: i.t, kind: "debate" })))];
+  if (subjects.length) chapters[0].blocks.push({ node: <SectorKey entries={subjects} label="Each row is labelled and coloured by its subject" /> });
 
   // Added after the jump chips are worked out, so they still list only the four kinds of business.
   chapters.push({

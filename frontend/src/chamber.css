@@ -1,16 +1,11 @@
-/* The Commons Chamber seating plan (components/CommonsChamber.jsx). When it scrolls into view the 650 MPs stand in one block in the middle of the floor, all the same quiet grey,
-   and then each walks to a seat on their party's benches and takes their party's colour, the ones nearest the aisle first. On a phone, and for anyone who has asked for
-   calmer motion, the seats simply fade in where they belong. */
-.chm-seat { fill: var(--sc); transition: transform 1.05s cubic-bezier(0.22, 0.8, 0.24, 1) var(--d), fill 0.7s ease var(--d), opacity 0.25s ease, r 0.2s ease; }
-.chm-plan[data-go="0"] .chm-seat { transform: translate(var(--dx), var(--dy)); fill: color-mix(in srgb, var(--c-ink-soft) 38%, var(--c-paper)); }
-.chm-plan[data-lite="1"] .chm-seat { transition: opacity 0.6s ease var(--d); transform: none; }
-.chm-plan[data-lite="1"][data-go="0"] .chm-seat { transform: none; fill: var(--sc); opacity: 0 !important; }
-@media (prefers-reduced-motion: reduce) {
-  .chm-seat { transition: opacity 0.2s ease; }
-  .chm-plan[data-go="0"] .chm-seat { transform: none; fill: var(--sc); }
-}
-html[data-calm] .chm-seat { transition: opacity 0.2s ease; }
-html[data-calm] .chm-plan[data-go="0"] .chm-seat { transform: none; fill: var(--sc); }
+/* The Commons Chamber seating plan (components/CommonsChamber.jsx). When it scrolls into view the seats fade in, the ones nearest the aisle first, so the benches fill from the middle outwards.
+   For anyone who has asked for calmer motion they are simply there. */
+.chm-seat { fill: var(--sc); transition: opacity 0.25s ease, r 0.2s ease; }
+.chm-plan[data-go="0"] .chm-seat { opacity: 0 !important; }
+.chm-plan[data-go="1"] .chm-seat { animation: chmIn 0.6s ease var(--d) backwards; }
+@keyframes chmIn { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .chm-plan[data-go="1"] .chm-seat { animation: none; } }
+html[data-calm] .chm-plan[data-go="1"] .chm-seat { animation: none; }
 
 /* The parties under the plan: pressing one (or hovering it) leaves only its seats lit. */
 .chm-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }

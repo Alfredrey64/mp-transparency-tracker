@@ -8,8 +8,7 @@
 .swr-book { fill: var(--c-paper-card); stroke: #1F7A6E; stroke-width: 2; }
 .swr-paper { fill: #fff; stroke: #1F7A6E; stroke-width: 1.6; opacity: 0; }
 .swr-ring { fill: none; stroke: #A9701F; stroke-width: 2.5; opacity: 0; transform-box: fill-box; transform-origin: center; }
-.swr-line { fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-dasharray: 2 8; opacity: 0; transition: opacity 0.5s; }
-.swr-lg { stroke: #2C5F9E; } .swr-lo { stroke: #9A3F55; }
+.swr-rip { fill: none; opacity: 0; transform-box: fill-box; transform-origin: center; }
 .swr-dot, .swr-whip, .swr-spk, .swr-clk circle { transition: opacity 0.6s, transform 0.5s cubic-bezier(0.3, 1.5, 0.5, 1); transform-box: fill-box; transform-origin: center; }
 .swr-dot { opacity: 0.34; }
 .swr-whip { opacity: 0.55; } .swr-whip-ring { opacity: 0; }
@@ -18,7 +17,7 @@
 /* who is in the spotlight */
 .swr[data-role="speaker"] .swr-spk { opacity: 1; }
 .swr[data-role="whips"] .swr-whip { opacity: 1; } .swr[data-role="whips"] .swr-whip-ring { opacity: 1; }
-.swr[data-role="whips"] .swr-dot { opacity: 0.7; } .swr[data-role="whips"] .swr-line { opacity: 0.8; }
+.swr[data-role="whips"] .swr-dot { opacity: 0.7; }
 .swr[data-role="clerks"] .swr-clk { opacity: 1; }
 .swr[data-role="clerks"] .swr-table { fill: color-mix(in srgb, #1F7A6E 24%, var(--c-paper-card)); stroke: #1F7A6E; }
 
@@ -26,15 +25,14 @@
 .swr[data-on="1"][data-calm="0"][data-role="speaker"] .swr-ring { animation: swrRing 2.8s ease-out infinite; animation-delay: calc(var(--k) * 1.4s); }
 .swr[data-on="1"][data-calm="0"][data-role="speaker"] .swr-up1 { animation: swrStand 5.2s ease-in-out infinite; }
 .swr[data-on="1"][data-calm="0"][data-role="speaker"] .swr-up2 { animation: swrStand 5.2s ease-in-out 2.4s infinite; }
-.swr[data-on="1"][data-calm="0"][data-role="whips"] .swr-line { animation: swrMarch 0.9s linear infinite; }
-.swr[data-on="1"][data-calm="0"][data-role="whips"] .swr-dot { animation: swrVote 2.6s ease-in-out infinite; animation-delay: calc(var(--i) * 70ms); }
-.swr[data-on="1"][data-calm="0"][data-role="whips"] .swr-whip-ring { animation: swrBeat 1.3s ease-in-out infinite; }
+/* the order passes up each side from the whip at the back, one row after another, and the whole bench lines up before it relaxes */
+.swr[data-on="1"][data-calm="0"][data-role="whips"] .swr-dot { animation: swrWave 4.6s ease-in-out infinite; animation-delay: calc((6 - var(--row)) * 0.32s); }
+.swr[data-on="1"][data-calm="0"][data-role="whips"] .swr-rip { animation: swrRip 2.3s ease-out infinite; }
 .swr[data-on="1"][data-calm="0"][data-role="clerks"] .swr-paper { animation: swrPaper 3.4s ease-in-out infinite; animation-delay: calc(var(--k) * 1.1s); }
 @keyframes swrRing { 0% { opacity: 0.7; transform: scale(0.6); } 100% { opacity: 0; transform: scale(3.4); } }
 @keyframes swrStand { 0%, 12%, 55%, 100% { opacity: 0.34; transform: scale(1); } 22%, 45% { opacity: 1; transform: scale(1.9); } }
-@keyframes swrMarch { to { stroke-dashoffset: -10; } }
-@keyframes swrVote { 0%, 100% { opacity: 0.4; transform: scale(1); } 45% { opacity: 1; transform: scale(1.22); } }
-@keyframes swrBeat { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.35; } }
+@keyframes swrWave { 0%, 100% { opacity: 0.4; transform: scale(1); } 14%, 56% { opacity: 1; transform: scale(1.16); } 76% { opacity: 0.4; transform: scale(1); } }
+@keyframes swrRip { 0% { opacity: 0.75; transform: scale(0.85); } 100% { opacity: 0; transform: scale(2.1); } }
 @keyframes swrPaper { 0% { opacity: 0; transform: translateY(70px); } 15% { opacity: 1; } 70% { opacity: 1; } 100% { opacity: 0; transform: translateY(-62px); } }
 .swr[data-calm="1"] .swr-ring, .swr[data-calm="1"] .swr-paper { animation: none; }
 .swr[data-calm="1"][data-role="speaker"] .swr-up1, .swr[data-calm="1"][data-role="speaker"] .swr-up2 { opacity: 1; transform: scale(1.6); }
