@@ -1,4 +1,5 @@
 import STAGES from "../data/billStages.json";
+import AMENDMENTS from "../data/billAmendments.json";
 
 export function stagesFor(bill) {
   return STAGES[String(bill.bill_id)] ?? null;
@@ -39,4 +40,23 @@ export function paceOf(stages, bill, today) {
   const finished = Boolean(bill?.is_act || bill?.is_defeated);
   const end = finished ? last.date : today;
   return { start: first.date, last, days: Math.max(0, dayCount(first.date, end)), sinceLast: Math.max(0, dayCount(last.date, today)), finished };
+}
+
+// The amendment counts for one stage of a bill (data/billAmendments.json, built by fetch-bill-amendments.js), found by the same three facts the file is keyed on: House, stage name and
+// first sitting day. Null when the stage had none recorded, or is not one that takes amendments.
+export function amendmentsFor(bill, stage) {
+  return AMENDMENTS[String(bill.bill_id)]?.[`${stage.house}|${stage.stage}|${stage.dates?.[0] ?? ""}`] ?? null;
+}
+
+// The groups shown in the line under a stage, in the order a reader meets them, each with a plain label. A group with none in it is left out.
+export const AMENDMENT_PARTS = [
+  ["agreed", "agreed"],
+  ["rejected", "voted down"],
+  ["withdrawn", "withdrawn"],
+  ["notDecided", "not moved, called or chosen for debate"],
+  ["pending", "with no decision recorded"],
+  ["other", "other outcomes"],
+];
+export function amendmentParts(a) {
+  return AMENDMENT_PARTS.filter(([k]) => a[k] > 0).map(([k, label]) => ({ key: k, n: a[k], label }));
 }

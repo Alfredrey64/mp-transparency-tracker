@@ -118,6 +118,7 @@ export const SECTIONS = [
       { key: "cabinet", label: "Cabinet ministers", icon: IconCabinet, hint: "The top government jobs", aka: ["cabinet", "prime minister"] },
       { key: "offices", label: "Who held which job", icon: IconCabinet, hint: "Search any minister's role", aka: ["who held office", "secretary of state"] },
       { key: "tracker", label: "Promises tracker", icon: IconTracker, hint: "Has the government kept its word?", aka: ["manifesto promises"] },
+      { key: "specialAdvisers", label: "Special advisers", icon: IconGroup, hint: "How many, what they cost and who works for which minister", aka: ["spads", "spad", "special adviser", "political advisers", "ministers advisers", "downing street advisers", "adviser pay", "adviser salaries", "pay bands"] },
       { key: "lords", label: "The House of Lords", icon: IconLords, hint: "The unelected second chamber", aka: ["peers", "lords", "bishops", "lords spiritual", "hereditary peers", "lords reform", "reform of the lords"] },
       { key: "lordsVotes", label: "How peers vote", icon: IconLordsVote, hint: "Loyalty, rebels and defeats in the Lords", aka: ["lords votes", "peers voting", "lords divisions", "lords rebels", "content not content"] },
       { key: "honours", label: "Peerages and honours", icon: IconPeerage, hint: "Who ends up in the Lords", aka: ["peers", "lords appointments", "cash for honours", "holac", "lords reform"] },
@@ -301,7 +302,7 @@ export const HUBS = [
   { key: "partyhub", label: "Parties", hint: "What they promise, and which one suits you", pages: [["parties", "What parties promise"], ["partymatch", "Which party suits me?"]] },
   { key: "yourvote", label: "Your vote", hint: "How to vote, and who is on your ballot", pages: [["howtovote", "How to vote"], ["myBallot", "Who is on my ballot"]] },
   // Who's in charge
-  { key: "ministers", label: "Ministers and promises", hint: "The Cabinet, every past post, and whether promises were kept", pages: [["cabinet", "Cabinet now"], ["offices", "Who held which job"], ["tracker", "Promises tracker"]] },
+  { key: "ministers", label: "Ministers and promises", hint: "The Cabinet, every past post, and whether promises were kept", pages: [["cabinet", "Cabinet now"], ["offices", "Who held which job"], ["tracker", "Promises tracker"], ["specialAdvisers", "Special advisers"]] },
   { key: "lords", label: "The House of Lords", hint: "The peers, how they vote, and how people become peers", pages: [["lords", "The peers"], ["lordsVotes", "How peers vote"], ["honours", "Peerages"]] },
   // How MPs behave
   { key: "mpvotes", label: "How MPs vote", hint: "Every vote, who breaks ranks, and the laws ministers make", pages: [["voting", "How MPs voted"], ["rebels", "MPs who defy their party"], ["statutoryInstruments", "Laws made by ministers"], ["backbench", "Backbench bills"]] },

@@ -1,6 +1,12 @@
 /** @jsxImportSource react */
 import ExplainerPage from "../story/ExplainerPage";
+import Loading from "../Loading";
+import { LoadFailedNote } from "../MpCards";
+import TreatyList from "../story/TreatyList";
 import { IconAid } from "../newIcons";
+import { useDataFile } from "../../lib/useDataFile";
+import { treaties } from "../../lib/dataFiles";
+import { dateLong } from "../../lib/upcoming";
 
 const PAGE = {
   look: "field",
@@ -69,6 +75,41 @@ const PAGE = {
   checked: "28 October 2026",
 };
 
+const n = (v) => Number(v ?? 0).toLocaleString("en-GB");
+
+// The treaties laid before Parliament lately, from Parliament's Treaties API (data/treaties.json, refreshed daily by fetch-treaties.js). It sits after the explanation of how a treaty is approved.
+function treatyChapter(state) {
+  const base = { title: "Treaties before Parliament", colour: "#5A7FA6" };
+  if (!state.data) {
+    return { ...base, lede: "Every treaty laid before Parliament in the last year, with the steps Parliament recorded.", blocks: [{ node: state.failed ? <LoadFailedNote item="the treaties" /> : <Loading /> }] };
+  }
+  const d = state.data;
+  const open = d.treaties.filter((t) => t.status === "open");
+  const latestYear = d.perYear.at(-1);
+  return {
+    ...base,
+    lede: `${n(d.lastYear.count)} treaties were laid in the last 12 months${open.length ? `, and ${n(open.length)} ${open.length === 1 ? "is" : "are"} still inside Parliament's objection period` : ""}. Open any one to see what Parliament recorded about it.`,
+    blocks: [
+      { facts: [
+        { label: "Laid in the last 12 months", value: n(d.lastYear.count), note: "Treaties laid before Parliament since this time last year." },
+        { label: "Still in the objection period", value: n(open.length), note: "Not yet cleared to be ratified. The end date is Parliament's own." },
+        { label: "On Parliament's list in all", value: n(d.total), note: `Treaties on its list, the earliest laid in ${d.perYear[0].year}. Some have not been laid yet.` },
+      ] },
+      { node: <TreatyList treaties={d.treaties} /> },
+      { bars: { items: d.perYear.map((y) => ({ label: String(y.year), value: y.count, text: n(y.count), colour: "#5A7FA6" })), max: Math.max(...d.perYear.map((y) => y.count)), note: `Treaties laid before Parliament each year. ${latestYear.year} is the year so far.` } },
+      { bars: { items: d.byDepartment.slice(0, 8).map((x) => ({ label: x.name, value: x.count, text: n(x.count), colour: "#3F7D5C" })), max: Math.max(...d.byDepartment.map((x) => x.count)), note: "Treaties laid in the last 12 months, by the department that led on each." } },
+      { note: "A treaty that Parliament lists as cleared can be ratified, but ratifying is a separate act by the government that this page does not track. Treaties that are signed but not yet laid before Parliament do not appear." },
+    ],
+  };
+}
+
 export default function ForeignPolicy() {
-  return <ExplainerPage {...PAGE} />;
+  const state = useDataFile(treaties);
+  const at = PAGE.chapters.findIndex((c) => c.title === "How a treaty is approved");
+  const chapters = [...PAGE.chapters.slice(0, at + 1), treatyChapter(state), ...PAGE.chapters.slice(at + 1)];
+  const sources = [
+    ...PAGE.sources,
+    { label: "UK Parliament: Treaties API", url: "https://treaties-api.parliament.uk/index.html", note: "Every treaty laid before Parliament, its steps and the end of its objection period. Read each day." },
+  ];
+  return <ExplainerPage {...PAGE} chapters={chapters} sources={sources} checked={state.data ? dateLong(state.data.generated) : PAGE.checked} />;
 }

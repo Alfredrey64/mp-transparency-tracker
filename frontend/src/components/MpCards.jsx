@@ -11,6 +11,9 @@ import { getBillDescription } from "../lib/billDescriptions";
 import { plainSentence } from "../lib/billPlain";
 import { withScrollPreserved } from "../lib/preserveScroll";
 import Loading from "./Loading";
+import { useDataFile } from "../lib/useDataFile";
+import { mpSpeaking } from "../lib/dataFiles";
+import { describeSpeaking } from "../lib/mpSpeakingView";
 import BillMore from "./BillMore";
 
 // Lazy: this file is part of the bundle every page load pays for, and the
@@ -505,6 +508,19 @@ function QuestionCard({ q, colour }) {
   );
 }
 
+// How often this MP has spoken in the last 12 months, from Hansard's search (data/mpSpeaking.json, fetch-mp-speaking.js, rebuilt weekly). Shown only when the file has a count for them.
+function SpeakingLine({ memberId }) {
+  const { data } = useDataFile(mpSpeaking);
+  const s = data ? describeSpeaking(data.members?.[memberId], data) : null;
+  if (!s) return null;
+  return (
+    <p className="mpact-speak">
+      Hansard records <b>{s.count.toLocaleString("en-GB")} spoken {s.count === 1 ? "contribution" : "contributions"}</b> by them in the 12 months to {formatDate(data.to)}: {s.against}, who made <b>{s.typical.toLocaleString("en-GB")}</b>.
+      A contribution is one turn speaking: a speech, a question, an answer or a short intervention. Ministers answer questions and the Speaker&apos;s team chairs debates, so this shows how often they spoke, not how much they said or achieved.
+    </p>
+  );
+}
+
 export function RecentActivityBox({ politician, onNavigate }) {
   const activity = politician.recent_activity;
   const contributions = activity?.contributions ?? [];
@@ -521,6 +537,7 @@ export function RecentActivityBox({ politician, onNavigate }) {
       {contributions.length > 0 && (
         <section aria-labelledby="act-debates" style={{ marginBottom: writtenQuestions.length > 0 ? 20 : 0 }}>
           <h3 id="act-debates" className="mpact-h">Debates they spoke in</h3>
+          {politician.parliament_member_id ? <SpeakingLine memberId={politician.parliament_member_id} /> : null}
           <div className="mpact-list">{contributions.map((c, i) => <DebateCard key={i} c={c} colour={colour} />)}</div>
         </section>
       )}

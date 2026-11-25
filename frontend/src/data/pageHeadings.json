@@ -101,11 +101,16 @@
  },
  "byElections": {
   "title": "By-elections",
-  "heads": []
+  "heads": [
+   "By-elections at a glance",
+   "Every by-election"
+  ]
  },
  "cabinet": {
   "title": "Who's in Cabinet",
-  "heads": []
+  "heads": [
+   "Who works for whom"
+  ]
  },
  "calculators": {
   "title": "Money calculators",
@@ -331,7 +336,12 @@
  },
  "donors": {
   "title": "Who funds MPs",
-  "heads": []
+  "heads": [
+   "How to read this page",
+   "Money & Influence in Parliament, Explained",
+   "Who Receives the Most, By Sector",
+   "How This Works, and Its Limits"
+  ]
  },
  "economy": {
   "title": "How the economy is doing",
@@ -454,13 +464,16 @@
   "heads": [
    "The aid budget",
    "How a treaty is approved",
+   "Treaties before Parliament",
    "Where this meets the rest of the site",
    "Where this comes from"
   ]
  },
  "formerMps": {
   "title": "MPs who have just left",
-  "heads": []
+  "heads": [
+   "Who has left, and why"
+  ]
  },
  "funding": {
   "title": "Funding and independence",
@@ -915,7 +928,21 @@
  },
  "numbers": {
   "title": "The House of Commons, by the numbers",
-  "heads": []
+  "heads": [
+   "The chamber",
+   "At a glance",
+   "Seats by party",
+   "Women in the Commons",
+   "Who arrived when",
+   "How many elections they have won",
+   "Who has held office",
+   "Changing sides",
+   "Lost before they won",
+   "How safe are the seats?",
+   "Closest and biggest",
+   "Seats that changed hands",
+   "What isn't here, and why"
+  ]
  },
  "offices": {
   "title": "Who has held this office?",
@@ -1112,6 +1139,17 @@
    "Where this comes from"
   ]
  },
+ "specialAdvisers": {
+  "title": "Special advisers",
+  "heads": [
+   "What special advisers are",
+   "How many, and what they cost",
+   "The four pay bands",
+   "Who works for whom",
+   "Where this meets the rest of the site",
+   "Where this comes from"
+  ]
+ },
  "spotMisleadingStats": {
   "title": "How to spot a misleading statistic",
   "heads": [
@@ -1125,7 +1163,9 @@
  },
  "standards": {
   "title": "When the standards system names an MP",
-  "heads": []
+  "heads": [
+   "Reports by year"
+  ]
  },
  "start": {
   "title": "From “who's my MP?” to “what are they up to?”",
@@ -1204,7 +1244,16 @@
  },
  "thisWeek": {
   "title": "What changed this week",
-  "heads": []
+  "heads": [
+   "Today5 changes",
+   "Yesterday13 changes",
+   "Monday 23 November18 changes",
+   "Sunday 22 November3 changes",
+   "Saturday 21 November2 changes",
+   "Friday 20 November7 changes",
+   "Thursday 19 November5 changes",
+   "Wednesday 18 November8 changes"
+  ]
  },
  "timeline": {
   "title": "Three centuries in one timeline",
@@ -1323,6 +1372,9 @@
  "whatsnew": {
   "title": "What's new",
   "heads": [
+   "Special advisers",
+   "Treaties before Parliament",
+   "Search now looks inside pages, and pages point to related ones",
    "Your area in numbers",
    "Have your say on new rules",
    "Schools and A&E near you",

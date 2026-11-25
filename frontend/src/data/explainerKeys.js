@@ -33,6 +33,7 @@ export const EXPLAINER_KEYS = [
   "spotMisleadingStats",
   "backbench",
   "auditWatch",
+  "specialAdvisers",
   "councilComplaints",
   "nearYou",
   "consultations",

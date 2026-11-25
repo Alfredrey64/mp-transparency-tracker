@@ -1,11 +1,14 @@
 import { PageHeader } from "./shared";
 import { GlossaryTerm } from "./GlossaryTerm";
-import { IconThinkTank, IconSearch, IconBroadcast, IconQuestion } from "./icons";
+import { IconThinkTank, IconSearch, IconBroadcast, IconQuestion, IconRegister } from "./icons";
 import { Board, Why, Chapter, Pull, Cards, Visual } from "./story/Kit";
 import { Masked, Ladder } from "./story/ThinkArt";
 import { caseId } from "../lib/caseId";
 import { useGo } from "./story/useGo";
 import "../thinktankcards.css";
+import { useDataFile } from "../lib/useDataFile";
+import { thinkTankCharities } from "../lib/dataFiles";
+import { charityLine } from "../lib/charityView";
 
 const GRADE_COLOR = {
   A: "#3F7D5C",
@@ -71,7 +74,7 @@ const GRADE_WORD = { A: "open about its funders", B: "mostly open", C: "partly o
 
 // One think tank's evaluation. It arrives when it scrolls into view: the grade badge turns in, a gauge on the same open-to-undisclosed scale as the picture above slides its
 // marker to the grade, and the finding follows. The words are exactly as they were; this only changes how they arrive.
-function TankCard({ t, i }) {
+function TankCard({ t, i, charity }) {
   const [ref, go] = useGo(0.2);
   return (
     <li ref={ref} id={caseId(t.name)} className="st-case tt-card" data-go={go} data-grade={t.grade} style={{ "--tc": GRADE_COLOR[t.grade], "--i": i % 3, "--pos": `${GRADE_AT[t.grade]}%` }}>
@@ -85,12 +88,21 @@ function TankCard({ t, i }) {
           <div className="tt-gauge-ends" aria-hidden="true"><span>Open</span><span>Undisclosed</span></div>
         </div>
         <section><h4><IconSearch size={15} />What was found</h4><p>{t.detail}</p></section>
+        {charity && (
+          <section>
+            <h4><IconRegister size={15} />On the Charity Commission register</h4>
+            <p>
+              Registered charity <a href={charity.url} target="_blank" rel="noreferrer">{charity.number}<span className="sr-only"> (opens in a new tab)</span></a>. {charityLine(charity)} These are the figures the charity itself filed. The register does not say who gave the money.
+            </p>
+          </section>
+        )}
       </div>
     </li>
   );
 }
 
 export default function ThinkTankFunding() {
+  const charities = useDataFile(thinkTankCharities).data?.charities;
   const ladder = THINK_TANKS.map((t) => ({ ...t, short: SHORT[t.name] ?? t.name }));
   return (
     <div className="st" style={{ paddingTop: "clamp(20px, 5vw, 40px)" }}>
@@ -163,7 +175,7 @@ export default function ThinkTankFunding() {
       <Chapter n={4} title="A sample, across the spectrum" colour="#E8741A" lede="Seven prominent UK think tanks with a published Who Funds You? grade: three free-market organisations rated poorly, one left-leaning and two non-partisan organisations rated highly. A hand-picked sample to illustrate the range, not a comprehensive or systematically balanced survey.">
         <Visual><Ladder tanks={ladder} /></Visual>
         <ul className="st-case-grid">
-          {THINK_TANKS.map((t, i) => <TankCard key={t.name} t={t} i={i} />)}
+          {THINK_TANKS.map((t, i) => <TankCard key={t.name} t={t} i={i} charity={charities?.[t.name]} />)}
         </ul>
       </Chapter>
 

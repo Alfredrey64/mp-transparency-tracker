@@ -43,3 +43,14 @@ describe("paceOf", () => {
     expect(paceOf(null, {}, "2026-01-01")).toBeNull();
   });
 });
+
+describe("amendment counts under a stage", () => {
+  it("lists only the outcomes that happened, in reading order", async () => {
+    const { amendmentParts } = await import("./billStagesView");
+    expect(amendmentParts({ agreed: 5, rejected: 0, withdrawn: 2, notDecided: 0, pending: 1, other: 0 }).map((p) => `${p.n} ${p.label}`)).toEqual(["5 agreed", "2 withdrawn", "1 with no decision recorded"]);
+  });
+  it("finds nothing for a bill or stage with no counts", async () => {
+    const { amendmentsFor } = await import("./billStagesView");
+    expect(amendmentsFor({ bill_id: 1 }, { house: "Commons", stage: "Report stage", dates: ["2026-01-01"] })).toBeNull();
+  });
+});

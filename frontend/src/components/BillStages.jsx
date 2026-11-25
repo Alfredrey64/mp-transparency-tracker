@@ -1,6 +1,6 @@
 import { COLORS, FONT_BODY, readable } from "../theme";
 import { formatDate } from "../lib/format";
-import { stagesFor, currentIndex, stageTerm, paceOf } from "../lib/billStagesView";
+import { stagesFor, currentIndex, stageTerm, paceOf, amendmentsFor, amendmentParts } from "../lib/billStagesView";
 import { GlossaryTerm } from "./GlossaryTerm";
 
 // A bill's real journey so far: each stage it has been through in each House with the days it was sat on, from Parliament's Bills API (data/billStages.json, kept up to date by the
@@ -13,6 +13,26 @@ const when = (dates) => {
   if (dates.length === 1) return formatDate(dates[0]);
   return `${formatDate(dates[0])} to ${formatDate(dates.at(-1))}, ${dates.length} days`;
 };
+
+// Under a committee or report stage: how many amendments were proposed and how each was decided, with the party of whoever led each one on request. Counts from Parliament's Bills API.
+function Amendments({ a, colour }) {
+  const parts = amendmentParts(a);
+  return (
+    <details style={{ marginTop: 4, fontSize: 12.5, color: COLORS.inkSoft }}>
+      <summary style={{ cursor: "pointer", listStyle: "revert", lineHeight: 1.5 }}>
+        <b style={{ color: COLORS.ink }}>{a.total.toLocaleString("en-GB")} {a.total === 1 ? "amendment" : "amendments"}</b> proposed
+        {parts.length > 0 && <>: {parts.map((p, i) => <span key={p.key}>{i > 0 && ", "}<b style={{ color: p.key === "agreed" ? readable(colour) : COLORS.ink }}>{p.n.toLocaleString("en-GB")}</b> {p.label}</span>)}</>}
+      </summary>
+      <div style={{ padding: "6px 0 2px" }}>
+        <div style={{ fontWeight: 700, marginBottom: 3 }}>Whose they were, by the party of the lead sponsor</div>
+        <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gap: 2 }}>
+          {a.parties.map((p) => <li key={p.party}>{p.party}: <b style={{ color: COLORS.ink }}>{p.tabled.toLocaleString("en-GB")}</b> proposed, <b style={{ color: COLORS.ink }}>{p.agreed.toLocaleString("en-GB")}</b> agreed</li>)}
+        </ul>
+        <div style={{ marginTop: 4, lineHeight: 1.45 }}>An amendment can be proposed and never moved, so these are counts, not a success rate. Parliament does not say which amendments are the government&apos;s.</div>
+      </div>
+    </details>
+  );
+}
 
 export default function BillStages({ bill }) {
   const stages = stagesFor(bill);
@@ -48,6 +68,7 @@ export default function BillStages({ bill }) {
                   {text ?? (state === "next" ? "Still to come" : "No day recorded")}
                   <span className="sr-only">{state === "done" ? " (done)" : state === "now" ? " (where it is now)" : " (still to come)"}</span>
                 </span>
+                {(() => { const am = amendmentsFor(bill, s); return am ? <Amendments a={am} colour={colour} /> : null; })()}
               </span>
             </li>
           );

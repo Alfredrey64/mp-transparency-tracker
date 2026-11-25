@@ -330,6 +330,41 @@ jobs:
         continue-on-error: true
         run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-audit-reports.js
 
+      # The Charity Commission's register entries for the think tanks on the Who funds think tanks page
+      # (the weekly extract, about 45 MB, downloaded in pieces; only the think tanks' lines are kept).
+      - name: Run the think tank charities fetch script
+        id: fetch_charities
+        continue-on-error: true
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-charities.js
+
+      # How many times each MP has spoken in the last 12 months, from Hansard's search, for the Debates box on each MP's profile
+      # (one slow request per MP, four at a time, about 15 minutes; the script does nothing when its file is under six days old).
+      - name: Run the MP speaking counts fetch script
+        id: fetch_mp_speaking
+        continue-on-error: true
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-mp-speaking.js
+
+      # How many amendments each bill had at committee and report stage and how they were decided, for the bill cards
+      # (Bills API: one request per bill, then one per stage that has sat; settled stages are kept, so most days are quick).
+      - name: Run the bill amendments fetch script
+        id: fetch_bill_amendments
+        continue-on-error: true
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-bill-amendments.js
+
+      # Treaties laid before Parliament and the steps Parliament recorded, for The UK abroad page
+      # (Parliament's Treaties API: the list, then one request per treaty from the last year).
+      - name: Run the treaties fetch script
+        id: fetch_treaties
+        continue-on-error: true
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-treaties.js
+
+      # The Cabinet Office's annual special advisers report, for the Special advisers page
+      # (three requests to the GOV.UK Content API; the file only changes when a new edition is out).
+      - name: Run the special advisers fetch script
+        id: fetch_special_advisers
+        continue-on-error: true
+        run: node --import "$GITHUB_WORKSPACE/ci-notes.js" fetch-special-advisers.js
+
       # Open consultations on GOV.UK, for the Have your say page (one search request).
       - name: Run the consultations fetch script
         id: fetch_consultations
@@ -409,6 +444,11 @@ jobs:
           echo "STATUS_fetch_statutory_instruments=${{ steps.fetch_statutory_instruments.outcome }}" >> status.env
           echo "STATUS_fetch_backbench=${{ steps.fetch_backbench.outcome }}" >> status.env
           echo "STATUS_fetch_audit_reports=${{ steps.fetch_audit_reports.outcome }}" >> status.env
+          echo "STATUS_fetch_charities=${{ steps.fetch_charities.outcome }}" >> status.env
+          echo "STATUS_fetch_mp_speaking=${{ steps.fetch_mp_speaking.outcome }}" >> status.env
+          echo "STATUS_fetch_bill_amendments=${{ steps.fetch_bill_amendments.outcome }}" >> status.env
+          echo "STATUS_fetch_treaties=${{ steps.fetch_treaties.outcome }}" >> status.env
+          echo "STATUS_fetch_special_advisers=${{ steps.fetch_special_advisers.outcome }}" >> status.env
           echo "STATUS_fetch_ae_performance=${{ steps.fetch_ae_performance.outcome }}" >> status.env
           echo "STATUS_fetch_consultations=${{ steps.fetch_consultations.outcome }}" >> status.env
           echo "STATUS_fetch_rtt_waits=${{ steps.fetch_rtt_waits.outcome }}" >> status.env
@@ -424,7 +464,7 @@ jobs:
         if: always()
         run: |
           existing=""
-          for p in frontend/src/data/lordsCareers.json frontend/src/data/lordsCareerDetail frontend/src/data/lordsVotes.json frontend/src/data/parliamentCalendar.json frontend/public/calendar frontend/src/data/entryNotes.json frontend/src/data/committeeReports.json frontend/src/data/backbench.json frontend/src/data/auditReports.json frontend/src/data/aeNearYou.json frontend/src/data/consultations.json frontend/src/data/rttWaits.json frontend/src/data/bathingWater.json frontend/src/data/localEconomy.json frontend/src/data/housePrices.json frontend/src/data/roadCasualties.json frontend/src/data/acts.json frontend/src/data/gpAppointments.json frontend/src/data/statutoryInstruments.json frontend/src/data/plainEnglish.json; do [ -e "$p" ] && existing="$existing $p"; done
+          for p in frontend/src/data/lordsCareers.json frontend/src/data/lordsCareerDetail frontend/src/data/lordsVotes.json frontend/src/data/parliamentCalendar.json frontend/public/calendar frontend/src/data/entryNotes.json frontend/src/data/committeeReports.json frontend/src/data/backbench.json frontend/src/data/auditReports.json frontend/src/data/billAmendments.json frontend/src/data/mpSpeaking.json frontend/src/data/thinkTankCharities.json frontend/src/data/treaties.json frontend/src/data/specialAdvisers.json frontend/src/data/aeNearYou.json frontend/src/data/consultations.json frontend/src/data/rttWaits.json frontend/src/data/bathingWater.json frontend/src/data/localEconomy.json frontend/src/data/housePrices.json frontend/src/data/roadCasualties.json frontend/src/data/acts.json frontend/src/data/gpAppointments.json frontend/src/data/statutoryInstruments.json frontend/src/data/plainEnglish.json; do [ -e "$p" ] && existing="$existing $p"; done
           tar -cf data.tar status.env $existing
 
       - name: Upload them for the last job
@@ -894,7 +934,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add frontend/src/data/constituencies.json frontend/src/data/constituencySummary.json frontend/src/data/constituencyHistory.json frontend/src/data/mpCareers.json frontend/src/data/careerDetail frontend/src/data/lordsCareers.json frontend/src/data/benchmarks.json frontend/src/data/representatives.json frontend/src/data/councilsIndex.json frontend/src/data/councilDetail frontend/src/data/ons frontend/src/data/regionalBreakdowns.json frontend/src/data/lordsCareerDetail frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json frontend/src/data/partyDonorSectors.json frontend/src/data/partyDonorSectorsMeta.json frontend/src/data/pipelineStatus.json frontend/src/data/lordsVotes.json frontend/src/data/parliamentCalendar.json frontend/public/calendar frontend/src/data/entryNotes.json frontend/src/data/committeeReports.json frontend/src/data/backbench.json frontend/src/data/auditReports.json frontend/src/data/aeNearYou.json frontend/src/data/consultations.json frontend/src/data/rttWaits.json frontend/src/data/bathingWater.json frontend/src/data/localEconomy.json frontend/src/data/housePrices.json frontend/src/data/roadCasualties.json frontend/src/data/acts.json frontend/src/data/gpAppointments.json frontend/src/data/statutoryInstruments.json frontend/src/data/plainEnglish.json frontend/src/data/standardsReportAuto.json frontend/src/data/billStages.json frontend/src/data/lawExample.json frontend/src/data/fullFactPledges.json frontend/src/data/partyLeaders.json frontend/public/data/councillors.json
+          git add frontend/src/data/constituencies.json frontend/src/data/constituencySummary.json frontend/src/data/constituencyHistory.json frontend/src/data/mpCareers.json frontend/src/data/careerDetail frontend/src/data/lordsCareers.json frontend/src/data/benchmarks.json frontend/src/data/representatives.json frontend/src/data/councilsIndex.json frontend/src/data/councilDetail frontend/src/data/ons frontend/src/data/regionalBreakdowns.json frontend/src/data/lordsCareerDetail frontend/src/data/donorSectors.json frontend/src/data/donorSectorsMeta.json frontend/src/data/partyDonorSectors.json frontend/src/data/partyDonorSectorsMeta.json frontend/src/data/pipelineStatus.json frontend/src/data/lordsVotes.json frontend/src/data/parliamentCalendar.json frontend/public/calendar frontend/src/data/entryNotes.json frontend/src/data/committeeReports.json frontend/src/data/backbench.json frontend/src/data/auditReports.json frontend/src/data/billAmendments.json frontend/src/data/mpSpeaking.json frontend/src/data/thinkTankCharities.json frontend/src/data/treaties.json frontend/src/data/specialAdvisers.json frontend/src/data/aeNearYou.json frontend/src/data/consultations.json frontend/src/data/rttWaits.json frontend/src/data/bathingWater.json frontend/src/data/localEconomy.json frontend/src/data/housePrices.json frontend/src/data/roadCasualties.json frontend/src/data/acts.json frontend/src/data/gpAppointments.json frontend/src/data/statutoryInstruments.json frontend/src/data/plainEnglish.json frontend/src/data/standardsReportAuto.json frontend/src/data/billStages.json frontend/src/data/lawExample.json frontend/src/data/fullFactPledges.json frontend/src/data/partyLeaders.json frontend/public/data/councillors.json
           git diff --staged --quiet || git commit -m "chore: daily data refresh"
           # Someone may have pushed while the crawl ran (or while the pull below was running): sit this commit on top of theirs rather than being refused, and try again a few
           # times if another push gets in first. If a file was edited on both sides, today's rebuilt copy wins (`-X theirs` means the commit being replayed in a rebase).

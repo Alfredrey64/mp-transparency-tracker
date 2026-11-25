@@ -48,7 +48,7 @@ export const HAND_KEPT = [
 // Files a scheduled job rewrites (daily or weekly), so nobody types them.
 export const AUTOMATIC = [
   /^(ageing|care|defence|education|health|inequality|transport|trust|brexit|devolution|energy)Data\.json$/, /^(inequalityAbroad|inequalityPlace)\.json$/, /^ons\//,
-  /^(acts|gpAppointments|aeNearYou|auditReports|backbench|bathingWater|consultations|localEconomy|housePrices|roadCasualties|rttWaits|benchmarks|billStages|committeeReports|constituencies|constituencyHistory|constituencySummary|councilsIndex|donorSectors|donorSectorsMeta|entryNotes|fullFactPledges|lawExample|lordsCareers|lordsVotes|mpCareers|parliamentCalendar|partyDonorSectors|partyDonorSectorsMeta|partyLeaders|pipelineStatus|plainEnglish|regionalBreakdowns|representatives|standardsReportAuto|standardsReportDetails|statutoryInstruments|taxSeries)\.json$/,
+  /^(acts|gpAppointments|aeNearYou|auditReports|backbench|bathingWater|consultations|localEconomy|housePrices|roadCasualties|rttWaits|benchmarks|billAmendments|billStages|committeeReports|constituencies|constituencyHistory|constituencySummary|councilsIndex|donorSectors|donorSectorsMeta|entryNotes|fullFactPledges|lawExample|lordsCareers|lordsVotes|mpCareers|parliamentCalendar|partyDonorSectors|partyDonorSectorsMeta|partyLeaders|pipelineStatus|plainEnglish|regionalBreakdowns|representatives|standardsReportAuto|mpSpeaking|specialAdvisers|thinkTankCharities|standardsReportDetails|statutoryInstruments|taxSeries|treaties)\.json$/,
   /^(careerDetail|councilDetail|lordsCareerDetail)\//, /^(devolvedLeaders|pmPortraits|repPortraits|repLinks)\.json$/,
 ];
 

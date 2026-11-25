@@ -601,6 +601,11 @@ export const PAGE_GUIDES = {
     why: "Backbench bills and motions are how an issue the government has not chosen can still reach Parliament, and few succeed.",
     notShown: "Whether a bill was debated, how any MP voted on it, and the text of each motion beyond its title.",
   },
+  specialAdvisers: {
+    what: "How many special advisers there are, what they cost, the four pay bands, and who works for which minister, from the Cabinet Office's annual report.",
+    why: "They are paid from public money and work beside ministers, but are not elected, so the report is the public record of their number and cost.",
+    notShown: "What any adviser does, who is in post since the report's date, or exact salaries below £81,000. The report gives salaries only as £5,000 bands from that level up.",
+  },
   auditWatch: {
     what: "The National Audit Office's reports from the last year, by department and topic, and the Public Accounts Committee's reports with the government's replies.",
     why: "Public money is only as well spent as it is checked, and these reports are the evidence MPs use to question ministers about it.",

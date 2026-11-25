@@ -3,7 +3,7 @@
 // worth listing when the two are NOT in one group (a test checks this, and that every key is a real page).
 export const RELATED_PAIRS = [
   // Watching the government
-  ["watchdogs", "auditWatch"], ["watchdogs", "committees"], ["auditWatch", "departments"], ["auditWatch", "govContracts"], ["inquiries", "committeeReports"],
+  ["watchdogs", "auditWatch"], ["watchdogs", "committees"], ["auditWatch", "departments"], ["civilService", "specialAdvisers"], ["auditWatch", "govContracts"], ["inquiries", "committeeReports"],
   ["civilService", "cabinet"], ["civilService", "revolvingDoor"], ["cabinet", "revolvingDoor"], ["cabinet", "ministerialMeetings"],
   // Money and influence
   ["appg", "lobbyingRegister"], ["appg", "list"], ["appg", "donors"], ["foreignInfluence", "lobbyingRegister"], ["foreignInfluence", "darkMoney"],

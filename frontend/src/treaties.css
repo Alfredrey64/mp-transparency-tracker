@@ -1,0 +1,13 @@
+/* Treaties list on The UK abroad page (components/story/TreatyList.jsx). The cards are the shared opening cards from backbench.css and watchdog.css. */
+.tr-filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; }
+.tr-count { margin: 10px 2px 0; font: 500 13px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.tr-steps { list-style: none; margin: 0 0 14px; padding: 0 0 0 18px; display: grid; gap: 10px; position: relative; }
+.tr-steps::before { content: ""; position: absolute; left: 5px; top: 8px; bottom: 8px; width: 2px; border-radius: 1px; background: color-mix(in srgb, var(--ac) 30%, var(--c-paper-card)); }
+.tr-steps li { position: relative; display: grid; gap: 1px; font: 500 14.5px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.tr-steps li::before { content: ""; position: absolute; left: -18px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--ac); border: 2px solid var(--c-paper-card); }
+.tr-steps time { font: 600 12.5px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); font-variant-numeric: lining-nums; }
+.tr-steps a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.tr-steps a:hover { color: var(--ac); }
+.tr-steps button, .tr-filters button { min-height: 36px; }
+.tr-list .bbx-title { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+.tr-full { display: grid; gap: 4px; margin: 0 0 14px; font: 500 14px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }

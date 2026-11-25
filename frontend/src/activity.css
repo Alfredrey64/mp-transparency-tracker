@@ -10,3 +10,5 @@
 .mpact-said blockquote { margin: 0; padding: 10px 14px; border-radius: 12px; background: color-mix(in srgb, var(--ac) 7%, var(--c-paper)); font: 400 14.5px/1.65 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .mpact-link { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--ac) 80%, var(--c-ink)); text-decoration: none; }
 .mpact-link:hover { text-decoration: underline; }
+.mpact-speak { margin: 0 0 12px; font: 500 13.5px/1.55 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.mpact-speak b { color: var(--c-ink); font-variant-numeric: lining-nums; }

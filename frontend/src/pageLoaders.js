@@ -142,6 +142,7 @@ const EXPLAINER_LOADERS = {
   committeeReports: withData(() => import("./components/explainers/committeeReports"), () => import("./data/committeeReports.json")),
   statutoryInstruments: withData(() => import("./components/explainers/statutoryInstruments"), () => import("./data/statutoryInstruments.json")),
   backbench: withData(() => import("./components/explainers/backbench"), () => import("./data/backbench.json")),
+  specialAdvisers: withData(() => import("./components/explainers/specialAdvisers"), () => import("./data/specialAdvisers.json")),
   auditWatch: withData(() => import("./components/explainers/auditWatch"), () => import("./data/auditReports.json"), () => import("./data/committeeReports.json")),
   councilComplaints: withData(() => import("./components/explainers/councilComplaints"), () => import("./data/councilComplaints.json")),
   consultations: withData(() => import("./components/explainers/consultations"), () => import("./data/consultations.json")),
