@@ -38,6 +38,13 @@
     "companyNumber": "13054048",
     "sicCode": "94920"
   },
+  "International Centre of Justice for Palestinians (ICJP)": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "INTERNATIONAL CENTRE OF JUSTICE FOR PALESTINIANS",
+    "companyNumber": "13054048",
+    "sicCode": "94920"
+  },
   "National Liberal Club": {
     "sector": "Other / Uncategorised",
     "source": "companies-house",
@@ -79,10 +86,6 @@
     "companyName": "COALITION FOR GLOBAL PROSPERITY",
     "companyNumber": "10894509",
     "sicCode": "88990"
-  },
-  "National Union of Journalists": {
-    "sector": "Trade Unions",
-    "source": "known-union-list"
   },
   "Godfrey Coaching Ltd": {
     "sector": "Legal & Professional Services",
@@ -405,13 +408,6 @@
     "companyNumber": "04320977",
     "sicCode": "93110"
   },
-  "The National Liberal Club": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "NATIONAL LIBERAL CLUB LIMITED(THE)",
-    "companyNumber": "01355034",
-    "sicCode": "56302"
-  },
   "Lloyds Banking Group plc": {
     "sector": "Finance & Banking",
     "source": "companies-house",
@@ -465,18 +461,18 @@
     "companyNumber": "06410885",
     "sicCode": "41100"
   },
-  "Strathgrove Ltd": {
-    "sector": "Construction & Property",
-    "source": "companies-house",
-    "companyName": "STRATHGROVE LIMITED",
-    "companyNumber": "00972224",
-    "sicCode": "41100"
-  },
   "Stamford Property Company Ltd": {
     "sector": "Construction & Property",
     "source": "companies-house",
     "companyName": "STAMFORD PROPERTY COMPANY LIMITED",
     "companyNumber": "03016148",
+    "sicCode": "41100"
+  },
+  "Strathgrove Ltd": {
+    "sector": "Construction & Property",
+    "source": "companies-house",
+    "companyName": "STRATHGROVE LIMITED",
+    "companyNumber": "00972224",
     "sicCode": "41100"
   },
   "Grantham Investments Ltd": {
@@ -492,13 +488,6 @@
     "companyName": "STRATHGROVE LIMITED",
     "companyNumber": "00972224",
     "sicCode": "41100"
-  },
-  "Clerewell Ltd": {
-    "sector": "Construction & Property",
-    "source": "companies-house",
-    "companyName": "CLEREWELL LIMITED",
-    "companyNumber": "01798514",
-    "sicCode": "68209"
   },
   "SRE Hotels (Cliveden) Ltd": {
     "sector": "Other / Uncategorised",
@@ -680,5 +669,12 @@
     "companyName": "EUROPEAN INNOVATION LIMITED",
     "companyNumber": "04334036",
     "sicCode": "62011"
+  },
+  "Manchester United Football Club Limited": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "MANCHESTER UNITED FOOTBALL CLUB LIMITED",
+    "companyNumber": "00095489",
+    "sicCode": "93120"
   }
 }
