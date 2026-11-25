@@ -64,7 +64,7 @@ describe("the pictures at the tops of pages", () => {
     expect(funnel).toContain("Which average?");
     // one story is followed through the funnel (one moving dot), and the others stay where they are
     expect((funnel.match(/class="nfn-dot"/g) ?? []).length).toBe(1);
-    const resting = (funnel.match(/class="nfn-rest"/g) ?? []).length;
+    const resting = (funnel.match(/class="nfn-rest( nfn-fly)?"/g) ?? []).length;
     expect(resting).toBeGreaterThanOrEqual(15);
     expect(funnel).toContain(`>${resting + 1}</text>`);
     const lenses = renderToStaticMarkup(<StatsLenses nodes={nodes} label="Three choices" />);

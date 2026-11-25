@@ -15,10 +15,11 @@ import "../../explainart.css";
 // ---- the funnel ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // One story travels through the funnel, stage by stage, and the stage it is at is the one that is lit: both come from the same step number, so the dot and the stages move together.
-// The grey dots left of the gate are the other things that happen; they drift about where they are, because they are not covered. Only the one story goes through the gate.
+// The grey dots left of the gate are the other things that happen; half of them fly at the gate and bounce off, the rest stay where they are, because they are not covered. Only the one story goes through the gate.
 const STAGE_X = [100, 300, 500, 700, 900];
 const STAGE_Y = [85, 85, 85, 40, 60];
 const GREY = "#8A93A6";
+const GATE_X = 287; // just left of the bars of the gate
 // 19 resting dots scattered inside the wide end of the funnel (worked out from a fixed pattern, so the picture is the same every time), kept clear of the one that moves
 const REST = Array.from({ length: 40 }, (_, i) => {
   const x = 22 + ((i * 53) % 215);
@@ -38,7 +39,7 @@ export function StoryFunnel({ nodes, label }) {
   const back = st.wrap;
   const shown = still ? 0 : step;
   return (
-    <section ref={ref} className="nfn" data-go={go} data-still={still ? "1" : "0"} style={{ "--n": nodes.length }} aria-label={label}>
+    <section ref={ref} className="nfn" data-go={go} data-still={still ? "1" : "0"} data-playing={st.running ? "1" : "0"} style={{ "--n": nodes.length }} aria-label={label}>
       <svg className="nfn-svg" viewBox="0 -38 1000 232" aria-hidden="true">
         <defs>
           {/* one gradient across the whole funnel: grey where the events are not yet covered, then the colours of stages 2 to 5 in order, one shading into the next, which is how a view is formed */}
@@ -70,7 +71,13 @@ export function StoryFunnel({ nodes, label }) {
           <text x={22 + String(REST.length + 1).length * 21 + 8} y={190} className="nfn-cl">things happen</text>
           <text x={332} y={190} className="nfn-cl">only a few are covered</text>
         </g>
-        {REST.map((d, i) => <circle key={i} className="nfn-rest" cx={d.x} cy={d.y} r="5.5" style={{ "--dx": `${((i * 7) % 11) - 5}px`, "--dy": `${((i * 5) % 9) - 4}px`, "--t": `${3.4 + (i % 5) * 0.55}s`, "--w": `${-(i % 7) * 0.6}s` }} />)}
+        {REST.map((d, i) => {
+          // Every other dot flies at the newsroom's gate, hits the tip of one of the two bars and bounces away: most things that happen are never picked up. The rest stay put.
+          const flies = i % 2 === 0;
+          const up = (i >> 1) % 2 === 0;
+          const style = flies ? { "--fx": `${(GATE_X - d.x).toFixed(1)}px`, "--fy": `${((up ? 64 : 106) - d.y).toFixed(1)}px`, "--bo": up ? "-12px" : "12px", "--w": `${-((i * 0.83) % 5).toFixed(2)}s`, "--t": `${4.4 + (i % 3) * 0.5}s` } : undefined;
+          return <circle key={i} className={flies ? "nfn-rest nfn-fly" : "nfn-rest"} cx={d.x} cy={d.y} r="5.5" style={style} />;
+        })}
         {/* the one story that is followed */}
         <g className="nfn-tok" data-back={back ? "1" : "0"} style={{ transform: `translate(${STAGE_X[shown]}px, ${STAGE_Y[shown]}px)` }}>
           <circle className="nfn-dot" r="9" style={{ fill: shown >= 2 ? nodes[shown].colour : GREY }} />

@@ -217,9 +217,9 @@ export function GrantPipe({ estate, now, proposed, label, duties }) {
           <div className="fla-g-hd"><b>The Sovereign Grant</b><small>Public money paid to the Royal Household</small></div>
           <div className="fla-g-body">
             <div className="fla-g-tank">
-              <div className="fla-g-gauge" aria-hidden="true">
-                <span className="fla-g-fill" style={{ height: `${view === "now" ? 100 : proposed.pct}%` }} />
-                <span className="fla-g-cut" style={{ height: `${100 - proposed.pct}%` }} />
+              <div className="fla-g-gauge" aria-hidden="true" style={{ "--cut": (100 - proposed.pct) / 100 }}>
+                <span className="fla-g-fill" />
+                <span className="fla-g-cut" />
               </div>
               <div className="fla-g-val">
                 <strong aria-live="polite">{cur.value}</strong>
